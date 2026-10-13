@@ -2,7 +2,7 @@
 title: "Poate o întreprindere individuală să fie la normă de venit?"
 description: "Codul fiscal nu diferențiază PFA de întreprinderea individuală (II) la stabilirea venitului net pe bază de normă de venit — condiția e activitatea, nu forma de organizare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,7 +35,7 @@ Ce rezultă de aici pentru o II:
 
 ## Ce face iConta.eu
 
-Generatorul D212 al iConta.eu emite capitolul de normă de venit (`cap12`) cu câmpul `norma_forma_org`, care înregistrează forma de organizare a titularului — inclusiv II — exact cum cere structura validată de ANAF (D212Validator). Registrul de evidență fiscală pentru persoane fizice (varianta „venituri_pf", conform OMFP 3254/2017, aplicația) susține de asemenea modul „normă de venit" (`mod_venit_net = 3`) ca opțiune de completare a evidenței, fără să facă vreo distincție între PFA și II la validarea înregistrării.
+Generatorul D212 al iConta.eu emite capitolul de normă de venit (`cap12`) cu câmpul `norma_forma_org`, care înregistrează forma de organizare a titularului — inclusiv II — exact cum cere structura validată de ANAF (D212Validator). Registrul de evidență fiscală pentru persoane fizice (varianta „venituri — persoane fizice", conform OMFP 3254/2017, aplicația) susține de asemenea modul „normă de venit" (modul de determinare a venitului net = 3) ca opțiune de completare a evidenței, fără să facă vreo distincție între PFA și II la validarea înregistrării.
 
 Ce nu face aplicația: nu verifică dacă activitatea CAEN concretă e inclusă în nomenclatorul de normă de venit publicat de DGRFP pentru anul de raportare — nomenclatorul nu e un cod fiscal fix, ci un document regional actualizat anual, iar verificarea eligibilității rămâne responsabilitatea contabilului.
 

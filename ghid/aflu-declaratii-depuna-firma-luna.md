@@ -2,7 +2,7 @@
 title: Cum aflu ce declarații trebuie să depună firma luna aceasta?
 description: Semaforul de conformare fiscală răspunde exact la această întrebare — pentru fiecare firmă, câte o pastilă și motivul din spatele ei, nu o listă generică valabilă pentru toată lumea.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Fiecare verdict poartă motivul explicit — de exemplu, D112 apare doar în lun
 
 ## Ce face iConta.eu
 
-Ecranul Control fiscal, alimentat de motorul F022, răspunde exact acestei întrebări pentru fiecare firmă: ce e datorat, cu ce termen, și de ce. Verdictul se recalculează la fiecare accesare, pe baza profilului fiscal curent al firmei și a declarațiilor deja confirmate ca depuse în aplicație.
+Ecranul Control fiscal, alimentat de motorul „Semafor conformare fiscală”, răspunde exact acestei întrebări pentru fiecare firmă: ce e datorat, cu ce termen, și de ce. Verdictul se recalculează la fiecare accesare, pe baza profilului fiscal curent al firmei și a declarațiilor deja confirmate ca depuse în aplicație.
 
 [iConta.eu](/)

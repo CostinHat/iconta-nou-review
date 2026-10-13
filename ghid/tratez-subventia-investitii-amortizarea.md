@@ -2,7 +2,7 @@
 title: Cum tratez subvenția pentru investiții și amortizarea
 description: Subvenția pentru investiții se înregistrează separat de activul cumpărat și se reia la venituri treptat, pe măsura amortizării — nu integral, la primire.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -45,6 +45,6 @@ Fiscal, distincția e importantă:
 
 ## Ce face iConta.eu
 
-Ecranul „Subvenții (445/741)" din iConta.eu generează notele pentru dreptul de a primi și încasarea subvenției pentru investiții (`445=4751`, `5121=445`). Pentru reluarea lunară (`4751=7584`), motorul `reluare_lunara_investitii(valoare_activ, subventie, amortizare_lunara)` calculează exact cota proporțională descrisă mai sus — **dar, la data acestei verificări, formularul „Subvenții" din ecran nu expune câmpurile `valoare_activ`, `subventie` și `amortizare_lunara`** cerute de această operație (are doar dată, fel, sumă, moment și descriere); opțiunea „Reluare la venituri" apare în lista de tip de operațiune, dar nu poate fi dusă la capăt din formularul standard. Până la o corectare a ecranului, reluarea lunară trebuie introdusă prin altă cale (API direct sau o notă manuală calculată după formula de mai sus). La declarația unificată, dacă ai reluat subvenții pentru investiții în perioada raportată, verifică manual, conform art. 53 alin. (1) lit. d), că suma respectivă a fost scăzută din baza impozabilă a microîntreprinderii înainte de depunere.
+Ecranul „Subvenții (445/741)" din iConta.eu generează notele pentru dreptul de a primi și încasarea subvenției pentru investiții (`445=4751`, `5121=445`). Pentru reluarea lunară (`4751=7584`), motorul „reluarea lunară a subvenției pentru investiții” calculează exact cota proporțională descrisă mai sus — **dar, la data acestei verificări, formularul „Subvenții" din ecran nu expune câmpurile „valoarea activului”, `subventie` și „amortizarea lunară”** cerute de această operație (are doar dată, fel, sumă, moment și descriere); opțiunea „Reluare la venituri" apare în lista de tip de operațiune, dar nu poate fi dusă la capăt din formularul standard. Până la o corectare a ecranului, reluarea lunară trebuie introdusă prin altă cale (API direct sau o notă manuală calculată după formula de mai sus). La declarația unificată, dacă ai reluat subvenții pentru investiții în perioada raportată, verifică manual, conform art. 53 alin. (1) lit. d), că suma respectivă a fost scăzută din baza impozabilă a microîntreprinderii înainte de depunere.
 
 [iConta.eu](/)

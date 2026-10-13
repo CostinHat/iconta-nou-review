@@ -2,7 +2,7 @@
 title: "Ce se întâmplă cu TVA dedusă pentru stocuri la lichidare?"
 description: Dacă stocurile rămase se vând înainte de radiere, TVA dedusă la achiziție rămâne definitivă, echilibrată de TVA colectată la vânzare — dar regimul TVA pentru stocuri distribuite direct asociaților, fără vânzare, nu are un temei confirmat separat în sursele verificate pentru lichidare.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,7 +24,7 @@ Lichidatorii pot „să vândă, prin licitație publică, imobilele și orice a
 
 Dacă stocurile rămase se vând înainte de radiere — ca parte firească a valorificării activelor în lichidare — vânzarea generează TVA colectată în mod normal, la fel ca orice altă vânzare de marfă, iar TVA dedusă la achiziția inițială a mărfii rămâne definitiv dobândită, fără ajustare, tocmai pentru că bunul e efectiv livrat, cu titlu oneros, în cadrul unei operațiuni taxabile.
 
-Situația e mai puțin clară pentru stocurile care nu se vând, ci se distribuie direct asociaților la partaj sau ies pur și simplu din evidență la radiere: sursele verificate pentru acest dosar (temeiul legal pentru F057 — lichidare/radiere) nu conțin un text explicit despre regimul TVA aplicabil unei asemenea ieșiri de stoc fără vânzare. Dacă te afli în această situație, tratamentul corect trebuie verificat separat — printre altele, dacă operațiunea se încadrează la regulile de ajustare a TVA pentru bunuri care ies din sfera operațiunilor taxabile (relevante altfel la lipsurile de gestiune, nu neapărat identice la lichidare) — nu presupune automat un răspuns.
+Situația e mai puțin clară pentru stocurile care nu se vând, ci se distribuie direct asociaților la partaj sau ies pur și simplu din evidență la radiere: sursele verificate pentru acest dosar (temeiul legal pentru „Lichidare/radiere societate” — lichidare/radiere) nu conțin un text explicit despre regimul TVA aplicabil unei asemenea ieșiri de stoc fără vânzare. Dacă te afli în această situație, tratamentul corect trebuie verificat separat — printre altele, dacă operațiunea se încadrează la regulile de ajustare a TVA pentru bunuri care ies din sfera operațiunilor taxabile (relevante altfel la lipsurile de gestiune, nu neapărat identice la lichidare) — nu presupune automat un răspuns.
 
 ## Ce se greșește în practică
 

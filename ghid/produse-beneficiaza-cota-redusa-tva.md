@@ -2,7 +2,7 @@
 title: Ce produse beneficiază de cotă redusă de TVA în 2026?
 description: Cota redusă de 11% se aplică unei liste limitative de bunuri — medicamente, alimente, cărți, îngrășăminte agricole, lemn de foc, energie termică — fiecare cu excepțiile ei exacte din Codul fiscal.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -43,6 +43,6 @@ Cea mai frecventă greșeală este aplicarea automată a cotei de 11% oricărui 
 
 ## Ce face iConta.eu
 
-Aplicația ține lista limitativă (`CATEGORII_11`) cu fiecare categorie legată explicit de litera din art. 291 alin. (2), plus lista separată a excepțiilor care rămân la 21% (`EXCEPTII_21`). Motorul de potrivire (`potriveste_cota`) folosește AI pentru a încadra denumirea unui produs în categoria corectă, dar dacă răspunsul nu e clar sau AI e indisponibil, linia rămâne **nedeterminată** și emiterea facturii se blochează — aplicația nu completează tăcut o cotă implicită.
+Aplicația ține lista limitativă („categoriile cu cota de 11%”) cu fiecare categorie legată explicit de litera din art. 291 alin. (2), plus lista separată a excepțiilor care rămân la 21% („excepțiile cu cota de 21%”). Motorul de potrivire („potrivirea cotei de TVA”) folosește AI pentru a încadra denumirea unui produs în categoria corectă, dar dacă răspunsul nu e clar sau AI e indisponibil, linia rămâne **nedeterminată** și emiterea facturii se blochează — aplicația nu completează tăcut o cotă implicită.
 
 [iConta.eu](/)

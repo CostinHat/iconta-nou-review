@@ -2,7 +2,7 @@
 title: "Un telefon mobil este mijloc fix sau obiect de inventar?"
 description: "Pragul legal care decide dacă un telefon mobil (sau orice alt bun) se înregistrează ca mijloc fix amortizabil sau ca obiect de inventar, conform Codului fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Notă de tranziție: mijloacele fixe aflate deja în evidență la 31.12.2025, c
 
 ## Ce face iConta.eu
 
-Aplicația are un motor dedicat exact acestei clasificări, aplicația, care citește pragul legal curent dintr-un registru de cote istoricizat (nu un număr fix scris în cod) — motiv pentru care aplică automat 5.000 lei pentru achiziții din 2026 și valoarea anterioară pentru date mai vechi. Funcția `e_obiect_inventar(valoare, la_data, durata_sub_1_an)` decide încadrarea exact pe criteriile de mai sus (sub prag sau durată sub un an → obiect de inventar), iar motorul generează automat notele contabile corespunzătoare: la achiziție (303 + 4426 = 401), la darea în folosință (603 = 303, cu evidență extracontabilă în contul 8035 până la scoaterea din uz) și la scoaterea din uz. Pentru bunurile care depășesc pragul și devin mijloace fixe, aplicația are un motor separat de amortizare, care aplică metoda și durata alese conform regulilor de amortizare fiscală.
+Aplicația are un motor dedicat exact acestei clasificări, aplicația, care citește pragul legal curent dintr-un registru de cote istoricizat (nu un număr fix scris în cod) — motiv pentru care aplică automat 5.000 lei pentru achiziții din 2026 și valoarea anterioară pentru date mai vechi. Funcția „încadrarea ca obiect de inventar” decide încadrarea exact pe criteriile de mai sus (sub prag sau durată sub un an → obiect de inventar), iar motorul generează automat notele contabile corespunzătoare: la achiziție (303 + 4426 = 401), la darea în folosință (603 = 303, cu evidență extracontabilă în contul 8035 până la scoaterea din uz) și la scoaterea din uz. Pentru bunurile care depășesc pragul și devin mijloace fixe, aplicația are un motor separat de amortizare, care aplică metoda și durata alese conform regulilor de amortizare fiscală.
 
 [iConta.eu](/)

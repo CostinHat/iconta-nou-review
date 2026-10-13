@@ -2,7 +2,7 @@
 title: Cum se calculează deducerea personală în 2026?
 description: Deducerea personală depinde de nr. de persoane în întreținere și de venitul brut, raportat la salariul minim — care are, în 2026, două valori diferite pe cele două jumătăți de an (4.050 lei și 4.325 lei). Vezi scara completă și exemple pe ambele ferestre.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -54,6 +54,6 @@ Aceeași persoană, cu același număr de persoane în întreținere, primește 
 
 ## Ce face iConta.eu
 
-Deducerea personală se calculează automat de `deducere_personala()`, care necesită obligatoriu data la care se face calculul — codul refuză explicit ghicirea lunii curente, tocmai pentru că salariul minim (deci și deducerea) diferă pe cele două ferestre din 2026. Cotele și pragurile scării de deducere vin din registrul „period-aware" `core.common.COTE`, nu sunt scrise fix în cod.
+Deducerea personală se calculează automat de „deducerea personală”, care necesită obligatoriu data la care se face calculul — codul refuză explicit ghicirea lunii curente, tocmai pentru că salariul minim (deci și deducerea) diferă pe cele două ferestre din 2026. Cotele și pragurile scării de deducere vin din registrul „period-aware" „registrul de cote al aplicației”, nu sunt scrise fix în cod.
 
 [iConta.eu](/)

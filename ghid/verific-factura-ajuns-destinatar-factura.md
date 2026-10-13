@@ -2,20 +2,13 @@
 title: "Cum verific dacă factura a ajuns la destinatar în e-Factura"
 description: "Explică ce înseamnă legal comunicarea unei facturi electronice și cum urmărește iConta.eu automat statusul la ANAF."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum verific dacă factura a ajuns la destinatar în e-Factura
 
 "A ajunge la destinatar" are, în sistemul RO e-Factura, un înțeles legal precis: nu ține de o confirmare de citire din partea clientului, ci de momentul în care factura devine disponibilă pentru descărcare în sistemul național.
-
-## Temeiul legal
-
-::: ghid-temei
-"(4) În situaţia în care factura electronică transmisă respectă structura prevăzută la alin. (1), se aplică semnătura electronică a Ministerului Finanţelor şi se comunică de îndată destinatarului. Aplicarea semnăturii electronice a Ministerului Finanţelor atestă primirea acesteia în sistemul naţional privind factura electronică RO e-Factura." [...] "(7) Data comunicării facturii electronice către destinatar se consideră data la care factura electronică este disponibilă acestuia pentru descărcare din sistemul naţional privind factura electronică RO e-Factura. [...] Data comunicării este accesibilă în sistem şi emitentului facturii electronice."
-— OUG 120/2021, art. 4 alin. (4) și alin. (7), [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243), dosar de cercetare F178.
-:::
 
 Odată ce factura trece validarea structurală și primește semnătura electronică a Ministerului Finanțelor, ea e considerată comunicată destinatarului — disponibilă pentru descărcare în sistemul național, indiferent dacă destinatarul a deschis-o efectiv sau nu. Data comunicării e vizibilă și emitentului, direct în sistem.
 

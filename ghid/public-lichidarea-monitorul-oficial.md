@@ -2,7 +2,7 @@
 title: "Cum public lichidarea în Monitorul Oficial"
 description: "Numirea lichidatorilor și dizolvarea unei societăți produc efecte depline față de terți doar după publicarea în Monitorul Oficial, Partea a IV-a — un pas obligatoriu, nu unul opțional."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce presupune, practic, procedura de publicare:
 
 ## Ce face iConta.eu
 
-Modulul de lichidare/radiere societate din iConta.eu (F057, aplicația) este funcționalitate live, dar e un motor **pur**, limitat la două operațiuni: vânzarea activelor imobilizate rămase (`nota_vanzare_activ`) și partajul final (`partaj`). Încasarea creanțelor și plata datoriilor curente nu au o funcție dedicată în acest motor — se fac prin operațiunile obișnuite de încasare/plată din aplicație, ca înainte de deschiderea lichidării. La partaj, aplicația calculează impozitul pe câștigul asociaților persoane fizice (rezerve + profituri repartizate) cu cota fixă de **10%, impozit final**, conform Codului fiscal art. 97 alin. (5) — codul aplicației marchează explicit că acesta **nu este regimul dividendelor** (art. 97 alin. (7), cu cotă diferită), ci un regim distinct, specific câștigului din lichidare. Aplicația **nu se ocupă de partea juridic-procedurală** a lichidării — redactarea actului de numire a lichidatorilor, depunerea lui la Registrul Comerțului și publicarea efectivă în Monitorul Oficial rămân pași separați, în afara aplicației, pe care lichidatorii îi parcurg conform Legii 31/1990.
+Modulul de lichidare/radiere societate din iConta.eu („Lichidare/radiere societate”, aplicația) este funcționalitate live, dar e un motor **pur**, limitat la două operațiuni: vânzarea activelor imobilizate rămase („nota de vânzare a activului”) și partajul final („partajul”). Încasarea creanțelor și plata datoriilor curente nu au o funcție dedicată în acest motor — se fac prin operațiunile obișnuite de încasare/plată din aplicație, ca înainte de deschiderea lichidării. La partaj, aplicația calculează impozitul pe câștigul asociaților persoane fizice (rezerve + profituri repartizate) cu cota fixă de **10%, impozit final**, conform Codului fiscal art. 97 alin. (5) — codul aplicației marchează explicit că acesta **nu este regimul dividendelor** (art. 97 alin. (7), cu cotă diferită), ci un regim distinct, specific câștigului din lichidare. Aplicația **nu se ocupă de partea juridic-procedurală** a lichidării — redactarea actului de numire a lichidatorilor, depunerea lui la Registrul Comerțului și publicarea efectivă în Monitorul Oficial rămân pași separați, în afara aplicației, pe care lichidatorii îi parcurg conform Legii 31/1990.
 
 [iConta.eu](/)

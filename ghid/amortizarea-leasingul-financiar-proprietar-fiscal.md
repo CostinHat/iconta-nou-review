@@ -2,7 +2,7 @@
 title: "Amortizarea și leasingul financiar: cine e proprietar fiscal"
 description: "La leasingul financiar, locatarul e tratat fiscal drept proprietar al bunului — indiferent la cine rămâne titlul juridic — deci el amortizează și el deduce cheltuielile."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Proprietatea juridică poate rămâne, prin contract, la societatea de leasing p
 
 ## Ce face iConta.eu
 
-F056 (Leasing financiar și operațional) implementează monografia din perspectiva locatarului tratat ca proprietar la leasingul financiar: bunul intră în contabilitatea lui de la primire (2133=167), consecvent cu art. 29 alin. (1) din Codul fiscal. Clasificarea inițială a contractului (financiar sau operațional) rămâne însă decizia contabilului, luată înainte de a alege tipul de operațiune în ecran — aplicația nu evaluează automat criteriile de clasificare din OMFP pct. 213.
+„Leasing financiar și operațional” implementează monografia din perspectiva locatarului tratat ca proprietar la leasingul financiar: bunul intră în contabilitatea lui de la primire (2133=167), consecvent cu art. 29 alin. (1) din Codul fiscal. Clasificarea inițială a contractului (financiar sau operațional) rămâne însă decizia contabilului, luată înainte de a alege tipul de operațiune în ecran — aplicația nu evaluează automat criteriile de clasificare din OMFP pct. 213.
 
 [iConta.eu](/)

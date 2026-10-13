@@ -2,7 +2,7 @@
 title: "Cum se contabilizează costurile apărute în perioada de garanție a unei construcții?"
 description: "Provizionul pentru garanții de bună execuție (1512) e singura categorie de provizion 151x deductibilă fiscal — constituit la nivelul cotelor din contract sau al procentelor de garantare din tarif, la data recepției lucrării."
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Pe măsură ce garanția expiră sau costurile efective de service/reparație di
 
 ## Ce face iConta.eu
 
-`nota_provizion(suma, tip="garantii", actiune)` din aplicație generează notele 6812=1512 (constituire) / 1512=7812 (reluare), marcate explicit ca deductibile în cod — singura categorie din dicționarul `PROVIZIOANE` cu acest tratament. Aplicația nu calculează automat suma provizionului (cota din contract sau procentul de garantare din tarif) — aceasta se introduce de contabil, ca parametru de intrare, iar costurile efective de service din perioada de garanție se înregistrează separat, prin cheltuielile obișnuite ale firmei.
+„nota de provizion (Operațiuni speciale)” din aplicație generează notele 6812=1512 (constituire) / 1512=7812 (reluare), marcate explicit ca deductibile în cod — singura categorie din dicționarul `PROVIZIOANE` cu acest tratament. Aplicația nu calculează automat suma provizionului (cota din contract sau procentul de garantare din tarif) — aceasta se introduce de contabil, ca parametru de intrare, iar costurile efective de service din perioada de garanție se înregistrează separat, prin cheltuielile obișnuite ale firmei.
 
 [iConta.eu](/)

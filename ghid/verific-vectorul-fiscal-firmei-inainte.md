@@ -2,7 +2,7 @@
 title: Cum verific vectorul fiscal al firmei înainte de depunerea declarațiilor?
 description: Vectorul fiscal (regim, TVA, periodicitate, intracomunitar) se verifică pe ecranul Date firmă — un câmp necompletat lasă declarația aferentă gri, cu cauza afișată explicit.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ poarta: v1
 ## Temeiul legal
 
 ::: ghid-temei
-Vectorul fiscal nu are un temei legal unic — cei patru atribute provin din articole diferite ale Codului fiscal: **regimul fiscal micro/profit** (art. 47, 52 CF), **calitatea de plătitor de TVA** (art. 316 CF), **periodicitatea decontului de TVA** (art. 322 CF) și **operațiunile intracomunitare** (art. 317 CF). În registrul intern al funcționalităților iConta, câmpul „Temei legal" asociat lui F100 e gol — fiecare atribut al vectorului are propriul temei, verificat separat.
+Vectorul fiscal nu are un temei legal unic — cei patru atribute provin din articole diferite ale Codului fiscal: **regimul fiscal micro/profit** (art. 47, 52 CF), **calitatea de plătitor de TVA** (art. 316 CF), **periodicitatea decontului de TVA** (art. 322 CF) și **operațiunile intracomunitare** (art. 317 CF). În registrul intern al funcționalităților iConta, câmpul „Temei legal" asociat lui „Vector fiscal per firmă” e gol — fiecare atribut al vectorului are propriul temei, verificat separat.
 :::
 
 Verificarea practică începe cu cele patru câmpuri din Vector fiscal (ecranul Date firmă): regimul fiscal (micro/profit), dacă firma e plătitoare de TVA (și, dacă da, periodicitatea — lunară sau trimestrială), și dacă are operațiuni intracomunitare. Toate patru sunt obligatorii, fără valoare implicită tacită — dacă vreunul lipsește, vectorul e considerat „necompletat", iar declarațiile care depind de el apar gri în semafor, cu motivul explicit afișat, nu ca un simplu blocaj nemotivat.
@@ -30,6 +30,6 @@ Un al treilea nivel privește operațiunile efective: dacă vectorul spune „f�
 
 ## Ce face iConta.eu
 
-Motorul din aplicație (funcția `declaratii_datorate`) traduce cei patru parametri ai vectorului, plus faptele reale (salariați, facturi IC), în lista de declarații datorate/scadente. Un atribut necompletat nu produce niciodată un „default tăcut" — declarația dependentă iese gri, cu cauza declarată explicit. Comparația live cu ANAF (roșu/verde/gri) e un semnal, nu un blocaj: salvarea rămâne posibilă chiar dacă diferă de ce arată ANAF, decizia finală fiind a contabilului.
+Motorul din aplicație (funcția „declarațiile datorate (Control fiscal)”) traduce cei patru parametri ai vectorului, plus faptele reale (salariați, facturi IC), în lista de declarații datorate/scadente. Un atribut necompletat nu produce niciodată un „default tăcut" — declarația dependentă iese gri, cu cauza declarată explicit. Comparația live cu ANAF (roșu/verde/gri) e un semnal, nu un blocaj: salvarea rămâne posibilă chiar dacă diferă de ce arată ANAF, decizia finală fiind a contabilului.
 
 [iConta.eu](/)

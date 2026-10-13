@@ -2,7 +2,7 @@
 title: Cum se tratează diferențele de curs la regularizarea avansurilor în valută?
 description: Avansurile în valută (409/419) sunt elemente nemonetare și rămân înregistrate la cursul din ziua plății/încasării, fără reevaluare lunară sau la 31.12; la factura finală doar partea neacoperită de avans se convertește la cursul nou.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -44,7 +44,7 @@ O firmă plătește un avans de 10.000 EUR unui furnizor pe 3 martie, la cursul 
 
 ## Ce face iConta.eu
 
-Motorul de avansuri este un motor pur, fără acces la cursul valutar BNR: funcțiile primesc direct `suma_fara_tva`, presupusă deja convertită în lei. Nu există niciun parametru de curs sau monedă în cele patru funcții (`nota_avans_platit`, `nota_regularizare_avans_platit`, `nota_avans_incasat`, `nota_regularizare_avans_incasat`), iar singurul apelant din aplicație (`nota_avans`) transmite suma primită direct de la stratul HTTP, fără nicio conversie valutară.
+Motorul de avansuri este un motor pur, fără acces la cursul valutar BNR: funcțiile primesc direct „suma fără TVA”, presupusă deja convertită în lei. Nu există niciun parametru de curs sau monedă în cele patru funcții („nota avansului plătit”, „regularizarea avansului plătit”, „nota avansului încasat”, „regularizarea avansului încasat”), iar singurul apelant din aplicație („nota de avans”) transmite suma primită direct de la stratul HTTP, fără nicio conversie valutară.
 
 Onest spus: **iConta.eu nu calculează automat diferența de curs la regularizarea unui avans în valută.** Contabilul trebuie să calculeze el însuși suma în lei — la cursul BNR din ultima zi bancară anterioară datei plății/încasării avansului, respectiv la cursul din data exigibilității pentru orice diferență nefacturată prin avans — și să introducă direct suma în lei rezultată. Motorul respectă corect regula că 409/419 nu se reevaluează (pentru că, oricum, nu are nicio logică de reevaluare), dar responsabilitatea calculului valutar propriu-zis rămâne integral a contabilului.
 

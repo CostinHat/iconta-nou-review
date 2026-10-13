@@ -2,7 +2,7 @@
 title: "Medicamente expirate: cum se casează"
 description: Medicamentele cu termen de valabilitate depășit sunt deductibile explicit la impozitul pe profit, dar operația corectă în evidența contabilă e „Minus" (lipsă neimputabilă de stoc), nu „Casare" — aceasta din urmă e rezervată mijloacelor fixe.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Spre deosebire de o marfă pur și simplu pierdută sau degradată fără explic
 
 ## Ce face iConta.eu
 
-Pentru scoaterea din gestiune a medicamentelor expirate, operația relevantă e „Minus" din formularul „Inventariere anuală" — nu „Casare", care în aplicație e rezervată exclusiv mijloacelor fixe (identificate printr-un `mijloc_fix_id` din registrul de mijloace fixe) și nu acceptă conturi de stoc. La „Minus", marchezi lipsa ca neimputabilă; cota de TVA e obligatorie, fără valoare implicită. Dacă bifezi că lipsa e „asigurată sau distrusă dovedit", aplicația nu adaugă linia de ajustare TVA; altfel, o generează automat. Evaluarea dacă medicamentele respective se încadrează efectiv la pct. 7 (deductibilitate) rămâne o decizie a ta, pe baza documentelor de distrugere — aplicația nu face această verificare automat.
+Pentru scoaterea din gestiune a medicamentelor expirate, operația relevantă e „Minus" din formularul „Inventariere anuală" — nu „Casare", care în aplicație e rezervată exclusiv mijloacelor fixe (identificate printr-un „mijlocul fix” din registrul de mijloace fixe) și nu acceptă conturi de stoc. La „Minus", marchezi lipsa ca neimputabilă; cota de TVA e obligatorie, fără valoare implicită. Dacă bifezi că lipsa e „asigurată sau distrusă dovedit", aplicația nu adaugă linia de ajustare TVA; altfel, o generează automat. Evaluarea dacă medicamentele respective se încadrează efectiv la pct. 7 (deductibilitate) rămâne o decizie a ta, pe baza documentelor de distrugere — aplicația nu face această verificare automat.
 
 [iConta.eu](/)

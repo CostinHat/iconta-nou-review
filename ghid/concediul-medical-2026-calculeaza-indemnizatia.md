@@ -2,7 +2,7 @@
 title: "Concediul medical 2026: cum se calculează indemnizația"
 description: "Formula legală a indemnizației de concediu medical în 2026 — baza pe 6 luni, plafonul de 12 salarii minime și procentul progresiv — și ce calculează efectiv motorul din iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,7 +33,7 @@ Din text rezultă mecanica exactă a calculului:
 
 ## Ce face iConta.eu
 
-Motorul de calcul (funcțiile `calcul_cm` și `procent_cm`) aplică exact procentele progresive de mai sus, dispecerizate pe data certificatului, și calculează media zilnică din baza pe 6 luni primită ca parametru. Acest motor nu are un ecran „calculator" de sine stătător — e folosit intern, prin ecranul de introducere a certificatelor de concediu medical al unui salariat (secțiunea Concedii din fișa salariatului), unde contabilul completează codul, perioada și **suma veniturilor din ultimele 6 luni, introdusă manual**, iar aplicația calculează automat baza, procentul și indemnizația. Există și un modul separat care poate aduna automat veniturile pe 6 luni din statele de plată deja emise, dar el e conectat doar la un API intern, fără ecran propriu — ecranul folosit efectiv de contabil nu-l apelează.
+Motorul de calcul (funcțiile „calculul concediului medical (Salarii)” și „procentul indemnizației”) aplică exact procentele progresive de mai sus, dispecerizate pe data certificatului, și calculează media zilnică din baza pe 6 luni primită ca parametru. Acest motor nu are un ecran „calculator" de sine stătător — e folosit intern, prin ecranul de introducere a certificatelor de concediu medical al unui salariat (secțiunea Concedii din fișa salariatului), unde contabilul completează codul, perioada și **suma veniturilor din ultimele 6 luni, introdusă manual**, iar aplicația calculează automat baza, procentul și indemnizația. Există și un modul separat care poate aduna automat veniturile pe 6 luni din statele de plată deja emise, dar el e conectat doar la un API intern, fără ecran propriu — ecranul folosit efectiv de contabil nu-l apelează.
 
 O limitare reală, verificată în cod: deși motorul suportă tehnic plafonarea la 12 salarii minime din art. 10 alin. (1), niciun ecran din aplicație nu trimite astăzi veniturile defalcate pe fiecare din cele 6 luni (parametrul opțional care activează plafonarea) — formularul cere doar suma și zilele agregate pe 6 luni. În consecință, la un salariat cu venituri peste plafonul legal, indemnizația calculată azi de iConta.eu poate ieși mai mare decât permite legea, pentru că plafonarea lunară nu se aplică în practică.
 

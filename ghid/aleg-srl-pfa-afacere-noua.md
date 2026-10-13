@@ -2,7 +2,7 @@
 title: "Cum aleg între SRL și PFA pentru o afacere nouă în 2026"
 description: "Dincolo de răspundere, SRL și PFA diferă în sarcina fiscală asupra veniturilor: PFA plătește CAS pe un venit ales de contribuabil, cu praguri de 12 și 24 de salarii minime brute, iar SRL impozitează separat profitul firmei și dividendele ridicate de asociat."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce înseamnă, practic, în comparație cu un SRL:
 
 ## Ce face iConta.eu
 
-Pentru PFA, iConta.eu are motorul D212 (F030) live: calculează venitul net în sistem real, CAS și CASS pe plafoanele legale (6/12/24 salarii minime), alimentând Fișa D212. Pentru SRL, aplicația calculează impozitul pe profit sau pe veniturile microîntreprinderii (D101/D100) și impozitul pe dividende (D205). Aplicația **nu oferă însă o comparație directă**, pe același venit ipotetic, între sarcina fiscală totală a unui PFA și cea a unui SRL — fiecare calcul rulează separat, în funcție de forma juridică deja aleasă și introdusă în aplicație.
+Pentru PFA, iConta.eu are motorul D212 („Motor D212 (PFA/II/IF)”) live: calculează venitul net în sistem real, CAS și CASS pe plafoanele legale (6/12/24 salarii minime), alimentând Fișa D212. Pentru SRL, aplicația calculează impozitul pe profit sau pe veniturile microîntreprinderii (D101/D100) și impozitul pe dividende (D205). Aplicația **nu oferă însă o comparație directă**, pe același venit ipotetic, între sarcina fiscală totală a unui PFA și cea a unui SRL — fiecare calcul rulează separat, în funcție de forma juridică deja aleasă și introdusă în aplicație.
 
 [iConta.eu](/)

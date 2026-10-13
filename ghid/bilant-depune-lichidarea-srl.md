@@ -2,7 +2,7 @@
 title: Ce bilanț se depune la lichidarea unui SRL?
 description: O societate în lichidare nu depune S1005/S1003 în regimul obișnuit al firmei în funcțiune — legea prevede un regim distinct, cu termene diferite, iar în iConta.eu acest regim nu are azi un formular dedicat generat automat.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Conținutul tehnic exact al Anexei nr. 1 la OMFP 897/2015 (formatul propriu-zis 
 
 ## Ce face iConta.eu
 
-Trebuie spus deschis: modulul de lichidare din iConta.eu (funcționalitatea F057, aplicația) generează notele contabile aferente operațiunilor de lichidare — vânzarea activelor rămase și partajul către asociați (inclusiv impozitul pe câștigul din lichidare, calculat în regim de dividend) — dar **nu generează niciun formular sau document de raportare de bilanț de lichidare**. Componentele obligatorii de mai sus (situații financiare de lichidare sau raportarea anuală de 90 de zile) nu au azi un corespondent funcțional dedicat în aplicație; ele rămân, la acest moment, de întocmit separat, pe baza temeiului legal descris mai sus.
+Trebuie spus deschis: modulul de lichidare din iConta.eu (funcționalitatea „Lichidare/radiere societate”, aplicația) generează notele contabile aferente operațiunilor de lichidare — vânzarea activelor rămase și partajul către asociați (inclusiv impozitul pe câștigul din lichidare, calculat în regim de dividend) — dar **nu generează niciun formular sau document de raportare de bilanț de lichidare**. Componentele obligatorii de mai sus (situații financiare de lichidare sau raportarea anuală de 90 de zile) nu au azi un corespondent funcțional dedicat în aplicație; ele rămân, la acest moment, de întocmit separat, pe baza temeiului legal descris mai sus.
 
 [iConta.eu](/)

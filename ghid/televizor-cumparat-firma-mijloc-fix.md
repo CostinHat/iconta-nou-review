@@ -2,7 +2,7 @@
 title: "Un televizor cumpărat de firmă este mijloc fix?"
 description: "Cele două condiții cumulative — durata de utilizare și valoarea minimă de 5.000 lei — care decid dacă un bun cumpărat de firmă e mijloc fix sau obiect de inventar."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Cele două condiții **cumulative**, aplicate unui televizor cumpărat de firmă
 
 ## Ce face iConta.eu
 
-Verificat în cod: Aplicația citește pragul valoric al mijlocului fix dintr-un registru de cote istoricizat (`prag_mf(la_data)`), nu dintr-o valoare fixă — pentru achizițiile de la 25.02.2026 încoace pragul aplicat este 5.000 lei (OUG 8/2026), iar pentru cele anterioare, 2.500 lei (HG 276/2013), fiecare corect legat de data operațiunii. Verificarea celeilalte condiții — durata reală de utilizare planificată de firmă pentru bunul respectiv — rămâne o evaluare a contabilului la momentul înregistrării achiziției.
+Verificat în cod: Aplicația citește pragul valoric al mijlocului fix dintr-un registru de cote istoricizat („pragul mijloacelor fixe”), nu dintr-o valoare fixă — pentru achizițiile de la 25.02.2026 încoace pragul aplicat este 5.000 lei (OUG 8/2026), iar pentru cele anterioare, 2.500 lei (HG 276/2013), fiecare corect legat de data operațiunii. Verificarea celeilalte condiții — durata reală de utilizare planificată de firmă pentru bunul respectiv — rămâne o evaluare a contabilului la momentul înregistrării achiziției.
 
 [iConta.eu](/)

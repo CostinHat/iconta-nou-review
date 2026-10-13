@@ -2,7 +2,7 @@
 title: "Cum înregistrez decontul administratorului fără avans acordat anterior?"
 description: "Documentul justificativ folosit când administratorul plătește din bani proprii cheltuieli ale firmei, fără să fi primit un avans spre decontare în prealabil."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce rezultă din text pentru cazul administratorului fără avans prealabil:
 
 ## Ce face iConta.eu
 
-Aplicația are funcțiile `avans_acordare`, `avans_deconteaza` și `avans_sold`, care calculează soldul rămas la decontarea unui avans (inclusiv, matematic, cazul în care suma justificată depășește avansul primit — rezultatul `rest_de_restituit` devine negativ, semn că firma datorează administratorului diferența). Din verificarea codului, funcția `avans_deconteaza` **presupune totuși un avans de plecare** (chiar și zero) și **nu generează automat** nota contabilă de rambursare efectivă a diferenței către administrator — acest ultim pas rămâne, la acest moment, o notă pe care contabilul o adaugă manual, folosind exact documentul „Dispoziție de plată către casierie" descris mai sus.
+Aplicația are funcțiile „acordarea avansului de trezorerie”, „decontarea avansului de trezorerie” și „soldul avansului de trezorerie”, care calculează soldul rămas la decontarea unui avans (inclusiv, matematic, cazul în care suma justificată depășește avansul primit — rezultatul „suma de restituit” devine negativ, semn că firma datorează administratorului diferența). Din verificarea codului, funcția „decontarea avansului de trezorerie” **presupune totuși un avans de plecare** (chiar și zero) și **nu generează automat** nota contabilă de rambursare efectivă a diferenței către administrator — acest ultim pas rămâne, la acest moment, o notă pe care contabilul o adaugă manual, folosind exact documentul „Dispoziție de plată către casierie" descris mai sus.
 
 [iConta.eu](/)

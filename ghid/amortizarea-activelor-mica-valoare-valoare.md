@@ -2,7 +2,7 @@
 title: "Amortizarea activelor de mică valoare și valoare mică: plafon"
 description: "Plafonul de 5.000 lei (majorat de la 2.500 lei prin OUG 8/2026) sub care un bun nu se amortizează ca mijloc fix, ci se trece integral pe cheltuieli ca obiect de inventar."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,6 +27,6 @@ Regula de încadrare: dacă valoarea de achiziție a bunului e sub pragul în vi
 
 ## Ce face iConta.eu
 
-iConta.eu are un motor dedicat pentru obiecte de inventar (conform OMFP 1802/2014), cu funcția `prag_mf(la_data)`, care determină pragul de încadrare ca mijloc fix exact la data intrării bunului în patrimoniu — 2.500 lei pentru bunuri intrate până la 24.02.2026 inclusiv, 5.000 lei pentru cele intrate de la 25.02.2026, conform OUG 8/2026, art. 6 pct. 7. Aplicația are un test dedicat (gard de conformitate) care verifică explicit atât valoarea corectă a pragului la fiecare dată, cât și faptul că un bun de 3.000 lei e clasificat mijloc fix înainte de 25.02.2026 și obiect de inventar după — și că pragul e citit dintr-o singură sursă (registrul de cote al aplicației), nu duplicat în mai multe module.
+iConta.eu are un motor dedicat pentru obiecte de inventar (conform OMFP 1802/2014), cu funcția „pragul mijloacelor fixe”, care determină pragul de încadrare ca mijloc fix exact la data intrării bunului în patrimoniu — 2.500 lei pentru bunuri intrate până la 24.02.2026 inclusiv, 5.000 lei pentru cele intrate de la 25.02.2026, conform OUG 8/2026, art. 6 pct. 7. Aplicația are un test dedicat (gard de conformitate) care verifică explicit atât valoarea corectă a pragului la fiecare dată, cât și faptul că un bun de 3.000 lei e clasificat mijloc fix înainte de 25.02.2026 și obiect de inventar după — și că pragul e citit dintr-o singură sursă (registrul de cote al aplicației), nu duplicat în mai multe module.
 
 [iConta.eu](/)

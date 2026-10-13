@@ -2,7 +2,7 @@
 title: "Se declară exporturile în D394?"
 description: "De ce livrările către parteneri din afara UE intră în D394 la fel ca cele intracomunitare, și cum le clasifică automat iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Spre deosebire de importuri, exporturile de bunuri **intră** în D394 — decla
 
 ## Ce face iConta.eu
 
-Funcția `tip_operatiune()` din aplicație clasifică orice livrare (`emisa=True`) către un partener de tip UE sau non-UE drept tip „L", care trece apoi prin aceeași regulă de reclasificare folosită pentru orice livrare scutită: la cotă 0, tipul devine automat „LS", indiferent de categoria partenerului. Practic, exporturile sunt tratate identic cu livrările intracomunitare din perspectiva D394 — ambele apar ca livrări scutite cu drept de deducere, în secțiunile E sau F ale declarației, corespunzător țării partenerului.
+Funcția „tipul operațiunii” din aplicație clasifică orice livrare (factură emisă) către un partener de tip UE sau non-UE drept tip „L", care trece apoi prin aceeași regulă de reclasificare folosită pentru orice livrare scutită: la cotă 0, tipul devine automat „LS", indiferent de categoria partenerului. Practic, exporturile sunt tratate identic cu livrările intracomunitare din perspectiva D394 — ambele apar ca livrări scutite cu drept de deducere, în secțiunile E sau F ale declarației, corespunzător țării partenerului.
 
 [iConta.eu](/)

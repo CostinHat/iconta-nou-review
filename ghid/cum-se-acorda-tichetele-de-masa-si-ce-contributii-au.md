@@ -2,7 +2,7 @@
 title: Cum se acordă tichetele de masă și ce contribuții au?
 description: Tichetele de masă se configurează per salariat, cu o valoare nominală de cel mult 45 lei/tichet din noiembrie 2025, se acordă pe zilele efectiv lucrate și sunt purtătoare de CASS 10% și impozit 10%, fără CAS și fără CAM.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -51,6 +51,6 @@ Un salariat are tichetul de masă configurat la 45 lei și a lucrat 21 de zile �
 
 ## Ce face iConta.eu
 
-Valoarea nominală configurată per salariat (`tichet_masa_valoare`) este validată la salvare: trebuie să fie ≥0 și să nu depășească plafonul legal curent stocat central în cotele aplicației. Numărul de tichete rezultă din pontajul lunii, nu este introdus manual. Calculul de CASS și impozit pe tichete se face automat, fără CAS și fără CAM, iar dacă pontajul lunii nu este confirmat, valoarea tichetului de masă este blocată la 0 pentru acea lună, exact conform HG 1045/2018 art. 10 alin. (3).
+Valoarea nominală configurată per salariat („valoarea tichetului de masă (Salariați)”) este validată la salvare: trebuie să fie ≥0 și să nu depășească plafonul legal curent stocat central în cotele aplicației. Numărul de tichete rezultă din pontajul lunii, nu este introdus manual. Calculul de CASS și impozit pe tichete se face automat, fără CAS și fără CAM, iar dacă pontajul lunii nu este confirmat, valoarea tichetului de masă este blocată la 0 pentru acea lună, exact conform HG 1045/2018 art. 10 alin. (3).
 
 [iConta.eu](/)

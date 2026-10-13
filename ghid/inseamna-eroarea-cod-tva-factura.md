@@ -2,7 +2,7 @@
 title: "Ce înseamnă eroarea de cod TVA în e-Factura?"
 description: "De ce apare eroarea de cod de TVA la trimiterea unei facturi în RO e-Factura și cum se deosebește codul de înregistrare în scopuri de TVA de codul de identificare fiscală."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Amestecarea celor două — atribuirea prefixului „RO" unei firme neplătitoar
 
 ## Ce face iConta.eu
 
-iConta.eu construiește codul de TVA pentru factura electronică din CUI-ul înregistrat, prin funcția `_vatid()` din aplicație. Pentru **furnizor** (firma proprie, emitentul facturii), codul din cod confirmă exact regula de mai sus: prefixul „RO" se adaugă în fața cifrelor CUI **numai** atunci când firma e marcată drept plătitoare de TVA (`sup_vat = _vatid(furnizor.get("cui")) if furnizor.get("platitor_tva") else ""`) — respectând distincția din art. 319 alin. (20) din Codul fiscal între codul de înregistrare în scopuri de TVA și codul de identificare fiscală simplu. Pentru **client/beneficiar**, verificarea directă în cod arată însă că regula NU e aplicată condiționat: `cli_vat = _vatid(client.get("cui"))` adaugă prefixul „RO" necondiționat, indiferent dacă partenerul e sau nu marcat plătitor de TVA — o inconsecvență reală față de distincția din lege, pe latura de beneficiar. Ce nu automatizează astăzi aplicația, pe niciuna dintre laturi: verificarea în timp real a statusului de plătitor de TVA al unui partener direct din Registrul contribuabililor ANAF, înainte de emiterea facturii — corectitudinea datelor introduse pentru un partener rămâne responsabilitatea contabilului care completează fișa partenerului.
+iConta.eu construiește codul de TVA pentru factura electronică din CUI-ul înregistrat, prin funcția „codul de TVA” din aplicație. Pentru **furnizor** (firma proprie, emitentul facturii), codul din cod confirmă exact regula de mai sus: prefixul „RO" se adaugă în fața cifrelor CUI **numai** atunci când firma e marcată drept plătitoare de TVA (codul de TVA al furnizorului = codul de TVA(furnizor.get("cui")) if furnizor.get("plătitor de TVA (Date firmă)") else "") — respectând distincția din art. 319 alin. (20) din Codul fiscal între codul de înregistrare în scopuri de TVA și codul de identificare fiscală simplu. Pentru **client/beneficiar**, verificarea directă în cod arată însă că regula NU e aplicată condiționat: codul de TVA al clientului = codul de TVA(client.get("cui")) adaugă prefixul „RO" necondiționat, indiferent dacă partenerul e sau nu marcat plătitor de TVA — o inconsecvență reală față de distincția din lege, pe latura de beneficiar. Ce nu automatizează astăzi aplicația, pe niciuna dintre laturi: verificarea în timp real a statusului de plătitor de TVA al unui partener direct din Registrul contribuabililor ANAF, înainte de emiterea facturii — corectitudinea datelor introduse pentru un partener rămâne responsabilitatea contabilului care completează fișa partenerului.
 
 [iConta.eu](/)

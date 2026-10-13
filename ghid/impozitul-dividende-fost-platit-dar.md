@@ -2,7 +2,7 @@
 title: "Ce faci dacă impozitul pe dividende a fost plătit, dar beneficiarul lipsește din D205?"
 description: "Ce prevede legea pentru dividendele distribuite dar neplătite până la sfârșitul anului, și de ce un beneficiar poate lipsi din D205 deși impozitul a fost efectiv achitat."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Ce spun cele două texte, puse cap la cap:
 
 Generatorul D205 construiește baza de impozitare **strict din dividendul plătit** din contul 457 (`baza1 = platit`), nu din cel distribuit — deci un dividend distribuit, de exemplu, în decembrie, dar neplătit până la 31 decembrie, **nu produce niciun beneficiar** în D205-ul acelui an. Asta contrazice direct regula de mai sus din instrucțiunile D205, care cere includerea lui în declarația anului distribuirii. Situația inversă — dividend distribuit într-un an, plătit eșalonat sau integral anul următor — e tratată corect: aplicația atribuie fiecărei tranșe de plată cota de impozit de la data distribuirii corespunzătoare (nu cota din anul plății), prin motorul de atribuire FIFO al distribuirilor.
 
-Concret, dacă impozitul a fost plătit dar beneficiarul lipsește din D205, verificați dacă acel dividend a fost distribuit într-un an și beneficiarul urma să fie raportat, conform normei, în declarația anului distribuirii, nu al plății — pentru acest caz, aplicația nu adaugă automat beneficiarul. Funcția internă `d205.genereaza()` acceptă, tehnic, un parametru `manual` pentru suprascrierea listei de beneficiari, dar adaptorul din aplicație care generează efectiv D205 din aplicație **nu îl transmite** (spre deosebire de D101, D300, D390 sau D212, unde `manual` chiar ajunge din cerere la generator) — deci, la acest moment, nu există nicio cale prin aplicație de a introduce manual acel beneficiar în D205. Obligația trebuie urmărită și raportată separat de contabil, în afara fluxului D205 al aplicației, până când acest gol e acoperit.
+Concret, dacă impozitul a fost plătit dar beneficiarul lipsește din D205, verificați dacă acel dividend a fost distribuit într-un an și beneficiarul urma să fie raportat, conform normei, în declarația anului distribuirii, nu al plății — pentru acest caz, aplicația nu adaugă automat beneficiarul. Funcția internă „generarea” acceptă, tehnic, un parametru `manual` pentru suprascrierea listei de beneficiari, dar adaptorul din aplicație care generează efectiv D205 din aplicație **nu îl transmite** (spre deosebire de D101, D300, D390 sau D212, unde `manual` chiar ajunge din cerere la generator) — deci, la acest moment, nu există nicio cale prin aplicație de a introduce manual acel beneficiar în D205. Obligația trebuie urmărită și raportată separat de contabil, în afara fluxului D205 al aplicației, până când acest gol e acoperit.
 
 [iConta.eu](/)

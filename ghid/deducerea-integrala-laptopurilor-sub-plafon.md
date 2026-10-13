@@ -2,7 +2,7 @@
 title: "Deducerea integrală a laptopurilor sub plafon: condiții 2026"
 description: "Din 25.02.2026, pragul de la care un bun devine mijloc fix amortizabil a crescut la 5.000 lei — sub această valoare, cheltuiala se deduce integral, nu se mai amortizează."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Condițiile efective pentru deducerea integrală în 2026:
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcționalitate reală pentru acest prag, în aplicație: funcția `prag_mf(la_data)` citește pragul valabil la data intrării dintr-un registru de cote versionat (`COTE["plafon_mijloc_fix"]`), cu valoarea de 5.000 lei aplicabilă de la 25.02.2026 (OUG nr. 8/2026, art. 28 alin. (2) lit. b)) și 2.500 lei pentru datele anterioare, iar `e_obiect_inventar()` decide, pe baza acestui prag și a duratei de utilizare, dacă bunul intră pe cheltuială integrală (303/603) sau trebuie amortizat. Fiindcă pragul e citit la data efectivă de intrare a bunului, un bun intrat înainte de 25.02.2026 e verificat automat față de vechiul plafon de 2.500 lei, fără să fie nevoie de o regulă separată pentru bunurile deja aflate în patrimoniu. La importul mijloacelor fixe, aplicația semnalează automat, pentru fiecare bun, dacă valoarea lui e sub pragul de mijloc fix valabil la data intrării.
+iConta.eu are o funcționalitate reală pentru acest prag, în aplicație: funcția „pragul mijloacelor fixe” citește pragul valabil la data intrării dintr-un registru de cote versionat (registrul de cote al aplicației["plafonul mijloacelor fixe"]), cu valoarea de 5.000 lei aplicabilă de la 25.02.2026 (OUG nr. 8/2026, art. 28 alin. (2) lit. b)) și 2.500 lei pentru datele anterioare, iar „încadrarea ca obiect de inventar” decide, pe baza acestui prag și a duratei de utilizare, dacă bunul intră pe cheltuială integrală (303/603) sau trebuie amortizat. Fiindcă pragul e citit la data efectivă de intrare a bunului, un bun intrat înainte de 25.02.2026 e verificat automat față de vechiul plafon de 2.500 lei, fără să fie nevoie de o regulă separată pentru bunurile deja aflate în patrimoniu. La importul mijloacelor fixe, aplicația semnalează automat, pentru fiecare bun, dacă valoarea lui e sub pragul de mijloc fix valabil la data intrării.
 
 [iConta.eu](/)

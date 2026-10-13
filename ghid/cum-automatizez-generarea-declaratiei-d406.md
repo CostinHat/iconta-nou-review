@@ -2,7 +2,7 @@
 title: Cum automatizez generarea declarației D406?
 description: Generarea D406 urmează un flux în patru pași — preluare date, asamblare, validare structurală internă și construire XML — dar validarea oficială ANAF (DUKIntegrator) rămâne un pas extern obligatoriu, nu este înlocuită de validarea din aplicație.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -20,11 +20,11 @@ secţiunile "Stocuri" şi "Active"; - la termenul de depunere a situaţiilor fin
 aferente exerciţiului financiar, în cazul secţiunii "Active"; - la termenul stabilit de
 organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data
 solicitării, în cazul secţiunii "Stocuri"."
-(opanaf_1783_2021_saft_d406.txt, Anexa 4, pct. 1)
+(OPANAF 1783/2021 (SAF-T, D406), Anexa 4, pct. 1)
 
 "6. În situaţia în care contribuabilul constată anumite erori în declaraţia depusă iniţial,
 acesta poate depune declaraţii rectificative."
-(opanaf_1783_2021_saft_d406.txt, Anexa 4, pct. 6)
+(OPANAF 1783/2021 (SAF-T, D406), Anexa 4, pct. 6)
 :::
 
 ## Fluxul real de generare
@@ -50,6 +50,6 @@ Dacă o notă contabilă are un dezechilibru de 0,05 lei între debit și credit
 
 ## Ce face iConta.eu
 
-Fluxul de generare este automatizat prin patru funcții înlănțuite din motorul D406: `pull()` citește datele din baza de date (profil firmă, plan de conturi filtrat, parteneri, note contabile validate din fereastra de raportare, facturi, plăți), `construieste()` asamblează rezultatul și lista de avertismente, `valideaza()` rulează verificările structurale proprii ale aplicației (echilibru debit/credit, coerență TVA pe linie, CUI/nume prezente, unicitate AccountID), iar `build_xml()` produce fișierul final. Mesajul afișat la fiecare generare reamintește explicit pasul următor, obligatoriu: validarea finală cu instrumentul oficial ANAF, `DUKIntegrator_AnLunaUI.jar`, instalat pe server — validarea internă din aplicație nu îl înlocuiește.
+Fluxul de generare este automatizat prin patru funcții înlănțuite din motorul D406: „preluarea datelor” citește datele din baza de date (profil firmă, plan de conturi filtrat, parteneri, note contabile validate din fereastra de raportare, facturi, plăți), „construirea declarației” asamblează rezultatul și lista de avertismente, „validarea” rulează verificările structurale proprii ale aplicației (echilibru debit/credit, coerență TVA pe linie, CUI/nume prezente, unicitate AccountID), iar „generarea XML-ului declarației (Declarații)” produce fișierul final. Mesajul afișat la fiecare generare reamintește explicit pasul următor, obligatoriu: validarea finală cu instrumentul oficial ANAF, validatorul ANAF (DUKIntegrator), instalat pe server — validarea internă din aplicație nu îl înlocuiește.
 
 [iConta.eu](/)

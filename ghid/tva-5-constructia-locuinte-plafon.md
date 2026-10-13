@@ -2,7 +2,7 @@
 title: "TVA 5% pentru construcția de locuințe: plafon"
 description: "De ce cota de TVA 5% pentru locuințe nu mai există din august 2025 și ce regim se aplică în prezent, cu ce plafoane, conform Codului fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Pentru firmele care construiesc și vând locuințe, concluzia practică e simpl
 
 ## Ce face iConta.eu
 
-Din verificarea codului sursă (registrul `COTE`), iConta.eu ține istoricul complet al cotelor de TVA (inclusiv fostele 9% și 5%, cu temeiurile lor legale), dar pentru orice dată de la 1 august 2025 încolo, atât fosta cotă de 9%, cât și fosta cotă de 5% sunt înregistrate ca fiind înlocuite de cota unică de 11% (Legea 141/2025, art. 291 alin. (2)) — codul distinge intern între cele două (9% a fost „comasată" în 11%, 5% a fost „abrogată" ca atare de la aceeași dată), dar rezultatul practic e identic: aplicația nu va mai propune 5% sau 9% pentru o factură emisă după 1 august 2025. Utilizatorul trebuie totuși să confirme manual dacă o locuință anume se încadrează la cota de 11% (politică socială) sau la 21% standard, întrucât încadrarea depinde de caracteristici pe care aplicația nu le verifică automat (tipul beneficiarului, suprafața, destinația clădirii).
+Din verificarea codului sursă (registrul „registrul de cote al aplicației”), iConta.eu ține istoricul complet al cotelor de TVA (inclusiv fostele 9% și 5%, cu temeiurile lor legale), dar pentru orice dată de la 1 august 2025 încolo, atât fosta cotă de 9%, cât și fosta cotă de 5% sunt înregistrate ca fiind înlocuite de cota unică de 11% (Legea 141/2025, art. 291 alin. (2)) — codul distinge intern între cele două (9% a fost „comasată" în 11%, 5% a fost „abrogată" ca atare de la aceeași dată), dar rezultatul practic e identic: aplicația nu va mai propune 5% sau 9% pentru o factură emisă după 1 august 2025. Utilizatorul trebuie totuși să confirme manual dacă o locuință anume se încadrează la cota de 11% (politică socială) sau la 21% standard, întrucât încadrarea depinde de caracteristici pe care aplicația nu le verifică automat (tipul beneficiarului, suprafața, destinația clădirii).
 
 [iConta.eu](/)

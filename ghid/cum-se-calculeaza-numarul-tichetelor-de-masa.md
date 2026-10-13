@@ -2,7 +2,7 @@
 title: Cum se calculează numărul tichetelor de masă?
 description: Numărul de tichete de masă este egal cu zilele efectiv lucrate din pontaj, nu cu zilele calendaristice — concediul de odihnă, delegația, absențele și învoirile nu dau drept la tichet, iar calculul se blochează dacă pontajul lunii nu e confirmat.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ O lună are 21 de zile lucrătoare. Un salariat a fost 3 zile în concediu de od
 
 ## Ce face iConta.eu
 
-Numărul de tichete nu este un câmp introdus manual: se calculează la generarea statului de plată, pe baza pontajului lunii. Funcția `zile_fara_tichet()` din modulul de pontaj exclude din numărul de zile lucrate stările `concediu_odihna`, `delegatie`, `absent_motivat`, `absent_nemotivat` și `invoire`, citând explicit HG 1045/2018 art. 10 alin. (3); concediul medical se scade separat, din evidența de concedii medicale. Dacă pontajul lunii nu este confirmat, aplicația blochează valoarea tichetului de masă la 0 pentru acea lună, tocmai pentru a nu genera un stat de plată pe date neconfirmate.
+Numărul de tichete nu este un câmp introdus manual: se calculează la generarea statului de plată, pe baza pontajului lunii. Funcția „zilele fără tichet” din modulul de pontaj exclude din numărul de zile lucrate stările „concediu de odihnă”, `delegatie`, „absent motivat”, „absent nemotivat” și `invoire`, citând explicit HG 1045/2018 art. 10 alin. (3); concediul medical se scade separat, din evidența de concedii medicale. Dacă pontajul lunii nu este confirmat, aplicația blochează valoarea tichetului de masă la 0 pentru acea lună, tocmai pentru a nu genera un stat de plată pe date neconfirmate.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Poate un magazin cu amănuntul să țină gestiune cantitativ-valorică?"
 description: "Dreptul de opțiune între metoda cantitativ-valorică și metoda global-valorică (preț cu amănuntul) în comerțul cu amănuntul, conform OMFP 1802/2014."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Din formulare rezultă clar structura de opțiuni:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu susține ambele mecanisme: Aplicația calculează evidența **cantitativ-valorică**, la cost mediu ponderat (CMP), recalculat după fiecare intrare (OMFP 1802/2014 pct. 96), iar aplicația (`nir_gv`, `coeficient_k`, `descarcare_gv`) susține evidența **global-valorică**, cu adaos comercial și coeficient de repartizare K. Alegerea metodei pentru fiecare gestiune rămâne o decizie a firmei, pe care aplicația o poate opera tehnic în oricare dintre cele două variante.
+La data acestui ghid, iConta.eu susține ambele mecanisme: Aplicația calculează evidența **cantitativ-valorică**, la cost mediu ponderat (CMP), recalculat după fiecare intrare (OMFP 1802/2014 pct. 96), iar aplicația („NIR global-valoric (Stocuri)”, „coeficientul K (Stocuri, descărcarea global-valorică)”, „descărcarea global-valorică (Stocuri)”) susține evidența **global-valorică**, cu adaos comercial și coeficient de repartizare K. Alegerea metodei pentru fiecare gestiune rămâne o decizie a firmei, pe care aplicația o poate opera tehnic în oricare dintre cele două variante.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Ce limită are sponsorizarea pentru o microîntreprindere?
 description: Facilitatea a fost abrogată de la 1 ianuarie 2024, deci în 2026 nu mai există nicio limită de dedus — sponsorizarea nu mai reduce impozitul micro; cât a fost activă (01.04.2019–31.12.2023), limita era 20% din impozitul micro datorat pe trimestrul respectiv.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -43,7 +43,7 @@ Răspunsul scurt pentru 2026: **niciuna, pentru că facilitatea nu mai există**
 
 ## Ce face iConta.eu
 
-În aplicația, ramura `tip_impozit="micro"` a funcției `credit_sponsorizare()` este activă **doar pentru `la_data` în intervalul 01.04.2019 – 31.12.2023**; în afara acestui interval — inclusiv pentru orice dată din 2024, 2025 sau 2026 — motorul returnează credit 0, cu o notă explicită de inaplicabilitate, ceea ce reflectă corect abrogarea facilității. În interval, limita se calculează ca `20% × impozit_profit`, unde parametrul `impozit_profit` reprezintă, pentru ramura micro, impozitul micro datorat pe trimestru — nu un impozit anual.
+În aplicația, ramura tipul de impozit="micro" a funcției „creditul fiscal pentru sponsorizări (Operațiuni speciale)” este activă **doar pentru „data” în intervalul 01.04.2019 – 31.12.2023**; în afara acestui interval — inclusiv pentru orice dată din 2024, 2025 sau 2026 — motorul returnează credit 0, cu o notă explicită de inaplicabilitate, ceea ce reflectă corect abrogarea facilității. În interval, limita se calculează ca 20% × impozitul pe profit, unde parametrul „impozitul pe profit” reprezintă, pentru ramura micro, impozitul micro datorat pe trimestru — nu un impozit anual.
 
 Notă: fereastra 01.04.2018 – 31.03.2019 (regula inițială, mai restrânsă, din OUG 25/2018) nu este acoperită de motor — pentru o sponsorizare micro din acea perioadă, calculul trebuie făcut manual.
 

@@ -2,7 +2,7 @@
 title: Care este tratamentul fiscal al reparațiilor la mijloacele fixe amortizabile?
 description: Diferența dintre o reparație curentă (cheltuială deductibilă imediat) și o modernizare care majorează valoarea amortizabilă a activului, plus ce oferă și ce nu oferă iConta.eu pe acest caz.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,7 +34,7 @@ că:
   utilizare a activului) se capitalizează — adică majorează valoarea de la care se calculează
   în continuare amortizarea.
 
-**Atenție onestă**: dosarul de cercetare F247 (funcționalitatea "Mijloace fixe" din
+**Atenție onestă**: documentația aplicației (funcționalitatea "Mijloace fixe" din
 iConta.eu) nu conține un text legal verbatim dedicat exclusiv acestei distincții
 reparație/modernizare — corpusul verificat acoperă definirea bazei de amortizare (art.28) și
 regimurile pe categorie, nu și tratamentul cheltuielilor ulterioare intrării activului în

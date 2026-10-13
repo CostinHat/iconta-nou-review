@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**777 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**780 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 740
+### `core/` — 742
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9242,7 +9242,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_gazda_productie.py` — core/test_gazda_productie.py — o verificare care loveste ALT domeniu nu e o verificare.
 - `core/test_get_fara_scriere.py` — GARD (20.08.2026): o rută GET nu scrie în starea de business. GET trebuie să fie SAFE (RFC 9110 §9.2.1).
 - `core/test_ghid_d212_afirmatii.py` — GARD — afirmațiile RETRASE despre D212 nu mai pot apărea în ghiduri și în ajutorul F246.
+- `core/test_ghid_fara_coduri.py` — GARD — comanda Costin 13.10.2026, pct.2b (verbatim în DECIZII): „Scoate din textele publice denumirile din cod (de ex. nir_gv,
 - `core/test_ghid_poarta.py` — GARD — poarta de verificare pre-publicare a ghidurilor (core/ghid_poarta.py).
+- `core/test_ghid_publicare.py` — GARD — site-ul public /ghid/ (comanda Costin 13.10.2026 pct.2c, 2d, 2e, verbatim în DECIZII).
 - `core/test_ghid_registru_sincron.py` — GARD — registrul de titluri (`index_titluri_ghid.csv`) nu spune „nepublicat” despre un ghid care e publicat.
 - `core/test_ghiduri_servite.py` — Gard: ghid/ e SURSA UNICA a paginilor publice de ghid.
 - `core/test_golden_xsd.py` — GARD completitudine golden-XSD: fiecare XSD de declaratie din corpus (anaf_surse/*.xsd +
@@ -9542,7 +9544,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 37
+### `scripts/` — 38
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -9560,6 +9562,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `scripts/scan_formulare_operatiuni.py` — scripts/scan_formulare_operatiuni.py — ce CERE ecranul Operațiuni față de ce CITEȘTE serverul. O singură implementare, două porți:
 - `scripts/scan_functionalitati.py` — scripts/scan_functionalitati.py — LISTA FUNCTIONALITATILOR, derivata din cod.
 - `scripts/scan_garzi_inventar.py` — Inventarul gărzilor, DERIVAT din cod — blocul generat din `GARZI.md`.
+- `scripts/scan_ghid_suprapuneri.py` — scripts/scan_ghid_suprapuneri.py — ghidurile publice care răspund la ACEEAȘI întrebare (comanda Costin 13.10.2026, pct.2a, verbatim
 - `scripts/scan_instrumente.py` — scripts/scan_instrumente.py - FAZA 4: pe ce instrument sta fiecare garda, si a fost calibrat.
 - `scripts/scan_lanturi_declaratie.py` — ETAPA 2 — CARE unitate alimentează CARE declarație, derivat din cod.
 - `scripts/scan_lista3.py` — scripts/scan_lista3.py — lista 3, DERIVATA din registru, nu numarata cu mana.
@@ -10928,3 +10931,18 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | închiderea 6/7 din solduri | `core/motor.py` (`inchidere_din_solduri`) + `::test_inchiderea_din_solduri_…` | un cont 6/7 rămas cu sold după închidere; latura inversă | latura greșită -> ROȘU | — |
 | ruta propunerii, pe HTTP, până în rulajul declarației | `core/test_inchidere_an.py::test_ruta_propunerii_…` (clichetul `test_rute_probate`: rutele care scriu în tabele de declarație au probă în suită) | o rută care scrie direct în evidență, fără validare | notele scrise `validata` -> soldul 121 nu mai e zero înainte de validare -> ROȘU | — |
 | toate motivele de oprire deodată | `core/bilant.py` (`motive_31_12`, `refuz`, `refuz_impreuna`), `bilant_api.coloanele_verificate` + `::test_def_242_…` + e2e 242 | refuzul la primul motiv, care ascunde restul (6/7 ascundea 401 / 4427 / 581) | refuzul la primul motiv -> ROȘU (core + e2e) | 228 / 229 rămân singure, înainte (nu e nimic de rezolvat pe date) |
+
+## 13.10.2026 — lotul 2: site-ul public /ghid/ (a–e); C17, C18
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| publicarea înghețată (pct.2e) | `ghid_publicate.txt` + `main._ghid_publicate` (în `_ghid_lista` și `public_ghid`) + `core/test_ghid_publicare.py::test_publicate_sunt_lista_inghetata`, `::test_un_ghid_nou_nu_se_publica` | un `ghid/*.md` nou servit, listat în cuprins / teme / ghiduri înrudite sau în sitemap fără decizia lui Costin | filtrul scos din `_ghid_lista` -> ROȘU; din `public_ghid` -> ROȘU (200 în loc de 404) | lista se poate edita de mână: numărul 6.558 din test e a doua cheie, deci o adăugare cere schimbarea ambelor — vizibilă în diff |
+| data ultimei actualizări (pct.2c) | `public_ghid` + verificator GHID_ACTUALIZAT + `::test_fiecare_ghid_are_data_sub_titlu_fara_autor` (toate cele 6.558) | un ghid fără „Actualizat la …” sub titlu, cu altă dată decât `dateModified`, cu autor persoană | data scoasă de sub titlu -> ROȘU; data publicării în loc de modificare -> ROȘU; verificator: clasa scoasă / CSS fără tokeni -> TOTAL 1 | „fără titluri profesionale” se caută pe tipare cunoscute (Person, „Autor:”, „expert contabil” la final) — un titlu scris altfel nu e prins |
+| noindex pe rutele aplicației (pct.2d) | `main._edge_canonic_head` + `_pagina_publica_indexabila` + `::test_antetul_noindex_numai_pe_rutele_aplicatiei` | o rută a aplicației fără `X-Robots-Tag: noindex`; o pagină publică cu el | `/tenants` declarat public -> ROȘU; antetul scos -> ROȘU | lista de probă e un eșantion (9 rute ale aplicației, 13 publice); regula însă e o listă albă, deci o rută nouă e `noindex` implicit |
+| robots.txt = suprafața publică | `::test_robots_e_allow_listul_suprafetei_publice` | un `Allow` spre aplicație; `Disallow: /` scos | `Allow: /tenants` -> ROȘU | — |
+| sitemap numai public, ghidurile = lista publicată | `::test_sitemap_numai_pagini_publice` | o rută a aplicației sau un ghid nepublicat în sitemap | (acoperit și de mutația filtrului scos) | — |
+| fără linkuri din paginile publice spre aplicație | `::test_niciun_link_din_paginile_publice_spre_aplicatie` (landing, cuprins, 16 teme, termeni, toate ghidurile randate) | un `<a href>` public spre o rută a aplicației | link `/tenants` în ghidurile înrudite -> ROȘU | numai HTML-ul servit; un link creat de JavaScript pe landing nu e văzut (landing-ul încarcă aplicația) |
+| fără denumiri și expresii din cod (pct.2b) | `scripts/curata_coduri_ghid.py` + `core/test_ghid_fara_coduri.py::test_niciun_ghid_public_…` | un ghid cu nume de funcție / câmp / fișier / test, cod F, `tenant_N`, expresie de cod (`regim == "micro"`), trimitere la registrul intern | `nir_gv` într-un ghid -> ROȘU; `regim == "micro"` -> ROȘU | proza care DESCRIE codul („comentariul din cod”, 50 de ghiduri) nu e prinsă — decizie editorială cerută |
+| suprapunerile = ieșirea uneltei (pct.2a) | `::test_suprapunerile_masurate_sunt_cele_ale_uneltei` | o listă de grupuri editată de mână | grup renumerotat în CSV -> ROȘU | măsură lexicală (plafon inferior) |
+| C17 contrastul paginilor publice | `core/test_a11y_contrast_tokens.py::test_paginile_publice_contrast` + e2e `test_def_c17_…` | text pe fundal `var(--p-…)` sub 4,5:1; link deosebit numai prin culoare | `--p-brand` #0672FE -> ROȘU (core și e2e); `text-decoration:none` -> ROȘU | axe nu verifică pseudo-elementele (numărul pasului) — le acoperă calculul din CSS |
+| C18 numerotarea numai pe `ol > li` | `core/test_ghid_publicare.py::test_procedura_numara_numai_lista_ordonata` + e2e `test_def_c18_…` | „0” pe o listă cu buline într-un bloc de procedură | regula veche repusă -> ROȘU | — |

@@ -2,19 +2,13 @@
 title: "Cum se calculează rezultatul fiscal la final de an 2026"
 description: "Rezultatul fiscal pentru 2026 aplică cea de-a 16-a cotă standard, dar cere atenție la IMCA și la termenul de depunere, ambele cu discrepanțe active."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum se calculează rezultatul fiscal la final de an 2026
 
 Calculul de bază al rezultatului fiscal rămâne neschimbat pentru anul fiscal 2026, dar există două puncte specifice acestui an care merită atenție suplimentară.
-
-## Temeiul legal
-
-::: ghid-temei
-"Art.17: Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%." — Legea 227/2015, citată în dosarul de cercetare F027, valabilă și pentru anul fiscal 2026.
-:::
 
 Calculul standard: profitul contabil ajustat cu deduceri (amortizare fiscală, P11), add-back-uri (amortizare contabilă și alte cheltuieli nedeductibile, P34, inclusiv contul 691 dacă are sold debitor pozitiv) și rezerva legală (P13) dă profitul impozabil (P40), înmulțit cu 16% pentru impozitul final (P411).
 

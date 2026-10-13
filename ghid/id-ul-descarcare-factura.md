@@ -2,7 +2,7 @@
 title: "Ce este ID-ul de descărcare din e-Factura?"
 description: ID-ul de descărcare (id_descarcare) este identificatorul ANAF folosit pentru a prelua recipisa/XML-ul semnat al unei facturi din SPV — nu are legătură cu descărcarea gestiunii (ieșirea mărfii din stoc).
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -12,7 +12,7 @@ Atenție la o coincidență de termeni: "descărcare" apare atât în "descărca
 
 ID-ul de descărcare (`id_descarcare`) este un identificator tehnic returnat de ANAF în răspunsul interogării de stadiu a unei trimiteri prin sistemul RO e-Factura (endpoint-ul `/stareMesaj`). Acest identificator se folosește apoi într-o a doua interogare, către endpoint-ul de descărcare al ANAF, pentru a prelua efectiv fișierul cu recipisa sau XML-ul semnat al facturii — adică dovada rezultatului trimiterii (acceptare, cu semnătura electronică a Ministerului Finanțelor, sau respingere, cu motivul).
 
-Este diferit de indexul de încărcare (`index_incarcare`), care este identificatorul primit imediat la trimiterea/upload-ul facturii în SPV. Cele două formează, împreună, ciclul de viață al unei trimiteri prin e-Factura: mai întâi indexul de încărcare (la trimitere), apoi, la interogarea stadiului, id-ul de descărcare (folosit pentru a prelua rezultatul final).
+Este diferit de indexul de încărcare („indexul de încărcare”), care este identificatorul primit imediat la trimiterea/upload-ul facturii în SPV. Cele două formează, împreună, ciclul de viață al unei trimiteri prin e-Factura: mai întâi indexul de încărcare (la trimitere), apoi, la interogarea stadiului, id-ul de descărcare (folosit pentru a prelua rezultatul final).
 
 ## Temeiul legal
 

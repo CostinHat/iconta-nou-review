@@ -2,7 +2,7 @@
 title: "Ce fac dacă am declarat de două ori același venit în D212?"
 description: "Venitul dublu declarat în D212 se corectează prin ștergerea/corectarea operațiunii duplicate din registrul de încasări și plăți, apoi o declarație rectificativă; motorul D212 al iConta.eu însumează tot ce e validat în registru, fără să detecteze duplicate."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,7 +30,7 @@ Practic, venitul brut pentru D212 se stabilește prin însumarea încasărilor d
 
 ## Ce face iConta.eu
 
-Motorul D212 din iConta.eu (accesat prin funcția `fisa_d212` din aplicație) calculează venitul brut ca sumă a încasărilor cu categoria „activitate", **doar din operațiunile cu status „validată"** din registrul de încasări și plăți — ciornele nevalidate sunt excluse automat și semnalate separat, nu intră în calcul. Dacă însă aceeași încasare a fost introdusă și validată de două ori ca operațiuni distincte, motorul le însumează pe amândouă: **nu există în cod o detecție de duplicate** — validarea unei operațiuni certifică doar corectitudinea ei individuală, nu unicitatea față de restul registrului.
+Motorul D212 din iConta.eu (accesat prin funcția „fișa de calcul D212 (Declarații)” din aplicație) calculează venitul brut ca sumă a încasărilor cu categoria „activitate", **doar din operațiunile cu status „validată"** din registrul de încasări și plăți — ciornele nevalidate sunt excluse automat și semnalate separat, nu intră în calcul. Dacă însă aceeași încasare a fost introdusă și validată de două ori ca operațiuni distincte, motorul le însumează pe amândouă: **nu există în cod o detecție de duplicate** — validarea unei operațiuni certifică doar corectitudinea ei individuală, nu unicitatea față de restul registrului.
 
 Corectarea reală înseamnă ștergerea sau anularea operațiunii duplicate din registrul de încasări și plăți, urmată de regenerarea fișei D212 — cifra nouă va reflecta corect venitul. Dacă declarația a fost deja depusă la ANAF cu venitul dublat, corectarea registrului în iConta.eu nu retrimite automat nimic la ANAF: e nevoie, separat, de o declarație rectificativă, prin mecanismul general descris mai sus.
 

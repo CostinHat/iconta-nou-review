@@ -2,7 +2,7 @@
 title: "Poate o firmă de închirieri imobiliare să fie microîntreprindere?"
 description: "Verificarea condițiilor din Codul fiscal pentru ca o firmă cu activitate de închiriere de imobile să aplice impozitul pe veniturile microîntreprinderilor."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Lista de la art. 47 alin. (3) este exhaustivă și cuprinde doar patru domenii: 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are o funcționalitate care să verifice automat, în funcție de codul CAEN al firmei, dacă activitatea desfășurată se încadrează în excluderile de la art. 47 alin. (3). Aplicația permite setarea manuală a regimului fiscal al firmei (`regim_fiscal` = „micro" sau „profit", în aplicație), pe baza căreia stabilește declarațiile datorate (D100 trimestrial pentru micro, D101 anual pentru profit, via aplicația). Evaluarea eligibilității propriu-zise, inclusiv verificarea că activitatea de închiriere nu intră în vreo excludere, rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu nu are o funcționalitate care să verifice automat, în funcție de codul CAEN al firmei, dacă activitatea desfășurată se încadrează în excluderile de la art. 47 alin. (3). Aplicația permite setarea manuală a regimului fiscal al firmei („regimul fiscal (Date firmă)” = „micro" sau „profit", în aplicație), pe baza căreia stabilește declarațiile datorate (D100 trimestrial pentru micro, D101 anual pentru profit, via aplicația). Evaluarea eligibilității propriu-zise, inclusiv verificarea că activitatea de închiriere nu intră în vreo excludere, rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

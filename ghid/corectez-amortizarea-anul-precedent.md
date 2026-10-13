@@ -2,7 +2,7 @@
 title: "Cum corectez amortizarea din anul precedent?"
 description: "Registrul recalculează oricând amortizarea cumulată corectă; corectarea unor declarații deja depuse e un subiect separat."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,6 +25,6 @@ Greșeala frecventă e presupunerea că simpla recalculare în registru "rezolv�
 
 ## Ce face iConta.eu
 
-Funcția `amortizat_la_data` poate fi interogată pentru orice dată, inclusiv din anul precedent, și oferă valoarea corectă pe baza metodei reale a activului. Aplicația nu are o funcționalitate dedicată pentru rectificarea declarațiilor sau situațiilor financiare deja depuse.
+Funcția „amortizarea cumulată (Mijloace fixe)” poate fi interogată pentru orice dată, inclusiv din anul precedent, și oferă valoarea corectă pe baza metodei reale a activului. Aplicația nu are o funcționalitate dedicată pentru rectificarea declarațiilor sau situațiilor financiare deja depuse.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Returul de la client din UE: ajustarea TVA și documente
 description: Nomenclatorul D390 nu are un cod dedicat de "retur" — un retur de la un client din UE se reflectă prin stornarea (ajustarea) bazei impozabile raportate, păstrând aceeași clasificare fiscală ca livrarea inițială.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Cea mai frecventă greșeală e căutarea unui cod de tranzacție "de retur" în
 
 ## Ce face iConta.eu
 
-Motorul de stornare din contarea facturilor (`storno()`) generează aceleași note contabile ca factura originală, cu suma negată — nu o cotă recalculată sau un cont diferit. La nivelul documentului, crearea unei facturi de stornare păstrează cursul valutar al facturii inițiale și copiază identic clasificarea ei fiscală (țara terțului, taxarea inversă, axa intracomunitară bunuri/servicii, data faptului generator) — fără această copiere, stornul unei livrări intracomunitare ar deveni, în date, o livrare internă neclasificabilă, iar D300 și D390 nu ar mai corespunde. Practic, returul unei livrări IC aterizează pe același rând (L, cu bază negativă) ca factura originală.
+Motorul de stornare din contarea facturilor („stornarea”) generează aceleași note contabile ca factura originală, cu suma negată — nu o cotă recalculată sau un cont diferit. La nivelul documentului, crearea unei facturi de stornare păstrează cursul valutar al facturii inițiale și copiază identic clasificarea ei fiscală (țara terțului, taxarea inversă, axa intracomunitară bunuri/servicii, data faptului generator) — fără această copiere, stornul unei livrări intracomunitare ar deveni, în date, o livrare internă neclasificabilă, iar D300 și D390 nu ar mai corespunde. Practic, returul unei livrări IC aterizează pe același rând (L, cu bază negativă) ca factura originală.
 
 Aplicația nu are o rutină D390 dedicată separat stornourilor intracomunitare — se bazează pe faptul că baza negativă circulă prin același flux de generare ca orice altă operațiune de tip L/A/P/S.
 

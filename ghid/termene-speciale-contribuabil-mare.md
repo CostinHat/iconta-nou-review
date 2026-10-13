@@ -2,7 +2,7 @@
 title: "Ce termene speciale are un contribuabil mare"
 description: "Termenele diferite pentru marii contribuabili la avizul de inspecție fiscală și la obligația de depunere SAF-T (D406), potrivit Codului de procedură fiscală și OPANAF 1783/2021."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Din cele două surse rezultă două termene speciale distincte, cu logici diferi
 
 ## Ce face iConta.eu
 
-Generatorul de D406 din iConta.eu (aplicația și fișierele `d406_*.py`) produce declarația SAF-T pe baza datelor firmei, dar aplicația nu urmărește automat, la data acestui ghid, calendarul de intrare treptată în obligația de depunere (mare/mijlociu/mic contribuabil) și nici termenele diferențiate pentru avizul de inspecție fiscală — acestea rămân verificări pe care contabilul trebuie să le facă separat, în funcție de încadrarea comunicată de ANAF pentru firma respectivă.
+Generatorul de D406 din iConta.eu (aplicația și fișierele aplicația) produce declarația SAF-T pe baza datelor firmei, dar aplicația nu urmărește automat, la data acestui ghid, calendarul de intrare treptată în obligația de depunere (mare/mijlociu/mic contribuabil) și nici termenele diferențiate pentru avizul de inspecție fiscală — acestea rămân verificări pe care contabilul trebuie să le facă separat, în funcție de încadrarea comunicată de ANAF pentru firma respectivă.
 
 [iConta.eu](/)

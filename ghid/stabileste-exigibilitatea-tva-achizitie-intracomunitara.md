@@ -2,19 +2,13 @@
 title: "Cum se stabilește exigibilitatea TVA la o achiziție intracomunitară?"
 description: "Exigibilitatea e data facturii furnizorului, dar niciodată mai târziu de a 15-a zi a lunii următoare celei în care a avut loc livrarea (faptul generator) — art. 284 din Codul fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum se stabilește exigibilitatea TVA la o achiziție intracomunitară?
 
 Data exigibilității decide luna în care operațiunea intră în decont și în D390 — și e cea mai frecventă sursă de confuzie la achizițiile intracomunitare, pentru că nu coincide nici cu data primirii facturii, nici cu data plății.
-
-## Temeiul legal
-
-::: ghid-temei
-„CF art. 284 alin. (1)-(2) — Faptul generator la AIC = data la care ar interveni la o livrare similară în statul membru al achiziției; exigibilitatea = data facturii furnizorului (sau autofactura art. 319 alin. 9), cel târziu a 15-a zi a lunii următoare celei a faptului generator.” — `cod_fiscal_227_2015_consolidat.txt` L17785-17793, dosarul F050.
-:::
 
 Mecanismul are doi timpi. Întâi, faptul generator — de regulă, data livrării bunurilor. Apoi, exigibilitatea: dacă furnizorul emite factura înainte de a 15-a zi a lunii următoare faptului generator, exigibilitatea e data facturii; dacă nu emite factura până atunci, exigibilitatea „cade” automat pe a 15-a zi a lunii următoare — indiferent când sosește ulterior factura.
 

@@ -2,7 +2,7 @@
 title: "Cum se gestionează stocurile la mai multe puncte de lucru"
 description: Legea permite ținerea evidenței pe locuri de depozitare fără să impună un cost mediu separat pentru fiecare punct de lucru. Ce înseamnă asta practic și ce oferă, concret, iConta.eu la acest nivel.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Primul text stabilește distincția de bază: contabilitatea de stocuri poate fi
 
 ## Ce face iConta.eu
 
-iConta.eu oferă, la acest nivel, evidența cantitativă pe locație: stocul fiecărui articol poate fi urmărit separat pe fiecare punct de lucru (câte bucăți/unități sunt la fiecare locație), iar transferurile între puncte de lucru se înregistrează prin funcția de transfer (F138). Costul mediu ponderat rămâne însă **unic la nivel de firmă** — nu separat pe fiecare punct de lucru; un transfer între locații e, din acest motiv, neutru pe valorizare (nu schimbă costul mediu, doar mută cantitatea).
+iConta.eu oferă, la acest nivel, evidența cantitativă pe locație: stocul fiecărui articol poate fi urmărit separat pe fiecare punct de lucru (câte bucăți/unități sunt la fiecare locație), iar transferurile între puncte de lucru se înregistrează prin funcția de transfer („Transfer între gestiuni”). Costul mediu ponderat rămâne însă **unic la nivel de firmă** — nu separat pe fiecare punct de lucru; un transfer între locații e, din acest motiv, neutru pe valorizare (nu schimbă costul mediu, doar mută cantitatea).
 
 De reținut o limitare tehnică reală: numele locației e text liber în sistem, fără o listă centralizată de gestiuni/puncte de lucru și fără validare a denumirii. Un typo la scrierea locației (de exemplu „Depozit1" în loc de „Depozit 1") creează, silențios, o locație nouă, distinctă, în rapoartele de stoc — recomandăm să stabiliți intern o denumire unică, exactă, pentru fiecare punct de lucru și să o folosiți consecvent.
 

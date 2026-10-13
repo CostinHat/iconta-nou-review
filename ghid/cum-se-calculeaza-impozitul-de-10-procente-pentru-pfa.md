@@ -2,7 +2,7 @@
 title: Cum se calculează impozitul de 10% pentru PFA?
 description: Impozitul pe venit al unui PFA în sistem real e 10% aplicat pe venitul net rămas după scăderea CAS și CASS datorate, nu pe venitul net brut de contribuții — iar rotunjirea diferă între fișa de calcul (la bănuț) și declarația D212 efectivă (la leu întreg).
 published: 2026-09-22
-modified: 2026-10-03
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -45,6 +45,6 @@ Fișa de calcul internă rotunjește sumele la bănuț (2 zecimale). Declarația
 
 ## Ce face iConta.eu
 
-Aplicația, funcția `calculeaza_d212`, implementează exact pașii de mai sus: `venit_net = venit_brut − cheltuieli_deductibile`, apoi CAS și CASS conform funcțiilor dedicate, `baza_impozit = max(0, venit_net − cas − cass)`, iar `impozit = baza_impozit × 10%`. Rotunjirea în motorul de calcul se face la bănuț (`Decimal` cu `ROUND_HALF_UP`); generatorul XML (funcția `_lei()`) rotunjește separat la leu întreg pentru câmpurile declarației, folosind aceeași metodă de rotunjire, dar precizie diferită. Dacă venitul net e pozitiv dar sub pragul de 6 salarii minime, motorul aplică baza minimă de 6 salarii minime (art. 174 alin. (6)), iar la impozit deduce doar CASS pe venitul real — diferența până la baza minimă nu se deduce (art. 118 alin. (2) lit. b)); excepțiile de la baza minimă se aleg pe formularul D212.
+Aplicația, funcția „calculul D212 (Declarații)”, implementează exact pașii de mai sus: venitul net = venitul brut − cheltuielile deductibile, apoi CAS și CASS conform funcțiilor dedicate, baza impozabilă = max(0, venitul net − cas − cass), iar impozit = baza impozabilă × 10%. Rotunjirea în motorul de calcul se face la bănuț („calcul zecimal exact” cu „rotunjirea aritmetică (jumătatea în sus)”); generatorul XML (funcția „rotunjirea la leu întreg”) rotunjește separat la leu întreg pentru câmpurile declarației, folosind aceeași metodă de rotunjire, dar precizie diferită. Dacă venitul net e pozitiv dar sub pragul de 6 salarii minime, motorul aplică baza minimă de 6 salarii minime (art. 174 alin. (6)), iar la impozit deduce doar CASS pe venitul real — diferența până la baza minimă nu se deduce (art. 118 alin. (2) lit. b)); excepțiile de la baza minimă se aleg pe formularul D212.
 
 [iConta.eu](/)

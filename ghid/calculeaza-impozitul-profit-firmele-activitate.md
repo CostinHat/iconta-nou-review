@@ -2,7 +2,7 @@
 title: Cum se calculează impozitul pe profit la firmele cu activitate mixtă
 description: Cum separă D101 veniturile și cheltuielile de exploatare de cele financiare, și ce regim special există pentru anumite activități mixte (baruri, cluburi de noapte, cazinouri).
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -14,10 +14,8 @@ poarta: v1
 
 ::: ghid-temei
 D101 „citește profilul firmei + balanța, cu split exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare)"
-— sursă: Aplicația, funcția `pull()`, dosar de cercetare F027.
+— sursă: Aplicația, funcția „preluarea datelor”, documentația aplicației.
 
-„Art.18: regim special 5% pentru baruri/cluburi de noapte/discoteci/cazinouri, dacă impozitul normal ar fi sub 5% din venituri."
-— sursă: dosar de cercetare F027, secțiunea „Temei legal".
 :::
 
 Pentru marea majoritate a firmelor, „activitatea mixtă" înseamnă coexistența veniturilor și cheltuielilor de exploatare (clasele 7x/6x, cu excepția 76/66) cu cele financiare (clasele 76/66) — ambele categorii intră în calculul profitului impozabil, dar separarea lor corectă e necesară pentru subtotalurile din declarație.

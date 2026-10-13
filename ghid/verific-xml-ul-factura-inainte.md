@@ -2,7 +2,7 @@
 title: "Cum verific XML-ul e-Factura înainte de transmitere?"
 description: "Cum se verifică structura unui fișier XML de factură electronică față de standardul RO_CIUS înainte de a-l transmite prin sistemul RO e-Factura."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Factura electronică din sistemul RO e-Factura nu e un simplu PDF, ci un fișier
 
 ## Ce face iConta.eu
 
-iConta.eu **generează XML-ul de factură (UBL, conform schemei curente) și îl trimite spre verificare la validatorul public oficial al ANAF** înainte de emitere — funcția `valideaza` din aplicație apelează adresa `https://webservicesp.anaf.ro/prod/FCTEL/rest/validare/{standard}`, validatorul de structură (schematron CIUS-RO) pus la dispoziție public de ANAF, fără a necesita token sau drept pe CIF. Astfel, XML-ul e verificat structural la sursă, înainte de a fi transmis efectiv prin sistemul RO e-Factura, reducând riscul de respingere ulterioară.
+iConta.eu **generează XML-ul de factură (UBL, conform schemei curente) și îl trimite spre verificare la validatorul public oficial al ANAF** înainte de emitere — funcția „validarea” din aplicație apelează adresa `https://webservicesp.anaf.ro/prod/FCTEL/rest/validare/{standard}`, validatorul de structură (schematron CIUS-RO) pus la dispoziție public de ANAF, fără a necesita token sau drept pe CIF. Astfel, XML-ul e verificat structural la sursă, înainte de a fi transmis efectiv prin sistemul RO e-Factura, reducând riscul de respingere ulterioară.
 
 [iConta.eu](/)

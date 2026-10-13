@@ -2,7 +2,7 @@
 title: "Monografia casării unui mijloc fix complet amortizat"
 description: "Pentru un mijloc fix complet amortizat, casarea în iConta.eu folosește contul 'PV comisie' — ce anume calculează și generează automat aplicația."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,6 +24,6 @@ Se presupune eronat că, fiind complet amortizat, activul nu mai trebuie trecut 
 
 ## Ce face iConta.eu
 
-Casarea unui mijloc fix (prin `mijloc_fix_id`) calculează automat amortizarea la zi, indiferent dacă activul e deja complet amortizat sau nu, și dezactivează activul. Nota generată e o ciornă și folosește contul indicat în cod ca "PV comisie" — validarea finală, cu conturile complete, se face separat din Registrul jurnal.
+Casarea unui mijloc fix (prin „mijlocul fix”) calculează automat amortizarea la zi, indiferent dacă activul e deja complet amortizat sau nu, și dezactivează activul. Nota generată e o ciornă și folosește contul indicat în cod ca "PV comisie" — validarea finală, cu conturile complete, se face separat din Registrul jurnal.
 
 [iConta.eu](/)

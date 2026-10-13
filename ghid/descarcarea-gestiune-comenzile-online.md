@@ -2,7 +2,7 @@
 title: "Cum se face descărcarea de gestiune pentru comenzile online?"
 description: Comenzile emise ca facturi prin API (magazin online, integrare externă) trec prin aceeași poartă obligatorie "pleacă marfa acum?" ca facturile din ecran — dar cu un câmp dedicat, fără valoare implicită.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,12 +22,12 @@ Legea leagă recunoașterea vânzării de momentul transferului riscurilor și a
 ## Ce se greșește în practică
 
 - Integratorul (platforma de magazin online) presupune că, dacă nu trimite nimic, gestiunea rămâne intactă (sau, dimpotrivă, că se descarcă automat) — API-ul nu are valoare implicită: o factură cu linii de stoc, fără acest câmp completat, e respinsă cu eroare, nu emisă cu o presupunere.
-- Se confundă numele câmpului din ecran (`pleaca_marfa`) cu cel din API — API-ul de integrare folosește un câmp separat, `marfa_pleaca_cu_factura`; un request construit după numele din ecran nu funcționează.
+- Se confundă numele câmpului din ecran („marfa pleacă”) cu cel din API — API-ul de integrare folosește un câmp separat, „marfa pleacă cu factura”; un request construit după numele din ecran nu funcționează.
 - Se emit facturi doar pentru servicii (fără linie de articol) și se așteaptă poarta — poarta apare doar când există cel puțin o linie legată de un articol de stoc.
 
 ## Ce face iConta.eu
 
-Pe ruta de API pentru integratori (emitere de facturi pentru tenant, ex. dintr-un magazin online), dacă factura conține cel puțin o linie legată de un articol de stoc, aplicația cere explicit câmpul `marfa_pleaca_cu_factura` (adevărat/fals). Dacă acest câmp lipsește, cererea este respinsă cu eroarea `POARTA_GESTIUNE_FARA_RASPUNS`, cu mesaj explicit — nu se presupune niciun răspuns. Dacă valoarea trimisă e "adevărat", gestiunea se descarcă automat, în aceeași operațiune cu emiterea facturii, folosind exact același motor ca și emiterea din ecran (mișcarea de stoc e legată de factură, nota contabilă rezultată rămâne ciornă, iar un eventual stoc insuficient nu blochează emiterea — apare raportat separat, în răspunsul cererii). Data la care se înregistrează descărcarea este data facturii (cea trimisă de integrator, sau data curentă dacă lipsește).
+Pe ruta de API pentru integratori (emitere de facturi pentru tenant, ex. dintr-un magazin online), dacă factura conține cel puțin o linie legată de un articol de stoc, aplicația cere explicit câmpul „marfa pleacă cu factura” (adevărat/fals). Dacă acest câmp lipsește, cererea este respinsă cu eroarea `POARTA_GESTIUNE_FARA_RASPUNS`, cu mesaj explicit — nu se presupune niciun răspuns. Dacă valoarea trimisă e "adevărat", gestiunea se descarcă automat, în aceeași operațiune cu emiterea facturii, folosind exact același motor ca și emiterea din ecran (mișcarea de stoc e legată de factură, nota contabilă rezultată rămâne ciornă, iar un eventual stoc insuficient nu blochează emiterea — apare raportat separat, în răspunsul cererii). Data la care se înregistrează descărcarea este data facturii (cea trimisă de integrator, sau data curentă dacă lipsește).
 
 Menționăm onest o limitare: dacă valoarea trimisă e "fals" (marfa nu pleacă odată cu factura), gestiunea nu se descarcă deloc la acel moment — livrarea ulterioară, decuplată de factură, se descarcă separat, manual, din ecranul de stocuri, nu automat prin factura inițială.
 

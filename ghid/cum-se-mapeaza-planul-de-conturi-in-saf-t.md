@@ -2,7 +2,7 @@
 title: Cum se mapează planul de conturi în SAF-T?
 description: Planul de conturi se mapează pe baza normei contabile a firmei (societăți comerciale, IFRS, bănci, ONG etc.), fiecare cu propriul nomenclator oficial ANAF, iar AccountID trebuie să fie contul sintetic numeric întreg, nu contul analitic.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -14,19 +14,19 @@ Secțiunea `GeneralLedgerAccounts` din D406 nu preia orice cont din balanța fir
 
 ::: ghid-temei
 "NOTĂ: Secţiunea "Taxonomies" (Taxonomii) nu va trebui raportată în D406."
-(opanaf_1783_2021_saft_d406.txt, Anexa 1, pct. 5, nota de sub tabel)
+(OPANAF 1783/2021 (SAF-T, D406), Anexa 1, pct. 5, nota de sub tabel)
 
 "În această subsecţiune se raportează atât contul analitic folosit de către
 contribuabil/plătitor pentru înregistrarea tranzacţiilor în sistemul contabil conform
 planului de conturi aplicabil conform legislaţiei româneşti (AccountID), cât şi contul
 contabil pe baza standardului utilizat în principal de către contribuabil/plătitor în
 ERP-ul intern (StandardAccountID, fiind un câmp opţional)."
-(opanaf_1783_2021_saft_d406.txt, Anexa 1, pct. 5)
+(OPANAF 1783/2021 (SAF-T, D406), Anexa 1, pct. 5)
 :::
 
 ## Norma contabilă determină nomenclatorul
 
-Fiecare firmă are o normă contabilă declarată (`baza_contabila`): societăți comerciale (OMFP 1802/2014), IFRS, bancar, asigurări, ONG, sau reglementările specifice (Norma 39, Norma 36, Norma 14, IFN). Fiecare normă are propriul nomenclator oficial de conturi acceptate — extras direct din validatorul oficial ANAF (DUK), nu un plan inventat de aplicație.
+Fiecare firmă are o normă contabilă declarată („norma contabilă (Date firmă)”): societăți comerciale (OMFP 1802/2014), IFRS, bancar, asigurări, ONG, sau reglementările specifice (Norma 39, Norma 36, Norma 14, IFN). Fiecare normă are propriul nomenclator oficial de conturi acceptate — extras direct din validatorul oficial ANAF (DUK), nu un plan inventat de aplicație.
 
 Un cont din balanța firmei este raportat în `GeneralLedgerAccounts` doar dacă apare în nomenclatorul normei declarate. Un cont care nu se regăsește acolo este exclus din raportare, chiar dacă are mișcări reale în balanță.
 
@@ -45,6 +45,6 @@ Un al doilea aspect important: `AccountID` trebuie să fie un număr întreg —
 
 ## Ce face iConta.eu
 
-Maparea normă→nomenclator este automată, prin `PLAN_NOMENCLATOR` din motorul D406: fiecare normă contabilă (A — societăți comerciale, IFRS, BANK, INSURANCE, ONG, NORMA39, NORMA36, NORMA14, IFN) are cheia proprie citită direct din nomenclatorul oficial extras din validatorul ANAF (DUK), nu dintr-un plan inventat de aplicație. Norma implicită folosită este `"A"` (societăți comerciale, OMFP 1802/2014). La construirea declarației, conturile din balanța firmei care nu se regăsesc în nomenclatorul normei declarate sunt excluse automat din `GeneralLedgerAccounts` și colectate separat. AccountID este generat ca rădăcina sintetică numerică a contului, iar analiticele pe parteneri sunt transmise corect prin secțiunile Customers/Suppliers, nu prin conturi cu punct.
+Maparea normă→nomenclator este automată, prin „planul de conturi” din motorul D406: fiecare normă contabilă (A — societăți comerciale, IFRS, BANK, INSURANCE, ONG, NORMA39, NORMA36, NORMA14, IFN) are cheia proprie citită direct din nomenclatorul oficial extras din validatorul ANAF (DUK), nu dintr-un plan inventat de aplicație. Norma implicită folosită este `"A"` (societăți comerciale, OMFP 1802/2014). La construirea declarației, conturile din balanța firmei care nu se regăsesc în nomenclatorul normei declarate sunt excluse automat din `GeneralLedgerAccounts` și colectate separat. AccountID este generat ca rădăcina sintetică numerică a contului, iar analiticele pe parteneri sunt transmise corect prin secțiunile Customers/Suppliers, nu prin conturi cu punct.
 
 [iConta.eu](/)

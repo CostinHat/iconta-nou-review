@@ -2,7 +2,7 @@
 title: "Cum verific dacă un furnizor din UE are cod valid de TVA?"
 description: Codul de TVA al unui furnizor din alt stat membru se verifică în VIES, sistemul oficial al Comisiei Europene — nu prin simpla existență a firmei într-un registru comercial — pentru că valabilitatea contează la data operațiunii, nu o singură dată, la începutul relației comerciale.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Un cod de TVA poate fi valid pentru operațiuni interne în statul de origine al
 ## Temeiul legal
 
 ::: ghid-temei
-Scutirea LIC cu drept de deducere are condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt stat membru (CF art. 294 alin. 2 lit. a); simetric, la serviciile B2B intracomunitare, prezența unui client non-RO cu cod valid VIES face operațiunea neimpozabilă în România, declarată în D390 (S), iar lipsa unui cod valid o tratează ca B2C, facturată cu TVA românesc (CF art. 278 alin. 2-3) — verificat în dosarul F050, sursă `cod_fiscal_227_2015_consolidat.txt` L18397+ și L17303+.
+Scutirea LIC cu drept de deducere are condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt stat membru (CF art. 294 alin. 2 lit. a); simetric, la serviciile B2B intracomunitare, prezența unui client non-RO cu cod valid VIES face operațiunea neimpozabilă în România, declarată în D390 (S), iar lipsa unui cod valid o tratează ca B2C, facturată cu TVA românesc (CF art. 278 alin. 2-3) —, sursă Codul fiscal (Legea 227/2015), forma consolidată L18397+ și L17303+.
 :::
 
 Deși citatul de mai sus descrie condițiile scutirii la vânzare (LIC), principiul e simetric și la achiziție: codul de TVA valid al partenerului e o condiție de fond a tratamentului corect al operațiunii, iar VIES e mecanismul oficial de confirmare a acelei valabilități — pentru orice direcție a operațiunii, cumpărare sau vânzare.

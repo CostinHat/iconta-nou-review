@@ -2,7 +2,7 @@
 title: "Cum se înregistrează consumul personalului într-un restaurant?"
 description: "Tratamentul de TVA al mâncării și băuturii consumate de angajați într-un restaurant, potrivit Codului fiscal, ca livrare de bunuri asimilată."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Când un restaurant acordă gratuit personalului propriu masa din stocul destina
 
 ## Ce face iConta.eu
 
-La verificarea codului, iConta.eu are un modul de rețetar pentru HoReCa (`retete.py`), care calculează consumul de ingrediente la cost mediu ponderat (CMP) pe baza vânzărilor efective (numărul de porții vândute) și food cost-ul aferent. Aplicația nu are însă, în prezent, o funcție dedicată consumului de personal (mese oferite gratuit angajaților) ca operațiune distinctă de vânzarea către clienți — tratamentul de TVA descris mai sus, asimilarea la livrare de bunuri conform art. 270 alin. (4) lit. a), rămâne o înregistrare manuală a contabilului.
+La verificarea codului, iConta.eu are un modul de rețetar pentru HoReCa, care calculează consumul de ingrediente la cost mediu ponderat (CMP) pe baza vânzărilor efective (numărul de porții vândute) și food cost-ul aferent. Aplicația nu are însă, în prezent, o funcție dedicată consumului de personal (mese oferite gratuit angajaților) ca operațiune distinctă de vânzarea către clienți — tratamentul de TVA descris mai sus, asimilarea la livrare de bunuri conform art. 270 alin. (4) lit. a), rămâne o înregistrare manuală a contabilului.
 
 [iConta.eu](/)

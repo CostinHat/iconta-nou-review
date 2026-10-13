@@ -2,7 +2,7 @@
 title: "Ce fac dacă am închis anul și găsesc documente lipsă?"
 description: "Cele două căi disponibile când descoperi, după închiderea anului, că un document nu a fost înregistrat: contarea la data descoperirii sau redeschiderea motivată a perioadei."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,7 +26,7 @@ Pe acest principiu se bazează calea implicită de rezolvare descrisă mai jos: 
 
 ## Ce face iConta.eu
 
-**Calea 1 — contarea la data descoperirii.** Motorul de contare acceptă parametrul `data_nota`: dacă luna documentului e blocată, nota poate fi scrisă la data la care ai găsit documentul, în luna curentă deschisă, cu o mențiune care documentează legătura cu data reală a documentului. Nu necesită redeschiderea perioadei vechi.
+**Calea 1 — contarea la data descoperirii.** Motorul de contare acceptă parametrul „data notei”: dacă luna documentului e blocată, nota poate fi scrisă la data la care ai găsit documentul, în luna curentă deschisă, cu o mențiune care documentează legătura cu data reală a documentului. Nu necesită redeschiderea perioadei vechi.
 
 **Calea 2 — redeschiderea perioadei.** Dacă totuși e nevoie ca documentul să apară exact în luna lui de origine, administratorul firmei poate redeschide acea lună — dar deblocarea cere obligatoriu un motiv consemnat, pe temeiul citat direct în aplicație: „OMFP 1802/2014 — o perioadă închisă se redeschide ca act, nu prin ștergere." Fiecare blocare și deblocare e păstrată în istoricul firmei (cine, când, cu ce motiv).
 

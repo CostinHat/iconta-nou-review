@@ -2,7 +2,7 @@
 title: Cum aplic TVA la serviciile prestate către un client din UE cu cod invalid
 description: Fără cod de TVA valid al clientului din UE, serviciul B2B intracomunitar nu mai e neimpozabil în România — operațiunea devine, fiscal, o prestare către persoană fără cod valid, iar TVA-ul românesc se facturează normal.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,10 +13,10 @@ Regula de bază pentru serviciile B2B intracomunitare e că locul prestării e l
 ## Temeiul legal
 
 ::: ghid-temei
-„CF art. 278 alin. (2) — Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” — sursă: `cod_fiscal_227_2015_consolidat.txt`, L17303-17420, verificat în dosarul F050.
+„CF art. 278 alin. (2) — Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” — sursă: Codul fiscal (Legea 227/2015), forma consolidată.
 :::
 
-Codul sursă al motorului F050 descrie explicit efectul lipsei codului valid: „`valideaza_prestare_ic(cod_tva_client, cod_valid_vies)` — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România, se declară D390 (S); fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” Referința la alin. (3) vine din antetul modulului aplicația; textul integral al alineatului nu a fost extras verbatim în dosarul de cercetare F050, doar numărul articolului și efectul lui, așa cum reiese din cod.
+Codul sursă al motorului „Operațiuni intracomunitare” descrie explicit efectul lipsei codului valid: „„validarea prestării intracomunitare” — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România, se declară D390 (S); fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” Referința la alin. (3) vine din antetul modulului aplicația; textul integral al alineatului nu a fost extras verbatim în documentația aplicației, doar numărul articolului și efectul lui, așa cum reiese din cod.
 
 ## Ce înseamnă practic
 

@@ -2,7 +2,7 @@
 title: Ce fac dacă sponsorizarea depășește suma care poate fi scăzută din impozit?
 description: La impozitul pe profit, azi (regim din 03.02.2022) suma care depășește plafonul de min(0,75% din cifra de afaceri; 20% din impozitul pe profit) nu se pierde definitiv doar dacă rămâne loc de redirecționare prin D177 până la termenul D101; dacă sponsorizarea efectivă a atins deja plafonul, excedentul propriu-zis rămâne cheltuială nedeductibilă.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -49,8 +49,8 @@ O firmă cu cifra de afaceri 5.000.000 lei și impozit pe profit datorat 40.000 
 
 ## Ce face iConta.eu
 
-În aplicația, `plafon_credit()` calculează `min(0,75% × cifra de afaceri, 20% × impozit pe profit)`, iar `credit_sponsorizare()` calculează `credit = min(sponsorizari_efectuate, plafon)` și `redirectionabil_d177 = plafon - credit`. Așadar, când sponsorizarea depășește plafonul, `credit` este limitat la valoarea plafonului, iar `redirectionabil_d177` iese 0 — nu mai există spațiu suplimentar de redirecționare, iar diferența dintre sponsorizarea efectivă și plafon rămâne, corect, în afara calculului.
+În aplicația, „plafonul creditului fiscal” calculează `min(0,75% × cifra de afaceri, 20% × impozit pe profit)`, iar „creditul fiscal pentru sponsorizări (Operațiuni speciale)” calculează credit = min(sponsorizările efectuate, plafon) și suma redirecționabilă prin D177 = plafon - credit. Așadar, când sponsorizarea depășește plafonul, `credit` este limitat la valoarea plafonului, iar „suma redirecționabilă prin D177” iese 0 — nu mai există spațiu suplimentar de redirecționare, iar diferența dintre sponsorizarea efectivă și plafon rămâne, corect, în afara calculului.
 
-Rețineți însă: motorul aplică această regulă (0,75%/D177) **indiferent de `la_data` transmisă**, chiar și pentru ani anteriori lui 2022, când legea prevedea altceva (0,5% cu reportare pe 7 ani). Pentru sponsorizări din 2019–2021, nu vă bazați pe rezultatul automat.
+Rețineți însă: motorul aplică această regulă (0,75%/D177) **indiferent de „data” transmisă**, chiar și pentru ani anteriori lui 2022, când legea prevedea altceva (0,5% cu reportare pe 7 ani). Pentru sponsorizări din 2019–2021, nu vă bazați pe rezultatul automat.
 
 [iConta.eu](/)

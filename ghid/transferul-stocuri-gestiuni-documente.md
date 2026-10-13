@@ -2,7 +2,7 @@
 title: "Transferul de stocuri între gestiuni: documente"
 description: Documentul justificativ pentru un transfer de marfă între gestiuni depinde de un singur criteriu legal - dacă gestiunile sunt în aceeași incintă sau dispersate teritorial. Ce document trebuie emis, în fiecare caz, și ce face iConta.eu la nivel de înregistrare.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Cele două texte fixează exact granița: **Bonul de predare, transfer, restitui
 
 ## Ce face iConta.eu
 
-Funcția de transfer între gestiuni din iConta.eu (F138, Tier 1) înregistrează mișcarea de stoc: o ieșire din gestiunea sursă și o intrare în gestiunea destinație, ambele la costul mediu ponderat (CMP) curent, aceeași cantitate și valoare, fără notă contabilă (transferul fizic e neutru pe valorizare — nu e nici consum, nici achiziție). Câmpul de document al mișcării e text liber: fie numele documentului emis de dvs. (de exemplu „Aviz 14-3-6A nr. 25"), fie, dacă îl lăsați gol, un text generat automat de forma „transfer {gestiune sursă}->{gestiune destinație}".
+Funcția de transfer între gestiuni din iConta.eu („Transfer între gestiuni”, Tier 1) înregistrează mișcarea de stoc: o ieșire din gestiunea sursă și o intrare în gestiunea destinație, ambele la costul mediu ponderat (CMP) curent, aceeași cantitate și valoare, fără notă contabilă (transferul fizic e neutru pe valorizare — nu e nici consum, nici achiziție). Câmpul de document al mișcării e text liber: fie numele documentului emis de dvs. (de exemplu „Aviz 14-3-6A nr. 25"), fie, dacă îl lăsați gol, un text generat automat de forma „transfer {gestiune sursă}->{gestiune destinație}".
 
 Aplicația nu generează un formular tipizat 14-3-3A sau 14-3-6A ca document/PDF propriu-zis — verificat direct în codul motorului de stocuri, nu există nicio funcție care să producă un asemenea document. Transferul înregistrat în iConta.eu e evidența internă de stoc; documentul justificativ pentru circulația fizică a mărfii (mai ales cel obligatoriu pe drum, avizul de însoțire) rămâne de întocmit separat, după criteriul de mai sus.
 

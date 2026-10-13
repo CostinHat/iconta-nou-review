@@ -2,7 +2,7 @@
 title: "Cum se înregistrează o încasare bancară fără factură?"
 description: "Ce document justifică o încasare bancară fără factură emisă și cum tratează iConta.eu, prin motorul de reconciliere, o linie de extras pe care nu o poate potrivi automat cu o factură."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,7 +30,7 @@ Pe lângă acest temei, mai contează:
 
 ## Ce face iConta.eu
 
-Motorul de reconciliere bancară (F073, aplicația) încearcă întâi să potrivească automat fiecare linie din extras cu facturile deschise ale unui partener, identificat după CUI-ul din descrierea liniei. Când **nu găsește un CUI pe linia de extras**, statusul e direct **roșu** — linia nu e potrivită cu nicio factură și rămâne vizibilă ca atare pe ecranul „Bancă", indiferent dacă e o încasare cu adevărat fără factură sau doar o descriere neclară a băncii. La fel, dacă un CUI e detectat dar partenerul respectiv nu are nicio factură deschisă pe direcția cerută (încasare → facturi emise), linia rămâne tot roșie.
+Motorul de reconciliere bancară („Reconciliere bancară (potrivirea plăților cu facturile)”, aplicația) încearcă întâi să potrivească automat fiecare linie din extras cu facturile deschise ale unui partener, identificat după CUI-ul din descrierea liniei. Când **nu găsește un CUI pe linia de extras**, statusul e direct **roșu** — linia nu e potrivită cu nicio factură și rămâne vizibilă ca atare pe ecranul „Bancă", indiferent dacă e o încasare cu adevărat fără factură sau doar o descriere neclară a băncii. La fel, dacă un CUI e detectat dar partenerul respectiv nu are nicio factură deschisă pe direcția cerută (încasare → facturi emise), linia rămâne tot roșie.
 
 Pentru aceste linii, iConta.eu nu forțează o potrivire — contabilul creează o **notă contabilă manuală** din ecranul de Jurnal, folosind linia de extras ca sursă și calificând corect operațiunea (avans, restituire, dobândă, etc.), conform documentului justificativ real (extrasul de cont, eventual contractul aferent). O dată contată manual, linia rămâne asociată extrasului, dar nu trece prin motorul automat de potrivire pe factură — acela e rezervat exclusiv liniilor care corespund unor facturi deschise ale unui partener identificat.
 

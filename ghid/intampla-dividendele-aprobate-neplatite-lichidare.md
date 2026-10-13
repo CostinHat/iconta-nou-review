@@ -2,7 +2,7 @@
 title: "Ce se întâmplă cu dividendele aprobate și neplătite la lichidare?"
 description: "Dividendul aprobat, dar neîncasat de asociat, rămâne o datorie certă a firmei (cont 457), care nu se topește în partajul de lichidare — se plătește separat, ca orice altă datorie."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,6 +24,6 @@ Greșeala tipică e amânarea plății dividendului aprobat până la partajul f
 
 ## Ce face iConta.eu
 
-Nota de dividend anual, generată de funcționalitatea de decontări cu asociații (F039), poate fi înregistrată și fără plata efectivă (1171=457, 457=446, fără linia de plată netă) — exact situația unui dividend aprobat, dar neîncasat încă de asociat. Plata ulterioară a acestui sold (457=5121) se înregistrează separat, tot prin F039. Funcționalitatea de lichidare (partajul capitalului social și al rezervelor/profiturilor rămase, la cota de dividend) nu citește și nu include automat soldul preexistent de pe 457 în formula ei — acesta trebuie stins separat, ca datorie a firmei, înainte ca partajul final să fie considerat complet.
+Nota de dividend anual, generată de funcționalitatea de decontări cu asociații („Decontări asociați”), poate fi înregistrată și fără plata efectivă (1171=457, 457=446, fără linia de plată netă) — exact situația unui dividend aprobat, dar neîncasat încă de asociat. Plata ulterioară a acestui sold (457=5121) se înregistrează separat, tot prin „Decontări asociați”. Funcționalitatea de lichidare (partajul capitalului social și al rezervelor/profiturilor rămase, la cota de dividend) nu citește și nu include automat soldul preexistent de pe 457 în formula ei — acesta trebuie stins separat, ca datorie a firmei, înainte ca partajul final să fie considerat complet.
 
 [iConta.eu](/)

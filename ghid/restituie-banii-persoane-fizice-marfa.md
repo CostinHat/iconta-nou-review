@@ -2,7 +2,7 @@
 title: "Cum se restituie banii unei persoane fizice pentru marfa returnată?"
 description: "Plafonul de 10.000 lei pentru restituirea în numerar către o persoană fizică, și excepția pentru cine nu are cont bancar, conform Legii 70/2015."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce înseamnă concret:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația nu are o funcție dedicată „restituire marfă către persoană fizică". Motorul de calcul (`verifica_plafon()`) distinge, la nivel de parametru (`partener_tip`), o plată către persoană fizică și o verifică față de plafonul `PLAFON_PF` de 10.000 lei — dar API-ul expus, aplicația, are doar cinci categorii fixe de operațiuni (`incasare_client`, `plata_furnizor`, `ridicare_banca`, `depunere_banca`, `avans_decontare`), niciuna dedicată unei restituiri către o persoană fizică, iar tabela `casa_operatiuni` nu reține deloc tipul de partener (pf/pj). În fluxul curent al registrului de casă, o astfel de restituire nu are deci o categorie proprie, iar verificarea automată a plafonului de 10.000 lei nu se declanșează pe această cale. Excepția pentru clientul fără cont bancar, cu declarația pe propria răspundere aferentă, nu e tratată deloc de aplicație — rămâne, azi, o decizie și o documentare integral manuală a comerciantului.
+La data acestui ghid, aplicația nu are o funcție dedicată „restituire marfă către persoană fizică". Motorul de calcul („verificarea plafonului de numerar (Casă)”) distinge, la nivel de parametru („tipul partenerului”), o plată către persoană fizică și o verifică față de plafonul „plafonul pentru persoane fizice” de 10.000 lei — dar API-ul expus, aplicația, are doar cinci categorii fixe de operațiuni („încasare de la client (Casă)”, „plată către furnizor (Casă)”, „ridicare de numerar din bancă (Casă)”, „depunere de numerar la bancă (Casă)”, „avans spre decontare (Casă)”), niciuna dedicată unei restituiri către o persoană fizică, iar tabela „operațiunile de casă (Casă)” nu reține deloc tipul de partener (pf/pj). În fluxul curent al registrului de casă, o astfel de restituire nu are deci o categorie proprie, iar verificarea automată a plafonului de 10.000 lei nu se declanșează pe această cale. Excepția pentru clientul fără cont bancar, cu declarația pe propria răspundere aferentă, nu e tratată deloc de aplicație — rămâne, azi, o decizie și o documentare integral manuală a comerciantului.
 
 [iConta.eu](/)

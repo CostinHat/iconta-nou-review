@@ -2,7 +2,7 @@
 title: Factura de marfă primită din Italia
 description: Marfa cumpărată de la un furnizor din Italia e achiziție intracomunitară de bunuri (art. 268 alin. (3) lit. a) Cod fiscal), cu recepția fără TVA și taxa autoimpusă prin 4426 = 4427, nu prin plată la furnizor.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -49,6 +49,6 @@ Firma plătește furnizorului italian doar cei 12.500 lei ai facturii. TVA de 2.
 
 ## Ce face iConta.eu
 
-Codul de TVA al furnizorului e analizat automat — prefixul de țară e verificat contra listei celor 27 de state membre UE plus `XI`; operațiunea e tratată ca intracomunitară doar dacă țara codului nu e România. TVA la taxare inversă se calculează cu `TVA = bază × cotă / 100`, rotunjit aritmetic (`ROUND_HALF_UP`) la 2 zecimale, cu cota transmisă explicit la fiecare calcul și baza strict pozitivă.
+Codul de TVA al furnizorului e analizat automat — prefixul de țară e verificat contra listei celor 27 de state membre UE plus `XI`; operațiunea e tratată ca intracomunitară doar dacă țara codului nu e România. TVA la taxare inversă se calculează cu `TVA = bază × cotă / 100`, rotunjit aritmetic („rotunjirea aritmetică (jumătatea în sus)”) la 2 zecimale, cu cota transmisă explicit la fiecare calcul și baza strict pozitivă.
 
 [iConta.eu](/)

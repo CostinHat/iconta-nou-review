@@ -2,7 +2,7 @@
 title: "Cum justifici retragerile de numerar făcute de administrator?"
 description: "Plafonul zilnic de 5.000 lei pentru avansurile spre decontare și interdicția de a elibera numerar peste plafon, potrivit Legii nr. 70/2015 privind disciplina financiară."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Ce înseamnă acest temei pentru justificarea retragerilor administratorului:
 
 ## Ce face iConta.eu
 
-Verificat în cod: Aplicația calculează, pe baza cotei „plafon_avans_decontare" citită din nomenclatorul de cote (cu temeiul legal aferent), sumele acordate ca avans de trezorerie pe fiecare partener/persoană și generează un avertisment (`PLAFON_AVANS`) atunci când suma cumulată depășește plafonul legal; aplicația ține, de asemenea, evidența decontării avansurilor (contul 542) și a soldurilor nedecontate, dar decizia de a elibera sau nu suma peste plafon rămâne, desigur, a operatorului care introduce operațiunea de casă.
+Verificat în cod: Aplicația calculează, pe baza cotei „plafonul avansului spre decontare" citită din nomenclatorul de cote (cu temeiul legal aferent), sumele acordate ca avans de trezorerie pe fiecare partener/persoană și generează un avertisment („plafonul avansului de trezorerie”) atunci când suma cumulată depășește plafonul legal; aplicația ține, de asemenea, evidența decontării avansurilor (contul 542) și a soldurilor nedecontate, dar decizia de a elibera sau nu suma peste plafon rămâne, desigur, a operatorului care introduce operațiunea de casă.
 
 [iConta.eu](/)

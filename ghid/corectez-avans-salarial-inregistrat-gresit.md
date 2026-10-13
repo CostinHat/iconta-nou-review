@@ -2,7 +2,7 @@
 title: "Cum corectez un avans salarial înregistrat greșit?"
 description: "Regulile contabile pentru corectarea unei erori de înregistrare a unui avans salarial (chenzinal), în funcție de perioada la care se referă eroarea."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Avansul chenzinal (plata parțială a salariului la mijlocul lunii) e un documen
 
 ## Ce face iConta.eu
 
-Pentru corectarea notelor contabile în general — inclusiv, la nevoie, pentru un avans salarial înregistrat greșit — iConta.eu folosește un **mecanism intern de stornare**, prezent generalizat în motoarele de contare ale aplicației (facturi, bancă, decont TVA, SAF-T etc.), care respectă principiul din OMFP 1802/2014: corectarea se face printr-o operațiune de stornare, nu prin suprascrierea directă a înregistrării inițiale. Nu există însă, la acest moment, o funcție special dedicată exclusiv „corectării avansului salarial" — statul de plată și salarizarea au module proprii (`plata_salarii.py`, `salarii_contare.py`), dar corecția unei sume greșite urmează logica generală de stornare + re-înregistrare, aplicată manual de utilizator.
+Pentru corectarea notelor contabile în general — inclusiv, la nevoie, pentru un avans salarial înregistrat greșit — iConta.eu folosește un **mecanism intern de stornare**, prezent generalizat în motoarele de contare ale aplicației (facturi, bancă, decont TVA, SAF-T etc.), care respectă principiul din OMFP 1802/2014: corectarea se face printr-o operațiune de stornare, nu prin suprascrierea directă a înregistrării inițiale. Nu există însă, la acest moment, o funcție special dedicată exclusiv „corectării avansului salarial" — statul de plată și salarizarea au module proprii (aplicația), dar corecția unei sume greșite urmează logica generală de stornare + re-înregistrare, aplicată manual de utilizator.
 
 [iConta.eu](/)

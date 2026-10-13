@@ -2,7 +2,7 @@
 title: De ce diferă impozitul pe salarii din D112 de balanța contabilă?
 description: Impozitul pe salarii declarat în D112 (codul 602) trebuie să corespundă cu rulajul creditor al contului 444, cu o toleranță de rotunjire — orice diferență peste toleranță are o cauză identificabilă, nu întâmplătoare.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Greșeala frecventă e presupunerea că diferența e "doar rotunjire" fără ver
 
 ## Ce face iConta.eu
 
-Funcția `compara_d112` compară exact suma declarată sub codul 602 cu rulajul creditor al contului 444, aplică toleranța corespunzătoare numărului de salariați și, dacă diferența depășește toleranța, indică remediul potrivit cauzei (contabilizare, validare notă sau investigație), niciodată o simplă marcare "diferență" fără explicație.
+Funcția „comparația D112 (Control fiscal)” compară exact suma declarată sub codul 602 cu rulajul creditor al contului 444, aplică toleranța corespunzătoare numărului de salariați și, dacă diferența depășește toleranța, indică remediul potrivit cauzei (contabilizare, validare notă sau investigație), niciodată o simplă marcare "diferență" fără explicație.
 
 [iConta.eu](/)

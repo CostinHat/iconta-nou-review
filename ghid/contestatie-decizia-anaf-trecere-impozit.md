@@ -2,7 +2,7 @@
 title: "Contestație la decizia ANAF de trecere la impozit pe profit"
 description: "Termenul și forma contestației atunci când ANAF trece din oficiu firma de la micro la impozit pe profit, conform Codului de procedură fiscală."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Ce rezultă concret pentru o firmă care primește o astfel de decizie:
 
 ## Ce face iConta.eu
 
-iConta.eu nu are, la data acestui ghid, un flux dedicat de generare sau depunere a contestațiilor fiscale — acestea se redactează și se depun separat, prin mijloacele proprii ale contabilului sau ale firmei. Aplicația păstrează însă istoricul regimului fiscal (`regim_fiscal`) și al declarațiilor depuse pe fiecare perioadă, evidență utilă ca material probatoriu atunci când se argumentează, într-o contestație, că firma a îndeplinit condițiile de microîntreprindere la data la care ANAF susține contrariul.
+iConta.eu nu are, la data acestui ghid, un flux dedicat de generare sau depunere a contestațiilor fiscale — acestea se redactează și se depun separat, prin mijloacele proprii ale contabilului sau ale firmei. Aplicația păstrează însă istoricul regimului fiscal („regimul fiscal (Date firmă)”) și al declarațiilor depuse pe fiecare perioadă, evidență utilă ca material probatoriu atunci când se argumentează, într-o contestație, că firma a îndeplinit condițiile de microîntreprindere la data la care ANAF susține contrariul.
 
 [iConta.eu](/)

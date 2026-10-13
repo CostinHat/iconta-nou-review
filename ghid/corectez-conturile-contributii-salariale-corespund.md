@@ -2,7 +2,7 @@
 title: Cum corectez conturile de contribuții salariale dacă nu corespund cu D112?
 description: CAS (4315), CASS (4316) și CAM (436) se corectează diferit față de simplul „ajustezi soldul" — iConta.eu identifică, pentru fiecare cont în parte, dacă lipsește contabilizarea, dacă nota e doar în ciornă sau dacă e nevoie de investigație.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,7 +24,7 @@ O greșeală frecventă este ignorarea codurilor 458 și 459 — suprataxa dator
 
 ## Ce face iConta.eu
 
-Pentru fiecare din cele trei conturi, funcția `compara_d112` compară suma declarată (coduri D112 relevante, incluzând suprataxa 458/459 unde e cazul) cu rulajul creditor al contului, citit doar din notele validate, și aplică toleranța de rotunjire (0,5 lei per salariat, minim 1 leu). În funcție de rezultat:
+Pentru fiecare din cele trei conturi, funcția „comparația D112 (Control fiscal)” compară suma declarată (coduri D112 relevante, incluzând suprataxa 458/459 unde e cazul) cu rulajul creditor al contului, citit doar din notele validate, și aplică toleranța de rotunjire (0,5 lei per salariat, minim 1 leu). În funcție de rezultat:
 
 - Cont la zero, fără nicio notă → remediu executabil, „contabilizează statul de plată" pentru contribuția respectivă.
 - Cont la zero, dar cu notă de salarii în ciornă → remediu sugerat, „validează nota".

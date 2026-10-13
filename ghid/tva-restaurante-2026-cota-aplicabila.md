@@ -2,7 +2,7 @@
 title: "TVA pentru restaurante 2026: cota aplicabilă"
 description: Fișă rapidă — servicii de restaurant/catering 11%, băuturi alcoolice și NC 2202 21%, mâncare la pachet fără servicii conexe = livrare de bunuri la cota alimentului. Reguli valabile neschimbat tot 2026.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Cea mai des întâlnită greșeală e aplicarea unei singure cote pe tot bonul u
 
 ## Ce face iConta.eu
 
-Categoriile `restaurant_catering` (11%) și excepțiile `bauturi_alcoolice`/`bauturi_nc2202` (21%) din aplicație sunt aplicate automat, pe fiecare linie de bon sau factură, prin motorul de potrivire cotă — astfel încât un meniu de restaurant și o băutură alcoolică vândute pe același document primesc fiecare cota lui corectă, fără intervenție manuală.
+Categoriile „restaurant și catering (cota redusă)” (11%) și excepțiile „băuturi alcoolice”/„băuturi NC 2202” (21%) din aplicație sunt aplicate automat, pe fiecare linie de bon sau factură, prin motorul de potrivire cotă — astfel încât un meniu de restaurant și o băutură alcoolică vândute pe același document primesc fiecare cota lui corectă, fără intervenție manuală.
 
 [iConta.eu](/)

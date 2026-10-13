@@ -2,7 +2,7 @@
 title: "Am tratat greșit tichetele de masă"
 description: Cea mai frecventă greșeală la tichetele de masă e calcularea impozitului de 10% pe valoarea nominală brută, în loc de baza rămasă după scăderea CASS — o diferență de formulă, nu de rotunjire, care umflă reținerea reală.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ O a doua sursă frecventă de eroare ține de zilele care dau drept la tichet: a
 
 ## Ce face iConta.eu
 
-Motorul de salarizare aplică automat formula corectă — CASS 10% pe nominal, apoi impozit 10% pe baza rămasă după CASS — fără să lase loc calculului manual pe nominalul brut. Numărul de tichete se calculează din pontajul lunii, confirmat obligatoriu înainte de generarea D112 pe tichete de masă, scăzând explicit doar zilele de concediu de odihnă, delegație/detașare, absențe și învoire; telemunca nu apare în lista de excludere, deci generează tichet normal. Dacă o lună a fost deja procesată cu o formulă greșită (de exemplu preluată manual dintr-un exemplu numeric incorect), corectarea presupune refacerea calculului acelei luni în statul de plată, cu formula de mai sus — F133 nu oferă un instrument separat de „corectare retroactivă" dincolo de recalcularea lunii respective.
+Motorul de salarizare aplică automat formula corectă — CASS 10% pe nominal, apoi impozit 10% pe baza rămasă după CASS — fără să lase loc calculului manual pe nominalul brut. Numărul de tichete se calculează din pontajul lunii, confirmat obligatoriu înainte de generarea D112 pe tichete de masă, scăzând explicit doar zilele de concediu de odihnă, delegație/detașare, absențe și învoire; telemunca nu apare în lista de excludere, deci generează tichet normal. Dacă o lună a fost deja procesată cu o formulă greșită (de exemplu preluată manual dintr-un exemplu numeric incorect), corectarea presupune refacerea calculului acelei luni în statul de plată, cu formula de mai sus — „Tichete de masă, de vacanță și cadouri în statul de plată” nu oferă un instrument separat de „corectare retroactivă" dincolo de recalcularea lunii respective.
 
 [iConta.eu](/)

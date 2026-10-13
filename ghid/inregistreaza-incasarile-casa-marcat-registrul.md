@@ -2,7 +2,7 @@
 title: "Cum se înregistrează încasările prin casa de marcat în registrul de casă?"
 description: "Documentul care stă la baza înregistrării în registrul de casă a încasărilor zilnice prin aparatul de marcat electronic fiscal, conform OMFP 2634/2015."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă pentru registrul de casă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația conține `parseaza_raport_z()`, care preia raportul fiscal de închidere zilnică (XML) exportat de aparatul de marcat, iar aplicația (`horeca_import_amef()`) generează automat o singură notă contabilă zilnică din acel raport Z (5311/5125 = 707, cu TVA colectată pe 4427), nu bon cu bon. Nota generată din AMEF intră direct ca înregistrare contabilă; ea nu trece prin `casa_operatiuni`/`registru_casa()` din aplicație, care rămâne motorul soldului rulant al casei doar pentru operațiunile introduse manual (încasare client, plată furnizor, ridicare/depunere bancă, avans). Rezultatul practic respectă totuși mecanismul din normă: raportul Z e documentul-sumă a zilei, nu chitanța bon cu bon.
+La data acestui ghid, aplicația conține „citirea raportului Z”, care preia raportul fiscal de închidere zilnică (XML) exportat de aparatul de marcat, iar aplicația („importul AMEF (HoReCa)”) generează automat o singură notă contabilă zilnică din acel raport Z (5311/5125 = 707, cu TVA colectată pe 4427), nu bon cu bon. Nota generată din AMEF intră direct ca înregistrare contabilă; ea nu trece prin „operațiunile de casă (Casă)”/„registrul de casă (Casă)” din aplicație, care rămâne motorul soldului rulant al casei doar pentru operațiunile introduse manual (încasare client, plată furnizor, ridicare/depunere bancă, avans). Rezultatul practic respectă totuși mecanismul din normă: raportul Z e documentul-sumă a zilei, nu chitanța bon cu bon.
 
 [iConta.eu](/)

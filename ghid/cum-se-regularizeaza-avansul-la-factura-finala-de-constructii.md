@@ -2,7 +2,7 @@
 title: Cum se regularizează avansul la factura finală de construcții?
 description: Regularizarea avansului la recepția finală a lucrării stornează avansul (409/419) la cota valabilă la data livrării, iar la contracte cu avansuri/situații de plată succesive, suma corectă de regularizat este cumulul tuturor plăților anterioare — pe care sistemul nu îl calculează singur.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -41,8 +41,8 @@ Un contract de construcții are trei plăți anterioare recepției: avans iniți
 
 ## Ce face iConta.eu
 
-Regularizarea tehnică se face prin `nota_regularizare_avans_platit(...)` (pentru avansuri plătite constructorului) sau `nota_regularizare_avans_incasat(...)` (pentru avansuri încasate de firma de construcții), care inversează liniile de avans: `401 = 409x` + `401 = 4426`, respectiv `419 = 4111` + `4427 = 4111`. Orchestrarea din aplicație cere explicit `data_livrare` pentru orice operație de tip "regularizare" și calculează cota pe baza acestei date, exact conform art. 291 alin. (6).
+Regularizarea tehnică se face prin „regularizarea avansului plătit” (pentru avansuri plătite constructorului) sau „regularizarea avansului încasat” (pentru avansuri încasate de firma de construcții), care inversează liniile de avans: `401 = 409x` + `401 = 4426`, respectiv `419 = 4111` + `4427 = 4111`. Orchestrarea din aplicație cere explicit „data livrării” pentru orice operație de tip "regularizare" și calculează cota pe baza acestei date, exact conform art. 291 alin. (6).
 
-**Limitarea de reținut pentru contracte cu plăți eșalonate**: `avansuri.py` nu urmărește câte avansuri/situații de plată s-au emis pentru un contract și nu le agregă automat. La regularizare, suma trebuie să fie exact suma cumulată a tuturor plăților anterioare aferente facturii finale — această cumulare e responsabilitatea utilizatorului/aplicației care apelează motorul (UI, contabil), nu a modulului `avansuri.py` însuși, care nu are context despre facturile/plățile anterioare pentru a detecta o sumă greșită.
+**Limitarea de reținut pentru contracte cu plăți eșalonate**: aplicația nu urmărește câte avansuri/situații de plată s-au emis pentru un contract și nu le agregă automat. La regularizare, suma trebuie să fie exact suma cumulată a tuturor plăților anterioare aferente facturii finale — această cumulare e responsabilitatea utilizatorului/aplicației care apelează motorul (UI, contabil), nu a modulului aplicația însuși, care nu are context despre facturile/plățile anterioare pentru a detecta o sumă greșită.
 
 [iConta.eu](/)

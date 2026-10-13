@@ -2,7 +2,7 @@
 title: "Cum corectez o perioadă SAF-T deja depusă?"
 description: "Regula ANAF prin care orice declarație D406 (SAF-T) depusă ulterior pentru aceeași perioadă devine automat declarație rectificativă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,7 +25,7 @@ Corectarea unei declarații informative D406 (fișierul standard de control fisc
 ## Ce se greșește în practică
 
 - Se încearcă transmiterea unui fișier XML care conține doar înregistrările modificate, crezând că se va face o „actualizare parțială" — ANAF respinge acest tip de fișier.
-- Se ignoră mesajele de eroare din documentul „Validator" (fișierul SAFT.xml.err.txt) și se retransmite fișierul nemodificat.
+- Se ignoră mesajele de eroare din documentul „Validator" (fișierul raportul de erori al validatorului ANAF) și se retransmite fișierul nemodificat.
 - Se presupune că o rectificativă anulează sancțiunea pentru nedepunere în termen a declarației inițiale, chiar și atunci când termenul-limită a fost deja depășit.
 - Se depun rectificative repetate pentru corecții minore, fără a recalcula întregul fișier de la sursă, ceea ce duce la inconsistențe între secțiuni (de exemplu GeneralLedgerEntries vs. MasterFiles).
 

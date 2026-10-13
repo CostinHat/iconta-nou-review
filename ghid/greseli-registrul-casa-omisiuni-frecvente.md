@@ -2,7 +2,7 @@
 title: "Greșeli la registrul de casă: omisiuni frecvente"
 description: "Cele mai frecvente omisiuni la completarea registrului de casă și regulile de plafon numerar care le fac vizibile, potrivit Legii 70/2015 și OMFP 2634/2015."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Cele mai frecvente omisiuni:
 
 ## Ce face iConta.eu
 
-Modulul de casierie din iConta.eu generează registrul de casă pe baza operațiunilor introduse, calculează soldul final zi de zi și verifică automat încadrarea în plafoanele legale de numerar (`verifica_plafon`), cu sursele actualizate — Legea 70/2015, în vigoare cu modificările din Legea 239/2025 (plafon 01.01.2026) și OMFP 1802/2014 pentru monografiile contabile. Aplicația ține și evidența avansurilor de trezorerie (acordare, restituire, decontare, reclasificare la bilanț). La data acestui ghid, iConta.eu **nu poate detecta o operațiune introdusă cu întârziere față de data reală** (de exemplu, o zi completată retroactiv) — corectitudinea cronologică a introducerii datelor rămâne responsabilitatea celui care operează în cont.
+Modulul de casierie din iConta.eu generează registrul de casă pe baza operațiunilor introduse, calculează soldul final zi de zi și verifică automat încadrarea în plafoanele legale de numerar („verificarea plafonului de numerar (Casă)”), cu sursele actualizate — Legea 70/2015, în vigoare cu modificările din Legea 239/2025 (plafon 01.01.2026) și OMFP 1802/2014 pentru monografiile contabile. Aplicația ține și evidența avansurilor de trezorerie (acordare, restituire, decontare, reclasificare la bilanț). La data acestui ghid, iConta.eu **nu poate detecta o operațiune introdusă cu întârziere față de data reală** (de exemplu, o zi completată retroactiv) — corectitudinea cronologică a introducerii datelor rămâne responsabilitatea celui care operează în cont.
 
 [iConta.eu](/)

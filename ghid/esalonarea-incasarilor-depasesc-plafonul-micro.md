@@ -2,7 +2,7 @@
 title: "Eșalonarea încasărilor ca să nu depășesc plafonul micro"
 description: "De ce amânarea încasării facturilor nu ajută la evitarea depășirii plafonului de 100.000 euro pentru regimul micro, pentru că plafonul se verifică pe venituri, nu pe încasări."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce înseamnă asta, concret:
 
 ## Ce face iConta.eu
 
-iConta.eu calculează obligațiile fiscale ale regimului micro (D100) pe baza veniturilor introduse de utilizator pentru trimestrul respectiv (funcția `deriva_obligatii`), nu pe baza încasărilor din casă sau bancă. Aplicația nu are, la acest moment, o alertă automată care să semnaleze apropierea de plafonul de 100.000 euro cumulat de la începutul anului — verificarea acestui plafon rămâne o responsabilitate a contabilului, urmărind veniturile cumulate raportate în declarațiile trimestriale.
+iConta.eu calculează obligațiile fiscale ale regimului micro (D100) pe baza veniturilor introduse de utilizator pentru trimestrul respectiv (funcția „calculul obligațiilor (Declarații)”), nu pe baza încasărilor din casă sau bancă. Aplicația nu are, la acest moment, o alertă automată care să semnaleze apropierea de plafonul de 100.000 euro cumulat de la începutul anului — verificarea acestui plafon rămâne o responsabilitate a contabilului, urmărind veniturile cumulate raportate în declarațiile trimestriale.
 
 [iConta.eu](/)

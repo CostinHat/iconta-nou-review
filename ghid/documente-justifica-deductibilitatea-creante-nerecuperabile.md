@@ -2,7 +2,7 @@
 title: "Ce documente justifică deductibilitatea unei creanțe nerecuperabile?"
 description: "Documentele care condiționează deductibilitatea 100% sau 30% a ajustării pentru deprecierea unei creanțe comerciale neîncasate, în funcție de situația juridică a debitorului."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Documentele care fac diferența între deductibilitatea de 30% și cea de 100%:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **calculează automat procentul de deductibilitate** al ajustării pentru deprecierea creanțelor (funcția `deductibilitate_creanta`): pe baza numărului de zile de întârziere de la scadență și a răspunsurilor date de contabil — creanța e garantată, e la o persoană afiliată, există faliment/insolvență declarată — aplicația stabilește procentul corect (0%, 30% sau 100%, potrivit art. 26 lit. c)/j)) și generează nota contabilă de ajustare. Aplicația **nu verifică însă ea însăși existența sau conținutul hotărârii judecătorești** de deschidere a falimentului/insolvenței — confirmarea faptului că un astfel de document există și susține procentul de 100% rămâne o constatare a contabilului, introdusă ca atare în aplicație.
+La data acestui ghid, iConta.eu **calculează automat procentul de deductibilitate** al ajustării pentru deprecierea creanțelor (funcția „deductibilitatea creanței (Operațiuni speciale)”): pe baza numărului de zile de întârziere de la scadență și a răspunsurilor date de contabil — creanța e garantată, e la o persoană afiliată, există faliment/insolvență declarată — aplicația stabilește procentul corect (0%, 30% sau 100%, potrivit art. 26 lit. c)/j)) și generează nota contabilă de ajustare. Aplicația **nu verifică însă ea însăși existența sau conținutul hotărârii judecătorești** de deschidere a falimentului/insolvenței — confirmarea faptului că un astfel de document există și susține procentul de 100% rămâne o constatare a contabilului, introdusă ca atare în aplicație.
 
 [iConta.eu](/)

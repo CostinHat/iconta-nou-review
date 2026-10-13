@@ -2,7 +2,7 @@
 title: "Regularizarea facturilor vechi prin e-Factura"
 description: "Cum se corectează prin sistemul RO e-Factura o factură emisă anterior, conform mecanismului de corectare prevăzut de Codul fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Când o factură emisă anterior trebuie corectată — pentru că a fost greși
 
 ## Ce face iConta.eu
 
-iConta.eu are integrare cu RO e-Factura pentru generarea și transmiterea facturilor emise (`efactura_send.py`), construită pe structura XML UBL 2.1 / CIUS-RO cerută de ANAF. La verificarea codului, aplicația are o funcție dedicată de stornare (`facturi_api.storneaza`, expusă prin ruta `/tenants/{tenant_id}/facturi/{factura_id}/storno`): pe baza unei facturi emise existente, generează automat o factură de stornare cu liniile copiate și cantitățile cu semn negativ, cu număr propriu din aceeași serie și cu referință explicită la factura originală (`storno_din_id`) — corespunde variantei de la art. 330 alin. (1) lit. b) în care se emite o factură separată cu valorile cu semnul minus. Factura de stornare astfel generată intră apoi în același flux de transmitere prin RO e-Factura ca orice altă factură emisă. Emiterea facturii ulterioare, cu valorile corecte, rămâne o operațiune separată a utilizatorului — aplicația nu leagă automat cele două documente într-un singur pas.
+iConta.eu are integrare cu RO e-Factura pentru generarea și transmiterea facturilor emise, construită pe structura XML UBL 2.1 / CIUS-RO cerută de ANAF. La verificarea codului, aplicația are o funcție dedicată de stornare („stornarea”, expusă prin ruta aplicația): pe baza unei facturi emise existente, generează automat o factură de stornare cu liniile copiate și cantitățile cu semn negativ, cu număr propriu din aceeași serie și cu referință explicită la factura originală („factura stornată (referința)”) — corespunde variantei de la art. 330 alin. (1) lit. b) în care se emite o factură separată cu valorile cu semnul minus. Factura de stornare astfel generată intră apoi în același flux de transmitere prin RO e-Factura ca orice altă factură emisă. Emiterea facturii ulterioare, cu valorile corecte, rămâne o operațiune separată a utilizatorului — aplicația nu leagă automat cele două documente într-un singur pas.
 
 [iConta.eu](/)

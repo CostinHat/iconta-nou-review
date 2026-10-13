@@ -2,7 +2,7 @@
 title: "Cum plătesc CAS pentru PFA?"
 description: "Mecanismul de calcul, declarare și plată a contribuției de asigurări sociale (CAS) datorate de o PFA, potrivit Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Pașii concreți, așa cum rezultă din art. 148 și 151 din Codul fiscal:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, pentru PFA-urile în sistem real (partidă simplă), iConta.eu calculează baza CAS/CASS din operațiunile validate ale contribuabilului, prin aplicație (funcția `fisa_d212`), folosind plafoanele legale verificate pentru anii acoperiți de aplicație, și generează Declarația unică (D212) prin aplicație. Aplicația nu efectuează ea însăși plata contribuției către bugetul de stat — plata rămâne un pas separat, realizat de contribuabil, în același termen legal la care se depune D212.
+La data acestui ghid, pentru PFA-urile în sistem real (partidă simplă), iConta.eu calculează baza CAS/CASS din operațiunile validate ale contribuabilului, prin aplicație (funcția „fișa de calcul D212 (Declarații)”), folosind plafoanele legale verificate pentru anii acoperiți de aplicație, și generează Declarația unică (D212) prin aplicație. Aplicația nu efectuează ea însăși plata contribuției către bugetul de stat — plata rămâne un pas separat, realizat de contribuabil, în același termen legal la care se depune D212.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se face NIR pentru marfa primită cu titlu gratuit?"
 description: "Pașii de recepție și monografia contabilă pentru marfa primită cu titlu gratuit, când NIR-ul e necesar, conform OMFP 2634/2015 și OMFP 1802/2014."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Pașii, pentru cazul în care NIR-ul e necesar:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația conține motorul `nir_gv()` pentru NIR global-valoric (cu adaos comercial și TVA neexigibilă) și aplicația oferă funcția `intrare()` pentru încărcarea cantitativă în gestiune. Ambele acceptă orice valoare unitară introdusă de utilizator, deci pot procesa tehnic o intrare la valoare justă — dar aplicația nu are un flux dedicat „marfă gratuită" care să sugereze automat contul de venituri 758 ca și contrapartidă sau să ceară documentarea sursei valorii juste. Determinarea valorii și alegerea contului de contrapartidă rămân, azi, decizii ale contabilului.
+La data acestui ghid, aplicația conține motorul „NIR global-valoric (Stocuri)” pentru NIR global-valoric (cu adaos comercial și TVA neexigibilă) și aplicația oferă funcția „intrarea în stoc” pentru încărcarea cantitativă în gestiune. Ambele acceptă orice valoare unitară introdusă de utilizator, deci pot procesa tehnic o intrare la valoare justă — dar aplicația nu are un flux dedicat „marfă gratuită" care să sugereze automat contul de venituri 758 ca și contrapartidă sau să ceară documentarea sursei valorii juste. Determinarea valorii și alegerea contului de contrapartidă rămân, azi, decizii ale contabilului.
 
 [iConta.eu](/)

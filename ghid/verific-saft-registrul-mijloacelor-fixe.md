@@ -2,7 +2,7 @@
 title: "Cum verific SAF-T cu registrul mijloacelor fixe?"
 description: "De ce secțiunea Active a D406 (SAF-T) nu e o verificare independentă a registrului de mijloace fixe, ci se generează direct din el — și ce înseamnă asta pentru un registru importat prin migrare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,7 +30,7 @@ Mulți contabili se așteaptă ca declarația D406 (SAF-T), secțiunea Active, s
 
 ## Ce face iConta.eu
 
-Verificat direct în cod: secțiunea Active a SAF-T (funcționalitatea „D406 Active") se generează direct din tabela `mijloace_fixe` — motorul de amortizare unic (liniar/degresiv/accelerat/superaccelerat, conform art. 28 Cod fiscal) e consumat atât de ecranul de mijloace fixe, cât și de generatorul SAF-T. Nu există un al doilea flux independent cu care rezultatul să fie comparat în aplicație; endpoint-ul e disponibil (`GET /tenants/{tenant_id}/d406-active`), dar **fără ecran dedicat în UI** la acest moment.
+Verificat direct în cod: secțiunea Active a SAF-T (funcționalitatea „D406 Active") se generează direct din tabela „registrul mijloacelor fixe” — motorul de amortizare unic (liniar/degresiv/accelerat/superaccelerat, conform art. 28 Cod fiscal) e consumat atât de ecranul de mijloace fixe, cât și de generatorul SAF-T. Nu există un al doilea flux independent cu care rezultatul să fie comparat în aplicație; endpoint-ul e disponibil (aplicația), dar **fără ecran dedicat în UI** la acest moment.
 
 Aici intervine legătura reală cu importul de mijloace fixe la migrare: la import, aplicația verifică explicit fiecare rând — cod de inventar, durată, valoare — și avertizează dacă lipsește **contul de imobilizare** pe categorie, cu mesajul din cod: „Mijloacele fixe intră în amortizare și în D406 SAF-T", pentru că fără acest cont metodele accelerat/superaccelerat sunt respinse ulterior la generarea declarației. Practic, „verificarea SAF-T cu registrul" pentru un registru migrat înseamnă rezolvarea din start a avertismentelor de import — un registru incomplet la migrare rămâne incomplet și în secțiunea Active a SAF-T, pentru că sunt aceleași date.
 

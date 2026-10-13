@@ -2,13 +2,13 @@
 title: "Cum contabilizez un transfer între două conturi bancare ale aceleiași firme?"
 description: Această întrebare nu ține de transferul de stocuri între gestiuni. E vorba de mișcare de bani între două conturi bancare, subiect diferit - contul 581 și evidența de trezorerie, nu evidența de marfă.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum contabilizez un transfer între două conturi bancare ale aceleiași firme?
 
-Această întrebare nu are legătură cu transferul de marfă între gestiuni (F138) — e un transfer de bani între două conturi bancare deținute de aceeași firmă, subiect din zona de trezorerie, nu din zona de stocuri. Le tratăm distinct pentru că documentele, conturile și mecanismul de raportare sunt complet diferite.
+Această întrebare nu are legătură cu transferul de marfă între gestiuni („Transfer între gestiuni”) — e un transfer de bani între două conturi bancare deținute de aceeași firmă, subiect din zona de trezorerie, nu din zona de stocuri. Le tratăm distinct pentru că documentele, conturile și mecanismul de raportare sunt complet diferite.
 
 ## Temeiul legal
 
@@ -22,7 +22,7 @@ Textul confirmă un singur lucru direct relevant aici: extrasul de cont bancar e
 
 ## Ce se greșește în practică
 
-- Se caută acest subiect sub eticheta „transfer între gestiuni" sau F138 — sunt funcționalități complet diferite; F138 mută marfă între locații de stoc, nu bani între conturi.
+- Se caută acest subiect sub eticheta „transfer între gestiuni" sau „Transfer între gestiuni” — sunt funcționalități complet diferite; „Transfer între gestiuni” mută marfă între locații de stoc, nu bani între conturi.
 - Se lasă transferul bancar necategorizat sau categorizat greșit ca „achiziție"/"încasare", ceea ce denaturează situația de trezorerie și poate duplica venituri sau cheltuieli.
 - Se presupune că orice mișcare între conturile proprii ale firmei e recunoscută automat de sistemul contabil ca „virament intern" — depinde de modul de categorizare configurat, vezi mai jos.
 

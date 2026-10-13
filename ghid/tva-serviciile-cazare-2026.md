@@ -2,7 +2,7 @@
 title: TVA pentru serviciile de cazare în 2026
 description: Cazarea în sectorul hotelier și camping intră la cota redusă de 11%, iar la pachetele cu demipensiune, pensiune completă sau all-inclusive, cota redusă se aplică la prețul total — inclusiv băuturile alcoolice incluse în preț.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Excepția e specifică pachetului de cazare — nu se extinde la restaurantul in
 
 ## Ce face iConta.eu
 
-Aplicația include categoria `cazare` la cota de 11% (art. 291 alin. (2) lit. m), separat de categoria `restaurant_catering`. Tratamentul special al pachetelor demipensiune/pensiune completă/all-inclusive ține de modul în care e facturat pachetul, nu de un câmp automat distinct — pachetul se declară pe factură ca o singură linie de cazare, la cota de 11%, nu defalcat pe componente cu cote diferite.
+Aplicația include categoria `cazare` la cota de 11% (art. 291 alin. (2) lit. m), separat de categoria „restaurant și catering (cota redusă)”. Tratamentul special al pachetelor demipensiune/pensiune completă/all-inclusive ține de modul în care e facturat pachetul, nu de un câmp automat distinct — pachetul se declară pe factură ca o singură linie de cazare, la cota de 11%, nu defalcat pe componente cu cote diferite.
 
 [iConta.eu](/)

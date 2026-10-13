@@ -2,7 +2,7 @@
 title: De ce apare diferență între impozitul micro din contabilitate și D100?
 description: O diferență între suma din evidența contabilă și suma din D100 apare de regulă din venituri înregistrate în perioada greșită, deduceri omise (contul 709) sau rulaje cumulate confundate cu rulaje trimestriale.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -43,6 +43,6 @@ Formula legală e simplă (venituri trimestru × 1%), deci o diferență între 
 
 ## Ce face iConta.eu
 
-Pentru fiecare declarație D100, `d100_reconciliere.verifica_reconciliere` recalculează suma pe o cale complet independentă — direct din SQL, pe tabela `inregistrari_linii` — și o confruntă cu suma produsă de generator (`deriva_obligatii`). Această reconciliere este o poartă obligatorie înainte de emiterea XML-ului: dacă cele două căi de calcul nu coincid, discrepanța e semnalată înainte ca declarația să poată fi depusă. Dacă totuși suma din D100 diferă de o estimare manuală, cauza e aproape sigur în datele contabile sursă (perioadă, deduceri, note ulterioare), nu în motorul de calcul.
+Pentru fiecare declarație D100, „reconcilierea D112 (Control fiscal)” recalculează suma pe o cale complet independentă — direct din SQL, pe tabela „notele contabile” — și o confruntă cu suma produsă de generator („calculul obligațiilor (Declarații)”). Această reconciliere este o poartă obligatorie înainte de emiterea XML-ului: dacă cele două căi de calcul nu coincid, discrepanța e semnalată înainte ca declarația să poată fi depusă. Dacă totuși suma din D100 diferă de o estimare manuală, cauza e aproape sigur în datele contabile sursă (perioadă, deduceri, note ulterioare), nu în motorul de calcul.
 
 [iConta.eu](/)

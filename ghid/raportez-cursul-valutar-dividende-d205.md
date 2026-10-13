@@ -2,7 +2,7 @@
 title: Cum raportez cursul valutar la dividende în D205
 description: Nu-l raportați — D205 nu are un câmp pentru cursul valutar. Cursul intervine doar la conversia contabilă a sumei în lei, înainte ca ea să ajungă în declarație.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -17,7 +17,7 @@ Scurt: nu raportați cursul valutar separat în D205, pentru că formularul nu a
 — OPANAF 179/2022, instrucțiuni de completare D205, Cap. V
 :::
 
-Instrucțiunile de completare descriu explicit conținutul coloanelor relevante pentru dividende: sume (venit distribuit, venit plătit, bază, impozit) — niciuna dintre ele nu e definită ca "sumă în valută" sau "curs de schimb". Cercetarea care stă la baza acestui ghid nu a identificat, nici în structura oficială a D205, nici în codul funcționalității F029, un câmp sau o regulă de raportare a cursului valutar — declarăm explicit acest gol.
+Instrucțiunile de completare descriu explicit conținutul coloanelor relevante pentru dividende: sume (venit distribuit, venit plătit, bază, impozit) — niciuna dintre ele nu e definită ca "sumă în valută" sau "curs de schimb". Cercetarea care stă la baza acestui ghid nu a identificat, nici în structura oficială a D205, nici în codul funcționalității „Declarația D205 și distribuirea dividendelor”, un câmp sau o regulă de raportare a cursului valutar — declarăm explicit acest gol.
 
 ## Ce se greșește în practică
 

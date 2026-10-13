@@ -2,7 +2,7 @@
 title: Cum se calculează impozitul micro trimestrial?
 description: Impozitul micro se calculează independent pentru fiecare trimestru, aplicând cota unică de 1% la veniturile înregistrate contabil în trimestrul respectiv, fără cumulare de la începutul anului.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -46,6 +46,6 @@ Fiecare trimestru se calculează separat, pe baza proprie de venituri.
 
 ## Ce face iConta.eu
 
-Aplicația, funcția `deriva_obligatii`, calculează obligația cod 121 (impozit micro) exact ca `venituri_trimestru × cotă(1%)`, unde baza e veniturile trimestrului curent citite din conturile 70x/75x/76x minus 709, necumulate de la începutul anului — fiecare trimestru fiind tratat independent. Deducerea de sponsorizare nu este implementată în motor, corect, pentru că e lege abrogată din 2024.
+Aplicația, funcția „calculul obligațiilor (Declarații)”, calculează obligația cod 121 (impozit micro) exact ca veniturile trimestrului × cotă(1%), unde baza e veniturile trimestrului curent citite din conturile 70x/75x/76x minus 709, necumulate de la începutul anului — fiecare trimestru fiind tratat independent. Deducerea de sponsorizare nu este implementată în motor, corect, pentru că e lege abrogată din 2024.
 
 [iConta.eu](/)

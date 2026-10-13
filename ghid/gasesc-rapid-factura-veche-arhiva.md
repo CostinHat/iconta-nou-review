@@ -2,7 +2,7 @@
 title: "Cum găsesc rapid o factură veche în arhiva e-Factura?"
 description: "De ce căutarea rapidă a unei facturi vechi transmise prin SPV se face în evidența proprie a firmei, nu direct în arhiva ANAF, și ce oferă iConta.eu pentru asta."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Citatul de mai sus nu privește direct arhivarea, ci delimitează ce operațiuni
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu importă și înregistrează local facturile primite și trimise prin RO e-Factura, iar funcția `lista_facturi` din aplicație permite filtrarea facturilor proprii după an, lună și direcție (emise/primite), direct din evidența firmei, fără interogarea portalului ANAF de fiecare dată. Aplicația nu oferă însă un motor de căutare full-text peste conținutul facturilor (produse, descrieri) și nu înlocuiește arhiva oficială SPV ca sursă legală a documentului original.
+La data acestui ghid, iConta.eu importă și înregistrează local facturile primite și trimise prin RO e-Factura, iar funcția „lista facturilor (Facturi)” din aplicație permite filtrarea facturilor proprii după an, lună și direcție (emise/primite), direct din evidența firmei, fără interogarea portalului ANAF de fiecare dată. Aplicația nu oferă însă un motor de căutare full-text peste conținutul facturilor (produse, descrieri) și nu înlocuiește arhiva oficială SPV ca sursă legală a documentului original.
 
 [iConta.eu](/)

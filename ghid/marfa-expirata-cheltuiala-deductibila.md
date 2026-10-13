@@ -2,7 +2,7 @@
 title: "Marfa expirată este cheltuială deductibilă?"
 description: "Regimul fiscal, la impozitul pe profit, al pierderilor din marfă cu termen de valabilitate depășit — deductibilitate limitată, nu integrală."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Marfa care expiră pe raft sau în depozit e o realitate a oricărui comerciant,
 
 ## Ce face iConta.eu
 
-La verificarea codului sursă, iConta.eu are un modul dedicat (`perisabilitati.py`, construit pe HG 831/2004 și art. 25/art. 304 din Codul fiscal) care calculează limita deductibilă (valoarea intrărilor × procentul-limită), separă partea deductibilă de cea nedeductibilă și determină automat ajustarea de TVA aferentă depășirii (potrivit art. 304 CF), cu excepția expresă a cazului de degradare calitativă dovedită prin distrugere. Modulul **nu deduce însă singur procentul-limită** din anexele HG 831/2004 pentru fiecare categorie de produs — acesta trebuie furnizat ca parametru (`procent_limita`), pe baza încadrării făcute de contabil în funcție de natura mărfii.
+La verificarea codului sursă, iConta.eu are un modul dedicat (aplicația, construit pe HG 831/2004 și art. 25/art. 304 din Codul fiscal) care calculează limita deductibilă (valoarea intrărilor × procentul-limită), separă partea deductibilă de cea nedeductibilă și determină automat ajustarea de TVA aferentă depășirii (potrivit art. 304 CF), cu excepția expresă a cazului de degradare calitativă dovedită prin distrugere. Modulul **nu deduce însă singur procentul-limită** din anexele HG 831/2004 pentru fiecare categorie de produs — acesta trebuie furnizat ca parametru („procentul de limită”), pe baza încadrării făcute de contabil în funcție de natura mărfii.
 
 [iConta.eu](/)

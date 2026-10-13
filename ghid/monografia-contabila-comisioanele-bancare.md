@@ -2,7 +2,7 @@
 title: "Care este monografia contabilă pentru comisioanele bancare?"
 description: "Contul din reglementările contabile românești folosit pentru evidențierea comisioanelor bancare și logica lui de funcționare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Contul 627 face parte din grupa 62 „Cheltuieli cu alte servicii executate de t
 
 ## Ce face iConta.eu
 
-iConta.eu **recunoaște și contează automat operațiunile bancare** importate din extrasul de cont, inclusiv comisioanele bancare, prin modulele dedicate de import și parsare a extraselor (`banca.py`, `banca_parser.py`). Aplicația poate identifica liniile de extras corespunzătoare comisioanelor și le poate propune spre contare pe conturile corespunzătoare, reducând munca manuală de clasificare, dar decizia finală privind încadrarea exactă (627 vs. alt cont, în funcție de politica contabilă a firmei) rămâne la latitudinea utilizatorului sau a contabilului care validează notele contabile.
+iConta.eu **recunoaște și contează automat operațiunile bancare** importate din extrasul de cont, inclusiv comisioanele bancare, prin modulele dedicate de import și parsare a extraselor (aplicația). Aplicația poate identifica liniile de extras corespunzătoare comisioanelor și le poate propune spre contare pe conturile corespunzătoare, reducând munca manuală de clasificare, dar decizia finală privind încadrarea exactă (627 vs. alt cont, în funcție de politica contabilă a firmei) rămâne la latitudinea utilizatorului sau a contabilului care validează notele contabile.
 
 [iConta.eu](/)

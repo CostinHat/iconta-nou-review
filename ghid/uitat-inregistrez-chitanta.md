@@ -2,7 +2,7 @@
 title: "Ce fac dacă am uitat să înregistrez o chitanță?"
 description: "Obligația legală de a consemna operațiunile în ordinea reală a documentelor și ce trebuie făcut când o chitanță a rămas neînregistrată."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Găsești în sertar o chitanță — poate primită de la un furnizor, poate un
 
 ## Ce face iConta.eu
 
-Acest titlu descrie o chitanță **primită de la altcineva și omisă din evidență** — o situație diferită de funcționalitatea „Chitanțe emise" (F017) din iConta.eu, care acoperă emiterea de către firmă a propriilor chitanțe (`chitanta_emite`, numerotare pe serie, PDF cu suma în litere, cont 5311=4111). Aplicația are, separat, un flux prin care contabilul certifică o chitanță primită de la un furnizor, fotografiată de client în portal (`chitanta_stinge`, cont 401=5311) — dar acest flux cere ca documentul să fie deja încărcat și confirmat de client în portal, nu oferă o cale specială de adăugare retroactivă a unei chitanțe „uitate" direct de contabil, fără acest circuit. Dacă ai o chitanță rămasă neînregistrată, verifică dacă se încadrează în fluxul de certificare din portal; altfel, remedierea rămâne, la acest moment, un pas manual.
+Acest titlu descrie o chitanță **primită de la altcineva și omisă din evidență** — o situație diferită de funcționalitatea „Chitanțe emise" („Chitanțe emise”) din iConta.eu, care acoperă emiterea de către firmă a propriilor chitanțe („emiterea chitanței (Casă)”, numerotare pe serie, PDF cu suma în litere, cont 5311=4111). Aplicația are, separat, un flux prin care contabilul certifică o chitanță primită de la un furnizor, fotografiată de client în portal („stingerea chitanței primite (Portal)”, cont 401=5311) — dar acest flux cere ca documentul să fie deja încărcat și confirmat de client în portal, nu oferă o cale specială de adăugare retroactivă a unei chitanțe „uitate" direct de contabil, fără acest circuit. Dacă ai o chitanță rămasă neînregistrată, verifică dacă se încadrează în fluxul de certificare din portal; altfel, remedierea rămâne, la acest moment, un pas manual.
 
 [iConta.eu](/)

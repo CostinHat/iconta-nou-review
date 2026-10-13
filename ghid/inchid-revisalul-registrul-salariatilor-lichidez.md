@@ -2,7 +2,7 @@
 title: "Cum închid Revisalul/registrul salariaților când lichidez firma"
 description: "Ce obligații rămân privind registrul general de evidență a salariaților atunci când angajatorul își încetează activitatea, potrivit Codului muncii."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Când o firmă intră în lichidare, contractele de muncă ale salariaților în
 
 ## Ce face iConta.eu
 
-Verificat în cod: Aplicația conține funcția `mesaj_incetare_contract`, care generează mesajul de tip `ActiuneIncetare` transmis către REGES-ONLINE pentru încetarea unui contract individual de muncă, pe baza datei și temeiului de încetare. Aplicația **nu are o funcționalitate separată de „închidere a registrului" la nivelul întregii firme** — nu există în cod o acțiune dedicată radierii angajatorului din registru la lichidare. Practic, contabilul folosește mecanismul existent de încetare a contractelor, pentru fiecare salariat în parte, iar radierea firmei din Registrul Comerțului rămâne un pas separat, în afara aplicației.
+Verificat în cod: Aplicația conține funcția „încetarea contractului în REGES (Salarii)”, care generează mesajul de tip „acțiunea de încetare” transmis către REGES-ONLINE pentru încetarea unui contract individual de muncă, pe baza datei și temeiului de încetare. Aplicația **nu are o funcționalitate separată de „închidere a registrului" la nivelul întregii firme** — nu există în cod o acțiune dedicată radierii angajatorului din registru la lichidare. Practic, contabilul folosește mecanismul existent de încetare a contractelor, pentru fiecare salariat în parte, iar radierea firmei din Registrul Comerțului rămâne un pas separat, în afara aplicației.
 
 [iConta.eu](/)

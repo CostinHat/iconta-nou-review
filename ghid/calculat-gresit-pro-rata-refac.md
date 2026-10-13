@@ -2,7 +2,7 @@
 title: "Am calculat greșit pro-rata: cum o refac"
 description: "Cum se recalculează corect pro-rata de TVA pentru un an fiscal, dacă a fost aplicată greșit pro-rata provizorie sau cea definitivă."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Refacerea corectă a calculului urmează pașii din articol:
 
 ## Ce face iConta.eu
 
-iConta.eu permite introducerea manuală a pro-ratei (`pro_rata`) în profilul fiscal al firmei, valoare care e apoi folosită la generarea D300: dacă e sub 100%, aplicația calculează automat ajustarea corespunzătoare pe rândul de regularizare al deconturilor. La data acestui ghid, iConta.eu **nu calculează automat pro-rata definitivă** din operațiunile firmei (numărător/numitor conform art. 300 alin. (6)) — procentul rămâne o valoare pe care contabilul o determină și o introduce, pe răspunderea lui, conform metodologiei din articol; aplicația doar aplică procentul introdus la generarea declarației.
+iConta.eu permite introducerea manuală a pro-ratei („pro-rata (Date firmă)”) în profilul fiscal al firmei, valoare care e apoi folosită la generarea D300: dacă e sub 100%, aplicația calculează automat ajustarea corespunzătoare pe rândul de regularizare al deconturilor. La data acestui ghid, iConta.eu **nu calculează automat pro-rata definitivă** din operațiunile firmei (numărător/numitor conform art. 300 alin. (6)) — procentul rămâne o valoare pe care contabilul o determină și o introduce, pe răspunderea lui, conform metodologiei din articol; aplicația doar aplică procentul introdus la generarea declarației.
 
 [iConta.eu](/)

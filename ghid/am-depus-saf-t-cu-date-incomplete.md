@@ -2,7 +2,7 @@
 title: Am depus SAF-T cu date incomplete — ce fac?
 description: Se depune o declarație rectificativă cu fișierul SAF-T corectat integral — D406 nu permite corecții parțiale, prin transmiterea selectivă a doar a înregistrărilor sau câmpurilor greșite.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -23,7 +23,7 @@ fişierul SAF-T corectat.
 12. Nu este admisă transmiterea unor corecţii parţiale prin transmiterea selectivă a
 înregistrărilor sau câmpurilor corectate pentru Declaraţia informativă D406 anterior
 transmisă şi pentru care au fost primite recipise ce semnalau erori."
-(opanaf_1783_2021_saft_d406.txt, Anexa 4, pct. 6, 11, 12)
+(OPANAF 1783/2021 (SAF-T, D406), Anexa 4, pct. 6, 11, 12)
 :::
 
 ## Regula: retransmitere integrală, nu corecție parțială
@@ -45,6 +45,6 @@ Această regulă are o implicație practică importantă pentru automatizare: mo
 
 ## Ce face iConta.eu
 
-Fluxul de generare al aplicației (`pull → construieste → valideaza → build_xml`) produce de fiecare dată fișierul SAF-T complet pentru perioada aleasă, pe baza datelor curente din contabilitate — ceea ce se potrivește exact cu cerința legală de retransmitere integrală: după corectarea datei greșite (ex. cod de partener, cont, linie de factură) direct în contabilitate, contabilul rulează din nou generarea pentru aceeași perioadă și obține fișierul complet, corectat, pregătit pentru retransmitere ca declarație rectificativă. Ca la orice generare, pasul de validare finală rămâne, în continuare, validatorul oficial ANAF (DUKIntegrator), care trebuie rulat din nou pe fișierul rectificat înainte de depunere — validarea structurală internă a aplicației nu îl înlocuiește.
+Fluxul de generare al aplicației (preluarea datelor → construirea declarației → validarea → generarea XML-ului declarației (Declarații)) produce de fiecare dată fișierul SAF-T complet pentru perioada aleasă, pe baza datelor curente din contabilitate — ceea ce se potrivește exact cu cerința legală de retransmitere integrală: după corectarea datei greșite (ex. cod de partener, cont, linie de factură) direct în contabilitate, contabilul rulează din nou generarea pentru aceeași perioadă și obține fișierul complet, corectat, pregătit pentru retransmitere ca declarație rectificativă. Ca la orice generare, pasul de validare finală rămâne, în continuare, validatorul oficial ANAF (DUKIntegrator), care trebuie rulat din nou pe fișierul rectificat înainte de depunere — validarea structurală internă a aplicației nu îl înlocuiește.
 
 [iConta.eu](/)

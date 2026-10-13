@@ -2,7 +2,7 @@
 title: "Poate ANAF recalcula TVA pentru perioade deja controlate?"
 description: "Când poate ANAF să reia o perioadă deja inspectată — condițiile cumulative ale reverificării — și cât timp rămâne expus contribuabilul, conform Codului de procedură fiscală."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ b) datele suplimentare influențează rezultatele inspecției fiscale încheiate
 
 ## Ce face iConta.eu
 
-Subiectul acestui ghid este pur procedural-legal, guvernat de Codul de procedură fiscală, și nu are legătură cu **F118 — Blocare perioade**, mecanismul intern al aplicației care protejează integritatea evidenței contabile a firmei (blochează scrierea de note noi într-o lună închisă, per tenant). Verificat direct în cod: motorul SAF-T și modulul de control fiscal nu verifică deloc tabela `perioade_blocate`, iar reverificarea fiscală de care vorbește art. 128 e o procedură desfășurată exclusiv de ANAF, asupra propriei sale decizii de impunere anterioare — nu ceva ce o aplicație de contabilitate ar putea automatiza sau preveni. Ceea ce oferă iConta.eu în zona adiacentă este blocarea perioadelor contabile proprii ale firmei (F118) și, separat, controlul încrucișat intern D300 vs. evidența contabilă, util pentru a reduce riscul ca ANAF să găsească motive de reverificare — dar niciuna dintre aceste funcționalități nu „răspunde" pentru firmă la o reverificare deja declanșată de organul fiscal.
+Subiectul acestui ghid este pur procedural-legal, guvernat de Codul de procedură fiscală, și nu are legătură cu **„Blocare perioade” — Blocare perioade**, mecanismul intern al aplicației care protejează integritatea evidenței contabile a firmei (blochează scrierea de note noi într-o lună închisă, per tenant). Verificat direct în cod: motorul SAF-T și modulul de control fiscal nu verifică deloc tabela „perioadele închise”, iar reverificarea fiscală de care vorbește art. 128 e o procedură desfășurată exclusiv de ANAF, asupra propriei sale decizii de impunere anterioare — nu ceva ce o aplicație de contabilitate ar putea automatiza sau preveni. Ceea ce oferă iConta.eu în zona adiacentă este blocarea perioadelor contabile proprii ale firmei („Blocare perioade”) și, separat, controlul încrucișat intern D300 vs. evidența contabilă, util pentru a reduce riscul ca ANAF să găsească motive de reverificare — dar niciuna dintre aceste funcționalități nu „răspunde" pentru firmă la o reverificare deja declanșată de organul fiscal.
 
 [iConta.eu](/)

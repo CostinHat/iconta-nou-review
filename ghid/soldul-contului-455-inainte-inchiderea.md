@@ -2,7 +2,7 @@
 title: "Ce fac cu soldul contului 455 înainte de închiderea firmei?"
 description: "Soldul contului 455 (împrumut de la asociat) trebuie stins înainte de radiere; lichidarea propriu-zisă e o funcționalitate separată, care mai adaugă și decontarea capitalului și rezervelor."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,6 +24,6 @@ Greșeala tipică e tratarea soldului de pe 455 ca parte a partajului de lichida
 
 ## Ce face iConta.eu
 
-Soldul contului 455/4551 provine din notele de împrumut generate de funcționalitatea de decontări cu asociații (F039); stingerea lui, înainte de radiere, se face prin nota de restituire a aceleiași funcționalități (4551=5121, plus dobânda și impozitul reținut, dacă e cazul). Lichidarea și radierea firmei sunt acoperite de o funcționalitate separată, care are propria logică de partaj a capitalului social și a rezervelor/profiturilor (1012=456 pentru capital, 106x/1171=456 pentru rezerve/profit, cu impozit 456=446 la cota de dividend valabilă și plată netă 456=5121) — funcționalitate distinctă de F039, deși folosește conturi apropiate.
+Soldul contului 455/4551 provine din notele de împrumut generate de funcționalitatea de decontări cu asociații („Decontări asociați”); stingerea lui, înainte de radiere, se face prin nota de restituire a aceleiași funcționalități (4551=5121, plus dobânda și impozitul reținut, dacă e cazul). Lichidarea și radierea firmei sunt acoperite de o funcționalitate separată, care are propria logică de partaj a capitalului social și a rezervelor/profiturilor (1012=456 pentru capital, 106x/1171=456 pentru rezerve/profit, cu impozit 456=446 la cota de dividend valabilă și plată netă 456=5121) — funcționalitate distinctă de „Decontări asociați”, deși folosește conturi apropiate.
 
 [iConta.eu](/)

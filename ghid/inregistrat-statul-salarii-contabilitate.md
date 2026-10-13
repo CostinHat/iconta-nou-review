@@ -2,7 +2,7 @@
 title: Ce fac dacă nu am înregistrat statul de salarii în contabilitate?
 description: Dacă D112 declară sume pe impozit, CAS, CASS sau CAM iar conturile 444/4315/4316/436 sunt la zero și nu există nicio notă (nici în ciornă), statul de salarii lipsește pur și simplu din evidență — remediul e contabilizarea lui, nu o ajustare a contului.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,6 +28,6 @@ Greșeala tipică e depunerea la timp a D112 (pentru a evita penalitățile de d
 
 ## Ce face iConta.eu
 
-Funcția `compara_d112` tratează explicit cazul "cont 0, D112 pozitiv, fără notă" ca roșu cu remediu executabil ("Contabilizează statul de plată"), separat de cazul cu notă în ciornă (remediu "Validează nota") și de orice altă divergență (remediu investigație). Comparația citește rulajele contabile doar din notele cu statut validat — o notă în ciornă nu contează ca evidență, exact ca să nu se raporteze fals că statul a fost înregistrat.
+Funcția „comparația D112 (Control fiscal)” tratează explicit cazul "cont 0, D112 pozitiv, fără notă" ca roșu cu remediu executabil ("Contabilizează statul de plată"), separat de cazul cu notă în ciornă (remediu "Validează nota") și de orice altă divergență (remediu investigație). Comparația citește rulajele contabile doar din notele cu statut validat — o notă în ciornă nu contează ca evidență, exact ca să nu se raporteze fals că statul a fost înregistrat.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum se aplică plafonul de 12 salarii minime la contribuții?
 description: CAS devine obligatorie doar dacă venitul net anual din activități independente atinge 12 salarii minime brute pe țară, cu bază de calcul în trepte — 12 salarii minime între 12 și 24 de salarii, respectiv 24 de salarii minime peste acest nivel.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -43,6 +43,6 @@ Un PFA cu venit net de 70.000 lei în 2025 se încadrează în treapta 12–24 s
 
 ## Ce face iConta.eu
 
-Aplicația, funcția `calculeaza_cas`, implementează exact această structură pe trepte: sub 12 salarii minime, CAS e opțională (dacă se bifează opțiunea, baza devine 12 salarii minime); între 12 și 24 de salarii minime, baza e fixă la 12 salarii minime; peste 24 de salarii minime, baza e plafonată la 24 de salarii minime. Cota aplicată e 25%, conform art. 138 lit. a). Acest comportament e confirmat de dosarul de temei legal ca fiind conform art. 148 — spre deosebire de CASS, aici nu există nicio discrepanță identificată între cod și lege. Un singur aspect nu e modelat automat: dacă venitul PFA se cumulează cu alte surse de venit independent la același plafon (art. 148 alin. (3)), verificarea cumulului rămâne responsabilitatea contabilului.
+Aplicația, funcția „calculul CAS (Declarații)”, implementează exact această structură pe trepte: sub 12 salarii minime, CAS e opțională (dacă se bifează opțiunea, baza devine 12 salarii minime); între 12 și 24 de salarii minime, baza e fixă la 12 salarii minime; peste 24 de salarii minime, baza e plafonată la 24 de salarii minime. Cota aplicată e 25%, conform art. 138 lit. a). Acest comportament e confirmat de dosarul de temei legal ca fiind conform art. 148 — spre deosebire de CASS, aici nu există nicio discrepanță identificată între cod și lege. Un singur aspect nu e modelat automat: dacă venitul PFA se cumulează cu alte surse de venit independent la același plafon (art. 148 alin. (3)), verificarea cumulului rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

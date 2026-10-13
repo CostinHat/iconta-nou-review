@@ -2,7 +2,7 @@
 title: "Cum se aplică plafonul de 5.000 lei la încasările în numerar"
 description: "Mecanismul plafonului zilnic de 5.000 lei pentru încasările în numerar de la o firmă, pe zi și pe partener, conform Legii 70/2015."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Formula de calcul, în trei pași:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația implementează exact acest mecanism în funcția `verifica_plafon()`: operațiunile sunt grupate pe zi și pe partener (`defaultdict` cheiat pe partener), sumele se cumulează pentru fiecare persoană juridică în parte, iar depășirea constantei `PLAFON_INCASARE_PJ = Decimal("5000")` generează un avertisment (`PLAFON_INCASARE_PJ`) cu suma găsită și plafonul aplicabil. Verificarea acoperă cumulul zilnic pe partener descris de art. 3 alin. (1) lit. a); interdicția separată de fragmentare pe o singură factură mare (art. 3 alin. (2)) nu e verificată distinct de aplicație.
+La data acestui ghid, aplicația implementează exact acest mecanism în funcția „verificarea plafonului de numerar (Casă)”: operațiunile sunt grupate pe zi și pe partener (`defaultdict` cheiat pe partener), sumele se cumulează pentru fiecare persoană juridică în parte, iar depășirea constantei plafonul de încasare de la persoane juridice = 5000 generează un avertisment („plafonul de încasare de la persoane juridice”) cu suma găsită și plafonul aplicabil. Verificarea acoperă cumulul zilnic pe partener descris de art. 3 alin. (1) lit. a); interdicția separată de fragmentare pe o singură factură mare (art. 3 alin. (2)) nu e verificată distinct de aplicație.
 
 [iConta.eu](/)

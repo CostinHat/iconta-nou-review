@@ -2,7 +2,7 @@
 title: "Casierie la întreprinderea familială 2026: se aplică"
 description: "Confirmarea că plafoanele legale de încasări și plăți în numerar se aplică și întreprinderilor familiale, nu doar SRL-urilor și PFA-urilor."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Da — întreprinderea familială intră explicit sub incidența legii care limi
 
 ## Ce face iConta.eu
 
-Din verificarea codului, iConta.eu are în modulul de casierie (`casa.py`/`casa_api.py`) o funcție de **verificare automată a plafonului legal de numerar** pentru operațiunile înregistrate în registrul de casă, iar aceasta se aplică indiferent de tipul de firmă. Trebuie spus onest, însă, că modelul intern al aplicației distinge firmele doar pe două tipuri, „srl" și „pfa" (care decid regimul contabil — partidă dublă, respectiv partidă simplă) — nu există un tip distinct „întreprindere familială" în aplicație. O întreprindere familială, care ține contabilitate în partidă simplă la fel ca un PFA, ar fi operată în iConta.eu sub regimul de partidă simplă; verificarea plafonului de casă din Legea 70/2015 se aplică în continuare, dar denumirea exactă a formei juridice nu este reflectată ca atare în profilul firmei.
+Din verificarea codului, iConta.eu are în modulul de casierie (aplicația/aplicația) o funcție de **verificare automată a plafonului legal de numerar** pentru operațiunile înregistrate în registrul de casă, iar aceasta se aplică indiferent de tipul de firmă. Trebuie spus onest, însă, că modelul intern al aplicației distinge firmele doar pe două tipuri, „srl" și „pfa" (care decid regimul contabil — partidă dublă, respectiv partidă simplă) — nu există un tip distinct „întreprindere familială" în aplicație. O întreprindere familială, care ține contabilitate în partidă simplă la fel ca un PFA, ar fi operată în iConta.eu sub regimul de partidă simplă; verificarea plafonului de casă din Legea 70/2015 se aplică în continuare, dar denumirea exactă a formei juridice nu este reflectată ca atare în profilul firmei.
 
 [iConta.eu](/)

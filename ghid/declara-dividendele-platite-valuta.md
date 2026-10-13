@@ -2,7 +2,7 @@
 title: "Cum se declară dividendele plătite în valută?"
 description: "Cursul de schimb BNR aplicabil la calculul impozitului pe dividende atunci când plata efectivă se face în valută, conform reglementărilor contabile."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Din regula generală de conversie rezultă tratamentul pentru dividendele plăti
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează impozitul pe dividende ponderat pe fiecare tranșă de plată, potrivit distribuirilor înregistrate (funcția `impozit_ponderat`), care potrivește FIFO plățile pe distribuirile deschise și aplică cota de impozit valabilă la data fiecărei plăți. Pentru conversia sumelor plătite în valută, aplicația se bazează pe cursurile BNR gestionate în aplicație. Introducerea corectă a monedei de plată și verificarea faptului că suma din extrasul bancar corespunde cursului BNR din ziua plății rămân, însă, o verificare manuală a contabilului la momentul înregistrării plății.
+La data acestui ghid, iConta.eu calculează impozitul pe dividende ponderat pe fiecare tranșă de plată, potrivit distribuirilor înregistrate (funcția „impozitul pe tranșe de plată”), care potrivește FIFO plățile pe distribuirile deschise și aplică cota de impozit valabilă la data fiecărei plăți. Pentru conversia sumelor plătite în valută, aplicația se bazează pe cursurile BNR gestionate în aplicație. Introducerea corectă a monedei de plată și verificarea faptului că suma din extrasul bancar corespunde cursului BNR din ziua plății rămân, însă, o verificare manuală a contabilului la momentul înregistrării plății.
 
 [iConta.eu](/)

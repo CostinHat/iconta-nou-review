@@ -2,7 +2,7 @@
 title: "Documentarea duratei de viață utilă a mijlocului fix"
 description: "Cum se stabilește și se documentează durata normală de funcționare a unui mijloc fix, conform Catalogului mijloacelor fixe (HG 2139/2004)."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Documentarea corectă presupune parcurgerea explicită a pașilor din catalog:
 
 ## Ce face iConta.eu
 
-Am verificat în aplicație: aplicația **preia durata normală de funcționare (`dnf_luni`) ca dată introdusă de contabil**, la import sau manual, fără să o verifice față de intervalele minim-maxim din Catalogul mijloacelor fixe (HG 2139/2004) și fără să solicite sau să genereze vreun document justificativ (proces-verbal de comisie tehnică, de exemplu). Corectitudinea încadrării în catalog rămâne, la acest moment, o verificare manuală a contabilului.
+Am verificat în aplicație: aplicația **preia durata normală de funcționare („durata normală de funcționare (Mijloace fixe)”) ca dată introdusă de contabil**, la import sau manual, fără să o verifice față de intervalele minim-maxim din Catalogul mijloacelor fixe (HG 2139/2004) și fără să solicite sau să genereze vreun document justificativ (proces-verbal de comisie tehnică, de exemplu). Corectitudinea încadrării în catalog rămâne, la acest moment, o verificare manuală a contabilului.
 
 [iConta.eu](/)

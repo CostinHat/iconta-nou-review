@@ -2,7 +2,7 @@
 title: "Cum se înregistrează un mijloc fix cumpărat prin leasing operațional?"
 description: "La leasingul operațional, locatarul nu cumpără și nu înregistrează niciun mijloc fix — bunul rămâne la locator; firma utilizatoare înregistrează doar chiria."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Pentru leasing operațional, funcția `nota_rata_operational` din F056 (Leasing financiar și operațional) înregistrează doar chiria: contul de cheltuială (implicit 612) = 401, plus TVA pe 4426 — niciodată un cont de imobilizare. Dacă întrebarea reală e „cum înregistrez rata de leasing operațional", răspunsul e chiar acest ecran; dacă e chiar despre cumpărarea unui mijloc fix, subiectul aparține de fapt leasingului financiar (F056, tipul „Primire bun") sau unei achiziții directe, nu leasingului operațional. Notă: la data acestui ghid, ecranul „Leasing" nu colectează câmpul de cotă TVA pentru tipul „Chirie leasing operațional", deci trimiterea acestei note eșuează azi din interfață cu eroare de validare.
+Pentru leasing operațional, funcția „nota ratei de leasing operațional (Operațiuni speciale)” din „Leasing financiar și operațional” înregistrează doar chiria: contul de cheltuială (implicit 612) = 401, plus TVA pe 4426 — niciodată un cont de imobilizare. Dacă întrebarea reală e „cum înregistrez rata de leasing operațional", răspunsul e chiar acest ecran; dacă e chiar despre cumpărarea unui mijloc fix, subiectul aparține de fapt leasingului financiar („Leasing financiar și operațional”, tipul „Primire bun") sau unei achiziții directe, nu leasingului operațional. Notă: la data acestui ghid, ecranul „Leasing" nu colectează câmpul de cotă TVA pentru tipul „Chirie leasing operațional", deci trimiterea acestei note eșuează azi din interfață cu eroare de validare.
 
 [iConta.eu](/)

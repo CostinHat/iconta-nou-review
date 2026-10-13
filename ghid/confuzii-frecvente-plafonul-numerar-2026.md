@@ -2,7 +2,7 @@
 title: "Confuzii frecvente despre plafonul de numerar 2026"
 description: "Cele patru plafoane distincte din Legea 70/2015 pentru operațiunile în numerar — și greșelile tipice de a le trata ca pe unul singur."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Plafoanele care se confundă cel mai des:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **verifică automat** toate aceste plafoane: Aplicația, funcția `verifica_plafon`, calculează pe zi soldul casei, încasările și plățile agregate pe fiecare partener persoană juridică (cu regim separat pentru cash and carry), operațiunile cu persoane fizice și avansurile spre decontare, semnalând fiecare depășire ca avertisment (risc la control, nu blocaj al operațiunii). Verificarea acoperă și distincția dintre plafonul standard și cel majorat pentru cash and carry, urmărite separat.
+La data acestui ghid, iConta.eu **verifică automat** toate aceste plafoane: Aplicația, funcția „verificarea plafonului de numerar (Casă)”, calculează pe zi soldul casei, încasările și plățile agregate pe fiecare partener persoană juridică (cu regim separat pentru cash and carry), operațiunile cu persoane fizice și avansurile spre decontare, semnalând fiecare depășire ca avertisment (risc la control, nu blocaj al operațiunii). Verificarea acoperă și distincția dintre plafonul standard și cel majorat pentru cash and carry, urmărite separat.
 
 [iConta.eu](/)

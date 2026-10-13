@@ -2,7 +2,7 @@
 title: Cum se scade sponsorizarea din impozitul micro?
 description: Facilitatea a existat între 01.04.2019 și 31.12.2023, cu un plafon de 20% din impozitul micro datorat pe trimestrul respectiv; a fost abrogată prin OUG 115/2023 și nu se mai aplică începând cu 01.01.2024, deci în 2026 microîntreprinderile nu mai pot deduce sponsorizări din impozitul pe venit.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -45,6 +45,6 @@ Cât timp a fost activă, regula funcționa astfel: plafonul era **20% din impoz
 
 ## Ce face iConta.eu
 
-În aplicația, funcția `credit_sponsorizare(..., tip_impozit="micro", ..., la_data=None)` este activă **doar pentru `la_data` în intervalul 01.04.2019 – 31.12.2023**; în afara acestui interval, motorul returnează credit 0, cu o notă explicită de inaplicabilitate — deci pentru orice calcul făcut azi, în 2026, aplicația respinge corect deducerea. În interval, plafonul se calculează ca `plafon_m = 20% × impozit_profit`, unde parametrul `impozit_profit` este folosit, pentru ramura micro, ca fiind **impozitul micro datorat pe trimestrul respectiv** — atenție la această denumire, pentru a nu introduce din greșeală un impozit anual sau un impozit pe profit.
+În aplicația, funcția „creditul fiscal pentru sponsorizări (Operațiuni speciale)” este activă **doar pentru „data” în intervalul 01.04.2019 – 31.12.2023**; în afara acestui interval, motorul returnează credit 0, cu o notă explicită de inaplicabilitate — deci pentru orice calcul făcut azi, în 2026, aplicația respinge corect deducerea. În interval, plafonul se calculează ca plafonul = 20% × impozitul pe profit, unde parametrul „impozitul pe profit” este folosit, pentru ramura micro, ca fiind **impozitul micro datorat pe trimestrul respectiv** — atenție la această denumire, pentru a nu introduce din greșeală un impozit anual sau un impozit pe profit.
 
 [iConta.eu](/)

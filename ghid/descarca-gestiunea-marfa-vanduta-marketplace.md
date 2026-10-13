@@ -2,7 +2,7 @@
 title: "Cum se descarcă gestiunea pentru marfa vândută prin marketplace?"
 description: "Momentul la care marfa vândută printr-un marketplace trebuie scoasă din gestiune — data transferului riscurilor și beneficiilor, nu data facturii sau a decontului primit de la platformă."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Aplicat la o vânzare prin marketplace:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu descarcă gestiunea pe baza facturilor emise, folosind coeficientul de repartizare a diferențelor de preț pentru metoda global-valorică (funcția `descarcare_gv`). Pentru magazinele conectate prin WooCommerce, comenzile importate automat generează facturi pe baza cărora se face descărcarea de gestiune — dar pentru vânzările prin alte marketplace-uri (Amazon, eMAG și altele, fără conector dedicat), introducerea comenzii și, implicit, momentul descărcării de gestiune depind de data la care utilizatorul introduce manual factura, nu de data reală a livrării confirmate de platformă.
+La data acestui ghid, iConta.eu descarcă gestiunea pe baza facturilor emise, folosind coeficientul de repartizare a diferențelor de preț pentru metoda global-valorică (funcția „descărcarea global-valorică (Stocuri)”). Pentru magazinele conectate prin WooCommerce, comenzile importate automat generează facturi pe baza cărora se face descărcarea de gestiune — dar pentru vânzările prin alte marketplace-uri (Amazon, eMAG și altele, fără conector dedicat), introducerea comenzii și, implicit, momentul descărcării de gestiune depind de data la care utilizatorul introduce manual factura, nu de data reală a livrării confirmate de platformă.
 
 [iConta.eu](/)

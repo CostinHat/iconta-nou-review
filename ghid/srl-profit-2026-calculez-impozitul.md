@@ -2,7 +2,7 @@
 title: "SRL pe profit 2026: cum calculez impozitul de 16%"
 description: "Formula legală de calcul a impozitului pe profit — rezultatul fiscal, nu profitul contabil — și cota unică de 16% aplicabilă în 2026."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -40,6 +40,6 @@ Important: acest calcul e complet diferit de impozitul pe veniturile microîntre
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează impozitul pe profit prin aplicație, funcția `calcul_d101()`, reconstruită după formularul oficial D101 (OPANAF 206/2025, structura D101_A600 v10). Aplicația preia intrările contabile (P1, P2, P4, P5 — corespunzătoare rândurilor oficiale ale formularului) și calculează automat câmpurile derivate, inclusiv impozitul minim pe cifra de afaceri, atunci când e cazul (`impozit_minim_cifra_afaceri()`). Cota de 16% și structura de calcul urmează direct formularul oficial ANAF, nu o formulă simplificată proprie.
+La data acestui ghid, iConta.eu calculează impozitul pe profit prin aplicație, funcția „calculul D101 (Declarații)”, reconstruită după formularul oficial D101 (OPANAF 206/2025, structura D101_A600 v10). Aplicația preia intrările contabile (P1, P2, P4, P5 — corespunzătoare rândurilor oficiale ale formularului) și calculează automat câmpurile derivate, inclusiv impozitul minim pe cifra de afaceri, atunci când e cazul („impozitul minim pe cifra de afaceri”). Cota de 16% și structura de calcul urmează direct formularul oficial ANAF, nu o formulă simplificată proprie.
 
 [iConta.eu](/)

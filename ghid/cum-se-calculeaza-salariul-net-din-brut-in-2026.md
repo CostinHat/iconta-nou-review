@@ -2,7 +2,7 @@
 title: Cum se calculează salariul net din brut în 2026?
 description: Din brut se scad CAS 25%, CASS 10% și impozit 10% (aplicat pe baza rămasă după deducerea personală), eventual reduse de facilitatea de 200/300 lei pentru salariul minim, în timp ce CAM 2,25% este suportată separat de angajator.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -52,6 +52,6 @@ Un salariat cu normă întreagă, plătit exact la nivelul salariului minim (4.3
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`calcul_salariu()`) parcurge exact acești pași, în această ordine: determină salariul minim al lunii (cu regula valorii celei mai mici, dacă e cazul), scade facilitatea eligibilă din baza de contribuție, calculează CAS și CASS pe baza redusă, calculează deducerea personală pe brutul impozabil total, obține baza impozabilă (readusă la 0 dacă rezultă negativă), calculează impozitul, apoi netul ca brut minus CAS, CASS, CASS pe tichetele de masă în exces și impozit — fără să scadă facilitatea din net. CAM se calculează separat, pe brutul total impozabil, ca sarcină exclusivă a angajatorului. Dacă baza de contribuție e sub pragul minim proporțional cu perioada activă a contractului, se calculează separat suprataxarea suportată de angajator. Toate cotele și pragurile sunt citite dintr-un registru intern versionat pe date, astfel încât un calcul pentru o lună trecută folosește automat regulile valabile atunci.
+Motorul de calcul („calculul salariului (Salarii)”) parcurge exact acești pași, în această ordine: determină salariul minim al lunii (cu regula valorii celei mai mici, dacă e cazul), scade facilitatea eligibilă din baza de contribuție, calculează CAS și CASS pe baza redusă, calculează deducerea personală pe brutul impozabil total, obține baza impozabilă (readusă la 0 dacă rezultă negativă), calculează impozitul, apoi netul ca brut minus CAS, CASS, CASS pe tichetele de masă în exces și impozit — fără să scadă facilitatea din net. CAM se calculează separat, pe brutul total impozabil, ca sarcină exclusivă a angajatorului. Dacă baza de contribuție e sub pragul minim proporțional cu perioada activă a contractului, se calculează separat suprataxarea suportată de angajator. Toate cotele și pragurile sunt citite dintr-un registru intern versionat pe date, astfel încât un calcul pentru o lună trecută folosește automat regulile valabile atunci.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se înregistrează factura Meta Ads?"
 description: "Factura de publicitate Meta Ads e operațiune intracomunitară doar dacă e emisă cu un cod de TVA UE valid, verificat în VIES."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Factura de publicitate online (Meta Ads sau orice alt furnizor similar) intră s
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L17303-17420)
+CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Dacă furnizorul de publicitate facturează cu un cod de TVA valid, verificabil în VIES, într-un stat membru UE, achiziția e un serviciu B2B intracomunitar: firma din România datorează TVA prin taxare inversă și declară operațiunea în D390 (cod S). Dacă factura vine cu TVA local sau de la o entitate fără cod de TVA UE (de exemplu o entitate din afara Uniunii Europene), acest mecanism nu se aplică — tratamentul TVA e altul, neacoperit de acest ghid.
@@ -28,7 +28,7 @@ Recomandarea practică: verifică efectiv codul de TVA afișat pe factura primit
 
 ## Ce face iConta.eu
 
-Verifică pe factura primită codul de TVA al emitentului. Dacă are prefix de stat membru UE, folosește formularul de achiziție intracomunitară (`achizitie_ic`), tip „servicii”, din categoria „Extern”: data, valoarea în RON, codul de TVA al furnizorului, numărul facturii și cota de TVA aplicabilă (declarată explicit, fără valoare implicită fixă în motor).
+Verifică pe factura primită codul de TVA al emitentului. Dacă are prefix de stat membru UE, folosește formularul de achiziție intracomunitară („achiziție intracomunitară (Operațiuni)”), tip „servicii”, din categoria „Extern”: data, valoarea în RON, codul de TVA al furnizorului, numărul facturii și cota de TVA aplicabilă (declarată explicit, fără valoare implicită fixă în motor).
 
 Aplicația calculează TVA prin taxare inversă (4426 = 4427) și clasifică automat operațiunea pentru D390, cod S. Dacă factura vine de la o entitate fără cod de TVA UE valid, operațiunea nu intră prin acest formular.
 

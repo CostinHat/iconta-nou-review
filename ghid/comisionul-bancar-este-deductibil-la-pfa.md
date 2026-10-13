@@ -2,7 +2,7 @@
 title: Comisionul bancar este deductibil la PFA?
 description: Da — comisioanele și alte servicii bancare sunt cheltuieli deductibile expres numite prin normele metodologice ale Codului fiscal, cu condiția să fie justificate prin documente și legate de activitatea PFA-ului.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -23,7 +23,7 @@ Codul fiscal, art. 68 alin. (4): condiții generale de deductibilitate — "a) s
 Spre deosebire de comisioanele reținute de procesatori de plăți nebancari, comisionul bancar are un temei numit explicit: litera f) de la pct. 7 alin. (5) din normele metodologice îl citează textual ca "cheltuieli cu comisioanele și cu alte servicii bancare". Condiția rămâne, ca la orice cheltuială, ca sumele să fie legate de contul/activitatea PFA-ului și justificate prin documentul bancar (extras de cont, notă de taxare).
 
 ::: ghid-exemplu
-Un PFA plătește lunar 15 lei comision de mentenanță cont curent și, ocazional, comision de transfer intern de 5 lei. Ambele sume se înregistrează ca plăți, categoria "cheltuiala_deductibila", cu explicația "comision bancar" și documentul justificativ extrasul de cont pe luna respectivă.
+Un PFA plătește lunar 15 lei comision de mentenanță cont curent și, ocazional, comision de transfer intern de 5 lei. Ambele sume se înregistrează ca plăți, categoria "cheltuială deductibilă", cu explicația "comision bancar" și documentul justificativ extrasul de cont pe luna respectivă.
 :::
 
 ## Ce se greșește în practică
@@ -35,6 +35,6 @@ Un PFA plătește lunar 15 lei comision de mentenanță cont curent și, ocazion
 
 ## Ce face iConta.eu
 
-Comisionul bancar se înregistrează ca operațiune de plată, în categoria `cheltuiala_deductibila` din `CATEGORII_PLATA = {"cheltuiala_deductibila", "cheltuiala_limitata", "cheltuiala_nedeductibila", "aport_retragere", "rambursare_credit"}`. Validarea (`_valideaza`) cere deductibilitate explicită pentru orice plată de tip `cheltuiala*`. Mai mult, funcția `import_banca` generează automat ciorne din extrasul bancar (`extras_linii`), cu categorie și deductibilitate propuse implicit ca "cheltuiala_deductibila"/"integral" — propunere pe care contabilul o confirmă sau o corectează înainte de validare, așa cum cere explicit comentariul din cod.
+Comisionul bancar se înregistrează ca operațiune de plată, în categoria „cheltuială deductibilă” din categoriile de plăți = {"cheltuială deductibilă", "cheltuială cu deductibilitate limitată", "cheltuială nedeductibilă", "aport sau retragere", "rambursare de credit"}. Validarea („validarea”) cere deductibilitate explicită pentru orice plată de tip `cheltuiala*`. Mai mult, funcția „importul extrasului bancar (Bancă)” generează automat ciorne din extrasul bancar („liniile extrasului bancar”), cu categorie și deductibilitate propuse implicit ca "cheltuială deductibilă"/"integral" — propunere pe care contabilul o confirmă sau o corectează înainte de validare, așa cum cere explicit comentariul din cod.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "SAF-T pentru stocuri: cum se reflectă în D406"
 description: "Secțiunea Stocuri e un fragment separat, generat distinct pentru fiecare perioadă solicitată de ANAF — nu o parte automată a fișierului lunar SAF-T principal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,7 +27,7 @@ Consecința tehnică a acestui text: fișierul de Stocuri nu e „o secțiune î
 
 ## Ce face iConta.eu
 
-Structura tehnică confirmă exact acest tipar: în iConta.eu, fragmentul Stocuri se generează printr-un endpoint separat de cel al declarației D406 lunare principale, cu un interval de date (`data_start`/`data_end`) introdus explicit — nu e legat automat de ciclul lunar de generare a SAF-T-ului obișnuit. Fragmentul citește mișcările de stoc din gestiunea cantitativ-valorică și calculează soldul de deschidere și de închidere pentru fiecare articol cu mișcări în interval.
+Structura tehnică confirmă exact acest tipar: în iConta.eu, fragmentul Stocuri se generează printr-un endpoint separat de cel al declarației D406 lunare principale, cu un interval de date („data de început”/„data de sfârșit”) introdus explicit — nu e legat automat de ciclul lunar de generare a SAF-T-ului obișnuit. Fragmentul citește mișcările de stoc din gestiunea cantitativ-valorică și calculează soldul de deschidere și de închidere pentru fiecare articol cu mișcări în interval.
 
 Trei limite de spus onest: (1) la data acestui ghid, generarea acestui fragment nu are ecran dedicat în interfață — se apelează direct, tehnic, nu dintr-un buton vizibil contabilului; (2) fragmentul acoperă exclusiv firmele care țin gestiune **cantitativ-valorică** — pentru o firmă care ține gestiune global-valorică (metoda prețului de vânzare cu amănuntul), mișcările de stoc nu sunt înregistrate în sursa de date citită de acest fragment, deci cererea nu găsește niciun articol cu mișcări în perioadă; (3) aplicația nu generează automat câte o declarație separată pentru fiecare lună/trimestru dintr-un interval mai lung — fiecare apel produce un singur fragment, pentru intervalul exact dat, iar împărțirea pe perioade calendaristice separate, dacă ANAF o cere așa, rămâne în sarcina contabilului.
 

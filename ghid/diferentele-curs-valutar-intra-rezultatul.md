@@ -2,7 +2,7 @@
 title: "Diferențele de curs valutar intră în rezultatul fiscal?"
 description: "Da, ca regulă generală — veniturile și cheltuielile din diferențe de curs urmează calculul standard al rezultatului fiscal, fără o excludere dedicată."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Da. La impozitul pe profit, rezultatul fiscal pornește de la ce ai înregistrat
 
 ## Ce face iConta.eu
 
-Aplicația calculează și contabilizează diferențele de curs (665/765), dar aplicația **nu calculează rezultatul fiscal** și nu aplică art. 19-40^2 asupra acestor sume — modulul e, cum spune el însuși, un „motor pur", fără nicio legătură de cod cu declarația de impozit pe profit. Sumele generate automat de F041 alimentează balanța de verificare, de unde contabilul le preia manual în calculul rezultatului fiscal.
+Aplicația calculează și contabilizează diferențele de curs (665/765), dar aplicația **nu calculează rezultatul fiscal** și nu aplică art. 19-40^2 asupra acestor sume — modulul e, cum spune el însuși, un „motor pur", fără nicio legătură de cod cu declarația de impozit pe profit. Sumele generate automat de „Diferențe de curs valutar” alimentează balanța de verificare, de unde contabilul le preia manual în calculul rezultatului fiscal.
 
 [iConta.eu](/)

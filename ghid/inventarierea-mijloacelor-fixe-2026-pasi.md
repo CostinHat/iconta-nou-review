@@ -2,7 +2,7 @@
 title: "Inventarierea mijloacelor fixe 2026: pași obligatorii"
 description: "Etapele obligatorii ale inventarierii anuale a mijloacelor fixe, de la decizia de numire a comisiei până la înregistrarea rezultatelor, și cum sprijină iConta.eu ultima etapă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,7 +38,7 @@ Pașii obligatorii, conform OMFP 2861/2009, Anexa 1:
 
 În iConta.eu, etapa finală — înregistrarea contabilă a rezultatelor — se face din ecranul "Inventariere anuală" (categoria "Imobilizări și capital"), cu operațiile Plus mijloc fix, Minus și Casare:
 
-- Pentru un mijloc fix găsit **în plus**, aplicația cere obligatoriu durata normală de funcționare (`dnf_luni`) și data punerii în funcțiune, refuzând metoda de amortizare care nu e permisă pentru categoria activului respectivă; mijlocul fix e apoi introdus efectiv în registrul de mijloace fixe, nu doar înregistrat contabil.
+- Pentru un mijloc fix găsit **în plus**, aplicația cere obligatoriu durata normală de funcționare („durata normală de funcționare (Mijloace fixe)”) și data punerii în funcțiune, refuzând metoda de amortizare care nu e permisă pentru categoria activului respectivă; mijlocul fix e apoi introdus efectiv în registrul de mijloace fixe, nu doar înregistrat contabil.
 - Pentru un mijloc fix **pierdut** la inventariere, operația corectă este **Casare** (nu Minus) — aplicația calculează automat amortizarea cumulată pe metoda reală a activului și scoate mijlocul fix din evidență.
 - Descrierea notei contabile primește automat sufixul " - OMFP 2861/2009".
 - Aplicația cere perioadă contabilă deschisă înainte de a permite orice operațiune de inventariere.

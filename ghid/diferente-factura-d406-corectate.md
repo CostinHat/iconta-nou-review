@@ -2,7 +2,7 @@
 title: "Ce diferențe între e-Factura și D406 trebuie corectate?"
 description: "De ce apar diferențe între datele din RO e-Factura și fișierul standard de control fiscal D406 (SAF-T) și principiul contabil care obligă la corectarea lor."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Notă onestă: nu am găsit în corpus un articol care să reglementeze explicit
 
 ## Ce face iConta.eu
 
-iConta.eu are integrare atât cu RO e-Factura (`efactura_send.py`, `efactura_import.py`), cât și cu generarea Declarației D406 (`d406.py`), fiecare declarație fiscală generată de aplicație (D406, D394, D301, D390, D112 etc.) trecând printr-un modul propriu de reconciliere care recalculează independent balanța și blochează generarea în caz de dezechilibru (de exemplu, `d406_reconciliere.py` verifică Σdebit = Σcredit pe baza notelor contabile, separat de motorul de generare). La verificarea codului nu am găsit însă o funcție dedicată care să compare direct, linie cu linie, facturile din RO e-Factura cu secțiunile de facturi din D406 — reconcilierile existente verifică fiecare declarație împotriva propriei evidențe contabile, nu una față de cealaltă.
+iConta.eu are integrare atât cu RO e-Factura (aplicația), cât și cu generarea Declarației D406, fiecare declarație fiscală generată de aplicație (D406, D394, D301, D390, D112 etc.) trecând printr-un modul propriu de reconciliere care recalculează independent balanța și blochează generarea în caz de dezechilibru (de exemplu, aplicația verifică Σdebit = Σcredit pe baza notelor contabile, separat de motorul de generare). La verificarea codului nu am găsit însă o funcție dedicată care să compare direct, linie cu linie, facturile din RO e-Factura cu secțiunile de facturi din D406 — reconcilierile existente verifică fiecare declarație împotriva propriei evidențe contabile, nu una față de cealaltă.
 
 [iConta.eu](/)

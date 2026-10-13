@@ -2,7 +2,7 @@
 title: Cum corectez avansurile către furnizori înregistrate greșit?
 description: Corecția unui avans plătit greșit (sumă, cont analitic sau furnizor eronat) se face prin stornarea liniei de avans pe temeiul ajustării bazei de impozitare, păstrând regimul, cota și cursul valutar de la data avansului inițial, nu de la data corecției.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,8 +35,8 @@ Regula esențială la stornare: **regimul de impozitare, cota și cursul de schi
 
 ## Ce face iConta.eu
 
-Corecția tehnică se face prin `nota_regularizare_avans_platit(...)`, care inversează avansul: `401 = 409x` pentru capital și `401 = 4426` pentru TVA, folosind același cont analitic 409x (4091-4094) ca la avansul inițial. Cota de TVA trebuie transmisă explicit la fiecare apel — motorul nu are o valoare implicită, exact ca să evite aplicarea din greșeală a unei cote curente în locul celei corecte de la data avansului.
+Corecția tehnică se face prin „regularizarea avansului plătit”, care inversează avansul: `401 = 409x` pentru capital și `401 = 4426` pentru TVA, folosind același cont analitic 409x (4091-4094) ca la avansul inițial. Cota de TVA trebuie transmisă explicit la fiecare apel — motorul nu are o valoare implicită, exact ca să evite aplicarea din greșeală a unei cote curente în locul celei corecte de la data avansului.
 
-Un aspect util pentru audit: câmpul `tip_operatiune='regularizare_avans'` e informativ, nu declanșează o ramificație separată în generatoarele de declarații — regularizarea se reflectă corect prin liniile contabile (rezultatul fiscal net iese corect), dar eticheta nu produce automat o verificare sau un raport dedicat de "avansuri corectate". Dacă aveți nevoie de trasabilitate suplimentară pentru corecțiile de avansuri greșit înregistrate, recomandăm documentarea separată (notă internă/referință) a motivului corecției, în afara mecanicii pur contabile oferite de motor.
+Un aspect util pentru audit: câmpul tipul operațiunii='regularizarea avansului' e informativ, nu declanșează o ramificație separată în generatoarele de declarații — regularizarea se reflectă corect prin liniile contabile (rezultatul fiscal net iese corect), dar eticheta nu produce automat o verificare sau un raport dedicat de "avansuri corectate". Dacă aveți nevoie de trasabilitate suplimentară pentru corecțiile de avansuri greșit înregistrate, recomandăm documentarea separată (notă internă/referință) a motivului corecției, în afara mecanicii pur contabile oferite de motor.
 
 [iConta.eu](/)

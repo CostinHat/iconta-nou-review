@@ -2,7 +2,7 @@
 title: "Cum corectez o chitanță înregistrată de două ori?"
 description: "Ce prevede legea pentru corectarea unei duble înregistrări de numerar — stornare, nu ștergere — și ce oferă azi iConta.eu pentru chitanțele deja emise."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Aceeași încasare ajunge, din greșeală, înregistrată de două ori — o dat
 
 ## Ce face iConta.eu
 
-Verificat în cod: `chitanta_emite` alocă, la fiecare apel, strict numărul următor din serie (`urmatorul_numar_chitanta`), fără nicio verificare de duplicat față de chitanțe existente, și nu există în modulul de chitanțe nicio funcție de corectare, ștergere sau stornare a unui rând deja creat în tabela de chitanțe. Dacă aceeași încasare a fost emisă de două ori din greșeală, iConta.eu nu oferă azi un buton dedicat de corecție — cele două chitanțe rămân, ambele, active în listă și în Registrul de casă, iar remedierea (inclusiv nota de stornare descrisă mai sus) trebuie făcută manual, în afara aplicației.
+Verificat în cod: „emiterea chitanței (Casă)” alocă, la fiecare apel, strict numărul următor din serie („numărul următor al chitanței”), fără nicio verificare de duplicat față de chitanțe existente, și nu există în modulul de chitanțe nicio funcție de corectare, ștergere sau stornare a unui rând deja creat în tabela de chitanțe. Dacă aceeași încasare a fost emisă de două ori din greșeală, iConta.eu nu oferă azi un buton dedicat de corecție — cele două chitanțe rămân, ambele, active în listă și în Registrul de casă, iar remedierea (inclusiv nota de stornare descrisă mai sus) trebuie făcută manual, în afara aplicației.
 
 [iConta.eu](/)

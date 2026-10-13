@@ -2,7 +2,7 @@
 title: "Cum se completează declarația de beneficiar real"
 description: "Ce este beneficiarul real al unei firme, cine îl definește legal și de ce declarația privind identificarea lui ține de o lege distinctă de Codul fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Ce se poate confirma din sursele fiscale disponibile — și, la fel de importan
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are o funcționalitate dedicată** identificării sau depunerii declarației de beneficiar real a unui SRL sau a altei societăți obișnuite — căutarea în cod nu a găsit niciun modul care să gestioneze acest proces pentru societăți. Există, distinct, aplicația, module care generează declarații privind beneficiarul real, dar exclusiv pentru un caz juridic îngust — fiducia (contract de fiducie sau construcție juridică similară), în temeiul aceleiași Legi nr. 129/2019 — nu pentru beneficiarul real al unei societăți comerciale obișnuite, care rămâne neacoperit de aplicație. (O altă potrivire de nume din cod, `test_d300_taxare_inversa_beneficiar.py`, privește un concept diferit, „beneficiarul" taxării inverse la TVA în D300, fără legătură cu beneficiarul real din legislația anti-spălare de bani.) Aplicația oferă evidența contabilă generală a firmei; obligația de declarare a beneficiarului real către ONRC rămâne, la acest moment, în sarcina administratorului sau a consultantului juridic.
+La data acestui ghid, iConta.eu **nu are o funcționalitate dedicată** identificării sau depunerii declarației de beneficiar real a unui SRL sau a altei societăți obișnuite — căutarea în cod nu a găsit niciun modul care să gestioneze acest proces pentru societăți. Există, distinct, aplicația, module care generează declarații privind beneficiarul real, dar exclusiv pentru un caz juridic îngust — fiducia (contract de fiducie sau construcție juridică similară), în temeiul aceleiași Legi nr. 129/2019 — nu pentru beneficiarul real al unei societăți comerciale obișnuite, care rămâne neacoperit de aplicație. (O altă potrivire de nume din cod, aplicația, privește un concept diferit, „beneficiarul" taxării inverse la TVA în D300, fără legătură cu beneficiarul real din legislația anti-spălare de bani.) Aplicația oferă evidența contabilă generală a firmei; obligația de declarare a beneficiarului real către ONRC rămâne, la acest moment, în sarcina administratorului sau a consultantului juridic.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum import automat facturile primite în contabilitate?"
 description: "Ce prevede legea despre calitatea de document justificativ a facturii electronice și cum ajunge o factură primită prin RO e-Factura în evidența contabilă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Legea nu obligă, însă, la o metodă anume de „import" în programul de cont
 
 ## Ce face iConta.eu
 
-iConta.eu automatizează partea de **preluare**, nu și pe cea de validare finală. Un job programat interoghează periodic contul SPV al firmei, descarcă facturile noi primite prin RO e-Factura și le inserează ca ciornă în `efactura_primite`, folosind parserul XML din aplicație pentru a extrage furnizor, sumă, TVA și liniile facturii. Din acel moment, factura apare în aplicație ca ciornă, dar **nu devine automat o cheltuială înregistrată** — contabilul trebuie să o valideze explicit (principiul celor patru ochi), moment în care i se atribuie contul de cheltuială și intră efectiv în evidență. Deduplicarea (aceeași factură descărcată la mai multe rulări) este tratată la nivel de bază de date, pe identificatorul mesajului ANAF.
+iConta.eu automatizează partea de **preluare**, nu și pe cea de validare finală. Un job programat interoghează periodic contul SPV al firmei, descarcă facturile noi primite prin RO e-Factura și le inserează ca ciornă în „facturile primite din SPV”, folosind parserul XML din aplicație pentru a extrage furnizor, sumă, TVA și liniile facturii. Din acel moment, factura apare în aplicație ca ciornă, dar **nu devine automat o cheltuială înregistrată** — contabilul trebuie să o valideze explicit (principiul celor patru ochi), moment în care i se atribuie contul de cheltuială și intră efectiv în evidență. Deduplicarea (aceeași factură descărcată la mai multe rulări) este tratată la nivel de bază de date, pe identificatorul mesajului ANAF.
 
 [iConta.eu](/)

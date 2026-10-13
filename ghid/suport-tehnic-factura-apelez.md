@@ -2,7 +2,7 @@
 title: "Suport tehnic pentru e-Factura: unde apelez"
 description: "Canalele reale de asistență pentru probleme tehnice cu sistemul RO e-Factura și obligația legală a ANAF de a îndruma contribuabilul."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Canalele reale prin care se solicită sprijin pentru probleme tehnice cu e-Factu
 
 ## Ce face iConta.eu
 
-iConta.eu generează și validează factura electronică înainte de trimitere (funcția `valideaza`), încarcă fișierul UBL în sistemul RO e-Factura și urmărește starea mesajului trimis (`stare_mesaj`, `descarca`, `lista_mesaje`). Multe dintre erorile de structură XML sunt astfel prinse și semnalate contabilului înainte de trimitere, reducând nevoia de a mai apela suportul ANAF pentru probleme de format. La data acestui ghid, iConta.eu **nu oferă suport tehnic direct pentru infrastructura RO e-Factura administrată de ANAF** — pentru indisponibilitatea sistemului sau probleme de cont/certificat, contribuabilul rămâne dependent de canalele oficiale (SPV, portalul ANAF).
+iConta.eu generează și validează factura electronică înainte de trimitere (funcția „validarea”), încarcă fișierul UBL în sistemul RO e-Factura și urmărește starea mesajului trimis („starea transmiterii în RO e-Factura”, „descărcarea”, „lista mesajelor din SPV”). Multe dintre erorile de structură XML sunt astfel prinse și semnalate contabilului înainte de trimitere, reducând nevoia de a mai apela suportul ANAF pentru probleme de format. La data acestui ghid, iConta.eu **nu oferă suport tehnic direct pentru infrastructura RO e-Factura administrată de ANAF** — pentru indisponibilitatea sistemului sau probleme de cont/certificat, contribuabilul rămâne dependent de canalele oficiale (SPV, portalul ANAF).
 
 [iConta.eu](/)

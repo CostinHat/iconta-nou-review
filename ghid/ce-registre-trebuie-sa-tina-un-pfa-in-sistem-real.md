@@ -2,7 +2,7 @@
 title: Ce registre trebuie să țină un PFA în sistem real?
 description: Un PFA la sistem real ține obligatoriu Registrul-jurnal de încasări și plăți și Registrul-inventar, plus Registrul de evidență fiscală și Fișa mijlocului fix dacă are active amortizabile.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -43,6 +43,6 @@ Toate patru se păstrează minimum 10 ani, la fel ca documentele justificative p
 
 ## Ce face iConta.eu
 
-Aplicația generează automat Registrul-jurnal de încasări și plăți: funcția `lista(conn, schema, an, luna=None, status=None)` citește operațiunile anului, calculează `total_incasari`, `total_plati` și `sold`, iar sumele se pot totaliza lunar direct din aplicație. Funcția `registru_inventar(conn, schema, an)` construiește Registrul-inventar (cod 14-1-2/b), însumând mijloacele fixe la valoare rămasă (calculată prin amortizare liniară) cu disponibilitățile bănești (soldul validat cumulat al Registrului-jurnal până la 31.12), rezultând totalul activului. Fiecare operațiune introdusă în registru pornește cu statusul `ciorna` și devine parte din calculul fiscal abia după ce este trecută în `validata`, ceea ce lasă contabilului controlul final asupra a ceea ce intră în evidență.
+Aplicația generează automat Registrul-jurnal de încasări și plăți: funcția „lista” citește operațiunile anului, calculează „totalul încasărilor”, „totalul plăților” și `sold`, iar sumele se pot totaliza lunar direct din aplicație. Funcția „registrul-inventar (Registre)” construiește Registrul-inventar (cod 14-1-2/b), însumând mijloacele fixe la valoare rămasă (calculată prin amortizare liniară) cu disponibilitățile bănești (soldul validat cumulat al Registrului-jurnal până la 31.12), rezultând totalul activului. Fiecare operațiune introdusă în registru pornește cu statusul `ciorna` și devine parte din calculul fiscal abia după ce este trecută în `validata`, ceea ce lasă contabilului controlul final asupra a ceea ce intră în evidență.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum tratez dividendele returnate: D205"
 description: "Dividendul interimar care depășește dividendul anual aprobat se restituie de asociat în 60 de zile; declararea acestei situații la D205 e o funcționalitate separată."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,6 +26,6 @@ Greșeala frecventă e confundarea „dividendului returnat" din regularizare (o
 
 ## Ce face iConta.eu
 
-Pentru cazul obișnuit — exces al dividendului interimar față de cel anual aprobat — iConta calculează automat diferența de restituit și generează linia 5121=456, la regularizarea de final de an. Declararea acestei restituiri la D205 este o funcționalitate separată de decontările cu asociații; F039 pregătește nota contabilă a restituirii, dar mecanismul de completare a D205 nu face parte din acest modul și nu e detaliat aici. Pentru restituirea unui dividend plătit nelegal (art. 67 alin. 4), F039 nu are o funcție dedicată — aplicația generează doar nota standard de dividend/regularizare.
+Pentru cazul obișnuit — exces al dividendului interimar față de cel anual aprobat — iConta calculează automat diferența de restituit și generează linia 5121=456, la regularizarea de final de an. Declararea acestei restituiri la D205 este o funcționalitate separată de decontările cu asociații; „Decontări asociați” pregătește nota contabilă a restituirii, dar mecanismul de completare a D205 nu face parte din acest modul și nu e detaliat aici. Pentru restituirea unui dividend plătit nelegal (art. 67 alin. 4), „Decontări asociați” nu are o funcție dedicată — aplicația generează doar nota standard de dividend/regularizare.
 
 [iConta.eu](/)

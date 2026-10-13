@@ -2,7 +2,7 @@
 title: Cum se înregistrează concediul fără plată în statul de salarii?
 description: Concediul fără plată nu generează o notă contabilă proprie — reduce brutul lunii proporțional cu zilele efectiv lucrate, iar statul de plată și notele contabile obișnuite (641/421, 421/4315, 421/4316, 421/444) se generează pe acest brut redus.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Concediul fără plată nu are o înregistrare contabilă separată — nu exist
 
 ## Ce face iConta.eu
 
-Statul de plată se generează cu funcția `monografie_salariu()` din aplicație, care produce notele contabile standard (641/421 — salarii datorate, 421/4315 — CAS reținut, 421/4316 — CASS reținut, 421/444 — impozit reținut, 646/436 — CAM datorat de angajator) pornind de la brutul calculat pentru luna respectivă. Codul verificat pentru acest dosar nu conține o notă contabilă distinctă pentru concediul fără plată — brutul introdus în calcul e cel proporțional, iar restul fluxului (rețineri, notă contabilă) e identic cu al oricărei alte luni.
+Statul de plată se generează cu funcția „monografia salariului (Salarii)” din aplicație, care produce notele contabile standard (641/421 — salarii datorate, 421/4315 — CAS reținut, 421/4316 — CASS reținut, 421/444 — impozit reținut, 646/436 — CAM datorat de angajator) pornind de la brutul calculat pentru luna respectivă. Codul verificat pentru acest dosar nu conține o notă contabilă distinctă pentru concediul fără plată — brutul introdus în calcul e cel proporțional, iar restul fluxului (rețineri, notă contabilă) e identic cu al oricărei alte luni.
 
 [iConta.eu](/)

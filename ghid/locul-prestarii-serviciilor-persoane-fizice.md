@@ -2,7 +2,7 @@
 title: "Locul prestării serviciilor către persoane fizice din UE"
 description: "Pentru servicii prestate unor persoane neimpozabile (B2C) din alt stat membru, regula generală e locul unde e stabilit prestatorul — cu o listă lungă de excepții pentru servicii specifice."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Ce trebuie verificat înainte de a aplica regula generală:
 
 ## Ce face iConta.eu
 
-Aplicația, modulul de operațiuni intracomunitare al iConta.eu, implementează explicit regula B2B pentru prestări de servicii (`valideaza_prestare_ic`, conform art. 278 alin. (2)) — locul la beneficiarul persoană impozabilă din alt stat membru, cu verificare VIES a codului de TVA. Funcția respinge explicit cazul unui cod de TVA invalid, semnalând că operațiunea trece în regim B2C, cu TVA românesc conform art. 278 alin. (3).
+Aplicația, modulul de operațiuni intracomunitare al iConta.eu, implementează explicit regula B2B pentru prestări de servicii („validarea prestării intracomunitare”, conform art. 278 alin. (2)) — locul la beneficiarul persoană impozabilă din alt stat membru, cu verificare VIES a codului de TVA. Funcția respinge explicit cazul unui cod de TVA invalid, semnalând că operațiunea trece în regim B2C, cu TVA românesc conform art. 278 alin. (3).
 
 Aplicația nu are însă un modul dedicat regulilor speciale B2C (servicii electronice și regimul OSS, servicii legate de imobile, transport de călători, închiriere mijloace de transport) — pentru aceste excepții de la regula generală, încadrarea corectă a operațiunii rămâne o evaluare manuală a contabilului.
 

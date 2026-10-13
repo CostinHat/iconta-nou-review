@@ -2,7 +2,7 @@
 title: Ce reguli se aplică la descărcarea gestiunii unei farmacii?
 description: O farmacie vinde tipic la două cote de TVA — medicamentele la cota redusă de 11%, o parte din restul produselor la cota standard de 21% — ceea ce face ca aproximarea prin cotă medie folosită la descărcarea TVA din 4428 să conteze mai mult decât la un magazin cu sortiment omogen.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,8 +39,8 @@ Codul fiscal menționează explicit medicamentele de uz uman la cota redusă de 
 
 ## Ce face iConta.eu
 
-Recepția fiecărui produs în farmacie trece prin două validări complementare: `adauga_nir` (stratul API) impune declararea explicită a cotei de TVA pe fiecare linie, iar `nir_gv` (motorul de calcul) refuză, la rândul lui, o cotă de TVA implicită nedeclarată la nivel de NIR — nu există o cotă implicită „de farmacie”, tocmai pentru că medicamentele (11%) și restul produselor (de regulă 21%) coexistă în același sortiment. Costul de achiziție se calculează inclusiv cu transportul și taxele capitalizate, iar adaosul rezultă din diferența față de prețul de vânzare, cu TVA extras prin formula sutei mărite pentru fiecare linie, la cota ei proprie.
+Recepția fiecărui produs în farmacie trece prin două validări complementare: „adăugarea NIR-ului (Stocuri)” (stratul API) impune declararea explicită a cotei de TVA pe fiecare linie, iar „NIR global-valoric (Stocuri)” (motorul de calcul) refuză, la rândul lui, o cotă de TVA implicită nedeclarată la nivel de NIR — nu există o cotă implicită „de farmacie”, tocmai pentru că medicamentele (11%) și restul produselor (de regulă 21%) coexistă în același sortiment. Costul de achiziție se calculează inclusiv cu transportul și taxele capitalizate, iar adaosul rezultă din diferența față de prețul de vânzare, cu TVA extras prin formula sutei mărite pentru fiecare linie, la cota ei proprie.
 
-La descărcarea lunară, `descarca_luna` calculează coeficientul K din rulajele cumulate ale conturilor 371, 378 și 4428, apoi îl aplică la vânzările lunii. TVA-ul descărcat din 4428 rămâne însă o aproximare: se calculează dintr-o cotă medie ponderată, dedusă din structura stocului cumulat de la 1 ianuarie, nu din mixul real de medicamente (11%) și alte produse (21%) vândute efectiv în lună. Pentru o farmacie, unde ponderea medicamentelor în vânzări poate varia sezonier (de exemplu creșterea vânzărilor de medicamente în lunile de iarnă), contabilul trebuie să verifice separat, din Z-urile de casă pe cote, că soldul 4428 rămas reflectă plauzibil marfa nevândută.
+La descărcarea lunară, „descărcarea lunii (Stocuri)” calculează coeficientul K din rulajele cumulate ale conturilor 371, 378 și 4428, apoi îl aplică la vânzările lunii. TVA-ul descărcat din 4428 rămâne însă o aproximare: se calculează dintr-o cotă medie ponderată, dedusă din structura stocului cumulat de la 1 ianuarie, nu din mixul real de medicamente (11%) și alte produse (21%) vândute efectiv în lună. Pentru o farmacie, unde ponderea medicamentelor în vânzări poate varia sezonier (de exemplu creșterea vânzărilor de medicamente în lunile de iarnă), contabilul trebuie să verifice separat, din Z-urile de casă pe cote, că soldul 4428 rămas reflectă plauzibil marfa nevândută.
 
 [iConta.eu](/)

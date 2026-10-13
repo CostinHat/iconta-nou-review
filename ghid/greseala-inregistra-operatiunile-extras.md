@@ -2,7 +2,7 @@
 title: "Greșeala de a nu înregistra toate operațiunile din extras"
 description: "De ce omiterea unor tranzacții din extrasul de cont la înregistrarea în contabilitate încalcă Legea contabilității și ce riscuri practice generează."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Consecințele omiterii unor operațiuni din extras, în lumina acestui principiu
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un parser de extrase bancare, care citește fișiere XLS/XLSX/CSV/MT940 de la bănci (testat pe formatul ING) și extrage automat toate liniile de tranzacții din extras, reducând riscul de a omite manual o operațiune la introducerea datelor. Aplicația (funcția `contabilizeaza_extras`) propune apoi contarea automată a liniilor identificate, pe baza descrierii operațiunii. Validarea finală — confirmarea că toate liniile din extrasul importat au fost efectiv procesate și că soldul rezultat corespunde cu cel din extrasul bancar — rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu are un parser de extrase bancare, care citește fișiere XLS/XLSX/CSV/MT940 de la bănci (testat pe formatul ING) și extrage automat toate liniile de tranzacții din extras, reducând riscul de a omite manual o operațiune la introducerea datelor. Aplicația (funcția „contarea extrasului (Bancă)”) propune apoi contarea automată a liniilor identificate, pe baza descrierii operațiunii. Validarea finală — confirmarea că toate liniile din extrasul importat au fost efectiv procesate și că soldul rezultat corespunde cu cel din extrasul bancar — rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

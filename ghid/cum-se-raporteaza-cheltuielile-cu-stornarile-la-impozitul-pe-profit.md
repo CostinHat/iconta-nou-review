@@ -2,7 +2,7 @@
 title: Cum se raportează cheltuielile cu stornările la impozitul pe profit
 description: O stornare din exercițiul financiar curent afectează normal contul de profit și pierdere al perioadei; una pentru o factură dintr-un an anterior deja închis ar trebui să treacă prin 1174, nu direct prin venituri curente — distincție pe care motorul de storno nu o face automat.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ O factură de 20.000 lei emisă acum doi ani se stornează azi. Dacă suma intr�
 
 ## Ce face iConta.eu
 
-Funcția de storno (`storneaza`) creează întotdeauna documentul nou cu data curentă, indiferent de anul facturii originale, iar nota automată generată din liniile cu cantitate negativă scrie mereu pe conturile de venit curent (707/701/703/704) — niciodată pe 1174. Sistemul nu verifică exercițiul financiar al facturii originale la storno. Pentru facturi din ani anteriori, distincția dintre corecție pe P&L curent și corecție pe 1174, precum și eventuala rectificare a declarației de impozit pe profit pentru anul corect, rămân responsabilitatea contabilului — sunt pași manuali, în afara motorului automat de contare.
+Funcția de storno („stornarea”) creează întotdeauna documentul nou cu data curentă, indiferent de anul facturii originale, iar nota automată generată din liniile cu cantitate negativă scrie mereu pe conturile de venit curent (707/701/703/704) — niciodată pe 1174. Sistemul nu verifică exercițiul financiar al facturii originale la storno. Pentru facturi din ani anteriori, distincția dintre corecție pe P&L curent și corecție pe 1174, precum și eventuala rectificare a declarației de impozit pe profit pentru anul corect, rămân responsabilitatea contabilului — sunt pași manuali, în afara motorului automat de contare.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Firmele cu puncte de încasare cash 2026: reguli"
 description: "Cum se aplică plafoanele legale de încasări și plăți în numerar atunci când firma are mai multe casierii sau sedii secundare cu casierie proprie."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Din text rezultă regimul aplicabil firmelor cu mai multe puncte de încasare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu verifică plafoanele de încasări și plăți în numerar prin aplicație (`verifica_plafon()`), cu constantele legale — 5.000 lei încasare de la persoană juridică, 10.000 lei pentru cash and carry, 10.000 lei încasare/plată de la persoană fizică — și cu soldul zilnic de casă preluat dinamic din registrul de cote (`c.cota("plafon_sold_casa", la_data)`). Calculul funcționează însă la nivelul unei singure casierii, pe tenant (schema firmei) — codul nu are conceptul de casierii multiple sau puncte de lucru separate (nu există câmp de tip „casierie_id" sau „punct_lucru" în modulul de casă). O firmă cu mai multe puncte de încasare distincte, fiecare cu casierie proprie conform art. 7-8, trebuie să urmărească separat, în afara aplicației, încadrarea în plafon pentru fiecare punct de lucru.
+La data acestui ghid, iConta.eu verifică plafoanele de încasări și plăți în numerar prin aplicație („verificarea plafonului de numerar (Casă)”), cu constantele legale — 5.000 lei încasare de la persoană juridică, 10.000 lei pentru cash and carry, 10.000 lei încasare/plată de la persoană fizică — și cu soldul zilnic de casă preluat dinamic din registrul de cote (c.cota("plafonul soldului de casă", data)). Calculul funcționează însă la nivelul unei singure casierii, pe tenant (schema firmei) — codul nu are conceptul de casierii multiple sau puncte de lucru separate (nu există câmp de tip „casieria" sau „punctul de lucru" în modulul de casă). O firmă cu mai multe puncte de încasare distincte, fiecare cu casierie proprie conform art. 7-8, trebuie să urmărească separat, în afara aplicației, încadrarea în plafon pentru fiecare punct de lucru.
 
 [iConta.eu](/)

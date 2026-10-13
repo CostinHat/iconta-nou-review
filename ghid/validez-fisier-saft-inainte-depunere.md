@@ -2,7 +2,7 @@
 title: "Cum validez un fișier SAF-T înainte de depunere"
 description: Cum se validează structural un fișier D406 înainte de depunere și ce instrument oficial verifică schema XML.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -20,7 +20,7 @@ Potrivit procedurii oficiale de depunere (OPANAF nr. 1783/2021, Anexa 3, pct. 1-
 
 Validarea nu e opțională și nu poate fi înlocuită de o verificare vizuală a fișierului XML — schema SAF-T e complexă (patru module, zeci de câmpuri obligatorii, coduri de nomenclator), iar un fișier structural greșit e respins la depunere sau, mai rău, acceptat cu date incorecte.
 
-În iConta.eu, validarea tehnică se face cu **DUKIntegrator** (`DUKIntegrator_AnLunaUI.jar`, apelat prin funcția `valideaza(xml, tip, an, luna)`) — instrumentul de validare structurală folosit și de ANAF, apelat pentru fișierul, tipul de declarație și perioada respectivă. Există un istoric relevant aici: la un moment dat, butonul de validare din aplicație nu trimitea corect anul și luna către validator și întorcea mereu o stare intermediară („gri"), indiferent de conținutul real al fișierului — problemă identificată și reparată, cu validare confirmată „valid" pe date reale ale mai multor firme.
+În iConta.eu, validarea tehnică se face cu **DUKIntegrator** (validatorul ANAF (DUKIntegrator), apelat prin funcția „validarea”) — instrumentul de validare structurală folosit și de ANAF, apelat pentru fișierul, tipul de declarație și perioada respectivă. Există un istoric relevant aici: la un moment dat, butonul de validare din aplicație nu trimitea corect anul și luna către validator și întorcea mereu o stare intermediară („gri"), indiferent de conținutul real al fișierului — problemă identificată și reparată, cu validare confirmată „valid" pe date reale ale mai multor firme.
 
 ## Ce se greșește în practică
 

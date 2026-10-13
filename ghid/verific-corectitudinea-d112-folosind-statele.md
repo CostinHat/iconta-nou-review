@@ -2,7 +2,7 @@
 title: Cum verific corectitudinea D112 folosind statele de plată
 description: Verificarea D112 față de contabilitate se face pe patru perechi cod-cont (impozit, CAS, CASS, CAM), cu o toleranță de rotunjire care crește cu numărul de salariați și trei stări posibile — verde, roșu, gri.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Greșeala frecventă e compararea manuală doar a impozitului pe venit din statu
 
 ## Ce face iConta.eu
 
-Funcția `verifica_d112` execută automat acest control pentru fiecare lună: generează sau preia D112, parsează sumele declarate direct din XML (nu printr-o reagregare separată a salariaților, pentru a evita o "a treia cifră"), citește rulajele contabile doar din notele validate, aplică toleranța corectă și afișează verdictul pe fiecare din cele patru conturi, cu temeiul citat explicit pentru fiecare constatare.
+Funcția „verificarea D112 (Control fiscal)” execută automat acest control pentru fiecare lună: generează sau preia D112, parsează sumele declarate direct din XML (nu printr-o reagregare separată a salariaților, pentru a evita o "a treia cifră"), citește rulajele contabile doar din notele validate, aplică toleranța corectă și afișează verdictul pe fiecare din cele patru conturi, cu temeiul citat explicit pentru fiecare constatare.
 
 [iConta.eu](/)

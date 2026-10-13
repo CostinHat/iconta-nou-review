@@ -2,7 +2,7 @@
 title: "e-Factura obligatorie pentru toate firmele în 2026: ce trebuie să știu"
 description: "Extinderile aduse sistemului RO e-Factura pentru 2026 și termenele de conformare pentru firme și persoane fizice care desfășoară activități economice."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Obligativitatea RO e-Factura în relația B2B nu e o noutate a lui 2026 — ea e
 
 ## Ce face iConta.eu
 
-iConta.eu are integrare reală cu RO e-Factura: modulul `efactura_send.py` generează XML-ul UBL 2.1 / CIUS-RO și face upload-ul prin API-ul ANAF, modulul `spv_receive.py` rulează periodic (cron) și descarcă din SPV facturile primite de la furnizori, iar `efactura_import.py` este parserul care interpretează XML-ul UBL descărcat (extrage numărul, datele, părțile, sumele, liniile). Extinderile din 2026 discutate mai sus (persoane nestabilite înregistrate TVA, termenul de 15 ianuarie pentru furnizorii cu CNP) țin de sfera de aplicare a legii, nu de un modul separat — la verificarea codului nu există un tratament special pentru identificarea prin CNP în `efactura_send.py`; aplicația folosește același flux de trimitere/validare pentru toate facturile eligibile, indiferent de tipul de contribuabil.
+iConta.eu are integrare reală cu RO e-Factura: modulul aplicația generează XML-ul UBL 2.1 / CIUS-RO și face upload-ul prin API-ul ANAF, modulul aplicația rulează periodic (cron) și descarcă din SPV facturile primite de la furnizori, iar aplicația este parserul care interpretează XML-ul UBL descărcat (extrage numărul, datele, părțile, sumele, liniile). Extinderile din 2026 discutate mai sus (persoane nestabilite înregistrate TVA, termenul de 15 ianuarie pentru furnizorii cu CNP) țin de sfera de aplicare a legii, nu de un modul separat — la verificarea codului nu există un tratament special pentru identificarea prin CNP în aplicația; aplicația folosește același flux de trimitere/validare pentru toate facturile eligibile, indiferent de tipul de contribuabil.
 
 [iConta.eu](/)

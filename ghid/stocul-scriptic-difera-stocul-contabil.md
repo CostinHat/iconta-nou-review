@@ -2,7 +2,7 @@
 title: "Ce faci dacă stocul scriptic diferă de stocul contabil?"
 description: "De ce, în arhitectura iConta.eu, stocul din modulul de gestiune și stocul rezultat din conturile contabile sunt două evidențe separate — și de ce nota de inventariere nu le sincronizează automat."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,7 +26,7 @@ Legea cere ca rezultatul inventarierii — diferența dintre stocul faptic (num�
 
 ## Ce face iConta.eu
 
-Aici e important de spus deschis o limitare confirmată în cod: ecranul "Inventariere anuală" din iConta.eu (`nota-inventariere`) scrie **doar** în jurnalul contabil și, pentru plusuri de mijloace fixe sau casări, în registrul de mijloace fixe. **Nu apelează modulul de gestiune a stocurilor și nu actualizează mișcările de stoc din acel modul.** Cu alte cuvinte, nota de inventariere rezolvă partea contabilă (soldurile conturilor 3xx), dar **stocul scriptic afișat în modulul de gestiune a stocurilor trebuie actualizat separat, manual**, de contabil sau de gestionar — cele două evidențe nu sunt legate automat printr-un singur document.
+Aici e important de spus deschis o limitare confirmată în cod: ecranul "Inventariere anuală" din iConta.eu („nota de inventariere (Operațiuni speciale)”) scrie **doar** în jurnalul contabil și, pentru plusuri de mijloace fixe sau casări, în registrul de mijloace fixe. **Nu apelează modulul de gestiune a stocurilor și nu actualizează mișcările de stoc din acel modul.** Cu alte cuvinte, nota de inventariere rezolvă partea contabilă (soldurile conturilor 3xx), dar **stocul scriptic afișat în modulul de gestiune a stocurilor trebuie actualizat separat, manual**, de contabil sau de gestionar — cele două evidențe nu sunt legate automat printr-un singur document.
 
 Această situație era, la ultima verificare internă disponibilă, deschisă și documentată ca atare; nu putem confirma dacă a fost deja rezolvată la data citirii acestui ghid — dacă lucrați cu stocuri gestionate atât în modulul de gestiune, cât și contabil, verificați ambele evidențe separat după orice notă de inventariere.
 

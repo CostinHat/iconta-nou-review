@@ -2,7 +2,7 @@
 title: "Cum tratez reluarea la venit a unui provizion nedeductibil?"
 description: "De ce reluarea la venituri a unui provizion care nu a fost dedus fiscal la constituire este venit neimpozabil."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,6 +24,6 @@ Greșeala tipică este includerea automată a venitului din reluare în baza imp
 
 ## Ce face iConta.eu
 
-Motorul F071 generează nota de reluare (de exemplu 1511 = 7812, pentru un provizion de litigii) ca simplă înregistrare contabilă. Caracterul deductibil sau nedeductibil este stabilit de aplicație încă de la constituire — doar categoria „garanții” (1512) e marcată deductibilă, toate celelalte fiind nedeductibile. Contabilul folosește această informație pentru a aplica regula simetrică la reluare: venit neimpozabil pentru orice reluare a unui provizion care, la constituire, a fost generat ca nedeductibil.
+Motorul „Provizioane și ajustări” generează nota de reluare (de exemplu 1511 = 7812, pentru un provizion de litigii) ca simplă înregistrare contabilă. Caracterul deductibil sau nedeductibil este stabilit de aplicație încă de la constituire — doar categoria „garanții” (1512) e marcată deductibilă, toate celelalte fiind nedeductibile. Contabilul folosește această informație pentru a aplica regula simetrică la reluare: venit neimpozabil pentru orice reluare a unui provizion care, la constituire, a fost generat ca nedeductibil.
 
 [iConta.eu](/)

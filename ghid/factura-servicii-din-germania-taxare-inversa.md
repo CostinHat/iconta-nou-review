@@ -2,7 +2,7 @@
 title: Factura de servicii primită din Germania — taxare inversă
 description: Un serviciu B2B primit de la un furnizor din Germania are locul prestării în România (art. 278 alin. (2) Cod fiscal), iar TVA e datorată de beneficiarul român prin taxare inversă, conform art. 307 alin. (2) Cod fiscal.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -49,6 +49,6 @@ Firma nu plătește TVA german și nu plătește nimic în plus furnizorului —
 
 ## Ce face iConta.eu
 
-Codul de TVA al furnizorului e analizat automat — prefixul de țară e verificat contra listei celor 27 de state membre UE plus `XI`; operațiunea e tratată ca prestare intracomunitară doar dacă țara codului nu e România și codul e valid. TVA la taxare inversă se calculează cu `TVA = bază × cotă / 100`, rotunjit aritmetic (`ROUND_HALF_UP`) la 2 zecimale, cu cota transmisă explicit la fiecare calcul, fără valoare implicită.
+Codul de TVA al furnizorului e analizat automat — prefixul de țară e verificat contra listei celor 27 de state membre UE plus `XI`; operațiunea e tratată ca prestare intracomunitară doar dacă țara codului nu e România și codul e valid. TVA la taxare inversă se calculează cu `TVA = bază × cotă / 100`, rotunjit aritmetic („rotunjirea aritmetică (jumătatea în sus)”) la 2 zecimale, cu cota transmisă explicit la fiecare calcul, fără valoare implicită.
 
 [iConta.eu](/)

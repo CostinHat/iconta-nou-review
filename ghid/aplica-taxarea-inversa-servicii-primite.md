@@ -2,7 +2,7 @@
 title: "Când se aplică taxarea inversă la servicii primite din UE?"
 description: "Condițiile aplicării taxării inverse (art. 278 alin. 2, art. 308-309) la servicii primite de la un furnizor cu cod de TVA valid în alt stat membru UE."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,9 +13,9 @@ Taxarea inversă la servicii primite din UE nu e o opțiune contabilă, ci conse
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L17303-17420)
+CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 
-CF art. 307 alin. (2): „Taxa este datorată de orice persoană impozabilă… care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României…” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L19334-19342)
+CF art. 307 alin. (2): „Taxa este datorată de orice persoană impozabilă… care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României…” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 
 HG 1/2016, norme la CF art. 331, pct. 109 alin. (1): „beneficiarul înregistrează… suma taxei aferente în următoarea formulă contabilă: 4426 = 4427. Prevederile acestui alineat sunt valabile pentru orice alte situații în care se aplică taxarea inversă.” (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
@@ -32,8 +32,8 @@ Fără cod de TVA valid al furnizorului în VIES, condiția nu e îndeplinită �
 
 ## Ce face iConta.eu
 
-Formularul de achiziție intracomunitară (`achizitie_ic`), tip „servicii”, din categoria „Extern”, permite înregistrarea achiziției cu data, valoarea în RON, codul de TVA al furnizorului (verificabil în VIES), numărul facturii și cota de TVA aplicabilă — motorul intern cere cota declarată explicit la fiecare operațiune, fără o valoare implicită fixă în cod.
+Formularul de achiziție intracomunitară („achiziție intracomunitară (Operațiuni)”), tip „servicii”, din categoria „Extern”, permite înregistrarea achiziției cu data, valoarea în RON, codul de TVA al furnizorului (verificabil în VIES), numărul facturii și cota de TVA aplicabilă — motorul intern cere cota declarată explicit la fiecare operațiune, fără o valoare implicită fixă în cod.
 
-Aplicația calculează TVA prin taxare inversă, folosind rotunjire `Decimal` cu regula standard de rotunjire, generează formula contabilă 4426 = 4427 și clasifică automat operațiunea pentru D390, cod S.
+Aplicația calculează TVA prin taxare inversă, folosind rotunjire „calcul zecimal exact” cu regula standard de rotunjire, generează formula contabilă 4426 = 4427 și clasifică automat operațiunea pentru D390, cod S.
 
 [iConta.eu](/)

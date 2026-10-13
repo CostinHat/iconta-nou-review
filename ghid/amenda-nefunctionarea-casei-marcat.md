@@ -2,7 +2,7 @@
 title: "Amenda pentru nefuncționarea casei de marcat"
 description: "Sancțiunea aplicabilă atunci când o casă de marcat electronică fiscală se defectează și utilizatorul nu anunță unitatea de service, potrivit OUG nr. 28/1999."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce prevede legea, concret, pentru o casă de marcat defectă:
 
 ## Ce face iConta.eu
 
-iConta.eu importă și reconciliază datele de la aparatele de marcat electronice fiscale prin modulul dedicat (`amef_import`), dar nu gestionează situațiile de defectare a casei de marcat sau ținerea registrului special impus pe perioada nefuncționării — acestea rămân proceduri pe care operatorul economic le urmează separat, conform legii.
+iConta.eu importă și reconciliază datele de la aparatele de marcat electronice fiscale prin modulul dedicat („importul AMEF”), dar nu gestionează situațiile de defectare a casei de marcat sau ținerea registrului special impus pe perioada nefuncționării — acestea rămân proceduri pe care operatorul economic le urmează separat, conform legii.
 
 [iConta.eu](/)

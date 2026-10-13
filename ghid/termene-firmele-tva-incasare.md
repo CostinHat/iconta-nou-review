@@ -2,7 +2,7 @@
 title: "Termene pentru firmele cu TVA la încasare"
 description: "Termenele-cheie pentru intrarea, rămânerea și ieșirea din sistemul TVA la încasare, conform Codului fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Sistemul TVA la încasare are propriile termene de notificare, distincte de term
 ## Temeiul legal
 
 ::: ghid-temei
-Art. 324 alin. (16) Cod fiscal: „A.N.A.F. organizează Registrul persoanelor impozabile care aplică sistemul TVA la încasare... Registrul este public și se afișează pe site-ul A.N.A.F." — verificat în `cod_fiscal_227_2015_consolidat.txt`.
+Art. 324 alin. (16) Cod fiscal: „A.N.A.F. organizează Registrul persoanelor impozabile care aplică sistemul TVA la încasare... Registrul este public și se afișează pe site-ul A.N.A.F." — verificat în Codul fiscal (Legea 227/2015), forma consolidată.
 :::
 
 Termenele confirmate în Codul fiscal (art. 324) și în regulile de plafon (art. 282 alin. 3, modificat prin OUG 8/2026):
@@ -24,7 +24,7 @@ Termenele confirmate în Codul fiscal (art. 324) și în regulile de plafon (art
 - **Rămânerea minimă în sistem**: cel puțin până la sfârșitul anului calendaristic al opțiunii (art. 282 alin. 5), cu excepția depășirii plafonului.
 - **Ieșire voluntară**: prin notificare depusă între 1 și 20 ale lunii, dar nu în primul an de aplicare a sistemului (art. 282 alin. 5).
 
-Plafonul relevant pentru eligibilitate, cu valabilitatea în timp (confirmată la sursă în aplicație, tabelul `COTE["plafon_tva_incasare"]`):
+Plafonul relevant pentru eligibilitate, cu valabilitatea în timp (confirmată la sursă în aplicație, tabelul registrul de cote al aplicației["plafonul TVA la încasare"]):
 
 | Valabil de la | Plafon | Temei |
 |---|---|---|
@@ -40,6 +40,6 @@ Cea mai costisitoare greșeală e ratarea termenului de 20 a lunii următoare de
 
 ## Ce face iConta.eu
 
-Funcția `plafon_la(data)` din aplicație e period-aware — întoarce automat plafonul corect (4.500.000 / 5.000.000 / 5.500.000 lei) pentru orice dată, folosită direct de motorul F097. Aplicația nu depune însă notificările către ANAF (art. 324) și nu urmărește automat termenele de 20 ale lunii pentru intrare, depășire sau ieșire — acestea rămân responsabilitatea contabilului.
+Funcția „plafonul la dată” din aplicație e period-aware — întoarce automat plafonul corect (4.500.000 / 5.000.000 / 5.500.000 lei) pentru orice dată, folosită direct de motorul „TVA la încasare”. Aplicația nu depune însă notificările către ANAF (art. 324) și nu urmărește automat termenele de 20 ale lunii pentru intrare, depășire sau ieșire — acestea rămân responsabilitatea contabilului.
 
 [iConta.eu](/)

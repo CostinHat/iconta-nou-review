@@ -2,7 +2,7 @@
 title: Calendar fiscal 2026: ce termene privesc încasările și plățile unui PFA?
 description: Registrul-jurnal de încasări și plăți se totalizează lunar, documentele se arhivează 10 ani, plafonul de numerar zilnic este 50.000 lei/tranzacție, iar Declarația Unică (D212) pentru veniturile anului se depune până la 25 mai anul următor.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -43,6 +43,6 @@ Un PFA validează, în decembrie 2026, toate operațiunile din anul fiscal 2026.
 
 ## Ce face iConta.eu
 
-Funcția `lista(conn, schema, an, luna=None, status=None)` din aplicație permite citirea operațiunilor filtrate pe lună, susținând direct totalizarea lunară cerută de OMFP 170/2015, cu calculul `total_incasari`, `total_plati` și `sold`. Fișa de calcul D212 (`fisa_d212(conn, schema, an, optiune_cas, optiune_cass)`) folosește exclusiv operațiunile cu status `validata` din anul respectiv și refuză să calculeze pentru anii ale căror plafoane fiscale nu au fost verificate la sursă — `_e.ANI_VERIFICATI = (2025, 2026)` — un mecanism explicit de siguranță împotriva calculelor pe bază de plafoane neconfirmate legal. Doar operațiunile trecute din `ciorna` în `validata` (prin funcția `valideaza`) intră în calculul fiscal final; o operațiune validată devine definitivă în registru și nu mai poate fi ștearsă, coerent cu logica arhivării pe termen lung.
+Funcția „lista” din aplicație permite citirea operațiunilor filtrate pe lună, susținând direct totalizarea lunară cerută de OMFP 170/2015, cu calculul „totalul încasărilor”, „totalul plăților” și `sold`. Fișa de calcul D212 („fișa de calcul D212 (Declarații)”) folosește exclusiv operațiunile cu status `validata` din anul respectiv și refuză să calculeze pentru anii ale căror plafoane fiscale nu au fost verificate la sursă — _e.anii verificați = (2025, 2026) — un mecanism explicit de siguranță împotriva calculelor pe bază de plafoane neconfirmate legal. Doar operațiunile trecute din `ciorna` în `validata` (prin funcția „validarea”) intră în calculul fiscal final; o operațiune validată devine definitivă în registru și nu mai poate fi ștearsă, coerent cu logica arhivării pe termen lung.
 
 [iConta.eu](/)

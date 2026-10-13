@@ -2,7 +2,7 @@
 title: "Micro pentru societățile de închirieri imobiliare"
 description: "De ce activitatea de închirieri imobiliare nu e exclusă de la impozitul micro — lista limitativă a domeniilor excluse din art. 47 alin. (3) Cod fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,6 +27,6 @@ Lista de excluderi de la art. 47 alin. (3) e limitativă — nu poate fi extins�
 
 ## Ce face iConta.eu
 
-iConta.eu emite facturi de chirie și evidențiază contabil veniturile din chirii (funcția `nota_chirie_incasata` din aplicație, care generează nota 4111 = 706 + 4427), atât pentru chiriile facturate de firmă, cât și pentru chiriile plătite de firmă unei persoane fizice (funcția `nota_chirie_platita`, care generează 612 = 462, fără TVA și fără reținere la sursă, contribuabilul persoană fizică declarându-și singur venitul prin Declarația Unică). La data acestui ghid, aplicația nu are o verificare dedicată a condițiilor de eligibilitate pentru micro (art. 47) specifică societăților de închirieri imobiliare — încadrarea rămâne o decizie manuală a contabilului, pe baza regulilor generale.
+iConta.eu emite facturi de chirie și evidențiază contabil veniturile din chirii (funcția „nota chiriei încasate” din aplicație, care generează nota 4111 = 706 + 4427), atât pentru chiriile facturate de firmă, cât și pentru chiriile plătite de firmă unei persoane fizice (funcția „nota chiriei plătite”, care generează 612 = 462, fără TVA și fără reținere la sursă, contribuabilul persoană fizică declarându-și singur venitul prin Declarația Unică). La data acestui ghid, aplicația nu are o verificare dedicată a condițiilor de eligibilitate pentru micro (art. 47) specifică societăților de închirieri imobiliare — încadrarea rămâne o decizie manuală a contabilului, pe baza regulilor generale.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum se înregistrează TVA neexigibilă la mărfuri?
 description: La gestiunea la preț cu amănuntul, TVA-ul aferent adaosului nedeclarat încă (aferent vânzărilor viitoare) se ține în contul 4428, separat de TVA-ul deductibil de la achiziție (4426); se descarcă lunar, odată cu marfa vândută, pe măsura vânzărilor efective.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,8 +34,8 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Aplicația, funcția `nir_gv`, generează la recepție linia `371=4428` pentru TVA neexigibilă, alături de `371=401` (cost), `4426=401` (TVA deductibilă) și `371=378` (adaos) — cota de TVA e obligatorie explicit pe fiecare linie sau ca parametru, aplicația refuzând să presupună tacit o cotă implicită. La descărcarea lunară, funcția `descarcare_gv` calculează TVA aferentă vânzărilor lunii (`tva_vanzari`) proporțional din stocul curent (`tva_vanzari = rc_707 × tva_stoc / baza_stoc`, o cotă medie din stoc, cu avertisment explicit în cod că „proporțional din 4427 e riscant”) și generează nota de descărcare cu linia `4428=371`.
+Aplicația, funcția „NIR global-valoric (Stocuri)”, generează la recepție linia `371=4428` pentru TVA neexigibilă, alături de `371=401` (cost), `4426=401` (TVA deductibilă) și `371=378` (adaos) — cota de TVA e obligatorie explicit pe fiecare linie sau ca parametru, aplicația refuzând să presupună tacit o cotă implicită. La descărcarea lunară, funcția „descărcarea global-valorică (Stocuri)” calculează TVA aferentă vânzărilor lunii („TVA-ul vânzărilor”) proporțional din stocul curent (TVA-ul vânzărilor = rulajul creditor 707 × TVA-ul din stoc / baza stocului, o cotă medie din stoc, cu avertisment explicit în cod că „proporțional din 4427 e riscant”) și generează nota de descărcare cu linia `4428=371`.
 
-Atenție: `descarca_luna` citește rulajul contului 4428 **fără filtrare pe sursă** de operațiune — dacă firma folosește și ecranul separat de „TVA la încasare (art. 282)”, care produce note manuale tot pe 4428, acele mișcări se adună la cele din gestiunea global-valorică, denaturând calculul. Dacă firma combină ambele mecanisme, verificați separat sursa fiecărei mișcări pe contul 4428 înainte de a valida descărcarea lunară.
+Atenție: „descărcarea lunii (Stocuri)” citește rulajul contului 4428 **fără filtrare pe sursă** de operațiune — dacă firma folosește și ecranul separat de „TVA la încasare (art. 282)”, care produce note manuale tot pe 4428, acele mișcări se adună la cele din gestiunea global-valorică, denaturând calculul. Dacă firma combină ambele mecanisme, verificați separat sursa fiecărei mișcări pe contul 4428 înainte de a valida descărcarea lunară.
 
 [iConta.eu](/)

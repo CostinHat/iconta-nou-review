@@ -2,7 +2,7 @@
 title: "Cât poate plăti o firmă în numerar unei persoane fizice?"
 description: "Plafonul zilnic de 10.000 lei pentru plățile în numerar către o persoană fizică, conform Legii 70/2015."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Elementele-cheie:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația are constanta `PLAFON_PF = Decimal("10000")`, folosită în funcția `verifica_plafon()` pentru a semnala, ca avertisment, orice plată sau încasare cumulată către/de la o persoană fizică ce depășește 10.000 lei într-o zi. Verificarea acoperă exact plafonul din art. 4 alin. (4), pe baza operațiunilor introduse în registrul de casă al aplicației.
+La data acestui ghid, aplicația are constanta plafonul pentru persoane fizice = 10000, folosită în funcția „verificarea plafonului de numerar (Casă)” pentru a semnala, ca avertisment, orice plată sau încasare cumulată către/de la o persoană fizică ce depășește 10.000 lei într-o zi. Verificarea acoperă exact plafonul din art. 4 alin. (4), pe baza operațiunilor introduse în registrul de casă al aplicației.
 
 [iConta.eu](/)

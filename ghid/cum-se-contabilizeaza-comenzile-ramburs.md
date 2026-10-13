@@ -2,7 +2,7 @@
 title: Cum se contabilizează comenzile ramburs?
 description: Legea cere document justificativ pentru fiecare operațiune; încasarea efectivă a rambursului ajunge de regulă printr-o decontare bancară agregată, fără CUI-ul fiecărui client, așa că matching-ul automat pe factură nu funcționează pentru aceste linii — alocarea rămâne manuală.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,7 +22,7 @@ Comenzile cu plata ramburs au un flux specific: factura se emite la livrare, dar
 
 Factura comenzii se emite la livrare, ca orice altă factură, și rămâne deschisă în evidență până la încasare. Când curierul virează decontarea, linia din extrasul bancar conține de regulă suma netă (după reținerea comisionului curierului) și textul agregatorului, nu CUI-ul fiecărui client care a plătit ramburs. Fără CUI detectat în descriere, motorul de matching marchează automat linia cu status roșu — indiferent de câte comenzi acoperă real suma decontată.
 
-Practic, legătura dintre fiecare comandă ramburs și decontarea agregată nu poate fi făcută automat de motorul de matching din F073. E nevoie fie de alocare manuală a sumei pe facturile individuale corespunzătoare comenzilor din acea decontare, fie de un raport de settlement separat, în afara ariei aplicația, care să identifice comenzile acoperite de fiecare decontare a curierului.
+Practic, legătura dintre fiecare comandă ramburs și decontarea agregată nu poate fi făcută automat de motorul de matching din „Reconciliere bancară (potrivirea plăților cu facturile)”. E nevoie fie de alocare manuală a sumei pe facturile individuale corespunzătoare comenzilor din acea decontare, fie de un raport de settlement separat, în afara ariei aplicația, care să identifice comenzile acoperite de fiecare decontare a curierului.
 
 ## Ce se greșește în practică
 
@@ -33,7 +33,7 @@ Practic, legătura dintre fiecare comandă ramburs și decontarea agregată nu p
 
 ## Ce face iConta.eu
 
-Motorul de matching cere un CUI identificat pentru fiecare linie de extras înainte de a căuta facturi deschise ale partenerului. Liniile de decontare curier, fără CUI individual în descriere, primesc automat status roșu, alocări goale, motiv "fără CUI în descriere". Pentru aceste linii, sistemul poate propune o sugestie de cont bazată pe istoricul deja contat de utilizator (`core.ai_incredere.sugestie`), dar fără nicio bază legală atribuită — e o funcționalitate de confort.
+Motorul de matching cere un CUI identificat pentru fiecare linie de extras înainte de a căuta facturi deschise ale partenerului. Liniile de decontare curier, fără CUI individual în descriere, primesc automat status roșu, alocări goale, motiv "fără CUI în descriere". Pentru aceste linii, sistemul poate propune o sugestie de cont bazată pe istoricul deja contat de utilizator („sugestia de cont”), dar fără nicio bază legală atribuită — e o funcționalitate de confort.
 
 Alocarea sumei decontate pe facturile individuale ale comenzilor ramburs rămâne, în această situație, un pas manual la contare, folosind parametrul `alocari`.
 

@@ -2,7 +2,7 @@
 title: Cum se amortizează mijloacele fixe la întreprinderea individuală?
 description: Întreprinderea individuală (II) urmează exact același regim de amortizare ca PFA-ul — nu există un tratament distinct în sursele legale; ambele sunt "persoane care desfășoară activități independente" sub incidența acelorași articole din Codul fiscal.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Singurul element specific formei de organizare este identificarea contribuabilul
 
 ## Ce face iConta.eu
 
-Motorul de calcul din aplicație — inclusiv `registru_inventar(conn, schema, an)`, care calculează amortizarea liniară a mijloacelor fixe pe baza `dnf_luni`, `data_pif` și `valoare` din tabela `mijloace_fixe` — nu face nicio distincție de cod între PFA, întreprindere individuală sau întreprindere familială: toate rulează prin aceeași logică de validare, amortizare și calcul al Registrului-inventar, coerent cu faptul că sursele legale nu prevăd un regim distinct pentru II.
+Motorul de calcul din aplicație — inclusiv „registrul-inventar (Registre)”, care calculează amortizarea liniară a mijloacelor fixe pe baza „durata normală de funcționare (Mijloace fixe)”, „data punerii în funcțiune (Mijloace fixe)” și `valoare` din tabela „registrul mijloacelor fixe” — nu face nicio distincție de cod între PFA, întreprindere individuală sau întreprindere familială: toate rulează prin aceeași logică de validare, amortizare și calcul al Registrului-inventar, coerent cu faptul că sursele legale nu prevăd un regim distinct pentru II.
 
 [iConta.eu](/)

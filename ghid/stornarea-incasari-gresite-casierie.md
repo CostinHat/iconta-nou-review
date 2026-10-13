@@ -2,7 +2,7 @@
 title: "Stornarea unei încasări greșite la casierie"
 description: "De ce o chitanță sau o dispoziție de încasare întocmită greșit nu se corectează prin ștersătură, ci se anulează, conform normelor privind documentele financiar-contabile."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Aplicat la o încasare greșită la casierie, mecanismul e simplu, dar diferit d
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu gestionează registrul de casă și mișcările de numerar prin aplicație (funcțiile `registru_casa`, `sold_final`, `verifica_plafon`, `regula_cont_casa`), care calculează soldurile și verifică plafonul de casă, dar **nu are o funcție dedicată de „anulare" a unei chitanțe/dispoziții de încasare** care să reproducă mecanismul de la pct. 15 (document păstrat, marcat anulat, cu unul nou emis în loc). Corectarea unei încasări greșite — anularea documentului fizic și, dacă e cazul, stornarea notei contabile aferente — se face manual, prin înregistrările pe care contabilul le introduce în aplicație.
+La data acestui ghid, iConta.eu gestionează registrul de casă și mișcările de numerar prin aplicație (funcțiile „registrul de casă (Casă)”, „soldul final al registrului de casă”, „verificarea plafonului de numerar (Casă)”, „regula de contare a casei (Casă)”), care calculează soldurile și verifică plafonul de casă, dar **nu are o funcție dedicată de „anulare" a unei chitanțe/dispoziții de încasare** care să reproducă mecanismul de la pct. 15 (document păstrat, marcat anulat, cu unul nou emis în loc). Corectarea unei încasări greșite — anularea documentului fizic și, dacă e cazul, stornarea notei contabile aferente — se face manual, prin înregistrările pe care contabilul le introduce în aplicație.
 
 [iConta.eu](/)

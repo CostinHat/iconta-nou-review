@@ -2,7 +2,7 @@
 title: Cum verific un furnizor în Registrul TVA la încasare?
 description: Bifa de pe factura de achiziție e declarativă — verificarea reală a unui furnizor se face în Registrul public al ANAF, iar de ea depinde momentul la care poți deduce TVA.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Mențiunea „TVA la încasare" de pe factură ar trebui să te avertizeze, dar 
 
 ## Ce face iConta.eu
 
-Pe factura de achiziție, contabilul bifează manual dacă furnizorul aplică TVA la încasare (`furnizor_tva_incasare`), iar aplicația folosește această informație pentru a amâna corect dreptul de deducere. Bifa este **declarativă** — iConta nu interoghează live Registrul public ANAF, verificarea rămâne responsabilitatea contabilului.
+Pe factura de achiziție, contabilul bifează manual dacă furnizorul aplică TVA la încasare („furnizor cu TVA la încasare”), iar aplicația folosește această informație pentru a amâna corect dreptul de deducere. Bifa este **declarativă** — iConta nu interoghează live Registrul public ANAF, verificarea rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

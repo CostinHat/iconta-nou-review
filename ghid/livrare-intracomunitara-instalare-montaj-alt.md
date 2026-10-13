@@ -2,7 +2,7 @@
 title: "Livrare intracomunitară cu instalare sau montaj în alt stat"
 description: "Bunurile livrate cu instalare sau montaj de către furnizor nu sunt livrare intracomunitară scutită — locul livrării e unde se face montajul, iar TVA se tratează după regulile acelui stat."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,7 +35,7 @@ Ce înseamnă practic pentru o firmă din România care livrează bunuri cu mont
 
 ## Ce face iConta.eu
 
-Aplicația, modulul de operațiuni intracomunitare al iConta.eu, implementează validarea livrării intracomunitare scutite standard (`valideaza_lic`) — cod TVA valid în VIES plus dovada transportului — potrivit art. 294 alin. (2) lit. a) din Codul fiscal. Modulul nu tratează explicit excepția bunurilor livrate cu instalare sau montaj (art. 275 alin. (1) lit. b)): dacă o astfel de operațiune ar fi introdusă prin funcția de validare a livrării intracomunitare obișnuite, aplicația nu semnalează că regimul de scutire nu se aplică bunurilor montate de furnizor.
+Aplicația, modulul de operațiuni intracomunitare al iConta.eu, implementează validarea livrării intracomunitare scutite standard („validarea livrării intracomunitare”) — cod TVA valid în VIES plus dovada transportului — potrivit art. 294 alin. (2) lit. a) din Codul fiscal. Modulul nu tratează explicit excepția bunurilor livrate cu instalare sau montaj (art. 275 alin. (1) lit. b)): dacă o astfel de operațiune ar fi introdusă prin funcția de validare a livrării intracomunitare obișnuite, aplicația nu semnalează că regimul de scutire nu se aplică bunurilor montate de furnizor.
 
 Pentru livrări cu instalare sau montaj în alt stat membru, tratamentul TVA corect — inclusiv o eventuală obligație de înregistrare în statul de montaj — trebuie stabilit manual de contabil, pe baza legislației aplicabile în acel stat.
 

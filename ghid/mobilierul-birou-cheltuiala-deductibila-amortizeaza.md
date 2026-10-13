@@ -2,7 +2,7 @@
 title: Mobilierul de birou este cheltuială deductibilă sau se amortizează?
 description: Cum decide valoarea la achiziție dacă mobilierul de birou se deduce integral sau se amortizează ca mijloc fix, plus categoria de amortizare aplicabilă și ce controlează automat iConta.eu.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -54,14 +54,14 @@ mijloc fix amortizabil" (art.28 alin.5 lit.c) — metodă liniară sau degresiv�
 ## Ce face iConta.eu
 
 Pragul mijlocului fix se verifică automat la înregistrarea ca obiect de inventar
-(`nota-obiect-inventar`): dacă valoarea depășește pragul valabil la data achiziției, operațiunea
+(„nota obiectului de inventar (Operațiuni speciale)”): dacă valoarea depășește pragul valabil la data achiziției, operațiunea
 e refuzată și trebuie înregistrată ca mijloc fix. Odată intrat în registrul `Firma > Mijloace
 fixe`, motorul unic de amortizare respinge automat, cu eroare pe rând (nu o cifră inventată), o
 metodă nepermisă pentru categorie — deci nu puteți amortiza accidental mobilierul cu metodă
 accelerată.
 
 De spus deschis: **catalogul HG 2139/2004 (plajele de durată pe categorie) nu e cablat în
-aplicație**. Durata normală de utilizare (`dnf_luni`) e un câmp complet liber, introdus manual —
+aplicație**. Durata normală de utilizare („durata normală de funcționare (Mijloace fixe)”) e un câmp complet liber, introdus manual —
 iConta.eu nu oferă un lookup automat al plajei corecte pentru Grupa 3 și nu avertizează dacă
 durata aleasă e în afara intervalului legal. Alegerea duratei rămâne responsabilitatea
 contabilului.

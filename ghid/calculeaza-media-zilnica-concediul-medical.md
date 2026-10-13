@@ -2,7 +2,7 @@
 title: "Cum se calculează media zilnică pentru concediul medical?"
 description: "Formula legală a mediei zilnice folosite la calculul indemnizației de concediu medical — baza pe 6 luni, plafonul de 12 salarii minime — și cum o calculează efectiv iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,7 +34,7 @@ Formula rezultă direct din text:
 
 ## Ce face iConta.eu
 
-Motorul de calcul (funcția `calcul_cm`) aplică formula de mai sus — media zilnică din veniturile și zilele lucrătoare pe 6 luni — odată ce cele două cifre agregate sunt disponibile. Există și un modul care adună automat veniturile și zilele lucrătoare din ultimele 6 luni pe baza statelor de plată emise (cu recalcul explicit pentru lunile încă neemise), dar el e conectat astăzi doar la un API intern (`/tenants/{tenant_id}/calcul-cm`), fără ecran propriu în aplicație.
+Motorul de calcul (funcția „calculul concediului medical (Salarii)”) aplică formula de mai sus — media zilnică din veniturile și zilele lucrătoare pe 6 luni — odată ce cele două cifre agregate sunt disponibile. Există și un modul care adună automat veniturile și zilele lucrătoare din ultimele 6 luni pe baza statelor de plată emise (cu recalcul explicit pentru lunile încă neemise), dar el e conectat astăzi doar la un API intern (aplicația), fără ecran propriu în aplicație.
 
 O limitare reală, verificată în cod: ecranul real de introducere a certificatului (secțiunea Concedii din fișa salariatului) nu folosește deloc aplicația — contabilul introduce el însuși suma veniturilor și numărul de zile lucrătoare pe cele 6 luni, ca sumă agregată, nu defalcate pe lună, iar aplicația nu recalculează sau confruntă acea sumă cu statele de plată deja emise. Din același motiv, plafonarea la 12 salarii minime brute **pe fiecare lună**, deși motorul o suportă tehnic printr-un parametru opțional, nu se activează în practică — nimic din ecranul folosit efectiv nu trimite veniturile defalcate pe lună. La un salariat cu venituri lunare peste plafonul legal, media zilnică (și, în consecință, indemnizația) calculată de iConta.eu poate ieși mai mare decât permite legea.
 

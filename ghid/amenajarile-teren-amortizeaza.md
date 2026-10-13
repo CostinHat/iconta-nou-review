@@ -2,7 +2,7 @@
 title: "Amenajările de teren se amortizează?"
 description: "Diferența fiscală dintre terenuri (neamortizabile) și amenajările de terenuri (amortizabile pe 10 ani), conform Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Din text rezultă o distincție clară pe care contabilitatea trebuie să o resp
 
 ## Ce face iConta.eu
 
-Am verificat în aplicație: aplicația reține durata normală de funcționare (`dnf_luni`) introdusă de contabil pentru fiecare mijloc fix și calculează amortizarea pe baza ei, dar **nu are o categorie predefinită „amenajări de terenuri" cu durata fixă de 10 ani și metoda liniară impuse de art. 28 alin. (12) lit. e)** — încadrarea corectă a unei investiții ca amenajare de teren, separat de valoarea terenului, și aplicarea duratei legale de 10 ani rămân responsabilitatea contabilului la introducerea datelor.
+Am verificat în aplicație: aplicația reține durata normală de funcționare („durata normală de funcționare (Mijloace fixe)”) introdusă de contabil pentru fiecare mijloc fix și calculează amortizarea pe baza ei, dar **nu are o categorie predefinită „amenajări de terenuri" cu durata fixă de 10 ani și metoda liniară impuse de art. 28 alin. (12) lit. e)** — încadrarea corectă a unei investiții ca amenajare de teren, separat de valoarea terenului, și aplicarea duratei legale de 10 ani rămân responsabilitatea contabilului la introducerea datelor.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Garanția de bună execuție reținută în contract: TVA și impozit"
 description: "Cum se tratează fiscal, la impozit pe profit și TVA, garanția de bună execuție pe care beneficiarul o reține din contravaloarea unei lucrări sau a unui contract de servicii."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Pentru **TVA**, Codul fiscal actual nu prevede un regim special, distinct, pentr
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcționalitate reală pentru provizioanele de garanție de bună execuție, în aplicație: notele de constituire/reluare a provizionului folosesc explicit contul 1512 (din nomenclatorul `PROVIZIOANE`) și aplicația marchează deductibilitatea fiscală **doar** pentru tipul „garantii" (`deductibil = (tip == "garantii")`), conform art. 26 alin. (1) lit. b) citat mai sus — celelalte tipuri de provizioane din nomenclator (litigii, dezafectare) sunt tratate ca nedeductibile.
+iConta.eu are o funcționalitate reală pentru provizioanele de garanție de bună execuție, în aplicație: notele de constituire/reluare a provizionului folosesc explicit contul 1512 (din nomenclatorul `PROVIZIOANE`) și aplicația marchează deductibilitatea fiscală **doar** pentru tipul „garantii" (deductibil numai pentru garanții), conform art. 26 alin. (1) lit. b) citat mai sus — celelalte tipuri de provizioane din nomenclator (litigii, dezafectare) sunt tratate ca nedeductibile.
 
 Ce nu automatizează astăzi aplicația: nu există o regulă specifică pentru exigibilitatea TVA pe suma reținută drept garanție — pentru că, la verificarea la sursă, Codul fiscal în vigoare nu prevede un regim distinct pentru această situație (regula generală de exigibilitate se aplică integral). Calculul procentului de garantare aplicabil, pe baza contractului, rămâne o valoare introdusă de contabil, nu determinată automat din text contractual.
 

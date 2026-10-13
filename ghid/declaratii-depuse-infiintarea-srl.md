@@ -2,7 +2,7 @@
 title: "Ce declarații trebuie depuse după înființarea unui SRL?"
 description: "Ce declarații fiscale devin obligatorii pentru un SRL nou-înființat, în funcție de vectorul fiscal ales la înregistrare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce declarații devin, de regulă, obligatorii imediat după înființare:
 
 ## Ce face iConta.eu
 
-Pe baza vectorului fiscal completat în ecranul „Date firmă", motorul de conformare al iConta.eu (funcția `declaratii_datorate`) calculează automat ce declarații sunt datorate lunar sau trimestrial pentru firma respectivă, ținând cont de regimul fiscal, statutul de plătitor de TVA, periodicitatea decontului și operațiunile intracomunitare. Aplicația nu depune însă declarația de înregistrare fiscală inițială la ANAF — aceasta e un pas separat, făcut la înființare.
+Pe baza vectorului fiscal completat în ecranul „Date firmă", motorul de conformare al iConta.eu (funcția „declarațiile datorate (Control fiscal)”) calculează automat ce declarații sunt datorate lunar sau trimestrial pentru firma respectivă, ținând cont de regimul fiscal, statutul de plătitor de TVA, periodicitatea decontului și operațiunile intracomunitare. Aplicația nu depune însă declarația de înregistrare fiscală inițială la ANAF — aceasta e un pas separat, făcut la înființare.
 
 [iConta.eu](/)

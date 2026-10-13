@@ -2,7 +2,7 @@
 title: Cum corectez o factură cu TVA înregistrată greșit?
 description: Legal, o factură netransmisă beneficiarului s-ar putea anula direct — dar în iConta.eu ștergerea e refuzată pentru orice factură deja creată, pentru că nota de contare se scrie automat la emitere; corectarea trece mereu prin storno total plus emiterea unei facturi noi, corecte — iConta.eu nu oferă corecția directă a unei singure linii cu TVA greșit.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -45,6 +45,6 @@ Dacă firma sau furnizorul e la TVA la încasare, atenție și la contul folosit
 
 ## Ce face iConta.eu
 
-`sterge_factura` refuză ștergerea unei facturi cu notă de contare atașată și direcționează explicit spre storno, ca să nu rămână o „gaură" în evidență. Pentru facturi deja create/emise, corectarea unei cote de TVA greșite trece prin `storneaza()`: negarea integrală a tuturor liniilor facturii originale, urmată de crearea unei facturi noi, cu liniile corecte, prin fluxul normal de creare. `genereaza_note` calculează baza și TVA-ul pe fiecare linie/grup de cotă separat, ceea ce asigură că factura nouă, corectă, calculează exact TVA-ul pe fiecare cotă din nou. Stornarea rămâne totală — nu există corecție parțială doar a liniei greșite — iar legătura dintre factura greșită și cea corectă nu apare structurat în XML-ul transmis la SPV, doar în baza de date internă.
+„ștergerea facturii (Facturi)” refuză ștergerea unei facturi cu notă de contare atașată și direcționează explicit spre storno, ca să nu rămână o „gaură" în evidență. Pentru facturi deja create/emise, corectarea unei cote de TVA greșite trece prin „stornarea”: negarea integrală a tuturor liniilor facturii originale, urmată de crearea unei facturi noi, cu liniile corecte, prin fluxul normal de creare. „contarea facturii” calculează baza și TVA-ul pe fiecare linie/grup de cotă separat, ceea ce asigură că factura nouă, corectă, calculează exact TVA-ul pe fiecare cotă din nou. Stornarea rămâne totală — nu există corecție parțială doar a liniei greșite — iar legătura dintre factura greșită și cea corectă nu apare structurat în XML-ul transmis la SPV, doar în baza de date internă.
 
 [iConta.eu](/)

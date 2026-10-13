@@ -2,7 +2,7 @@
 title: "Firmele neplătitoare de TVA și SAF-T: se aplică"
 description: Un SRL neplătitor de TVA nu scapă de D406 — rămâne obligat structural, doar periodicitatea se schimbă la trimestrial.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Concluzia practică: **un SRL neplătitor de TVA e obligat să depună D406, tri
 
 ## Ce face iConta.eu
 
-Motorul F022 derivă automat periodicitatea D406 din regimul de TVA al firmei: dacă firma nu e plătitoare de TVA, generează verdictul pe fereastră trimestrială; dacă e plătitoare, urmărește exact perioada ei fiscală de TVA (lunar sau trimestrial), trecând automat la trimestrial dacă perioada declarată e semestrială sau anuală. Regula de fond e aceeași cu cea folosită de generatorul propriu-zis al declarației D406: deși semaforul F022 nu apelează direct funcția comună aplicația (are propria implementare, prin `emite_tva`/`per_trim`/`per_luni`), ambele căi se bazează pe aceeași sursă de adevăr pentru perioada TVA din aplicație, ceea ce asigură consecvența între cele două.
+Motorul „Semafor conformare fiscală” derivă automat periodicitatea D406 din regimul de TVA al firmei: dacă firma nu e plătitoare de TVA, generează verdictul pe fereastră trimestrială; dacă e plătitoare, urmărește exact perioada ei fiscală de TVA (lunar sau trimestrial), trecând automat la trimestrial dacă perioada declarată e semestrială sau anuală. Regula de fond e aceeași cu cea folosită de generatorul propriu-zis al declarației D406: deși semaforul „Semafor conformare fiscală” nu apelează direct funcția comună aplicația (are propria implementare, prin „TVA-ul facturilor emise”/„trimestrial”/„lunar”), ambele căi se bazează pe aceeași sursă de adevăr pentru perioada TVA din aplicație, ceea ce asigură consecvența între cele două.
 
 [iConta.eu](/)

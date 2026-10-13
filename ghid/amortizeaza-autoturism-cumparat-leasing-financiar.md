@@ -2,7 +2,7 @@
 title: "Cum se amortizează un autoturism cumpărat prin leasing financiar?"
 description: "Contabil se amortizează integral valoarea de intrare; fiscal, pentru autoturisme M1, deductibilitatea amortizării e plafonată la 1.500 lei/lună, cu excepții prevăzute de lege."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Un autoturism preluat prin leasing financiar se amortizează la locatar, ca oric
 
 ## Ce face iConta.eu
 
-F056 (Leasing financiar și operațional) înregistrează corect intrarea autoturismului (2133=167, cu dobânda ținută extracontabil pe 8051) și ratele lunare — dar calculul amortizării propriu-zise, inclusiv aplicarea plafonului fiscal de 1.500 lei/lună, nu e cod în acest modul. Amortizarea rulează prin registrul de Mijloace fixe, unde bunul e tratat identic cu orice alt autoturism al firmei, fără nicio distincție pentru că a intrat prin leasing.
+„Leasing financiar și operațional” înregistrează corect intrarea autoturismului (2133=167, cu dobânda ținută extracontabil pe 8051) și ratele lunare — dar calculul amortizării propriu-zise, inclusiv aplicarea plafonului fiscal de 1.500 lei/lună, nu e cod în acest modul. Amortizarea rulează prin registrul de Mijloace fixe, unde bunul e tratat identic cu orice alt autoturism al firmei, fără nicio distincție pentru că a intrat prin leasing.
 
 [iConta.eu](/)

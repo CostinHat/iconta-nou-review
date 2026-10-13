@@ -2,7 +2,7 @@
 title: Cum calculez TVA exigibilă la o încasare parțială?
 description: Din suma încasată se extrage TVA prin metoda sutei mărite — suma × cotă/(100+cotă) — nu prin aplicarea cotei peste sumă.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Dacă factura conține mai multe cote de TVA sau regimuri diferite, iar plata pr
 
 ## Ce face iConta.eu
 
-Funcția `tva_din_incasare(suma_incasata, cota)` din aplicație implementează exact metoda sutei mărite (`suma × cotă/(100+cotă)`), iar `tva_exigibil_alocari()` agregă rezultatul pe cote pentru încasări care ating mai multe facturi/cote simultan. Alegerea manuală a cotei aplicabile (când sunt implicate facturi/avansuri cu date diferite, conform art. 291 alin. 5) rămâne un pas separat, controlat de contabil — aplicația nu deduce automat ramura corectă, tocmai ca să nu producă „o cifră validă și falsă" (decizie de produs explicită în cod).
+Funcția „TVA-ul exigibil la încasare” din aplicație implementează exact metoda sutei mărite (`suma × cotă/(100+cotă)`), iar „TVA-ul exigibil pe cote” agregă rezultatul pe cote pentru încasări care ating mai multe facturi/cote simultan. Alegerea manuală a cotei aplicabile (când sunt implicate facturi/avansuri cu date diferite, conform art. 291 alin. 5) rămâne un pas separat, controlat de contabil — aplicația nu deduce automat ramura corectă, tocmai ca să nu producă „o cifră validă și falsă" (decizie de produs explicită în cod).
 
 [iConta.eu](/)

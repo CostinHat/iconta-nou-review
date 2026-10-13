@@ -2,7 +2,7 @@
 title: "Ce este Declarația Unică D212 în 2026?"
 description: "D212 este declarația prin care persoanele fizice își stabilesc singure impozitul pe venit și contribuțiile sociale (CAS, CASS) pentru veniturile realizate în afara salariului."
 published: 2026-09-26
-modified: 2026-10-03
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Ce anume face D212:
 
 D212 se generează în iConta.eu din datele persoanei fizice: venitul din registrul de încasări și plăți al PFA, normele de venit, celelalte venituri din România și veniturile din străinătate se introduc pe formular, iar aplicația calculează rândurile, CAS, CASS, impozitul și suma de plată, respectând structura validată de ANAF (D212Validator, namespace v11). Veniturile persoanei din afara firmei (alte activități, investiții) nu le cunoaște singură — le scrie contabilul.
 
-Pentru contribuabilii care își țin evidența financiară în iConta.eu prin Registrul-jurnal de încasări și plăți (OMFP 170/2015), funcția `fisa_d212` din aplicație calculează automat venitul net, CAS și CASS pe baza operațiunilor validate — dar numai pentru veniturile anilor 2025 și 2026, singurii ale căror plafoane sunt verificate la sursă în aplicație.
+Pentru contribuabilii care își țin evidența financiară în iConta.eu prin Registrul-jurnal de încasări și plăți (OMFP 170/2015), funcția „fișa de calcul D212 (Declarații)” din aplicație calculează automat venitul net, CAS și CASS pe baza operațiunilor validate — dar numai pentru veniturile anilor 2025 și 2026, singurii ale căror plafoane sunt verificate la sursă în aplicație.
 
 [iConta.eu](/)

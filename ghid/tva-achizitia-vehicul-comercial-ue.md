@@ -2,7 +2,7 @@
 title: "TVA la achiziția unui vehicul comercial din UE"
 description: "Regula generală de achiziție intracomunitară de bunuri se aplică și vehiculelor comerciale, cu excepția specială pentru mijloacele de transport noi."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,9 +13,9 @@ Achiziția unui vehicul comercial (utilitară, camion, remorcă) dintr-un alt st
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 268 alin. (1)-(3) lit. a): „Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L16593-16626)
+CF art. 268 alin. (1)-(3) lit. a): „Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite.” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 
-CF art. 308-309: „Obligat la plata taxei = beneficiarul, la AIC/servicii primite.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L19405, L19418)
+CF art. 308-309: „Obligat la plata taxei = beneficiarul, la AIC/servicii primite.” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Textul citat exclude explicit „mijloacele de transport noi” din regimul obișnuit al achiziției intracomunitare care urmează unei livrări intracomunitare scutite — pentru vehiculele noi există un regim special (impozitare la destinație, la cumpărător, indiferent de statutul lui de plătitor de TVA), diferit de regula standard descrisă mai jos pentru achizițiile obișnuite.
@@ -30,7 +30,7 @@ Pentru un vehicul comercial care **nu** se încadrează în categoria „mijloc 
 
 ## Ce face iConta.eu
 
-Pentru o achiziție intracomunitară obișnuită de bunuri (inclusiv vehicule care nu intră în categoria „mijloc de transport nou”), folosești formularul de achiziție intracomunitară (`achizitie_ic`), tip „bunuri”, din categoria „Extern”: data, valoarea în RON, codul de TVA al furnizorului, numărul facturii, furnizorul, contul de destinație (sugestie 371) și cota de TVA aplicabilă, declarată explicit.
+Pentru o achiziție intracomunitară obișnuită de bunuri (inclusiv vehicule care nu intră în categoria „mijloc de transport nou”), folosești formularul de achiziție intracomunitară („achiziție intracomunitară (Operațiuni)”), tip „bunuri”, din categoria „Extern”: data, valoarea în RON, codul de TVA al furnizorului, numărul facturii, furnizorul, contul de destinație (sugestie 371) și cota de TVA aplicabilă, declarată explicit.
 
 Aplicația calculează TVA prin taxare inversă (4426 = 4427) și clasifică operațiunea pentru D390, cod A. Pentru cazul particular al unui mijloc de transport nou, verifică regulile specifice — nu confirmate în cercetarea care stă la baza acestui ghid ca fiind acoperite de un formular dedicat.
 

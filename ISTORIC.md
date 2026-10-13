@@ -2307,3 +2307,14 @@ claselor 6/7 în 121 — din soldurile notelor validate (`core/inchidere_an.py`,
 `POST /tenants/{id}/bilant-inchidere-propunere`); intră în evidență numai după validare (R36). **242:** soldurile F2 n-au dispărut —
 verificarea 6/7 oprea generarea înaintea celei a soldurilor fără loc; acum refuzul strânge toate motivele (6/7, solduri fără loc, rulajele
 anului, ambii ani), numerotate, fiecare cu acțiunea lui. R4 BLOCAT. Un commit prin poarta completă (commitul care conține această intrare).
+
+## 13.10.2026 — Lotul 2: site-ul public /ghid/ (a–e); C17, C18
+
+Comanda verbatim în DECIZII (pct.2). **(a)** 45 de grupuri de ghiduri care răspund la aceeași întrebare, 90 de pagini, cel mult 2 pe grup
+(măsură lexicală, plafon inferior; `scripts/scan_ghid_suprapuneri.py`, lista `ghid_suprapuneri.csv`) — nimic comasat. **(b)** denumirile
+și expresiile din codul aplicației scoase din 1.056 ghiduri (2.413 înlocuiri, `scripts/curata_coduri_ghid.py`); numele oficiale ANAF
+rămân; 73 de ghiduri au rămas fără caseta de temei (citatul era din aplicație). **(c)** „Actualizat la zz.ll.aaaa” sub titlul fiecărui
+ghid (DS cap.22 v2.90). **(d)** `X-Robots-Tag: noindex` pe tot ce nu e suprafața publică; robots.txt (allow-list din 15.08) neschimbat;
+sitemap și linkurile publice verificate. **(e)** publicarea înghețată la cele 6.558 de ghiduri (`ghid_publicate.txt`). **C17** contrastul
+paginilor publice (`--p-brand` #0566EA, linkurile subliniate) și **C18** („0” pe listele cu buline din procedură), găsite de Code la proba
+vizuală. R4 BLOCAT. Un commit prin poarta completă (commitul care conține această intrare).

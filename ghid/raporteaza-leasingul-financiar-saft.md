@@ -2,7 +2,7 @@
 title: "Cum se raportează leasingul financiar în SAF-T?"
 description: "SAF-T/D406 nu are o secțiune dedicată leasingului — notele contabile intră generic în registrul de jurnal, iar bunul apare la Active doar dacă e introdus separat ca mijloc fix."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,6 +28,6 @@ Leasingul financiar nu are un tratament special în structura SAF-T (Declarația
 
 ## Ce face iConta.eu
 
-Notele generate de F056 (Leasing financiar și operațional) intră în exportul SAF-T generic, ca orice altă înregistrare contabilă — iConta.eu **nu are cod dedicat** de raportare a leasingului în D406 (nicio mențiune „leasing" în motorul de generare a SAF-T al aplicației). Pentru ca bunul din leasing să apară și în secțiunea de Active a raportării, el trebuie introdus separat, în registrul de Mijloace fixe.
+Notele generate de „Leasing financiar și operațional” intră în exportul SAF-T generic, ca orice altă înregistrare contabilă — iConta.eu **nu are cod dedicat** de raportare a leasingului în D406 (nicio mențiune „leasing" în motorul de generare a SAF-T al aplicației). Pentru ca bunul din leasing să apară și în secțiunea de Active a raportării, el trebuie introdus separat, în registrul de Mijloace fixe.
 
 [iConta.eu](/)

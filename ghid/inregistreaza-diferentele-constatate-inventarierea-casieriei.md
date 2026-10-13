@@ -2,7 +2,7 @@
 title: "Cum se înregistrează diferențele constatate la inventarierea casieriei?"
 description: "Ce spune norma despre inventarierea numerarului la final de an și de ce, în iConta.eu, diferențele de casierie nu se înregistrează prin ecranul de inventariere anuală."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,7 +31,7 @@ Norma nu detaliază, la pct. 29, cursul de schimb care trebuie folosit pentru ev
 
 ## Ce face iConta.eu
 
-Aici trebuie spus onest: ecranul "Inventariere anuală" din iConta.eu (operația `nota-inventariere`) acceptă doar patru tipuri de operațiuni — Plus stoc, Plus mijloc fix, Minus și Casare — iar pentru Plus/Minus contul de stoc trebuie să fie unul dintre cele șase acceptate explicit de aplicație: 371, 301, 302, 303, 345 sau 381. Contul de casierie (5311/5314) nu se regăsește printre acestea, iar aplicația refuză orice alt cont de stoc introdus.
+Aici trebuie spus onest: ecranul "Inventariere anuală" din iConta.eu (operația „nota de inventariere (Operațiuni speciale)”) acceptă doar patru tipuri de operațiuni — Plus stoc, Plus mijloc fix, Minus și Casare — iar pentru Plus/Minus contul de stoc trebuie să fie unul dintre cele șase acceptate explicit de aplicație: 371, 301, 302, 303, 345 sau 381. Contul de casierie (5311/5314) nu se regăsește printre acestea, iar aplicația refuză orice alt cont de stoc introdus.
 
 Cu alte cuvinte, **diferențele constatate la inventarierea casieriei nu pot fi înregistrate prin ecranul de inventariere anuală din iConta.eu** — acesta este construit pentru stocuri și mijloace fixe, nu pentru numerar. Înregistrarea contabilă a plusului sau minusului de casă trebuie făcută separat, printr-o notă contabilă manuală.
 

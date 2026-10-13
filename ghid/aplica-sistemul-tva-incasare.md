@@ -2,7 +2,7 @@
 title: Cine poate aplica sistemul TVA la încasare?
 description: Sistemul e deschis firmelor înregistrate în scopuri de TVA, cu sediul activității economice în România, aflate sub plafonul valabil — dar legea exclude explicit membrii unui grup fiscal unic, firmele nestabilite în România și cele care au depășit deja plafonul.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Legea exclude explicit patru categorii, indiferent de cifra de afaceri: membrii 
 
 ## Ce face iConta.eu
 
-Eligibilitatea de plafon se verifică pe baza plafonului valabil la data de referință (`plafon_la(data)`, din aplicație). Verificarea celorlalte condiții de eligibilitate — statutul de plătitor de TVA, sediul activității economice, apartenența la un grup fiscal unic — nu e confirmată în acest dosar ca fiind automatizată; rămâne, conform cercetării de față, o verificare manuală a contabilului.
+Eligibilitatea de plafon se verifică pe baza plafonului valabil la data de referință („plafonul la dată”, din aplicație). Verificarea celorlalte condiții de eligibilitate — statutul de plătitor de TVA, sediul activității economice, apartenența la un grup fiscal unic — nu e confirmată în acest dosar ca fiind automatizată; rămâne, conform cercetării de față, o verificare manuală a contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: D205 pentru dividende către o persoană juridică străină
 description: D205 nu se aplică dividendelor plătite unei persoane juridice străine — declarația e construită exclusiv pentru beneficiari persoane fizice rezidente, identificate prin CNP.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,6 +26,6 @@ Acest text arată granița exactă a regimului pentru dividende plătite unor pe
 
 ## Ce face iConta.eu
 
-Generatorul D205 din iConta.eu validează fiecare beneficiar pe cifra de control a CNP-ului; un beneficiar fără CNP românesc valid — situație în care se încadrează, structural, orice persoană juridică, română sau străină — este respins la generare, nu apare în declarație. Aplicația nu construiește, pentru F029, nicio declarație alternativă pentru dividende plătite persoanelor juridice străine; dacă vă aflați în acest caz, verificați separat, cu un consultant fiscal, regimul aplicabil (inclusiv o eventuală convenție de evitare a dublei impuneri) — nu e acoperit de această funcționalitate.
+Generatorul D205 din iConta.eu validează fiecare beneficiar pe cifra de control a CNP-ului; un beneficiar fără CNP românesc valid — situație în care se încadrează, structural, orice persoană juridică, română sau străină — este respins la generare, nu apare în declarație. Aplicația nu construiește, pentru „Declarația D205 și distribuirea dividendelor”, nicio declarație alternativă pentru dividende plătite persoanelor juridice străine; dacă vă aflați în acest caz, verificați separat, cu un consultant fiscal, regimul aplicabil (inclusiv o eventuală convenție de evitare a dublei impuneri) — nu e acoperit de această funcționalitate.
 
 [iConta.eu](/)

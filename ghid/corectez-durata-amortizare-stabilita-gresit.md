@@ -2,7 +2,7 @@
 title: "Cum corectez durata de amortizare stabilită greșit?"
 description: "Câmpul de durată din registrul de mijloace fixe e liber și necontrolat față de catalogul legal — corectarea revine contabilului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,6 +25,6 @@ Greșeala tipică e introducerea unei durate "aproximative" sau preluate dintr-u
 
 ## Ce face iConta.eu
 
-Câmpul de durată (`dnf_luni`) este complet liber, atât la introducere manuală, cât și la import — **catalogul de clasificare HG 2139/2004 nu este cablat în aplicație**, deci nu există lookup sau avertizare dacă durata aleasă e în afara plajei legale pentru categoria activului. Corectarea se face simplu, prin editarea directă a câmpului, dar verificarea corectitudinii duratei rămâne responsabilitatea contabilului.
+Câmpul de durată („durata normală de funcționare (Mijloace fixe)”) este complet liber, atât la introducere manuală, cât și la import — **catalogul de clasificare HG 2139/2004 nu este cablat în aplicație**, deci nu există lookup sau avertizare dacă durata aleasă e în afara plajei legale pentru categoria activului. Corectarea se face simplu, prin editarea directă a câmpului, dar verificarea corectitudinii duratei rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

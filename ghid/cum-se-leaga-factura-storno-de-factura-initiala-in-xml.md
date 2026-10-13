@@ -2,7 +2,7 @@
 title: Cum se leagă factura storno de factura inițială în XML?
 description: Nu se leagă — legătura există doar ca o coloană internă în baza de date iConta; XML-ul UBL trimis la SPV nu conține nicio referință structurată (BillingReference/BT-25) către factura corectată.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,11 +32,11 @@ Legea cere, explicit, ca documentul de corecție să conțină „numărul și d
 
 - Se presupune că prefixul „STORNO: " din descriere echivalează, legal și tehnic, cu o referință structurată la factura inițială — nu echivalează.
 - Se caută în XML-ul descărcat din SPV un câmp BillingReference care, pentru facturile de storno emise din sistem, pur și simplu nu există.
-- Se consideră suficientă legătura din baza de date internă (`storno_din_id`) pentru un control ANAF sau pentru un audit extern — aceasta e invizibilă în afara aplicației.
+- Se consideră suficientă legătura din baza de date internă („factura stornată (referința)”) pentru un control ANAF sau pentru un audit extern — aceasta e invizibilă în afara aplicației.
 - Nu se păstrează, separat, o evidență manuală (număr + dată factură originală) în cazurile în care referința structurată contează pentru documentarea corecției.
 
 ## Ce face iConta.eu
 
-`storneaza()` citește factura originală, refuză operația dacă factura nu are direcția „emisă", construiește linii noi cu cantitatea negată și descrierea prefixată „STORNO: " + descrierea originală, rezervă un număr nou din aceeași serie și creează documentul cu data curentă. Singura legătură persistentă cu factura originală e coloana internă `storno_din_id` din baza de date — o legătură vizibilă în aplicație, dar nu pe documentul emis și nu în XML-ul transmis la SPV. Verificat direct în codul care generează structura de e-Factura: nu există nicio generare de BillingReference, InvoiceDocumentReference sau echivalentul BT-25. Aceasta e o limitare cunoscută a motorului curent, nu un comportament ascuns.
+„stornarea” citește factura originală, refuză operația dacă factura nu are direcția „emisă", construiește linii noi cu cantitatea negată și descrierea prefixată „STORNO: " + descrierea originală, rezervă un număr nou din aceeași serie și creează documentul cu data curentă. Singura legătură persistentă cu factura originală e coloana internă „factura stornată (referința)” din baza de date — o legătură vizibilă în aplicație, dar nu pe documentul emis și nu în XML-ul transmis la SPV. Verificat direct în codul care generează structura de e-Factura: nu există nicio generare de BillingReference, InvoiceDocumentReference sau echivalentul BT-25. Aceasta e o limitare cunoscută a motorului curent, nu un comportament ascuns.
 
 [iConta.eu](/)

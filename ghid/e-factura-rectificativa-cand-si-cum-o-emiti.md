@@ -2,7 +2,7 @@
 title: "e-Factura rectificativă: când și cum o emiți"
 description: O factură rectificativă se emite ori de câte ori o factură deja transmisă la SPV trebuie corectată; iConta.eu o generează prin storno total, fără însă să includă o referință structurată la factura inițială în XML.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -40,6 +40,6 @@ Punctul unde produsul actual nu acoperă complet cerința legală: art. 319 alin
 
 ## Ce face iConta.eu
 
-Pentru corecția unei facturi deja emise, `storneaza()` construiește o factură nouă cu toate liniile originale negate integral, descrierea liniilor prefixată cu „STORNO: ", un număr nou din aceeași serie și data curentă, păstrând moneda/cursul/clasificarea fiscală de pe original. Nota contabilă automată iese cu semn minus prin motorul obișnuit de contare. Corecția propriu-zisă (valorile corecte) se emite ca factură nouă separată, prin fluxul normal de creare. Legătura cu factura originală e păstrată doar intern (`storno_din_id`) — nu există, verificat direct în cod, o generare de referință structurată (BillingReference/InvoiceDocumentReference/BT-25) în XML-ul de e-Factura trimis la SPV.
+Pentru corecția unei facturi deja emise, „stornarea” construiește o factură nouă cu toate liniile originale negate integral, descrierea liniilor prefixată cu „STORNO: ", un număr nou din aceeași serie și data curentă, păstrând moneda/cursul/clasificarea fiscală de pe original. Nota contabilă automată iese cu semn minus prin motorul obișnuit de contare. Corecția propriu-zisă (valorile corecte) se emite ca factură nouă separată, prin fluxul normal de creare. Legătura cu factura originală e păstrată doar intern („factura stornată (referința)”) — nu există, verificat direct în cod, o generare de referință structurată (BillingReference/InvoiceDocumentReference/BT-25) în XML-ul de e-Factura trimis la SPV.
 
 [iConta.eu](/)

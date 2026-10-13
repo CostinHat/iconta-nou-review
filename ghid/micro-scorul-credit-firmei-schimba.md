@@ -2,7 +2,7 @@
 title: "Micro și scorul de credit al firmei: se schimbă ceva"
 description: "De ce statutul de microîntreprindere nu are, prin el însuși, niciun efect legal asupra scorului de credit bancar al firmei."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Condițiile de mai sus sunt exclusiv fiscale, nu au legătură cu bonitatea sau 
 
 ## Ce face iConta.eu
 
-Acest subiect nu corespunde funcționalității F086 (sponsorizări și credit fiscal) cercetate pentru acest ghid și nici, în general, unei funcționalități fiscale declarative — ține de analiza de risc bancar, care e din afara sferei de conformitate fiscală pe care o acoperă iConta.eu. Cu certitudine, aplicația **nu calculează și nu afișează un „scor de credit"** al firmei — un asemenea indicator ține de metodologia internă a fiecărei bănci, nu de o obligație fiscală pe care un program de contabilitate ar avea motiv s-o automatizeze. Ce poate corect confirma acest ghid, pe baza cercetării F086 verificate direct în cod, este mecanismul separat, real, de credit fiscal legat de statutul de microîntreprindere: facilitatea de sponsorizare cu credit fiscal pentru microîntreprinderi (fostul art. 56 alin. (1^1) din Codul fiscal) a fost **eliminată prin OUG 115/2023**, ultimul an fiscal de aplicare fiind 2023 — deci, din 2024, o microîntreprindere care sponsorizează nu mai are credit fiscal, sponsorizarea rămânând o simplă cheltuială. Dincolo de acest punct verificat, nu avem în cercetarea de față o confirmare directă a vreunei alte funcții din iConta.eu legate de „scorul de credit", motiv pentru care acest ghid nu face afirmații neconfirmate despre asta.
+Acest subiect nu corespunde funcționalității „Sponsorizări și credit fiscal” cercetate pentru acest ghid și nici, în general, unei funcționalități fiscale declarative — ține de analiza de risc bancar, care e din afara sferei de conformitate fiscală pe care o acoperă iConta.eu. Cu certitudine, aplicația **nu calculează și nu afișează un „scor de credit"** al firmei — un asemenea indicator ține de metodologia internă a fiecărei bănci, nu de o obligație fiscală pe care un program de contabilitate ar avea motiv s-o automatizeze. Ce poate corect confirma acest ghid, pe baza cercetării „Sponsorizări și credit fiscal” verificate direct în cod, este mecanismul separat, real, de credit fiscal legat de statutul de microîntreprindere: facilitatea de sponsorizare cu credit fiscal pentru microîntreprinderi (fostul art. 56 alin. (1^1) din Codul fiscal) a fost **eliminată prin OUG 115/2023**, ultimul an fiscal de aplicare fiind 2023 — deci, din 2024, o microîntreprindere care sponsorizează nu mai are credit fiscal, sponsorizarea rămânând o simplă cheltuială. Dincolo de acest punct verificat, nu avem în cercetarea de față o confirmare directă a vreunei alte funcții din iConta.eu legate de „scorul de credit", motiv pentru care acest ghid nu face afirmații neconfirmate despre asta.
 
 [iConta.eu](/)

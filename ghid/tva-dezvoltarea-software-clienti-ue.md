@@ -2,7 +2,7 @@
 title: "TVA pentru dezvoltarea de software pentru clienți din UE"
 description: "Regula TVA aplicabilă serviciilor de dezvoltare software pentru clienți persoane impozabile din alte state membre UE."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Dezvoltarea de software (custom, la comandă, sau contract de mentenanță/supor
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L17303-17420)
+CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Regula: locul prestării serviciului e considerat, legal, locul unde e stabilit beneficiarul (clientul), nu locul unde lucrează efectiv dezvoltatorii. Dacă clientul e o firmă cu cod de TVA valid, verificat în VIES, într-un alt stat membru, factura se emite **fără TVA românesc** — serviciul e neimpozabil în România, impozitarea revenind statului beneficiarului.
@@ -28,7 +28,7 @@ Dacă clientul nu are cod de TVA valid în VIES (persoană fizică, sau firmă n
 
 ## Ce face iConta.eu
 
-Formularul de vânzare intracomunitară (`vanzare_ic`) permite înregistrarea prestării de servicii către un client din UE, cu câmp pentru codul de TVA al acestuia. La emitere, aplicația verifică automat, live, în VIES statutul codului și afișează rezultatul (valid/invalid) direct în ecran; dacă VIES e indisponibil temporar, afișează avertisment explicit.
+Formularul de vânzare intracomunitară („vânzare intracomunitară (Operațiuni)”) permite înregistrarea prestării de servicii către un client din UE, cu câmp pentru codul de TVA al acestuia. La emitere, aplicația verifică automat, live, în VIES statutul codului și afișează rezultatul (valid/invalid) direct în ecran; dacă VIES e indisponibil temporar, afișează avertisment explicit.
 
 Validarea neimpozabilității se face pe baza a două condiții — client non-RO + cod valid VIES — iar operațiunea validă se clasifică automat spre D390, cod P.
 

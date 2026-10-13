@@ -2,7 +2,7 @@
 title: "Anularea unei chitanțe emise din greșeală"
 description: "Ce prevede legea pentru o chitanță întocmită greșit — anulare, nu corectare prin ștersătură — și de ce iConta.eu nu automatizează azi acest pas."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Cui nu i s-a întâmplat să scrie o sumă greșită pe o chitanță, sau să o 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are o funcție de anulare** pentru chitanțele deja emise. Emiterea (`chitanta_emite`) alocă un număr secvențial nou pe seria firmei, generează PDF-ul cu suma în litere și înregistrează operațiunea în Registrul de casă (5311=4111); verificat în cod, nu există nicio rută sau funcție care să marcheze o chitanță drept anulată sau să șteargă rândul creat. Practic, o chitanță emisă greșit din aplicație rămâne activă în listă și în Registrul de casă — corectarea ei, conform normei de mai sus, trebuie gestionată azi manual, în afara aplicației (de exemplu printr-o notă către contabil și, dacă e cazul, o operațiune de stornare a înregistrării de casă generate).
+La data acestui ghid, iConta.eu **nu are o funcție de anulare** pentru chitanțele deja emise. Emiterea („emiterea chitanței (Casă)”) alocă un număr secvențial nou pe seria firmei, generează PDF-ul cu suma în litere și înregistrează operațiunea în Registrul de casă (5311=4111); verificat în cod, nu există nicio rută sau funcție care să marcheze o chitanță drept anulată sau să șteargă rândul creat. Practic, o chitanță emisă greșit din aplicație rămâne activă în listă și în Registrul de casă — corectarea ei, conform normei de mai sus, trebuie gestionată azi manual, în afara aplicației (de exemplu printr-o notă către contabil și, dacă e cazul, o operațiune de stornare a înregistrării de casă generate).
 
 [iConta.eu](/)

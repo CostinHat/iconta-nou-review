@@ -2,7 +2,7 @@
 title: "Cum împac casa de marcat cu extrasul de cont"
 description: "De ce încasările cu cardul de la aparatul de marcat trebuie regăsite exact în extrasul de cont, ca parte a corectitudinii evidenței cerute de Legea 82/1991."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Cum se aplică principiul la reconcilierea casă de marcat – extras de cont:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația importă raportul fiscal de închidere zilnică, iar aplicația (`contabilizeaza_extras()`) contabilizează liniile din extrasul bancar. Aplicația nu are însă o funcție dedicată de **reconciliere automată** între încasările cu cardul raportate de AMEF și sumele efectiv intrate în bancă de la procesatorul de plăți — compararea celor două fluxuri, identificarea decalajelor de decontare și separarea comisionului rămân, azi, o verificare manuală a contabilului.
+La data acestui ghid, aplicația importă raportul fiscal de închidere zilnică, iar aplicația („contarea extrasului (Bancă)”) contabilizează liniile din extrasul bancar. Aplicația nu are însă o funcție dedicată de **reconciliere automată** între încasările cu cardul raportate de AMEF și sumele efectiv intrate în bancă de la procesatorul de plăți — compararea celor două fluxuri, identificarea decalajelor de decontare și separarea comisionului rămân, azi, o verificare manuală a contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum se emite factura storno pentru un retur online?
 description: Storno-ul din iConta.eu se generează automat, ca o factură nouă cu liniile negate integral, la data curentă; pentru un retur online parțial, e nevoie de o factură de corecție creată manual, pentru că motorul nu susține stornarea parțială.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -40,6 +40,6 @@ Pentru că liniile au cantitate negativă, nota contabilă automată iese cu sem
 
 ## Ce face iConta.eu
 
-`storneaza()` implementează exact pașii descriși mai sus: citește factura originală, refuză dacă direcția nu e „emisă", construiește linii cu cantitatea negată și descrierea prefixată, rezervă un număr nou și creează documentul cu data curentă, păstrând moneda/cursul/clasificarea de pe original. Nota automată se generează cu semn minus prin motorul obișnuit de contare (`genereaza_note` → `factura_emisa`), nu printr-o funcție separată de inversare a unei note deja scrise. Stornarea e întotdeauna totală — toate liniile facturii originale sunt negate integral, fără opțiune de a selecta doar unele. Pentru un retur parțial dintr-o comandă online, singura variantă corectă e o factură de corecție construită manual, cu liniile exacte ale returului, nu funcția de storno.
+„stornarea” implementează exact pașii descriși mai sus: citește factura originală, refuză dacă direcția nu e „emisă", construiește linii cu cantitatea negată și descrierea prefixată, rezervă un număr nou și creează documentul cu data curentă, păstrând moneda/cursul/clasificarea de pe original. Nota automată se generează cu semn minus prin motorul obișnuit de contare („contarea facturii” → „factura emisă”), nu printr-o funcție separată de inversare a unei note deja scrise. Stornarea e întotdeauna totală — toate liniile facturii originale sunt negate integral, fără opțiune de a selecta doar unele. Pentru un retur parțial dintr-o comandă online, singura variantă corectă e o factură de corecție construită manual, cu liniile exacte ale returului, nu funcția de storno.
 
 [iConta.eu](/)

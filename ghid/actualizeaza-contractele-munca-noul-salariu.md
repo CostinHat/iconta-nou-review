@@ -2,7 +2,7 @@
 title: "Cum se actualizează contractele de muncă la noul salariu minim"
 description: "Obligația de a majora salariul contractual la nivelul noului salariu minim brut și termenul de raportare a modificării în REGES-ONLINE."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Pașii de actualizare, o dată ce noul plafon intră în vigoare:
 
 ## Ce face iConta.eu
 
-iConta.eu calculează salariul și contribuțiile aferente (funcția `calcul_salariu`) pe baza salariului brut introdus pentru fiecare salariat, iar pentru raportarea modificărilor contractuale către REGES-ONLINE există un client dedicat (funcția `mesaj_adaugare_contract`), care generează mesajul XML de modificare a contractului. La data acestui ghid, aplicația **nu identifică automat, la fiecare actualizare a plafonului legal, contractele cu salariu de bază sub noul minim** — verificarea fiecărui contract și inițierea actului adițional rămân un pas manual, pe care contabilul îl parcurge folosind datele de salarizare deja introduse în aplicație.
+iConta.eu calculează salariul și contribuțiile aferente (funcția „calculul salariului (Salarii)”) pe baza salariului brut introdus pentru fiecare salariat, iar pentru raportarea modificărilor contractuale către REGES-ONLINE există un client dedicat (funcția „transmiterea contractului în REGES (Salarii)”), care generează mesajul XML de modificare a contractului. La data acestui ghid, aplicația **nu identifică automat, la fiecare actualizare a plafonului legal, contractele cu salariu de bază sub noul minim** — verificarea fiecărui contract și inițierea actului adițional rămân un pas manual, pe care contabilul îl parcurge folosind datele de salarizare deja introduse în aplicație.
 
 [iConta.eu](/)

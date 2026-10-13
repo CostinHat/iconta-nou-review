@@ -2,7 +2,7 @@
 title: "Calendarul obligațiilor în primul an de la înființare"
 description: "Termenele legale ale primelor obligații ale unui SRL nou-înființat: înmatricularea, plafonul de TVA și declararea modificărilor la organul fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Dincolo de acestea, calendarul concret depinde de regimul fiscal ales (micro sau
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat calendarului de termene ale firmei (funcția `termene_firma`), care calculează obligațiile următoare pe baza vectorului fiscal al firmei (regim de TVA, dacă are salariați, ce declarații a depus deja) — util pentru urmărirea obligațiilor curente odată ce firma e configurată în aplicație. Pașii dinaintea acestui punct — înmatricularea la registrul comerțului și prima înregistrare fiscală — au loc în afara aplicației, prin ONRC/ANAF, așa că nu sunt urmăriți automat de iConta.eu; calendarul din aplicație pornește din momentul în care contabilul configurează firma și vectorul ei fiscal.
+iConta.eu are un modul dedicat calendarului de termene ale firmei (funcția „termenele firmei (Termene)”), care calculează obligațiile următoare pe baza vectorului fiscal al firmei (regim de TVA, dacă are salariați, ce declarații a depus deja) — util pentru urmărirea obligațiilor curente odată ce firma e configurată în aplicație. Pașii dinaintea acestui punct — înmatricularea la registrul comerțului și prima înregistrare fiscală — au loc în afara aplicației, prin ONRC/ANAF, așa că nu sunt urmăriți automat de iConta.eu; calendarul din aplicație pornește din momentul în care contabilul configurează firma și vectorul ei fiscal.
 
 [iConta.eu](/)

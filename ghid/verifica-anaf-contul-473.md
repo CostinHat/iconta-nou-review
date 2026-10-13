@@ -2,7 +2,7 @@
 title: "Ce verifică ANAF la contul 473?"
 description: "De ce contul 473 Decontări din operațiuni în curs de clarificare este un indicator urmărit la controale și cum trebuie clarificat conform termenului legal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Contul 473 „Decontări din operațiuni în curs de clarificare" există pentru
 
 ## Ce face iConta.eu
 
-Contul 473 este prezent în planul de conturi implementat de iConta.eu (`plan_omfp.py`), alături de descrierea sa oficială, dar la verificarea codului nu există în prezent o funcție dedicată care să alerteze automat asupra unui sold vechi (peste termenul legal de trei luni) rămas pe acest cont. Monitorizarea soldului contului 473 și clarificarea la timp a operațiunilor înregistrate provizoriu rămân, deocamdată, o sarcină manuală a contabilului.
+Contul 473 este prezent în planul de conturi implementat de iConta.eu, alături de descrierea sa oficială, dar la verificarea codului nu există în prezent o funcție dedicată care să alerteze automat asupra unui sold vechi (peste termenul legal de trei luni) rămas pe acest cont. Monitorizarea soldului contului 473 și clarificarea la timp a operațiunilor înregistrate provizoriu rămân, deocamdată, o sarcină manuală a contabilului.
 
 [iConta.eu](/)

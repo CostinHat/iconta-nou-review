@@ -2,7 +2,7 @@
 title: "Amortizarea bunurilor achiziționate prin leasing financiar"
 description: "Pașii corecți: recunoașterea bunului prin nota de leasing, apoi trecerea lui în registrul de mijloace fixe — cu atenție la eventuale plafoane fiscale speciale de amortizare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Amortizarea unui bun preluat prin leasing financiar trece prin doi pași distinc
 
 ## Ce face iConta.eu
 
-Ca și în cazul recunoașterii bunului, F056 (Leasing financiar și operațional) se oprește la nota contabilă de intrare (2133=167) și la notele de rată/reziduală — nu calculează amortizarea. Aplicarea unor plafoane fiscale speciale, precum cel de 1.500 lei/lună, nu e cod în acest modul: calculul amortizării, inclusiv verificarea unor astfel de limite, rămâne în sarcina registrului de Mijloace fixe și a contabilului.
+Ca și în cazul recunoașterii bunului, „Leasing financiar și operațional” se oprește la nota contabilă de intrare (2133=167) și la notele de rată/reziduală — nu calculează amortizarea. Aplicarea unor plafoane fiscale speciale, precum cel de 1.500 lei/lună, nu e cod în acest modul: calculul amortizării, inclusiv verificarea unor astfel de limite, rămâne în sarcina registrului de Mijloace fixe și a contabilului.
 
 [iConta.eu](/)

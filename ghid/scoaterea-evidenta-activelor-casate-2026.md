@@ -2,7 +2,7 @@
 title: "Scoaterea din evidență a activelor casate 2026"
 description: "Casarea unui mijloc fix calculează automat amortizarea la zi și dezactivează activul din registru — cum funcționează în iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,6 +24,6 @@ Se calculează manual amortizarea la data casării, riscând erori dacă activul
 
 ## Ce face iConta.eu
 
-Acțiunea **Casează** din registru pornește o operațiune de tip nota-inventariere: pentru un mijloc fix cu `mijloc_fix_id`, aplicația calculează automat amortizarea la zi (pe metoda reală a activului) și dezactivează activul (`activ=false`). Nota rezultată e generată ca **ciornă** și trebuie validată separat din Registrul jurnal — nu se aplică direct pe registrul de mijloace fixe.
+Acțiunea **Casează** din registru pornește o operațiune de tip nota-inventariere: pentru un mijloc fix cu „mijlocul fix”, aplicația calculează automat amortizarea la zi (pe metoda reală a activului) și dezactivează activul (marcat inactiv). Nota rezultată e generată ca **ciornă** și trebuie validată separat din Registrul jurnal — nu se aplică direct pe registrul de mijloace fixe.
 
 [iConta.eu](/)

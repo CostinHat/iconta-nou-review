@@ -2,7 +2,7 @@
 title: Regularizarea D101 după ieșirea din micro în același an
 description: Cum se leagă D100-urile trimestriale depuse pe impozit micro de D101 anuală, când firma a trecut la impozit pe profit în cursul aceluiași an fiscal.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -14,7 +14,7 @@ Firma a fost la impozit micro o parte din an, apoi a depășit plafonul și a in
 
 ::: ghid-temei
 Art.52 alin.(6) CF: „Calculul și plata impozitului pe profit de către microîntreprinderile care se încadrează în prevederile alin. (1), (2), (4) și (7) se efectuează luând în considerare veniturile și cheltuielile realizate începând cu trimestrul respectiv."
-— sursă: dosar de cercetare F027, secțiunea „Ieșirea din regimul micro în cursul anului".
+— sursă: documentația aplicației, secțiunea „Ieșirea din regimul micro în cursul anului".
 :::
 
 Răspunsul scurt: D101 nu „regularizează" retroactiv perioada de micro — ea definitivează doar impozitul pe profit datorat de la trimestrul depășirii plafonului până la finalul anului fiscal, cumulând plățile anticipate trimestriale deja declarate prin D100 pe cod de obligație 103. Perioada anterioară, cât firma a fost corect la impozit micro, rămâne declarată separat prin D100 pe cod 121 și nu intră în baza de calcul a D101.

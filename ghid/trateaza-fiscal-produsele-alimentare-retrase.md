@@ -2,7 +2,7 @@
 title: Cum se tratează fiscal produsele alimentare retrase din cauza temperaturii necorespunzătoare?
 description: O defecțiune de temperatură nu e perisabilitate „de comercializare" în sensul HG 831/2004, ci degradare calitativă a stocului — deductibilă și scutită de ajustare TVA doar dacă distrugerea produselor e dovedită.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Regula generală tratează bunurile constatate lipsă sau degradate, neimputabil
 
 ## Ce face iConta.eu
 
-Motorul F066 modelează exclusiv mecanismul de perisabilitate periodică din HG 831/2004 (coeficient pe grupă, aplicat la valoarea intrărilor) — nu are un flux dedicat pentru un eveniment punctual de degradare calitativă cauzat de o defecțiune tehnică. Pentru acest caz, aplicația nu calculează automat nimic; contabilul trebuie să evalueze direct, pe baza documentelor disponibile, dacă degradarea și distrugerea sunt dovedite corespunzător pentru a justifica deductibilitatea și scutirea de ajustare TVA.
+Motorul „Perisabilități și scăzăminte” modelează exclusiv mecanismul de perisabilitate periodică din HG 831/2004 (coeficient pe grupă, aplicat la valoarea intrărilor) — nu are un flux dedicat pentru un eveniment punctual de degradare calitativă cauzat de o defecțiune tehnică. Pentru acest caz, aplicația nu calculează automat nimic; contabilul trebuie să evalueze direct, pe baza documentelor disponibile, dacă degradarea și distrugerea sunt dovedite corespunzător pentru a justifica deductibilitatea și scutirea de ajustare TVA.
 
 [iConta.eu](/)

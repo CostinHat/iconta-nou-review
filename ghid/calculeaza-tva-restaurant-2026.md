@@ -2,7 +2,7 @@
 title: Cum se calculează TVA într-un restaurant în 2026?
 description: Calculul TVA într-un restaurant pornește de la o distincție simplă — e serviciu de restaurant sau livrare de bunuri la pachet? — apoi separă alimentele (11%) de băuturile alcoolice/NC 2202 (21%), linie cu linie.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Cea mai frecventă greșeală este aplicarea unei singure cote pe tot bonul, de 
 
 ## Ce face iConta.eu
 
-Motorul de potrivire cotă distinge explicit categoria `restaurant_catering` (11%) de excepțiile `bauturi_alcoolice` și `bauturi_nc2202` (21%), astfel încât fiecare linie de bon/factură primește cota corectă în funcție de denumirea produsului, nu o cotă unică aplicată global pe document.
+Motorul de potrivire cotă distinge explicit categoria „restaurant și catering (cota redusă)” (11%) de excepțiile „băuturi alcoolice” și „băuturi NC 2202” (21%), astfel încât fiecare linie de bon/factură primește cota corectă în funcție de denumirea produsului, nu o cotă unică aplicată global pe document.
 
 [iConta.eu](/)

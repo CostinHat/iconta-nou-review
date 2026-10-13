@@ -2,7 +2,7 @@
 title: "Ce fac dacă am omis o chitanță din registrul de casă?"
 description: "Regula legală a completării zilnice a Registrului de casă și cum se remediază onest o chitanță rămasă în afara lui."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Registrul de casă trebuie să reflecte, zi de zi, exact ce a intrat și ce a ie
 
 ## Ce face iConta.eu
 
-Funcționalitatea F017 din iConta.eu acoperă **emiterea** de chitanțe de către firmă (`chitanta_emite`) — care înregistrează automat operațiunea de casă (5311=4111) în chiar momentul emiterii — și, separat, **certificarea** unei chitanțe primite de la un furnizor prin fluxul de portal (`chitanta_stinge`, cont 401=5311), care cere ca documentul să fi fost deja încărcat și confirmat de client. Niciunul din aceste două fluxuri, verificate în cod, nu oferă o funcție dedicată de „adăugare retroactivă" a unei chitanțe omise, cu recalcularea automată a soldurilor de casă din zilele intermediare — acest tip de corecție rămâne, la acest moment, un pas manual, în afara aplicației.
+Funcționalitatea „Chitanțe emise” din iConta.eu acoperă **emiterea** de chitanțe de către firmă („emiterea chitanței (Casă)”) — care înregistrează automat operațiunea de casă (5311=4111) în chiar momentul emiterii — și, separat, **certificarea** unei chitanțe primite de la un furnizor prin fluxul de portal („stingerea chitanței primite (Portal)”, cont 401=5311), care cere ca documentul să fi fost deja încărcat și confirmat de client. Niciunul din aceste două fluxuri, verificate în cod, nu oferă o funcție dedicată de „adăugare retroactivă" a unei chitanțe omise, cu recalcularea automată a soldurilor de casă din zilele intermediare — acest tip de corecție rămâne, la acest moment, un pas manual, în afara aplicației.
 
 [iConta.eu](/)

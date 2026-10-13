@@ -2,7 +2,7 @@
 title: Cum se calculează adaosul și descărcarea la un depozit en-gros?
 description: Metoda global-valorică este definită de lege pentru comerțul cu amănuntul, deci un depozit en-gros trebuie să verifice dacă profilul activității (articole numeroase, marje similare, preț de vânzare unic) se potrivește criteriilor legale înainte de a o aplica.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -46,7 +46,7 @@ Dacă însă prețurile variază semnificativ per client sau contract (rabaturi 
 
 ## Ce face iConta.eu
 
-Mecanismul de calcul din aplicație nu distinge tehnic între „magazin cu amănuntul” și „depozit en-gros” — motorul lucrează cu prețuri de vânzare, costuri de achiziție și cote de TVA introduse explicit la fiecare linie de NIR, indiferent de tipul de client final. `nir_gv` calculează costul de achiziție (cu transport și taxe capitalizate), extrage TVA din prețul de vânzare prin formula sutei mărite și calculează adaosul, respingând adaos negativ sau vânzare sub cost. La descărcarea lunară, `coeficient_k` poate fi rulat separat pe grupe/categorii de stocuri, dacă rulajele sunt separate corespunzător — util pentru un depozit cu linii de produse cu marje foarte diferite.
+Mecanismul de calcul din aplicație nu distinge tehnic între „magazin cu amănuntul” și „depozit en-gros” — motorul lucrează cu prețuri de vânzare, costuri de achiziție și cote de TVA introduse explicit la fiecare linie de NIR, indiferent de tipul de client final. „NIR global-valoric (Stocuri)” calculează costul de achiziție (cu transport și taxe capitalizate), extrage TVA din prețul de vânzare prin formula sutei mărite și calculează adaosul, respingând adaos negativ sau vânzare sub cost. La descărcarea lunară, „coeficientul K (Stocuri, descărcarea global-valorică)” poate fi rulat separat pe grupe/categorii de stocuri, dacă rulajele sunt separate corespunzător — util pentru un depozit cu linii de produse cu marje foarte diferite.
 
 Decizia dacă un depozit en-gros se încadrează efectiv în criteriile legale ale metodei prețului cu amănuntul (preț de vânzare unic, marje similare) rămâne una de politică contabilă a entității, nu una impusă tehnic de aplicație. Iar dacă metoda e aplicată, TVA-ul descărcat lunar din 4428 rămâne o aproximare dintr-o cotă medie ponderată a stocului cumulat, nu din structura reală a vânzărilor lunii — de verificat separat, mai ales dacă depozitul lucrează cu produse la cote de TVA diferite.
 

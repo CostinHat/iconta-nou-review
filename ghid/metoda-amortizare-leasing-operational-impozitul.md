@@ -2,7 +2,7 @@
 title: "Metoda de amortizare în leasing operațional: impozitul pe profit"
 description: "La leasingul operațional, firma utilizatoare nu alege nicio metodă de amortizare — amortizarea rămâne integral la societatea de leasing, conform legii."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Pentru leasing operațional, funcția `nota_rata_operational` din F056 (Leasing financiar și operațional) produce o singură notă: chiria pe contul de cheltuială (implicit 612) = 401, plus TVA pe 4426. Nu există niciun câmp sau funcție pentru „metodă de amortizare" în ecranul de leasing operațional — corect, pentru că regula legală nu prevede așa ceva la locatar. Ce se poate întreba legitim în acest caz e deductibilitatea chiriei, nu a unei amortizări inexistente.
+Pentru leasing operațional, funcția „nota ratei de leasing operațional (Operațiuni speciale)” din „Leasing financiar și operațional” produce o singură notă: chiria pe contul de cheltuială (implicit 612) = 401, plus TVA pe 4426. Nu există niciun câmp sau funcție pentru „metodă de amortizare" în ecranul de leasing operațional — corect, pentru că regula legală nu prevede așa ceva la locatar. Ce se poate întreba legitim în acest caz e deductibilitatea chiriei, nu a unei amortizări inexistente.
 
 [iConta.eu](/)

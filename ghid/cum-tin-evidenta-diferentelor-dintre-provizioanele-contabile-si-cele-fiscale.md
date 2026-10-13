@@ -2,7 +2,7 @@
 title: Cum țin evidența diferențelor dintre provizioanele contabile și cele fiscale?
 description: Fiindcă motorul contabil nu leagă automat notele de provizioane de rândurile nedeductibile din D101, e nevoie de un registru propriu (contabil, sold, procent/temei de deducere, tratament la reluare) pentru fiecare provizion, care să susțină atât declarația curentă, cât și impozitarea corectă la reluare.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -50,6 +50,6 @@ Registru simplificat pentru un provizion de garanții de 6.000 lei, dedus integr
 
 ## Ce face iConta.eu
 
-Aplicația calculează, la constituire, procentul/flagul de deductibilitate pentru fiecare tip de operațiune (`deductibilitate_creanta` pentru ajustări de creanțe, flagul `deductibil` din `nota_provizion` pentru provizionul de garanții, `deductibil: False` necondiționat în `nota_ajustare_stoc`), dar acest rezultat nu e persistat sau reutilizat automat la reluare, și nu e legat de rândurile D101 (aplicația citește P23-P33 ca input manual, fără nicio legătură cu `provizioane.py`). Practic, motorul oferă calculul punctual de deductibilitate la constituire; evidența longitudinală (constituire → sumă dedusă → reluare → venit impozabil/neimpozabil) trebuie ținută separat de utilizator, folosind rezultatele motorului ca sursă de date pentru fiecare operațiune.
+Aplicația calculează, la constituire, procentul/flagul de deductibilitate pentru fiecare tip de operațiune („deductibilitatea creanței (Operațiuni speciale)” pentru ajustări de creanțe, flagul `deductibil` din „nota de provizion (Operațiuni speciale)” pentru provizionul de garanții, „nedeductibil” necondiționat în „nota de ajustare a stocurilor (Operațiuni speciale)”), dar acest rezultat nu e persistat sau reutilizat automat la reluare, și nu e legat de rândurile D101 (aplicația citește P23-P33 ca input manual, fără nicio legătură cu aplicația). Practic, motorul oferă calculul punctual de deductibilitate la constituire; evidența longitudinală (constituire → sumă dedusă → reluare → venit impozabil/neimpozabil) trebuie ținută separat de utilizator, folosind rezultatele motorului ca sursă de date pentru fiecare operațiune.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum reconciliezi taxele salariale din balanță cu D112?
 description: Reconcilierea taxelor salariale cu D112 se face pe patru perechi cont-cod, cu sursa declarației (depusă sau regenerată), toleranță proporțională cu efectivul și trei stări de verdict — verde, roșu, gri.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Greșeala tipică e tratarea reconcilierii ca pe o singură cifră totală ("tax
 
 ## Ce face iConta.eu
 
-`verifica_d112` automatizează cei șase pași de mai sus pentru fiecare lună: alege sursa corectă a declarației, parsează sumele din XML, citește rulajele validate, aplică toleranța dinamică și afișează verdictul pe fiecare cont în parte, cu cauza divergenței și remediul recomandat — niciodată o cifră agregată care ar putea ascunde erori individuale.
+„verificarea D112 (Control fiscal)” automatizează cei șase pași de mai sus pentru fiecare lună: alege sursa corectă a declarației, parsează sumele din XML, citește rulajele validate, aplică toleranța dinamică și afișează verdictul pe fiecare cont în parte, cu cauza divergenței și remediul recomandat — niciodată o cifră agregată care ar putea ascunde erori individuale.
 
 [iConta.eu](/)

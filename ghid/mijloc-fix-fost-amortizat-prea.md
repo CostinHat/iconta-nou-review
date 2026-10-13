@@ -2,7 +2,7 @@
 title: "Ce faci dacă un mijloc fix a fost amortizat prea repede?"
 description: "Cum se corectează o durată de amortizare stabilită greșit — modificare de estimare contabilă cu efect prospectiv, nu corectare de eroare, conform reglementărilor contabile."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Distincția e importantă pentru cum se tratează contabil situația:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **stochează durata normală de funcționare** (`dnf_luni`, în aplicație) introdusă de contabil la înregistrarea mijlocului fix și calculează amortizarea pe baza ei, dar **nu are un flux dedicat pentru revizuirea unei estimări** — nu există în cod o funcție care să permită modificarea prospectivă a duratei rămase pentru un activ deja amortizat integral, conform pct. 70 din OMFP 1802/2014. Ajustarea unei asemenea situații rămâne, pentru moment, o intervenție manuală a contabilului.
+La data acestui ghid, iConta.eu **stochează durata normală de funcționare** („durata normală de funcționare (Mijloace fixe)”, în aplicație) introdusă de contabil la înregistrarea mijlocului fix și calculează amortizarea pe baza ei, dar **nu are un flux dedicat pentru revizuirea unei estimări** — nu există în cod o funcție care să permită modificarea prospectivă a duratei rămase pentru un activ deja amortizat integral, conform pct. 70 din OMFP 1802/2014. Ajustarea unei asemenea situații rămâne, pentru moment, o intervenție manuală a contabilului.
 
 [iConta.eu](/)

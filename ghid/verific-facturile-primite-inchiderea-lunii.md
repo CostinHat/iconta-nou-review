@@ -2,7 +2,7 @@
 title: Cum verific facturile primite după închiderea lunii
 description: iConta.eu are două mecanisme distincte legate de facturile primite și închiderea lunii — poarta care oprește scrierile (Blocare perioade) și verificarea de completitudine care refuză să declare luna închisă dacă mai sunt e-Facturi neînregistrate. Nu sunt duplicate.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,9 +24,9 @@ TVA-ul unei facturi de furnizor sosite târziu se deduce în perioada în care e
 
 ## Ce verifică efectiv aplicația
 
-**1. Verificarea de completitudine (`inchidere_luna`).** Când se încearcă blocarea unei luni din Registru jurnal, iConta.eu verifică dacă mai există e-Facturi primite de la ANAF (prin SPV) și rămase neînregistrate — nici ciornă, nici validate, nici respinse — cu data în luna respectivă. Dacă găsește așa ceva, **refuză blocarea**, cu un mesaj care spune câte documente și unde se rezolvă. Practic, e verificarea pe care o poți folosi înainte de a bloca luna, ca să te asiguri că n-a rămas nimic nepreluat din e-Factura.
+**1. Verificarea de completitudine („închiderea lunii (Control fiscal)”).** Când se încearcă blocarea unei luni din Registru jurnal, iConta.eu verifică dacă mai există e-Facturi primite de la ANAF (prin SPV) și rămase neînregistrate — nici ciornă, nici validate, nici respinse — cu data în luna respectivă. Dacă găsește așa ceva, **refuză blocarea**, cu un mesaj care spune câte documente și unde se rezolvă. Practic, e verificarea pe care o poți folosi înainte de a bloca luna, ca să te asiguri că n-a rămas nimic nepreluat din e-Factura.
 
-**2. Poarta de blocare propriu-zisă (F118).** Odată luna blocată, orice înregistrare nouă pe acea lună — inclusiv contarea unei facturi rămase neînregistrată — e respinsă de un trigger de bază de date, indiferent de sursă (UI, import, cron). Mesajul arătat: *„Perioada e blocată (luna închisă). Cere-i administratorului cabinetului să o redeschidă sau înregistrează în luna curentă."*
+**2. Poarta de blocare propriu-zisă („Blocare perioade”).** Odată luna blocată, orice înregistrare nouă pe acea lună — inclusiv contarea unei facturi rămase neînregistrată — e respinsă de un trigger de bază de date, indiferent de sursă (UI, import, cron). Mesajul arătat: *„Perioada e blocată (luna închisă). Cere-i administratorului cabinetului să o redeschidă sau înregistrează în luna curentă."*
 
 Cele două sunt legate operațional — blocarea lunii (pasul 2) verifică chiar ea completitudinea din pasul 1 înainte de a permite închiderea — dar rămân mecanisme diferite: unul e o poartă care oprește scrieri, celălalt e o constatare despre stadiul evidenței.
 

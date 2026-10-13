@@ -2,7 +2,7 @@
 title: "Producția în curs: evaluare și reprezentare 2026"
 description: "Cum se evaluează producția în curs de execuție la cost de producție stabilit prin inventar și unde apare ea în bilanț."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Din text rezultă un mecanism clar, în doi timpi:
 
 ## Ce face iConta.eu
 
-Din ecranul **Operațiuni speciale → Imobilizări**, operațiunea „Producție (711/345)" permite introducerea directă a sumei constatate la inventar pentru producția în curs, cu alegerea momentului — „constatare" (generează automat nota 331 = 711) sau „reluare" (generează automat nota 711 = 331), suma fiind introdusă manual de contabil pe baza inventarului. Motorul de calcul este pur (bazat pe `Decimal`, fără input incorect acceptat: o sumă invalidă e respinsă explicit) și acoperit de teste unitare. Notă onestă: iConta.eu **nu automatizează inventarierea** propriu-zisă a producției în curs — aplicația generează corect nota contabilă pe baza sumei pe care contabilul o introduce, dar stabilirea acelei sume, prin inventar fizic sau tehnic, rămâne un proces din afara aplicației.
+Din ecranul **Operațiuni speciale → Imobilizări**, operațiunea „Producție (711/345)" permite introducerea directă a sumei constatate la inventar pentru producția în curs, cu alegerea momentului — „constatare" (generează automat nota 331 = 711) sau „reluare" (generează automat nota 711 = 331), suma fiind introdusă manual de contabil pe baza inventarului. Motorul de calcul este pur (bazat pe „calcul zecimal exact”, fără input incorect acceptat: o sumă invalidă e respinsă explicit) și acoperit de teste unitare. Notă onestă: iConta.eu **nu automatizează inventarierea** propriu-zisă a producției în curs — aplicația generează corect nota contabilă pe baza sumei pe care contabilul o introduce, dar stabilirea acelei sume, prin inventar fizic sau tehnic, rămâne un proces din afara aplicației.
 
 [iConta.eu](/)

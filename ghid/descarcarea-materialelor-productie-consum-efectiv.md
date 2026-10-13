@@ -2,7 +2,7 @@
 title: "Descărcarea materialelor în producție după consum efectiv"
 description: "Când și pe ce cont se descarcă gestiunea de materii prime la darea în consum pentru producție — regula inventarului permanent din OMFP 1802/2014."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un motor de producție, cu funcțiile `nota_obtinere` (obținerea produselor finite la cost standard sau efectiv) și `nota_productie_in_curs`, dar **nu am găsit** în acest modul o funcție dedicată descărcării automate a materiilor prime consumate (nota 601 = 301) pe baza unui bon de consum. Aplicația oferă evidența contabilă generală și registrul de stocuri, în care contabilul înregistrează manual consumul efectiv de materii prime pe măsură ce apar bonurile de consum.
+La data acestui ghid, iConta.eu are un motor de producție, cu funcțiile „nota de obținere a produselor finite (Producție)” (obținerea produselor finite la cost standard sau efectiv) și „nota producției în curs (Producție)”, dar **nu am găsit** în acest modul o funcție dedicată descărcării automate a materiilor prime consumate (nota 601 = 301) pe baza unui bon de consum. Aplicația oferă evidența contabilă generală și registrul de stocuri, în care contabilul înregistrează manual consumul efectiv de materii prime pe măsură ce apar bonurile de consum.
 
 [iConta.eu](/)

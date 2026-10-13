@@ -2,7 +2,7 @@
 title: "Cum se emite factura pentru o vânzare pe un site propriu"
 description: "Regulile de facturare pentru vânzările făcute printr-un magazin online propriu, inclusiv obligația de transmitere prin RO e-Factura pentru vânzările către persoane fizice, din 2025."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ O vânzare printr-un site propriu urmează regulile obișnuite de facturare din 
 
 ## Ce face iConta.eu
 
-iConta.eu **are un modul general de facturare** (`facturi_api.py`), care calculează totalul și TVA din liniile facturii, și un modul de transmitere RO e-Factura (`efactura_send.py`), care generează XML-ul UBL 2.1/CIUS-RO și îl trimite către ANAF prin OAuth. În plus, pentru magazinele online construite pe WooCommerce, aplicația **are un conector dedicat**, care citește periodic comenzile din magazin prin API-ul WooCommerce și emite automat facturi corespunzătoare (idempotent, pe numărul comenzii, pentru a nu duplica o comandă deja preluată). Pentru un site propriu construit pe altă platformă decât WooCommerce, această preluare automată nu există, iar emiterea facturii se face, la fel ca pentru orice altă vânzare, prin introducerea manuală a datelor în ecranul de facturi al aplicației.
+iConta.eu **are un modul general de facturare**, care calculează totalul și TVA din liniile facturii, și un modul de transmitere RO e-Factura, care generează XML-ul UBL 2.1/CIUS-RO și îl trimite către ANAF prin OAuth. În plus, pentru magazinele online construite pe WooCommerce, aplicația **are un conector dedicat**, care citește periodic comenzile din magazin prin API-ul WooCommerce și emite automat facturi corespunzătoare (idempotent, pe numărul comenzii, pentru a nu duplica o comandă deja preluată). Pentru un site propriu construit pe altă platformă decât WooCommerce, această preluare automată nu există, iar emiterea facturii se face, la fel ca pentru orice altă vânzare, prin introducerea manuală a datelor în ecranul de facturi al aplicației.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum facturez servicii de programare către o firmă din UE?"
 description: "Un serviciu de programare facturat unei firme înregistrate în scopuri de TVA în alt stat membru e neimpozabil în România dacă îi verifici codul TVA în VIES; fără cod valid, factura se emite cu TVA românesc."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Un serviciu de programare (dezvoltare software, mentenanță, integrare) urmeaz�
 ## Temeiul legal
 
 ::: ghid-temei
-„`valideaza_prestare_ic(cod_tva_client, cod_valid_vies)` — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România; fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” — aplicația, dosarul F050.
+
 
 OPANAF 705/2020: „prestări servicii — în care se înscriu prestările intracomunitare de servicii (cod P)”. (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::

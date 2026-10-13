@@ -2,7 +2,7 @@
 title: Cum știu sigur dacă firma mea e plătitoare de impozit pe profit în 2026
 description: Statusul se verifică în câmpul „Regim fiscal" din Vector fiscal — dar câmpul reflectă ce a fost salvat, nu o interogare live la ANAF.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -18,7 +18,7 @@ poarta: v1
 **Art. 52 alin. (1) CF**: obligația de trecere la profit „începând cu trimestrul în care s-a depășit" plafonul de venituri, dacă depășirea are loc în cursul anului. Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
 :::
 
-Prima verificare, imediată: câmpul „Regim fiscal" din ecranul Date firmă → Vector fiscal, care poate fi „micro" sau „profit". Dacă e gol, vectorul nu e completat (`completat=False`), iar declarațiile dependente de regim apar gri în semafor, nu implicit „micro" sau „profit" — necompletarea nu are o valoare implicită tacită.
+Prima verificare, imediată: câmpul „Regim fiscal" din ecranul Date firmă → Vector fiscal, care poate fi „micro" sau „profit". Dacă e gol, vectorul nu e completat (vector fiscal necompletat), iar declarațiile dependente de regim apar gri în semafor, nu implicit „micro" sau „profit" — necompletarea nu are o valoare implicită tacită.
 
 A doua verificare, mai profundă: dacă valoarea salvată reflectă corect realitatea legală. Aplicația nu validează automat condițiile de eligibilitate din art. 47 (venituri, situații financiare, salariat, întreprinderi legate) — dacă firma a depășit plafonul în cursul anului fără ca cineva să actualizeze manual vectorul, câmpul poate arăta în continuare „micro", deși legal firma datorează deja impozit pe profit de la trimestrul depășirii.
 
@@ -32,6 +32,6 @@ Pentru certitudine completă, singura cale e verificarea manuală, periodică, a
 
 ## Ce face iConta.eu
 
-Endpoint-ul `GET /tenants/{id}/vector` întoarce vectorul salvat, plus flag-ul `completat = bool(regim_fiscal)` — dacă regimul nu a fost setat, semaforul de declarații arată explicit cauza, nu un implicit „micro". Comparația roșu/verde/gri față de ANAF există doar pentru statutul de plătitor TVA, nu pentru regimul de impozitare micro/profit — pentru acesta din urmă, nu există nicio verificare automată împotriva condițiilor legale din art. 47, responsabilitatea fiind integral a contabilului.
+Endpoint-ul aplicația întoarce vectorul salvat, plus flag-ul completat = bool(regimul fiscal (Date firmă)) — dacă regimul nu a fost setat, semaforul de declarații arată explicit cauza, nu un implicit „micro". Comparația roșu/verde/gri față de ANAF există doar pentru statutul de plătitor TVA, nu pentru regimul de impozitare micro/profit — pentru acesta din urmă, nu există nicio verificare automată împotriva condițiilor legale din art. 47, responsabilitatea fiind integral a contabilului.
 
 [iConta.eu](/)

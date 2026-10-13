@@ -2,7 +2,7 @@
 title: Un SRL nou poate avea TVA trimestrial?
 description: Da — dacă cifra de afaceri estimată pentru restul anului, recalculată proporțional, nu depășește plafonul și firma nu are deja achiziții intracomunitare.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Există o nuanță importantă între alin. (3) și alin. (4): alin. (3) vizeaz�
 
 ## Ce face iConta.eu
 
-Câmpul `tip_decont` din Vector fiscal permite alegerea „trimestrial" pentru orice firmă, inclusiv nou-înființată — aplicația nu impune automat „lunar" firmelor noi. Calculul specific al plafonului recalculat (proporțional cu lunile rămase, conform art. 322 alin. 3, sau la an calendaristic întreg, conform alin. 4) nu este automatizat — contabilul introduce direct periodicitatea aleasă, pe baza propriului calcul.
+Câmpul „periodicitatea TVA (Date firmă)” din Vector fiscal permite alegerea „trimestrial" pentru orice firmă, inclusiv nou-înființată — aplicația nu impune automat „lunar" firmelor noi. Calculul specific al plafonului recalculat (proporțional cu lunile rămase, conform art. 322 alin. 3, sau la an calendaristic întreg, conform alin. 4) nu este automatizat — contabilul introduce direct periodicitatea aleasă, pe baza propriului calcul.
 
 [iConta.eu](/)

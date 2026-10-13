@@ -2,7 +2,7 @@
 title: Când se plătesc contribuții la nivelul salariului minim pentru part-time?
 description: Când brutul contractual al unui part-time scade sub o „podea" minimă — salariul minim redus cu facilitatea aplicabilă, proratat pe fracțiunea de normă — CAS și CASS se calculează la acel nivel minim, nu pe brutul real.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Greșeala frecventă e aplicarea podelei pe salariul minim întreg, neproratat p
 
 ## Ce face iConta.eu
 
-Regula „baza_podea" verifică automat, pentru fiecare stat de plată, dacă brutul contractual e sub podeaua calculată pentru fereastra activă a lunii, și generează notele contabile de suprataxare (6451/4315, 6453/4316) doar când e cazul. Interpretarea privind proratarea e documentată explicit în cod și în aplicație (cheia `podea_part_time_minus_facilitate`), pentru trasabilitate.
+Regula „baza minimă a contribuțiilor" verifică automat, pentru fiecare stat de plată, dacă brutul contractual e sub podeaua calculată pentru fereastra activă a lunii, și generează notele contabile de suprataxare (6451/4315, 6453/4316) doar când e cazul. Interpretarea privind proratarea e documentată explicit în cod și în aplicație (cheia „baza minimă la timp parțial”), pentru trasabilitate.
 
 [iConta.eu](/)

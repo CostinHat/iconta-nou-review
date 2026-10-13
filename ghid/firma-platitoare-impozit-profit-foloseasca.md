@@ -2,7 +2,7 @@
 title: "O firmă plătitoare de impozit pe profit trebuie să folosească e-Factura?"
 description: "Obligativitatea RO e-Factura în relația B2B depinde de faptul că firma este persoană impozabilă stabilită în România, nu de regimul de impozitare (micro sau profit) pe care îl aplică."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Criteriul legal pentru obligativitate este, deci, altul decât regimul de impozi
 
 ## Ce face iConta.eu
 
-iConta.eu emite facturi și le transmite în sistemul RO e-Factura direct din aplicație (modulele `efactura_send` și `efactura_trimitere` din motorul aplicației), indiferent de regimul de impozitare al firmei — micro sau profit. Firma rămâne responsabilă să confirme corectitudinea datelor de facturare și să urmărească eventualele erori raportate de sistemul ANAF.
+iConta.eu emite facturi și le transmite în sistemul RO e-Factura direct din aplicație (modulele „transmiterea în RO e-Factura” și „evidența transmiterilor în RO e-Factura” din motorul aplicației), indiferent de regimul de impozitare al firmei — micro sau profit. Firma rămâne responsabilă să confirme corectitudinea datelor de facturare și să urmărească eventualele erori raportate de sistemul ANAF.
 
 [iConta.eu](/)

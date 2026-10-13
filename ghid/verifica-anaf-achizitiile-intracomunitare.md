@@ -2,7 +2,7 @@
 title: "Ce verifică ANAF la achizițiile intracomunitare?"
 description: "Cum se confruntă declarația recapitulativă 390 cu decontul de TVA și cu evidența contabilă la o achiziție intracomunitară, și ce arată un rezultat neconcordant la VIES."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Rezultatul acestor confruntări se citește pe un semafor cu trei culori, nu ca 
 
 iConta rulează exact aceste trei confruntări automat, pe fiecare firmă: D300 vs. evidența 4426/4427, D390 vs. evidența validată și D390 vs. D300 efectiv depus, afișând rezultatul pe semaforul verde/gri/roșu descris mai sus, nu ca un blocaj rigid la depunere. De reținut, punctual: verificarea live în VIES există în aplicație, dar nu e legată de „emiterea unei facturi" în general, ci de ecranul dedicat „Livrare/prestare intracomunitară" (vânzare-ic) — acolo, codul de TVA al clientului e interogat live în VIES înainte de a accepta scutirea, cu eroare explicită dacă serviciul e indisponibil. La achiziția intracomunitară (achiziție-ic), aplicația doar deduce automat țara furnizorului din prefixul codului de TVA introdus — nu face o interogare live în VIES a codului furnizorului.
 
-O limită de spus onest: D390 **nu se poate depune pe zero** — dacă luna nu are nicio operațiune intracomunitară, generarea e blocată, conform regulii că declarația recapitulativă se depune numai pentru lunile în care ia naștere exigibilitatea taxei. Iar dacă D301 arată achiziții intracomunitare într-o lună, dar D390 iese pe zero, aplicația semnalează explicit discrepanța, pentru că lipsește o informație obligatorie (de regulă țara furnizorului). În fine, iConta nu ține un cumul automat al pragului de 10.000 euro de achiziții intracomunitare (art. 268 alin. (4) lit. b), coroborat cu alin. (5)) care declanșează obligația de înregistrare specială art. 317 — acel flag (`inreg_art317`, boolean pe profilul firmei) rămâne o bifă manuală, nu un calcul urmărit automat de aplicație.
+O limită de spus onest: D390 **nu se poate depune pe zero** — dacă luna nu are nicio operațiune intracomunitară, generarea e blocată, conform regulii că declarația recapitulativă se depune numai pentru lunile în care ia naștere exigibilitatea taxei. Iar dacă D301 arată achiziții intracomunitare într-o lună, dar D390 iese pe zero, aplicația semnalează explicit discrepanța, pentru că lipsește o informație obligatorie (de regulă țara furnizorului). În fine, iConta nu ține un cumul automat al pragului de 10.000 euro de achiziții intracomunitare (art. 268 alin. (4) lit. b), coroborat cu alin. (5)) care declanșează obligația de înregistrare specială art. 317 — acel flag („înregistrare art.317 (Date firmă)”, boolean pe profilul firmei) rămâne o bifă manuală, nu un calcul urmărit automat de aplicație.
 
 [iConta.eu](/)

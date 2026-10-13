@@ -2,7 +2,7 @@
 title: Cum corectez o factură înregistrată cu valoarea greșită?
 description: O valoare greșită pe o factură deja introdusă nu se editează în iConta.eu. Fără notă contabilă, se șterge și se reintroduce cu suma corectă. Cu notă contabilă, corecția e exclusiv prin stornare — factura originală se anulează cu sumă negativă, apoi se introduce factura corectă.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -23,15 +23,15 @@ Partida dublă cere ca fiecare sumă înregistrată să corespundă exact opera�
 ## Cum corectez în iConta.eu
 
 - **Factura nu are încă notă contabilă** → se șterge și se reintroduce cu suma corectă.
-- **Factura are notă contabilă** (a fost deja contată cu suma greșită) → ștergerea e refuzată explicit („Corecția unei facturi contabilizate se face prin STORNO"). Pentru facturile emise, `storneaza()` creează o factură nouă cu liniile din original **negate** (deci exact valoarea greșită, cu semn opus), legată de original, apoi se introduce factura nouă, cu suma corectă.
+- **Factura are notă contabilă** (a fost deja contată cu suma greșită) → ștergerea e refuzată explicit („Corecția unei facturi contabilizate se face prin STORNO"). Pentru facturile emise, „stornarea” creează o factură nouă cu liniile din original **negate** (deci exact valoarea greșită, cu semn opus), legată de original, apoi se introduce factura nouă, cu suma corectă.
 - Efectul net contabil e: suma greșită + suma stornată (negativă) = zero, plus suma corectă din factura nouă — exact mecanismul „stornării în roșu" din pct. 69, aplicat la nivel de document.
-- Dacă doar nota contabilă are suma greșită (nu și factura), iar nota e încă ciornă, aceasta se poate corecta direct — `jurnal_api.editeaza` acceptă modificarea sumelor pe liniile unei note doar cât timp e ciornă; nota validează linii cu sumă strict pozitivă, deci suma corectă trebuie introdusă corect pe fiecare linie de debit/credit.
+- Dacă doar nota contabilă are suma greșită (nu și factura), iar nota e încă ciornă, aceasta se poate corecta direct — „editarea” acceptă modificarea sumelor pe liniile unei note doar cât timp e ciornă; nota validează linii cu sumă strict pozitivă, deci suma corectă trebuie introdusă corect pe fiecare linie de debit/credit.
 - Odată validată nota, aceeași regulă se aplică: nu există editare, doar o notă nouă de stornare.
 
 ## Ce se greșește în practică
 
 - Se editează suma direct pe factură sau pe o notă deja validată, așteptând ca aplicația să permită — funcția refuză explicit orice modificare pe o notă/factură deja fixată în evidență.
-- Se stornează doar parțial diferența (de exemplu se introduce o notă manuală cu diferența, fără să se treacă prin stornarea documentului) — riscul e ca legătura cu factura originală (`storno_din_id`) să se piardă, iar urmărirea corecției să devină greoaie.
+- Se stornează doar parțial diferența (de exemplu se introduce o notă manuală cu diferența, fără să se treacă prin stornarea documentului) — riscul e ca legătura cu factura originală („factura stornată (referința)”) să se piardă, iar urmărirea corecției să devină greoaie.
 - Se uită introducerea facturii corecte după stornare — rezultă doar anularea sumei greșite, fără înregistrarea operațiunii reale.
 
 ## Ce face iConta.eu

@@ -2,7 +2,7 @@
 title: "Impozit micro pentru organizarea de evenimente"
 description: "De la 1 ianuarie 2026 toate microîntreprinderile, inclusiv firmele din organizarea de evenimente sau cateringul pentru evenimente, plătesc o cotă unică de 1%, după eliminarea vechiului split 1%/3% pe coduri CAEN."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ O firmă care organizează evenimente (conferințe, târguri, petreceri corporat
 
 ## Ce face iConta.eu
 
-La calculul impozitului pentru firmele aflate în regim micro (declarația D100), iConta.eu aplică automat cota din registrul central de cote (cheia `"impozit_micro"`), citită prin aplicație. Registrul reține azi o singură valoare, 1%, valabilă din 2023, cu o notă explicită în cod care confirmă că OUG 89/2025 a eliminat de la 01.01.2026 splitul 1%/3% pe coduri CAEN și pragul de 60.000 euro asociat lui. Contabilul poate suprascrie manual cota dacă are un caz particular, dar nu există nicio logică în aplicație care să citească sau să diferențieze după codul CAEN al firmei — ceea ce, pentru 2026, corespunde exact legii: nu mai există nicio diferențiere de urmărit pe activitate.
+La calculul impozitului pentru firmele aflate în regim micro (declarația D100), iConta.eu aplică automat cota din registrul central de cote (cheia "cota impozitului micro"), citită prin aplicație. Registrul reține azi o singură valoare, 1%, valabilă din 2023, cu o notă explicită în cod care confirmă că OUG 89/2025 a eliminat de la 01.01.2026 splitul 1%/3% pe coduri CAEN și pragul de 60.000 euro asociat lui. Contabilul poate suprascrie manual cota dacă are un caz particular, dar nu există nicio logică în aplicație care să citească sau să diferențieze după codul CAEN al firmei — ceea ce, pentru 2026, corespunde exact legii: nu mai există nicio diferențiere de urmărit pe activitate.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Ce diferențe între SAF-T și D394 trebuie verificate?"
 description: "SAF-T (D406) și D394 nu raportează același lucru — D394 e o subselecție de tranzacții pe TVA, SAF-T e întreaga evidență contabilă. Ce merită comparat între ele."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Cele două declarații au baze legale, obligații și conținut diferite:
 
 Fereastra de date a SAF-T-ului urmează explicit perioada fiscală declarată pentru TVA a firmei (lunar sau trimestrial), nu doar luna-ancoră — o reparație aplicată de curând tocmai pentru ca SAF-T-ul unei firme trimestriale să conțină toate lunile perioadei, la fel ca D300 și D394 pentru același trimestru, nu doar o singură lună din trei.
 
-Aplicația nu are, la data acestui ghid, un modul dedicat de comparație automată între D394 și SAF-T — cele două sunt generatoare separate (`d394.py`, respectiv `d406.py`), cu propriile reguli de calcul, propriile validări locale pe validatorul oficial ANAF și propriile avertismente pentru date incomplete sau conturi neîncadrate în planul de conturi declarat. O verificare încrucișată punctuală, cifră cu cifră, între cele două rămâne o operațiune manuală a contabilului.
+Aplicația nu are, la data acestui ghid, un modul dedicat de comparație automată între D394 și SAF-T — cele două sunt generatoare separate (aplicația, respectiv aplicația), cu propriile reguli de calcul, propriile validări locale pe validatorul oficial ANAF și propriile avertismente pentru date incomplete sau conturi neîncadrate în planul de conturi declarat. O verificare încrucișată punctuală, cifră cu cifră, între cele două rămâne o operațiune manuală a contabilului.
 
 [iConta.eu](/)

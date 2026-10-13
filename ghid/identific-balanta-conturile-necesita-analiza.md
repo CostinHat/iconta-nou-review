@@ -2,19 +2,13 @@
 title: "Cum identific din balanță conturile care necesită analiză fiscală?"
 description: "Patru categorii de conturi din balanță cer atenție fiscală explicită la completarea D101: exploatare/financiar, capital, rezervă și impozitul pe profit."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum identific din balanță conturile care necesită analiză fiscală?
 
 Nu toate conturile din balanță au același impact asupra D101 — câteva grupuri cer verificare fiscală explicită.
-
-## Temeiul legal
-
-::: ghid-temei
-"`pull()` [...] citește profilul firmei + balanța, cu split exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare) și datele pentru rezerva legală (capital 1012, rezervă existentă 1061, cheltuială impozit 691)." — dosarul de cercetare F027, pe baza aplicația.
-:::
 
 Cele patru grupuri de urmărit:
 
@@ -29,6 +23,6 @@ Analiza fiscală superficială a balanței — tratarea tuturor conturilor la fe
 
 ## Ce face iConta.eu
 
-`pull()` citește automat aceste conturi din balanță. Rezerva legală se calculează automat dacă nu e introdusă manual, iar aplicația emite avertisment explicit pe contul 691 când semnalează un risc de subevaluare.
+„preluarea datelor” citește automat aceste conturi din balanță. Rezerva legală se calculează automat dacă nu e introdusă manual, iar aplicația emite avertisment explicit pe contul 691 când semnalează un risc de subevaluare.
 
 [iConta.eu](/)

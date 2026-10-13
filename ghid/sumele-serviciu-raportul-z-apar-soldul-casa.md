@@ -2,7 +2,7 @@
 title: "Sumele de serviciu din raportul Z: ce sunt și cum apar în soldul de casă?"
 description: "Sumele de serviciu sunt banii pentru rest dați casierului la începutul zilei. Nu sunt vânzări, apar distinct în raportul Z și se regăsesc în soldul contului de casă, inclusiv la sfârșitul zilei."
 published: 2026-10-02
-modified: 2026-10-02
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,7 +22,7 @@ Pentru contabil, sumele de serviciu explică diferența dintre numerarul din ser
 Ce rezultă:
 
 - **Nu sunt venit.** Sunt numerarul firmei mutat din casierie în sertarul casei de marcat. Încasările din vânzări sunt cele defalcate pe mijloace de plată în același raport.
-- **Apar în raportul Z separat de vânzări.** În structura XML a raportului de închidere zilnică aprobată prin OPANAF 146/2018 (anexa 2, secțiunea II.7) există două câmpuri distincte: sumele de serviciu declarate la începerea zilei de lucru (`sume_serv_in`) și cele declarate la sfârșitul ei (`sume_serv_out`).
+- **Apar în raportul Z separat de vânzări.** În structura XML a raportului de închidere zilnică aprobată prin OPANAF 146/2018 (anexa 2, secțiunea II.7) există două câmpuri distincte: sumele de serviciu declarate la începerea zilei de lucru („sumele de serviciu de la începutul zilei”) și cele declarate la sfârșitul ei („sumele de serviciu de la sfârșitul zilei”).
 - **Rămân în soldul contului de casă.** Sumele de serviciu nu scad soldul de casă al firmei. Banii sunt doar în alt loc, în sertar. La sfârșitul zilei, sertarul conține sumele de serviciu plus numerarul încasat.
 - **Legătura cu documentele justificative.** OUG 28/1999 cere document pentru sumele introduse în unitatea de vânzare care nu provin din bonuri sau din registrul special (art. 4 alin. (12) lit. h)). Sumele de serviciu sunt declarate în aparat și apar în raportul Z. Prudent este să existe și un document pentru mutarea lor din casieria firmei, mai ales când casieria e ținută separat.
 

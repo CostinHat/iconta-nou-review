@@ -2,7 +2,7 @@
 title: Trebuie raportate toate conturile din balanță în SAF-T?
 description: Nu — se raportează doar conturile care există în nomenclatorul oficial al normei contabile declarate de firmă; conturile "străine" acelui nomenclator sunt excluse automat din fișierul XML.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -17,10 +17,10 @@ Un contabil care se uită prima dată la o declarație D406 generată se poate �
 (denumire, adresa, cod de înregistrare fiscală), contul analitic în care este înregistrat
 soldul clientului respectiv, soldul iniţial debitor/creditor, sold final debitor/creditor
 etc."
-(opanaf_1783_2021_saft_d406.txt, Anexa 1, pct. 5, tabelul cu structura AuditFile)
+(OPANAF 1783/2021 (SAF-T, D406), Anexa 1, pct. 5, tabelul cu structura AuditFile)
 
 "NOTĂ: Secţiunea "Taxonomies" (Taxonomii) nu va trebui raportată în D406."
-(opanaf_1783_2021_saft_d406.txt, Anexa 1, pct. 5, nota de sub tabel)
+(OPANAF 1783/2021 (SAF-T, D406), Anexa 1, pct. 5, nota de sub tabel)
 :::
 
 ## De ce lipsesc unele conturi

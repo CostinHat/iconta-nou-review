@@ -2,7 +2,7 @@
 title: "Cum se transferă materiale între șantiere?"
 description: Șantierele sunt, prin natura lor, gestiuni dispersate teritorial - documentul obligatoriu pentru transportul materialelor între ele este avizul de însoțire a mărfii, nu bonul de transfer intern. Costul mediu rămâne unic pe firmă.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Primul text fixează documentul: pentru un transfer de materiale între două ș
 
 ## Ce face iConta.eu
 
-Transferul între gestiuni din iConta.eu (F138) tratează un șantier ca pe orice altă locație de stoc: înregistrează o ieșire din șantierul sursă și o intrare în șantierul destinație, la costul mediu ponderat (CMP) curent al firmei — un singur CMP, global, indiferent de câte șantiere/locații aveți active. Aplicația nu diferențiază automat, la nivel de cod, dacă două locații sunt „în aceeași incintă" sau „dispersate teritorial" — tratează orice pereche de locații identic, ca simplă etichetă text. Decizia privind documentul corect (14-3-6A pentru șantiere, în marea majoritate a cazurilor) rămâne de luat de dvs., pe baza distanței reale dintre punctele de lucru, iar iConta.eu nu generează formularul respectiv ca document tipizat — doar înregistrarea internă de stoc.
+Transferul între gestiuni din iConta.eu („Transfer între gestiuni”) tratează un șantier ca pe orice altă locație de stoc: înregistrează o ieșire din șantierul sursă și o intrare în șantierul destinație, la costul mediu ponderat (CMP) curent al firmei — un singur CMP, global, indiferent de câte șantiere/locații aveți active. Aplicația nu diferențiază automat, la nivel de cod, dacă două locații sunt „în aceeași incintă" sau „dispersate teritorial" — tratează orice pereche de locații identic, ca simplă etichetă text. Decizia privind documentul corect (14-3-6A pentru șantiere, în marea majoritate a cazurilor) rămâne de luat de dvs., pe baza distanței reale dintre punctele de lucru, iar iConta.eu nu generează formularul respectiv ca document tipizat — doar înregistrarea internă de stoc.
 
 [iConta.eu](/)

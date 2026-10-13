@@ -2,7 +2,7 @@
 title: "Linii de credit pentru acoperirea decalajului de cash 2026"
 description: "Ce spune Codul fiscal despre deductibilitatea dobânzii la liniile de credit folosite pentru acoperirea decalajelor de trezorerie."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Tradus pentru o linie de credit de trezorerie:
 
 ## Ce face iConta.eu
 
-Acest subiect ține de gestiunea trezoreriei și de limitarea deductibilității dobânzii pe termen scurt, nu de funcționalitatea F086 (sponsorizări și credit fiscal) cercetată pentru acest ghid — F086 privește exclusiv creditul fiscal obținut prin sponsorizare, un mecanism complet diferit de deductibilitatea dobânzii la un credit bancar. Cercetarea de față a verificat direct în cod doar motorul de sponsorizări și garda de plafon din D101; nu avem, în acest dosar, nicio verificare a vreunui modul din iConta.eu care să calculeze plafonul costurilor excedentare ale îndatorării (art. 40^2) sau să simuleze o linie de credit, așa că nu afirmăm aici nici că aplicația automatizează acest calcul, nici că nu-l automatizează — subiectul rămâne, pentru moment, în afara cercetării verificate disponibile.
+Acest subiect ține de gestiunea trezoreriei și de limitarea deductibilității dobânzii pe termen scurt, nu de funcționalitatea „Sponsorizări și credit fiscal” cercetată pentru acest ghid — „Sponsorizări și credit fiscal” privește exclusiv creditul fiscal obținut prin sponsorizare, un mecanism complet diferit de deductibilitatea dobânzii la un credit bancar. Cercetarea de față a verificat direct în cod doar motorul de sponsorizări și garda de plafon din D101; nu avem, în acest dosar, nicio verificare a vreunui modul din iConta.eu care să calculeze plafonul costurilor excedentare ale îndatorării (art. 40^2) sau să simuleze o linie de credit, așa că nu afirmăm aici nici că aplicația automatizează acest calcul, nici că nu-l automatizează — subiectul rămâne, pentru moment, în afara cercetării verificate disponibile.
 
 [iConta.eu](/)

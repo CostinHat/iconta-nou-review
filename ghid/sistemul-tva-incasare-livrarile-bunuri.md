@@ -2,7 +2,7 @@
 title: Sistemul TVA la încasare la livrările de bunuri cu plata în rate
 description: La o livrare cu plata eșalonată, TVA la încasare devine exigibilă separat pentru fiecare rată încasată, prin sută mărită — dar cota aplicabilă rămâne cea fixată o singură dată, la faptul generator sau la factură/avans, nu se recalculează la fiecare tranșă.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Ce **nu** se schimbă de la o rată la alta e cota aplicabilă. Art. 291 alin. (
 
 ## Ce face iConta.eu
 
-Motorul de calcul extrage TVA exigibil din fiecare sumă încasată prin sută mărită (`suma × cotă/(100+cotă)`) și agregă rezultatele pe cotă pentru mai multe încasări/alocări (`tva_exigibil_alocari`). Alegerea între cota de la faptul generator și cota de la factură/avans (ramura din art. 291 alin. (5)) **nu e dedusă automat** — contabilul o selectează manual, pentru fiecare operațiune, în ecranul dedicat.
+Motorul de calcul extrage TVA exigibil din fiecare sumă încasată prin sută mărită (`suma × cotă/(100+cotă)`) și agregă rezultatele pe cotă pentru mai multe încasări/alocări („TVA-ul exigibil pe cote”). Alegerea între cota de la faptul generator și cota de la factură/avans (ramura din art. 291 alin. (5)) **nu e dedusă automat** — contabilul o selectează manual, pentru fiecare operațiune, în ecranul dedicat.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Stocuri acordate drept sponsorizare: cum se descarcă"
 description: "Regimul TVA al stocurilor acordate cu titlu gratuit în cadrul unei sponsorizări: plafonul de 3 la mie din cifra de afaceri și condițiile în care nu se colectează taxă."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Din text rezultă mecanismul concret de urmărit la descărcarea din gestiune:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează **creditul fiscal de sponsorizare** (art. 25 alin. (4) lit. i) din Codul fiscal) în aplicație, prin funcția `credit_sponsorizare()`, dar înregistrarea contabilă suportată pentru sponsorizare (`nota_sponsorizare()`) acoperă doar varianta în bani — contul 6582 în corespondență cu 401 (pe contract) sau 5121 (plată directă). Nu există în cod nicio funcție dedicată descărcării de gestiune a stocurilor acordate pentru sponsorizare și nicio verificare automată a plafonului de 3 la mie din cifra de afaceri. Contabilul trebuie să urmărească manual acest plafon și să înregistreze separat autofactura de TVA în cazul depășirii.
+La data acestui ghid, iConta.eu calculează **creditul fiscal de sponsorizare** (art. 25 alin. (4) lit. i) din Codul fiscal) în aplicație, prin funcția „creditul fiscal pentru sponsorizări (Operațiuni speciale)”, dar înregistrarea contabilă suportată pentru sponsorizare („nota de sponsorizare”) acoperă doar varianta în bani — contul 6582 în corespondență cu 401 (pe contract) sau 5121 (plată directă). Nu există în cod nicio funcție dedicată descărcării de gestiune a stocurilor acordate pentru sponsorizare și nicio verificare automată a plafonului de 3 la mie din cifra de afaceri. Contabilul trebuie să urmărească manual acest plafon și să înregistreze separat autofactura de TVA în cazul depășirii.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Reducerea dobânzilor dacă plătesc mai repede"
 description: "Precizare: nu e o reducere de dobânzi, ci o bonificație de 3% din impozitul pe profit/impozitul micro anual, condiționată de depunerea la timp a declarațiilor și plata integrală."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -21,7 +21,7 @@ Titlul acestei întrebări se referă, în practică, la un mecanism care nu est
 Precizări importante despre acest mecanism:
 
 - Nu este o **reducere a dobânzilor de întârziere** — este o **bonificație de 3%** aplicată impozitului anual pe profit sau impozitului pe veniturile microîntreprinderilor, deci o reducere a impozitului însuși, nu a accesoriilor.
-- Condiția de bază, potrivit textului sursă mai larg al articolului (a se vedea și cod_fiscal_227_2015_consolidat.txt, linia care detaliază condițiile), este ca firma să aibă **depuse toate declarațiile** conform vectorului fiscal — deci disciplina declarativă, nu doar viteza de plată, contează.
+- Condiția de bază, potrivit textului sursă mai larg al articolului (a se vedea și Codul fiscal (Legea 227/2015), forma consolidată, linia care detaliază condițiile), este ca firma să aibă **depuse toate declarațiile** conform vectorului fiscal — deci disciplina declarativă, nu doar viteza de plată, contează.
 - Bonificația nu se restituie în bani — sumele se utilizează pentru compensare cu alte obligații fiscale ale contribuabilului.
 
 ## Ce se greșește în practică

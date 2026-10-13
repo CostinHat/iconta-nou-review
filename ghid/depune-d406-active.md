@@ -2,7 +2,7 @@
 title: "Când se depune D406 Active?"
 description: "Termenul de depunere a secțiunii Active din declarația SAF-T (D406): o singură depunere anuală, la termenul situațiilor financiare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Trei lucruri rezultă direct din text:
 
 ## Ce face iConta.eu
 
-Generatorul secțiunii Active calculează corect motorul de amortizare pe patru metode (liniară/degresivă/accelerată/superaccelerată, verificat câmp cu câmp cu structura oficială `Asset/Valuations`) și produce fragmentul XML `<Assets>` pornind din registrul de mijloace fixe al firmei. La data acestui ghid, ruta care expune acest calcul (`GET /tenants/{id}/d406-active`) există și funcționează, dar întoarce **doar fragmentul `<Assets>`**, nu un `<AuditFile>` complet, depunibil ca atare la ANAF — iar acest fragment nu are încă un ecran propriu în aplicație (comentariul din cod marchează explicit ruta ca „fără UI încă, păstrat deliberat"). Generatorul fișierului complet există la nivel de motor și a fost probat ca valid pe validatorul oficial DUK, dar nu e conectat la nicio rută accesibilă azi din interfață. Practic: calculul de amortizare pentru Active e corect și verificabil, dar depunerea propriu-zisă a declarației Active nu e încă disponibilă din ecranele aplicației.
+Generatorul secțiunii Active calculează corect motorul de amortizare pe patru metode (liniară/degresivă/accelerată/superaccelerată, verificat câmp cu câmp cu structura oficială `Asset/Valuations`) și produce fragmentul XML `<Assets>` pornind din registrul de mijloace fixe al firmei. La data acestui ghid, ruta care expune acest calcul (aplicația) există și funcționează, dar întoarce **doar fragmentul `<Assets>`**, nu un `<AuditFile>` complet, depunibil ca atare la ANAF — iar acest fragment nu are încă un ecran propriu în aplicație (comentariul din cod marchează explicit ruta ca „fără UI încă, păstrat deliberat"). Generatorul fișierului complet există la nivel de motor și a fost probat ca valid pe validatorul oficial DUK, dar nu e conectat la nicio rută accesibilă azi din interfață. Practic: calculul de amortizare pentru Active e corect și verificabil, dar depunerea propriu-zisă a declarației Active nu e încă disponibilă din ecranele aplicației.
 
 [iConta.eu](/)

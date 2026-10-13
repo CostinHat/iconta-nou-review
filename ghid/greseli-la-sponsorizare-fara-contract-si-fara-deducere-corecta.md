@@ -2,7 +2,7 @@
 title: Greșeli la sponsorizare: fără contract și fără deducere corectă
 description: Lipsa contractului scris (obligatoriu potrivit Legii nr. 32/1994) și deducerea greșită a plafonului fiscal sunt cele două erori care riscă cel mai mult creditul de sponsorizare — fiecare poate anula integral avantajul, nu doar reduce suma dedusă.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -58,8 +58,8 @@ O firmă semnează un contract de sponsorizare cu o asociație în martie 2026, 
 
 ## Ce face iConta.eu
 
-Funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="profit", beneficiar_in_registru=True, la_data=None)` din aplicație respinge explicit creditul dacă `beneficiar_in_registru=False`: rezultatul e credit 0, cu o notă de respingere — motorul reflectă corect faptul că lipsa înscrierii anulează întregul credit, nu doar excedentul. Ce motorul **nu poate verifica automat** este dacă acel parametru reflectă corect data încheierii contractului (nu data plății), și nici dacă există efectiv un contract scris valid, sau dacă beneficiarul se încadrează la excluderile din art. 6 al Legii nr. 32/1994 — acestea rămân verificări manuale, în afara calculului.
+Funcția „creditul fiscal pentru sponsorizări (Operațiuni speciale)” din aplicație respinge explicit creditul dacă beneficiar în registrul entităților=False: rezultatul e credit 0, cu o notă de respingere — motorul reflectă corect faptul că lipsa înscrierii anulează întregul credit, nu doar excedentul. Ce motorul **nu poate verifica automat** este dacă acel parametru reflectă corect data încheierii contractului (nu data plății), și nici dacă există efectiv un contract scris valid, sau dacă beneficiarul se încadrează la excluderile din art. 6 al Legii nr. 32/1994 — acestea rămân verificări manuale, în afara calculului.
 
-Pentru înregistrarea contabilă, `nota_sponsorizare(suma, mod)` generează `6582 = 401` pentru sponsorizarea pe bază de contract sau `6582 = 5121` pentru plata directă, izolând suma de alte cheltuieli — dar folosirea corectă a acestei funcții nu înlocuiește verificarea condițiilor de fond ale contractului și ale beneficiarului, descrise mai sus.
+Pentru înregistrarea contabilă, „nota de sponsorizare” generează `6582 = 401` pentru sponsorizarea pe bază de contract sau `6582 = 5121` pentru plata directă, izolând suma de alte cheltuieli — dar folosirea corectă a acestei funcții nu înlocuiește verificarea condițiilor de fond ale contractului și ale beneficiarului, descrise mai sus.
 
 [iConta.eu](/)

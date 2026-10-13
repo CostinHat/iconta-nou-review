@@ -2,7 +2,7 @@
 title: "Cum se depune o declarație rectificativă pentru impozitul micro?"
 description: "Fluxul legal și practic pentru corectarea unei declarații D100 pe impozitul pe veniturile microîntreprinderilor (cod 121), prin declarația 710."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Dacă ai declarat greșit impozitul pe veniturile microîntreprinderilor prin fo
 
 iConta.eu generează efectiv formularul 710 pentru cod de obligație 121 (impozit micro), din ecranul **Declarații** → tip D710 → perioadă (trimestru) → panoul „Obligații corectate": se alege codul 121, se completează suma declarată inițial, suma corectă și cota de impozitare (câmpul de cotă apare automat doar la acest cod). Declarația e trecută prin validatorul oficial ANAF (DUK) înainte de a fi considerată validă, iar aplicația blochează explicit cazurile clar greșite — cotă lipsă la cod 121, CUI invalid, sume negative sau declarație goală — cu mesaj de eroare, nu cu o excepție tehnică. Pentru trimestrul IV, aplicația calculează automat scadența specială (25 iunie anul următor, în loc de 25 ianuarie).
 
-O limitare reală, verificată în cod: motorul suportă și o **deducere** (`suma_ded`) la corecțiile pe cod 121, dar formularul din ecranul Declarații **nu are încă un câmp pentru ea** — doar cod, sumă inițială, sumă corectă și cotă. Dacă rectificativa ta implică o deducere, ea nu poate fi introdusă azi direct din formularul vizibil.
+O limitare reală, verificată în cod: motorul suportă și o **deducere** („deducerea”) la corecțiile pe cod 121, dar formularul din ecranul Declarații **nu are încă un câmp pentru ea** — doar cod, sumă inițială, sumă corectă și cotă. Dacă rectificativa ta implică o deducere, ea nu poate fi introdusă azi direct din formularul vizibil.
 
 De asemenea, iConta.eu **nu depune automat** declarația la ANAF/SPV și nu confirmă automat că rectificativa a înlocuit declarația inițială — generează XML-ul validat; depunerea efectivă în portalul SPV rămâne un pas separat, făcut de contabil.
 

@@ -2,20 +2,13 @@
 title: "Cum corectez impozitul pe dividende calculat greșit?"
 description: "Ce verifică motorul D205 automat înainte de generare și cum se corectează o valoare greșită a impozitului pe dividende, la sursă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum corectez impozitul pe dividende calculat greșit?
 
 Impozitul pe dividende afișat greșit în D205 are aproape întotdeauna cauza în datele sursă (notele contabile pe contul 457 sau cotele asociaților), nu într-o eroare de calcul izolată — de aceea corecția trebuie făcută acolo, nu direct în declarație.
-
-## Temeiul legal
-
-::: ghid-temei
-"[...] recalculează INDEPENDENT (SQL propriu, aceeași formulă) baza și impozitul per beneficiar din contul 457 și compară cu ce a produs generatorul; orice divergență blochează generarea (`ReconciliereD205`)."
-— descriere a modulului aplicația, verificată în sursă
-:::
 
 ## Ce se greșește în practică
 

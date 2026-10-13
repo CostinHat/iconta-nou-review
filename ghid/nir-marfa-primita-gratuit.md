@@ -2,7 +2,7 @@
 title: "Se face NIR pentru marfa primită gratuit?"
 description: "Când e obligatorie Nota de recepție pentru mărfurile primite cu titlu gratuit, conform OMFP 2634/2015, și ce document o poate înlocui."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Rezultă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația oferă funcția generală `intrare()` pentru încărcarea cantitativă în gestiune, indiferent de sursa documentului (factură, aviz sau NIR). Aplicația nu are un câmp sau flux dedicat „marfă primită gratuit" care să aplice automat criteriile de mai sus și să decidă dacă NIR e sau nu obligatoriu — alegerea documentului de recepție și verificarea diferențelor rămân, azi, în sarcina contabilului.
+La data acestui ghid, aplicația oferă funcția generală „intrarea în stoc” pentru încărcarea cantitativă în gestiune, indiferent de sursa documentului (factură, aviz sau NIR). Aplicația nu are un câmp sau flux dedicat „marfă primită gratuit" care să aplice automat criteriile de mai sus și să decidă dacă NIR e sau nu obligatoriu — alegerea documentului de recepție și verificarea diferențelor rămân, azi, în sarcina contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum se înregistrează o factură de hosting primită din UE?
 description: O factură de hosting de la un furnizor stabilit în UE se declară, pentru firma română neplătitoare de TVA, în Secțiunea 4.1 a D301, prin taxare inversă conform art. 307 alin. (2); dacă lipsește factura, se emite autofactură.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -44,7 +44,7 @@ Aceste sume se raportează în Secțiunea 4.1 din D301, pentru luna exigibilită
 
 ## Ce face iConta.eu
 
-Baza de impozitare se calculează automat de aplicație (`baza = round(val_valuta × curs, 0)`), cu rotunjire aritmetică (`ROUND_HALF_UP`), iar generarea declarației este refuzată explicit dacă lipsește cursul valutar sau acesta este introdus ca zero sau negativ — cursul valabil la data exigibilității trebuie introdus manual de contabil, aplicația nu are o integrare automată cu cursul BNR sau BCE.
+Baza de impozitare se calculează automat de aplicație (baza = round(valoarea în valută × curs, 0)), cu rotunjire aritmetică („rotunjirea aritmetică (jumătatea în sus)”), iar generarea declarației este refuzată explicit dacă lipsește cursul valutar sau acesta este introdus ca zero sau negativ — cursul valabil la data exigibilității trebuie introdus manual de contabil, aplicația nu are o integrare automată cu cursul BNR sau BCE.
 
 Pentru operațiunile de tip servicii intracomunitare (Secțiunea 4.1), aplicația validează tipul, valuta (dintr-un nomenclator dedicat), valoarea în valută, cursul și cota aplicabilă perioadei, și face rollup-ul cerut de instrucțiunile OPANAF 592/2016 în totalul Secțiunii 4. Aplicația nu emite automat autofactura prevăzută de art. 320 și nu validează țara furnizorului împotriva unei liste de state membre UE — aceste verificări rămân responsabilitatea contabilului.
 

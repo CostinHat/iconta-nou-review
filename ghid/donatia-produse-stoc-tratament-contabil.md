@@ -2,7 +2,7 @@
 title: "Donația de produse din stoc: tratament contabil"
 description: "De ce donarea unor bunuri din stoc, pentru care TVA a fost dedusă la achiziție, e asimilată unei livrări cu plată și trebuie taxată la ieșirea din gestiune."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce înseamnă asta în practică:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un flux dedicat pentru donația de produse din stoc**. Aplicația are module pentru descărcarea de gestiune la vânzare (cu funcția `descarcare_gv`), pentru sponsorizări deductibile prin credit fiscal (cu funcțiile `credit_sponsorizare` și `nota_sponsorizare`, aplicabile însă sponsorizărilor în bani sau prin contracte de sponsorizare, nu donațiilor directe de marfă), dar niciunul dintre ele nu calculează automat TVA colectată la o livrare către sine conform art. 270 alin. (4). Înregistrarea corectă — descărcare de gestiune la cost plus autofactură cu TVA colectată — rămâne o operațiune manuală, pe baza documentației întocmite de contabil.
+La data acestui ghid, iConta.eu **nu are un flux dedicat pentru donația de produse din stoc**. Aplicația are module pentru descărcarea de gestiune la vânzare (cu funcția „descărcarea global-valorică (Stocuri)”), pentru sponsorizări deductibile prin credit fiscal (cu funcțiile „creditul fiscal pentru sponsorizări (Operațiuni speciale)” și „nota de sponsorizare”, aplicabile însă sponsorizărilor în bani sau prin contracte de sponsorizare, nu donațiilor directe de marfă), dar niciunul dintre ele nu calculează automat TVA colectată la o livrare către sine conform art. 270 alin. (4). Înregistrarea corectă — descărcare de gestiune la cost plus autofactură cu TVA colectată — rămâne o operațiune manuală, pe baza documentației întocmite de contabil.
 
 [iConta.eu](/)

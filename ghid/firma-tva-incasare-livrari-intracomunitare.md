@@ -2,7 +2,7 @@
 title: Firmă cu TVA la încasare și livrări intracomunitare
 description: Livrările intracomunitare scutite rămân pe regulile generale de exigibilitate, chiar dacă firma e înscrisă în sistemul TVA la încasare.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Practic, o firmă cu TVA la încasare continuă să aplice mecanismul de încasa
 
 ## Ce face iConta.eu
 
-Codul confirmă separarea: Aplicația exclude explicit din calculul prin `tva_incasare.tva_din_incasare()` operațiunile care nu intră sub mecanismul de încasare, iar comentariul din sursă precizează regula pentru taxarea inversă (art. 282 alin. 6) — aceeași logică de excludere se aplică oricărei operațiuni de la alin. (6), inclusiv livrărilor scutite. Cercetarea de față nu a verificat separat, linie cu linie, raportarea specifică a livrărilor intracomunitare în D390 din perspectiva TVA la încasare — pentru situații punctuale, recomandăm verificarea directă în aplicație.
+Codul confirmă separarea: Aplicația exclude explicit din calculul prin „TVA-ul exigibil la încasare” operațiunile care nu intră sub mecanismul de încasare, iar comentariul din sursă precizează regula pentru taxarea inversă (art. 282 alin. 6) — aceeași logică de excludere se aplică oricărei operațiuni de la alin. (6), inclusiv livrărilor scutite. Cercetarea de față nu a verificat separat, linie cu linie, raportarea specifică a livrărilor intracomunitare în D390 din perspectiva TVA la încasare — pentru situații punctuale, recomandăm verificarea directă în aplicație.
 
 [iConta.eu](/)

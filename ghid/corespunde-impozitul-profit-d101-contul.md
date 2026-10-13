@@ -2,7 +2,7 @@
 title: "De ce nu corespunde impozitul pe profit din D101 cu contul 4411?"
 description: "Explică onest ce verifică aplicația (contul 691 și structura balanței) și ce nu acoperă (soldul de bilanț 4411)."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -12,7 +12,7 @@ poarta: v1
 
 ::: ghid-temei
 CF art.25 alin.(4) lit.a): cheltuiala cu impozitul pe profit (cont contabil 691) este nedeductibilă și trebuie adăugată înapoi la baza impozabilă.
-— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F027.
+— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), documentația aplicației.
 :::
 
 Sursele verificate în acest dosar arată că motorul D101 verifică explicit contul 691 (cheltuiala cu impozitul pe profit, cont de rezultat) și structura balanței pe clase (66/76 financiar, 7x/6x exploatare), dar nu confirmă o comparație explicită cu soldul contului de bilanț 4411 (impozit pe profit datorat).

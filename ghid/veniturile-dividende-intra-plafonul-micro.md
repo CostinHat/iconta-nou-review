@@ -2,7 +2,7 @@
 title: "Veniturile din dividende intră în plafonul micro?"
 description: "Ce curs și ce categorie de venituri contează la verificarea plafonului de 100.000 EUR pentru microîntreprinderi, și dacă dividendele primite de la o altă firmă românească intră în calcul."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,8 +35,8 @@ Din cele două texte rezultă două lucruri diferite, care nu trebuie confundate
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu urmărește și nu calculează automat plafonul de 100.000 EUR** al microîntreprinderii. Verificat direct în cod: nu există nicio constantă sau funcție de plafon micro în motorul fiscal — regimul fiscal al firmei (`regim_fiscal`) e un câmp introdus manual de contabil, iar aplicația nu compară veniturile cumulate ale firmei cu pragul legal pentru a semnala automat o eventuală trecere la impozit pe profit.
+La data acestui ghid, iConta.eu **nu urmărește și nu calculează automat plafonul de 100.000 EUR** al microîntreprinderii. Verificat direct în cod: nu există nicio constantă sau funcție de plafon micro în motorul fiscal — regimul fiscal al firmei („regimul fiscal (Date firmă)”) e un câmp introdus manual de contabil, iar aplicația nu compară veniturile cumulate ale firmei cu pragul legal pentru a semnala automat o eventuală trecere la impozit pe profit.
 
-Ce face aplicația, prin **F029 (D205 + distribuire dividende)**, este partea complementară: calculează impozitul reținut la sursă pe dividendele pe care firma le **plătește** propriilor asociați (cota 16% de la 01.01.2026, generarea automată a declarației D205 din contul 457). Situația din acest ghid — dividende **primite** de firmă de la o altă societate — e un subiect distinct, pe care aplicația nu îl monitorizează în raport cu plafonul micro. Calculul propriu-zis al plafonului rămâne, azi, în responsabilitatea contabilului.
+Ce face aplicația, prin **„Declarația D205 și distribuirea dividendelor” (D205 + distribuire dividende)**, este partea complementară: calculează impozitul reținut la sursă pe dividendele pe care firma le **plătește** propriilor asociați (cota 16% de la 01.01.2026, generarea automată a declarației D205 din contul 457). Situația din acest ghid — dividende **primite** de firmă de la o altă societate — e un subiect distinct, pe care aplicația nu îl monitorizează în raport cu plafonul micro. Calculul propriu-zis al plafonului rămâne, azi, în responsabilitatea contabilului.
 
 [iConta.eu](/)

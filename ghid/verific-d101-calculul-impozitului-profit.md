@@ -2,7 +2,7 @@
 title: "Cum verific D101 cu calculul impozitului pe profit?"
 description: "Descrie mecanismele de verificare confirmate în cod pentru validarea D101 față de calculul propriu al impozitului pe profit."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -12,7 +12,7 @@ poarta: v1
 
 ::: ghid-temei
 Art.17 CF: "Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
-— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F027.
+— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), documentația aplicației.
 :::
 
 D101 aplică cota de 16% (art.17) pe profitul impozabil (P40 → P411), rezultat din profitul contabil ajustat cu deducerile (P11, P13) și cheltuielile nedeductibile (P23/P34). Pentru validare, motorul rulează verificări proprii înainte de generare.

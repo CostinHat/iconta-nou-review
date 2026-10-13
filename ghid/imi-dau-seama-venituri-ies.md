@@ -2,7 +2,7 @@
 title: "Cum îmi dau seama de la ce venituri ies din micro"
 description: "Plafonul de venituri de 100.000 euro pentru 2026 și momentul din care o microîntreprindere trece la impozit pe profit, potrivit Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce trebuie urmărit concret în 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu verifică și nu semnalează automat** depășirea plafonului de 100.000 euro — nu există, în cod, nicio constantă a plafonului micro (confirmat explicit în comentariile din aplicație); regimul fiscal (`regim_fiscal`) rămâne un câmp declarat manual de contabil, la Date firmă. Verificarea cumulării cu veniturile unor întreprinderi legate externe (alte firme sau PFA-uri ale asociaților, care nu sunt gestionate în același cont iConta.eu) rămâne, firesc, în sarcina utilizatorului, pentru că aplicația nu are acces la evidențele altor entități din afara ei.
+La data acestui ghid, iConta.eu **nu verifică și nu semnalează automat** depășirea plafonului de 100.000 euro — nu există, în cod, nicio constantă a plafonului micro (confirmat explicit în comentariile din aplicație); regimul fiscal („regimul fiscal (Date firmă)”) rămâne un câmp declarat manual de contabil, la Date firmă. Verificarea cumulării cu veniturile unor întreprinderi legate externe (alte firme sau PFA-uri ale asociaților, care nu sunt gestionate în același cont iConta.eu) rămâne, firesc, în sarcina utilizatorului, pentru că aplicația nu are acces la evidențele altor entități din afara ei.
 
 [iConta.eu](/)

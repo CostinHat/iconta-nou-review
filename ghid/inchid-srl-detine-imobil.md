@@ -2,20 +2,13 @@
 title: Cum închid un SRL care deține un imobil?
 description: Ce spune legea despre vânzarea unui imobil în cursul lichidării și cum generează iConta.eu automat nota contabilă aferentă.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum închid un SRL care deține un imobil?
 
 Un imobil rămas în patrimoniul societății la data dizolvării nu blochează lichidarea — legea permite explicit lichidatorilor să vândă imobilele, pentru a transforma acest activ în lichidități care apoi intră în circuitul de stingere a pasivului și, eventual, de partaj.
-
-## Temeiul legal
-
-::: ghid-temei
-„lichidatorii pot [...] «să vândă, prin licitație publică, imobilele și orice avere mobiliară a societății»"
-— L31/1990, art. 255 alin. (1) lit. c) (citat în dosarul de cercetare F057)
-:::
 
 Această prevedere se coroboră cu păstrarea personalității juridice a societății „pentru operațiunile lichidării, până la terminarea acesteia" (L31/1990, art. 233 alin. 4) — societatea în lichidare rămâne, deci, pe deplin capabilă să vândă imobilul, să emită factură și să încaseze prețul.
 

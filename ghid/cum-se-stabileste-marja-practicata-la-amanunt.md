@@ -2,7 +2,7 @@
 title: Cum se stabilește marja practicată la amănunt?
 description: La metoda global-valorică marja (adaosul comercial) nu se introduce separat, ci rezultă din diferența dintre prețul de vânzare cu amănuntul și costul de achiziție, cu TVA extras din preț prin formula sutei mărite.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -60,6 +60,6 @@ Dacă în schimb comerciantul stabilește prețul de vânzare la exact 121 lei (
 
 ## Ce face iConta.eu
 
-La recepția în regim global-valoric, `nir_gv` calculează mai întâi costul de achiziție al fiecărei linii (cantitate × preț achiziție, plus partea proporțională din transport și taxe capitalizate, cu restul de rotunjire alocat pe ultima linie). Pentru prețul de vânzare introdus (cu TVA inclus), funcția extrage TVA prin formula sutei mărite (`tva = vanz × cota/(100+cota)`), apoi calculează adaosul ca diferență între vânzare, TVA și cost. Dacă prețul de vânzare introdus e sub costul de achiziție, sau dacă adaosul rezultat ar fi negativ, aplicația refuză operațiunea — o gardă împotriva erorilor de tastare la introducerea prețurilor, nu o interdicție impusă de lege.
+La recepția în regim global-valoric, „NIR global-valoric (Stocuri)” calculează mai întâi costul de achiziție al fiecărei linii (cantitate × preț achiziție, plus partea proporțională din transport și taxe capitalizate, cu restul de rotunjire alocat pe ultima linie). Pentru prețul de vânzare introdus (cu TVA inclus), funcția extrage TVA prin formula sutei mărite (`tva = vanz × cota/(100+cota)`), apoi calculează adaosul ca diferență între vânzare, TVA și cost. Dacă prețul de vânzare introdus e sub costul de achiziție, sau dacă adaosul rezultat ar fi negativ, aplicația refuză operațiunea — o gardă împotriva erorilor de tastare la introducerea prețurilor, nu o interdicție impusă de lege.
 
 [iConta.eu](/)

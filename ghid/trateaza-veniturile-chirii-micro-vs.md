@@ -2,7 +2,7 @@
 title: "Cum se tratează veniturile din chirii la micro vs profit"
 description: "Diferența dintre tratamentul veniturilor din chirii obținute de o firmă plătitoare de impozit pe veniturile microîntreprinderilor și una plătitoare de impozit pe profit."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Baza impozabilă a impozitului pe veniturile microîntreprinderilor o constituie
 
 ## Ce face iConta.eu
 
-iConta.eu are un motor dedicat pentru chirii și comodat (`comodat_chirii`), care generează notele contabile corecte pentru chiria plătită (cont 612) și chiria încasată ca activitate (cont 4111 = 706 + 4427, cu TVA), inclusiv pentru refacturarea utilităților către chiriaș. Aplicația **nu decide automat** dacă un venit din chirii e mai avantajos impozitat la regimul micro sau la profit — acesta rămâne un calcul de optimizare fiscală pe care contabilul îl face separat, folosind cifrele de venituri și cheltuieli evidențiate în aplicație.
+iConta.eu are un motor dedicat pentru chirii și comodat („chirii și comodat (Operațiuni speciale)”), care generează notele contabile corecte pentru chiria plătită (cont 612) și chiria încasată ca activitate (cont 4111 = 706 + 4427, cu TVA), inclusiv pentru refacturarea utilităților către chiriaș. Aplicația **nu decide automat** dacă un venit din chirii e mai avantajos impozitat la regimul micro sau la profit — acesta rămâne un calcul de optimizare fiscală pe care contabilul îl face separat, folosind cifrele de venituri și cheltuieli evidențiate în aplicație.
 
 [iConta.eu](/)

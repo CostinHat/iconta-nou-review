@@ -2,7 +2,7 @@
 title: "Regimul impozitului pe profit pentru ONG-uri cu activitate economică"
 description: "ONG-urile nu sunt scutite în bloc de impozit pe profit: veniturile fără scop patrimonial sunt neimpozabile, cele economice sunt scutite doar până la un plafon, iar restul se impozitează cu 16%."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ O organizație nonprofit (asociație, fundație) nu iese complet din sfera impoz
 
 ## Ce face iConta.eu
 
-Din ecranul „Operațiuni speciale" → „Operațiuni ONG", iConta.eu înregistrează încasarea unui venit fără scop patrimonial (cotizație, contribuție, donație, sponsorizare sau venit financiar) direct pe contul din grupa 73 corespunzător, cu nota contabilă generată automat. Separat, aplicația oferă un calculator care compară plafonul de 15.000 EUR (la cursul introdus) cu 10% din veniturile neimpozabile ale anului, reține minimul dintre ele și estimează impozitul de 16% pe partea rămasă — dar acest calcul e disponibil azi doar printr-un apel direct la API (`POST /tenants/{id}/nota-ong`), nu și din formularul din ecran, unde operația „Calcul scutire art. 15 CF" nu are încă niciun câmp de completat. Depunerea declarației de impozit pe profit (D101) rămâne, oricum, în sarcina contabilului.
+Din ecranul „Operațiuni speciale" → „Operațiuni ONG", iConta.eu înregistrează încasarea unui venit fără scop patrimonial (cotizație, contribuție, donație, sponsorizare sau venit financiar) direct pe contul din grupa 73 corespunzător, cu nota contabilă generată automat. Separat, aplicația oferă un calculator care compară plafonul de 15.000 EUR (la cursul introdus) cu 10% din veniturile neimpozabile ale anului, reține minimul dintre ele și estimează impozitul de 16% pe partea rămasă — dar acest calcul e disponibil azi doar printr-un apel direct la API (aplicația), nu și din formularul din ecran, unde operația „Calcul scutire art. 15 CF" nu are încă niciun câmp de completat. Depunerea declarației de impozit pe profit (D101) rămâne, oricum, în sarcina contabilului.
 
 [iConta.eu](/)

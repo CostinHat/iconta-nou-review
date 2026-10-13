@@ -2,7 +2,7 @@
 title: "Cheltuieli specifice pentru HoReCa: deductibilitate"
 description: "Ce se întâmplă fiscal cu bacșișul încasat de restaurante și baruri (CAEN 5610/5630) și când bacșișul evidențiat pe factură se tratează ca o cheltuială de protocol, cu plafon de deductibilitate."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,7 +34,7 @@ Restul restului de costuri specifice HoReCa (materie primă, ambalaje, utilită�
 
 ## Ce face iConta.eu
 
-Elementul specific HoReCa pe care iConta.eu îl implementează efectiv este **F010 — Bacșiș HoReCa**, pentru traseul obișnuit: încasarea bacșișului pe bon (461=462 la încasare, 5121/5311=461) și distribuirea lui la salariați, cu reținerea automată a impozitului de 10% (`462=446`, plata netă `462=5121/5311`), rotunjit la 2 zecimale. Motorul respinge orice sumă de zero sau negativă, cu mesaj explicit.
+Elementul specific HoReCa pe care iConta.eu îl implementează efectiv este **„Bacșiș HoReCa” — Bacșiș HoReCa**, pentru traseul obișnuit: încasarea bacșișului pe bon (461=462 la încasare, 5121/5311=461) și distribuirea lui la salariați, cu reținerea automată a impozitului de 10% (`462=446`, plata netă `462=5121/5311`), rotunjit la 2 zecimale. Motorul respinge orice sumă de zero sau negativă, cu mesaj explicit.
 
 Traseul de la alin. (7) — bacșișul evidențiat distinct pe factură, la cererea clientului, tratat ca cheltuială de protocol — **nu e implementat separat în cod**: nu există un flux dedicat care să facă legătura automată dintre acest caz și plafonul de 2% din art. 25 alin. (3) lit. a) CF. Pentru costurile obișnuite ale unui local (marfă, materie primă, utilități), iConta.eu nu are o funcționalitate dedicată de verificare a deductibilității specifice HoReCa — ele se înregistrează prin fluxurile generale de achiziții și cheltuieli ale aplicației, cu aceleași reguli fiscale ca la orice altă firmă.
 

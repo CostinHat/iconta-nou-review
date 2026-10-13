@@ -2,7 +2,7 @@
 title: Cum verifici contul 4315 cu D112?
 description: Contul 4315 (CAS) trebuie să corespundă, pe rulaj creditor, cu suma codurilor 412 și 458 din D112 — 458 fiind suprataxa angajatorului la contractele part-time, contabilizată tot aici, nu separat.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Greșeala frecventă e compararea contului 4315 doar cu codul 412, ignorând 458
 
 ## Ce face iConta.eu
 
-Maparea din aplicație (`COD_CONT_D112`) însumează automat codurile 412 și 458 înainte de a compara cu rulajul contului 4315, exact pentru a evita această greșeală. Toleranța se calculează dinamic în funcție de numărul de salariați ai lunii verificate.
+Maparea din aplicație („contul bugetar D112”) însumează automat codurile 412 și 458 înainte de a compara cu rulajul contului 4315, exact pentru a evita această greșeală. Toleranța se calculează dinamic în funcție de numărul de salariați ai lunii verificate.
 
 [iConta.eu](/)

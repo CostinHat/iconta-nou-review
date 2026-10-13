@@ -2,7 +2,7 @@
 title: "Diferențe de curs la stocurile în valută"
 description: "De ce stocurile cumpărate în valută nu se reevaluează la cursul BNR și rămân înregistrate la cursul din data recepției."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Stocurile cumpărate în valută nu au „diferențe de curs" propriu-zise. Sunt
 
 ## Ce face iConta.eu
 
-Motorul de diferențe de curs din iConta.eu respectă corect această regulă: funcția `diferenta()` acceptă exclusiv `tip ∈ {creanta, disponibil, datorie}`, iar un apel cu tipul „stoc" ridică o eroare de validare — aplicația **nu generează și nu poate genera** o notă de diferență de curs pe un cont de stoc. Ce calculează F041, dacă marfa din stoc a fost cumpărată pe credit comercial neplătit, este diferența de curs pe datoria față de furnizor (401), prin ecranele de decontare sau reevaluare valutară — nu pe stocul propriu-zis.
+Motorul de diferențe de curs din iConta.eu respectă corect această regulă: funcția „calculul diferenței de curs” acceptă exclusiv `tip ∈ {creanta, disponibil, datorie}`, iar un apel cu tipul „stoc" ridică o eroare de validare — aplicația **nu generează și nu poate genera** o notă de diferență de curs pe un cont de stoc. Ce calculează „Diferențe de curs valutar”, dacă marfa din stoc a fost cumpărată pe credit comercial neplătit, este diferența de curs pe datoria față de furnizor (401), prin ecranele de decontare sau reevaluare valutară — nu pe stocul propriu-zis.
 
 [iConta.eu](/)

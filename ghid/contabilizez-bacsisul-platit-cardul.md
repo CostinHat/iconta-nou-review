@@ -2,7 +2,7 @@
 title: Cum contabilizez bacșișul plătit cu cardul?
 description: Bacșișul cu cardul urmează exact același traseu ca cel în numerar — doar contul de trezorerie diferă. Fluxul complet, de la încasare la distribuire.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Cea mai frecventă confuzie e presupunerea că bacșișul cu cardul, fiind „vi
 
 ## Ce face iConta.eu
 
-Funcția `nota_incasare(bacsis, sursa="card")` din modulul F010 generează automat nota corectă pentru bacșișul cu cardul (`461=462`, `5121=461`), diferențiată de varianta cu numerar (`sursa="numerar"`, care folosește `5311`) doar prin contul de trezorerie. Distribuirea ulterioară, prin `nota_distribuire`, e identică indiferent de sursa de încasare.
+Funcția „nota de încasare (HoReCa, bacșiș)” din modulul „Bacșiș HoReCa” generează automat nota corectă pentru bacșișul cu cardul (`461=462`, `5121=461`), diferențiată de varianta cu numerar (sursa „numerar”, care folosește `5311`) doar prin contul de trezorerie. Distribuirea ulterioară, prin „nota de distribuire a bacșișului (HoReCa)”, e identică indiferent de sursa de încasare.
 
 [iConta.eu](/)

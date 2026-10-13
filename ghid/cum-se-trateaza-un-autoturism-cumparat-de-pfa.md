@@ -2,7 +2,7 @@
 title: Cum se tratează un autoturism cumpărat de PFA?
 description: Autoturismul folosit mixt de un PFA se amortizează integral după regulile generale, dar cheltuielile de funcționare (combustibil, întreținere, reparații) sunt deductibile doar 50%, dacă nu există foaie de parcurs care să justifice folosirea exclusivă în activitate.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -42,6 +42,6 @@ Dacă PFA-ul întocmește foaie de parcurs și poate dovedi utilizarea exclusiv�
 
 ## Ce face iConta.eu
 
-Amortizarea autoturismului se calculează prin `registru_inventar(conn, schema, an)` din aplicație, pe baza datelor din tabela `mijloace_fixe` (valoare, dată PIF, durata normală de funcționare în luni) — amortizare liniară pe lunile scurse, conform formulei `amortizabil * luni / dnf_luni`. Partea de cheltuieli de funcționare supusă plafonului de 50% se înregistrează separat, ca plată, în categoria `cheltuiala_limitata` din `CATEGORII_PLATA`; fișa de calcul D212 (`fisa_d212`) exclude automat aceste sume din calcul, raportându-le distinct, iar aplicarea plafonului de 50% (sau a deducerii integrale, pe baza foii de parcurs) rămâne decizia contabilului.
+Amortizarea autoturismului se calculează prin „registrul-inventar (Registre)” din aplicație, pe baza datelor din tabela „registrul mijloacelor fixe” (valoare, dată PIF, durata normală de funcționare în luni) — amortizare liniară pe lunile scurse, conform formulei amortizabil * luni / durata normală de funcționare (Mijloace fixe). Partea de cheltuieli de funcționare supusă plafonului de 50% se înregistrează separat, ca plată, în categoria „cheltuială cu deductibilitate limitată” din „categoriile de plăți”; fișa de calcul D212 („fișa de calcul D212 (Declarații)”) exclude automat aceste sume din calcul, raportându-le distinct, iar aplicarea plafonului de 50% (sau a deducerii integrale, pe baza foii de parcurs) rămâne decizia contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum se scot din evidență bunurile amortizate complet?
 description: Ce se întâmplă fiscal și contabil cu un mijloc fix care și-a atins valoarea fiscală integral amortizată, și cum se face casarea lui în iConta.eu.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -47,7 +47,7 @@ calculează automat amortizarea la data casării, pe metoda reală a activului (
 de calcul folosit de registru, nota lunară de amortizare, D406 și reevaluare), și generează o
 notă contabilă **ciornă** (cont de rezultat al casării), care se validează separat din Registrul
 jurnal — nu se aplică direct pe registrul de mijloace fixe. După validare, activul e marcat ca
-inactiv (`activ=false`) și iese din calculul amortizărilor viitoare, rămânând vizibil în istoric.
+inactiv (marcat inactiv) și iese din calculul amortizărilor viitoare, rămânând vizibil în istoric.
 De reținut: pragul minim al mijlocului fix (5.000 lei) nu mai e reverificat la casarea unui
 activ deja existent în registru — pragul contează doar la momentul intrării, nu și la ieșire.
 

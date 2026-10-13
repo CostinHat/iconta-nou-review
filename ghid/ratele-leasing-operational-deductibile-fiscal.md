@@ -2,7 +2,7 @@
 title: "Ratele de leasing operațional sunt deductibile fiscal?"
 description: "Ca regulă generală, da — dar pentru vehicule rutiere motorizate folosite și în scop personal, deductibilitatea chiriei de leasing scade la 50%, cu excepții expres prevăzute de lege."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ca regulă generală, da — chiria (rata) de leasing operațional e o cheltuial
 
 ## Ce face iConta.eu
 
-Funcția `nota_rata_operational` din F056 (Leasing financiar și operațional) generează doar nota contabilă brută a chiriei — 612=401, plus TVA pe 4426 — fără nicio verificare sau aplicare automată a plafonului de 50% pentru vehicule. iConta.eu **nu automatizează** încadrarea unui vehicul la excepțiile de mai sus și nici calculul plafonului fiscal; aplicarea corectă a limitării, la calculul rezultatului fiscal, rămâne în sarcina contabilului.
+Funcția „nota ratei de leasing operațional (Operațiuni speciale)” din „Leasing financiar și operațional” generează doar nota contabilă brută a chiriei — 612=401, plus TVA pe 4426 — fără nicio verificare sau aplicare automată a plafonului de 50% pentru vehicule. iConta.eu **nu automatizează** încadrarea unui vehicul la excepțiile de mai sus și nici calculul plafonului fiscal; aplicarea corectă a limitării, la calculul rezultatului fiscal, rămâne în sarcina contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se verifică plafonul de trei salarii de bază pentru diurnă?"
 description: "Formula celui de-al doilea prag al plafonului de diurnă neimpozabilă — 3 salarii de bază raportate la zilele lucrătoare din lună — și când devine el plafonul efectiv aplicabil."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,7 +33,7 @@ Mecanica exactă a celui de-al doilea prag:
 
 ## Ce face iConta.eu
 
-Formula celor „3 salarii de bază/zile lucrătoare" este implementată în funcția `plafon_diurna`, ca al doilea termen al comparației care determină plafonul final (minimul dintre cele două praguri). Există însă o particularitate de proiectare verificată în cod: funcția **nu calculează singură** numărul de zile lucrătoare din calendar — îl primește ca parametru de la apelant. Restul aplicației are o funcție dedicată pentru acest calcul (`core.scadente.zile_lucratoare_luna`, folosită la salarizare și la declarația D112), dar fluxul curent al deconturilor **nu o apelează** — cere numărul de zile lucrătoare direct de la utilizator, dacă și când calculul e invocat.
+Formula celor „3 salarii de bază/zile lucrătoare" este implementată în funcția „plafonul diurnei”, ca al doilea termen al comparației care determină plafonul final (minimul dintre cele două praguri). Există însă o particularitate de proiectare verificată în cod: funcția **nu calculează singură** numărul de zile lucrătoare din calendar — îl primește ca parametru de la apelant. Restul aplicației are o funcție dedicată pentru acest calcul („zilele lucrătoare ale lunii”, folosită la salarizare și la declarația D112), dar fluxul curent al deconturilor **nu o apelează** — cere numărul de zile lucrătoare direct de la utilizator, dacă și când calculul e invocat.
 
 Ca și celelalte componente ale plafonului, acest calcul **nu apare în interfața iConta** — nu există un ecran care să ceară salariul de bază și numărul de zile lucrătoare pentru a afișa plafonul rezultat. Formula există corect la nivel de motor de calcul (API), dar rămâne, astăzi, un calcul pe care contabilul trebuie să-l facă manual, cu propriile date despre salariul angajatului și zilele lucrătoare din luna deplasării.
 

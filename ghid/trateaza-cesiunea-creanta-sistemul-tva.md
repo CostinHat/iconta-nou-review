@@ -2,7 +2,7 @@
 title: Cum se tratează cesiunea de creanță în sistemul TVA la încasare?
 description: Cesiunea unei creanțe declanșează exigibilitatea integrală a TVA la data cesiunii, indiferent de prețul la care creanța a fost cedată.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Norma tratează separat și situația inversă: când cumpărătorul unei livră
 
 ## Ce face iConta.eu
 
-Cercetarea la sursă a codului F097 nu a găsit o ramură dedicată cesiunii de creanță — motorul aplică formula sutei mărite pe orice sumă și dată introduse manual de contabil în ecranul „TVA la încasare". Pentru o cesiune de creanță, contabilul trebuie să introducă manual data cesiunii ca dată de „încasare" și valoarea integrală rămasă neîncasată din factură, conform regulii de mai sus — calculul specific al acestei situații nu e automatizat de aplicație.
+Cercetarea la sursă a codului „TVA la încasare” nu a găsit o ramură dedicată cesiunii de creanță — motorul aplică formula sutei mărite pe orice sumă și dată introduse manual de contabil în ecranul „TVA la încasare". Pentru o cesiune de creanță, contabilul trebuie să introducă manual data cesiunii ca dată de „încasare" și valoarea integrală rămasă neîncasată din factură, conform regulii de mai sus — calculul specific al acestei situații nu e automatizat de aplicație.
 
 [iConta.eu](/)

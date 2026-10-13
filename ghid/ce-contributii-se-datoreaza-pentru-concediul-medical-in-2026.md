@@ -2,7 +2,7 @@
 title: Ce contribuții se datorează pentru concediul medical în 2026?
 description: Pe indemnizația de concediu medical se reține CAS de 25% pe majoritatea codurilor, CASS de 10% doar pentru codurile 01, 07 și 10, iar impozitul de 10% nu se aplică pe indemnizațiile expres declarate neimpozabile de Codul fiscal.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -45,6 +45,6 @@ Un salariat cu concediu medical pentru maternitate (cod 08) primește 85% din ba
 
 ## Ce face iConta.eu
 
-Funcția `taxe_cm()` din motorul de calcul aplică rețineri diferențiate pe cod: CAS de 25% uniform pe toate codurile, CASS de 10% doar pentru codurile 01, 07 și 10, iar impozitul de 10% pe (brut − CASS), cu excepția codurilor marcate ca neimpozabile — 08, 09, 15, 17, 91, 92 — conform art.62 lit.c) din Codul fiscal. Procentele aplicate bazei de calcul (85% pentru maternitate/îngrijire copil, 100% pentru bolile grave enumerate expres de lege, scara progresivă pentru boala obișnuită) sunt calculate separat, prin `procent_cm()`, în funcție de codul certificatului.
+Funcția „contribuțiile la concediul medical” din motorul de calcul aplică rețineri diferențiate pe cod: CAS de 25% uniform pe toate codurile, CASS de 10% doar pentru codurile 01, 07 și 10, iar impozitul de 10% pe (brut − CASS), cu excepția codurilor marcate ca neimpozabile — 08, 09, 15, 17, 91, 92 — conform art.62 lit.c) din Codul fiscal. Procentele aplicate bazei de calcul (85% pentru maternitate/îngrijire copil, 100% pentru bolile grave enumerate expres de lege, scara progresivă pentru boala obișnuită) sunt calculate separat, prin „procentul indemnizației”, în funcție de codul certificatului.
 
 [iConta.eu](/)

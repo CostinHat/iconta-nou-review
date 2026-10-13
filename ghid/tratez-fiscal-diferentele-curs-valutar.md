@@ -2,7 +2,7 @@
 title: "Cum tratez fiscal diferențele de curs valutar?"
 description: "Regula generală de la impozitul pe profit pentru diferențele de curs, în lipsa unei excluderi speciale, și distincția față de regimul microîntreprinderilor."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Depinde de regimul de impozitare al firmei. La impozit pe profit, diferențele d
 
 ## Ce face iConta.eu
 
-Funcționalitatea de diferențe de curs valutar (F041) e un motor pur de contabilizare pe 665/765 — calculează suma și generează nota, la decontare sau la reevaluare lunară. Aplicația **nu calculează impozitul pe profit** și **nu calculează impozitul pe veniturile microîntreprinderilor** pe baza acestor conturi: nu există în cod nicio legătură între `diferente_curs.py` și motoarele de declarații fiscale (D101, D710 sau echivalent). Regulile de mai sus rămân, deocamdată, aplicate manual de contabil, pe baza rulajului 665/765 generat automat de F041.
+Funcționalitatea de diferențe de curs valutar („Diferențe de curs valutar”) e un motor pur de contabilizare pe 665/765 — calculează suma și generează nota, la decontare sau la reevaluare lunară. Aplicația **nu calculează impozitul pe profit** și **nu calculează impozitul pe veniturile microîntreprinderilor** pe baza acestor conturi: nu există în cod nicio legătură între aplicația și motoarele de declarații fiscale (D101, D710 sau echivalent). Regulile de mai sus rămân, deocamdată, aplicate manual de contabil, pe baza rulajului 665/765 generat automat de „Diferențe de curs valutar”.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum se calculează CASS la part-time sub salariul minim?
 description: Ca și la CAS, angajatul plătește CASS pe brutul lui real, iar diferența până la podeaua minimă (salariul minim proratat, minus facilitate) e o cheltuială suplimentară a angajatorului.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -46,6 +46,6 @@ Greșeala frecventă e reținerea de la angajat a întregului CASS calculat pe p
 
 ## Ce face iConta.eu
 
-Regula „baza_podea" tratează CAS și CASS simetric, calculând podeaua o singură dată pentru fereastra activă a lunii și generând, când e cazul, atât reținerea obișnuită (421/4316), cât și cheltuiala suplimentară de suprataxare (6453/4316), conform `monografie_salariu()` (linia 390).
+Regula „baza minimă a contribuțiilor" tratează CAS și CASS simetric, calculând podeaua o singură dată pentru fereastra activă a lunii și generând, când e cazul, atât reținerea obișnuită (421/4316), cât și cheltuiala suplimentară de suprataxare (6453/4316), conform „monografia salariului (Salarii)” (linia 390).
 
 [iConta.eu](/)

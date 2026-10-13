@@ -2,7 +2,7 @@
 title: "Cum înregistrez intrarea unei firme ca asociat"
 description: "Pașii legali pentru ca o persoană juridică să devină asociat într-un SRL, prin transmiterea părților sociale și înscrierea la Registrul Comerțului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Art. 203 (1) Transmiterea părților sociale trebuie înscrisă în registrul co
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are o funcție dedicată de înregistrare a intrării unui nou asociat** (persoană fizică sau juridică) în structura societății. Nu am găsit în cod niciun modul pentru cesiune de părți sociale sau pentru actualizarea automată a registrului de asociați. Aplicația poate importa datele asociaților existenți dintr-o sursă externă (modulul `asociati_import_api.py`), dar operațiunea juridică de intrare a unui nou asociat — actul de cesiune, hotărârea AGA, dosarul la Registrul Comerțului — rămâne, în acest moment, în afara aplicației.
+La data acestui ghid, iConta.eu **nu are o funcție dedicată de înregistrare a intrării unui nou asociat** (persoană fizică sau juridică) în structura societății. Nu am găsit în cod niciun modul pentru cesiune de părți sociale sau pentru actualizarea automată a registrului de asociați. Aplicația poate importa datele asociaților existenți dintr-o sursă externă (modulul aplicația), dar operațiunea juridică de intrare a unui nou asociat — actul de cesiune, hotărârea AGA, dosarul la Registrul Comerțului — rămâne, în acest moment, în afara aplicației.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Ce verifică ANAF la avansurile de trezorerie"
 description: "Plafonul zilnic legal pentru plățile din avansuri spre decontare și de ce e unul dintre primele lucruri urmărite la un control de casierie."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce urmărește efectiv un control pe avansurile de trezorerie:
 
 ## Ce face iConta.eu
 
-Verificat în cod: Aplicația conține funcția `verifica_plafon`, care calculează soldul zilnic al casei și verifică explicit plafonul avansurilor spre decontare (`plafon_avans_decontare`), pe baza cotei/temeiului legal ținut în registrul intern al aplicației. Depășirile sunt semnalate ca avertismente cu temei citat (nu blochează operațiunea, dar marchează riscul de control), pentru fiecare zi în care apar. Funcția `avans_deconteaza` din același modul gestionează decontarea efectivă a avansurilor acordate angajaților, cu urmărirea sumei rămase nedecontate.
+Verificat în cod: Aplicația conține funcția „verificarea plafonului de numerar (Casă)”, care calculează soldul zilnic al casei și verifică explicit plafonul avansurilor spre decontare („plafonul avansului spre decontare”), pe baza cotei/temeiului legal ținut în registrul intern al aplicației. Depășirile sunt semnalate ca avertismente cu temei citat (nu blochează operațiunea, dar marchează riscul de control), pentru fiecare zi în care apar. Funcția „decontarea avansului de trezorerie” din același modul gestionează decontarea efectivă a avansurilor acordate angajaților, cu urmărirea sumei rămase nedecontate.
 
 [iConta.eu](/)

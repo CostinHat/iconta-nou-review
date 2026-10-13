@@ -2,7 +2,7 @@
 title: Cum se înregistrează o încasare în avans prin bancă?
 description: O încasare în avans prin bancă generează TVA exigibilă imediat la data încasării, prin nota 4111 = 419 + 4427; dacă suma e în valută, cursul folosit e cel BNR din ultima zi bancară anterioară plății, iar suma trebuie deja convertită corect înainte de a fi introdusă în sistem.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,8 +37,8 @@ Dacă suma încasată e în valută, cursul de referință e cel BNR din **ultim
 
 ## Ce face iConta.eu
 
-Pentru încasarea unui avans prin bancă, motorul folosește `nota_avans_incasat(suma_fara_tva, cota)`, care generează exact mecanica din pct. 9 (OMFP 1802/2014): `4111 = 419 + 4427`. Rotunjirea sumelor se face cu `Decimal` și `ROUND_HALF_UP` la 2 zecimale, conform regulii de rotunjire aritmetică a proiectului. Cota de TVA e obligatorie la fiecare apel — nu există o valoare implicită în cod.
+Pentru încasarea unui avans prin bancă, motorul folosește „nota avansului încasat”, care generează exact mecanica din pct. 9 (OMFP 1802/2014): `4111 = 419 + 4427`. Rotunjirea sumelor se face cu aritmetică (jumătatea în sus) la 2 zecimale, conform regulii de rotunjire aritmetică a proiectului. Cota de TVA e obligatorie la fiecare apel — nu există o valoare implicită în cod.
 
-Dacă încasarea e în valută, este important de știut că aplicația **nu are niciun parametru de curs valutar sau monedă** — funcția primește direct `suma_fara_tva`, presupusă deja convertită în lei. Motorul nu contactează BNR și nu calculează singur cursul din ultima zi bancară anterioară încasării; conversia corectă (suma în valută × cursul BNR aplicabil) trebuie făcută de contabil înainte de a introduce suma în sistem.
+Dacă încasarea e în valută, este important de știut că aplicația **nu are niciun parametru de curs valutar sau monedă** — funcția primește direct „suma fără TVA”, presupusă deja convertită în lei. Motorul nu contactează BNR și nu calculează singur cursul din ultima zi bancară anterioară încasării; conversia corectă (suma în valută × cursul BNR aplicabil) trebuie făcută de contabil înainte de a introduce suma în sistem.
 
 [iConta.eu](/)

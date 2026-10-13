@@ -2,7 +2,7 @@
 title: "Cum verific calculul pro-ratei TVA la control?"
 description: "Ce documente și ce calcule cere legea pentru pro-rata de TVA, ca să le puteți verifica sau prezenta la un control fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Pentru un control, verificați pe rând:
 
 ## Ce face iConta.eu
 
-iConta.eu folosește pro-rata introdusă manual de contabil în profilul fiscal (`pro_rata`) pentru a calcula automat, la generarea D300, ajustarea corespunzătoare din rândul de regularizare, dacă procentul e sub 100%. La data acestui ghid, aplicația **nu generează documentul de metodă de calcul** cerut de art. 300 alin. (8) și **nu calculează ea însăși numărătorul/numitorul** din operațiunile firmei — contabilul rămâne responsabil să determine procentul corect și să pregătească separat documentația justificativă pentru control.
+iConta.eu folosește pro-rata introdusă manual de contabil în profilul fiscal („pro-rata (Date firmă)”) pentru a calcula automat, la generarea D300, ajustarea corespunzătoare din rândul de regularizare, dacă procentul e sub 100%. La data acestui ghid, aplicația **nu generează documentul de metodă de calcul** cerut de art. 300 alin. (8) și **nu calculează ea însăși numărătorul/numitorul** din operațiunile firmei — contabilul rămâne responsabil să determine procentul corect și să pregătească separat documentația justificativă pentru control.
 
 [iConta.eu](/)

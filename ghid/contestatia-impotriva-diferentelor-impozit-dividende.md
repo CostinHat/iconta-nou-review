@@ -2,7 +2,7 @@
 title: "Contestația împotriva diferențelor de impozit pe dividende"
 description: "Termenul, forma și procedura de contestare a unei decizii de impunere prin care ANAF stabilește diferențe de impozit pe dividende, conform Codului de procedură fiscală."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Restul mecanismului, verificat la sursă în același text de lege:
 
 Contestarea unui act administrativ-fiscal e o procedură care se poartă în întregime în afara aplicației, la organul fiscal emitent și, eventual, în instanță — iConta.eu nu are un modul de gestionare a contestațiilor fiscale.
 
-Ce face F029 (D205 + distribuire dividende) este partea preventivă, nu cea de contestare: motorul de generare a D205 rulează o **a doua cale de verificare independentă** (`d205_reconciliere.py`), care recalculează separat, din contul 457, baza și impozitul pe fiecare beneficiar și compară rezultatul cu ce a produs generatorul — orice divergență blochează generarea declarației, tocmai ca să reducă riscul de a depune o D205 cu diferențe pe care ANAF le-ar putea contesta ulterior printr-o decizie de impunere. Dincolo de acest gard intern, dacă diferența de impozit a fost deja stabilită de ANAF printr-un act administrativ, pasul de contestare propriu-zis — redactarea, depunerea și urmărirea ei — rămâne integral responsabilitatea contribuabilului sau a contabilului, prin canalele oficiale (ANAF, SPV, instanță).
+Ce face „Declarația D205 și distribuirea dividendelor” (D205 + distribuire dividende) este partea preventivă, nu cea de contestare: motorul de generare a D205 rulează o **a doua cale de verificare independentă**, care recalculează separat, din contul 457, baza și impozitul pe fiecare beneficiar și compară rezultatul cu ce a produs generatorul — orice divergență blochează generarea declarației, tocmai ca să reducă riscul de a depune o D205 cu diferențe pe care ANAF le-ar putea contesta ulterior printr-o decizie de impunere. Dincolo de acest gard intern, dacă diferența de impozit a fost deja stabilită de ANAF printr-un act administrativ, pasul de contestare propriu-zis — redactarea, depunerea și urmărirea ei — rămâne integral responsabilitatea contribuabilului sau a contabilului, prin canalele oficiale (ANAF, SPV, instanță).
 
 [iConta.eu](/)

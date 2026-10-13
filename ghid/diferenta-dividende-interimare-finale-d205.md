@@ -2,7 +2,7 @@
 title: "Diferența între dividende interimare și finale la D205"
 description: "Dividendul interimar și cel final (anual) folosesc conturi diferite; regularizarea dintre ele e o notă contabilă distinctă, separată de declararea D205."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,6 +24,6 @@ O greșeală frecventă e amestecarea celor două fluxuri — înregistrarea une
 
 ## Ce face iConta.eu
 
-iConta ține separat cele două tipuri de note: dividendul interimar (463/456) și dividendul final/regularizarea (1171/457, cu compensarea 457=463 a sumelor interimare). Declararea propriu-zisă la D205 este o funcționalitate distinctă în aplicație, care nu face parte din decontările cu asociații (F039); acest ghid descrie doar diferența contabilă dintre interimar și final, nu mecanismul intern al declarației D205.
+iConta ține separat cele două tipuri de note: dividendul interimar (463/456) și dividendul final/regularizarea (1171/457, cu compensarea 457=463 a sumelor interimare). Declararea propriu-zisă la D205 este o funcționalitate distinctă în aplicație, care nu face parte din decontările cu asociații („Decontări asociați”); acest ghid descrie doar diferența contabilă dintre interimar și final, nu mecanismul intern al declarației D205.
 
 [iConta.eu](/)

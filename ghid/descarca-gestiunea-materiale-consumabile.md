@@ -2,7 +2,7 @@
 title: "Cum se descarcă gestiunea pentru materiale consumabile?"
 description: "Documentul justificativ pentru eliberarea materialelor consumabile din magazie și scăderea lor din gestiune, conform normelor privind documentele financiar-contabile."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Concret, pentru materiale consumabile (spre deosebire de mărfurile din comerț,
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu automatizează **descărcarea de gestiune pentru mărfuri** ținute în evidență global-valorică (metoda coeficientului K, pe baza rulajelor conturilor 371/378/4428 — vezi aplicația, funcția `descarcare_gv`). Pentru **materiale consumabile**, care ies din gestiune pe bază de bon de consum și se evaluează prin metode de tip FIFO sau cost mediu ponderat, aplicația **nu are în prezent un flux dedicat** — nu există în cod o funcție care să genereze bonul de consum sau să calculeze automat descărcarea pe această cale. Emiterea bonului de consum și înregistrarea contabilă aferentă rămân, pentru acest tip de stoc, în sarcina contabilului.
+La data acestui ghid, iConta.eu automatizează **descărcarea de gestiune pentru mărfuri** ținute în evidență global-valorică (metoda coeficientului K, pe baza rulajelor conturilor 371/378/4428 — vezi aplicația, funcția „descărcarea global-valorică (Stocuri)”). Pentru **materiale consumabile**, care ies din gestiune pe bază de bon de consum și se evaluează prin metode de tip FIFO sau cost mediu ponderat, aplicația **nu are în prezent un flux dedicat** — nu există în cod o funcție care să genereze bonul de consum sau să calculeze automat descărcarea pe această cale. Emiterea bonului de consum și înregistrarea contabilă aferentă rămân, pentru acest tip de stoc, în sarcina contabilului.
 
 [iConta.eu](/)

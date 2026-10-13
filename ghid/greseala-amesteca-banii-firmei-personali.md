@@ -2,7 +2,7 @@
 title: "Greșeala de a amesteca banii firmei cu cei personali"
 description: "De ce cheltuielile plătite din contul firmei în interesul personal al asociatului sunt nedeductibile la impozitul pe profit, conform Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Din text rezultă mecanismul de sancționare fiscală a amestecului de patrimoni
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul dedicat decontărilor cu asociații, cu funcții pentru înregistrarea împrumuturilor acordate/primite de la asociați (`nota_imprumut_asociat`) și a notelor de dividend, care permit tratarea corectă — ca împrumut, avans sau distribuire de dividende — a sumelor puse la dispoziția sau retrase de asociat. Aplicația **nu clasifică automat** o cheltuială plătită din contul firmei drept „în favoarea asociatului" și nu o exclude din calculul impozitului pe profit doar pe baza contului bancar folosit — încadrarea corectă a fiecărei plăți rămâne o decizie a contabilului, pe baza documentelor justificative.
+La data acestui ghid, iConta.eu are un modul dedicat decontărilor cu asociații, cu funcții pentru înregistrarea împrumuturilor acordate/primite de la asociați („nota împrumutului de la asociat (Operațiuni speciale)”) și a notelor de dividend, care permit tratarea corectă — ca împrumut, avans sau distribuire de dividende — a sumelor puse la dispoziția sau retrase de asociat. Aplicația **nu clasifică automat** o cheltuială plătită din contul firmei drept „în favoarea asociatului" și nu o exclude din calculul impozitului pe profit doar pe baza contului bancar folosit — încadrarea corectă a fiecărei plăți rămâne o decizie a contabilului, pe baza documentelor justificative.
 
 [iConta.eu](/)

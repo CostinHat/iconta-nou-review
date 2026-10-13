@@ -2,7 +2,7 @@
 title: "Cum se declară dividendele plătite în mai multe tranșe?"
 description: "Dividendele distribuite trimestrial se înregistrează separat de cele anuale și se regularizează după aprobarea situațiilor financiare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,6 +26,6 @@ O greșeală tipică e înregistrarea fiecărei tranșe trimestriale direct pe 1
 
 ## Ce face iConta.eu
 
-iConta generează câte o notă separată pentru fiecare tranșă interimară (463=456, plus impozitul 456=446, cu cota valabilă la data plății), apoi nota de regularizare de final de an (1171=457 pentru dividendul anual aprobat, plus compensarea 457=463 a sumelor interimare deja distribuite). Dacă interimarul depășește dividendul anual aprobat, excesul se restituie de la asociat (5121=456). Declararea fiscală a dividendului prin D205 este o funcționalitate separată; F039 pregătește notele contabile pe care se bazează acea declarație, nu declarația în sine.
+iConta generează câte o notă separată pentru fiecare tranșă interimară (463=456, plus impozitul 456=446, cu cota valabilă la data plății), apoi nota de regularizare de final de an (1171=457 pentru dividendul anual aprobat, plus compensarea 457=463 a sumelor interimare deja distribuite). Dacă interimarul depășește dividendul anual aprobat, excesul se restituie de la asociat (5121=456). Declararea fiscală a dividendului prin D205 este o funcționalitate separată; „Decontări asociați” pregătește notele contabile pe care se bazează acea declarație, nu declarația în sine.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Impozit pe profit pentru firmele cu activitate de jocuri de noroc"
 description: "De ce firmele cu activitate de jocuri de noroc sunt obligate la impozit pe profit și nu pot aplica niciodată regimul micro, conform Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Consecințele pentru o firmă din acest domeniu:
 
 ## Ce face iConta.eu
 
-Regimul fiscal (`regim_fiscal`: micro sau profit) se stabilește manual în **Date firma**. La data acestui ghid, iConta.eu nu verifică automat codul CAEN sau obiectul de activitate al firmei pentru a semnala o excludere din regimul micro conform art. 47 alin. (3) — inclusiv pentru jocuri de noroc — astfel încât încadrarea corectă rămâne o verificare pe care contabilul o face la înființare și la orice modificare de activitate.
+Regimul fiscal („regimul fiscal (Date firmă)”: micro sau profit) se stabilește manual în **Date firma**. La data acestui ghid, iConta.eu nu verifică automat codul CAEN sau obiectul de activitate al firmei pentru a semnala o excludere din regimul micro conform art. 47 alin. (3) — inclusiv pentru jocuri de noroc — astfel încât încadrarea corectă rămâne o verificare pe care contabilul o face la înființare și la orice modificare de activitate.
 
 [iConta.eu](/)

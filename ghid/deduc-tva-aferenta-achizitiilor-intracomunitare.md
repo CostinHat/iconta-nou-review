@@ -2,7 +2,7 @@
 title: Cum deduc TVA aferentă achizițiilor intracomunitare
 description: TVA la achiziția intracomunitară nu se plătește către furnizor și nu se deduce dintr-o factură primită cu TVA — se calculează prin taxare inversă, se înregistrează 4426 = 4427, iar deducerea e condiționată de aceleași reguli generale ca orice altă taxă deductibilă.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ La o achiziție intracomunitară de bunuri, furnizorul din alt stat membru nu fa
 ## Temeiul legal
 
 ::: ghid-temei
-„Obligat la plata taxei = beneficiarul, la AIC/servicii primite.” — CF art. 308-309 (sursă: `cod_fiscal_227_2015_consolidat.txt`, L19405 și L19418, verificat în dosarul F050).
+„Obligat la plata taxei = beneficiarul, la AIC/servicii primite.” — CF art. 308-309 (sursă: Codul fiscal (Legea 227/2015), forma consolidată și L19418).
 :::
 
 Mecanic, taxarea inversă înseamnă că firma cumpărătoare calculează ea însăși TVA-ul aferent achiziției, îl înregistrează simultan ca taxă colectată și ca taxă deductibilă, iar norma de aplicare confirmă exact această formulă: „beneficiarul înregistrează… suma taxei aferente în următoarea formulă contabilă: 4426 = 4427” (HG 1/2016, norme la art. 331 pct. 109 alin. 1) — cu precizarea explicită că regula se aplică „pentru orice alte situații în care se aplică taxarea inversă”, deci și la achiziția intracomunitară.
@@ -30,6 +30,6 @@ Cea mai frecventă greșeală e așteptarea unei facturi „cu TVA de recuperat�
 
 ## Ce face iConta.eu
 
-Ecranul de achiziție intracomunitară cere valoarea în lei, codul de TVA al furnizorului, tipul operațiunii (bunuri/servicii) și cota de TVA aplicabilă — fără valoare implicită impusă de sistem, exact pentru ca o cotă „scrisă în cod” să nu se rupă tăcut de lege la prima schimbare. Motorul calculează taxa prin taxare inversă, cu rotunjire `Decimal` și `ROUND_HALF_UP`, și generează formula contabilă 4426 = 4427 cerută de normă. Obligația de plată rămâne, corect, a beneficiarului — furnizorul nu apare nicăieri ca plătitor al taxei românești.
+Ecranul de achiziție intracomunitară cere valoarea în lei, codul de TVA al furnizorului, tipul operațiunii (bunuri/servicii) și cota de TVA aplicabilă — fără valoare implicită impusă de sistem, exact pentru ca o cotă „scrisă în cod” să nu se rupă tăcut de lege la prima schimbare. Motorul calculează taxa prin taxare inversă, cu rotunjire aritmetică (jumătatea în sus), și generează formula contabilă 4426 = 4427 cerută de normă. Obligația de plată rămâne, corect, a beneficiarului — furnizorul nu apare nicăieri ca plătitor al taxei românești.
 
 [iConta.eu](/)

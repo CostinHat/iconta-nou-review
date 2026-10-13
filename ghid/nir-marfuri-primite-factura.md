@@ -2,7 +2,7 @@
 title: "NIR pentru mărfuri primite fără factură: se poate"
 description: "Cazurile în care Nota de recepție și constatare de diferențe (NIR) e documentul obligatoriu pentru mărfuri primite fără factură sau aviz, conform OMFP 2634/2015."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă concret:
 
 ## Ce face iConta.eu
 
-Modulul de stocuri din iConta.eu (funcția `adauga_nir`) acceptă introducerea unui NIR cu referință de factură **opțională** (`factura_ref?`) — confirmând că fluxul e pregătit exact pentru cazul mărfii primite fără factură: contabilul poate înregistra recepția pe baza NIR-ului, cu datele de furnizor și valoare disponibile la momentul respectiv, și poate completa ulterior referința facturii când aceasta sosește. Regularizarea automată a eventualelor diferențe de valoare între NIR-ul provizoriu și factura sosită ulterior rămâne o operațiune pe care contabilul o introduce manual, ca notă contabilă separată.
+Modulul de stocuri din iConta.eu (funcția „adăugarea NIR-ului (Stocuri)”) acceptă introducerea unui NIR cu referință de factură **opțională** (referința facturii?) — confirmând că fluxul e pregătit exact pentru cazul mărfii primite fără factură: contabilul poate înregistra recepția pe baza NIR-ului, cu datele de furnizor și valoare disponibile la momentul respectiv, și poate completa ulterior referința facturii când aceasta sosește. Regularizarea automată a eventualelor diferențe de valoare între NIR-ul provizoriu și factura sosită ulterior rămâne o operațiune pe care contabilul o introduce manual, ca notă contabilă separată.
 
 [iConta.eu](/)

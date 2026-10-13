@@ -2,7 +2,7 @@
 title: "Cum corectez o eroare într-un D300 deja depus?"
 description: "Procedura legală de corectare a unui decont de TVA deja depus, prin declarație rectificativă, și cum ajută controlul încrucișat D390 vs D300 din iConta.eu la depistarea unei asemenea erori."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Câteva limite importante ale dreptului de corectare, din același articol:
 
 iConta.eu nu are, în această versiune, o funcție dedicată de „editare a unui D300 deja depus" sau de generare automată a unei rectificative — corectarea propriu-zisă a declarației depuse e o procedură separată de depunere, care nu a fost obiectul acestei cercetări asupra codului aplicației.
 
-Ce ajută efectiv la **depistarea** unei asemenea erori este funcționalitatea **F163 — Control încrucișat D390 vs. evidență/D300**, din ecranul Control fiscal → „Declarație vs contabilitate". Motorul compară, pe fiecare perioadă, baza declarată în D390 (livrări/achiziții intracomunitare) cu rândurile R1_1/R5_1 ale D300-ului **efectiv depus prin aplicație** — dacă declarația la VIES (D390) arată o sumă pe care D300 depus n-o reflectă, constatarea iese pe roșu, cu un remediu sugerat: fie rectificativă D300, fie corectarea D390, decizia rămânând la contabil. Această comparație acoperă strict rândurile intracomunitare (R1_1/R5_1) — nu verifică alte tipuri de erori din D300 (de exemplu TVA deductibilă greșit calculată pe achiziții interne) și nu urmărește dacă decontul a fost efectiv validat de ANAF, verificare care ar necesita conectarea directă la SPV.
+Ce ajută efectiv la **depistarea** unei asemenea erori este funcționalitatea **„Control încrucișat: D390 (bunuri intracomunitare) față de evidența validată și de D300 depus” — Control încrucișat D390 vs. evidență/D300**, din ecranul Control fiscal → „Declarație vs contabilitate". Motorul compară, pe fiecare perioadă, baza declarată în D390 (livrări/achiziții intracomunitare) cu rândurile R1_1/R5_1 ale D300-ului **efectiv depus prin aplicație** — dacă declarația la VIES (D390) arată o sumă pe care D300 depus n-o reflectă, constatarea iese pe roșu, cu un remediu sugerat: fie rectificativă D300, fie corectarea D390, decizia rămânând la contabil. Această comparație acoperă strict rândurile intracomunitare (R1_1/R5_1) — nu verifică alte tipuri de erori din D300 (de exemplu TVA deductibilă greșit calculată pe achiziții interne) și nu urmărește dacă decontul a fost efectiv validat de ANAF, verificare care ar necesita conectarea directă la SPV.
 
 [iConta.eu](/)

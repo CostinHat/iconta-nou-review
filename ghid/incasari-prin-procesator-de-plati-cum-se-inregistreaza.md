@@ -2,7 +2,7 @@
 title: Încasări prin procesator de plăți: cum se înregistrează?
 description: Când un procesator de plăți virează suma netă (după reținerea comisionului propriu), în Registrul-jurnal trebuie înregistrată suma brută încasată de la client ca venit, iar comisionul reținut separat, ca o cheltuială deductibilă.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,7 +25,7 @@ OMFP 170/2015, Cap. V, Secțiunea a 2-a: "În Registrul-jurnal de încasări şi
 Din combinația celor două texte rezultă un principiu clar: venitul brut este suma pe care o datorează clientul (sau pe care o generează vânzarea), nu suma care ajunge efectiv în cont după reținerea comisionului procesatorului. Comisionul reținut este, la rândul lui, o cheltuială deductibilă distinctă — dedusă separat, nu "compensată" tacit prin faptul că suma din extras e deja mai mică.
 
 ::: ghid-exemplu
-Un client plătește 1.000 lei printr-un procesator care reține un comision de 3% (30 lei) și virează în contul PFA-ului doar 970 lei. Corect: se înregistrează o încasare de 1.000 lei (categoria "activitate", document justificativ factura/comanda) și o plată separată de 30 lei (categoria "cheltuiala_deductibila", document justificativ raportul procesatorului). Greșit: se înregistrează o singură încasare de 970 lei, ca și cum comisionul nici n-ar fi existat.
+Un client plătește 1.000 lei printr-un procesator care reține un comision de 3% (30 lei) și virează în contul PFA-ului doar 970 lei. Corect: se înregistrează o încasare de 1.000 lei (categoria "activitate", document justificativ factura/comanda) și o plată separată de 30 lei (categoria "cheltuială deductibilă", document justificativ raportul procesatorului). Greșit: se înregistrează o singură încasare de 970 lei, ca și cum comisionul nici n-ar fi existat.
 :::
 
 Diferența nu e doar formală: dacă se înregistrează direct suma netă, cheltuiala cu comisionul dispare din evidență și din calculul deductibilităților, iar venitul brut raportat e subevaluat — ambele afectează, potențial, fișa de calcul D212.
@@ -39,6 +39,6 @@ Diferența nu e doar formală: dacă se înregistrează direct suma netă, chelt
 
 ## Ce face iConta.eu
 
-Aplicația nu impune el însuși disciplina brut/net: validarea (`_valideaza`) acceptă orice sumă pozitivă pe orice categorie validă, fără să verifice dacă suma introdusă corespunde valorii brute sau nete a tranzacției — decizia rămâne integral a contabilului la introducerea datelor. Funcția `import_banca` preia direct suma din extrasul bancar ca ciornă la categoria `activitate`/venit, fără să știe dacă acea sumă e brută sau netă, pentru simplul motiv că extrasul bancar arată doar ce a intrat efectiv în cont. Practic, atunci când plata vine printr-un procesator care reține comision, contabilul trebuie să corecteze ciorna generată automat: să introducă suma brută ca încasare și să adauge separat o plată pentru comisionul reținut, pe baza raportului procesatorului.
+Aplicația nu impune el însuși disciplina brut/net: validarea („validarea”) acceptă orice sumă pozitivă pe orice categorie validă, fără să verifice dacă suma introdusă corespunde valorii brute sau nete a tranzacției — decizia rămâne integral a contabilului la introducerea datelor. Funcția „importul extrasului bancar (Bancă)” preia direct suma din extrasul bancar ca ciornă la categoria `activitate`/venit, fără să știe dacă acea sumă e brută sau netă, pentru simplul motiv că extrasul bancar arată doar ce a intrat efectiv în cont. Practic, atunci când plata vine printr-un procesator care reține comision, contabilul trebuie să corecteze ciorna generată automat: să introducă suma brută ca încasare și să adauge separat o plată pentru comisionul reținut, pe baza raportului procesatorului.
 
 [iConta.eu](/)

@@ -2,13 +2,13 @@
 title: Cum se ține gestiunea la un magazin alimentar de cartier?
 description: Un magazin alimentar cu sortiment numeros și marje similare poate ține mărfurile în regim global-valoric (metoda prețului cu amănuntul), dar sortimentul mixt de cote TVA (11%/21%) cere atenție la NIR și la descărcarea lunară.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum se ține gestiunea la un magazin alimentar de cartier?
 
-Un magazin alimentar de cartier are exact profilul pentru care legea permite metoda prețului cu amănuntul: multe articole, mișcare rapidă, marje similare pe categorii. Practic, magazinul nu ține o fișă de magazie pe fiecare produs, ci evidențiază mărfurile la valoare, în regim global-valoric (F088), cu adaosul comercial separat în contul 378 și TVA neexigibilă în 4428.
+Un magazin alimentar de cartier are exact profilul pentru care legea permite metoda prețului cu amănuntul: multe articole, mișcare rapidă, marje similare pe categorii. Practic, magazinul nu ține o fișă de magazie pe fiecare produs, ci evidențiază mărfurile la valoare, în regim global-valoric („Stocuri global-valorice”), cu adaosul comercial separat în contul 378 și TVA neexigibilă în 4428.
 
 ## Temeiul legal
 
@@ -52,8 +52,8 @@ Fiecare linie își păstrează propria cotă — nu se aplică o cotă „medie
 
 ## Ce face iConta.eu
 
-Recepția (NIR) în regim global-valoric trece prin două validări complementare: `adauga_nir` (stratul API) impune declararea explicită a cotei de TVA pe fiecare linie, iar `nir_gv` (motorul de calcul) refuză, la rândul lui, o cotă de TVA implicită nedeclarată la nivel de NIR — exact pentru a evita o cotă „scrisă în cod” care se rupe tăcut la o schimbare legislativă a cotelor (cum a fost trecerea 19%/9% → 21%/11%). Costul de achiziție se calculează din cantitate × preț achiziție, la care se adaugă transportul și taxele capitalizate, repartizate proporțional pe linii. TVA se extrage din prețul de vânzare cu formula „sută mărită”, iar adaosul rezultă ca diferență (preț vânzare − TVA − cost); aplicația nu permite adaos negativ.
+Recepția (NIR) în regim global-valoric trece prin două validări complementare: „adăugarea NIR-ului (Stocuri)” (stratul API) impune declararea explicită a cotei de TVA pe fiecare linie, iar „NIR global-valoric (Stocuri)” (motorul de calcul) refuză, la rândul lui, o cotă de TVA implicită nedeclarată la nivel de NIR — exact pentru a evita o cotă „scrisă în cod” care se rupe tăcut la o schimbare legislativă a cotelor (cum a fost trecerea 19%/9% → 21%/11%). Costul de achiziție se calculează din cantitate × preț achiziție, la care se adaugă transportul și taxele capitalizate, repartizate proporțional pe linii. TVA se extrage din prețul de vânzare cu formula „sută mărită”, iar adaosul rezultă ca diferență (preț vânzare − TVA − cost); aplicația nu permite adaos negativ.
 
-La finalul lunii, `descarca_luna` calculează coeficientul de repartizare K din rulajele cumulate ale conturilor 371, 378 și 4428, apoi îl aplică la vânzările lunii (contul 707) pentru a obține automat costul mărfii vândute și adaosul de descărcat. TVA-ul descărcat din 4428 este însă o aproximare: se calculează dintr-o cotă medie ponderată, dedusă din structura stocului cumulat de la 1 ianuarie, nu din mixul real de cote vândute efectiv în lună. Pentru un magazin cu sortiment mixt, unde produsele la 11% și 21% se vând în proporții diferite lună de lună, contabilul trebuie să verifice separat — din Z-urile de casă pe cote — că soldul rămas în 4428 reflectă plauzibil marfa nevândută.
+La finalul lunii, „descărcarea lunii (Stocuri)” calculează coeficientul de repartizare K din rulajele cumulate ale conturilor 371, 378 și 4428, apoi îl aplică la vânzările lunii (contul 707) pentru a obține automat costul mărfii vândute și adaosul de descărcat. TVA-ul descărcat din 4428 este însă o aproximare: se calculează dintr-o cotă medie ponderată, dedusă din structura stocului cumulat de la 1 ianuarie, nu din mixul real de cote vândute efectiv în lună. Pentru un magazin cu sortiment mixt, unde produsele la 11% și 21% se vând în proporții diferite lună de lună, contabilul trebuie să verifice separat — din Z-urile de casă pe cote — că soldul rămas în 4428 reflectă plauzibil marfa nevândută.
 
 [iConta.eu](/)

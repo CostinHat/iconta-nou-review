@@ -2,7 +2,7 @@
 title: Ce cheltuieli nu sunt deductibile pentru un PFA?
 description: Codul fiscal exclude expres de la deducere cheltuielile personale, donațiile, amenzile și penalitățile, ratele la credite și achiziția de bunuri amortizabile trecute direct pe cheltuială — plus o categorie de cheltuieli "deductibile limitat" pe care contabilul trebuie să le plafoneze manual.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Legea, și evidența practică din registru, disting de fapt trei situații:
 
 ## Ce face iConta.eu
 
-Aplicația separă la nivel de cod cele trei categorii din `CATEGORII_PLATA = {"cheltuiala_deductibila", "cheltuiala_limitata", "cheltuiala_nedeductibila", "aport_retragere", "rambursare_credit"}`, iar validarea (`_valideaza`) obligă alegerea unei deductibilități explicite pentru orice plată de tip `cheltuiala*`. În fișa de calcul D212, funcția `fisa_d212` include în calculul automat doar suma cheltuielilor din categoria `cheltuiala_deductibila`; cheltuielile din categoria `cheltuiala_limitata` sunt raportate separat, dar **nu** intră automat în calcul — comentariul din cod e explicit: "cheltuielile limitate NU sunt în calcul - contabilul stabilește partea deductibilă". Cu alte cuvinte, aplicația nu aplică ea singură plafoanele procentuale sau valorice din lege (de exemplu, pentru autoturisme, burse, protocol, tichete de masă) — evidențiază suma totală din categoria limitată și lasă calculul plafonului la latitudinea contabilului.
+Aplicația separă la nivel de cod cele trei categorii din categoriile de plăți = {"cheltuială deductibilă", "cheltuială cu deductibilitate limitată", "cheltuială nedeductibilă", "aport sau retragere", "rambursare de credit"}, iar validarea („validarea”) obligă alegerea unei deductibilități explicite pentru orice plată de tip `cheltuiala*`. În fișa de calcul D212, funcția „fișa de calcul D212 (Declarații)” include în calculul automat doar suma cheltuielilor din categoria „cheltuială deductibilă”; cheltuielile din categoria „cheltuială cu deductibilitate limitată” sunt raportate separat, dar **nu** intră automat în calcul — comentariul din cod e explicit: "cheltuielile limitate NU sunt în calcul - contabilul stabilește partea deductibilă". Cu alte cuvinte, aplicația nu aplică ea singură plafoanele procentuale sau valorice din lege (de exemplu, pentru autoturisme, burse, protocol, tichete de masă) — evidențiază suma totală din categoria limitată și lasă calculul plafonului la latitudinea contabilului.
 
 [iConta.eu](/)

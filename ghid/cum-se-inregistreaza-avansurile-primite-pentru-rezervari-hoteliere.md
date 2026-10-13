@@ -2,7 +2,7 @@
 title: Cum se înregistrează avansurile primite pentru rezervări hoteliere?
 description: Avansul pentru o rezervare hotelieră urmează regimul general de avans (TVA exigibilă la încasare, cont 419), fără nicio derogare specială de plafon numerar — derogarea din Legea 70/2015 e limitată explicit la organizatorii de nunți și botezuri.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,7 +35,7 @@ Dacă avansul e încasat în numerar de la o persoană fizică, se aplică plafo
 
 ## Ce face iConta.eu
 
-Pentru avansul încasat de la client, motorul folosește `nota_avans_incasat(suma_fara_tva, cota)`, care generează linia `4111 = 419 + 4427`, exact mecanica descrisă la pct. 9 din OMFP 1802/2014 pentru contul 419. Cota de TVA trebuie transmisă explicit — nu există o valoare implicită în cod, tocmai pentru a evita aplicarea unei cote învechite.
+Pentru avansul încasat de la client, motorul folosește „nota avansului încasat”, care generează linia `4111 = 419 + 4427`, exact mecanica descrisă la pct. 9 din OMFP 1802/2014 pentru contul 419. Cota de TVA trebuie transmisă explicit — nu există o valoare implicită în cod, tocmai pentru a evita aplicarea unei cote învechite.
 
 Motorul nu verifică plafonul de numerar din Legea 70/2015 și nu distinge tipul de serviciu prestat (cazare, eveniment etc.) — validarea plafonului și încadrarea corectă a sumei ca avans (și nu ca garanție returnabilă) rămân în sarcina contabilului la introducerea datelor.
 

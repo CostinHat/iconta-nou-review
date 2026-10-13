@@ -2,7 +2,7 @@
 title: Cum completez D301 pentru achiziții de servicii intracomunitare?
 description: Achizițiile de servicii de la furnizori stabiliți în UE (Google, Microsoft, hosting etc.) se declară în Secțiunea 4.1 a D301, prin taxare inversă conform art. 307 alin. (2) Cod fiscal.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -47,7 +47,7 @@ Suma se declară în Secțiunea 4.1 a D301, la baza și TVA-ul aferente lunii î
 
 ## Ce face iConta.eu
 
-Pentru `tip=5` (Secțiunea 4.1), aplicația face rollup automat al bazei și TVA în totalul Secțiunii 4, conform instrucțiunilor OPANAF 592/2016. Baza se calculează automat din `val_valuta × curs`, cu rotunjire aritmetică (`ROUND_HALF_UP`), iar dacă cursul valutar lipsește sau este introdus ca zero, generarea este refuzată explicit — cursul trebuie introdus manual de contabil, aplicația nu îl preia automat de la BNR sau BCE.
+Pentru `tip=5` (Secțiunea 4.1), aplicația face rollup automat al bazei și TVA în totalul Secțiunii 4, conform instrucțiunilor OPANAF 592/2016. Baza se calculează automat din valoarea în valută × curs, cu rotunjire aritmetică („rotunjirea aritmetică (jumătatea în sus)”), iar dacă cursul valutar lipsește sau este introdus ca zero, generarea este refuzată explicit — cursul trebuie introdus manual de contabil, aplicația nu îl preia automat de la BNR sau BCE.
 
 Aplicația nu validează însă automat țara furnizorului împotriva unei liste de state membre UE la introducerea unei operațiuni `tip=5` — câmpul de țară al partenerului este opțional și liber. Responsabilitatea încadrării corecte (furnizor stabilit în UE vs. în afara UE) rămâne a contabilului.
 

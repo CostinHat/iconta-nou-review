@@ -2,7 +2,7 @@
 title: "Avansurile încasate intră în plafonul de TVA?"
 description: "Ce se cuprinde în cifra de afaceri relevantă pentru plafonul de scutire de TVA al întreprinderilor mici, conform Codului fiscal, și cum se tratează avansurile."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Din formularea legii rezultă:
 
 ## Ce face iConta.eu
 
-iConta.eu urmărește plafonul relevant pentru TVA la încasare (funcția `plafon_la()`), care e un prag distinct de cel de înregistrare în scopuri de TVA analizat mai sus. Aplicația nu are, la data acestui ghid, o funcție separată care să calculeze automat cifra de afaceri relevantă pentru plafonul de scutire al întreprinderilor mici (art. 310) și să distingă în acest calcul avansurile de livrările/prestările efective — verificarea plafonului de înregistrare rămâne, pentru acest scenariu, responsabilitatea contabilului.
+iConta.eu urmărește plafonul relevant pentru TVA la încasare (funcția „plafonul la dată”), care e un prag distinct de cel de înregistrare în scopuri de TVA analizat mai sus. Aplicația nu are, la data acestui ghid, o funcție separată care să calculeze automat cifra de afaceri relevantă pentru plafonul de scutire al întreprinderilor mici (art. 310) și să distingă în acest calcul avansurile de livrările/prestările efective — verificarea plafonului de înregistrare rămâne, pentru acest scenariu, responsabilitatea contabilului.
 
 [iConta.eu](/)

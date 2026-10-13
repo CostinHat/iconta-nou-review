@@ -2,7 +2,7 @@
 title: "Cum verifici dacă plata către ANAF a fost alocată corect?"
 description: "Ordinea legală de stingere a obligațiilor fiscale când o plată nu acoperă toate datoriile, și cum se verifică alocarea într-un extras/certificat fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Cum verifici, concret, dacă o plată a fost alocată corect:
 
 ## Ce face iConta.eu
 
-iConta.eu ține evidența contabilă a obligațiilor fiscale calculate în aplicație (impozite, TVA, contribuții) și a plăților înregistrate prin modulul de bancă (tipul „impozit_profit", „tva" etc., recunoscut din descrierea extrasului). La data acestui ghid, aplicația **nu are o conexiune directă cu fișa pe plătitor din SPV** pentru a compara automat alocarea reală făcută de ANAF cu obligațiile calculate intern — verificarea alocării plăților rămâne un proces manual, prin consultarea certificatului de atestare fiscală sau a fișei pe plătitor din Spațiul Privat Virtual.
+iConta.eu ține evidența contabilă a obligațiilor fiscale calculate în aplicație (impozite, TVA, contribuții) și a plăților înregistrate prin modulul de bancă (tipul „impozitul pe profit", „tva" etc., recunoscut din descrierea extrasului). La data acestui ghid, aplicația **nu are o conexiune directă cu fișa pe plătitor din SPV** pentru a compara automat alocarea reală făcută de ANAF cu obligațiile calculate intern — verificarea alocării plăților rămâne un proces manual, prin consultarea certificatului de atestare fiscală sau a fișei pe plătitor din Spațiul Privat Virtual.
 
 [iConta.eu](/)

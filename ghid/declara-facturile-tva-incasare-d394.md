@@ -2,7 +2,7 @@
 title: Cum se declară facturile cu TVA la încasare în D394?
 description: Bifa prin care contabilul marchează, pe factura de achiziție, că furnizorul aplică TVA la încasare e confirmată în cod ca alimentând rândul B1 din D300 — tratamentul acelorași facturi în D394 nu a fost verificat în cercetarea de temei.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -15,7 +15,7 @@ Pentru o factură de la un furnizor înscris la TVA la încasare, contabilul are
 ::: ghid-temei
 **Art. 297 alin. (2) CF**: *„Dreptul de deducere a TVA aferente achizițiilor efectuate de o persoană impozabilă de la o persoană impozabilă care aplică sistemul TVA la încasare... este amânat până la data la care taxa aferentă... a fost plătită furnizorului."*
 
-Verificat direct în codul sursă (linia 142): `furnizor_tva_incasare: corp.querySelector("#pr-furnizor-incasare").checked, // [B1 D300]`.
+Verificat direct în codul sursă (linia 142): câmpul „furnizor cu TVA la încasare” din ecran.
 :::
 
 ## Ce e sigur

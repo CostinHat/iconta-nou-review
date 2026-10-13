@@ -2,7 +2,7 @@
 title: Ce este contul 378 și cum se folosește?
 description: Contul 378 „Diferențe de preț la mărfuri” ține evidența adaosului comercial din gestiunea la preț cu amănuntul — se creditează cu adaosul aferent mărfurilor intrate și se debitează cu adaosul aferent mărfurilor ieșite, iar soldul arată adaosul rămas în stocul de la sfârșitul perioadei.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Contul 378 nu se folosește izolat — el intră, împreună cu 371 (mărfuri, l
 
 ## Ce face iConta.eu
 
-Motorul de gestiune global-valorică, aplicația, folosește explicit contul 378 în ambele funcții relevante: la recepție (`nir_gv`), nota propusă include linia `371=378` pentru adaosul stabilit pe fiecare articol; la descărcarea lunară (`descarcare_gv`), soldul și rulajul contului 378 (`Si378`, `Rc378`) intră direct în formula coeficientului K, iar nota de descărcare produce linia `378=371` pentru adaosul aferent vânzărilor lunii. Rulajele contului 378 sunt citite din notele **validate** (`status='validata'`), cumulat de la 1 ianuarie, exact cum cere calculul legal al coeficientului de repartizare.
+Motorul de gestiune global-valorică, aplicația, folosește explicit contul 378 în ambele funcții relevante: la recepție („NIR global-valoric (Stocuri)”), nota propusă include linia `371=378` pentru adaosul stabilit pe fiecare articol; la descărcarea lunară („descărcarea global-valorică (Stocuri)”), soldul și rulajul contului 378 (`Si378`, `Rc378`) intră direct în formula coeficientului K, iar nota de descărcare produce linia `378=371` pentru adaosul aferent vânzărilor lunii. Rulajele contului 378 sunt citite din notele **validate** (starea „validată”), cumulat de la 1 ianuarie, exact cum cere calculul legal al coeficientului de repartizare.
 
 [iConta.eu](/)

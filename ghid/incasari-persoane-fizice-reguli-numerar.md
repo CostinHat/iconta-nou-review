@@ -2,7 +2,7 @@
 title: "Încasări de la persoane fizice: reguli de numerar 2026"
 description: "Plafonul zilnic de 10.000 lei pentru încasările în numerar de la o persoană fizică, valabil neschimbat în 2026, conform Legii 70/2015."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Reguli aplicabile în 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația are constanta `PLAFON_PF = Decimal("10000")`, aplicată în `verifica_plafon()` pentru orice încasare sau plată cumulată cu o persoană fizică, într-o zi. Aplicația nu are un flux separat pentru excepția contractelor cu plata în rate — orice încasare eșalonată de la o persoană fizică e evaluată prin aceeași regulă de cumul zilnic, iar excluderea ei, unde se aplică, rămâne o decizie a contabilului.
+La data acestui ghid, aplicația are constanta plafonul pentru persoane fizice = 10000, aplicată în „verificarea plafonului de numerar (Casă)” pentru orice încasare sau plată cumulată cu o persoană fizică, într-o zi. Aplicația nu are un flux separat pentru excepția contractelor cu plata în rate — orice încasare eșalonată de la o persoană fizică e evaluată prin aceeași regulă de cumul zilnic, iar excluderea ei, unde se aplică, rămâne o decizie a contabilului.
 
 [iConta.eu](/)

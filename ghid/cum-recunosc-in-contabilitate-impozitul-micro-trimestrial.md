@@ -2,7 +2,7 @@
 title: Cum recunosc în contabilitate impozitul micro trimestrial?
 description: Impozitul pe veniturile microîntreprinderilor se recunoaște ca o cheltuială a trimestrului în care se calculează, pe baza acelorași venituri (facturat, nu încasat) folosite pentru determinarea sumei din D100.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -40,6 +40,6 @@ Practic, la finalul fiecărui trimestru, după ce se stabilește baza de calcul 
 
 ## Ce face iConta.eu
 
-`d100.pull()` determină baza impozabilă a trimestrului direct din înregistrările contabile ale firmei (conturile 70x/75x/76x minus 709), iar `deriva_obligatii` aplică cota de 1% pentru a obține suma obligației cod 121. Aceeași sumă, calculată pe aceeași bază de venituri ale trimestrului, este cea care trebuie recunoscută drept cheltuială cu impozitul micro — asigurând consistența între ce arată evidența contabilă și ce declară D100.
+„preluarea datelor” determină baza impozabilă a trimestrului direct din înregistrările contabile ale firmei (conturile 70x/75x/76x minus 709), iar „calculul obligațiilor (Declarații)” aplică cota de 1% pentru a obține suma obligației cod 121. Aceeași sumă, calculată pe aceeași bază de venituri ale trimestrului, este cea care trebuie recunoscută drept cheltuială cu impozitul micro — asigurând consistența între ce arată evidența contabilă și ce declară D100.
 
 [iConta.eu](/)

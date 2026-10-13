@@ -2,7 +2,7 @@
 title: Cum se declară impozitul micro trimestrial?
 description: Impozitul micro se declară prin D100 până pe 25 ale lunii următoare fiecărui trimestru, inclusiv trimestrul IV (25 ianuarie anul următor). Excepția de 25 iunie, provenită din OUG 153/2020, s-a aplicat doar până în anul de raportare 2025 inclusiv.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -50,7 +50,7 @@ Structura oficială ANAF a D100 limitează explicit această excepție „până
 
 ## Ce face iConta.eu
 
-Aplicația, funcția `_scadenta_cod`, calculează corect scadența declarației: pentru trimestrele I-III, 25 a lunii următoare; pentru trimestrul IV al impozitului micro (cod 121), 25 iunie anul următor — confirmat inclusiv printr-un test dedicat. Cota de 1% (poziția 17a din formular) e completată automat doar pentru cod 121, conform cerinței structurii oficiale.
+Aplicația, funcția „scadența”, calculează corect scadența declarației: pentru trimestrele I-III, 25 a lunii următoare; pentru trimestrul IV al impozitului micro (cod 121), 25 iunie anul următor — confirmat inclusiv printr-un test dedicat. Cota de 1% (poziția 17a din formular) e completată automat doar pentru cod 121, conform cerinței structurii oficiale.
 
 **De reținut:** acest calcul corect există în generatorul propriu-zis al XML-ului. Modulul de scadențar folosit de semaforul de obligații/dashboard nu are însă o ramură dedicată pentru tipul „d100" și, pentru trimestrul IV, cade pe regula generică din cod, care calculează 25 ianuarie anul următor — o dată diferită de cea generată efectiv în declarație. E o divergență internă cunoscută, între ceea ce arată semaforul și ceea ce depune efectiv declarația, în special pentru trimestrul IV; dacă vedeți în listă un termen de 25 ianuarie pentru trimestrul IV al impozitului micro, tratați-l cu rezervă și verificați scadența reală din declarația D100 generată.
 

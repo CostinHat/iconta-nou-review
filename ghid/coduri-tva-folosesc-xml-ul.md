@@ -2,7 +2,7 @@
 title: "Ce coduri de TVA se folosesc în XML-ul e-Factura?"
 description: "Baza legală a formatului RO_CIUS pentru factura electronică și ce coduri de categorie TVA sunt implementate în prezent în generatorul XML al iConta.eu."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,9 +28,9 @@ Legea trimite direct la standardul tehnic (SR EN 16931-1, în specificația naț
 
 ## Ce face iConta.eu
 
-La data acestui ghid, generatorul de XML e-Factura al iConta.eu implementează **doar codurile de categorie TVA „S" (cotă standard sau redusă, pentru orice linie cu cotă mai mare de zero) și „Z" (cotă zero)** — conform comentariului explicit din cod: „Doar factura standard cu TVA (categorii S/Z). taxare_inversa (AE), neplatitor TVA (O), storno/nota de credit (381) NU sunt tratate în v1 - se adaugă după confirmare pe TEST." Concret:
+La data acestui ghid, generatorul de XML e-Factura al iConta.eu implementează **doar codurile de categorie TVA „S" (cotă standard sau redusă, pentru orice linie cu cotă mai mare de zero) și „Z" (cotă zero)** — conform comentariului explicit din cod: „Doar factura standard cu TVA (categorii S/Z). taxare inversă (AE), neplatitor TVA (O), storno/nota de credit (381) NU sunt tratate în v1 - se adaugă după confirmare pe TEST." Concret:
 
-- Pentru o factură cu **taxare inversă**, aplicația **refuză explicit generarea** — codul aruncă o eroare (`NotImplementedError`) dacă factura e marcată cu taxare inversă, în loc să genereze un XML cu cod de categorie greșit.
+- Pentru o factură cu **taxare inversă**, aplicația **refuză explicit generarea** — codul aruncă o eroare („refuz”) dacă factura e marcată cu taxare inversă, în loc să genereze un XML cu cod de categorie greșit.
 - Pentru facturi către **beneficiari neplătitori de TVA** (cod „O") sau pentru **storno/notă de credit**, generatorul nu are încă suport dedicat.
 
 Această limitare e asumată și documentată direct în cod, nu ascunsă — dacă emiteți facturi cu taxare inversă sau storno prin e-Factura, verificați cu atenție rezultatul generat, iar pentru aceste cazuri, la data acestui ghid, procesul rămâne parțial manual.

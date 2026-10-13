@@ -2,7 +2,7 @@
 title: "D406 Active se depune lunar sau anual?"
 description: "De ce secțiunea Active din SAF-T (D406) are un regim anual, diferit de restul declarației, care e lunară sau trimestrială."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Deci întrebarea „lunar sau anual" nu are un răspuns unic pentru tot D406 —
 
 ## Ce face iConta.eu
 
-Motorul secțiunii Active calculează amortizarea pe cele patru metode fiscale și generează fragmentul XML `<Assets>` din registrul de mijloace fixe, la cererea unui an anume — coerent cu regimul anual descris mai sus, nu cu un ciclu lunar. Ruta care întoarce acest calcul (`GET /tenants/{id}/d406-active`) e funcțională, dar la data acestui ghid întoarce doar fragmentul `<Assets>`, nu un fișier `<AuditFile>` complet, depunibil ca atare, și nu are încă un ecran dedicat în interfață — comentariul din cod marchează explicit acest lucru („fără UI încă, păstrat deliberat"). Generatorul fișierului complet există la nivel de motor, probat valid pe validatorul oficial DUK, dar nu e conectat azi la nicio rută accesibilă din aplicație.
+Motorul secțiunii Active calculează amortizarea pe cele patru metode fiscale și generează fragmentul XML `<Assets>` din registrul de mijloace fixe, la cererea unui an anume — coerent cu regimul anual descris mai sus, nu cu un ciclu lunar. Ruta care întoarce acest calcul (aplicația) e funcțională, dar la data acestui ghid întoarce doar fragmentul `<Assets>`, nu un fișier `<AuditFile>` complet, depunibil ca atare, și nu are încă un ecran dedicat în interfață — comentariul din cod marchează explicit acest lucru („fără UI încă, păstrat deliberat"). Generatorul fișierului complet există la nivel de motor, probat valid pe validatorul oficial DUK, dar nu e conectat azi la nicio rută accesibilă din aplicație.
 
 [iConta.eu](/)

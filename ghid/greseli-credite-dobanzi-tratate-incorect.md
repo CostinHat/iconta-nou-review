@@ -2,7 +2,7 @@
 title: "Greșeli la credite: dobânzi tratate incorect"
 description: "Cele mai frecvente greșeli de înregistrare a dobânzii la credite bancare — angajare vs. plată, termen lung vs. scurt, descoperit de cont — și limita fiscală de deductibilitate."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Dobânda la un credit bancar se înregistrează în două momente diferite — a
 
 ## Ce face iConta.eu
 
-Verificat direct în cod: Aplicația generează notele contabile pentru credite bancare pe termen lung (conturile 1621/1682/1622) și pe termen scurt (5191/5198/5192), cu funcții separate pentru angajarea dobânzii (`nota_dobanda_angajata`), plata compusă rată+dobândă+comision (`nota_plata`) și reclasificarea la restanță (`nota_restanta`). Codul **nu acceptă un al treilea tip „overdraft"** — funcția internă de validare a tipului respinge explicit orice altă valoare în afară de „lung" sau „scurt". Tratamentul descoperitului de cont (666 = 5121, fără principal recunoscut) se poate obține doar ca efect secundar al aceleiași funcții de plată, apelată cu dobânda angajată dezactivată și rata/comisionul pe zero — nu există un buton sau o opțiune dedicată „overdraft" în aplicație, iar contabilul trebuie să știe să aleagă manual acest mod de lucru. Calculul plafonului fiscal de 30%/1.000.000 euro pentru costurile excedentare ale îndatorării (art. 40^2 CF) **nu e implementat** în acest motor — el produce doar notele contabile, nu și verificarea limitei de deductibilitate fiscală, care rămâne un calcul separat, în sarcina contabilului.
+Verificat direct în cod: Aplicația generează notele contabile pentru credite bancare pe termen lung (conturile 1621/1682/1622) și pe termen scurt (5191/5198/5192), cu funcții separate pentru angajarea dobânzii („nota dobânzii angajate”), plata compusă rată+dobândă+comision („nota de plată a ratei”) și reclasificarea la restanță („nota de reclasificare la restanță”). Codul **nu acceptă un al treilea tip „overdraft"** — funcția internă de validare a tipului respinge explicit orice altă valoare în afară de „lung" sau „scurt". Tratamentul descoperitului de cont (666 = 5121, fără principal recunoscut) se poate obține doar ca efect secundar al aceleiași funcții de plată, apelată cu dobânda angajată dezactivată și rata/comisionul pe zero — nu există un buton sau o opțiune dedicată „overdraft" în aplicație, iar contabilul trebuie să știe să aleagă manual acest mod de lucru. Calculul plafonului fiscal de 30%/1.000.000 euro pentru costurile excedentare ale îndatorării (art. 40^2 CF) **nu e implementat** în acest motor — el produce doar notele contabile, nu și verificarea limitei de deductibilitate fiscală, care rămâne un calcul separat, în sarcina contabilului.
 
 [iConta.eu](/)

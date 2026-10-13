@@ -2,7 +2,7 @@
 title: "Cum verific dacă toate facturile lunii au ajuns în e-Factura?"
 description: "Termenul legal de transmitere a facturilor în RO e-Factura și de ce verificarea lunară a stării fiecărei facturi transmise nu e opțională."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce înseamnă asta pentru verificarea de sfârșit de lună:
 
 ## Ce face iConta.eu
 
-Modulul e-Factura din iConta.eu ține evidența stării fiecărei transmiteri, cu funcția `ultima_trimitere_per_factura`, care întoarce, pentru fiecare factură din evidență, starea ultimei încercări de transmitere (reușită, în curs sau eroare) — exact mecanismul necesar pentru a compara facturile emise într-o lună cu cele efectiv confirmate de sistemul ANAF. Contabilul folosește acest raport pentru a identifica rapid facturile fără confirmare și a le retrimite în termenul legal de 5 zile lucrătoare.
+Modulul e-Factura din iConta.eu ține evidența stării fiecărei transmiteri, cu funcția „ultima transmitere a facturii”, care întoarce, pentru fiecare factură din evidență, starea ultimei încercări de transmitere (reușită, în curs sau eroare) — exact mecanismul necesar pentru a compara facturile emise într-o lună cu cele efectiv confirmate de sistemul ANAF. Contabilul folosește acest raport pentru a identifica rapid facturile fără confirmare și a le retrimite în termenul legal de 5 zile lucrătoare.
 
 [iConta.eu](/)

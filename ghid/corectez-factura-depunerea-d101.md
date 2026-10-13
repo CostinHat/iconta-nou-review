@@ -2,7 +2,7 @@
 title: Cum corectez o factură după depunerea D101
 description: iConta.eu nu leagă în niciun fel depunerea D101 de corectarea facturilor. Corectarea facturii se face prin storno, independent de D101; dacă factura corectată schimbă rezultatul fiscal deja declarat, ajustarea acelui rezultat se face separat, prin D101 rectificativă.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -12,7 +12,7 @@ D101 e declarația anuală de impozit pe profit — un rezumat al unui exerciți
 
 ## Corectarea facturii, în sine
 
-Aici răspunsul nu depinde deloc de D101: o factură emisă se corectează prin storno — o factură nouă, cu cantitățile negate, datată la momentul corecției, în luna curentă (deschisă). Dacă luna facturii originale e blocată prin „Blocare perioade" (F118), stornoul funcționează exact la fel, pentru că e datat oricum azi, nu în luna veche.
+Aici răspunsul nu depinde deloc de D101: o factură emisă se corectează prin storno — o factură nouă, cu cantitățile negate, datată la momentul corecției, în luna curentă (deschisă). Dacă luna facturii originale e blocată prin „Blocare perioade" („Blocare perioade”), stornoul funcționează exact la fel, pentru că e datat oricum azi, nu în luna veche.
 
 ## Corectarea rezultatului fiscal deja declarat
 

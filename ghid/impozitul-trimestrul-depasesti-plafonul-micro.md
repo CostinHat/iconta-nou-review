@@ -2,7 +2,7 @@
 title: "Impozitul în trimestrul în care depășești plafonul micro"
 description: "Cum se calculează impozitul pe profit din trimestrul în care o microîntreprindere depășește plafonul de 100.000 euro venituri."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Când veniturile cumulate ale unei microîntreprinderi depășesc, în cursul an
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu verifică și nu semnalează automat** depășirea plafonului de 100.000 euro în cursul anului. Aplicația tratează regimul fiscal (`regim_fiscal`) ca pe un câmp declarat manual de utilizator, la Date firmă, și confirmă explicit, în comentariile de cod, că nu există nicio constantă a plafonului micro în aplicație — deci nu poate detecta singură momentul depășirii și nici trimestrul din care ar trebui calculat impozitul pe profit. Comutarea efectivă a regimului de calcul, inclusiv separarea veniturilor și cheltuielilor pe trimestrul depășirii, rămâne integral responsabilitatea contabilului, care actualizează manual regimul fiscal declarat.
+La data acestui ghid, iConta.eu **nu verifică și nu semnalează automat** depășirea plafonului de 100.000 euro în cursul anului. Aplicația tratează regimul fiscal („regimul fiscal (Date firmă)”) ca pe un câmp declarat manual de utilizator, la Date firmă, și confirmă explicit, în comentariile de cod, că nu există nicio constantă a plafonului micro în aplicație — deci nu poate detecta singură momentul depășirii și nici trimestrul din care ar trebui calculat impozitul pe profit. Comutarea efectivă a regimului de calcul, inclusiv separarea veniturilor și cheltuielilor pe trimestrul depășirii, rămâne integral responsabilitatea contabilului, care actualizează manual regimul fiscal declarat.
 
 [iConta.eu](/)

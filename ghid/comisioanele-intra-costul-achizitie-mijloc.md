@@ -2,7 +2,7 @@
 title: "Comisioanele intră în costul de achiziție al unui mijloc fix?"
 description: "Ce spune OMFP 1802/2014 despre includerea comisioanelor atribuibile direct achiziției în costul de intrare al unui mijloc fix, și de ce iConta.eu nu repartizează automat aceste costuri decât pentru stocuri, nu și pentru mijloace fixe."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,7 +34,7 @@ Deci: dacă un comision e **atribuibil direct** achiziției unui mijloc fix conc
 
 ## Ce face iConta.eu
 
-Mecanismul automat de capitalizare a costurilor accesorii (transport, taxe) pe articolele unei intrări în gestiune — **F139, Costul complet de achiziție pe NIR (transport, vamă)** — e construit exclusiv pentru **stocuri**, pe metoda global-valorică (F088). Verificat explicit în cod: motorul de gestiune cantitativ-valorică (CMP) nu are niciun parametru de accesoriu, iar modulul de import/migrare a mijloacelor fixe (F059, aplicația) preia direct valoarea de intrare introdusă de contabil, fără o funcție de repartizare proporțională a unor costuri accesorii pe mai multe active.
+Mecanismul automat de capitalizare a costurilor accesorii (transport, taxe) pe articolele unei intrări în gestiune — **„Costul complet de achiziție pe NIR (transport, vamă)”, Costul complet de achiziție pe NIR (transport, vamă)** — e construit exclusiv pentru **stocuri**, pe metoda global-valorică („Stocuri global-valorice”). Verificat explicit în cod: motorul de gestiune cantitativ-valorică (CMP) nu are niciun parametru de accesoriu, iar modulul de import/migrare a mijloacelor fixe („Import mijloace fixe (migrare)”, aplicația) preia direct valoarea de intrare introdusă de contabil, fără o funcție de repartizare proporțională a unor costuri accesorii pe mai multe active.
 
 Practic, deși temeiul legal (OMFP 1802/2014, pct. 6) susține includerea unui comision direct atribuibil în costul de achiziție al unui mijloc fix, **iConta.eu nu are un mecanism automat care să facă această capitalizare pentru mijloace fixe** — contabilul introduce el însuși valoarea de intrare completă (preț + comision atribuibil), fie la înregistrarea inițială a activului, fie la migrarea registrului dintr-un alt program.
 

@@ -2,7 +2,7 @@
 title: "Cum obțin acces SPV pentru un SRL imediat după înființare?"
 description: "Firmele au obligația de a comunica cu organul fiscal prin mijloace electronice, prin înrolare în sistemul de comunicare electronică (SPV) — o obligație activă, nu una opțională, chiar de la înființare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce presupune obligația pentru un SRL nou:
 
 ## Ce face iConta.eu
 
-Conectorul OAuth SPV/ANAF este funcționalitate live în iConta.eu (F176): permite cabinetului să se conecteze o singură dată cu certificatul propriu, prin fluxul oficial OAuth ANAF (logincert.anaf.ro), iar de acolo aplicația poate trimite facturi electronice (e-Factura) și notificări e-Transport pentru firmele pe care cabinetul le gestionează, cu reîmprospătare automată a tokenului la fiecare 90 de zile. Ce nu face aplicația: nu înlocuiește înrolarea inițială în SPV a firmei la ANAF (obținerea certificatului, asocierea CUI-ului la cont) și nu depune direct declarații fiscale prin API — la data acestui ghid nu există un API oficial de transmitere a declarațiilor, acestea rămânând de încărcat manual în SPV după generarea și validarea lor în aplicație.
+Conectorul OAuth SPV/ANAF este funcționalitate live în iConta.eu („Conectarea la SPV (ANAF)”): permite cabinetului să se conecteze o singură dată cu certificatul propriu, prin fluxul oficial OAuth ANAF (logincert.anaf.ro), iar de acolo aplicația poate trimite facturi electronice (e-Factura) și notificări e-Transport pentru firmele pe care cabinetul le gestionează, cu reîmprospătare automată a tokenului la fiecare 90 de zile. Ce nu face aplicația: nu înlocuiește înrolarea inițială în SPV a firmei la ANAF (obținerea certificatului, asocierea CUI-ului la cont) și nu depune direct declarații fiscale prin API — la data acestui ghid nu există un API oficial de transmitere a declarațiilor, acestea rămânând de încărcat manual în SPV după generarea și validarea lor în aplicație.
 
 [iConta.eu](/)

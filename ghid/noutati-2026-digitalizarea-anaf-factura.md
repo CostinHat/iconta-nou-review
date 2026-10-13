@@ -2,7 +2,7 @@
 title: "Noutăți 2026 la digitalizarea ANAF: e-Factura, e-TVA, e-Transport"
 description: "Termenul de transmitere pentru RO e-Factura, calendarul suspendării RO e-TVA și mecanismul codului UIT la RO e-Transport, valabile în 2026."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,12 +38,12 @@ Pentru RO e-Transport, mecanismul de bază (necontestat, în vigoare) e codul UI
 
 ## Ce face iConta.eu
 
-**e-Factura SPV complet (F126)**: aplicația trimite automat facturile emise în SPV, cu reîncercare la indisponibilitate ANAF, și urmărește starea trimiterii (recipisă/erori); primește și facturile de la furnizori din SPV, transformându-le automat în ciornă de NIR/cheltuială, validată însă de om (mecanism „four-eyes": mașina propune, contabilul confirmă contul și validează).
+**e-Factura SPV complet („e-Factura SPV complet”)**: aplicația trimite automat facturile emise în SPV, cu reîncercare la indisponibilitate ANAF, și urmărește starea trimiterii (recipisă/erori); primește și facturile de la furnizori din SPV, transformându-le automat în ciornă de NIR/cheltuială, validată însă de om (mecanism „four-eyes": mașina propune, contabilul confirmă contul și validează).
 
-**e-Transport (F121)**: iConta.eu generează și trimite codul UIT prin API SPV, cu o „gardă de timp" proprie — cererea e blocată în afara ferestrei legale (UIT declarat cu maximum 3 zile înainte, valabil 5 zile pentru transport național / 15 zile pentru cel intracomunitar), iar după expirare declanșarea trimiterii e blocată explicit, cu motivul afișat.
+**e-Transport („Trimitere e-Transport prin API SPV”)**: iConta.eu generează și trimite codul UIT prin API SPV, cu o „gardă de timp" proprie — cererea e blocată în afara ferestrei legale (UIT declarat cu maximum 3 zile înainte, valabil 5 zile pentru transport național / 15 zile pentru cel intracomunitar), iar după expirare declanșarea trimiterii e blocată explicit, cu motivul afișat.
 
 **e-TVA**: nu am identificat, în cercetarea pentru acest ghid, un modul dedicat de generare sau răspuns automat la notificarea de conformare RO e-TVA în iConta.eu — regulile de mai sus rămân, pentru moment, informație de conformitate pe care contabilul o gestionează prin canalele oficiale ANAF.
 
-Notă: funcționalitatea din spatele acestui ghid, F060 (Monitor fiscal), e un mecanism intern — un cron săptămânal care citește noutățile ANAF/MF și trimite un rezumat filtrat prin email către administratorul aplicației. Nu e un modul orientat spre contabil și nu generează automat conținut vizibil în aplicație; rezumatul de mai sus e redactat manual, pe bază de surse legale verificate, nu produs de acel cron.
+Notă: funcționalitatea din spatele acestui ghid, „Monitor fiscal (noutăți legislative)”, e un mecanism intern — un cron săptămânal care citește noutățile ANAF/MF și trimite un rezumat filtrat prin email către administratorul aplicației. Nu e un modul orientat spre contabil și nu generează automat conținut vizibil în aplicație; rezumatul de mai sus e redactat manual, pe bază de surse legale verificate, nu produs de acel cron.
 
 [iConta.eu](/)

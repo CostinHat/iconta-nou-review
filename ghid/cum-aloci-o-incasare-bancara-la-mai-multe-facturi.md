@@ -2,7 +2,7 @@
 title: Cum aloci o încasare bancară la mai multe facturi?
 description: Legea cere doar ca operațiunea să aibă un document justificativ; ordinea exactă în care se sting facturile deschise ale unui partener (FIFO, cele mai vechi întâi) e logica aplicației, nu un text de lege citat verbatim.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,8 +37,8 @@ Important de precizat onest: ordinea FIFO (facturile cele mai vechi întâi) est
 
 ## Ce face iConta.eu
 
-Motorul de matching parcurge, pentru fiecare linie de extras cu CUI identificat, în ordine: potrivire exactă pe o singură factură (toleranță 0,01 lei), apoi potrivire exactă pe o combinație de 2-4 facturi (`MAX_COMBO = 4`, căutare limitată la primele 12 facturi FIFO ale partenerului), apoi alocare parțială FIFO pe soldurile rămase. Facturile eligibile sunt filtrate strict pe CUI-ul normalizat al partenerului și pe direcția corespunzătoare tipului liniei (încasare → facturi emise; plată → facturi primite) și sortate FIFO după data emiterii.
+Motorul de matching parcurge, pentru fiecare linie de extras cu CUI identificat, în ordine: potrivire exactă pe o singură factură (toleranță 0,01 lei), apoi potrivire exactă pe o combinație de 2-4 facturi (numărul maxim de combinații = 4, căutare limitată la primele 12 facturi FIFO ale partenerului), apoi alocare parțială FIFO pe soldurile rămase. Facturile eligibile sunt filtrate strict pe CUI-ul normalizat al partenerului și pe direcția corespunzătoare tipului liniei (încasare → facturi emise; plată → facturi primite) și sortate FIFO după data emiterii.
 
-Rezultatul unei potriviri exacte (una sau combo) primește status verde; alocarea parțială FIFO primește status galben și necesită confirmare manuală înainte de contare. La contare (`conteaza`), utilizatorul poate suprascrie alocările sugerate de motor prin parametrul `alocari`, dacă vrea o altă repartizare decât cea propusă automat.
+Rezultatul unei potriviri exacte (una sau combo) primește status verde; alocarea parțială FIFO primește status galben și necesită confirmare manuală înainte de contare. La contare („contarea”), utilizatorul poate suprascrie alocările sugerate de motor prin parametrul `alocari`, dacă vrea o altă repartizare decât cea propusă automat.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum completez D212 pentru PFA la normă de venit?"
 description: "La normă de venit se declară norma anuală (eventual ajustată), nu venitul brut și cheltuielile — iar CAS și CASS se calculează pe norma respectivă, nu pe un venit net dedus din contabilitate."
 published: 2026-09-26
-modified: 2026-10-03
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Ce rezultă practic pentru completarea D212 la capitolul de normă de venit:
 
 Generatorul D212 al iConta.eu emite capitolul dedicat normei de venit (`cap12`) cu câmpurile oficiale — `real_norma_venit`, `real_ajustare`, `real_venit_net_anual`, `real_impozit` — contabilul introduce norma și, dacă e cazul, norma ajustată (nu se preiau dintr-o evidență), iar venitul net, venitul impozabil și impozitul de 10% le calculează aplicația.
 
-Registrul de evidență fiscală pentru persoane fizice din iConta.eu (conform OMFP 3254/2017) susține corect regula specifică normei de venit: la `mod_venit_net = 3` (normă de venit), aplicația **refuză** înregistrarea dacă se introduce o valoare la cheltuieli deductibile, exact potrivit art. 1 alin. (2) din ordin. Fișa D212 din aplicație (`fisa_d212`) e construită pentru sistem real; pentru PFA la normă, CAS și CASS se calculează în Declarația unică (D212), pe norma declarată acolo.
+Registrul de evidență fiscală pentru persoane fizice din iConta.eu (conform OMFP 3254/2017) susține corect regula specifică normei de venit: la modul de determinare a venitului net = 3 (normă de venit), aplicația **refuză** înregistrarea dacă se introduce o valoare la cheltuieli deductibile, exact potrivit art. 1 alin. (2) din ordin. Fișa D212 din aplicație („fișa de calcul D212 (Declarații)”) e construită pentru sistem real; pentru PFA la normă, CAS și CASS se calculează în Declarația unică (D212), pe norma declarată acolo.
 
 [iConta.eu](/)

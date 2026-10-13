@@ -2,7 +2,7 @@
 title: Cum aleg perioada fiscală TVA pentru o firmă nouă?
 description: Pentru o firmă nou-înregistrată TVA, periodicitatea depinde de cifra de afaceri estimată pentru restul anului — nu de o alegere liberă.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ La finalul anului de înregistrare, dacă cifra de afaceri efectiv realizată (r
 
 ## Ce face iConta.eu
 
-La crearea unei firme, câmpul `tip_decont` (periodicitatea TVA) **nu se precompletează automat** — rămâne, conform deciziei de produs documentate în cod, „alegerea contabilului" (ANAF v9 nu întoarce această informație). Textul de ajutor din ecranul „Date firmă" parafrazează corect regula generală (lunar, cu excepția trimestrial dacă cifra de afaceri anul precedent e sub 100.000 euro și fără achiziții intracomunitare), dar aplicația nu calculează automat estimarea specifică firmelor nou-înregistrate din art. 322 alin. (3) — introducerea periodicității corecte, la firma nouă, rămâne un calcul manual al contabilului.
+La crearea unei firme, câmpul „periodicitatea TVA (Date firmă)” (periodicitatea TVA) **nu se precompletează automat** — rămâne, conform deciziei de produs documentate în cod, „alegerea contabilului" (ANAF v9 nu întoarce această informație). Textul de ajutor din ecranul „Date firmă" parafrazează corect regula generală (lunar, cu excepția trimestrial dacă cifra de afaceri anul precedent e sub 100.000 euro și fără achiziții intracomunitare), dar aplicația nu calculează automat estimarea specifică firmelor nou-înregistrate din art. 322 alin. (3) — introducerea periodicității corecte, la firma nouă, rămâne un calcul manual al contabilului.
 
 [iConta.eu](/)

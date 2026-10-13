@@ -2,7 +2,7 @@
 title: "Cum găsesc diferențele de câțiva bani din contabilitate?"
 description: "De ce balanța de verificare, întocmită lunar, e instrumentul standard pentru localizarea unei diferențe mici, aparent inexplicabile, din contabilitate."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce oferă, concret, aceste registre pentru localizarea diferenței:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează balanța de verificare lunară din evidența contabilă generală (jurnal, fișă de cont), utilă exact pentru acest tip de verificare. Pentru calculele fiscale proprii (contribuții, impozite), aplicația foloseşte rotunjire aritmetică (`ROUND_HALF_UP`, la 2 zecimale, o singură dată per calcul) — o disciplină internă menită să evite exact diferențele de „câțiva bani" cauzate de rotunjire bancară (half-to-even) sau de rotunjire dublă. Identificarea unei diferențe concrete, apărute din date introduse manual, rămâne însă un proces de verificare pe care contabilul îl face cu balanța ca punct de plecare.
+La data acestui ghid, iConta.eu generează balanța de verificare lunară din evidența contabilă generală (jurnal, fișă de cont), utilă exact pentru acest tip de verificare. Pentru calculele fiscale proprii (contribuții, impozite), aplicația foloseşte rotunjire aritmetică („rotunjirea aritmetică (jumătatea în sus)”, la 2 zecimale, o singură dată per calcul) — o disciplină internă menită să evite exact diferențele de „câțiva bani" cauzate de rotunjire bancară (half-to-even) sau de rotunjire dublă. Identificarea unei diferențe concrete, apărute din date introduse manual, rămâne însă un proces de verificare pe care contabilul îl face cu balanța ca punct de plecare.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se înregistrează lucrările în curs pe șantiere"
 description: "Lucrările neterminate la sfârșitul lunii pe un șantier intră la producția în curs de execuție — contul 331 — și se reiau la începutul lunii următoare, potrivit reglementărilor contabile."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce rezultă din text pentru lucrările pe șantier:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un motor dedicat producției în curs de execuție, în aplicație: funcția `nota_productie_in_curs(suma, moment)` generează nota contabilă de constatare la sfârșitul lunii (331 = 711, pentru suma introdusă) și, simetric, nota de reluare la începutul lunii următoare (711 = 331), pe baza aceleiași sume. Motorul nu evaluează el însuși stadiul lucrării pe șantier și nu declanșează automat reluarea din luna următoare — suma constatată se introduce de contabil, pe baza situației de lucrări sau a devizului actualizat, iar generarea notei de reluare rămâne o acțiune separată, la momentul potrivit.
+La data acestui ghid, iConta.eu are un motor dedicat producției în curs de execuție, în aplicație: funcția „nota producției în curs (Producție)” generează nota contabilă de constatare la sfârșitul lunii (331 = 711, pentru suma introdusă) și, simetric, nota de reluare la începutul lunii următoare (711 = 331), pe baza aceleiași sume. Motorul nu evaluează el însuși stadiul lucrării pe șantier și nu declanșează automat reluarea din luna următoare — suma constatată se introduce de contabil, pe baza situației de lucrări sau a devizului actualizat, iar generarea notei de reluare rămâne o acțiune separată, la momentul potrivit.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se declară bonurile de combustibil în D394?"
 description: "Când un bon fiscal de combustibil intră în D394 ca achiziție cu factură simplificată și ce condiție trebuie să îndeplinească pentru asta."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,7 +33,7 @@ Practic: bonul de combustibil de la pompă, cerut cu CUI-ul firmei la momentul p
 
 ## Ce face iConta.eu
 
-D394 se generează în iConta.eu din aceleași tabele de facturi (`facturi` + `factura_linii`) folosite pentru restul aplicației, cu o a doua cale de calcul independentă care recalculează totalurile pe cotă direct din liniile brute și oprește generarea dacă rezultatul diferă de cel al generatorului principal.
+D394 se generează în iConta.eu din aceleași tabele de facturi (`facturi` + „liniile facturii”) folosite pentru restul aplicației, cu o a doua cale de calcul independentă care recalculează totalurile pe cotă direct din liniile brute și oprește generarea dacă rezultatul diferă de cel al generatorului principal.
 
 Această a doua cale de calcul are o limită declarată explicit în codul sursă: **nu acoperă operațiunile manuale — bonurile fiscale și borderourile, care nu au un ecran/tabelă dedicată de introducere, ci pot fi transmise doar prin câmpul „manual" al cererii de generare (rânduri TVA introduse de contabil), fără o interfață proprie în aplicație.** Practic, un bon de combustibil cu CUI-ul firmei poate ajunge în D394 fie introdus ca o achiziție obișnuită, prin fluxul normal de facturi — caz acoperit de garda de reconciliere independentă —, fie ca rând manual transmis prin acel câmp „manual" — caz pe care garda de reconciliere NU îl verifică. Rămâne responsabilitatea contabilului să se asigure că bonul respectă condiția CUI-ului înscris înainte de a-l introduce în sistem, indiferent de calea aleasă.
 

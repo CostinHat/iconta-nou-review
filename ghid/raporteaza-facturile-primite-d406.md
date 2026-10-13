@@ -2,7 +2,7 @@
 title: Cum se raportează facturile primite în D406?
 description: Facturile primite se raportează în secțiunea PurchaseInvoices din SourceDocuments, cu linii reale per produs, reconciliate obligatoriu cu antetul.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,7 +24,7 @@ Greșeala tipică este preluarea facturilor primite direct din nota contabilă d
 
 ## Ce face iConta.eu
 
-Conform docstring-ului generatorului (actualizat 03.08.2026): „SourceDocuments: SalesInvoices/PurchaseInvoices se emit cu LINII REALE pe produs din factura_linii (cantitate/UM/pret/descriere/cota), reconciliate OBLIGATORIU cu antetul; DUK-validate structural (reparat 27.07)." Pentru facturile primite, aceasta înseamnă preluarea liniilor reale ale facturii (cantitate, unitate de măsură, preț, descriere, cotă), reconciliate automat cu antetul, cu verificare structurală prin validatorul DUK.
+Conform docstring-ului generatorului (actualizat 03.08.2026): „SourceDocuments: SalesInvoices/PurchaseInvoices se emit cu LINII REALE pe produs din liniile facturii (cantitate/UM/pret/descriere/cota), reconciliate OBLIGATORIU cu antetul; DUK-validate structural (reparat 27.07)." Pentru facturile primite, aceasta înseamnă preluarea liniilor reale ale facturii (cantitate, unitate de măsură, preț, descriere, cotă), reconciliate automat cu antetul, cu verificare structurală prin validatorul DUK.
 
 Cotele de TVA de pe liniile facturilor primite urmează aceeași logică period-aware descrisă pentru livrări: codurile TaxCode se aplică în funcție de data facturii, ținând cont de schimbarea introdusă de Legea 141/2025 de la 1 august 2025.
 

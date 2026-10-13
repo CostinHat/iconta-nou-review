@@ -2,7 +2,7 @@
 title: "Cum se raportează vânzarea unui mijloc fix în D406?"
 description: "Fereastra de raportare anuală a secțiunii Active din SAF-T (D406) și legătura ei cu ieșirea unui mijloc fix din evidență prin vânzare."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă pentru situația unei vânzări de mijloc fix:
 
 ## Ce face iConta.eu
 
-Generatorul de secțiune Active din SAF-T (funcțiile `xml_asset`/`xml_d406_anual_active`) construiește raportarea anuală pentru fiecare mijloc fix, inclusiv amortizarea calculată până la data de referință, pe baza datelor introduse în modulul de mijloace fixe. Vânzarea propriu-zisă a activului (emiterea facturii, calculul rezultatului din cesiune) se înregistrează separat, în modulul de facturare al aplicației, și se reflectă în secțiunile curente ale D406, nu în raportarea anuală de Active.
+Generatorul de secțiune Active din SAF-T (funcțiile „XML-ul activelor D406”/„D406 active (Declarații)”) construiește raportarea anuală pentru fiecare mijloc fix, inclusiv amortizarea calculată până la data de referință, pe baza datelor introduse în modulul de mijloace fixe. Vânzarea propriu-zisă a activului (emiterea facturii, calculul rezultatului din cesiune) se înregistrează separat, în modulul de facturare al aplicației, și se reflectă în secțiunile curente ale D406, nu în raportarea anuală de Active.
 
 [iConta.eu](/)

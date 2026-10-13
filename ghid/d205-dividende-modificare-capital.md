@@ -2,7 +2,7 @@
 title: D205 pentru dividende după modificare de capital
 description: D205 nu ține cont, prin ea însăși, de o eventuală majorare sau reducere anterioară de capital social — citește doar contul 457 și cotele de participare actuale ale asociaților. Ce trebuie verificat manual în acest caz.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -17,7 +17,7 @@ Dacă societatea a trecut printr-o modificare de capital social (majorare sau re
 — Codul fiscal, Legea 227/2015, art. 97 alin. (7)
 :::
 
-Cota de impozitare a dividendelor (art. 97 alin. (7) de mai sus) se aplică sumei distribuite/plătite, indiferent de operațiunile anterioare de capital social. Cercetarea care stă la baza acestui ghid nu a identificat, nici în structura oficială a D205, nici în instrucțiunile ei de completare, nici în codul funcționalității F029, vreo regulă specifică legată de o modificare anterioară a capitalului social — nu există, la acest nivel, un temei separat de cel general (art. 97 alin. (7)), iar acest ghid nu inventează unul.
+Cota de impozitare a dividendelor (art. 97 alin. (7) de mai sus) se aplică sumei distribuite/plătite, indiferent de operațiunile anterioare de capital social. Cercetarea care stă la baza acestui ghid nu a identificat, nici în structura oficială a D205, nici în instrucțiunile ei de completare, nici în codul funcționalității „Declarația D205 și distribuirea dividendelor”, vreo regulă specifică legată de o modificare anterioară a capitalului social — nu există, la acest nivel, un temei separat de cel general (art. 97 alin. (7)), iar acest ghid nu inventează unul.
 
 ## Ce se greșește în practică
 
@@ -27,6 +27,6 @@ Cota de impozitare a dividendelor (art. 97 alin. (7) de mai sus) se aplică sume
 
 ## Ce face iConta.eu
 
-Generatorul D205 din iConta.eu împarte automat dividendul distribuit/plătit pe asociați/acționari strict după cotele de participare înregistrate la momentul generării (`select_asociati`, doar cei cu cotă peste 0%) și după mișcările contului 457 din note validate — nu păstrează, pentru F029, un istoric al modificărilor de capital social și nu ajustează singur cotele în urma unei asemenea modificări. Dacă societatea dumneavoastră a trecut printr-o modificare de capital care schimbă structura de asociați sau procentele deținute, actualizați întâi cotele asociaților în iConta.eu, înainte de a genera D205 pentru o distribuire ulterioară — altfel riscați o împărțire a impozitului pe cote care nu mai reflectă structura reală.
+Generatorul D205 din iConta.eu împarte automat dividendul distribuit/plătit pe asociați/acționari strict după cotele de participare înregistrate la momentul generării („lista asociaților (Date firmă)”, doar cei cu cotă peste 0%) și după mișcările contului 457 din note validate — nu păstrează, pentru „Declarația D205 și distribuirea dividendelor”, un istoric al modificărilor de capital social și nu ajustează singur cotele în urma unei asemenea modificări. Dacă societatea dumneavoastră a trecut printr-o modificare de capital care schimbă structura de asociați sau procentele deținute, actualizați întâi cotele asociaților în iConta.eu, înainte de a genera D205 pentru o distribuire ulterioară — altfel riscați o împărțire a impozitului pe cote care nu mai reflectă structura reală.
 
 [iConta.eu](/)

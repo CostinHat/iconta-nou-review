@@ -2,7 +2,7 @@
 title: Cum se înregistrează activele achiziționate cu granturi
 description: Activul cumpărat cu ajutorul unui grant se înregistrează normal, la valoarea de intrare, iar grantul se reflectă separat, ca subvenție pentru investiții, reluată treptat pe măsura amortizării.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Fiscal, la microîntreprindere, venitul din reluarea grantului (7584) se scade d
 
 ## Ce face iConta.eu
 
-Operațiunile de mijloace fixe și cele de subvenții sunt separate în iConta.eu, exact ca în mecanismul de mai sus: activul se înregistrează prin ecranul dedicat de mijloace fixe, la valoarea lui integrală, iar grantul primit se reflectă prin ecranul „Subvenții (445/741)", cu opțiunea „Investiții (475)" — dreptul și încasarea funcționează normal din acest ecran. **Reluarea lunară proporțională cu amortizarea nu poate fi însă finalizată din același formular**: deși „Reluare la venituri" apare ca opțiune de „Fel", ecranul nu are câmpurile `valoare_activ`, `subventie` și `amortizare_lunara` pe care ruta le cere; la data acestei verificări, reluarea trebuie introdusă pe altă cale (API direct sau notă manuală calculată după formula `amortizare_lunară × subvenție / valoare_activ`). Aplicația nu leagă automat valoarea grantului de valoarea activului la intrare — corelarea celor două (procentul subvenționat, folosit la calculul reluării) trebuie făcută manual.
+Operațiunile de mijloace fixe și cele de subvenții sunt separate în iConta.eu, exact ca în mecanismul de mai sus: activul se înregistrează prin ecranul dedicat de mijloace fixe, la valoarea lui integrală, iar grantul primit se reflectă prin ecranul „Subvenții (445/741)", cu opțiunea „Investiții (475)" — dreptul și încasarea funcționează normal din acest ecran. **Reluarea lunară proporțională cu amortizarea nu poate fi însă finalizată din același formular**: deși „Reluare la venituri" apare ca opțiune de „Fel", ecranul nu are câmpurile „valoarea activului”, `subventie` și „amortizarea lunară” pe care ruta le cere; la data acestei verificări, reluarea trebuie introdusă pe altă cale (API direct sau notă manuală calculată după formula amortizare_lunară × subvenție / valoarea activului). Aplicația nu leagă automat valoarea grantului de valoarea activului la intrare — corelarea celor două (procentul subvenționat, folosit la calculul reluării) trebuie făcută manual.
 
 [iConta.eu](/)

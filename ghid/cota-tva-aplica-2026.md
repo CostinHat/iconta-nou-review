@@ -2,7 +2,7 @@
 title: Ce cotă de TVA se aplică în 2026?
 description: În 2026 sunt în vigoare două cote de TVA — 21% standard și 11% redusă unică — valabile fără schimbare pe tot anul, de la 01.08.2025. Vezi regula generală și lista limitativă a excepțiilor.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Pentru anul 2026, OUG 8/2026 a modificat alte praguri fiscale (plafonul TVA la �
 
 ## Ce face iConta.eu
 
-Cotele curente (`COTA_STANDARD = 21`, `COTA_REDUSA = 11`) sunt sursa unică internă folosită de motorul de potrivire cotă↔produs. În paralel, aplicația ține un registru „period-aware" al valorilor istorice (19% până la 31.07.2025, cote istorice 9%/5%) — astfel încât aplicația validează automat cota corectă în funcție de data operațiunii, nu doar de valoarea numerică introdusă.
+Cotele curente (cota standard = 21, cota redusă = 11) sunt sursa unică internă folosită de motorul de potrivire cotă↔produs. În paralel, aplicația ține un registru „period-aware" al valorilor istorice (19% până la 31.07.2025, cote istorice 9%/5%) — astfel încât aplicația validează automat cota corectă în funcție de data operațiunii, nu doar de valoarea numerică introdusă.
 
 [iConta.eu](/)

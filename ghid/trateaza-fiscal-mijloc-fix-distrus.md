@@ -2,7 +2,7 @@
 title: "Cum se tratează fiscal un mijloc fix distrus?"
 description: "Scoaterea din funcțiune a unui mijloc fix distrus urmează aceeași regulă de calcul ca orice casare, pe baza valorii fiscale rămase."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,6 +25,6 @@ Greșeala frecventă e uitarea scoaterii activului distrus din registrul de mijl
 
 ## Ce face iConta.eu
 
-Ecranul de Casare — singura acțiune de ieșire din registru descrisă în acest dosar — calculează automat amortizarea la zi pe metoda reală a activului și dezactivează activul (`activ=false`), indiferent de motivul scoaterii din funcțiune (uzură, distrugere sau altul). Nota generată e ciornă, validată separat din Registrul jurnal.
+Ecranul de Casare — singura acțiune de ieșire din registru descrisă în acest dosar — calculează automat amortizarea la zi pe metoda reală a activului și dezactivează activul (marcat inactiv), indiferent de motivul scoaterii din funcțiune (uzură, distrugere sau altul). Nota generată e ciornă, validată separat din Registrul jurnal.
 
 [iConta.eu](/)

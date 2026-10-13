@@ -2,7 +2,7 @@
 title: "Cum caut facturile unui anumit furnizor în e-Factura?"
 description: "Ce spune legea despre disponibilitatea facturilor primite prin RO e-Factura și cum se regăsesc, în practică, facturile unui furnizor anume."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-iConta.eu are un conector propriu către SPV (Spațiul Privat Virtual ANAF), care preia automat facturile primite prin RO e-Factura, și un ecran de facturi cu filtrare pe an, lună și direcție (emisă/primită). La verificarea codului, funcția de listare a facturilor (`lista_facturi`) nu are însă, la acest moment, un parametru dedicat de căutare explicită după numele sau CUI-ul furnizorului — datele de identificare ale terțului (`tert_nume`, `tert_cui`) sunt afișate pentru fiecare factură, dar filtrarea unei liste lungi doar după furnizor rămâne, structural, o funcție de căutare pe care nu am găsit-o implementată separat în backend.
+iConta.eu are un conector propriu către SPV (Spațiul Privat Virtual ANAF), care preia automat facturile primite prin RO e-Factura, și un ecran de facturi cu filtrare pe an, lună și direcție (emisă/primită). La verificarea codului, funcția de listare a facturilor („lista facturilor (Facturi)”) nu are însă, la acest moment, un parametru dedicat de căutare explicită după numele sau CUI-ul furnizorului — datele de identificare ale terțului („numele terțului”, „CUI-ul terțului”) sunt afișate pentru fiecare factură, dar filtrarea unei liste lungi doar după furnizor rămâne, structural, o funcție de căutare pe care nu am găsit-o implementată separat în backend.
 
 [iConta.eu](/)

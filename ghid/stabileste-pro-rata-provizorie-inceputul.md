@@ -2,7 +2,7 @@
 title: "Cum se stabilește pro-rata provizorie la începutul anului?"
 description: "Regula legală de stabilire a pro-rata provizorii de TVA la începutul fiecărui an fiscal, pentru persoanele impozabile cu regim mixt."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Pentru firmele cu regim mixt de TVA (care fac atât operațiuni cu drept de dedu
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu calculează automat pro-rata** (nici provizorie, nici definitivă). În generatorul declarației D300 există un câmp `pro_rata`, care poate fi introdus manual de contabil în profilul TVA al firmei — dacă lipsește, aplicația presupune 100% (drept de deducere integral), ceea ce e corect doar pentru firmele fără regim mixt. Determinarea propriu-zisă a pro-rata provizorii (pe baza cifrelor anului precedent sau a estimării) și comunicarea ei către ANAF până la 25 ianuarie rămân, în acest moment, în sarcina contabilului, în afara aplicației.
+La data acestui ghid, iConta.eu **nu calculează automat pro-rata** (nici provizorie, nici definitivă). În generatorul declarației D300 există un câmp „pro-rata (Date firmă)”, care poate fi introdus manual de contabil în profilul TVA al firmei — dacă lipsește, aplicația presupune 100% (drept de deducere integral), ceea ce e corect doar pentru firmele fără regim mixt. Determinarea propriu-zisă a pro-rata provizorii (pe baza cifrelor anului precedent sau a estimării) și comunicarea ei către ANAF până la 25 ianuarie rămân, în acest moment, în sarcina contabilului, în afara aplicației.
 
 [iConta.eu](/)

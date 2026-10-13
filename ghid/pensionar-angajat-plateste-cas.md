@@ -2,7 +2,7 @@
 title: "Un pensionar angajat plătește CAS?"
 description: "Dacă un pensionar angajat cu contract individual de muncă datorează contribuția de asigurări sociale (CAS) pe salariu și ce excepție specială are față de contribuția minimă obligatorie."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Explicația mecanismului:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează corect CAS pentru salariații pensionari ca pentru orice alt angajat, pe baza salariului brut introdus. În plus, modulul de salarizare (funcția de calcul salariu) are un parametru dedicat `exceptat_suprataxare`, prin care contabilul poate marca un salariat aflat în una din situațiile de la art. 146 alin. (5^7) din Codul fiscal — printre care „elev/student <26, pensionar, multi-contract cu declarație" — astfel încât aplicația nu mai ridică artificial contribuția de asigurări sociale la nivelul corespunzător salariului minim brut pe țară, ci o calculează la salariul efectiv realizat.
+La data acestui ghid, iConta.eu calculează corect CAS pentru salariații pensionari ca pentru orice alt angajat, pe baza salariului brut introdus. În plus, modulul de salarizare (funcția de calcul salariu) are un parametru dedicat „exceptat de la suprataxare”, prin care contabilul poate marca un salariat aflat în una din situațiile de la art. 146 alin. (5^7) din Codul fiscal — printre care „elev/student <26, pensionar, multi-contract cu declarație" — astfel încât aplicația nu mai ridică artificial contribuția de asigurări sociale la nivelul corespunzător salariului minim brut pe țară, ci o calculează la salariul efectiv realizat.
 
 [iConta.eu](/)

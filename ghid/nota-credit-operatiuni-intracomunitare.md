@@ -2,7 +2,7 @@
 title: Nota de credit pentru operațiuni intracomunitare — tratament contabil
 description: O notă de credit primită de la furnizorul UE pentru o achiziție intracomunitară reduce proporțional baza și TVA autoimpusă prin 4426 = 4427, conform pct. 109 alin. (1) din normele HG 1/2016, aplicabil oricărei situații de taxare inversă.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -51,6 +51,6 @@ După corecție, baza rămasă e 5.000 lei, iar TVA autoimpusă rămasă e 1.050
 
 ## Ce face iConta.eu
 
-Calculul TVA la taxare inversă aplică formula `TVA = bază × cotă / 100`, cu rotunjire aritmetică (`ROUND_HALF_UP`) la 2 zecimale — aceeași formulă, indiferent dacă baza vine dintr-o achiziție inițială sau dintr-o corecție. Cota trebuie transmisă explicit la fiecare calcul, fără valoare implicită înghețată în cod, iar baza trebuie să fie strict pozitivă.
+Calculul TVA la taxare inversă aplică formula `TVA = bază × cotă / 100`, cu rotunjire aritmetică („rotunjirea aritmetică (jumătatea în sus)”) la 2 zecimale — aceeași formulă, indiferent dacă baza vine dintr-o achiziție inițială sau dintr-o corecție. Cota trebuie transmisă explicit la fiecare calcul, fără valoare implicită înghețată în cod, iar baza trebuie să fie strict pozitivă.
 
 [iConta.eu](/)

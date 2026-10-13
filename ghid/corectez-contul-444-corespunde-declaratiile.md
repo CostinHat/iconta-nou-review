@@ -2,7 +2,7 @@
 title: Cum corectez contul 444 dacă nu corespunde cu declarațiile depuse?
 description: Corectarea contului 444 depinde de cauza divergenței față de D112 — stat de salarii necontabilizat, notă în ciornă sau altă situație de investigat — și, dacă există un XML efectiv depus la ANAF, comparația se face cu acela, nu cu o regenerare.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,7 +24,7 @@ Cea mai frecventă greșeală este „ajustarea" soldului contului 444 printr-o 
 
 ## Ce face iConta.eu
 
-Funcția `compara_d112` preferă, la stabilirea sumei declarate, XML-ul D112 efectiv depus și persistat la momentul depunerii; doar dacă acesta nu există, folosește o regenerare calculată acum — și comunică explicit în rezultat care variantă a folosit (depusă sau regenerată). Pe baza acestei sume, comparată cu rulajul creditor al contului 444 (citit doar din notele validate), aplicația indică motivul divergenței și remediul corespunzător:
+Funcția „comparația D112 (Control fiscal)” preferă, la stabilirea sumei declarate, XML-ul D112 efectiv depus și persistat la momentul depunerii; doar dacă acesta nu există, folosește o regenerare calculată acum — și comunică explicit în rezultat care variantă a folosit (depusă sau regenerată). Pe baza acestei sume, comparată cu rulajul creditor al contului 444 (citit doar din notele validate), aplicația indică motivul divergenței și remediul corespunzător:
 
 - Contul 444 e la zero și nu există nicio notă (nici în ciornă) → statul de salarii nu a fost contabilizat; remediu executabil, „contabilizează statul de plată".
 - Contul e la zero, dar există o notă de salarii în ciornă → remediu sugerat, „validează nota" — ciornele nu intră în evidența folosită la comparație.

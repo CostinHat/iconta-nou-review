@@ -2,7 +2,7 @@
 title: Cum se verifică soldul contului 378?
 description: Soldul contului 378 se verifică prin fișa de cont (sold inițial + rulaj credit − rulaj debit, cumulat de la 1 ianuarie) și trebuie să corespundă cu adaosul comercial aferent mărfurilor rămase efectiv în stoc la data verificării.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,10 +32,10 @@ Soldul contului 378 „Diferențe de preț la mărfuri” nu e o cifră abstract
 
 ## Ce face iConta.eu
 
-Soldul contului 378, ca al oricărui alt cont, se verifică prin ruta `/tenants/{tenant_id}/fisa-cont` (motor aplicația), care permite filtrarea pe cont (378) și interval de an/lună — echivalentul funcțional al Cărții mari pentru acest cont, conform OMFP 2634/2015 (Registrul Cartea mare poate fi înlocuit cu Fișa de cont pentru operațiuni diverse).
+Soldul contului 378, ca al oricărui alt cont, se verifică prin ruta aplicația (motor aplicația), care permite filtrarea pe cont (378) și interval de an/lună — echivalentul funcțional al Cărții mari pentru acest cont, conform OMFP 2634/2015 (Registrul Cartea mare poate fi înlocuit cu Fișa de cont pentru operațiuni diverse).
 
-Soldul e alimentat de motorul de gestiune global-valorică: la recepție, prin `nir_gv` (linia `371=378`), la descărcarea lunară, prin `descarcare_gv` (linia `378=371`, cu suma calculată din coeficientul K). Funcția `coeficient_k(si_378, rc_378, si_371, rd_371, si_4428, rc_4428)` refuză explicit să calculeze dacă numitorul (stocul la preț de înregistrare, fără TVA neexigibilă) ajunge la zero sau negativ — deci o eroare gravă de sold pe 371/378/4428 oprește calculul, cu mesaj explicit, în loc să producă tăcut un coeficient greșit.
+Soldul e alimentat de motorul de gestiune global-valorică: la recepție, prin „NIR global-valoric (Stocuri)” (linia `371=378`), la descărcarea lunară, prin „descărcarea global-valorică (Stocuri)” (linia `378=371`, cu suma calculată din coeficientul K). Funcția „coeficientul K (Stocuri, descărcarea global-valorică)” refuză explicit să calculeze dacă numitorul (stocul la preț de înregistrare, fără TVA neexigibilă) ajunge la zero sau negativ — deci o eroare gravă de sold pe 371/378/4428 oprește calculul, cu mesaj explicit, în loc să producă tăcut un coeficient greșit.
 
-O atenție de reținut: `descarca_luna` citește rulajele 371/378/4428 **fără filtrare pe sursă** — dacă firma folosește și un mecanism manual separat pe contul 4428 (de exemplu, TVA la încasare), acele mișcări s-ar aduna la rulajul folosit pentru calculul coeficientului K, denaturând soldul rezultat pe 378. Dacă soldul verificat pe 378 nu se leagă cu stocul fizic, verificați întâi dacă firma are și alte note manuale pe 4428, în afara descărcării de gestiune.
+O atenție de reținut: „descărcarea lunii (Stocuri)” citește rulajele 371/378/4428 **fără filtrare pe sursă** — dacă firma folosește și un mecanism manual separat pe contul 4428 (de exemplu, TVA la încasare), acele mișcări s-ar aduna la rulajul folosit pentru calculul coeficientului K, denaturând soldul rezultat pe 378. Dacă soldul verificat pe 378 nu se leagă cu stocul fizic, verificați întâi dacă firma are și alte note manuale pe 4428, în afara descărcării de gestiune.
 
 [iConta.eu](/)

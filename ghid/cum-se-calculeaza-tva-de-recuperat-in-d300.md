@@ -2,7 +2,7 @@
 title: Cum se calculează TVA de recuperat în D300?
 description: TVA de recuperat e suma negativă cumulată (rd.43/45) rezultată când taxa dedusă depășește taxa colectată; legea dă opțiunea de rambursare prin bifarea casetei sau reportul în luna următoare, dar iConta generează azi doar deconturi cu reportul — nu poate bifa cererea de rambursare.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -49,6 +49,6 @@ Legea permite, pentru acest sold, două căi: bifarea casetei de pe formular pen
 
 ## Ce face iConta.eu
 
-Important de știut: `build_xml` scrie mereu, necondiționat, caseta „Solicitați rambursarea soldului sumei negative de TVA?” pe „Nu” — nu există niciun parametru, câmp de profil sau rând manual prin care contabilul să poată bifa „Da”. Practic, orice firmă care generează D300 cu iConta primește întotdeauna un decont cu soldul negativ reportat spre luna următoare, niciodată cu cererea de rambursare bifată, indiferent de mărimea soldului sau de intenția contabilului. Dacă firma dorește efectiv rambursarea, decontul trebuie corectat manual înainte de depunere (sau depus prin alt mijloc) pentru a bifa caseta corespunzătoare — aplicația nu susține azi acest flux. Restul lanțului de calcul (rd.36–rd.45) e generat automat, cu excepția soldului reportat din luna precedentă (rd.41), care e un câmp manual introdus de contabil la fiecare depunere.
+Important de știut: „generarea XML-ului declarației (Declarații)” scrie mereu, necondiționat, caseta „Solicitați rambursarea soldului sumei negative de TVA?” pe „Nu” — nu există niciun parametru, câmp de profil sau rând manual prin care contabilul să poată bifa „Da”. Practic, orice firmă care generează D300 cu iConta primește întotdeauna un decont cu soldul negativ reportat spre luna următoare, niciodată cu cererea de rambursare bifată, indiferent de mărimea soldului sau de intenția contabilului. Dacă firma dorește efectiv rambursarea, decontul trebuie corectat manual înainte de depunere (sau depus prin alt mijloc) pentru a bifa caseta corespunzătoare — aplicația nu susține azi acest flux. Restul lanțului de calcul (rd.36–rd.45) e generat automat, cu excepția soldului reportat din luna precedentă (rd.41), care e un câmp manual introdus de contabil la fiecare depunere.
 
 [iConta.eu](/)

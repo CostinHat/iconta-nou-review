@@ -1,8 +1,8 @@
 ---
 title: Ce fac dacă am compensat greșit două facturi?
-description: Contează ce înțelegi prin „compensare" — alocarea greșită a unei încasări/plăți pe facturi (F073) se corectează diferit față de compensarea legală reciprocă dintre o creanță și o datorie, pe care F073 nu o automatizează.
+description: Contează ce înțelegi prin „compensare" — alocarea greșită a unei încasări/plăți pe facturi („Reconciliere bancară (potrivirea plăților cu facturile)”) se corectează diferit față de compensarea legală reciprocă dintre o creanță și o datorie, pe care „Reconciliere bancară (potrivirea plăților cu facturile)” nu o automatizează.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 

@@ -2,7 +2,7 @@
 title: Cum se amortizează investițiile făcute într-un spațiu închiriat?
 description: Ce spune Codul fiscal despre baza de amortizare a mijloacelor fixe proprii și de ce investițiile în amenajarea unui spațiu închiriat de la terți nu sunt (încă) un caz acoperit de registrul de mijloace fixe al iConta.eu.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,7 +22,7 @@ mijlocului fix amortizabil.
 — Codul fiscal (Legea 227/2015), art.28 alin.(6)
 :::
 
-**Onestitate înainte de orice**: dosarul de cercetare pentru funcționalitatea F247 (Mijloace
+**Onestitate înainte de orice**: documentația aplicației (Mijloace
 fixe) al iConta.eu **nu conține un text legal verbatim dedicat special investițiilor în active
 luate cu chirie de la terți** ("îmbunătățiri la mijloace fixe închiriate" / leasehold
 improvements). Corpusul verificat acoperă regimul de amortizare al mijloacelor fixe aflate în
@@ -52,7 +52,7 @@ Registrul `Firma > Mijloace fixe` ține evidența mijloacelor fixe **proprii** a
 și necorporale), cu valoare, metodă de amortizare, amortizare la zi și valoare rămasă. Aplicația
 **nu are un flux dedicat** pentru investiții/îmbunătățiri făcute într-un activ care nu aparține
 firmei (spațiu închiriat de la terți) — acest caz nu apare separat nici în codul verificat, nici
-în corpusul legal cercetat pentru F247. Dacă firma dvs. are o astfel de investiție, tratamentul
+în corpusul legal cercetat pentru „Mijloace fixe (registrul activelor)”. Dacă firma dvs. are o astfel de investiție, tratamentul
 ei corect trebuie stabilit separat (eventual ca imobilizare corporală distinctă, introdusă manual
 în registru, cu durată aleasă în funcție de contractul de închiriere), nu ca o funcție automată
 oferită de iConta.eu.

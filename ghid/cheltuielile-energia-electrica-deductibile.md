@@ -2,7 +2,7 @@
 title: "Cheltuielile cu energia electrică sunt deductibile?"
 description: "Regula generală de deductibilitate a cheltuielilor cu utilitățile — energie electrică inclusă — la impozitul pe profit și la TVA, și limitele ei în spațiile cu folosință mixtă."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce înseamnă acest principiu general aplicat facturii de curent:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul dedicat pentru refacturarea utilităților în relația comodat/chirie (funcția `nota_refacturare()`), care generează nota contabilă pentru partea din factura furnizorului de utilități refacturată către chiriaș/comodatar. Aplicația nu are însă o funcție care să calculeze automat proporția deductibilă a unei facturi de energie electrică pentru un spațiu cu folosință mixtă (locuință + sediu) — determinarea cheii de repartizare (suprafață, timp de utilizare) și justificarea ei documentată rămân, la acest moment, în sarcina contabilului.
+La data acestui ghid, iConta.eu are un modul dedicat pentru refacturarea utilităților în relația comodat/chirie (funcția „nota de refacturare a utilităților”), care generează nota contabilă pentru partea din factura furnizorului de utilități refacturată către chiriaș/comodatar. Aplicația nu are însă o funcție care să calculeze automat proporția deductibilă a unei facturi de energie electrică pentru un spațiu cu folosință mixtă (locuință + sediu) — determinarea cheii de repartizare (suprafață, timp de utilizare) și justificarea ei documentată rămân, la acest moment, în sarcina contabilului.
 
 [iConta.eu](/)

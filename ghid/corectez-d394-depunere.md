@@ -2,7 +2,7 @@
 title: "Cum corectez D394 după depunere?"
 description: "Procedura legală de rectificare a declarației 394 — o declarație nouă, completă, care înlocuiește integral pe cea depusă greșit — și ce automatizează iConta.eu în acest proces."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,7 +30,7 @@ D394 nu are un formular separat de „rectificativă". Când se descoperă o ero
 
 ## Ce face iConta.eu
 
-Fișierul D394 generat de iConta trece printr-o validare locală, pe validatorul oficial ANAF instalat (funcția `valideaza()`), înainte de a fi considerat gata de depus — deci erorile de structură sunt prinse înainte de trimitere, nu după. În plus, generatorul rulează o a doua cale de calcul, independentă, care recalculează totalurile pe cotă direct din liniile brute ale facturilor și **oprește generarea** dacă rezultatul diferă de cel al generatorului principal — semnalând divergența înainte ca fișierul greșit să ajungă la depunere.
+Fișierul D394 generat de iConta trece printr-o validare locală, pe validatorul oficial ANAF instalat (funcția „validarea”), înainte de a fi considerat gata de depus — deci erorile de structură sunt prinse înainte de trimitere, nu după. În plus, generatorul rulează o a doua cale de calcul, independentă, care recalculează totalurile pe cotă direct din liniile brute ale facturilor și **oprește generarea** dacă rezultatul diferă de cel al generatorului principal — semnalând divergența înainte ca fișierul greșit să ajungă la depunere.
 
 Ce nu face iConta: nu depune automat la ANAF (nici declarația inițială, nici o eventuală redepunere) — depunerea rămâne manuală, prin portalul SPV, cu fișierul deja validat local. Regenerarea unei declarații complete pentru o perioadă deja depusă se face din nou, din datele curente ale firmei pentru acea lună/trimestru — aplicația nu ține o evidență separată de „ce s-a schimbat față de depunerea anterioară", așa că verificarea diferențelor rămâne responsabilitatea contabilului.
 

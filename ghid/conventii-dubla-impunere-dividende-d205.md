@@ -2,7 +2,7 @@
 title: "Convenții de dublă impunere la dividende: D205"
 description: Convențiile de evitare a dublei impuneri privesc beneficiari nerezidenți — iar D205 e construită exclusiv pentru beneficiari persoane fizice rezidente. Iată de ce cele două subiecte nu se întâlnesc, de fapt, în D205.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -17,7 +17,7 @@ Dacă vă întrebați cum se aplică o convenție de evitare a dublei impuneri (
 — Codul fiscal, Legea 227/2015, art. 97 alin. (7)
 :::
 
-Art. 97 alin. (7) stabilește cota internă de impozitare a dividendelor, fără nicio referire la nerezidenți sau la convenții internaționale — regimul de bază presupune un beneficiar rezident. Cercetarea legală care stă la baza acestui ghid nu a identificat, în sursele consultate pentru funcționalitatea D205/F029, textul vreunei convenții de evitare a dublei impuneri și nici o listă de cote convenționale — subiectul nu ține, structural, de această declarație, așa că nu redăm aici cote sau proceduri pe care nu le putem susține cu o sursă verificată.
+Art. 97 alin. (7) stabilește cota internă de impozitare a dividendelor, fără nicio referire la nerezidenți sau la convenții internaționale — regimul de bază presupune un beneficiar rezident. Cercetarea legală care stă la baza acestui ghid nu a identificat, în sursele consultate pentru funcționalitatea D205/„Declarația D205 și distribuirea dividendelor”, textul vreunei convenții de evitare a dublei impuneri și nici o listă de cote convenționale — subiectul nu ține, structural, de această declarație, așa că nu redăm aici cote sau proceduri pe care nu le putem susține cu o sursă verificată.
 
 ## Ce se greșește în practică
 
@@ -27,6 +27,6 @@ Art. 97 alin. (7) stabilește cota internă de impozitare a dividendelor, fără
 
 ## Ce face iConta.eu
 
-Generatorul D205 din iConta.eu acceptă doar beneficiari cu CNP românesc valid (verificat pe cifră de control); orice beneficiar fără un asemenea CNP este respins la generare și nu apare în declarație. Această regulă exclude, de facto, orice caz în care o convenție de dublă impunere ar fi relevantă — pentru că acele cazuri presupun tocmai un beneficiar nerezident, care nu poate intra în D205. Dacă societatea dumneavoastră plătește dividende unor beneficiari nerezidenți și trebuie să aplicați o convenție de evitare a dublei impuneri, această funcționalitate (F029/D205) nu acoperă acel flux — verificați separat regimul aplicabil.
+Generatorul D205 din iConta.eu acceptă doar beneficiari cu CNP românesc valid (verificat pe cifră de control); orice beneficiar fără un asemenea CNP este respins la generare și nu apare în declarație. Această regulă exclude, de facto, orice caz în care o convenție de dublă impunere ar fi relevantă — pentru că acele cazuri presupun tocmai un beneficiar nerezident, care nu poate intra în D205. Dacă societatea dumneavoastră plătește dividende unor beneficiari nerezidenți și trebuie să aplicați o convenție de evitare a dublei impuneri, această funcționalitate („Declarația D205 și distribuirea dividendelor”/D205) nu acoperă acel flux — verificați separat regimul aplicabil.
 
 [iConta.eu](/)

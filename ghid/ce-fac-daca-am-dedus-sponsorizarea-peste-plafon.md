@@ -2,7 +2,7 @@
 title: Ce fac dacă am dedus sponsorizarea peste plafon?
 description: Trebuie identificat anul fiscal al erorii — plafonul a fost 0,5% din cifra de afaceri cu reportare pe 7 ani până la 02.02.2022 și 0,75% cu redirecționare D177 de atunci încolo — apoi recalculat plafonul corect și depusă o D101 rectificativă cu impozit pe profit suplimentar de plată.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -53,7 +53,7 @@ Dacă ați observat, după depunerea declarației 101, că ați scăzut din impo
 
 ## Ce face iConta.eu
 
-Motorul din aplicație (`plafon_credit()`, `credit_sponsorizare()`) are o singură regulă înregistrată, datată „2018-01-01”, care calculează plafonul mereu ca `min(0,75% × cifra de afaceri, 20% × impozit pe profit)`, indiferent de parametrul `la_data` transmis. Niciun test din suita existentă nu verifică un `la_data` anterior lui 2022, iar acest comportament nu este garantat corect pentru astfel de date.
+Motorul din aplicație („plafonul creditului fiscal”, „creditul fiscal pentru sponsorizări (Operațiuni speciale)”) are o singură regulă înregistrată, datată „2018-01-01”, care calculează plafonul mereu ca `min(0,75% × cifra de afaceri, 20% × impozit pe profit)`, indiferent de parametrul „data” transmis. Niciun test din suita existentă nu verifică un „data” anterior lui 2022, iar acest comportament nu este garantat corect pentru astfel de date.
 
 Dacă recalculați în iConta.eu o corecție pentru un an anterior lui 03.02.2022, aplicația va folosi tot 0,75%/D177, nu 0,5%/reportare 7 ani. Pentru aceste corecții, calculați manual plafonul cu procentul valabil în anul respectiv și nu vă bazați pe rezultatul automat al motorului.
 

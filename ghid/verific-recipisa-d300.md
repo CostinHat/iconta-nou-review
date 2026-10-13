@@ -2,7 +2,7 @@
 title: "Cum verific recipisa pentru D300?"
 description: "Ce înseamnă legal mesajul electronic de confirmare a unei declarații depuse prin mijloace electronice și unde se verifică, pentru D300, dacă declarația a fost efectiv validată de ANAF."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Alte elemente utile, din același articol:
 
 iConta.eu nu are, în cod, o funcție de verificare a stării de validare a unei declarații direct din SPV — motorul de control fiscal semnalează explicit acest lucru ca o limită cunoscută: nu există niciun modul care să confirme dacă D300 (sau D390) depuse efectiv la ANAF coincid cu ce calculează aplicația, pentru că o asemenea confirmare ar necesita conectare directă la Spațiul Privat Virtual.
 
-Ce face efectiv aplicația, prin funcționalitatea **F251 — panoul de rânduri manuale D300**, e o verificare internă diferită: garantează **paritatea între ce se vede în preview și ce se depune** — rândurile introduse manual (regularizări, ajustări care nu rezultă din facturi) sunt persistate în tabelul `d300_manual` și recitite identic la generarea XML-ului final, indiferent dacă acesta vine din previzualizare sau din coada efectivă de depunere. Aceasta e o garanție de consistență a conținutului declarației înainte de trimitere, nu o confirmare a recipisei primite de la ANAF după trimitere — verificarea propriu-zisă a recipisei/statusului de validare rămâne, azi, o operațiune făcută direct în SPV.
+Ce face efectiv aplicația, prin funcționalitatea **„Rând manual D300” — panoul de rânduri manuale D300**, e o verificare internă diferită: garantează **paritatea între ce se vede în preview și ce se depune** — rândurile introduse manual (regularizări, ajustări care nu rezultă din facturi) sunt persistate în tabelul „rândurile D300 completate manual (Declarații)” și recitite identic la generarea XML-ului final, indiferent dacă acesta vine din previzualizare sau din coada efectivă de depunere. Aceasta e o garanție de consistență a conținutului declarației înainte de trimitere, nu o confirmare a recipisei primite de la ANAF după trimitere — verificarea propriu-zisă a recipisei/statusului de validare rămâne, azi, o operațiune făcută direct în SPV.
 
 [iConta.eu](/)

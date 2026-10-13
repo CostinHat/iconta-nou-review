@@ -2,7 +2,7 @@
 title: Cum închid un SRL care deține un autoturism?
 description: Vânzarea autoturismului către un terț la lichidare se tratează ca o livrare normală cu TVA pe prețul obținut, dar predarea lui directă către asociat este o livrare asimilată, taxabilă cu TVA la valoarea de piață — iar iConta.eu nu are o operațiune dedicată pentru acest al doilea caz.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,7 +36,7 @@ Un autoturism cu valoare de piață estimată la predare de 50.000 lei, pentru c
 
 ## Ce face iConta.eu
 
-iConta.eu oferă o singură operațiune pentru mijloace fixe la lichidare: nota de vânzare a activului (`nota_vanzare_activ`), care presupune întotdeauna o vânzare cu preț — generează `461=7583+4427` (venit din vânzare + TVA colectată pe prețul dat) și descărcarea din gestiune `6583+28xx=21x`. Cota de TVA este obligatorie la fiecare notă (aplicația nu are o valoare implicită), tocmai pentru ca operațiunea să reflecte cota reală în vigoare la data ei.
+iConta.eu oferă o singură operațiune pentru mijloace fixe la lichidare: nota de vânzare a activului („nota de vânzare a activului”), care presupune întotdeauna o vânzare cu preț — generează `461=7583+4427` (venit din vânzare + TVA colectată pe prețul dat) și descărcarea din gestiune `6583+28xx=21x`. Cota de TVA este obligatorie la fiecare notă (aplicația nu are o valoare implicită), tocmai pentru ca operațiunea să reflecte cota reală în vigoare la data ei.
 
 Aplicația **nu are o operațiune dedicată pentru distribuirea în natură** a unui activ direct către asociat, tratată ca livrare asimilată la valoarea de piață conform art.270 alin.(5). Dacă autoturismul e predat direct asociatului, contabilul trebuie să calculeze manual TVA la valoarea de piață și să înregistreze operațiunea prin motorul general de facturare al aplicației, nu prin nota de lichidare.
 

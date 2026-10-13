@@ -2,7 +2,7 @@
 title: "Cum se înregistrează diferențele dintre amortizarea contabilă și cea fiscală?"
 description: "Regula din Codul fiscal potrivit căreia amortizarea fiscală se determină independent de amortizarea contabilă, cu impact direct asupra calculului impozitului pe profit."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce rezultă de aici pentru evidența practică:
 
 ## Ce face iConta.eu
 
-Modulul de mijloace fixe din iConta.eu ține o singură schemă de amortizare per mijloc fix (valoare, valoare reziduală, durată normală de funcționare în luni), folosită pentru amortizarea contabilă înregistrată în evidență. La data acestui ghid, aplicația **nu calculează și nu urmărește separat o amortizare fiscală distinctă** de cea contabilă și nu automatizează reconcilierea impozitului amânat rezultat din diferențele temporare — nu există, în cod, o funcție dedicată „amortizare_fiscala" sau tratamentul impozitului pe profit amânat. Contabilul rămâne responsabil să verifice, pentru fiecare mijloc fix, dacă durata și metoda contabilă coincid cu cele admise fiscal și, dacă nu, să calculeze manual diferența pentru declarația de impozit pe profit.
+Modulul de mijloace fixe din iConta.eu ține o singură schemă de amortizare per mijloc fix (valoare, valoare reziduală, durată normală de funcționare în luni), folosită pentru amortizarea contabilă înregistrată în evidență. La data acestui ghid, aplicația **nu calculează și nu urmărește separat o amortizare fiscală distinctă** de cea contabilă și nu automatizează reconcilierea impozitului amânat rezultat din diferențele temporare — nu există, în cod, o funcție dedicată „amortizarea fiscală" sau tratamentul impozitului pe profit amânat. Contabilul rămâne responsabil să verifice, pentru fiecare mijloc fix, dacă durata și metoda contabilă coincid cu cele admise fiscal și, dacă nu, să calculeze manual diferența pentru declarația de impozit pe profit.
 
 [iConta.eu](/)

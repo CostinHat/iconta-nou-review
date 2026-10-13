@@ -2,7 +2,7 @@
 title: "Cum se întocmește statul de plată pentru plata în numerar"
 description: "Regulile Codului muncii pentru plata salariului în bani, inclusiv în numerar, și cum se întocmește statul de plată indiferent de canalul prin care ajung banii la salariat."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Multe firme mici plătesc încă parte din salariați în numerar, la casierie, 
 
 Statul de plată din iConta.eu calculează brut→net identic, indiferent cum ajunge suma netă la salariat — nu există în aplicație niciun concept separat de „metodă de plată" sau „plată numerar". Ce contează pentru calcul e doar baza contractuală, deducerile, tichetele și cotele fiscale ale lunii; canalul de plată nu intervine în formulă.
 
-Singurul câmp din stat legat de un mod de plată e IBAN-ul salariatului, folosit exclusiv pentru a genera fișierul bancar de plată pe card (funcționalitate separată, F134 — fișier SEPA opțional). Dacă firma plătește în numerar, acest fișier pur și simplu nu se generează pentru salariații respectivi; asta nu afectează statul de plată sau fluturașul, care rămân documentele de întocmit și predat salariatului, la fel indiferent de canal.
+Singurul câmp din stat legat de un mod de plată e IBAN-ul salariatului, folosit exclusiv pentru a genera fișierul bancar de plată pe card (funcționalitate separată, „Plata salariilor pe card (fișier bancar)” — fișier SEPA opțional). Dacă firma plătește în numerar, acest fișier pur și simplu nu se generează pentru salariații respectivi; asta nu afectează statul de plată sau fluturașul, care rămân documentele de întocmit și predat salariatului, la fel indiferent de canal.
 
 [iConta.eu](/)

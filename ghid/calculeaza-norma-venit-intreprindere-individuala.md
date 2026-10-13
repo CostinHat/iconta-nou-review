@@ -2,7 +2,7 @@
 title: "Cum se calculează norma de venit pentru o întreprindere individuală?"
 description: "Regulile Codului fiscal privind stabilirea venitului net anual pe baza normelor de venit pentru activități independente, inclusiv pentru întreprinderi individuale."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Pentru anumite activități independente — inclusiv cele desfășurate printr-
 
 ## Ce face iConta.eu
 
-iConta.eu susține regimul de determinare a venitului pe bază de normă de venit: în modulul de registru de evidență fiscală (`registru_evidenta_fiscala.py`) și în generatorul Declarației Unice (`d212.py`), norma de venit este unul dintre modurile recunoscute de stabilire a venitului net („sistem real", „cote forfetare", „norma de venit"), cu regula specifică potrivit căreia la norma de venit nu se înscriu cheltuieli în registru (conform art. 1 alin. (2) din normele metodologice ale registrului). Aplicația nu calculează însă ea însăși nivelul normei de venit publicat de administrația județeană — acesta rămâne o dată introdusă de utilizator, conform publicării anuale a ANAF.
+iConta.eu susține regimul de determinare a venitului pe bază de normă de venit: în modulul de registru de evidență fiscală și în generatorul Declarației Unice, norma de venit este unul dintre modurile recunoscute de stabilire a venitului net („sistem real", „cote forfetare", „norma de venit"), cu regula specifică potrivit căreia la norma de venit nu se înscriu cheltuieli în registru (conform art. 1 alin. (2) din normele metodologice ale registrului). Aplicația nu calculează însă ea însăși nivelul normei de venit publicat de administrația județeană — acesta rămâne o dată introdusă de utilizator, conform publicării anuale a ANAF.
 
 [iConta.eu](/)

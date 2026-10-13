@@ -2,7 +2,7 @@
 title: "Cota impozitului pe dividende în 2026: cât este"
 description: "Cota impozitului reținut la sursă pentru dividendele distribuite din 2026, cu temeiul legal exact și istoricul cotelor anterioare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Cea mai frecventă eroare apare când un dividend a fost distribuit într-un an,
 
 ## Ce face iConta.eu
 
-Cota aplicabilă este ținută într-un registru central (cheia "impozit_dividend"), sensibil la perioadă, aplicat după data distribuirii. Pentru cazul dividendului distribuit într-un an și plătit eșalonat sau în anul următor, iConta folosește un algoritm dedicat care potrivește FIFO fiecare tranșă de plată cu distribuirea corespunzătoare și aplică cota de la data acelei distribuiri, nu o cotă unică la finalul anului — comportament confirmat prin teste dedicate (de exemplu un dividend distribuit în decembrie 2025 la cota 10%, plătit în ianuarie 2026, este impozitat corect la 10%, nu la 16%).
+Cota aplicabilă este ținută într-un registru central (cheia "cota impozitului pe dividende"), sensibil la perioadă, aplicat după data distribuirii. Pentru cazul dividendului distribuit într-un an și plătit eșalonat sau în anul următor, iConta folosește un algoritm dedicat care potrivește FIFO fiecare tranșă de plată cu distribuirea corespunzătoare și aplică cota de la data acelei distribuiri, nu o cotă unică la finalul anului — comportament confirmat prin teste dedicate (de exemplu un dividend distribuit în decembrie 2025 la cota 10%, plătit în ianuarie 2026, este impozitat corect la 10%, nu la 16%).
 
 [iConta.eu](/)

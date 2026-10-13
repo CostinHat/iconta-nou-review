@@ -2,7 +2,7 @@
 title: "Ce parte din diurnă este deductibilă fiscal?"
 description: "Cum se împarte diurna de delegare/detașare în parte neimpozabilă și parte impozabilă, conform plafonului din Codul fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,7 +34,7 @@ Din text rezultă o formulă cu două praguri, se aplică cel mai mic dintre ele
 
 ## Ce face iConta.eu
 
-Formula legală de mai sus este implementată corect în motorul de calcul din aplicație (funcția `plafon_diurna`): calculează ambele praguri (2,5× diurnă bugetară și 3×salariu/zile lucrătoare), alege minimul, și întoarce separat suma neimpozabilă și cea impozabilă. Motorul este chiar „period-aware" — recunoaște dacă diurna bugetară aplicabilă e 20 sau 23 lei, în funcție de data la care se raportează calculul.
+Formula legală de mai sus este implementată corect în motorul de calcul din aplicație (funcția „plafonul diurnei”): calculează ambele praguri (2,5× diurnă bugetară și 3×salariu/zile lucrătoare), alege minimul, și întoarce separat suma neimpozabilă și cea impozabilă. Motorul este chiar „period-aware" — recunoaște dacă diurna bugetară aplicabilă e 20 sau 23 lei, în funcție de data la care se raportează calculul.
 
 Există însă o limitare reală, verificată în cod: **acest calcul de plafon nu este accesibil din nicio interfață a aplicației**. Ecranul „Decont deplasare / diurnă" (din „Operațiuni speciale") permite doar înregistrarea unui avans sau a unui decont — nu oferă un buton sau un câmp pentru a vedea plafonul calculat. Mai mult, atunci când se înregistrează un decont propriu-zis, aplicația **postează întreaga sumă de diurnă introdusă drept cheltuială**, fără să verifice automat dacă depășește plafonul. Separarea neimpozabil/impozabil descrisă mai sus există doar ca funcție de calcul brut la nivel de cod (API), nu ca pas automat în fluxul de înregistrare a decontului. Contabilul trebuie, astăzi, să calculeze manual plafonul înainte de a introduce diurna, pentru a decide singur dacă și cât din ea trebuie tratat ca venit salarial suplimentar.
 

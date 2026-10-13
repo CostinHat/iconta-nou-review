@@ -2,7 +2,7 @@
 title: Cum se face plata impozitului pe profit la bugetul de stat?
 description: Impozitul pe profit calculat prin D100 (cota 16%) se achită în contul bugetar unic 5503, identificat pe declarație prin numărul de evidență a plății (nr_evid).
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -44,6 +44,6 @@ Plata trebuie identificată corect prin numărul de evidență a plății (nr_ev
 
 ## Ce face iConta.eu
 
-Nomenclatorul cod→cont bugetar din aplicație (`COD_BUGETAR`) conține exclusiv cele două obligații pe care aplicația le generează — cod 103 (profit) și cod 121 (micro) — ambele mapate la contul unic 5503XXXXXX. Orice alt cod de obligație transmis ridică explicit o eroare, nu se emite tăcut fără cont bugetar asociat. Numărul de evidență a plății (nr_evid, 23 de caractere) este derivat direct din aceeași dată de scadență calculată pentru declarație, nu recalculat independent — eliminând riscul ca cele două să diveargă atunci când scadența e determinată corect de generator.
+Nomenclatorul cod→cont bugetar din aplicație („codul bugetar”) conține exclusiv cele două obligații pe care aplicația le generează — cod 103 (profit) și cod 121 (micro) — ambele mapate la contul unic 5503XXXXXX. Orice alt cod de obligație transmis ridică explicit o eroare, nu se emite tăcut fără cont bugetar asociat. Numărul de evidență a plății (nr_evid, 23 de caractere) este derivat direct din aceeași dată de scadență calculată pentru declarație, nu recalculat independent — eliminând riscul ca cele două să diveargă atunci când scadența e determinată corect de generator.
 
 [iConta.eu](/)

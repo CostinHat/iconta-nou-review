@@ -2,23 +2,13 @@
 title: "Cheltuieli nedeductibile 2026: ce nu se scade din impozitul pe profit"
 description: Ce cheltuieli trebuie adăugate înapoi la calculul profitului impozabil în 2026 și cum le tratează D101 în iConta.eu — cu accent pe cheltuiala cu impozitul pe profit (cont 691) și pe sponsorizare.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cheltuieli nedeductibile 2026: ce nu se scade din impozitul pe profit
 
 O cheltuială nedeductibilă fiscal poate fi complet corectă contabil și, totuși, trebuie adăugată înapoi la profitul contabil brut pentru a obține profitul impozabil de pe D101. Cele mai frecvente două capcane confirmate în motorul de calcul al declarației sunt cheltuiala cu impozitul pe profit (cont 691) și depășirea plafonului de sponsorizare.
-
-## Temeiul legal
-
-::: ghid-temei
-„dacă soldul debitor al contului 691 (cheltuiala cu impozitul pe profit) e >0 și rd.23 (P23, cheltuieli nedeductibile) e 0, se emite avertisment — cheltuiala e nedeductibilă (CF art.25 alin.(4) lit.a) și trebuie adăugată înapoi, altfel impozitul declarat iese subevaluat."
-— sursă: Aplicația, dosar de cercetare F027.
-
-„Sponsorizare (P43) — dublă limită V5 (20% impozit, DUK) + V5-bis (0,75% cifră de afaceri, adăugat manual în cod fiindcă DUK verifică doar 20%), temei CF art.25 alin.(4) lit.i)"
-— sursă: Aplicația, dosar de cercetare F027.
-:::
 
 Practic, două reguli distincte se aplică simultan:
 
@@ -27,7 +17,7 @@ Practic, două reguli distincte se aplică simultan:
 
 ## Ce se greșește în practică
 
-Cea mai comună greșeală este omiterea add-back-ului pentru cont 691: contabilul lasă cheltuiala cu impozitul „ca atare" în rulaj, fără s-o reintroducă la rândul de cheltuieli nedeductibile (P23/P34). Impactul nu e teoretic — pe un portofoliu monitorizat (tenant_005, 2025), omisiunea a redus impozitul declarat cu 2.432 lei, fără niciun semnal vizibil înainte de introducerea gardului automat.
+Cea mai comună greșeală este omiterea add-back-ului pentru cont 691: contabilul lasă cheltuiala cu impozitul „ca atare" în rulaj, fără s-o reintroducă la rândul de cheltuieli nedeductibile (P23/P34). Impactul nu e teoretic — pe un portofoliu monitorizat (o firmă de test, 2025), omisiunea a redus impozitul declarat cu 2.432 lei, fără niciun semnal vizibil înainte de introducerea gardului automat.
 
 A doua greșeală frecventă: verificarea sponsorizării doar prin plafonul de 20% din impozit, ignorând complet limita de 0,75% din cifra de afaceri — care poate fi, la firme mari, plafonul efectiv mai restrictiv.
 

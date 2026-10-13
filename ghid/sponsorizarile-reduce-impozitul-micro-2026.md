@@ -2,7 +2,7 @@
 title: Sponsorizările pot reduce impozitul micro în 2026?
 description: Nu. Facilitatea prin care microîntreprinderile scădeau sponsorizările din impozitul pe venit a fost abrogată de la 1 ianuarie 2024 (OUG 115/2023); în 2026 nu mai există nicio deducere de acest fel pentru micro, indiferent de beneficiar sau de sumă.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Răspunsul scurt: **nu**. Până la finalul lui 2023, microîntreprinderile pute
 
 ## Ce face iConta.eu
 
-În aplicația, funcția `credit_sponsorizare(..., tip_impozit="micro", ...)` este activă **doar pentru date cuprinse între 01.04.2019 și 31.12.2023** — în afara acestui interval, inclusiv pentru orice dată din 2024, 2025 sau 2026, motorul returnează credit 0, cu o notă explicită de inaplicabilitate. Asta reflectă corect abrogarea facilității: pentru o sponsorizare micro introdusă azi, aplicația nu propune nicio reducere de impozit — sponsorizarea se înregistrează contabil (`6582 = 401` sau `6582 = 5121`), dar rămâne cheltuială nedeductibilă din impozitul pe venitul microîntreprinderilor.
+În aplicația, funcția „creditul fiscal pentru sponsorizări (Operațiuni speciale)” este activă **doar pentru date cuprinse între 01.04.2019 și 31.12.2023** — în afara acestui interval, inclusiv pentru orice dată din 2024, 2025 sau 2026, motorul returnează credit 0, cu o notă explicită de inaplicabilitate. Asta reflectă corect abrogarea facilității: pentru o sponsorizare micro introdusă azi, aplicația nu propune nicio reducere de impozit — sponsorizarea se înregistrează contabil (`6582 = 401` sau `6582 = 5121`), dar rămâne cheltuială nedeductibilă din impozitul pe venitul microîntreprinderilor.
 
 [iConta.eu](/)

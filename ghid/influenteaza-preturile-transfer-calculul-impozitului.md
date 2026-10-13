@@ -2,7 +2,7 @@
 title: "Cum influențează prețurile de transfer calculul impozitului pe profit"
 description: "Ce prevede Codul fiscal despre ajustarea rezultatului fiscal atunci când tranzacțiile cu persoane afiliate nu respectă principiul valorii de piață."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Efectul direct asupra impozitului pe profit:
 
 ## Ce face iConta.eu
 
-Verificat în cod: Aplicația gestionează declararea existenței operațiunilor cu persoane afiliate prin câmpul `prsAfiliat` din declarația D394, pe baza unui indicator setat în profilul firmei (`are_operatiuni_afiliate`). Aplicația **nu calculează și nu ajustează automat prețurile de transfer** — nu există în cod o funcționalitate care să aplice metodele de determinare a valorii de piață (comparării prețurilor, cost plus etc.) sau să recalculeze rezultatul fiscal în funcție de acestea. Declararea corectă a operațiunilor cu persoane afiliate și, dacă e cazul, întocmirea dosarului prețurilor de transfer rămân în sarcina contabilului.
+Verificat în cod: Aplicația gestionează declararea existenței operațiunilor cu persoane afiliate prin câmpul `prsAfiliat` din declarația D394, pe baza unui indicator setat în profilul firmei („operațiuni cu afiliați (Date firmă)”). Aplicația **nu calculează și nu ajustează automat prețurile de transfer** — nu există în cod o funcționalitate care să aplice metodele de determinare a valorii de piață (comparării prețurilor, cost plus etc.) sau să recalculeze rezultatul fiscal în funcție de acestea. Declararea corectă a operațiunilor cu persoane afiliate și, dacă e cazul, întocmirea dosarului prețurilor de transfer rămân în sarcina contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Raportul Z zilnic: cum se înregistrează în registrul de casă"
 description: Raportul Z generează notă contabilă (5311=707), dar asta nu e același lucru cu o linie în Registrul de casă (Cod 14-4-7A) — sunt două evidențe diferite, care nu se alimentează automat una din alta.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,6 +28,6 @@ Presupunerea că soldul din „Registru de casă" reflectă și numerarul din v�
 
 ## Ce face iConta.eu
 
-Cele două module sunt distincte în aplicație: Raportul Z scrie note contabile direct în jurnal (sursă `amef` sau `horeca_z`), în timp ce Registrul de casă citește o tabelă proprie de operațiuni de casierie, cu categorii fixe (încasare client, plată furnizor, ridicare/depunere bancă, avans spre decontare). Raportul Z **nu** alimentează automat această a doua tabelă — dacă ai nevoie de un registru de casă operativ complet pe zi, încasarea de numerar din Z trebuie adăugată și acolo, ca operațiune separată.
+Cele două module sunt distincte în aplicație: Raportul Z scrie note contabile direct în jurnal (sursă `amef` sau „raportul Z (HoReCa)”), în timp ce Registrul de casă citește o tabelă proprie de operațiuni de casierie, cu categorii fixe (încasare client, plată furnizor, ridicare/depunere bancă, avans spre decontare). Raportul Z **nu** alimentează automat această a doua tabelă — dacă ai nevoie de un registru de casă operativ complet pe zi, încasarea de numerar din Z trebuie adăugată și acolo, ca operațiune separată.
 
 [iConta.eu](/)

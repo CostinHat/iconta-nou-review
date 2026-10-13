@@ -2,7 +2,7 @@
 title: 'Descărcarea de gestiune 2026: cum se face corect lunar'
 description: Descărcarea lunară calculează coeficientul de adaos cumulat de la 1 ianuarie, îl aplică doar vânzărilor lunii curente și generează o notă de descărcare la ultima zi calendaristică a lunii, propusă ca ciornă pentru validare de către contabil.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,8 +37,8 @@ Descărcarea de gestiune la o firmă cu evidență global-valorică (preț cu am
 
 ## Ce face iConta.eu
 
-Aplicația, funcția `descarca_luna(conn, schema, an, luna)`, implementează exact acest flux: calculează cumulat de la 1 ianuarie (`inceput_an`), citește soldurile inițiale din tabela `solduri_initiale` (dacă există) și rulajele 371/378/4428 din notele **validate** (`status='validata'`), filtrează vânzările (707) doar pe luna curentă și doar din sursele de gestiune relevante (`horeca_z`, `stocuri`, `facturi_marfa`). Nota de descărcare se creează la ultima zi calendaristică a lunii, ca **ciornă** — contabilul o validează manual în jurnal, conform textului de ajutor al funcționalității: „AI propune (note ciorne), contabilul validează”. Dacă nu sunt vânzări în lună, nu se generează nicio notă.
+Aplicația, funcția „descărcarea lunii (Stocuri)”, implementează exact acest flux: calculează cumulat de la 1 ianuarie („începutul anului”), citește soldurile inițiale din tabela „soldurile inițiale (Migrare)” (dacă există) și rulajele 371/378/4428 din notele **validate** (starea „validată”), filtrează vânzările (707) doar pe luna curentă și doar din sursele de gestiune relevante („raportul Z (HoReCa)”, `stocuri`, „facturile de marfă”). Nota de descărcare se creează la ultima zi calendaristică a lunii, ca **ciornă** — contabilul o validează manual în jurnal, conform textului de ajutor al funcționalității: „AI propune (note ciorne), contabilul validează”. Dacă nu sunt vânzări în lună, nu se generează nicio notă.
 
-**Limitare confirmată**: nu există, în aplicație, nicio funcție de corecție/stornare dedicată pentru o descărcare deja validată greșit — notele validate nu pot fi editate sau șterse; corectarea se face printr-o notă manuală de ajustare, scrisă de contabil. De asemenea, rulajele 371/378/4428 din `descarca_luna` nu sunt filtrate pe sursă (spre deosebire de 707) — dacă firma combină gestiunea global-valorică cu note manuale pe 4428 din alt mecanism, verificați separat sursa acestora înainte de a valida.
+**Limitare confirmată**: nu există, în aplicație, nicio funcție de corecție/stornare dedicată pentru o descărcare deja validată greșit — notele validate nu pot fi editate sau șterse; corectarea se face printr-o notă manuală de ajustare, scrisă de contabil. De asemenea, rulajele 371/378/4428 din „descărcarea lunii (Stocuri)” nu sunt filtrate pe sursă (spre deosebire de 707) — dacă firma combină gestiunea global-valorică cu note manuale pe 4428 din alt mecanism, verificați separat sursa acestora înainte de a valida.
 
 [iConta.eu](/)

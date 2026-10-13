@@ -2,7 +2,7 @@
 title: Cum se calculează salariul când angajatul are concediu fără plată?
 description: Pentru luna cu concediu fără plată, salariul se calculează proporțional cu timpul efectiv lucrat — principiul general din Codul muncii, aplicat de motorul de calcul verificat pentru salariul obișnuit. Articolele specifice concediului fără plată nu au fost confirmate separat în acest dosar.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,7 +28,7 @@ Brut proporțional = brut contractual × (zile efectiv lucrate / zile lucrătoar
 |---|---|---|
 | Brut proporțional | 6.000 × (16/20) | 4.800 lei |
 
-Pornind de la acest brut redus, restul calculului (CAS 25%, CASS 10%, deducere personală, impozit 10%) urmează aceeași formulă ca la un salariu obișnuit, aplicată motorului de calcul `_calcul_salariu_2018()` din codul verificat. Dacă brutul astfel redus ajunge sub podeaua de contribuții (salariul minim aplicabil lunii, eventual redus cu facilitatea „salariul minim neimpozabil"), CAS și CASS se recalculează pe podea, nu pe brutul efectiv redus — aceeași regulă de la CF art.146 alin.(5^6), valabilă indiferent de motivul pentru care venitul e sub minim.
+Pornind de la acest brut redus, restul calculului (CAS 25%, CASS 10%, deducere personală, impozit 10%) urmează aceeași formulă ca la un salariu obișnuit, aplicată motorului de calcul „calculul salariului (Salarii)” din codul verificat. Dacă brutul astfel redus ajunge sub podeaua de contribuții (salariul minim aplicabil lunii, eventual redus cu facilitatea „salariul minim neimpozabil"), CAS și CASS se recalculează pe podea, nu pe brutul efectiv redus — aceeași regulă de la CF art.146 alin.(5^6), valabilă indiferent de motivul pentru care venitul e sub minim.
 
 ## Ce se greșește în practică
 
@@ -38,6 +38,6 @@ Pornind de la acest brut redus, restul calculului (CAS 25%, CASS 10%, deducere p
 
 ## Ce face iConta.eu
 
-Formula de calcul brut→net (`_calcul_salariu_2018()`) e aceeași indiferent de motivul reducerii brutului contractual — fie normă parțială, fie zile de concediu fără plată într-o lună. Cotele și salariul minim aplicabil vin din registrul „period-aware" `core.common.COTE`, potrivit lunii calculate, iar verificarea podelei de contribuții se aplică automat oricând brutul introdus e sub pragul corespunzător.
+Formula de calcul brut→net („calculul salariului (Salarii)”) e aceeași indiferent de motivul reducerii brutului contractual — fie normă parțială, fie zile de concediu fără plată într-o lună. Cotele și salariul minim aplicabil vin din registrul „period-aware" „registrul de cote al aplicației”, potrivit lunii calculate, iar verificarea podelei de contribuții se aplică automat oricând brutul introdus e sub pragul corespunzător.
 
 [iConta.eu](/)

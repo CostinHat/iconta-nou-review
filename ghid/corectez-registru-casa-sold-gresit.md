@@ -2,7 +2,7 @@
 title: "Cum corectez un registru de casă cu sold greșit?"
 description: "Un sold de casă greșit nu se rescrie direct — se identifică operațiunea care l-a produs și se corectează prin regula specifică ei: tăiere cu o linie, anulare de document sau stornare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,7 +30,7 @@ Un sold de casă greșit e aproape întotdeauna un simptom, nu problema în sine
 
 ## Ce face iConta.eu
 
-În „card Casa", operațiunile de casă se introduc prin ecranul care apelează `POST /tenants/{id}/casa/operatiuni`, iar corectarea unei operațiuni greșite depinde de statusul ei: aplicația **nu are rută de editare** (nu există niciun `PUT`/`PATCH` pentru operațiunile de casă) — singura corecție posibilă e ștergerea, și doar cât timp nota contabilă legată e încă „ciornă". Odată ce nota a fost validată/postată, aplicația refuză ștergerea („nota legată e validată; nu se mai poate șterge"), consistent cu regula de mai sus — corecția reală, în acel caz, e stornarea, ca operațiune separată de contabilitate.
+În „card Casa", operațiunile de casă se introduc prin ecranul care apelează aplicația, iar corectarea unei operațiuni greșite depinde de statusul ei: aplicația **nu are rută de editare** (nu există niciun `PUT`/`PATCH` pentru operațiunile de casă) — singura corecție posibilă e ștergerea, și doar cât timp nota contabilă legată e încă „ciornă". Odată ce nota a fost validată/postată, aplicația refuză ștergerea („nota legată e validată; nu se mai poate șterge"), consistent cu regula de mai sus — corecția reală, în acel caz, e stornarea, ca operațiune separată de contabilitate.
 
 O limită importantă de reținut: motorul de calcul al registrului de casă din iConta.eu **nu verifică soldul rezultat** înainte de a înregistra o operațiune — nu există nicio verificare care să semnaleze sau să blocheze introducerea unei plăți mai mari decât soldul disponibil, deci un sold de casă negativ poate apărea în registru fără niciun avertisment din partea aplicației. Dacă apare un sold neașteptat, verificarea rămâne, azi, în sarcina contabilului — nu e automatizată.
 

@@ -2,7 +2,7 @@
 title: Cum se tratează avansul pentru achiziția unui mijloc fix?
 description: Avansul pentru imobilizări corporale se înregistrează distinct, în contul 4093, dar contrapartida sa oficială poate fi 401 sau 404 — iConta.eu folosește întotdeauna 401, chiar și pentru avansurile de imobilizări.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,7 +35,7 @@ Un detaliu important, adesea trecut cu vederea: sursa oficială (pct. 8, funcți
 
 ## Ce face iConta.eu
 
-Funcția `nota_avans_platit(suma_fara_tva, cota, destinatie="stocuri")` acceptă parametrul `destinatie`, mapat prin dicționarul `CONT_AVANS` pe conturile analitice corecte: `stocuri → 4091`, `servicii → 4092`, `imobilizari → 4093`, `imobilizari_necorporale → 4094`. Pentru un avans de mijloc fix, alegerea `destinatie="imobilizari"` generează corect linia pe `4093`.
+Funcția „nota avansului plătit” acceptă parametrul `destinatie`, mapat prin dicționarul `CONT_AVANS` pe conturile analitice corecte: `stocuri → 4091`, `servicii → 4092`, `imobilizari → 4093`, imobilizări necorporale → 4094. Pentru un avans de mijloc fix, alegerea `destinatie="imobilizari"` generează corect linia pe `4093`.
 
 **Important de știut**: indiferent de `destinatie` aleasă, contrapartida generată de motor este întotdeauna `401` — inclusiv pentru avansurile de imobilizări. Codul nu oferă opțiunea `404`, deși sursa (pct. 8) o listează ca variantă valabilă. Nu este o eroare legală (401 e o contrapartidă acceptată explicit), dar dacă țineți evidența furnizorilor de mijloace fixe separat pe 404, soldul acelui cont nu va reflecta avansurile înregistrate prin iConta.eu — rămâneți cu opțiunea de a urmări avansurile de imobilizări prin analiticul 4093, indiferent de contrapartida 401 folosită de motor.
 

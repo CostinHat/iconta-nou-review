@@ -2,7 +2,7 @@
 title: "Contabilitatea unui magazin alimentar de cartier: gestiune"
 description: "Cum se aplică metoda global-valorică (preț cu amănuntul) la gestiunea unui magazin alimentar de cartier, folosind motorul de calcul al iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,8 +28,8 @@ Descrierea legală de mai sus („articole numeroase și cu mișcare rapidă, ca
 
 ## Ce face iConta.eu
 
-Motorul de gestiune global-valorică al iConta.eu acoperă mecanismul descris mai sus: la recepția mărfii (`nir_gv`, aplicația), cota de TVA este obligatorie explicit pe fiecare linie sau ca parametru — aplicația nu presupune tacit o cotă implicită, tocmai pentru a evita erori la schimbarea legislației TVA. Costurile accesorii (transport, taxe) se capitalizează în costul de achiziție și se repartizează proporțional pe liniile de recepție.
+Motorul de gestiune global-valorică al iConta.eu acoperă mecanismul descris mai sus: la recepția mărfii („NIR global-valoric (Stocuri)”, aplicația), cota de TVA este obligatorie explicit pe fiecare linie sau ca parametru — aplicația nu presupune tacit o cotă implicită, tocmai pentru a evita erori la schimbarea legislației TVA. Costurile accesorii (transport, taxe) se capitalizează în costul de achiziție și se repartizează proporțional pe liniile de recepție.
 
-Lunar, funcția `descarca_luna` calculează coeficientul de repartizare cumulat de la 1 ianuarie și propune automat, ca ciornă, nota de descărcare de gestiune (607/378/4428) — validarea rămâne manuală, în sarcina contabilului. Conform cercetării care stă la baza acestui ghid, aplicația nu are o funcție dedicată de „reprețuire" a stocului deja recepționat (`nir_gv` fixează prețul de vânzare doar la intrare); recalcularea marjei brute la o schimbare de preț, cerută de lege, rămâne o procedură contabilă manuală, nu un ecran dedicat în iConta.eu.
+Lunar, funcția „descărcarea lunii (Stocuri)” calculează coeficientul de repartizare cumulat de la 1 ianuarie și propune automat, ca ciornă, nota de descărcare de gestiune (607/378/4428) — validarea rămâne manuală, în sarcina contabilului. Conform cercetării care stă la baza acestui ghid, aplicația nu are o funcție dedicată de „reprețuire" a stocului deja recepționat („NIR global-valoric (Stocuri)” fixează prețul de vânzare doar la intrare); recalcularea marjei brute la o schimbare de preț, cerută de lege, rămâne o procedură contabilă manuală, nu un ecran dedicat în iConta.eu.
 
 [iConta.eu](/)

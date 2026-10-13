@@ -2,7 +2,7 @@
 title: "Se declară facturile de la furnizori neplătitori de TVA în D394?"
 description: "Cine intră în declarația 394 ca partener de achiziție atunci când furnizorul nu are cod de TVA, și ce spune ordinul ANAF despre asta."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,7 +34,7 @@ Din cele două texte rezultă regula practică:
 
 ## Ce face iConta.eu
 
-Generatorul D394 din iConta.eu clasifică fiecare partener din factură după prefixul CUI, în cod (funcția `clasifica_partener()`): plătitor RO cu prefix valid, partener fără cod de TVA, partener din UE și partener din afara UE. Aplicația nu tratează tacit un partener autohton fără cod de TVA ca fiind „în afara declarației" — clasificarea există tocmai ca să deosebească acest caz de un partener străin.
+Generatorul D394 din iConta.eu clasifică fiecare partener din factură după prefixul CUI, în cod (funcția „clasificarea partenerului”): plătitor RO cu prefix valid, partener fără cod de TVA, partener din UE și partener din afara UE. Aplicația nu tratează tacit un partener autohton fără cod de TVA ca fiind „în afara declarației" — clasificarea există tocmai ca să deosebească acest caz de un partener străin.
 
 Ce nu face aplicația: nu verifică independent, la generare, dacă un CUI RO scris fără prefix e efectiv un CUI valid de neplătitor de TVA sau o simplă greșeală de tastare a codului „RO" — există totuși un gard care semnalează un CUI RO scris greșit înainte ca acesta să fie declarat tacit drept partener străin. Achizițiile intracomunitare sunt excluse explicit din generare (comentariu în cod: „ACHIZITIILE INTRACOMUNITARE NU INTRA IN D394 - se declara in D390"), în timp ce achizițiile de la furnizori autohtoni, indiferent de statutul lor de TVA, urmează fluxul normal de generare.
 

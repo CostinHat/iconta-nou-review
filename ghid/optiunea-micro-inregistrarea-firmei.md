@@ -2,7 +2,7 @@
 title: "Opțiunea pentru micro la înregistrarea firmei"
 description: "Condițiile în care o firmă nou-înființată poate opta pentru impozitul pe veniturile microîntreprinderilor chiar din primul an fiscal, potrivit art. 48 din Codul fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce trebuie verificat, concret, la înregistrarea unei firme noi care vrea regim 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu urmărește automat termenul de 90 de zile** de la înregistrarea unei firme noi pentru verificarea condiției salariatului, necesară păstrării opțiunii pentru micro din primul an fiscal — această verificare rămâne manuală, pe baza datei de înființare și a datei de angajare a primului salariat, introduse de contabil. Aplicația are evidența reală a salariaților firmei (`salariati_import_api.py`, cu funcția care determină dacă firma are cel puțin un salariat activ), dar nu leagă această evidență de termenul legal de 90 de zile din art. 48 alin. (3).
+La data acestui ghid, iConta.eu **nu urmărește automat termenul de 90 de zile** de la înregistrarea unei firme noi pentru verificarea condiției salariatului, necesară păstrării opțiunii pentru micro din primul an fiscal — această verificare rămâne manuală, pe baza datei de înființare și a datei de angajare a primului salariat, introduse de contabil. Aplicația are evidența reală a salariaților firmei (aplicația, cu funcția care determină dacă firma are cel puțin un salariat activ), dar nu leagă această evidență de termenul legal de 90 de zile din art. 48 alin. (3).
 
 [iConta.eu](/)

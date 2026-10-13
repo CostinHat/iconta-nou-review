@@ -2,7 +2,7 @@
 title: Cum se calculează deducerea personală pentru un angajat cu copii?
 description: Fiecare copil în întreținere crește procentul deducerii (25/30/35/45%, după numărul de persoane în întreținere); pe lângă asta, există o deducere separată de 100 lei/lună/copil la învățământ, condiționată de declarație — nu se acordă automat.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -48,6 +48,6 @@ Această sumă e distinctă de scara de mai sus — se adaugă la deducerea calc
 
 ## Ce face iConta.eu
 
-Deducerea calculată după numărul de persoane în întreținere e acoperită integral de `deducere_personala()` din aplicație, folosind registrul „period-aware" de cote și praguri. Pentru deducerea de 100 lei/copil la învățământ, codul are un gard defensiv care respinge introducerea unui număr de copii la învățământ fără declarația pe propria răspundere bifată — regula legală e implementată strict, nu se acordă tacit.
+Deducerea calculată după numărul de persoane în întreținere e acoperită integral de „deducerea personală” din aplicație, folosind registrul „period-aware" de cote și praguri. Pentru deducerea de 100 lei/copil la învățământ, codul are un gard defensiv care respinge introducerea unui număr de copii la învățământ fără declarația pe propria răspundere bifată — regula legală e implementată strict, nu se acordă tacit.
 
 [iConta.eu](/)

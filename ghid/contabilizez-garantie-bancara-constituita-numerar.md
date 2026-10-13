@@ -2,7 +2,7 @@
 title: "Cum contabilizez o garanție bancară constituită în numerar?"
 description: "O garanție bancară garantată integral cu bani depuși de firmă e o creanță imobilizată, nu un simplu angajament extrabilanțier — diferența contează contabil."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Uneori banca nu emite o scrisoare de garanție „pe încrederea" clientului, ci
 
 ## Ce face iConta.eu
 
-Verificat în cod: funcția de garanții existentă în iConta.eu (`nota_garantie`) tratează exclusiv cazul angajamentului extrabilanțier (8011/8021=891), fără mutare efectivă de numerar. Pentru cazul concret din acest ghid — bani chiar depuși de firmă drept colateral, care devin o creanță imobilizată — iConta.eu **nu are** o funcție dedicată care să genereze automat nota corespunzătoare (ieșire de trezorerie + creanță). Operațiunea trebuie înregistrată manual, printr-o notă contabilă obișnuită, cu contul de creanță potrivit termenului garanției.
+Verificat în cod: funcția de garanții existentă în iConta.eu („nota de garanție (Operațiuni speciale)”) tratează exclusiv cazul angajamentului extrabilanțier (8011/8021=891), fără mutare efectivă de numerar. Pentru cazul concret din acest ghid — bani chiar depuși de firmă drept colateral, care devin o creanță imobilizată — iConta.eu **nu are** o funcție dedicată care să genereze automat nota corespunzătoare (ieșire de trezorerie + creanță). Operațiunea trebuie înregistrată manual, printr-o notă contabilă obișnuită, cu contul de creanță potrivit termenului garanției.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cine poate depune decontul de TVA trimestrial"
 description: "Condițiile legale pentru a folosi trimestrul, în loc de luna, ca perioadă fiscală de TVA în 2026."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Regula implicită pentru orice persoană înregistrată în scopuri de TVA e dec
 
 ## Ce face iConta.eu
 
-iConta **nu calculează și nu verifică automat** eligibilitatea pentru trimestrial: periodicitatea (`tip_decont`) e un atribut pe care contabilul îl setează manual pe profilul firmei, nu o valoare dedusă din cifra de afaceri a anului precedent sau din prezența achizițiilor intracomunitare. Decontul D300, precum și D394 și SAF-T (D406), urmează întotdeauna acea setare — dacă profilul spune „trimestrial", aplicația generează deconturi pe trimestru, indiferent dacă firma mai îndeplinește sau nu condițiile legale de mai sus. Verificarea condiției (plafonul de 100.000 euro, achizițiile IC din anul precedent) rămâne o decizie profesională a contabilului, făcută în afara aplicației.
+iConta **nu calculează și nu verifică automat** eligibilitatea pentru trimestrial: periodicitatea („periodicitatea TVA (Date firmă)”) e un atribut pe care contabilul îl setează manual pe profilul firmei, nu o valoare dedusă din cifra de afaceri a anului precedent sau din prezența achizițiilor intracomunitare. Decontul D300, precum și D394 și SAF-T (D406), urmează întotdeauna acea setare — dacă profilul spune „trimestrial", aplicația generează deconturi pe trimestru, indiferent dacă firma mai îndeplinește sau nu condițiile legale de mai sus. Verificarea condiției (plafonul de 100.000 euro, achizițiile IC din anul precedent) rămâne o decizie profesională a contabilului, făcută în afara aplicației.
 
 [iConta.eu](/)

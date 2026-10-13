@@ -2,7 +2,7 @@
 title: "TVA la brunch-ul cu băuturi incluse: cum se aplică cotele"
 description: Un brunch la preț fix, cu băuturi incluse, servit la restaurant, se defalcă pe TVA — mâncarea și băuturile nealcoolice care nu se încadrează la NC 2202 intră la 11%, băuturile alcoolice și cele NC 2202 rămân la 21%, indiferent de prețul unic afișat.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Dacă brunch-ul se vinde la un preț fix care include și băuturi alcoolice/NC 
 
 ## Ce face iConta.eu
 
-Aplicația tratează categoria `restaurant_catering` la 11%, cu excepțiile din `EXCEPTII_21` pentru băuturi alcoolice și băuturi NC 2202, potrivite pe fiecare linie a facturii sau a bonului. Pentru un pachet cu preț unic care combină componente la cote diferite (mâncare + alcool inclus), defalcarea pe linii separate, cu cota corectă pentru fiecare, rămâne o decizie a emitentului la structurarea facturii — aplicația nu presupune automat o singură cotă pentru tot pachetul.
+Aplicația tratează categoria „restaurant și catering (cota redusă)” la 11%, cu excepțiile din „excepțiile cu cota de 21%” pentru băuturi alcoolice și băuturi NC 2202, potrivite pe fiecare linie a facturii sau a bonului. Pentru un pachet cu preț unic care combină componente la cote diferite (mâncare + alcool inclus), defalcarea pe linii separate, cu cota corectă pentru fiecare, rămâne o decizie a emitentului la structurarea facturii — aplicația nu presupune automat o singură cotă pentru tot pachetul.
 
 [iConta.eu](/)

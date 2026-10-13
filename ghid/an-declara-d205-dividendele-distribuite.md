@@ -2,7 +2,7 @@
 title: "În ce an se declară în D205 dividendele distribuite, dar neplătite?"
 description: "Regula legală privind anul de raportare pentru dividendele aprobate spre distribuire dar neîncasate de asociați până la 31 decembrie."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Cea mai frecventă confuzie este raportarea dividendului abia în anul în care 
 
 ## Ce face iConta.eu
 
-Aici este important să fim exacți: aplicația calculează corect cota și impozitul atunci când un dividend distribuit într-un an este plătit ulterior (motorul FIFO din `dividende_curs.py` aplică cota de la data fiecărei distribuiri, verificat prin teste dedicate). **Însă**, pentru cazul specific din acest ghid — dividend distribuit, dar deloc plătit până la 31 decembrie — generatorul D205 exclude din declarație orice beneficiar pentru care suma plătită este zero, deci acel dividend nu apare automat în declarația anului aprobării. Acesta este un gol de conformitate cunoscut și documentat intern la iConta, nu un comportament corect din punct de vedere legal. La acest moment, iConta nu are în interfață o opțiune de adăugare manuală a unui beneficiar la generarea D205 (spre deosebire de alte declarații din aplicație, care au un astfel de ecran) — pentru acest caz, suma trebuie tratată de contabil separat de fluxul automat al aplicației, pentru a nu pierde obligația de declarare.
+Aici este important să fim exacți: aplicația calculează corect cota și impozitul atunci când un dividend distribuit într-un an este plătit ulterior (motorul FIFO din aplicația aplică cota de la data fiecărei distribuiri, verificat prin teste dedicate). **Însă**, pentru cazul specific din acest ghid — dividend distribuit, dar deloc plătit până la 31 decembrie — generatorul D205 exclude din declarație orice beneficiar pentru care suma plătită este zero, deci acel dividend nu apare automat în declarația anului aprobării. Acesta este un gol de conformitate cunoscut și documentat intern la iConta, nu un comportament corect din punct de vedere legal. La acest moment, iConta nu are în interfață o opțiune de adăugare manuală a unui beneficiar la generarea D205 (spre deosebire de alte declarații din aplicație, care au un astfel de ecran) — pentru acest caz, suma trebuie tratată de contabil separat de fluxul automat al aplicației, pentru a nu pierde obligația de declarare.
 
 [iConta.eu](/)

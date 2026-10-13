@@ -2,7 +2,7 @@
 title: Cum se raportează cotele de TVA în D406?
 description: Cotele de TVA se raportează prin secțiunea Tax Table din MasterFiles, cu coduri de TVA sensibile la data facturii — mai ales în jurul schimbării de la 1 august 2025.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,6 +28,6 @@ Greșeala principală este aplicarea unui singur cod de TVA "curent" tuturor fac
 
 Conform docstring-ului generatorului (actualizat 03.08.2026): „TaxCode livrari PERIOD-AWARE pe data facturii (03.08: coduri pre/post 01.08.2025, Legea 141/2025)" — adică iConta.eu aplică automat codul de TVA corect în funcție de data facturii, nu de data la care se generează declarația, ținând cont explicit de schimbarea din Legea 141/2025.
 
-Nomenclatorul de coduri (TaxCode) folosit la generare provine din nomenclatoarele tehnice ale aplicației (`d406_nomenclatoare_anaf.properties`, `d406_schema_anaf.xlsx`), care descriu structura acceptată de ANAF pentru acest câmp.
+Nomenclatorul de coduri (TaxCode) folosit la generare provine din nomenclatoarele tehnice ale aplicației (nomenclatoarele SAF-T publicate de ANAF, schema SAF-T (D406) publicată de ANAF), care descriu structura acceptată de ANAF pentru acest câmp.
 
 [iConta.eu](/)

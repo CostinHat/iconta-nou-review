@@ -2,7 +2,7 @@
 title: "Cum se înregistrează un mijloc fix cumpărat din fonduri nerambursabile?"
 description: Mijlocul fix se înregistrează la valoarea lui integrală, ca orice achiziție, iar fondurile nerambursabile care l-au finanțat se reflectă separat, ca subvenție pentru investiții.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Fiscal, la microîntreprindere, venitul din reluare (7584) se scade din baza imp
 
 ## Ce face iConta.eu
 
-Mijlocul fix cumpărat din fonduri nerambursabile se înregistrează prin ecranul de mijloace fixe, la valoarea integrală. Fondurile primite se reflectă separat, prin ecranul „Subvenții (445/741)", opțiunea „Investiții (475)" — dreptul și încasarea funcționează din acest ecran. Reluarea lunară proporțională cu amortizarea nu poate fi însă finalizată din același formular: la data acestei verificări, deși „Reluare la venituri" apare ca opțiune de „Fel", ecranul nu expune câmpurile `valoare_activ`, `subventie` și `amortizare_lunara` cerute de operație — reluarea trebuie introdusă pe altă cale (API direct sau notă manuală). Aplicația nu are o rută unică care să lege automat cele două operațiuni; corelarea lor (procentul finanțat, folosit la calculul reluării) se face manual, la introducerea datelor.
+Mijlocul fix cumpărat din fonduri nerambursabile se înregistrează prin ecranul de mijloace fixe, la valoarea integrală. Fondurile primite se reflectă separat, prin ecranul „Subvenții (445/741)", opțiunea „Investiții (475)" — dreptul și încasarea funcționează din acest ecran. Reluarea lunară proporțională cu amortizarea nu poate fi însă finalizată din același formular: la data acestei verificări, deși „Reluare la venituri" apare ca opțiune de „Fel", ecranul nu expune câmpurile „valoarea activului”, `subventie` și „amortizarea lunară” cerute de operație — reluarea trebuie introdusă pe altă cale (API direct sau notă manuală). Aplicația nu are o rută unică care să lege automat cele două operațiuni; corelarea lor (procentul finanțat, folosit la calculul reluării) se face manual, la introducerea datelor.
 
 [iConta.eu](/)

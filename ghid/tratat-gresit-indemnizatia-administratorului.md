@@ -2,7 +2,7 @@
 title: Ce fac dacă am tratat greșit indemnizația administratorului?
 description: Dacă indemnizația a fost trecută ca salariu clasic (cu CAM și D112), corecția înseamnă stornare, recalcul pe regulile de mandat și, separat, verificarea declarativă.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Cea mai frecventă formă a acestei greșeli e tratarea indemnizației de mandat
 
 ## Ce face iConta.eu
 
-Modulul F021 oferă calculul și nota corecte pentru mandat, prin funcțiile `calcul_mandat` și `nota(fel="mandat")`. O limitare importantă de reținut la corectare: generarea automată a D112 din aplicație citește exclusiv din tabela de salariați cu CIM — nu are, la acest moment, o punte funcțională spre notele de mandat/cenzor. Dacă indemnizația a fost declarată greșit la D112 ca salariat clasic, rectificarea acelei declarații rămâne un pas manual, în afara acestui modul.
+Modulul „Contracte de muncă speciale” oferă calculul și nota corecte pentru mandat, prin funcțiile „calculul contractului de mandat (Salarii)” și nota contabilă (mandat). O limitare importantă de reținut la corectare: generarea automată a D112 din aplicație citește exclusiv din tabela de salariați cu CIM — nu are, la acest moment, o punte funcțională spre notele de mandat/cenzor. Dacă indemnizația a fost declarată greșit la D112 ca salariat clasic, rectificarea acelei declarații rămâne un pas manual, în afara acestui modul.
 
 [iConta.eu](/)

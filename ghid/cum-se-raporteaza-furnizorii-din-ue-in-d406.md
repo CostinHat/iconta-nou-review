@@ -2,7 +2,7 @@
 title: Cum se raportează furnizorii din UE în D406?
 description: Furnizorii din UE se raportează cu codul de identificare "01" urmat de codul de țară ISO și CUI-ul de TVA (format VIES), cu excepția Greciei, unde prefixul de țară folosit este "EL", nu "GR".
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Fișierul SAF-T identifică fiecare partener (client sau furnizor) printr-un cod
 ## Temeiul legal
 
 ::: ghid-temei
-**Notă onestă privind temeiul**: formatul exact al codurilor de identificare a furnizorilor străini (`01`+țară+cod pentru UE, cu excepția Greciei unde se folosește prefixul VIES `EL`, nu ISO-ul `GR`; `02`+țară+cod pentru furnizorii din afara UE) nu a fost găsit ca citat verbatim în actele normative citite integral pentru acest dosar (OPANAF 1783/2021, OPANAF 407/2025). Formatul provine din schema tehnică oficială ANAF (foaia "5. Structures" a fișierului `d406_schema_anaf.xlsx`), verificată direct în codul aplicației — nu dintr-un text de lege redat ca atare în sursele parcurse aici. Detaliile tehnice sunt descrise mai jos, în secțiunea explicativă.
+**Notă onestă privind temeiul**: formatul exact al codurilor de identificare a furnizorilor străini (`01`+țară+cod pentru UE, cu excepția Greciei unde se folosește prefixul VIES `EL`, nu ISO-ul `GR`; `02`+țară+cod pentru furnizorii din afara UE) nu a fost găsit ca citat verbatim în actele normative citite integral pentru acest dosar (OPANAF 1783/2021, OPANAF 407/2025). Formatul provine din schema tehnică oficială ANAF (foaia "5. Structures" a fișierului schema SAF-T (D406) publicată de ANAF), verificată direct în codul aplicației — nu dintr-un text de lege redat ca atare în sursele parcurse aici. Detaliile tehnice sunt descrise mai jos, în secțiunea explicativă.
 :::
 
 ## Cum se construiește codul pentru un furnizor din UE
@@ -38,6 +38,6 @@ Pentru furnizorii din afara UE (ex. Marea Britanie, SUA, Elveția), prefixul fol
 
 ## Ce face iConta.eu
 
-Construcția codului de partener este automată, prin funcția `_partener_registration_number` din motorul D406: pentru un partener român se generează `00`+CUI, pentru un partener din UE (altul decât România) se generează `01`+prefixul de țară+CUI, iar pentru un partener din afara UE, `02`+țară+CUI. Maparea codului ISO de țară la prefixul VIES este cablată explicit pentru cazul Greciei (`_ISO_TO_VAT = {"GR": "EL"}`), astfel încât un furnizor grecesc introdus cu țara `GR` primește automat codul corect `01EL...`, fără intervenție manuală.
+Construcția codului de partener este automată, prin funcția „codul partenerului” din motorul D406: pentru un partener român se generează `00`+CUI, pentru un partener din UE (altul decât România) se generează `01`+prefixul de țară+CUI, iar pentru un partener din afara UE, `02`+țară+CUI. Maparea codului ISO de țară la prefixul VIES este cablată explicit pentru cazul Greciei (`_ISO_TO_VAT = {"GR": "EL"}`), astfel încât un furnizor grecesc introdus cu țara `GR` primește automat codul corect `01EL...`, fără intervenție manuală.
 
 [iConta.eu](/)

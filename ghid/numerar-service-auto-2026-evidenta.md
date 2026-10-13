@@ -2,7 +2,7 @@
 title: "Numerar la service auto 2026: evidență"
 description: "Obligațiile legale de evidențiere a numerarului pentru un service auto care încasează de la populație: casa de marcat, bonul fiscal și plafonul de numerar."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce înseamnă concret pentru un service auto:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul de casierie care ține un registru de casă cu sold rulant (`registru_casa`) și verifică automat, pe baza operațiunilor introduse, respectarea plafoanelor legale de numerar din Legea 70/2015 (`verifica_plafon`) — inclusiv pentru avansurile spre decontare. Aplicația poate importa, separat, Raportul Z generat de aparatul de marcat electronic fiscal al service-ului, cu totalurile de încasări pe modalitate de plată. Aplicația nu are însă o funcționalitate specifică sectorului auto (de exemplu, legarea încasărilor de comenzi de reparație individuale) — evidența numerarului se face la nivelul general al oricărei firme cu casierie.
+La data acestui ghid, iConta.eu are un modul de casierie care ține un registru de casă cu sold rulant („registrul de casă (Casă)”) și verifică automat, pe baza operațiunilor introduse, respectarea plafoanelor legale de numerar din Legea 70/2015 („verificarea plafonului de numerar (Casă)”) — inclusiv pentru avansurile spre decontare. Aplicația poate importa, separat, Raportul Z generat de aparatul de marcat electronic fiscal al service-ului, cu totalurile de încasări pe modalitate de plată. Aplicația nu are însă o funcționalitate specifică sectorului auto (de exemplu, legarea încasărilor de comenzi de reparație individuale) — evidența numerarului se face la nivelul general al oricărei firme cu casierie.
 
 [iConta.eu](/)

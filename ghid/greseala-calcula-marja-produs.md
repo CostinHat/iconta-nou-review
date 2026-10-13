@@ -2,23 +2,13 @@
 title: "Greșeala de a nu calcula marja pe produs"
 description: "Explică de ce regimul special TVA la marjă cere calcul individual pe fiecare bun vândut, nu o marjă medie pe activitate."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Greșeala de a nu calcula marja pe produs
 
 În regimul special de marjă pentru bunuri second-hand, TVA-ul nu se calculează pe o marjă medie sau globală a activității — legea cere determinarea taxei colectate pentru fiecare livrare în parte.
-
-## Temeiul legal
-
-::: ghid-temei
-"pentru determinarea taxei colectate aferente fiecărei livrări, din marja profitului [...] se calculează suma taxei colectate [...] prin aplicarea procedeului sutei mărite"
-— HG 1/2016 (norme metodologice CF), pct. 86 alin. (4) lit. c), [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822) (linia 8919-8920, Titlul VII), dosar de cercetare F098.
-
-"persoana impozabilă revânzătoare va îndeplini următoarele obligații: a) va ține un jurnal special de cumpărări [...]; b) va ține un jurnal special de vânzări [...]; c) va ține un registru care permite să se stabilească, la finele fiecărei perioade fiscale, totalul bazei de impozitare pentru livrările efectuate în respectiva perioadă fiscală, pe fiecare cotă de TVA aplicabilă, și, după caz, taxa colectată"
-— HG 1/2016 (norme metodologice CF), pct. 86 alin. (6) lit. a)-c), [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822) (linia 8981-8992, Titlul VII), dosar de cercetare F098.
-:::
 
 Norma leagă explicit taxa colectată de "fiecare livrare" — adică de fiecare bun vândut individual, cu prețul lui de cumpărare și prețul lui de vânzare — nu de o marjă calculată global, la nivel de perioadă, din diferența dintre totalul vânzărilor și totalul achizițiilor. În plus, obligația de a ține jurnal special de cumpărări și de vânzări presupune, structural, o evidență per bun, nu una agregată.
 

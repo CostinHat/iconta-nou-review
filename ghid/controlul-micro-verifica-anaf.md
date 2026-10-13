@@ -2,7 +2,7 @@
 title: "Controlul pe micro: ce verifică ANAF"
 description: "Plafonul de venituri pe care ANAF îl verifică prioritar la o microîntreprindere, coborât la echivalentul a 100.000 euro începând cu 1 ianuarie 2026, și celelalte condiții cumulative de eligibilitate."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce urmărește practic un control fiscal la o firmă micro:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu urmărește obligațiile declarative datorate pentru regimul fiscal setat de firmă (funcția `obligatii_datorate`), inclusiv D100 trimestrial pentru micro, dar **nu monitorizează automat** depășirea plafonului de venituri și nu alertează contabilul când firma trebuie să treacă la impozitul pe profit. Verificarea continuă a plafonului și a celorlalte condiții de eligibilitate rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu urmărește obligațiile declarative datorate pentru regimul fiscal setat de firmă (funcția „obligațiile datorate (Control fiscal)”), inclusiv D100 trimestrial pentru micro, dar **nu monitorizează automat** depășirea plafonului de venituri și nu alertează contabilul când firma trebuie să treacă la impozitul pe profit. Verificarea continuă a plafonului și a celorlalte condiții de eligibilitate rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

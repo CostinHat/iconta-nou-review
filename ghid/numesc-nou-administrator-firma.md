@@ -2,7 +2,7 @@
 title: "Cum numesc un nou administrator în firmă"
 description: "Cum se numește legal un nou administrator al unui SRL, cine decide și ce pași urmează la Registrul Comerțului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce presupune, concret, procedura:
 
 ## Ce face iConta.eu
 
-iConta.eu nu automatizează procedura de numire a administratorului la Registrul Comerțului — aceasta rămâne o formalitate juridică separată, în afara aplicației. Aplicația oferă evidența contabilă generală (state de plată, declarații), inclusiv posibilitatea de a genera documente pentru un administrator remunerat, dar depinde de completarea corectă a datelor firmei (ecranul „Date firmă") — un test intern al codului (`test_document_fara_administrator.py`) confirmă că aplicația semnalează explicit lipsa datelor de administrator la generarea documentelor care le necesită, în loc să le lase necompletate tăcut.
+iConta.eu nu automatizează procedura de numire a administratorului la Registrul Comerțului — aceasta rămâne o formalitate juridică separată, în afara aplicației. Aplicația oferă evidența contabilă generală (state de plată, declarații), inclusiv posibilitatea de a genera documente pentru un administrator remunerat, dar depinde de completarea corectă a datelor firmei (ecranul „Date firmă") — un test intern al codului confirmă că aplicația semnalează explicit lipsa datelor de administrator la generarea documentelor care le necesită, în loc să le lase necompletate tăcut.
 
 [iConta.eu](/)

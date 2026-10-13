@@ -2,7 +2,7 @@
 title: "Statistici de numerar pentru management 2026"
 description: "Ce evidență a numerarului cere legea (Registrul de casă) și diferența față de o statistică de management, care nu este o obligație legală distinctă."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce rezultă din text pentru evidența numerarului:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu ține un registru de casă cu sold rulant, calculat operațiune cu operațiune (funcția `registru_casa`), care poate fi folosit ca bază atât pentru evidența legală, cât și pentru o privire de ansamblu asupra fluxului de numerar. Aplicația nu are însă un modul dedicat de „statistici de numerar pentru management" (grafice, tendințe, comparații pe perioade) — dincolo de registrul de casă și de verificarea plafoanelor legale (`verifica_plafon`), orice analiză suplimentară a numerarului rămâne de făcut manual, pe baza datelor exportate din aplicație.
+La data acestui ghid, iConta.eu ține un registru de casă cu sold rulant, calculat operațiune cu operațiune (funcția „registrul de casă (Casă)”), care poate fi folosit ca bază atât pentru evidența legală, cât și pentru o privire de ansamblu asupra fluxului de numerar. Aplicația nu are însă un modul dedicat de „statistici de numerar pentru management" (grafice, tendințe, comparații pe perioade) — dincolo de registrul de casă și de verificarea plafoanelor legale („verificarea plafonului de numerar (Casă)”), orice analiză suplimentară a numerarului rămâne de făcut manual, pe baza datelor exportate din aplicație.
 
 [iConta.eu](/)

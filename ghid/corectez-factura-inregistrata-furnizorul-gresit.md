@@ -2,7 +2,7 @@
 title: Cum corectez o factură înregistrată pe furnizorul greșit?
 description: O factură primită, atribuită greșit altui furnizor, nu se editează în iConta.eu. Fără notă contabilă, se șterge și se reintroduce pe furnizorul corect. Cu notă contabilă, corecția se face prin stornare la nivel de notă — stornoul automat de factură e confirmat în cod doar pentru facturile emise.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -23,7 +23,7 @@ Documentul justificativ e legat de identitatea reală a furnizorului care l-a em
 ## Cum corectez în iConta.eu
 
 - **Factura nu are încă notă contabilă** → se șterge și se reintroduce pe furnizorul corect. Simplu, fără urme ale greșelii.
-- **Factura are notă contabilă** (a fost deja contată) → ștergerea e refuzată explicit („Factura are notă contabilă și nu se mai șterge... Corecția unei facturi contabilizate se face prin STORNO"). Aici intervine particularitatea: funcția de stornare automată a facturii (`storneaza`), care generează un document nou cu liniile negate, e verificată în cod **doar pentru facturile emise** — pentru o factură primită, apelul respectiv nu se aplică.
+- **Factura are notă contabilă** (a fost deja contată) → ștergerea e refuzată explicit („Factura are notă contabilă și nu se mai șterge... Corecția unei facturi contabilizate se face prin STORNO"). Aici intervine particularitatea: funcția de stornare automată a facturii („stornarea”), care generează un document nou cu liniile negate, e verificată în cod **doar pentru facturile emise** — pentru o factură primită, apelul respectiv nu se aplică.
 - Pentru o factură primită deja contată, cu furnizor greșit, corecția se face la nivelul notei contabile: dacă nota e încă ciornă, contul analitic al furnizorului se corectează direct în notă (editare de linii); dacă nota e deja validată, corecția se face printr-o notă nouă de stornare (semn minus pe furnizorul greșit, apoi înregistrare corectă pe furnizorul real), conform aceluiași principiu din pct. 69.
 - Perioada contabilă închisă blochează la fel editarea ciornei, ștergerea sau validarea — indiferent de stadiul corecției.
 

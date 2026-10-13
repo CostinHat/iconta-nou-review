@@ -2,7 +2,7 @@
 title: "Amortizarea costurilor de dezvoltare capitalizate"
 description: "Durata legală de amortizare a cheltuielilor de dezvoltare recunoscute ca imobilizare necorporală și limita ei maximă atunci când depășește 5 ani."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Când o firmă capitalizează costurile unui proiect de dezvoltare (de exemplu, 
 
 ## Ce face iConta.eu
 
-Din verificarea codului, iConta.eu recunoaște contul **203 „Cheltuieli de dezvoltare"** în planul de conturi (OMFP 1802/2014). La data acestui ghid, însă, aplicația **nu are un calculator dedicat de amortizare pentru imobilizările necorporale** (cum are, de exemplu, pentru pragul de încadrare a mijloacelor fixe corporale, prin modulul `obiecte_inventar.py`) — planul de amortizare pentru cheltuielile de dezvoltare capitalizate, inclusiv verificarea plafonului de 10 ani, se calculează și se introduce manual.
+Din verificarea codului, iConta.eu recunoaște contul **203 „Cheltuieli de dezvoltare"** în planul de conturi (OMFP 1802/2014). La data acestui ghid, însă, aplicația **nu are un calculator dedicat de amortizare pentru imobilizările necorporale** (cum are, de exemplu, pentru pragul de încadrare a mijloacelor fixe corporale, prin modulul aplicația) — planul de amortizare pentru cheltuielile de dezvoltare capitalizate, inclusiv verificarea plafonului de 10 ani, se calculează și se introduce manual.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Care este plafonul pentru microîntreprinderi în 2026?"
 description: "Plafonul de venituri de 100.000 euro pentru încadrarea ca microîntreprindere în 2026, potrivit ultimei modificări a Codului fiscal, și celelalte condiții cumulative."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -42,6 +42,6 @@ Ce trebuie verificat concret pentru 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu calculează și nu verifică automat plafonul de venituri pentru încadrarea în regimul de microîntreprindere**. Aplicația tratează regimul fiscal (micro/profit) ca pe un câmp declarat manual de utilizator (`regim_fiscal`, la Date firmă) și confirmă explicit, în comentariile de cod, că nu există nicio constantă a plafonului micro în aplicație — deci nu poate contrazice sau semnala singură o eventuală depășire a plafonului. Dacă firma depășește plafonul de 100.000 euro sau altă condiție cumulativă, actualizarea regimului fiscal declarat rămâne responsabilitatea contabilului, verificată în afara aplicației.
+La data acestui ghid, iConta.eu **nu calculează și nu verifică automat plafonul de venituri pentru încadrarea în regimul de microîntreprindere**. Aplicația tratează regimul fiscal (micro/profit) ca pe un câmp declarat manual de utilizator („regimul fiscal (Date firmă)”, la Date firmă) și confirmă explicit, în comentariile de cod, că nu există nicio constantă a plafonului micro în aplicație — deci nu poate contrazice sau semnala singură o eventuală depășire a plafonului. Dacă firma depășește plafonul de 100.000 euro sau altă condiție cumulativă, actualizarea regimului fiscal declarat rămâne responsabilitatea contabilului, verificată în afara aplicației.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Când pot constitui ajustare deductibilă pentru clienți incerți?
 description: Ajustarea pentru un client incert devine deductibilă la 30% după 270 de zile de la scadență, sau la 100% dacă debitorul e în faliment/insolvență declarată — cu condiția ca acesta să nu fie afiliat și creanța să nu fie garantată.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -46,6 +46,6 @@ Până la îndeplinirea condițiilor de mai sus, ajustarea rămâne constituită
 
 ## Ce face iConta.eu
 
-Funcția `deductibilitate_creanta` din aplicație primește numărul de zile de depășire a scadenței, precum și marcajele „garantată", „afiliată" și „faliment declarat", și întoarce procentul de deducere aplicabil (0%, 30% sau 100%) plus temeiul textual corespunzător. O creanță garantată sau afiliată primește întotdeauna 0%, indiferent de vechime; sub pragul de 270 de zile și fără faliment declarat, procentul e tot 0% ("sub 270 zile ... nedeductibil încă"). Nota contabilă la constituire e generată automat prin `nota_ajustare_creanta` (6814=491).
+Funcția „deductibilitatea creanței (Operațiuni speciale)” din aplicație primește numărul de zile de depășire a scadenței, precum și marcajele „garantată", „afiliată" și „faliment declarat", și întoarce procentul de deducere aplicabil (0%, 30% sau 100%) plus temeiul textual corespunzător. O creanță garantată sau afiliată primește întotdeauna 0%, indiferent de vechime; sub pragul de 270 de zile și fără faliment declarat, procentul e tot 0% ("sub 270 zile ... nedeductibil încă"). Nota contabilă la constituire e generată automat prin „nota de ajustare a creanței” (6814=491).
 
 [iConta.eu](/)

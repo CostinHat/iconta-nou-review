@@ -2,7 +2,7 @@
 title: "Factura de export se transmite în e-Factura?"
 description: "Obligația B2B de transmitere în RO e-Factura vizează doar tranzacțiile dintre persoane impozabile stabilite în România, ceea ce exclude, de regulă, facturile de export."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Din acest dosar de cercetare este documentată și verificată în cod o singură funcționalitate apropiată ca terminologie — F171, exportul facturilor emise către programul de contabilitate SAGA, în format XML propriu al SAGA. Aceasta nu are nicio legătură cu transmiterea facturilor în sistemul RO e-Factura/SPV: e o punte tehnică opțională între iConta.eu și programul contabilului, fără temei legal propriu (nicio citare de act normativ în codul modulului). Aplicația are, conform dosarului, și un fișier separat pentru transmiterea facturilor către e-Factura, dar comportamentul lui concret — inclusiv modul în care tratează facturile de export — nu a fost verificat în acest dosar, așa că nu facem afirmații neconfirmate despre el aici.
+Din acest dosar de cercetare este documentată și verificată în cod o singură funcționalitate apropiată ca terminologie — „Export facturi emise către SAGA”, exportul facturilor emise către programul de contabilitate SAGA, în format XML propriu al SAGA. Aceasta nu are nicio legătură cu transmiterea facturilor în sistemul RO e-Factura/SPV: e o punte tehnică opțională între iConta.eu și programul contabilului, fără temei legal propriu (nicio citare de act normativ în codul modulului). Aplicația are, conform dosarului, și un fișier separat pentru transmiterea facturilor către e-Factura, dar comportamentul lui concret — inclusiv modul în care tratează facturile de export — nu a fost verificat în acest dosar, așa că nu facem afirmații neconfirmate despre el aici.
 
 [iConta.eu](/)

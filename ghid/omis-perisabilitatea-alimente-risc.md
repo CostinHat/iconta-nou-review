@@ -2,7 +2,7 @@
 title: "Am omis perisabilitatea la alimente: ce risc"
 description: Omiterea notei de perisabilitate lasă lipsa din gestiune nedocumentată — riscul e ca întreaga pierdere să fie tratată ca lipsă neimputabilă nedeductibilă, cu TVA aferent datorat, nu doar partea peste limita legală.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Dacă perisabilitatea e recunoscută și documentată la timp (verificare faptic
 
 ## Ce face iConta.eu
 
-Nota de perisabilitate (`nota_perisabilitati`) cere luna deschisă și separă automat 607 deductibil de nedeductibil pe baza procentului introdus, cu ajustarea de TVA aferentă părții peste limită — dar aplicația nu detectează singură o lipsă neînregistrată din gestiune; dacă nota nu e introdusă deloc, nimic din motorul F066 nu intervine, iar riscul de recalificare ca lipsă nedeductibilă rămâne integral al contabilului care nu a înregistrat-o la timp.
+Nota de perisabilitate („nota de perisabilități (Stocuri)”) cere luna deschisă și separă automat 607 deductibil de nedeductibil pe baza procentului introdus, cu ajustarea de TVA aferentă părții peste limită — dar aplicația nu detectează singură o lipsă neînregistrată din gestiune; dacă nota nu e introdusă deloc, nimic din motorul „Perisabilități și scăzăminte” nu intervine, iar riscul de recalificare ca lipsă nedeductibilă rămâne integral al contabilului care nu a înregistrat-o la timp.
 
 [iConta.eu](/)

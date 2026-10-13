@@ -2,7 +2,7 @@
 title: "Cum corectez o încasare trecută de două ori în registrul de casă?"
 description: "Regula din normele financiar-contabile pentru corectarea documentelor de casă: chitanțele și dispozițiile de încasare nu se corectează, ci se anulează sau se stornează."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Pentru o încasare de casă dublată, rezultă două căi corecte, în funcție 
 
 ## Ce face iConta.eu
 
-Modulul de casierie al iConta.eu calculează soldul rulant al registrului de casă strict pe baza listei de operațiuni introduse (`registru_casa`), fără o funcție dedicată de „anulare" sau „stornare" a unei operațiuni — o încasare dublată trebuie eliminată sau contrabalansată manual de contabil, prin introducerea corecției ca operațiune nouă, cu urma ei documentară păstrată în afara aplicației. Aplicația verifică automat plafoanele de numerar (art. 4^2 din Legea 70/2015, inclusiv pragurile speciale pentru cash and carry) pe operațiunile introduse, dar nu semnalează dubluri de înregistrare și nu propune stornarea lor.
+Modulul de casierie al iConta.eu calculează soldul rulant al registrului de casă strict pe baza listei de operațiuni introduse („registrul de casă (Casă)”), fără o funcție dedicată de „anulare" sau „stornare" a unei operațiuni — o încasare dublată trebuie eliminată sau contrabalansată manual de contabil, prin introducerea corecției ca operațiune nouă, cu urma ei documentară păstrată în afara aplicației. Aplicația verifică automat plafoanele de numerar (art. 4^2 din Legea 70/2015, inclusiv pragurile speciale pentru cash and carry) pe operațiunile introduse, dar nu semnalează dubluri de înregistrare și nu propune stornarea lor.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se descarcă gestiunea pentru produsele finite vândute"
 description: "Nota contabilă de vânzare a produselor finite conform OMFP 1802/2014: descărcarea la cost standard (711=345), TVA obligatoriu explicit și repartizarea diferențelor de preț pe contul 348."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Mecanismul complet, așa cum rezultă din funcțiunea conturilor 345/348/711:
 
 ## Ce face iConta.eu
 
-Funcționalitatea **Producție în curs și produse finite** (ecran Operațiuni speciale → Imobilizări) generează exact acest tipar de note prin funcția `nota_vanzare` din aplicație: `4111=701` + `4111=4427` (cu cotă de TVA obligatorie — aplicația refuză explicit generarea dacă nu se dă o cotă, ca să nu rămână o valoare implicită „ruptă tăcut de lege la prima schimbare"), apoi descărcarea `711=345` la costul standard ieșit și, dacă se transmite un coeficient `coef_348`, repartizarea diferenței (`711=348`/`348=711`).
+Funcționalitatea **Producție în curs și produse finite** (ecran Operațiuni speciale → Imobilizări) generează exact acest tipar de note prin funcția „nota de vânzare (Operațiuni speciale)” din aplicație: `4111=701` + `4111=4427` (cu cotă de TVA obligatorie — aplicația refuză explicit generarea dacă nu se dă o cotă, ca să nu rămână o valoare implicită „ruptă tăcut de lege la prima schimbare"), apoi descărcarea `711=345` la costul standard ieșit și, dacă se transmite un coeficient „coeficientul diferențelor de preț (348)”, repartizarea diferenței (`711=348`/`348=711`).
 
 **Limită reală, de menționat onest**: ecranul de introducere a vânzării din iConta (Operațiuni speciale → Imobilizări → Producție → Vânzare + descărcare) are, la data acestui ghid, doar câmpurile preț de vânzare, cost standard ieșit și cotă de TVA — **niciun câmp pentru coeficientul de repartizare 348**, deși motorul din spate îl acceptă și îl aplică corect dacă i se dă. Rezultatul practic: din interfața curentă, orice descărcare de gestiune se înregistrează la cost standard pur, fără repartizarea diferențelor de preț — exact greșeala pe care legea (și avertismentul intern al aplicației) o semnalează ca fiind cea mai frecventă. Calculul manual al coeficientului și transmiterea lui rămân, azi, în afara ecranului standard.
 

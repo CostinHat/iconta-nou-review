@@ -2,7 +2,7 @@
 title: "Diferențele de curs pot determina depășirea plafonului micro?"
 description: "Cum se verifică plafonul de venituri al microîntreprinderilor și de ce cursul valutar folosit la calculul echivalentului în euro este fixat, nu variabil pe parcursul anului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Multe firme cu venituri parțial în valută se întreabă dacă fluctuațiile c
 
 ## Ce face iConta.eu
 
-La verificarea codului, iConta.eu nu are, în prezent, o constantă sau o funcție dedicată verificării automate a plafonului micro de venituri — un comentariu explicit din codul aplicației (`control_fiscal_api.py`) confirmă acest lucru: „nicio constantă de plafon micro în aplicație". Aplicația gestionează generarea declarațiilor de impozit (D100 pentru regimul micro, D101 pentru impozit pe profit) în funcție de regimul fiscal introdus de utilizator, dar nu calculează și nu alertează automat asupra apropierii sau depășirii pragului de 100.000 euro — această verificare, inclusiv efectul diferențelor de curs valutar asupra ei, rămâne în prezent responsabilitatea contabilului.
+La verificarea codului, iConta.eu nu are, în prezent, o constantă sau o funcție dedicată verificării automate a plafonului micro de venituri — un comentariu explicit din codul aplicației confirmă acest lucru: „nicio constantă de plafon micro în aplicație". Aplicația gestionează generarea declarațiilor de impozit (D100 pentru regimul micro, D101 pentru impozit pe profit) în funcție de regimul fiscal introdus de utilizator, dar nu calculează și nu alertează automat asupra apropierii sau depășirii pragului de 100.000 euro — această verificare, inclusiv efectul diferențelor de curs valutar asupra ei, rămâne în prezent responsabilitatea contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum completez D205 pentru beneficiari din afara UE?
 description: D205 nu admite deloc beneficiari nerezidenți la venituri din dividende, indiferent dacă sunt din UE sau din afara UE — orice dividend plătit unui nerezident se declară pe D207, nu pe D205.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -17,7 +17,7 @@ poarta: v1
 
 „Stat_R... daca Rezid=2 atunci Stat_R in nomenclator state de rezidenta altfel Stat_R=null" (structura D205, OPANAF 102/2025, rd.32-33)
 
-„01 a. Venituri din dividende (art.223 alin.(1) lit.a))"; „22 a. Venituri din dividende (cf. convențiilor de evitare a dublei impuneri)" (nomenclatorul de tip_venit al declarației D207, `structura_D207_2025.txt`)
+„01 a. Venituri din dividende (art.223 alin.(1) lit.a))"; „22 a. Venituri din dividende (cf. convențiilor de evitare a dublei impuneri)" (nomenclatorul de tip_venit al declarației D207, structura D207 publicată de ANAF)
 :::
 
 ## Regula: nerezident ⇒ D207, niciodată D205

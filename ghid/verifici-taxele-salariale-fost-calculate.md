@@ -2,7 +2,7 @@
 title: Cum verifici dacă taxele salariale au fost calculate corect?
 description: Verificarea corectitudinii taxelor salariale se face prin comparație cu D112 pe patru conturi, cu trei stări posibile — verde, roșu, gri — și cu limite clar declarate: nu se verifică brutul, iar sursa declarației (depusă sau regenerată) contează.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Greșeala tipică e interpretarea unui verdict gri drept "totul e în regulă" (
 
 ## Ce face iConta.eu
 
-`verifica_d112` implementează exact cele trei stări, cu cauza precisă pentru gri (nu un mesaj generic) și cu sursa declarației (depusă/regenerată) comunicată explicit pe fiecare constatare. Comparația propriu-zisă (`compara_d112`) e o funcție pură care nu modifică nimic în baza de date — doar raportează, cu temei legal citat pentru fiecare din cele patru obligații verificate.
+„verificarea D112 (Control fiscal)” implementează exact cele trei stări, cu cauza precisă pentru gri (nu un mesaj generic) și cu sursa declarației (depusă/regenerată) comunicată explicit pe fiecare constatare. Comparația propriu-zisă („comparația D112 (Control fiscal)”) e o funcție pură care nu modifică nimic în baza de date — doar raportează, cu temei legal citat pentru fiecare din cele patru obligații verificate.
 
 [iConta.eu](/)

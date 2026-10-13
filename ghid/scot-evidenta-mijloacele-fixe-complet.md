@@ -2,7 +2,7 @@
 title: "Cum scot din evidență mijloacele fixe complet amortizate înainte de radiere?"
 description: "Scoaterea din registru a activelor complet amortizate folosește aceeași acțiune de Casare, indiferent de valoarea rămasă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,6 +25,6 @@ Greșeala frecventă e lăsarea activelor complet amortizate active în registru
 
 ## Ce face iConta.eu
 
-Ecranul de Casare dezactivează activul (`activ=false`) indiferent de valoarea rămasă calculată — inclusiv pentru active complet amortizate, unde `amortizat_la_data` va calcula automat valoarea rămasă la zero. Nota generată e ciornă, validată separat din Registrul jurnal.
+Ecranul de Casare dezactivează activul (marcat inactiv) indiferent de valoarea rămasă calculată — inclusiv pentru active complet amortizate, unde „amortizarea cumulată (Mijloace fixe)” va calcula automat valoarea rămasă la zero. Nota generată e ciornă, validată separat din Registrul jurnal.
 
 [iConta.eu](/)

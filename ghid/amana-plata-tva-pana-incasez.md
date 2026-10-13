@@ -2,7 +2,7 @@
 title: "Pot amâna plata TVA până când încasez factura?"
 description: "Explică mecanismul legal prin care TVA colectată devine exigibilă abia la încasarea facturii, în sistemul TVA la încasare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Da — dar numai dacă firma e înscrisă în sistemul TVA la încasare, iar tra
 ## Temeiul legal
 
 ::: ghid-temei
-Art. 282 alin. (3) Cod fiscal: „Prin excepție de la prevederile alin. (1) și alin. (2) lit. a), exigibilitatea taxei intervine la data încasării contravalorii integrale sau parțiale a livrării de bunuri ori a prestării de servicii, în cazul persoanelor impozabile care optează în acest sens... Plafonul pentru aplicarea sistemului TVA la încasare este de: a) 5.000.000 lei, în perioada 1 martie-31 decembrie 2026; b) 5.500.000 lei, începând cu data de 1 ianuarie 2027." (`cod_fiscal_227_2015_consolidat.txt`)
+Art. 282 alin. (3) Cod fiscal: „Prin excepție de la prevederile alin. (1) și alin. (2) lit. a), exigibilitatea taxei intervine la data încasării contravalorii integrale sau parțiale a livrării de bunuri ori a prestării de servicii, în cazul persoanelor impozabile care optează în acest sens... Plafonul pentru aplicarea sistemului TVA la încasare este de: a) 5.000.000 lei, în perioada 1 martie-31 decembrie 2026; b) 5.500.000 lei, începând cu data de 1 ianuarie 2027." (Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Regula generală (art. 282 alin. 1) e că TVA devine exigibilă la faptul generator (livrare/prestare), indiferent dacă ați fost plătit. Pentru firmele care optează pentru TVA la încasare și se încadrează sub plafon (eligibilitate detaliată la art. 282 alin. 3^1 — înregistrare TVA conform art. 316, sediu în România), regula se schimbă: TVA devine exigibilă abia la data încasării, integrale sau parțiale.
@@ -30,6 +30,6 @@ O confuzie frecventă e amestecarea exigibilității (CÂND se datorează TVA, a
 
 ## Ce face iConta.eu
 
-Motorul calculează TVA exigibilă din suma încasată prin sută mărită, exact conform art. 282 alin. (8). În decont, pentru firmele cu flagul `tva_la_incasare` activ, sumele calculate ajung în rândurile obișnuite de TVA colectată (R9_1/R9_2, R10, R11) — nu există un rând D300 separat pentru „TVA la încasare". Codul aplică explicit excepția pentru taxare inversă, care „rămâne pe calea de emitere" chiar și pentru o firmă înscrisă în sistem. Contul 4428 (TVA neexigibilă) rămâne intern, în afara decontului, până la încasarea efectivă.
+Motorul calculează TVA exigibilă din suma încasată prin sută mărită, exact conform art. 282 alin. (8). În decont, pentru firmele cu flagul „TVA la încasare” activ, sumele calculate ajung în rândurile obișnuite de TVA colectată (R9_1/R9_2, R10, R11) — nu există un rând D300 separat pentru „TVA la încasare". Codul aplică explicit excepția pentru taxare inversă, care „rămâne pe calea de emitere" chiar și pentru o firmă înscrisă în sistem. Contul 4428 (TVA neexigibilă) rămâne intern, în afara decontului, până la încasarea efectivă.
 
 [iConta.eu](/)

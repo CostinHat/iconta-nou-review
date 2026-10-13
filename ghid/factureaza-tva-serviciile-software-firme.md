@@ -2,7 +2,7 @@
 title: "Se facturează cu TVA serviciile software către firme din UE?"
 description: "Când o factură de servicii software către o firmă din UE se emite fără TVA și când, dimpotrivă, trebuie facturată cu TVA românesc."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Răspunsul scurt: depinde exclusiv de statutul clientului, nu de tipul exact de 
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L17303-17420)
+CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Dacă firma-client are un cod de TVA valid, verificat în VIES, într-un alt stat membru UE, serviciul software (dezvoltare, licențiere de soft custom, mentenanță, suport) se facturează **fără TVA românesc** — locul prestării e considerat, legal, la beneficiar, iar impozitarea revine statului lui.
@@ -30,6 +30,6 @@ Dacă firma-client NU are un cod de TVA valid în VIES — fie pentru că e pers
 
 La emiterea unei facturi cu un cod de TVA de prefix non-RO, iConta verifică automat, live, în VIES starea codului (valid/invalid) și afișează rezultatul în ecranul de emitere; dacă VIES e temporar indisponibil, afișează un avertisment explicit.
 
-Formularul de vânzare intracomunitară (`vanzare_ic`) validează neimpozabilitatea pe baza a două condiții: client non-RO + cod valid VIES. Dacă oricare lipsește, tratamentul corect e facturarea cu TVA — nu scutirea „din oficiu”. Operațiunea validă se clasifică automat pentru D390, cod P (servicii prestate).
+Formularul de vânzare intracomunitară („vânzare intracomunitară (Operațiuni)”) validează neimpozabilitatea pe baza a două condiții: client non-RO + cod valid VIES. Dacă oricare lipsește, tratamentul corect e facturarea cu TVA — nu scutirea „din oficiu”. Operațiunea validă se clasifică automat pentru D390, cod P (servicii prestate).
 
 [iConta.eu](/)

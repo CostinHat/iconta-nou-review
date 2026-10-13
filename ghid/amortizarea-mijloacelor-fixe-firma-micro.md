@@ -2,7 +2,7 @@
 title: "Amortizarea mijloacelor fixe la firma micro: se deduce"
 description: "De ce amortizarea unui mijloc fix nu reduce impozitul datorat de o microîntreprindere, câtă vreme baza de impozitare a acesteia e formată din venituri, nu din profit."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,7 +34,7 @@ Lista continuă cu venituri din subvenții, provizioane, diferențe de curs valu
 
 ## Ce face iConta.eu
 
-Motorul de import/migrare a registrului de mijloace fixe (F059, aplicația) preia, la trecerea unei firme în iConta.eu, valoarea de intrare, durata și amortizarea deja cumulată a fiecărui activ, indiferent de regimul fiscal al firmei (micro sau impozit pe profit) — nu există în cod nicio ramificație care să trateze diferit amortizarea în funcție de acest regim. Aplicația continuă să calculeze și să evidențieze amortizarea contabilă a activelor și pentru firmele micro, pentru că evidența rămâne necesară indiferent dacă amortizarea reduce sau nu impozitul datorat.
+Motorul de import/migrare a registrului de mijloace fixe („Import mijloace fixe (migrare)”, aplicația) preia, la trecerea unei firme în iConta.eu, valoarea de intrare, durata și amortizarea deja cumulată a fiecărui activ, indiferent de regimul fiscal al firmei (micro sau impozit pe profit) — nu există în cod nicio ramificație care să trateze diferit amortizarea în funcție de acest regim. Aplicația continuă să calculeze și să evidențieze amortizarea contabilă a activelor și pentru firmele micro, pentru că evidența rămâne necesară indiferent dacă amortizarea reduce sau nu impozitul datorat.
 
 Ce nu face aplicația e o verificare sau un avertisment specific de tipul „amortizarea nu se deduce la micro" — calculul impozitului pe veniturile microîntreprinderii, cu excluderile din art. 53, e o funcție separată de motorul de mijloace fixe, iar legătura conceptuală dintre cele două rămâne, azi, o informație pe care contabilul o aplică manual.
 

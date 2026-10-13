@@ -2,7 +2,7 @@
 title: "Se declară importurile în D394?"
 description: "De ce achizițiile de bunuri din afara UE nu apar în D394 și cum tratează iConta.eu, automat, achizițiile provenite de la parteneri non-UE."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ D394 e o declarație despre operațiuni „pe teritoriul național" — iar impo
 
 ## Ce face iConta.eu
 
-Clasificarea partenerului (funcția `clasifica_partener()`) încadrează furnizorii/clienții după prefixul CUI: RO, fără CUI, țară UE sau țară non-UE. Pentru achizițiile de tip „primit" (direcția inversă livrării), generatorul exclude explicit din D394 orice operațiune cu partener din categoria UE sau non-UE — comentariul din cod spune direct „ACHIZIȚIILE INTRACOMUNITARE NU INTRĂ ÎN D394 — se declară în D390 (VIES)", iar aceeași excludere acoperă și achizițiile de la parteneri non-UE, categorie în care intră tipic importurile de bunuri. Parteneri din aceste categorii apar în D394 doar la livrări (export, tip L/LS) sau la achiziții de servicii cu taxare inversă conform art.307/331 — niciodată la achiziții de bunuri importate.
+Clasificarea partenerului (funcția „clasificarea partenerului”) încadrează furnizorii/clienții după prefixul CUI: RO, fără CUI, țară UE sau țară non-UE. Pentru achizițiile de tip „primit" (direcția inversă livrării), generatorul exclude explicit din D394 orice operațiune cu partener din categoria UE sau non-UE — comentariul din cod spune direct „ACHIZIȚIILE INTRACOMUNITARE NU INTRĂ ÎN D394 — se declară în D390 (VIES)", iar aceeași excludere acoperă și achizițiile de la parteneri non-UE, categorie în care intră tipic importurile de bunuri. Parteneri din aceste categorii apar în D394 doar la livrări (export, tip L/LS) sau la achiziții de servicii cu taxare inversă conform art.307/331 — niciodată la achiziții de bunuri importate.
 
 [iConta.eu](/)

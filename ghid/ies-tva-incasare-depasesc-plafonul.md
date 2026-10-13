@@ -2,7 +2,7 @@
 title: Cum ies din TVA la încasare dacă depășesc plafonul
 description: Depășirea plafonului nu e o opțiune de părăsire a sistemului, ci o obligație — firma trebuie să notifice ANAF până la data de 20 a lunii următoare celei în care a depășit plafonul, altfel riscă radierea din oficiu.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Plafonul de raportat depinde de anul: 5.000.000 lei pentru perioada 1 martie-31 
 
 ## Ce face iConta.eu
 
-Funcția `plafon_la(data)` din aplicație întoarce plafonul corect valabil la orice dată, pe baza istoricului din tabelul `COTE["plafon_tva_incasare"]`. Depistarea automată a momentului exact în care firma depășește plafonul în cursul anului, cu alertă pentru depunerea notificării la ANAF, nu e confirmată în acest dosar ca funcționalitate implementată — calculul plafonului aplicabil e automat, dar depunerea notificării rămâne, conform cercetării de față, un pas manual al contabilului.
+Funcția „plafonul la dată” din aplicație întoarce plafonul corect valabil la orice dată, pe baza istoricului din tabelul registrul de cote al aplicației["plafonul TVA la încasare"]. Depistarea automată a momentului exact în care firma depășește plafonul în cursul anului, cu alertă pentru depunerea notificării la ANAF, nu e confirmată în acest dosar ca funcționalitate implementată — calculul plafonului aplicabil e automat, dar depunerea notificării rămâne, conform cercetării de față, un pas manual al contabilului.
 
 [iConta.eu](/)

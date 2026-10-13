@@ -2,7 +2,7 @@
 title: "Când are nevoie o firmă nouă neplătitoare de TVA de cod special de TVA?"
 description: "Situațiile în care o firmă neplătitoare de TVA trebuie să solicite înregistrarea specială conform art. 317 din Codul fiscal, înainte de o achiziție sau un serviciu intracomunitar."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Cele trei situații de bază pentru o firmă neplătitoare de TVA:
 
 ## Ce face iConta.eu
 
-Aplicația păstrează în profilul firmei un marcaj explicit pentru înregistrarea specială conform art. 317 (`inreg_art317`), folosit apoi de motorul de operațiuni intracomunitare la calculul TVA pentru achiziții cu taxare inversă: dacă firma e neplătitoare de TVA și NU are acest marcaj, aplicația tratează TVA-ul aferent ca nedeductibil, inclus în costul achiziției (consecința firească a lipsei înregistrării art. 316/317, conform CF art. 297) — comportament distinct de cel al unei firme plătitoare, la care TVA-ul e simultan colectat și dedus. Aplicația nu calculează însă automat plafonul de 10.000 euro pentru achizițiile intracomunitare de bunuri și nu semnalează proactiv momentul în care firma ar trebui să solicite înregistrarea — verificarea depășirii plafonului rămâne o responsabilitate a contabilului.
+Aplicația păstrează în profilul firmei un marcaj explicit pentru înregistrarea specială conform art. 317 („înregistrare art.317 (Date firmă)”), folosit apoi de motorul de operațiuni intracomunitare la calculul TVA pentru achiziții cu taxare inversă: dacă firma e neplătitoare de TVA și NU are acest marcaj, aplicația tratează TVA-ul aferent ca nedeductibil, inclus în costul achiziției (consecința firească a lipsei înregistrării art. 316/317, conform CF art. 297) — comportament distinct de cel al unei firme plătitoare, la care TVA-ul e simultan colectat și dedus. Aplicația nu calculează însă automat plafonul de 10.000 euro pentru achizițiile intracomunitare de bunuri și nu semnalează proactiv momentul în care firma ar trebui să solicite înregistrarea — verificarea depășirii plafonului rămâne o responsabilitate a contabilului.
 
 [iConta.eu](/)

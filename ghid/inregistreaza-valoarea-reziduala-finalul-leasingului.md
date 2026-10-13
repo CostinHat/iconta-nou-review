@@ -2,7 +2,7 @@
 title: "Cum se înregistrează valoarea reziduală la finalul leasingului financiar?"
 description: "Valoarea reziduală închide contul de datorie 167 față de societatea de leasing (167=404, cu TVA pe 4426) — bunul rămâne deja recunoscut de la primire."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Valoarea reziduală e, practic, ultima plată pe care locatarul o face pentru a 
 
 ## Ce face iConta.eu
 
-Funcția `nota_reziduala` din F056 (Leasing financiar și operațional) închide exact contul 167, la valoarea reziduală plătită, cu TVA pe 4426 (167=404 + 4426=404) — testată unitar în aplicație (de exemplu, valoare reziduală 278,15 lei → TVA 58,41 lei la cota de 21%). Notă: la data acestui ghid, ecranul „Leasing" nu colectează câmpul de cotă TVA pentru acest tip de operațiune („Valoare reziduală"), deci trimiterea ei din interfață eșuează azi cu eroare de validare, deși motorul de calcul o produce corect.
+Funcția „nota valorii reziduale (leasing)” din „Leasing financiar și operațional” închide exact contul 167, la valoarea reziduală plătită, cu TVA pe 4426 (167=404 + 4426=404) — testată unitar în aplicație (de exemplu, valoare reziduală 278,15 lei → TVA 58,41 lei la cota de 21%). Notă: la data acestui ghid, ecranul „Leasing" nu colectează câmpul de cotă TVA pentru acest tip de operațiune („Valoare reziduală"), deci trimiterea ei din interfață eșuează azi cu eroare de validare, deși motorul de calcul o produce corect.
 
 [iConta.eu](/)

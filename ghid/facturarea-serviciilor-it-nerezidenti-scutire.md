@@ -2,7 +2,7 @@
 title: "Facturarea serviciilor IT către nerezidenți: scutire"
 description: Fluxul e invers față de impozitul pe veniturile nerezidenților — aici firma românească e cea care încasează, nu care plătește. Subiectul real e locul prestării de servicii la TVA, nu reținerea la sursă.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,6 +27,6 @@ Pentru servicii prestate unei persoane impozabile (firmă, nu persoană fizică 
 
 ## Ce face iConta.eu
 
-Această întrebare nu ține de funcționalitatea D207/impozit reținut nerezidenți (F209) — F209 acoperă exclusiv cazul opus, în care firma românească plătește un venit unui nerezident și reține impozit la sursă. Facturarea serviciilor către un client nerezident, cu locul prestării în afara României, ține de funcționalitățile dedicate operațiunilor cu partenerii din afara țării: pentru clienți din Uniunea Europeană, de Operațiuni intracomunitare; pentru clienți din afara Uniunii Europene, verificați funcționalitatea dedicată operațiunilor extracomunitare din aplicație — nu am identificat, în cercetarea de temei pentru F209, detalii verificate despre tratarea specifică a serviciilor (spre deosebire de mărfuri) în acel modul, așa că nu le redăm aici pentru a nu afirma un comportament neconfirmat la sursă.
+Această întrebare nu ține de funcționalitatea D207/impozit reținut nerezidenți („Declarația D207 (impozit reținut nerezidenți)”) — „Declarația D207 (impozit reținut nerezidenți)” acoperă exclusiv cazul opus, în care firma românească plătește un venit unui nerezident și reține impozit la sursă. Facturarea serviciilor către un client nerezident, cu locul prestării în afara României, ține de funcționalitățile dedicate operațiunilor cu partenerii din afara țării: pentru clienți din Uniunea Europeană, de Operațiuni intracomunitare; pentru clienți din afara Uniunii Europene, verificați funcționalitatea dedicată operațiunilor extracomunitare din aplicație — nu am identificat, în cercetarea de temei pentru „Declarația D207 (impozit reținut nerezidenți)”, detalii verificate despre tratarea specifică a serviciilor (spre deosebire de mărfuri) în acel modul, așa că nu le redăm aici pentru a nu afirma un comportament neconfirmat la sursă.
 
 [iConta.eu](/)

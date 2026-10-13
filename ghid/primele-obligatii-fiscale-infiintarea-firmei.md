@@ -2,7 +2,7 @@
 title: Primele obligații fiscale după înființarea firmei
 description: Ce declarații începe să urmărească semaforul de conformare fiscală de la prima lună de activitate a firmei — și de ce nicio restanță nu apare pentru perioada dinainte de înființare.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Semaforul nu marchează nicio declarație ca restantă pentru perioada dinainte 
 
 ## Ce face iConta.eu
 
-Motorul F022 construiește verdictul pentru fiecare firmă pornind de la profilul ei fiscal (regim, statut de TVA, existența de salariați) și de la data reală a existenței/activității — o firmă nou-înființată nu apare cu restanțe pentru perioada anterioară înființării. Pentru ca semaforul să poată evalua corect primele obligații, profilul firmei (regim fiscal, statut de TVA) trebuie completat încă din prima lună — necompletat, declarațiile care depind de el (D100/D101, D394) apar gri, nu verzi.
+Motorul „Semafor conformare fiscală” construiește verdictul pentru fiecare firmă pornind de la profilul ei fiscal (regim, statut de TVA, existența de salariați) și de la data reală a existenței/activității — o firmă nou-înființată nu apare cu restanțe pentru perioada anterioară înființării. Pentru ca semaforul să poată evalua corect primele obligații, profilul firmei (regim fiscal, statut de TVA) trebuie completat încă din prima lună — necompletat, declarațiile care depind de el (D100/D101, D394) apar gri, nu verzi.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum tratez fiscal reevaluarea creanțelor și datoriilor în valută?"
 description: "Reevaluarea lunară e o obligație contabilă (OMFP 1802/2014); la impozit pe profit, diferența rezultată urmează regula generală a rezultatului fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Aici sunt de fapt două întrebări distincte, ușor de confundat: dacă trebuie
 
 ## Ce face iConta.eu
 
-Reevaluarea lunară e automatizată prin ecranul „Operațiuni speciale → Reevaluare valuta": aplicația ia cursul BNR pentru fiecare monedă din listă și generează, prin aplicație (`reevaluare_sold`), o singură notă contabilă cu toate diferențele pe 665/765. Partea fiscală **nu e automatizată**: aplicația nu calculează impozitul pe profit și nu aplică regula de scădere din baza impozabilă micro — sumele generate de reevaluare rămân în balanța contabilă, de unde contabilul le preia manual în calculul fiscal, în funcție de regimul de impozitare al firmei.
+Reevaluarea lunară e automatizată prin ecranul „Operațiuni speciale → Reevaluare valuta": aplicația ia cursul BNR pentru fiecare monedă din listă și generează, prin aplicație („reevaluarea soldului în valută (Operațiuni speciale)”), o singură notă contabilă cu toate diferențele pe 665/765. Partea fiscală **nu e automatizată**: aplicația nu calculează impozitul pe profit și nu aplică regula de scădere din baza impozabilă micro — sumele generate de reevaluare rămân în balanța contabilă, de unde contabilul le preia manual în calculul fiscal, în funcție de regimul de impozitare al firmei.
 
 [iConta.eu](/)

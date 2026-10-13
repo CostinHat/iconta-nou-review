@@ -2,7 +2,7 @@
 title: Cum transmit o factură de corecție în RO e-Factura?
 description: O factură de corecție se transmite la SPV ca orice altă factură emisă, prin fluxul obișnuit — iConta.eu nu populează câmpul de referință structurată (BillingReference/BT-25) către factura inițială în XML.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Verificat direct în codul care construiește documentele de storno: acest câmp
 
 ## Ce face iConta.eu
 
-Documentul de corecție (generat prin `storneaza()`) e creat prin același mecanism ca orice factură emisă — număr nou rezervat din aceeași serie, linii construite din datele originalului (negate, cu descrierea prefixată „STORNO: "), apoi trimis prin fluxul standard de emitere/transmitere. Legătura cu factura originală se păstrează doar ca o coloană internă în baza de date (`storno_din_id`). Verificat prin căutare directă în codul care generează structura de e-Factura: nu există nicio generare de BillingReference, InvoiceDocumentReference sau echivalentul BT-25. Factura de corecție se transmite deci la SPV ca document independent, fără referință structurată către factura inițială.
+Documentul de corecție (generat prin „stornarea”) e creat prin același mecanism ca orice factură emisă — număr nou rezervat din aceeași serie, linii construite din datele originalului (negate, cu descrierea prefixată „STORNO: "), apoi trimis prin fluxul standard de emitere/transmitere. Legătura cu factura originală se păstrează doar ca o coloană internă în baza de date („factura stornată (referința)”). Verificat prin căutare directă în codul care generează structura de e-Factura: nu există nicio generare de BillingReference, InvoiceDocumentReference sau echivalentul BT-25. Factura de corecție se transmite deci la SPV ca document independent, fără referință structurată către factura inițială.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum reconciliez soldul contului 5121 cu extrasul bancar?
 description: Reconcilierea automată din iConta.eu potrivește linii de extras cu facturi, nu solduri. Confruntarea soldului contului 5121 cu extrasul rămâne o verificare separată, pe fișa de cont și balanța de verificare.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,7 +26,7 @@ Textul cel mai apropiat de „confruntarea soldului 5121 cu extrasul" e formulat
 
 ## Cum se face, în lipsa unui instrument automat de sold
 
-Pentru că F073 nu oferă un raport dedicat de comparație de sold, verificarea se face manual, în doi pași:
+Pentru că „Reconciliere bancară (potrivirea plăților cu facturile)” nu oferă un raport dedicat de comparație de sold, verificarea se face manual, în doi pași:
 
 1. **Soldul contabil** — se ia soldul contului 5121 (sau 5124, pentru conturile în valută) la data dorită, din fișa de cont sau din balanța de verificare a lunii.
 2. **Soldul bancar** — se ia soldul de la aceeași dată din extrasul bancar (sau din soldul curent afișat de bancă).

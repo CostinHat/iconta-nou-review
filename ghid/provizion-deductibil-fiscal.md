@@ -2,7 +2,7 @@
 title: "Când este un provizion deductibil fiscal?"
 description: "Diferența dintre categoriile de provizioane recunoscute contabil, neexhaustive, și lista limitativă a celor deductibile fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Greșeala tipică este confuzia dintre „recunoscut contabil” (orice provizio
 
 ## Ce face iConta.eu
 
-Motorul F071 acceptă mai multe categorii de provizioane (litigii, garanții, dezafectare, restructurare, impozite, altele), dar marchează deductibil fiscal **doar** provizionul de tip „garanții” (cont 1512) — toate celelalte categorii sunt generate explicit ca nedeductibile, indiferent de nume sau de cât de bine justificată e constituirea lor contabilă.
+Motorul „Provizioane și ajustări” acceptă mai multe categorii de provizioane (litigii, garanții, dezafectare, restructurare, impozite, altele), dar marchează deductibil fiscal **doar** provizionul de tip „garanții” (cont 1512) — toate celelalte categorii sunt generate explicit ca nedeductibile, indiferent de nume sau de cât de bine justificată e constituirea lor contabilă.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Ce fac dacă am acordat prea multe tichete de masă?
 description: Legea cere ca excedentul de tichete de masă acordate necuvenit într-o lună să fie diminuat din numărul de tichete al lunii următoare, dacă angajatorul nu a încasat contravaloarea lor de la salariat — corecția este o obligație a angajatorului, nu un mecanism automat.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Legea nu prevede o „anulare" retroactivă a tichetelor acordate în exces, ci 
 
 ## Ce face iConta.eu
 
-Aplicația calculează corect numărul de tichete de masă pentru luna curentă, pe baza zilelor efectiv lucrate din pontaj (`zile_fara_tichet`). Nu există însă un mecanism automat care să diminueze numărul de tichete al lunii următoare cu excedentul necuvenit din luna anterioară — diminuarea prevăzută de HG 1045/2018 art. 17 alin. (5) trebuie aplicată manual de contabil, la configurarea tichetelor pentru luna următoare, pe baza excedentului constatat.
+Aplicația calculează corect numărul de tichete de masă pentru luna curentă, pe baza zilelor efectiv lucrate din pontaj („zilele fără tichet”). Nu există însă un mecanism automat care să diminueze numărul de tichete al lunii următoare cu excedentul necuvenit din luna anterioară — diminuarea prevăzută de HG 1045/2018 art. 17 alin. (5) trebuie aplicată manual de contabil, la configurarea tichetelor pentru luna următoare, pe baza excedentului constatat.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum se verifică maparea conturilor pentru D406?
 description: Verificarea reală a mapării conturilor se face prin validarea fișierului D406 cu validatorul oficial ANAF, nu printr-un pas separat de verificare.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,8 +24,8 @@ O greșeală frecventă este tratarea validării ca pe o formalitate — se gene
 
 ## Ce face iConta.eu
 
-Validarea D406 se face cu `DUKIntegrator_AnLunaUI.jar` (funcția `valideaza(xml, tip, an=, luna=)`), nu cu un validator generic — exact componenta oficială la care se referă procedura ANAF de mai sus.
+Validarea D406 se face cu validatorul ANAF (DUKIntegrator) (funcția „validarea”), nu cu un validator generic — exact componenta oficială la care se referă procedura ANAF de mai sus.
 
-Este utilă o precizare tehnică: a existat, istoric, un bug documentat (`DECIZII.md`, 27.07.2026) în care butonul de validare D406 nu trimitea parametrii `an`/`luna` validatorului și returna mereu o stare neconcludentă ("GRI"). Bug-ul a fost reparat, iar validarea a fost confirmată cu rezultat „valid" pe date reale (tenant_002, iunie 2026; tenant_013, 2026-08). Dacă, la un moment din trecut, ați văzut o stare de validare neclară fără explicație, mecanismul cauzei respective a fost identificat și corectat.
+Este utilă o precizare tehnică: a existat, istoric, un bug documentat (documentația internă, 27.07.2026) în care butonul de validare D406 nu trimitea parametrii `an`/`luna` validatorului și returna mereu o stare neconcludentă ("GRI"). Bug-ul a fost reparat, iar validarea a fost confirmată cu rezultat „valid" pe date reale (o firmă de test, iunie 2026; o firmă de test, 2026-08). Dacă, la un moment din trecut, ați văzut o stare de validare neclară fără explicație, mecanismul cauzei respective a fost identificat și corectat.
 
 [iConta.eu](/)

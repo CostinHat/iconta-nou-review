@@ -2,7 +2,7 @@
 title: Cota CAS redusă pentru angajații din construcții 2026
 description: Registrul de cote verificat pentru 2026 conține o singură cotă CAS standard (25%), fără o cotă redusă separată pentru sectorul construcțiilor. Nu presupunem că facilitatea a rămas neschimbată — raportăm exact ce confirmă dosarul.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -16,7 +16,7 @@ Construcțiile au avut, în trecut, o cotă CAS redusă pentru angajați (spre d
 Cota CAS standard, confirmată ca singura activă în registrul verificat pentru 2026, fără excepție sectorială: 25%, de la 2018-01-01 — Codul fiscal, art.138 lit.a).
 :::
 
-**De semnalat onest**: registrul de cote (dict `COTE`, „period-aware") conține o singură intrare pentru cota CAS — 25%, activă din 2018-01-01, fără fereastră de excepție și fără o a doua cotă redusă asociată vreunui sector. Funcționalitatea F080 declară, printre temeiurile ei generale, și OUG 34/2024 (actul care a reformat facilitățile fiscale sectoriale), dar dosarul de cercetare nu reproduce textul acelui act și nu confirmă dacă o eventuală cotă redusă pentru construcții a fost eliminată, restrânsă sau condiționată altfel. Nu presupunem că cota redusă a rămas neschimbată din ani anteriori — absența ei din registrul verificat e un indiciu clar că aplicația nu o mai aplică la data acestui dosar (mirror din 17.09.2026), dar fără un citat exact din actul de modificare, nu putem preciza data sau mecanismul exact al schimbării.
+**De semnalat onest**: registrul de cote (dict „registrul de cote al aplicației”, „period-aware") conține o singură intrare pentru cota CAS — 25%, activă din 2018-01-01, fără fereastră de excepție și fără o a doua cotă redusă asociată vreunui sector. Funcționalitatea „Calcul salarizare (de la brut la net)” declară, printre temeiurile ei generale, și OUG 34/2024 (actul care a reformat facilitățile fiscale sectoriale), dar dosarul de cercetare nu reproduce textul acelui act și nu confirmă dacă o eventuală cotă redusă pentru construcții a fost eliminată, restrânsă sau condiționată altfel. Nu presupunem că cota redusă a rămas neschimbată din ani anteriori — absența ei din registrul verificat e un indiciu clar că aplicația nu o mai aplică la data acestui dosar (mirror din 17.09.2026), dar fără un citat exact din actul de modificare, nu putem preciza data sau mecanismul exact al schimbării.
 
 ## Ce se greșește în practică
 

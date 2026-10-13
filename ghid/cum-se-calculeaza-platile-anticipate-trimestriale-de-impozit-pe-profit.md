@@ -2,7 +2,7 @@
 title: Cum se calculează plățile anticipate trimestriale de impozit pe profit?
 description: În regimul opțional de declarare anuală, plățile anticipate trimestriale de impozit pe profit se calculează ca 1/4 din impozitul datorat pentru anul precedent, actualizat cu indicele prețurilor de consum — o formulă diferită de cea a regimului standard. Se declară prin D100, cod 103.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -46,6 +46,6 @@ Opțiunea pentru acest regim este obligatorie pentru minimum 2 ani fiscali conse
 
 ## Ce face iConta.eu
 
-Vectorul fiscal al firmei distinge doar între regimurile „micro" și „profit" (`_REGIMURI = ("micro", "profit")`) — nu există un atribut separat care să marcheze opțiunea pentru regimul anual cu plăți anticipate trimestriale. Ca urmare, motorul de calcul (`deriva_obligatii`) aplică întotdeauna formula regimului standard — bază cumulată de la 1 ianuarie, nu formula 1/4 din impozitul anului precedent. Dacă firma dvs. a optat oficial pentru regimul cu plăți anticipate trimestriale, calculul acestei formule trebuie făcut și verificat manual, în afara declarației generate automat — aplicația nu are astăzi această distincție implementată.
+Vectorul fiscal al firmei distinge doar între regimurile „micro" și „profit" (regimurile fiscale = ("micro", "profit")) — nu există un atribut separat care să marcheze opțiunea pentru regimul anual cu plăți anticipate trimestriale. Ca urmare, motorul de calcul („calculul obligațiilor (Declarații)”) aplică întotdeauna formula regimului standard — bază cumulată de la 1 ianuarie, nu formula 1/4 din impozitul anului precedent. Dacă firma dvs. a optat oficial pentru regimul cu plăți anticipate trimestriale, calculul acestei formule trebuie făcut și verificat manual, în afara declarației generate automat — aplicația nu are astăzi această distincție implementată.
 
 [iConta.eu](/)

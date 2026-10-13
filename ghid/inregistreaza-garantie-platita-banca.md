@@ -2,7 +2,7 @@
 title: "Cum se înregistrează o garanție plătită prin bancă?"
 description: "Tratamentul contabil al unei garanții acordate/plătite unui partener prin bancă, ca angajament extrabilanțier distinct de o plată efectivă de trezorerie."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,7 +28,7 @@ Simetric cu garanția primită, o firmă poate acorda o garanție unui furnizor,
 
 ## Ce face iConta.eu
 
-Motorul de calcul din aplicație (funcția `nota_garantie`) știe, la nivel de funcție pură, să genereze și nota simetrică pentru garanția acordată (`8011=891`), primind parametrul `fel="acordata"`. Onest, verificat direct în interfață: ecranul **Credite bancare** (operațiunea „Garanție") nu are, la acest moment, niciun câmp prin care contabilul să aleagă „primită" sau „acordată" — formularul trimite mereu valoarea implicită, iar rezultatul e mereu nota pentru garanție **primită** (`8021=891`). Practic, azi, din interfața iConta.eu **nu se poate genera** nota `8011=891` pentru o garanție acordată — capacitatea există în motorul de calcul, dar nu e expusă în formular.
+Motorul de calcul din aplicație (funcția „nota de garanție (Operațiuni speciale)”) știe, la nivel de funcție pură, să genereze și nota simetrică pentru garanția acordată (`8011=891`), primind parametrul `fel="acordata"`. Onest, verificat direct în interfață: ecranul **Credite bancare** (operațiunea „Garanție") nu are, la acest moment, niciun câmp prin care contabilul să aleagă „primită" sau „acordată" — formularul trimite mereu valoarea implicită, iar rezultatul e mereu nota pentru garanție **primită** (`8021=891`). Practic, azi, din interfața iConta.eu **nu se poate genera** nota `8011=891` pentru o garanție acordată — capacitatea există în motorul de calcul, dar nu e expusă în formular.
 
 La fel ca la garanția încasată, trebuie spus cinstit: dacă garanția se **plătește efectiv** prin bancă (banii chiar ies din contul firmei), iConta.eu nu automatizează separat acea plată de trezorerie și creanța de recuperat aferentă — funcția existentă tratează doar cazul angajamentului extrabilanțier. Plata efectivă și evidența creanței de recuperat trebuie înregistrate manual, printr-o notă contabilă obișnuită.
 

@@ -2,7 +2,7 @@
 title: Firmă cu doi asociați și regimul micro 2026 — ce se schimbă?
 description: Numărul de asociați nu influențează încadrarea la microîntreprindere; ce contează sunt plafoanele de venit și celelalte condiții din Codul fiscal. Distribuirea profitului către cei doi asociați e un subiect separat, contabil.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Acest text se aplică distribuirii profitului către asociați **indiferent de r
 
 ## Ce face iConta.eu
 
-Funcționalitatea **Decontări asociați** (Operațiuni speciale > Finanțare) nu decide și nu verifică regimul de impozitare al firmei (micro sau profit) — acesta se stabilește separat, la nivel de firmă. Ce face F039 este să genereze corect nota contabilă pentru dividendul distribuit celor doi asociați, proporțional cu participarea fiecăruia, indiferent dacă firma e la micro sau la profit: `1171 = 457` pentru dividendul brut aprobat și `457 = 446` pentru impozitul reținut, cu cota valabilă la data distribuirii (16% din 2026).
+Funcționalitatea **Decontări asociați** (Operațiuni speciale > Finanțare) nu decide și nu verifică regimul de impozitare al firmei (micro sau profit) — acesta se stabilește separat, la nivel de firmă. Ce face „Decontări asociați” este să genereze corect nota contabilă pentru dividendul distribuit celor doi asociați, proporțional cu participarea fiecăruia, indiferent dacă firma e la micro sau la profit: `1171 = 457` pentru dividendul brut aprobat și `457 = 446` pentru impozitul reținut, cu cota valabilă la data distribuirii (16% din 2026).
 
 [iConta.eu](/)

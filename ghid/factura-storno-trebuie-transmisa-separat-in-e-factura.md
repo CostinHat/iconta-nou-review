@@ -2,7 +2,7 @@
 title: Factura storno trebuie transmisă separat în e-Factura?
 description: Da — storno-ul e generat ca o factură nouă, cu propriul număr, care intră în fluxul obișnuit de emitere și transmitere; ea nu este trimisă „grupat" cu factura originală, iar legătura dintre ele nu apare structurat în XML.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Legea (art. 330 alin. 1 lit. b) cere ca noua factură să cuprindă numărul și
 
 ## Ce face iConta.eu
 
-Mecanismul real de storno (`storneaza`) refuză operația dacă factura nu are direcția „emisă", apoi construiește linii noi cu cantitatea negată (`-abs(cantitate)`) și descrierea prefixată „STORNO: " + descrierea originală, rezervă un număr nou de factură din aceeași serie și creează documentul cu data de azi, păstrând moneda, cursul și clasificarea fiscală de pe original. Nota contabilă automată iese cu semn minus pe același drum ca orice altă factură emisă, pentru că liniile au cantitate negativă. Legătura cu factura inițială e marcată intern, în baza de date (`storno_din_id`) — verificat: în codul care generează XML-ul de e-Factura nu există nicio referință structurată de tipul BillingReference/BT-25 către factura originală. Documentul de storno se transmite, deci, ca orice factură emisă nouă, dar fără o legătură structurată, vizibilă în XML, către factura pe care o corectează.
+Mecanismul real de storno („stornarea”) refuză operația dacă factura nu are direcția „emisă", apoi construiește linii noi cu cantitatea negată (cantitatea, cu semn minus) și descrierea prefixată „STORNO: " + descrierea originală, rezervă un număr nou de factură din aceeași serie și creează documentul cu data de azi, păstrând moneda, cursul și clasificarea fiscală de pe original. Nota contabilă automată iese cu semn minus pe același drum ca orice altă factură emisă, pentru că liniile au cantitate negativă. Legătura cu factura inițială e marcată intern, în baza de date („factura stornată (referința)”) — verificat: în codul care generează XML-ul de e-Factura nu există nicio referință structurată de tipul BillingReference/BT-25 către factura originală. Documentul de storno se transmite, deci, ca orice factură emisă nouă, dar fără o legătură structurată, vizibilă în XML, către factura pe care o corectează.
 
 [iConta.eu](/)

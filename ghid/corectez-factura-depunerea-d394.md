@@ -2,7 +2,7 @@
 title: "Cum corectez o factură după depunerea D394?"
 description: "Ce prevede OPANAF 2194/2025 despre rectificativa D394 — de ce e o declarație nouă, completă, care înlocuiește integral declarația inițială, și ce excepție există pentru facturile primite cu întârziere."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,7 +31,7 @@ Două lucruri esențiale de reținut din text:
 
 ## Ce face iConta.eu
 
-D394 se generează în iConta.eu din aceeași tabelă de facturi (`facturi`/`factura_linii`) folosită și de restul aplicației, prin aplicație. Când o factură se corectează sau se adaugă ulterior depunerii inițiale, regenerarea D394 pentru acea perioadă produce automat **declarația completă**, cu toate operațiunile perioadei — exact forma cerută de lege pentru o redepunere (nu o declarație parțială), fiindcă generatorul nu are un mod „doar diferența".
+D394 se generează în iConta.eu din aceeași tabelă de facturi (`facturi`/„liniile facturii”) folosită și de restul aplicației, prin aplicație. Când o factură se corectează sau se adaugă ulterior depunerii inițiale, regenerarea D394 pentru acea perioadă produce automat **declarația completă**, cu toate operațiunile perioadei — exact forma cerută de lege pentru o redepunere (nu o declarație parțială), fiindcă generatorul nu are un mod „doar diferența".
 
 Înainte ca fișierul regenerat să fie considerat gata de redepus, aplicația rulează aceleași două garduri ca la depunerea inițială: validarea cu **DUKIntegrator** (validatorul oficial ANAF, local) și **a doua cale de calcul independentă**, care recalculează totalurile pe cotă direct din liniile brute și oprește generarea dacă diferă de rezultatul generatorului. Depunerea efectivă a declarației redepuse rămâne, ca și la depunerea inițială, manuală, prin portalul SPV — iConta nu are o funcție de transmitere automată la ANAF.
 

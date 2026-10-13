@@ -2,7 +2,7 @@
 title: "Diferențe de curs în calculul plafonului micro"
 description: "Distincția dintre plafonul de încadrare ca microîntreprindere (cifră de afaceri) și baza impozabilă lunară a impozitului micro, unde diferențele de curs chiar apar, dar se scad."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Aici trebuie separate două calcule diferite, ușor de confundat: **plafonul** c
 
 ## Ce face iConta.eu
 
-Funcționalitatea de diferențe de curs valutar din iConta.eu generează notele contabile pe 665/765, dar **nu calculează impozitul pe veniturile microîntreprinderilor** și nu aplică distincția de mai sus (scădere lunară vs. regularizare de trimestrul IV) — căutare în cod confirmă că niciun modul de declarație D710/plafon micro nu citește sau nu procesează aceste conturi. Rulajul 665/765 generat automat de F041 rămâne materia primă din care contabilul calculează separat baza impozabilă micro, pentru declarația trimestrială.
+Funcționalitatea de diferențe de curs valutar din iConta.eu generează notele contabile pe 665/765, dar **nu calculează impozitul pe veniturile microîntreprinderilor** și nu aplică distincția de mai sus (scădere lunară vs. regularizare de trimestrul IV) — căutare în cod confirmă că niciun modul de declarație D710/plafon micro nu citește sau nu procesează aceste conturi. Rulajul 665/765 generat automat de „Diferențe de curs valutar” rămâne materia primă din care contabilul calculează separat baza impozabilă micro, pentru declarația trimestrială.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Când o cheltuială trebuie capitalizată în loc să fie dedusă imediat?"
 description: "Criteriul contabil care decide dacă o cheltuială ulterioară legată de o imobilizare corporală majorează valoarea activului sau se înregistrează direct pe cheltuieli."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Ce rezultă din text, punct cu punct:
 
 ## Ce face iConta.eu
 
-Modulele legate de mijloace fixe din aplicație (`repo_mijloace_fixe.py`, `mijloace_fixe_import_api.py`, `inventariere.py`) gestionează evidența și amortizarea activelor deja înregistrate ca imobilizări; decizia dacă o cheltuială ulterioară se capitalizează sau se înregistrează direct pe cheltuieli **rămâne o alegere a contabilului**, pe baza politicii contabile a firmei — nu a fost găsită în cod o regulă automată care să claseze cheltuielile ulterioare în funcție de beneficiul economic viitor, iar o astfel de regulă ar fi, de altfel, greu de automatizat complet, fiind prin natura ei o estimare profesională.
+Modulele legate de mijloace fixe din aplicație gestionează evidența și amortizarea activelor deja înregistrate ca imobilizări; decizia dacă o cheltuială ulterioară se capitalizează sau se înregistrează direct pe cheltuieli **rămâne o alegere a contabilului**, pe baza politicii contabile a firmei — nu a fost găsită în cod o regulă automată care să claseze cheltuielile ulterioare în funcție de beneficiul economic viitor, iar o astfel de regulă ar fi, de altfel, greu de automatizat complet, fiind prin natura ei o estimare profesională.
 
 [iConta.eu](/)

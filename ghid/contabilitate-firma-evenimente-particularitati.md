@@ -2,7 +2,7 @@
 title: "Contabilitate firmă de evenimente: particularități"
 description: "Firmele care organizează evenimente încasează de regulă avansuri consistente înainte de eveniment — regula fiscală centrală e momentul exigibilității TVA la avans, nu data evenimentului efectiv."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ O firmă de evenimente — organizator de conferințe, agenție de nunți, firm�
 
 ## Ce face iConta.eu
 
-iConta.eu tratează avansurile prin modulul generic aplicația, cu funcțiile `nota_avans_incasat` (avansul facturat clientului: `4111 = 419 + 4427`) și `nota_avans_platit` (avansul plătit unui furnizor/subcontractor: `409x + 4426 = 401`, pe destinații — stocuri, servicii, imobilizări), plus funcțiile de regularizare la factura finală (`nota_regularizare_avans_incasat`/`nota_regularizare_avans_platit`) — exact mecanica impusă de art. 282 alin. (2) lit. b) de mai sus. Modulul e complet generic, valabil pentru orice tip de avans din orice activitate; nu există în cod o monografie sau un flux dedicat special firmelor de evenimente (subcontractare pe mai multe niveluri, garanții returnabile, facturare eșalonată pe etape ale evenimentului) — contabilul aplică motorul general de avansuri, tranzacție cu tranzacție, cu aceeași disciplină ca la orice altă activitate.
+iConta.eu tratează avansurile prin modulul generic aplicația, cu funcțiile „nota avansului încasat” (avansul facturat clientului: `4111 = 419 + 4427`) și „nota avansului plătit” (avansul plătit unui furnizor/subcontractor: `409x + 4426 = 401`, pe destinații — stocuri, servicii, imobilizări), plus funcțiile de regularizare la factura finală („regularizarea avansului încasat”/„regularizarea avansului plătit”) — exact mecanica impusă de art. 282 alin. (2) lit. b) de mai sus. Modulul e complet generic, valabil pentru orice tip de avans din orice activitate; nu există în cod o monografie sau un flux dedicat special firmelor de evenimente (subcontractare pe mai multe niveluri, garanții returnabile, facturare eșalonată pe etape ale evenimentului) — contabilul aplică motorul general de avansuri, tranzacție cu tranzacție, cu aceeași disciplină ca la orice altă activitate.
 
 [iConta.eu](/)

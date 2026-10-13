@@ -2,7 +2,7 @@
 title: "Provizioane pentru riscuri de casierie 2026"
 description: "Nici Codul fiscal, nici reglementările contabile (OMFP 1802/2014) nu prevăd o categorie distinctă de «provizion pentru risc de casierie» — categoriile de provizioane admise sunt altele, enumerate expres."
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Enumerarea de mai sus nu e strict închisă — textul o introduce cu „cum sun
 
 ## Ce face iConta.eu
 
-Modulul de provizioane generează note doar pentru categoriile recunoscute: litigii, garanții, dezafectare, restructurare, impozite și altele — dicționarul intern al aplicației nu conține o categorie „risc de casierie". Casieria e un modul separat, fără legătură cu motorul de provizioane; eventualele diferențe de casă se gestionează prin acel modul, nu prin F071.
+Modulul de provizioane generează note doar pentru categoriile recunoscute: litigii, garanții, dezafectare, restructurare, impozite și altele — dicționarul intern al aplicației nu conține o categorie „risc de casierie". Casieria e un modul separat, fără legătură cu motorul de provizioane; eventualele diferențe de casă se gestionează prin acel modul, nu prin „Provizioane și ajustări”.
 
 [iConta.eu](/)

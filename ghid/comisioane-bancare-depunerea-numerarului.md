@@ -2,7 +2,7 @@
 title: "Comisioane bancare la depunerea numerarului"
 description: "Cum se clasifică în contabilitate comisioanele reținute de bancă la depunerea de numerar în cont."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce rezultă concret pentru comisionul de depunere numerar:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația (`regula_cont()`, `detecteaza_tip()`), expus prin ruta `/tenants/{tenant_id}/banca/parse-extras`, clasifică automat liniile din extrasul bancar după cuvinte-cheie din descriere — inclusiv „comision", „taxa adm", „speze" și „serviciu bancar", încadrate direct pe contul **627** „Cheltuieli cu serviciile bancare și asimilate". O linie de comision de depunere numerar, dacă descrierea din extras conține unul dintre aceste cuvinte, e deci recunoscută și contată automat, nu doar manual. Separat, aplicația alocă liniile de extras care corespund unor facturi deschise ale partenerilor — comisionul, nefiind o factură, nu trece prin acest motor, ci prin clasificarea pe cuvinte-cheie de mai sus.
+La data acestui ghid, aplicația („regula de contare”, „detectarea tipului de operațiune”), expus prin ruta aplicația, clasifică automat liniile din extrasul bancar după cuvinte-cheie din descriere — inclusiv „comision", „taxa adm", „speze" și „serviciu bancar", încadrate direct pe contul **627** „Cheltuieli cu serviciile bancare și asimilate". O linie de comision de depunere numerar, dacă descrierea din extras conține unul dintre aceste cuvinte, e deci recunoscută și contată automat, nu doar manual. Separat, aplicația alocă liniile de extras care corespund unor facturi deschise ale partenerilor — comisionul, nefiind o factură, nu trece prin acest motor, ci prin clasificarea pe cuvinte-cheie de mai sus.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se declara tranzacțiile cu părți afiliate"
 description: "Obligația de a întocmi dosarul prețurilor de transfer pentru tranzacțiile cu persoane afiliate, potrivit Codului de procedură fiscală, și declararea lor prin bifa dedicată din D394."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce rezultă din text pentru declararea tranzacțiilor cu părți afiliate:
 
 ## Ce face iConta.eu
 
-Verificat în cod: Aplicația populează indicatorul „prsAfiliat" din formularul D394 pe baza unui flag explicit din profilul firmei (`are_operatiuni_afiliate`), fără să-l deducă automat din relațiile de acționariat sau din tranzacțiile efective cu partenerii; aplicația nu are, la acest moment, un model de „persoană afiliată" (nicio coloană dedicată în profilul firmei, clienți sau furnizori) și nu generează dosarul prețurilor de transfer — încadrarea unei tranzacții ca fiind cu o parte afiliată și documentarea aferentă rămân, integral, responsabilitatea contabilului.
+Verificat în cod: Aplicația populează indicatorul „prsAfiliat" din formularul D394 pe baza unui flag explicit din profilul firmei („operațiuni cu afiliați (Date firmă)”), fără să-l deducă automat din relațiile de acționariat sau din tranzacțiile efective cu partenerii; aplicația nu are, la acest moment, un model de „persoană afiliată" (nicio coloană dedicată în profilul firmei, clienți sau furnizori) și nu generează dosarul prețurilor de transfer — încadrarea unei tranzacții ca fiind cu o parte afiliată și documentarea aferentă rămân, integral, responsabilitatea contabilului.
 
 [iConta.eu](/)

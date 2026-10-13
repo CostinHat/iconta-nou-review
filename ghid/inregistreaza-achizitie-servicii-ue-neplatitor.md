@@ -2,7 +2,7 @@
 title: "Cum se înregistrează o achiziție de servicii UE la un neplătitor de TVA?"
 description: "Taxare inversă cu TVA nedeductibilă în costul achiziției — mecanismul specific pentru firmele neplătitoare de TVA care cumpără servicii de la un prestator din alt stat membru UE."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce rezultă din regula locului prestării, combinată cu regimul deducerii (art.
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu tratează diferit cele două situații direct în cod: Aplicația (funcția `note_taxare_inversa`) generează nota contabilă corectă în funcție de statutul beneficiarului — pentru un plătitor de TVA, taxare inversă neutră (4426 = 4427, deductibilă conform art. 297), iar pentru un neplătitor înregistrat conform art. 317, taxa nedeductibilă intră în costul achiziției, cu suma de plată către stat pe contul 446. Aplicația verifică și validitatea codului de TVA al partenerului direct în VIES (funcția `verifica_vies`), pentru a confirma că e vorba de o achiziție intracomunitară reală.
+La data acestui ghid, iConta.eu tratează diferit cele două situații direct în cod: Aplicația (funcția „nota de taxare inversă”) generează nota contabilă corectă în funcție de statutul beneficiarului — pentru un plătitor de TVA, taxare inversă neutră (4426 = 4427, deductibilă conform art. 297), iar pentru un neplătitor înregistrat conform art. 317, taxa nedeductibilă intră în costul achiziției, cu suma de plată către stat pe contul 446. Aplicația verifică și validitatea codului de TVA al partenerului direct în VIES (funcția „verificarea în VIES”), pentru a confirma că e vorba de o achiziție intracomunitară reală.
 
 [iConta.eu](/)

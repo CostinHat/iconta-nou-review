@@ -2,7 +2,7 @@
 title: "Cum corectez produsele finite înregistrate greșit?"
 description: "Ce se poate corecta direct și ce necesită notă de stornare la notele de producție și produse finite generate conform OMFP 1802/2014, în funcție de statusul lor: ciornă sau validată."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,10 +27,10 @@ Obligația de partidă dublă e temeiul pentru care o notă contabilă validată
 
 ## Ce face iConta.eu
 
-Notele generate de funcționalitatea **Producție în curs și produse finite** (prin ecranul Operațiuni speciale → Imobilizări) intră în contabilitate ca **note ciornă** (`facturi_ciorna` + linii), exact ca orice altă notă din aplicație — nu se validează automat.
+Notele generate de funcționalitatea **Producție în curs și produse finite** (prin ecranul Operațiuni speciale → Imobilizări) intră în contabilitate ca **note ciornă** („nota ciornă a facturii” + linii), exact ca orice altă notă din aplicație — nu se validează automat.
 
-Cât timp nota e încă **ciornă**, poate fi editată sau ștearsă direct, prin mecanismul general de jurnal al aplicației (funcțiile `editeaza`/`sterge`), care operează generic pe orice notă din tabela de înregistrări, indiferent de funcționalitatea care a creat-o — inclusiv notele de producție. Aceste funcții **refuză explicit** orice notă care nu mai are statusul `ciorna` (mesajul din aplicație: „doar ciornele se pot edita" / „doar ciornele se pot șterge").
+Cât timp nota e încă **ciornă**, poate fi editată sau ștearsă direct, prin mecanismul general de jurnal al aplicației (funcțiile „editarea”/„ștergerea”), care operează generic pe orice notă din tabela de înregistrări, indiferent de funcționalitatea care a creat-o — inclusiv notele de producție. Aceste funcții **refuză explicit** orice notă care nu mai are statusul `ciorna` (mesajul din aplicație: „doar ciornele se pot edita" / „doar ciornele se pot șterge").
 
-**Odată ce nota a fost validată, iConta.eu nu are o funcție dedicată de corecție** pentru notele de producție/produse finite — nu există un buton „corectează" sau „anulează" specific acestei funcționalități. Corectarea unei note validate greșit se face, ca în restul aplicației, printr-o **notă manuală de stornare/corecție**, introdusă de contabil în ecranul general de jurnal, nu printr-un mecanism automat al F069. Recomandarea practică: verificați cu atenție costul standard și cantitatea înainte de validare — după acel punct, corecția cere o intervenție manuală explicită.
+**Odată ce nota a fost validată, iConta.eu nu are o funcție dedicată de corecție** pentru notele de producție/produse finite — nu există un buton „corectează" sau „anulează" specific acestei funcționalități. Corectarea unei note validate greșit se face, ca în restul aplicației, printr-o **notă manuală de stornare/corecție**, introdusă de contabil în ecranul general de jurnal, nu printr-un mecanism automat al „Producție în curs și produse finite”. Recomandarea practică: verificați cu atenție costul standard și cantitatea înainte de validare — după acel punct, corecția cere o intervenție manuală explicită.
 
 [iConta.eu](/)

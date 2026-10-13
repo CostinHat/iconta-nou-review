@@ -2,7 +2,7 @@
 title: "Cum corectez CASS declarată greșit în D212?"
 description: "CASS se recalculează pe baza plafonată corect (6, 12, 24 sau 72 de salarii minime brute, în funcție de an și de tipul veniturilor) și se corectează prin declarație rectificativă."
 published: 2026-09-26
-modified: 2026-10-03
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Ce contează la recalculare:
 
 ## Ce face iConta.eu
 
-Aplicația implementează exact distincția dintre calculul liniar pentru activități independente (`calculeaza_cass`) și tratamentul pe trepte al veniturilor pasive, cu plafonul de 72 de salarii minime brute aplicat corect doar veniturilor din 2026 (`plafoane_an`, care citește Legea 239/2025 art. XII pct. 19), respectiv 60 de salarii minime pentru veniturile din 2025. Calculul e disponibil prin `fisa_d212` numai pentru anii verificați la sursă (2025, 2026) și doar pentru veniturile din activități independente evidențiate în Registrul-jurnal de încasări și plăți.
+Aplicația implementează exact distincția dintre calculul liniar pentru activități independente („calculul CASS (Declarații)”) și tratamentul pe trepte al veniturilor pasive, cu plafonul de 72 de salarii minime brute aplicat corect doar veniturilor din 2026 („plafoanele anului”, care citește Legea 239/2025 art. XII pct. 19), respectiv 60 de salarii minime pentru veniturile din 2025. Calculul e disponibil prin „fișa de calcul D212 (Declarații)” numai pentru anii verificați la sursă (2025, 2026) și doar pentru veniturile din activități independente evidențiate în Registrul-jurnal de încasări și plăți.
 
 Pentru veniturile din chirii, dividende, dobânzi, activități agricole și alte surse, Declarația unică (D212) din aplicație calculează CASS pe trepte (6, 12 sau 24 de salarii minime) din sumele introduse; corectarea înseamnă regenerarea declarației, ca rectificativă, cu cifrele corecte.
 

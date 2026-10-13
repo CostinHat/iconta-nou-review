@@ -2,7 +2,7 @@
 title: "Ce declarație se depune pentru dividendele plătite unui nerezident?"
 description: D207 — declarația informativă privind impozitul reținut la sursă pe beneficiari nerezidenți. Iată ce conține și ce trebuie completat pentru fiecare beneficiar.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Firma românească ce plătește dividendul are, ca plătitor de venit cu rețin
 
 ## Ce face iConta.eu
 
-Ecranul dedicat D207 (F209) generează declarația pe baza datelor introduse manual de contabil pentru fiecare beneficiar nerezident: tipul de venit (dividende), denumirea beneficiarului, statul de rezidență, codul fiscal (românesc sau străin) și actul normativ aplicabil. Aplicația nu calculează singură cota sau impozitul — contabilul introduce baza de impozitare și impozitul reținut, iar generatorul îl validează doar structural (câmpuri obligatorii complete, tip de venit valid din nomenclator) și construiește XML-ul conform structurii oficiale a validatorului ANAF. Alegerea cotei corecte (16% intern sau cota redusă din convenție) rămâne o verificare pe care o face contabilul, pe baza certificatului de rezidență al beneficiarului.
+Ecranul dedicat D207 („Declarația D207 (impozit reținut nerezidenți)”) generează declarația pe baza datelor introduse manual de contabil pentru fiecare beneficiar nerezident: tipul de venit (dividende), denumirea beneficiarului, statul de rezidență, codul fiscal (românesc sau străin) și actul normativ aplicabil. Aplicația nu calculează singură cota sau impozitul — contabilul introduce baza de impozitare și impozitul reținut, iar generatorul îl validează doar structural (câmpuri obligatorii complete, tip de venit valid din nomenclator) și construiește XML-ul conform structurii oficiale a validatorului ANAF. Alegerea cotei corecte (16% intern sau cota redusă din convenție) rămâne o verificare pe care o face contabilul, pe baza certificatului de rezidență al beneficiarului.
 
 [iConta.eu](/)

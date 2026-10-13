@@ -2,7 +2,7 @@
 title: "Cum se înregistrează un mijloc fix primit cu titlu gratuit?"
 description: "Evaluarea la valoare justă și contul de subvenții pentru investiții, conform OMFP 1802/2014, pentru un mijloc fix primit gratuit."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Din normă rezultă mecanismul complet de înregistrare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația oferă funcții generale de gestiune a mijloacelor fixe — `adauga()` și `adauga_cu_reevaluare()` — cu parametri liberi pentru cont de imobilizare, cont de amortizare și valoare de intrare. Contabilul poate introduce manual valoarea justă și poate alege contul de contrapartidă potrivit (475), dar aplicația **nu are un flux dedicat „primire cu titlu gratuit"** care să completeze automat contrapartida 475 și să genereze, lună de lună, trecerea proporțională la 7584 corespunzător amortizării. Această corelare rămâne, azi, în sarcina contabilului.
+La data acestui ghid, aplicația oferă funcții generale de gestiune a mijloacelor fixe — „adăugarea” și „adăugarea mijlocului fix cu reevaluare” — cu parametri liberi pentru cont de imobilizare, cont de amortizare și valoare de intrare. Contabilul poate introduce manual valoarea justă și poate alege contul de contrapartidă potrivit (475), dar aplicația **nu are un flux dedicat „primire cu titlu gratuit"** care să completeze automat contrapartida 475 și să genereze, lună de lună, trecerea proporțională la 7584 corespunzător amortizării. Această corelare rămâne, azi, în sarcina contabilului.
 
 [iConta.eu](/)

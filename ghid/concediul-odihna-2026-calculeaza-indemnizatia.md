@@ -2,7 +2,7 @@
 title: "Concediul de odihnă 2026: cum se calculează indemnizația"
 description: "Formula legală de calcul a indemnizației de concediu de odihnă — media zilnică a veniturilor înmulțită cu zilele de concediu — și termenul de plată."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Ce rezultă concret din formulă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează salariul obișnuit (`calcul_salariu()`) și indemnizația de concediu medical (`calcul_cm()`, cu regulile OUG 158/2005 și Codul fiscal), dar **nu are o funcție dedicată calculului indemnizației de concediu de odihnă** conform formulei „media zilnică a veniturilor × zile de concediu" din art. 145 din Codul muncii. Modulul de pontaj urmărește zilele lucrate și grila de lucru, dar nu generează automat suma de plată pentru zilele de concediu de odihnă. Calculul indemnizației și respectarea termenului de plată de 5 zile lucrătoare înainte de concediu rămân, la acest moment, în sarcina angajatorului/contabilului.
+La data acestui ghid, iConta.eu calculează salariul obișnuit („calculul salariului (Salarii)”) și indemnizația de concediu medical („calculul concediului medical (Salarii)”, cu regulile OUG 158/2005 și Codul fiscal), dar **nu are o funcție dedicată calculului indemnizației de concediu de odihnă** conform formulei „media zilnică a veniturilor × zile de concediu" din art. 145 din Codul muncii. Modulul de pontaj urmărește zilele lucrate și grila de lucru, dar nu generează automat suma de plată pentru zilele de concediu de odihnă. Calculul indemnizației și respectarea termenului de plată de 5 zile lucrătoare înainte de concediu rămân, la acest moment, în sarcina angajatorului/contabilului.
 
 [iConta.eu](/)

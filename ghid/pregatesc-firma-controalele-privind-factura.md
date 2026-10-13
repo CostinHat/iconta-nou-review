@@ -2,7 +2,7 @@
 title: "Cum pregătesc firma pentru controalele privind e-Factura"
 description: "Termenul legal de transmitere a facturilor în RO e-Factura și amenzile pentru nerespectarea lui — ce trebuie să poată dovedi firma la un control."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Ce rezultă din text pentru pregătirea unui control:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu automatizează transmiterea efectivă în RO e-Factura prin aplicație — generarea XML-ului UBL (`genereaza_xml()`), validarea față de schema FACT1 (`valideaza()`), încărcarea (`upload_ubl()`) și interogarea stării mesajului (`stare_mesaj()`, `lista_mesaje()`). Aplicația nu are însă, la acest moment, o verificare automată explicită a încadrării în termenul de 5 zile lucrătoare din art. LIX alin. (6) — nu există o funcție dedicată care să semnaleze facturile aflate în risc de depășire a termenului sau să genereze un raport lunar de conformitate pentru pregătirea unui control. Reconstituirea istoricului de transmitere pe fiecare factură, pentru dovada la control, se face din stările interogate individual (`stare_mesaj`), nu dintr-un tablou de bord dedicat conformității.
+La data acestui ghid, iConta.eu automatizează transmiterea efectivă în RO e-Factura prin aplicație — generarea XML-ului UBL („generarea XML-ului e-Factura”), validarea față de schema FACT1 („validarea”), încărcarea („transmiterea în RO e-Factura”) și interogarea stării mesajului („starea transmiterii în RO e-Factura”, „lista mesajelor din SPV”). Aplicația nu are însă, la acest moment, o verificare automată explicită a încadrării în termenul de 5 zile lucrătoare din art. LIX alin. (6) — nu există o funcție dedicată care să semnaleze facturile aflate în risc de depășire a termenului sau să genereze un raport lunar de conformitate pentru pregătirea unui control. Reconstituirea istoricului de transmitere pe fiecare factură, pentru dovada la control, se face din stările interogate individual („starea transmiterii în RO e-Factura”), nu dintr-un tablou de bord dedicat conformității.
 
 [iConta.eu](/)

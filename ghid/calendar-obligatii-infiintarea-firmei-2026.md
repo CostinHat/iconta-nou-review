@@ -2,7 +2,7 @@
 title: Calendar obligații la înființarea firmei 2026
 description: Pașii, în ordine, ca o firmă nou-înființată în 2026 să apară corect pe calendarul de scadențe din iConta.eu — și ce rămâne, oricum, în afara aplicației.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,7 +22,7 @@ Vectorul fiscal — ce declarații datorează firma — se stabilește la înreg
 ## Pașii, în ordine
 
 1. **Înregistrarea la ANAF/ONRC** se face în afara iConta.eu — declarația de înregistrare fiscală (D700) și opțiunile de regim/TVA se depun direct la organul fiscal. Aplicația nu urmărește și nu generează acest pas.
-2. **Completarea vectorului fiscal în iConta.eu**, din ecranul „Date firmă" (F100): regimul fiscal (micro sau profit), statutul de plătitor de TVA, tipul de decont (lunar/trimestrial, dacă e plătitor) și dacă are operațiuni intracomunitare. Fiecare din aceste patru câmpuri e obligatoriu — necompletat, nu ia o valoare implicită tăcută, ci intră explicit ca „necunoscut".
+2. **Completarea vectorului fiscal în iConta.eu**, din ecranul „Date firmă" („Vector fiscal per firmă”): regimul fiscal (micro sau profit), statutul de plătitor de TVA, tipul de decont (lunar/trimestrial, dacă e plătitor) și dacă are operațiuni intracomunitare. Fiecare din aceste patru câmpuri e obligatoriu — necompletat, nu ia o valoare implicită tăcută, ci intră explicit ca „necunoscut".
 3. **Abia după completare**, ecranul „Termene" poate deriva declarațiile datorate. Până atunci, firma apare separat, sub „neevaluate", cu mesajul „Vector fiscal necompletat — nu pot evalua obligațiile firmei."
 4. **Din luna angajării primului salariat**, D112 intră automat în calendar — nu trebuie activat manual, dar nici nu apare mai devreme.
 

@@ -2,7 +2,7 @@
 title: Cota redusă de TVA la alimente și băuturi în 2026
 description: Alimentele și băuturile destinate consumului uman și animal intră la cota redusă de 11%, dar cu patru excepții explicite care trec la 21% — băuturile alcoolice, băuturile NC 2202, alimentele cu zahăr adăugat ≥10g/100g și suplimentele alimentare.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Legea 141/2025 a modificat această listă de la 1 august 2025 (Codul fiscal, ar
 
 ## Ce face iConta.eu
 
-Aplicația include categoria de alimente/băuturi la 11% în `CATEGORII_11`, cu cele patru excepții din `EXCEPTII_21` (băuturi alcoolice, băuturi NC 2202, alimente cu zahăr ≥10g/100g, suplimente alimentare Legea 56/2021) potrivite pe linia de factură. Dacă motorul de potrivire nu poate determina cu certitudine categoria unui produs, aplicația nu presupune tăcut 21% — răspunde cu un statut de cotă nedeterminată, care blochează emiterea până la o clasificare manuală, exact pentru a evita o cotă greșită pe o factură deja emisă.
+Aplicația include categoria de alimente/băuturi la 11% în „categoriile cu cota de 11%”, cu cele patru excepții din „excepțiile cu cota de 21%” (băuturi alcoolice, băuturi NC 2202, alimente cu zahăr ≥10g/100g, suplimente alimentare Legea 56/2021) potrivite pe linia de factură. Dacă motorul de potrivire nu poate determina cu certitudine categoria unui produs, aplicația nu presupune tăcut 21% — răspunde cu un statut de cotă nedeterminată, care blochează emiterea până la o clasificare manuală, exact pentru a evita o cotă greșită pe o factură deja emisă.
 
 [iConta.eu](/)

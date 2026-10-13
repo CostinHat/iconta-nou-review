@@ -2,7 +2,7 @@
 title: "Cum se înregistrează restituirea unui avans în numerar?"
 description: "Ce se întâmplă contabil cu soldul contului 409 sau 419 când un avans nu mai este decontat printr-o factură, ci restituit în numerar."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,6 +24,6 @@ Greșeala tipică: la restituirea avansului, contul 409/419 rămâne deschis (ne
 
 ## Ce face iConta.eu
 
-iConta.eu automatizează, prin motorul dedicat avansurilor, doar decontarea prin factură: `nota_regularizare_avans_platit` generează inversarea 401 = 409x, 401 = 4426 atunci când sosește factura finală. Pentru restituirea efectivă în numerar a unui avans nefolosit, dosarul de cercetare al acestei funcționalități nu confirmă o funcție dedicată în aplicație — stingerea contului 409 (sau 419) prin casă/bancă rămâne o notă contabilă introdusă manual de contabil, având ca reper soldul avansului nedecontat.
+iConta.eu automatizează, prin motorul dedicat avansurilor, doar decontarea prin factură: „regularizarea avansului plătit” generează inversarea 401 = 409x, 401 = 4426 atunci când sosește factura finală. Pentru restituirea efectivă în numerar a unui avans nefolosit, dosarul de cercetare al acestei funcționalități nu confirmă o funcție dedicată în aplicație — stingerea contului 409 (sau 419) prin casă/bancă rămâne o notă contabilă introdusă manual de contabil, având ca reper soldul avansului nedecontat.
 
 [iConta.eu](/)

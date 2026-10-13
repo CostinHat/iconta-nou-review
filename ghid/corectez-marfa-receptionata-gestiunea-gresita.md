@@ -2,7 +2,7 @@
 title: "Cum corectez marfa recepționată pe gestiunea greșită?"
 description: Nu există un mecanism de "corectare a locației" separat - singurul instrument disponibil este transferul obișnuit între gestiuni, cu marfa mutată la costul mediu curent din gestiunea greșită în cea corectă.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Primul text arată de ce contează locul de depozitare: recepția corectă a bun
 
 ## Ce face iConta.eu
 
-iConta.eu nu are o funcție dedicată „corectare locație recepție" — verificat direct în codul motorului de stocuri, nu există un asemenea tip de mișcare separat de transferul obișnuit. Instrumentul disponibil e funcția de transfer (F138): ieșire din gestiunea greșită + intrare în gestiunea corectă, ambele la costul mediu ponderat (CMP) curent al articolului, fără notă contabilă (nu modifică nimic în Registrul jurnal, doar realocă marfa între gestiuni). Câmpul de document al mișcării, text liber, poate purta o mențiune de tipul „corecție recepție NIR nr. X" pentru trasabilitate — dar sistemul nu marchează automat mișcarea ca „de corecție"; în evidența de stoc, va arăta identic cu orice alt transfer între gestiuni.
+iConta.eu nu are o funcție dedicată „corectare locație recepție" — verificat direct în codul motorului de stocuri, nu există un asemenea tip de mișcare separat de transferul obișnuit. Instrumentul disponibil e funcția de transfer („Transfer între gestiuni”): ieșire din gestiunea greșită + intrare în gestiunea corectă, ambele la costul mediu ponderat (CMP) curent al articolului, fără notă contabilă (nu modifică nimic în Registrul jurnal, doar realocă marfa între gestiuni). Câmpul de document al mișcării, text liber, poate purta o mențiune de tipul „corecție recepție NIR nr. X" pentru trasabilitate — dar sistemul nu marchează automat mișcarea ca „de corecție"; în evidența de stoc, va arăta identic cu orice alt transfer între gestiuni.
 
 [iConta.eu](/)

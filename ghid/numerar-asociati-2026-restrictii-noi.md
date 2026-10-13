@@ -2,7 +2,7 @@
 title: "Numerar de la asociați 2026: restricții noi"
 description: "Restricția nouă din 2026 privind împrumuturile către asociați în timpul distribuirii trimestriale de dividende, și cum se leagă de decontările cu asociații."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ De la 18 decembrie 2025, Legea societăților are o restricție nouă, care leag
 
 ## Ce face iConta.eu
 
-Din verificarea codului, funcția care generează nota de împrumut către/de la asociat, `nota_imprumut_asociat()`, **nu verifică nicio condiție legată de dividendele interimare nerregularizate** înainte de a genera operațiunea. Aplicația calculează corect liniile contabile ale împrumutului (primire, restituire, dobândă, impozit reținut), dar nu blochează și nu avertizează dacă firma a distribuit dividende trimestrial și nu a făcut încă regularizarea anuală — verificarea restricției din art. 67 alin. (2^3) rămâne, la acest moment, o obligație de conformitate pe care contabilul trebuie s-o urmărească manual, nu o validare automată în iConta.eu.
+Din verificarea codului, funcția care generează nota de împrumut către/de la asociat, „nota împrumutului de la asociat (Operațiuni speciale)”, **nu verifică nicio condiție legată de dividendele interimare nerregularizate** înainte de a genera operațiunea. Aplicația calculează corect liniile contabile ale împrumutului (primire, restituire, dobândă, impozit reținut), dar nu blochează și nu avertizează dacă firma a distribuit dividende trimestrial și nu a făcut încă regularizarea anuală — verificarea restricției din art. 67 alin. (2^3) rămâne, la acest moment, o obligație de conformitate pe care contabilul trebuie s-o urmărească manual, nu o validare automată în iConta.eu.
 
 [iConta.eu](/)

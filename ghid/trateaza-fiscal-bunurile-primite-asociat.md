@@ -2,7 +2,7 @@
 title: "Cum se tratează fiscal bunurile primite de asociat la lichidarea firmei?"
 description: "Codul fiscal prevede o cotă fixă de 10% pentru câștigul din lichidare — diferită de cota aplicată dividendelor obișnuite."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,7 +26,7 @@ Cea mai frecventă și mai costisitoare greșeală este aplicarea, prin analogie
 
 ## Ce face iConta.eu
 
-**Atenție, discrepanță semnalată**: motorul de partaj din iConta.eu (`lichidare.partaj`) calculează în prezent impozitul pe câștigul din partaj folosind același registru de cote ca la dividendele obișnuite — deci 16% începând cu 01.01.2026, nu cota de 10% prevăzută la art. 97 alin. (5) din Codul fiscal, citat mai sus, care este articolul explicit dedicat lichidării. Această echivalare pare să fi fost o decizie de simplificare tehnică (același registru de cote, pentru ambele situații), nu o verificare separată a articolului de lege aplicabil lichidării.
+**Atenție, discrepanță semnalată**: motorul de partaj din iConta.eu („partajul”) calculează în prezent impozitul pe câștigul din partaj folosind același registru de cote ca la dividendele obișnuite — deci 16% începând cu 01.01.2026, nu cota de 10% prevăzută la art. 97 alin. (5) din Codul fiscal, citat mai sus, care este articolul explicit dedicat lichidării. Această echivalare pare să fi fost o decizie de simplificare tehnică (același registru de cote, pentru ambele situații), nu o verificare separată a articolului de lege aplicabil lichidării.
 
 Până la clarificarea/corectarea acestui aspect în aplicație, recomandăm verificarea manuală a cotei de impozit calculate de iConta.eu la orice operațiune de partaj în lichidare, prin comparație cu cota de 10% prevăzută la art. 97 alin. (5) din Codul fiscal.
 

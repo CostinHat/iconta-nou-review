@@ -2,7 +2,7 @@
 title: Lipsurile în limitele normelor de perisabilitate
 description: Pierderea încadrată în limita coeficientului de perisabilitate aplicat la valoarea intrărilor e deductibilă integral, fără ajustare de TVA — dar procentul aplicabil grupei de mărfuri se stabilește din anexele HG 831/2004, nu se calculează automat.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Nu orice pierdere de marfă intră sub acest regim. Sunt excluse explicit: consu
 
 ## Ce face iConta.eu
 
-Motorul F066 calculează automat `limita`, separă deductibilul de nedeductibil (`deductibil = min(pierdere_constatată, limita)`) și nu aplică nicio ajustare de TVA cât timp toată pierderea se încadrează în limită. Procentul de limită (`procent_limita`) se introduce manual de contabil — aplicația nu conține tabelul coeficienților pe grupe de mărfuri din anexele HG 831/2004; procentul aplicabil grupei de produse trebuie verificat direct în anexa hotărârii, publicată în Monitorul Oficial.
+Motorul „Perisabilități și scăzăminte” calculează automat `limita`, separă deductibilul de nedeductibil (`deductibil = min(pierdere_constatată, limita)`) și nu aplică nicio ajustare de TVA cât timp toată pierderea se încadrează în limită. Procentul de limită („procentul de limită”) se introduce manual de contabil — aplicația nu conține tabelul coeficienților pe grupe de mărfuri din anexele HG 831/2004; procentul aplicabil grupei de produse trebuie verificat direct în anexa hotărârii, publicată în Monitorul Oficial.
 
 [iConta.eu](/)

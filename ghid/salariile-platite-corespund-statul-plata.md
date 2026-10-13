@@ -2,7 +2,7 @@
 title: "Ce fac dacă salariile plătite nu corespund cu statul de plată?"
 description: "Ce prevede legea despre dovada plății salariului și cum se investighează o neconcordanță între suma efectiv plătită și statul de plată al lunii."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,8 +30,8 @@ Statul de plată arată cât se datorează fiecărui salariat. Ce a ieșit efect
 
 ## Ce face iConta.eu
 
-Statul de plată (F087) e sursa cifrei pe care se bazează plata, dar nu verifică el însuși dacă suma respectivă a ajuns efectiv la salariat — asta e domeniul unei funcționalități separate din aplicație, cea de plată a salariilor pe card printr-un fișier bancar. Acolo, netul calculat de statul de plată alimentează fișierul de plată, dar cu o regulă explicită de siguranță: fișierul se generează DOAR pentru salariații cu IBAN valid; cei fără IBAN valid sunt excluși din plată și raportați ca atare, nu plătiți tacit sau ignorați silențios.
+Statul de plată („Statul de plată și fluturașii”) e sursa cifrei pe care se bazează plata, dar nu verifică el însuși dacă suma respectivă a ajuns efectiv la salariat — asta e domeniul unei funcționalități separate din aplicație, cea de plată a salariilor pe card printr-un fișier bancar. Acolo, netul calculat de statul de plată alimentează fișierul de plată, dar cu o regulă explicită de siguranță: fișierul se generează DOAR pentru salariații cu IBAN valid; cei fără IBAN valid sunt excluși din plată și raportați ca atare, nu plătiți tacit sau ignorați silențios.
 
-Deci, dacă suma efectiv plătită nu corespunde cu statul de plată, cauza cea mai probabilă de verificat întâi e exact acolo — un IBAN greșit sau lipsă, un salariat exclus dintr-o rulare de plată colectivă, sau o plată efectuată prin alt canal decât cel evidențiat în aplicație. Statul de plată din F087 rămâne, prin construcție, documentul „cât se datorează", nu un instrument de reconciliere cu extrasul bancar.
+Deci, dacă suma efectiv plătită nu corespunde cu statul de plată, cauza cea mai probabilă de verificat întâi e exact acolo — un IBAN greșit sau lipsă, un salariat exclus dintr-o rulare de plată colectivă, sau o plată efectuată prin alt canal decât cel evidențiat în aplicație. Statul de plată din „Statul de plată și fluturașii” rămâne, prin construcție, documentul „cât se datorează", nu un instrument de reconciliere cu extrasul bancar.
 
 [iConta.eu](/)

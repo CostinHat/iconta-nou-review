@@ -2,7 +2,7 @@
 title: Cum închid un SRL cu datorii către furnizori?
 description: Ce presupune stingerea pasivului față de furnizori la lichidare și de ce, dacă datoriile nu pot fi acoperite, procedura poate depăși cadrul obișnuit al Legii 31/1990.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,6 +27,6 @@ Se presupune uneori că, dacă datoriile către furnizori nu pot fi acoperite in
 
 ## Ce face iConta.eu
 
-Datoriile către furnizori se sting, în cursul lichidării, prin operațiunile obișnuite de plată din aplicație, la fel ca înainte de deschiderea procedurii — societatea își păstrează personalitatea juridică pentru aceste operațiuni până la terminarea lichidării (L31/1990, art. 233 alin. 4). Motorul dedicat de lichidare (F057) intervine abia la etapele de valorificare a activelor (`nota_vanzare_activ`) și de partaj final (`partaj`) — stingerea datoriilor curente către furnizori nu are o funcție separată în acest motor, ci urmează fluxul normal de plăți.
+Datoriile către furnizori se sting, în cursul lichidării, prin operațiunile obișnuite de plată din aplicație, la fel ca înainte de deschiderea procedurii — societatea își păstrează personalitatea juridică pentru aceste operațiuni până la terminarea lichidării (L31/1990, art. 233 alin. 4). Motorul dedicat de lichidare („Lichidare/radiere societate”) intervine abia la etapele de valorificare a activelor („nota de vânzare a activului”) și de partaj final („partajul”) — stingerea datoriilor curente către furnizori nu are o funcție separată în acest motor, ci urmează fluxul normal de plăți.
 
 [iConta.eu](/)

@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.88 · 12 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.90 · 13 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -454,6 +454,13 @@ Procedura manuală, pas cu pas, utilizabilă și fără produs. Aceasta este par
 - **`.ghid-lista`** — pagina unei teme: ghidurile ei, cu descrierea, ordonate după titlu, sub calea `.ghid-tema` („Ghiduri › Tema”).
 - **`.ghid-legaturi`** — la finalul fiecărui ghid, după structura de la pct.5: „Ghiduri înrudite” (până la șase, din aceeași temă) și
   `.ghid-tema` („Tema: … · Toate temele”). Se generează, nu se scrie de mână în pagină.
+- **`.ghid-actualizat`** (v2.90, 13.10.2026, comanda Costin pct.2c) — „Actualizat la zz.ll.aaaa”, imediat sub titlul fiecărui ghid, din
+  `modified` al ghidului (sau data fișierului) — aceeași dată ca `dateModified` și `lastmod` din sitemap. Fără autori și fără titluri
+  profesionale. Se generează (`public_ghid`), nu se scrie de mână. Gard: verificator GHID_ACTUALIZAT, `core/test_ghid_publicare.py`.
+- **Contrastul paginilor publice (v2.90, 13.10.2026, axe pe /ghid):** orice text pe fundal `var(--p-…)` trece 4,5:1 — `--p-brand`
+  e #0566EA (alb pe el 5,13; era #0672FE = 4,33: butonul „Intră în cont”, numărul pasului din `.ghid-procedura`). Linkul din pagină
+  (`--p-link`) are față de text numai 2,7:1, deci **se deosebește și altfel decât prin culoare: e subliniat** (`.ghid-wrap a`, WCAG
+  1.4.1). Gard: `core/test_a11y_contrast_tokens.py::test_paginile_publice_contrast`.
 
 ### 4. Regula variației
 
@@ -856,6 +863,7 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.90 (13.10.2026)** — comanda Costin pct.2c: **cap.22** — **`.ghid-actualizat`**, data ultimei actualizări sub titlul fiecărui ghid (fără autori, fără titluri profesionale). Gard: verificator GHID_ACTUALIZAT, `core/test_ghid_publicare.py`. Plus **contrastul paginilor publice** (axe pe /ghid, găsit la proba vizuală a lotului): `--p-brand` #0672FE -> #0566EA (alb pe el 4,33 -> 5,13) și linkurile din pagină subliniate (`--p-link` față de text = 2,7:1, WCAG 1.4.1). Gard: `core/test_a11y_contrast_tokens.py::test_paginile_publice_contrast`.
 **v2.89 (12.10.2026)** — retestul Costin de seară: **cap.6** — **un mesaj, o singură dată; o listă, rând cu rând** (deficiențele 237, 238): nota de lângă butoanele Bilanțului trimite la refuzul de dedesubt în loc să-l repete; zonele de mesaj păstrează rândurile (`white-space: pre-line`), iar refuzul soldurilor fără loc în bilanț are un rând pe cont. Gard: verificator MESAJ_PE_RANDURI, e2e 237 / 238.
 
 - Eroare de câmp/formular: `<span class="msg-eroare">` (roșu), lângă câmpul/butonul relevant. Niciodată tăcere la o acțiune eșuată.

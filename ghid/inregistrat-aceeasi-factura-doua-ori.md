@@ -2,7 +2,7 @@
 title: "Ce fac dacă am înregistrat aceeași factură de două ori?"
 description: "Ce se întâmplă când o factură ajunge dublată în evidență și cum se corectează, fără ștergere, o factură deja contabilizată."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -23,7 +23,7 @@ Corectarea unei operațiuni deja înregistrată în contabilitate se face prin s
 
 Greșeala tipică este să se încerce ștergerea directă a facturii duplicate, ca și cum nu ar fi existat niciodată. Odată ce o factură are notă de contare generată, ștergerea ei este blocată — corecția corectă a unei facturi contabilizate se face „prin STORNO — un al doilea document, care își produce propria notă", nu prin eliminarea facturii sau a notei din evidență.
 
-O altă greșeală este să se creadă că a doua trecere prin motorul de contare al aceleiași facturi produce o a doua notă, „dublând" astfel eroarea contabil. Nu este cazul: a doua chemare a contării pe o factură deja contată este tratată ca operațiune fără efect (`deja_contata`), nu ca eroare și nu generează o a doua notă.
+O altă greșeală este să se creadă că a doua trecere prin motorul de contare al aceleiași facturi produce o a doua notă, „dublând" astfel eroarea contabil. Nu este cazul: a doua chemare a contării pe o factură deja contată este tratată ca operațiune fără efect („factură deja contată”), nu ca eroare și nu generează o a doua notă.
 
 ## Ce face iConta.eu
 

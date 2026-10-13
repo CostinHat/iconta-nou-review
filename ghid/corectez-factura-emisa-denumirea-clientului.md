@@ -2,7 +2,7 @@
 title: "Cum corectez o factură emisă cu denumirea clientului greșită?"
 description: "Cele două căi legale de corectare a unei facturi cu date greșite despre client, în funcție de faptul că a fost sau nu transmisă deja beneficiarului."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Concret, procedura corectă depinde de stadiul facturii:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are o funcție dedicată de stornare a facturilor (funcția `storneaza`), care creează o factură de stornare — copie a originalului, cu cantități negative, cu numă nou din aceeași serie și referință la factura originală (`storno_din_id`) — exact mecanismul prevăzut la art. 330 alin. (1) lit. b). Aplicația impune ca orice corecție a unei facturi deja contabilizate să treacă prin acest flux de stornare, nu prin editare directă. Decizia dacă factura a fost deja transmisă beneficiarului (și, deci, dacă e nevoie de anulare simplă sau de stornare) rămâne o verificare pe care o face utilizatorul înainte de a alege calea corectă.
+La data acestui ghid, iConta.eu are o funcție dedicată de stornare a facturilor (funcția „stornarea”), care creează o factură de stornare — copie a originalului, cu cantități negative, cu numă nou din aceeași serie și referință la factura originală („factura stornată (referința)”) — exact mecanismul prevăzut la art. 330 alin. (1) lit. b). Aplicația impune ca orice corecție a unei facturi deja contabilizate să treacă prin acest flux de stornare, nu prin editare directă. Decizia dacă factura a fost deja transmisă beneficiarului (și, deci, dacă e nevoie de anulare simplă sau de stornare) rămâne o verificare pe care o face utilizatorul înainte de a alege calea corectă.
 
 [iConta.eu](/)

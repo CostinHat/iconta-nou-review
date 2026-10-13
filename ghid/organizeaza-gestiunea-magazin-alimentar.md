@@ -2,7 +2,7 @@
 title: Cum se organizează gestiunea la un magazin alimentar?
 description: Un magazin alimentar, cu articole numeroase și marje similare, e cazul tipic pentru metoda global-valorică (preț cu amănuntul) — recepție cu cost+adaos+TVA neexigibilă separate, descărcare lunară prin coeficient de adaos; legea nu prevede reguli speciale pentru sectorul alimentar.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,8 +33,8 @@ Un magazin alimentar e exact tipul de activitate pentru care legea a gândit met
 
 ## Ce face iConta.eu
 
-Pentru un magazin alimentar, motorul relevant e cel de gestiune global-valorică: `nir_gv` pentru recepții (cu cost, adaos, TVA neexigibilă separate pe fiecare linie), `descarcare_gv`/`descarca_luna` pentru descărcarea lunară automată, propusă ca ciornă pentru validare.
+Pentru un magazin alimentar, motorul relevant e cel de gestiune global-valorică: „NIR global-valoric (Stocuri)” pentru recepții (cu cost, adaos, TVA neexigibilă separate pe fiecare linie), „descărcarea global-valorică (Stocuri)”/„descărcarea lunii (Stocuri)” pentru descărcarea lunară automată, propusă ca ciornă pentru validare.
 
-Nu am găsit, în `FUNCTIONALITATI.csv` sau în codul verificat, nicio funcționalitate sau particularizare de cod specifică sectorului alimentar (cote speciale, regim distinct de gestiune) — orice specificitate fiscală a comerțului alimentar (dincolo de cota de TVA aplicată la vânzare, calculată separat) nu e implementată ca atare în motorul de stocuri; gestiunea unui magazin alimentar folosește mecanismul general F088, la fel ca orice alt comerț cu amănuntul cu articole numeroase.
+Nu am găsit, în documentația internă sau în codul verificat, nicio funcționalitate sau particularizare de cod specifică sectorului alimentar (cote speciale, regim distinct de gestiune) — orice specificitate fiscală a comerțului alimentar (dincolo de cota de TVA aplicată la vânzare, calculată separat) nu e implementată ca atare în motorul de stocuri; gestiunea unui magazin alimentar folosește mecanismul general „Stocuri global-valorice”, la fel ca orice alt comerț cu amănuntul cu articole numeroase.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Când se depune D406 SAF-T în 2026?
 description: D406 se depune lunar sau trimestrial, în funcție de perioada fiscală de TVA a firmei, cu termen-limită ultima zi calendaristică a lunii următoare perioadei de raportare — singura declarație cu scadență pe ultima zi a lunii, nu pe 25.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -20,7 +20,7 @@ secţiunile "Stocuri" şi "Active"; - la termenul de depunere a situaţiilor fin
 aferente exerciţiului financiar, în cazul secţiunii "Active"; - la termenul stabilit de
 organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data
 solicitării, în cazul secţiunii "Stocuri"."
-(opanaf_1783_2021_saft_d406.txt, Anexa 4, pct. 1)
+(OPANAF 1783/2021 (SAF-T, D406), Anexa 4, pct. 1)
 
 "2. Contribuabilii/Plătitorii transmit Declaraţia informativă D406 lunar sau trimestrial,
 urmând perioada fiscală aplicabilă pentru taxa pe valoarea adăugată (TVA). Contribuabilii
@@ -28,7 +28,7 @@ care au ca perioadă fiscală aplicabilă pentru taxa pe valoarea adăugată sem
 transmit Declaraţia informativă D406 trimestrial.
 3. Contribuabilii care nu sunt înregistraţi în scopuri de TVA transmit Declaraţia
 informativă D406 trimestrial."
-(opanaf_1783_2021_saft_d406.txt, Anexa 4, pct. 2-3)
+(OPANAF 1783/2021 (SAF-T, D406), Anexa 4, pct. 2-3)
 
 "5. (1) Contribuabilii/Plătitorii beneficiază de o perioadă de graţie de: - 6 (şase) luni
 pentru prima raportare, respectiv cinci (cinci) luni pentru a doua raportare, 4 (patru) luni
@@ -40,7 +40,7 @@ calculează pornind de la ultima zi a perioadei de raportare pentru care aceasta
 ... (3) Astfel, contribuabilii/plătitorii nu sunt sancţionaţi contravenţional, conform
 prevederilor art. 337^1 din Legea nr. 207/2015 ..., dacă depun Declaraţia informativă D406
 validă în termenul maxim prevăzut la alin. (1)."
-(opanaf_1783_2021_saft_d406.txt, Anexa 4, pct. 5)
+(OPANAF 1783/2021 (SAF-T, D406), Anexa 4, pct. 5)
 :::
 
 ## Cum se determină frecvența: lunar sau trimestrial
@@ -69,7 +69,7 @@ Pentru firmele nou-obligate la prima raportare, legea prevede și o perioadă de
 
 ## Ce face iConta.eu
 
-Tipul de raportare (lunar `"L"` sau trimestrial `"T"`) este calculat automat, prin funcția `fereastra_d406`: dacă firma nu e plătitoare de TVA, se aplică trimestrial; dacă perioada de TVA a firmei e semestrială sau anuală, se mapează forțat pe trimestrial; altfel se urmează exact perioada fiscală de TVA a firmei. Codul tipului de depunere (L/T/A) se derivă din întinderea reală a ferestrei de raportare, nu se alege manual, iar o întindere neașteptată oprește generarea în loc să cadă tacit pe lunar. Separat, calendarul de scadențe al aplicației confirmă D406 ca fiind singura declarație cu termen pe ultima zi a lunii, nu pe 25.
+Tipul de raportare (lunar `"L"` sau trimestrial `"T"`) este calculat automat, prin funcția „perioada D406 (Declarații)”: dacă firma nu e plătitoare de TVA, se aplică trimestrial; dacă perioada de TVA a firmei e semestrială sau anuală, se mapează forțat pe trimestrial; altfel se urmează exact perioada fiscală de TVA a firmei. Codul tipului de depunere (L/T/A) se derivă din întinderea reală a ferestrei de raportare, nu se alege manual, iar o întindere neașteptată oprește generarea în loc să cadă tacit pe lunar. Separat, calendarul de scadențe al aplicației confirmă D406 ca fiind singura declarație cu termen pe ultima zi a lunii, nu pe 25.
 
 Perioada de grație prevăzută la primele raportări ale firmelor nou-obligate nu a fost identificată ca fiind cablată în scadențarul aplicației — contabilul unei firme nou-intrate sub obligația D406 trebuie să verifice separat dacă beneficiază de acest termen extins.
 

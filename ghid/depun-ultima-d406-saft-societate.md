@@ -2,7 +2,7 @@
 title: Când depun ultima D406 SAF-T pentru o societate radiată?
 description: Verificarea în sursele legale disponibile nu a identificat un text explicit despre ultima declarație D406 la radiere — explicăm ce este confirmat și ce rămâne neclar.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Această întrebare nu are, la acest moment, un răspuns confirmat printr-un tex
 ## Temeiul legal
 
 ::: ghid-temei
-„Am căutat explicit (în actele oficiale și în tot codul) termenii radiat/radiere/încetare/dizolvare/lichidare în corelație cu D406/SAF-T — nicio potrivire." — Dosar de cercetare F035, secțiunea Discrepanțe, pct. 4.
+„Am căutat explicit (în actele oficiale și în tot codul) termenii radiat/radiere/încetare/dizolvare/lichidare în corelație cu D406/SAF-T — nicio potrivire." — Dosar de cercetare „Declarația D406 (SAF-T)”, secțiunea Discrepanțe, pct. 4.
 :::
 
 Ce știm sigur, din sursele legale verificate local (OPANAF 1783/2021 și OPANAF 407/2025):

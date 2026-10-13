@@ -2,7 +2,7 @@
 title: "Diferențe între casa de marcat și registrul de casă"
 description: "Rolul distinct al aparatului de marcat electronic fiscal și al registrului de casă, conform OUG 28/1999 și OMFP 2634/2015."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Diferența, punct cu punct:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu tratează cele două fluxuri prin module separate, coerent cu distincția legală: Aplicația (`parseaza_raport_z()`) pentru citirea raportului fiscal al aparatului de marcat — din care aplicația (`horeca_import_amef()`) generează automat o notă contabilă zilnică (5311/5125 = 707 + TVA pe 4427) — și aplicația (`registru_casa()`, `sold_final()`) pentru registrul de casă propriu-zis, care ține soldul rulant al operațiunilor de numerar introduse manual (încasare client, plată furnizor, ridicare/depunere bancă, avans). Cele două fluxuri rămân, la acest moment, separate: nota generată din raportul Z nu intră și în `registru_casa()` ca o linie de operațiune, deci soldul de casă din registru și suma din raportul Z se urmăresc azi ca fluxuri distincte, nu unul integrat automat în celălalt.
+La data acestui ghid, iConta.eu tratează cele două fluxuri prin module separate, coerent cu distincția legală: Aplicația („citirea raportului Z”) pentru citirea raportului fiscal al aparatului de marcat — din care aplicația („importul AMEF (HoReCa)”) generează automat o notă contabilă zilnică (5311/5125 = 707 + TVA pe 4427) — și aplicația („registrul de casă (Casă)”, „soldul final al registrului de casă”) pentru registrul de casă propriu-zis, care ține soldul rulant al operațiunilor de numerar introduse manual (încasare client, plată furnizor, ridicare/depunere bancă, avans). Cele două fluxuri rămân, la acest moment, separate: nota generată din raportul Z nu intră și în „registrul de casă (Casă)” ca o linie de operațiune, deci soldul de casă din registru și suma din raportul Z se urmăresc azi ca fluxuri distincte, nu unul integrat automat în celălalt.
 
 [iConta.eu](/)

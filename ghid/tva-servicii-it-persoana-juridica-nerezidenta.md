@@ -2,7 +2,7 @@
 title: Tratamentul fiscal al serviciilor IT cumpărate de la o persoană juridică nerezidentă
 description: Un serviciu IT cumpărat de la o firmă nestabilită în România are locul prestării la sediul beneficiarului (art. 278 alin. (2) Cod fiscal), iar TVA e datorată de beneficiar prin taxare inversă, conform art. 307 alin. (2) Cod fiscal.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -52,6 +52,6 @@ Firma plătește furnizorului doar cei 2.800 lei ai facturii; TVA de 588 lei se 
 
 ## Ce face iConta.eu
 
-Pentru furnizorii din UE, codul de TVA e analizat automat — prefixul de țară e verificat contra listei celor 27 de state membre plus `XI`; operațiunea e tratată ca prestare intracomunitară doar dacă țara codului nu e România. Calculul TVA la taxare inversă aplică formula `TVA = bază × cotă / 100`, cu rotunjire aritmetică (`ROUND_HALF_UP`) la 2 zecimale, cu cota transmisă explicit la fiecare calcul, fără valoare implicită.
+Pentru furnizorii din UE, codul de TVA e analizat automat — prefixul de țară e verificat contra listei celor 27 de state membre plus `XI`; operațiunea e tratată ca prestare intracomunitară doar dacă țara codului nu e România. Calculul TVA la taxare inversă aplică formula `TVA = bază × cotă / 100`, cu rotunjire aritmetică („rotunjirea aritmetică (jumătatea în sus)”) la 2 zecimale, cu cota transmisă explicit la fiecare calcul, fără valoare implicită.
 
 [iConta.eu](/)

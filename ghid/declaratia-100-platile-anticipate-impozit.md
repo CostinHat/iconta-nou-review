@@ -2,7 +2,7 @@
 title: "Declarația 100 pentru plățile anticipate de impozit pe profit"
 description: "Firmele care optează pentru sistemul anual de declarare a impozitului pe profit plătesc trimestrial plăți anticipate, declarate prin formularul 100, iar impozitul se definitivează abia prin D101."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce presupune, concret, sistemul anual cu plăți anticipate:
 
 ## Ce face iConta.eu
 
-Declarația 100 este funcționalitate live în iConta.eu (F026): aplicația calculează cota pe perioadă, aplică proratizarea și generează XML-ul validat, folosită astăzi în principal pentru impozitul pe veniturile microîntreprinderilor. Pentru firmele în regim de profit, D100 (cod obligație 103) calculează automat suma de plată — dar pe baza formulei standard din sistemul trimestrial obișnuit (impozit cumulat de la 1 ianuarie, cu regularizare la fiecare trimestru, potrivit art. 41 alin. (1)), nu pe baza mecanismului specific de „plată anticipată" al sistemului anual opțional de la art. 41 alin. (2). Aplicația **nu distinge**, la această dată, firmele care au optat pentru sistemul anual — pentru acestea, suma calculată automat de D100 nu corespunde formulei legale a plății anticipate, iar corectarea sumei declarate (sau introducerea ei manuală, prin cota indicată contabilului) rămâne în sarcina contabilului.
+Declarația 100 este funcționalitate live în iConta.eu („Declarația D100”): aplicația calculează cota pe perioadă, aplică proratizarea și generează XML-ul validat, folosită astăzi în principal pentru impozitul pe veniturile microîntreprinderilor. Pentru firmele în regim de profit, D100 (cod obligație 103) calculează automat suma de plată — dar pe baza formulei standard din sistemul trimestrial obișnuit (impozit cumulat de la 1 ianuarie, cu regularizare la fiecare trimestru, potrivit art. 41 alin. (1)), nu pe baza mecanismului specific de „plată anticipată" al sistemului anual opțional de la art. 41 alin. (2). Aplicația **nu distinge**, la această dată, firmele care au optat pentru sistemul anual — pentru acestea, suma calculată automat de D100 nu corespunde formulei legale a plății anticipate, iar corectarea sumei declarate (sau introducerea ei manuală, prin cota indicată contabilului) rămâne în sarcina contabilului.
 
 [iConta.eu](/)

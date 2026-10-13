@@ -2,7 +2,7 @@
 title: "Cum se calculează indemnizația de concediu de odihnă?"
 description: "Formula legală a indemnizației de concediu de odihnă — media zilnică a lunii în care se efectuează concediul, înmulțită cu zilele — și termenul de plată."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Din text rezultă exact ce se ia în calcul:
 
 ## Ce face iConta.eu
 
-iConta.eu nu are un calcul automat, dedicat, al indemnizației de concediu de odihnă pornind de la zilele de concediu programate ale unui salariat — verificat în cod, nu există nicio funcție care să deriveze automat media zilnică a lunii de concediu și s-o înmulțească cu zilele. Contabilul calculează separat suma (conform formulei de mai sus) și o introduce ca parte a venitului brut al lunii; de acolo, motorul de calcul al salariului (`calcul_salariu`) preia suma și aplică restul: contribuții, impozit, notă contabilă, fluturaș.
+iConta.eu nu are un calcul automat, dedicat, al indemnizației de concediu de odihnă pornind de la zilele de concediu programate ale unui salariat — verificat în cod, nu există nicio funcție care să deriveze automat media zilnică a lunii de concediu și s-o înmulțească cu zilele. Contabilul calculează separat suma (conform formulei de mai sus) și o introduce ca parte a venitului brut al lunii; de acolo, motorul de calcul al salariului („calculul salariului (Salarii)”) preia suma și aplică restul: contribuții, impozit, notă contabilă, fluturaș.
 
 [iConta.eu](/)

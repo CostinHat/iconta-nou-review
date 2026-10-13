@@ -2,7 +2,7 @@
 title: "Poate un SRL reveni la impozit micro după ce a trecut la impozit pe profit?"
 description: "Condițiile și termenul în care o microîntreprindere care a devenit plătitoare de impozit pe profit poate reveni la sistemul de impunere pe veniturile microîntreprinderilor."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Mecanismul funcționează astfel:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu decide și nu recomandă automat momentul din care o firmă poate reveni la impozitul micro. Aplicația are, în profilul firmei, un câmp `regim_fiscal` cu valorile „micro" sau „profit" (vezi aplicația), pe baza căruia motorul fiscal stabilește ce declarații sunt datorate — D100 trimestrial pentru regimul micro, D101 anual pentru regimul profit. Contabilul este cel care evaluează îndeplinirea condițiilor de la art. 47 și setează manual regimul corect în profilul firmei; iConta.eu nu validează eligibilitatea pentru revenirea la sistemul micro și nu depune declarația de mențiuni către ANAF.
+La data acestui ghid, iConta.eu nu decide și nu recomandă automat momentul din care o firmă poate reveni la impozitul micro. Aplicația are, în profilul firmei, un câmp „regimul fiscal (Date firmă)” cu valorile „micro" sau „profit" (vezi aplicația), pe baza căruia motorul fiscal stabilește ce declarații sunt datorate — D100 trimestrial pentru regimul micro, D101 anual pentru regimul profit. Contabilul este cel care evaluează îndeplinirea condițiilor de la art. 47 și setează manual regimul corect în profilul firmei; iConta.eu nu validează eligibilitatea pentru revenirea la sistemul micro și nu depune declarația de mențiuni către ANAF.
 
 [iConta.eu](/)

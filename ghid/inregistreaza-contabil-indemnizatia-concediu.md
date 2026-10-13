@@ -2,7 +2,7 @@
 title: "Cum se înregistrează contabil indemnizația de concediu?"
 description: "Indemnizația de concediu de odihnă se înregistrează exact ca salariul — 641/421 — pentru că, legal, e un drept salarial ca oricare altul. Ce face iConta.eu pentru asta."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Din combinarea celor două surse rezultă înregistrarea:
 
 ## Ce face iConta.eu
 
-iConta.eu nu tratează indemnizația de concediu de odihnă ca pe o sumă separată de salariu — contabilul o include în venitul brut al lunii, la fel ca orice alt element salarial, iar motorul de calcul al salariului (`calcul_salariu`) generează automat nota contabilă completă (641/421, 421/4315, 421/4316, 421/444) pentru întreaga sumă. Aplicația nu are astăzi un calcul dedicat al zilelor și al sumei indemnizației de concediu de odihnă pornind de la perioada de concediu programată — acel calcul (media zilnică a lunii de concediu × zile) rămâne, pentru moment, în sarcina contabilului, la introducerea brutului lunii.
+iConta.eu nu tratează indemnizația de concediu de odihnă ca pe o sumă separată de salariu — contabilul o include în venitul brut al lunii, la fel ca orice alt element salarial, iar motorul de calcul al salariului („calculul salariului (Salarii)”) generează automat nota contabilă completă (641/421, 421/4315, 421/4316, 421/444) pentru întreaga sumă. Aplicația nu are astăzi un calcul dedicat al zilelor și al sumei indemnizației de concediu de odihnă pornind de la perioada de concediu programată — acel calcul (media zilnică a lunii de concediu × zile) rămâne, pentru moment, în sarcina contabilului, la introducerea brutului lunii.
 
 [iConta.eu](/)

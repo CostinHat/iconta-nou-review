@@ -2,7 +2,7 @@
 title: Ce fac dacă nu s-a făcut descărcarea de gestiune într-o lună?
 description: O lună omisă nu se pierde definitiv — coeficientul de repartizare, calculat cumulat de la 1 ianuarie, o include automat la prima descărcare ulterioară, dar vânzările lunii omise trebuie descărcate explicit pentru acea lună anume, altfel rămân nedescărcate din 371/378/4428.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -53,8 +53,8 @@ Vânzările (contul 707), în schimb, se iau întotdeauna doar pe luna pentru ca
 
 ## Ce face iConta.eu
 
-`descarca_luna` calculează soldurile inițiale de exercițiu (371, 378, 4428) din `solduri_initiale`, apoi cumulează rulajele acestor conturi de la începutul anului până la sfârșitul lunii cerute, folosind toate notele validate din interval — indiferent de data la care au fost efectiv validate. Vânzările de mărfuri (contul 707) se iau însă doar pe luna curentă cerută la apel, filtrate pe sursele configurate.
+„descărcarea lunii (Stocuri)” calculează soldurile inițiale de exercițiu (371, 378, 4428) din „soldurile inițiale (Migrare)”, apoi cumulează rulajele acestor conturi de la începutul anului până la sfârșitul lunii cerute, folosind toate notele validate din interval — indiferent de data la care au fost efectiv validate. Vânzările de mărfuri (contul 707) se iau însă doar pe luna curentă cerută la apel, filtrate pe sursele configurate.
 
-Consecința practică: dacă o lună a fost omisă, rulajele cumulate ale lunilor următoare includ automat notele validate din luna omisă, dar vânzările acelei luni nu se descarcă decât dacă `descarca_luna` este rulată explicit pentru luna respectivă. Recomandarea e să se ruleze descărcarea pentru luna omisă înainte de a trece la luna curentă, în ordine cronologică — altfel vânzările lunii omise rămân permanent nedescărcate din 371/378/4428, deși deja influențează coeficientul K aplicat lunilor ulterioare.
+Consecința practică: dacă o lună a fost omisă, rulajele cumulate ale lunilor următoare includ automat notele validate din luna omisă, dar vânzările acelei luni nu se descarcă decât dacă „descărcarea lunii (Stocuri)” este rulată explicit pentru luna respectivă. Recomandarea e să se ruleze descărcarea pentru luna omisă înainte de a trece la luna curentă, în ordine cronologică — altfel vânzările lunii omise rămân permanent nedescărcate din 371/378/4428, deși deja influențează coeficientul K aplicat lunilor ulterioare.
 
 [iConta.eu](/)

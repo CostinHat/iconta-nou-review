@@ -2,7 +2,7 @@
 title: "Cum se descarcă gestiunea la un magazin online?"
 description: Facturile emise automat prin integrarea magazinului online trec prin aceeași poartă ca cele din ecran — un câmp dedicat, obligatoriu la orice factură cu marfă din stoc, fără valoare implicită.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,7 +22,7 @@ La un magazin online, predarea mărfii coincide adesea cu emiterea facturii (com
 ## Ce se greșește în practică
 
 - Integrarea nu trimite deloc informația despre plecarea mărfii, presupunând un comportament implicit — la o factură cu linii de stoc, lipsa acestui câmp face ca cererea de emitere să fie respinsă, nu emisă cu o presupunere.
-- Se folosește numele câmpului din interfața internă (`pleaca_marfa`) în cererea către API — API-ul public de integrare are un nume de câmp propriu, diferit.
+- Se folosește numele câmpului din interfața internă („marfa pleacă”) în cererea către API — API-ul public de integrare are un nume de câmp propriu, diferit.
 - Se așteaptă ca produsele marcate ca servicii (fără legătură la un articol de stoc) să declanșeze și ele întrebarea — poarta se declanșează doar dacă există cel puțin o linie legată efectiv de un articol.
 
 ## Ce face iConta.eu

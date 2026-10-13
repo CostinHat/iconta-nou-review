@@ -2,7 +2,7 @@
 title: "Cum se facturează ambalajele cu garanție în e-Factura?"
 description: "Legea SGR cere afișarea distinctă a garanției pe documentul fiscal, dar iConta.eu nu are încă o modalitate dedicată de a reprezenta acest lucru pe o factură e-Factura."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,7 +29,7 @@ De la intrarea în funcțiune a sistemului garanție-returnare (SGR), fiecare pr
 
 ## Ce face iConta.eu
 
-Verificat exhaustiv în cod: modulul care generează notele contabile SGR (ruta `POST /tenants/{tenant_id}/nota-sgr`) **nu are nicio legătură** cu modulele de facturare sau e-Factura ale aplicației (aplicația — căutare pe termenii „sgr"/„garant" în toate: zero rezultate). SGR, în iConta.eu, produce exclusiv note contabile de jurnal (achiziție, vânzare, restituire, autofactură, virare), nu facturi.
+Verificat exhaustiv în cod: modulul care generează notele contabile SGR (ruta aplicația) **nu are nicio legătură** cu modulele de facturare sau e-Factura ale aplicației (aplicația — căutare pe termenii „sgr"/„garant" în toate: zero rezultate). SGR, în iConta.eu, produce exclusiv note contabile de jurnal (achiziție, vânzare, restituire, autofactură, virare), nu facturi.
 
 Onest: iConta.eu **nu automatizează** facturarea (nici pe hârtie, nici prin e-Factura) a garanției SGR. Mai mult, structura actuală a liniilor de factură din modulul de facturare nu are un concept distinct de „în afara sferei de TVA" pentru o linie — deci reprezentarea corectă a garanției SGR pe o factură emisă din iConta.eu, la data acestui ghid, trebuie gestionată manual, în afara aplicației.
 

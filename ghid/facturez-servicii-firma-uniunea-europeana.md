@@ -2,7 +2,7 @@
 title: "Cum facturez servicii către o firmă din Uniunea Europeană?"
 description: "Ghid despre facturarea serviciilor B2B către clienți din UE: când sunt neimpozabile în România și cum se declară în D390."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,9 +13,9 @@ Când prestezi un serviciu către o firmă (persoană impozabilă) dintr-un alt 
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L17303-17420)
+CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 
-CF art. 294 alin. (2) lit. a): „Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (sursă: `intracomunitar.py`, docstring)
+CF art. 294 alin. (2) lit. a): „Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (sursă: aplicația, docstring)
 :::
 
 Pentru **servicii** către o firmă din UE, condiția esențială e ca partenerul să aibă un **cod de TVA valid, verificat în VIES**, într-un alt stat membru. Dacă această condiție e îndeplinită, factura se emite fără TVA românesc, iar operațiunea e neimpozabilă în România — se impozitează în statul beneficiarului, potrivit legislației lui.
@@ -32,6 +32,6 @@ Dacă partenerul NU are cod de TVA valid în VIES (de exemplu e persoană fizic�
 
 La emiterea unei facturi cu un cod de TVA cu prefix non-RO, iConta verifică automat, live, în VIES starea codului (valid/invalid) și afișează rezultatul direct în ecranul de emitere; dacă VIES e temporar indisponibil, afișează un avertisment explicit, nu ascunde problema.
 
-Pentru operațiunea propriu-zisă, în categoria „Extern” a operațiunilor speciale există formularul de vânzare intracomunitară (`vanzare_ic`), cu câmpuri pentru data, valoarea, codul de TVA al clientului, tipul (bunuri/servicii) și, pentru bunuri, dovada transportului. Pe baza acestor date, operațiunea se clasifică pentru D390 (cod P pentru servicii prestate, verificat automat prin funcția care validează condițiile de neimpozabilitate: client non-RO + cod valid VIES).
+Pentru operațiunea propriu-zisă, în categoria „Extern” a operațiunilor speciale există formularul de vânzare intracomunitară („vânzare intracomunitară (Operațiuni)”), cu câmpuri pentru data, valoarea, codul de TVA al clientului, tipul (bunuri/servicii) și, pentru bunuri, dovada transportului. Pe baza acestor date, operațiunea se clasifică pentru D390 (cod P pentru servicii prestate, verificat automat prin funcția care validează condițiile de neimpozabilitate: client non-RO + cod valid VIES).
 
 [iConta.eu](/)

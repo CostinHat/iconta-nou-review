@@ -2,7 +2,7 @@
 title: "Amortizarea unui mijloc fix folosit în regim de închiriere"
 description: "Cine calculează amortizarea unui mijloc fix închiriat — proprietarul sau chiriașul — și ce se întâmplă cu investițiile efectuate de chiriaș la bunul închiriat."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -21,7 +21,7 @@ Din text rezultă o regulă clară, cu o singură excepție bine delimitată:
 
 - **Amortizarea mijlocului fix propriu-zis** o calculează întotdeauna **proprietarul** (locatorul), indiferent dacă bunul e folosit de el sau e închiriat/concesionat unui terț. Chiriașul nu amortizează un bun pe care nu îl deține.
 - **Investițiile efectuate de chiriaș la bunul închiriat** (de exemplu, o modernizare sau o îmbunătățire adusă unui spațiu comercial închiriat) sunt o altă categorie: acestea se amortizează separat, de către **cel care a efectuat investiția** (chiriașul), pe durata contractului de închiriere — nu pe durata normală de funcționare a mijlocului fix.
-- Această distincție se regăsește și în Codul fiscal, care confirmă tratamentul separat al „cheltuielilor cu investițiile efectuate la mijloacele fixe concesionate, închiriate sau luate în locație de gestiune, de cel care a efectuat investiția, pe perioada contractului sau pe durata normală de utilizare, după caz" (cod_fiscal_227_2015_consolidat.txt).
+- Această distincție se regăsește și în Codul fiscal, care confirmă tratamentul separat al „cheltuielilor cu investițiile efectuate la mijloacele fixe concesionate, închiriate sau luate în locație de gestiune, de cel care a efectuat investiția, pe perioada contractului sau pe durata normală de utilizare, după caz" (Codul fiscal (Legea 227/2015), forma consolidată).
 
 ## Ce se greșește în practică
 

@@ -2,7 +2,7 @@
 title: "Tratamentul fiscal al adaosului comercial la micro"
 description: "Ce documentează concret metoda global-valorică pentru adaosul comercial — și de ce acest ghid nu poate confirma o particularizare fiscală pentru microîntreprinderi."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,6 +26,6 @@ O confuzie frecventă este amestecarea a două lucruri distincte: (1) modul în 
 
 ## Ce face iConta.eu
 
-Motorul de calcul al gestiunii global-valorice aplică formula coeficientului de repartizare (K) și generează automat, ca ciornă, nota lunară de descărcare (607/378/4428), validată manual de contabil — mecanism descris pe larg în ghidul „Calculul adaosului comercial la ieșirea din gestiune". Conform cercetării care stă la baza acestui ghid, acest mecanism **nu diferă în funcție de regimul de impozitare** al firmei (nu există în cod nicio ramură separată „microîntreprindere" pentru F088). Pentru tratamentul fiscal propriu-zis al veniturilor microîntreprinderii, recomandăm consultarea unui ghid dedicat acelui subiect, bazat pe un dosar de cercetare privind Codul fiscal — nu pe acest dosar, care acoperă doar evidența stocurilor.
+Motorul de calcul al gestiunii global-valorice aplică formula coeficientului de repartizare (K) și generează automat, ca ciornă, nota lunară de descărcare (607/378/4428), validată manual de contabil — mecanism descris pe larg în ghidul „Calculul adaosului comercial la ieșirea din gestiune". Conform cercetării care stă la baza acestui ghid, acest mecanism **nu diferă în funcție de regimul de impozitare** al firmei (nu există în cod nicio ramură separată „microîntreprindere" pentru „Stocuri global-valorice”). Pentru tratamentul fiscal propriu-zis al veniturilor microîntreprinderii, recomandăm consultarea unui ghid dedicat acelui subiect, bazat pe un dosar de cercetare privind Codul fiscal — nu pe acest dosar, care acoperă doar evidența stocurilor.
 
 [iConta.eu](/)

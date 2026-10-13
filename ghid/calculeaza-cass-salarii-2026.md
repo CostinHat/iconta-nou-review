@@ -2,7 +2,7 @@
 title: Cum se calculează CASS pentru salarii în 2026?
 description: CASS se calculează cu cota de 10%, pe aceeași bază ca CAS — brutul, redus cu facilitatea aplicabilă, dacă e cazul. Vezi formula și un exemplu complet, pentru ambele ferestre din 2026.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -43,6 +43,6 @@ Cea mai frecventă greșeală e calcularea CASS pe baza rămasă după scăderea
 
 ## Ce face iConta.eu
 
-CASS se calculează în `_calcul_salariu_2018()`, imediat după CAS, din aceeași bază (brut redus cu facilitatea, dacă se aplică). Cota și pragurile aferente vin din registrul „period-aware" `core.common.COTE`, care aplică automat valorile corecte pentru fereastra din 2026 în care cade luna statului de plată.
+CASS se calculează în „calculul salariului (Salarii)”, imediat după CAS, din aceeași bază (brut redus cu facilitatea, dacă se aplică). Cota și pragurile aferente vin din registrul „period-aware" „registrul de cote al aplicației”, care aplică automat valorile corecte pentru fereastra din 2026 în care cade luna statului de plată.
 
 [iConta.eu](/)

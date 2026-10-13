@@ -2,7 +2,7 @@
 title: Ce contribuții plătește angajatorul pentru un salariat în 2026?
 description: Angajatorul datorează separat CAM 2,25% din fondul de salarii brut — o cheltuială proprie, care nu se reține din venitul angajatului și nu apare pe fluturaș ca reținere.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,10 +13,10 @@ Spre deosebire de CAS, CASS și impozitul pe venit — toate reținute din brutu
 ## Temeiul legal
 
 ::: ghid-temei
-„Ordinea reținerilor din brut: facilitate (dacă se aplică) → CAS 25% → CASS 10% → deducere personală → impozit 10% pe baza impozabilă → net. CAM 2,25% e cheltuială angajator, nu reținere." — Dosar de cercetare F080, secțiunea „Cod sursă verificat"
+„Ordinea reținerilor din brut: facilitate (dacă se aplică) → CAS 25% → CASS 10% → deducere personală → impozit 10% pe baza impozabilă → net. CAM 2,25% e cheltuială angajator, nu reținere." — Dosar de cercetare „Calcul salarizare (de la brut la net)”, secțiunea „Cod sursă verificat"
 :::
 
-CAM se calculează cu cota de 2,25%, conform art.220^3 alin.(1) din Codul fiscal (confirmat în registrul de cote `core.common.COTE`, activ din 2018-01-01, fără modificări până azi). Fiind o cheltuială a angajatorului, CAM nu se scade din brutul sau din netul angajatului și nu figurează printre reținerile de pe fluturaș.
+CAM se calculează cu cota de 2,25%, conform art.220^3 alin.(1) din Codul fiscal (confirmat în registrul de cote „registrul de cote al aplicației”, activ din 2018-01-01, fără modificări până azi). Fiind o cheltuială a angajatorului, CAM nu se scade din brutul sau din netul angajatului și nu figurează printre reținerile de pe fluturaș.
 
 ## Cum se calculează, în cifre
 
@@ -37,6 +37,6 @@ Greșeala tipică e includerea CAM în calculul netului angajatului — CAM nu a
 
 ## Ce face iConta.eu
 
-CAM nu intră în funcția de calcul al netului (`_calcul_salariu_2018()`), fiind tratată separat, ca notă contabilă de cheltuială (641 pentru salarii, respectiv 646/436 pentru CAM, conform `monografie_salariu()`, linia 390). Cota vine din registrul „period-aware" `core.common.COTE`, care aplică automat valoarea corectă pentru luna calculată.
+CAM nu intră în funcția de calcul al netului („calculul salariului (Salarii)”), fiind tratată separat, ca notă contabilă de cheltuială (641 pentru salarii, respectiv 646/436 pentru CAM, conform „monografia salariului (Salarii)”, linia 390). Cota vine din registrul „period-aware" „registrul de cote al aplicației”, care aplică automat valoarea corectă pentru luna calculată.
 
 [iConta.eu](/)

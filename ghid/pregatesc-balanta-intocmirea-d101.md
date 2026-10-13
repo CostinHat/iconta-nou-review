@@ -2,7 +2,7 @@
 title: "Cum pregătesc balanța pentru întocmirea D101"
 description: "D101 se construiește dintr-o balanță cu conturi separate corect pe exploatare/financiar și cu datele necesare rezervei legale."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,10 +13,10 @@ poarta: v1
 ## Temeiul legal
 
 ::: ghid-temei
-Rezerva legală (P13) este "calculată automat când nu e dată manual [...], din profitul contabil brut + cheltuiala cu impozitul (cont 691), plafonată la min(5% × bază; 20% × capital social − rezervă existentă), temei CF art.26 alin.(1) lit.a)." — dosarul de cercetare F027, pe baza aplicația liniile 264–275.
+Rezerva legală (P13) este "calculată automat când nu e dată manual [...], din profitul contabil brut + cheltuiala cu impozitul (cont 691), plafonată la min(5% × bază; 20% × capital social − rezervă existentă), temei CF art.26 alin.(1) lit.a).".
 :::
 
-Funcția `pull()` din aplicație citește profilul firmei și balanța, cu o separare clară: conturile din clasele 76 și 66 sunt tratate ca financiar, iar restul conturilor din clasele 7x și 6x ca exploatare. Tot `pull()` aduce și datele necesare rezervei legale: capitalul social (cont 1012), rezerva deja constituită (cont 1061) și cheltuiala cu impozitul pe profit (cont 691).
+Funcția „preluarea datelor” din aplicație citește profilul firmei și balanța, cu o separare clară: conturile din clasele 76 și 66 sunt tratate ca financiar, iar restul conturilor din clasele 7x și 6x ca exploatare. Tot „preluarea datelor” aduce și datele necesare rezervei legale: capitalul social (cont 1012), rezerva deja constituită (cont 1061) și cheltuiala cu impozitul pe profit (cont 691).
 
 ## Ce se greșește în practică
 
@@ -24,6 +24,6 @@ Greșelile frecvente la această etapă: încadrarea greșită a unor conturi fi
 
 ## Ce face iConta.eu
 
-`pull()` citește automat balanța firmei conform separării de mai sus. Dacă rezerva legală nu e introdusă manual, aplicația o calculează automat pe baza acelorași conturi, respectând plafonul legal. Aplicația emite și un avertisment separat legat de contul 691 (detaliat în ghidul dedicat verificării D101), tocmai pentru a semnala când soldul acestui cont nu a fost tratat corect.
+„preluarea datelor” citește automat balanța firmei conform separării de mai sus. Dacă rezerva legală nu e introdusă manual, aplicația o calculează automat pe baza acelorași conturi, respectând plafonul legal. Aplicația emite și un avertisment separat legat de contul 691 (detaliat în ghidul dedicat verificării D101), tocmai pentru a semnala când soldul acestui cont nu a fost tratat corect.
 
 [iConta.eu](/)

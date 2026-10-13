@@ -2,7 +2,7 @@
 title: "Contabilitatea unui lanț de magazine: gestiune pe puncte de lucru"
 description: Legea nu obligă un cost mediu separat pentru fiecare magazin dintr-un lanț - dar nici nu interzice ținerea unei evidențe cantitative distincte pe fiecare punct de lucru. De unde vine, concret, limita între ce oferă și ce nu oferă un sistem cu cost mediu unic.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Primul text răspunde direct: faptul că fiecare magazin al lanțului e la o adr
 
 ## Ce face iConta.eu
 
-Pentru un lanț de magazine, iConta.eu oferă, la nivelul actual (Tier 1), evidența cantitativă descriptivă pe locație: stocul fiecărui articol poate fi urmărit separat pe fiecare magazin, iar mutările de marfă între magazine se fac prin funcția de transfer (F138) — ieșire dintr-un magazin, intrare în altul, fără notă contabilă. Costul mediu ponderat (CMP) rămâne însă **unul singur la nivelul întregii firme**, nu separat pe fiecare magazin — un transfer între magazine nu modifică deloc costul, doar mută cantitatea.
+Pentru un lanț de magazine, iConta.eu oferă, la nivelul actual (Tier 1), evidența cantitativă descriptivă pe locație: stocul fiecărui articol poate fi urmărit separat pe fiecare magazin, iar mutările de marfă între magazine se fac prin funcția de transfer („Transfer între gestiuni”) — ieșire dintr-un magazin, intrare în altul, fără notă contabilă. Costul mediu ponderat (CMP) rămâne însă **unul singur la nivelul întregii firme**, nu separat pe fiecare magazin — un transfer între magazine nu modifică deloc costul, doar mută cantitatea.
 
 De precizat clar limita: dacă aveți nevoie de un cost mediu propriu fiecărui magazin (de exemplu pentru a compara marja reală magazin cu magazin, cu costuri de achiziție diferite pe fiecare gestiune), acest nivel de detaliu (gestiune cantitativ-valorică separată per depozit/magazin) e un pas mai avansat, momentan amânat în dezvoltarea aplicației — nu e disponibil ca funcționalitate completă în starea curentă. Ce e disponibil acum e eticheta de locație pe cantitate, cu un CMP global pentru toată firma.
 

@@ -2,7 +2,7 @@
 title: Mai trebuie depus D406 SAF-T dacă firma este suspendată?
 description: Nu — o firmă cu activitate suspendată temporar la Registrul Comerțului (sau cu suspendare aprobată de organismul care a autorizat-o) este exceptată explicit de la obligația D406, pe toată perioada suspendării.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -23,7 +23,7 @@ suspendarea activităţii la organismele care le-au autorizat nu au obligaţia d
 fişierului standard de control fiscal (SAF-T) pentru perioada în care activitatea este
 suspendată temporar, conform art. 101 alin. (42) din Legea nr. 207/2015 privind Codul de
 procedură fiscală, cu modificările şi completările ulterioare;"
-(opanaf_407_2025_saft_d406.txt, pct. 4, lit. o-p)
+(OPANAF 407/2025 (SAF-T, D406), pct. 4, lit. o-p)
 :::
 
 ## Ce înseamnă concret exceptarea

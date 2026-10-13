@@ -2,7 +2,7 @@
 title: Ce faci dacă ai calculat greșit impozitul micro într-un trimestru anterior?
 description: O eroare de calcul într-un trimestru anterior de impozit micro se corectează prin rectificarea trimestrului respectiv, nu prin ajustarea trimestrului curent, pentru că fiecare trimestru micro e independent, nu cumulat.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -40,6 +40,6 @@ Primul pas practic e identificarea sursei erorii: de regulă o înregistrare con
 
 ## Ce face iConta.eu
 
-Pentru fiecare declarație D100 generată, `d100_reconciliere.verifica_reconciliere` recalculează suma obligației pe o cale independentă — direct din tabela `inregistrari_linii`, nu din rezultatul deja calculat — și o confruntă cu suma generatorului înainte de emiterea XML-ului. Această reconciliere obligatorie e mecanismul prin care o eroare de bază (înregistrare contabilă greșită sau omisă) ar fi semnalată înainte ca o declarație incorectă să fie depusă. Dacă eroarea a fost deja depusă într-un trimestru anterior, corectarea înregistrării contabile sursă din trimestrul respectiv și regenerarea D100 pentru acel trimestru specific reflectă suma corectă — motorul de calcul (`deriva_obligatii`) tratează fiecare trimestru izolat, deci o corecție la sursă nu afectează retroactiv trimestrele deja depuse corect.
+Pentru fiecare declarație D100 generată, „reconcilierea D112 (Control fiscal)” recalculează suma obligației pe o cale independentă — direct din tabela „notele contabile”, nu din rezultatul deja calculat — și o confruntă cu suma generatorului înainte de emiterea XML-ului. Această reconciliere obligatorie e mecanismul prin care o eroare de bază (înregistrare contabilă greșită sau omisă) ar fi semnalată înainte ca o declarație incorectă să fie depusă. Dacă eroarea a fost deja depusă într-un trimestru anterior, corectarea înregistrării contabile sursă din trimestrul respectiv și regenerarea D100 pentru acel trimestru specific reflectă suma corectă — motorul de calcul („calculul obligațiilor (Declarații)”) tratează fiecare trimestru izolat, deci o corecție la sursă nu afectează retroactiv trimestrele deja depuse corect.
 
 [iConta.eu](/)

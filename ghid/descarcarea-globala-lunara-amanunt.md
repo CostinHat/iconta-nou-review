@@ -2,7 +2,7 @@
 title: "Descărcarea globală lunară la amănunt: cum se face"
 description: "Pașii descărcării lunare de gestiune la metoda global-valorică: solduri, rulaje, coeficient de repartizare și nota contabilă rezultată."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,7 +35,7 @@ Pașii calculului, așa cum rezultă din formula legală de mai sus și din moto
 
 ## Ce face iConta.eu
 
-Funcția `descarca_luna` automatizează exact pașii de mai sus: preia soldurile inițiale din `solduri_initiale` (dacă există), rulajele 371/378/4428 din notele deja validate, iar vânzările (707) filtrate explicit pe sursele `horeca_z`, `stocuri` și `facturi_marfa`, doar pe luna curentă. TVA aferentă vânzărilor lunii este aproximată proporțional cu cota medie din stoc (`tva_vanzari = rc_707 × tva_stoc / baza_stoc`), cu mențiunea explicită din codul sursă că o repartizare proporțională din contul 4427 ar fi riscantă.
+Funcția „descărcarea lunii (Stocuri)” automatizează exact pașii de mai sus: preia soldurile inițiale din „soldurile inițiale (Migrare)” (dacă există), rulajele 371/378/4428 din notele deja validate, iar vânzările (707) filtrate explicit pe sursele „raportul Z (HoReCa)”, `stocuri` și „facturile de marfă”, doar pe luna curentă. TVA aferentă vânzărilor lunii este aproximată proporțional cu cota medie din stoc (TVA-ul vânzărilor = rulajul creditor 707 × TVA-ul din stoc / baza stocului), cu mențiunea explicită din codul sursă că o repartizare proporțională din contul 4427 ar fi riscantă.
 
 Dacă nu au existat vânzări în lună, aplicația nu generează nicio notă, ci întoarce un „fapt" structurat care confirmă lipsa vânzărilor. Nota de descărcare, când există, se creează la data ultimei zile calendaristice a lunii, ca **ciornă** — validarea rămâne manuală, în jurnalul contabil.
 

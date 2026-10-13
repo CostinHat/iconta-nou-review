@@ -2,7 +2,7 @@
 title: Cum se validează fișierul D406 înainte de depunere?
 description: Validarea D406 e un pas legal obligatoriu, cu validatorul oficial ANAF — explicăm procedura și cum e implementată tehnic.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,9 +24,9 @@ Cea mai frecventă greșeală este sărirea pasului de validare — fie din grab
 
 ## Ce face iConta.eu
 
-Validarea se face cu validatorul oficial `DUKIntegrator_AnLunaUI.jar`, integrat direct în aplicație (funcția `valideaza(xml, tip, an=, luna=)`) — nu cu un validator generic sau propriu.
+Validarea se face cu validatorul oficial validatorul ANAF (DUKIntegrator), integrat direct în aplicație (funcția „validarea”) — nu cu un validator generic sau propriu.
 
-Un istoric tehnic relevant, pentru transparență: `DECIZII.md` (27.07.2026) documentează un bug reparat, în care butonul de validare D406 nu trimitea `an`/`luna` validatorului și întorcea mereu o stare neconcludentă ("GRI"), indiferent de conținutul real al fișierului. Bug-ul a fost corectat, iar validarea a fost confirmată cu rezultat „valid" pe date reale: tenant_002 (iunie 2026) și tenant_013 (2026-08).
+Un istoric tehnic relevant, pentru transparență: documentația internă (27.07.2026) documentează un bug reparat, în care butonul de validare D406 nu trimitea `an`/`luna` validatorului și întorcea mereu o stare neconcludentă ("GRI"), indiferent de conținutul real al fișierului. Bug-ul a fost corectat, iar validarea a fost confirmată cu rezultat „valid" pe date reale: o firmă de test (iunie 2026) și o firmă de test (2026-08).
 
 Notă legată de conținutul fișierului validat: secțiunea SourceDocuments (facturi emise/primite) se generează cu linii reale per produs, reconciliate obligatoriu cu antetul, iar rezultatul e verificat structural prin DUK ("DUK-validate structural"). Secțiunea Payments rămâne, la acest moment, neemisă din lipsa unei surse de mapare a plăților din trezorerie (decizie de business în așteptare) — validarea reușește pe fișierul cu Payments gol, dar declarația nu conține date de plăți.
 

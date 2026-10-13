@@ -2,7 +2,7 @@
 title: "Cum tratez o factură de la Amazon UE în contabilitate?"
 description: "Diferența dintre achiziția intracomunitară de bunuri și achiziția de servicii atunci când firma cumpără de la Amazon EU Sarl sau alt operator UE, cu regulile de TVA aplicabile."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Din citat rezultă mecanismul de bază:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un conector dedicat pentru Amazon**. Aplicația oferă un modul general pentru achiziții intracomunitare, cu funcții de validare VIES a codului de TVA al furnizorului și de calcul al taxării inverse (`tva_taxare_inversa`, `note_taxare_inversa`), pe care contabilul le poate folosi pentru a înregistra manual o factură Amazon ca AIC. Singurul conector automat de import comenzi din prezent este cel pentru WooCommerce, relevant pentru magazine online proprii, nu pentru achiziții de la Amazon. Introducerea și clasificarea corectă a facturii Amazon — AIC, achiziție de servicii sau achiziție cu TVA străin nedeductibil — rămân o decizie manuală a contabilului.
+La data acestui ghid, iConta.eu **nu are un conector dedicat pentru Amazon**. Aplicația oferă un modul general pentru achiziții intracomunitare, cu funcții de validare VIES a codului de TVA al furnizorului și de calcul al taxării inverse („TVA prin taxare inversă”, „nota de taxare inversă”), pe care contabilul le poate folosi pentru a înregistra manual o factură Amazon ca AIC. Singurul conector automat de import comenzi din prezent este cel pentru WooCommerce, relevant pentru magazine online proprii, nu pentru achiziții de la Amazon. Introducerea și clasificarea corectă a facturii Amazon — AIC, achiziție de servicii sau achiziție cu TVA străin nedeductibil — rămân o decizie manuală a contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum obțin CUI de la asociați pentru D205"
 description: "Codul de identificare fiscală al beneficiarului de dividende este un câmp obligatoriu în structura D205, iar sursa lui rămâne datele deja deținute de firmă despre asociați."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce spune structura, practic:
 
 ## Ce face iConta.eu
 
-iConta.eu **nu obține automat** codul de identificare al asociaților de la ANAF sau de la alte registre publice — declarația D205 citește aceste date direct din modulul propriu de asociați al firmei (`select_asociati`), unde CNP-ul fiecărui asociat trebuie introdus și menținut de utilizator. Aplicația validează structural codul introdus (lungime, format numeric) pentru a deriva corect rezidența, dar corectitudinea și completitudinea datelor despre asociați rămân responsabilitatea contabilului sau a administratorului firmei.
+iConta.eu **nu obține automat** codul de identificare al asociaților de la ANAF sau de la alte registre publice — declarația D205 citește aceste date direct din modulul propriu de asociați al firmei („lista asociaților (Date firmă)”), unde CNP-ul fiecărui asociat trebuie introdus și menținut de utilizator. Aplicația validează structural codul introdus (lungime, format numeric) pentru a deriva corect rezidența, dar corectitudinea și completitudinea datelor despre asociați rămân responsabilitatea contabilului sau a administratorului firmei.
 
 [iConta.eu](/)

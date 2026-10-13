@@ -2,7 +2,7 @@
 title: "Cum se plătesc dividendele către un asociat nerezident?"
 description: Contabilizarea e aceeași ca la un asociat rezident (conturile 457/456), dar cota de impozit și declarația diferă — și verificarea unei eventuale convenții de evitare a dublei impuneri rămâne manuală.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Cota internă e 16% (de la 1 ianuarie 2026, aceeași cu cea aplicată rezidenți
 
 ## Ce face iConta.eu
 
-Contabilizarea plății (457=5121 pentru dividendul net, respectiv 457=446 pentru impozitul reținut, sau 456/463 pentru dividende interimare) se face prin motorul de decontări asociați (F039), care calculează automat impozitul la cota internă în vigoare (16% de la 1 ianuarie 2026) — **fără nicio logică specifică pentru asociatul nerezident**: modulul nu diferențiază cota internă de o eventuală cotă redusă prin convenție, așa că, dacă se aplică o convenție mai favorabilă, contabilul introduce manual impozitul corect calculat, nu cel generat implicit de aplicație. Obligația declarativă rezultată se acoperă separat, prin ecranul D207 (F209), unde se completează manual beneficiarul nerezident, venitul, statul de rezidență și actul normativ aplicat.
+Contabilizarea plății (457=5121 pentru dividendul net, respectiv 457=446 pentru impozitul reținut, sau 456/463 pentru dividende interimare) se face prin motorul de decontări asociați („Decontări asociați”), care calculează automat impozitul la cota internă în vigoare (16% de la 1 ianuarie 2026) — **fără nicio logică specifică pentru asociatul nerezident**: modulul nu diferențiază cota internă de o eventuală cotă redusă prin convenție, așa că, dacă se aplică o convenție mai favorabilă, contabilul introduce manual impozitul corect calculat, nu cel generat implicit de aplicație. Obligația declarativă rezultată se acoperă separat, prin ecranul D207 („Declarația D207 (impozit reținut nerezidenți)”), unde se completează manual beneficiarul nerezident, venitul, statul de rezidență și actul normativ aplicat.
 
 [iConta.eu](/)

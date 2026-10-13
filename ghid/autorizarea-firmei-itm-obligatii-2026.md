@@ -2,7 +2,7 @@
 title: "Autorizarea firmei la ITM: obligații 2026"
 description: "Precizare de temei: firma nu are nevoie de o autorizare formală de la Inspectoratul Teritorial de Muncă; obligația reală e înregistrarea salariaților în REGES-ONLINE înainte de începerea activității."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Notă: HG 295/2025 (care a înlocuit vechea HG 905/2017, cunoscută popular sub 
 
 ## Ce face iConta.eu
 
-iConta.eu are integrare directă cu REGES-ONLINE, care generează și trimite mesajul de înregistrare a identității salariatului (`mesaj_inregistrare_salariat`) și mesajul de adăugare a contractului individual de muncă (`mesaj_adaugare_contract`), din ecranul Stat de plată — acoperind exact obligația de la art. 7 din HG 295/2025. Obligațiile de securitate și sănătate în muncă (evaluarea riscurilor, planul de prevenire, instructajul) **nu sunt gestionate de aplicație** — ele țin de un domeniu separat de expertiză (SSM), nu de contabilitate, și rămân în sarcina firmei sau a unui furnizor specializat.
+iConta.eu are integrare directă cu REGES-ONLINE, care generează și trimite mesajul de înregistrare a identității salariatului („înregistrarea salariatului în REGES (Salarii)”) și mesajul de adăugare a contractului individual de muncă („transmiterea contractului în REGES (Salarii)”), din ecranul Stat de plată — acoperind exact obligația de la art. 7 din HG 295/2025. Obligațiile de securitate și sănătate în muncă (evaluarea riscurilor, planul de prevenire, instructajul) **nu sunt gestionate de aplicație** — ele țin de un domeniu separat de expertiză (SSM), nu de contabilitate, și rămân în sarcina firmei sau a unui furnizor specializat.
 
 [iConta.eu](/)

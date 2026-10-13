@@ -2,7 +2,7 @@
 title: Se plătește CAS pentru concediul medical?
 description: Indemnizația de concediu medical este supusă contribuției de asigurări sociale (CAS) de 25%, aplicată uniform pe majoritatea codurilor de boală, inclusiv maternitate și îngrijire copil - dar acesta este un punct bazat pe practica administrativă, nu pe un text explicit al legii.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ O indemnizație brută de concediu medical (cod 01) de 1.300 lei suportă CAS de
 
 ## Ce face iConta.eu
 
-Funcția de calcul al reținerilor pe indemnizație (`taxe_cm`) aplică CAS de 25% UNIFORM pe toate codurile de concediu medical. Codul sursă marchează explicit acest punct drept „interpretare oficială" (nivel de sursă distinct de un text de lege citat direct), recunoscând că regula reflectă practica administrativă. CASS de 10% se reține doar pentru codurile 01, 07 și 10, iar impozitul de 10% se aplică pe (brut − CASS), cu excepția codurilor neimpozabile prevăzute expres de Codul fiscal (08, 09, 15, 17, 91, 92).
+Funcția de calcul al reținerilor pe indemnizație („contribuțiile la concediul medical”) aplică CAS de 25% UNIFORM pe toate codurile de concediu medical. Codul sursă marchează explicit acest punct drept „interpretare oficială" (nivel de sursă distinct de un text de lege citat direct), recunoscând că regula reflectă practica administrativă. CASS de 10% se reține doar pentru codurile 01, 07 și 10, iar impozitul de 10% se aplică pe (brut − CASS), cu excepția codurilor neimpozabile prevăzute expres de Codul fiscal (08, 09, 15, 17, 91, 92).
 
 [iConta.eu](/)

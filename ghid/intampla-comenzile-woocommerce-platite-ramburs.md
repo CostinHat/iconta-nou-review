@@ -2,7 +2,7 @@
 title: "Ce se întâmplă cu comenzile WooCommerce plătite ramburs?"
 description: "Încasarea ramburs de la o persoană fizică intră sub plafonul legal de numerar de 10.000 lei pe zi per persoană — un aspect pe care conectorul WooCommerce al iConta.eu nu-l tratează diferit de orice altă comandă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Plata ramburs (colectarea contravalorii comenzii de către curier, la livrare, d
 
 ## Ce face iConta.eu
 
-Conectorul WooCommerce al iConta.eu **nu citește metoda de plată a comenzii** — nu există în cod niciun cod care să acceseze `payment_method` sau denumirea metodei de plată. O comandă plătită ramburs e tratată identic cu oricare alta: intră în import dacă statusul ei în WooCommerce e `completed` sau `processing`, indiferent cum a fost sau va fi încasată contravaloarea. Nu există, așadar, un tratament contabil special pentru comenzile ramburs — respectarea plafonului legal de încasări în numerar rămâne, ca și până acum, responsabilitatea firmei, urmărită separat de acest import automat.
+Conectorul WooCommerce al iConta.eu **nu citește metoda de plată a comenzii** — nu există în cod niciun cod care să acceseze „metoda de plată” sau denumirea metodei de plată. O comandă plătită ramburs e tratată identic cu oricare alta: intră în import dacă statusul ei în WooCommerce e `completed` sau `processing`, indiferent cum a fost sau va fi încasată contravaloarea. Nu există, așadar, un tratament contabil special pentru comenzile ramburs — respectarea plafonului legal de încasări în numerar rămâne, ca și până acum, responsabilitatea firmei, urmărită separat de acest import automat.
 
 [iConta.eu](/)

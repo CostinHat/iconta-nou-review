@@ -2,7 +2,7 @@
 title: "Cum tratez TVA pentru bunuri cumpărate de pe Amazon Business din UE?"
 description: "O achiziție de pe Amazon Business e intracomunitară doar dacă vânzătorul facturează cu un cod de TVA UE valid și bunurile vin din alt stat membru."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ O achiziție prin Amazon Business urmează aceleași reguli ca orice altă achiz
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 268 alin. (1)-(3) lit. a): „Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L16593-16626)
+CF art. 268 alin. (1)-(3) lit. a): „Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite.” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Dacă factura primită prin Amazon Business arată un cod de TVA valid al vânzătorului dintr-un alt stat membru UE (nu al României) și bunurile sunt expediate dintr-un depozit din alt stat membru, achiziția e, din perspectivă TVA, o achiziție intracomunitară de bunuri: se aplică taxare inversă la beneficiar (firma din România), cu declarare în D390.
@@ -28,7 +28,7 @@ Dacă, în schimb, factura arată TVA românesc (de exemplu, vânzătorul e înr
 
 ## Ce face iConta.eu
 
-Verifică pe fiecare factură primită codul de TVA al vânzătorului și țara de expediere a bunurilor. Dacă e o achiziție intracomunitară reală (cod de TVA UE valid al furnizorului, bunuri din alt stat membru), folosește formularul de achiziție intracomunitară (`achizitie_ic`), tip „bunuri”: data, valoarea în RON, codul de TVA al furnizorului, numărul facturii, furnizorul, contul de destinație (sugestie 371) și cota de TVA aplicabilă.
+Verifică pe fiecare factură primită codul de TVA al vânzătorului și țara de expediere a bunurilor. Dacă e o achiziție intracomunitară reală (cod de TVA UE valid al furnizorului, bunuri din alt stat membru), folosește formularul de achiziție intracomunitară („achiziție intracomunitară (Operațiuni)”), tip „bunuri”: data, valoarea în RON, codul de TVA al furnizorului, numărul facturii, furnizorul, contul de destinație (sugestie 371) și cota de TVA aplicabilă.
 
 Aplicația calculează TVA prin taxare inversă (4426 = 4427) și clasifică operațiunea pentru D390, cod A. Dacă factura arată TVA românesc, operațiunea se înregistrează ca achiziție obișnuită, nu prin acest formular.
 

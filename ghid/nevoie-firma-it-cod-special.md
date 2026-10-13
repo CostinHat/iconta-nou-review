@@ -2,7 +2,7 @@
 title: "Când are nevoie o firmă IT de cod special de TVA?"
 description: "Firmele IT neplătitoare de TVA care prestează sau achiziționează servicii intracomunitare au nevoie, de regulă, de codul special art. 317 CF."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Multe firme IT mici (micro-întreprinderi, neplătitoare de TVA „normal") lucr
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 317: „Înregistrare specială pentru neplătitori care fac AIC peste plafon sau servicii IC (alin. 1 lit. a-d). Alin. (1)-(2) modificate de OG 22/2025 art. I pct. 24, 01-09-2025.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L21049-21160)
+CF art. 317: „Înregistrare specială pentru neplătitori care fac AIC peste plafon sau servicii IC (alin. 1 lit. a-d). Alin. (1)-(2) modificate de OG 22/2025 art. I pct. 24, 01-09-2025.” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Câmpul din profilul firmei descrie chiar acest scop: „Înregistrare specială în scopuri de TVA (art. 317 CF) pentru achiziții/livrări intracomunitare la neplătitori.” Adică o firmă IT neplătitoare de TVA obișnuit are nevoie de codul special art. 317 dacă, în activitatea ei curentă, prestează servicii către firme din UE sau primește servicii de la furnizori din UE — cazuri tipice pentru domeniul IT (dezvoltare pentru clienți străini, abonamente la unelte/servicii cloud facturate de furnizori din alt stat membru).
@@ -28,7 +28,7 @@ Această înregistrare specială decide, printre altele, obligația de a depune 
 
 ## Ce face iConta.eu
 
-Profilul firmei are un câmp dedicat, `inreg_art317`, descris explicit ca fiind pentru „achiziții/livrări intracomunitare la neplătitori”; el decide dacă D390 devine datorat corect și dacă firma apare marcată `pers_inreg` în D301.
+Profilul firmei are un câmp dedicat, „înregistrare art.317 (Date firmă)”, descris explicit ca fiind pentru „achiziții/livrări intracomunitare la neplătitori”; el decide dacă D390 devine datorat corect și dacă firma apare marcată `pers_inreg` în D301.
 
 Important de precizat: iConta **nu automatizează obținerea** codului special — câmpul e un flag manual, bifat de utilizator după ce înregistrarea a fost obținută efectiv la ANAF (formularul 700, depus prin SPV). Aplicația nu generează acest formular și nu interoghează SPV pentru înregistrare; rolul ei e să reflecte corect, în declarații, statutul deja obținut.
 

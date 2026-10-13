@@ -2,7 +2,7 @@
 title: "Ce taxe plătește un SRL cu restaurant în 2026?"
 description: "Cota de TVA aplicabilă serviciilor de restaurant și catering în 2026, cu excepția băuturilor alcoolice, potrivit Codului fiscal — restul taxelor urmează regimul general."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Din text rezultă exact ce se taxează diferit la un restaurant:
 
 ## Ce face iConta.eu
 
-iConta.eu aplică regula din art. 291 alin. (2) lit. n) pentru serviciile de restaurant și catering, distingând explicit categoria „restaurant_catering" (cotă 11%) de băuturile alcoolice (cotă 21%, chiar și atunci când sunt servite în restaurant), în modulul de clasificare a cotelor de TVA. Aplicația oferă și funcționalități specifice activității de alimentație publică — rapoarte Z, gestiunea bacșișului, rețete de fabricație — dar restul obligațiilor fiscale ale firmei (impozit pe profit/micro, impozite locale) se calculează după regulile generale, fără un regim special pentru restaurante.
+iConta.eu aplică regula din art. 291 alin. (2) lit. n) pentru serviciile de restaurant și catering, distingând explicit categoria „restaurant și catering (cota redusă)" (cotă 11%) de băuturile alcoolice (cotă 21%, chiar și atunci când sunt servite în restaurant), în modulul de clasificare a cotelor de TVA. Aplicația oferă și funcționalități specifice activității de alimentație publică — rapoarte Z, gestiunea bacșișului, rețete de fabricație — dar restul obligațiilor fiscale ale firmei (impozit pe profit/micro, impozite locale) se calculează după regulile generale, fără un regim special pentru restaurante.
 
 [iConta.eu](/)

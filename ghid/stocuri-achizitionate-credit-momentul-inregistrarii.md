@@ -2,7 +2,7 @@
 title: "Stocuri achiziționate pe credit: momentul înregistrării"
 description: "Regula contabilă care stabilește când se înregistrează în gestiune stocurile cumpărate pe credit comercial, indiferent de momentul plății furnizorului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Din text rezultă regula centrală, valabilă indiferent de termenul de plată a
 
 ## Ce face iConta.eu
 
-Acest subiect ține de contabilitatea generală a stocurilor și a creditului comercial furnizor-client, nu de funcționalitatea F086 (sponsorizări și credit fiscal) cercetată pentru acest ghid — cele două noțiuni de „credit" (creditul comercial dintr-o achiziție de mărfuri și creditul fiscal din sponsorizare) nu au nimic în comun. Cercetarea disponibilă pentru acest ghid a verificat direct în cod doar motorul de sponsorizări și garda de plafon din D101; nu avem, în acest dosar, o verificare directă a vreunui modul din iConta.eu dedicat gestiunii de stocuri sau recepțiilor de marfă, așa că nu facem aici nicio afirmație despre ce automatizează sau nu automatizează aplicația pe acest subiect.
+Acest subiect ține de contabilitatea generală a stocurilor și a creditului comercial furnizor-client, nu de funcționalitatea „Sponsorizări și credit fiscal” cercetată pentru acest ghid — cele două noțiuni de „credit" (creditul comercial dintr-o achiziție de mărfuri și creditul fiscal din sponsorizare) nu au nimic în comun. Cercetarea disponibilă pentru acest ghid a verificat direct în cod doar motorul de sponsorizări și garda de plafon din D101; nu avem, în acest dosar, o verificare directă a vreunui modul din iConta.eu dedicat gestiunii de stocuri sau recepțiilor de marfă, așa că nu facem aici nicio afirmație despre ce automatizează sau nu automatizează aplicația pe acest subiect.
 
 [iConta.eu](/)

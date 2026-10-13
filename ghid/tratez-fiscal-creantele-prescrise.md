@@ -2,7 +2,7 @@
 title: "Cum tratez fiscal creanțele prescrise?"
 description: "Scoaterea din evidență a unei creanțe prescrise e, în primul rând, o obligație contabilă — dar pierderea rămasă neacoperită de provizion e deductibilă doar dacă situația se încadrează în una din cele șase excepții din Codul fiscal, iar prescripția în sine nu e una dintre ele."
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ O creanță prescrisă (pentru care dreptul de a cere executarea silită s-a sti
 
 ## Ce face iConta.eu
 
-Aplicația calculează și contabilizează exclusiv ajustarea pentru deprecierea creanței (`deductibilitate_creanta`, art. 26) — aplicația nu modelează scoaterea propriu-zisă din evidență a unei creanțe prescrise și nu verifică dacă situația concretă a debitorului se încadrează în una din cele șase excepții de la art. 25 alin. (4) lit. h). Evaluarea și nota contabilă corespunzătoare rămân manuale, pe baza documentelor disponibile despre debitor.
+Aplicația calculează și contabilizează exclusiv ajustarea pentru deprecierea creanței („deductibilitatea creanței (Operațiuni speciale)”, art. 26) — aplicația nu modelează scoaterea propriu-zisă din evidență a unei creanțe prescrise și nu verifică dacă situația concretă a debitorului se încadrează în una din cele șase excepții de la art. 25 alin. (4) lit. h). Evaluarea și nota contabilă corespunzătoare rămân manuale, pe baza documentelor disponibile despre debitor.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Ce faci dacă amortizarea nu a fost calculată timp de câteva luni?"
 description: "Cum se corectează o amortizare fiscală omisă pe câteva luni, fără a pierde dreptul de deducere, potrivit regulilor Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce se face concret, în funcție de moment:
 
 ## Ce face iConta.eu
 
-Modulul de mijloace fixe din iConta.eu (funcția `amortizare_luna`) calculează amortizarea lunară pe baza datei de punere în funcțiune, a duratei normale de funcționare și a metodei alese, iar `repo_mijloace_fixe.py` (`de_amortizat`) identifică activele cu amortizare de calculat într-o perioadă dată. La data acestui ghid, aplicația **nu are o funcție dedicată de recalculare automată retroactivă** a lunilor omise dintr-un exercițiu deja închis — corectarea unei amortizări omise pe câteva luni, mai ales dacă privește un an fiscal deja declarat, se face manual de contabil, cu documentarea perioadelor afectate.
+Modulul de mijloace fixe din iConta.eu (funcția „amortizarea lunii (Mijloace fixe)”) calculează amortizarea lunară pe baza datei de punere în funcțiune, a duratei normale de funcționare și a metodei alese, iar aplicația („activele de amortizat”) identifică activele cu amortizare de calculat într-o perioadă dată. La data acestui ghid, aplicația **nu are o funcție dedicată de recalculare automată retroactivă** a lunilor omise dintr-un exercițiu deja închis — corectarea unei amortizări omise pe câteva luni, mai ales dacă privește un an fiscal deja declarat, se face manual de contabil, cu documentarea perioadelor afectate.
 
 [iConta.eu](/)

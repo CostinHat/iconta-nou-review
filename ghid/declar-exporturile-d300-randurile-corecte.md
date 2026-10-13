@@ -2,7 +2,7 @@
 title: "Cum declar exporturile în D300: rândurile corecte"
 description: Exporturile scutite cu drept de deducere se raportează în D300 pe rândul livrărilor scutite (rd.14) — dar atenție, e o regulă diferită de cea pentru importuri, unde D300 nu populează automat rândul specific la data acestei cercetări.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,7 +28,7 @@ Fiind o operațiune scutită **cu drept de deducere** (nu neimpozabilă și nu s
 
 ## Ce face iConta.eu
 
-Pentru operațiunile de export extracomunitar, motorul intern rutează facturile emise către parteneri din afara UE pe rândul din D300 destinat livrărilor scutite cu drept de deducere (rd.14) — comportament confirmat direct în codul de rutare al declarației (`d300.py:319-320, 332-333`), verificat la 17.09.2026.
+Pentru operațiunile de export extracomunitar, motorul intern rutează facturile emise către parteneri din afara UE pe rândul din D300 destinat livrărilor scutite cu drept de deducere (rd.14) — comportament confirmat direct în codul de rutare al declarației (aplicația), verificat la 17.09.2026.
 
 De precizat o limitare importantă, ca să nu se creeze confuzie la firmele care fac și import, nu doar export: la aceeași dată a cercetării, aplicația **nu populează automat** rândul de TVA la import (rd.21) pentru operațiunile de import din afara UE — acestea rămân clasificate generic pe rd.26 (neimpozabil), indiferent de modul de tratare a TVA calculat de motorul de import. Este o limitare de stare curentă a aplicației, deja cunoscută, nu o regulă fiscală nouă — dacă firma are și operațiuni de import, raportarea lor în D300 trebuie verificată manual, separat de exporturi.
 

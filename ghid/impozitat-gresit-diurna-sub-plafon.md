@@ -2,7 +2,7 @@
 title: "Am impozitat greșit diurna sub plafon"
 description: "Cum se calculează corect plafonul neimpozabil al diurnei interne, ca să nu se impoziteze o sumă care era, de fapt, sub plafon."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Concret, plafonul zilnic neimpozabil e minimul dintre:
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcție separată care calculează plafonul neimpozabil al diurnei ca minimul dintre 2,5× diurna bugetară internă (versionată — 23 lei/zi din 1 aprilie 2023, 20 lei/zi anterior) și 3× salariul de bază raportat la zilele lucrătoare din lună (funcția `plafon_diurna`), returnând distinct suma neimpozabilă și suma impozabilă. Nota contabilă de decont generată de aplicație (625 = 542, cu TVA pe cazare/transport dacă e cazul, prin funcția `nota_decont`) nu preia însă automat această împărțire — postează integral diurna, transportul și cazarea pe cheltuială (625), fără să separe și să treacă prin statul de plată partea de diurnă care depășește plafonul neimpozabil. Verificarea plafonului rămâne, la acest moment, un calcul separat pe care contabilul trebuie să-l coreleze manual cu nota de decont, pentru a evita atât impozitarea unei sume sub plafon, cât și omiterea impozitării excedentului.
+iConta.eu are o funcție separată care calculează plafonul neimpozabil al diurnei ca minimul dintre 2,5× diurna bugetară internă (versionată — 23 lei/zi din 1 aprilie 2023, 20 lei/zi anterior) și 3× salariul de bază raportat la zilele lucrătoare din lună (funcția „plafonul diurnei”), returnând distinct suma neimpozabilă și suma impozabilă. Nota contabilă de decont generată de aplicație (625 = 542, cu TVA pe cazare/transport dacă e cazul, prin funcția „nota decontului de avans”) nu preia însă automat această împărțire — postează integral diurna, transportul și cazarea pe cheltuială (625), fără să separe și să treacă prin statul de plată partea de diurnă care depășește plafonul neimpozabil. Verificarea plafonului rămâne, la acest moment, un calcul separat pe care contabilul trebuie să-l coreleze manual cu nota de decont, pentru a evita atât impozitarea unei sume sub plafon, cât și omiterea impozitării excedentului.
 
 [iConta.eu](/)

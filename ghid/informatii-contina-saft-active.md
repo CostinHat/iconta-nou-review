@@ -2,7 +2,7 @@
 title: "Ce informații trebuie să conțină SAF-T Active?"
 description: "Datele obligatorii din secțiunea 'Active' a fișierului standard de control fiscal D406 și termenul specific de transmitere, potrivit OPANAF 1783/2021."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Secțiunea „Active" din SAF-T (D406) e cea mai apropiată de un registru de mi
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat exact pentru această secțiune (`d406_active.py`), care calculează amortizarea pe metode (liniară, degresivă, neliniară), urmărește categoria activului și metodele permise pentru ea, ține evidența reevaluărilor și generează direct structura XML cerută de ANAF (`xml_asset`, `xml_assets`, `xml_d406_anual_active`). Datele de amortizare folosite pentru SAF-T Active sunt aceleași cu cele din registrul intern de mijloace fixe al aplicației, deci nu există un calcul „paralel" doar pentru declarație.
+iConta.eu are un modul dedicat exact pentru această secțiune, care calculează amortizarea pe metode (liniară, degresivă, neliniară), urmărește categoria activului și metodele permise pentru ea, ține evidența reevaluărilor și generează direct structura XML cerută de ANAF („XML-ul activelor D406”, „XML-ul activelor D406”, „D406 active (Declarații)”). Datele de amortizare folosite pentru SAF-T Active sunt aceleași cu cele din registrul intern de mijloace fixe al aplicației, deci nu există un calcul „paralel" doar pentru declarație.
 
 [iConta.eu](/)

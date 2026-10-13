@@ -2,7 +2,7 @@
 title: Cum se deduce sponsorizarea din impozitul pe profit pe D101?
 description: Sponsorizarea se scade direct din impozitul pe profit datorat, în limita minimului dintre 0,75% din cifra de afaceri și 20% din impozitul pe profit, se declară în D101 a anului în care a fost acordată, iar spațiul neconsumat din plafon poate fi redirecționat separat prin D177, până la termenul de depunere a D101.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -48,8 +48,8 @@ O firmă cu cifra de afaceri 6.000.000 lei și impozit pe profit datorat 50.000 
 
 ## Ce face iConta.eu
 
-Funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="profit", beneficiar_in_registru=True, la_data=None)` din aplicație calculează exact acest flux: dacă `beneficiar_in_registru=False`, returnează credit 0, cu o notă explicită de respingere; altfel, calculează `credit = min(sponsorizari_efectuate, plafon)` — unde `plafon` vine din `plafon_credit()`, ca `min(0,75% × cifra_afaceri, 20% × impozit_profit)` — și `redirectionabil_d177 = plafon - credit`, adică exact spațiul neconsumat pe care îl puteți redirecționa separat prin D177.
+Funcția „creditul fiscal pentru sponsorizări (Operațiuni speciale)” din aplicație calculează exact acest flux: dacă beneficiar în registrul entităților=False, returnează credit 0, cu o notă explicită de respingere; altfel, calculează credit = min(sponsorizările efectuate, plafon) — unde `plafon` vine din „plafonul creditului fiscal”, ca min(0,75% × cifra de afaceri, 20% × impozitul pe profit) — și suma redirecționabilă prin D177 = plafon - credit, adică exact spațiul neconsumat pe care îl puteți redirecționa separat prin D177.
 
-Acest calcul reflectă corect regula actuală (de la 03.02.2022), valabilă pentru anii fiscali curenți precum 2025–2026. Motorul aplică însă aceeași regulă de 0,75%/D177 indiferent de parametrul `la_data` transmis — pentru o D101 aferentă unui an fiscal anterior lui 2022, rezultatul automat nu este corect și trebuie recalculat manual cu regula valabilă atunci.
+Acest calcul reflectă corect regula actuală (de la 03.02.2022), valabilă pentru anii fiscali curenți precum 2025–2026. Motorul aplică însă aceeași regulă de 0,75%/D177 indiferent de parametrul „data” transmis — pentru o D101 aferentă unui an fiscal anterior lui 2022, rezultatul automat nu este corect și trebuie recalculat manual cu regula valabilă atunci.
 
 [iConta.eu](/)

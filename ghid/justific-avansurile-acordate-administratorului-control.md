@@ -2,7 +2,7 @@
 title: "Cum justific avansurile acordate administratorului la control?"
 description: "Regula de decontare a avansurilor spre decontare conform normelor financiar-contabile și plafonul zilnic din Legea 70/2015, aplicate sumelor acordate administratorului."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Mecanismul de justificare, pas cu pas:
 
 ## Ce face iConta.eu
 
-Modulul de casierie al iConta.eu tratează explicit acest flux: `avans_acordare` înregistrează nota de acordare (cont 542), `avans_deconteaza` generează notele de decontare pe baza liniilor introduse (cu TVA aferent, dacă e cazul) și calculează suma rămasă de restituit, iar `reclasificare_bilant` mută soldurile de avansuri nedecontate la contul corespunzător (4282 pentru avansuri personale, 461 pentru altele), cu temeiul citat explicit în cod (OMFP 1802/2014 pct. 302/306). Funcția `verifica_plafon` din același modul semnalează, ca avertisment, depășirea plafonului zilnic de 5.000 lei per persoană la avansurile din ziua respectivă. Documentele justificative propriu-zise pentru fiecare cheltuială decontată rămân, evident, în afara aplicației — introduse și păstrate de contabil.
+Modulul de casierie al iConta.eu tratează explicit acest flux: „acordarea avansului de trezorerie” înregistrează nota de acordare (cont 542), „decontarea avansului de trezorerie” generează notele de decontare pe baza liniilor introduse (cu TVA aferent, dacă e cazul) și calculează suma rămasă de restituit, iar „reclasificarea în bilanț” mută soldurile de avansuri nedecontate la contul corespunzător (4282 pentru avansuri personale, 461 pentru altele), cu temeiul citat explicit în cod (OMFP 1802/2014 pct. 302/306). Funcția „verificarea plafonului de numerar (Casă)” din același modul semnalează, ca avertisment, depășirea plafonului zilnic de 5.000 lei per persoană la avansurile din ziua respectivă. Documentele justificative propriu-zise pentru fiecare cheltuială decontată rămân, evident, în afara aplicației — introduse și păstrate de contabil.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: 'Sponsorizare ca micro: se scade din impozitul de 1%'
 description: Nu, nici din cota de 1%, nici din cea de 3% — facilitatea de deducere a sponsorizării din impozitul micro a fost abrogată de la 1 ianuarie 2024; indiferent de cota aplicată firmei în 2026, sponsorizarea nu mai reduce impozitul pe venitul microîntreprinderilor.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Sponsorizarea rămâne o cheltuială reală, înregistrată contabil, dar la cal
 
 ## Ce face iConta.eu
 
-Funcția `credit_sponsorizare(..., tip_impozit="micro", ..., la_data=None)` din aplicație nu primește și nici nu folosește cota micro (1%/3%) ca parametru — calculul se baza, cât a fost activ, exclusiv pe impozitul micro deja calculat pentru trimestru, indiferent de cota din care rezultase acel impozit. Pentru orice `la_data` din afara intervalului 01.04.2019–31.12.2023 — deci pentru toate operațiunile din 2026 — funcția returnează credit 0, cu notă explicită de inaplicabilitate a facilității, indiferent de cota micro a firmei.
+Funcția „creditul fiscal pentru sponsorizări (Operațiuni speciale)” din aplicație nu primește și nici nu folosește cota micro (1%/3%) ca parametru — calculul se baza, cât a fost activ, exclusiv pe impozitul micro deja calculat pentru trimestru, indiferent de cota din care rezultase acel impozit. Pentru orice „data” din afara intervalului 01.04.2019–31.12.2023 — deci pentru toate operațiunile din 2026 — funcția returnează credit 0, cu notă explicită de inaplicabilitate a facilității, indiferent de cota micro a firmei.
 
 [iConta.eu](/)

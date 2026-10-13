@@ -2,7 +2,7 @@
 title: "Tichetele de masă pentru angajații din restaurant"
 description: Regulile fiscale pentru tichetele de masă nu depind de domeniul de activitate al angajatorului — un angajat dintr-un restaurant primește tichete de masă după exact aceleași reguli ca oricare alt salariat.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,6 +26,6 @@ Plafonul de 45 lei/tichet e valabil pentru toate lunile din 2026 (a intrat în v
 
 ## Ce face iConta.eu
 
-Motorul de salarizare calculează numărul de tichete de masă din zilele efectiv lucrate conform pontajului confirmat al lunii, scăzând automat zilele de concediu de odihnă, delegație/detașare, absențe și învoire — mecanismul e identic pentru toți angajații, fără vreo condiționare de domeniul de activitate al firmei. Plafonul de 45 lei/tichet e ținut ca valoare unică validă pentru tot 2026. Dacă firma acordă direct masă sau indemnizație de hrană în bani, în loc de sau pe lângă tichete de masă, acel beneficiu se configurează separat — F133 acoperă strict fluxul tichetelor de masă, nu regimul indemnizației de hrană.
+Motorul de salarizare calculează numărul de tichete de masă din zilele efectiv lucrate conform pontajului confirmat al lunii, scăzând automat zilele de concediu de odihnă, delegație/detașare, absențe și învoire — mecanismul e identic pentru toți angajații, fără vreo condiționare de domeniul de activitate al firmei. Plafonul de 45 lei/tichet e ținut ca valoare unică validă pentru tot 2026. Dacă firma acordă direct masă sau indemnizație de hrană în bani, în loc de sau pe lângă tichete de masă, acel beneficiu se configurează separat — „Tichete de masă, de vacanță și cadouri în statul de plată” acoperă strict fluxul tichetelor de masă, nu regimul indemnizației de hrană.
 
 [iConta.eu](/)

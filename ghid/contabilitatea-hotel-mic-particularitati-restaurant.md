@@ -2,7 +2,7 @@
 title: "Contabilitatea unui hotel mic: particularități față de un restaurant"
 description: "De ce cazarea hotelieră și serviciile de restaurant au aceeași cotă redusă de TVA, dar un hotel mic gestionează contabil mai multe linii de venit cu cote diferite decât un restaurant simplu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce rezultă concret pentru cele două tipuri de afaceri:
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcționalitate reală de clasificare a operațiunilor pe cote de TVA, în aplicație, cu chei distincte de nomenclator pentru „cazare" (cazare hotelieră sau în sectoare cu funcție similară), „restaurant_catering" (servicii de restaurant și catering) și băuturile alcoolice (taxate separat, chiar și în restaurant/catering) — exact distincția din art. 291 alin. (2) lit. m) și n). Aplicația oferă evidența contabilă generală pe aceste categorii; separarea liniilor de venit ale unui hotel (cazare, restaurant, minibar, alte servicii) pe facturile emise rămâne, la această dată, o decizie de structurare pe care contabilul o face la configurarea articolelor/serviciilor firmei.
+iConta.eu are o funcționalitate reală de clasificare a operațiunilor pe cote de TVA, în aplicație, cu chei distincte de nomenclator pentru „cazare" (cazare hotelieră sau în sectoare cu funcție similară), „restaurant și catering (cota redusă)" (servicii de restaurant și catering) și băuturile alcoolice (taxate separat, chiar și în restaurant/catering) — exact distincția din art. 291 alin. (2) lit. m) și n). Aplicația oferă evidența contabilă generală pe aceste categorii; separarea liniilor de venit ale unui hotel (cazare, restaurant, minibar, alte servicii) pe facturile emise rămâne, la această dată, o decizie de structurare pe care contabilul o face la configurarea articolelor/serviciilor firmei.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Ce diferențe între D112 și balanță pot atrage un control?"
 description: "De ce discrepanțele dintre D112 și balanța contabilă contează în analiza de risc a ANAF, care stă la baza selecției pentru inspecție fiscală."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Legea nu detaliază public criteriile exacte de risc (ele sunt, de regulă, inte
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat de reconciliere pentru D112 (`d112_reconciliere.py`, cu funcțiile `reconciliaza` și `verifica_reconciliere`), care compară valorile calculate/declarate în D112 cu datele din motorul de salarizare al aplicației, exact pentru a prinde din timp acest tip de diferențe. Reconcilierea se face la nivelul motorului de calcul al salariilor, nu direct contra unei balanțe contabile externe — dacă firma ține contabilitatea în alt program decât cel de salarizare din iConta.eu, verificarea finală față de balanță rămâne un pas manual al contabilului.
+iConta.eu are un modul dedicat de reconciliere pentru D112 (aplicația, cu funcțiile „reconcilierea” și „reconcilierea D112 (Control fiscal)”), care compară valorile calculate/declarate în D112 cu datele din motorul de salarizare al aplicației, exact pentru a prinde din timp acest tip de diferențe. Reconcilierea se face la nivelul motorului de calcul al salariilor, nu direct contra unei balanțe contabile externe — dacă firma ține contabilitatea în alt program decât cel de salarizare din iConta.eu, verificarea finală față de balanță rămâne un pas manual al contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum tratez fiscal cheltuielile de deplasare ale administratorului?"
 description: "Regimul de neimpozabilitate plafonată aplicabil indemnizațiilor de deplasare ale administratorilor și directorilor cu contract de mandat, cu aceeași formulă ca la salariați."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Ce e identic și ce diferă față de regimul salariaților:
 
 ## Ce face iConta.eu
 
-Funcția de calcul a plafonului (`plafon_diurna`, din aplicație) este generică — primește ca parametru o bază de calcul numită, la nivel de cod, `salariu_baza`, indiferent dacă persoana pentru care se calculează plafonul este un salariat sau un administrator/director cu mandat. Codul nu are o ramură separată explicit dedicată „administratorului", dar formula fiind identică matematic cu cea de la lit. k), acoperă corect și acest caz — cu condiția ca operatorul să introducă la acest parametru remunerația de mandat a administratorului, nu un salariu de angajat.
+Funcția de calcul a plafonului („plafonul diurnei”, din aplicație) este generică — primește ca parametru o bază de calcul numită, la nivel de cod, „salariul de bază”, indiferent dacă persoana pentru care se calculează plafonul este un salariat sau un administrator/director cu mandat. Codul nu are o ramură separată explicit dedicată „administratorului", dar formula fiind identică matematic cu cea de la lit. k), acoperă corect și acest caz — cu condiția ca operatorul să introducă la acest parametru remunerația de mandat a administratorului, nu un salariu de angajat.
 
 Ca pentru toate celelalte calcule de plafon din acest modul, trebuie menționat: funcția rămâne accesibilă doar la nivel de API, fără un ecran dedicat în interfața iConta unde să fie introdusă remunerația administratorului și să fie afișat plafonul rezultat. Calculul corect al plafonului pentru un administrator rămâne, astăzi, un calcul pe care contabilul trebuie să-l facă manual, folosind formula de mai sus.
 

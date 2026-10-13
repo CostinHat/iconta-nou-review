@@ -2,7 +2,7 @@
 title: "Cum se calculează concediul medical în 2026?"
 description: "Pașii calculului de concediu medical în 2026: baza pe 6 luni, procentul pe cod, diminuarea de 1 zi introdusă de OUG 91/2025 și ce parte a calculului o face iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,7 +33,7 @@ Pașii calculului, în ordine:
 
 ## Ce face iConta.eu
 
-Motorul de calcul (funcția `calcul_cm`) e dispecerizat pe data certificatului și aplică automat regula corectă pentru 2026: baza pe 6 luni, procentul pe cod și, pentru certificatele din fereastra 1 februarie 2026 – 31 decembrie 2027, diminuarea de o zi, cu excepțiile ei. Nu există un ecran separat „calculator" — calculul rulează în spatele ecranului de introducere a certificatelor de concediu medical din fișa salariatului, unde contabilul completează certificatul și primește direct rezultatul.
+Motorul de calcul (funcția „calculul concediului medical (Salarii)”) e dispecerizat pe data certificatului și aplică automat regula corectă pentru 2026: baza pe 6 luni, procentul pe cod și, pentru certificatele din fereastra 1 februarie 2026 – 31 decembrie 2027, diminuarea de o zi, cu excepțiile ei. Nu există un ecran separat „calculator" — calculul rulează în spatele ecranului de introducere a certificatelor de concediu medical din fișa salariatului, unde contabilul completează certificatul și primește direct rezultatul.
 
 O limitare reală, verificată în cod: plafonarea bazei de calcul la 12 salarii minime brute pe lună (art. 10 alin. (1)), deși motorul o suportă tehnic, nu se aplică în practică astăzi, pentru că niciun ecran din aplicație nu trimite veniturile defalcate pe fiecare din cele 6 luni — se introduce doar suma agregată. La salariați cu venituri peste plafon, indemnizația calculată poate ieși mai mare decât permite legea.
 

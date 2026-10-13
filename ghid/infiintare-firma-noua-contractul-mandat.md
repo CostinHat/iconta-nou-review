@@ -2,7 +2,7 @@
 title: Înființare firmă nouă și contractul de mandat pentru administrator
 description: Administratorul unei firme noi e, implicit, remunerat printr-un contract de mandat, nu prin CIM — regimul fiscal e diferit de la prima indemnizație plătită.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ La înființarea unei firme, administratorul desemnat prin actul constitutiv e l
 
 ## Ce face iConta.eu
 
-Modulul F021 oferă, prin ecranul „Contracte speciale (zilieri, mandat, cenzori)", tipul „Mandat administrator" chiar din prima lună de activitate a firmei — cu calculul CAS 25% + CASS 10% + impozit 10% pe rest, fără CAM, și nota contabilă prin 621. O limitare de reținut de la înființare: generarea D112 din aplicație nu are, la acest moment, o legătură funcțională cu notele de mandat — declararea corectă a administratorului la D112 (categoria „tip asigurat" 6) rămâne un pas separat.
+Modulul „Contracte de muncă speciale” oferă, prin ecranul „Contracte speciale (zilieri, mandat, cenzori)", tipul „Mandat administrator" chiar din prima lună de activitate a firmei — cu calculul CAS 25% + CASS 10% + impozit 10% pe rest, fără CAM, și nota contabilă prin 621. O limitare de reținut de la înființare: generarea D112 din aplicație nu are, la acest moment, o legătură funcțională cu notele de mandat — declararea corectă a administratorului la D112 (categoria „tip asigurat" 6) rămâne un pas separat.
 
 [iConta.eu](/)

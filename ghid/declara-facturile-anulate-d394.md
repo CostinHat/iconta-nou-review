@@ -2,7 +2,7 @@
 title: "Se declară facturile anulate în D394?"
 description: "Ce înseamnă legal o factură anulată sau stornată și de ce D394 nu trebuie să le includă în bază și TVA, cu filtrul aplicat automat de iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,7 +29,7 @@ Legea definește destul de precis ce înseamnă „factură anulată" și „fac
 
 ## Ce face iConta.eu
 
-Din 17.09.2026, generatorul D394 filtrează facturile după status folosind același nomenclator ca decontul de TVA (D300): facturile aflate în starea ciornă, de_preluat, descărcată, anulată sau stornată sunt excluse din calculul bazei și al TVA-ului. Comentariul din cod e explicit despre problema reparată: „D394 filtra doar TIPUL (proformă/aviz), NU statusul: o factură anulată sau stornată intra în D394 cu bază/TVA — deși D300 le exclude", cu efect măsurat de supra-declarare a operațiunilor și a rezumatului față de decont.
+Din 17.09.2026, generatorul D394 filtrează facturile după status folosind același nomenclator ca decontul de TVA (D300): facturile aflate în starea ciornă, de preluat, descărcată, anulată sau stornată sunt excluse din calculul bazei și al TVA-ului. Comentariul din cod e explicit despre problema reparată: „D394 filtra doar TIPUL (proformă/aviz), NU statusul: o factură anulată sau stornată intra în D394 cu bază/TVA — deși D300 le exclude", cu efect măsurat de supra-declarare a operațiunilor și a rezumatului față de decont.
 
 O limită onestă: iConta.eu **nu completează** azi câmpurile de identificare a seriilor și numerelor facturilor stornate/anulate cerute distinct de instrucțiunile ANAF (secțiunea „seria şi numărul facturilor stornate/anulate") — generatorul construiește doar seriile facturilor emise și alocate (`<serieFacturi>`), nu și lista separată de storno/anulate. Dacă acest câmp e relevant pentru firma ta, verifică manual completarea lui înainte de depunere.
 

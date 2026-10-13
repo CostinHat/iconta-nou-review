@@ -2,7 +2,7 @@
 title: "Cum corectez o diurnă tratată greșit ca neimpozabilă?"
 description: "Ce se întâmplă când o diurnă peste plafonul legal a fost înregistrată integral ca neimpozabilă și cum se remediază situația la nivel de salarizare și declarații."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Pașii pe care îi presupune o corecție reală:
 
 ## Ce face iConta.eu
 
-Acest scenariu de eroare este confirmat direct de comportamentul curent al codului, nu doar teoretic: funcția care generează nota contabilă pentru un decont (funcția `nota_decont`) **nu verifică niciodată plafonul** înainte de a posta diurna — întreaga sumă introdusă de utilizator ajunge înregistrată ca o singură cheltuială (625 = 542), indiferent dacă depășește plafonul legal sau nu. Separarea neimpozabil/impozabil există doar ca o funcție de calcul separată (`plafon_diurna`), pe care fluxul de decont nu o apelează automat. Deci, dacă un contabil nu calculează manual plafonul înainte de a introduce diurna, riscul descris de acest ghid — o diurnă peste plafon rămasă înregistrată integral ca „neimpozabilă" — este real și se poate produce exact așa cum e descris mai sus.
+Acest scenariu de eroare este confirmat direct de comportamentul curent al codului, nu doar teoretic: funcția care generează nota contabilă pentru un decont (funcția „nota decontului de avans”) **nu verifică niciodată plafonul** înainte de a posta diurna — întreaga sumă introdusă de utilizator ajunge înregistrată ca o singură cheltuială (625 = 542), indiferent dacă depășește plafonul legal sau nu. Separarea neimpozabil/impozabil există doar ca o funcție de calcul separată („plafonul diurnei”), pe care fluxul de decont nu o apelează automat. Deci, dacă un contabil nu calculează manual plafonul înainte de a introduce diurna, riscul descris de acest ghid — o diurnă peste plafon rămasă înregistrată integral ca „neimpozabilă" — este real și se poate produce exact așa cum e descris mai sus.
 
 Pentru corecția propriu-zisă (stornarea sau editarea notei contabile greșite), iConta.eu folosește mecanismele generale de corecție a notelor contabile din aplicație — acestea nu sunt specifice modulului de deconturi de deplasare și nu sunt tratate în acest ghid. Recalcularea impozitului, CAS și CASS pentru excedent, precum și rectificarea D112, rămân, astăzi, pași pe care contabilul trebuie să-i parcurgă manual — aplicația nu detectează automat o diurnă înregistrată greșit peste plafon și nu oferă un flux dedicat de corecție pentru acest caz specific.
 

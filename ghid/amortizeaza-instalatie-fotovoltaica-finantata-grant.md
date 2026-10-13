@@ -2,7 +2,7 @@
 title: "Cum se amortizează o instalație fotovoltaică finanțată prin grant?"
 description: Instalația fotovoltaică se amortizează integral, la valoarea ei de achiziție, iar grantul care a finanțat-o se reia la venituri treptat, proporțional cu amortizarea lunară.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Fiscal, la microîntreprindere, venitul din reluare (7584) se scade din baza imp
 
 ## Ce face iConta.eu
 
-Instalația fotovoltaică se înregistrează ca mijloc fix obișnuit, prin ecranul de mijloace fixe, la valoarea integrală, cu amortizarea calculată normal. Grantul se reflectă separat, prin ecranul „Subvenții (445/741)", opțiunea „Investiții (475)", pentru dreptul de a-l primi și încasare. Reluarea lunară proporțională cu amortizarea (`4751=7584`) e calculată corect de motor (`amortizare_lunară × subvenție / valoare_activ`), dar, la data acestei verificări, **ecranul „Subvenții" nu are câmpuri pentru valoarea activului, subvenție și amortizarea lunară** — opțiunea „Reluare la venituri" există în listă, dar operația nu poate fi finalizată din formularul standard; până la o corectare a ecranului, reluarea trebuie introdusă manual, prin altă cale, cu procentul subvenționat calculat separat.
+Instalația fotovoltaică se înregistrează ca mijloc fix obișnuit, prin ecranul de mijloace fixe, la valoarea integrală, cu amortizarea calculată normal. Grantul se reflectă separat, prin ecranul „Subvenții (445/741)", opțiunea „Investiții (475)", pentru dreptul de a-l primi și încasare. Reluarea lunară proporțională cu amortizarea (`4751=7584`) e calculată corect de motor (amortizare_lunară × subvenție / valoarea activului), dar, la data acestei verificări, **ecranul „Subvenții" nu are câmpuri pentru valoarea activului, subvenție și amortizarea lunară** — opțiunea „Reluare la venituri" există în listă, dar operația nu poate fi finalizată din formularul standard; până la o corectare a ecranului, reluarea trebuie introdusă manual, prin altă cale, cu procentul subvenționat calculat separat.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum verifici contul 4316 cu D112?
 description: Contul 4316 (CASS) trebuie să corespundă, pe rulaj creditor, cu suma codurilor 432 și 459 din D112 — 459 fiind suprataxa angajatorului la contractele part-time, contabilizată tot aici, nu separat.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ca și la CAS, greșeala frecventă e compararea contului 4316 doar cu codul 432
 
 ## Ce face iConta.eu
 
-Maparea `COD_CONT_D112` din aplicație însumează codurile 432 și 459 înainte de comparație cu rulajul contului 4316. Toleranța se recalculează pentru fiecare lună, în funcție de numărul de salariați activi în luna respectivă.
+Maparea „contul bugetar D112” din aplicație însumează codurile 432 și 459 înainte de comparație cu rulajul contului 4316. Toleranța se recalculează pentru fiecare lună, în funcție de numărul de salariați activi în luna respectivă.
 
 [iConta.eu](/)

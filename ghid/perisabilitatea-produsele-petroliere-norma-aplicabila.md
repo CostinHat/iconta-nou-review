@@ -2,7 +2,7 @@
 title: "Perisabilitatea la produsele petroliere: normă aplicabilă"
 description: Mecanismul de calcul al perisabilității e același indiferent de grupa de marfă, dar coeficientul aplicabil produselor petroliere se stabilește din anexa HG 831/2004, nu dintr-un procent general de perisabilitate.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Diferența specifică produselor petroliere e doar procentul de limită aplicabi
 
 ## Ce face iConta.eu
 
-Motorul F066 tratează toate grupele de mărfuri identic — calculul, separarea deductibil/nedeductibil și eventuala ajustare de TVA nu depind de tipul de produs, ci exclusiv de procentul de limită introdus de contabil în câmpul „Procent limită HG 831/2004 (%)". Aplicația nu conține coeficientul specific produselor petroliere din anexele HG 831/2004 — acesta trebuie verificat direct în hotărâre, în Monitorul Oficial, și introdus manual.
+Motorul „Perisabilități și scăzăminte” tratează toate grupele de mărfuri identic — calculul, separarea deductibil/nedeductibil și eventuala ajustare de TVA nu depind de tipul de produs, ci exclusiv de procentul de limită introdus de contabil în câmpul „Procent limită HG 831/2004 (%)". Aplicația nu conține coeficientul specific produselor petroliere din anexele HG 831/2004 — acesta trebuie verificat direct în hotărâre, în Monitorul Oficial, și introdus manual.
 
 [iConta.eu](/)

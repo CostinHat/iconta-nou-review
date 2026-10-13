@@ -2,7 +2,7 @@
 title: "Cum se înregistrează numerarul retras de la bancă pentru casierie?"
 description: "Documentul justificativ și înregistrarea contabilă a numerarului ridicat din contul bancar al firmei și depus în casierie, conform normelor privind documentele financiar-contabile."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Câteva precizări pentru operațiunea propriu-zisă:
 
 ## Ce face iConta.eu
 
-Da — iConta.eu are un modul dedicat casieriei, care tratează explicit operațiunea de „ridicare_banca" ca mișcare de trezorerie internă, prin contul de viramente interne: nota contabilă generată este Casă (5311/5314) = 581 „Viramente interne", urmată de 581 = Bancă (5121/5124). Modulul citează explicit ca sursă Legea nr. 70/2015 (plafoanele de numerar) și OMFP nr. 1802/2014 (planul de conturi și monografiile contabile), și este construit special ca operațiunile de ridicare/depunere din/în bancă să nu fie confundate cu încasările sau plățile către clienți/furnizori, care au propriile plafoane legale.
+Da — iConta.eu are un modul dedicat casieriei, care tratează explicit operațiunea de „ridicare de numerar din bancă (Casă)" ca mișcare de trezorerie internă, prin contul de viramente interne: nota contabilă generată este Casă (5311/5314) = 581 „Viramente interne", urmată de 581 = Bancă (5121/5124). Modulul citează explicit ca sursă Legea nr. 70/2015 (plafoanele de numerar) și OMFP nr. 1802/2014 (planul de conturi și monografiile contabile), și este construit special ca operațiunile de ridicare/depunere din/în bancă să nu fie confundate cu încasările sau plățile către clienți/furnizori, care au propriile plafoane legale.
 
 [iConta.eu](/)

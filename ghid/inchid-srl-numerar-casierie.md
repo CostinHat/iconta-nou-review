@@ -2,7 +2,7 @@
 title: Cum închid un SRL cu numerar în casierie?
 description: Ce se întâmplă cu numerarul rămas în casierie la lichidare și de ce nota contabilă standard din iConta.eu presupune plata netului prin bancă, nu în numerar.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -21,7 +21,7 @@ Legea nu face distincție, la nivelul situației patrimoniale finale, între act
 
 ## Ce se greșește în practică
 
-O eroare tehnică de reținut: nota contabilă generată de funcția de partaj din motorul de lichidare al iConta.eu creditează, pentru netul plătit către asociat, contul **5121 (bancă)** — `456=5121`. Dosarul de cercetare pentru F057 nu confirmă o variantă a acestei operațiuni care să crediteze contul **5311 (casă)**. Dacă plata efectivă a netului către asociați se face în numerar, nota contabilă generată automat de aplicație pentru operația de partaj nu va reflecta corect realitatea — trebuie corectată manual, prin înlocuirea contului 5121 cu 5311 în nota generată, sau printr-o notă manuală separată.
+O eroare tehnică de reținut: nota contabilă generată de funcția de partaj din motorul de lichidare al iConta.eu creditează, pentru netul plătit către asociat, contul **5121 (bancă)** — `456=5121`. Dosarul de cercetare pentru „Lichidare/radiere societate” nu confirmă o variantă a acestei operațiuni care să crediteze contul **5311 (casă)**. Dacă plata efectivă a netului către asociați se face în numerar, nota contabilă generată automat de aplicație pentru operația de partaj nu va reflecta corect realitatea — trebuie corectată manual, prin înlocuirea contului 5121 cu 5311 în nota generată, sau printr-o notă manuală separată.
 
 ## Ce face iConta.eu
 

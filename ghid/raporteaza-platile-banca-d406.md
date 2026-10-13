@@ -2,7 +2,7 @@
 title: "Cum se raportează plățile prin bancă în D406?"
 description: "Secțiunea Payments din fișierul standard de control fiscal (SAF-T/D406) și cum se raportează metoda de plată, inclusiv plățile prin bancă, potrivit OPANAF 1783/2021."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce se poate confirma, cu onestitate, din structura oficială:
 
 ## Ce face iConta.eu
 
-Motorul D406 al iConta.eu mapează metoda de plată a fiecărei tranzacții la codul ANAF corespunzător prin funcția `payment_method_anaf` — termenii interni „vir", „virament", „transfer", „op", „banca" sunt recunoscuți și mapați la codul „03" (plată fără numerar), folosit implicit pentru majoritatea plăților prin bancă; o metodă necunoscută primește codul implicit „03", cu semnalarea explicită a valorii înlocuite, nu tacit. Secțiunea `<Payments>` a fișierului XML se generează doar dacă există plăți înregistrate pentru perioada raportată. Rămâne responsabilitatea contabilului să se asigure că metoda de plată e introdusă corect la nivelul fiecărei tranzacții din aplicație, pentru ca maparea la codul ANAF să reflecte realitatea.
+Motorul D406 al iConta.eu mapează metoda de plată a fiecărei tranzacții la codul ANAF corespunzător prin funcția „codul ANAF al metodei de plată” — termenii interni „vir", „virament", „transfer", „op", „banca" sunt recunoscuți și mapați la codul „03" (plată fără numerar), folosit implicit pentru majoritatea plăților prin bancă; o metodă necunoscută primește codul implicit „03", cu semnalarea explicită a valorii înlocuite, nu tacit. Secțiunea `<Payments>` a fișierului XML se generează doar dacă există plăți înregistrate pentru perioada raportată. Rămâne responsabilitatea contabilului să se asigure că metoda de plată e introdusă corect la nivelul fiecărei tranzacții din aplicație, pentru ca maparea la codul ANAF să reflecte realitatea.
 
 [iConta.eu](/)

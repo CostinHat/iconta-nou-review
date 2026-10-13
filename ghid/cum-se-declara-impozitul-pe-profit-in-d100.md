@@ -2,7 +2,7 @@
 title: Cum se declară impozitul pe profit în D100?
 description: Pentru firmele pe regim de profit, D100 declară trimestrial (trimestrele I-III) impozitul calculat pe baza profitului cumulat de la începutul anului, cu cotă de 16%.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -49,7 +49,7 @@ Dacă baza cumulată e ≤ 0 (pierdere), declarația nu se poate depune pe zero 
 
 ## Ce face iConta.eu
 
-Aplicația calculează efectiv obligația cod 103 (impozit pe profit) pentru firmele pe regim „profit", cu bază cumulată de la 1 ianuarie, conform mecanismului descris mai sus. Totuși, în aplicație, semaforul de obligații/restanțe adaugă D100 la lista de urmărit **doar** pentru firmele pe regim „micro" (`_adauga_d100_micro`); pe ramura „profit" se adaugă automat numai D101, nu și D100. Aceasta e o neconformitate deschisă (R95, urmărită în registrul intern al proiectului): deși generatorul calculează corect obligația, o firmă pe profit nu vede D100 în lista de restanțe/obligații urmărite — trebuie generată manual, trimestrial, din ecranul de declarații, pentru trimestrele I-III.
+Aplicația calculează efectiv obligația cod 103 (impozit pe profit) pentru firmele pe regim „profit", cu bază cumulată de la 1 ianuarie, conform mecanismului descris mai sus. Totuși, în aplicație, semaforul de obligații/restanțe adaugă D100 la lista de urmărit **doar** pentru firmele pe regim „micro" („D100 micro”); pe ramura „profit" se adaugă automat numai D101, nu și D100. Aceasta e o limitare cunoscută a aplicației: deși generatorul calculează corect obligația, o firmă pe profit nu vede D100 în lista de restanțe/obligații urmărite — trebuie generată manual, trimestrial, din ecranul de declarații, pentru trimestrele I-III.
 
 Pentru trimestrul IV, existența unei obligații cod 103 generate cu formula standard e o zonă tratată diferit intern față de regimul opțional cu plăți anticipate (vezi ghidul despre plățile anticipate 2026) — dacă firma dvs. se încadrează la un regim special, verificați suplimentar cu contabilul acest caz.
 

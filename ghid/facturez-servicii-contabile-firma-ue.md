@@ -2,19 +2,13 @@
 title: "Cum facturez servicii contabile către o firmă din UE?"
 description: "Serviciile contabile facturate unei firme înregistrate în scopuri de TVA în alt stat membru sunt neimpozabile în România dacă îi verifici codul TVA în VIES; fără cod valid, factura se emite cu TVA românesc."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum facturez servicii contabile către o firmă din UE?
 
 Serviciile contabile prestate unei firme din alt stat membru urmează aceeași regulă de loc al prestării ca orice serviciu B2B — ținuta de contabilitate, întocmirea de rapoarte sau consultanța fiscală nu au un regim special, intră la fel ca orice altă prestare intracomunitară.
-
-## Temeiul legal
-
-::: ghid-temei
-„`valideaza_prestare_ic(cod_tva_client, cod_valid_vies)` — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România, se declară D390 (S); fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” — aplicația, dosarul F050.
-:::
 
 Dacă clientul e o firmă din UE cu cod de TVA valid, factura se emite fără TVA românesc, cu mențiunea taxării inverse, iar operațiunea se declară în D390. Dacă nu are cod valid (persoană neimpozabilă), regimul devine B2C — TVA românesc pe factură.
 

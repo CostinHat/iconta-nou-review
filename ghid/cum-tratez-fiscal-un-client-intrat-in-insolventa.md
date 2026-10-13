@@ -2,7 +2,7 @@
 title: Cum tratez fiscal un client intrat în insolvență?
 description: Insolvența unui client declanșează separat dreptul la deducere 100% a ajustării de creanță (impozit pe profit, la faliment declarat) și dreptul la ajustarea bazei de TVA (la data hotărârii de faliment sau confirmării planului de reorganizare) — două regimuri distincte, fiecare cu condițiile lui.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -51,6 +51,6 @@ provizion, potrivit art. 26, precum și cele înregistrate în alte cazuri decâ
 
 ## Ce face iConta.eu
 
-Aplicația calculează procentul de deducere a ajustării de creanță la impozitul pe profit prin `deductibilitate_creanta(..., faliment_declarat=True)`, care întoarce 100% (cu condiția negarantării și neafilierii) și generează nota contabilă 6814=491. Aplicația nu calculează ajustarea bazei de TVA (art. 287) și nu modelează scoaterea din evidență a creanței la închiderea procedurii de faliment (art. 25 alin. (4) lit. h)) — ambele rămân operațiuni separate, de tratat manual, conform termenelor și condițiilor de mai sus.
+Aplicația calculează procentul de deducere a ajustării de creanță la impozitul pe profit prin „deductibilitatea creanței (Operațiuni speciale)”, care întoarce 100% (cu condiția negarantării și neafilierii) și generează nota contabilă 6814=491. Aplicația nu calculează ajustarea bazei de TVA (art. 287) și nu modelează scoaterea din evidență a creanței la închiderea procedurii de faliment (art. 25 alin. (4) lit. h)) — ambele rămân operațiuni separate, de tratat manual, conform termenelor și condițiilor de mai sus.
 
 [iConta.eu](/)

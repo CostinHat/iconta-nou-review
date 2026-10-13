@@ -2,7 +2,7 @@
 title: "Cum verifici D101 cu balanța contabilă?"
 description: "Descrie mecanismele de verificare confirmate în cod: split exploatare/financiar, reconciliere independentă și avertismentul dedicat contului 691."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -12,7 +12,7 @@ poarta: v1
 
 ::: ghid-temei
 CF art.25 alin.(4) lit.a): cheltuiala cu impozitul pe profit (cont contabil 691) este nedeductibilă și trebuie adăugată înapoi la baza impozabilă.
-— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F027.
+— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), documentația aplicației.
 :::
 
 Datele pentru D101 sunt citite din profilul firmei și din balanța contabilă, cu separare exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare), plus conturile 1012 (capital social), 1061 (rezervă deja constituită) și 691 (cheltuiala cu impozitul pe profit) pentru calculul rezervei legale.

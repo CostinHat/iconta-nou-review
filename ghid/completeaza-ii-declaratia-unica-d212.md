@@ -2,7 +2,7 @@
 title: "Cum completează o II Declarația Unică D212?"
 description: "O întreprindere individuală completează D212 la fel ca un PFA — categoria de venit, modul de stabilire (sistem real sau normă) și forma de organizare se declară pe capitolul corespunzător."
 published: 2026-09-26
-modified: 2026-10-03
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Contribuțiile aferente (CAS și CASS) se declară separat, la capitolul `oblig_
 
 Generatorul D212 al iConta.eu pornește de la datele contabilului: venitul în sistem real se preia din registrul de încasări și plăți al II, norma de venit se introduce (cea publicată de direcția regională), iar aplicația calculează rândurile, contribuțiile și impozitul. Structura respectă întocmai câmpurile validate de ANAF (D212Validator), inclusiv `norma_forma_org` pentru declararea corectă a formei de organizare la capitolul de normă de venit.
 
-Pentru contribuabilii la sistem real, aplicația (funcția `fisa_d212`) calculează automat CAS, CASS și impozitul pornind de la operațiunile validate din Registrul-jurnal de încasări și plăți (OMFP 170/2015) ținut în aplicație — dar doar pentru veniturile anilor 2025 și 2026, singurii pentru care plafoanele sunt verificate la sursă. Pentru normă de venit, valoarea normei se introduce, conform listei direcției regionale; venitul net, impozitul și contribuțiile pe normă le calculează declarația.
+Pentru contribuabilii la sistem real, aplicația (funcția „fișa de calcul D212 (Declarații)”) calculează automat CAS, CASS și impozitul pornind de la operațiunile validate din Registrul-jurnal de încasări și plăți (OMFP 170/2015) ținut în aplicație — dar doar pentru veniturile anilor 2025 și 2026, singurii pentru care plafoanele sunt verificate la sursă. Pentru normă de venit, valoarea normei se introduce, conform listei direcției regionale; venitul net, impozitul și contribuțiile pe normă le calculează declarația.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum afectează cursul valutar rezultatul fiscal la impozitul pe profit
 description: Ce spune legea despre elementele de curs valutar la trecerea de la impozit micro la profit, și cum e folosit cursul de schimb la calculul pragului IMCA.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -14,10 +14,8 @@ Cursul valutar intervine în două locuri distincte, confirmate în cercetarea f
 
 ::: ghid-temei
 Art.53 alin.(2) lit.b) CF tratează elementele de curs valutar la trecerea de la micro la profit ca „elemente similare veniturilor în primul trimestru pentru care datorează impozit pe profit"
-— sursă: dosar de cercetare F027, secțiunea „Ieșirea din regimul micro în cursul anului".
+— sursă: documentația aplicației, secțiunea „Ieșirea din regimul micro în cursul anului".
 
-„cifra de afaceri anul precedent = VT−Vs, la cursul de închidere a exercițiului"
-— sursă: Aplicația, funcția `datoreaza_imca`, dosar de cercetare F027.
 :::
 
 Pentru firmele care trec de la impozit micro la impozit pe profit în cursul anului, diferențele de curs valutar generate până la momentul trecerii se recunosc fiscal ca elemente similare veniturilor, în primul trimestru pentru care se datorează deja impozit pe profit — nu se reportează și nu se ignoră, dar nici nu se tratează retroactiv pe perioada de micro.

@@ -2,7 +2,7 @@
 title: "Cum se întocmește chitanța pentru încasare numerar"
 description: "Ce e obligatoriu pe o chitanță de încasare numerar, conform OMFP 2634/2015, și când ea ține loc de document justificativ pentru venituri."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce reține norma:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația conține funcția `pdf_chitanta(emitent, ch)`, care generează documentul de chitanță, inclusiv conversia sumei în litere (`suma_in_litere()`), element standard al formularului. Aplicația produce efectiv documentul pentru fiecare încasare introdusă, coerent cu cerința normei de emitere pe operațiune.
+La data acestui ghid, aplicația conține funcția „chitanța tipărită (Casă)”, care generează documentul de chitanță, inclusiv conversia sumei în litere („suma în litere”), element standard al formularului. Aplicația produce efectiv documentul pentru fiecare încasare introdusă, coerent cu cerința normei de emitere pe operațiune.
 
 [iConta.eu](/)

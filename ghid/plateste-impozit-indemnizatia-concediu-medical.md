@@ -2,7 +2,7 @@
 title: "Se plătește impozit pentru indemnizația de concediu medical?"
 description: "Regula impozitării indemnizației de concediu medical în 2026 — impozabilă pentru boala obișnuită, scutită pentru maternitate și îngrijirea copilului — și cum o aplică iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Interpretarea corectă a acestor litere, pentru un salariat:
 
 ## Ce face iConta.eu
 
-Motorul de calcul (funcția `taxe_cm`) reține corect distincția din lege: aplică impozitul de 10% (pe baza rămasă după CAS și, unde e cazul, CASS) pentru boala obișnuită și celelalte coduri impozabile, dar **nu** reține niciun impozit pentru codurile de maternitate, îngrijire copil bolnav, risc maternal și îngrijire pacient oncologic — exact lista de la art. 62 lit. c). Calculul rulează automat la introducerea certificatului de concediu medical în fișa salariatului, cu rezultatul salvat odată cu certificatul.
+Motorul de calcul (funcția „contribuțiile la concediul medical”) reține corect distincția din lege: aplică impozitul de 10% (pe baza rămasă după CAS și, unde e cazul, CASS) pentru boala obișnuită și celelalte coduri impozabile, dar **nu** reține niciun impozit pentru codurile de maternitate, îngrijire copil bolnav, risc maternal și îngrijire pacient oncologic — exact lista de la art. 62 lit. c). Calculul rulează automat la introducerea certificatului de concediu medical în fișa salariatului, cu rezultatul salvat odată cu certificatul.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum verific rapid ce clienți au D406 nedepusă?
 description: Pastila roșie din lista de portofoliu marchează firmele cu restanțe — un clic pe fiecare arată exact dacă restanța e la D406 sau la altă declarație.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Când portofoliul are zeci de firme, verificarea manuală a D406 firmă cu firm�
 
 ## Ce face iConta.eu
 
-Funcția `obligatii_datorate()` din modulul F022 evaluează D406 separat pentru fiecare firmă din portofoliu, cu reguli distincte după regimul de TVA: plătitorii cu perioadă lunară primesc verdict lunar, cei cu perioadă trimestrială/semestrială/anuală și neplătitorii de TVA primesc verdict trimestrial. Fiecare restanță de D406 poartă motivul explicit — un termen deja depășit fără declarație confirmată ca depusă — vizibil în detaliul firmei, nu doar în sumarul de portofoliu.
+Funcția „obligațiile datorate (Control fiscal)” din modulul „Semafor conformare fiscală” evaluează D406 separat pentru fiecare firmă din portofoliu, cu reguli distincte după regimul de TVA: plătitorii cu perioadă lunară primesc verdict lunar, cei cu perioadă trimestrială/semestrială/anuală și neplătitorii de TVA primesc verdict trimestrial. Fiecare restanță de D406 poartă motivul explicit — un termen deja depășit fără declarație confirmată ca depusă — vizibil în detaliul firmei, nu doar în sumarul de portofoliu.
 
 [iConta.eu](/)

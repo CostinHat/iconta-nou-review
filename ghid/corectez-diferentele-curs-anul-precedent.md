@@ -2,7 +2,7 @@
 title: "Cum corectez diferențele de curs din anul precedent?"
 description: "Corectarea unei diferențe de curs omise din anul financiar anterior nu se face pe 665/765 curent, ci pe contul de rezultat reportat 1174 — regulă distinctă de recunoașterea diferențelor curente."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Regula de decizie:
 
 ## Ce face iConta.eu
 
-Trebuie spus onest, direct: în iConta.eu, motorul de diferențe de curs (folosit atât la decontare, cât și la reevaluarea lunară) scrie întotdeauna nota contabilă pe conturile 665 sau 765, niciodată pe contul 1174 — verificat, nu există în acest circuit nicio ramură care să trateze o corecție de exercițiu anterior. Așadar, o corecție a unei diferențe de curs omise din anul precedent **nu poate fi făcută prin ecranele dedicate F041** (decontare/reevaluare în valută) — acestea presupun mereu exercițiul financiar curent, cu luna deschisă. Contabilul trebuie să introducă manual, printr-o notă contabilă obișnuită, articolul de corecție pe 1174, conform pct. 67 de mai sus, calculând el însuși diferența de curs care ar fi trebuit recunoscută la momentul respectiv.
+Trebuie spus onest, direct: în iConta.eu, motorul de diferențe de curs (folosit atât la decontare, cât și la reevaluarea lunară) scrie întotdeauna nota contabilă pe conturile 665 sau 765, niciodată pe contul 1174 — verificat, nu există în acest circuit nicio ramură care să trateze o corecție de exercițiu anterior. Așadar, o corecție a unei diferențe de curs omise din anul precedent **nu poate fi făcută prin ecranele dedicate „Diferențe de curs valutar”** (decontare/reevaluare în valută) — acestea presupun mereu exercițiul financiar curent, cu luna deschisă. Contabilul trebuie să introducă manual, printr-o notă contabilă obișnuită, articolul de corecție pe 1174, conform pct. 67 de mai sus, calculând el însuși diferența de curs care ar fi trebuit recunoscută la momentul respectiv.
 
 [iConta.eu](/)

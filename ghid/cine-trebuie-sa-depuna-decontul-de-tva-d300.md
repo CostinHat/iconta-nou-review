@@ -2,7 +2,7 @@
 title: Cine trebuie să depună decontul de TVA D300?
 description: D300 se completează doar de persoanele înregistrate în scopuri de TVA, cu termen până pe 25 ale lunii următoare pentru declaranții lunari, iar frecvența (lunar/trimestrial/semestrial/anual) trebuie să corespundă corect lunii pentru care se depune.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Frecvența nu e liberă pentru orice lună — de exemplu, un decont trimestrial
 
 ## Ce face iConta.eu
 
-`pull` citește facturile pe fereastra fiscală a firmei (`c.fereastra_tva`), care ține cont de tipul de decont configurat — lunar, trimestrial, semestrial sau anual. Înainte de generare, gărzile blocante verifică explicit corelația dintre tipul de decont și luna pentru care se generează decontul (de exemplu, un decont trimestrial e valid doar pentru anumite luni din calendarul fiscal) — o combinație nevalidă oprește generarea, ca să nu se depună un decont pentru o perioadă greșit încadrată.
+„preluarea datelor” citește facturile pe fereastra fiscală a firmei („perioada TVA”), care ține cont de tipul de decont configurat — lunar, trimestrial, semestrial sau anual. Înainte de generare, gărzile blocante verifică explicit corelația dintre tipul de decont și luna pentru care se generează decontul (de exemplu, un decont trimestrial e valid doar pentru anumite luni din calendarul fiscal) — o combinație nevalidă oprește generarea, ca să nu se depună un decont pentru o perioadă greșit încadrată.
 
 [iConta.eu](/)

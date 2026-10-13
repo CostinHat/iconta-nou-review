@@ -2,7 +2,7 @@
 title: Cum se declară achiziția unui mijloc fix în D300?
 description: Regula de bază e simplă — dreptul de deducere ia naștere la exigibilitate — dar dacă mijlocul fix e un vehicul rutier motorizat neutilizat exclusiv economic, deducerea se limitează la 50%, iar aplicația nu aplică automat această limitare.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -46,6 +46,6 @@ Excepția privește strict vehiculele rutiere motorizate: dacă vehiculul nu e u
 
 ## Ce face iConta.eu
 
-`calcul_d300` preia integral TVA-ul din antetul și liniile facturii, fără nicio verificare automată a tipului de bun (vehicul vs. alt mijloc fix) sau a flag-ului de utilizare exclusiv economică — limitarea de 50% pentru vehicule nu e un gard automat în motorul de calcul. Ea trebuie aplicată manual de contabil înainte ca factura să ajungă în decont: dacă vehiculul nu e utilizat exclusiv economic, doar 50% din TVA trebuie introdus efectiv ca sumă deductibilă, aplicația nu face această distincție singură.
+„calculul D300 (Declarații)” preia integral TVA-ul din antetul și liniile facturii, fără nicio verificare automată a tipului de bun (vehicul vs. alt mijloc fix) sau a flag-ului de utilizare exclusiv economică — limitarea de 50% pentru vehicule nu e un gard automat în motorul de calcul. Ea trebuie aplicată manual de contabil înainte ca factura să ajungă în decont: dacă vehiculul nu e utilizat exclusiv economic, doar 50% din TVA trebuie introdus efectiv ca sumă deductibilă, aplicația nu face această distincție singură.
 
 [iConta.eu](/)

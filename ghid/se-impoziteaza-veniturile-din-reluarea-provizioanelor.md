@@ -2,7 +2,7 @@
 title: Se impozitează veniturile din reluarea provizioanelor?
 description: Depinde dacă provizionul a fost dedus la constituire — reluarea unui provizion dedus e venit impozabil (CF art. 26 alin. (5)), iar reluarea unui provizion nededus e venit neimpozabil (CF art. 23 lit. d)); nu există o regulă unică valabilă pentru toate provizioanele.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -48,6 +48,6 @@ O firmă a constituit un provizion pentru garanții de 5.000 lei, integral dedus
 
 ## Ce face iConta.eu
 
-Aplicația generează nota contabilă de reluare pentru fiecare tip de provizion (`15xx = 7812` prin `nota_provizion`, respectiv `491 = 7814` / `39x = 7814` prin `nota_ajustare_creanta` și `nota_ajustare_stoc`), dar **nu recalculează și nu propagă automat caracterul impozabil sau neimpozabil al venitului din reluare** — flagul `deductibil` calculat la constituire nu e reutilizat la reluare. Verificarea dacă provizionul reluat fusese dedus inițial și, deci, dacă venitul din reluare e impozabil sau nu, rămâne o decizie manuală, pe baza regulii de simetrie explicate mai sus.
+Aplicația generează nota contabilă de reluare pentru fiecare tip de provizion (`15xx = 7812` prin „nota de provizion (Operațiuni speciale)”, respectiv `491 = 7814` / `39x = 7814` prin „nota de ajustare a creanței” și „nota de ajustare a stocurilor (Operațiuni speciale)”), dar **nu recalculează și nu propagă automat caracterul impozabil sau neimpozabil al venitului din reluare** — flagul `deductibil` calculat la constituire nu e reutilizat la reluare. Verificarea dacă provizionul reluat fusese dedus inițial și, deci, dacă venitul din reluare e impozabil sau nu, rămâne o decizie manuală, pe baza regulii de simetrie explicate mai sus.
 
 [iConta.eu](/)

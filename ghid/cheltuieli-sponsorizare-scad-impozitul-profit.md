@@ -2,7 +2,7 @@
 title: 'Cheltuieli de sponsorizare: cum se scad din impozitul pe profit'
 description: Sponsorizarea nu reduce profitul impozabil, ci se scade direct din impozitul pe profit datorat, ca și credit fiscal — dar numai până la minimul dintre 0,75% din cifra de afaceri și 20% din impozitul pe profit; peste plafon, suma rămâne cheltuială fără efect fiscal.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Firmă cu cifra de afaceri 1.500.000 lei, impozit pe profit datorat 40.000 lei, 
 
 ## Ce face iConta.eu
 
-Aplicația, funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="profit", beneficiar_in_registru=True, la_data=None)`, implementează ambele verificări: respinge creditul (0) dacă `beneficiar_in_registru=False`, altfel calculează `credit = min(sponsorizari_efectuate, plafon_credit(cifra_afaceri, impozit_profit))`. Spațiul neconsumat din plafon, `redirectionabil_d177 = plafon - credit`, e disponibil pentru redirecționare separată prin D177, până la termenul de depunere a D101.
+Aplicația, funcția „creditul fiscal pentru sponsorizări (Operațiuni speciale)”, implementează ambele verificări: respinge creditul (0) dacă beneficiar în registrul entităților=False, altfel calculează credit = min(sponsorizările efectuate, plafonul creditului fiscal(cifra de afaceri, impozitul pe profit)). Spațiul neconsumat din plafon, suma redirecționabilă prin D177 = plafon - credit, e disponibil pentru redirecționare separată prin D177, până la termenul de depunere a D101.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Termene fiscale 2026: când depun fiecare declarație ca să nu iau amendă"
 description: Nouă declarații, nouă termene — de la 25 ale lunii următoare, la 30, la ultima zi a lunii, până la 25 iunie anul următor pentru impozitul pe profit.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Toate aceste termene se mută la prima zi lucrătoare, dacă data calculată pic
 
 ## Ce face iConta.eu
 
-Modulul de scadențe calculează, pentru fiecare din cele 9 declarații urmărite, termenul exact al perioadei, mutat automat la prima zi lucrătoare dacă pică în weekend sau sărbătoare legală — inclusiv sărbătorile cu dată mobilă, calculate din data Paștelui ortodox, nu hardcodate an de an. Semaforul F022 folosește acest calcul ca sursă unică pentru toate verdictele de termen, astfel încât aceeași regulă de scadență se aplică identic în toată aplicația.
+Modulul de scadențe calculează, pentru fiecare din cele 9 declarații urmărite, termenul exact al perioadei, mutat automat la prima zi lucrătoare dacă pică în weekend sau sărbătoare legală — inclusiv sărbătorile cu dată mobilă, calculate din data Paștelui ortodox, nu hardcodate an de an. Semaforul „Semafor conformare fiscală” folosește acest calcul ca sursă unică pentru toate verdictele de termen, astfel încât aceeași regulă de scadență se aplică identic în toată aplicația.
 
 [iConta.eu](/)

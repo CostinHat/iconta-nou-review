@@ -2,7 +2,7 @@
 title: "Cum tratez o achiziție de marfă din Polonia?"
 description: "Regulile de TVA pentru achiziția intracomunitară de marfă de la un furnizor din Polonia: taxare inversă, D390 și verificarea VIES."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,9 +13,9 @@ O achiziție de marfă de la un furnizor cu cod de TVA valid în Polonia urmeaz�
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 268 alin. (1)-(3) lit. a): „Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L16593-16626)
+CF art. 268 alin. (1)-(3) lit. a): „Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite.” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 
-CF art. 308-309: „Obligat la plata taxei = beneficiarul, la AIC/servicii primite.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L19405, L19418)
+CF art. 308-309: „Obligat la plata taxei = beneficiarul, la AIC/servicii primite.” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Dacă firma din România e înregistrată în scopuri de TVA (normal, art. 316, sau prin codul special art. 317) și furnizorul polonez are cod de TVA valid, verificabil în VIES, furnizorul facturează fără TVA polonez, iar firma din România datorează TVA prin taxare inversă — beneficiarul e obligat la plata taxei, conform art. 308-309, cu formula contabilă 4426 = 4427.
@@ -28,7 +28,7 @@ Dacă firma din România e înregistrată în scopuri de TVA (normal, art. 316, 
 
 ## Ce face iConta.eu
 
-Formularul de achiziție intracomunitară (`achizitie_ic`), tip „bunuri”, din categoria „Extern”, are câmpuri pentru data, valoarea în RON, codul de TVA al furnizorului (verificabil automat în VIES), numărul facturii, furnizorul, contul de destinație (sugestie 371) și cota de TVA aplicabilă.
+Formularul de achiziție intracomunitară („achiziție intracomunitară (Operațiuni)”), tip „bunuri”, din categoria „Extern”, are câmpuri pentru data, valoarea în RON, codul de TVA al furnizorului (verificabil automat în VIES), numărul facturii, furnizorul, contul de destinație (sugestie 371) și cota de TVA aplicabilă.
 
 Aplicația calculează TVA prin taxare inversă (4426 = 4427) și clasifică automat operațiunea pentru D390, cod A.
 

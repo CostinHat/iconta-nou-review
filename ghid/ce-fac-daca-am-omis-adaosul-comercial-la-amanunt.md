@@ -2,7 +2,7 @@
 title: Ce fac dacă am omis adaosul comercial la amănunt?
 description: Adaosul comercial nu se introduce separat, ci rezultă automat din diferența dintre prețul de vânzare și costul de achiziție — dacă a fost „omis”, de regulă înseamnă că prețul de vânzare a fost setat greșit, egal sau sub costul de achiziție.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -47,7 +47,7 @@ Legea nu obligă existența unui adaos pozitiv la fiecare articol. Contul 378 e 
 
 ## Ce face iConta.eu
 
-La fiecare linie de NIR, `nir_gv` calculează automat adaosul ca diferență între prețul de vânzare (cu TVA extras prin formula sutei mărite) și costul de achiziție. Dacă rezultatul e negativ — adică prețul de vânzare introdus e sub costul de achiziție — aplicația ridică eroare și refuză înregistrarea; adaosul zero, în schimb, e permis (nu există verificare separată care să blocheze un adaos de exact 0).
+La fiecare linie de NIR, „NIR global-valoric (Stocuri)” calculează automat adaosul ca diferență între prețul de vânzare (cu TVA extras prin formula sutei mărite) și costul de achiziție. Dacă rezultatul e negativ — adică prețul de vânzare introdus e sub costul de achiziție — aplicația ridică eroare și refuză înregistrarea; adaosul zero, în schimb, e permis (nu există verificare separată care să blocheze un adaos de exact 0).
 
 Dacă un NIR a fost deja validat cu un preț de vânzare greșit (implicit cu adaosul dorit „omis”), corecția nu ar trebui făcută prin editarea directă a notei validate — NIR-urile trec prin stadiul de ciornă, cu „validare ulterioară de către contabil”, tocmai pentru a păstra trasabilitatea operațiunilor. Pentru un NIR deja validat cu date greșite, corecția exactă (ce operațiune anume se face) e de stabilit împreună cu dezvoltatorul aplicației, nu presupusă — nu e o cerință impusă direct de OMFP 1802/2014.
 

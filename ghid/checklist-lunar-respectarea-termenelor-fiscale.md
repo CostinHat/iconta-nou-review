@@ -2,19 +2,13 @@
 title: "Checklist lunar pentru respectarea termenelor fiscale"
 description: "Cum folosești ecranul Termene din iConta.eu ca checklist lunar de scadențe pe portofoliu și ce limitări trebuie cunoscute."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Checklist lunar pentru respectarea termenelor fiscale
 
 Pentru un cabinet cu portofoliu de firme, ecranul „Termene” din iConta.eu agregă, pentru toate firmele, declarațiile scadente în următoarele 60 de zile, grupate pe dată. E gândit ca instrument de verificare periodică, dar are câteva limite pe care merită să le cunoști înainte să-l folosești drept checklist unic.
-
-## Temeiul legal
-
-::: ghid-temei
-Descrierea funcționalității (din documentația internă a aplicației): „Pentru fiecare firmă derivă din vectorul fiscal declarațiile datorate cu termenele următoarelor 60 de zile; agregare pe portofoliu, grupare pe dată.”
-:::
 
 Ecranul de agregare în sine nu are un temei legal propriu — fiecare declarație afișată își are propriul temei (de exemplu, art. 323 alin. (1) Cod fiscal pentru D300, OPANAF 705/2020 pentru D390 ș.a.m.d.), în funcție de tipul de obligație.
 

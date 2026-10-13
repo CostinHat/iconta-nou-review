@@ -2,7 +2,7 @@
 title: Cum se contabilizează avansul pentru organizarea unei nunți la restaurant?
 description: Avansul pentru o nuntă/botez urmează regimul general de avans (TVA exigibilă la încasare), dar restaurantul poate solicita ANAF un plafon de numerar diferit de cel standard de 10.000 lei/zi, printr-o procedură specială prevăzută expres de Legea 70/2015.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,8 +39,8 @@ Un restaurant care organizează frecvent nunți solicită ANAF, conform art. 4^1
 
 ## Ce face iConta.eu
 
-Pentru avansul încasat de la client (organizatorii evenimentului), motorul folosește `nota_avans_incasat(suma_fara_tva, cota)`, generând `4111 = 419 + 4427` — mecanica standard pentru orice avans încasat, indiferent de tipul evenimentului.
+Pentru avansul încasat de la client (organizatorii evenimentului), motorul folosește „nota avansului încasat”, generând `4111 = 419 + 4427` — mecanica standard pentru orice avans încasat, indiferent de tipul evenimentului.
 
-Modulul `avansuri.py` nu verifică plafonul de numerar și nu are nicio logică specifică pentru derogarea de la art. 4^1 — nu știe, la momentul introducerii avansului, dacă restaurantul deține sau nu o decizie ANAF de plafon special. Obținerea deciziei, verificarea valabilității ei și respectarea plafonului aprobat rămân integral responsabilitatea contabilului/restaurantului la momentul încasării.
+Modulul aplicația nu verifică plafonul de numerar și nu are nicio logică specifică pentru derogarea de la art. 4^1 — nu știe, la momentul introducerii avansului, dacă restaurantul deține sau nu o decizie ANAF de plafon special. Obținerea deciziei, verificarea valabilității ei și respectarea plafonului aprobat rămân integral responsabilitatea contabilului/restaurantului la momentul încasării.
 
 [iConta.eu](/)

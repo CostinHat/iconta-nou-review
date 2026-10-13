@@ -2,7 +2,7 @@
 title: Cum corectez tichetele de masă declarate greșit?
 description: Corectarea unui număr greșit de tichete de masă se face diferit înainte și după depunerea declarației — înainte de depunere se reconfirmă pontajul și se recalculează, iar după depunere corecția se face exclusiv prin D112 rectificativă.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Câtă vreme o lună nu a fost încă declarată la ANAF, corecția se face dire
 
 ## Ce face iConta.eu
 
-Modificarea datelor confirmate (fapt deja declarat la ANAF) este blocată în aplicație — corectarea se face prin declarație rectificativă, nu prin suprascrierea directă a datelor deja depuse. Pentru o lună nedeclarată încă, cu pontajul neconfirmat, corecția se face prin deconfirmarea perioadei, corectarea pontajului și recalcul. Valoarea tichetului de masă configurată per salariat (`tichet_masa_valoare`) este o singură valoare curentă, fără istoric de versiuni — spre deosebire de salariul brut, care are propriul istoric — deci o corecție a acestei valori afectează doar lunile calculate după modificare, nu retroactiv lunile deja procesate.
+Modificarea datelor confirmate (fapt deja declarat la ANAF) este blocată în aplicație — corectarea se face prin declarație rectificativă, nu prin suprascrierea directă a datelor deja depuse. Pentru o lună nedeclarată încă, cu pontajul neconfirmat, corecția se face prin deconfirmarea perioadei, corectarea pontajului și recalcul. Valoarea tichetului de masă configurată per salariat („valoarea tichetului de masă (Salariați)”) este o singură valoare curentă, fără istoric de versiuni — spre deosebire de salariul brut, care are propriul istoric — deci o corecție a acestei valori afectează doar lunile calculate după modificare, nu retroactiv lunile deja procesate.
 
 [iConta.eu](/)

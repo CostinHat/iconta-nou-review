@@ -2,7 +2,7 @@
 title: Cum corectez o factură înregistrată pe clientul greșit?
 description: O factură emisă, atribuită greșit altui client, nu se editează în iConta.eu. Fără notă contabilă, se șterge și se reintroduce pe clientul corect. Cu notă contabilă, corecția se face prin stornare — o factură nouă, cu liniile negate, urmată de factura corectă pe clientul real.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -18,12 +18,12 @@ O factură emisă pe clientul greșit poartă un venit real, dar atribuit unei a
 „În cazul stornărilor, pe documentul inițial se menționează numărul și data notei de contabilitate prin care s-a efectuat stornarea operațiunii, iar în nota de contabilitate de stornare se menționează documentul, data și numărul de ordine ale operațiunii care face obiectul stornării." — OMFP 2634/2015, pct. 20
 :::
 
-Regula de mai sus e temeiul direct al legăturii ținute de aplicație între factura originală și cea de stornare (`storno_din_id`) — nu e o simplă convenție internă, ci o cerință a documentelor financiar-contabile.
+Regula de mai sus e temeiul direct al legăturii ținute de aplicație între factura originală și cea de stornare („factura stornată (referința)”) — nu e o simplă convenție internă, ci o cerință a documentelor financiar-contabile.
 
 ## Cum corectez în iConta.eu
 
 - **Factura nu are încă notă contabilă** → se șterge și se reintroduce pe clientul corect.
-- **Factura are notă contabilă** (deja contată) → ștergerea e refuzată explicit, cu mesajul: „Factura are notă contabilă și nu se mai șterge: o notă ștearsă lasă o gaură în evidență. Corecția unei facturi contabilizate se face prin STORNO." Corecția e prin `storneaza()`: funcția confirmată în cod pentru facturile **emise** — creează o factură nouă, cu liniile din original negate, număr nou din aceeași serie, legată de original prin `storno_din_id`, păstrând cursul valutar și clasificarea originalului (axă IC, taxare inversă etc.).
+- **Factura are notă contabilă** (deja contată) → ștergerea e refuzată explicit, cu mesajul: „Factura are notă contabilă și nu se mai șterge: o notă ștearsă lasă o gaură în evidență. Corecția unei facturi contabilizate se face prin STORNO." Corecția e prin „stornarea”: funcția confirmată în cod pentru facturile **emise** — creează o factură nouă, cu liniile din original negate, număr nou din aceeași serie, legată de original prin „factura stornată (referința)”, păstrând cursul valutar și clasificarea originalului (axă IC, taxare inversă etc.).
 - După stornare, se introduce factura nouă, cu clientul corect — stornoul anulează operațiunea greșită, dar nu o înlocuiește automat cu cea reală.
 - Dacă factura are deja statutul `anulata` sau `stornata`, aplicația refuză o nouă notă de contare pe ea, cu mesajul „o stornare se declară prin documentul ei nou" — nu se mai poate contabiliza a doua oară un document deja anulat.
 - Perioada contabilă închisă blochează atât ștergerea, cât și stornarea sau contarea facturii noi, dacă luna e blocată administrativ.

@@ -2,7 +2,7 @@
 title: "Cum se amortizează un mijloc fix achiziționat printr-o subvenție?"
 description: Amortizarea se calculează la valoarea integrală a mijlocului fix, ca la orice activ — subvenția care l-a finanțat se reia separat la venituri, în același ritm cu amortizarea.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Fiscal, la microîntreprindere, venitul din reluare (7584) se scade din baza imp
 
 ## Ce face iConta.eu
 
-Amortizarea mijlocului fix se calculează normal, prin operațiunile obișnuite de mijloace fixe, la valoarea lui integrală de intrare. Reluarea proporțională a subvenției (`4751=7584`) e calculată corect de motor (`reluare_lunara_investitii`, formula `amortizare_lunară × subvenție / valoare_activ`), dar, la data acestei verificări, **ecranul „Subvenții (445/741)" nu are câmpuri pentru valoarea activului, subvenție și amortizarea lunară** — opțiunea „Reluare la venituri" apare în listă, dar operația nu poate fi finalizată din formularul standard; reluarea trebuie introdusă pe altă cale (API direct sau notă manuală), până la o corectare a ecranului.
+Amortizarea mijlocului fix se calculează normal, prin operațiunile obișnuite de mijloace fixe, la valoarea lui integrală de intrare. Reluarea proporțională a subvenției (`4751=7584`) e calculată corect de motor („reluarea lunară a subvenției pentru investiții”, formula amortizare_lunară × subvenție / valoarea activului), dar, la data acestei verificări, **ecranul „Subvenții (445/741)" nu are câmpuri pentru valoarea activului, subvenție și amortizarea lunară** — opțiunea „Reluare la venituri" apare în listă, dar operația nu poate fi finalizată din formularul standard; reluarea trebuie introdusă pe altă cale (API direct sau notă manuală), până la o corectare a ecranului.
 
 [iConta.eu](/)

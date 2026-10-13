@@ -2,7 +2,7 @@
 title: "Cum înregistrez o chitanță găsită după închiderea lunii?"
 description: "Ce spune legea despre perioadele contabile închise și blocarea modificărilor, plus ce verifică (și ce nu verifică) azi iConta.eu la emiterea unei chitanțe."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ O chitanță apare, uitată prin hârtii, după ce luna în care s-a petrecut op
 
 ## Ce face iConta.eu
 
-Verificat exhaustiv în codul funcției `chitanta_emite`: singurele validări la emiterea unei chitanțe sunt suma mai mare decât zero, existența facturii legate (dacă e cazul) și starea „emisă" a acesteia — **nu există nicio verificare de perioadă sau lună închisă** cuplată la emiterea de chitanțe în acest modul. Practic, iConta.eu permite azi emiterea unei chitanțe noi oricând, fără un mecanism de blocare pe perioade închise specific acestei funcționalități; conceptul de perioadă închisă cerut de normă (pct. 58 lit. h) de mai sus) nu e implementat aici. Dacă găsești o chitanță din luna închisă, tratarea ei corectă — cu notă de contabilitate în perioada curentă — rămâne, la acest moment, un pas manual.
+Verificat exhaustiv în codul funcției „emiterea chitanței (Casă)”: singurele validări la emiterea unei chitanțe sunt suma mai mare decât zero, existența facturii legate (dacă e cazul) și starea „emisă" a acesteia — **nu există nicio verificare de perioadă sau lună închisă** cuplată la emiterea de chitanțe în acest modul. Practic, iConta.eu permite azi emiterea unei chitanțe noi oricând, fără un mecanism de blocare pe perioade închise specific acestei funcționalități; conceptul de perioadă închisă cerut de normă (pct. 58 lit. h) de mai sus) nu e implementat aici. Dacă găsești o chitanță din luna închisă, tratarea ei corectă — cu notă de contabilitate în perioada curentă — rămâne, la acest moment, un pas manual.
 
 [iConta.eu](/)

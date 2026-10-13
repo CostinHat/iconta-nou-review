@@ -2,7 +2,7 @@
 title: Când devine obligatorie plata CAS pentru PFA?
 description: CAS (contribuția de asigurări sociale, pensii) devine obligatorie pentru un PFA în sistem real doar dacă venitul net anual atinge cel puțin 12 salarii minime brute pe țară; sub acest prag, plata rămâne opțională.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Cu salariul minim de referință 4.050 lei (2025/2026), pragul de obligativitate
 
 ## Ce face iConta.eu
 
-Aplicația, funcția `calculeaza_cas`, aplică exact acest prag: sub 12 salarii minime, întoarce "neobligatoriu" (cu posibilitatea de a opta manual pentru plată, caz în care baza sare la 12 salarii minime); de la 12 salarii minime în sus, CAS devine obligatorie, cu bază plafonată în trepte. Acest comportament e confirmat ca fiind conform art. 148 — spre deosebire de tratamentul CASS din motor, aici nu există nicio discrepanță semnalată față de lege. Ce nu verifică automat motorul: cumulul cu alte surse de venit independent ale aceleiași persoane, care ar trebui adunate la același plafon conform art. 148 alin. (3).
+Aplicația, funcția „calculul CAS (Declarații)”, aplică exact acest prag: sub 12 salarii minime, întoarce "neobligatoriu" (cu posibilitatea de a opta manual pentru plată, caz în care baza sare la 12 salarii minime); de la 12 salarii minime în sus, CAS devine obligatorie, cu bază plafonată în trepte. Acest comportament e confirmat ca fiind conform art. 148 — spre deosebire de tratamentul CASS din motor, aici nu există nicio discrepanță semnalată față de lege. Ce nu verifică automat motorul: cumulul cu alte surse de venit independent ale aceleiași persoane, care ar trebui adunate la același plafon conform art. 148 alin. (3).
 
 [iConta.eu](/)

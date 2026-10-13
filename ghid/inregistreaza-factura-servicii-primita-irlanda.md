@@ -2,7 +2,7 @@
 title: "Cum se înregistrează o factură de servicii primită din Irlanda?"
 description: Un serviciu cumpărat de la un prestator din Irlanda, pentru o firmă din România, e impozabil în România — locul prestării e locul beneficiarului —, iar TVA se autolichidează prin 4426 = 4427, declarat în D390 cu clasificare manuală.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Pentru serviciile B2B intracomunitare, regula de bază schimbă complet locul de
 ## Temeiul legal
 
 ::: ghid-temei
-Antetul modulului de operațiuni intracomunitare citează, printre temeiurile motorului de calcul, art. 278 alin. (2) (servicii B2B, locul beneficiarului) și art. 308-309 (obligat la plată = beneficiarul la AIC/servicii primite) — verificat în dosarul F050, aplicația.
+Antetul modulului de operațiuni intracomunitare citează, printre temeiurile motorului de calcul, art. 278 alin. (2) (servicii B2B, locul beneficiarului) și art. 308-309 (obligat la plată = beneficiarul la AIC/servicii primite) —, aplicația.
 :::
 
 ::: ghid-temei

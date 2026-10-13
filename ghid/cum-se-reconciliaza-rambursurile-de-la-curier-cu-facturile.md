@@ -2,7 +2,7 @@
 title: Cum se reconciliază rambursurile de la curier cu facturile?
 description: Legea cere ca orice operațiune să aibă un document justificativ; motorul de matching nu identifică automat CUI-ul clienților individuali dintr-o linie de decontare agregată de la curier, așa că aceste linii cad sistematic pe status roșu și necesită alocare manuală.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,8 +31,8 @@ Nu există în motorul de matching niciun mecanism de "matching pe lot", care s�
 
 ## Ce face iConta.eu
 
-Aplicația cere un CUI identificat pentru fiecare linie de extras (populat în amonte, prin extragerea automată din descriere) înainte de a căuta facturi deschise ale partenerului. O linie fără CUI detectat primește direct status roșu, alocări goale. Pentru liniile roșii fără notă manuală, sistemul încearcă o sugestie de cont pe baza istoricului deja contat (`core.ai_incredere.sugestie`) — o funcționalitate de confort, fără bază legală, utilizatorul rămânând responsabil de validare.
+Aplicația cere un CUI identificat pentru fiecare linie de extras (populat în amonte, prin extragerea automată din descriere) înainte de a căuta facturi deschise ale partenerului. O linie fără CUI detectat primește direct status roșu, alocări goale. Pentru liniile roșii fără notă manuală, sistemul încearcă o sugestie de cont pe baza istoricului deja contat („sugestia de cont”) — o funcționalitate de confort, fără bază legală, utilizatorul rămânând responsabil de validare.
 
-Pentru decontările agregate de ramburs, alocarea pe facturile individuale rămâne un pas manual, folosind parametrul `alocari` la contare (`conteaza`) pentru a specifica exact ce facturi se sting.
+Pentru decontările agregate de ramburs, alocarea pe facturile individuale rămâne un pas manual, folosind parametrul `alocari` la contare („contarea”) pentru a specifica exact ce facturi se sting.
 
 [iConta.eu](/)

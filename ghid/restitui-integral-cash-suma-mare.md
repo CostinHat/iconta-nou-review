@@ -2,7 +2,7 @@
 title: "Se poate restitui integral cash o sumă mai mare decât plafonul?"
 description: "Excepția din Legea nr. 70/2015 care permite restituirea integrală în numerar către o persoană fizică fără cont bancar, peste plafonul obișnuit de 10.000 lei."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă concret:
 
 ## Ce face iConta.eu
 
-iConta.eu semnalează în modulul de casierie (funcția `verifica_plafon`) depășirile plafoanelor de numerar ca avertismente, cu temeiul legal atașat fiecărei probleme — dar aplicația nu are, la data acestui ghid, un câmp dedicat pentru „declarație pe propria răspundere fără cont bancar" care să marcheze automat o restituire ca exceptată de la plafon. Excepția din art. 9 alin. (2) rămâne, deocamdată, o verificare manuală a contabilului, documentată în afara aplicației.
+iConta.eu semnalează în modulul de casierie (funcția „verificarea plafonului de numerar (Casă)”) depășirile plafoanelor de numerar ca avertismente, cu temeiul legal atașat fiecărei probleme — dar aplicația nu are, la data acestui ghid, un câmp dedicat pentru „declarație pe propria răspundere fără cont bancar" care să marcheze automat o restituire ca exceptată de la plafon. Excepția din art. 9 alin. (2) rămâne, deocamdată, o verificare manuală a contabilului, documentată în afara aplicației.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se plătește o factură de peste 5.000 lei parțial cash și parțial prin bancă?"
 description: "Regula din Legea 70/2015 privind combinarea plății în numerar cu plata prin bancă pentru facturile care depășesc plafonul legal de 5.000 lei."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Mecanismul, explicat:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul dedicat de casierie (funcția `verifica_plafon`) care verifică automat, pe baza operațiunilor introduse, respectarea plafoanelor din Legea 70/2015: încasări/plăți zilnice către/de la persoane juridice (5.000 lei, 10.000 lei pentru cash and carry), plăți din avansuri spre decontare și soldul de casă. Când o sumă introdusă depășește plafonul legal, aplicația semnalează un avertisment (risc la control), fără să blocheze operațiunea — decizia de a împărți plata între numerar și bancă rămâne, ca și până acum, a contabilului.
+La data acestui ghid, iConta.eu are un modul dedicat de casierie (funcția „verificarea plafonului de numerar (Casă)”) care verifică automat, pe baza operațiunilor introduse, respectarea plafoanelor din Legea 70/2015: încasări/plăți zilnice către/de la persoane juridice (5.000 lei, 10.000 lei pentru cash and carry), plăți din avansuri spre decontare și soldul de casă. Când o sumă introdusă depășește plafonul legal, aplicația semnalează un avertisment (risc la control), fără să blocheze operațiunea — decizia de a împărți plata între numerar și bancă rămâne, ca și până acum, a contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se înregistrează onorariile încasate cash 2026"
 description: "Plafonul legal pentru încasările în numerar de la persoane fizice, aplicabil onorariilor plătite cash de clienți, conform Legii nr. 70/2015."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Practic, pentru un profesionist (avocat, consultant, notar, orice prestator de s
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcționalitate reală de verificare a plafoanelor de casă, în aplicație: constanta `PLAFON_PF = 10000` reflectă exact plafonul legal pentru încasările de la persoane fizice (art. 4 alin. 1 din Legea 70/2015), iar funcția `verifica_plafon()` compară suma încasărilor cumulate de la aceeași persoană, în aceeași zi, cu acest plafon și semnalează un avertisment (`PLAFON_PF`) atunci când e depășit. Aplicația nu poate detecta însă o fragmentare intenționată pe mai multe zile diferite, concepută explicit pentru a ocoli plafonul — o astfel de practică rămâne o evaluare pe care contabilul trebuie s-o facă, dincolo de verificarea automată zilnică.
+iConta.eu are o funcționalitate reală de verificare a plafoanelor de casă, în aplicație: constanta plafonul pentru persoane fizice = 10000 reflectă exact plafonul legal pentru încasările de la persoane fizice (art. 4 alin. 1 din Legea 70/2015), iar funcția „verificarea plafonului de numerar (Casă)” compară suma încasărilor cumulate de la aceeași persoană, în aceeași zi, cu acest plafon și semnalează un avertisment („plafonul pentru persoane fizice”) atunci când e depășit. Aplicația nu poate detecta însă o fragmentare intenționată pe mai multe zile diferite, concepută explicit pentru a ocoli plafonul — o astfel de practică rămâne o evaluare pe care contabilul trebuie s-o facă, dincolo de verificarea automată zilnică.
 
 [iConta.eu](/)

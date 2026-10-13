@@ -2,7 +2,7 @@
 title: Cum corectez perisabilitățile înregistrate greșit?
 description: Corectarea unei note de perisabilitate greșite depinde de ce anume a fost greșit — procentul de limită, contul de stoc sau ajustarea de TVA — și se face prin ștergerea notei (cât timp e încă ciornă) și reintroducerea ei cu datele corecte.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -20,8 +20,8 @@ O notă de perisabilitate greșită are, de regulă, una din trei cauze: procent
 
 ## Cele trei greșeli tipice și cum se corectează
 
-1. **Procentul de limită greșit** — motorul calculează `limita = valoare_intrari × procent_limita / 100`; dacă procentul introdus nu corespunde grupei de mărfuri (conform anexelor HG 831/2004), tot calculul din aval e greșit: partea deductibilă, partea nedeductibilă și eventuala ajustare de TVA. Corectarea înseamnă ștergerea notei (cât timp e ciornă) și reintroducerea ei cu procentul corect — nu există o corecție parțială, doar pe linia de TVA.
-2. **Contul de stoc greșit** — motorul acceptă orice cont de stoc valid din planul de conturi al firmei (parametrul `cont_stoc`, implicit „371", dar testat și cu „301"); dacă produsul aparține altei categorii de stoc, se re-emite nota cu contul corect.
+1. **Procentul de limită greșit** — motorul calculează limita = valoarea intrărilor × procentul de limită / 100; dacă procentul introdus nu corespunde grupei de mărfuri (conform anexelor HG 831/2004), tot calculul din aval e greșit: partea deductibilă, partea nedeductibilă și eventuala ajustare de TVA. Corectarea înseamnă ștergerea notei (cât timp e ciornă) și reintroducerea ei cu procentul corect — nu există o corecție parțială, doar pe linia de TVA.
+2. **Contul de stoc greșit** — motorul acceptă orice cont de stoc valid din planul de conturi al firmei (parametrul „contul de stoc”, implicit „371", dar testat și cu „301"); dacă produsul aparține altei categorii de stoc, se re-emite nota cu contul corect.
 3. **Ajustarea de TVA calculată greșit** — motorul face ajustarea `635=4426` doar dacă există parte nedeductibilă ȘI nu s-a bifat degradare dovedită distrusă. Dacă ajustarea a fost făcută deși degradarea era dovedită (sau invers, omisă când nu era), se corectează prin refacerea notei cu parametrul corect.
 
 ## Ce se greșește în practică
@@ -32,6 +32,6 @@ O notă de perisabilitate greșită are, de regulă, una din trei cauze: procent
 
 ## Ce face iConta.eu
 
-Nota de perisabilitate e scrisă inițial cu statusul `'ciorna'` (funcția `nota_perisabilitati`), ceea ce permite corectarea ei înainte de închiderea lunii; contul de stoc e validat prin `cont_valid.cere_cont`, care respinge un cont inexistent în planul firmei. Motorul de calcul nu are o funcție de „recalculare" a unei note existente — corectarea unei perisabilități greșite înseamnă ștergerea/stornarea notei din ciornă și reintroducerea ei cu parametrii corecți prin ecranul Operațiuni speciale > „Perisabilități și scăzăminte".
+Nota de perisabilitate e scrisă inițial cu statusul `'ciorna'` (funcția „nota de perisabilități (Stocuri)”), ceea ce permite corectarea ei înainte de închiderea lunii; contul de stoc e validat prin „verificarea contului”, care respinge un cont inexistent în planul firmei. Motorul de calcul nu are o funcție de „recalculare" a unei note existente — corectarea unei perisabilități greșite înseamnă ștergerea/stornarea notei din ciornă și reintroducerea ei cu parametrii corecți prin ecranul Operațiuni speciale > „Perisabilități și scăzăminte".
 
 [iConta.eu](/)

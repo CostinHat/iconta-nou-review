@@ -2,7 +2,7 @@
 title: "Trebuie făcut NIR pentru marfa cumpărată din România?"
 description: "Cazurile în care Nota de recepție și constatare de diferențe (NIR) e obligatorie, conform OMFP 2634/2015, și cele în care recepția se face direct pe bază de factură."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Aplicat la marfa cumpărată din România, cu factură, de la un furnizor persoa
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația oferă funcția `intrare_din_factura()`, care generează direct intrarea cantitativă în gestiune pe baza facturii de achiziție validate, fără a impune un NIR separat — coerent cu regula de mai sus pentru cazul fără diferențe. Pentru situațiile în care NIR-ul e obligatoriu (diferențe la recepție, evidență la preț de vânzare), aplicația conține motorul `nir_gv()` pentru NIR global-valoric, cu calcul de adaos și TVA neexigibilă. Alegerea între cele două fluxuri rămâne, azi, o decizie a contabilului la fiecare recepție, nu una automatizată în funcție de criteriile legale de mai sus.
+La data acestui ghid, aplicația oferă funcția „intrarea în stoc din factură (Stocuri)”, care generează direct intrarea cantitativă în gestiune pe baza facturii de achiziție validate, fără a impune un NIR separat — coerent cu regula de mai sus pentru cazul fără diferențe. Pentru situațiile în care NIR-ul e obligatoriu (diferențe la recepție, evidență la preț de vânzare), aplicația conține motorul „NIR global-valoric (Stocuri)” pentru NIR global-valoric, cu calcul de adaos și TVA neexigibilă. Alegerea între cele două fluxuri rămâne, azi, o decizie a contabilului la fiecare recepție, nu una automatizată în funcție de criteriile legale de mai sus.
 
 [iConta.eu](/)

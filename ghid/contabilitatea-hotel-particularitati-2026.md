@@ -2,7 +2,7 @@
 title: "Contabilitatea unui hotel: particularități 2026"
 description: "Cota redusă de TVA aplicabilă serviciilor de cazare și restaurant într-un hotel, conform art. 291 din Codul fiscal, și cazul separat al băuturilor alcoolice."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Ce rezultă concret pentru evidența unui hotel:
 
 ## Ce face iConta.eu
 
-Modulul de cote TVA din iConta.eu are categorii dedicate pentru „cazare" (cazare hotelieră sau în sectoare cu funcție similară, inclusiv loc de camping) și „restaurant_catering", ambele la cota redusă de 11%, cu o categorie separată pentru băuturile alcoolice — care rămân la cota standard chiar și în context de restaurant/catering, conform excepției explicite din lege. Contabilul rămâne responsabil să descompună corect un pachet mixt (cazare + masă + băutură) pe componentele lui, atunci când firma nu emite facturi separate pentru fiecare element.
+Modulul de cote TVA din iConta.eu are categorii dedicate pentru „cazare" (cazare hotelieră sau în sectoare cu funcție similară, inclusiv loc de camping) și „restaurant și catering (cota redusă)", ambele la cota redusă de 11%, cu o categorie separată pentru băuturile alcoolice — care rămân la cota standard chiar și în context de restaurant/catering, conform excepției explicite din lege. Contabilul rămâne responsabil să descompună corect un pachet mixt (cazare + masă + băutură) pe componentele lui, atunci când firma nu emite facturi separate pentru fiecare element.
 
 [iConta.eu](/)

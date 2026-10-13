@@ -2,7 +2,7 @@
 title: "Greșeli la contractele de mandat: contribuții omise"
 description: Cea mai gravă greșeală la contractele de mandat nu e taxarea în plus, ci omiterea completă a CAS/CASS, tratând administratorul sau cenzorul ca pe un colaborator fără contribuții.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ CAM (contribuția asiguratorie pentru muncă) se datorează diferit, după tipul
 
 ## Ce face iConta.eu
 
-Funcția `calcul_mandat(brut)` din modulul F021 calculează întotdeauna CAS 25% și CASS 10% pentru mandat și cenzor, alături de impozitul de 10% pe rest — nu există în cod o variantă „fără contribuții" pentru aceste categorii. Nota contabilă generată (`nota(fel="mandat"/"cenzor")`) include automat pasul `421 = 4315` (CAS) și, dacă suma rezultă pozitivă, `421 = 4316` (CASS) — omiterea lor ar necesita o abatere manuală de la fluxul standard al aplicației, nu un comportament implicit.
+Funcția „calculul contractului de mandat (Salarii)” din modulul „Contracte de muncă speciale” calculează întotdeauna CAS 25% și CASS 10% pentru mandat și cenzor, alături de impozitul de 10% pe rest — nu există în cod o variantă „fără contribuții" pentru aceste categorii. Nota contabilă generată (nota contabilă (mandat/cenzor)) include automat pasul `421 = 4315` (CAS) și, dacă suma rezultă pozitivă, `421 = 4316` (CASS) — omiterea lor ar necesita o abatere manuală de la fluxul standard al aplicației, nu un comportament implicit.
 
 [iConta.eu](/)

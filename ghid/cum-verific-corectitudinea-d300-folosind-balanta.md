@@ -2,7 +2,7 @@
 title: Cum verific corectitudinea D300 folosind balanța?
 description: Reconcilierea automată a iConta recalculează independent taxa colectată (cotele 21/11/9%) și taxa deductibilă (cotele 21/11%) din liniile de factură — pentru rândurile manuale, lanțul de regularizări și TVA la încasare, verificarea cu balanța contabilă rămâne necesară.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Ce nu intră în această reconciliere, și trebuie confruntat separat cu balan�
 
 ## Ce face iConta.eu
 
-`d300_reconciliere.verifica_reconciliere` rulează ca pas obligatoriu în fluxul de generare, cu SQL propriu, independent de motorul principal (`d300.py`) — recalculează totalurile pe cote pentru colectată (R9/R10/R11) și deductibilă (R22/R23) direct din liniile brute de factură. O divergență blochează generarea și afișează ambele valori pentru investigare. Limita e declarată explicit în cod: reconcilierea NU acoperă rândurile manuale (intracomunitar, taxare inversă, ajustări), lanțul pro-rata/rd.36–45 și TVA la încasare — pentru acestea, verificarea cu balanța contabilă rămâne necesară.
+„reconcilierea D112 (Control fiscal)” rulează ca pas obligatoriu în fluxul de generare, cu SQL propriu, independent de motorul principal — recalculează totalurile pe cote pentru colectată (R9/R10/R11) și deductibilă (R22/R23) direct din liniile brute de factură. O divergență blochează generarea și afișează ambele valori pentru investigare. Limita e declarată explicit în cod: reconcilierea NU acoperă rândurile manuale (intracomunitar, taxare inversă, ajustări), lanțul pro-rata/rd.36–45 și TVA la încasare — pentru acestea, verificarea cu balanța contabilă rămâne necesară.
 
 [iConta.eu](/)

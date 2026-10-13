@@ -2,7 +2,7 @@
 title: "Trebuie întocmit registru de casă în zilele fără operațiuni?"
 description: "Norma spune doar că registrul de casă «se întocmește zilnic, pe baza documentelor justificative» — fără să precizeze explicit dacă o zi fără nicio încasare sau plată cere un rând propriu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Ecranul „card Casa" construiește registrul lunar (`GET /tenants/{id}/casa/registru`) direct din operațiunile existente în `casa_operatiuni` pentru luna cerută — aplicația **nu generează automat rânduri pentru zilele fără nicio operațiune**. Practic, indiferent de interpretarea legală de mai sus, iConta.eu urmează varianta „un rând doar acolo unde există o operațiune reală", fără o linie de sold „zero" pentru zilele fără mișcări.
+Ecranul „card Casa" construiește registrul lunar (aplicația) direct din operațiunile existente în „operațiunile de casă (Casă)” pentru luna cerută — aplicația **nu generează automat rânduri pentru zilele fără nicio operațiune**. Practic, indiferent de interpretarea legală de mai sus, iConta.eu urmează varianta „un rând doar acolo unde există o operațiune reală", fără o linie de sold „zero" pentru zilele fără mișcări.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum completez D112 pentru un salariat nou angajat"
 description: "Ce cere legea la depunerea Declarației 112 pentru luna în care un salariat a fost angajat — și de ce data angajării este câmpul critic."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Pentru un salariat nou angajat, în luna angajării:
 
 ## Ce face iConta.eu
 
-iConta.eu generează D112 din datele salariaților introduse în aplicație, iar `data_angajare` e un câmp obligatoriu — aplicația refuză generarea declarației dacă acest câmp lipsește pentru un salariat activ în perioada raportată, pentru a evita transmiterea unei declarații cu date incomplete către ANAF. Pe baza datei de angajare, aplicația calculează automat proporționalizarea perioadei lucrate în luna angajării și media necesară pentru concediile medicale (dacă e cazul). Raportarea în REGES-ONLINE rămâne, la data acestui ghid, în afara fluxului automatizat — vezi ghidul dedicat modificărilor de contract în REGES.
+iConta.eu generează D112 din datele salariaților introduse în aplicație, iar „data angajării” e un câmp obligatoriu — aplicația refuză generarea declarației dacă acest câmp lipsește pentru un salariat activ în perioada raportată, pentru a evita transmiterea unei declarații cu date incomplete către ANAF. Pe baza datei de angajare, aplicația calculează automat proporționalizarea perioadei lucrate în luna angajării și media necesară pentru concediile medicale (dacă e cazul). Raportarea în REGES-ONLINE rămâne, la data acestui ghid, în afara fluxului automatizat — vezi ghidul dedicat modificărilor de contract în REGES.
 
 [iConta.eu](/)

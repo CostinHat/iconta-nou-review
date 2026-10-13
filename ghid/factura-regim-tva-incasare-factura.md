@@ -2,7 +2,7 @@
 title: "Factura în regim TVA la încasare în e-Factura"
 description: "Ce trebuie să conțină, din punct de vedere legal, o factură electronică emisă de o firmă la TVA la încasare, dincolo de simpla ei transmitere."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,7 +31,7 @@ O factură emisă de o firmă înscrisă la TVA la încasare nu are o structură
 
 ## Ce face iConta.eu
 
-iConta.eu calculează corect baza de impozitare, cota (inclusiv regula specială art. 291 alin. 5, implementată separat în aplicație) și suma TVA pe fiecare linie de factură, indiferent de regimul TVA al firmei. Generatorul de facturi electronice (F126) construiește un XML UBL/CIUS-RO valid din aceste date.
+iConta.eu calculează corect baza de impozitare, cota (inclusiv regula specială art. 291 alin. 5, implementată separat în aplicație) și suma TVA pe fiecare linie de factură, indiferent de regimul TVA al firmei. Generatorul de facturi electronice („e-Factura SPV complet”) construiește un XML UBL/CIUS-RO valid din aceste date.
 
 Ce nu face, verificat direct în cod: generatorul XML-ului nu include nicăieri mențiunea text „TVA la încasare" cerută de art. 319 alin. (20) lit. p) — categoriile de TVA folosite în XML sunt doar standard ("S") și cotă zero ("Z"), fără vreo mențiune sau categorie distinctă pentru regimul de încasare. Conținutul facturii electronice, așa cum e generat azi de aplicație, e deci incomplet față de cerința legală de mai sus pentru o firmă la TVA la încasare — un gol pe care contabilul trebuie să-l suplinească manual, prin alt mijloc, până la o actualizare a generatorului.
 

@@ -2,7 +2,7 @@
 title: "Cum se înregistrează diferențele de curs la stocuri"
 description: "Pas cu pas: de ce nu există o notă de diferență de curs pentru stocuri și cum se înregistrează, de fapt, o achiziție de marfă în valută."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Practic, o achiziție de marfă în valută se înregistrează în doi pași dis
 
 ## Ce face iConta.eu
 
-Funcționalitatea de diferențe de curs valutar respinge explicit tipul „stoc": funcția care calculează diferența acceptă doar `creanta`, `disponibil` sau `datorie`. Aplicația nu generează, deci, nicio notă de diferență de curs pe conturile de stoc — corect, conform regulii de mai sus. Ce automatizează F041 este diferența de curs pe datoria față de furnizorul mărfii (cont 401), prin ecranele „Operațiuni speciale" → decontare sau reevaluare valutară; înregistrarea inițială a stocului la cursul de recepție se face separat, din ecranul de facturare/achiziții.
+Funcționalitatea de diferențe de curs valutar respinge explicit tipul „stoc": funcția care calculează diferența acceptă doar `creanta`, `disponibil` sau `datorie`. Aplicația nu generează, deci, nicio notă de diferență de curs pe conturile de stoc — corect, conform regulii de mai sus. Ce automatizează „Diferențe de curs valutar” este diferența de curs pe datoria față de furnizorul mărfii (cont 401), prin ecranele „Operațiuni speciale" → decontare sau reevaluare valutară; înregistrarea inițială a stocului la cursul de recepție se face separat, din ecranul de facturare/achiziții.
 
 [iConta.eu](/)

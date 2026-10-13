@@ -2,7 +2,7 @@
 title: "Poate firma schimba metoda FIFO cu CMP?"
 description: "Ce spune legea despre alegerea și schimbarea metodei de evaluare a stocurilor (FIFO, CMP, LIFO), și de ce iConta.eu nu oferă un comutator între ele."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,7 +30,7 @@ Da, în principiu — metoda de evaluare a stocurilor este o alegere de politic�
 
 ## Ce face iConta.eu
 
-Această întrebare presupune o funcționalitate care **nu există în iConta.eu**: nu există, nicăieri în codul aplicației, un comutator sau o setare care să permită alegerea sau schimbarea metodei de evaluare între FIFO și CMP. Motorul de stocuri cantitativ-valorice implementează exclusiv metoda CMP, fără nicio ramură alternativă pentru FIFO sau LIFO — costul se calculează mereu ca medie ponderată (`cmp_curent = valoare / cantitate`), indiferent de preferințele firmei.
+Această întrebare presupune o funcționalitate care **nu există în iConta.eu**: nu există, nicăieri în codul aplicației, un comutator sau o setare care să permită alegerea sau schimbarea metodei de evaluare între FIFO și CMP. Motorul de stocuri cantitativ-valorice implementează exclusiv metoda CMP, fără nicio ramură alternativă pentru FIFO sau LIFO — costul se calculează mereu ca medie ponderată (costul mediu ponderat = valoare / cantitate), indiferent de preferințele firmei.
 
 Așadar, un utilizator care caută în iConta.eu o opțiune „schimbă metoda FIFO cu CMP" nu o va găsi, pentru simplul motiv că aplicația nu a oferit niciodată FIFO ca alternativă — singura metodă disponibilă pentru gestiunea cantitativ-valorică este CMP. Dacă firma folosea efectiv FIFO în altă parte (pe hârtie sau în alt sistem) și trece la iConta, trecerea înseamnă, de fapt, adoptarea metodei CMP ca metodă unică de evidență în aplicație, nu o alegere între cele două în interiorul ei.
 

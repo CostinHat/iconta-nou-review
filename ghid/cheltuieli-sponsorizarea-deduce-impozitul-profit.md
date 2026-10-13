@@ -2,7 +2,7 @@
 title: 'Cheltuieli cu sponsorizarea: cum se deduce din impozitul pe profit'
 description: Sponsorizarea nu se deduce din baza impozabilă, ca o cheltuială obișnuită — se scade direct din impozitul pe profit datorat, ca și credit fiscal, în limita minimului dintre 0,75% din cifra de afaceri și 20% din impozitul pe profit.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,8 +36,8 @@ Sponsorizarea are un regim fiscal diferit de restul cheltuielilor firmei: nu red
 
 ## Ce face iConta.eu
 
-Funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="profit", beneficiar_in_registru=True, la_data=None)` din aplicație implementează exact acest mecanism: dacă `beneficiar_in_registru=False`, returnează credit 0, cu notă explicită de respingere; altfel, calculează plafonul prin `plafon_credit()` = `min(0,75% × cifra_afaceri, 20% × impozit_profit)`, apoi `credit = min(sponsorizari_efectuate, plafon)`. Diferența rămasă neconsumată din plafon (`redirectionabil_d177 = plafon - credit`) poate fi redirecționată separat, prin formularul D177, până la termenul de depunere a D101.
+Funcția „creditul fiscal pentru sponsorizări (Operațiuni speciale)” din aplicație implementează exact acest mecanism: dacă beneficiar în registrul entităților=False, returnează credit 0, cu notă explicită de respingere; altfel, calculează plafonul prin „plafonul creditului fiscal” = min(0,75% × cifra de afaceri, 20% × impozitul pe profit), apoi credit = min(sponsorizările efectuate, plafon). Diferența rămasă neconsumată din plafon (suma redirecționabilă prin D177 = plafon - credit) poate fi redirecționată separat, prin formularul D177, până la termenul de depunere a D101.
 
-Nota contabilă a sponsorizării în sine se generează cu `nota_sponsorizare(suma, mod="contract"|"plata")`, pe contul 6582 „Donații acordate” (denumirea oficială din planul de conturi OMFP 1802/2014 — nu există un cont dedicat „sponsorizare”).
+Nota contabilă a sponsorizării în sine se generează cu „nota de sponsorizare”, pe contul 6582 „Donații acordate” (denumirea oficială din planul de conturi OMFP 1802/2014 — nu există un cont dedicat „sponsorizare”).
 
 [iConta.eu](/)

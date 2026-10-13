@@ -2,19 +2,13 @@
 title: "Cum se declară dividendele când asociații au procente diferite?"
 description: "Cum se distribuie proporțional dividendul brut între asociați cu cote de participare diferite, în vederea declarării D205."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum se declară dividendele când asociații au procente diferite?
 
 Când asociații nu dețin cote egale din capitalul social, dividendul brut trebuie împărțit proporțional cu procentul fiecăruia, iar D205 trebuie să reflecte exact această proporție pe fiecare beneficiar.
-
-## Temeiul legal
-
-::: ghid-temei
-Descrierea funcționalității F029 (`/home/claude/iconta/FUNCTIONALITATI.csv`, rând F029): "impozit reținut la sursă (dividende), beneficiari cu cota pe an (8/10/16%), împărțire automată a dividendului brut pe asociați după cote, XML validat."
-:::
 
 Declarația D205 nu are un câmp separat pentru "procent" — ceea ce se raportează este suma efectivă (bază + impozit) alocată fiecărui beneficiar, rezultată din aplicarea procentului acestuia asupra dividendului brut distribuit/plătit.
 

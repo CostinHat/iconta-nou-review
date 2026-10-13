@@ -2,7 +2,7 @@
 title: "Care este monografia contabilă pentru recepția mărfurilor?"
 description: "Funcțiunea contului 371 «Mărfuri» la recepția unei achiziții de la furnizor, potrivit reglementărilor contabile OMFP 1802/2014."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Nota contabilă tipică, la recepția unei achiziții de mărfuri de la un furni
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă, prin aplicație, funcția `nir_gv`, care generează nota de recepție pentru gestiunea global-valorică (cu adaos comercial și TVA neexigibilă, conturile 371/378/4428), inclusiv calculul coeficientului de repartizare (K) folosit ulterior la descărcarea gestiunii. Pentru evidența la cost de achiziție simplu, aplicația oferă evidența contabilă generală (jurnal, fișă de cont), pe care contabilul o folosește pentru notele de recepție care nu trec prin gestiunea global-valorică.
+La data acestui ghid, iConta.eu oferă, prin aplicație, funcția „NIR global-valoric (Stocuri)”, care generează nota de recepție pentru gestiunea global-valorică (cu adaos comercial și TVA neexigibilă, conturile 371/378/4428), inclusiv calculul coeficientului de repartizare (K) folosit ulterior la descărcarea gestiunii. Pentru evidența la cost de achiziție simplu, aplicația oferă evidența contabilă generală (jurnal, fișă de cont), pe care contabilul o folosește pentru notele de recepție care nu trec prin gestiunea global-valorică.
 
 [iConta.eu](/)

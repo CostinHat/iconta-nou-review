@@ -2,7 +2,7 @@
 title: "Cum se înregistrează contabil un mijloc fix primit prin proiect european?"
 description: Mijlocul fix obținut printr-un proiect european se înregistrează la valoarea lui integrală, ca orice activ, iar finanțarea europeană se ține separat, ca subvenție pentru investiții.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Contabilitatea proiectului se ține distinct, pe sursa de finanțare, dar asta n
 
 ## Ce face iConta.eu
 
-Mijlocul fix se înregistrează prin ecranul obișnuit de mijloace fixe, la valoarea integrală. Finanțarea europeană se reflectă separat, prin ecranul „Subvenții (445/741)", opțiunea „Investiții (475)" — dreptul și încasarea funcționează din acest ecran. Reluarea lunară proporțională cu amortizarea nu poate fi însă finalizată din același formular: la data acestei verificări, opțiunea „Reluare la venituri" apare în listă, dar ecranul nu are câmpurile `valoare_activ`, `subventie` și `amortizare_lunara` cerute de operație — reluarea trebuie introdusă pe altă cale (API direct sau notă manuală). Aplicația nu are un ecran dedicat de „proiect european" cu evidență analitică separată pe surse de finanțare — dacă contractul de finanțare îți cere raportare distinctă pe proiect, aceasta trebuie ținută separat, în completarea notelor generate aici.
+Mijlocul fix se înregistrează prin ecranul obișnuit de mijloace fixe, la valoarea integrală. Finanțarea europeană se reflectă separat, prin ecranul „Subvenții (445/741)", opțiunea „Investiții (475)" — dreptul și încasarea funcționează din acest ecran. Reluarea lunară proporțională cu amortizarea nu poate fi însă finalizată din același formular: la data acestei verificări, opțiunea „Reluare la venituri" apare în listă, dar ecranul nu are câmpurile „valoarea activului”, `subventie` și „amortizarea lunară” cerute de operație — reluarea trebuie introdusă pe altă cale (API direct sau notă manuală). Aplicația nu are un ecran dedicat de „proiect european" cu evidență analitică separată pe surse de finanțare — dacă contractul de finanțare îți cere raportare distinctă pe proiect, aceasta trebuie ținută separat, în completarea notelor generate aici.
 
 [iConta.eu](/)

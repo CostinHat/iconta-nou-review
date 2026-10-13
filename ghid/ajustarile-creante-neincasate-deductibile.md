@@ -2,7 +2,7 @@
 title: "Ajustările pentru creanțe neîncasate sunt deductibile?"
 description: "Da, dar limitat: 30% peste 270 de zile de la scadență, sau 100% la faliment declarat/insolvență — și doar dacă creanța nu e garantată și nu e la o persoană afiliată."
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Condițiile de negarantare și neafiliere sunt cumulative cu celelalte, la ambel
 
 ## Ce face iConta.eu
 
-Funcția `deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat)` din aplicație calculează procentul deductibil exact în această ordine: creanță garantată sau afiliată → 0%, indiferent de alți parametri; faliment declarat/insolvență PF → 100%; peste 270 de zile (altfel) → 30%; sub 270 de zile → 0%. Aplicația nu preia automat rezultatul în declarația de impozit pe profit — valoarea nedeductibilă se introduce manual la rândurile corespunzătoare.
+Funcția „deductibilitatea creanței (Operațiuni speciale)” din aplicație calculează procentul deductibil exact în această ordine: creanță garantată sau afiliată → 0%, indiferent de alți parametri; faliment declarat/insolvență PF → 100%; peste 270 de zile (altfel) → 30%; sub 270 de zile → 0%. Aplicația nu preia automat rezultatul în declarația de impozit pe profit — valoarea nedeductibilă se introduce manual la rândurile corespunzătoare.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum tratez fiscal provizioanele pentru litigii?"
 description: "De ce cheltuiala cu provizionul pentru litigii, deși recunoscută contabil, rămâne integral nedeductibilă fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Greșeala tipică este tratarea cheltuielii cu provizionul pentru litigii ca ded
 
 ## Ce face iConta.eu
 
-Motorul F071 marchează explicit provizionul pentru litigii (cont 1511) ca nedeductibil — în cod, deductibilitatea e activată doar pentru categoria „garanții” (cont 1512), toate celelalte, inclusiv litigiile, fiind generate ca nedeductibile. Nota contabilă generată este 6812 = 1511 la constituire, respectiv 1511 = 7812 la reluare.
+Motorul „Provizioane și ajustări” marchează explicit provizionul pentru litigii (cont 1511) ca nedeductibil — în cod, deductibilitatea e activată doar pentru categoria „garanții” (cont 1512), toate celelalte, inclusiv litigiile, fiind generate ca nedeductibile. Nota contabilă generată este 6812 = 1511 la constituire, respectiv 1511 = 7812 la reluare.
 
 [iConta.eu](/)

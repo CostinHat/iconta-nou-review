@@ -2,7 +2,7 @@
 title: "Regimul special de impozitare pentru cooperative"
 description: "De ce nu există în legislația fiscală românească un regim special de impozitare dedicat societăților cooperative — ele plătesc impozit pe profit sau pe veniturile microîntreprinderilor, ca orice altă persoană juridică română."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,7 +34,7 @@ Organizarea juridică a cooperativelor (constituire, funcționare, tipuri) e reg
 
 ## Ce face iConta.eu
 
-Acest ghid nu corespunde niciunei funcționalități specifice din iConta.eu. Titlul a fost, inițial, asociat funcționalității **F099 — Regim special de TVA pentru agențiile de turism** (art. 311 Cod fiscal, regimul marjei de profit), dar cele două subiecte nu au nicio legătură: F099 tratează exclusiv baza de TVA a agențiilor de turism (marja dintre încasare și costurile directe), nu impozitarea profitului sau a veniturilor unei cooperative. Nu am forțat această legătură.
+Acest ghid nu corespunde niciunei funcționalități specifice din iConta.eu. Titlul a fost, inițial, asociat funcționalității **„Regim special agenții de turism” — Regim special de TVA pentru agențiile de turism** (art. 311 Cod fiscal, regimul marjei de profit), dar cele două subiecte nu au nicio legătură: „Regim special agenții de turism” tratează exclusiv baza de TVA a agențiilor de turism (marja dintre încasare și costurile directe), nu impozitarea profitului sau a veniturilor unei cooperative. Nu am forțat această legătură.
 
 O societate cooperativă care folosește iConta.eu se înregistrează și e tratată de aplicație exact ca orice altă firmă, în funcție de regimul ei fiscal real (impozit pe profit sau microîntreprindere) — nu există în cod niciun modul, calcul sau declarație dedicate specific formei juridice de cooperativă.
 

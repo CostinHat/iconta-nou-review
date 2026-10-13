@@ -2,7 +2,7 @@
 title: "Cum se declară dividendele pentru mai mulți asociați în D205?"
 description: "Cum împarte D205 dividendul brut între mai mulți asociați și ce validări se aplică fiecărui beneficiar."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,6 +25,6 @@ Se încearcă uneori declararea unei singure sume agregate pe firmă, fără def
 
 ## Ce face iConta.eu
 
-Repository-ul de date al D205 (funcția `select_asociati`) citește automat toți asociații cu cotă mai mare de zero și, pornind de la sumele înregistrate în contul 457 (doar din note contabile cu status "validata"), calculează pentru fiecare în parte baza și impozitul, în funcție de suma efectiv plătită acelui asociat. CUI-ul plătitorului și CNP-ul fiecărui beneficiar sunt validate pe cifră de control (checksum), nu doar verificate ca fiind completate, iar un CNP duplicat pentru același tip de venit este blocat explicit la generare. Suma totală de control din antetul declarației (`totalPlata_A`) este calculată o singură dată, la nivelul tuturor beneficiarilor, și doar preluată în XML-ul final — nu recalculată separat, pentru a evita neconcordanțe.
+Repository-ul de date al D205 (funcția „lista asociaților (Date firmă)”) citește automat toți asociații cu cotă mai mare de zero și, pornind de la sumele înregistrate în contul 457 (doar din note contabile cu status "validata"), calculează pentru fiecare în parte baza și impozitul, în funcție de suma efectiv plătită acelui asociat. CUI-ul plătitorului și CNP-ul fiecărui beneficiar sunt validate pe cifră de control (checksum), nu doar verificate ca fiind completate, iar un CNP duplicat pentru același tip de venit este blocat explicit la generare. Suma totală de control din antetul declarației (`totalPlata_A`) este calculată o singură dată, la nivelul tuturor beneficiarilor, și doar preluată în XML-ul final — nu recalculată separat, pentru a evita neconcordanțe.
 
 [iConta.eu](/)

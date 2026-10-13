@@ -2,19 +2,13 @@
 title: "Cum declar diferența de impozit rezultată la D101?"
 description: "Diferența de impozit rezultă din definitivarea anuală la cota de 16%, dar D101 rectificativă nu este încă disponibilă în aplicație."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum declar diferența de impozit rezultată la D101?
 
 Diferența de impozit pe profit rezultă din definitivarea anuală (P40 × 16% = P411). Dacă însă diferența apare pentru că a fost descoperită o eroare DUPĂ depunerea D101, situația e diferită — și trebuie tratată onest.
-
-## Temeiul legal
-
-::: ghid-temei
-"Toate flag-urile de stare din rădăcina XML (`d_rec`, `d_reg`, `d_reglem`, `d_anulare`, `d_succ`, `d_prof`, `d_alte`) sunt hardcodate «0» în `build_xml()`, fără parametru de intrare care să le seteze." — dosarul de cercetare F027.
-:::
 
 Pentru definitivarea normală, impozitul rezultat este cota de 16% (CF art.17) aplicată pe profitul impozabil final (P40 → P411), după deduceri, add-back-uri și rezerva legală.
 

@@ -2,7 +2,7 @@
 title: "Voucherele de vacanță la HoReCa 2026: cum se folosesc?"
 description: Voucherele de vacanță se folosesc doar la unități afiliate din turism (structuri de primire clasificate sau agenții licențiate), fără posibilitate de rest în bani, iar diferența peste valoarea voucherelor se suportă de salariat.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Legea prevede și sancțiuni pentru unitățile afiliate care încalcă aceste r
 
 ## Ce face iConta.eu
 
-Tranzacția de utilizare a voucherului la unitatea afiliată (decontarea cu operatorul de turism, comisionul, eventualul rest de plată suportat de salariat) are loc în afara angajatorului și nu este gestionată de F133. Modulul acoperă doar partea de angajator: acordarea lunară a voucherului de vacanță per salariat, calculul CASS 10% și impozit 10% (fără CAS, fără CAM), urmărirea plafonului anual cumulat de 6 salarii minime și, la exces, taxarea integrală ca venit salarial. Ce se întâmplă la unitatea afiliată în momentul folosirii efective a voucherului rămâne un circuit extern aplicației.
+Tranzacția de utilizare a voucherului la unitatea afiliată (decontarea cu operatorul de turism, comisionul, eventualul rest de plată suportat de salariat) are loc în afara angajatorului și nu este gestionată de „Tichete de masă, de vacanță și cadouri în statul de plată”. Modulul acoperă doar partea de angajator: acordarea lunară a voucherului de vacanță per salariat, calculul CASS 10% și impozit 10% (fără CAS, fără CAM), urmărirea plafonului anual cumulat de 6 salarii minime și, la exces, taxarea integrală ca venit salarial. Ce se întâmplă la unitatea afiliată în momentul folosirii efective a voucherului rămâne un circuit extern aplicației.
 
 [iConta.eu](/)

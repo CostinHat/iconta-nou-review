@@ -2,7 +2,7 @@
 title: Cum verific dacă D300 este corect înainte de depunere?
 description: iConta rulează gărzi de profil, calcul automat pe cote, un gard de oglindă pentru taxarea inversă și o reconciliere a doua cale înainte de a genera XML-ul — dar reconcilierea automată nu acoperă rândurile manuale, pro-rata sau TVA la încasare.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,7 +25,7 @@ poarta: v1
 
 ## Ce verifică aplicația automat înainte de generare
 
-Fluxul de generare (`genereaza`) parcurge, în ordine: citirea facturilor pe fereastra fiscală a firmei, gărzi de profil (CUI cu cifră de control, denumire, bancă, cont/IBAN, cod CAEN, pro-rata), calculul propriu-zis pe cote și operațiuni speciale, gărzi blocante (inclusiv corelația tip de decont ↔ lună), un gard dedicat care verifică oglinda dintre rândul colectat și cel deductibil la taxarea inversă internă (dacă nu sunt egale, generarea se oprește cu eroare), o reconciliere independentă a totalurilor pe cote, apoi serializarea XML și un gard de sumă totală de plată, înainte de a semnala dacă decontul rezultat e nul.
+Fluxul de generare („generarea”) parcurge, în ordine: citirea facturilor pe fereastra fiscală a firmei, gărzi de profil (CUI cu cifră de control, denumire, bancă, cont/IBAN, cod CAEN, pro-rata), calculul propriu-zis pe cote și operațiuni speciale, gărzi blocante (inclusiv corelația tip de decont ↔ lună), un gard dedicat care verifică oglinda dintre rândul colectat și cel deductibil la taxarea inversă internă (dacă nu sunt egale, generarea se oprește cu eroare), o reconciliere independentă a totalurilor pe cote, apoi serializarea XML și un gard de sumă totală de plată, înainte de a semnala dacă decontul rezultat e nul.
 
 ## Ce se greșește în practică
 
@@ -36,6 +36,6 @@ Fluxul de generare (`genereaza`) parcurge, în ordine: citirea facturilor pe fer
 
 ## Ce face iConta.eu
 
-`genereaza(conn, schema, perioada, manual, reclasificari)` rulează, în ordine: gărzile de profil (`erori_generare`), calculul (`calcul_d300`), gărzile blocante pre-validare, gardul dedicat de oglindă pentru taxarea inversă (`_oglinda_r12_r25`, care ridică eroare dacă rândul colectat și cel deductibil nu sunt egale — regulă impusă de aplicație, nu de validatorul ANAF instalat), reconcilierea a doua cale (`d300_reconciliere.verifica_reconciliere`), serializarea XML și un gard de sumă totală de plată. Reconcilierea a doua cale recalculează independent doar totalurile automate pe cote — 21/11/9% pentru taxa colectată, dar doar 21/11% pentru cea deductibilă (cota 9% deductibilă nu se auto-emite) — nu acoperă rândurile manuale, lanțul de regularizări pro-rata (rd.36–45) și TVA la încasare, limite declarate explicit în cod. Pentru operațiunile speciale, verificarea manuală față de balanța contabilă rămâne necesară.
+„generarea” rulează, în ordine: gărzile de profil („verificarea datelor înainte de generare (Declarații)”), calculul („calculul D300 (Declarații)”), gărzile blocante pre-validare, gardul dedicat de oglindă pentru taxarea inversă (`_oglinda_r12_r25`, care ridică eroare dacă rândul colectat și cel deductibil nu sunt egale — regulă impusă de aplicație, nu de validatorul ANAF instalat), reconcilierea a doua cale („reconcilierea D112 (Control fiscal)”), serializarea XML și un gard de sumă totală de plată. Reconcilierea a doua cale recalculează independent doar totalurile automate pe cote — 21/11/9% pentru taxa colectată, dar doar 21/11% pentru cea deductibilă (cota 9% deductibilă nu se auto-emite) — nu acoperă rândurile manuale, lanțul de regularizări pro-rata (rd.36–45) și TVA la încasare, limite declarate explicit în cod. Pentru operațiunile speciale, verificarea manuală față de balanța contabilă rămâne necesară.
 
 [iConta.eu](/)

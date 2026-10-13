@@ -2,7 +2,7 @@
 title: Cum se înregistrează lipsurile de gestiune într-un restaurant?
 description: Nota contabilă de minus la inventar diferă după cum lipsa e imputabilă unui salariat, unui terț, sau neimputabilă — și, în acest ultim caz, după cum e sau nu dovedită.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -42,6 +42,6 @@ Operația "Minus" din ecranul de inventariere cere obligatoriu cota de TVA — a
 - **minus neimputabil, neasigurat sau nedemonstrat ca distrus** — pe lângă descărcarea de gestiune, se generează și ajustarea de TVA (635 = 4426);
 - **minus neimputabil, asigurat sau dovedit distrus** — fără linia de ajustare TVA.
 
-Câmpurile `imputabil` și `valoare_imputare` apar în formular condiționat de alegerea operației "Minus". De verificat direct pe ecran, la momentul completării: câmpul de cotă TVA distinct pentru acest formular nu a putut fi confirmat separat din codul sursă citit — dacă nu apare explicit, contactați suportul înainte de a presupune o valoare implicită.
+Câmpurile `imputabil` și „valoarea imputată” apar în formular condiționat de alegerea operației "Minus". De verificat direct pe ecran, la momentul completării: câmpul de cotă TVA distinct pentru acest formular nu a putut fi confirmat separat din codul sursă citit — dacă nu apare explicit, contactați suportul înainte de a presupune o valoare implicită.
 
 [iConta.eu](/)

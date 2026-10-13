@@ -2,7 +2,7 @@
 title: "Pot depune D212 online prin SPV?"
 description: "Obligația persoanelor fizice cu activitate independentă de a transmite Declarația unică (D212) exclusiv prin mijloace electronice, potrivit Codului de procedură fiscală."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Consecințele practice ale acestei obligații:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează fișierul XML al Declarației unice (D212) pe baza datelor introduse manual de contabil, prin aplicație (funcția `genereaza`/`build_xml`). Aplicația nu transmite însă declarația către SPV și nu are integrare cu portalul ANAF pentru depunerea D212 — fișierul XML generat trebuie încărcat manual de contribuabil sau de contabil în Spațiul Privat Virtual.
+La data acestui ghid, iConta.eu generează fișierul XML al Declarației unice (D212) pe baza datelor introduse manual de contabil, prin aplicație (funcția „generarea”/„generarea XML-ului declarației (Declarații)”). Aplicația nu transmite însă declarația către SPV și nu are integrare cu portalul ANAF pentru depunerea D212 — fișierul XML generat trebuie încărcat manual de contribuabil sau de contabil în Spațiul Privat Virtual.
 
 [iConta.eu](/)

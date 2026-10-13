@@ -2,7 +2,7 @@
 title: Ce contribuții plătește angajatul din salariu în 2026?
 description: Angajatul suportă trei rețineri din brut — CAS 25%, CASS 10% și impozit pe venit 10% — aplicate într-o ordine precisă. Vezi formula completă și un exemplu de calcul.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -58,6 +58,6 @@ Cea mai frecventă greșeală e calcularea CASS pe baza rămasă după scăderea
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`_calcul_salariu_2018()`) aplică exact ordinea de mai sus: facilitate → CAS 25% → CASS 10% → deducere personală → impozit 10% → net. Toate cotele vin din registrul „period-aware" `core.common.COTE`, astfel încât aplicația folosește automat valorile corecte pentru fereastra din 2026 în care cade luna calculată.
+Motorul de calcul („calculul salariului (Salarii)”) aplică exact ordinea de mai sus: facilitate → CAS 25% → CASS 10% → deducere personală → impozit 10% → net. Toate cotele vin din registrul „period-aware" „registrul de cote al aplicației”, astfel încât aplicația folosește automat valorile corecte pentru fereastra din 2026 în care cade luna calculată.
 
 [iConta.eu](/)

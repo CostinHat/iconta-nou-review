@@ -2,23 +2,13 @@
 title: "Cum contabilizez plata unei facturi în euro dintr-un cont în lei?"
 description: "Explică ce curs BNR se folosește pentru o factură în euro și cum îl determină automat iConta.eu la emitere."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum contabilizez plata unei facturi în euro dintr-un cont în lei?
 
 Punctul de plecare pentru orice factură în valută e stabilirea corectă a cursului la care se convertesc sumele în lei — plata efectivă dintr-un cont în lei nu schimbă regula, doar o pune în practică.
-
-## Temeiul legal
-
-::: ghid-temei
-"(2) Dacă elementele folosite pentru stabilirea bazei de impozitare a unei operațiuni, alta decât importul de bunuri, se exprimă în valută, cursul de schimb care se aplică este ultimul curs de schimb comunicat de Banca Națională a României [...] valabil la data la care intervine exigibilitatea taxei pentru operațiunea în cauză [...]"
-— Codul fiscal (Legea 227/2015), art. 290 alin. (2), [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F025.
-
-"În sensul art. 290 alin. (2) din Codul fiscal, prin ultimul curs de schimb comunicat de Banca Națională a României se înțelege cursul de schimb comunicat de respectiva bancă în ziua anterioară și care este valabil pentru operațiunile care se vor desfășura în ziua următoare."
-— HG 1/2016 (norme metodologice CF), pct. 35 alin. (1), [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822), dosar de cercetare F025.
-:::
 
 Factura emisă în euro se înregistrează în lei la cursul BNR valabil la data operațiunii (de regulă data exigibilității taxei). Plata ulterioară, dintr-un cont în lei, nu recalculează acest curs — factura rămâne înregistrată la cursul ei propriu; diferența dintre cursul facturii și cursul zilei plății generează, contabil, o diferență de curs valutar la decontare (venit sau cheltuială financiară), tratată separat de cursul de TVA al facturii.
 

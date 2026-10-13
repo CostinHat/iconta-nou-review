@@ -2,7 +2,7 @@
 title: "Am omis să scot din evidență un mijloc fix vândut"
 description: "Cum se corectează registrul de mijloace fixe atunci când un activ vândut a rămas activ în evidență."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,6 +25,6 @@ Greșeala inițială — omiterea scoaterii din evidență — duce de obicei la
 
 ## Ce face iConta.eu
 
-Ecranul de Casare este singura acțiune de ieșire din registru descrisă în acest dosar — o poți folosi pentru a dezactiva activul, iar amortizarea la zi (`amortizat_la_data`) se calculează automat, pe metoda reală a activului, până la data introdusă. Nota generată e ciornă, validată separat din Registrul jurnal, deci corecția nu se aplică direct fără validare contabilă.
+Ecranul de Casare este singura acțiune de ieșire din registru descrisă în acest dosar — o poți folosi pentru a dezactiva activul, iar amortizarea la zi („amortizarea cumulată (Mijloace fixe)”) se calculează automat, pe metoda reală a activului, până la data introdusă. Nota generată e ciornă, validată separat din Registrul jurnal, deci corecția nu se aplică direct fără validare contabilă.
 
 [iConta.eu](/)

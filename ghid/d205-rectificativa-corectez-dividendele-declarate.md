@@ -2,20 +2,13 @@
 title: "D205 rectificativă: cum corectez dividendele declarate"
 description: "Ce poate și ce nu poate face în prezent iConta.eu pentru corectarea unei declarații D205 deja depuse la ANAF."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # D205 rectificativă: cum corectez dividendele declarate
 
 Dacă o declarație D205 a fost deja depusă la ANAF cu date greșite despre dividende, corecția standard se face printr-o declarație rectificativă. Este important să știți, înainte de a căuta acest flux în aplicație, ce este și ce nu este acoperit în acest moment.
-
-## Temeiul legal
-
-::: ghid-temei
-"nu suportă declarație rectificativă (`d_rec="0"` hardcodat, `GARZI.md:2765`)"
-— stare documentată intern a generatorului D205 din iConta, referitoare la limitele curente ale funcționalității F029
-:::
 
 Structura oficială D205 este reglementată prin OPANAF 179/2022 (bază), modificat prin OPANAF 102/2025 și, cel mai recent, OPANAF 303/2026 — niciuna dintre modificările recente nu afectează regulile privind dividendele (tip_venit "08"). Notă onestă: dincolo de faptul documentat mai sus (`d_rec="0"` hardcodat în generatorul iConta), acest ghid nu a putut verifica în corpusul de surse locale prevederile punctuale ale formularului oficial privind mecanismul de rectificare — pentru procedura exactă de rectificare la ANAF, consultați instrucțiunile oficiale de completare a D205.
 

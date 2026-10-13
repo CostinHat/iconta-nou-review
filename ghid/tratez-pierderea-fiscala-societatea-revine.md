@@ -2,19 +2,13 @@
 title: "Cum tratez pierderea fiscală când societatea revine la impozit pe profit?"
 description: "Doar pierderea fiscală generată înainte de perioada de microîntreprindere poate fi utilizată la revenirea la impozit pe profit."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum tratez pierderea fiscală când societatea revine la impozit pe profit?
 
 Punctul esențial de reținut: pierderea fiscală este un concept exclusiv al regimului de impozit pe profit — nu se generează, ca atare, în perioada în care firma a fost la impozit micro.
-
-## Temeiul legal
-
-::: ghid-temei
-"Art.31 alin.(5): «Contribuabilii care au fost plătitori de impozit pe veniturile microîntreprinderilor și care ANTERIOR au realizat pierdere fiscală intră sub incidența alin.(1) de la data la care au revenit la sistemul [profit]» — confirmă că pierderea fiscală e un concept exclusiv al regimului de profit, reportabilă doar din perioade de profit, nu generabilă în perioada micro." — Legea 227/2015, citată în dosarul de cercetare F027.
-:::
 
 Baza acestei reguli: art.49 și art.53 arată că baza impozabilă a impozitului micro este VENITUL, nu profitul — conceptul de „pierdere fiscală" (art.31, Titlul II) nu este menționat nicăieri în art.47–56 (Titlul III, impozit micro). Singura mențiune a pierderii legate de regimul micro, la art.53 alin.(2) lit.c)-d), se referă la rezerve constituite ANTERIOR, când firma era încă plătitoare de impozit pe profit — nu la o pierdere generată în perioada micro.
 

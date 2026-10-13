@@ -2,7 +2,7 @@
 title: "Cum contabilizez restituirea banilor pe cardul clientului?"
 description: "Limitele legale pentru restituirea în numerar a sumelor către clienți persoane fizice, conform Legii 70/2015 privind disciplina financiară."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Contabil, restituirea pe card se înregistrează ca o diminuare a creanței/înc
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă evidența generală a facturilor și a încasărilor/plăților asociate (casierie și bancă). Modulul de casierie (funcția `verifica_plafon`) semnalează, ca avertisment, orice plată în numerar de peste 10.000 lei către aceeași persoană fizică într-o zi — inclusiv o restituire introdusă ca atare — dar nu distinge specific „restituire de bunuri/servicii neprestate" de o altă plată către persoana fizică, și nu verifică declarația pe propria răspundere privind lipsa contului bancar (excepția de la art. 9 alin. (2)). Încadrarea corectă a modalității de restituire rămâne o decizie a contabilului la momentul înregistrării.
+La data acestui ghid, iConta.eu oferă evidența generală a facturilor și a încasărilor/plăților asociate (casierie și bancă). Modulul de casierie (funcția „verificarea plafonului de numerar (Casă)”) semnalează, ca avertisment, orice plată în numerar de peste 10.000 lei către aceeași persoană fizică într-o zi — inclusiv o restituire introdusă ca atare — dar nu distinge specific „restituire de bunuri/servicii neprestate" de o altă plată către persoana fizică, și nu verifică declarația pe propria răspundere privind lipsa contului bancar (excepția de la art. 9 alin. (2)). Încadrarea corectă a modalității de restituire rămâne o decizie a contabilului la momentul înregistrării.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum transform profitul contabil în profit fiscal?"
 description: "Trecerea de la profitul contabil la cel fiscal presupune add-back-uri obligatorii pe amortizare, cont 691 și rezerva legală."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Profitul fiscal nu este profitul contabil — este rezultatul unor ajustări pre
 ## Temeiul legal
 
 ::: ghid-temei
-"Avertisment cont 691 [...]: dacă soldul debitor al contului 691 (cheltuială cu impozitul pe profit) e >0 și rd.23 (P23, cheltuieli nedeductibile) e 0, se emite avertisment — cheltuiala e nedeductibilă (CF art.25 alin.(4) lit.a) și trebuie adăugată înapoi, altfel impozitul declarat iese subevaluat." — dosarul de cercetare F027, pe baza aplicația liniile 502–529.
+"Avertisment cont 691 [...]: dacă soldul debitor al contului 691 (cheltuială cu impozitul pe profit) e >0 și rd.23 (P23, cheltuieli nedeductibile) e 0, se emite avertisment — cheltuiala e nedeductibilă (CF art.25 alin.(4) lit.a) și trebuie adăugată înapoi, altfel impozitul declarat iese subevaluat.".
 :::
 
 Cele trei ajustări principale confirmate în motorul D101:

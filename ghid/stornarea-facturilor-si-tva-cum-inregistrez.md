@@ -2,7 +2,7 @@
 title: "Stornarea facturilor și TVA: cum înregistrez"
 description: Stornarea unei facturi emise se înregistrează automat prin generarea unei facturi noi, cu linii negate, care produce o notă cu semn minus conform OMFP 1802/2014 pct. 69 — nu prin inversarea manuală a unei note existente; verifică însă manual exercițiul financiar și referința la factura originală.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -48,6 +48,6 @@ O factură emisă de 1.000 lei bază + TVA colectată aferentă (4111 = 707 / 41
 
 ## Ce face iConta.eu
 
-Mecanismul real de storno (`storneaza`, în modulul de orchestrare a facturilor) citește factura originală, refuză operația dacă factura nu are direcția „emisă", construiește linii noi cu cantitatea negată și descrierea prefixată „STORNO: ", rezervă un număr nou din aceeași serie și creează documentul cu data curentă, păstrând moneda/cursul/clasificarea de pe original. Nota automată se generează prin motorul obișnuit de contare (`genereaza_note` → `factura_emisa`), cu semn minus, pentru că liniile au cantitate negativă — nu printr-o funcție separată de „storno" care ar inversa o notă deja scrisă (o astfel de funcție există în codul de calcul pur, dar nu e apelată niciodată din restul aplicației). Sistemul nu verifică exercițiul financiar al facturii originale, iar stornarea e întotdeauna totală — fără opțiune de corecție parțială. Legătura cu factura originală se păstrează doar ca o coloană internă în baza de date, nu ca referință structurată în XML-ul transmis la SPV.
+Mecanismul real de storno („stornarea”, în modulul de orchestrare a facturilor) citește factura originală, refuză operația dacă factura nu are direcția „emisă", construiește linii noi cu cantitatea negată și descrierea prefixată „STORNO: ", rezervă un număr nou din aceeași serie și creează documentul cu data curentă, păstrând moneda/cursul/clasificarea de pe original. Nota automată se generează prin motorul obișnuit de contare („contarea facturii” → „factura emisă”), cu semn minus, pentru că liniile au cantitate negativă — nu printr-o funcție separată de „storno" care ar inversa o notă deja scrisă (o astfel de funcție există în codul de calcul pur, dar nu e apelată niciodată din restul aplicației). Sistemul nu verifică exercițiul financiar al facturii originale, iar stornarea e întotdeauna totală — fără opțiune de corecție parțială. Legătura cu factura originală se păstrează doar ca o coloană internă în baza de date, nu ca referință structurată în XML-ul transmis la SPV.
 
 [iConta.eu](/)

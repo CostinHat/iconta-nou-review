@@ -1,8 +1,8 @@
 ---
 title: Ce bază de calcul se folosește pentru concediul medical?
-description: Indemnizația de concediu medical se calculează cu procente de 55%, 65% sau 75%, în funcție de tipul concediului — dar formula exactă a bazei de calcul ține de o funcționalitate distinctă (F122), nu de calculul salarial obișnuit.
+description: Indemnizația de concediu medical se calculează cu procente de 55%, 65% sau 75%, în funcție de tipul concediului — dar formula exactă a bazei de calcul ține de o funcționalitate distinctă („Cod 10 CM în flux”), nu de calculul salarial obișnuit.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,14 +13,14 @@ Concediile medicale nu se calculează cu aceleași reguli ca salariul obișnuit 
 ## Temeiul legal
 
 ::: ghid-temei
-„Concedii medicale (context F080↔F122, nu obiectul direct al celor 12 titluri, dar apare în descrierea F080) — OUG 158/2005, cu procentele 55/65/75% (Legea 141/2025, de la 01.08.2025); nu e detaliat aici, nu e cerut de titluri." — Dosar de cercetare F080, secțiunea „Temei legal", pct. 7
+„Concedii medicale (context „Calcul salarizare (de la brut la net)”↔„Cod 10 CM în flux”, nu obiectul direct al celor 12 titluri, dar apare în descrierea „Calcul salarizare (de la brut la net)”) — OUG 158/2005, cu procentele 55/65/75% (Legea 141/2025, de la 01.08.2025); nu e detaliat aici, nu e cerut de titluri." — Dosar de cercetare „Calcul salarizare (de la brut la net)”, secțiunea „Temei legal", pct. 7
 :::
 
 Ce e confirmat: actul normativ de bază e OUG 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, iar procentele de calcul ale indemnizației — 55%, 65% și 75%, în funcție de tipul concediului — au fost modificate prin Legea 141/2025, aplicabile de la 1 august 2025.
 
 ## Ce nu confirmă acest dosar
 
-Formula exactă a bazei de calcul (perioada de referință folosită pentru medierea veniturilor, veniturile incluse și eventualele plafoane) nu a fost verificată verbatim în cercetarea de față — dosarul de cercetare a fost elaborat pentru F080 (calculul salarial brut→net) și marchează explicit acest subiect ca nefiind obiectul cercetării, ci al unei funcționalități distincte, F122. Acest ghid nu afirmă, deci, detalii pe care nu le poate susține cu o sursă verificată — pentru formula completă a bazei de calcul, verifică textul OUG 158/2005 direct sau resursele dedicate F122.
+Formula exactă a bazei de calcul (perioada de referință folosită pentru medierea veniturilor, veniturile incluse și eventualele plafoane) nu a fost verificată verbatim în cercetarea de față — dosarul de cercetare a fost elaborat pentru „Calcul salarizare (de la brut la net)” (calculul salarial brut→net) și marchează explicit acest subiect ca nefiind obiectul cercetării, ci al unei funcționalități distincte, „Cod 10 CM în flux”. Acest ghid nu afirmă, deci, detalii pe care nu le poate susține cu o sursă verificată — pentru formula completă a bazei de calcul, verifică textul OUG 158/2005 direct sau resursele dedicate „Cod 10 CM în flux”.
 
 ## Ce se greșește în practică
 
@@ -28,6 +28,6 @@ Greșeala frecventă e tratarea concediului medical ca un salariu obișnuit — 
 
 ## Ce face iConta.eu
 
-Motorul de calcul salarial (F080, aplicația, `monografie_salariu()`) tratează rețineri și cheltuieli specifice salariului obișnuit — CAS, CASS, impozit, CAM și, la part-time sub minim, suprataxarea. Dosarul de cercetare disponibil pentru F080 nu confirmă dacă și cum acest motor sau o componentă distinctă calculează baza indemnizației de concediu medical — pentru asta, verifică ecranul dedicat concediilor medicale din iConta.eu (F122).
+Motorul de calcul salarial („Calcul salarizare (de la brut la net)”, aplicația, „monografia salariului (Salarii)”) tratează rețineri și cheltuieli specifice salariului obișnuit — CAS, CASS, impozit, CAM și, la part-time sub minim, suprataxarea. Dosarul de cercetare disponibil pentru „Calcul salarizare (de la brut la net)” nu confirmă dacă și cum acest motor sau o componentă distinctă calculează baza indemnizației de concediu medical — pentru asta, verifică ecranul dedicat concediilor medicale din iConta.eu („Cod 10 CM în flux”).
 
 [iConta.eu](/)

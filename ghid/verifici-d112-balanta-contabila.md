@@ -2,7 +2,7 @@
 title: Cum verifici D112 cu balanța contabilă?
 description: Verificarea D112 vs. balanță se face pe patru conturi (444, 4315, 4316, 436), comparând sumele declarate cu rulajul creditor din notele validate, cu o toleranță de rotunjire proporțională cu numărul de salariați.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Greșeala tipică e compararea soldului contului, nu a rulajului creditor al lun
 
 ## Ce face iConta.eu
 
-Funcția `verifica_d112` automatizează exact acest proces: citește rulajele creditoare doar din notele validate, parsează sumele declarate direct din XML-ul D112, aplică toleranța corespunzătoare numărului de salariați și afișează verdictul (verde/roșu/gri) pentru fiecare din cele patru conturi, cu temeiul legal și cauza citate pe fiecare constatare.
+Funcția „verificarea D112 (Control fiscal)” automatizează exact acest proces: citește rulajele creditoare doar din notele validate, parsează sumele declarate direct din XML-ul D112, aplică toleranța corespunzătoare numărului de salariați și afișează verdictul (verde/roșu/gri) pentru fiecare din cele patru conturi, cu temeiul legal și cauza citate pe fiecare constatare.
 
 [iConta.eu](/)

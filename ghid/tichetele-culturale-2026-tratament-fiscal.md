@@ -2,7 +2,7 @@
 title: "Tichetele culturale 2026: tratament fiscal pentru angajator"
 description: "Plafoanele legale ale tichetelor culturale acordate angajaților — sumă maximă lunară, valoare per tichet și cerințele de valabilitate, conform Legii 165/2018."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce trebuie reținut pentru angajator:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu emite tichete culturale** — furnizarea lor rămâne prin operatorii autorizați. Aplicația are însă un câmp dedicat (`tichet_cultural`) pentru suma introdusă manual de contabil, pe baza căreia calculează automat tratamentul fiscal corect: impozit 10% pe valoarea nominală integrală, fără CAS, CASS sau CAM. Aplicația **nu verifică automat** dacă suma introdusă respectă plafoanele legale (150 lei/lună sau 300 lei/eveniment) sau valoarea nominală standardizată a tichetului — încadrarea în plafoanele Legii 165/2018 rămâne responsabilitatea contabilului la introducerea sumei.
+La data acestui ghid, iConta.eu **nu emite tichete culturale** — furnizarea lor rămâne prin operatorii autorizați. Aplicația are însă un câmp dedicat („tichetul cultural”) pentru suma introdusă manual de contabil, pe baza căreia calculează automat tratamentul fiscal corect: impozit 10% pe valoarea nominală integrală, fără CAS, CASS sau CAM. Aplicația **nu verifică automat** dacă suma introdusă respectă plafoanele legale (150 lei/lună sau 300 lei/eveniment) sau valoarea nominală standardizată a tichetului — încadrarea în plafoanele Legii 165/2018 rămâne responsabilitatea contabilului la introducerea sumei.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Plafonul de TVA de 395.000 lei în 2026: cum se calculează"
 description: "Ce intră în cifra de afaceri care se compară cu plafonul de scutire de TVA de 395.000 lei, potrivit art. 310 din Codul fiscal, valabil în 2026."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Practic, în cifra de afaceri de referință intră:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu urmărește vectorul de TVA al firmei (`tip_decont` — lunar/trimestrial) și generează **D300** (decontul de TVA) și **D394** pe baza facturilor introduse în aplicație, cu deducerea cotei per linie de factură. Aplicația nu calculează însă automat, ca funcție dedicată, cifra de afaceri de referință de la art. 310 alin. (2) pentru a semnala apropierea de plafonul de 395.000 lei — verificarea acestui plafon rămâne, la data acestui ghid, o operațiune manuală a utilizatorului sau a contabilului, pe baza facturilor emise evidențiate în aplicație.
+La data acestui ghid, iConta.eu urmărește vectorul de TVA al firmei („periodicitatea TVA (Date firmă)” — lunar/trimestrial) și generează **D300** (decontul de TVA) și **D394** pe baza facturilor introduse în aplicație, cu deducerea cotei per linie de factură. Aplicația nu calculează însă automat, ca funcție dedicată, cifra de afaceri de referință de la art. 310 alin. (2) pentru a semnala apropierea de plafonul de 395.000 lei — verificarea acestui plafon rămâne, la data acestui ghid, o operațiune manuală a utilizatorului sau a contabilului, pe baza facturilor emise evidențiate în aplicație.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se înregistrează scrisoare de garanție bancară"
 description: "O scrisoare de garanție bancară e, contabil, un angajament extrabilanțier — cum se evidențiază și ce tip de operațiune dedicată există în iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,7 +29,7 @@ Scrisoarea de garanție bancară e un instrument prin care o bancă se angajeaz�
 
 ## Ce face iConta.eu
 
-Verificat direct în cod: Aplicația conține o funcție generică de înregistrare a unei garanții (`nota_garantie`, acordată sau primită), care poate genera, la nivel de motor de calcul, exact notele extrabilanțiere descrise mai sus (8011=891 sau 8021=891).
+Verificat direct în cod: Aplicația conține o funcție generică de înregistrare a unei garanții („nota de garanție (Operațiuni speciale)”, acordată sau primită), care poate genera, la nivel de motor de calcul, exact notele extrabilanțiere descrise mai sus (8011=891 sau 8021=891).
 
 Onest: iConta.eu **nu are** un tip de operațiune dedicat, distinct, numit „scrisoare de garanție bancară" — cu câmpuri specifice precum numărul scrisorii, banca emitentă sau beneficiarul. Din ecranul **Credite bancare** (operațiunea „Garanție"), disponibilă azi în interfață, se poate genera doar nota pentru garanție **primită** (`8021=891`) — formularul nu are un câmp pentru a alege „acordată", deci varianta 8011=891 (relevantă când firma e cea care oferă scrisoarea de garanție) nu poate fi produsă azi din UI, deși motorul de calcul o suportă.
 

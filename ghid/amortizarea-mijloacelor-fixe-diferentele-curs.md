@@ -2,7 +2,7 @@
 title: "Amortizarea mijloacelor fixe și diferențele de curs valutar"
 description: "De ce mijloacele fixe, ca elemente nemonetare, nu se reevaluează la curs valutar și nu generează diferențe de curs contabile."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Un mijloc fix cumpărat în valută nu generează diferențe de curs pe durata l
 
 ## Ce face iConta.eu
 
-Aplicația din iConta.eu respectă exact această limită: funcția `diferenta()` acceptă strict `tip ∈ {creanta, disponibil, datorie}` — un apel cu un tip precum „mijloc fix" sau „imobilizare" ridică o eroare de validare, nu generează nicio notă. Aplicația **nu are și nu poate avea** o funcție de „diferențe de curs la mijloacele fixe", pentru că o asemenea operațiune ar fi contrară OMFP 1802/2014. Ce calculează F041 este strict diferența de curs pe datoria față de furnizorul mijlocului fix, dacă acea datorie e încă nedecontată — prin ecranele de decontare/reevaluare valutară, nu prin fișa mijlocului fix.
+Aplicația din iConta.eu respectă exact această limită: funcția „calculul diferenței de curs” acceptă strict `tip ∈ {creanta, disponibil, datorie}` — un apel cu un tip precum „mijloc fix" sau „imobilizare" ridică o eroare de validare, nu generează nicio notă. Aplicația **nu are și nu poate avea** o funcție de „diferențe de curs la mijloacele fixe", pentru că o asemenea operațiune ar fi contrară OMFP 1802/2014. Ce calculează „Diferențe de curs valutar” este strict diferența de curs pe datoria față de furnizorul mijlocului fix, dacă acea datorie e încă nedecontată — prin ecranele de decontare/reevaluare valutară, nu prin fișa mijlocului fix.
 
 [iConta.eu](/)

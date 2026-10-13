@@ -2,7 +2,7 @@
 title: "Cum conectez magazinul WooCommerce la iConta?"
 description: "Pașii reali pentru a lega un magazin WooCommerce de iConta.eu, plus limita practică a validării: salvarea configurației nu testează conexiunea la magazin."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,6 +22,6 @@ Conectarea unui magazin online la o aplicație de contabilitate e o operațiune 
 
 ## Ce face iConta.eu
 
-Din ecranul „Magazin online", completezi trei câmpuri: **URL-ul magazinului**, **Consumer Key** și **Consumer Secret** (generate din WooCommerce → Setări → Avansat → REST API). Salvarea acestora (rută `PUT /tenants/{id}/woocommerce/config`, disponibilă doar pentru rolul de admin firmă) verifică doar formatul URL-ului, nu conexiunea reală — un URL fără schema `http(s)` sau fără punct în domeniu e respins, dar un URL valid ca formă, chiar dacă e greșit sau magazinul e nefuncțional, e acceptat fără avertisment. Odată configurat, apare și un buton **„Sincronizează acum"**, care declanșează manual, oricând, aceeași funcție folosită și de rularea automată zilnică (07:30). Eroarea reală de conectare (chei greșite, magazin indisponibil) se vede abia atunci, sub forma unui mesaj de eroare la sincronizare, nu la salvarea configurării.
+Din ecranul „Magazin online", completezi trei câmpuri: **URL-ul magazinului**, **Consumer Key** și **Consumer Secret** (generate din WooCommerce → Setări → Avansat → REST API). Salvarea acestora (rută aplicația, disponibilă doar pentru rolul de admin firmă) verifică doar formatul URL-ului, nu conexiunea reală — un URL fără schema `http(s)` sau fără punct în domeniu e respins, dar un URL valid ca formă, chiar dacă e greșit sau magazinul e nefuncțional, e acceptat fără avertisment. Odată configurat, apare și un buton **„Sincronizează acum"**, care declanșează manual, oricând, aceeași funcție folosită și de rularea automată zilnică (07:30). Eroarea reală de conectare (chei greșite, magazin indisponibil) se vede abia atunci, sub forma unui mesaj de eroare la sincronizare, nu la salvarea configurării.
 
 [iConta.eu](/)

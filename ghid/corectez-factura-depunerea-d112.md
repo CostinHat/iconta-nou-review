@@ -2,7 +2,7 @@
 title: Cum corectez o factură după depunerea D112
 description: Depunerea D112 nu blochează facturile în iConta.eu — blochează doar editarea pontajului lunii respective. Corectarea unei facturi urmează un mecanism complet diferit, independent de D112.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -12,7 +12,7 @@ poarta: v1
 
 ## Ce blochează, de fapt, D112
 
-Singurul lucru pe care depunerea D112 îl blochează în iConta.eu e editarea **pontajului** lunii respective (evidența zilelor lucrate/concediu/absențe folosită la calculul salarial). Verificarea se face pe o evidență separată a depunerilor (`declaratii_depuse`, tip `d112`) și afectează exclusiv tabelul de pontaj — nu tabelul de perioade blocate folosit de facturi și note contabile, și nu are nicio verificare echivalentă pe `facturi`.
+Singurul lucru pe care depunerea D112 îl blochează în iConta.eu e editarea **pontajului** lunii respective (evidența zilelor lucrate/concediu/absențe folosită la calculul salarial). Verificarea se face pe o evidență separată a depunerilor („evidența declarațiilor depuse”, tip „D112”) și afectează exclusiv tabelul de pontaj — nu tabelul de perioade blocate folosit de facturi și note contabile, și nu are nicio verificare echivalentă pe `facturi`.
 
 Cu alte cuvinte: **D112 depusă ≠ lună blocată contabil.** Sunt evenimente diferite, pe tabele diferite, fără nicio legătură cablată între ele.
 
@@ -35,7 +35,7 @@ Nicio prevedere legală nu leagă corectarea unei facturi de existența unei dec
 
 - Se amână corectarea unei facturi, crezând că D112 depusă „blochează" și facturile — nu e cazul; blocajul real, dacă există, vine de la „Blocare perioade", nu de la D112.
 - Se caută în mesajele de eroare legate de facturi o referire la D112 — mesajul relevant pentru D112 apare exclusiv la editarea pontajului, nu la facturi.
-- Se confundă „lună blocată" (tabelul `perioade_blocate`, valabil pentru facturi/note) cu „D112 depusă" (evidența `declaratii_depuse`, valabilă pentru pontaj) — sunt verificări separate, cu mesaje separate.
+- Se confundă „lună blocată" (tabelul „perioadele închise”, valabil pentru facturi/note) cu „D112 depusă" (evidența „evidența declarațiilor depuse”, valabilă pentru pontaj) — sunt verificări separate, cu mesaje separate.
 
 ## Ce face iConta.eu
 

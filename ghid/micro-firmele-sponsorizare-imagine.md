@@ -2,7 +2,7 @@
 title: Micro la firmele care fac sponsorizare de imagine
 description: Legea nu cunoaște o categorie separată „sponsorizare de imagine” — dacă e o sponsorizare reală, în sensul Legii 32/1994, se aplică regimul micro (abrogat din 2024); dacă firma primește în schimb servicii de promovare efective, e un contract de publicitate, nu sponsorizare, și regulile sunt complet diferite.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,8 +35,8 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Aplicația nu distinge tipuri de sponsorizare (de imagine, culturală, sportivă etc.) — tratează orice sumă introdusă ca sponsorizare în sensul Legii 32/1994, cu nota contabilă `6582 = 401` (la contract) sau `6582 = 5121` (la plată directă). Aplicația nu verifică și nu poate verifica dacă în spatele contractului există sau nu o contraprestație de publicitate — această calificare rămâne responsabilitatea contabilului, pe baza clauzelor contractului. Dacă operațiunea e, de fapt, o prestație de publicitate, ea nu ar trebui introdusă prin fluxul de sponsorizare, ci înregistrată ca o cheltuială de marketing obișnuită (pe bază de factură de la prestator, cu conturile de cheltuieli/TVA uzuale), fără a trece prin `credit_sponsorizare()`.
+Aplicația nu distinge tipuri de sponsorizare (de imagine, culturală, sportivă etc.) — tratează orice sumă introdusă ca sponsorizare în sensul Legii 32/1994, cu nota contabilă `6582 = 401` (la contract) sau `6582 = 5121` (la plată directă). Aplicația nu verifică și nu poate verifica dacă în spatele contractului există sau nu o contraprestație de publicitate — această calificare rămâne responsabilitatea contabilului, pe baza clauzelor contractului. Dacă operațiunea e, de fapt, o prestație de publicitate, ea nu ar trebui introdusă prin fluxul de sponsorizare, ci înregistrată ca o cheltuială de marketing obișnuită (pe bază de factură de la prestator, cu conturile de cheltuieli/TVA uzuale), fără a trece prin „creditul fiscal pentru sponsorizări (Operațiuni speciale)”.
 
-Pentru ramura `tip_impozit="micro"` a funcției `credit_sponsorizare()`, indiferent de natura sponsorizării, calculul e activ doar pentru `la_data` în intervalul 01.04.2019–31.12.2023; pentru orice dată din 2026, funcția returnează credit 0.
+Pentru ramura tipul de impozit="micro" a funcției „creditul fiscal pentru sponsorizări (Operațiuni speciale)”, indiferent de natura sponsorizării, calculul e activ doar pentru „data” în intervalul 01.04.2019–31.12.2023; pentru orice dată din 2026, funcția returnează credit 0.
 
 [iConta.eu](/)

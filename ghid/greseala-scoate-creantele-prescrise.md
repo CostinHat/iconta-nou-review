@@ -2,7 +2,7 @@
 title: "Greșeala de a nu scoate creanțele prescrise"
 description: "A lăsa în evidență o creanță prescrisă nu e doar o problemă contabilă — la impozitul pe profit, pierderea din scoaterea ei din evidență e nedeductibilă, cu excepția a șase situații enumerate expres, iar prescripția în sine nu se numără printre ele."
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Dacă pentru creanța respectivă a fost constituită anterior o ajustare (491),
 
 ## Ce face iConta.eu
 
-Aplicația calculează și contabilizează ajustarea deductibilă a creanțelor (`deductibilitate_creanta`, art. 26), dar nu modelează scoaterea propriu-zisă din evidență a unei creanțe și nu verifică dacă situația concretă se încadrează în una din cele șase excepții de la art. 25 alin. (4) lit. h) — aceasta rămâne o evaluare manuală a contabilului, pe baza documentelor disponibile despre debitor.
+Aplicația calculează și contabilizează ajustarea deductibilă a creanțelor („deductibilitatea creanței (Operațiuni speciale)”, art. 26), dar nu modelează scoaterea propriu-zisă din evidență a unei creanțe și nu verifică dacă situația concretă se încadrează în una din cele șase excepții de la art. 25 alin. (4) lit. h) — aceasta rămâne o evaluare manuală a contabilului, pe baza documentelor disponibile despre debitor.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Unde evidențiez pierderea fiscală reportată în D101?"
 description: "Rândurile din declarația 101 unde se raportează pierderea fiscală curentă și cea recuperată din anii precedenți, potrivit instrucțiunilor ANAF."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Pierderea fiscală nu dispare atunci când un exercițiu se închide pe minus �
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat declarației 101 (`d101.py`), care preia automat din contabilitate baza de calcul a rezultatului (veniturile/cheltuielile de exploatare și financiare, rândurile P1/P2/P4/P5) și aplică formulele oficiale ale formularului pentru a obține profitul impozabil. Verificarea codului arată însă că rândurile **36, 39 și 391 (pierderea fiscală curentă și cea recuperată din anii precedenți) rămân intrări manuale ale contabilului**, cu valoare implicită 0 — aplicația nu ține un istoric multianual al pierderilor fiscale și nu le reportează automat de la un exercițiu la altul; chiar codul sursă documentează explicit că „ajustările fiscale (deduceri, nedeductibile, pierderi reportate...) sunt intrări manuale ale contabilului". Modulul `d101_reconciliere.py` recalculează independent doar baza contabilă (P1/P2/P4/P5) din balanță și o confruntă cu ce a generat `d101.py`, semnalând diferențe — el nu acoperă rândurile de pierdere fiscală (P6-P9 și cele de mai sus), care rămân, explicit, în afara acestei verificări.
+iConta.eu are un modul dedicat declarației 101, care preia automat din contabilitate baza de calcul a rezultatului (veniturile/cheltuielile de exploatare și financiare, rândurile P1/P2/P4/P5) și aplică formulele oficiale ale formularului pentru a obține profitul impozabil. Verificarea codului arată însă că rândurile **36, 39 și 391 (pierderea fiscală curentă și cea recuperată din anii precedenți) rămân intrări manuale ale contabilului**, cu valoare implicită 0 — aplicația nu ține un istoric multianual al pierderilor fiscale și nu le reportează automat de la un exercițiu la altul; chiar codul sursă documentează explicit că „ajustările fiscale (deduceri, nedeductibile, pierderi reportate...) sunt intrări manuale ale contabilului". Modulul aplicația recalculează independent doar baza contabilă (P1/P2/P4/P5) din balanță și o confruntă cu ce a generat aplicația, semnalând diferențe — el nu acoperă rândurile de pierdere fiscală (P6-P9 și cele de mai sus), care rămân, explicit, în afara acestei verificări.
 
 [iConta.eu](/)

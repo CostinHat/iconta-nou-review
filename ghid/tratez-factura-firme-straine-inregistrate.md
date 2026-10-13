@@ -2,19 +2,13 @@
 title: "Cum tratez factura unei firme străine înregistrate în scopuri de TVA în România?"
 description: "O firmă străină (din UE sau din afara UE) care facturează cu un cod de TVA de România acționează, pentru operațiunea respectivă, ca persoană înregistrată în România — factura urmează regimul intern, nu regimul intracomunitar."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum tratez factura unei firme străine înregistrate în scopuri de TVA în România?
 
 Nu contează unde are sediul social o firmă, ci cu ce cod de TVA a facturat operațiunea. O firmă străină înregistrată direct în scopuri de TVA în România (indiferent dacă e din UE sau din afara UE) poate factura cu codul ei românesc — și atunci operațiunea nu urmează regulile de la achiziții/prestări intracomunitare.
-
-## Temeiul legal
-
-::: ghid-temei
-„`desparte_cod_tva(cod)` — separă prefixul de țară de restul codului (...); validează prefixul contra `TARI_UE` (cele 27 state + `XI` = Irlanda de Nord, post-Brexit); erori distincte pentru cod absent / prefix nevalid / prefix fără număr.” — aplicația, dosarul F050.
-:::
 
 Regimul de achiziție/prestare intracomunitară (art. 268, art. 278 alin. 2) se leagă de un furnizor stabilit și identificat cu un cod de TVA emis de alt stat membru. Dacă firma, deși are sediul în străinătate, a ales să factureze cu cod de TVA românesc (RO), factura urmează regimul intern de TVA — nu se mai verifică în VIES ca operațiune intracomunitară, iar taxa e cea aplicată direct pe factură, nu prin taxare inversă specifică IC.
 

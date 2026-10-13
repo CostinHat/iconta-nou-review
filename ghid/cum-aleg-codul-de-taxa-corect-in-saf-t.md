@@ -2,7 +2,7 @@
 title: Cum aleg codul de taxă corect în SAF-T?
 description: Codul de taxă (TaxCode) se alege dintr-un nomenclator oficial pe 6 cifre, dependent de cota de TVA și de data facturii pentru livrări; pentru achiziții, codul folosit e simplificat și nu reflectă gradul real de deductibilitate.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -17,7 +17,7 @@ Fiecare linie de factură din SAF-T trebuie asociată cu un cod de taxă (`TaxCo
 taxă (de exemplu, TVA), contribuabilul/plătitorul va selecta codurile de taxă din
 nomenclatorul Coduri de taxă TVA pentru operaţiuni, asociate operaţiunilor incluse în
 fişierul SAF-T."
-(opanaf_1783_2021_saft_d406.txt, Anexa 1, pct. 5, tabelul cu structura AuditFile)
+(OPANAF 1783/2021 (SAF-T, D406), Anexa 1, pct. 5, tabelul cu structura AuditFile)
 :::
 
 ## Livrări vs. achiziții — două logici diferite

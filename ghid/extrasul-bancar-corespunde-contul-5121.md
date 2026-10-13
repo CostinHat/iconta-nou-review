@@ -1,8 +1,8 @@
 ---
 title: Ce fac dacă extrasul bancar nu corespunde cu contul 5121?
-description: F073 nu compară niciodată soldul contului 5121 cu extrasul — potrivește doar liniile de extras cu facturi. O diferență are de regulă o cauză identificabilă printre liniile necontate, ignorate sau duplicate.
+description: „Reconciliere bancară (potrivirea plăților cu facturile)” nu compară niciodată soldul contului 5121 cu extrasul — potrivește doar liniile de extras cu facturi. O diferență are de regulă o cauză identificabilă printre liniile necontate, ignorate sau duplicate.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,7 +26,7 @@ Confruntarea explicită a soldului bancar cu extrasul de cont e prevăzută ca p
 
 ## Cauze verificate ale diferenței
 
-Pentru că F073 nu ține un calcul de sold, o diferență între contul 5121 și extras poate proveni din:
+Pentru că „Reconciliere bancară (potrivirea plăților cu facturile)” nu ține un calcul de sold, o diferență între contul 5121 și extras poate proveni din:
 
 - **Linii de extras nepotrivite sau necontate încă** — rămase în starea „nou", „potrivit parțial" (galben) sau „fără potrivire" (roșu) pe ecranul Bancă, deci neînregistrate contabil.
 - **Linii marcate „Ignorată"** — un utilizator poate exclude explicit o linie din contabilizare; suma ei rămâne în extras, dar nu ajunge în 5121.

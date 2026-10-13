@@ -2,7 +2,7 @@
 title: Cum corectezi impozitul micro după stornarea unei facturi?
 description: Dacă factura stornată aparține exercițiului financiar curent, minusul intră firesc în veniturile trimestrului; dacă aparține unui an anterior deja închis, corecția fiscală trebuie tratată manual — motorul de storno nu distinge cele două situații.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -40,6 +40,6 @@ O factură de 5.000 lei emisă în decembrie anul trecut se stornează azi. Dac�
 
 ## Ce face iConta.eu
 
-Funcția de storno construiește întotdeauna documentul nou cu data curentă (`datetime.date.today()`), indiferent de anul facturii originale, iar nota automată generată din liniile cu cantitate negativă scrie mereu pe conturile de venit curent (707/701/703/704) cu semn minus — niciodată pe 1174. Sistemul nu verifică și nu semnalează dacă factura originală aparține unui exercițiu financiar anterior celui curent. Pentru facturi stornate din ani anteriori, corecția prin 1174 și eventuala rectificare a declarației de impozit micro pentru perioada corectă rămân în sarcina contabilului — sunt pași manuali, nu automatizați de motorul de contare.
+Funcția de storno construiește întotdeauna documentul nou cu data curentă (data zilei), indiferent de anul facturii originale, iar nota automată generată din liniile cu cantitate negativă scrie mereu pe conturile de venit curent (707/701/703/704) cu semn minus — niciodată pe 1174. Sistemul nu verifică și nu semnalează dacă factura originală aparține unui exercițiu financiar anterior celui curent. Pentru facturi stornate din ani anteriori, corecția prin 1174 și eventuala rectificare a declarației de impozit micro pentru perioada corectă rămân în sarcina contabilului — sunt pași manuali, nu automatizați de motorul de contare.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Când este deductibilă deprecierea creanțelor?"
 description: "Condițiile cumulative în care ajustarea pentru deprecierea unei creanțe este deductibilă fiscal, 30% sau 100%."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,6 +28,6 @@ Greșeala tipică este aplicarea automată a procentului de 30% pentru orice cre
 
 ## Ce face iConta.eu
 
-Motorul F071 calculează automat procentul deductibil, pe baza datelor introduse (zile de întârziere față de scadență, dacă creanța e garantată, dacă debitorul e afiliat, dacă falimentul/insolvența e declarat(ă)): 0% dacă creanța este garantată sau debitorul este afiliat; 100% dacă este declarat falimentul sau insolvența; 30% dacă au trecut peste 270 de zile de la scadență, în celelalte cazuri; 0% dacă termenul de 270 de zile nu a trecut încă.
+Motorul „Provizioane și ajustări” calculează automat procentul deductibil, pe baza datelor introduse (zile de întârziere față de scadență, dacă creanța e garantată, dacă debitorul e afiliat, dacă falimentul/insolvența e declarat(ă)): 0% dacă creanța este garantată sau debitorul este afiliat; 100% dacă este declarat falimentul sau insolvența; 30% dacă au trecut peste 270 de zile de la scadență, în celelalte cazuri; 0% dacă termenul de 270 de zile nu a trecut încă.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Ce metodă de gestiune este potrivită pentru un depozit?"
 description: "Cele trei metode legale de evaluare a stocurilor la ieșirea din gestiune — CMP, FIFO, LIFO — și ce presupune fiecare pentru un depozit cu mișcare de mărfuri."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Diferențele practice între metode, relevante pentru un depozit:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu implementează **exclusiv metoda CMP** (costul mediu ponderat), recalculat după fiecare intrare, conform OMFP 1802/2014 pct. 96 — vezi aplicația (`fisa_magazie()`, `valoare_iesire()`, constanta `TEMEI_CMP`). Aplicația nu oferă metodele FIFO sau LIFO ca opțiuni alternative de evaluare a stocurilor; firmele care aleg, prin politica lor contabilă, una din aceste două metode trebuie să țină evidența loturilor și calculul costurilor de ieșire prin alte mijloace, în afara acestui modul. Există separat un modul de gestiune la preț de vânzare cu amănuntul (cu coeficientul de repartizare K), pentru firmele de retail care folosesc acest regim specific, diferit de CMP/FIFO/LIFO.
+La data acestui ghid, iConta.eu implementează **exclusiv metoda CMP** (costul mediu ponderat), recalculat după fiecare intrare, conform OMFP 1802/2014 pct. 96 — vezi aplicația („fișa de magazie (Stocuri)”, „valoarea ieșirii (fișa de magazie)”, constanta „temeiul costului mediu ponderat”). Aplicația nu oferă metodele FIFO sau LIFO ca opțiuni alternative de evaluare a stocurilor; firmele care aleg, prin politica lor contabilă, una din aceste două metode trebuie să țină evidența loturilor și calculul costurilor de ieșire prin alte mijloace, în afara acestui modul. Există separat un modul de gestiune la preț de vânzare cu amănuntul (cu coeficientul de repartizare K), pentru firmele de retail care folosesc acest regim specific, diferit de CMP/FIFO/LIFO.
 
 [iConta.eu](/)

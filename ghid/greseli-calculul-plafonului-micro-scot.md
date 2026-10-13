@@ -2,7 +2,7 @@
 title: "Greșeli la calculul plafonului micro care te scot din regim"
 description: Plafonul de 100.000 euro se verifică cumulat de la începutul anului, la cursul BNR fix de la închiderea exercițiului financiar precedent — nu la cursul zilnic — și, în anumite situații, trebuie însumat cu veniturile persoanelor afiliate care dețin peste 25% în alte microîntreprinderi.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Verificarea plafonului se face **cumulat de la începutul anului fiscal**, nu pe
 
 ## Ce face iConta.eu
 
-Aplicația nu urmărește automat plafonul de ieșire din regimul micro — verificat direct în cod: nu există în aplicație nicio constantă sau logică de calcul/monitorizare a plafonului de 100.000 euro. Blocajul de schimbare a regimului fiscal se bazează strict pe câmpul `regim_fiscal` completat manual de contabil, nu pe un calcul intern al plafonului. Verificarea plafonului — inclusiv cursul fix corect și, dacă e cazul, cumularea cu veniturile persoanelor afiliate — rămâne o responsabilitate a contabilului, în afara aplicației.
+Aplicația nu urmărește automat plafonul de ieșire din regimul micro — verificat direct în cod: nu există în aplicație nicio constantă sau logică de calcul/monitorizare a plafonului de 100.000 euro. Blocajul de schimbare a regimului fiscal se bazează strict pe câmpul „regimul fiscal (Date firmă)” completat manual de contabil, nu pe un calcul intern al plafonului. Verificarea plafonului — inclusiv cursul fix corect și, dacă e cazul, cumularea cu veniturile persoanelor afiliate — rămâne o responsabilitate a contabilului, în afara aplicației.
 
 [iConta.eu](/)

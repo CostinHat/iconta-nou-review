@@ -2,7 +2,7 @@
 title: "Cum se înregistrează o plată neautorizată din cont"
 description: "De ce o plată neautorizată apărută în extras nu se înregistrează ca o cheltuială obișnuită, ci ca o creanță în litigiu, conform Legii contabilității 82/1991."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Consecința, pentru o plată neautorizată:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația contabilizează liniile din extrasul bancar prin `contabilizeaza_extras()`, pe baza unor cuvinte-cheie din descriere (comision, dobândă, credit, salarii etc.) — nu are o categorie dedicată „plată neautorizată/de clarificat", care să direcționeze automat o astfel de sumă spre un cont de creanțe în litigiu. O plată neidentificată prin niciun cuvânt-cheie cade, implicit, în categoria generică „furnizor" (plată) — reclasificarea ei corectă, pe un cont de clarificat, rămâne azi o intervenție manuală a contabilului.
+La data acestui ghid, aplicația contabilizează liniile din extrasul bancar prin „contarea extrasului (Bancă)”, pe baza unor cuvinte-cheie din descriere (comision, dobândă, credit, salarii etc.) — nu are o categorie dedicată „plată neautorizată/de clarificat", care să direcționeze automat o astfel de sumă spre un cont de creanțe în litigiu. O plată neidentificată prin niciun cuvânt-cheie cade, implicit, în categoria generică „furnizor" (plată) — reclasificarea ei corectă, pe un cont de clarificat, rămâne azi o intervenție manuală a contabilului.
 
 [iConta.eu](/)

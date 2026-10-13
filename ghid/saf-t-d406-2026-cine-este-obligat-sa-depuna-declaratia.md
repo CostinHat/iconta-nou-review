@@ -2,7 +2,7 @@
 title: SAF-T D406 2026 — cine este obligat să depună declarația?
 description: Obligația D406 se aplică pe categorii de contribuabili cu date de referință diferite (mari, mijlocii, mici, nerezidenți TVA), iar OPANAF 407/2025 este actul în vigoare care stabilește lista exhaustivă a celor obligați și a celor exceptați.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -46,14 +46,14 @@ categorie în parte, obligaţia de depunere a Declaraţiei informative D406 înc
 efectivă a înregistrării, prima depunere a Declaraţiei informative D406 urmând să se facă în
 ultima zi a lunii care urmează perioadei pentru care se face raportarea, ulterior datei de
 referinţă pentru categoria în care au fost înregistraţi/încadraţi."
-(opanaf_407_2025_saft_d406.txt, pct. 1.1)
+(OPANAF 407/2025 (SAF-T, D406), pct. 1.1)
 
 "3. Următoarele categorii de contribuabili au obligaţia de depunere a fişierului standard de
 control fiscal (SAF-T), prin intermediul Declaraţiei informative D406: a) regiile autonome;
 ... c) societăţile pe acţiuni (S.A.); ... g) societăţile cu răspundere limitată (S.R.L.); ...
 s) alte persoane juridice care nu se regăsesc menţionate în mod expres la pct. 4 şi au
 obligaţia potrivit legii să organizeze şi să ţină contabilitatea în partidă dublă."
-(opanaf_407_2025_saft_d406.txt, pct. 3)
+(OPANAF 407/2025 (SAF-T, D406), pct. 3)
 
 "4. Următoarele categorii de contribuabili nu au obligaţia de depunere a fişierului standard
 de control fiscal (SAF-T): a) persoanele fizice autorizate (PFA); b) întreprinderile
@@ -77,7 +77,7 @@ fişierului standard de control fiscal (SAF-T) pentru perioada în care activita
 suspendată temporar, conform art. 101 alin. (42) din Legea nr. 207/2015 privind Codul de
 procedură fiscală, cu modificările şi completările ulterioare; q) alţi contribuabili
 persoane fizice care realizează venituri din profesii liberale ..."
-(opanaf_407_2025_saft_d406.txt, pct. 4, lit. a-q)
+(OPANAF 407/2025 (SAF-T, D406), pct. 4, lit. a-q)
 :::
 
 ## Cum se citește lista pe categorii
@@ -98,6 +98,6 @@ Există și o situație tranzitorie: contribuabilii mijlocii "coborâți" la cat
 
 ## Ce face iConta.eu
 
-Aplicația nu calculează automat, pe baza categoriei de mărime ANAF, dacă firma este sau nu obligată să depună D406 — acest lucru nu a fost identificat ca implementat în modulele verificate. Ce este cablat corect este determinarea tipului de raportare (lunar/trimestrial) odată ce firma este obligată, prin funcția `fereastra_d406`. Motorul de generare D406 NU verifică și NU exclude automat firmele cu activitate suspendată temporar — decizia de a nu depune declarația pe perioada suspendării (lit. o și p) rămâne în sarcina contabilului. Pentru încadrarea inițială pe categorie (mare/mijlocie/mică) și data de referință aplicabilă, contabilul trebuie să verifice separat statutul comunicat de ANAF.
+Aplicația nu calculează automat, pe baza categoriei de mărime ANAF, dacă firma este sau nu obligată să depună D406 — acest lucru nu a fost identificat ca implementat în modulele verificate. Ce este cablat corect este determinarea tipului de raportare (lunar/trimestrial) odată ce firma este obligată, prin funcția „perioada D406 (Declarații)”. Motorul de generare D406 NU verifică și NU exclude automat firmele cu activitate suspendată temporar — decizia de a nu depune declarația pe perioada suspendării (lit. o și p) rămâne în sarcina contabilului. Pentru încadrarea inițială pe categorie (mare/mijlocie/mică) și data de referință aplicabilă, contabilul trebuie să verifice separat statutul comunicat de ANAF.
 
 [iConta.eu](/)

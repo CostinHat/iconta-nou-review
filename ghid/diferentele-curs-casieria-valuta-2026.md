@@ -2,7 +2,7 @@
 title: "Diferențele de curs la casieria în valută 2026"
 description: "Reevaluarea lunară a casieriei în valută (cont 5314) funcționează la fel ca pentru bancă; la decontări directe prin casierie, o limită reală din iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Casieria în valută (cont 5314) urmează exact aceleași reguli de diferențe d
 
 ## Ce face iConta.eu
 
-Pentru **reevaluarea lunară**, ecranul „Operațiuni speciale → Reevaluare valuta" din iConta.eu funcționează corect pentru casierie: câmpul „cont" e text liber, deci accepți 5314 la fel de bine ca 5124, iar motorul (`reevaluare_sold`) calculează diferența cu aceeași regulă de semn ca pentru bancă. Pentru **decontări directe prin casierie** (o încasare sau plată de creanță/datorie efectuată prin casa în valută), există însă o limită reală: ecranul „Decontare în valută" nu are câmp pentru contul de bancă/casierie, iar backend-ul folosește implicit contul 5124 — deci o decontare care a avut loc de fapt prin 5314 se înregistrează automat pe 5124, greșit, fără niciun avertisment. Dacă lucrezi cu casierie în valută și faci decontări directe prin ea, corectează manual contul din nota generată înainte de a o confirma.
+Pentru **reevaluarea lunară**, ecranul „Operațiuni speciale → Reevaluare valuta" din iConta.eu funcționează corect pentru casierie: câmpul „cont" e text liber, deci accepți 5314 la fel de bine ca 5124, iar motorul („reevaluarea soldului în valută (Operațiuni speciale)”) calculează diferența cu aceeași regulă de semn ca pentru bancă. Pentru **decontări directe prin casierie** (o încasare sau plată de creanță/datorie efectuată prin casa în valută), există însă o limită reală: ecranul „Decontare în valută" nu are câmp pentru contul de bancă/casierie, iar backend-ul folosește implicit contul 5124 — deci o decontare care a avut loc de fapt prin 5314 se înregistrează automat pe 5124, greșit, fără niciun avertisment. Dacă lucrezi cu casierie în valută și faci decontări directe prin ea, corectează manual contul din nota generată înainte de a o confirma.
 
 [iConta.eu](/)

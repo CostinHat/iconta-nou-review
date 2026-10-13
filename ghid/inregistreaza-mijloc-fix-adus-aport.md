@@ -2,7 +2,7 @@
 title: "Cum se înregistrează un mijloc fix adus ca aport la capitalul social?"
 description: "Regulile de evaluare și înregistrare a unui bun adus ca aport în natură la capitalul social, conform Legii societăților și reglementărilor contabile."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -43,6 +43,6 @@ Ce rezultă, punând cele două texte cap la cap:
 
 ## Ce face iConta.eu
 
-Modulele de mijloace fixe din aplicație (`repo_mijloace_fixe.py`, `mijloace_fixe_import_api.py`, `inventariere.py`) gestionează evidența și amortizarea activelor odată introduse în contabilitate, la valoarea comunicată; introducerea specifică a unui bun la „valoarea de aport" stabilită prin evaluare, ca modalitate distinctă de intrare (față de achiziție sau producție proprie), rămâne o alegere pe care contabilul o face la înregistrarea inițială, aplicația nefiind identificată cu o rutină dedicată exclusiv acestui scenariu de intrare.
+Modulele de mijloace fixe din aplicație gestionează evidența și amortizarea activelor odată introduse în contabilitate, la valoarea comunicată; introducerea specifică a unui bun la „valoarea de aport" stabilită prin evaluare, ca modalitate distinctă de intrare (față de achiziție sau producție proprie), rămâne o alegere pe care contabilul o face la înregistrarea inițială, aplicația nefiind identificată cu o rutină dedicată exclusiv acestui scenariu de intrare.
 
 [iConta.eu](/)

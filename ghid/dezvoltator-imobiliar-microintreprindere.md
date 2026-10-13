@@ -2,7 +2,7 @@
 title: "Poate un dezvoltator imobiliar să fie microîntreprindere"
 description: "Dacă domeniul de dezvoltare imobiliară e exclus prin lege de la sistemul de impozitare pe veniturile microîntreprinderilor."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Codul fiscal exclude explicit anumite domenii de activitate de la sistemul de im
 
 ## Ce face iConta.eu
 
-Regimul fiscal al firmei (`regim_fiscal`, micro sau profit) se declară manual de contabil, la Date firmă — iConta.eu nu verifică automat condițiile generale de eligibilitate de la art. 47 alin. (1) (plafon de venituri, salariat, capital, situații financiare) și nu are o listă automată de coduri CAEN excluse conform art. 47 alin. (3) — verificarea atât a condițiilor generale, cât și a apartenenței domeniului de activitate la una dintre categoriile excluse (bancar, asigurări, jocuri de noroc, petrol și gaze) rămâne responsabilitatea contabilului.
+Regimul fiscal al firmei („regimul fiscal (Date firmă)”, micro sau profit) se declară manual de contabil, la Date firmă — iConta.eu nu verifică automat condițiile generale de eligibilitate de la art. 47 alin. (1) (plafon de venituri, salariat, capital, situații financiare) și nu are o listă automată de coduri CAEN excluse conform art. 47 alin. (3) — verificarea atât a condițiilor generale, cât și a apartenenței domeniului de activitate la una dintre categoriile excluse (bancar, asigurări, jocuri de noroc, petrol și gaze) rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

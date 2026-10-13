@@ -2,7 +2,7 @@
 title: "Cum verific D406 cu balanța contabilă?"
 description: "De ce trebuie ca fișierul SAF-T (D406) să se lege de balanța de verificare lunară și ce pași concreți sunt de urmat pentru reconciliere."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,7 +33,7 @@ Practic, verificarea D406 vs. balanță înseamnă:
 
 ## Ce face iConta.eu
 
-iConta.eu generează D406 din aplicație, dar verificarea nu se oprește la emisie: aplicația construiește o **a doua cale de calcul, independentă**, în aplicație. Aceasta reface balanța de rulaje per cont direct din `inregistrari_linii` (notele contabile validate din perioada de raportare), fără să reutilizeze codul generatorului D406, și o compară cu rulajele extrase din fișierul SAF-T efectiv emis. Dacă cele două nu coincid pe un cont, sau dacă suma debitelor și creditelor unei note nu e egală, aplicația oprește depunerea și arată exact contul și valorile divergente — nu corectează tacit.
+iConta.eu generează D406 din aplicație, dar verificarea nu se oprește la emisie: aplicația construiește o **a doua cale de calcul, independentă**, în aplicație. Aceasta reface balanța de rulaje per cont direct din „notele contabile” (notele contabile validate din perioada de raportare), fără să reutilizeze codul generatorului D406, și o compară cu rulajele extrase din fișierul SAF-T efectiv emis. Dacă cele două nu coincid pe un cont, sau dacă suma debitelor și creditelor unei note nu e egală, aplicația oprește depunerea și arată exact contul și valorile divergente — nu corectează tacit.
 
 Limita declarată în cod: reconcilierea acoperă secțiunea `GeneralLedgerEntries` (dubla partidă a notelor contabile); nu acoperă încă, în aceeași verificare automată, sub-secțiunile de facturi de vânzare/achiziție, plăți sau mișcări de active din D406 — acestea au verificări separate, parțiale, de reconciliere linii-antet.
 

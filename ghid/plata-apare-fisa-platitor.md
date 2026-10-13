@@ -2,7 +2,7 @@
 title: "Ce fac dacă plata nu apare în fișa pe plătitor?"
 description: "Ce dată contează legal drept moment al plății unei obligații fiscale prin transfer bancar, chiar dacă fișa pe plătitor din portalul ANAF nu o reflectă încă."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce trebuie făcut, în ordine, când suma nu apare în fișă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu urmărește obligațiile fiscale datorate și termenele de plată prin modulul de control fiscal (funcțiile `obligatii_datorate` și `declaratii_datorate`), pe baza calendarului fiscal al firmei. Aplicația **nu are acces la fișa pe plătitor din portalul ANAF** și nu confirmă automat recepționarea unei plăți de către trezorerie — verificarea datei reale de debitare a contului bancar și, dacă e cazul, transmiterea dovezii de plată către organul fiscal rămân operațiuni pe care contabilul le face în afara aplicației.
+La data acestui ghid, iConta.eu urmărește obligațiile fiscale datorate și termenele de plată prin modulul de control fiscal (funcțiile „obligațiile datorate (Control fiscal)” și „declarațiile datorate (Control fiscal)”), pe baza calendarului fiscal al firmei. Aplicația **nu are acces la fișa pe plătitor din portalul ANAF** și nu confirmă automat recepționarea unei plăți de către trezorerie — verificarea datei reale de debitare a contului bancar și, dacă e cazul, transmiterea dovezii de plată către organul fiscal rămân operațiuni pe care contabilul le face în afara aplicației.
 
 [iConta.eu](/)

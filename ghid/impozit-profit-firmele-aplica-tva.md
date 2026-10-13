@@ -2,7 +2,7 @@
 title: "Impozit pe profit la firmele care aplică TVA normal"
 description: "Cum se calculează impozitul pe profit pentru o firmă înregistrată în scopuri de TVA cu regimul normal (nu TVA la încasare) și de ce regimul de TVA nu schimbă baza de calcul a impozitului pe profit."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă de aici pentru o firmă cu TVA în regim normal:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează rezultatul fiscal pe baza înregistrărilor contabile ale firmei, prin modulele de impozit pe profit sau de impozit micro, în funcție de `regim_fiscal` setat în profilul firmei. Regimul de TVA (`platitor_tva`, `tip_decont`) este o setare separată, folosită de motorul fiscal doar pentru a determina declarațiile de TVA datorate (D300, D390 etc., via aplicația), nu pentru a modifica baza de calcul a impozitului pe profit sau a impozitului micro.
+La data acestui ghid, iConta.eu calculează rezultatul fiscal pe baza înregistrărilor contabile ale firmei, prin modulele de impozit pe profit sau de impozit micro, în funcție de „regimul fiscal (Date firmă)” setat în profilul firmei. Regimul de TVA („plătitor de TVA (Date firmă)”, „periodicitatea TVA (Date firmă)”) este o setare separată, folosită de motorul fiscal doar pentru a determina declarațiile de TVA datorate (D300, D390 etc., via aplicația), nu pentru a modifica baza de calcul a impozitului pe profit sau a impozitului micro.
 
 [iConta.eu](/)

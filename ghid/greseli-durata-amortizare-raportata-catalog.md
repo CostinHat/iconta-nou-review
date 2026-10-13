@@ -2,7 +2,7 @@
 title: "Greșeli la durata de amortizare raportată la catalog"
 description: "Catalogul de clasificare a mijloacelor fixe nu este validat automat — durata aleasă rămâne responsabilitatea contabilului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,6 +25,6 @@ Greșeala tipică e alegerea unei durate "convenabile" (de exemplu cea mai scurt
 
 ## Ce face iConta.eu
 
-**Catalogul HG 2139/2004 nu este cablat deloc în aplicație.** Câmpul de durată (`dnf_luni`) e complet liber, fără nicio validare a intervalului minim-maxim din catalog pentru categoria de clasificare a activului — aplicația nu oferă un lookup și nu avertizează dacă durata aleasă e în afara plajei legale. Responsabilitatea alegerii corecte a duratei din catalog revine integral contabilului.
+**Catalogul HG 2139/2004 nu este cablat deloc în aplicație.** Câmpul de durată („durata normală de funcționare (Mijloace fixe)”) e complet liber, fără nicio validare a intervalului minim-maxim din catalog pentru categoria de clasificare a activului — aplicația nu oferă un lookup și nu avertizează dacă durata aleasă e în afara plajei legale. Responsabilitatea alegerii corecte a duratei din catalog revine integral contabilului.
 
 [iConta.eu](/)

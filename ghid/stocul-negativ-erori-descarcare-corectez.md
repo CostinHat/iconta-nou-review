@@ -2,7 +2,7 @@
 title: "Stocul negativ din erori de descărcare: cum îl corectez"
 description: "Ce este stocul negativ, de ce apare din erori de descărcare de gestiune și cum se corectează prin inventariere, potrivit reglementărilor contabile."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Pașii de corectare a unui stoc negativ:
 
 ## Ce face iConta.eu
 
-Modulul de stocuri din iConta.eu ține evidența cantitativ-valorică pe gestiuni și articole, cu note contabile dedicate pentru plusuri de inventar (`nota_plus`) și minusuri de inventar (`nota_minus`), inclusiv pentru mijloace fixe. Reconcilierea automată dintre facturi și mișcările de stoc este acoperită de teste dedicate (`test_reconciliere_factura_stoc.py`). La data acestui ghid, aplicația **nu previne automat introducerea unei ieșiri care ar duce stocul pe negativ** dacă documentele nu sunt introduse în ordine cronologică — depistarea și corectarea cauzei rămân în sarcina contabilului, pe baza rapoartelor de stoc.
+Modulul de stocuri din iConta.eu ține evidența cantitativ-valorică pe gestiuni și articole, cu note contabile dedicate pentru plusuri de inventar („nota plusurilor de inventar (Inventariere)”) și minusuri de inventar („nota minusurilor de inventar (Inventariere)”), inclusiv pentru mijloace fixe. Reconcilierea automată dintre facturi și mișcările de stoc este acoperită de teste dedicate. La data acestui ghid, aplicația **nu previne automat introducerea unei ieșiri care ar duce stocul pe negativ** dacă documentele nu sunt introduse în ordine cronologică — depistarea și corectarea cauzei rămân în sarcina contabilului, pe baza rapoartelor de stoc.
 
 [iConta.eu](/)

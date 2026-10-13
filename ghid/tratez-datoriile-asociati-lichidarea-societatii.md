@@ -2,7 +2,7 @@
 title: "Cum tratez datoriile față de asociați la lichidarea societății?"
 description: "Trei tipuri de solduri (împrumut, dividend aprobat neplătit, dividend interimar neregularizat) trebuie stinse separat — partajul de lichidare nu le preia automat în calcul."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Greșeala tipică e tratarea acestor solduri ca și cum ar dispărea automat oda
 
 ## Ce face iConta.eu
 
-Soldurile de pe 4551, 457 și 463 provin din funcționalitatea de decontări cu asociații (F039): nota de împrumut, respectiv nota de dividend/regularizare. Stingerea lor — restituirea împrumutului (4551=5121, cu dobânda și impozitul reținut, dacă e cazul) sau plata/regularizarea dividendelor — se face tot prin această funcționalitate. Lichidarea și radierea firmei sunt acoperite de o funcționalitate separată, cu propria logică de partaj al capitalului social și al rezervelor/profiturilor rămase; aceasta din urmă nu citește și nu stinge automat soldurile de pe 4551/457/463 — ele trebuie tratate explicit, înainte.
+Soldurile de pe 4551, 457 și 463 provin din funcționalitatea de decontări cu asociații („Decontări asociați”): nota de împrumut, respectiv nota de dividend/regularizare. Stingerea lor — restituirea împrumutului (4551=5121, cu dobânda și impozitul reținut, dacă e cazul) sau plata/regularizarea dividendelor — se face tot prin această funcționalitate. Lichidarea și radierea firmei sunt acoperite de o funcționalitate separată, cu propria logică de partaj al capitalului social și al rezervelor/profiturilor rămase; aceasta din urmă nu citește și nu stinge automat soldurile de pe 4551/457/463 — ele trebuie tratate explicit, înainte.
 
 [iConta.eu](/)

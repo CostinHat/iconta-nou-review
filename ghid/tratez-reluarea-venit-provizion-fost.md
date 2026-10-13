@@ -2,7 +2,7 @@
 title: "Cum tratez reluarea la venit a unui provizion care a fost deductibil?"
 description: "De ce reluarea la venituri a unui provizion dedus fiscal la constituire este, simetric, venit impozabil."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,6 +28,6 @@ Greșeala tipică este tratarea ca neimpozabilă a reluării unui provizion pent
 
 ## Ce face iConta.eu
 
-Motorul F071 generează aceeași structură de notă (de exemplu 1512 = 7812) la reluarea unui provizion de garanții, ca și la orice altă categorie. Caracterul deductibil este marcat de aplicație încă de la constituire — doar categoria „garanții” e deductibilă — informație pe care contabilul o folosește pentru a aplica regula simetrică la reluare: venit impozabil pentru orice reluare a unui provizion care, la constituire, a fost dedus fiscal.
+Motorul „Provizioane și ajustări” generează aceeași structură de notă (de exemplu 1512 = 7812) la reluarea unui provizion de garanții, ca și la orice altă categorie. Caracterul deductibil este marcat de aplicație încă de la constituire — doar categoria „garanții” e deductibilă — informație pe care contabilul o folosește pentru a aplica regula simetrică la reluare: venit impozabil pentru orice reluare a unui provizion care, la constituire, a fost dedus fiscal.
 
 [iConta.eu](/)

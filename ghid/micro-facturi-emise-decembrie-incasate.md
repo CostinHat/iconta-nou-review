@@ -2,7 +2,7 @@
 title: "Micro cu facturi emise în decembrie, încasate în ianuarie"
 description: "Impozitul pe veniturile microîntreprinderilor se calculează pe veniturile recunoscute la data facturării, nu la data încasării, ceea ce contează la trecerea dintre doi ani fiscali."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ O microîntreprindere care emite o factură pe 20 decembrie și încasează cont
 
 ## Ce face iConta.eu
 
-Singura funcționalitate din acest dosar de cercetare legată de cuvintele-cheie „facturi emise" este F171 — exportul tehnic al facturilor emise către programul de contabilitate SAGA (format XML propriu, pentru importul lor în alt soft). Acest export nu calculează și nu afectează în niciun fel impozitul pe veniturile microîntreprinderilor; el doar transferă datele unei facturi deja emise către un alt program. Comportamentul exact al modulului de calcul al impozitului micro (recunoașterea veniturilor pe trimestre, verificarea plafonului anual) nu a fost verificat în codul sursă analizat pentru acest dosar, așa că nu facem aici afirmații neverificate despre el.
+Singura funcționalitate din acest dosar de cercetare legată de cuvintele-cheie „facturi emise" este „Export facturi emise către SAGA” — exportul tehnic al facturilor emise către programul de contabilitate SAGA (format XML propriu, pentru importul lor în alt soft). Acest export nu calculează și nu afectează în niciun fel impozitul pe veniturile microîntreprinderilor; el doar transferă datele unei facturi deja emise către un alt program. Comportamentul exact al modulului de calcul al impozitului micro (recunoașterea veniturilor pe trimestre, verificarea plafonului anual) nu a fost verificat în codul sursă analizat pentru acest dosar, așa că nu facem aici afirmații neverificate despre el.
 
 [iConta.eu](/)

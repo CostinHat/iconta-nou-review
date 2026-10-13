@@ -2,7 +2,7 @@
 title: Cum verific dacă o firmă aplică TVA la încasare?
 description: Verificarea se face în Registrul public al persoanelor care aplică TVA la încasare, ținut de ANAF — nu prin presupunere pe baza cifrei de afaceri sau a plafonului legal.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Dacă vrei doar să estimezi eligibilitatea (de exemplu pentru propria firmă, �
 
 ## Ce face iConta.eu
 
-Funcția `plafon_la(data)` din motorul F097 calculează automat plafonul corect valabil la orice dată (4,5M / 5M / 5,5M, în funcție de perioadă), pe baza istoricului legislativ din tabelul intern al aplicației. Verificarea propriu-zisă a înscrierii unei firme în Registrul public ANAF **nu este automatizată** — rămâne un pas manual al contabilului, pe portalul ANAF.
+Funcția „plafonul la dată” din motorul „TVA la încasare” calculează automat plafonul corect valabil la orice dată (4,5M / 5M / 5,5M, în funcție de perioadă), pe baza istoricului legislativ din tabelul intern al aplicației. Verificarea propriu-zisă a înscrierii unei firme în Registrul public ANAF **nu este automatizată** — rămâne un pas manual al contabilului, pe portalul ANAF.
 
 [iConta.eu](/)

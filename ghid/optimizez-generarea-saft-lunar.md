@@ -2,7 +2,7 @@
 title: "Cum optimizez generarea SAF-T lunar"
 description: "Ce poți controla la fiecare generare D406 lunară ca fișierul să iasă corect din prima încercare, și ce limite tehnice trebuie să știi din timp."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,7 +30,7 @@ Primul pas al „optimizării" e să nu generezi declarația pe periodicitatea g
 
 Generatorul D406 produce Header, MasterFiles și GeneralLedgerEntries complet din XSD, iar SourceDocuments (facturi de vânzare/achiziție) cu linii reale pe produs (cantitate, UM, preț, descriere, cotă), reconciliate obligatoriu cu antetul declarației — nu doar totaluri agregate. Identitatea partenerului urmează nomenclatorul (00/01/02+cod, 03+CNP, 04+nume). Codurile de taxă pentru livrări sunt aplicate „period-aware", pe data facturii, ținând cont de schimbarea din Legea 141/2025.
 
-Validarea nu se face cu un instrument generic, ci cu `DUKIntegrator_AnLunaUI.jar` (validatorul oficial), integrat direct în aplicație — pasul de validare înainte de depunere e parte din flux, nu un instrument extern separat de gestionat manual.
+Validarea nu se face cu un instrument generic, ci cu validatorul ANAF (DUKIntegrator) (validatorul oficial), integrat direct în aplicație — pasul de validare înainte de depunere e parte din flux, nu un instrument extern separat de gestionat manual.
 
 Onest, ca să nu optimizezi pe baza unor așteptări greșite: secțiunea **Payments** (plăți) rămâne neemisă — codul de generare există, dar nu se populează încă din sursă, în lipsa unei mapări a trezoreriei; **MovementOfGoods** iese goală (self-closed); **AssetTransactions** lipsește (opțională conform XSD). Declarația e depunerea pe zero-plăți, dar incompletă pentru firmele cu plăți de raportat în această secțiune — de știut din timp, nu de descoperit la validare.
 

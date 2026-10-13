@@ -2,7 +2,7 @@
 title: Cum se calculează salariul minim pentru un angajat part-time?
 description: Salariul minim se proratează pe fereastra activă a contractului în lună, iar facilitatea de 200/300 lei se acordă doar dacă salariul de bază contractual este egal cu salariul minim și sunt îndeplinite cumulativ toate condițiile din lege.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -49,6 +49,6 @@ Un angajat cu 4 ore/zi are salariul de bază contractual stabilit exact la nivel
 
 ## Ce face iConta.eu
 
-Motorul de calcul determină baza de suprataxare (baza_podea) ca salariul minim minus facilitatea aplicabilă, proratată pe fereastra activă a contractului în lună, și compară venitul brut realizat cu acest prag. Dacă venitul e sub prag, calculează suplimentar CAS/CASS suportate de angajator, evidențiate separat, fără să afecteze salariul net al angajatului. Pentru facilitatea de 200/300 lei, aplicația verifică cele patru condiții cumulative din lege (nivel salariu de bază egal cu minimul, funcție de bază, venit brut total sub plafonul perioadei) și aplică proratarea prevăzută explicit de lege pentru fracția de lună activă a contractului.
+Motorul de calcul determină baza de suprataxare (baza minimă a contribuțiilor) ca salariul minim minus facilitatea aplicabilă, proratată pe fereastra activă a contractului în lună, și compară venitul brut realizat cu acest prag. Dacă venitul e sub prag, calculează suplimentar CAS/CASS suportate de angajator, evidențiate separat, fără să afecteze salariul net al angajatului. Pentru facilitatea de 200/300 lei, aplicația verifică cele patru condiții cumulative din lege (nivel salariu de bază egal cu minimul, funcție de bază, venit brut total sub plafonul perioadei) și aplică proratarea prevăzută explicit de lege pentru fracția de lună activă a contractului.
 
 [iConta.eu](/)

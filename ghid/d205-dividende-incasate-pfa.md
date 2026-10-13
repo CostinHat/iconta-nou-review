@@ -2,7 +2,7 @@
 title: D205 pentru dividende încasate de un PFA
 description: Dividendele încasate de o persoană care e și titular de PFA se impozitează exact ca la orice altă persoană fizică asociată — venitul din dividende nu se amestecă cu venitul din activitatea independentă.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -23,7 +23,7 @@ Legea leagă impozitarea dividendului de calitatea de acționar/asociat, nu de a
 
 - Se încearcă raportarea dividendului încasat ca venit al PFA-ului (de exemplu ca venit din activitatea independentă) — dividendul nu e, fiscal, venit din activitate independentă, ci venit din deținerea de titluri de participare; regimul lui (16%, reținut la sursă, final) e complet distinct.
 - Se presupune că impozitul de 16% reținut prin D205 acoperă și eventuale obligații de CASS pe care beneficiarul, ca persoană fizică, le poate avea pe cumulul veniturilor sale (inclusiv dividende) — impozitul pe dividend și contribuția de asigurări sociale de sănătate sunt obligații diferite; a doua e a beneficiarului, declarată separat de acesta, nu de societatea plătitoare.
-- Se așteaptă ca D205 sau iConta.eu să semnaleze automat o eventuală obligație de CASS a beneficiarului — funcționalitatea F029 nu emite un asemenea avertisment; rămâne responsabilitatea beneficiarului să verifice, prin propria declarație, dacă intră sub incidența CASS.
+- Se așteaptă ca D205 sau iConta.eu să semnaleze automat o eventuală obligație de CASS a beneficiarului — funcționalitatea „Declarația D205 și distribuirea dividendelor” nu emite un asemenea avertisment; rămâne responsabilitatea beneficiarului să verifice, prin propria declarație, dacă intră sub incidența CASS.
 
 ## Ce face iConta.eu
 

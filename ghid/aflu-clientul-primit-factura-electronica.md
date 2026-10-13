@@ -2,20 +2,13 @@
 title: "Cum aflu dacă clientul a primit factura electronică"
 description: "Explică diferența dintre comunicarea legală a facturii electronice și confirmarea de citire, plus cum urmărește iConta.eu statusul la ANAF."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum aflu dacă clientul a primit factura electronică
 
 În sistemul RO e-Factura, "primirea" de către client nu e o confirmare pe care o dă clientul, ci un fapt tehnic definit de lege: momentul în care factura devine disponibilă pentru descărcare, după ce trece validarea și primește semnătura Ministerului Finanțelor.
-
-## Temeiul legal
-
-::: ghid-temei
-"(4) [...] se aplică semnătura electronică a Ministerului Finanţelor şi se comunică de îndată destinatarului. Aplicarea semnăturii electronice a Ministerului Finanţelor atestă primirea acesteia în sistemul naţional privind factura electronică RO e-Factura." [...] "(7) Data comunicării facturii electronice către destinatar se consideră data la care factura electronică este disponibilă acestuia pentru descărcare din sistemul naţional privind factura electronică RO e-Factura. [...] Data comunicării este accesibilă în sistem şi emitentului facturii electronice."
-— OUG 120/2021, art. 4 alin. (4) și alin. (7), [OUG nr. 120/2021 privind sistemul național RO e-Factura](https://legislatie.just.ro/Public/DetaliiDocument/247243), dosar de cercetare F178.
-:::
 
 Legea leagă "primirea" de disponibilitatea facturii în sistemul național, atestată prin semnătura electronică MF, nu de o acțiune explicită a clientului (deschidere, confirmare, descărcare efectivă). Data comunicării e accesibilă și emitentului, direct în sistemul RO e-Factura — de acolo se poate verifica, nu prin confirmare de la client.
 

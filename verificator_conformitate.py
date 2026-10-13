@@ -1367,6 +1367,24 @@ try:
 except Exception as _e_mr:
     rap["mesaj_pe_randuri"].append(("verificator", 0, "EROARE", "gard mesaj_pe_randuri: " + str(_e_mr)))
 
+# --- GHID_ACTUALIZAT (DS cap.22 v2.90, comanda Costin 13.10.2026 pct.2c): fiecare ghid public poartă data ultimei actualizări sub titlu
+#     (`.ghid-actualizat`, generată de `public_ghid`), cu tokenii textului secundar. Mutația care o probează: scoate `ghid-actualizat` din
+#     `public_ghid` (main.py) sau regula din stil.css -> lista nevidă -> TOTAL > 0 -> poarta roșie.
+rap["ghid_actualizat"] = []
+try:
+    _css_ga = open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read()
+    _mga = re.search(r"(?m)^\.ghid-actualizat\s*\{([^}]*)\}", _css_ga)
+    if not _mga or not re.search(r"font-size\s*:\s*var\(--text-desc\)", _mga.group(1)) or not re.search(r"color\s*:\s*var\(--gri\)", _mga.group(1)):
+        rap["ghid_actualizat"].append(("static/stil.css", 0, "ghid-actualizat",
+            ".ghid-actualizat lipsa sau fara tokenii textului secundar (--text-desc, --gri) (DS cap.22 v2.90)"))
+    _main_ga = open(os.path.join(BAZA_PY, "main.py"), encoding="utf-8").read()
+    _fga = re.search(r"(?ms)^def public_ghid\(.*?(?=^def |^@app)", _main_ga)
+    if not _fga or 'class="ghid-actualizat">Actualizat la ' not in _fga.group(0):
+        rap["ghid_actualizat"].append(("main.py", 0, "public_ghid",
+            "public_ghid nu mai pune „Actualizat la …” (.ghid-actualizat) sub titlul ghidului (DS cap.22 v2.90)"))
+except Exception as _e_ga:
+    rap["ghid_actualizat"].append(("verificator", 0, "EROARE", "gard ghid_actualizat: " + str(_e_ga)))
+
 # --- DIALOG_FARA_INCHIDERE (DS cap.9 v2.64, comanda Costin 04.10.2026): orice fereastră suprapusă creată în JS se
 #     închide prin mecanismul unic `inchidereDialog` (X în antet + Esc), SAU poartă pe linia creării marcajul
 #     `fereastra-de-lucru: doar X` (fereastra cu câmpuri — Esc nu aruncă un formular). Instanța: bun-venitul se

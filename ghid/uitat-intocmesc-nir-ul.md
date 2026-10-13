@@ -2,7 +2,7 @@
 title: "Ce fac dacă am uitat să întocmesc NIR-ul?"
 description: "Când este obligatorie Nota de recepție și constatare de diferențe (NIR) și cum se rezolvă situația în care recepția unor bunuri a rămas neînregistrată."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ NIR-ul (Nota de recepție și constatare de diferențe) e documentul standard pr
 
 ## Ce face iConta.eu
 
-Recepția și gestiunea stocurilor din iConta.eu au module dedicate (`stocuri.py`, `stocuri_api.py`), care generează NIR-ul din liniile de recepție (cantitate, preț de achiziție, cotă TVA), inclusiv pentru gestiuni la preț de vânzare (cu adaos comercial și TVA neexigibilă). Dacă un NIR a fost omis pentru o recepție care necesită unul, corectarea presupune completarea lui ulterioară, cu datele reale ale recepției — aplicația nu are, la acest moment, o funcție separată de „recuperare automată" a NIR-urilor lipsă pentru recepții deja vechi; NIR-ul se creează normal, oricând, pe baza documentelor de livrare păstrate.
+Recepția și gestiunea stocurilor din iConta.eu au module dedicate (aplicația), care generează NIR-ul din liniile de recepție (cantitate, preț de achiziție, cotă TVA), inclusiv pentru gestiuni la preț de vânzare (cu adaos comercial și TVA neexigibilă). Dacă un NIR a fost omis pentru o recepție care necesită unul, corectarea presupune completarea lui ulterioară, cu datele reale ale recepției — aplicația nu are, la acest moment, o funcție separată de „recuperare automată" a NIR-urilor lipsă pentru recepții deja vechi; NIR-ul se creează normal, oricând, pe baza documentelor de livrare păstrate.
 
 [iConta.eu](/)

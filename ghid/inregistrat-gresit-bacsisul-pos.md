@@ -2,7 +2,7 @@
 title: Am înregistrat greșit bacșișul din POS
 description: Cea mai frecventă greșeală la bacșișul încasat prin POS este trecerea lui prin veniturile firmei. Cum recunoști eroarea și cum o corectezi, cont cu cont.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Cel mai des, bacșișul încasat cu cardul e contabilizat împreună cu restul �
 
 ## Ce face iConta.eu
 
-Modulul F010 separă explicit cele două operațiuni: `nota_incasare(bacsis, sursa="card")` generează întotdeauna `461=462` + `5121=461`, niciodată o notă care amestecă bacșișul cu venitul din vânzare. Funcția respinge orice sumă mai mică sau egală cu zero, cu un mesaj dedicat, ca să nu ajungă „bacșiș fantomă" în evidență. Pentru corectarea unei înregistrări greșite deja introduse, stornarea rămâne un pas manual — aplicația nu detectează automat o încasare de bacșiș trecută anterior prin alt cont.
+Modulul „Bacșiș HoReCa” separă explicit cele două operațiuni: „nota de încasare (HoReCa, bacșiș)” generează întotdeauna `461=462` + `5121=461`, niciodată o notă care amestecă bacșișul cu venitul din vânzare. Funcția respinge orice sumă mai mică sau egală cu zero, cu un mesaj dedicat, ca să nu ajungă „bacșiș fantomă" în evidență. Pentru corectarea unei înregistrări greșite deja introduse, stornarea rămâne un pas manual — aplicația nu detectează automat o încasare de bacșiș trecută anterior prin alt cont.
 
 [iConta.eu](/)

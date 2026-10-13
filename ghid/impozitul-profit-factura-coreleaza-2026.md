@@ -2,7 +2,7 @@
 title: "Impozitul pe profit și e-Factura: cum se corelează în 2026"
 description: "De ce statutul unei facturi în sistemul RO e-Factura contează pentru deductibilitatea cheltuielilor la impozitul pe profit, potrivit Codului fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -45,6 +45,6 @@ Coroborat cu:
 
 ## Ce face iConta.eu
 
-iConta.eu **generează și trimite facturi electronice conforme RO e-Factura** prin modulul `efactura_send.py` (generator XML UBL 2.1/CIUS-RO, cu upload prin OAuth către ANAF) și gestionează facturile emise prin `facturi_api.py`. Aplicația nu are însă, la data acestui ghid, o funcție care să **coreleze automat statutul de transmitere RO e-Factura al unei achiziții cu deductibilitatea ei la impozitul pe profit** — nu am găsit în cod niciun modul care să blocheze sau să semnaleze o cheltuială înregistrată pe baza unei facturi de la un furnizor ce nu a transmis-o (corect) prin sistemul RO e-Factura. Verificarea acestei corelații rămâne, în acest moment, o sarcină manuală a contabilului.
+iConta.eu **generează și trimite facturi electronice conforme RO e-Factura** prin modulul aplicația (generator XML UBL 2.1/CIUS-RO, cu upload prin OAuth către ANAF) și gestionează facturile emise prin aplicația. Aplicația nu are însă, la data acestui ghid, o funcție care să **coreleze automat statutul de transmitere RO e-Factura al unei achiziții cu deductibilitatea ei la impozitul pe profit** — nu am găsit în cod niciun modul care să blocheze sau să semnaleze o cheltuială înregistrată pe baza unei facturi de la un furnizor ce nu a transmis-o (corect) prin sistemul RO e-Factura. Verificarea acestei corelații rămâne, în acest moment, o sarcină manuală a contabilului.
 
 [iConta.eu](/)

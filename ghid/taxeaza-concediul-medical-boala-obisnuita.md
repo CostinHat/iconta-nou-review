@@ -2,7 +2,7 @@
 title: Cum se taxează concediul medical pentru boală obișnuită?
 description: Concediul medical e reglementat de OUG 158/2005, modificată prin Legea 141/2025 (de la 1 august 2025). Dosarul verificat pentru acest ghid nu detaliază mecanismul de taxare (CAS/CASS/impozit) al indemnizației — vezi ce e confirmat și ce nu.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -16,7 +16,7 @@ Indemnizația de concediu medical pentru boală obișnuică (incapacitate tempor
 OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, cu modificările aduse de Legea 141/2025 (aplicabile de la 1 august 2025).
 :::
 
-**De semnalat onest**: dosarul de cercetare folosit la acest ghid acoperă în detaliu motorul de calcul al salariului obișnuit (funcționalitatea F080 — CAS, CASS, impozit, deducere personală, facilități). Concediul medical a apărut doar incidental, în descrierea generală a funcționalității, cu mențiunea că Legea 141/2025 a schimbat procentele de calcul ale indemnizației (trei niveluri, 55/65/75%, în funcție de vechime/tip de incapacitate), fără ca sursa consultată să precizeze care procent corespunde exact bolii obișnuite și fără un citat verbatim din text. Din acest motiv, acest ghid nu afirmă un procent anume pentru boala obișnuită și nu detaliază regimul de CAS/CASS/impozit aplicabil indemnizației — o asemenea afirmație ar însemna o citare neconfirmată, ceea ce evităm explicit.
+**De semnalat onest**: dosarul de cercetare folosit la acest ghid acoperă în detaliu motorul de calcul al salariului obișnuit (funcționalitatea „Calcul salarizare (de la brut la net)” — CAS, CASS, impozit, deducere personală, facilități). Concediul medical a apărut doar incidental, în descrierea generală a funcționalității, cu mențiunea că Legea 141/2025 a schimbat procentele de calcul ale indemnizației (trei niveluri, 55/65/75%, în funcție de vechime/tip de incapacitate), fără ca sursa consultată să precizeze care procent corespunde exact bolii obișnuite și fără un citat verbatim din text. Din acest motiv, acest ghid nu afirmă un procent anume pentru boala obișnuită și nu detaliază regimul de CAS/CASS/impozit aplicabil indemnizației — o asemenea afirmație ar însemna o citare neconfirmată, ceea ce evităm explicit.
 
 ## Ce se greșește în practică
 
@@ -26,6 +26,6 @@ OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de
 
 ## Ce face iConta.eu
 
-Motorul de calcul verificat pentru acest ghid (funcția `calcul_salariu()` / `_calcul_salariu_2018()`) acoperă salariul obișnuit, plătit pentru timp efectiv lucrat — CAS 25%, CASS 10%, deducere personală, impozit 10%. Tratamentul specific al indemnizației de concediu medical (baza de calcul, procentele din OUG 158/2005 modificată, regimul de contribuții) nu face parte din codul verificat aici, ci dintr-o funcționalitate distinctă. Nu afirmăm, fără verificare directă a acelei funcționalități, cum anume calculează iConta.eu indemnizația de concediu medical — recomandăm verificarea directă în aplicație, la fluturașul de salariu al lunii respective.
+Motorul de calcul verificat pentru acest ghid (funcția „calculul salariului (Salarii)” / „calculul salariului (Salarii)”) acoperă salariul obișnuit, plătit pentru timp efectiv lucrat — CAS 25%, CASS 10%, deducere personală, impozit 10%. Tratamentul specific al indemnizației de concediu medical (baza de calcul, procentele din OUG 158/2005 modificată, regimul de contribuții) nu face parte din codul verificat aici, ci dintr-o funcționalitate distinctă. Nu afirmăm, fără verificare directă a acelei funcționalități, cum anume calculează iConta.eu indemnizația de concediu medical — recomandăm verificarea directă în aplicație, la fluturașul de salariu al lunii respective.
 
 [iConta.eu](/)

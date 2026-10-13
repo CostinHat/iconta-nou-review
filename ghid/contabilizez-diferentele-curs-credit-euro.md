@@ -2,7 +2,7 @@
 title: Cum contabilizez diferențele de curs la un credit în euro?
 description: Diferența de curs valutar la un credit în euro se recunoaște lunar (reevaluarea soldului la cursul BNR de la sfârșitul lunii) și la fiecare plată; pentru o datorie, cursul crescut înseamnă pierdere pe 665, cursul scăzut înseamnă câștig pe 765.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,8 +26,8 @@ Un credit în euro generează diferențe de curs în două momente diferite: la 
 
 Creditul e o **datorie** a firmei față de bancă — regula de semn pentru datorii e inversă față de creanțe sau disponibilități:
 
-- **Cursul BNR crește** (leul se depreciază) → soldul creditului, exprimat în lei, crește → **pierdere** din curs valutar → `665 = cont_credit`.
-- **Cursul BNR scade** (leul se apreciază) → soldul creditului, exprimat în lei, scade → **câștig** din curs valutar → `cont_credit = 765`.
+- **Cursul BNR crește** (leul se depreciază) → soldul creditului, exprimat în lei, crește → **pierdere** din curs valutar → 665 = contul creditor.
+- **Cursul BNR scade** (leul se apreciază) → soldul creditului, exprimat în lei, scade → **câștig** din curs valutar → contul creditor = 765.
 
 Diferența se calculează întotdeauna ca produs între suma rămasă în valută și variația de curs (curs nou minus curs vechi), nu ca diferență între solduri absolute — altfel rambursările parțiale denaturează calculul.
 
@@ -46,8 +46,8 @@ Luna următoare, firma plătește o rată de 1.000 EUR la cursul zilei, 5,03 lei
 
 ## Ce face iConta.eu
 
-Motorul dedicat diferențelor de curs, aplicația, implementează exact această regulă de semn: funcția `diferenta(valoare_valuta, curs_initial, curs_final, tip)` calculează câștigul/pierderea în funcție de `tip` (`"creanta"`, `"disponibil"` sau `"datorie"`) — pentru `"datorie"`, un curs final mai mare produce cont `"665"`, iar unul mai mic produce cont `"765"`, exact invers față de creanțe și disponibilități.
+Motorul dedicat diferențelor de curs, aplicația, implementează exact această regulă de semn: funcția „calculul diferenței de curs” calculează câștigul/pierderea în funcție de `tip` (`"creanta"`, `"disponibil"` sau `"datorie"`) — pentru `"datorie"`, un curs final mai mare produce cont `"665"`, iar unul mai mic produce cont `"765"`, exact invers față de creanțe și disponibilități.
 
-Pentru reevaluarea lunară a soldului unui credit, se folosește funcția `reevaluare_sold(sold_valuta, curs_evidenta, curs_bnr_sfarsit_luna, tip, cont_sold)`, apelată din use-case-ul `reevaluare_valuta()` pe ruta `/tenants/{tenant_id}/reevaluare-valuta`; nota generată e datată în ziua reevaluării, cu descrierea „Reevaluare solduri valuta la [data] (curs BNR)”. Pentru diferența apărută la o plată efectivă (rată sau dobândă), funcția `nota_decontare(valoare_valuta, curs_factura, curs_decontare, tip, cont_tert, cont_banca)` generează atât nota de plată, cât și linia de diferență de curs, într-o singură operațiune.
+Pentru reevaluarea lunară a soldului unui credit, se folosește funcția „reevaluarea soldului în valută (Operațiuni speciale)”, apelată din use-case-ul „reevaluarea în valută (Operațiuni speciale)” pe ruta aplicația; nota generată e datată în ziua reevaluării, cu descrierea „Reevaluare solduri valuta la [data] (curs BNR)”. Pentru diferența apărută la o plată efectivă (rată sau dobândă), funcția „nota de decontare în valută” generează atât nota de plată, cât și linia de diferență de curs, într-o singură operațiune.
 
 [iConta.eu](/)

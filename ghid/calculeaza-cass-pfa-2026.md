@@ -2,7 +2,7 @@
 title: "Cum se calculează CASS pentru PFA în 2026?"
 description: "Pentru veniturile din 2026, CASS se calculează liniar (10%) pe venitul net, plafonat la 72 de salarii minime brute pe țară — plafon urcat de la 60, prin Legea 239/2025."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Pașii de calcul pentru veniturile 2026:
 
 ## Ce face iConta.eu
 
-Aplicația implementează exact această distincție pentru anul de venit 2026: funcția `plafoane_an(2026)` ridică pragul maxim la 72 de salarii minime brute, citind Legea 239/2025 art. XII pct. 19, verificată la sursă, în timp ce reperul de salariu minim rămâne fix la valoarea de la 1 ianuarie 2026 (4.050 lei, conform HG 1506/2024), indiferent de majorarea ulterioară din iulie 2026. Calculul liniar al CASS (`calculeaza_cass`) e disponibil prin `fisa_d212`, pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți.
+Aplicația implementează exact această distincție pentru anul de venit 2026: funcția „plafoanele anului” ridică pragul maxim la 72 de salarii minime brute, citind Legea 239/2025 art. XII pct. 19, verificată la sursă, în timp ce reperul de salariu minim rămâne fix la valoarea de la 1 ianuarie 2026 (4.050 lei, conform HG 1506/2024), indiferent de majorarea ulterioară din iulie 2026. Calculul liniar al CASS („calculul CASS (Declarații)”) e disponibil prin „fișa de calcul D212 (Declarații)”, pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți.
 
 Aplicația refuză explicit calculul pentru orice an fiscal în afara celor verificate la sursă (2025, 2026) — un an neverificat ar produce o fișă plauzibilă, dar pe praguri neconfirmate.
 

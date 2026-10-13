@@ -2,7 +2,7 @@
 title: Cum se ajustează TVA la lichidarea firmei?
 description: Ce acoperă efectiv iConta.eu din partea de TVA la lichidare (TVA colectată la vânzarea activelor) și unde se oprește dosarul de cercetare disponibil pentru acest subiect.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -19,7 +19,7 @@ poarta: v1
 
 Acest ordin este temeiul contabil general pentru operațiunile de lichidare pe care se bazează și motorul de calcul din iConta.eu. Textul propriu-zis al normelor metodologice (Anexa 1) și al exemplelor de monografii contabile (Anexa 2) se publică separat, în Monitorul Oficial, Partea I, nr. 711 bis, și **nu a fost disponibil în dosarul de cercetare** folosit pentru acest ghid.
 
-**Notă de transparență, conform regulii de aur a acestor ghiduri:** dosarul de cercetare pentru funcționalitatea F057 nu conține un text legal citabil verbatim, specific „ajustării" (regularizării) TVA deduse la lichidarea/radierea unei societăți (de tipul prevederilor din Codul fiscal privind ajustarea deducerii pentru bunuri de capital sau la încetarea calității de plătitor). Nu inventăm aici un asemenea citat. Ceea ce putem confirma, din codul sursă al aplicației, este tratamentul TVA la **vânzarea** activelor rămase în cursul lichidării — descris mai jos.
+**Notă de transparență, conform regulii de aur a acestor ghiduri:** documentația aplicației nu conține un text legal citabil verbatim, specific „ajustării" (regularizării) TVA deduse la lichidarea/radierea unei societăți (de tipul prevederilor din Codul fiscal privind ajustarea deducerii pentru bunuri de capital sau la încetarea calității de plătitor). Nu inventăm aici un asemenea citat. Ceea ce putem confirma, din codul sursă al aplicației, este tratamentul TVA la **vânzarea** activelor rămase în cursul lichidării — descris mai jos.
 
 ## Ce se greșește în practică
 

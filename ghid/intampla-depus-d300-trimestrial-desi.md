@@ -2,7 +2,7 @@
 title: "Ce se întâmplă dacă am depus D300 trimestrial deși trebuia lunar?"
 description: "Consecințele aplicării greșite a periodicității TVA — cine stabilește dacă decontul e lunar sau trimestrial și cum se corectează o depunere pe fereastra greșită."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -41,6 +41,6 @@ Din textul de mai sus rezultă mecanismul complet:
 
 ## Ce face iConta.eu
 
-Fereastra de TVA (lunar sau trimestrial) folosită la generarea D300 vine din profilul firmei (`tip_decont`), citit de modulul de dispecerizare a declarațiilor (funcția `periodicitate_firma`) — deci, dacă profilul e setat corect, aplicația construiește deja decontul pe fereastra potrivită, lună de lună sau trimestru de trimestru. Aplicația **nu verifică retroactiv** dacă periodicitatea aplicată în trecut a fost cea corectă și **nu generează automat** declarațiile lunare lipsă atunci când se descoperă că firma ar fi trebuit să treacă la lunar mai devreme — depistarea situației și depunerea declarațiilor de regularizare rămân în sarcina contabilului.
+Fereastra de TVA (lunar sau trimestrial) folosită la generarea D300 vine din profilul firmei („periodicitatea TVA (Date firmă)”), citit de modulul de dispecerizare a declarațiilor (funcția „periodicitatea declarațiilor (Date firmă)”) — deci, dacă profilul e setat corect, aplicația construiește deja decontul pe fereastra potrivită, lună de lună sau trimestru de trimestru. Aplicația **nu verifică retroactiv** dacă periodicitatea aplicată în trecut a fost cea corectă și **nu generează automat** declarațiile lunare lipsă atunci când se descoperă că firma ar fi trebuit să treacă la lunar mai devreme — depistarea situației și depunerea declarațiilor de regularizare rămân în sarcina contabilului.
 
 [iConta.eu](/)

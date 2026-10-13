@@ -2,7 +2,7 @@
 title: "Ce amendă riscă firma pentru depășirea plafonului de numerar"
 description: "Sancțiunile contravenționale prevăzute de lege pentru nerespectarea plafoanelor de încasări și plăți în numerar."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Sunt, de fapt, **două regimuri sancționatorii distincte**, în funcție de tip
 
 ## Ce face iConta.eu
 
-Verificat în cod: Aplicația semnalează depășirile plafoanelor legate de operațiunile în numerar (sold casă, încasări de la persoane juridice, avansuri spre decontare) ca **avertismente cu temei citat**, prin funcția `verifica_plafon` — util pentru a preveni o depășire înainte să devină o problemă de control. Aplicația **nu calculează automat cuantumul amenzii potențiale** (10% din depășire, minimum 100 lei, sau amenda fixă de 3.000-4.500 lei, după caz) — avertismentele arată doar că un prag legal a fost depășit, nu și expunerea financiară concretă la sancțiune, care rămâne o evaluare separată.
+Verificat în cod: Aplicația semnalează depășirile plafoanelor legate de operațiunile în numerar (sold casă, încasări de la persoane juridice, avansuri spre decontare) ca **avertismente cu temei citat**, prin funcția „verificarea plafonului de numerar (Casă)” — util pentru a preveni o depășire înainte să devină o problemă de control. Aplicația **nu calculează automat cuantumul amenzii potențiale** (10% din depășire, minimum 100 lei, sau amenda fixă de 3.000-4.500 lei, după caz) — avertismentele arată doar că un prag legal a fost depășit, nu și expunerea financiară concretă la sancțiune, care rămâne o evaluare separată.
 
 [iConta.eu](/)

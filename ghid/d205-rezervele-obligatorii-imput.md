@@ -2,7 +2,7 @@
 title: "D205 și rezervele obligatorii: ce se imput"
 description: "Ce raportează efectiv declarația 205 (impozit reținut la sursă pe beneficiari de venit) și de ce rezerva legală obligatorie a unei societăți nu are legătură cu acest formular."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Din cercetarea legislației, aceste două subiecte nu se intersectează. D205 es
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat generării D205 (`d205.py`, cu funcțiile `calcul_d205`, `build_xml`, `erori_generare`), care calculează impozitul reținut la sursă pe beneficiar de venit direct din datele înregistrate în aplicație (dividende plătite, alte venituri cu reținere la sursă) și construiește XML-ul conform structurii ANAF. Constituirea rezervei legale obligatorii a societății este o operațiune separată, de repartizare a profitului, tratată la nivelul bilanțului — nu am găsit în cod o legătură automată între cele două, ceea ce confirmă și de ce ele nu se intersectează nici în lege.
+iConta.eu are un modul dedicat generării D205 (aplicația, cu funcțiile „calculul D205 (Declarații)”, „generarea XML-ului declarației (Declarații)”, „verificarea datelor înainte de generare (Declarații)”), care calculează impozitul reținut la sursă pe beneficiar de venit direct din datele înregistrate în aplicație (dividende plătite, alte venituri cu reținere la sursă) și construiește XML-ul conform structurii ANAF. Constituirea rezervei legale obligatorii a societății este o operațiune separată, de repartizare a profitului, tratată la nivelul bilanțului — nu am găsit în cod o legătură automată între cele două, ceea ce confirmă și de ce ele nu se intersectează nici în lege.
 
 [iConta.eu](/)

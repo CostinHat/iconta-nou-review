@@ -2,7 +2,7 @@
 title: Cum intru în sistemul TVA la încasare în 2026?
 description: Intrarea în sistem nu e automată — presupune o notificare depusă la ANAF până la data de 20 a lunii anterioare începerii perioadei fiscale de aplicare, iar înscrierea produce efecte de la data de 1 a perioadei fiscale următoare depunerii.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Plafonul de eligibilitate s-a schimbat la mijlocul anului (4.500.000 lei până 
 
 ## Ce face iConta.eu
 
-Eligibilitatea de plafon se verifică automat pe baza plafonului valabil la data de referință (`plafon_la(data)`). Procedura de notificare la ANAF (art. 324) — depunerea propriu-zisă, termenele și confirmarea înscrierii în Registru — nu e implementată ca proces automatizat în motorul F097, conform codului cercetat pentru acest dosar; rămâne un pas administrativ realizat direct de contabil, în afara aplicației.
+Eligibilitatea de plafon se verifică automat pe baza plafonului valabil la data de referință („plafonul la dată”). Procedura de notificare la ANAF (art. 324) — depunerea propriu-zisă, termenele și confirmarea înscrierii în Registru — nu e implementată ca proces automatizat în motorul „TVA la încasare”, conform codului cercetat pentru acest dosar; rămâne un pas administrativ realizat direct de contabil, în afara aplicației.
 
 [iConta.eu](/)

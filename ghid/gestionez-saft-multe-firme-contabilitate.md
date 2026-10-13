@@ -2,7 +2,7 @@
 title: Cum gestionez SAF-T pentru mai multe firme de contabilitate?
 description: Semaforul de conformare fiscală arată dintr-o singură ecran starea D406 a întregului portofoliu, sortată automat astfel încât firmele cu restanțe apar primele.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Pentru fiecare firmă, verdictul acoperă 9 declarații simultan (D100, D101, D1
 
 ## Ce face iConta.eu
 
-Motorul F022, accesibil prin `GET /control-fiscal`, evaluează întregul portofoliu al cabinetului dintr-o singură cerere, firmă cu firmă, și întoarce lista sortată cu pastilele de stare. Fiecare verdict poartă motivul explicit — inclusiv pentru D406, unde regula de periodicitate (lunar la plătitorii de TVA cu perioadă lunară, trimestrial pentru restul) e derivată automat din profilul fiscal al fiecărei firme.
+Motorul „Semafor conformare fiscală”, accesibil prin `GET /control-fiscal`, evaluează întregul portofoliu al cabinetului dintr-o singură cerere, firmă cu firmă, și întoarce lista sortată cu pastilele de stare. Fiecare verdict poartă motivul explicit — inclusiv pentru D406, unde regula de periodicitate (lunar la plătitorii de TVA cu perioadă lunară, trimestrial pentru restul) e derivată automat din profilul fiscal al fiecărei firme.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Care este diferența dintre verificarea documentară și inspecția fiscală?"
 description: "Cum diferă verificarea documentară de inspecția fiscală, potrivit Codului de procedură fiscală — obiect, procedură și efecte."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -42,6 +42,6 @@ Comparativ, inspecția fiscală:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu distinge în aplicație** între cele două proceduri și nu are o funcție dedicată vreuneia dintre ele. Ecranul de „control fiscal" din aplicație (`control_fiscal_api.py`) e o funcție internă de reconciliere a declarațiilor firmei (compară D112/D300/D390 cu ce ar trebui depus), diferită atât de verificarea documentară, cât și de inspecția fiscală ANAF — numele coincide, dar conceptul e altul. Gestionarea efectivă a unei verificări documentare sau a unei inspecții fiscale reale rămâne, în acest moment, în afara aplicației.
+La data acestui ghid, iConta.eu **nu distinge în aplicație** între cele două proceduri și nu are o funcție dedicată vreuneia dintre ele. Ecranul de „control fiscal" din aplicație e o funcție internă de reconciliere a declarațiilor firmei (compară D112/D300/D390 cu ce ar trebui depus), diferită atât de verificarea documentară, cât și de inspecția fiscală ANAF — numele coincide, dar conceptul e altul. Gestionarea efectivă a unei verificări documentare sau a unei inspecții fiscale reale rămâne, în acest moment, în afara aplicației.
 
 [iConta.eu](/)

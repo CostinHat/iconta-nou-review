@@ -2,7 +2,7 @@
 title: Bonurile fiscale și TVA în restaurante 2026
 description: De la 1 august 2025, TVA pentru restaurant/catering e 11%, cu excepția băuturilor alcoolice și a celor nealcoolice cu cod NC 2202, care rămân la 21%. Plus ce nu acoperă încă aplicația — D394.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,7 +27,7 @@ Această regulă e mai largă decât forma inițială a articolului din 2016, ca
 
 ## Ce nu acoperă (încă) mecanismul din aplicație
 
-Vânzările înregistrate prin Raportul Z (sursă `amef` sau `horeca_z`) **nu apar încă** în declarația informativă D394 — acest gol e confirmat direct de codul aplicației, care marchează explicit că sumele rămân 0 pentru operațiunile pe facturi simplificate/AMEF, până la construirea integrării. Nu presupune un flux automat spre D394 dacă ții evidența unui restaurant prin acest mecanism.
+Vânzările înregistrate prin Raportul Z (sursă `amef` sau „raportul Z (HoReCa)”) **nu apar încă** în declarația informativă D394 — acest gol e confirmat direct de codul aplicației, care marchează explicit că sumele rămân 0 pentru operațiunile pe facturi simplificate/AMEF, până la construirea integrării. Nu presupune un flux automat spre D394 dacă ții evidența unui restaurant prin acest mecanism.
 
 ## Ce se greșește în practică
 

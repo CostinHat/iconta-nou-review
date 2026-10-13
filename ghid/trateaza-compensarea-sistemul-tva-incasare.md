@@ -2,7 +2,7 @@
 title: Cum se tratează compensarea în sistemul TVA la încasare?
 description: Compensarea între firme e considerată încasare la data compensării — nu la data facturii — cu reguli diferite după cum ambele părți sunt persoane juridice sau nu.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Fără acest proces-verbal, pentru compensările care implică o parte care nu e
 
 ## Ce face iConta.eu
 
-Cercetarea la sursă a codului F097 nu a identificat o ramură dedicată compensării — motorul calculează exigibilitatea pe baza sumelor introduse manual de contabil în ecranul „TVA la încasare" (`nota-tva-incasare`), indiferent de modalitatea de stingere a datoriei. Practic, contabilul introduce suma și data la care compensarea a devenit efectivă (data compensării sau data procesului-verbal), iar aplicația calculează TVA exigibilă cu metoda sutei mărite — dar stabilirea acestei date rămâne responsabilitatea contabilului, nu e automatizată.
+Cercetarea la sursă a codului „TVA la încasare” nu a identificat o ramură dedicată compensării — motorul calculează exigibilitatea pe baza sumelor introduse manual de contabil în ecranul „TVA la încasare" („nota TVA la încasare (Operațiuni speciale)”), indiferent de modalitatea de stingere a datoriei. Practic, contabilul introduce suma și data la care compensarea a devenit efectivă (data compensării sau data procesului-verbal), iar aplicația calculează TVA exigibilă cu metoda sutei mărite — dar stabilirea acestei date rămâne responsabilitatea contabilului, nu e automatizată.
 
 [iConta.eu](/)

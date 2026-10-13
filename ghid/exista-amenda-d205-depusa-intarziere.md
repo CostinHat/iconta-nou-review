@@ -2,7 +2,7 @@
 title: "Există amendă pentru D205 depusă cu întârziere?"
 description: "Contravenția și amenda aplicabilă pentru nedepunerea la termen a declarației informative D205, potrivit Codului de procedură fiscală."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce rezultă concret pentru o firmă care depune D205 cu întârziere:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează D205 prin aplicație (`calcul_d205()`, `build_xml()`, `genereaza()`) și urmărește scadența declarației în aplicație, prin apelul `scadente.scadenta_data("d205", an)`, semnalând firma dacă termenul a fost depășit. Aplicația nu calculează însă și nu afișează cuantumul amenzii posibile pentru nedepunerea la termen — urmărirea scadenței arată doar dacă declarația e restantă, nu și riscul financiar concret al întârzierii, potrivit art. 336.
+La data acestui ghid, iConta.eu generează D205 prin aplicație („calculul D205 (Declarații)”, „generarea XML-ului declarației (Declarații)”, „generarea”) și urmărește scadența declarației în aplicație, prin apelul scadente.scadenta_data("D205", an), semnalând firma dacă termenul a fost depășit. Aplicația nu calculează însă și nu afișează cuantumul amenzii posibile pentru nedepunerea la termen — urmărirea scadenței arată doar dacă declarația e restantă, nu și riscul financiar concret al întârzierii, potrivit art. 336.
 
 [iConta.eu](/)

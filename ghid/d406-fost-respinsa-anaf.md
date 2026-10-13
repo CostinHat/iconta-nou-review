@@ -2,7 +2,7 @@
 title: "Ce faci dacă D406 a fost respinsă de ANAF?"
 description: "Procedura de corectare a unei declarații D406 (SAF-T) respinse la transmitere: identificarea erorii din fișierul de validare, corectarea și regenerarea fișierului XML."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,19 +13,19 @@ Spre deosebire de alte declarații, D406 (fișierul standard de control fiscal, 
 ## Temeiul legal
 
 ::: ghid-temei
-„12. În situația în care, ca urmare a încercării de transmitere a Declarației D406, sunt primite mesaje de eroare/erori, utilizatorul trebuie să verifice cauza erorii prin analiza documentului generat de programul «Validator», fișierul SAFT.xml.err.txt. Odată identificată eroarea sau identificate erorile, se corectează problema semnalată de către utilizator și se generează un nou fișier XML. [...] 16. Formularele și fișierele SAF-T atașate pentru care nu este validată identitatea sunt respinse."
+„12. În situația în care, ca urmare a încercării de transmitere a Declarației D406, sunt primite mesaje de eroare/erori, utilizatorul trebuie să verifice cauza erorii prin analiza documentului generat de programul «Validator», fișierul raportul de erori al validatorului ANAF. Odată identificată eroarea sau identificate erorile, se corectează problema semnalată de către utilizator și se generează un nou fișier XML. [...] 16. Formularele și fișierele SAF-T atașate pentru care nu este validată identitatea sunt respinse."
 — OPANAF nr. 1.783/2021, Instrucțiuni de completare și transmitere D406 (SAF-T), pct. 12 și pct. 16 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 Procedura de corectare, așa cum rezultă din instrucțiuni:
 
-- Prima verificare este întotdeauna **fișierul `SAFT.xml.err.txt`**, generat de programul Validator — el conține exact cauza respingerii, camp cu câmp, și nu mesajul generic din portal.
+- Prima verificare este întotdeauna **fișierul raportul de erori al validatorului ANAF**, generat de programul Validator — el conține exact cauza respingerii, camp cu câmp, și nu mesajul generic din portal.
 - După identificarea erorii, se **corectează problema** direct la sursa datelor (contabilitate, master data) și se **regenerează** un fișier XML nou — nu se editează manual XML-ul respins, ci se reia întregul proces de generare.
 - O cauză distinctă de respingere, separată de erorile de conținut, este **neconcordanța de identitate**: fișierul e respins dacă identitatea contribuabilului/plătitorului pentru care se depune declarația nu corespunde cu identitatea cu care utilizatorul e înrolat la ANAF pentru depunerea declarațiilor electronice.
 
 ## Ce se greșește în practică
 
-- Se încearcă retransmiterea aceluiași fișier XML respins, fără corectarea cauzei semnalate în `SAFT.xml.err.txt` — fișierul va fi respins din nou, cu același mesaj de eroare.
+- Se încearcă retransmiterea aceluiași fișier XML respins, fără corectarea cauzei semnalate în raportul de erori al validatorului ANAF — fișierul va fi respins din nou, cu același mesaj de eroare.
 - Se ignoră verificarea identității cu care utilizatorul e înrolat la ANAF, presupunând că respingerea se datorează exclusiv unei erori de conținut, deși cauza poate fi o simplă neconcordanță de certificat/identitate la depunere.
 - Se transmite declarația chiar în ultima zi a termenului legal (ultima zi a lunii următoare perioadei de raportare), fără marjă pentru un al doilea ciclu de corectare-retransmitere, dacă prima încercare e respinsă.
 

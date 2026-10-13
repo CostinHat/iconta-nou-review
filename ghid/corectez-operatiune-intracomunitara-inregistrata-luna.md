@@ -2,7 +2,7 @@
 title: "Cum corectez o operațiune intracomunitară înregistrată în luna greșită?"
 description: "Regula exigibilității TVA la achiziția intracomunitară și cum influențează ea luna în care apare operațiunea în D390."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ poarta: v1
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 284 alin. (1)-(2): „Faptul generator la AIC = data la care ar interveni la o livrare similară în statul membru al achiziției; exigibilitatea = data facturii furnizorului (sau autofactura art. 319 alin. 9), cel târziu a 15-a zi a lunii următoare celei a faptului generator.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L17785-17793)
+CF art. 284 alin. (1)-(2): „Faptul generator la AIC = data la care ar interveni la o livrare similară în statul membru al achiziției; exigibilitatea = data facturii furnizorului (sau autofactura art. 319 alin. 9), cel târziu a 15-a zi a lunii următoare celei a faptului generator.” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 
 OPANAF 705/2020, pct. 1.2: „Persoanele impozabile înregistrate în scopuri de TVA depun declarația recapitulativă numai pentru luna de raportare în care ia naștere exigibilitatea taxei pentru livrările/achizițiile/prestările intracomunitare (...).” (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::
@@ -30,7 +30,7 @@ Corecția presupune, în esență, editarea datelor operațiunii astfel încât 
 
 ## Ce face iConta.eu
 
-Formularul de achiziție intracomunitară (`achizitie_ic`) are un câmp opțional pentru data faptului generator, cu explicație directă în interfață: „Gol = încadrare pe data facturii. Completat = exigibilitate MIN(dată factură, ziua 15 luna următoare) — art. 284.” Corectarea unei operațiuni datate greșit înseamnă, practic, editarea acestor câmpuri (data facturii și/sau data faptului generator) astfel încât exigibilitatea calculată să corespundă realității, ceea ce mută automat operațiunea în luna corectă pentru D390.
+Formularul de achiziție intracomunitară („achiziție intracomunitară (Operațiuni)”) are un câmp opțional pentru data faptului generator, cu explicație directă în interfață: „Gol = încadrare pe data facturii. Completat = exigibilitate MIN(dată factură, ziua 15 luna următoare) — art. 284.” Corectarea unei operațiuni datate greșit înseamnă, practic, editarea acestor câmpuri (data facturii și/sau data faptului generator) astfel încât exigibilitatea calculată să corespundă realității, ceea ce mută automat operațiunea în luna corectă pentru D390.
 
 Cercetarea care stă la baza acestui ghid nu a identificat o funcționalitate separată, dedicată exclusiv „mutării” unei operațiuni deja declarate dintr-o lună în alta — corectarea se face la nivelul datelor operațiunii, iar orice declarație deja depusă greșit urmează regulile generale de rectificare a D390.
 

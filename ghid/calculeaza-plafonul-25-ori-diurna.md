@@ -2,7 +2,7 @@
 title: "Cum se calculează plafonul de 2,5 ori pentru diurnă?"
 description: "Formula legală a primului prag din plafonul de diurnă neimpozabilă — 2,5 ori nivelul indemnizației bugetare — și cum interacționează cu al doilea prag."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Descompunerea formulei „2,5 ori":
 
 ## Ce face iConta.eu
 
-Formula 2,5× este implementată exact conform textului de mai sus, ca primă componentă a calculului din funcția `plafon_diurna`: aplicația calculează `2,5 × diurna_bugetară` și îl compară automat cu al doilea prag (3×salariu/zile lucrătoare), reținând minimul. Calculul e „period-aware" — alege automat 20 sau 23 lei ca bază, în funcție de data la care se raportează plafonul.
+Formula 2,5× este implementată exact conform textului de mai sus, ca primă componentă a calculului din funcția „plafonul diurnei”: aplicația calculează `2,5 × diurna_bugetară` și îl compară automat cu al doilea prag (3×salariu/zile lucrătoare), reținând minimul. Calculul e „period-aware" — alege automat 20 sau 23 lei ca bază, în funcție de data la care se raportează plafonul.
 
 Ca și în cazul celorlalte întrebări despre plafon, trebuie spus clar: acest calcul **nu are un ecran dedicat în iConta**. Formula de 2,5× nu e vizibilă nicăieri în interfața de „Decont deplasare / diurnă" — există doar ca funcție de calcul internă, apelabilă azi doar prin API, nu prin niciun buton din aplicație. Un contabil care vrea să vadă rezultatul acestei formule pentru un caz concret trebuie să-l calculeze manual.
 

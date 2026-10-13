@@ -2,7 +2,7 @@
 title: "Ce se întâmplă dacă diurna depășește plafonul neimpozabil?"
 description: "Doar partea din diurnă care depășește 2,5 ori nivelul stabilit pentru personalul bugetar devine impozabilă — nu întreaga sumă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă concret din text, cu valorile în vigoare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are o funcție dedicată pentru plafonul neimpozabil al diurnei (`plafon_diurna`), care aplică exact formula legală — minimul dintre 2,5 ori diurna internă bugetară (period-aware: 20 lei/zi până la 31.03.2023, 23 lei/zi din 01.04.2023, conform Ordinului MF 1235/2023) și 3 salarii de bază raportate la zilele lucrătoare din lună — și calculează automat partea neimpozabilă și excedentul impozabil al diurnei acordate. Rezultatul alimentează decontul de deplasare și, pentru partea impozabilă, statul de plată și **D112**.
+La data acestui ghid, iConta.eu are o funcție dedicată pentru plafonul neimpozabil al diurnei („plafonul diurnei”), care aplică exact formula legală — minimul dintre 2,5 ori diurna internă bugetară (period-aware: 20 lei/zi până la 31.03.2023, 23 lei/zi din 01.04.2023, conform Ordinului MF 1235/2023) și 3 salarii de bază raportate la zilele lucrătoare din lună — și calculează automat partea neimpozabilă și excedentul impozabil al diurnei acordate. Rezultatul alimentează decontul de deplasare și, pentru partea impozabilă, statul de plată și **D112**.
 
 [iConta.eu](/)

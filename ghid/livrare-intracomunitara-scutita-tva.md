@@ -2,7 +2,7 @@
 title: "Când este o livrare intracomunitară scutită de TVA?"
 description: "Cele două condiții cumulative pentru scutirea de TVA la o livrare intracomunitară de bunuri (LIC), conform art. 294 alin. (2) lit. a) CF."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ O livrare de bunuri către un client dintr-un alt stat membru UE (LIC) este scut
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 294 alin. (2) lit. a): „Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (sursă: `intracomunitar.py`, docstring; text complet `cod_fiscal_227_2015_consolidat.txt`, L18397)
+CF art. 294 alin. (2) lit. a): „Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (sursă: aplicația, docstring; text complet Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Cele două condiții cumulative sunt:
@@ -31,6 +31,6 @@ Dacă lipsește oricare dintre cele două, livrarea nu mai e o LIC scutită: se 
 
 ## Ce face iConta.eu
 
-În formularul de vânzare intracomunitară (`vanzare_ic`), aplicația validează exact aceste două condiții — client non-RO, cod valid VIES, dovadă de transport prezentă — și, dacă una dintre ele lipsește, semnalează explicit că trebuie facturat cu TVA, în loc să lase scutirea aplicată „din oficiu”. Verificarea codului de TVA se face live, direct în VIES, la momentul emiterii facturii.
+În formularul de vânzare intracomunitară („vânzare intracomunitară (Operațiuni)”), aplicația validează exact aceste două condiții — client non-RO, cod valid VIES, dovadă de transport prezentă — și, dacă una dintre ele lipsește, semnalează explicit că trebuie facturat cu TVA, în loc să lase scutirea aplicată „din oficiu”. Verificarea codului de TVA se face live, direct în VIES, la momentul emiterii facturii.
 
 [iConta.eu](/)

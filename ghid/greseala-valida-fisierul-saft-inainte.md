@@ -2,7 +2,7 @@
 title: "Greșeala de a nu valida fișierul SAF-T înainte de depunere"
 description: "De ce validarea D406 înainte de depunere nu e un pas opțional, ce riscă cine sare peste el și cum face iConta.eu această verificare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,7 +26,7 @@ Legea face diferența clară între „nedepunere" (amendă mai mare, 1.000-5.00
 
 ## Ce face iConta.eu
 
-Validarea D406 se face cu instrumentul oficial ANAF, `DUKIntegrator_AnLunaUI.jar`, integrat în aplicație (funcția `valideaza`), nu cu un validator generic construit intern. Fluxul e testat pe date reale — validare confirmată „valid" pentru declarații reale generate în aplicație — și bug-ul istoric de trimitere greșită a anului/lunii către validator (care ducea la o stare neclară, nu la un răspuns fals-pozitiv) a fost identificat și reparat.
+Validarea D406 se face cu instrumentul oficial ANAF, validatorul ANAF (DUKIntegrator), integrat în aplicație (funcția „validarea”), nu cu un validator generic construit intern. Fluxul e testat pe date reale — validare confirmată „valid" pentru declarații reale generate în aplicație — și bug-ul istoric de trimitere greșită a anului/lunii către validator (care ducea la o stare neclară, nu la un răspuns fals-pozitiv) a fost identificat și reparat.
 
 Recomandarea practică din acest mecanism: nu trimite niciodată declarația în coadă direct de la generare — folosește pasul de validare din aplicație și abia după ce fișierul iese „valid" continuă spre depunere. E singurul mod verificat de a evita categoria de amendă pentru „depunere incorectă ori incompletă" din art. 337^1.
 

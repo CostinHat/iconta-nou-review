@@ -2,7 +2,7 @@
 title: Am aplicat taxare inversă unde nu era cazul
 description: Dacă operațiunea nu se încadrează la art. 331 (categorie greșită, un partener neînregistrat în scopuri de TVA, categorie expirată sau sub prag), factura trebuia să aibă TVA normal — corectarea înseamnă stornarea facturii greșite și reemiterea ei cu TVA.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ O dată identificată cauza, corecția presupune stornarea facturii emise eronat
 
 ## Ce face iConta.eu
 
-Motorul de taxare inversă al iConta.eu (`se_aplica`) verifică, la fiecare operațiune, categoria, înregistrarea în scopuri de TVA a ambelor părți, expirarea și pragul valoric — și respinge explicit operațiunea, cu mesaj de eroare, dacă vreo condiție nu e îndeplinită. Dacă ai aplicat totuși taxare inversă manual, în afara acestei validări (de exemplu direct pe factură, fără să treci prin ecranul dedicat), aplicația nu poate detecta retroactiv greșeala — corectarea (stornarea și reemiterea facturii, plus ajustarea decontului) rămâne un pas manual, de făcut direct de tine.
+Motorul de taxare inversă al iConta.eu („verificarea taxării inverse”) verifică, la fiecare operațiune, categoria, înregistrarea în scopuri de TVA a ambelor părți, expirarea și pragul valoric — și respinge explicit operațiunea, cu mesaj de eroare, dacă vreo condiție nu e îndeplinită. Dacă ai aplicat totuși taxare inversă manual, în afara acestei validări (de exemplu direct pe factură, fără să treci prin ecranul dedicat), aplicația nu poate detecta retroactiv greșeala — corectarea (stornarea și reemiterea facturii, plus ajustarea decontului) rămâne un pas manual, de făcut direct de tine.
 
 [iConta.eu](/)

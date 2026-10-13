@@ -2,7 +2,7 @@
 title: Cum se declară un utilaj importat în D300?
 description: Un utilaj importat nu e vehicul rutier motorizat, deci nu intră sub limitarea de 50% a dreptului de deducere — dar rândul din D300 (rd.7 sau rd.24, după regimul vamal) trebuie introdus manual, aplicația nu îl derivă automat din factură.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -43,6 +43,6 @@ Rândul din decont unde se declară TVA la import depinde de regimul vamal folos
 
 ## Ce face iConta.eu
 
-`calcul_d300` preia integral TVA din antetul și liniile facturii, fără nicio verificare a tipului de bun (vehicul vs. utilaj) sau a utilizării exclusiv economice — nu există un gard automat pentru limitarea de 50%, tocmai pentru că ea nu se aplică decât vehiculelor. Rândul pentru achiziții cu taxare inversă la import e complet manual — codul nu citește un flag „import” de pe factură pentru a-l deriva automat; baza de impozitare și TVA-ul trebuie introduse manual la rândul corect, în funcție de regimul vamal aplicat efectiv.
+„calculul D300 (Declarații)” preia integral TVA din antetul și liniile facturii, fără nicio verificare a tipului de bun (vehicul vs. utilaj) sau a utilizării exclusiv economice — nu există un gard automat pentru limitarea de 50%, tocmai pentru că ea nu se aplică decât vehiculelor. Rândul pentru achiziții cu taxare inversă la import e complet manual — codul nu citește un flag „import” de pe factură pentru a-l deriva automat; baza de impozitare și TVA-ul trebuie introduse manual la rândul corect, în funcție de regimul vamal aplicat efectiv.
 
 [iConta.eu](/)

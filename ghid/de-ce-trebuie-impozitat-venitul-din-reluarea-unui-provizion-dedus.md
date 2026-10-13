@@ -2,7 +2,7 @@
 title: De ce trebuie impozitat venitul din reluarea unui provizion dedus?
 description: Legea impune explicit ca reluarea unui provizion dedus anterior să fie inclusă ca venit impozabil, indiferent de motivul reluării — omiterea acestui venit din calculul profitului impozabil e o greșeală frecventă și ușor de detectat la control.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ O firmă a dedus 3.000 lei la constituirea unui provizion pentru garanții (cot�
 
 ## Ce face iConta.eu
 
-Aplicația generează corect nota contabilă de reluare pentru fiecare tip de provizion (`15xx = 7812`, prin `nota_provizion`), dar nu recalculează automat, la momentul reluării, dacă provizionul respectiv fusese dedus la constituire — flagul `deductibil` nu e propagat de la constituire la reluare. Responsabilitatea de a identifica provizioanele deduse anterior și de a include venitul din reluarea lor în rezultatul fiscal, conform art. 26 alin. (5), rămâne a utilizatorului aplicației.
+Aplicația generează corect nota contabilă de reluare pentru fiecare tip de provizion (`15xx = 7812`, prin „nota de provizion (Operațiuni speciale)”), dar nu recalculează automat, la momentul reluării, dacă provizionul respectiv fusese dedus la constituire — flagul `deductibil` nu e propagat de la constituire la reluare. Responsabilitatea de a identifica provizioanele deduse anterior și de a include venitul din reluarea lor în rezultatul fiscal, conform art. 26 alin. (5), rămâne a utilizatorului aplicației.
 
 [iConta.eu](/)

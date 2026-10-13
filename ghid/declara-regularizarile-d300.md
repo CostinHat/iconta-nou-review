@@ -2,21 +2,13 @@
 title: "Unde se declară regularizările în D300?"
 description: Regularizările D300 se introduc printr-un panou manual dedicat, separat de motorul care generează rândurile din facturi — cu o listă fixă de rânduri acceptate și gărzi împotriva dublei numărări.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Unde se declară regularizările în D300?
 
 Regularizările de TVA nu rezultă automat din facturile perioadei — se introduc explicit, printr-un panou manual dedicat, separat de motorul de calcul al decontului. Mai jos, exact ce rânduri acceptă panoul și cum funcționează mecanismul.
-
-## Temeiul legal
-
-::: ghid-temei
-„Regularizări taxă colectată" — eticheta oficială a rândului R16
-„Regularizări taxă dedusă" — eticheta oficială a rândului R30
-— `d300_manual_api.py`, confirmate contra structurii ANAF D300 v12 (OPANAF 174/2026)
-:::
 
 ## Rândurile de regularizare acceptate
 
@@ -34,7 +26,7 @@ Rândurile computate — R17, R27, R28, R31, R32, R33, R34, R37, R40, R41, R42 �
 
 ## Mecanismul tehnic
 
-Rândurile se introduc prin `POST /tenants/{id}/d300-manual` (an, lună, rând, bază, TVA, descriere), cu validare că rândul e în allow-list și nu e deja derivat automat din facturile perioadei. Se persistă în tabelul `d300_manual` și se recitesc automat la generarea decontului — atât la preview, cât și la depunerea efectivă, cu paritate garantată între cele două căi (test dedicat confirmă XML identic generat din baza de date și din parametru).
+Rândurile se introduc prin aplicația (an, lună, rând, bază, TVA, descriere), cu validare că rândul e în allow-list și nu e deja derivat automat din facturile perioadei. Se persistă în tabelul „rândurile D300 completate manual (Declarații)” și se recitesc automat la generarea decontului — atât la preview, cât și la depunerea efectivă, cu paritate garantată între cele două căi (test dedicat confirmă XML identic generat din baza de date și din parametru).
 
 ## Ce se greșește în practică
 

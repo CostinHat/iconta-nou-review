@@ -2,23 +2,13 @@
 title: "Norme de perisabilitate la băuturi alcoolice pentru baruri 2026"
 description: "Explică unde se găsesc procentele legale de perisabilitate pe grupe de mărfuri și cum introduce iConta.eu limita aplicabilă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Norme de perisabilitate la băuturi alcoolice pentru baruri 2026
 
 Procentul exact de perisabilitate admis pentru băuturile alcoolice se stabilește prin anexele HG 831/2004 — un tabel de coeficienți pe grupe de mărfuri, publicat în Monitorul Oficial. Acest ghid explică regula generală și de unde se ia procentul, fără să reproducă un procent nesigur.
-
-## Temeiul legal
-
-::: ghid-temei
-"Se aprobă Normele privind limitele admisibile de perisabilitate la mărfuri în procesul de comercializare, prevăzute în anexa care face parte integrantă din prezenta hotărâre."
-— HG 831/2004, art. 1, [HG nr. 831/2004 pentru aprobarea Normelor privind limitele admisibile de perisabilitate](https://legislatie.just.ro/Public/DetaliiDocument/52623), dosar de cercetare F066.
-
-"Următoarele cheltuieli au deductibilitate limitată: [...] d) scăzămintele, perisabilitățile, pierderile rezultate din manipulare/depozitare, potrivit legii;"
-— Codul fiscal (Legea 227/2015), art. 25 alin. (3) lit. d), [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F066.
-:::
 
 Limita maximă deductibilă a perisabilității se calculează aplicând coeficientul grupei de mărfuri (stabilit în anexele 1-3 la HG 831/2004) la prețul de înregistrare al produselor intrate în gestiune — nu la stocul final, nici la vânzări. Coeficientul concret pentru băuturile alcoolice depinde de grupa exactă în care se încadrează produsul (anexele fac diferența pe categorii) — de aceea recomandăm consultarea directă a anexei HG 831/2004 publicate în Monitorul Oficial nr. 522/10.06.2004, pentru procentul aplicabil grupei dumneavoastră de produse, în loc de un procent preluat din surse neoficiale.
 

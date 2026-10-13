@@ -2,7 +2,7 @@
 title: Activele de mică valoare - deducere 100% sau amortizare?
 description: Ce se întâmplă fiscal cu un bun sub pragul mijlocului fix (5.000 lei din 2026) - deducere integrală la achiziție sau amortizare pe mai mulți ani - și cum decide iConta.eu între cele două fluxuri.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -52,10 +52,10 @@ durata normală de utilizare — dacă firma preferă să eșaloneze cheltuiala.
 ## Ce face iConta.eu
 
 Pragul de încadrare ca mijloc fix nu e un literal fix în cod, ci se citește dintr-un registru
-unic de cote (`plafon_mijloc_fix`), tocmai ca să nu apară divergențe când pragul se schimbă
+unic de cote („plafonul mijloacelor fixe”), tocmai ca să nu apară divergențe când pragul se schimbă
 legal — valorile din registru sunt 5.000 lei de la 25.02.2026 și 2.500 lei anterior.
 
-Când înregistrați o achiziție ca **obiect de inventar** (`nota-obiect-inventar`, operație
+Când înregistrați o achiziție ca **obiect de inventar** („nota obiectului de inventar (Operațiuni speciale)”, operație
 achiziție), aplicația verifică automat pragul valabil la data achiziției și **refuză**
 operațiunea dacă valoarea depășește pragul, cerând înregistrarea ca mijloc fix în locul
 cheltuielii directe. Dacă alegeți în schimb să tratați un bun sub prag ca mijloc fix (opțiunea

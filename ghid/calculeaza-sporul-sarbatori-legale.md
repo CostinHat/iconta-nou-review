@@ -2,7 +2,7 @@
 title: Cum se calculează sporul pentru sărbători legale?
 description: Calculul sporului pentru munca prestată în zilele de sărbătoare legală ține de Codul muncii, nu de funcționalitatea de calcul al scadențelor fiscale verificată pentru acest ghid. Redirecționăm onest, fără să inventăm un citat pe care dosarul nu-l confirmă.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,6 +24,6 @@ Pentru cuantumul exact al sporului (sau alternativa cu zi liberă compensatorie)
 
 ## Ce face iConta.eu
 
-Motorul de calcul salarial al iConta.eu (o funcționalitate distinctă, F080) calculează salariul obișnuit pe baza timpului efectiv lucrat, cu cotele și deducerile confirmate pentru acel calcul — dar dosarul disponibil la acest ghid nu confirmă un mecanism dedicat pentru sporul de sărbătoare legală. Recomandăm verificarea directă în aplicație, la fluturașul de salariu, dacă acest tip de spor apare ca linie distinctă.
+Motorul de calcul salarial al iConta.eu (o funcționalitate distinctă, „Calcul salarizare (de la brut la net)”) calculează salariul obișnuit pe baza timpului efectiv lucrat, cu cotele și deducerile confirmate pentru acel calcul — dar dosarul disponibil la acest ghid nu confirmă un mecanism dedicat pentru sporul de sărbătoare legală. Recomandăm verificarea directă în aplicație, la fluturașul de salariu, dacă acest tip de spor apare ca linie distinctă.
 
 [iConta.eu](/)

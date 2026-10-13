@@ -2,7 +2,7 @@
 title: "Înființare PFA pentru un contabil independent"
 description: "Obligația de a completa Registrul de evidență fiscală pentru PFA care determină venitul net anual în sistem real, pe baza contabilității în partidă simplă."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Pentru un contabil independent, care de regulă optează pentru determinarea ven
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un modul dedicat persoanelor fizice care determină venitul net anual în sistem real, cu funcții pentru validarea datelor de intrare, calculul venitului net (`venit_net`) și generarea registrului pe an (`registru_pf`, `registru_profit`). Aplicația nu gestionează însă pașii de înființare efectivă a PFA la registrul comerțului sau alegerea formei de impozitare (normă de venit vs. sistem real) — acestea rămân decizii luate înainte de a introduce datele în aplicație, iar iConta.eu preia de aici înainte evidența fiscală curentă a activității.
+La data acestui ghid, iConta.eu are un modul dedicat persoanelor fizice care determină venitul net anual în sistem real, cu funcții pentru validarea datelor de intrare, calculul venitului net („venitul net”) și generarea registrului pe an („registrul persoanelor fizice (Registre)”, „registrul de evidență fiscală — profit (Registre)”). Aplicația nu gestionează însă pașii de înființare efectivă a PFA la registrul comerțului sau alegerea formei de impozitare (normă de venit vs. sistem real) — acestea rămân decizii luate înainte de a introduce datele în aplicație, iar iConta.eu preia de aici înainte evidența fiscală curentă a activității.
 
 [iConta.eu](/)

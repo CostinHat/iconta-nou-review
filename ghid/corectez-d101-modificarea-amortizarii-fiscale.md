@@ -2,7 +2,7 @@
 title: "Cum corectez D101 după modificarea amortizării fiscale?"
 description: "Condițiile în care D101 poate fi corectată prin declarație rectificativă, inclusiv după anularea rezervei verificării ulterioare, potrivit Codului de procedură fiscală."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă pentru situația concretă a amortizării modificate:
 
 ## Ce face iConta.eu
 
-Generatorul de D101 din iConta.eu recalculează declarația pe baza datelor curente din aplicație de fiecare dată când e rulat (`genereaza`), inclusiv pe baza modulului de amortizare a mijloacelor fixe (folosit și pentru SAF-T). Aplicația nu marchează însă automat, la data acestui ghid, o declarație regenerată drept „rectificativă" cu temeiul legal aferent din art. 105 — încadrarea corecției (rectificativă obișnuită sau excepție de la art. 105 alin. (6)) rămâne o verificare a contabilului, înainte de retransmiterea declarației.
+Generatorul de D101 din iConta.eu recalculează declarația pe baza datelor curente din aplicație de fiecare dată când e rulat („generarea”), inclusiv pe baza modulului de amortizare a mijloacelor fixe (folosit și pentru SAF-T). Aplicația nu marchează însă automat, la data acestui ghid, o declarație regenerată drept „rectificativă" cu temeiul legal aferent din art. 105 — încadrarea corecției (rectificativă obișnuită sau excepție de la art. 105 alin. (6)) rămâne o verificare a contabilului, înainte de retransmiterea declarației.
 
 [iConta.eu](/)

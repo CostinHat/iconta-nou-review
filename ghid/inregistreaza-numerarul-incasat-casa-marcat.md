@@ -2,7 +2,7 @@
 title: "Cum se înregistrează numerarul încasat prin casa de marcat?"
 description: "Nota contabilă corectă pentru numerarul încasat prin aparatul de marcat electronic fiscal, direct pe venituri, conform planului de conturi din OMFP 1802/2014."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Nota contabilă tipică pentru încasările zilei, preluate din raportul fiscal 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația conține `regula_cont_casa()`, care generează nota contabilă pentru operațiunile de casă introduse manual — dar doar pentru scopurile pe care le recunoaște azi: încasare de la client (5311 = 4111), plată către furnizor (401 = 5311), ridicare și depunere la bancă; pentru orice altă situație, funcția ridică explicit o eroare (`scop/tip nesuportat`). Vânzarea cu amănuntul prin AMEF are însă un flux dedicat, separat: Aplicația (`parseaza_raport_z()`) preia raportul fiscal de închidere zilnică, iar aplicația (`horeca_import_amef()`) generează automat nota-ciornă exact pe structura descrisă mai sus — **5311 = 707 pentru numerar** (respectiv **5125 = 707** pentru încasările prin card/altele), cu linie separată **707 = 4427** pentru TVA colectată pe fiecare cotă din raportul Z. Preluarea sumei din raportul Z, cu separarea pe conturi de venituri și TVA colectată, e deci automată; rămâne manuală doar verificarea notei-ciornă rezultate față de Z-ul tipărit.
+La data acestui ghid, aplicația conține „regula de contare a casei (Casă)”, care generează nota contabilă pentru operațiunile de casă introduse manual — dar doar pentru scopurile pe care le recunoaște azi: încasare de la client (5311 = 4111), plată către furnizor (401 = 5311), ridicare și depunere la bancă; pentru orice altă situație, funcția ridică explicit o eroare (`scop/tip nesuportat`). Vânzarea cu amănuntul prin AMEF are însă un flux dedicat, separat: Aplicația („citirea raportului Z”) preia raportul fiscal de închidere zilnică, iar aplicația („importul AMEF (HoReCa)”) generează automat nota-ciornă exact pe structura descrisă mai sus — **5311 = 707 pentru numerar** (respectiv **5125 = 707** pentru încasările prin card/altele), cu linie separată **707 = 4427** pentru TVA colectată pe fiecare cotă din raportul Z. Preluarea sumei din raportul Z, cu separarea pe conturi de venituri și TVA colectată, e deci automată; rămâne manuală doar verificarea notei-ciornă rezultate față de Z-ul tipărit.
 
 [iConta.eu](/)

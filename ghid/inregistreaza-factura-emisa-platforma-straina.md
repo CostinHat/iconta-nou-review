@@ -2,7 +2,7 @@
 title: "Cum se înregistrează o factură emisă de o platformă străină de food delivery?"
 description: "Comisionul unei platforme de food delivery e operațiune intracomunitară doar dacă platforma facturează cu un cod de TVA UE valid — altfel e o factură obișnuită."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,10 +13,10 @@ poarta: v1
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L17303-17420)
+CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
-Acest ghid (F050) tratează strict cazul în care factura de comision vine de la o entitate **înregistrată în scopuri de TVA în alt stat membru UE**, cu cod de TVA valid, verificabil în VIES. În acest caz, e o achiziție de serviciu B2B intracomunitar: firma din România datorează TVA prin taxare inversă, indiferent de cota aplicabilă serviciului, iar operațiunea se declară în D390.
+Acest ghid („Operațiuni intracomunitare”) tratează strict cazul în care factura de comision vine de la o entitate **înregistrată în scopuri de TVA în alt stat membru UE**, cu cod de TVA valid, verificabil în VIES. În acest caz, e o achiziție de serviciu B2B intracomunitar: firma din România datorează TVA prin taxare inversă, indiferent de cota aplicabilă serviciului, iar operațiunea se declară în D390.
 
 Există însă și alte două situații frecvente, care **nu** intră sub acest regim:
 - platforma facturează prin filiala ei românească, cu TVA românesc pe factură — atunci nu e o operațiune intracomunitară, e o achiziție locală obișnuită (contarea facturii se face ca la orice furnizor din România, nu prin mecanismul descris aici);
@@ -30,8 +30,8 @@ Există însă și alte două situații frecvente, care **nu** intră sub acest 
 
 ## Ce face iConta.eu
 
-Primul pas practic: verifică pe factura primită codul de TVA al emitentului. Dacă are prefix de stat membru UE, folosește formularul de achiziție intracomunitară (`achizitie_ic`), tip „servicii”, din categoria „Extern” a operațiunilor speciale — completezi data, valoarea în RON, codul de TVA al furnizorului, numărul facturii și cota de TVA aplicabilă (sugestie implicită 21%, dar cota nu are valoare fixă în motor — trebuie declarată explicit, tocmai pentru a nu rămâne „înghețată” la o cotă veche).
+Primul pas practic: verifică pe factura primită codul de TVA al emitentului. Dacă are prefix de stat membru UE, folosește formularul de achiziție intracomunitară („achiziție intracomunitară (Operațiuni)”), tip „servicii”, din categoria „Extern” a operațiunilor speciale — completezi data, valoarea în RON, codul de TVA al furnizorului, numărul facturii și cota de TVA aplicabilă (sugestie implicită 21%, dar cota nu are valoare fixă în motor — trebuie declarată explicit, tocmai pentru a nu rămâne „înghețată” la o cotă veche).
 
-Aplicația calculează TVA prin taxare inversă (formula contabilă 4426 = 4427) și clasifică operațiunea pentru D390, cod S. Dacă factura vine, în schimb, cu TVA românesc de la o filială locală, operațiunea nu se înregistrează prin acest formular — e o achiziție obișnuită, în afara sferei F050.
+Aplicația calculează TVA prin taxare inversă (formula contabilă 4426 = 4427) și clasifică operațiunea pentru D390, cod S. Dacă factura vine, în schimb, cu TVA românesc de la o filială locală, operațiunea nu se înregistrează prin acest formular — e o achiziție obișnuită, în afara sferei „Operațiuni intracomunitare”.
 
 [iConta.eu](/)

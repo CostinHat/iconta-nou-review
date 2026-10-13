@@ -2,7 +2,7 @@
 title: "Cum tratez achiziția unui autoturism din UE?"
 description: "Regula AIC pentru un autoturism cumpărat din UE, cu excepția specială pentru mijloacele de transport noi (art. 268 alin. 3 lit. a)."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Tratamentul TVA al unui autoturism cumpărat dintr-un alt stat membru UE depinde
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 268 alin. (1)-(3) lit. a): „Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L16593-16626)
+CF art. 268 alin. (1)-(3) lit. a): „Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite.” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Textul citat exclude explicit mijloacele de transport noi din regimul obișnuit al AIC care urmează unei LIC scutite — pentru un autoturism nou (criteriile de noutate, de vechime/kilometraj, țin de un regim special, nedetaliat în cercetarea care stă la baza acestui ghid), se aplică o regulă separată de impozitare la destinație.
@@ -30,7 +30,7 @@ Pentru un autoturism care **nu** e „mijloc de transport nou”, se aplică reg
 
 ## Ce face iConta.eu
 
-Pentru un autoturism achiziționat intracomunitar și care nu se încadrează la excepția „mijloc de transport nou”, folosești formularul de achiziție intracomunitară (`achizitie_ic`), tip „bunuri”, cu câmpurile: data, valoarea în RON, codul de TVA al furnizorului (verificabil în VIES), numărul facturii, furnizorul, contul de destinație și cota de TVA.
+Pentru un autoturism achiziționat intracomunitar și care nu se încadrează la excepția „mijloc de transport nou”, folosești formularul de achiziție intracomunitară („achiziție intracomunitară (Operațiuni)”), tip „bunuri”, cu câmpurile: data, valoarea în RON, codul de TVA al furnizorului (verificabil în VIES), numărul facturii, furnizorul, contul de destinație și cota de TVA.
 
 Aplicația calculează TVA prin taxare inversă (4426 = 4427) și clasifică operațiunea pentru D390, cod A. Pentru cazul particular al unui mijloc de transport nou, cercetarea care stă la baza acestui ghid nu a confirmat un formular sau tratament dedicat în aplicație.
 

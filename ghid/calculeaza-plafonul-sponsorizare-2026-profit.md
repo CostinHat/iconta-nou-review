@@ -2,7 +2,7 @@
 title: Cum se calculează plafonul de sponsorizare 2026 pentru profit
 description: Plafonul deductibil în 2026 este minimul dintre 0,75% din cifra de afaceri și 20% din impozitul pe profit datorat — se calculează ambele valori separat și se reține cea mai mică; regula e neschimbată din 03.02.2022, nu diferă pentru anul fiscal 2026.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -40,8 +40,8 @@ O firmă are, în 2026, cifra de afaceri 4.000.000 lei și impozit pe profit dat
 
 ## Ce face iConta.eu
 
-Funcția `plafon_credit(cifra_afaceri, impozit_profit, la_data=None)` din aplicație calculează exact formula de mai sus: `p1 = 0,75% × cifra_afaceri`, `p2 = 20% × impozit_profit`, iar rezultatul e `min(p1, p2)`. Pentru orice `la_data` din 2026, motorul folosește varianta curentă a regulii (singura înregistrată în `_VARIANTE_PLAFON_CREDIT`, activă din 01.01.2018 în sus, cu procentul de 0,75% aplicat pentru toate datele — atenție dacă recalculați retroactiv o perioadă anterioară lui 03.02.2022, unde procentul legal era, de fapt, 0,5%, nu 0,75%).
+Funcția „plafonul creditului fiscal” din aplicație calculează exact formula de mai sus: p1 = 0,75% × cifra de afaceri, p2 = 20% × impozitul pe profit, iar rezultatul e `min(p1, p2)`. Pentru orice „data” din 2026, motorul folosește varianta curentă a regulii (singura înregistrată în „variantele plafonului de credit”, activă din 01.01.2018 în sus, cu procentul de 0,75% aplicat pentru toate datele — atenție dacă recalculați retroactiv o perioadă anterioară lui 03.02.2022, unde procentul legal era, de fapt, 0,5%, nu 0,75%).
 
-Funcția `credit_sponsorizare(...)` merge un pas mai departe: `credit = min(sponsorizari_efectuate, plafon)`, plus `redirectionabil_d177 = plafon - credit`, adică spațiul rămas care poate fi redirecționat separat, prin D177, din impozitul pe profit datorat.
+Funcția „creditul fiscal pentru sponsorizări (Operațiuni speciale)” merge un pas mai departe: credit = min(sponsorizările efectuate, plafon), plus suma redirecționabilă prin D177 = plafon - credit, adică spațiul rămas care poate fi redirecționat separat, prin D177, din impozitul pe profit datorat.
 
 [iConta.eu](/)

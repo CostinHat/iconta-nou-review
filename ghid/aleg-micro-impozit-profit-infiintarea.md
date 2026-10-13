@@ -2,7 +2,7 @@
 title: "Cum aleg între micro și impozit pe profit la înființarea firmei?"
 description: "Condițiile legale pentru a opta la înființare pentru regimul micro, în locul impozitului pe profit, conform Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Pentru a opta valid, la înființare, pentru micro, trebuie îndeplinite trei co
 
 ## Ce face iConta.eu
 
-La crearea unei firme noi în iConta.eu, regimul fiscal (`regim_fiscal`) se stabilește manual, ca prim pas obligatoriu în **Date firma**, câmp fără valoare implicită — contabilul alege explicit micro sau profit. Aplicația nu verifică automat, la data acestui ghid, condițiile de la art. 48 alin. (3) (termenul de 90 de zile pentru primul salariat, structura asociaților legați), astfel încât eligibilitatea reală pentru opțiunea de micro la înființare rămâne o verificare separată a contabilului.
+La crearea unei firme noi în iConta.eu, regimul fiscal („regimul fiscal (Date firmă)”) se stabilește manual, ca prim pas obligatoriu în **Date firma**, câmp fără valoare implicită — contabilul alege explicit micro sau profit. Aplicația nu verifică automat, la data acestui ghid, condițiile de la art. 48 alin. (3) (termenul de 90 de zile pentru primul salariat, structura asociaților legați), astfel încât eligibilitatea reală pentru opțiunea de micro la înființare rămâne o verificare separată a contabilului.
 
 [iConta.eu](/)

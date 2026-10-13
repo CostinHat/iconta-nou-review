@@ -2,7 +2,7 @@
 title: "De ce diferă D394 de jurnalul de cumpărări?"
 description: "Regulile structurale prin care D394 exclude sau reformulează operațiuni față de un simplu jurnal de cumpărări — și de ce diferența e, de cele mai multe ori, normală."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,7 +34,7 @@ Legea îți cere să ții evidențe complete ale operațiunilor (art.321) — da
 
 ## Ce face iConta.eu
 
-D394 se generează în iConta.eu direct din tabelele de facturi ale aplicației (`facturi` + `factura_linii`), cu filtre explicite în cod: sunt excluse documentele de tip proformă/aviz, precum și facturile anulate sau stornate (filtru adăugat explicit în aplicație). Achizițiile intracomunitare sunt excluse programatic din generare, cu un comentariu explicit în cod care trimite la D390.
+D394 se generează în iConta.eu direct din tabelele de facturi ale aplicației (`facturi` + „liniile facturii”), cu filtre explicite în cod: sunt excluse documentele de tip proformă/aviz, precum și facturile anulate sau stornate (filtru adăugat explicit în aplicație). Achizițiile intracomunitare sunt excluse programatic din generare, cu un comentariu explicit în cod care trimite la D390.
 
 Aplicația nu are un „jurnal de cumpărări" ca document separat de registrul de facturi — orice diferență între o evidență ținută paralel (de exemplu, într-un tabel Excel) și D394 trebuie verificată pornind de la aceleași reguli de excludere de mai sus, nu tratată automat ca eroare de generare.
 

@@ -2,7 +2,7 @@
 title: Cum se calculează CAS la part-time sub salariul minim?
 description: Angajatul plătește CAS pe brutul lui real, dar diferența până la podeaua minimă (salariul minim proratat, minus facilitate) e o cheltuială suplimentară a angajatorului, nu o reținere.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -46,6 +46,6 @@ Greșeala frecventă e reținerea de la angajat a întregului CAS calculat pe po
 
 ## Ce face iConta.eu
 
-Regula „baza_podea" calculează automat podeaua pentru fereastra activă a lunii și generează, când e cazul, atât reținerea obișnuită (421/4315), cât și cheltuiala suplimentară de suprataxare (6451/4315), conform `monografie_salariu()` (linia 390).
+Regula „baza minimă a contribuțiilor" calculează automat podeaua pentru fereastra activă a lunii și generează, când e cazul, atât reținerea obișnuită (421/4315), cât și cheltuiala suplimentară de suprataxare (6451/4315), conform „monografia salariului (Salarii)” (linia 390).
 
 [iConta.eu](/)

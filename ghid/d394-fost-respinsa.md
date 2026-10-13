@@ -2,7 +2,7 @@
 title: "Ce fac dacă D394 a fost respinsă?"
 description: "Procedura pentru o D394 respinsă de portal: 3 zile lucrătoare pentru corectare și redepunere, plus validarea locală prin validatorul oficial ANAF folosită de iConta.eu înainte de depunere."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,7 +31,7 @@ Ce rezultă concret din acest text:
 
 ## Ce face iConta.eu
 
-Înainte ca fișierul D394 să fie considerat gata de depus, aplicația îl rulează prin **validatorul oficial ANAF instalat local** (funcția `valideaza(xml, tip, an, luna)`) — aceeași unealtă (DUK) pe care o folosește și portalul ANAF pentru verificarea structurală. Asta reduce riscul unei respingeri de structură la depunere, pentru că majoritatea erorilor de acest tip sunt prinse local, înainte de a ajunge pe portal.
+Înainte ca fișierul D394 să fie considerat gata de depus, aplicația îl rulează prin **validatorul oficial ANAF instalat local** (funcția „validarea”) — aceeași unealtă (DUK) pe care o folosește și portalul ANAF pentru verificarea structurală. Asta reduce riscul unei respingeri de structură la depunere, pentru că majoritatea erorilor de acest tip sunt prinse local, înainte de a ajunge pe portal.
 
 Separat, D394 are o a doua cale de calcul, independentă, care recalculează totalurile pe cotă direct din liniile facturilor și **oprește generarea** dacă rezultatul diferă de cel al generatorului principal — un al doilea gard de conținut, nu doar de structură XML.
 

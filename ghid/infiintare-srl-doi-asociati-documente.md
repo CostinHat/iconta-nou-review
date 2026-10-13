@@ -2,7 +2,7 @@
 title: "Înființare SRL cu doi asociați: documente necesare"
 description: "Ce trebuie să cuprindă actul constitutiv al unui SRL cu doi asociați și care e capitalul social minim, conform Legii 31/1990."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ d) capitalul social subscris, cu menționarea aportului fiecărui asociat, în n
 
 ## Ce face iConta.eu
 
-Din verificarea codului sursă (`FUNCTIONALITATI.csv` și modulele din aplicație), iConta.eu **nu are nicio funcționalitate pentru înființarea sau înmatricularea unei societăți**. Aplicația intervine abia după ce firma există deja în registrul comerțului: F007 importă lista de asociați dintr-un fișier .xlsx/.csv, la migrarea unei firme deja înființate în aplicație, fără nicio legătură cu depunerea actului constitutiv sau cu cererea de înmatriculare. Documentele de înființare de mai sus se pregătesc și se depun la registrul comerțului prin mijloace din afara iConta.eu.
+Din verificarea codului sursă (documentația internă și modulele din aplicație), iConta.eu **nu are nicio funcționalitate pentru înființarea sau înmatricularea unei societăți**. Aplicația intervine abia după ce firma există deja în registrul comerțului: „Import asociați (migrare)” importă lista de asociați dintr-un fișier .xlsx/.csv, la migrarea unei firme deja înființate în aplicație, fără nicio legătură cu depunerea actului constitutiv sau cu cererea de înmatriculare. Documentele de înființare de mai sus se pregătesc și se depun la registrul comerțului prin mijloace din afara iConta.eu.
 
 [iConta.eu](/)

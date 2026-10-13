@@ -2,7 +2,7 @@
 title: "Extras de cont pentru instanță: cum îl obțin"
 description: "De ce extrasul de cont folosit ca probă în instanță trebuie cerut de la bancă, nu reconstituit din contabilitatea proprie, și ce obligație de păstrare are firma pentru documentele justificative."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce rezultă din această obligație, aplicat la nevoia de probă pentru instanț
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația păstrează evidența importurilor de extrase bancare (`inregistreaza_import()`, cu hash-ul fișierului sursă) și liniile contabilizate din ele, iar aplicația poate afișa/lista aceste linii importate. Aplicația nu emite însă ea însăși un extras de cont certificat, opozabil în instanță — acel document rămâne, prin natura lui, unul care se obține direct de la banca emitentă.
+La data acestui ghid, aplicația păstrează evidența importurilor de extrase bancare („evidența importurilor de extrase (Bancă)”, cu hash-ul fișierului sursă) și liniile contabilizate din ele, iar aplicația poate afișa/lista aceste linii importate. Aplicația nu emite însă ea însăși un extras de cont certificat, opozabil în instanță — acel document rămâne, prin natura lui, unul care se obține direct de la banca emitentă.
 
 [iConta.eu](/)

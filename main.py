@@ -695,8 +695,19 @@ async def _edge_canonic_head(request: Request, call_next):
     # uvicorn suprima corpul pe fir pentru cererea HEAD (raspunde doar cu headerele, inclusiv Content-Length).
     if request.method == "HEAD":
         request.scope["method"] = "GET"
-        return await call_next(request)
-    return await call_next(request)
+    response = await call_next(request)
+    # [comanda Costin 13.10.2026 pct.2d: „Exclude rutele aplicației din indexare (robots.txt + antetul X-Robots-Tag: noindex). Paginile
+    # publice rămân indexabile.”] tot ce nu e suprafața publică (landing, ghiduri, termeni, sitemap, robots, resursele statice afară de
+    # JS) poartă „noindex” — și când robots.txt e ignorat, iar un URL al aplicației ajunge totuși la un motor de căutare
+    if not _pagina_publica_indexabila(request.url.path):
+        response.headers["X-Robots-Tag"] = "noindex"
+    return response
+
+
+def _pagina_publica_indexabila(cale):
+    """Suprafața publică indexabilă — aceeași ca allow-list-ul din `robots.txt` (`public_robots`)."""
+    return (cale == "/" or cale == "/ghid" or cale.startswith("/ghid/") or cale == "/public/termeni" or cale == "/robots.txt"
+            or bool(_ghid_re.fullmatch(r"/sitemap[\w-]*\.xml", cale)) or (cale.startswith("/static/") and not cale.startswith("/static/js/")))
 
 
 # ICRD_CABINETE_CONSOLIDAT_V1
@@ -6473,6 +6484,19 @@ import json as _ghid_json
 from core import repo_main as _repo
 
 _GHID_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ghid")
+#: [comanda Costin 13.10.2026 pct.2e: „De acum, nu publici ghiduri noi până la decizia mea.”] lista ÎNGHEȚATĂ a ghidurilor publicate:
+#: pagina, cuprinsul, temele, ghidurile înrudite și sitemap-ul arată NUMAI slugurile de aici; un ghid/*.md nou nu se publică
+_GHID_PUBLICATE_CALE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ghid_publicate.txt")
+
+
+def _ghid_publicate():
+    """Mulțimea slugurilor publicate (`ghid_publicate.txt`, fără comentarii), citită la fiecare apel — fără stare în proces; un fișier
+    lipsă = niciun ghid publicat (fail-closed)."""
+    try:
+        linii = open(_GHID_PUBLICATE_CALE, encoding="utf-8").read().splitlines()
+    except OSError:
+        return frozenset()
+    return frozenset(x.strip() for x in linii if x.strip() and not x.startswith("#"))
 _GHID_SLUG_RE = _ghid_re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 _GHID_BAZA = "https://iconta.eu"          # domeniu canonic public (canonical, og:url, sitemap)
 # [ghid_redirect] slug-uri retrase -> 301 permanent catre succesor (consolidare continut, pastreaza SEO).
@@ -6750,7 +6774,7 @@ def _ghid_teme_index():
     schimbă directorul ghidurilor sau registrul titlurilor. Întoarce (pe_slug, pe_tema)."""
     from core import ghid_teme as _gt, ghid_titluri as _gtl
     try:
-        cheie = (os.stat(_GHID_DIR).st_mtime_ns, os.stat(_gtl.CALE).st_mtime_ns)
+        cheie = (_GHID_DIR, os.stat(_GHID_DIR).st_mtime_ns, os.stat(_gtl.CALE).st_mtime_ns, os.stat(_GHID_PUBLICATE_CALE).st_mtime_ns)
     except OSError:
         cheie = None
     return _gt.index(cheie, _ghid_lista, lambda: {r["slug_publicat"]: r["categorie"] for r in _gtl.incarca()
@@ -6774,17 +6798,21 @@ def _ghid_legaturi(slug):
 
 
 def _ghid_lista():
-    """Lista ghidurilor PUBLICATE = TOATE fisierele ghid/*.md cu front-matter valid. Sursa UNICA pentru index +
+    """Lista ghidurilor PUBLICATE = fisierele ghid/*.md cu front-matter valid DIN LISTA INGHETATA `ghid_publicate.txt` (comanda
+    Costin 13.10.2026 pct.2e; un fisier nou nu se publica pana la decizia lui). Sursa UNICA pentru index +
     sitemap (aliniat la ce declara comentariul: ghid/ e sursa unica). FUNCTIONALITATI.csv (coloana ghid_slug) NU
     mai decide ce pagini EXISTA - ramane doar pentru legatura inversa functionalitate->ghid. Un fisier fara
     front-matter valid e EXCLUS cu LOG EXPLICIT (nu tacut). Fiecare: {slug, titlu, descriere, published, modified}."""
     import glob as _glob
     out = []
+    publicate = _ghid_publicate()
     for cale in sorted(_glob.glob(os.path.join(_GHID_DIR, "*.md"))):
         nume = os.path.basename(cale)
         slug = nume[:-3]
         if not _GHID_SLUG_RE.match(slug):
             print("[ghid] EXCLUS (slug invalid): %s" % nume, flush=True)
+            continue
+        if slug not in publicate:      # [pct.2e] un ghid nou nu se publică până la decizia lui Costin
             continue
         try:
             meta, corp = _ghid_frontmatter(open(cale, encoding="utf-8").read())
@@ -6855,7 +6883,7 @@ def public_ghid(slug: str):
     if slug in _GHID_REDIRECT:
         return RedirectResponse(_GHID_BAZA + "/ghid/" + _GHID_REDIRECT[slug], status_code=301)
     cale = os.path.join(_GHID_DIR, slug + ".md")
-    if not os.path.isfile(cale):
+    if not os.path.isfile(cale) or slug not in _ghid_publicate():      # [pct.2e] numai ghidurile publicate până la 13.10.2026
         return _ghid_404()
     meta, corp_md = _ghid_frontmatter(open(cale, encoding="utf-8").read())
     h1 = _ghid_titlu(corp_md)
@@ -6873,7 +6901,14 @@ def public_ghid(slug: str):
               "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
               "image": _GHID_OG_IMAGINE}
     jsonld = {k: v for k, v in jsonld.items() if v not in ("", None)}
-    return Response(content=_ghid_pagina_html(titlu, descriere, canonical, _ghid_randeaza(corp_md) + _ghid_legaturi(slug),
+    # [comanda Costin 13.10.2026 pct.2c: „Adaugă pe fiecare ghid data ultimei actualizări. Nu adăuga autori sau titluri profesionale.”]
+    # sub titlu, din `modified` (sau data fișierului) — aceeași dată ca `dateModified` și `lastmod` din sitemap
+    from core.pdf_util import data_ro as _data_ro
+    actualizat = '<p class="ghid-actualizat">Actualizat la %s</p>' % _ghid_html.escape(_data_ro(jsonld.get("dateModified", "")))
+    corp_html = _ghid_re.sub(r"(</h1>)", r"\1" + actualizat, _ghid_randeaza(corp_md), count=1)
+    if actualizat not in corp_html:
+        corp_html = actualizat + corp_html
+    return Response(content=_ghid_pagina_html(titlu, descriere, canonical, corp_html + _ghid_legaturi(slug),
                                               jsonld=jsonld, slug=slug),
                     media_type="text/html; charset=utf-8")
 

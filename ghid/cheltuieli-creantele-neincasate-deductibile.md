@@ -2,7 +2,7 @@
 title: "Cheltuieli cu creanțele neîncasate: când sunt deductibile"
 description: "Două cheltuieli diferite, două regimuri diferite — ajustarea contabilă (deductibilă condiționat, 30% sau 100%) și pierderea la scoaterea din evidență a creanței (deductibilă doar în șase situații enumerate expres)."
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Următoarele cheltuieli nu sunt deductibile: [...] h) pierderile înregistrate l
 
 ## Ce face iConta.eu
 
-Aplicația calculează și contabilizează doar ajustarea (constituire 6814=491, reluare 491=7814), pe baza `deductibilitate_creanta`. Aplicația nu modelează scoaterea propriu-zisă din evidență a creanței și nu verifică încadrarea în cele șase excepții de la art. 25 alin. (4) lit. h) — această evaluare, la fel ca și nota contabilă corespunzătoare, rămâne manuală.
+Aplicația calculează și contabilizează doar ajustarea (constituire 6814=491, reluare 491=7814), pe baza „deductibilitatea creanței (Operațiuni speciale)”. Aplicația nu modelează scoaterea propriu-zisă din evidență a creanței și nu verifică încadrarea în cele șase excepții de la art. 25 alin. (4) lit. h) — această evaluare, la fel ca și nota contabilă corespunzătoare, rămâne manuală.
 
 [iConta.eu](/)

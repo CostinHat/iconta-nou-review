@@ -2,7 +2,7 @@
 title: Cum găsesc codul de clasificare al unui mijloc fix?
 description: Codul de clasificare vine din Catalogul HG 2139/2004, căutat succesiv grupă → subgrupă → clasă → subclasă → familie. E un proces manual — nu ține de TVA, ci de stabilirea duratei de amortizare.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Se alege o categorie apropiată vizual, dar greșită funcțional — de exemplu
 
 ## Ce face iConta.eu
 
-De precizat clar: acest subiect ține de **registrul de mijloace fixe** (funcționalitatea F247), nu de clasificarea TVA a facturii. Câmpul cu codul de inventar al fiecărui mijloc fix este **text liber**, introdus prin importul de fișier CSV/XLSX — singura cale prin care intră un mijloc fix în aplicație, nu există un formular de adăugare individuală în interfață. Aplicația nu are cablat catalogul HG 2139/2004: nu caută, nu sugerează și nu validează codul introdus față de catalogul oficial, și nici nu avertizează dacă durata aleasă e în afara plajei legale pentru categoria activului. Găsirea codului corect rămâne, la acest moment, un proces complet manual, făcut de contabil direct în catalog, înainte de completarea fișierului de import.
+De precizat clar: acest subiect ține de **registrul de mijloace fixe** (funcționalitatea „Mijloace fixe (registrul activelor)”), nu de clasificarea TVA a facturii. Câmpul cu codul de inventar al fiecărui mijloc fix este **text liber**, introdus prin importul de fișier CSV/XLSX — singura cale prin care intră un mijloc fix în aplicație, nu există un formular de adăugare individuală în interfață. Aplicația nu are cablat catalogul HG 2139/2004: nu caută, nu sugerează și nu validează codul introdus față de catalogul oficial, și nici nu avertizează dacă durata aleasă e în afara plajei legale pentru categoria activului. Găsirea codului corect rămâne, la acest moment, un proces complet manual, făcut de contabil direct în catalog, înainte de completarea fișierului de import.
 
 [iConta.eu](/)

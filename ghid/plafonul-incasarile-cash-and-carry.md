@@ -2,7 +2,7 @@
 title: "Care este plafonul pentru încasările cash and carry în 2026?"
 description: "Plafonul special de sold de casă pentru magazinele de tip cash and carry, super și hipermarket, conform Legii 70/2015 modificate prin OUG 115/2023."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Acest plafon de sold e diferit de plafonul de **încasare zilnică de la o singu
 
 ## Ce face iConta.eu
 
-Modulul de casierie al iConta.eu aplică efectiv acest plafon dublu: funcția `verifica_plafon` calculează soldul de casă la sfârșitul fiecărei zile și semnalează un avertisment (`PLAFON_SOLD_CASA`) când soldul depășește pragul aplicabil — 500.000 lei dacă operațiunile sunt marcate drept `cash_and_carry=True`, respectiv 50.000 lei în regimul standard. Avertismentele generate sunt de nivel informativ (risc la control), nu blocante — aplicația nu împiedică introducerea operațiunii, ci atrage atenția contabilului asupra depășirii.
+Modulul de casierie al iConta.eu aplică efectiv acest plafon dublu: funcția „verificarea plafonului de numerar (Casă)” calculează soldul de casă la sfârșitul fiecărei zile și semnalează un avertisment (`PLAFON_SOLD_CASA`) când soldul depășește pragul aplicabil — 500.000 lei dacă operațiunile sunt marcate drept cash and carry=True, respectiv 50.000 lei în regimul standard. Avertismentele generate sunt de nivel informativ (risc la control), nu blocante — aplicația nu împiedică introducerea operațiunii, ci atrage atenția contabilului asupra depășirii.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Erori frecvente la statul de plată și cum le evit"
 description: "Cele mai frecvente semnale de eroare de pe statul de plată lunar — tichete de masă blocate, plafon de tichete de vacanță depășit, cadouri impozabile, bază de calcul lipsă — cu temeiul legal al fiecăruia."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,7 +31,7 @@ Statul de plată lunar nu e doar o listă de cifre calculate de motorul de salar
 
 ## Ce face iConta.eu
 
-Statul de plată lunar (`stat_plata()`) produce, pentru fiecare salariat, nu doar cifrele brut/net, ci și semnale explicite de calitate a datelor, calculate din exact aceleași reguli de mai sus: bază contractuală lipsă sau zero, tichete de masă blocate din lipsa confirmării pontajului (conform art. 10 alin. (3) citat mai sus), depășirea plafonului anual de tichete de vacanță și cadou impozabil (peste prag sau la un eveniment nelegal). Aceste semnale se afișează pe rândul salariatului, nu tăcut — scopul lor e ca eroarea să fie vizibilă înainte ca fluturașul să fie emis și predat.
+Statul de plată lunar („statul de plată (Salarii)”) produce, pentru fiecare salariat, nu doar cifrele brut/net, ci și semnale explicite de calitate a datelor, calculate din exact aceleași reguli de mai sus: bază contractuală lipsă sau zero, tichete de masă blocate din lipsa confirmării pontajului (conform art. 10 alin. (3) citat mai sus), depășirea plafonului anual de tichete de vacanță și cadou impozabil (peste prag sau la un eveniment nelegal). Aceste semnale se afișează pe rândul salariatului, nu tăcut — scopul lor e ca eroarea să fie vizibilă înainte ca fluturașul să fie emis și predat.
 
 O precizare importantă pentru contabili: pe fluturașul unui salariat care are DOAR tichete culturale sau de creșă (fără tichete de masă sau de vacanță), rândul care arată impozitul reținut pe aceste tichete nu apare separat în compoziția afișată, deși suma e deja scăzută corect din salariul net calculat. Cifra finală e corectă; ce lipsește e explicația pe rând a acelei componente pentru acest caz particular — merită verificată suma totală, nu doar rândurile individuale, când singurele facilități ale unui salariat sunt tichetele culturale sau de creșă.
 

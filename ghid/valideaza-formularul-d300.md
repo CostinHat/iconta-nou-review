@@ -2,7 +2,7 @@
 title: De ce nu se validează formularul D300?
 description: D300 este respins când încalcă una dintre regulile de tip „ERR” din structura XML publicată de ANAF pentru decontul aplicabil din august 2025. Cele mai frecvente sunt datele de identificare, combinația dintre tipul decontului și lună, formulele dintre rânduri, oglinda taxării inverse și cererea de rambursare sub 5.000 lei.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,7 +22,7 @@ Mesajele ERR apar dacă:
 
 ### 2. Tipul decontului nu se potrivește cu luna
 
-Câmpul tip_decont acceptă valorile L, T, S sau A:
+Câmpul periodicitatea TVA (Date firmă) acceptă valorile L, T, S sau A:
 
 - pentru **T** (trimestrial), luna trebuie să fie 02, 03, 05, 06, 08, 09, 11 sau 12;
 - pentru **S** (semestrial), luna trebuie să fie 06 sau 12;

@@ -2,7 +2,7 @@
 title: "Sancțiuni pentru facturi emise fără e-Factura în 2026"
 description: "Nerespectarea obligației B2B de transmitere în RO e-Factura se sancționează cu amendă egală cu 15% din valoarea totală a facturii, iar întârzierea peste termenul de 5 zile lucrătoare, cu amenzi fixe separate."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ De la intrarea în vigoare deplină a obligației B2B (1 iulie 2024), o factură
 
 ## Ce face iConta.eu
 
-Singura funcționalitate verificată în cod în acest dosar de cercetare pentru cuvintele-cheie apropiate acestui titlu este F171 — exportul tehnic al facturilor emise către programul SAGA, care nu are nicio legătură cu sistemul RO e-Factura/SPV și, fiind o punte între două softuri de contabilitate, nu are temei legal propriu, deci nici sancțiuni asociate. Aplicația conține, conform dosarului, un modul separat pentru transmiterea efectivă în e-Factura, dar acest dosar nu a verificat dacă și cum semnalează aplicația riscul de sancțiune pentru facturi netransmise sau transmise cu întârziere — nu facem, deci, nicio afirmație neconfirmată despre asta.
+Singura funcționalitate verificată în cod în acest dosar de cercetare pentru cuvintele-cheie apropiate acestui titlu este „Export facturi emise către SAGA” — exportul tehnic al facturilor emise către programul SAGA, care nu are nicio legătură cu sistemul RO e-Factura/SPV și, fiind o punte între două softuri de contabilitate, nu are temei legal propriu, deci nici sancțiuni asociate. Aplicația conține, conform dosarului, un modul separat pentru transmiterea efectivă în e-Factura, dar acest dosar nu a verificat dacă și cum semnalează aplicația riscul de sancțiune pentru facturi netransmise sau transmise cu întârziere — nu facem, deci, nicio afirmație neconfirmată despre asta.
 
 [iConta.eu](/)

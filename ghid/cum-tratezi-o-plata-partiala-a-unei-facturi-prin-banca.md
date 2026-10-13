@@ -2,7 +2,7 @@
 title: Cum tratezi o plată parțială a unei facturi prin bancă?
 description: Când o încasare sau o plată nu acoperă integral o factură, motorul alocă suma FIFO și marchează linia galbenă pentru confirmare manuală; dacă firma e pe TVA la încasare, TVA-ul exigibil se calculează separat pentru fiecare sumă efectiv încasată, conform art. 282 alin. (8) Cod fiscal.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Dacă firma aplică sistemul TVA la încasare, fiecare sumă alocată printr-o p
 
 ## Ce face iConta.eu
 
-`_alocare_fifo` din aplicație distribuie suma liniei pe facturile deschise ale partenerului, în ordine FIFO, marcând rezultatul galben. La contare (`conteaza` din aplicație), fiecare alocare parțială generează o înregistrare separată legată de `factura_id`; dacă firma are activ profilul `tva_la_incasare`, TVA-ul exigibil pentru acea alocare se calculează separat, prin `core.tva_incasare.tva_din_incasare`, folosind cota de pe liniile facturii — lipsa cotei declanșează o eroare explicită la contare.
+`_alocare_fifo` din aplicație distribuie suma liniei pe facturile deschise ale partenerului, în ordine FIFO, marcând rezultatul galben. La contare („contarea” din aplicație), fiecare alocare parțială generează o înregistrare separată legată de „factura legată”; dacă firma are activ profilul „TVA la încasare”, TVA-ul exigibil pentru acea alocare se calculează separat, prin „TVA-ul exigibil la încasare”, folosind cota de pe liniile facturii — lipsa cotei declanșează o eroare explicită la contare.
 
 [iConta.eu](/)

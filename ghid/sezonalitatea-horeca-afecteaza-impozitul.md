@@ -2,7 +2,7 @@
 title: "Sezonalitatea în HoReCa: cum afectează impozitul"
 description: "Din 2026, cota de impozit pe veniturile microîntreprinderilor e unică, 1% — vechiul split 1%/3% pe coduri CAEN și pragul de 60.000 euro au fost abrogate. Ce mai contează pentru un HoReCa sezonier e doar pragul de 100.000 euro."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Consecințele practice pentru un HoReCa sezonier, în 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu aplică, pentru regimul micro, cota unică de 1% conform art. 51 alin. (1) din Codul fiscal (registrul de cote „impozit_micro"), fără nicio diferențiere pe cod CAEN — în acord cu abrogarea, din 2026, a fostei cote de 3%. Aplicația **nu determină automat** trimestrul din care o firmă sezonieră depășește pragul de 100.000 euro și trece la impozit pe profit — aceasta rămâne o verificare pe care contabilul o face pe baza evidenței contabile generale oferite de aplicație.
+La data acestui ghid, iConta.eu aplică, pentru regimul micro, cota unică de 1% conform art. 51 alin. (1) din Codul fiscal (registrul de cote „cota impozitului micro"), fără nicio diferențiere pe cod CAEN — în acord cu abrogarea, din 2026, a fostei cote de 3%. Aplicația **nu determină automat** trimestrul din care o firmă sezonieră depășește pragul de 100.000 euro și trece la impozit pe profit — aceasta rămâne o verificare pe care contabilul o face pe baza evidenței contabile generale oferite de aplicație.
 
 [iConta.eu](/)

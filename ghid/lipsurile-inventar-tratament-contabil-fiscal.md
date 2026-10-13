@@ -2,7 +2,7 @@
 title: "Lipsurile la inventar: tratament contabil și fiscal 2026"
 description: "Cum se tratează fiscal, la impozitul pe profit și la TVA, o lipsă constatată la inventarierea anuală — și ce parte din calcul face automat aplicația și ce rămâne în sarcina contabilului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -43,6 +43,6 @@ La TVA, art. 304 alin. (1) lit. c) cere ajustarea deducerii inițiale pentru lip
 
 ## Ce face iConta.eu
 
-Din ecranul "Inventariere anuală", operația Minus, aplicația generează notele contabile de descărcare de gestiune și, unde e cazul, ajustarea de TVA (635=4426) pentru lipsa neimputabilă nedemonstrată. **Aplicația nu calculează ea însăși deductibilitatea la impozitul pe profit** — F052 produce doar notele contabile care alimentează balanța; evaluarea celor 7 condiții de deductibilitate din art. 25 alin. (4) lit. c) și reflectarea lor în declarația anuală de impozit pe profit rămân în sarcina contabilului, la nivelul declarației D101.
+Din ecranul "Inventariere anuală", operația Minus, aplicația generează notele contabile de descărcare de gestiune și, unde e cazul, ajustarea de TVA (635=4426) pentru lipsa neimputabilă nedemonstrată. **Aplicația nu calculează ea însăși deductibilitatea la impozitul pe profit** — „Inventariere anuală” produce doar notele contabile care alimentează balanța; evaluarea celor 7 condiții de deductibilitate din art. 25 alin. (4) lit. c) și reflectarea lor în declarația anuală de impozit pe profit rămân în sarcina contabilului, la nivelul declarației D101.
 
 [iConta.eu](/)

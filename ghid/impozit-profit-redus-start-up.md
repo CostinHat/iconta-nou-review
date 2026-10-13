@@ -2,7 +2,7 @@
 title: "Impozit pe profit redus pentru start-up: se aplică în 2026"
 description: "Nu există o cotă redusă de impozit pe profit pentru start-up-uri; alternativa reală din Codul fiscal e opțiunea pentru regimul micro din primul an fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce înseamnă concret, pentru o firmă la înființare:
 
 ## Ce face iConta.eu
 
-La înființarea unei firme în iConta.eu, contabilul stabilește manual, în **Date firma**, regimul fiscal (`regim_fiscal`: micro sau profit) — aplicația nu calculează automat eligibilitatea pentru opțiunea de la art. 48 alin. (3) și nu semnalează termenul de 90 de zile pentru angajarea primului salariat. Verificarea condițiilor de opțiune la înființare (art. 48 alin. (3)) rămâne, la data acestui ghid, în sarcina contabilului.
+La înființarea unei firme în iConta.eu, contabilul stabilește manual, în **Date firma**, regimul fiscal („regimul fiscal (Date firmă)”: micro sau profit) — aplicația nu calculează automat eligibilitatea pentru opțiunea de la art. 48 alin. (3) și nu semnalează termenul de 90 de zile pentru angajarea primului salariat. Verificarea condițiilor de opțiune la înființare (art. 48 alin. (3)) rămâne, la data acestui ghid, în sarcina contabilului.
 
 [iConta.eu](/)

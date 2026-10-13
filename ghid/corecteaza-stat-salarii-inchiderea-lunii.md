@@ -1,8 +1,8 @@
 ---
 title: Cum se corectează un stat de salarii după închiderea lunii
-description: Pontajul lunii nu se blochează prin „Blocare perioade" (F118), ci separat, în momentul în care D112 e depusă la ANAF pe luna respectivă. Corecția, după acel moment, se face prin declarație rectificativă, nu prin editare liberă.
+description: Pontajul lunii nu se blochează prin „Blocare perioade" („Blocare perioade”), ci separat, în momentul în care D112 e depusă la ANAF pe luna respectivă. Corecția, după acel moment, se face prin declarație rectificativă, nu prin editare liberă.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -20,9 +20,9 @@ D112 e o declarație cu obligații de plată (contribuții sociale, impozit pe v
 
 ## Ce blochează efectiv editarea în iConta.eu
 
-Editarea unei zile de pontaj se verifică, per firmă, astfel: dacă D112 a fost deja înregistrată ca depusă pentru luna respectivă (evidența depunerilor, `public.declaratii_depuse`), editarea e refuzată, cu mesajul: *„Pontajul lunii nu se poate modifica: D112 e deja depusă la ANAF. Corectează prin rectificativă (nu prin editare liberă)."*
+Editarea unei zile de pontaj se verifică, per firmă, astfel: dacă D112 a fost deja înregistrată ca depusă pentru luna respectivă (evidența depunerilor, „evidența declarațiilor depuse”), editarea e refuzată, cu mesajul: *„Pontajul lunii nu se poate modifica: D112 e deja depusă la ANAF. Corectează prin rectificativă (nu prin editare liberă)."*
 
-Această verificare **nu are nicio legătură cu „Blocare perioade"** (funcția de la Registru jurnal, F118). E un mecanism separat, aplicativ, legat strict de faptul declarat la ANAF — nu de tabelul „perioade blocate" folosit pentru notele contabile. O lună de pontaj poate rămâne editabilă chiar dacă luna contabilă e blocată, și invers: poate fi blocată la editare (D112 depusă) chiar dacă luna contabilă e încă deschisă.
+Această verificare **nu are nicio legătură cu „Blocare perioade"** (funcția de la Registru jurnal, „Blocare perioade”). E un mecanism separat, aplicativ, legat strict de faptul declarat la ANAF — nu de tabelul „perioade blocate" folosit pentru notele contabile. O lună de pontaj poate rămâne editabilă chiar dacă luna contabilă e blocată, și invers: poate fi blocată la editare (D112 depusă) chiar dacă luna contabilă e încă deschisă.
 
 ## Ce se greșește în practică
 

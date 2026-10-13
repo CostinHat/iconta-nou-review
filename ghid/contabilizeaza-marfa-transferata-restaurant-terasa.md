@@ -2,7 +2,7 @@
 title: "Cum se contabilizează marfa transferată între restaurant și terasa sezonieră?"
 description: O terasă sezonieră la altă adresă decât restaurantul e o gestiune dispersată teritorial, indiferent cât de scurt e sezonul - documentul obligatoriu pentru transportul mărfii e avizul de însoțire, nu bonul de transfer intern.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Doar dacă terasa e efectiv în aceeași incintă cu restaurantul (de exemplu o 
 
 ## Ce face iConta.eu
 
-Din perspectiva funcției de transfer între gestiuni (F138), terasa sezonieră e o locație de stoc ca oricare alta: ieșire din restaurant, intrare pe terasă (sau invers), la costul mediu ponderat curent, fără notă contabilă. Aplicația nu are nicio noțiune de „locație sezonieră" — nu există, în evidența de locații, o dată de activare sau dezactivare a unui punct de lucru; locația e doar o etichetă text, activă cât timp apare în mișcările de stoc. Decizia privind documentul corect de circulație (14-3-3A dacă sunt în aceeași incintă, 14-3-6A dacă sunt la adrese diferite) rămâne de luat de dvs., iar iConta.eu nu generează formularul respectiv — doar înregistrarea internă de stoc.
+Din perspectiva funcției de transfer între gestiuni („Transfer între gestiuni”), terasa sezonieră e o locație de stoc ca oricare alta: ieșire din restaurant, intrare pe terasă (sau invers), la costul mediu ponderat curent, fără notă contabilă. Aplicația nu are nicio noțiune de „locație sezonieră" — nu există, în evidența de locații, o dată de activare sau dezactivare a unui punct de lucru; locația e doar o etichetă text, activă cât timp apare în mișcările de stoc. Decizia privind documentul corect de circulație (14-3-3A dacă sunt în aceeași incintă, 14-3-6A dacă sunt la adrese diferite) rămâne de luat de dvs., iar iConta.eu nu generează formularul respectiv — doar înregistrarea internă de stoc.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum obțin sprijin de la ANAF pentru SAF-T"
 description: "Cele două forme oficiale de asistență pe care ANAF le pune la dispoziție contribuabililor pentru pregătirea și transmiterea fișierului standard de control fiscal (SAF-T/D406)."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ SAF-T (Standard Audit File for Tax), raportat prin Declarația informativă D406
 
 ## Ce face iConta.eu
 
-Modulele `d406.py`, `d406_active.py` și `d406_reconciliere.py` din iConta.eu generează Declarația informativă D406 (SAF-T) și includ un mecanism intern de verificare independentă — o „balanță de rulaje" per cont, construită separat din înregistrările contabile brute, confruntată apoi cu totalurile din SAF-T-ul efectiv emis, cu blocare la orice dezechilibru. Această verificare internă e complementară programului Validator oficial al ANAF menționat mai sus, nu un înlocuitor al lui — folosirea Validatorului ANAF înainte de încărcarea pe portal rămâne recomandată, indiferent de softul folosit pentru generare.
+Modulele aplicația și aplicația din iConta.eu generează Declarația informativă D406 (SAF-T) și includ un mecanism intern de verificare independentă — o „balanță de rulaje" per cont, construită separat din înregistrările contabile brute, confruntată apoi cu totalurile din SAF-T-ul efectiv emis, cu blocare la orice dezechilibru. Această verificare internă e complementară programului Validator oficial al ANAF menționat mai sus, nu un înlocuitor al lui — folosirea Validatorului ANAF înainte de încărcarea pe portal rămâne recomandată, indiferent de softul folosit pentru generare.
 
 [iConta.eu](/)

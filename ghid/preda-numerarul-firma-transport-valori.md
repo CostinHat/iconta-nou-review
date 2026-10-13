@@ -2,7 +2,7 @@
 title: "Cum se predă numerarul la firma de transport valori 2026"
 description: "De ce predarea fizică a numerarului către o firmă de transport de valori ține de legislația privind paza și protecția, nu de Codul fiscal, și ce urmărește totuși legea plafoanelor de numerar în acest context."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce rezultă practic de aici pentru firmele care apelează la transport de valori
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu ține registrul de casă și verifică plafonul de sold de casă introdus în profilul firmei (funcția `verifica_plafon`), dar **nu are o funcționalitate dedicată** predării numerarului către o firmă de transport de valori — operațiunea se înregistrează, ca orice altă ieșire din casă, sub forma unei note de depunere în bancă, pe baza documentelor de predare-primire păstrate în afara aplicației.
+La data acestui ghid, iConta.eu ține registrul de casă și verifică plafonul de sold de casă introdus în profilul firmei (funcția „verificarea plafonului de numerar (Casă)”), dar **nu are o funcționalitate dedicată** predării numerarului către o firmă de transport de valori — operațiunea se înregistrează, ca orice altă ieșire din casă, sub forma unei note de depunere în bancă, pe baza documentelor de predare-primire păstrate în afara aplicației.
 
 [iConta.eu](/)

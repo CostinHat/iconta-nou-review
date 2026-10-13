@@ -2,7 +2,7 @@
 title: Înființare firmă și primul angajat - ce contribuții apar?
 description: La angajarea primului salariat apar patru contribuții obligatorii - CAS 25%, CASS 10% și impozit 10% reținute din brut, plus CAM 2,25% suportată separat de angajator - fără nicio facilitate sectorială, indiferent de domeniul de activitate.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -47,6 +47,6 @@ Un angajat cu normă întreagă, plătit cu salariul brut de 5.000 lei, genereaz
 
 ## Ce face iConta.eu
 
-Motorul de calcul (`calcul_salariu()`) aplică cele patru contribuții pe baza cotelor curente din registrul intern: CAS 25% și CASS 10% pe baza de contribuție (brutul impozabil, eventual redus de facilitatea salariului minim), impozit 10% pe baza impozabilă rămasă după deducerea personală, și CAM 2,25% pe brutul total impozabil, calculat și afișat separat, ca sarcină a angajatorului. Aplicația nu implementează nicio ramură de scutire pe cod CAEN — corect, întrucât nicio astfel de scutire nu mai are temei legal din 2025.
+Motorul de calcul („calculul salariului (Salarii)”) aplică cele patru contribuții pe baza cotelor curente din registrul intern: CAS 25% și CASS 10% pe baza de contribuție (brutul impozabil, eventual redus de facilitatea salariului minim), impozit 10% pe baza impozabilă rămasă după deducerea personală, și CAM 2,25% pe brutul total impozabil, calculat și afișat separat, ca sarcină a angajatorului. Aplicația nu implementează nicio ramură de scutire pe cod CAEN — corect, întrucât nicio astfel de scutire nu mai are temei legal din 2025.
 
 [iConta.eu](/)

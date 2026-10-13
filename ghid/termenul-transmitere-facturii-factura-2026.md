@@ -2,7 +2,7 @@
 title: "Care este termenul de transmitere a facturii în e-Factura în 2026?"
 description: "Termenul de 5 zile lucrătoare pentru transmiterea facturilor în sistemul RO e-Factura, conform Legii 296/2023."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Structura termenului, cu cele două ancore posibile:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația (`fctel`) generează XML-ul facturii (`genereaza_xml()`), îl validează (`valideaza()`) și îl transmite prin `upload_ubl()` către SPV, cu urmărirea stării prin `stare_mesaj()`. Transmiterea propriu-zisă către ANAF e deci o funcționalitate reală a aplicației — verificarea automată a încadrării în termenul de 5 zile lucrătoare de la art. LIX alin. (6), cu semnalarea unei transmiteri care riscă să depășească termenul, nu a fost identificată ca funcție distinctă în cod.
+La data acestui ghid, aplicația (`fctel`) generează XML-ul facturii („generarea XML-ului e-Factura”), îl validează („validarea”) și îl transmite prin „transmiterea în RO e-Factura” către SPV, cu urmărirea stării prin „starea transmiterii în RO e-Factura”. Transmiterea propriu-zisă către ANAF e deci o funcționalitate reală a aplicației — verificarea automată a încadrării în termenul de 5 zile lucrătoare de la art. LIX alin. (6), cu semnalarea unei transmiteri care riscă să depășească termenul, nu a fost identificată ca funcție distinctă în cod.
 
 [iConta.eu](/)

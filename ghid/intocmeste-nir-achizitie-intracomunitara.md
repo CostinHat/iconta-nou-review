@@ -2,7 +2,7 @@
 title: "Cum se întocmește NIR pentru o achiziție intracomunitară?"
 description: "Cum se completează NIR-ul cu landed cost pentru o achiziție intracomunitară de bunuri și de ce nota de TVA generată automat trebuie corectată manual la taxare inversă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,9 +33,9 @@ Definiția costului de achiziție e generică — nu distinge intern, intracomun
 
 Ecranul NIR cu **landed cost** (card Stocuri → NIR, motor aplicația) acceptă transportul și taxele ca parametri și le repartizează proporțional cu costul de bază pe fiecare linie, cu restul de rotunjire pe ultima linie — mecanismul e generic pe originea mărfii, deci funcționează identic pentru o achiziție IC. Testele aplicației confirmă repartizarea exactă (de exemplu 10 lei transport pe 3 linii egale → 3.33 + 3.33 + 3.34, sumă exact 10.00) și blocarea explicită a vânzării sub costul de achiziție cu accesoriu inclus.
 
-**Limită de disponibilitate**: `nir_gv` e motorul gestiunii **global-valorice** (prețul cu amănuntul, cu adaos comercial și TVA neexigibilă) — cere pentru fiecare linie și prețul de vânzare cu TVA, nu doar costul de achiziție. Pentru firmele care țin gestiunea **cantitativ-valorică** (pe fișă de magazie, CMP), mecanismul de landed cost din acest ecran nu e disponibil; transportul trebuie adăugat manual la prețul unitar înainte de introducerea intrării.
+**Limită de disponibilitate**: „NIR global-valoric (Stocuri)” e motorul gestiunii **global-valorice** (prețul cu amănuntul, cu adaos comercial și TVA neexigibilă) — cere pentru fiecare linie și prețul de vânzare cu TVA, nu doar costul de achiziție. Pentru firmele care țin gestiunea **cantitativ-valorică** (pe fișă de magazie, CMP), mecanismul de landed cost din acest ecran nu e disponibil; transportul trebuie adăugat manual la prețul unitar înainte de introducerea intrării.
 
-**Limită reală, de cunoscut înainte de a folosi acest ecran pentru o achiziție IC**: nota de TVA generată automat de `nir_gv` e `4426=401` — adică TVA dedusă ca de la un furnizor intern care a facturat TVA. Pentru o achiziție intracomunitară de bunuri, acest tratament e **greșit**: furnizorul din UE nu facturează TVA românesc, iar tratamentul corect e taxarea inversă (`4426=4427`), disponibilă în aplicație printr-o funcționalitate separată, pentru operațiuni intracomunitare (achiziția IC ca sumă globală, legată de o singură factură). Motorul NIR-ului **nu are niciun parametru de „taxare inversă"** — cele două mecanisme nu sunt integrate.
+**Limită reală, de cunoscut înainte de a folosi acest ecran pentru o achiziție IC**: nota de TVA generată automat de „NIR global-valoric (Stocuri)” e `4426=401` — adică TVA dedusă ca de la un furnizor intern care a facturat TVA. Pentru o achiziție intracomunitară de bunuri, acest tratament e **greșit**: furnizorul din UE nu facturează TVA românesc, iar tratamentul corect e taxarea inversă (`4426=4427`), disponibilă în aplicație printr-o funcționalitate separată, pentru operațiuni intracomunitare (achiziția IC ca sumă globală, legată de o singură factură). Motorul NIR-ului **nu are niciun parametru de „taxare inversă"** — cele două mecanisme nu sunt integrate.
 
 Recomandarea practică, confirmată de comportamentul verificat al aplicației: dacă folosiți ecranul NIR pentru a capitaliza transportul pe articolele unei achiziții IC, tratați separat TVA-ul — fie introduceți NIR-ul fără TVA suplimentară pe marfă (doar capitalizarea costului), fie corectați manual nota de TVA generată automat, pentru a nu dubla deducerea alături de nota de taxare inversă introdusă separat.
 

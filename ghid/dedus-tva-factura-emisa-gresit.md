@@ -2,7 +2,7 @@
 title: Am dedus TVA la o factură emisă greșit de furnizor
 description: Nu se rectifică decontul vechi. Beneficiarul ajustează deducerea în perioada în care primește factura de stornare de la furnizor, chiar dacă factura inițială era pe o perioadă deja închisă.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Cea mai frecventă eroare: contabilul încearcă să rectifice decontul din luna
 
 ## Ce face iConta.eu
 
-Factura de stornare primită de la furnizor se înregistrează ca orice altă factură primită — cu sumele în semn negativ — iar TVA-ul aferent intră în decontul perioadei în care e introdusă în aplicație, respectând astfel logica din art. 330: nu retroactiv, pe perioada facturii inițiale. De precizat totuși limita: legătura automată furnizor-storno (câmpul `storno_din_id`, care leagă tehnic stornarea de originalul ei) funcționează doar pe facturile emise de tine, prin acțiunea „Stornează" din aplicație — pentru o stornare primită de la un furnizor extern, aplicația n-o poate lega automat de factura inițială deja înregistrată. Verificarea coerenței (că suma stornării corespunde exact deducerii inițiale) rămâne, la acest moment, în responsabilitatea contabilului.
+Factura de stornare primită de la furnizor se înregistrează ca orice altă factură primită — cu sumele în semn negativ — iar TVA-ul aferent intră în decontul perioadei în care e introdusă în aplicație, respectând astfel logica din art. 330: nu retroactiv, pe perioada facturii inițiale. De precizat totuși limita: legătura automată furnizor-storno (câmpul „factura stornată (referința)”, care leagă tehnic stornarea de originalul ei) funcționează doar pe facturile emise de tine, prin acțiunea „Stornează" din aplicație — pentru o stornare primită de la un furnizor extern, aplicația n-o poate lega automat de factura inițială deja înregistrată. Verificarea coerenței (că suma stornării corespunde exact deducerii inițiale) rămâne, la acest moment, în responsabilitatea contabilului.
 
 [iConta.eu](/)

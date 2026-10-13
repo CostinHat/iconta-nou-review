@@ -2,7 +2,7 @@
 title: Cum corectez o factură după închiderea lunii
 description: O factură emisă nu se editează direct în iConta.eu, iar dacă luna e închisă, editarea nici n-ar fi posibilă. Corecția se face prin stornare — o factură nouă, cu cantități negative, datată în luna curentă (deschisă).
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,8 +24,8 @@ Cele două puncte explică de ce corecția nu se face „înapoi", în luna fact
 
 Pentru o factură **emisă**, corectarea are doi pași, verificați direct în cod:
 
-1. **Ștergerea e refuzată dacă factura are notă de contare legată.** O factură emisă primește automat, la creare, o notă de contare. Odată ce nota există, `sterge_factura` refuză ștergerea și trimite explicit spre stornare — indiferent dacă luna e blocată sau nu.
-2. **Stornarea creează o factură NOUĂ**, cu aceleași linii dar cu cantitatea negativă, cu un număr nou din aceeași serie, datată **azi** (`data_emitere = data de azi`) — adică întotdeauna în luna curentă, deschisă. Nota de contare aferentă stornoului urmează aceeași dată.
+1. **Ștergerea e refuzată dacă factura are notă de contare legată.** O factură emisă primește automat, la creare, o notă de contare. Odată ce nota există, „ștergerea facturii (Facturi)” refuză ștergerea și trimite explicit spre stornare — indiferent dacă luna e blocată sau nu.
+2. **Stornarea creează o factură NOUĂ**, cu aceleași linii dar cu cantitatea negativă, cu un număr nou din aceeași serie, datată **azi** (data emiterii = data de azi) — adică întotdeauna în luna curentă, deschisă. Nota de contare aferentă stornoului urmează aceeași dată.
 
 Consecința: **corectarea unei facturi dintr-o lună închisă nu cere deblocarea lunii respective.** Luna veche rămâne închisă și intactă; stornoul apare în luna în care ai constatat eroarea, exact cum cere pct. 65 alin. (2) de mai sus.
 
@@ -41,6 +41,6 @@ Dacă factura corectă trebuie reemisă cu sumă diferită, se emite o factură 
 
 ## Ce face iConta.eu
 
-Nu există rută de editare a unei facturi emise — nici pentru facturi din luna curentă, nici pentru cele din luni închise. Corecția se face exclusiv prin storno: o factură nouă, cu cantitățile negate, cu propriul număr din serie, datată la data la care se face corecția. Legătura cu factura originală (`factura_id`) rămâne înscrisă pe nota de contare, iar dacă data notei diferă de data facturii, descrierea notei consemnează explicit acest lucru — nu apare o dată „arbitrară" fără explicație. Nu se editează niciodată direct linia unei facturi emise, indiferent de starea lunii.
+Nu există rută de editare a unei facturi emise — nici pentru facturi din luna curentă, nici pentru cele din luni închise. Corecția se face exclusiv prin storno: o factură nouă, cu cantitățile negate, cu propriul număr din serie, datată la data la care se face corecția. Legătura cu factura originală („factura legată”) rămâne înscrisă pe nota de contare, iar dacă data notei diferă de data facturii, descrierea notei consemnează explicit acest lucru — nu apare o dată „arbitrară" fără explicație. Nu se editează niciodată direct linia unei facturi emise, indiferent de starea lunii.
 
 [iConta.eu](/)

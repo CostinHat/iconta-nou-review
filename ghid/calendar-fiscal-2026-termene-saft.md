@@ -2,7 +2,7 @@
 title: "Calendar fiscal 2026: termene pentru SAF-T și D205"
 description: Termenele SAF-T (D406) și D205 pentru 2026, cu temeiul legal al fiecăruia — și o precizare importantă despre ce arată efectiv ecranul Termene din iConta.eu pentru fiecare din ele.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,7 +31,7 @@ SAF-T (D406) și D205 au reguli de termen diferite și, în iConta.eu, tratament
 Aici e diferența importantă între cele două declarații:
 
 - **SAF-T apare** în ecranul „Termene" (card-ul cu scadențele pe portofoliu, fereastra viitoare de 60 de zile): motorul de calendar derivă periodicitatea din vectorul fiscal (statut TVA + tip decont) și pune scadența pe listă, cu termenul nominal descris mai sus.
-- **D205 NU apare** în ecranul „Termene". Verificat direct în cod: motorul care alimentează acest ecran (aplicația → `control_fiscal_api.obligatii_datorate`) nu calculează D205 deloc. D205 se derivă în altă parte a aplicației, pe „Semafor" (control fiscal), printr-o funcție separată (`declaratii_fapt`) care verifică FAPTUL — rulajul contului 457 (dividende distribuite) — nu doar vectorul fiscal. Motivul pentru care nu e (încă) în calendarul pe 60 de zile: D205 depinde de un eveniment (distribuirea dividendelor), nu de un termen fix derivabil doar din regim/TVA, ca celelalte declarații de pe acel ecran.
+- **D205 NU apare** în ecranul „Termene". Verificat direct în cod: motorul care alimentează acest ecran (aplicația → „obligațiile datorate (Control fiscal)”) nu calculează D205 deloc. D205 se derivă în altă parte a aplicației, pe „Semafor" (control fiscal), printr-o funcție separată („verificarea faptelor (Control fiscal)”) care verifică FAPTUL — rulajul contului 457 (dividende distribuite) — nu doar vectorul fiscal. Motivul pentru care nu e (încă) în calendarul pe 60 de zile: D205 depinde de un eveniment (distribuirea dividendelor), nu de un termen fix derivabil doar din regim/TVA, ca celelalte declarații de pe acel ecran.
 
 Practic: pentru SAF-T, cardul „Termene" e locul corect de verificat. Pentru D205, verifică ecranul „Semafor" — acolo aplicația confruntă rulajul contului 457 cu declarațiile depuse și îți spune dacă ai dividende distribuite fără D205 aferentă.
 
@@ -43,7 +43,7 @@ Practic: pentru SAF-T, cardul „Termene" e locul corect de verificat. Pentru D2
 
 ## Ce face iConta.eu
 
-Ecranul „Termene" (F093) derivă și afișează scadențele SAF-T pentru fiecare firmă din portofoliu, grupate pe dată, folosind același motor unic de mapare fiscală ca semaforul de control fiscal, dar cu fereastra restrânsă la viitor (60 de zile). Nu calculează perioada de grație de la prima raportare SAF-T — asta rămâne verificare manuală.
+Ecranul „Termene" („Scadențe viitoare pe portofoliu”) derivă și afișează scadențele SAF-T pentru fiecare firmă din portofoliu, grupate pe dată, folosind același motor unic de mapare fiscală ca semaforul de control fiscal, dar cu fereastra restrânsă la viitor (60 de zile). Nu calculează perioada de grație de la prima raportare SAF-T — asta rămâne verificare manuală.
 
 Pentru D205, iConta.eu nu îl pune pe calendarul de 60 de zile, dar îl urmărește pe fapt (rulajul contului 457) în ecranul „Semafor", cu explicație clară când nu poate stabili dacă s-au distribuit dividende (lipsă note validate pe anul respectiv).
 

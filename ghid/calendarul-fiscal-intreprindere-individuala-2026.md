@@ -2,7 +2,7 @@
 title: "Care este calendarul fiscal pentru o întreprindere individuală în 2026?"
 description: "Termenul legal de 25 mai pentru declarația unică a persoanelor fizice care obțin venituri din activități independente, inclusiv cazurile care obligă la o declarație suplimentară în cursul anului."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Din text și din contextul art. 122 rezultă calendarul concret al unei întrepr
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează CAS și CASS pentru declarația unică prin aplicație (`calculeaza_cas()`, `calculeaza_cass()`, `calculeaza_d212()`), cu plafoanele anuale aduse din `plafoane_an()`. Modulul de urmărire a obligațiilor fiscale tratează însă explicit D212 ca fiind **rutată separat** de calendarul general de obligații pe care îl monitorizează pentru celelalte declarații (D100, D300, D112 etc.) — termenul de 25 mai nu apare în tabloul unic de scadențe urmărite automat de aplicație pentru restul declarațiilor. Calculul sumelor e automatizat; urmărirea scadenței de 25 mai (și a termenelor declarative suplimentare din cursul anului) rămâne, la acest moment, în afara acestui tablou unificat.
+La data acestui ghid, iConta.eu calculează CAS și CASS pentru declarația unică prin aplicație („calculul CAS (Declarații)”, „calculul CASS (Declarații)”, „calculul D212 (Declarații)”), cu plafoanele anuale aduse din „plafoanele anului”. Modulul de urmărire a obligațiilor fiscale tratează însă explicit D212 ca fiind **rutată separat** de calendarul general de obligații pe care îl monitorizează pentru celelalte declarații (D100, D300, D112 etc.) — termenul de 25 mai nu apare în tabloul unic de scadențe urmărite automat de aplicație pentru restul declarațiilor. Calculul sumelor e automatizat; urmărirea scadenței de 25 mai (și a termenelor declarative suplimentare din cursul anului) rămâne, la acest moment, în afara acestui tablou unificat.
 
 [iConta.eu](/)

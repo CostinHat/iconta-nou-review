@@ -2,7 +2,7 @@
 title: "Comisioanele procesatorului de plăți la WooCommerce: cum se înregistrează?"
 description: "Comisionul reținut de un procesator de plăți (Stripe, PayU, Netopia etc.) e o cheltuială deductibilă separată de vânzare — și un subiect pe care conectorul WooCommerce al iConta.eu nu-l atinge automat."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Când un client plătește online printr-un procesator de plăți (Stripe, PayU,
 
 ## Ce face iConta.eu
 
-Conectorul WooCommerce al iConta.eu citește exclusiv liniile de produse ale unei comenzi (`line_items`) pentru a genera factura de vânzare — **nu citește și nu atinge niciodată informații despre comisioane sau taxe de procesare a plății** (verificat exhaustiv în codul conectorului: niciun apel către datele de comisioane ale comenzii). Așadar, nu există o funcție dedicată acestui subiect: comisionul procesatorului de plăți trebuie introdus manual în contabilitate, ca orice altă cheltuială de servicii bancare/financiare, pe baza extrasului de cont sau a documentului emis de procesator, separat de factura de vânzare generată automat din comandă.
+Conectorul WooCommerce al iConta.eu citește exclusiv liniile de produse ale unei comenzi („liniile comenzii”) pentru a genera factura de vânzare — **nu citește și nu atinge niciodată informații despre comisioane sau taxe de procesare a plății** (verificat exhaustiv în codul conectorului: niciun apel către datele de comisioane ale comenzii). Așadar, nu există o funcție dedicată acestui subiect: comisionul procesatorului de plăți trebuie introdus manual în contabilitate, ca orice altă cheltuială de servicii bancare/financiare, pe baza extrasului de cont sau a documentului emis de procesator, separat de factura de vânzare generată automat din comandă.
 
 [iConta.eu](/)

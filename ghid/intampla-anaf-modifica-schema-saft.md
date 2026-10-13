@@ -2,7 +2,7 @@
 title: "Ce se întâmplă dacă ANAF modifică schema SAF-T?"
 description: "Cum sunt reglementate modificările aduse structurii Declarației D406 (SAF-T) și ce înseamnă asta pentru firmele care generează fișierul de raportare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Structura fișierului standard de control fiscal (SAF-T), raportat prin Declara�
 
 ## Ce face iConta.eu
 
-Generatorul D406 din iConta.eu (`d406.py`) este construit direct din schema XSD oficială descărcată de la ANAF, cu referințe explicite, datate, la sursa folosită (de exemplu la nomenclatoare și structuri preluate din fișierul oficial `d406_schema_anaf.xlsx`, cu mențiunea versiunii aplicabile). Aceasta înseamnă că, atunci când ANAF publică o schemă nouă, codul generatorului trebuie actualizat manual pentru a reflecta noua structură — aplicația nu se „auto-actualizează" la o schemă nouă fără o intervenție de dezvoltare, dar urmărește explicit sursa oficială ca reper, exact pentru a evita generarea unor fișiere pe o structură depășită.
+Generatorul D406 din iConta.eu este construit direct din schema XSD oficială descărcată de la ANAF, cu referințe explicite, datate, la sursa folosită (de exemplu la nomenclatoare și structuri preluate din fișierul oficial schema SAF-T (D406) publicată de ANAF, cu mențiunea versiunii aplicabile). Aceasta înseamnă că, atunci când ANAF publică o schemă nouă, codul generatorului trebuie actualizat manual pentru a reflecta noua structură — aplicația nu se „auto-actualizează" la o schemă nouă fără o intervenție de dezvoltare, dar urmărește explicit sursa oficială ca reper, exact pentru a evita generarea unor fișiere pe o structură depășită.
 
 [iConta.eu](/)

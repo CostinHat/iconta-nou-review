@@ -2,7 +2,7 @@
 title: "Am omis ajustarea pentru clientul insolvabil"
 description: "Ajustarea de 100% pentru un client aflat în faliment declarat sau insolvență nu are prag de vechime — se poate constitui imediat ce procedura e declarată, cu condiția ca creanța să nu fie garantată sau la o persoană afiliată."
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Dacă un client a intrat în faliment declarat sau insolvență și ajustarea pe
 
 ## Ce face iConta.eu
 
-Funcția `deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat=True)` din aplicație întoarce direct 100% (cu condiția negarantării și neafilierii) și generează nota `6814=491`. Aplicația nu detectează singură intrarea unui client în insolvență — introducerea corectă a stării debitorului (`faliment_declarat`) rămâne o verificare a contabilului, pe baza hotărârii judecătorești.
+Funcția „deductibilitatea creanței (Operațiuni speciale)” din aplicație întoarce direct 100% (cu condiția negarantării și neafilierii) și generează nota `6814=491`. Aplicația nu detectează singură intrarea unui client în insolvență — introducerea corectă a stării debitorului („faliment declarat”) rămâne o verificare a contabilului, pe baza hotărârii judecătorești.
 
 [iConta.eu](/)

@@ -48,8 +48,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 - fir: **Comanda Costin 13.10.2026 (răspunsul la §6 al raportului C14-C15-237-238, verbatim în DECIZII)** — două loturi separate, fiecare
   cu poarta lui; R4 BLOCAT; ghiduri noi NEPUBLICATE până la decizia lui Costin.
-  - ultim: L0, L1 (+ 242) în commitul lotului 1 (SHA-ul în raport)
-  - urmator: L2 (lotul /ghid/). STARE = IN LUCRU
+  - ultim: L0, L1 (+ 242) `13856f1f`; L2 (/ghid/ a–e + C17, C18) în commitul lotului 2 (SHA-ul în raport)
+  - urmator: raportul punctual + ZIP; apoi decizia lui Costin (comasarea grupurilor, proza internă, cele 73 fără temei). STARE = BLOCAT:
+    decizia lui Costin (comanda: „Oprește-te și raportează”)
   - pasi:
     L0. DECIZII (comanda verbatim), TESTE (acest fir).
     L1. Lotul 1 — varianta (a): `core/motor.py` (închiderea 6/7 în 121 și regularizarea TVA 4426/4427 -> 4423/4424, din soldurile la

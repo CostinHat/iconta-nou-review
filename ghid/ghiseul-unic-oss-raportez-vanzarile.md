@@ -2,7 +2,7 @@
 title: "Ghișeul unic OSS: cum raportez vânzările intra-UE"
 description: "Regimul special OSS permite declararea și plata centralizată, din România, a TVA-ului datorat pentru vânzările la distanță și serviciile B2C către alte state membre UE."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Mecanismul, pe scurt:
 
 ## Ce face iConta.eu
 
-La verificarea codului sursă, iConta.eu are un modul dedicat (`d398.py`) care generează și validează declarația D398 — „Declarație specială de TVA pentru regimurile speciale UE/non-UE/import (OSS)" — acoperind atât regimul UE de la art. 315, cât și regimul non-UE (art. 314) și regimul de import/IOSS (art. 315^2). Declarația este însă **manuală**: aplicația nu ține evidența automată a operațiunilor OSS pe stat de consum și cotă străină din facturile emise, așa că toate sumele (TVA defalcat pe state membre, cotele aplicate) trebuie introduse de utilizator, nu sunt deduse automat din registrele contabile ale firmei. Înregistrarea inițială în regimul OSS rămâne, de asemenea, în afara aplicației.
+La verificarea codului sursă, iConta.eu are un modul dedicat care generează și validează declarația D398 — „Declarație specială de TVA pentru regimurile speciale UE/non-UE/import (OSS)" — acoperind atât regimul UE de la art. 315, cât și regimul non-UE (art. 314) și regimul de import/IOSS (art. 315^2). Declarația este însă **manuală**: aplicația nu ține evidența automată a operațiunilor OSS pe stat de consum și cotă străină din facturile emise, așa că toate sumele (TVA defalcat pe state membre, cotele aplicate) trebuie introduse de utilizator, nu sunt deduse automat din registrele contabile ale firmei. Înregistrarea inițială în regimul OSS rămâne, de asemenea, în afara aplicației.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum ține gestiunea o firmă micro cu amănuntul?
 description: Regimul fiscal (micro sau profit) nu schimbă regulile de gestiune a mărfurilor — metoda global-valorică se aplică identic, indiferent de impozitul pe care îl plătește firma; singura diferență e la calculul impozitului, nu la organizarea stocurilor.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Obligațiile de evidență a stocurilor (recepție, gestiune, descărcare lunar�
 
 ## Ce face iConta.eu
 
-Motorul de gestiune global-valorică nu are niciun parametru sau ramură de cod legată de regimul de impozitare al firmei (micro vs. profit) — funcțiile `nir_gv`, `coeficient_k` și `descarcare_gv` calculează identic, indiferent dacă tenantul e configurat ca plătitor de impozit micro sau de impozit pe profit. Impozitul propriu-zis (D101 pentru profit, sau declarația specifică micro) se calculează separat, din alte module, fără nicio legătură cu motorul de stocuri.
+Motorul de gestiune global-valorică nu are niciun parametru sau ramură de cod legată de regimul de impozitare al firmei (micro vs. profit) — funcțiile „NIR global-valoric (Stocuri)”, „coeficientul K (Stocuri, descărcarea global-valorică)” și „descărcarea global-valorică (Stocuri)” calculează identic, indiferent dacă tenantul e configurat ca plătitor de impozit micro sau de impozit pe profit. Impozitul propriu-zis (D101 pentru profit, sau declarația specifică micro) se calculează separat, din alte module, fără nicio legătură cu motorul de stocuri.
 
 [iConta.eu](/)

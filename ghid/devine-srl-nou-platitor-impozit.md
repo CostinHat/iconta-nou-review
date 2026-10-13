@@ -2,7 +2,7 @@
 title: "Când devine un SRL nou plătitor de impozit pe profit?"
 description: "Condițiile cumulative din Codul fiscal pentru statutul de microîntreprindere în 2026 și momentul exact în care un SRL nou-înființat trece la impozit pe profit."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce înseamnă asta pentru un SRL nou:
 
 ## Ce face iConta.eu
 
-Regimul fiscal (micro sau profit) e un **câmp ales manual** în ecranul de configurare a firmei din iConta.eu — aplicația nu urmărește automat plafonul de 100.000 euro, numărul de salariați sau apartenența la un grup de firme legate, ca să recomande sau să forțeze schimbarea regimului. Câmpul `regim_fiscal` din profilul firmei determină doar cum se calculează obligația D100 (cod 121 pe venituri, pentru micro, respectiv cod 103 pe profit, pentru regimul de profit) — D100 rămâne declarația lunară/trimestrială pentru ambele regimuri, iar D101 (declarația anuală privind impozitul pe profit, aplicația) devine relevantă suplimentar doar pentru firmele pe profit. Generatorul nu blochează efectiv generarea unei declarații „nepotrivite" cu regimul setat — verificarea condițiilor de încadrare din art. 47 și coerența dintre regimul real al firmei și declarațiile generate rămân, la acest moment, în sarcina contabilului.
+Regimul fiscal (micro sau profit) e un **câmp ales manual** în ecranul de configurare a firmei din iConta.eu — aplicația nu urmărește automat plafonul de 100.000 euro, numărul de salariați sau apartenența la un grup de firme legate, ca să recomande sau să forțeze schimbarea regimului. Câmpul „regimul fiscal (Date firmă)” din profilul firmei determină doar cum se calculează obligația D100 (cod 121 pe venituri, pentru micro, respectiv cod 103 pe profit, pentru regimul de profit) — D100 rămâne declarația lunară/trimestrială pentru ambele regimuri, iar D101 (declarația anuală privind impozitul pe profit, aplicația) devine relevantă suplimentar doar pentru firmele pe profit. Generatorul nu blochează efectiv generarea unei declarații „nepotrivite" cu regimul setat — verificarea condițiilor de încadrare din art. 47 și coerența dintre regimul real al firmei și declarațiile generate rămân, la acest moment, în sarcina contabilului.
 
 [iConta.eu](/)

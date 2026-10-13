@@ -2,7 +2,7 @@
 title: "Cum repar erorile de validare din D390?"
 description: "Ghid practic pentru identificarea și corectarea celor mai frecvente erori de validare la depunerea declarației D390 (VIES) în iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,11 +13,11 @@ Declarația recapitulativă D390 (VIES) e supusă unor reguli stricte, atât leg
 ## Temeiul legal
 
 ::: ghid-temei
-„Orice persoană impozabilă înregistrată în scopuri de TVA conform art. 316 sau 317 trebuie să întocmească și să depună la organele fiscale competente o declarație recapitulativă…” — Codul fiscal (Legea 227/2015), art. 325 alin. (1) (`cod_fiscal_227_2015_consolidat.txt:22103`)
+„Orice persoană impozabilă înregistrată în scopuri de TVA conform art. 316 sau 317 trebuie să întocmească și să depună la organele fiscale competente o declarație recapitulativă…” — Codul fiscal (Legea 227/2015), art. 325 alin. (1) (Codul fiscal (Legea 227/2015), forma consolidată)
 
-„Sunt, de asemenea, scutite de taxă următoarele: a) livrările intracomunitare de bunuri către o persoană impozabilă... care îi comunică furnizorului un cod valabil de înregistrare în scopuri de TVA, atribuit de autoritățile fiscale din alt stat membru…” — Codul fiscal, art. 294 alin. (2) lit. a) (`cod_fiscal_227_2015_consolidat.txt:18514-18525`)
+„Sunt, de asemenea, scutite de taxă următoarele: a) livrările intracomunitare de bunuri către o persoană impozabilă... care îi comunică furnizorului un cod valabil de înregistrare în scopuri de TVA, atribuit de autoritățile fiscale din alt stat membru…” — Codul fiscal, art. 294 alin. (2) lit. a) (Codul fiscal (Legea 227/2015), forma consolidată-18525`)
 
-„Scutirea prevăzută la alin. (2) lit. a) nu se aplică în cazul în care furnizorul nu a respectat obligația prevăzută la art. 325 alin. (1) de a depune o declarație recapitulativă sau declarația recapitulativă depusă de acesta nu conține informațiile corecte…” — Codul fiscal, art. 294 alin. (2^1) (`cod_fiscal_227_2015_consolidat.txt:18549-18552`)
+„Scutirea prevăzută la alin. (2) lit. a) nu se aplică în cazul în care furnizorul nu a respectat obligația prevăzută la art. 325 alin. (1) de a depune o declarație recapitulativă sau declarația recapitulativă depusă de acesta nu conține informațiile corecte…” — Codul fiscal, art. 294 alin. (2^1) (Codul fiscal (Legea 227/2015), forma consolidată-18552`)
 :::
 
 Aceste prevederi arată de ce validarea D390 nu se oprește la formatul XML: o declarație depusă greșit sau incomplet poate anula chiar scutirea de TVA a livrării intracomunitare pe care o raportează.

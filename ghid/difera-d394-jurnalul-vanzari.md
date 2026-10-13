@@ -2,7 +2,7 @@
 title: "De ce diferă D394 de jurnalul de vânzări?"
 description: "D394 nu e un rezumat al jurnalului de vânzări: conține doar operațiunile taxabile în România, raportabile B2B conform OPANAF 2194/2025, în timp ce jurnalul de vânzări cuprinde toate vânzările firmei."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,7 +35,7 @@ Principalele surse de diferență între jurnalul de vânzări (evidența comple
 
 ## Ce face iConta.eu
 
-Generatorul D394 citește facturile din aceeași tabelă unică (`facturi` + `factura_linii`) folosită și pentru evidența contabilă a firmei, cu filtre proprii de tip document (exclude proforme/avize) și de status (exclude ciorne, facturi anulate/stornate). Diferențele față de jurnalul de vânzări complet apar tocmai din aceste filtre și din regulile de agregare specifice D394 descrise mai sus, nu dintr-o eroare de generare.
+Generatorul D394 citește facturile din aceeași tabelă unică (`facturi` + „liniile facturii”) folosită și pentru evidența contabilă a firmei, cu filtre proprii de tip document (exclude proforme/avize) și de status (exclude ciorne, facturi anulate/stornate). Diferențele față de jurnalul de vânzări complet apar tocmai din aceste filtre și din regulile de agregare specifice D394 descrise mai sus, nu dintr-o eroare de generare.
 
 Aplicația are o a doua cale de calcul, independentă, care recalculează totalurile pe cotă direct din liniile brute ale facturilor și oprește generarea dacă diferă de rezultatul generatorului principal — dar acest gard confirmă coerența internă a D394, nu o compară cu jurnalul de vânzări în ansamblu. **iConta.eu nu are o funcție dedicată care să compare automat D394 cu jurnalul de vânzări** — o eventuală divergență trebuie interpretată manual, pe baza regulilor de scop explicate mai sus.
 

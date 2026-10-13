@@ -2,7 +2,7 @@
 title: "Ce fac dacă D101 nu corespunde cu balanța?"
 description: "Descrie mecanismele de verificare confirmate în cod și cea mai frecventă cauză de neconcordanță."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -12,7 +12,7 @@ poarta: v1
 
 ::: ghid-temei
 CF art.25 alin.(4) lit.a): cheltuiala cu impozitul pe profit (cont contabil 691) este nedeductibilă și trebuie adăugată înapoi la baza impozabilă.
-— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F027.
+— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), documentația aplicației.
 :::
 
 iConta.eu citește datele pentru D101 direct din profilul firmei și din balanță, cu separare exploatare/financiar și rulează o reconciliere independentă la generare. Cea mai documentată cauză de neconcordanță este omiterea add-back-ului pentru cheltuiala cu impozitul pe profit (cont 691), nedeductibilă conform art.25 alin.(4) lit.a).

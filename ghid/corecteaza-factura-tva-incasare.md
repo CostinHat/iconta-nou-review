@@ -2,7 +2,7 @@
 title: "Cum se corectează o factură cu TVA la încasare"
 description: "Ce verifică aplicația la introducerea unei operațiuni de TVA la încasare și cum se corectează erorile de cotă sau de dată."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Când o operațiune de TVA la încasare e respinsă sau are cota greșită, cauz
 ## Temeiul legal
 
 ::: ghid-temei
-Art. 291 alin. (5) Cod fiscal: „În cazul operațiunilor supuse sistemului TVA la încasare, cota aplicabilă este cea în vigoare la data la care intervine faptul generator, cu excepția situațiilor în care este emisă o factură sau este încasat un avans, înainte de data livrării/prestării, pentru care se aplică cota în vigoare la data la care a fost emisă factura ori la data la care a fost încasat avansul." (`cod_fiscal_227_2015_consolidat.txt`)
+Art. 291 alin. (5) Cod fiscal: „În cazul operațiunilor supuse sistemului TVA la încasare, cota aplicabilă este cea în vigoare la data la care intervine faptul generator, cu excepția situațiilor în care este emisă o factură sau este încasat un avans, înainte de data livrării/prestării, pentru care se aplică cota în vigoare la data la care a fost emisă factura ori la data la care a fost încasat avansul." (Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Legea distinge două situații pentru cota aplicabilă: regula generală (cota de la faptul generator) și excepția (cota de la data facturii sau a avansului, dacă acestea au fost emise/încasate înainte de livrare). Aplicarea greșită a acestei distincții e cea mai frecventă sursă de eroare de cotă într-o operațiune de TVA la încasare.
@@ -31,7 +31,7 @@ O „corecție" a facturii, în majoritatea cazurilor, înseamnă completarea sa
 
 ## Ce face iConta.eu
 
-Ecranul „TVA la încasare (art. 282)" (rută `nota-tva-incasare`, categorie „TVA regimuri speciale") cere explicit: data operațiunii, sensul (încasare/plată), suma încasată cu TVA, data faptului generator, ramura art. 291 alin. (5) și, condiționat, data facturii/avansului. Textul de ajutor din ecran citează direct legea: „Cota de TVA e cea în vigoare la data livrării, nu la data încasării (art. 291 alin. 5 Cod fiscal)."
+Ecranul „TVA la încasare (art. 282)" (rută „nota TVA la încasare (Operațiuni speciale)”, categorie „TVA regimuri speciale") cere explicit: data operațiunii, sensul (încasare/plată), suma încasată cu TVA, data faptului generator, ramura art. 291 alin. (5) și, condiționat, data facturii/avansului. Textul de ajutor din ecran citează direct legea: „Cota de TVA e cea în vigoare la data livrării, nu la data încasării (art. 291 alin. 5 Cod fiscal)."
 
 Aplicația **nu deduce automat** care document a fost emis primul — este o decizie de produs asumată explicit, pentru că o deducere automată „ar produce o cifră validă și falsă". Contabilul trebuie să aleagă manual ramura corectă; dacă alegerea sau datele sunt incomplete ori contradictorii, aplicația respinge operațiunea în loc să calculeze o cotă potențial greșită.
 

@@ -2,7 +2,7 @@
 title: "Cum tratez mijloacele fixe neînregistrate descoperite la inventar"
 description: "Ce cere norma pentru evaluarea unui mijloc fix descoperit în plus la inventariere și ce date obligatorii cere iConta.eu pentru a-l trece corect în evidență."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Un mijloc fix descoperit la inventariere trebuie introdus și în registrul de m
 
 ## Ce face iConta.eu
 
-Pentru operația "Plus mijloc fix" din ecranul "Inventariere anuală", iConta.eu cere obligatoriu durata normală de funcționare (`dnf_luni`) și data punerii în funcțiune, și refuză (cu eroare) metoda de amortizare care nu e permisă pentru categoria activului declarată. Mijlocul fix e apoi normalizat și adăugat efectiv în registrul de mijloace fixe — nu doar înregistrat ca notă contabilă — folosind contul 4754 pentru plusul constatat. Valoarea justă la care se înregistrează bunul rămâne, ca și la stocuri, cea introdusă de contabil — aplicația nu o calculează automat.
+Pentru operația "Plus mijloc fix" din ecranul "Inventariere anuală", iConta.eu cere obligatoriu durata normală de funcționare („durata normală de funcționare (Mijloace fixe)”) și data punerii în funcțiune, și refuză (cu eroare) metoda de amortizare care nu e permisă pentru categoria activului declarată. Mijlocul fix e apoi normalizat și adăugat efectiv în registrul de mijloace fixe — nu doar înregistrat ca notă contabilă — folosind contul 4754 pentru plusul constatat. Valoarea justă la care se înregistrează bunul rămâne, ca și la stocuri, cea introdusă de contabil — aplicația nu o calculează automat.
 
 [iConta.eu](/)

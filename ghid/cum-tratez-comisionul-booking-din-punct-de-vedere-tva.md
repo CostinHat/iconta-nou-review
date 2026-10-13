@@ -2,7 +2,7 @@
 title: Cum tratez comisionul Booking din punct de vedere TVA?
 description: Comisionul reținut de Booking.com B.V. (Olanda) este o achiziție de serviciu intracomunitar de la un furnizor stabilit în UE și se declară, prin taxare inversă, în Secțiunea 4.1 a D301.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -44,7 +44,7 @@ Suma se declară în Secțiunea 4.1 a D301, pentru luna exigibilității taxei, 
 
 ## Ce face iConta.eu
 
-Pentru operațiunile de Secțiunea 4.1, aplicația calculează automat baza de impozitare din valoarea în valută și cursul introdus, cu rotunjire aritmetică (`ROUND_HALF_UP`), aplică cota validă pentru perioadă și face rollup-ul cerut de instrucțiunile OPANAF 592/2016 în totalul Secțiunii 4. Generarea declarației este refuzată dacă lipsește cursul valutar.
+Pentru operațiunile de Secțiunea 4.1, aplicația calculează automat baza de impozitare din valoarea în valută și cursul introdus, cu rotunjire aritmetică („rotunjirea aritmetică (jumătatea în sus)”), aplică cota validă pentru perioadă și face rollup-ul cerut de instrucțiunile OPANAF 592/2016 în totalul Secțiunii 4. Generarea declarației este refuzată dacă lipsește cursul valutar.
 
 Aplicația nu validează automat că furnizorul introdus (Booking.com B.V.) este efectiv stabilit în UE — câmpul de țară al partenerului este opțional și liber, regula fiind confirmată doar prin instrucțiunile OPANAF 592/2016, nu printr-o verificare automată în cod. Încadrarea corectă a comisionului Booking în Secțiunea 4.1 (și nu 4) rămâne, astfel, responsabilitatea contabilului.
 

@@ -2,7 +2,7 @@
 title: "Cum declar dividendele virate pe un cont de trezorerie"
 description: "Regulile de reținere, declarare și plată a impozitului pe dividende atunci când sumele sunt virate prin bancă (conturi de trezorerie), valabile pentru 2026."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Câteva repere pentru declarare, indiferent de contul prin care circulă banii:
 
 ## Ce face iConta.eu
 
-Da — iConta.eu are un modul dedicat pentru acest calcul (`dividende_curs.py`), care atribuie plățile de dividende pe distribuiri, în ordine cronologică (FIFO), astfel încât impozitul să fie aplicat cu cota valabilă la **data distribuirii** fiecărei tranșe, nu cu cota de la data plății. Motorul e construit explicit pe baza art. 97 alin. (7) din Codul fiscal și pe tranziția de cotă adusă de Legea nr. 141/2025 (10% pentru distribuirile din 2025, 16% pentru cele din 2026), fiind folosit atât la generarea, cât și la reconcilierea declarației D205.
+Da — iConta.eu are un modul dedicat pentru acest calcul, care atribuie plățile de dividende pe distribuiri, în ordine cronologică (FIFO), astfel încât impozitul să fie aplicat cu cota valabilă la **data distribuirii** fiecărei tranșe, nu cu cota de la data plății. Motorul e construit explicit pe baza art. 97 alin. (7) din Codul fiscal și pe tranziția de cotă adusă de Legea nr. 141/2025 (10% pentru distribuirile din 2025, 16% pentru cele din 2026), fiind folosit atât la generarea, cât și la reconcilierea declarației D205.
 
 [iConta.eu](/)

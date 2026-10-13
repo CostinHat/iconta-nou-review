@@ -2,7 +2,7 @@
 title: Validarea VIES pentru partenerii intracomunitari
 description: Codul de TVA al unui partener dintr-un alt stat membru se verifică în VIES, sistemul oficial al Comisiei Europene — nu în registrul ANAF de CUI-uri — pentru că e singura sursă care confirmă dacă acel cod e valid pentru operațiuni intracomunitare.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Un cod de TVA poate fi perfect valid pentru operațiuni interne în statul lui d
 ## Temeiul legal
 
 ::: ghid-temei
-„Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (CF art. 294 alin. 2 lit. a); simetric, la serviciile B2B intracomunitare, „client non-RO + cod valid VIES → neimpozabil în România, se declară D390 (S); fără cod valid → B2C, se facturează cu TVA românesc” (CF art. 278 alin. 2-3) — verificat în dosarul F050, sursă `cod_fiscal_227_2015_consolidat.txt` L18397+ și L17303+.
+„Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (CF art. 294 alin. 2 lit. a); simetric, la serviciile B2B intracomunitare, „client non-RO + cod valid VIES → neimpozabil în România, se declară D390 (S); fără cod valid → B2C, se facturează cu TVA românesc” (CF art. 278 alin. 2-3) —, sursă Codul fiscal (Legea 227/2015), forma consolidată L18397+ și L17303+.
 :::
 
 Codul de TVA valid e, în ambele cazuri — livrare de bunuri sau prestare de servicii — o condiție de fond a tratamentului fiscal favorabil (scutire, respectiv neimpozabilitate în România). VIES e mecanismul prin care se confirmă acea validitate.

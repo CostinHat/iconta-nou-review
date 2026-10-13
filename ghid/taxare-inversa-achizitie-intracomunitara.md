@@ -2,7 +2,7 @@
 title: Taxarea inversă la achiziția intracomunitară de bunuri
 description: La o achiziție intracomunitară de bunuri, taxa e datorată de cumpărător (art. 308 alin. (1) Cod fiscal), calculată ca bază × cotă și înregistrată prin 4426 = 4427, conform pct. 109 alin. (1) din normele HG 1/2016.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -49,6 +49,6 @@ Nota contabilă: `4426 = 4427` cu **892,50 lei**. Suma apare simultan la deducer
 
 ## Ce face iConta.eu
 
-Calculul taxei aplică formula `TVA = bază × cotă / 100`, cu rotunjire aritmetică (`ROUND_HALF_UP`) la 2 zecimale, nu rotunjire bancară. Cota nu are valoare implicită — trebuie transmisă explicit la fiecare calcul, exact pentru ca o cotă înghețată în cod să nu producă sume greșite tăcut la o schimbare legislativă. Baza de calcul trebuie să fie strict pozitivă.
+Calculul taxei aplică formula `TVA = bază × cotă / 100`, cu rotunjire aritmetică („rotunjirea aritmetică (jumătatea în sus)”) la 2 zecimale, nu rotunjire bancară. Cota nu are valoare implicită — trebuie transmisă explicit la fiecare calcul, exact pentru ca o cotă înghețată în cod să nu producă sume greșite tăcut la o schimbare legislativă. Baza de calcul trebuie să fie strict pozitivă.
 
 [iConta.eu](/)

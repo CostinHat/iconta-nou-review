@@ -2,7 +2,7 @@
 title: "Cum corectezi contabil o achiziție care trebuia înregistrată ca mijloc fix?"
 description: "Procedura corectă de corectare a unei erori contabile atunci când o achiziție a fost trecută greșit pe cheltuieli în loc de imobilizări corporale."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Dacă o achiziție care depășea pragul legal de încadrare ca mijloc fix a fos
 
 ## Ce face iConta.eu
 
-Din verificarea codului, iConta.eu menține **o singură sursă canonică pentru pragul valoric de încadrare ca mijloc fix** (modulul `obiecte_inventar.py`), astfel încât la introducerea unei noi achiziții aplicația poate semnala corect dacă suma depășește pragul legal în vigoare la data respectivă — reducând riscul exact al erorii descrise mai sus, pentru achizițiile viitoare. Pentru corectarea unei erori deja produse în trecut (o achiziție anterioară deja înregistrată greșit pe cheltuieli), aplicația nu are un flux dedicat de „corectare retroactivă" — nota contabilă de corecție și eventuala declarație rectificativă rămân operațiuni manuale ale contabilului.
+Din verificarea codului, iConta.eu menține **o singură sursă canonică pentru pragul valoric de încadrare ca mijloc fix** (modulul aplicația), astfel încât la introducerea unei noi achiziții aplicația poate semnala corect dacă suma depășește pragul legal în vigoare la data respectivă — reducând riscul exact al erorii descrise mai sus, pentru achizițiile viitoare. Pentru corectarea unei erori deja produse în trecut (o achiziție anterioară deja înregistrată greșit pe cheltuieli), aplicația nu are un flux dedicat de „corectare retroactivă" — nota contabilă de corecție și eventuala declarație rectificativă rămân operațiuni manuale ale contabilului.
 
 [iConta.eu](/)

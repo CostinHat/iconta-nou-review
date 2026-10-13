@@ -2,7 +2,7 @@
 title: "Cum verific codurile TVA ale partenerilor înainte de depunerea D390?"
 description: "De ce verificarea VIES (nu registrul ANAF de CUI-uri) este obligatorie pentru fiecare partener intracomunitar înainte de a depune D390."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,9 +13,9 @@ Orice operațiune intracomunitară — achiziție sau livrare de bunuri, prestar
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 294 alin. (2) lit. a): „Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (sursă: `intracomunitar.py`, docstring)
+CF art. 294 alin. (2) lit. a): „Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (sursă: aplicația, docstring)
 
-CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L17303-17420)
+CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 VIES (registrul de schimb de informații privind TVA la nivel UE) e sursa oficială de verificare — nu un registru local de CUI-uri, nu o simplă declarație a partenerului. Practic, verificarea unui cod de TVA presupune două etape: (1) separarea prefixului de țară de restul codului (de exemplu „DE123456789” → țara DE, numărul 123456789), cu o atenție specială pentru Grecia, al cărei prefix real în VIES este „EL”, nu „GR”; și (2) interogarea efectivă a VIES pentru acel cod, la acea dată.
@@ -32,6 +32,6 @@ Rezultatul verificării — valid/invalid, plus numele și adresa asociate codul
 
 La emiterea unei facturi cu un cod de TVA de prefix non-RO, aplicația verifică automat, live, în VIES starea codului și afișează rezultatul (valid/invalid) direct în ecranul de emitere; dacă serviciul VIES e temporar indisponibil, afișează un avertisment explicit „VIES indisponibil”, în loc să presupună tacit că e valid.
 
-Motorul intern separă mai întâi prefixul de țară de restul codului, validează prefixul contra listei celor 27 de state membre plus „XI” (Irlanda de Nord, post-Brexit) și normalizează cazuri speciale precum Grecia (GR→EL). Rezultatul verificării alimentează direct validările din formularele de achiziție (`achizitie_ic`) și vânzare (`vanzare_ic`) intracomunitară, precum și clasificarea pentru D390.
+Motorul intern separă mai întâi prefixul de țară de restul codului, validează prefixul contra listei celor 27 de state membre plus „XI” (Irlanda de Nord, post-Brexit) și normalizează cazuri speciale precum Grecia (GR→EL). Rezultatul verificării alimentează direct validările din formularele de achiziție („achiziție intracomunitară (Operațiuni)”) și vânzare („vânzare intracomunitară (Operațiuni)”) intracomunitară, precum și clasificarea pentru D390.
 
 [iConta.eu](/)

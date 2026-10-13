@@ -2,7 +2,7 @@
 title: "Cum corectez CAS declarat greșit în D212?"
 description: "O contribuție de asigurări sociale declarată greșit în D212 se corectează prin rectificativă, cu baza de calcul recalculată corect pe treptele de 12/24 salarii minime brute."
 published: 2026-09-26
-modified: 2026-10-03
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,7 +35,7 @@ Pașii pentru o corecție reală, nu doar formală:
 
 ## Ce face iConta.eu
 
-Motorul de calcul din aplicație implementează exact regula de plafonare pe trepte pentru CAS (`calculeaza_cas`): sub pragul de 12 salarii minime brute contribuția e opțională, între 12 și 24 baza e fixă la 12 salarii minime, iar peste 24 baza e plafonată la 24 de salarii minime — cu reperul de salariu minim citit din registrul de cote al aplicației pentru anul de venit corect, nu hardcodat. Calculul e disponibil prin `fisa_d212` pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți, dar numai pentru veniturile anilor 2025 și 2026.
+Motorul de calcul din aplicație implementează exact regula de plafonare pe trepte pentru CAS („calculul CAS (Declarații)”): sub pragul de 12 salarii minime brute contribuția e opțională, între 12 și 24 baza e fixă la 12 salarii minime, iar peste 24 baza e plafonată la 24 de salarii minime — cu reperul de salariu minim citit din registrul de cote al aplicației pentru anul de venit corect, nu hardcodat. Calculul e disponibil prin „fișa de calcul D212 (Declarații)” pentru contribuabilii cu evidență în Registrul-jurnal de încasări și plăți, dar numai pentru veniturile anilor 2025 și 2026.
 
 Aplicația nu depune declarația: rectificativa se generează din același formular D212, bifând „Rectificativă”, cu cifrele corecte, iar depunerea rămâne a contabilului.
 

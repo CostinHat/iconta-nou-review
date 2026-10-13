@@ -2,7 +2,7 @@
 title: "Ce document justifică împrumutul în numerar acordat firmei de asociat"
 description: "Plafonul legal pentru împrumuturile acordate în numerar de o persoană fizică unei firme și documentul care trebuie să stea la baza operațiunii."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Din text rezultă atât plafonul, cât și logica documentului justificativ:
 
 ## Ce face iConta.eu
 
-Verificat în cod: Aplicația generează notele contabile pentru împrumutul de la asociat (contul 4551) — atât la primire (5121=4551), cât și la restituire, inclusiv cu dobânda și impozitul reținut, dacă e cazul. Funcția `nota_imprumut_asociat` din aplicație presupune însă mișcarea prin cont bancar (contul 5121), nu prin casierie — aplicația **nu verifică automat plafonul de 10.000 lei/zi pentru încasările în numerar** de la asociat și nu generează documentul de casă asociat unei astfel de operațiuni; pentru un împrumut acordat efectiv în numerar, respectarea plafonului și emiterea documentului justificativ rămân în sarcina contabilului.
+Verificat în cod: Aplicația generează notele contabile pentru împrumutul de la asociat (contul 4551) — atât la primire (5121=4551), cât și la restituire, inclusiv cu dobânda și impozitul reținut, dacă e cazul. Funcția „nota împrumutului de la asociat (Operațiuni speciale)” din aplicație presupune însă mișcarea prin cont bancar (contul 5121), nu prin casierie — aplicația **nu verifică automat plafonul de 10.000 lei/zi pentru încasările în numerar** de la asociat și nu generează documentul de casă asociat unei astfel de operațiuni; pentru un împrumut acordat efectiv în numerar, respectarea plafonului și emiterea documentului justificativ rămân în sarcina contabilului.
 
 [iConta.eu](/)

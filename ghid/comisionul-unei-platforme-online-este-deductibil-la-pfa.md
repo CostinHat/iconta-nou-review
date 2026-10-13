@@ -2,7 +2,7 @@
 title: Comisionul unei platforme online este deductibil la PFA?
 description: Comisionul reținut de o platformă (marketplace, procesator de plăți, aplicație de intermediere) este deductibil prin clauza generală "alte cheltuieli efectuate în scopul realizării veniturilor", nu printr-un text care îl numește direct.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,7 +25,7 @@ Codul fiscal, art. 68 alin. (4): "a) să fie efectuate în cadrul activitățilo
 Fiindcă nu există literă de lege dedicată, documentul justificativ emis de platformă (factură de comision, raport de vânzări cu comisionul detaliat, extras de tranzacții) devine elementul-cheie care susține deducerea în fața unui control. Fără el, condiția "justificate prin documente" nu e îndeplinită și deducerea poate fi contestată.
 
 ::: ghid-exemplu
-Un PFA vinde printr-un marketplace care reține automat 12% comision din fiecare comandă. La finalul lunii, platforma emite un raport cu vânzările brute și comisionul total reținut. Suma brută a vânzărilor se înregistrează ca încasare (categoria "activitate"), iar comisionul reținut se înregistrează separat, ca plată, la categoria "cheltuiala_deductibila", cu raportul platformei ca document justificativ.
+Un PFA vinde printr-un marketplace care reține automat 12% comision din fiecare comandă. La finalul lunii, platforma emite un raport cu vânzările brute și comisionul total reținut. Suma brută a vânzărilor se înregistrează ca încasare (categoria "activitate"), iar comisionul reținut se înregistrează separat, ca plată, la categoria "cheltuială deductibilă", cu raportul platformei ca document justificativ.
 :::
 
 ## Ce se greșește în practică
@@ -37,6 +37,6 @@ Un PFA vinde printr-un marketplace care reține automat 12% comision din fiecare
 
 ## Ce face iConta.eu
 
-Aplicația nu tratează diferit, la nivel de cod, comisionul unei platforme online față de alt tip de cheltuială: orice plată introdusă cu categoria `cheltuiala_deductibila` trece prin aceeași validare (`_valideaza`) — sumă pozitivă, dată, explicație, deductibilitate marcată. Decizia de a încadra comisionul de platformă ca deductibil, pe baza documentului emis de platformă, rămâne integral a contabilului. Spre deosebire de operațiunile importate automat din extrasul bancar (`import_banca`, unde categoria e propusă implicit), comisioanele reținute direct de o platformă (fără să treacă prin extrasul bancar ca linie separată) se introduc și se justifică manual în registru.
+Aplicația nu tratează diferit, la nivel de cod, comisionul unei platforme online față de alt tip de cheltuială: orice plată introdusă cu categoria „cheltuială deductibilă” trece prin aceeași validare („validarea”) — sumă pozitivă, dată, explicație, deductibilitate marcată. Decizia de a încadra comisionul de platformă ca deductibil, pe baza documentului emis de platformă, rămâne integral a contabilului. Spre deosebire de operațiunile importate automat din extrasul bancar („importul extrasului bancar (Bancă)”, unde categoria e propusă implicit), comisioanele reținute direct de o platformă (fără să treacă prin extrasul bancar ca linie separată) se introduc și se justifică manual în registru.
 
 [iConta.eu](/)

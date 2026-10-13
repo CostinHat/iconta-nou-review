@@ -2,7 +2,7 @@
 title: Cum declar în D205 dividendele plătite parțial?
 description: D205 calculează baza impozabilă și impozitul pe dividendul efectiv plătit, nu pe cel distribuit — dacă plata s-a făcut parțial, se declară doar partea plătită, iar restul intră în declarația anului în care se plătește.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -16,7 +16,7 @@ Un dividend poate fi aprobat integral, dar plătit efectiv în tranșe — mai a
 **Structura oficială D205 (OPANAF 102/2025)**, câmpurile 7.V și 8.V: coloana „divid_D" înregistrează dividendul **distribuit**, coloana „divid_P" înregistrează dividendul **plătit** — sunt sume distincte, nu una derivată automat din cealaltă.
 :::
 
-Declarația D205 e o funcționalitate separată de decontările cu asociații (F039 alimentează doar notele contabile din care se calculează sumele) — D205 propriu-zis e generat de motorul declarativ, pe baza mișcărilor din contul 457 „Dividende de plată". Regula de calcul, confirmată direct în codul declarației: baza impozabilă și impozitul se calculează pe dividendul efectiv **plătit**, nu pe cel distribuit, pentru că impozitul pe dividende se reține la momentul plății.
+Declarația D205 e o funcționalitate separată de decontările cu asociații („Decontări asociați” alimentează doar notele contabile din care se calculează sumele) — D205 propriu-zis e generat de motorul declarativ, pe baza mișcărilor din contul 457 „Dividende de plată". Regula de calcul, confirmată direct în codul declarației: baza impozabilă și impozitul se calculează pe dividendul efectiv **plătit**, nu pe cel distribuit, pentru că impozitul pe dividende se reține la momentul plății.
 
 Dacă un dividend aprobat de 100.000 lei se plătește 60.000 lei într-un an și restul de 40.000 lei în anul următor, D205 pentru primul an declară baza și impozitul aferente celor 60.000 lei plătiți, iar D205 pentru anul următor declară restul, la momentul plății efective. Suma distribuită (divid_D) e mereu mai mare sau egală cu suma plătită (divid_P) — nu se poate plăti cumulat mai mult decât s-a distribuit.
 

@@ -2,7 +2,7 @@
 title: "Care este plafonul pentru plățile cash and carry în 2026?"
 description: "Plățile în numerar către magazinele de tipul cash and carry au un plafon zilnic dublu față de plafonul general — 10.000 lei, față de 5.000 lei pentru restul furnizorilor."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Magazinele de tipul cash and carry (comerț cu ridicata pentru profesioniști) b
 
 ## Ce face iConta.eu
 
-La data acestui ghid, modulul de casierie din iConta.eu (funcția `verifica_plafon`) verifică automat, pe zi și pe partener, plafoanele din Legea nr. 70/2015, cu un parametru explicit `cash_and_carry` care comută plafonul de încasare de la 5.000 lei (`PLAFON_INCASARE_PJ`) la 10.000 lei (`PLAFON_INCASARE_PJ_CC`) și verifică separat plafonul total de plată de 10.000 lei/zi (`PLAFON_PLATA_PJ_TOTAL`) pentru acest tip de furnizor. Aplicația emite avertismente (nu blochează operațiunea) atunci când o zi sau un partener depășește plafonul aplicabil — decizia finală, inclusiv modul de decontare a diferenței peste plafon, rămâne la utilizator.
+La data acestui ghid, modulul de casierie din iConta.eu (funcția „verificarea plafonului de numerar (Casă)”) verifică automat, pe zi și pe partener, plafoanele din Legea nr. 70/2015, cu un parametru explicit „cash and carry” care comută plafonul de încasare de la 5.000 lei („plafonul de încasare de la persoane juridice”) la 10.000 lei („plafonul de încasare cash and carry”) și verifică separat plafonul total de plată de 10.000 lei/zi („plafonul total de plăți”) pentru acest tip de furnizor. Aplicația emite avertismente (nu blochează operațiunea) atunci când o zi sau un partener depășește plafonul aplicabil — decizia finală, inclusiv modul de decontare a diferenței peste plafon, rămâne la utilizator.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Amortizarea bunurilor aduse ca aport în natură la capital"
 description: "Valoarea fiscală de la care pornește amortizarea unui mijloc fix adus ca aport în natură la capitalul social, conform Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Din definiția valorii fiscale rezultă mecanismul de amortizare pentru un aport
 
 ## Ce face iConta.eu
 
-Am verificat în aplicație (funcția `urca_valoarea`) și aplicația: aplicația reține valoarea de intrare a unui mijloc fix (`valoare`) și permite reevaluări ulterioare, dar **nu diferențiază explicit „valoarea de aport" ca sursă de proveniență** a valorii de intrare, conform art. 7 pct. 44 lit. c) din Codul fiscal — stabilirea corectă a valorii de piață la data aportului (prin evaluare) și introducerea ei ca valoare inițială rămân, la acest moment, în sarcina contabilului.
+Am verificat în aplicație (funcția „majorarea valorii (Mijloace fixe)”) și aplicația: aplicația reține valoarea de intrare a unui mijloc fix (`valoare`) și permite reevaluări ulterioare, dar **nu diferențiază explicit „valoarea de aport" ca sursă de proveniență** a valorii de intrare, conform art. 7 pct. 44 lit. c) din Codul fiscal — stabilirea corectă a valorii de piață la data aportului (prin evaluare) și introducerea ei ca valoare inițială rămân, la acest moment, în sarcina contabilului.
 
 [iConta.eu](/)

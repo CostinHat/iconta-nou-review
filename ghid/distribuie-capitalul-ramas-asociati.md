@@ -2,7 +2,7 @@
 title: "Cum se distribuie capitalul rămas între asociați"
 description: "Partajul final la lichidarea unei societăți conform Legii 31/1990 și Codului fiscal: capitalul social se restituie neimpozabil, rezervele și profiturile se impozitează cu cota de lichidare de 10%."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Ce rezultă practic pentru partajul final:
 
 ## Ce face iConta.eu
 
-Această operațiune **nu ține de funcționalitatea Decontări asociați** (dividende curente, împrumuturi, regularizări interimare) — acolo se înregistrează decontările din timpul funcționării normale a firmei. Partajul final la lichidare e acoperit de o funcționalitate separată, **Lichidare/radiere societate**, care conține exact acest calcul: funcția `partaj(capital_social, rezerve, profituri)` generează notele conform mecanismului de mai sus — `1012=456` pentru restituirea capitalului social (neimpozabilă), `1061=456`/`1171=456` pentru rezerve/profituri (câștig impozabil), `456=446` pentru impozitul de 10% calculat automat cu cota de lichidare valabilă la data operațiunii, și `456=5121` pentru plata netă către asociat.
+Această operațiune **nu ține de funcționalitatea Decontări asociați** (dividende curente, împrumuturi, regularizări interimare) — acolo se înregistrează decontările din timpul funcționării normale a firmei. Partajul final la lichidare e acoperit de o funcționalitate separată, **Lichidare/radiere societate**, care conține exact acest calcul: funcția „partajul” generează notele conform mecanismului de mai sus — `1012=456` pentru restituirea capitalului social (neimpozabilă), `1061=456`/`1171=456` pentru rezerve/profituri (câștig impozabil), `456=446` pentru impozitul de 10% calculat automat cu cota de lichidare valabilă la data operațiunii, și `456=5121` pentru plata netă către asociat.
 
 Cota de impozit e citită dintr-un registru propriu de cote (nu e hardcodată în funcția de calcul), ceea ce înseamnă că aplicația aplică automat cota corectă valabilă la data lichidării, fără să ceară contabilului să o caute separat. Rămâne responsabilitatea contabilului să stabilească exact ce parte din sumă reprezintă restituire de aport (neimpozabilă) și ce parte reprezintă rezerve/profituri (impozabile) — distincția pe care o cere legea la introducerea sumelor în calculul de partaj.
 

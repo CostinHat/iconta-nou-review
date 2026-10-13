@@ -2,7 +2,7 @@
 title: "Cum se cumulează veniturile din salarii pentru plafoane 2026"
 description: "Regula de cumulare a bazei lunare de calcul din mai multe contracte de muncă, folosită pentru a stabili dacă se aplică plafonul CAS/CASS la nivelul salariului minim în 2026."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Cum funcționează, pas cu pas:
 
 ## Ce face iConta.eu
 
-Motorul de salarizare calculează automat, pentru fiecare salariat, „suprataxarea sub salariul minim" descrisă mai sus: dacă baza de contribuții e sub salariul minim din luna respectivă, CAS și CASS se recalculează la nivelul podelei legale, proporțional cu zilele lucrate din contract. Excepția pentru cumul de contracte există în cod ca parametru dedicat (`exceptat_suprataxare`, populat din câmpul `scutit_contrib_minim` al salariatului), dar aplicarea lui rămâne **manuală**: contabilul bifează excepția pe baza declarației salariatului, fiindcă aplicația unei singure firme nu are acces la veniturile plătite de ceilalți angajatori și nu poate calcula singură cumulul real.
+Motorul de salarizare calculează automat, pentru fiecare salariat, „suprataxarea sub salariul minim" descrisă mai sus: dacă baza de contribuții e sub salariul minim din luna respectivă, CAS și CASS se recalculează la nivelul podelei legale, proporțional cu zilele lucrate din contract. Excepția pentru cumul de contracte există în cod ca parametru dedicat („exceptat de la suprataxare”, populat din câmpul „scutit de contribuția minimă (Salariați)” al salariatului), dar aplicarea lui rămâne **manuală**: contabilul bifează excepția pe baza declarației salariatului, fiindcă aplicația unei singure firme nu are acces la veniturile plătite de ceilalți angajatori și nu poate calcula singură cumulul real.
 
 [iConta.eu](/)

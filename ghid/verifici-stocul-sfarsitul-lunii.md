@@ -2,7 +2,7 @@
 title: "Cum verifici stocul la sfârșitul lunii?"
 description: "Pașii de verificare a stocului contabil la finalul lunii: reconcilierea cu documentele sursă și, la final de exercițiu, cu inventarierea faptică."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Pașii utili pentru verificarea lunară:
 
 ## Ce face iConta.eu
 
-Modulul de stocuri din iConta.eu oferă rapoarte de sold pe gestiune și articol, iar reconcilierea automată dintre facturi și mișcările de stoc e acoperită prin aplicație (funcția `intrare_din_factura`), care creează intrarea cantitativă în fișa de magazie la validarea facturii de marfă, legată de aceasta prin `factura_id`. La data acestui ghid, aplicația **nu generează automat un raport lunar de excepții** (stocuri negative, diferențe de reconciliere) fără să fie cerut explicit — verificarea lunară a stocului rămâne un pas activ pe care contabilul îl parcurge, folosind rapoartele de stoc și de reconciliere oferite de aplicație.
+Modulul de stocuri din iConta.eu oferă rapoarte de sold pe gestiune și articol, iar reconcilierea automată dintre facturi și mișcările de stoc e acoperită prin aplicație (funcția „intrarea în stoc din factură (Stocuri)”), care creează intrarea cantitativă în fișa de magazie la validarea facturii de marfă, legată de aceasta prin „factura legată”. La data acestui ghid, aplicația **nu generează automat un raport lunar de excepții** (stocuri negative, diferențe de reconciliere) fără să fie cerut explicit — verificarea lunară a stocului rămâne un pas activ pe care contabilul îl parcurge, folosind rapoartele de stoc și de reconciliere oferite de aplicație.
 
 [iConta.eu](/)

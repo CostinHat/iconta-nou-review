@@ -2,7 +2,7 @@
 title: "Ghid practic pentru casieri 2026"
 description: "Plafoanele legale de numerar aplicabile în 2026, conform Legii 70/2015 actualizată prin Legea 239/2025, esențiale pentru orice casier."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Plafoanele se aplică per **zi calendaristică** și per **relație cu parteneru
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **aplică plafoanele de numerar din Legea 70/2015, actualizată prin Legea 239/2025 (în vigoare de la 01.01.2026)**, direct în modulul de casierie — constantele `PLAFON_INCASARE_PJ`, `PLAFON_PLATA_PJ`, `PLAFON_PLATA_PJ_TOTAL` și `PLAFON_PF` reflectă exact valorile din lege, iar aplicația generează avertismente la depășirea lor, calculate cumulat pe zi, la nivel de firmă.
+La data acestui ghid, iConta.eu **aplică plafoanele de numerar din Legea 70/2015, actualizată prin Legea 239/2025 (în vigoare de la 01.01.2026)**, direct în modulul de casierie — constantele „plafonul de încasare de la persoane juridice”, „plafonul de plată către persoane juridice”, „plafonul total de plăți” și „plafonul pentru persoane fizice” reflectă exact valorile din lege, iar aplicația generează avertismente la depășirea lor, calculate cumulat pe zi, la nivel de firmă.
 
 [iConta.eu](/)

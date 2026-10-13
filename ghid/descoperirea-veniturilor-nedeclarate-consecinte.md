@@ -2,7 +2,7 @@
 title: "Descoperirea veniturilor nedeclarate: consecințe"
 description: "Ce se întâmplă fiscal și financiar când organul fiscal descoperă venituri nedeclarate: estimarea bazei de impozitare, dobânzi și penalitatea de nedeclarare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Când organul fiscal constată, în cadrul unui control sau al unei verificări 
 
 ## Ce face iConta.eu
 
-iConta.eu nu descoperă și nu raportează venituri nedeclarate — nu e rolul unei aplicații de contabilitate. Aplicația are însă un modul de **alerte de control fiscal** (`control_fiscal_api.py`, `alerte_control_fiscal.py`) care compară obligațiile declarative datorate cu cele efectiv depuse și semnalează firmei nepotrivirile (declarații lipsă, discrepanțe cu datele ANAF) înainte ca acestea să devină un motiv de inspecție. Scopul e prevenția — reducerea riscului de a ajunge exact în situația descrisă mai sus — nu constatarea propriu-zisă a veniturilor nedeclarate, care rămâne atribuția exclusivă a organului fiscal.
+iConta.eu nu descoperă și nu raportează venituri nedeclarate — nu e rolul unei aplicații de contabilitate. Aplicația are însă un modul de **alerte de control fiscal** (aplicația) care compară obligațiile declarative datorate cu cele efectiv depuse și semnalează firmei nepotrivirile (declarații lipsă, discrepanțe cu datele ANAF) înainte ca acestea să devină un motiv de inspecție. Scopul e prevenția — reducerea riscului de a ajunge exact în situația descrisă mai sus — nu constatarea propriu-zisă a veniturilor nedeclarate, care rămâne atribuția exclusivă a organului fiscal.
 
 [iConta.eu](/)

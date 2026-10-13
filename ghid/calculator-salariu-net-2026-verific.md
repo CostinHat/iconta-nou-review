@@ -2,7 +2,7 @@
 title: "Calculator salariu net 2026: cum verific reținerile"
 description: "Cele trei rețineri legale din salariul brut — CAS 25%, CASS 10%, impozit 10% — și cum le calculează și le afișează iConta.eu pe fluturașul de salariu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Ordinea de calcul, exact așa cum rezultă din text:
 
 ## Ce face iConta.eu
 
-Calculul brut-net e o funcție reală, folosită curent: Aplicația (`calcul_salariu`) aplică exact cascada de mai sus — CAS 25%, CASS 10%, apoi impozitul 10% pe venitul net rămas, cu deducerea personală calculată automat din numărul de persoane aflate în întreținere. Rezultatul apare direct pe fluturașul de salariu, din ecranul Stat de plată, cu fiecare reținere afișată pe rândul ei (CAS, CASS, deduceri, impozit, salariu net), plus costul total pentru angajator (inclusiv contribuția asiguratorie pentru muncă de 2,25%, suportată separat de angajator). La fiecare reținere generată, aplicația scrie automat și nota contabilă corespunzătoare (641/421, 421/4315, 421/4316, 421/444).
+Calculul brut-net e o funcție reală, folosită curent: Aplicația („calculul salariului (Salarii)”) aplică exact cascada de mai sus — CAS 25%, CASS 10%, apoi impozitul 10% pe venitul net rămas, cu deducerea personală calculată automat din numărul de persoane aflate în întreținere. Rezultatul apare direct pe fluturașul de salariu, din ecranul Stat de plată, cu fiecare reținere afișată pe rândul ei (CAS, CASS, deduceri, impozit, salariu net), plus costul total pentru angajator (inclusiv contribuția asiguratorie pentru muncă de 2,25%, suportată separat de angajator). La fiecare reținere generată, aplicația scrie automat și nota contabilă corespunzătoare (641/421, 421/4315, 421/4316, 421/444).
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum se depune declarația 100 pentru impozitul pe profit trimestrial?
 description: D100 pentru impozitul pe profit se depune trimestrial (trimestrele I-III), până pe 25 ale lunii următoare, dar pentru firmele pe regim de profit trebuie generată manual — semaforul de obligații nu o reamintește automat.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -54,7 +54,7 @@ Pentru trimestrul IV, situația e mai puțin clară: legea (art. 41 alin. 1) și
 
 ## Ce face iConta.eu
 
-Aplicația calculează corect obligația cod 103, cu bază cumulată de la 1 ianuarie și scadență 25 a lunii următoare pentru trimestrele I-III. Totuși, aplicația adaugă D100 la lista de obligații urmărite doar pe ramura `regim == "micro"` (funcția `_adauga_d100_micro`); pe ramura `regim == "profit"` se adaugă automat numai D101 — D100 nu apare niciodată în „obligații"/„restanțe" pentru o firmă pe profit, deși motorul de calcul o suportă complet. Aceasta e o neconformitate deschisă (R95) în registrul intern al proiectului: generarea D100 pentru o firmă pe profit rămâne, pentru moment, un pas manual.
+Aplicația calculează corect obligația cod 103, cu bază cumulată de la 1 ianuarie și scadență 25 a lunii următoare pentru trimestrele I-III. Totuși, aplicația adaugă D100 la lista de obligații urmărite doar pe ramura „regim micro” (funcția „D100 micro”); pe ramura „regim profit” se adaugă automat numai D101 — D100 nu apare niciodată în „obligații"/„restanțe" pentru o firmă pe profit, deși motorul de calcul o suportă complet. Aceasta e o limitare cunoscută a aplicației: generarea D100 pentru o firmă pe profit rămâne, pentru moment, un pas manual.
 
 În plus, modulul de scadențar folosit de semafor nu are o ramură specială pentru tipul „d100" și cade pe regula generică pentru trimestrul IV, care calculează 25 ianuarie anul următor — dată diferită de cea generată efectiv în XML-ul D100 (25 iunie pentru micro, 25 decembrie pentru profit). Dacă folosiți lista de termene/scadențe din aplicație pentru trimestrul IV, verificați suplimentar data reală din declarația generată, nu doar afișajul din semafor.
 

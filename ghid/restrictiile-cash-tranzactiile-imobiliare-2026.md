@@ -2,7 +2,7 @@
 title: "Restricțiile de cash la tranzacțiile imobiliare 2026"
 description: "Legea 70/2015 nu prevede un regim special pentru vânzarea-cumpărarea de imobile — se aplică plafonul general de numerar pentru operațiuni cu persoane fizice și cu persoane juridice."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Ce înseamnă concret pentru o tranzacție imobiliară:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are o funcționalitate specifică tranzacțiilor imobiliare. Modulul general de casierie (funcția `verifica_plafon`) semnalează totuși, ca avertisment, orice încasare sau plată în numerar care depășește plafonul legal de 10.000 lei/zi/persoană (pentru persoane fizice) sau 5.000 lei/zi/persoană (pentru persoane juridice), indiferent de natura bunului tranzacționat — deci și pentru o eventuală plată în numerar aferentă unui imobil, dacă operațiunea e introdusă ca atare în aplicație.
+La data acestui ghid, iConta.eu nu are o funcționalitate specifică tranzacțiilor imobiliare. Modulul general de casierie (funcția „verificarea plafonului de numerar (Casă)”) semnalează totuși, ca avertisment, orice încasare sau plată în numerar care depășește plafonul legal de 10.000 lei/zi/persoană (pentru persoane fizice) sau 5.000 lei/zi/persoană (pentru persoane juridice), indiferent de natura bunului tranzacționat — deci și pentru o eventuală plată în numerar aferentă unui imobil, dacă operațiunea e introdusă ca atare în aplicație.
 
 [iConta.eu](/)

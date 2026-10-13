@@ -2,7 +2,7 @@
 title: "Cum declar un avans în D300?"
 description: "Ce se întâmplă cu TVA la un avans încasat sau plătit și cum ajunge exigibilitatea lui în decontul de TVA."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Un avans încasat sau plătit înainte de livrarea bunului sau prestarea servici
 
 Motorul D300 al iConta.eu tratează automat exigibilitatea avansului: o factură de avans emisă intră în decontul lunii de emitere, exact ca orice altă factură a perioadei, fără intervenție manuală din partea contabilului. Modulul de avansuri al aplicației generează notele contabile aferente (înregistrarea avansului și regularizarea lui la factura finală), dar aceste note contabile **nu produc rânduri separate în D300** — baza și TVA din factura de avans intră în decont prin mecanismul obișnuit de extragere a facturilor perioadei.
 
-Dincolo de acest mecanism automat, aplicația **nu are un rând sau un flux dedicat, separat, pentru „regularizarea unui avans"** în panoul de rânduri manuale al D300 (F251) — dacă un avans nu e capturat corect (de exemplu, a fost omis din evidență sau are o eroare de cotă descoperită ulterior), corecția intră sub regula generală de regularizare a decontului (rândul de regularizări, dacă operațiunea nu are deja o factură corectă în perioada curentă), nu sub o funcție specifică de „avans" — aceasta nu există separat în aplicație.
+Dincolo de acest mecanism automat, aplicația **nu are un rând sau un flux dedicat, separat, pentru „regularizarea unui avans"** în panoul de rânduri manuale al D300 („Rând manual D300”) — dacă un avans nu e capturat corect (de exemplu, a fost omis din evidență sau are o eroare de cotă descoperită ulterior), corecția intră sub regula generală de regularizare a decontului (rândul de regularizări, dacă operațiunea nu are deja o factură corectă în perioada curentă), nu sub o funcție specifică de „avans" — aceasta nu există separat în aplicație.
 
 [iConta.eu](/)

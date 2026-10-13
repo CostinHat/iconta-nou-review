@@ -2,7 +2,7 @@
 title: "Cum verific impozitul reținut pentru fiecare beneficiar din D205?"
 description: D205 e declarația pentru beneficiari persoane fizice rezidente — impozitul se verifică pe fiecare beneficiar din secțiunea aferentă tipului de venit. Nerezidenții nu apar deloc aici, ci pe D207.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,6 +27,6 @@ D205 raportează, pentru fiecare beneficiar rezident, câte o secțiune agregat�
 
 ## Ce face iConta.eu
 
-Generatorul D205 din iConta.eu (F029) calculează, pentru fiecare beneficiar, baza și impozitul din datele introduse, agregă pe tip de venit (secțiuni cu numărul de beneficiari, baza totală și impozitul total) și validează fiecare beneficiar pe cifra de control a CNP-ului — un beneficiar fără CNP românesc valid este respins la generare, nu apare în declarație. Dacă întrebarea privește, de fapt, un beneficiar nerezident, acesta nu se verifică în D205: se declară separat, prin ecranul dedicat D207 (F209), unde venitul, baza și impozitul se introduc manual pentru fiecare beneficiar.
+Generatorul D205 din iConta.eu („Declarația D205 și distribuirea dividendelor”) calculează, pentru fiecare beneficiar, baza și impozitul din datele introduse, agregă pe tip de venit (secțiuni cu numărul de beneficiari, baza totală și impozitul total) și validează fiecare beneficiar pe cifra de control a CNP-ului — un beneficiar fără CNP românesc valid este respins la generare, nu apare în declarație. Dacă întrebarea privește, de fapt, un beneficiar nerezident, acesta nu se verifică în D205: se declară separat, prin ecranul dedicat D207 („Declarația D207 (impozit reținut nerezidenți)”), unde venitul, baza și impozitul se introduc manual pentru fiecare beneficiar.
 
 [iConta.eu](/)

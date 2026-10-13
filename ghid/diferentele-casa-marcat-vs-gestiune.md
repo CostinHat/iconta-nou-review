@@ -2,7 +2,7 @@
 title: "Diferențele de la casa de marcat vs gestiune"
 description: "Ce obligă legea când vânzările raportate de casa de marcat nu se potrivesc cu descărcarea de gestiune, conform OMFP 2861/2009."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce înseamnă asta pentru o diferență casă de marcat–gestiune:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația conține `parseaza_raport_z()`, care citește raportul Z (XML) exportat de aparatele de marcat electronice fiscale, iar aplicația oferă `inventar()` pentru operațiunea de inventariere a gestiunii (compară soldul scriptic cu faptul numărat și propune nota contabilă de plus/minus, la CMP). Aplicația nu are însă un mecanism automat de **reconciliere** între vânzările raportate de AMEF și descărcarea de gestiune pe articole, care să semnaleze diferențele și să declanșeze inventarierea cerută de OMFP 2861/2009 — compararea celor două fluxuri și decizia de a inventaria rămân, azi, în sarcina contabilului.
+La data acestui ghid, aplicația conține „citirea raportului Z”, care citește raportul Z (XML) exportat de aparatele de marcat electronice fiscale, iar aplicația oferă „inventarierea gestiunii” pentru operațiunea de inventariere a gestiunii (compară soldul scriptic cu faptul numărat și propune nota contabilă de plus/minus, la CMP). Aplicația nu are însă un mecanism automat de **reconciliere** între vânzările raportate de AMEF și descărcarea de gestiune pe articole, care să semnaleze diferențele și să declanșeze inventarierea cerută de OMFP 2861/2009 — compararea celor două fluxuri și decizia de a inventaria rămân, azi, în sarcina contabilului.
 
 [iConta.eu](/)

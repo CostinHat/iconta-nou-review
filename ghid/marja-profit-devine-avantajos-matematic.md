@@ -2,7 +2,7 @@
 title: "La ce marjă de profit devine mai avantajos matematic impozitul micro față de profit?"
 description: "Cotele de 1% (micro) și 16% (impozit pe profit) comparate aritmetic — și de ce pragul rezultat e un reper orientativ, nu o regulă legală."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Comparația matematică, pas cu pas:
 
 Subiectul nu are nicio legătură cu funcționalitatea **Jurnal regim marjă** (raportul care grupează vânzările în regimul special de marjă TVA pentru bunuri second-hand și agenții de turism, conform art. 312/311 Cod fiscal) — „marjă" înseamnă aici altceva: marja de profit a firmei, un concept de impozit pe profit/impozit micro, nu de TVA. E o capcană de omonim: „regim de marjă" (TVA) și „marjă de profit" (impozit pe profit vs. micro) nu au nimic în comun în lege sau în cod.
 
-Verificat direct în aplicație: nu există niciun modul care să calculeze sau să compare automat impozitul micro cu impozitul pe profit pentru a recomanda un regim — căutarea explicită a arătat că aplicația **nu urmărește** plafonul de ieșire din regimul micro (nicio constantă de plafon în cod) și tratează regimul fiscal (`regim_fiscal`) strict ca pe un câmp completat manual de contabil, nu ca pe un rezultat al unui calcul intern. Comparația de mai sus e, deci, un instrument didactic de folosit înainte de a alege regimul, nu o funcție a aplicației.
+Verificat direct în aplicație: nu există niciun modul care să calculeze sau să compare automat impozitul micro cu impozitul pe profit pentru a recomanda un regim — căutarea explicită a arătat că aplicația **nu urmărește** plafonul de ieșire din regimul micro (nicio constantă de plafon în cod) și tratează regimul fiscal („regimul fiscal (Date firmă)”) strict ca pe un câmp completat manual de contabil, nu ca pe un rezultat al unui calcul intern. Comparația de mai sus e, deci, un instrument didactic de folosit înainte de a alege regimul, nu o funcție a aplicației.
 
 [iConta.eu](/)

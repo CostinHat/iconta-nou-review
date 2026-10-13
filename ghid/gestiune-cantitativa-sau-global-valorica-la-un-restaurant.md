@@ -2,7 +2,7 @@
 title: Gestiune cantitativă sau global-valorică la un restaurant?
 description: Un restaurant cu meniu numeros și marje relativ similare pe preparate se poate ține în regim global-valoric, dar evidența cantitativ-valorică pe cost mediu ponderat rămâne alternativa mai simplă dacă nu se dorește gestionarea coeficientului de repartizare și a conturilor 378/4428.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -50,7 +50,7 @@ La cantitativ-valoric (CMP), fiecare produs/materie primă are propria fișă de
 
 ## Ce face iConta.eu
 
-Cele două module sunt separate și alese explicit. La global-valoric, `nir_gv` calculează costul, adaosul și TVA la fiecare recepție, iar `descarcare_gv`/`descarca_luna` descarcă lunar costul mărfii vândute (607), adaosul (378) și TVA neexigibilă (4428) folosind coeficientul K calculat din rulaje cumulate de la 1 ianuarie. La cantitativ-valoric, fiecare articol are o fișă de magazie proprie, cu costul mediu ponderat recalculat după fiecare intrare (`fisa_magazie`), iar ieșirea se înregistrează direct 607=371 la valoarea CMP × cantitate — fără conturile 378/4428 și fără coeficient de repartizare.
+Cele două module sunt separate și alese explicit. La global-valoric, „NIR global-valoric (Stocuri)” calculează costul, adaosul și TVA la fiecare recepție, iar „descărcarea global-valorică (Stocuri)”/„descărcarea lunii (Stocuri)” descarcă lunar costul mărfii vândute (607), adaosul (378) și TVA neexigibilă (4428) folosind coeficientul K calculat din rulaje cumulate de la 1 ianuarie. La cantitativ-valoric, fiecare articol are o fișă de magazie proprie, cu costul mediu ponderat recalculat după fiecare intrare („fișa de magazie (Stocuri)”), iar ieșirea se înregistrează direct 607=371 la valoarea CMP × cantitate — fără conturile 378/4428 și fără coeficient de repartizare.
 
 Dacă restaurantul optează pentru global-valoric, trebuie știut că TVA-ul descărcat lunar din 4428 e o aproximare calculată dintr-o cotă medie ponderată a stocului cumulat, nu din mixul real de cote al bonurilor emise în lună — un cost suplimentar de verificare pe care evidența cantitativ-valorică, neavând deloc contul 4428, nu îl are.
 

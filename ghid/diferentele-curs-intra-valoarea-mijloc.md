@@ -2,7 +2,7 @@
 title: "Diferențele de curs intră în valoarea unui mijloc fix cumpărat în valută?"
 description: "Nu: un mijloc fix e element nemonetar, înregistrat o singură dată la cursul BNR din data tranzacției. Diferențele de curs ulterioare apar doar la decontarea datoriei către furnizor și se recunosc la 665/765, nu în valoarea activului."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,7 +39,7 @@ Practic: costul mijlocului fix nu se „ajustează" niciodată din cauza cursulu
 
 ## Ce face iConta.eu
 
-Motorul de diferențe de curs acceptă strict trei tipuri de element: creanță, disponibil, datorie — un apel cu „mijloc fix" sau „stoc" ridică eroare, exact conform regulii de mai sus (elementele nemonetare nu intră în acest calcul). Pentru **datoria** către furnizorul mijlocului fix, dacă plata se face în valută la un curs diferit de cel din evidență, aplicația calculează corect diferența prin operațiunea „Decontare în valută" (`decontare_valuta`), cu tip „datorie", generând automat nota contabilă cu diferența pe 665/765.
+Motorul de diferențe de curs acceptă strict trei tipuri de element: creanță, disponibil, datorie — un apel cu „mijloc fix" sau „stoc" ridică eroare, exact conform regulii de mai sus (elementele nemonetare nu intră în acest calcul). Pentru **datoria** către furnizorul mijlocului fix, dacă plata se face în valută la un curs diferit de cel din evidență, aplicația calculează corect diferența prin operațiunea „Decontare în valută" („decontare în valută (Operațiuni speciale)”), cu tip „datorie", generând automat nota contabilă cu diferența pe 665/765.
 
 Valoarea propriu-zisă a mijlocului fix, la înregistrarea inițială, se stabilește separat, la cursul BNR din data tranzacției — acest pas nu ține de motorul de diferențe de curs, ci de fluxul obișnuit de înregistrare a achiziției.
 

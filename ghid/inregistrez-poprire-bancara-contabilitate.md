@@ -2,7 +2,7 @@
 title: "Cum înregistrez o poprire bancară în contabilitate?"
 description: "Ce înseamnă indisponibilizarea sumelor din cont printr-o poprire fiscală și cum apare, în practică, o astfel de operațiune pe extrasul bancar din iConta.eu."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,7 +33,7 @@ Alte elemente relevante ale mecanismului, verificate în același articol:
 
 ## Ce face iConta.eu
 
-O poprire bancară ajunge pe extrasul de cont ca o linie de ieșire, de regulă fără CUI de partener în descriere și fără o factură deschisă asociată — exact tiparul pe care motorul de reconciliere bancară (F073, aplicația) îl marchează automat cu status **roșu**: fără CUI detectat pe descrierea liniei, potrivirea automată cu o factură nu se încearcă deloc. Aplicația nu are o categorie dedicată „poprire" în lista de cuvinte-cheie a modulului de clasificare a extrasului, care recunoaște comision, dobândă, credit, salarii, impozit pe profit, TVA sau numerar, dar nu și poprirea ca tip distinct de operațiune.
+O poprire bancară ajunge pe extrasul de cont ca o linie de ieșire, de regulă fără CUI de partener în descriere și fără o factură deschisă asociată — exact tiparul pe care motorul de reconciliere bancară („Reconciliere bancară (potrivirea plăților cu facturile)”, aplicația) îl marchează automat cu status **roșu**: fără CUI detectat pe descrierea liniei, potrivirea automată cu o factură nu se încearcă deloc. Aplicația nu are o categorie dedicată „poprire" în lista de cuvinte-cheie a modulului de clasificare a extrasului, care recunoaște comision, dobândă, credit, salarii, impozit pe profit, TVA sau numerar, dar nu și poprirea ca tip distinct de operațiune.
 
 Practic, linia rămâne pe roșu, iar contabilul o clarifică printr-o **notă contabilă manuală** din Jurnal, stingând obligația fiscală restantă (de regulă pe contul de datorii bugetare corespunzător) din contul de trezorerie/disponibilități, folosind ca document justificativ adresa de înființare a popririi primită de la organul fiscal, nu extrasul bancar singur.
 

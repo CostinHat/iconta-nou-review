@@ -2,19 +2,13 @@
 title: "Cum verific D390 cu contabilitatea?"
 description: "Ce compară exact controlul automat dintre D390 și evidența contabilă, ce culoare primește fiecare situație și ce înseamnă de fapt „evidență validată" în acest control."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum verific D390 cu contabilitatea?
 
 Controlul automat dintre D390 și contabilitate nu compară declarația cu balanța de verificare, ci cu notele contabile validate care sunt legate direct de facturile intracomunitare din perioadă.
-
-## Temeiul legal
-
-::: ghid-temei
-„art. 325 Cod fiscal (Legea 227/2015)" — declarația recapitulativă (D390): obligație, conținut, depunere lunară; „OMFP 1802/2014" — temeiul pentru evidența contabilă / nota validată vs. ciornă (citate ambele în codul de control al aplicației, la fiecare constatare generată).
-:::
 
 ## Ce se greșește în practică
 

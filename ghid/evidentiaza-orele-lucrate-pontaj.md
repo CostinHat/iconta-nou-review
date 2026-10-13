@@ -2,7 +2,7 @@
 title: Cum se evidențiază orele lucrate în pontaj?
 description: Pontajul din iConta.eu ține zile, nu ore — vezi de ce, ce stări poți înregistra și unde ar trebui ținută, separat, o evidență orară reală.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,6 +27,6 @@ Cea mai frecventă confuzie este căutarea unui câmp de „ore lucrate" sau „
 
 ## Ce face iConta.eu
 
-Pontajul din iConta.eu e o grilă lunară pe zile, cu stare implicită „prezent" și șapte stări de excepție posibile (absent motivat/nemotivat, concediu de odihnă, concediu medical, învoire, delegație — plus un câmp de notă liberă pentru detalii). Nu există evidență pe intervale orare de intrare/ieșire și nici un total de ore lucrate calculat automat. Dacă firma are nevoie de o evidență orară reală (de exemplu pentru personal cu tură variabilă), aceasta trebuie ținută separat — pontajul F135 din iConta.eu nu acoperă acest caz.
+Pontajul din iConta.eu e o grilă lunară pe zile, cu stare implicită „prezent" și șapte stări de excepție posibile (absent motivat/nemotivat, concediu de odihnă, concediu medical, învoire, delegație — plus un câmp de notă liberă pentru detalii). Nu există evidență pe intervale orare de intrare/ieșire și nici un total de ore lucrate calculat automat. Dacă firma are nevoie de o evidență orară reală (de exemplu pentru personal cu tură variabilă), aceasta trebuie ținută separat — pontajul „Pontaj angajați” din iConta.eu nu acoperă acest caz.
 
 [iConta.eu](/)

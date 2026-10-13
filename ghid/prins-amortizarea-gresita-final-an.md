@@ -2,7 +2,7 @@
 title: "Am prins amortizarea greșită la final de an: ce fac"
 description: "Cum se identifică diferența dintre amortizarea deja postată și cea calculată corect de registru, la închiderea anului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,6 +25,6 @@ Greșeala frecventă e corectarea "din ochi", pe baza unei estimări, în loc de
 
 ## Ce face iConta.eu
 
-Funcția `amortizat_la_data` poate fi interogată pentru orice dată de închidere, oferind valoarea cumulată corectă pe metoda reală a activului — valoare care servește drept referință pentru identificarea diferenței față de ce a fost postat.
+Funcția „amortizarea cumulată (Mijloace fixe)” poate fi interogată pentru orice dată de închidere, oferind valoarea cumulată corectă pe metoda reală a activului — valoare care servește drept referință pentru identificarea diferenței față de ce a fost postat.
 
 [iConta.eu](/)

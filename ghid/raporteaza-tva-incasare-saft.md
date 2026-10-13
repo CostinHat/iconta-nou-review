@@ -2,7 +2,7 @@
 title: "Cum se raportează TVA la încasare în SAF-T?"
 description: "Ce cere legal fișierul standard de control fiscal (SAF-T/D406) de la o firmă la TVA la încasare, și cum reflectă azi iConta.eu mecanismul de exigibilitate în acest raport."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ SAF-T (Declarația informativă D406) e un export structurat al întregii contab
 
 Generatorul SAF-T al iConta.eu e complex și verificat pe validatorul oficial ANAF (DUK) pentru toate secțiunile cerute — antet, plan de conturi, parteneri, jurnale, facturi. Facturile raportate în `SourceDocuments` includ, la nivel de linie, câmpul `TaxPointDate`.
 
-Verificat direct în cod: acest câmp e completat cu **data facturii**, nu cu data încasării, și nu există în `d406.py` nicio ramură de cod condiționată de flagul `tva_la_incasare` al firmei — spre deosebire de aplicația, unde exigibilitatea pe încasări are un tratament explicit și dedicat (vezi ghidurile despre decontul de TVA la încasare). Cu alte cuvinte, mecanismul specific de TVA la încasare (4428→4427 pe măsura încasării) trăiește azi doar în decont (D300); SAF-T raportează facturile și rulajele contabile așa cum au fost înregistrate, fără o secțiune sau un semnal distinct pentru firmele la TVA la încasare. Nu am găsit în cercetarea de față o confirmare directă, la sursa oficială ANAF (documentația XSD/DUK), a ceea ce ar trebui de fapt să reprezinte `TaxPointDate` pentru o firmă la TVA la încasare — e un aspect care merită verificat punctual, separat, înainte de a-l considera tranșat.
+Verificat direct în cod: acest câmp e completat cu **data facturii**, nu cu data încasării, și nu există în aplicația nicio ramură de cod condiționată de flagul „TVA la încasare” al firmei — spre deosebire de aplicația, unde exigibilitatea pe încasări are un tratament explicit și dedicat (vezi ghidurile despre decontul de TVA la încasare). Cu alte cuvinte, mecanismul specific de TVA la încasare (4428→4427 pe măsura încasării) trăiește azi doar în decont (D300); SAF-T raportează facturile și rulajele contabile așa cum au fost înregistrate, fără o secțiune sau un semnal distinct pentru firmele la TVA la încasare. Nu am găsit în cercetarea de față o confirmare directă, la sursa oficială ANAF (documentația XSD/DUK), a ceea ce ar trebui de fapt să reprezinte `TaxPointDate` pentru o firmă la TVA la încasare — e un aspect care merită verificat punctual, separat, înainte de a-l considera tranșat.
 
 [iConta.eu](/)

@@ -2,13 +2,13 @@
 title: Cum reconciliez contul bancar cu extrasul de cont?
 description: Legea cere confruntarea soldurilor bancare cu contabilitatea la inventariere (de regulă anuală); reconcilierea lunară sau la fiecare extras, deși recomandată ca bună practică, nu are un temei legal distinct pentru frecvență în sursele verificate.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum reconciliez contul bancar cu extrasul de cont?
 
-Reconcilierea bancară înseamnă potrivirea fiecărei linii din extrasul de cont cu operațiunea contabilă corespunzătoare — de regulă o factură emisă sau primită. iConta.eu automatizează cea mai mare parte a acestui proces prin motorul de matching din F073.
+Reconcilierea bancară înseamnă potrivirea fiecărei linii din extrasul de cont cu operațiunea contabilă corespunzătoare — de regulă o factură emisă sau primită. iConta.eu automatizează cea mai mare parte a acestui proces prin motorul de matching din „Reconciliere bancară (potrivirea plăților cu facturile)”.
 
 ## Temeiul legal
 
@@ -29,12 +29,12 @@ Textul legal citat mai sus vorbește explicit despre inventarierea disponibilit�
 - Se crede că legea obligă la o reconciliere lunară strictă — textul citat vorbește de inventariere, de regulă anuală, nu de o cadență lunară obligatorie.
 - Se lasă liniile roșii necontate pe termen lung, fără investigație, deși ele semnalează fie o factură lipsă, fie un CUI nedetectat.
 - Se confundă statusul galben (alocare parțială, care încă necesită confirmare) cu o linie deja contabilizată definitiv.
-- Se ignoră faptul că o linie contabilizată (`status='contat'`) nu mai poate fi recontată automat prin motor — o corecție ulterioară trebuie tratată manual.
+- Se ignoră faptul că o linie contabilizată (starea „contată”) nu mai poate fi recontată automat prin motor — o corecție ulterioară trebuie tratată manual.
 
 ## Ce face iConta.eu
 
-Aplicația rulează motorul pur de matching pe fiecare linie de extras, iar aplicația persistă rezultatul și calculează soldul fiecărei facturi deschise (total minus sumele deja decontate, plus eventualele storno-uri). Pentru liniile care ies roșii și nu au notă manuală, sistemul încearcă o sugestie de cont pe baza istoricului deja contat de utilizator (`core.ai_incredere.sugestie`) — o funcționalitate de confort, fără nicio bază legală, utilizatorul rămânând responsabil pentru validarea sugestiei.
+Aplicația rulează motorul pur de matching pe fiecare linie de extras, iar aplicația persistă rezultatul și calculează soldul fiecărei facturi deschise (total minus sumele deja decontate, plus eventualele storno-uri). Pentru liniile care ies roșii și nu au notă manuală, sistemul încearcă o sugestie de cont pe baza istoricului deja contat de utilizator („sugestia de cont”) — o funcționalitate de confort, fără nicio bază legală, utilizatorul rămânând responsabil pentru validarea sugestiei.
 
-La contare, fiecare alocare generează o înregistrare separată (`status='ciorna'`, `sursa='banca'`), iar dacă firma e pe TVA la încasare, exigibilitatea TVA se calculează separat pentru fiecare sumă alocată.
+La contare, fiecare alocare generează o înregistrare separată (starea „ciornă”, sursa „bancă”), iar dacă firma e pe TVA la încasare, exigibilitatea TVA se calculează separat pentru fiecare sumă alocată.
 
 [iConta.eu](/)

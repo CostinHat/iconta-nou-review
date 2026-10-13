@@ -2,7 +2,7 @@
 title: "Cum se aplică TVA la cumpărarea unei mașini noi din UE?"
 description: "Mijloacele de transport noi sunt excluse explicit din regimul obișnuit de achiziție intracomunitară (art. 268 alin. 3 lit. a) — se aplică un regim special."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ O mașină nouă cumpărată dintr-un alt stat membru UE nu urmează regula obi�
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 268 alin. (1)-(3) lit. a): „Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L16593-16626)
+CF art. 268 alin. (1)-(3) lit. a): „Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite.” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Textul citat spune, explicit, că regimul obișnuit de AIC (achiziție intracomunitară care urmează unei livrări intracomunitare scutite, condiționată de statutul de plătitor al cumpărătorului și de plafonul de 10.000 euro) se aplică bunurilor „**altele decât** mijloacele de transport noi” — adică mijloacele de transport noi sunt, prin definiție legală, excluse din acest regim și supuse unei impozitări la destinație aplicabile oricărui cumpărător, inclusiv persoanelor fizice sau firmelor neplătitoare de TVA.
@@ -27,6 +27,6 @@ Textul citat spune, explicit, că regimul obișnuit de AIC (achiziție intracomu
 
 ## Ce face iConta.eu
 
-Cercetarea care stă la baza acestui ghid nu a confirmat, în codul citit, un formular sau flux dedicat special mijloacelor de transport noi — formularul de achiziție intracomunitară (`achizitie_ic`) din iConta acoperă regula generală AIC, descrisă mai sus ca fiind cea pentru bunuri „altele decât mijloace de transport noi”. Pentru achiziția unei mașini noi din UE, tratamentul corect ține de regimul special respectiv, nu de fluxul standard de achiziție intracomunitară din aplicație — recomandăm verificarea directă a regulilor specifice înainte de înregistrare.
+Cercetarea care stă la baza acestui ghid nu a confirmat, în codul citit, un formular sau flux dedicat special mijloacelor de transport noi — formularul de achiziție intracomunitară („achiziție intracomunitară (Operațiuni)”) din iConta acoperă regula generală AIC, descrisă mai sus ca fiind cea pentru bunuri „altele decât mijloace de transport noi”. Pentru achiziția unei mașini noi din UE, tratamentul corect ține de regimul special respectiv, nu de fluxul standard de achiziție intracomunitară din aplicație — recomandăm verificarea directă a regulilor specifice înainte de înregistrare.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se înregistrează situațiile de lucrări emise către beneficiar"
 description: "Pentru serviciile cu decontări succesive, precum lucrările de construcții-montaj, situația de lucrări este documentul care stabilește, din punct de vedere al TVA, data la care serviciul se consideră prestat."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Dosarul de cercetare care stă la baza acestui ghid documentează o singură funcționalitate legată de facturile emise — F171, exportul lor tehnic în format XML către programul de contabilitate SAGA, care operează exclusiv pe facturi deja înregistrate în aplicație (`{schema}.facturi`/`factura_linii`) și nu are nicio legătură cu emiterea, calculul faptului generator sau înregistrarea situațiilor de lucrări. Nu s-a găsit, în codul verificat pentru acest dosar, nicio funcționalitate dedicată situațiilor de lucrări ca document distinct de factură, așa că nu putem afirma dacă și cum tratează iConta.eu acest tip de document — orice afirmație în acest sens ar depăși ce a fost efectiv verificat în cod.
+Dosarul de cercetare care stă la baza acestui ghid documentează o singură funcționalitate legată de facturile emise — „Export facturi emise către SAGA”, exportul lor tehnic în format XML către programul de contabilitate SAGA, care operează exclusiv pe facturi deja înregistrate în aplicație (`{schema}.facturi`/„liniile facturii”) și nu are nicio legătură cu emiterea, calculul faptului generator sau înregistrarea situațiilor de lucrări. Nu s-a găsit, în codul verificat pentru acest dosar, nicio funcționalitate dedicată situațiilor de lucrări ca document distinct de factură, așa că nu putem afirma dacă și cum tratează iConta.eu acest tip de document — orice afirmație în acest sens ar depăși ce a fost efectiv verificat în cod.
 
 [iConta.eu](/)

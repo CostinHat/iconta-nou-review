@@ -2,7 +2,7 @@
 title: Când pot deduce pierderea dintr-o creanță neîncasată?
 description: Pierderea din scoaterea din evidență a unei creanțe e deductibilă, pentru partea neacoperită de ajustare, doar în șase situații expres prevăzute (reorganizare judiciară, faliment închis, decesul debitorului, dizolvare/lichidare fără succesor, dificultăți financiare majore, asigurare).
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -42,6 +42,6 @@ O creanță de 15.000 lei are constituită o ajustare deductibilă de 4.500 lei 
 
 ## Ce face iConta.eu
 
-Aplicația acoperă doar constituirea și reluarea ajustării pentru deprecierea creanțelor (`nota_ajustare_creanta`, cu notele contabile 6814=491 la constituire și 491=7814 la reluare) — motorul nu modelează operațiunea de scoatere din evidență a creanței (înregistrarea pierderii propriu-zise, de regulă pe 654=411 sau 659=411, pentru partea neacoperită) și nu verifică niciunul din cele 6 temeiuri de mai sus. Încadrarea într-un caz din cele 6 și calculul deductibilității pierderii rămân integral în sarcina utilizatorului.
+Aplicația acoperă doar constituirea și reluarea ajustării pentru deprecierea creanțelor („nota de ajustare a creanței”, cu notele contabile 6814=491 la constituire și 491=7814 la reluare) — motorul nu modelează operațiunea de scoatere din evidență a creanței (înregistrarea pierderii propriu-zise, de regulă pe 654=411 sau 659=411, pentru partea neacoperită) și nu verifică niciunul din cele 6 temeiuri de mai sus. Încadrarea într-un caz din cele 6 și calculul deductibilității pierderii rămân integral în sarcina utilizatorului.
 
 [iConta.eu](/)

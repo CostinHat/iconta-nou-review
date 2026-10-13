@@ -2,7 +2,7 @@
 title: "Se poate încasa în numerar o factură mai mare de 5.000 lei?"
 description: "Cât se poate încasa în numerar dintr-o factură care depășește 5.000 lei și de ce restul nu poate fi fragmentat, conform Legii 70/2015."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Mecanismul, coroborat cu plafonul zilnic general de la art. 3 alin. (1) lit. a):
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația are constanta `PLAFON_INCASARE_PJ = Decimal("5000")` (10.000 lei pentru cash and carry), folosită de `verifica_plafon()` pentru a semnala orice încasare cumulată de la un partener persoană juridică ce depășește plafonul într-o zi. Verificarea agregă operațiunile pe zi și pe partener, coerent cu regula de interzicere a fragmentării de la art. 3 alin. (2), dar rămâne un avertisment de control — decizia de a încasa parțial numerar și restul prin virament aparține contabilului.
+La data acestui ghid, aplicația are constanta plafonul de încasare de la persoane juridice = 5000 (10.000 lei pentru cash and carry), folosită de „verificarea plafonului de numerar (Casă)” pentru a semnala orice încasare cumulată de la un partener persoană juridică ce depășește plafonul într-o zi. Verificarea agregă operațiunile pe zi și pe partener, coerent cu regula de interzicere a fragmentării de la art. 3 alin. (2), dar rămâne un avertisment de control — decizia de a încasa parțial numerar și restul prin virament aparține contabilului.
 
 [iConta.eu](/)

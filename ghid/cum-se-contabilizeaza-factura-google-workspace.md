@@ -2,7 +2,7 @@
 title: Cum se contabilizează factura Google Workspace?
 description: Factura Google Workspace primită de o firmă română neplătitoare de TVA de la Google Ireland Limited declanșează obligația de taxare inversă conform art. 307 alin. (2) și trebuie declarată în Secțiunea 4.1 a D301.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -45,7 +45,7 @@ Baza și TVA se raportează în Secțiunea 4.1 din D301 pentru luna în care a l
 
 ## Ce face iConta.eu
 
-Aplicația calculează automat baza de impozitare (`baza = round(val_valuta × curs, 0)`), cu rotunjire aritmetică (`ROUND_HALF_UP`), și refuză generarea declarației dacă lipsește cursul valutar sau dacă acesta este zero ori negativ — cursul trebuie introdus manual de contabil, valabil la data exigibilității, aplicația nu îl preia automat de la BNR sau BCE. Pentru operațiunile de tip servicii intracomunitare (Secțiunea 4.1), aplicația face rollup automat al bazei și TVA în totalul Secțiunii 4, conform instrucțiunilor OPANAF 592/2016.
+Aplicația calculează automat baza de impozitare (baza = round(valoarea în valută × curs, 0)), cu rotunjire aritmetică („rotunjirea aritmetică (jumătatea în sus)”), și refuză generarea declarației dacă lipsește cursul valutar sau dacă acesta este zero ori negativ — cursul trebuie introdus manual de contabil, valabil la data exigibilității, aplicația nu îl preia automat de la BNR sau BCE. Pentru operațiunile de tip servicii intracomunitare (Secțiunea 4.1), aplicația face rollup automat al bazei și TVA în totalul Secțiunii 4, conform instrucțiunilor OPANAF 592/2016.
 
 Introducerea operațiunii este blocată dacă firma este marcată în vectorul fiscal drept plătitoare de TVA (D301 este exclusiv pentru neplătitori). Aplicația nu validează însă automat că furnizorul introdus este efectiv stabilit în UE — câmpul de țară al partenerului este opțional și liber — astfel încât încadrarea corectă în Secțiunea 4.1 (și nu 4) rămâne responsabilitatea contabilului.
 

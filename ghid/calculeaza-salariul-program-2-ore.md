@@ -2,7 +2,7 @@
 title: Cum se calculează salariul pentru program de 2 ore?
 description: Pentru 2 ore/zi (un sfert de normă, la un program normal de 8 ore), brutul e mic — atât de mic încât, la salariul minim, deducerea personală poate anula complet impozitul. Vezi exemplul complet.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -46,6 +46,6 @@ Greșeala frecventă e aplicarea impozitului chiar și când baza impozabilă a 
 
 ## Ce face iConta.eu
 
-Aplicația calculează automat baza impozabilă și o plafonează la zero când deducerea personală depășește baza rămasă, evitând un impozit negativ. Brutul proporțional și verificarea podelei folosesc aceleași reguli „period-aware" din `core.common.COTE`, aplicate corect pentru fereastra din 2026 în care cade luna calculată.
+Aplicația calculează automat baza impozabilă și o plafonează la zero când deducerea personală depășește baza rămasă, evitând un impozit negativ. Brutul proporțional și verificarea podelei folosesc aceleași reguli „period-aware" din „registrul de cote al aplicației”, aplicate corect pentru fereastra din 2026 în care cade luna calculată.
 
 [iConta.eu](/)

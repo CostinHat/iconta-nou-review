@@ -2,7 +2,7 @@
 title: Ce fac dacă am trecut firma la profit prea devreme?
 description: Trecerea prematură la impozit pe profit se corectează la loc, la micro, dacă firma încă îndeplinește condițiile de eligibilitate — verificarea eligibilității rămâne însă manuală.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,7 +22,7 @@ Dacă firma a fost trecută la profit din eroare (de exemplu, o estimare greșit
 
 Verificarea acestor condiții e integral manuală — iConta nu are nicio constantă de plafon micro sau vreo logică de „întreprinderi legate" în motorul de calcul, deci nu validează și nu contestă alegerea regimului fiscal introdus de contabil.
 
-Corectarea propriu-zisă urmează aceeași regulă generală: dacă firma nu are perioade fiscale închise în intervalul afectat, e o simplă resalvare a câmpului `regim_fiscal`; dacă are, trebuie parcursă calea de redeschidere → corectare → închidere la loc.
+Corectarea propriu-zisă urmează aceeași regulă generală: dacă firma nu are perioade fiscale închise în intervalul afectat, e o simplă resalvare a câmpului „regimul fiscal (Date firmă)”; dacă are, trebuie parcursă calea de redeschidere → corectare → închidere la loc.
 
 ## Ce se greșește în practică
 
@@ -32,6 +32,6 @@ Corectarea propriu-zisă urmează aceeași regulă generală: dacă firma nu are
 
 ## Ce face iConta.eu
 
-Schimbarea `regim_fiscal` e o editare directă în Vector fiscal, validată tehnic (valoare în „micro"/"profit", rol `admin_firma` necesar, regula perioadelor închise), dar **fără nicio verificare a condițiilor de eligibilitate din Codul fiscal** — motorul nu conține nicio constantă de plafon micro sau vreo logică legată de întreprinderi legate. Responsabilitatea verificării eligibilității rămâne integral a contabilului.
+Schimbarea „regimul fiscal (Date firmă)” e o editare directă în Vector fiscal, validată tehnic (valoare în „micro"/"profit", rol „administrator” necesar, regula perioadelor închise), dar **fără nicio verificare a condițiilor de eligibilitate din Codul fiscal** — motorul nu conține nicio constantă de plafon micro sau vreo logică legată de întreprinderi legate. Responsabilitatea verificării eligibilității rămâne integral a contabilului.
 
 [iConta.eu](/)

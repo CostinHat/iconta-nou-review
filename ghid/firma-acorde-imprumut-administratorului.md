@@ -2,7 +2,7 @@
 title: "Poate firma să acorde un împrumut administratorului?"
 description: "Dacă administratorul e și asociat, se aplică restricția nouă din Legea 31/1990: firma nu-i poate împrumuta cât timp are dividende trimestriale neregularizate — iar iConta nu verifică automat asta."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,6 +26,6 @@ Greșeala tipică e ignorarea completă a acestei condiții pentru că împrumut
 
 ## Ce face iConta.eu
 
-Funcționalitatea de decontări cu asociații (F039) generează nota de acordare a împrumutului (5121=4551) oricând i se cere, fără să verifice dacă firma are dividende trimestriale neregularizate în acel moment și fără să distingă administrator de asociat. Verificarea condiției de la art. 67 alin. (2³) rămâne integral responsabilitatea contabilului, înainte de a introduce operația.
+Funcționalitatea de decontări cu asociații („Decontări asociați”) generează nota de acordare a împrumutului (5121=4551) oricând i se cere, fără să verifice dacă firma are dividende trimestriale neregularizate în acel moment și fără să distingă administrator de asociat. Verificarea condiției de la art. 67 alin. (2³) rămâne integral responsabilitatea contabilului, înainte de a introduce operația.
 
 [iConta.eu](/)

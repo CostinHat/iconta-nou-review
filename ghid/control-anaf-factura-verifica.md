@@ -2,7 +2,7 @@
 title: "Control ANAF pe e-Factura: ce verifică"
 description: "Ce urmărește ANAF prin sistemul RO e-Factura și care este sancțiunea concretă pentru nerespectarea termenului de transmitere."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Sistemul RO e-Factura nu este doar un canal de transmitere a facturilor, ci și 
 
 ## Ce face iConta.eu
 
-Din verificarea codului, iConta.eu are un modul complet de integrare cu RO e-Factura: generarea și validarea fișierului XML UBL (`efactura_send.py`), orchestrarea încărcării facturilor în sistemul ANAF (`efactura_trimitere.py`), iar urmărirea ulterioară a stării mesajului transmis (interogare `stareMesaj`) și descărcarea recipisei/confirmării se fac printr-un proces separat, rulat periodic (`spv_poll.py`), nu sincron la trimitere. Practic, aplicația vă ajută să respectați exact termenul de transmitere verificat de ANAF, semnalând facturile netrimise sau respinse. Aplicația nu execută însă un „control" propriu-zis în sensul de audit fiscal — rolul ei este să asigure transmiterea corectă și la timp, nu să simuleze verificarea pe care o face ANAF.
+Din verificarea codului, iConta.eu are un modul complet de integrare cu RO e-Factura: generarea și validarea fișierului XML UBL, orchestrarea încărcării facturilor în sistemul ANAF, iar urmărirea ulterioară a stării mesajului transmis (interogare `stareMesaj`) și descărcarea recipisei/confirmării se fac printr-un proces separat, rulat periodic, nu sincron la trimitere. Practic, aplicația vă ajută să respectați exact termenul de transmitere verificat de ANAF, semnalând facturile netrimise sau respinse. Aplicația nu execută însă un „control" propriu-zis în sensul de audit fiscal — rolul ei este să asigure transmiterea corectă și la timp, nu să simuleze verificarea pe care o face ANAF.
 
 [iConta.eu](/)

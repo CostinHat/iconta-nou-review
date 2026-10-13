@@ -2,7 +2,7 @@
 title: Cum se tratează contabil bacșișul rămas nedistribuit la sfârșitul lunii?
 description: Bacșișul neredistribuit până la închiderea lunii rămâne o datorie față de salariați, vizibilă în sold — legea nu fixează un termen limită de distribuire, dar nici o variantă de a-l ține nedistribuit pe termen nelimitat.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Legea 376/2022 nu fixează un termen legal explicit până la care bacșișul tr
 
 ## Ce face iConta.eu
 
-Modulul F010 separă strict cele două operațiuni — `nota_incasare` la momentul încasării și `nota_distribuire` la momentul plății către salariați — astfel încât soldul `462` reflectă în orice moment exact bacșișul încasat, dar nedistribuit încă. Aplicația nu impune și nu verifică automat un termen de distribuire; stabilirea procedurii și a ritmului de distribuire rămâne, conform legii, în sarcina regulamentului intern al operatorului.
+Modulul „Bacșiș HoReCa” separă strict cele două operațiuni — „nota de încasare (HoReCa, bacșiș)” la momentul încasării și „nota de distribuire a bacșișului (HoReCa)” la momentul plății către salariați — astfel încât soldul `462` reflectă în orice moment exact bacșișul încasat, dar nedistribuit încă. Aplicația nu impune și nu verifică automat un termen de distribuire; stabilirea procedurii și a ritmului de distribuire rămâne, conform legii, în sarcina regulamentului intern al operatorului.
 
 [iConta.eu](/)

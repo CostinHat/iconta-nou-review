@@ -2,7 +2,7 @@
 title: "Calculul adaosului comercial la ieșirea din gestiune"
 description: "Cum se calculează, la ieșirea mărfii din gestiune, adaosul comercial (378) și TVA neexigibilă (4428) la comercianții care țin evidența la preț de vânzare cu amănuntul."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -45,7 +45,7 @@ unde `Si` = sold inițial, `Rc`/`Rd` = rulaj credit/debit, calculate cumulat de 
 
 ## Ce face iConta.eu
 
-Motorul de calcul implementează exact formula de mai sus prin funcția `descarcare_gv`, care se bazează la rândul ei pe `coeficient_k`. Dacă numitorul `(Si371 + Rd371) - (Si4428 + Rc4428)` este mai mic sau egal cu zero, aplicația **refuză să calculeze** și afișează o eroare explicită către contabil, în loc să întoarcă 0 sau o valoare implicită. Dacă rezultă un cost al mărfii vândute negativ (adaos peste 100%), aplicația generează de asemenea o eroare explicită.
+Motorul de calcul implementează exact formula de mai sus prin funcția „descărcarea global-valorică (Stocuri)”, care se bazează la rândul ei pe „coeficientul K (Stocuri, descărcarea global-valorică)”. Dacă numitorul `(Si371 + Rd371) - (Si4428 + Rc4428)` este mai mic sau egal cu zero, aplicația **refuză să calculeze** și afișează o eroare explicită către contabil, în loc să întoarcă 0 sau o valoare implicită. Dacă rezultă un cost al mărfii vândute negativ (adaos peste 100%), aplicația generează de asemenea o eroare explicită.
 
 Nota de descărcare (607 = 371, 378 = 371, 4428 = 371) este propusă automat de aplicație ca **ciornă**; ea trebuie validată manual de contabil în jurnal — aplicația nu validează singură notele contabile.
 

@@ -2,7 +2,7 @@
 title: "D205 și plata dividendelor: ordinea operațiilor"
 description: "Nota contabilă de dividend se înregistrează întâi; declararea la D205 este o funcționalitate separată, care preia datele din această notă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,6 +24,6 @@ O greșeală frecventă e încercarea de a „declara" un dividend înainte ca a
 
 ## Ce face iConta.eu
 
-iConta generează nota contabilă de dividend — repartizare, impozit calculat cu cota valabilă la data distribuirii și, opțional, plata netă — prin funcționalitatea de decontări cu asociații (F039). Declararea fiscală propriu-zisă a dividendului, prin formularul D205, este o funcționalitate separată în aplicație, distinctă de F039; F039 pregătește baza de date contabilă pe care se sprijină acea declarație, dar mecanismul intern de completare și depunere a D205 nu face parte din decontările cu asociații și nu e detaliat aici.
+iConta generează nota contabilă de dividend — repartizare, impozit calculat cu cota valabilă la data distribuirii și, opțional, plata netă — prin funcționalitatea de decontări cu asociații („Decontări asociați”). Declararea fiscală propriu-zisă a dividendului, prin formularul D205, este o funcționalitate separată în aplicație, distinctă de „Decontări asociați”; „Decontări asociați” pregătește baza de date contabilă pe care se sprijină acea declarație, dar mecanismul intern de completare și depunere a D205 nu face parte din decontările cu asociații și nu e detaliat aici.
 
 [iConta.eu](/)

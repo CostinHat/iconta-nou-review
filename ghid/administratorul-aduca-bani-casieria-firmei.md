@@ -2,7 +2,7 @@
 title: "Poate administratorul să aducă bani în casieria firmei?"
 description: "Regimul contului 455 vizează acționarii/asociații, nu administratorul ca atare; iar funcționalitatea din iConta pentru această operațiune generează nota prin bancă, nu prin casierie."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,6 +24,6 @@ Greșeala tipică e tratarea oricărei sume aduse de „administrator” ca 4551
 
 ## Ce face iConta.eu
 
-Funcționalitatea de decontări cu asociații (F039) generează nota de primire a sumei pe contul curent de asociat prin transfer bancar (5121=4551); din câmpurile documentate pentru acest ecran nu rezultă o variantă separată pentru depunere prin casierie. Pentru sume aduse în numerar, contul corespunzător trebuie ajustat manual la introducerea notei. Funcționalitatea e gândită pentru asociați — pentru un administrator care nu e și asociat, iConta nu are o notă dedicată în acest modul.
+Funcționalitatea de decontări cu asociații („Decontări asociați”) generează nota de primire a sumei pe contul curent de asociat prin transfer bancar (5121=4551); din câmpurile documentate pentru acest ecran nu rezultă o variantă separată pentru depunere prin casierie. Pentru sume aduse în numerar, contul corespunzător trebuie ajustat manual la introducerea notei. Funcționalitatea e gândită pentru asociați — pentru un administrator care nu e și asociat, iConta nu are o notă dedicată în acest modul.
 
 [iConta.eu](/)

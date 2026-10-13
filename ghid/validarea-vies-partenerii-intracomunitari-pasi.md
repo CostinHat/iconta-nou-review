@@ -2,19 +2,13 @@
 title: Validarea VIES pentru partenerii intracomunitari: pași
 description: Pașii verificării unui partener din UE în iConta.eu — de la separarea codului de TVA până la rezultatul afișat la emiterea facturii — și ce înseamnă fiecare stare posibilă: valid, invalid sau VIES indisponibil.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Validarea VIES pentru partenerii intracomunitari: pași
 
 Verificarea VIES nu e un pas opțional de bifat „ca să fie” — e condiția de fond a tratamentului fiscal favorabil, atât pentru livrări/prestări (scutire, respectiv neimpozabilitate în România), cât și pentru achiziții (taxare inversă corectă). Pașii de mai jos descriu exact ce se întâmplă tehnic, în ordine.
-
-## Temeiul legal
-
-::: ghid-temei
-„`verifica_vies(cod_tva, timeout=15)` — interoghează `https://ec.europa.eu/taxation_customs/vies/rest-api/ms/{MS}/vat/{nr}`, întoarce `{valid, nume, adresa, tara, numar, eroare}`.” — codul aplicației, verificat în dosarul F050; folosit pentru condiția „cod TVA valid” din CF art. 294 alin. (2) lit. a) (livrări) și art. 278 alin. (2) (servicii B2B).
-:::
 
 ## Pas cu pas
 

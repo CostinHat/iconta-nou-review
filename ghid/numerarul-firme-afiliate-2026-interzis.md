@@ -2,7 +2,7 @@
 title: "Numerarul între firme afiliate 2026: ce este interzis"
 description: "Regimul plăților și încasărilor în numerar între persoane juridice, aplicabil și firmelor afiliate, conform Legii 70/2015."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Precizare importantă: am căutat explicit în Legea 70/2015 o prevedere special
 
 ## Ce face iConta.eu
 
-Am verificat în aplicație: aplicația **validează automat plafoanele din Legea 70/2015** (funcția `verifica_plafon`, cu constantele `PLAFON_INCASARE_PJ` și `PLAFON_PLATA_PJ`, ambele setate la 5.000 lei pentru operațiunile cu persoane juridice, respectiv 10.000 lei/zi cumulat la plăți) și semnalează un avertisment când o operațiune de casierie depășește pragul legal, indiferent dacă partenerul este sau nu o firmă afiliată — regula fiind, oricum, aceeași pentru toate persoanele juridice. Aplicația nu are o categorie separată „firmă afiliată" pentru că legea însăși nu face această distincție.
+Am verificat în aplicație: aplicația **validează automat plafoanele din Legea 70/2015** (funcția „verificarea plafonului de numerar (Casă)”, cu constantele „plafonul de încasare de la persoane juridice” și „plafonul de plată către persoane juridice”, ambele setate la 5.000 lei pentru operațiunile cu persoane juridice, respectiv 10.000 lei/zi cumulat la plăți) și semnalează un avertisment când o operațiune de casierie depășește pragul legal, indiferent dacă partenerul este sau nu o firmă afiliată — regula fiind, oricum, aceeași pentru toate persoanele juridice. Aplicația nu are o categorie separată „firmă afiliată" pentru că legea însăși nu face această distincție.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: La ce dată se aplică taxarea inversă la o achiziție intracomunitară
 description: Taxa la o achiziție intracomunitară se înregistrează în luna în care devine exigibilă, prin 4426 = 4427, conform pct. 109 alin. (1) din normele HG 1/2016 — nu la data plății și nu cu o cotă „înghețată" dintr-o perioadă anterioară.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Stabilirea exactă a datei de exigibilitate pentru fiecare tip de operațiune (b
 
 ## Ce face iConta.eu
 
-Calculul taxei aplică formula `TVA = bază × cotă / 100`, cu rotunjire aritmetică (`ROUND_HALF_UP`) la 2 zecimale. Cota nu are valoare implicită — trebuie transmisă explicit la fiecare calcul, tocmai pentru ca o schimbare de cotă prin lege să nu rămână „înghețată" într-o valoare veche folosită din neatenție pentru o perioadă la care nu se mai aplică.
+Calculul taxei aplică formula `TVA = bază × cotă / 100`, cu rotunjire aritmetică („rotunjirea aritmetică (jumătatea în sus)”) la 2 zecimale. Cota nu are valoare implicită — trebuie transmisă explicit la fiecare calcul, tocmai pentru ca o schimbare de cotă prin lege să nu rămână „înghețată" într-o valoare veche folosită din neatenție pentru o perioadă la care nu se mai aplică.
 
 [iConta.eu](/)

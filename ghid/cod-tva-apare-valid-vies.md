@@ -2,7 +2,7 @@
 title: "Ce fac dacă un cod de TVA nu apare valid în VIES?"
 description: "Invalid" și "indisponibil" nu înseamnă același lucru în VIES — un cod invalid schimbă tratamentul fiscal al operațiunii, în timp ce o eroare temporară a serviciului nu spune nimic despre valabilitatea reală a codului.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Prima distincție de făcut: sistemul poate răspunde „cod invalid" sau poate 
 ## Temeiul legal
 
 ::: ghid-temei
-Scutirea LIC cu drept de deducere are condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt stat membru (CF art. 294 alin. 2 lit. a); simetric, la serviciile B2B intracomunitare, prezența unui client non-RO cu cod valid VIES face operațiunea neimpozabilă în România, declarată în D390 (S), iar lipsa unui cod valid o tratează ca B2C, facturată cu TVA românesc (CF art. 278 alin. 2-3) — verificat în dosarul F050, sursă `cod_fiscal_227_2015_consolidat.txt` L18397+ și L17303+.
+Scutirea LIC cu drept de deducere are condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt stat membru (CF art. 294 alin. 2 lit. a); simetric, la serviciile B2B intracomunitare, prezența unui client non-RO cu cod valid VIES face operațiunea neimpozabilă în România, declarată în D390 (S), iar lipsa unui cod valid o tratează ca B2C, facturată cu TVA românesc (CF art. 278 alin. 2-3) —, sursă Codul fiscal (Legea 227/2015), forma consolidată L18397+ și L17303+.
 :::
 
 Dacă e vorba despre codul unui **client**, la o livrare/prestare intracomunitară: fără un cod valid VIES, condiția de fond a scutirii (art. 294 alin. 2 lit. a) sau a neimpozabilității în România (art. 278 alin. 2-3, pentru servicii) nu e îndeplinită — operațiunea se tratează, după caz, ca vânzare cu TVA românesc (B2C, la servicii) sau nu poate beneficia de scutirea LIC, până la obținerea unui cod valid.

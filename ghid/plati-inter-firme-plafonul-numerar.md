@@ -2,7 +2,7 @@
 title: "Cum se fac plăți inter-firme peste plafonul de numerar"
 description: "Regulile Legii 70/2015 privind plafoanele de plată în numerar între firme și ce se întâmplă cu sumele care le depășesc."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Regula generală în România este că plățile între firme se fac prin instru
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcție dedicată verificării plafoanelor de numerar: modulul de casierie (`casa.py`) implementează constantele legale din Legea 70/2015 (plafonul de 5.000 lei pentru încasări/plăți către o persoană juridică, plafonul total de 10.000 lei/zi, plafonul de 10.000 lei pentru cash and carry, plafonul de 5.000 lei pentru avansuri spre decontare) și funcția `verifica_plafon`, care semnalează depășirile ca avertisment la fiecare operațiune de casă — util pentru a preveni exact situațiile de mai sus înainte ca acestea să ajungă subiect de control.
+iConta.eu are o funcție dedicată verificării plafoanelor de numerar: modulul de casierie implementează constantele legale din Legea 70/2015 (plafonul de 5.000 lei pentru încasări/plăți către o persoană juridică, plafonul total de 10.000 lei/zi, plafonul de 10.000 lei pentru cash and carry, plafonul de 5.000 lei pentru avansuri spre decontare) și funcția „verificarea plafonului de numerar (Casă)”, care semnalează depășirile ca avertisment la fiecare operațiune de casă — util pentru a preveni exact situațiile de mai sus înainte ca acestea să ajungă subiect de control.
 
 [iConta.eu](/)

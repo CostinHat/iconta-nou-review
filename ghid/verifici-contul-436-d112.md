@@ -2,7 +2,7 @@
 title: Cum verifici contul 436 cu D112?
 description: Contul 436 (CAM) trebuie să corespundă, pe rulaj creditor, cu codul 480 din D112 — singura obligație salarială care nu se împarte pe două coduri, fiind integral în sarcina angajatorului.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Greșeala tipică e confuzia dintre CAM și CAS/CASS ca natură — CAM e cheltu
 
 ## Ce face iConta.eu
 
-Maparea `COD_CONT_D112` din aplicație compară direct codul 480 cu rulajul creditor al contului 436, cu toleranța standard calculată pe numărul de salariați ai lunii. Verdictul (verde/roșu/gri) și cauza divergenței sunt afișate exact ca la celelalte trei conturi verificate.
+Maparea „contul bugetar D112” din aplicație compară direct codul 480 cu rulajul creditor al contului 436, cu toleranța standard calculată pe numărul de salariați ai lunii. Verdictul (verde/roșu/gri) și cauza divergenței sunt afișate exact ca la celelalte trei conturi verificate.
 
 [iConta.eu](/)

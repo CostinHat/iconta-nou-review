@@ -2,7 +2,7 @@
 title: Cum corectez retroactiv regimul fiscal aplicat greșit?
 description: Peste perioade fiscale deja închise, corectarea regimului fiscal cere un pas suplimentar — redeschiderea perioadei, schimbarea vectorului, apoi închiderea la loc.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -16,7 +16,7 @@ Corectarea propriu-zisă a câmpului din Vector fiscal e simplă — problema ap
 Regimul fiscal corect ține de art. 47 și art. 52 din Codul fiscal (condiții de eligibilitate și obligația de ieșire din regimul microîntreprinderilor). Regula tehnică descrisă mai jos e însă o **regulă de produs a iConta**, nu o prevedere legală: aplicația nu permite modificarea vectorului fiscal peste o perioadă fiscală deja închisă, tocmai pentru că declarațiile aferente au fost deja depuse și o schimbare silențioasă ar rescrie trecutul fără urmă.
 :::
 
-Dacă firma nu are nicio perioadă fiscală închisă în intervalul afectat, corecția e o simplă resalvare a câmpului `regim_fiscal` (sau a oricărui alt atribut al vectorului), cu validare imediată.
+Dacă firma nu are nicio perioadă fiscală închisă în intervalul afectat, corecția e o simplă resalvare a câmpului „regimul fiscal (Date firmă)” (sau a oricărui alt atribut al vectorului), cu validare imediată.
 
 Dacă însă există cel puțin o perioadă închisă (chiar dacă nu toate din interval), aplicația refuză direct salvarea, cu un mesaj explicit care indică prima lună blocată și motivul: câmpul decide ce se datorează, iar pentru lunile închise declarațiile s-au depus deja. Calea de corecție e în trei pași, toți consemnați: redeschide perioada afectată (din ecranul Perioade blocate, cu motiv obligatoriu), schimbă vectorul la valoarea corectă, apoi închide perioada la loc.
 

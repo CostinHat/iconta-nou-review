@@ -2,7 +2,7 @@
 title: Cum verific dacă am respectat toate termenele lunii trecute
 description: Semaforul de conformare fiscală nu arată doar ce urmează — marchează roșu, cu motiv, orice declarație a cărei scadență a trecut deja fără o depunere confirmată.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Starea **gri** (nu se poate verifica) poate apărea și pentru perioade trecute,
 
 ## Ce face iConta.eu
 
-Funcția `obligatii_datorate()` din modulul F022 evaluează, la fiecare accesare a ecranului, toate perioadele din trecut ale firmei — nu doar luna curentă — și marchează roșu orice declarație cu termen depășit și fără depunere confirmată. Evaluarea ține cont și de existența reală a firmei/activității în perioada respectivă, astfel încât nu apar restanțe „retroactive" pentru perioade dinainte de înființare sau de prima activitate demonstrabilă.
+Funcția „obligațiile datorate (Control fiscal)” din modulul „Semafor conformare fiscală” evaluează, la fiecare accesare a ecranului, toate perioadele din trecut ale firmei — nu doar luna curentă — și marchează roșu orice declarație cu termen depășit și fără depunere confirmată. Evaluarea ține cont și de existența reală a firmei/activității în perioada respectivă, astfel încât nu apar restanțe „retroactive" pentru perioade dinainte de înființare sau de prima activitate demonstrabilă.
 
 [iConta.eu](/)

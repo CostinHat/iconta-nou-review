@@ -2,7 +2,7 @@
 title: "Cum număr contractele de muncă pentru micro în 2026"
 description: "Definiția legală a salariatului relevant pentru condiția de eligibilitate la regimul micro, inclusiv fracțiunile de normă și contractele de administrare/mandat, potrivit art. 51 din Codul fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Cum se numără, corect, în 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are evidența reală a salariaților firmei, cu un indicator simplu — `are_salariati` — derivat din numărul de rânduri active din tabelul de salariați. Acest indicator confirmă doar prezența salariaților în evidență, nu aplică regulile fine de la art. 51 alin. (4): aplicația **nu însumează automat fracțiunile de normă** pentru a verifica echivalentul unei norme întregi și **nu identifică separat** contractele de administrare/mandat remunerate la nivelul minim ca îndeplinind condiția — aceste verificări rămân manuale, pe baza contractelor efectiv introduse.
+La data acestui ghid, iConta.eu are evidența reală a salariaților firmei, cu un indicator simplu — „are salariați” — derivat din numărul de rânduri active din tabelul de salariați. Acest indicator confirmă doar prezența salariaților în evidență, nu aplică regulile fine de la art. 51 alin. (4): aplicația **nu însumează automat fracțiunile de normă** pentru a verifica echivalentul unei norme întregi și **nu identifică separat** contractele de administrare/mandat remunerate la nivelul minim ca îndeplinind condiția — aceste verificări rămân manuale, pe baza contractelor efectiv introduse.
 
 [iConta.eu](/)

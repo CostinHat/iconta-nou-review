@@ -2,7 +2,7 @@
 title: "Cum declar în D212 dacă am PFA și venituri din chirii?"
 description: "PFA-ul și chiriile se completează în D212 ca surse separate, în cadrul unor categorii diferite de venit — iar chiriile nu intră în cumulul care declanșează CAS, ci doar în cel pentru CASS."
 published: 2026-09-26
-modified: 2026-10-03
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Ce înseamnă practic pentru cele două surse:
 
 ## Ce face iConta.eu
 
-D212 se generează în iConta.eu cu mai multe capitole de venit deodată: activitatea independentă, preluată din Registrul-jurnal de încasări și plăți, și — în lista „Alte venituri” a formularului — chiriile, pentru care aplicația aplică cota forfetară de cheltuieli de 20% și impozitul de 10%. Fișa D212 (`fisa_d212`) rămâne doar pentru venitul din PFA.
+D212 se generează în iConta.eu cu mai multe capitole de venit deodată: activitatea independentă, preluată din Registrul-jurnal de încasări și plăți, și — în lista „Alte venituri” a formularului — chiriile, pentru care aplicația aplică cota forfetară de cheltuieli de 20% și impozitul de 10%. Fișa D212 („fișa de calcul D212 (Declarații)”) rămâne doar pentru venitul din PFA.
 
 Declarația calculează contribuțiile pe cumulurile lor distincte: CAS pe activitatea independentă, CASS pe activitatea independentă și, separat, CASS pe chirii și celelalte venituri de aceeași natură, pe trepte de 6, 12 sau 24 de salarii minime. Contabilul verifică datele introduse (contractele, sumele).
 

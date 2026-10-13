@@ -2,7 +2,7 @@
 title: Cum generează programul contabil notele contabile din e-Factura?
 description: Facturile emise se contabilizează automat, în aceeași tranzacție cu emiterea; facturile primite se contabilizează abia la validare, iar cele intrate prin import SPV/XML rămân necontate.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -47,6 +47,6 @@ O factură cu o linie de marfă (cota standard) și o linie de servicii (cotă r
 
 ## Ce face iConta.eu
 
-La crearea unei facturi emise de tip factură, `creeaza_factura` apelează, în aceeași tranzacție, `_conteaza_la_creare`, care declanșează motorul de contare (`contare_facturi.genereaza_note`). Pentru facturile primite, contarea e amânată la acțiunea de validare (decizie internă R88), tocmai pentru că faptul economic e recunoașterea cheltuielii, nu primirea documentului. `genereaza_note` calculează baza și TVA-ul pe fiecare linie/grup de cotă în parte, nu pe totalul facturii — o corecție explicită pentru facturile mixte. O notă e recunoscută ca „notă de contare" doar dacă atinge un cont de terț (4111/401/404) și fondul sau TVA-ul, fără să atingă trezoreria — definiție folosită și pentru a evita scrierea de două ori a aceleiași note. O factură anulată sau stornată nu primește notă, iar o factură în valută fără curs BNR disponibil nu se contează.
+La crearea unei facturi emise de tip factură, „emiterea facturii (Facturi)” apelează, în aceeași tranzacție, „contarea la emitere”, care declanșează motorul de contare („contarea facturii”). Pentru facturile primite, contarea e amânată la acțiunea de validare (decizie internă R88), tocmai pentru că faptul economic e recunoașterea cheltuielii, nu primirea documentului. „contarea facturii” calculează baza și TVA-ul pe fiecare linie/grup de cotă în parte, nu pe totalul facturii — o corecție explicită pentru facturile mixte. O notă e recunoscută ca „notă de contare" doar dacă atinge un cont de terț (4111/401/404) și fondul sau TVA-ul, fără să atingă trezoreria — definiție folosită și pentru a evita scrierea de două ori a aceleiași note. O factură anulată sau stornată nu primește notă, iar o factură în valută fără curs BNR disponibil nu se contează.
 
 [iConta.eu](/)

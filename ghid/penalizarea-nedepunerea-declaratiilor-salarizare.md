@@ -2,7 +2,7 @@
 title: "Penalizarea pentru nedepunerea declarațiilor de salarizare"
 description: "Amenda pentru nedepunerea la termen a D112 și riscul mult mai grav, separat, al reținerii fără virare a impozitelor și contribuțiilor salariale."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Două niveluri de risc, distincte, pentru o firmă cu salariați:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează D112 și urmărește termenul ei de depunere prin aplicație (`obligatii_datorate()`, cu callback-ul `d112_fapt`, verificat față de scadența calculată pentru fiecare lună). Aplicația nu calculează și nu afișează cuantumul amenzii pentru nedepunere și nu distinge, în avertismentele generate, între simpla întârziere a declarației și riscul mult mai grav al reținerii fără virare a sumelor din salarii — urmărirea scadenței arată doar dacă D112 e restantă, nu și consecința financiară potențială.
+La data acestui ghid, iConta.eu generează D112 și urmărește termenul ei de depunere prin aplicație („obligațiile datorate (Control fiscal)”, cu callback-ul „verificarea D112 (Control fiscal)”, verificat față de scadența calculată pentru fiecare lună). Aplicația nu calculează și nu afișează cuantumul amenzii pentru nedepunere și nu distinge, în avertismentele generate, între simpla întârziere a declarației și riscul mult mai grav al reținerii fără virare a sumelor din salarii — urmărirea scadenței arată doar dacă D112 e restantă, nu și consecința financiară potențială.
 
 [iConta.eu](/)

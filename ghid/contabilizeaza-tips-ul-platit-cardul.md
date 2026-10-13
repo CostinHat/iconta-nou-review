@@ -2,7 +2,7 @@
 title: Cum se contabilizează tips-ul plătit cu cardul separat de nota de consum?
 description: Chiar plătit separat de consumație, printr-o tranzacție de card distinctă, bacșișul urmează același traseu contabil ca cel inclus pe bon.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ La distribuire, procedura e identică: `462 = 446` (impozitul de 10% reținut la
 
 ## Ce face iConta.eu
 
-Funcția `nota_incasare(bacsis, sursa="card")` din modulul F010 tratează fiecare încasare de bacșiș ca operațiune de sine stătătoare, indiferent dacă a fost plătită împreună cu consumația sau separat — nota generată e mereu `461=462` + `5121=461`, niciodată legată de altă tranzacție. Respinge orice sumă mai mică sau egală cu zero, cu mesaj dedicat.
+Funcția „nota de încasare (HoReCa, bacșiș)” din modulul „Bacșiș HoReCa” tratează fiecare încasare de bacșiș ca operațiune de sine stătătoare, indiferent dacă a fost plătită împreună cu consumația sau separat — nota generată e mereu `461=462` + `5121=461`, niciodată legată de altă tranzacție. Respinge orice sumă mai mică sau egală cu zero, cu mesaj dedicat.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Ce se întâmplă dacă un SRL nou face prima achiziție intracomunitară?"
 description: "Ce trebuie verificat înainte de prima achiziție intracomunitară de bunuri a unui SRL nou-înființat: cod de TVA, prag de 10.000 euro și înregistrarea specială."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,9 +13,9 @@ Un SRL nou-înființat care face prima achiziție de bunuri dintr-un alt stat me
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 268 alin. (5)/(6) — plafon 10.000 €: „…valoarea totală a acestor achiziții intracomunitare nu depășește pe parcursul anului calendaristic curent sau nu a depășit pe parcursul anului calendaristic anterior plafonul de 10.000 euro, al cărui echivalent în lei este stabilit prin normele metodologice.” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L16639)
+CF art. 268 alin. (5)/(6) — plafon 10.000 €: „…valoarea totală a acestor achiziții intracomunitare nu depășește pe parcursul anului calendaristic curent sau nu a depășit pe parcursul anului calendaristic anterior plafonul de 10.000 euro, al cărui echivalent în lei este stabilit prin normele metodologice.” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 
-CF art. 317: „Înregistrare specială pentru neplătitori care fac AIC peste plafon sau servicii IC (alin. 1 lit. a-d).” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L21049-21160)
+CF art. 317: „Înregistrare specială pentru neplătitori care fac AIC peste plafon sau servicii IC (alin. 1 lit. a-d).” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Dacă firma e deja înregistrată normal ca plătitoare de TVA (art. 316), prima achiziție intracomunitară de bunuri urmează regula obișnuită: furnizorul UE facturează fără TVA (dacă are cod de TVA valid al cumpărătorului), iar firma din România calculează TVA prin taxare inversă și declară operațiunea în D390.
@@ -32,8 +32,8 @@ Dacă firma **nu** e plătitoare de TVA (caz frecvent la un SRL nou, sub plafonu
 
 ## Ce face iConta.eu
 
-Profilul firmei conține câmpurile `operatiuni_ic` (Da/Nu — decide D390/VIES) și `inreg_art317` (Înregistrată art. 317), care influențează direct corectitudinea D390 și marcajul `pers_inreg` în D301.
+Profilul firmei conține câmpurile „operațiuni intracomunitare (Date firmă)” (Da/Nu — decide D390/VIES) și „înregistrare art.317 (Date firmă)” (Înregistrată art. 317), care influențează direct corectitudinea D390 și marcajul `pers_inreg` în D301.
 
-**Important:** cercetarea care stă la baza acestui ghid nu a găsit, în codul citit, o urmărire automată, cumulativă pe an, a plafonului de 10.000 euro pentru achiziții intracomunitare de bunuri — câmpul `inreg_art317` e un flag manual, bifat de utilizator, nu rezultatul unui calcul automat al aplicației. Verificarea depășirii plafonului rămâne, pe baza acestei cercetări, în sarcina firmei/contabilului, la fiecare achiziție intracomunitară nouă.
+**Important:** cercetarea care stă la baza acestui ghid nu a găsit, în codul citit, o urmărire automată, cumulativă pe an, a plafonului de 10.000 euro pentru achiziții intracomunitare de bunuri — câmpul „înregistrare art.317 (Date firmă)” e un flag manual, bifat de utilizator, nu rezultatul unui calcul automat al aplicației. Verificarea depășirii plafonului rămâne, pe baza acestei cercetări, în sarcina firmei/contabilului, la fiecare achiziție intracomunitară nouă.
 
 [iConta.eu](/)

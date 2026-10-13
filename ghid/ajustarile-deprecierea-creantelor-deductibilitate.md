@@ -2,7 +2,7 @@
 title: "Ajustările pentru deprecierea creanțelor: deductibilitate"
 description: "Deductibilitatea ajustărilor pentru deprecierea creanțelor se stabilește prin verificarea, în ordine, a garantării, afilierii, stadiului de faliment/insolvență și, în lipsa acestuia, a numărului de zile de la scadență."
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Cheltuiala de constituire a ajustării (6814) e ea însăși încadrată la chel
 
 ## Ce face iConta.eu
 
-`deductibilitate_creanta(zile_depasire_scadenta, garantata, afiliata, faliment_declarat)` din aplicație parcurge exact această ordine de verificare și generează nota `6814=491` pentru constituire. Aplicația nu calculează automat numărul de zile de întârziere sau stadiul procedurii de insolvență a debitorului — aceste date se introduc manual, pe baza documentelor firmei.
+„deductibilitatea creanței (Operațiuni speciale)” din aplicație parcurge exact această ordine de verificare și generează nota `6814=491` pentru constituire. Aplicația nu calculează automat numărul de zile de întârziere sau stadiul procedurii de insolvență a debitorului — aceste date se introduc manual, pe baza documentelor firmei.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Retururi și refulări online 2026: impact pe casierie"
 description: "Cât poate restitui în numerar un magazin online atunci când un client returnează marfa, și când restituirea trebuie făcută obligatoriu prin bancă."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Concret, pentru un retur online plătit inițial ramburs sau cash la livrare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un modul dedicat de gestiune a rambursurilor de comerț electronic** care să verifice automat plafonul din art. 9 alin. (2) la momentul restituirii. Aplicația oferă evidența generală de casierie, cu plafoanele de încasare/plată în numerar prevăzute de Legea 70/2015 și verificarea lor pe operațiunile introduse (`verifica_plafon`), dar restituirea specifică unui retur din vânzare online rămâne o operațiune pe care contabilul o introduce și încadrează manual, urmărind el însuși plafonul de 10.000 lei.
+La data acestui ghid, iConta.eu **nu are un modul dedicat de gestiune a rambursurilor de comerț electronic** care să verifice automat plafonul din art. 9 alin. (2) la momentul restituirii. Aplicația oferă evidența generală de casierie, cu plafoanele de încasare/plată în numerar prevăzute de Legea 70/2015 și verificarea lor pe operațiunile introduse („verificarea plafonului de numerar (Casă)”), dar restituirea specifică unui retur din vânzare online rămâne o operațiune pe care contabilul o introduce și încadrează manual, urmărind el însuși plafonul de 10.000 lei.
 
 [iConta.eu](/)

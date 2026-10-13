@@ -2,7 +2,7 @@
 title: Cum se încarcă raportul Z în contabilitate
 description: Raportul Z zilnic al casei de marcat intră în contabilitate fie prin importul fișierului AMEF (p7b/XML), fie introdus manual — cele două căi produc note diferite ca statut. Vezi ce face fiecare.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Cea mai frecventă greșeală e introducerea manuală repetată a aceluiași Z (
 
 ## Ce face iConta.eu
 
-Ecranul „Raport Z" oferă ambele căi pe același formular. Importul de fișier apelează parserul propriu pentru structura AMEF și generează o notă ciornă (`repo_contabilitate.nota_amef_ciorna`); introducerea manuală (funcția `horeca_raport_z`) validează matematic totalurile (numerar+card = total pe cote) și generează nota direct ca validată. Unicitatea pe NUI+număr e impusă și la nivel de bază de date, printr-un index unic — nu doar prin verificarea din aplicație.
+Ecranul „Raport Z" oferă ambele căi pe același formular. Importul de fișier apelează parserul propriu pentru structura AMEF și generează o notă ciornă („nota raportului Z”); introducerea manuală (funcția „raportul Z introdus manual (HoReCa)”) validează matematic totalurile (numerar+card = total pe cote) și generează nota direct ca validată. Unicitatea pe NUI+număr e impusă și la nivel de bază de date, printr-un index unic — nu doar prin verificarea din aplicație.
 
 [iConta.eu](/)

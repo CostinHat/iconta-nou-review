@@ -2,7 +2,7 @@
 title: "Înregistrarea noilor asociați străini la ONRC"
 description: "Regula legală pentru intrarea unui nou asociat — inclusiv străin — într-un SRL prin cesiune de părți sociale și înscrierea ei la registrul comerțului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Un nou asociat, cetățean străin sau persoană juridică străină, intră de 
 
 ## Ce face iConta.eu
 
-Din verificarea codului, iConta.eu **nu are o funcționalitate pentru cesiunea de părți sociale sau pentru înregistrarea la ONRC a unui asociat nou**, fie el român sau străin. Singurul modul învecinat, F007, importă o listă de asociați (nume, CNP/CUI, cotă) dintr-un fișier .xlsx/.csv, exclusiv la migrarea unei firme deja existente în aplicație — nu depune și nu generează nimic către registrul comerțului, iar validarea CNP din import acoperă doar formatul românesc de 13 cifre, fără o logică dedicată identificării asociaților străini. Cesiunea de părți sociale și depunerea la ONRC rămân, la acest moment, în afara iConta.eu.
+Din verificarea codului, iConta.eu **nu are o funcționalitate pentru cesiunea de părți sociale sau pentru înregistrarea la ONRC a unui asociat nou**, fie el român sau străin. Singurul modul învecinat, „Import asociați (migrare)”, importă o listă de asociați (nume, CNP/CUI, cotă) dintr-un fișier .xlsx/.csv, exclusiv la migrarea unei firme deja existente în aplicație — nu depune și nu generează nimic către registrul comerțului, iar validarea CNP din import acoperă doar formatul românesc de 13 cifre, fără o logică dedicată identificării asociaților străini. Cesiunea de părți sociale și depunerea la ONRC rămân, la acest moment, în afara iConta.eu.
 
 [iConta.eu](/)

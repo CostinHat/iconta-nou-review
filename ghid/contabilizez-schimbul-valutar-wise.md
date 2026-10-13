@@ -2,7 +2,7 @@
 title: "Cum contabilizez schimbul valutar făcut în Wise?"
 description: "Cum se înregistrează un schimb valutar făcut printr-un cont Wise, cu diferența de curs recunoscută ca venit sau cheltuială financiară, și de unde ia iConta.eu cursul BNR de referință."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,7 +38,7 @@ Mecanic, un schimb valutar (de exemplu conversia soldului unui cont în valută,
 
 ## Ce face iConta.eu
 
-Motorul de curs valutar (F025, aplicația) preia și aplică automat cursul BNR pentru facturile în valută, conform regulii legale a ultimului curs comunicat, valabil la data operațiunii — sursă unică de conversie folosită de TVA, D300, D390, D394, D406 și de contarea facturilor din aplicație. Acesta e reperul legal de curs pe care contabilul îl poate folosi ca punct de plecare și pentru operațiunile de trezorerie, inclusiv un schimb valutar făcut printr-un cont Wise.
+Motorul de curs valutar („Curs valutar BNR”, aplicația) preia și aplică automat cursul BNR pentru facturile în valută, conform regulii legale a ultimului curs comunicat, valabil la data operațiunii — sursă unică de conversie folosită de TVA, D300, D390, D394, D406 și de contarea facturilor din aplicație. Acesta e reperul legal de curs pe care contabilul îl poate folosi ca punct de plecare și pentru operațiunile de trezorerie, inclusiv un schimb valutar făcut printr-un cont Wise.
 
 iConta.eu nu are însă un modul dedicat de „schimb valutar" sau de conectare la platforme de tip Wise — o astfel de operațiune se înregistrează ca **notă contabilă manuală** (ieșire din contul sursă, intrare în contul destinație, diferența de curs pe 665/765), folosind cursul de referință afișat de aplicație doar ca sprijin de verificare, nu ca sursă automată a operațiunii de schimb.
 

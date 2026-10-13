@@ -2,7 +2,7 @@
 title: Cum închid un SRL cu sold în contul 455?
 description: Ce se întâmplă cu un sold rămas în contul 455 „Sume datorate acționarilor/asociaților" la lichidarea unei societăți și de ce nu se stinge automat prin operațiunea de partaj din iConta.eu.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -21,12 +21,12 @@ Textul de mai sus confirmă principiul general: **lichidarea presupune întâi p
 
 ## Ce se greșește în practică
 
-Cea mai frecventă confuzie este între contul **455** (datorii ale societății către asociați, de regulă împrumuturi) și contul **456** „Decontări cu acționarii/asociații privind capitalul" — cel folosit efectiv la partajul final. Contabilii care rulează direct operația de „Partaj către asociați" din iConta.eu se așteaptă uneori ca soldul din 455 să fie preluat automat de această operație. Nu este cazul: motorul de lichidare din iConta.eu (funcția `partaj`) operează explicit pe capital social, rezerve și profituri, toate contra contului 456, nu pe 455.
+Cea mai frecventă confuzie este între contul **455** (datorii ale societății către asociați, de regulă împrumuturi) și contul **456** „Decontări cu acționarii/asociații privind capitalul" — cel folosit efectiv la partajul final. Contabilii care rulează direct operația de „Partaj către asociați" din iConta.eu se așteaptă uneori ca soldul din 455 să fie preluat automat de această operație. Nu este cazul: motorul de lichidare din iConta.eu (funcția „partajul”) operează explicit pe capital social, rezerve și profituri, toate contra contului 456, nu pe 455.
 
 ## Ce face iConta.eu
 
-Funcția `partaj` din motorul de lichidare al iConta.eu produce trei tipuri de note contabile: capitalul social, tratat ca neimpozabil (1012=456); rezervele și profiturile, tratate ca „câștig impozabil" cu cota de impozit pe dividend (1061/1171=456, apoi 456=446 pentru impozit și 456=5121 pentru netul plătit asociatului). Contul 455 nu apare în această monografie predefinită.
+Funcția „partajul” din motorul de lichidare al iConta.eu produce trei tipuri de note contabile: capitalul social, tratat ca neimpozabil (1012=456); rezervele și profiturile, tratate ca „câștig impozabil" cu cota de impozit pe dividend (1061/1171=456, apoi 456=446 pentru impozit și 456=5121 pentru netul plătit asociatului). Contul 455 nu apare în această monografie predefinită.
 
-Un sold pe 455 rămas la data lichidării trebuie deci stins separat, prin operațiunile obișnuite de plată/încasare din aplicație (de exemplu restituirea împrumutului către asociat), **înainte** de a rula operația de partaj — nu există în F057 o funcție dedicată de stingere automată a contului 455. Dosarul de cercetare nu a găsit local (în Anexele OMFP 897/2015, indisponibile în corpusul verificat) o monografie contabilă oficială specifică pentru acest caz, așa că tratamentul exact rămâne o decizie profesională a contabilului, aplicată prin operațiunile standard, nu prin ecranul de lichidare.
+Un sold pe 455 rămas la data lichidării trebuie deci stins separat, prin operațiunile obișnuite de plată/încasare din aplicație (de exemplu restituirea împrumutului către asociat), **înainte** de a rula operația de partaj — nu există în „Lichidare/radiere societate” o funcție dedicată de stingere automată a contului 455. Dosarul de cercetare nu a găsit local (în Anexele OMFP 897/2015, indisponibile în corpusul verificat) o monografie contabilă oficială specifică pentru acest caz, așa că tratamentul exact rămâne o decizie profesională a contabilului, aplicată prin operațiunile standard, nu prin ecranul de lichidare.
 
 [iConta.eu](/)

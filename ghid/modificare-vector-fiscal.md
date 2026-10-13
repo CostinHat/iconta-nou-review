@@ -2,7 +2,7 @@
 title: "Modificare vector fiscal: când și cum"
 description: "Ce este vectorul fiscal al unei firme, când trebuie actualizat prin declarația de mențiuni și ce câmpuri gestionează efectiv iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Situații tipice care cer actualizarea vectorului fiscal:
 
 ## Ce face iConta.eu
 
-iConta.eu tratează vectorul fiscal ca pe o **afirmație declarată de utilizator**, nu ca pe o stare derivată automat din ANAF: regimul fiscal (micro/profit), statutul de plătitor de TVA, tipul de decont și periodicitatea se configurează manual în ecranul firmei, iar declarațiile generate (D100/D101, D300/D394/D390 etc.) urmează strict aceste setări. Motorul de scadențe (funcția `declaratii_datorate`) semnalează ce declarații decurg din vectorul configurat, dar generatoarele individuale de declarații nu refuză o declarație doar pentru că nu se potrivește regimului setat — nu există o astfel de validare încrucișată. Aplicația **nu depune ea însăși declarația de mențiuni la ANAF** și nu detectează automat momentul în care vectorul real al firmei ar trebui schimbat — actualizarea rămâne o decizie și o acțiune a contabilului, atât în aplicație, cât și la ANAF.
+iConta.eu tratează vectorul fiscal ca pe o **afirmație declarată de utilizator**, nu ca pe o stare derivată automat din ANAF: regimul fiscal (micro/profit), statutul de plătitor de TVA, tipul de decont și periodicitatea se configurează manual în ecranul firmei, iar declarațiile generate (D100/D101, D300/D394/D390 etc.) urmează strict aceste setări. Motorul de scadențe (funcția „declarațiile datorate (Control fiscal)”) semnalează ce declarații decurg din vectorul configurat, dar generatoarele individuale de declarații nu refuză o declarație doar pentru că nu se potrivește regimului setat — nu există o astfel de validare încrucișată. Aplicația **nu depune ea însăși declarația de mențiuni la ANAF** și nu detectează automat momentul în care vectorul real al firmei ar trebui schimbat — actualizarea rămâne o decizie și o acțiune a contabilului, atât în aplicație, cât și la ANAF.
 
 [iConta.eu](/)

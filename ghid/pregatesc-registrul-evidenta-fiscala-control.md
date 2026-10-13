@@ -2,7 +2,7 @@
 title: "Cum pregătesc registrul de evidență fiscală pentru control?"
 description: "Registrul de evidență fiscală e un document intern obligatoriu, cu conținut diferit pentru firmele la profit față de persoanele fizice, care se prezintă la control, nu se depune periodic."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Registrul de evidență fiscală e unul dintre documentele pe care organul de in
 
 ## Ce face iConta.eu
 
-Verificarea codului sursă arată că iConta.eu are un modul dedicat (`registru_evidenta_fiscala`) care tratează explicit cele **două registre ca fiind distincte**: varianta pentru impozit pe profit se derivă din sursele deja existente în aplicație (declarația D101 și evidența contabilă), în timp ce varianta pentru persoane fizice urmează structura din OMFP 3254/2017. Aplicația construiește registrul din date deja introduse, astfel încât utilizatorul nu trebuie să îl completeze manual de la zero înainte de un control.
+Verificarea codului sursă arată că iConta.eu are un modul dedicat („registrul de evidență fiscală (Registre)”) care tratează explicit cele **două registre ca fiind distincte**: varianta pentru impozit pe profit se derivă din sursele deja existente în aplicație (declarația D101 și evidența contabilă), în timp ce varianta pentru persoane fizice urmează structura din OMFP 3254/2017. Aplicația construiește registrul din date deja introduse, astfel încât utilizatorul nu trebuie să îl completeze manual de la zero înainte de un control.
 
 [iConta.eu](/)

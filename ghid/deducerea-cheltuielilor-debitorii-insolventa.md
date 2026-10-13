@@ -2,7 +2,7 @@
 title: "Deducerea cheltuielilor cu debitorii în insolvență"
 description: "La un debitor în faliment/insolvență declarată, ajustarea de 100% e disponibilă imediat, fără prag de zile — dar pierderea finală, la închiderea procedurii, are propriul regim de deductibilitate, cu condiții separate."
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Un debitor aflat în faliment declarat sau insolvență generează, pentru credi
 
 ## Ce face iConta.eu
 
-`deductibilitate_creanta(..., faliment_declarat=True)` din aplicație întoarce 100% (cu condiția negarantării și neafilierii) și generează nota `6814=491`. Aplicația nu modelează scoaterea din evidență a creanței la închiderea procedurii de faliment — pierderea finală rămasă neacoperită, condiționată de hotărârea judecătorească de închidere, se tratează separat, manual.
+„deductibilitatea creanței (Operațiuni speciale)” din aplicație întoarce 100% (cu condiția negarantării și neafilierii) și generează nota `6814=491`. Aplicația nu modelează scoaterea din evidență a creanței la închiderea procedurii de faliment — pierderea finală rămasă neacoperită, condiționată de hotărârea judecătorească de închidere, se tratează separat, manual.
 
 [iConta.eu](/)

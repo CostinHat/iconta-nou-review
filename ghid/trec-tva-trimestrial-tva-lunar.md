@@ -2,7 +2,7 @@
 title: "Când trec de la TVA trimestrial la TVA lunar?"
 description: "Momentul legal în care o firmă cu perioadă fiscală trimestrială pentru TVA trece obligatoriu la perioadă lunară, potrivit art. 322 din Codul fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Regula, tradusă în momentul concret de trecere:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu numără automat plafonul de 100.000 euro** al anului precedent și nu decide singură trecerea firmei de la trimestrial la lunar — aceasta e o verificare pe care contabilul o face și o reflectă în profilul firmei (`tip_decont`). Aplicația are însă un modul dedicat care leagă corect regula legală de periodicitatea afișată: pentru declarațiile a căror perioadă fiscală urmează TVA (D300, D394, D406), aplică art. 322 alin. (1)/(2) exact ca temei, fără să inventeze o regulă proprie și fără să confunde acest temei cu periodicitatea altor declarații.
+La data acestui ghid, iConta.eu **nu numără automat plafonul de 100.000 euro** al anului precedent și nu decide singură trecerea firmei de la trimestrial la lunar — aceasta e o verificare pe care contabilul o face și o reflectă în profilul firmei („periodicitatea TVA (Date firmă)”). Aplicația are însă un modul dedicat care leagă corect regula legală de periodicitatea afișată: pentru declarațiile a căror perioadă fiscală urmează TVA (D300, D394, D406), aplică art. 322 alin. (1)/(2) exact ca temei, fără să inventeze o regulă proprie și fără să confunde acest temei cu periodicitatea altor declarații.
 
 [iConta.eu](/)

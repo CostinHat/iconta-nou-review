@@ -2,7 +2,7 @@
 title: "Cheltuieli cu garanțiile de bună execuție: deductibile"
 description: "Condițiile în care provizionul pentru garanții de bună execuție acordate clienților este deductibil la calculul impozitului pe profit, potrivit Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Condițiile de deductibilitate, punctate de text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are o notă de provizion dedicată (expusă prin ruta `/tenants/{tenant_id}/nota-provizion`) care, la constituirea unui provizion de tip „garanții" (contul 1512), marchează automat operațiunea ca deductibilă fiscal, spre deosebire de celelalte tipuri de provizioane (litigii, dezafectare, restructurare, altele), pe care le marchează nedeductibile — distincție aplicată conform art. 26 alin. (1) lit. b) din Codul fiscal. Aplicația **nu calculează însă suma provizionului** pornind din cota contractuală sau din tariful lucrărilor — suma se introduce de contabil — și nu verifică dacă procentul aplicat corespunde clauzei contractuale. Constituirea la cota corectă, precum și reluarea provizionului la venituri conform termenelor din contract, rămân operațiuni introduse și urmărite manual de contabil.
+La data acestui ghid, iConta.eu are o notă de provizion dedicată (expusă prin ruta aplicația) care, la constituirea unui provizion de tip „garanții" (contul 1512), marchează automat operațiunea ca deductibilă fiscal, spre deosebire de celelalte tipuri de provizioane (litigii, dezafectare, restructurare, altele), pe care le marchează nedeductibile — distincție aplicată conform art. 26 alin. (1) lit. b) din Codul fiscal. Aplicația **nu calculează însă suma provizionului** pornind din cota contractuală sau din tariful lucrărilor — suma se introduce de contabil — și nu verifică dacă procentul aplicat corespunde clauzei contractuale. Constituirea la cota corectă, precum și reluarea provizionului la venituri conform termenelor din contract, rămân operațiuni introduse și urmărite manual de contabil.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Calendar fiscal pentru PFA în 2026: toate scadențele"
 description: "Ce arată (și ce nu arată) ecranul Termene din iConta.eu pentru un PFA — nu un calendar fiscal complet al tuturor obligațiilor unui PFA."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Precizare importantă înainte de a începe: acest ghid explică strict ce arat�
 ## Temeiul legal
 
 ::: ghid-temei
-Motorul comun de calcul al scadențelor „exclude structural D100/D101/D406 din motor” pentru regimul de „partidă simplă” (PFA) — marcaj intern de cod `neaplic_statut`.
+Motorul comun de calcul al scadențelor „exclude structural D100/D101/D406 din motor” pentru regimul de „partidă simplă” (PFA) — marcaj intern de cod „nu se aplică”.
 :::
 
 Documentația funcțională a aplicației nu leagă acest comportament de un articol de lege citat verbatim în cercetarea disponibilă — e o regulă de aplicare internă, verificată direct în codul motorului de scadențe.

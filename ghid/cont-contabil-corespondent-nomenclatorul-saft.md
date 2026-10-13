@@ -2,7 +2,7 @@
 title: Ce faci dacă un cont contabil nu are corespondent în nomenclatorul SAF-T?
 description: Un cont fără mapare validă blochează validarea fișierului D406 — explicăm de unde vine nomenclatorul și ce limite are confirmarea tehnică disponibilă.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -16,7 +16,7 @@ Fișierul D406 nu acceptă conturi "libere" — fiecare cont raportat trebuie ma
 „MasterFiles ... Conţine date preluate din Registrul-jurnal, furnizori, clienţi, produse, stocuri, active etc." — cu subsecțiuni detaliate: GeneralLedgerAccounts (conturi, tip, solduri) ... — OPANAF nr. 1783/2021, Anexa 1, pct. 4-5.
 :::
 
-Important de clarificat: nomenclatoarele tehnice care descriu forma acceptată a conturilor (`d406_nomenclatoare_anaf.properties`, `d406_schema_anaf.xlsx` — sursa planurilor de conturi acceptate pe normă și a nomenclatoarelor SAF-T pentru payment method, UoM, TaxCode) **nu conțin obligații de depunere** — sunt doar structură XML, nu temei normativ de sine stătător. Temeiul obligației rămâne OPANAF 1783/2021 (structura declarației) și OPANAF 407/2025 (cine e obligat). Nomenclatorul e mijlocul tehnic prin care se respectă structura cerută, nu sursa obligației.
+Important de clarificat: nomenclatoarele tehnice care descriu forma acceptată a conturilor (nomenclatoarele SAF-T publicate de ANAF, schema SAF-T (D406) publicată de ANAF — sursa planurilor de conturi acceptate pe normă și a nomenclatoarelor SAF-T pentru payment method, UoM, TaxCode) **nu conțin obligații de depunere** — sunt doar structură XML, nu temei normativ de sine stătător. Temeiul obligației rămâne OPANAF 1783/2021 (structura declarației) și OPANAF 407/2025 (cine e obligat). Nomenclatorul e mijlocul tehnic prin care se respectă structura cerută, nu sursa obligației.
 
 ## Ce se greșește în practică
 
@@ -24,7 +24,7 @@ Greșeala tipică este să se lase contul nemapat "pentru mai târziu" și să s
 
 ## Ce face iConta.eu
 
-Validarea fișierului D406 se face cu validatorul oficial `DUKIntegrator_AnLunaUI.jar` (integrat prin aplicație, funcția `valideaza(xml, tip, an=, luna=)`) — un cont fără corespondent valid în structura acceptată este exact genul de problemă pe care acest pas de validare este menit să o prindă înainte de depunere.
+Validarea fișierului D406 se face cu validatorul oficial validatorul ANAF (DUKIntegrator) (integrat prin aplicație, funcția „validarea”) — un cont fără corespondent valid în structura acceptată este exact genul de problemă pe care acest pas de validare este menit să o prindă înainte de depunere.
 
 Dosarul de cercetare pentru acest ghid nu conține o descriere a unui ecran dedicat, în iConta.eu, pentru rezolvarea punctuală a unui cont nemapat — dacă întâmpinați această situație, cel mai sigur pas este verificarea planului de conturi al firmei și, dacă problema persistă, contactarea suportului iConta.eu cu exemplul concret al contului respectiv.
 

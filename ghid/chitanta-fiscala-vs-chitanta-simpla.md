@@ -2,7 +2,7 @@
 title: "Chitanța fiscală vs chitanța simplă: când folosesc fiecare"
 description: "Diferența dintre bonul fiscal emis de aparatul de marcat electronic (numit popular «chitanță fiscală») și chitanța document justificativ din OMFP 2634/2015."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Distincția, aplicată:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația (`pdf_chitanta()`) generează chitanța document justificativ (Cod 14-4-1), pentru situațiile în care ea e cerută. Emiterea propriu-zisă a bonului fiscal rămâne, evident, în sarcina aparatului de marcat electronic fiscal — iConta.eu preia rezultatul lui prin aplicație (`parseaza_raport_z()`), care citește raportul de închidere zilnică, nu bonurile individuale.
+La data acestui ghid, aplicația („chitanța tipărită (Casă)”) generează chitanța document justificativ (Cod 14-4-1), pentru situațiile în care ea e cerută. Emiterea propriu-zisă a bonului fiscal rămâne, evident, în sarcina aparatului de marcat electronic fiscal — iConta.eu preia rezultatul lui prin aplicație („citirea raportului Z”), care citește raportul de închidere zilnică, nu bonurile individuale.
 
 [iConta.eu](/)

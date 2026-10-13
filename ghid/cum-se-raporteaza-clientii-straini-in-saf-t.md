@@ -2,7 +2,7 @@
 title: Cum se raportează clienții străini în SAF-T?
 description: Clienții din UE se raportează cu prefixul "01"+țară+cod TVA (excepție Grecia, "EL"), iar cei din afara UE cu prefixul "02"+țară+cod, potrivit formatului oficial S.C.1 din schema ANAF.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -17,9 +17,9 @@ Fișierul SAF-T folosește un format standardizat de identificare a partenerilor
 (denumire, adresa, cod de înregistrare fiscală), contul analitic în care este înregistrat
 soldul clientului respectiv, soldul iniţial debitor/creditor, sold final debitor/creditor
 etc."
-(opanaf_1783_2021_saft_d406.txt, Anexa 1, pct. 5, tabelul cu structura AuditFile)
+(OPANAF 1783/2021 (SAF-T, D406), Anexa 1, pct. 5, tabelul cu structura AuditFile)
 
-**Notă onestă privind temeiul**: formatul exact al prefixelor de identificare a clienților străini (`01`+țară+cod pentru UE, `02`+țară+cod pentru non-UE, excepția Greciei unde se folosește prefixul VIES `EL`, nu ISO-ul `GR`) nu a fost găsit ca citat verbatim în actele normative citite integral pentru acest dosar (OPANAF 1783/2021, OPANAF 407/2025). Formatul provine din schema tehnică oficială ANAF (foaia "5. Structures" a fișierului `d406_schema_anaf.xlsx`), verificată direct în codul aplicației — nu dintr-un text de lege redat ca atare în sursele parcurse aici. Detaliile tehnice sunt descrise mai jos, în secțiunea explicativă.
+**Notă onestă privind temeiul**: formatul exact al prefixelor de identificare a clienților străini (`01`+țară+cod pentru UE, `02`+țară+cod pentru non-UE, excepția Greciei unde se folosește prefixul VIES `EL`, nu ISO-ul `GR`) nu a fost găsit ca citat verbatim în actele normative citite integral pentru acest dosar (OPANAF 1783/2021, OPANAF 407/2025). Formatul provine din schema tehnică oficială ANAF (foaia "5. Structures" a fișierului schema SAF-T (D406) publicată de ANAF), verificată direct în codul aplicației — nu dintr-un text de lege redat ca atare în sursele parcurse aici. Detaliile tehnice sunt descrise mai jos, în secțiunea explicativă.
 :::
 
 ## Distincția UE vs. non-UE
@@ -43,6 +43,6 @@ Un client din Franța cu cod de TVA `FR12345678901` se raportează ca `01FR12345
 
 ## Ce face iConta.eu
 
-Codul de identificare al clienților străini se construiește automat, prin `_partener_registration_number`: pentru un client din UE se generează `01`+prefix de țară+cod, iar maparea de la codul ISO la prefixul VIES este cablată explicit pentru excepția Greciei (`GR` → `EL`), astfel încât rezultatul respectă exact formatul cerut de schema oficială ANAF. Pentru clienții din afara UE se generează automat prefixul `02`. Rămâne de reținut: câmpul de adresă completă a partenerului (stradă) e în prezent un placeholder în secțiunea Customers/Suppliers — doar localitatea e populată din nomenclator, adresa detaliată a firmei proprii fiind singura raportată complet.
+Codul de identificare al clienților străini se construiește automat, prin „codul partenerului”: pentru un client din UE se generează `01`+prefix de țară+cod, iar maparea de la codul ISO la prefixul VIES este cablată explicit pentru excepția Greciei (`GR` → `EL`), astfel încât rezultatul respectă exact formatul cerut de schema oficială ANAF. Pentru clienții din afara UE se generează automat prefixul `02`. Rămâne de reținut: câmpul de adresă completă a partenerului (stradă) e în prezent un placeholder în secțiunea Customers/Suppliers — doar localitatea e populată din nomenclator, adresa detaliată a firmei proprii fiind singura raportată complet.
 
 [iConta.eu](/)

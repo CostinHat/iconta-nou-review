@@ -2,7 +2,7 @@
 title: "Confuzia dintre cash-flow și profit: greșeală de management"
 description: "De ce o firmă poate avea profit contabil pozitiv și, în același timp, un sold de bani proiectat negativ peste câteva săptămâni — și unde se vede asta în iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Chiar textul reglementării explică sursa confuziei:
 
 ## Ce face iConta.eu
 
-În portalul clientului, ecranul „Cifrele firmei" pune vizual, una sub alta, exact cele două mărimi care se confundă: rândul „Profit" (calculat contabil, pe bază de angajamente, din `documente_api.balanta`) și, imediat dedesubt, secțiunea „Previziune bani (8 săptămâni)" — proiecția de cash pe scadențe, generată de aplicația. Astfel poți avea, pe același ecran, un profit contabil pozitiv și, câteva rânduri mai jos, un sold de bani proiectat care devine negativ peste 3-4 săptămâni — colorat automat cu roșu în interfață. Proiecția e explicit etichetată în aplicație drept „estimare pe scadențele facturilor — orientativ", nu o certitudine, iar ecranul e strict informativ: nu există niciun buton de acțiune, nu se pot programa plăți sau amâna facturi din el.
+În portalul clientului, ecranul „Cifrele firmei" pune vizual, una sub alta, exact cele două mărimi care se confundă: rândul „Profit" (calculat contabil, pe bază de angajamente, din „balanța de verificare”) și, imediat dedesubt, secțiunea „Previziune bani (8 săptămâni)" — proiecția de cash pe scadențe, generată de aplicația. Astfel poți avea, pe același ecran, un profit contabil pozitiv și, câteva rânduri mai jos, un sold de bani proiectat care devine negativ peste 3-4 săptămâni — colorat automat cu roșu în interfață. Proiecția e explicit etichetată în aplicație drept „estimare pe scadențele facturilor — orientativ", nu o certitudine, iar ecranul e strict informativ: nu există niciun buton de acțiune, nu se pot programa plăți sau amâna facturi din el.
 
 [iConta.eu](/)

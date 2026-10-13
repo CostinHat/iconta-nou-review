@@ -2,7 +2,7 @@
 title: "Ce curs valutar folosesc la decontarea unui avans în euro?"
 description: "De ce un avans plătit sau încasat în valută nu generează diferențe de curs și rămâne înregistrat la cursul din ziua plății."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Un avans plătit sau încasat în euro nu se „decontează la un curs" în sens
 
 ## Ce face iConta.eu
 
-Motorul de diferențe de curs valutar din iConta.eu respectă corect limita elementelor monetare: funcția `diferenta()` acceptă doar `tip ∈ {creanta, disponibil, datorie}`, iar un apel cu tipul „avans" ridică o eroare de validare. Aplicația **nu automatizează** o funcție de „diferențe de curs pentru avansuri" — pentru că, legal, o asemenea funcție n-ar avea temei. Ce calculează F041 este diferența de curs pe soldul rămas după regularizarea avansului cu factura finală, dacă acel sold e o creanță sau o datorie efectivă, nedecontată integral.
+Motorul de diferențe de curs valutar din iConta.eu respectă corect limita elementelor monetare: funcția „calculul diferenței de curs” acceptă doar `tip ∈ {creanta, disponibil, datorie}`, iar un apel cu tipul „avans" ridică o eroare de validare. Aplicația **nu automatizează** o funcție de „diferențe de curs pentru avansuri" — pentru că, legal, o asemenea funcție n-ar avea temei. Ce calculează „Diferențe de curs valutar” este diferența de curs pe soldul rămas după regularizarea avansului cu factura finală, dacă acel sold e o creanță sau o datorie efectivă, nedecontată integral.
 
 [iConta.eu](/)

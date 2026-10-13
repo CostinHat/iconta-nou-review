@@ -2,7 +2,7 @@
 title: "Cum verific SAF-T cu gestiunea stocurilor?"
 description: "Când se transmite secțiunea 'Stocuri' din D406 (SAF-T) și cum se verifică față de gestiunea internă a firmei, potrivit OPANAF 1783/2021."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Spre deosebire de restul fișierului standard de control fiscal (D406), care se 
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat generării secțiunii de stocuri pentru SAF-T (`d406_stocuri.py`), care calculează soldurile de mișcări pe perioada cerută (`solduri`) și construiește structura XML necesară (`xml_entry`, `xml_physical_stock`) direct din datele de gestiune ale firmei introduse în modulul de stocuri. Practic, aplicația generează fișierul din aceleași date pe care le folosește și pentru evidența internă de stoc, ceea ce elimină riscul unei discrepanțe „artificiale" între SAF-T și gestiune — dar depunerea rămâne condiționată, ca și în lege, de solicitarea explicită din partea ANAF.
+iConta.eu are un modul dedicat generării secțiunii de stocuri pentru SAF-T, care calculează soldurile de mișcări pe perioada cerută (`solduri`) și construiește structura XML necesară („XML-ul D406 stocuri”, „XML-ul D406 stocuri”) direct din datele de gestiune ale firmei introduse în modulul de stocuri. Practic, aplicația generează fișierul din aceleași date pe care le folosește și pentru evidența internă de stoc, ceea ce elimină riscul unei discrepanțe „artificiale" între SAF-T și gestiune — dar depunerea rămâne condiționată, ca și în lege, de solicitarea explicită din partea ANAF.
 
 [iConta.eu](/)

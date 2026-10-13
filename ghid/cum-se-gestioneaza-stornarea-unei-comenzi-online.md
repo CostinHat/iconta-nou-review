@@ -2,7 +2,7 @@
 title: Cum se gestionează stornarea unei comenzi online
 description: Stornarea în iConta.eu anulează întotdeauna 100% din factură; pentru un retur parțial dintr-o comandă online trebuie emisă manual o factură de corecție cu liniile corecte, nu prin butonul de storno.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -40,6 +40,6 @@ Dacă vânzătorul nu emite la timp factura de corecție pentru un retur pe care
 
 ## Ce face iConta.eu
 
-Funcția de storno (`storneaza`) neagă integral toate liniile facturii originale (`-abs(cantitate)` pe fiecare linie), fără niciun parametru de selecție a liniilor sau de sumă parțială — stornarea e mereu 100%. Pentru o corecție parțială, singura variantă disponibilă azi e construirea manuală a unei facturi de corecție prin fluxul normal de creare a facturii, cu liniile exacte ale returului, fără să se treacă prin funcția de storno. Sistemul nu are un tip de document „autofactură" implementat — situațiile în care obligația de ajustare trece la cumpărător, conform art. 319 alin. (3), nu pot fi emise cu motorul curent.
+Funcția de storno („stornarea”) neagă integral toate liniile facturii originale (cantitatea, cu semn minus pe fiecare linie), fără niciun parametru de selecție a liniilor sau de sumă parțială — stornarea e mereu 100%. Pentru o corecție parțială, singura variantă disponibilă azi e construirea manuală a unei facturi de corecție prin fluxul normal de creare a facturii, cu liniile exacte ale returului, fără să se treacă prin funcția de storno. Sistemul nu are un tip de document „autofactură" implementat — situațiile în care obligația de ajustare trece la cumpărător, conform art. 319 alin. (3), nu pot fi emise cu motorul curent.
 
 [iConta.eu](/)

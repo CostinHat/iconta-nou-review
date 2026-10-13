@@ -2,7 +2,7 @@
 title: Cum tratez fiscal sponsorizările la impozitul pe profit în 2026?
 description: În 2026 se aplică regimul în vigoare din 03.02.2022 — credit fiscal egal cu minimul dintre 0,75% din cifra de afaceri și 20% din impozitul pe profit, condiționat de un contract scris și, pentru entitățile nonprofit/culte, de înscrierea beneficiarului în Registrul ANAF, cu spațiul neconsumat redirecționabil prin D177; facilitatea similară de la impozitul micro nu mai există din 01.01.2024.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -60,8 +60,8 @@ O firmă plătitoare de impozit pe profit are, în 2026, cifra de afaceri 8.000.
 
 ## Ce face iConta.eu
 
-Aplicația implementează regula actuală prin `plafon_credit()` (calculul `min(0,75% × cifra de afaceri, 20% × impozit pe profit)`) și `credit_sponsorizare()` (aplică plafonul, verifică `beneficiar_in_registru` și calculează `redirectionabil_d177`). Pentru un an fiscal precum 2026, această regulă corespunde legii în vigoare. Ramura `tip_impozit="micro"` este dezactivată în afara intervalului 01.04.2019–31.12.2023, deci pentru 2026 returnează corect credit 0 pentru orice sponsorizare a unei microîntreprinderi.
+Aplicația implementează regula actuală prin „plafonul creditului fiscal” (calculul `min(0,75% × cifra de afaceri, 20% × impozit pe profit)`) și „creditul fiscal pentru sponsorizări (Operațiuni speciale)” (aplică plafonul, verifică „beneficiar în registrul entităților” și calculează „suma redirecționabilă prin D177”). Pentru un an fiscal precum 2026, această regulă corespunde legii în vigoare. Ramura tipul de impozit="micro" este dezactivată în afara intervalului 01.04.2019–31.12.2023, deci pentru 2026 returnează corect credit 0 pentru orice sponsorizare a unei microîntreprinderi.
 
-Notele contabile se generează prin `nota_sponsorizare(suma, mod)`, dar doar pentru modurile `"contract"` și `"plata"` — sponsorizarea în natură nu are un mod dedicat și trebuie tratată manual, inclusiv sub aspectul TVA.
+Notele contabile se generează prin „nota de sponsorizare”, dar doar pentru modurile `"contract"` și `"plata"` — sponsorizarea în natură nu are un mod dedicat și trebuie tratată manual, inclusiv sub aspectul TVA.
 
 [iConta.eu](/)

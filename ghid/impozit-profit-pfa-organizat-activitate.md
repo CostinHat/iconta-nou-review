@@ -2,7 +2,7 @@
 title: "Impozit pe profit la PFA organizat ca activitate independentă"
 description: "De ce PFA nu plătește impozit pe profit, ci impozit pe venit din activități independente, conform Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Ce arată clar cele două texte:
 
 ## Ce face iConta.eu
 
-Pentru firmele organizate ca PFA, II sau IF, iConta.eu ține contabilitatea în partidă simplă și generează declarațiile specifice veniturilor din activități independente (D200 — declarația unică, venit estimat, și D201, după caz), nu D100/D101. Ecranul **Date firma** nu cere și nu permite alegerea între micro și profit pentru acest tip de firmă — regimul fiscal (`regim_fiscal`) se cere doar pentru firmele cu contabilitate în partidă dublă, exact pentru a nu induce o alegere care nu are sens legal pentru PFA.
+Pentru firmele organizate ca PFA, II sau IF, iConta.eu ține contabilitatea în partidă simplă și generează declarațiile specifice veniturilor din activități independente (D200 — declarația unică, venit estimat, și D201, după caz), nu D100/D101. Ecranul **Date firma** nu cere și nu permite alegerea între micro și profit pentru acest tip de firmă — regimul fiscal („regimul fiscal (Date firmă)”) se cere doar pentru firmele cu contabilitate în partidă dublă, exact pentru a nu induce o alegere care nu are sens legal pentru PFA.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: 'Evidența global-valorică vs cantitativ-valorică 2026'
 description: Global-valorică (preț cu amănuntul, conturile 371/378/4428) se potrivește magazinelor cu multe articole mărunte; cantitativ-valorică (CMP, pe fiecare articol) se potrivește activităților cu articole urmărite individual — cele două nu se pot combina pe aceeași gestiune.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -44,6 +44,6 @@ Legea permite (pct. 287) folosirea de metode diferite pentru categorii de stocur
 
 ## Ce face iConta.eu
 
-iConta implementează cele două metode ca module separate, complet independente: **F088**, gestiunea global-valorică (coeficient K, conturile 371/378/4428) și **F089**, gestiunea cantitativ-valorică (cost mediu ponderat recalculat după fiecare intrare, fișă de magazie cronologică per articol). Nu există niciun cod care să lege cele două module — o firmă alege, la nivel de gestiune, care mecanism folosește, iar aplicația nu permite combinarea automată a lor pe aceleași articole.
+iConta implementează cele două metode ca module separate, complet independente: **„Stocuri global-valorice”**, gestiunea global-valorică (coeficient K, conturile 371/378/4428) și **„Stocuri cantitativ-valorice (CMP)”**, gestiunea cantitativ-valorică (cost mediu ponderat recalculat după fiecare intrare, fișă de magazie cronologică per articol). Nu există niciun cod care să lege cele două module — o firmă alege, la nivel de gestiune, care mecanism folosește, iar aplicația nu permite combinarea automată a lor pe aceleași articole.
 
 [iConta.eu](/)

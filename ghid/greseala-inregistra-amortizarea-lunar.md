@@ -2,7 +2,7 @@
 title: "Greșeala de a nu înregistra amortizarea lunar"
 description: "De ce omiterea notelor lunare de amortizare nu produce o eroare permanentă, datorită calculului cumulat la zi."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,6 +25,6 @@ Amânarea lunară a înregistrărilor duce la un decalaj tot mai mare între ce 
 
 ## Ce face iConta.eu
 
-Funcțiile de calcul (`amortizat_la_data` pentru cumulat, `amortizare_luna` pentru o singură lună) sunt independente de istoricul înregistrărilor contabile efective — recalculează mereu corect pe baza PIF, valorii și metodei activului. Aceasta e valoarea folosită uniform de registru, de nota lunară, de casare și de reevaluare.
+Funcțiile de calcul („amortizarea cumulată (Mijloace fixe)” pentru cumulat, „amortizarea lunii (Mijloace fixe)” pentru o singură lună) sunt independente de istoricul înregistrărilor contabile efective — recalculează mereu corect pe baza PIF, valorii și metodei activului. Aceasta e valoarea folosită uniform de registru, de nota lunară, de casare și de reevaluare.
 
 [iConta.eu](/)

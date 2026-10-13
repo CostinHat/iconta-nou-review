@@ -2,7 +2,7 @@
 title: "Reacția pieței la noile restricții de numerar 2026"
 description: "Plafoanele actuale pentru încasări și plăți în numerar între firme, între firme și persoane fizice, și de ce comercianții își adaptează practicile de casierie."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Structura actuală a plafoanelor, așa cum rezultă din lege:
 
 ## Ce face iConta.eu
 
-Aplicația conține funcția `verifica_plafon`, care calculează, pe baza operațiunilor de casă înregistrate, dacă plafonul legal a fost depășit — inclusiv distincția pentru cash and carry și pentru avansurile spre decontare, confirmat direct din cod (`plafon_avans_decontare` ca parametru distinct al cotei aplicate). Verificarea acoperă operațiunile trecute prin registrul de casă din aplicație; tranzacțiile în numerar care nu sunt înregistrate prin acest modul nu pot fi, evident, verificate automat.
+Aplicația conține funcția „verificarea plafonului de numerar (Casă)”, care calculează, pe baza operațiunilor de casă înregistrate, dacă plafonul legal a fost depășit — inclusiv distincția pentru cash and carry și pentru avansurile spre decontare, confirmat direct din cod („plafonul avansului spre decontare” ca parametru distinct al cotei aplicate). Verificarea acoperă operațiunile trecute prin registrul de casă din aplicație; tranzacțiile în numerar care nu sunt înregistrate prin acest modul nu pot fi, evident, verificate automat.
 
 [iConta.eu](/)

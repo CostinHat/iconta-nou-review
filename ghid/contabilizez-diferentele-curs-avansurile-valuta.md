@@ -2,7 +2,7 @@
 title: "Cum contabilizez diferențele de curs la avansurile în valută?"
 description: "Răspunsul scurt: nu există. De ce avansurile în valută sunt elemente nemonetare și ce se întâmplă, de fapt, la regularizarea lor."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Practic, pentru un avans plătit unui furnizor extern:
 
 ## Ce face iConta.eu
 
-Aplicația validează explicit tipurile de solduri acceptate la `creanta`, `disponibil` și `datorie` — un avans nu se încadrează în niciuna dintre acestea, iar un apel cu tipul „avans" produce o eroare, nu o notă contabilă. Aplicația **nu are** o funcție dedicată de „diferențe de curs la avansuri", pentru că o asemenea funcție ar contrazice regula elementelor nemonetare. Regularizarea avansului cu factura finală și înregistrarea restului de sold ca datorie/creanță rămân operațiuni pe care contabilul le face separat, prin ecranele de facturare, respectiv de decontare valutară (F041) doar pentru restul rămas, dacă există.
+Aplicația validează explicit tipurile de solduri acceptate la `creanta`, `disponibil` și `datorie` — un avans nu se încadrează în niciuna dintre acestea, iar un apel cu tipul „avans" produce o eroare, nu o notă contabilă. Aplicația **nu are** o funcție dedicată de „diferențe de curs la avansuri", pentru că o asemenea funcție ar contrazice regula elementelor nemonetare. Regularizarea avansului cu factura finală și înregistrarea restului de sold ca datorie/creanță rămân operațiuni pe care contabilul le face separat, prin ecranele de facturare, respectiv de decontare valutară („Diferențe de curs valutar”) doar pentru restul rămas, dacă există.
 
 [iConta.eu](/)

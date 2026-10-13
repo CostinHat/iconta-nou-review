@@ -2,7 +2,7 @@
 title: "Lipsuri peste normele de perisabilitate: deductibile sau nu"
 description: Partea de pierdere care depășește limita HG 831/2004 e nedeductibilă și, suplimentar, atrage ajustare de TVA — cu o singură excepție de la ajustarea de TVA, dacă degradarea calitativă și distrugerea sunt dovedite.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Partea din pierdere care depășește coeficientul de perisabilitate al grupei d
 
 ## Ce face iConta.eu
 
-Motorul F066 generează linia de ajustare TVA (635=4426) doar dacă există parte nedeductibilă ȘI parametrul `degradare_dovedita_distrusa` nu e bifat; dacă e bifat, ajustarea nu se face, indiferent de mărimea depășirii. Decizia că degradarea și distrugerea sunt „dovedite" rămâne o evaluare a contabilului, pe baza documentelor disponibile (proces-verbal de distrugere) — aplicația nu verifică singură existența acestei dovezi.
+Motorul „Perisabilități și scăzăminte” generează linia de ajustare TVA (635=4426) doar dacă există parte nedeductibilă ȘI parametrul „bunuri distruse dovedit” nu e bifat; dacă e bifat, ajustarea nu se face, indiferent de mărimea depășirii. Decizia că degradarea și distrugerea sunt „dovedite" rămâne o evaluare a contabilului, pe baza documentelor disponibile (proces-verbal de distrugere) — aplicația nu verifică singură existența acestei dovezi.
 
 [iConta.eu](/)

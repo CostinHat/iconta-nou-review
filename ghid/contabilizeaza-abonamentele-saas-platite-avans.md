@@ -2,7 +2,7 @@
 title: "Cum se contabilizează abonamentele SaaS plătite în avans de clienți?"
 description: Dacă abonamentul e plătit înainte de a fi facturat, se tratează prin mecanismul de avans client (419). Dacă e deja facturat pentru o perioadă viitoare și trebuie „întins" pe lunile de livrare a serviciului, e o temă de venituri înregistrate în avans, care nu a fost verificată în acest dosar.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,7 +28,7 @@ Dacă abonamentul a fost deja facturat integral pentru o perioadă viitoare (de 
 
 - Se tratează orice plată anticipată pentru un abonament ca „avans" pe contul 419, chiar și atunci când factura a fost deja emisă — dacă factura există deja, discuția nu mai e despre avans (o datorie față de client fără factură), ci despre eșalonarea recunoașterii venitului dintr-o factură deja emisă.
 - Se recunoaște tot venitul din abonament în luna facturării, chiar dacă serviciul se prestează pe parcursul mai multor luni — fără o eșalonare corectă, veniturile lunare raportate nu reflectă prestarea reală a serviciului.
-- Se presupune că mecanismul de avans (419) din F009 rezolvă automat și eșalonarea veniturilor din abonamente deja facturate — sunt mecanisme contabile diferite; avansul (419) privește sume încasate fără factură, nu eșalonarea unei facturi deja emise.
+- Se presupune că mecanismul de avans (419) din „Avansuri furnizori/clienți” rezolvă automat și eșalonarea veniturilor din abonamente deja facturate — sunt mecanisme contabile diferite; avansul (419) privește sume încasate fără factură, nu eșalonarea unei facturi deja emise.
 
 ## Ce face iConta.eu
 

@@ -2,7 +2,7 @@
 title: "Contabilitatea unei firme de leasing operațional: venituri"
 description: "Locatorul păstrează bunul în propriile imobilizări, îl amortizează și recunoaște veniturile din chirii pe măsura facturării, conform contabilității de angajamente."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,6 +28,6 @@ O societate de leasing (locator) care dă bunuri în regim de leasing operațion
 
 ## Ce face iConta.eu
 
-F056 (Leasing financiar și operațional) implementează exclusiv **perspectiva locatarului** — firma care folosește bunul. Cele patru funcții din motorul de leasing (primire bun, rată financiar, valoare reziduală, chirie operațională) nu au niciun corespondent pentru recunoașterea veniturilor unei societăți de leasing. O firmă de leasing operațional (locator) care ar căuta în iConta.eu un ecran pentru propria contabilitate — recunoașterea bunurilor date în leasing și a veniturilor din chirii — nu găsește niciun suport dedicat în aplicație.
+„Leasing financiar și operațional” implementează exclusiv **perspectiva locatarului** — firma care folosește bunul. Cele patru funcții din motorul de leasing (primire bun, rată financiar, valoare reziduală, chirie operațională) nu au niciun corespondent pentru recunoașterea veniturilor unei societăți de leasing. O firmă de leasing operațional (locator) care ar căuta în iConta.eu un ecran pentru propria contabilitate — recunoașterea bunurilor date în leasing și a veniturilor din chirii — nu găsește niciun suport dedicat în aplicație.
 
 [iConta.eu](/)

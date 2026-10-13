@@ -2,7 +2,7 @@
 title: "Cum se distribuie activele rămase între asociați la lichidare?"
 description: "Ce spune legea despre repartizarea în natură a activelor rămase după plata creditorilor și ce dovadă trebuie anexată la cererea de radiere."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,6 +27,6 @@ Separat, când societatea a fost dizolvată pe cale judiciară (de exemplu, la c
 
 ## Ce face iConta.eu
 
-Motorul de partaj din iConta.eu (`lichidare.partaj`) calculează sumele impozabile și neimpozabile pe baza valorilor bănești ale capitalului social, rezervelor și profiturilor — generând notele contabile aferente distribuției în bani către asociați. Aplicația **nu are, la acest moment, o operațiune dedicată repartizării directe a unui activ specific (bun mobil sau imobil) în natură** către un asociat, distinctă de vânzarea activului urmată de distribuirea sumei încasate.
+Motorul de partaj din iConta.eu („partajul”) calculează sumele impozabile și neimpozabile pe baza valorilor bănești ale capitalului social, rezervelor și profiturilor — generând notele contabile aferente distribuției în bani către asociați. Aplicația **nu are, la acest moment, o operațiune dedicată repartizării directe a unui activ specific (bun mobil sau imobil) în natură** către un asociat, distinctă de vânzarea activului urmată de distribuirea sumei încasate.
 
 [iConta.eu](/)

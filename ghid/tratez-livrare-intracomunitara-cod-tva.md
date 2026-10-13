@@ -2,19 +2,13 @@
 title: Cum tratez o livrare intracomunitară fără cod TVA valid
 description: Fără cod de TVA valid al clientului din UE, livrarea nu se poate scuti — se facturează cu TVA românesc, ca o livrare internă, indiferent dacă transportul în alt stat membru e dovedit.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum tratez o livrare intracomunitară fără cod TVA valid
 
 Vinzi bunuri unui client din alt stat membru, dar codul lui de TVA nu e valid — a fost anulat, suspendat, sau firma nu e înregistrată pentru operațiuni intracomunitare. Scutirea de TVA nu se poate aplica, oricât de sigur ai fi că bunurile chiar au plecat din România.
-
-## Temeiul legal
-
-::: ghid-temei
-„`valideaza_lic(cod_tva_client, cod_valid_vies, are_dovada_transport)` — validează condițiile scutirii LIC (art. 294 alin. 2 lit. a): client non-RO + cod valid VIES + dovadă transport; fără oricare din ele → eroare explicită «facturează cu TVA».” — codul aplicației, verificat în dosarul F050; temei: CF art. 294 alin. (2) lit. a).
-:::
 
 Cele două condiții ale scutirii — cod valid comunicat de client + dovada transportului — sunt cumulative. Codul nevalid rupe scutirea de unul singur, indiferent dacă ai și dovada transportului.
 

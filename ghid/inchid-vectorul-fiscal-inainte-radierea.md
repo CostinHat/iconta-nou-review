@@ -2,7 +2,7 @@
 title: Cum închid vectorul fiscal înainte de radierea societății?
 description: Nu există în iConta o funcționalitate de „închidere a vectorului fiscal" — la radiere, contul păstrează ultimul vector salvat, iar radierea propriu-zisă se face în procedura legală externă.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -16,7 +16,7 @@ poarta: v1
 Radierea unei societăți urmează procedura legală de lichidare/dizolvare (OMFP 897/2015, Legea 31/1990 — art. 227 și următoarele, Legea 85/2014 pentru insolvență), depusă la ONRC/ANAF — un proces complet separat de evidența internă a vectorului fiscal din iConta, care nu are un temei legal propriu de „închidere".
 :::
 
-Cercetarea la sursă confirmă direct absența funcționalității: Aplicația are doar două funcții — `citeste` și `salveaza` — fără nicio noțiune de „închis" sau „radiat". Nici motorul de lichidare (care implementează monografiile de valorificare active, încasare creanțe, plată datorii, rezultat pe cont 121, partaj) nu atinge deloc `firma_profil` sau vectorul fiscal.
+Cercetarea la sursă confirmă direct absența funcționalității: Aplicația are doar două funcții — „citirea” și „salvarea” — fără nicio noțiune de „închis" sau „radiat". Nici motorul de lichidare (care implementează monografiile de valorificare active, încasare creanțe, plată datorii, rezultat pe cont 121, partaj) nu atinge deloc „Date firmă” sau vectorul fiscal.
 
 Practic, asta înseamnă: radierea societății se face integral prin procedura legală externă (ONRC pentru dizolvare/lichidare, ANAF pentru scoaterea din evidențele fiscale) — nu printr-un pas din iConta. În aplicație, contul firmei rămâne, după radiere, cu ultimul vector fiscal valabil salvat; nu apare niciun câmp sau status distinct care să marcheze firma drept „radiată".
 
@@ -30,6 +30,6 @@ Dacă întrebarea vine din nevoia de a opri generarea declarațiilor pentru firm
 
 ## Ce face iConta.eu
 
-Nu există, confirmat direct din cod, nicio funcționalitate de „închidere a vectorului fiscal" sau un status de firmă „radiată" în `firma_profil`. Radierea societății e un proces legal extern (ONRC/ANAF), pe care iConta nu îl automatizează sau reflectă printr-un câmp dedicat — contul firmei rămâne cu ultimul vector salvat.
+Nu există, confirmat direct din cod, nicio funcționalitate de „închidere a vectorului fiscal" sau un status de firmă „radiată" în „Date firmă”. Radierea societății e un proces legal extern (ONRC/ANAF), pe care iConta nu îl automatizează sau reflectă printr-un câmp dedicat — contul firmei rămâne cu ultimul vector salvat.
 
 [iConta.eu](/)

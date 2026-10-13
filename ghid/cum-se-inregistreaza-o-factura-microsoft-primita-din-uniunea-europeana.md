@@ -2,7 +2,7 @@
 title: Cum se înregistrează o factură Microsoft primită din Uniunea Europeană?
 description: Facturile Microsoft 365 sau alte licențe Microsoft emise de Microsoft Ireland Operations Limited generează, pentru o firmă română neplătitoare de TVA, obligația de taxare inversă și declarare în Secțiunea 4.1 a D301.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -46,7 +46,7 @@ Suma se declară în Secțiunea 4.1 a D301, pentru luna exigibilității.
 
 ## Ce face iConta.eu
 
-Baza de impozitare se calculează automat de aplicație (`baza = round(val_valuta × curs, 0)`), cu rotunjire aritmetică (`ROUND_HALF_UP`), pe baza cursului introdus manual de contabil — nu există o integrare automată cu cursul BNR sau BCE, iar generarea declarației este refuzată explicit dacă lipsește cursul valutar sau acesta este introdus ca zero. Pentru operațiunile de Secțiunea 4.1, aplicația face rollup automat al bazei și TVA în totalul Secțiunii 4, conform instrucțiunilor OPANAF 592/2016.
+Baza de impozitare se calculează automat de aplicație (baza = round(valoarea în valută × curs, 0)), cu rotunjire aritmetică („rotunjirea aritmetică (jumătatea în sus)”), pe baza cursului introdus manual de contabil — nu există o integrare automată cu cursul BNR sau BCE, iar generarea declarației este refuzată explicit dacă lipsește cursul valutar sau acesta este introdus ca zero. Pentru operațiunile de Secțiunea 4.1, aplicația face rollup automat al bazei și TVA în totalul Secțiunii 4, conform instrucțiunilor OPANAF 592/2016.
 
 Aplicația nu validează automat că furnizorul introdus (de exemplu Microsoft Ireland Operations Limited) este efectiv stabilit în UE — câmpul de țară al partenerului este opțional și liber, iar încadrarea corectă a operațiunii în Secțiunea 4.1 rămâne responsabilitatea contabilului.
 

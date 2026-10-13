@@ -2,7 +2,7 @@
 title: Cum se descarcă stocul la un restaurant, zi de zi?
 description: Vânzările zilnice ale unui restaurant alimentează rulajul lunar al contului 707, dar descărcarea de gestiune propriu-zisă (coeficientul de repartizare aplicat la costul mărfii vândute) se face lunar, nu în fiecare zi.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -50,7 +50,7 @@ Lunar: se adună rulajul total al lui 707 pe luna respectivă, se calculează co
 
 ## Ce face iConta.eu
 
-Fiecare vânzare zilnică alimentează rulajul contului 707, filtrat din sursele de vânzare configurate (ex. `horeca_z` pentru bonurile de casă din HoReCa, `stocuri`, `facturi_marfa`). La finalul lunii, `descarca_luna` adună soldurile inițiale de exercițiu ale conturilor 371, 378, 4428, cumulează rulajele acestor conturi de la 1 ianuarie până la sfârșitul lunii cerute, dar ia vânzările (rulajul creditor al 707) doar pe luna curentă. Dacă în luna respectivă nu există nicio vânzare de mărfuri (`rc_707 == 0`), funcția nu generează note contabile, ci întoarce un rezultat structurat care consemnează explicit acest fapt — nu o eroare.
+Fiecare vânzare zilnică alimentează rulajul contului 707, filtrat din sursele de vânzare configurate (ex. „raportul Z (HoReCa)” pentru bonurile de casă din HoReCa, `stocuri`, „facturile de marfă”). La finalul lunii, „descărcarea lunii (Stocuri)” adună soldurile inițiale de exercițiu ale conturilor 371, 378, 4428, cumulează rulajele acestor conturi de la 1 ianuarie până la sfârșitul lunii cerute, dar ia vânzările (rulajul creditor al 707) doar pe luna curentă. Dacă în luna respectivă nu există nicio vânzare de mărfuri (rulajul creditor 707 == 0), funcția nu generează note contabile, ci întoarce un rezultat structurat care consemnează explicit acest fapt — nu o eroare.
 
 Odată calculat, coeficientul K se aplică la vânzările lunii pentru a obține costul mărfii vândute (607=371) și adaosul descărcat (378=371). TVA-ul descărcat din 4428 rămâne însă o aproximare, calculată dintr-o cotă medie ponderată a stocului, nu din mixul real de cote al bonurilor emise în acea lună — relevant mai ales dacă restaurantul vinde atât produse la cotă redusă (mâncare/băuturi nealcoolice servite), cât și produse la cotă standard (băuturi alcoolice, vânzări la pachet).
 

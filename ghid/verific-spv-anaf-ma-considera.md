@@ -2,7 +2,7 @@
 title: "Cum verific în SPV că ANAF mă consideră micro"
 description: "Încadrarea ca microîntreprindere se verifică direct în Spațiul Privat Virtual al ANAF, pe baza pragului de venituri din Codul fiscal — nu prin conectorul OAuth folosit de iConta.eu pentru e-Factura și e-Transport."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro.
 
 ## Ce face iConta.eu
 
-Verificat direct în cod: funcționalitatea **F176 — Conectorul OAuth SPV/ANAF** gestionează strict autorizarea tehnică dintre iConta și SPV — autentificarea cu certificat calificat, obținerea și reînnoirea tokenului de acces, apelurile către serviciile e-Factura și e-Transport. Nu conține nicio funcție legată de afișarea sau verificarea regimului fiscal (micro vs. profit) al unei firme; căutarea directă în cod nu a găsit nicio referință la „vector fiscal" sau la încadrarea ca microîntreprindere în acest modul. iConta.eu are, separat, o funcționalitate care determină **categoria de mărime a entității** conform OMFP 1802/2014 (folosită pentru a stabili tipul situațiilor financiare datorate) — dar aceasta e un criteriu contabil distinct de plafonul de venituri din art. 47 Cod fiscal și nu răspunde la întrebarea „mă consideră ANAF micro din punct de vedere fiscal". Verificarea propriu-zisă a acestei încadrări, la acest moment, se face direct în SPV, pe portalul ANAF — nu prin conectorul F176 sau prin vreo altă funcționalitate a aplicației.
+Verificat direct în cod: funcționalitatea **„Conectarea la SPV (ANAF)” — Conectorul OAuth SPV/ANAF** gestionează strict autorizarea tehnică dintre iConta și SPV — autentificarea cu certificat calificat, obținerea și reînnoirea tokenului de acces, apelurile către serviciile e-Factura și e-Transport. Nu conține nicio funcție legată de afișarea sau verificarea regimului fiscal (micro vs. profit) al unei firme; căutarea directă în cod nu a găsit nicio referință la „vector fiscal" sau la încadrarea ca microîntreprindere în acest modul. iConta.eu are, separat, o funcționalitate care determină **categoria de mărime a entității** conform OMFP 1802/2014 (folosită pentru a stabili tipul situațiilor financiare datorate) — dar aceasta e un criteriu contabil distinct de plafonul de venituri din art. 47 Cod fiscal și nu răspunde la întrebarea „mă consideră ANAF micro din punct de vedere fiscal". Verificarea propriu-zisă a acestei încadrări, la acest moment, se face direct în SPV, pe portalul ANAF — nu prin conectorul „Conectarea la SPV (ANAF)” sau prin vreo altă funcționalitate a aplicației.
 
 [iConta.eu](/)

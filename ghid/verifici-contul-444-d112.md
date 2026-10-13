@@ -2,7 +2,7 @@
 title: Cum verifici contul 444 cu D112?
 description: Contul 444 (impozit pe venit din salarii) trebuie să corespundă, pe rulaj creditor, cu codul 602 din D112, cu o toleranță de rotunjire proporțională cu numărul de salariați.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Greșeala tipică e compararea contului 444 cu impozitul teoretic calculat manua
 
 ## Ce face iConta.eu
 
-Maparea `COD_CONT_D112` din aplicație compară direct codul 602 cu rulajul creditor al contului 444, folosind suma parsată din XML-ul D112 (depus sau regenerat), nu o reagregare separată a salariaților — pentru a evita exact acest risc de "a treia cifră" divergentă.
+Maparea „contul bugetar D112” din aplicație compară direct codul 602 cu rulajul creditor al contului 444, folosind suma parsată din XML-ul D112 (depus sau regenerat), nu o reagregare separată a salariaților — pentru a evita exact acest risc de "a treia cifră" divergentă.
 
 [iConta.eu](/)

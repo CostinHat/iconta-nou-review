@@ -2,7 +2,7 @@
 title: "Casieria în situațiile financiare 2026: ce raportez"
 description: Diferența dintre gestionarea zilnică a casei (plafoane, registru de casă) și modul în care soldul ei ajunge, la final de an, într-un singur rând din bilanț.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,7 +29,7 @@ Bilanțul trebuie să reflecte fidel patrimoniul firmei la data raportării — 
 Cele două paliere sunt tratate de funcționalități separate, dar conectate:
 
 - **Proveniența soldului** — operațiunile de casă validate în cursul anului (funcționalitatea de registru de casă și plafoane, aplicația) formează, prin rulaje, soldul final al conturilor 531/532 din balanța de verificare.
-- **Raportarea în bilanț** — motorul de generare a bilanțului (`f10_din_balanta`) preia soldurile finale ale conturilor 5112, 512, **531, 532**, 541, 542 și le cumulează pe rândul de disponibilități al formularului F10.
+- **Raportarea în bilanț** — motorul de generare a bilanțului („bilanțul din balanță (Bilanț)”) preia soldurile finale ale conturilor 5112, 512, **531, 532**, 541, 542 și le cumulează pe rândul de disponibilități al formularului F10.
 
 Practic, dacă soldul de casă de la sfârșitul anului nu e cel așteptat în bilanț, cauza aproape sigur se află în operațiunile de casă validate în cursul anului, nu în motorul de mapare al bilanțului — verificarea corectă începe din registrul de casă, nu din ecranul de bilanț.
 

@@ -2,7 +2,7 @@
 title: "Se amortizează bunurile luate în leasing operațional?"
 description: "Nu, la firma utilizatoare — bunul rămâne extrabilanțier; amortizarea aparține exclusiv societății de leasing, care rămâne proprietarul lui contabil și fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Nu, nu la firma care folosește bunul. La leasingul operațional, amortizarea r�
 
 ## Ce face iConta.eu
 
-Funcția `nota_rata_operational` din F056 (Leasing financiar și operațional) confirmă exact această regulă în cod: nu există nicio linie de amortizare sau de imobilizare generată pentru bunurile luate în leasing operațional — doar chiria (612=401, plus TVA pe 4426). Aplicația e consecventă cu răspunsul „nu" de mai sus: nu propune, nu automatizează și nu permite din acest ecran nicio amortizare la firma utilizatoare.
+Funcția „nota ratei de leasing operațional (Operațiuni speciale)” din „Leasing financiar și operațional” confirmă exact această regulă în cod: nu există nicio linie de amortizare sau de imobilizare generată pentru bunurile luate în leasing operațional — doar chiria (612=401, plus TVA pe 4426). Aplicația e consecventă cu răspunsul „nu" de mai sus: nu propune, nu automatizează și nu permite din acest ecran nicio amortizare la firma utilizatoare.
 
 [iConta.eu](/)

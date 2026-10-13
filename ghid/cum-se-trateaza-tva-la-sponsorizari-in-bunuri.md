@@ -2,7 +2,7 @@
 title: Cum se tratează TVA la sponsorizări în bunuri?
 description: Acordarea gratuită de bunuri sau servicii în cadrul unei acțiuni de sponsorizare nu este asimilată unei livrări/prestări cu plată supuse TVA, dar numai „în condițiile stabilite prin normele metodologice” — condiții pe care sursele verificate nu le detaliază, deci trebuie confirmate separat înainte de a aplica scutirea.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -47,7 +47,7 @@ O firmă cumpără calculatoare, deduce TVA la achiziție, apoi le donează unei
 
 ## Ce face iConta.eu
 
-Funcția `nota_sponsorizare(suma, mod)` din aplicație generează nota contabilă doar pentru două moduri: `"contract"` (`6582 = 401`) și `"plata"` (`6582 = 5121`). Modulul menționează în documentația internă și un mod „în natură” (cont din clasa 3xx, pentru ieșirea bunurilor din gestiune), dar **acesta nu este implementat** — apelul funcției cu orice altă valoare decât `"contract"` sau `"plata"` generează eroare.
+Funcția „nota de sponsorizare” din aplicație generează nota contabilă doar pentru două moduri: `"contract"` (`6582 = 401`) și `"plata"` (`6582 = 5121`). Modulul menționează în documentația internă și un mod „în natură” (cont din clasa 3xx, pentru ieșirea bunurilor din gestiune), dar **acesta nu este implementat** — apelul funcției cu orice altă valoare decât `"contract"` sau `"plata"` generează eroare.
 
 Practic, pentru o sponsorizare acordată sub formă de bunuri, iConta.eu nu generează automat nici nota de ieșire a bunurilor din gestiune, nici eventuala notă de colectare a TVA dacă operațiunea nu se încadrează în condițiile de scutire. Această sponsorizare trebuie înregistrată și verificată manual, inclusiv sub aspectul TVA descris mai sus.
 

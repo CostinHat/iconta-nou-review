@@ -2,7 +2,7 @@
 title: Ce cotă de TVA se aplică băuturilor vândute într-un restaurant?
 description: Băuturile alcoolice și băuturile nealcoolice NC 2202 (sucuri, cola, energizante) rămân la cota standard de 21% chiar servite în restaurant — orice amestec cu alcool e tratat tot ca băutură alcoolică.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Băuturile nealcoolice care **nu** se încadrează la codul NC 2202 — de exemp
 
 ## Ce face iConta.eu
 
-Aplicația listează separat, în `EXCEPTII_21`, categoriile `bauturi_alcoolice` și `bauturi_nc2202`, fiecare cu exemple concrete (bere, vin, vodcă, whisky pentru alcool; cola, suc acidulat, energizant, apă aromatizată pentru NC 2202) — astfel încât o băutură de acest tip primește automat cota standard de 21%, chiar dacă apare pe același bon cu produse de restaurant la 11%.
+Aplicația listează separat, în „excepțiile cu cota de 21%”, categoriile „băuturi alcoolice” și „băuturi NC 2202”, fiecare cu exemple concrete (bere, vin, vodcă, whisky pentru alcool; cola, suc acidulat, energizant, apă aromatizată pentru NC 2202) — astfel încât o băutură de acest tip primește automat cota standard de 21%, chiar dacă apare pe același bon cu produse de restaurant la 11%.
 
 [iConta.eu](/)

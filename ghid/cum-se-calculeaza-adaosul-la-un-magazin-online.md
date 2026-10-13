@@ -2,7 +2,7 @@
 title: Cum se calculează adaosul la un magazin online?
 description: Costul de achiziție al mărfii vândute online include și transportul plătit furnizorului la recepție, capitalizat proporțional pe liniile de marfă — abia după acest cost se calculează adaosul din diferența față de prețul de vânzare.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -54,7 +54,7 @@ Costul de livrare către client (curierat, facturat separat la 15 lei) nu intră
 
 ## Ce face iConta.eu
 
-La recepția (NIR) unui magazin online, `nir_gv` calculează costul de bază al fiecărei linii (cantitate × preț achiziție, fără TVA), la care adaugă partea proporțională din transport și taxe declarate la nivelul întregului NIR — capitalizate, adică incluse în costul de achiziție, nu tratate ca cheltuială separată. Repartizarea se face proporțional pe linii, cu restul de rotunjire alocat pe ultima linie, pentru ca suma repartizată să corespundă exact cu totalul transportului plătit. Din prețul de vânzare (cu TVA inclus) se extrage TVA prin formula sutei mărite, iar adaosul rezultă ca diferență între vânzare, TVA și costul de achiziție (deja cu transport capitalizat).
+La recepția (NIR) unui magazin online, „NIR global-valoric (Stocuri)” calculează costul de bază al fiecărei linii (cantitate × preț achiziție, fără TVA), la care adaugă partea proporțională din transport și taxe declarate la nivelul întregului NIR — capitalizate, adică incluse în costul de achiziție, nu tratate ca cheltuială separată. Repartizarea se face proporțional pe linii, cu restul de rotunjire alocat pe ultima linie, pentru ca suma repartizată să corespundă exact cu totalul transportului plătit. Din prețul de vânzare (cu TVA inclus) se extrage TVA prin formula sutei mărite, iar adaosul rezultă ca diferență între vânzare, TVA și costul de achiziție (deja cu transport capitalizat).
 
 Transportul facturat clientului la livrarea comenzii nu face parte din acest calcul — e o prestare de serviciu separată de vânzarea mărfii, tratată distinct în contabilitate, nu ca parte a costului de achiziție al produsului vândut.
 

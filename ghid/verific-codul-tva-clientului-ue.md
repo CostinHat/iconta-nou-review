@@ -2,7 +2,7 @@
 title: Cum verific codul de TVA al clientului UE pentru scutire
 description: Codul se desparte în prefix de țară și număr, prefixul se validează contra statelor membre, iar restul se interoghează live în VIES; rezultatul — valid sau invalid — decide dacă livrarea se poate factura scutită de TVA.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Scutirea de TVA la livrarea intracomunitară depinde de un singur lucru verifica
 ## Temeiul legal
 
 ::: ghid-temei
-„Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” — CF art. 294 alin. (2) lit. a) (sursă: `cod_fiscal_227_2015_consolidat.txt`, L18397, verificat în dosarul F050).
+„Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” — CF art. 294 alin. (2) lit. a) (sursă: Codul fiscal (Legea 227/2015), forma consolidată).
 :::
 
 ## Pasul 1 — forma codului

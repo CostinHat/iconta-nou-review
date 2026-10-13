@@ -2,7 +2,7 @@
 title: "Ce fac dacă furnizorul a trecut CUI-ul greșit pe factură?"
 description: O factură primită cu CUI-ul tău greșit trecut de furnizor nu se corectează unilateral — remediul e ca furnizorul să storneze și să reemită documentul. Tot ce poți face din partea ta e să verifici CUI-ul corect și să ceri corectarea la sursă.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ O factură care te identifică greșit (CUI eronat) nu te leagă corect, ca subi
 
 ## Ce face iConta.eu
 
-Verificat: mecanismul de corectare din iConta.eu (stornare + reemitere) a fost confirmat pentru facturile emise chiar din aplicație de propria firmă (`POST /tenants/{tenant_id}/facturi/{factura_id}/storno`), cu mențiunea explicită din cod că „stornarea nu corectează documentul emis — emite AL DOILEA document". Pentru facturile primite de la un furnizor extern, cu eroare de CUI, corectarea depinde de sistemul de facturare al furnizorului respectiv — acest flux specific (corectarea unui document primit) nu a fost verificat punctual în acest context. Ce poți face în iConta.eu e să verifici CUI-ul corect al firmei tale sau al furnizorului direct la ANAF, înainte de a solicita documentul corectat.
+Verificat: mecanismul de corectare din iConta.eu (stornare + reemitere) a fost confirmat pentru facturile emise chiar din aplicație de propria firmă (aplicația), cu mențiunea explicită din cod că „stornarea nu corectează documentul emis — emite AL DOILEA document". Pentru facturile primite de la un furnizor extern, cu eroare de CUI, corectarea depinde de sistemul de facturare al furnizorului respectiv — acest flux specific (corectarea unui document primit) nu a fost verificat punctual în acest context. Ce poți face în iConta.eu e să verifici CUI-ul corect al firmei tale sau al furnizorului direct la ANAF, înainte de a solicita documentul corectat.
 
 [iConta.eu](/)

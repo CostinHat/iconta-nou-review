@@ -2,7 +2,7 @@
 title: "Eșalonarea la plată a datoriilor la ANAF 2026"
 description: "Condițiile și procedura prin care un debitor poate obține de la organul fiscal central eșalonarea la plată a obligațiilor fiscale restante, valabile în 2026."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Când o firmă sau un PFA nu poate achita integral, la termen, datoriile către 
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are o funcție dedicată pentru depunerea sau gestionarea cererilor de eșalonare la plată** către ANAF. Aplicația conține un mecanism separat, cu alt scop, legat de cuvântul „amânare" — certificatul de amânare a plății TVA la import (art. 326 alin. (4) din Codul fiscal, folosit în `import_export.py`) — dar acesta nu are legătură cu eșalonarea datoriilor fiscale restante. Depunerea cererii de eșalonare, constituirea garanțiilor și urmărirea graficului de rate rămân, pentru moment, în afara aplicației.
+La data acestui ghid, iConta.eu **nu are o funcție dedicată pentru depunerea sau gestionarea cererilor de eșalonare la plată** către ANAF. Aplicația conține un mecanism separat, cu alt scop, legat de cuvântul „amânare" — certificatul de amânare a plății TVA la import (art. 326 alin. (4) din Codul fiscal, folosit în aplicația) — dar acesta nu are legătură cu eșalonarea datoriilor fiscale restante. Depunerea cererii de eșalonare, constituirea garanțiilor și urmărirea graficului de rate rămân, pentru moment, în afara aplicației.
 
 [iConta.eu](/)

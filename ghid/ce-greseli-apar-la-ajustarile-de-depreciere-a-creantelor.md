@@ -2,7 +2,7 @@
 title: Ce greșeli apar la ajustările de depreciere a creanțelor?
 description: Cele mai frecvente greșeli sunt ignorarea condiției de negarantare/neafiliere, confuzia dintre pragul de 270 de zile de la scadență (impozit pe profit) și pragurile de TVA, și aplicarea procentului greșit de deducere (30% vs. 100%).
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -42,6 +42,6 @@ O creanță de 20.000 lei față de un client afiliat, neîncasată de 400 de zi
 
 ## Ce face iConta.eu
 
-Funcția `deductibilitate_creanta` din aplicație verifică explicit, în această ordine, garantarea și afilierea (care întorc 0% necondiționat), apoi falimentul declarat (100%), apoi pragul strict de 270 de zile (30%). Ordinea reflectă corect caracterul cumulativ al condițiilor din lege. Motorul nu verifică însă data înregistrării creanței față de pragul de aplicabilitate din 1 ianuarie 2016 (relevant azi doar pentru creanțe foarte vechi) și nu modelează deloc pragurile de TVA — acelea se verifică separat, conform ghidului dedicat ajustării TVA.
+Funcția „deductibilitatea creanței (Operațiuni speciale)” din aplicație verifică explicit, în această ordine, garantarea și afilierea (care întorc 0% necondiționat), apoi falimentul declarat (100%), apoi pragul strict de 270 de zile (30%). Ordinea reflectă corect caracterul cumulativ al condițiilor din lege. Motorul nu verifică însă data înregistrării creanței față de pragul de aplicabilitate din 1 ianuarie 2016 (relevant azi doar pentru creanțe foarte vechi) și nu modelează deloc pragurile de TVA — acelea se verifică separat, conform ghidului dedicat ajustării TVA.
 
 [iConta.eu](/)

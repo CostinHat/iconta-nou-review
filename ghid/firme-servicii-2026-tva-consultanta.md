@@ -2,19 +2,13 @@
 title: "Firme de servicii 2026: TVA la consultanță către clienți din UE"
 description: "Regula de bază pentru consultanța facturată unor clienți din UE rămâne locul beneficiarului (art. 278 alin. 2), cu o modificare recentă adusă de OG 22/2025, în vigoare din 1 septembrie 2025 — de verificat la fiecare firmă cu operațiuni curente."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Firme de servicii 2026: TVA la consultanță către clienți din UE
 
 Pentru o firmă de consultanță cu clienți în UE, regula de bază nu s-a schimbat — dar articolul care o susține a fost modificat relativ recent, ceea ce merită semnalat firmelor care lucrează des cu acest tip de operațiuni în 2026.
-
-## Temeiul legal
-
-::: ghid-temei
-„CF art. 278 alin. (2) — Locul prestării serviciilor B2B = locul beneficiarului (...). Alin. (5) lit. f) modificată și completată de **OG 22/2025 art. I pct. 4-5**, 01-09-2025.” — `cod_fiscal_227_2015_consolidat.txt` L17303-17420, dosarul F050.
-:::
 
 Regula rămâne aceeași: serviciul de consultanță facturat unei firme din UE e neimpozabil în România dacă clientul are cod de TVA valid, verificat în VIES; fără cod valid, operațiunea e B2C, cu TVA românesc. Ce s-a schimbat de la 1 septembrie 2025 e conținutul alin. (5) lit. f) al aceluiași articol — o modificare recentă, prea aproape de finalul perioadei acoperite de cercetarea de bază (17.09.2026) pentru a garanta că nu a mai intervenit nimic ulterior.
 

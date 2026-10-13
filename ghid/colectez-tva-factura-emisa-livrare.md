@@ -2,7 +2,7 @@
 title: "Când colectez TVA dacă factura este emisă după livrare?"
 description: "De ce exigibilitatea TVA rămâne legată de data livrării, nu de data facturii, atunci când factura e emisă ulterior faptului generator."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce rezultă din text pentru cazul unei facturi emise după livrare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează TVA colectată pe baza datelor introduse la emiterea facturii și gestionează separat regimul TVA la încasare, acolo unde e aplicabil, prin aplicație (funcția `tva_exigibil_alocari`). Pentru firmele care nu aplică TVA la încasare, corectitudinea raportării TVA în luna faptului generator — și nu în luna facturii, dacă acestea diferă — depinde de data introdusă manual ca dată a livrării/prestării la fiecare factură; aplicația nu deduce automat data faptului generator dintr-un alt document (aviz de expediție, proces-verbal de recepție) decât dacă aceasta e introdusă explicit de utilizator.
+La data acestui ghid, iConta.eu calculează TVA colectată pe baza datelor introduse la emiterea facturii și gestionează separat regimul TVA la încasare, acolo unde e aplicabil, prin aplicație (funcția „TVA-ul exigibil pe cote”). Pentru firmele care nu aplică TVA la încasare, corectitudinea raportării TVA în luna faptului generator — și nu în luna facturii, dacă acestea diferă — depinde de data introdusă manual ca dată a livrării/prestării la fiecare factură; aplicația nu deduce automat data faptului generator dintr-un alt document (aviz de expediție, proces-verbal de recepție) decât dacă aceasta e introdusă explicit de utilizator.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Stocuri ca gaj pentru un credit: tratament contabil"
 description: "Ce se întâmplă contabil cu stocurile puse drept gaj pentru un credit bancar, chiar dacă sunt fizic predate creditorului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Regula-cheie pentru acest caz specific:
 
 ## Ce face iConta.eu
 
-Acest subiect ține de tratamentul contabil al garanțiilor reale asupra stocurilor, nu de funcționalitatea F086 (sponsorizări și credit fiscal) documentată pentru acest ghid — sunt două sensuri complet diferite ale cuvântului „credit" (garanție bancară vs. reducere de impozit pentru sponsorizare). Cercetarea disponibilă a verificat direct în cod exclusiv motorul de sponsorizări și garda de plafon din D101; nu avem o verificare a vreunui modul din iConta.eu pentru gestiunea stocurilor gajate sau pentru evidența garanțiilor reale, așa că nu facem nicio afirmație — pozitivă sau negativă — despre o astfel de funcție, pentru a nu inventa ce nu am verificat.
+Acest subiect ține de tratamentul contabil al garanțiilor reale asupra stocurilor, nu de funcționalitatea „Sponsorizări și credit fiscal” documentată pentru acest ghid — sunt două sensuri complet diferite ale cuvântului „credit" (garanție bancară vs. reducere de impozit pentru sponsorizare). Cercetarea disponibilă a verificat direct în cod exclusiv motorul de sponsorizări și garda de plafon din D101; nu avem o verificare a vreunui modul din iConta.eu pentru gestiunea stocurilor gajate sau pentru evidența garanțiilor reale, așa că nu facem nicio afirmație — pozitivă sau negativă — despre o astfel de funcție, pentru a nu inventa ce nu am verificat.
 
 [iConta.eu](/)

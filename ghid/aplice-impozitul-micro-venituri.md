@@ -2,7 +2,7 @@
 title: "Poate o SA să aplice impozitul micro pe venituri"
 description: "Dacă forma juridică de societate pe acțiuni împiedică aplicarea impozitului pe veniturile microîntreprinderilor, potrivit condițiilor de la art. 47 din Codul fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce rezultă, citind strict condițiile de la art. 47:
 
 ## Ce face iConta.eu
 
-Regimul fiscal al firmei (`regim_fiscal`, valoare `micro` sau `profit`) se stabilește manual de contabil în ecranul Date firmă, indiferent de forma juridică înregistrată a societății — iConta.eu **nu blochează și nu restricționează** selectarea regimului micro în funcție de forma juridică (SRL, SA etc.). Verificarea îndeplinirii cumulative a condițiilor de la art. 47 — venituri, structură de capital, acționariat, situații financiare depuse la termen — rămâne, la acest moment, responsabilitatea contabilului.
+Regimul fiscal al firmei („regimul fiscal (Date firmă)”, valoare `micro` sau `profit`) se stabilește manual de contabil în ecranul Date firmă, indiferent de forma juridică înregistrată a societății — iConta.eu **nu blochează și nu restricționează** selectarea regimului micro în funcție de forma juridică (SRL, SA etc.). Verificarea îndeplinirii cumulative a condițiilor de la art. 47 — venituri, structură de capital, acționariat, situații financiare depuse la termen — rămâne, la acest moment, responsabilitatea contabilului.
 
 [iConta.eu](/)

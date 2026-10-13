@@ -2,7 +2,7 @@
 title: "Rolul contabilului în generarea SAF-T"
 description: "Ce date trebuie să confirme contabilul înainte de depunerea D406/SAF-T, și cum diferă rolul lui de cel al programului care generează efectiv fișierul XML."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce revine concret contabilului, în fluxul de generare a SAF-T:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu generează efectiv fișierul SAF-T (D406) din datele contabile deja înregistrate în aplicație — jurnal, parteneri, active, stocuri (aplicația și modulele conexe: `d406_active.py`, `d406_stocuri.py`, `d406_reconciliere.py`). Aplicația construiește structura XML conform cerințelor OPANAF, inclusiv identificarea corectă a partenerilor pe fiecare linie de tranzacție și generarea fișierului „pe zero" pentru lunile fără mișcări — dar corectitudinea datelor sursă (facturi introduse complet și corect) rămâne responsabilitatea contabilului care le introduce.
+La data acestui ghid, iConta.eu generează efectiv fișierul SAF-T (D406) din datele contabile deja înregistrate în aplicație — jurnal, parteneri, active, stocuri (aplicația și modulele conexe: aplicația). Aplicația construiește structura XML conform cerințelor OPANAF, inclusiv identificarea corectă a partenerilor pe fiecare linie de tranzacție și generarea fișierului „pe zero" pentru lunile fără mișcări — dar corectitudinea datelor sursă (facturi introduse complet și corect) rămâne responsabilitatea contabilului care le introduce.
 
 [iConta.eu](/)

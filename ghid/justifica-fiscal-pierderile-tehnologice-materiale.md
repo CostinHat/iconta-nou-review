@@ -2,20 +2,13 @@
 title: "Cum se justifică fiscal pierderile tehnologice de materiale pe șantier?"
 description: "Explică distincția legală dintre pierderile tehnologice și perisabilități, și de ce norma de consum propriu, nu HG 831/2004, e temeiul corect pe șantier."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum se justifică fiscal pierderile tehnologice de materiale pe șantier?
 
 Materialele consumate/pierdute în procesul de construcție nu intră, din punct de vedere fiscal, sub aceeași categorie ca perisabilitățile mărfurilor din comerț — legea le tratează separat, cu un temei și o justificare diferite.
-
-## Temeiul legal
-
-::: ghid-temei
-"Următoarele cheltuieli au deductibilitate limitată: [...] d) scăzămintele, perisabilitățile, pierderile rezultate din manipulare/depozitare, potrivit legii; e) pierderile tehnologice care sunt cuprinse în norma de consum proprie necesară pentru fabricarea unui produs sau prestarea unui serviciu;"
-— Codul fiscal (Legea 227/2015), art. 25 alin. (3) lit. d)-e), [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F066.
-:::
 
 Legea distinge explicit între cele două categorii: scăzămintele/perisabilitățile (lit. d) se justifică "potrivit legii" — adică prin coeficienții stabiliți în HG 831/2004, aplicabili mărfurilor în procesul de comercializare. Pierderile tehnologice (lit. e) se justifică prin "norma de consum proprie" — un standard intern, stabilit și documentat de firmă însăși pentru procesul ei de fabricare sau prestare de servicii, nu printr-un procent fixat de un act normativ. Materialele pierdute/consumate pe un șantier (tăieri, resturi, manipulare în procesul de construcție) sunt, conceptual, mai aproape de pierderi tehnologice (lit. e) — un proces de prestare/producție — decât de perisabilitatea mărfurilor de vânzare (lit. d).
 

@@ -2,7 +2,7 @@
 title: "Casierie la micro cu numerar 2026"
 description: "Cum se combină plafoanele legale de numerar cu obligația de ținere zilnică a registrului de casă, pentru o microîntreprindere care lucrează cu cash."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Reguli practice pentru casieria unei microîntreprinderi, valabile în 2026:
 
 ## Ce face iConta.eu
 
-Aplicația implementează `verifica_plafon`, care calculează, pe baza operațiunilor de casă înregistrate zilnic, dacă a fost depășit plafonul legal aplicabil fiecărei categorii de operațiune (inclusiv distincția pentru cash and carry și avansuri spre decontare), confirmat direct din cod. Alertele de plafon funcționează pe operațiunile trecute prin aplicație; contribuția lor la baza impozabilă a regimului micro se reflectă mai departe prin evidența generală a veniturilor, fără un modul separat care să lege explicit „plafon de numerar depășit" de „bază impozabilă micro" — legătura conceptuală rămâne una pe care contabilul o face.
+Aplicația implementează „verificarea plafonului de numerar (Casă)”, care calculează, pe baza operațiunilor de casă înregistrate zilnic, dacă a fost depășit plafonul legal aplicabil fiecărei categorii de operațiune (inclusiv distincția pentru cash and carry și avansuri spre decontare), confirmat direct din cod. Alertele de plafon funcționează pe operațiunile trecute prin aplicație; contribuția lor la baza impozabilă a regimului micro se reflectă mai departe prin evidența generală a veniturilor, fără un modul separat care să lege explicit „plafon de numerar depășit" de „bază impozabilă micro" — legătura conceptuală rămâne una pe care contabilul o face.
 
 [iConta.eu](/)

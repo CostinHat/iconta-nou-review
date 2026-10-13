@@ -2,7 +2,7 @@
 title: Cum ies din TVA la încasare dacă am operațiuni intra-UE
 description: Operațiunile intracomunitare nu te obligă să ieși din TVA la încasare — doar aceste operațiuni specifice urmează regulile generale de exigibilitate, restul rămân la încasare.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Atenție să nu confunzi această situație cu o regulă complet diferită: peri
 
 ## Ce face iConta.eu
 
-Flagul „operațiuni intracomunitare" (`operatiuni_ic`) e unul dintre cele patru atribute ale vectorului fiscal al firmei (alături de regim fiscal, plătitor TVA și periodicitate), iar flagul „TVA la încasare" (`tva_la_incasare`) e un câmp separat pe profilul firmei, în afara vectorului fiscal propriu-zis — cele două sunt independente, iar activarea unuia nu dezactivează automat celălalt. Aplicația calculează exigibilitatea corect pe fiecare tip de operațiune, aplicând excepția de la alin. (6) doar acolo unde se aplică legal, fără să scoată firma din sistemul TVA la încasare per ansamblu.
+Flagul „operațiuni intracomunitare" („operațiuni intracomunitare (Date firmă)”) e unul dintre cele patru atribute ale vectorului fiscal al firmei (alături de regim fiscal, plătitor TVA și periodicitate), iar flagul „TVA la încasare" („TVA la încasare”) e un câmp separat pe profilul firmei, în afara vectorului fiscal propriu-zis — cele două sunt independente, iar activarea unuia nu dezactivează automat celălalt. Aplicația calculează exigibilitatea corect pe fiecare tip de operațiune, aplicând excepția de la alin. (6) doar acolo unde se aplică legal, fără să scoată firma din sistemul TVA la încasare per ansamblu.
 
 [iConta.eu](/)

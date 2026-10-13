@@ -230,3 +230,24 @@ def test_validare_si_activitate_contrast():
     cap = re.search(r"\.ac-cap\s*\{[^}]*color:\s*([^;]+);", css).group(1).strip()
     cap = _token(css, cap[6:-1]) if cap.startswith("var(--") else cap
     assert _ratio(cap, "#ffffff") >= 4.5, ".ac-cap: %s pe alb = %.2f" % (cap, _ratio(cap, "#ffffff"))
+
+
+def test_paginile_publice_contrast():
+    """[13.10.2026, axe pe paginile publice /ghid — lotul 2 al comenzii Costin] (1) orice regulă publică cu fundal `var(--p-…)` și text
+    literal/token trece 4,5:1 — alb pe `--p-brand` #0672FE era 4,33 (butonul „Intră în cont”, numărul pasului din `.ghid-procedura`);
+    (2) linkul din pagină (`--p-link`) are contrast < 3:1 față de text, deci se deosebește și altfel decât prin culoare: `.ghid-wrap a`
+    nu are voie să fie `text-decoration:none` (WCAG 1.4.1; axe `link-in-text-block` pe cuprinsul temelor).
+    MUTAȚIE: `--p-brand` înapoi la #0672FE sau `text-decoration:none` pe `.ghid-wrap a` -> pică."""
+    css = _css()
+    if not css:
+        pytest.skip("stil.css absent")
+    tok = lambda v: _token(css, v.strip()[6:-1]) if v.strip().startswith("var(--") else v.strip()
+    perechi = []
+    for sel, corp in re.findall(r"([^{}]+)\{([^{}]*)\}", css):
+        fond, text = re.search(r"background:\s*(var\(--p-[\w-]+\))", corp), re.search(r"(?<![-\w])color:\s*([^;]+)", corp)
+        if fond and text and tok(fond.group(1)) and tok(text.group(1)).startswith("#"):
+            perechi.append((sel.strip(), round(_ratio(tok(text.group(1)), tok(fond.group(1))), 2)))
+    assert len(perechi) >= 2 and [p for p in perechi if p[1] < 4.5] == [], perechi
+    assert _ratio(_token(css, "p-link"), _token(css, "p-text")) < 3
+    link = re.findall(r"(?m)^\.ghid-wrap a\{([^}]*)\}", css)
+    assert [re.findall(r"text-decoration:\s*(\w+)", c) for c in link] == [["underline"]], link

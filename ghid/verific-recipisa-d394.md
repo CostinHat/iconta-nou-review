@@ -2,7 +2,7 @@
 title: "Cum verific recipisa D394?"
 description: "Cum se verifică starea declarației 394 după depunere, conform instrucțiunilor ANAF, și de ce iConta.eu nu automatizează încă acest pas pentru D394."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,7 +29,7 @@ D394 nu folosește literal cuvântul „recipisă" în instrucțiunile ei de com
 
 ## Ce face iConta.eu
 
-Aici e important de spus onest ce anume automatizează aplicația și ce nu. iConta **validează local** fișierul D394 înainte de depunere, rulând validatorul oficial ANAF instalat (`valideaza()`) — asta prinde majoritatea erorilor de structură înainte ca fișierul să ajungă pe portal. Pentru **e-Factura**, aplicația are un mecanism separat de interogare automată a stării mesajelor la ANAF și de descărcare a recipisei, care rulează periodic și salvează recipisa primită.
+Aici e important de spus onest ce anume automatizează aplicația și ce nu. iConta **validează local** fișierul D394 înainte de depunere, rulând validatorul oficial ANAF instalat („validarea”) — asta prinde majoritatea erorilor de structură înainte ca fișierul să ajungă pe portal. Pentru **e-Factura**, aplicația are un mecanism separat de interogare automată a stării mesajelor la ANAF și de descărcare a recipisei, care rulează periodic și salvează recipisa primită.
 
 **Acest mecanism de interogare automată a recipisei nu există pentru D394.** Depunerea declarației 394 se face manual prin SPV, iar verificarea stării declarației după depunere — inclusiv citirea eventualelor erori și redepunerea în termenul de 3 zile — rămâne un pas pe care contabilul îl face direct pe portalul ANAF, în afara aplicației.
 

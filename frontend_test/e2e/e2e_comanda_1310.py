@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """Comanda Costin 13.10.2026 (verbatim în DECIZII): varianta (a) — propunerea notei de închidere la 31.12 — și deficiența 242 (retestul
 din aceeași zi). Pașii contabilului pe ecranul Bilanț, pe aplicația din index, pe baza de TEST."""
+import os
 import re
 
 import pytest
 
-from conftest import firma_noua, sql
+from conftest import BAZA, firma_noua, sql
 from e2e_bloc_d import PATRON, _api, _date_firma, _deschide, _nota_validata
 from e2e_comanda_1010 import _alege_bilant, _solduri, _valideaza_bilant
 
@@ -105,3 +106,40 @@ def test_varianta_a_propunerea_notei_de_inchidere(patron, firma_de_inchis):
     patron.captura("dupa_validare")
     assert "Validare fără erori" in text, text[:600]
     assert (rand[("F10", 43)][1], rand[("F10", 13)][1]) == ("800,00", "168,00"), sorted(rand.items())
+
+
+# ── C17 + pct.2c (site-ul public /ghid/) ────────────────────────────────────────────────────────────────────────────────────────────
+_AXE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "vizual", "axe.min.js")
+
+
+def test_def_c17_paginile_publice_au_contrast_si_data_actualizarii(patron):
+    """C17 (găsită de Code la proba vizuală a lotului 2, comanda Costin 13.10.2026): axe pe paginile publice — butonul „Intră în cont”
+    și numărul pasului din procedură, alb pe #0672FE = 4,33:1 (< 4,5); pe cuprinsul temelor, linkurile se deosebeau de textul din jur
+    numai prin culoare (1,05:1). Și pct.2c: fiecare ghid arată „Actualizat la zz.ll.aaaa” sub titlu, fără autor.
+    Pașii: un ghid cu procedură -> sub titlu „Actualizat la …”; axe (contrast + link în text) pe ghid, pe cuprins și pe o temă: 0.
+    MUTAȚIA din plasă: `--p-brand` înapoi la #0672FE -> ROȘU."""
+    pg = patron.pg
+    for cale in ("/ghid/diurna-interna-neimpozabila", "/ghid", "/ghid/tema/tva"):
+        pg.goto(BAZA + cale, wait_until="domcontentloaded")
+        pg.add_script_tag(path=_AXE)
+        rele = pg.evaluate("async () => (await axe.run(document, {runOnly: ['color-contrast', 'link-in-text-block']})).violations"
+                           ".map(v => v.id + ': ' + v.nodes.map(n => n.target.join(' ')).join(', '))")
+        if cale.startswith("/ghid/diurna"):
+            assert re.fullmatch(r"Actualizat la \d\d\.\d\d\.\d{4}", pg.inner_text("h1 + .ghid-actualizat")), cale
+            pg.locator(".ghid-procedura").first.scroll_into_view_if_needed()
+            patron.captura("ghid_procedura")
+        assert rele == [], (cale, rele)
+
+
+def test_def_c18_procedura_cu_buline_nu_numara_zero(patron):
+    """C18 (găsită de Code la captura C17, 13.10.2026): în ghidul „diurna internă neimpozabilă”, lista cu buline din blocul de procedură
+    („Ce se greșește în practică”) arăta un cerc cu „0” la fiecare punct — regula veche numerota orice `li`, iar contorul crește numai
+    pe lista ordonată. Pașii: ghidul -> punctele listei cu buline nu au cifră; pașii numerotați (lista ordonată) păstrează 1, 2, 3 …
+    MUTAȚIA din plasă: regula veche repusă -> ROȘU."""
+    pg = patron.pg
+    pg.goto(BAZA + "/ghid/diurna-interna-neimpozabila", wait_until="domcontentloaded")
+    pg.locator(".ghid-procedura ul").first.scroll_into_view_if_needed()
+    patron.captura()
+    cifre_buline = pg.evaluate("() => [...document.querySelectorAll('.ghid-procedura ul > li')]"
+                               ".map(li => getComputedStyle(li, '::before').content)")
+    assert cifre_buline and set(cifre_buline) <= {"none", "normal"}, cifre_buline

@@ -2,7 +2,7 @@
 title: "Cum se depune D112 dacă firma nu mai are salariați?"
 description: "Ce leagă obligația de depunere a D112 de calitatea de angajator (vectorul fiscal) și cum se comportă generatorul D112 din iConta.eu când tabelul de salariați al firmei e gol."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,7 +34,7 @@ Practic, câtă vreme firma și-a păstrat calitatea de angajator (vectorul fisc
 
 ## Ce face iConta.eu
 
-Registrul de salariați (F078, aplicația) nu are o funcție specifică pentru situația „firmă fără salariați" — el gestionează operațiile obișnuite de creare, editare și încetare a contractelor înregistrate în aplicație. Ce contează pentru întrebarea din acest ghid e comportamentul generatorului D112 propriu-zis, verificat direct în cod: funcția care citește datele salariaților (`pull`) interoghează tabelul pe cursor, nu pe rânduri, exact ca să prindă și cazul unui tabel gol — o firmă fără niciun salariat activ în luna respectivă generează în continuare o declarație D112, cu valorile aferente la zero, nu o eroare sau o declarație lipsă.
+Registrul de salariați („Salariați (adăugare, modificare, ștergere)”, aplicația) nu are o funcție specifică pentru situația „firmă fără salariați" — el gestionează operațiile obișnuite de creare, editare și încetare a contractelor înregistrate în aplicație. Ce contează pentru întrebarea din acest ghid e comportamentul generatorului D112 propriu-zis, verificat direct în cod: funcția care citește datele salariaților („preluarea datelor”) interoghează tabelul pe cursor, nu pe rânduri, exact ca să prindă și cazul unui tabel gol — o firmă fără niciun salariat activ în luna respectivă generează în continuare o declarație D112, cu valorile aferente la zero, nu o eroare sau o declarație lipsă.
 
 Decizia dacă, pentru acea lună, declarația trebuie totuși depusă la ANAF (pentru că vectorul fiscal e activ) rămâne una legală, în afara aplicației — iConta.eu nu verifică și nu semnalează starea vectorului fiscal al firmei la ANAF, nici nu recomandă automat deregistrarea calității de angajator atunci când ultimul salariat își încetează contractul.
 

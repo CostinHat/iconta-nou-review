@@ -2,20 +2,13 @@
 title: Cum închid un SRL cu facturi neîncasate?
 description: Ce se întâmplă cu creanțele neîncasate la lichidare și de ce încasarea lor rămâne o etapă obligatorie înainte de radiere.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum închid un SRL cu facturi neîncasate?
 
 Facturile emise și neîncasate până la data dizolvării nu se anulează automat — creanțele societății fac parte din patrimoniul care trebuie lichidat, iar încasarea lor este una dintre atribuțiile explicite ale lichidatorilor.
-
-## Temeiul legal
-
-::: ghid-temei
-„lichidatorii pot [...] «să lichideze și să încaseze creanțele societății»"
-— L31/1990, art. 255 alin. (1) lit. e) (citat în dosarul de cercetare F057)
-:::
 
 La finalul procesului, situația creanțelor trebuie prezentată explicit în raportul final:
 
@@ -30,6 +23,6 @@ Se crede uneori că, odată deschisă procedura de lichidare, societatea nu mai 
 
 ## Ce face iConta.eu
 
-Dosarul de cercetare pentru F057 nu a găsit, în motorul de lichidare, o funcție dedicată separată pentru încasarea creanțelor — acesta acoperă doar vânzarea activelor imobilizate (`nota_vanzare_activ`) și partajul final (`partaj`). Încasarea facturilor neîncasate se face, ca înainte de deschiderea lichidării, prin operațiunile obișnuite de încasare din aplicație. Abia după ce toate creanțele recuperabile au fost încasate (sau, după caz, scoase din evidență ca nerecuperabile) se poate întocmi corect situația patrimonială finală și, ulterior, rula operația de partaj.
+Dosarul de cercetare pentru „Lichidare/radiere societate” nu a găsit, în motorul de lichidare, o funcție dedicată separată pentru încasarea creanțelor — acesta acoperă doar vânzarea activelor imobilizate („nota de vânzare a activului”) și partajul final („partajul”). Încasarea facturilor neîncasate se face, ca înainte de deschiderea lichidării, prin operațiunile obișnuite de încasare din aplicație. Abia după ce toate creanțele recuperabile au fost încasate (sau, după caz, scoase din evidență ca nerecuperabile) se poate întocmi corect situația patrimonială finală și, ulterior, rula operația de partaj.
 
 [iConta.eu](/)

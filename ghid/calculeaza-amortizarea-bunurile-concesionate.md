@@ -2,7 +2,7 @@
 title: "Cum se calculează amortizarea pentru bunurile concesionate"
 description: "Cine amortizează mijloacele fixe primite în concesiune și cum se recuperează fiscal investițiile făcute asupra lor, potrivit normelor Codului fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Amortizarea investițiilor efectuate la mijloacele fixe concesionate, închiriat
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat mijloacelor fixe și amortizării (`d406_active.py`), cu funcții care calculează amortizarea lunară/anuală după metodă (liniară, degresivă, accelerată) și încadrează activul pe categorii pentru raportarea în SAF-T secțiunea „Active". Modulul nu are însă, la acest moment, o distincție explicită de tip „bun concesionat vs. investiție proprie asupra unui bun concesionat" — o firmă care are un astfel de caz trebuie să introducă investiția ca mijloc fix separat, cu durata de amortizare corespunzătoare, aplicând manual regula de mai sus.
+iConta.eu are un modul dedicat mijloacelor fixe și amortizării, cu funcții care calculează amortizarea lunară/anuală după metodă (liniară, degresivă, accelerată) și încadrează activul pe categorii pentru raportarea în SAF-T secțiunea „Active". Modulul nu are însă, la acest moment, o distincție explicită de tip „bun concesionat vs. investiție proprie asupra unui bun concesionat" — o firmă care are un astfel de caz trebuie să introducă investiția ca mijloc fix separat, cu durata de amortizare corespunzătoare, aplicând manual regula de mai sus.
 
 [iConta.eu](/)

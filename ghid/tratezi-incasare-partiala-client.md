@@ -2,7 +2,7 @@
 title: Cum tratezi o încasare parțială de la client?
 description: O încasare parțială declanșează exigibilitate proporțională, calculată prin metoda sutei mărite — restul facturii rămâne pe 4428 până la următoarea plată.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Dacă factura are mai multe cote de TVA sau regimuri de impozitare diferite, iar
 
 ## Ce face iConta.eu
 
-Ecranul manual „TVA la încasare" (rută `nota-tva-incasare`) generează articolul contabil 4428=4427 pentru sensul „încasare", pe baza sumei și datei introduse de contabil, calculate cu formula sutei mărite din aplicație. Pentru firmele cu decontări alocate automat pe facturi, aplicația trece sumele prin aceeași funcție, cotă cu cotă, generând direct baza exigibilă și TVA exigibilă corespunzătoare fiecărei încasări parțiale.
+Ecranul manual „TVA la încasare" (rută „nota TVA la încasare (Operațiuni speciale)”) generează articolul contabil 4428=4427 pentru sensul „încasare", pe baza sumei și datei introduse de contabil, calculate cu formula sutei mărite din aplicație. Pentru firmele cu decontări alocate automat pe facturi, aplicația trece sumele prin aceeași funcție, cotă cu cotă, generând direct baza exigibilă și TVA exigibilă corespunzătoare fiecărei încasări parțiale.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum tratez o factură primită după închiderea lunii?"
 description: "Ce se întâmplă tehnic când o factură de furnizor ajunge după ce luna a fost deja blocată, și cum se înregistrează fără să redeschizi perioada."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,7 +28,7 @@ Acesta e cel mai direct temei identificat pentru principiul „se corectează la
 
 Orice încercare de a scrie o notă contabilă (înregistrare) cu data în luna blocată e respinsă la nivelul bazei de date, printr-un trigger care verifică tabelul de perioade blocate pentru firmă — indiferent de canalul prin care vine înregistrarea. Mesajul afișat este: „Perioada e blocată (luna închisă). Cere-i administratorului cabinetului să o redeschidă sau înregistrează în luna curentă."
 
-Pentru exact acest scenariu — o factură cu data în luna închisă — motorul de contare acceptă o dată explicită de înregistrare (`data_nota`): dacă luna emiterii facturii e blocată, nota poate fi scrisă la data descoperirii, în luna curentă (deschisă), cu o mențiune care documentează legătura dintre data reală a facturii și data la care a fost efectiv înregistrată. Dacă nu se dă explicit o dată de înregistrare și data facturii cade într-o lună blocată, aplicația refuză operațiunea cu eroare explicită, nu o lasă să „dispară" tăcut.
+Pentru exact acest scenariu — o factură cu data în luna închisă — motorul de contare acceptă o dată explicită de înregistrare („data notei”): dacă luna emiterii facturii e blocată, nota poate fi scrisă la data descoperirii, în luna curentă (deschisă), cu o mențiune care documentează legătura dintre data reală a facturii și data la care a fost efectiv înregistrată. Dacă nu se dă explicit o dată de înregistrare și data facturii cade într-o lună blocată, aplicația refuză operațiunea cu eroare explicită, nu o lasă să „dispară" tăcut.
 
 Alternativa — redeschiderea lunii — rămâne disponibilă pentru administratorul firmei, dar cere obligatoriu un motiv consemnat (nu se poate redeschide „doar ca să șterg"), pe temeiul intern citat în cod: „OMFP 1802/2014 — o perioadă închisă se redeschide ca act, nu prin ștergere." Fiecare blocare și deblocare rămâne în istoricul firmei.
 

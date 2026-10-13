@@ -2,7 +2,7 @@
 title: "TVA intracomunitar: cum declar achizițiile de servicii"
 description: "Regula locului prestării pentru serviciile B2B intracomunitare — locul unde beneficiarul e stabilit — și obligația de taxare inversă care rezultă de aici pentru firma din România."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Mecanismul de declarare pentru o firmă românească plătitoare de TVA care ach
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu preia automat facturile de achiziții de servicii intracomunitare pentru calculul D301 (funcția `achizitii_d301`), pe baza operațiunilor deja înregistrate în contabilitate. Aplicația **nu clasifică automat** fiecare serviciu în funcție de excepțiile de la regula locului prestării — contabilul trebuie să verifice, la contarea facturii, dacă operațiunea respectă regula generală B2B sau intră sub o excepție cu loc de prestare diferit.
+La data acestui ghid, iConta.eu preia automat facturile de achiziții de servicii intracomunitare pentru calculul D301 (funcția „achizițiile pentru D301”), pe baza operațiunilor deja înregistrate în contabilitate. Aplicația **nu clasifică automat** fiecare serviciu în funcție de excepțiile de la regula locului prestării — contabilul trebuie să verifice, la contarea facturii, dacă operațiunea respectă regula generală B2B sau intră sub o excepție cu loc de prestare diferit.
 
 [iConta.eu](/)

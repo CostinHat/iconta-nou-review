@@ -2,7 +2,7 @@
 title: "e-Factura cu TVA la încasare: cum se transmite"
 description: "Ce se schimbă, și ce nu se schimbă, când o firmă la TVA la încasare trece la facturarea electronică obligatorie prin RO e-Factura."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,8 +31,8 @@ Facturarea electronică obligatorie prin RO e-Factura (OUG 120/2021) nu creează
 
 ## Ce face iConta.eu
 
-iConta.eu are un flux complet de transmitere prin RO e-Factura (funcționalitatea F126, aplicația): generează XML-ul UBL/CIUS-RO, îl validează pe schematronul oficial ANAF, îl încarcă în SPV printr-o conexiune OAuth per cabinet și urmărește recipisa printr-un job periodic. Acest flux e identic din punct de vedere tehnic pentru toate firmele, indiferent de regimul lor de TVA — nu există o ramură de cod separată pentru „firmă la TVA la încasare" în procesul de trimitere.
+iConta.eu are un flux complet de transmitere prin RO e-Factura (funcționalitatea „e-Factura SPV complet”, aplicația): generează XML-ul UBL/CIUS-RO, îl validează pe schematronul oficial ANAF, îl încarcă în SPV printr-o conexiune OAuth per cabinet și urmărește recipisa printr-un job periodic. Acest flux e identic din punct de vedere tehnic pentru toate firmele, indiferent de regimul lor de TVA — nu există o ramură de cod separată pentru „firmă la TVA la încasare" în procesul de trimitere.
 
-Onest: exact acest lucru înseamnă că mențiunea legală „TVA la încasare", cerută pe conținutul facturii, nu e adăugată automat de generator — verificat direct în cod, `genereaza_xml` din `efactura_send.py` nu scrie nicio mențiune de acest fel. Firma la TVA la încasare beneficiază de aceeași conexiune tehnică fiabilă la RO e-Factura ca oricare alta, dar rămâne responsabilitatea contabilului să se asigure, prin alt mijloc, că factura conține mențiunea obligatorie înainte de a considera obligația de facturare corect îndeplinită.
+Onest: exact acest lucru înseamnă că mențiunea legală „TVA la încasare", cerută pe conținutul facturii, nu e adăugată automat de generator — verificat direct în cod, „generarea XML-ului e-Factura” din aplicația nu scrie nicio mențiune de acest fel. Firma la TVA la încasare beneficiază de aceeași conexiune tehnică fiabilă la RO e-Factura ca oricare alta, dar rămâne responsabilitatea contabilului să se asigure, prin alt mijloc, că factura conține mențiunea obligatorie înainte de a considera obligația de facturare corect îndeplinită.
 
 [iConta.eu](/)

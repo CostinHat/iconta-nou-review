@@ -2,7 +2,7 @@
 title: "Cum se descarcă gestiunea pentru marfa folosită în scop propriu?"
 description: "Regimul de TVA și descărcarea de gestiune când o firmă preia marfă din stoc pentru folosință proprie, fără să o vândă unui client."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce presupune, concret, această regulă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă, prin aplicație (gestiune global-valorică, funcția `descarcare_gv`) și prin evidența generală de stocuri, mecanismul de descărcare a gestiunii pe baza vânzărilor înregistrate — dar **nu am găsit** o funcționalitate dedicată care să identifice automat o preluare pentru scop propriu și să calculeze TVA colectată aferentă, potrivit art. 270 alin. (4) lit. a). Nota contabilă pentru o asemenea operațiune (607 = 371, plus TVA colectată) se înregistrează manual de contabil, folosind evidența contabilă generală a aplicației.
+La data acestui ghid, iConta.eu oferă, prin aplicație (gestiune global-valorică, funcția „descărcarea global-valorică (Stocuri)”) și prin evidența generală de stocuri, mecanismul de descărcare a gestiunii pe baza vânzărilor înregistrate — dar **nu am găsit** o funcționalitate dedicată care să identifice automat o preluare pentru scop propriu și să calculeze TVA colectată aferentă, potrivit art. 270 alin. (4) lit. a). Nota contabilă pentru o asemenea operațiune (607 = 371, plus TVA colectată) se înregistrează manual de contabil, folosind evidența contabilă generală a aplicației.
 
 [iConta.eu](/)

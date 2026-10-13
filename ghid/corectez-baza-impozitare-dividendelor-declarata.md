@@ -2,20 +2,13 @@
 title: "Cum corectez o bază de impozitare a dividendelor declarată greșit"
 description: "De unde provine baza de impozitare a dividendelor în D205 și cum se corectează atunci când este greșită."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum corectez o bază de impozitare a dividendelor declarată greșit
 
 Baza de impozitare (`baza1`) raportată în D205 pentru un beneficiar de dividende nu este o valoare introdusă direct — ea rezultă din suma efectiv plătită acelui asociat, citită din contabilitate. O bază greșită are, de regulă, o cauză la sursă.
-
-## Temeiul legal
-
-::: ghid-temei
-"Contul 457 e bifuncțional: CREDIT 457 (117/121 = 457) = dividend DISTRIBUIT [...]; DEBIT 457 (457 = 5121/446) = dividend PLĂTIT [...]. baza1/imp1 (baza de impozitare și impozitul reținut) se calculează pe dividendul PLĂTIT, nu pe cel distribuit."
-— comportamentul motorului de calcul, aplicația
-:::
 
 ## Ce se greșește în practică
 

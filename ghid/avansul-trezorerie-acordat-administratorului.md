@@ -2,7 +2,7 @@
 title: "Avansul de trezorerie acordat administratorului"
 description: "Plafonul zilnic de 5.000 lei pentru plățile din avansuri spre decontare acordate unei persoane, conform Legii 70/2015, și documentul obligatoriu de acordare."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Ce rezultă concret pentru avansul dat administratorului:
 
 ## Ce face iConta.eu
 
-Modulul de casierie din iConta.eu verifică automat plafonul zilnic al avansurilor spre decontare (funcția `verifica_plafon`), cu temeiul legal atașat direct în cod (Legea 70/2015, plafon de 5.000 lei/persoană/zi), și semnalează depășirile ca avertisment de risc la control. Aplicația generează și notele contabile de acordare (`avans_acordare`), restituire (`avans_restituire`) și decontare (`avans_deconteaza`) a avansurilor de trezorerie (contul 542), cu sold urmărit pe fiecare titular de avans.
+Modulul de casierie din iConta.eu verifică automat plafonul zilnic al avansurilor spre decontare (funcția „verificarea plafonului de numerar (Casă)”), cu temeiul legal atașat direct în cod (Legea 70/2015, plafon de 5.000 lei/persoană/zi), și semnalează depășirile ca avertisment de risc la control. Aplicația generează și notele contabile de acordare („acordarea avansului de trezorerie”), restituire („restituirea avansului de trezorerie”) și decontare („decontarea avansului de trezorerie”) a avansurilor de trezorerie (contul 542), cu sold urmărit pe fiecare titular de avans.
 
 [iConta.eu](/)

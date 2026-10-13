@@ -2,7 +2,7 @@
 title: Cum se calculează adaosul comercial?
 description: Adaosul comercial descărcat lunar se calculează prin coeficientul de repartizare K = diferențe de preț (sold inițial + intrări) / (stoc la preț de înregistrare − TVA neexigibilă), cumulat de la 1 ianuarie, înmulțit apoi cu vânzările lunii.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -46,8 +46,8 @@ Dacă vânzările lunii (707) sunt 400 lei: adaos descărcat = 400 × 0,25 = 100
 
 ## Ce face iConta.eu
 
-Funcția `coeficient_k(si_378, rc_378, si_371, rd_371, si_4428, rc_4428)` din aplicație implementează exact formula de mai sus, cu excluderea explicită a soldului/rulajului 4428 din numitor. Dacă numitorul ajunge la zero sau negativ, funcția **refuză să calculeze** și aruncă o eroare explicită, în loc să întoarcă 0 sau o valoare implicită.
+Funcția „coeficientul K (Stocuri, descărcarea global-valorică)” din aplicație implementează exact formula de mai sus, cu excluderea explicită a soldului/rulajului 4428 din numitor. Dacă numitorul ajunge la zero sau negativ, funcția **refuză să calculeze** și aruncă o eroare explicită, în loc să întoarcă 0 sau o valoare implicită.
 
-Funcția `descarcare_gv(rc_707, tva_vanzari, ...)` aplică apoi K la vânzările lunii (`adaos = rc_707 × K`, `cmv = rc_707 − adaos`) și generează nota de descărcare (`607=371` pentru CMV, `378=371` pentru adaos, `4428=371` pentru TVA). Dacă nu au fost vânzări în lună (`rc_707 == 0`), nu se generează nicio notă „pe zero”. Calculul din `descarca_luna` ia soldurile inițiale din tabela `solduri_initiale` și rulajele din notele **validate**, cumulat de la 1 ianuarie — confirmând textual regula „cumulat pe exercițiu” din lege.
+Funcția „descărcarea global-valorică (Stocuri)” aplică apoi K la vânzările lunii (adaos = rulajul creditor 707 × K, cmv = rulajul creditor 707 − adaos) și generează nota de descărcare (`607=371` pentru CMV, `378=371` pentru adaos, `4428=371` pentru TVA). Dacă nu au fost vânzări în lună (rulajul creditor 707 == 0), nu se generează nicio notă „pe zero”. Calculul din „descărcarea lunii (Stocuri)” ia soldurile inițiale din tabela „soldurile inițiale (Migrare)” și rulajele din notele **validate**, cumulat de la 1 ianuarie — confirmând textual regula „cumulat pe exercițiu” din lege.
 
 [iConta.eu](/)

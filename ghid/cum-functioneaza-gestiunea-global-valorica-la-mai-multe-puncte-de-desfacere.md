@@ -2,7 +2,7 @@
 title: Cum funcționează gestiunea global-valorică la mai multe puncte de desfacere?
 description: Coeficientul de repartizare se poate calcula la nivelul conturilor sintetice sau pe grupe/categorii de stocuri, ceea ce permite urmărirea separată a fiecărui punct de desfacere, dar cere rulaje distincte pe fiecare gestiune.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -58,8 +58,8 @@ Un comerciant cu două magazine — unul cu marfă alimentară (adaos mediu 15%)
 
 ## Ce face iConta.eu
 
-Coeficientul de repartizare K este calculat de `coeficient_k` din soldurile și rulajele conturilor 371, 378 și 4428 transmise de apelant: `K = (Si378 + Rc378) / [(Si371 + Rd371) - (Si4428 + Rc4428)]`, exact formula din pct. 286 alin. (4), cu excluderea TVA neexigibile din numitor conform notei *2). Funcția ridică eroare dacă numitorul e zero sau negativ, semnalând contabilului să verifice soldurile/rulajele. Pentru că funcția primește soldurile și rulajele ca parametri, aceeași logică poate fi rulată separat pe fiecare gestiune sau punct de desfacere, atât timp cât rulajele transmise sunt filtrate corect pe gestiunea respectivă — granularitatea e o decizie de organizare a datelor, nu o limitare a motorului de calcul.
+Coeficientul de repartizare K este calculat de „coeficientul K (Stocuri, descărcarea global-valorică)” din soldurile și rulajele conturilor 371, 378 și 4428 transmise de apelant: `K = (Si378 + Rc378) / [(Si371 + Rd371) - (Si4428 + Rc4428)]`, exact formula din pct. 286 alin. (4), cu excluderea TVA neexigibile din numitor conform notei *2). Funcția ridică eroare dacă numitorul e zero sau negativ, semnalând contabilului să verifice soldurile/rulajele. Pentru că funcția primește soldurile și rulajele ca parametri, aceeași logică poate fi rulată separat pe fiecare gestiune sau punct de desfacere, atât timp cât rulajele transmise sunt filtrate corect pe gestiunea respectivă — granularitatea e o decizie de organizare a datelor, nu o limitare a motorului de calcul.
 
-La descărcarea lunară (`descarca_luna`), TVA-ul din 4428 se aproximează dintr-o cotă medie ponderată a stocului cumulat, nu din structura reală vândută în lună — un aspect valabil identic pentru fiecare punct de desfacere calculat separat, care merită verificat gestiune cu gestiune, nu doar la nivel centralizat.
+La descărcarea lunară („descărcarea lunii (Stocuri)”), TVA-ul din 4428 se aproximează dintr-o cotă medie ponderată a stocului cumulat, nu din structura reală vândută în lună — un aspect valabil identic pentru fiecare punct de desfacere calculat separat, care merită verificat gestiune cu gestiune, nu doar la nivel centralizat.
 
 [iConta.eu](/)

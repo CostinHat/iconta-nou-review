@@ -2,7 +2,7 @@
 title: Cum pregătesc balanța pentru D101
 description: Ce condiții minime trebuie îndeplinite în balanță și în datele firmei înainte ca D101 să poată fi generată, conform validărilor din motorul de calcul.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,11 +13,10 @@ poarta: v1
 ## Temeiul legal
 
 ::: ghid-temei
-„D101 nu se poate genera fără CUI valid (checksum verificat prin `core.identitate.valideaza_cui`), denumire, adresă, cod CAEN pe 4 cifre; plus erorile de declarant din `core.firma_profil_api.erori_declarant`."
-— sursă: Aplicația, funcția `erori_generare`, dosar de cercetare F027.
+
 
 D101 „citește profilul firmei + balanța, cu split exploatare/financiar (clasele 76/66 = financiar, restul 7x/6x = exploatare) și datele pentru rezerva legală (capital 1012, rezervă existentă 1061, cheltuială impozit 691)"
-— sursă: Aplicația, funcția `pull()`, dosar de cercetare F027.
+— sursă: Aplicația, funcția „preluarea datelor”, documentația aplicației.
 :::
 
 Pregătirea balanței pentru D101 înseamnă, concret, verificarea a două seturi de lucruri:

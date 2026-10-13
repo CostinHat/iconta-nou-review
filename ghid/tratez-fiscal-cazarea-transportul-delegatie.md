@@ -2,7 +2,7 @@
 title: "Cum tratez fiscal cazarea și transportul în delegație?"
 description: "Cheltuielile de transport și cazare decontate pe bază de documente justificative în delegație sunt neimpozabile integral, spre deosebire de diurnă, care are un plafon."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Codul fiscal tratează diferit cele trei componente ale unei deplasări în inte
 
 ## Ce face iConta.eu
 
-Aplicația are un modul dedicat deconturilor de deplasare, cu funcția `plafon_diurna`, care calculează plafonul neimpozabil al diurnei direct pe baza art. 76 alin. (2) lit. k) și alin. (4^1) din Codul fiscal (diurna bugetară x 2,5, cu ajustare pe zile lucrătoare). Modulul de decont susține și componentele de transport și cazare pe justificative, contate separat de diurnă (contul 625, cu TVA deductibil aferent facturilor de cazare/transport), tratându-le corect ca sume distincte de plafonul diurnei, conform textului de lege.
+Aplicația are un modul dedicat deconturilor de deplasare, cu funcția „plafonul diurnei”, care calculează plafonul neimpozabil al diurnei direct pe baza art. 76 alin. (2) lit. k) și alin. (4^1) din Codul fiscal (diurna bugetară x 2,5, cu ajustare pe zile lucrătoare). Modulul de decont susține și componentele de transport și cazare pe justificative, contate separat de diurnă (contul 625, cu TVA deductibil aferent facturilor de cazare/transport), tratându-le corect ca sume distincte de plafonul diurnei, conform textului de lege.
 
 [iConta.eu](/)

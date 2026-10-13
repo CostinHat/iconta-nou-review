@@ -2,7 +2,7 @@
 title: Ce fac dacă găsesc o factură din anul trecut neînregistrată
 description: O factură veche, găsită abia acum, nu se înregistrează cu data ei originală dacă luna respectivă e închisă — se contează la data descoperirii, cu mențiunea explicită a legăturii cu factura și a motivului.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,7 +28,7 @@ Pentru o factură veche, descoperită acum, aplicația acceptă explicit o dată
 
 - dacă luna **emiterii** facturii e blocată (Registru jurnal > Blocheaza luna), nota nu se poate scrie pe acea dată — poarta de perioadă o refuză;
 - nota se scrie atunci la **data descoperirii** (în luna curentă, deschisă), cu motivul consemnat explicit în descrierea ei — de exemplu „Contare factura ... din 2025-11-14 — inregistrata la 2026-09-23: factură de furnizor găsită la reconcilierea soldurilor";
-- legătura cu factura originală nu se pierde — nota rămâne legată de factura reală (`factura_id`), cu data ei corectă de emitere, doar înregistrarea contabilă e datată la momentul găsirii.
+- legătura cu factura originală nu se pierde — nota rămâne legată de factura reală („factura legată”), cu data ei corectă de emitere, doar înregistrarea contabilă e datată la momentul găsirii.
 
 Dacă nu se dă explicit o dată de înregistrare și data facturii cade într-o lună blocată, aplicația refuză contarea — nu există o cale silențioasă prin care o factură veche „intră" fără să fie datată corect.
 

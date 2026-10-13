@@ -2,7 +2,7 @@
 title: "Am tratat administratorul ca salariat: corecție"
 description: Cea mai completă formă a greșelii — CIM în loc de mandat, CAM reținut, D112 depus greșit. Ce se corectează și ce rămâne, inevitabil, un pas manual.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Când un administrator cu contract de mandat e introdus în aplicație ca angaja
 
 ## Ce face iConta.eu
 
-Modulul F021 oferă calculul corect (`calcul_mandat`) și nota corectă (`nota(fel="mandat")`, prin contul 621) pentru administratorul de mandat. O limitare de reținut, verificată direct în cod: generarea D112 din aplicație citește exclusiv din tabela de salariați cu contract individual de muncă (`asigCI="1" asigSO="1"`, hardcodat) — nu are, la acest moment, un traseu care să ducă o notă de mandat spre categoria corectă de „tip asigurat" (6, pentru administratori) din D112. Dacă administratorul a fost deja declarat greșit ca salariat cu CIM, rectificarea declarației rămâne un pas manual, în afara acestui modul.
+Modulul „Contracte de muncă speciale” oferă calculul corect („calculul contractului de mandat (Salarii)”) și nota corectă (nota contabilă (mandat), prin contul 621) pentru administratorul de mandat. O limitare de reținut, verificată direct în cod: generarea D112 din aplicație citește exclusiv din tabela de salariați cu contract individual de muncă (`asigCI="1" asigSO="1"`, hardcodat) — nu are, la acest moment, un traseu care să ducă o notă de mandat spre categoria corectă de „tip asigurat" (6, pentru administratori) din D112. Dacă administratorul a fost deja declarat greșit ca salariat cu CIM, rectificarea declarației rămâne un pas manual, în afara acestui modul.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Ce documente contabile sunt necesare la lichidarea unei firme?
 description: Ce documente cere legea la terminarea lichidării unei societăți — și ce anume generează, respectiv nu generează, iConta.eu din acestea.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,7 +32,7 @@ Termenul legal general pentru terminarea lichidării este de maximum un an de la
 
 ## Ce se greșește în practică
 
-Se presupune uneori că un program de contabilitate „generează bilanțul de lichidare" ca document final, gata de depus. În realitate, așa cum reiese și din descrierea funcționalității F057 din iConta.eu, motorul de calcul este unul **pur**: produce notele contabile pentru fiecare etapă (vânzare de active, partaj), dar **nu generează el însuși un document/raport separat numit „bilanțul de lichidare"**. Situațiile financiare de lichidare rămân un document de întocmit distinct, pe baza înregistrărilor contabile rezultate din operațiuni.
+Se presupune uneori că un program de contabilitate „generează bilanțul de lichidare" ca document final, gata de depus. În realitate, așa cum reiese și din descrierea funcționalității „Lichidare/radiere societate” din iConta.eu, motorul de calcul este unul **pur**: produce notele contabile pentru fiecare etapă (vânzare de active, partaj), dar **nu generează el însuși un document/raport separat numit „bilanțul de lichidare"**. Situațiile financiare de lichidare rămân un document de întocmit distinct, pe baza înregistrărilor contabile rezultate din operațiuni.
 
 ## Ce face iConta.eu
 

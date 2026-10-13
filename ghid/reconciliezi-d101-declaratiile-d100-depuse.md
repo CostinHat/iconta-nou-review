@@ -2,7 +2,7 @@
 title: "Cum reconciliezi D101 cu declarațiile D100 depuse în cursul anului?"
 description: Dacă o microîntreprindere depășește plafonul în cursul anului, D100 (trimestrele de dinainte de depășire, la impozit micro) și D101 (impozitul pe profit, de la trimestrul depășirii înainte) acoperă perioade diferite ale aceluiași an — nu se „reconciliază" una cu alta, ci se însumează cronologic.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ D101 nu „reface" ce a fost deja declarat prin D100 — acoperă strict perioad
 
 ## Ce face iConta.eu
 
-Fiecare trimestru se calculează independent, pe baza regimului fiscal (`regim_fiscal`) al firmei valabil la momentul rulării — verificat direct în cod, motorul de calcul D100 nu are nicio funcție de recalcul retroactiv al trimestrelor deja declarate ca micro. Practic, aplicația nu amestecă automat cele două regimuri într-o singură bază de calcul: trimestrele de micro rămân declarate prin D100 așa cum au fost, iar de la schimbarea de regim, firma trece pe fluxul de impozit pe profit pentru perioada rămasă din an.
+Fiecare trimestru se calculează independent, pe baza regimului fiscal („regimul fiscal (Date firmă)”) al firmei valabil la momentul rulării — verificat direct în cod, motorul de calcul D100 nu are nicio funcție de recalcul retroactiv al trimestrelor deja declarate ca micro. Practic, aplicația nu amestecă automat cele două regimuri într-o singură bază de calcul: trimestrele de micro rămân declarate prin D100 așa cum au fost, iar de la schimbarea de regim, firma trece pe fluxul de impozit pe profit pentru perioada rămasă din an.
 
 [iConta.eu](/)

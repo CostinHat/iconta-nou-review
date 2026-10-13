@@ -2,7 +2,7 @@
 title: "Cum tratez fiscal creanțele neîncasate la impozitul pe profit?"
 description: "La impozitul pe profit, o creanță neîncasată trece prin ajustare (30% peste 270 de zile, sau 100% la faliment/insolvență) și, dacă se scoate din evidență, printr-un al doilea test de deductibilitate, separat."
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Partea neacoperită de ajustarea dedusă anterior e deductibilă doar dacă situ
 
 ## Ce face iConta.eu
 
-Aplicația calculează Etapa 1 — `deductibilitate_creanta` întoarce procentul corect (0%/30%/100%) și generează nota `6814=491`. Etapa 2 (scoaterea din evidență și verificarea celor șase excepții) nu e modelată de motor — rămâne o evaluare și o notă contabilă separate, introduse manual de contabil.
+Aplicația calculează Etapa 1 — „deductibilitatea creanței (Operațiuni speciale)” întoarce procentul corect (0%/30%/100%) și generează nota `6814=491`. Etapa 2 (scoaterea din evidență și verificarea celor șase excepții) nu e modelată de motor — rămâne o evaluare și o notă contabilă separate, introduse manual de contabil.
 
 [iConta.eu](/)

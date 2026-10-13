@@ -2,7 +2,7 @@
 title: "Raportarea conturilor de client: obligații"
 description: "Ce trebuie să conțină raportarea conturilor analitice de client în fișierul standard de control fiscal (SAF-T/D406) și cine e obligat la ea."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce presupune, concret, această obligație:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **generează secțiunea Customers** a declarației D406/SAF-T: Aplicația construiește, pentru fiecare client, elementul `<Customer>` cu `CustomerID`, `AccountID` (contul 4111) și identificarea fiscală, iar aplicația extrage lista clienților din baza de date (`select_clienti`). Aplicația asigură și consecvența `CustomerID` între secțiunea Customers și liniile de tranzacție din registrul general, cerută de validatorul oficial ANAF (DUK). Judecata asupra completitudinii datelor de identificare introduse pentru fiecare client rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu **generează secțiunea Customers** a declarației D406/SAF-T: Aplicația construiește, pentru fiecare client, elementul `<Customer>` cu `CustomerID`, `AccountID` (contul 4111) și identificarea fiscală, iar aplicația extrage lista clienților din baza de date („lista clienților”). Aplicația asigură și consecvența `CustomerID` între secțiunea Customers și liniile de tranzacție din registrul general, cerută de validatorul oficial ANAF (DUK). Judecata asupra completitudinii datelor de identificare introduse pentru fiecare client rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

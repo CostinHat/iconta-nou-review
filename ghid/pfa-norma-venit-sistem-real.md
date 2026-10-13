@@ -2,7 +2,7 @@
 title: "PFA la normă de venit sau sistem real în 2026: cum știu ce regim mi se aplică?"
 description: "Regulile din Codul fiscal care decid dacă o PFA determină venitul net pe bază de normă de venit sau în sistem real, și situațiile în care sistemul real devine obligatoriu."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Regulile, în ordine practică de verificare:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are o funcționalitate care să verifice automat, pe baza codului CAEN, dacă o activitate PFA se încadrează în nomenclatorul cu normă de venit sau să detecteze automat depășirea pragului de 25.000 euro pentru trecerea obligatorie la sistem real — aceste verificări rămân în sarcina contabilului. Pentru PFA-urile în sistem real (partidă simplă), aplicația oferă modulul de evidență a operațiunilor, cu funcția `fisa_d212`, care calculează venitul brut, cheltuielile deductibile și baza CAS/CASS din operațiunile validate introduse de utilizator, pentru generarea Declarației unice (D212).
+La data acestui ghid, iConta.eu nu are o funcționalitate care să verifice automat, pe baza codului CAEN, dacă o activitate PFA se încadrează în nomenclatorul cu normă de venit sau să detecteze automat depășirea pragului de 25.000 euro pentru trecerea obligatorie la sistem real — aceste verificări rămân în sarcina contabilului. Pentru PFA-urile în sistem real (partidă simplă), aplicația oferă modulul de evidență a operațiunilor, cu funcția „fișa de calcul D212 (Declarații)”, care calculează venitul brut, cheltuielile deductibile și baza CAS/CASS din operațiunile validate introduse de utilizator, pentru generarea Declarației unice (D212).
 
 [iConta.eu](/)

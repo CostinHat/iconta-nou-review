@@ -2,7 +2,7 @@
 title: "Greșeala de a începe amortizarea la factură nu la punere în funcțiune"
 description: "Legea leagă startul amortizării de data punerii în funcțiune, nu de data facturii de achiziție."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,6 +25,6 @@ Greșeala tipică apare la active care necesită timp de instalare (utilaje, ech
 
 ## Ce face iConta.eu
 
-Toate funcțiile motorului unic de amortizare (`amortizat_la_data`, `amortizare_luna`, folosite și de nota lunară, casare și reevaluare) calculează pornind strict de la câmpul de dată a punerii în funcțiune al activului, aplicând regula "luna următoare PIF" — corectitudinea calculului depinde direct de corectitudinea datei de PIF introduse, aplicația nu o deduce automat din altă sursă (cum ar fi data facturii).
+Toate funcțiile motorului unic de amortizare („amortizarea cumulată (Mijloace fixe)”, „amortizarea lunii (Mijloace fixe)”, folosite și de nota lunară, casare și reevaluare) calculează pornind strict de la câmpul de dată a punerii în funcțiune al activului, aplicând regula "luna următoare PIF" — corectitudinea calculului depinde direct de corectitudinea datei de PIF introduse, aplicația nu o deduce automat din altă sursă (cum ar fi data facturii).
 
 [iConta.eu](/)

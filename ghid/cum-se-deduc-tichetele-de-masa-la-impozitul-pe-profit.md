@@ -2,7 +2,7 @@
 title: Cum se deduc tichetele de masă la impozitul pe profit?
 description: Cheltuiala cu tichetele de masă intră integral la calculul impozitului pe profit, printr-o literă proprie a Codului fiscal, fără raportare la plafonul de 5% cheltuieli sociale folosit pentru cadouri, tichete culturale sau de creșă.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ O firmă cu 10 salariați acordă tichete de masă la valoarea maximă legală, 
 
 ## Ce face iConta.eu
 
-Cheltuiala lunară cu tichetele de masă acordate este înregistrată prin nota contabilă 642=5328, calculată pe baza valorii configurate per salariat (validată la plafonul legal) și a zilelor efectiv lucrate din pontaj. Achiziția biletelor de la emitent este o operațiune separată, 5328=5121/401. Nota 642=5328 pentru tichete de masă și vouchere de vacanță rămâne distinctă de notele contabile pentru cadouri, tichete culturale sau de creșă, care se încadrează în plafonul de 5% cheltuieli sociale — calcul pe care F133 nu îl automatizează, fiind responsabilitatea contabilului la stabilirea impozitului pe profit.
+Cheltuiala lunară cu tichetele de masă acordate este înregistrată prin nota contabilă 642=5328, calculată pe baza valorii configurate per salariat (validată la plafonul legal) și a zilelor efectiv lucrate din pontaj. Achiziția biletelor de la emitent este o operațiune separată, 5328=5121/401. Nota 642=5328 pentru tichete de masă și vouchere de vacanță rămâne distinctă de notele contabile pentru cadouri, tichete culturale sau de creșă, care se încadrează în plafonul de 5% cheltuieli sociale — calcul pe care „Tichete de masă, de vacanță și cadouri în statul de plată” nu îl automatizează, fiind responsabilitatea contabilului la stabilirea impozitului pe profit.
 
 [iConta.eu](/)

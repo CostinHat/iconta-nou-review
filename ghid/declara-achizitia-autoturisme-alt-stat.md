@@ -2,7 +2,7 @@
 title: "Cum se declară achiziția de autoturisme din alt stat membru"
 description: "Achiziția unui mijloc de transport nou din alt stat membru e întotdeauna impozabilă în România, indiferent de statutul cumpărătorului, și se declară prin decontul special de TVA înainte de înmatriculare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,7 +35,7 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-Aplicația, modulul de decont special de TVA al iConta.eu, susține explicit tipul de operațiune 2 („achiziții intracomunitare de mijloace de transport noi"), inclusiv marcajul dedicat pe numărul de evidență al declarației (`mij_transp`), care semnalează prezența unei asemenea achiziții în perioada declarată. Calculul bazei (`calc_baza`) și al declarației urmează structura validată de ANAF pentru D301.
+Aplicația, modulul de decont special de TVA al iConta.eu, susține explicit tipul de operațiune 2 („achiziții intracomunitare de mijloace de transport noi"), inclusiv marcajul dedicat pe numărul de evidență al declarației (`mij_transp`), care semnalează prezența unei asemenea achiziții în perioada declarată. Calculul bazei („calculul bazei”) și al declarației urmează structura validată de ANAF pentru D301.
 
 Aplicația nu determină ea însăși dacă un autoturism concret se încadrează în definiția fiscală de „mijloc de transport nou" (criteriile de kilometraj și vechime de la art. 266 alin. (3)) — încadrarea tipului de operațiune (2, pentru transport nou, sau 1, pentru achiziție obișnuită) rămâne o alegere manuală a contabilului la introducerea datelor.
 

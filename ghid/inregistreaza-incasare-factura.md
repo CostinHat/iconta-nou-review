@@ -2,7 +2,7 @@
 title: "Cum se înregistrează o încasare fără factură?"
 description: "Ce este, din punct de vedere fiscal, o încasare primită înainte de a fi emisă factura (avans) și cum tratează TVA la încasare acest caz."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Cea mai frecventă situație în care banii ajung la firmă înainte să existe 
 
 iConta.eu are un modul dedicat de contabilizare a avansurilor: un avans încasat de la client generează automat nota `4111 = % (419 + 4427)`, iar TVA merge direct pe contul de TVA exigibilă (4427), niciodată pe cel neexigibil (4428) — indiferent dacă firma aplică sau nu TVA la încasare. Motorul de calcul al sumei de TVA din încasare (sută mărită) e implementat separat, în aplicație.
 
-De precizat onest: acest modul de avansuri e generic — nu are o ramură de cod condiționată explicit de flagul `tva_la_incasare` al firmei și nu citează în comentarii art. 282 alin. (3)/(8). Rezultatul practic (TVA direct pe 4427) e coerent cu formularea legii de mai sus, dar nu e o comportare verificată explicit ca fiind "regula specială TVA la încasare aplicată avansurilor" — e mai degrabă rezultatul firesc al faptului că orice avans e, prin definiție legală, o încasare parțială exigibilă imediat. Pentru structuri contractuale neobișnuite (avansuri parțiale multiple, avansuri în valută, avansuri restituite parțial), verifică punctual rezultatul înainte de a-l considera definitiv.
+De precizat onest: acest modul de avansuri e generic — nu are o ramură de cod condiționată explicit de flagul „TVA la încasare” al firmei și nu citează în comentarii art. 282 alin. (3)/(8). Rezultatul practic (TVA direct pe 4427) e coerent cu formularea legii de mai sus, dar nu e o comportare verificată explicit ca fiind "regula specială TVA la încasare aplicată avansurilor" — e mai degrabă rezultatul firesc al faptului că orice avans e, prin definiție legală, o încasare parțială exigibilă imediat. Pentru structuri contractuale neobișnuite (avansuri parțiale multiple, avansuri în valută, avansuri restituite parțial), verifică punctual rezultatul înainte de a-l considera definitiv.
 
 [iConta.eu](/)

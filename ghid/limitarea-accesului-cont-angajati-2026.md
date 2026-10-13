@@ -2,7 +2,7 @@
 title: "Limitarea accesului la cont pentru angajați 2026"
 description: "Ce cere controlul intern din reglementările contabile privind separarea funcțiilor și accesul limitat la datele financiar-contabile, și cum implementează iConta.eu accesul pe rol pentru utilizatorii angajați ai unui cabinet."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Textul nu fixează o listă tehnică de permisiuni — el stabilește principiul
 
 iConta.eu implementează accesul diferențiat pe rol prin funcționalitatea de **autentificare și sesiuni**: fiecare utilizator primește un token cu rolul lui — superadmin, admin firmă, **angajat** sau client — iar accesul e limitat la propriul cabinet, respectiv la propriile firme, în funcție de acest rol. Un utilizator cu rol de angajat nu vede, prin construcție, date din afara cabinetului la care e alocat.
 
-Acest ghid a fost, inițial, asociat funcționalității **F135 — Pontaj angajați**, care ține evidența zilelor lucrate/absente ale salariaților unei firme cliente, dar aceasta e o funcționalitate complet diferită — un registru informativ de prezență, fără nicio legătură cu drepturile de acces în sistem ale utilizatorilor iConta.eu. Subiectul acestui ghid ține, funcțional, de autentificare și roluri, nu de pontaj — nu am forțat această legătură.
+Acest ghid a fost, inițial, asociat funcționalității **„Pontaj angajați” — Pontaj angajați**, care ține evidența zilelor lucrate/absente ale salariaților unei firme cliente, dar aceasta e o funcționalitate complet diferită — un registru informativ de prezență, fără nicio legătură cu drepturile de acces în sistem ale utilizatorilor iConta.eu. Subiectul acestui ghid ține, funcțional, de autentificare și roluri, nu de pontaj — nu am forțat această legătură.
 
 [iConta.eu](/)

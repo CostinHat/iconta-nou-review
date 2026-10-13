@@ -2,7 +2,7 @@
 title: Cum se calculează impozitul pe profit la firmele cu pierdere
 description: Ce înseamnă „pierdere fiscală" la impozitul pe profit, de ce conceptul nu există la impozitul micro, și ce trebuie să știe contabilul la trecerea dintr-un regim în altul.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -14,7 +14,7 @@ poarta: v1
 
 ::: ghid-temei
 Art.31 alin.(5) CF: „Contribuabilii care au fost plătitori de impozit pe veniturile microîntreprinderilor și care ANTERIOR au realizat pierdere fiscală intră sub incidența alin.(1) de la data la care au revenit la sistemul [profit]"
-— sursă: dosar de cercetare F027, secțiunea „Poate microîntreprinderea înregistra pierdere fiscală?".
+— sursă: documentația aplicației, secțiunea „Poate microîntreprinderea înregistra pierdere fiscală?".
 :::
 
 Conceptul de „pierdere fiscală" (reglementat la art.31, în Titlul II — impozit pe profit) nu există ca atare în Titlul III (impozit pe veniturile microîntreprinderilor, art.47–56): baza impozabilă la micro este venitul, nu profitul, astfel încât noțiunea de pierdere fiscală generată în perioada de micro nu are corespondent legal. Singura mențiune a pierderii la impozitul micro (art.53 alin.(2) lit.c)-d)) se referă la rezerve constituite anterior, când firma era plătitoare de impozit pe profit — nu la o pierdere generată în timp ce firma era la micro. Art.31 alin.(5), citat mai sus, confirmă indirect aceeași logică: pierderea fiscală reportabilă e legată de perioadele în care firma a fost efectiv plătitoare de impozit pe profit.

@@ -2,20 +2,13 @@
 title: "Cum se contabilizează taxa de transport nerestituită la retur?"
 description: "Tratamentul contabil al garanției SGR de 0,50 lei/ambalaj — încasată la vânzare și restituită doar la returul efectiv al ambalajului — potrivit HG 1074/2021."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum se contabilizează taxa de transport nerestituită la retur?
 
 Ce e cunoscut popular drept „taxă" pe ambalaj, la produsele care intră sub sistemul garanție-returnare (SGR), nu e de fapt o taxă, ci o **garanție**: o sumă fixă încasată la vânzare, care se restituie doar atunci când consumatorul aduce efectiv ambalajul înapoi. Cât timp ambalajul nu e returnat, garanția nu se restituie — iar contabil, ea rămâne o datorie a comerciantului față de sistem, nu un venit.
-
-## Temeiul legal
-
-::: ghid-temei
-„SGR sistem garantie-returnare — motor PUR (HG 1074/2021, garantie 0,50 lei/ambalaj, administrator RetuRO). Tratament MFP/CECCAR: garantia NU intra in sfera TVA; tariful de gestionare primit de la RetuRO este purtator de TVA (autofactura emisa de RetuRO in numele comerciantului)."
-— HG 1074/2021 (garanția SGR), citat din documentația modulului aplicația, verificat la sursă
-:::
 
 Monografia contabilă, pentru un comerciant care vinde produse cu ambalaj SGR:
 

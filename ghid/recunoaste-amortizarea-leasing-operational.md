@@ -2,7 +2,7 @@
 title: "Cum se recunoaște amortizarea în leasing operațional"
 description: "La leasingul operațional, locatarul nu recunoaște nicio amortizare — bunul rămâne evidențiat extrabilanțier; amortizarea aparține exclusiv locatorului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Din perspectiva locatarului — singura implementată în F056 (Leasing financiar și operațional) — funcția `nota_rata_operational` înregistrează doar chiria (612=401, plus TVA pe 4426), fără nicio linie de amortizare, consecvent cu regula legală de mai sus. Partea de locator, care ar recunoaște efectiv amortizarea bunului dat în leasing operațional, nu e implementată deloc în aplicație — o societate de leasing care ar căuta acest ecran pentru propria contabilitate nu găsește niciun suport aici.
+Din perspectiva locatarului — singura implementată în „Leasing financiar și operațional” — funcția „nota ratei de leasing operațional (Operațiuni speciale)” înregistrează doar chiria (612=401, plus TVA pe 4426), fără nicio linie de amortizare, consecvent cu regula legală de mai sus. Partea de locator, care ar recunoaște efectiv amortizarea bunului dat în leasing operațional, nu e implementată deloc în aplicație — o societate de leasing care ar căuta acest ecran pentru propria contabilitate nu găsește niciun suport aici.
 
 [iConta.eu](/)

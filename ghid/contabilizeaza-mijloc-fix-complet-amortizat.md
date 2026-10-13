@@ -2,7 +2,7 @@
 title: "Cum se contabilizează un mijloc fix complet amortizat?"
 description: "Ce se întâmplă contabil și fiscal cu un mijloc fix la finalul duratei normale de utilizare: rămâne în evidență, cu valoare zero, până la scoaterea din gestiune."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce se întâmplă, practic, la finalul duratei normale de utilizare:
 
 ## Ce face iConta.eu
 
-Modulul de mijloace fixe din iConta.eu (funcția `amortizat_la_data`) calculează amortizarea cumulată și oprește automat generarea de cheltuială cu amortizarea odată ce valoarea de intrare a fost integral recuperată, iar activul rămâne vizibil în evidență și în declarația D406 (secțiunea de active) chiar și cu valoare contabilă zero. Scoaterea din evidență (casare) are notă contabilă dedicată (funcția `nota_casare_mf`). La data acestui ghid, aplicația **nu recalculează automat o durată nouă de amortizare** pentru investițiile ulterioare la un activ cu durata normală de utilizare expirată — stabilirea acestei durate, prin comisie tehnică internă sau expert independent, rămâne un pas manual.
+Modulul de mijloace fixe din iConta.eu (funcția „amortizarea cumulată (Mijloace fixe)”) calculează amortizarea cumulată și oprește automat generarea de cheltuială cu amortizarea odată ce valoarea de intrare a fost integral recuperată, iar activul rămâne vizibil în evidență și în declarația D406 (secțiunea de active) chiar și cu valoare contabilă zero. Scoaterea din evidență (casare) are notă contabilă dedicată (funcția „nota de casare (Mijloace fixe)”). La data acestui ghid, aplicația **nu recalculează automat o durată nouă de amortizare** pentru investițiile ulterioare la un activ cu durata normală de utilizare expirată — stabilirea acestei durate, prin comisie tehnică internă sau expert independent, rămâne un pas manual.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Decontul de perisabilitate: cum se întocmește"
 description: Nota de perisabilitate cere trei date obligatorii — valoarea intrărilor, procentul de limită și pierderea constatată — plus condițiile documentare din HG 831/2004, care rămân în sarcina contabilului, nu ale aplicației.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -20,10 +20,10 @@ poarta: v1
 
 ## Datele de intrare
 
-1. **Valoarea intrărilor** (`valoare_intrari`) — prețul de înregistrare al produselor intrate în perioadă, nu stocul final.
-2. **Procentul de limită** (`procent_limita`) — coeficientul din anexele HG 831/2004, pe grupa de marfă corectă; se introduce manual, nu se preia automat.
-3. **Pierderea constatată** (`pierdere_constatata`) — valoarea efectivă a lipsei, stabilită prin verificare faptică (inventariere, recepție sau predare de gestiune).
-4. **Contul de stoc** (`cont_stoc`) — implicit 371, dar poate fi orice cont de stoc valid din planul de conturi al firmei (de exemplu 301).
+1. **Valoarea intrărilor** („valoarea intrărilor”) — prețul de înregistrare al produselor intrate în perioadă, nu stocul final.
+2. **Procentul de limită** („procentul de limită”) — coeficientul din anexele HG 831/2004, pe grupa de marfă corectă; se introduce manual, nu se preia automat.
+3. **Pierderea constatată** („pierderea constatată”) — valoarea efectivă a lipsei, stabilită prin verificare faptică (inventariere, recepție sau predare de gestiune).
+4. **Contul de stoc** („contul de stoc”) — implicit 371, dar poate fi orice cont de stoc valid din planul de conturi al firmei (de exemplu 301).
 5. **Degradare dovedită distrusă** (opțional) — bifat doar dacă degradarea calitativă și distrugerea efectivă sunt dovedite; dezactivează ajustarea de TVA, indiferent de mărimea depășirii.
 
 Nota generată e scrisă în status `'ciorna'`, cu descrierea sufixată automat „ - HG 831/2004", și cere ca luna contabilă să fie deschisă.
@@ -40,6 +40,6 @@ Verificarea faptică, aprobarea administratorului și procesul-verbal sunt condi
 
 ## Ce face iConta.eu
 
-Ecranul Operațiuni speciale > „Perisabilități și scăzăminte" colectează cele cinci date de mai sus; funcția `nota_perisabilitati` validează contul de stoc prin `cont_valid.cere_cont` (respinge un cont inexistent în planul firmei) și scrie nota ca ciornă, cu liniile calculate de motorul pur aplicația. Cota de TVA e obligatorie de introdus — dacă lipsește, motorul ridică eroare explicită, fără să folosească un procent implicit.
+Ecranul Operațiuni speciale > „Perisabilități și scăzăminte" colectează cele cinci date de mai sus; funcția „nota de perisabilități (Stocuri)” validează contul de stoc prin „verificarea contului” (respinge un cont inexistent în planul firmei) și scrie nota ca ciornă, cu liniile calculate de motorul pur aplicația. Cota de TVA e obligatorie de introdus — dacă lipsește, motorul ridică eroare explicită, fără să folosească un procent implicit.
 
 [iConta.eu](/)

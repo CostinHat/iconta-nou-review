@@ -2,7 +2,7 @@
 title: "Cum se contabilizează un contract IT cu facturare în funcție de orele lucrate?"
 description: "Principiul contabil care guvernează recunoașterea veniturilor dintr-un contract IT facturat pe ore lucrate (time and material), în lipsa unei reglementări specifice pentru acest tip de contract."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Nu am găsit în corpusul de legislație verificat un articol specific pentru re
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul de facturare și contracte (`facturi`, `contracte_api.py`, `contracte_speciale.py`) care permite emiterea de facturi și gestionarea șabloanelor de contract, dar nu am găsit în cod o funcție dedicată de recunoaștere automată a veniturilor pe bază de ore lucrate/decontare time-and-material — contarea automată existentă (`test_contare_automata.py`) urmează regulile generale de facturare, nu un model specific de recunoaștere pe stadii pentru contracte IT. Alocarea corectă a veniturilor pe perioada de prestare, atunci când există decalaj față de factură, rămâne, în prezent, o notă contabilă manuală.
+iConta.eu are un modul de facturare și contracte (`facturi`, aplicația) care permite emiterea de facturi și gestionarea șabloanelor de contract, dar nu am găsit în cod o funcție dedicată de recunoaștere automată a veniturilor pe bază de ore lucrate/decontare time-and-material — contarea automată existentă urmează regulile generale de facturare, nu un model specific de recunoaștere pe stadii pentru contracte IT. Alocarea corectă a veniturilor pe perioada de prestare, atunci când există decalaj față de factură, rămâne, în prezent, o notă contabilă manuală.
 
 [iConta.eu](/)

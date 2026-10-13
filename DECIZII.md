@@ -19873,3 +19873,47 @@ comanda din 10.10, ora 19:41” — scos din cerere):
   intern „Notă de calcul”; (4) o propunere nevalidată se înlocuiește la o nouă cerere, cu același document; una aflată la validare în
   coadă nu se înlocuiește (refuz). **Alternativă respinsă:** închiderea „virtuală” în generatorul bilanțului (fără note) — contrazice R36
   (evidența = ce a validat un om) și ar lăsa balanța, D101 și fișele conturilor cu 6/7 deschise.
+
+## 13.10.2026 — Lotul 2: /ghid/ (a–e); C17, C18 (Code)
+
+Comanda: intrarea de mai sus („Răspunsul la §6 al raportului C14-C15-237-238”), pct.2 a–e, verbatim acolo. TEMEI: N/A — site public,
+fără regulă fiscală; reperele sunt protocolul sitemaps.org, directiva `X-Robots-Tag` și WCAG 2.1 (1.4.3, 1.4.1).
+
+- **(a) Suprapunerile — metoda.** Titlul ghidului e întrebarea. Două titluri răspund la aceeași întrebare când, după normalizare (litere
+  mici, fără diacritice, fără cuvinte de legătură, fără terminația flexiunii), diferă NUMAI prin cuvinte de formulare („cum se calculează
+  / contabilizează / înregistrează”, „ce trebuie”, anul) și au cel puțin două cuvinte de conținut comune; grupul se formează prin legătură
+  COMPLETĂ (fiecare cu fiecare — fără lanțuri). Rezultat: **45 de grupuri, 90 de pagini, cel mai mare grup 2**; lista pentru aprobare:
+  `ghid_suprapuneri.csv` (unealta `scripts/scan_ghid_suprapuneri.py`). **Limita:** măsură LEXICALĂ — nu vede sinonimele și întrebările
+  echivalente cu alt vocabular, deci cifra e un plafon INFERIOR; precizia pe eșantion ~37/40 (fals-pozitivele: inversiuni de sens —
+  „cheltuială ca venit” / „venit ca cheltuială”). **Alternativă respinsă:** legătura simplă (lanțuri A~B~C) — unea zeci de titluri diferite
+  într-un singur grup. Nimic modificat la grupuri (comasarea o aprobă Costin, separat).
+- **(b) Denumirile din cod.** `scripts/curata_coduri_ghid.py`: 1.056 ghiduri, 2.413 înlocuiri — numele funcțiilor, câmpurilor, tabelelor,
+  fișierelor, rutelor și testelor -> numele din ecran (nomenclatorul din unealtă), codurile funcționalităților (F027) -> numele lor din
+  `FUNCTIONALITATI.csv`, fișierele locale cu documente oficiale -> numele actului; la proba vizuală s-a lărgit clasa: **expresiile** de cod
+  (`regim == "micro"`, `deductibil: False`, `pull()` — 20 în 17 ghiduri) și trimiterile la registrul intern („neconformitate deschisă
+  (R95)” -> „o limitare cunoscută a aplicației”, 2 ghiduri). **Interpretări:** (1) denumirile din STRUCTURILE OFICIALE ANAF (`d_rec`,
+  `cod_oblig`, rândurile D300 `R9_1`, elementele SAF-T) RĂMÂN — nu sunt cod al aplicației, așa le scrie ANAF; (2) într-un bloc de temei, un
+  citat a cărui sursă e APLICAȚIA (codul ei, registrul funcționalităților) nu e temei — se scoate; citatele din acte rămân neatinse; un bloc
+  rămas gol pleacă cu titlul lui. Efect: **73 de ghiduri** au rămas fără casetă de temei (singurul lor „temei” era codul aplicației) —
+  lista în ZIP-ul lotului; temeiul lor real se scrie numai cu decizia lui Costin (ghidurile sunt înghețate, pct.e). **Alternativă respinsă:**
+  păstrarea citatului cu numele înlocuite — ar fi rămas „temei” un text care nu e act normativ (CLAUDE.md §3).
+- **(c) Data ultimei actualizări.** „Actualizat la zz.ll.aaaa” sub titlul fiecărui ghid, din `modified` (= `dateModified` din JSON-LD =
+  `lastmod` din sitemap — o singură dată, trei locuri); un ghid schimbat la (b) poartă 13.10.2026. Fără autor și fără titlu profesional
+  (JSON-LD rămâne cu `author` = organizația iConta.eu, cum era). DS cap.22 v2.90, verificator GHID_ACTUALIZAT.
+- **(d) Indexarea.** `robots.txt` era deja allow-list (15.08.2026: landing, /ghid, /public/termeni, /static/ fără /static/js/, sitemap,
+  robots; restul `Disallow: /`) — neschimbat. Nou: antetul `X-Robots-Tag: noindex` pe orice răspuns din afara aceleiași suprafețe
+  (`main._pagina_publica_indexabila`, în middleware-ul cel mai din afară, deci și pe 401/404/405 și pe HEAD) — acoperă cazul în care un
+  URL al aplicației ajunge la motor pe altă cale decât robots.txt. Sitemap: numai pagini publice, ghidurile = lista publicată (verificat);
+  linkuri din paginile publice (landing, cuprins, 16 teme, termeni, toate cele 6.558 de ghiduri) spre rutele aplicației: 0. Cele 17 erori
+  404 din Search Console: rute de la rădăcină pe care Google nu le-a mai cerut după 30.07 (analiza din `public_robots`, 27.08) — reziduu.
+- **(e) Publicarea înghețată.** `ghid_publicate.txt`: cele 6.558 de sluguri publicate la 13.10.2026. Pagina, cuprinsul, temele, ghidurile
+  înrudite și sitemap-ul arată numai slugurile de acolo; un `ghid/*.md` nou -> 404 și absent peste tot. Lista se schimbă numai cu decizia
+  lui Costin (gard `core/test_ghid_publicare.py`: numărul 6.558 și un fișier nou nepublicat).
+- **C17, C18 (Code, CICLUL).** La proba vizuală a lotului: axe pe paginile publice — alb pe `--p-brand` #0672FE = 4,33:1 (butonul „Intră
+  în cont”, numărul pasului) -> `--p-brand` #0566EA (5,13:1, nuanța cea mai apropiată care trece); linkurile din pagină deosebite numai prin
+  culoare -> subliniate (WCAG 1.4.1). La captura C17: regula veche `.ghid-procedura li::before` numerota și lista cu buline („0”) -> scoasă,
+  numerotarea stă numai pe `ol > li` (regula paginilor publice). **Alternativă respinsă** (C17): butonul cu text îngroșat mai mare — 14px
+  semibold nu e „text mare” WCAG, deci tot 4,5:1 se cere.
+- **Clasa rămasă, pentru decizie (raportul lotului §6):** proza care DESCRIE codul în secțiunile „Ce face iConta.eu” („comentariul din
+  cod”, „registrul intern”, „dosarul tehnic”, „mirrorul local” — 50 de ghiduri, lista în ZIP) nu e o denumire din cod, ci vocea textului; rescrierea ei
+  e o alegere editorială.

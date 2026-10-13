@@ -2,7 +2,7 @@
 title: Cum deduce un PFA amortizarea echipamentelor în 2026?
 description: De la 25.02.2026, pragul mijlocului fix amortizabil a crescut la 5.000 lei; peste acest prag, echipamentul se amortizează liniar, pe durata normală de funcționare din catalog, începând cu luna următoare punerii în funcțiune.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -40,6 +40,6 @@ Un PFA cumpără pe 10 martie 2026 un laptop de 6.500 lei, pus în funcțiune im
 
 ## Ce face iConta.eu
 
-Amortizarea se calculează în `registru_inventar(conn, schema, an)` din aplicație: pentru fiecare mijloc fix se aplică metoda liniară pe lunile scurse din durata normală de funcționare (`amortizabil * luni / dnf_luni`), pe baza câmpurilor `data_pif`, `valoare` și `rezidual` din tabela `mijloace_fixe`. Important: funcția `registru_inventar()` **nu verifică ea însăși** dacă valoarea de intrare depășește pragul legal (5.000 lei de la 25.02.2026, conform aplicația, `COTE["plafon_mijloc_fix"]`, și aplicația, `prag_mf()`) — citește tabela `mijloace_fixe` ca atare. Încadrarea unui bun ca mijloc fix sau ca obiect de inventar, prin raportare la prag, se face la introducerea achiziției, în aplicație, nu în F077. Codul mai notează explicit că mijloacele fixe existente la 31.12.2025 cu valoare între 2.500 și 5.000 lei continuă să se amortizeze pe durata rămasă, fără reclasificare retroactivă.
+Amortizarea se calculează în „registrul-inventar (Registre)” din aplicație: pentru fiecare mijloc fix se aplică metoda liniară pe lunile scurse din durata normală de funcționare (amortizabil * luni / durata normală de funcționare (Mijloace fixe)), pe baza câmpurilor „data punerii în funcțiune (Mijloace fixe)”, `valoare` și `rezidual` din tabela „registrul mijloacelor fixe”. Important: funcția „registrul-inventar (Registre)” **nu verifică ea însăși** dacă valoarea de intrare depășește pragul legal (5.000 lei de la 25.02.2026, conform aplicația, registrul de cote al aplicației["plafonul mijloacelor fixe"], și aplicația, „pragul mijloacelor fixe”) — citește tabela „registrul mijloacelor fixe” ca atare. Încadrarea unui bun ca mijloc fix sau ca obiect de inventar, prin raportare la prag, se face la introducerea achiziției, în aplicație, nu în „Registru încasări/plăți (partidă simplă)”. Codul mai notează explicit că mijloacele fixe existente la 31.12.2025 cu valoare între 2.500 și 5.000 lei continuă să se amortizeze pe durata rămasă, fără reclasificare retroactivă.
 
 [iConta.eu](/)

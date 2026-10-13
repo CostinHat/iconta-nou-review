@@ -2,7 +2,7 @@
 title: "Cum se calculează diferențele de curs la plata unei facturi?"
 description: "Formula de calcul a diferenței de curs valutar la decontarea unei facturi în valută și cum o generează automat iConta.eu."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Când plătești o factură în valută la un curs diferit de cel la care ai în
 
 ## Ce face iConta.eu
 
-Această operațiune corespunde exact rutei de decontare din iConta.eu: din ecranul **Operațiuni speciale → Decontare în valută**, completezi tipul (creanță sau datorie), valoarea în valută, moneda și cursul de evidență; aplicația ia automat cursul BNR al zilei din aplicație și, prin aplicație, calculează diferența cu regula de semn corectă pe tip (creanță/disponibil câștigă la curs în creștere, datorie pierde), generând o notă-ciornă cu linia principală și linia de diferență pe 665 sau 765. Motorul e testat unitar (`test_diferente_curs.py`, 11 teste). O limită de reținut: ecranul de decontare nu are câmp pentru contul de bancă/casierie — toate decontările se înregistrează implicit pe contul 5124, indiferent prin ce cont a avut loc efectiv plata.
+Această operațiune corespunde exact rutei de decontare din iConta.eu: din ecranul **Operațiuni speciale → Decontare în valută**, completezi tipul (creanță sau datorie), valoarea în valută, moneda și cursul de evidență; aplicația ia automat cursul BNR al zilei din aplicație și, prin aplicație, calculează diferența cu regula de semn corectă pe tip (creanță/disponibil câștigă la curs în creștere, datorie pierde), generând o notă-ciornă cu linia principală și linia de diferență pe 665 sau 765. Motorul e testat unitar (aplicația, 11 teste). O limită de reținut: ecranul de decontare nu are câmp pentru contul de bancă/casierie — toate decontările se înregistrează implicit pe contul 5124, indiferent prin ce cont a avut loc efectiv plata.
 
 [iConta.eu](/)

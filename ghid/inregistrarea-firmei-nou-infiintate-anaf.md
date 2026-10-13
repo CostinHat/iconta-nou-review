@@ -2,7 +2,7 @@
 title: "Înregistrarea firmei nou înființate la ANAF"
 description: "Firma nou înființată trebuie să depună declarația de înregistrare fiscală în 30 de zile de la înființare, pentru a primi vectorul fiscal și certificatul de înregistrare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Din verificarea codului sursă, iConta.eu are un modul (`vector_fiscal_api`) care citește și gestionează vectorul fiscal al firmei deja configurate în aplicație (regim fiscal, calitate de plătitor de TVA, periodicitatea decontului, operațiuni intracomunitare) și îl folosește pentru a determina ce declarații sunt datorate. Aplicația **nu** depune însă efectiv declarația de înregistrare fiscală la ANAF — acel pas administrativ inițial rămâne în afara aplicației; iConta.eu preia vectorul fiscal ca informație deja existentă, pentru a organiza declarațiile ulterioare.
+Din verificarea codului sursă, iConta.eu are un modul („vectorul fiscal (Date firmă)”) care citește și gestionează vectorul fiscal al firmei deja configurate în aplicație (regim fiscal, calitate de plătitor de TVA, periodicitatea decontului, operațiuni intracomunitare) și îl folosește pentru a determina ce declarații sunt datorate. Aplicația **nu** depune însă efectiv declarația de înregistrare fiscală la ANAF — acel pas administrativ inițial rămâne în afara aplicației; iConta.eu preia vectorul fiscal ca informație deja existentă, pentru a organiza declarațiile ulterioare.
 
 [iConta.eu](/)

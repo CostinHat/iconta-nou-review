@@ -2,7 +2,7 @@
 title: Avansurile și TVA-ul în contractele de construcții?
 description: TVA-ul avansurilor din construcții devine exigibilă la fiecare încasare parțială, iar la o schimbare de cotă între avans și situația finală, regularizarea se face după cota valabilă la data livrării/recepției, nu la data avansului sau a regularizării.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,8 +37,8 @@ O firmă de construcții încasează un avans de 100.000 lei în decembrie, la c
 
 ## Ce face iConta.eu
 
-Orchestrarea din aplicație cere explicit data livrării (`data_livrare`) pentru orice operație al cărei tip începe cu `"regularizare"`, exact conform cerinței art. 291 alin. (6): cota de regularizare se calculează prin `_common.cota_ceruta({**corp, "data": _data_cota})`, adică pe data livrării, nu pe data la care se operează efectiv regularizarea. Descrierea notei contabile generate poartă explicit mențiunea "- art. 282(2)b CF".
+Orchestrarea din aplicație cere explicit data livrării („data livrării”) pentru orice operație al cărei tip începe cu `"regularizare"`, exact conform cerinței art. 291 alin. (6): cota de regularizare se calculează prin „validarea cotei de TVA”, adică pe data livrării, nu pe data la care se operează efectiv regularizarea. Descrierea notei contabile generate poartă explicit mențiunea "- art. 282(2)b CF".
 
-O limitare importantă pentru contractele de construcții cu plăți eșalonate: modulul `avansuri.py` **nu agregă** mai multe avansuri pe aceeași comandă/factură finală — fiecare apel produce o notă separată, iar suma corectă pentru regularizare (cumulul tuturor avansurilor/situațiilor de plată anterioare) trebuie calculată și transmisă corect de utilizator sau de stratul care apelează motorul. Dacă suma cumulată e greșită la intrare, motorul nu are context despre facturile anterioare și nu poate detecta eroarea.
+O limitare importantă pentru contractele de construcții cu plăți eșalonate: modulul aplicația **nu agregă** mai multe avansuri pe aceeași comandă/factură finală — fiecare apel produce o notă separată, iar suma corectă pentru regularizare (cumulul tuturor avansurilor/situațiilor de plată anterioare) trebuie calculată și transmisă corect de utilizator sau de stratul care apelează motorul. Dacă suma cumulată e greșită la intrare, motorul nu are context despre facturile anterioare și nu poate detecta eroarea.
 
 [iConta.eu](/)

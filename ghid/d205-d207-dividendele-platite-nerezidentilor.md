@@ -2,7 +2,7 @@
 title: "D205 sau D207 pentru dividendele plătite nerezidenților?"
 description: D207, niciodată D205. Cele două declarații se separă strict după rezidența beneficiarului, nu după tipul de venit — dividendele plătite unui nerezident merg exclusiv pe D207.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Cele două formulare sunt aprobate prin același ordin, dar ca anexe distincte, 
 
 ## Ce face iConta.eu
 
-Separarea e mecanică, nu editorială: generatorul D205 acceptă doar beneficiari cu CNP românesc valid (verificat pe cifra de control) — un beneficiar fără acesta este respins la generare. Pentru dividendele către nerezidenți, ecranul dedicat D207 (F209) permite introducerea manuală a fiecărui beneficiar nerezident — venit plătit, stat de rezidență, cod fiscal, act normativ aplicabil — aplicația nu are încă un registru automat al plăților către nerezidenți, așa că lista de beneficiari vine ca input de la contabil, nu se generează singură din alte module.
+Separarea e mecanică, nu editorială: generatorul D205 acceptă doar beneficiari cu CNP românesc valid (verificat pe cifra de control) — un beneficiar fără acesta este respins la generare. Pentru dividendele către nerezidenți, ecranul dedicat D207 („Declarația D207 (impozit reținut nerezidenți)”) permite introducerea manuală a fiecărui beneficiar nerezident — venit plătit, stat de rezidență, cod fiscal, act normativ aplicabil — aplicația nu are încă un registru automat al plăților către nerezidenți, așa că lista de beneficiari vine ca input de la contabil, nu se generează singură din alte module.
 
 [iConta.eu](/)

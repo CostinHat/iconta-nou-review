@@ -2,7 +2,7 @@
 title: "TVA pentru medicamente 2026: cotele aplicabile"
 description: Medicamentele de uz uman intră la cota redusă de 11%, fără distincție între cele compensate și cele eliberate fără prescripție — dar suplimentele alimentare, deși vândute tot în farmacie, rămân explicit la cota standard de 21%.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ De asemenea, legea nu condiționează cota redusă de statutul de „medicament 
 
 ## Ce face iConta.eu
 
-Aplicația include categoria „medicamente" în `CATEGORII_11`, pe litera a) din art. 291 alin. (2). Suplimentele alimentare (Legea 56/2021) apar explicit în `EXCEPTII_21`, tocmai pentru a nu fi confundate cu medicamentele la clasificarea automată a liniei de factură. Dacă motorul de potrivire nu poate stabili cu certitudine dacă un produs e medicament, supliment sau alt tip de bun (de exemplu, dintr-o denumire comercială ambiguă), aplicația nu presupune tăcut o cotă — răspunde cu un statut de cotă nedeterminată, care cere o clasificare manuală înainte de emiterea facturii.
+Aplicația include categoria „medicamente" în „categoriile cu cota de 11%”, pe litera a) din art. 291 alin. (2). Suplimentele alimentare (Legea 56/2021) apar explicit în „excepțiile cu cota de 21%”, tocmai pentru a nu fi confundate cu medicamentele la clasificarea automată a liniei de factură. Dacă motorul de potrivire nu poate stabili cu certitudine dacă un produs e medicament, supliment sau alt tip de bun (de exemplu, dintr-o denumire comercială ambiguă), aplicația nu presupune tăcut o cotă — răspunde cu un statut de cotă nedeterminată, care cere o clasificare manuală înainte de emiterea facturii.
 
 [iConta.eu](/)

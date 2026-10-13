@@ -2,7 +2,7 @@
 title: Cum corectez codul de clasificare al unui mijloc fix?
 description: Odată aleasă, durata normală de funcționare rămâne fixă până la recuperarea integrală a valorii sau scoaterea din funcțiune (HG 2139/2004). Corectarea unui cod greșit deja folosit e o corecție de eroare, nu o simplă editare de câmp.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,7 +28,7 @@ Se schimbă codul „din mers", direct în evidență, fără să se documenteze
 
 ## Ce face iConta.eu
 
-Aici e limita reală, de precizat cinstit: **nu există în aplicație o acțiune dedicată de editare a unui mijloc fix deja introdus.** Singurele operațiuni disponibile pe un mijloc fix existent sunt reevaluarea (`urca_valoarea`, pentru majorarea valorii) și scoaterea din evidență (casare/vânzare) — nu și modificarea codului sau a duratei normale de funcționare pe un rând existent. Singura cale de introducere a mijloacelor fixe e importul de fișier CSV/XLSX (`POST /tenants/{id}/mijloace-fixe-import`), iar acest import **înlocuiește întregul registru al firmei** (șterge tot și reinserează din fișier), nu actualizează un singur rând.
+Aici e limita reală, de precizat cinstit: **nu există în aplicație o acțiune dedicată de editare a unui mijloc fix deja introdus.** Singurele operațiuni disponibile pe un mijloc fix existent sunt reevaluarea („majorarea valorii (Mijloace fixe)”, pentru majorarea valorii) și scoaterea din evidență (casare/vânzare) — nu și modificarea codului sau a duratei normale de funcționare pe un rând existent. Singura cale de introducere a mijloacelor fixe e importul de fișier CSV/XLSX (aplicația), iar acest import **înlocuiește întregul registru al firmei** (șterge tot și reinserează din fișier), nu actualizează un singur rând.
 
 Practic, astăzi, corectarea codului unui singur mijloc fix înseamnă reîncărcarea întregului fișier de mijloace fixe, cu valoarea corectată pe rândul respectiv și toate celelalte active reintroduse identic — o operațiune „totul sau nimic", nu o editare punctuală. Recomandăm verificarea atentă a fișierului întreg înainte de reîncărcare și, pentru un activ deja intrat în amortizare, tratarea corecției conform regulilor de corectare a erorilor contabile, nu ca o simplă modificare de câmp.
 

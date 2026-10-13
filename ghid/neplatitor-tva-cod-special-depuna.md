@@ -2,7 +2,7 @@
 title: "Un neplătitor de TVA cu cod special trebuie să depună D390?"
 description: "Când o firmă neplătitoare de TVA, înregistrată cu cod special conform art. 317 din Codul fiscal, datorează declarația recapitulativă D390."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Concret: o firmă neplătitoare de TVA, dar înregistrată conform art. 317 (de 
 
 ## Ce face iConta.eu
 
-Aplicația are un câmp dedicat în profilul firmei (`inreg_art317`) care marchează explicit dacă firma e înregistrată special în scopuri de TVA conform art. 317, separat de statutul de plătitor „obișnuit" de TVA. Motorul care determină ce declarații datorează firma (folosit pentru semnalizarea obligațiilor fiscale și pentru termene) verifică acest marcaj: dacă firma are operațiuni intracomunitare și e neplătitoare de TVA, dar are bifat art. 317, D390 apare corect ca declarație datorată; dacă marcajul lipsește, aplicația nu presupune tacit obligația, ci semnalează explicit contabilului să confirme înregistrarea art. 317 în profil. Generarea propriu-zisă a declarației D390 verifică, la rândul ei, dacă există operațiuni intracomunitare cu exigibilitate în luna respectivă și refuză generarea pe zero, exact cum cere norma de mai sus.
+Aplicația are un câmp dedicat în profilul firmei („înregistrare art.317 (Date firmă)”) care marchează explicit dacă firma e înregistrată special în scopuri de TVA conform art. 317, separat de statutul de plătitor „obișnuit" de TVA. Motorul care determină ce declarații datorează firma (folosit pentru semnalizarea obligațiilor fiscale și pentru termene) verifică acest marcaj: dacă firma are operațiuni intracomunitare și e neplătitoare de TVA, dar are bifat art. 317, D390 apare corect ca declarație datorată; dacă marcajul lipsește, aplicația nu presupune tacit obligația, ci semnalează explicit contabilului să confirme înregistrarea art. 317 în profil. Generarea propriu-zisă a declarației D390 verifică, la rândul ei, dacă există operațiuni intracomunitare cu exigibilitate în luna respectivă și refuză generarea pe zero, exact cum cere norma de mai sus.
 
 [iConta.eu](/)

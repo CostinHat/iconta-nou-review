@@ -2,19 +2,13 @@
 title: "Contabilitatea unei firme de traduceri: TVA la servicii UE"
 description: "Serviciile de traducere facturate unor firme din UE sunt neimpozabile în România dacă firma-client are cod de TVA valid, verificat în VIES; altfel, se facturează cu TVA românesc, regim B2C."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Contabilitatea unei firme de traduceri: TVA la servicii UE
 
 O firmă de traduceri care lucrează cu clienți din UE nu are un regim de TVA diferit de orice altă firmă de servicii — testul e același: locul beneficiarului și validitatea codului lui de TVA.
-
-## Temeiul legal
-
-::: ghid-temei
-„`valideaza_prestare_ic(cod_tva_client, cod_valid_vies)` — validează serviciul B2B intracomunitar (art. 278 alin. 2): client non-RO + cod valid VIES → neimpozabil în România, se declară D390 (S); fără cod valid → B2C, se facturează cu TVA românesc (art. 278 alin. 3).” — aplicația, dosarul F050.
-:::
 
 Dacă firma-client din UE are cod de TVA valid, verificat, factura pentru serviciul de traducere se emite fără TVA românesc, cu mențiunea taxării inverse, iar operațiunea se declară în D390. Fără cod valid — client persoană fizică sau firmă neînregistrată — se aplică regimul B2C, cu TVA românesc.
 

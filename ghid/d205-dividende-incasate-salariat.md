@@ -2,7 +2,7 @@
 title: D205 pentru dividende încasate de un salariat
 description: Un asociat care e și angajat al societății încasează dividendul sub un regim complet separat de salariu — cotă diferită, mecanism diferit, fără nicio legătură între cele două.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,6 +27,6 @@ Regimul descris de acest text privește strict calitatea de acționar/asociat/in
 
 ## Ce face iConta.eu
 
-Motorul D205 din iConta.eu identifică beneficiarii exclusiv din lista de asociați/acționari cu cotă de participare peste 0% și din mișcările contului 457 — nu interoghează și nu ține cont de statutul de angajat al beneficiarului respectiv (salariile se gestionează într-o funcționalitate separată, complet independentă de F029). Pentru un asociat care e și salariat, D205 tratează partea de dividend exact ca la orice alt beneficiar: bază calculată pe dividendul plătit, cotă valabilă la data distribuirii, impozit final reținut de societate.
+Motorul D205 din iConta.eu identifică beneficiarii exclusiv din lista de asociați/acționari cu cotă de participare peste 0% și din mișcările contului 457 — nu interoghează și nu ține cont de statutul de angajat al beneficiarului respectiv (salariile se gestionează într-o funcționalitate separată, complet independentă de „Declarația D205 și distribuirea dividendelor”). Pentru un asociat care e și salariat, D205 tratează partea de dividend exact ca la orice alt beneficiar: bază calculată pe dividendul plătit, cotă valabilă la data distribuirii, impozit final reținut de societate.
 
 [iConta.eu](/)

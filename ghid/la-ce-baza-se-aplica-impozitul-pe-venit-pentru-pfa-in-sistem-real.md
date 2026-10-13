@@ -2,7 +2,7 @@
 title: La ce bază se aplică impozitul pe venit pentru PFA în sistem real?
 description: Impozitul de 10% nu se aplică pe tot venitul net, ci pe venitul net rămas după scăderea CAS și CASS datorate — dacă CASS e calculată greșit (de exemplu omisă), baza impozabilă iese artificial mai mare.
 published: 2026-09-22
-modified: 2026-10-02
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -44,6 +44,6 @@ Dacă PFA nu e singura sursă de venit independent a persoanei (de exemplu mai a
 
 ## Ce face iConta.eu
 
-Aplicația, funcția `calculeaza_d212`, calculează baza impozabilă ca venitul net minus CAS și minus CASS pe venitul real (minim 0), conform art. 118 alin. (2) lit. b): când venitul net e sub 6 salarii minime, CASS datorată e la baza minimă, dar diferența până la baza minimă nu se scade din baza impozabilă. Proporționalizarea CAS/CASS pentru surse cumulate (art. 118 alin. (2^2)-(2^3)) nu e automatizată — motorul presupune că venitul net al PFA e singura sursă la plafon.
+Aplicația, funcția „calculul D212 (Declarații)”, calculează baza impozabilă ca venitul net minus CAS și minus CASS pe venitul real (minim 0), conform art. 118 alin. (2) lit. b): când venitul net e sub 6 salarii minime, CASS datorată e la baza minimă, dar diferența până la baza minimă nu se scade din baza impozabilă. Proporționalizarea CAS/CASS pentru surse cumulate (art. 118 alin. (2^2)-(2^3)) nu e automatizată — motorul presupune că venitul net al PFA e singura sursă la plafon.
 
 [iConta.eu](/)

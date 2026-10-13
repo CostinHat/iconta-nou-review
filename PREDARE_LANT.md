@@ -1,13 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **13.10.2026: varianta (a) + 242 (lotul 1); lotul 2 /ghid/ urmează; R4 BLOCAT; ghiduri noi oprite**
+# PREDARE LANȚ — **13.10.2026: lotul 1 (varianta (a) + 242) `13856f1f`; lotul 2 /ghid/ (a–e) + C17, C18 comis; R4 BLOCAT; ghiduri noi oprite; așteaptă deciziile lui Costin**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-12** (retestul Costin: 224, 225 redeschise, 226–232), pe secțiunile de stare (lecțiile și CIFRE
+- **ultima rescriere**: **2026-10-13** (lotul 2 al comenzii 13.10: /ghid/ a–e, C17, C18), pe secțiunile de stare (lecțiile și CIFRE
   INVALIDATE se poartă).
-- **pe commit**: `88834afc` (C15, C14, 237, 238, C16 — four-way închis 13.10 01:38); lotul 1 al comenzii 13.10 (varianta (a) + 242) e
-  în commitul care conține această predare — SHA-ul și four-way-ul în raport.
+- **pe commit**: `13856f1f` (lotul 1: varianta (a) + 242 — four-way închis 13.10 05:55); lotul 2 (/ghid/) e în commitul care conține
+  această predare — SHA-ul și four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -115,8 +115,15 @@ aplicației**, nu „în așteptarea unei teme”:
 - **VARIANTA (a) — ÎNCHISĂ** (aprobată 13.10.2026; lotul 1 al comenzii de azi): butonul „Propune nota de închidere la 31.12.<an>” de
   lângă refuz scrie două note ciornă (regularizarea TVA, închiderea 6/7), validate apoi în Jurnal. **242 — ÎNCHISĂ**: refuzul bilanțului
   arată toate motivele deodată.
-- **LOTUL 2 — /ghid/ (a–e), comanda 13.10.2026**: urmează după lotul 1; **ghiduri noi NEPUBLICATE până la decizia lui Costin**; comasarea
-  grupurilor — numai cu aprobarea lui, pe lista din raport.
+- **LOTUL 2 — /ghid/ (a–e) — ÎNCHIS** (lotul care conține această predare): 45 de grupuri / 90 de pagini măsurate (`ghid_suprapuneri.csv`,
+  nimic comasat); denumirile și expresiile din cod scoase din 1.056 ghiduri; „Actualizat la …” pe fiecare ghid; `X-Robots-Tag: noindex` pe
+  rutele aplicației; publicarea ÎNGHEȚATĂ la cele 6.558 de sluguri din `ghid_publicate.txt` — **un ghid nou nu se publică până la decizia
+  lui Costin** (gard `core/test_ghid_publicare.py`). **C17** (contrastul paginilor publice) și **C18** („0” pe listele cu buline din
+  procedură) — ÎNCHISE.
+- **DECIZII CERUTE (raportul lotului 2, §6), BLOCHEAZĂ orice lucru pe /ghid/:** (1) comasarea grupurilor, pe `ghid_suprapuneri.csv`;
+  (2) proza care descrie codul în „Ce face iConta.eu” (50 de ghiduri — „comentariul din cod”, „registrul intern”, „dosarul tehnic”);
+  (3) temeiul celor 73 de ghiduri rămase fără casetă de temei; (4) dacă se face și o măsurare semantică a suprapunerilor (cea lexicală e
+  un plafon inferior). Listele sunt în ZIP-ul lotului 2.
 - **C14 — ÎNCHISĂ** (lotul care conține această predare): F30 cap.XIX scris pe listele și calculele formularului (`Table8_an_micro`), pe
   ambele coloane; S1005 cu activitate valid pe DUK; „An precedent” manual cere și cap.XIX, verificat cu F20 la salvare.
 - **237, 238, C16 — ÎNCHISE** (lotul care conține această predare): refuzul o singură dată pe ecran; refuzul soldurilor fără loc rescris
@@ -440,7 +447,9 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## STAREA LA PREDARE
 
-**Ultima poartă completă: `41aaf93d` (12.10.2026, lotul „Oprește R4”)** — `8003 passed, 10 skipped, 15 xfailed in 2847.62s (0:47:27)`,
+**Ultima poartă completă: `13856f1f` (13.10.2026, lotul 1: varianta (a) + 242)** — `8092 passed, 10 skipped, 15 xfailed`, COLLECTED 8117,
+verificator TOTAL 0, e2e 247 passed; poarta întreagă 4070 s (pytest 3024 s, plasa 1046 s). Cifrele lotului 2 sunt în raportul lui.
+Înainte: **`41aaf93d` (12.10.2026, lotul „Oprește R4”)** — `8003 passed, 10 skipped, 15 xfailed in 2847.62s (0:47:27)`,
 COLLECTED 8028 (confirmat cu `--collect-only`), verificator TOTAL 0, cifrele identice cu referința (5 firme), e2e 225 passed; poarta
 întreagă 3784 s = 63 de minute (01:40 -> 02:43), în paralel (pytest-xdist, 3 procese; verificatorul și cifrele simultan, plasa după
 pytest) — linia `DURATE` din `.poarta_jurnal.log`. Înainte, serială: `e69198fb` (R3), COLLECTED 8021, ~82 de minute. 63 de minute e

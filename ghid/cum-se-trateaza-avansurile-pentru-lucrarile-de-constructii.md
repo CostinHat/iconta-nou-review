@@ -2,7 +2,7 @@
 title: Cum se tratează avansurile pentru lucrările de construcții?
 description: Avansurile pentru lucrări de construcții se înregistrează în conturi distincte de cele pentru stocuri sau imobilizări, cu TVA exigibilă la fiecare plată, iar la contracte cu situații de plată succesive suma cumulată pentru regularizare trebuie urmărită separat de sistem.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,8 +35,8 @@ TVA devine exigibilă la fiecare plată/încasare intermediară, nu doar la rece
 
 ## Ce face iConta.eu
 
-Pentru avansul plătit unui constructor, motorul folosește `nota_avans_platit(suma_fara_tva, cota, destinatie="servicii")` (sau `"imobilizari"`, după caz), generând `409x + 4426 = 401`. Pentru avansul încasat de firma de construcții de la beneficiar, `nota_avans_incasat(suma_fara_tva, cota)` generează `4111 = 419 + 4427`. Cota trebuie transmisă explicit la fiecare apel.
+Pentru avansul plătit unui constructor, motorul folosește „nota avansului plătit” (sau `"imobilizari"`, după caz), generând `409x + 4426 = 401`. Pentru avansul încasat de firma de construcții de la beneficiar, „nota avansului încasat” generează `4111 = 419 + 4427`. Cota trebuie transmisă explicit la fiecare apel.
 
-O limitare de reținut pentru contractele cu plăți eșalonate: `avansuri.py` **nu agregă** automat mai multe avansuri/situații de plată pe aceeași comandă. Fiecare apel produce o notă separată, iar la momentul regularizării finale, suma cumulată corectă a tuturor avansurilor anterioare trebuie calculată și transmisă de utilizator — motorul nu are context despre plățile anterioare pentru a verifica sau corecta automat o sumă greșită.
+O limitare de reținut pentru contractele cu plăți eșalonate: aplicația **nu agregă** automat mai multe avansuri/situații de plată pe aceeași comandă. Fiecare apel produce o notă separată, iar la momentul regularizării finale, suma cumulată corectă a tuturor avansurilor anterioare trebuie calculată și transmisă de utilizator — motorul nu are context despre plățile anterioare pentru a verifica sau corecta automat o sumă greșită.
 
 [iConta.eu](/)

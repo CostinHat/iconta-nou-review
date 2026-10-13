@@ -2,7 +2,7 @@
 title: "Ce fac dacă am depășit plafonul neimpozabil al diurnei?"
 description: "Diurna acordată peste plafonul neimpozabil (2,5x nivelul stabilit pentru instituțiile publice) devine venit impozabil de natură salarială pentru partea care depășește plafonul."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Angajatorii din mediul privat pot acorda o diurnă mai mare decât nivelul stabi
 
 ## Ce face iConta.eu
 
-La data acestui ghid, modulul de decontări din iConta.eu (funcția `plafon_diurna`) calculează automat plafonul neimpozabil ca minimul dintre 2,5x diurna bugetară internă și 3x salariul de bază raportat la zilele lucrătoare din lună, exact formula de la art. 76 alin. (2) lit. k) și alin. (4^1) din Codul fiscal, și separă automat suma neimpozabilă de partea impozabilă a diurnei acordate. Nivelul diurnei bugetare folosit ca bază e sensibil la perioadă — 20 lei/zi până la 31.03.2023 (HG nr. 714/2018), 23 lei/zi de la 1 aprilie 2023 (Ordinul MF nr. 1235/2023) — astfel încât calculul nu aplică retroactiv valoarea actuală unor deplasări din trecut.
+La data acestui ghid, modulul de decontări din iConta.eu (funcția „plafonul diurnei”) calculează automat plafonul neimpozabil ca minimul dintre 2,5x diurna bugetară internă și 3x salariul de bază raportat la zilele lucrătoare din lună, exact formula de la art. 76 alin. (2) lit. k) și alin. (4^1) din Codul fiscal, și separă automat suma neimpozabilă de partea impozabilă a diurnei acordate. Nivelul diurnei bugetare folosit ca bază e sensibil la perioadă — 20 lei/zi până la 31.03.2023 (HG nr. 714/2018), 23 lei/zi de la 1 aprilie 2023 (Ordinul MF nr. 1235/2023) — astfel încât calculul nu aplică retroactiv valoarea actuală unor deplasări din trecut.
 
 [iConta.eu](/)

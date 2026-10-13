@@ -2,7 +2,7 @@
 title: "Cum se calculează termenul de transmitere în RO e-Factura?"
 description: "Formula de calcul a termenului de 5 zile lucrătoare pentru RO e-Factura, pornind de la data emiterii sau de la data-limită legală de emitere, conform Legii 296/2023 și Codului fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Algoritmul de calcul, cu cele două date de referință:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația (`fctel`) generează și transmite XML-ul facturii către SPV prin `upload_ubl()`, cu confirmarea stării prin `stare_mesaj()`. Calculul automat al celor două ancore de termen (5 zile de la emitere / 5 zile de la data-limită legală, în zile lucrătoare) și semnalarea proactivă a riscului de depășire nu au fost identificate ca funcție distinctă în cod — verificarea încadrării în termen rămâne, azi, o responsabilitate a contabilului, la momentul transmiterii.
+La data acestui ghid, aplicația (`fctel`) generează și transmite XML-ul facturii către SPV prin „transmiterea în RO e-Factura”, cu confirmarea stării prin „starea transmiterii în RO e-Factura”. Calculul automat al celor două ancore de termen (5 zile de la emitere / 5 zile de la data-limită legală, în zile lucrătoare) și semnalarea proactivă a riscului de depășire nu au fost identificate ca funcție distinctă în cod — verificarea încadrării în termen rămâne, azi, o responsabilitate a contabilului, la momentul transmiterii.
 
 [iConta.eu](/)

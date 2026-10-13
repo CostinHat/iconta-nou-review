@@ -2,7 +2,7 @@
 title: "Cum se organizează casieria la mai multe puncte de lucru"
 description: "Regula contabilă potrivit căreia registrul de casă documentează operațiunile fiecărei casierii, cu implicații directe pentru firmele cu mai multe puncte de lucru."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Ce rezultă din text pentru firmele cu mai multe puncte de lucru:
 
 ## Ce face iConta.eu
 
-Din verificarea codului, tabelul `casa_operatiuni` folosit de aplicația **nu are un câmp dedicat punctului de lucru** — registrul de casă din aplicație este, la data acestui ghid, **unic per firmă (schema tenant)**, nu structurat pe mai multe case fizice separate. Pentru o firmă cu mai multe puncte de lucru, funcția `verifica_plafon` din aplicație calculează corect plafonul agregat pe zi/partener la nivelul întregii firme (ceea ce corespunde regulii legale), dar ținerea unor registre de casă separate, cu solduri zilnice distincte pe fiecare punct de lucru, nu e susținută nativ — dacă acest lucru e necesar, evidența separată pe puncte de lucru trebuie ținută în afara aplicației sau folosind câmpul „document"/„partener" ca marcaj convențional.
+Din verificarea codului, tabelul „operațiunile de casă (Casă)” folosit de aplicația **nu are un câmp dedicat punctului de lucru** — registrul de casă din aplicație este, la data acestui ghid, **unic per firmă (schema tenant)**, nu structurat pe mai multe case fizice separate. Pentru o firmă cu mai multe puncte de lucru, funcția „verificarea plafonului de numerar (Casă)” din aplicație calculează corect plafonul agregat pe zi/partener la nivelul întregii firme (ceea ce corespunde regulii legale), dar ținerea unor registre de casă separate, cu solduri zilnice distincte pe fiecare punct de lucru, nu e susținută nativ — dacă acest lucru e necesar, evidența separată pe puncte de lucru trebuie ținută în afara aplicației sau folosind câmpul „document"/„partener" ca marcaj convențional.
 
 [iConta.eu](/)

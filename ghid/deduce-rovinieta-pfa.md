@@ -2,7 +2,7 @@
 title: "Pot deduce rovinieta la PFA?"
 description: "Condițiile în care rovinieta este cheltuială deductibilă pentru un PFA care folosește un autoturism în activitatea independentă."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă practic pentru rovinietă la PFA:
 
 ## Ce face iConta.eu
 
-Pentru PFA, iConta.eu permite înregistrarea plăților în registrul de încasări și plăți și clasificarea lor pe categorii de deductibilitate — deductibilă, limitată sau nedeductibilă (categoria `cheltuiala_limitata`). La data acestui ghid, aplicația **nu aplică automat plafonul „un singur autoturism pe persoană"** din art. 68 alin. (5) lit. j) și nu verifică dacă rovinieta introdusă corespunde unui vehicul deja afectat activității — încadrarea corectă a cheltuielii rămâne responsabilitatea celui care operează în cont.
+Pentru PFA, iConta.eu permite înregistrarea plăților în registrul de încasări și plăți și clasificarea lor pe categorii de deductibilitate — deductibilă, limitată sau nedeductibilă (categoria „cheltuială cu deductibilitate limitată”). La data acestui ghid, aplicația **nu aplică automat plafonul „un singur autoturism pe persoană"** din art. 68 alin. (5) lit. j) și nu verifică dacă rovinieta introdusă corespunde unui vehicul deja afectat activității — încadrarea corectă a cheltuielii rămâne responsabilitatea celui care operează în cont.
 
 [iConta.eu](/)

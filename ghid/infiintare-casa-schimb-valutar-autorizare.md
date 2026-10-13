@@ -2,7 +2,7 @@
 title: "Înființare casă de schimb valutar: autorizare BNR"
 description: Autorizarea unei case de schimb valutar e o procedură de reglementare a Băncii Naționale a României, distinctă de temele fiscale acoperite de corpusul nostru — nu am identificat, în sursele verificate local, textul normei BNR aplicabile, așa că recomandăm verificarea directă la sursă.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,6 +28,6 @@ Se confundă procedura de autorizare BNR (specifică activității de schimb val
 
 ## Ce face iConta.eu
 
-iConta.eu nu acoperă procedura de autorizare BNR a unei case de schimb valutar — aplicația e un instrument de contabilitate și declarații fiscale, nu de reglementare bancară, iar acest subiect nu are corespondent în funcționalitățile ei (motorul de curs valutar F025 preia și aplică cursul BNR pentru facturare, nu are legătură cu autorizarea entităților care fac schimb valutar). Odată firma autorizată și înființată, contabilitatea ei curentă — inclusiv evidența operațiunilor valutare proprii — se ține în aplicație ca la orice altă firmă.
+iConta.eu nu acoperă procedura de autorizare BNR a unei case de schimb valutar — aplicația e un instrument de contabilitate și declarații fiscale, nu de reglementare bancară, iar acest subiect nu are corespondent în funcționalitățile ei (motorul de curs valutar „Curs valutar BNR” preia și aplică cursul BNR pentru facturare, nu are legătură cu autorizarea entităților care fac schimb valutar). Odată firma autorizată și înființată, contabilitatea ei curentă — inclusiv evidența operațiunilor valutare proprii — se ține în aplicație ca la orice altă firmă.
 
 [iConta.eu](/)

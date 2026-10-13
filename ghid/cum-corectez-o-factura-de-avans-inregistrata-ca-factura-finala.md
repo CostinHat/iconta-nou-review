@@ -2,7 +2,7 @@
 title: Cum corectez o factură de avans înregistrată ca factură finală?
 description: Corecția se face prin stornarea liniilor de avans (409/419), pe temeiul ajustării bazei de impozitare pentru facturi de avans emise pentru operațiuni desființate total sau parțial; cursul valutar rămâne cel al avansului inițial, nu cel din ziua corecției.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,8 +35,8 @@ Un aspect legal important, ușor de ratat: la stornarea/anularea avansului, **re
 
 ## Ce face iConta.eu
 
-Pentru un avans plătit greșit înregistrat ca factură finală, corecția tehnică se face prin `nota_regularizare_avans_platit(...)`, care inversează linia de avans: `401 = 409x` pentru capital și `401 = 4426` pentru TVA. Pentru un avans încasat, echivalentul e `nota_regularizare_avans_incasat(...)`, cu `419 = 4111` și `4427 = 4111`. Ambele funcții stornează strict avansul — docstring-ul modulului precizează explicit că "factura finală se înregistrează separat, întreagă": motorul nu generează singur factura finală corectă, doar reversul avansului.
+Pentru un avans plătit greșit înregistrat ca factură finală, corecția tehnică se face prin „regularizarea avansului plătit”, care inversează linia de avans: `401 = 409x` pentru capital și `401 = 4426` pentru TVA. Pentru un avans încasat, echivalentul e „regularizarea avansului încasat”, cu `419 = 4111` și `4427 = 4111`. Ambele funcții stornează strict avansul — docstring-ul modulului precizează explicit că "factura finală se înregistrează separat, întreagă": motorul nu generează singur factura finală corectă, doar reversul avansului.
 
-În aplicația, orchestrarea cere explicit data livrării (`data_livrare`) pentru orice operație de tip `"regularizare"`, iar cota se calculează pe baza acestei date — nu pe data la care se face efectiv corecția, conform art. 291 alin. (6). Totuși, câmpul `tip_operatiune='regularizare_avans'` e informativ: nu ramifică generatoarele de declarații (D300/D390), regularizarea se reflectă corect prin liniile facturii (livrare minus storno avans), dar eticheta în sine nu declanșează o verificare separată în sistem — util de reținut la audit intern, chiar dacă rezultatul fiscal final e corect.
+În aplicația, orchestrarea cere explicit data livrării („data livrării”) pentru orice operație de tip `"regularizare"`, iar cota se calculează pe baza acestei date — nu pe data la care se face efectiv corecția, conform art. 291 alin. (6). Totuși, câmpul tipul operațiunii='regularizarea avansului' e informativ: nu ramifică generatoarele de declarații (D300/D390), regularizarea se reflectă corect prin liniile facturii (livrare minus storno avans), dar eticheta în sine nu declanșează o verificare separată în sistem — util de reținut la audit intern, chiar dacă rezultatul fiscal final e corect.
 
 [iConta.eu](/)

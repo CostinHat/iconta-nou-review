@@ -2,7 +2,7 @@
 title: "Cum corectez impozitul micro după depășirea plafonului?"
 description: Dacă depășirea plafonului de 100.000 euro a fost descoperită după ce trimestrele următoare au fost greșit declarate tot ca impozit micro, corectarea nu recalculează trimestrele dinainte de depășire — ci schimbă regimul, de la trimestrul depășirii, la impozit pe profit, declarat separat.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Dacă se descoperă, la un moment dat, că firma a depășit plafonul de 100.000
 
 ## Ce face iConta.eu
 
-Fiecare trimestru se calculează independent, pe baza regimului fiscal (`regim_fiscal`) setat pentru firmă — verificat direct în cod, aplicația nu recalculează automat trimestrele anterioare când regimul se schimbă. Schimbarea regimului fiscal, o dată constatată depășirea plafonului, rămâne o decizie și o acțiune manuală a contabilului; corectarea trimestrelor deja declarate greșit ca micro se face prin formularul 710, iar calculul impozitului pe profit pentru perioada corectă urmează fluxul specific acelui regim, separat de D100.
+Fiecare trimestru se calculează independent, pe baza regimului fiscal („regimul fiscal (Date firmă)”) setat pentru firmă — verificat direct în cod, aplicația nu recalculează automat trimestrele anterioare când regimul se schimbă. Schimbarea regimului fiscal, o dată constatată depășirea plafonului, rămâne o decizie și o acțiune manuală a contabilului; corectarea trimestrelor deja declarate greșit ca micro se face prin formularul 710, iar calculul impozitului pe profit pentru perioada corectă urmează fluxul specific acelui regim, separat de D100.
 
 [iConta.eu](/)

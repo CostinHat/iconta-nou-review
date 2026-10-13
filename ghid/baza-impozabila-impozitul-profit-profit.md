@@ -2,19 +2,13 @@
 title: "Baza impozabilă la impozitul pe profit: de la profit contabil la profit fiscal"
 description: "Baza impozabilă a impozitului pe profit rezultă din profitul contabil ajustat cu deduceri, add-back-uri și rezerva legală."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Baza impozabilă la impozitul pe profit: de la profit contabil la profit fiscal
 
 Baza impozabilă (P40 în D101) nu este profitul contabil — este rezultatul unor ajustări specifice, aplicate în ordine.
-
-## Temeiul legal
-
-::: ghid-temei
-"Art.17: Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%." — Legea 227/2015, citată în dosarul de cercetare F027 pe baza [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282).
-:::
 
 Traseul, confirmat în motorul D101:
 

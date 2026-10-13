@@ -2,7 +2,7 @@
 title: "Cum verific D394 cu jurnalele de TVA?"
 description: "Ce mecanisme de verificare există înainte de depunerea D394 și de ce nu există un jurnal de TVA separat de facturile din aplicație."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,7 +27,7 @@ Obligația de evidență corectă și completă e generală — legea nu impune 
 
 ## Ce face iConta.eu
 
-iConta.eu nu are un modul separat numit „jurnal de TVA" — D394 se generează direct din tabelele de facturi (`facturi` + `factura_linii`, aplicația), aceleași folosite de restul aplicației, cu filtre explicite care exclud din generare documentele de tip proformă/aviz și facturile anulate sau stornate.
+iConta.eu nu are un modul separat numit „jurnal de TVA" — D394 se generează direct din tabelele de facturi (`facturi` + „liniile facturii”, aplicația), aceleași folosite de restul aplicației, cu filtre explicite care exclud din generare documentele de tip proformă/aviz și facturile anulate sau stornate.
 
 Înainte de a considera fișierul gata de depus, aplicația rulează două verificări:
 

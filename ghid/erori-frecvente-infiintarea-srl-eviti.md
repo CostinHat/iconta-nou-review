@@ -2,7 +2,7 @@
 title: "Erori frecvente la înființarea unui SRL și cum le eviți"
 description: "Elementele obligatorii ale actului constitutiv al unui SRL, conform art. 7 din Legea 31/1990, și cum lipsa lor complică înmatricularea."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -45,6 +45,6 @@ Erori concrete, legate direct de elementele obligatorii de mai sus:
 
 ## Ce face iConta.eu
 
-iConta.eu intervine după înființarea firmei, la momentul configurării ei în aplicație — verifică validitatea cifrei de control a CUI-ului (`cui_valid`) și poate precompleta datele firmei direct din ANAF (`precompleteaza_din_anaf`), reducând riscul unei erori de transcriere a CUI-ului sau a denumirii. Aplicația **nu intervine în redactarea actului constitutiv sau în procedura de înmatriculare** la registrul comerțului — acestea au loc înainte de configurarea firmei în iConta.eu, deci elementele obligatorii ale actului constitutiv (art. 7) rămân responsabilitatea celor implicați în constituirea firmei, de regulă cu asistență juridică sau notarială.
+iConta.eu intervine după înființarea firmei, la momentul configurării ei în aplicație — verifică validitatea cifrei de control a CUI-ului („verificarea CUI-ului”) și poate precompleta datele firmei direct din ANAF („precompletarea din ANAF (Date firmă)”), reducând riscul unei erori de transcriere a CUI-ului sau a denumirii. Aplicația **nu intervine în redactarea actului constitutiv sau în procedura de înmatriculare** la registrul comerțului — acestea au loc înainte de configurarea firmei în iConta.eu, deci elementele obligatorii ale actului constitutiv (art. 7) rămân responsabilitatea celor implicați în constituirea firmei, de regulă cu asistență juridică sau notarială.
 
 [iConta.eu](/)

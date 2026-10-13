@@ -2,7 +2,7 @@
 title: "Contribuții pentru perioada de concediu medical: se datorează"
 description: "Ce contribuții se rețin din indemnizația de concediu medical — CAS întotdeauna, CASS doar pentru anumite coduri — și cum le calculează iConta.eu la introducerea certificatului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Din text rezultă o distincție importantă, ratată des:
 
 ## Ce face iConta.eu
 
-Motorul de calcul (funcția `taxe_cm`) aplică exact distincția din lege: CAS 25% pe toate indemnizațiile de concediu medical, iar CASS 10% doar pentru codurile 01, 07 și 10 — potrivire exactă cu textul citat mai sus. Calculul rulează automat la introducerea unui certificat de concediu medical în fișa salariatului, iar rezultatul (CAS, CASS, impozit, net) se salvează odată cu certificatul.
+Motorul de calcul (funcția „contribuțiile la concediul medical”) aplică exact distincția din lege: CAS 25% pe toate indemnizațiile de concediu medical, iar CASS 10% doar pentru codurile 01, 07 și 10 — potrivire exactă cu textul citat mai sus. Calculul rulează automat la introducerea unui certificat de concediu medical în fișa salariatului, iar rezultatul (CAS, CASS, impozit, net) se salvează odată cu certificatul.
 
 [iConta.eu](/)

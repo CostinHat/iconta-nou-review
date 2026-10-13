@@ -2,7 +2,7 @@
 title: "Ajustările pentru deprecierea stocurilor: deductibilitate"
 description: "De ce ajustările contabile pentru deprecierea stocurilor nu sunt, ca regulă, deductibile fiscal la calculul impozitului pe profit."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Contabil, o entitate poate — și, potrivit principiului prudenței, chiar treb
 
 ## Ce face iConta.eu
 
-iConta.eu **are o funcție dedicată** pentru exact acest caz: `nota_ajustare_stoc` din aplicație generează nota contabilă de constituire/reluare a ajustării de valoare a stocurilor (6814=39x, respectiv 39x=7814) și marchează explicit rezultatul cu `deductibil: False`, cu comentariul din cod „nedeductibil fiscal (nu figurează în art. 26)" — exact regula descrisă mai sus. Aplicația are și un modul consistent de gestiune a stocurilor (`stocuri.py`, `stocuri_api.py`, `stocuri_cv.py`) pentru mișcări, cantități și valori. Nu am găsit însă, în modulele verificate, o legătură automată între acest marcaj `deductibil: False` și completarea efectivă a rândului corespunzător din declarația 101 — reportarea sumei ca element similar cheltuielilor nedeductibile în D101 rămâne, la acest moment, o verificare manuală a contabilului.
+iConta.eu **are o funcție dedicată** pentru exact acest caz: „nota de ajustare a stocurilor (Operațiuni speciale)” din aplicație generează nota contabilă de constituire/reluare a ajustării de valoare a stocurilor (6814=39x, respectiv 39x=7814) și marchează explicit rezultatul cu „nedeductibil”, cu comentariul din cod „nedeductibil fiscal (nu figurează în art. 26)" — exact regula descrisă mai sus. Aplicația are și un modul consistent de gestiune a stocurilor (aplicația) pentru mișcări, cantități și valori. Nu am găsit însă, în modulele verificate, o legătură automată între acest marcaj „nedeductibil” și completarea efectivă a rândului corespunzător din declarația 101 — reportarea sumei ca element similar cheltuielilor nedeductibile în D101 rămâne, la acest moment, o verificare manuală a contabilului.
 
 [iConta.eu](/)

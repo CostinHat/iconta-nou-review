@@ -2,7 +2,7 @@
 title: Impozitul micro se calculează la facturat sau la încasat?
 description: Baza impozitului pe veniturile microîntreprinderilor este formată din veniturile înregistrate contabil (facturat/accrual), nu din sumele efectiv încasate.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -45,6 +45,6 @@ O microîntreprindere emite în trimestrul II facturi în valoare totală de 50.
 
 ## Ce face iConta.eu
 
-Motorul de calcul (funcția `deriva_obligatii`) determină baza impozitului micro (cod obligație 121) ca `venituri_trimestru × 1%`, unde veniturile trimestrului sunt citite din conturile 70x/75x/76x minus 709, pentru perioada exactă a trimestrului curent — nu cumulat de la 1 ianuarie. Datele sunt preluate de `d100.pull()` direct din înregistrările contabile ale firmei, deci suma calculată reflectă exact baza „la facturat" impusă de art. 53 alin. (1), nu sumele încasate.
+Motorul de calcul (funcția „calculul obligațiilor (Declarații)”) determină baza impozitului micro (cod obligație 121) ca veniturile trimestrului × 1%, unde veniturile trimestrului sunt citite din conturile 70x/75x/76x minus 709, pentru perioada exactă a trimestrului curent — nu cumulat de la 1 ianuarie. Datele sunt preluate de „preluarea datelor” direct din înregistrările contabile ale firmei, deci suma calculată reflectă exact baza „la facturat" impusă de art. 53 alin. (1), nu sumele încasate.
 
 [iConta.eu](/)

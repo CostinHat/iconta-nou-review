@@ -2,7 +2,7 @@
 title: Ce cotă de TVA se aplică alimentelor servite în restaurant?
 description: Alimentele servite la masă, ca parte a serviciului de restaurant, intră la cota redusă de 11% — chiar și un desert dulce, pentru care excepția „zahăr ≥10g/100g" nu se aplică în acest context.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Se aplică excepția „zahăr ≥10g/100g" și pentru desertul servit la masă,
 
 ## Ce face iConta.eu
 
-Categoria `restaurant_catering` din aplicație acoperă alimentele servite ca parte a mesei la cota de 11%, distinct de excepțiile listate în `EXCEPTII_21` (băuturi alcoolice, băuturi NC 2202, suplimente, alimente cu zahăr pentru livrare de bunuri). Motorul de potrivire cotă folosește contextul denumirii produsului pentru a stabili încadrarea corectă linie cu linie.
+Categoria „restaurant și catering (cota redusă)” din aplicație acoperă alimentele servite ca parte a mesei la cota de 11%, distinct de excepțiile listate în „excepțiile cu cota de 21%” (băuturi alcoolice, băuturi NC 2202, suplimente, alimente cu zahăr pentru livrare de bunuri). Motorul de potrivire cotă folosește contextul denumirii produsului pentru a stabili încadrarea corectă linie cu linie.
 
 [iConta.eu](/)

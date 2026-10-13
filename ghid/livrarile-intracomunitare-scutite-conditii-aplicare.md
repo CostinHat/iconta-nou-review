@@ -2,7 +2,7 @@
 title: Livrările intracomunitare scutite: condiții de aplicare
 description: Scutirea de TVA cu drept de deducere la livrarea intracomunitară e condiționată cumulativ de codul de TVA valid al cumpărătorului și de dovada transportului în alt stat membru; fără oricare din ele, operațiunea nu e scutită și se facturează cu TVA.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ O livrare de bunuri către un client dintr-un alt stat membru nu e scutită de T
 ## Temeiul legal
 
 ::: ghid-temei
-„Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” — CF art. 294 alin. (2) lit. a) (sursă: `cod_fiscal_227_2015_consolidat.txt`, L18397, verificat în dosarul F050).
+„Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” — CF art. 294 alin. (2) lit. a) (sursă: Codul fiscal (Legea 227/2015), forma consolidată).
 :::
 
 ## Cele două condiții

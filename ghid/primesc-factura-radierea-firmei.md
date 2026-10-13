@@ -2,7 +2,7 @@
 title: "Ce fac dacă primesc o factură după radierea firmei?"
 description: "Ce se întâmplă din punct de vedere fiscal și juridic când o factură ajunge la o firmă deja radiată din registrul comerțului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Radierea din registrul comerțului marchează încetarea existenței juridice a 
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat proceselor de lichidare și radiere a societății (`lichidare.py`), care tratează corect notele contabile ale valorificării activelor, închiderii TVA și partajului final către asociați, conform OMFP 897/2015 și Legii 31/1990. La verificarea codului, aplicația nu are însă o funcție specifică pentru gestionarea facturilor primite după data radierii firmei — această situație depășește ciclul normal de contabilitate curentă și necesită, așa cum arată și temeiul legal de mai sus, o analiză punctuală, de regulă cu sprijin juridic.
+iConta.eu are un modul dedicat proceselor de lichidare și radiere a societății, care tratează corect notele contabile ale valorificării activelor, închiderii TVA și partajului final către asociați, conform OMFP 897/2015 și Legii 31/1990. La verificarea codului, aplicația nu are însă o funcție specifică pentru gestionarea facturilor primite după data radierii firmei — această situație depășește ciclul normal de contabilitate curentă și necesită, așa cum arată și temeiul legal de mai sus, o analiză punctuală, de regulă cu sprijin juridic.
 
 [iConta.eu](/)

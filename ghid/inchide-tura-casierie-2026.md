@@ -2,7 +2,7 @@
 title: "Cum se închide tura la casierie 2026"
 description: "Ce rol are, potrivit reglementărilor contabile OMFP 2634/2015, Registrul de casă în stabilirea soldului zilnic al casieriei și cum se documentează închiderea zilei/turei."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce reiese, strict din text, pentru procedura de „închidere":
 
 ## Ce face iConta.eu
 
-Modulul de casierie al iConta.eu calculează automat soldul de casă zilnic pe baza operațiunilor introduse (`registru_casa`, `sold_final`) și verifică încadrarea în plafoanele legale de numerar (`verifica_plafon`). Această funcționalitate reflectă direct cerința legală de stabilire a soldului de casă la sfârșitul fiecărei zile. La data acestui ghid, iConta.eu **nu gestionează explicit conceptul de „tură"** ca subdiviziune a zilei de casierie — soldul se calculează și se închide la nivel de zi, nu la nivel de tură individuală, iar structurarea internă pe ture (dacă firma o folosește operațional) rămâne în afara evidenței aplicației.
+Modulul de casierie al iConta.eu calculează automat soldul de casă zilnic pe baza operațiunilor introduse („registrul de casă (Casă)”, „soldul final al registrului de casă”) și verifică încadrarea în plafoanele legale de numerar („verificarea plafonului de numerar (Casă)”). Această funcționalitate reflectă direct cerința legală de stabilire a soldului de casă la sfârșitul fiecărei zile. La data acestui ghid, iConta.eu **nu gestionează explicit conceptul de „tură"** ca subdiviziune a zilei de casierie — soldul se calculează și se închide la nivel de zi, nu la nivel de tură individuală, iar structurarea internă pe ture (dacă firma o folosește operațional) rămâne în afara evidenței aplicației.
 
 [iConta.eu](/)

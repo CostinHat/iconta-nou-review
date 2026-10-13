@@ -2,7 +2,7 @@
 title: "Se declară în D205 dividendele plătite unui asociat nerezident?"
 description: Nu — un beneficiar nerezident de dividende nu poate fi introdus în D205. Dividendele plătite unui asociat nerezident se declară exclusiv prin D207.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Legea tratează separat, într-un capitol distinct al Codului fiscal (Titlul VI 
 
 ## Ce face iConta.eu
 
-Generatorul D205 din iConta.eu validează fiecare beneficiar pe baza CNP-ului românesc: un CNP invalid sau lipsă — situația în care se încadrează orice asociat nerezident — este refuzat la generare și nu apare deloc în declarație. Dividendele către un asociat nerezident trebuie declarate separat, prin ecranul dedicat D207 (F209), unde contabilul completează manual venitul plătit, statul de rezidență al beneficiarului, codul său fiscal și actul normativ aplicabil (Codul fiscal, o convenție de evitare a dublei impuneri sau un acord internațional) — aplicația nu deduce automat aceste date, contabilul le introduce pe baza documentelor beneficiarului.
+Generatorul D205 din iConta.eu validează fiecare beneficiar pe baza CNP-ului românesc: un CNP invalid sau lipsă — situația în care se încadrează orice asociat nerezident — este refuzat la generare și nu apare deloc în declarație. Dividendele către un asociat nerezident trebuie declarate separat, prin ecranul dedicat D207 („Declarația D207 (impozit reținut nerezidenți)”), unde contabilul completează manual venitul plătit, statul de rezidență al beneficiarului, codul său fiscal și actul normativ aplicabil (Codul fiscal, o convenție de evitare a dublei impuneri sau un acord internațional) — aplicația nu deduce automat aceste date, contabilul le introduce pe baza documentelor beneficiarului.
 
 [iConta.eu](/)

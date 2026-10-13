@@ -2,7 +2,7 @@
 title: "Poate administratorul depune bani personali în contul firmei?"
 description: "Cum se tratează legal și contabil depunerea de bani personali de către administrator sau asociat în contul firmei, și plafonul legal pentru încasările în numerar de acest fel."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Da. Cea mai frecventă formă e împrumutul acordat de asociat/administrator soc
 
 ## Ce face iConta.eu
 
-iConta.eu **are un motor contabil dedicat pentru decontările cu asociații**, inclusiv pentru împrumutul de la asociat: modulul `decontari_asociati.py` generează notele contabile pentru primirea sumei (cont 5121 = 4551), restituirea ei (4551 = 5121) și, dacă e cazul, dobânda aferentă (666 = 4551, cu impozitul de 10% pe venitul din dobândă reținut la sursă: 4551 = 446). Aplicația nu verifică însă automat plafonul de 10.000 lei/zi din Legea 70/2015 pentru încasările în numerar — respectarea acestui plafon rămâne responsabilitatea celui care depune efectiv banii.
+iConta.eu **are un motor contabil dedicat pentru decontările cu asociații**, inclusiv pentru împrumutul de la asociat: modulul aplicația generează notele contabile pentru primirea sumei (cont 5121 = 4551), restituirea ei (4551 = 5121) și, dacă e cazul, dobânda aferentă (666 = 4551, cu impozitul de 10% pe venitul din dobândă reținut la sursă: 4551 = 446). Aplicația nu verifică însă automat plafonul de 10.000 lei/zi din Legea 70/2015 pentru încasările în numerar — respectarea acestui plafon rămâne responsabilitatea celui care depune efectiv banii.
 
 [iConta.eu](/)

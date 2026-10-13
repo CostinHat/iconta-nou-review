@@ -2,7 +2,7 @@
 title: "Cum se decontează tichetele de vacanță la pensiuni"
 description: Decontarea tichetelor de vacanță la o pensiune ține de relația comercială dintre unitatea de cazare și operatorul emitent de vouchere, un flux diferit de taxarea acordării voucherelor de către angajator — și doar acesta din urmă e acoperit tehnic de acest ghid.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,6 +28,6 @@ Pentru latura **pensiunii** care acceptă vouchere de vacanță de la turiști �
 
 ## Ce face iConta.eu
 
-Modulul de salarizare (F133) acoperă exclusiv latura angajatorului care acordă vouchere de vacanță: calculul CASS 10% + impozit 10%, aplicarea plafonului anual dinamic (funcție de salariul minim valabil la data acordării) și declararea în D112. Pentru o pensiune care încasează vouchere de vacanță de la turiști, acele sume se înregistrează în contabilitate ca venit din prestări de servicii, prin fluxul obișnuit de facturare/încasare al aplicației — procedura tehnică de decontare cu operatorul de vouchere (termene, documente, eventuale comisioane) nu face parte din F133 și nu e un proces verificat în acest dosar.
+Modulul de salarizare („Tichete de masă, de vacanță și cadouri în statul de plată”) acoperă exclusiv latura angajatorului care acordă vouchere de vacanță: calculul CASS 10% + impozit 10%, aplicarea plafonului anual dinamic (funcție de salariul minim valabil la data acordării) și declararea în D112. Pentru o pensiune care încasează vouchere de vacanță de la turiști, acele sume se înregistrează în contabilitate ca venit din prestări de servicii, prin fluxul obișnuit de facturare/încasare al aplicației — procedura tehnică de decontare cu operatorul de vouchere (termene, documente, eventuale comisioane) nu face parte din „Tichete de masă, de vacanță și cadouri în statul de plată” și nu e un proces verificat în acest dosar.
 
 [iConta.eu](/)

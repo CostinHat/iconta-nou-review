@@ -2,7 +2,7 @@
 title: "Am uitat să corectez stocul după o stornare"
 description: "De ce stornarea unei facturi de vânzare trebuie să corecteze simultan contul de clienți, veniturile, cheltuiala cu marfa și stocul, nu doar partea comercială a operațiunii."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce înseamnă, concret, „a corecta" o stornare completă:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are o funcție de stornare a facturilor (funcția `storneaza`), care generează o factură de corecție cu cantități negative, referențiată la factura originală. Modulul de gestiune a stocurilor descarcă gestiunea pe baza facturilor de vânzare emise. Aplicația **nu garantează automat** că stornarea unei facturi de vânzare readuce marfa în stoc — dacă factura de stornare nu e emisă și contată corect, cu liniile corespunzătoare de marfă, corectarea stocului rămâne o verificare manuală a contabilului, separată de simpla anulare a facturii.
+La data acestui ghid, iConta.eu are o funcție de stornare a facturilor (funcția „stornarea”), care generează o factură de corecție cu cantități negative, referențiată la factura originală. Modulul de gestiune a stocurilor descarcă gestiunea pe baza facturilor de vânzare emise. Aplicația **nu garantează automat** că stornarea unei facturi de vânzare readuce marfa în stoc — dacă factura de stornare nu e emisă și contată corect, cu liniile corespunzătoare de marfă, corectarea stocului rămâne o verificare manuală a contabilului, separată de simpla anulare a facturii.
 
 [iConta.eu](/)

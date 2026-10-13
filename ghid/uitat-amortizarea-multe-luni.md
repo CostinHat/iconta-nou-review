@@ -2,7 +2,7 @@
 title: "Ce fac dacă am uitat amortizarea mai multe luni?"
 description: "Cum recuperează registrul de mijloace fixe automat amortizarea omisă, prin calculul cumulat la zi."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,6 +25,6 @@ Greșeala tipică e recalcularea manuală, lună cu lună, a sumelor omise, cu r
 
 ## Ce face iConta.eu
 
-Funcția `amortizat_la_data` calculează amortizarea cumulată "la zi" plus valoarea rămasă, pentru orice dată cerută, pe metoda reală a activului — indiferent ce a fost sau nu postat anterior în contabilitate. Aceasta e valoarea folosită și de ecranul de registru, și de casare, și de reevaluare.
+Funcția „amortizarea cumulată (Mijloace fixe)” calculează amortizarea cumulată "la zi" plus valoarea rămasă, pentru orice dată cerută, pe metoda reală a activului — indiferent ce a fost sau nu postat anterior în contabilitate. Aceasta e valoarea folosită și de ecranul de registru, și de casare, și de reevaluare.
 
 [iConta.eu](/)

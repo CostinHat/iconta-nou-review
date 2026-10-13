@@ -2,7 +2,7 @@
 title: "Poate un magazin online să fie microîntreprindere?"
 description: "Condițiile din Codul fiscal pentru încadrarea la impozitul pe veniturile microîntreprinderilor și de ce comerțul online nu e exclus din start."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ i) a depus în termen situațiile financiare anuale, dacă are această obligaț
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are un verificator automat de eligibilitate pentru regimul de microîntreprindere** (nu am găsit în cod niciun modul care să calculeze pragul de 100.000 euro sau să verifice condițiile de la art. 47). Regimul fiscal (`regim_fiscal`) se stabilește ca dată introdusă de utilizator în profilul firmei, nu se derivă automat din venituri sau din structura asociaților. Există în schimb un modul separat, `categorie_marime.py`, care încadrează firma în categoria de mărime (micro/mici/mijlocii-mari) pentru situațiile financiare anuale — dar acesta e un concept contabil distinct (OMFP 1802/2014), nu regimul fiscal al microîntreprinderilor, și nu trebuie confundat cu el.
+La data acestui ghid, iConta.eu **nu are un verificator automat de eligibilitate pentru regimul de microîntreprindere** (nu am găsit în cod niciun modul care să calculeze pragul de 100.000 euro sau să verifice condițiile de la art. 47). Regimul fiscal („regimul fiscal (Date firmă)”) se stabilește ca dată introdusă de utilizator în profilul firmei, nu se derivă automat din venituri sau din structura asociaților. Există în schimb un modul separat, aplicația, care încadrează firma în categoria de mărime (micro/mici/mijlocii-mari) pentru situațiile financiare anuale — dar acesta e un concept contabil distinct (OMFP 1802/2014), nu regimul fiscal al microîntreprinderilor, și nu trebuie confundat cu el.
 
 [iConta.eu](/)

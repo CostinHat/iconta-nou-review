@@ -2,7 +2,7 @@
 title: "Cum calculez rezultatul fiscal pornind de la balanța contabilă?"
 description: "Rezultatul fiscal pornește din balanță, dar amortizarea, rezerva legală și contul 691 cer intervenție manuală atentă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,10 +13,10 @@ Calculul rezultatului fiscal în D101 pornește din balanță, dar nu se opreșt
 ## Temeiul legal
 
 ::: ghid-temei
-"D101 tratează amortizarea ca INTRARE, nu o calculează — P11 = amortizare fiscală (deducere, intră în P16 total deduceri, reduce profitul impozabil), P2x/P28-tip = cheltuiala cu amortizarea contabilă (intră în rollup-ul P34 «cheltuieli nedeductibile», se adaugă înapoi la baza impozabilă). Contabilul introduce manual ambele valori." — dosarul de cercetare F027, pe baza aplicația și `calcul_d101`.
+"D101 tratează amortizarea ca INTRARE, nu o calculează — P11 = amortizare fiscală (deducere, intră în P16 total deduceri, reduce profitul impozabil), P2x/P28-tip = cheltuiala cu amortizarea contabilă (intră în rollup-ul P34 «cheltuieli nedeductibile», se adaugă înapoi la baza impozabilă). Contabilul introduce manual ambele valori.".
 :::
 
-Punctul de plecare este `pull()`, care citește balanța cu separarea clasică: conturile 76/66 ca financiar, restul 7x/6x ca exploatare. Din același pas se preiau și datele pentru rezerva legală: capitalul social (1012), rezerva existentă (1061) și cheltuiala cu impozitul pe profit (cont 691) — aceasta din urmă e și sursa avertismentului de nedeductibilitate dacă rândul P23 rămâne pe 0.
+Punctul de plecare este „preluarea datelor”, care citește balanța cu separarea clasică: conturile 76/66 ca financiar, restul 7x/6x ca exploatare. Din același pas se preiau și datele pentru rezerva legală: capitalul social (1012), rezerva existentă (1061) și cheltuiala cu impozitul pe profit (cont 691) — aceasta din urmă e și sursa avertismentului de nedeductibilitate dacă rândul P23 rămâne pe 0.
 
 ## Ce se greșește în practică
 
@@ -24,6 +24,6 @@ Cea mai frecventă greșeală e să se aștepte ca aplicația să calculeze sing
 
 ## Ce face iConta.eu
 
-`pull()` aduce automat conturile relevante din balanță. Rezerva legală (P13) se calculează automat dacă nu e introdusă manual, plafonată conform CF art.26 alin.(1) lit.a). Amortizarea fiscală și add-back-ul contabil al amortizării rămân, în schimb, valori introduse manual de contabil.
+„preluarea datelor” aduce automat conturile relevante din balanță. Rezerva legală (P13) se calculează automat dacă nu e introdusă manual, plafonată conform CF art.26 alin.(1) lit.a). Amortizarea fiscală și add-back-ul contabil al amortizării rămân, în schimb, valori introduse manual de contabil.
 
 [iConta.eu](/)

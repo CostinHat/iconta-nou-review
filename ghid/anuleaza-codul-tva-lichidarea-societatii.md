@@ -1,21 +1,14 @@
 ---
 title: Cum se anulează codul de TVA la lichidarea societății?
-description: De ce anularea codului de TVA la lichidare se depune manual la ANAF, nu prin iConta.eu, și ce confirmă dosarul de cercetare al funcționalității F057 despre acest blocaj.
+description: De ce anularea codului de TVA la lichidare se depune manual la ANAF, nu prin iConta.eu, și ce confirmă dosarul de cercetare al funcționalității „Lichidare/radiere societate” despre acest blocaj.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum se anulează codul de TVA la lichidarea societății?
 
 Anularea codului de înregistrare în scopuri de TVA face parte din formalitățile de scoatere a societății din vectorul fiscal, alături de celelalte mențiuni legate de radiere. Din păcate, la acest pas, iConta.eu are o limitare cunoscută, pe care o comunicăm explicit mai jos.
-
-## Temeiul legal
-
-::: ghid-temei
-„Declarația D700 (mențiuni vector fiscal) - RESPINS", stare „RESPINS 20.07.2026"
-— FUNCTIONALITATI.csv, rândul F196
-:::
 
 Mențiunile privind vectorul fiscal (inclusiv scoaterea din evidența plătitorilor de TVA) se declară, în mod normal, prin formularul D700. Această funcționalitate este marcată explicit ca **respinsă** în evidența internă a funcționalităților iConta.eu, fără cod sursă asociat.
 

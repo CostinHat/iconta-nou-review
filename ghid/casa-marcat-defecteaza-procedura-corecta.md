@@ -2,7 +2,7 @@
 title: "Casa de marcat se defectează: procedura corectă"
 description: "Obligațiile exacte la defectarea aparatului de marcat electronic fiscal — registrul special, chitanțele și notificarea distribuitorului — conform OUG 28/1999."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Procedura, în ordine:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu are un modul dedicat registrului special pentru perioada de defectare a aparatului de marcat — aplicația oferă aplicația (`pdf_chitanta()`) pentru emiterea chitanțelor, care poate fi folosită și în această situație, dar înregistrarea operațiunilor în registrul special propriu-zis și notificarea documentată a distribuitorului rămân, azi, în afara funcționalității aplicației.
+La data acestui ghid, iConta.eu nu are un modul dedicat registrului special pentru perioada de defectare a aparatului de marcat — aplicația oferă aplicația („chitanța tipărită (Casă)”) pentru emiterea chitanțelor, care poate fi folosită și în această situație, dar înregistrarea operațiunilor în registrul special propriu-zis și notificarea documentată a distribuitorului rămân, azi, în afara funcționalității aplicației.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Contabilitatea unei firme de contabilitate: TVA la propriile servicii"
 description: "Regulile TVA nu au un regim special pentru firmele de contabilitate — un cabinet care își facturează propriile servicii aplică exact aceleași reguli de fapt generator și cotă ca orice alt prestator."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Un cabinet de contabilitate nu are, din perspectiva TVA, un regim diferit față
 
 ## Ce face iConta.eu
 
-Verificat direct în cod: nu există în iConta.eu nicio funcționalitate specifică pentru „TVA la propriile servicii ale unui cabinet de contabilitate" — subiectul nu apare nici în lista de funcționalități a aplicației, nici în motorul de control încrucișat **F169**, care compară D300 cu rulajele contabile pe conturile de TVA (4426/4427/4423/4424/4428) generic, pentru orice firmă, fără nicio ramură dedicată cabinetelor de contabilitate sau facturării serviciilor proprii. Un cabinet care își emite facturi de onorariu către clienți folosește, ca orice altă firmă prestatoare de servicii, modulul general de facturare al aplicației — cota, faptul generator și exigibilitatea se calculează după regulile standard descrise mai sus, nu printr-un mecanism separat.
+Verificat direct în cod: nu există în iConta.eu nicio funcționalitate specifică pentru „TVA la propriile servicii ale unui cabinet de contabilitate" — subiectul nu apare nici în lista de funcționalități a aplicației, nici în motorul de control încrucișat **„Control încrucișat: declarația de TVA față de contabilitate”**, care compară D300 cu rulajele contabile pe conturile de TVA (4426/4427/4423/4424/4428) generic, pentru orice firmă, fără nicio ramură dedicată cabinetelor de contabilitate sau facturării serviciilor proprii. Un cabinet care își emite facturi de onorariu către clienți folosește, ca orice altă firmă prestatoare de servicii, modulul general de facturare al aplicației — cota, faptul generator și exigibilitatea se calculează după regulile standard descrise mai sus, nu printr-un mecanism separat.
 
 [iConta.eu](/)

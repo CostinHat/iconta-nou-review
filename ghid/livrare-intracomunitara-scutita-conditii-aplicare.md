@@ -2,7 +2,7 @@
 title: Livrare intracomunitară scutită: condiții de aplicare 2026
 description: Condițiile scutirii — cod TVA valid al cumpărătorului + dovada transportului — rămân neschimbate pentru 2026, dar definiția achiziției intracomunitare din care derivă tratamentul întregului lanț a fost modificată de OG 22/2025, în vigoare din 1 septembrie 2025.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,7 @@ Cele două condiții ale scutirii de TVA la livrarea intracomunitară — cod de
 ## Temeiul legal
 
 ::: ghid-temei
-„CF art. 268 alin. (1)-(3) lit. a) — Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite. Lit. a) modificată de OG 22/2025 art. I pct. 2, în vigoare 01-09-2025 (MO 806/29.08.2025).” — sursă: `cod_fiscal_227_2015_consolidat.txt` L16593-16626, verificat în dosarul F050.
+„CF art. 268 alin. (1)-(3) lit. a) — Operațiuni impozabile; alin. (3) lit. a) — AIC de bunuri (altele decât mijloace de transport noi/accizabile) urmând unei LIC scutite. Lit. a) modificată de OG 22/2025 art. I pct. 2, în vigoare 01-09-2025 (MO 806/29.08.2025).” — sursă: Codul fiscal (Legea 227/2015), forma consolidată L16593-16626.
 :::
 
 Concret: art. 268 alin. (3) lit. a) e articolul care leagă achiziția intracomunitară taxabilă în statul de destinație de existența unei livrări intracomunitare scutite în statul de origine — cele două fețe ale aceleiași operațiuni. Modificarea prin OG 22/2025, intrată în vigoare pe 1 septembrie 2025, atinge exact acest articol. Condiția scutirii propriu-zise rămâne cea de la art. 294 alin. (2) lit. a): cod de TVA valid al cumpărătorului, comunicat furnizorului, plus dovada transportului în alt stat membru.
@@ -30,6 +30,6 @@ Fiindcă modificarea prin OG 22/2025 e recentă (intrată în vigoare cu mai pu�
 
 ## Ce face iConta.eu
 
-Ecranul de livrare/prestare intracomunitară cere codul de TVA al clientului și, opțional, dovada transportului, cu verificare automată a codului în VIES la emiterea facturii. Motorul intern validează cele două condiții ale scutirii (art. 294 alin. 2 lit. a) și întoarce o eroare explicită când oricare lipsește. Antetul modulului F050 citează explicit temeiurile pe care le aplică, inclusiv art. 268 — deci o eventuală modificare ulterioară a definiției operațiunilor impozabile se poate urmări direct la sursa citată în cod, nu doar din memorie.
+Ecranul de livrare/prestare intracomunitară cere codul de TVA al clientului și, opțional, dovada transportului, cu verificare automată a codului în VIES la emiterea facturii. Motorul intern validează cele două condiții ale scutirii (art. 294 alin. 2 lit. a) și întoarce o eroare explicită când oricare lipsește. Antetul modulului „Operațiuni intracomunitare” citează explicit temeiurile pe care le aplică, inclusiv art. 268 — deci o eventuală modificare ulterioară a definiției operațiunilor impozabile se poate urmări direct la sursa citată în cod, nu doar din memorie.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "D205 și diferențele de curs la plata dividendelor"
 description: "De ce D205 nu are legătură cu cursul valutar la dividende și care e, de fapt, regula care contează: cota de impozit în vigoare la data distribuirii."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Titlul ăsta pornește dintr-o confuzie de nume: dividendele plătite unei perso
 
 ## Ce face iConta.eu
 
-Calculul D205 folosește un modul intern numit „dividende_curs” — numele poate induce în eroare, dar acest modul **nu are nicio legătură cu cursul valutar BNR**. „Curs" se referă aici la succesiunea cronologică (FIFO pe dată) a distribuirilor și plăților de dividende, folosită pentru a aplica cota de impozit corectă în timp (10% pentru distribuiri pe bază de situații interimare 2025, 16% ulterior), conform Legii 141/2025 art. VII. Funcționalitatea de diferențe de curs valutar propriu-zisă (F041, aplicația) nu e apelată nicăieri din `d205.py` și nu are nimic de-a face cu plata dividendelor — dividendele nu generează diferențe de curs, fiind distribuite și plătite în lei.
+Calculul D205 folosește un modul intern numit „dividendele în curs” — numele poate induce în eroare, dar acest modul **nu are nicio legătură cu cursul valutar BNR**. „Curs" se referă aici la succesiunea cronologică (FIFO pe dată) a distribuirilor și plăților de dividende, folosită pentru a aplica cota de impozit corectă în timp (10% pentru distribuiri pe bază de situații interimare 2025, 16% ulterior), conform Legii 141/2025 art. VII. Funcționalitatea de diferențe de curs valutar propriu-zisă („Diferențe de curs valutar”, aplicația) nu e apelată nicăieri din aplicația și nu are nimic de-a face cu plata dividendelor — dividendele nu generează diferențe de curs, fiind distribuite și plătite în lei.
 
 [iConta.eu](/)

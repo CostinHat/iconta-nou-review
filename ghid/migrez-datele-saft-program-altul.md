@@ -2,7 +2,7 @@
 title: "Cum migrez datele SAF-T de la un program la altul"
 description: "Ce spune legea despre continuitatea raportării SAF-T (D406) când o firmă schimbă programul de contabilitate în cursul anului, și cum se corectează eventualele erori."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Nu am găsit un temei specific pentru procedura tehnică de migrare a datelor SA
 
 ## Ce face iConta.eu
 
-iConta.eu are module dedicate de import al datelor unei firme la trecerea dintr-un alt sistem (`articole_import_api.py` — articole și stoc inițial, `mijloace_fixe_import_api.py` — registrul de mijloace fixe, `salariati_import_api.py` — salariați, `asociati_import_api.py`, `istoric_declaratii_import_api.py` — istoricul declarațiilor deja depuse), fiecare citind un export .xlsx/.csv din aplicația veche. Corecție necesară: numele de fișier `migrare_*.py` din cod NU sunt module de import de date ale unei firme, ci migrări de schemă (DDL) ale bazei de date proprii a aplicației, fără legătură cu trecerea de la alt program de contabilitate. Nu am găsit o funcție dedicată de export al datelor SAF-T dintr-un format specific pentru a fi „migrate" către alt program terț. Din perspectiva generării SAF-T, aplicația construiește fișierul D406 (secțiunile Active și Stocuri incluse) din datele curente ale firmei existente în iConta.eu, indiferent de programul folosit anterior — responsabilitatea reconcilierii soldurilor de deschidere cu ultima raportare din vechiul program revine contabilului, la migrarea inițială.
+iConta.eu are module dedicate de import al datelor unei firme la trecerea dintr-un alt sistem (aplicația — articole și stoc inițial, aplicația — registrul de mijloace fixe, aplicația — salariați, aplicația — istoricul declarațiilor deja depuse), fiecare citind un export .xlsx/.csv din aplicația veche. Corecție necesară: numele de fișier aplicația din cod NU sunt module de import de date ale unei firme, ci migrări de schemă (DDL) ale bazei de date proprii a aplicației, fără legătură cu trecerea de la alt program de contabilitate. Nu am găsit o funcție dedicată de export al datelor SAF-T dintr-un format specific pentru a fi „migrate" către alt program terț. Din perspectiva generării SAF-T, aplicația construiește fișierul D406 (secțiunile Active și Stocuri incluse) din datele curente ale firmei existente în iConta.eu, indiferent de programul folosit anterior — responsabilitatea reconcilierii soldurilor de deschidere cu ultima raportare din vechiul program revine contabilului, la migrarea inițială.
 
 [iConta.eu](/)

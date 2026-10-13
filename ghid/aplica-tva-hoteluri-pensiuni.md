@@ -2,7 +2,7 @@
 title: Cum se aplică TVA în hoteluri și pensiuni
 description: Cazarea și serviciile de restaurant/catering sunt amândouă la cota redusă de 11%, dar cu reguli diferite pentru alcool — la cazare cu masă inclusă, cota redusă acoperă și băuturile alcoolice, la restaurant, alcoolul rămâne mereu la cota standard.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Regula depinde de ce anume e facturat, nu de locație: dacă suma apare ca parte
 
 ## Ce face iConta.eu
 
-Aplicația ține separat categoria `cazare` (art. 291 alin. (2) lit. m) de categoria `restaurant_catering` (lit. n), fiecare cu regulile ei proprii de excepție. Motorul de potrivire cotă lucrează linie cu linie: o linie de cazare (inclusiv pachet cu masă) primește 11% integral, iar o linie de restaurant/catering primește 11% cu excepția explicită pentru băuturile alcoolice și NC 2202, care rămân la 21%. Distincția rămâne, în ultimă instanță, de felul în care emitentul structurează factura — pe linie de cazare sau pe linie de consumație separată.
+Aplicația ține separat categoria `cazare` (art. 291 alin. (2) lit. m) de categoria „restaurant și catering (cota redusă)” (lit. n), fiecare cu regulile ei proprii de excepție. Motorul de potrivire cotă lucrează linie cu linie: o linie de cazare (inclusiv pachet cu masă) primește 11% integral, iar o linie de restaurant/catering primește 11% cu excepția explicită pentru băuturile alcoolice și NC 2202, care rămân la 21%. Distincția rămâne, în ultimă instanță, de felul în care emitentul structurează factura — pe linie de cazare sau pe linie de consumație separată.
 
 [iConta.eu](/)

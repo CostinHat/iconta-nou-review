@@ -2,7 +2,7 @@
 title: "Greșeala de a nu valida codul de TVA al partenerului UE"
 description: "Ce se întâmplă când o operațiune intracomunitară se tratează ca scutită/neimpozabilă fără verificare VIES a codului de TVA al partenerului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,9 +13,9 @@ Una dintre cele mai frecvente greșeli la operațiunile intracomunitare este tra
 ## Temeiul legal
 
 ::: ghid-temei
-CF art. 294 alin. (2) lit. a): „Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (sursă: `intracomunitar.py`, docstring)
+CF art. 294 alin. (2) lit. a): „Scutire LIC cu drept de deducere — condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt SM.” (sursă: aplicația, docstring)
 
-CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: `cod_fiscal_227_2015_consolidat.txt`, L17303-17420)
+CF art. 278 alin. (2): „Locul prestării serviciilor B2B = locul beneficiarului (bază pentru neimpozabilitate în RO + declarare D390 cod S).” (sursă: Codul fiscal (Legea 227/2015), forma consolidată)
 :::
 
 Legea nu scutește o operațiune „pentru că partenerul e din UE” — scutirea/neimpozitarea depinde strict de existența unui cod de TVA **valid, la acea dată, în VIES**. Fără el, motorul de validare pentru livrări (LIC) cere explicit codul valid + dovada transportului, iar pentru servicii cere codul valid pentru a stabili că operațiunea e neimpozabilă în România; în lipsa lui, sistemul întoarce eroare explicită — echivalentul practic: „facturează cu TVA”.
@@ -31,6 +31,6 @@ Legea nu scutește o operațiune „pentru că partenerul e din UE” — scutir
 
 La emiterea unei facturi cu cod de TVA de prefix non-RO, aplicația verifică automat, live, în VIES (nu în registrul ANAF de CUI-uri) starea codului și afișează rezultatul — valid/invalid — direct în ecranul de emitere; dacă VIES e temporar indisponibil, afișează avertisment explicit, în loc să presupună tacit validitatea.
 
-Pentru livrări (`vanzare_ic`), validarea scutirii cere explicit: client non-RO + cod valid VIES + dovadă de transport prezentă; pentru servicii, validarea neimpozabilității cere client non-RO + cod valid VIES. În lipsa oricărei condiții, sistemul semnalează explicit că operațiunea trebuie tratată ca impozabilă în România (cu TVA), nu ca scutită/neimpozabilă „implicit”.
+Pentru livrări („vânzare intracomunitară (Operațiuni)”), validarea scutirii cere explicit: client non-RO + cod valid VIES + dovadă de transport prezentă; pentru servicii, validarea neimpozabilității cere client non-RO + cod valid VIES. În lipsa oricărei condiții, sistemul semnalează explicit că operațiunea trebuie tratată ca impozabilă în România (cu TVA), nu ca scutită/neimpozabilă „implicit”.
 
 [iConta.eu](/)

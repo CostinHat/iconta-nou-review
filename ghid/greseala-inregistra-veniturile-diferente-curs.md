@@ -2,7 +2,7 @@
 title: "Greșeala de a nu înregistra veniturile din diferențe de curs"
 description: "Ce se întâmplă când se omit veniturile din diferențe de curs valutar (cont 765) și de ce afectează atât rezultatul contabil, cât și baza impozabilă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ O greșeală frecventă, mai des decât omisiunea pierderilor: se înregistreaz�
 
 ## Ce face iConta.eu
 
-Aplicația nu face nicio distincție de tratament între câștig și pierdere — funcția `diferenta()` aplică aceeași regulă de semn indiferent de rezultat și generează nota cu linia pe 765 (venit) la fel de automat ca pe 665 (cheltuială), fie la decontare, fie la reevaluarea lunară. Riscul de omisiune descris mai sus nu vine din motorul de calcul, ci din faptul că operațiunile trebuie inițiate manual de contabil, din ecranul „Operațiuni speciale" — dacă o decontare sau o reevaluare nu e introdusă deloc în aplicație, niciun venit din 765 nu se generează, indiferent dacă era favorabil sau nu.
+Aplicația nu face nicio distincție de tratament între câștig și pierdere — funcția „calculul diferenței de curs” aplică aceeași regulă de semn indiferent de rezultat și generează nota cu linia pe 765 (venit) la fel de automat ca pe 665 (cheltuială), fie la decontare, fie la reevaluarea lunară. Riscul de omisiune descris mai sus nu vine din motorul de calcul, ci din faptul că operațiunile trebuie inițiate manual de contabil, din ecranul „Operațiuni speciale" — dacă o decontare sau o reevaluare nu e introdusă deloc în aplicație, niciun venit din 765 nu se generează, indiferent dacă era favorabil sau nu.
 
 [iConta.eu](/)

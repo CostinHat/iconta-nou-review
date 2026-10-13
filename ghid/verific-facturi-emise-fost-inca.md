@@ -2,7 +2,7 @@
 title: "Cum verific ce facturi emise nu au fost încă trimise în SPV?"
 description: "Legea impune un termen fix de 5 zile lucrătoare pentru transmiterea facturilor emise în RO e-Factura, termen util ca reper pentru orice verificare a facturilor netrimise."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Emiterea unei facturi și transmiterea ei efectivă în sistemul RO e-Factura (S
 
 ## Ce face iConta.eu
 
-Dosarul de cercetare care stă la baza acestui ghid documentează în detaliu o singură funcționalitate legată de exportul facturilor emise — F171, exportul XML către programul de contabilitate SAGA, complet separat de sistemul RO e-Factura/SPV. Aplicația are, potrivit acestui dosar, și un modul distinct pentru transmiterea facturilor către e-Factura, dar acest dosar nu a verificat dacă și cum oferă acel modul o listă sau un raport al facturilor emise încă netransmise în SPV. Nu facem, așadar, nicio afirmație despre existența unei astfel de funcții de verificare în iConta.eu, pentru a nu inventa un comportament neconfirmat în cod.
+Dosarul de cercetare care stă la baza acestui ghid documentează în detaliu o singură funcționalitate legată de exportul facturilor emise — „Export facturi emise către SAGA”, exportul XML către programul de contabilitate SAGA, complet separat de sistemul RO e-Factura/SPV. Aplicația are, potrivit acestui dosar, și un modul distinct pentru transmiterea facturilor către e-Factura, dar acest dosar nu a verificat dacă și cum oferă acel modul o listă sau un raport al facturilor emise încă netransmise în SPV. Nu facem, așadar, nicio afirmație despre existența unei astfel de funcții de verificare în iConta.eu, pentru a nu inventa un comportament neconfirmat în cod.
 
 [iConta.eu](/)

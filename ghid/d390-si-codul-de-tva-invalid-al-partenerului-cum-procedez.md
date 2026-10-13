@@ -2,7 +2,7 @@
 title: D390 și codul de TVA invalid al partenerului — cum procedez?
 description: Aplicația raportează operațiunea chiar dacă validarea VIES eșuează (avertisment, nu blocare), dar un cod de TVA invalid sau incorect declarat poate anula scutirea de TVA pentru livrarea intracomunitară respectivă, conform art. 294 alin. (2^1) din Codul fiscal.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,7 +33,7 @@ Cu alte cuvinte, un cod de TVA invalid raportat greșit în D390 nu e doar un ri
 
 ## Ce face iConta.eu
 
-Validarea checksum-ului VIES (`checksum_vies`) este implementată ca **avertisment, nu ca blocare**: o operațiune cu un cod de TVA care nu trece validarea structurală se raportează totuși în D390, cu avertisment explicit către contabil. Decizia de produs a fost motivată astfel: o operațiune obligatorie raportată cu un cod de TVA invalid e mai bună decât una care dispare tăcut din declarație.
+Validarea checksum-ului VIES („verificarea cifrei de control a codului de TVA”) este implementată ca **avertisment, nu ca blocare**: o operațiune cu un cod de TVA care nu trece validarea structurală se raportează totuși în D390, cu avertisment explicit către contabil. Decizia de produs a fost motivată astfel: o operațiune obligatorie raportată cu un cod de TVA invalid e mai bună decât una care dispare tăcut din declarație.
 
 Această alegere tehnică nu elimină însă obligația contabilului de a verifica și corecta codul de TVA al partenerului înainte de depunerea finală — miza nu e validarea structurii XML, ci păstrarea scutirii de TVA pentru livrarea respectivă, conform art. 294 alin. (2^1).
 

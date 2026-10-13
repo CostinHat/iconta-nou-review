@@ -2,23 +2,13 @@
 title: "Cum contabilizez încasarea unei facturi în valută?"
 description: "Explică ce curs BNR se aplică unei facturi emise în valută și cum îl gestionează automat iConta.eu, inclusiv la stornare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum contabilizez încasarea unei facturi în valută?
 
 Ca și la o factură de plătit în valută, punctul de plecare e cursul BNR corect atașat facturii — încasarea ulterioară nu îl modifică.
-
-## Temeiul legal
-
-::: ghid-temei
-"(2) Dacă elementele folosite pentru stabilirea bazei de impozitare a unei operațiuni, alta decât importul de bunuri, se exprimă în valută, cursul de schimb care se aplică este ultimul curs de schimb comunicat de Banca Națională a României [...] valabil la data la care intervine exigibilitatea taxei pentru operațiunea în cauză [...]"
-— Codul fiscal (Legea 227/2015), art. 290 alin. (2), [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), dosar de cercetare F025.
-
-"În sensul art. 290 alin. (2) din Codul fiscal, prin ultimul curs de schimb comunicat de Banca Națională a României se înțelege cursul de schimb comunicat de respectiva bancă în ziua anterioară și care este valabil pentru operațiunile care se vor desfășura în ziua următoare."
-— HG 1/2016 (norme metodologice CF), pct. 35 alin. (1), [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822), dosar de cercetare F025.
-:::
 
 O factură emisă în valută se înregistrează în lei la cursul BNR valabil la data operațiunii (data exigibilității taxei, care în general coincide cu data facturii). Încasarea ulterioară, la un curs diferit, nu modifică baza de TVA a facturii — generează, separat, o diferență de curs valutar la decontare.
 

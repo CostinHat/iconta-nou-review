@@ -2,7 +2,7 @@
 title: Cum corectez o factură înregistrată greșit în contabilitate?
 description: iConta.eu nu are funcție de editare a unei facturi deja introduse. Corecția depinde de starea ei — fără notă contabilă, factura se șterge și se reintroduce corect; cu notă contabilă, corecția se face exclusiv prin stornare (document nou, cu sens opus) plus o factură nouă, corectă.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -23,7 +23,7 @@ Nu există, în iConta.eu, un buton „editează factura" pentru o factură deja
 ## Cum corectez, în funcție de stare
 
 - **Factura nu are notă contabilă** (nu a fost încă contată) → se șterge direct și se reintroduce corect, cu datele bune. Ștergerea e permisă necondiționat cât timp nu există o notă de contare legată.
-- **Factura are notă contabilă** (a fost deja contabilizată) → ștergerea e refuzată explicit, cu mesajul din aplicație: „Factura are notă contabilă (#…) și nu se mai șterge: o notă ștearsă lasă o gaură în evidență. Corecția unei facturi contabilizate se face prin STORNO — un al doilea document, care își produce propria notă." Corecția se face prin stornare: se emite o factură de stornare (număr nou, din aceeași serie, cu liniile din original negate, legată de original prin `storno_din_id`), apoi se introduce factura nouă, corectă, cu propria notă contabilă.
+- **Factura are notă contabilă** (a fost deja contabilizată) → ștergerea e refuzată explicit, cu mesajul din aplicație: „Factura are notă contabilă (#…) și nu se mai șterge: o notă ștearsă lasă o gaură în evidență. Corecția unei facturi contabilizate se face prin STORNO — un al doilea document, care își produce propria notă." Corecția se face prin stornare: se emite o factură de stornare (număr nou, din aceeași serie, cu liniile din original negate, legată de original prin „factura stornată (referința)”), apoi se introduce factura nouă, corectă, cu propria notă contabilă.
 - Stornarea automată din facturi (buton dedicat) e verificată în cod pentru **facturile emise** — funcția refuză explicit dacă factura nu e emisă. Pentru o factură primită deja contabilizată, corecția urmează același principiu contabil (stornare în roșu/negru, pct. 69), dar prin nota contabilă, nu prin acest buton specific facturilor emise.
 - Dacă luna facturii sau a notei e închisă administrativ, nicio operație (ștergere, stornare, notă nouă) nu se poate face pe acea lună — aplicația refuză cu mesajul „Perioada e blocată (luna închisă). Cere-i administratorului cabinetului să o redeschidă sau înregistrează în luna curentă."
 

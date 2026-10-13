@@ -2,7 +2,7 @@
 title: "Cum se descarcă gestiunea pentru produse oferite gratuit?"
 description: "Documentul de descărcare din gestiune pentru bunurile cedate cu titlu gratuit și tratamentul TVA aferent, conform OMFP 2634/2015 și Codul fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Mecanismul complet:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, aplicația oferă funcția generală `iesire()` pentru descărcarea din gestiune, folosibilă tehnic și pentru cedări gratuite. Aplicația nu are însă un flux dedicat „cedare cu titlu gratuit" care să calculeze automat TVA colectată conform art. 270 alin. (4) lit. b) sau să verifice dacă operațiunea se încadrează în vreuna dintre excepțiile de la art. 270 alin. (8) — încadrarea legală a fiecărei cedări rămâne, azi, o evaluare a contabilului.
+La data acestui ghid, aplicația oferă funcția generală „ieșirea din stoc” pentru descărcarea din gestiune, folosibilă tehnic și pentru cedări gratuite. Aplicația nu are însă un flux dedicat „cedare cu titlu gratuit" care să calculeze automat TVA colectată conform art. 270 alin. (4) lit. b) sau să verifice dacă operațiunea se încadrează în vreuna dintre excepțiile de la art. 270 alin. (8) — încadrarea legală a fiecărei cedări rămâne, azi, o evaluare a contabilului.
 
 [iConta.eu](/)

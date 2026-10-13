@@ -2,7 +2,7 @@
 title: "Cine amortizează bunul în leasing financiar?"
 description: "La leasingul financiar, amortizarea bunului se ține la locatar (firma care îl folosește), nu la societatea de leasing, indiferent de cine rămâne proprietar juridic."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Răspunsul e direct din lege: la leasingul financiar, amortizarea bunului se ți
 
 ## Ce face iConta.eu
 
-Funcția `nota_primire_financiar` din F056 (Leasing financiar și operațional) înregistrează bunul la intrare (2133=167), la valoarea capitalului din contract, exact ca pentru un mijloc fix cumpărat direct — consecvent cu regula de mai sus. De acolo, amortizarea propriu-zisă rulează prin registrul general de Mijloace fixe, la locatar, fără nicio cerință suplimentară din modulul de leasing. Clasificarea contractului (financiar sau operațional) rămâne însă decizia contabilului, făcută înainte de a alege tipul de operațiune în ecran — aplicația nu evaluează automat criteriile de clasificare din OMFP pct. 213.
+Funcția „nota de primire în leasing financiar” din „Leasing financiar și operațional” înregistrează bunul la intrare (2133=167), la valoarea capitalului din contract, exact ca pentru un mijloc fix cumpărat direct — consecvent cu regula de mai sus. De acolo, amortizarea propriu-zisă rulează prin registrul general de Mijloace fixe, la locatar, fără nicio cerință suplimentară din modulul de leasing. Clasificarea contractului (financiar sau operațional) rămâne însă decizia contabilului, făcută înainte de a alege tipul de operațiune în ecran — aplicația nu evaluează automat criteriile de clasificare din OMFP pct. 213.
 
 [iConta.eu](/)

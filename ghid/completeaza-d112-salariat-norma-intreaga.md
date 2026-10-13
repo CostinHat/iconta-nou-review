@@ -2,7 +2,7 @@
 title: "Cum se completează D112 pentru un salariat cu normă întreagă?"
 description: "Baza minimă de calcul a contribuției de asigurări sociale pentru un salariat cu normă întreagă, conform Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce înseamnă concret pentru completarea D112:
 
 ## Ce face iConta.eu
 
-Am verificat în aplicație: aplicația **calculează automat baza minimă de CAS** conform art. 146 alin. (5^6)-(5^7), diferențiat pentru salariat cu normă întreagă (parametrul `norma_intreaga=True`, baza raportată la salariul minim brut pe economie din luna respectivă) și pentru timp parțial (proporțional). Codul citează explicit acest temei în comentarii („CF art.146 alin.(5^6)/(5^7)") și rezultatul e preluat direct în generarea D112.
+Am verificat în aplicație: aplicația **calculează automat baza minimă de CAS** conform art. 146 alin. (5^6)-(5^7), diferențiat pentru salariat cu normă întreagă (parametrul normă întreagă=True, baza raportată la salariul minim brut pe economie din luna respectivă) și pentru timp parțial (proporțional). Codul citează explicit acest temei în comentarii („CF art.146 alin.(5^6)/(5^7)") și rezultatul e preluat direct în generarea D112.
 
 [iConta.eu](/)

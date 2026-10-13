@@ -2,7 +2,7 @@
 title: Ce fac dacă am calculat CAS greșit?
 description: Cea mai frecventă cauză a unui CAS calculat greșit e ignorarea podelei minime de contribuții (CF art.146 alin.(5^6)) sau folosirea salariului minim greșit din cele două ferestre ale 2026. Vezi cum se verifică și se recalculează.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Recalculați luna respectivă pe baza corectă (podea corectă, salariu minim co
 
 ## Ce face iConta.eu
 
-Motorul de calcul verifică automat podeaua de contribuții („baza_podea") de fiecare dată când brutul introdus e sub pragul corespunzător lunii — pragul vine din registrul „period-aware" `core.common.COTE`, potrivit fereastrei active (salariul minim, eventual redus cu facilitatea). Recalcularea unei luni anterioare cu datele corecte pentru acea lună (dată explicită, obligatorie pentru funcția de deducere și pentru selectarea cotelor) produce automat valoarea corectă de CAS pentru comparație cu ce a fost declarat greșit.
+Motorul de calcul verifică automat podeaua de contribuții („baza minimă a contribuțiilor") de fiecare dată când brutul introdus e sub pragul corespunzător lunii — pragul vine din registrul „period-aware" „registrul de cote al aplicației”, potrivit fereastrei active (salariul minim, eventual redus cu facilitatea). Recalcularea unei luni anterioare cu datele corecte pentru acea lună (dată explicită, obligatorie pentru funcția de deducere și pentru selectarea cotelor) produce automat valoarea corectă de CAS pentru comparație cu ce a fost declarat greșit.
 
 [iConta.eu](/)

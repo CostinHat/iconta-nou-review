@@ -2,7 +2,7 @@
 title: "Am emis factură cu TVA către un client din UE din greșeală"
 description: "Condițiile scutirii de TVA pentru livrarea intracomunitară de bunuri și ce trebuie corectat pe factură atunci când TVA a fost aplicată greșit unui client din alt stat membru."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,7 +37,7 @@ Când scutirea e aplicabilă, factura trebuie să conțină și mențiunea oblig
 
 ## Ce face iConta.eu
 
-Aplicația (F045) este exclusiv un generator de PDF: randează datele deja calculate ale facturii (cotă TVA, sume, partener) exact cum sunt salvate în rândul din baza de date — aplicația **nu determină și nu verifică** regimul de TVA al operațiunii (dacă un client are cod valid VIES, dacă operațiunea e scutită etc.). Stabilirea corectă a regimului rămâne o decizie a contabilului, făcută înainte de emitere.
+Aplicația („PDF factură”) este exclusiv un generator de PDF: randează datele deja calculate ale facturii (cotă TVA, sume, partener) exact cum sunt salvate în rândul din baza de date — aplicația **nu determină și nu verifică** regimul de TVA al operațiunii (dacă un client are cod valid VIES, dacă operațiunea e scutită etc.). Stabilirea corectă a regimului rămâne o decizie a contabilului, făcută înainte de emitere.
 
 O precizare utilă pentru corectarea unei facturi de acest tip: chiar dacă reemiți factura cu regimul corect (scutire sau taxare inversă), generatorul de PDF **nu afișează mențiunea obligatorie** aferentă — nu citește deloc câmpul care marchează taxarea inversă, iar mențiunea de trimitere la scutire (lit. l) nu e randată automat pentru linii cu cotă 0%. Până la o eventuală reparație, mențiunea trebuie adăugată manual, de exemplu în câmpul de descriere a liniei, ca soluție de ocolire.
 

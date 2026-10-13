@@ -2,7 +2,7 @@
 title: "Amortizarea activelor prin PNRR: regim fiscal"
 description: Un activ cumpărat din fonduri PNRR nu are un regim fiscal separat — se tratează contabil și fiscal ca orice altă subvenție pentru investiții, cu reluare la venituri pe măsura amortizării.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Fiscal, la impozitul pe veniturile microîntreprinderilor, venitul din reluare (
 
 ## Ce face iConta.eu
 
-Ecranul „Subvenții (445/741)" nu face distincție după sursa fondurilor (PNRR, alt program european, buget național) — tratează orice subvenție pentru investiții cu același mecanism: `445=4751` la drept, `5121=445` la încasare. Reluarea lunară (`4751=7584`, proporțională cu amortizarea) e calculată corect de motor (`reluare_lunara_investitii`), dar **formularul standard „Subvenții" nu are, la data acestei verificări, câmpurile necesare** (`valoare_activ`, `subventie`, `amortizare_lunara`) pentru operația „Reluare la venituri" — deși apare ca opțiune în listă, nu poate fi finalizată din ecran; reluarea trebuie introdusă manual, prin altă cale. Activul finanțat se înregistrează și se amortizează separat, prin operațiunile obișnuite de mijloace fixe. Aplicația nu ține evidența contractuală a condițiilor specifice de finanțare PNRR (rapoarte de progres, eligibilitate cheltuieli) — aceasta rămâne responsabilitatea ta, în afara evidenței contabile.
+Ecranul „Subvenții (445/741)" nu face distincție după sursa fondurilor (PNRR, alt program european, buget național) — tratează orice subvenție pentru investiții cu același mecanism: `445=4751` la drept, `5121=445` la încasare. Reluarea lunară (`4751=7584`, proporțională cu amortizarea) e calculată corect de motor („reluarea lunară a subvenției pentru investiții”), dar **formularul standard „Subvenții" nu are, la data acestei verificări, câmpurile necesare** („valoarea activului”, `subventie`, „amortizarea lunară”) pentru operația „Reluare la venituri" — deși apare ca opțiune în listă, nu poate fi finalizată din ecran; reluarea trebuie introdusă manual, prin altă cale. Activul finanțat se înregistrează și se amortizează separat, prin operațiunile obișnuite de mijloace fixe. Aplicația nu ține evidența contractuală a condițiilor specifice de finanțare PNRR (rapoarte de progres, eligibilitate cheltuieli) — aceasta rămâne responsabilitatea ta, în afara evidenței contabile.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: D300 precompletat — cum îl verific înainte de depunere?
 description: iConta generează propriul decont din facturile firmei, cu gărzi de profil și reconciliere automată pe cotele de TVA — aplicația nu importă și nu compară automat cu nicio sursă externă, verificarea finală rămânând bazată pe evidența contabilă proprie (facturi, jurnale, balanță).
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -39,6 +39,6 @@ Aceste verificări confirmă doar consistența internă a decontului generat de 
 
 ## Ce face iConta.eu
 
-Aplicația generează decontul strict din propriile date — facturile firmei, preluate pe fereastra fiscală (`pull`), calculate automat pe cote (`calcul_d300`) și verificate printr-o reconciliere a doua cale (`d300_reconciliere.verifica_reconciliere`) care recalculează independent totalurile pe cotele automate 21/11/9%. Sursele verificate nu confirmă existența unui mecanism ANAF de decont D300 precompletat; aplicația nu are, în orice caz, nicio funcționalitate de import sau comparare automată cu o asemenea sursă externă — verificarea finală rămâne un pas manual, bazat pe evidența contabilă proprie, iar zonele cele mai importante de verificat sunt exact cele pe care reconcilierea automată a aplicației nu le acoperă: rândurile manuale, lanțul de regularizări și TVA la încasare.
+Aplicația generează decontul strict din propriile date — facturile firmei, preluate pe fereastra fiscală („preluarea datelor”), calculate automat pe cote („calculul D300 (Declarații)”) și verificate printr-o reconciliere a doua cale („reconcilierea D112 (Control fiscal)”) care recalculează independent totalurile pe cotele automate 21/11/9%. Sursele verificate nu confirmă existența unui mecanism ANAF de decont D300 precompletat; aplicația nu are, în orice caz, nicio funcționalitate de import sau comparare automată cu o asemenea sursă externă — verificarea finală rămâne un pas manual, bazat pe evidența contabilă proprie, iar zonele cele mai importante de verificat sunt exact cele pe care reconcilierea automată a aplicației nu le acoperă: rândurile manuale, lanțul de regularizări și TVA la încasare.
 
 [iConta.eu](/)

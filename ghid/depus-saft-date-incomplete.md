@@ -2,7 +2,7 @@
 title: "Am depus SAF-T cu date incomplete"
 description: "O declarație D406 (SAF-T) depusă cu date incomplete pentru o lună sau un trimestru se corectează prin depunerea unei declarații rectificative, care trebuie să cuprindă toate datele, nu doar diferența."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Dacă îți dai seama, după validare, că fișierul SAF-T (D406) transmis pentr
 
 ## Ce face iConta.eu
 
-La data acestui ghid, generatorul D406/SAF-T din iConta.eu construiește fișierul integral din evidența contabilă a lunii/trimestrului respectiv (jurnal, active, stocuri, mișcări), inclusiv o poartă explicită care oprește generarea cu un mesaj clar dacă profilul firmei e incomplet, în loc să trimită un XML respins de ANAF (`erori_generare`, în aplicație). Regenerarea declarației pentru aceeași perioadă, după completarea datelor lipsă, produce automat un fișier complet — corespunzător cerinței ca rectificativa să conțină toate informațiile, nu doar diferența. Depunerea efectivă și confirmarea recipisei rămân un pas separat, în afara aplicației.
+La data acestui ghid, generatorul D406/SAF-T din iConta.eu construiește fișierul integral din evidența contabilă a lunii/trimestrului respectiv (jurnal, active, stocuri, mișcări), inclusiv o poartă explicită care oprește generarea cu un mesaj clar dacă profilul firmei e incomplet, în loc să trimită un XML respins de ANAF („verificarea datelor înainte de generare (Declarații)”, în aplicație). Regenerarea declarației pentru aceeași perioadă, după completarea datelor lipsă, produce automat un fișier complet — corespunzător cerinței ca rectificativa să conțină toate informațiile, nu doar diferența. Depunerea efectivă și confirmarea recipisei rămân un pas separat, în afara aplicației.
 
 [iConta.eu](/)

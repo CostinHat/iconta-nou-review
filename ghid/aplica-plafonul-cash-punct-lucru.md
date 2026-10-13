@@ -2,7 +2,7 @@
 title: "Cum se aplică plafonul cash pentru un punct de lucru cu casierie proprie?"
 description: "Ce spune Legea 70/2015 despre plafoanele zilnice de încasări și plăți în numerar și la ce nivel se calculează — la firmă, nu la punct de lucru."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **aplică plafoanele de numerar din Legea 70/2015 (actualizată prin Legea 239/2025, în vigoare din 01.01.2026)** direct în modulul de casierie, cu constante distincte pentru partenerii de tip persoană juridică (5.000 lei/încasare, 5.000 lei/plată cu plafon total de 10.000 lei/zi) și, separat, pentru partenerii marcați ca persoană fizică (constanta `PLAFON_PF`, 10.000 lei) — o distincție de organizare internă a aplicației, nu una explicit textuală în art. 1 sau art. 3 din lege, care condiționează plafoanele de tipul operațiunii, nu de calitatea partenerului. Aplicația **nu segmentează plafonul pe puncte de lucru** — calculul urmează structura legii, la nivelul relației cu partenerul, nu al locației fizice.
+La data acestui ghid, iConta.eu **aplică plafoanele de numerar din Legea 70/2015 (actualizată prin Legea 239/2025, în vigoare din 01.01.2026)** direct în modulul de casierie, cu constante distincte pentru partenerii de tip persoană juridică (5.000 lei/încasare, 5.000 lei/plată cu plafon total de 10.000 lei/zi) și, separat, pentru partenerii marcați ca persoană fizică (constanta „plafonul pentru persoane fizice”, 10.000 lei) — o distincție de organizare internă a aplicației, nu una explicit textuală în art. 1 sau art. 3 din lege, care condiționează plafoanele de tipul operațiunii, nu de calitatea partenerului. Aplicația **nu segmentează plafonul pe puncte de lucru** — calculul urmează structura legii, la nivelul relației cu partenerul, nu al locației fizice.
 
 [iConta.eu](/)

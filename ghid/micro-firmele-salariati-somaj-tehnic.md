@@ -2,7 +2,7 @@
 title: "Micro la firmele cu salariați în șomaj tehnic"
 description: "Ce se întâmplă cu încadrarea la microîntreprindere atunci când singurul salariat al firmei intră în șomaj tehnic, conform Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Consecințele practice:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu urmărește automat durata unei suspendări de contract (șomaj tehnic) pentru a semnala pierderea condiției de microîntreprindere din art. 48 alin. (3^1). Regimul fiscal (`regim_fiscal`) se introduce manual în **Date firma**, iar decizia de a rămâne micro sau de a trece la profit în urma unei perioade de șomaj tehnic prelungit rămâne o verificare pe care contabilul o face separat, pe baza datelor din contractele de muncă.
+La data acestui ghid, iConta.eu nu urmărește automat durata unei suspendări de contract (șomaj tehnic) pentru a semnala pierderea condiției de microîntreprindere din art. 48 alin. (3^1). Regimul fiscal („regimul fiscal (Date firmă)”) se introduce manual în **Date firma**, iar decizia de a rămâne micro sau de a trece la profit în urma unei perioade de șomaj tehnic prelungit rămâne o verificare pe care contabilul o face separat, pe baza datelor din contractele de muncă.
 
 [iConta.eu](/)

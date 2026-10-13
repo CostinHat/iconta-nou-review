@@ -2,7 +2,7 @@
 title: "Cum plătesc o diferență de impozit stabilită la control"
 description: "Termenul de plată al unei diferențe de impozit stabilite printr-o decizie de impunere depinde de data la care decizia a fost comunicată, nu de data emiterii ei."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ După o inspecție fiscală, organul de control emite o decizie de impunere prin
 
 ## Ce face iConta.eu
 
-Din verificarea codului sursă, iConta.eu are un modul de urmărire a conformării fiscale (`control_fiscal_api`) care compară declarațiile datorate cu cele efectiv depuse și semnalizează diferențele — dar nu a fost găsită o funcție dedicată înregistrării unei decizii de impunere emise în urma unui control și calculării automate a termenului de plată aferent diferenței stabilite. Urmărirea acestui termen rămâne, la acest moment, o sarcină manuală.
+Din verificarea codului sursă, iConta.eu are un modul de urmărire a conformării fiscale („Control fiscal”) care compară declarațiile datorate cu cele efectiv depuse și semnalizează diferențele — dar nu a fost găsită o funcție dedicată înregistrării unei decizii de impunere emise în urma unui control și calculării automate a termenului de plată aferent diferenței stabilite. Urmărirea acestui termen rămâne, la acest moment, o sarcină manuală.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum corectez o factură înregistrată cu data greșită?
 description: O dată greșită pe o factură deja introdusă nu se editează în iConta.eu. Fără notă contabilă, se șterge și se reintroduce cu data corectă. Cu notă contabilă, corecția e prin stornare (facturi emise) sau prin corecția notei, cu grija suplimentară ca luna corectă să fie deschisă.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -23,7 +23,7 @@ Data reală a documentului nu se schimbă retroactiv — dacă a fost introdusă
 ## Cum corectez în iConta.eu
 
 - **Factura nu are încă notă contabilă** → se șterge și se reintroduce cu data corectă. Nota ei nouă va prelua automat această dată corectă.
-- **Factura are notă contabilă** (a fost deja contată, eventual chiar pe o lună diferită de cea corectă) → ștergerea e refuzată; corecția se face prin stornare (pentru facturi emise, `storneaza()` creează factura de stornare) și introducerea facturii noi, cu data reală.
+- **Factura are notă contabilă** (a fost deja contată, eventual chiar pe o lună diferită de cea corectă) → ștergerea e refuzată; corecția se face prin stornare (pentru facturi emise, „stornarea” creează factura de stornare) și introducerea facturii noi, cu data reală.
 - Un caz frecvent la corectarea datei: data corectă cade într-o lună deja închisă administrativ. Poarta de perioadă blochează contarea pe acea lună — nota facturii noi (sau de stornare) nu poate primi decât o dată dintr-o lună deschisă; dacă data reală a documentului rămâne pe o lună închisă, nota se datează la data constatării/corectării, cu mențiunea explicită a datei reale în descriere.
 - Dacă doar nota contabilă are data greșită, iar factura însăși e corectă, corecția e mai simplă: cât timp nota e ciornă, data ei se editează direct; dacă e deja validată, corecția e prin notă de stornare (pct. 69).
 

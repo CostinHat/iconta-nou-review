@@ -2,7 +2,7 @@
 title: "Cum răspund unei notificări privind diferențele din declarații?"
 description: "Ce este notificarea de conformare emisă de ANAF pentru riscuri fiscale identificate în declarații și ce termen ai la dispoziție ca să corectezi situația înainte de o inspecție."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Când ANAF identifică, prin analiza de risc, diferențe sau neconcordanțe înt
 
 ## Ce face iConta.eu
 
-Nicio funcționalitate din iConta.eu nu citește, procesează sau afișează notificările de conformare emise de ANAF — verificat direct în cod: nu există niciun modul care se conectează la acest tip de comunicare oficială. Funcționalitatea din aplicație care se apropie cel mai mult de temă, **F131 — Notificări de plată și alerte neplătnici**, acoperă exact opusul direcției: reamintiri trimise de firmă către **proprii clienți** pentru facturi emise neîncasate, nu notificări primite de firmă de la ANAF. Pentru diferențele reale dintre declarații și evidența contabilă, aplicația are un instrument separat, intern și proactiv — controlul încrucișat D300 vs. conturile de TVA din balanță — util tocmai ca să previi apariția unei asemenea notificări, verificând tu însuți diferențele înainte ca ANAF să le semnaleze. Răspunsul efectiv la o notificare deja primită (depunerea sau corectarea declarațiilor în cele 30 de zile) rămâne, la acest moment, un pas realizat de contabil, în afara unui flux dedicat din aplicație.
+Nicio funcționalitate din iConta.eu nu citește, procesează sau afișează notificările de conformare emise de ANAF — verificat direct în cod: nu există niciun modul care se conectează la acest tip de comunicare oficială. Funcționalitatea din aplicație care se apropie cel mai mult de temă, **„Notificări de plată și alerte neplătnici” — Notificări de plată și alerte neplătnici**, acoperă exact opusul direcției: reamintiri trimise de firmă către **proprii clienți** pentru facturi emise neîncasate, nu notificări primite de firmă de la ANAF. Pentru diferențele reale dintre declarații și evidența contabilă, aplicația are un instrument separat, intern și proactiv — controlul încrucișat D300 vs. conturile de TVA din balanță — util tocmai ca să previi apariția unei asemenea notificări, verificând tu însuți diferențele înainte ca ANAF să le semnaleze. Răspunsul efectiv la o notificare deja primită (depunerea sau corectarea declarațiilor în cele 30 de zile) rămâne, la acest moment, un pas realizat de contabil, în afara unui flux dedicat din aplicație.
 
 [iConta.eu](/)

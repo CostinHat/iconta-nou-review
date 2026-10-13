@@ -2,7 +2,7 @@
 title: "Cum se înregistrează transferul de alimente între două puncte de lucru ale aceluiași restaurant?"
 description: "Listă zilnică de alimente" nu e documentul potrivit pentru un restaurant comercial - e rezervat cantinelor de pe lângă instituții publice. Regula generală de document (bon de transfer sau aviz de însoțire, după caz) se aplică și alimentelor.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Primul text dă regula generală, care se aplică inclusiv alimentelor: dacă ce
 
 ## Ce face iConta.eu
 
-Funcția de transfer între gestiuni din iConta.eu (F138) nu face nicio distincție pe tipul de marfă — alimentele se transferă exact ca orice alt articol de stoc: ieșire din locația sursă, intrare în locația destinație, la costul mediu ponderat curent, fără notă contabilă. Nu există în aplicație nicio funcționalitate specifică HoReCa pentru transferul de alimente (verificat direct în codul motorului de stocuri) și nici o generare a formularului „Listă zilnică de alimente" — de altfel, un formular care oricum nu se aplică unui restaurant comercial. Documentul de circulație corect (14-3-3A sau 14-3-6A, în funcție de distanța dintre cele două puncte de lucru) rămâne de întocmit separat, în afara aplicației, conform criteriului general de mai sus.
+Funcția de transfer între gestiuni din iConta.eu („Transfer între gestiuni”) nu face nicio distincție pe tipul de marfă — alimentele se transferă exact ca orice alt articol de stoc: ieșire din locația sursă, intrare în locația destinație, la costul mediu ponderat curent, fără notă contabilă. Nu există în aplicație nicio funcționalitate specifică HoReCa pentru transferul de alimente (verificat direct în codul motorului de stocuri) și nici o generare a formularului „Listă zilnică de alimente" — de altfel, un formular care oricum nu se aplică unui restaurant comercial. Documentul de circulație corect (14-3-3A sau 14-3-6A, în funcție de distanța dintre cele două puncte de lucru) rămâne de întocmit separat, în afara aplicației, conform criteriului general de mai sus.
 
 [iConta.eu](/)

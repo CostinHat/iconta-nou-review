@@ -2,7 +2,7 @@
 title: Ce fac dacă statul de salarii nu corespunde cu D112?
 description: O divergență roșie între contabilitate și D112 nu se rezolvă cu o ajustare "ca să dea verde" — remediul depinde de cauză (stat necontabilizat, notă în ciornă sau diferență neclară), și fiecare are un pas concret diferit.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,6 +28,6 @@ Cea mai frecventă greșeală e "ajustarea" contului contabil (o notă manuală 
 
 ## Ce face iConta.eu
 
-Funcția `compara_d112` din aplicație separă exact aceste cazuri: stat necontabilizat → remediu executabil ("Contabilizează statul de plată"), notă cunoscută în ciornă → remediu sugerat ("Validează nota"), orice altă divergență → remediu de tip investigație, cu cauzele posibile enumerate explicit în răspuns. Aplicația nu propune niciodată o ajustare a contului doar pentru a elimina o culoare roșie.
+Funcția „comparația D112 (Control fiscal)” din aplicație separă exact aceste cazuri: stat necontabilizat → remediu executabil ("Contabilizează statul de plată"), notă cunoscută în ciornă → remediu sugerat ("Validează nota"), orice altă divergență → remediu de tip investigație, cu cauzele posibile enumerate explicit în răspuns. Aplicația nu propune niciodată o ajustare a contului doar pentru a elimina o culoare roșie.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Când trebuie depus D010 pentru o schimbare de vector fiscal"
 description: "Termenul legal de 15 zile pentru declararea modificărilor la datele de înregistrare fiscală, inclusiv vectorul fiscal, prin declarația de mențiuni."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Din verificarea codului, iConta.eu citește și urmărește **vectorul fiscal al firmei** (regim fiscal, calitate de plătitor de TVA, tip de decont, operațiuni intracomunitare) dintr-un profil centralizat al firmei, folosit pentru a determina automat ce declarații sunt datorate și când (`control_fiscal_api.py`). Aplicația nu depune însă, la data acestui ghid, formularul D010 propriu-zis către ANAF — generarea automată a acestei declarații este blocată tehnic, întrucât formularul nu are, la momentul verificării, un validator XML oficial disponibil în canalul ANAF pe care aplicația îl folosește pentru celelalte declarații. Practic, aplicația vă ajută să identificați că vectorul fiscal s-a schimbat, dar depunerea propriu-zisă a D010 rămâne, deocamdată, manuală.
+Din verificarea codului, iConta.eu citește și urmărește **vectorul fiscal al firmei** (regim fiscal, calitate de plătitor de TVA, tip de decont, operațiuni intracomunitare) dintr-un profil centralizat al firmei, folosit pentru a determina automat ce declarații sunt datorate și când. Aplicația nu depune însă, la data acestui ghid, formularul D010 propriu-zis către ANAF — generarea automată a acestei declarații este blocată tehnic, întrucât formularul nu are, la momentul verificării, un validator XML oficial disponibil în canalul ANAF pe care aplicația îl folosește pentru celelalte declarații. Practic, aplicația vă ajută să identificați că vectorul fiscal s-a schimbat, dar depunerea propriu-zisă a D010 rămâne, deocamdată, manuală.
 
 [iConta.eu](/)

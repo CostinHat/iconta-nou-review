@@ -2,7 +2,7 @@
 title: "Ce document stabilește data punerii în funcțiune a unui mijloc fix?"
 description: "Momentul de la care începe amortizarea fiscală a unui mijloc fix și legătura lui cu data punerii în funcțiune, conform Codului fiscal și Catalogului mijloacelor fixe."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Codul fiscal ancorează momentul de start al amortizării de „punerea în func
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **înregistrează data punerii în funcțiune** ca dată introdusă de contabil la fiecare mijloc fix (câmpul `data_pif` din aplicație) și o folosește pentru a determina de când începe amortizarea. Aplicația **nu generează și nu solicită** procesul-verbal de recepție/punere în funcțiune ca document justificativ — data se preia ca atare din fișierul de import sau din introducerea manuală, fără o verificare automată față de un document sursă.
+La data acestui ghid, iConta.eu **înregistrează data punerii în funcțiune** ca dată introdusă de contabil la fiecare mijloc fix (câmpul „data punerii în funcțiune (Mijloace fixe)” din aplicație) și o folosește pentru a determina de când începe amortizarea. Aplicația **nu generează și nu solicită** procesul-verbal de recepție/punere în funcțiune ca document justificativ — data se preia ca atare din fișierul de import sau din introducerea manuală, fără o verificare automată față de un document sursă.
 
 [iConta.eu](/)

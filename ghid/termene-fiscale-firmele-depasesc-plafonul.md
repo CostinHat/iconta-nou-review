@@ -2,7 +2,7 @@
 title: "Termene fiscale pentru firmele care depășesc plafonul de TVA"
 description: "Ce termen legal are o firmă neplătitoare de TVA atunci când cifra de afaceri depășește plafonul de scutire de 395.000 lei, și de când se aplică regimul normal de taxare."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Din aceste texte rezultă mecanismul concret:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu calculează și nu monitorizează automat** cifra de afaceri cumulată a firmei față de plafonul de 395.000 lei de scutire TVA. Aplicația urmărește intern doar un alt plafon, cel al TVA la încasare (`plafon_tva_incasare`, folosit de motorul din aplicație), care este un prag diferit, cu regim fiscal diferit. Verificarea depășirii plafonului de scutire pentru întreprinderile mici și inițierea la timp a înregistrării în scopuri de TVA rămân, la acest moment, responsabilitatea contabilului.
+La data acestui ghid, iConta.eu **nu calculează și nu monitorizează automat** cifra de afaceri cumulată a firmei față de plafonul de 395.000 lei de scutire TVA. Aplicația urmărește intern doar un alt plafon, cel al TVA la încasare („plafonul TVA la încasare”, folosit de motorul din aplicație), care este un prag diferit, cu regim fiscal diferit. Verificarea depășirii plafonului de scutire pentru întreprinderile mici și inițierea la timp a înregistrării în scopuri de TVA rămân, la acest moment, responsabilitatea contabilului.
 
 [iConta.eu](/)

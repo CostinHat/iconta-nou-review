@@ -2,7 +2,7 @@
 title: D205 pentru dividende plătite în valută
 description: D205 se completează în lei, iar conversia unui dividend plătit în valută se face la nivelul înregistrării contabile, nu în declarație. Ce anume nu e o particularitate a D205 și de ce.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -17,7 +17,7 @@ Un dividend poate fi, în anumite situații, plătit în valută (de exemplu unu
 — Codul fiscal, Legea 227/2015, art. 97 alin. (7)
 :::
 
-Textul de lege vorbește de "suma" dividendului, fără nicio mențiune despre monedă — cota de impozitare (16%/10%/8%/5%, în funcție de perioadă) se aplică indiferent de moneda în care e exprimat dividendul. Cercetarea care stă la baza acestui ghid nu a identificat, în structura oficială a D205, în instrucțiunile ei de completare sau în codul funcționalității F029, nicio regulă specifică de conversie valutară (curs aplicabil, dată de referință) — declarăm explicit acest gol, ca să nu inventăm o regulă pe care nu o putem susține cu o sursă verificată. Conversia unei sume în valută la lei, pentru orice operațiune contabilă, urmează regulile generale de contabilitate, nu o regulă specifică D205.
+Textul de lege vorbește de "suma" dividendului, fără nicio mențiune despre monedă — cota de impozitare (16%/10%/8%/5%, în funcție de perioadă) se aplică indiferent de moneda în care e exprimat dividendul. Cercetarea care stă la baza acestui ghid nu a identificat, în structura oficială a D205, în instrucțiunile ei de completare sau în codul funcționalității „Declarația D205 și distribuirea dividendelor”, nicio regulă specifică de conversie valutară (curs aplicabil, dată de referință) — declarăm explicit acest gol, ca să nu inventăm o regulă pe care nu o putem susține cu o sursă verificată. Conversia unei sume în valută la lei, pentru orice operațiune contabilă, urmează regulile generale de contabilitate, nu o regulă specifică D205.
 
 ## Ce se greșește în practică
 

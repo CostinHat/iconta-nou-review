@@ -2,7 +2,7 @@
 title: "Cum se întocmește registrul de casă în 2026?"
 description: "Regulile de completare zilnică a registrului de casă și plafoanele de încasări/plăți în numerar aplicabile în 2026."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Registrul de casă rămâne, și în 2026, documentul obligatoriu prin care o fi
 
 ## Ce face iConta.eu
 
-iConta.eu are o funcție dedicată registrului de casă (`registru_casa` în aplicație), care generează automat registrul pe baza operațiunilor de încasare/plată introduse în aplicație, calculează soldul final zilnic (`sold_final`) și verifică depășirea plafoanelor legale de numerar, inclusiv regimul special pentru comerțul cash and carry (`verifica_plafon`). Contabilul nu mai trebuie să calculeze manual soldul de casă sau să verifice singur plafoanele — aplicația semnalează automat orice operațiune care ar depăși limita zilnică legală.
+iConta.eu are o funcție dedicată registrului de casă („registrul de casă (Casă)” în aplicație), care generează automat registrul pe baza operațiunilor de încasare/plată introduse în aplicație, calculează soldul final zilnic („soldul final al registrului de casă”) și verifică depășirea plafoanelor legale de numerar, inclusiv regimul special pentru comerțul cash and carry („verificarea plafonului de numerar (Casă)”). Contabilul nu mai trebuie să calculeze manual soldul de casă sau să verifice singur plafoanele — aplicația semnalează automat orice operațiune care ar depăși limita zilnică legală.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Care este plafonul pentru TVA la încasare în 2026?
 description: În 2026, plafonul pentru TVA la încasare nu e unic — a fost 4.500.000 lei până la 29 februarie și a crescut la 5.000.000 lei începând cu 1 martie 2026, odată cu intrarea în vigoare a OUG 8/2026.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Dosarul de cercetare al acestei funcționalități semnalează și o regulă tra
 
 ## Ce face iConta.eu
 
-Funcția `plafon_la(data)` din aplicație e period-aware — pe baza tabelului `COTE["plafon_tva_incasare"]`, întoarce automat plafonul corect pentru orice dată de referință: 4.500.000 lei înainte de 1 martie 2026, 5.000.000 lei între 1 martie și 31 decembrie 2026, 5.500.000 lei de la 1 ianuarie 2027.
+Funcția „plafonul la dată” din aplicație e period-aware — pe baza tabelului registrul de cote al aplicației["plafonul TVA la încasare"], întoarce automat plafonul corect pentru orice dată de referință: 4.500.000 lei înainte de 1 martie 2026, 5.000.000 lei între 1 martie și 31 decembrie 2026, 5.500.000 lei de la 1 ianuarie 2027.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum se tratează avansurile încasate de un PFA?
 description: Avansul încasat de un PFA intră integral în venitul brut al anului în care a fost încasat, chiar dacă se referă la un serviciu prestat în alt an fiscal — contabilitatea în partidă simplă e pe bază de casă (cash-basis).
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -40,6 +40,6 @@ Un PFA încasează pe 20 decembrie 2026 un avans de 6.000 lei pentru un proiect 
 
 ## Ce face iConta.eu
 
-În aplicația, orice sumă încasată se înregistrează ca operațiune de tip `incasare`, cu categoria `activitate` din lista validă `CATEGORII_INCASARE = {"activitate", "aport", "credit", "subventie", "alte_incasari"}`. Validarea (`_valideaza`) cere obligatoriu tip, metodă (numerar/bancă), sumă pozitivă, dată și explicație pentru fiecare operațiune — inclusiv pentru un avans, care se înregistrează la data efectivă a încasării, exact așa cum cere regula cash-basis. Când plata vine prin bancă, `import_banca` generează automat o ciornă din extrasul bancar (categorie propusă implicit `activitate`), pe care contabilul o validează, confirmând astfel data și suma exactă a avansului.
+În aplicația, orice sumă încasată se înregistrează ca operațiune de tip `incasare`, cu categoria `activitate` din lista validă categoriile de încasări = {"activitate", "aport", "credit", "subventie", "alte încasări"}. Validarea („validarea”) cere obligatoriu tip, metodă (numerar/bancă), sumă pozitivă, dată și explicație pentru fiecare operațiune — inclusiv pentru un avans, care se înregistrează la data efectivă a încasării, exact așa cum cere regula cash-basis. Când plata vine prin bancă, „importul extrasului bancar (Bancă)” generează automat o ciornă din extrasul bancar (categorie propusă implicit `activitate`), pe care contabilul o validează, confirmând astfel data și suma exactă a avansului.
 
 [iConta.eu](/)

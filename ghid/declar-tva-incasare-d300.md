@@ -2,7 +2,7 @@
 title: Cum declar TVA la încasare în D300?
 description: TVA calculată prin sistemul de încasare nu are un rând separat în D300 — ajunge în rândurile obișnuite de TVA colectată (R9_1/R9_2, R10, R11), iar deducerea la beneficiar se amână prin bifa de la rândul B1, conform art. 297 Cod fiscal.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -17,7 +17,7 @@ Mulți contabili caută în formularul D300 un rând dedicat „TVA la încasare
 
 **Art. 297 alin. (2) CF**: *„Dreptul de deducere a TVA aferente achizițiilor efectuate de o persoană impozabilă de la o persoană impozabilă care aplică sistemul TVA la încasare... este amânat până la data la care taxa aferentă... a fost plătită furnizorului."*
 
-Verificat direct în codul sursă: `furnizor_tva_incasare: corp.querySelector("#pr-furnizor-incasare").checked, // [B1 D300]`.
+Verificat direct în codul sursă: câmpul „furnizor cu TVA la încasare” din ecran.
 :::
 
 ## Ce înseamnă practic
@@ -34,6 +34,6 @@ Verificat direct în codul sursă: `furnizor_tva_incasare: corp.querySelector("#
 
 ## Ce face iConta.eu
 
-Flagul `tva_la_incasare` din profilul firmei declanșează, pentru sumele din decontări (încasări/plăți alocate pe facturi), trecerea prin `tva_incasare.tva_din_incasare()` per cotă, cu excepție explicită pentru taxarea inversă. Bifa „furnizorul aplică TVA la încasare", de pe factura de achiziție, e **manuală** — aplicația nu verifică live Registrul public al persoanelor care aplică sistemul, administrat de ANAF conform art. 324 alin. (16); bifa rămâne pe răspunderea contabilului.
+Flagul „TVA la încasare” din profilul firmei declanșează, pentru sumele din decontări (încasări/plăți alocate pe facturi), trecerea prin „TVA-ul exigibil la încasare” per cotă, cu excepție explicită pentru taxarea inversă. Bifa „furnizorul aplică TVA la încasare", de pe factura de achiziție, e **manuală** — aplicația nu verifică live Registrul public al persoanelor care aplică sistemul, administrat de ANAF conform art. 324 alin. (16); bifa rămâne pe răspunderea contabilului.
 
 [iConta.eu](/)

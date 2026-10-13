@@ -2,7 +2,7 @@
 title: "Ce documente pregătesc pentru o inspecție fiscală?"
 description: "Ce documente și informații trebuie puse la dispoziția organului de inspecție fiscală, potrivit Codului de procedură fiscală, și ce conține avizul de inspecție."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ e) posibilitatea depunerii sau corectării declarației de impunere aferentă pe
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are o funcție care să genereze automat lista de documente necesare pentru o inspecție fiscală reală ANAF**. Aplicația are un ecran de „control fiscal" (`control_fiscal_api.py`, `control_incrucisat.py`, `alerte_control_fiscal.py`), dar acesta e un **semafor intern de conformare** — compară declarațiile depuse (D112, D300, D390) cu ce ar trebui depus și semnalează inconsecvențe sau declarații lipsă. E util pentru a intra pregătit într-o inspecție reală (declarațiile sunt coerente între ele), dar nu înlocuiește pregătirea documentelor justificative cerute efectiv de organul fiscal, pe baza avizului de inspecție.
+La data acestui ghid, iConta.eu **nu are o funcție care să genereze automat lista de documente necesare pentru o inspecție fiscală reală ANAF**. Aplicația are un ecran de „control fiscal" (aplicația), dar acesta e un **semafor intern de conformare** — compară declarațiile depuse (D112, D300, D390) cu ce ar trebui depus și semnalează inconsecvențe sau declarații lipsă. E util pentru a intra pregătit într-o inspecție reală (declarațiile sunt coerente între ele), dar nu înlocuiește pregătirea documentelor justificative cerute efectiv de organul fiscal, pe baza avizului de inspecție.
 
 [iConta.eu](/)

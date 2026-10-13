@@ -2,7 +2,7 @@
 title: 'Micro și sponsorizarea: cum se deduce din impozit'
 description: Nu se mai deduce — facilitatea prin care micro-urile scădeau sponsorizarea din impozitul pe venit a fost abrogată de la 1 ianuarie 2024; cât timp a fost activă (01.04.2019–31.12.2023), limita era 20% din impozitul micro datorat pe trimestrul în care s-a înregistrat cheltuiala.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Pentru o microîntreprindere, în 2026, sponsorizarea **nu se mai deduce din imp
 
 ## Ce face iConta.eu
 
-Funcția `credit_sponsorizare(cifra_afaceri, impozit_profit, sponsorizari_efectuate, tip_impozit="micro", beneficiar_in_registru=True, la_data=None)` din aplicație calculează, doar pentru `la_data` în intervalul 01.04.2019–31.12.2023, `plafon = 20% × impozit_profit` (unde parametrul reprezintă, pentru ramura micro, impozitul micro datorat pe trimestru, nu unul anual) și `credit = min(sponsorizari_efectuate, plafon)`. În afara acestui interval — inclusiv pentru 2026 — motorul returnează credit 0, cu o notă explicită că facilitatea nu se mai aplică. Sponsorizarea se contabilizează în continuare normal (`6582 = 401` la constituire, `6582 = 5121` la plată directă), doar că nu mai reduce impozitul datorat.
+Funcția „creditul fiscal pentru sponsorizări (Operațiuni speciale)” din aplicație calculează, doar pentru „data” în intervalul 01.04.2019–31.12.2023, plafon = 20% × impozitul pe profit (unde parametrul reprezintă, pentru ramura micro, impozitul micro datorat pe trimestru, nu unul anual) și credit = min(sponsorizările efectuate, plafon). În afara acestui interval — inclusiv pentru 2026 — motorul returnează credit 0, cu o notă explicită că facilitatea nu se mai aplică. Sponsorizarea se contabilizează în continuare normal (`6582 = 401` la constituire, `6582 = 5121` la plată directă), doar că nu mai reduce impozitul datorat.
 
 [iConta.eu](/)

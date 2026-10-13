@@ -2,7 +2,7 @@
 title: Cum tratez provizioanele nedeductibile în D101?
 description: Provizioanele nedeductibile (litigii, dezafectare, restructurare, altele, ajustări de stoc, partea nedeductibilă din ajustările de creanțe) se adaugă manual la rândurile de cheltuieli nedeductibile din D101 — aplicația nu preia automat aceste sume din notele contabile.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -41,6 +41,6 @@ O firmă constituie o ajustare de creanță de 8.000 lei (client negarantat, nea
 
 ## Ce face iConta.eu
 
-Rândurile D101 de cheltuieli nedeductibile (P23-P33, cumulate în P34) sunt **input manual** în aplicație — funcția citește direct valorile primite de la utilizator (`g("P23")` ... `g("P33")`) și nu importă nimic din aplicație. Nu există niciun calcul automat pornind de la soldurile conturilor 6812/6814 sau de la flagul `deductibil` întors de `nota_provizion` ori `deductibilitate_creanta`. În consecință, întreaga analiză de mai sus (identificarea provizioanelor nedeductibile și a părții nedeductibile din cele parțial deductibile) trebuie făcută separat, iar rezultatul introdus manual în rândurile corespunzătoare din D101.
+Rândurile D101 de cheltuieli nedeductibile (P23-P33, cumulate în P34) sunt **input manual** în aplicație — funcția citește direct valorile primite de la utilizator (P23 ... P33) și nu importă nimic din aplicație. Nu există niciun calcul automat pornind de la soldurile conturilor 6812/6814 sau de la flagul `deductibil` întors de „nota de provizion (Operațiuni speciale)” ori „deductibilitatea creanței (Operațiuni speciale)”. În consecință, întreaga analiză de mai sus (identificarea provizioanelor nedeductibile și a părții nedeductibile din cele parțial deductibile) trebuie făcută separat, iar rezultatul introdus manual în rândurile corespunzătoare din D101.
 
 [iConta.eu](/)

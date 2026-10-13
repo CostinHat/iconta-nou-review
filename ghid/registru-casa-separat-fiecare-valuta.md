@@ -2,7 +2,7 @@
 title: "Trebuie registru de casă separat pentru fiecare valută?"
 description: "Norma contabilă distinge un formular separat pentru «Registrul de casă (în valută)» față de cel în lei, dar nu precizează explicit dacă fiecare monedă străină primește propriul registru."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,7 +29,7 @@ Da, cu o nuanță: legea separă clar registrul în lei de registrul în valută
 
 ## Ce face iConta.eu
 
-Aici trebuie spusă direct limita produsului: **iConta.eu nu are, azi, suport pentru operațiuni de casă în valută**. Ecranul „card Casa" mapează toate operațiunile fix pe contul de casă în lei (`5311`), tabela din baza de date (`casa_operatiuni`) nu are nicio coloană de valută, iar formularul de introducere a unei operațiuni nu oferă opțiunea de a alege o monedă străină. Motorul de calcul intern (funcția `regula_cont_casa`) conține, e drept, o ramură pregătită pentru conturile de casă în valută (5314/5124), dar acest cod **nu e apelat din nicio rută sau ecran** — e cod scris, dar neconectat la aplicația live.
+Aici trebuie spusă direct limita produsului: **iConta.eu nu are, azi, suport pentru operațiuni de casă în valută**. Ecranul „card Casa" mapează toate operațiunile fix pe contul de casă în lei (`5311`), tabela din baza de date („operațiunile de casă (Casă)”) nu are nicio coloană de valută, iar formularul de introducere a unei operațiuni nu oferă opțiunea de a alege o monedă străină. Motorul de calcul intern (funcția „regula de contare a casei (Casă)”) conține, e drept, o ramură pregătită pentru conturile de casă în valută (5314/5124), dar acest cod **nu e apelat din nicio rută sau ecran** — e cod scris, dar neconectat la aplicația live.
 
 Practic: dacă firma încasează sau plătește numerar în valută prin casierie, evidența acelor operațiuni trebuie ținută în afara ecranului „card Casa" din iConta.eu, cel puțin până la extinderea funcționalității.
 

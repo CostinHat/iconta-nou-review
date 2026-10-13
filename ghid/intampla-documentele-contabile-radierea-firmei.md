@@ -2,7 +2,7 @@
 title: "Ce se întâmplă cu documentele contabile după radierea firmei?"
 description: "Unde ajung registrele, situațiile financiare și documentele justificative ale unei firme radiate și pentru cât timp trebuie păstrate."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Corelat cu regula generală de păstrare a documentelor (aplicabilă cât timp f
 
 ## Ce face iConta.eu
 
-iConta.eu păstrează, cât timp o firmă e activă în aplicație, întreaga evidență contabilă generată — facturi, note contabile, declarații depuse. Nu am găsit în cod o funcție dedicată procesului de predare a documentelor către arhivele statului la radierea firmei (procedura de predare e una administrativă, în afara aplicației, reglementată de legislația arhivelor). Modulul de lichidare din aplicație (`lichidare.py`) tratează calculul fiscal al lichidării — impozitarea câștigului distribuit asociaților — nu și arhivarea fizică/electronică a documentelor după radiere.
+iConta.eu păstrează, cât timp o firmă e activă în aplicație, întreaga evidență contabilă generată — facturi, note contabile, declarații depuse. Nu am găsit în cod o funcție dedicată procesului de predare a documentelor către arhivele statului la radierea firmei (procedura de predare e una administrativă, în afara aplicației, reglementată de legislația arhivelor). Modulul de lichidare din aplicație tratează calculul fiscal al lichidării — impozitarea câștigului distribuit asociaților — nu și arhivarea fizică/electronică a documentelor după radiere.
 
 [iConta.eu](/)

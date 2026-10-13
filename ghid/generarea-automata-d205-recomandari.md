@@ -2,20 +2,13 @@
 title: "Generarea automată a D205: recomandări"
 description: "Cum funcționează generarea automată a D205 din contul 457 și ce trebuie verificat manual înainte de a o folosi în siguranță."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Generarea automată a D205: recomandări
 
 D205 pentru dividende nu se completează manual într-un formular din interfață — se generează automat, pornind din contabilitate. Câteva recomandări ajută la folosirea corectă a acestui flux.
-
-## Temeiul legal
-
-::: ghid-temei
-"Acces UI: tab «Declarații» (D205) + tab «asociați» (fără ecran de completare manual dedicat — D205 se generează automat din contul 457 + cotele asociaților)."
-— înregistrarea canonică a funcționalității F029, `/home/claude/iconta/FUNCTIONALITATI.csv`
-:::
 
 Termenul legal de depunere a declarației este ultima zi a lunii februarie a anului curent, pentru anul expirat (OPANAF 179/2022), distinct de termenul de virare a impozitului (25 a lunii, respectiv 25 ianuarie pentru dividendele distribuite dar neplătite).
 

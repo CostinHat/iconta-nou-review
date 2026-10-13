@@ -2,7 +2,7 @@
 title: Cum se tratează plata prin bancă în TVA la încasare?
 description: Data exigibilității e cea din extrasul de cont, pentru transfer-credit — pentru instrumente de tip cec, cambie sau bilet la ordin regula diferă.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Pentru cec, cambie sau bilet la ordin, regula se schimbă în funcție de ce fac
 
 ## Ce face iConta.eu
 
-Ecranul manual „TVA la încasare" din iConta (rută `nota-tva-incasare`) cere contabilului să introducă direct data și suma încasată — aplicația nu diferențiază automat între transfer-credit, cec, cambie sau bilet la ordin. Stabilirea datei corecte de exigibilitate, conform regulilor de mai sus (extras de cont vs. dată gir), rămâne un calcul făcut de contabil înainte de a introduce operațiunea.
+Ecranul manual „TVA la încasare" din iConta (rută „nota TVA la încasare (Operațiuni speciale)”) cere contabilului să introducă direct data și suma încasată — aplicația nu diferențiază automat între transfer-credit, cec, cambie sau bilet la ordin. Stabilirea datei corecte de exigibilitate, conform regulilor de mai sus (extras de cont vs. dată gir), rămâne un calcul făcut de contabil înainte de a introduce operațiunea.
 
 [iConta.eu](/)

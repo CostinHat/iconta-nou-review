@@ -2,7 +2,7 @@
 title: Cum corectez taxele unui administrator cu contract de mandat?
 description: "Cele mai frecvente corecții: CAM aplicat greșit, temeiul legal citat greșit (lit. g în loc de lit. o) și amestecul cu regimul de salariat clasic."
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Dacă indemnizația unui administrator cu contract de mandat a fost taxată gre�
 
 ## Ce face iConta.eu
 
-Funcția `calcul_mandat(brut)` din modulul F021 calculează întotdeauna CAS 25% + CASS 10% + impozit 10% pe rest, fără CAM — dacă o notă a fost introdusă anterior cu alt calcul (de exemplu prin fluxul de salarizare clasică), corectarea presupune stornarea acelei note și reintroducerea ei prin ecranul „Contracte speciale (zilieri, mandat, cenzori)", cu tipul „mandat". Aplicația nu recalculează automat notele deja introduse greșit prin alt flux.
+Funcția „calculul contractului de mandat (Salarii)” din modulul „Contracte de muncă speciale” calculează întotdeauna CAS 25% + CASS 10% + impozit 10% pe rest, fără CAM — dacă o notă a fost introdusă anterior cu alt calcul (de exemplu prin fluxul de salarizare clasică), corectarea presupune stornarea acelei note și reintroducerea ei prin ecranul „Contracte speciale (zilieri, mandat, cenzori)", cu tipul „mandat". Aplicația nu recalculează automat notele deja introduse greșit prin alt flux.
 
 [iConta.eu](/)

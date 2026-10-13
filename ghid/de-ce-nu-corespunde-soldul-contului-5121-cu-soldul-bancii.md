@@ -1,8 +1,8 @@
 ---
 title: De ce nu corespunde soldul contului 5121 cu soldul băncii?
-description: Legea cere confruntarea soldurilor din extrasul de cont cu contabilitatea la inventariere; o diferență între soldul 5121 și soldul bancar poate proveni din comisioane, dobânzi, viramente interne sau linii de extras neimportate/necontate, cauze pe care motorul de matching din F073 nu le acoperă complet.
+description: Legea cere confruntarea soldurilor din extrasul de cont cu contabilitatea la inventariere; o diferență între soldul 5121 și soldul bancar poate proveni din comisioane, dobânzi, viramente interne sau linii de extras neimportate/necontate, cauze pe care motorul de matching din „Reconciliere bancară (potrivirea plăților cu facturile)” nu le acoperă complet.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -20,7 +20,7 @@ Contul 512 "Conturi curente la bănci" [...] este un cont bifuncțional. În deb
 
 ## Ce poate cauza diferența
 
-Motorul de matching din F073 potrivește exclusiv linii de extras pe facturi deschise, pe baza CUI-ului partenerului. Nu calculează și nu compară un sold total de cont cu soldul bancar. O discrepanță reală de sold poate veni din cauze complet din afara acestui motor:
+Motorul de matching din „Reconciliere bancară (potrivirea plăților cu facturile)” potrivește exclusiv linii de extras pe facturi deschise, pe baza CUI-ului partenerului. Nu calculează și nu compară un sold total de cont cu soldul bancar. O discrepanță reală de sold poate veni din cauze complet din afara acestui motor:
 
 - comisioane bancare (cont 627), care apar în extras dar nu sunt legate de nicio factură;
 - dobânzi încasate sau plătite (766/666/518);
@@ -39,7 +39,7 @@ Verificarea corectă nu se face comparând doar liniile alocate de motorul de ma
 
 ## Ce face iConta.eu
 
-Aplicația potrivesc doar liniile de extras care au un CUI identificat și o factură deschisă corespunzătoare — rezultatul e clasificat verde (potrivire exactă), galben (alocare parțială, necesită confirmare) sau roșu (fără CUI sau fără factură deschisă a partenerului). Contarea (`conteaza`) generează înregistrarea contabilă doar pentru liniile alocate, folosind formula debit 5121/5124 – credit 4111 la încasare, respectiv debit 401 – credit 5121/5124 la plată.
+Aplicația potrivesc doar liniile de extras care au un CUI identificat și o factură deschisă corespunzătoare — rezultatul e clasificat verde (potrivire exactă), galben (alocare parțială, necesită confirmare) sau roșu (fără CUI sau fără factură deschisă a partenerului). Contarea („contarea”) generează înregistrarea contabilă doar pentru liniile alocate, folosind formula debit 5121/5124 – credit 4111 la încasare, respectiv debit 401 – credit 5121/5124 la plată.
 
 Sistemul nu calculează și nu afișează automat o comparație agregată "sold 5121 vs. sold extras bancar" — pentru asta rămâne necesară verificarea fișei de cont 5121 complete, inclusiv operațiunile care nu trec prin acest motor de matching.
 

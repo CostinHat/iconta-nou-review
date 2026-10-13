@@ -2,7 +2,7 @@
 title: "Manual intern de proceduri de casierie 2026"
 description: "Ce reguli obligatorii de disciplină financiară trebuie să conțină un manual intern de casierie în 2026, pe baza Legii 70/2015 și a monografiilor OMFP 1802/2014."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Un manual intern serios de casierie pentru 2026 trebuie să acopere cel puțin:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu generează un manual intern de proceduri** — acesta rămâne un document de politică internă, redactat de firmă. Aplicația are însă motorul real de casierie descris în aplicație, cu plafoanele curente din Legea 70/2015 (actualizate cu Legea 239/2025, în vigoare de la 1 ianuarie 2026) și cu verificarea lor pe fiecare operațiune introdusă, prin aplicație (`verifica_plafon`). Contabilul primește astfel un semnal concret când o operațiune introdusă depășește plafonul legal, dar redactarea manualului de proceduri în sine rămâne în afara aplicației.
+La data acestui ghid, iConta.eu **nu generează un manual intern de proceduri** — acesta rămâne un document de politică internă, redactat de firmă. Aplicația are însă motorul real de casierie descris în aplicație, cu plafoanele curente din Legea 70/2015 (actualizate cu Legea 239/2025, în vigoare de la 1 ianuarie 2026) și cu verificarea lor pe fiecare operațiune introdusă, prin aplicație („verificarea plafonului de numerar (Casă)”). Contabilul primește astfel un semnal concret când o operațiune introdusă depășește plafonul legal, dar redactarea manualului de proceduri în sine rămâne în afara aplicației.
 
 [iConta.eu](/)

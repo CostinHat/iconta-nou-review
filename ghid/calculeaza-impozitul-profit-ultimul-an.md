@@ -2,7 +2,7 @@
 title: Cum se calculează impozitul pe profit în ultimul an de activitate
 description: Ce se aplică la calculul impozitului pe profit atunci când firma își încetează activitatea, și ce nu confirmă cercetarea funcționalității D101 din iConta.eu pentru acest caz special.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -16,10 +16,10 @@ poarta: v1
 Art.17 CF: „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%."
 
 Art.42 alin.(1) CF (modificat de OUG 8/2026 art.6 pct.12, MO 147/25.02.2026): contribuabilii au obligația să depună declarația anuală privind impozitul pe profit „până la data de 25 iunie inclusiv a anului următor".
-— sursă: dosar de cercetare F027, secțiunea „Temei legal".
+— sursă: documentația aplicației, secțiunea „Temei legal".
 :::
 
-Regula generală rămâne cota de 16% aplicată profitului impozabil, indiferent dacă e vorba de un an fiscal complet sau de un an fiscal scurtat de încetarea activității. Ce trebuie spus onest: cercetarea funcțională documentată pentru D101 (dosarul F027) nu conține o secțiune dedicată perioadei impozabile în cazul dizolvării/lichidării/radierii în cursul anului — de exemplu, dacă termenul de depunere se recalculează de la data încetării activității, sau dacă exercițiul fiscal scurtat impune ajustări specifice ale plafoanelor (rezervă legală, sponsorizare). Aceste detalii țin de reguli distincte din Codul fiscal și din Codul de procedură fiscală care nu au fost verificate în acest dosar de cercetare.
+Regula generală rămâne cota de 16% aplicată profitului impozabil, indiferent dacă e vorba de un an fiscal complet sau de un an fiscal scurtat de încetarea activității. Ce trebuie spus onest: cercetarea funcțională documentată pentru D101 nu conține o secțiune dedicată perioadei impozabile în cazul dizolvării/lichidării/radierii în cursul anului — de exemplu, dacă termenul de depunere se recalculează de la data încetării activității, sau dacă exercițiul fiscal scurtat impune ajustări specifice ale plafoanelor (rezervă legală, sponsorizare). Aceste detalii țin de reguli distincte din Codul fiscal și din Codul de procedură fiscală care nu au fost verificate în acest dosar de cercetare.
 
 ## Ce se greșește în practică
 

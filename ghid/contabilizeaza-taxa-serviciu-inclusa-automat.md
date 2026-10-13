@@ -2,7 +2,7 @@
 title: Cum se contabilizează taxa de serviciu inclusă automat pe nota de plată a unui restaurant?
 description: O taxă de serviciu adăugată automat pe notă nu e bacșiș din punct de vedere legal — regimul de la Legea 376/2022 se aplică doar sumei alese voluntar de client.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,11 +27,11 @@ Legea condiționează explicit tot regimul special (fără TVA, fără impozit p
 ## Ce se greșește în practică
 
 - **Se tratează orice sumă suplimentară de pe notă ca „bacșiș"**, indiferent dacă a fost aleasă voluntar de client sau adăugată automat de restaurant.
-- **O taxă de serviciu obligatorie e trecută prin conturile de datorii ale F010** (461/462), ca și cum ar fi bacșiș, deși nu îndeplinește condiția de voluntariat de la alin. (1) — ceea ce ar scoate nejustificat suma din baza de TVA și de venituri a firmei.
+- **O taxă de serviciu obligatorie e trecută prin conturile de datorii ale „Bacșiș HoReCa”** (461/462), ca și cum ar fi bacșiș, deși nu îndeplinește condiția de voluntariat de la alin. (1) — ceea ce ar scoate nejustificat suma din baza de TVA și de venituri a firmei.
 - **Nu se verifică modul de prezentare pe nota de plată** — rubricile de 0-15% + sumă fixă, cerute la alin. (3), presupun o alegere reală a clientului, nu un procent fix inserat automat.
 
 ## Ce face iConta.eu
 
-Motorul F010 din iConta.eu implementează exact traseul bacșișului voluntar definit de Legea 376/2022 — încasare pe bon + distribuire la salariați cu impozit 10%. O taxă de serviciu obligatorie, care nu e bacșiș în sensul legii, nu are un tratament dedicat identificat în acest modul; ea urmează regimul normal al prețului serviciului prestat (parte din baza de TVA și din venitul firmei), nu regimul special F010. Dacă operatorul aplică efectiv o astfel de taxă obligatorie, tratamentul ei corect ține de o verificare separată, nu de acest modul.
+Motorul „Bacșiș HoReCa” din iConta.eu implementează exact traseul bacșișului voluntar definit de Legea 376/2022 — încasare pe bon + distribuire la salariați cu impozit 10%. O taxă de serviciu obligatorie, care nu e bacșiș în sensul legii, nu are un tratament dedicat identificat în acest modul; ea urmează regimul normal al prețului serviciului prestat (parte din baza de TVA și din venitul firmei), nu regimul special „Bacșiș HoReCa”. Dacă operatorul aplică efectiv o astfel de taxă obligatorie, tratamentul ei corect ține de o verificare separată, nu de acest modul.
 
 [iConta.eu](/)

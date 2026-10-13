@@ -2,7 +2,7 @@
 title: "Ce curs valutar se folosește la recepția mărfii din UE?"
 description: "Cursul BNR aplicabil la înregistrarea inițială a unei achiziții intracomunitare de marfă și de ce nu are legătură cu reevaluarea ulterioară a datoriei."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ La recepția mărfii cumpărate din UE, în valută, folosești cursul de schimb
 
 ## Ce face iConta.eu
 
-Cursul BNR folosit la înregistrarea inițială a unei tranzacții în valută — inclusiv la recepția unei mărfi din UE — vine din aplicație, folosit în fluxul de facturare/achiziții, nu prin funcționalitatea de diferențe de curs valutar (F041). F041 intervine abia **după** înregistrarea inițială: la decontarea datoriei către furnizorul extern sau la reevaluarea ei lunară, calculând diferența 665/765 pe soldul rămas. Alegerea cursului la recepție nu e, deci, o funcție a F041, ci ține de ecranul de achiziții/facturare.
+Cursul BNR folosit la înregistrarea inițială a unei tranzacții în valută — inclusiv la recepția unei mărfi din UE — vine din aplicație, folosit în fluxul de facturare/achiziții, nu prin funcționalitatea de diferențe de curs valutar („Diferențe de curs valutar”). „Diferențe de curs valutar” intervine abia **după** înregistrarea inițială: la decontarea datoriei către furnizorul extern sau la reevaluarea ei lunară, calculând diferența 665/765 pe soldul rămas. Alegerea cursului la recepție nu e, deci, o funcție a „Diferențe de curs valutar”, ci ține de ecranul de achiziții/facturare.
 
 [iConta.eu](/)

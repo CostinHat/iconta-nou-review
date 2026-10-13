@@ -2,7 +2,7 @@
 title: "Cum corectezi o încasare bancară înregistrată pe clientul greșit?"
 description: "Cum se corectează, conform reglementărilor contabile, o eroare de alocare a unei încasări bancare pe un alt client decât cel real, prin stornare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Practic, corectarea unei încasări alocate greșit unui client presupune:
 
 ## Ce face iConta.eu
 
-iConta.eu oferă evidența contabilă generală a operațiunilor bancare și a soldurilor pe fiecare client. Mecanismul de stornare din cod e implementat azi doar pentru facturi (expus prin ruta `facturi_storno`) — nu există un mecanism generic de stornare pentru o notă contabilă provenită dintr-o linie de extras bancar alocată greșit unui client; corectarea unei astfel de note (stornare + reînregistrare pe clientul corect) se face azi manual de contabil, folosind principiile de stornare din normă, nu printr-o funcție dedicată a aplicației. De asemenea, identificarea automată a faptului că o încasare a fost alocată unui client greșit (de exemplu, prin potrivirea denumirii plătitorului din extrasul bancar cu un alt client din baza de date) nu e automatizată — semnalarea unei posibile alocări eronate rămâne o verificare pe care contabilul o face manual, pe baza extrasului bancar și a soldurilor clienților.
+iConta.eu oferă evidența contabilă generală a operațiunilor bancare și a soldurilor pe fiecare client. Mecanismul de stornare din cod e implementat azi doar pentru facturi (expus prin ruta „stornarea facturii (Facturi)”) — nu există un mecanism generic de stornare pentru o notă contabilă provenită dintr-o linie de extras bancar alocată greșit unui client; corectarea unei astfel de note (stornare + reînregistrare pe clientul corect) se face azi manual de contabil, folosind principiile de stornare din normă, nu printr-o funcție dedicată a aplicației. De asemenea, identificarea automată a faptului că o încasare a fost alocată unui client greșit (de exemplu, prin potrivirea denumirii plătitorului din extrasul bancar cu un alt client din baza de date) nu e automatizată — semnalarea unei posibile alocări eronate rămâne o verificare pe care contabilul o face manual, pe baza extrasului bancar și a soldurilor clienților.
 
 [iConta.eu](/)

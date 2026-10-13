@@ -2,7 +2,7 @@
 title: "Cash la târguri și evenimente 2026: casierie"
 description: "O firmă care vinde cu numerar la un târg sau eveniment ocazional rămâne sub aceleași obligații de casă de marcat și plafon de numerar ca orice vânzare cu amănuntul, cu doar două excepții înguste."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Caracterul temporar sau ocazional al unui stand de târg nu scutește, de regul�
 
 ## Ce face iConta.eu
 
-Modulul de casierie al iConta.eu urmărește plafoanele de numerar din Legea 70/2015, printre care plafonul zilnic de încasare de la o persoană fizică (10.000 lei), aplicat generic prin funcția `verifica_plafon()`, indiferent de contextul concret al vânzării — magazin, birou sau stand de eveniment/târg. Depășirea plafonului generează un avertisment (nivel „avertisment", nu o blocare a înregistrării), cu suma găsită și cea așteptată, pe fiecare zi și partener. Aplicația nu are însă nicio logică specifică pentru „vânzare la eveniment/târg" — nu distinge, de exemplu, un producător agricol individual exceptat de la obligația de AMEF (art. 2 lit. a)) de un comerciant obișnuit, și nu ține evidența biletelor tipărite cu valoare fixă de la art. 2 lit. d). Încadrarea corectă în aceste excepții rămâne integral responsabilitatea contabilului sau a firmei.
+Modulul de casierie al iConta.eu urmărește plafoanele de numerar din Legea 70/2015, printre care plafonul zilnic de încasare de la o persoană fizică (10.000 lei), aplicat generic prin funcția „verificarea plafonului de numerar (Casă)”, indiferent de contextul concret al vânzării — magazin, birou sau stand de eveniment/târg. Depășirea plafonului generează un avertisment (nivel „avertisment", nu o blocare a înregistrării), cu suma găsită și cea așteptată, pe fiecare zi și partener. Aplicația nu are însă nicio logică specifică pentru „vânzare la eveniment/târg" — nu distinge, de exemplu, un producător agricol individual exceptat de la obligația de AMEF (art. 2 lit. a)) de un comerciant obișnuit, și nu ține evidența biletelor tipărite cu valoare fixă de la art. 2 lit. d). Încadrarea corectă în aceste excepții rămâne integral responsabilitatea contabilului sau a firmei.
 
 [iConta.eu](/)

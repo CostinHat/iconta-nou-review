@@ -2,7 +2,7 @@
 title: Comisionul PayPal este deductibil la PFA?
 description: Comisionul reținut de PayPal poate fi dedus, dar nu pe baza unui text legal care îl numește explicit, ci prin clauza generală de deductibilitate — necesar documentul emis de platformă și legătura clară cu activitatea.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Fiindcă nu există text expres, documentul justificativ contează dublu: extras
 
 ## Ce face iConta.eu
 
-Validarea din aplicație (`_valideaza`) nu face distincție automată între tipul de comision: orice plată introdusă cu categoria `cheltuiala_deductibila` trebuie doar să aibă sumă pozitivă, dată, explicație și deductibilitate marcată — decizia de încadrare a comisionului PayPal ca deductibil rămâne a contabilului, pe baza documentului emis de platformă. Aplicația nu propune automat această categorie pentru comisioane reținute de procesatori nebancari (spre deosebire de `import_banca`, care propune implicit categoria pentru operațiunile din extrasul bancar) — introducerea și justificarea comisionului PayPal se fac manual, cu explicația și documentul aferent.
+Validarea din aplicație („validarea”) nu face distincție automată între tipul de comision: orice plată introdusă cu categoria „cheltuială deductibilă” trebuie doar să aibă sumă pozitivă, dată, explicație și deductibilitate marcată — decizia de încadrare a comisionului PayPal ca deductibil rămâne a contabilului, pe baza documentului emis de platformă. Aplicația nu propune automat această categorie pentru comisioane reținute de procesatori nebancari (spre deosebire de „importul extrasului bancar (Bancă)”, care propune implicit categoria pentru operațiunile din extrasul bancar) — introducerea și justificarea comisionului PayPal se fac manual, cu explicația și documentul aferent.
 
 [iConta.eu](/)

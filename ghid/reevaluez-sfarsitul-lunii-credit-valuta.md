@@ -2,7 +2,7 @@
 title: "Cum reevaluez la sfârșitul lunii un credit în valută?"
 description: "Regula contabilă pentru reevaluarea lunară a creditelor și datoriilor în valută, la cursul BNR din ultima zi bancară a lunii."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Aplicat concret la un credit în valută:
 
 ## Ce face iConta.eu
 
-Acest subiect ține de reevaluarea valutară a creditelor bancare, o operațiune de contabilitate generală — nu de funcționalitatea F086 (sponsorizări și credit fiscal) cercetată pentru acest ghid, care privește exclusiv creditul fiscal obținut din sponsorizare (o reducere de impozit pe profit), fără nicio legătură cu creditele bancare sau cu reevaluarea valutară. Cercetarea disponibilă a verificat direct în cod doar motorul de sponsorizări și garda de plafon din D101; nu avem, în acest dosar, o verificare a vreunui modul din iConta.eu pentru reevaluarea lunară a datoriilor în valută, așa că nu facem nicio afirmație despre existența sau absența unei asemenea automatizări.
+Acest subiect ține de reevaluarea valutară a creditelor bancare, o operațiune de contabilitate generală — nu de funcționalitatea „Sponsorizări și credit fiscal” cercetată pentru acest ghid, care privește exclusiv creditul fiscal obținut din sponsorizare (o reducere de impozit pe profit), fără nicio legătură cu creditele bancare sau cu reevaluarea valutară. Cercetarea disponibilă a verificat direct în cod doar motorul de sponsorizări și garda de plafon din D101; nu avem, în acest dosar, o verificare a vreunui modul din iConta.eu pentru reevaluarea lunară a datoriilor în valută, așa că nu facem nicio afirmație despre existența sau absența unei asemenea automatizări.
 
 [iConta.eu](/)

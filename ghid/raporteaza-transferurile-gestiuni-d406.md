@@ -2,7 +2,7 @@
 title: "Cum se raportează transferurile între gestiuni în D406?"
 description: Răspunsul scurt și verificat direct în cod - transferul între gestiuni nu apare în D406 sub nicio formă, nici în raportarea lunară, nici în raportarea de stocuri la cererea ANAF. De ce, și ce înseamnă asta practic.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -42,6 +42,6 @@ Practic: dacă un control ANAF verifică D406-ul lunar depus, nu găsește acolo
 
 ## Ce face iConta.eu
 
-Transferul între gestiuni din iConta.eu (F138) generează exclusiv o mișcare internă de stoc (ieșire din gestiunea sursă + intrare în gestiunea destinație, la CMP curent), fără notă contabilă — deci nu are cum să apară în Registrul jurnal și, prin construcție, nici în secțiunea de mișcări de bunuri a D406-ului lunar, care rămâne goală indiferent de operațiunile de acest tip. Raportul separat de stocuri „la cerere ANAF" nu grupează rezultatele pe gestiune — agregă totul pe articol, indiferent de câte locații a folosit firma. Dacă aveți nevoie să dovediți circulația mărfii între gestiuni, documentul de referință e cel emis conform criteriului aceeași incintă/dispersare teritorială (bon 14-3-3A sau aviz 14-3-6A), nu D406.
+Transferul între gestiuni din iConta.eu („Transfer între gestiuni”) generează exclusiv o mișcare internă de stoc (ieșire din gestiunea sursă + intrare în gestiunea destinație, la CMP curent), fără notă contabilă — deci nu are cum să apară în Registrul jurnal și, prin construcție, nici în secțiunea de mișcări de bunuri a D406-ului lunar, care rămâne goală indiferent de operațiunile de acest tip. Raportul separat de stocuri „la cerere ANAF" nu grupează rezultatele pe gestiune — agregă totul pe articol, indiferent de câte locații a folosit firma. Dacă aveți nevoie să dovediți circulația mărfii între gestiuni, documentul de referință e cel emis conform criteriului aceeași incintă/dispersare teritorială (bon 14-3-3A sau aviz 14-3-6A), nu D406.
 
 [iConta.eu](/)

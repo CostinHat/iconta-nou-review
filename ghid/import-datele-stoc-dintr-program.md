@@ -2,7 +2,7 @@
 title: "Cum import datele de stoc dintr-un program în balanță"
 description: "Ce cere legea contabilității când datele de stoc vin dintr-un alt program și trebuie regăsite corect în balanța de verificare, conform Legii 82/1991."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă pentru un import de date de stoc:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu oferă un importator de articole și stoc inițial expus utilizatorului: Aplicația citește un export .xlsx/.csv (denumire, UM, cantitate, preț unitar, cont de stoc) și creează articolele plus intrarea inițială pentru cele cu stoc, la data soldului declarată; funcția refuză explicit un articol cu stoc dar preț zero/lipsă, ca să nu subraporteze tăcut valoarea stocului. Fluxul e expus prin ruta `/tenants/{tenant_id}/articole-import`, deci nu e un instrument doar intern de onboarding. Aplicația sunt migrări de schemă (ALTER TABLE, coloane noi), nu importatoare de date de stoc, și nu trebuie confundate cu funcția de import de mai sus.
+La data acestui ghid, iConta.eu oferă un importator de articole și stoc inițial expus utilizatorului: Aplicația citește un export .xlsx/.csv (denumire, UM, cantitate, preț unitar, cont de stoc) și creează articolele plus intrarea inițială pentru cele cu stoc, la data soldului declarată; funcția refuză explicit un articol cu stoc dar preț zero/lipsă, ca să nu subraporteze tăcut valoarea stocului. Fluxul e expus prin ruta aplicația, deci nu e un instrument doar intern de onboarding. Aplicația sunt migrări de schemă (ALTER TABLE, coloane noi), nu importatoare de date de stoc, și nu trebuie confundate cu funcția de import de mai sus.
 
 [iConta.eu](/)
