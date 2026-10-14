@@ -1,0 +1,59 @@
+Evidentierea ambalajelor SGR
+Tratament fiscal al intrarilor
+Imobilizari
+Ecran utilizat pentru gestionarea imobilizărilor corporale şi necorporale ale societăţii.
+Conţine clasificaţia mijloacelor fixe, pentru imobilizările corporale, permiţând calculul automat al amortizării acestora. Metoda de calcul a amortizării este cea a calculului liniar sau accelerat. În acest moment programul nu calculează amortizarea în regim degresiv.
+Ecranul conține trei pagini:
+Lista imobilizărilor - permite adăugarea, modificarea sau ștergerea imobilizărilor.
+Modernizări / Reevaluări / Suspendări / Plan amortizare -  permite introducerea operațiile care au loc asupra imobilizărilor si vizualizarea planului de amortizare.
+Registru imobilizărilor - destinat generării registrului.
+Lista imobilizărilor
+Semnificația coloanelor și modul de operare:
+Nr.inv.  - numărul de inventar - acesta trebuie să fie unic.
+Denumire  - denumirea imobilizării (ex. Autoturism DACIA Pick-Up).
+Nr.document  - se completează (opţional) cu numărul documentului prin care a intrat imobilizarea.
+Gestiune  - locul de amplasare a mijlocului fix (gestiunea).
+Cod clasă  - permite alegerea din lista derulantă, a codului de clasificare în cazul imobilizărilor corporale.
+Data intrare  - se completează cu data la care intră în evidență imobilizarea. Din luna urmatoare acestei date începe înregistrarea amortizării.
+Valoare intrare  - se completează cu valoarea de inventar a imobilizării (valoarea de achiziţie).
+Valoare inventar  - această coloană apare în cazul în care există modernizări si/sau reevaluări și cuprinde valoarea la zi a imobilizării.
+Dur.luni  - va fi completat cu durata de utilizare a imobilizării. Se completează automat de către program la imobilizările corporale şi poate fi modificat.
+Tip amortizare  - liniară sau accelarată, după caz.
+Val. ramasa  - se completează automat cu valoarea iniţială a imobilizării, urmând să scadă după fiecare lună în care se înregistrează amortizarea.
+Dur. ramasă  - se completează automat durata totală de funcţionare în luni, urmând să scadă după fiecare lună în care se înregistrează amortizarea.
+Amort. lunara  - se va completa automat cu raportul dintre valoarea de intrare și durata amortizării.
+Amort. inreg.  - amortizarea înregistrată se va actualiza automat după fiecare lună în care se înregistrează amortizarea.
+Necorp.  - se bifează dacă imobilizarea este necorporală.
+Cont  - se completează contul în care a intrat imobilizarea.
+Cont amortizare  - se completează contul în care se va înregistra amortizarea.
+Cont cheltuiala  - se completează contul de cheltuiala (6811 sau analitic) în care se va înregistra amortizarea.
+Butoanele cu funcții comune cu a altor ecrane, au fost prezentate în secțiunea  Consideratii generale . Butoanele regăsite doar în acest ecran sau cu funcții specifice, vor fi prezentate în continuare:
+- tipăreşte procesul verbal de recepție a mijlocului fix selectat.
+- tipăreşte fişa mijlocului fix selectat.
+- permite adăugarea, modificarea sau ştergerea informaţiilor din clasificaţia mijloacelor fixe.
+- permite importul imobilizărilor din fișier XLS/ CSV/ TXT. Fișierul trebuie să conțină denumire imobilizării, clasa, data și valoarea de intrare.
+Modernizari/ Reevaluari/ Suspendari/ Plan amortizare
+Semnificația coloanelor și modul de operare:
+Tip. operație  - se va alege din listă tipul dorit, dintre: modernizare, reevaluare brut/ net, vânzare, casare, suspendare, reactivare.
+Explicație  - opțional se completează detalii suplimentare.
+Nr. doc  - opțional, numărul documentului.
+Data  - data e la care se vor produce efectele.
+Valoare (justa)  - după caz, se introduce valoarea aferentă tipului de operație selectat.
+Plan amortizare- în partea dreaptă a paginii, apăsarea butonului   va afișa evoluţia amortizării, imobilizării selectate, de la luna curentă pâna la terminarea ei. Bifarea opțiuni "Societate" va duce la afișarea perioadei și a valorii amortizării lunare cumulate pentru toate imobilizările ce urmează a fi amortizate.
+Registru imobilizărilor
+Această pagină afișează imobilizările înregistrate, permițând filtrarea imobilizărilor și generarea registrului imobilizărilor la zi sau la o dată aleasă.
+ATENŢIE!
+Generarea registrului imobilizărilor pentru lunile din urmă este posibil să nu producă rezultate corecte în cazul în care se modifică manual câmpurile "Val.ramasa" sau "Dur.ramasa", astfel încat acestea nu mai corespund calculelor automate realizate de program.
+Observație:
+În cazul în care se modifică manual câmpurile "Val.ramasa" sau "Dur.ramasa", astfel încât acestea nu mai corespund calculelor automate realizate de program, amortizarea lunară va fi dată de raportul "Val. ramasa"/ "Dur. ramasa". La imobilizările la care nu corespunde valoarea ramasă de amortizat cu cea calculată automat, câmpul aferent va apărea îngroșat. La aceste cazuri, generarea registrului imobilizărilor pentru lunile din urmă este posibil să nu producă rezultate corecte. De asemenea, nu se pot introduce modernizări, reevaluări sau suspendări, pentru că se va reseta valoarea rămasă astfel încat sa fie corectă, conform cu data de intrare, valoarea de intrare, durata de amortizare și operațiunile asociate existente.
+Pentru imobilizările încadrate pe codul de clasa 2.3.2.1.1., programul va stabili automat,  la calculul impozitului,  suma nedeductibilă aferentă amortizării care depășește 1500 lei/luna.
+×
+SAGA Software © 2026
+Home
+Linkuri
+Tutoriale
+Blog
+Forum
+Contact
+Distribuţie
+Politica de confidențialitate

@@ -37,7 +37,7 @@ from core import scan_afirmatii as s
 BASELINE = {
     "core/supervizor.py": 1,
     "core/raportari_ai.py": 3,
-    "core/articole_import_api.py": 2,
+    "core/articole_import_api.py": 1,
     # [P7 · valul use-case, 13.09.2026] Cele doua afirmatii netipate din  au plecat cu
     # corpurile rutelor:  in ,  in
     # . TOTALUL e neschimbat (15 = 15) — datoria si-a schimbat adresa, nu
@@ -51,7 +51,6 @@ BASELINE = {
     # unde îi era și locul. Verificat cu instrumentul pe HEAD și acum: același dict, aceeași linie de cod, altă funcție-gazdă.
     "core/etransport_send.py": 1,
     "core/gdpr_sterge.py": 1,
-    "core/istoric_declaratii_import_api.py": 1,
     "core/rip_migrare_api.py": 1,
     "core/tipare_api.py": 1,
 }

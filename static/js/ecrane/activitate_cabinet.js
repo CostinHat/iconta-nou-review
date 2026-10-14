@@ -102,7 +102,7 @@ export async function randeazaActivitateCabinet(corp, nav) {
         ${card(t.in_asteptare || 0, "în așteptare")}
       </div>
       <div class="mig-intro">Jurnal cronologic — cine, ce și când (${jur.total || 0} evenimente)</div>
-      <div class="mig-sold-tabel ac-tabel">
+      <div class="mig-sold-tabel ac-tabel" tabindex="0" aria-label="Activitatea cabinetului">
         <div class="mig-sold-rand ac-cap">
           <span class="ac-cand">Când</span>
           <span class="ac-cine">Cine</span>

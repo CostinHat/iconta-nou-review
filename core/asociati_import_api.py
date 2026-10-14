@@ -45,57 +45,48 @@ def valideaza_cnp(cnp):
     return True, "ok"
 
 
-def _gaseste_col(antet, *chei):
-    for i, h in enumerate(antet):
-        hl = str(h).strip().lower()
-        for k in chei:
-            if k in hl:
-                return i
-    return -1
+# [14.10.2026, comanda Costin „Importul din SAGA”, verbatim în DECIZII] Citirea fișierului și potrivirea coloanelor trec prin
+# `core.import_tabel` (sursa unică: format, codare Windows-1250 recunoscută sau refuzată, antet sub titluri, coloane pe cuvinte
+# întregi, ambiguitate refuzată numit) — nu mai e o copie a lui `_gaseste_col` aici.
+from core import import_tabel as _it
+
+CAMPURI = {
+    "nume": ("nume asociat", "denumire asociat", "=nume", "nume*", "asociat*", "denumire*"),
+    "cod": ("cnp cui", "cnp", "cui", "cif", "cod fiscal", "=cod"),
+    "cota": ("cota*", "procent*", "participare", "%"),
+}
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026); "%" tratat acolo
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
+from core.pdf_util import data_ro as _data_ro   # DS cap.4: data din text, canonic
 
 
 def extrage(continut, nume_fisier=""):
     """Intoarce [{nume, cnp, cota, tip, cnp_valid, cnp_motiv}]."""
-    nume = (nume_fisier or "").lower()
-    randuri = []
-
-    if nume.endswith(".csv") or nume.endswith(".tsv") or nume.endswith(".txt"):
-        import csv, io
-        text = continut.decode("utf-8-sig", errors="replace") if isinstance(continut, bytes) else str(continut)
-        prima = text.splitlines()[0] if text.splitlines() else ""
-        delim = "\t" if nume.endswith(".tsv") else (";" if prima.count(";") > prima.count(",") else ",")
-        randuri = list(csv.reader(io.StringIO(text), delimiter=delim))
-    elif nume.endswith(".xlsx") or nume.endswith(".xlsm"):
-        import io
-        from openpyxl import load_workbook
-        wb = load_workbook(io.BytesIO(continut), read_only=True, data_only=True)
-        ws = wb.active
-        for r in ws.iter_rows(values_only=True):
-            randuri.append(["" if c is None else c for c in r])
-        wb.close()
-    else:
-        raise ValueError("Fișierul trimis nu se poate citi: se așteaptă un CSV sau un "
-                         "XLSX. Salvează exportul în unul din formatele astea și "
-                         "încarcă-l din nou.")
-
-    if not randuri:
+    randuri = _it.citeste(continut, nume_fisier)
+    if not randuri or all(_it.rand_gol(r) for r in randuri):
         return []
-
-    antet = [str(x) for x in randuri[0]]
-    i_nume = _gaseste_col(antet, "nume", "asociat", "denumire")
-    i_cod = _gaseste_col(antet, "cnp", "cui", "cif", "cod")
-    i_cota = _gaseste_col(antet, "cota", "cotă", "procent", "participare", "%")
+    try:
+        antet, start = _it.gaseste_antet(randuri, CAMPURI, obligatorii=("nume",), nume_fisier=nume_fisier)
+    except _it.FisierNecitit as e:
+        if isinstance(e, _it.ColoaneAmbigue):
+            raise
+        try:
+            antet, start = _it.gaseste_antet(randuri, CAMPURI, obligatorii=("cod",), nume_fisier=nume_fisier)
+        except _it.FisierNecitit:
+            raise ValueError("nu se găsește coloana nume/cod asociat - fișier nerecunoscut")
+    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=camp)
+    i_cod = col("cod")
+    i_nume = col("nume", (i_cod,))
+    i_cota = col("cota", (i_cod, i_nume))
     if i_nume < 0 and i_cod < 0:
         raise ValueError("nu se găsește coloana nume/cod asociat - fișier nerecunoscut")
-
+    randuri = randuri[start - 1:]
     out = []
-    for r in randuri[1:]:
+    for nr, r in enumerate(randuri[1:], start=start + 1):
         def cel(i):
-            return str(r[i]).strip() if (0 <= i < len(r)) else ""
+            return _it.celula(r, i)
         nume_v = cel(i_nume)
         cod = cel(i_cod).upper().replace("RO", "").replace(" ", "")
         cota = _numar(cel(i_cota))
@@ -110,7 +101,7 @@ def extrage(continut, nume_fisier=""):
             valid, motiv = True, "CUI"   # juridica, nu validam CNP
             tip = "juridica"
         out.append({"nume": nume_v, "cnp": cod, "cota": cota,
-                    "tip": tip, "cnp_valid": valid, "cnp_motiv": motiv})
+                    "tip": tip, "cnp_valid": valid, "cnp_motiv": motiv, "rand_fisier": nr})
     return out
 
 
@@ -139,6 +130,7 @@ def verifica_randuri(randuri):
     """
     er = []
     for i, r in enumerate(randuri or [], start=2):   # antetul e randul 1
+        i = _it.nr_rand(r, i)
         nume = str(r.get("nume") or "?").strip()
         cod = str(r.get("cnp") or "").strip()
         # [Q4] ramifica fizic/juridic ca extrage(): CUI de juridica se valideaza ca CUI (cifra de
@@ -189,14 +181,14 @@ def importa(conn, randuri, data_cesiune=None):
         except ValueError:
             raise ValueError("data cesiunii %r nu e o dată (AAAA-LL-ZZ)." % data_cesiune)
         if dc > _dt.date.today():
-            raise ValueError("data cesiunii (%s) e în viitor: o transmitere se înregistrează după ce a avut loc." % dc)
+            raise ValueError("data cesiunii (%s) e în viitor: o transmitere se înregistrează după ce a avut loc." % _data_ro(dc))
         pana = dc - _dt.timedelta(days=1)
         with conn.cursor() as cur:
             cur.execute("SELECT max(valabil_pana_la) FROM asociati_istoric")
             ultima = cur.fetchone()[0]
             if ultima is not None and pana <= ultima:
                 raise ValueError("data cesiunii (%s) trebuie să fie după ultima cesiune înregistrată (structura "
-                                 "anterioară e valabilă până la %s)." % (dc, ultima))
+                                 "anterioară e valabilă până la %s)." % (_data_ro(dc), _data_ro(ultima)))
             cur.execute("SELECT nume, cnp, cota FROM asociati WHERE cota > 0")
             for nume, cnp, cota in cur.fetchall():
                 cur.execute("INSERT INTO asociati_istoric (cnp, nume, cota, valabil_pana_la) VALUES (%s,%s,%s,%s)",

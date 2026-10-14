@@ -41,6 +41,34 @@ def ecran_import_asociati(pg):
     pg.wait_for_timeout(800)
 
 
+def _previzualizare(pg, strat, nume, continut, buton):
+    """[14.10.2026, importul din SAGA] Previzualizarea unui import (numai citire: `.../incarca` nu salvează). Fișierele sunt cele
+    INVENTATE din `core/test_import_saga.py` (antetele din manualul SAGA), ca ecranul probat să fie cel din teste."""
+    deschide_firma(pg)
+    _import_strat(pg, strat)
+    pg.set_input_files("#mig-file", files=[{"name": nume, "mimeType": "text/csv", "buffer": continut}])
+    pg.wait_for_selector(buton, timeout=14000)
+    pg.wait_for_timeout(800)
+
+
+def ecran_import_solduri_saga(pg):
+    """Balanța SAGA (Windows-1250, antet pe două rânduri): coloanele citite, rândurile neintrate, data balanței."""
+    from core.test_import_saga import BALANTA_SAGA, _cp1250
+    _previzualizare(pg, "Solduri ini", "balanta_saga.csv", _cp1250(BALANTA_SAGA), "#mig-salveaza-sold")
+
+
+def ecran_import_mijloace_saga(pg):
+    """Registrul de imobilizări SAGA: un rând care nu intră, butonul care salvează rândul bun."""
+    from core.test_import_saga import MF_SAGA, _cp1250
+    _previzualizare(pg, "Mijloace fixe", "mijloace_fixe_saga.csv", _cp1250(MF_SAGA), "#mig-salveaza-mf")
+
+
+def ecran_import_istoric_saga(pg):
+    """Istoricul declarațiilor: două rânduri care nu intră, butonul care salvează rândurile bune."""
+    from core.test_import_saga import ISTORIC
+    _previzualizare(pg, "Istoric declara", "istoric.csv", ISTORIC.encode("utf-8"), "#mig-salveaza-ist")
+
+
 def ecran_vector_fiscal(pg):
     deschide_firma(pg)
     _import_strat(pg, "Vector fiscal")
@@ -265,6 +293,10 @@ ECRANE = [
     ("vector_fiscal", ecran_vector_fiscal),
     ("plan_conturi", ecran_plan_conturi),
     ("solduri_parteneri", ecran_solduri_parteneri),
+    ("import_solduri_saga", ecran_import_solduri_saga),       # [14.10.2026] previzualizările atinse de importul din SAGA
+    ("import_mijloace_saga", ecran_import_mijloace_saga),
+    ("import_istoric_saga", ecran_import_istoric_saga),
+    ("activitate_cabinet", ecran_activitate_cabinet),        # [14.10.2026] tabelul cu derulare proprie, făcut focusabil
     ("stat_plata", ecran_stat_plata),
     ("declaratii", ecran_declaratii),
     ("stocuri", ecran_stocuri),
@@ -436,7 +468,7 @@ def ecran_flux_concediu(pg):
 # verdictul de randul `#nr` fara traducere.
 ECRANE_CABINET = [
     # [11.10.2026] `cabinet_desktop` a trecut în `ECRANE` (JS atins de lotul 220–225)
-    ("activitate_cabinet", CONT_CABINET, ecran_activitate_cabinet),  # 463
+    # [14.10.2026] `activitate_cabinet` a trecut în `ECRANE` (JS atins: tabelul cu derulare proprie, focusabil)
     ("tipare", CONT_CABINET, ecran_tipare),                        # 497
     ("asistenti", CONT_CABINET, _card_fn("asistenti")),            # 471
     ("capacitate", CONT_CABINET, _card_fn("capacitate")),          # 473

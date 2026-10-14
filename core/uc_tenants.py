@@ -314,6 +314,16 @@ def solduri_salveaza(tenant_id, date, ctx):
             raise _erori.DateInvalide(str(e))
 
 
+def _data_soldurilor(conn, schema):
+    """Data soldurilor de preluare ('YYYY-MM-DD') din sursa unică `bilant_api.data_soldurilor`, sau None (evidența întreagă în
+    iConta.eu, fără preluare)."""
+    from psycopg2.extras import RealDictCursor
+    from core import bilant_api
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        d = bilant_api.data_soldurilor(cur, schema)
+    return d.isoformat() if d else None
+
+
 def parteneri_rezumat(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/parteneri`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
@@ -324,11 +334,13 @@ def parteneri_rezumat(tenant_id, ctx):
 def parteneri_salveaza(tenant_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/parteneri`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
-    randuri = [{"cont": r.cont, "cui": r.cui, "denumire": r.denumire, "debit": r.debit, "credit": r.credit}
-               for r in date.randuri]
+    randuri = [r.model_dump() for r in date.randuri]   # rand_fisier inclus: refuzul numește rândul din fișier
     with db.get_conn(schema) as conn:
         try:
-            return solduri_parteneri_api.importa(conn, randuri, date.data_referinta)
+            # [C22, clasa — 14.10.2026] data soldurilor pe parteneri = data soldurilor de preluare a firmei (sursa unică
+            # `bilant_api.data_soldurilor`: data balanței, altfel ziua dinaintea lunii preluării). Ecranul nu trimitea niciodată
+            # `data_referinta`, deci soldurile pe parteneri rămâneau fără dată.
+            return solduri_parteneri_api.importa(conn, randuri, date.data_referinta or _data_soldurilor(conn, schema))
         except ValueError as e:  # randuri invalide -> 422 cu mesaj explicativ
             raise _erori.DateInvalide(str(e))
 
@@ -368,7 +380,10 @@ def articole_import_salveaza(tenant_id, date, ctx):
     randuri = [r.model_dump() for r in date.randuri]
     with db.get_conn(schema) as conn:
         try:
-            return articole_import_api.importa(conn, schema, randuri, data_sold=date.data_sold)
+            # [C22, clasa — 14.10.2026] stocul inițial e „la” data soldurilor de preluare (sursa unică), nu la ziua importului:
+            # ecranul nu trimitea `data_sold`, iar `importa` punea data de azi — mișcarea de intrare cădea în luna curentă.
+            return articole_import_api.importa(conn, schema, randuri,
+                                               data_sold=date.data_sold or _data_soldurilor(conn, schema))
         except (ValueError, KeyError) as e:    # [lotul 6] refuzul ajunge ca mesaj, nu ca 500
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
 
@@ -5007,12 +5022,12 @@ def client_acces_creeaza(tenant_id, date, ctx):
 
 
 
-def parteneri_incarca(tenant_id, continut, nume_fisier, ctx):
+def parteneri_incarca(tenant_id, continut, nume_fisier, ctx, cont_implicit=None):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/parteneri/incarca`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     continut = continut
     try:
-        randuri = solduri_parteneri_api.extrage(continut, nume_fisier or "")
+        randuri = solduri_parteneri_api.extrage(continut, nume_fisier or "", cont_implicit=cont_implicit)
     except ValueError as e:
         raise _erori.CerereGresita(str(e))
     # [lotul 6] Un `.txt` cu o linie de proza intorcea `{"randuri": []}` — „fisierul n-are parteneri"
@@ -5038,7 +5053,7 @@ def salariati_import_incarca(tenant_id, continut, nume_fisier, ctx):
         randuri = salariati_import_api.extrage(continut, nume_fisier or "")
     except ValueError as e:
         raise _erori.CerereGresita(str(e))
-    valizi = sum(1 for r in randuri if r["cnp_valid"])
+    valizi = sum(1 for r in randuri if salariati_import_api.valideaza_cnp(r.get("cnp"))[0])   # [14.10] recalculat, ca la salvare
     erori = migrare_api.erori_verifica(salariati_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
     from core import cor_api as _cor   # [Q16] imbogateste COR cu denumirea ocupatiei (nomenclator public.cor_ocupatii)
     _cache = {}

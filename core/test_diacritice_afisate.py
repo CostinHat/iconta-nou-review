@@ -194,15 +194,23 @@ _VALIDATORI_IMPORT = (
     "core/solduri_api.py", "core/solduri_parteneri_api.py", "core/asociati_import_api.py",
     "core/mijloace_fixe_import_api.py", "core/istoric_declaratii_import_api.py",
     "core/articole_import_api.py", "core/salariati_import_api.py", "core/retete_import_api.py",
+    # [14.10.2026] citirea comună a fișierelor de import (refuzurile de format / codare / antet ajung pe ecran) și RIP-ul
+    "core/import_tabel.py", "core/rip_migrare_api.py",
 )
+
+# [14.10.2026] SINONIMELE DE COLOANĂ trăiesc acum în dicționare de modul (`CAMPURI`), nu în argumentele lui `_gaseste_col`
+# (copiile au dispărut, sursa unică e `core.import_tabel`). Se compară cu antetul NORMALIZAT (`import_tabel.norm` scoate
+# diacriticele), deci sunt ASCII prin construcție — ca și cheile de căutare normalizate (`_JUDETE_NUME`, `_PREFIXE_CASA`) și
+# cuvintele de sub-antet (`_SUBANTET`). Nu sunt mesaje: nu ajung pe ecran.
+_SINONIME_DE_COLOANA = {"CAMPURI", "_JUDETE_NUME", "_PREFIXE_CASA", "_SUBANTET"}
 
 
 def _flagate_import():
     """TOATE mesajele din validatorii de import - fisiere integral user-facing (fiecare mesaj ajunge
     in .caseta-atentie / #mig-eroare / avertismente per rand), scanate INTEGRAL: prinde raise brut,
     det+=, f-string, avertismente.append(...), structuri pe care _candidati() nu le vede. Se exclud:
-    docstring-uri; argumentele lui _gaseste_col (SINONIME DE COLOANA = antetul CSV al utilizatorului,
-    poate fi ASCII); string-urile SQL (execute, nu mesaj)."""
+    docstring-uri; SINONIMELE DE COLOANA (`_SINONIME_DE_COLOANA`: dicționarele de modul cu care se compară antetul normalizat,
+    ASCII prin construcție); string-urile SQL (execute, nu mesaj)."""
     import os
     import re as _re2
     _SQL = _re2.compile(r"\b(SELECT|INSERT|UPDATE|DELETE|CREATE|VALUES)\b")
@@ -215,15 +223,11 @@ def _flagate_import():
                    if isinstance(x, ast.Expr) and isinstance(x.value, ast.Constant)
                    and isinstance(x.value.value, str)}
         col_ids = set()
-        for c in ast.walk(tree):
-            if isinstance(c, ast.Call):
-                f = c.func
-                nm = f.id if isinstance(f, ast.Name) else (f.attr if isinstance(f, ast.Attribute) else "")
-                if nm == "_gaseste_col":
-                    for a in c.args:
-                        for lit in ast.walk(a):
-                            if isinstance(lit, ast.Constant) and isinstance(lit.value, str):
-                                col_ids.add(id(lit))
+        for c in tree.body:
+            if isinstance(c, ast.Assign) and any(isinstance(x, ast.Name) and x.id in _SINONIME_DE_COLOANA for x in c.targets):
+                for lit in ast.walk(c.value):
+                    if isinstance(lit, ast.Constant) and isinstance(lit.value, str):
+                        col_ids.add(id(lit))
         for n in ast.walk(tree):
             if isinstance(n, ast.Constant) and isinstance(n.value, str) \
                     and id(n) not in doc_ids and id(n) not in col_ids:

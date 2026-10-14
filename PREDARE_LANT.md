@@ -1,12 +1,13 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **14.10.2026: pct.1 publicat (`5e260e3c`); pct.2 (243, 244, 245) comis în lotul care conține această predare; urmează pct.3 (C19), apoi ghidurile 4a -> 4b -> 4c; R4 BLOCAT; ghiduri noi oprite**
+# PREDARE LANȚ — **15.10.2026: REGIM PILOT (DECIZII 14.10.2026 „Regim pilot”). Lucrul NUMAI în worktree `/home/costin/iconta_lucru` (ramura `lucru/pilot-2026-10-14`); `~/iconta_nou` = versiunea publicată. Lotul 1 (importul din SAGA: C21–C25, C27–C33 + răspunsul la §6: salvarea parțială la salariați / parteneri, „de verificat”) comis pe ramură și publicat cu acordul lui Costin (commitul care conține această predare; four-way în raport). Urmează lotul 2 (garda pe main, invitația, backup-ul), apoi lotul 3 (246 + C26) — după comanda lui Costin**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-14** (lotul pct.2 al comenzii din 14.10: 243–245), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `5e260e3c` (pct.1 — four-way închis 14.10 10:47:55); lotul pct.2 e în commitul care conține această predare — SHA-ul și
-  four-way-ul în raport.
+- **ultima rescriere**: **2026-10-15** (lotul 1 al regimului pilot: importul din SAGA, comis și publicat — SHA în raport), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `12998290` (pct.2) — **four-way închis 14.10.2026 15:53:02**: HEAD = origin/main = public/main = backup/lant-2026-10-14 =
+  RUNNING = `129982907b5640dc174368f9114834d7936d9db4`; procesul pornit 15:53:02 EEST, după commit (14:27:29); nicio sentinelă; statica
+  `12998290` publicată (63 de fișiere). Predarea asta e pe disc, NECOMISĂ (vezi „ce e în lucru”).
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -129,7 +130,19 @@ aplicației**, nu „în așteptarea unei teme”:
   așteaptă validarea” cu legătura spre Registrul jurnal pe decembrie; **245** sursa notei în cuvinte (11 surse). Pe drum: bomba de
   calendar din `core/test_retest2.py` (ar fi oprit poarta din 01.11.2026) reparată + gard. **Ciornele de închidere pe 31.12.2026 de pe
   F2 (producție, 13.10) rămân ciorne** — nevalidabile până după 31.12.2026; nu le-am șters (date de producție).
-- **URMEAZĂ (comanda 14.10, în ordine, fiecare lot cu raport și ZIP):** pct.3 C19 (D394 E / F după OPANAF 2194/2025, citat verbatim) ->
+- **PUBLICAREA CU APROBARE (Costin, 14.10.2026, după raportul pct.2):** „Când termini pct.2, NU publica și nu reporni producția. Comite pe
+  main local, oprește-te înainte de publicare și raportează. Publicarea o aprob eu, după ce confirm că acel cabinet pilot nu lucrează în
+  aplicație.” Executat: poarta pct.2 verde (14:27–15:36) cu `post-commit` neexecutabil (git l-a sărit; hook-ul n-are oprire), bitul pus
+  la loc imediat; publicarea aprobată 15:52 („Publică 12998290 acum (cabinetul pilot nu lucrează în aplicație)”) și rulată cu
+  `sh scripts/githooks/post-commit` (15:52:46–15:53:05). **De reținut pentru loturile următoare: orice commit pe main publică și
+  repornește automat — dacă regula „publicarea o aprob eu” rămâne în vigoare, întreabă înainte de fiecare commit / poartă.**
+- **REGIM PILOT (14.10.2026, verbatim în DECIZII):** publicare / restart / migrări / poartă NUMAI după ce Costin confirmă că cabinetul nu lucrează, cu backup chiar înainte; nicio citire / scriere în datele cabinetului fără aprobare; observațiile „expert contabil” au prioritate absolută. Lucrul în `/home/costin/iconta_lucru`; commit pe ramura de lucru tot prin poartă (commit-msg) -> tot cu acord.
+- **CE E ÎN LUCRU ACUM (15.10):** nimic pornit după lotul 1. Lotul 1 = commitul care conține această predare, publicat cu acordul lui Costin (14.10.2026 noaptea: „poarta + commit acum (cabinetul pilot nu lucrează). La poartă verde, publică (backup al bazei înainte)”): backup `~/backups_db/iconta_v2_pre_lot1_import_saga_*.dump` înainte, fast-forward pe `main` în `~/iconta_nou`, post-commit (push, backup, statica), migrarea `core/migrare_salariati_de_verificat.py` pe producție (rulatorul repornește), four-way. SHA-ul și ora sunt în raport.
+- **URMEAZĂ (ordinea confirmată de Costin 14.10 noaptea):** raportul lotului 1 + ZIP -> **oprire, comanda lui Costin** -> lotul 2 (pct.2 garda pe `main` prin `reference-transaction`; pct.3 invitația în locul înregistrării libere; pct.5 alerta backup-ului local + proba de restaurare pe o bază separată, numai cifre) -> lotul 3 (246 + C26). Pct.4 (serverul de lucru) după pilot.
+- **CE ERA ÎN LUCRU (până la 14.10 15:53):** nimic. Arborele are o singură modificare: această predare (necomisă — un commit trece prin poarta de ~70 min și
+  repornește producția la final; se comite odată cu lotul următor sau când aprobă Costin).
+- **URMEAZĂ (comanda 14.10, în ordine, fiecare lot cu raport și ZIP) — NUMAI după comanda lui Costin („După raport, nu porni pct.3;
+  aștepți”):** pct.3 C19 (D394 E / F după OPANAF 2194/2025, citat verbatim) ->
   4a proza despre cod (clasa largă) -> 4b cele 1.348 de citate -> 4c comasarea nivelului A (324 de grupuri). Nimic din afara comenzii.
 - **DECIZII CERUTE (raportul lotului §6) — RĂSPUNSE 14.10.2026 (verbatim în DECIZII): C19 se corectează (lot separat); 4a, 4b, 4c (nivelul A)
   aprobate, în loturi separate; nivelul B nu se comasează. Ordinea: pct.2 (243–245) -> pct.3 (C19) -> 4a -> 4b -> 4c. Erau:** (1) **C19** — D394 E / F declară exporturile și livrările intracomunitare și omite
@@ -463,7 +476,10 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## STAREA LA PREDARE
 
-**Ultima poartă completă: `5e260e3c` (14.10.2026, §6 COMANDA_13_10 + pct.1)** — `8117 passed, 10 skipped, 15 xfailed in 3204.52s`,
+**Ultima poartă completă: `12998290` (14.10.2026, pct.2: 243–245)** — `8129 passed, 10 skipped, 15 xfailed in 3044.81s`, COLLECTED 8154,
+verificator TOTAL 0, cifrele identice (5 firme), e2e 254 passed; poarta întreagă 4131 s (pytest 3045 s, plasa 1086 s). Prima trecere
+(12:44–13:35) respinsă: 2 failed (versionarea `firme.js`, un parametru netransmis) — WIP `wip/2026-10-14-1335-pct2`.
+Înainte: **`5e260e3c` (14.10.2026, §6 COMANDA_13_10 + pct.1)** — `8117 passed, 10 skipped, 15 xfailed in 3204.52s`,
 COLLECTED 8142, verificator TOTAL 0, cifrele identice (5 firme), e2e 250 passed; poarta întreagă 4258 s (pytest 3206 s, plasa 1052 s).
 Înainte: **`13856f1f` (13.10.2026, lotul 1: varianta (a) + 242)** — `8092 passed, 10 skipped, 15 xfailed`, COLLECTED 8117,
 verificator TOTAL 0, e2e 247 passed; poarta întreagă 4070 s (pytest 3024 s, plasa 1046 s). Cifrele lotului 2 sunt în raportul lui.
@@ -507,8 +523,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **964** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **960** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

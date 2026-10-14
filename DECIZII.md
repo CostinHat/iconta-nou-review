@@ -20055,3 +20055,114 @@ mai apar ca motiv separat — e aceeași validare (`inchidere_an.solduri_dupa`).
 **Bomba de calendar din suită (găsită de Code la 243).** `core/test_retest2.py` afirma `luna_in_curs(2026, 10)` pe ziua de azi — de la
 01.11.2026 poarta ar fi căzut fără nicio schimbare de cod. Ziua fixată; gard `core/test_teste_ziua_fixata.py`. Nu primește număr în
 DEFICIENTE: nu e o deficiență a aplicației (starea „rezolvată” cere e2e în browser) — e o neconformitate a porții, consemnată în GARZI.
+
+## 14.10.2026 — Regim pilot: primul cabinet real în producție (comanda Costin 14.10.2026, verbatim)
+
+**Context, verbatim:** „SCHIMBARE DE REGIM, de acum: astăzi intră în aplicație primul cabinet real, un expert contabil, în regim pilot,
+în paralel cu SAGA. Migrează acum o singură firmă simplă. Producția are de acum date ale unui client.”
+
+**Decizie, verbatim:**
+1. „lucrul tău nu se mai face în directorul citit de producție (~/iconta_nou). Creezi un worktree separat pentru lucru. ~/iconta_nou rămâne
+   mereu exact pe versiunea publicată.”
+2. „a) Publicare, restart și migrări numai după ce îți confirm eu că acel cabinet nu lucrează în aplicație, cu backup al bazei de date făcut
+   chiar înainte. Un commit care ar publica automat (post-commit) se face numai cu acordul meu; până atunci lucrezi pe ramură.
+   b) În datele cabinetului real nu citești și nu scrii nimic fără aprobarea mea explicită. Datele lui nu intră în rapoarte, ZIP-uri sau probe.
+   c) Poarta nu rulează cât lucrează cabinetul, dacă încarcă producția.”
+5. „observațiile cabinetului pilot (le transmit eu, marcate „expert contabil”) trec înaintea oricărei alte lucrări. Cele blocante (import
+   eșuat, cifre diferite de SAGA, declarație greșită, operație imposibilă) se tratează imediat, în lot separat.”
+
+**Aplicare (14.10.2026).** Worktree `/home/costin/iconta_lucru`, ramura `lucru/pilot-2026-10-14` din `12998290`; `venv` și `import_fiscalos`
+legate prin symlink din `~/iconta_nou`, excluse în `.git/info/exclude` (comun worktree-urilor). Predarea necomisă a fost mutată în
+worktree (copie identică, `cmp`), iar `~/iconta_nou` adus la HEAD -> `git status --porcelain` gol. `post-commit` iese la orice ramură ≠
+`main` (`scripts/githooks/post-commit`, prima condiție), deci un commit pe ramura de lucru nu publică și nu repornește.
+**Ce rămâne la disciplină (limita):** (1) nimic nu împiedică mecanic un commit pe `main` în `~/iconta_nou` — ar publica și reporni;
+(2) `commit-msg` rulează poarta întreagă (pytest pe `iconta_test`, același server, 2 nuclee) și la commitul pe ramura de lucru — deci și
+el cere acordul cât lucrează cabinetul (2c); (3) la ORICE pornire a aplicației, migrările de structură de la boot (`main.py`, R61 / P2)
+ating schema fiecărei firme, deci și a cabinetului (structură, nu date) — restartul e oricum sub 2a; (4) CLAUDE.md §5 (ritualul de
+început cere `pwd` = `~/iconta_nou`) și §2.3 pct.10 (publicarea automată) sunt depășite de regimul pilot și se aliniază în commitul
+care va fi aprobat. **Respinse:** clona separată în locul worktree-ului (dublează `.git`, iar hook-urile și remote-urile ar trebui
+reconfigurate); mutarea `import_fiscalos/` din `~/iconta_nou` (scripturile și `core/test_corpus_continut.py` îl caută acolo).
+
+## 14.10.2026 (seara) — Importul din SAGA: răspunsul Costin la §6 al raportului REGIM_PILOT_PREGĂTIRE_IMPORT (verbatim) și lotul 1
+
+**Comanda, verbatim:**
+„1. Lot imediat, înaintea lui 246: C21 (balanța completă: ia soldurile finale, nu cele inițiale; cere data balanței), C22, C23 (IBAN
+păstrat), C24, C25 (fără blocare la salvare; rândul problemă se arată, restul se salvează) și codarea: un CSV în Windows-1250 se
+recunoaște automat; dacă nu se poate, se refuză cu mesaj, nu se strică diacriticele. Aplică aceeași clasă pe toate cele 7 parsere
+(_gaseste_col) și pe cele 6 modele *Rand. Probă pe fișiere inventate, cu antetele tipice ale exporturilor SAGA (balanță de verificare
+completă, parteneri, salariați, mijloace fixe).
+2. Garda pe main în ~/iconta_nou (commit refuzat fără aprobare scrisă): da.
+3. Înregistrarea liberă se închide: în pilot, conturile noi se creează numai prin invitație. Spune ce schimbi.
+4. Planul serverului de lucru: aprobat. Îl construim după pilot; îți dau eu startul.
+5. Backup: repară alerta la eșecul dump-ului local și fă o probă de restaurare pe o bază separată pe același server, ștearsă după
+probă. În raport numai cifre (număr de scheme, de rânduri, sume de control), fără date.
+6. După lotul de la 1: 246 + C26 (asistentul vede consolidarea tuturor firmelor), lot separat.
+Fiecare lot comis pe ramura de lucru; publicarea numai cu acordul meu. Răspunde punctual, cu probă și ZIP. Oprește-te după fiecare lot
+și raportează.”
+
+**Ordinea loturilor (interpretare, de confirmat la raport):** lotul 1 = pct.1 (importul); lotul 2 = pct.2 + 3 + 5 (garda pe `main`,
+invitația, backup-ul — infrastructură, niciunul nu atinge importul); lotul 3 = pct.6 (246 + C26). Pct.4: nimic de făcut acum.
+
+**Lotul 1 — ce s-a hotărât în execuție, cu temei (N/A fiscal — citirea fișierelor; antetele SAGA: manualul SAGA C, salvat în
+`anaf_surse/saga_manual_topic{5,12,17,25,34,52,60,90}_*` cu amprentele lor):**
+- **Sursa unică a citirii** `core/import_tabel.py`: CSV / TXT / TSV / XLSX / XLS (manualul SAGA, „Considerații generale”: exportul e
+  „XLS(Excel), CSV, TXT sau XML”); codarea: BOM, UTF-8 strict, Windows-1250 verificat literă cu literă (ş / ţ cu sedilă — singurele pe
+  care codarea le are), altfel refuz cu mesaj; antetul căutat sub titluri, antetul pe două rânduri unit; coloanele pe CUVINTE ÎNTREGI,
+  două coloane la fel de potrivite = refuz numit. Opt copii ale lui `_gaseste_col` (nu șapte: și `rip_migrare_api` o importa) și
+  citirea listei de CUI-uri trec pe ea. **Respinse:** detectarea statistică a codării (charset_normalizer — ghicește, nu verifică);
+  păstrarea lui „prima coloană câștigă” cu aliasuri mai bune (defectul C21 e chiar alegerea tăcută).
+- **C21:** dintr-o balanță cu mai multe perechi debit / credit se ia perechea marcată „final”; fără ea, refuz numit (nu prima pereche).
+  Rândurile care nu sunt conturi (totaluri, titluri de clasă) și sinteticele dublate de analiticele lor se arată și nu intră (C29); un
+  sintetic al cărui net nu e suma analiticelor = refuz numit.
+- **C22:** data balanței cerută pe ecran și la server. **Clasa (aceeași omisiune):** soldurile pe parteneri și stocul inițial al
+  articolelor primesc data din sursa unică `bilant_api.data_soldurilor` (data balanței, altfel ziua dinaintea lunii preluării —
+  regula din 08.10 §6 pct.4); stocul inițial fără dată cunoscută = refuz numit, nu „azi”. **Respinsă:** o a doua dată cerută pe
+  ecranul partenerilor / articolelor (două surse pentru același fapt).
+- **C24 / C25 — salvarea parțială numai unde a cerut-o Costin** (mijloace fixe, istoric). Balanța, partenerii, salariații și asociații
+  rămân „tot sau nimic” (decizia din 15.07, „Refuzul e PRIMA POARTĂ”): balanța și cotele asociaților sunt întreguri (un import parțial
+  ar fi dezechilibrat / sub 100%), iar la salariați și parteneri o extindere ar răsturna o decizie scrisă — **cerută la §6**.
+- **Modelele `*Rand`:** poartă numai datele de scris; câmpurile calculate de previzualizare (validități, avertismente, amortizarea la
+  zi) nu se mai citesc din cerere, serverul le recalculează (C30: `cnp_valid` și `valid` erau crezute). `rand_fisier` = rândul din
+  fișier, ca refuzul să numească același rând (C31).
+- **Partenerii din SAGA:** „Situație clienți / furnizori” n-are coloana Cont — contul se alege pe ecran (4111 / 401), soldul din
+  „Neachitat final” stă pe partea contului; un CNP valid e identificator (persoană fizică), verificat cu cheia CNP-ului.
+- **Salariații din SAGA:** „Norma pe zi” e număr de ore (8 = întreagă; 1–7 = parțială cu atâtea ore; 0 = contract pe ore lunare,
+  refuzat numit — `norma_ore_luna`); „Casa de sănătate” scrisă cu numele județului se trece în codul județului.
+- **Istoricul:** anualele fără lună (D101, D205, D212, S1003, S1005) pe luna 12 — convenția aplicației (`control_fiscal_api`).
+- **C32:** mesajul motorului de amortizare în cuvinte (categoria, metodele), temeiul în formatul §3.1 (`CF art.28 alin.(5)`).
+- **UI:** coloana „Metodă” a previzualizării MF #c0492b -> #a83d22 (4,46:1 -> 5,63:1 pe rândul cu avertisment); cele 7 tabele cu
+  derulare proprie (`.mig-sold-tabel`) focusabile — aceeași regulă ca `.fereastra-corp` (DS v2.57), păzită de
+  `core/test_fereastra_focusabila.py`.
+**Limita:** antetul EXACT al exportului de balanță din SAGA nu e în manual (ecranul „Balanțe” nu-și listează coloanele); proba folosește
+termenii manualului. Primul export real al cabinetului (cu acordul lui Costin, regula 2b) e proba care închide limita.
+
+## 14.10.2026 (noaptea) — PIVOT: importul salariaților și al partenerilor după răspunsul Costin la §6 al lotului 1 (verbatim)
+
+**Răspunsul, verbatim:** „1. Acord: poarta + commit acum (cabinetul pilot nu lucrează). La poartă verde, publică (backup al bazei
+înainte) și confirmă four-way-ul. 2. Salvarea parțială se extinde la salariați și parteneri: rândurile bune se salvează, cele refuzate
+se arată numite, cu motivul în cuvinte. 3. Persoanele în întreținere lipsă din fișier: rândul se importă, iar salariatul e marcat
+vizibil «persoane în întreținere de completat»; calculul salariului afișează avertismentul până la confirmare. 4. Coloana «Scutit
+contribuție minimă», absentă din exportul SAGA: rândul nu se mai refuză. Se importă cu «nescutit» și e marcat «de verificat», la fel ca
+la 3. Modifici decizia din 07.10 în acest sens și o consemnezi. 5. Ordinea loturilor: confirmată (lotul 2 = pct.2 + pct.3 + pct.5, apoi
+lotul 3 = 246 + C26). Punctele 2–4 intră în lotul 1, înaintea porții. Răspunde punctual, cu probă și ZIP. Oprește-te după publicare și
+raportează.”
+
+**PIVOT al deciziei 07.10 pct.4 („Deciziile 07.10”, D4 — salariatul pe API și la import cu funcția de bază, scutirea și norma cerute
+explicit; la import lipsa REFUZA rândul):** la IMPORT, scutirea de contribuția minimă lipsă (coloana absentă sau celula goală) nu mai
+refuză rândul — se importă „nescutit” și salariatul e marcat „de verificat”. Funcția de bază și norma rămân cerute (refuz numit). Pe
+ecranul de creare / editare (API), scutirea rămâne cerută explicit — decizia 07.10 neschimbată acolo. Regula de refuz
+`scutire_minim_lipsa` a ieșit din nomenclatorul `migrare_api.REGULI`.
+
+**Aplicare:**
+- `salariati.de_verificat text[]` (migrarea `core/migrare_salariati_de_verificat.py` + `tenant_template.sql`): câmpurile importate fără
+  valoare — `persoane_intretinere` (intră 0), `scutit_contrib_minim` (intră „nescutit”). Statul de plată arată avertismentul pe rând și
+  butonul „De verificat (N)” la capătul rândului; confirmarea (numărul persoanelor, scutirea Da/Nu fără preselecție) se salvează pe
+  salariat și scoate câmpul din marcaj (`salariati_api.actualizeaza_salariat`: orice salvare a câmpului = confirmare).
+- **Reimportul nu strică ce s-a confirmat:** un câmp absent din fișierul nou păstrează valoarea existentă, iar marcajul rămâne numai dacă
+  era încă neconfirmat (intersecția marcajelor). **Respinsă:** suprascrierea la fiecare reimport (ar readuce 0 peste o valoare
+  confirmată, tăcut).
+- **Salvarea parțială** la salariați și parteneri, ca la mijloace fixe și istoric: rândurile refuzate se arată numite înainte de
+  salvare și în mesajul de după; numai un import fără niciun rând bun se refuză întreg. Balanța și cotele asociaților rămân „tot sau
+  nimic” (întreguri: un import parțial ar fi dezechilibrat / sub 100%).
+**Limita:** marcajul „de verificat” apare în statul de plată (calculul salariului, cum a cerut decizia); D112 se generează cu valorile
+importate (0 / „nescutit”) fără avertisment propriu — nu l-a cerut decizia.

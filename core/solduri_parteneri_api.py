@@ -19,25 +19,6 @@ from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/nu
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 
 
-def _gaseste_col(antet, *chei, exclus=None):
-    """Indexul primei coloane al carei antet contine una din chei. -1 daca lipseste.
-    `exclus` = indecsi deja atribuiti altui camp; nu pot fi si acesta.
-
-    Fara `exclus`, un antet "CUI partener" se potriveste si la "cui", si la "partener":
-    prima potrivire castiga, iar denumirea ajunge sa fie CUI-ul. Dovedit 15.07.2026
-    prin migrare reala - cabinetele isi numesc chiar asa coloanele.
-    """
-    lua = set(x for x in (exclus or []) if x is not None) if not isinstance(exclus, int) else {exclus}
-    for i, h in enumerate(antet):
-        if i in lua:
-            continue
-        hl = str(h).strip().lower()
-        for k in chei:
-            if k in hl:
-                return i
-    return -1
-
-
 def _radacina(cont):
     """Sinteticul de baza al unui cont: '4111.ALPHA' -> '4111', '401' -> '401'."""
     return str(cont).split(".")[0].strip()
@@ -51,58 +32,93 @@ def _curata_cui(v):
     return t
 
 
-def extrage(continut, nume_fisier=""):
+# [14.10.2026, comanda Costin „Importul din SAGA”, verbatim în DECIZII] Fișierul trece prin `core.import_tabel` (format, codare,
+# antet pe unul sau două rânduri, coloane pe cuvinte întregi). Antetele SAGA vin din manualul SAGA C: ecranul Terți are „Cod
+# fiscal/ CNP” și „Cont analitic” (401.00001 / 4111.00001), iar „Situație clienți / furnizori” are „Neachitat final” — soldul
+# fiecărui terț, fără coloana Cont (contul îl dă ecranul din care s-a exportat: clienți sau furnizori).
+from core import import_tabel as _it
+
+CAMPURI = {
+    "cont": ("cont analitic", "simbol cont", "=cont", "=simbol"),
+    "cui": ("cod fiscal cnp", "cod fiscal", "cui", "cif", "cnp", "cod unic de inregistrare"),
+    "denumire": ("denumire partener", "denumire tert", "denumire", "partener", "tert", "client", "furnizor", "nume"),
+    "debit": ("debit*",),
+    "credit": ("credit*",),
+    "sold": ("neachitat final", "sold final", "sold", "rest de plata", "rest de incasat"),
+}
+
+# Natura contului de parteneri: pe ce parte stă soldul lui obișnuit. Folosită numai când fișierul are O SINGURĂ coloană de sold
+# („Neachitat final”) — atunci partea o dă contul, iar o valoare negativă trece pe partea cealaltă.
+_DEBITOARE = ("4111", "4118", "409", "4091", "4092", "4093")
+_CREDITOARE = ("401", "419")
+CONTURI_ALESE = ("4111", "401")      # ce se poate alege pe ecran când fișierul n-are coloana Cont (situația clienților / furnizorilor)
+
+
+def extrage(continut, nume_fisier="", cont_implicit=None):
     """
     Intoarce [{cont, cui, denumire, debit, credit}] din fisierul de parteneri.
-    Detecteaza coloanele dupa antet (cont / cui / denumire / debit / credit).
+
+    Coloanele: Cont (sau `cont_implicit`, ales pe ecran, când fișierul n-are coloana), CUI / CNP, Denumire, și fie perechea
+    debit / credit (la o balanță completă: perechea soldului FINAL), fie o singură coloană de sold („Neachitat final”).
+    Rândurile de total și cele cu sold 0 nu sunt parteneri — nu intră.
     """
-    nume = (nume_fisier or "").lower()
-    randuri = []
-
-    if nume.endswith(".csv") or nume.endswith(".tsv") or nume.endswith(".txt"):
-        import csv, io
-        text = continut.decode("utf-8-sig", errors="replace") if isinstance(continut, bytes) else str(continut)
-        prima = text.splitlines()[0] if text.splitlines() else ""
-        delim = "\t" if nume.endswith(".tsv") else (";" if prima.count(";") > prima.count(",") else ",")
-        randuri = list(csv.reader(io.StringIO(text), delimiter=delim))
-    elif nume.endswith(".xlsx") or nume.endswith(".xlsm"):
-        import io
-        from openpyxl import load_workbook
-        wb = load_workbook(io.BytesIO(continut), read_only=True, data_only=True)
-        ws = wb.active
-        for r in ws.iter_rows(values_only=True):
-            randuri.append(["" if c is None else c for c in r])
-        wb.close()
-    else:
-        raise ValueError("Fișierul trimis nu se poate citi: se așteaptă un CSV sau un "
-                         "XLSX. Salvează exportul în unul din formatele astea și "
-                         "încarcă-l din nou.")
-
-    if not randuri:
+    brut = _it.citeste(continut, nume_fisier)
+    if not brut or all(_it.rand_gol(r) for r in brut):
         return []
-
-    antet = [str(x) for x in randuri[0]]
-    i_cont = _gaseste_col(antet, "cont", "simbol")
-    i_cui = _gaseste_col(antet, "cui", "cif", "cod fiscal")
-    # denumirea se cauta DUPA cont si cui, sarind peste coloanele lor
-    i_den = _gaseste_col(antet, "denumire", "nume", "partener", exclus=[i_cont, i_cui])
-    i_deb = _gaseste_col(antet, "debitor", "debit")
-    i_cre = _gaseste_col(antet, "creditor", "credit")
-    if i_cont < 0:
-        i_cont = 0
+    antet, start = _it.gaseste_antet(brut, CAMPURI, obligatorii=("denumire",), nume_fisier=nume_fisier)
+    i_cont = _it.coloana(antet, CAMPURI["cont"], camp="cont")
+    i_cui = _it.coloana(antet, CAMPURI["cui"], exclus=(i_cont,), camp="CUI / CNP")
+    # denumirea se cauta DUPA cont si cui, sarind peste coloanele lor („CUI partener” nu e denumirea)
+    i_den = _it.coloana(antet, CAMPURI["denumire"], exclus=(i_cont, i_cui), camp="denumire")
+    are_dc = any(_it._e_debit(h) or _it._e_credit(h) for h in antet if h)
+    i_deb = i_cre = i_sold = -1
+    if are_dc:
+        i_deb, i_cre = _it.pereche_sold_final(antet, nume_fisier)
+    else:
+        i_sold = _it.coloana(antet, CAMPURI["sold"], camp="sold")
+        if i_sold < 0:
+            raise _it.FisierNecitit("Fișierul %s n-are nici coloane debit / credit, nici o coloană de sold („Neachitat "
+                                    "final”, „Sold final”) — nu se poate citi soldul partenerilor."
+                                    % ("«%s»" % nume_fisier if nume_fisier else "trimis"))
+    cont_ales = str(cont_implicit or "").strip()
+    if i_cont < 0 and cont_ales not in CONTURI_ALESE:
+        raise _it.FisierNecitit("Fișierul %s n-are coloana „Cont”. Alege din listă contul partenerilor din fișier (4111 — "
+                                "situația clienților, 401 — situația furnizorilor) și încarcă-l din nou."
+                                % ("«%s»" % nume_fisier if nume_fisier else "trimis"))
 
     out = []
-    for r in randuri[1:]:
-        if i_cont >= len(r):
+    for nr, r in enumerate(brut[start:], start=start + 1):
+        if _it.rand_gol(r):
             continue
-        cont = str(r[i_cont]).strip()
-        if not cont:
-            continue
-        cui = _curata_cui(r[i_cui]) if (0 <= i_cui < len(r)) else ""
-        den = str(r[i_den]).strip() if (0 <= i_den < len(r)) else ""
-        deb = _numar(r[i_deb]) if (0 <= i_deb < len(r)) else 0.0
-        cre = _numar(r[i_cre]) if (0 <= i_cre < len(r)) else 0.0
-        out.append({"cont": cont, "cui": cui, "denumire": den, "debit": deb, "credit": cre})
+        den = _it.celula(r, i_den)
+        cui = _curata_cui(_it.celula(r, i_cui))
+        cont = _it.celula(r, i_cont) if i_cont >= 0 else cont_ales
+        if not cui and (not den or _it.norm(den).startswith("total")):
+            continue                                       # rând de total / titlu, nu partener
+        try:
+            if i_sold >= 0:
+                s = _numar(_it.valoare(r, i_sold), strict=True)
+                debitor = _radacina(cont) in _DEBITOARE or (_radacina(cont) not in _CREDITOARE and s >= 0)
+                deb, cre = ((s, 0.0) if s >= 0 else (0.0, -s)) if debitor else ((0.0, s) if s >= 0 else (-s, 0.0))
+            else:
+                deb = _numar(_it.valoare(r, i_deb), strict=True) if i_deb >= 0 else 0.0
+                cre = _numar(_it.valoare(r, i_cre), strict=True) if i_cre >= 0 else 0.0
+        except ValueError:
+            raise _it.FisierNecitit("Rândul %d (%s): soldul nu e un număr. Corectează celula și încarcă fișierul din nou."
+                                    % (nr, den or cui or "?"))
+        if round(deb, 2) == 0 and round(cre, 2) == 0:
+            continue                                       # partener fără sold: nu intră în soldurile inițiale
+        out.append({"cont": cont, "cui": cui, "denumire": den, "debit": deb, "credit": cre, "rand_fisier": nr})
+    # același partener pe același cont de două ori: baza are UNIQUE(cont, cui) (GARZI cat.1) — refuz numit, nu eroare de bază
+    vazute, dubluri = {}, []
+    for x in out:
+        k = (x["cont"], x["cui"])
+        if x["cui"] and k in vazute:
+            dubluri.append("%s / %s (rândurile %s și %s)" % (x["cont"], x["cui"], vazute[k], x["rand_fisier"]))
+        vazute.setdefault(k, x["rand_fisier"])
+    if dubluri:
+        raise _it.FisierNecitit("Același partener apare de două ori pe același cont: %s. Un partener are un singur sold pe un cont; "
+                                "adună rândurile în fișier și încarcă-l din nou." % "; ".join(dubluri[:6]))
     return out
 
 
@@ -177,6 +193,12 @@ def valideaza_cui(cui):
     c = "".join(ch for ch in str(cui or "") if ch.isdigit())
     if not c:
         return False, "lipsa"
+    if len(c) == 13:
+        # [14.10.2026] un partener persoană fizică e identificat prin CNP (ecranul Terți SAGA: „Cod fiscal/ CNP”); CNP-ul se
+        # verifică cu cheia lui oficială, nu cu a CUI-ului
+        from core.salariati_import_api import valideaza_cnp
+        ok, motiv = valideaza_cnp(c)
+        return ok, ("ok" if ok else "CNP: " + motiv)
     if not (2 <= len(c) <= 10):
         return False, "lungime (2-10 cifre)"
     corp, ctrl = c[:-1], int(c[-1])
@@ -201,6 +223,7 @@ def verifica_randuri(randuri):
     """
     erori, bune = [], []
     for i, r in enumerate(randuri or [], start=2):   # +2: randul din fisier, cu antet
+        i = _it.nr_rand(r, i)
         cont = str(r.get("cont") or "").strip()
         cui = str(r.get("cui") or "").strip()
         den = str(r.get("denumire") or "").strip()
@@ -216,7 +239,7 @@ def verifica_randuri(randuri):
             erori.append(respinge(
                 "sold partener", i, "cui_invalid",
                 ("partenerul %s nu are CUI" % (den or "?")) if motiv == "lipsa"
-                else "CUI %s invalid (%s)" % (cui, motiv),
+                else ("CNP %s invalid (%s)" % (cui, motiv[5:]) if motiv.startswith("CNP: ") else "CUI %s invalid (%s)" % (cui, motiv)),
                 cont=cont, cui=cui, denumire=den))
             continue
         bune.append(r)
@@ -224,9 +247,9 @@ def verifica_randuri(randuri):
 
 
 def importa(conn, randuri, data_referinta=None):
-    """Inlocuieste partenerii (DELETE + INSERT). Intoarce {randuri, total_debit, total_credit}.
-    Ridica ValueError daca vreun rand nu poate intra in evidenta (vezi verifica_randuri).
-    Refuzul e PRIMA POARTA: nimic nu se scrie dintr-un import cu randuri invalide."""
+    """Inlocuieste partenerii (DELETE + INSERT) cu randurile BUNE. Intoarce {randuri, total_debit, total_credit, respinse}.
+    Randurile respinse (vezi verifica_randuri) nu intra si se intorc numite (decizia Costin 14.10.2026 pct.2); ValueError numai
+    cand niciun rand nu poate intra."""
     # [probare invalid, 03.09.2026 — aceeasi clasa ca importul de istoric] UN IMPORT GOL
     # STERGEA TOT, IN TACERE. Lista vida trecea de verificare (n-are ce respinge), ajungea la
     # `DELETE FROM solduri_parteneri` de mai jos, si raspundea ca un import reusit cu zero randuri. Un fisier gol,
@@ -236,20 +259,22 @@ def importa(conn, randuri, data_referinta=None):
         raise ValueError("nu ai trimis niciun rând. Importul ar fi șters soldurile inițiale ale "
                          "partenerilor și n-ar fi pus nimic în loc. Dacă chiar vrei să le "
                          "golești, e altă operațiune.")
-    erori, _bune = verifica_randuri(randuri)
-    if erori:
+    erori, bune = verifica_randuri(randuri)
+    # [decizia Costin 14.10.2026 pct.2, verbatim în DECIZII] „rândurile bune se salvează, cele refuzate se arată numite, cu motivul
+    # în cuvinte” — numai un import fără niciun rând bun se refuză întreg (și atunci soldurile existente rămân neatinse).
+    if not bune:
         det = "; ".join("rand %s: %s" % (e["rand"], e["mesaj"]) for e in erori[:6])
         if len(erori) > 6:
             det += " (și încă %d)" % (len(erori) - 6)
         raise ValueError(
             "%d rânduri nu pot intra în evidență: %s. Soldurile pe parteneri au nevoie "
-            "de CUI valid (intră în D394 și SAF-T) și de un cont care ține parteneri."
+            "de CUI valid (intră în D394 și SAF-T) și de un cont care ține parteneri; niciun sold n-a fost scris."
             % (len(erori), det))
     asigura_tabel(conn)
     td = tc = 0.0
     with conn.cursor() as cur:
         cur.execute("DELETE FROM solduri_parteneri")
-        for r in randuri:
+        for r in bune:
             cur.execute(
                 "INSERT INTO solduri_parteneri (cont, cui, denumire, sold_debitor, sold_creditor, data_referinta) "
                 "VALUES (%s,%s,%s,%s,%s,%s)",
@@ -257,7 +282,7 @@ def importa(conn, randuri, data_referinta=None):
                  r.get("debit", 0), r.get("credit", 0), data_referinta))
             td += float(r.get("debit", 0) or 0)
             tc += float(r.get("credit", 0) or 0)
-    return {"randuri": len(randuri), "total_debit": round(td, 2), "total_credit": round(tc, 2)}
+    return {"randuri": len(bune), "total_debit": round(td, 2), "total_credit": round(tc, 2), "respinse": erori}
 
 
 def rezumat(conn):

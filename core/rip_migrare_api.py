@@ -21,7 +21,11 @@ anterior; e evidență preluată, marcată ca atare.
 # deschide, nu comite.
 from __future__ import annotations
 from decimal import Decimal, ROUND_HALF_UP
-from core.solduri_api import _numar, _gaseste_col
+from core.solduri_api import _numar
+# [14.10.2026, comanda Costin „Importul din SAGA”, verbatim în DECIZII] Citirea fișierului și potrivirea coloanelor trec prin
+# `core.import_tabel` (sursa unică: format, codare Windows-1250 recunoscută sau refuzată, antet sub titluri, coloane pe cuvinte
+# întregi, ambiguitate refuzată numit) — nu mai e o copie a lui `_gaseste_col` aici.
+from core import import_tabel as _it
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 
 
@@ -61,6 +65,17 @@ def _norm_metoda(v):
     return None
 
 
+CAMPURI = {
+    "data": ("data operatiunii", "data operatiune", "=data", "data*"),
+    "tip": ("tip operatiune", "=tip", "fel", "sens"),
+    "explicatie": ("explicatie", "explicatii", "explica*", "descriere", "descrie*", "detalii"),
+    "suma": ("=suma", "suma*", "valoare", "incasari", "plati"),
+    "categorie": ("categorie", "categor*"),
+    "metoda": ("metoda*", "=cont", "mod*"),
+    "document": ("document*", "factura*", "chitanta*"),
+}
+
+
 def extrage_operatiuni(continut, nume_fisier=""):
     """
     Întoarce ({operatiuni:[...]}, raport) din fișierul de registru.
@@ -70,22 +85,23 @@ def extrage_operatiuni(continut, nume_fisier=""):
     Detectează coloanele după antet. NU ghicește tipul/metoda: rândurile ambigue merg
     în respinse cu motiv, ca importatorul (omul) să le vadă — nu se colorează verde tăcut.
     """
-    nume = (nume_fisier or "").lower()
-    randuri = _citeste_tabel(continut, nume)
+    randuri = [r for r in _it.citeste(continut, nume_fisier) if not _it.rand_gol(r)]
     if not randuri:
         return {"operatiuni": []}, {"total": 0, "valide": 0, "respinse": [], "metoda_prezumata": 0}
 
-    antet = randuri[0]
-    i_data = _gaseste_col(antet, "data")
-    i_tip  = _gaseste_col(antet, "tip", "fel", "sens")
-    i_expl = _gaseste_col(antet, "explica", "descrie", "detalii")
-    i_suma = _gaseste_col(antet, "suma", "sumă", "valoare", "incasari", "plati")
-    i_cat  = _gaseste_col(antet, "categor")
-    i_met  = _gaseste_col(antet, "metoda", "metodă", "cont", "mod")
-    i_doc  = _gaseste_col(antet, "document", "factura", "chitanta")
+    antet, start = _it.gaseste_antet(randuri, CAMPURI, obligatorii=("data",), nume_fisier=nume_fisier)
+    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=camp)
+    i_data = col("data")
+    i_tip  = col("tip", (i_data,))
+    i_expl = col("explicatie")
+    i_suma = col("suma")
+    i_cat  = col("categorie")
+    i_met  = col("metoda")
+    i_doc  = col("document", (i_data,))
+    randuri = randuri[start - 1:]          # randuri[0] = antetul, ca numerotarea de mai jos să rămână cea din fișier
 
     ops, respinse, metoda_prezumata = [], [], 0
-    for nr, rand in enumerate(randuri[1:], start=2):
+    for nr, rand in enumerate(randuri[1:], start=start + 1):
         def get(i):
             return rand[i] if 0 <= i < len(rand) else None
 
@@ -139,28 +155,6 @@ def extrage_operatiuni(continut, nume_fisier=""):
         "metoda_prezumata": metoda_prezumata,
     }
     return {"operatiuni": ops}, raport
-
-
-def _citeste_tabel(continut, nume):
-    """[[celule]] din .csv/.tsv/.xlsx. Clonă logica de citire din solduri_api."""
-    if nume.endswith((".csv", ".tsv", ".txt")):
-        import csv, io
-        text = continut.decode("utf-8-sig", errors="replace") if isinstance(continut, bytes) else str(continut)
-        linii = text.splitlines()
-        if not linii:
-            return []
-        delim = "\t" if nume.endswith(".tsv") else (";" if linii[0].count(";") > linii[0].count(",") else ",")
-        return [r for r in csv.reader(io.StringIO(text), delimiter=delim) if any(c.strip() for c in r)]
-    # xlsx
-    import io
-    from openpyxl import load_workbook
-    wb = load_workbook(io.BytesIO(continut) if isinstance(continut, bytes) else continut, read_only=True, data_only=True)
-    ws = wb.active
-    out = []
-    for row in ws.iter_rows(values_only=True):
-        if any(c is not None and str(c).strip() for c in row):
-            out.append([("" if c is None else c) for c in row])
-    return out
 
 
 def importa(conn, schema, operatiuni):

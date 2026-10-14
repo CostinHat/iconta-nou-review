@@ -46,7 +46,7 @@ def test_ramas_care_nu_se_leaga_cu_calculul_da_avertisment():
                        % (12000 - 200 * _luni_scurse(datetime.date(2024, 3, 15))), "m.csv")
     assert bun["avertismente"] == [] and bun["ok"]
     assert len(rau["avertismente"]) == 1 and not rau["ok"], rau["avertismente"]
-    assert rau["avertismente"][0].startswith("valoarea rămasă din fișier (5900.00)"), rau["avertismente"]
+    assert rau["avertismente"][0].startswith("valoarea rămasă din fișier (5.900,00 lei)"), rau["avertismente"]   # [14.10.2026] DS cap.4: bani()
 
 
 def test_ramas_inaintea_valorii_de_intrare_nu_fura_coloana():

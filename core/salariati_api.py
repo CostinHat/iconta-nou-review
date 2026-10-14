@@ -251,7 +251,7 @@ def detalii_salariat(conn, salariat_id):
         cur.execute(
             "SELECT id, cnp, nume, prenume, data_angajare, part_time, ore_zi, "
             "persoane_intretinere, judet_casa, data_incetare, "
-            "scutit_contrib_minim, motiv_exceptare, cor, tichet_masa_valoare, iban "
+            "scutit_contrib_minim, motiv_exceptare, cor, tichet_masa_valoare, iban, de_verificat "
             "FROM salariati WHERE id = %s", (salariat_id,))
         r = cur.fetchone()
         if r:
@@ -416,6 +416,12 @@ def actualizeaza_salariat(conn, salariat_id, _golite=(), **date):
             seturi = ", ".join("%s = %%s" % k for k in campuri)
             cur.execute("UPDATE salariati SET %s WHERE id = %%s" % seturi,
                         list(campuri.values()) + [salariat_id])
+            # [decizia Costin 14.10.2026 pct.3–4] câmpul salvat de contabil e CONFIRMAT: iese din marcajul de import
+            # („persoane în întreținere de completat”, „scutirea de verificat”) — avertismentul din statul de plată dispare
+            _confirmate = [c for c in ("persoane_intretinere", "scutit_contrib_minim") if c in campuri_api]
+            if _confirmate:
+                cur.execute("UPDATE salariati SET de_verificat = ARRAY(SELECT x FROM unnest(de_verificat) x "
+                            "WHERE x <> ALL(%s::text[])) WHERE id = %s", (_confirmate, salariat_id))
         if _sb is not None:
             _si.seteaza(cur, salariat_id, _sb, date.get("valabil_din") or _dm.today().isoformat())
     return {"ok": True}

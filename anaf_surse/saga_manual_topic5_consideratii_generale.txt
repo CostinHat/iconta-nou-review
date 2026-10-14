@@ -1,0 +1,95 @@
+Evidentierea ambalajelor SGR
+Tratament fiscal al intrarilor
+Consideratii generale
+Programul are o interfaţă uşor de utilizat, intuitivă, standardizată şi ergonomică.
+Meniul programului
+După  Configurarea societății , utilizatorul va avea acces doar la opțiunile "Administrare" și "Ajutor".
+Meniurile programului, meniul principal şi submeniurile sale devin active în urma încheierii operaţiunii de  Preluare date contabile .
+Meniul inactiv:
+Meniu activ:
+Detalii despre fiecare opțiune a meniului principal regăsiți în secțiunile:
+Nomenclatoare
+Operatii
+Situatii
+Diverse
+Administrare
+Ajutor
+Observații:
+Dacă activați doar modulul de contabilitate, nu veți avea acces la ecranele aferente stocurilor, și anume:  Articole ,  Tipuri de articole/servicii ,  Operatii cu stocuri ,  Fise articole ,  Situație aprovizionări ,  Situatie vânzări ,  Situație consumuri ,  Situație obiecte inventar ,  Situație producție ,  Situație stocuri ,
+Dacă activați doar modulul de stocuri, nu veți avea acces la ecranele  Articole contabile ,  State salarii ,  Imobilizari ,  Fisa contului ,  Balante ,  Cartea Mare ,  Registrul Inventar ,  Bilant .
+Unele din opţiunile meniurilor, nu apar în mod implicit. Există opţiuni care se vor activa numai în funcţie de modul de configurare a societăţilor.
+Operarea
+Adăugarea, modificarea, ștergerea
+Adăugarea, modificarea şi stergerea datelor urmează, în program, acelaşi şablon.
+La intrarea în regim de adăugare, butoanele prezentate mai sus, se transformă în
+unde, după cum se observă, butonul " Adaug " este inactiv. De altfel, acest lucru se va observa în toate modulele programului. Butoanele inactive de culoare gri deschis pe fond gri, sunt plate şi nu pot fi apăsate.
+După salvarea înregistrării, toate butoanele vor fi active, având astfel posibilitatea adăugării unei noi linii sau modificarea/ștergerea celei selectate.
+Sfat: Pentru operarea mai rapidă a datelor, folosiți tastatura. Între câmpuri navigarea se poate face utilizând tastele <Enter>, <Tab> sau <Sageata-jos>. Declanșarea acțiunii unui buton funcțional se realizează prin apăsarea simultană a tastelor  <Alt + litera subliniată din denumirea butonului> .
+Exemplu: în cazul acționării butonului "Adaug", se apasă simultan tastele  <Alt + A>     . În unele ecrane, pentru același buton, o să regăsiți subliniată litera "d", astfel o să folosiți combinația      <Alt + D>    .
+Observații:
+După apăsarea butonului "Adaug" în tabel va apărea o nouă linie care va avea, uneori, valori completate implicit (de exemplu cota de TVA). Unele din aceste valori pot fi modificate, altele nu (cele care nu pot fi modificate sunt de regulă câmpurile calculate - de exemplu adaosul comercial).
+Dacă optați pentru ștergerea înregistrării, va fi afișat un mesaj de atenționare. Confirmarea operaţiunii de ştergere duce la pierderea definitivă a datelor care se doresc a fi şterse. Acolo unde datele sunt supuse procedurii de validare (intrări/ieşiri)  datele validate nu pot fi şterse . Pentru a şterge acele date, documentul a cărui stare este marcată ca "Validat", trebuie devalidat anterior.
+Validarea/ Devalidarea
+Operaţiunea de validare a datelor este folosită în program, în toate ecranele funcţionale de introducere a datelor cu excepţia celor pentru casă, bancă şi deconturi.
+Validarea documentelor  presupune generarea articolului contabil pentru operaţiunea la care se aplică validarea, iar acolo unde este cazul, închiderea acelui document. Acesta nu mai poate fi şters sau modificat, până la devalidarea lui.
+Validarea documentelor primare, duce la dezactivarea butonului de "Validare" şi la activarea butoanelor corespunzătoare unor funcţii suplimentare, aplicabile doar documentelor marcate ca fiind validate.
+Devalidarea documentelor  presupune ştergerea articolului contabil generat de operaţiunea de validare, marcarea documentului ca fiind nevalidat în aşa fel încât asupra acestuia să poată fi aplicate operaţiuni de adăugare, modificare sau ştergere.
+În cazul documentelor de intrare/ieşire, la care s-au efectuat operaţiuni de plăţi/încasări, programul atenţionează asupra acestui fapt la devalidare şi poate şterge automat acele operaţiuni, după confirmarea utilizatorului.
+Devalidarea documentelor primare, duce la dezactivarea butonului "Devalidare" şi a butoanelor corespunzătoare unor funcţii suplimentare, activate la validarea documentelor.
+Orice document supus operaţiilor de validare/devalidare, poate avea numai una din aceste stări la un moment dat.
+În ecranele funcţionale, marcarea stării de document validat/devalidat, este atestată de semnul conţinut de prima coloană din stânga ecranului:
+Ordonarea
+Implicit, în majoritatea ecranelor, datele vor fi afișate în ordinea cronologică. Dacă se dorește ordonarea în funcție de alte criterii, acest lucru este posibil dacă faceți click cu butonul mouse-ului în antetul coloanei în funcție de care se dorește ordonarea. Astfel, în funcție de coloana aleasă, datele vor putea fi sortate în ordinea alfabetică (A-Z/ Z-A) sau numerică (crescător/descrescător).
+După cum se poate vedea în exemplul de mai jos, datele au fost ordonate cronologic, în funcție de coloana "Data".
+Printr-un click cu butonul mouse-ului în antetul coloanei "Neachitat", datele au fost ordonate crescător în funcție de valorile din această coloană. Dacă se face din nou click în antetul aceleași coloane, datele vor fi ordonate descrescător.
+Sfat:  Pentru o mai bună urmărire a înregistrărilor operate, în toate tabelele din program, puteți face click cu butonul mouse-ului în colțul din partea stangă-sus a tabelului pentru afișarea coloanei ce conținere numărul de ordine, numită "Nr. crt.".
+⇒
+Căutarea
+În cadrul tabelelor din ecrane, căutarea datelor poate fi efectuată cu ajutorul butonului  sau cu ajutorul casetelor text pentru căutarea rapidă a informaţiilor. Acestea sunt localizate de regulă în partea inferioară a ecranelor de introducere a datelor permiţând utilizatorului tastarea directă a informaţiei căutate. Căutarea se realizează instantaneu în funcţie de datele tastate în câmpul utilizat la căutare.
+După regăsirea informației căutate, poziţionarea efectivă pe acel câmp se va realiza după apăsarea tastei <ENTER>.
+După cum se observă în imaginea de mai sus, la simpla tastare a caracterelor "PER", programul s-a poziţionat pe prima informaţie găsită ce corespunde valorii tastate în caseta text de căutare rapidă.
+Poziţionarea efectivă pe acel câmp se va realiza după apăsarea tastei  <ENTER> .
+Tipărirea
+Din orice ecran se pot tipări documente primare, jurnale, etc. Tipărirea se realizează după apăsarea butonului "Tipărire" din cadrul ecranului în care vă aflaţi, sau prin selectarea butonului  aflat în ecranele funcţionale. Apăsarea butoanelor de tipărire duce la apariţia ferestrei următoare:
+Pentru a tipări documentul, indiferent de destinaţia listării - ecran sau direct la imprimantă, apăsaţi butonul  , altfel  . La anumite rapoarte se poate modifica titlul din ecranul de tiparire.
+După alegerea opţiunii de vizualizare, pe lângă afişarea pe ecran a documentului, mai apare un grup de butoane:
+Butoane funcţionale
+În continuare vor fi prezentate butoanele regăsite în majoritatea ecranelor programului și care îndeplinesc aceleași funcții indiferent de ecranul în care îl regăsiți. Butoanele întâlnite doar în anumite ecrane sau cu funcții specifice la nivelul acestora vor fi prezentate în descrierea fiecărui ecran.
+caută în tabelul curent o secvență de caractere sau un numar. Ecranul "Cautare", care este afișat la apăsarea acestui buton, permite și alegerea coloanei în funcție de care se va efectua operația.
+exportă datele din ecranul curent, în format XLS(Excel), CSV, TXT sau XML. În ecranul de export se poate opta pentru coloanele care vor fi transferate.
+butoanele de " Copiere " și " Lipire ", permit copierea înregistrării curente pentru a fi alipită, ulterior, în acelasi tabel. Opțiunea este utilă în cazul în care înregistrările sunt similare. În ecranele cu detalii (de ex. "Intrări", "Ieșiri"), dacă se apasă tasta simultan cu apasare butonului " Copiere ", la lipire se va prelua tot documentul (inclusiv detaliile).
+oferă posibilitatea asocierii unui fișier înregistrării pe care sunteți poziționat. După apăsarea acestui buton, trageți cu mouse-ul, în fereastra curentă, fișierul dorit. După asociere butonul se va transforma în    , iar după apăsarea acestuia se va deschide automat fișierul asociat.
+oferă acces la ecranul de filtrare a datelor din ecranul curent. Filtrarea presupune stabilirea unor parametri în funcţie de care programul va afişa în ecranul curent doar acele date care respectă parametrii specificaţi în ecranul de filtrare.
+Operaţiunea de filtrare nu modifică sau şterge datele din ecranul curent. Filtrul aplicat asupra datelor din ecranul curent, nu este permanent.
+Operaţiunea de sortare a datelor poate fi aplicată şi asupra datelor filtrate.
+Dacă în urma aplicării unui filtru nu vor fi afişate date, înseamnă că nici o informaţie din acel ecran nu corespunde criteriilor pe care le-aţi stabilit în ecranul de filtrare.
+Pentru a anula filtru aplicat, ieșiți și reaccesați ecranul sau apăsați din nou butonul   și folosiți butonul
+Sfat: Pentru validarea automată a mai multor înregistrări concomitent, efectuați o filtrare numai după documente devalidate. Ulterior, apăsarea butonului   va provoca validarea tuturor documentelor filtrate. La fel, în cazul în care se efectuează o filtrare numai după documente validate, apasarea butonului   va provoca devalidarea tuturor documentelor filtrate.
+permite importul de date din fișiere XLS, CSV, TXT, XML sau DBF.
+permite tipărirea diverselor situații.
+permite vizualizarea automată a fișei aferentă contului din înregistrarea selectată.
+acest buton are rolul de a extinde ecranul curent înspre dreapta, oferind posibilitatea de introducere a unor date suplimentare. Se va transforma în    , buton care, apăsat, va ascunde în ecranele de detalii informaţiile suplimentare.
+permite transmiterea automată prin e-mail a diverselor documente/ situații din program, dacă adresa de e-mail a fost completată pentru terți și salariați în ecranele dedicate și există un client de mail configurat în computer (Outlook, Mozilla, etc.) sau au fost setate datele serverului de mail folosit (conform instrucțiunilor din secțiunea  Intretinere BD ).
+buton de calcul şi introducere discounturi. Se găseşte numai în ecranele de înregistrare a intrărilor sau ieşirilor.
+se regăseşte în fereastra de calcul a discounturilor. Apăsarea lui duce la reglarea discountului.
+buton utilizat pentru salt la ecranul de operare aferent înregistrării selectate.
+disponibil doar în ecrane de afişare a datelor. Are rolul de a ascunde în ecranul de afişare a datelor acele linii care sunt nule sau prezintă sold nul.
+afișează numai pozițiile cu diferențe între coloanele "Neachitat final" și "Neachitat la zi", din ecranele "Situație clienți/furnizori".
+este folosit pentru anularea plăților/încasărilor la factura selectată, respectiv pentru anularea asocierii unei facturi la plata/încasarea selectată din ecranele "Situație clienți/furnizori".
+afișează situația grafică dintr-un ecran de afișare a datelor. Graficul este afișat într-un ecran distinct, putând fi tipărit.
+buton utilizat pentru operarea rapidă (folosit pentru majorare colectivă de salarii sau  operarea rapidă din ieșiri  (cu coduri de bare).
+Liste derulante, căsuţe de validare, butoane pentru alegerea unei opţiuni
+Listele derulante sunt des întâlnite în cadrul operaţiilor cu date. Aceste liste vă oferă posibilitatea să alegeţi una din valorile pe care le conţin. Uneori, acestea conţin o valoare prestabilită, acea opţiune fiind implicită.
+Sfat: Introduceți o secvență de caractere urmată de apăsarea tastelor <CTRL+ENTER>, în caseta aferentă listei derulante. Această acțiune va afișa în listă numai pozițiile care conțin secvența de caractere introdusă. De exemplu, dintr-o listă de selecție a furnizorilor, dacă dorim să vedem doar furnizorii care conțin secvența "CONSTRUCT", o tastăm și apăsăm <CTRL+ENTER>.
+Căsuţele de validare permit alegerea unei opţiuni la un moment dat. Bifarea acestora duce la sortarea înregistrărilor în funcție de opțiunea aleasă. Acestea pot fi grupate şi permit alegerea fie numai a uneia din opţiuni, fie a tuturor opţiunilor puse la dispoziţie.
+Butoanele pentru alegerea unei opţiuni diferă de căsuţele de validare întrucât permit alegerea unei singure opţiuni la un moment dat, din cele puse la dispoziţie.
+×
+SAGA Software © 2026
+Home
+Linkuri
+Tutoriale
+Blog
+Forum
+Contact
+Distribuţie
+Politica de confidențialitate

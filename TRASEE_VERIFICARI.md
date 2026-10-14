@@ -1262,7 +1262,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · solduri_parteneri (DELETE/INSERT) — prin `migrare_api`, `solduri_parteneri_api`*
+*ce face: Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta — poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · solduri_parteneri (DELETE/INSERT) — prin `migrare_api`, `solduri_parteneri_api`*
 
 - [x] verificarea de coerență față de balanță: suma soldurilor partenerilor = soldul contului corespondent. Diferența se arată cu **ambele cifre**, nu ca „există o divergență"
 - un partener fără cod fiscal se semnalează la încărcare — nu intră în D394 și nu se corelează în VIES

@@ -748,7 +748,7 @@ html, body {
 .mig-cap-mf span:nth-child(3), .mig-cap-mf span:nth-child(4) { text-align: right; }
 .mig-rand-mf .mig-sold-val { text-align: right; font-variant-numeric: tabular-nums; }
 .mig-sold-dur, .mig-sold-met { color: #44516b; font-size: var(--text-mic); }
-.mig-sold-met { color: #c0492b; }
+.mig-sold-met { color: #a83d22; }  /* [14.10.2026, axe pe previzualizarea importului SAGA] #c0492b = 4,46:1 pe rândul cu avertisment (#fdf0ee); #a83d22 = 5,63:1 (6,26:1 pe alb) */
 
 
 /* ---------- STRAT 7: ISTORIC DECLARATII (4 coloane) ---------- */

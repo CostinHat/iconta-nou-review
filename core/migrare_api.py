@@ -173,10 +173,12 @@ REGULI = {
     "durata_lipsa":     {"fel": "lipsa", "inseamna": "durata de amortizare lipseste sau nu e pozitiva"},
     "norma_lipsa":      {"fel": "lipsa", "inseamna": "norma de lucru (intreaga/partiala) lipseste - ceruta de D112"},
     "salariu_lipsa":    {"fel": "lipsa", "inseamna": "salariul de baza lipseste sau nu e mai mare ca 0"},
-    # [decizia Costin 07.10, pct.4] cele trei fapte cerute explicit și la import (aceeași regulă ca pe ecran)
+    # [decizia Costin 07.10, pct.4] faptele cerute explicit și la import (aceeași regulă ca pe ecran); [PIVOT 14.10 pct.4] scutirea de
+    # contribuția minimă lipsă NU mai refuză rândul — se importă „nescutit” și se marchează de verificat (`salariati.de_verificat`)
     "functie_baza_lipsa": {"fel": "lipsa", "inseamna": "funcția de bază la acest angajator (Da/Nu) lipsește - decide deducerea personală"},
-    "scutire_minim_lipsa": {"fel": "lipsa", "inseamna": "scutirea de contribuția minimă (Da/Nu) lipsește - intră în D112"},
     "ore_lipsa":        {"fel": "lipsa", "inseamna": "orele pe zi ale normei parțiale lipsesc - baza D112 la normă parțială"},
+    # [14.10.2026, importul din SAGA] „Norma pe zi” = 0 la SAGA = contract cu ore pe lună, fără normă zilnică
+    "norma_ore_luna":   {"fel": "lipsa", "inseamna": "norma pe zi e 0 (ore pe luna): orele pe zi ale normei nu sunt in fisier"},
     "valoare_lipsa":    {"fel": "lipsa", "inseamna": "valoarea de intrare lipseste sau nu e pozitiva"},
     "data_lipsa":       {"fel": "lipsa", "inseamna": "data operatiunii lipseste"},
     "explicatie_lipsa": {"fel": "lipsa", "inseamna": "explicatia operatiunii lipseste (coloana e NOT NULL)"},
@@ -196,6 +198,8 @@ REGULI = {
     "data_viitor":      {"fel": "invalid", "inseamna": "data e in viitor, unde nu poate fi"},
     "tip_necunoscut":   {"fel": "invalid", "inseamna": "tipul nu exista in nomenclatorul asteptat"},
     "suma_invalida":    {"fel": "invalid", "inseamna": "suma e 0 sau neinterpretabila"},
+    # [C24, 14.10.2026] motorul de amortizare refuza randul (ex. metoda accelerata pe un cont neclasificat)
+    "amortizare_necalculabila": {"fel": "invalid", "inseamna": "amortizarea nu se poate calcula din datele randului"},
     "cantitate_pret_negativ": {"fel": "invalid",
                                "inseamna": "cantitate sau pret negativ la un articol de stoc"},
     "pret_zero_cu_stoc": {"fel": "invalid",

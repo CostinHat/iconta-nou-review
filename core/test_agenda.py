@@ -626,7 +626,10 @@ def test_garda_anti_stale_vede_ce_se_comite_nu_numai_HEAD(tmp_path, monkeypatch)
     mutat = _re.sub(r'("salariu_minim"\s*:\s*\[\s*\(\s*date\([^)]*\)\s*,\s*)(Decimal\("?)(\d+)', lambda m: m.group(1) + m.group(2) + str(int(m.group(3)) + 1), src, count=1)
     assert agenda.cota_valori(mutat, "salariu_minim") != vechi, "proba n-a schimbat valoarea"
     monkeypatch.setenv("GIT_OBJECT_DIRECTORY", str(obj))
-    monkeypatch.setenv("GIT_ALTERNATE_OBJECT_DIRECTORIES", os.path.join(git_dir, "objects"))
+    # [15.10.2026] obiectele stau în directorul COMUN: într-un worktree `--absolute-git-dir` e `.git/worktrees/<nume>`, fără obiecte
+    comun = subprocess.run(["git", "-C", str(_RAD), "rev-parse", "--path-format=absolute", "--git-common-dir"], capture_output=True,
+                           text=True).stdout.strip()
+    monkeypatch.setenv("GIT_ALTERNATE_OBJECT_DIRECTORIES", os.path.join(comun, "objects"))
     monkeypatch.setenv("GIT_INDEX_FILE", str(idx))
     blob = subprocess.run(["git", "-C", str(_RAD), "hash-object", "-w", "--stdin"], input=mutat, capture_output=True,
                           text=True).stdout.strip()

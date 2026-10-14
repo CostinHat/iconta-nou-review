@@ -62,7 +62,7 @@ CAZURI = [
      [{"cont": "4111", "cui": "", "denumire": "POP", "debit": 100.0, "credit": 0.0}],
      "cui_invalid", True),
     ("salariati", main.salariati_import_incarca, _sal,
-     [{"nume": "POP", "prenume": "ION", "cnp_valid": True, "tip_norma": "", "ore_zi": 0}],
+     [{"nume": "POP", "prenume": "ION", "cnp": "1960101078916", "tip_norma": "", "ore_zi": 0}],
      "norma_lipsa", True),   # [Q16] endpointul deschide conn pt. denumirea COR -> fake_conn (cor gol = fara lookup)
     ("asociati", main.asociati_import_incarca, _aso,
      [{"nume": "POP ION", "cnp": "1234567890123", "cota": 100}],

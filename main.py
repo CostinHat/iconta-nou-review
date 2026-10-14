@@ -11,7 +11,7 @@ import os
 from contextlib import asynccontextmanager
 from typing import List, Optional
 
-from fastapi import FastAPI, HTTPException, Depends, Header, Body, UploadFile, File, Request
+from fastapi import FastAPI, HTTPException, Depends, Header, Body, UploadFile, File, Form, Request
 import re as _re_audit
 import json as _json_audit
 from starlette.concurrency import run_in_threadpool as _run_in_threadpool_audit
@@ -1262,6 +1262,14 @@ class NumerotareIn(BaseModel):
     serie: Optional[str] = None
     numar_start: Optional[int] = None
 
+# ── MODELELE DE SALVARE ALE IMPORTURILOR (14.10.2026, comanda Costin „Importul din SAGA”, verbatim în DECIZII) ──────────────
+# Ecranul trimite înapoi rândurile primite la previzualizare. Un model care nu se potrivește cu ce produce `extrage` e un defect
+# de CLASĂ, nu de câmp: C23 (`iban` lipsă -> IBAN-ul pierdut tăcut, FastAPI aruncă un câmp necunoscut), C24 (`amortizat: float`
+# pe un `None` -> 422 pe tot importul), C25 (`avertisment: list[str]` pe afirmații -> 422). Regula de acum:
+# - modelul poartă NUMAI datele de scris; ce calculează previzualizarea (validități, avertismente, amortizarea la zi) NU se mai
+#   citește din cerere — serverul îl RECALCULEAZĂ la scriere (câmpurile în plus se ignoră);
+# - `rand_fisier` = rândul din fișier, ca refuzul de la salvare să numească același rând ca previzualizarea.
+# Gard: `core/test_import_modele_salvare.py` — ieșirea fiecărui `extrage` trece prin modelul rutei ei, fără pierderi.
 class SoldRand(BaseModel):
     cont: str
     denumire: str = ""
@@ -1270,13 +1278,14 @@ class SoldRand(BaseModel):
 
 class SolduriIn(BaseModel):
     randuri: list[SoldRand]
-    data_referinta: Optional[str] = None
+    data_referinta: Optional[str] = None     # [C22] cerută la scriere (`solduri_api.data_balantei`); lipsa -> 422 numit
 class PartenerRand(BaseModel):
     cont: str
     cui: str = ""
     denumire: str = ""
     debit: float = 0
     credit: float = 0
+    rand_fisier: Optional[int] = None
 class ParteneriIn(BaseModel):
     randuri: list[PartenerRand]
     data_referinta: Optional[str] = None
@@ -1286,6 +1295,7 @@ class SalariatRand(BaseModel):
     cnp: str = ""
     data_angajare: Optional[str] = None
     tip_norma: str = ""     # [Q11] fara default tacit (DS cap.17): necunoscut ramane necunoscut, semnalat
+    norma_ore_luna: bool = False                 # [14.10] SAGA „Norma pe zi” = 0 (ore pe lună): rândul se refuză numit
     functie_baza: Optional[bool] = None          # [decizii 07.10 pct.4] cerut explicit; lipsa -> rândul refuzat, numit
     scutit_contrib_minim: Optional[bool] = None  # idem
     ore_zi: float = 0
@@ -1293,8 +1303,9 @@ class SalariatRand(BaseModel):
     persoane_intretinere: int = 0
     judet_casa: str = ""
     cor: str = ""
-    cnp_valid: bool = True
-    cnp_motiv: str = "ok"
+    iban: str = ""                               # [C23] contul de salariu (SEPA); lipsea -> IBAN-ul importat se pierdea
+    de_verificat: list[str] = []                 # [14.10, decizia Costin pct.3–4] câmpurile venite fără valoare din fișier
+    rand_fisier: Optional[int] = None
 class SalariatiImportIn(BaseModel):
     randuri: list[SalariatRand]
 class AsociatRand(BaseModel):
@@ -1302,8 +1313,7 @@ class AsociatRand(BaseModel):
     cnp: str = ""
     cota: float = 0
     tip: str = "fizica"
-    cnp_valid: bool = True
-    cnp_motiv: str = "ok"
+    rand_fisier: Optional[int] = None
 class AsociatiImportIn(BaseModel):
     randuri: list[AsociatRand]
     # [lot 19 pct.4e] data de la care noua structura e valabila (cesiune): cea veche se arhiveaza pentru D205
@@ -1314,24 +1324,21 @@ class MijlocFixRand(BaseModel):
     denumire: str = ""
     valoare: float = 0
     rezidual: float = 0
-    amortizat: float = 0
     dnf_luni: int = 0
     data_pif: Optional[str] = None
     metoda: str = "liniara"
     cont_imobilizare: str = ""   # [Q13] fara default tacit 2131 (extrage lasa gol intentionat, DS cap.17); gol = neclasificat -> lit.c
     cont_amortizare: str = "2813"
-    avertismente: list[str] = []
-    ok: bool = True
+    destinatie_cd: bool = False  # [C24] CF art.20 alin.(1) lit.b); lipsea din model -> bifa C&D se pierdea la salvare
+    rand_fisier: Optional[int] = None
 class MijloaceFixeImportIn(BaseModel):
     randuri: list[MijlocFixRand]
 class IstoricDeclRand(BaseModel):
     tip: str = ""
     an: int = 0
-    luna: int = 0
+    luna: Optional[int] = None   # [C25] anuala fara luna -> 12 la scriere; lunara fara luna -> refuz numit
     data_depunere: Optional[str] = None
-    tip_cunoscut: bool = True
-    avertisment: list[str] = []
-    ok: bool = True
+    rand_fisier: Optional[int] = None
 class IstoricDeclImportIn(BaseModel):
     randuri: list[IstoricDeclRand]
 
@@ -1955,15 +1962,20 @@ def solduri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(
     _schema_sau_404(ctx, tenant_id)
     continut = _octetii(fisier)
     try:
-        randuri = solduri_api.extrage_balanta(continut, fisier.filename or "")
+        _det = solduri_api.extrage_balanta_detaliat(continut, fisier.filename or "")
     except ValueError as e:
         raise HTTPException(400, str(e))
+    randuri = _det["randuri"]
     td = round(sum(r["debit"] for r in randuri), 2)
     tc = round(sum(r["credit"] for r in randuri), 2)
     valida, motiv = solduri_api.balanta_valida(randuri)
     # [P8] cand fisierul NU e o balanta valida, spunem CE regula nu tine si PE CE fisier - nu doar
     # un text. Domeniul e FISIERUL incarcat (fel de referent adaugat 22.08).
-    _baza = {"randuri": randuri, "total_debit": td, "total_credit": tc, "valida": valida}
+    # [C21, 14.10.2026] ecranul arata CE coloane s-au citit (soldul final), ce randuri n-au intrat (totaluri, titluri) si ce
+    # sintetice au fost inlocuite de analiticele lor — nimic din fisier nu dispare fara sa se vada.
+    _baza = {"randuri": randuri, "total_debit": td, "total_credit": tc, "valida": valida,
+             "coloane": _det["coloane"], "ignorate": _det["ignorate"],
+             "sintetice_inlocuite": _det["sintetice_inlocuite"], "fara_sold": _det["fara_sold"]}
     if valida:
         return _raspuns(dict(_baza, motiv=motiv))
     return _raspuns(dict(_baza, **migrare_api.respinge(
@@ -2013,10 +2025,12 @@ def migrare_parteneri_status(ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/parteneri/incarca")
-def parteneri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
-    """Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta."""
+def parteneri_incarca(tenant_id: int, fisier: UploadFile = File(...), cont: Optional[str] = Form(None),
+                      ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta.
+    `cont` = contul ales pe ecran (4111 / 401) cand fisierul n-are coloana Cont (situatia clientilor / furnizorilor din SAGA)."""
     try:
-        return _uc_tenants.parteneri_incarca(tenant_id, _octetii(fisier), fisier.filename, ctx)
+        return _uc_tenants.parteneri_incarca(tenant_id, _octetii(fisier), fisier.filename, ctx, cont_implicit=cont)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -2150,8 +2164,7 @@ class ArticolImportIn(BaseModel):
     pret: float = 0
     cont_stoc: str = "302"
     cont_cheltuiala: str = "601"
-    valid: bool = True
-    motiv: str = "ok"
+    # [14.10.2026] `valid` / `motiv` nu se mai citesc din cerere: `articole_import_api.importa` revalidează fiecare rând
 class ArticoleImportIn(BaseModel):
     randuri: list[ArticolImportIn]
     data_sold: Optional[str] = None

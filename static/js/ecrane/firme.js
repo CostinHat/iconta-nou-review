@@ -10,7 +10,7 @@ import { ecranRip } from "./rip_ecran.js?v=b0638d5a64";
 import { trimiteInCoada, casetaTrimisa } from "./coada_trimite.js?v=feade00646";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=49001da67e";
 import { ecranEtransport } from "./etransport_ecran.js?v=d9952813f1";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=00548d5fca";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=ba6b73ad1a";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=0f3ab68351";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2fc749a2a2";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=4554cd872c";  // [produse_firma_v1]
@@ -891,6 +891,16 @@ function campCorLookup(prefix, obligatoriu) {
     <div id="${prefix}-cor-rez" style="max-height:180px;overflow:auto"></div></div>`;
 }
 
+// [decizia Costin 14.10.2026 pct.3–4] avertismentul din statul de plată pentru câmpurile importate fără valoare, până la confirmare
+function _avertDeVerificat(s) {
+  const dv = s.de_verificat || [];
+  if (!dv.length) return "";
+  const parti = [];
+  if (dv.includes("persoane_intretinere")) parti.push("persoane în întreținere de completat (s-au importat 0 — deducerea personală poate fi greșită)");
+  if (dv.includes("scutit_contrib_minim")) parti.push("scutirea de contribuția minimă de verificat (s-a importat „nescutit”)");
+  return `<div class="pf-frand-sub" role="status" style="color:var(--rosu)">⚠ ${esc(parti.join("; "))}. Confirmă cu butonul „De verificat”.</div>`;
+}
+
 function formularSalariatNou(corp, nav, t, dupaSalvare) {
   const camp = (id, eticheta, tip, extra) => {
     const optional = !(extra && extra.obligatoriu);
@@ -1198,6 +1208,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
             <div class="pf-frand-nume">${esc(s.nume)}${s.baza_lipsa ? ' <span style="color:var(--rosu);font-weight:600">⚠ salariu de bază lipsă</span>' : ""}${s.pontaj_neconfirmat ? ' <span style="color:var(--gri);font-weight:600">tichete blocate</span>' : ""}</div>
             ${s.baza_lipsa ? `<div class="pf-frand-sub" style="color:var(--rosu)">Salariul de bază lipsește (0 lei) — completează-l cu butonul „Salariu" de pe salariat. Fără el statul nu e corect: net 0, dar angajatorul apare cu cost din suprataxa CAS/CASS pe podeaua salariului minim (art.146(5^6)/168(6^1)).</div>` : ""}
             ${s.pontaj_neconfirmat ? `<div class="pf-frand-sub" style="color:var(--gri)">Tichetele de masă sunt blocate până la confirmarea pontajului lunii (buton „Pontaj").</div>` : ""}
+            ${_avertDeVerificat(s)}
             <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${s.cadou ? ` · <span style="color:var(--teal)">cadou ${bani(s.cadou)}</span>${s.cadou_taxabil ? ' <span style="color:var(--rosu)">⚠ taxabil (>300 lei/eveniment sau eveniment nelegal)</span>' : ""}` : ""}${s.tichete_cultural ? ` · <span style="color:var(--teal)">cultural ${bani(s.tichete_cultural)}</span>` : ""}${s.tichete_cresa ? ` · <span style="color:var(--teal)">creșă ${bani(s.tichete_cresa)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta || s.cadou) ? ` · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
           </div>
           ${compozitieNet(s)}
@@ -1218,6 +1229,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
           <button data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" class="buton-secundar" data-date="${s.id}" data-dnume="${esc(s.nume_ed || "")}" data-dpren="${esc(s.prenume_ed || "")}" data-dcnp="${esc(s.cnp || "")}" data-dang="${esc(s.data_angajare || "")}" data-dnorma="${esc(s.tip_norma || "")}" data-dorezi="${esc(s.ore_zi == null ? "" : String(s.ore_zi))}">Corectează datele</button>
           <button data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" class="buton-secundar" data-susp="${s.id}" data-nume="${esc(s.nume)}">${(s.suspendari || []).length ? `Suspendări (${s.suspendari.length})` : "Suspendare / CFP"}</button>
           <button data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/elemente" class="buton-secundar" data-elem="${s.id}" data-nume="${esc(s.nume)}">Prime, sporuri, ore supl.${(s.elemente || []).length ? ` (${s.elemente.length})` : ""}</button>
+          ${(s.de_verificat || []).length ? `<button data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}" class="buton-secundar" data-verif="${s.id}" data-nume="${esc(s.nume)}">De verificat (${s.de_verificat.length})</button>` : ""}
           </div>
         </div>`).join("");
     corp.innerHTML = `
@@ -1242,6 +1254,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
       <div id="sp-incet-zona"></div>
       <div id="sp-salariu-zona"></div>
       <div id="sp-date-zona"></div>
+      <div id="sp-verif-zona"></div>
       <div id="sp-susp-zona"></div>
       <div id="sp-elem-zona"></div>
       ${!areIban ? `<div class="caseta-info"><span class="ci-mesaj">Fișierul de plată pe card (SEPA) e indisponibil: niciun salariat nu are IBAN completat. Adaugă IBAN-ul cu butonul „IBAN ⚠" de pe salariat.</span></div>` : ""}
@@ -1668,6 +1681,57 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
           await api.put(`/tenants/${t.id}/salariati/${sid}`, { nume, prenume, cnp, data_angajare, tip_norma, ore_zi });
           zonaDate.innerHTML = ""; deseneaza();
         } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
+      });
+    }));
+    // [decizia Costin 14.10.2026 pct.3–4, verbatim în DECIZII] câmpurile importate fără valoare din fișier („de verificat”): se
+    // confirmă aici — persoanele în întreținere (numărul) și scutirea de contribuția minimă (Da/Nu, fără preselecție: importul a pus
+    // „nescutit”, dar alegerea e a contabilului). Salvarea câmpului îl scoate din marcaj, iar avertismentul din stat dispare.
+    const zonaVerif = corp.querySelector("#sp-verif-zona");
+    corp.querySelectorAll("[data-verif]").forEach((b) => b.addEventListener("click", () => {
+      const sid = b.dataset.verif;
+      const s0 = stat.find((x) => String(x.id) === String(sid)) || {};
+      const dv = s0.de_verificat || [];
+      corp.querySelectorAll("[data-verif]").forEach((x) => x.classList.remove("buton-activ"));
+      b.classList.add("buton-activ");
+      zonaVerif.innerHTML = `<div style="margin:10px 0;padding:12px;border:1px solid var(--linie);border-radius:var(--raza)">
+        <div class="camp-eticheta" style="font-weight:600;margin-bottom:8px">De verificat · ${esc(b.dataset.nume)}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px">
+          ${dv.includes("persoane_intretinere") ? `<label class="camp"><span class="camp-eticheta">Persoane în întreținere <span class="oblig">*</span></span>
+            <input type="number" min="0" step="1" id="dv-persoane" class="camp-input" value="${esc(String(s0.persoane_intretinere || 0))}">
+            <span class="camp-ajutor">Fișierul importat nu le avea; s-a pus 0. Din declarația salariatului (CF art.77).</span></label>` : ""}
+          ${dv.includes("scutit_contrib_minim") ? `<label class="camp"><span class="camp-eticheta">Scutit de contribuția minimă <span class="oblig">*</span></span>
+            ${selectDaNu('id="dv-scutit"', null, "Scutit de contribuția minimă")}
+            <span class="camp-ajutor">Fișierul importat nu avea coloana; s-a importat „nescutit”. Intră în D112.</span></label>` : ""}
+        </div>
+        <p style="margin-top:8px"><button class="buton-primar" id="dv-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Confirmă</button>
+          <button class="buton-secundar" id="dv-cancel" style="margin-left:6px">Renunță</button></p>
+        <div id="dv-msg"></div></div>`;
+      corp.querySelector("#dv-cancel").addEventListener("click", () => { zonaVerif.innerHTML = ""; b.classList.remove("buton-activ"); });
+      corp.querySelector("#dv-save").addEventListener("click", async () => {
+        const msg = corp.querySelector("#dv-msg");
+        curataEroriCamp(corp);
+        const corpReq = {};
+        if (dv.includes("persoane_intretinere")) {
+          const v = corp.querySelector("#dv-persoane").value;
+          if (v === "" || !(Number(v) >= 0)) { eroareCamp(corp, "dv-persoane", "Scrie numărul persoanelor în întreținere (0 dacă nu are)."); return; }
+          corpReq.persoane_intretinere = Number(v);
+        }
+        if (dv.includes("scutit_contrib_minim")) {
+          if (cereAlegerile(corp, ["#dv-scutit"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+          corpReq.scutit_contrib_minim = daNu(corp.querySelector("#dv-scutit"));
+        }
+        const btn = corp.querySelector("#dv-save");
+        btn.disabled = true; btn.textContent = "Se salvează…";
+        try {
+          await api.put(`/tenants/${t.id}/salariati/${sid}`, corpReq);
+          zonaVerif.innerHTML = "";
+          await deseneaza();
+          // DS cap.27: confirmarea numește salariatul și consecința (zona se re-randează odată cu statul)
+          arataMesaj(corp.querySelector("#sp-verif-zona"), `${b.dataset.nume}: datele de verificat sunt confirmate; statul se calculează cu ele.`, "ok");
+        } catch (e) {
+          btn.disabled = false; btn.textContent = "Confirmă";
+          arataMesaj(msg, (e && e.mesaj) || "Eroare la salvare.", "eroare");
+        }
       });
     }));
     // [lot 19 pct.4c] Suspendari FARA drepturi salariale (CFP / suspendare) - Codul muncii art.49 alin.(2), art.54, art.153.

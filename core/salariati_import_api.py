@@ -50,16 +50,8 @@ def _da_nu(v):
     return True if t in ("da", "1", "true", "x", "yes") else (False if t in ("nu", "0", "false", "no") else None)
 
 
-def _gaseste_col(antet, *chei):
-    for i, h in enumerate(antet):
-        hl = str(h).strip().lower()
-        for k in chei:
-            if k in hl:
-                return i
-    return -1
-
-
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
+from core.pdf_util import data_ro as _data_ro   # DS cap.4: data din text, canonic
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 
 
@@ -88,59 +80,120 @@ def _split_nume(intreg):
     return (parti[0] if parti else ""), ""
 
 
+# [14.10.2026, comanda Costin „Importul din SAGA”, verbatim în DECIZII] Fișierul trece prin `core.import_tabel`. Antetele SAGA
+# vin din manualul SAGA C, ecranul Salariați (`anaf_surse/saga_manual_topic25_salariati.txt`): „Nume”, „Prenume”, „Data
+# angajării”, „Funcție baza”, „Norma pe zi” (ORE: 8 … 0), „Ore pe lună” (NU ore pe zi), „Salariu brut”, „Salariu orar”, „CNP”,
+# „Județ” (al adresei), „Casa de sănătate”, „Cont card”. Până azi, pe un astfel de export: „Funcție baza” nu se potrivea cu
+# „funcție de bază” (fiecare salariat refuzat), „Data angajării” nu se potrivea cu „angajare” (dată pierdută), „Ore pe lună”
+# intra ca ore pe zi, iar „Norma pe zi” = 4 devenea normă ÎNTREAGĂ (orice valoare fără „part” era întreagă).
+from core import import_tabel as _it
+
+CAMPURI = {
+    "nume": ("nume salariat", "nume", "nume si prenume", "nume complet"),
+    "prenume": ("prenume",),
+    "cnp": ("cnp", "cod numeric personal", "cod numeric"),
+    "data": ("data angajarii", "data angajare", "data angaj*", "angaj*", "data contract", "contract din"),
+    "norma": ("norma pe zi", "tip norma", "norma*"),
+    "ore_luna": ("ore pe luna", "ore lunar*", "ore luna"),
+    "ore": ("ore pe zi", "ore zi", "ore"),
+    "brut": ("salariu brut", "brut", "salariu de baza", "salariu de incadrare", "salariu"),
+    "intretinere": ("persoane in intretinere", "intretinere", "persoane"),
+    "casa": ("casa de sanatate", "casa sanatate", "judet casa", "casa", "judet"),
+    "cor": ("cod cor", "cor", "cod ocupatie", "ocupatie"),
+    "iban": ("iban", "cont iban", "cont bancar", "cont card"),
+    "fbaza": ("functie de baza", "functia de baza", "functie baza", "functia baza"),
+    "scut": ("scutit contributie minima", "scutit*", "contributie minima"),
+}
+
+# Casa de sănătate scrisă cu numele județului („CAS Cluj”, „Casa de Asigurări de Sănătate Bistrița-Năsăud”) -> codul județului.
+# Lista județelor e cea oficială (codurile din JUDETE_CASA); se compară fără diacritice, liniuțe și prefixele caselor.
+_JUDETE_NUME = {
+    "alba": "AB", "arad": "AR", "arges": "AG", "bacau": "BC", "bihor": "BH", "bistrita nasaud": "BN", "botosani": "BT",
+    "brasov": "BV", "braila": "BR", "buzau": "BZ", "caras severin": "CS", "calarasi": "CL", "cluj": "CJ", "constanta": "CT",
+    "covasna": "CV", "dambovita": "DB", "dolj": "DJ", "galati": "GL", "giurgiu": "GR", "gorj": "GJ", "harghita": "HR",
+    "hunedoara": "HD", "ialomita": "IL", "iasi": "IS", "ilfov": "IF", "maramures": "MM", "mehedinti": "MH", "mures": "MS",
+    "neamt": "NT", "olt": "OT", "prahova": "PH", "satu mare": "SM", "salaj": "SJ", "sibiu": "SB", "suceava": "SV",
+    "teleorman": "TR", "timis": "TM", "tulcea": "TL", "vaslui": "VS", "valcea": "VL", "vrancea": "VN", "bucuresti": "B",
+    "municipiul bucuresti": "B",
+}
+_PREFIXE_CASA = ("casa de asigurari de sanatate a judetului", "casa de asigurari de sanatate", "casa de sanatate",
+                 "cas a judetului", "cjas", "cas", "casmb", "judetul", "jud", "municipiul")
+
+
+def cod_judet_casa(v):
+    """Codul județului din valoarea coloanei („CJ”, „cj”, „Cluj”, „CAS Cluj”, „CASMB” -> „B”). Necunoscut -> textul, verbatim
+    (verificarea îl refuză numit: `judet_invalid`), nu ghicit."""
+    t = str(v or "").strip()
+    if not t:
+        return ""
+    if t.upper() in JUDETE_CASA:
+        return t.upper()
+    n = _it.norm(t)
+    if n == "casmb":
+        return "B"
+    for p in _PREFIXE_CASA:
+        if n.startswith(p + " "):
+            n = n[len(p) + 1:]
+            break
+    return _JUDETE_NUME.get(n, t)
+
+
+def _norma(v):
+    """`(tip_norma, ore_zi, ore_luna_zero)` din coloana normei.
+
+    Text: „întreagă” / „parțială” (ca până azi). NUMĂR (SAGA „Norma pe zi” = ore): 8 -> întreagă, 8 ore; 1–7 -> parțială, cu
+    atâtea ore; 0 -> contract fără normă zilnică (SAGA: „Ore pe lună”) — aplicația nu-l preia automat, rândul se refuză numit."""
+    t = str(v or "").strip()
+    if not t:
+        return "", 0.0, False
+    try:
+        n = float(t.replace(",", "."))
+    except ValueError:
+        tl = t.lower()
+        return ("partiala" if ("part" in tl or "parțial" in tl) else "intreaga"), 0.0, False
+    if n == 0:
+        return "", 0.0, True
+    if n >= 8:
+        return "intreaga", n, False
+    return "partiala", n, False
+
+
 def extrage(continut, nume_fisier=""):
     """
     Intoarce [{nume, prenume, cnp, data_angajare, tip_norma, ore_zi, salariu_brut,
-               persoane_intretinere, judet_casa, cor, cnp_valid, cnp_motiv}].
+               persoane_intretinere, judet_casa, cor, iban, functie_baza, scutit_contrib_minim, cnp_valid, cnp_motiv}].
     """
-    nume = (nume_fisier or "").lower()
-    randuri = []
-
-    if nume.endswith(".csv") or nume.endswith(".tsv") or nume.endswith(".txt"):
-        import csv, io
-        text = continut.decode("utf-8-sig", errors="replace") if isinstance(continut, bytes) else str(continut)
-        prima = text.splitlines()[0] if text.splitlines() else ""
-        delim = "\t" if nume.endswith(".tsv") else (";" if prima.count(";") > prima.count(",") else ",")
-        randuri = list(csv.reader(io.StringIO(text), delimiter=delim))
-    elif nume.endswith(".xlsx") or nume.endswith(".xlsm"):
-        import io
-        from openpyxl import load_workbook
-        wb = load_workbook(io.BytesIO(continut), read_only=True, data_only=True)
-        ws = wb.active
-        for r in ws.iter_rows(values_only=True):
-            randuri.append(["" if c is None else c for c in r])
-        wb.close()
-    else:
-        raise ValueError("Fișierul trimis nu se poate citi: se așteaptă un CSV sau un "
-                         "XLSX. Salvează exportul în unul din formatele astea și "
-                         "încarcă-l din nou.")
-
-    if not randuri:
+    brut = _it.citeste(continut, nume_fisier)
+    if not brut or all(_it.rand_gol(r) for r in brut):
         return []
-
-    antet = [str(x) for x in randuri[0]]
-    i_nume = _gaseste_col(antet, "nume")          # poate prinde "nume complet" sau "nume"
-    i_pren = _gaseste_col(antet, "prenume")
-    i_cnp = _gaseste_col(antet, "cnp", "cod numeric")
-    i_data = _gaseste_col(antet, "angajare", "angajat", "data contract", "contract din")
-    i_norma = _gaseste_col(antet, "norma", "norma")
-    i_ore = _gaseste_col(antet, "ore")
-    i_brut = _gaseste_col(antet, "brut", "salariu")
-    i_intr = _gaseste_col(antet, "intretinere", "persoane")
-    i_jud = _gaseste_col(antet, "judet", "casa")
-    i_cor = _gaseste_col(antet, "cor", "ocupatie", "ocupație")
-    i_iban = _gaseste_col(antet, "iban", "cont bancar")   # [iban_import] contul in care se plateste salariul (SEPA)
+    try:
+        antet, start = _it.gaseste_antet(brut, CAMPURI, obligatorii=("cnp",), nume_fisier=nume_fisier)
+    except _it.ColoaneAmbigue:
+        raise
+    except _it.FisierNecitit:
+        antet, start = _it.gaseste_antet(brut, CAMPURI, obligatorii=("nume",), nume_fisier=nume_fisier)
+    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=camp)
+    i_nume = col("nume")
+    i_pren = col("prenume", (i_nume,))
+    i_cnp = col("cnp")
+    i_data = col("data")
+    i_norma = col("norma")
+    i_ore_luna = col("ore_luna")
+    i_ore = col("ore", (i_ore_luna, i_norma))
+    i_brut = col("brut")
+    i_intr = col("intretinere")
+    i_jud = col("casa")
+    i_cor = col("cor")
+    i_iban = col("iban")   # [iban_import] contul in care se plateste salariul (SEPA)
     # [decizia Costin 07.10, pct.4] cele două DA/NU cerute explicit: coloana lipsă sau celula goală -> None (rândul se refuză)
-    i_fbaza = _gaseste_col(antet, "functie de baza", "funcție de bază", "functia de baza", "funcția de bază")
-    i_scut = _gaseste_col(antet, "scutit", "contributie minima", "contribuție minimă")
+    i_fbaza = col("fbaza")
+    i_scut = col("scut")
     if i_nume < 0 and i_cnp < 0:
         raise ValueError("nu se găsește coloana nume/CNP salariat - fișier nerecunoscut")
 
     out = []
-    for r in randuri[1:]:
-        def cel(i):
-            return str(r[i]).strip() if (0 <= i < len(r)) else ""
-
+    for nr, r in enumerate(brut[start:], start=start + 1):
+        cel = lambda i: _it.celula(r, i)
         cnp = cel(i_cnp)
         nume_v = cel(i_nume)
         pren_v = cel(i_pren)
@@ -154,32 +207,43 @@ def extrage(continut, nume_fisier=""):
         valid, motiv = valideaza_cnp(cnp)
         # [Q11] fara default tacit (DS cap.17): coloana norma lipsa / celula goala -> tip_norma
         # necunoscut (""), NU "intreaga" fabricata. Doar o valoare PREZENTA se interpreteaza.
-        if i_norma >= 0 and cel(i_norma):
-            norma = cel(i_norma).lower()
-            tip_norma = "partiala" if ("part" in norma or "parțial" in norma) else "intreaga"
-        else:
-            tip_norma = ""
+        tip_norma, ore_norma, ore_luna = _norma(cel(i_norma)) if i_norma >= 0 else ("", 0.0, False)
         ore = _numar(cel(i_ore)) if i_ore >= 0 else 0.0
+        if ore <= 0:
+            ore = ore_norma
         # [decizii 07.10 pct.4, aceeași clasă] 8 ore = norma întreagă (dedus din normă); la normă PARȚIALĂ orele nu se ghicesc
         # (până azi „4” din oficiu) — lipsa se refuză numit (`ore_lipsa`)
         if ore <= 0 and tip_norma == "intreaga":
             ore = 8
 
+        # [decizia Costin 14.10.2026 pct.3–4, verbatim în DECIZII] persoanele în întreținere și scutirea de contribuția minimă LIPSĂ
+        # din fișier (coloana absentă — exportul SAGA nu le are — sau celula goală) nu mai refuză rândul: intră cu 0 / „nescutit” și
+        # salariatul e MARCAT („de verificat”), vizibil în statul de plată până la confirmare (`salariati.de_verificat`).
+        de_verificat = []
+        persoane = int(_numar(cel(i_intr))) if (i_intr >= 0 and cel(i_intr)) else None
+        if persoane is None:
+            de_verificat.append("persoane_intretinere")
+        scutit = _da_nu(cel(i_scut)) if i_scut >= 0 else None
+        if scutit is None:
+            de_verificat.append("scutit_contrib_minim")
         out.append({
+            "rand_fisier": nr,
             "nume": nume_v,
             "prenume": pren_v,
             "cnp": cnp,
-            "data_angajare": _data(r[i_data]) if (0 <= i_data < len(r)) else None,
+            "data_angajare": _data(_it.valoare(r, i_data)) if i_data >= 0 else None,
             "tip_norma": tip_norma,
+            "norma_ore_luna": ore_luna,
             "ore_zi": ore,
             "salariu_brut": _numar(cel(i_brut)),
-            "persoane_intretinere": int(_numar(cel(i_intr))) if i_intr >= 0 else 0,
-            "judet_casa": cel(i_jud),
+            "persoane_intretinere": persoane or 0,
+            "judet_casa": cod_judet_casa(cel(i_jud)),
             "cor": cel(i_cor),
             # [iban_import] normalizat (fara spatii, majuscule); gol -> "" (necunoscut, NU fabricat)
             "iban": cel(i_iban).replace(" ", "").upper(),
             "functie_baza": _da_nu(cel(i_fbaza)) if i_fbaza >= 0 else None,
-            "scutit_contrib_minim": _da_nu(cel(i_scut)) if i_scut >= 0 else None,
+            "scutit_contrib_minim": bool(scutit),          # lipsă -> „nescutit”, marcat de verificat
+            "de_verificat": de_verificat,
             "cnp_valid": valid,
             "cnp_motiv": motiv,
         })
@@ -215,10 +279,14 @@ def verifica_randuri(randuri, azi=None):
     er = []
 
     for i, r in enumerate(randuri or [], start=2):   # antetul e randul 1
+        i = _it.nr_rand(r, i)
         nume = ("%s %s" % (r.get("nume") or "", r.get("prenume") or "")).strip() or "?"
-        if not r.get("cnp_valid"):
+        # [14.10.2026] cifra de control se RECALCULEAZĂ aici: `cnp_valid` venea din cererea ecranului, iar un client putea
+        # trimite `cnp_valid: true` pentru un CNP greșit. Verdictul e al serverului, nu al previzualizării.
+        _cnp_ok, _cnp_motiv = valideaza_cnp(r.get("cnp"))
+        if not _cnp_ok:
             er.append(respinge("salariat", i, "cnp_invalid",
-                            "%s: CNP invalid (%s)" % (nume, r.get("cnp_motiv") or "-")))
+                            "%s: CNP invalid (%s)" % (nume, _cnp_motiv)))
             continue
         d = r.get("data_angajare")
         if d:
@@ -226,11 +294,14 @@ def verifica_randuri(randuri, azi=None):
                 dd = d if isinstance(d, _dt.date) else _dt.date.fromisoformat(str(d)[:10])
                 if dd > azi:
                     er.append(respinge("salariat", i, "data_viitor",
-                                    "%s: data angajării (%s) e în viitor" % (nume, dd)))
+                                    "%s: data angajării (%s) e în viitor" % (nume, _data_ro(dd))))
             except ValueError:
                 er.append(respinge("salariat", i, "data_invalida",
                                 "%s: data angajării nu se înțelege (%r)" % (nume, d)))
-        if not str(r.get("tip_norma") or "").strip():
+        if r.get("norma_ore_luna"):
+            er.append(respinge("salariat", i, "norma_ore_luna",
+                            "%s: norma pe zi e 0 (contract cu ore pe lună) - treci în fișier orele pe zi ale normei" % nume))
+        elif not str(r.get("tip_norma") or "").strip():
             er.append(respinge("salariat", i, "norma_lipsa",
                             "%s: norma de lucru lipsește (întreagă/parțială) - necesară pentru D112" % nume))
         elif r.get("tip_norma") == "partiala" and not (r.get("ore_zi") or 0):
@@ -240,9 +311,8 @@ def verifica_randuri(randuri, azi=None):
         if r.get("functie_baza") is None:
             er.append(respinge("salariat", i, "functie_baza_lipsa",
                             "%s: funcția de bază (Da/Nu) lipsește - coloana «Funcție de bază»; decide deducerea personală" % nume))
-        if r.get("scutit_contrib_minim") is None:
-            er.append(respinge("salariat", i, "scutire_minim_lipsa",
-                            "%s: scutirea de contribuția minimă (Da/Nu) lipsește - coloana «Scutit contribuție minimă»" % nume))
+        # [PIVOT, decizia Costin 14.10.2026 pct.4] scutirea lipsă NU mai refuză rândul (era decizia 07.10 pct.4): se importă
+        # „nescutit” și se marchează de verificat (`extrage` / `importa`).
         # [salariu_import] salariul de baza e OBLIGATORIU si > 0 (ca la creare, salariati_api #8):
         # intra in D112 si pe fluturas. Lipsa lui (coloana absenta / celula goala -> parser 0.0) NU se
         # accepta tacit (DS cap.17, fara default fabricat): firma ar plati CAS/CASS pe podeaua sub-minim
@@ -286,7 +356,11 @@ def importa(conn, randuri):
         raise ValueError("nu ai trimis niciun rând. Un import fără rânduri n-are ce adăuga în "
                          "evidența salariaților; dacă voiai altceva, e altă operațiune.")
     er = verifica_randuri(randuri)
-    if er:
+    # [decizia Costin 14.10.2026 pct.2, verbatim în DECIZII] „rândurile bune se salvează, cele refuzate se arată numite, cu motivul
+    # în cuvinte” — numai un import fără niciun rând bun se refuză întreg.
+    respinse_idx = {e["rand"] for e in er}
+    bune = [r for i, r in enumerate(randuri, start=2) if _it.nr_rand(r, i) not in respinse_idx]
+    if not bune:
         det = "; ".join("rand %s: %s" % (e["rand"], e["mesaj"]) for e in er[:6])
         if len(er) > 6:
             det += " (și încă %d)" % (len(er) - 6)
@@ -296,7 +370,7 @@ def importa(conn, randuri):
         _n = len({e["rand"] for e in er})
         _cate = ("Un rând nu poate intra" if _n == 1 else "%d rânduri nu pot intra" % _n)
         raise ValueError("%s în evidență: %s. Salariații intră în D112 și REGES - datele trebuie "
-                         "să fie cele reale." % (_cate, det))
+                         "să fie cele reale; niciun salariat n-a fost scris." % (_cate, det))
     importati = 0
     with conn.cursor() as cur:
         # asiguram constrangerea unica pe cnp pentru upsert (idempotent)
@@ -311,22 +385,27 @@ def importa(conn, randuri):
               END IF;
             END $$;
         """)
-        for r in randuri:
-            # NU exista skip tacit: importa a ridicat deja (mai sus) daca vreun CNP e invalid, deci aici
-            # toate randurile sunt valide (fostul skip pe CNP invalid era cod mort: importa ridica intai).
+        for r in bune:
+            # rândurile respinse au rămas pe dinafară (`respinse`, întoarse numite) — aici numai rândurile bune
             part_time = (r.get("tip_norma") == "partiala")   # norma e cerută mai sus (norma_lipsa): fără „intreaga” implicit
             # upsert-ok: re-import salariat pe CNP - actualizeaza fisa existenta (IBAN pazit separat)
             cur.execute("""
                 INSERT INTO salariati
                   (cnp, nume, prenume, data_angajare, part_time, ore_zi,
-                   persoane_intretinere, judet_casa, cor, iban, functie_baza, scutit_contrib_minim)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                   persoane_intretinere, judet_casa, cor, iban, functie_baza, scutit_contrib_minim, de_verificat)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 ON CONFLICT (cnp) DO UPDATE SET
-                  functie_baza=EXCLUDED.functie_baza, scutit_contrib_minim=EXCLUDED.scutit_contrib_minim,
+                  functie_baza=EXCLUDED.functie_baza,
+                  -- [14.10.2026] un câmp ABSENT din fișierul de acum (marcat în EXCLUDED.de_verificat) nu șterge valoarea existentă,
+                  -- iar marcajul rămâne numai dacă era încă neconfirmat (intersecția): un reimport nu strică ce a confirmat contabilul
+                  scutit_contrib_minim=CASE WHEN 'scutit_contrib_minim' = ANY(EXCLUDED.de_verificat)
+                                            THEN salariati.scutit_contrib_minim ELSE EXCLUDED.scutit_contrib_minim END,
+                  de_verificat=ARRAY(SELECT unnest(EXCLUDED.de_verificat) INTERSECT SELECT unnest(salariati.de_verificat)),
                   nume=EXCLUDED.nume, prenume=EXCLUDED.prenume,
                   data_angajare=EXCLUDED.data_angajare, part_time=EXCLUDED.part_time,
                   ore_zi=EXCLUDED.ore_zi,
-                  persoane_intretinere=EXCLUDED.persoane_intretinere,
+                  persoane_intretinere=CASE WHEN 'persoane_intretinere' = ANY(EXCLUDED.de_verificat)
+                                            THEN salariati.persoane_intretinere ELSE EXCLUDED.persoane_intretinere END,
                   judet_casa=EXCLUDED.judet_casa, cor=EXCLUDED.cor,
                   -- [iban_import] la re-import fara coloana IBAN (EXCLUDED.iban NULL) NU sterge IBAN-ul deja
                   -- introdus manual pe ecran: pastreaza valoarea existenta (COALESCE), nu o goleste tacit.
@@ -337,11 +416,23 @@ def importa(conn, randuri):
                   r.get("persoane_intretinere", 0),
                   r.get("judet_casa", ""), r.get("cor", ""),
                   (r.get("iban") or "").strip() or None,   # gol -> NULL (necunoscut), nu "" fabricat
-                  r.get("functie_baza"), r.get("scutit_contrib_minim")))   # [decizii 07.10 pct.4] cerute explicit
+                  r.get("functie_baza"), bool(r.get("scutit_contrib_minim")),   # [decizii 07.10 pct.4; PIVOT 14.10 pct.4]
+                  _de_verificat(r)))
             # [PASUL 2b] salariul de baza pe salariu_istoric (sursa unica); reparat si activ (coloana retrasa PASUL 1)
             _sid = cur.fetchone()[0]
             from core import salariu_istoric as _si
             from datetime import date as _dm
             _si.seteaza(cur, _sid, r.get("salariu_brut", 0), r.get("data_angajare") or _dm.today().isoformat())
             importati += 1
-    return {"importati": importati}
+    return {"importati": importati, "respinse": er}
+
+
+DE_VERIFICAT = ("persoane_intretinere", "scutit_contrib_minim")
+
+
+def _de_verificat(r):
+    """Marcajul rândului: câmpurile venite fără valoare. Numai valorile cunoscute; o scutire `None` (cerere fără ea) = marcată."""
+    m = [x for x in (r.get("de_verificat") or []) if x in DE_VERIFICAT]
+    if r.get("scutit_contrib_minim") is None and "scutit_contrib_minim" not in m:
+        m.append("scutit_contrib_minim")
+    return m

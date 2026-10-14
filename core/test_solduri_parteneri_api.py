@@ -7,7 +7,8 @@ intre extrage() si importa(), iar ecranul afisa avertismente si salva oricum.
 """
 import pytest
 from core.solduri_parteneri_api import (valideaza_cui, verifica_randuri, importa,
-                                        _gaseste_col, CONTURI_PARTENERI)
+                                        CONTURI_PARTENERI)
+from core import import_tabel as _it
 
 
 # ---------- CUI ----------
@@ -68,16 +69,22 @@ def test_numarul_randului_e_cel_din_fisier():
 
 
 def test_importa_REFUZA_randurile_invalide():
-    """Refuzul e prima poarta: nimic nu se scrie dintr-un import cu randuri invalide.
-    Regresie 15.07.2026: importa() scria orice, iar migrarea marca stratul 'gata' verde."""
+    """Rândurile invalide nu intră (regresie 15.07.2026: importa() scria orice, iar migrarea marca stratul „gata” verde).
+    [PIVOT, decizia Costin 14.10.2026 pct.2, verbatim în DECIZII] „rândurile bune se salvează, cele refuzate se arată numite, cu
+    motivul în cuvinte”: un import MIXT scrie numai rândurile bune și le întoarce pe cele refuzate; numai un import fără niciun rând
+    bun se refuză întreg (soldurile existente rămân neatinse). MUTAȚIA: `for r in bune` -> `for r in randuri` -> ROȘU."""
+    from core.test_import_saga import _ConnFals
     with pytest.raises(ValueError) as e:
-        importa(None, [_r("4111", "RO14399840", "DEDEMAN SRL"),
-                       _r("4111", "12345678", "FIRMA INVENTATA"),
-                       _r("5121", "RO4221306", "BANCA")])
+        importa(None, [_r("4111", "12345678", "FIRMA INVENTATA"), _r("5121", "RO4221306", "BANCA")])
     m = str(e.value)
     assert "2 rânduri" in m
     assert "12345678" in m and "5121" in m
     assert "D394" in m or "SAF-T" in m      # spune DE CE conteaza
+    conn = _ConnFals()
+    rez = importa(conn, [_r("4111", "RO14399840", "DEDEMAN SRL"), _r("4111", "12345678", "FIRMA INVENTATA"),
+                         _r("5121", "RO4221306", "BANCA")], "2026-09-30")
+    assert rez["randuri"] == 1 and sorted(x["regula"] for x in rez["respinse"]) == ["cont_nepartener", "cui_invalid"]
+    assert [p[1] for p in conn.inserate("solduri_parteneri")] == ["RO14399840"]
 
 
 def test_conturile_de_parteneri_sunt_cele_din_omfp():
@@ -89,8 +96,10 @@ def test_conturile_de_parteneri_sunt_cele_din_omfp():
 def test_denumirea_nu_mai_e_cui_ul():
     """Antetul 'CUI partener' contine 'partener' -> era gasit inaintea coloanei
     'Denumire partener'. In baza ajungea denumire='RO14399840' in loc de 'DEDEMAN SRL'."""
-    antet = ["Cont", "CUI partener", "Denumire partener", "Sold debitor", "Sold creditor"]
-    i_cont = _gaseste_col(antet, "cont", "simbol")
-    i_cui = _gaseste_col(antet, "cui", "cif", "cod fiscal")
-    i_den = _gaseste_col(antet, "denumire", "nume", "partener", exclus=[i_cont, i_cui])
+    # [14.10.2026] potrivirea trece prin `core.import_tabel.coloana` (sursa unică), cu aliasurile parserului
+    from core.solduri_parteneri_api import CAMPURI
+    antet = [_it.norm(h) for h in ["Cont", "CUI partener", "Denumire partener", "Sold debitor", "Sold creditor"]]
+    i_cont = _it.coloana(antet, CAMPURI["cont"])
+    i_cui = _it.coloana(antet, CAMPURI["cui"], exclus=(i_cont,))
+    i_den = _it.coloana(antet, CAMPURI["denumire"], exclus=(i_cont, i_cui))
     assert (i_cont, i_cui, i_den) == (0, 1, 2)

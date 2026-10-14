@@ -101,8 +101,9 @@ def test_mesajul_de_refuz_citeaza_temeiul_si_permisele():
         assert False, "trebuia să ridice"
     except ValueError as e:
         s = str(e)
-        assert "transport" not in s or "categorie" in s   # contine categoria dedusa
-        assert "permise" in s and "liniara" in s and "degresiva" in s
+        # [14.10.2026] în cuvinte, fără codurile interne (mesajul ajunge pe ecran): categoria dedusă, permisele, temeiul
+        assert "deci alt mijloc fix, CF art.28 alin.(5) lit.c)" in s and "alt_mijloc_fix" not in s
+        assert "metoda accelerată nu e permisă de lege; permise: degresivă, liniară." in s
         assert "art.28" in s
 
 

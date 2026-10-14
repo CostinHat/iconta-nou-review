@@ -1,0 +1,176 @@
+Evidentierea ambalajelor SGR
+Tratament fiscal al intrarilor
+Preluare solduri tertilor
+Preluarea soldurilor pentru conturile 401.X/4111.Y, se realizează pe fiecare analitic în parte, în ecranul   Preluare date contabile ,  cât și în ecranele ’’Intrări/Ieșiri’’ prin introducerea facturilor în sold cu o dată anterioară începerii de utilizare a programului.
+Sfat:  Pentru simplificarea preluării, se vor introduce doar sumele cumulate în conturile sintetice 401/4111, pentru a putea  valida balanța de pornire. Ulterior, conturile analitice și soldurile aferente vor putea fi preluate automat din facturile operate, conform indicațiilor prezentate în continuare.
+Preluarea soldurilor analitice la furnizori şi clienţi este o procedură care implică mai mulţi paşi:
+1. Pregătirea situației facturilor în sold
+Indiferent de momentul în care se preiau datele, pentru a putea prelua corect facturile neachitate/neîncasate, primul pas este să vă pregătiţi o situaţie analitică a acestora sub forma:
+Furnizor sau Client
+Nr. factură
+Data factură
+Suma neachitată
+unde, totalul coloanei "Suma neachitată"= soldul furnizorilor/clienţilor.
+2. Înregistrarea soldurilor în conturile sintetice 401/4111
+Apelaţi ecranul " Preluare date contabile ". La preluarea datelor, introduceţi datele în conturile sintetice 401/4111 şi validaţi preluarea.
+Exemplu : Utilizând datele pentru furnizori, procedura pentru clienţi fiind similară:
+a. Preluarea se face cu data de 01.01.N
+Societatea are o datorie faţă de furnizori (sold creditor al contului 401) în sumă de 2000 lei defalcată astfel:
+Furnizor
+Nr. factură
+Data factură
+Suma neachitată
+Furnizor 1
+10000
+29/11/N-1
+1000
+Furnizor 1
+10001
+30/12/N-1
+800
+Furnizor 2
+20000
+28/12/N-1
+200
+La preluarea datelor, nu se vor crea analitice, ci se vor completa la contul 401, coloanele credit iniţial an şi credit precedent cu suma de 2000 lei.
+Observaţie:
+Situația prezentată mai sus trebuie să cuprindă valoarea neachitată a facturilor. Dacă de exemplu valoarea iniţială a facturii 10000 a fost de 1200 lei, din care până la data preluării s-a achitat suma de 200 lei, în situaţia pregătită va trebui să înscrieţi valoarea rămasă de plată pentru această factură, adică 1000 lei.
+b. Preluarea datelor se face cu data de 01.03.N
+Societatea are următoarele date la contul 401:
+sold creditor la 01 ianuarie - 500 lei;
+rulaje creditoare cumulate ianuarie+februarie - 3000 lei;
+rulaje debitoare cumulate ianuarie+februarie - 1500 lei;
+sold creditor la sfârșitul lunii februarie - 2000 lei.
+Pentru simplificare, defalcarea datelor o considerăm similară celei din tabelul anterior.
+La preluarea datelor, nu se vor crea analitice, ci se vor completa datele la contul 401, astfel:
+credit iniţial an - 500 lei;
+debit precedent - 1500 lei;
+credit precedent - 3500 lei (sold început an + rulaje lunare cumulate).
+După terminarea introducerii tuturor soldurilor şi verificarea corectitudinii acestora, validaţi preluarea datelor.
+3. Preluarea facturilor în sold
+Apelaţi ecranul de înregistrare a intrărilor/ieșirilor, din meniul "Operaţii">>"Intrări"/ "Ieșiri" și introduceţi pentru fiecare factură aflată în sold câte o înregistrare.
+Detalii despre introducerea facturilor de intrare găsiţi aici:   Intrari - lei , iar despre facturile de ieşire aici:   Iesiri - lei .
+Exemplu de operare în ecranul "Intrări"- utilizând datele facturii nr. 10000/29.11.N-1 cu valoare neachitată de 1000 lei:
+Observaţii :
+Denumirea articolului poate avea orice explicaţie: Marfă, Servicii, Sold, etc.
+Puteți folosi orice cont, dar nu din clasa 8.
+Data facturii, după cum se observă şi în imaginea anterioară este data emiterii acesteia, presupunând că data începerii utilizării programului este 01.03.2021.
+Odată cu introducerea facturilor neachitate se vor crea şi furnizorii şi implicit conturile analitice a acestora. Similar se va proceda și în cazul facturilor operate în ecranul "Ieșiri".
+La validarea acestor facturi, programul va genera următorul mesaj:
+Confirmați mesajul afișat și introduceți toate facturile.
+4. Preluarea soldurilor pe fiecare analitic aferent terților
+După terminarea introducerii tuturor facturilor neachitate/neîncasate şi validarea lor, se apelează din nou meniul principal "Administrare">>"Configurare societăţi"- "Preluare date contabile" şi se devalidează preluarea.
+Se apasă butonul    pentru preluarea automată din facturile de preluare a sumelor aferente analiticelor terților.
+Datele introduse la conturile sintetice 401/4111 se modifică astfel:
+În cazul preluării datelor cu 01 ianuarie:
+la contul sintetic 401/4111 se vor completa cu zero toate coloanele;
+se vor completa corect coloanele credit iniţial an şi credit precedent la fiecare analitic al acestor conturi.
+Ţinând seama de datele utilizate anterior vom avea următoarea situaţie:
+Iniţial :
+Cont
+Titlu cont
+Debit initial
+Credit initial
+Debit precedent
+Credit precedent
+401
+Furnizori
+0,00
+2000,00
+0,00
+2000,00
+...
+...
+...
+...
+...
+....
+După introducerea facturilor în analitic, prin ecranul de intrări, se vor modifica datele în ecranul de preluare astfel:
+Cont
+Titlu cont
+Debit initial
+Credit initial
+Debit precedent
+Credit precedent
+401
+Furnizori
+0,00
+0,00
+0,00
+0,00
+401.0001
+Furnizor 1
+0,00
+1800,00
+0,00
+1800,00
+401.0002
+Furnizor 2
+0,00
+200,00
+0,00
+200,00
+În cazul preluării datelor cu 01 martie:
+la contul sintetic 401/4111 se vor completa cu zero toate coloanele;
+se vor completa corect coloanele credit iniţial an şi credit precedent la fiecare analitic al acestor conturi.
+Ţinând seama de datele utilizate anterior vom avea următoarea situaţie:
+Iniţial :
+Cont
+Titlu cont
+Debit initial
+Credit initial
+Debit precedent
+Credit precedent
+401
+Furnizori
+0,00
+500,00
+1500,00
+3500,00
+...
+...
+...
+...
+...
+...
+După introducerea facturilor în analitic, prin ecranul de intrări, se vor modifica datele în ecranul de preluare astfel:
+Cont
+Titlu cont
+Debit initial
+Credit initial
+Debit precedent
+Credit precedent
+401
+Furnizori
+0,00
+500,00
+1500,00
+1500,00
+401.0001
+Furnizor 1
+0,00
+0,00
+0,00
+1800,00
+401.0002
+Furnizor 2
+0,00
+0,00
+0,00
+200,00
+După cum se observă, în contul sintetic 401 vom avea ca valori cumulate pe debit/credit aceeaşi valoare, iar soldul l-am repartizat pe analitice.
+La terminarea introducerii datelor se va revalida preluarea datelor.
+Procedura este similară în cazul facturilor emise către clienţi, cu respectarea funcţiilor contabile a contului 4111.
+Vezi şi:
+Preluare balanței contabile
+Vezi şi:
+×
+SAGA Software © 2026
+Home
+Linkuri
+Tutoriale
+Blog
+Forum
+Contact
+Distribuţie
+Politica de confidențialitate

@@ -1237,6 +1237,7 @@ CREATE TABLE TENANT_PLACEHOLDER.salariati (
     motiv_exceptare smallint,
     data_incetare date,
     creat_la timestamp with time zone DEFAULT now() NOT NULL,
+    de_verificat text[] DEFAULT '{}'::text[] NOT NULL,  -- [14.10.2026] câmpuri importate fără valoare, de confirmat (core/migrare_salariati_de_verificat.py)
     CONSTRAINT salariati_incetare_dupa_angajare CHECK (data_incetare IS NULL OR data_incetare >= data_angajare)
 );
 

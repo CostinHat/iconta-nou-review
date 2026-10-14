@@ -186,14 +186,28 @@ def _verifica_categorie(mf, metoda, pif):
     categorie = _categorie_activ(cont)
     permise = _metode_permise(categorie, pif, bool(mf.get("destinatie_cd")))
     if metoda not in permise:
-        temei = "CF art.28 alin.5; aparatura C&D: CF art.20 alin.(1) lit.b) (bifa «Destinat C&D»)"
+        temei = "CF art.28 alin.(5); aparatura C&D: CF art.20 alin.(1) lit.b) (bifa «Destinat C&D»)"
         if metoda == "superaccelerata":
-            temei = ("CF art.28 alin.8^1 (OUG 8/2026): doar subgrupa 2.1 (echipamente) sau 2.4 "
+            temei = ("CF art.28 alin.(8^1) (OUG 8/2026): doar subgrupa 2.1 (echipamente) sau 2.4 "
                      "(animale/plantații), active NOI puse în funcțiune în 2026")
+        # [14.10.2026] mesajul ajunge pe ecran (importul mijloacelor fixe, generarea D406): categoria și metodele în cuvinte, nu
+        # codurile interne („alt_mijloc_fix”, 'accelerata'), iar un cont lipsă se spune, nu se lasă gol („contul ,”)
         raise ValueError(
-            "Mijlocul fix %s (contul %s, categoria „%s”): metoda '%s' nu e permisă de lege; permise: %s. Temei: %s."
-            % (mf.get("cod"), cont, categorie, metoda,
-               (", ".join(sorted(permise)) or "niciuna (activ neamortizabil)"), temei))
+            "Mijlocul fix %s (%s, deci %s): metoda %s nu e permisă de lege; permise: %s. Temei: %s."
+            % (mf.get("cod") or "fără cod", ("contul %s" % cont) if str(cont or "").strip() else "fără cont de imobilizare",
+               _ETICHETA_CATEGORIE.get(categorie, categorie), _ETICHETA_METODA.get(metoda, metoda),
+               (", ".join(_ETICHETA_METODA.get(m, m) for m in sorted(permise)) or "niciuna (activ neamortizabil)"), temei))
+
+
+_ETICHETA_CATEGORIE = {
+    "constructii": "construcție, CF art.28 alin.(5) lit.a",
+    "echipamente_2_1": "echipament tehnologic din subgrupa 2.1, CF art.28 alin.(5) lit.b",
+    "animale_plantatii": "animale și plantații, subgrupa 2.4",
+    "terenuri": "teren — nu se amortizează",
+    "alt_mijloc_fix": "alt mijloc fix, CF art.28 alin.(5) lit.c",
+}
+_ETICHETA_METODA = {"liniara": "liniară", "degresiva": "degresivă", "accelerata": "accelerată",
+                    "superaccelerata": "superaccelerată"}
 
 
 # ── REEVALUAREA, ca etapa a amortizarii (R59) ───────────────────────────────────────────────
@@ -303,7 +317,7 @@ def calc_asset(mf, an):
     val = _d(mf_s["valoare"])
     dnf = int(mf.get("dnf_luni") or 0)
     if dnf <= 0 or val <= 0:
-        raise ValueError(f"MF {mf.get('cod')}: valoare/dnf invalide")
+        raise ValueError("Mijlocul fix %s: valoarea de intrare sau durata de amortizare lipsește (sau nu e mai mare ca 0) — fără ele amortizarea nu se calculează." % (mf.get('cod') or 'fără cod'))
     _verifica_categorie(mf, _norm_metoda(mf.get("metoda")), pif_real)   # alin.5/8^1: ce legea nu permite -> refuza
 
     am_inceput = _acumulat_final_an(mf_i, pif_real, an - 1)
@@ -378,7 +392,7 @@ def amortizat_la_data(mf, la_data):
     rez = _d(mf.get("rezidual"))
     dnf = int(mf.get("dnf_luni") or 0)
     if dnf <= 0 or val <= 0:
-        raise ValueError(f"MF {mf.get('cod')}: valoare/dnf invalide")
+        raise ValueError("Mijlocul fix %s: valoarea de intrare sau durata de amortizare lipsește (sau nu e mai mare ca 0) — fără ele amortizarea nu se calculează." % (mf.get('cod') or 'fără cod'))
     pif = mf.get("data_pif")
     metoda = _norm_metoda(mf.get("metoda"))
     _verifica_categorie(mf, metoda, _pif_real)   # ce legea nu permite pe categorie -> refuza (nu calcula gresit)
@@ -413,7 +427,7 @@ def amortizare_luna(mf, an, luna):
     rez = _d(mf.get("rezidual"))
     dnf = int(mf.get("dnf_luni") or 0)
     if dnf <= 0 or val <= 0:
-        raise ValueError(f"MF {mf.get('cod')}: valoare/dnf invalide")
+        raise ValueError("Mijlocul fix %s: valoarea de intrare sau durata de amortizare lipsește (sau nu e mai mare ca 0) — fără ele amortizarea nu se calculează." % (mf.get('cod') or 'fără cod'))
     pif = mf.get("data_pif")
     metoda = _norm_metoda(mf.get("metoda"))
     _verifica_categorie(mf, metoda, _pif_real)

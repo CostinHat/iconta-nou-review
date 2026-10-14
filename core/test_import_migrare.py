@@ -20,7 +20,8 @@ AZI = d.date(2026, 7, 15)
 
 # ---------------- SALARIATI ----------------
 def _s(**kw):
-    b = {"nume": "X", "prenume": "Y", "cnp_valid": True, "data_angajare": "2024-01-08",
+    # [14.10.2026] CNP real (cifra de control verificată): verificarea îl RECALCULEAZĂ, nu mai crede `cnp_valid` din cerere
+    b = {"nume": "X", "prenume": "Y", "cnp": "1960101078916", "data_angajare": "2024-01-08",
          "ore_zi": 8, "judet_casa": "B", "tip_norma": "intreaga", "functie_baza": True, "scutit_contrib_minim": False,  # [Q11; decizii 07.10 pct.4] salariat complet are norma
          "salariu_brut": 5000}  # [salariu_import] ... si salariu de baza > 0
     b.update(kw)
@@ -32,7 +33,7 @@ def test_salariat_corect_trece():
 
 
 def test_cnp_invalid_e_respins():
-    er = v_sal([_s(cnp_valid=False, cnp_motiv="cifra de control")], azi=AZI)
+    er = v_sal([_s(cnp="1960101078911")], azi=AZI)   # cifra de control greșită (corect: ...6)
     assert er and er[0]["regula"] == "cnp_invalid"
 
 

@@ -34,7 +34,7 @@ def test_q11_extrage_nu_fabrica_norma():
 
 def test_q11_norma_lipsa_semnalata():
     from core import salariati_import_api as s
-    er = s.verifica_randuri([{"nume": "POP", "prenume": "ION", "cnp_valid": True, "tip_norma": "", "ore_zi": 0}])
+    er = s.verifica_randuri([{"nume": "POP", "prenume": "ION", "cnp": "1960101078916", "tip_norma": "", "ore_zi": 0}])
     assert any(e["regula"] == "norma_lipsa" for e in er), "norma lipsa nu e semnalata (Q11): %r" % er
 
 

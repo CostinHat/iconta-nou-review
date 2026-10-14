@@ -1,0 +1,41 @@
+Evidentierea ambalajelor SGR
+Tratament fiscal al intrarilor
+Balante
+Ecranul permite listarea balanţei de verificare sintetice sau analitice, pentru intervalul de timp selectat.
+Înainte de generarea balanței se vor seta seriile de egalități, intervalul de timp și se vor aplica filtrele suplimentare, în funcție de necesități.
+Balanţa sintetică
+Fără aplicarea filtrelor aferente balanței analitice, se va genera balanţa de verificare utilizând doar conturile sintetice de grad 1 şi/sau grad 2.
+Dacă în balanța sintetică se doreşte listarea analiticelor unui cont, se poate completa sau alege din listele derulante de selecţie  " Cu - analitice pentru conturile " contul a căror analitice se doresc a fi listate.
+Balanţa analitică
+Pentru listarea acestei balanțe se va bifa casuța " Analitica ".
+Balanța analitică poate cuprinde toate conturile, o clasa de conturi, o grupă, analiticele unui sintetic sau analiticele unui analitic, în funcție de setările aplicate în listele derulante de selecție " Cu/Fără - analitice pentru conturile ".
+Pentru a lista o balanță analitică care să conţină toate conturile,  listele derulante de selecție " Cu/Fără - analitice pentru conturile " trebuie sa ramână necompletate.
+Dacă se dorește, de exemplu,  listarea unei balanţe analitice numai pentru conturile din clasa 2 şi clasa 3, completaţi două din câmpurile text a listelor din secţiunea "Analitice pentru conturile" cu cifrele 2, respectiv 3.
+Oricare din aceste tipuri de balanţe de verificare pot fi listate la imprimantă sau vizualizate pe ecran.
+Filtre suplimentare:
+Sumare conturi sintetice de grad 2 la sintetice de grad 1  - bifarea opţiunii va duce la listarea în balanţa de verificare a contului sintetic de grad 1, acesta conţinând sumele conturilor sintetice de grad 2. De exemplu,  va apărea contul 442 "TVA" a cărui rulaje şi solduri vor fi generate de conturile sintetice de grad 2 derivate din acesta: 4423, 4424, 4426, 4427 şi/sau 4428.
+Inclusiv conturi din afara bilanțului  - vor fi incluse în balanță și înregistrările prin conturile din afara bilanțului. Dacă există înregistrări ce cuprind un cont corespondent din afara bilanțului, pentru a fi generată egalitatea în balanță, este obligatorie bifarea acestei opțiuni.
+Lei  - opțiune este vizibilă atunci când se lucrează cu operaţii în valută. Permite generarea balanței cu operaţiunile realizate în moneda selectată.
+Toate activitățile  - opțiune vizibilă doar dacă în ecranul  Grupe  au fost definite "Activități/ Centre de profit". Aceasta permite generarea balanței doar pentru înregistrările cuprinse în activitatea selectată.
+Defalcată pe activități  - opțiune vizibilă doar dacă în ecranul  Grupe  au fost definite "Activități/ Centre de profit" și permite generarea balanței defalcată pe activități.
+Observații:
+Soldurile iniţiale şi finale la o balanța cu sumare pe sintetice de grad I nu sunt, în general, egale cu cele de la balanţa sintetică, pentru că sumele se calculează la nivelul conturilor compuse din trei cifre (conturi sintetice de gradul I ).
+Exemplu:
+"4426"  are sold debitor          2000
+"4427"  are sold creditor         1000
+"442"    are sold debitor          1000
+La balanţa sintetică se adună 2000 pentru solduri debitoare şi 1000 pentru solduri creditoare, iar la balanţa cumulată se adună doar 1000 la solduri debitoare.
+Pot exista diferențe între balanța preluată în ecranul  "Configurarea societății" și balanța generată din acest ecran. Acestea pot proveni de la analiticele conturilor bifuncționale care prezintă atât solduri debitoare cât și solduri creditoare. Acest lucru se întâmplă pentru că balanța generată din ecranul "Situații- Listări" recalculează soldurile, generând astfel un singur sold, debitor sau creditor, pentru contul sintetic bifuncțional.
+Dacă balanța generată nu prezintă egalitate, cauzele pot fi următoarele:
+Lipsa unui cont care prezintă inregistrări, din planuri de conturi.- În aceasta situație programul generează o atenționare la momentul generării balanței, afisând contul care lipsește. Pentru rezolvare, readăugați contul în ecranul  Planul de conturi , sau corectați înregistrarea contabilă, dacă aceasta a fost operată cu un cont greșit.
+Utilizarea unui cont din bilanț cu un cont din afara bilanțului.- În aceasta situație, pentru a obține egalitate, generați balanța bifând opțiunea " Inclusiv conturi din afara bilanțului ".
+×
+SAGA Software © 2026
+Home
+Linkuri
+Tutoriale
+Blog
+Forum
+Contact
+Distribuţie
+Politica de confidențialitate

@@ -25,6 +25,16 @@ import pytest
 
 CALE_TEST_ENV = os.path.expanduser("~/.iconta/test.env")
 
+# [15.10.2026, regim pilot — lucrul se face într-un worktree] Poarta rulează suita din hook-ul `commit-msg`. Într-un WORKTREE, git
+# exportă hook-urilor `GIT_DIR` și `GIT_INDEX_FILE` cu cale ABSOLUTĂ (în depozitul principal `GIT_INDEX_FILE=.git/index` e relativă și
+# nu iese din directorul curent). Moștenite de suită, ele fac ca un `git` rulat de un test într-un depozit TEMPORAR să lucreze pe
+# indexul real al commitului: testele hook-ului de mesaj au văzut cele 38 de fișiere noi ale lotului și au respins un mesaj „normal”
+# (prima poartă a lotului 1, 14.10.2026 noaptea). Suita nu citește indexul prin aceste variabile: un `git` rulat în rădăcina
+# depozitului găsește singur indexul worktree-ului. Gard: `core/test_mediu_git_curat.py`.
+VARIABILE_GIT_DE_HOOK = ("GIT_DIR", "GIT_INDEX_FILE", "GIT_WORK_TREE", "GIT_PREFIX", "GIT_COMMON_DIR", "GIT_OBJECT_DIRECTORY")
+for _v in VARIABILE_GIT_DE_HOOK:
+    os.environ.pop(_v, None)
+
 
 def _incarca(cale):
     """Sourceaza un fisier de mediu in `os.environ` (setdefault). Intoarce numarul de variabile

@@ -32,22 +32,12 @@ import re as _re
 import datetime
 
 from core import obiecte_inventar as _oi
+from core.pdf_util import bani as _bani, data_ro as _data_ro   # DS cap.4: sumele și datele din text, canonic
 
 # PRAGUL NU MAI E SCRIS AICI (01.09.2026, R108). Era `PLAFON_MF_2026 = 5000.0` — un literal FARA
 # DATA, deci avertismentul iesea gresit pentru bunurile intrate inainte de 01.01.2026, cand pragul
 # era 2.500. Se cere acum de la singura poarta, `obiecte_inventar.prag_mf(la_data)`, care citeste
 # registrul.
-
-
-def _gaseste_col(antet, *chei, exclus=()):
-    for i, h in enumerate(antet):
-        if i in exclus:
-            continue
-        hl = str(h).strip().lower()
-        for k in chei:
-            if k in hl:
-                return i
-    return -1
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
@@ -85,54 +75,65 @@ def _normalizeaza_metoda(v):
     return "liniara"
 
 
+# [14.10.2026, comanda Costin „Importul din SAGA”, verbatim în DECIZII] Fișierul trece prin `core.import_tabel`. Antetele SAGA
+# vin din manualul SAGA C, ecranul Imobilizări (`anaf_surse/saga_manual_topic34_imobilizari.txt`): „Nr.inv.”, „Denumire”,
+# „Nr.document”, „Gestiune”, „Cod clasă”, „Data intrare”, „Valoare intrare”, „Valoare inventar”, „Dur.luni”, „Tip amortizare”,
+# „Val. ramasa”, „Dur. ramasă”, „Amort. lunara”, „Amort. inreg.”, „Necorp.”, „Cont”, „Cont amortizare”, „Cont cheltuiala”.
+# Până azi, pe un astfel de export, valoarea de intrare se lua din „Data intrare” (prima coloană care conținea „intrare”), iar
+# contul de imobilizare („Cont”) nu se recunoștea deloc.
+from core import import_tabel as _it
+
+CAMPURI = {
+    "cod": ("nr inv", "nr inventar", "numar inventar", "numar de inventar", "cod inventar", "cod", "inventar"),
+    "denumire": ("denumire mijloc fix", "denumire", "mijloc fix", "nume"),
+    "rezidual": ("valoare reziduala", "rezidual*"),
+    "ramas": ("val ramasa", "valoare ramasa", "valoare neamortizata", "ramas", "ramasa", "neamortizat*"),
+    "amortizat": ("amort inreg", "amortizare inregistrata", "amortizare cumulata", "amortizat"),
+    "valoare": ("valoare intrare", "valoare de intrare", "valoare achizitie", "valoare de achizitie", "cost achizitie",
+                "valoare"),
+    "valoare_inventar": ("valoare inventar",),
+    "durata": ("dur luni", "durata luni", "durata normala", "durata*", "luni", "dnf"),
+    "pif": ("data pif", "data punerii in functiune", "data intrare", "pif", "punere in functiune", "data"),
+    "metoda": ("tip amortizare", "metoda amortizare", "metoda de amortizare", "metoda*"),
+    "cont_imob": ("cont imobilizare", "cont imob", "=cont"),
+    "cont_amort": ("cont amortizare", "cont amort"),
+    "cd": ("cercetare*", "c d", "destinat cd", "destinatie cd"),
+}
+
+
 def extrage(continut, nume_fisier=""):
     """Intoarce lista de dicturi cu campurile mijlocului fix + verificari."""
-    nume = (nume_fisier or "").lower()
-    randuri = []
-
-    if nume.endswith(".csv") or nume.endswith(".tsv") or nume.endswith(".txt"):
-        import csv, io
-        text = continut.decode("utf-8-sig", errors="replace") if isinstance(continut, bytes) else str(continut)
-        prima = text.splitlines()[0] if text.splitlines() else ""
-        delim = "\t" if nume.endswith(".tsv") else (";" if prima.count(";") > prima.count(",") else ",")
-        randuri = list(csv.reader(io.StringIO(text), delimiter=delim))
-    elif nume.endswith(".xlsx") or nume.endswith(".xlsm"):
-        import io
-        from openpyxl import load_workbook
-        wb = load_workbook(io.BytesIO(continut), read_only=True, data_only=True)
-        ws = wb.active
-        for r in ws.iter_rows(values_only=True):
-            randuri.append(["" if c is None else c for c in r])
-        wb.close()
-    else:
-        raise ValueError("Fișierul trimis nu se poate citi: se așteaptă un CSV sau un "
-                         "XLSX. Salvează exportul în unul din formatele astea și "
-                         "încarcă-l din nou.")
-
-    if not randuri:
+    brut = _it.citeste(continut, nume_fisier)
+    if not brut or all(_it.rand_gol(r) for r in brut):
         return []
-
-    antet = [str(x) for x in randuri[0]]
-    i_cod = _gaseste_col(antet, "cod", "inventar", "nr")
-    i_den = _gaseste_col(antet, "denumire", "nume", "mijloc")
+    try:
+        antet, start = _it.gaseste_antet(brut, CAMPURI, obligatorii=("denumire",), nume_fisier=nume_fisier)
+    except _it.FisierNecitit as e:
+        if isinstance(e, _it.ColoaneAmbigue):
+            raise
+        raise ValueError("nu se găsește coloana denumire mijloc fix - fișier nerecunoscut")
+    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=camp)
+    i_den = col("denumire")
+    i_cod = col("cod", (i_den,))
     # rezidual si ramas se identifica INTAI, ca „valoare reziduala" / „valoare ramasa" sa nu fie luate drept
     # valoarea de intrare cand stau inaintea ei in antet
-    i_rez = _gaseste_col(antet, "rezidual", "reziduală")
-    i_ram = _gaseste_col(antet, "ramas", "rămas", "neamortizat", exclus=(i_rez,))
-    i_val = _gaseste_col(antet, "valoare", "intrare", "achizitie", "achiziție", exclus=(i_rez, i_ram))
-    i_dur = _gaseste_col(antet, "durata", "durată", "luni", "dnf")
-    i_pif = _gaseste_col(antet, "pif", "punere", "functiune", "funcțiune", "data")
-    i_met = _gaseste_col(antet, "metoda", "metodă", "amortizare")
-    i_cimo = _gaseste_col(antet, "cont imob", "cont_imob", "imobilizare")
-    i_camo = _gaseste_col(antet, "cont amort", "cont_amort", "amortizare cont")
-    i_cd = _gaseste_col(antet, "cercetare", "c&d", "destinat cd", "destinatie cd", "destinatie_cd")   # [lot 19 d11]
-    if i_den < 0:
-        raise ValueError("nu se găsește coloana denumire mijloc fix - fișier nerecunoscut")
+    i_rez = col("rezidual")
+    i_dur = col("durata")
+    i_ram = col("ramas", (i_rez, i_dur) + tuple(j for j, h in enumerate(antet) if h.split()[:1] in (["dur"], ["durata"])))
+    i_amz = col("amortizat")
+    i_vinv = col("valoare_inventar")
+    i_pif = col("pif")
+    i_val = col("valoare", (i_rez, i_ram, i_vinv, i_pif))
+    i_met = col("metoda")
+    i_camo = col("cont_amort")
+    i_cimo = col("cont_imob", (i_camo,))
+    i_cd = col("cd")   # [lot 19 d11]
 
     out = []
-    for idx, r in enumerate(randuri[1:], start=1):
+    for idx, r in enumerate(brut[start:], start=1):
+        nr = start + idx
         def cel(i):
-            return str(r[i]).strip() if (0 <= i < len(r)) else ""
+            return _it.celula(r, i)
 
         den = cel(i_den)
         if not den:
@@ -141,31 +142,31 @@ def extrage(continut, nume_fisier=""):
         rezidual = _numar(cel(i_rez)) if i_rez >= 0 else 0.0   # lipsa coloanei = 0, NU valoare (defect 6)
         durata = _intreg(cel(i_dur))
         # durata in ani -> luni daca pare ani (< 60 si fisierul zice "ani")
-        if 0 < durata <= 50 and "an" in (antet[i_dur].lower() if 0 <= i_dur < len(antet) else ""):
+        if 0 < durata <= 50 and any(w.startswith("an") for w in (antet[i_dur].split() if i_dur >= 0 else [])):
             durata *= 12
 
         avertismente = []
         if rezidual > valoare + 0.01:
-            avertismente.append("rezidual > valoare")
+            avertismente.append("valoarea reziduală depășește valoarea de intrare")
         # `_data` intoarce un SIR ISO, nu un `date` — prima forma a trecut sirul direct la
         # `prag_mf` si a produs `TypeError: '>=' not supported between str and date`. Prins de
         # `test_mijloace_fixe_import_categorie`, pe fixturi reale.
-        _pif_iso = _data(r[i_pif]) if (0 <= i_pif < len(r)) else None
+        _pif_iso = _data(_it.valoare(r, i_pif)) if i_pif >= 0 else None
         try:
             _pif = datetime.date.fromisoformat(_pif_iso) if _pif_iso else None
         except ValueError:
             _pif = None
         _prag = float(_oi.prag_mf(_pif))
-        _cand = _pif.isoformat() if _pif else "dată lipsă"
+        _cand = _data_ro(_pif) if _pif else "dată lipsă"
         if 0 < valoare < _prag:
             if _oi.prag_mf_cunoscut(_pif):
-                avertismente.append("sub plafonul de mijloc fix de %s lei, la data intrării %s"
-                                    % (int(_prag), _cand))
+                avertismente.append("sub plafonul de mijloc fix de %s, la data intrării %s"
+                                    % (_bani(_prag, "lei"), _cand))
             else:
                 # Necunoscutul nu se rotunjeste la „stiu ca nu": registrul n-are prag pentru data
                 # aia, deci se spune ca pragul e MOSTENIT, nu verificat la sursa.
-                avertismente.append("sub cel mai vechi plafon cunoscut (%s lei) — registrul n-are "
-                                    "prag verificat pentru %s" % (int(_prag), _cand))
+                avertismente.append("sub cel mai vechi plafon cunoscut (%s) — registrul n-are "
+                                    "prag verificat pentru %s" % (_bani(_prag, "lei"), _cand))
         if durata <= 0:
             avertismente.append("durată lipsă")
         if not cel(i_cimo):
@@ -183,11 +184,24 @@ def extrage(continut, nume_fisier=""):
             rata = (valoare - rezidual) / durata
             if abs(ramas_fisier - ramas) > rata + 1:
                 avertismente.append(
-                    "valoarea rămasă din fișier (%.2f) diferă de cea calculată la %s din data PIF, durată și "
-                    "metodă (%.2f) — amortizarea continuă din calcul, nu din coloana rămas; verifică cele trei"
-                    % (ramas_fisier, datetime.date.today().isoformat(), ramas))
+                    "valoarea rămasă din fișier (%s) diferă de cea calculată la %s din data PIF, durată și "
+                    "metodă (%s) — amortizarea continuă din calcul, nu din coloana rămas; verifică cele trei"
+                    % (_bani(ramas_fisier, "lei"), _data_ro(datetime.date.today()), _bani(ramas, "lei")))
+        if i_amz >= 0 and cel(i_amz) != "" and amortizat is not None and durata > 0:
+            amz_fisier = _numar(cel(i_amz))
+            if abs(amz_fisier - amortizat) > (valoare - rezidual) / durata + 1:
+                avertismente.append(
+                    "amortizarea înregistrată din fișier (%s) diferă de cea calculată la %s din data PIF, durată și metodă "
+                    "(%s) — amortizarea continuă din calcul; verifică data, durata și metoda" %
+                    (_bani(amz_fisier, "lei"), _data_ro(datetime.date.today()), _bani(amortizat, "lei")))
+        if i_vinv >= 0 and cel(i_vinv) != "" and abs(_numar(cel(i_vinv)) - valoare) > 0.01:
+            avertismente.append(
+                "valoarea de inventar din fișier (%s) diferă de valoarea de intrare (%s) — în aplicația veche au fost "
+                "modernizări sau reevaluări, care nu se preiau: amortizarea continuă din valoarea de intrare. Dacă activul a fost modernizat sau reevaluat, valoarea și durata din fișier trebuie aduse la zi înainte de import"
+                % (_bani(_numar(cel(i_vinv)), "lei"), _bani(valoare, "lei")))
 
         out.append({
+            "rand_fisier": nr,
             "cod": cel(i_cod) or f"MF{idx:03d}",
             "denumire": den,
             "valoare": valoare,
@@ -195,7 +209,7 @@ def extrage(continut, nume_fisier=""):
             "amortizat": amortizat,           # la zi, din motor (None daca motorul nu poate calcula randul)
             "ramas": ramas,
             "dnf_luni": durata,
-            "data_pif": _data(r[i_pif]) if (0 <= i_pif < len(r)) else None,
+            "data_pif": _pif_iso,
             "metoda": _normalizeaza_metoda(cel(i_met)),
             "cont_imobilizare": cel(i_cimo),   # NU se completeaza tacit cu 2131 (categoria permisiva); gol -> lit.c
             "cont_amortizare": cel(i_camo) or "2813",
@@ -247,6 +261,7 @@ def verifica_randuri(randuri):
     (imposibil), cod de inventar duplicat - toate intrau, iar migrarea zicea "gata"."""
     er, coduri = [], {}
     for i, r in enumerate(randuri or [], start=2):
+        i = _it.nr_rand(r, i)
         cod = str(r.get("cod") or "").strip()
         den = str(r.get("denumire") or cod or "?").strip()
         val = float(r.get("valoare") or 0)
@@ -269,13 +284,40 @@ def verifica_randuri(randuri):
         elif rez > val + 0.01:
             er.append(respinge("mijloc fix", i, "rezidual_peste_intrare",
                                "%s: valoarea reziduală (%s) depășește valoarea de intrare (%s)"
-                               % (den, rez, val)))
+                               % (den, _bani(rez, "lei"), _bani(val, "lei"))))
+        elif dur > 0:
+            # [C24, 14.10.2026] amortizarea se calculează AICI, pe server, din ce se scrie — nu din câmpul `amortizat` al
+            # previzualizării. Un rând pe care motorul nu-l poate calcula (ex. metoda accelerată pe un cont neclasificat) se
+            # refuză numit, cu motivul motorului; până azi trecea de verificare și răsturna toată salvarea cu un 422 de model.
+            motiv = _motiv_necalculabil(r, dur)
+            if motiv:
+                er.append(respinge("mijloc fix", i, "amortizare_necalculabila",
+                                   "%s: amortizarea nu se poate calcula — %s" % (den, motiv)))
     return er
 
 
+def _motiv_necalculabil(r, dur):
+    """Textul motorului de amortizare când rândul nu se poate calcula; `""` când se poate."""
+    from core import d406_active
+    pif = r.get("data_pif")
+    try:
+        pif = datetime.date.fromisoformat(str(pif)[:10]) if pif else None
+    except ValueError:
+        return "data punerii în funcțiune %r nu se înțelege" % (pif,)
+    try:
+        d406_active.amortizat_la_data({"valoare": float(r.get("valoare") or 0), "rezidual": float(r.get("rezidual") or 0),
+                                       "dnf_luni": dur, "data_pif": pif, "cod": r.get("cod"),
+                                       "metoda": r.get("metoda") or "liniara",
+                                       "cont_imobilizare": r.get("cont_imobilizare") or "",
+                                       "destinatie_cd": bool(r.get("destinatie_cd"))}, datetime.date.today())
+    except ValueError as e:
+        return str(e)
+    return ""
+
+
 def importa(conn, randuri):
-    """DELETE + INSERT per firma. Intoarce {importati}.
-    Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri)."""
+    """DELETE + INSERT per firma. Intoarce {importati, respinse}: rândurile bune se scriu, cele respinse se întorc numite
+    (C24). Ridica ValueError numai daca NICIUN rand nu poate intra (vezi verifica_randuri)."""
     # [probare invalid, 03.09.2026 — aceeasi clasa ca importul de istoric] UN IMPORT GOL
     # STERGEA TOT, IN TACERE. Lista vida trecea de verificare (n-are ce respinge), ajungea la
     # `DELETE FROM mijloace_fixe` de mai jos, si raspundea ca un import reusit cu zero randuri. Un fisier gol,
@@ -286,14 +328,19 @@ def importa(conn, randuri):
                          "fixe al firmei — cel pe care stă amortizarea — și n-ar fi pus nimic "
                          "în loc. Dacă chiar vrei să golești registrul, e altă operațiune.")
     er = verifica_randuri(randuri)
-    if er:
-        raise ValueError("%d rânduri nu pot intra: %s. Mijloacele fixe intră în "
-                         "amortizare și în D406 SAF-T."
-                         % (len(er), "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6])))
+    # [C24, decizia Costin 14.10.2026, verbatim în DECIZII: „fără blocare la salvare; rândul problemă se arată, restul se
+    # salvează”] Rândurile respinse NU intră și se întorc numite (`respinse`); celelalte se salvează. Numai un import în care
+    # NICIUN rând nu poate intra se refuză întreg — altfel ar șterge registrul și n-ar pune nimic în loc.
+    respinse_idx = {x["rand"] for x in er}
+    bune = [r for i, r in enumerate(randuri, start=2) if _it.nr_rand(r, i) not in respinse_idx]
+    if not bune:
+        raise ValueError("Niciun rând nu poate intra: %s. Mijloacele fixe intră în amortizare și în D406 SAF-T; registrul "
+                         "existent a rămas neatins."
+                         % "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6]))
     with conn.cursor() as cur:
         cur.execute("DELETE FROM mijloace_fixe")
         n = 0
-        for r in randuri:
+        for r in bune:
             cur.execute("""
                 INSERT INTO mijloace_fixe
                   (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual,
@@ -304,4 +351,4 @@ def importa(conn, randuri):
                   r.get("rezidual", 0), r.get("dnf_luni", 0),
                   r.get("data_pif"), r.get("metoda", "liniara"), bool(r.get("destinatie_cd"))))
             n += 1
-    return {"importati": n}
+    return {"importati": n, "respinse": er}

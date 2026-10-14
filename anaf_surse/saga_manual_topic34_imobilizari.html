@@ -1,0 +1,186 @@
+    <!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all | index | follow">
+  <title>Imobilizari - Manual de utilizare Saga C.</title>
+<meta name="description" content="Ecran utilizat pentru gestionarea imobilizărilor corporale şi necorporale ale societăţii.
+Conţine clasificaţia mijloacelor fixe, pentru imobili ...">
+    <link rel="shortcut icon" href="/images/web/favicon.png">
+  <link type="text/css" href="../comun/css/style.css?version=1791985756" rel="stylesheet">
+  <link type="text/css" href="../comun/css/responsive.css?version=1791985756" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700" rel="stylesheet">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tinymce/tinymce-jquery@1/dist/tinymce-jquery.min.js"></script>
+  <script src="../comun/js/core.js?version=1791985756"></script>
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="display: none;">
+        <symbol id="facebookLogo" viewBox="0 0 24 24">
+          <path style="fill:#fff;"
+                d="M20.4,2.1H3.6C2.7,2.1,2,2.8,2,3.7v16.7c0,0.9,0.7,1.7,1.6,1.7h16.8c0.9,0,1.6-0.7,1.6-1.7V3.7 C22,2.8,21.3,2.1,20.4,2.1z 
+                  M15.4,8c-0.4-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.7,0.1-0.9,0.3c-0.2,0.2-0.3,0.5-0.3,1v0.7
+                  h2.2l-0.5,2.1 h-1.7v6.9h-2.7v-6.9H9.1V9.6h1.3V8.8c0-0.8,0.1-1.3,0.3-1.7c0.2-0.4,0.6-0.9,1.1-1.1
+                  c0.5-0.3,1.3-0.4,2-0.4c0.8,0,1.4,0.3,2.2,0.5 L15.4,8z">
+          </path>
+    	</symbol>
+        <symbol id="logoSmall" viewBox="0 0 48 48">
+    	    <path d="M34.3,11.7L18.9,27.5c-1.4,1.4-3.8,1.4-5.3,0l-1.6-1.6c-1.4-1.4-1.4-3.8,0-5.3
+            L27.5,5.1c1.4-1.4,3.8-1.4,5.2,0l1.6,1.6C35.8,8.1,35.8,10.3,34.3,11.7z" />
+
+        <path d="M36,27.5L20.6,42.9c-1.4,1.4-3.8,1.4-5.3,0l-1.4-1.6c-1.4-1.4-1.4-3.8,0-5.2
+            l15.5-15.5c1.4-1.4,3.8-1.4,5.3,0l1.6,1.6C37.5,23.6,37.5,26,36,27.5z" />
+        </symbol>
+    </svg>
+
+    <header class="header">
+      <nav class="navbar navbar-default">
+        <div class="navbar-header">
+        <a class="navbar-brand" href="index.php" title="Programe de contabilitate, salarii si evidenta de stocuri">
+        <img src="https://www.sagasoft.ro/images/logo.svg" class="logo" height="25" alt="Sagasoft Logo">
+        <svg role="img" aria-label="Logo" class="logoSmall"><use xlink:href="#logoSmall"></use></svg>
+        </a>
+        </div>
+        <div class="header-right">
+          <span class="copy-text">Copiat</span>
+          <div id="copy"><i class="fa fa-share-alt" aria-hidden="true"></i></div>
+            <form method="GET" action="search.php">
+  <input type="text" name="cauta" placeholder="Cauta in manual ...">
+  <button type="submit">Cautare</button>
+</form>
+        </div>
+      </nav>
+    </header>
+    <main>
+        <div class="sidebar">
+            <div class="sidebar-header">
+    <div class="ham">
+        <i class="fa fa-bars" aria-hidden="true"></i>
+    </div>
+    <div class="sidebar-header-wrapper">
+        <div class="version">
+            <span class="title">Saga C.</span>
+        </div>
+                <a class="hmbtnindex" href="glosar-1-kw-1-letter-A.html">
+        <i class="fa fa-folder-open" aria-hidden="true"></i>
+        <span>Glosar</span>
+        </a>
+        <a class="hmbtntoc current" href="topic-1-introducere.html">
+        <i class="fa fa fa-list-ol" aria-hidden="true"></i>
+        <span>Content</span>
+        </a>
+            </div>
+</div>
+            <div class="sidebar-content"><ul><li class="child-0"><a href="topic-1-introducere.html" title="Introducere">Introducere</a></li><li class="child-0"><a href="topic-3-licente.html" title="Licente">Licente</a></li><li class="child-0"><a href="topic-5-consideratii-generale.html" title="Consideratii generale">Consideratii generale</a></li><li class="child-0"><a href="topic-8-configurare.html" title="Configurare">Configurare</a><ul><li class="child-1"><a href="topic-9-configurare-societati.html" title="Configurare societati">Configurare societati</a><ul><li class="child-2"><a href="topic-10-conturi-automate.html" title="Conturi automate">Conturi automate</a></li><li class="child-2"><a href="topic-11-setari-diverse.html" title="Setari diverse">Setari diverse</a></li><li class="child-2"><a href="topic-12-preluare-date-contabile.html" title="Preluare date contabile">Preluare date contabile</a></li><li class="child-2"><a href="topic-13-preluare-stocuri-initiale.html" title="Preluare stocuri initiale">Preluare stocuri initiale</a></li></ul></li><li class="child-1"><a href="topic-14-configurare-salarii.html" title="Configurare salarii">Configurare salarii</a></li><li class="child-1"><a href="topic-15-configurare-utilizatori.html" title="Configurare utilizatori">Configurare utilizatori</a></li></ul></li><li class="child-0"><a href="topic-16-nomenclatoare.html" title="Nomenclatoare">Nomenclatoare</a><ul><li class="child-1"><a href="topic-17-terti.html" title="Terti">Terti</a></li><li class="child-1"><a href="topic-18-agenti.html" title="Agenti">Agenti</a></li><li class="child-1"><a href="topic-19-plan-de-conturi.html" title="Plan de conturi">Plan de conturi</a></li><li class="child-1"><a href="topic-20-gestiuni.html" title="Gestiuni">Gestiuni</a></li><li class="child-1"><a href="topic-21-articole.html" title="Articole">Articole</a></li><li class="child-1"><a href="topic-22-tipuri-de-articole-servicii.html" title="Tipuri de articole-servicii">Tipuri de articole-servicii</a></li><li class="child-1"><a href="topic-23-grupe.html" title="Grupe">Grupe</a></li><li class="child-1"><a href="topic-24-filiale.html" title="Filiale">Filiale</a></li><li class="child-1"><a href="topic-25-salariati.html" title="Salariati">Salariati</a></li><li class="child-1"><a href="topic-273-reges.html" title="REGES">REGES</a></li></ul></li><li class="child-0"><a href="topic-26-operatii.html" title="Operatii">Operatii</a><ul><li class="child-1"><a href="topic-27-articole-contabile.html" title="Articole contabile">Articole contabile</a></li><li class="child-1"><a href="topic-28-intrari.html" title="Intrari">Intrari</a><ul><li class="child-2"><a href="topic-29-intrari---lei.html" title="Intrari - lei">Intrari - lei</a></li><li class="child-2"><a href="topic-30-intrari---valuta.html" title="Intrari - valuta">Intrari - valuta</a></li></ul></li><li class="child-1"><a href="topic-31-iesiri.html" title="Iesiri">Iesiri</a><ul><li class="child-2"><a href="topic-32-iesiri---lei.html" title="Iesiri - lei">Iesiri - lei</a></li><li class="child-2"><a href="topic-33-iesiri---valuta.html" title="Iesiri - valuta">Iesiri - valuta</a></li></ul></li><li class="child-1"><a href="topic-34-imobilizari.html" title="Imobilizari">Imobilizari</a></li><li class="child-1"><a href="topic-35-operatii-cu-stocuri.html" title="Operatii cu stocuri">Operatii cu stocuri</a><ul><li class="child-2"><a href="topic-36-transferuri.html" title="Transferuri">Transferuri</a></li><li class="child-2"><a href="topic-37-bonuri-de-consum.html" title="Bonuri de consum">Bonuri de consum</a></li><li class="child-2"><a href="topic-38-productie.html" title="Productie">Productie</a></li><li class="child-2"><a href="topic-39-inventariere.html" title="Inventariere">Inventariere</a></li><li class="child-2"><a href="topic-40-dare-in-folosinta-obiecte-de-inventar.html" title="Dare in folosinta obiecte de inventar">Dare in folosinta obiecte de inventar</a></li><li class="child-2"><a href="topic-41-dezmembrari.html" title="Dezmembrari">Dezmembrari</a></li><li class="child-2"><a href="topic-42-operatii-speciale.html" title="Operatii speciale">Operatii speciale</a></li><li class="child-2"><a href="topic-43-reglari-descarcare.html" title="Reglari descarcare">Reglari descarcare</a></li><li class="child-2"><a href="topic-44-schimbare-pret-de-vanzare-marfuri.html" title="Schimbare pret de vanzare marfuri">Schimbare pret de vanzare marfuri</a></li></ul></li><li class="child-1"><a href="topic-45-casa-banca-deconturi.html" title="Casa-Banca-Deconturi">Casa-Banca-Deconturi</a></li><li class="child-1"><a href="topic-46-cecuri,-bo-emise-primite.html" title="Cecuri, BO emise-primite">Cecuri, BO emise-primite</a></li><li class="child-1"><a href="topic-47-state-salarii.html" title="State salarii">State salarii</a></li><li class="child-1"><a href="topic-48-inchidere-luna.html" title="Inchidere luna">Inchidere luna</a></li><li class="child-1"><a href="topic-89-e-factura.html" title="e-Factura">e-Factura</a></li></ul></li><li class="child-0"><a href="topic-49-situatii.html" title="Situatii">Situatii</a><ul><li class="child-1"><a href="topic-50-contabile.html" title="Contabile">Contabile</a><ul><li class="child-2"><a href="topic-51-fisa-contului.html" title="Fisa contului">Fisa contului</a></li><li class="child-2"><a href="topic-52-balante.html" title="Balante">Balante</a></li><li class="child-2"><a href="topic-53-cartea-mare.html" title="Cartea Mare">Cartea Mare</a></li><li class="child-2"><a href="topic-54-jurnale-tva.html" title="Jurnale TVA">Jurnale TVA</a></li><li class="child-2"><a href="topic-55-registrul-jurnal.html" title="Registrul jurnal">Registrul jurnal</a></li><li class="child-2"><a href="topic-56-registrul-inventar.html" title="Registrul Inventar">Registrul Inventar</a></li><li class="child-2"><a href="topic-57-bilant.html" title="Bilant">Bilant</a></li><li class="child-2"><a href="topic-58-declaratia-406---saf-t.html" title="Declaratia 406 - SAF-T">Declaratia 406 - SAF-T</a></li></ul></li><li class="child-1"><a href="topic-59-comerciale.html" title="Comerciale">Comerciale</a><ul><li class="child-2"><a href="topic-60-situatii-clienti---furnizori.html" title="Situatii clienti - furnizori">Situatii clienti - furnizori</a></li><li class="child-2"><a href="topic-61-situatie-cecuri-bilete-la-ordin.html" title="Situatie cecuri-bilete la ordin">Situatie cecuri-bilete la ordin</a></li><li class="child-2"><a href="topic-62-fise-articole.html" title="Fise articole">Fise articole</a></li><li class="child-2"><a href="topic-63-situatie-aprovizionari.html" title="Situatie aprovizionari">Situatie aprovizionari</a></li><li class="child-2"><a href="topic-64-situatie-vanzari.html" title="Situatie vanzari">Situatie vanzari</a></li><li class="child-2"><a href="topic-65-situatie-consumuri.html" title="Situatie consumuri">Situatie consumuri</a></li><li class="child-2"><a href="topic-66-situatie-obiecte-inventar.html" title="Situatie obiecte inventar">Situatie obiecte inventar</a></li><li class="child-2"><a href="topic-67-situatie-productie.html" title="Situatie productie">Situatie productie</a></li><li class="child-2"><a href="topic-68-situatie-stocuri.html" title="Situatie stocuri">Situatie stocuri</a></li><li class="child-2"><a href="topic-69-raport-de-gestiune.html" title="Raport de gestiune">Raport de gestiune</a></li><li class="child-2"><a href="topic-269-situatie-ambalaje-sgr.html" title="Situatie ambalaje SGR">Situatie ambalaje SGR</a></li></ul></li></ul></li><li class="child-0"><a href="topic-70-diverse.html" title="Diverse">Diverse</a><ul><li class="child-1"><a href="topic-71-comenzi.html" title="Comenzi">Comenzi</a></li><li class="child-1"><a href="topic-72-situatie-comenzi.html" title="Situatie comenzi">Situatie comenzi</a></li><li class="child-1"><a href="topic-73-contracte.html" title="Contracte">Contracte</a></li><li class="child-1"><a href="topic-74-cheltuieli-venituri-in-avans.html" title="Cheltuieli-Venituri in avans">Cheltuieli-Venituri in avans</a></li><li class="child-1"><a href="topic-76-import-date.html" title="Import date">Import date</a></li><li class="child-1"><a href="topic-77-normare.html" title="Normare">Normare</a></li><li class="child-1"><a href="topic-78-diurne.html" title="Diurne">Diurne</a></li><li class="child-1"><a href="topic-79-situatii-manageriale.html" title="Situatii manageriale">Situatii manageriale</a></li><li class="child-1"><a href="topic-80-masini.html" title="Masini">Masini</a></li><li class="child-1"><a href="topic-81-e-transport.html" title="e-Transport">e-Transport</a></li><li class="child-1"><a href="topic-82-actionari.html" title="Actionari">Actionari</a></li><li class="child-1"><a href="topic-268-declaratia-intrastat.html" title="Declaratia intrastat">Declaratia intrastat</a></li><li class="child-1"><a href="topic-271-declaratia-205.html" title="Declaratia 205">Declaratia 205</a></li></ul></li><li class="child-0"><a href="topic-83-administrare.html" title="Administrare">Administrare</a><ul><li class="child-1"><a href="topic-84-intretinere-bd.html" title="Intretinere BD">Intretinere BD</a></li><li class="child-1"><a href="topic-85-numere-si-serii.html" title="Numere si serii">Numere si serii</a></li></ul></li><li class="child-0"><a href="topic-86-ajutor.html" title="Ajutor">Ajutor</a></li><li class="child-0"><a href="topic-87-utile.html" title="Utile">Utile</a><ul><li class="child-1"><a href="topic-88-operare-rapida-din-iesiri.html" title="Operare rapida din iesiri">Operare rapida din iesiri</a></li><li class="child-1"><a href="topic-90-preluare-solduri-tertilor.html" title="Preluare solduri tertilor">Preluare solduri tertilor</a></li><li class="child-1"><a href="topic-92-etichete.html" title="Etichete">Etichete</a></li><li class="child-1"><a href="topic-93-operare-cu-cod-de-bare.html" title="Operare cu cod de bare">Operare cu cod de bare</a></li><li class="child-1"><a href="topic-95-operare-rapida-din-iesiri.html" title="Operare rapida din iesiri">Operare rapida din iesiri</a></li><li class="child-1"><a href="topic-96-conectarea-la-casa-de-marcat.html" title="Conectarea la casa de marcat">Conectarea la casa de marcat</a></li><li class="child-1"><a href="topic-97-introducerea-raportului-fiscal-z.html" title="Introducerea raportului fiscal Z">Introducerea raportului fiscal Z</a></li><li class="child-1"><a href="topic-98-productie-pentru-ciclu-de-executie-mai-lung-de-o-luna.html" title="Productie pentru ciclu de executie mai lung de o luna">Productie pentru ciclu de executie mai lung de o luna</a></li><li class="child-1"><a href="topic-99-memento.html" title="Memento">Memento</a></li><li class="child-1"><a href="topic-270-evidentierea-ambalajelor-sgr.html" title="Evidentierea ambalajelor SGR">Evidentierea ambalajelor SGR</a></li><li class="child-1"><a href="topic-274-tratament-fiscal-al-intrarilor.html" title="Tratament fiscal al intrarilor">Tratament fiscal al intrarilor</a></li></ul></li></ul></div>        </div>
+
+    <div class="content" id="content">
+        <div class="content-head">
+                            <div class="title"><h1>Imobilizari</h1></div>
+                <div class="navigation"><div class="arrows">
+    <div class="toggleAccordion"><i class="fa fa-expand" aria-hidden="true"></i></div>
+    <div id="left"><i class="fa fa-arrow-left" aria-hidden="true"></i></div>
+    <div id="top"><i class="fa fa-arrow-up" aria-hidden="true"></i></div>
+    <div id="right"><i class="fa fa-arrow-right" aria-hidden="true"></i></div>
+</div>
+</div>
+            </div>
+            <div class="content-body">
+                <p>Ecran utilizat pentru gestionarea imobilizărilor corporale şi necorporale ale societăţii.</p>
+<p>Conţine clasificaţia mijloacelor fixe, pentru imobilizările corporale, permiţând calculul automat al amortizării acestora. Metoda de calcul a amortizării este cea a calculului liniar sau accelerat. În acest moment programul nu calculează amortizarea în regim degresiv.</p>
+<p>Ecranul conține trei pagini:</p>
+<ol>
+<li>Lista imobilizărilor - permite adăugarea, modificarea sau ștergerea imobilizărilor.</li>
+<li>Modernizări / Reevaluări / Suspendări / Plan amortizare -  permite introducerea operațiile care au loc asupra imobilizărilor si vizualizarea planului de amortizare.</li>
+<li>Registru imobilizărilor - destinat generării registrului.</li>
+</ol>
+<hr>
+<div class="accordion"><i class="fa fa-plus-square"></i>Lista imobilizărilor</div>
+<div class="accordion-child hidden">
+<p>Semnificația coloanelor și modul de operare:</p>
+<ul>
+<li><strong>Nr.inv.</strong> - numărul de inventar - acesta trebuie să fie unic.</li>
+<li><strong>Denumire</strong> - denumirea imobilizării (ex. Autoturism DACIA Pick-Up).</li>
+<li><strong>Nr.document</strong> - se completează (opţional) cu numărul documentului prin care a intrat imobilizarea.</li>
+<li><strong>Gestiune</strong> - locul de amplasare a mijlocului fix (gestiunea).</li>
+<li><strong>Cod clasă</strong> - permite alegerea din lista derulantă, a codului de clasificare în cazul imobilizărilor corporale.</li>
+<li><strong>Data intrare</strong> - se completează cu data la care intră în evidență imobilizarea. Din luna urmatoare acestei date începe înregistrarea amortizării.</li>
+<li><strong>Valoare intrare</strong> - se completează cu valoarea de inventar a imobilizării (valoarea de achiziţie).</li>
+<li><strong>Valoare inventar</strong> - această coloană apare în cazul în care există modernizări si/sau reevaluări și cuprinde valoarea la zi a imobilizării.</li>
+<li><strong>Dur.luni</strong> - va fi completat cu durata de utilizare a imobilizării. Se completează automat de către program la imobilizările corporale şi poate fi modificat.</li>
+<li><strong>Tip amortizare</strong> - liniară sau accelarată, după caz.</li>
+<li><strong>Val. ramasa</strong> - se completează automat cu valoarea iniţială a imobilizării, urmând să scadă după fiecare lună în care se înregistrează amortizarea.</li>
+<li><strong>Dur. ramasă</strong> - se completează automat durata totală de funcţionare în luni, urmând să scadă după fiecare lună în care se înregistrează amortizarea.</li>
+<li><strong>Amort. lunara</strong> - se va completa automat cu raportul dintre valoarea de intrare și durata amortizării.</li>
+<li><strong>Amort. inreg.</strong> - amortizarea înregistrată se va actualiza automat după fiecare lună în care se înregistrează amortizarea.</li>
+<li><strong>Necorp.</strong> - se bifează dacă imobilizarea este necorporală.</li>
+<li><strong>Cont</strong> - se completează contul în care a intrat imobilizarea.</li>
+<li><strong>Cont amortizare</strong> - se completează contul în care se va înregistra amortizarea.</li>
+<li><strong>Cont cheltuiala</strong> - se completează contul de cheltuiala (6811 sau analitic) în care se va înregistra amortizarea.</li>
+</ul>
+<p>Butoanele cu funcții comune cu a altor ecrane, au fost prezentate în secțiunea <a title="Consideratii generale" href="topic-5-consideratii-generale.html" aria-invalid="true">Consideratii generale</a>. Butoanele regăsite doar în acest ecran sau cu funcții specifice, vor fi prezentate în continuare:</p>
+<p><img src="/images/hmfile_hash_e5d2c287.png" alt="Imobilizari 1">- tipăreşte procesul verbal de recepție a mijlocului fix selectat.</p>
+<p><img src="/images/hmfile_hash_0b8b388f.png" alt="Imobilizari 2">- tipăreşte fişa mijlocului fix selectat.</p>
+<p><img src="/images/hmfile_hash_e4a55fd3.png" alt="Imobilizari 3">- permite adăugarea, modificarea sau ştergerea informaţiilor din clasificaţia mijloacelor fixe.</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACpSURBVEhLtdLBDYMwDIVhz9XFOlUuTJAteo7UASIWSOVKRq/GgcaJD78EIeSDAL3ee4uMaq0tsi+QUgrpByilLG0KeDw3M5zjBnLO5uIczpsCiOg0rseGAeuJOQb5+hTwz7ZMA71t6YFugI9xW5YDmB7Dcxdgpd9I7hkGdLiY5AZ0AljJnFsAP5hOv42Ecy4B/Ud46gKyuLdbABEcG+0SWNEJiOgA4qrtAwg8zuvqWizCAAAAAElFTkSuQmCC" alt="">- permite importul imobilizărilor din fișier XLS/ CSV/ TXT. Fișierul trebuie să conțină denumire imobilizării, clasa, data și valoarea de intrare.</p>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Modernizari/ Reevaluari/ Suspendari/ Plan amortizare</div>
+<div class="accordion-child hidden">
+<p>Semnificația coloanelor și modul de operare:</p>
+<ul>
+<li><strong>Tip. operație</strong> - se va alege din listă tipul dorit, dintre: modernizare, reevaluare brut/ net, vânzare, casare, suspendare, reactivare.</li>
+<li><strong>Explicație</strong> - opțional se completează detalii suplimentare.</li>
+<li><strong>Nr. doc</strong> - opțional, numărul documentului.</li>
+<li><strong>Data</strong> - data e la care se vor produce efectele.</li>
+<li><strong>Valoare (justa)</strong> - după caz, se introduce valoarea aferentă tipului de operație selectat.</li>
+</ul>
+<p>Plan amortizare- în partea dreaptă a paginii, apăsarea butonului <img src="/images/hmfile_hash_9589efa7.png" alt="Imobilizari 4"> va afișa evoluţia amortizării, imobilizării selectate, de la luna curentă pâna la terminarea ei. Bifarea opțiuni "Societate" va duce la afișarea perioadei și a valorii amortizării lunare cumulate pentru toate imobilizările ce urmează a fi amortizate.  </p>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Registru imobilizărilor</div>
+<div class="accordion-child hidden">
+<p>Această pagină afișează imobilizările înregistrate, permițând filtrarea imobilizărilor și generarea registrului imobilizărilor la zi sau la o dată aleasă.</p>
+<p class="warning"><strong>ATENŢIE!</strong></p>
+<hr>
+<ul>
+<li><em>Generarea registrului imobilizărilor pentru lunile din urmă este posibil să nu producă rezultate corecte în cazul în care se modifică manual câmpurile "Val.ramasa" sau "Dur.ramasa", astfel încat acestea nu mai corespund calculelor automate realizate de program.</em></li>
+</ul>
+</div>
+<hr>
+<p class="warning"><strong><strong>Observație:</strong></strong></p>
+<hr>
+<ul>
+<li><em>În cazul în care se modifică manual câmpurile "Val.ramasa" sau "Dur.ramasa", astfel încât acestea nu mai corespund calculelor automate realizate de program, amortizarea lunară va fi dată de raportul "Val. ramasa"/ "Dur. ramasa". La imobilizările la care nu corespunde valoarea ramasă de amortizat cu cea calculată automat, câmpul aferent va apărea îngroșat. La aceste cazuri, generarea registrului imobilizărilor pentru lunile din urmă este posibil să nu producă rezultate corecte. De asemenea, nu se pot introduce modernizări, reevaluări sau suspendări, pentru că se va reseta valoarea rămasă astfel încat sa fie corectă, conform cu data de intrare, valoarea de intrare, durata de amortizare și operațiunile asociate existente.</em></li>
+<li><em>Pentru imobilizările încadrate pe codul de clasa 2.3.2.1.1., programul va stabili automat, <em>la calculul impozitului, </em>suma nedeductibilă aferentă amortizării care depășește 1500 lei/luna.    <br></em></li>
+</ul>            </div>
+                </div>
+        <div id="myModal" class="modal hidden">
+        <div class="blanket hidden"></div>
+        <div class="modal-content">
+            <div class="close" id="closeModal"><span>&times;</span></div>
+            <iframe width="720" height="404" title="Tutorial video" name="contents" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+    </main>
+    <footer class="footer">
+	<div>SAGA Software © 2026</div>
+	<ul class="footer-menu">
+		<li><a href="//sagasoft.ro/index.php">Home</a></li>
+		<li><a href="//sagasoft.ro/linkuri.php">Linkuri</a></li>
+		<li><a href="//sagasoft.ro/tutoriale-video.php">Tutoriale</a></li>
+		<li><a href="http://www.sagasoftware.ro/" target="_blank">Blog</a></li>
+		<li><a href="http://forum.sagasoft.ro/index.php" target="_blank">Forum</a></li>
+		<li><a href="//sagasoft.ro/contact.php">Contact</a></li>
+		<li><a href="//sagasoft.ro/distributie.php">Distribuţie</a></li>
+		<li><a href="//sagasoft.ro/politica-confidentialitate.php">Politica de confidențialitate</a></li>
+		<li>
+		<a href="//www.facebook.com/pages/Saga-Software/128551477201741" target="_blank" title="Sagasoft pe Facebook">
+		<svg role="img" class="sg-logo"><use xlink:href="#facebookLogo"></use></svg>
+		</a>
+		</li>
+	</ul>
+</footer>
+</body>
+</html>

@@ -1,0 +1,90 @@
+Evidentierea ambalajelor SGR
+Tratament fiscal al intrarilor
+Situatii clienti - furnizori
+Situația terților se apelează prin opţiuni distincte ale meniului, dar modul de utilizare/afișare este aproape identic, astfel că vor fi prezentate împreună.
+Ecranele permit vizualizarea şi/sau tipărirea situaţiei facturilor emise/primite de la terţi (stadiul încasării/achitării acestora), atât pentru cele în lei cât şi pentru cele în valută. Sunt structurate în pagini distincte ce permit vizualizarea/listarea situației generale a facturilor emise/primite de la terți, a situației detaliate pentru un anumit terț, a facturilor scadente, a avizelor și a avansurilor, având posibilitatea definirii unui interval de timp și aplicării unor filtre suplimentare pentru obținerea situațiilor dorite.
+Situație generală
+Această pagină va fi prezentată implicit după accesarea ecranului.
+Din partea de sus a ecranului se alege perioada pentru care se dorește afișarea situaţiei terţilor (perioada implicită fiind luna curentă) și valuta (implicit fiind afișate înregistrările în lei).
+În tabelul afișat va fi prezentată, însumat pentru fiecare terț, situația generală din perioada definită, astfel:
+Neachitat inițial  - soldul total al facturilor la începutul perioadei definite.
+Total intrări  - valoarea totală a facturilor din perioada definită.
+Total plăți/ încasări  - totalul plăților/încasărilor din perioada definită.
+Neachitat final  - conţine soldul contabil al contului analitic al terţului, la sfârșitul perioadei selectate.
+Neachitat la zi  - conţine suma ramasă de achitat ce apare la momentul efectuării plății din casă, bancă sau deconturi.
+Observație:
+Sumele din câmpurile "neachitat la zi" și "neachitat final" pot fi diferite dacă:
+există plăți/încasări înregistrate după ultima zi a intervalului pentru care s-a ales listare, caz în care situația este corectă;
+s-au produs eventuale distorsiuni în cadrul datelor, iar pentru verificarea și reglarea situație se va accesa pagina următoare- "Facturi- Terțul selectat".
+Butoane funcționale
+Majoritatea butoanelor, cu funcții comune cu a altor ecrane, au fost prezentate în secțiunea  Consideratii generale .
+Butoanele regăsite doar în acest ecran sau cu funcții specifice, vor fi prezentate în continuare:
+- ascunde, în ecranul de afişare a datelor, acele linii care sunt nule sau prezintă sold nul.
+- afișează numai pozițiile cu diferențe între coloanele "Neachitat final" și "Neachitat la zi".
+- permite vizualizarea automată a fișei contului aferentă terțului selectat.
+- permite transmiterea automată prin e-mail a situației facturilor neachitate către toți terții cu sold, în cazul în care adresa de mail a terțului este completată și există un client de mail configurat în computer (Outlook, Mozilla, etc.) sau au fost setate datele serverului de mail folosit (conform instrucțiunilor din secțiunea  Intretinere BD ).
+- tipărește situația generală a tuturor terților afișați în tabel după aplicarea filtrelor.
+- tipărește situația facturilor în sold pentru toți clienții/furnizorii afișați în tabel.
+/  - tipărește toate facturile înregistrate  împreună cu plățile/încasările asociate, dacă au fost operate în intervalul ales.
+/  - tipărește situația plăților/încasărilor din intervalul ales și a facturilor stinse (chiar dacă nu aparțin intervalului) pentru toți terții din tabel
+Facturi - Terțul selectat
+Această pagină conţine facturile din perioada selectată, aferente terţului selectat în prima pagină precum şi toate plăţile/încasările efectuate în perioada de referinţă.
+Pagina este împărțită în două tabele. Tabelul din partea superioară conţine facturile din perioada selectată, aferente terţului selectat în prima pagină, iar tabelul din partea inferioară conține plăţile/încasările efectuate în perioada de referinţă.
+La poziționarea pe o factură din tabelul superior, dacă există plăți/încasări asociate acesteia, în tabelul inferior, înregistrările vor fi afișate pe fundal albastru.
+Plățile/încasările neasociate cu facturile vor fi afișate cu caractere roșii.
+Observație:
+Dacă există diferențe între sumele din coloanele "Neachitat final" și "Neachitat la zi" (semnificația coloanelor a fost prezentată în secțiunea "Situație generală") se alege o perioadă de timp suficient de mare pentru a cuprinde toate datele și se apasă butonul "Verificare". Dacă programul propune ștergerea corelațiilor, acceptați ștergerea acestora și refaceți legătura dintre facturi și plăți/încasări folosind butonul "Reglare". Dacă nu se propune ștergerea corelațiilor, iar suma din coloana "Neachitat la zi" este diferită de cea din coloana  "Neachitat final", se poate completa manual coloana "Neachitat la zi" cu suma corectă.
+Nu se pot regla facturi cu TVA la încasare cu butonul "Reglari...".
+Butoane funcționale
+Majoritatea butoanelor, cu funcții comune cu a altor ecrane, au fost prezentate în secțiunea  Consideratii generale .
+Butoanele regăsite doar în acest ecran sau cu funcții specifice, vor fi prezentate în continuare:
+- ascunde, în ecranul de afişare a datelor, acele linii care sunt nule sau prezintă sold nul.
+- este folosit pentru anularea plăților/încasărilor la factura selectată, respectiv pentru anularea asocierii unei facturi la plata/încasarea selectată.
+- permite transmiterea automată prin e-mail a situației facturilor neachitate către terțul selectat, în cazul în care adresa de mail a terțului este completată și există un client de mail configurat în computer (Outlook, Mozilla, etc.) sau au fost setate datele serverului de mail folosit (conform instrucțiunilor din secțiunea  Intretinere BD ).
+- buton utilizat pentru salt la ecranul de operare aferent înregistrării selectate.
+-  permite vizualizarea automată a fișei contului aferentă terțului selectat.
+-  acest buton caută acele situații în care există neconcordanțe în corelațiile dintre facturi și plățile/încasările efectuate pentru acestea. În cazul în care programul depistează astfel de situații vă va propune ștergerea corelațiilor. Acceptați ștergerea acestora și refaceți corelațiile prin ecranul afișat după apăsarea  butonului "Reglare". Ștergerea corelațiilor nu duce la ștergerea datelor înregistrate în contabilitate, vor fi șterse doar corelațiile dintre factură și plată/încasare.
+-  acest buton deschide panoul din care se va putea face legatura între plăți/încasări și facturi, în cazul în care acest lucru nu s-a efectuat la momentul operării plăților sau au fost șterse aceste corelații. Panoul va afișa în tabelul superior plățile care nu au fost atribuite facturilor, precum și stornările nerepartizate pe facturi, iar în ecranul inferior, facturile care prezintă sold. Pentru asociere, se va selecta o poziție din tabelul superior și se va asocia parțial (prin completarea manuală a sumei dorite în coloana "Achitat") sau integral (prin bifarea casetei aferente) cu factura dorită din tabelul inferior.
+Reglare în FIFO- bifarea acestei opțiuni, din panoul "Reglare", va duce la asocierea plăților/încasărilor/stornărilor cu facturile ce prezintă sold și au o dată anterioară plății/încasării/stornării, folosind principiul FIFO. Pentru declanșarea acestei operațiuni apăsați și butonul "Reglare automată".
+Reglare automată- apăsarea acestui buton, fără bifarea opțiunii "Reglare în FIFO", va duce la asocierea automată a facturilor cu plățile/încasările/stornările, împerecherea fiind efectuată în funcție de valoare.
+Reglare automată pentru toți furnizorii/clienții- folosind metoda descrisă mai sus, acest buton declanșează reglarea automată pentru toți furnizorii/clienții ce prezintă sold.
+-  generează documentul ce cuprinde facturile neachitate aferente terțului selectat.
+-  tipărește situația generală, din perioada definită, pentru terțul selectat
+-  tipărește situația facturilor în sold pentru terțul selectat.
+/  -  tipărește toate facturile înregistrate împreună cu plățile/încasările asociate, dacă au fost operate în intervalul ales.
+/  - tipărește situația plăților/încasărilor din intervalul ales și a facturilor stinse (chiar dacă nu aparțin intervalului) aferente terțului selectat.
+Scadențar
+Această pagină conţine toate facturile aflate în sold, scadente peste numărul de zile specificate în partea de sus a paginii.
+Utilizatorul poate opta pentru generarea scadențarului numai pentru facturile aferente terțului selectat anterior (în pagina Situație generală) și/ sau numai pentru facturile din perioada selectată. În acest sens se bifează căsuța corespunzătoare, aflată în partea superioară a ecranului.
+Butoane funcționale
+- generează scadențarul conform filtrelor aplicate.
+- generează scadențarul conform filtrelor aplicate, grupand facturile în sold pe intervale de timp predefinite.
+Avize de expediție
+Această pagină afișează avizele aferente terțului selectat.
+Pagina este împărțită în trei tabele. În primul tabel vor fi afișate avizele înregistrate pentru terțul selectat, din perioada setată în partea de sus a ecranului. Tabelul poziționat în partea dreaptă, sus, afișează toate facturile, din perioada definită, pentru care s-au asociat avize, iar în tabelul din partea inferioară, vor fi afișate pozițiile privind detaliile înregistrate pentru fiecare aviz selectat în partea de sus.
+Bifarea opțiunii " Toate " va duce la afișarea avizelor aferente tuturor clienților/furnizorilor, înregistrate în perioada definită.
+Bifarea opțiunii " Facturi corespondente " va afișa doar facturile ce au asociat avizul selectat în primul tabel, dacă acestea au fost înregistrate în perioada definită.
+Butoane funcționale
+- ascunde, în ecranul de afişare a datelor, acele avize pentru care au fost asociate facturi pentru întreaga valoare (coloana "Total de facturat"=0)
+- buton utilizat pentru salt la ecranul de operare aferent avizului selectat.
+-  tipărește situația generală a avizelor, din perioada definită.
+-  tipărește situația facturilor neachitate pentru terțul selectat inițial.
+/  - tipărește toate facturile aferente terțului selectat inițial, împreună cu plățile/încasările asociate, dacă au fost operate în intervalul ales.
+/  - tipărește situația plăților/încasărilor în corespondență cu facturile stinse, din intervalul ales, aferente terțului selectat.
+Avansuri
+Această pagină afișează sumele înregistrate prin conturile de avans (409, 419 și analiticele acestora), aferente terțului selectat.
+Pagina este împărțită în două tabele. Tabelul din partea de sus a ecranului afișează totalul sumelor înregistate prin conturile de avans, în perioada selectată, iar în tabelul din partea de jos a ecranului regăsiți sumele facturate și stornate, defalcate pe fiecare înregistrare, din perioada selectată.
+Butoane funcționale
+- ascunde acele poziții care au sold 0.
+- buton utilizat pentru salt la ecranul de operare aferent avansului primit/ acordat sau stornat.
+-  tipărește situația avansurilor, așa cum sunt afișate în tabelul din partea de jos a ecranului.
+×
+SAGA Software © 2026
+Home
+Linkuri
+Tutoriale
+Blog
+Forum
+Contact
+Distribuţie
+Politica de confidențialitate

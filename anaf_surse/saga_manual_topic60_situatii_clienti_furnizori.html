@@ -1,0 +1,230 @@
+    <!DOCTYPE html>
+<html lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all | index | follow">
+  <title>Situatii clienti - furnizori - Manual de utilizare Saga C.</title>
+<meta name="description" content="Situația terților se apelează prin opţiuni distincte ale meniului, dar modul de utilizare/afișare este aproape identic, astfel că vor fi prezent ...">
+    <link rel="shortcut icon" href="/images/web/favicon.png">
+  <link type="text/css" href="../comun/css/style.css?version=1791985756" rel="stylesheet">
+  <link type="text/css" href="../comun/css/responsive.css?version=1791985756" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700" rel="stylesheet">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tinymce/tinymce-jquery@1/dist/tinymce-jquery.min.js"></script>
+  <script src="../comun/js/core.js?version=1791985756"></script>
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="display: none;">
+        <symbol id="facebookLogo" viewBox="0 0 24 24">
+          <path style="fill:#fff;"
+                d="M20.4,2.1H3.6C2.7,2.1,2,2.8,2,3.7v16.7c0,0.9,0.7,1.7,1.6,1.7h16.8c0.9,0,1.6-0.7,1.6-1.7V3.7 C22,2.8,21.3,2.1,20.4,2.1z 
+                  M15.4,8c-0.4-0.3-0.7-0.5-1.2-0.5c-0.4,0-0.7,0.1-0.9,0.3c-0.2,0.2-0.3,0.5-0.3,1v0.7
+                  h2.2l-0.5,2.1 h-1.7v6.9h-2.7v-6.9H9.1V9.6h1.3V8.8c0-0.8,0.1-1.3,0.3-1.7c0.2-0.4,0.6-0.9,1.1-1.1
+                  c0.5-0.3,1.3-0.4,2-0.4c0.8,0,1.4,0.3,2.2,0.5 L15.4,8z">
+          </path>
+    	</symbol>
+        <symbol id="logoSmall" viewBox="0 0 48 48">
+    	    <path d="M34.3,11.7L18.9,27.5c-1.4,1.4-3.8,1.4-5.3,0l-1.6-1.6c-1.4-1.4-1.4-3.8,0-5.3
+            L27.5,5.1c1.4-1.4,3.8-1.4,5.2,0l1.6,1.6C35.8,8.1,35.8,10.3,34.3,11.7z" />
+
+        <path d="M36,27.5L20.6,42.9c-1.4,1.4-3.8,1.4-5.3,0l-1.4-1.6c-1.4-1.4-1.4-3.8,0-5.2
+            l15.5-15.5c1.4-1.4,3.8-1.4,5.3,0l1.6,1.6C37.5,23.6,37.5,26,36,27.5z" />
+        </symbol>
+    </svg>
+
+    <header class="header">
+      <nav class="navbar navbar-default">
+        <div class="navbar-header">
+        <a class="navbar-brand" href="index.php" title="Programe de contabilitate, salarii si evidenta de stocuri">
+        <img src="https://www.sagasoft.ro/images/logo.svg" class="logo" height="25" alt="Sagasoft Logo">
+        <svg role="img" aria-label="Logo" class="logoSmall"><use xlink:href="#logoSmall"></use></svg>
+        </a>
+        </div>
+        <div class="header-right">
+          <span class="copy-text">Copiat</span>
+          <div id="copy"><i class="fa fa-share-alt" aria-hidden="true"></i></div>
+            <form method="GET" action="search.php">
+  <input type="text" name="cauta" placeholder="Cauta in manual ...">
+  <button type="submit">Cautare</button>
+</form>
+        </div>
+      </nav>
+    </header>
+    <main>
+        <div class="sidebar">
+            <div class="sidebar-header">
+    <div class="ham">
+        <i class="fa fa-bars" aria-hidden="true"></i>
+    </div>
+    <div class="sidebar-header-wrapper">
+        <div class="version">
+            <span class="title">Saga C.</span>
+        </div>
+                <a class="hmbtnindex" href="glosar-1-kw-1-letter-A.html">
+        <i class="fa fa-folder-open" aria-hidden="true"></i>
+        <span>Glosar</span>
+        </a>
+        <a class="hmbtntoc current" href="topic-1-introducere.html">
+        <i class="fa fa fa-list-ol" aria-hidden="true"></i>
+        <span>Content</span>
+        </a>
+            </div>
+</div>
+            <div class="sidebar-content"><ul><li class="child-0"><a href="topic-1-introducere.html" title="Introducere">Introducere</a></li><li class="child-0"><a href="topic-3-licente.html" title="Licente">Licente</a></li><li class="child-0"><a href="topic-5-consideratii-generale.html" title="Consideratii generale">Consideratii generale</a></li><li class="child-0"><a href="topic-8-configurare.html" title="Configurare">Configurare</a><ul><li class="child-1"><a href="topic-9-configurare-societati.html" title="Configurare societati">Configurare societati</a><ul><li class="child-2"><a href="topic-10-conturi-automate.html" title="Conturi automate">Conturi automate</a></li><li class="child-2"><a href="topic-11-setari-diverse.html" title="Setari diverse">Setari diverse</a></li><li class="child-2"><a href="topic-12-preluare-date-contabile.html" title="Preluare date contabile">Preluare date contabile</a></li><li class="child-2"><a href="topic-13-preluare-stocuri-initiale.html" title="Preluare stocuri initiale">Preluare stocuri initiale</a></li></ul></li><li class="child-1"><a href="topic-14-configurare-salarii.html" title="Configurare salarii">Configurare salarii</a></li><li class="child-1"><a href="topic-15-configurare-utilizatori.html" title="Configurare utilizatori">Configurare utilizatori</a></li></ul></li><li class="child-0"><a href="topic-16-nomenclatoare.html" title="Nomenclatoare">Nomenclatoare</a><ul><li class="child-1"><a href="topic-17-terti.html" title="Terti">Terti</a></li><li class="child-1"><a href="topic-18-agenti.html" title="Agenti">Agenti</a></li><li class="child-1"><a href="topic-19-plan-de-conturi.html" title="Plan de conturi">Plan de conturi</a></li><li class="child-1"><a href="topic-20-gestiuni.html" title="Gestiuni">Gestiuni</a></li><li class="child-1"><a href="topic-21-articole.html" title="Articole">Articole</a></li><li class="child-1"><a href="topic-22-tipuri-de-articole-servicii.html" title="Tipuri de articole-servicii">Tipuri de articole-servicii</a></li><li class="child-1"><a href="topic-23-grupe.html" title="Grupe">Grupe</a></li><li class="child-1"><a href="topic-24-filiale.html" title="Filiale">Filiale</a></li><li class="child-1"><a href="topic-25-salariati.html" title="Salariati">Salariati</a></li><li class="child-1"><a href="topic-273-reges.html" title="REGES">REGES</a></li></ul></li><li class="child-0"><a href="topic-26-operatii.html" title="Operatii">Operatii</a><ul><li class="child-1"><a href="topic-27-articole-contabile.html" title="Articole contabile">Articole contabile</a></li><li class="child-1"><a href="topic-28-intrari.html" title="Intrari">Intrari</a><ul><li class="child-2"><a href="topic-29-intrari---lei.html" title="Intrari - lei">Intrari - lei</a></li><li class="child-2"><a href="topic-30-intrari---valuta.html" title="Intrari - valuta">Intrari - valuta</a></li></ul></li><li class="child-1"><a href="topic-31-iesiri.html" title="Iesiri">Iesiri</a><ul><li class="child-2"><a href="topic-32-iesiri---lei.html" title="Iesiri - lei">Iesiri - lei</a></li><li class="child-2"><a href="topic-33-iesiri---valuta.html" title="Iesiri - valuta">Iesiri - valuta</a></li></ul></li><li class="child-1"><a href="topic-34-imobilizari.html" title="Imobilizari">Imobilizari</a></li><li class="child-1"><a href="topic-35-operatii-cu-stocuri.html" title="Operatii cu stocuri">Operatii cu stocuri</a><ul><li class="child-2"><a href="topic-36-transferuri.html" title="Transferuri">Transferuri</a></li><li class="child-2"><a href="topic-37-bonuri-de-consum.html" title="Bonuri de consum">Bonuri de consum</a></li><li class="child-2"><a href="topic-38-productie.html" title="Productie">Productie</a></li><li class="child-2"><a href="topic-39-inventariere.html" title="Inventariere">Inventariere</a></li><li class="child-2"><a href="topic-40-dare-in-folosinta-obiecte-de-inventar.html" title="Dare in folosinta obiecte de inventar">Dare in folosinta obiecte de inventar</a></li><li class="child-2"><a href="topic-41-dezmembrari.html" title="Dezmembrari">Dezmembrari</a></li><li class="child-2"><a href="topic-42-operatii-speciale.html" title="Operatii speciale">Operatii speciale</a></li><li class="child-2"><a href="topic-43-reglari-descarcare.html" title="Reglari descarcare">Reglari descarcare</a></li><li class="child-2"><a href="topic-44-schimbare-pret-de-vanzare-marfuri.html" title="Schimbare pret de vanzare marfuri">Schimbare pret de vanzare marfuri</a></li></ul></li><li class="child-1"><a href="topic-45-casa-banca-deconturi.html" title="Casa-Banca-Deconturi">Casa-Banca-Deconturi</a></li><li class="child-1"><a href="topic-46-cecuri,-bo-emise-primite.html" title="Cecuri, BO emise-primite">Cecuri, BO emise-primite</a></li><li class="child-1"><a href="topic-47-state-salarii.html" title="State salarii">State salarii</a></li><li class="child-1"><a href="topic-48-inchidere-luna.html" title="Inchidere luna">Inchidere luna</a></li><li class="child-1"><a href="topic-89-e-factura.html" title="e-Factura">e-Factura</a></li></ul></li><li class="child-0"><a href="topic-49-situatii.html" title="Situatii">Situatii</a><ul><li class="child-1"><a href="topic-50-contabile.html" title="Contabile">Contabile</a><ul><li class="child-2"><a href="topic-51-fisa-contului.html" title="Fisa contului">Fisa contului</a></li><li class="child-2"><a href="topic-52-balante.html" title="Balante">Balante</a></li><li class="child-2"><a href="topic-53-cartea-mare.html" title="Cartea Mare">Cartea Mare</a></li><li class="child-2"><a href="topic-54-jurnale-tva.html" title="Jurnale TVA">Jurnale TVA</a></li><li class="child-2"><a href="topic-55-registrul-jurnal.html" title="Registrul jurnal">Registrul jurnal</a></li><li class="child-2"><a href="topic-56-registrul-inventar.html" title="Registrul Inventar">Registrul Inventar</a></li><li class="child-2"><a href="topic-57-bilant.html" title="Bilant">Bilant</a></li><li class="child-2"><a href="topic-58-declaratia-406---saf-t.html" title="Declaratia 406 - SAF-T">Declaratia 406 - SAF-T</a></li></ul></li><li class="child-1"><a href="topic-59-comerciale.html" title="Comerciale">Comerciale</a><ul><li class="child-2"><a href="topic-60-situatii-clienti---furnizori.html" title="Situatii clienti - furnizori">Situatii clienti - furnizori</a></li><li class="child-2"><a href="topic-61-situatie-cecuri-bilete-la-ordin.html" title="Situatie cecuri-bilete la ordin">Situatie cecuri-bilete la ordin</a></li><li class="child-2"><a href="topic-62-fise-articole.html" title="Fise articole">Fise articole</a></li><li class="child-2"><a href="topic-63-situatie-aprovizionari.html" title="Situatie aprovizionari">Situatie aprovizionari</a></li><li class="child-2"><a href="topic-64-situatie-vanzari.html" title="Situatie vanzari">Situatie vanzari</a></li><li class="child-2"><a href="topic-65-situatie-consumuri.html" title="Situatie consumuri">Situatie consumuri</a></li><li class="child-2"><a href="topic-66-situatie-obiecte-inventar.html" title="Situatie obiecte inventar">Situatie obiecte inventar</a></li><li class="child-2"><a href="topic-67-situatie-productie.html" title="Situatie productie">Situatie productie</a></li><li class="child-2"><a href="topic-68-situatie-stocuri.html" title="Situatie stocuri">Situatie stocuri</a></li><li class="child-2"><a href="topic-69-raport-de-gestiune.html" title="Raport de gestiune">Raport de gestiune</a></li><li class="child-2"><a href="topic-269-situatie-ambalaje-sgr.html" title="Situatie ambalaje SGR">Situatie ambalaje SGR</a></li></ul></li></ul></li><li class="child-0"><a href="topic-70-diverse.html" title="Diverse">Diverse</a><ul><li class="child-1"><a href="topic-71-comenzi.html" title="Comenzi">Comenzi</a></li><li class="child-1"><a href="topic-72-situatie-comenzi.html" title="Situatie comenzi">Situatie comenzi</a></li><li class="child-1"><a href="topic-73-contracte.html" title="Contracte">Contracte</a></li><li class="child-1"><a href="topic-74-cheltuieli-venituri-in-avans.html" title="Cheltuieli-Venituri in avans">Cheltuieli-Venituri in avans</a></li><li class="child-1"><a href="topic-76-import-date.html" title="Import date">Import date</a></li><li class="child-1"><a href="topic-77-normare.html" title="Normare">Normare</a></li><li class="child-1"><a href="topic-78-diurne.html" title="Diurne">Diurne</a></li><li class="child-1"><a href="topic-79-situatii-manageriale.html" title="Situatii manageriale">Situatii manageriale</a></li><li class="child-1"><a href="topic-80-masini.html" title="Masini">Masini</a></li><li class="child-1"><a href="topic-81-e-transport.html" title="e-Transport">e-Transport</a></li><li class="child-1"><a href="topic-82-actionari.html" title="Actionari">Actionari</a></li><li class="child-1"><a href="topic-268-declaratia-intrastat.html" title="Declaratia intrastat">Declaratia intrastat</a></li><li class="child-1"><a href="topic-271-declaratia-205.html" title="Declaratia 205">Declaratia 205</a></li></ul></li><li class="child-0"><a href="topic-83-administrare.html" title="Administrare">Administrare</a><ul><li class="child-1"><a href="topic-84-intretinere-bd.html" title="Intretinere BD">Intretinere BD</a></li><li class="child-1"><a href="topic-85-numere-si-serii.html" title="Numere si serii">Numere si serii</a></li></ul></li><li class="child-0"><a href="topic-86-ajutor.html" title="Ajutor">Ajutor</a></li><li class="child-0"><a href="topic-87-utile.html" title="Utile">Utile</a><ul><li class="child-1"><a href="topic-88-operare-rapida-din-iesiri.html" title="Operare rapida din iesiri">Operare rapida din iesiri</a></li><li class="child-1"><a href="topic-90-preluare-solduri-tertilor.html" title="Preluare solduri tertilor">Preluare solduri tertilor</a></li><li class="child-1"><a href="topic-92-etichete.html" title="Etichete">Etichete</a></li><li class="child-1"><a href="topic-93-operare-cu-cod-de-bare.html" title="Operare cu cod de bare">Operare cu cod de bare</a></li><li class="child-1"><a href="topic-95-operare-rapida-din-iesiri.html" title="Operare rapida din iesiri">Operare rapida din iesiri</a></li><li class="child-1"><a href="topic-96-conectarea-la-casa-de-marcat.html" title="Conectarea la casa de marcat">Conectarea la casa de marcat</a></li><li class="child-1"><a href="topic-97-introducerea-raportului-fiscal-z.html" title="Introducerea raportului fiscal Z">Introducerea raportului fiscal Z</a></li><li class="child-1"><a href="topic-98-productie-pentru-ciclu-de-executie-mai-lung-de-o-luna.html" title="Productie pentru ciclu de executie mai lung de o luna">Productie pentru ciclu de executie mai lung de o luna</a></li><li class="child-1"><a href="topic-99-memento.html" title="Memento">Memento</a></li><li class="child-1"><a href="topic-270-evidentierea-ambalajelor-sgr.html" title="Evidentierea ambalajelor SGR">Evidentierea ambalajelor SGR</a></li><li class="child-1"><a href="topic-274-tratament-fiscal-al-intrarilor.html" title="Tratament fiscal al intrarilor">Tratament fiscal al intrarilor</a></li></ul></li></ul></div>        </div>
+
+    <div class="content" id="content">
+        <div class="content-head">
+                            <div class="title"><h1>Situatii clienti - furnizori</h1></div>
+                <div class="navigation"><div class="arrows">
+    <div class="toggleAccordion"><i class="fa fa-expand" aria-hidden="true"></i></div>
+    <div id="left"><i class="fa fa-arrow-left" aria-hidden="true"></i></div>
+    <div id="top"><i class="fa fa-arrow-up" aria-hidden="true"></i></div>
+    <div id="right"><i class="fa fa-arrow-right" aria-hidden="true"></i></div>
+</div>
+</div>
+            </div>
+            <div class="content-body">
+                <p>Situația terților se apelează prin opţiuni distincte ale meniului, dar modul de utilizare/afișare este aproape identic, astfel că vor fi prezentate împreună.</p>
+<p>Ecranele permit vizualizarea şi/sau tipărirea situaţiei facturilor emise/primite de la terţi (stadiul încasării/achitării acestora), atât pentru cele în lei cât şi pentru cele în valută. Sunt structurate în pagini distincte ce permit vizualizarea/listarea situației generale a facturilor emise/primite de la terți, a situației detaliate pentru un anumit terț, a facturilor scadente, a avizelor și a avansurilor, având posibilitatea definirii unui interval de timp și aplicării unor filtre suplimentare pentru obținerea situațiilor dorite.</p>
+<hr>
+<div class="accordion"><i class="fa fa-plus-square"></i>Situație generală</div>
+<div class="accordion-child hidden">
+<p>Această pagină va fi prezentată implicit după accesarea ecranului.</p>
+<p>Din partea de sus a ecranului se alege perioada pentru care se dorește afișarea situaţiei terţilor (perioada implicită fiind luna curentă) și valuta (implicit fiind afișate înregistrările în lei).</p>
+<p>În tabelul afișat va fi prezentată, însumat pentru fiecare terț, situația generală din perioada definită, astfel:</p>
+<p><strong>Neachitat inițial</strong> - soldul total al facturilor la începutul perioadei definite.</p>
+<p><strong>Total intrări </strong>- valoarea totală a facturilor din perioada definită.</p>
+<p><strong>Total plăți/ încasări</strong> - totalul plăților/încasărilor din perioada definită.</p>
+<p><strong>Neachitat final</strong> - conţine soldul contabil al contului analitic al terţului, la sfârșitul perioadei selectate.</p>
+<p><strong>Neachitat la zi </strong>- conţine suma ramasă de achitat ce apare la momentul efectuării plății din casă, bancă sau deconturi.</p>
+<hr>
+<p class="warning"><strong><strong>Observație:</strong></strong></p>
+<hr>
+<ul>
+<li>Sumele din câmpurile "neachitat la zi" și "neachitat final" pot fi diferite dacă:
+<ul>
+<li>există plăți/încasări înregistrate după ultima zi a intervalului pentru care s-a ales listare, caz în care situația este corectă;</li>
+<li>s-au produs eventuale distorsiuni în cadrul datelor, iar pentru verificarea și reglarea situație se va accesa pagina următoare- "Facturi- Terțul selectat".</li>
+</ul>
+</li>
+</ul>
+<div class="accordion"><i class="fa fa-plus-square"></i>Butoane funcționale</div>
+<div class="accordion-child hidden">
+<p>Majoritatea butoanelor, cu funcții comune cu a altor ecrane, au fost prezentate în secțiunea <a title="Consideratii generale" href="topic-5-consideratii-generale.html" aria-invalid="true">Consideratii generale</a>.</p>
+<p>Butoanele regăsite doar în acest ecran sau cu funcții specifice, vor fi prezentate în continuare:</p>
+<p><img src="/images/bsoldnul.png" alt="Bsoldnul">- ascunde, în ecranul de afişare a datelor, acele linii care sunt nule sau prezintă sold nul.</p>
+<p><img src="/images/hmfile_hash_bbcceef3.png" alt="B diferente neachitat">- afișează numai pozițiile cu diferențe între coloanele "Neachitat final" și "Neachitat la zi".</p>
+<p><img src="/images/hmfile_hash_6fcbe6e5.png" alt="B fisa contului">- permite vizualizarea automată a fișei contului aferentă terțului selectat.</p>
+<p><img src="/images/hmfile_hash_c61a4625.png" alt="B email">- permite transmiterea automată prin e-mail a situației facturilor neachitate către toți terții cu sold, în cazul în care adresa de mail a terțului este completată și există un client de mail configurat în computer (Outlook, Mozilla, etc.) sau au fost setate datele serverului de mail folosit (conform instrucțiunilor din secțiunea <a title="Intretinere BD" href="topic-84-intretinere-bd.html" aria-invalid="true">Intretinere BD</a>).<br><br></p>
+<p><img src="/images/hmfile_hash_e8c644eb.png" alt="B tiparire all">- tipărește situația generală a tuturor terților afișați în tabel după aplicarea filtrelor.</p>
+<p><img src="/images/hmfile_hash_933b096c.png" alt="Situatie furnizori 1">- tipărește situația facturilor în sold pentru toți clienții/furnizorii afișați în tabel.</p>
+<p><img src="/images/hmfile_hash_8f21af1d.png" alt="Situatie furnizori 2">/ <img src="/images/hmfile_hash_be1f4506.png" alt="Situatie clienti 1">- tipărește toate facturile înregistrate  împreună cu plățile/încasările asociate, dacă au fost operate în intervalul ales.</p>
+<p><img src="/images/hmfile_hash_a0a0e8cf.png" alt="Situatie furnizori 3">/ <img src="/images/hmfile_hash_5bbde729.png" alt="Situatie clienti  2">- tipărește situația plăților/încasărilor din intervalul ales și a facturilor stinse (chiar dacă nu aparțin intervalului) pentru toți terții din tabel</p>
+</div>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Facturi - Terțul selectat</div>
+<div class="accordion-child hidden">
+<p>Această pagină conţine facturile din perioada selectată, aferente terţului selectat în prima pagină precum şi toate plăţile/încasările efectuate în perioada de referinţă.</p>
+<p>Pagina este împărțită în două tabele. Tabelul din partea superioară conţine facturile din perioada selectată, aferente terţului selectat în prima pagină, iar tabelul din partea inferioară conține plăţile/încasările efectuate în perioada de referinţă.</p>
+<p>La poziționarea pe o factură din tabelul superior, dacă există plăți/încasări asociate acesteia, în tabelul inferior, înregistrările vor fi afișate pe fundal albastru.</p>
+<p>Plățile/încasările neasociate cu facturile vor fi afișate cu caractere roșii.</p>
+<hr>
+<p class="warning"><strong><strong>Observație:</strong></strong></p>
+<hr>
+<ul>
+<li><em>Dacă există diferențe între sumele din coloanele "Neachitat final" și "Neachitat la zi" (semnificația coloanelor a fost prezentată în secțiunea "Situație generală") se alege o perioadă de timp suficient de mare pentru a cuprinde toate datele și se apasă butonul "Verificare". Dacă programul propune ștergerea corelațiilor, acceptați ștergerea acestora și refaceți legătura dintre facturi și plăți/încasări folosind butonul "Reglare". Dacă nu se propune ștergerea corelațiilor, iar suma din coloana "Neachitat la zi" este diferită de cea din coloana  "Neachitat final", se poate completa manual coloana "Neachitat la zi" cu suma corectă.</em></li>
+<li><em>Nu se pot regla facturi cu TVA la încasare cu butonul "Reglari...".</em></li>
+</ul>
+<div class="accordion"><i class="fa fa-plus-square"></i>Butoane funcționale</div>
+<div class="accordion-child hidden">
+<p>Majoritatea butoanelor, cu funcții comune cu a altor ecrane, au fost prezentate în secțiunea <a title="Consideratii generale" href="topic-5-consideratii-generale.html" aria-invalid="true">Consideratii generale</a>.</p>
+<p>Butoanele regăsite doar în acest ecran sau cu funcții specifice, vor fi prezentate în continuare:</p>
+<p><img src="/images/bsoldnul.png" alt="Bsoldnul">- ascunde, în ecranul de afişare a datelor, acele linii care sunt nule sau prezintă sold nul.</p>
+<p><img src="/images/hmfile_hash_be394d11.png" alt="B anulare asocieri">- este folosit pentru anularea plăților/încasărilor la factura selectată, respectiv pentru anularea asocierii unei facturi la plata/încasarea selectată.</p>
+<p><img src="/images/hmfile_hash_c61a4625.png" alt="B email">- permite transmiterea automată prin e-mail a situației facturilor neachitate către terțul selectat, în cazul în care adresa de mail a terțului este completată și există un client de mail configurat în computer (Outlook, Mozilla, etc.) sau au fost setate datele serverului de mail folosit (conform instrucțiunilor din secțiunea <a title="Intretinere BD" href="topic-84-intretinere-bd.html" aria-invalid="true">Intretinere BD</a>).</p>
+<p><img src="/images/bsalt.png" alt="Bsalt">- buton utilizat pentru salt la ecranul de operare aferent înregistrării selectate.</p>
+<p><img src="/images/hmfile_hash_6fcbe6e5.png" alt="B fisa contului">-  permite vizualizarea automată a fișei contului aferentă terțului selectat.</p>
+<p><img src="/images/hmfile_hash_d3750d70.png" alt="Terti 1">-  acest buton caută acele situații în care există neconcordanțe în corelațiile dintre facturi și plățile/încasările efectuate pentru acestea. În cazul în care programul depistează astfel de situații vă va propune ștergerea corelațiilor. Acceptați ștergerea acestora și refaceți corelațiile prin ecranul afișat după apăsarea  butonului "Reglare". Ștergerea corelațiilor nu duce la ștergerea datelor înregistrate în contabilitate, vor fi șterse doar corelațiile dintre factură și plată/încasare.</p>
+<p><img src="/images/hmfile_hash_da405629.png" alt="Situatie furnizori 4">-  acest buton deschide panoul din care se va putea face legatura între plăți/încasări și facturi, în cazul în care acest lucru nu s-a efectuat la momentul operării plăților sau au fost șterse aceste corelații. Panoul va afișa în tabelul superior plățile care nu au fost atribuite facturilor, precum și stornările nerepartizate pe facturi, iar în ecranul inferior, facturile care prezintă sold. Pentru asociere, se va selecta o poziție din tabelul superior și se va asocia parțial (prin completarea manuală a sumei dorite în coloana "Achitat") sau integral (prin bifarea casetei aferente) cu factura dorită din tabelul inferior.</p>
+<ul>
+<li>Reglare în FIFO- bifarea acestei opțiuni, din panoul "Reglare", va duce la asocierea plăților/încasărilor/stornărilor cu facturile ce prezintă sold și au o dată anterioară plății/încasării/stornării, folosind principiul FIFO. Pentru declanșarea acestei operațiuni apăsați și butonul "Reglare automată".</li>
+<li>Reglare automată- apăsarea acestui buton, fără bifarea opțiunii "Reglare în FIFO", va duce la asocierea automată a facturilor cu plățile/încasările/stornările, împerecherea fiind efectuată în funcție de valoare.</li>
+<li>Reglare automată pentru toți furnizorii/clienții- folosind metoda descrisă mai sus, acest buton declanșează reglarea automată pentru toți furnizorii/clienții ce prezintă sold.</li>
+</ul>
+<p><img src="/images/hmfile_hash_d43c2307.png" alt="Situatie furnizori 5">-  generează documentul ce cuprinde facturile neachitate aferente terțului selectat.</p>
+<p><img src="/images/hmfile_hash_e8c644eb.png" alt="B tiparire all">-  tipărește situația generală, din perioada definită, pentru terțul selectat</p>
+<p><img src="/images/hmfile_hash_933b096c.png" alt="Situatie furnizori 1">-  tipărește situația facturilor în sold pentru terțul selectat.</p>
+<p><img src="/images/hmfile_hash_8f21af1d.png" alt="Situatie furnizori 2">/ <img src="/images/hmfile_hash_be1f4506.png" alt="Situatie clienti 1">-  tipărește toate facturile înregistrate împreună cu plățile/încasările asociate, dacă au fost operate în intervalul ales.</p>
+<p><img src="/images/hmfile_hash_a0a0e8cf.png" alt="Situatie furnizori 3">/ <img src="/images/hmfile_hash_5bbde729.png" alt="Situatie clienti  2">- tipărește situația plăților/încasărilor din intervalul ales și a facturilor stinse (chiar dacă nu aparțin intervalului) aferente terțului selectat.</p>
+</div>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Scadențar</div>
+<div class="accordion-child hidden">
+<p>Această pagină conţine toate facturile aflate în sold, scadente peste numărul de zile specificate în partea de sus a paginii.</p>
+<p>Utilizatorul poate opta pentru generarea scadențarului numai pentru facturile aferente terțului selectat anterior (în pagina Situație generală) și/ sau numai pentru facturile din perioada selectată. În acest sens se bifează căsuța corespunzătoare, aflată în partea superioară a ecranului.</p>
+<div class="accordion"><i class="fa fa-plus-square"></i>Butoane funcționale</div>
+<div class="accordion-child hidden">
+<p><img src="/images/hmfile_hash_e8c644eb.png" alt="B tiparire all">- generează scadențarul conform filtrelor aplicate.</p>
+<p><img src="/images/hmfile_hash_8b119ade.png" alt="Situatie furnizori 6">- generează scadențarul conform filtrelor aplicate, grupand facturile în sold pe intervale de timp predefinite.</p>
+</div>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Avize de expediție</div>
+<div class="accordion-child hidden">
+<p>Această pagină afișează avizele aferente terțului selectat.</p>
+<p>Pagina este împărțită în trei tabele. În primul tabel vor fi afișate avizele înregistrate pentru terțul selectat, din perioada setată în partea de sus a ecranului. Tabelul poziționat în partea dreaptă, sus, afișează toate facturile, din perioada definită, pentru care s-au asociat avize, iar în tabelul din partea inferioară, vor fi afișate pozițiile privind detaliile înregistrate pentru fiecare aviz selectat în partea de sus.</p>
+<p>Bifarea opțiunii "<strong>Toate</strong>" va duce la afișarea avizelor aferente tuturor clienților/furnizorilor, înregistrate în perioada definită.</p>
+<p>Bifarea opțiunii "<strong>Facturi corespondente</strong>" va afișa doar facturile ce au asociat avizul selectat în primul tabel, dacă acestea au fost înregistrate în perioada definită.</p>
+<div class="accordion"><i class="fa fa-plus-square"></i>Butoane funcționale</div>
+<div class="accordion-child hidden">
+<p><img src="/images/bsoldnul.png" alt="Bsoldnul">- ascunde, în ecranul de afişare a datelor, acele avize pentru care au fost asociate facturi pentru întreaga valoare (coloana "Total de facturat"=0)</p>
+<p><img src="/images/bsalt.png" alt="Bsalt">- buton utilizat pentru salt la ecranul de operare aferent avizului selectat.</p>
+<p><img src="/images/hmfile_hash_e8c644eb.png" alt="B tiparire all">-  tipărește situația generală a avizelor, din perioada definită.</p>
+<p><img src="/images/hmfile_hash_933b096c.png" alt="Situatie furnizori 1">-  tipărește situația facturilor neachitate pentru terțul selectat inițial.</p>
+<p><img src="/images/hmfile_hash_8f21af1d.png" alt="Situatie furnizori 2">/ <img src="/images/hmfile_hash_be1f4506.png" alt="Situatie clienti 1">- tipărește toate facturile aferente terțului selectat inițial, împreună cu plățile/încasările asociate, dacă au fost operate în intervalul ales.</p>
+<p><img src="/images/hmfile_hash_a0a0e8cf.png" alt="Situatie furnizori 3">/ <img src="/images/hmfile_hash_5bbde729.png" alt="Situatie clienti  2">- tipărește situația plăților/încasărilor în corespondență cu facturile stinse, din intervalul ales, aferente terțului selectat.</p>
+</div>
+</div>
+<div class="accordion"><i class="fa fa-plus-square"></i>Avansuri</div>
+<div class="accordion-child hidden">
+<p>Această pagină afișează sumele înregistrate prin conturile de avans (409, 419 și analiticele acestora), aferente terțului selectat.</p>
+<p>Pagina este împărțită în două tabele. Tabelul din partea de sus a ecranului afișează totalul sumelor înregistate prin conturile de avans, în perioada selectată, iar în tabelul din partea de jos a ecranului regăsiți sumele facturate și stornate, defalcate pe fiecare înregistrare, din perioada selectată.</p>
+<div class="accordion"><i class="fa fa-plus-square"></i>Butoane funcționale</div>
+<div class="accordion-child hidden">
+<p><img src="/images/bsoldnul.png" alt="Bsoldnul">- ascunde acele poziții care au sold 0.</p>
+<p><img src="/images/bsalt.png" alt="Bsalt">- buton utilizat pentru salt la ecranul de operare aferent avansului primit/ acordat sau stornat.</p>
+<p><img src="/images/hmfile_hash_e8c644eb.png" alt="B tiparire all">-  tipărește situația avansurilor, așa cum sunt afișate în tabelul din partea de jos a ecranului.</p>
+</div>
+</div>            </div>
+                </div>
+        <div id="myModal" class="modal hidden">
+        <div class="blanket hidden"></div>
+        <div class="modal-content">
+            <div class="close" id="closeModal"><span>&times;</span></div>
+            <iframe width="720" height="404" title="Tutorial video" name="contents" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+    </main>
+    <footer class="footer">
+	<div>SAGA Software © 2026</div>
+	<ul class="footer-menu">
+		<li><a href="//sagasoft.ro/index.php">Home</a></li>
+		<li><a href="//sagasoft.ro/linkuri.php">Linkuri</a></li>
+		<li><a href="//sagasoft.ro/tutoriale-video.php">Tutoriale</a></li>
+		<li><a href="http://www.sagasoftware.ro/" target="_blank">Blog</a></li>
+		<li><a href="http://forum.sagasoft.ro/index.php" target="_blank">Forum</a></li>
+		<li><a href="//sagasoft.ro/contact.php">Contact</a></li>
+		<li><a href="//sagasoft.ro/distributie.php">Distribuţie</a></li>
+		<li><a href="//sagasoft.ro/politica-confidentialitate.php">Politica de confidențialitate</a></li>
+		<li>
+		<a href="//www.facebook.com/pages/Saga-Software/128551477201741" target="_blank" title="Sagasoft pe Facebook">
+		<svg role="img" class="sg-logo"><use xlink:href="#facebookLogo"></use></svg>
+		</a>
+		</li>
+	</ul>
+</footer>
+</body>
+</html>

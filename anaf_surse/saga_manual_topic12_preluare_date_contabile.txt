@@ -1,0 +1,64 @@
+Evidentierea ambalajelor SGR
+Tratament fiscal al intrarilor
+Preluare date contabile
+Ecran ce permite preluarea balanței de pornire. Meniurile programului, meniul principal şi submeniurile sale devin active după validarea preluării de date.
+Acest capitol a configurării societăţilor este extrem de important, de aceea vă recomandăm să-l parcurgeţi cu atenţie.
+În practică se vor regăsi două situaţii legate de preluarea datelor:
+Societatea nu a avut activitate
+În această situaţie, în ecranul de preluare date se va alege luna de începere a lucrului cu programul şi se va apăsa butonul " Validare ".
+Observație :
+În situația în care doriți să activați meniul programului pentru a-l explora sau pentru a prelua prin  Restaurare  o baza de date, procedura este similară, fară a fi nevoie să țineți cont de luna aleasă pentru începerea folosirii programului.
+Societatea a mai avut activitate
+Preluarea datelor pentru astfel de societăţi poate avea loc în două momente diferite, care presupun două modalităţi de preluare:
+preluarea datelor se va face la începutul exerciţiului financiar  - în acest caz, se vor completa, pentru fiecare cont care prezintă sold la 01/01 a anului de începere, coloanele "Debit iniţial an", "Credit iniţial an", "Debit precedent" şi "Credit precedent" cu soldul conturilor la data de 01/01. Valorile de la "Debit initial an" și "Debit precedent" vor fi egale. La fel pe credit.
+preluarea datelor se va face în cursul anului  - în acest caz, se vor respecta următoarele reguli:
+✓în coloanele "Debit iniţial an", respectiv "Credit iniţial an" se vor înscrie în dreptul conturilor care se preiau, soldul acestora la data de 01/01 a anului de referinţă;
+✓coloanele "Debit precedent", respectiv "Credit precedent" se vor completa cu rulajele cumulate (inclusiv soldurile iniţiale)- coloanele "Total Sume debitoare/creditoare" din balanţa lunii anterioare preluării datelor în Saga.
+După cum se observă, valorile celor patru coloane nu vor fi egale în această situaţie
+Observații :
+În cazul în care doriţi preluarea unor conturi analitice, va trebui să le adăugaţi în listă ținând cont de regulile de configurare prezentate mai jos.
+În momentul în care se vor termina de preluat sumele de la clasa 5, totalurile vor trebui să prezinte sume egale. În caz contrar înseamnă că unele din datele introduse nu sunt corecte şi datele sunt dezechilibrate motiv pentru care nu veţi putea valida preluarea datelor.
+În cazul unor neconcordanţe Debit<>Credit, la apăsarea butonului de validare programul va semnala acest fapt, iar datele nu vor putea fi validate.
+ATENŢIE!
+Nu preluaţi sume şi în conturile sintetice dacă aţi preluat conturile analitice a acestora. Este suficientă preluarea sumelor în conturile analitice în acest caz.
+Exemplu : La data de 01/01/N, aveaţi 2 conturi bancare în lei deschise la două bănci diferite. Anterior utilizării programului, pentru o evidenţă exactă a operaţiilor derulate prin fiecare cont în parte, aţi avut două conturi analitice deschise la contul sintetic de grad 2- 5121 "Conturi la bănci în lei". Valorile sunt: pentru banca 1 sold- 100 lei, pentru banca 2- sold 50 lei. Începerea lucrului cu programul se va face cu luna ianuarie.
+Pentru a putea prelua corect soldurile în conturi analitice, dumneavoastră va trebui să creaţi conturile analitice 5121.1 "Cont în lei- Banca 1" respectiv 5121.2 "Cont în lei- Banca 2".
+Nu preluaţi nimic la contul sintetic de grad 2- 5121. Programul va şti că acesta este compus din suma valorilor introduse în conturile analitice.
+Veţi prelua doar sumele corespunzătoare analiticelor:
+- la contul analitic 5121.1- Debit iniţial an - 100 lei, Debit precedent - 100 lei;
+- la contul analitic 5121.2- Debit iniţial an - 50 lei, Debit precedent - 50 lei.
+În cazul soldurilor aferente terților preluarea poate fi făcută inițial pe conturile sintetice (401/4111). Ulterior, se vor putea prelua automat conturile analitice și soldurile aferente din facturile de preluare operate în ecranele "Intrări"/"Ieșiri".
+Vezi şi :  Preluare solduri analitice la terti .
+Regulile de creare a unui cont analitic
+Crearea conturilor analitice va trebui să ţină seama de următoarele enunţuri:
+cont sintetic de grad 1  este contul al cărui simbol este compus din 3 caractere (Exemplu: contul 121 "Profit şi pierdere")
+conturile sintetice de grad 2  sunt conturi al căror simbol este compus din 4 caractere şi reprezintă, de regulă, o defalcare a conturilor sintetice de grad 1 (Exemplu: contul sintetic de grad 1- 442 "TVA" este defalcat în 5 conturi sintetice de grad 2- 4423, 4424, 4426, 4427 şi 4428)
+Reguli :
+un analitic al unui cont se creează pentru conturile sintetice de grad 1 numai dacă acestea nu sunt defalcate în conturi sintetice de grad 2, iar dacă există o astfel de defalcare contul analitic se va crea având ca bază contul sintetic de grad 2.
+simbolul contului analitic astfel creat va trebui să conţină în mod obligatoriu
+După cum se observă, delimitatorul pentru conturi analitice este punctul.
+Observație :
+În multe cazuri, anterior începerii lucrului cu programul, utilizatorii foloseau analitice a unor conturi fără ca între simbolul contului sintetic şi indentificatorul de analitic să existe vreo delimitare. Luând exemplul anterior este posibil să fi avut analitice a contului 5121 formate astfel: 51211 şi 51212. Această formă este incorectă în utilizarea programului de aceea vă recomandăm convertirea acestui tip de analitic în forma corectă (exemplu: 51211 -> 5121.1, 51212 -> 5121.2).
+Preluarea soldurilor în valută
+În ecranul "Preluare date contabile", veți avea posibilitatea selectării monedei din lista derulantă, accesibilă din căsuța completată implicit cu " RON ". După selectare, ecranul își va schimba culoarea de fond. Preluarea soldurilor în valută se face similar preluării soldurilor în lei. Pentru a reveni la operarea datelor în lei, selectați tot din listă derulantă "RON".
+Butoane funcționale
+Butoanele cu funcții comune cu a altor ecrane, au fost prezentate în secțiunea  Consideratii generale . Butoanele regăsite doar în acest ecran sau cu funcții specifice, vor fi prezentate în continuare:
+preia automat conturile analitice ale terților și soldurile aferente din facturile de preluare. Pentru detalii consultați  Preluare solduri analitice la terti .
+vă va ajuta la preluarea automată a datelor introduse deja într-o altă societate din program. Poate fi utilizat la trecererea la versiunea integrată sau poate fi utilizat, de exemplu, dacă doriţi să începeţi o perioadă doar cu soldurile perioadei anterioare. Operaţiunea vă va prelua: conturile analitice create, soldul tuturor conturilor, clienţii, furnizorii, facturile de intrare/ieşire neachitate/neîncasate.
+Exemplu : La firma "X" aţi avut introduse toate datele până la 31.12.N şi doriţi ca în anul N+1 să începeţi doar cu soldurile la 31.12.N. Pentru aceasta redenumiţi societatea inițială adăugând, de exemplu, anul până la care au fost operate datele la finele denumirii şi creaţi o societate nouă (ex. societatea "X " va deveni " X anul N " şi veţi crea o nouă societate cu numele inițial în care veţi preluat soldurile perioadei precedente dorite).
+Pentru a prelua datele, accesați ecranul "Preluare date contabile" la firma nou creată şi apăsaţi butonul "Preluare automată". Selectaţi locaţia în care este instalat  SAGA C.3.0 , de regulă C:\SAGA C.3.0. Vă va fi afişată lista firmelor, bifaţi câmpul " preluat " al firmei a cărei date doriţi să le preluaţi şi apăsaţi butonul "Transfer firma selectată".
+Observație :
+Se selectează calea către program, de regulă C:\SAGA C.3.0 şi nu calea către datele firmei (calea de tip C:\SAGA C.3.0\0001\ fiind eronată).
+Vezi şi:
+Vezi şi:
+Preluare soldurilor tertilor .
+×
+SAGA Software © 2026
+Home
+Linkuri
+Tutoriale
+Blog
+Forum
+Contact
+Distribuţie
+Politica de confidențialitate

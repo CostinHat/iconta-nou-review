@@ -46,6 +46,52 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Comanda Costin 14.10.2026 seara (răspunsul la §6 al raportului REGIM_PILOT_PREGĂTIRE_IMPORT, verbatim în DECIZII), pct.1 —
+  importul din SAGA: C21–C25, codarea, clasa pe toate parserele și modelele `*Rand`** — lot separat pe ramura `lucru/pilot-2026-10-14`;
+  poarta NUMAI cu acordul lui Costin (regim pilot, 2c); publicarea NUMAI cu acordul lui; după raport: lotul pct.2+3+5, apoi 246 + C26.
+  - ultim: L1-0 … L1-9 făcute în worktree (necomise): `core/import_tabel.py`, 8 parsere + RIP + lista de CUI-uri pe el, C21–C25 și
+    C27–C33 (găsite pe drum: C27 codarea, C28 coloanele pe subșir, C29 totalurile / sinteticele, C30 indicatorii crezuți, C31 rândul
+    sub titluri, C32 mesajul motorului de amortizare, C33 contul dublat), ecranul, `core/test_import_saga.py` (34), plasa
+    `e2e_import_saga.py` (12, fiecare cu mutația ROȘIE), uneltele vizuale pe aplicația de probă (8019, baza de test)
+  - urmator: L1-10 — poarta + commit pe ramură, apoi publicarea (backup înainte, migrarea `salariati.de_verificat`, four-way) —
+    ACORD primit 14.10.2026 noaptea (DECIZII „PIVOT: importul salariaților și al partenerilor”). STARE = IN LUCRU
+  - pasi:
+    L1-0. Registre: TESTE (acest fir), DECIZII (comanda verbatim + interpretările), DEFICIENTE (C21–C25 + cele găsite pe drum).
+    L1-1. `core/import_tabel.py` (nou, sursa unică a citirii unui fișier de import): CSV/TSV/TXT/XLSX/XLS (xlrd, ca `banca_parser`);
+          codarea: BOM UTF-8 / UTF-16, UTF-8 strict, altfel Windows-1250 verificat (litere plauzibile), altfel REFUZ cu mesaj; rândul
+          de antet căutat sub rândurile de titlu, antetul pe două rânduri unit; antetul normalizat (diacritice ș/ş ț/ţ, punctuație);
+          `coloana()` — întâi egalitate, apoi cuvinte întregi (nu subșir: „an” nu mai prinde „angajare”), două coloane la fel de
+          potrivite = refuz numit. Trec pe el: `solduri_api`, `solduri_parteneri_api`, `salariati_import_api`, `asociati_import_api`,
+          `mijloace_fixe_import_api`, `istoric_declaratii_import_api`, `articole_import_api`, `retete_import_api` (cele 8 copii
+          `_gaseste_col` dispar), plus citirea din `rip_migrare_api` și `anaf_api.extrage_cui_din_fisier`.
+    L1-2. C21 + C22 balanța (`solduri_api.extrage_balanta`): perechea „sold final” dintr-o balanță cu mai multe perechi debit/credit
+          (fără ea: refuz numit, nu prima pereche); rândurile de total / titlu ignorate și numărate; sintetic + analiticele lui ->
+          analiticele (netul verificat, altfel refuz numit); data balanței cerută (ecran + `SolduriIn` + `importa`).
+    L1-3. Parteneri: antetele SAGA („Cod fiscal/ CNP”, „Neachitat final”, „Cont analitic”), contul ales din listă când fișierul n-are
+          coloana Cont, CNP valid acceptat ca identificator.
+    L1-4. Salariați: antetele SAGA („Funcție baza”, „Data angajării”, „Norma pe zi” numerică, „Ore pe lună” neconfundat cu ore/zi,
+          „Casa de sănătate” -> codul județului, „Cont card”); C23: `iban` în `SalariatRand`; `cnp_valid` recalculat pe server.
+    L1-5. Mijloace fixe: antetele SAGA („Nr.inv.”, „Data intrare” nu e valoarea, „Valoare intrare”, „Dur.luni”, „Tip amortizare”,
+          „Val. ramasa”, „Amort. inreg.”, „Cont”, „Cont amortizare”); C24: rândul cu problemă arătat, restul salvat; `destinatie_cd`
+          în model; câmpurile calculate (amortizat, ramas, avertismente, ok) nu se mai citesc din cerere.
+    L1-6. Istoric declarații: C25 — rândul cu problemă arătat, restul salvat; un singur nomenclator de tipuri; anualele fără lună
+          -> luna 12 (convenția din `control_fiscal_api`); modelul fără câmpurile calculate.
+    L1-7. Modelele `*Rand` (6): câmpurile calculate de previzualizare recalculate pe server; gard: ieșirea fiecărui `extrage` trece
+          prin modelul de salvare al rutei lui.
+    L1-8. Ecranul `migrare.js`: data balanței, coloanele citite, rândurile ignorate, contul partenerilor, salvarea parțială (MF,
+          istoric) cu rândurile neintrate arătate.
+    L1-9. Probe: fișiere inventate cu antetele din manualul SAGA (`anaf_surse/saga_manual_*`): balanță completă (antet pe două
+          rânduri, Windows-1250), parteneri, salariați, mijloace fixe; teste + e2e `e2e_import_saga.py` + mutații.
+    L1-9b. (crescut pe drum, 14.10) C32: mesajul `d406_active._verifica_categorie` / „valoare/dnf invalide” în cuvinte (3 locuri);
+          sumele și datele din mesajele importurilor prin `pdf_util.bani` / `data_ro` (14 mesaje, 5 module) + gard; C33: contul /
+          partenerul dublat refuzat la citire; contrastul coloanei „Metodă”; cele 7 `.mig-sold-tabel` focusabile + gard; previzualizările
+          atinse și jurnalul de activitate în inventarul vizual (`nav_ecrane.ECRANE`); DS v2.91.
+    L1-9c. (răspunsul la §6, 14.10 noaptea) salvarea parțială la salariați și parteneri; persoanele în întreținere și scutirea lipsă
+          -> 0 / „nescutit” + `salariati.de_verificat` (migrare + template), avertismentul și „De verificat” în Stat de plată,
+          confirmarea golește marcajul, reimportul nu strică ce s-a confirmat; PIVOT al deciziei 07.10 pct.4 (scutirea); e2e + mutații.
+    L1-10. Registre, verificator TOTAL 0, testele fișierelor atinse; poartă + commit pe ramură; publicare: backup, fast-forward pe
+          `main` în `~/iconta_nou`, post-commit (push, statica), migrarea pe producție (rulatorul repornește), four-way.
+
 - fir: **Comanda Costin 14.10.2026, pct.2 — deficiențele 243, 244, 245 (retestul 13.10, verbatim în DECIZII)** — lot separat, o poartă;
   R4 BLOCAT; publicarea de ghiduri noi ÎNGHEȚATĂ; după raport: pct.3 (C19).
   - ultim: pct.1 publicat `5e260e3c`; D0–D4b în commitul lotului (SHA-ul în raport)

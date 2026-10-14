@@ -1,0 +1,54 @@
+Evidentierea ambalajelor SGR
+Tratament fiscal al intrarilor
+Terti
+Terţii sunt furnizorii și clienţii.
+Gestiunea acestora este aproape identică, de aceea vor fi trataţi în acelaşi capitol.
+Semnificația coloanelor și modul de completare
+Informațiile comune afișate/ solicitate în ecranele de gestionare a terţilor sunt:
+Cod  - se completează automat de către program în momentul adaugării unei noi poziții.
+Denumire  - se completează numele terţului. Din motive practice recomandăm introducerea denumirii fără iniţialele "S.C.". Astfel ordonarea, introducerea şi/sau selectarea terților se va face mult mai simplu.
+Cod fiscal/ CNP  - se introduce codul unic de identificare al firmei sau CNP-ul, în cazul persoanelor fizice, pentru ca în jurnalele de TVA să fie completate corect datele. Programul vă va atenţiona asupra unor eventuale coduri eronate.
+Cont analitic  - se completează automat de către program în momentul introducerii unei înregistrări noi, în funcție de codul atribuit terțului. Astfel, pentru furnizorul cu codul 00001, contul analitic generat automat va fi de forma 401.00001. La fel și în cazul clienților, clientul cu codul 00001, va avea contul analitic generat automat 4111.00001.
+Țara  - codul de țară va putea fi selectat din lista derulantă. Pentru înregistrarea și declararea corectă a operațiunilor cu terți externi este obligatorie selectarea codului de țară. Implicit, acest câmp va fi completat cu "RO".
+Județ  - codul județului poate fi selectat din lista derulantă sau va fi completat automat în cazul apăsării butonului "Verificare", pentru persoanele juridice care nu au avut această informație completată în prealabil.
+Localitate  - se poate completa manual, sau se poate prelua automat la apasarea butonului "Verificare".
+Adresa  - poate fi completată manual sau va fi preluată automat în cazul apăsării butonului "Verificare" pentru persoanele juridice care nu au avut această informație completată în prealabil.
+Cont bancar  - se completează manual.
+Coloane vizibile doar după apăsarea butonului de extindere  :
+Banca  - se completează manual.
+Telefon  - se completează manual
+Email  - în cazul în care adresa de mail a terțului este completată și există un client de mail configurat în computer (Outlook, Mozilla, etc.) sau au fost setate datele serverului de mail folosit (conform instrucțiunilor din secțiunea  Intretinere BD ), se va putea trimite o notificare automată prin mail la eliberarea facturii (cu butonul care are ca imagine un plic, din partea superioara a ecranului "Iesiri") sau se vor putea trimite informari cu privire la facturile neachitate (cu butonul care are ca imagine un plic, din ecranele "Situatie furnizori" și "Situatie clienti", pagina "Situație generală"- pentru transmiterea facturilor neachitate catre toți terții cu sold sau din pagina "Facturi - TERT"- pentru transmiterea facturilor neachitate către terțul selectat.
+Nr. Reg. Com.  - se completează manual de către utilizator sau va fi completat automat de către program la apăsarea butonului "Verificare", pentru persoanele juridice care nu au avut această informație completată inițial.
+Agent  - coloană vizibilă doar dacă ați activat modulul de stocuri. După configurarea acestora în ecranul "Agenti", vor putea fi selectați din lista derulantă. Mai multe informați regăsiți în sectiunea dedicată -  agenti .
+Coloane vizibile doar în ecranul "Clienti" după apăsarea butonului de extindere  :
+Delegat, seria, nr. C.I., eliberat de..., mijloc transport  - aceste informații vor figura pe facturile emise clienților, pentru care s-au completat aceste date. După apăsarea butonului de tipărire a facturii, bifați opțiunea "Primitor", iar câmpurile se vor popula cu aceste informații.
+Disc(%)  - coloană vizibilă doar în versiunea integrată. În această coloană poate fi completat procentul de discount ce va fi aplicat articolelor, în momentul vânzări, dacă a fost completat, în prealabil, prețul de vânzare în ecranul "Articole".
+Operaţiunile de adăugare, modificare şi ştergere sunt cele prezentate în capitolul  Consideratii generale .
+Butoane funcționale
+Butoanele cu funcții comune cu a altor ecrane, au fost prezentate în secțiunea  Consideratii generale . Butoanele regăsite doar în acest ecran sau cu funcții specifice, vor fi prezentate în continuare:
+după adăugarea CUI-ului, permite verificarea terțului curent cu privire la înregistrarea în scopuri de TVA (dacă este plătitor de TVA se va adauga atributul fiscal "RO" CUI-ului deja completat). Dacă denumirea sau adresa nu sunt completate, acestea se completează automat. Funcționalitatea poate fi utilizată numai în cazul în care calculatorul este conectat la internet.
+după metoda prevăzută mai sus, acest buton permite verificarea tuturor terților înregistrați.
+deschide panoul în care se va putea introduce adresa de livrarea pentru clientul selectat. Setarea adresei de livrare este utilă atunci când se livrează către un client cu sediul social diferit de adresa de livrare a bunurilor sau care are puncte de lucru la adrese distincte. În acest panou există și campul cod în care se completează o referință proprie a adresei, pentru a ajuta la identificare. În acest câmp poate fi introdus și un cod de bare special, numit GLN (de 13 caractere). Dacă textul din câmpul cod se validează într-un cod de bare, în  e-Factura , se va transmite ca și ID de locație. Pentru a fi preluată în factură, adresa va trebui selectată din ecranul de tipărire al facturii. Adresa de livrare va putea fi completată și direct în ecranul de tipărire.
+deschide panoul din care se mai pot efectua setări suplimentare, precum:
+Zile scadență  - în funcție de numărul de zile completat în acest ecran se va completa automat coloana "Scadent" din ecranele "Intrări"/"Ieșiri";
+Limită de sold  - vizibilă doar în ecranul "Clienți". Dacă se depășește limita setată pentru clientul respectiv, o să primiți o avertizare la validarea ieșirii;
+Blocat  - va duce la blocarea tertului, astfel încât acesta nu va mai putea fi utilizat în introducerea de date;
+Cu avertizare la operare  - programul va genera o avertizare/atentionare la operarea in program;
+Entitate afiliată  - setarea este necesară dacă realizați tranzacții cu persoane afiliate, pentru transmiterea corecta în D394 (regasiți mai multe detalii pe blog la secțiunea  D394 și entități afiliate );
+Tip impozit  - opțiune disponibilă doar in ecranul "Furnizori", în cazul poziționării pe un terț- persoana fizică cu CNP-ul completat. Butonul permite selectarea tipului de impozit dintr-o listă derulantă predefinită;
+Informații suplimentare  - secțiune dedicată completării de informații suplimentare care vor apărea la momentul poziționării pe terț în ecranele de operare sau situații.
+Pentru a putea efectua setări în acest panou, apăsați butonul "Modific".
+Observații :
+Nu recomandăm schimbarea codurilor implicite, dar dacă totuși doriți să le modificați, asigurați-vă că ați completat coduri unice pentru fiecare terț configurat. Dublarea codurilor poate conduce la anomalii în funcţionarea corectă a programului.
+Conturile analitice generate automat pot fi schimbate de către utilizatori. Un exemplu ar putea fi cazul în care unul din furnizori este furnizor de imobilizări. În acest caz, utilizatorul va putea schimba contul analitic din 401.00001 în 404.00001.
+Conturile analitice definite în ecranele de furnizori/clienţi, dacă nu există în planul de conturi, vor fi create automat. Acestea vor fi utilizate implicit de către program la generarea automată a articolelor contabile în ecranele de intrări/ieşiri.
+×
+SAGA Software © 2026
+Home
+Linkuri
+Tutoriale
+Blog
+Forum
+Contact
+Distribuţie
+Politica de confidențialitate

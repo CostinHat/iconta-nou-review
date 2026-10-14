@@ -916,9 +916,11 @@ def _cnp(baza12):
 
 def test_def_97_importul_cere_norma_functia_de_baza_si_scutirea(patron, firma_gv):
     """97. Salariați: prin API/import trebuie cerute funcția de bază, scutirea și norma.
+    [PIVOT, decizia Costin 14.10.2026 pct.4, verbatim în DECIZII] scutirea lipsă nu mai refuză rândul: se importă „nescutit”, marcată
+    de verificat. Funcția de bază și norma rămân cerute.
     Pașii: firma -> Import date -> Salariați -> încarcă un fișier fără coloanele „norma”, „functie de baza”, „scutit contributie
-    minima”. Previzualizarea arată „—” la ele, rândul e refuzat cu motivul numit (norma, funcția de bază, scutirea) și
-    „Salvează salariații” e inactiv; nimic nu se scrie."""
+    minima”. Previzualizarea arată „—” la funcția de bază, „Nu — de verificat” la scutire; rândul e refuzat cu motivul numit (norma,
+    funcția de bază), „Salvează” e inactiv (niciun rând bun); nimic nu se scrie."""
     pg = patron.pg
     cnp = _cnp("185071541001")
     csv = ("nume,prenume,cnp,data angajare,brut,judet,cor\nPopescu,Ana,%s,2025-01-15,5000,B,251401\n" % cnp).encode("utf-8")
@@ -928,8 +930,9 @@ def test_def_97_importul_cere_norma_functia_de_baza_si_scutirea(patron, firma_gv
     pg.set_input_files("#mig-file", files=[{"name": "salariati_proba.csv", "mimeType": "text/csv", "buffer": csv}])
     pg.wait_for_selector("#mig-salveaza-sal", timeout=15000)
     t = patron.fereastra()
-    assert "funcție de bază: —" in t and "scutit minim: —" in t, t[:800]
-    assert "norma de lucru lipsește" in t and "funcția de bază (Da/Nu) lipsește" in t and "scutirea de contribuția minimă" in t, t[:1500]
+    assert "funcție de bază: —" in t and "scutit minim: Nu — de verificat" in t, t[:800]
+    assert "norma de lucru lipsește" in t and "funcția de bază (Da/Nu) lipsește" in t, t[:1500]
+    assert "scutirea de contribuția minimă (Da/Nu) lipsește" not in t, t[:1500]
     assert pg.is_disabled("#mig-salveaza-sal")
     patron.captura()
     assert sql('SELECT count(*) FROM "%s".salariati' % firma_gv["schema"])[0][0] == 0

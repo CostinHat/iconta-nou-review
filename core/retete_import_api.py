@@ -8,17 +8,17 @@ Idempotenta: reteta existenta (aceeasi denumire) se sare cu motiv.
 from __future__ import annotations
 
 
-def _gaseste_col(antet, *chei):
-    for i, h in enumerate(antet):
-        hl = str(h).strip().lower()
-        if hl in chei:
-            return i
-    for i, h in enumerate(antet):
-        hl = str(h).strip().lower()
-        for k in chei:
-            if k in hl:
-                return i
-    return -1
+# [14.10.2026, comanda Costin „Importul din SAGA”, verbatim în DECIZII] Citirea fișierului și potrivirea coloanelor trec prin
+# `core.import_tabel` (sursa unică: format, codare Windows-1250 recunoscută sau refuzată, antet sub titluri, coloane pe cuvinte
+# întregi, ambiguitate refuzată numit) — nu mai e o copie a lui `_gaseste_col` aici.
+from core import import_tabel as _it
+
+CAMPURI = {
+    "reteta": ("denumire reteta", "reteta", "preparat", "produs finit"),
+    "pret": ("pret vanzare", "pret*"),
+    "ingredient": ("ingredient*", "articol*", "materie*"),
+    "cantitate": ("cantitate*", "cant", "consum*"),
+}
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
@@ -27,44 +27,31 @@ from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu re
 
 def extrage(continut, nume_fisier=""):
     """Intoarce [{denumire, pret, linii:[{ingredient, cantitate}]}] grupat pe reteta."""
-    nume = (nume_fisier or "").lower()
-    randuri = []
-    if nume.endswith(".csv") or nume.endswith(".tsv") or nume.endswith(".txt"):
-        import csv, io
-        text = continut.decode("utf-8-sig", errors="replace") if isinstance(continut, bytes) else str(continut)
-        prima = text.splitlines()[0] if text.splitlines() else ""
-        delim = "\t" if nume.endswith(".tsv") else (";" if prima.count(";") > prima.count(",") else ",")
-        randuri = list(csv.reader(io.StringIO(text), delimiter=delim))
-    elif nume.endswith(".xlsx") or nume.endswith(".xlsm"):
-        import io
-        from openpyxl import load_workbook
-        wb = load_workbook(io.BytesIO(continut), read_only=True, data_only=True)
-        ws = wb.active
-        for r in ws.iter_rows(values_only=True):
-            randuri.append(["" if c is None else c for c in r])
-        wb.close()
-    else:
-        raise ValueError("Fișierul trimis nu se poate citi: se așteaptă un CSV sau un "
-                         "XLSX. Salvează exportul în unul din formatele astea și "
-                         "încarcă-l din nou.")
-    if not randuri:
+    randuri = _it.citeste(continut, nume_fisier)
+    if not randuri or all(_it.rand_gol(r) for r in randuri):
         return []
-    antet = [str(x) for x in randuri[0]]
-    i_ret = _gaseste_col(antet, "reteta", "preparat", "produs finit", "denumire reteta")
-    i_pret = _gaseste_col(antet, "pret", "pret vanzare")
-    i_ing = _gaseste_col(antet, "ingredient", "articol", "materie")
-    i_cant = _gaseste_col(antet, "cantitate", "cant", "consum")
-    if i_ret < 0 or i_ing < 0 or i_cant < 0:
+    try:
+        antet, start = _it.gaseste_antet(randuri, CAMPURI, obligatorii=("reteta", "ingredient", "cantitate"),
+                                         nume_fisier=nume_fisier)
+    except _it.FisierNecitit as e:
+        if isinstance(e, _it.ColoaneAmbigue):
+            raise
         raise ValueError("nu se găsesc coloanele Rețeta / Ingredient / Cantitate")
+    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=camp)
+    i_ret = col("reteta")
+    i_pret = col("pret")
+    i_ing = col("ingredient", (i_ret,))
+    i_cant = col("cantitate")
+    randuri = randuri[start - 1:]
     grup = {}
     ordine = []
     for r in randuri[1:]:
-        ret = str(r[i_ret] if i_ret < len(r) else "").strip()
-        ing = str(r[i_ing] if i_ing < len(r) else "").strip()
+        ret = _it.celula(r, i_ret)
+        ing = _it.celula(r, i_ing)
         if not ret or not ing:
             continue
-        cant = _numar(r[i_cant]) if 0 <= i_cant < len(r) else 0.0
-        pret = _numar(r[i_pret]) if 0 <= i_pret < len(r) else 0.0
+        cant = _numar(_it.valoare(r, i_cant)) if i_cant >= 0 else 0.0
+        pret = _numar(_it.valoare(r, i_pret)) if i_pret >= 0 else 0.0
         if ret not in grup:
             grup[ret] = {"denumire": ret[:255], "pret": pret, "linii": []}
             ordine.append(ret)

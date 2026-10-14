@@ -77,6 +77,17 @@ cotă TVA inexistentă la data documentului; semn inversat.
   salariati.salariu_brut, registre_art321.valoare — au căi de INSERT cu NULL legitim).
 - LIPSĂ: `produse` — singurul tabel de import fără cheie naturală (fără câmp de cod, nici barcode);
   în whitelist-ul gardului cu motiv, decizie de schemă deschisă (adăugare coloană cod).
+- ACOPERIT (14.10.2026, importul din SAGA — C21–C33): **citirea unui fișier de import are o singură sursă**,
+  `core/import_tabel.py` (format, codare Windows-1250 verificată sau refuzată, antet sub titluri / pe două rânduri, coloane pe
+  cuvinte întregi, ambiguitate refuzată numit). Gărzile, în `core/test_import_saga.py`:
+  `test_nicio_citire_de_fisier_de_import_in_afara_lui_import_tabel` (o copie a lui `_gaseste_col` / `load_workbook` / `decode(errors=
+  "replace")` într-un parser -> ROȘU), `test_modelul_de_salvare_nu_pierde_si_nu_rastoarna_iesirea_previzualizarii` (6 modele `*Rand`:
+  un câmp de date pierdut sau un 422 de model -> ROȘU), `test_mesajele_importului_nu_au_sume_si_date_brute` (DS cap.4), plus
+  probele C21–C33 pe fișiere inventate cu antetele manualului SAGA și plasa `frontend_test/e2e/e2e_import_saga.py`.
+  **LIMITA:** antetul EXACT al exportului de balanță SAGA nu e în manual — proba folosește termenii manualului; primul export real
+  (cu acordul lui Costin, regula 2b a regimului pilot) închide limita. Salvarea parțială: mijloace fixe, istoric, salariați, parteneri (deciziile Costin
+  14.10.2026); balanța și asociații rămân „tot sau nimic” (întreguri). Marcajul „de verificat” al salariaților (`salariati.de_verificat`)
+  e păzit de plasă (`test_salariatii_partial_si_de_verificat_pana_la_confirmare`: import, avertisment, confirmare, reimport).
 
 ### 2. Graniță cod–bază
 **Eșec:** query pe coloană/tabel inexistent; drift între schema unui tenant și template.
@@ -422,11 +433,16 @@ balanță ≠ sumă înregistrări; backup nerestaurabil.
 **Stare: PARȚIAL.**
 - ACOPERIT: `perioade_blocate`; declarația depusă persistată cu rânduri (F163v2);
   `verificatoare.echilibru_nota` / `balanta`.
-- ACOPERIT: backup local + off-site cu alertare la N eșecuri consecutive.
+- PARȚIAL (corectat 14.10.2026, citind `config/iconta-backup.sh`): backup local zilnic 03:00 (`pg_dump -Fc`, 7 zile) + off-site
+  Storage Box (30 de zile); alertarea acoperă NUMAI eșecul off-site. Un eșec al `pg_dump` local oprește scriptul (`set -euo pipefail`)
+  înaintea contorului și a emailului, unitatea n-are `OnFailure=`, iar `core/cron.py` (NESUPRAVEGHEATE) o scutește pe motiv că
+  „alertează singur” — deci un backup local căzut e tăcut. Rolurile Postgres nu sunt în dump (fără `pg_dumpall --globals-only`).
+  Fără arhivare WAL: pierderea maximă = ~24 h. Din 14.10.2026 producția are datele unui cabinet real (DECIZII 14.10.2026 „Regim pilot”).
 - ACOPERIT: restaurarea din off-site **a fost testată cap-coadă pe 18.07** (`pg_restore` exit 0,
   scheme identice cu producția, `tenant_002.facturi=5`, apoi `dropdb`). Am scris inițial aici
   „LIPSĂ" fără să verific — vezi ISTORIC 18.07. Ce lipsește e **repetarea automată**: proba a
-  fost făcută o dată, manual; nimic n-o reia periodic.
+  fost făcută o dată, manual; nimic n-o reia periodic. De atunci baza a crescut (2 firme -> 5 scheme, 204 MB); după 18.07
+  s-a rulat numai `pg_restore -l` (cuprinsul arhivei), nu o restaurare.
 - LIPSĂ: verificare nocturnă Σdebit=Σcredit per perioadă/tenant + orfani.
 
 ### 8. Integritate cod — arbori paraleli
@@ -465,6 +481,13 @@ fișiere necolectate).
   unei campanii pe un cluster deja bifat, inainte de a te sprijini pe bifa veche. De ce 3 luni: ~ un ciclu fiscal RO
   (declaratii lunare/trimestriale, legislatia se schimba la granite de an/semestru); sub atat, fereastra e prea
   scurta ca sa merite recitirea istoricului.
+- ACOPERIT (15.10.2026, regim pilot — lucrul într-un worktree): **suita nu moștenește `GIT_DIR` / `GIT_INDEX_FILE` ale hook-ului.**
+  Într-un worktree git le exportă cu cale absolută; poarta rulează din `commit-msg`, iar testele care rulau `git` într-un depozit
+  temporar lucrau pe indexul real (prima poartă a lotului 1: 6 teste ale hook-ului de mesaj + garda anti-stale a agendei, roșii fără
+  nicio legătură cu codul). `conftest.py` le scoate; gard `core/test_mediu_git_curat.py` (mutația = bucla scoasă + variabilele
+  exportate -> ROȘU). Tot din worktree: `core/test_agenda.py` lua obiectele din `--absolute-git-dir` — acum din `--git-common-dir`.
+  **LIMITA:** sentinelele `.git/…` din `post-commit` / `four-way` / `migrari_registru` presupun depozitul principal — publicarea se
+  face numai din `~/iconta_nou` (post-commit iese pe orice ramură ≠ `main`), deci nu sunt atinse din worktree.
 
 ### 10. Joburi de fundal
 **Eșec:** job care crapă nesupravegheat; job mort care arată identic cu unul care n-a avut
@@ -8797,9 +8820,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**783 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**785 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 745
+### `core/` — 747
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9265,6 +9288,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_import_migrare.py` — Teste gardian pentru importurile de migrare care nu aveau NICIUNA.
 - `core/test_import_migrare_valideaza.py` — Gard COMPORTAMENTAL (unit) pentru clasa 'importul accepta orice fisier si declara succes'
 - `core/test_import_motiv_vizibil.py` — [Regula 6 + Regula 14] GARD: motivul de refuz din preview-ul de IMPORT e VIZIBIL, nu doar in `title`.
+- `core/test_import_saga.py` — core/test_import_saga.py — importul din SAGA (comanda Costin 14.10.2026, verbatim în DECIZII „Importul din SAGA”): C21–C25,
 - `core/test_importuri_nefolosite.py` — CLICHET pe importurile nefolosite (F401). Nu blochează codul existent; oprește creșterea.
 - `core/test_impozit_dividend.py` — PAS 0 versionare formule: cotele = COTE period-aware, nu petic 'if ref>=2026 else 10'.
 - `core/test_inchidere_an.py` — GARD — varianta (a), decizia Costin 13.10.2026 (verbatim în DECIZII): „Aplicația propune, la cererea contabilului, nota de închidere la
@@ -9310,6 +9334,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_manual_decl_cere_eligibil.py` — GARD (sweep audit tenant_006): rutele de intrare MANUALĂ de declarație verifică eligibilitatea față
 - `core/test_masti.py` — Garda: nicio masca TACUTA peste un query.
 - `core/test_matrice_control_fiscal.py` — Matrice de stari pe control fiscal - PURA, aserții pe FORMĂ (nu valori). NU testeaza UI, NU repara.
+- `core/test_mediu_git_curat.py` — Suita nu moștenește variabilele GIT_* pe care git le dă hook-ului (15.10.2026, regim pilot: lucrul într-un worktree).
 - `core/test_mesaj_commit_curat.py` — GARD [Z, 28.08.2026]: mesajul de commit nu poate purta octeți de control.
 - `core/test_mesaj_in_formular.py` — GARD ÎN BROWSER — un mesaj de stare nu șterge câmpurile formularului în care e pus (găsit 08.10.2026, la proba lotului
 - `core/test_mesaje_fara_camp_intern.py` — core/test_mesaje_fara_camp_intern.py — GARD: mesaj user-facing FĂRĂ nume intern de câmp.

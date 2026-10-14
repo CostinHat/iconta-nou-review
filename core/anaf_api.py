@@ -16,54 +16,30 @@ def _curata(cui_brut):
     return cifre or None
 
 
-def _ghiceste_delim(text):
-    prima = text.splitlines()[0] if text.splitlines() else ""
-    return ";" if prima.count(";") > prima.count(",") else ","
-
-
 def extrage_cui_din_fisier(continut, nume_fisier=""):
     """
-    Extrage CUI-urile dintr-un .csv/.tsv sau .xlsx.
-    Caută coloana al cărei antet conține 'cui'/'cif'; altfel ia prima coloană.
+    Extrage CUI-urile dintr-un CSV / TXT / XLSX / XLS (citit prin `core.import_tabel`).
+    Coloana CUI după antet („Cod fiscal”, „CUI”, „CIF”); fără antet recunoscut, prima coloană.
     Curăță fiecare valoare la cifre, păstrează doar 2–10 cifre, fără duplicate.
     """
-    nume = (nume_fisier or "").lower()
-    randuri = []
-
-    if nume.endswith(".csv") or nume.endswith(".tsv") or nume.endswith(".txt"):
-        import csv, io
-        text = continut.decode("utf-8-sig", errors="replace") if isinstance(continut, bytes) else str(continut)
-        delim = "\t" if nume.endswith(".tsv") else _ghiceste_delim(text)
-        randuri = list(csv.reader(io.StringIO(text), delimiter=delim))
-    elif nume.endswith(".xlsx") or nume.endswith(".xlsm"):
-        import io
-        from openpyxl import load_workbook
-        wb = load_workbook(io.BytesIO(continut), read_only=True, data_only=True)
-        ws = wb.active
-        for r in ws.iter_rows(values_only=True):
-            randuri.append(["" if c is None else str(c) for c in r])
-        wb.close()
-    else:
-        # [P5 val 1, 10.09.2026] Mesajul ăsta n-a fost păzit niciodată de gardul de
-        # diacritice: el se uita doar la `ast.FunctionDef`, iar ruta care îl publică
-        # (`/migrare/incarca`) era `async def`. Conversia l-a scos la iveală.
-        raise ValueError("Fișierul «%s» nu se poate citi: se așteaptă un CSV sau un XLSX."
-                         % (nume or "trimis"))
-
+    # [14.10.2026, comanda Costin „Importul din SAGA”] citirea trece prin `core.import_tabel`: Windows-1250 recunoscut sau
+    # refuzat numit, XLS acceptat, antetul căutat sub titluri; coloana CUI = „Cod fiscal”, „CUI”, „CIF” (cuvinte întregi).
+    from core import import_tabel as _it
+    randuri = [r for r in _it.citeste(continut, nume_fisier) if not _it.rand_gol(r)]
     if not randuri:
         return []
-
-    # coloana CUI după antet; altfel prima coloană
-    antet = [str(x).strip().lower() for x in randuri[0]]
-    are_antet = any("cui" in h or "cif" in h for h in antet)
-    col = 0
-    for i, h in enumerate(antet):
-        if "cui" in h or "cif" in h:
-            col = i
-            break
+    campuri = {"cui": ("cod fiscal cnp", "cod fiscal", "cui", "cif", "cod unic de inregistrare")}
+    try:
+        antet, start = _it.gaseste_antet(randuri, campuri, obligatorii=("cui",), nume_fisier=nume_fisier)
+        col = _it.coloana(antet, campuri["cui"], camp="CUI")
+    except _it.ColoaneAmbigue:
+        raise
+    except _it.FisierNecitit:
+        col, start = 0, 0                       # fără antet: prima coloană, de pe primul rând (ca până acum)
+    randuri = [[_it.celula(r, j) for j in range(len(r))] for r in randuri[start:]]
 
     cui_uri, vazute = [], set()
-    for r in randuri[(1 if are_antet else 0):]:
+    for r in randuri:
         bruta = r[col] if col < len(r) else ""
         cifre = _curata(bruta)
         if cifre and 2 <= len(cifre) <= 10 and cifre not in vazute:

@@ -21,7 +21,8 @@ def stat_plata(conn, schema, an, luna):
         cur.execute(f"""
             SELECT id, nume, prenume, cnp, persoane_intretinere, part_time, ore_zi,
                    tichet_masa_valoare, iban, cor, data_angajare, data_incetare,
-                   data_nastere, copii_scolarizati, declaratie_copii, functie_baza
+                   data_nastere, copii_scolarizati, declaratie_copii, functie_baza,
+                   scutit_contrib_minim, de_verificat
             FROM {schema}.salariati
             WHERE (data_incetare IS NULL OR data_incetare >= %s)
               AND (data_angajare IS NULL OR data_angajare < (%s::date + INTERVAL '1 month'))
@@ -66,7 +67,7 @@ def stat_plata(conn, schema, an, luna):
     _pontaj_confirmat = _per.e_confirmat(conn, schema, an, luna, "pontaj")["confirmat"]
     _cs_sal = conn.cursor()
     for (sid, nume, prenume, cnp, pers, part_time, ore_zi, tichet_val, iban, cor, data_ang, data_inc,
-         data_nastere, copii_scolarizati, declaratie_copii, functie_baza) in randuri:
+         data_nastere, copii_scolarizati, declaratie_copii, functie_baza, scutit, de_verificat) in randuri:
         brut = _si.salariu_la(_cs_sal, schema, sid, _ultima_luna)  # salariul contractual din istoric
         # [lot 19 pct.4c] prezența în contract în lună: angajare/încetare, CFP/suspendare, schimbare de salariu.
         # Codul muncii art.159 alin.(1) + art.49 alin.(2); brutul cuvenit = Σ salariul zilei / zile lucrătoare.
@@ -154,6 +155,10 @@ def stat_plata(conn, schema, an, luna):
             "tichete_nominal": float(calc.get("tichete_nominal", 0)),
             "tichete_zile": tichet_zile if _tichet_val > 0 else 0,
             "pontaj_neconfirmat": bool(_pontaj_neconf),  # [#1/#3] tichete blocate pana la confirmarea pontajului
+            # [decizia Costin 14.10.2026 pct.3–4] câmpurile importate fără valoare, încă neconfirmate: statul arată avertismentul
+            # (deducerea personală / contribuția minimă pot fi greșite) până când contabilul le salvează pe salariat
+            "de_verificat": list(de_verificat or []),
+            "persoane_intretinere": int(pers or 0), "scutit_contrib_minim": bool(scutit),
             "tichet_masa_valoare": float(tichet_val or 0),  # valoarea configurata (chiar daca blocata luna asta)
             "tichete_vacanta": float(calc.get("tichete_vacanta", 0)),
             "vacanta_peste_plafon": bool(vac and vac_an > plafon_vac_an),

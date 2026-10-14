@@ -2357,3 +2357,46 @@ cuprinsese (amândouă scanează tot codul): tokenul de versiune al `firme.js` �
 --scrie`) și un parametru primit și netransmis (`bilant.motive_31_12 -> _text_6_7`); reparate, lucrul pus la adăpost pe
 `wip/2026-10-14-1335-pct2`, scanurile vizuale refăcute după re-ștampilare. Un commit prin poarta completă (commitul care conține această
 intrare).
+
+## 14.10.2026 (după-amiaza) — regim pilot: worktree de lucru + raportul de pregătire a importului din SAGA (numai citire)
+
+Comanda Costin 14.10.2026 (verbatim în DECIZII „Regim pilot”). Worktree `/home/costin/iconta_lucru` (ramura `lucru/pilot-2026-10-14`
+din `12998290`); `~/iconta_nou` curat, pe versiunea publicată. Raportul pct.3–4 (import SAGA, fluxul cabinetului nou, backup, planul
+serverului de lucru) — numai citire, plus o probă sintetică fără bază (balanța completă și modelele de salvare). Găsite: C21–C26 în
+DEFICIENTE (C21: balanța completă importată cu soldurile inițiale; C23: IBAN-ul salariatului pierdut la salvare; C26: consolidarea
+vizibilă asistentului — clasa 246); GARZI cat.7 corectat (alertarea backup-ului acoperă numai off-site). Nimic comis; nicio citire în
+datele cabinetului.
+
+## 14.10.2026 (seara) — lotul 1 al răspunsului la §6: importul din SAGA (C21–C25, C27–C33), în worktree, necomis
+
+Comanda Costin (verbatim în DECIZII „Importul din SAGA”). Citirea fișierelor de import are acum o singură sursă, `core/import_tabel.py`
+(CSV / TXT / TSV / XLSX / XLS, Windows-1250 recunoscut sau refuzat cu mesaj, antetul sub titluri sau pe două rânduri, coloanele pe
+cuvinte întregi, ambiguitatea refuzată numit); cele opt copii ale lui `_gaseste_col` au dispărut. Balanța de verificare completă se
+citește cu soldurile finale (C21), cu totalurile și sinteticele dublate lăsate deoparte și spuse (C29); data balanței e cerută (C22),
+iar partenerii și stocul inițial iau data din sursa unică; IBAN-ul salariaților ajunge în evidență (C23); la mijloace fixe și istoric
+rândul cu problemă se arată și restul se salvează (C24, C25). Pe drum: C27 (codarea), C28 (antetele SAGA pe subșir), C30 (salvarea
+credea indicatorii ecranului), C31 (rândul numărat greșit sub titluri), C32 (mesajul motorului de amortizare cu coduri), C33 (contul
+dublat -> eroare de bază). Antetele de probă din manualul SAGA C, salvat în `anaf_surse/`. Probe: `core/test_import_saga.py`,
+plasa `frontend_test/e2e/e2e_import_saga.py` (12, fiecare cu mutația roșie), uneltele vizuale pe aplicația de probă (port 8019, baza
+de test — nu pe producție). Commitul pe ramură așteaptă acordul lui Costin (poarta încarcă serverul pe care lucrează cabinetul).
+
+## 14.10.2026 (noaptea) — lotul 1, completat după răspunsul la §6: salvarea parțială la salariați și parteneri; „de verificat”
+
+Răspunsul Costin (verbatim în DECIZII „PIVOT: importul salariaților și al partenerilor”). Salariații și partenerii se salvează parțial
+(rândurile refuzate se arată numite). Persoanele în întreținere și scutirea de contribuția minimă lipsă din fișier intră 0 / „nescutit”
+și salariatul e marcat (`salariati.de_verificat`, migrare nouă): Stat de plată arată avertismentul și „De verificat (N)” până la
+confirmare; reimportul nu strică ce s-a confirmat. PIVOT al deciziei 07.10 pct.4 pentru scutire, la import. Plasa importului: 14 teste,
+fiecare comportament nou cu mutația roșie; blocul C al plasei verde (testul 97 aliniat la pivot).
+
+## 15.10.2026 — lotul 1: prima poartă respinsă (20 din 8.183), cauzele și reparațiile
+
+Prima poartă a lotului 1 (commit pe ramura de lucru) a ieșit roșie: 20 failed / 8.148 passed / 10 skipped / 15 xfailed în 3.070 s;
+nimic comis, lucrul la adăpost pe `wip/2026-10-15-lot1-poarta1`. Cauze: (1) **clasă nouă, adusă de worktree** — git dă hook-urilor
+`GIT_DIR` / `GIT_INDEX_FILE` absolute, iar suita le moștenea: testele hook-ului de mesaj vedeau indexul lotului (38 de fișiere noi);
+`conftest.py` le scoate + gard `core/test_mediu_git_curat.py`; garda anti-stale a agendei citea obiectele din directorul worktree-ului
+(acum `--git-common-dir`); (2) garda „aserțiuni pe text”: testul nou avea 13 aserțiuni pe subșir — rescrise ca egalități pe mesajul
+întreg; clichetul coborât; (3) artefacte de regenerat: TRASEE (refuzuri 107 -> 106, adnotarea rutei de parteneri), clichetele din
+predare (50: 1222 -> 1220, 77u: 964 -> 960), proba paginii principale și proba celor 50 (stil.css schimbat); (4) o citare de test
+inexistentă în TESTE.md și data „ultimei rescrieri” a predării în forma cerută.
+A doua poartă: 1 failed / 8.170 passed — `test_garzi_mesaje_afisabile` (egalitate cu un mesaj afișabil întreg, la linia 194 a testului nou;
+garda opusă celei „pe text”): aserțiunea trecută pe câmpurile respingerii (regula, CUI-ul) și începutul mesajului.

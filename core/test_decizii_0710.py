@@ -126,15 +126,18 @@ def test_d4_salariatul_pe_api_cere_cele_trei_fapte_numite():
 
 
 def test_d4_importul_refuza_randul_fara_cele_trei_cu_coloana_numita():
-    """MUTAȚIE: regula `functie_baza_lipsa` scoasă din `verifica_randuri` -> pică."""
+    """MUTAȚIE: regula `functie_baza_lipsa` scoasă din `verifica_randuri` -> pică.
+    [PIVOT, decizia Costin 14.10.2026 pct.4, verbatim în DECIZII] scutirea lipsă NU mai refuză rândul: se importă „nescutit” și se
+    marchează de verificat (`de_verificat`); funcția de bază și norma rămân cerute."""
     from core import salariati_import_api as si
     rand = {"nume": "POP", "prenume": "I", "cnp": "1900101410011", "cnp_valid": True, "data_angajare": "2099-01-01",
             "salariu_brut": 5000, "judet_casa": "B", "cor": "522101", "tip_norma": "partiala", "ore_zi": None,
             "functie_baza": None, "scutit_contrib_minim": None}
     reguli = {e.get("regula") for e in si.verifica_randuri([rand])}
-    assert {"functie_baza_lipsa", "scutire_minim_lipsa", "ore_lipsa"} <= reguli, reguli
+    assert {"functie_baza_lipsa", "ore_lipsa"} <= reguli and "scutire_minim_lipsa" not in reguli, reguli
     r = si.extrage(b"nume,prenume,cnp,data angajare,norma,brut\nPOP,I,1900101410011,2099-01-01,partiala,5000\n", "x.csv")[0]
-    assert (r["functie_baza"], r["scutit_contrib_minim"], r["ore_zi"] or None) == (None, None, None)   # nimic presupus
+    assert (r["functie_baza"], r["ore_zi"] or None) == (None, None)   # nimic presupus
+    assert r["scutit_contrib_minim"] is False and r["de_verificat"] == ["persoane_intretinere", "scutit_contrib_minim"]
 
 
 # ── D5 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

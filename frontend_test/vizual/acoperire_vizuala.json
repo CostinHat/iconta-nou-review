@@ -1,5 +1,5 @@
 {
- "ui_hash": "101127d8c8e54443",
+ "ui_hash": "a36f5335d6726fab",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -96,10 +96,86 @@
     "title_unic": 0
    }
   },
+  "import_solduri_saga": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 7,
+    "apasate": 5,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "import_mijloace_saga": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 7,
+    "apasate": 5,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "import_istoric_saga": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 7,
+    "apasate": 5,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "activitate_cabinet": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 7,
+    "apasate": 2,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
   "stat_plata": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 43,
+    "vazute": 44,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false

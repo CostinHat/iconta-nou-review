@@ -1,0 +1,88 @@
+Evidentierea ambalajelor SGR
+Tratament fiscal al intrarilor
+Salariati
+Ecran specific modulului de contabilitate. Acesta permite configurarea contractelor de muncă pentru salariații unei societăți.
+Ecranul are două tabele (zone) de introducere a datelor:
+Tabelul principal - în care se vor introduce datele aferente salariaților;
+Tabelul secundar - permite introducerea datelor aferente persoanelor aflate în întreţinerea salariatului selectat în tabelul principal. În situația în care pentru tipul contractului selectați contract de drepturi de autor, arenda sau sportiv, în tabelul din partea inferioară se vor putea adăuga datele la care s-au realizat venituri, iar pentru zilieri, o să puteți introduce pozițiile din Registrul zilierilor.
+Mai jos regăsiți informații detaliate.
+Operaţiunile de adăugare, modificare şi ştergere sunt cele prezentate în capitolul  Consideratii generale .
+Salariații pot fi preluați și automat din fișiere XML sau RVS cu ajutorul butonului  .
+Tabelul principal
+Unele câmpuri, la adăugarea unui salariat în evidenţă, vor fi completate cu valori prestabilite, de regulă cele mai des întâlnite în practică, dar acestea pot fi modificate.
+Semnificația coloanelor și modul de completare:
+Cod  - se completează automat de către program în momentul adaugării unei noi poziții.
+Nume  - numele salariatului.
+Prenume  - prenumele salariatului.
+Punct de lucru  - permite introducerea punctului de lucru la care își desfășoară activitatea salariatul. Util pentru generarea statului pe puncte de lucru, insa nu si pentru declararea impozitului defalcat pe sedii secundare în D112, în acest caz se utilizează coloana "Cod fiscal filiala".
+Funcție  - se completează funcţia, conform contractului de muncă.
+Data angajării  - se completează data angajării conform contractului de muncă.
+Tip  - se alege din lista derulantă tipul contractului. Implicit este completat "Permanent".
+Funcție baza  - optiunea se bifează în cazul în care salariatul are funcţia de bază la societate, în caz contrar se debifează. Programul bifează implicit această opțiune pentru tipul de contract - "Permanent" şi debifează pentru restul categoriilor. Bifarea acestei opțiuni va duce la aplicarea deducerii personale pentru salariatul în cauză. Dacă există persoane în întreținere, acestea se vor adăuga în tabelul secundar, pentru majorarea deducerii personale.
+Norma pe zi  - norma de lucru zilnică, conform contractului de muncă. Implicit va fi completată valoarea "8". În lista derulantă o să regăsiți valorile cuprinse între 8 și 0, inclusiv. Valoarea 0 se completează pentru contractele la care nu există o norma zilnica stabilita, ci un total de ore lucrate pentru toata luna.
+Ore pe lună  - se completează numarul de ore lunar, in cazul contractelor incadrate la norma 0 (acele contracte care nu au stabilită o normă zilnică). Ștatele de plată vor fi generate cu numărul de ore înscris în acest câmp, indiferent câte ore lucrătoare are luna. Astfel, dacă numărul de ore lucrate diferă de la o lună la alta, după validarea statului de salarii, va trebui modificat acest câmp. Programul va calcula, acolo unde se solicită obligatoriu, numărul de zile lucrate, făcând raportul dintre numărul de ore lunar şi 8 (maximul normei zilnice).
+CAS individuala  - listă de selecţie care vă permite sa optați pentru modul de calcul al CAS la nivelul angajatului.
+Zile CO/an  - permite completarea numărului de ore de concediu de odihnă anual.
+Tip salariu  - se alege tipul salariului: lunar/orar/plan.
+Avans  - se poate introduce suma plătită sub formă de avans, conform contractului de muncă. Este obligatorie pentru cei care efectuează plăţi în sistemul avans-lichidare.
+Salariu brut  - se completează cu salariul de încadrare, lunar, conform contractului de muncă a salariatului. În cazul unor decizii ulterioare de modificare a acestuia, valoarea va fi modificată corespunzător în acest câmp.
+Salariu orar  - se completează cu salariul datorat pe oră lucrată, conform contractului de muncă. La orice modificare a acestuia, valoarea din acest câmp va trebui modificată. Completarea acestui câmp este obligatorie pentru tipul de salariu "Orar".
+CNP  - codul numeric personal al salariatului.
+Cod fiscal filială  - coloană vizibilă doar după bifarea opțiunii "Această societate are filiale/ puncte de lucru", din ecranul  setari diverse . Se folosește în cazul în care există puncte de lucru cu mai mult de 5 salariați ce au CIF propriu, pentru declararea impozitului defalcat în D112. La bifarea acestei opțiuni, în meniul "Fisiere" va apărea opțiunea "Filiale" unde vor putea fi definite sediile secundare. Ulterior, fiecarui salariat i se va putea aloca filiala din care face parte.
+Județ  - se alege din lista derulantă.
+Localitatea  - după alegerea județului, în lista derulantă veți regăsi localitățile din acel județ.
+Strada, Nr., Cod poștal, Bl., Sc., Et., Ap. Sect.  - aceste coloane aferente adresei salariatului se complează manual.
+Telefon  - opțional, se complează manual.
+Nr./Data contract  - în aceste coloane se completeză numărul şi data contractului de muncă. Obligatorii pentru Registrul de Evidenta al Salariatilor. Numărul de contract trebuie sa fie unic la nivel de firma
+Casa de sănătate  - se va selecta casa de asigurări la care este arondat angajatul. Implicit este selectată casa de asigurări din județul în care societatea are sediul
+Activitate  - coloană vizibilă doar după definirea unei grupe, în panoul "Activitati/ Centre de profit", din ecranul  Grupe . Permite alegerea unei grupe, definite anterior, astfel încât la validarea statului de plată să se genereze nota contabilă defalcată pe activități. Butonul  , poziționat după coloana "Activitate" permite repartizarea salariului pe mai multe grupe, procentual și valoric.
+Tabelul secundar
+În partea de jos a ecranului se pot completa datele persoanelor aflate în întreţinerea salariatului selectat în tabelul principal, pentru ca acesta să beneficieze de deducere de bază majorată.
+Datele solicitate sunt: numele și prenumele persoanei aflate în întreţinere, CNP-ul, data de început și de sfârșit a perioadei în care se află în întreținere.
+Dacă un salariat are mai multe persoane în întreţinere, acestea se vor adăuga pe rând în acest tabel.
+Pentru aplicarea deducerii suplimentare, dacă persoanele în întreținere sunt înscrise la o formă de învățământ, se bifează opțiunea " Scolar ".
+Tot prin acest tabel, în situația în care pentru tipul contractului selectați contract de drepturi de autor, arendă sau sportiv, se vor putea adăuga datele la care s-au realizat venituri, iar pentru zilieri, o să puteți introduce pozițiile din Registrul zilierilor.
+Butoane funcționale
+Butoanele cu funcții comune cu a altor ecrane au fost prezentate în secțiunea  Consideratii generale . Butoanele regăsite doar în acest ecran sau cu funcții specifice, vor fi prezentate în continuare:
+deschide un panou din care se pot efectua setări suplimentare, precum:
+Impozitat  câmp completat implicit. Se poate alege o altă optiune disponibila in lista, dacă salariatul se încadrează excepţiile în prevăzute în Codul Fiscal.
+CAS 25%  - bifarea opțiunii va duce la calculul CAS-ului integral, respectiv 25%, pentru salariații societăților din sectorul construcțiilor, industriei alimentare sau IT. Opțiunea este vizibilă doar dacă s-a optat pentru aplicarea facilităților din cele două sectoare, în ecranul  Configurare salarii  sau dacă ați selectat în câmpul "Impozitat"-"Neimpozitat (programator)".
+Pensionar  se bifează numai dacă salariatul este pensionar, în vederea transmiterii în D112.
+Fără CAM  se bifează în cazul in care nu se datorează contribuția CAM de către salariat.
+Fără contrib. sanatate  - salariat -  se bifează în cazul în care nu se datorează contribuția individuală la fondul de sanatate.
+Tip plată  listă de selecţie a modalităţii de plată. Este utilă pentru cei care fac plata pe card a salariilor. Băncile pentru care se poate face plata pe card vor fi afişate în lista de selecţie.
+Cont card  vizibil dacă se selectează o bancă din lista "Tip plata".
+Salariat  câmp completat implicit. Din această listă derulantă se alege tipul de asigurat dpdv al contractului de muncă, în vederea transmiterii în D112.
+CI serie +nr...  datele cărții de identitate. aceste date vor fi folosite la generarea documentelor (adeverinte, contract, anexe).
+Email  în cazul în care adresa de mail a salariatului este completată și există un client de mail configurat în computer (Outlook, Mozilla, etc.) sau au fost setate datele serverului de mail folosit (conform instrucțiunilor din secțiunea  Intretinere BD ), se va putea trimite o notificare automată prin mail, conținând fluturașul de salariu (cu ajutorul butonului care are ca imagine un plic, poziționat pe linia fluturașilor, din ecranul "State salarii"-"Tipărire").
+Oră început/sfârșit activitate  se completează dacă se dorește generarea pontajului cu preluarea acestor elemente. În caz contrar se va prelua, dacă a fost setat, intervalul orar din ecranul  Configurare salarii .
+Generează analitic la 542  bifarea acestei opțiuni va duce la generarea unui analitic, pentru contul sintetic 542, de forma "542.". Spre exemplu, pentru salariatul cu cod 000001, se va genera contul analitic "542.000001".
+Mai sus au fost prezentate opțiunile vizibile în panoul "Detalii", în situația în care coloana "Tip" a fost completată cu valoarea "Permanent". Pentru un alt tip de contract, o să regăsiți mai puține opțiuni, iar unele vor fi completate implicit diferit de cele prezentate mai sus.
+De asemenea, pentru salariații cu norma întreagă diferită de 8ore/zi, dacă selectați în coloana "Norma pe zi" valoarea "7" sau "6", pentru contractele permanente,  în acest panou o să o să apară o casetă pentru reselectarea normei. Aceasta setare este necesară pentru aplicarea tratamentului corect în astfel de cazuri.
+- permite majorarea colectivă a salariilor, pentru salariații permanenți selectați din listă.
+permite importul salariaților din REVISAL (fișiere de tip RVS) sau fișiere XML.
+genereaza diverse adeverinţe foarte mişto. Textele din acestea se pot modifica înainte de tipărire.
+permite efectuarea de simulări de calcul al salariului, pornind fie de la brut, fie de la net.
+permite atribuirea storurilor permanente și a clauzei de mobilitate configurate anterior în ecranul  Configurare salarii , salariatului selectat. Suma aferentă clauzei de mobilitate, fiind neimpozabilă, nu va fi transmisă în statul de salarii, dar va fi transmisă automat în  registrul de evidență al salariaților  și în D112.
+tipăreşte sub forma unui stat de plată sintetic, pentru un interval de timp ales de utilizator, situaţia salariatului pe care este poziţionat cursorul în tabelul principal. Pentru listarea acestei situaţii, trebuie ca în perioada aleasă să existe date (state de plată) introduse.
+tipăreşte situaţia concediilor de odihnă a tuturor salariaţilor din evidenţă, pentru perioada selectată, datele fiind prezentate sub forma unui tabel cu zile concediu acordate/zile lucrătoare în lună şi zilele rămase de efectuat. Raportul ține cont şi de suspendările introduse în panoul "Concedii" din ecranul "State salarii".
+Pentru încetarea unui contract, fiind poziționat pe salariatul dorit, se completează data în câmpul "Ultima zi de lucru".
+Observații :
+Salariaţii ieşiti din evidenţă vor figura în listă pe fundal gri.
+Vor fi afișați pe fundal roșu salariații angajați de peste doi ani pentru care salariul brut este tot la nivelul minimului pe economie.
+Dacă un salariat este reangajat sau are mai multe contracte de muncă, acesta trebuie readăugat în listă.
+Nu confundați persoanele în întreținere cu coasigurații. Aceștia din urmă, se introduc in ecranul “Declaratia unica 112” > “ Asigurati “ > “ D. CM+Coasigurati ”, în partea inferioară a ecranului. Ulterior introducerii lor în acest ecran se vor prelua automat în declarație.
+Contractele de arenda pentru care nu se calculeaza contribuţii se introduc în ecranul  Intrari .
+Dacă pentru contractele aferente zilierilor există înregistrări în acest tabel, la generarea statului, programul preia sumele din înregistrarile astfel operate.  Altfel, se va prelua suma din coloana "Salariu brut".
+Vezi şi:
+Registrul de evidenţă al salariaţilor
+×
+SAGA Software © 2026
+Home
+Linkuri
+Tutoriale
+Blog
+Forum
+Contact
+Distribuţie
+Politica de confidențialitate

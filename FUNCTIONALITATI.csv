@@ -777,7 +777,7 @@ Diferențe de inventar înregistrate (plus/minus), stoc reconciliat.
 - Neînregistrarea minusurilor (imputare/cheltuială).
 ## Reguli fiscale
 Legea contabilității (inventariere anuală obligatorie); OMFP 2861/2009 (norme inventariere)."
-Import istoric declarații (migrare),"Citește lista declarațiilor deja depuse în vechiul program (tip/an/luna) și le înregistrează, ca iConta să nu le ceară ca restanță.",F053,firma,Migrare / Import date,core/istoric_declaratii_import_api.py,,LIVE,,,"## Ce face
+Import istoric declarații (migrare),"Citește lista declarațiilor deja depuse în vechiul program (tip/an/luna; anualele fără lună pe luna 12) și le înregistrează, ca iConta să nu le ceară ca restanță; rândul greșit se arată și nu intră, celelalte se salvează.",F053,firma,Migrare / Import date,core/istoric_declaratii_import_api.py,,LIVE,,,"## Ce face
 Importă lista declarațiilor deja depuse în vechiul program (tip, an, lună) și le înregistrează în iConta, ca aplicația să nu ți le mai ceară drept restanțe.
 ## Unde apare / Cum se folosește
 Se folosește la migrare, în pasul de import al istoricului de declarații pentru o firmă.
@@ -861,7 +861,7 @@ Arată starea migrării pe straturi pentru fiecare cabinet: fiecare strat are o 
 O găsești în zona de migrare, ca tablou de bord al progresului. Marchezi fiecare strat pe măsură ce îl finalizezi.
 ## De reținut
 Stările sunt decise manual de tine, ca să știi clar cât mai ai de făcut."
-Import mijloace fixe (migrare),"Citește registrul de mijloace fixe din export (valoare, durată, amortizare cumulată) - amortizarea continuă fără reluare de la zero.",F059,firma,Migrare / Import date,core/mijloace_fixe_import_api.py,,LIVE,,,"## Ce face
+Import mijloace fixe (migrare),"Citește registrul de mijloace fixe din export (SAGA: Nr.inv., Valoare intrare, Dur.luni, Tip amortizare, Cont…; CSV / TXT / XLSX / XLS) - amortizarea continuă din calcul, fără reluare de la zero; rândul pe care amortizarea nu se poate calcula se arată și nu intră, celelalte se salvează.",F059,firma,Migrare / Import date,core/mijloace_fixe_import_api.py,,LIVE,,,"## Ce face
 Importă registrul de mijloace fixe dintr-un export (valoare, durată, amortizare cumulată), astfel încât amortizarea să continue de unde a rămas, fără să fie reluată de la zero.
 ## Unde apare / Cum se folosește
 Se folosește la migrare, în pasul de import al mijloacelor fixe pentru o firmă.
@@ -1134,7 +1134,7 @@ Salariat activ, folosit automat în statul de plată, în D112 și în REGES.
 - ștergerea unui salariat cu istoric de salarizare în loc de înregistrarea încetării
 ## Bun de știut
 Modificările de aici se propagă în stat și în D112; corectează datele salariatului aici, nu direct în declarație."
-Import salariați (migrare),"Import salariați la migrare (stratul 4): citește exportul din vechea aplicație (.xlsx/.csv) cu mapare flexibilă a coloanelor (nume/prenume/CNP/salariu/funcție/data angajare, indiferent de ordine sau denumire); validează CNP-ul cu cheia de control oficială 279146358279 + structura data + județ; importă în tabelul salariați existent al tenantului.",F079,firma,Migrare / Import date,core/salariati_import_api.py,,LIVE,,,"## Ce face
+Import salariați (migrare),"Import salariați la migrare (stratul 4): citește exportul din vechea aplicație (CSV / TXT / XLSX / XLS, Windows-1250 recunoscut; antetele SAGA: Funcție baza, Data angajării, Norma pe zi, Casa de sănătate, Cont card) cu potrivirea coloanelor pe cuvinte întregi; validează CNP-ul cu cheia de control oficială 279146358279 + structura data + județ (recalculat la salvare); importă în tabelul salariați existent al tenantului, cu IBAN-ul; rândurile refuzate se arată numite, celelalte se salvează; persoanele în întreținere și scutirea de contribuția minimă lipsă din fișier intră 0 / „nescutit”, marcate „de verificat” în Stat de plată până la confirmare.",F079,firma,Migrare / Import date,core/salariati_import_api.py,,LIVE,,,"## Ce face
 Importă salariații la migrare (stratul 4) dintr-un export .xlsx/.csv al vechii aplicații, cu mapare flexibilă a coloanelor (nume, prenume, CNP, salariu, funcție, data angajare - indiferent de ordine sau denumire). Validează CNP-ul (cheia de control oficială, structura datei, județul) și îi adaugă în lista de salariați a firmei.
 ## Unde apare / Cum se folosește
 Se folosește la migrare, în pasul de import al salariaților pentru o firmă.
@@ -1194,13 +1194,13 @@ Un email cu sinteza cabinetului, cu același conținut disponibil în card.
 - confundarea stării ""depuse"" cu ""validate""
 ## Bun de știut
 Sinteza reflectă exact ce e înregistrat în sistem; ce nu e marcat corect nu apare în cifre."
-Import solduri inițiale (migrare),"Citește balanța de deschidere (.xlsx/.csv), extrage soldurile per cont și le importă ca poziție de pornire; conturile analitice intra automat în plan.",F084,firma,Migrare / Import date,core/solduri_api.py,,LIVE,,,"## Ce face
+Import solduri inițiale (migrare),"Citește balanța de deschidere sau balanța de verificare exportată din programul vechi (SAGA: CSV / TXT / XLSX / XLS, Windows-1250 recunoscut), ia soldurile FINALE (perechea „sold final” dintr-o balanță cu mai multe perechi), lasă deoparte totalurile și sinteticele dublate de analiticele lor și le spune pe ecran; data balanței e cerută și dă luna preluării; conturile analitice intră automat în plan.",F084,firma,Migrare / Import date,core/solduri_api.py,,LIVE,,,"## Ce face
 Importă balanța de deschidere (.xlsx/.csv), extrage soldurile pe fiecare cont și le înregistrează ca poziție de pornire. Conturile analitice noi intră automat în planul de conturi.
 ## Unde apare / Cum se folosește
 Se folosește la migrare, în pasul de import al soldurilor inițiale pentru o firmă.
 ## De reținut
 Este baza de la care pornesc toate calculele contabile ale firmei în iConta."
-Import solduri parteneri (migrare),"Import solduri parteneri la migrare (defalcarea 4111/401 per client/furnizor): fișier .xlsx/.csv cu Cont, CUI, Denumire, Sold debitor/creditor - un rând = un partener pe un cont; verificare de coerență cu stratul 2: suma soldurilor partenerilor pe contul sintetic se compară cu soldul din balanța de deschidere (analiticele grupate pe rădăcina).",F085,firma,Migrare / Import date,core/solduri_parteneri_api.py,,LIVE,,,"## Ce face
+Import solduri parteneri (migrare),"Import solduri parteneri la migrare (defalcarea 4111/401 per client/furnizor): fișier CSV / TXT / XLSX / XLS cu Cont, CUI / CNP, Denumire și soldul (debit / credit, sau „Neachitat final” din situația clienților / furnizorilor SAGA, cu contul ales pe ecran) - un rând = un partener pe un cont; data soldurilor = data soldurilor de preluare; verificare de coerență cu balanța de deschidere (analiticele grupate pe rădăcină); rândurile refuzate se arată numite, celelalte se salvează.",F085,firma,Migrare / Import date,core/solduri_parteneri_api.py,,LIVE,,,"## Ce face
 Importă soldurile pe parteneri la migrare (defalcarea conturilor 4111/401 pe fiecare client/furnizor) dintr-un fișier .xlsx/.csv cu Cont, CUI, Denumire, Sold debitor/creditor - un rând pentru fiecare partener pe un cont.
 ## Unde apare / Cum se folosește
 Se folosește la migrare, după importul soldurilor inițiale, în pasul de solduri parteneri.
