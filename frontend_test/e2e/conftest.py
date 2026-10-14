@@ -203,7 +203,7 @@ def firma_noua(tip_firma="srl"):
     import time as _t
     from core import tenant_provisioning as tp
     db = _db()
-    nume = "%s %d SRL" % (PREFIX_FIRMA, int(_t.time() * 1000) % 10000000)
+    nume = "%s %d %s" % (PREFIX_FIRMA, int(_t.time() * 1000) % 10000000, "PFA" if tip_firma == "pfa" else "SRL")
     rad = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     sql_t = _io.open(os.path.join(rad, "tenant_template.sql"), encoding="utf-8").read()
     with db.get_conn() as c, c.cursor() as cur:

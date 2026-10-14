@@ -68,6 +68,13 @@ def motiv_rulaje(tip, rl):
     return None
 
 
+def _motive_31_12(cur, schema, s, an):
+    """`bilant.motive_31_12` cu starea propunerii notei de închidere la 31.12.`an` (243: anul încheiat; 244: notele propuse, la zi)."""
+    from core import inchidere_an as _ia
+    p = _ia.ciorne(cur, schema, an)
+    return _b.motive_31_12(s, an, propuse=p, incheiat=_ia.an_incheiat(an), s_dupa=_ia.solduri_dupa(cur, schema, s, p) if p else None)
+
+
 def coloana_curenta_f10(cur, schema, an, tip=None):
     """F10 „An curent” = bilanțul la 31.12.an. Necunoscut (an dinaintea soldurilor de preluare) -> refuz: bilanțul nu se poate întocmi.
     [242] Cu `tip`, refuzul strânge TOATE motivele anului: soldurile la 31.12 (6 / 7, fără loc) și rulajele lui (F20)."""
@@ -77,7 +84,7 @@ def coloana_curenta_f10(cur, schema, an, tip=None):
     if s_c is None:
         raise ValueError("Bilanțul pe %d nu se poate întocmi în iConta.eu: evidența firmei începe după soldurile de preluare de la %s, "
                          "deci soldurile de la %s nu sunt în aplicație." % (an, data_ro(ref), data_ro(datetime.date(an, 12, 31))))
-    motive = _b.motive_31_12(s_c, an)   # [C15, 242] 6 / 7 închise în 121, soldurile cu loc în bilanț, rulajele — toate motivele deodată
+    motive = _motive_31_12(cur, schema, s_c, an)   # [C15, 242] 6 / 7 închise în 121, soldurile cu loc în bilanț, rulajele — toate
     if tip:
         m = motiv_rulaje(tip, _rulaje_67(cur, schema, an))
         motive += [m] if m else []
@@ -209,7 +216,7 @@ def coloana_precedenta(cur, schema, tip, an):
         out["bilant"] = {"exemplar": b["exemplar"], "la": b["produs_la"], "de": b["produs_de"]}
         return out
     if s_p is not None:
-        motive = _b.motive_31_12(s_p, an - 1)   # [C15, 242] și coloana „An precedent” din evidență, la 31.12.an-1 — toate motivele
+        motive = _motive_31_12(cur, schema, s_p, an - 1)   # [C15, 242] și coloana „An precedent” din evidență, la 31.12.an-1
         rl_p = _rulaje_67(cur, schema, an - 1) if (ref is None or ref < datetime.date(an - 1, 1, 1)) else None
         m = motiv_rulaje(tip, rl_p) if rl_p is not None else None
         _b.refuz(motive + ([m] if m else []), an - 1, bilant_pe=an)

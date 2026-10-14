@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**781 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**783 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 743
+### `core/` — 745
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9286,6 +9286,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_jurnal_fara_document.py` — GARD ÎN BROWSER — Registrul jurnal: o ciornă fără document justificativ se vede ÎNAINTE de validare, iar „Validează” pe ea
 - `core/test_jurnal_refuz.py` — GARDĂ: calea jurnalului refuză cu TEMEI, și confruntă conturile cu planul firmei.
 - `core/test_jurnal_regim_tva.py` — GARD — jurnalul schimbărilor regimului de TVA (PIVOT DECIZII 04.10.2026, răspunsurile lui Costin la confirmări).
+- `core/test_jurnal_sursa_eticheta.py` — GARD — deficiența 245 (retestul Costin 13.10.2026, comanda 14.10 pct.2, verbatim în DECIZII): „pe note apare «sursa: inchidere_an».
 - `core/test_kpi_client.py` — —
 - `core/test_legari_await.py` — GARD — un clic al contabilului nu se pierde (comanda Costin 10.10.2026 pct.8, verbatim: „Clasa «butoane legate după o cerere
 - `core/test_limita_text_anaf.py` — Gard: niciun atribut de text din declaratii nu depaseste limita ANAF (75 caractere).
@@ -9505,6 +9506,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_termene.py` — core/test_termene.py — plasa de regresie pentru scadentele viitoare (termene_api).
 - `core/test_testare_asistent.py` — GARD — constatările din testarea ca asistent (comanda Costin 04.10.2026), punctele 3 și 6 + invitația.
 - `core/test_teste_decuplate.py` — Garda PERMANENTA (29.07.2026): niciun test nu depinde de o firma PERSISTENTA din baza.
+- `core/test_teste_ziua_fixata.py` — GARD — bomba de calendar din suită (găsită de Code la 243, 14.10.2026; neconformitate a porții, nu a aplicației — GARZI): un test
 - `core/test_text_afisat_limbaj.py` — core/test_text_afisat_limbaj.py — GARD: textul afișat contabilului e limbă română, nu limbaj de programator.
 - `core/test_text_ecran.py` — GARD — textul AFIȘAT pe ecrane e limba contabilului: scanul din browser e proaspăt și curat.
 - `core/test_text_structurat.py` — GARD — o subclasă de `str` care poartă structură se COPIAZĂ cu tot cu structura (comanda Costin 07.10.2026, C1).
@@ -10961,3 +10963,8 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | citatele din casetă = paragrafe separate | `core/test_ghid_citate.py::test_citatele_din_caseta_sunt_paragrafe_separate` | sursa lipită de citatul următor într-un singur paragraf (302 locuri în 201 de ghiduri, corectate) | rândul liber scos -> ROȘU | — |
 | C20 temeiul D406 pentru PFA | `core/test_control_fiscal.py::test_pfa_d100_d101_d406_neaplicabile_nu_restante` | litera greșită în motivul afișat contabilului | „lit.q)” înapoi -> ROȘU | probat și în browser: `frontend_test/e2e/e2e_comanda_1310.py::test_def_c20_pfa_d406_nu_se_datoreaza_cu_litera_corecta` (mutația „lit.q)” în plasă -> ROȘU); C20 = rezolvată |
 | cifrele de referință: lunile numai din notele validate (R36, decizia Costin 14.10.2026, varianta (c)) | `scripts/cifre_referinta._luni_cu_date` + `core/test_cifre_referinta_poarta.py::test_lunile_cu_date_vin_numai_din_notele_validate` | o ciornă (sau o factură fără notă) care face o lună „cu date” și oprește poarta fără nicio cifră schimbată (13.10: două ciorne de închidere pe F2) | filtrul `status = 'validata'` scos -> ROȘU | o notă validată greșit intră tot (e evidență, deci e cifră) |
+| 243 nota de închidere numai pentru un an încheiat (comanda Costin 14.10.2026 pct.2) | `core/inchidere_an.an_incheiat` (= `inchidere_luna.luna_in_curs(an, 12)`, sursa unică) în `propune` și în `refuz_validare`, chemat din `jurnal_api.valideaza` (unicul drum: jurnalul și coada) + `core/test_inchidere_an.py::test_def_243_anul_neincheiat_nu_se_propune_si_nu_se_valideaza` + e2e `e2e_comanda_1410.py::test_def_243_anul_neincheiat_nu_se_propune` | propunerea sau validarea unei note de închidere înainte de 31.12 (inclusiv o ciornă scrisă înainte de gard, ca pe F2) | `an_incheiat` mereu True -> ROȘU (unitar și în plasă); poarta scoasă din `valideaza` -> nota se validează, ROȘU | ciornele deja scrise rămân ciorne (nu se șterg) |
+| 243 nota de închidere validată numai cât e a soldurilor de acum | `core/inchidere_an.corespunde` în `refuz_validare` + `test_def_243_nota_care_nu_mai_corespunde_soldurilor_nu_se_valideaza` (unitar + e2e) | validarea unei note de închidere după ce s-au validat operațiuni ale anului (sau după ce nota a fost modificată) | `corespunde` mereu True -> ROȘU (unitar și în plasă) | o operațiune validată DUPĂ nota de închidere validată: bilanțul se oprește din nou, iar propunerea închide restul — corecția e o notă nouă, nu o modificare |
+| 244 motivul bilanțului cu notele de închidere propuse | `core/bilant.motive_31_12` (`inchidere_propusa`), `core/bilant_api._motive_31_12` (`inchidere_an.ciorne`, `solduri_dupa`), afirmația `propuse` -> legătura din ecranul Bilanț + `test_def_244_dupa_propunere_motivul_e_validarea_notelor` + e2e `test_def_244_dupa_propunere_legatura_spre_notele_de_validat` | „închide clasele 6/7” după propunere; o legătură care nu duce la notele propuse pe luna lor | `propuse` nepasat -> ROȘU (unitar și în plasă) | — |
+| 245 sursa notei în cuvinte | `core/jurnal_api.ETICHETE_SURSA` + `core/test_jurnal_sursa_eticheta.py` (4: fiecare sursă scrisă în `inregistrari` are etichetă — scanează toate scrierile; o sursă-parametru nerezolvată pică; ecranul nu afișează codul) + e2e `test_def_245_sursa_notei_se_scrie_in_cuvinte` | o sursă nouă afișată ca cod intern | `inchidere_an` scos din etichete / `esc(n.sursa)` repus -> ROȘU | o scriere cu numele tabelului construit dinamic (azi niciuna) |
+| bomba de calendar: testele nu întreabă regula „perioada s-a încheiat” pe ziua de azi (găsită de Code la 243, 14.10.2026) | `core/test_teste_ziua_fixata.py` (2) | un test verde numai până trece luna (`core/test_retest2.py` afirma `luna_in_curs(2026, 10)` fără zi: ar fi oprit poarta din 01.11.2026) | `azi=zi` scos din `test_retest2` -> ROȘU | numai `luna_in_curs` / `an_incheiat`; alte funcții care citesc ziua de azi nu le vede |

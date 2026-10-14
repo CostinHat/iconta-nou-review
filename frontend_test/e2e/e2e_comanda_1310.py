@@ -76,7 +76,7 @@ def test_varianta_a_propunerea_notei_de_inchidere(patron, firma_de_inchis):
     Pașii: firma cu vânzări 1.000 (+TVA 210) și servicii 200 (+TVA 42), neînchise -> Bilanț 2025: refuzul „închide clasele 6/7” și
     butonul „Propune nota de închidere la 31.12.2025” -> apăsat: „Am propus, ca ciornă …”, rezultatul închis în 121: profit 800,00 lei;
     în evidență: două note CIORNĂ (regularizarea TVA — 4427 = 4426 42, 4427 = 4423 168 — și închiderea — 704 = 121, 121 = 628) -> cât
-    sunt ciorne, bilanțul se oprește tot -> validate (jurnalul) -> Bilanț 2025: coloana „An precedent” (2024 nu e în aplicație)
+    sunt ciorne, bilanțul se oprește tot („Notele de închidere propuse așteaptă validarea”, 244) -> validate (jurnalul) -> Bilanț 2025: coloana „An precedent” (2024 nu e în aplicație)
     completată -> „Validează”: fără erori, profitul în bilanț (F10 rd.43 = 800), TVA de plată 168 în datorii (rd.13).
     MUTAȚIA din plasă: notele propuse scrise validate (fără contabil) -> ROȘU."""
     pg = patron.pg
@@ -95,7 +95,7 @@ def test_varianta_a_propunerea_notei_de_inchidere(patron, firma_de_inchis):
         ("ciorna", "4427", "4426", "42.00"), ("ciorna", "4427", "4423", "168.00"),
         ("ciorna", "121", "628", "200.00"), ("ciorna", "704", "121", "1000.00")], note
     st, r = _api(PATRON, "POST", "/tenants/%d/s1005-valideaza?an=2025" % f["tenant_id"], {})
-    assert st >= 400 and "închide clasele 6/7" in str(r), (st, r)            # ciornele nu sunt evidență (R36)
+    assert st >= 400 and "Notele de închidere propuse așteaptă validarea" in str(r), (st, r)    # ciornele nu sunt evidență (R36; 244)
     for nid in sorted({n[0] for n in note}):
         st, r = _api(PATRON, "POST", "/tenants/%d/jurnal/%d/valideaza" % (f["tenant_id"], nid), {})
         assert st == 200 and r.get("ok"), (st, r)
@@ -161,6 +161,9 @@ def test_def_c20_pfa_d406_nu_se_datoreaza_cu_litera_corecta(patron, firma_pfa):
     patron.firma(firma_pfa["nume"])
     _deschide(patron, "#fa-declaratii", "Pasul 1 din 3")
     opt = pg.locator(".fereastra:last-of-type #dec-tip option[value='d406']")
+    # captura arată lista deschisă (o listă derulantă închisă nu-și arată opțiunile), cu motivul D406 pe rândul lui
+    pg.eval_on_selector(".fereastra:last-of-type #dec-tip", "s => { s.size = s.options.length; s.style.height = 'auto'; }")
+    opt.scroll_into_view_if_needed()
     patron.captura()
     assert opt.evaluate("o => o.disabled"), opt.inner_text()          # dezactivat, cu motivul ca text (nu ascuns)
     assert re.findall(r"pct\.4 lit\.(\S+)", opt.inner_text()) == ["a)–d)"], opt.inner_text()

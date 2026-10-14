@@ -253,6 +253,12 @@ def ecran_bilant(pg):
     pg.wait_for_timeout(2500)
 
 
+def ecran_jurnal(pg):
+    """Firma -> «Registru jurnal» (`firme.js::ecranJurnal`). [14.10.2026, deficiențele 244 / 245] a trecut din `_FA_CAMPANIE`: lotul i-a
+    ATINS JS-ul (eticheta sursei notei, notele de închidere evidențiate la deschiderea din Bilanț)."""
+    _ecran_shell(pg, "fa-jurnal")
+
+
 ECRANE = [
     ("supervizor", ecran_supervizor),
     ("import_mijloace_fixe", ecran_import_mijloace_fixe),
@@ -298,6 +304,7 @@ ECRANE = [
     ("raporteaza", ecran_raporteaza),
     ("ansamblu", ecran_ansamblu),
     ("bilant", ecran_bilant),
+    ("jurnal", ecran_jurnal),
 ]
 
 
@@ -320,7 +327,7 @@ _FA_CAMPANIE = [
     "fa-acces", "fa-balanta", "fa-bonuri",   # [11.10.2026] `fa-bilant` a trecut în `ECRANE` (deficiențele 221/222)
     "fa-contracte", "fa-control",
     # [LOTUL 15] `fa-magazin` a trecut in `ECRANE`: lotul i-a atins JS-ul (R152).
-    "fa-facturi", "fa-fisacont", "fa-jurnal", "fa-marja",
+    "fa-facturi", "fa-fisacont", "fa-marja",   # [14.10.2026] `fa-jurnal` a trecut în `ECRANE` (deficiențele 244 / 245)
     # [D394 op2 Î1, 02.10.2026] `fa-raportz` a trecut in `ECRANE`: decizia B i-a atins JS-ul.
     # [LOT 19 d11, 03.10.2026] `fa-mijloace` a trecut in `ECRANE`: bifa C&D i-a atins JS-ul.
     "fa-produse", "fa-regfiscal",

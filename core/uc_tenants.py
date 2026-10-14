@@ -1245,6 +1245,7 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
                 if iid not in note:
                     note[iid] = {"id": iid, "nr_curent": int(nrc), "data": data.isoformat(),
                                  "numar": nr, "descriere": desc, "sursa": sursa, "status": status,
+                                 "sursa_eticheta": _j.eticheta_sursa(sursa),   # [deficiența 245] ecranul arată eticheta, nu codul
                                  "factura_id": fid, "document_ref": dref,   # scris de om (editorul îl arată)
                                  "document": _j.document_justificativ(dref, f_tip, f_serie, f_nr, f_data, sursa, nr),
                                  "linii": []}
@@ -2675,7 +2676,7 @@ def bilant_an_precedent(tenant_id, an, tip, ctx):
                 # [varianta (a), 13.10.2026] refuzul spune și anii de închis — ecranul oferă propunerea notei de închidere pentru ei
                 # afirmație TIPATĂ (DS cap.25): un fapt despre soldurile și rulajele firmei, cu temeiul completitudinii
                 raise _erori.DateInvalide(_af.afirmatie(
-                    "fapt", "bilant_oprit", str(e), an=e.an, luna=12, mesaj=str(e), cod="bilant_oprit", ani_inchidere=e.ani_inchidere,
+                    "fapt", "bilant_oprit", str(e), an=e.an, luna=12, mesaj=str(e), cod="bilant_oprit", ani_inchidere=e.ani_inchidere, propuse=e.propuse,
                     temei_completitudine="soldurile la 31.12 și rulajele anului din notele validate ale firmei"))
             except ValueError as e:      # [deficiența 229] un an dinaintea înființării: bilanțul nu există
                 raise _erori.DateInvalide(str(e))
@@ -2733,9 +2734,9 @@ def bilant_inchidere_propunere(tenant_id, an, ctx):
         rez = r["rezultat"]
         ce = ("profit %s lei" % bani(rez)) if rez > 0 else (("pierdere %s lei" % bani(-rez)) if rez < 0 else "rezultat zero")
         mesaj = ("Am propus, ca ciornă, la 31.12.%d: %s. Rezultatul închis în 121: %s. Notele intră în evidență numai după ce le validezi "
-                 "(Jurnal — notele de validat); apoi bilanțul se generează."
+                 "în Registrul jurnal, luna decembrie %d; apoi bilanțul se generează."
                  % (an, "; ".join("%s (%s, %d %s)" % (n["descriere"], n["document"] or "fără document", len(n["linii"]),
-                                                        "linie" if len(n["linii"]) == 1 else "linii") for n in r["note"]), ce))
+                                                        "linie" if len(n["linii"]) == 1 else "linii") for n in r["note"]), ce, an))
     return {"ok": True, "an": an, "mesaj": mesaj, "nimic": r["nimic"], "inlocuite": r["inlocuite"], "rezultat": str(r["rezultat"]),
             "note": [{"id": n["id"], "descriere": n["descriere"], "document": n["document"], "linii": n["linii"]} for n in r["note"]]}
 

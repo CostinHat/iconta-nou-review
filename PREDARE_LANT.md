@@ -1,12 +1,12 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **14.10.2026: §6 COMANDA_13_10 comis (comasarea 45, proza despre cod, temeiul celor 73, măsurarea semantică, C19 consemnată, C20 rezolvată) + cifrele de referință pe notele validate (c); urmează comanda din 14.10: 243–245, C19, ghidurile 4a–4c; R4 BLOCAT; ghiduri noi oprite**
+# PREDARE LANȚ — **14.10.2026: pct.1 publicat (`5e260e3c`); pct.2 (243, 244, 245) comis în lotul care conține această predare; urmează pct.3 (C19), apoi ghidurile 4a -> 4b -> 4c; R4 BLOCAT; ghiduri noi oprite**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-14** (lotul §6 COMANDA_13_10, reluat după decizia (c)), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `c194d5ee` (lotul 2 /ghid/ — four-way închis 13.10 08:56); lotul §6 e în commitul care conține această predare —
-  SHA-ul și four-way-ul în raport.
+- **ultima rescriere**: **2026-10-14** (lotul pct.2 al comenzii din 14.10: 243–245), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `5e260e3c` (pct.1 — four-way închis 14.10 10:47:55); lotul pct.2 e în commitul care conține această predare — SHA-ul și
+  four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -124,6 +124,13 @@ aplicației**, nu „în așteptarea unei teme”:
   294 de ghiduri corectate pe fond (rânduri D300 2026, IMCA 0,5%, trimestrul I 2026, casete cu proză, contradicții). Citatele literale:
   `core/ghid_citate.py` + clichet. **C20** rezolvată (e2e `test_def_c20_…`). Poarta din 13.10 respinsă la cifre (ciorne pe F2) ->
   decizia Costin 14.10 varianta (c): lunile numai din notele validate, referința rescrisă (amprenta în DECIZII).
+- **PCT.2 al comenzii din 14.10 — ÎNCHIS** (lotul care conține această predare): **243** nota de închidere numai după 31.12 (varianta
+  aleasă, motivul în DECIZII) + validarea refuză nota care nu mai corespunde soldurilor; **244** motivul „Notele de închidere propuse
+  așteaptă validarea” cu legătura spre Registrul jurnal pe decembrie; **245** sursa notei în cuvinte (11 surse). Pe drum: bomba de
+  calendar din `core/test_retest2.py` (ar fi oprit poarta din 01.11.2026) reparată + gard. **Ciornele de închidere pe 31.12.2026 de pe
+  F2 (producție, 13.10) rămân ciorne** — nevalidabile până după 31.12.2026; nu le-am șters (date de producție).
+- **URMEAZĂ (comanda 14.10, în ordine, fiecare lot cu raport și ZIP):** pct.3 C19 (D394 E / F după OPANAF 2194/2025, citat verbatim) ->
+  4a proza despre cod (clasa largă) -> 4b cele 1.348 de citate -> 4c comasarea nivelului A (324 de grupuri). Nimic din afara comenzii.
 - **DECIZII CERUTE (raportul lotului §6) — RĂSPUNSE 14.10.2026 (verbatim în DECIZII): C19 se corectează (lot separat); 4a, 4b, 4c (nivelul A)
   aprobate, în loturi separate; nivelul B nu se comasează. Ordinea: pct.2 (243–245) -> pct.3 (C19) -> 4a -> 4b -> 4c. Erau:** (1) **C19** — D394 E / F declară exporturile și livrările intracomunitare și omite
   serviciile non-UE cu taxare inversă (OPANAF 2194/2025 pct.8–10); corectura schimbă ce se depune la ANAF; (2) clasa largă de proză despre
@@ -245,6 +252,10 @@ aplicației**, nu „în așteptarea unei teme”:
    portofoliu vechi→nou (output brut) + cele trei unelte vizuale dacă s-a atins un ecran + verificatorul ÎNAINTE de commit + registrele
    (GARZI, DECIZII, TESTE, ISTORIC, PREDARE; FUNCTIONALITATI/TRASEE după caz) + commit pe nume (`git commit -F`) + four-way + ZIP + raportul
    cu cele 11 secțiuni (CLAUDE.md §2.2).
+3b. **Înainte de poartă, testele fișierelor atinse includ și SCANERELE GLOBALE** (testele care citesc tot `core/` sau tot `static/js` —
+   `test_versionare_assets`, `test_parametru_transmis`, `test_acoperire_vizuala` …), nu doar cele care numesc fișierul: pe 14.10 poarta
+   pct.2 a fost respinsă de două dintre ele. **Ordinea la un JS atins:** `versioneaza_assets.py --scrie` ÎNTÂI, apoi uneltele vizuale și
+   probele (re-ștampilarea schimbă amprenta UI și îmbătrânește scanurile).
 4. **Când poarta respinge, prima ipoteză e că are dreptate.** Pe 03–04.10 a respins fiecare temă cel puțin o dată și de fiecare dată a prins ceva
    real (o coloană NULL nedeclarată, un registru nesincronizat, o tabelă neclasificată, un import nefolosit, un `bool(corp…)`).
 
@@ -452,7 +463,9 @@ aplicației**, nu „în așteptarea unei teme”:
 
 ## STAREA LA PREDARE
 
-**Ultima poartă completă: `13856f1f` (13.10.2026, lotul 1: varianta (a) + 242)** — `8092 passed, 10 skipped, 15 xfailed`, COLLECTED 8117,
+**Ultima poartă completă: `5e260e3c` (14.10.2026, §6 COMANDA_13_10 + pct.1)** — `8117 passed, 10 skipped, 15 xfailed in 3204.52s`,
+COLLECTED 8142, verificator TOTAL 0, cifrele identice (5 firme), e2e 250 passed; poarta întreagă 4258 s (pytest 3206 s, plasa 1052 s).
+Înainte: **`13856f1f` (13.10.2026, lotul 1: varianta (a) + 242)** — `8092 passed, 10 skipped, 15 xfailed`, COLLECTED 8117,
 verificator TOTAL 0, e2e 247 passed; poarta întreagă 4070 s (pytest 3024 s, plasa 1046 s). Cifrele lotului 2 sunt în raportul lui.
 Înainte: **`41aaf93d` (12.10.2026, lotul „Oprește R4”)** — `8003 passed, 10 skipped, 15 xfailed in 2847.62s (0:47:27)`,
 COLLECTED 8028 (confirmat cu `--collect-only`), verificator TOTAL 0, cifrele identice cu referința (5 firme), e2e 225 passed; poarta
@@ -494,7 +507,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **963** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **964** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

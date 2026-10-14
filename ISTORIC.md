@@ -2340,3 +2340,20 @@ producție, pe drumul aplicației, au făcut o lună „cu date” nouă (5 chei
 notele validate (R36) + gard; consecința (F5 balanța 10/2026, intrată numai printr-o ciornă de salarii) întrebată și aprobată, referința
 rescrisă cu amprenta în DECIZII. **C20** probată și în browser (e2e) -> rezolvată. Un commit prin poarta completă (commitul care conține
 această intrare).
+
+## 14.10.2026 — Pct.2 al comenzii din 14.10: 243, 244, 245
+
+Lotul pct.1 publicat (`5e260e3c`, poarta 71 min, four-way închis). **243** (varianta aleasă: propunerea numai după 31.12, motivul în
+DECIZII): nota de închidere nu se propune și nu se validează înainte ca anul să se încheie (regula `inchidere_luna.luna_in_curs`, aceeași
+ca la închiderea lunii, amortizare și salarii); după 31.12 validarea refuză nota care nu mai corespunde soldurilor validate (o operațiune a
+anului validată după propunere) — bilanțul oferă „Propune din nou”. Poarta e în `jurnal_api.valideaza`, unicul drum (jurnalul și coada).
+**244**: după propunere, motivul bilanțului e „Notele de închidere propuse așteaptă validarea”, cu legătura spre Registrul jurnal pe
+decembrie, notele evidențiate; zona se recitește singură. **245**: sursa notei în cuvinte („închiderea anului”, „introducere manuală” …),
+toate cele 11 surse scrise de aplicație etichetate și păzite. Găsite pe drum: o bombă de calendar în suită (`core/test_retest2.py` ar fi
+oprit poarta din 01.11.2026; ziua fixată + gard), «Registru jurnal» trecut în `nav_ecrane.ECRANE` (JS atins), captura C20 cu lista
+deschisă. Ciornele de închidere pe 31.12.2026 de pe F2 (producție) rămân ciorne, nevalidabile până după 31.12.2026. Prima poartă
+(12:44–13:35, 2 failed / 8.127 passed) a fost respinsă de două gărzi existente pe care selecția mea de teste dinaintea porții nu le
+cuprinsese (amândouă scanează tot codul): tokenul de versiune al `firme.js` în cele 6 fișiere care îl importă (`versioneaza_assets.py
+--scrie`) și un parametru primit și netransmis (`bilant.motive_31_12 -> _text_6_7`); reparate, lucrul pus la adăpost pe
+`wip/2026-10-14-1335-pct2`, scanurile vizuale refăcute după re-ștampilare. Un commit prin poarta completă (commitul care conține această
+intrare).

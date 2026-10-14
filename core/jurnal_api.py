@@ -286,6 +286,11 @@ def valideaza(conn, schema, nota_id):
         _z = _zd.refuz_validare(cur, schema, nota_id)
         if _z:
             return {**_refuz(_z, "OMFP 1802/2014 pct.287 alin.(1)-(2)"), "cod": _zd.COD_NEDESCARCAT}
+        # [deficiența 243] nota de închidere: numai după 31.12 și numai cât e încă a soldurilor validate de acum
+        from core import inchidere_an as _ia
+        _i = _ia.refuz_validare(cur, schema, nota_id)
+        if _i:
+            return {**_refuz(_i, "OMFP 1802/2014, contul 121"), "cod": "INCHIDERE_NEVALIDABILA"}
         cur.execute(f"UPDATE {schema}.inregistrari SET status='validata' WHERE id=%s", (nota_id,))
         # ai_invatare_v1: invatare din validare (context = descriere, cont = debitul primei linii)
         try:
@@ -304,6 +309,31 @@ def valideaza(conn, schema, nota_id):
             from core import observare as _obs
             _obs.esec_secundar("invatare AI la validare nota", _e)  # inghitit, dar nu tacut (27.07.2026)
     return {"ok": True}
+
+
+#: [deficiența 245, retestul Costin 13.10.2026, comanda 14.10 pct.2, verbatim în DECIZII] „pe note apare «sursa: inchidere_an». Scrie
+#: «sursa: închiderea anului» și verifică toate sursele de note afișate.” Sursa notei (`inregistrari.sursa`) e un cod intern; contabilul
+#: vede eticheta. Fiecare sursă pe care aplicația o scrie are etichetă aici — păzit de `core/test_jurnal_sursa_eticheta.py` (citește
+#: toate scrierile în `inregistrari` din cod).
+ETICHETE_SURSA = {
+    "manual": "introducere manuală",
+    "facturi": "facturile",
+    "banca": "banca (extrasul de cont)",
+    "casa": "registrul de casă",
+    "stocuri": "gestiunea stocurilor",
+    "salarii": "statul de plată",
+    "amortizare": "amortizarea mijloacelor fixe",
+    "bon": "bonul fiscal",
+    "horeca_z": "raportul Z",
+    "amef": "raportul Z din casa de marcat",
+    "inchidere_an": "închiderea anului",
+}
+
+
+def eticheta_sursa(sursa):
+    """Eticheta sursei notei, pentru ecran; None pentru o notă fără sursă sau cu un cod pe care aplicația nu-l scrie (nu se afișează
+    codul)."""
+    return ETICHETE_SURSA.get(sursa)
 
 
 def document_justificativ(document_ref, fel, serie, numar, data, sursa=None, numar_nota=None):

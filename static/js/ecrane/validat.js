@@ -31,7 +31,7 @@
 import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=2561dbfd34";
 import { randA as randConstatare } from "./control_verdict.js?v=2fc749a2a2";
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
-import { deschideFirma } from "./firme.js?v=0ef8b6f80a";
+import { deschideFirma } from "./firme.js?v=659e5cf1c3";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)

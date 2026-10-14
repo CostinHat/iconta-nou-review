@@ -2938,6 +2938,7 @@ async function ecranBilant(corp, nav, t) {
     const SURSA = { bilant: "bilanțul pe %AN validat în aplicație", evidenta: "evidența pe %AN din aplicație", manual: "completată manual" };
     // ca la categoria de mărime (151/188): zona veche rămâne până sosește cea nouă — golirea ei mișca fereastra (centrată) sub cursor
     let cerereaPrec = "";
+    let ultimaPropunere = null;                   // [244] mesajul propunerii rămâne după recitirea refuzului
     const incarcaPrecedent = async () => {
       if (!tip()) { zonaPrec.innerHTML = ""; zonaPrec.removeAttribute("data-pentru"); legaTip(); return; }
       const an = parseInt(corp.querySelector("#bl-an").value, 10);
@@ -2954,18 +2955,34 @@ async function ecranBilant(corp, nav, t) {
           // [varianta (a), decizia Costin 13.10.2026] „Aplicația propune, la cererea contabilului, nota de închidere la 31.12 …” — lângă
           // refuzul cu clasele 6/7 neînchise, câte un buton pe anul de închis; notele intră ciornă și se validează în Jurnal (R36)
           const ani = (e && e.detaliu && e.detaliu.ani_inchidere) || [];
-          if (ani.length) {
-            zonaPrec.insertAdjacentHTML("beforeend", `<div class="bl-inchidere" style="margin-top:8px">${ani.map((a) =>
+          // [deficiența 244] notele propuse care așteaptă validarea: legătura deschide Registrul jurnal pe luna lor (decembrie), cu ele
+          // evidențiate — nu un text de căutat („Jurnal — notele de validat” ducea la Jurnalul regim marjă)
+          const propuse = (e && e.detaliu && e.detaliu.propuse) || [];
+          if (ani.length || propuse.length) {
+            const dinNou = new Set(propuse.map((p) => p.an));
+            zonaPrec.insertAdjacentHTML("beforeend", `<div class="bl-inchidere" style="margin-top:8px">${propuse.map((p) =>
+              `<button class="btn-link bl-inchidere-jurnal" data-an="${esc(String(p.an))}" data-note="${esc(p.note.map((n) => n.id).join(","))}">`
+              + `Deschide notele de închidere în Registrul jurnal — decembrie ${esc(String(p.an))}</button>`).join(" ")}${ani.map((a) =>
               `<button class="buton-secundar bl-inchidere-propune" data-an="${esc(String(a))}" data-actiune="POST /tenants/{tenant_id}/bilant-inchidere-propunere">`
-              + `Propune nota de închidere la 31.12.${esc(String(a))}</button>`).join(" ")}<div class="bl-inchidere-mesaj"></div></div>`);
+              + `${dinNou.has(a) ? "Propune din nou" : "Propune"} nota de închidere la 31.12.${esc(String(a))}</button>`).join(" ")}<div class="bl-inchidere-mesaj"></div></div>`);
+            zonaPrec.querySelectorAll(".bl-inchidere-jurnal").forEach((b) => b.addEventListener("click", () => {
+              nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, { an: parseInt(b.dataset.an, 10), luna: 12,
+                evidentiaza: b.dataset.note.split(",").map(Number) }));
+            }));
+            if (ultimaPropunere && ultimaPropunere.cheie === cheie) arataMesaj(zonaPrec.querySelector(".bl-inchidere-mesaj"), ultimaPropunere.mesaj, "ok");
             zonaPrec.querySelectorAll(".bl-inchidere-propune").forEach((b) => b.addEventListener("click", async () => {
               const zm = zonaPrec.querySelector(".bl-inchidere-mesaj");
               b.disabled = true;
               try {
                 const r = await api.post(`/tenants/${t.id}/bilant-inchidere-propunere?an=${b.dataset.an}`, {});
-                arataMesaj(zm, r.mesaj, "ok");
-              } catch (e2) { arataMesaj(zm, (e2 && e2.mesaj) || "Nu s-a putut propune nota de închidere.", "eroare"); }
-              finally { b.disabled = false; }
+                // [244] refuzul se recitește: după propunere spune că notele așteaptă validarea, cu legătura spre ele
+                ultimaPropunere = { cheie, mesaj: r.mesaj };
+                await incarcaPrecedent();
+                if (cheie === cerereaPrec && !zonaPrec.querySelector(".bl-inchidere-mesaj")) {   // fără refuz: mesajul deasupra zonei
+                  zonaPrec.insertAdjacentHTML("afterbegin", `<div class="bl-inchidere-mesaj"></div>`);
+                  arataMesaj(zonaPrec.querySelector(".bl-inchidere-mesaj"), r.mesaj, "ok");
+                }
+              } catch (e2) { arataMesaj(zm, (e2 && e2.mesaj) || "Nu s-a putut propune nota de închidere.", "eroare"); b.disabled = false; }
             }));
           }
           // [deficiența 237, retestul Costin 12.10.2026] „mesajul de oprire apare de două ori … Trebuie să apară o singură dată.” Refuzul
@@ -4336,7 +4353,7 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
         <div class="pf-frand" data-nota-id="${n.id}">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${n.nr_curent != null ? `Nr. crt. ${n.nr_curent} \u00b7 ` : ""}${dataRo(n.data)} \u00b7 ${esc(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
-            <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${bani(l.suma)}${l.centru_nume ? ` \u00b7 <span style="color:var(--teal)">${esc(l.centru_nume)}</span>` : ""}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + esc(n.sursa) : ""}<br>${docJustificativ(n)}</div>
+            <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${bani(l.suma)}${l.centru_nume ? ` \u00b7 <span style="color:var(--teal)">${esc(l.centru_nume)}</span>` : ""}`).join("<br>")}${n.sursa_eticheta ? " \u00b7 sursa: " + esc(n.sursa_eticheta) : ""}<br>${docJustificativ(n)}</div>
             ${n.status === "ciorna" && !n.document ? `<div class="caseta-atentie jn-fara-doc"><div class="ca-mesaj">${MESAJ_FARA_DOCUMENT}</div></div>` : ""}
             ${stareValidare}
           </div>
@@ -4436,9 +4453,10 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
       }
       valideaza();
     }));
-    if (opt.evidentiaza) {   // [lotul 07.10 pct.8] deschis din notificare: nota ei
-      const r0 = corp.querySelector(`[data-nota-id="${Number(opt.evidentiaza)}"]`);
-      if (r0) { r0.classList.add("val-evidentiat"); r0.scrollIntoView({ block: "center" }); }
+    if (opt.evidentiaza) {   // [lotul 07.10 pct.8] deschis din notificare: nota ei; [244] din Bilanț: notele de închidere propuse
+      const rr = [].concat(opt.evidentiaza).map((id) => corp.querySelector(`[data-nota-id="${Number(id)}"]`)).filter(Boolean);
+      rr.forEach((r0) => r0.classList.add("val-evidentiat"));
+      if (rr.length) rr[0].scrollIntoView({ block: "center" });
       opt.evidentiaza = null;
     }
     corp.querySelectorAll("[data-retrimite]").forEach((b) => b.addEventListener("click", async () => {

@@ -448,10 +448,12 @@ class BilantOprit(ValueError):
     """[C15, 242] Refuzul bilanțului la 31.12, cu TOATE motivele deodată. `an` = anul la 31.12 căruia se închid clasele 6 / 7 (pentru
     propunerea notei de închidere — varianta (a)); `inchidere` = unul din motive e închiderea 6 / 7."""
 
-    def __init__(self, mesaj, an=None, inchidere=False, ani_inchidere=None):
+    def __init__(self, mesaj, an=None, inchidere=False, ani_inchidere=None, propuse=None):
         super().__init__(mesaj)
         self.an, self.inchidere = an, inchidere
         self.ani_inchidere = list(ani_inchidere) if ani_inchidere is not None else ([an] if inchidere else [])
+        #: [244] propunerile care așteaptă validarea (`inchidere_an.ciorne`): ecranul pune legătura spre Registrul jurnal pe luna lor
+        self.propuse = list(propuse or [])
 
 
 def refuz_impreuna(oprite):
@@ -460,17 +462,23 @@ def refuz_impreuna(oprite):
         raise oprite[0]
     if oprite:
         raise BilantOprit("\n\n".join(str(e) for e in oprite), an=oprite[-1].an, inchidere=any(e.inchidere for e in oprite),
-                          ani_inchidere=sorted({a for e in oprite for a in e.ani_inchidere}))
+                          ani_inchidere=sorted({a for e in oprite for a in e.ani_inchidere}),
+                          propuse=[p for e in oprite for p in e.propuse])
 
 
-def _text_6_7(cu_sold, an):
+def _text_6_7(cu_sold, an, incheiat=True):
+    """`incheiat` = False [243]: anul nu s-a încheiat — nu se cere închiderea acum, se spune când se face."""
     from core.pdf_util import bani
     rez = sum(((v if l == "c" else -v) for _c, l, v in cu_sold), Decimal("0"))
     ce = "profit %s lei" % bani(rez) if rez > 0 else ("pierdere %s lei" % bani(-rez) if rez < 0 else "rezultat zero (0,00 lei)")
+    conturi = "\n".join("• %s sold %s %s" % (c, "debitor" if l == "d" else "creditor", bani(v)) for c, l, v in cu_sold)
+    if not incheiat:
+        return ("anul %d nu s-a încheiat — clasele 6/7 se închid în 121 la 31.12.%d, iar nota de închidere se propune după această dată "
+                "(până atunci urmează operațiuni care schimbă soldurile). Rezultatul de până acum: %s. %s.\nConturile cu sold:\n%s"
+                % (an, an, ce, _TEMEI_121, conturi))
     return ("închide clasele 6/7 în 121 la 31.12.%d. Rezultatul de închis: %s (veniturile minus cheltuielile cu sold la 31.12.%d). Până la "
             "închidere, rezultatul exercițiului nu e în contul 121, deci lipsește din bilanț. %s.\nConturile cu sold:\n%s"
-            % (an, ce, an, _TEMEI_121, "\n".join("• %s sold %s %s" % (c, "debitor" if l == "d" else "creditor", bani(v))
-                                                   for c, l, v in cu_sold)))
+            % (an, ce, an, _TEMEI_121, conturi))
 
 
 def inchiderea_6_7(s, an, bilant_pe=None):
@@ -482,14 +490,34 @@ def inchiderea_6_7(s, an, bilant_pe=None):
         raise BilantOprit("Bilanțul pe %d nu se poate genera: %s" % (bilant_pe or an, _text_6_7(cu_sold, an)), an=an, inchidere=True)
 
 
-def motive_31_12(s, an):
+def _text_propuse(p):
+    """[244] Clasele 6 / 7 au încă sold, iar notele de închidere sunt propuse: motivul e validarea lor, nu o nouă închidere."""
+    an, note = p["an"], "; ".join("#%d %s" % (n["id"], n["descriere"]) for n in p["note"])
+    t = "Notele de închidere propuse așteaptă validarea: %s. Se validează în Registrul jurnal, luna decembrie %d" % (note, an)
+    if not p["incheiat"]:
+        return t + (". Anul %d nu s-a încheiat: se validează numai după 31.12.%d, dacă mai corespund atunci soldurilor; până atunci "
+                    "operațiunile anului le pot schimba." % (an, an))
+    if not p["la_zi"]:
+        return t + (", dar nu mai corespund soldurilor de la 31.12.%d din notele validate (după propunere s-au validat operațiuni ale "
+                    "anului sau notele au fost modificate): propune-le din nou — butonul de mai jos le recalculează." % an)
+    return t + "; apoi generează bilanțul."
+
+
+def motive_31_12(s, an, propuse=None, incheiat=True, s_dupa=None):
     """[deficiența 242] Motivele de oprire din soldurile la 31.12.`an`, TOATE: [{"fel", "titlu", "text"}] — clasele 6 / 7 neînchise (C15),
-    soldurile fără loc în bilanț (238). Lista goală = soldurile permit bilanțul."""
+    soldurile fără loc în bilanț (238). Lista goală = soldurile permit bilanțul.
+    [243, 244] `propuse` = propunerea care așteaptă validarea (`inchidere_an.ciorne`): atunci motivul e validarea ei („inchidere_propusa”),
+    cu propunerea din nou numai când nu mai corespunde soldurilor; `incheiat` = False: anul nu s-a încheiat, propunerea nu se oferă;
+    `s_dupa` = soldurile după notele propuse (`inchidere_an.solduri_dupa`): soldurile fără loc se spun pe ele."""
     out = []
     cu_sold = conturi_6_7_cu_sold(s)
-    if cu_sold:
-        out.append({"fel": "inchidere_6_7", "titlu": "Clasele 6 / 7", "text": _text_6_7(cu_sold, an)})
-    fara = conturi_fara_rand(F10_NOMENCLATOR, s, "12345")
+    if cu_sold and propuse:
+        out.append({"fel": "inchidere_propusa", "titlu": "Clasele 6 / 7", "text": _text_propuse(propuse), "simplu": _text_propuse(propuse),
+                    "propuse": propuse, "din_nou": propuse["incheiat"] and not propuse["la_zi"]})
+    elif cu_sold:
+        out.append({"fel": "inchidere_6_7" if incheiat else "an_neincheiat", "titlu": "Clasele 6 / 7",
+                    "text": _text_6_7(cu_sold, an, incheiat=incheiat)})
+    fara = conturi_fara_rand(F10_NOMENCLATOR, s if s_dupa is None else s_dupa, "12345")
     if fara:
         out.append({"fel": "fara_loc", "titlu": "Soldurile de la 31.12 de mai jos nu au loc în bilanț",
                     "text": "\n".join(_randuri_fara_loc(fara)), "simplu": motiv_f10(fara)})
@@ -501,7 +529,8 @@ def refuz(motive, an, bilant_pe=None):
     lui, ca să se rezolve dintr-o singură trecere."""
     if not motive:
         return
-    inchidere = any(m["fel"] == "inchidere_6_7" for m in motive)
+    inchidere = any(m["fel"] == "inchidere_6_7" or m.get("din_nou") for m in motive)
+    propuse = [m["propuse"] for m in motive if m["fel"] == "inchidere_propusa"]
     if len(motive) == 1:
         m = motive[0]
         mesaj = m.get("simplu") or "Bilanțul pe %d nu se poate genera: %s" % (bilant_pe or an, m["text"])
@@ -509,7 +538,7 @@ def refuz(motive, an, bilant_pe=None):
         mesaj = ("Bilanțul pe %d nu se poate genera — %d motive; rezolvă-le pe toate, apoi generează din nou.\n" % (bilant_pe or an, len(motive))
                  + "\n".join("%d. %s:%s%s" % (i, m["titlu"], "\n" if m["fel"] == "fara_loc" else " ", m["text"])
                              for i, m in enumerate(motive, start=1)))
-    raise BilantOprit(mesaj, an=an, inchidere=inchidere)
+    raise BilantOprit(mesaj, an=an, inchidere=inchidere, propuse=propuse)
 
 
 def verifica_31_12(s, an, bilant_pe=None):

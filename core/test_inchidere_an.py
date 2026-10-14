@@ -81,7 +81,7 @@ def _anul(c):
 def test_propunerea_e_ciorna_si_intra_in_evidenta_numai_dupa_validare(cur):
     """Propunerea la 31.12.2025: două note CIORNĂ (`sursa='inchidere_an'`, document intern „Notă de calcul”) — regularizarea TVA (4427 =
     4426 42, 4427 = 4423 168) și închiderea (704 = 121 1.000, 121 = 628 200); rezultatul 800. Cât sunt ciorne, bilanțul se oprește tot
-    („închide clasele 6/7”); după validare (jurnalul), bilanțul se generează: F10 rd.43 = 800, iar 4423 (168) e datorie (rd.13). O nouă
+    („Notele de închidere propuse așteaptă validarea”, 244); după validare (jurnalul), bilanțul se generează: F10 rd.43 = 800, iar 4423 (168) e datorie (rd.13). O nouă
     cerere înlocuiește o ciornă nevalidată (același document), iar după validare nu mai are ce închide. MUTAȚII: notele scrise
     `validata` -> pică (R36); regularizarea TVA scoasă -> 4427 rămâne fără loc -> pică."""
     _anul(cur)
@@ -92,7 +92,7 @@ def test_propunerea_e_ciorna_si_intra_in_evidenta_numai_dupa_validare(cur):
     assert r["rezultat"] == D(800) and all(re.match(r"Notă de calcul nr \d+ din 31\.12\.2025$", n["document"] or "") for n in r["note"]), r
     cur.execute("SELECT DISTINCT status, sursa FROM inregistrari WHERE id = ANY(%s)", ([n["id"] for n in r["note"]],))
     assert [tuple(x.values()) for x in cur.fetchall()] == [("ciorna", "inchidere_an")]
-    with pytest.raises(b.BilantOprit, match=r"închide clasele 6/7 în 121 la 31\.12\.2025"):
+    with pytest.raises(b.BilantOprit, match=r"^Notele de închidere propuse așteaptă validarea: "):     # [244] ciornele nu sunt evidență
         ba.coloanele(cur, _SCHEMA, "s1005", 2025, [])
     r2 = ia.propune(cur, _SCHEMA, 2025)                                    # o nouă cerere: ciornele se înlocuiesc
     assert r2["inlocuite"] == [n["id"] for n in r["note"]] and [n["document"] for n in r2["note"]] == [n["document"] for n in r["note"]]
@@ -217,3 +217,78 @@ def test_ruta_propunerii_pana_in_rulajul_declaratiei(lume_http):
         rv = cl.post("/tenants/%d/jurnal/%d/valideaza" % (lume_http["tid"], n["id"]), json={}, headers=h)
         assert rv.status_code == 200, rv.text[:200]
     assert (_sold(lume_http, "121"), _sold(lume_http, "4423")) == (D(800), D(168))
+
+
+# ── 243, 244 (retestul Costin 13.10.2026, comanda 14.10 pct.2, verbatim în DECIZII) ───────────────────────────────────────────────────
+def _ciorna_inchidere(c, an, linii):
+    """O ciornă de închidere scrisă direct (ca cele două de pe F2 din producție, propuse la 13.10 pe 31.12.2026)."""
+    c.execute("INSERT INTO inregistrari (data, status, sursa, descriere, document_ref) VALUES (%s, 'ciorna', %s, %s, %s) RETURNING id",
+              (datetime.date(an, 12, 31), ia.SURSA, ia.DESCRIERE_INCHIDERE % an, "Notă de calcul nr 1 din 31.12.%d" % an))
+    nid = c.fetchone()["id"]
+    for d, cr, s in linii:
+        c.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, %s, %s, %s)", (nid, d, cr, s))
+    return nid
+
+
+def test_def_243_anul_neincheiat_nu_se_propune_si_nu_se_valideaza(cur):
+    """243: „nota de închidere se poate propune pentru un an neîncheiat; operațiunile ulterioare o fac greșită, iar după validare nu se mai
+    corectează. Fie permiți propunerea numai după 31.12, fie avertizezi și recalculezi înainte de validare. Alege varianta mai sigură.”
+    Aleasă: numai după 31.12. Anul curent (neîncheiat): propunerea se refuză cu motivul; o ciornă de închidere deja scrisă pe 31.12 a
+    anului curent (cazul F2) nu se validează; bilanțul nu oferă propunerea, spune de ce. MUTAȚIE: `an_incheiat` întors mereu True -> pică."""
+    an = datetime.date.today().year
+    for d, cr, s in (("4111", "704", 1000), ("628", "401", 200)):
+        _nota(cur, datetime.date(an, 3, 10), d, cr, D(s))
+    with pytest.raises(ValueError, match=r"^Nota de închidere pe %d se propune după 31\.12\.%d: " % (an, an)):
+        ia.propune(cur, _SCHEMA, an)
+    nid = _ciorna_inchidere(cur, an, [("704", "121", D(1000)), ("121", "628", D(200))])
+    r = jurnal_api.valideaza(cur.connection, _SCHEMA, nid)
+    assert r.get("cod") == "INCHIDERE_NEVALIDABILA" and r["eroare"].startswith(
+        "Nota de închidere #%d nu se validează înainte de 31.12.%d: până la sfârșitul anului" % (nid, an)), r
+    cur.execute("SELECT status FROM inregistrari WHERE id = %s", (nid,))
+    assert cur.fetchone()["status"] == "ciorna"
+    with pytest.raises(b.BilantOprit) as e:
+        ba.coloanele(cur, _SCHEMA, "s1005", an, [])
+    assert "Anul %d nu s-a încheiat: se validează numai după 31.12.%d" % (an, an) in str(e.value), str(e.value)
+    assert (e.value.ani_inchidere, [p["incheiat"] for p in e.value.propuse]) == ([], [False])
+
+
+def test_def_243_nota_care_nu_mai_corespunde_soldurilor_nu_se_valideaza(cur):
+    """243, același drum după 31.12: propunerea pe 2025, apoi o vânzare din noiembrie 2025 validată târziu (500). Nota de închidere 6 / 7
+    nu se mai validează („nu mai corespunde soldurilor”), regularizarea TVA — încă a soldurilor — da; bilanțul spune că notele propuse nu
+    mai corespund și oferă propunerea din nou; după ea și validare: profitul 1.300 în bilanț. MUTAȚIE: `corespunde` întors mereu True
+    -> pică."""
+    _anul(cur)
+    r = ia.propune(cur, _SCHEMA, 2025)
+    tva, inch = r["note"]
+    _nota(cur, datetime.date(2025, 11, 30), "4111", "704", D(500))
+    assert ia.ciorne(cur, _SCHEMA, 2025)["la_zi"] is False
+    rv = jurnal_api.valideaza(cur.connection, _SCHEMA, inch["id"])
+    assert rv.get("eroare", "").startswith("Nota de închidere #%d nu mai corespunde soldurilor de la 31.12.2025" % inch["id"]), rv
+    assert jurnal_api.valideaza(cur.connection, _SCHEMA, tva["id"]) == {"ok": True}
+    with pytest.raises(b.BilantOprit) as e:
+        ba.coloanele(cur, _SCHEMA, "s1005", 2025, [])
+    assert ([(p["an"], p["la_zi"], p["incheiat"]) for p in e.value.propuse], e.value.ani_inchidere) == ([(2025, False, True)], [2025]), \
+        e.value                                                                # textul de pe ecran îl verifică e2e-ul 243
+    r2 = ia.propune(cur, _SCHEMA, 2025)
+    assert [n["linii"] for n in r2["note"]] == [[("121", "628", "200.00"), ("704", "121", "1500.00")]], r2
+    assert jurnal_api.valideaza(cur.connection, _SCHEMA, r2["note"][0]["id"]) == {"ok": True}
+    _f10p, f10c, _f20p, _f30p = ba.coloanele(cur, _SCHEMA, "s1005", 2025, [])
+    assert f10c[43] == 1300, f10c
+
+
+def test_def_244_dupa_propunere_motivul_e_validarea_notelor(cur):
+    """244: „după propunere, mesajul roșu din Bilanț spune în continuare «închide clasele 6/7 în 121». Trebuie «Notele de închidere propuse
+    așteaptă validarea», cu link direct spre ele, deschis pe luna lor.” Refuzul spune notele și luna (decembrie 2025) și le poartă (ecranul
+    face din ele legătura spre Registrul jurnal); nu mai oferă propunerea (notele sunt la zi). MUTAȚIE: `propuse` nepasat din
+    `bilant_api` -> pică."""
+    _anul(cur)
+    r = ia.propune(cur, _SCHEMA, 2025)
+    with pytest.raises(b.BilantOprit) as e:
+        ba.coloanele(cur, _SCHEMA, "s1005", 2025, [])
+    m = str(e.value)
+    assert m == ("Notele de închidere propuse așteaptă validarea: #%d Regularizarea TVA la 31.12.2025; #%d Închiderea conturilor de "
+                 "venituri și cheltuieli în 121 la 31.12.2025. Se validează în Registrul jurnal, luna decembrie 2025; apoi generează "
+                 "bilanțul." % tuple(n["id"] for n in r["note"])), m
+    assert [(p["an"], p["luna"], [n["id"] for n in p["note"]], p["la_zi"]) for p in e.value.propuse] == [
+        (2025, 12, [n["id"] for n in r["note"]], True)]
+    assert e.value.ani_inchidere == [] and "închide clasele 6/7" not in m

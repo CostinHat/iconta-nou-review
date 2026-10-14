@@ -187,7 +187,8 @@ def test_pct5_amortizarea_pana_la_ultima_luna_incheiata():
     from core.inchidere_luna import ultima_zi_incheiata, luna_in_curs
     assert ultima_zi_incheiata(datetime.date(2026, 10, 9)) == datetime.date(2026, 9, 30)
     assert ultima_zi_incheiata(datetime.date(2026, 1, 1)) == datetime.date(2025, 12, 31)
-    assert luna_in_curs(2026, 10) and not luna_in_curs(2026, 9)   # aceeași frontieră ca închiderea
+    zi = datetime.date(2026, 10, 9)        # [14.10.2026, garda `test_teste_ziua_fixata`] ziua fixată: fără ea, aserțiunea pica de la 01.11.2026 (octombrie se încheia)
+    assert luna_in_curs(2026, 10, azi=zi) and not luna_in_curs(2026, 9, azi=zi)   # aceeași frontieră ca închiderea
 
 
 # ── pct.6-7 (B6, B7) ────────────────────────────────────────────────────────────────────────────────────────────────────────

@@ -20020,3 +20020,38 @@ DECIZII?” — răspunsul, verbatim: **„Da, rescrie referința (Recommended)�
   prin nota ei; o factură-ciornă ar fi adăugat tot o lună goală). Măsurat înainte, pe cele 5 firme: lunile notelor validate = lunile
   notelor validate + facturi, deci referința nu se schimbă din cauza facturilor.
 - Gard: `core/test_cifre_referinta_poarta.py::test_lunile_cu_date_vin_numai_din_notele_validate` (mutația: filtrul scos -> roșu).
+
+## 14.10.2026 — Pct.2 al comenzii din 14.10: 243 (varianta aleasă și de ce), 244, 245; bomba de calendar din suită (Code)
+
+**Comanda, verbatim (pct.2, textul întreg în intrarea de mai sus):** „243: nota de închidere se poate propune pentru un an neîncheiat;
+operațiunile ulterioare o fac greșită, iar după validare nu se mai corectează. Fie permiți propunerea numai după 31.12, fie avertizezi și
+recalculezi înainte de validare. Alege varianta mai sigură și spune de ce.”
+
+**243 — aleasă: propunerea NUMAI după 31.12.** De ce e mai sigură:
+- înainte de 31.12, operațiunile ulterioare nu sunt o excepție, ci sigure (facturile, salariile, amortizarea lunilor rămase); o notă
+  propusă în octombrie e greșită aproape sigur în decembrie;
+- un avertisment se poate trece cu vederea, iar nota validată nu se mai modifică (R36: validarea e a omului, nu o rescrie aplicația);
+  un refuz nu se poate ocoli;
+- „recalculezi înainte de validare” ar schimba sub ochii contabilului nota pe care o validează — ce validează n-ar mai fi ce a văzut.
+**Același drum rămâne deschis și după 31.12** (o operațiune a anului validată după propunere: o factură de decembrie primită în ianuarie),
+deci validarea refuză ȘI nota care nu mai corespunde soldurilor validate de acum (`inchidere_an.corespunde`: liniile ei = una din părțile
+propunerii recalculate) — refuz, nu recalcul: contabilul o propune din nou și validează ce vede. Poarta stă în `jurnal_api.valideaza`,
+unicul drum de validare (jurnalul și coada). „Anul s-a încheiat” = `inchidere_luna.luna_in_curs(an, 12)` — sursa unică a regulii pentru
+închiderea lunii, amortizare și salarii (deficiența 216), cu ziua României.
+**Respinse:** avertisment + recalcul (motivele de mai sus); blocarea anului după validarea notei de închidere (o operațiune validată după
+ea redeschide refuzul bilanțului, iar propunerea închide numai ce a rămas cu sold — corecția există și nu cere o regulă nouă de perioadă;
+blocarea perioadei rămâne a contabilului, „Blochează luna”).
+**Limita:** ciornele de închidere pe 31.12.2026 deja scrise pe F2 (producție, 13.10) rămân ciorne; nu se mai pot valida până după
+31.12.2026 și numai dacă mai corespund atunci soldurilor. Nu le șterg (date de producție, scrierile le face Costin).
+
+**244** — cu ciornele de închidere la 31.12 propuse, motivul bilanțului devine „Notele de închidere propuse așteaptă validarea: #… …; #… ….
+Se validează în Registrul jurnal, luna decembrie AN”, cu legătura „Deschide notele de închidere în Registrul jurnal — decembrie AN”
+(Registrul jurnal deschis pe 12/AN, notele evidențiate). Soldurile pe care le închid notele propuse (4426 / 4427 din regularizarea TVA) nu
+mai apar ca motiv separat — e aceeași validare (`inchidere_an.solduri_dupa`). După propunere, zona se recitește singură.
+
+**245** — sursa notei e un cod intern; ecranul arată eticheta din `jurnal_api.ETICHETE_SURSA` (11 surse, toate cele scrise de aplicație —
+25 de scrieri în `inregistrari`, păzite de `core/test_jurnal_sursa_eticheta.py`). Registrul jurnal era singurul ecran care afișa sursa.
+
+**Bomba de calendar din suită (găsită de Code la 243).** `core/test_retest2.py` afirma `luna_in_curs(2026, 10)` pe ziua de azi — de la
+01.11.2026 poarta ar fi căzut fără nicio schimbare de cod. Ziua fixată; gard `core/test_teste_ziua_fixata.py`. Nu primește număr în
+DEFICIENTE: nu e o deficiență a aplicației (starea „rezolvată” cere e2e în browser) — e o neconformitate a porții, consemnată în GARZI.

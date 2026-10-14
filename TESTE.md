@@ -46,11 +46,32 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Comanda Costin 14.10.2026, pct.2 — deficiențele 243, 244, 245 (retestul 13.10, verbatim în DECIZII)** — lot separat, o poartă;
+  R4 BLOCAT; publicarea de ghiduri noi ÎNGHEȚATĂ; după raport: pct.3 (C19).
+  - ultim: pct.1 publicat `5e260e3c`; D0–D4b în commitul lotului (SHA-ul în raport)
+  - urmator: D5 — poarta, ZIP, raport; apoi pct.3 (C19). STARE = IN LUCRU
+  - pasi:
+    D0. DECIZII (varianta aleasă la 243 și de ce), TESTE (acest fir), DEFICIENTE (243, 244, 245).
+    D1. 243: `core/inchidere_an.propune` refuză cât anul nu s-a încheiat (azi ≤ 31.12.an); `inchidere_an.refuz_validare`, chemat din
+        `jurnal_api.valideaza` (unicul drum de validare — jurnalul și coada): nota de închidere a unui an neîncheiat sau care nu mai
+        corespunde soldurilor validate de acum se refuză; ecranul Bilanț nu oferă propunerea pe un an neîncheiat; teste + e2e + mutații.
+    D2. 244: `core/bilant.motive_31_12` + `bilant_api`: cu ciornele de închidere la 31.12 propuse, motivul e „Notele de închidere propuse
+        așteaptă validarea” (notele, luna lor; „nu mai corespund soldurilor” când s-au schimbat), afirmația poartă notele; ecranul Bilanț:
+        legătură directă spre Registrul jurnal deschis pe decembrie AN, cu notele evidențiate; după propunere zona se reîncarcă; mesajul
+        propunerii fără „(Jurnal — notele de validat)”, cu aceeași legătură; e2e + mutație.
+    D3. 245: `core/jurnal_api.ETICHETE_SURSA` (fiecare sursă scrisă de aplicație: manual, facturi, banca, casa, stocuri, salarii,
+        amortizare, bon, horeca_z, amef, inchidere_an), ruta jurnalului întoarce `sursa_eticheta`, ecranul o afișează în loc de cod; gard:
+        fiecare sursă scrisă în cod are etichetă, ecranul nu afișează codul; e2e + mutație.
+    D4. Din raportul pct.1 (§7): captura C20 arată textul opțiunii D406 dezactivate; firma PFA din test fără „SRL” în nume.
+    D4b. (găsite pe drum, 14.10) bomba de calendar `core/test_retest2.py` (`luna_in_curs(2026, 10)` fără zi -> roșu din 01.11.2026):
+        ziua fixată + gard `core/test_teste_ziua_fixata.py`; `an_incheiat` = `inchidere_luna.luna_in_curs` (sursa unică, nu o a doua
+        regulă); «Registru jurnal» trecut în `nav_ecrane.ECRANE` (JS atins) + cele trei unelte vizuale; `TRASEE.md` regenerat (+1 refuz).
+    D5. Registre, verificator TOTAL 0, testele fișierelor atinse, o poartă, ZIP, raport.
+
 - fir: **Răspunsul Costin la §6 al raportului COMANDA_13_10 (13.10.2026, verbatim în DECIZII)** — un lot, o poartă; R4 BLOCAT;
   publicarea de ghiduri noi ÎNGHEȚATĂ (lista se micșorează numai prin comasare).
   - ultim: lotul 2 /ghid/ `c194d5ee`; M0–M5 în commitul lotului (SHA-ul în raport)
-  - urmator: poarta 13.10 respinsă la cifre (două ciorne de închidere pe F2, nu lotul); decizia Costin 14.10 (varianta (c), verbatim în
-    DECIZII) primită -> M6, apoi lotul prin poartă și publicat; apoi pct.2 al comenzii din 14.10 (243–245). STARE = IN LUCRU
+  - urmator: — (M0–M6 publicate în `5e260e3c`, poarta verde 14.10, four-way închis; raportul pct.1 + ZIP). STARE = ÎNCHIS
   - pasi:
     M0. DECIZII (comanda verbatim), TESTE (acest fir).
     M1. Comasarea celor 45 de grupuri: în fiecare, ghidul mai complet rămâne; conținutul util în plus mutat în el; celălalt -> `.md` șters,
