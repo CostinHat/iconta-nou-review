@@ -17,6 +17,7 @@ Contează în practică pentru că o amendă aplicată spre maxim, fără nicio 
 ::: ghid-temei
 „(3) Sancțiunea se aplică în limitele prevăzute de actul normativ și trebuie să fie proporțională cu gradul de pericol social al faptei săvârșite, ținându-se seama de împrejurările în care a fost săvârșită fapta, de modul și mijloacele de săvârșire a acesteia, de scopul urmărit, de urmarea produsă, precum și de circumstanțele personale ale contravenientului și de celelalte date înscrise în procesul-verbal."
 — OG 2/2001, art. 21 alin. (3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
+
 „(5) Sancțiunea stabilită trebuie să fie proporțională cu gradul de pericol social al faptei săvârșite."
 — OG 2/2001, art. 5 alin. (5) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::

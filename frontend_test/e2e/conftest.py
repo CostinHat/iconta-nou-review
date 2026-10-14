@@ -195,9 +195,10 @@ def alege_perioada(pg, an, luna=None, trim=None, zona=""):
         raise AssertionError("perioada cerută (luna %s, trim %s) fără selector pe ecran" % (luna, trim))
 
 
-def firma_noua():
-    """O firmă NOUĂ a cabinetului de test, creată pe drumul aplicației (`provision_tenant`) și trecută în registrul de curățenie:
-    {tenant_id, schema, nume, cabinet_id}. Generator: cine o cere o scoate la final (`_scoate_firmele_e2e(tenant_id)`)."""
+def firma_noua(tip_firma="srl"):
+    """O firmă NOUĂ a cabinetului de test, creată pe drumul aplicației (`provision_tenant`, cu `tip_firma` — „pfa” pentru partida
+    simplă) și trecută în registrul de curățenie: {tenant_id, schema, nume, cabinet_id}. Generator: cine o cere o scoate la final
+    (`_scoate_firmele_e2e(tenant_id)`)."""
     import io as _io
     import time as _t
     from core import tenant_provisioning as tp
@@ -208,7 +209,7 @@ def firma_noua():
     with db.get_conn() as c, c.cursor() as cur:
         cur.execute("SELECT id, accounting_firm_id FROM public.users WHERE email = 'patron@prisma-cont.test'")
         uid, cab = cur.fetchone()
-        r = tp.provision_tenant(c, nume, cui_cu_control(90000000 + int(_t.time() * 1000) % 9000000), cab, uid, sql_t)
+        r = tp.provision_tenant(c, nume, cui_cu_control(90000000 + int(_t.time() * 1000) % 9000000), cab, uid, sql_t, tip_firma=tip_firma)
         c.commit()
     import curatenie
     os.makedirs(os.path.dirname(curatenie.registru_firme()), exist_ok=True)

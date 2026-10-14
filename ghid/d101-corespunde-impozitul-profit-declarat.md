@@ -2,7 +2,7 @@
 title: De ce D101 nu corespunde cu impozitul pe profit declarat în cursul anului?
 description: D101 e definitivarea anuală, nu suma plăților trimestriale — diferența apare din regularizarea de la finalul anului, din opțiunea de sistem anual/trimestrial și din recalcularea bazei cumulate de la începutul anului.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -17,7 +17,12 @@ Art. 41 din Codul fiscal (Legea 227/2015) descrie două regimuri posibile:
 - **Sistemul trimestrial (regula generală, alin. 1):** calculul, declararea și plata impozitului pe profit se fac trimestrial, până la 25 a lunii următoare încheierii trimestrelor I-III, iar definitivarea și plata impozitului anual se fac până la termenul de depunere a declarației anuale (D101), prevăzut la art. 42.
 - **Sistemul anual, cu plăți anticipate trimestriale (alin. 2):** contribuabilul poate opta pentru calculul, declararea și plata anuală a impozitului, cu plăți anticipate trimestriale. Plata finală se face tot până la termenul de depunere a D101.
 
-Diferența practică: în sistemul trimestrial, fiecare trimestru se calculează pe baza rezultatului fiscal cumulat efectiv realizat până în acel moment — deci sumele plătite în cursul anului sunt deja impozitul „real" pentru fiecare perioadă, iar D101 doar confirmă totalul. În sistemul anual, plățile anticipate trimestriale nu sunt calculate pe rezultatul fiscal efectiv al fiecărui trimestru, ci pe o bază estimativă (de regulă 1/4 din impozitul anului precedent recalculat, sau pe profitul contabil al perioadei, în anumite cazuri) — de aici apare diferența față de D101, care e definitivarea reală.
+Diferența practică: în sistemul trimestrial, fiecare trimestru se calculează pe baza rezultatului fiscal cumulat efectiv realizat până în acel moment — deci sumele plătite în cursul anului sunt deja impozitul „real" pentru fiecare perioadă, iar D101 doar confirmă totalul. În sistemul anual, plățile anticipate trimestriale nu sunt calculate pe rezultatul fiscal efectiv al fiecărui trimestru, ci pe o bază estimativă — de regulă 1/4 din impozitul anului precedent, actualizat cu indicele prețurilor de consum (art. 41 alin. (8)), iar pentru trimestrul I, începând cu anul fiscal 2026, cota de impozit aplicată asupra profitului contabil al trimestrului (art. 41 alin. (10^1), introdus de OUG 8/2026) — de aici apare diferența față de D101, care e definitivarea reală.
+
+::: ghid-temei
+„[...] plata anticipată pentru trimestrul I al fiecărui an fiscal/an fiscal modificat se calculează prin aplicarea cotei de impozit asupra profitului contabil al perioadei pentru care se efectuează plata anticipată. Aceasta se declară și se plătește până la data de 25 inclusiv a lunii următoare trimestrului I.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 41 alin. (10^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
 
 ### Regularizarea la finalul anului
 

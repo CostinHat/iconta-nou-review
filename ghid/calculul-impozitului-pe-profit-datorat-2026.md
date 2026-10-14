@@ -2,7 +2,7 @@
 title: Cum se calculează impozitul pe profit datorat pe anul 2026
 description: Impozitul datorat pe 2026 nu e mereu cota de 16% din profit — pentru firmele cu cifră de afaceri peste 50.000.000 euro se compară cu impozitul minim pe cifra de afaceri, calculat pentru 2026 cu cota de 0,5%, nu 1%, potrivit art. 18^1 alin. (16) Cod fiscal.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -63,6 +63,6 @@ Se datorează **cel mai mare dintre cele două**, niciodată suma lor.
 
 Comparația dintre impozitul pe profit clasic (rd. 46) și impozitul la nivelul IMCA (rd. 47) e calculată conform structurii din OPANAF 206/2025: ramura mai mare câștigă — rd. 48.1 dacă rd. 46 ≥ rd. 47, rd. 48.2 dacă rd. 47 > rd. 46 — iar un rezultat negativ al bazei IMCA e tratat corect ca zero, conform art. 18^1 alin. (4).
 
-Pragul de eligibilitate de 50.000.000 euro, măsurat la cursul de la închiderea exercițiului financiar, e verificat conform art. 18^1 alin. (1). Cota efectiv folosită în formula IMCA merită verificată separat pentru anul fiscal 2026 — vezi [ghidul dedicat cotei IMCA din 2026](/ghid/imca-2026-cota-05-la-suta) pentru detalii despre reducerea de la 1% la 0,5%.
+Pragul de eligibilitate de 50.000.000 euro, măsurat la cursul de la închiderea exercițiului financiar, e verificat conform art. 18^1 alin. (1). Cota folosită în formula IMCA urmează anul fiscal: 1% pentru 2024–2025 și 0,5% pentru anul fiscal 2026 (art. 18^1 alin. (16)) — vezi [ghidul dedicat cotei IMCA din 2026](/ghid/imca-2026-cota-05-la-suta) pentru detalii despre reducerea de la 1% la 0,5%.
 
 [iConta.eu](/)

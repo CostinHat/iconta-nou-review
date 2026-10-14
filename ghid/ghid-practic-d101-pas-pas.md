@@ -22,12 +22,25 @@ Pașii, așa cum funcționează motorul din aplicație:
 8. **IMCA** — dacă cifra de afaceri a anului precedent depășește 50.000.000 EUR, „generarea” cere explicit P47 dacă nu a fost furnizat manual.
 9. **Termenul** — legal, 25 iunie a anului următor (vezi ghidul dedicat termenului pentru detalii și pentru o discrepanță activă între cod și lege pentru anul fiscal 2026).
 
+## Temeiul legal
+
+::: ghid-temei
+„Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 17 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„a) rezerva legală este deductibilă în limita unei cote de 5% aplicate asupra profitului contabil, la care se adaugă cheltuielile cu impozitul pe profit, până ce aceasta va atinge a cincea parte din capitalul social subscris și vărsat sau din patrimoniu, după caz;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 26 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Contribuabilii au obligația să depună o declarație anuală privind impozitul pe profit până la data de 25 iunie inclusiv a anului următor [...]”
+— Legea nr. 227/2015 privind Codul fiscal, art. 42 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 ## Ce se greșește în practică
 
 Cele mai frecvente greșeli: tratarea D101 ca declarație trimestrială, ignorarea avertismentului de la contul 691, și necompletarea manuală a P47 pentru firmele mari eligibile la IMCA.
 
 ## Ce face iConta.eu
 
-Aplicația validează identitatea firmei înainte de generare („verificarea datelor înainte de generare (Declarații)”), calculează automat rezerva legală dacă lipsește, avertizează pe contul 691 și rulează reconciliere independentă a bazei contabile la generare. Nu generează, în schimb, o D101 rectificativă din interfață — flag-urile de rectificare din structura XML sunt hardcodate la „0" în cod, fără parametru de intrare care să le seteze.
+Aplicația validează identitatea firmei înainte de generare („verificarea datelor înainte de generare (Declarații)”), calculează automat rezerva legală dacă lipsește, avertizează pe contul 691 și rulează reconciliere independentă a bazei contabile la generare. Nu generează, în schimb, o D101 rectificativă din interfață — declarația iese întotdeauna ca declarație inițială, fără posibilitatea de a o marca drept rectificativă.
 
 [iConta.eu](/)

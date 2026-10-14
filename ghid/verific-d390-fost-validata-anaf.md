@@ -2,7 +2,7 @@
 title: Cum verific dacă D390 a fost validată de ANAF?
 description: Aplicația verifică D390 față de evidența contabilă și de D300 depus prin ea — nu față de statusul de validare la ANAF, care rămâne de confirmat în SPV.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -21,7 +21,7 @@ Depunerea și confirmarea recepției/validării unei declarații electronice se 
 Ce face, de fapt, controlul din aplicație pentru D390: confruntă baza declarată (livrări/achiziții intracomunitare, calculată din facturi) cu două surse **interne**, nu cu ANAF —
 
 - **evidența contabilă validată**: facturile intracomunitare cu notă contabilă având statusul „validată", legată de factura respectivă;
-- **D300-ul efectiv depus prin aplicație**, pe rândurile corespunzătoare (R1_1 pentru livrări, R5_1 pentru achiziții).
+- **D300-ul efectiv depus prin aplicație**, pe rândurile corespunzătoare (baza de la rândul 1 pentru livrări, de la rândul 5 pentru achiziții).
 
 Niciuna dintre aceste comparații nu interoghează ANAF sau SPV. Ele arată dacă ce ai declarat corespunde cu ce ai în contabilitate și cu ce ai depus anterior ca decont — nu dacă fișierul XML depus a trecut de validarea/procesarea din partea ANAF.
 

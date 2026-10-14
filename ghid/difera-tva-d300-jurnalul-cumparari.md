@@ -2,13 +2,13 @@
 title: De ce diferă TVA din D300 de jurnalul de cumpărări?
 description: TVA deductibilă din D300 (rândul TOTAL TAXĂ DEDUCTIBILĂ) trebuie comparată cu rulajul debitor al contului 4426, nu cu un alt rând al declarației — o confuzie frecventă de rând poate produce diferențe false.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
 # De ce diferă TVA din D300 de jurnalul de cumpărări?
 
-Când TVA deductibilă din D300 nu se potrivește cu jurnalul de cumpărări, primul lucru de verificat e chiar rândul din declarație folosit în comparație: rândul corect este **TOTAL TAXĂ DEDUCTIBILĂ (R27_2)**, comparat cu rulajul debitor al contului **4426**. Un alt rând al declarației (cel de „ajustări/pro-rata") înseamnă altceva și nu trebuie confundat cu TVA-ul dedus efectiv.
+Când TVA deductibilă din D300 nu se potrivește cu jurnalul de cumpărări, primul lucru de verificat e chiar rândul din declarație folosit în comparație: rândul corect este **TOTAL TAXĂ DEDUCTIBILĂ (rândul 30, coloana TVA)**, comparat cu rulajul debitor al contului **4426**. Un alt rând al declarației (rândul 34, „Ajustări conform pro-rata/ajustări de taxă”) înseamnă altceva și nu trebuie confundat cu TVA-ul dedus efectiv.
 
 ## Temeiul legal
 

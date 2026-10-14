@@ -17,6 +17,7 @@ Pentru firmă, efectul practic se vede în extrasul de carte funciară. Un cump�
 ::: ghid-temei
 „Urmărirea imobilului, în baza somației prevăzute la alin. (1), se notează la cererea organului fiscal în cartea funciară, asupra bunurilor imobile ale debitorului, indiferent de modalitatea dreptului de proprietate, respectiv proprietate exclusivă, devălmășie sau coproprietate."
 — Codul de procedură fiscală (Legea 207/2015), art. 230 alin. (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „Executarea silită începe prin comunicarea somației. Dacă în termen de 15 zile de la comunicarea somației nu se stinge debitul sau nu se notifică organul fiscal cu privire la intenția de a demara procedura de mediere, se continuă măsurile de executare silită."
 — Codul de procedură fiscală (Legea 207/2015), art. 230 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::

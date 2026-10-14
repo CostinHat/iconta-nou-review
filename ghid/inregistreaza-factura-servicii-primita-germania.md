@@ -13,11 +13,16 @@ Pentru serviciile B2B intracomunitare, regula de bază schimbă complet locul de
 ## Temeiul legal
 
 ::: ghid-temei
-Antetul modulului de operațiuni intracomunitare citează, printre temeiurile motorului de calcul, art. 278 alin. (2) (servicii B2B, locul beneficiarului) și art. 308-309 (obligat la plată = beneficiarul la AIC/servicii primite) —, aplicația.
+„(2) Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„(2) Taxa este datorată de orice persoană impozabilă, inclusiv de către persoana juridică neimpozabilă înregistrată în scopuri de TVA conform art. 316 sau 317, care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]”
+— Legea nr. 227/2015 privind Codul fiscal, art. 307 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ::: ghid-temei
-HG 1/2016, norme la CF art. 331, pct. 109 alin. (1): „beneficiarul înregistrează… suma taxei aferente în următoarea formulă contabilă: 4426 = 4427. Prevederile acestui alineat sunt valabile pentru orice alte situații în care se aplică taxarea inversă.”
+„Din punct de vedere contabil, beneficiarul înregistrează în cursul perioadei fiscale în care taxa este exigibilă suma taxei aferente în următoarea formulă contabilă: 4426 = 4427. Prevederile acestui alineat sunt valabile pentru orice alte situații în care se aplică taxarea inversă.”
+— HG nr. 1/2016 (Normele metodologice ale Codului fiscal), titlul VII, pct. 109 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::
 
 Fiindcă locul prestării e locul beneficiarului (firma din România), serviciul cumpărat din Germania e neimpozabil în Germania și impozabil în România. Prestatorul german, corect, nu facturează TVA german pe acest serviciu — firma din România e cea obligată la plata taxei, prin autolichidare, la cota corespunzătoare serviciului.

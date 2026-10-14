@@ -46,6 +46,24 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Răspunsul Costin la §6 al raportului COMANDA_13_10 (13.10.2026, verbatim în DECIZII)** — un lot, o poartă; R4 BLOCAT;
+  publicarea de ghiduri noi ÎNGHEȚATĂ (lista se micșorează numai prin comasare).
+  - ultim: lotul 2 /ghid/ `c194d5ee`; M0–M5 în commitul lotului (SHA-ul în raport)
+  - urmator: poarta 13.10 respinsă la cifre (două ciorne de închidere pe F2, nu lotul); decizia Costin 14.10 (varianta (c), verbatim în
+    DECIZII) primită -> M6, apoi lotul prin poartă și publicat; apoi pct.2 al comenzii din 14.10 (243–245). STARE = IN LUCRU
+  - pasi:
+    M0. DECIZII (comanda verbatim), TESTE (acest fir).
+    M1. Comasarea celor 45 de grupuri: în fiecare, ghidul mai complet rămâne; conținutul util în plus mutat în el; celălalt -> `.md` șters,
+        `_GHID_REDIRECT` (301), scos din `ghid_publicate.txt`, `index_titluri_ghid.csv` / linkurile interne / `FUNCTIONALITATI.ghid_slug`
+        repointate; sitemap și ghidurile înrudite urmează din `_ghid_lista`; gard (perechile comasate = 301, absente din listă).
+    M2. Proza despre cod în cele 50 de ghiduri rescrisă din perspectiva contabilului; gardul 2b extins la tiparele ei.
+    M3. Cele 73 de ghiduri fără temei: temeiul din lege citat VERBATIM din sursa locală verificată, sau nicio casetă; gard: fiecare
+        citat adăugat se regăsește literal în sursa lui.
+    M4. Măsurarea semantică a suprapunerilor — numai raport (număr grupuri, pagini, 10 exemple, inclusiv adaos / descărcare / K).
+    M5. Registre, mutații, suita completă, o poartă, ZIP, raport.
+    M6. (14.10, decizia (c)) `scripts/cifre_referinta._luni_cu_date`: lunile numai din notele validate (R36) + gard; referința rescrisă
+        (F5 balanța 10/2026 scoasă, aprobat), amprenta în DECIZII; C20 probat în browser (e2e) -> rezolvată.
+
 - fir: **Comanda Costin 13.10.2026 (răspunsul la §6 al raportului C14-C15-237-238, verbatim în DECIZII)** — două loturi separate, fiecare
   cu poarta lui; R4 BLOCAT; ghiduri noi NEPUBLICATE până la decizia lui Costin.
   - ultim: L0, L1 (+ 242) `13856f1f`; L2 (/ghid/ a–e + C17, C18) în commitul lotului 2 (SHA-ul în raport)

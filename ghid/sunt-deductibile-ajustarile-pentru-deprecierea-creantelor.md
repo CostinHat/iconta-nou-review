@@ -13,24 +13,11 @@ Ajustările pentru deprecierea creanțelor (cont 491) sunt printre puținele pro
 ## Temeiul legal
 
 ::: ghid-temei
-"ajustările pentru deprecierea creanțelor, înregistrate potrivit reglementărilor contabile aplicabile,
-reprezentând sume datorate de clienții interni și externi pentru produse, semifabricate, materiale,
-mărfuri vândute, lucrări executate și servicii prestate, în limita unui procent de 30% din valoarea
-acestor ajustări, altele decât cele prevăzute la lit. d)-f), h) și i), dacă creanțele îndeplinesc
-cumulativ următoarele condiții:
-1. sunt neîncasate într-o perioadă ce depășește 270 de zile de la data scadenței;
-2. nu sunt garantate de altă persoană;
-3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului;"
+„c) ajustările pentru deprecierea creanțelor, înregistrate potrivit reglementărilor contabile aplicabile, reprezentând sume datorate de clienții interni și externi pentru produse, semifabricate, materiale, mărfuri vândute, lucrări executate și servicii prestate, în limita unui procent de 30% din valoarea acestor ajustări, altele decât cele prevăzute la lit. d)-f), h) și i), dacă creanțele îndeplinesc cumulativ următoarele condiții: [...] 1. sunt neîncasate într-o perioadă ce depășește 270 de zile de la data scadenței; [...] 2. nu sunt garantate de altă persoană; [...] 3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului;”
+— Codul fiscal (Legea 227/2015), art. 26 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-"ajustările pentru deprecierea creanțelor înregistrate potrivit reglementărilor contabile aplicabile,
-în limita unui procent de 100% din valoarea creanțelor, altele decât cele prevăzute la lit. d), e),
-f), h) și i), dacă creanțele îndeplinesc cumulativ următoarele condiții:
-1. sunt deținute la o persoană juridică asupra căreia este declarată procedura de deschidere a
-falimentului, pe baza hotărârii judecătorești prin care se atestă această situație, sau la o persoană
-fizică asupra căreia este deschisă procedura de insolvență pe bază de: – plan de rambursare a
-datoriilor; – lichidare de active; – procedură simplificată;
-2. nu sunt garantate de altă persoană;
-3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului;"
+„j) ajustările pentru deprecierea creanțelor înregistrate potrivit reglementărilor contabile aplicabile, în limita unui procent de 100% din valoarea creanțelor, altele decât cele prevăzute la lit. d), e), f), h) și i), dacă creanțele îndeplinesc cumulativ următoarele condiții: 1. sunt deținute la o persoană juridică asupra căreia este declarată procedura de deschidere a falimentului, pe baza hotărârii judecătorești prin care se atestă această situație, sau la o persoană fizică asupra căreia este deschisă procedura de insolvență pe bază de: – plan de rambursare a datoriilor; [...] – lichidare de active; [...] – procedură simplificată; [...] 2. nu sunt garantate de altă persoană; [...] 3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului;”
+— Codul fiscal (Legea 227/2015), art. 26 alin. (1) lit. j) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Cele două praguri, pas cu pas

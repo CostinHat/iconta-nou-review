@@ -31,10 +31,10 @@ Din indemnizația brută se calculează, în această ordine:
 
 - **Se citează art. 76 alin. (2) lit. g) drept temei** pentru remunerația administratorului — lit. g) e despre președintele asociației de proprietari (Legea 230/2007), nu despre administratorul unei societăți. Temeiul corect pentru administrator e **lit. o)**.
 - **Se omite CAM** pe motiv că administratorul de mandat nu are raport de muncă — greșit: remunerația administratorilor și a directorilor cu contract de mandat e inclusă expres în baza CAM (art. 220^4 alin. (1) lit. d) și e)).
-- **Se confundă administratorul cu mandat cu cenzorul** — deși calculul (CAS+CASS+impozit, fără CAM) e identic ca structură, temeiul fiscal e diferit: lit. o) pentru administrator, **lit. i)** pentru cenzor.
+- **Se confundă administratorul cu mandat cu cenzorul** — deși reținerile din indemnizație (CAS + CASS + impozit) se calculează la fel, temeiul fiscal e diferit: lit. o) pentru administrator, **lit. i)** pentru cenzor; în plus, pentru remunerația administratorului societatea datorează și CAM 2,25% (art. 220^4 alin. (1) lit. d)).
 
 ## Ce face iConta.eu
 
-Funcția „calculul contractului de mandat (Salarii)” din modulul „Contracte de muncă speciale” aplică exact această structură — CAS 25% + CASS 10% + impozit 10% pe (brut − CAS − CASS), fără CAM — pentru ambele cazuri, mandat de administrator și cenzor. Notă: docstring-ul modulului citează generic „CF art. 76(2) lit. g/i" pentru cele două cazuri; verificarea la sursă arată că lit. g) nu e temeiul corect pentru administrator — temeiul corect e lit. o), care nu apare în comentariul din cod, deși calculul aplicat e cel corect.
+La operațiunea „Contracte speciale (zilieri, mandat, cenzori)”, iConta.eu calculează indemnizația după această structură — CAS 25% + CASS 10% + impozit 10% pe (brut − CAS − CASS) — atât pentru „Mandat administrator”, cât și pentru „Cenzor”. Pentru mandatul de administrator, aplicația adaugă și CAM 2,25%, ca obligație a societății, în nota contabilă 646 = 436, fără să modifice netul; pentru cenzor nu calculează CAM.
 
 [iConta.eu](/)

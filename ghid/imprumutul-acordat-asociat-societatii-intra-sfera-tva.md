@@ -22,6 +22,7 @@ Când asociatul este o persoană fizică ce nu desfășoară activitate economic
 ::: ghid-temei
 „acordarea și negocierea de credite, precum și administrarea creditelor de către persoana care le acordă;"
 — Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. a) pct. 1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „Este considerată persoană impozabilă orice persoană care desfășoară, de o manieră independentă și indiferent de loc, activități economice de natura celor prevăzute la alin. (2) , oricare ar fi scopul sau rezultatul acestei activități."
 — Codul fiscal (Legea 227/2015), art. 269 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::

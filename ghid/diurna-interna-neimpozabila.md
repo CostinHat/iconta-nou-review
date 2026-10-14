@@ -2,7 +2,7 @@
 title: Diurna internă neimpozabilă: 57,5 lei pe zi (Ordin MF 1235/2023)
 description: Cât e diurna internă scutită de impozit și contribuții — plafonul de 2,5 × 23 lei = 57,5 lei pe zi, potrivit Ordinului MF 1235/2023, aplicabil din 1 aprilie 2023.
 published: 2026-08-12
-modified: 2026-08-13
+modified: 2026-10-13
 ---
 # Diurna internă neimpozabilă: până la 57,5 lei pe zi, și de când
 
@@ -11,21 +11,23 @@ Diurna pe care o dai unui angajat delegat sau detașat în altă localitate din 
 ## Temeiul legal
 
 ::: ghid-temei
-**Codul fiscal (Legea 227/2015), art. 76** stabilește plafonul neimpozabil al indemnizației de delegare/detașare: partea care depășește plafonul e venit din salarii. Plafonul: „**(i) în țară, 2,5 ori nivelul legal stabilit pentru indemnizație, prin hotărâre a Guvernului, pentru personalul autorităților și instituțiilor publice, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat**".
+„k) indemnizația de delegare, indemnizația de detașare, [...] precum și orice alte sume de aceeași natură, altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare, primite de salariați potrivit legislației în materie, pe perioada desfășurării activității în altă localitate, în țară sau în străinătate, în interesul serviciului, pentru partea care depășește plafonul neimpozabil stabilit astfel: (i) în țară, 2,5 ori nivelul legal stabilit pentru indemnizație, prin hotărâre a Guvernului, pentru personalul autorităților și instituțiilor publice, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat;”
+— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. k) pct. (i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„ART. 1 Începând cu data de 1 aprilie 2023: a) cuantumul indemnizației de delegare prevăzute la art. 1 alin. (1) și alin. (2) lit. a) din anexa la Hotărârea Guvernului nr. 714/2018 [...] se majorează la 23 lei; [...] c) cuantumul indemnizației de detașare prevăzute la art. 4 alin. (1) din anexa la Hotărârea Guvernului nr. 714/2018 se majorează la 23 lei.”
+— OMF 1235/2023, art. 1 lit. a), c) (sursă: [OMF nr. 1235/2023 pentru actualizarea cuantumului indemnizației de delegare/detașare (HG nr. 714/2018)](https://legislatie.just.ro/Public/DetaliiDocument/266379))
+:::
 
 „Nivelul legal" al indemnizației e cel din **HG 714/2018** (Monitorul Oficial nr. 1050/2018), care a stabilit diurna internă la **20 lei/zi**, majorată apoi la **23 lei/zi** prin **Ordinul ministrului finanțelor nr. 1235/2023** (Monitorul Oficial nr. 261 din 29 martie 2023), **aplicabil de la 1 aprilie 2023**.
-:::
 
 ## Regula concretă
 
 Plafonul zilnic neimpozabil = **2,5 × 23 lei = 57,5 lei/zi**, de la 1 aprilie 2023. Există și o **a doua limită**: totalul neimpozabil al indemnizațiilor dintr-o lună nu poate depăși **3 salarii de bază** corespunzătoare locului de muncă. Se aplică plafonul mai mic dintre cele două.
 
-::: ghid-temei
 Cronologia nivelului legal (pentru calculul plafonului 2,5×):
 - până la HG 714/2018: 17 lei/zi → plafon **42,5 lei**
 - HG 714/2018, din 2018: 20 lei/zi → plafon **50 lei**
 - Ordin 1235/2023, din 01.04.2023: 23 lei/zi → plafon **57,5 lei**
-:::
 
 ## Un exemplu
 

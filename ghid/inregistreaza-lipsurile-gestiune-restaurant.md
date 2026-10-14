@@ -32,16 +32,16 @@ Pentru partea **imputabilă** (lipsa recuperată de la salariatul sau terțul vi
 
 - Se înregistrează orice lipsă direct pe cheltuială deductibilă, fără verificarea celor șapte condiții limitative din art. 25 alin. (4) lit. c).
 - Se presupune că lipsa e "automat" scutită de ajustare TVA dacă marfa era asigurată — legea cere ca situația să fie **demonstrată sau confirmată corespunzător**, nu doar existența unei polițe de asigurare.
-- Se confundă imputarea către salariat cu o simplă notare administrativă, fără calculul TVA aferent valorii de imputare.
+- Se confundă imputarea către salariat cu o simplă notare administrativă, fără înregistrarea creanței (4282 sau 461 = 7581) — sau, invers, se colectează TVA pe valoarea de imputare, deși sumele imputate pentru bunuri lipsă nu sunt în sfera de aplicare a TVA (HG nr. 1/2016, titlul VII, pct. 78 alin. (6) lit. a)).
 
 ## Ce face iConta.eu
 
-Operația "Minus" din ecranul de inventariere cere obligatoriu cota de TVA — aplicația nu are o cotă implicită, tocmai pentru că o cotă fixată în cod s-ar rupe tăcut de lege la prima schimbare de cotă. Ecranul distinge:
+Operația "Minus" din ecranul de inventariere cere obligatoriu cota de TVA — aplicația nu propune o cotă implicită, tocmai ca să nu aplice tacit o cotă depășită după o schimbare a legii. Ecranul distinge:
 
-- **minus imputabil** — salariat (4282 = 7581) sau terț (461 = 7581), la valoarea de imputare, plus TVA calculat pe această valoare;
-- **minus neimputabil, neasigurat sau nedemonstrat ca distrus** — pe lângă descărcarea de gestiune, se generează și ajustarea de TVA (635 = 4426);
-- **minus neimputabil, asigurat sau dovedit distrus** — fără linia de ajustare TVA.
+- **minus imputabil** — salariat (4282 = 7581) sau terț (461 = 7581), la valoarea de imputare, fără TVA: sumele imputate pentru bunuri lipsă nu sunt considerate contravaloarea unor operațiuni în sfera de aplicare a TVA (HG nr. 1/2016, titlul VII, pct. 78 alin. (6) lit. a));
+- **minus pentru un bun neasigurat sau nedemonstrat ca distrus** — pe lângă descărcarea de gestiune, se generează și ajustarea TVA deduse (635 = 4426), calculată cu cota introdusă, pe costul bunului lipsă, fie că lipsa e imputabilă, fie că nu;
+- **minus pentru un bun asigurat sau dovedit distrus** — fără linia de ajustare TVA.
 
-Câmpurile `imputabil` și „valoarea imputată” apar în formular condiționat de alegerea operației "Minus". De verificat direct pe ecran, la momentul completării: câmpul de cotă TVA distinct pentru acest formular nu a putut fi confirmat separat din codul sursă citit — dacă nu apare explicit, contactați suportul înainte de a presupune o valoare implicită.
+Pentru operația "Minus", formularul cere: valoarea (costul bunului lipsă), contul de stoc, „Imputabil” (Da/Nu — la Da apar „Valoare imputare” și „Cui se impută”: salariat sau terț), „Cota TVA %” și „Bunul lipsă era asigurat sau a fost distrus” (Da/Nu). „Cota TVA %” e obligatorie și la lipsurile imputabile: cifra 21 afișată în câmpul gol e doar un exemplu, nu o valoare completată, iar fără cotă scrisă nota nu se generează. Cota se folosește numai la ajustarea TVA deduse pe bunul lipsă (635 = 4426), când la „asigurat sau distrus” ați răspuns Nu; suma imputată nu poartă TVA.
 
 [iConta.eu](/)

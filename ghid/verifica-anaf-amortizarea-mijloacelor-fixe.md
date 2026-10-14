@@ -2,7 +2,7 @@
 title: Ce verifică ANAF la amortizarea mijloacelor fixe?
 description: Un control verifică, în esență, trei lucruri — dacă bunul îndeplinea condițiile legale de mijloc fix la data intrării, dacă metoda de amortizare aleasă e permisă pentru categoria lui, și dacă cifrele din contabilitate corespund cu ce se raportează în SAF-T.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,10 +30,10 @@ Al treilea strat ține de coerența raportării: pentru firmele obligate la SAF-
 
 - Se aplică o metodă de amortizare accelerată sau superaccelerată pentru o categorie de activ care nu o permite (de exemplu o construcție), fără verificarea prealabilă a art. 28 alin. (5).
 - Se calculează amortizarea pe pragul valoric curent, în loc de pragul valabil la data efectivă a intrării bunului în patrimoniu — pragul s-a schimbat în timp (2.500 lei până în 2026, 5.000 lei de la 25.02.2026), iar bunurile mai vechi rămân sub regula valabilă la data lor de intrare.
-- Se lasă neconcordanțe între registrul intern de mijloace fixe și cifrele raportate în secțiunea Active a D406, pentru firmele obligate la SAF-T.
+- Se lasă neconcordanțe între registrul de mijloace fixe al firmei și cifrele raportate în secțiunea Active a D406, pentru firmele obligate la SAF-T.
 
 ## Ce face iConta.eu
 
-Registrul „Firmă > Mijloace fixe" verifică automat, la fiecare calcul, dacă metoda de amortizare a unui activ e permisă pentru categoria lui, derivată din contul de imobilizare folosit — dacă nu e, afișează o eroare explicită pe rândul respectiv, în loc să calculeze tacit o cifră pe o metodă nepermisă. Pragul valoric de încadrare ca mijloc fix se citește dintr-un registru de cote actualizat pe dată, aplicat la data de intrare a fiecărui bun, nu la data curentă. Secțiunea Active din D406 folosește același motor de calcul ca registrul intern, ceea ce reduce riscul de discrepanțe între cele două — dar catalogul oficial de durate normale de funcționare nu e verificat automat de aplicație, iar durata introdusă pentru fiecare activ rămâne responsabilitatea contabilului.
+Registrul „Firmă > Mijloace fixe" verifică automat, la fiecare calcul, dacă metoda de amortizare a unui activ e permisă pentru categoria lui, derivată din contul de imobilizare folosit — dacă nu e, afișează o eroare explicită pe rândul respectiv, în loc să calculeze tacit o cifră pe o metodă nepermisă. Pragul valoric de încadrare ca mijloc fix e cel în vigoare la data de intrare a fiecărui bun, nu cel de la data curentă. Secțiunea Active din D406 folosește același calcul ca registrul „Mijloace fixe", ceea ce reduce riscul de discrepanțe între cele două — dar catalogul oficial de durate normale de funcționare nu e verificat automat de aplicație, iar durata introdusă pentru fiecare activ rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

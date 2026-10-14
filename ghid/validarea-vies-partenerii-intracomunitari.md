@@ -20,16 +20,22 @@ Codul de TVA valid e, în ambele cazuri — livrare de bunuri sau prestare de se
 
 ## Cum funcționează verificarea
 
-Un cod de TVA intracomunitar e format dintr-un prefix de țară și un număr — de exemplu „DE123456789”. Prefixul trebuie să corespundă uneia dintre țările UE recunoscute pentru VIES (cele 27 state membre, plus „XI” pentru Irlanda de Nord, regim post-Brexit); Grecia e un caz special, prefixul legal e „EL”, nu „GR”, deși „GR” apare frecvent informal.
+Un cod de TVA intracomunitar e format dintr-un prefix de țară și un număr — de exemplu „DE123456789”, nu doar „123456789”; codul se introduce întotdeauna cu prefixul. Prefixul trebuie să corespundă uneia dintre țările UE recunoscute pentru VIES (cele 27 state membre, plus „XI” pentru Irlanda de Nord, regim post-Brexit); Grecia e un caz special, prefixul legal e „EL”, nu „GR”, deși „GR” apare frecvent informal.
 
 Interogarea propriu-zisă se face prin serviciul REST oficial VIES al Comisiei Europene, pe codul de țară și numărul separate de prefix, și întoarce dacă acel cod e valid, numele și adresa firmei asociate (când statul membru le publică), sau un mesaj de eroare dacă serviciul nu poate răspunde.
 
+Rezultatul e unul din trei, și fiecare are o consecință:
+
+- **cod valid** — la livrare de bunuri, scutire; la prestare de servicii, operațiune neimpozabilă în România, declarată în D390;
+- **cod invalid** — factura se emite cu TVA românesc, ca operațiune internă;
+- **„VIES indisponibil”** — serviciul nu a răspuns la timp, deci nu s-a confirmat nimic; verificarea trebuie reluată înainte de a aplica tratamentul favorabil.
+
 ## Ce se greșește în practică
 
-Verificarea „firma există, are CUI” nu e echivalentă cu verificarea VIES — o firmă poate fi complet legală și activă, dar neînregistrată pentru operațiuni intracomunitare la momentul respectiv. A doua greșeală: verificarea o singură dată, la începutul relației comerciale, fără reluare periodică — un cod valid azi poate fi anulat peste câteva luni, iar validitatea contează **la data operațiunii**, nu la data primei verificări.
+Verificarea „firma există, are CUI” nu e echivalentă cu verificarea VIES — o firmă poate fi complet legală și activă, dar neînregistrată pentru operațiuni intracomunitare la momentul respectiv. A doua greșeală: verificarea o singură dată, la începutul relației comerciale, fără reluare periodică — un cod valid azi poate fi anulat peste câteva luni, iar validitatea contează **la data operațiunii**, nu la data primei verificări. A treia: tratarea unui rezultat „VIES indisponibil” ca implicit favorabil — e absența unui răspuns, nu o confirmare.
 
 ## Ce face iConta.eu
 
-La emiterea unei facturi către un client cu cod de TVA de prefix non-românesc, sistemul verifică automat starea codului direct în VIES — nu în registrul ANAF de CUI-uri — și afișează rezultatul (valid/invalid) sau avertismentul „VIES indisponibil” dacă serviciul european nu răspunde în timp util. Prefixul de țară e validat separat, cu normalizarea Grecia „GR”→„EL”, iar erorile sunt distincte pentru cod absent, prefix nevalid sau prefix fără număr asociat — deci mesajul primit indică exact ce anume nu e în regulă cu codul introdus.
+La emiterea unei facturi către un client cu cod de TVA de prefix non-românesc, iConta.eu verifică automat, ca parte din fluxul normal de emitere (nu printr-un buton separat), starea codului direct în VIES — nu în registrul ANAF de CUI-uri — și afișează rezultatul (valid/invalid) sau avertismentul „VIES indisponibil” dacă serviciul european nu răspunde în timp util. Prefixul de țară e validat separat, cu normalizarea Grecia „GR”→„EL”, iar erorile sunt distincte pentru cod absent, prefix nevalid sau prefix fără număr asociat — deci mesajul primit indică exact ce anume nu e în regulă cu codul introdus.
 
 [iConta.eu](/)

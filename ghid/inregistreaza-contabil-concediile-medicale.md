@@ -1,6 +1,6 @@
 ---
 title: Cum se înregistrează contabil concediile medicale?
-description: Notele contabile pentru salarizarea obișnuită sunt confirmate în cod, dar documentația aplicației nu confirmă înregistrări dedicate pentru indemnizațiile de concediu medical — acestea țin de o funcționalitate distinctă („Cod 10 CM în flux”).
+description: Indemnizația de concediu medical se înregistrează prin contul 423 — partea suportată de angajator pe cheltuieli (6458 = 423), partea din FNUASS ca sumă de recuperat (4382 = 423), iar contribuțiile și impozitul reținute din indemnizație din 423. iConta.eu le include în nota statului de plată.
 published: 2026-09-24
 modified: 2026-10-13
 poarta: v1
@@ -8,21 +8,37 @@ poarta: v1
 
 # Cum se înregistrează contabil concediile medicale?
 
-Pentru salarizarea obișnuită, monografia contabilă e clar confirmată în codul iConta.eu. Pentru concediile medicale — reglementate separat, prin OUG 158/2005 — cercetarea disponibilă pentru funcționalitatea de calcul salarial („Calcul salarizare (de la brut la net)”) nu confirmă notele contabile specifice.
+Indemnizațiile de concediu medical sunt reglementate separat de salariu, prin OUG 158/2005, și au contul lor: 423 „Personal - ajutoare materiale datorate”. Primele zile de incapacitate le suportă angajatorul, restul se suportă din bugetul Fondului național unic de asigurări sociale de sănătate (FNUASS) și se recuperează de acolo.
 
 ## Temeiul legal
 
 ::: ghid-temei
-„Concedii medicale (context „Calcul salarizare (de la brut la net)”↔„Cod 10 CM în flux”, nu obiectul direct al celor 12 titluri, dar apare în descrierea „Calcul salarizare (de la brut la net)”) — OUG 158/2005, cu procentele 55/65/75% (Legea 141/2025, de la 01.08.2025); nu e detaliat aici, nu e cerut de titluri." — Dosar de cercetare „Calcul salarizare (de la brut la net)”, secțiunea „Temei legal", pct. 7
+„Indemnizațiile pentru incapacitate temporară de muncă se suportă după cum urmează: A. de către angajator, din prima zi până în a 5-a zi de incapacitate temporară de muncă, [...] B. din bugetul Fondului național unic de asigurări sociale de sănătate, începând cu: a) ziua următoare celor suportate de angajator, conform lit. A , și până la data încetării incapacității temporare de muncă a asiguratului sau a pensionării acestuia;”
+— OUG 158/2005, art. 12 (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
+
+„(1) Sumele reprezentând indemnizații, care se plătesc asiguraților și care, potrivit prevederilor prezentei ordonanțe de urgență, se suportă din bugetul Fondului național unic de asigurări sociale de sănătate, se recuperează din bugetul Fondului național unic de asigurări sociale de sănătate din creditele bugetare prevăzute cu această destinație. Aceste sume nu pot fi recuperate din sumele constituite reprezentând contribuție de asigurări sociale de sănătate.”
+— OUG 158/2005, art. 38 alin. (1) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
+
+„Contul 423 "Personal - ajutoare materiale datorate" Cu ajutorul acestui cont se ține evidența ajutoarelor de boală pentru incapacitate temporară de muncă, a celor pentru îngrijirea copilului, a ajutoarelor de deces și a altor ajutoare acordate. [...] În creditul contului 423 "Personal - ajutoare materiale datorate" se înregistrează: – ajutoarele materiale suportate potrivit legii, precum și alte ajutoare acordate (431, 645). ... În debitul contului 423 "Personal - ajutoare materiale datorate" se înregistrează: – ajutoare materiale achitate (512, 531); ... – reținerile reprezentând avansuri acordate, sume datorate unității sau terților, contribuția pentru asigurări sociale, contribuția pentru asigurări de sănătate și pentru ajutorul de șomaj și impozitul datorat (425, 427, 428, 431, 437, 444);”
+— OMFP 1802/2014, anexa nr. 1, contul 423 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
+
+„În debitul contului 645 "Cheltuieli privind asigurările și protecția socială" se înregistrează: – sumele acordate personalului, potrivit legii, pentru protecția socială (423);”
+— OMFP 1802/2014, anexa nr. 1, contul 645 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 ## Ce e confirmat pentru salarizarea obișnuită
 
-„monografia salariului (Salarii)” (linia 390) generează notele contabile standard pentru un stat de plată obișnuit: 641/421 (cheltuiala cu salariile), 421/4315 (reținere CAS), 421/4316 (reținere CASS), 421/444 (reținere impozit), 646/436 (cheltuiala CAM a angajatorului), opțional 642/5328 (tichete de masă) și, la part-time sub salariul minim, 6451/4315 și 6453/4316 (cheltuiala de suprataxare a angajatorului).
+La contabilizarea statului de plată, iConta.eu propune notele contabile standard pentru un stat de plată obișnuit: 641/421 (cheltuiala cu salariile), 421/4315 (reținere CAS), 421/4316 (reținere CASS), 421/444 (reținere impozit), 646/436 (cheltuiala CAM a angajatorului), opțional 642/5328 (tichete de masă) și, la part-time sub salariul minim, 6451/4315 și 6453/4316 (cheltuiala de suprataxare a angajatorului).
 
-## Ce nu confirmă acest dosar
+## Ce se adaugă pentru concediile medicale
 
-Dosarul de cercetare pentru „Calcul salarizare (de la brut la net)” nu confirmă dacă „monografia salariului (Salarii)” sau o altă componentă din cod generează note contabile dedicate pentru indemnizațiile de concediu medical (OUG 158/2005) — subiectul e marcat explicit ca aparținând unei funcționalități distincte, „Cod 10 CM în flux”, nedetaliată în cercetarea de față. Acest ghid nu inventează conturi sau formule de înregistrare pentru concediul medical fără o sursă verificată — pentru înregistrarea contabilă corectă (de regulă, cu distincția între zilele suportate de angajator și cele suportate din bugetul asigurărilor sociale de sănătate), verifică cu un contabil sau cu resursele dedicate „Cod 10 CM în flux”.
+Când în luna respectivă există concedii medicale, nota statului de plată mai cuprinde:
+
+- **6458 = 423** — indemnizația suportată de angajator (zilele 1–5, OUG 158/2005 art. 12 lit. A);
+- **4382 = 423** — indemnizația suportată din FNUASS (din ziua a 6-a, art. 12 lit. B), ca sumă de recuperat din bugetul FNUASS (art. 38 alin. (1)); contul 4382 „Alte creanțe sociale” e o alegere interpretativă a aplicației: OMFP 1802/2014 prevede, în debitul contului 431, „sumele datorate personalului, ce se suportă din asigurări sociale (423)”, fără să numească analiticul, iar analiticele lui 431 privesc contribuțiile datorate, din care art. 38 alin. (1) nu permite recuperarea;
+- **423 = 4315 / 4316 / 444** — CAS, CASS și impozitul reținute din indemnizație; din 421 se rețin doar sumele care privesc salariul, exact cele de pe fluturaș.
+
+Soldul contului 423 după notă trebuie să fie egal cu netul indemnizațiilor de pe fluturași; dacă nu este, aplicația semnalează diferența la contabilizarea statului.
 
 ## Ce se greșește în practică
 
@@ -30,6 +46,6 @@ Greșeala frecventă e înregistrarea indemnizației de concediu medical prin ac
 
 ## Ce face iConta.eu
 
-Pentru salarizarea obișnuită, notele contabile sunt generate automat de „monografia salariului (Salarii)”, pe baza rezultatului calculului din „calculul salariului (Salarii)”. Pentru concediile medicale, verifică ecranul dedicat din iConta.eu („Cod 10 CM în flux”) — documentația aplicației nu acoperă acest flux.
+Butonul „Contabilizează statul” din ecranul de salarii propune nota contabilă a lunii, ca ciornă: notele salariului obișnuit și, când există concedii medicale, înregistrările pe contul 423 descrise mai sus. Contribuțiile și impozitul se iau din sumele declarate în D112 pentru aceeași lună, iar indemnizațiile din aceleași date ca D112.
 
 [iConta.eu](/)

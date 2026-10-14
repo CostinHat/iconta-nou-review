@@ -143,3 +143,24 @@ def test_def_c18_procedura_cu_buline_nu_numara_zero(patron):
     cifre_buline = pg.evaluate("() => [...document.querySelectorAll('.ghid-procedura ul > li')]"
                                ".map(li => getComputedStyle(li, '::before').content)")
     assert cifre_buline and set(cifre_buline) <= {"none", "normal"}, cifre_buline
+
+
+# ── C20 (răspunsul la §6 COMANDA_13_10) ─────────────────────────────────────────────────────────────────────────────────────────
+@pytest.fixture()
+def firma_pfa():
+    yield from firma_noua(tip_firma="pfa")
+
+
+def test_def_c20_pfa_d406_nu_se_datoreaza_cu_litera_corecta(patron, firma_pfa):
+    """C20 (găsită de Code la rescrierea unui ghid, 13.10.2026): la o firmă în partidă simplă, motivul „D406 nu se datorează” cita
+    „Anexa 5 pct.4 lit.q)” — litera q) e la pct.3 (entitățile OBLIGATE). TEMEI: OPANAF 407/2025, Anexa 5 pct.4 lit.a)–d) (persoanele
+    fizice: PFA, II, IF, PFL; anaf_surse/opanaf_407_2025_saft_d406.txt).
+    Pașii contabilului: firma PFA -> Declarații -> tipul declarației: D406 e dezactivat, cu motivul care trimite la pct.4 lit.a)–d).
+    MUTAȚIA din plasă: litera repusă la „lit.q)” în `core/control_fiscal_api.py` -> ROȘU."""
+    pg = patron.pg
+    patron.firma(firma_pfa["nume"])
+    _deschide(patron, "#fa-declaratii", "Pasul 1 din 3")
+    opt = pg.locator(".fereastra:last-of-type #dec-tip option[value='d406']")
+    patron.captura()
+    assert opt.evaluate("o => o.disabled"), opt.inner_text()          # dezactivat, cu motivul ca text (nu ascuns)
+    assert re.findall(r"pct\.4 lit\.(\S+)", opt.inner_text()) == ["a)–d)"], opt.inner_text()

@@ -14,7 +14,7 @@ Nu există în panoul de declarații un buton „compară D390 cu D300". Mecanis
 
 Reclasificările bun-vs-serviciu ale operațiunilor intracomunitare (livrare sau achiziție) se scriu într-un singur tabel, „reclasificările D390 (Declarații)”, populat din panoul D390. Acest tabel e **citit identic** de ambele generatoare de declarație: D300 prin `_incarca_reclasificari` → „reclasificările”, D390 prin `calculeaza` → „reclasificările”, aceeași funcție.
 
-Efectul, confirmat prin teste interne: după reclasificarea unei livrări IC emise ca „P" (serviciu), `D300.R3_1` devine egal cu suma serviciilor „P" din rezumatul D390, iar `R1_1` (bunuri) dispare din D300 — operațiunea e **mutată**, nu adăugată în plus. Simetric, pentru achizițiile IC reclasificate „S" (serviciu): `D300.R7_1` egal cu suma „S" din D390, cu oglinda deductibilă rd.20 (net zero).
+Efectul, confirmat prin teste interne: după reclasificarea unei livrări IC emise ca „P" (serviciu), baza de la rândul 3 din D300 (cu subrândul 3.1, servicii intracomunitare) devine egală cu suma serviciilor „P" din rezumatul D390, iar baza de la rândul 1 (bunuri) dispare din D300 — operațiunea e **mutată**, nu adăugată în plus. Simetric, pentru achizițiile IC reclasificate „S" (serviciu): baza de la rândul 7 din D300 (cu subrândul 7.1) egală cu suma „S" din D390, cu oglinda deductibilă de la rândul 22 (net zero).
 
 Pentru că o singură scriere în „reclasificările D390 (Declarații)” schimbă simultan ambele declarații, o divergență între ele, pentru operațiunile reclasificate, e structural imposibilă — nu pentru că există un instrument care o verifică și o corectează, ci pentru că ambele citesc aceeași sursă.
 

@@ -2,7 +2,7 @@
 title: "Înregistrarea firmei în REVISAL la înființare"
 description: "Ce trebuie să facă o firmă nou-înființată în registrul general de evidență a salariaților când angajează primul salariat, și de unde se obține accesul."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,6 +26,7 @@ Pentru a putea transmite date, angajatorul (sau contabilul care operează în nu
 - Se tratează înființarea firmei ca moment al obligației de raportare — de fapt, obligația e legată de angajarea primului salariat, nu de data înmatriculării firmei.
 - Se așteaptă ca un soft de contabilitate să creeze automat accesul la registru — accesul (contul, cheile) se obține separat, iar softul, dacă are integrare, doar folosește ulterior credențialele deja emise.
 - Se ignoră termenul strict („cel târziu în ziua anterioară începerii activității"), presupunând că e suficient să se raporteze „la începutul lunii" în care a fost angajat primul salariat.
+- Se crede că, dacă operarea e delegată contabilului, firma scapă de răspundere — art. 3 alin. (12) lasă răspunderea pentru date „în exclusivitate" angajatorului.
 
 ## Ce face iConta.eu
 

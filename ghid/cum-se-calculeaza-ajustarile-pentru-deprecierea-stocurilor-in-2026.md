@@ -13,15 +13,11 @@ La fiecare inventariere, stocurile se evaluează la cost, mai puțin ajustările
 ## Temeiul legal
 
 ::: ghid-temei
-"Activele de natura stocurilor se evaluează la cost, mai puțin ajustările pentru depreciere constatate.
-Ajustări pentru depreciere se constată inclusiv pentru stocurile fără mișcare. În cazul în care
-valoarea contabilă a stocurilor este mai mare decât valoarea de inventar, valoarea stocurilor se
-diminuează până la valoarea realizabilă netă, prin constituirea unei ajustări pentru depreciere."
+„Activele de natura stocurilor se evaluează la cost, mai puțin ajustările pentru depreciere constatate. Ajustări pentru depreciere se constată inclusiv pentru stocurile fără mișcare. În cazul în care valoarea contabilă a stocurilor este mai mare decât valoarea de inventar, valoarea stocurilor se diminuează până la valoarea realizabilă netă, prin constituirea unei ajustări pentru depreciere.”
+— OMFP 1802/2014, pct. 88 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
-"În înțelesul prezentelor reglementări, prin valoare realizabilă netă a stocurilor se înțelege prețul
-de vânzare estimat care ar putea fi obținut pe parcursul desfășurării normale a activității, minus
-costurile estimate pentru finalizarea bunului, atunci când este cazul, și costurile estimate necesare
-vânzării."
+„În înțelesul prezentelor reglementări, prin valoare realizabilă netă a stocurilor se înțelege prețul de vânzare estimat care ar putea fi obținut pe parcursul desfășurării normale a activității, minus costurile estimate pentru finalizarea bunului, atunci când este cazul, și costurile estimate necesare vânzării.”
+— OMFP 1802/2014, pct. 88 alin. (3) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::
 
 ## Formula de calcul

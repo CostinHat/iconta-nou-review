@@ -2,7 +2,7 @@
 title: De ce nu se descarcă factura din SPV
 description: Verifică, în ordine, conexiunea SPV a cabinetului, CUI-ul firmei din profil și dacă factura a fost emisă efectiv către CIF-ul acestei firme — aplicația nu afișează încă o alertă dedicată pentru acest caz.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,11 +22,11 @@ Legea spune că factura e „primită” din momentul în care devine disponibil
 
 ## Ce verifici, în ordine
 
-1. **Conexiunea SPV a cabinetului.** Procesul care descarcă facturile folosește autentificarea SPV la nivel de cabinet, nu de firmă. Dacă acea conexiune nu e activă sau tokenul a expirat, interogarea nici nu pornește pentru firmele cabinetului — fără să genereze o eroare vizibilă contabilului.
-2. **CUI-ul firmei, în profil.** Dacă firma nu are CUI completat în profilul ei din aplicație, procesul nu are ce CIF să interogheze la ANAF pentru acea firmă și o sare, tot fără mesaj vizibil.
+1. **Conexiunea SPV a cabinetului.** Descărcarea automată a facturilor folosește autentificarea SPV la nivel de cabinet, nu de firmă. Dacă acea conexiune nu e activă sau autorizarea ei a expirat, căutarea nici nu pornește pentru firmele cabinetului — fără să genereze o eroare vizibilă contabilului.
+2. **CUI-ul firmei, în profil.** Dacă firma nu are CUI completat în profilul ei din aplicație, aplicația nu are ce CIF să caute la ANAF pentru acea firmă și o sare, tot fără mesaj vizibil.
 3. **CIF-ul real către care a fost emisă factura.** Dacă un cabinet gestionează mai multe firme, iar furnizorul a emis, din greșeală, factura către CIF-ul altei firme din același cabinet, aplicația **nu o importă** la firma ta — există un control explicit tocmai pentru a nu amesteca facturile firmelor din același cabinet. În acest caz, factura există în SPV, dar e legată de CIF-ul greșit.
 4. **Conținutul arhivei descărcate.** Dacă arhiva primită de la ANAF pentru acel mesaj nu conține niciun fișier XML valid, descărcarea eșuează silențios pentru acea factură — se poate întâmpla, deși e rar.
-5. **Eșecul HTTP la descărcare.** O eroare de rețea sau un răspuns gol la cererea de descărcare a unei facturi individuale nu oprește restul lotului — dar acea factură anume rămâne nedescărcată pentru rularea respectivă.
+5. **O eroare la descărcarea unei singure facturi.** O eroare de rețea sau un răspuns gol de la ANAF pentru o anumită factură nu oprește descărcarea celorlalte — dar acea factură rămâne nedescărcată până la căutarea următoare.
 
 ## Ce se greșește în practică
 
@@ -36,6 +36,6 @@ Legea spune că factura e „primită” din momentul în care devine disponibil
 
 ## Ce face iConta.eu
 
-Cronul de descărcare rulează la fiecare 30 de minute, cu o fereastră de interogare de 3 zile în urmă (suprapusă, nu doar „de la ultima rulare”), tocmai ca să tolereze eșecuri intermitente. Cauzele de mai sus sunt gestionate intern prin contorizare (nu opresc restul lotului), dar aplicația **nu afișează încă** aceste contoare într-un ecran dedicat contabilului și nu trimite o alertă automată când o firmă nu primește nicio factură nouă pentru o perioadă — la data acestei redactări, diagnosticarea se face manual, urmând pașii de mai sus.
+Aplicația caută automat facturi noi în SPV la fiecare 30 de minute și, de fiecare dată, cere de la ANAF facturile din ultimele 3 zile (nu doar pe cele apărute de la căutarea precedentă), tocmai ca o factură ratată o dată să fie preluată la căutarea următoare. O factură care nu se poate descărca nu oprește descărcarea celorlalte, dar aplicația **nu afișează încă** aceste eșecuri într-un ecran dedicat contabilului și nu trimite o alertă automată când o firmă nu primește nicio factură nouă pentru o perioadă — la data acestei redactări, diagnosticarea se face manual, urmând pașii de mai sus.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Suspendare firmă și declararea micro
 description: O microîntreprindere care intră în inactivitate temporară rămâne, prin lege, plătitoare de impozit pe veniturile microîntreprinderilor pe toată durata suspendării - dar reluarea regimului la reactivare are propriile condiții.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,11 @@ Statutul de microîntreprindere nu se pierde automat odată cu intrarea în inac
 ## Temeiul legal
 
 ::: ghid-temei
-Legea nr. 227/2015 (Codul fiscal), art. 48 alin. (2^3) (menținerea calității de plătitor de impozit pe veniturile microîntreprinderilor pe durata inactivității temporare) și art. 48 alin. (3^2) (condițiile de menținere a regimului micro la reluarea activității).
+„Prin excepție de la prevederile art. 52, respectiv de la art. 47 alin. (1) și alin. (4), microîntreprinderea care se află în inactivitate temporară înscrisă în registrul comerțului, potrivit prevederilor legale, continuă să fie plătitoare de impozit pe veniturile microîntreprinderilor pentru întreaga perioadă în care înregistrează această situație de inactivitate.”
+— Codul fiscal (Legea 227/2015), art. 48 alin. (2^3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„O microîntreprindere care s-a aflat în inactivitate temporară înscrisă în registrul comerțului, potrivit prevederilor legale, continuă să fie plătitoare de impozit pe veniturile microîntreprinderilor de la data înscrierii în registrul comerțului a mențiunii de reluare a activității, dacă îndeplinește condițiile prevăzute la art. 47 alin. (1) lit. d), h) și i), iar pe cea de la lit. g) în termen de 30 de zile inclusiv de la data înregistrării mențiunii în Registrul Comerțului.”
+— Codul fiscal (Legea 227/2015), art. 48 alin. (3^2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pe durata suspendării, art. 48 alin. (2^3) este clar: microîntreprinderea aflată în **inactivitate temporară înscrisă la registrul comerțului continuă să fie plătitoare de impozit pe veniturile microîntreprinderilor** pentru întreaga perioadă cât se află în această situație. Nu are loc, deci, o trecere automată la impozit pe profit doar pentru că firma e suspendată.

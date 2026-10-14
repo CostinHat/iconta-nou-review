@@ -1,6 +1,6 @@
 ---
 title: Cum declar TVA la încasare în D300?
-description: TVA calculată prin sistemul de încasare nu are un rând separat în D300 — ajunge în rândurile obișnuite de TVA colectată (R9_1/R9_2, R10, R11), iar deducerea la beneficiar se amână prin bifa de la rândul B1, conform art. 297 Cod fiscal.
+description: TVA calculată prin sistemul de încasare nu are un rând separat în D300 — ajunge în rândurile obișnuite de TVA colectată (rândurile 9, 10 și 11), iar deducerea la beneficiar se amână prin bifa de la rândul B1, conform art. 297 Cod fiscal.
 published: 2026-09-24
 modified: 2026-10-13
 poarta: v1
@@ -22,7 +22,7 @@ Verificat direct în codul sursă: câmpul „furnizor cu TVA la încasare” di
 
 ## Ce înseamnă practic
 
-**Pe partea de vânzări**, când firma ta e înscrisă la TVA la încasare, sumele încasate/alocate pe facturile emise sunt trecute prin calculul de exigibilitate (sută mărită) pe fiecare cotă, iar rezultatul ajunge exact în rândurile obișnuite de TVA colectată — R9_1/R9_2 pentru 21%, R10 pentru 11%, R11 pentru cota tranzitorie de 9%. Nu există un rând separat pentru „TVA la încasare": suma pur și simplu apare în decont **în perioada în care a fost încasată**, nu în cea în care a fost facturată. Până atunci, TVA rămâne în contul 4428 (neexigibil), în afara decontului.
+**Pe partea de vânzări**, când firma ta e înscrisă la TVA la încasare, sumele încasate/alocate pe facturile emise sunt trecute prin calculul de exigibilitate (sută mărită) pe fiecare cotă, iar rezultatul ajunge exact în rândurile obișnuite de TVA colectată — rândul 9 (valoare și TVA) pentru 21%, rândul 10 pentru 11%, rândul 11 pentru cota tranzitorie de 9%. Nu există un rând separat pentru „TVA la încasare": suma pur și simplu apare în decont **în perioada în care a fost încasată**, nu în cea în care a fost facturată. Până atunci, TVA rămâne în contul 4428 (neexigibil), în afara decontului.
 
 **Pe partea de achiziții**, dacă furnizorul tău aplică TVA la încasare, dreptul tău de deducere e amânat până plătești factura (art. 297 alin. (2)) — bifarea acestei situații pe factura de achiziție alimentează rândul B1 din D300, exact eticheta din cod (`[B1 D300]`).
 

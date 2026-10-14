@@ -13,9 +13,8 @@ Fiind înscris în sistemul TVA la încasare nu înseamnă că absolut toate ope
 ## Temeiul legal
 
 ::: ghid-temei
-**Art. 282 alin. (6) CF** (rezumat din dosarul de cercetare): operațiunile supuse taxării inverse (art. 307 alin. (2)-(6) sau art. 331), livrările scutite, operațiunile din regimurile speciale (art. 311-313) și livrările către persoane afiliate (art. 7 pct. 26) sunt excluse din sistemul TVA la încasare, chiar dacă firma e înscrisă.
-
-Comentariu verificat direct în codul sursă, atașat exact acestei reguli: *„taxarea inversa e exigibila la faptul generator (art.282 alin.6 CF), NU la incasare: ramane pe calea de emitere ... chiar sub TVA la încasare"*.
+„Persoanele impozabile care optează pentru aplicarea sistemului TVA la încasare aplică sistemul respectiv numai pentru operațiuni pentru care locul livrării, conform prevederilor art. 275, sau locul prestării, conform prevederilor art. 278, se consideră a fi în România, dar nu aplică sistemul respectiv pentru următoarele operațiuni care intră sub incidența regulilor generale privind exigibilitatea TVA: a) livrările de bunuri/prestările de servicii pentru care beneficiarul este persoana obligată la plata taxei conform art. 307 alin. (2)-(6) sau art. 331; [...] b) livrările de bunuri/prestările de servicii care sunt scutite de TVA; [...] c) operațiunile supuse regimurilor speciale prevăzute la art. 311-313; [...] d) livrările de bunuri/prestările de servicii pentru care beneficiarul este o persoană afiliată furnizorului/prestatorului potrivit art. 7 pct. 26.”
+— Codul fiscal (Legea nr. 227/2015), art. 282 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Ce înseamnă practic
@@ -32,6 +31,6 @@ Aceeași excludere se aplică livrărilor scutite de TVA, operațiunilor din reg
 
 ## Ce face iConta.eu
 
-Aplicația tratează explicit taxarea inversă ca excepție de la mecanismul TVA la încasare: sumele aferente acestor operațiuni nu trec prin funcția de calcul al exigibilității la încasare („TVA-ul exigibil la încasare”), nici pentru firmele care au flag-ul „TVA la încasare” activ pe profil — rămân pe calea normală de raportare, la faptul generator.
+Aplicația tratează explicit taxarea inversă ca excepție de la mecanismul TVA la încasare: sumele aferente acestor operațiuni nu trec prin calculul TVA exigibile la încasare, nici pentru firmele care au opțiunea „TVA la încasare” activă pe profil — rămân pe calea normală de raportare, la faptul generator.
 
 [iConta.eu](/)

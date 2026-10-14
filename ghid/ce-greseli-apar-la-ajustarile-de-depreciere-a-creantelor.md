@@ -13,19 +13,11 @@ Regimul fiscal al ajustărilor pentru deprecierea creanțelor (CF art. 26 alin. 
 ## Temeiul legal
 
 ::: ghid-temei
-"ajustările pentru deprecierea creanțelor, înregistrate potrivit reglementărilor contabile aplicabile,
-reprezentând sume datorate de clienții interni și externi pentru produse, semifabricate, materiale,
-mărfuri vândute, lucrări executate și servicii prestate, în limita unui procent de 30% din valoarea
-acestor ajustări, altele decât cele prevăzute la lit. d)-f), h) și i), dacă creanțele îndeplinesc
-cumulativ următoarele condiții:
-1. sunt neîncasate într-o perioadă ce depășește 270 de zile de la data scadenței;
-2. nu sunt garantate de altă persoană;
-3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului;"
+„ajustările pentru deprecierea creanțelor, înregistrate potrivit reglementărilor contabile aplicabile, reprezentând sume datorate de clienții interni și externi pentru produse, semifabricate, materiale, mărfuri vândute, lucrări executate și servicii prestate, în limita unui procent de 30% din valoarea acestor ajustări, altele decât cele prevăzute la lit. d)-f), h) și i), dacă creanțele îndeplinesc cumulativ următoarele condiții: [...] 1. sunt neîncasate într-o perioadă ce depășește 270 de zile de la data scadenței; [...] 2. nu sunt garantate de altă persoană; [...] 3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului;”
+— Codul fiscal (Legea 227/2015), art. 26 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-"Prevederile alin. (1) lit. c) și j) se aplică pentru creanțele, altele decât cele asupra clienților
-reprezentând sumele datorate de clienții interni și externi pentru produse, semifabricate, materiale,
-mărfuri vândute, lucrări executate și servicii prestate, înregistrate începând cu data de 1 ianuarie
-2016."
+„Prevederile alin. (1) lit. c) și j) se aplică pentru creanțele, altele decât cele asupra clienților reprezentând sumele datorate de clienții interni și externi pentru produse, semifabricate, materiale, mărfuri vândute, lucrări executate și servicii prestate, înregistrate începând cu data de 1 ianuarie 2016.”
+— Codul fiscal (Legea 227/2015), art. 26 alin. (11) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Greșelile cele mai des întâlnite

@@ -1389,106 +1389,6 @@
      "tot_d": 248.0
     }
    ],
-   "10/2026": [
-    {
-     "cont": "421",
-     "denumire": "Personal - salarii datorate",
-     "prec_c": 11000.0,
-     "prec_d": 4496.0,
-     "rul_c": 0.0,
-     "rul_d": 0.0,
-     "sf_c": 6504.0,
-     "sf_d": 0.0,
-     "si_c": 0.0,
-     "si_d": 0.0,
-     "tot_c": 11000.0,
-     "tot_d": 4496.0
-    },
-    {
-     "cont": "4315",
-     "denumire": "Contribuția de asigurări sociale",
-     "prec_c": 2750.0,
-     "prec_d": 0.0,
-     "rul_c": 0.0,
-     "rul_d": 0.0,
-     "sf_c": 2750.0,
-     "sf_d": 0.0,
-     "si_c": 0.0,
-     "si_d": 0.0,
-     "tot_c": 2750.0,
-     "tot_d": 0.0
-    },
-    {
-     "cont": "4316",
-     "denumire": "Contribuția de asigurări sociale de sănătate",
-     "prec_c": 1100.0,
-     "prec_d": 0.0,
-     "rul_c": 0.0,
-     "rul_d": 0.0,
-     "sf_c": 1100.0,
-     "sf_d": 0.0,
-     "si_c": 0.0,
-     "si_d": 0.0,
-     "tot_c": 1100.0,
-     "tot_d": 0.0
-    },
-    {
-     "cont": "436",
-     "denumire": "Contribuția asiguratorie pentru muncă",
-     "prec_c": 248.0,
-     "prec_d": 0.0,
-     "rul_c": 0.0,
-     "rul_d": 0.0,
-     "sf_c": 248.0,
-     "sf_d": 0.0,
-     "si_c": 0.0,
-     "si_d": 0.0,
-     "tot_c": 248.0,
-     "tot_d": 0.0
-    },
-    {
-     "cont": "444",
-     "denumire": "Impozitul pe venituri de natura salariilor",
-     "prec_c": 646.0,
-     "prec_d": 0.0,
-     "rul_c": 0.0,
-     "rul_d": 0.0,
-     "sf_c": 646.0,
-     "sf_d": 0.0,
-     "si_c": 0.0,
-     "si_d": 0.0,
-     "tot_c": 646.0,
-     "tot_d": 0.0
-    },
-    {
-     "cont": "641",
-     "denumire": "Cheltuieli cu salariile personalului",
-     "prec_c": 0.0,
-     "prec_d": 11000.0,
-     "rul_c": 0.0,
-     "rul_d": 0.0,
-     "sf_c": 0.0,
-     "sf_d": 11000.0,
-     "si_c": 0.0,
-     "si_d": 0.0,
-     "tot_c": 0.0,
-     "tot_d": 11000.0
-    },
-    {
-     "cont": "646",
-     "denumire": "Cheltuieli privind contribuția asiguratorie pentru muncă",
-     "prec_c": 0.0,
-     "prec_d": 248.0,
-     "rul_c": 0.0,
-     "rul_d": 0.0,
-     "sf_c": 0.0,
-     "sf_d": 248.0,
-     "si_c": 0.0,
-     "si_d": 0.0,
-     "tot_c": 0.0,
-     "tot_d": 248.0
-    }
-   ],
    "11/2026": [
     {
      "cont": "421",
@@ -1592,7 +1492,6 @@
   },
   "luni": [
    "09/2026",
-   "10/2026",
    "11/2026"
   ]
  }

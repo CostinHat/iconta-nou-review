@@ -13,10 +13,17 @@ Spre deosebire de CAS, CASS și impozitul pe venit — toate reținute din brutu
 ## Temeiul legal
 
 ::: ghid-temei
-„Ordinea reținerilor din brut: facilitate (dacă se aplică) → CAS 25% → CASS 10% → deducere personală → impozit 10% pe baza impozabilă → net. CAM 2,25% e cheltuială angajator, nu reținere." — Dosar de cercetare „Calcul salarizare (de la brut la net)”, secțiunea „Cod sursă verificat"
+„Cota contribuției asiguratorii pentru muncă este de 2,25%.”
+— Legea 227/2015, art. 220^3 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Baza lunară de calcul al contribuției asiguratorii pentru muncă o reprezintă suma câștigurilor brute realizate din salarii și venituri asimilate salariilor [...]”
+— Legea 227/2015, art. 220^4 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Prin derogare de la prevederile art. 78, art. 139 alin. (1), art. 140, art. 157 alin. (1) și ale art. 220^4 alin. (1) din Legea nr. 227/2015, cu modificările și completările ulterioare, în cazul salariaților care desfășoară activitate în baza contractului individual de muncă, încadrați cu normă întreagă, la locul unde se află funcția de bază, pentru suma de 300 lei/lună din veniturile din salarii și asimilate salariilor aferente perioadei 1 ianuarie-30 iunie 2026, respectiv pentru suma de 200 lei/lună, din veniturile din salarii și asimilate salariilor aferente perioadei 1 iulie-31 decembrie 2026, nu se datorează impozit pe venit și contribuții sociale obligatorii dacă sunt îndeplinite cumulativ următoarele condiții: [...]”
+— OUG 89/2025, art. III alin. (1) (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
-CAM se calculează cu cota de 2,25%, conform art.220^3 alin.(1) din Codul fiscal (confirmat în registrul de cote „registrul de cote al aplicației”, activ din 2018-01-01, fără modificări până azi). Fiind o cheltuială a angajatorului, CAM nu se scade din brutul sau din netul angajatului și nu figurează printre reținerile de pe fluturaș.
+CAM se calculează cu cota de 2,25%, conform art.220^3 alin.(1) din Codul fiscal. Fiind o cheltuială a angajatorului, CAM nu se scade din brutul sau din netul angajatului și nu figurează printre reținerile de pe fluturaș.
 
 ## Cum se calculează, în cifre
 
@@ -29,14 +36,14 @@ CAM se aplică la salariul de bază brut. Pentru un angajat la salariul minim, �
 
 Calculul e simplu aritmetic: 2,25% × 4.050 = 91,125 → 91,13 lei; 2,25% × 4.325 = 97,3125 → 97,31 lei. Aceste cifre nu sunt un „exemplu oficial" — sunt derivate direct din cota confirmată aplicată la brut.
 
-Dosarul de cercetare nu confirmă dacă facilitatea „salariul minim neimpozabil" (200/300 lei), care reduce baza pentru CAS, CASS și impozit, reduce și baza de calcul a CAM — acest ghid nu face nicio presupunere pe acest punct; pentru certitudine, verifică rezultatul pe un fluturaș generat efectiv de aplicație.
+Tabelul de mai sus e calculat pe brutul întreg. Dacă se aplică facilitatea „salariul minim neimpozabil" (300 lei/lună în ianuarie–iunie 2026, 200 lei/lună în iulie–decembrie 2026), suma respectivă iese și din baza CAM, nu doar din baza CAS, CASS și impozit: OUG 89/2025 art. III alin. (1) derogă expres și de la art. 220^4 alin. (1), baza CAM. Pentru același angajat, cu facilitatea aplicată: 2,25% × (4.050 − 300) = 2,25% × 3.750 = 84,375 → 84,38 lei; 2,25% × (4.325 − 200) = 2,25% × 4.125 = 92,8125 → 92,81 lei.
 
 ## Ce se greșește în practică
 
-Greșeala tipică e includerea CAM în calculul netului angajatului — CAM nu afectează niciodată salariul net, e o cheltuială separată a firmei, contabilizată distinct. A doua greșeală: presupunerea că CAM se calculează pe aceeași bază redusă (brut minus facilitate) ca CAS/CASS, fără verificare — vezi paragraful de mai sus.
+Greșeala tipică e includerea CAM în calculul netului angajatului — CAM nu afectează niciodată salariul net, e o cheltuială separată a firmei, contabilizată distinct. A doua greșeală: calculul CAM pe brutul întreg atunci când se aplică facilitatea pentru salariul minim — suma neimpozabilă iese și din baza CAM, la fel ca din baza CAS/CASS (vezi paragraful de mai sus).
 
 ## Ce face iConta.eu
 
-CAM nu intră în funcția de calcul al netului („calculul salariului (Salarii)”), fiind tratată separat, ca notă contabilă de cheltuială (641 pentru salarii, respectiv 646/436 pentru CAM, conform „monografia salariului (Salarii)”, linia 390). Cota vine din registrul „period-aware" „registrul de cote al aplicației”, care aplică automat valoarea corectă pentru luna calculată.
+În ecranul Salarii, CAM nu intră în calculul netului, fiind tratată separat, ca notă contabilă de cheltuială (641 pentru salarii, respectiv 646 = 436 pentru CAM). Aplicația folosește automat cota valabilă pentru luna calculată și calculează CAM pe baza din care s-a scos suma neimpozabilă de la salariul minim, atunci când facilitatea se aplică.
 
 [iConta.eu](/)

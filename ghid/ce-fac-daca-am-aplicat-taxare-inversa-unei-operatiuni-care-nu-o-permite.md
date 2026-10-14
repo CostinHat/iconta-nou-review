@@ -2,7 +2,7 @@
 title: Ce fac dacă am aplicat taxare inversă unei operațiuni care nu o permite?
 description: O factură emisă eronat cu regimul de taxare inversă, pentru o operațiune care nu se încadrează la art. 331 alin. (2), se corectează printr-o factură de corecție conform art. 330 alin. (1) lit. b) Cod fiscal, nu prin simpla anulare.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,9 +13,11 @@ Dacă s-a emis o factură fără taxă colectată, cu mențiunea "taxare invers�
 ## Temeiul legal
 
 ::: ghid-temei
-**Norme, pct. 108 alin. (2):** În situația în care o persoană impozabilă a emis facturi aplicând regimul de taxare și ulterior intră în posesia documentelor justificative care îi dau dreptul la aplicarea unei scutiri de taxă pe valoarea adăugată [...], aceasta poate corecta facturile emise, potrivit art. 330 alin. (1) lit. b) din Codul fiscal [...] Aceleași prevederi se aplică și în situația în care o persoană impozabilă a emis facturi aplicând regimul de taxare pentru operațiuni care nu se cuprind în sfera de aplicarea a taxei, se supun măsurilor de simplificare prevăzute la art. 331 din Codul fiscal sau care sunt neimpozabile în România.
+„În situația în care o persoană impozabilă a emis facturi aplicând regimul de taxare și ulterior intră în posesia documentelor justificative care îi dau dreptul la aplicarea unei scutiri de taxă pe valoarea adăugată [...], aceasta poate corecta facturile emise, potrivit art. 330 alin. (1) lit. b) din Codul fiscal [...] Aceleași prevederi se aplică și în situația în care o persoană impozabilă a emis facturi aplicând regimul de taxare pentru operațiuni care nu se cuprind în sfera de aplicarea a taxei, se supun măsurilor de simplificare prevăzute la art. 331 din Codul fiscal sau care sunt neimpozabile în România.”
+— Normele metodologice ale Codului fiscal (HG 1/2016), titlul VII, pct. 108 alin. (2) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 
-**Articolul 331 alin. (1):** Condiția obligatorie pentru aplicarea taxării inverse este ca atât furnizorul, cât și beneficiarul să fie înregistrați în scopuri de TVA conform art. 316.
+„Condiția obligatorie pentru aplicarea taxării inverse este ca atât furnizorul, cât și beneficiarul să fie înregistrați în scopuri de TVA conform art. 316.”
+— Codul fiscal (Legea 227/2015), art. 331 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Cum se corectează, în practică

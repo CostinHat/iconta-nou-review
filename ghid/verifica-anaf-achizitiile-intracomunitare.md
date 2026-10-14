@@ -19,7 +19,7 @@ O achiziție intracomunitară de bunuri sau servicii lasă urme în trei locuri 
 
 Trei confruntări concrete, pe care se bazează controlul:
 
-- **D300 vs. evidența contabilă** — rândul de TVA colectată din decont (R17_2) se confruntă cu rulajul creditor al contului 4427 pe lună; rândul de TVA deductibilă (R27_2), cu rulajul debitor al contului 4426. La o achiziție intracomunitară, ambele mișcă simultan, prin taxare inversă (4426 = 4427).
+- **D300 vs. evidența contabilă** — rândul de TVA colectată din decont (rândul 19, TOTAL TAXĂ COLECTATĂ) se confruntă cu rulajul creditor al contului 4427 pe lună; rândul de TVA deductibilă (rândul 30, TOTAL TAXĂ DEDUCTIBILĂ), cu rulajul debitor al contului 4426. La o achiziție intracomunitară, ambele mișcă simultan, prin taxare inversă (4426 = 4427).
 - **D390 vs. evidența validată** — bazele din declarația recapitulativă (facturile intracomunitare, identificate automat sau clasificate manual) se confruntă cu operațiunile deja validate în contabilitate.
 - **D390 vs. D300** — rândurile intracomunitare din decontul de TVA efectiv depus se confruntă cu ce a fost declarat pe D390 pentru aceeași lună.
 

@@ -12,6 +12,16 @@ Vinzi bunuri unui client din alt stat membru, dar codul lui de TVA nu e valid �
 
 Cele două condiții ale scutirii — cod valid comunicat de client + dovada transportului — sunt cumulative. Codul nevalid rupe scutirea de unul singur, indiferent dacă ai și dovada transportului.
 
+## Temeiul legal
+
+::: ghid-temei
+„(2) Sunt, de asemenea, scutite de taxă următoarele: a) livrările intracomunitare de bunuri către o persoană impozabilă sau către o persoană juridică neimpozabilă care acționează ca atare în alt stat membru decât cel în care începe expedierea sau transportul bunurilor, care îi comunică furnizorului un cod valabil de înregistrare în scopuri de TVA, atribuit de autoritățile fiscale din alt stat membru [...]”
+— Legea nr. 227/2015 privind Codul fiscal, art. 294 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„(1) Orice persoană impozabilă înregistrată în scopuri de TVA conform art. 316 sau 317 trebuie să întocmească și să depună la organele fiscale competente o declarație recapitulativă în care menționează: [...] a) livrările intracomunitare scutite de taxă în condițiile prevăzute la art. 294 alin. (2) lit. a) și d), pentru care exigibilitatea taxei a luat naștere în luna calendaristică respectivă;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 325 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 ## Ce faci concret
 
 **Facturezi cu TVA din România**, la cota aplicabilă bunului vândut, exact ca la o livrare internă către un client fără cod valid de TVA. Operațiunea nu se declară în D390 — declarația recapitulativă privește livrările intracomunitare scutite, iar aceasta nu se califică drept una.

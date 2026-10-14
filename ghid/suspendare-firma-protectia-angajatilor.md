@@ -2,7 +2,7 @@
 title: Suspendare firmă și protecția angajaților
 description: Suspendarea activității firmei nu duce automat la încetarea contractelor de muncă - Codul muncii prevede o suspendare distinctă a CIM, cu indemnizație de minimum 75% din salariul de bază, pe durata întreruperii temporare.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,14 +13,18 @@ Suspendarea activității economice a unei firme și suspendarea contractelor in
 ## Temeiul legal
 
 ::: ghid-temei
-Legea nr. 53/2003 (Codul muncii), art. 52 alin. (1) lit. d) (suspendarea CIM din inițiativa angajatorului, în caz de întrerupere temporară a activității) și art. 53 alin. (1)-(2) (indemnizația datorată salariaților pe durata întreruperii).
+„Contractul individual de muncă poate fi suspendat din inițiativa angajatorului în următoarele situații: [...] c) în cazul întreruperii sau reducerii temporare a activității, fără încetarea raportului de muncă, pentru motive economice, tehnologice, structurale sau similare;”
+— Codul muncii (Legea 53/2003), art. 52 alin. (1) lit. c) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
+
+„(1) Pe durata reducerii și/sau a întreruperii temporare a activității, salariații implicați în activitatea redusă sau întreruptă, care nu mai desfășoară activitate, beneficiază de o indemnizație, plătită din fondul de salarii, ce nu poate fi mai mică de 75% din salariul de bază corespunzător locului de muncă ocupat, cu excepția situațiilor prevăzute la art. 52 alin. (3). (2) Pe durata reducerii și/sau a întreruperii temporare prevăzute la alin. (1), salariații se vor afla la dispoziția angajatorului, acesta având oricând posibilitatea să dispună reînceperea activității.”
+— Codul muncii (Legea 53/2003), art. 53 alin. (1)-(2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
-Codul muncii permite angajatorului să suspende contractele individuale de muncă, **fără încetarea raportului de muncă**, în cazul întreruperii temporare a activității, în special pentru motive economice, tehnologice, structurale sau similare (art. 52 alin. (1) lit. d)). Este important de reținut: contractul de muncă se **suspendă**, nu **încetează** — nu este o formă de concediere.
+Codul muncii permite angajatorului să suspende contractele individuale de muncă, **fără încetarea raportului de muncă**, în cazul întreruperii temporare a activității, în special pentru motive economice, tehnologice, structurale sau similare (art. 52 alin. (1) lit. c)). Este important de reținut: contractul de muncă se **suspendă**, nu **încetează** — nu este o formă de concediere.
 
 Pe durata suspendării, salariații beneficiază de o **indemnizație plătită din fondul de salarii**, care **nu poate fi mai mică de 75% din salariul de bază** corespunzător locului de muncă ocupat, cu excepția perioadelor în care salariații beneficiază de alte drepturi (art. 53 alin. (1)-(2)). În acest interval, salariații rămân **la dispoziția angajatorului**, care are oricând posibilitatea să dispună reînceperea activității.
 
-Consecința practică: suspendarea activității economice a firmei (inactivitatea temporară de la ONRC/ANAF) nu suspendă automat contractele de muncă și nu scutește firma de obligațiile față de salariați. Dacă angajatorul dorește să suspende și raporturile de muncă pe durata inactivității temporare, trebuie să parcurgă separat procedura de la art. 52 alin. (1) lit. d), cu plata indemnizației aferente.
+Consecința practică: suspendarea activității economice a firmei (inactivitatea temporară de la ONRC/ANAF) nu suspendă automat contractele de muncă și nu scutește firma de obligațiile față de salariați. Dacă angajatorul dorește să suspende și raporturile de muncă pe durata inactivității temporare, trebuie să parcurgă separat procedura de la art. 52 alin. (1) lit. c), cu plata indemnizației aferente.
 
 ## Ce se greșește în practică
 

@@ -30,6 +30,6 @@ Printre modificările aduse Codului fiscal pentru 2026, una directă și cuantif
 
 ## Ce face iConta.eu
 
-La data acestui ghid, modulul de impozit pe profit din iConta.eu implementează explicit cota redusă de IMCA pentru anul fiscal 2026: funcția „impozitul minim pe cifra de afaceri” folosește o listă de cote versionate pe an (`_VARIANTE_COTA_IMCA`), cu 1% până în 2025 și 0,5% începând cu 1 ianuarie 2026, temei citat direct în cod (OUG nr. 89/2025). Aplicația calculează și pragul de eligibilitate pentru IMCA (cifră de afaceri peste 50.000.000 euro, conform art. 18^1 alin. (1)) prin funcția „verificarea IMCA (Declarații)”, deci firmele care intră sub incidența acestui mecanism primesc automat cota corectă pentru 2026 la generarea D101.
+iConta.eu aplică cota IMCA după anul fiscal: 1% pentru anii fiscali 2024–2025, 0,5% pentru anul fiscal 2026 (art. 18^1 alin. (16), introdus prin OUG nr. 89/2025), iar după 31 decembrie 2026 IMCA nu se mai aplică (alin. (17)). La generarea D101, aplicația verifică și pragul de eligibilitate (cifră de afaceri din anul precedent peste 50.000.000 euro, conform art. 18^1 alin. (1)); peste prag, cere completarea rândului 47 (impozitul la nivelul IMCA), pentru că indicatorii VT, Vs, I și A din formulă nu se calculează automat din balanță.
 
 [iConta.eu](/)

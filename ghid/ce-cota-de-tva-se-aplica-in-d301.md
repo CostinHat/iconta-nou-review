@@ -2,7 +2,7 @@
 title: Ce cotă de TVA se aplică în D301?
 description: În D301 se aplică, în funcție de tipul operațiunii, cota standard (21% de la 01.08.2025) sau cota redusă (11% de la 01.08.2025), determinată de perioada în care ia naștere exigibilitatea taxei.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,13 +13,15 @@ Cota de TVA folosită la completarea decontului special D301 nu este fixă — d
 ## Temeiul legal
 
 ::: ghid-temei
-**Art. 291 alin. (1)**: Cota standard se aplică asupra bazei de impozitare pentru operațiunile impozabile care nu sunt scutite de taxă sau care nu sunt supuse cotei reduse, iar nivelul acesteia este **21%**. *(modificat de la 01-08-2025 prin Legea nr. 141/2025)*
+„Cota standard se aplică asupra bazei de impozitare pentru operațiunile impozabile care nu sunt scutite de taxă sau care nu sunt supuse cotei reduse, iar nivelul acesteia este 21%.”
+— Legea 227/2015, art. 291 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Art. 291 alin. (2)**: Cota redusă de **11%** se aplică asupra bazei de impozitare pentru [lista limitativă de bunuri/servicii: medicamente, alimente, apă/canalizare, îngrășăminte, cărți/manuale, acces muzee, lemn de foc, energie termică, locuințe sociale, cazare hotelieră, restaurant/catering]. *(modificat de la 01-08-2025 prin Legea nr. 141/2025)*
+„Cota redusă de 11% se aplică asupra bazei de impozitare pentru următoarele prestări de servicii și/sau livrări de bunuri: a) livrarea de medicamente de uz uman; [...]”
+— Legea 227/2015, art. 291 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Art. 291 alin. (8)**: Cota aplicabilă pentru achiziții intracomunitare de bunuri este cota aplicată pe teritoriul României pentru livrarea aceluiași bun și care este în vigoare la data la care intervine exigibilitatea taxei.
+„Cota aplicabilă pentru achiziții intracomunitare de bunuri este cota aplicată pe teritoriul României pentru livrarea aceluiași bun și care este în vigoare la data la care intervine exigibilitatea taxei.”
+— Legea 227/2015, art. 291 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
-
 ## Cota standard vs. cota redusă și perioada de referință
 
 Pentru achizițiile intracomunitare de bunuri (Secțiunea 1), art. 291 alin. (8) impune o regulă clară: se aplică aceeași cotă ca la livrarea internă a bunului respectiv, valabilă la data exigibilității taxei — nu cota din statul membru de origine.

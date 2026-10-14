@@ -2,7 +2,7 @@
 title: "Cum corectez impozitul pe salariu calculat greșit?"
 description: "Ordinea corectă de calcul a impozitului de 10% pe venitul din salarii și cele mai frecvente cauze ale unei baze impozabile greșite."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,11 @@ Impozitul pe venitul din salarii pare simplu — o cotă unică de 10% — dar b
 ## Temeiul legal
 
 ::: ghid-temei
-Codul fiscal, art.64 alin.(1) / art.78: impozitul pe venitul din salarii se calculează cu cota de **10%**, aplicabilă din 01.01.2018, asupra bazei de calcul rămase după reținerile legale (CAS, CASS) și deducerea personală.
+„Cota de impozit este de 10% și se aplică asupra venitului impozabil corespunzător fiecărei surse din fiecare categorie pentru determinarea impozitului pe veniturile din: [...] b) salarii și asimilate salariilor;”
+— Codul fiscal (Legea 227/2015), art. 64 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„la locul unde se află funcția de bază, prin aplicarea cotei de 10% asupra bazei de calcul determinată ca diferență între venitul net din salarii calculat prin deducerea din venitul brut a contribuțiilor sociale obligatorii aferente unei luni [...] și următoarele: [...] (i) deducerea personală acordată pentru luna respectivă;”
+— Codul fiscal (Legea 227/2015), art. 78 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Ordinea de calcul, așa cum e implementată în motorul de calcul: **facilitate (dacă se aplică) → CAS 25% → CASS 10% → deducere personală → impozit 10% pe baza impozabilă → net**. Dacă vreunul dintre acești pași e inversat sau omis, impozitul rezultat e greșit chiar dacă cota de 10% a fost aplicată corect aritmetic.

@@ -17,6 +17,7 @@ Plafoanele de încasări și plăți în numerar rămân, pentru 2026, cele stab
 lei de la o persoană [...] plăți către persoanele prevăzute la art. 1 alin. (1), în limita unui
 plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi [...]"
 — Legea nr. 70/2015 privind întărirea disciplinei financiare privind operațiunile de încasări
+
 și plăți în numerar, art. 3 alin. (1) lit. a) și c)
 :::
 

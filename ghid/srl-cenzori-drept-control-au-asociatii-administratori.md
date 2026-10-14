@@ -22,6 +22,7 @@ Legea societăților nu descrie în detaliu acest drept de control. Codul civil,
 ::: ghid-temei
 „Dacă legea nu prevede altfel, oricare dintre asociați are dreptul de a consulta registrele și situațiile financiare ale societății, de a lua cunoștință de operațiunile acesteia și de a consulta orice document al societății, fără a stânjeni operațiunile societății și a afecta drepturile celorlalți asociați."
 — Codul civil (Legea 287/2009), art. 1.918 alin. (2) (sursă: [Legea nr. 287/2009 privind Codul civil](https://legislatie.just.ro/Public/DetaliiDocument/109884))
+
 „Prezentul capitol constituie dreptul comun în materia societăților."
 — Codul civil (Legea 287/2009), art. 1.887 alin. (1) (sursă: [Legea nr. 287/2009 privind Codul civil](https://legislatie.just.ro/Public/DetaliiDocument/109884))
 :::

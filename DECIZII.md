@@ -19917,3 +19917,106 @@ fără regulă fiscală; reperele sunt protocolul sitemaps.org, directiva `X-Rob
 - **Clasa rămasă, pentru decizie (raportul lotului §6):** proza care DESCRIE codul în secțiunile „Ce face iConta.eu” („comentariul din
   cod”, „registrul intern”, „dosarul tehnic”, „mirrorul local” — 50 de ghiduri, lista în ZIP) nu e o denumire din cod, ci vocea textului; rescrierea ei
   e o alegere editorială.
+
+## 13.10.2026 — Răspunsul la §6 al raportului COMANDA_13_10: comasarea celor 45 de grupuri, proza despre cod, temeiul celor 73, măsurarea semantică
+
+**Comanda, verbatim:**
+
+> Răspuns la raportul COMANDA_13_10, §6:
+>
+> 1. Comasarea celor 45 de grupuri (ghid_suprapuneri.csv): aprobată. În fiecare grup rămâne ghidul mai complet; celălalt devine redirecționare 301 spre el, iar conținutul util în plus se mută în ghidul rămas. Sitemap-ul și ghidurile înrudite se actualizează.
+> 2. Cele 50 de ghiduri cu proză despre cod („comentariul din cod”, „registrul intern”, „dosarul tehnic”, „mirrorul local”): rescrie acele pasaje din perspectiva contabilului, adică ce face aplicația pentru el, fără referiri la cod sau la registrele proiectului.
+> 3. Cele 73 de ghiduri fără temei: pune temeiul din lege, citat verbatim din sursă verificată. Unde nu există normă aplicabilă, nu pune caseta. Nu inventa temeiuri.
+> 4. Măsurarea semantică a suprapunerilor: da, numai raport, fără modificări. Numărul de grupuri, paginile implicate și 10 exemple, inclusiv grupurile de tip „adaos / descărcare / coeficient K”.
+> 5. R4 rămâne blocat. Publicarea de ghiduri noi rămâne înghețată.
+>
+> Un singur lot, o singură trecere prin poartă. În raport, răspunde punctual, cu proba, pentru 1–4. La final: ZIP cu tot ce s-a schimbat, cu calea exactă.
+>
+> Oprește-te și raportează.
+
+- Interpretările și rezultatul — în intrarea lotului, mai jos.
+
+## 13.10.2026 — Lotul §6 COMANDA_13_10: comasarea (45), proza despre cod, temeiul celor 73, măsurarea semantică; C19, C20 (Code)
+
+Comanda: intrarea de mai sus, verbatim. TEMEI pe fiecare citat adăugat: textul legii, copiat LITERAL din `anaf_surse/*.txt` (forma
+consolidată descărcată din Portalul Legislativ / MO, cu amprentă sha256), verificat mecanic de `core/ghid_citate.py`.
+
+- **1. Comasarea.** „Mai complet” = mai multe citate de temei în casete, apoi textul mai lung, apoi publicat primul (criteriul deduplicării
+  din 29.09.2026, `85a811f6`). Conținutul util în plus din ghidul comasat s-a mutat în cel păstrat, cu verificarea că citatele mutate se
+  regăsesc literal; afirmațiile care nu se puteau susține (sau contraziceau legea) NU s-au mutat — sunt numite în raport. Mecanic:
+  `.md` șters, 301 în `main._GHID_REDIRECT` (o redirecționare veche spre un ghid comasat trimisă direct la cel păstrat — fără lanț),
+  scos din `ghid_publicate.txt` (6.558 -> 6.513), `index_titluri_ghid.csv` repointat (47 de câmpuri); sitemap-ul și ghidurile înrudite
+  urmează din `_ghid_lista`. Registrul perechilor: `ghid_comasate.csv`. Alternativă respinsă: comasarea prin unirea integrală a celor
+  două texte — dubla conținutul și păstra contradicțiile.
+- **2. Proza despre cod.** Cele 50 de ghiduri numite + aceleași tipare găsite în alte 78 („dosarul de cercetare” e aceeași categorie ca
+  „dosarul tehnic”) rescrise din perspectiva contabilului (ce face aplicația, pe ce ecran, ce rămâne în sarcina lui), cu aceleași limite;
+  unde rescrierea cerea o afirmație despre aplicație, ea s-a verificat în cod. Tiparele numite + trimiterile tehnice (coduri GH, linii de
+  cod, cron): ZERO în toate ghidurile (gard absolut). **Măsurătoarea corectată (am raportat greșit „50” în raportul anterior — tiparul
+  era prea îngust):** clasa largă („verificat în cod”, „motorul de calcul”, „cercetarea”, termeni tehnici) e în 1.312 ghiduri / 1.895
+  apariții — sub clichet, la decizia lui Costin.
+- **3. Temeiul celor 73.** 2 erau printre ghidurile comasate; din 71: 69 au caseta (166 de citate, toate literale), 2 fără casetă
+  (`verific-d390-contabilitatea`, `verific-d390-decontul-d300` — descriu un control al aplicației, nu afirmă o regulă legală). Unde textul
+  ghidului contrazicea legea găsită (CF art.307 alin.(2) la servicii, art.41 alin.(6) lit.a), art.320 alin.(1)), s-a corectat textul.
+  **Verificatorul de citate a fost reparat de două ori în lot** (tăia citatul la prima ghilimea dreaptă interioară — verde fals; nu vedea
+  citatele închise cu ghilimea dreaptă — unghi mort); forma finală vede 7.417 citate în 4.296 de ghiduri; 1.348 (1.089 de ghiduri) nu se
+  regăsesc literal — preexistente, sub clichet, la decizia lui Costin. În cele 370 de ghiduri atinse: 70 -> 49, niciunul nou.
+- **Clase de fond găsite pe drum (CICLUL), corectate în ghiduri:** rândurile D300 numite după atributul XML / numerotarea veche
+  (corespondența oficială = `core/d300_randuri.NOMENCLATOR_RANDURI_FORMULAR`, aceeași ca ecranul); IMCA 1% afirmat pentru 2026 (legea și
+  aplicația: 0,5%, CF art.18^1 alin.(16)); plățile anticipate „o pătrime” fără CF art.41 alin.(10^1) (trimestrul I pe profitul contabil,
+  OUG 8/2026, din anul fiscal 2026); casete de temei cu proză în loc de lege; note „n-am putut verifica” contrazise de casetele noi;
+  contradicții (D394 importuri / stornate, CAM la administrator). Total: 294 de ghiduri în valul 2.
+- **4. Măsurarea semantică (numai raport).** Nivelul A (aceeași întrebare): candidate TF-IDF pe titlu + descriere ≥ 0,50 (2.514 perechi),
+  fiecare judecată; legătură completă -> 324 de grupuri / 674 de pagini / max 4. Nivelul B (aceeași temă: titlu ≥ 0,35 + același citat
+  de lege): 82 de familii / 234 de pagini / max 14. Familia adaos / descărcare / K: 36 de ghiduri — judecate întrebări diferite (calcul /
+  verificare / corectare / tratament fiscal), textul comun fiind citatul OMFP pct.286 și descrierea aplicației. Limită: perechile sub
+  pragul 0,50 n-au fost judecate (plafon inferior). Unealta lexicală (2a) găsește acum 0 grupuri.
+- **C19 (D394, secțiunile E / F) — NEREZOLVATĂ, decizia lui Costin:** exporturile și livrările intracomunitare se declară (L / LS), deși
+  OPANAF 2194/2025 pct.10 le exclude; serviciile din afara UE cu taxare inversă se exclud, deși pct.8–9 le cer. Corectura schimbă ce se
+  depune la ANAF și poate cere rectificative -> oprire pentru decizie (CLAUDE.md §2.3 pct.2), nu reparat în lot.
+- **C20 (temeiul D406 pentru PFA)** — corectat: „pct.4 lit.q)” -> „pct.4 lit.a)–d)” (transcriere greșită în cod a intrării anterioare despre PFA
+  și D406, al cărei TEMEI spunea deja „pct.4 lit.a)”). Și `core/contracte_speciale.py`: docstring „FARA CAM” pentru mandat, contrazis de cod și de test — corectat.
+- **Legarea în producție:** `core/ghid_citate.py` e chemat de poarta de pre-publicare (`core/ghid_poarta.verifica_ghid`) — un ghid nou cu
+  un citat neliteral nu trece poarta; prins de `core/test_module_nelegate.py` (modul de producție fără apelant).
+- **Forma casetelor (văzut la captură):** după rândul de sursă, un rând liber înaintea citatului următor — altfel markdown lipea sursa de
+  citatul următor într-un paragraf; 302 locuri în 201 de ghiduri, corectate (numai forma; data actualizării neschimbată).
+- **Verificat, nu e defect nou:** calendarul D100 micro, trimestrul IV = 25 ianuarie (CF art.56 alin.(1), forma consolidată), iar XML-ul
+  D100 pune 25.06 (validatorul DUK v9, regula R15.1) — tensiune deja documentată în `core/d100.py`.
+
+## 14.10.2026 — Răspunsul la §6 al raportului COMANDA_13_10 (ghiduri): cifrele de referință (c), apoi 243–245, C19, ghidurile 4a–4c
+
+**Comanda, verbatim:**
+
+> Răspuns la raportul COMANDA_13_10 §6 (ghiduri):
+>
+> 1. Cifrele de referință: varianta (c) aprobată. Unealta de cifre alege lunile numai din notele validate (R36). Reia lotul prin poartă și publică-l. Apoi treci la punctul 2.
+>
+> 2. Deficiențele din aplicație (retest 13.10), într-un lot separat:
+>    243: nota de închidere se poate propune pentru un an neîncheiat; operațiunile ulterioare o fac greșită, iar după validare nu se mai corectează. Fie permiți propunerea numai după 31.12, fie avertizezi și recalculezi înainte de validare. Alege varianta mai sigură și spune de ce.
+>    244: după propunere, mesajul roșu din Bilanț spune în continuare „închide clasele 6/7 în 121”. Trebuie „Notele de închidere propuse așteaptă validarea”, cu link direct spre ele, deschis pe luna lor (textul „Jurnal — notele de validat” m-a dus la Jurnalul regim marjă).
+>    245: pe note apare „sursa: inchidere_an”. Scrie „sursa: închiderea anului” și verifică toate sursele de note afișate.
+>
+> 3. C19 (D394, E/F): corectează după textul OPANAF 2194/2025, citat verbatim. Portofoliul e numai de test, nu există declarații depuse de rectificat. Lot separat, după punctul 2.
+>
+> 4. Ghidurile (după 3, în loturi separate, fiecare cu raport):
+>    a) Proza despre cod, clasa largă (1895 de apariții în 1312 ghiduri): se rescrie din perspectiva contabilului.
+>    b) Cele 1348 de citate nerecuperate literal: unde textul se găsește în sursă, pune textul exact; unde nu, scoate ghilimelele și lasă o parafrază cu trimitere la articol. Niciun text între ghilimele care nu e literal din lege.
+>    c) Comasarea grupurilor semantice de nivel A (324 de grupuri, aceeași întrebare): aprobată, cu aceleași reguli ca la cele 45. Nivelul B (aceeași temă): nu se comasează.
+>
+> 5. R4 rămâne blocat. Publicarea de ghiduri noi rămâne înghețată.
+>
+> Raportează după fiecare punct (1, 2, 3, 4a, 4b, 4c), punctual și cu probă. Fiecare raport cu ZIP-ul lui și calea exactă. După raportul fiecărui punct, continui cu următorul din această comandă; nu porni nimic din afara ei.
+
+**Pct.1 — consecința variantei (c), întrebată înainte de scriere și aprobată.** Aplicată, varianta scoate din referința aprobată și luna
+10/2026 a firmei F5: luna intrase acolo numai prin ciorna de salarii #5 (31.10.2026, creată 08.10), iar balanța ei avea rulaj 0 (soldurile
+din 09/2026 reportate). Întrebarea pusă lui Costin, 14.10.2026: „Rescriu referința fără F5 balanța 10/2026 și consemnez amprenta în
+DECIZII?” — răspunsul, verbatim: **„Da, rescrie referința (Recommended)”**.
+- Diferența referinței, toată (veche -> nouă): `/F5 …/balanta/10/2026` -> lipsă; `/F5 …/luni` ['09/2026','10/2026','11/2026'] ->
+  ['09/2026','11/2026']. Nicio altă cifră schimbată; D112 10/2026 (lunile cu stat, `_luni_cu_stat`) și D406 T4/2026 rămân.
+- **Amprenta noii referințe (`scripts/cifre_referinta_aprobate.json`): f2b72a911b63d3437e71d0ba4d01f5d6a872381c643e3871690ea146a714265a**
+- Temei: R36 (decizia Costin 08.10.2026 §6 pct.7) — „evidența = ce a validat un om”; balanța și declarațiile citesc numai notele validate.
+- Alternativele respinse (raportul din 13.10): (a) referința nouă cu cele 5 chei ale ciornelor F2 — orice ciornă pe o firmă de test ar fi
+  oprit din nou publicarea; (b) ștergerea ciornelor din producție — scriere pe producție, a lui Costin.
+- Aplicată literal („numai din notele validate”): nici facturile nu mai fac singure o lună „cu date” (o factură emisă intră în evidență
+  prin nota ei; o factură-ciornă ar fi adăugat tot o lună goală). Măsurat înainte, pe cele 5 firme: lunile notelor validate = lunile
+  notelor validate + facturi, deci referința nu se schimbă din cauza facturilor.
+- Gard: `core/test_cifre_referinta_poarta.py::test_lunile_cu_date_vin_numai_din_notele_validate` (mutația: filtrul scos -> roșu).

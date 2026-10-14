@@ -2,7 +2,7 @@
 title: Cum se înregistrează raportul Z în contabilitatea unui restaurant?
 description: Notă contabilă pe două cote de TVA (11% mâncare, 21% alcool și sucuri), pe numerar și pe card — construită din Raportul Z, prin import de fișier AMEF sau introducere manuală.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,14 +26,20 @@ Pe ecranul „Raport Z" din iConta.eu, câmpurile pentru introducerea manuală r
 - `5125 = 707` pentru card
 - `707 = 4427` pentru TVA colectată pe fiecare cotă
 
-Dacă în locul introducerii manuale se importă direct fișierul AMEF (p7b/XML), aplicația citește orice cotă apărută efectiv în raportul casei de marcat, nu doar 11%/21% — util dacă restaurantul mai vinde și produse la o altă cotă (de exemplu produse nealimentare).
+Dacă în locul introducerii manuale se importă direct fișierul AMEF (p7b/XML), aplicația citește orice cotă apărută efectiv în raportul casei de marcat, nu doar 11%/21% — util dacă restaurantul mai vinde și produse la o altă cotă (de exemplu produse nealimentare) — precum și plățile pe tip (card, numerar, tichete etc.).
+
+Cele două căi se deosebesc și prin starea notei rezultate: la import, nota e generată ca **ciornă**, verificabilă înainte să intre definitiv în evidență; la introducerea manuală (unde se completează și NUI-ul casei de marcat și numărul raportului), nota e generată **direct ca validată**.
+
+Unicitatea raportului se ține pe combinația **NUI casă de marcat + număr raport Z**, nu pe data calendaristică — numărul raportului e secvențial pe fiecare casă de marcat, deci nu se repetă. Un al doilea import sau o a doua introducere manuală cu aceeași combinație e refuzată, cu un mesaj care indică nota deja existentă.
 
 ## Ce se greșește în practică
 
 Aplicarea vechii cote de 9% (abrogată de la 1 august 2025) pentru mâncare, în loc de 11%. A doua greșeală: încadrarea greșită a băuturilor — nu doar alcoolul iese din cota redusă, ci și băuturile nealcoolice cu cod NC 2202, o categorie mai largă decât „alcool" (energizante, sucuri, ape gazoase/aromatizate cu zahăr intră aici).
 
+A treia greșeală: reintroducerea manuală a unui Z deja importat din fișierul AMEF, „pentru siguranță". Refuzul aplicației trebuie citit, nu ocolit prin modificarea numărului de raport doar ca să treacă — și nu data, ci strict combinația NUI + număr garantează că un Z nu e înregistrat de două ori.
+
 ## Ce face iConta.eu
 
-Calea manuală de pe ecranul „Raport Z" separă direct suma pe cele două cote relevante pentru HoReCa și calculează automat TVA prin sută mărită, fără rotunjiri manuale. Calea de import citește direct structura raportului Z din fișierul AMEF (conform OPANAF 146/2018), cotă cu cotă, pentru cazurile în care restaurantul vinde și la alte cote decât 11%/21%.
+Calea manuală de pe ecranul „Raport Z" separă direct suma pe cele două cote relevante pentru HoReCa și calculează automat TVA prin sută mărită, fără rotunjiri manuale. Calea de import citește direct structura raportului Z din fișierul AMEF (conform OPANAF 146/2018), cotă cu cotă, pentru cazurile în care restaurantul vinde și la alte cote decât 11%/21%. La un duplicat (același NUI și același număr de raport), aplicația nu creează o a doua notă, nu șterge și nu alege automat nota corectă — refuză înregistrarea, chiar și când două încercări ajung aproape simultan, și lasă verificarea în sarcina contabilului.
 
 [iConta.eu](/)

@@ -1,6 +1,6 @@
 ---
 title: Cum se calculează sporul pentru sărbători legale?
-description: Calculul sporului pentru munca prestată în zilele de sărbătoare legală ține de Codul muncii, nu de funcționalitatea de calcul al scadențelor fiscale verificată pentru acest ghid. Redirecționăm onest, fără să inventăm un citat pe care dosarul nu-l confirmă.
+description: Pentru munca prestată într-o zi de sărbătoare legală, salariatul primește timp liber corespunzător în următoarele 30 de zile sau, dacă din motive justificate nu se acordă zile libere, un spor de cel puțin 100% din salariul de bază (Legea 53/2003, art. 142).
 published: 2026-09-25
 modified: 2026-10-13
 poarta: v1
@@ -8,22 +8,23 @@ poarta: v1
 
 # Cum se calculează sporul pentru sărbători legale?
 
-Această întrebare privește salarizarea — cât primește în plus un angajat care lucrează într-o zi de sărbătoare legală. Dosarul de cercetare disponibil pentru acest ghid acoperă o funcționalitate diferită: calculul scadențelor fiscale (termenele de depunere și plată a declarațiilor), nu calculul drepturilor salariale.
+Această întrebare privește salarizarea — cât primește în plus un angajat care lucrează într-o zi de sărbătoare legală. Regula vine din Codul muncii, nu din legislația fiscală: întâi se acordă timp liber corespunzător, iar sporul se plătește numai dacă, din motive justificate, zilele libere nu se acordă.
 
 ## Temeiul legal
 
 ::: ghid-temei
-Zilele de sărbătoare legală, ca listă de date fixe și mobile, sunt confirmate — pentru scopul acestui dosar — doar ca referință pentru mutarea termenelor fiscale, cu bază declarată în art.139 din Codul muncii, care enumeră atât zilele fixe, cât și cele mobile (calculate după Paștele ortodox). Articolul din Codul muncii care reglementează cuantumul sporului pentru muncă în sărbătoare nu a fost verificat, cu citat verbatim, în acest dosar.
+„(1) Salariaților care lucrează în unitățile prevăzute la art. 140 , precum și la locurile de muncă prevăzute la art. 141 li se asigură compensarea cu timp liber corespunzător în următoarele 30 de zile. (2) În cazul în care, din motive justificate, nu se acordă zile libere, salariații beneficiază, pentru munca prestată în zilele de sărbătoare legală, de un spor la salariul de bază ce nu poate fi mai mic de 100% din salariul de bază corespunzător muncii prestate în programul normal de lucru.”
+— Legea nr. 53/2003 - Codul muncii, art. 142 alin. (1) și (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
-**De semnalat onest**: nu există, în dosarul folosit la acest ghid, nicio funcționalitate F0xx asociată calculului sporului pentru sărbători legale — verificarea directă a listei de funcționalități nu a găsit nicio potrivire pe acest subiect. Calendarul de sărbători legale e folosit de aplicație exclusiv ca listă de date de referință pentru mutarea scadențelor fiscale, nu ca bază pentru calculul unui spor salarial. Nu inventăm un citat din Codul muncii pentru mecanismul de calcul al sporului, pentru că nu a fost confirmat în acest dosar.
+**De reținut**: sporul de cel puțin 100% se raportează la salariul de bază corespunzător muncii prestate în programul normal de lucru și se datorează numai când compensarea cu timp liber în următoarele 30 de zile nu se acordă. Pentru plata muncii în sărbătorile legale din 2026, vezi și [ghidul dedicat](/ghid/munca-sarbatori-legale-2026-plateste).
 
 ## Recomandare
 
-Pentru cuantumul exact al sporului (sau alternativa cu zi liberă compensatorie) și condițiile de acordare, verificați direct Codul muncii sau un ghid dedicat legislației muncii.
+Pentru cuantumul exact al sporului (sau alternativa cu zi liberă compensatorie) și condițiile de acordare, verificați direct Codul muncii (art. 139–142) și contractul de muncă al angajatului; minimul legal al sporului este cel de la art. 142 alin. (2).
 
 ## Ce face iConta.eu
 
-Motorul de calcul salarial al iConta.eu (o funcționalitate distinctă, „Calcul salarizare (de la brut la net)”) calculează salariul obișnuit pe baza timpului efectiv lucrat, cu cotele și deducerile confirmate pentru acel calcul — dar dosarul disponibil la acest ghid nu confirmă un mecanism dedicat pentru sporul de sărbătoare legală. Recomandăm verificarea directă în aplicație, la fluturașul de salariu, dacă acest tip de spor apare ca linie distinctă.
+iConta.eu nu calculează automat sporul pentru sărbători legale. În ecranul Salariați, în statul de plată, la butonul „Prime, sporuri, ore supl.” al fiecărui salariat, contabilul adaugă pentru luna respectivă un element de tip „Spor”, cu denumirea și suma brută calculate de el; suma intră în brut și în bazele CAS, CASS și impozit și apare distinct pe fluturaș. Calendarul de sărbători legale din aplicație e folosit pentru zilele lucrătoare din pontaj și pentru mutarea termenelor fiscale, nu pentru calculul sporului.
 
 [iConta.eu](/)

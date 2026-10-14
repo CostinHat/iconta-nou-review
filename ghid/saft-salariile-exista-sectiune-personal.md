@@ -2,7 +2,7 @@
 title: "SAF-T și salariile: există o secțiune de personal?"
 description: D406 nu are o secțiune de personal sau de state de plată. Salariile apar doar ca înregistrări contabile în GeneralLedgerEntries, pe conturile 421, 431, 436, 444, 641, 646, cu TaxType-urile din nomenclatorul de impozite (602, 412, 432, 480), conform structurii aprobate prin OPANAF 1783/2021.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -46,7 +46,7 @@ Aplicat: la conturile de contribuții față de buget (431, 436, 444) se folose�
 
 ### Exemplu
 
-Pentru un salariat cu brut de 6.000 lei, nota lunară are linii pe 641 (debit 6.000), 4315 (credit, CAS reținut), 4316 (credit, CASS reținut), 444 (credit, impozit) și 421 (credit, netul). Separat, linia 646 = 436 reprezintă contribuția asiguratorie pentru muncă. În D406, fiecare linie apare cu contul ei și cu TaxType corespunzător (412, 432, 602, 480), cu TaxCode 000000. Plata netului prin bancă apare apoi în Payments, cu PaymentMethod 03.
+Pentru un salariat cu brut de 6.000 lei, nota lunară are linii pe 641 (debit 6.000), 4315 (credit, CAS reținut), 4316 (credit, CASS reținut), 444 (credit, impozit) și 421 (credit, netul). Separat, înregistrarea 646 = 436 reprezintă contribuția asiguratorie pentru muncă. În D406, fiecare linie apare cu contul ei și cu TaxType corespunzător (412, 432, 602, 480), cu TaxCode 000000. Plata netului prin bancă apare apoi în Payments, cu PaymentMethod 03.
 
 ### De reținut
 

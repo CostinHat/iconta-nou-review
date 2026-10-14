@@ -2,7 +2,7 @@
 title: "Taxarea inversă la deșeuri reciclabile 2026"
 description: "Livrarea de deșeuri și materiale reciclabile intră sub taxare inversă conform art. 331 CF, iar spre deosebire de alte categorii, această regulă nu expiră la finalul lui 2026."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -56,7 +56,7 @@ Categoria „deșeuri" din ecranul „Taxare inversă internă (art. 331)" al ap
 listă fără câmp de expirare și fără prag valoric — configurată explicit așa în sursa aplicației,
 tocmai pentru că legea nu prevede nici termen, nici prag pentru această categorie. La confirmarea
 operațiunii, iConta generează automat mențiunea de factură „taxare inversa - art. 331 alin. (2)
-lit. a) Cod fiscal" (text exact din sursă, fără diacritice) și preia automat suma în declarația D300 (rd. 13 la furnizor; rd. 12/rd. 25 la
+lit. a) Cod fiscal" (text exact din sursă, fără diacritice) și preia automat suma în declarația D300 (rândul 13 la furnizor; rândul 12 pentru taxa colectată și rândul 26 pentru taxa deductibilă la
 beneficiar) și în D394 (tip V la emitere, tip C la primire).
 
 [iConta.eu](/)

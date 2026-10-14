@@ -2,7 +2,7 @@
 title: "Ieșirea din suspendare: cum reactivez firma"
 description: Reactivarea fiscală a unei firme aflate în inactivitate temporară presupune îndeplinirea condițiilor legale și constatarea de către organul fiscal că situația care a dus la declararea ca inactiv nu mai există.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,13 +13,24 @@ Ieșirea din suspendare nu este un simplu act unilateral al firmei — reactivar
 ## Temeiul legal
 
 ::: ghid-temei
-Legea nr. 207/2015 (Codul de procedură fiscală), art. 92 alin. (5), (5^1) și (6) (condițiile de reactivare a contribuabililor declarați inactivi fiscal).
+„(4) Declararea ca inactiv a contribuabilului/plătitorului, precum și reactivarea acestuia se efectuează de către organul fiscal central, prin decizie, emisă conform competențelor și procedurii stabilite prin ordin al președintelui A.N.A.F., care se comunică contribuabilului/plătitorului.”
+— Legea 207/2015, art. 92 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„(5) Contribuabilul/Plătitorul declarat inactiv conform alin. (1) lit. a) , d)-g) se reactivează dacă sunt îndeplinite, cumulativ, următoarele condiții: a) își îndeplinește toate obligațiile declarative prevăzute de lege; [...] b) nu înregistrează obligații fiscale restante.”
+— Legea 207/2015, art. 92 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„(5^1) Contribuabilul/Plătitorul declarat inactiv conform alin. (1) lit. b) și c) se reactivează dacă sunt îndeplinite, cumulativ, condițiile prevăzute la alin. (5) și dacă organul fiscal central care a propus reactivarea constată că acesta funcționează la domiciliul fiscal declarat.”
+— Legea 207/2015, art. 92 alin. (5^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„(6) În cazul contribuabilului/plătitorului prevăzut la alin. (1) lit. d)-g) , în vederea reactivării, pe lângă condițiile prevăzute la alin. (5) , trebuie să nu se mai afle în situația pentru care a fost declarat inactiv, conform mențiunilor înscrise în registrele în care a fost înregistrat, precum în nicio altă situație din cele prevăzute la alin. (1) lit. d)-g) .”
+— Legea 207/2015, art. 92 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Reactivarea presupune, cumulativ:
 
-- îndeplinirea condițiilor prevăzute la alin. (5) al art. 92 — condiții generale pentru încetarea stării de inactivitate fiscală;
-- pentru contribuabilii declarați inactivi în temeiul situațiilor de la lit. b)-c) ale alin. (1) (categorie în care intră, prin trimitere, și cea de la lit. d) — inactivitatea temporară înscrisă la registrul comerțului), **constatarea de către organul fiscal central că nu se mai află în situația care a dus la declararea ca inactiv**.
+- îndeplinirea condițiilor prevăzute la alin. (5) al art. 92 — toate obligațiile declarative îndeplinite și nicio obligație fiscală restantă;
+- pentru firma declarată inactivă pentru inactivitatea temporară înscrisă la registrul comerțului (alin. (1) lit. d)), în plus, **să nu se mai afle în situația pentru care a fost declarată inactivă, conform mențiunilor din registrele în care e înregistrată** (alin. (6)) — deci reluarea activității trebuie înscrisă la registrul comerțului; pentru situațiile de la lit. b)-c), condiția suplimentară e ca organul fiscal central să constate că firma funcționează la domiciliul fiscal declarat (alin. (5^1));
+- **decizia de reactivare a organului fiscal central** (alin. (4)), comunicată firmei.
 
 Practic, reactivarea fiscală nu este automată la simpla reluare a activității declarate la registrul comerțului — organul fiscal trebuie să confirme, la rândul lui, că motivul inactivității a încetat. Până la această confirmare, firma rămâne, din perspectivă fiscală, în regimul de inactiv, cu toate consecințele asociate (inclusiv restricțiile privind deducerea cheltuielilor și a TVA pentru orice activitate desfășurată în fapt în acest interval).
 

@@ -66,3 +66,25 @@ def test_schimbarea_referintei_cere_amprenta_in_decizii():
     assert 'REF_CIFRE="scripts/cifre_referinta_aprobate.json"' in linii
     regula = r'git diff --cached -U0 -- DECIZII.md | grep -E ' + r"'^\+'" + r' | grep -q "$AMPR"'
     assert any(regula in x and x.startswith("if ") for x in linii), "regula aprobării lipsește (condiția unui `if` din script)"
+
+
+def test_lunile_cu_date_vin_numai_din_notele_validate():
+    """[14.10.2026, decizia Costin, varianta (c), verbatim în DECIZII] „Unealta de cifre alege lunile numai din notele validate (R36).”
+    Pe o schemă din `tenant_template.sql` (baza de TEST, anulată): o notă validată în 01/2099 și o ciornă în 12/2099 -> numai 01/2099
+    (cazul din 13.10: ciornele de închidere la 31.12.2026 pe F2 adăugau o lună goală). MUTAȚIE: filtrul `status = 'validata'` scos din
+    `_luni_cu_date` -> pică."""
+    from core import db as _db
+    from core import tenant_provisioning as _tp
+    schema = "ztest_cifre_r36"
+    _db.init_pool()
+    with _db.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % schema)
+                cur.execute(_tp.parametrizeaza_template(_citeste("tenant_template.sql"), schema))
+                for data, stare in (("2099-01-15", "validata"), ("2099-12-31", "ciorna")):
+                    cur.execute("INSERT INTO %s.inregistrari (data, descriere, sursa, status) VALUES (%%s, 'proba R36', 'manual', %%s)"
+                                % schema, (data, stare))
+                assert cr._luni_cu_date(cur, schema) == [(2099, 1)]
+        finally:
+            conn.rollback()

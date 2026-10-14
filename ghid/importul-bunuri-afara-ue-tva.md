@@ -2,7 +2,7 @@
 title: "Importul de bunuri din afara UE: TVA și declarare 2026"
 description: TVA la import are trei moduri de tratare — plată la vamă, autolichidare prin certificat de amânare sau cost pentru neplătitori — și declararea corectă în D300 are, la acest moment, o limitare cunoscută pentru operațiunile non-UE.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Certificatul de amânare nu e disponibil oricui: condițiile cumulative de la ar
 
 Ecranul „Import extracomunitar (DVI)" calculează baza de TVA (valoare vamală + taxe vamale + accize + accesorii) și taxa aferentă, cu cota declarată explicit de contabil la fiecare operațiune (fără valoare implicită). În funcție de statutul firmei și de existența certificatului de amânare, aplicația generează automat una din cele trei note contabile: 4426=4427 (autolichidare, certificat de amânare), 4426=446 (TVA plătită la vamă, dedusă pe baza DVI) sau TVA inclus în costul bunului, pentru neplătitori. Dacă se bifează certificatul de amânare la o firmă neplătitoare de TVA, aplicația respinge combinația, întrucât acest certificat e disponibil doar persoanelor înregistrate în scopuri de TVA conform art. 316 — dar aplicația **nu verifică** plafonul de 50 milioane lei sau celelalte condiții de la art. 326 alin. (4^1); confirmarea eligibilității rămâne responsabilitatea contabilului.
 
-Pentru declararea în D300: la data acestei cercetări, aplicația **nu populează automat rândul de TVA la import (rd.21) pentru operațiunile cu parteneri din afara UE** — acestea rămân clasificate generic pe rd.26 (neimpozabil), indiferent de modul de tratare a TVA calculat de motorul de import. Este o limitare de stare curentă a aplicației, nu o regulă fiscală, iar contabilul trebuie să verifice manual încadrarea corectă în decont.
+Pentru declararea în D300: în prezent, aplicația **nu populează automat rândurile pe care se declară TVA la import pentru achizițiile de bunuri de la parteneri din afara UE** — rândul 24 (cota de 21%) sau rândul 25 (cota de 11%) pentru TVA plătită în vamă, respectiv rândurile 7 și 22 pentru importurile cu certificat de amânare (art. 326 alin. (4) și (5)). Aceste achiziții rămân clasificate generic pe rândul 29 (achiziții scutite de taxă sau neimpozabile), indiferent de modul de tratare a TVA calculat pe ecranul de import. Este o limitare de stare curentă a aplicației, nu o regulă fiscală, iar contabilul trebuie să verifice manual încadrarea corectă în decont.
 
 [iConta.eu](/)

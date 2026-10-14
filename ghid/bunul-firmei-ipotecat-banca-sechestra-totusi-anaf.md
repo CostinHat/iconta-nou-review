@@ -17,6 +17,7 @@ Pentru firmă, asta înseamnă că un bun ipotecat nu e „protejat" de executar
 ::: ghid-temei
 „Terțul nu se poate opune sechestrării unui bun al debitorului, invocând un drept de gaj, drept de ipotecă sau un privilegiu. Terțul participă la distribuirea sumelor rezultate din valorificarea bunului, potrivit legii."
 — Codul de procedură fiscală (Legea 207/2015), art. 231 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „Față de terți, inclusiv față de stat, o garanție reală și celelalte sarcini reale asupra bunurilor au un grad de prioritate care se stabilește de la momentul în care acestea au fost făcute publice prin oricare dintre metodele prevăzute de lege."
 — Codul de procedură fiscală (Legea 207/2015), art. 227 alin. (9) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::

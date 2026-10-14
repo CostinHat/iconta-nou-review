@@ -23,7 +23,7 @@ Lichidarea simplificată, pe acord unanim al asociaților, este condiționată e
 
 Se presupune uneori că, dacă datoriile către furnizori nu pot fi acoperite integral din activele disponibile, procedura rămâne oricum cea „simplă" descrisă de art. 235 din Legea 31/1990. Legea prevede însă că, în lipsa acordului unanim privind împărțirea bunurilor sau a stingerii pasivului, „va fi urmată procedura lichidării prevăzută de prezenta lege" — adică procedura de drept comun, mai formală, cu numire de lichidator și termene stricte (art. 260). Iar dacă societatea îndeplinește condițiile de insolvență, radierea se poate face pe temeiul Legii nr. 85/2014, la care Legea 31/1990 trimite explicit pentru acest caz (art. 260 alin. 10).
 
-**Notă de transparență:** textul integral al Legii 85/2014 (legea insolvenței) nu a fost disponibil în dosarul de cercetare folosit la redactarea acestui ghid, deci nu putem cita aici prevederi specifice din ea. Dacă datoriile către furnizori depășesc activele disponibile ale societății și există risc de insolvență, procedura corectă (reorganizare judiciară sau faliment) trebuie stabilită împreună cu un practician în insolvență sau consilier juridic — nu poate fi acoperită integral doar prin operațiunile contabile din aplicație.
+**Notă de transparență:** acest ghid nu citează prevederi din Legea 85/2014 (legea insolvenței) și nu se pronunță asupra procedurii de insolvență. Dacă datoriile către furnizori depășesc activele disponibile ale societății și există risc de insolvență, procedura corectă (reorganizare judiciară sau faliment) trebuie stabilită împreună cu un practician în insolvență sau consilier juridic — nu poate fi acoperită integral doar prin operațiunile contabile din aplicație.
 
 ## Ce face iConta.eu
 

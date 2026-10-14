@@ -2,7 +2,7 @@
 title: Cum diagnostichez o balanță care dă impozit pe profit greșit
 description: Un impozit pe profit greșit vine aproape mereu dintr-un ajustament omis — cheltuiala nedeductibilă cu impozitul, rezerva legală, plafonul de sponsorizare sau amortizarea introdusă doar parțial. Un ghid de verificare pas cu pas, pe baza avertismentelor pe care le rulează generatorul D101.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Cea mai frecventă cauză a unui impozit greșit e un ajustament fiscal aplicat 
 
 ## Ce face iConta.eu
 
-Generatorul D101 rulează automat mai multe validări la fiecare generare: verifică non-negativitatea rândurilor, subtotalurile „din care" față de componente, plafoanele pe credite fiscale/sponsorizare/reduceri, și emite explicit un avertisment când soldul contului 691 e pozitiv fără ca suma corespunzătoare să apară la cheltuieli nedeductibile. **Important pentru firmele eligibile IMCA în 2026**: motorul de calcul din aplicație aplică în prezent o cotă fixă de 1% în formula IMCA, deși legea prevede explicit 0,5% pentru anul fiscal 2026 (art. 18^1 alin. 16, citat mai sus) — pentru firmele cu cifră de afaceri peste 50 milioane EUR, valoarea IMCA afișată de aplicație poate ieși dublă față de cea legal datorată. Verificați manual acest calcul pentru anul fiscal 2026 până la corectarea acestei discrepanțe.
+Generatorul D101 rulează automat mai multe validări la fiecare generare: verifică non-negativitatea rândurilor, subtotalurile „din care" față de componente, plafoanele pe credite fiscale/sponsorizare/reduceri, și emite explicit un avertisment când soldul contului 691 e pozitiv fără ca suma corespunzătoare să apară la cheltuieli nedeductibile. **Pentru firmele eligibile IMCA**: aplicația alege cota IMCA după anul fiscal — 1% pentru 2024–2025, 0,5% pentru anul fiscal 2026 (art. 18^1 alin. (16), citat mai sus) — iar pentru anii fiscali de după 2026 nu mai calculează IMCA, pentru că impozitul minim se aplică până la 31 decembrie 2026 (art. 18^1 alin. (17)).
 
 [iConta.eu](/)

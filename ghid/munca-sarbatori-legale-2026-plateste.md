@@ -1,26 +1,27 @@
 ---
 title: "Munca în sărbători legale 2026: cum se plătește"
-description: Plata muncii prestate în zilele de sărbătoare legală ține de Codul muncii (dreptul la spor sau la zi liberă compensatorie), nu de calculul scadențelor fiscale. Acest ghid vă redirecționează onest, fără să inventeze un citat pe care dosarul verificat nu-l confirmă.
+description: Plata muncii prestate în zilele de sărbătoare legală ține de Codul muncii, nu de calculul scadențelor fiscale - timp liber corespunzător în următoarele 30 de zile sau, dacă din motive justificate nu se acordă zile libere, un spor de cel puțin 100% din salariul de bază (Legea 53/2003, art. 142).
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Munca în sărbători legale 2026: cum se plătește
 
-Această întrebare ține de dreptul muncii — cât se plătește un angajat care lucrează într-o zi de sărbătoare legală — nu de calculul scadențelor fiscale (declarații, plăți la buget), care e funcționalitatea verificată pentru acest ghid.
+Această întrebare ține de dreptul muncii — cât se plătește un angajat care lucrează într-o zi de sărbătoare legală — nu de calculul scadențelor fiscale (declarații, plăți la buget).
 
 ## Temeiul legal
 
 ::: ghid-temei
-Zilele de sărbătoare legală, ca listă de date, sunt confirmate ca fiind reglementate de art.139 din Codul muncii (Legea 53/2003) — dar acest dosar le-a verificat doar ca listă de referință (pentru mutarea scadențelor fiscale care pică într-o astfel de zi), nu ca temei pentru plata muncii prestate în acele zile.
+„(1) Salariaților care lucrează în unitățile prevăzute la art. 140 , precum și la locurile de muncă prevăzute la art. 141 li se asigură compensarea cu timp liber corespunzător în următoarele 30 de zile. (2) În cazul în care, din motive justificate, nu se acordă zile libere, salariații beneficiază, pentru munca prestată în zilele de sărbătoare legală, de un spor la salariul de bază ce nu poate fi mai mic de 100% din salariul de bază corespunzător muncii prestate în programul normal de lucru.”
+— Legea nr. 53/2003 - Codul muncii, art. 142 alin. (1) și (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
-**De semnalat onest**: dosarul de cercetare disponibil pentru acest ghid acoperă funcționalitatea de calcul al scadențelor fiscale (termene de depunere și plată a declarațiilor) — sărbătorile legale apar acolo doar ca *date de referință*, folosite pentru a decide dacă un termen fiscal se mută pe următoarea zi lucrătoare. Dreptul salariatului la spor sau la o zi liberă compensatorie pentru munca prestată într-o sărbătoare legală e reglementat separat, în Codul muncii (zona drepturilor salariale la muncă suplimentară/în zile de repaus) — dar articolul exact și textul lui verbatim nu au fost confirmate în dosarul folosit la acest ghid. Nu inventăm acest citat.
+Regula este, deci, compensarea cu timp liber: salariatul care lucrează într-o zi de sărbătoare legală (în unitățile sanitare și de alimentație publică de la art. 140 sau la locurile de muncă unde activitatea nu poate fi întreruptă, de la art. 141) primește timp liber corespunzător în următoarele 30 de zile. Sporul la salariul de bază, de cel puțin 100% din salariul de bază corespunzător muncii prestate în programul normal de lucru, se acordă numai când, din motive justificate, nu se acordă zile libere. Zilele de sărbătoare legală în care nu se lucrează sunt cele enumerate la art. 139 din Codul muncii.
 
 ## Recomandare
 
-Pentru răspunsul complet la această întrebare (cuantumul sporului, condițiile de acordare, alternativa cu zi liberă compensatorie), verificați direct Codul muncii sau un ghid dedicat legislației muncii — subiectul nu e acoperit, cu sursă verificată, de funcționalitatea de calcul al scadențelor fiscale.
+Sporul de 100% este minimul prevăzut de lege („nu poate fi mai mic de 100%”). Verificați și contractul de muncă aplicabil, care poate prevedea un spor mai mare, și țineți evidența zilelor libere acordate în cele 30 de zile — doar în lipsa lor se datorează sporul.
 
 ## Ce face iConta.eu
 

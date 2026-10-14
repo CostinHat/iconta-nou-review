@@ -2,7 +2,7 @@
 title: "Taxa pe veniturile suplimentare din energie și impozitul pe profit"
 description: "Cum interacționează impozitul minim pe cifra de afaceri (IMCA) cu regulile speciale pentru companiile de distribuție, furnizare și transport de energie electrică și gaze naturale."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -17,7 +17,7 @@ Companiile mari din sectorul energiei nu plătesc doar impozit pe profit calcula
 — Legea 227/2015 (Codul fiscal), art. 18^1 alin. (1), introdus prin Legea 296/2023 (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::
 
-Regula generală (IMCA de 1% din indicatorul VT–Vs–I–A) se aplică și companiilor din energie, dar cu o ajustare specifică prevăzută pentru cele reglementate de ANRE:
+Regula generală (IMCA de 1% din indicatorul VT–Vs–I–A pentru anii fiscali 2024–2025, respectiv 0,5% pentru anul fiscal 2026, potrivit art. 18^1 alin. (16)) se aplică și companiilor din energie, dar cu o ajustare specifică prevăzută pentru cele reglementate de ANRE:
 
 - Pentru contribuabilii care desfășoară **activități de distribuție/furnizare/transport de energie electrică și gaze naturale** și sunt reglementați/licențiați de Autoritatea Națională de Reglementare în Domeniul Energiei, elementele aferente acestor activități nu se cuprind în indicatorii VT, Vs, I și A folosiți la calculul impozitului minim pentru celelalte activități ale grupului.
 - Contribuabilii care desfășoară **exclusiv** activități de distribuție/furnizare/transport de energie electrică și gaze naturale, reglementate de ANRE, nu intră sub incidența acestui articol.

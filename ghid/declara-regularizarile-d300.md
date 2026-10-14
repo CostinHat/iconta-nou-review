@@ -10,19 +10,29 @@ poarta: v1
 
 Regularizările de TVA nu rezultă automat din facturile perioadei — se introduc explicit, printr-un panou manual dedicat, separat de motorul de calcul al decontului. Mai jos, exact ce rânduri acceptă panoul și cum funcționează mecanismul.
 
+## Temeiul legal
+
+::: ghid-temei
+„Datele înscrise incorect într-un decont de taxă se pot corecta prin decontul unei perioade fiscale ulterioare și se vor înscrie la rândurile de regularizări.”
+— Codul fiscal, art. 323 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„În cazul taxei pe valoarea adăugată, corectarea erorilor din deconturile de taxă se realizează potrivit prevederilor Codului fiscal.”
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 105 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+:::
+
 ## Rândurile de regularizare acceptate
 
 Panoul manual acceptă o listă fixă (allow-list) de coduri de rând. Pentru regularizări, cele relevante sunt:
 
-- **R16** — „Regularizări taxă colectată" — se oglindește automat în totalul taxei colectate (rd.17), la generarea decontului.
-- **R30** — „Regularizări taxă dedusă" — intră direct în calculul totalului taxei deduse (rd.32).
-- **R2, R4, R6, R8** — regularizări specifice operațiunilor intracomunitare (livrări bunuri, prestări servicii, achiziții bunuri, achiziții servicii), fiecare cu oglinda ei deductibilă unde e cazul (R19 pentru R6, R21 pentru R8).
+- **rândul 16** — „Regularizări taxă colectată" — se oglindește automat în totalul taxei colectate (rândul 19), la generarea decontului.
+- **rândul 33** — „Regularizări taxă dedusă" — intră direct în calculul totalului taxei deduse (rândul 35).
+- **rândurile 2, 4, 6, 8** — regularizări specifice operațiunilor intracomunitare (livrări bunuri, prestări servicii, achiziții bunuri, achiziții servicii), fiecare cu oglinda ei deductibilă unde e cazul (rândul 21 pentru rândul 6, rândul 23 pentru rândul 8).
 
-Toate aceste coduri apar, în motorul D300, **doar** în formulele de însumare (rd.17/rd.27) — niciodată ca țintă a unei atribuiri automate din facturi. Sunt 100% manuale.
+Toate aceste coduri apar, în motorul D300, **doar** în formulele de însumare (rândurile 19 și 30, totalurile de taxă colectată și deductibilă) — niciodată ca țintă a unei atribuiri automate din facturi. Sunt 100% manuale.
 
 ## Ce NU e o regularizare manuală
 
-Rândurile computate — R17, R27, R28, R31, R32, R33, R34, R37, R40, R41, R42 — nu sunt în allow-list, indiferent de context. Nu pot fi introduse manual prin acest panou, chiar dacă tema pare de „ajustare" sau „regularizare" a unei sume.
+Rândurile computate — 19, 30, 31, 34, 35, 36, 37, 40, 43, 44, 45 — nu sunt în allow-list, indiferent de context. Nu pot fi introduse manual prin acest panou, chiar dacă tema pare de „ajustare" sau „regularizare" a unei sume.
 
 ## Mecanismul tehnic
 
@@ -30,11 +40,11 @@ Rândurile se introduc prin aplicația (an, lună, rând, bază, TVA, descriere)
 
 ## Ce se greșește în practică
 
-- Se încearcă introducerea manuală a unui rând computat (ex. R31, ajustarea pro-rata) crezând că e o formă de „regularizare" — rândul nu apare în lista de rânduri disponibile, pentru că nu e permis manual.
+- Se încearcă introducerea manuală a unui rând computat (ex. rândul 34, ajustarea pro-rata) crezând că e o formă de „regularizare" — rândul nu apare în lista de rânduri disponibile, pentru că nu e permis manual.
 - Se introduce manual o sumă care e deja derivată automat dintr-o factură a perioadei — aplicația respinge cererea (dublă numărare).
 
 ## Ce face iConta.eu
 
-Panoul din ecranul de declarații oferă exact lista rândurilor de regularizare acceptate (R2, R4, R6, R8, R16, R19, R21, R30), cu etichetele oficiale ANAF, validare împotriva dublei numărări cu facturile deja înregistrate și persistență cu paritate garantată între preview și depunere.
+Panoul din ecranul de declarații oferă exact lista rândurilor de regularizare acceptate (rândurile 2, 4, 6, 8, 16, 21, 23 și 33), cu etichetele oficiale ANAF, validare împotriva dublei numărări cu facturile deja înregistrate și persistență cu paritate garantată între preview și depunere.
 
 [iConta.eu](/)

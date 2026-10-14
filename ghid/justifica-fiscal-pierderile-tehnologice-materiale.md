@@ -12,6 +12,16 @@ Materialele consumate/pierdute în procesul de construcție nu intră, din punct
 
 Legea distinge explicit între cele două categorii: scăzămintele/perisabilitățile (lit. d) se justifică "potrivit legii" — adică prin coeficienții stabiliți în HG 831/2004, aplicabili mărfurilor în procesul de comercializare. Pierderile tehnologice (lit. e) se justifică prin "norma de consum proprie" — un standard intern, stabilit și documentat de firmă însăși pentru procesul ei de fabricare sau prestare de servicii, nu printr-un procent fixat de un act normativ. Materialele pierdute/consumate pe un șantier (tăieri, resturi, manipulare în procesul de construcție) sunt, conceptual, mai aproape de pierderi tehnologice (lit. e) — un proces de prestare/producție — decât de perisabilitatea mărfurilor de vânzare (lit. d).
 
+## Temeiul legal
+
+::: ghid-temei
+„(3) Următoarele cheltuieli au deductibilitate limitată: [...] d) scăzămintele, perisabilitățile, pierderile rezultate din manipulare/depozitare, potrivit legii; [...] e) pierderile tehnologice care sunt cuprinse în norma de consum proprie necesară pentru fabricarea unui produs sau prestarea unui serviciu;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 25 alin. (3) lit. d) și e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Se aprobă Normele privind limitele admisibile de perisabilitate la mărfuri în procesul de comercializare, prevăzute în anexa care face parte integrantă din prezenta hotărâre.”
+— HG nr. 831/2004, art. 1 (sursă: [HG nr. 831/2004 pentru aprobarea Normelor privind limitele admisibile de perisabilitate](https://legislatie.just.ro/Public/DetaliiDocument/52623))
+:::
+
 ## Ce se greșește în practică
 
 Greșeala frecventă e aplicarea directă a unui procent din HG 831/2004 (gândit pentru mărfuri comercializate ca atare) la pierderile de materiale de construcție consumate în procesul de execuție. HG 831/2004 vizează explicit "mărfuri în procesul de comercializare", nu materiale de construcție consumate tehnologic. A doua greșeală e lipsa unei norme de consum proprii documentate (deviz, fișă tehnologică, standard intern), fără de care pierderea nu are, de fapt, o bază de justificare la control.

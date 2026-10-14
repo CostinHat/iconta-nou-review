@@ -15,6 +15,16 @@ Practic, două reguli distincte se aplică simultan:
 1. **Cheltuiala cu impozitul pe profit (cont 691)** este nedeductibilă potrivit art.25 alin.(4) lit.a) din Codul fiscal — se adaugă înapoi la baza impozabilă, indiferent cât de firesc pare că un impozit „reduce" rezultatul contabil.
 2. **Sponsorizarea (art.25 alin.(4) lit.i))** are o dublă limită: 20% din impozitul pe profit datorat ȘI 0,75% din cifra de afaceri — se aplică plafonul mai mic dintre cele două, nu doar cel de 20%.
 
+## Temeiul legal
+
+::: ghid-temei
+„Următoarele cheltuieli nu sunt deductibile: a) cheltuielile proprii ale contribuabilului cu impozitul pe profit datorat, inclusiv cele reprezentând diferențe din anii precedenți sau din anul curent, precum și impozitele pe profit sau pe venit plătite în străinătate.”
+— Codul fiscal (Legea nr. 227/2015), art. 25 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„i) cheltuielile de sponsorizare și/sau mecenat, acordate potrivit legii; contribuabilii care efectuează sponsorizări și/sau acte de mecenat, potrivit prevederilor Legii nr. 32/1994 privind sponsorizarea, cu modificările și completările ulterioare, și ale Legii bibliotecilor nr. 334/2002, republicată, cu modificările și completările ulterioare, scad sumele aferente din impozitul pe profit datorat la nivelul valorii minime dintre următoarele: [...] 1. valoarea calculată prin aplicarea a 0,75% la cifra de afaceri; [...] 2. valoarea reprezentând 20% din impozitul pe profit datorat.”
+— Codul fiscal (Legea nr. 227/2015), art. 25 alin. (4) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 ## Ce se greșește în practică
 
 Cea mai comună greșeală este omiterea add-back-ului pentru cont 691: contabilul lasă cheltuiala cu impozitul „ca atare" în rulaj, fără s-o reintroducă la rândul de cheltuieli nedeductibile (P23/P34). Impactul nu e teoretic — pe un portofoliu monitorizat (o firmă de test, 2025), omisiunea a redus impozitul declarat cu 2.432 lei, fără niciun semnal vizibil înainte de introducerea gardului automat.

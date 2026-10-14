@@ -2,7 +2,7 @@
 title: Cum verific raportul POS cu extrasul de cont?
 description: Legea cere confruntarea soldurilor din extrasul de cont cu contabilitatea; decontările POS ajung agregat, fără CUI individual pe tranzacție, deci motorul de matching le marchează roșu, iar verificarea contra raportului POS rămâne un pas manual.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,10 +13,14 @@ poarta: v1
 ## Temeiul legal
 
 ::: ghid-temei
-**Articolul 6 (1)** Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ.
+„Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ.”
+— Legea contabilității nr. 82/1991, art. 6 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 
-**29. - (2)** Disponibilitățile aflate în conturi la bănci [...] se inventariază prin confruntarea soldurilor din extrasele de cont emise de acestea cu cele din contabilitatea entității. [...]
+„[...] prin confruntarea soldurilor din extrasele de cont emise de acestea cu cele din contabilitatea [...]”
+— OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii, pct. 29 alin. (2) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
+
+Norma citată privește disponibilitățile aflate în conturi la bănci sau la unitățile Trezoreriei Statului, care se inventariază prin confruntarea soldurilor din extrasele de cont cu cele din contabilitate; extrasele de cont din 31 decembrie sau din ultima zi bancară, puse la dispoziție de bancă, poartă ștampila oficială a acesteia.
 
 ## De ce decontarea POS nu se potrivește automat
 

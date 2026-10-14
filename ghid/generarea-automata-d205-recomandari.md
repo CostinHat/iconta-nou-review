@@ -12,6 +12,16 @@ D205 pentru dividende nu se completează manual într-un formular din interfaț�
 
 Termenul legal de depunere a declarației este ultima zi a lunii februarie a anului curent, pentru anul expirat (OPANAF 179/2022), distinct de termenul de virare a impozitului (25 a lunii, respectiv 25 ianuarie pentru dividendele distribuite dar neplătite).
 
+## Temeiul legal
+
+::: ghid-temei
+„Plătitorii de venituri cu regim de reținere la sursă a impozitelor au obligația să depună o declarație privind calcularea și reținerea impozitului pentru fiecare beneficiar de venit la organul fiscal competent, până în ultima zi a lunii februarie inclusiv a anului curent pentru anul expirat [...]”
+— Legea nr. 227/2015 privind Codul fiscal, art. 132 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Termenul de virare a impozitului este până la data de 25 inclusiv a lunii următoare celei în care se face plata. În cazul dividendelor/câștigurilor obținute ca urmare a deținerii de titluri de participare, distribuite, dar care nu au fost plătite acționarilor/asociaților/investitorilor până la sfârșitul anului în care s-a aprobat distribuirea acestora, impozitul pe dividende/câștig se plătește până la data de 25 ianuarie inclusiv a anului următor distribuirii.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 97 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 ## Ce se greșește în practică
 
 Se generează declarația fără a verifica întâi dacă toate notele contabile relevante pe contul 457 au statutul "validată", sau fără a lua în calcul separat dividendele distribuite dar rămase neplătite la 31 decembrie.

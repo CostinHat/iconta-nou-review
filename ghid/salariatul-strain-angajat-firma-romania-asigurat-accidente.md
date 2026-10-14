@@ -17,6 +17,7 @@ Pentru cabinet, concluzia e simplă. Salariatul străin cu CIM se tratează, din
 ::: ghid-temei
 „(2) Au calitatea de asigurat cetățenii străini sau apatrizii încadrați cu contract individual de muncă, care prestează muncă pentru un angajator român."
 — Legea 346/2002, art. 7 alin. (2) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
+
 „(3) Sunt asimilați persoanelor asigurate cetățenii statelor membre ale UE, SEE și Confederației Elvețiene care prestează muncă pe teritoriul României în baza regulamentelor europene sau acordurilor internaționale privind coordonarea sistemelor de securitate socială nr. 883/2004 și 987/2009, după caz."
 — Legea 346/2002, art. 7 alin. (3) (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::

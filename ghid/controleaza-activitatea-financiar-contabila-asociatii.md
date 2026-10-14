@@ -20,8 +20,10 @@ Pentru contabilul sau administratorul care ține evidența asociației, asta în
 ::: ghid-temei
 „(4) Compartimentele prevăzute la alin. (1) exercită controlul asupra activității financiar-contabile din cadrul asociațiilor de proprietari, din oficiu ori la solicitarea unuia sau mai multor membri ai asociației de proprietari."
 — Legea 196/2018, art. 10 alin. (4) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
+
 „(1) Autoritățile administrației publice locale organizează în cadrul aparatului de specialitate al primarului un compartiment specializat în sprijinirea, îndrumarea și controlul asociațiilor de proprietari."
 — Legea 196/2018, art. 10 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
+
 „b) de către primari sau de împuterniciții acestora sau de către Poliția Locală în cazul faptelor prevăzute la alin. (1) lit. a)-e) , i)-m) și o)-s) ;"
 — Legea 196/2018, art. 102 alin. (4) lit. b) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::

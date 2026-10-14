@@ -2,7 +2,7 @@
 title: "Cum reconciliez D394 cu D300?"
 description: "De ce D300 și D394 nu sunt declarații egale, ce include fiecare și cum verifică practic un contabil coerența dintre ele, folosind reconcilierea internă a D394."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,10 +32,10 @@ Ce rezultă practic pentru o reconciliere corectă:
 
 ## Ce face iConta.eu
 
-iConta.eu **nu are o funcționalitate expusă contabilului de reconciliere „D394 vs. D300"**, dar codul chiar face legătura între cele două declarații, în mai multe locuri. codul leagă direct calculele (funcția `_tva_ded_ai_platite`) ca să calculeze TVA-ul dedus pe facturile cu TVA la încasare achitate în perioadă, refolosind explicit aceeași interogare și aceeași alocare pe cote ca D300 — „sursă unică cu D300", cum spune comentariul din cod. Aplicația filtrează facturile după același nomenclator de status ca D300, ca să nu declare o factură anulată/stornată pe care D300 o exclude. Iar aplicația discută explicit, în docstring, de ce nu compară totalurile cu D300 pe egalitate (D300 colectat ≥ D394 livrări pe cotă, fiindcă D300 e TVA totală și D394 doar subsetul raportabil) — și există și un test dedicat, aplicația, care confruntă TVA pe cotă calculat de D300 cu cel calculat de D394, ca gard de paritate între generatoare.
+iConta.eu **nu are un ecran sau un raport de reconciliere „D394 vs. D300"**, dar cele două declarații pornesc din aceleași date și din aceleași calcule. TVA-ul dedus pe facturile cu TVA la încasare achitate în perioadă intră în D394 calculat exact ca în D300 — pe aceleași facturi și cu aceeași alocare pe cote. Facturile anulate/stornate pe care D300 le exclude sunt excluse și din D394. Aplicația nu cere ca totalurile să fie egale (TVA colectată din D300 ≥ livrările din D394 pe aceeași cotă, fiindcă D300 e TVA totală, iar D394 doar subsetul raportabil), iar concordanța dintre TVA pe cotă din D300 și din D394 este verificată la fiecare actualizare a aplicației.
 
-Ce nu există e o reconciliere **de business**, expusă contabilului la generare, care să verifice că diferența dintre cele două declarații se explică exclusiv prin operațiunile IC excluse din D394 — gardurile din cod sunt interne, pentru dezvoltator, nu un ecran sau un raport pe care contabilul îl vede.
+Ce nu există e o reconciliere **de business**, afișată contabilului la generare, care să verifice că diferența dintre cele două declarații se explică exclusiv prin operațiunile IC excluse din D394 — verificările de concordanță de mai sus sunt interne aplicației, nu un ecran sau un raport pe care contabilul îl vede.
 
-Ce are aplicația, pentru D394 în sine, sunt două garduri independente înainte de depunere: validarea prin **DUKIntegrator** (validatorul oficial ANAF, rulat local) și o **a doua cale de calcul**, care recalculează independent totalurile pe cotă direct din liniile brute ale facturilor și **oprește generarea** dacă diferă de rezultatul generatorului principal. Limitele acestui gard sunt declarate explicit în cod: nu acoperă operațiunile manuale (bonuri/borderouri, azi fără UI proprie) și nu prinde o eroare pe care ambele căi de calcul o fac identic (de exemplu o cotă de TVA tastată greșit o singură dată, pe factură). Reconcilierea propriu-zisă cu D300 — verificarea că diferența dintre cele două declarații se explică exclusiv prin operațiunile IC excluse din D394 — rămâne, azi, o verificare manuală a contabilului.
+Ce are aplicația, pentru D394 în sine, sunt două verificări independente înainte de depunere: validarea prin **DUKIntegrator** (validatorul oficial ANAF, rulat local) și o **a doua cale de calcul**, care recalculează independent totalurile pe cotă direct din liniile brute ale facturilor și **oprește generarea** dacă diferă de rezultatul calculului principal. Această a doua verificare are limite: nu acoperă operațiunile manuale (bonuri/borderouri, azi fără ecran propriu) și nu prinde o eroare pe care ambele căi de calcul o fac identic (de exemplu o cotă de TVA tastată greșit o singură dată, pe factură). Reconcilierea propriu-zisă cu D300 — verificarea că diferența dintre cele două declarații se explică exclusiv prin operațiunile IC excluse din D394 — rămâne, azi, o verificare manuală a contabilului.
 
 [iConta.eu](/)

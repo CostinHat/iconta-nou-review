@@ -2,7 +2,7 @@
 title: "Fonduri europene și impozitul pe profit: cum se tratează"
 description: "Fondurile europene nu sunt scutite de impozitul pe profit standard, dar sunt explicit excluse din baza impozitului minim pe cifra de afaceri (IMCA)."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -15,11 +15,18 @@ O firmă care primește o finanțare europeană nerambursabilă se întreabă fr
 ::: ghid-temei
 „(3) Impozitul minim pe cifra de afaceri se determină astfel: IMCA = 1% x (VT – Vs – I – A), unde indicatorii au următoarea semnificație: [...] V_s - venituri care se scad din veniturile totale [...] reprezentând: [...] (v) veniturile din subvenții; [...]"
 — Legea nr. 227/2015 privind Codul fiscal, art. 18^1 alin. (3) pct. (v) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„(16) Pentru anul fiscal 2026/anul fiscal modificat care începe în anul 2026, cota de impozit din cadrul formulei prevăzute la alin. (3) este 0,5%.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 18^1 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„(17) Prevederile prezentului articol se aplică până la data de 31 decembrie 2026 inclusiv/ultima zi a anului fiscal modificat care se încheie în anul 2027 inclusiv.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 18^1 alin. (17) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Câteva precizări importante despre acest text și despre ce nu spune:
 
 - Art. 18^1 reglementează **impozitul minim pe cifra de afaceri (IMCA)**, un impozit distinct de impozitul pe profit standard de 16%. În calculul bazei acestui impozit minim, veniturile din subvenții — categorie în care intră și fondurile europene nerambursabile — sunt **excluse explicit**.
+- Cota de 1% din formula de la alin. (3) e cea aplicabilă pentru 2024–2025. Pentru anul fiscal 2026, alin. (16) o reduce la **0,5%**, iar potrivit alin. (17) IMCA se aplică până la 31 decembrie 2026 (sau până la sfârșitul anului fiscal modificat care se încheie în 2027).
 - Codul fiscal **nu conține** (în lista de venituri neimpozabile de la art. 15, rezervată cultelor religioase, unităților de învățământ particular, asociațiilor de proprietari și Crucii Roșii) o scutire generală de impozit pe profit standard pentru fondurile europene primite de o firmă obișnuită. Regula generală rămâne: veniturile din subvenții/finanțări nerambursabile intră în calculul rezultatului fiscal obișnuit (art. 19), la fel ca orice alt venit contabil, cu excepția cazurilor speciale enumerate expres de lege.
 - Din perspectivă contabilă (nu direct fiscală), subvențiile pentru investiții se recunosc de regulă eșalonat, pe măsura amortizării activului finanțat — ceea ce influențează *momentul* în care venitul intră în calculul fiscal, nu dacă intră.
 

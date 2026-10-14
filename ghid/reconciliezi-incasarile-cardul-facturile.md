@@ -2,7 +2,7 @@
 title: Cum reconciliezi încasările cu cardul cu facturile
 description: O încasare cu cardul se reconciliază automat dacă ajunge în extrasul bancar ca linie individuală, cu CUI-ul clientului identificabil. O decontare agregată de la un procesator sau POS nu se potrivește automat — rămâne alocare manuală.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,14 +26,14 @@ Legea nu distinge tehnic de plată (transfer, card, numerar depus) — cere doar
 
 ## De ce încasările cu cardul nu se potrivesc mereu automat
 
-Motorul de reconciliere caută, pe fiecare linie de extras, un CUI de partener identificabil în descrierea liniei. Dacă îl găsește, caută apoi o potrivire de sumă (exactă, pe combinație de facturi sau FIFO parțial) pe facturile deschise ale acelui partener — exact ca la orice altă plată.
+La reconcilierea bancară, iConta.eu caută, pe fiecare linie de extras, un CUI de partener identificabil în descrierea liniei. Dacă îl găsește, caută apoi o potrivire de sumă (exactă, pe combinație de facturi sau FIFO parțial) pe facturile deschise ale acelui partener — exact ca la orice altă plată.
 
 Problema apare când suma din extras nu mai corespunde individual unui singur client:
 
-- **Decontare cumulată** — un procesator de plăți sau un terminal POS depune, de regulă zilnic, o singură sumă care acoperă încasările de la mai mulți clienți. Linia din extras nu poartă CUI-ul niciunui client anume, deci motorul o clasifică automat drept nepotrivită („fără CUI în descriere"), oricâte facturi individuale ar acoperi în realitate suma.
+- **Decontare cumulată** — un procesator de plăți sau un terminal POS depune, de regulă zilnic, o singură sumă care acoperă încasările de la mai mulți clienți. Linia din extras nu poartă CUI-ul niciunui client anume, deci aplicația o clasifică automat drept nepotrivită („fără CUI în descriere"), oricâte facturi individuale ar acoperi în realitate suma.
 - **Decontare netă de comision** — dacă procesatorul virează suma minus comisionul reținut, suma din extras nu mai coincide exact cu totalul facturii/facturilor acoperite, așa că nici măcar o potrivire pe CUI individual nu iese exact — linia rămâne pe alocare parțială sau nepotrivită.
 
-Pentru aceste cazuri, în iConta.eu nu există azi un modul dedicat care să despartă automat o decontare agregată în facturile individuale acoperite și să separe comisionul reținut de procesator. Alocarea se face manual, factură cu factură, din picker-ul „Alege facturile", pe baza raportului de tranzacții pus la dispoziție de procesator/bancă.
+Pentru aceste cazuri, iConta.eu nu desparte azi automat o decontare agregată în facturile individuale acoperite și nu separă automat comisionul reținut de procesator. Alocarea se face manual, factură cu factură, cu butonul „Alege facturile" de pe linia din extras, pe baza raportului de tranzacții pus la dispoziție de procesator/bancă.
 
 ## Ce se greșește în practică
 
@@ -43,6 +43,6 @@ Pentru aceste cazuri, în iConta.eu nu există azi un modul dedicat care să des
 
 ## Ce face iConta.eu
 
-Pentru o încasare cu cardul care ajunge în extras ca linie individuală cu CUI vizibil, motorul de matching o tratează identic cu orice altă încasare bancară — potrivire exactă, pe combinație sau FIFO. Pentru decontările agregate de la procesatori de plăți sau terminale POS, iConta.eu nu are azi un parser sau un mecanism automat de despărțire pe facturi individuale și de netare a comisionului — funcționalitatea corespunzătoare din registrul intern de funcționalități este amânată, nu construită. Alocarea rămâne manuală, din picker-ul „Alege facturile", pe baza raportului de tranzacții al procesatorului.
+Pentru o încasare cu cardul care ajunge în extras ca linie individuală cu CUI vizibil, reconcilierea bancară o tratează identic cu orice altă încasare bancară — potrivire exactă, pe combinație sau FIFO. Pentru decontările agregate de la procesatori de plăți sau terminale POS, iConta.eu nu le desparte azi automat pe facturi individuale și nu separă automat comisionul reținut. Alocarea rămâne manuală, cu butonul „Alege facturile" de pe linia din extras, pe baza raportului de tranzacții al procesatorului.
 
 [iConta.eu](/)

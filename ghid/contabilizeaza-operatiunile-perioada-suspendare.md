@@ -2,7 +2,7 @@
 title: Cum se contabilizează operațiunile din perioada de suspendare
 description: Regula contabilă rămâne aceeași și pe perioada de inactivitate temporară — se înregistrează doar operațiunile care chiar au loc, la momentul efectuării lor, pe baza documentului justificativ.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,8 @@ O firmă aflată în inactivitate temporară nu iese din sfera Legii contabilit�
 ## Temeiul legal
 
 ::: ghid-temei
-Legea nr. 82/1991 (Legea contabilității), art. 6 alin. (1) (obligația de a consemna orice operațiune economico-financiară în momentul efectuării ei, pe baza documentului justificativ).
+„Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ.”
+— Legea nr. 82/1991 (Legea contabilității), art. 6 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
 
 Principiul de la art. 6 alin. (1) este general și se aplică indiferent de starea firmei: **orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei**, într-un document care stă la baza înregistrărilor în contabilitate. Nu există o regulă specială care „oprește" contabilitatea pe perioada de suspendare — regula se aplică invers: dacă nu au loc operațiuni, nu există ce să se înregistreze; dacă totuși au loc (de exemplu, comisioane bancare, dobânzi la conturi existente, amortizarea unor mijloace fixe deja înregistrate, plata unor obligații restante din perioada anterioară), acestea se contabilizează normal, la data la care s-au produs.

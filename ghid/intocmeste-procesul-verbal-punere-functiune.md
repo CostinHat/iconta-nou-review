@@ -2,7 +2,7 @@
 title: "Cum se întocmește procesul-verbal de punere în funcțiune?"
 description: "De ce data punerii în funcțiune a unui mijloc fix contează pentru amortizarea fiscală și ce elemente trebuie să conțină documentul justificativ, conform Codului fiscal și normelor financiar-contabile."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Din cele două texte rezultă atât motivul pentru care procesul-verbal conteaz�
 
 ## Ce face iConta.eu
 
-La data acestui ghid, nu am putut confirma din codul aplicației o funcție care să genereze automat procesul-verbal de punere în funcțiune ca document — modulele legate de mijloace fixe gestionează evidența activelor și calculul amortizării pe baza datei de punere în funcțiune introduse de contabil, dar întocmirea și semnarea procesului-verbal ca document justificativ rămân un pas manual, în afara aplicației.
+La data acestui ghid, iConta.eu nu generează automat procesul-verbal de punere în funcțiune ca document — la mijloacele fixe, aplicația ține evidența activelor și calculează amortizarea pe baza datei de punere în funcțiune introduse de contabil, dar întocmirea și semnarea procesului-verbal ca document justificativ rămân un pas manual, în afara aplicației.
 
 [iConta.eu](/)

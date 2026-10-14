@@ -2,7 +2,7 @@
 title: Cum se contabilizează factura Amazon Web Services din UE?
 description: Când AWS facturează dintr-o entitate stabilită în Uniunea Europeană, achiziția e servicii intracomunitare (tip 5) — cu obligații diferite pentru un plătitor și pentru un neplătitor de TVA, plus intrare automată în D390.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -20,7 +20,7 @@ Distincția contează: Secțiunea 4.1 (tip 5) e rezervată explicit prestatorilo
 
 ### Cum se declară, în funcție de statutul TVA
 
-- **Firmă plătitoare de TVA (art. 316):** taxare inversă în D300, rd. 7 (colectat) + rd. 20 (deductibil), operațiune net zero. D301 nu se completează pentru acest profil.
+- **Firmă plătitoare de TVA (art. 316):** taxare inversă în D300, rd. 7 (colectat) + rd. 22 (deductibil), operațiune net zero. D301 nu se completează pentru acest profil.
 - **Firmă neplătitoare de TVA:** D301, secțiunea 4.1 (tip 5), cu obligația de înregistrare specială prin art. 317 înainte de primirea primului serviciu, fără plafon. Operațiunea intră automat și în D390, cu cod S — un neplătitor înregistrat doar prin art. 317 depune, în aceeași lună, ambele declarații.
 
 ### Exemplu de calcul

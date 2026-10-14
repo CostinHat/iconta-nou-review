@@ -22,6 +22,7 @@ Nu. O construcție încă neterminată, înregistrată ca imobilizare corporală
 ::: ghid-temei
 „În înțelesul prezentului titlu, construcțiile sunt cele prevăzute în grupa 1 din Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe."
 — Codul fiscal (Legea 227/2015), art. 497 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „În sensul alin. (1) lit. a) , valoarea netă a construcțiilor reprezintă valoarea evidențiată în soldul debitor al conturilor corespunzătoare construcțiilor din care se scade valoarea contabilă cumulată a amortizării acestora."
 — Codul fiscal (Legea 227/2015), art. 498 alin. (1^2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::

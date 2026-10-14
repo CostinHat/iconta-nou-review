@@ -12,6 +12,13 @@ O factură care sosește în luna următoare livrării nu e neapărat o problem�
 
 Dacă marfa a fost livrată, de exemplu, spre finalul unei luni, iar factura e emisă în prima parte a lunii următoare, exigibilitatea e chiar data facturii — operațiunea intră în declarațiile lunii în care s-a emis factura, nu în luna livrării. Dacă factura nu ajunge deloc până în a 15-a zi a lunii următoare, exigibilitatea se fixează automat la acea dată, indiferent când sosește ulterior documentul.
 
+## Temeiul legal
+
+::: ghid-temei
+„În cazul unei achiziții intracomunitare de bunuri, exigibilitatea taxei intervine la data emiterii facturii prevăzute în legislația altui stat membru la articolul care transpune prevederile art. 222 din Directiva 112 sau, după caz, la data emiterii autofacturii prevăzute la art. 319 alin. (9) ori în cea de-a 15-a zi a lunii următoare celei în care a intervenit faptul generator, dacă nu a fost emisă nicio factură/autofactură până la data respectivă.”
+— Codul fiscal, art. 284 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 ## Ce se greșește în practică
 
 - Se așteaptă factura pentru a decide luna în care se înregistrează operațiunea, fără să se verifice dacă s-a depășit deja a 15-a zi a lunii următoare — moment în care exigibilitatea a intervenit oricum, cu sau fără factură.

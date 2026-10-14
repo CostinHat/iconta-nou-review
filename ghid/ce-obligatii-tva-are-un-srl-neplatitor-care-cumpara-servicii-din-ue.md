@@ -2,7 +2,7 @@
 title: Ce obligații TVA are un SRL neplătitor care cumpără servicii din UE?
 description: Un SRL neplătitor care cumpără servicii de la un furnizor stabilit în UE trebuie să se înregistreze special conform art. 317 înainte de primirea serviciului și să declare taxarea inversă în Secțiunea 4.1 a D301.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,13 +13,17 @@ Un SRL care nu este înregistrat normal în scopuri de TVA (nu depășește plaf
 ## Temeiul legal
 
 ::: ghid-temei
-**Articolul 307 alin. (2)**: Taxa este datorată de orice persoană impozabilă [...] care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]
+„Taxa este datorată de orice persoană impozabilă, inclusiv de către persoana juridică neimpozabilă înregistrată în scopuri de TVA conform art. 316 sau 317, care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]”
+— Codul fiscal (Legea 227/2015), art. 307 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Articolul 317 alin. (1) lit. c)**: [...] persoana impozabilă [...] dacă primesc de la un prestator, persoană impozabilă stabilită în alt stat membru, servicii pentru care sunt obligate la plata taxei în România conform art. 307 alin. (2), **înaintea primirii serviciilor respective**.
+„Are obligația să solicite înregistrarea în scopuri de TVA, conform prezentului articol: [...] c) persoana impozabilă care își are stabilit sediul activității economice în România și persoana impozabilă care aplică regimul special de scutire prevăzut la art. 310^2, care nu sunt înregistrate și nu au obligația să se înregistreze conform art. 316 [...], dacă primesc de la un prestator, persoană impozabilă stabilită în alt stat membru, servicii pentru care sunt obligate la plata taxei în România conform art. 307 alin. (2), înaintea primirii serviciilor respective;”
+— Codul fiscal (Legea 227/2015), art. 317 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Alin. (10)**: Înregistrarea în scopuri de TVA conform prezentului articol nu conferă persoanei calitatea de persoană înregistrată normal în scopuri de TVA, acest cod fiind utilizat numai pentru operațiunile prevăzute la alin. (1)-(2^1).
+„Înregistrarea în scopuri de TVA conform prezentului articol nu conferă persoanei calitatea de persoană înregistrată normal în scopuri de TVA, acest cod fiind utilizat numai pentru operațiunile prevăzute la alin. (1)-(2^1).”
+— Codul fiscal (Legea 227/2015), art. 317 alin. (10) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Articolul 324 alin. (2)**: [...] se depune până la data de 25 inclusiv a lunii următoare celei în care ia naștere exigibilitatea operațiunilor menționate la alin. (1). Decontul special de taxă trebuie depus numai pentru perioadele în care ia naștere exigibilitatea taxei.
+„Decontul special de taxă trebuie întocmit potrivit modelului stabilit prin ordin al președintelui A.N.A.F. și se depune până la data de 25 inclusiv a lunii următoare celei în care ia naștere exigibilitatea operațiunilor menționate la alin. (1). Decontul special de taxă trebuie depus numai pentru perioadele în care ia naștere exigibilitatea taxei.”
+— Codul fiscal (Legea 227/2015), art. 324 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Cele două obligații: înregistrarea și declararea

@@ -4,7 +4,7 @@
 de test; producția în tranzacție anulată), XML normalizat + SHA” și „Amprentele «după» = «înainte»”).
 
 Ce se amprentează: fiecare tip din `declaratii_api.DECLARATII` + situațiile financiare, pe fiecare perioadă a firmei în care există date
-(lunile cu note sau facturi — `cifre_referinta._luni_cu_date`), la periodicitatea tipului (setul TVA-decont după `tip_decont`-ul firmei,
+(lunile cu note validate — `cifre_referinta._luni_cu_date`, R36), la periodicitatea tipului (setul TVA-decont după `tip_decont`-ul firmei,
 ca selectorul). Generarea trece pe DRUMUL APLICAȚIEI (`declaratii_api.genereaza`), în sesiune READ-ONLY, iar fiecare generare se
 anulează. Un refuz e și el o amprentă: aceeași cerere trebuie refuzată la fel și după.
 

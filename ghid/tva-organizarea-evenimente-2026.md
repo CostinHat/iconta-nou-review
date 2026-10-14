@@ -2,7 +2,7 @@
 title: "TVA la organizarea de evenimente în 2026"
 description: "Serviciile legate de acordarea accesului la evenimente culturale, artistice, sportive sau similare (târguri, expoziții) urmează o regulă specială de loc al prestării TVA — locul unde se desfășoară efectiv evenimentul, nu locul beneficiarului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Pentru cele mai multe servicii B2B, TVA se impozitează unde e stabilit clientul
 
 ## Ce face iConta.eu
 
-Pentru servicii intracomunitare B2B, iConta.eu clasifică prestările către persoane impozabile din UE conform regulii generale a locului prestării (art. 278 alin. (2) — sediul beneficiarului), reflectată în motorul de raportare D300/D390, care reclasifică automat astfel de prestări ca servicii, declarate la rândurile 3 și 3.1 din D390, cu observația explicită „locul prestării în afară României, 0%". Aplicația nu are însă nicio logică dedicată excepției de la art. 278 alin. (5) lit. f) și alin. (6) lit. b) pentru serviciile legate de evenimente — nu există în cod niciun marcaj de tipul „acces la eveniment" sau „loc de desfășurare a evenimentului" care să direcționeze automat aceste operațiuni spre regula specială. O firmă care vinde acces la un eveniment din România unei firme din alt stat membru trebuie să aplice manual regula corectă (loc = România, TVA românească), fără niciun sprijin din partea aplicației la acest pas de clasificare.
+Pentru servicii intracomunitare B2B, iConta.eu clasifică prestările către persoane impozabile din UE conform regulii generale a locului prestării (art. 278 alin. (2) — sediul beneficiarului), reflectată în motorul de raportare D300/D390, care reclasifică automat astfel de prestări ca servicii, declarate la rândurile 3 și 3.1 din D300, cu observația explicită „locul prestării în afară României, 0%". Aplicația nu are însă nicio logică dedicată excepției de la art. 278 alin. (5) lit. f) și alin. (6) lit. b) pentru serviciile legate de evenimente — nu există în cod niciun marcaj de tipul „acces la eveniment" sau „loc de desfășurare a evenimentului" care să direcționeze automat aceste operațiuni spre regula specială. O firmă care vinde acces la un eveniment din România unei firme din alt stat membru trebuie să aplice manual regula corectă (loc = România, TVA românească), fără niciun sprijin din partea aplicației la acest pas de clasificare.
 
 [iConta.eu](/)

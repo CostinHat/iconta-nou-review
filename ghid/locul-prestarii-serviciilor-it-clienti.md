@@ -12,6 +12,16 @@ Titlul iese din sfera strict intracomunitară (clienți din afara UE), dar regul
 
 Regula generală citată în cercetare — locul prestării la beneficiar — nu condiționează aplicarea ei de apartenența clientului la UE. Un serviciu IT prestat unei firme din afara UE, cu locul prestării la sediul acesteia, rămâne neimpozabil în România pe aceleași principii. Diferența practică: nu există cod de TVA de verificat în VIES (sistemul acoperă doar statele membre + Irlanda de Nord), iar operațiunea nu se declară în D390 — declarația recapitulativă intracomunitară.
 
+## Temeiul legal
+
+::: ghid-temei
+„(2) Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„(1) Orice persoană impozabilă înregistrată în scopuri de TVA conform art. 316 sau 317 trebuie să întocmească și să depună la organele fiscale competente o declarație recapitulativă în care menționează: [...] c) prestările de servicii prevăzute la art. 278 alin. (2) efectuate în beneficiul unor persoane impozabile nestabilite în România, dar stabilite în Uniunea Europeană, altele decât cele scutite de TVA în statul membru în care acestea sunt impozabile, pentru care exigibilitatea de taxă a luat naștere în luna calendaristică respectivă;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 325 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 ## Ce se greșește în practică
 
 - Se aplică mecanismul specific intracomunitar (verificare VIES, cod D390) și pentru clienți din afara UE, deși acel mecanism e construit exclusiv pentru statele membre.

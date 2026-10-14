@@ -34,6 +34,6 @@ Deci întrebarea „lunar sau anual" nu are un răspuns unic pentru tot D406 —
 
 ## Ce face iConta.eu
 
-Motorul secțiunii Active calculează amortizarea pe cele patru metode fiscale și generează fragmentul XML `<Assets>` din registrul de mijloace fixe, la cererea unui an anume — coerent cu regimul anual descris mai sus, nu cu un ciclu lunar. Ruta care întoarce acest calcul (aplicația) e funcțională, dar la data acestui ghid întoarce doar fragmentul `<Assets>`, nu un fișier `<AuditFile>` complet, depunibil ca atare, și nu are încă un ecran dedicat în interfață — comentariul din cod marchează explicit acest lucru („fără UI încă, păstrat deliberat"). Generatorul fișierului complet există la nivel de motor, probat valid pe validatorul oficial DUK, dar nu e conectat azi la nicio rută accesibilă din aplicație.
+Pentru secțiunea Active, iConta.eu calculează amortizarea pe cele patru metode fiscale și întocmește partea `<Assets>` a fișierului din registrul de mijloace fixe, pentru un an anume — coerent cu regimul anual descris mai sus, nu cu un ciclu lunar. La data acestui ghid, însă, calculul nu are încă un ecran dedicat și produce doar partea `<Assets>`, nu un fișier `<AuditFile>` complet, depunibil ca atare. Fișierul complet a fost probat valid pe validatorul oficial DUK, dar nu poate fi obținut azi din aplicație — întocmirea și depunerea secțiunii Active rămân, deocamdată, în sarcina contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Registrul unic de control: cine îl ține, unde se cumpără și ce se scrie în el
 description: Se ține câte unul pentru fiecare sediu, se completează de organele de control și dovedește ce s-a verificat deja. Lipsa lui e contravenție separată.
 published: 2026-08-15
-modified: 2026-08-15
+modified: 2026-10-13
 ---
 
 # Registrul unic de control: cine îl ține, unde se cumpără și ce se scrie în el
@@ -34,15 +34,11 @@ Registrul se completează de **organele de control**, nu de firmă. Fiecare echi
 
 Rolul contribuabilului e să-l prezinte la cerere și să-l păstreze la sediul unde e ținut.
 
-::: ghid-temei
-**Legea nr. 252/2003** privind registrul unic de control.
+Pe scurt, ce prevede legea privind registrul unic de control (rezumat, nu citat):
 
-**Art. 1 alin. (1):** contribuabilii persoane juridice, înregistrați la registrul comerțului, autorizați potrivit legii, au obligația să țină registrul unic de control.
-
-**Art. 3:** registrul unic de control se ține la sediul social și la fiecare sediu secundar pentru care s-au eliberat avize sau autorizații.
-
-**Art. 8:** neachiziționarea registrului în termenul prevăzut, precum și neprezentarea lui la solicitarea organelor de control, constituie contravenție și se sancționează cu amendă.
-:::
+- îl țin contribuabilii persoane juridice înregistrați la registrul comerțului și autorizați potrivit legii;
+- se ține la sediul social și la fiecare sediu secundar pentru care s-au eliberat avize sau autorizații;
+- neachiziționarea registrului în termenul prevăzut și neprezentarea lui la solicitarea organelor de control sunt contravenții și se sancționează cu amendă.
 
 ## De ce contează mai mult decât pare
 

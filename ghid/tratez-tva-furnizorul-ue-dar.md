@@ -10,6 +10,16 @@ poarta: v1
 
 Naționalitatea furnizorului nu decide regimul de TVA — decide traseul fizic al bunurilor. Dacă marfa era deja în România când ai cumpărat-o, nu a existat achiziție intracomunitară, oricât de „european” ar arăta furnizorul pe factură.
 
+## Temeiul legal
+
+::: ghid-temei
+„Se consideră achiziție intracomunitară de bunuri obținerea dreptului de a dispune, ca și un proprietar, de bunuri mobile corporale expediate sau transportate la destinația indicată de cumpărător, de către furnizor, de către cumpărător sau de către altă persoană, în contul furnizorului sau al cumpărătorului, către un stat membru, altul decât cel de plecare a transportului sau de expediere a bunurilor.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 273 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Se consideră a fi locul livrării de bunuri: a) locul unde se găsesc bunurile în momentul când începe expedierea sau transportul, în cazul bunurilor care sunt expediate sau transportate de furnizor, de cumpărător sau de un terț. [...] c) locul unde se găsesc bunurile atunci când sunt puse la dispoziția cumpărătorului, în cazul bunurilor care nu sunt expediate sau transportate;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 275 alin. (1) lit. a) și c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 O achiziție intracomunitară presupune, prin definiție, o livrare intracomunitară „de partea cealaltă” — adică un transport de bunuri dintr-un stat membru către România. Dacă bunurile se aflau deja pe teritoriul românesc (de exemplu, furnizorul avea deja stoc aici), nu există acest transport, deci nu există nici achiziție intracomunitară — indiferent că furnizorul e o firmă înregistrată în alt stat membru.
 
 ## Ce se greșește în practică

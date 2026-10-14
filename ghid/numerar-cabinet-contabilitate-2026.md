@@ -2,7 +2,7 @@
 title: Numerar la un cabinet de contabilitate 2026
 description: Operațiunile în numerar ale unui cabinet de contabilitate se supun acelorași reguli generale de plafonare a încasărilor și plăților în numerar ca orice altă entitate - un subiect distinct de suspendarea activității firmelor client.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,11 @@ Acest subiect nu are legătură cu suspendarea activității unei firme (tema ce
 ## Temeiul legal
 
 ::: ghid-temei
-Legea nr. 70/2015 privind limitarea operațiunilor cu numerar, actualizată prin Legea nr. 239/2025.
+„(1) Prin excepție de la prevederile art. 1 alin. (1) se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții: a) încasări de la persoanele prevăzute la art. 1 alin. (1) , în limita unui plafon zilnic de 5.000 lei de la o persoană; [...] c) plăți către persoanele prevăzute la art. 1 alin. (1) , în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi;”
+— Legea nr. 70/2015, art. 3 alin. (1) lit. a) și c) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
+
+„(1) Operațiunile de încasări și plăți în numerar efectuate între persoanele prevăzute la art. 1 alin. (1) și persoane fizice, reprezentând contravaloarea unor livrări ori achiziții de bunuri sau a unor prestări de servicii, dividende, cesiuni de creanțe sau alte drepturi, se efectuează cu încadrarea în plafonul zilnic de 10.000 lei către/de la o persoană.”
+— Legea nr. 70/2015, art. 4 alin. (1) (sursă: [Legea nr. 70/2015 pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar](https://legislatie.just.ro/Public/DetaliiDocument/167088))
 :::
 
 Legea 70/2015 stabilește reguli de plafonare pentru operațiunile de încasări și plăți în numerar efectuate de persoane juridice și alte entități, inclusiv cabinetele de contabilitate — atât în relația cu clienții, cât și cu furnizorii. Legea a fost actualizată prin Legea nr. 239/2025, cu aplicare inclusiv pentru anul 2026.

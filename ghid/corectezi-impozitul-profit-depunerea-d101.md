@@ -8,21 +8,28 @@ poarta: v1
 
 # Cum corectezi impozitul pe profit după depunerea D101?
 
+Corectarea impozitului pe profit deja declarat prin D101 se face prin depunerea unei declarații rectificative, pe același model de formular 101, cu „X” în căsuța „Declarație rectificativă”. Instrucțiunile de completare ale formularului prevăd și limita: după anularea rezervei verificării ulterioare, declarația nu mai poate fi corectată (cu excepțiile din Codul de procedură fiscală).
+
 ## Temeiul legal
 
 ::: ghid-temei
-Art.42 alin.(1) CF (modificat prin OUG 8/2026 art.6 pct.12, MO 147/25.02.2026, aplicabil începând cu anul fiscal 2026): "Contribuabilii au obligația să depună o declarație anuală privind impozitul pe profit până la data de 25 iunie inclusiv a anului următor..."
-— Legea 227/2015 (Codul fiscal) consolidată, [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282), documentația aplicației.
-:::
+„(1) Contribuabilii au obligația să depună o declarație anuală privind impozitul pe profit până la data de 25 iunie inclusiv a anului următor [...]”
+— Legea nr. 227/2015 privind Codul fiscal, art. 42 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-Corectarea impozitului pe profit deja declarat prin D101 presupune, în principiu, depunerea unei declarații rectificative. Sursele verificate în acest dosar nu conțin un temei normativ local dedicat procedurii de rectificare a D101 — doar flagul `d_rec` din structura XML oficială confirmă că formularul o prevede.
+„3. În cazul în care plătitorul corectează declaraţia depusă, declaraţia rectificativă se întocmeşte pe acelaşi model de formular, înscriind "X" în spaţiul special prevăzut în acest scop.”
+— OPANAF 206/2025, instrucțiunile de completare a formularului 101 (sursă: [OPANAF nr. 206/2025 pentru aprobarea formularelor 101](https://legislatie.just.ro/Public/DetaliiDocument/294776))
+
+„Declaraţia nu poate fi depusă şi nu poate fi corectată după anularea rezervei verificării ulterioare, cu excepţiile prevăzute la art. 105 alin. (6) din Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi completările ulterioare.”
+— OPANAF 206/2025, instrucțiunile de completare a formularului 101 (sursă: [OPANAF nr. 206/2025 pentru aprobarea formularelor 101](https://legislatie.just.ro/Public/DetaliiDocument/294776))
+:::
 
 ## Ce se greșește în practică
 
-Se greșește prin amânarea corectării, sub asumpția că D101 „nu se poate rectifica” — formularul oficial o permite; ce lipsește e suportul din aplicație pentru a o genera automat.
+- Se amână corectarea, sub asumpția că D101 „nu se poate rectifica” — formularul oficial o permite; ce lipsește e suportul din aplicație pentru a o genera automat.
+- Se caută o opțiune de rectificare direct în ecranul D101 al aplicației, care astăzi nu există.
 
 ## Ce face iConta.eu
 
-iConta.eu nu generează în prezent o D101 rectificativă din interfață: toate flagurile de stare din structura XML (`d_rec`, `d_reg`, `d_reglem`, `d_anulare`, `d_succ`, `d_prof`, `d_alte`) sunt fixate la `"0"` direct în cod („generarea XML-ului declarației (Declarații)”, aplicația), fără niciun parametru de intrare care să le poată seta. Modulul de rectificative din aplicație (D710) acoperă doar obligațiile declarate prin D100 (cod 121 micro / cod 103 profit trimestrial), nu și D101. Corectarea unei D101 deja depuse trebuie făcută astăzi direct la ANAF, în afara aplicației; nici sursele legale locale nu conțin un act normativ dedicat procedurii de rectificare a D101 (spre deosebire de D710, unde OPANAF 649/2025 e citat explicit), deși structura XML oficială (structura D101 publicată de ANAF) confirmă existența flagului `d_rec` la nivel de formular.
+iConta.eu nu generează în prezent o D101 rectificativă: ecranul D101 produce numai declarația inițială — căsuța „Declarație rectificativă” și celelalte căsuțe care marchează tipul declarației rămân nebifate și nu există o opțiune care să le bifeze. Modulul de rectificative din aplicație (D710) acoperă doar obligațiile declarate prin D100 (cod 121 micro / cod 103 profit trimestrial), nu și D101. Corectarea unei D101 deja depuse trebuie făcută astăzi direct la ANAF, în afara aplicației, pe formularul 101 completat ca declarație rectificativă.
 
 [iConta.eu](/)

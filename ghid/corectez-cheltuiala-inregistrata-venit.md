@@ -2,7 +2,7 @@
 title: Cum corectez o cheltuială înregistrată ca venit?
 description: O cheltuială înregistrată din greșeală pe un cont de venit se corectează ca orice cont greșit din iConta.eu — editare de linie cât timp nota e ciornă, notă de stornare dacă a fost deja validată. Nu există o distincție tehnică separată între „cont greșit" și „cheltuială confundată cu venit".
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,7 +24,7 @@ O confuzie cheltuială/venit nu afectează doar un cont izolat — schimbă dire
 
 - **Nota e ciornă** → linia cu contul de venit greșit se înlocuiește direct cu contul corect de cheltuială (clasa 6), păstrând suma corectă. E o editare de linie obișnuită, condiționată doar ca noul cont să existe în planul firmei.
 - **Nota e validată** → nu se editează. Corecția se face printr-o notă nouă: se stornează suma de pe contul de venit greșit (semn opus) și se înregistrează corect pe contul de cheltuială potrivit, în exercițiul curent — pe seama contului de profit și pierdere, conform pct. 67 alin. (1).
-- Dacă eroarea provine dintr-o notă de contare a unei facturi deja validate, corecția trece prin stornarea facturii, nu prin editarea directă a notei.
+- Dacă eroarea provine dintr-o notă de contare a unei facturi (de exemplu o factură primită contată greșit) deja validate, corecția trece prin stornarea facturii, nu prin editarea directă a notei.
 - Dacă eroarea a fost descoperită după închiderea exercițiului în care s-a produs (situații financiare deja depuse), tratamentul diferă după cât de semnificativă e suma — regulă generală de corectare a erorilor din exerciții precedente, nu o excepție pentru cheltuială/venit.
 - Luna închisă blochează editarea ciornei sau introducerea notei de stornare, la fel ca la orice altă corecție.
 
@@ -33,6 +33,7 @@ O confuzie cheltuială/venit nu afectează doar un cont izolat — schimbă dire
 - Se lasă operațiunea „așa cum e" pentru că suma e corectă, ignorând că e pe cont de venit în loc de cheltuială — asta modifică direct rezultatul din contul de profit și pierdere, nu doar aspectul evidenței.
 - Se editează o notă deja validată, deși aplicația refuză explicit — corecția reală necesită o notă nouă de stornare.
 - Se corectează doar contul, fără să se verifice dacă eroarea aparține exercițiului curent sau unuia deja închis — de asta depinde dacă efectul merge pe rezultatul curent sau pe rezultatul reportat.
+- Se schimbă doar contul de pe o linie, fără să se verifice și sensul (debit/credit) și linia opusă a notei — o corecție manuală făcută pe jumătate poate lăsa nota dezechilibrată.
 
 ## Ce face iConta.eu
 

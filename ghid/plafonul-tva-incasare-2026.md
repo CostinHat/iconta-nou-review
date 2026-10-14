@@ -20,7 +20,7 @@ Anul 2026 e un an cu două plafoane pentru TVA la încasare, nu unul singur — 
 
 Pentru perioada **1 ianuarie - 29 februarie 2026**, plafonul rămas în vigoare a fost cel introdus de Legea 296/2020, valabil din 2021: 4.500.000 lei. Din **1 martie 2026**, odată cu intrarea în vigoare a OUG 8/2026, plafonul a crescut la 5.000.000 lei, valabil până la 31 decembrie 2026. Din 1 ianuarie 2027, plafonul va urca la 5.500.000 lei.
 
-Dosarul de cercetare al acestei funcționalități semnalează și o regulă tranzitorie: firmele care depășiseră 4.500.000 lei, dar nu ajunseseră la 5.000.000 lei, până în ianuarie 2026, nu au fost radiate din sistem odată cu schimbarea plafonului; cele aflate în aceeași situație în februarie 2026 nu au avut obligația unei notificări noi. Această regulă tranzitorie e prevăzută la art. 9 din OUG 8/2026.
+OUG 8/2026 prevede, la art. 9, și o regulă tranzitorie: firmele care aplicau TVA la încasare și au depășit în cursul lunii ianuarie 2026 plafonul de 4.500.000 lei, fără să depășească 5.000.000 lei, nu au fost radiate din Registrul persoanelor impozabile care aplică sistemul TVA la încasare; cele aflate în aceeași situație în februarie 2026 nu au avut obligația să depună notificarea prevăzută la art. 324 alin. (14) din Codul fiscal și nici nu au fost radiate.
 
 ## Ce se greșește în practică
 
@@ -30,6 +30,6 @@ Dosarul de cercetare al acestei funcționalități semnalează și o regulă tra
 
 ## Ce face iConta.eu
 
-Funcția „plafonul la dată” din aplicație e period-aware — pe baza tabelului registrul de cote al aplicației["plafonul TVA la încasare"], întoarce automat plafonul corect pentru orice dată de referință: 4.500.000 lei înainte de 1 martie 2026, 5.000.000 lei între 1 martie și 31 decembrie 2026, 5.500.000 lei de la 1 ianuarie 2027.
+iConta.eu păstrează plafonul TVA la încasare pe perioade de valabilitate, astfel încât pentru orice dată de referință se folosește plafonul în vigoare la acea dată: 4.500.000 lei înainte de 1 martie 2026, 5.000.000 lei între 1 martie și 31 decembrie 2026, 5.500.000 lei de la 1 ianuarie 2027. Aplicația nu compară automat cifra de afaceri a firmei cu plafonul: urmărirea depășirii și notificarea la organul fiscal rămân în sarcina contabilului.
 
 [iConta.eu](/)

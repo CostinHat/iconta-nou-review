@@ -2,7 +2,7 @@
 title: "Înființare SRL cu asociați străini: documente"
 description: Dosarul de înmatriculare al unui SRL cu asociați străini (documente traduse/apostilate, împuterniciri) e o etapă juridico-administrativă, separată de gestiunea contabilă a decontărilor cu asociații care începe după înființare.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -10,7 +10,7 @@ poarta: v1
 
 Ca și în cazul unui SRL cu asociați români, **înființarea firmei e o etapă notarială și administrativă**, care precede orice operațiune contabilă. Când unul sau mai mulți asociați sunt cetățeni sau firme străine, la dosarul standard de înmatriculare se adaugă de regulă documente suplimentare (acte de identitate/înregistrare traduse și, după caz, apostilate sau supralegalizate, eventual împuterniciri pentru semnarea actelor în România) — dar lista exactă și cerințele curente trebuie verificate direct la Registrul Comerțului sau cu un notar/avocat specializat.
 
-Acest subiect nu face parte din dosarul de cercetare pe care se bazează acest ghid și nu corespunde niciunei funcționalități din iConta.eu — aplicația intervine abia după ce firma există și are asociați înregistrați.
+Acest ghid nu detaliază pașii de înmatriculare, iar subiectul nu corespunde niciunei funcționalități din iConta.eu — aplicația intervine abia după ce firma există și are asociați înregistrați.
 
 ## Temeiul legal
 

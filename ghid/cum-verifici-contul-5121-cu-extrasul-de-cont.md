@@ -13,8 +13,11 @@ Verificarea contului 5121 față de extrasul bancar înseamnă, în esență, s�
 ## Temeiul legal
 
 ::: ghid-temei
-**29. - (2)** Disponibilitățile aflate în conturi la bănci sau la unitățile Trezoreriei Statului se inventariază prin confruntarea soldurilor din extrasele de cont emise de acestea cu cele din contabilitatea entității. În acest scop, extrasele de cont din ziua de 31 decembrie sau din ultima zi bancară, puse la dispoziție de instituțiile de credit și unitățile Trezoreriei Statului, vor purta ștampila oficială a acestora.
+„[...] prin confruntarea soldurilor din extrasele de cont emise de acestea cu cele din contabilitatea [...]”
+— OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii, pct. 29 alin. (2) (sursă: [OMFP nr. 2861/2009 pentru aprobarea Normelor privind organizarea și efectuarea inventarierii](https://legislatie.just.ro/Public/DetaliiDocument/112430))
 :::
+
+Norma citată privește disponibilitățile aflate în conturi la bănci sau la unitățile Trezoreriei Statului, care se inventariază prin confruntarea soldurilor din extrasele de cont cu cele din contabilitate; extrasele de cont din 31 decembrie sau din ultima zi bancară, puse la dispoziție de bancă, poartă ștampila oficială a acesteia.
 
 ## Pașii practici de verificare
 

@@ -703,7 +703,7 @@ GH-00701,Cum se înregistrează impozitul pe profit în contabilitate?,profit,pu
 GH-00702,Care este monografia contabilă pentru impozitul pe profit?,profit,publicat,,nu,monografia-contabila-impozitul-profit,
 GH-00703,În ce cont se înregistrează impozitul pe profit?,profit,publicat,,nu,cont-inregistreaza-impozitul-profit,
 GH-00704,Cum se înregistrează impozitul pe profit trimestrial?,profit,publicat,,nu,inregistreaza-impozitul-profit-trimestrial,
-GH-00705,Cum se înregistrează regularizarea anuală a impozitului pe profit?,profit,publicat,,nu,inregistreaza-regularizarea-anuala-impozitului-profit,
+GH-00705,Cum se înregistrează regularizarea anuală a impozitului pe profit?,profit,publicat,,nu,regularizarea-anuala-impozitului-profit,
 GH-00706,Cum se calculează impozitul pe profit trimestrial în 2026?,profit,publicat,,nu,impozitul-pe-profit-trimestrial-2026,
 GH-00707,Care sunt termenele de plată pentru impozitul pe profit în 2026?,profit,candidat,,nu,,
 GH-00708,Ce declarație se depune trimestrial pentru impozitul pe profit?,profit,publicat,,nu,declaratie-depune-trimestrial-impozitul-profit,
@@ -819,11 +819,11 @@ GH-00817,Cheltuielile cu energia electrică sunt deductibile?,altele,publicat,,n
 GH-00818,Cheltuielile cu telefonul sunt deductibile la impozitul pe profit?,profit,publicat,,nu,cheltuielile-telefonul-deductibile-impozitul-profit,
 GH-00819,Abonamentul de internet este deductibil fiscal?,altele,candidat,,nu,,
 GH-00820,Telefonul mobil cumpărat pe firmă este deductibil?,altele,publicat,,nu,telefonul-mobil-cumparat-firma-deductibil,
-GH-00821,Laptopul cumpărat pe firmă este cheltuială sau mijloc fix?,mijloace_fixe,publicat,,nu,laptop-cheltuiala-sau-mijloc-fix,laptopul-cumparat-firma-cheltuiala-mijloc
+GH-00821,Laptopul cumpărat pe firmă este cheltuială sau mijloc fix?,mijloace_fixe,publicat,,nu,laptop-cheltuiala-sau-mijloc-fix,laptop-cheltuiala-sau-mijloc-fix
 GH-00822,Mobilierul de birou este cheltuială deductibilă sau se amortizează?,profit,publicat,,nu,mobilierul-birou-cheltuiala-deductibila-amortizeaza,
 GH-00823,Aerul condiționat cumpărat pentru sediu se amortizează?,mijloace_fixe,publicat,,nu,aerul-conditionat-cumparat-sediu-amortizeaza,
 GH-00824,Renovarea sediului este cheltuială sau investiție?,altele,candidat,,nu,,
-GH-00825,Cum se amortizează investițiile făcute într-un spațiu închiriat?,mijloace_fixe,publicat,,nu,amortizeaza-investitiile-facute-spatiu-inchiriat,
+GH-00825,Cum se amortizează investițiile făcute într-un spațiu închiriat?,mijloace_fixe,publicat,,nu,amortizeaza-investitiile-spatiu-inchiriat,
 GH-00826,Ce se întâmplă cu investiția într-un spațiu închiriat când încetează contractul?,altele,candidat,,nu,,
 GH-00827,Cheltuielile cu reparațiile sunt deductibile integral?,altele,publicat,,nu,cheltuielile-reparatiile-deductibile-integral,
 GH-00828,Care este diferența fiscală dintre reparație și modernizare?,greseli,asemanator,,nu,,diferenta-fiscala-dintre-sponsorizare-donatie
@@ -915,7 +915,7 @@ GH-00913,Cum se tratează fiscal un mijloc fix distrus?,mijloace_fixe,publicat,,
 GH-00914,Cum se tratează amortizarea unui mijloc fix trecut în conservare?,mijloace_fixe,candidat,,nu,,
 GH-00915,Se mai calculează amortizare pentru un mijloc fix neutilizat?,mijloace_fixe,candidat,,nu,,
 GH-00916,Cum se reia amortizarea după ieșirea din conservare?,mijloace_fixe,candidat,,nu,,
-GH-00917,Terenurile se amortizează fiscal?,mijloace_fixe,publicat,,nu,terenurile-amortizeaza-fiscal,
+GH-00917,Terenurile se amortizează fiscal?,mijloace_fixe,publicat,,nu,terenurile-amortizeaza-contabil-fiscal,
 GH-00918,Clădirile se amortizează fiscal?,mijloace_fixe,publicat,,nu,cladirile-amortizeaza-fiscal,
 GH-00919,Cum se amortizează o clădire cumpărată de firmă?,mijloace_fixe,publicat,,nu,amortizeaza-cladire-cumparata-firma-2,
 GH-00920,Cum se amortizează sediul social aflat într-un apartament?,mijloace_fixe,publicat,,nu,amortizeaza-sediul-social-aflat-apartament,
@@ -1548,7 +1548,7 @@ GH-01546,Cum corectezi CNP-ul greșit al unui salariat în D112?,salarizare,cand
 GH-01547,Cum corectezi salariul brut declarat greșit în D112?,salarizare,publicat,,nu,corectezi-salariul-brut-declarat-gresit,
 GH-01548,Cum corectezi CAS declarat greșit în D112?,salarizare,asemanator,,nu,,corectezi-salariul-brut-declarat-gresit
 GH-01549,Cum corectezi CASS declarat greșit în D112?,salarizare,asemanator,,nu,,corectezi-salariul-brut-declarat-gresit
-GH-01550,Cum corectezi impozitul pe salariu declarat greșit în D112?,salarizare,asemanator,,nu,,corectezi-impozitul-dividende-declarat-gresit
+GH-01550,Cum corectezi impozitul pe salariu declarat greșit în D112?,salarizare,asemanator,,nu,,corectez-impozit-dividende-gresit-d205
 GH-01551,Cum corectezi un concediu medical declarat greșit în D112?,salarizare,publicat,,nu,corectezi-concediu-medical-declarat-gresit,
 GH-01552,Cum corectezi numărul de zile lucrate în D112?,salarizare,publicat,,nu,corectezi-numarul-zile-lucrate-d112,
 GH-01553,Cum corectezi o D112 după plata contribuțiilor?,salarizare,publicat,,nu,corectezi-d112-platit-contributiile,
@@ -1871,7 +1871,7 @@ GH-01869,"Cât pot deduce din cheltuielile cu mașina folosită și personal, ș
 GH-01870,Cum dovedesc utilizarea exclusiv profesională a autoturismului la PFA?,pfa,publicat,,nu,dovedesc-utilizarea-exclusiv-profesionala-autoturismului,
 GH-01871,Este obligatorie foaia de parcurs pentru deducerea cheltuielilor auto la PFA?,pfa,candidat,,nu,,
 GH-01872,Pot deduce amortizarea autoturismului la PFA?,pfa,publicat,,nu,deduce-amortizarea-autoturismului-pfa,
-GH-01873,Cum se amortizează un laptop cumpărat pe PFA?,pfa,publicat,,da,amortizeaza-laptop-cumparat-pfa-2,
+GH-01873,Cum se amortizează un laptop cumpărat pe PFA?,pfa,publicat,,da,amortizeaza-laptop-cumparat-pfa-3,
 GH-01874,Când trebuie amortizat un bun cumpărat de PFA?,pfa,candidat,,nu,,
 GH-01875,Ce valoare are un mijloc fix pentru un PFA în 2026?,pfa,publicat,,nu,valoare-mijloc-fix-pfa-2026,
 GH-01876,Cum se înregistrează mijloacele fixe la PFA?,pfa,publicat,,nu,inregistreaza-mijloacele-fixe-pfa,
@@ -2051,7 +2051,7 @@ GH-02049,Operațiunea triunghiulară când firma din mijloc nu e plătitoare în
 GH-02050,Triunghiular cu firma din România ca intermediar: obligații,altele,publicat,,nu,triunghiular-firma-romania-intermediar-obligatii,
 GH-02051,Livrare intracomunitară scutită: condiții de aplicare 2026,ic_ue,publicat,,nu,livrare-intracomunitara-scutita-conditii-aplicare,
 GH-02052,Cum verific codul de TVA al clientului UE pentru scutire,tva,publicat,,nu,verific-codul-tva-clientului-ue,
-GH-02053,Validarea VIES pentru partenerii intracomunitari: pași,ic_ue,publicat,,nu,validarea-vies-partenerii-intracomunitari-pasi,
+GH-02053,Validarea VIES pentru partenerii intracomunitari: pași,ic_ue,publicat,,nu,validarea-vies-partenerii-intracomunitari,
 GH-02054,Livrare intracomunitară cu transport pe cheltuiala clientului: condiții,ic_ue,candidat,,nu,,
 GH-02055,Scutirea de TVA pentru livrările intracomunitare: dovada transportului,ic_ue,publicat,,nu,scutirea-tva-livrarile-intracomunitare-dovada,
 GH-02056,Cum obțin și păstrez documentele de tranport pentru scutirea de TVA,tva,candidat,,nu,,
@@ -2204,7 +2204,7 @@ GH-02202,Ce cotă de TVA folosesc la taxarea inversă pentru o achiziție intrac
 GH-02203,Cum se înregistrează 4426 și 4427 la o achiziție intracomunitară?,ic_ue,candidat,,nu,,
 GH-02204,Care este monografia contabilă pentru o achiziție intracomunitară de bunuri?,ic_ue,asemanator,,nu,,monografie-contabila-achizitie-intracomunitara-bunuri
 GH-02205,Cum se înregistrează o factură de marfă primită din Germania?,altele,publicat,,nu,inregistreaza-factura-marfa-primita-germania,
-GH-02206,Cum se înregistrează o factură de marfă primită din Italia?,altele,publicat,,nu,inregistreaza-factura-marfa-primita-italia,
+GH-02206,Cum se înregistrează o factură de marfă primită din Italia?,altele,publicat,,nu,factura-marfa-din-italia,
 GH-02207,Cum se înregistrează o factură de bunuri primită din Franța?,altele,publicat,,nu,inregistreaza-factura-bunuri-primita-franta,
 GH-02208,Cum se înregistrează o factură de servicii primită din Germania?,altele,publicat,,nu,inregistreaza-factura-servicii-primita-germania,
 GH-02209,Cum se înregistrează o factură de servicii primită din Irlanda?,altele,publicat,,nu,inregistreaza-factura-servicii-primita-irlanda,
@@ -2339,8 +2339,8 @@ GH-02337,Cum verific în SPV TVA declarată prin D301?,ic_ue,candidat,,nu,,
 GH-02338,Se poate deduce TVA plătită prin D301?,ic_ue,publicat,,nu,deduce-tva-platita-d301,
 GH-02339,De ce TVA din D301 devine cost pentru un neplătitor de TVA?,ic_ue,publicat,,nu,tva-d301-devine-cost-neplatitor,
 GH-02340,Cum se înregistrează contabil TVA plătită prin D301?,ic_ue,publicat,,nu,inregistreaza-contabil-tva-platita-d301,
-GH-02341,Cum se înregistrează o achiziție de servicii UE la un neplătitor de TVA?,tva,publicat,,nu,inregistreaza-achizitie-servicii-ue-neplatitor,
-GH-02342,Cum se înregistrează o achiziție de bunuri UE la un neplătitor de TVA?,tva,publicat,,nu,achizitia-intracomunitara-bunuri-neplatitor-tva,inregistreaza-achizitie-servicii-ue-neplatitor
+GH-02341,Cum se înregistrează o achiziție de servicii UE la un neplătitor de TVA?,tva,publicat,,nu,achizitia-servicii-neplatitori-ue-obligatii,
+GH-02342,Cum se înregistrează o achiziție de bunuri UE la un neplătitor de TVA?,tva,publicat,,nu,achizitia-intracomunitara-bunuri-neplatitor-tva,achizitia-servicii-neplatitori-ue-obligatii
 GH-02343,Trebuie depuse și D301 și D390 pentru aceeași factură?,ic_ue,candidat,,nu,,
 GH-02344,Care este diferența dintre D301 și D390?,ic_ue,publicat,,nu,diferenta-dintre-d301-d390,
 GH-02345,Ce fac dacă am depus D390 dar am uitat D301?,ic_ue,candidat,,da,,
@@ -2421,12 +2421,12 @@ GH-02419,Cum se stabilește exigibilitatea TVA la o achiziție intracomunitară?
 GH-02420,La ce dată se aplică taxarea inversă pentru o achiziție intracomunitară?,ic_ue,asemanator,,nu,,data-taxare-inversa-achizitie-intracomunitara
 GH-02421,Ce fac dacă factura pentru marfa din UE vine în luna următoare?,altele,publicat,,nu,factura-marfa-ue-vine-luna,
 GH-02422,Cum înregistrez o achiziție intracomunitară fără factură până la închiderea lunii?,ic_ue,publicat,,nu,inregistrez-achizitie-intracomunitara-factura-pana,
-GH-02423,Cum declar o factură UE primită cu întârziere?,altele,publicat,,nu,declar-factura-ue-primita-intarziere,
+GH-02423,Cum declar o factură UE primită cu întârziere?,altele,publicat,,nu,declari-factura-ue-primita-intarziere,
 GH-02424,Cum declar o achiziție intracomunitară omisă din luna precedentă?,ic_ue,publicat,,nu,declar-achizitie-intracomunitara-omisa-luna,
 GH-02425,Cum corectez D300 pentru o achiziție intracomunitară omisă?,ic_ue,publicat,,nu,corectez-d300-achizitie-intracomunitara-omisa,
 GH-02426,Cum corectez D390 pentru o achiziție intracomunitară omisă?,ic_ue,publicat,,nu,corectez-d390-achizitie-intracomunitara-omisa,
 GH-02427,Cum tratez un avans plătit unui furnizor din UE?,altele,publicat,,nu,tratez-avans-platit-furnizor-ue,
-GH-02428,Cum tratez un avans primit de la un client din UE?,altele,publicat,,nu,tratez-avans-primit-client-ue,
+GH-02428,Cum tratez un avans primit de la un client din UE?,altele,publicat,,nu,tratezi-avans-primit-client-ue,
 GH-02429,Cum tratez returul de marfă către un furnizor din UE?,altele,publicat,,nu,tratez-returul-marfa-furnizor-ue,
 GH-02430,Cum tratez returul primit de la un client din UE?,altele,publicat,,nu,tratez-returul-primit-client-ue,
 GH-02431,Cum declar un retur intracomunitar în D390?,ic_ue,publicat,,nu,declar-retur-intracomunitar-d390,
@@ -2651,7 +2651,7 @@ GH-02649,Diferențele de curs intră în valoarea unui mijloc fix cumpărat în 
 GH-02650,Dobânda intră în valoarea de intrare a unui mijloc fix?,mijloace_fixe,publicat,,nu,dobanda-intra-valoarea-intrare-mijloc,
 GH-02651,Cum se stabilește valoarea unui mijloc fix construit în regie proprie?,mijloace_fixe,candidat,,nu,,
 GH-02652,Cum se înregistrează un mijloc fix realizat în regie proprie?,mijloace_fixe,candidat,,nu,,
-GH-02653,Când începe amortizarea unui mijloc fix?,mijloace_fixe,publicat,,da,incepe-amortizarea-mijloc-fix-2,
+GH-02653,Când începe amortizarea unui mijloc fix?,mijloace_fixe,publicat,,da,incepe-amortizarea-mijloc-fix,
 GH-02654,Amortizarea începe în luna achiziției sau în luna următoare?,mijloace_fixe,publicat,,nu,amortizarea-incepe-luna-achizitiei-luna,
 GH-02655,De la ce dată se amortizează un mijloc fix pus în funcțiune?,mijloace_fixe,publicat,,nu,data-amortizeaza-mijloc-fix-pus,
 GH-02656,Ce document stabilește data punerii în funcțiune a unui mijloc fix?,mijloace_fixe,publicat,,nu,document-stabileste-data-punerii-functiune,
@@ -2661,7 +2661,7 @@ GH-02659,Ce documente trebuie întocmite pentru un mijloc fix?,mijloace_fixe,pub
 GH-02660,Cum se atribuie numărul de inventar unui mijloc fix?,mijloace_fixe,publicat,,nu,atribuie-numarul-inventar-mijloc-fix,
 GH-02661,Cum se ține registrul numerelor de inventar?,altele,publicat,,nu,registrul-numerelor-inventar,
 GH-02662,Cum se întocmește fișa unui mijloc fix?,mijloace_fixe,publicat,,nu,intocmeste-fisa-mijloc-fix,
-GH-02663,Cum se alege codul de clasificare pentru un mijloc fix?,mijloace_fixe,publicat,,nu,alege-codul-clasificare-mijloc-fix,
+GH-02663,Cum se alege codul de clasificare pentru un mijloc fix?,mijloace_fixe,publicat,,nu,alegi-codul-clasificare-mijloc-fix,
 GH-02664,Cum găsesc codul de clasificare al unui mijloc fix?,mijloace_fixe,publicat,,nu,gasesc-codul-clasificare-mijloc-fix,
 GH-02665,Ce durată de amortizare aleg pentru un laptop?,mijloace_fixe,candidat,,nu,,
 GH-02666,În câți ani se amortizează un calculator?,mijloace_fixe,publicat,,nu,cati-ani-amortizeaza-calculator,
@@ -2727,13 +2727,13 @@ GH-02725,Ce faci cu un mijloc fix complet amortizat care este încă folosit?,mi
 GH-02726,Trebuie scos din evidență un mijloc fix complet amortizat?,mijloace_fixe,candidat,,nu,,
 GH-02727,Poate firma folosi în continuare un autoturism complet amortizat?,mijloace_fixe,candidat,,nu,,
 GH-02728,Cum se contabilizează un mijloc fix complet amortizat?,mijloace_fixe,publicat,,nu,contabilizeaza-mijloc-fix-complet-amortizat,
-GH-02729,Cum se vinde un mijloc fix complet amortizat?,mijloace_fixe,publicat,,da,vinde-mijloc-fix-complet-amortizat,
+GH-02729,Cum se vinde un mijloc fix complet amortizat?,mijloace_fixe,publicat,,da,vanzare-mijloc-fix-amortizat-complet,
 GH-02730,Cum se vinde un mijloc fix neamortizat integral?,mijloace_fixe,publicat,,nu,vanzare-mijloc-fix-neamortizat-integral,
 GH-02731,Care este monografia contabilă pentru vânzarea unui mijloc fix?,mijloace_fixe,asemanator,,da,,monografia-contabila-casarea-mijloc-fix
 GH-02732,Cum se calculează rezultatul la vânzarea unui mijloc fix?,mijloace_fixe,publicat,,nu,calculeaza-rezultatul-vanzarea-mijloc-fix,
 GH-02733,Valoarea neamortizată este deductibilă la vânzarea unui mijloc fix?,mijloace_fixe,asemanator,,nu,,valoarea-neamortizata-mijloc-fix-casat
 GH-02734,Cum se tratează fiscal valoarea rămasă neamortizată la vânzare?,mijloace_fixe,publicat,,nu,tratamentul-fiscal-valorii-ramase-neamortizate,
-GH-02735,Cum se înregistrează scoaterea din evidență a unui mijloc fix vândut?,mijloace_fixe,publicat,,nu,inregistreaza-scoaterea-evidenta-mijloc-fix,
+GH-02735,Cum se înregistrează scoaterea din evidență a unui mijloc fix vândut?,mijloace_fixe,publicat,,nu,scoaterea-evidenta-mijloc-fix-vandut,
 GH-02736,Cum se facturează vânzarea unui mijloc fix?,mijloace_fixe,publicat,,nu,factureaza-vanzarea-mijloc-fix,
 GH-02737,Se colectează TVA la vânzarea unui mijloc fix?,tva,candidat,,nu,,
 GH-02738,Cum vinde un neplătitor de TVA un mijloc fix?,tva,candidat,,nu,,
@@ -2971,7 +2971,7 @@ GH-02969,Cum se înregistrează TVA neexigibilă la mărfuri?,tva,publicat,,nu,i
 GH-02970,Ce este contul 4428 în gestiunea cu amănuntul?,stocuri,publicat,,nu,contul-4428-gestiunea-amanuntul,
 GH-02971,Cum se verifică soldul contului 4428 la mărfuri?,altele,publicat,,nu,cum-se-verifica-soldul-contului-4428-la-marfuri,
 GH-02972,Cum se calculează prețul cu amănuntul?,altele,publicat,,nu,calculeaza-pretul-amanuntul,
-GH-02973,Cum se calculează adaosul comercial?,altele,publicat,,nu,calculeaza-adaosul-comercial,
+GH-02973,Cum se calculează adaosul comercial?,altele,publicat,,nu,contabilizeaza-adaosul-comercial,
 GH-02974,Cum se calculează marja comercială?,altele,publicat,,nu,calculeaza-marja-comerciala,
 GH-02975,Care este diferența dintre adaos comercial și marjă comercială?,greseli,publicat,,nu,diferenta-dintre-adaos-comercial-marja,
 GH-02976,Cum se modifică prețul de vânzare al mărfurilor aflate în stoc?,stocuri,candidat,,nu,,
@@ -3280,7 +3280,7 @@ GH-03278,Se poate credita firma în numerar de către asociat în 2026?,casierie
 GH-03279,Împrumutul acordat firmei de asociat poate fi depus cash?,casierie,publicat,,nu,imprumutul-acordat-firmei-asociat-depus,
 GH-03280,Restituirea împrumutului către asociat se poate face în numerar?,casierie,publicat,,nu,restituirea-imprumutului-asociat-numerar,
 GH-03281,Cum se înregistrează un împrumut acordat firmei de asociat?,infiintare,asemanator,,nu,,inregistreaza-dobanda-imprumut-acordat-firmei
-GH-03282,Cum se înregistrează restituirea unui împrumut către asociat?,infiintare,publicat,,nu,inregistreaza-restituirea-imprumut-asociat,
+GH-03282,Cum se înregistrează restituirea unui împrumut către asociat?,infiintare,publicat,,nu,restituirea-imprumutului-asociat-inregistrare,
 GH-03283,Ce documente sunt necesare pentru creditarea firmei de către asociat?,infiintare,candidat,,nu,,
 GH-03284,Este obligatoriu contractul de împrumut între asociat și firmă?,infiintare,candidat,,nu,,
 GH-03285,Cum se înregistrează dobânda la un împrumut acordat firmei de asociat?,infiintare,publicat,,nu,inregistreaza-dobanda-imprumut-acordat-firmei,
@@ -3321,7 +3321,7 @@ GH-03319,Care este monografia contabilă pentru comisioanele bancare?,altele,pub
 GH-03320,Cum se înregistrează taxa lunară de administrare a contului bancar?,casierie,publicat,,nu,inregistreaza-taxa-lunara-administrare-contului,
 GH-03321,Cum se înregistrează dobânda încasată de firmă de la bancă?,altele,candidat,,nu,,
 GH-03322,Cum se înregistrează dobânda plătită pentru un credit bancar?,altele,candidat,,nu,,
-GH-03323,Cum se înregistrează un extras de cont bancar?,casierie,publicat,,nu,contabilizare-extras-cont-bancar,
+GH-03323,Cum se înregistrează un extras de cont bancar?,casierie,publicat,,nu,inregistreaza-extras-cont-bancar-contabilitate,
 GH-03324,Este obligatorie înregistrarea zilnică a extraselor bancare?,casierie,candidat,,nu,,
 GH-03325,Ce dată se folosește la înregistrarea extrasului bancar?,casierie,publicat,,nu,data-foloseste-inregistrarea-extrasului-bancar,
 GH-03326,Cum se înregistrează o plată bancară către furnizor?,altele,publicat,,nu,inregistreaza-plata-bancara-furnizor,
@@ -3352,7 +3352,7 @@ GH-03350,Cum se înregistrează plata unei facturi în avans?,altele,publicat,,n
 GH-03351,Cum se înregistrează o încasare în avans prin bancă?,altele,publicat,,nu,cum-se-inregistreaza-o-incasare-in-avans-prin-banca,
 GH-03352,Cum se înregistrează o garanție încasată în contul bancar?,casierie,publicat,,nu,inregistreaza-garantie-incasata-contul-bancar,
 GH-03353,Cum se înregistrează o garanție plătită prin bancă?,altele,publicat,,nu,inregistreaza-garantie-platita-banca,
-GH-03354,Cum se înregistrează o poprire bancară?,altele,publicat,,nu,inregistreaza-poprire-bancara,
+GH-03354,Cum se înregistrează o poprire bancară?,altele,publicat,,nu,inregistrez-poprire-bancara-contabilitate,
 GH-03355,Cum se contabilizează sumele blocate de bancă?,altele,publicat,,nu,contabilizeaza-sumele-blocate-banca,
 GH-03356,Cum se înregistrează plata unei popriri către ANAF?,altele,candidat,,nu,,
 GH-03357,Cum se contabilizează o executare silită din contul bancar?,casierie,candidat,,nu,,
@@ -3584,7 +3584,7 @@ GH-03582,Casierie la magazin alimentar: reguli specifice,casierie,candidat,,nu,,
 GH-03583,Cum se ține casa la un cabinet medical,altele,publicat,,nu,casa-cabinet-medical,
 GH-03584,Casierie la benzinărie: obligații speciale,casierie,candidat,,nu,,
 GH-03585,Casierie la o firmă de transport: încasări cash,casierie,publicat,,nu,casierie-firma-transport-incasari-cash,
-GH-03586,Cum se gestionează încasările de la curieri,altele,publicat,,nu,gestioneaza-incasarile-curieri,
+GH-03586,Cum se gestionează încasările de la curieri,altele,publicat,,nu,contabilizeaza-incasarile-curier,
 GH-03587,Încasări prin curier: plată și documente,altele,candidat,,nu,,
 GH-03588,Contravaloarea ramburs: înregistrare corectă,altele,candidat,,nu,,
 GH-03589,Cum se împacă vânzările online cu casieria,casierie,asemanator,,nu,,impaca-stocul-magazinului-online-vanzarile
@@ -3769,7 +3769,7 @@ GH-03767,Data încărcării în e-Factura schimbă exigibilitatea TVA?,tva,candi
 GH-03768,Data comunicării prin e-Factura schimbă dreptul de deducere a TVA?,tva,publicat,,nu,data-comunicarii-factura-schimba-dreptul,
 GH-03769,Cum se tratează o factură din e-Factura la TVA la încasare?,tva,publicat,,nu,trateaza-factura-factura-tva-incasare,
 GH-03770,Cum identific dacă furnizorul aplică TVA la încasare din factura electronică?,tva,publicat,,nu,identificare-furnizor-tva-la-incasare-factura-electronica,
-GH-03771,Cum se transmite o factură cu TVA la încasare în e-Factura?,tva,publicat,,da,transmite-factura-tva-incasare-factura,
+GH-03771,Cum se transmite o factură cu TVA la încasare în e-Factura?,tva,publicat,,da,factura-tva-incasare-transmite,
 GH-03772,Cum se marchează taxarea inversă în e-Factura?,spv,publicat,,nu,marcheaza-taxarea-inversa-factura,
 GH-03773,Cum emit o factură cu taxare inversă în RO e-Factura?,ic_ue,publicat,,nu,emit-factura-taxare-inversa-ro,
 GH-03774,Cum se declară o factură cu taxare inversă în XML?,ic_ue,publicat,,nu,cum-se-declara-o-factura-cu-taxare-inversa-in-xml,
@@ -4182,7 +4182,7 @@ GH-04180,Trebuie rectificat SAF-T dacă modific contabilitatea unei luni anterio
 GH-04181,Cum se depune D406 rectificativă?,declaratii_speciale,publicat,,nu,depune-d406-rectificativa,
 GH-04182,Când trebuie depusă o declarație D406 rectificativă?,declaratii_speciale,publicat,,nu,depusa-declaratie-d406-rectificativa,
 GH-04183,Cum corectez o factură omisă din SAF-T?,declaratii_speciale,publicat,,nu,corectez-factura-omisa-saft,
-GH-04184,Cum corectez un client declarat greșit în D406?,declaratii_speciale,asemanator,,nu,,corectez-partener-declarat-gresit-d394
+GH-04184,Cum corectez un client declarat greșit în D406?,declaratii_speciale,asemanator,,nu,,corectezi-partener-declarat-gresit-d394
 GH-04185,Cum corectez un furnizor declarat greșit în SAF-T?,declaratii_speciale,asemanator,,nu,,corectez-saft-depus-gresit
 GH-04186,Cum corectez o cotă de TVA greșită în D406?,declaratii_speciale,candidat,,nu,,
 GH-04187,Cum corectez un cont contabil greșit în SAF-T?,declaratii_speciale,asemanator,,nu,,corectez-saft-depus-gresit
@@ -4602,7 +4602,7 @@ GH-04600,Ce acte sunt necesare pentru o întreprindere individuală?,pfa,candida
 GH-04601,Cum înființez o întreprindere familială?,pfa,publicat,,nu,infiintez-intreprindere-familiala,
 GH-04602,Ce trebuie făcut fiscal după înființarea unui PFA?,pfa,publicat,,nu,fiscal-infiintarea-pfa,
 GH-04603,Trebuie depusă D212 imediat după înființarea unui PFA?,pfa,publicat,,nu,depusa-d212-imediat-infiintarea-pfa,
-GH-04604,Cum aleg norma de venit sau sistemul real la înființarea PFA?,pfa,publicat,,nu,aleg-norma-venit-sistemul-real,
+GH-04604,Cum aleg norma de venit sau sistemul real la înființarea PFA?,pfa,publicat,,nu,aleg-norma-venit-sistem-real,
 GH-04605,Cum înregistrez un PFA în SPV?,pfa,asemanator,,nu,,inregistrez-pfa-nou-spv
 GH-04606,Cum înregistrez un SRL nou în SPV?,spv,asemanator,,nu,,inregistrez-pfa-nou-spv
 GH-04607,Cum obțin acces SPV pentru o firmă nouă?,spv,publicat,,nu,obtin-acces-spv-firma-noua,
@@ -4885,7 +4885,7 @@ GH-04883,Prima declarație a unei firme noi: ce depun,altele,publicat,,nu,prima-
 GH-04884,Calendarul obligațiilor fiscale în primul an de activitate,altele,publicat,,nu,calendarul-obligatiilor-fiscale-primul-an,
 GH-04885,Înființare firmă și angajarea primului salariat,salarizare,candidat,,nu,,
 GH-04886,Cum închei primul contract de muncă în firma nouă,altele,publicat,,nu,inchei-primul-contract-munca-firma,
-GH-04887,Înregistrarea în REVISAL la înființarea firmei,infiintare,publicat,,nu,inregistrarea-revisal-infiintarea-firmei,
+GH-04887,Înregistrarea în REVISAL la înființarea firmei,infiintare,publicat,,nu,inregistrarea-firmei-revisal-infiintare,
 GH-04888,Autorizarea firmei la ITM: obligații 2026,altele,publicat,,nu,autorizarea-firmei-itm-obligatii-2026,
 GH-04889,Cum obțin autorizația de funcționare pentru firma nouă,altele,candidat,,nu,,
 GH-04890,Înființare firmă cu activitate de import-export: obligații,infiintare,publicat,,nu,infiintare-firma-activitate-import-export-obligatii,
@@ -5244,7 +5244,7 @@ GH-05242,Cum se contabilizează veniturile recurente din software?,altele,public
 GH-05243,Cum se tratează fiscal creditele gratuite oferite utilizatorilor unei aplicații?,altele,candidat,,nu,,
 GH-05244,Cum se contabilizează refund-urile acordate clienților unui SaaS?,altele,publicat,,nu,contabilizeaza-refund-urile-acordate-clientilor,
 GH-05245,Cum se contabilizează comisioanele PayPal?,altele,asemanator,,nu,,contabilizeaza-comisioanele-shopify
-GH-05246,Cum se contabilizează încasările prin Stripe?,industrii,publicat,,nu,contabilizeaza-incasarile-stripe,
+GH-05246,Cum se contabilizează încasările prin Stripe?,industrii,publicat,,nu,inregistreaza-incasarile-stripe,
 GH-05247,Cum se reconciliază Stripe cu facturile emise?,industrii,publicat,,nu,cum-se-reconciliaza-stripe-cu-facturile-emise,
 GH-05248,Cum se reconciliază PayPal cu contabilitatea?,altele,asemanator,,nu,,reconciliaza-tranzactiile-revolut-contabilitatea
 GH-05249,Cum se contabilizează diferențele de curs la încasările Stripe?,industrii,publicat,,nu,contabilizeaza-diferentele-curs-incasarile-stripe,
@@ -5269,18 +5269,18 @@ GH-05267,Cum se contabilizează comisionul reținut de curier?,altele,publicat,,
 GH-05268,Cum se înregistrează transportul facturat clientului?,altele,publicat,,nu,inregistreaza-transportul-facturat-clientului-2,
 GH-05269,Transportul facturat clientului are aceeași cotă TVA ca produsul?,tva,publicat,,nu,transportul-facturat-clientului-aceeasi-cota,
 GH-05270,Cum se contabilizează comenzile plătite cu cardul online?,altele,publicat,,nu,contabilizeaza-comenzile-platite-cardul-online,
-GH-05271,Cum se contabilizează încasările prin Netopia?,altele,publicat,,nu,contabilizeaza-incasarile-netopia,
+GH-05271,Cum se contabilizează încasările prin Netopia?,altele,publicat,,nu,inregistreaza-incasarile-netopia,
 GH-05272,Cum se contabilizează încasările prin Stripe într-un magazin online?,industrii,publicat,,nu,contabilizeaza-incasarile-stripe-magazin-online,
 GH-05273,Cum se contabilizează plățile prin PayPal într-un magazin online?,industrii,publicat,,nu,contabilizeaza-platile-paypal-magazin-online,
 GH-05274,Cum se reconciliază procesatorul de plăți cu comenzile magazinului?,altele,publicat,,nu,reconciliaza-procesatorul-plati-comenzile-magazinului,
 GH-05275,Cum se contabilizează comenzile anulate?,altele,publicat,,nu,contabilizeaza-comenzile-anulate,
-GH-05276,Cum se contabilizează retururile într-un magazin online?,industrii,publicat,,nu,contabilizeaza-retururile-magazin-online,
+GH-05276,Cum se contabilizează retururile într-un magazin online?,industrii,publicat,,nu,trateaza-retururile-magazin-online,
 GH-05277,Cum se emite factura storno pentru un retur online?,altele,publicat,,nu,cum-se-emite-factura-storno-pentru-un-retur-online,
 GH-05278,Cum se face reintrarea în gestiune a produsului returnat?,stocuri,candidat,,nu,,
 GH-05279,Cum se tratează un produs returnat deteriorat?,altele,publicat,,nu,trateaza-produs-returnat-deteriorat,
 GH-05280,Cum se contabilizează taxa de transport nerestituită la retur?,altele,publicat,,nu,contabilizeaza-taxa-transport-nerestituita-retur,
 GH-05281,Cum se contabilizează reducerile și cupoanele de discount?,altele,candidat,,nu,,
-GH-05282,Cum se contabilizează voucherele valorice într-un magazin online?,industrii,asemanator,,nu,,contabilizeaza-retururile-magazin-online
+GH-05282,Cum se contabilizează voucherele valorice într-un magazin online?,industrii,asemanator,,nu,,trateaza-retururile-magazin-online
 GH-05283,Cum se tratează fiscal cardurile cadou vândute online?,altele,asemanator,,nu,,trateaza-fiscal-cardurile-cadou-vandute
 GH-05284,Când se colectează TVA pentru un voucher?,tva,publicat,,nu,colecteaza-tva-voucher,
 GH-05285,Cum se contabilizează punctele de fidelitate acordate clienților?,altele,publicat,,nu,contabilizeaza-punctele-fidelitate-acordate-clientilor,
@@ -5305,7 +5305,7 @@ GH-05303,Cum se contabilizează vânzările prin Shopify?,altele,candidat,,nu,,
 GH-05304,Cum se contabilizează comisioanele Shopify?,altele,publicat,,nu,contabilizeaza-comisioanele-shopify,
 GH-05305,Cum se contabilizează vânzările prin marketplace-uri din UE?,industrii,publicat,,nu,contabilizarea-vanzarilor-marketplace-uri-ue,
 GH-05306,Cine emite factura când vinzi printr-un marketplace?,industrii,candidat,,nu,,
-GH-05307,Cum se tratează TVA pentru vânzările online către persoane fizice din UE?,tva,publicat,,nu,trateaza-tva-vanzarile-online-persoane,
+GH-05307,Cum se tratează TVA pentru vânzările online către persoane fizice din UE?,tva,publicat,,nu,vanzarile-online-persoane-fizice-ue,
 GH-05308,Când trebuie folosit regimul OSS pentru comerț online?,industrii,candidat,,nu,,
 GH-05309,Cum se calculează plafonul pentru vânzările la distanță în UE?,altele,publicat,,nu,calculeaza-plafonul-vanzarile-distanta-ue,
 GH-05310,Cum se facturează o vânzare B2C prin OSS?,altele,candidat,,nu,,
@@ -5360,7 +5360,7 @@ GH-05358,Perisabilitatea la alimente în restaurante: norme,industrii,candidat,,
 GH-05359,Cum se tratează pierderile tehnologice în bucătărie,altele,candidat,,nu,,
 GH-05360,TVA la pierderile din prepararea alimentelor,tva,candidat,,nu,,
 GH-05361,Cum se înregistrează vânzarea pe bonuri fiscale la restaurant,industrii,publicat,,nu,inregistreaza-vanzarea-bonuri-fiscale-restaurant,
-GH-05362,Raportul Z la restaurant: cum se înregistrează,industrii,publicat,,nu,raportul-z-restaurant-inregistreaza,
+GH-05362,Raportul Z la restaurant: cum se înregistrează,industrii,publicat,,nu,inregistreaza-raportul-z-contabilitatea-restaurant,
 GH-05363,Cum împac casa de marcat cu vânzările la HoReCa,industrii,publicat,,nu,impac-casa-marcat-vanzarile-horeca,
 GH-05364,Bacșișul în restaurante 2026: cum se impozitează,industrii,candidat,,nu,,
 GH-05365,Tratamentul fiscal al bacșișului din 2026,altele,publicat,,nu,tratamentul-fiscal-bacsisului-2026,
@@ -5594,17 +5594,17 @@ GH-05592,Contabilitate firmă de curierat: particularități,altele,publicat,,nu
 GH-05593,TVA pentru serviciile de curierat în 2026,tva,asemanator,,nu,,tva-serviciile-cazare-2026
 GH-05594,Contabilitate stație de benzină: obligații speciale,altele,candidat,,nu,,
 GH-05595,Accizele la carburanți pentru benzinării,altele,publicat,,nu,accizele-carburanti-benzinarii,
-GH-05596,Contabilitate firmă de pază: particularități,altele,asemanator,,nu,,contabilitate-firma-catering-particularitati
+GH-05596,Contabilitate firmă de pază: particularități,altele,asemanator,,nu,,contabilitatea-firme-catering-particularitati
 GH-05597,Contabilitate firmă de curățenie: TVA și salarizare,salarizare,candidat,,nu,,
-GH-05598,Contabilitate firmă de publicitate: particularități,altele,asemanator,,nu,,contabilitate-firma-catering-particularitati
+GH-05598,Contabilitate firmă de publicitate: particularități,altele,asemanator,,nu,,contabilitatea-firme-catering-particularitati
 GH-05599,TVA pentru serviciile de publicitate în 2026,tva,publicat,,nu,tva-serviciile-publicitate-2026,
 GH-05600,Contabilitate firmă de printare: particularități fiscale,altele,publicat,,nu,contabilitate-firma-printare-particularitati-fiscale,
 GH-05601,TVA la tipărirea de materiale publicitare,tva,asemanator,,nu,,tiparirea-materiale-publicitare-tva-deductibilitate
 GH-05602,Contabilitate firmă de evenimente: particularități,altele,publicat,,nu,contabilitate-firma-evenimente-particularitati,
 GH-05603,TVA la organizarea de evenimente în 2026,tva,publicat,,nu,tva-organizarea-evenimente-2026,
-GH-05604,Contabilitate firmă de catering: particularități,altele,publicat,,nu,contabilitate-firma-catering-particularitati,
+GH-05604,Contabilitate firmă de catering: particularități,altele,publicat,,nu,contabilitatea-firme-catering-particularitati,
 GH-05605,TVA la serviciile de catering în 2026,tva,publicat,,nu,tva-serviciile-catering-2026,
-GH-05606,Contabilitate firmă de panificație: particularități,altele,asemanator,,nu,,contabilitate-firma-catering-particularitati
+GH-05606,Contabilitate firmă de panificație: particularități,altele,asemanator,,nu,,contabilitatea-firme-catering-particularitati
 GH-05607,Cota de TVA la pâine și produse de panificație,tva,publicat,,nu,cota-tva-paine-produse-panificatie,
 GH-05608,Contabilitate firmă de producție: costuri și TVA,tva,candidat,,nu,,
 GH-05609,Cum se calculează costul de producție pe industrii,altele,asemanator,,nu,,calculeaza-costul-productie-unitar
@@ -5764,7 +5764,7 @@ GH-05762,Ce întrerupe termenul de prescripție fiscală?,control_fiscal,asemana
 GH-05763,Ce suspendă termenul de prescripție fiscală?,control_fiscal,asemanator,,nu,,acte-suspenda-termenul-prescriptie-fiscala
 GH-05764,Poate ANAF controla din nou o perioadă deja verificată?,altele,candidat,,nu,,
 GH-05765,În ce situații poate fi refăcută inspecția fiscală?,control_fiscal,asemanator,,nu,,conditii-refacuta-inspectia-fiscala
-GH-05766,Care este diferența dintre inspecție fiscală și verificare documentară?,control_fiscal,publicat,,nu,diferenta-dintre-inspectie-fiscala-verificare,
+GH-05766,Care este diferența dintre inspecție fiscală și verificare documentară?,control_fiscal,publicat,,nu,diferenta-dintre-verificarea-documentara-inspectia,
 GH-05767,Ce este verificarea documentară ANAF?,altele,publicat,,nu,verificarea-documentara-anaf,
 GH-05768,Ce documente poate cere ANAF la verificarea documentară?,altele,publicat,,nu,documente-cere-anaf-verificarea-documentara,
 GH-05769,Cum răspund unei solicitări de documente primite prin SPV?,spv,publicat,,nu,raspund-solicitari-documente-primite-spv,
@@ -5777,7 +5777,7 @@ GH-05775,Ce este controlul inopinat ANAF?,altele,publicat,,nu,controlul-inopinat
 GH-05776,ANAF poate veni în control fără aviz?,altele,publicat,,nu,anaf-veni-control-aviz,
 GH-05777,Ce documente poate cere ANAF la un control inopinat?,altele,publicat,,nu,documente-cere-anaf-control-inopinat,
 GH-05778,Cât poate dura un control inopinat?,altele,candidat,,nu,,
-GH-05779,Care este diferența dintre control inopinat și inspecție fiscală?,control_fiscal,asemanator,,nu,,diferenta-dintre-inspectie-fiscala-verificare
+GH-05779,Care este diferența dintre control inopinat și inspecție fiscală?,control_fiscal,asemanator,,nu,,diferenta-dintre-verificarea-documentara-inspectia
 GH-05780,Ce este controlul antifraudă?,altele,candidat,,nu,,
 GH-05781,Ce verifică Direcția Generală Antifraudă Fiscală la o firmă?,altele,candidat,,nu,,
 GH-05782,Antifrauda poate veni fără notificare?,control_fiscal,candidat,,da,,
@@ -6096,7 +6096,7 @@ GH-06094,Cum primesc actele de la ANAF prin SPV,spv,publicat,,nu,primesc-actele-
 GH-06095,Obligația de a verifica SPV-ul periodic,spv,publicat,,nu,obligatia-verifica-spv-ul-periodic,
 GH-06096,Am pierdut accesul la cont la SPV: cum recuperez,spv,publicat,,nu,pierdut-accesul-cont-spv-recuperez,
 GH-06097,Cum se transmite împuternicirea pentru SPV,spv,candidat,,nu,,
-GH-06098,Noutăți 2026 la controlul fiscal și sancțiuni,control_fiscal,publicat,,da,noutati-2026-controlul-fiscal-sanctiuni-2,
+GH-06098,Noutăți 2026 la controlul fiscal și sancțiuni,control_fiscal,publicat,,da,noutati-2026-controlul-fiscal-sanctiuni,
 GH-06099,Ce se schimbă în 2026 în relația cu ANAF,altele,publicat,,nu,schimba-2026-relatia-anaf,
 GH-06100,"Digitalizarea ANAF 2026: e-TVA, e-Factura, e-Transport",tva,asemanator,,nu,,noutati-2026-digitalizarea-anaf-factura
 GH-06101,Cum se aplică analiza big data în controlul fiscal,control_fiscal,candidat,,nu,,
@@ -6148,7 +6148,7 @@ GH-06146,De ce diferă TVA din D300 de jurnalul de vânzări?,tva,publicat,,nu,d
 GH-06147,Cum verific D300 înainte de depunere?,tva,publicat,,nu,verific-d300-inainte-depunere,
 GH-06148,Ce fac dacă am depus D300 cu o sumă greșită?,tva,publicat,,nu,ce-fac-daca-am-depus-d300-cu-o-suma-gresita,
 GH-06149,Cum corectez o factură omisă din D394?,tva,publicat,,nu,corectez-factura-omisa-d394,
-GH-06150,Cum corectez un partener declarat greșit în D394?,tva,publicat,,nu,corectez-partener-declarat-gresit-d394,
+GH-06150,Cum corectez un partener declarat greșit în D394?,tva,publicat,,nu,corectezi-partener-declarat-gresit-d394,
 GH-06151,Ce fac dacă D394 nu corespunde cu D300?,tva,publicat,,nu,d394-corespunde-d300,
 GH-06152,De ce diferă D394 de jurnalul de vânzări?,tva,publicat,,nu,difera-d394-jurnalul-vanzari,
 GH-06153,De ce diferă D394 de jurnalul de cumpărări?,tva,publicat,,nu,difera-d394-jurnalul-cumparari,
@@ -6182,7 +6182,7 @@ GH-06180,Cum corectez o notă contabilă introdusă greșit?,greseli,publicat,,n
 GH-06181,Ce fac dacă am folosit contul contabil greșit?,greseli,publicat,,nu,folosit-contul-contabil-gresit,
 GH-06182,Cum mut o sumă înregistrată pe contul greșit?,greseli,publicat,,nu,mut-suma-inregistrata-contul-gresit,
 GH-06183,Cum corectez o cheltuială înregistrată ca venit?,greseli,publicat,,nu,corectez-cheltuiala-inregistrata-venit,
-GH-06184,Cum corectez un venit înregistrat ca cheltuială?,greseli,publicat,,nu,corectez-venit-inregistrat-cheltuiala,
+GH-06184,Cum corectez un venit înregistrat ca cheltuială?,greseli,publicat,,nu,corectez-cheltuiala-inregistrata-venit,
 GH-06185,Ce fac dacă am înregistrat o achiziție direct pe cheltuială în loc de stoc?,stocuri,publicat,,nu,inregistrat-achizitie-direct-cheltuiala-loc,
 GH-06186,Cum corectez marfa înregistrată greșit ca obiect de inventar?,greseli,publicat,,nu,corectez-marfa-inregistrata-gresit-obiect,
 GH-06187,Cum corectez un obiect de inventar înregistrat greșit ca mijloc fix?,mijloace_fixe,publicat,,nu,corectez-obiect-inventar-inregistrat-gresit,
@@ -6211,7 +6211,7 @@ GH-06209,Ce fac dacă am omis cheltuielile nedeductibile la calculul impozitului
 GH-06210,Cum corectez calculul impozitului pe profit?,profit,publicat,,nu,corectez-calculul-impozitului-profit,
 GH-06211,Ce fac dacă am calculat impozitul pe profit prea mic?,profit,publicat,,nu,calculat-impozitul-profit-prea-mic,
 GH-06212,Ce fac dacă am calculat impozitul pe profit prea mare?,profit,publicat,,nu,calculat-impozitul-profit-prea-mare,
-GH-06213,Cum corectez impozitul pe profit după depunerea D101?,profit,publicat,,nu,corectez-impozitul-profit-depunerea-d101,
+GH-06213,Cum corectez impozitul pe profit după depunerea D101?,profit,publicat,,nu,corectezi-impozitul-profit-depunerea-d101,
 GH-06214,Cum corectez o D101 depusă greșit?,profit,publicat,,nu,corectez-d101-depusa-gresit,
 GH-06215,Ce fac dacă D101 nu corespunde cu balanța?,profit,publicat,,nu,d101-corespunde-balanta,
 GH-06216,De ce rezultatul fiscal diferă de profitul contabil?,profit,publicat,,nu,rezultatul-fiscal-difera-profitul-contabil,
@@ -6288,7 +6288,7 @@ GH-06286,Cum tratez o factură primită după închiderea lunii?,altele,publicat
 GH-06287,Cum tratez o factură primită după închiderea anului?,altele,publicat,,nu,tratez-factura-primita-inchiderea-anului,
 GH-06288,Ce fac dacă am închis anul și găsesc documente lipsă?,altele,publicat,,nu,inchis-anul-gasesc-documente-lipsa,
 GH-06289,Cum corectez o eroare contabilă dintr-un exercițiu financiar precedent?,greseli,publicat,,nu,corectez-eroare-contabila-dintr-exercitiu,
-GH-06290,Când se folosește contul 1174 pentru corectarea erorilor contabile?,greseli,publicat,,nu,foloseste-contul-1174-corectarea-erorilor,
+GH-06290,Când se folosește contul 1174 pentru corectarea erorilor contabile?,greseli,publicat,,nu,corectarea-erorilor-contabile-1174,
 GH-06291,Cum corectez o eroare semnificativă din anii precedenți?,greseli,candidat,,nu,,
 GH-06292,Cum corectez o eroare nesemnificativă din anii precedenți?,greseli,candidat,,nu,,
 GH-06293,Ce fac dacă bilanțul depus conține o eroare?,altele,publicat,,nu,bilantul-depus-contine-eroare,
@@ -6658,7 +6658,7 @@ GH-06656,Poate administratorul depune bani personali în contul firmei?,infiinta
 GH-06657,Cum justific o depunere de numerar făcută de administrator în contul societății?,casierie,publicat,,nu,justific-depunere-numerar-facuta-administrator,
 GH-06658,Cum înregistrez numerarul depus din casierie în contul bancar?,casierie,publicat,,nu,inregistrez-numerarul-depus-casierie-contul,
 GH-06659,Ce document justifică transferul banilor din casă în bancă?,altele,publicat,,nu,document-justifica-transferul-banilor-casa,
-GH-06660,Cum înregistrez numerarul retras din bancă pentru casierie?,casierie,asemanator,,nu,,inregistrezi-numerarul-retras-banca-casierie
+GH-06660,Cum înregistrez numerarul retras din bancă pentru casierie?,casierie,asemanator,,nu,,inregistreaza-numerarul-retras-banca-casierie
 GH-06661,Ce documente sunt necesare când retrag bani din bancă pentru casă?,altele,candidat,,nu,,
 GH-06662,Cum contabilizez banii retrași din bancă și neintroduși încă în casierie?,casierie,candidat,,nu,,
 GH-06663,Când se folosește contul 581 Viramente interne?,altele,publicat,,nu,foloseste-contul-581-viramente-interne,
@@ -6732,7 +6732,7 @@ GH-06730,Cum contabilizez un depozit bancar pe termen scurt?,control_fiscal,publ
 GH-06731,Cum contabilizez dobânda unui depozit bancar?,altele,candidat,,nu,,
 GH-06732,Când un depozit bancar poate fi considerat echivalent de numerar?,casierie,publicat,,nu,depozit-bancar-considerat-echivalent-numerar,
 GH-06733,Cum contabilizez lichidarea unui depozit bancar?,infiintare,asemanator,,nu,,contabilizezi-lichidarea-depozit-bancar
-GH-06734,Cum se înregistrează un cont bancar nou deschis de firmă?,casierie,asemanator,,nu,,contabilizare-extras-cont-bancar
+GH-06734,Cum se înregistrează un cont bancar nou deschis de firmă?,casierie,asemanator,,nu,,inregistreaza-extras-cont-bancar-contabilitate
 GH-06735,Trebuie declarat la ANAF un cont bancar nou al societății?,casierie,publicat,,nu,declarat-anaf-cont-bancar-nou,
 GH-06736,Cum închid contabil un cont bancar care nu mai este folosit?,casierie,candidat,,nu,,
 GH-06737,Ce fac cu diferențele rămase în contabilitate după închiderea unui cont bancar?,casierie,publicat,,nu,diferentele-ramase-contabilitate-inchiderea-cont,
@@ -7443,7 +7443,7 @@ GH-07441,Erori frecvente la contabilitatea firmelor de construcții,industrii,pu
 GH-07442,Erori frecvente la contabilitatea firmelor IT,industrii,asemanator,,da,,erori-frecvente-contabilitatea-firmelor-it
 GH-07443,Erori frecvente la contabilitatea magazinelor online,industrii,asemanator,,da,,erori-frecvente-contabilitatea-magazinelor-online
 GH-07444,Cum aleg regimul fiscal potrivit industriei mele în 2026,altele,candidat,,nu,,
-GH-07445,Cum calculez impozitul pe profit de 16% pentru un SRL în 2026?,profit,publicat,,da,calculez-impozitul-profit-16-srl-2026,
+GH-07445,Cum calculez impozitul pe profit de 16% pentru un SRL în 2026?,profit,publicat,,da,srl-profit-2026-calculez-impozitul,
 GH-07446,Când devine exigibil impozitul pe profit în 2026?,profit,publicat,,nu,devine-exigibil-impozitul-profit-2026-2,
 GH-07447,Care este termenul pentru plata impozitului pe profit în 2026?,profit,publicat,,da,termenul-plata-impozitului-profit-2026,
 GH-07448,Cum calculez rezultatul fiscal pornind de la balanța contabilă?,altele,publicat,,nu,calculez-rezultatul-fiscal-pornind-balanta,
@@ -7506,7 +7506,7 @@ GH-07504,Cum calculez impozitul pe profit dacă firma începe activitatea în cu
 GH-07505,Cum calculez impozitul pe profit pentru o firmă reactivată în cursul anului?,profit,publicat,,nu,calculez-impozitul-profit-firma-reactivata,
 GH-07506,Cum calculez impozitul pe profit la suspendarea activității firmei?,profit,asemanator,,nu,,calculezi-impozitul-profit-suspendarea-activitatii
 GH-07507,Cum calculez impozitul pe profit în anul dizolvării societății?,profit,publicat,,nu,calculez-impozitul-profit-anul-dizolvarii,
-GH-07508,Cum calculez impozitul pe profit în perioada de lichidare?,profit,publicat,,da,impozit-profit-perioada-lichidare,
+GH-07508,Cum calculez impozitul pe profit în perioada de lichidare?,profit,publicat,,da,calculez-impozitul-profit-perioada-lichidare,
 GH-07509,Ce declarație de impozit pe profit depun la închiderea firmei?,profit,publicat,,nu,declaratie-impozit-profit-depun-inchiderea,
 GH-07510,Cum se tratează fiscal veniturile obținute în timpul lichidării?,altele,publicat,,nu,trateaza-fiscal-veniturile-obtinute-timpul,
 GH-07511,Cum se tratează fiscal activele distribuite asociaților la lichidare?,infiintare,publicat,,nu,trateaza-fiscal-activele-distribuite-asociatilor,
@@ -7765,7 +7765,7 @@ GH-07763,Impozitul pe profit la lichidarea firmei: ultima declarație,profit,pub
 GH-07764,Impozitul pe profit la fuziunea prin absorbție 2026,profit,candidat,,nu,,
 GH-07765,Cum se calculează impozitul pe profit după o reorganizare,profit,asemanator,,nu,,calculeaza-impozitul-dividende-impozitul-profit
 GH-07766,Impozitul pe profit la divizarea firmei,profit,candidat,,nu,,
-GH-07767,Impozitul pe profit la firmele cu activitate sezonieră,profit,publicat,,nu,impozitul-profit-firmele-activitate-sezoniera,
+GH-07767,Impozitul pe profit la firmele cu activitate sezonieră,profit,publicat,,nu,impozit-profit-firmele-activitate-sezoniera,
 GH-07768,Cum monitorizez impozitul pe profit în timpul anului,profit,publicat,,nu,monitorizez-impozitul-profit-timpul-anului,
 GH-07769,Balanța de verificare și impozitul pe profit: cum le corelez,profit,asemanator,,nu,,balanta-verificare-impozitul-profit-pregatesc
 GH-07770,Cum pregătesc balanța pentru întocmirea D101,profit,publicat,,nu,pregatesc-balanta-intocmirea-d101,

@@ -2,7 +2,7 @@
 title: "Cum se înregistrează încasările prin Stripe?"
 description: Stripe nu are azi nicio integrare automată în iConta.eu. Încasarea se identifică din extrasul de cont, pe suma netă virată de Stripe, iar comisionul reținut se înregistrează separat, ca o cheltuială cu serviciile bancare.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -25,6 +25,14 @@ Fluxul contabil, pas cu pas:
 3. **Comisionul reținut de Stripe** se înregistrează separat, ca o cheltuială: contul **627 „Cheltuieli cu serviciile bancare și asimilate"** (sau, în funcție de politica contabilă a firmei, contul **622 „Cheltuieli privind comisioanele și onorariile"** — OMFP 1802/2014 definește ambele conturi generic, fără să trateze explicit cazul „procesator de plăți online"; alegerea între cele două e o convenție internă, nu o regulă tranșată de reglementări pentru acest caz specific).
 
 Punctul de plecare al reconcilierii rămâne factura emisă de firmă către client, pe suma brută — încasarea din Stripe trebuie potrivită cu factura pe brut, iar diferența (comisionul) explicată separat, nu „pierdută" în soldul contului bancar.
+
+::: ghid-exemplu
+Factură de 1.000 lei, încasată prin Stripe, cu un comision ipotetic de 30 lei (comisionul real depinde de contractul cu Stripe; nu e o mărime fixată de lege):
+- la plata clientului, dacă se ține evidența intermediară: `5125 = 4111` — 1.000 lei;
+- la decontare, suma netă din extras: `5121 = 5125` — 970 lei;
+- comisionul reținut: `627 = 5125` (sau `622 = 5125`) — 30 lei.
+Contul 5125 se închide, iar clientul e stins integral, la valoarea brută a facturii.
+:::
 
 ## Ce se greșește în practică
 

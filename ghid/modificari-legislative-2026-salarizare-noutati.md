@@ -56,6 +56,7 @@ anterioare celei în care are loc această operațiune, se includ în veniturile
 determinate și se declară în Declarația privind obligațiile de plată a contribuțiilor sociale,
 impozitului pe venit și evidența nominală a persoanelor asigurate ... aferentă aceleiași luni"
 — OUG nr. 158/2005, art. 17 alin. (1^2), introdus de OUG nr. 89/2025, art. VII, în vigoare de la
+
 1 iulie 2026 (art. VIII alin. (2))
 :::
 

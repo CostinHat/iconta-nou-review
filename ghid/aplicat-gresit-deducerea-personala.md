@@ -2,7 +2,7 @@
 title: "Ce fac dacă am aplicat greșit deducerea personală?"
 description: "Scara deducerii personale, treptele degresive și cele două majorări speciale (sub 26 de ani, copil la școală) — unde apar cel mai des erorile."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,10 +13,14 @@ Deducerea personală reduce baza impozabilă a salariului, dar depinde de mai mu
 ## Temeiul legal
 
 ::: ghid-temei
-Codul fiscal, art.77 alin.(3): pragul de bază al scării de deducere = **salariul minim + 2.000 lei**, cu trepte de 50 lei.
+„Deducerea personală de bază se acordă pentru persoanele fizice care au un venit lunar brut de până la 2.000 de lei peste nivelul salariului de bază minim brut pe țară garantat în plată aprobat prin hotărâre a Guvernului, în vigoare în luna de realizare a venitului. În situația în care, în cursul aceleiași luni, se utilizează mai multe valori ale salariului minim brut pe țară, se ia în calcul valoarea cea mai mică a salariului minim brut pe țară.”
+— Codul fiscal (Legea nr. 227/2015), art. 77 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-Codul fiscal, art.77 alin.(4): scara deducerii e de **20/25/30/35/45%** în funcție de numărul de persoane în întreținere (0/1/2/3/4 sau mai multe), degresivă cu **0,5 puncte procentuale** pentru fiecare tranșă de 50 lei peste salariul minim, până la plafonul de la alin.(3).
+„Pentru contribuabilii care realizează venituri brute lunare din salarii de până la nivelul prevăzut la alin. (3) inclusiv, deducerile personale de bază se stabilesc potrivit următorului tabel:”
+— Codul fiscal (Legea nr. 227/2015), art. 77 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
+
+Tabelul de la art. 77 alin. (4) stabilește deducerea ca procent din salariul minim: **20/25/30/35/45%** în funcție de numărul de persoane în întreținere (0/1/2/3/4 sau mai multe), procent care scade cu **0,5 puncte procentuale** pentru fiecare tranșă de 50 lei peste salariul minim, până la pragul de salariul minim + 2.000 lei de la alin. (3).
 
 Pentru că pragul și treptele scării se raportează la salariul minim, iar în 2026 există **două valori diferite** ale salariului minim (4.050 lei până la 30.06.2026, apoi 4.325 lei), o deducere personală calculată corect pentru prima jumătate a anului poate fi greșită dacă se aplică neschimbată în a doua jumătate — și invers.
 

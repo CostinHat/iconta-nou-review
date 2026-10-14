@@ -30,6 +30,6 @@ Pentru mulți angajatori din IT, „noutatea" pe care o caută de fapt este dac�
 
 ## Ce face iConta.eu
 
-Această temă face parte din **„Monitor fiscal (noutăți legislative)” — Monitorul fiscal**, mecanismul intern care citește săptămânal noutățile legislative de la ANAF/Ministerul Finanțelor, le filtrează cu ajutorul AI după relevanță (TVA, salarii, plafoane, declarații, dividende) și trimite un rezumat prin email către administratorul platformei. „Monitor fiscal (noutăți legislative)” **nu** e un modul orientat spre utilizatorul contabil și nu generează automat articole afișate în aplicație — e un cron intern, fără ecran dedicat. Ghidurile de acest tip, inclusiv cel de față, sunt sinteze editoriale redactate manual, pe bază de text de lege verificat direct la sursă, nu un produs al monitorului însuși. Calculul efectiv al salariului (inclusiv impozitul pe venit reținut la sursă, fără nicio scutire specifică IT) se face în modulul de salarizare al aplicației, conform regulilor generale în vigoare.
+Calculul salariului în iConta.eu (inclusiv impozitul pe venit reținut la sursă) se face în salarizarea aplicației, după regulile generale în vigoare, fără nicio scutire specifică IT.
 
 [iConta.eu](/)

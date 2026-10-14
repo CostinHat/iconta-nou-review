@@ -1,6 +1,6 @@
 ---
 title: Ce bază de calcul se folosește pentru concediul medical?
-description: Indemnizația de concediu medical se calculează cu procente de 55%, 65% sau 75%, în funcție de tipul concediului — dar formula exactă a bazei de calcul ține de o funcționalitate distinctă („Cod 10 CM în flux”), nu de calculul salarial obișnuit.
+description: Indemnizația de concediu medical pentru boli obișnuite se calculează cu 55%, 65% sau 75% din baza de calcul, în funcție de durata certificatului — iar baza este media veniturilor brute din ultimele 6 luni, nu salariul obișnuit (OUG 158/2005 art. 10 și art. 17).
 published: 2026-09-24
 modified: 2026-10-13
 poarta: v1
@@ -13,14 +13,18 @@ Concediile medicale nu se calculează cu aceleași reguli ca salariul obișnuit 
 ## Temeiul legal
 
 ::: ghid-temei
-„Concedii medicale (context „Calcul salarizare (de la brut la net)”↔„Cod 10 CM în flux”, nu obiectul direct al celor 12 titluri, dar apare în descrierea „Calcul salarizare (de la brut la net)”) — OUG 158/2005, cu procentele 55/65/75% (Legea 141/2025, de la 01.08.2025); nu e detaliat aici, nu e cerut de titluri." — Dosar de cercetare „Calcul salarizare (de la brut la net)”, secțiunea „Temei legal", pct. 7
+„Pentru persoanele prevăzute la art. 1 alin. (1) lit. A și B, baza de calcul al indemnizațiilor prevăzute la art. 2 se determină ca medie a veniturilor brute lunare din ultimele 6 luni din cele 12 luni din care se constituie stagiul de asigurare, până la limita a 12 salarii minime brute pe țară lunar, pe baza cărora se calculează contribuția asiguratorie pentru muncă.”
+— OUG nr. 158/2005, art. 10 alin. (1) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
+
+„Cuantumul brut lunar al indemnizației pentru incapacitate temporară de muncă cauzată de boli obișnuite sau de accidente în afara muncii se determină raportat la fiecare episod de boală, după cum urmează: a) prin aplicarea procentului de 55% asupra bazei de calcul stabilite conform art. 10 pentru certificatele de concediu medical eliberate pentru o perioadă de până la 7 zile de incapacitate temporară de muncă; [...] b) prin aplicarea procentului de 65% asupra bazei de calcul stabilite conform art. 10 pentru certificatele de concediu medical eliberate pentru o perioadă cuprinsă între 8 și 14 zile de incapacitate temporară de muncă; [...] c) prin aplicarea procentului de 75% asupra bazei de calcul stabilite conform art. 10 pentru certificatele de concediu medical eliberate pentru o perioadă de peste 15 zile de incapacitate temporară de muncă.”
+— OUG nr. 158/2005, art. 17 alin. (1) (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
-Ce e confirmat: actul normativ de bază e OUG 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, iar procentele de calcul ale indemnizației — 55%, 65% și 75%, în funcție de tipul concediului — au fost modificate prin Legea 141/2025, aplicabile de la 1 august 2025.
+Actul normativ de bază e OUG 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate. Procentele de 55%, 65% și 75% pentru bolile obișnuite și accidentele în afara muncii se aplică în funcție de durata certificatului de concediu medical, în forma modificată prin Legea 141/2025, aplicabilă de la 1 august 2025.
 
-## Ce nu confirmă acest dosar
+## Baza de calcul
 
-Formula exactă a bazei de calcul (perioada de referință folosită pentru medierea veniturilor, veniturile incluse și eventualele plafoane) nu a fost verificată verbatim în cercetarea de față — dosarul de cercetare a fost elaborat pentru „Calcul salarizare (de la brut la net)” (calculul salarial brut→net) și marchează explicit acest subiect ca nefiind obiectul cercetării, ci al unei funcționalități distincte, „Cod 10 CM în flux”. Acest ghid nu afirmă, deci, detalii pe care nu le poate susține cu o sursă verificată — pentru formula completă a bazei de calcul, verifică textul OUG 158/2005 direct sau resursele dedicate „Cod 10 CM în flux”.
+Baza de calcul este media veniturilor brute lunare din ultimele 6 luni din cele 12 luni din care se constituie stagiul de asigurare, în limita a 12 salarii minime brute pe țară lunar (art. 10 alin. (1)). Pentru situațiile speciale (alte categorii de asigurați, alte tipuri de indemnizații), referința rămâne textul complet al OUG 158/2005 și normele lui de aplicare.
 
 ## Ce se greșește în practică
 
@@ -28,6 +32,6 @@ Greșeala frecventă e tratarea concediului medical ca un salariu obișnuit — 
 
 ## Ce face iConta.eu
 
-Motorul de calcul salarial („Calcul salarizare (de la brut la net)”, aplicația, „monografia salariului (Salarii)”) tratează rețineri și cheltuieli specifice salariului obișnuit — CAS, CASS, impozit, CAM și, la part-time sub minim, suprataxarea. Dosarul de cercetare disponibil pentru „Calcul salarizare (de la brut la net)” nu confirmă dacă și cum acest motor sau o componentă distinctă calculează baza indemnizației de concediu medical — pentru asta, verifică ecranul dedicat concediilor medicale din iConta.eu („Cod 10 CM în flux”).
+Calculul salarial din iConta.eu (ecranul Salariați) tratează reținerile și cheltuielile specifice salariului obișnuit — CAS, CASS, impozit, CAM și, la part-time sub minim, suprataxarea. Indemnizația de concediu medical se calculează separat, în ecranul Concedii medicale: contabilul completează veniturile brute din ultimele 6 luni lucrate (din statele de plată) și zilele lucrătoare din aceleași luni, iar aplicația împarte suma la zile și aplică procentul corespunzător codului de indemnizație și duratei episodului de boală.
 
 [iConta.eu](/)

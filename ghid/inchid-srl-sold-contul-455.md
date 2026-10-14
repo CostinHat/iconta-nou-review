@@ -25,8 +25,8 @@ Cea mai frecventă confuzie este între contul **455** (datorii ale societății
 
 ## Ce face iConta.eu
 
-Funcția „partajul” din motorul de lichidare al iConta.eu produce trei tipuri de note contabile: capitalul social, tratat ca neimpozabil (1012=456); rezervele și profiturile, tratate ca „câștig impozabil" cu cota de impozit pe dividend (1061/1171=456, apoi 456=446 pentru impozit și 456=5121 pentru netul plătit asociatului). Contul 455 nu apare în această monografie predefinită.
+Operația „Partaj către asociați” din ecranul „Lichidare / radiere firmă” al iConta.eu produce trei tipuri de note contabile: capitalul social, tratat ca neimpozabil (1012=456); rezervele și profiturile, tratate ca „câștig impozabil" cu cota de impozit pe dividend (1061/1171=456, apoi 456=446 pentru impozit și 456=5121 pentru netul plătit asociatului). Contul 455 nu apare în această monografie predefinită.
 
-Un sold pe 455 rămas la data lichidării trebuie deci stins separat, prin operațiunile obișnuite de plată/încasare din aplicație (de exemplu restituirea împrumutului către asociat), **înainte** de a rula operația de partaj — nu există în „Lichidare/radiere societate” o funcție dedicată de stingere automată a contului 455. Dosarul de cercetare nu a găsit local (în Anexele OMFP 897/2015, indisponibile în corpusul verificat) o monografie contabilă oficială specifică pentru acest caz, așa că tratamentul exact rămâne o decizie profesională a contabilului, aplicată prin operațiunile standard, nu prin ecranul de lichidare.
+Un sold pe 455 rămas la data lichidării trebuie deci stins separat, prin operațiunile obișnuite de plată/încasare din aplicație (de exemplu restituirea împrumutului către asociat), **înainte** de a rula operația de partaj — ecranul „Lichidare / radiere firmă” nu are o operație dedicată de stingere automată a contului 455. Acest ghid nu citează o monografie contabilă oficială specifică pentru acest caz, așa că tratamentul exact rămâne o decizie profesională a contabilului, aplicată prin operațiunile standard, nu prin ecranul de lichidare.
 
 [iConta.eu](/)

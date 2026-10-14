@@ -17,8 +17,10 @@ Intabularea contează pentru rang. Ipoteca legală a statului se plasează după
 ::: ghid-temei
 „Sechestrul aplicat asupra bunurilor imobile în temeiul alin. (5) constituie ipotecă legală."
 — Codul de procedură fiscală (Legea 207/2015), art. 242 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „Dreptul de ipotecă conferă creditorului fiscal în raport cu alți creditori aceleași drepturi ca și dreptul de ipotecă, în sensul prevederilor dreptului comun."
 — Codul de procedură fiscală (Legea 207/2015), art. 242 alin. (7) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „Pentru bunurile imobile sechestrate, organul de executare silită care a instituit sechestrul va solicita de îndată biroului de cadastru și publicitate imobiliară intabularea ipotecii legale în cartea funciară, în termenele și condițiile prevăzute de lege, anexând un exemplar al procesului-verbal de sechestru."
 — Codul de procedură fiscală (Legea 207/2015), art. 242 alin. (8) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::

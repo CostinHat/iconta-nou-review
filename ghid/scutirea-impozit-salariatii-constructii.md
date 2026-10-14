@@ -1,6 +1,6 @@
 ---
 title: Scutirea de impozit pentru salariații din construcții
-description: Registrul complet de cote și facilități verificat pentru acest ghid (period-aware, valabil pentru 2026) nu conține nicio facilitate de scutire de impozit specifică sectorului construcțiilor. Nu presupunem că e neschimbată — raportăm exact ce arată dosarul.
+description: Scutirea de impozit pe venit pentru salariații din construcții (art. 60 pct. 5 din Codul fiscal) a fost abrogată prin OUG 156/2024, începând cu veniturile aferente lunii ianuarie 2025. În 2026, salariații din construcții se impozitează după cotele standard.
 published: 2026-09-25
 modified: 2026-10-13
 poarta: v1
@@ -8,15 +8,19 @@ poarta: v1
 
 # Scutirea de impozit pentru salariații din construcții
 
-Sectorul construcțiilor a avut, în anii anteriori, un regim fiscal special pentru salariați (scutire de impozit pe venit, cotă CAS redusă, prag propriu pentru salariul minim). Acest ghid verifică ce arată, concret, dosarul de cercetare disponibil pentru 2026 — și răspunsul onest e că **nu confirmă existența unei asemenea facilități active**.
+Sectorul construcțiilor a avut, în anii anteriori, un regim fiscal special pentru salariați (scutire de impozit pe venit, cotă CAS redusă, prag propriu pentru salariul minim — pragul de salariu minim e tratat separat în [ghidul despre salariul minim în construcții](/ghid/salariul-minim-constructii-2026-prag)). Pentru 2026 răspunsul e că **scutirea de impozit pe venit nu mai există**: art. 60 pct. 5 din Codul fiscal, care o prevedea, a fost abrogat prin OUG 156/2024, începând cu veniturile aferente lunii ianuarie 2025.
 
 ## Temeiul legal
 
 ::: ghid-temei
-Cotele standard, confirmate în registrul verificat, pentru orice salariat fără un regim special: CAS 25% — Codul fiscal, art.138 lit.a); CASS 10% — art.156; impozit pe venit 10% — art.64 alin.(1)/art.78. Funcționalitatea de calcul salarial (cod „Calcul salarizare (de la brut la net)”) are ca temei declarat, în lista funcționalităților aplicației, și OUG 34/2024 — act care a reformat regimul facilităților fiscale sectoriale — dar textul acestui act nu a fost reprodus verbatim în dosarul de cercetare.
+„7. La articolul 60, punctele 2, 5 şi 7 se abrogă.”
+— OUG nr. 156/2024, art. LXIV pct. 7 (sursă: [OUG nr. 156/2024 privind unele măsuri fiscal-bugetare pentru anul 2025](https://legislatie.just.ro/Public/DetaliiDocument/293109))
+
+„Prevederile art. LXIV pct. 7, 8 şi 10 - 14 se aplică începând cu veniturile aferente lunii ianuarie 2025.”
+— OUG nr. 156/2024, art. LXV alin. (3) (sursă: [OUG nr. 156/2024 privind unele măsuri fiscal-bugetare pentru anul 2025](https://legislatie.just.ro/Public/DetaliiDocument/293109))
 :::
 
-**De semnalat onest**: dosarul verificat pentru acest ghid conține registrul complet și exhaustiv de cote și facilități (dict „registrul de cote al aplicației”), „period-aware" — adică fiecare cotă sau facilitate are o fereastră de valabilitate explicită, cu temei legal atașat. Registrul conține, pentru 2026: cotele standard (CAS, CASS, impozit, CAM), cele două valori ale salariului minim, facilitatea generică „salariul minim neimpozabil" (300 lei, apoi 200 lei) și plafonul tichetelor de masă. **Nu conține nicio intrare pentru o facilitate distinctă de scutire de impozit pentru sectorul construcțiilor.** Funcționalitatea „Calcul salarizare (de la brut la net)” are ca temei declarat, în lista de funcționalități a aplicației, și OUG 34/2024 — act care a modificat regimul facilităților fiscale sectoriale — dar dosarul nu conține textul acelui act, nici confirmarea explicită a datei sau condițiilor în care o eventuală facilitate pentru construcții a fost restrânsă sau eliminată. Nu inventăm acest detaliu: dacă aveți nevoie de un răspuns definitiv despre statutul facilității pentru construcții în 2026, verificați direct OUG 34/2024 și actele care l-au modificat ulterior, sau consultați un contabil.
+Pentru un salariat fără regim special se aplică cotele standard: CAS 25% — Codul fiscal, art.138 lit.a); CASS 10% — art.156; impozit pe venit 10% — art.64 alin.(1)/art.78. Scutirea pentru construcții nu mai poate fi aplicată pe veniturile din 2026, pentru că punctul din Codul fiscal care o prevedea (art. 60 pct. 5) nu mai există din ianuarie 2025.
 
 ## Ce se greșește în practică
 
@@ -25,6 +29,6 @@ Cotele standard, confirmate în registrul verificat, pentru orice salariat făr�
 
 ## Ce face iConta.eu
 
-Motorul de calcul salarial verificat pentru acest ghid (registrul „registrul de cote al aplicației”) nu aplică, pentru 2026, nicio facilitate de scutire de impozit distinctă pentru sectorul construcțiilor — calculul urmează cotele standard (CAS 25%, CASS 10%, impozit 10%), la fel ca pentru orice alt salariat, exceptând facilitatea generică „salariul minim neimpozabil" (disponibilă oricărui angajat încadrat la salariul minim, indiferent de sector, cu condițiile ei proprii). Dacă situația dumneavoastră implică un regim sectorial specific, verificați direct statutul actual al reglementării — acest dosar nu îl confirmă.
+Calculul salarial din iConta.eu nu aplică, pentru 2026, nicio facilitate de scutire de impozit distinctă pentru sectorul construcțiilor — calculul urmează cotele standard (CAS 25%, CASS 10%, impozit 10%), la fel ca pentru orice alt salariat, exceptând facilitatea generică „salariul minim neimpozabil" (disponibilă oricărui angajat încadrat la salariul minim, indiferent de sector, cu condițiile ei proprii). Pentru 2026 aplică cotele standard (CAS, CASS, impozit, CAM), cele două valori ale salariului minim, facilitatea „salariul minim neimpozabil" (300 lei, apoi 200 lei) și plafonul tichetelor de masă, fiecare pe perioada ei de valabilitate. Lipsa unei facilități pentru construcții e consecventă cu abrogarea art. 60 pct. 5 prin OUG 156/2024.
 
 [iConta.eu](/)

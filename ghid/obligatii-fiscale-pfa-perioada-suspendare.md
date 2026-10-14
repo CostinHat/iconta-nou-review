@@ -2,7 +2,7 @@
 title: Ce obligații fiscale are un PFA în perioada de suspendare
 description: Un PFA care și-a suspendat activitatea la organismul care l-a autorizat este scutit de depunerea declarațiilor fiscale pe acea perioadă — dar numai atât timp cât nu desfășoară, în fapt, activitate economică.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,11 @@ Regimul fiscal al unui PFA pe perioada de suspendare a activității urmează, �
 ## Temeiul legal
 
 ::: ghid-temei
-Legea nr. 207/2015 (Codul de procedură fiscală), art. 101 alin. (4^2) (scutirea de depunere a declarațiilor fiscale pentru entitățile care au solicitat suspendarea activității la organismele care le-au autorizat); Legea nr. 227/2015 (Codul fiscal), art. 11 alin. (6) (regimul fiscal al contribuabililor declarați inactivi/suspendați care totuși desfășoară activitate economică).
+„(4^2) Celelalte entități, altele decât cele prevăzute la alin. (4^1) , nu au obligația depunerii declarațiilor fiscale, pentru perioada pentru care au solicitat suspendarea activității la organismele care le-au autorizat, începând cu data de 1 a lunii următoare înscrierii mențiunii privind suspendarea activității în registrul contribuabililor.”
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 101 alin. (4^2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„(6) Contribuabilii, persoane impozabile stabilite în România, declarați inactivi conform Codului de procedură fiscală, care desfășoară activități economice în perioada de inactivitate, sunt supuși obligațiilor privind plata impozitelor, taxelor și contribuțiilor sociale obligatorii prevăzute de prezentul cod, dar, în perioada respectivă, nu beneficiază de dreptul de deducere a cheltuielilor și a taxei pe valoarea adăugată aferente achizițiilor efectuate.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 11 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Art. 101 alin. (4^2) prevede o scutire de depunere a declarațiilor fiscale, similară celei de la alin. (4^1) pentru firmele înregistrate la registrul comerțului, dar formulată generic pentru „celelalte entități" — categorie în care intră și PFA: scutirea se aplică **pentru perioada pentru care a fost solicitată suspendarea activității la organismele care au autorizat-o**, începând cu data de 1 a lunii următoare înscrierii mențiunii de suspendare în registrul contribuabililor.

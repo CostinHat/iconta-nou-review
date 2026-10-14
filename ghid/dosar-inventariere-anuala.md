@@ -2,7 +2,7 @@
 title: Dosarul de inventariere: ce trebuie să conțină ca să reziste la control
 description: Decizia, declarațiile gestionarilor, listele semnate, procesul-verbal, registrul-inventar. Lanțul de documente care dovedește inventarierea, inclusiv la creanțe și datorii.
 published: 2026-08-15
-modified: 2026-08-15
+modified: 2026-10-13
 ---
 
 # Dosarul de inventariere: ce trebuie să conțină ca să reziste la control
@@ -34,12 +34,14 @@ Nu e un singur document, ci un lanț. Fiecare verigă lipsă rupe demonstrația.
 **Registrul-inventar**, în care se înscriu rezultatele.
 
 ::: ghid-temei
-**Legea contabilității nr. 82/1991, art. 7:** persoanele prevăzute la art. 1 au obligația să efectueze inventarierea generală a elementelor de natura activelor, datoriilor și capitalurilor proprii deținute la începutul activității, cel puțin o dată în cursul exercițiului financiar pe parcursul funcționării lor, în cazul fuziunii sau încetării activității, precum și în alte situații prevăzute de lege.
+„Persoanele prevăzute la art. 1 au obligația să efectueze inventarierea generală a elementelor de natura activelor, datoriilor și capitalurilor proprii deținute la începutul activității, cel puțin o dată în cursul exercițiului financiar, precum și în cazul fuziunii, divizării ori transformării sau al lichidării și în alte situații prevăzute de lege.”
+— Legea contabilității nr. 82/1991, art. 7 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 
-**OMFP nr. 2861/2009** pentru aprobarea Normelor privind organizarea și efectuarea inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii.
-
-**OMFP nr. 1802/2014**, secțiunea privind evaluarea la inventar și prezentarea în situațiile financiare.
+„Registrele de contabilitate obligatorii sunt: Registrul-jurnal, Registrul-inventar și Cartea mare.”
+— Legea contabilității nr. 82/1991, art. 20 (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 :::
+
+Procedura detaliată a inventarierii — decizia, declarațiile gestionarilor, listele, procesul-verbal, registrul-inventar — e stabilită de Normele privind organizarea și efectuarea inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii, aprobate prin OMFP nr. 2861/2009; evaluarea la inventar și prezentarea în situațiile financiare urmează OMFP nr. 1802/2014.
 
 ## Ce se face cu plusurile și lipsurile
 

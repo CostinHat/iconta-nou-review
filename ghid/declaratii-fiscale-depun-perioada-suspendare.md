@@ -2,7 +2,7 @@
 title: Ce declarații fiscale se depun în perioada de suspendare
 description: Cât timp o firmă are înscrisă la registrul comerțului mențiunea de inactivitate temporară, scutirea de depunere a declarațiilor fiscale nu este totală — obligațiile din perioada anterioară suspendării rămân valabile.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,17 @@ Una dintre primele întrebări după înscrierea mențiunii de inactivitate temp
 ## Temeiul legal
 
 ::: ghid-temei
-Legea nr. 207/2015 (Codul de procedură fiscală), art. 101 alin. (4^1)-(4^4) (scutirea de depunere a declarațiilor fiscale pe perioada inactivității temporare, întinderea și limitele ei); art. 92 alin. (1) lit. d) (inactivitatea temporară înscrisă la registrul comerțului ca temei al declarării inactivității fiscale).
+„Entitățile înregistrate în registrul comerțului, pentru care există înscrise mențiuni privind inactivitatea temporară, nu au obligația depunerii declarațiilor fiscale pentru perioada în care se află în inactivitate temporară, începând cu data de 1 a lunii următoare înscrierii mențiunii privind inactivitatea temporară în registrul comerțului.”
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 101 alin. (4^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„Aplicarea prevederilor alin. (4^1) și (4^2) încetează la data reluării activității sau la împlinirea unui termen de 3 ani de la data înregistrării în registrul comerțului a mențiunii privind inactivitatea temporară sau a mențiunii privind suspendarea activității în registrul contribuabililor.”
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 101 alin. (4^3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„Obligațiile de declarare, aferente activității desfășurate anterior înregistrării inactivității temporare/suspendării, se mențin.”
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 101 alin. (4^4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„Contribuabilul/Plătitorul persoană juridică sau orice entitate fără personalitate juridică este declarat inactiv și îi sunt aplicabile prevederile din Codul fiscal privind efectele inactivității dacă se află în una dintre următoarele situații: [...] d) inactivitatea temporară înscrisă la registrul comerțului;”
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 92 alin. (1) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Legea distinge două situații:

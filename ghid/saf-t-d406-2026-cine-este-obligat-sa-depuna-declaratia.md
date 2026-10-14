@@ -13,71 +13,14 @@ Obligația de depunere a Declarației informative D406 (SAF-T) nu a intrat în v
 ## Temeiul legal
 
 ::: ghid-temei
-"1.1. Obligaţia de transmitere a fişierului standard de control fiscal prin intermediul
-Declaraţiei informative D406 devine efectivă pentru fiecare categorie de contribuabili,
-astfel:
-a) pentru contribuabilii încadraţi în categoria mari contribuabili la data de 1 ianuarie
-2022, care au făcut parte din această categorie şi în anul 2021, obligaţia de depunere a
-Declaraţiei informative D406 începe de la data de 1 ianuarie 2022, care reprezintă data de
-referinţă pentru marii contribuabili;
-b) pentru contribuabilii încadraţi în categoria mari contribuabili la data de 1 ianuarie
-2022, care nu au făcut parte din această categorie în anul 2021, obligaţia de depunere a
-Declaraţiei informative D406 începe de la data de 1 iulie 2022, care reprezintă data de
-referinţă pentru noii mari contribuabili;
-c) pentru contribuabilii încadraţi în categoria contribuabili mijlocii la data de 31
-decembrie 2021, obligaţia de depunere a Declaraţiei informative D406 începe de la data de 1
-ianuarie 2023, care reprezintă data de referinţă pentru contribuabilii mijlocii;
-d) pentru contribuabilii care nu sunt încadraţi la data de 31 decembrie 2021 în categoria
-marilor contribuabili sau a contribuabililor mijlocii, denumiţi generic contribuabili mici,
-şi care îşi păstrează această încadrare şi după data de 1 ianuarie 2022, obligaţia de
-depunere a Declaraţiei informative D406 începe de la data de 1 ianuarie 2025, care
-reprezintă data de referinţă pentru contribuabilii mici;
-e) contribuabilii nerezidenţi înregistraţi doar în scop de TVA în România au obligaţia de
-depunere a Declaraţiei informative D406 începând cu data de referinţă pentru contribuabilii
-mici (1 ianuarie 2025);
-f) contribuabilii care la data de 31 decembrie 2021 erau încadraţi în categoria marilor
-contribuabili, iar începând cu data de 1 ianuarie 2022 sunt încadraţi în categoria
-contribuabililor mijlocii sau mici au obligaţia depunerii Declaraţiei informative D406
-începând cu data de referinţă pentru contribuabilii mijlocii (1 ianuarie 2023), respectiv
-pentru contribuabilii mici (1 ianuarie 2025), în funcţie de categoria în care au fost
-încadraţi începând cu 1 ianuarie 2022;
-g) pentru contribuabilii nou-înregistraţi/încadraţi după data de referinţă pentru fiecare
-categorie în parte, obligaţia de depunere a Declaraţiei informative D406 începe de la data
-efectivă a înregistrării, prima depunere a Declaraţiei informative D406 urmând să se facă în
-ultima zi a lunii care urmează perioadei pentru care se face raportarea, ulterior datei de
-referinţă pentru categoria în care au fost înregistraţi/încadraţi."
-(OPANAF 407/2025 (SAF-T, D406), pct. 1.1)
+„1.1. Obligația de transmitere a fișierului standard de control fiscal prin intermediul Declarației informative D406 devine efectivă pentru fiecare categorie de contribuabili, astfel: a) pentru contribuabilii încadrați în categoria mari contribuabili la data de 1 ianuarie 2022, care au făcut parte din această categorie și în anul 2021, obligația de depunere a Declarației informative D406 începe de la data de 1 ianuarie 2022, care reprezintă data de referință pentru marii contribuabili; b) pentru contribuabilii încadrați în categoria mari contribuabili la data de 1 ianuarie 2022, care nu au făcut parte din această categorie în anul 2021, obligația de depunere a Declarației informative D406 începe de la data de 1 iulie 2022, care reprezintă data de referință pentru noii mari contribuabili; c) pentru contribuabilii încadrați în categoria contribuabili mijlocii la data de 31 decembrie 2021, obligația de depunere a Declarației informative D406 începe de la data de 1 ianuarie 2023, care reprezintă data de referință pentru contribuabilii mijlocii; d) pentru contribuabilii care nu sunt încadrați la data de 31 decembrie 2021 în categoria marilor contribuabili sau a contribuabililor mijlocii, denumiți generic contribuabili mici, și care își păstrează această încadrare și după data de 1 ianuarie 2022, obligația de depunere a Declarației informative D406 începe de la data de 1 ianuarie 2025, care reprezintă data de referință pentru contribuabilii mici; e) contribuabilii nerezidenți înregistrați doar în scop de TVA în România au obligația de depunere a Declarației informative D406 începând cu data de referință pentru contribuabilii mici (1 ianuarie 2025); f) contribuabilii care la data de 31 decembrie 2021 erau încadrați în categoria marilor contribuabili, iar începând cu data de 1 ianuarie 2022 sunt încadrați în categoria contribuabililor mijlocii sau mici au obligația depunerii Declarației informative D406 începând cu data de referință pentru contribuabilii mijlocii (1 ianuarie 2023), respectiv pentru contribuabilii mici (1 ianuarie 2025), în funcție de categoria în care au fost încadrați începând cu 1 ianuarie 2022; g) pentru contribuabilii nou-înregistrați/încadrați după data de referință pentru fiecare categorie în parte, obligația de depunere a Declarației informative D406 începe de la data efectivă a înregistrării, prima depunere a Declarației informative D406 urmând să se facă în ultima zi a lunii care urmează perioadei pentru care se face raportarea, ulterior datei de referință pentru categoria în care au fost înregistrați/încadrați.”
+— OPANAF 1783/2021 (modificat prin OPANAF 407/2025), Anexa nr. 5, pct. 1.1 lit. a)-g) (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 
-"3. Următoarele categorii de contribuabili au obligaţia de depunere a fişierului standard de
-control fiscal (SAF-T), prin intermediul Declaraţiei informative D406: a) regiile autonome;
-... c) societăţile pe acţiuni (S.A.); ... g) societăţile cu răspundere limitată (S.R.L.); ...
-s) alte persoane juridice care nu se regăsesc menţionate în mod expres la pct. 4 şi au
-obligaţia potrivit legii să organizeze şi să ţină contabilitatea în partidă dublă."
-(OPANAF 407/2025 (SAF-T, D406), pct. 3)
+„3. Următoarele categorii de contribuabili au obligația de depunere a fișierului standard de control fiscal (SAF-T), prin intermediul Declarației informative D406: a) regiile autonome; [...] c) societățile pe acțiuni (S.A.); [...] g) societățile cu răspundere limitată (S.R.L.); [...] s) alte persoane juridice care nu se regăsesc menționate în mod expres la pct. 4 și au obligația potrivit legii să organizeze și să țină contabilitatea în partidă dublă.”
+— OPANAF 1783/2021 (modificat prin OPANAF 407/2025), Anexa nr. 5, pct. 3 lit. a), c), g) și s) (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 
-"4. Următoarele categorii de contribuabili nu au obligaţia de depunere a fişierului standard
-de control fiscal (SAF-T): a) persoanele fizice autorizate (PFA); b) întreprinderile
-individuale (II); c) întreprinderile familiale (IF); d) persoanele fizice care desfăşoară
-activităţi cu scop lucrativ (PFL); e) asociaţiile familiale (ASF); f) societăţile
-profesionale de avocaţi cu răspundere limitată (SPAR) şi cabinetele individuale de avocat; g)
-societăţile profesionale notariale şi birourile individuale notariale; h) cabinetele
-medicale individuale (CMI); i) societăţile profesionale de practicieni în insolvenţă (SPI);
-j) întreprinderile profesionale unipersonale cu răspundere limitată (URL); k) instituţiile
-publice (PUB), indiferent de sursa lor de finanţare sau de categoria de contribuabili la
-care sunt încadrate; l) autorităţile administrative, indiferent de sursa lor de finanţare;
-m) persoanele juridice care utilizează informaţii clasificate ...; n) asociaţiile/persoanele
-fără scop patrimonial, alte entităţi, care organizează şi ţin contabilitatea în partidă
-simplă conform legii ...; o) persoanele juridice a căror activitate este suspendată temporar
-prin înscrierea menţiunilor la registrul comerţului nu au obligaţia de depunere a fişierului
-standard de control fiscal (SAF-T) pentru perioada în care activitatea este suspendată
-temporar, conform art. 101 alin. (41) din Legea nr. 207/2015 privind Codul de procedură
-fiscală, cu modificările şi completările ulterioare; p) alte entităţi care au solicitat
-suspendarea activităţii la organismele care le-au autorizat nu au obligaţia de depunere a
-fişierului standard de control fiscal (SAF-T) pentru perioada în care activitatea este
-suspendată temporar, conform art. 101 alin. (42) din Legea nr. 207/2015 privind Codul de
-procedură fiscală, cu modificările şi completările ulterioare; q) alţi contribuabili
-persoane fizice care realizează venituri din profesii liberale ..."
-(OPANAF 407/2025 (SAF-T, D406), pct. 4, lit. a-q)
+„4. Următoarele categorii de contribuabili nu au obligația de depunere a fișierului standard de control fiscal (SAF-T): a) persoanele fizice autorizate (PFA); b) întreprinderile individuale (II); c) întreprinderile familiale (IF); d) persoanele fizice care desfășoară activități cu scop lucrativ (PFL); e) asociațiile familiale (ASF); f) societățile profesionale de avocați cu răspundere limitată (SPAR) și cabinetele individuale de avocat; g) societățile profesionale notariale și birourile individuale notariale; h) cabinetele medicale individuale (CMI); i) societățile profesionale de practicieni în insolvență (SPI); j) întreprinderile profesionale unipersonale cu răspundere limitată (URL); k) instituțiile publice (PUB), indiferent de sursa lor de finanțare sau de categoria de contribuabili la care sunt încadrate; l) autoritățile administrative, indiferent de sursa lor de finanțare; m) persoanele juridice care utilizează informații clasificate [...]; n) asociațiile/persoanele fără scop patrimonial, alte entități, care organizează și țin contabilitatea în partidă simplă conform legii. [...] o) persoanele juridice a căror activitate este suspendată temporar prin înscrierea mențiunilor la registrul comerțului nu au obligația de depunere a fișierului standard de control fiscal (SAF-T) pentru perioada în care activitatea este suspendată temporar, conform art. 101 alin. (41) din Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările și completările ulterioare; p) alte entități care au solicitat suspendarea activității la organismele care le-au autorizat nu au obligația de depunere a fișierului standard de control fiscal (SAF-T) pentru perioada în care activitatea este suspendată temporar, conform art. 101 alin. (42) din Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările și completările ulterioare; q) alți contribuabili persoane fizice care realizează venituri din profesii liberale [...]”
+— OPANAF 1783/2021 (modificat prin OPANAF 407/2025), Anexa nr. 5, pct. 4 lit. a)-q) (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 :::
 
 ## Cum se citește lista pe categorii
@@ -98,6 +41,6 @@ Există și o situație tranzitorie: contribuabilii mijlocii "coborâți" la cat
 
 ## Ce face iConta.eu
 
-Aplicația nu calculează automat, pe baza categoriei de mărime ANAF, dacă firma este sau nu obligată să depună D406 — acest lucru nu a fost identificat ca implementat în modulele verificate. Ce este cablat corect este determinarea tipului de raportare (lunar/trimestrial) odată ce firma este obligată, prin funcția „perioada D406 (Declarații)”. Motorul de generare D406 NU verifică și NU exclude automat firmele cu activitate suspendată temporar — decizia de a nu depune declarația pe perioada suspendării (lit. o și p) rămâne în sarcina contabilului. Pentru încadrarea inițială pe categorie (mare/mijlocie/mică) și data de referință aplicabilă, contabilul trebuie să verifice separat statutul comunicat de ANAF.
+Aplicația nu calculează automat, pe baza categoriei de mărime ANAF, dacă firma este sau nu obligată să depună D406. Ce este cablat corect este determinarea tipului de raportare (lunar/trimestrial) odată ce firma este obligată, prin funcția „perioada D406 (Declarații)”. Motorul de generare D406 NU verifică și NU exclude automat firmele cu activitate suspendată temporar — decizia de a nu depune declarația pe perioada suspendării (lit. o și p) rămâne în sarcina contabilului. Pentru încadrarea inițială pe categorie (mare/mijlocie/mică) și data de referință aplicabilă, contabilul trebuie să verifice separat statutul comunicat de ANAF.
 
 [iConta.eu](/)

@@ -12,6 +12,16 @@ Pentru un cabinet cu portofoliu de firme, ecranul „Termene” din iConta.eu ag
 
 Ecranul de agregare în sine nu are un temei legal propriu — fiecare declarație afișată își are propriul temei (de exemplu, art. 323 alin. (1) Cod fiscal pentru D300, OPANAF 705/2020 pentru D390 ș.a.m.d.), în funcție de tipul de obligație.
 
+## Temeiul legal
+
+::: ghid-temei
+„Persoanele înregistrate conform art. 316 trebuie să depună la organele fiscale competente, pentru fiecare perioadă fiscală, un decont de taxă, până la data de 25 inclusiv a lunii următoare celei în care se încheie perioada fiscală respectivă.”
+— Codul fiscal (Legea nr. 227/2015), art. 323 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Contribuabilii/Plătitorii beneficiază de o perioadă de grație de: - 6 (șase) luni pentru prima raportare, [...] pentru contribuabilii care au obligația de transmitere lunară a fișierului SAF-T; - 3 (trei) luni pentru prima raportare, pentru contribuabilii care au obligația de transmitere trimestrială a fișierului SAF-T.”
+— OPANAF nr. 1783/2021, anexa nr. 4, pct. 5 alin. (1) (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
+:::
+
 ## Ce se greșește în practică
 
 - Se tratează lista din „Termene” ca fiind completă pentru toate obligațiile firmei — ecranul arată strict viitorul apropiat (60 de zile), nu și restanțele. O declarație deja scadentă în trecut nu apare aici deloc, ci pe ecranul separat „Semafor conformare fiscală”.

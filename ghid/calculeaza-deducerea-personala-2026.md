@@ -15,7 +15,11 @@ Deducerea personală se scade din venitul brut, înainte de aplicarea impozitulu
 ## Temeiul legal
 
 ::: ghid-temei
-Codul fiscal (Legea 227/2015), art.77: pragul de bază pentru deducerea integrală e salariul minim brut pe țară; peste acest prag, deducerea scade degresiv cu 0,5 puncte procentuale pentru fiecare tranșă de 50 lei, până la pragul-limită de salariul minim + 2.000 lei, unde deducerea devine zero.
+„Deducerea personală de bază se acordă pentru persoanele fizice care au un venit lunar brut de până la 2.000 de lei peste nivelul salariului de bază minim brut pe țară garantat în plată aprobat prin hotărâre a Guvernului, în vigoare în luna de realizare a venitului. În situația în care, în cursul aceleiași luni, se utilizează mai multe valori ale salariului minim brut pe țară, se ia în calcul valoarea cea mai mică a salariului minim brut pe țară.”
+— Codul fiscal (Legea nr. 227/2015), art. 77 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Pentru contribuabilii care realizează venituri brute lunare din salarii de până la nivelul prevăzut la alin. (3) inclusiv, deducerile personale de bază se stabilesc potrivit următorului tabel:”
+— Codul fiscal (Legea nr. 227/2015), art. 77 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Scara deducerii (după persoane în întreținere)

@@ -22,6 +22,7 @@ Obligația contează mai ales dacă firma ajunge totuși în insolvență: de la
 ::: ghid-temei
 „dificultatea reprezintă starea generată de orice împrejurare care determină o afectare temporară a activității ce dă naștere unei amenințări reale și grave la adresa capacității viitoare a debitorului de a-și plăti datoriile la scadență, dacă nu sunt luate măsuri adecvate; debitorul în stare de dificultate este capabil să își execute obligațiile pe măsură ce devin scadente;"
 — Legea 85/2014, art. 5 alin. (1) pct. 26^2 (sursă: [Legea nr. 85/2014 privind procedurile de prevenire a insolvenței și de insolvență](https://legislatie.just.ro/Public/DetaliiDocument/159286))
+
 „d) măsurile întreprinse de organele statutare ale societății în vederea prevenirii stării de insolvență/a falimentului și pentru acoperirea pasivului societății, inclusiv cele aplicate potrivit art. 73 alin. (1^1) din Legea nr. 31/1990"
 — Legea 85/2014, art. 97 alin. (1^1) lit. d) (sursă: [Legea nr. 85/2014 privind procedurile de prevenire a insolvenței și de insolvență](https://legislatie.just.ro/Public/DetaliiDocument/159286))
 :::

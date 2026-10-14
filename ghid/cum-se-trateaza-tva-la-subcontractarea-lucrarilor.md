@@ -2,7 +2,7 @@
 title: Cum se tratează TVA la subcontractarea lucrărilor?
 description: Legea română nu prevede un mecanism de taxare inversă pentru lucrările de construcții-montaj/subcontractare; factura de subcontractare se emite cu TVA în regim normal, singura excepție de la art. 331 fiind livrarea taxabilă a clădirii/terenului finit, nu execuția lucrării.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,11 +13,14 @@ Mulți antreprenori și subcontractori din construcții presupun că există o t
 ## Temeiul legal
 
 ::: ghid-temei
-**Articolul 331 alin. (2)**, lit. g): construcțiile, astfel cum sunt definite la art. 292 alin. (2) lit. f) pct. 2, părțile de construcție și terenurile de orice fel, pentru a căror livrare se aplică regimul de taxare prin efectul legii sau prin opțiune;
+„Prin excepție de la prevederile art. 307 alin. (1), în cazul operațiunilor taxabile, persoana obligată la plata taxei este beneficiarul pentru operațiunile prevăzute la alin. (2). Condiția obligatorie pentru aplicarea taxării inverse este ca atât furnizorul, cât și beneficiarul să fie înregistrați în scopuri de TVA conform art. 316.”
+— Codul fiscal (Legea 227/2015), art. 331 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Articolul 331 alin. (1):** Prin excepție de la prevederile art. 307 alin. (1), în cazul operațiunilor taxabile, persoana obligată la plata taxei este beneficiarul pentru operațiunile prevăzute la alin. (2). Condiția obligatorie pentru aplicarea taxării inverse este ca atât furnizorul, cât și beneficiarul să fie înregistrați în scopuri de TVA conform art. 316.
+„Operațiunile pentru care se aplică taxarea inversă sunt: [...] g) construcțiile, astfel cum sunt definite la art. 292 alin. (2) lit. f) pct. 2, părțile de construcție și terenurile de orice fel, pentru a căror livrare se aplică regimul de taxare prin efectul legii sau prin opțiune;”
+— Codul fiscal (Legea 227/2015), art. 331 alin. (2) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Articolul 331 alin. (5):** Prevederile prezentului articol se aplică numai pentru livrările de bunuri/prestările de servicii în interiorul țării.
+„Prevederile prezentului articol se aplică numai pentru livrările de bunuri/prestările de servicii în interiorul țării.”
+— Codul fiscal (Legea 227/2015), art. 331 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Ce se aplică de fapt

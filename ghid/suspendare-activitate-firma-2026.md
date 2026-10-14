@@ -2,7 +2,7 @@
 title: "Suspendare activitate firmă 2026: cum se face"
 description: Suspendarea activității unei firme înseamnă înscrierea mențiunii de inactivitate temporară la registrul comerțului și anunțarea organului fiscal — un mecanism cu o durată maximă de 3 ani, valabil și în 2026.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,11 @@ Suspendarea activității unei firme — corect numită, din punct de vedere leg
 ## Temeiul legal
 
 ::: ghid-temei
-Legea nr. 31/1990 (Legea societăților), art. 237^2 alin. (1) lit. b) (inactivitatea temporară anunțată organelor fiscale și înscrisă în registrul comerțului, cu durată maximă de 3 ani); Legea nr. 207/2015 (Codul de procedură fiscală), art. 92 alin. (1) lit. d) (inactivitatea temporară înscrisă la registrul comerțului ca temei al declarării inactivității fiscale).
+„Oficiul Național al Registrului Comerțului, prin registrator, constată întrunirea condițiilor pentru dizolvarea societății [...] în cazurile în care: [...] b) a încetat activitatea societății sau nu a fost reluată activitatea după perioada de inactivitate temporară, anunțată organelor fiscale și înscrisă în registrul comerțului, perioadă care nu poate depăși 3 ani de la data înscrierii în registrul comerțului;”
+— Legea societăților nr. 31/1990, art. 237^2 alin. (1) lit. b) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
+
+„Contribuabilul/Plătitorul persoană juridică sau orice entitate fără personalitate juridică este declarat inactiv și îi sunt aplicabile prevederile din Codul fiscal privind efectele inactivității dacă se află în una dintre următoarele situații: [...] d) inactivitatea temporară înscrisă la registrul comerțului;”
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 92 alin. (1) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Mecanismul are două componente, care se leagă una de cealaltă:

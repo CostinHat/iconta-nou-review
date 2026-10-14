@@ -34,17 +34,17 @@ Plătitorii trimestriali au o situație specială când fac achiziții intracomu
 
 Totalurile trebuie să rezulte din formulele din structură. Orice abatere produce „ERR : calcul”. Exemple:
 
-- R33_2 = MAX(R32_2 − R17_2, 0) și R34_2 = MAX(R17_2 − R32_2, 0): taxa de plată și suma negativă a perioadei;
-- R37_2 = R34_2 + R35_2 + R36_2, respectiv R40_2 = R33_2 + R38_2 + R39_2;
-- R41_2 = MAX(R37_2 − R40_2, 0) și R42_2 = MAX(R40_2 − R37_2, 0): soldurile finale.
+- rd. 36 = MAX(rd. 35 − rd. 19, 0) și rd. 37 = MAX(rd. 19 − rd. 35, 0): suma negativă și taxa de plată a perioadei;
+- rd. 40 = rd. 37 + rd. 38 + rd. 39, respectiv rd. 43 = rd. 36 + rd. 41 + rd. 42;
+- rd. 44 = MAX(rd. 40 − rd. 43, 0) și rd. 45 = MAX(rd. 43 − rd. 40, 0): soldurile finale.
 
-Un rând „din care” nu poate depăși rândul său principal. De exemplu, rd. 17.1 nu poate fi mai mare decât rd. 17.
+Rândurile „din care” nu pot depăși rândul lor principal. De exemplu, la baza de impozitare, rd. 12.1 și rd. 12.2 adunate nu pot fi mai mari decât rd. 12.
 
-**Soldurile din decontul anterior.** R35_2 este soldul de plată neachitat din perioada precedentă. R38_2 este suma negativă reportată din perioada precedentă, pentru care nu s-a cerut rambursare. Cele două nu pot fi completate simultan: dacă unul este mai mare decât zero, celălalt trebuie să fie zero.
+**Soldurile din decontul anterior.** Rândul 38 este soldul de plată neachitat din perioada precedentă. Rândul 41 este suma negativă reportată din perioada precedentă, pentru care nu s-a cerut rambursare. Cele două nu pot fi completate simultan: dacă unul este mai mare decât zero, celălalt trebuie să fie zero.
 
 ### 4. Oglinda taxării inverse
 
-Pentru achizițiile intracomunitare și pentru operațiunile cu taxare inversă, TVA-ul se colectează și se deduce în același decont. Validarea cere ca rândul de deducere să fie egal cu rândul de colectare, atât la bază, cât și la TVA. Regulile V_7–V_26 compară, de exemplu, R18 cu R5 și R25 cu R12. Diferențele apar când o factură este introdusă doar pe o parte.
+Pentru achizițiile intracomunitare și pentru operațiunile cu taxare inversă, TVA-ul se colectează și se deduce în același decont. Validarea cere ca rândul de deducere să fie egal cu rândul de colectare, atât la bază, cât și la TVA. Regulile V_7–V_26 compară, de exemplu, rândul 20 cu rândul 5 și rândul 26 cu rândul 12. Diferențele apar când o factură este introdusă doar pe o parte.
 
 ### 5. Metoda simplificată bifată greșit
 

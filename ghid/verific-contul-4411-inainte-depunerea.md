@@ -2,7 +2,7 @@
 title: "Cum verific contul 4411 înainte de depunerea declarațiilor?"
 description: Spre deosebire de TVA sau D112, contul 4411 (impozitul pe profit) nu are un verificator automat față de declarație — reconcilierea e manuală, cu pașii concreți de urmat, nu doar cu promisiunea unui buton.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -14,6 +14,12 @@ Răspunsul onest, întâi de toate: nu există un verificator automat care să c
 
 ::: ghid-temei
 „Cota de impozit pe profit care se aplică asupra profitului impozabil este de 16%." — Legea nr. 227/2015 (Codul fiscal), art. 17.
+
+„Contribuabilii care aplică sistemul de declarare și plată a impozitului pe profit anual, cu plăți anticipate efectuate trimestrial, determină plățile anticipate trimestriale în sumă de o pătrime din impozitul pe profit datorat pentru anul precedent, actualizat cu indicele prețurilor de consum [...]”
+— Legea nr. 227/2015 privind Codul fiscal, art. 41 alin. (8) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„(10^1) Prin excepție de la prevederile alin. (8) , plata anticipată pentru trimestrul I al fiecărui an fiscal/an fiscal modificat se calculează prin aplicarea cotei de impozit asupra profitului contabil al perioadei pentru care se efectuează plata anticipată. Aceasta se declară și se plătește până la data de 25 inclusiv a lunii următoare trimestrului I.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 41 alin. (10^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## De ce nu există un verificator automat aici
@@ -24,7 +30,7 @@ TVA are un comparator explicit între conturile 4427/4426 și rândurile din dec
 
 1. **Recalculează obligația din declarație.** Profit impozabil × 16% (cota standard, Codul fiscal art. 17). Dacă firma depășește pragul de cifră de afaceri pentru impozitul minim pe cifra de afaceri (IMCA), obligația se determină după formula specifică acelui regim, nu simpla înmulțire cu 16%.
 2. **Extrage rulajul contului 4411** pentru perioada declarată — atenție la distincția între 4411 (impozit pe profit) și 4418 (impozit pe venit), conturi diferite în planul de conturi.
-3. **Compară cele două sume.** O diferență poate veni din: plăți anticipate trimestriale neînregistrate corect, regularizări de la un an la altul, sau o eroare de calcul în declarație.
+3. **Compară cele două sume.** O diferență poate veni din: plăți anticipate trimestriale neînregistrate corect, regularizări de la un an la altul, sau o eroare de calcul în declarație. La sistemul anual cu plăți anticipate, plățile trimestriale sunt o pătrime din impozitul pe profit al anului precedent, actualizat cu indicele prețurilor de consum (art. 41 alin. (8)) — cu excepția trimestrului I: începând cu anul fiscal 2026, plata anticipată pentru trimestrul I se calculează aplicând cota de impozit asupra profitului contabil al trimestrului I (art. 41 alin. (10^1), introdus prin OUG 8/2026).
 4. **Documentează diferența**, dacă există — nu o corecta „din ochi" fără să identifici sursa exactă, pentru că exact aceasta e verificarea pe care controlul o va cere.
 
 ## Ce se greșește în practică

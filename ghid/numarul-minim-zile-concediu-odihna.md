@@ -21,6 +21,7 @@ Concediul de odihnă anual e un drept garantat oricărui salariat, indiferent de
 
 „Sărbătorile legale în care nu se lucrează, precum şi zilele libere plătite stabilite prin contractul colectiv de muncă aplicabil nu sunt incluse în durata concediului de odihnă anual."
 — Legea 53/2003 (Codul muncii), art. 140 alin. (3)
+
 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 

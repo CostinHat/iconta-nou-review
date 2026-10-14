@@ -13,8 +13,14 @@ De la început, o precizare de graniță: acest subiect nu are nicio legătură 
 ## Temeiul legal
 
 ::: ghid-temei
-D101 este generată din balanță, pe baza profilului firmei și a rulajelor contabile din clasele 6/7, pentru calculul impozitului pe profit; formularul e reglementat prin ordinul care stabilește modelul și conținutul D101 (OPANAF 206/2025), iar impozitul minim pe cifra de afaceri (IMCA) se calculează conform art. 18^1 din Codul fiscal, pentru firmele cu cifra de afaceri de peste 50.000.000 EUR.
+„(1) Se aprobă modelul, conţinutul şi instrucţiunile de completare a formularului 101 "Declaraţie privind impozitul pe profit", prevăzute în anexa nr. 1.”
+— OPANAF 206/2025, art. 1 alin. (1) (sursă: [OPANAF nr. 206/2025 pentru aprobarea formularelor 101](https://legislatie.just.ro/Public/DetaliiDocument/294776))
+
+„(1) Contribuabilii, alții decât cei prevăzuți la art. 15 , care înregistrează în anul precedent o cifră de afaceri de peste 50.000.000 euro și care în anul de calcul determină un impozit pe profit, cumulat de la începutul anului fiscal/anului fiscal modificat până la sfârșitul trimestrului/anului de calcul, mai mic decât impozitul minim pe cifra de afaceri stabilit potrivit prevederilor alin. (3) , sunt obligați la plata impozitului pe profit la nivelul impozitului minim pe cifra de afaceri.”
+— Legea 227/2015, art. 18^1 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
+
+Formularul D101 e cel aprobat prin OPANAF 206/2025, iar impozitul minim pe cifra de afaceri (IMCA) privește, potrivit art. 18^1 din Codul fiscal, firmele cu o cifră de afaceri de peste 50.000.000 euro în anul precedent.
 
 Numărul de angajați ai firmei nu apare, în sursele verificate pentru acest subiect, ca un criteriu al calculului impozitului pe profit propriu-zis sau al IMCA — obligația de plată a impozitului pe profit ține de forma de organizare și de regimul fiscal ales (profit vs. microîntreprindere), nu de faptul că firma are sau nu personal angajat.
 
@@ -25,6 +31,6 @@ Numărul de angajați ai firmei nu apare, în sursele verificate pentru acest su
 
 ## Ce face iConta.eu
 
-Trebuie spus deschis unde se termină ce a putut fi verificat: acest subiect nu ține de funcționalitatea de bilanț („Bilanț anual S1005/S1003”), ci de **„Declarația D101 și IMCA” — Declarația D101 și IMCA**. Verificat direct în cod: nu există nicio ramură de calcul legată de numărul de angajați (verificarea în aplicație → 0 rezultate) — impozitul pe profit și IMCA se calculează la fel, indiferent dacă firma are sau nu personal angajat. Dacă întrebarea vizează de fapt condiția de a avea cel puțin un salariat pentru cota redusă de impozitare la **microîntreprinderi** (un regim diferit de impozitul pe profit), aceasta nu are azi o funcționalitate dedicată identificată în dosarul de cercetare al acestui ghid — nu putem confirma aici acest aspect.
+Acest subiect nu ține de funcționalitatea de bilanț („Bilanț anual S1005/S1003”), ci de **„Declarația D101 și IMCA”**. Aplicația generează D101 din balanță, pe baza profilului firmei și a rulajelor contabile din clasele 6/7, iar calculul impozitului pe profit și al IMCA nu ține cont de numărul de angajați — se face la fel, indiferent dacă firma are sau nu personal angajat. Dacă întrebarea vizează de fapt condiția de a avea cel puțin un salariat pentru cota redusă de impozitare la **microîntreprinderi** (un regim diferit de impozitul pe profit), acest ghid nu se pronunță asupra ei.
 
 [iConta.eu](/)

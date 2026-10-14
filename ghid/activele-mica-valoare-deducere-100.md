@@ -20,6 +20,7 @@ decât suma de 5.000 lei; această limită se actualizată anual, în funcție d
 inflație, prin hotărâre a Guvernului;
 
 — Codul fiscal (Legea 227/2015), art.28 alin.(2) lit.b, forma consolidată la 25.02.2026 (modificată
+
 prin OUG nr. 8/2026, publicată în M.Of. nr. 147/25.02.2026)
 :::
 

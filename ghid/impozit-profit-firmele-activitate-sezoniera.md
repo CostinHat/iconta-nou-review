@@ -2,7 +2,7 @@
 title: "Impozit pe profit la firmele cu activitate sezonieră"
 description: "Codul fiscal nu prevede un regim special pentru firmele cu activitate sezonieră — se aplică regulile generale de calcul, declarare și plată a impozitului pe profit."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -20,16 +20,18 @@ Codul fiscal nu are un regim special pentru firmele cu activitate sezonieră (de
 — Legea 227/2015, art. 41 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
-Consecința: o firmă cu activitate sezonieră (de exemplu, venituri concentrate în trimestrele II-III și activitate redusă restul anului) declară și, dacă e cazul, plătește impozit pe profit pentru fiecare trimestru, conform obligațiilor generale — dacă un trimestru „mort" nu generează profit impozabil, nu se datorează impozit pentru acel trimestru (declarația se depune totuși, dacă firma e obligată la sistemul trimestrial), iar impozitul se calculează cumulat de la începutul anului: pierderea unui trimestru diminuează impozitul datorat pentru trimestrele următoare cu profit, până la definitivarea anuală. Nu există un plafon special, o cotă redusă sau un termen extins doar pentru că activitatea e sezonieră.
+Consecința: o firmă cu activitate sezonieră (de exemplu, venituri concentrate în trimestrele II-III și activitate redusă restul anului) declară și, dacă e cazul, plătește impozit pe profit pentru fiecare trimestru, conform obligațiilor generale — dacă un trimestru „mort" nu generează profit impozabil, nu se datorează impozit pentru acel trimestru (declarația se depune totuși, dacă firma e obligată la sistemul trimestrial), iar impozitul se calculează cumulat de la începutul anului: pierderea unui trimestru diminuează impozitul datorat pentru trimestrele următoare cu profit, până la definitivarea anuală. Concret, impozitul de plată pentru un trimestru e diferența dintre impozitul calculat pe profitul cumulat de la 1 ianuarie și impozitul deja calculat în trimestrele anterioare ale aceluiași an — nu impozitul pe profitul „brut” al trimestrului de sezon, luat izolat. Nu există un plafon special, o cotă redusă sau un termen extins doar pentru că activitatea e sezonieră.
 
 ## Ce se greșește în practică
 
 - Se caută, fără temei, un „regim sezonier" separat în Codul fiscal — nu există; excepțiile de la sistemul trimestrial vizează categorii expres nominalizate (agricultura, art. 41 alin. 5 lit. b; instituțiile de credit, art. 41 alin. 4; firmele aflate în dizolvare cu lichidare, art. 41 alin. 1 coroborat cu art. 16 alin. 6), nu sezonalitatea activității în general.
+- Se calculează impozitul fiecărui trimestru izolat, pe profitul acelui trimestru, ignorând pierderea din trimestrele anterioare — rezultatul e un impozit supra-declarat în trimestrele de sezon.
+- Nu se ține evidența impozitului deja calculat în trimestrele anterioare, așa că diferența de plată din trimestrul curent nu se mai poate stabili corect.
 - Se omite depunerea declarației trimestriale pentru perioadele fără activitate, presupunând greșit că absența profitului scutește și de obligația declarativă.
 - Se confundă inactivitatea temporară înregistrată la registrul comerțului (care are reguli proprii, relevante mai ales pentru micro, art. 48 alin. 2^3) cu o simplă perioadă de activitate redusă specifică unui sezon, care nu declanșează niciun regim special.
 
 ## Ce face iConta.eu
 
-iConta.eu calculează impozitul pe profit cumulat de la începutul anului fiscal, conform art. 41 — motorul D100 tratează corect cazul unui trimestru cu pierdere urmat de un trimestru cu profit, aplicând impozitul doar pe rezultatul cumulat, nu pe fiecare trimestru izolat. Această logică acoperă exact situația unei firme cu activitate sezonieră, indiferent dacă are un regim special declarat sau nu — pentru că, legal, nu există un regim special, iar calculul cumulat corect e suficient pentru orice distribuție neuniformă a profitului pe parcursul anului.
+În declarația D100, iConta.eu calculează impozitul pe profit cumulat de la începutul anului fiscal, conform art. 41: un trimestru cu pierdere reduce cumulatul, iar impozitul unui trimestru următor cu profit se calculează ca diferență față de ce s-a calculat deja în trimestrele anterioare, nu pe profitul izolat al acelui trimestru. Această logică acoperă exact situația unei firme cu activitate sezonieră, indiferent dacă are un regim special declarat sau nu — pentru că, legal, nu există un regim special, iar calculul cumulat corect e suficient pentru orice distribuție neuniformă a profitului pe parcursul anului.
 
 [iConta.eu](/)

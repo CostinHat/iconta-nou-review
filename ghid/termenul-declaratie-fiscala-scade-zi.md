@@ -2,7 +2,7 @@
 title: Care este termenul dacă o declarație fiscală scade într-o zi nelucrătoare?
 description: Aceeași regulă se aplică indiferent de tipul declarației — data nominală se mută pe următoarea zi lucrătoare, ținând cont de weekend și de calendarul complet al sărbătorilor legale (fixe și mobile) până în 2099.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,10 +13,14 @@ poarta: v1
 ## Temeiul legal
 
 ::: ghid-temei
-Calendarul zilelor de sărbătoare legală folosit pentru mutarea termenelor are ca bază declarată art.139 din Codul muncii (Legea 53/2003), care enumeră atât zilele fixe, cât și cele cinci zile mobile calculate după Paștele ortodox (valabile pentru intervalul 2024–2099).
+„Termenele de orice fel privind exercitarea drepturilor și îndeplinirea obligațiilor prevăzute de Codul fiscal, de prezentul cod, precum și de alte dispoziții legale aplicabile în materie, dacă legislația fiscală nu dispune altfel, se calculează potrivit dispozițiilor Codului de procedură civilă, republicat.”
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 75 (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„Zilele de sărbătoare legală în care nu se lucrează sunt: – 1 și 2 ianuarie; [...] – 6 ianuarie - Botezul Domnului - Boboteaza; [...] – 7 ianuarie - Soborul Sfântului Proroc Ioan Botezătorul; [...] – 24 ianuarie – Ziua Unirii Principatelor Române; [...] – Vinerea Mare, ultima zi de vineri înaintea Paștelui; [...] – prima și a doua zi de Paști; [...] – 1 mai; [...] – 1 iunie; [...] – prima și a doua zi de Rusalii; [...] – Adormirea Maicii Domnului; [...] – 30 noiembrie - Sfântul Apostol Andrei, cel Întâi chemat, Ocrotitorul României; [...] – 1 decembrie; [...] – prima și a doua zi de Crăciun; [...]”
+— Codul muncii (Legea 53/2003), art. 139 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 
-**De semnalat onest**: regula de prorogare a termenului fiscal pentru „prima zi lucrătoare" e confirmată ca fiind implementată efectiv, ca mecanism, în aplicația verificată pentru acest dosar — dar dosarul nu conține un citat verbatim din actul normativ care reglementează explicit acest mecanism de prorogare (de regulă, Codul de procedură fiscală). Nu inventăm acest citat; mecanismul descris mai jos e confirmat din comportamentul codului sursă, nu dintr-un text de lege reprodus aici.
+Codul de procedură fiscală nu are o regulă proprie de prelungire a termenului: trimite, pentru calculul termenelor, la Codul de procedură civilă (art. 75, citat mai sus), al cărui text nu e reprodus în acest ghid. Calendarul zilelor nelucrătoare cuprinde, pe lângă sâmbete și duminici, sărbătorile legale de la art. 139 alin. (1) din Codul muncii — fixe și mobile (Vinerea Mare, Paștele și Rusaliile, după calendarul ortodox). Mecanismul descris mai jos este cel aplicat de aplicație.
 
 ## Mecanismul, pas cu pas
 

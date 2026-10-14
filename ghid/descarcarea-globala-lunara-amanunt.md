@@ -16,11 +16,9 @@ La comercianții cu amănuntul care țin evidența mărfii la preț de vânzare 
 OMFP 1802/2014, Anexa 1 — Reglementări contabile, pct. 286 alin. (4): „Repartizarea diferențelor de preț asupra valorii bunurilor ieșite și asupra stocurilor se efectuează cu ajutorul unui coeficient care se calculează astfel: Coeficient de repartizare = [Soldul inițial al diferențelor de preț + Diferențe de preț aferente intrărilor în cursul perioadei, cumulat de la începutul exercițiului financiar până la finele perioadei de referință] / [Soldul inițial al stocurilor la preț de înregistrare + Valoarea intrărilor în cursul perioadei la preț de înregistrare, cumulat de la începutul exercițiului financiar până la finele perioadei de referință] x 100."
 
 pct. 286 alin. (7): „Diferențele de preț se repartizează proporțional atât asupra valorii bunurilor ieșite, cât și asupra bunurilor rămase în stoc."
-
-(Text consolidat OMFP 1802/2014, verificat pe mirrorul local la 17.09.2026.)
 :::
 
-Pașii calculului, așa cum rezultă din formula legală de mai sus și din motorul de calcul al iConta.eu:
+Pașii calculului, așa cum rezultă din formula legală de mai sus și așa cum îi aplică iConta.eu:
 
 1. Se determină soldurile inițiale și rulajele conturilor 371 (mărfuri), 378 (adaos comercial) și 4428 (TVA neexigibilă), cumulat de la 1 ianuarie până la sfârșitul lunii.
 2. Se calculează coeficientul de repartizare K, ca raport între adaosul cumulat (378) și stocul la preț de înregistrare, din care se exclude TVA neexigibilă (4428) — conform notei *2) de la alin. (4).
@@ -35,8 +33,8 @@ Pașii calculului, așa cum rezultă din formula legală de mai sus și din moto
 
 ## Ce face iConta.eu
 
-Funcția „descărcarea lunii (Stocuri)” automatizează exact pașii de mai sus: preia soldurile inițiale din „soldurile inițiale (Migrare)” (dacă există), rulajele 371/378/4428 din notele deja validate, iar vânzările (707) filtrate explicit pe sursele „raportul Z (HoReCa)”, `stocuri` și „facturile de marfă”, doar pe luna curentă. TVA aferentă vânzărilor lunii este aproximată proporțional cu cota medie din stoc (TVA-ul vânzărilor = rulajul creditor 707 × TVA-ul din stoc / baza stocului), cu mențiunea explicită din codul sursă că o repartizare proporțională din contul 4427 ar fi riscantă.
+Descărcarea lunii, din ecranul Stocuri, automatizează exact pașii de mai sus: preia soldurile inițiale introduse la preluarea firmei (dacă există), rulajele 371/378/4428 din notele deja validate, iar vânzările (707) doar pe luna curentă și numai pe cele provenite din rapoartele Z, din operațiunile de stoc și din facturile de marfă. TVA aferentă vânzărilor lunii este aproximată proporțional cu cota medie din stoc (TVA-ul vânzărilor = rulajul creditor 707 × TVA-ul din stoc / baza stocului); aplicația nu o repartizează proporțional din contul 4427, pentru că o asemenea repartizare ar fi riscantă.
 
-Dacă nu au existat vânzări în lună, aplicația nu generează nicio notă, ci întoarce un „fapt" structurat care confirmă lipsa vânzărilor. Nota de descărcare, când există, se creează la data ultimei zile calendaristice a lunii, ca **ciornă** — validarea rămâne manuală, în jurnalul contabil.
+Dacă nu au existat vânzări în lună, aplicația nu generează nicio notă, ci vă arată că în lună nu au existat vânzări. Nota de descărcare, când există, se creează la data ultimei zile calendaristice a lunii, ca **ciornă** — validarea rămâne manuală, în jurnalul contabil.
 
 [iConta.eu](/)

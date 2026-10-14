@@ -2,7 +2,7 @@
 title: "Ce facturi nu se declară în D394?"
 description: "Categoriile de operațiuni și de documente excluse din declarația 394, cu temeiul legal și modul în care iConta.eu le filtrează automat."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,7 +29,7 @@ D394 nu e o oglindă a tuturor documentelor emise sau primite de firmă: ea rapo
 
 ## Ce face iConta.eu
 
-Generatorul D394 (cu accesul la date în aplicație) exclude automat din calcul: achizițiile de la parteneri UE și non-UE (direcția „primită" e sărită explicit, cu comentariul din cod „ACHIZIȚIILE INTRACOMUNITARE NU INTRĂ ÎN D394 — se declară în D390"), documentele de tip proformă/aviz (filtrate după tipul de document) și, din 17.09.2026, facturile cu status anulat, stornat sau ciornă — aliniat cu aceeași regulă folosită la decontul D300. Înainte de acest ultim fix, o factură anulată sau stornată putea intra în D394 cu bază și TVA, deși D300 o excludea deja; corecția a unificat cele două surse.
+La întocmirea D394, iConta.eu exclude automat din calcul: achizițiile de la parteneri UE și non-UE (facturile primite de la acești parteneri nu intră în D394; achizițiile intracomunitare se declară în D390), documentele de tip proformă/aviz (după tipul de document) și, din 17.09.2026, facturile cu status anulat, stornat sau ciornă — după aceeași regulă folosită la decontul D300. Înainte de această corecție, o factură anulată sau stornată putea intra în D394 cu bază și TVA, deși D300 o excludea deja; acum cele două declarații aplică aceeași regulă.
 
 Depunerea efectivă a declarației rămâne manuală, prin portalul SPV — iConta nu transmite fișierul automat la ANAF, ci doar îl generează și îl validează local.
 

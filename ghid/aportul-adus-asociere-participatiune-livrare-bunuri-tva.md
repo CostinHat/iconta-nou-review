@@ -18,6 +18,7 @@ Regula are limite clare. Dacă un asociat furnizează mai mult decât partea lui
 „(3) Bunurile care sunt puse la dispoziția asocierii de către membrii săi fără plată, ca aport la asociere în limita cotei de participare stabilite prin contract, nu constituie livrare de bunuri cu plată în sensul art. 270 din Codul fiscal."
 „(7) Aportul la asociere nu este considerat avans la o livrare/prestare, în măsura în care sunt respectate prevederile prezentelor norme referitoare la asocierile în participațiune, respectiv în situația în care nu au loc livrări de bunuri/prestări de servicii exclusiv între membrii asociați."
 — HG 1/2016, norme metodologice, titlul VII, pct. 102 alin. (3) și (7) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
+
 „În acest caz, baza impozabilă este suma primită de membrul respectiv al asocierii drept contravaloare a operațiunilor ce depășesc partea prevăzută pentru el în contractul de asociere."
 — HG 1/2016, norme metodologice, titlul VII, pct. 102 alin. (6) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::

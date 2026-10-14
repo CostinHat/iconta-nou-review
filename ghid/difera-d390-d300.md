@@ -1,8 +1,8 @@
 ---
 title: De ce diferă D390 de D300?
-description: R1_1 și R5_1 din D300 se derivă din aceleași facturi ca D390 — o diferență reală vine aproape mereu din decalaj temporal, nu dintr-o eroare de calcul dublă.
+description: Rândurile 1 și 5 din D300 (baza de impozitare) se derivă din aceleași facturi ca D390 — o diferență reală vine aproape mereu din decalaj temporal, nu dintr-o eroare de calcul dublă.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -15,12 +15,12 @@ Când D390 și D300 arată cifre diferite pentru aceleași operațiuni intracomu
 ::: ghid-temei
 **Art. 325 din Codul fiscal (Legea 227/2015)** — obligația de a declara lunar, prin declarația recapitulativă, livrările intracomunitare scutite (lit. a) și achizițiile intracomunitare taxabile (lit. d).
 
-Structura oficială a formularului D300 confirmă rândurile **R1_1** (livrări intracomunitare) și **R5_1** (achiziții intracomunitare) ca puncte de comparație cu bazele echivalente din D390.
+Structura oficială a formularului D300 confirmă rândurile **1** (livrări intracomunitare) și **5** (achiziții intracomunitare), coloana bazei de impozitare, ca puncte de comparație cu bazele echivalente din D390.
 
 Art. 284 din Codul fiscal (exigibilitatea taxei) e motivul pentru care o diferență de cifre între D390 și D300 rămâne, de regulă, un semnal de verificat, nu o eroare confirmată — fără să existe un text unic de citat aici pentru decalajul de exigibilitate în sine.
 :::
 
-Rândul R1_1 (livrări) și rândul R5_1 (achiziții) din D300 nu sunt completate independent de D390 — ambele se derivă automat din **aceleași facturi intracomunitare**, cu partener identificat prin cod de TVA UE. Practic, dacă o factură intră o singură dată în sistem, ea alimentează în același fel și baza D390, și rândul corespunzător din D300.
+Rândul 1 (livrări) și rândul 5 (achiziții) din D300 nu sunt completate independent de D390 — ambele se derivă automat din **aceleași facturi intracomunitare**, cu partener identificat prin cod de TVA UE. Practic, dacă o factură intră o singură dată în sistem, ea alimentează în același fel și baza D390, și rândul corespunzător din D300.
 
 De aici rezultă ceva important: comparația D390 ↔ D300 **nu prinde o eroare pe care ambele calcule o fac la fel** — de exemplu o factură clasificată greșit ca intracomunitară de la bun început va apărea identic, și greșit, în ambele declarații, fără nicio diferență de sesizat.
 
@@ -37,7 +37,7 @@ Ce produce, atunci, o diferență reală:
 
 ## Ce face iConta.eu
 
-Aplicația confruntă baza D390 (recalculată pe perioada relevantă) cu rândurile R1_1 (livrări) și R5_1 (achiziții) din D300-ul efectiv depus prin aplicație pentru cea mai recentă perioadă disponibilă. Rezultatul e verde dacă valorile coincid, roșu dacă D390 arată o operațiune pe care D300 depus nu o confirmă deloc (cu propunere de remediu, confirmată de tine), și gri pentru orice altă diferență de cifre — tratată ca decalaj de exigibilitate, regularizare sau rotunjire, niciodată ca eroare automat confirmată.
+Aplicația confruntă baza D390 (recalculată pe perioada relevantă) cu baza de impozitare de la rândurile 1 (livrări) și 5 (achiziții) din D300-ul efectiv depus prin aplicație pentru cea mai recentă perioadă disponibilă. Rezultatul e verde dacă valorile coincid, roșu dacă D390 arată o operațiune pe care D300 depus nu o confirmă deloc (cu propunere de remediu, confirmată de tine), și gri pentru orice altă diferență de cifre — tratată ca decalaj de exigibilitate, regularizare sau rotunjire, niciodată ca eroare automat confirmată.
 
 Ce nu verifică: o eroare de clasificare făcută o singură dată, la nivelul facturii, care se propagă identic în ambele declarații — aceasta rămâne responsabilitatea verificării facturii la sursă, nu a comparației D390-D300.
 

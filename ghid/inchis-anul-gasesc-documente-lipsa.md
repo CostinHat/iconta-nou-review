@@ -22,11 +22,11 @@ Pe acest principiu se bazează calea implicită de rezolvare descrisă mai jos: 
 
 - Se cere redeschiderea întregii perioade pentru un singur document lipsă, deși există o cale mai simplă (contarea la data descoperirii) care nu presupune deblocarea lunii vechi.
 - Se redeschide o perioadă fără motiv consemnat — aplicația nu permite asta: deblocarea cere obligatoriu un motiv, nu se face „prin ștergere".
-- Se presupune că orice document lipsă poate fi introdus retroactiv, direct pe data lui reală, indiferent dacă luna respectivă e blocată — orice încercare de scriere pe o lună închisă e respinsă indiferent de sursă (interfață, import, cron, rețetar).
+- Se presupune că orice document lipsă poate fi introdus retroactiv, direct pe data lui reală, indiferent dacă luna respectivă e blocată — orice încercare de scriere pe o lună închisă e respinsă indiferent de sursă (introducere manuală, import, operațiuni automate programate, rețetar).
 
 ## Ce face iConta.eu
 
-**Calea 1 — contarea la data descoperirii.** Motorul de contare acceptă parametrul „data notei”: dacă luna documentului e blocată, nota poate fi scrisă la data la care ai găsit documentul, în luna curentă deschisă, cu o mențiune care documentează legătura cu data reală a documentului. Nu necesită redeschiderea perioadei vechi.
+**Calea 1 — contarea la data descoperirii.** La contarea documentului se poate alege data notei: dacă luna documentului e blocată, nota poate fi scrisă la data la care ai găsit documentul, în luna curentă deschisă, cu o mențiune care documentează legătura cu data reală a documentului. Nu necesită redeschiderea perioadei vechi.
 
 **Calea 2 — redeschiderea perioadei.** Dacă totuși e nevoie ca documentul să apară exact în luna lui de origine, administratorul firmei poate redeschide acea lună — dar deblocarea cere obligatoriu un motiv consemnat, pe temeiul citat direct în aplicație: „OMFP 1802/2014 — o perioadă închisă se redeschide ca act, nu prin ștergere." Fiecare blocare și deblocare e păstrată în istoricul firmei (cine, când, cu ce motiv).
 

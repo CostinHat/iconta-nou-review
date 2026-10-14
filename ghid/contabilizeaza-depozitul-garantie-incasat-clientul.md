@@ -24,6 +24,6 @@ Greșeala tipică este colectarea TVA la încasarea depozitului, deși acesta r�
 
 ## Ce face iConta.eu
 
-Motorul de avansuri al iConta („Avansuri furnizori/clienți”) generează nota 4111 = 419 + 4427 doar pentru sumele introduse ca avans — sume care reprezintă plată pentru o prestare viitoare. Dosarul de cercetare al acestei funcționalități nu confirmă un cont sau o notă dedicată pentru depozite de garanție pur rambursabile — evidențierea lor separată nu ține de „Avansuri furnizori/clienți”. Din momentul în care depozitul este reținut și aplicat ca plată, trebuie introdus ca avans, iar iConta îl tratează, de atunci, la fel ca orice alt avans încasat.
+Motorul de avansuri al iConta („Avansuri furnizori/clienți”) generează nota 4111 = 419 + 4427 doar pentru sumele introduse ca avans — sume care reprezintă plată pentru o prestare viitoare. Ecranul „Avansuri furnizori/clienți” nu are un cont sau o notă dedicată pentru depozite de garanție pur rambursabile — evidențierea lor separată nu ține de acest ecran și rămâne în sarcina contabilului. Din momentul în care depozitul este reținut și aplicat ca plată, trebuie introdus ca avans, iar iConta îl tratează, de atunci, la fel ca orice alt avans încasat.
 
 [iConta.eu](/)

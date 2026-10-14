@@ -46,6 +46,6 @@ Greșeala frecventă e reținerea de la angajat a întregului CAS calculat pe po
 
 ## Ce face iConta.eu
 
-Regula „baza minimă a contribuțiilor" calculează automat podeaua pentru fereastra activă a lunii și generează, când e cazul, atât reținerea obișnuită (421/4315), cât și cheltuiala suplimentară de suprataxare (6451/4315), conform „monografia salariului (Salarii)” (linia 390).
+Calculul salarial din iConta.eu (ecranul Salariați) calculează automat podeaua pentru luna respectivă și generează în notele contabile ale salariilor, când e cazul, atât reținerea obișnuită (421/4315), cât și cheltuiala suplimentară de suprataxare (6451/4315).
 
 [iConta.eu](/)

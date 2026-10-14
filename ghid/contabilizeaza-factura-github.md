@@ -2,7 +2,7 @@
 title: Cum se contabilizează factura GitHub?
 description: O factură GitHub e o achiziție de servicii electronice, dar tratamentul TVA (D300 sau D301) depinde de statutul de TVA al firmei și de unde e stabilit furnizorul — nu de faptul că factura vine din străinătate.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,7 +22,7 @@ Pentru o firmă din România care cumpără un serviciu de la GitHub, locul pres
 
 ### Cum se declară, în funcție de statutul firmei
 
-- **Firmă plătitoare de TVA (art. 316):** taxare inversă în D300, rd. 7 (colectat) + rd. 20 (deductibil) — operațiune net zero. D301 e blocat pentru acest profil.
+- **Firmă plătitoare de TVA (art. 316):** taxare inversă în D300, rd. 7 (colectat) + rd. 22 (deductibil) — operațiune net zero. D301 e blocat pentru acest profil.
 - **Firmă neplătitoare de TVA:** dacă furnizorul e stabilit în UE, operațiunea intră la D301 secțiunea 4.1 (tip 5) și, automat, în D390 cu cod S. Dacă furnizorul nu e stabilit în UE, operațiunea intră la D301 secțiunea 4 (tip 4, art. 307 alin. (6)) și **nu** apare în D390.
 
 ### Exemplu de calcul (bază rotunjită la leu întreg)

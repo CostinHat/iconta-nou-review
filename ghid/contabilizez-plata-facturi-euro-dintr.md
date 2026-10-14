@@ -10,6 +10,19 @@ poarta: v1
 
 Punctul de plecare pentru orice factură în valută e stabilirea corectă a cursului la care se convertesc sumele în lei — plata efectivă dintr-un cont în lei nu schimbă regula, doar o pune în practică.
 
+## Temeiul legal
+
+::: ghid-temei
+„Dacă elementele folosite pentru stabilirea bazei de impozitare a unei operațiuni, alta decât importul de bunuri, se exprimă în valută, cursul de schimb care se aplică este ultimul curs de schimb comunicat de Banca Națională a României sau ultimul curs de schimb publicat de Banca Centrală Europeană ori cursul de schimb utilizat de banca prin care se efectuează decontările, valabil la data la care intervine exigibilitatea taxei pentru operațiunea în cauză [...]”
+— Codul fiscal (Legea 227/2015), art. 290 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„O tranzacție în valută trebuie înregistrată inițial la cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunii.”
+— OMFP 1802/2014, pct. 319 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
+
+„Diferențele de curs valutar care apar cu ocazia decontării creanțelor și datoriilor în valută la cursuri diferite față de cele la care au fost înregistrate inițial pe parcursul lunii sau față de cele la care sunt înregistrate în contabilitate trebuie recunoscute în luna în care apar, ca venituri sau cheltuieli din diferențe de curs valutar.”
+— OMFP 1802/2014, pct. 322 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
+:::
+
 Factura emisă în euro se înregistrează în lei la cursul BNR valabil la data operațiunii (de regulă data exigibilității taxei). Plata ulterioară, dintr-un cont în lei, nu recalculează acest curs — factura rămâne înregistrată la cursul ei propriu; diferența dintre cursul facturii și cursul zilei plății generează, contabil, o diferență de curs valutar la decontare (venit sau cheltuială financiară), tratată separat de cursul de TVA al facturii.
 
 ## Ce se greșește în practică

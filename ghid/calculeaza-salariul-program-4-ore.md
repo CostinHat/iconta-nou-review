@@ -13,12 +13,38 @@ Pentru un salariat cu 4 ore/zi, la un program normal de 8 ore/zi, norma e jumăt
 ## Temeiul legal
 
 ::: ghid-temei
-„(2) Drepturile salariale se acordă proporțional cu timpul efectiv lucrat, raportat la drepturile stabilite pentru programul normal de lucru." — Legea 53/2003 (Codul muncii), art.103 alin.(2)
+„Drepturile salariale se acordă proporțional cu timpul efectiv lucrat, raportat la drepturile stabilite pentru programul normal de lucru.”
+— Legea nr. 53/2003 (Codul muncii), art. 106 alin. (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
+
+„Contractul individual de muncă cu timp parțial se încheie numai în formă scrisă.”
+— Legea nr. 53/2003 (Codul muncii), art. 104 alin. (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
+
+„În situația în care într-un contract individual de muncă cu timp parțial nu sunt precizate elementele prevăzute la alin. (1), contractul se consideră a fi încheiat pentru normă întreagă.”
+— Legea nr. 53/2003 (Codul muncii), art. 105 alin. (2) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
+
+„Salariatul încadrat cu contract de muncă cu timp parțial se bucură de drepturile salariaților cu normă întreagă, în condițiile prevăzute de lege și de contractele colective de muncă aplicabile.”
+— Legea nr. 53/2003 (Codul muncii), art. 106 alin. (1) (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
+
+„[...] acordată pentru fiecare lună a perioadei impozabile numai pentru veniturile din salarii la locul unde se află funcția de bază.”
+— Legea nr. 227/2015 (Codul fiscal), art. 77 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
+
+## Ce trebuie să conțină contractul
+
+Pe lângă elementele obișnuite ale contractului individual de muncă, contractul cu timp parțial trebuie să prevadă (art. 105 alin. (1) din Codul muncii): durata muncii și repartizarea programului de lucru; condițiile în care se poate modifica programul; interdicția de a efectua ore suplimentare, cu excepția cazurilor de forță majoră sau a altor lucrări urgente. Dacă aceste elemente lipsesc, contractul se consideră încheiat pentru normă întreagă — iar salariul și contribuțiile se calculează ca pentru normă întreagă.
 
 ## Pasul 1 — brutul proporțional
 
 Brut proporțional = brut la normă întreagă × (ore lucrate / ore normă). Pentru un angajat la salariul minim, fereastra 1 iulie – 31 decembrie 2026 (salariul minim 4.325 lei): brut = 4.325 × (4/8) = 2.162,50 lei.
+
+Salariul minim de referință depinde de luna calculată:
+
+| Perioadă | Salariu minim lunar (normă întreagă) | Echivalent orar | Brut la 4 ore/zi (× 0,5) |
+|---|---|---|---|
+| 1 ianuarie 2025 – 30 iunie 2026 | 4.050 lei (HG nr. 1.506/2024, program mediu de 165,334 ore/lună) | 24,496 lei/oră | 2.025,00 lei |
+| de la 1 iulie 2026 | 4.325 lei (HG nr. 146/2026, program mediu de 166,667 ore/lună) | 25,949 lei/oră | 2.162,50 lei |
+
+Sporurile și celelalte drepturi salariale se acordă tot proporțional cu timpul lucrat (art. 106 alin. (2)), iar salariatul cu timp parțial are aceleași drepturi ca unul cu normă întreagă, în condițiile legii și ale contractelor colective aplicabile (art. 106 alin. (1)).
 
 ## Pasul 2 — verificarea podelei CAS/CASS
 
@@ -29,6 +55,8 @@ Brutul contractual (2.162,50 lei) e peste podea (2.062,50 lei) → CAS și CASS 
 ## Pasul 3 — calculul complet, cu net
 
 Deducerea personală se acordă la nivel maxim (865 lei, funcție de bază, fără persoane în întreținere), pentru că venitul brut lunar realizat (2.162,50 lei) e sub salariul minim brut întreg (4.325 lei) — pragul la care începe reducerea treptată a deducerii.
+
+Deducerea personală se acordă numai la locul unde se află funcția de bază (art. 77 alin. (1) Cod fiscal). Dacă salariatul are un singur contract, cel cu 4 ore/zi e funcția de bază și deducerea se aplică; dacă mai are un contract la alt angajator, deducerea se acordă doar acolo unde și-a declarat funcția de bază.
 
 | Element | Calcul | Valoare |
 |---|---|---|
@@ -42,10 +70,10 @@ Deducerea personală se acordă la nivel maxim (865 lei, funcție de bază, făr
 
 ## Ce se greșește în practică
 
-Greșeala frecventă e aplicarea facilității „salariul minim neimpozabil" și la normă parțială — condiția normă întreagă exclude explicit part-time-ul din facilitate. A doua greșeală: proratarea deducerii personale pe fracțiunea de normă — deducerea nu se proratează, se aplică integral (la nivelul maxim din scară) atâta timp cât venitul brut realizat e sub salariul minim întreg.
+Greșeala frecventă e aplicarea facilității „salariul minim neimpozabil" și la normă parțială — condiția normă întreagă exclude explicit part-time-ul din facilitate. A doua greșeală: proratarea deducerii personale pe fracțiunea de normă — deducerea nu se proratează, se aplică integral (la nivelul maxim din scară) atâta timp cât venitul brut realizat e sub salariul minim întreg. A treia: contractul cu timp parțial nu precizează durata și repartizarea programului, condițiile de modificare a lui și interdicția orelor suplimentare — caz în care se consideră încheiat pentru normă întreagă (art. 105 alin. (2) din Codul muncii).
 
 ## Ce face iConta.eu
 
-Brutul proporțional și verificarea podelei sunt calculate automat de aplicația — funcția „calculul salariului (Salarii)” verifică „tipul normei” (întreagă/parțială) și aplică regula „baza minimă a contribuțiilor" doar când brutul e sub prag. Cotele și salariul minim aplicabil vin din registrul „period-aware" „registrul de cote al aplicației”, potrivit lunii calculate.
+Pe ecranul Salarii, aplicația calculează automat brutul proporțional și verifică podeaua: ține cont de tipul normei din contract (întreagă sau parțială) și aplică baza minimă a contribuțiilor doar când brutul e sub prag. Cotele și salariul minim se iau automat pe cele în vigoare în luna calculată.
 
 [iConta.eu](/)

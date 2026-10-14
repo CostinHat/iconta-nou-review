@@ -2,7 +2,7 @@
 title: Pot ajusta baza de TVA pentru o creanță neîncasată de peste 270 de zile?
 description: Nu — 270 de zile e pragul pentru deducerea ajustării de creanță la impozitul pe profit (CF art. 26), nu un prag de TVA. Ajustarea bazei de TVA are termene proprii, complet diferite, de la CF art. 287.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,30 +13,17 @@ Nu există niciun prag de 270 de zile în regulile de ajustare a bazei de impozi
 ## Temeiul legal
 
 ::: ghid-temei
-"ajustările pentru deprecierea creanțelor, înregistrate potrivit reglementărilor contabile aplicabile,
-reprezentând sume datorate de clienții interni și externi pentru produse, semifabricate, materiale,
-mărfuri vândute, lucrări executate și servicii prestate, în limita unui procent de 30% din valoarea
-acestor ajustări, altele decât cele prevăzute la lit. d)-f), h) și i), dacă creanțele îndeplinesc
-cumulativ următoarele condiții:
-1. sunt neîncasate într-o perioadă ce depășește 270 de zile de la data scadenței;
-2. nu sunt garantate de altă persoană;
-3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului;"
+„c) ajustările pentru deprecierea creanțelor, înregistrate potrivit reglementărilor contabile aplicabile, reprezentând sume datorate de clienții interni și externi pentru produse, semifabricate, materiale, mărfuri vândute, lucrări executate și servicii prestate, în limita unui procent de 30% din valoarea acestor ajustări, altele decât cele prevăzute la lit. d)-f) , h) și i) , dacă creanțele îndeplinesc cumulativ următoarele condiții:”
+— Legea nr. 227/2015 privind Codul fiscal, art. 26 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-"în cazul în care contravaloarea bunurilor livrate sau a serviciilor prestate nu se poate încasa ca
-urmare a intrării în faliment a beneficiarului sau ca urmare a punerii în aplicare a unui plan de
-reorganizare admis și confirmat printr-o sentință judecătorească, prin care creanța creditorului este
-modificată sau eliminată. Ajustarea este permisă începând cu data pronunțării hotărârii judecătorești
-de confirmare a planului de reorganizare, iar, în cazul falimentului beneficiarului, începând cu data
-sentinței sau, după caz, a încheierii, prin care s-a decis intrarea în faliment [...] Ajustarea se
-efectuează în termen de 5 ani de la data de 1 ianuarie a anului următor [...]"
+„1. sunt neîncasate într-o perioadă ce depășește 270 de zile de la data scadenței; [...] 2. nu sunt garantate de altă persoană; [...] 3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 26 alin. (1) lit. c) pct. 1-3 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-"în cazul în care contravaloarea totală sau parțială a bunurilor livrate sau a serviciilor prestate nu
-a fost încasată de la beneficiarii persoane fizice în termen de 12 luni de la termenul de plată
-stabilit de părți, ori în lipsa acestuia, de la data emiterii facturii, cu excepția situației în care
-furnizorul/prestatorul și beneficiarul sunt părți afiliate [...] Ajustarea este permisă numai în cazul
-în care se face dovada că s-au luat măsuri comerciale pentru recuperarea creanțelor de până la 1.000
-lei, inclusiv, respectiv că au fost întreprinse proceduri judiciare pentru recuperarea creanțelor mai
-mari de 1.000 lei."
+„d) în cazul în care contravaloarea bunurilor livrate sau a serviciilor prestate nu se poate încasa ca urmare a intrării în faliment a beneficiarului sau ca urmare a punerii în aplicare a unui plan de reorganizare admis și confirmat printr-o sentință judecătorească, prin care creanța creditorului este modificată sau eliminată. Ajustarea este permisă începând cu data pronunțării hotărârii judecătorești de confirmare a planului de reorganizare, iar, în cazul falimentului beneficiarului, începând cu data sentinței sau, după caz, a încheierii, prin care s-a decis intrarea în faliment, conform legislației privind insolvența. Ajustarea se efectuează în termen de 5 ani de la data de 1 ianuarie a anului următor celui în care s-a pronunțat hotărârea judecătorească de confirmare a planului de reorganizare, respectiv a celui în care s-a decis, prin sentință sau, după caz, prin încheiere, intrarea în faliment.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 287 lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„f) în cazul în care contravaloarea totală sau parțială a bunurilor livrate sau a serviciilor prestate nu a fost încasată de la beneficiarii persoane fizice în termen de 12 luni de la termenul de plată stabilit de părți, ori în lipsa acestuia, de la data emiterii facturii, cu excepția situației în care furnizorul/prestatorul și beneficiarul sunt părți afiliate în sensul art. 7 pct. 26 . Ajustarea se efectuează în termen de 5 ani de la data de 1 ianuarie a anului următor celui în care a intervenit termenul de plată stabilit de părți, ori în lipsa acestuia, a anului următor celui în care s-a emis factura. Ajustarea este permisă numai în cazul în care se face dovada că s-au luat măsuri comerciale pentru recuperarea creanțelor de până la 1.000 lei, inclusiv, respectiv că au fost întreprinse proceduri judiciare pentru recuperarea creanțelor mai mari de 1.000 lei.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 287 lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Cele două regimuri, ca să nu le mai confunzi

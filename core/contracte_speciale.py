@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 """Contracte de munca speciale: zilieri, cenzori, mandat administrator - motor PUR.
-Surse: Legea 52/2011 (zilieri) + art. 76(2) lit. g/i CF (mandat/cenzori =
-venituri asimilate salariilor).
+Surse: Legea 52/2011 (zilieri) + CF art.76 alin.(2) lit.f) (directori cu contract de mandat), lit.i) (cenzori), lit.o)
+(administratori) = venituri asimilate salariilor.
 - ZILIERI: impozit 10% + CAS 25%, FARA CASS, FARA CAM (art. 9^1 L52/2011);
   impozit = 10% x (brut - CAS); declarare D112; remuneratia orara minima =
   salariul minim orar; max 90 zile/an la acelasi beneficiar (120 agricultura);
   nota: 641.zilieri = 421; CAS 421=4315; impozit 421=444; plata 421=5311/5121;
 - CENZORI / MANDAT ADMINISTRATOR (fara CIM): CAS 25% + CASS 10% + impozit 10%
-  aplicat la (brut - CAS - CASS); FARA CAM (nu exista raport de munca);
+  aplicat la (brut - CAS - CASS); CAM 2,25% NUMAI la administratori si directori cu contract de mandat
+  (CF art.220^4 alin.(1) lit.d), e) — vezi `calcul_mandat`), cenzorii fara CAM; [13.10.2026: textul vechi spunea „FARA CAM”
+  pentru toti, contrazis de `calcul_mandat` si de core/test_mandat_cam.py — proza falsa despre cod, gasita la ghidul public]
   nota: 621 = 421 (colaboratori) + retineri + plata."""
 from decimal import Decimal, ROUND_HALF_UP
 

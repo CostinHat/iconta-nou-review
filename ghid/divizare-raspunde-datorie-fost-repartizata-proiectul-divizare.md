@@ -17,6 +17,7 @@ Regula e diferită pentru elementele de activ uitate: acestea se împart între 
 ::: ghid-temei
 „Dacă un element de pasiv nu este repartizat în proiectul de divizare și dacă interpretarea proiectului nu permite luarea unei decizii privind repartizarea sa, societățile beneficiare răspund solidar pentru elementul de pasiv în cauză."
 — Legea societăților nr. 31/1990, art. 241^1 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
+
 „Dacă un element de activ nu este repartizat în proiectul de divizare și dacă interpretarea proiectului nu permite luarea unei decizii privind repartizarea sa, elementul de activ în cauză sau contravaloarea acestuia se repartizează între toate societățile beneficiare, proporțional cu cota din activul net alocat societăților în cauză, în conformitate cu proiectul de divizare."
 — Legea societăților nr. 31/1990, art. 241^1 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::

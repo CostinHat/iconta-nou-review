@@ -12,6 +12,16 @@ Data exigibilității decide luna în care operațiunea intră în decont și î
 
 Mecanismul are doi timpi. Întâi, faptul generator — de regulă, data livrării bunurilor. Apoi, exigibilitatea: dacă furnizorul emite factura înainte de a 15-a zi a lunii următoare faptului generator, exigibilitatea e data facturii; dacă nu emite factura până atunci, exigibilitatea „cade” automat pe a 15-a zi a lunii următoare — indiferent când sosește ulterior factura.
 
+## Temeiul legal
+
+::: ghid-temei
+„(1) În cazul unei achiziții intracomunitare de bunuri, faptul generator intervine la data la care ar interveni faptul generator pentru livrări de bunuri similare, în statul membru în care se face achiziția. (2) În cazul unei achiziții intracomunitare de bunuri, exigibilitatea taxei intervine la data emiterii facturii prevăzute în legislația altui stat membru la articolul care transpune prevederile art. 222 din Directiva 112 sau, după caz, la data emiterii autofacturii prevăzute la art. 319 alin. (9) ori în cea de-a 15-a zi a lunii următoare celei în care a intervenit faptul generator, dacă nu a fost emisă nicio factură/autofactură până la data respectivă.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 284 alin. (1) și (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„(1) Orice persoană impozabilă înregistrată în scopuri de TVA conform art. 316 sau 317 trebuie să întocmească și să depună la organele fiscale competente o declarație recapitulativă în care menționează: [...] d) achizițiile intracomunitare de bunuri taxabile, pentru care exigibilitatea de taxă a luat naștere în luna calendaristică respectivă;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 325 alin. (1) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 ## Ce se greșește în practică
 
 - Se ia data primirii facturii (sau data înregistrării în contabilitate) drept dată de exigibilitate — legea nu se raportează la niciuna dintre ele.

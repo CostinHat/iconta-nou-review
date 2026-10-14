@@ -2,7 +2,7 @@
 title: Ce declarații depune un magazin online neplătitor de TVA pentru Google Ads?
 description: Un magazin online neplătitor de TVA care cumpără publicitate Google Ads de la Google Ireland Limited trebuie să declare taxarea inversă în Secțiunea 4.1 a D301, indiferent de suma cheltuită — plafonul de 10.000 EUR nu se aplică serviciilor.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,11 +13,14 @@ Campaniile de publicitate Google Ads sunt facturate, pentru clienții din Român
 ## Temeiul legal
 
 ::: ghid-temei
-**Articolul 307 alin. (2)**: Taxa este datorată de orice persoană impozabilă [...] care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]
+„Taxa este datorată de orice persoană impozabilă, inclusiv de către persoana juridică neimpozabilă înregistrată în scopuri de TVA conform art. 316 sau 317, care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]”
+— Codul fiscal (Legea 227/2015), art. 307 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Articolul 268 alin. (4)**: Prin excepție de la prevederile alin. (3) lit. a), nu sunt considerate operațiuni impozabile în România achizițiile intracomunitare de **bunuri** care îndeplinesc următoarele condiții: [...] b) valoarea totală a acestor achiziții intracomunitare nu depășește pe parcursul anului calendaristic curent sau nu a depășit pe parcursul anului calendaristic anterior plafonul de 10.000 euro [...]
+„Prin excepție de la prevederile alin. (3) lit. a), nu sunt considerate operațiuni impozabile în România achizițiile intracomunitare de bunuri care îndeplinesc următoarele condiții: [...] b) valoarea totală a acestor achiziții intracomunitare nu depășește pe parcursul anului calendaristic curent sau nu a depășit pe parcursul anului calendaristic anterior plafonul de 10.000 euro [...]”
+— Codul fiscal (Legea 227/2015), art. 268 alin. (4) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-Instrucțiuni OPANAF 592/2016: În secțiunea 4.1 se preiau din secțiunea 4 doar achizițiile de servicii intracomunitare, pentru care beneficiarul este obligat la plata taxei pe valoarea adăugată conform art. 307 alin. (2) din Codul fiscal.
+„În secțiunea 4.1 se preiau din secțiunea 4 doar achizițiile de servicii intracomunitare, pentru care beneficiarul este obligat la plata taxei pe valoarea adăugată conform art. 307 alin. (2) din Codul fiscal.”
+— OPANAF 592/2016, Anexa 2 — Instrucțiuni de completare a formularului 301 (sursă: [OPANAF nr. 592/2016 pentru aprobarea formularului 301](https://legislatie.just.ro/Public/DetaliiDocument/175654))
 :::
 
 ## De ce plafonul de 10.000 EUR nu ajută aici

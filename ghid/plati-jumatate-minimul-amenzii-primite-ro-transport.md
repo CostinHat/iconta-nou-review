@@ -22,6 +22,7 @@ Diferența e mare: la persoanele juridice, minimul amenzilor pentru faptele prin
 ::: ghid-temei
 „Prin derogare de la prevederile art. 16 alin. (1) și art. 28 alin. (1) din Ordonanța Guvernului nr. 2/2001 privind regimul juridic al contravențiilor […] contravenienții sancționați în baza prevederilor […] Ordonanței de urgență a Guvernului nr. 41/2022 pentru instituirea Sistemului național privind monitorizarea transporturilor rutiere de bunuri cu risc fiscal ridicat RO e-Transport […] nu beneficiază de posibilitatea achitării, în termen de 15 zile de la data înmânării sau comunicării procesului-verbal, a jumătate din minimul amenzii prevăzute de actul normativ."
 — Legea 296/2023, art. LVIII (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
+
 „Plata amenzilor contravenționale aplicate anterior intrării în vigoare a prezentei legi în temeiul actelor normative prevăzute la art. LVIII"
 — Legea 296/2023, art. LXIX (sursă: [Legea nr. 296/2023 privind unele măsuri fiscal-bugetare pentru asigurarea sustenabilității financiare a României pe termen lung](https://legislatie.just.ro/Public/DetaliiDocument/275745))
 :::

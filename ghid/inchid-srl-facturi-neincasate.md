@@ -23,6 +23,6 @@ Se crede uneori că, odată deschisă procedura de lichidare, societatea nu mai 
 
 ## Ce face iConta.eu
 
-Dosarul de cercetare pentru „Lichidare/radiere societate” nu a găsit, în motorul de lichidare, o funcție dedicată separată pentru încasarea creanțelor — acesta acoperă doar vânzarea activelor imobilizate („nota de vânzare a activului”) și partajul final („partajul”). Încasarea facturilor neîncasate se face, ca înainte de deschiderea lichidării, prin operațiunile obișnuite de încasare din aplicație. Abia după ce toate creanțele recuperabile au fost încasate (sau, după caz, scoase din evidență ca nerecuperabile) se poate întocmi corect situația patrimonială finală și, ulterior, rula operația de partaj.
+Ecranul „Lichidare / radiere firmă” nu are o operație dedicată pentru încasarea creanțelor — acoperă doar vânzarea activelor imobilizate (operația „Vânzare activ la lichidare”) și partajul final (operația „Partaj către asociați”). Încasarea facturilor neîncasate se face, ca înainte de deschiderea lichidării, prin operațiunile obișnuite de încasare din aplicație. Abia după ce toate creanțele recuperabile au fost încasate (sau, după caz, scoase din evidență ca nerecuperabile) se poate întocmi corect situația patrimonială finală și, ulterior, rula operația de partaj.
 
 [iConta.eu](/)

@@ -26,13 +26,13 @@ Ce înseamnă, concret, pentru gestionarea notificărilor din SPV:
 
 ## Ce se greșește în practică
 
-- Se presupune că orice notificare/mesaj din SPV (inclusiv confirmările de trimitere sau erorile) e „descărcat" automat de aplicația de contabilitate — depinde strict de ce tip de mesaj (`filtru`) e configurat să fie preluat automat.
+- Se presupune că orice notificare/mesaj din SPV (inclusiv confirmările de trimitere sau erorile) e „descărcat" automat de aplicația de contabilitate — depinde strict de ce tip de mesaj e configurat să fie preluat automat.
 - Se confundă „respingerea" unei facturi primite, făcută intern în programul de contabilitate, cu obiecția formală prevăzută de lege (art. 4 alin. (9)), care presupune înscrierea unui mesaj în sistemul SPV către emitent — cele două nu au același efect juridic.
 - Se așteaptă o alertă automată de tip e-mail/push pentru absența oricărei facturi noi descărcate din SPV — o astfel de tăcere poate însemna, la fel de bine, o conexiune SPV expirată, nu neapărat lipsa reală de facturi.
 
 ## Ce face iConta.eu
 
-Funcționalitatea **Cron receive e-Factura** rulează automat, la fiecare 30 de minute, și descarcă din SPV mesajele de tip „factură primită" (tipul „P” — facturi primite) pentru fiecare firmă conectată, pe o fereastră de 3 zile suprapusă (toleranță la eșecuri intermitente). Fiecare mesaj e verificat contra scurgerii de date între firme ale aceluiași cabinet (CIF-ul beneficiarului din mesaj trebuie să coincidă cu CIF-ul firmei) și deduplicat pe identificatorul de mesaj ANAF, apoi factura e inserată ca ciornă — fără să genereze automat nicio cheltuială: validarea (alegerea contului de cheltuială) rămâne un pas manual, obligatoriu, al contabilului.
+Preluarea automată a facturilor primite prin RO e-Factura rulează la fiecare 30 de minute și descarcă din SPV mesajele de tip „factură primită" (tipul „P” — facturi primite) pentru fiecare firmă conectată, pe o fereastră de 3 zile suprapusă (toleranță la eșecuri intermitente). Fiecare mesaj e verificat contra scurgerii de date între firme ale aceluiași cabinet (CIF-ul beneficiarului din mesaj trebuie să coincidă cu CIF-ul firmei) și deduplicat pe identificatorul de mesaj ANAF, apoi factura e inserată ca ciornă — fără să genereze automat nicio cheltuială: validarea (alegerea contului de cheltuială) rămâne un pas manual, obligatoriu, al contabilului.
 
 Aplicația **nu descarcă și nu gestionează automat** celelalte tipuri de mesaje SPV — confirmările de trimitere (`T`), erorile (`E`) sau mesajele de tip cumpărător (`R`, care includ obiecția formală prevăzută de art. 4 alin. (9)) nu sunt preluate de acest mecanism. „Respingerea" unei facturi primite, disponibilă în iConta, e o acțiune pur internă (cu motiv, păstrată în istoric) — nu scrie niciun mesaj înapoi în sistemul SPV către emitent, deci nu echivalează cu obiecția formală din lege. Automatizarea rulează implicit, fără niciun ecran de configurare — frecvența și fereastra de interogare sunt fixate la nivel de server, nu editabile din interfață.
 

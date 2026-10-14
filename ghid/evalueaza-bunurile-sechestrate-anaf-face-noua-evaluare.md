@@ -17,6 +17,7 @@ Evaluarea contează direct pentru firmă: prețul de evaluare e pragul sub care,
 ::: ghid-temei
 „înaintea valorificării bunurilor, acestea se evaluează. Evaluarea se efectuează de organul de executare silită prin experți evaluatori proprii sau prin experți evaluatori independenți. Evaluatorii independenți sunt desemnați în condițiile art. 63 ."
 — Codul de procedură fiscală (Legea 207/2015), art. 232 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „Organul de executare silită poate proceda la o nouă evaluare în situații cum sunt: când se constată modificări ale prețurilor de circulație pe piața liberă a bunurilor, când valoarea bunului s-a modificat prin deteriorări sau prin amenajări."
 — Codul de procedură fiscală (Legea 207/2015), art. 232 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::

@@ -13,8 +13,8 @@ poarta: v1
 ## Temeiul legal
 
 ::: ghid-temei
-Art.31 alin.(5) CF: „Contribuabilii care au fost plătitori de impozit pe veniturile microîntreprinderilor și care ANTERIOR au realizat pierdere fiscală intră sub incidența alin.(1) de la data la care au revenit la sistemul [profit]"
-— sursă: documentația aplicației, secțiunea „Poate microîntreprinderea înregistra pierdere fiscală?".
+„Contribuabilii care au fost plătitori de impozit pe veniturile microîntreprinderilor și care anterior au realizat pierdere fiscală intră sub incidența prevederilor alin. (1) de la data la care au revenit la sistemul de impozitare reglementat de prezentul titlu. Această pierdere se recuperează potrivit alin. (1) și (7), după caz.”
+— Codul fiscal (Legea nr. 227/2015), art. 31 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Conceptul de „pierdere fiscală" (reglementat la art.31, în Titlul II — impozit pe profit) nu există ca atare în Titlul III (impozit pe veniturile microîntreprinderilor, art.47–56): baza impozabilă la micro este venitul, nu profitul, astfel încât noțiunea de pierdere fiscală generată în perioada de micro nu are corespondent legal. Singura mențiune a pierderii la impozitul micro (art.53 alin.(2) lit.c)-d)) se referă la rezerve constituite anterior, când firma era plătitoare de impozit pe profit — nu la o pierdere generată în timp ce firma era la micro. Art.31 alin.(5), citat mai sus, confirmă indirect aceeași logică: pierderea fiscală reportabilă e legată de perioadele în care firma a fost efectiv plătitoare de impozit pe profit.
@@ -27,6 +27,6 @@ Greșeala des întâlnită este raportarea unei „pierderi fiscale" pentru peri
 
 ## Ce face iConta.eu
 
-Dosarul de cercetare al funcționalității D101 confirmă mecanismul de citire automată a balanței (profil firmă, split exploatare/financiar, rezervă legală, cont 691) la generarea declarației, dar nu documentează un modul dedicat de gestiune a reportului pierderii fiscale între ani în interfața D101 — profitul impozabil (P40) se asamblează din datele preluate din balanță plus intrările manuale ale contabilului (inclusiv, dacă e cazul, pierderea fiscală reportată). Recomandăm verificarea manuală atentă a reportului de pierdere fiscală înainte de generarea declarației, întrucât acest calcul nu este descris ca fiind automatizat integral în motorul aplicației.
+La generarea declarației D101, iConta.eu preia automat datele din balanță (profilul firmei, separarea exploatare/financiar, rezerva legală, contul 691), dar nu are un modul dedicat de evidență a reportului pierderii fiscale de la un an la altul: profitul impozabil se asamblează din datele preluate din balanță plus intrările manuale ale contabilului, inclusiv, dacă e cazul, pierderea fiscală reportată. Recomandăm verificarea manuală atentă a reportului de pierdere fiscală înainte de generarea declarației, întrucât aplicația nu îl calculează automat.
 
 [iConta.eu](/)

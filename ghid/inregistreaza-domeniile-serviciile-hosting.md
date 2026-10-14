@@ -2,7 +2,7 @@
 title: Cum se înregistrează domeniile și serviciile de hosting?
 description: Domeniile web și serviciile de hosting sunt cheltuieli cu servicii, dar cumpărate frecvent de la furnizori stabiliți în afara României — ceea ce declanșează, pentru o firmă neplătitoare de TVA, obligații declarative separate.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -20,7 +20,7 @@ Locul prestării pentru un domeniu sau un abonament de hosting cumpărat de o fi
 
 ### Cum se declară, în funcție de statutul TVA și de furnizor
 
-- **Firmă plătitoare de TVA:** taxare inversă în D300, rd. 7 + rd. 20, net zero, indiferent dacă furnizorul e stabilit în UE sau nu.
+- **Firmă plătitoare de TVA:** taxare inversă în D300, indiferent dacă furnizorul e stabilit în UE sau nu: rândul 7 (TVA colectată) și rândul 22 (aceeași sumă, ca TVA deductibilă), net zero; pentru furnizorul din UE, suma se înscrie și la rândurile 7.1 și 22.1.
 - **Firmă neplătitoare de TVA, furnizor stabilit în UE:** D301 secțiunea 4.1 (tip 5) + D390 cod S. Necesită înregistrare specială prin art. 317, înainte de prima achiziție, fără plafon.
 - **Firmă neplătitoare de TVA, furnizor stabilit în afara UE:** D301 secțiunea 4 (tip 4, art. 307 alin. (6)), fără D390.
 

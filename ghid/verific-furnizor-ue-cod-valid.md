@@ -13,7 +13,14 @@ Un cod de TVA poate fi valid pentru operațiuni interne în statul de origine al
 ## Temeiul legal
 
 ::: ghid-temei
-Scutirea LIC cu drept de deducere are condiții: cod TVA valid al cumpărătorului comunicat furnizorului + dovada transportului în alt stat membru (CF art. 294 alin. 2 lit. a); simetric, la serviciile B2B intracomunitare, prezența unui client non-RO cu cod valid VIES face operațiunea neimpozabilă în România, declarată în D390 (S), iar lipsa unui cod valid o tratează ca B2C, facturată cu TVA românesc (CF art. 278 alin. 2-3) —, sursă Codul fiscal (Legea 227/2015), forma consolidată L18397+ și L17303+.
+„Sunt, de asemenea, scutite de taxă următoarele: a) livrările intracomunitare de bunuri către o persoană impozabilă sau către o persoană juridică neimpozabilă care acționează ca atare în alt stat membru decât cel în care începe expedierea sau transportul bunurilor, care îi comunică furnizorului un cod valabil de înregistrare în scopuri de TVA, atribuit de autoritățile fiscale din alt stat membru [...]”
+— Legea nr. 227/2015 privind Codul fiscal, art. 294 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Locul de prestare a serviciilor către o persoană neimpozabilă este locul unde prestatorul își are stabilit sediul activității sale economice.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 278 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Deși citatul de mai sus descrie condițiile scutirii la vânzare (LIC), principiul e simetric și la achiziție: codul de TVA valid al partenerului e o condiție de fond a tratamentului corect al operațiunii, iar VIES e mecanismul oficial de confirmare a acelei valabilități — pentru orice direcție a operațiunii, cumpărare sau vânzare.

@@ -2,7 +2,7 @@
 title: "Ce declarații fiscale trebuie depuse lunar în 2026?"
 description: "Nucleul declarațiilor cu periodicitate lunară în 2026 — D112, D301, D390, D394 și, condiționat de profilul firmei, D300 și D406 — cu temeiul legal al fiecăreia."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -50,6 +50,6 @@ Descompus pe declarație:
 
 ## Ce face iConta.eu
 
-iConta.eu generează prin ecranul „Declarații" un set de 9 tipuri de declarații parametrizate pe an/lună/trimestru (D100, D101, D112, D205, D300, D301, D390, D394, D406) — dintre acestea, șase au periodicitate lunară statică în registrul intern al aplicației (D112, D300, D301, D390, D394, D406), dar pentru setul legat de TVA (D300, D394, D406), periodicitatea afișată efectiv urmează periodicitatea reală a firmei (câmpul din Vector fiscal), nu o listă fixă. Aplicația **nu produce un calendar consolidat „ce am de depus luna asta"** din acest ecran — acela e rolul Semaforului de conformare fiscală, care compară declarațiile efectiv datorate (calculate din vectorul fiscal al firmei) cu cele deja depuse. Există și alte 41 de tipuri de declarații pe care aplicația le poate genera, dar doar la cerere directă (nu prin acest selector lunar/trimestrial/anual), unele dintre ele având și ele periodicitate lunară — nu apar automat în lista de mai sus.
+iConta.eu generează prin ecranul „Declarații" un set de 9 tipuri de declarații parametrizate pe an/lună/trimestru (D100, D101, D112, D205, D300, D301, D390, D394, D406) — dintre acestea, șase sunt propuse implicit pe lună (D112, D300, D301, D390, D394, D406), dar pentru setul legat de TVA (D300, D394, D406), periodicitatea afișată efectiv urmează periodicitatea reală a firmei (câmpul din Vector fiscal), nu o listă fixă. Aplicația **nu produce un calendar consolidat „ce am de depus luna asta"** din acest ecran — acela e rolul Semaforului de conformare fiscală, care compară declarațiile efectiv datorate (calculate din vectorul fiscal al firmei) cu cele deja depuse. Există și alte 41 de tipuri de declarații pe care aplicația le poate genera, dar doar la cerere directă (nu prin acest selector lunar/trimestrial/anual), unele dintre ele având și ele periodicitate lunară — nu apar automat în lista de mai sus.
 
 [iConta.eu](/)

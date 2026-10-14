@@ -2,7 +2,7 @@
 title: Cum primesc alerte pentru facturile primite în SPV
 description: Facturile primite prin RO e-Factura ajung automat în aplicație, la interval fix, ca ciornă de validat - dar iConta.eu nu trimite, în acest moment, o alertă separată (e-mail, push) la fiecare factură nouă.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Ce nu există, în acest moment, e un canal separat care să semnaleze activ „
 
 ## Ce face iConta.eu
 
-Cronul intern de preluare RO e-Factura citește periodic mesajele din SPV și aduce automat facturile primite ca ciornă în lista dedicată din aplicație, cu datele esențiale deja extrase din XML — fără nicio acțiune manuală de descărcare. Nu există, la acest moment, un mecanism separat de alertă (e-mail, notificare push, badge dedicat) pentru fiecare factură nouă adusă astfel — cea mai sigură practică, până la o eventuală extindere a acestei zone, e verificarea periodică a listei de facturi primite, mai ales înainte de închiderea lunii.
+Aplicația citește automat, la interval fix, mesajele din SPV și aduce facturile primite ca ciornă în lista dedicată din aplicație, cu datele esențiale deja extrase din XML — fără nicio acțiune manuală de descărcare. Nu există, la acest moment, un mecanism separat de alertă (e-mail, notificare push, badge dedicat) pentru fiecare factură nouă adusă astfel — cea mai sigură practică, până la o eventuală extindere a acestei zone, e verificarea periodică a listei de facturi primite, mai ales înainte de închiderea lunii.
 
 [iConta.eu](/)

@@ -22,6 +22,7 @@ Când vânzătorul este o persoană fizică asociată, care nu desfășoară o a
 ::: ghid-temei
 „Se cuprind în sfera operațiunilor scutite conform art. 292 alin. (2) lit. a) pct. 5 din Codul fiscal, printre altele, și transferul și/sau orice alte operațiuni cu părți sociale și acțiuni necotate la bursă."
 — Normele metodologice (HG 1/2016), Titlul VII, pct. 52 alin. (19) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
+
 „În sfera operațiunilor scutite conform art. 292 alin. (2) lit. a) pct. 5 din Codul fiscal nu se cuprind operațiuni precum: depozitarea activelor fondurilor speciale de investiții, așa cum rezultă și din Decizia Curții Europene de Justiție nr. C-169/04 Abbey Național, administrarea și depozitarea titlurilor de valoare."
 — HG 1/2016, Titlul VII, pct. 52 alin. (20) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::

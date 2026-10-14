@@ -2,7 +2,7 @@
 title: "Cum se facturează un abonament software lunar?"
 description: "Regula fiscală pentru facturarea prestărilor de servicii continue, precum abonamentele software, și cum automatizează iConta.eu emiterea lunară a facturii."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Un abonament software (SaaS, mentenanță, licență cu plată periodică) e, di
 
 ## Ce face iConta.eu
 
-Ecranul **Facturi recurente** din iConta.eu automatizează exact acest caz: se creează un șablon (client, linii de facturare, sumă, zi de emitere din lună), iar un job (cron) rulează zilnic, la 07:00, și emite automat câte o factură pe lună pentru fiecare șablon activ, atâta timp cât ziua configurată a trecut și șablonul nu a mai emis deja în luna curentă. Dacă rularea zilnică lipsește exact în ziua configurată, factura tot iese la următoarea rulare din aceeași lună — nu se pierde nicio lună — dar cu data facturii egală cu ziua reală a emiterii, nu neapărat ziua din șablon. Un șablon existent nu poate fi editat (sumă, linii, zi) — poate fi doar activat/dezactivat sau șters și recreat.
+Ecranul **Facturi recurente** din iConta.eu automatizează exact acest caz: se creează un șablon (client, linii de facturare, sumă, zi de emitere din lună), iar aplicația verifică zilnic, la ora 07:00, șabloanele și emite automat câte o factură pe lună pentru fiecare șablon activ, atâta timp cât ziua configurată a trecut și șablonul nu a mai emis deja în luna curentă. Dacă verificarea zilnică nu are loc exact în ziua configurată, factura tot iese la următoarea verificare din aceeași lună — nu se pierde nicio lună — dar cu data facturii egală cu ziua reală a emiterii, nu neapărat ziua din șablon. Un șablon existent nu poate fi editat (sumă, linii, zi) — poate fi doar activat/dezactivat sau șters și recreat.
 
 [iConta.eu](/)

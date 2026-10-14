@@ -30,6 +30,6 @@ Textul confirmă un singur lucru direct relevant aici: extrasul de cont bancar e
 
 Important de precizat, ca să nu creeze o așteptare greșită: în iConta.eu, contul 581 „Viramente interne" e legat, în motorul de categorizare automată a extraselor bancare, **strict de operațiuni de numerar** — tranzacții al căror text conține cuvinte-cheie ca „retragere", „ATM", „ridicare numerar", „depunere numerar" sau „alimentare". Verificat direct în codul de categorizare: nu există un cuvânt-cheie sau o regulă dedicată pentru „transfer între conturi bancare proprii" în sens general (de exemplu „virament", „alimentare cont", „între conturi"). Deci un transfer obișnuit bancă-la-bancă între două conturi ale aceleiași firme **nu e recunoscut automat** de categorizarea curentă a aplicației — va fi nevoie să-l categorizați manual pe contul 581, sau conform indicației contabilului dvs., dacă tratamentul diferă.
 
-Pentru subiectul de stocuri și transfer între gestiuni, vedeți [ghidul despre transferul de stocuri între gestiuni: documente](/ghid/GH-03089).
+Pentru subiectul de stocuri și transfer între gestiuni, vedeți [ghidul despre transferul de stocuri între gestiuni: documente](/ghid/transferul-stocuri-gestiuni-documente).
 
 [iConta.eu](/)

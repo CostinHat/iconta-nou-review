@@ -32,6 +32,6 @@ Secțiunea „Active" din SAF-T (D406) e cea mai apropiată de un registru de mi
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat exact pentru această secțiune, care calculează amortizarea pe metode (liniară, degresivă, neliniară), urmărește categoria activului și metodele permise pentru ea, ține evidența reevaluărilor și generează direct structura XML cerută de ANAF („XML-ul activelor D406”, „XML-ul activelor D406”, „D406 active (Declarații)”). Datele de amortizare folosite pentru SAF-T Active sunt aceleași cu cele din registrul intern de mijloace fixe al aplicației, deci nu există un calcul „paralel" doar pentru declarație.
+iConta.eu calculează amortizarea pe metode (liniară, degresivă, neliniară), urmărește categoria fiecărui activ și metodele permise pentru ea, ține evidența reevaluărilor și generează direct fișierul XML al secțiunii Active, în structura cerută de ANAF („D406 active (Declarații)”). Cifrele de amortizare din SAF-T Active sunt aceleași cu cele din registrul de mijloace fixe ținut în aplicație, deci nu există un calcul „paralel" doar pentru declarație.
 
 [iConta.eu](/)

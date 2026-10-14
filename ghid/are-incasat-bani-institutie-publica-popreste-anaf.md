@@ -17,6 +17,7 @@ Mecanismul e util firmelor care lucrează cu statul: facturile neîncasate de la
 ::: ghid-temei
 „în cazul în care debitorul are de încasat sume certe, lichide și exigibile de la autorități sau instituții publice, executarea silită se continuă prin poprirea acestor sume ori de câte ori, ulterior comunicării somației, se depune la organul fiscal un document eliberat de autoritatea sau instituția publică respectivă prin care se certifică că sumele sunt certe, lichide și exigibile. Prevederile art. 236 se aplică în mod corespunzător."
 — Codul de procedură fiscală (Legea 207/2015), art. 230 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „Nu sunt considerate sume exigibile și nu sunt aplicabile prevederile alin. (3) sumelor aflate în litigiu."
 — Codul de procedură fiscală (Legea 207/2015), art. 230 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::

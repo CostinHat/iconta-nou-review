@@ -2,7 +2,7 @@
 title: Noutăți legislative 2026 la impozitul pe profit
 description: Cota standard de impozit pe profit rămâne 16% și în 2026 — ce s-a schimbat e componenta specifică pe cifra de afaceri pentru bănci (4%) și prorogarea măsurilor speciale pentru petrol, gaze și alte resurse naturale.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -17,12 +17,8 @@ impozitare au fost prelungite.
 ## Temeiul legal
 
 ::: ghid-temei
-"Instituțiile de credit - persoane juridice române și sucursalele din România ale instituțiilor
-de credit - persoane juridice străine datorează suplimentar impozitului pe profit un impozit
-specific pe cifra de afaceri calculat prin aplicarea asupra cifrei de afaceri a următoarelor cote
-de impozitare: [...] b) 4%, pentru perioada 1 ianuarie 2026 - 31 decembrie 2026 inclusiv" —
-Legea nr. 227/2015, art. 46^1 alin. (1) lit. b), modificat de Legea nr. 141/2025, art. II pct. 2,
-publicată în Monitorul Oficial nr. 699 din 25 iulie 2025
+„(1) Instituțiile de credit - persoane juridice române și sucursalele din România ale instituțiilor de credit - persoane juridice străine datorează suplimentar impozitului pe profit un impozit specific pe cifra de afaceri calculat prin aplicarea asupra cifrei de afaceri a următoarelor cote de impozitare: [...] b) 4%, pentru perioada 1 ianuarie 2026-31 decembrie 2026 inclusiv;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 46^1 alin. (1) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Pentru 2025, cota impozitului specific bancar a fost eșalonată — 2% în prima jumătate a anului,
@@ -36,13 +32,8 @@ A doua zonă de continuitate confirmată e prorogarea termenelor pentru măsuril
 impozitare a activităților de exploatare a resurselor naturale:
 
 ::: ghid-temei
-"Termenul prevăzut la art. 6 din Ordonanța Guvernului nr. 5/2013 privind stabilirea unor măsuri
-speciale de impozitare a activităților cu caracter de monopol natural din sectorul energiei
-electrice și al gazului natural, cu modificările ulterioare, se prorogă până la data de 31
-decembrie 2027 inclusiv. (2) Termenul prevăzut la art. 6 din Ordonanța Guvernului nr. 6/2013
-privind instituirea unor măsuri speciale pentru impozitarea exploatării resurselor naturale,
-altele decât gazele naturale [...] se prorogă până la data de 31 decembrie 2027 inclusiv." —
-OUG nr. 89/2025, art. IX, publicată în Monitorul Oficial nr. 1203 din 24 decembrie 2025
+„(1) Termenul prevăzut la art. 6 din Ordonanța Guvernului nr. 5/2013 privind stabilirea unor măsuri speciale de impozitare a activităților cu caracter de monopol natural din sectorul energiei electrice și al gazului natural, cu modificările ulterioare, se prorogă până la data de 31 decembrie 2027 inclusiv. (2) Termenul prevăzut la art. 6 din Ordonanța Guvernului nr. 6/2013 privind instituirea unor măsuri speciale pentru impozitarea exploatării resurselor naturale, altele decât gazele naturale [...] se prorogă până la data de 31 decembrie 2027 inclusiv.”
+— OUG nr. 89/2025, art. IX alin. (1) și (2) (sursă: [OUG nr. 89/2025 pentru modificarea și completarea Legii nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/305817))
 :::
 
 Pentru impozitul minim pe cifra de afaceri (IMCA), care se aplică suplimentar contribuabililor

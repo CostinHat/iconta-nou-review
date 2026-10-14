@@ -18,17 +18,22 @@ D394 e o declarație despre operațiuni „pe teritoriul național" — iar impo
 :::
 
 - Importul de bunuri, chiar și cel efectuat cu certificat de amânare de la plata TVA în vamă, nu se declară în D394 — regimul lui de TVA e altul (plată/amânare la vamă, nu taxare inversă raportată aici).
-- Excluderea privește achizițiile „cu taxare inversă" de la parteneri neînregistrați/nestabiliți în UE — categoria în care s-ar putea încadra greșit un import de marfă. Legea o exclude explicit din acest cartuș.
-- Regula se completează cu excluderea deja cunoscută a achizițiilor intracomunitare (D390) — practic, D394 raportează doar achizițiile interne, cu partener stabilit sau nu în România, nu și fluxurile transfrontaliere de bunuri.
+- Instrucțiunea nu exclude achizițiile de servicii de la prestatori stabiliți în afara UE pentru care beneficiarul din România plătește TVA (art. 307 alin. (2)): ele nu sunt import de bunuri și nu se înscriu în D390, deci intră în D394.
+- Excluderea se completează cu cea a operațiunilor din declarația recapitulativă (D390) — practic, D394 nu cuprinde importurile și exporturile de bunuri și nici operațiunile intracomunitare declarate în D390.
 
 ## Ce se greșește în practică
 
-- Se declară o achiziție de import ca operațiune cu taxare inversă (tip C), confundând-o cu achizițiile de bunuri/servicii de la parteneri stabiliți în UE care intră efectiv sub art.307.
-- Se presupune, greșit, că regula simetrică se aplică și livrărilor: exporturile **sunt** declarate în D394 (ca livrare, cotă 0), spre deosebire de importuri, care nu sunt declarate deloc.
+- Se declară un import de bunuri ca operațiune cu taxare inversă (tip C), confundându-l cu achizițiile pentru care beneficiarul plătește taxa conform art. 307 — importul de bunuri nu se declară deloc în D394.
+- Se declară exporturile de bunuri în D394, ca livrări cu cota 0 — instrucțiunea le exclude la fel ca pe importuri: „Nu vor fi declarate operaţiunile de export şi import de bunuri”.
 - Se amestecă certificatul de amânare de la plata TVA în vamă cu o scutire de declarare în altă parte — amânarea privește doar momentul plății TVA la import, nu obligația de declarare (care rămâne oricum în afara D394).
 
 ## Ce face iConta.eu
 
-Clasificarea partenerului (funcția „clasificarea partenerului”) încadrează furnizorii/clienții după prefixul CUI: RO, fără CUI, țară UE sau țară non-UE. Pentru achizițiile de tip „primit" (direcția inversă livrării), generatorul exclude explicit din D394 orice operațiune cu partener din categoria UE sau non-UE — comentariul din cod spune direct „ACHIZIȚIILE INTRACOMUNITARE NU INTRĂ ÎN D394 — se declară în D390 (VIES)", iar aceeași excludere acoperă și achizițiile de la parteneri non-UE, categorie în care intră tipic importurile de bunuri. Parteneri din aceste categorii apar în D394 doar la livrări (export, tip L/LS) sau la achiziții de servicii cu taxare inversă conform art.307/331 — niciodată la achiziții de bunuri importate.
+iConta.eu încadrează partenerii după codul fiscal de pe factură: cod românesc, fără cod, cod cu prefix de țară din UE sau cod cu prefix de țară din afara UE.
+
+- **La achiziții (facturile primite)**, aplicația scoate din D394 **orice** factură de la un partener din UE sau din afara UE — achiziții intracomunitare, importuri de bunuri și, la fel, achizițiile de servicii cu taxare inversă de la acești parteneri: niciuna nu intră automat în D394. La întocmire, aplicația afișează numărul achizițiilor excluse, cu mesajul că nu intră în D394 și se declară în D390 (VIES).
+- **La livrări (facturile emise)**, facturile către parteneri din UE sau din afara UE intră în D394 ca livrări (tip L, sau LS la cota 0), fără să se deosebească exporturile de bunuri și livrările intracomunitare, pe care instrucțiunea de mai sus le exclude. Verifică aceste facturi înainte de depunere.
+
+Aici aplicația exclude mai mult decât cere instrucțiunea: o achiziție de servicii de la un prestator din afara UE, cu taxare inversă, nu intră automat în D394, deși instrucțiunea de mai sus nu o exclude (iar mesajul de la întocmire o trimite, impropriu, la D390). Dacă firma are astfel de achiziții, includerea lor în D394 rămâne în sarcina contabilului, înainte de depunere.
 
 [iConta.eu](/)

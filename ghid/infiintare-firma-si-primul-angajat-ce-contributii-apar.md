@@ -47,6 +47,6 @@ Un angajat cu normă întreagă, plătit cu salariul brut de 5.000 lei, genereaz
 
 ## Ce face iConta.eu
 
-Motorul de calcul („calculul salariului (Salarii)”) aplică cele patru contribuții pe baza cotelor curente din registrul intern: CAS 25% și CASS 10% pe baza de contribuție (brutul impozabil, eventual redus de facilitatea salariului minim), impozit 10% pe baza impozabilă rămasă după deducerea personală, și CAM 2,25% pe brutul total impozabil, calculat și afișat separat, ca sarcină a angajatorului. Aplicația nu implementează nicio ramură de scutire pe cod CAEN — corect, întrucât nicio astfel de scutire nu mai are temei legal din 2025.
+La calculul salariului, iConta.eu aplică cele patru contribuții, cu cotele în vigoare: CAS 25% și CASS 10% pe baza de contribuție (brutul impozabil, eventual redus de facilitatea salariului minim), impozit 10% pe baza impozabilă rămasă după deducerea personală, și CAM 2,25% pe brutul total impozabil, calculat și afișat separat, ca sarcină a angajatorului. Aplicația nu aplică nicio scutire în funcție de codul CAEN — corect, întrucât nicio astfel de scutire nu mai are temei legal din 2025.
 
 [iConta.eu](/)

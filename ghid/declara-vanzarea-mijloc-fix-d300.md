@@ -1,8 +1,8 @@
 ---
 title: "Cum se declară vânzarea unui mijloc fix în D300?"
-description: D300 nu are un rând separat pentru vânzarea unui mijloc fix — se declară ca orice altă livrare taxabilă, pe rândul automat corespunzător cotei de TVA facturate (R9 la 21%, R10 la 11%, R11 la 9%).
+description: D300 nu are un rând separat pentru vânzarea unui mijloc fix — se declară ca orice altă livrare taxabilă, pe rândul automat corespunzător cotei de TVA facturate (rândul 9 la 21%, rândul 10 la 11%, rândul 11 la 9%).
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -20,7 +20,7 @@ Din perspectiva decontului de TVA, vânzarea unui mijloc fix nu are un tratament
 
 ## Cum intră în decont
 
-Structura confirmată în cod mapează fiecare cotă de TVA pe un rând specific de livrare: **21% → R9, 11% → R10, 9% → R11**. Vânzarea unui mijloc fix se declară exact ca orice altă vânzare, pe rândul corespunzător cotei aplicate facturii de vânzare — nu există un rând sau o secțiune separată, în structura verificată, dedicată exclusiv mijloacelor fixe.
+Structura confirmată în cod mapează fiecare cotă de TVA pe un rând specific de livrare: **21% → rândul 9, 11% → rândul 10, 9% → rândul 11**. Vânzarea unui mijloc fix se declară exact ca orice altă vânzare, pe rândul corespunzător cotei aplicate facturii de vânzare — nu există un rând sau o secțiune separată, în structura verificată, dedicată exclusiv mijloacelor fixe.
 
 Notă din sursele verificate: doar cotele 21%, 11% și 9% au rând automat în această structură — orice altă cotă aplicată (de exemplu una tranzitorie sau specială) „dispare" din decontul automat dacă nu e tratată manual, cu avertisment generat de aplicație.
 
@@ -28,12 +28,12 @@ Un aspect care nu face parte din sursele verificate pentru acest ghid: dacă vâ
 
 ## Ce se greșește în practică
 
-- **Se caută un rând special „mijloc fix" în D300** — nu există; vânzarea intră pe rândul cotei de TVA aplicate (R9/R10/R11), ca orice altă livrare.
+- **Se caută un rând special „mijloc fix" în D300** — nu există; vânzarea intră pe rândul cotei de TVA aplicate (rândurile 9, 10 sau 11), ca orice altă livrare.
 - **Se omite verificarea unei eventuale obligații de ajustare a TVA deduse la achiziția mijlocului fix** — acest calcul e distinct de simpla colectare a TVA la vânzare și nu e acoperit de mecanismul de bază al decontului.
 - **Se aplică o cotă „specială" pentru mijloace fixe** — nu există un regim de cotă distinct pentru vânzarea de mijloace fixe; se aplică cota standard sau redusă, ca la orice altă livrare de bunuri.
 
 ## Ce face iConta.eu
 
-Decontul de TVA v12 rutează automat orice livrare — inclusiv vânzarea unui mijloc fix — pe rândul corespunzător cotei facturate (R9 la 21%, R10 la 11%, R11 la 9%), cu avertisment explicit dacă apare o cotă neobișnuită, netratată automat. Aplicația nu calculează separat o eventuală ajustare a TVA deduse la achiziția mijlocului fix vândut — acel calcul, dacă e aplicabil, rămâne în afara acestui mecanism.
+Decontul de TVA v12 rutează automat orice livrare — inclusiv vânzarea unui mijloc fix — pe rândul corespunzător cotei facturate (rândul 9 la 21%, rândul 10 la 11%, rândul 11 la 9%), cu avertisment explicit dacă apare o cotă neobișnuită, netratată automat. Aplicația nu calculează separat o eventuală ajustare a TVA deduse la achiziția mijlocului fix vândut — acel calcul, dacă e aplicabil, rămâne în afara acestui mecanism.
 
 [iConta.eu](/)

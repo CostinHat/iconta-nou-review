@@ -12,6 +12,16 @@ Un imobil rămas în patrimoniul societății la data dizolvării nu blochează 
 
 Această prevedere se coroboră cu păstrarea personalității juridice a societății „pentru operațiunile lichidării, până la terminarea acesteia" (L31/1990, art. 233 alin. 4) — societatea în lichidare rămâne, deci, pe deplin capabilă să vândă imobilul, să emită factură și să încaseze prețul.
 
+## Temeiul legal
+
+::: ghid-temei
+„În afară de puterile conferite de asociați, cu aceeași majoritate cerută pentru numirea lor, lichidatorii vor putea: [...] c) să vândă, prin licitație publică, imobilele și orice avere mobiliară a societății;”
+— Legea nr. 31/1990 privind societățile, art. 255 alin. (1) lit. c) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
+
+„Societatea își păstrează personalitatea juridică pentru operațiunile lichidării, până la terminarea acesteia.”
+— Legea nr. 31/1990 privind societățile, art. 233 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
+:::
+
 ## Ce se greșește în practică
 
 O greșeală frecventă este omiterea cotei de TVA la înregistrarea vânzării, considerând-o „implicită" ca la o vânzare obișnuită. Motorul de lichidare al iConta.eu nu are o cotă de TVA implicită pentru acest tip de operațiune — cota trebuie introdusă explicit, altfel nota contabilă nu poate fi generată.

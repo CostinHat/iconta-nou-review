@@ -22,6 +22,7 @@ Nu. Când adunarea asociaților unui SRL discută un contract dintre societate �
 ::: ghid-temei
 „Asociatul care, într-o operațiune determinată, are, pe cont propriu sau pe contul altuia, interese contrare acelora ale societății, nu poate lua parte la nici o deliberare sau decizie privind această operațiune."
 — Legea societăților nr. 31/1990, art. 79 alin. (1), aplicabil SRL potrivit art. 197 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
+
 „Asociatul care contravine dispozițiilor alin. (1) este răspunzător de daunele cauzate societății, dacă, fără votul său, nu s-ar fi obținut majoritatea cerută."
 — Legea societăților nr. 31/1990, art. 79 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::

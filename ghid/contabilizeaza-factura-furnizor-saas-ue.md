@@ -2,7 +2,7 @@
 title: Cum se contabilizează factura unui furnizor SaaS din UE?
 description: Un abonament software cumpărat de la un furnizor stabilit în alt stat membru UE e o achiziție de servicii intracomunitare — se declară diferit la un plătitor și la un neplătitor de TVA, cu intrare automată în D390 pentru neplătitor.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -20,7 +20,7 @@ Pentru firma din România, locul prestării e România — beneficiarul, nu furn
 
 ### Cum se declară
 
-- **Firmă plătitoare de TVA (art. 316):** taxare inversă în D300 (rd. 7 + rd. 20), operațiune net zero. D301 e blocat pentru acest profil de firmă.
+- **Firmă plătitoare de TVA (art. 316):** taxare inversă în D300 (rd. 7 + rd. 22), operațiune net zero. D301 e blocat pentru acest profil de firmă.
 - **Firmă neplătitoare de TVA:** D301, secțiunea 4.1 (tip 5), cu obligație de înregistrare prin art. 317 **înainte** de primul abonament cumpărat, fără plafon valoric. Operațiunea intră automat și în D390, cu cod S.
 
 ### Exemplu de calcul

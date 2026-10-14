@@ -13,12 +13,11 @@ Fiecare linie de factură din SAF-T trebuie asociată cu un cod de taxă (`TaxCo
 ## Temeiul legal
 
 ::: ghid-temei
-"|Tax Table (Tabelă taxe)| Conţine informaţii specifice despre taxe. În funcţie de tipul de
-taxă (de exemplu, TVA), contribuabilul/plătitorul va selecta codurile de taxă din
-nomenclatorul Coduri de taxă TVA pentru operaţiuni, asociate operaţiunilor incluse în
-fişierul SAF-T."
-(OPANAF 1783/2021 (SAF-T, D406), Anexa 1, pct. 5, tabelul cu structura AuditFile)
+„Conţine informaţii specifice despre [...] În funcţie de tipul de taxă (de [...] exemplu, TVA), contribuabilul/ [...] plătitorul va selecta codurile de [...] taxă din nomenclatorul Coduri de taxă [...] TVA pentru operaţiuni, asociate [...] operaţiunilor incluse în fişierul [...] SAF-T.”
+— OPANAF nr. 1.783/2021, Anexa 1, pct. 5, rubrica Tax Table (Tabelă taxe) (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
+
+Textul ordinului este așezat într-un tabel; „[...]” marchează aici doar trecerile de la un rând al tabelului la următorul, nu omisiuni din text.
 
 ## Livrări vs. achiziții — două logici diferite
 

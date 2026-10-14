@@ -17,6 +17,7 @@ Pentru contabil, asta înseamnă că soldurile de clienți din balanță și fi�
 ::: ghid-temei
 „să intre în orice incintă de afaceri a debitorului, persoană juridică, sau în alte incinte unde acesta își păstrează bunurile, în scopul identificării bunurilor sau valorilor care pot fi executate silit, precum și să analizeze evidența contabilă a debitorului în scopul identificării terților care datorează sau dețin în păstrare venituri ori bunuri ale debitorului;"
 — Codul de procedură fiscală (Legea 207/2015), art. 223 alin. (3) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „să solicite și să cerceteze orice document sau element material care poate constitui o probă în determinarea bunurilor proprietate a debitorului;"
 — Codul de procedură fiscală (Legea 207/2015), art. 223 alin. (3) lit. c) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::

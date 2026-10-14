@@ -29,6 +29,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Dosarul de cercetare care stă la baza acestui ghid documentează o singură funcționalitate legată de facturile emise — „Export facturi emise către SAGA”, exportul lor tehnic în format XML către programul de contabilitate SAGA, care operează exclusiv pe facturi deja înregistrate în aplicație (`{schema}.facturi`/„liniile facturii”) și nu are nicio legătură cu emiterea, calculul faptului generator sau înregistrarea situațiilor de lucrări. Nu s-a găsit, în codul verificat pentru acest dosar, nicio funcționalitate dedicată situațiilor de lucrări ca document distinct de factură, așa că nu putem afirma dacă și cum tratează iConta.eu acest tip de document — orice afirmație în acest sens ar depăși ce a fost efectiv verificat în cod.
+iConta.eu nu are o funcționalitate dedicată situațiilor de lucrări, ca document distinct de factură: stabilirea faptului generator după situația de lucrări (sau după acceptarea ei, dacă așa prevede contractul) rămâne în sarcina contabilului. Funcționalitatea legată de facturile emise este „Export facturi emise către SAGA” — exportul, în format XML, al facturilor deja înregistrate în aplicație, pentru importul lor în programul SAGA; exportul nu emite facturi, nu calculează faptul generator și nu înregistrează situații de lucrări.
 
 [iConta.eu](/)

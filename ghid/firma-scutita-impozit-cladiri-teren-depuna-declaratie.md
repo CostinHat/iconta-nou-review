@@ -17,6 +17,7 @@ Contează în practică pentru că organul fiscal local acordă și verifică sc
 ::: ghid-temei
 „Depunerea declarațiilor fiscale reprezintă o obligație și în cazul persoanelor care beneficiază de scutiri sau reduceri de la plata impozitului sau a taxei pe clădiri."
 — Codul fiscal (Legea 227/2015), art. 461 alin. (15) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „Depunerea declarațiilor fiscale reprezintă o obligație și în cazul persoanelor care beneficiază de scutiri sau reduceri de la plata impozitului sau a taxei pe teren."
 — Codul fiscal (Legea 227/2015), art. 466 alin. (12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::

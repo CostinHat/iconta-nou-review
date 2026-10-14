@@ -2,7 +2,7 @@
 title: "e-Factura la o firmă în lichidare"
 description: "Dacă obligația RO e-Factura se menține pentru o societate aflată în lichidare și cum funcționează trimiterea în iConta.eu în această perioadă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,8 +30,8 @@ O firmă intrată în lichidare nu dispare din circuitul fiscal din prima zi —
 
 ## Ce face iConta.eu
 
-iConta **nu are nicio ramură de cod separată pentru facturarea unei firme aflate în lichidare** — nici în generarea și trimiterea facturilor prin RO e-Factura, nici în ecranul de facturi. O firmă marcată în lichidare emite și transmite facturi exact prin același flux ca oricare altă firmă: generare XML UBL/CIUS-RO, validare la validatorul public ANAF, apoi trimitere prin butonul „Trimite în SPV", cu urmărirea recipisei prin cronul de poll la 30 de minute. Nu există niciun blocaj, avertisment sau comportament diferit legat de starea de lichidare a firmei.
+iConta **nu tratează diferit facturarea unei firme aflate în lichidare** — nici la generarea și trimiterea facturilor prin RO e-Factura, nici în ecranul de facturi. O firmă marcată în lichidare emite și transmite facturi exact prin același flux ca oricare altă firmă: generare XML UBL/CIUS-RO, validare la validatorul public ANAF, apoi trimitere prin butonul „Trimite în SPV", iar aplicația verifică automat, la fiecare 30 de minute, starea facturii trimise (recipisa ANAF). Nu există niciun blocaj, avertisment sau comportament diferit legat de starea de lichidare a firmei.
 
-Modulul de lichidare al aplicației (notele contabile pentru vânzarea activelor și partajul final către asociați) e complet separat de motorul e-Factura — cele două nu comunică între ele. Dacă un activ e vândut în cursul lichidării și factura respectivă trebuie transmisă prin RO e-Factura, contabilul trece prin ecranul obișnuit de facturi, la fel ca la orice altă vânzare a firmei.
+Ecranul „Lichidare / radiere firmă” (notele contabile pentru vânzarea activelor și partajul final către asociați) e complet separat de transmiterea facturilor în RO e-Factura — operațiile de lichidare nu emit și nu transmit facturi. Dacă un activ e vândut în cursul lichidării și factura respectivă trebuie transmisă prin RO e-Factura, contabilul trece prin ecranul obișnuit de facturi, la fel ca la orice altă vânzare a firmei.
 
 [iConta.eu](/)

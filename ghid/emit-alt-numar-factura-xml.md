@@ -2,7 +2,7 @@
 title: Trebuie să emit alt număr de factură dacă XML-ul a fost respins?
 description: Nu este obligatoriu. O factură respinsă la validare nu a primit sigiliul Ministerului Finanțelor și nu a ajuns la client, iar OUG 120/2021 art. 4 alin. (5) prevede că, după corectarea erorilor, factura se transmite din nou în același sistem. Dacă preferi un număr nou, Codul fiscal art. 330 alin. (1) lit. a) permite anularea facturii netransmise și emiterea alteia.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -40,7 +40,7 @@ Termenul de transmitere este de 5 zile lucrătoare de la data emiterii facturii,
 1. Citește mesajul de erori și corectează datele în programul de facturare, nu direct în XML.
 2. Retransmite cu același număr și aceeași dată.
 3. Verifică primirea sigiliului. Abia de atunci factura există pentru client.
-4. Dacă alegi totuși număr nou, notează în registrul intern al seriei anularea numărului vechi.
+4. Dacă alegi totuși număr nou, notează în evidența internă a seriei anularea numărului vechi.
 
 ### De reținut
 - Factura respinsă nu a ajuns la client și nu are sigiliu (OUG 120/2021, art. 4 alin. (4)-(6)).

@@ -2,7 +2,7 @@
 title: "Este recipisa ANAF dovada depunerii declarației?"
 description: "Ce spune Codul de procedură fiscală despre data depunerii unei declarații transmise electronic și rolul mesajului de confirmare (recipisa) în stabilirea acestei date."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Practic, recipisa singură nu spune tot: trebuie citită împreună cu mesajul d
 
 ## Ce face iConta.eu
 
-La data acestui ghid, nu am putut confirma din codul aplicației un mecanism dedicat de arhivare și urmărire automată a mesajelor de confirmare/validare primite de la ANAF pentru declarațiile transmise (dincolo de fluxul specific de e-Factura, unde aplicația gestionează separat starea încărcării — vezi aplicația). Pentru celelalte declarații fiscale, păstrarea recipisei și verificarea statusului de validare rămân un proces manual al contabilului, în afara aplicației.
+La data acestui ghid, iConta.eu nu arhivează și nu urmărește automat mesajele de confirmare/validare primite de la ANAF pentru declarațiile transmise. Excepție face e-Factura, unde aplicația urmărește separat starea fiecărei încărcări. Pentru celelalte declarații fiscale, păstrarea recipisei și verificarea statusului de validare rămân un proces manual al contabilului, în afara aplicației.
 
 [iConta.eu](/)

@@ -13,7 +13,8 @@ SAF-T nu se validează cu un instrument oarecare — procedura oficială cere tr
 ## Temeiul legal
 
 ::: ghid-temei
-Potrivit procedurii oficiale de depunere (OPANAF nr. 1783/2021, Anexa 3, pct. 1-9), generarea unei declarații D406 valide urmează, în ordine: generarea fișierului XML, validarea cu instrumentul oficial denumit în ordin „Validator" (Soft J), generarea PDF-ului cu fișierul XML atașat și semnat electronic, apoi transmiterea prin SPV sau prin e-guvernare.ro.
+„Pentru pregătirea şi transmiterea fişierului standard de control fiscal prin intermediul Declaraţiei informative D406 se derulează următoarele activităţi: a) generarea fişierului SAF-T în format XML de către sistemul informatic al contribuabilului/plătitorului; b) verificarea structurii fişierului XML şi a corelaţiilor dintre date prin programul informatic "Validator" pus la dispoziţie de către Agenţia Naţională de Administrare Fiscală (ANAF); c) generarea Declaraţiei informative D406 ca document electronic în format PDF cu XML ataşat (dacă acesta a îndeplinit condiţiile de verificare) semnat electronic.”
+— OPANAF nr. 1783/2021, anexa nr. 3, pct. 1 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 ## De ce nu se poate sări peste validare

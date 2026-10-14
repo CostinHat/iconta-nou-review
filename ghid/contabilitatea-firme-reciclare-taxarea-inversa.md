@@ -2,7 +2,7 @@
 title: "Contabilitatea unei firme de reciclare: taxarea inversă la deșeuri"
 description: "O firmă de reciclare care livrează deșeuri și materiale reciclabile unui alt plătitor de TVA aplică taxare inversă potrivit art. 331 CF, cu formula contabilă 4426=4427 la beneficiar."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -59,10 +59,10 @@ exact din sursă, fără diacritice) și calculează TVA-ul aferent cu rotunjire
 Pentru livrările proprii (firma e furnizor, vinde deșeuri), aplicația nu are un ecran dedicat
 echivalent — factura se emite prin fluxul obișnuit de facturare, fără TVA, iar mențiunea „taxare
 inversă" se adaugă manual de contabil. Indiferent de sursă, suma este preluată automat în
-declarația D300 — rd. 13 la emiterea facturii (latura furnizorului) și rd. 12/rd. 25 la primirea ei
+declarația D300 — rd. 13 la emiterea facturii (latura furnizorului) și rd. 12/rd. 26 la primirea ei
 (latura beneficiarului, colectat + deductibil, net zero) — și în D394, cu tip de operațiune „V" la
 livrare și „C" la achiziție. Pentru D300, dacă
-aceeași sumă e introdusă și automat din factură, și manual în rândurile dedicate (rd. 12/13/25),
+aceeași sumă e introdusă și automat din factură, și manual în rândurile dedicate (rd. 12/13/26),
 aplicația blochează calculul decontului cu un mesaj de dublă numărare; la D394 nu există aceeași
 verificare dedicată — sumele automate și cele manuale se însumează pe aceeași cheie.
 

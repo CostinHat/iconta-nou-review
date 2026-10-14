@@ -22,6 +22,7 @@ Nu există un răspuns unic pentru toate rezervele. Ce contează este dacă reze
 ::: ghid-temei
 „rezervele, cu excepția celor reprezentând facilități fiscale, reduse sau anulate, reprezentând rezerva legală, rezerve din reevaluarea mijloacelor fixe, inclusiv a terenurilor, care au fost deduse la calculul profitului impozabil și nu au fost impozitate în perioada în care microîntreprinderile au fost și plătitoare de impozit pe profit, indiferent dacă reducerea sau anularea este datorată modificării destinației rezervei, distribuirii acesteia către participanți sub orice formă, lichidării, divizării, fuziunii contribuabilului sau oricărui altui motiv;"
 — Codul fiscal (Legea 227/2015), art. 53 alin. (2) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „În situația în care rezervele fiscale sunt menținute până la lichidare, acestea nu sunt luate în calcul pentru determinarea bazei impozabile ca urmare a lichidării."
 — Codul fiscal (Legea 227/2015), art. 53 alin. (2) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::

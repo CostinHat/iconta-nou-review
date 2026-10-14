@@ -2,7 +2,7 @@
 title: Taxare inversă la livrarea de bunuri în regim de consignație
 description: Taxarea inversă internă depinde exclusiv de natura bunului (dacă se încadrează la una din literele a)-l) de la art. 331 alin. (2)) și de statutul de plătitor de TVA al părților — nu de mecanismul comercial prin care se face livrarea, deci se aplică și în consignație dacă bunul se încadrează la lege.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,11 +13,14 @@ Consignația e un mecanism comercial (bunul e predat unui consignatar, care îl 
 ## Temeiul legal
 
 ::: ghid-temei
-**Articolul 331 alin. (1):** Prin excepție de la prevederile art. 307 alin. (1), în cazul operațiunilor taxabile, persoana obligată la plata taxei este beneficiarul pentru operațiunile prevăzute la alin. (2). Condiția obligatorie pentru aplicarea taxării inverse este ca atât furnizorul, cât și beneficiarul să fie înregistrați în scopuri de TVA conform art. 316.
+„(1) Prin excepție de la prevederile art. 307 alin. (1), în cazul operațiunilor taxabile, persoana obligată la plata taxei este beneficiarul pentru operațiunile prevăzute la alin. (2). Condiția obligatorie pentru aplicarea taxării inverse este ca atât furnizorul, cât și beneficiarul să fie înregistrați în scopuri de TVA conform art. 316.”
+— Codul fiscal (Legea 227/2015), art. 331 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Articolul 331 alin. (2)** (extras): Operațiunile pentru care se aplică taxarea inversă sunt: a) livrarea următoarelor categorii de bunuri: 1. deșeuri feroase și neferoase, de rebuturi feroase și neferoase, inclusiv produse semifinite rezultate din prelucrarea, fabricarea sau topirea acestora; [...] b) livrarea de masă lemnoasă și materiale lemnoase [...]; [...]
+„(2) Operațiunile pentru care se aplică taxarea inversă sunt: a) livrarea următoarelor categorii de bunuri: 1. deșeuri feroase și neferoase, de rebuturi feroase și neferoase, inclusiv produse semifinite rezultate din prelucrarea, fabricarea sau topirea acestora; [...] b) livrarea de masă lemnoasă și materiale lemnoase [...]”
+— Codul fiscal (Legea 227/2015), art. 331 alin. (2) lit. a) pct. 1 și lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Articolul 331 alin. (5):** Prevederile prezentului articol se aplică numai pentru livrările de bunuri/prestările de servicii în interiorul țării.
+„(5) Prevederile prezentului articol se aplică numai pentru livrările de bunuri/prestările de servicii în interiorul țării.”
+— Codul fiscal (Legea 227/2015), art. 331 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Cum se determină aplicarea taxării inverse la o livrare în consignație

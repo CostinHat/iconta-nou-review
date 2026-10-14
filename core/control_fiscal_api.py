@@ -135,8 +135,8 @@ _NEAP_FORMA_SIMPLA = {
             "juridice; PFA (partidă simplă) depune Declarația unică (D212).",
     "d101": "D101 nu se datorează — impozitul pe profit e al persoanelor juridice; PFA (partidă "
             "simplă) depune Declarația unică (D212).",
-    "d406": "D406 (SAF-T) nu se datorează — OPANAF 407/2025, Anexa 5 pct.4 lit.q) exclude "
-            "persoanele fizice (PFA/II/PFL) de la obligația SAF-T (enumerare necondiționată).",
+    "d406": "D406 (SAF-T) nu se datorează — OPANAF 407/2025, Anexa 5 pct.4 lit.a)–d) exclude "
+            "persoanele fizice (PFA, II, IF, PFL) de la obligația SAF-T (enumerare necondiționată).",
 }
 
 

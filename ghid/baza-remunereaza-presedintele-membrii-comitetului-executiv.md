@@ -17,6 +17,7 @@ Fiscal, sumele primite nu sunt venituri din activități independente: Codul fis
 ::: ghid-temei
 „(1) Președintele asociației de proprietari și membrii comitetului executiv pot fi remunerați pe baza unui contract de mandat, conform hotărârii adunării generale a proprietarilor, consemnată în procesul-verbal."
 — Legea 196/2018, art. 58 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
+
 „(8) Cenzorul/Membrii comisiei de cenzori, angajat/angajați al/ai asociației de proprietari, este/sunt remunerat/remunerați pe baza unui contract de mandat, conform hotărârii adunării generale a asociației de proprietari, consemnată în procesul-verbal."
 — Legea 196/2018, art. 60 alin. (8) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::

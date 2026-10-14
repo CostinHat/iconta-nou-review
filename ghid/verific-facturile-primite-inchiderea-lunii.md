@@ -26,7 +26,7 @@ TVA-ul unei facturi de furnizor sosite târziu se deduce în perioada în care e
 
 **1. Verificarea de completitudine („închiderea lunii (Control fiscal)”).** Când se încearcă blocarea unei luni din Registru jurnal, iConta.eu verifică dacă mai există e-Facturi primite de la ANAF (prin SPV) și rămase neînregistrate — nici ciornă, nici validate, nici respinse — cu data în luna respectivă. Dacă găsește așa ceva, **refuză blocarea**, cu un mesaj care spune câte documente și unde se rezolvă. Practic, e verificarea pe care o poți folosi înainte de a bloca luna, ca să te asiguri că n-a rămas nimic nepreluat din e-Factura.
 
-**2. Poarta de blocare propriu-zisă („Blocare perioade”).** Odată luna blocată, orice înregistrare nouă pe acea lună — inclusiv contarea unei facturi rămase neînregistrată — e respinsă de un trigger de bază de date, indiferent de sursă (UI, import, cron). Mesajul arătat: *„Perioada e blocată (luna închisă). Cere-i administratorului cabinetului să o redeschidă sau înregistrează în luna curentă."*
+**2. Poarta de blocare propriu-zisă („Blocare perioade”).** Odată luna blocată, orice înregistrare nouă pe acea lună — inclusiv contarea unei facturi rămase neînregistrată — e respinsă, indiferent de calea prin care vine înregistrarea (introducere pe ecran, import, operațiuni generate automat). Mesajul arătat: *„Perioada e blocată (luna închisă). Cere-i administratorului cabinetului să o redeschidă sau înregistrează în luna curentă."*
 
 Cele două sunt legate operațional — blocarea lunii (pasul 2) verifică chiar ea completitudinea din pasul 1 înainte de a permite închiderea — dar rămân mecanisme diferite: unul e o poartă care oprește scrieri, celălalt e o constatare despre stadiul evidenței.
 
@@ -42,6 +42,6 @@ Verificarea de completitudine acoperă doar ce a coborât din e-Factura. O factu
 
 ## Ce face iConta.eu
 
-La încercarea de blocare a unei luni, aplicația verifică e-Facturile primite și rămase neînregistrate cu data în acea lună și refuză motivat blocarea dacă găsește vreuna — cu numărul lor și direcția în care se rezolvă. Odată luna blocată, orice scriere nouă e respinsă de trigger-ul de bază de date, indiferent de sursă. O factură primită pe alt canal decât e-Factura și găsită după blocare nu se poate contabiliza cu data ei originală — se înregistrează cu data descoperirii, cu mențiunea explicită a motivului, iar TVA-ul rămâne deductibil în perioada primirii, în termenul legal de prescripție.
+La încercarea de blocare a unei luni, aplicația verifică e-Facturile primite și rămase neînregistrate cu data în acea lună și refuză motivat blocarea dacă găsește vreuna — cu numărul lor și direcția în care se rezolvă. Odată luna blocată, orice înregistrare nouă pe acea lună e respinsă, indiferent de calea prin care vine. O factură primită pe alt canal decât e-Factura și găsită după blocare nu se poate contabiliza cu data ei originală — se înregistrează cu data descoperirii, cu mențiunea explicită a motivului, iar TVA-ul rămâne deductibil în perioada primirii, în termenul legal de prescripție.
 
 [iConta.eu](/)

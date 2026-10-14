@@ -17,6 +17,7 @@ ANAF poate institui poprire sau sechestru asigurător și înainte de a emite de
 ::: ghid-temei
 „Aceste măsuri pot fi luate și înainte de emiterea titlului de creanță, inclusiv în cazul efectuării de controale sau al antrenării răspunderii solidare."
 — Codul de procedură fiscală (Legea 207/2015), art. 213 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „Se dispun măsuri asigurătorii sub forma popririi asigurătorii și sechestrului asigurător asupra bunurilor mobile și/sau imobile proprietate a debitorului, precum și asupra veniturilor acestuia, în cazuri excepționale, respectiv în situația în care există pericolul ca acesta să se sustragă, să își ascundă ori să își risipească patrimoniul, periclitând sau îngreunând în mod considerabil colectarea."
 — Codul de procedură fiscală (Legea 207/2015), art. 213 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::

@@ -29,6 +29,6 @@ O altă greșeală este să se creadă că a doua trecere prin motorul de contar
 
 Pentru o factură deja contabilizată, aplicația nu permite ștergerea directă a documentului — corecția se realizează prin stornarea facturii care nu trebuia emisă/înregistrată, ceea ce generează un document nou, cu valori negative, legat de original. Dacă apelezi din nou funcția de contare pe o factură deja contată, aceasta recunoaște situația și nu creează o notă suplimentară.
 
-Dosarul de cercetare nu identifică în cod o funcție dedicată de „detectare a facturilor duplicate" — decizia că o factură este într-adevăr un duplicat și trebuie stornată rămâne la latitudinea utilizatorului.
+La contarea unei facturi, dacă în evidență există deja o notă contabilă fără legătură cu vreo factură, pe aceeași sumă și în aceeași lună, aplicația avertizează că ar putea fi o a doua contare (iar la contarea automată nu scrie nota, ci cere legarea ei sau contarea manuală). Acest ghid nu descrie o funcție care să detecteze, în sine, două facturi înregistrate de două ori — decizia că o factură este într-adevăr un duplicat și trebuie stornată rămâne la latitudinea utilizatorului.
 
 [iConta.eu](/)

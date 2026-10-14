@@ -2,7 +2,7 @@
 title: "Cum se înregistrează plata dividendelor către asociat?"
 description: "Monografia contabilă completă pentru dividendul aprobat și plătit unui asociat, pentru varianta anuală și pentru cea interimară."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -26,6 +26,6 @@ O confuzie frecventă este utilizarea contului de dividend (457) pentru sume car
 
 ## Ce face iConta.eu
 
-În ecranul Operațiuni speciale > Finanțare > Decontări asociați, funcția care generează nota de dividend primește suma brută, data plății și un indicator „interimar" (da/nu). Pentru dividendul anual generează liniile 1171=457 (brut) și 457=446 (impozit); pentru cel interimar, 463=456 (brut) și 456=446 (impozit). Cota de impozit este citită automat din registrul intern al aplicației, în funcție de data plății (16% de la 1 ianuarie 2026, 10% pentru plățile din 2025). Dacă operațiunea este marcată drept plătită, aplicația adaugă și linia de virament net către bancă (457=5121, respectiv 456=5121); dacă nu, dividendul rămâne evidențiat doar ca obligație de plată, fără linia de virament.
+În ecranul Operațiuni speciale > Finanțare > Decontări asociați, pentru nota de dividend introduceți suma brută, data plății și dacă dividendul e „interimar" (da/nu). Pentru dividendul anual, aplicația generează liniile 1171=457 (brut) și 457=446 (impozit); pentru cel interimar, 463=456 (brut) și 456=446 (impozit). Cota de impozit o aplică automat aplicația, în funcție de data plății (16% de la 1 ianuarie 2026, 10% pentru plățile din 2025). Dacă operațiunea este marcată drept plătită, aplicația adaugă și linia de virament net către bancă (457=5121, respectiv 456=5121); dacă nu, dividendul rămâne evidențiat doar ca obligație de plată, fără linia de virament.
 
 [iConta.eu](/)

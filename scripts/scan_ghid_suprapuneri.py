@@ -114,7 +114,7 @@ if __name__ == "__main__":
     lista = ghiduri()
     gr = grupuri(lista)
     print("ghiduri publicate: %d · grupuri: %d · pagini în grupuri: %d · cel mai mare grup: %d"
-          % (len(lista), len(gr), sum(len(g) for g in gr), max(len(g) for g in gr)))
+          % (len(lista), len(gr), sum(len(g) for g in gr), max((len(g) for g in gr), default=0)))
     for g in gr[:10]:
         print("—", " | ".join(t for _s, t in g))
     if "--csv" in argv:

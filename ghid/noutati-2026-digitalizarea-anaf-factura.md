@@ -42,8 +42,6 @@ Pentru RO e-Transport, mecanismul de bază (necontestat, în vigoare) e codul UI
 
 **e-Transport („Trimitere e-Transport prin API SPV”)**: iConta.eu generează și trimite codul UIT prin API SPV, cu o „gardă de timp" proprie — cererea e blocată în afara ferestrei legale (UIT declarat cu maximum 3 zile înainte, valabil 5 zile pentru transport național / 15 zile pentru cel intracomunitar), iar după expirare declanșarea trimiterii e blocată explicit, cu motivul afișat.
 
-**e-TVA**: nu am identificat, în cercetarea pentru acest ghid, un modul dedicat de generare sau răspuns automat la notificarea de conformare RO e-TVA în iConta.eu — regulile de mai sus rămân, pentru moment, informație de conformitate pe care contabilul o gestionează prin canalele oficiale ANAF.
-
-Notă: funcționalitatea din spatele acestui ghid, „Monitor fiscal (noutăți legislative)”, e un mecanism intern — un cron săptămânal care citește noutățile ANAF/MF și trimite un rezumat filtrat prin email către administratorul aplicației. Nu e un modul orientat spre contabil și nu generează automat conținut vizibil în aplicație; rezumatul de mai sus e redactat manual, pe bază de surse legale verificate, nu produs de acel cron.
+**e-TVA**: iConta.eu nu are un modul dedicat de generare sau răspuns automat la notificarea de conformare RO e-TVA — regulile de mai sus rămân, pentru moment, informație de conformitate pe care contabilul o gestionează prin canalele oficiale ANAF.
 
 [iConta.eu](/)

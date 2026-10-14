@@ -2,7 +2,7 @@
 title: "Taxare inversă în construcții: condiții și declarare 2026"
 description: Nu există în legea română un mecanism general de taxare inversă pentru lucrări de construcții-montaj; singura excepție din art. 331 legată de imobiliare e livrarea taxabilă a clădirii/terenului finit, fără termen de expirare în 2026.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,11 +13,14 @@ Cu termenul de 31.12.2026 apărând tot mai des în discuțiile despre taxare in
 ## Temeiul legal
 
 ::: ghid-temei
-**Articolul 331 alin. (2)**, lit. g): construcțiile, astfel cum sunt definite la art. 292 alin. (2) lit. f) pct. 2, părțile de construcție și terenurile de orice fel, pentru a căror livrare se aplică regimul de taxare prin efectul legii sau prin opțiune;
+„g) construcțiile, astfel cum sunt definite la art. 292 alin. (2) lit. f) pct. 2, părțile de construcție și terenurile de orice fel, pentru a căror livrare se aplică regimul de taxare prin efectul legii sau prin opțiune;”
+— Codul fiscal (Legea 227/2015), art. 331 alin. (2) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Articolul 331 alin. (6):** Prevederile alin. (2) lit. c)-f) și i)-l) se aplică până la data de 31 decembrie 2026 inclusiv.
+„(6) Prevederile alin. (2) lit. c)-f) și i)-l) se aplică până la data de 31 decembrie 2026 inclusiv.”
+— Codul fiscal (Legea 227/2015), art. 331 alin. (6) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Articolul 331 alin. (5):** Prevederile prezentului articol se aplică numai pentru livrările de bunuri/prestările de servicii în interiorul țării.
+„(5) Prevederile prezentului articol se aplică numai pentru livrările de bunuri/prestările de servicii în interiorul țării.”
+— Codul fiscal (Legea 227/2015), art. 331 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Ce e valabil și ce nu, pentru construcții

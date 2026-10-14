@@ -2,7 +2,7 @@
 title: De când începe amortizarea unui mijloc fix?
 description: Amortizarea fiscală a unui mijloc fix începe din luna următoare punerii în funcțiune, nu din luna în care activul intră efectiv în folosință - regulă unică, valabilă pentru toate cele patru metode de amortizare.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,9 +13,8 @@ Amortizarea fiscală a unui mijloc fix începe **din luna următoare** celei în
 ## Temeiul legal
 
 ::: ghid-temei
-Amortizarea fiscală se calculează după cum urmează: a) începând cu luna următoare celei în care mijlocul fix amortizabil se pune în funcțiune, prin aplicarea regimului de amortizare prevăzut la alin. (5);
-
-— Codul fiscal (Legea 227/2015), art.28 alin.(12) lit.a)
+„Amortizarea fiscală se calculează după cum urmează: a) începând cu luna următoare celei în care mijlocul fix amortizabil se pune în funcțiune, prin aplicarea regimului de amortizare prevăzut la alin. (5);”
+— Codul fiscal, art. 28 alin. (12) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 „Punerea în funcțiune" (PIF) e momentul din care activul e efectiv folosit în activitatea firmei — de regulă data recepției, a montajului finalizat sau a primei utilizări, nu neapărat data facturii de achiziție. Din acel moment, legea numără o lună întreagă în care activul e considerat "în funcțiune" fără să genereze încă amortizare, iar calculul propriu-zis pornește abia cu luna calendaristică următoare.
@@ -30,6 +29,6 @@ Exemplu: un echipament pus în funcțiune pe 3 martie 2026 începe să se amorti
 
 ## Ce face iConta.eu
 
-Amortizarea se calculează dintr-un motor unic, folosit identic de registrul mijloacelor fixe, nota lunară de amortizare, casare, reevaluare și declarația D406/SAF-T. Toate aceste funcții numără lunile de amortizare pornind automat de la luna următoare datei de punere în funcțiune introduse pentru fiecare activ — nu există un mod separat, manual, de a forța amortizarea să înceapă chiar din luna PIF.
+În iConta.eu amortizarea se calculează la fel peste tot: în registrul mijloacelor fixe, în nota lunară de amortizare, la casare, la reevaluare și în declarația D406/SAF-T. Peste tot, lunile de amortizare se numără automat începând cu luna următoare datei de punere în funcțiune pe care o introduci pentru fiecare activ — nu data facturii sau a achiziției. Nu există o opțiune manuală prin care amortizarea să pornească chiar din luna PIF.
 
 [iConta.eu](/)

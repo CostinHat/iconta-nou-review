@@ -17,6 +17,7 @@ Legea dă două exemple tipice de abuz: asociatul dispune de bunurile societăț
 ::: ghid-temei
 „Asociatul care, în frauda creditorilor, abuzează de caracterul limitat al răspunderii sale și de personalitatea juridică distinctă a societății răspunde nelimitat pentru obligațiile neachitate ale societății dizolvate, respectiv lichidate."
 — Legea societăților nr. 31/1990, art. 237^1 alin. (3) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
+
 „Răspunderea asociatului devine nelimitată în condițiile alin. (3) [...] în special atunci când acesta dispune de bunurile societății ca și cum ar fi bunurile sale proprii sau dacă diminuează activul societății în beneficiul personal ori al unor terți, cunoscând sau trebuind să cunoască faptul că în acest mod societatea nu va mai fi în măsură să își execute obligațiile."
 — Legea societăților nr. 31/1990, art. 237^1 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::

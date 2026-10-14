@@ -2,7 +2,7 @@
 title: Cum se completează D101 în 2026?
 description: D101 pe 2026 se completează pe schema OPANAF 206/2025 (v10), cu cota standard de 16% (art. 17), cota de 5% pentru baruri/cluburi de noapte (art. 18), și impozitul minim pe cifra de afaceri calculat pentru firmele peste 50.000.000 euro cu cota redusă la 0,5%, nu 1% (art. 18^1 alin. 16 Cod fiscal).
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -62,7 +62,7 @@ dacă rd.47 > rd.46    ->  rd.48.2 (IMCA)
 
 Lanțul complet rd. 22 → rd. 35 → rd. 38.1 → rd. 39/39.1 → rd. 40 → rd. 41.1 e calculat conform structurii din OPANAF 206/2025, cu cota standard de 16% (art. 17) și cota separată de 5% pentru baruri/cluburi de noapte (art. 18) confirmate.
 
-Comparația cu impozitul minim pe cifra de afaceri (rd. 46/47/48) e calculată structural, cu pragul de eligibilitate de 50.000.000 euro verificat la cursul de la închiderea exercițiului financiar. **Cota efectiv folosită în formula IMCA pentru anul fiscal 2026 merită verificată separat** înainte de a considera finală suma de la rd. 47 — vezi [ghidul dedicat cotei IMCA din 2026](/ghid/imca-2026-cota-05-la-suta).
+Comparația cu impozitul minim pe cifra de afaceri (rd. 46/47/48) e calculată structural, cu pragul de eligibilitate de 50.000.000 euro verificat la cursul de la închiderea exercițiului financiar. Cota IMCA din regulile aplicației urmează legea: 1% pentru anii fiscali 2024–2025, 0,5% pentru anul fiscal 2026 (art. 18^1 alin. (16) CF, introdus prin OUG 89/2025), iar după 31.12.2026 IMCA nu se mai aplică (alin. (17)). La generarea D101 din contabilitate, rândul 47 îl completează contabilul — veniturile, investițiile și amortizarea din formulă nu se calculează automat din balanță; dacă firma depășește pragul și rândul 47 lipsește, aplicația oprește generarea și amintește cota: 0,5% în 2026, 1% până în 2025. Detalii în [ghidul dedicat cotei IMCA din 2026](/ghid/imca-2026-cota-05-la-suta).
 
 Vezi și: [pierderea fiscală reportată](/ghid/pierdere-fiscala-reportata) și [de la rezultatul contabil la rezultatul fiscal pe D101](/ghid/de-la-rezultatul-contabil-la-rezultatul-fiscal-d101).
 

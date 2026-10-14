@@ -8797,9 +8797,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**780 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**781 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 742
+### `core/` — 743
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9241,6 +9241,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_garzi_tacere_ui.py` — core/test_garzi_tacere_ui.py — GARDURI STATICE anti tacere-la-esec + info-leak in UI (JS).
 - `core/test_gazda_productie.py` — core/test_gazda_productie.py — o verificare care loveste ALT domeniu nu e o verificare.
 - `core/test_get_fara_scriere.py` — GARD (20.08.2026): o rută GET nu scrie în starea de business. GET trebuie să fie SAFE (RFC 9110 §9.2.1).
+- `core/test_ghid_citate.py` — GARD — citatele din casetele de temei ale ghidurilor publice se regăsesc LITERAL în sursele oficiale locale (`core/ghid_citate.py`).
 - `core/test_ghid_d212_afirmatii.py` — GARD — afirmațiile RETRASE despre D212 nu mai pot apărea în ghiduri și în ajutorul F246.
 - `core/test_ghid_fara_coduri.py` — GARD — comanda Costin 13.10.2026, pct.2b (verbatim în DECIZII): „Scoate din textele publice denumirile din cod (de ex. nir_gv,
 - `core/test_ghid_poarta.py` — GARD — poarta de verificare pre-publicare a ghidurilor (core/ghid_poarta.py).
@@ -10946,3 +10947,17 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | suprapunerile = ieșirea uneltei (pct.2a) | `::test_suprapunerile_masurate_sunt_cele_ale_uneltei` | o listă de grupuri editată de mână | grup renumerotat în CSV -> ROȘU | măsură lexicală (plafon inferior) |
 | C17 contrastul paginilor publice | `core/test_a11y_contrast_tokens.py::test_paginile_publice_contrast` + e2e `test_def_c17_…` | text pe fundal `var(--p-…)` sub 4,5:1; link deosebit numai prin culoare | `--p-brand` #0672FE -> ROȘU (core și e2e); `text-decoration:none` -> ROȘU | axe nu verifică pseudo-elementele (numărul pasului) — le acoperă calculul din CSS |
 | C18 numerotarea numai pe `ol > li` | `core/test_ghid_publicare.py::test_procedura_numara_numai_lista_ordonata` + e2e `test_def_c18_…` | „0” pe o listă cu buline într-un bloc de procedură | regula veche repusă -> ROȘU | — |
+
+## 13.10.2026 — lotul §6 COMANDA_13_10: comasarea, proza despre cod, citatele literale; C20
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| comasarea = 301 spre ghidul păstrat | `ghid_comasate.csv` + `core/test_ghid_publicare.py::test_comasarea_trimite_301_spre_ghidul_pastrat` | un ghid comasat servit, listat, în sitemap sau fără 301; un lanț 301 -> 301 | o redirecționare scoasă -> ROȘU; un ghid comasat repus în `ghid/` -> ROȘU | — |
+| lista publicată = 6.513 | `::test_publicate_sunt_lista_inghetata` | publicarea unui ghid nou fără decizie | (lotul 2) | — |
+| unealta lexicală nu mai găsește grupuri | `core/test_ghid_fara_coduri.py::test_suprapunerile_masurate_sunt_cele_ale_uneltei` | o suprapunere lexicală nouă nevăzută | ghid comasat repus -> ROȘU | lexical (plafon inferior) |
+| citatele de temei se regăsesc literal | `core/ghid_citate.py` (legat în poarta de pre-publicare `core/ghid_poarta.verifica_ghid`) + `core/test_ghid_citate.py` (calibrare în ambele sensuri, poarta oprește un ghid nou cu citat inventat, clichet pe fișier `core/clichet_citate_ghid.json`) | un citat nou care nu e textul legii; creșterea celor neliterale în orice ghid; publicarea unui ghid nou cu citat neliteral | un cuvânt adăugat într-un citat -> ROȘU; verificarea scoasă din poartă -> ROȘU | nu verifică atribuirea (articolul numit); 1.348 de citate vechi neliterale sub clichet |
+| proza despre cod numită de Costin = 0 | `scripts/curata_coduri_ghid.PROZA_COD_ZERO` + `::test_nicio_proza_despre_cod_numita_de_costin` | „comentariul din cod”, „registrul intern al proiectului”, „dosarul tehnic / de cercetare”, „mirror”, coduri GH, linii de cod, cron — oriunde, și în casete | „mirrorul local” repus -> ROȘU | tipare lexicale |
+| proza despre cod, clasa largă, nu crește | `PROZA_COD_CLICHET` + `core/clichet_proza_cod_ghid.json` + `::test_proza_despre_cod_clasa_larga_nu_creste` | „verificat în cod”, „motorul”, „cercetarea”, termeni tehnici, în plus pe orice ghid | „Verificat în cod” adăugat -> ROȘU | 1.312 ghiduri rămase, la decizie |
+| citatele din casetă = paragrafe separate | `core/test_ghid_citate.py::test_citatele_din_caseta_sunt_paragrafe_separate` | sursa lipită de citatul următor într-un singur paragraf (302 locuri în 201 de ghiduri, corectate) | rândul liber scos -> ROȘU | — |
+| C20 temeiul D406 pentru PFA | `core/test_control_fiscal.py::test_pfa_d100_d101_d406_neaplicabile_nu_restante` | litera greșită în motivul afișat contabilului | „lit.q)” înapoi -> ROȘU | probat și în browser: `frontend_test/e2e/e2e_comanda_1310.py::test_def_c20_pfa_d406_nu_se_datoreaza_cu_litera_corecta` (mutația „lit.q)” în plasă -> ROȘU); C20 = rezolvată |
+| cifrele de referință: lunile numai din notele validate (R36, decizia Costin 14.10.2026, varianta (c)) | `scripts/cifre_referinta._luni_cu_date` + `core/test_cifre_referinta_poarta.py::test_lunile_cu_date_vin_numai_din_notele_validate` | o ciornă (sau o factură fără notă) care face o lună „cu date” și oprește poarta fără nicio cifră schimbată (13.10: două ciorne de închidere pe F2) | filtrul `status = 'validata'` scos -> ROȘU | o notă validată greșit intră tot (e evidență, deci e cifră) |

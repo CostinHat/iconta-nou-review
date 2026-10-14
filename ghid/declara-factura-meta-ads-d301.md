@@ -2,7 +2,7 @@
 title: Cum se declară factura Meta Ads în D301 și D390?
 description: O factură Meta Ads e servicii de publicitate cumpărate din străinătate — dacă furnizorul e stabilit în UE, operațiunea e tip 5 și intră automat și în D390, dar entitatea de facturare trebuie verificată pe fiecare factură, nu presupusă.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,7 +22,7 @@ Tip 5 (secțiunea 4.1) e rezervat explicit prestatorilor stabiliți în UE. Dac�
 
 ### Cum se declară, în funcție de statutul TVA
 
-- **Firmă plătitoare de TVA (art. 316):** taxare inversă în D300, rd. 7 + rd. 20, net zero. D301 nu se completează pentru acest profil.
+- **Firmă plătitoare de TVA (art. 316):** taxare inversă în D300, rd. 7 + rd. 22, net zero. D301 nu se completează pentru acest profil.
 - **Firmă neplătitoare de TVA, furnizor stabilit în UE:** D301 secțiunea 4.1 (tip 5) + D390 cod S. Necesită înregistrare prin art. 317 înainte de prima campanie plătită, fără plafon.
 - **Firmă neplătitoare de TVA, furnizor stabilit în afara UE:** D301 secțiunea 4 (tip 4), fără D390.
 

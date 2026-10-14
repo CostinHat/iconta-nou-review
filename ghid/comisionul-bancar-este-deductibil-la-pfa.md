@@ -35,6 +35,6 @@ Un PFA plătește lunar 15 lei comision de mentenanță cont curent și, ocazion
 
 ## Ce face iConta.eu
 
-Comisionul bancar se înregistrează ca operațiune de plată, în categoria „cheltuială deductibilă” din categoriile de plăți = {"cheltuială deductibilă", "cheltuială cu deductibilitate limitată", "cheltuială nedeductibilă", "aport sau retragere", "rambursare de credit"}. Validarea („validarea”) cere deductibilitate explicită pentru orice plată de tip `cheltuiala*`. Mai mult, funcția „importul extrasului bancar (Bancă)” generează automat ciorne din extrasul bancar („liniile extrasului bancar”), cu categorie și deductibilitate propuse implicit ca "cheltuială deductibilă"/"integral" — propunere pe care contabilul o confirmă sau o corectează înainte de validare, așa cum cere explicit comentariul din cod.
+Comisionul bancar se înregistrează ca operațiune de plată, în categoria „cheltuială deductibilă” (celelalte categorii de plăți sunt „cheltuială cu deductibilitate limitată”, „cheltuială nedeductibilă”, „aport sau retragere” și „rambursare de credit”). La validare, orice plată încadrată ca cheltuială trebuie să aibă deductibilitatea aleasă explicit. Mai mult, la importul extrasului bancar, din ecranul Bancă, aplicația generează automat ciorne din liniile extrasului, cu categoria și deductibilitatea propuse implicit ca „cheltuială deductibilă”/„integral” — propunere pe care contabilul o confirmă sau o corectează înainte de validare.
 
 [iConta.eu](/)

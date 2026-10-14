@@ -13,11 +13,17 @@ Nu orice firmă sub plafonul de cifră de afaceri poate opta pentru TVA la înca
 ## Temeiul legal
 
 ::: ghid-temei
-**Art. 282 alin. (3) din Codul fiscal (Legea 227/2015)**: *„...exigibilitatea taxei intervine la data încasării contravalorii integrale sau parțiale a livrării de bunuri ori a prestării de servicii, în cazul persoanelor impozabile care optează în acest sens..."*
+„Prin excepție de la prevederile alin. (1) și alin. (2) lit. a), exigibilitatea taxei intervine la data încasării contravalorii integrale sau parțiale a livrării de bunuri ori a prestării de servicii, în cazul persoanelor impozabile care optează în acest sens, denumite în continuare persoane care aplică sistemul TVA la încasare.”
+— Codul fiscal (Legea nr. 227/2015), art. 282 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Art. 282 alin. (3^1) CF** (rezumat din dosarul de cercetare, fără text exact citat în sursă): sunt eligibile persoanele impozabile înregistrate în scopuri de TVA conform art. 316, cu sediul activității economice în România (art. 266 alin. (2) lit. a)), a căror cifră de afaceri din anul calendaristic precedent nu a depășit plafonul aplicabil pentru anul respectiv (lit. a); sau persoanele nou-înregistrate în scopuri de TVA în cursul anului, cu opțiune de la data înregistrării sau ulterior (lit. b).
+„Sunt eligibile pentru aplicarea sistemului TVA la încasare: a) persoanele impozabile înregistrate în scopuri de TVA conform art. 316, care au sediul activității economice în România conform art. 266 alin. (2) lit. a), a căror cifră de afaceri în anul calendaristic precedent nu a depășit plafonul pentru aplicarea sistemului TVA la încasare prevăzut pentru anul respectiv. [...] b) persoanele impozabile, care au sediul activității economice în România conform art. 266 alin. (2) lit. a), care se înregistrează în scopuri de TVA conform art. 316 în cursul anului și care optează pentru aplicarea sistemului TVA la încasare fie începând cu data înregistrării în scopuri de TVA, fie ulterior în cursul anului înregistrării în scopuri de TVA.”
+— Codul fiscal (Legea nr. 227/2015), art. 282 alin. (3^1) lit. a) și b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Art. 282 alin. (4) CF** (rezumat din dosar): nu sunt eligibile — membrii unui grup fiscal unic (lit. a); persoanele nestabilite în România (lit. b); cele care au depășit deja plafonul în anul precedent (lit. c); cele înregistrate în cursul anului cu depășire a plafonului anul precedent sau curent (lit. d).
+„Nu sunt eligibile pentru aplicarea sistemului TVA la încasare: a) persoanele impozabile care fac parte dintr-un grup fiscal unic conform prevederilor art. 269 alin. (9); [...] b) persoanele impozabile care nu sunt stabilite în România conform art. 266 alin. (2) lit. a); [...] c) persoanele impozabile care în anul precedent au depășit plafonul pentru aplicarea sistemului TVA la încasare prevăzut pentru anul respectiv;”
+— Codul fiscal (Legea nr. 227/2015), art. 282 alin. (4) lit. a)-c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„d) persoanele impozabile care se înregistrează în scopuri de TVA conform art. 316 în cursul anului și care au depășit în anul precedent plafonul prevăzut pentru aplicarea sistemului TVA la încasare în anul respectiv sau au depășit în anul calendaristic în curs plafonul prevăzut la alin. (3), calculat în funcție de operațiunile realizate în perioada în care respectiva persoană a avut un cod valabil de TVA conform art. 316.”
+— Codul fiscal (Legea nr. 227/2015), art. 282 alin. (4) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Condițiile pozitive
@@ -36,6 +42,6 @@ Legea exclude explicit patru categorii, indiferent de cifra de afaceri: membrii 
 
 ## Ce face iConta.eu
 
-Eligibilitatea de plafon se verifică pe baza plafonului valabil la data de referință („plafonul la dată”, din aplicație). Verificarea celorlalte condiții de eligibilitate — statutul de plătitor de TVA, sediul activității economice, apartenența la un grup fiscal unic — nu e confirmată în acest dosar ca fiind automatizată; rămâne, conform cercetării de față, o verificare manuală a contabilului.
+Eligibilitatea de plafon se verifică pe baza plafonului valabil la data de referință. Celelalte condiții de eligibilitate — statutul de plătitor de TVA, sediul activității economice, apartenența la un grup fiscal unic — nu sunt verificate automat de aplicație; rămân o verificare manuală a contabilului.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: Cum se calculează salariul net la o firmă IT cu facilități?
 description: Din 01.01.2025, scutirea de impozit pentru programatori și reducerea de CAS aferentă au fost abrogate - în 2026 un angajat la o firmă IT se calculează exact ca oricare alt salariat, fără nicio facilitate legată de codul CAEN.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -45,6 +45,6 @@ Un programator angajat cu normă întreagă, brut 8.000 lei/lună, la o firmă c
 
 ## Ce face iConta.eu
 
-Motorul de calcul al salariilor nu implementează nicio ramură de scutire pe cod CAEN sau pe sector de activitate — corect, întrucât nicio astfel de facilitate nu mai are temei legal din 2025. Calculul pentru un angajat IT urmează exact aceleași reguli generale (CAS, CASS, impozit, deducere personală, CAM) ca pentru orice alt salariat, aplicate prin cotele curente citite din registrul intern al aplicației. Singura facilitate aplicabilă, indiferent de domeniu, este cea legată de plata la nivelul salariului minim, evaluată independent de codul CAEN al firmei.
+La calculul salariilor, iConta.eu nu aplică nicio scutire în funcție de codul CAEN sau de sectorul de activitate — corect, întrucât nicio astfel de facilitate nu mai are temei legal din 2025. Calculul pentru un angajat IT urmează exact aceleași reguli generale (CAS, CASS, impozit, deducere personală, CAM) ca pentru orice alt salariat, cu cotele în vigoare. Singura facilitate aplicabilă, indiferent de domeniu, este cea legată de plata la nivelul salariului minim, evaluată independent de codul CAEN al firmei.
 
 [iConta.eu](/)

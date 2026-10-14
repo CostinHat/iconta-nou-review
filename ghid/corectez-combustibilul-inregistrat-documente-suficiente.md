@@ -2,7 +2,7 @@
 title: "Cum corectez combustibilul înregistrat fără documente suficiente?"
 description: "Regula de limitare la 50% a deductibilității cheltuielilor cu vehiculele care nu sunt utilizate exclusiv în scopul activității economice, conform Codului fiscal, și consecința lipsei documentelor justificative."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Corectarea unei înregistrări greșite (dedusă integral, fără documente sufi
 
 ## Ce face iConta.eu
 
-La data acestui ghid, nu am putut confirma din codul aplicației o funcție care să aplice automat limita de 50% pentru cheltuielile cu combustibilul în funcție de categoria vehiculului sau de existența documentelor justificative. Aplicația înregistrează cheltuiala pe baza documentelor introduse de contabil; verificarea încadrării vehiculului și aplicarea limitării de deductibilitate rămân o evaluare manuală.
+La data acestui ghid, iConta.eu nu aplică automat limita de 50% pentru cheltuielile cu combustibilul în funcție de categoria vehiculului sau de existența documentelor justificative. Aplicația înregistrează cheltuiala pe baza documentelor introduse de contabil; verificarea încadrării vehiculului și aplicarea limitării de deductibilitate rămân o evaluare manuală.
 
 [iConta.eu](/)

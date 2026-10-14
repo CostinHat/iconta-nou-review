@@ -2,7 +2,7 @@
 title: Diurna externă neimpozabilă: 2,5 × baremul din HG 518/1995
 description: Cum se calculează plafonul neimpozabil al diurnei externe — 2,5 × diurna pe țara de destinație din HG 518/1995 (35 euro pentru majoritatea statelor UE), cu temei și exemplu.
 published: 2026-08-12
-modified: 2026-08-13
+modified: 2026-10-13
 ---
 # Diurna externă neimpozabilă: se calculează pe țară, nu cu o sumă unică
 
@@ -11,20 +11,19 @@ La deplasările în străinătate, plafonul neimpozabil al diurnei nu e un numă
 ## Temeiul legal
 
 ::: ghid-temei
-**Codul fiscal (Legea 227/2015), art. 76** — plafonul neimpozabil al indemnizației, partea pentru străinătate: „**(ii) în străinătate, 2,5 ori nivelul legal stabilit pentru diurnă, prin hotărâre a Guvernului, pentru personalul român trimis în străinătate pentru îndeplinirea unor misiuni cu caracter temporar**", tot în limita a 3 salarii de bază.
+„k) indemnizația de delegare, indemnizația de detașare, [...] precum și orice alte sume de aceeași natură, altele decât cele acordate pentru acoperirea cheltuielilor de transport și cazare, primite de salariați potrivit legislației în materie, pe perioada desfășurării activității în altă localitate, în țară sau în străinătate, în interesul serviciului, pentru partea care depășește plafonul neimpozabil stabilit astfel: [...] (ii) în străinătate, 2,5 ori nivelul legal stabilit pentru diurnă, prin hotărâre a Guvernului, pentru personalul român trimis în străinătate pentru îndeplinirea unor misiuni cu caracter temporar, în limita a 3 salarii de bază corespunzătoare locului de muncă ocupat.”
+— Codul fiscal (Legea 227/2015), art. 76 alin. (2) lit. k) pct. (ii) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
 
 „Nivelul legal" pentru străinătate e cel din **HG 518/1995** (10 iulie 1995, formă consolidată), care conține în anexă **cuantumurile diurnei pe fiecare țară**, în valută, pe două categorii (Categoria I — restul personalului, coeficient 1,00; Categoria II — personal de conducere).
-:::
 
 ## Regula concretă
 
 Plafonul neimpozabil zilnic = **2,5 × diurna Categoria I a țării de destinație** (HG 518/1995). Majoritatea statelor UE au diurna Categoria I armonizată la **35 euro/zi**, deci plafonul lor e **87,5 euro/zi**. Statele non-euro își păstrează valuta proprie (de exemplu S.U.A. în USD). Nu există o „diurnă externă" unică: se ia baremul țării unde s-a făcut deplasarea.
 
-::: ghid-temei
 Exemple de diurnă Categoria I (formă consolidată HG 518/1995), și plafonul 2,5×:
 - Germania, Franța, Italia, Austria, Spania, Belgia, Marea Britanie: **35 euro/zi** → plafon **87,5 euro/zi**
 - (statele non-euro: în valuta proprie / USD, la nivelul din anexă)
-:::
 
 ## Un exemplu
 

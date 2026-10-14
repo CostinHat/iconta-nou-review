@@ -32,6 +32,6 @@ Ce urmărește efectiv un control pe avansurile de trezorerie:
 
 ## Ce face iConta.eu
 
-Verificat în cod: Aplicația conține funcția „verificarea plafonului de numerar (Casă)”, care calculează soldul zilnic al casei și verifică explicit plafonul avansurilor spre decontare („plafonul avansului spre decontare”), pe baza cotei/temeiului legal ținut în registrul intern al aplicației. Depășirile sunt semnalate ca avertismente cu temei citat (nu blochează operațiunea, dar marchează riscul de control), pentru fiecare zi în care apar. Funcția „decontarea avansului de trezorerie” din același modul gestionează decontarea efectivă a avansurilor acordate angajaților, cu urmărirea sumei rămase nedecontate.
+Pe ecranul Casă, iConta.eu calculează soldul zilnic al casei și verifică plafonul avansurilor spre decontare, cu plafonul și temeiul legal aplicabile. Depășirile sunt semnalate ca avertismente cu temeiul citat, pentru fiecare zi în care apar — nu blochează operațiunea, dar îți arată riscul de control. Tot acolo înregistrezi decontarea avansurilor acordate angajaților, iar aplicația urmărește suma rămasă nedecontată.
 
 [iConta.eu](/)

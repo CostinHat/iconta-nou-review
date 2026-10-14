@@ -25,10 +25,12 @@ inflație, prin hotărâre a Guvernului;
 ::: ghid-temei
 Astfel mijloacele fixe amortizabile au fost clasificate în trei grupe principale și anume:
 – Grupa 1 - Construcții; ... – Grupa 2 - Instalații tehnice, mijloace de transport, animale și
+
 plantații; ... – Grupa 3 - Mobilier, aparatura birotica, echipamente de protecție a valorilor
 umane și materiale și alte active corporale.
 
 — HG 2139/2004, Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor
+
 fixe, cap.I, pct.3
 :::
 

@@ -13,8 +13,14 @@ Corectarea propriu-zisă a câmpului din Vector fiscal e simplă — problema ap
 ## Temeiul legal
 
 ::: ghid-temei
-Regimul fiscal corect ține de art. 47 și art. 52 din Codul fiscal (condiții de eligibilitate și obligația de ieșire din regimul microîntreprinderilor). Regula tehnică descrisă mai jos e însă o **regulă de produs a iConta**, nu o prevedere legală: aplicația nu permite modificarea vectorului fiscal peste o perioadă fiscală deja închisă, tocmai pentru că declarațiile aferente au fost deja depuse și o schimbare silențioasă ar rescrie trecutul fără urmă.
+„În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent:”
+— Codul fiscal (Legea 227/2015), art. 47 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită.”
+— Codul fiscal (Legea 227/2015), art. 52 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
+
+Regimul fiscal corect ține de aceste două articole (condițiile de încadrare ca microîntreprindere și ieșirea din regim în cursul anului). Regula descrisă mai jos e însă o **regulă de produs a iConta**, nu o prevedere legală: aplicația nu permite modificarea vectorului fiscal peste o perioadă fiscală deja închisă, tocmai pentru că declarațiile aferente au fost deja depuse și o schimbare silențioasă ar rescrie trecutul fără urmă.
 
 Dacă firma nu are nicio perioadă fiscală închisă în intervalul afectat, corecția e o simplă resalvare a câmpului „regimul fiscal (Date firmă)” (sau a oricărui alt atribut al vectorului), cu validare imediată.
 

@@ -2,7 +2,7 @@
 title: "Ce fac dacă am depus D300 cu o factură lipsă?"
 description: "Mecanismul legal de corectare a unui decont de TVA în care a rămas o factură nedeclarată și ce verifică automat iConta.eu pe această temă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,7 +30,7 @@ O factură uitată dintr-un decont deja depus nu se repară prin redepunerea dec
 
 ## Ce face iConta.eu
 
-iConta **nu are o funcție care să detecteze, de una singură, că o factură a lipsit dintr-un decont D300 deja depus** — nu există în aplicație un mecanism generic de „factură nedeclarată". Ce există e o verificare mai specifică: pentru facturile de bunuri intracomunitare, aplicația compară automat declarația D390 cu rândurile R1_1 (livrări) și R5_1 (achiziții) ale **D300 efectiv depus prin aplicație** pentru cea mai recentă perioadă disponibilă. Dacă factura lipsă era o livrare sau achiziție IC, adăugarea ei ulterioară în evidență va produce o diferență între D390 (recalculat) și D300-ul deja depus, semnalată roșu, cu remediul sugerat „rectificativă D300 sau corectarea D390" — decizia și acțiunea rămân ale contabilului, aplicația nu corectează nimic automat.
+iConta **nu are o funcție care să detecteze, de una singură, că o factură a lipsit dintr-un decont D300 deja depus** — nu există în aplicație un mecanism generic de „factură nedeclarată". Ce există e o verificare mai specifică: pentru facturile de bunuri intracomunitare, aplicația compară automat declarația D390 cu rândul 1 (livrări) și rândul 5 (achiziții), coloana Valoare, ale **D300 efectiv depus prin aplicație** pentru cea mai recentă perioadă disponibilă. Dacă factura lipsă era o livrare sau achiziție IC, adăugarea ei ulterioară în evidență va produce o diferență între D390 (recalculat) și D300-ul deja depus, semnalată roșu, cu remediul sugerat „rectificativă D300 sau corectarea D390" — decizia și acțiunea rămân ale contabilului, aplicația nu corectează nimic automat.
 
 Pentru orice altă factură (internă, fără componentă intracomunitară), nu există niciun avertisment automat în aplicație — descoperirea și corectarea rămân integral responsabilitatea contabilului, care aplică mecanismul legal de mai sus: introduce regularizarea în decontul perioadei curente, nu redepune decontul greșit.
 

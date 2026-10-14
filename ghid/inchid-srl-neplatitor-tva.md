@@ -12,11 +12,18 @@ Pentru o societate neplătitoare de TVA, etapele juridice ale lichidării (dizol
 
 Dreptul de a vinde activele rămase în cursul lichidării nu depinde de statutul de plătitor sau neplătitor de TVA al societății — el aparține lichidatorilor indiferent de acest statut.
 
+## Temeiul legal
+
+::: ghid-temei
+„În afară de puterile conferite de asociați, cu aceeași majoritate cerută pentru numirea lor, lichidatorii vor putea: [...] c) să vândă, prin licitație publică, imobilele și orice avere mobiliară a societății;”
+— Legea nr. 31/1990 privind societățile, art. 255 alin. (1) lit. c) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
+:::
+
 ## Ce se greșește în practică
 
-O confuzie posibilă la o firmă neplătitoare de TVA privește ecranul de „Vânzare activ la lichidare" din iConta.eu: funcția de calcul care stă la baza acestei operațiuni („nota de vânzare a activului”) cere obligatoriu o cotă de TVA la fiecare vânzare de activ — codul refuză explicit generarea notei contabile dacă acest parametru lipsește, indiferent de statutul societății.
+O confuzie posibilă la o firmă neplătitoare de TVA privește operația „Vânzare activ la lichidare" din ecranul „Lichidare / radiere firmă” al iConta.eu: operația cere obligatoriu o cotă de TVA la fiecare vânzare de activ — aplicația refuză explicit generarea notei contabile dacă această cotă lipsește, indiferent de statutul societății.
 
-**Notă de transparență:** documentația aplicației nu a clarificat exact ce se completează în acest câmp pentru o societate neplătitoare de TVA (de exemplu, dacă se acceptă o cotă de 0% sau o valoare specială pentru „neplătitor"), pentru că ecranul de lichidare nu are un câmp explicit, vizibil, dedicat cotei de TVA la această operațiune — sursa exactă de unde preia aplicația această valoare nu a fost identificată în cercetarea de până acum. Recomandăm verificarea directă în aplicație, la momentul înregistrării vânzării, a valorii propuse implicit pentru cota de TVA, înainte de a valida nota contabilă.
+**Ce completezi la o societate neplătitoare de TVA:** câmpul obligatoriu „Cota TVA %” al operației (în care e sugerată valoarea 21) se completează cu 0. Aplicația acceptă cota 0 ca valoare validă și generează nota fără TVA colectată — doar 461 = 7583, fără linia 461 = 4427. Nota iese în ciornă; verifică-o înainte de a o valida.
 
 ## Ce face iConta.eu
 

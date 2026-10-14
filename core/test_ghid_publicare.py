@@ -17,8 +17,9 @@ from xml.etree import ElementTree as ET
 import pytest
 
 NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
-#: numărul ghidurilor publicate la înghețare (13.10.2026); se schimbă NUMAI printr-o decizie a lui Costin (pct.2e)
-PUBLICATE_LA_INGHETARE = 6558
+#: numărul ghidurilor publicate; se schimbă NUMAI printr-o decizie a lui Costin (pct.2e): 6.558 la înghețare (13.10.2026) -> 6.513 după
+#: comasarea celor 45 de grupuri (răspunsul la §6 COMANDA_13_10 pct.1, aceeași zi)
+PUBLICATE_LA_INGHETARE = 6513
 
 
 @pytest.fixture(scope="module")
@@ -137,3 +138,30 @@ def test_procedura_numara_numai_lista_ordonata():
     css = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "static", "stil.css"), encoding="utf-8").read()
     numerotari = [s.strip() for s, corp in re.findall(r"([^{}]+)\{([^{}]*)\}", css) if re.search(r"content:\s*counter\(", corp)]
     assert numerotari and [s for s in numerotari if not re.search(r"\bol\s*>\s*li::before$", s)] == [], numerotari
+
+
+# ── comasarea celor 45 de grupuri (răspunsul la §6 COMANDA_13_10 pct.1) ─────────────────────────────────────────────────────────
+def _comasate():
+    import csv
+    cale = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ghid_comasate.csv")
+    return [r for r in csv.DictReader(x for x in open(cale, encoding="utf-8") if not x.startswith("#"))]
+
+
+def test_comasarea_trimite_301_spre_ghidul_pastrat(c):
+    """Fiecare ghid comasat: fișierul șters, scos din lista publicată, 301 spre ghidul păstrat (fără lanț), absent din sitemap; ghidul
+    păstrat e publicat și răspunde 200. MUTAȚIE: o redirecționare scoasă din `_GHID_REDIRECT` -> pică (404 în loc de 301)."""
+    cl, main = c
+    rows = _comasate()
+    assert len(rows) == 45 and len({r["comasat"] for r in rows}) == 45
+    pub = main._ghid_publicate()
+    loc = {e.text for e in ET.fromstring(cl.get("/sitemap.xml").content).iter(NS + "loc")}
+    rele = []
+    for r in rows:
+        k, p = r["comasat"], r["pastrat"]
+        rr = cl.get("/ghid/" + k, follow_redirects=False)
+        stare = (os.path.exists(os.path.join(main._GHID_DIR, k + ".md")), k in pub, rr.status_code, rr.headers.get("location"),
+                 main._GHID_BAZA + "/ghid/" + k in loc, p in pub, os.path.exists(os.path.join(main._GHID_DIR, p + ".md")))
+        if stare != (False, False, 301, main._GHID_BAZA + "/ghid/" + p, False, True, True):
+            rele.append((k, stare))
+    assert rele == []
+    assert [a for a, b in main._GHID_REDIRECT.items() if b in main._GHID_REDIRECT] == []      # niciun lanț 301 -> 301

@@ -1,8 +1,8 @@
 ---
 title: Care e termenul real pentru plata TVA la buget
-description: Plata TVA (decontul D300) urmează, ca tipar de cod, aceeași zi nominală 25 folosită de majoritatea declarațiilor, mutată pe următoarea zi lucrătoare dacă pică în weekend sau sărbătoare legală. Textul exact al articolului din Codul fiscal nu a fost reprodus în dosarul verificat.
+description: TVA se plătește până la termenul de depunere a decontului D300 — ziua de 25 a lunii următoare perioadei fiscale, ca la majoritatea declarațiilor — mutată pe următoarea zi lucrătoare dacă pică în weekend sau sărbătoare legală.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,15 +13,17 @@ poarta: v1
 ## Temeiul legal
 
 ::: ghid-temei
-Decontul de TVA (D300) e unul dintre tipurile de declarații cu temei legal confirmat mecanic în registrul aplicației (alături de D301 și D390) — dar dosarul de cercetare folosit la acest ghid nu reproduce textul exact, verbatim, al articolului din Codul fiscal aplicabil D300. Ce e confirmat cu siguranță: ziua nominală implicită pentru orice tip de declarație fără o excepție explicită (D300 nu are o excepție înregistrată) e ziua 25 a lunii următoare perioadei fiscale.
+„(1) Persoanele înregistrate conform art. 316 trebuie să depună la organele fiscale competente, pentru fiecare perioadă fiscală, un decont de taxă, până la data de 25 inclusiv a lunii următoare celei în care se încheie perioada fiscală respectivă.”
+— Legea 227/2015 (Codul fiscal), art. 323 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„(1) Orice persoană trebuie să achite taxa de plată organelor fiscale până la data la care are obligația depunerii unuia dintre deconturile sau declarațiile prevăzute la art. 323 și 324”
+— Legea 227/2015 (Codul fiscal), art. 326 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Ce e confirmat
 
-- **Ziua nominală**: 25 a lunii următoare perioadei fiscale (lunar sau trimestrial, după perioada fiscală de TVA a firmei) — tiparul implicit din cod, valabil pentru D300 pentru că nu apare în lista de excepții (doar D394 are ziua 30, doar D406 are ultima zi a lunii).
+- **Ziua nominală**: 25 a lunii următoare perioadei fiscale (lunar sau trimestrial, după perioada fiscală de TVA a firmei) — conform art. 323 alin. (1), iar plata TVA are același termen, conform art. 326 alin. (1) (spre deosebire de D394, cu termen pe 30, și de D406, cu termen în ultima zi a lunii).
 - **Mutarea pentru weekend/sărbătoare**: dacă ziua 25 cade sâmbătă, duminică sau într-o zi de sărbătoare legală, termenul real de plată se mută pe următoarea zi lucrătoare — aceeași regulă aplicată tuturor declarațiilor.
-
-**De semnalat onest**: nu am identificat, în acest dosar, un citat verbatim din Codul fiscal (capitolul de TVA) care să confirme explicit textul art.323 sau echivalentul lui pentru termenul decontului de TVA — doar existența unei intrări formale, verificate mecanic, în registrul intern al aplicației. Dacă aveți nevoie de citatul legal exact, verificați direct Codul fiscal, capitolul de TVA.
 
 ## Ce se greșește în practică
 

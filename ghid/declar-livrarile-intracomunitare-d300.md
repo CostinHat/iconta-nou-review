@@ -10,27 +10,40 @@ poarta: v1
 
 Livrarea de bunuri sau prestarea de servicii către un partener din UE se declară, în cazul normal, automat — motorul D300 o derivă direct din factură. Manual, prin „Rând manual D300”, rămân doar regularizările ulterioare.
 
+## Temeiul legal
+
+::: ghid-temei
+„Sunt, de asemenea, scutite de taxă următoarele: a) livrările intracomunitare de bunuri către o persoană impozabilă sau către o persoană juridică neimpozabilă care acționează ca atare în alt stat membru decât cel în care începe expedierea sau transportul bunurilor, care îi comunică furnizorului un cod valabil de înregistrare în scopuri de TVA, atribuit de autoritățile fiscale din alt stat membru [...]”
+— Codul fiscal, art. 294 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice.”
+— Codul fiscal, art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Datele înscrise incorect într-un decont de taxă se pot corecta prin decontul unei perioade fiscale ulterioare și se vor înscrie la rândurile de regularizări.”
+— Codul fiscal, art. 323 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 ## Ce se derivă automat
 
 Pentru facturile cu partener din UE („țara partenerului” în spațiul UE), motorul derivă automat:
 
-- **livrare de bunuri către UE, cotă 0%** → rd.1 (`R1_1`);
-- **prestare de servicii intracomunitare emisă** (dacă tipul din D390 e „P") → rd.3 (`R3_1`/`R3_1_1`).
+- **livrare de bunuri către UE, cotă 0%** → rândul 1 (coloana Valoare);
+- **prestare de servicii intracomunitare emisă** (dacă tipul din D390 e „P") → rândul 3 și rândul 3.1 (coloana Valoare).
 
-## Rândul R1 e și în allow-list — dar doar ca excepție
+## Rândul 1 e și în allow-list — dar doar ca excepție
 
-R1 apare și în lista de rânduri acceptate manual în „Rând manual D300”. Asta nu înseamnă că se introduce în paralel cu derivarea automată: gardul anti-dublă-numărare al motorului respinge orice suprapunere. Există un test dedicat exact pentru acest caz: o livrare intracomunitară deja derivată automat pe rd.1, plus o încercare de a introduce manual `R1_1` → eroare („refuz”), cu mesaj care conține explicit „dublă numărare" (testele aplicației). R1 manual are sens doar ca fallback, când operațiunea n-a fost deloc captată automat.
+Rândul 1 apare și în lista de rânduri acceptate manual în „Rând manual D300”. Asta nu înseamnă că se introduce în paralel cu derivarea automată: gardul anti-dublă-numărare al motorului respinge orice suprapunere. Există un test dedicat exact pentru acest caz: o livrare intracomunitară deja derivată automat pe rândul 1, plus o încercare de a introduce manual rândul 1 (coloana Valoare) → eroare („refuz”), cu mesaj care conține explicit „dublă numărare" (testele aplicației). Rândul 1 manual are sens doar ca fallback, când operațiunea n-a fost deloc captată automat.
 
 ## Ce e strict manual: regularizările
 
-Rândurile **R2** („Regularizări livrări intracomunitare scutite conform art. 294 alin. (2) lit. a) și d)") și **R4** (regularizări prestări servicii intracomunitare) apar, în motorul D300, doar în formula de însumare rd.17, niciodată ca țintă a unei atribuiri automate. Sunt 100% manuale — orice corecție ulterioară a unei livrări/prestări deja înregistrate trece pe aceste rânduri.
+Rândurile **2** („Regularizări livrări intracomunitare scutite conform art. 294 alin. (2) lit. a) și d)") și **4** (regularizări prestări servicii intracomunitare) apar, în motorul D300, doar în formula de însumare a rândului 19 (total taxă colectată), niciodată ca țintă a unei atribuiri automate. Sunt 100% manuale — orice corecție ulterioară a unei livrări/prestări deja înregistrate trece pe aceste rânduri.
 
 ## Ce se greșește în practică
 
-Se introduce manual R1 sau R3 pentru o livrare deja captată automat dintr-o factură cu partener UE — aplicația respinge cererea cu eroare de dublă numărare, confirmat printr-un test dedicat exact pe acest scenariu.
+Se introduce manual rândul 1 sau rândul 3 pentru o livrare deja captată automat dintr-o factură cu partener UE — aplicația respinge cererea cu eroare de dublă numărare, confirmat printr-un test dedicat exact pe acest scenariu.
 
 ## Ce face iConta.eu
 
-Motorul D300 derivă automat rd.1/rd.3 din facturile cu partener din UE, folosind și clasificarea bun/serviciu din D390 pentru distincția livrare-bunuri vs. prestare-servicii. Panoul „Rând manual D300” acoperă regularizările (R2/R4) și, ca excepție validată, introducerea manuală a R1/R3 doar când operațiunea nu a fost deloc derivată automat — cu gard explicit împotriva dublei numărări.
+Motorul D300 derivă automat rândurile 1 și 3 din facturile cu partener din UE, folosind și clasificarea bun/serviciu din D390 pentru distincția livrare-bunuri vs. prestare-servicii. Panoul „Rând manual D300” acoperă regularizările (rândurile 2 și 4) și, ca excepție validată, introducerea manuală a rândurilor 1 și 3 doar când operațiunea nu a fost deloc derivată automat — cu gard explicit împotriva dublei numărări.
 
 [iConta.eu](/)

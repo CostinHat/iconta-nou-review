@@ -22,8 +22,10 @@ Cabinetul trebuie să știe că plata nu o face angajatorul. Cererea se depune l
 ::: ghid-temei
 „Articolul 46 Cererea pentru obținerea despăgubirii în caz de deces se depune la sediul asigurătorului, însoțită de actele din care rezultă dreptul solicitantului, potrivit prezentei legi."
 — Legea 346/2002, art. 46 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
+
 „(1) Admiterea sau respingerea cererii se face prin decizie emisă de asigurător în termen de 20 de zile de la data depunerii cererii. (2) Decizia se comunică în scris solicitantului în termen de 5 zile de la data emiterii ei."
 — Legea 346/2002, art. 47 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
+
 „Articolul 48 Plata despăgubirii în caz de deces se face în termen de 15 zile de la data comunicării deciziei prevăzute la art. 47 ."
 — Legea 346/2002, art. 48 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::

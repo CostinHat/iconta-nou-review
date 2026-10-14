@@ -13,27 +13,14 @@ Când un client intră în insolvență sau faliment, se declanșează în paral
 ## Temeiul legal
 
 ::: ghid-temei
-"ajustările pentru deprecierea creanțelor înregistrate potrivit reglementărilor contabile aplicabile,
-în limita unui procent de 100% din valoarea creanțelor, altele decât cele prevăzute la lit. d), e),
-f), h) și i), dacă creanțele îndeplinesc cumulativ următoarele condiții:
-1. sunt deținute la o persoană juridică asupra căreia este declarată procedura de deschidere a
-falimentului, pe baza hotărârii judecătorești prin care se atestă această situație, sau la o persoană
-fizică asupra căreia este deschisă procedura de insolvență pe bază de: – plan de rambursare a
-datoriilor; – lichidare de active; – procedură simplificată;
-2. nu sunt garantate de altă persoană;
-3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului;"
+„ajustările pentru deprecierea creanțelor înregistrate potrivit reglementărilor contabile aplicabile, în limita unui procent de 100% din valoarea creanțelor, altele decât cele prevăzute la lit. d), e), f), h) și i), dacă creanțele îndeplinesc cumulativ următoarele condiții: 1. sunt deținute la o persoană juridică asupra căreia este declarată procedura de deschidere a falimentului, pe baza hotărârii judecătorești prin care se atestă această situație, sau la o persoană fizică asupra căreia este deschisă procedura de insolvență pe bază de: – plan de rambursare a datoriilor; [...] – lichidare de active; [...] – procedură simplificată; [...] 2. nu sunt garantate de altă persoană; [...] 3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului;”
+— Codul fiscal (Legea 227/2015), art. 26 alin. (1) lit. j) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-"în cazul în care contravaloarea bunurilor livrate sau a serviciilor prestate nu se poate încasa ca
-urmare a intrării în faliment a beneficiarului sau ca urmare a punerii în aplicare a unui plan de
-reorganizare admis și confirmat printr-o sentință judecătorească, prin care creanța creditorului este
-modificată sau eliminată. Ajustarea este permisă începând cu data pronunțării hotărârii judecătorești
-de confirmare a planului de reorganizare, iar, în cazul falimentului beneficiarului, începând cu data
-sentinței sau, după caz, a încheierii, prin care s-a decis intrarea în faliment [...] Ajustarea se
-efectuează în termen de 5 ani de la data de 1 ianuarie a anului următor [...]"
+„în cazul în care contravaloarea bunurilor livrate sau a serviciilor prestate nu se poate încasa ca urmare a intrării în faliment a beneficiarului sau ca urmare a punerii în aplicare a unui plan de reorganizare admis și confirmat printr-o sentință judecătorească, prin care creanța creditorului este modificată sau eliminată. Ajustarea este permisă începând cu data pronunțării hotărârii judecătorești de confirmare a planului de reorganizare, iar, în cazul falimentului beneficiarului, începând cu data sentinței sau, după caz, a încheierii, prin care s-a decis intrarea în faliment [...] Ajustarea se efectuează în termen de 5 ani de la data de 1 ianuarie a anului următor [...]”
+— Codul fiscal (Legea 227/2015), art. 287 lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-"h) pierderile înregistrate la scoaterea din evidență a creanțelor, pentru partea neacoperită de
-provizion, potrivit art. 26, precum și cele înregistrate în alte cazuri decât următoarele: [...]
-2. procedura de faliment a debitorilor a fost închisă pe baza hotărârii judecătorești; [...]"
+„h) pierderile înregistrate la scoaterea din evidență a creanțelor, pentru partea neacoperită de provizion, potrivit art. 26, precum și cele înregistrate în alte cazuri decât următoarele: [...] 2. procedura de faliment a debitorilor a fost închisă pe baza hotărârii judecătorești; [...]”
+— Codul fiscal (Legea 227/2015), art. 25 alin. (4) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Trei momente, trei tratamente

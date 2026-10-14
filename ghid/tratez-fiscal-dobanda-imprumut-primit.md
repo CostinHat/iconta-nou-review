@@ -2,7 +2,7 @@
 title: "Cum tratez fiscal dobânda la un împrumut primit de la asociat?"
 description: "Dobânda plătită asociatului pentru un împrumut acordat firmei este venit din investiții impozabil cu 10%, reținut la sursă — cu un temei legal ușor de citat greșit."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -28,6 +28,6 @@ Cea mai frecventă greșeală este omiterea completă a impozitului pe dobândă
 
 ## Ce face iConta.eu
 
-Funcția de restituire a împrumutului din modulul de decontări asociați calculează automat impozitul pe dobândă atunci când în operațiune este introdusă o sumă de dobândă: generează cheltuiala cu dobânda (666=4551), impozitul reținut la sursă — cu o cotă implicită de 10%, care poate fi ajustată — pe linia 4551=446, și plata netă a dobânzii către asociat (4551=5121, diminuată cu impozitul reținut). Aplicația nu afișează un text explicativ despre articolul de lege aplicabil; alegerea temeiului legal corect (art. 64 + art. 91, nu art. 97^1) rămâne în sarcina contabilului care documentează operațiunea.
+Pe ecranul Decontări asociați (455/457), la operația „Împrumut asociat” cu sensul „Restituire către asociat”, aplicația calculează automat impozitul pe dobândă atunci când completezi câmpul „Dobânda plătită asociatului”: generează cheltuiala cu dobânda (666 = 4551), impozitul reținut la sursă — cu o cotă implicită de 10%, care poate fi ajustată — prin nota 4551 = 446, și plata netă a dobânzii către asociat (4551=5121, diminuată cu impozitul reținut). Aplicația nu afișează un text explicativ despre articolul de lege aplicabil; alegerea temeiului legal corect (art. 64 + art. 91, nu art. 97^1) rămâne în sarcina contabilului care documentează operațiunea.
 
 [iConta.eu](/)

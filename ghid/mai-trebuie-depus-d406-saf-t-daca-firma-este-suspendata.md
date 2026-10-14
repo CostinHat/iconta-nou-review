@@ -13,17 +13,11 @@ Suspendarea temporară a activității este o situație frecventă pentru firmel
 ## Temeiul legal
 
 ::: ghid-temei
-"4. Următoarele categorii de contribuabili nu au obligaţia de depunere a fişierului standard
-de control fiscal (SAF-T): ... o) persoanele juridice a căror activitate este suspendată temporar
-prin înscrierea menţiunilor la registrul comerţului nu au obligaţia de depunere a fişierului
-standard de control fiscal (SAF-T) pentru perioada în care activitatea este suspendată
-temporar, conform art. 101 alin. (41) din Legea nr. 207/2015 privind Codul de procedură
-fiscală, cu modificările şi completările ulterioare; p) alte entităţi care au solicitat
-suspendarea activităţii la organismele care le-au autorizat nu au obligaţia de depunere a
-fişierului standard de control fiscal (SAF-T) pentru perioada în care activitatea este
-suspendată temporar, conform art. 101 alin. (42) din Legea nr. 207/2015 privind Codul de
-procedură fiscală, cu modificările şi completările ulterioare;"
-(OPANAF 407/2025 (SAF-T, D406), pct. 4, lit. o-p)
+„4. Următoarele categorii de contribuabili nu au obligaţia de depunere a fişierului standard de control fiscal (SAF-T): [...] o) persoanele juridice a căror activitate este suspendată temporar prin înscrierea menţiunilor la registrul comerţului nu au obligaţia de depunere a fişierului standard de control fiscal (SAF-T) pentru perioada în care activitatea este suspendată temporar, conform art. 101 alin. (41) din Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi completările ulterioare;”
+— OPANAF 1783/2021 (modificat prin OPANAF 407/2025), Anexa nr. 5, pct. 4 lit. o) (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
+
+„p) alte entităţi care au solicitat suspendarea activităţii la organismele care le-au autorizat nu au obligaţia de depunere a fişierului standard de control fiscal (SAF-T) pentru perioada în care activitatea este suspendată temporar, conform art. 101 alin. (42) din Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi completările ulterioare;”
+— OPANAF 1783/2021 (modificat prin OPANAF 407/2025), Anexa nr. 5, pct. 4 lit. p) (sursă: [OPANAF nr. 407/2025 pentru modificarea anexei nr. 5 la OPANAF nr. 1783/2021 (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/296490))
 :::
 
 ## Ce înseamnă concret exceptarea

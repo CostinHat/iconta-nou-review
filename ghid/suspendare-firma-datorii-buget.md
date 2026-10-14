@@ -2,7 +2,7 @@
 title: Suspendare firmă cu datorii la buget
 description: Datoriile fiscale restante nu împiedică declararea inactivității temporare, dar nici nu dispar - iar pe durata inactivității, termenele de prescripție a dreptului organului fiscal de a stabili creanțe fiscale se suspendă.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,11 @@ O întrebare frecventă este dacă o firmă cu datorii restante la bugetul de st
 ## Temeiul legal
 
 ::: ghid-temei
-Legea nr. 207/2015 (Codul de procedură fiscală), art. 92 alin. (4^2) (dizolvarea contribuabililor inactivi peste un an, indiferent dacă figurează sau nu cu obligații fiscale restante) și art. 111 alin. (2) lit. d) (suspendarea termenului de prescripție a dreptului organului fiscal de a stabili creanțe fiscale, pe perioada inactivității).
+„În cazul contribuabilului/plătitorului declarat inactiv care nu se reactivează în termen de un an de la data declarării în inactivitate, organul fiscal are obligația de a formula cerere de dizolvare atât în situația în care nu figurează cu obligații fiscale restante, precum și alte creanțe bugetare individualizate în titluri executorii emise potrivit legii și existente în evidența organului fiscal central, cât și în situația în care figurează cu asemenea obligații de plată, dacă nu este subiectul unor sesizări penale.”
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 92 alin. (4^2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„Termenele de prescripție prevăzute la art. 110 se suspendă: [...] d) pe perioada cuprinsă între data declarării unui contribuabil/plătitor inactiv și data reactivării acestuia.”
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 111 alin. (2) lit. d) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::
 
 Existența unor datorii restante **nu blochează** procedura legată de inactivitatea fiscală: art. 92 alin. (4^2) prevede că organul fiscal are obligația de a cere dizolvarea contribuabilului rămas inactiv peste un an **atât în situația în care nu figurează cu obligații fiscale restante, cât și în situația în care figurează cu asemenea obligații de plată** (dacă nu este subiectul unor sesizări penale). Cu alte cuvinte, datoriile la buget nu împiedică declararea inactivității și nici nu accelerează automat vreo procedură specială pentru firmele datoare — regula e aceeași, cu sau fără datorii.

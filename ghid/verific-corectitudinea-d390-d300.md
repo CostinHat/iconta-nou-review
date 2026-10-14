@@ -2,7 +2,7 @@
 title: Cum verific corectitudinea D390 față de D300
 description: Două comparații rulează automat — D390 față de decontul depus și D390 față de evidența contabilă validată — fiecare cu semafor propriu.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -15,12 +15,12 @@ Verificarea D390 în raport cu D300 nu e o singură comparație, ci două, care 
 ::: ghid-temei
 **Art. 325 din Codul fiscal (Legea 227/2015)** — obligația depunerii lunare a declarației recapitulative (D390), cu livrările intracomunitare scutite (lit. a) și achizițiile intracomunitare taxabile (lit. d).
 
-Structura oficială a formularului D300 confirmă rândurile **R1_1** (livrări intracomunitare) și **R5_1** (achiziții intracomunitare) ca puncte de comparație cu bazele din D390.
+Structura oficială a formularului D300 confirmă rândurile **1** (livrări intracomunitare) și **5** (achiziții intracomunitare), la coloana bazei, ca puncte de comparație cu bazele din D390.
 :::
 
 **Prima comparație — D390 față de evidența contabilă validată.** Bazele de livrări/achiziții intracomunitare din D390 se confruntă cu facturile intracomunitare ale perioadei care au o notă contabilă validată legată de ele. O factură cu notă doar în ciornă nu contează ca evidență — trebuie să fie validată.
 
-**A doua comparație — D390 față de D300 efectiv depus.** Aceleași baze din D390 (recalculate pe cea mai recentă perioadă cu D300 depus prin aplicație) se confruntă cu rândurile R1_1 (livrări) și R5_1 (achiziții) din acel D300.
+**A doua comparație — D390 față de D300 efectiv depus.** Aceleași baze din D390 (recalculate pe cea mai recentă perioadă cu D300 depus prin aplicație) se confruntă cu baza de la rândul 1 (livrări) și de la rândul 5 (achiziții) din acel D300.
 
 Fiecare comparație primește propriul semnal:
 

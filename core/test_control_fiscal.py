@@ -5,6 +5,7 @@ Apara cele 5 defecte reparate in FAZA 1 (BRIEF_CODE_SEMAFOR):
   D4 scadentar per declaratie (delegat scadente.py) · D5 cod mort sters.
 """
 import datetime
+import re
 from datetime import date
 from core import control_fiscal_api as cf
 
@@ -197,8 +198,10 @@ def test_constatare_regim_tva_fara_snapshot_gri():
 
 # ---- F189+ : ramificare Control fiscal pe tip_firma (partida simpla) ----
 def test_pfa_d100_d101_d406_neaplicabile_nu_restante():
-    # PFA/persoane fizice: D100/D101 (persoana juridica) si D406 (SAF-T, OPANAF 407/2025 Anexa 5 pct.4 lit.q
+    # PFA/persoane fizice: D100/D101 (persoana juridica) si D406 (SAF-T, OPANAF 407/2025 Anexa 5 pct.4 lit.a)-d)
     # exclude NECONDITIONAT persoanele fizice) NU se datoreaza -> neaplicabile cu motiv, nu datorate/gri.
+    # [13.10.2026] mesajul cita „lit.q)” — litera q) e la pct.3 (organismele de plasament colectiv, OBLIGATE);
+    # PFA / II / IF / PFL sunt la pct.4 lit.a)-d) (anaf_surse/opanaf_407_2025_saft_d406.txt). MUTAȚIE: „lit.q)” înapoi -> pică.
     v = {"platitor_tva": False, "regim_fiscal": None, "operatiuni_ic": False, "partida_simpla": True}
     rez = cf.declaratii_datorate(v, are_salariati=False, azi=date(2026, 7, 23))
     dat = {d["tip"] for d in rez["datorate"]}
@@ -207,6 +210,7 @@ def test_pfa_d100_d101_d406_neaplicabile_nu_restante():
     assert {"d100", "d101", "d406"} <= set(neap)
     assert "D212" in neap["d100"] and "D212" in neap["d101"]
     assert "407/2025" in neap["d406"] and "necondiționat" in neap["d406"].lower()
+    assert re.findall(r"pct\.4 lit\.(\S+)", neap["d406"]) == ["a)–d)"]
 
 def test_srl_neschimbat_d406_datorat_d100_d101_gri():
     # SRL (partida dubla): NEschimbat - D406 trimestrial datorat, D100/D101 gri pe regim None, nimic neaplicabil.

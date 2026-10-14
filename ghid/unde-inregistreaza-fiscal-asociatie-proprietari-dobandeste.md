@@ -22,6 +22,7 @@ Practic, asociația are două relații fiscale distincte: cu primăria, pentru i
 ::: ghid-temei
 „(2) Cu excepția cazului în care prin lege se prevede altfel, atribuirea codului de identificare fiscală se face exclusiv de către organul fiscal central, pe baza declarației de înregistrare fiscală."
 — Codul de procedură fiscală (Legea 207/2015), art. 81 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „(6) Declarația de înregistrare fiscală se depune în termen de 30 de zile de la:
 a) data înființării potrivit legii, în cazul persoanelor juridice, asocierilor și al altor entități fără personalitate juridică;"
 — Codul de procedură fiscală (Legea 207/2015), art. 82 alin. (6) lit. a) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))

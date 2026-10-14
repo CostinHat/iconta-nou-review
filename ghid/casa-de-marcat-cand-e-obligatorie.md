@@ -2,7 +2,7 @@
 title: Casa de marcat: când e obligatorie și ce documente cere punerea în funcțiune
 description: Obligația apare la încasarea în numerar sau cu cardul de la persoane fizice, indiferent de activitate. Ce documente cere fiscalizarea.
 published: 2026-08-15
-modified: 2026-08-15
+modified: 2026-10-13
 ---
 
 # Casa de marcat: când e obligatorie și ce documente cere punerea în funcțiune
@@ -33,13 +33,7 @@ Pașii, în ordine:
 
 Documentele care însoțesc cererea: copia facturii și a documentului de plată care atestă achiziționarea aparatului — sau copia contractului de vânzare-cumpărare cu plata în rate, ori a contractului de leasing financiar cu clauză expresă privind transferul dreptului de proprietate la expirare; copia procesului-verbal de sigilare a memoriei fiscale; declarația pe propria răspundere privind adresa locului unde va fi instalat aparatul sau, după caz, declarația privind desfășurarea activității în regim ambulant ori în regim de taxi.
 
-::: ghid-temei
-**OUG nr. 28/1999** privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale, republicată.
-
-**HG nr. 479/2003** pentru aprobarea Normelor metodologice de aplicare a OUG nr. 28/1999, cu modificările ulterioare.
-
-**Art. 10^2 alin. (8) și (9) din HG nr. 479/2003**, astfel cum a fost completată prin HG nr. 804/2017: distribuitorii autorizați sau unitățile acreditate au obligația să anexeze la cartea de intervenții o copie a contractului de service pentru aparatul în cauză, pentru perioada de garanție sau de postgaranție.
-:::
+Actele care reglementează obligația sunt OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale, republicată, și Normele metodologice de aplicare a acesteia, aprobate prin HG nr. 479/2003, cu modificările ulterioare. Potrivit normelor metodologice (art. 102 alin. (8)), distribuitorii autorizați sau unitățile acreditate au obligația să anexeze la cartea de intervenții o copie a contractului de service pentru aparatul în cauză, pentru perioada de garanție sau de postgaranție.
 
 ## Contractul de service
 

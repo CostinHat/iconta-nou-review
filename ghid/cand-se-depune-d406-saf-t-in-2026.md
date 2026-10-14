@@ -13,36 +13,15 @@ Spre deosebire de majoritatea declarațiilor fiscale, care au termenul pe 25 ale
 ## Temeiul legal
 
 ::: ghid-temei
-"1. Declaraţia informativă D406 se transmite în format electronic, data-limită de
-transmitere fiind: - ultima zi calendaristică a lunii următoare perioadei de raportare,
-respectiv luna/trimestrul calendaristic, după caz, pentru alte informaţii decât cele privind
-secţiunile "Stocuri" şi "Active"; - la termenul de depunere a situaţiilor financiare
-aferente exerciţiului financiar, în cazul secţiunii "Active"; - la termenul stabilit de
-organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data
-solicitării, în cazul secţiunii "Stocuri"."
-(OPANAF 1783/2021 (SAF-T, D406), Anexa 4, pct. 1)
+„1. Declaraţia informativă D406 se transmite în format electronic, data-limită de transmitere fiind: - ultima zi calendaristică a lunii următoare perioadei de raportare, respectiv luna/trimestrul calendaristic, după caz, pentru alte informaţii decât cele privind secţiunile "Stocuri" şi "Active"; - la termenul de depunere a situaţiilor financiare aferente exerciţiului financiar, în cazul secţiunii "Active"; - la termenul stabilit de organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data solicitării, în cazul secţiunii "Stocuri".”
+— OPANAF 1783/2021, Anexa 4, pct. 1 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 
-"2. Contribuabilii/Plătitorii transmit Declaraţia informativă D406 lunar sau trimestrial,
-urmând perioada fiscală aplicabilă pentru taxa pe valoarea adăugată (TVA). Contribuabilii
-care au ca perioadă fiscală aplicabilă pentru taxa pe valoarea adăugată semestrul sau anul
-transmit Declaraţia informativă D406 trimestrial.
-3. Contribuabilii care nu sunt înregistraţi în scopuri de TVA transmit Declaraţia
-informativă D406 trimestrial."
-(OPANAF 1783/2021 (SAF-T, D406), Anexa 4, pct. 2-3)
+„2. Contribuabilii/Plătitorii transmit Declaraţia informativă D406 lunar sau trimestrial, urmând perioada fiscală aplicabilă pentru taxa pe valoarea adăugată (TVA). Contribuabilii care au ca perioadă fiscală aplicabilă pentru taxa pe valoarea adăugată semestrul sau anul transmit Declaraţia informativă D406 trimestrial. 3. Contribuabilii care nu sunt înregistraţi în scopuri de TVA transmit Declaraţia informativă D406 trimestrial.”
+— OPANAF 1783/2021, Anexa 4, pct. 2-3 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 
-"5. (1) Contribuabilii/Plătitorii beneficiază de o perioadă de graţie de: - 6 (şase) luni
-pentru prima raportare, respectiv cinci (cinci) luni pentru a doua raportare, 4 (patru) luni
-pentru a treia raportare, 3 (trei) luni pentru a patra raportare, 2 (două) luni pentru a
-cincea raportare, pentru contribuabilii care au obligaţia de transmitere lunară a
-fişierului SAF-T; - 3 (trei) luni pentru prima raportare, pentru contribuabilii care au
-obligaţia de transmitere trimestrială a fişierului SAF-T. (2) Perioada de graţie se
-calculează pornind de la ultima zi a perioadei de raportare pentru care aceasta se acordă
-... (3) Astfel, contribuabilii/plătitorii nu sunt sancţionaţi contravenţional, conform
-prevederilor art. 337^1 din Legea nr. 207/2015 ..., dacă depun Declaraţia informativă D406
-validă în termenul maxim prevăzut la alin. (1)."
-(OPANAF 1783/2021 (SAF-T, D406), Anexa 4, pct. 5)
+„5. (1) Contribuabilii/Plătitorii beneficiază de o perioadă de graţie de: - 6 (şase) luni pentru prima raportare, respectiv cinci (cinci) luni pentru a doua raportare, 4 (patru) luni pentru a treia raportare, 3 (trei) luni pentru a patra raportare, 2 (două) luni pentru a cincea raportare, pentru contribuabilii care au obligaţia de transmitere lunară a fişierului SAF-T; - 3 (trei) luni pentru prima raportare, pentru contribuabilii care au obligaţia de transmitere trimestrială a fişierului SAF-T. (2) Perioada de graţie se calculează pornind de la ultima zi a perioadei de raportare pentru care aceasta se acordă [...] (3) Astfel, contribuabilii/plătitorii nu sunt sancţionaţi contravenţional, conform prevederilor art. 337^1 din Legea nr. 207/2015 [...], dacă depun Declaraţia informativă D406 validă în termenul maxim prevăzut la alin. (1).”
+— OPANAF 1783/2021, Anexa 4, pct. 5 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
-
 ## Cum se determină frecvența: lunar sau trimestrial
 
 Regula de bază: D406 urmează perioada fiscală de TVA a firmei.

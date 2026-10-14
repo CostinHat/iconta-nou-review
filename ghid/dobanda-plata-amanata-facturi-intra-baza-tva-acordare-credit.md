@@ -22,8 +22,10 @@ Contează în practică pentru că aceeași „dobândă" trecută în contract 
 ::: ghid-temei
 „pentru livrări de bunuri și prestări de servicii, altele decât cele prevăzute la lit. b) [...] din tot ceea ce constituie contrapartida obținută sau care urmează a fi obținută de furnizor ori prestator din partea cumpărătorului, beneficiarului sau a unui terț, inclusiv subvențiile direct legate de prețul acestor operațiuni;"
 — Codul fiscal (Legea 227/2015), art. 286 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „acordarea și negocierea de credite, precum și administrarea creditelor de către persoana care le acordă;"
 — Codul fiscal (Legea 227/2015), art. 292 alin. (2) lit. a) pct. 1 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „dobânzile, percepute după data livrării sau prestării, pentru plăți cu întârziere;"
 — Codul fiscal (Legea 227/2015), art. 286 alin. (4) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::

@@ -2,7 +2,7 @@
 title: De la ce dată se aplică TVA la încasare după opțiune?
 description: Sistemul nu se aplică din ziua notificării — înscrierea produce efecte de la data de 1 a perioadei fiscale următoare depunerii notificării la ANAF, sau de la data înregistrării în scopuri de TVA, pentru firmele nou-înregistrate.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,9 +13,11 @@ Data la care depui notificarea și data de la care sistemul chiar produce efecte
 ## Temeiul legal
 
 ::: ghid-temei
-**Art. 324 alin. (16) CF**: *„A.N.A.F. organizează Registrul persoanelor impozabile care aplică sistemul TVA la încasare... Registrul este public și se afișează pe site-ul A.N.A.F."* (rezumat din dosar: înscrierea se face de organul fiscal pe baza notificării, până la data de 1 a perioadei fiscale următoare depunerii — sau de la data înregistrării în scopuri de TVA, pentru firmele nou-înregistrate care optează la înregistrare.)
+„Persoana impozabilă prevăzută la art. 282 alin. (3^1) lit. a) , care optează să aplice sistemul TVA la încasare potrivit prevederilor art. 282 alin. (3)-(8) , trebuie să depună la organele fiscale competente, până la data de 20 inclusiv a lunii anterioare începerii perioadei fiscale din care va aplica sistemul TVA la încasare, o notificare [...]”
+— Codul fiscal (Legea 227/2015), art. 324 alin. (12) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Art. 324 alin. (12) CF** (rezumat din dosarul de cercetare, fără text exact citat în sursă): notificarea se depune până la data de 20 inclusiv a lunii anterioare începerii perioadei fiscale din care se va aplica sistemul.
+„Înscrierea în Registrul persoanelor impozabile care aplică sistemul TVA la încasare se face de către organul fiscal competent, pe baza notificărilor depuse de persoanele impozabile potrivit alin. (12) , până la data de 1 a perioadei fiscale următoare celei în care a fost depusă notificarea sau, în cazul persoanelor impozabile înregistrate în scopuri de TVA în cursul anului calendaristic, prevăzute la art. 282 alin. (3^1) lit. b) , care optează să aplice sistemul TVA la încasare începând cu data înregistrării în scopuri de TVA, de la data înregistrării acestora în scopuri de TVA.”
+— Codul fiscal (Legea 227/2015), art. 324 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Ce înseamnă practic
@@ -34,6 +36,6 @@ Practic, orice factură emisă **înainte** de data efectivă de intrare rămân
 
 ## Ce face iConta.eu
 
-Firma e marcată în profil ca aplicând sistemul TVA la încasare de la o dată anume, iar acest marcaj declanșează tratamentul specific la contarea facturilor emise **de la acea dată încolo**. Determinarea automată, pentru fiecare factură deschisă la momentul opțiunii, dacă a fost emisă înainte sau după data efectivă de intrare — și deci dacă i se aplică regula de tranziție — nu e confirmată în acest dosar ca fiind automatizată; rămâne o verificare manuală, pe baza datei de emitere a fiecărei facturi.
+Firma e marcată în profil ca aplicând sistemul TVA la încasare de la o dată anume, iar acest marcaj declanșează tratamentul specific la contarea facturilor emise **de la acea dată încolo**. Pentru facturile deschise la momentul opțiunii, nu vă bazați pe o încadrare automată „înainte” sau „după” data efectivă de intrare — și deci pe aplicarea automată a regulii de tranziție: verificați manual, pe baza datei de emitere a fiecărei facturi.
 
 [iConta.eu](/)

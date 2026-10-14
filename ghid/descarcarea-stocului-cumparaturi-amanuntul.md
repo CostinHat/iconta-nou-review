@@ -16,8 +16,6 @@ Când marfa este vândută cu amănuntul și evidența stocurilor se ține la pr
 OMFP 1802/2014, Anexa 1 — Reglementări contabile, pct. 286 alin. (4): „Repartizarea diferențelor de preț asupra valorii bunurilor ieșite și asupra stocurilor se efectuează cu ajutorul unui coeficient care se calculează astfel: Coeficient de repartizare = [Soldul inițial al diferențelor de preț + Diferențe de preț aferente intrărilor în cursul perioadei, cumulat de la începutul exercițiului financiar până la finele perioadei de referință] / [Soldul inițial al stocurilor la preț de înregistrare + Valoarea intrărilor în cursul perioadei la preț de înregistrare, cumulat de la începutul exercițiului financiar până la finele perioadei de referință] x 100."
 
 pct. 291 alin. (5): „Inventarul intermitent nu se utilizează în comerțul cu amănuntul în situația în care se aplică metoda global-valorică."
-
-(Text consolidat OMFP 1802/2014, verificat pe mirrorul local la 17.09.2026.)
 :::
 
 Contul 371 „Mărfuri" trebuie ținut permanent (nu prin inventar intermitent, interzis explicit la alin. 5 de mai sus), iar diferența dintre prețul de vânzare și costul de achiziție se separă pe conturile 378 „Diferențe de preț la mărfuri" (adaos comercial) și 4428 „TVA neexigibilă", folosind coeficientul de repartizare calculat cumulat de la începutul exercițiului financiar.
@@ -30,8 +28,8 @@ Contul 371 „Mărfuri" trebuie ținut permanent (nu prin inventar intermitent, 
 
 ## Ce face iConta.eu
 
-Funcția „descărcarea lunii (Stocuri)” din aplicație calculează descărcarea de gestiune cumulat de la 1 ianuarie: preia soldurile inițiale ale conturilor 371/378/4428 (din „soldurile inițiale (Migrare)”, dacă există) și rulajele lor din notele **deja validate** de contabil, până la sfârșitul lunii pentru care se face descărcarea. Vânzările (contul 707) sunt filtrate explicit pe sursele „raportul Z (HoReCa)”, `stocuri` și „facturile de marfă”, luate doar pe luna curentă (nu cumulat). Nota rezultată este propusă automat ca **ciornă**, la data ultimei zile calendaristice a lunii, iar validarea ei rămâne manuală, în sarcina contabilului.
+Descărcarea lunii, din ecranul Stocuri, calculează descărcarea de gestiune cumulat de la 1 ianuarie: preia soldurile inițiale ale conturilor 371/378/4428 (cele introduse la preluarea firmei, dacă există) și rulajele lor din notele **deja validate** de contabil, până la sfârșitul lunii pentru care se face descărcarea. Vânzările (contul 707) sunt luate numai din rapoartele Z, din operațiunile de stoc și din facturile de marfă, și doar pe luna curentă (nu cumulat). Nota rezultată este propusă automat ca **ciornă**, la data ultimei zile calendaristice a lunii, iar validarea ei rămâne manuală, în sarcina contabilului.
 
-O atenționare tehnică din cercetarea care stă la baza acestui ghid: spre deosebire de rulajul contului 707 (filtrat explicit pe sursă), rulajele conturilor 371, 378 și 4428 sunt citite **fără filtrare pe sursă**. Contul 4428 este folosit în aplicație și de un ecran separat, manual, de TVA la încasare (art. 282 Cod fiscal). Dacă o firmă folosește ambele mecanisme, notele manuale de TVA la încasare pot influența rulajul 4428 folosit la calculul coeficientului de repartizare. Nu este o eroare confirmată în producție, dar este o lacună de izolare vizibilă în cod, de urmărit de către contabil.
+O atenționare: spre deosebire de vânzările din contul 707 (luate numai din sursele de mai sus), rulajele conturilor 371, 378 și 4428 sunt preluate **din toate notele validate, indiferent de unde provin**. Contul 4428 este folosit în aplicație și de un ecran separat, manual, de TVA la încasare (art. 282 Cod fiscal). Dacă o firmă folosește ambele mecanisme, notele manuale de TVA la încasare pot influența rulajul 4428 folosit la calculul coeficientului de repartizare — aplicația nu le separă, așa că situația rămâne de urmărit de către contabil.
 
 [iConta.eu](/)

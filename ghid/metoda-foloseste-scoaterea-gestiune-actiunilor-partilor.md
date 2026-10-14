@@ -27,6 +27,7 @@ Contează în practică pentru că titlurile cumpărate la momente diferite au p
 ::: ghid-temei
 „Costul de achiziție sau costul de producție al stocurilor din aceeași categorie și al tuturor elementelor fungibile se calculează prin aplicarea uneia din următoarele metode: a) metoda costului mediu ponderat - CMP; [...] b) metoda primul intrat-primul ieșit - FIFO;"
 — Reglementările contabile aprobate prin OMFP 1802/2014, pct. 96 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
+
 „Prevederile pct. 96 se aplică și investițiilor pe termen scurt, cu excepția depozitelor bancare pe termen scurt."
 — OMFP 1802/2014, pct. 98 (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 :::

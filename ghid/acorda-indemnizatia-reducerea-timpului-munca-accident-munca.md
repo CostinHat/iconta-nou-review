@@ -17,6 +17,7 @@ Contează la salarizare pentru că există două indemnizații de reducere a tim
 ::: ghid-temei
 „Articolul 40 Indemnizația pentru reducerea timpului de lucru cu o pătrime din durata normală, ca urmare a unor afecțiuni cauzate de accidente de muncă sau boli profesionale, se acordă asiguraților care, în aceste condiții, nu mai pot realiza durata normală de muncă."
 — Legea 346/2002, art. 40 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
+
 „(1) Indemnizațiile prevăzute la art. 39 alin. (2) și la art. 40 se acordă la propunerea medicului curant, cu avizul medicului asigurătorului, pentru cel mult 90 de zile într-un an calendaristic, în una sau mai multe etape. (2) Cuantumul lunar al indemnizațiilor prevăzute la alin. (1) este egal cu diferența dintre media veniturilor salariale din ultimele 6 luni și venitul salarial brut realizat de asigurat la noul loc de muncă sau prin reducerea timpului normal de muncă, fără a se depăși 25% din baza de calcul."
 — Legea 346/2002, art. 41 (sursă: [Legea nr. 346/2002 privind asigurarea pentru accidente de muncă și boli profesionale](https://legislatie.just.ro/Public/DetaliiDocument/36905))
 :::

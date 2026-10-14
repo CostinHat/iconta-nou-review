@@ -1,42 +1,58 @@
 ---
 title: Cum raportez în D394 operațiunile din sistemul TVA la încasare
-description: TVA la încasare schimbă doar momentul de exigibilitate al taxei (art. 282 CF) — operațiunea rămâne aceeași factură, cu aceleași părți și sume; tratamentul specific al acestor operațiuni în formularul D394 nu a fost verificat în cercetarea de temei a acestui ghid.
+description: TVA la încasare schimbă doar momentul de exigibilitate al taxei (art. 282 CF); în D394, facturile cu mențiunea „TVA la încasare” se raportează în perioada emiterii (livrări), respectiv a primirii (achiziții), indiferent de data exigibilității.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum raportez în D394 operațiunile din sistemul TVA la încasare
 
-Acest ghid tratează separat ce e sigur — mecanismul legal care stă la baza TVA la încasare — de ce nu am putut confirma din cercetarea disponibilă: comportamentul exact al declarației D394 pentru aceste operațiuni.
+Cea mai frecventă greșeală la D394 pentru firmele cu TVA la încasare: se așteaptă încasarea facturii ca să fie inclusă în declarație. Regula e opusă — D394 urmărește **factura** (emisă sau primită în perioada de raportare), nu exigibilitatea taxei.
 
 ## Temeiul legal
 
 ::: ghid-temei
 **Art. 282 alin. (3) din Codul fiscal (Legea 227/2015)**: *„Prin excepție de la prevederile alin. (1) și alin. (2) lit. a), exigibilitatea taxei intervine la data încasării contravalorii integrale sau parțiale a livrării de bunuri ori a prestării de servicii, în cazul persoanelor impozabile care optează în acest sens..."*
+
+„Declaraţia trebuie să conţină facturile care au fost emise în perioada de raportare, inclusiv cele care au înscrisă menţiunea "taxare inversă" sau "TVA la încasare", indiferent de data la care intervine exigibilitatea TVA.”
+— OPANAF 2194/2025, Anexa 2 pct. 1 lit. a) (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
+
+„Declaraţia trebuie să conţină facturile care au fost primite în perioada de raportare, indiferent de data la care intervine exigibilitatea TVA, inclusiv cele care au înscrisă menţiunea "taxare inversă" sau "TVA la încasare" [...]”
+— OPANAF 2194/2025, Anexa 2 pct. 1 lit. b) (sursă: [OPANAF nr. 2194/2025 pentru modificarea OPANAF nr. 3769/2015 (declarația informativă D394)](https://legislatie.just.ro/Public/DetaliiDocument/302310))
 :::
 
 ## Ce e sigur
 
-TVA la încasare (art. 282 alin. (3)) modifică exclusiv **momentul** la care taxa devine exigibilă — nu modifică factura în sine, valoarea operațiunii, părțile implicate sau natura ei. Aceeași concluzie e confirmată direct în codul aplicației, la nivelul decontului de TVA (D300): sumele calculate pentru firmele cu TVA la încasare ajung tot în rândurile obișnuite de TVA colectată (R9_1/R9_2, R10, R11) — **nu există un rând separat „TVA la încasare"** în D300. Regimul de exigibilitate schimbă doar perioada în care suma apare în decont, nu structura raportării.
+TVA la încasare (art. 282 alin. (3)) modifică exclusiv **momentul** la care taxa devine exigibilă — nu modifică factura în sine, valoarea operațiunii, părțile implicate sau natura ei. În decontul de TVA (D300) nu există un rând separat „TVA la încasare”: sumele unei firme cu TVA la încasare ajung tot în rândurile obișnuite de TVA colectată; regimul de exigibilitate schimbă doar perioada în care suma apare în decont, nu structura raportării.
 
-## Ce nu am putut confirma
+În D394 criteriul e altul, fixat de instrucțiunile formularului:
 
-Cercetarea de temei pentru acest ghid a acoperit aplicația și ecranele de facturare/operațiuni speciale — **nu a inclus o citire a modulului de generare D394** (aplicația nu a fost consultat). Nu putem confirma din acest dosar:
+- **Livrări/prestări (furnizor):** intră facturile **emise** în perioada de raportare, inclusiv cele cu mențiunea „TVA la încasare”, indiferent de data exigibilității. Dacă emiți în septembrie o factură cu „TVA la încasare”, ea intră în D394 pe septembrie — chiar dacă încasarea (și, odată cu ea, exigibilitatea taxei) se produce abia în noiembrie sau nu se produce deloc în acel an.
+- **Achiziții (client):** intră facturile **primite** în perioada de raportare, indiferent de data exigibilității, inclusiv cele cu „TVA la încasare”.
 
-- dacă aplicația marchează distinct, în fișierul D394, operațiunile efectuate de o firmă înscrisă la TVA la încasare;
-- dacă valoarea/perioada raportată în D394 urmează data facturii sau data încasării;
-- dacă există vreun indicator specific „TVA la încasare" în structura formularului, așa cum e generat de aplicație.
+D394 e o declarație informativă de tranzacții (cine a facturat cui, cât), nu o declarație de TVA de plată; de aceea urmărește documentul, nu fluxul de numerar. Formularul marchează totuși distinct regimul: în secțiunea 1 se completează căsuța „sistem de TVA la încasare” dacă firma care depune a optat pentru acest sistem, iar la achiziții, pe lângă tipurile de operațiune L/A, există tipul **AÎ** — „achiziții de la persoane impozabile care aplică sistemul de TVA la încasare”.
 
-Conform regulii dosarului de cercetare — nicio afirmație fără sursă verificată — nu vom prezenta niciunul din aceste puncte ca fiind confirmat.
+Achizițiile intracomunitare care se raportează în D390 nu se înscriu și în D394 — instrucțiunile exclud explicit acest dublaj.
+
+## Ce rămâne de verificat
+
+La data acestui ghid nu putem confirma, pentru D394 generată de iConta.eu:
+
+- dacă bifa „sistem de TVA la încasare” și tipul de operațiune AÎ se completează automat;
+- dacă perioada în care apar facturile cu „TVA la încasare” urmează data facturii, cum cer instrucțiunile.
+
+Nu prezentăm niciunul din aceste puncte ca fiind confirmat.
 
 ## Ce se greșește în practică
 
-- **Se presupune, fără verificare, că D394 urmează automat regimul de exigibilitate din D300.** Cele două declarații pot avea reguli de raportare diferite, iar acest dosar nu confirmă comportamentul aplicației pe D394.
-- **Se amână raportarea în D394 până la încasare**, prin analogie greșită cu mecanismul TVA la încasare din D300, fără o verificare directă a regulilor proprii declarației 394.
+- **Se amână raportarea în D394 până la încasare**, prin analogie greșită cu mecanismul TVA la încasare din D300 — criteriul D394 e data facturii.
+- **Se presupune, fără verificare, că D394 urmează automat regimul de exigibilitate din D300.** Cele două declarații au reguli de raportare diferite.
+- La reconcilierea D394 cu jurnalul de vânzări/cumpărări se filtrează după data plății, nu după data documentului — apar diferențe care nu sunt erori, ci o confuzie de criteriu.
+- Mențiunea „TVA la încasare” lipsește de pe factură, iar operațiunea nu mai poate fi identificată corect nici la furnizor, nici la client.
 
 ## Ce face iConta.eu
 
-La data acestui ghid, cercetarea de temei nu a acoperit modulul D394 — nu putem confirma dacă și cum aplicația tratează distinct operațiunile supuse TVA la încasare în această declarație. Recomandăm verificarea directă a modulului tehnic sau consultarea echipei de suport înainte de a considera un comportament ca fiind automatizat.
+La data acestui ghid nu putem confirma dacă și cum aplicația tratează distinct operațiunile supuse TVA la încasare în D394. Înainte de depunere, verifică pe declarația generată bifa „sistem de TVA la încasare”, tipul AÎ la achizițiile de la furnizori cu TVA la încasare și perioada facturilor, sau cere confirmarea echipei de suport înainte de a considera un comportament ca fiind automatizat.
 
 [iConta.eu](/)

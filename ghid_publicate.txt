@@ -1,6 +1,7 @@
-# Ghidurile PUBLICATE la 13.10.2026 — lista înghețată (comanda Costin 13.10.2026, pct.2e: „De acum, nu publici ghiduri noi până la
-# decizia mea.”). Site-ul servește, listează și pune în sitemap NUMAI slugurile de aici; un ghid/*.md nou nu se publică până nu e adăugat
-# aici, cu decizia lui Costin consemnată în DECIZII.md. Gard: core/test_ghid_publicare_inghetata.py.
+# Ghidurile PUBLICATE — lista înghețată (comanda Costin 13.10.2026, pct.2e: „De acum, nu publici ghiduri noi până la decizia mea.”).
+# Site-ul servește, listează și pune în sitemap NUMAI slugurile de aici; un ghid/*.md nou nu se publică până nu e adăugat aici, cu
+# decizia lui Costin consemnată în DECIZII.md. 13.10.2026: 6.558 -> 6.513 (comasarea celor 45 de grupuri, răspunsul la §6
+# COMANDA_13_10 pct.1; slugurile comasate răspund 301). Gard: core/test_ghid_publicare.py.
 abonament-software
 abonamentele-software-cheltuieli-imobilizari-necorporale
 abonamentul-transport-comun-angajatii-deplasari-frecvente
@@ -139,7 +140,6 @@ aleg-metoda-evaluare-stocurilor-iesire
 aleg-micro-impozit-profit-infiintarea
 aleg-micro-profit-firma-2026
 aleg-norma-venit-sistem-real
-aleg-norma-venit-sistemul-real
 aleg-perioada-fiscala-tva-firma
 aleg-pfa-intreprindere-individuala
 aleg-pfa-srl-2026
@@ -148,7 +148,6 @@ aleg-srl-pfa-afacere-noua
 aleg-srl-pfa-incep-afacere
 aleg-vectorul-fiscal-corect-infiintare
 alege-anaf-metoda-indirecta-stabilire-veniturilor-persoane
-alege-codul-clasificare-mijloc-fix
 alege-firma-ramane-micro-asociatul
 alege-micro-2026-anul-trecut
 alegi-codul-clasificare-mijloc-fix
@@ -294,9 +293,7 @@ amortizeaza-fiduciarul-activele-primite-masa-patrimoniala-fiduciara
 amortizeaza-instalatie-fotovoltaica-finantata-grant
 amortizeaza-instalatie-montata-cladire
 amortizeaza-investitiile-efectuate-cladire-proprie
-amortizeaza-investitiile-facute-spatiu-inchiriat
 amortizeaza-investitiile-spatiu-inchiriat
-amortizeaza-laptop-cumparat-pfa-2
 amortizeaza-laptop-cumparat-pfa-3
 amortizeaza-marca-achizitionata
 amortizeaza-masina-electrica-achizitionata-firma
@@ -611,7 +608,6 @@ calculat-impozitul-profit-prea-mic
 calculator-salariu-net-2026-verific
 calculeaza-accesorii-plata-ajuns-cont
 calculeaza-accesoriile-contributiile-salariale-neachitate
-calculeaza-adaosul-comercial
 calculeaza-ajustarea-tva-scoaterea-patrimoniu
 calculeaza-amortizare-luna-mijlocul-fix
 calculeaza-amortizare-mijloc-fix-inainte
@@ -732,7 +728,6 @@ calculeaza-venitul-estimat-anaf
 calculeaza-venitul-pfa-incasari-card
 calculeaza-veniturile-micro-firmele-avansuri
 calculeaza-zilele-concediu-fractiune-an
-calculez-impozitul-profit-16-srl-2026
 calculez-impozitul-profit-anul-dizolvarii
 calculez-impozitul-profit-firma-incepe
 calculez-impozitul-profit-firma-nou
@@ -752,7 +747,6 @@ calculezi-impozitul-profit-suspendarea-activitatii
 calculul-adaosului-comercial-iesirea-gestiune
 calculul-costului-portii-restaurant
 calculul-impozitului-pe-profit-datorat-2026
-calculul-salariului-program-4-ore
 calculul-trimestrial-impozitului-profit-firma
 calendar-fiscal-2026-termene-legate
 calendar-fiscal-2026-termene-plati-incasari
@@ -1213,7 +1207,6 @@ cont-trezorerie-vs-cont-bancar
 cont-unic-trezorerie-obligatii-2026
 contabil-pfa-norma-venit
 contabilitate-avocatura-2026-societati-avocati
-contabilitate-firma-catering-particularitati
 contabilitate-firma-curierat-particularitati
 contabilitate-firma-evenimente-particularitati
 contabilitate-firma-printare-particularitati-fiscale
@@ -1272,7 +1265,6 @@ contabilitatea-service-auto-tva-garantii
 contabilitatea-spalatorii-auto-tva-consumabile
 contabilitatea-spalatorii-self-service-incasari
 contabilitatea-vanzarii-cursuri-online-tva
-contabilizare-extras-cont-bancar
 contabilizarea-diferentelor-dintre-deviz-costurile
 contabilizarea-serviciilor-influencer
 contabilizarea-vanzarilor-marketplace-uri-ue
@@ -1346,10 +1338,8 @@ contabilizeaza-garantia-incasata-rezervarea-eveniment-restaurant
 contabilizeaza-importurile-factura-furnizorului-declaratia
 contabilizeaza-imprumutul-asociatului-depus-direct
 contabilizeaza-incasarile-curier
-contabilizeaza-incasarile-netopia
 contabilizeaza-incasarile-saas-multe-valute
 contabilizeaza-incasarile-stripe-magazin-online
-contabilizeaza-incasarile-stripe
 contabilizeaza-inchirierea-utilaje-alt-stat
 contabilizeaza-indemnizatiile-concediu-medical-suportate
 contabilizeaza-ingredientele-inlocuite-reteta-modificarea
@@ -1396,7 +1386,6 @@ contabilizeaza-reducerea-capitalului-social
 contabilizeaza-reducerea-pretului-marfurilor-stoc
 contabilizeaza-refund-urile-acordate-clientilor
 contabilizeaza-restituirea-imprumutului-asociatului-banca
-contabilizeaza-retururile-magazin-online
 contabilizeaza-rezilierea-antecontract-apartament
 contabilizeaza-schimbul-produs-alt-produs
 contabilizeaza-serverele-cloud
@@ -1704,7 +1693,6 @@ corectez-impozit-dividende-gresit-d205
 corectez-impozitul-dividende-calculat-gresit
 corectez-impozitul-micro-calculat-gresit
 corectez-impozitul-micro-depasirea-plafonului
-corectez-impozitul-profit-depunerea-d101
 corectez-impozitul-salariu-calculat-gresit
 corectez-impozitul-venit-declarat-gresit
 corectez-incasare-bancara-alocata-clientului
@@ -1724,7 +1712,6 @@ corectez-obiect-inventar-inregistrat-gresit
 corectez-obligatie-declarata-gresit-d100
 corectez-operatiune-declarata-l-loc
 corectez-operatiune-intracomunitara-inregistrata-luna
-corectez-partener-declarat-gresit-d394
 corectez-perioada-saft-deja-depusa
 corectez-perisabilitatile-inregistrate-gresit
 corectez-pierderea-fiscala-reportata-gresit
@@ -1750,7 +1737,6 @@ corectez-tva-servicii-cumparate-ue
 corectez-valoarea-intrare-mijloc-fix
 corectez-valoarea-operatiuni-declarate-gresit
 corectez-vectorul-fiscal-regimul-impozitare
-corectez-venit-inregistrat-cheltuiala
 corectezi-amortizarea-omisa-luna-anterioara
 corectezi-concediu-medical-declarat-gresit
 corectezi-contabil-achizitie-trebuia-inregistrata
@@ -1759,9 +1745,7 @@ corectezi-d112-concediu-medical-primit
 corectezi-d112-platit-contributiile
 corectezi-d205-erori
 corectezi-diferentele-dintre-contabilitate-extrasul
-corectezi-factura-emisa-cota-tva
 corectezi-formularul-213-depus-gresit
-corectezi-impozitul-dividende-declarat-gresit
 corectezi-impozitul-profit-depunerea-d101
 corectezi-incasare-bancara-inregistrata-clientul
 corectezi-numarul-zile-lucrate-d112
@@ -1860,7 +1844,6 @@ cum-recunosc-in-contabilitate-impozitul-micro-trimestrial
 cum-se-acorda-tichetele-de-masa-si-ce-contributii-au
 cum-se-aplica-plafonul-de-12-salarii-minime-la-contributii
 cum-se-calculeaza-adaosul-la-un-magazin-online
-cum-se-calculeaza-adaosul-si-descarcarea-la-un-depozit-en-gros
 cum-se-calculeaza-ajustarile-pentru-deprecierea-stocurilor-in-2026
 cum-se-calculeaza-impozitul-de-10-procente-pentru-pfa
 cum-se-calculeaza-impozitul-micro-trimestrial
@@ -2176,7 +2159,6 @@ declar-dividendele-virate-cont-trezorerie
 declar-exporturile-d300-randurile-corecte
 declar-factura-omisa-d300
 declar-factura-primita-depunerea-d394
-declar-factura-ue-primita-intarziere
 declar-importurile-d300
 declar-impozitul-profit-primul-trimestru
 declar-impozitul-profit-srl-proaspat
@@ -2662,7 +2644,6 @@ diferenta-dintre-faptul-generator-exigibilitatea
 diferenta-dintre-fifo-cmp
 diferenta-dintre-gestiunea-cantitativ-valorica-global-valorica
 diferenta-dintre-impozit-micro-1
-diferenta-dintre-inspectie-fiscala-verificare
 diferenta-dintre-inventarul-permanent-inventarul
 diferenta-dintre-micro-profit-firma
 diferenta-dintre-mijloc-fix-obiect
@@ -3205,7 +3186,6 @@ fiscal-infiintarea-pfa
 fise-magazie-cod-material-obligatoriu
 folosesc-certificatul-digital-spv-factura
 foloseste-aranjament-dac6-trebuie-raporteze-fiecare-an
-foloseste-contul-1174-corectarea-erorilor
 foloseste-contul-5125-sume-curs
 foloseste-contul-581-viramente-interne
 foloseste-gestiunea-global-valorica
@@ -3296,7 +3276,6 @@ generarea-automata-d205-recomandari
 genereaza-xml-ul-d112
 genereaza-xml-ul-d406
 gestionarea-crizei-lichiditate-2026
-gestioneaza-incasarile-curieri
 gestioneaza-stocul-alimente-perisabile-final
 gestioneaza-stocurile-multe-puncte-lucru
 gestionez-factura-magazin-online
@@ -3474,7 +3453,6 @@ impozit-profit-firmele-aplica-tva
 impozit-profit-firmele-domeniul-imobiliar
 impozit-profit-firmele-ies-micro
 impozit-profit-firmele-vanzari-consignatie
-impozit-profit-perioada-lichidare
 impozit-profit-pfa-organizat-activitate
 impozit-profit-redus-inovatie-aplica
 impozit-profit-redus-start-up
@@ -3518,7 +3496,6 @@ impozitul-profit-declaratia-unica-pfa
 impozitul-profit-dizolvare-inchidere
 impozitul-profit-factura-coreleaza-2026
 impozitul-profit-firma-insolventa-2026
-impozitul-profit-firmele-activitate-sezoniera
 impozitul-profit-firmele-agricole-calculeaza
 impozitul-profit-firmele-angajati-2026
 impozitul-profit-firmele-aplica-ifrs
@@ -3583,7 +3560,6 @@ incasari-ulterioare-transferul-dezmembramintelor-aplica-cota-1
 incasarile-strainatate-intra-plafonul-pfa
 incasarile-valuta-intra-plafonul-trecerea
 incep-facturarea-electronica-srl-nou
-incepe-amortizarea-mijloc-fix-2
 incepe-amortizarea-mijloc-fix-nou
 incepe-amortizarea-mijloc-fix
 incepe-curga-dobanda-obligatie-fiscala
@@ -3737,7 +3713,6 @@ inregistrarea-contractului-individual-munca-revisal
 inregistrarea-firmei-nou-infiintate-anaf
 inregistrarea-firmei-revisal-infiintare
 inregistrarea-noilor-asociati-straini-onrc
-inregistrarea-revisal-infiintarea-firmei
 inregistrarea-voluntara-scopuri-tva-2026
 inregistrarile-registrul-magazie
 inregistrat-aceeasi-factura-doua-ori
@@ -3749,7 +3724,6 @@ inregistrat-gresit-concediere-incetare-contract
 inregistrat-incasare-numerar-incasare-banca
 inregistrat-lipsuri-inventar-documente
 inregistrat-statul-salarii-contabilitate
-inregistreaza-achizitie-servicii-ue-neplatitor
 inregistreaza-activele-achizitionate-granturi
 inregistreaza-amenda-platita-contul-firmei
 inregistreaza-amortizarea-lunara-contabilitate
@@ -3805,7 +3779,6 @@ inregistreaza-factura-emisa-platforma-straina
 inregistreaza-factura-google-ads
 inregistreaza-factura-google-primita-srl
 inregistreaza-factura-marfa-primita-germania
-inregistreaza-factura-marfa-primita-italia
 inregistreaza-factura-meta-ads
 inregistreaza-factura-platita-personal-asociat
 inregistreaza-factura-servicii-primita-germania
@@ -3864,7 +3837,6 @@ inregistreaza-plata-trezorerie
 inregistreaza-platile-facute-asociat-firma
 inregistreaza-platile-procesate-procesator-carduri
 inregistreaza-plusurile-inventar-restaurant
-inregistreaza-poprire-bancara
 inregistreaza-primul-imprumut-asociatului-srl
 inregistreaza-productia-proprie-brutarie
 inregistreaza-productia-proprie-cofetarie
@@ -3872,14 +3844,11 @@ inregistreaza-rambursare-primita-anaf-contul
 inregistreaza-raportul-z-contabilitatea-restaurant
 inregistreaza-raportul-z-registrul-casa
 inregistreaza-reevaluarea-amortizarea-ulterioara
-inregistreaza-regularizarea-anuala-impozitului-profit
 inregistreaza-restituirea-avans-numerar
-inregistreaza-restituirea-imprumut-asociat
 inregistreaza-restituirea-plati-bancare-eronate
 inregistreaza-santier-durata-mare-an
 inregistreaza-schimbul-valutar-banca
 inregistreaza-schimbul-valutar-casa-schimb
-inregistreaza-scoaterea-evidenta-mijloc-fix
 inregistreaza-scopuri-tva-firma-straina-reprezentant-fiscal
 inregistreaza-scrisoare-garantie-bancara
 inregistreaza-serverele-achizitionate-hosting
@@ -3926,7 +3895,6 @@ inregistrez-restituirea-sume-anaf-contul
 inregistrez-salariatii-punct-lucru
 inregistrez-suma-primita-greseala-contul
 inregistrez-transferul-banilor-paypal-banca
-inregistrezi-numerarul-retras-banca-casierie
 inrolez-pfa-spv-factura
 inrolez-srl-spv-factura
 inscrie-ipoteca-legala-asociatiei-proprietari-restantele
@@ -4107,7 +4075,6 @@ justifici-soldul-mare-casieria-firmei
 la-ce-baza-se-aplica-impozitul-pe-venit-pentru-pfa-in-sistem-real
 laptop-cheltuiala-sau-mijloc-fix
 laptop-mijloc-fix-obiect-inventar
-laptopul-cumparat-firma-cheltuiala-mijloc
 leaga-contabilul-d205-d101-final
 leaga-factura-ro-transport
 leasing-financiar-reziliat-bunul-nerestituit-locatorul
@@ -4421,7 +4388,6 @@ notificarea-firmei-inainte-poprirea-conturilor
 notificari-anaf-decontul-tva-raspund
 notificarile-spv-gestionez
 notifice-primaria-furnizorilor-30-zile-aprobarea-bugetului
-noutati-2026-controlul-fiscal-sanctiuni-2
 noutati-2026-controlul-fiscal-sanctiuni
 noutati-2026-digitalizarea-anaf-factura
 noutati-2026-greselile-noi-evitat
@@ -5039,7 +5005,6 @@ raportez-d394-operatiunile-sistemul-tva
 raportez-dividendele-cass-declaratia-asociatilor
 raportez-iesirea-micro-finalul-anului
 raportez-multi-beneficiari-d205
-raportezi-d394-operatiunile-sistemul-tva
 raportul-d205-extrasul-cont-dividende
 raportul-dintre-d101-balanta-verificare
 raportul-evaluare-facut-impozitul-cladiri-inregistreaza
@@ -5049,7 +5014,6 @@ raportul-lichidatorului-privind-situatia-economica-firmei-termenul
 raportul-stoc-final-luna-contine
 raportul-z-corelat-plafonul-numerar-2026
 raportul-z-corespunde-numerarul-casierie
-raportul-z-restaurant-inregistreaza
 raportul-z-zilnic-inregistreaza-registrul
 raspund-cerere-anaf-documente-transmisa
 raspund-nota-explicativa-ceruta-inspectorii
@@ -5300,7 +5264,6 @@ retur-marfa-furnizor-descarca-gestiunea
 returul-client-ue-ajustarea-tva
 returul-marfa-reintrarea-stoc-monografie
 retururi-refulari-online-2026-impact
-retururile-magazin-online-factura
 retururile-publicatii-distribuitori-cheltuieli-deductibile
 reveni-impozit-profit-micro-2026
 reveni-norma-venit-ales-sistemul
@@ -5747,7 +5710,6 @@ teren-inchiriat-arendat-firma-persoana-fizica-plateste
 terenul-amortizeaza-contabil-fiscal
 terenul-cumparat-construirea-locuinte-destinate
 terenurile-amortizeaza-contabil-fiscal
-terenurile-amortizeaza-fiscal
 terenurile-detinute-8-ani-intra
 termen-contestatia-executare-fiscala
 termen-depunere-d101
@@ -5881,7 +5843,6 @@ transmite-contractul-munca-revisal
 transmite-declaratia-106-pdf-xml
 transmite-evidenta-mijloacelor-fixe-schimbarea
 transmite-factura-tva-0-factura
-transmite-factura-tva-incasare-factura
 transmite-factura-vand-emag-marketplace
 transport-mixt-bunuri-risc-fiscal-ridicat-alte-bunuri
 transportatorul-monteze-dispozitiv-gps-camioane-ro-transport
@@ -5980,7 +5941,6 @@ trateaza-tva-dropshipping-ue
 trateaza-tva-exporturile-facute-magazin
 trateaza-tva-magazin-online-vinde
 trateaza-tva-vanzarea-mijloc-fix
-trateaza-tva-vanzarile-online-persoane
 trateaza-veniturile-chirii-micro-vs
 trateaza-veniturile-management-consulting
 trateaza-veniturile-microintreprinderi-obtinute-strainatate
@@ -5993,7 +5953,6 @@ tratez-achizitie-emag-marketplace-furnizor
 tratez-achizitie-marfa-polonia
 tratez-amenajarile-facute-sediul-inchiriat
 tratez-avans-platit-furnizor-ue
-tratez-avans-primit-client-ue
 tratez-avansurile-clienti-stocuri
 tratez-avansurile-trezorerie-nejustificate-inainte
 tratez-comanda-woocommerce-anulata-facturare
@@ -6096,7 +6055,6 @@ tratez-tva-cumpararea-utilaj-ue
 tratez-tva-factura-vine-dintr
 tratez-tva-furnizorul-ue-dar
 tratez-tva-inchirierile-termen-scurt
-tratezi-achizitia-autoturism-ue
 tratezi-avans-primit-client-ue
 tratezi-fiscal-corectarea-erorilor-contabile
 tratezi-incasare-partiala-client
@@ -6255,7 +6213,6 @@ urgente-medico-chirurgicale-dau-drept
 urmaresc-termenele-saft-firmele-portofoliu
 utilaj-cumparat-second-hand-inregistreaza
 vad-facturile-primite-spv
-validarea-vies-partenerii-intracomunitari-pasi
 validarea-vies-partenerii-intracomunitari
 valideaza-declaratia-d205
 valideaza-fisierul-d406-inainte-depunere
@@ -6538,7 +6495,6 @@ verifici-ultima-d112-valida-depusa
 verifici-vectorul-fiscal-firma-micro
 versiune-ro-cius-foloseste-2026
 vinde-chiar-debitorul-bunul-sechestrat-valorificarea-intelegerea
-vinde-mijloc-fix-complet-amortizat
 vinde-platitor-tva-autoturism-patrimoniul
 vinzi-putin-platforma-online-sub-prag-esti
 vireaza-contributia-asiguratorie-munca-2026

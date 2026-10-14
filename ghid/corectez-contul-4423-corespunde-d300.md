@@ -2,13 +2,13 @@
 title: Cum corectez contul 4423 dacă nu corespunde cu D300?
 description: Contul 4423 (TVA de plată) se compară cu soldul de la sfârșitul perioadei din D300, dar verificarea e tăcută dacă ambele valori sunt zero — utilă doar când firma chiar are TVA de plată.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum corectez contul 4423 dacă nu corespunde cu D300?
 
-Contul **4423** (TVA de plată) se compară, pe credit, cu rândul „Sold TVA de plată la sfârșitul perioadei" din D300 (R41_2). Dacă ambele valori sunt zero, verificarea nu afișează nimic — are sens doar când firma chiar are, la finalul perioadei, o obligație de plată.
+Contul **4423** (TVA de plată) se compară, pe credit, cu rândul „Sold TVA de plată la sfârșitul perioadei" din D300 (rândul 44). Dacă ambele valori sunt zero, verificarea nu afișează nimic — are sens doar când firma chiar are, la finalul perioadei, o obligație de plată.
 
 ## Temeiul legal
 

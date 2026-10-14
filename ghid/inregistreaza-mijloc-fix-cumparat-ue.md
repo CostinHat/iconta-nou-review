@@ -12,6 +12,19 @@ Faptul că bunul cumpărat e un mijloc fix, nu marfă de revânzare, nu schimbă
 
 Ca la orice achiziție intracomunitară de bunuri: taxa se calculează prin taxare inversă (4426=4427), iar operațiunea intră în D390 la codul A. Diferența față de o achiziție de marfă e doar destinația contabilă — un mijloc fix nu intră în contul de mărfuri.
 
+## Temeiul legal
+
+::: ghid-temei
+„Sunt, de asemenea, operațiuni impozabile și următoarele operațiuni efectuate cu plată, pentru care locul este considerat a fi în România, potrivit art. 276: a) o achiziție intracomunitară de bunuri, altele decât mijloace de transport noi sau produse accizabile, efectuată de o persoană impozabilă ce acționează ca atare [...]”
+— Legea nr. 227/2015 privind Codul fiscal, art. 268 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Persoana care efectuează o achiziție intracomunitară de bunuri care este taxabilă, conform prezentului titlu, este obligată la plata taxei.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 308 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„[...] persoana impozabilă înregistrată conform art. 316 va evidenția în decontul prevăzut la art. 323, atât ca taxă colectată, cât și ca taxă deductibilă, în limitele și în condițiile stabilite la art. 297-301, taxa aferentă achizițiilor intracomunitare [...]”
+— Legea nr. 227/2015 privind Codul fiscal, art. 326 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 ## Ce se greșește în practică
 
 - Se lasă contul de destinație pe sugestia implicită a ecranului (`371`, mărfuri), gândită pentru bunuri de revânzare, fără să se schimbe manual la contul de imobilizări corespunzător.

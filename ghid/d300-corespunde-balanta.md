@@ -2,7 +2,7 @@
 title: Ce fac dacă D300 nu corespunde cu balanța?
 description: O diferență D300–balanță nu e automat o greșeală — poate fi și semnul unei evidențe rămase în urmă. Aplicația împarte fiecare cont în verde, roșu sau gri, cu o toleranță de 1 leu.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -24,10 +24,10 @@ Comparația se face pe cinci conturi, fiecare mapat pe rândul corespunzător di
 
 | Rând D300 | Cont | Sens | Observație |
 |---|---|---|---|
-| TOTAL TAXĂ COLECTATĂ (R17_2) | 4427 | credit | |
-| TOTAL TAXĂ DEDUCTIBILĂ (R27_2) | 4426 | debit | nu R31_2 (acela e alt rând, „Ajustări/pro-rata") |
-| Sold TVA de plată (R41_2) | 4423 | credit | tăcut dacă ambele sunt 0 |
-| Sold TVA de recuperat (R42_2) | 4424 | debit | tăcut dacă ambele sunt 0 |
+| TOTAL TAXĂ COLECTATĂ (rândul 19, coloana TVA) | 4427 | credit | |
+| TOTAL TAXĂ DEDUCTIBILĂ (rândul 30, coloana TVA) | 4426 | debit | nu rândul 34 (acela e alt rând, „Ajustări conform pro-rata/ajustări de taxă") |
+| Sold TVA de plată (rândul 44) | 4423 | credit | tăcut dacă ambele sunt 0 |
+| Sold TVA de recuperat (rândul 45) | 4424 | debit | tăcut dacă ambele sunt 0 |
 | — | 4428 (TVA neexigibilă) | net | doar informativ, niciodată roșu |
 
 Fiecare cont primește o stare: **verde** (coerent), **roșu** (divergent, cu cifre) sau **gri** (nu s-a putut verifica, de regulă din lipsă de date). Toleranța aplicată e de 1 leu — normal, pentru că D300 rotunjește la leu, iar contabilitatea ține banii cu bani (subunități).

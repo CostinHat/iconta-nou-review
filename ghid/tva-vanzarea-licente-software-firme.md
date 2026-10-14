@@ -10,6 +10,19 @@ poarta: v1
 
 O licență software vândută unei firme din UE nu e o livrare de bun, e o prestare de serviciu — chiar dacă „produsul” pare tangibil pentru utilizator. Regimul de TVA urmează regulile serviciilor B2B, nu pe cele ale bunurilor.
 
+## Temeiul legal
+
+::: ghid-temei
+„Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Locul de prestare a serviciilor către o persoană neimpozabilă este locul unde prestatorul își are stabilit sediul activității sale economice.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 278 alin. (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Factura cuprinde în mod obligatoriu următoarele informații: [...] m) în cazul în care clientul este persoana obligată la plata TVA, mențiunea «taxare inversă»;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 319 alin. (20) lit. m) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 Dacă firma cumpărătoare are cod de TVA valid, verificat, factura se emite fără TVA românesc, cu mențiunea taxării inverse, iar operațiunea se declară în D390. Dacă firma nu are cod de TVA valid (persoană neimpozabilă), operațiunea devine B2C și se facturează cu TVA românesc.
 
 ## Ce se greșește în practică

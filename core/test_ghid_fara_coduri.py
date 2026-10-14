@@ -49,10 +49,40 @@ def test_niciun_ghid_public_nu_poarta_denumiri_din_codul_aplicatiei():
 
 
 def test_suprapunerile_masurate_sunt_cele_ale_uneltei():
-    """`ghid_suprapuneri.csv` (lista pentru aprobarea comasării) = ce măsoară unealta acum; exemplul din comandă e un grup."""
+    """`ghid_suprapuneri.csv` = ce măsoară unealta acum. Cele 45 de grupuri măsurate la 13.10.2026 au fost comasate (răspunsul la §6
+    COMANDA_13_10 pct.1; registrul: `ghid_comasate.csv`), deci unealta nu mai găsește niciun grup; exemplul din comandă e o pereche
+    comasată. MUTAȚIE: un ghid comasat repus în ghid/ (cu titlul lui) -> grupul reapare -> pică."""
     rows = list(csv.DictReader(io.open(os.path.join(_RAD, "ghid_suprapuneri.csv"), encoding="utf-8")))
     acum = [(str(n), s, t) for n, g in enumerate(sp.grupuri(sp.ghiduri()), 1) for s, t in g]
     assert [(r["grup"], r["slug"], r["titlu"]) for r in rows] == acum, "regenerează: python scripts/scan_ghid_suprapuneri.py --csv"
-    grup = {r["slug"]: r["grup"] for r in rows}
-    assert grup["contabilitatea-depozit-en-gros-adaos"] == \
-        grup["cum-se-calculeaza-adaosul-si-descarcarea-la-un-depozit-en-gros"]
+    comasate = list(csv.DictReader(x for x in io.open(os.path.join(_RAD, "ghid_comasate.csv"), encoding="utf-8") if not x.startswith("#")))
+    pereche = {r["comasat"]: r["pastrat"] for r in comasate}
+    assert pereche.get("cum-se-calculeaza-adaosul-si-descarcarea-la-un-depozit-en-gros") == "contabilitatea-depozit-en-gros-adaos"
+
+
+def test_nicio_proza_despre_cod_numita_de_costin():
+    """Comanda Costin 13.10.2026 (răspunsul la §6 COMANDA_13_10 pct.2): „fără referiri la cod sau la registrele proiectului.” Tiparele
+    numite („comentariul din cod”, „registrul intern al proiectului”, „dosarul tehnic / de cercetare”, „mirrorul local”) și trimiterile
+    tehnice (coduri GH, linii de cod, cron, .timer): ZERO în orice ghid, inclusiv în casetele de temei.
+    MUTAȚIE: „(verificat pe mirrorul local)” pus înapoi într-o casetă -> pică."""
+    rele = []
+    for cale in sorted(glob.glob(os.path.join(_RAD, "ghid", "*.md"))):
+        z = cc.proza_cod(io.open(cale, encoding="utf-8").read(), cc.PROZA_COD_ZERO)
+        if z:
+            rele.append((os.path.basename(cale), z[:3]))
+    assert rele == [], (len(rele), rele[:5])
+
+
+def test_proza_despre_cod_clasa_larga_nu_creste():
+    """Clasa largă („verificat în cod”, „motorul de calcul”, „cercetarea”, termeni tehnici) — măsurată, la decizia lui Costin; nu
+    crește pe niciun ghid (`core/clichet_proza_cod_ghid.json`), un ghid nou pornește de la zero.
+    MUTAȚIE: „Verificat în cod:” adăugat într-un ghid -> pică."""
+    import json
+    pin = json.load(io.open(os.path.join(_RAD, "core", "clichet_proza_cod_ghid.json"), encoding="utf-8"))["fisiere"]
+    crescute = []
+    for cale in sorted(glob.glob(os.path.join(_RAD, "ghid", "*.md"))):
+        s = os.path.basename(cale)[:-3]
+        n = len(cc.proza_cod(io.open(cale, encoding="utf-8").read(), cc.PROZA_COD_CLICHET))
+        if n > pin.get(s, 0):
+            crescute.append((s, pin.get(s, 0), n))
+    assert crescute == [], crescute[:10]

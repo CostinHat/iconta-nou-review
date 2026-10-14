@@ -2,7 +2,7 @@
 title: "Declararea TVA la import prin D301 sau în vamă"
 description: D301 nu se aplică importului extracomunitar de bunuri — e declarația pentru achiziții intracomunitare și operațiuni cu taxare inversă. TVA la import se plătește la vamă sau, cu certificat de amânare, se reflectă în D300.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ D301 are un obiect complet diferit: declararea de către persoane neînregistrat
 
 Pentru importul extracomunitar, aplicația nu propune D301 ca variantă de declarare — motorul de import generează, în funcție de situația firmei, fie o notă contabilă cu TVA plătită la vamă și dedusă pe baza declarației vamale de import (4426=446), fie, dacă firma are certificat de amânare, o notă cu autolichidare integrală (4426=4427), fie TVA inclus în costul bunului pentru neplătitori. Aplicația respinge combinația "certificat de amânare" pentru o firmă neplătitoare de TVA (art. 316), dar **nu verifică plafonul de 50 milioane lei** și celelalte condiții cumulative de la art. 326 alin. (4^1) — eligibilitatea pentru certificat trebuie confirmată manual de contabil înainte de a bifa opțiunea.
 
-De precizat și o limitare curentă la nivel de declarare D300: la data acestei cercetări, aplicația nu populează automat rândul de TVA la import (rd.21) în D300 pentru operațiunile cu parteneri din afara UE — acestea rămân clasificate generic pe rd.26, indiferent de modul de tratare a TVA calculat la import. Este o limitare de stare curentă, nu o regulă fiscală, și necesită verificare manuală a raportării în decont.
+De precizat și o limitare curentă la nivel de declarare D300: la data acestei cercetări, aplicația nu populează automat, în D300, rândurile pe care formularul 2026 cere TVA aferentă importului (rândul 24 sau 25, pentru TVA plătită în vamă; rândurile 7 și 22, pentru importul cu certificat de amânare, art. 326 alin. (4) și (5)) pentru operațiunile cu parteneri din afara UE — acestea rămân clasificate generic pe rândul 29 (achiziții scutite sau neimpozabile), indiferent de modul de tratare a TVA calculat la import. Este o limitare de stare curentă, nu o regulă fiscală, și necesită verificare manuală a raportării în decont.
 
 [iConta.eu](/)

@@ -1,6 +1,6 @@
 ---
 title: "D101 precompletată: cum o verific 2026"
-description: Checklist de verificare a D101 pregătită automat de aplicație pentru 2026 — inclusiv o atenționare importantă privind cota IMCA calculată de motor.
+description: Checklist de verificare a D101 pregătită automat de aplicație pentru 2026 — inclusiv cota IMCA aplicabilă anului fiscal 2026 (0,5%).
 published: 2026-09-24
 modified: 2026-10-13
 poarta: v1
@@ -8,7 +8,7 @@ poarta: v1
 
 # D101 precompletată: cum o verific 2026
 
-D101 precompletată automat din balanță economisește timp, dar nu înlocuiește verificarea contabilului. Pentru 2026, există cel puțin o zonă în care valoarea generată de aplicație trebuie corectată manual înainte de depunere.
+D101 precompletată automat din balanță economisește timp, dar nu înlocuiește verificarea contabilului. Pentru 2026, o zonă care merită atenție specială este IMCA, a cărui cotă s-a redus la 0,5%.
 
 ## Temeiul legal
 
@@ -30,7 +30,7 @@ Iată ce trebuie verificat punct cu punct la o D101 precompletată de aplicație
 - **CUI, denumire, adresă, cod CAEN (4 cifre)** — declarația nu se generează fără acestea, deci prezența lor e deja validată automat.
 - **Contul 691** — dacă are sold debitor pozitiv, iar rândul de cheltuieli nedeductibile (P23) e 0, aplicația emite un avertisment; nu-l ignorați, e un semn de posibilă subevaluare a impozitului.
 - **Rezerva legală (P13)** — calculată automat din profitul contabil brut plus cheltuiala cu impozitul, plafonată corect; verificați dacă valoarea calculată corespunde realității, mai ales dacă ați introdus manual o valoare diferită.
-- **IMCA, dacă firma e eligibilă** — **atenție**: la data acestui ghid, motorul de calcul din aplicație aplică o cotă de 1% în formula IMCA, deși legea prevede explicit 0,5% pentru anul fiscal 2026. Dacă firma dumneavoastră depășește pragul de 50.000.000 EUR cifră de afaceri, verificați manual acest calcul și corectați cota la 0,5% înainte de depunere — nu vă bazați pe valoarea generată automat pentru acest rând, până la actualizarea motorului de calcul.
+- **IMCA, dacă firma e eligibilă** — aplicația calculează IMCA cu cota anului fiscal: 1% pentru 2024–2025 și 0,5% pentru anul fiscal 2026; IMCA se aplică până la 31.12.2026 inclusiv, deci de la 2027 nu se mai calculează. Componentele formulei (VT, Vs, I, A) sunt stabilite de contabil. Dacă firma dumneavoastră depășește pragul de 50.000.000 EUR cifră de afaceri, verificați că rândul IMCA din D101 pentru 2026 corespunde cu 0,5% din (VT − Vs − I − A) și că valorile componentelor sunt corecte.
 - **Rectificativă** — dacă aveți nevoie să corectați o D101 deja depusă, rețineți că generarea unei D101 rectificative nu este încă disponibilă din interfața aplicației; corecția se face în prezent direct la ANAF.
 
 [iConta.eu](/)

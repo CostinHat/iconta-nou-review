@@ -14,9 +14,12 @@ CASS urmează același mecanism ca CAS: când brutul contractual al unui part-ti
 
 ::: ghid-temei
 Contribuția CAS „nu poate fi mai mică" decât CAS calculat pe salariul minim, „în baza unui contract individual de muncă cu normă întreagă SAU cu timp parțial" — condiția e venitul sub minim, nu norma de lucru. — Codul fiscal, art.146 alin.(5^6)
+
+„Prevederile art. 146 alin. (5^6)-(5^9) se aplică în mod corespunzător.”
+— Codul fiscal (Legea nr. 227/2015), art. 168 alin. (6^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
-Citatul verbatim disponibil în corpus privește explicit CAS; dosarul de cercetare confirmă însă că podeaua analogă se aplică și CASS, prin art.146 alin.(5^6)-(5^9) coroborat cu art.168 alin.(6^1). Excepțiile de la regula podelei (art.146 alin.(5^7)) — elevi/studenți sub 26 de ani, ucenici sub 18 ani, persoane cu dizabilități, pensionari la limită de vârstă, cumul de contracte cu bază cumulată la nivelul minimului — se aplică deopotrivă CAS și CASS.
+Regula podelei e scrisă la CAS (art.146 alin.(5^6)-(5^9)), iar art.168 alin.(6^1) o aplică în mod corespunzător și la CASS. Excepțiile de la regula podelei (art.146 alin.(5^7)) — elevi/studenți sub 26 de ani, ucenici sub 18 ani, persoane cu dizabilități, pensionari la limită de vârstă, cumul de contracte cu bază cumulată la nivelul minimului — se aplică deopotrivă CAS și CASS.
 
 ## Pasul 1 — podeaua CASS
 
@@ -46,6 +49,6 @@ Greșeala frecventă e reținerea de la angajat a întregului CASS calculat pe p
 
 ## Ce face iConta.eu
 
-Regula „baza minimă a contribuțiilor" tratează CAS și CASS simetric, calculând podeaua o singură dată pentru fereastra activă a lunii și generând, când e cazul, atât reținerea obișnuită (421/4316), cât și cheltuiala suplimentară de suprataxare (6453/4316), conform „monografia salariului (Salarii)” (linia 390).
+Calculul salarial din iConta.eu (ecranul Salariați) tratează CAS și CASS simetric: calculează podeaua o singură dată pentru luna respectivă și generează în notele contabile ale salariilor, când e cazul, atât reținerea obișnuită (421/4316), cât și cheltuiala suplimentară de suprataxare (6453/4316).
 
 [iConta.eu](/)

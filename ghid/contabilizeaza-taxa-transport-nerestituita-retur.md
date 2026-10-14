@@ -10,6 +10,19 @@ poarta: v1
 
 Ce e cunoscut popular drept „taxă" pe ambalaj, la produsele care intră sub sistemul garanție-returnare (SGR), nu e de fapt o taxă, ci o **garanție**: o sumă fixă încasată la vânzare, care se restituie doar atunci când consumatorul aduce efectiv ambalajul înapoi. Cât timp ambalajul nu e returnat, garanția nu se restituie — iar contabil, ea rămâne o datorie a comerciantului față de sistem, nu un venit.
 
+## Temeiul legal
+
+::: ghid-temei
+„Garanția reprezintă suma plătită de către consumatorul sau utilizatorul final la momentul achiziționării unui produs în ambalaj SGR, separată de prețul produsului, gestionată în cadrul sistemului de garanție-returnare prin intermediul administratorului SGR și care este restituită integral consumatorului sau utilizatorului final la momentul returnării ambalajului SGR în cadrul unui punct de returnare.”
+— HG 1074/2021, art. 12 alin. (1) (sursă: [HG nr. 1074/2021 privind stabilirea sistemului de garanție-returnare pentru ambalaje primare nereutilizabile](https://legislatie.just.ro/Public/DetaliiDocument/247209))
+
+„Garanția se aplică pentru fiecare unitate de produs în ambalaj SGR și este evidențiată distinct în documentele fiscale ale producătorilor, distribuitorilor și comercianților, la comercializarea produselor, inclusiv către consumatorii sau utilizatorii finali.”
+— HG 1074/2021, art. 12 alin. (2) (sursă: [HG nr. 1074/2021 privind stabilirea sistemului de garanție-returnare pentru ambalaje primare nereutilizabile](https://legislatie.just.ro/Public/DetaliiDocument/247209))
+
+„Garanția aferentă produselor în ambalaje SGR percepută de producători, distribuitori și comercianți în cadrul sistemului SGR nu reprezintă contravaloarea unei livrări de bunuri/prestări de servicii în sfera taxei pe valoarea adăugată.”
+— Codul fiscal (Legea 227/2015), art. 315^5 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 Monografia contabilă, pentru un comerciant care vinde produse cu ambalaj SGR:
 
 - **La achiziția mărfii**: garanția plătită furnizorului se înregistrează **461.SGR = 401**, fără TVA — garanția nu intră în baza de TVA a tranzacției.
@@ -26,6 +39,6 @@ Monografia contabilă, pentru un comerciant care vinde produse cu ambalaj SGR:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu are un motor real, dedicat, pentru contabilizarea garanției SGR: generează notele contabile pentru achiziția mărfii cu garanție plătită furnizorului, încasarea garanției la vânzare, restituirea către consumatorul care returnează ambalajul și autofactura lunară de la RetuRO — cu tratamentul corect de TVA (garanția în afara sferei TVA, tariful de gestionare purtător de TVA), conform monografiei MFP/CECCAR citate în cod.
+La data acestui ghid, iConta.eu are un motor real, dedicat, pentru contabilizarea garanției SGR: generează notele contabile pentru achiziția mărfii cu garanție plătită furnizorului, încasarea garanției la vânzare, restituirea către consumatorul care returnează ambalajul și autofactura lunară de la RetuRO — cu tratamentul corect de TVA (garanția în afara sferei TVA, tariful de gestionare purtător de TVA), conform monografiei MFP/CECCAR.
 
 [iConta.eu](/)

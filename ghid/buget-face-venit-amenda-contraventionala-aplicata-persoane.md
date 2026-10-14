@@ -17,6 +17,7 @@ Amenzile aplicate persoanelor juridice se fac, ca regulă, **venit integral la b
 ::: ghid-temei
 „(3) Sumele provenite din amenzile aplicate persoanelor juridice în conformitate cu legislația în vigoare se fac venit integral la bugetul de stat, cu excepția celor aplicate, potrivit legii, de autoritățile administrației publice locale și amenzilor privind circulația pe drumurile publice, care se fac venit integral la bugetele locale ale unității/subdiviziunii administrativ-teritoriale în care contravenientul își are domiciliul sau sediul, după caz."
 — OG 2/2001, art. 8 alin. (3) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
+
 „(5) Sumele provenite din amenzile aplicate persoanelor fizice fără domiciliu în România și persoanelor juridice fără sediu în România se fac venit la bugetul de stat."
 — OG 2/2001, art. 8 alin. (5) (sursă: [OG nr. 2/2001 privind regimul juridic al contravențiilor](https://legislatie.just.ro/Public/DetaliiDocument/29779))
 :::

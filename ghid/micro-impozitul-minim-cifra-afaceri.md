@@ -2,7 +2,7 @@
 title: "Micro și impozitul minim pe cifra de afaceri: se confundă"
 description: "De ce impozitul micro (Titlul III, plafon 100.000 euro) și impozitul minim pe cifra de afaceri — IMCA (art. 18^1, prag 50.000.000 euro) nu se pot aplica niciodată aceleiași firme."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -23,7 +23,7 @@ Cele două noțiuni sunt confundate frecvent pentru că ambele se raportează la
 Diferența e de scară și de mecanism:
 
 - **Impozitul micro** (Titlul III) se aplică firmelor **sub** 100.000 euro venituri anuale (plafon redus prin OUG 8/2026 de la 25.02.2026); cota e 1% pe venituri.
-- **Impozitul minim pe cifra de afaceri — IMCA** (art. 18^1, Titlul II) se aplică firmelor plătitoare de impozit pe profit **cu peste 50.000.000 euro** cifră de afaceri, ca „plasă de siguranță" pentru cazul în care impozitul pe profit calculat normal (16%) ar ieși mai mic decât 1% din (venituri totale minus anumite scăderi).
+- **Impozitul minim pe cifra de afaceri — IMCA** (art. 18^1, Titlul II) se aplică firmelor plătitoare de impozit pe profit **cu peste 50.000.000 euro** cifră de afaceri, ca „plasă de siguranță" pentru cazul în care impozitul pe profit calculat normal (16%) ar ieși mai mic decât impozitul minim calculat pe (venituri totale minus anumite scăderi): cota a fost 1% pentru 2024–2025 (art. 18^1 alin. 3) și este 0,5% pentru anul fiscal 2026 (art. 18^1 alin. 16); IMCA se aplică până la 31 decembrie 2026 inclusiv (art. 18^1 alin. 17).
 
 Cele două praguri (100.000 euro și 50.000.000 euro) fac imposibilă coexistența: o firmă cu venituri sub 100.000 euro rămâne, dacă vrea, microîntreprindere și e la ani-lumină de pragul IMCA; o firmă care ajunge la 50.000.000 euro cifră de afaceri a depășit, cu mult timp în urmă, plafonul de 100.000 euro și a devenit plătitoare de impozit pe profit conform art. 52. IMCA nu poate „ajunge" niciodată la o microîntreprindere.
 

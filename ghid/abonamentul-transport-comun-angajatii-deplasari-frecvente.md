@@ -22,6 +22,7 @@ Condiția este ca deplasările să țină de fișa postului. Pentru un angajat d
 ::: ghid-temei
 „permise de călătorie pe orice mijloace de transport, folosite în scopul personal;”
 — Codul fiscal (Legea 227/2015), art. 76 alin. (3) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „contravaloarea transportului la și de la locul de muncă al salariatului, acordate de angajator pentru salariații proprii sau alte persoane, astfel cum este prevăzut în contractul de muncă sau în regulamentul intern."
 — Codul fiscal (Legea 227/2015), art. 76 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::

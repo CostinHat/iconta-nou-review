@@ -29,6 +29,6 @@ O microîntreprindere care emite o factură pe 20 decembrie și încasează cont
 
 ## Ce face iConta.eu
 
-Singura funcționalitate din acest dosar de cercetare legată de cuvintele-cheie „facturi emise" este „Export facturi emise către SAGA” — exportul tehnic al facturilor emise către programul de contabilitate SAGA (format XML propriu, pentru importul lor în alt soft). Acest export nu calculează și nu afectează în niciun fel impozitul pe veniturile microîntreprinderilor; el doar transferă datele unei facturi deja emise către un alt program. Comportamentul exact al modulului de calcul al impozitului micro (recunoașterea veniturilor pe trimestre, verificarea plafonului anual) nu a fost verificat în codul sursă analizat pentru acest dosar, așa că nu facem aici afirmații neverificate despre el.
+Pentru impozitul micro, aplicația ia baza din veniturile înregistrate în contabilitate în trimestrul respectiv (conturile de venituri 70x, 75x, 76x, minus 709), nu din încasări — deci o factură emisă și înregistrată în decembrie intră în trimestrul IV al acelui an, chiar dacă se încasează în ianuarie. Aplicația nu verifică automat plafonul anual de 100.000 euro: încadrarea în regimul micro rămâne cea completată de contabil la Date firmă (Regimul fiscal). Exportul „Export facturi emise către SAGA” doar transferă facturile deja emise, în format XML, către programul SAGA; nu calculează și nu influențează impozitul micro.
 
 [iConta.eu](/)

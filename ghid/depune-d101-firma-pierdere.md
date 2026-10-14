@@ -22,7 +22,7 @@ Da — o firmă plătitoare de impozit pe profit rămâne obligată la depunerea
 
 ## Ce se greșește în practică
 
-Greșeala tipică e omiterea depunerii D101 pentru anul cu pierdere, sub asumpția că nefiind impozit de plată, declarația nu mai e necesară — vezi și GH-00717.
+Greșeala tipică e omiterea depunerii D101 pentru anul cu pierdere, sub asumpția că nefiind impozit de plată, declarația nu mai e necesară — vezi și [Se depune D101 dacă firma nu are impozit pe profit de plată?](/ghid/depune-d101-firma-impozit-profit).
 
 ## Ce face iConta.eu
 

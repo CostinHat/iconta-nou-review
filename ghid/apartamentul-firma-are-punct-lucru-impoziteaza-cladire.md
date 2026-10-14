@@ -22,8 +22,10 @@ Dacă doar o parte din apartament este folosită ca punct de lucru, clădirea de
 ::: ghid-temei
 „clădire nerezidențială - orice clădire care nu este rezidențială;"
 — Codul fiscal (Legea 227/2015), art. 453 lit. e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „Pentru clădirile nerezidențiale aflate în proprietatea sau deținute de persoanele juridice, impozitul/taxa pe clădiri se calculează prin aplicarea unei cote cuprinse între 0,2%-1,3%, inclusiv, asupra valorii impozabile a clădirii."
 — Codul fiscal (Legea 227/2015), art. 460 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „În cazul clădirilor cu destinație mixtă aflate în proprietatea persoanelor juridice, impozitul se determină prin însumarea impozitului calculat pentru suprafața folosită în scop rezidențial conform alin. (1) [...] cu impozitul calculat pentru suprafața folosită în scop nerezidențial, conform alin. (2)"
 — Codul fiscal (Legea 227/2015), art. 460 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::

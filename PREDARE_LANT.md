@@ -1,13 +1,12 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **13.10.2026: lotul 1 (varianta (a) + 242) `13856f1f`; lotul 2 /ghid/ (a–e) + C17, C18 comis; R4 BLOCAT; ghiduri noi oprite; așteaptă deciziile lui Costin**
+# PREDARE LANȚ — **14.10.2026: §6 COMANDA_13_10 comis (comasarea 45, proza despre cod, temeiul celor 73, măsurarea semantică, C19 consemnată, C20 rezolvată) + cifrele de referință pe notele validate (c); urmează comanda din 14.10: 243–245, C19, ghidurile 4a–4c; R4 BLOCAT; ghiduri noi oprite**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-13** (lotul 2 al comenzii 13.10: /ghid/ a–e, C17, C18), pe secțiunile de stare (lecțiile și CIFRE
-  INVALIDATE se poartă).
-- **pe commit**: `13856f1f` (lotul 1: varianta (a) + 242 — four-way închis 13.10 05:55); lotul 2 (/ghid/) e în commitul care conține
-  această predare — SHA-ul și four-way-ul în raport.
+- **ultima rescriere**: **2026-10-14** (lotul §6 COMANDA_13_10, reluat după decizia (c)), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `c194d5ee` (lotul 2 /ghid/ — four-way închis 13.10 08:56); lotul §6 e în commitul care conține această predare —
+  SHA-ul și four-way-ul în raport.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -120,10 +119,16 @@ aplicației**, nu „în așteptarea unei teme”:
   rutele aplicației; publicarea ÎNGHEȚATĂ la cele 6.558 de sluguri din `ghid_publicate.txt` — **un ghid nou nu se publică până la decizia
   lui Costin** (gard `core/test_ghid_publicare.py`). **C17** (contrastul paginilor publice) și **C18** („0” pe listele cu buline din
   procedură) — ÎNCHISE.
-- **DECIZII CERUTE (raportul lotului 2, §6), BLOCHEAZĂ orice lucru pe /ghid/:** (1) comasarea grupurilor, pe `ghid_suprapuneri.csv`;
-  (2) proza care descrie codul în „Ce face iConta.eu” (50 de ghiduri — „comentariul din cod”, „registrul intern”, „dosarul tehnic”);
-  (3) temeiul celor 73 de ghiduri rămase fără casetă de temei; (4) dacă se face și o măsurare semantică a suprapunerilor (cea lexicală e
-  un plafon inferior). Listele sunt în ZIP-ul lotului 2.
+- **§6 COMANDA_13_10 — ÎNCHIS** (lotul care conține această predare): 45 de ghiduri comasate (301, `ghid_comasate.csv`, publicate 6.513);
+  proza despre cod numită de Costin = 0 peste tot (gard absolut); 69/71 ghiduri cu temei literal; măsurarea semantică raportată;
+  294 de ghiduri corectate pe fond (rânduri D300 2026, IMCA 0,5%, trimestrul I 2026, casete cu proză, contradicții). Citatele literale:
+  `core/ghid_citate.py` + clichet. **C20** rezolvată (e2e `test_def_c20_…`). Poarta din 13.10 respinsă la cifre (ciorne pe F2) ->
+  decizia Costin 14.10 varianta (c): lunile numai din notele validate, referința rescrisă (amprenta în DECIZII).
+- **DECIZII CERUTE (raportul lotului §6) — RĂSPUNSE 14.10.2026 (verbatim în DECIZII): C19 se corectează (lot separat); 4a, 4b, 4c (nivelul A)
+  aprobate, în loturi separate; nivelul B nu se comasează. Ordinea: pct.2 (243–245) -> pct.3 (C19) -> 4a -> 4b -> 4c. Erau:** (1) **C19** — D394 E / F declară exporturile și livrările intracomunitare și omite
+  serviciile non-UE cu taxare inversă (OPANAF 2194/2025 pct.8–10); corectura schimbă ce se depune la ANAF; (2) clasa largă de proză despre
+  cod (1.312 ghiduri, sub clichet); (3) cele 1.348 de citate vechi care nu se regăsesc literal (1.089 de ghiduri, sub clichet); (4) grupurile
+  semantice (324 / 82 de familii) — comasare sau nu.
 - **C14 — ÎNCHISĂ** (lotul care conține această predare): F30 cap.XIX scris pe listele și calculele formularului (`Table8_an_micro`), pe
   ambele coloane; S1005 cu activitate valid pe DUK; „An precedent” manual cere și cap.XIX, verificat cu F20 la salvare.
 - **237, 238, C16 — ÎNCHISE** (lotul care conține această predare): refuzul o singură dată pe ecran; refuzul soldurilor fără loc rescris

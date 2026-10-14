@@ -13,10 +13,11 @@ Indemnizația de concediu medical pentru boală obișnuică (incapacitate tempor
 ## Temeiul legal
 
 ::: ghid-temei
-OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, cu modificările aduse de Legea 141/2025 (aplicabile de la 1 august 2025).
+„(1) Cuantumul brut lunar al indemnizației pentru incapacitate temporară de muncă cauzată de boli obișnuite sau de accidente în afara muncii se determină raportat la fiecare episod de boală, după cum urmează: a) prin aplicarea procentului de 55% asupra bazei de calcul stabilite conform art. 10 pentru certificatele de concediu medical eliberate pentru o perioadă de până la 7 zile de incapacitate temporară de muncă; [...] b) prin aplicarea procentului de 65% asupra bazei de calcul stabilite conform art. 10 pentru certificatele de concediu medical eliberate pentru o perioadă cuprinsă între 8 și 14 zile de incapacitate temporară de muncă; [...] c) prin aplicarea procentului de 75% asupra bazei de calcul stabilite conform art. 10 pentru certificatele de concediu medical eliberate pentru o perioadă de peste 15 zile de incapacitate temporară de muncă.”
+— OUG nr. 158/2005, art. 17 alin. (1), în forma modificată prin Legea nr. 141/2025, aplicabilă de la 1 august 2025 (sursă: [OUG nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate](https://legislatie.just.ro/Public/DetaliiDocument/66305))
 :::
 
-**De semnalat onest**: dosarul de cercetare folosit la acest ghid acoperă în detaliu motorul de calcul al salariului obișnuit (funcționalitatea „Calcul salarizare (de la brut la net)” — CAS, CASS, impozit, deducere personală, facilități). Concediul medical a apărut doar incidental, în descrierea generală a funcționalității, cu mențiunea că Legea 141/2025 a schimbat procentele de calcul ale indemnizației (trei niveluri, 55/65/75%, în funcție de vechime/tip de incapacitate), fără ca sursa consultată să precizeze care procent corespunde exact bolii obișnuite și fără un citat verbatim din text. Din acest motiv, acest ghid nu afirmă un procent anume pentru boala obișnuită și nu detaliază regimul de CAS/CASS/impozit aplicabil indemnizației — o asemenea afirmație ar însemna o citare neconfirmată, ceea ce evităm explicit.
+Pentru boala obișnuită, procentul aplicat bazei de calcul se stabilește pe fiecare episod de boală, după durata pentru care s-au eliberat certificatele de concediu medical (art. 17 alin. (1), citat mai sus): 55% pentru până la 7 zile, 65% pentru 8–14 zile și 75% pentru peste 15 zile de incapacitate temporară de muncă. Acest ghid nu detaliază regimul de CAS/CASS/impozit aplicabil indemnizației.
 
 ## Ce se greșește în practică
 

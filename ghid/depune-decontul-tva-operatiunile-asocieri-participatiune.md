@@ -17,6 +17,7 @@ Contează în practică pentru că doar asociatul administrator facturează căt
 ::: ghid-temei
 „Asocierile în participațiune nu dau naștere unei persoane impozabile separate."
 — Codul fiscal (Legea 227/2015), art. 269 alin. (11) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „În cazul asociațiilor în participațiune care nu constituie o persoană impozabilă, drepturile și obligațiile legale privind taxa revin asociatului care contabilizează veniturile și cheltuielile, potrivit contractului încheiat între părți."
 — Codul fiscal (Legea 227/2015), art. 321 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::

@@ -2,7 +2,7 @@
 title: "Ce fac dacă am aplicat taxarea inversă greșit?"
 description: "Neaplicarea corectă a taxării inverse potrivit art. 331 CF poate duce la pierderea dreptului de deducere al beneficiarului — norma metodologică descrie exact acest caz."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -61,7 +61,7 @@ Motorul de taxare inversă din aplicație validează, înainte de a permite oper
 fie plătitoare de TVA, categoria să nu fi expirat la data operațiunii și, dacă e cazul, suma să
 depășească pragul legal — altfel operațiunea este respinsă cu un mesaj explicit al motivului.
 Pentru declarația D300, aplicația are o gardă separată împotriva dublei numărări: dacă aceeași sumă
-este introdusă și automat din factură, și manual în rândurile dedicate taxării inverse (rd. 12/13/25),
+este introdusă și automat din factură, și manual în rândurile dedicate taxării inverse (rd. 12/13/26),
 calculul decontului este blocat cu un mesaj de eroare care semnalează dubla înregistrare. La D394 nu
 există aceeași gardă explicită — operațiunile automate (din facturi) și cele introduse manual se
 însumează pe aceeași cheie, fără o verificare dedicată de duplicat.

@@ -10,6 +10,19 @@ poarta: v1
 
 Impozitul pe dividende afișat greșit în D205 are aproape întotdeauna cauza în datele sursă (notele contabile pe contul 457 sau cotele asociaților), nu într-o eroare de calcul izolată — de aceea corecția trebuie făcută acolo, nu direct în declarație.
 
+## Temeiul legal
+
+::: ghid-temei
+„Obligația calculării și reținerii impozitului pe veniturile sub formă de dividende revine persoanelor juridice, odată cu plata dividendelor/sumelor reprezentând câștigul obținut ca urmare a deținerii de titluri de participare de către acționari/ asociați/investitori.”
+— Codul fiscal (Legea 227/2015), art. 97 alin. (7) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Declarația informativă poate fi corectată de către contribuabil/plătitor indiferent de perioada la care se referă.”
+— Codul de procedură fiscală (Legea 207/2015), art. 105 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative.”
+— Codul de procedură fiscală (Legea 207/2015), art. 105 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+:::
+
 ## Ce se greșește în practică
 
 Se încearcă adesea modificarea directă a sumei impozitului în ecranul declarației, fără a corecta nota contabilă sau cota de asociat care a generat valoarea greșită — ceea ce lasă contabilitatea (contul 457) și declarația neconcordante.

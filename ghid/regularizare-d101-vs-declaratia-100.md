@@ -2,7 +2,7 @@
 title: Cum se regularizează diferența la final de an D101 vs declarația 100
 description: La final de an, impozitul plătit anticipat prin D100 se compară cu impozitul final din D101 — care poate fi impozitul clasic (rd. 48.1) sau, pentru firmele mari, impozitul minim pe cifra de afaceri (rd. 48.2), calculat pentru 2026 cu cota de 0,5%, nu 1%, potrivit art. 18^1 alin. (16) Cod fiscal.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -49,7 +49,7 @@ Dacă în cursul anului ai plătit anticipat pe baza calculului clasic (16% pe p
 
 Comparația dintre impozitul pe profit clasic (rd. 46) și impozitul la nivelul IMCA (rd. 47) e calculată conform structurii din OPANAF 206/2025: ramura mai mare câștigă — rd. 48.1 dacă rd. 46 ≥ rd. 47, rd. 48.2 dacă rd. 47 > rd. 46.
 
-Cota efectiv folosită în formula IMCA pentru anul fiscal 2026 merită verificată separat față de suma calculată — vezi [ghidul dedicat cotei IMCA din 2026](/ghid/imca-2026-cota-05-la-suta) pentru detalii despre reducerea de la 1% la 0,5%, înainte de a considera definitivă suma de regularizat.
+Cota din formula IMCA e aleasă după anul fiscal: 1% pentru anii fiscali 2024–2025 și 0,5% pentru anul fiscal 2026 (art. 18^1 alin. (16)). Pentru detalii despre reducerea de la 1% la 0,5%, vezi [ghidul dedicat cotei IMCA din 2026](/ghid/imca-2026-cota-05-la-suta).
 
 Vezi și: [Declarația 100: ce e, cine o depune și ce conține](/ghid/d100-ce-e-cine-depune).
 

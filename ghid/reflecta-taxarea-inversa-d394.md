@@ -2,7 +2,7 @@
 title: Cum se reflectă taxarea inversă în D394
 description: D394 include operațiunile de taxare inversă cu locul în România (art. 307 alin. (3), (5), (6) și art. 331) — achizițiile intracomunitare cu taxare inversă (art. 307 alin. (2)) sunt excluse, fiindcă se declară în D390.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Textul normei menționează generic taxarea inversă de la art. 307 alin. (2), (
 
 ## Ce face iConta.eu
 
-Aplicația exclude automat din D394 achizițiile intracomunitare, indiferent dacă sunt taxate direct sau prin taxare inversă — comentariul din cod explică exact acest motiv, cu trimitere la obligativitatea de raportare în D390. Operațiunile naționale de taxare inversă rămân incluse în D394, prin fluxul general de generare a declarației.
+Aplicația exclude automat din D394 achizițiile intracomunitare, indiferent dacă sunt taxate direct sau prin taxare inversă — pentru că acestea se raportează obligatoriu în D390. Operațiunile naționale de taxare inversă rămân incluse în D394, odată cu celelalte operațiuni declarate la generarea declarației.
 
 [iConta.eu](/)

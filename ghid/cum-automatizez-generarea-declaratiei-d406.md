@@ -13,18 +13,11 @@ Generarea manuală a fișierului SAF-T, secțiune cu secțiune, este impracticab
 ## Temeiul legal
 
 ::: ghid-temei
-"1. Declaraţia informativă D406 se transmite în format electronic, data-limită de
-transmitere fiind: - ultima zi calendaristică a lunii următoare perioadei de raportare,
-respectiv luna/trimestrul calendaristic, după caz, pentru alte informaţii decât cele privind
-secţiunile "Stocuri" şi "Active"; - la termenul de depunere a situaţiilor financiare
-aferente exerciţiului financiar, în cazul secţiunii "Active"; - la termenul stabilit de
-organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data
-solicitării, în cazul secţiunii "Stocuri"."
-(OPANAF 1783/2021 (SAF-T, D406), Anexa 4, pct. 1)
+„Declaraţia informativă D406 se transmite în format electronic, data-limită de transmitere fiind: - ultima zi calendaristică a lunii următoare perioadei de raportare, respectiv luna/trimestrul calendaristic, după caz, pentru alte informaţii decât cele privind secţiunile "Stocuri" şi "Active"; - la termenul de depunere a situaţiilor financiare aferente exerciţiului financiar, în cazul secţiunii "Active"; - la termenul stabilit de organul fiscal central, care nu poate fi mai mic de 30 de zile calendaristice de la data solicitării, în cazul secţiunii "Stocuri".”
+— OPANAF nr. 1.783/2021, Anexa 4, pct. 1 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 
-"6. În situaţia în care contribuabilul constată anumite erori în declaraţia depusă iniţial,
-acesta poate depune declaraţii rectificative."
-(OPANAF 1783/2021 (SAF-T, D406), Anexa 4, pct. 6)
+„În situaţia în care contribuabilul constată anumite erori în declaraţia depusă iniţial, acesta poate depune declaraţii rectificative.”
+— OPANAF nr. 1.783/2021, Anexa 4, pct. 6 (sursă: [OPANAF nr. 1783/2021 privind fișierul standard de control fiscal (SAF-T, D406)](https://legislatie.just.ro/Public/DetaliiDocument/248326))
 :::
 
 ## Fluxul real de generare

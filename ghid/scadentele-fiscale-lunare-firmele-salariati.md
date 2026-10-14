@@ -2,7 +2,7 @@
 title: "Scadențele fiscale lunare pentru firmele cu salariați în 2026"
 description: "Ce declarație lunară apare pe ecranul Termene pentru o firmă cu salariați și de la ce moment intră ea în calendar."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,10 +13,11 @@ O firmă cu cel puțin un salariat activ datorează lunar declarația D112 (decl
 ## Temeiul legal
 
 ::: ghid-temei
-D112 — temeiul indicat de aplicație este Codul fiscal, titlul V (art. 147). Textul exact al termenului nu a fost verificat verbatim în cercetarea care stă la baza acestui ghid; data folosită de aplicație este 25 a lunii următoare lunii pentru care se depune declarația.
+„Persoanele fizice și juridice care au calitatea de angajatori sau sunt asimilate acestora, [...] sunt obligate să depună lunar, până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc veniturile, Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate.”
+— Codul fiscal (Legea 227/2015), art. 147 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
-Notă de transparență: spre deosebire de alte declarații (D300, D301, D390), pentru care s-a confirmat citatul legal exact al termenului direct în sursele oficiale, pentru D112 dosarul de cercetare disponibil indică doar articolul de temei (art. 147, titlul V Cod fiscal), fără citatul integral verificat. Data de 25 a lunii următoare e cea folosită efectiv de motorul de calcul al aplicației.
+Termenul legal al D112 este, deci, 25 a lunii următoare celei pentru care se plătesc veniturile — aceeași dată pe care o folosește și aplicația în calendarul de scadențe.
 
 ## Ce se greșește în practică
 

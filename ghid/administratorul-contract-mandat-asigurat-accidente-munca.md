@@ -22,6 +22,7 @@ Consecința practică e fiscală. Remunerația administratorilor intră în baza
 ::: ghid-temei
 „d) remunerația administratorilor societăților, companiilor/societăților naționale și regiilor autonome, desemnați/numiți în condițiile legii;"
 — Codul fiscal (Legea 227/2015), art. 220^4 alin. (1) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „Cota contribuției asiguratorii pentru muncă este de 2,25%."
 — Codul fiscal (Legea 227/2015), art. 220^3 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::

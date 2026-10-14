@@ -29,8 +29,6 @@ O a doua greșeală este să se creadă că iConta.eu poate genera și depune de
 
 La vânzarea unui activ rămas în patrimoniu, ecranul „Lichidare / radiere firmă" (operația „Vânzare activ la lichidare") generează nota contabilă cu TVA colectată inclusă: `461 = 7583 + 4427`, pe baza cotei de TVA introduse explicit de utilizator.
 
-Pentru scoaterea efectivă din vectorul fiscal (anularea codului de TVA), aplicația **nu generează** declarația D700. Conform dosarului de cercetare pentru „Lichidare/radiere societate”, această declarație este marcată explicit ca respinsă la nivel de funcționalitate:
-
-Motivul tehnic confirmat în dosar: D700 este un formular de tip SmartPDF, nu un XML validabil precum alte declarații (D230, D311), iar validatorul disponibil întoarce eroare pe orice încercare de validare standalone; lipsește totodată și actul OPANAF cu instrucțiunile câmp-cu-câmp necesare unei implementări corecte. Concluzia practică: **D700 se depune manual, în afara aplicației**, de către contabil, la scoaterea societății din evidența plătitorilor de TVA.
+Pentru scoaterea efectivă din vectorul fiscal (anularea codului de TVA), aplicația **nu generează** declarația D700: D700 este un formular de tip SmartPDF, nu un fișier XML validabil, precum alte declarații (D230, D311). Concluzia practică: **D700 se depune manual, în afara aplicației**, de către contabil, la scoaterea societății din evidența plătitorilor de TVA.
 
 [iConta.eu](/)

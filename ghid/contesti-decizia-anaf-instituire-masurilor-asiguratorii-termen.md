@@ -17,6 +17,7 @@ Contează pe ce act anume vă plângeți. Decizia prin care s-a hotărât măsur
 ::: ghid-temei
 „împotriva deciziei prin care se dispune instituirea măsurilor asigurătorii, prevăzute la alin. (4), cel interesat poate formula acțiune în anulare, în termen de 30 de zile de la comunicare, la instanța de contencios administrativ competentă, conform cuantumului creanțelor fiscale în privința cărora aceste măsuri asigurătorii au fost instituite, fără a fi necesară parcurgerea procedurii prealabile. Cererea se judecă de urgență și cu precădere. [...] Hotărârea prin care se pronunță anularea deciziei este executorie de drept. Ea poate fi atacată cu recurs în termen de 15 zile de la comunicare. Recursul nu este suspensiv de executare."
 — Codul de procedură fiscală (Legea 207/2015), art. 213 alin. (13) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „Împotriva actelor prin care se duc la îndeplinire măsurile asigurătorii cel interesat poate face contestație la executare în conformitate cu prevederile art. 260 și 261 ."
 — Codul de procedură fiscală (Legea 207/2015), art. 213 alin. (14) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::

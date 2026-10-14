@@ -10,6 +10,19 @@ poarta: v1
 
 Operațiunile intracomunitare sunt vizibile din exterior prin VIES, sistemul prin care statele membre își compară reciproc declarațiile. De aceea sunt o zonă cu control automatizat, nu doar cu inspecție clasică — o neconcordanță se vede la nivel european, nu doar în evidența ta.
 
+## Temeiul legal
+
+::: ghid-temei
+„Sunt, de asemenea, scutite de taxă următoarele: a) livrările intracomunitare de bunuri către o persoană impozabilă sau către o persoană juridică neimpozabilă care acționează ca atare în alt stat membru decât cel în care începe expedierea sau transportul bunurilor, care îi comunică furnizorului un cod valabil de înregistrare în scopuri de TVA, atribuit de autoritățile fiscale din alt stat membru [...]”
+— Codul fiscal (Legea 227/2015), art. 294 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Scutirea prevăzută la alin. (2) lit. a) nu se aplică în cazul în care furnizorul nu a respectat obligația prevăzută la art. 325 alin. (1) de a depune o declarație recapitulativă sau declarația recapitulativă depusă de acesta nu conține informațiile corecte referitoare la această livrare, astfel cum se solicită în temeiul art. 325 alin. (3), cu excepția cazului în care furnizorul poate justifica în mod corespunzător deficiența într-un mod considerat satisfăcător de autoritățile fiscale competente.”
+— Codul fiscal (Legea 227/2015), art. 294 alin. (2^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Declarația se întocmește pentru fiecare lună calendaristică în care ia naștere exigibilitatea taxei pentru operațiunile prevăzute la alin. (1) [...]”
+— Codul fiscal (Legea 227/2015), art. 325 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 Practic, controlul se face pe trei niveluri suprapuse, nu pe unul singur:
 
 - **VIES vs. D390** — ce declari tu ca livrare sau achiziție intracomunitară trebuie să se regăsească, ca sumă și perioadă, la partenerul din celălalt stat membru;
@@ -29,6 +42,6 @@ Cele mai frecvente cauze reale de neconcordanță, distincte de diferențele leg
 
 Controlul încrucișat compară automat bazele din facturile intracomunitare cu evidența validată și cu D300 depus, pe un semafor verde/gri/roșu (nu blocant, ca la validările de generare a declarației): roșu înseamnă o operațiune declarată la VIES fără acoperire în evidență sau în D300; gri, o diferență de investigat, de regulă un decalaj de exigibilitate legitim; verde, coincidență confirmată. Constatările roșii sunt împinse ca alerte în aplicație.
 
-Nu există în iConta.eu un modul separat de „dosar de audit pentru operațiuni intracomunitare” — cel mai apropiat e exact acest control încrucișat, împreună cu alertele generate de el. Documentele care compun în practică un asemenea dosar (facturi validate, dovezi VIES cu dată, dovezi de transport, corelarea D301↔D390, rezultatul controlului încrucișat) există separat, dar nu se exportă printr-un singur buton dedicat — asta nu am găsit-o confirmată în cod și nu o afirmăm.
+Nu există în iConta.eu un modul separat de „dosar de audit pentru operațiuni intracomunitare” — cel mai apropiat e exact acest control încrucișat, împreună cu alertele generate de el. Documentele care compun în practică un asemenea dosar (facturi validate, dovezi VIES cu dată, dovezi de transport, corelarea D301↔D390, rezultatul controlului încrucișat) există separat, dar nu se exportă printr-un singur buton dedicat — asta nu o afirmăm.
 
 [iConta.eu](/)

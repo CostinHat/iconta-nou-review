@@ -2,7 +2,7 @@
 title: Raportul Z, declarația F4109 și corectarea unui bon greșit
 description: Raportul Z se emite și în zilele fără vânzări. F4109 se depune doar pentru lunile fără nicio utilizare. Ce cuprinde procesul-verbal de corecție.
 published: 2026-08-15
-modified: 2026-08-15
+modified: 2026-10-13
 ---
 
 # Raportul Z, declarația F4109 și corectarea unui bon greșit
@@ -39,13 +39,7 @@ Procesul-verbal de corecție trebuie să cuprindă:
 
 Bonul greșit se anexează la procesul-verbal. Fără el, corecția nu are suport documentar.
 
-::: ghid-temei
-**OUG nr. 28/1999** privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale, republicată.
-
-**HG nr. 479/2003** pentru aprobarea Normelor metodologice de aplicare a OUG nr. 28/1999, cu modificările și completările ulterioare.
-
-**HG nr. 355/2023** privind modificarea și completarea Normelor metodologice, în vigoare din 24 aprilie 2023.
-:::
+Obligațiile de mai sus sunt reglementate de OUG nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat electronice fiscale, republicată, și de Normele metodologice de aplicare a acesteia, aprobate prin HG nr. 479/2003, cu modificările și completările ulterioare.
 
 ## Cazul plății încasate greșit ca fiind cu cardul
 

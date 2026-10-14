@@ -10,6 +10,19 @@ poarta: v1
 
 Titlul cere strict un furnizor din afara Uniunii Europene — deci discuția nu mai ține de operațiunile intracomunitare („Operațiuni intracomunitare”), care se referă exclusiv la state membre UE. Explicăm mai jos ce se poate confirma din cercetarea de bază și unde se oprește acoperirea ei.
 
+## Temeiul legal
+
+::: ghid-temei
+„Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice.”
+— Codul fiscal (Legea 227/2015), art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Taxa este datorată de orice persoană impozabilă [...] care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]”
+— Codul fiscal (Legea 227/2015), art. 307 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Serviciile prevăzute la art. 278 alin. (2) din Codul fiscal, prestate de prestatori stabiliți în România către beneficiari persoane impozabile care sunt stabiliți în afara Uniunii Europene sau, după caz, prestate de prestatori stabiliți în afara Uniunii Europene către beneficiari persoane impozabile care sunt stabiliți pe teritoriul României, urmează aceleași reguli ca și serviciile intracomunitare în ceea ce privește determinarea locului prestării și celelalte obligații impuse de prezentul titlu, dar nu implică obligații referitoare la declararea în declarația recapitulativă, conform prevederilor art. 325 din Codul fiscal [...]”
+— HG 1/2016 (Normele Codului fiscal), titlul VII, pct. 15 alin. (7) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
+:::
+
 Regula generală de loc al prestării pentru servicii B2B (art. 278 alin. 2 — locul e la beneficiar) nu e limitată la furnizori din UE; textul citat în cercetare nu condiționează aplicarea ei de apartenența furnizorului la Uniune. Ce diferă, când furnizorul e din afara UE, sunt obligațiile specifice operațiunilor intracomunitare: nu există cod de TVA verificabil în VIES (sistemul acoperă exclusiv statele membre + Irlanda de Nord), iar operațiunea nu se declară în D390, care e o declarație recapitulativă strict intracomunitară.
 
 ## Ce se greșește în practică

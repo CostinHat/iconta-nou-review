@@ -2,7 +2,7 @@
 title: "Cum declar importurile în D300?"
 description: "TVA la import se plătește de regulă în vamă, în afara decontului; doar importatorii cu certificat de amânare autolichidează taxa prin decont. iConta.eu nu modelează azi acest calcul automat în D300 — bunurile importate din afara UE rămân, incorect, pe rândul de operațiuni scutite."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,10 +30,10 @@ Din text rezultă practic două trasee:
 
 ## Ce face iConta.eu
 
-Pentru bunurile importate din afara UE, generatorul D300 tratează azi livrarea/achiziția de bunuri fără taxare inversă (regimul obișnuit, TVA plătit în vamă) astfel: operațiunea rămâne pe rândul de operațiuni scutite/neimpozabile (rd. 26), **nu pe un rând dedicat de TVA achitat la import** — comentariul din cod marchează explicit acest caz ca „axă nedeclarată": *„BUNURILE importate non-UE au TVA in vama (rd.21, TVA achitat la import) — NU e modelat aici; raman pe rd.26 [...]"*. E o limită cunoscută și înregistrată intern (nu o funcționalitate ascunsă), a cărei reparare depinde de o clarificare separată privind structura oficială a rândului corespunzător.
+Pentru bunurile importate din afara UE în regimul obișnuit (fără taxare inversă, cu TVA plătit în vamă), iConta.eu lasă azi operațiunea, la întocmirea D300, pe rândul de achiziții scutite/neimpozabile (rândul 29), **nu pe rândurile de TVA aferentă importului** (în formularul 2026: rândul 24 sau 25, pentru TVA plătită în vamă; rândurile 7 și 22, pentru importul cu certificat de amânare, art. 326 alin. (4) și (5)) — aplicația nu tratează încă acest caz. E o limită cunoscută a aplicației, a cărei reparare depinde de o clarificare separată privind structura oficială a rândului corespunzător.
 
-Servicii primite de la parteneri non-UE, pentru care beneficiarul din România e obligat la plata taxei, se autolichidează corect, automat, ca taxare inversă (rd.7 colectat + rd.20 dedus, oglindă). Limitarea de mai sus privește strict **bunurile** importate, nu serviciile.
+Servicii primite de la parteneri non-UE, pentru care beneficiarul din România e obligat la plata taxei, se autolichidează corect, automat, ca taxare inversă (rândul 7 colectat + rândul 22 dedus, oglindă). Limitarea de mai sus privește strict **bunurile** importate, nu serviciile.
 
-Practic, dacă firma ta importă bunuri din afara UE, verifică manual regimul aplicabil (plată în vamă sau autolichidare cu certificat de amânare) și, dacă e cazul, introdu rândul corect prin panoul de rânduri manuale D300 — generatorul nu-l derivă azi corect automat din factura de import.
+Practic, dacă firma ta importă bunuri din afara UE, verifică manual regimul aplicabil (plată în vamă sau autolichidare cu certificat de amânare) și, dacă e cazul, introdu rândul corect prin panoul de rânduri manuale D300 — aplicația nu-l derivă azi corect automat din factura de import.
 
 [iConta.eu](/)

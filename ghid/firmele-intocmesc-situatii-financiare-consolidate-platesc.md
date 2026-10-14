@@ -22,6 +22,7 @@ Excepția este **grupul fiscal** din Codul fiscal, adică sistemul de consolidar
 ::: ghid-temei
 „Perioada de aplicare a sistemului de consolidare fiscală în domeniul impozitului pe profit este de 5 ani fiscali, calculați începând cu primul an al aplicării sistemului de consolidare fiscală și până la desființarea grupului fiscal, iar sistemul este opțional."
 — Codul fiscal (Legea 227/2015), art. 42^3 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „Prin excepție de la prevederile alin. (1) al art. 13 și art. 19 , rezultatul fiscal consolidat al grupului fiscal se determină prin însumarea algebrică a rezultatelor fiscale determinate în mod individual de fiecare membru al grupului fiscal."
 — Codul fiscal (Legea 227/2015), art. 42^5 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::

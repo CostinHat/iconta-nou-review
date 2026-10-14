@@ -17,8 +17,10 @@ Contează în practică pentru că o firmă de servicii care facturează „făr
 ::: ghid-temei
 „Scutirile se aplică numai în funcție de natura serviciilor, și nu de statutul persoanei care le prestează sau căreia îi sunt prestate."
 — Normele metodologice (HG 1/2016), Titlul VII, pct. 52 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
+
 „Serviciile externalizate aferente operațiunilor prevăzute la art. 292 alin. (2) lit. a) din Codul fiscal, precum serviciile de marketing, cercetare, serviciile juridice, serviciile de contabilitate și/sau de audit nu se cuprind în sfera operațiunilor scutite de taxă."
 — HG 1/2016, Titlul VII, pct. 52 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
+
 „În sfera operațiunilor scutite conform art. 292 alin. (2) lit. b) din Codul fiscal nu se cuprind operațiuni precum serviciile de marketing și serviciile administrative, cum ar fi acceptarea cererilor de asigurare, gestionarea modificării contractelor și a primelor de asigurare, încheierea, administrarea și rezilierea polițelor, organizarea și managementul sistemului informatic, furnizarea de informații și întocmirea rapoartelor pentru părțile asigurate, furnizate de alte persoane impozabile către persoanele impozabile care realizează operațiunile scutite de taxă prevăzute la art. 292 alin. (2) lit. b) din Codul fiscal."
 — HG 1/2016, Titlul VII, pct. 53 alin. (1) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
 :::

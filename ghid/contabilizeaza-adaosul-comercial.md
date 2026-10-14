@@ -2,7 +2,7 @@
 title: Cum se contabilizează adaosul comercial?
 description: Rolul contului 378 și notele contabile prin care adaosul comercial intră și iese din gestiunea global-valorică, în iConta.eu.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -27,6 +27,17 @@ Contul 371 „Mărfuri" (cont de activ): în debit — „valoarea la preț de �
 — OMFP 1802/2014, Anexa 1 – Reglementări contabile (formă consolidată), secțiunea Plan de conturi, funcțiunea contului 371 „Mărfuri"
 :::
 
+::: ghid-temei
+„Repartizarea diferențelor de preț asupra valorii bunurilor ieșite și asupra stocurilor se efectuează cu ajutorul unui coeficient care se calculează astfel: [...]”
+— OMFP 1802/2014, Anexa 1, pct. 286 alin. (4) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
+
+„La calcularea procentului mediu de adaos comercial, soldul inițial al contului de mărfuri și valoarea intrărilor de mărfuri nu vor include TVA neexigibilă.”
+— OMFP 1802/2014, Anexa 1, pct. 286 alin. (4), nota *2) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
+
+„Diferențele de preț se repartizează proporțional atât asupra valorii bunurilor ieșite, cât și asupra bunurilor rămase în stoc.”
+— OMFP 1802/2014, Anexa 1, pct. 286 alin. (7) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
+:::
+
 Contul 378 este un cont rectificativ: în credit se înregistrează adaosul aferent mărfurilor care intră în gestiune, iar în debit adaosul aferent mărfurilor care ies din gestiune. Soldul lui, la un moment dat, arată exact adaosul comercial aferent mărfurilor rămase în stoc.
 
 ## Cum se contabilizează, în două momente
@@ -39,13 +50,33 @@ Contul 378 este un cont rectificativ: în credit se înregistrează adaosul afer
 adaos descărcat = K × valoarea vânzărilor lunii (contul 707)
 ```
 
+Coeficientul K se calculează după formula de la pct. 286 alin. (4): diferențele de preț (soldul inițial plus intrările) raportate la stocul la preț de înregistrare (soldul inițial plus intrările), **cumulat de la începutul exercițiului financiar** până la finele lunii de referință. Transpusă pe conturi, cu TVA neexigibilă scoasă din numitor conform notei *2):
+
+```
+K = (Sold inițial 378 + Rulaj credit 378) / [(Sold inițial 371 + Rulaj debit 371) − (Sold inițial 4428 + Rulaj credit 4428)]
+```
+
+Forma cu simbolurile conturilor nu e scrisă ca atare în reglementare — e transpunerea formulei generice de la alin. (4) combinată cu nota *2). Costul mărfii vândute rezultă apoi prin diferență: `CMV = vânzări (707) − adaos descărcat`.
+
+::: ghid-exemplu
+Sold inițial 378 = 200 lei, rulaj credit 378 (intrări cu adaos) = 300 lei. Sold inițial 371 = 1.000 lei, rulaj debit 371 = 1.420 lei. Sold inițial 4428 = 190 lei, rulaj credit 4428 = 230 lei.
+Numărător = 200 + 300 = 500 lei. Numitor = (1.000 + 1.420) − (190 + 230) = 2.420 − 420 = 2.000 lei.
+K = 500 / 2.000 = 0,25 (25%).
+Dacă vânzările lunii (707) sunt 400 lei: adaos descărcat = 400 × 0,25 = 100 lei (`378 = 371`); CMV = 400 − 100 = 300 lei (`607 = 371`).
+:::
+
 ## Ce se greșește în practică
 
 - Se înregistrează adaosul la intrare direct în contul 607, fără să treacă prin 378 — pierzându-se astfel evidența separată a adaosului comercial aferent stocului rămas.
 - Se descarcă adaosul lunar fără să se fi calculat corect coeficientul K, ceea ce duce la o valoare descărcată în 378 care nu corespunde adaosului real aferent vânzărilor lunii.
+- Se calculează K doar din datele lunii curente, nu cumulat de la 1 ianuarie — reglementarea cere explicit calculul cumulat pe exercițiul financiar.
+- Se lasă TVA neexigibilă (4428) în numitorul lui K — nota *2) de la pct. 286 alin. (4) cere excluderea ei.
+- Se aplică K la vânzările cumulate ale anului, nu doar la vânzările lunii curente — adaosul descărcat iese, practic, dublat.
 
 ## Ce face iConta.eu
 
 La fiecare recepție (NIR) global-valorică, aplicația propune automat nota de adaos `371 = 378`, alături de notele de cost de achiziție și TVA deductibilă. La descărcarea lunară, adaosul aferent vânzărilor se calculează automat prin coeficientul K și se propune ca notă de ciornă `378 = 371`, împreună cu costul mărfii vândute și TVA neexigibilă aferentă — contabilul validează manual înainte ca notele să devină definitive.
+
+Coeficientul K se calculează cumulat de la 1 ianuarie, din soldurile inițiale și din notele **validate**, cu TVA neexigibilă (4428) scoasă din numitor. Dacă numitorul ajunge la zero sau negativ, aplicația refuză calculul și semnalează explicit eroarea, în loc să întoarcă zero sau o valoare implicită. Dacă în lună nu au fost vânzări (rulajul creditor 707 e zero), nu se generează nicio notă de descărcare „pe zero”.
 
 [iConta.eu](/)

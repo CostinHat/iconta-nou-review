@@ -26,6 +26,6 @@ Greșeala tipică este să se lase contul nemapat "pentru mai târziu" și să s
 
 Validarea fișierului D406 se face cu validatorul oficial validatorul ANAF (DUKIntegrator) (integrat prin aplicație, funcția „validarea”) — un cont fără corespondent valid în structura acceptată este exact genul de problemă pe care acest pas de validare este menit să o prindă înainte de depunere.
 
-Dosarul de cercetare pentru acest ghid nu conține o descriere a unui ecran dedicat, în iConta.eu, pentru rezolvarea punctuală a unui cont nemapat — dacă întâmpinați această situație, cel mai sigur pas este verificarea planului de conturi al firmei și, dacă problema persistă, contactarea suportului iConta.eu cu exemplul concret al contului respectiv.
+Acest ghid nu descrie un ecran dedicat, în iConta.eu, pentru rezolvarea punctuală a unui cont nemapat — dacă întâmpinați această situație, cel mai sigur pas este verificarea planului de conturi al firmei și, dacă problema persistă, contactarea suportului iConta.eu cu exemplul concret al contului respectiv.
 
 [iConta.eu](/)

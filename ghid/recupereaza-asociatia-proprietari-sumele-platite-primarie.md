@@ -17,8 +17,10 @@ Pentru contabilul asociației, asta schimbă felul în care se înregistrează �
 ::: ghid-temei
 „(1) În cazul unor defecțiuni tehnice, acțiuni accidentale sau accidente tehnice ale infrastructurii tehnico-edilitare care afectează minimum 25% din condominiile aflate în raza teritorială a unei unități administrativ-teritoriale, la solicitarea asociațiilor de proprietari sau a proprietarilor, după caz, autoritățile deliberative ale administrației publice locale pot aproba, prin hotărâre, finanțarea din bugetele locale a cheltuielilor necesare pentru reparații, revizii, lucrări de intervenție în caz de avarie a elementelor de infrastructură din condominii."
 — Legea 196/2018, art. 10^1 alin. (1) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
+
 „(2) Sumele virate în contul asociației de proprietari, potrivit alin. (1) , reprezintă creanțe bugetare de încasat de la asociațiile de proprietari sau de la proprietari, după caz, și se recuperează, într-o singură tranșă sau în mai multe rate, în termenul și condițiile stabilite prin hotărârea autorității deliberative. În caz de neplată la termenul stabilit, autoritățile administrației publice locale calculează majorări de întârziere […]"
 — Legea 196/2018, art. 10^1 alin. (2) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
+
 „(3) Creanțele bugetare și majorările de întârziere se stabilesc și se colectează prin intermediul organelor fiscale locale […]"
 — Legea 196/2018, art. 10^1 alin. (3) (sursă: [Legea nr. 196/2018 privind înființarea, organizarea și funcționarea asociațiilor de proprietari și administrarea condominiilor](https://legislatie.just.ro/Public/DetaliiDocument/203233))
 :::

@@ -10,6 +10,16 @@ poarta: v1
 
 Contul 691 (cheltuiala cu impozitul pe profit) e unul dintre acele conturi în care o înregistrare contabilă perfect corectă poate ascunde o eroare fiscală tăcută, dacă nu e adăugată înapoi la calculul profitului impozabil.
 
+## Temeiul legal
+
+::: ghid-temei
+„Următoarele cheltuieli nu sunt deductibile: a) cheltuielile proprii ale contribuabilului cu impozitul pe profit datorat, inclusiv cele reprezentând diferențe din anii precedenți sau din anul curent [...]”
+— Codul fiscal (Legea 227/2015), art. 25 alin. (4) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„rezerva legală este deductibilă în limita unei cote de 5% aplicate asupra profitului contabil, la care se adaugă cheltuielile cu impozitul pe profit, până ce aceasta va atinge a cincea parte din capitalul social subscris și vărsat sau din patrimoniu, după caz”
+— Codul fiscal (Legea 227/2015), art. 26 alin. (1) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 Potrivit art.25 alin.(4) lit.a) din Codul fiscal, cheltuiala cu impozitul pe profit înregistrată în contul 691 este nedeductibilă fiscal. Practic, ea trebuie readăugată la profitul contabil brut atunci când se determină profitul impozabil — altfel impozitul rezultă subevaluat, pentru că firma și-ar scădea din bază propriul impozit pe care tocmai îl calculează.
 
 Contul 691 mai are un al doilea rol în D101: soldul lui intră direct în formula de calcul automat al rezervei legale (profitul contabil brut plus cheltuiala cu impozitul din 691), deci o eroare aici se propagă în două locuri diferite din declarație.

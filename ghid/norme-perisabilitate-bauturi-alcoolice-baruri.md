@@ -12,6 +12,19 @@ Procentul exact de perisabilitate admis pentru băuturile alcoolice se stabileș
 
 Limita maximă deductibilă a perisabilității se calculează aplicând coeficientul grupei de mărfuri (stabilit în anexele 1-3 la HG 831/2004) la prețul de înregistrare al produselor intrate în gestiune — nu la stocul final, nici la vânzări. Coeficientul concret pentru băuturile alcoolice depinde de grupa exactă în care se încadrează produsul (anexele fac diferența pe categorii) — de aceea recomandăm consultarea directă a anexei HG 831/2004 publicate în Monitorul Oficial nr. 522/10.06.2004, pentru procentul aplicabil grupei dumneavoastră de produse, în loc de un procent preluat din surse neoficiale.
 
+## Temeiul legal
+
+::: ghid-temei
+„(3) Următoarele cheltuieli au deductibilitate limitată: [...] d) scăzămintele, perisabilitățile, pierderile rezultate din manipulare/depozitare, potrivit legii;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 25 alin. (3) lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Se aprobă Normele privind limitele admisibile de perisabilitate la mărfuri în procesul de comercializare, prevăzute în anexa care face parte integrantă din prezenta hotărâre.”
+— HG nr. 831/2004, art. 1 (sursă: [HG nr. 831/2004 pentru aprobarea Normelor privind limitele admisibile de perisabilitate](https://legislatie.just.ro/Public/DetaliiDocument/52623))
+
+„(10) În sensul art. 304 alin. (2) lit. a) din Codul fiscal, persoana impozabilă nu are obligația ajustării taxei deductibile în cazul bunurilor de natura celor prevăzute la alin. (1) distruse, pierdute sau furate, în condițiile în care aceste situații sunt demonstrate sau confirmate în mod corespunzător, în situații cum ar fi, de exemplu, următoarele, dar fără a se limita la acestea: [...] d) bunurile de natura stocurilor degradate calitativ, care nu mai pot fi valorificate și pentru care se face dovada distrugerii; [...] f) perisabilitățile, în limitele stabilite prin lege.”
+— HG nr. 1/2016 (Normele metodologice de aplicare a Codului fiscal), titlul VII, pct. 78 alin. (10) lit. d) și f) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
+:::
+
 ## Ce se greșește în practică
 
 Greșeala frecventă e aplicarea unui procent "din auzite" sau preluat de la un alt bar, fără verificarea grupei exacte din anexa HG 831/2004 — coeficienții diferă pe categorii de mărfuri, iar o eroare de încadrare duce la o limită deductibilă greșită. A doua greșeală e omiterea condițiilor obligatorii care însoțesc aplicarea limitei: verificare faptică (inventariere/recepție/predare gestiune), aprobarea administratorului și proces-verbal — fără aceste documente, deductibilitatea poate fi contestată chiar dacă procentul aplicat e corect.

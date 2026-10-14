@@ -2,7 +2,7 @@
 title: "Terenurile se amortizează contabil sau fiscal?"
 description: "Regula unică, valabilă atât contabil cât și fiscal, potrivit căreia terenurile nu se amortizează, spre deosebire de investițiile efectuate pe ele."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Răspunsul este identic din ambele perspective: terenurile nu se amortizează, n
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul de mijloace fixe care permite introducerea și amortizarea activelor pe baza duratei normale de funcționare stabilite de utilizator, pentru fiecare mijloc fix în parte. Din verificarea codului sursă, motorul de amortizare **recunoaște contul 211 „Terenuri" ca o categorie separată, neamortizabilă**: dacă un activ înregistrat pe acest cont are o metodă de amortizare setată, calculul amortizării (folosit atât pentru afișarea listei de mijloace fixe, cât și pentru generarea notei lunare de amortizare) respinge operația și afișează o eroare, în loc să calculeze o amortizare inexistentă. Separarea terenului de eventualele investiții amortizabile de pe el rămâne însă responsabilitatea contabilului la configurarea fiecărui activ — aplicația nu face automat această distincție dacă cele două valori sunt introduse împreună, pe același activ.
+În ecranul de mijloace fixe din iConta.eu introduci fiecare activ cu durata normală de funcționare pe care o stabilești, iar aplicația îl amortizează pe baza ei. **Contul 211 „Terenuri" e tratat ca o categorie separată, neamortizabilă**: pentru el nu există nicio metodă de amortizare permisă. Dacă un activ înregistrat pe acest cont are totuși o metodă de amortizare setată, aplicația afișează o eroare pe rândul activului — atât în lista mijloacelor fixe, cât și la generarea notei lunare de amortizare — în loc să calculeze o amortizare care nu există. Separarea terenului de eventualele investiții amortizabile de pe el rămâne însă responsabilitatea contabilului la configurarea fiecărui activ — aplicația nu face automat această distincție dacă cele două valori sunt introduse împreună, pe același activ.
 
 [iConta.eu](/)

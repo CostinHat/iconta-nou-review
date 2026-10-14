@@ -10,9 +10,19 @@ poarta: v1
 
 Pentru un SRL care a fost microîntreprindere doar o parte din an, D101 nu definitivează întregul an fiscal, ci exclusiv perioada în care firma a devenit plătitoare de impozit pe profit.
 
+## Temeiul legal
+
+::: ghid-temei
+„Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit începând cu trimestrul în care s-a depășit această limită.”
+— Codul fiscal (Legea 227/2015), art. 52 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Limitele fiscale prevăzute la alin. (1) se verifică pe baza veniturilor înregistrate cumulat de la începutul anului fiscal.”
+— Codul fiscal (Legea 227/2015), art. 52 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 Practic: perioada de micro (declarată separat, prin D100 cu cod 121) rămâne în afara calculului de impozit pe profit; abia din trimestrul depășirii plafonului de 100.000 EUR venituri, firma intră sub incidența impozitului pe profit, iar plățile trimestriale aferente acestei perioade merg prin D100 (cod 103). D101, la finalul anului, definitivează doar acea porțiune a anului.
 
-Dosarul de cercetare nu detaliază un câmp specific în interfața D101 pentru marcarea „perioadei parțiale" de profit — regula de mai sus e confirmată la nivel legal, dar mecanica exactă de completare în ecranul aplicației trebuie verificată direct în interfață.
+Acest ghid nu detaliază un câmp specific în interfața D101 pentru marcarea „perioadei parțiale" de profit — regula de mai sus e confirmată la nivel legal, dar mecanica exactă de completare în ecranul aplicației trebuie verificată direct în interfață.
 
 ## Ce se greșește în practică
 

@@ -17,6 +17,7 @@ Nu direct. Dacă firma sau persoana datoare nu are bunuri urmăribile în locali
 ::: ghid-temei
 „în situația în care debitorul nu are bunuri urmăribile pe raza teritorială a respectivei unități administrativ-teritoriale sau a subdiviziunii unității administrativ-teritoriale a municipiului, competența pentru efectuarea procedurii de executare silită revine organului fiscal local în a cărui rază teritorială se află bunurile urmăribile."
 — Codul de procedură fiscală (Legea 207/2015), art. 221 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „Cererea conține, în mod obligatoriu, următoarele informații: a) datele de identificare ale debitorului; b) valoarea creanței de recuperat; c) valoarea creanțelor fiscale accesorii stabilite, potrivit legii, până la data solicitării; d) contul în care se virează sumele încasate; e) orice date necesare pentru identificarea bunurilor urmăribile, dacă este cazul."
 — Codul de procedură fiscală (Legea 207/2015), art. 221 alin. (4) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::

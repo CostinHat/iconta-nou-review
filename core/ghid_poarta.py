@@ -261,6 +261,12 @@ def verifica_ghid(cale, acte_corpus=None, registru=None):
         mesaje.append("CITARE fără suport în corpus: %s  (act %s %s/%s)" % (t, a[0], a[1], a[2]))
     for fid, cod, detaliu in verifica_functionalitati(meta, slug, registru):
         mesaje.append("%s: %s%s" % (fid, _MESAJ_COD[cod], (" (%s)" % detaliu) if detaliu else ""))
+    # [13.10.2026, comanda Costin — răspunsul la §6 COMANDA_13_10 pct.3: „citat verbatim din sursă verificată … Nu inventa temeiuri.”]
+    # un citat de temei care nu se regăsește literal în anaf_surse oprește publicarea; ghidurile vechi au voie numai cu cele din clichet
+    from core import ghid_citate as _gc
+    rele = _gc.neregasite(txt)
+    if len(rele) > _gc.permise(slug):
+        mesaje += ["CITAT care nu se regăsește literal în sursele oficiale locale: „%s”" % c[:120] for c in rele]
     return (not mesaje, mesaje)
 
 

@@ -2,7 +2,7 @@
 title: "Cum se împart dividendele între asociați: documente"
 description: "Regula legală de împărțire a dividendelor între asociați, proporțional cu capitalul social vărsat, și modul în care iConta.eu înregistrează contabil operațiunea."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -30,8 +30,8 @@ Dividendul nu se împarte „pe din două" între asociați sau după o înțele
 
 ## Ce face iConta.eu
 
-Din ecranul **Operațiuni speciale > Finanțare**, intrarea „Decontări asociați (455/457)", iConta.eu generează nota contabilă a dividendului: pentru dividendul anual, `1171=457` (brut) și `457=446` (impozit reținut), iar pentru dividendul interimar, `463=456` și `456=446`, cu opțiunea de a înregistra și plata netă către asociat pe contul 5121. Cota de impozit e citită automat, în funcție de data operațiunii, din registrul intern de cote istorice al aplicației, nu e hardcodată.
+Din ecranul **Operațiuni speciale > Finanțare**, intrarea „Decontări asociați (455/457)", iConta.eu generează nota contabilă a dividendului: pentru dividendul anual, `1171=457` (brut) și `457=446` (impozit reținut), iar pentru dividendul interimar, `463=456` și `456=446`, cu opțiunea de a înregistra și plata netă către asociat pe contul 5121. Cota de impozit e aplicată automat, în funcție de data operațiunii, din cotele istorice pe care le ține aplicația — nu e o valoare fixă.
 
-De precizat onest: motorul contabil primește ca intrare o singură sumă („brut") pentru operațiunea de dividend — el **nu calculează el însuși partea fiecărui asociat** pornind de la cotele de participare. Împărțirea sumei totale aprobate pe fiecare asociat, conform art. 67 alin. (2), rămâne în sarcina contabilului, care introduce separat nota corespunzătoare fiecărei sume individuale.
+De precizat onest: pentru operațiunea de dividend introduci o singură sumă („brut") — aplicația **nu calculează ea însăși partea fiecărui asociat** pornind de la cotele de participare. Împărțirea sumei totale aprobate pe fiecare asociat, conform art. 67 alin. (2), rămâne în sarcina contabilului, care introduce separat nota corespunzătoare fiecărei sume individuale.
 
 [iConta.eu](/)

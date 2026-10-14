@@ -35,6 +35,6 @@ Obligativitatea RO e-Factura în relația B2B nu e o noutate a lui 2026 — ea e
 
 ## Ce face iConta.eu
 
-iConta.eu are integrare reală cu RO e-Factura: modulul aplicația generează XML-ul UBL 2.1 / CIUS-RO și face upload-ul prin API-ul ANAF, modulul aplicația rulează periodic (cron) și descarcă din SPV facturile primite de la furnizori, iar aplicația este parserul care interpretează XML-ul UBL descărcat (extrage numărul, datele, părțile, sumele, liniile). Extinderile din 2026 discutate mai sus (persoane nestabilite înregistrate TVA, termenul de 15 ianuarie pentru furnizorii cu CNP) țin de sfera de aplicare a legii, nu de un modul separat — la verificarea codului nu există un tratament special pentru identificarea prin CNP în aplicația; aplicația folosește același flux de trimitere/validare pentru toate facturile eligibile, indiferent de tipul de contribuabil.
+iConta.eu are integrare reală cu RO e-Factura: aplicația generează XML-ul UBL 2.1 / CIUS-RO și îl încarcă prin API-ul ANAF, descarcă automat din SPV, la fiecare 30 de minute, facturile primite de la furnizori și preia din XML-ul descărcat numărul, datele, părțile, sumele și liniile facturii. Extinderile din 2026 discutate mai sus (persoane nestabilite înregistrate TVA, termenul de 15 ianuarie pentru furnizorii cu CNP) țin de sfera de aplicare a legii, nu de o funcționalitate separată — aplicația nu are un tratament special pentru identificarea prin CNP și folosește același flux de trimitere/validare pentru toate facturile eligibile, indiferent de tipul de contribuabil.
 
 [iConta.eu](/)

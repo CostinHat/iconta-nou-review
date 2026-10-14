@@ -2,7 +2,7 @@
 title: "Deducerea dobânzilor și a comisioanelor bancare la impozitul pe profit"
 description: "Regula de limitare a deductibilității costurilor excedentare ale îndatorării din Codul fiscal (regula ATAD): plafonul de 1.000.000 euro, limita de 30% din baza fiscală de calcul și excepția pentru entitățile independente."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Mecanismul de plafonare, pas cu pas:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, nu am putut confirma din codul aplicației un modul care să aplice automat regula de limitare a deductibilității dobânzii din art. 40^2 (calculul bazei de 30%, plafonul de 1.000.000/500.000 euro sau testul de entitate independentă) la determinarea impozitului pe profit. Aplicația oferă evidența contabilă generală a cheltuielilor financiare; verificarea plafonului de deductibilitate rămâne, la acest stadiu, un calcul pe care contabilul trebuie să-l facă separat.
+La data acestui ghid, iConta.eu nu aplică automat regula de limitare a deductibilității dobânzii din art. 40^2 (calculul bazei de 30%, plafonul de 1.000.000/500.000 euro sau testul de entitate independentă) la determinarea impozitului pe profit. Aplicația oferă evidența contabilă generală a cheltuielilor financiare; verificarea plafonului de deductibilitate rămâne, la acest stadiu, un calcul pe care contabilul trebuie să-l facă separat.
 
 [iConta.eu](/)

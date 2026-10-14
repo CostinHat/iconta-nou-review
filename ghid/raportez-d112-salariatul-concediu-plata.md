@@ -18,6 +18,7 @@ Concediul fără plată e un drept al salariatului pentru rezolvarea unor situa�
 
 „Durata concediului fără plata se stabileşte prin contractul colectiv de muncă aplicabil sau prin regulamentul intern."
 — Legea 53/2003 (Codul muncii), art. 148 alin. (2)
+
 (sursă: [Legea nr. 53/2003 - Codul muncii](https://legislatie.just.ro/Public/DetaliiDocument/128647))
 :::
 

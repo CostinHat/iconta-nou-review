@@ -13,11 +13,14 @@ Serviciile de hosting sunt adesea furnizate din alte state membre UE. Pentru o f
 ## Temeiul legal
 
 ::: ghid-temei
-**Articolul 307 alin. (2)**: Taxa este datorată de orice persoană impozabilă [...] care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]
+„Taxa este datorată de orice persoană impozabilă [...] care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]”
+— Codul fiscal (Legea 227/2015), art. 307 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Articolul 290 alin. (2)**: Dacă elementele folosite pentru stabilirea bazei de impozitare a unei operațiuni, alta decât importul de bunuri, se exprimă în valută, cursul de schimb care se aplică este ultimul curs de schimb comunicat de Banca Națională a României sau ultimul curs de schimb publicat de Banca Centrală Europeană ori cursul de schimb utilizat de banca prin care se efectuează decontările, **valabil la data la care intervine exigibilitatea taxei** pentru operațiunea în cauză [...]
+„Dacă elementele folosite pentru stabilirea bazei de impozitare a unei operațiuni, alta decât importul de bunuri, se exprimă în valută, cursul de schimb care se aplică este ultimul curs de schimb comunicat de Banca Națională a României sau ultimul curs de schimb publicat de Banca Centrală Europeană ori cursul de schimb utilizat de banca prin care se efectuează decontările, valabil la data la care intervine exigibilitatea taxei pentru operațiunea în cauză [...]”
+— Codul fiscal (Legea 227/2015), art. 290 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Articolul 320 alin. (1)**: Persoana impozabilă sau persoana juridică neimpozabilă, obligată la plata taxei în condițiile prevăzute la art. 307 alin. (2)-(4) și (6) [...], trebuie să autofactureze operațiunile respective până cel mai târziu în a 15-a zi a lunii următoare celei în care ia naștere faptul generator al taxei, în cazul în care persoana respectivă nu se află în posesia facturii emise de furnizor/prestator.
+„Persoana impozabilă sau persoana juridică neimpozabilă, obligată la plata taxei în condițiile prevăzute la art. 307 alin. (2)-(4) și (6) [...], trebuie să autofactureze operațiunile respective până cel mai târziu în a 15-a zi a lunii următoare celei în care ia naștere faptul generator al taxei, în cazul în care persoana respectivă nu se află în posesia facturii emise de furnizor/prestator.”
+— Codul fiscal (Legea 227/2015), art. 320 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Pașii de urmat la primirea facturii de hosting

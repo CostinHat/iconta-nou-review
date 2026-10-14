@@ -10,7 +10,17 @@ poarta: v1
 
 Pentru o firmă de consultanță cu clienți în UE, regula de bază nu s-a schimbat — dar articolul care o susține a fost modificat relativ recent, ceea ce merită semnalat firmelor care lucrează des cu acest tip de operațiuni în 2026.
 
-Regula rămâne aceeași: serviciul de consultanță facturat unei firme din UE e neimpozabil în România dacă clientul are cod de TVA valid, verificat în VIES; fără cod valid, operațiunea e B2C, cu TVA românesc. Ce s-a schimbat de la 1 septembrie 2025 e conținutul alin. (5) lit. f) al aceluiași articol — o modificare recentă, prea aproape de finalul perioadei acoperite de cercetarea de bază (17.09.2026) pentru a garanta că nu a mai intervenit nimic ulterior.
+Regula rămâne aceeași: serviciul de consultanță facturat unei firme din UE e neimpozabil în România dacă clientul are cod de TVA valid, verificat în VIES; fără cod valid, operațiunea e B2C, cu TVA românesc. Ce s-a schimbat de la 1 septembrie 2025 e conținutul alin. (5) lit. f) al aceluiași articol — o modificare recentă; textul citat aici este cel în vigoare la data redactării ghidului (17.09.2026), așa că merită verificat dacă nu a mai intervenit vreo modificare ulterioară.
+
+## Temeiul legal
+
+::: ghid-temei
+„Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice. [...] (3) Locul de prestare a serviciilor către o persoană neimpozabilă este locul unde prestatorul își are stabilit sediul activității sale economice.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 278 alin. (2) și (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Dacă nu dispune de informații contrare, prestatorul poate considera că un client stabilit în alt stat membru are statutul de persoană impozabilă: a) atunci când respectivul client i-a comunicat codul său individual de înregistrare în scopuri de TVA și dacă prestatorul obține confirmarea validității codului de înregistrare respectiv, precum și a numelui și adresei aferente acestuia [...]”
+— HG nr. 1/2016, Normele metodologice de aplicare a Codului fiscal, titlul VII, pct. 15 alin. (8) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
+:::
 
 ## Ce se greșește în practică
 

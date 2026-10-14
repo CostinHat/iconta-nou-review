@@ -2,7 +2,7 @@
 title: "Suspendare activitate SRL: când e recomandată"
 description: Inactivitatea temporară e utilă atunci când o firmă are nevoie de o pauză reală, cu costuri administrative reduse și scutire de la depunerea declarațiilor - dar are un termen maxim de 3 ani, nu e un regim permanent.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,8 @@ Suspendarea activității (inactivitatea temporară) nu este soluția potrivită
 ## Temeiul legal
 
 ::: ghid-temei
-Legea nr. 31/1990 (Legea societăților), art. 237^2 alin. (1) lit. b) (inactivitatea temporară anunțată organelor fiscale și înscrisă în registrul comerțului, cu durată maximă de 3 ani).
+„Oficiul Național al Registrului Comerțului, prin registrator, constată întrunirea condițiilor pentru dizolvarea societății [...] în cazurile în care: [...] b) a încetat activitatea societății sau nu a fost reluată activitatea după perioada de inactivitate temporară, anunțată organelor fiscale și înscrisă în registrul comerțului, perioadă care nu poate depăși 3 ani de la data înscrierii în registrul comerțului;”
+— Legea societăților nr. 31/1990, art. 237^2 alin. (1) lit. b) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Legea permite unei societăți să întrerupă activitatea pentru o perioadă de inactivitate temporară, **anunțată organelor fiscale** și **înscrisă în registrul comerțului**, cu o durată care **nu poate depăși 3 ani** de la data înscrierii. Mecanismul e util în situații în care:

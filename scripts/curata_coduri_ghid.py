@@ -256,6 +256,31 @@ FRAZE_INTERNE = [
     (r"o neconformitate deschisă \(R\d+, urmărită în registrul intern al proiectului\)", "o limitare cunoscută a aplicației"),
     (r"o neconformitate deschisă \(R\d+\) în registrul intern al proiectului", "o limitare cunoscută a aplicației"),
 ]
+#: PROZĂ DESPRE COD — comanda Costin 13.10.2026 (răspunsul la §6 COMANDA_13_10 pct.2): „rescrie acele pasaje din perspectiva
+#: contabilului, adică ce face aplicația pentru el, fără referiri la cod sau la registrele proiectului.” Tiparele numite de Costin și
+#: trimiterile tehnice: ZERO în orice ghid (gard absolut).
+PROZA_COD_ZERO = re.compile(r"comentariul din cod|registrul intern al (proiectului|aplicației|funcționalităților)|evidența internă a funcționalităților"
+                            r"|\bdosar(ul|ului)? (tehnic|de cercetare)\b|\bmirror\w*|\bGH-\d{5}\b|\bliniile \d+[–-]\d+\b|\.timer\b|\bcron(-ul|ul)?\b",
+                            re.I)
+#: Clasa LARGĂ, măsurată la 13.10.2026 (1.413 ghiduri): „verificat în cod”, „motorul de calcul”, „cercetarea”, termeni tehnici. Nu
+#: crește (clichet pe fișier, core/clichet_proza_cod_ghid.json); rescrierea ei e decizia lui Costin (raportul lotului, §6).
+PROZA_COD_CLICHET = re.compile(
+    r"\b(în|din|la nivel de) cod(ul)?(?!\s*(fiscal|de procedur|muncii|civil|penal|caen|tva|nc\b|de bare|de identificare|cpv|iban|bic|swift|"
+    r"siruta|poștal|postal|de înregistrare|unic|de țară|țării|tarifar|vamal|partener|special|al tipului|de cont|obligației|de obligație|"
+    r"bugetar|ue\b|eori|\d))\b|\bcodul (refuză|aplicației|sursă|motorului|verificat|iconta)|\bcod(ul)? sursă\b"
+    r"|\bhardcod\w*|\bflag(-ul|-uri\w*|ul|uri)?\b|\bfallback\b|\bparser\w*|\bpicker\w*|\bendpoint\w*|\bdocstring\w*|\bbackend\b|\bfrontend\b"
+    r"|\bcercetarea (de temei|de bază|de până|tehnică)|\bacest dosar\b"
+    r"|\bmotor(ul|ului)?\b(?! (diesel|electric|termic|vehicul|auto))", re.I)
+
+
+def proza_cod(text, tipar):
+    """Potrivirile unui tipar de proză despre cod în textul PUBLIC al ghidului. Clasa largă se caută în afara casetelor de temei (un
+    citat de lege poate spune „motor”); tiparele cu zero absolut se caută peste tot — nota „verificat pe mirrorul local” stătea chiar în
+    casete, iar niciun text de lege nu spune „mirror” sau „comentariul din cod”."""
+    corp = text if tipar is PROZA_COD_ZERO else re.sub(r"^:::\s*ghid-temei.*?^:::\s*$", " ", text, flags=re.S | re.M)
+    return [m.group(0) for m in tipar.finditer(corp)]
+
+
 #: o expresie de cod între backtick-uri (gardul o caută; o formulă contabilă `6814=491` nu e cod)
 EXPRESIE_COD = re.compile(r"==|!=|\bNone\b|\bTrue\b|\bFalse\b|\w\(\)|\"\w+\"\)|\b[a-z_]+\.[a-z_]+\(|\b[a-z_]+=[A-Za-z]")
 

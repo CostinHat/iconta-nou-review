@@ -2,7 +2,7 @@
 title: "Ce se întâmplă dacă am dedus integral un bun care era mijloc fix"
 description: "Regimul de ajustare a TVA pentru bunurile de capital, pe o perioadă de 5 sau 20 de ani, conform Codului fiscal, și ce înseamnă pentru un mijloc fix dedus integral la achiziție."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Consecința practică a acestui regim, pentru un mijloc fix dedus integral la ac
 
 ## Ce face iConta.eu
 
-La data acestui ghid, nu am putut confirma din codul aplicației un modul dedicat urmăririi și calculării automate a ajustării TVA pe 5 sau 20 de ani pentru bunurile de capital, conform art. 305. Aplicația ține evidența mijloacelor fixe și calculează amortizarea fiscală pe baza datei de punere în funcțiune, dar urmărirea separată a obligației de ajustare a TVA deduse inițial rămâne, la acest stadiu, în sarcina contabilului.
+La data acestui ghid, iConta.eu nu urmărește și nu calculează automat ajustarea TVA pe 5 sau 20 de ani pentru bunurile de capital, conform art. 305. Aplicația ține evidența mijloacelor fixe și calculează amortizarea fiscală pe baza datei de punere în funcțiune, dar urmărirea separată a obligației de ajustare a TVA deduse inițial rămâne, la acest stadiu, în sarcina contabilului.
 
 [iConta.eu](/)

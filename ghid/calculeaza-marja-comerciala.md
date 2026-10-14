@@ -10,7 +10,20 @@ poarta: v1
 
 Acest ghid tratează marja profitului în sensul regimului special de TVA pentru bunuri second-hand (art. 312 Cod fiscal) — nu adaosul comercial generic folosit la stabilirea prețurilor de vânzare. Dacă vindeți bunuri folosite (achiziționate în scopul revânzării) și aplicați regimul special, aceasta e formula relevantă.
 
-Marja profitului se calculează, pentru fiecare bun vândut, ca diferență între prețul de vânzare și prețul de cumpărare al aceluiași bun. Din această marjă (care include deja TVA-ul), taxa colectată se extrage prin procedeul sutei mărite: TVA = marja × cotă / (100 + cotă). Exemplu (cotă 21%): un bun cumpărat cu 600 lei și vândut cu 1.000 lei are marja 400 lei; TVA colectată = 400 × 21 / 121 = 69,42 lei; marja netă (fără TVA) = 330,58 lei. Dacă marja e negativă sau zero (bunul se revinde sub prețul de achiziție), nu se colectează TVA.
+Marja profitului se calculează, pentru fiecare bun vândut, ca diferență între prețul de vânzare și prețul de cumpărare al aceluiași bun. Din această marjă (care include deja TVA-ul), taxa colectată se extrage prin procedeul sutei mărite: TVA = marja × cotă / (100 + cotă). Exemplu (cotă 21%): un bun cumpărat cu 600 lei și vândut cu 1.000 lei are marja 400 lei; TVA colectată = 400 × 21 / 121 = 69,42 lei; marja netă (fără TVA) = 330,58 lei. Dacă marja e negativă (bunul se revinde sub prețul de achiziție), nu se colectează TVA conform regimului special (normele, pct. 86 alin. (5)); la o marjă zero, procedeul sutei mărite dă oricum o taxă zero.
+
+## Temeiul legal
+
+::: ghid-temei
+„g) marja profitului este diferența dintre prețul de vânzare aplicat de persoana impozabilă revânzătoare și prețul de cumpărare”
+— Codul fiscal (Legea nr. 227/2015), art. 312 alin. (1) lit. g) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„[...] baza de impozitare este marja profitului, determinată conform alin. (1) lit. g), exclusiv valoarea taxei aferente.”
+— Codul fiscal (Legea nr. 227/2015), art. 312 alin. (4) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„b) marja profitului este diferența dintre prețul de vânzare și prețul de cumpărare al bunului supus regimului special; [...] c) pentru determinarea taxei colectate aferente fiecărei livrări, din marja profitului determinată conform lit. b) se calculează suma taxei colectate corespunzătoare fiecărei livrări prin aplicarea procedeului sutei mărite. [...] (5) Persoana impozabilă nu colectează TVA conform regimului special în situația în care marja profitului, determinată conform alin. (4) lit. b), este negativă.”
+— HG nr. 1/2016 (Normele metodologice ale Codului fiscal), titlul VII, pct. 86 alin. (4) lit. b)-c) și alin. (5) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
+:::
 
 ## Ce se greșește în practică
 
@@ -18,6 +31,6 @@ Greșeala frecventă e calcularea TVA-ului direct pe marjă, la cota nominală (
 
 ## Ce face iConta.eu
 
-Motorul de calcul aplică exact formula de mai sus, pe fiecare vânzare individuală: cota de TVA e un parametru obligatoriu (fără valoare implicită — dacă lipsește, aplicația refuză explicit calculul, ca să nu se rupă tăcut de o schimbare de cotă), iar rotunjirea se face cu regula fiscală (ROUND_HALF_UP, 2 zecimale). La marjă negativă sau zero, aplicația calculează TVA = 0, fără să colecteze taxă. Nota contabilă generată (prin ruta dedicată vânzării în regim de marjă) înregistrează separat costul, marja netă și TVA-ul aferent.
+Motorul de calcul aplică exact formula de mai sus, pe fiecare vânzare individuală: cota de TVA e un parametru obligatoriu (fără valoare implicită — dacă lipsește, aplicația refuză explicit calculul, ca să nu se rupă tăcut de o schimbare de cotă), iar rotunjirea se face cu regula fiscală (ROUND_HALF_UP, 2 zecimale). La marjă negativă, aplicația calculează TVA = 0, fără să colecteze taxă; la marjă zero, rezultatul este tot TVA = 0. Nota contabilă generată (prin ruta dedicată vânzării în regim de marjă) înregistrează separat costul, marja netă și TVA-ul aferent.
 
 [iConta.eu](/)

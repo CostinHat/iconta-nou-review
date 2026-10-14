@@ -2,7 +2,7 @@
 title: "Care este calendarul fiscal pentru o firmă plătitoare de impozit pe profit în 2026?"
 description: "Termenele de plată trimestrială și de depunere a declarației anuale de impozit pe profit în 2026 — inclusiv schimbarea termenului anual de la 25 martie la 25 iunie, aplicabilă din anul fiscal 2026."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -15,6 +15,9 @@ O firmă plătitoare de impozit pe profit are două tipuri de obligații pe an: 
 ::: ghid-temei
 „Calculul, declararea și plata impozitului pe profit, cu excepțiile prevăzute de prezentul articol, se efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III. [...] Contribuabilii au obligația să depună o declarație anuală privind impozitul pe profit până la data de 25 iunie inclusiv a anului următor [...]."
 — Legea 227/2015, art. 41 alin. (1) și art. 42 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Prin excepție de la prevederile alin. (8) , plata anticipată pentru trimestrul I al fiecărui an fiscal/an fiscal modificat se calculează prin aplicarea cotei de impozit asupra profitului contabil al perioadei pentru care se efectuează plata anticipată. Aceasta se declară și se plătește până la data de 25 inclusiv a lunii următoare trimestrului I.”
+— Legea 227/2015, art. 41 alin. (10^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 Calendarul, cu nuanța tranziției:
@@ -22,7 +25,7 @@ Calendarul, cu nuanța tranziției:
 - **Plăți trimestriale** (regimul standard, art. 41 alin. (1)): 25 aprilie (trim. I), 25 iulie (trim. II), 25 octombrie (trim. III) — pentru trimestrul IV, definitivarea se face odată cu declarația anuală, nu printr-o plată trimestrială separată.
 - **Declarația anuală (D101)**: termenul general de la art. 42 alin. (1) a fost modificat prin OUG 8/2026 de la 25 martie la **25 iunie** inclusiv a anului următor — dar modificarea „se aplică începând cu anul fiscal 2026" (potrivit normei de aplicare a OUG 8/2026).
 - Consecința practică: pentru **anul fiscal 2025** (declarația depusă în 2026), termenul rămâne cel vechi — **25 martie 2026**. Pentru **anul fiscal 2026** (declarația depusă în 2027), termenul nou se aplică — **25 iunie 2027**. Cele două termene nu se schimbă simultan pentru toate declarațiile depuse în 2026, ci în funcție de anul fiscal la care se referă declarația.
-- Firmele care optează pentru sistemul anual cu plăți anticipate trimestriale (art. 41 alin. (2)) urmează același calendar de plăți trimestriale, dar calculate ca o pătrime din impozitul anului precedent, actualizat cu indicele prețurilor de consum, nu din profitul trimestrului curent.
+- Firmele care optează pentru sistemul anual cu plăți anticipate trimestriale (art. 41 alin. (2)) urmează același calendar de plăți trimestriale, dar calculate ca o pătrime din impozitul anului precedent, actualizat cu indicele prețurilor de consum, nu din profitul trimestrului curent. Excepție, începând cu anul fiscal 2026 (art. 41 alin. (10^1), introdus prin OUG 8/2026): plata anticipată pentru **trimestrul I** se calculează aplicând cota de impozit asupra profitului contabil al trimestrului I, nu ca o pătrime din impozitul anului precedent; trimestrele II–IV rămân la o pătrime. Calculul acestui sistem (anual, cu plăți anticipate) nu îl face aplicația — rămâne în sarcina contabilului.
 
 ## Ce se greșește în practică
 

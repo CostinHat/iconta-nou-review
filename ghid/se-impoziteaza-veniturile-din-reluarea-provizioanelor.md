@@ -13,18 +13,11 @@ Când un provizion se reduce sau se anulează, contabil apare un venit (781x). F
 ## Temeiul legal
 
 ::: ghid-temei
-"Reducerea sau anularea oricărui provizion ori a rezervei care a fost anterior dedusă, inclusiv
-rezerva legală, se include în rezultatul fiscal, ca venituri impozabile sau elemente similare
-veniturilor, indiferent dacă reducerea sau anularea este datorată modificării destinației
-provizionului sau a rezervei, distribuirii provizionului sau rezervei către participanți sub orice
-formă, lichidării, divizării sub orice formă, fuziunii contribuabilului sau oricărui altui motiv."
+„Reducerea sau anularea oricărui provizion ori a rezervei care a fost anterior dedusă, inclusiv rezerva legală, se include în rezultatul fiscal, ca venituri impozabile sau elemente similare veniturilor, indiferent dacă reducerea sau anularea este datorată modificării destinației provizionului sau a rezervei, distribuirii provizionului sau rezervei către participanți sub orice formă, lichidării, divizării sub orice formă, fuziunii contribuabilului sau oricărui altui motiv.”
+— Codul fiscal (Legea 227/2015), art. 26 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-"d) veniturile din anularea, recuperarea, inclusiv refacturarea cheltuielilor pentru care nu s-a
-acordat deducere, veniturile din reducerea sau anularea provizioanelor pentru care nu s-a acordat
-deducere, veniturile din restituirea ori anularea unor dobânzi și/sau penalități pentru care nu
-s-a acordat deducere, precum și veniturile reprezentând anularea rezervei înregistrate ca urmare a
-participării în natură la capitalul altor persoane juridice sau ca urmare a majorării capitalului
-social la persoana juridică la care se dețin titlurile de participare;"
+„La calculul rezultatului fiscal, următoarele venituri sunt neimpozabile: [...] d) veniturile din anularea, recuperarea, inclusiv refacturarea cheltuielilor pentru care nu s-a acordat deducere, veniturile din reducerea sau anularea provizioanelor pentru care nu s-a acordat deducere, veniturile din restituirea ori anularea unor dobânzi și/sau penalități pentru care nu s-a acordat deducere, precum și veniturile reprezentând anularea rezervei înregistrate ca urmare a participării în natură la capitalul altor persoane juridice sau ca urmare a majorării capitalului social la persoana juridică la care se dețin titlurile de participare;”
+— Codul fiscal (Legea 227/2015), art. 23 lit. d) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## Regula, în oglindă

@@ -13,11 +13,14 @@ Factura de abonament Google Workspace este emisă, pentru clienții din România
 ## Temeiul legal
 
 ::: ghid-temei
-**Articolul 278 alin. (2)**: Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice. [...]
+„Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice. [...]”
+— Codul fiscal (Legea 227/2015), art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**Articolul 307 alin. (2)**: Taxa este datorată de orice persoană impozabilă [...] care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]
+„Taxa este datorată de orice persoană impozabilă [...] care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]”
+— Codul fiscal (Legea 227/2015), art. 307 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-Instrucțiuni OPANAF 592/2016: În secțiunea 4.1 se preiau din secțiunea 4 doar achizițiile de servicii intracomunitare, pentru care beneficiarul este obligat la plata taxei pe valoarea adăugată conform art. 307 alin. (2) din Codul fiscal.
+„În secțiunea 4.1 se preiau din secțiunea 4 doar achizițiile de servicii intracomunitare, pentru care beneficiarul este obligat la plata taxei pe valoarea adăugată conform art. 307 alin. (2) din Codul fiscal.”
+— OPANAF 592/2016, Anexa 2, Instrucțiuni cap. III (sursă: [OPANAF nr. 592/2016 pentru aprobarea formularului 301](https://legislatie.just.ro/Public/DetaliiDocument/175654))
 :::
 
 ## De la contabilizare la obligația de declarare

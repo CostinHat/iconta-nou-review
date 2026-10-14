@@ -2,7 +2,7 @@
 title: Cum declari o factură UE primită cu întârziere
 description: O factură de achiziție intracomunitară primită după perioada în care exigibilitatea TVA a luat deja naștere se declară în perioada corectă, prin rectificarea D300/D390 aferentă, nu în luna primirii efective.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -12,7 +12,12 @@ Când o factură pentru o achiziție intracomunitară de bunuri ajunge la firmă
 
 ### Momentul exigibilității — regula pentru achiziții intracomunitare
 
-Codul fiscal stabilește, pentru achiziția intracomunitară de bunuri, că exigibilitatea taxei intervine la data emiterii facturii prevăzute în legislația altui stat membru (echivalentul art. 222 din Directiva TVA) sau, dacă nu s-a emis factură conform acelei legislații, la data emiterii autofacturii de către beneficiar. Data relevantă e deci **data emiterii** facturii de către furnizorul din UE, nu data la care ajunge fizic/electronic la firma română.
+Codul fiscal stabilește, pentru achiziția intracomunitară de bunuri, că exigibilitatea taxei intervine la data emiterii facturii prevăzute în legislația altui stat membru (echivalentul art. 222 din Directiva TVA) sau, după caz, la data emiterii autofacturii de către beneficiar — ori, dacă până atunci nu s-a emis nicio factură/autofactură, în a 15-a zi a lunii următoare celei în care a intervenit faptul generator. Data relevantă e deci **data emiterii** facturii de către furnizorul din UE — cel târziu a 15-a zi a lunii următoare livrării —, nu data la care ajunge fizic/electronic la firma română.
+
+::: ghid-temei
+„(2) În cazul unei achiziții intracomunitare de bunuri, exigibilitatea taxei intervine la data emiterii facturii prevăzute în legislația altui stat membru la articolul care transpune prevederile art. 222 din Directiva 112 sau, după caz, la data emiterii autofacturii prevăzute la art. 319 alin. (9) ori în cea de-a 15-a zi a lunii următoare celei în care a intervenit faptul generator, dacă nu a fost emisă nicio factură/autofactură până la data respectivă.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 284 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
 
 ### Ce se întâmplă dacă factura ajunge după ce perioada s-a închis
 
@@ -31,3 +36,13 @@ Pentru că achizițiile intracomunitare de bunuri fac parte din categoria opera�
 1. Stabilește data emiterii facturii de către furnizorul UE (nu data primirii) — aceasta ancorează perioada fiscală corectă.
 2. Dacă acea perioadă a fost deja declarată fără operațiunea respectivă, pregătește declarația rectificativă pentru D300 (art. 105 alin. 1 CPF) și D390 (art. 105 alin. 2 CPF) aferente perioadei corecte.
 3. Nu raporta operațiunea în luna curentă (a primirii facturii), dacă aceasta e diferită de luna exigibilității — ar duce la declararea în perioada greșită, cu risc de discrepanțe față de raportarea furnizorului din celălalt stat membru (verificabilă prin schimbul de informații VIES/Eurofisc).
+
+### Ce se greșește în practică
+
+- Se înregistrează factura întârziată în luna în care a sosit fizic, nu în luna exigibilității reale — decalajul distorsionează atât decontul de TVA (D300, respectiv decontul special D301), cât și D390.
+- Se evită rectificativa din comoditate, deși operațiunea aparține unei luni deja declarate.
+- Se ignoră faptul că D390 nu se depune „pe zero”: dacă rectificarea introduce prima operațiune intracomunitară dintr-o lună în care inițial nu exista niciuna, D390 pentru acea lună devine datorată și trebuie depusă (nu doar decontul rectificat).
+
+### Ce face iConta.eu
+
+Data exigibilității se calculează din faptul generator și din data facturii, cu regula celor 15 zile aplicată automat, indiferent de momentul introducerii facturii în aplicație. Verificarea D390 față de D301 semnalează explicit situația în care D301 are achiziții intracomunitare într-o lună, dar D390 pentru aceeași lună iese pe zero — exact cazul unei operațiuni adăugate ulterior într-o lună deja închisă.

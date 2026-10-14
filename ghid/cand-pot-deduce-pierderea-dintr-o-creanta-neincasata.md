@@ -13,18 +13,9 @@ Ajustarea pentru deprecierea creanțelor (constituirea provizionului) e un pas i
 ## Temeiul legal
 
 ::: ghid-temei
-"h) pierderile înregistrate la scoaterea din evidență a creanțelor, pentru partea neacoperită de
-provizion, potrivit art. 26, precum și cele înregistrate în alte cazuri decât următoarele:
-1. punerea în aplicare a unui plan de reorganizare confirmat printr-o sentință judecătorească, în
-conformitate cu prevederile Legii nr. 85/2014;
-2. procedura de faliment a debitorilor a fost închisă pe baza hotărârii judecătorești;
-3. debitorul a decedat și creanța nu poate fi recuperată de la moștenitori;
-4. debitorul este dizolvat, în cazul societății cu răspundere limitată cu asociat unic, sau lichidat,
-fără succesor;
-5. debitorul înregistrează dificultăți financiare majore care îi afectează întreg patrimoniul;
-6. au fost încheiate contracte de asigurare;"
+„h) pierderile înregistrate la scoaterea din evidență a creanțelor, pentru partea neacoperită de provizion, potrivit art. 26, precum și cele înregistrate în alte cazuri decât următoarele: 1. punerea în aplicare a unui plan de reorganizare confirmat printr-o sentință judecătorească, în conformitate cu prevederile Legii nr. 85/2014; [...] 2. procedura de faliment a debitorilor a fost închisă pe baza hotărârii judecătorești; [...] 3. debitorul a decedat și creanța nu poate fi recuperată de la moștenitori; [...] 4. debitorul este dizolvat, în cazul societății cu răspundere limitată cu asociat unic, sau lichidat, fără succesor; [...] 5. debitorul înregistrează dificultăți financiare majore care îi afectează întreg patrimoniul; [...] 6. au fost încheiate contracte de asigurare;”
+— Legea 227/2015, art. 25 alin. (4) lit. h) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
-
 ## Cum se citește textul
 
 Formularea legii e o dublă negație, ușor de citit greșit: pierderea la scoaterea din evidență a creanței, pentru partea **neacoperită de ajustare**, e nedeductibilă **cu excepția** celor 6 cazuri enumerate. Cu alte cuvinte, pierderea e deductibilă doar dacă te încadrezi în unul din cele șase puncte — altfel rămâne cheltuială nedeductibilă, oricât de clar e că suma nu va mai fi recuperată.

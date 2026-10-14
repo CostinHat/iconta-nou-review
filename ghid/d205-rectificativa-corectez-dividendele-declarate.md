@@ -10,7 +10,17 @@ poarta: v1
 
 Dacă o declarație D205 a fost deja depusă la ANAF cu date greșite despre dividende, corecția standard se face printr-o declarație rectificativă. Este important să știți, înainte de a căuta acest flux în aplicație, ce este și ce nu este acoperit în acest moment.
 
-Structura oficială D205 este reglementată prin OPANAF 179/2022 (bază), modificat prin OPANAF 102/2025 și, cel mai recent, OPANAF 303/2026 — niciuna dintre modificările recente nu afectează regulile privind dividendele (tip_venit "08"). Notă onestă: dincolo de faptul documentat mai sus (`d_rec="0"` hardcodat în generatorul iConta), acest ghid nu a putut verifica în corpusul de surse locale prevederile punctuale ale formularului oficial privind mecanismul de rectificare — pentru procedura exactă de rectificare la ANAF, consultați instrucțiunile oficiale de completare a D205.
+Structura oficială D205 este reglementată prin OPANAF 179/2022 (bază), modificat prin OPANAF 102/2025 și, cel mai recent, OPANAF 303/2026 — niciuna dintre modificările recente nu afectează regulile privind dividendele (tip_venit "08"). Mecanismul de rectificare are temei explicit, citat mai jos: Codul de procedură fiscală (art. 105) permite corectarea unei declarații informative prin declarație rectificativă, indiferent de perioada la care se referă, iar instrucțiunile de completare a formularului 205 (OPANAF 179/2022, pct. 5.1–5.2) cer ca rectificativa să se întocmească pe tipuri de venit și să cuprindă numai pozițiile corectate sau pe cele omise din declarația inițială.
+
+## Temeiul legal
+
+::: ghid-temei
+„Declarația informativă poate fi corectată de către contribuabil/plătitor indiferent de perioada la care se referă. [...] Declarațiile prevăzute la alin. (1) și (2) pot fi corectate prin depunerea unei declarații rectificative.”
+— Legea nr. 207/2015 privind Codul de procedură fiscală, art. 105 alin. (2) și (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„ori de câte ori plătitorul de venit constată erori în declarația depusă anterior, acesta completează și depune o declarație rectificativă, în condițiile art. 105 și 170 din Legea nr. 207/2015 privind Codul de procedură fiscală [...] Declarația rectificativă se întocmește pe tipuri de venit și va cuprinde numai pozițiile corectate, declarate eronat în declarația inițială, sau pozițiile care, în mod eronat, nu au fost cuprinse în declarația inițială.”
+— OPANAF nr. 179/2022, anexa nr. 1, Instrucțiuni privind completarea formularului 205, cap. I pct. 5.1 lit. b) și pct. 5.2 (sursă: [OPANAF nr. 179/2022 pentru aprobarea formularelor 205 și 207](https://legislatie.just.ro/Public/DetaliiDocument/251562))
+:::
 
 ## Ce se greșește în practică
 

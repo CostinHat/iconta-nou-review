@@ -24,9 +24,9 @@ O factură de la un furnizor italian pentru marfă de revânzare vine, ca regul�
 
 Recepția mărfii se înregistrează la valoarea din factura furnizorului italian (convertită în lei), fără TVA:
 
-`371 = 401` — marfă destinată revânzării.
+`371 = 401` — marfă destinată revânzării (pentru alte destinații, de exemplu materii prime, se folosește contul de stoc corespunzător, cu aceeași logică).
 
-TVA se autoimpune separat: `4426 = 4427`, cu `TVA = bază × cotă / 100`, rotunjit aritmetic la 2 zecimale.
+TVA se autoimpune separat: `4426 = 4427`, cu `TVA = bază × cotă / 100`, rotunjit aritmetic la 2 zecimale. Cota e cea corespunzătoare bunului respectiv, verificată pentru fiecare factură — nu o cotă „implicită”.
 
 Condiția de bază ca operațiunea să fie AIC e ca furnizorul să aibă un cod de TVA valabil dintr-un stat membru UE — în acest caz Italia (`IT`) — și ca marfa să provină efectiv dintr-un stat membru diferit de România. Nu contează dacă transportul e făcut de furnizor, de cumpărător sau de un terț în contul lor, atâta timp cât marfa ajunge fizic dintr-un stat membru în altul.
 
@@ -46,9 +46,12 @@ Firma plătește furnizorului italian doar cei 12.500 lei ai facturii. TVA de 2.
 - **Se tratează factura ca „fără TVA" în sensul de scutire totală**, pentru că furnizorul italian n-a înscris nicio sumă de TVA — de fapt taxa există, doar că se autoimpune, nu se plătește furnizorului.
 - **Se omite comunicarea codului de TVA propriu către furnizor înainte de livrare.** Fără el, furnizorul poate factura cu TVA italian, iar recuperarea acelei taxe devine un proces separat, mai greoi (cerere de rambursare din alt stat membru), nu o simplă corectare internă.
 - **Se înregistrează doar marfa, fără taxarea inversă**, lăsând operațiunea contabilizată ca și cum n-ar avea nicio implicație de TVA în România.
+- **Se verifică doar că firma furnizoare există, nu și că are cod de TVA valid în VIES la data facturii.** Un cod valid la o verificare mai veche poate fi invalid la data operațiunii curente.
 
 ## Ce face iConta.eu
 
-Codul de TVA al furnizorului e analizat automat — prefixul de țară e verificat contra listei celor 27 de state membre UE plus `XI`; operațiunea e tratată ca intracomunitară doar dacă țara codului nu e România. TVA la taxare inversă se calculează cu `TVA = bază × cotă / 100`, rotunjit aritmetic („rotunjirea aritmetică (jumătatea în sus)”) la 2 zecimale, cu cota transmisă explicit la fiecare calcul și baza strict pozitivă.
+Ecranul de achiziție intracomunitară îți cere codul de TVA al furnizorului (pentru un furnizor italian, cu prefixul „IT”), data, valoarea în lei, numărul facturii, contul de destinație (sugestie 371), tipul operațiunii (bunuri) și cota de TVA — cota nu are o valoare pusă implicit, o alegi la fiecare factură, iar valoarea introdusă trebuie să fie mai mare decât zero. Prefixul de țară e verificat față de lista celor 27 de state membre UE plus „XI”, iar operațiunea e tratată ca intracomunitară doar dacă țara codului nu e România.
+
+Din aceste date aplicația generează formula `4426 = 4427`, cu TVA = bază × cotă / 100, rotunjită aritmetic (jumătatea în sus) la 2 zecimale, iar factura e preluată automat în D390, la achizițiile intracomunitare de bunuri.
 
 [iConta.eu](/)

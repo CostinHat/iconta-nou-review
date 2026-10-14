@@ -23,6 +23,7 @@ Registrul are o funcție practică: dovedește că ieșirea bunurilor din țară
 ::: ghid-temei
 „prestarea de servicii în beneficiul persoanei impozabile, care implică evaluarea bunurilor mobile corporale sau lucrări asupra bunurilor mobile corporale efectuate în statul membru în care se termină expedierea ori transportul bunului, cu condiția ca bunurile, după prelucrare, să fie reexpediate persoanei impozabile din România de la care fuseseră expediate sau transportate inițial;"
 — Codul fiscal (Legea 227/2015), art. 270 alin. (12) lit. f) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „În cazul în care nu mai este îndeplinită una dintre condițiile prevăzute la alin. (12) , expedierea sau transportul bunului respectiv este considerat ca un transfer din România în alt stat membru. În acest caz, transferul se consideră efectuat în momentul în care condiția nu mai este îndeplinită."
 — Codul fiscal (Legea 227/2015), art. 270 alin. (13) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::

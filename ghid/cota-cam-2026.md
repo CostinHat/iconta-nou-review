@@ -31,6 +31,6 @@ Contribuția asiguratorie pentru muncă (CAM) este o contribuție socială dator
 
 Acest ghid corespunde unui subiect fiscal real și de interes practic, dar **nu ține de funcționalitatea de nomenclator produse și potrivire AI a cotei de TVA („Nomenclator produse, cu cota de TVA propusă de AI”)** descrisă în restul acestei serii de ghiduri. Nomenclatorul de produse din iConta.eu, motorul AI care propune cota și ecranele de emitere a facturilor din care e format acest flux nu conțin niciun calcul, nicio referință și nicio mențiune legată de CAM — subiectul aparține în întregime zonei de salarizare/contribuții sociale a contabilității unei firme, nu facturării sau nomenclatorului de produse.
 
-Nu am verificat, în cercetarea de față, dacă și cum calculează iConta.eu contribuțiile sociale pe salarii (CAM, CAS, CASS) — acesta este un subiect care ține de o altă funcționalitate a aplicației, neacoperită de dosarul de cercetare curent, și nu poate fi descris aici fără riscul de a inventa un comportament neverificat în cod.
+Acest ghid nu descrie cum calculează iConta.eu contribuțiile sociale pe salarii (CAM, CAS, CASS) — acestea țin de partea de salarizare a aplicației.
 
 [iConta.eu](/)

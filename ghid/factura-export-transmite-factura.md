@@ -29,6 +29,6 @@ poarta: v1
 
 ## Ce face iConta.eu
 
-Din acest dosar de cercetare este documentată și verificată în cod o singură funcționalitate apropiată ca terminologie — „Export facturi emise către SAGA”, exportul facturilor emise către programul de contabilitate SAGA, în format XML propriu al SAGA. Aceasta nu are nicio legătură cu transmiterea facturilor în sistemul RO e-Factura/SPV: e o punte tehnică opțională între iConta.eu și programul contabilului, fără temei legal propriu (nicio citare de act normativ în codul modulului). Aplicația are, conform dosarului, și un fișier separat pentru transmiterea facturilor către e-Factura, dar comportamentul lui concret — inclusiv modul în care tratează facturile de export — nu a fost verificat în acest dosar, așa că nu facem afirmații neconfirmate despre el aici.
+iConta.eu are o funcționalitate cu nume apropiat — „Export facturi emise către SAGA”, care exportă facturile emise către programul de contabilitate SAGA, în formatul XML propriu al SAGA. Aceasta nu are nicio legătură cu transmiterea facturilor în sistemul RO e-Factura/SPV: e o punte tehnică opțională între iConta.eu și programul contabilului, fără temei legal propriu. Transmiterea facturilor în RO e-Factura se face separat; acest ghid nu se pronunță asupra modului în care aplicația tratează facturile de export la transmitere.
 
 [iConta.eu](/)

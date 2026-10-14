@@ -2,7 +2,7 @@
 title: Cum se contabilizează factura AWS?
 description: Factura de la Amazon Web Services se declară diferit după statutul de TVA al firmei și după entitatea care emite factura — verifici întâi cine e furnizorul, apoi alegi între D300 și D301.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -22,7 +22,7 @@ Regula mută obligația de plată a TVA de la furnizor la beneficiar, pentru un 
 
 ### Cum se declară
 
-- **Firmă plătitoare de TVA:** taxare inversă în D300, rd. 7 + rd. 20, net zero, indiferent dacă furnizorul e sau nu stabilit în UE — D301 e blocat pentru acest profil.
+- **Firmă plătitoare de TVA:** taxare inversă în D300, rd. 7 + rd. 22, net zero, indiferent dacă furnizorul e sau nu stabilit în UE — D301 e blocat pentru acest profil.
 - **Firmă neplătitoare de TVA, furnizor stabilit în UE:** D301 secțiunea 4.1 (tip 5) + D390 cod S. Necesită înregistrare specială prin art. 317, făcută **înainte** de primul serviciu cumpărat, fără plafon.
 - **Firmă neplătitoare de TVA, furnizor stabilit în afara UE:** D301 secțiunea 4 (tip 4, art. 307 alin. (6)), fără D390.
 

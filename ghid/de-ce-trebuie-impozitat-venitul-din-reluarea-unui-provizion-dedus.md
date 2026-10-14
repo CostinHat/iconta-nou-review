@@ -13,11 +13,8 @@ O greșeală recurentă: firma constituie corect un provizion deductibil (de exe
 ## Temeiul legal
 
 ::: ghid-temei
-"Reducerea sau anularea oricărui provizion ori a rezervei care a fost anterior dedusă, inclusiv
-rezerva legală, se include în rezultatul fiscal, ca venituri impozabile sau elemente similare
-veniturilor, indiferent dacă reducerea sau anularea este datorată modificării destinației
-provizionului sau a rezervei, distribuirii provizionului sau rezervei către participanți sub orice
-formă, lichidării, divizării sub orice formă, fuziunii contribuabilului sau oricărui altui motiv."
+„Reducerea sau anularea oricărui provizion ori a rezervei care a fost anterior dedusă, inclusiv rezerva legală, se include în rezultatul fiscal, ca venituri impozabile sau elemente similare veniturilor, indiferent dacă reducerea sau anularea este datorată modificării destinației provizionului sau a rezervei, distribuirii provizionului sau rezervei către participanți sub orice formă, lichidării, divizării sub orice formă, fuziunii contribuabilului sau oricărui altui motiv.”
+— Codul fiscal, art. 26 alin. (5) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
 ## De ce contează "indiferent de motiv"

@@ -2,13 +2,26 @@
 title: Cum tratezi un avans primit de la un client din UE
 description: Tratamentul TVA al unui avans încasat de la un client dintr-un alt stat membru pentru o livrare intracomunitară de bunuri — scutirea aplicabilă, momentul exigibilității și obligațiile declarative.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
 # Cum tratezi un avans primit de la un client din UE
 
 Un avans încasat de la un client stabilit în alt stat membru, pentru o livrare de bunuri care va fi expediată din România către acel stat, se analizează pornind de la faptul că operațiunea de bază — livrarea intracomunitară — e scutită de TVA cu drept de deducere, nu de la regulile obișnuite de facturare a avansurilor interne.
+
+## Temeiul legal
+
+::: ghid-temei
+„b) la data la care se încasează avansul, pentru plățile în avans efectuate înainte de data la care intervine faptul generator. Avansurile reprezintă plata parțială sau integrală a contravalorii bunurilor și serviciilor, efectuată înainte de data livrării ori prestării acestora;"
+— Codul fiscal (Legea 227/2015), art. 282 alin. (2) lit. b) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„(1) Prin excepție de la prevederile art. 282 , în cazul unei livrări intracomunitare de bunuri, scutite de taxă conform art. 294 alin. (2) , exigibilitatea taxei intervine la data emiterii facturii prevăzute la art. 319 alin. (15) sau, după caz, la emiterea autofacturii prevăzute la art. 319 alin. (9) ori în cea de-a 15-a zi a lunii următoare celei în care a intervenit faptul generator, dacă nu a fost emisă nicio factură/autofactură până la data respectivă. (2) Prevederile art. 282 alin. (2) lit. b) nu se aplică în ceea ce privește livrările și transferurile de bunuri prevăzute la alin. (1) ."
+— Codul fiscal (Legea 227/2015), art. 283 alin. (1)-(2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„(16) Pentru alte operațiuni decât cele prevăzute la alin. (15) , persoana impozabilă are obligația de a emite o factură cel târziu până în cea de-a 15-a zi a lunii următoare celei în care ia naștere faptul generator al taxei, cu excepția cazului în care factura a fost deja emisă. De asemenea, persoana impozabilă trebuie să emită o factură pentru suma avansurilor încasate în legătură cu o livrare de bunuri/prestare de servicii cel târziu până în cea de-a 15-a zi a lunii următoare celei în care a încasat avansurile, cu excepția cazului în care factura a fost deja emisă."
+— Codul fiscal (Legea 227/2015), art. 319 alin. (16) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
 
 ### Regula generală pentru avansuri — și excepția pentru livrările intracomunitare
 
@@ -44,3 +57,15 @@ Operațiunea se raportează în declarația recapitulativă D390, potrivit art. 
 
 - Dacă la momentul încasării avansului clientul nu are încă un cod de TVA valabil comunicat, tratamentul de livrare intracomunitară scutită nu poate fi confirmat până la clarificare — firma trebuie să verifice situația înainte de a considera operațiunea scutită.
 - Diferența de curs valutar dintre data încasării avansului în valută și data livrării efective se tratează contabil ca diferență de curs, fără efect asupra scutirii de TVA aplicate operațiunii de bază.
+- Pentru un **serviciu** prestat unui client persoană impozabilă din alt stat membru, locul prestării e locul unde clientul își are sediul activității economice (art. 278 alin. (2)), deci operațiunea nu e impozabilă în România, iar avansul nu poartă TVA românesc. Dacă operațiunea de bază nu e eligibilă pentru scutire sau nu e neimpozabilă în România, avansul urmează regimul ei: e taxabil cu TVA românesc, cu exigibilitate la data încasării (art. 282 alin. (2) lit. b)).
+
+## Ce se greșește în practică
+
+- Se aplică implicit TVA românesc pe orice avans de la un client din UE, fără să se verifice întâi dacă operațiunea de bază e eligibilă pentru scutire.
+- Invers, avansul e tratat automat ca scutit doar pentru că vine de la un client „din UE”, fără verificarea VIES a codului de TVA la momentul încasării.
+
+## Ce face iConta.eu
+
+Nota de avans încasat (4111 = 419 + 4427) cere explicit cota de TVA la fiecare generare — aplicația nu presupune o cotă implicită, care s-ar putea despărți tăcut de lege la prima schimbare de reglementare. Dacă operațiunea de bază e scutită sau neimpozabilă în România (livrare intracomunitară eligibilă ori serviciu către o persoană impozabilă cu cod de TVA validat prin VIES), se introduce cota 0, iar linia de TVA nu se generează. Aplicația nu tratează avansurile diferit după țara clientului: scutirea vine din verificarea VIES făcută pentru operațiunea de bază, nu dintr-o regulă separată pentru avansuri.
+
+[iConta.eu](/)

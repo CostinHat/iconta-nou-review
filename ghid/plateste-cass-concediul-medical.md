@@ -1,6 +1,6 @@
 ---
 title: Se plătește CASS pentru concediul medical?
-description: CASS 10% e cota confirmată pentru veniturile salariale obișnuite — dar dacă și cum se aplică indemnizațiilor de concediu medical (OUG 158/2005) nu a fost verificat în cercetarea disponibilă pentru „Calcul salarizare (de la brut la net)”.
+description: CASS de 10% se reține pe indemnizațiile de concediu medical numai pentru codurile de indemnizație 01, 07 și 10 (Codul fiscal art. 155 alin. (1) lit. i)); pentru celelalte coduri, persoana aflată în concediu medical e exceptată de la CASS pentru indemnizație (art. 154 alin. (1) lit. i)).
 published: 2026-09-24
 modified: 2026-10-13
 poarta: v1
@@ -8,28 +8,31 @@ poarta: v1
 
 # Se plătește CASS pentru concediul medical?
 
-Întrebarea e legitimă, pentru că indemnizația de concediu medical nu urmează mecanica salariului obișnuit. Răspunsul cert cere însă o sursă pe care cercetarea disponibilă pentru funcționalitatea de calcul salarial („Calcul salarizare (de la brut la net)”) nu o acoperă.
+Întrebarea e legitimă, pentru că indemnizația de concediu medical nu urmează mecanica salariului obișnuit. Răspunsul depinde de codul de indemnizație din certificatul de concediu medical: CASS se datorează numai pentru codurile 01, 07 și 10.
 
 ## Temeiul legal
 
 ::: ghid-temei
-„Concedii medicale (context „Calcul salarizare (de la brut la net)”↔„Cod 10 CM în flux”, nu obiectul direct al celor 12 titluri, dar apare în descrierea „Calcul salarizare (de la brut la net)”) — OUG 158/2005, cu procentele 55/65/75% (Legea 141/2025, de la 01.08.2025); nu e detaliat aici, nu e cerut de titluri." — Dosar de cercetare „Calcul salarizare (de la brut la net)”, secțiunea „Temei legal", pct. 7
+„(1) Contribuabilii la sistemul de asigurări sociale de sănătate, prevăzuți la art. 153 alin. (1) lit. a)-d) , datorează, după caz, contribuția de asigurări sociale de sănătate [...] i) indemnizațiile de asigurări sociale de sănătate, acordate în baza art. 2 alin. (1) lit. a) și b) din Ordonanța de urgență a Guvernului nr. 158/2005, [...] aferente concediilor medicale pentru codurile de indemnizație 01, 07 și 10 [...]”
+— Legea nr. 227/2015 privind Codul fiscal, art. 155 alin. (1) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„(1) Următoarele categorii de persoane fizice sunt exceptate de la plata contribuției de asigurări sociale de sănătate: [...] i) persoanele fizice care se află în concedii medicale pentru incapacitate temporară de muncă, acordate în urma unor accidente de muncă sau unor boli profesionale, [...] precum și cele aflate în concedii medicale în baza Ordonanței de urgență a Guvernului nr. 158/2005, [...] pentru care indemnizațiile nu sunt cuprinse în categoriile de venituri supuse contribuției de asigurări sociale de sănătate potrivit art. 155 alin. (1) lit. i) , pentru indemnizațiile aferente certificatelor medicale;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 154 alin. (1) lit. i) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
-## Ce e confirmat
+## Ce înseamnă practic
 
-CASS 10% (CF art.156) e cota confirmată pentru veniturile salariale obișnuite, calculată pe brutul angajatului (eventual redus cu facilitatea „salariul minim neimpozabil"). Concediile medicale funcționează pe un mecanism diferit — indemnizația se calculează cu procente proprii (55%, 65% sau 75%, actualizate prin Legea 141/2025, aplicabile de la 1 august 2025), nu pe cotele CAS/CASS/impozit ale salariului.
+CASS 10% (CF art.156) se aplică veniturilor salariale obișnuite, calculată pe brutul angajatului (eventual redus cu facilitatea „salariul minim neimpozabil"). Indemnizația de concediu medical se calculează cu procente proprii (55%, 65% sau 75%, actualizate prin Legea 141/2025, aplicabile de la 1 august 2025), iar pentru CASS contează codul de indemnizație:
 
-## Ce nu confirmă acest dosar
-
-Dacă indemnizațiile de concediu medical sunt sau nu supuse CASS, și în ce condiții, nu a fost verificat verbatim în corpusul cercetat pentru „Calcul salarizare (de la brut la net)” — dosarul marchează explicit acest subiect ca aparținând unei funcționalități distincte („Cod 10 CM în flux”), în afara obiectului celor 12 titluri cercetate pentru calculul salarial. Acest ghid nu oferă, deci, un răspuns cert pe acest punct — pentru certitudine, verifică textul OUG 158/2005 sau resursele dedicate „Cod 10 CM în flux”.
+- pentru codurile **01, 07 și 10**, indemnizația e venit supus CASS, deci se reține CASS de 10%;
+- pentru celelalte coduri (de exemplu, concediile pentru accidente de muncă sau boli profesionale, ori concediile medicale ale căror indemnizații nu sunt cuprinse la art. 155 alin. (1) lit. i)), persoana e exceptată de la CASS pentru indemnizație.
 
 ## Ce se greșește în practică
 
-Greșeala frecventă e presupunerea, fără verificare, că toate veniturile unui salariat (inclusiv indemnizațiile de asigurări sociale de sănătate) sunt tratate identic cu salariul obișnuit din perspectiva CAS/CASS — cele două mecanisme au baze de calcul și reguli distincte, confirmate ca atare în structura codului (motorul de salarizare „Calcul salarizare (de la brut la net)” e separat de cel al concediilor medicale).
+Greșeala frecventă e presupunerea, fără verificare, că toate veniturile unui salariat (inclusiv indemnizațiile de asigurări sociale de sănătate) sunt tratate identic cu salariul obișnuit din perspectiva CAS/CASS — indemnizația de concediu medical are reguli proprii, iar la CASS contează codul de indemnizație. Greșeala inversă e să nu se rețină deloc CASS pe concediul medical, deși pentru codurile 01, 07 și 10 contribuția se datorează.
 
 ## Ce face iConta.eu
 
-Motorul de calcul salarial aplică CASS 10% exclusiv pe veniturile salariale obișnuite, din registrul „period-aware" „registrul de cote al aplicației”. Pentru tratamentul CASS al indemnizațiilor de concediu medical, verifică ecranul dedicat din iConta.eu („Cod 10 CM în flux”) — documentația aplicației nu acoperă acest flux.
+La salariu, aplicația reține CASS 10% pe veniturile salariale, cu cota în vigoare la data calculului. La introducerea unui certificat de concediu medical, aplicația calculează reținerile pe indemnizație după codul de indemnizație: CASS 10% numai pentru codurile 01, 07 și 10, fără CASS pentru celelalte coduri. Sumele calculate trec în fluturaș și în D112.
 
 [iConta.eu](/)

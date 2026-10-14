@@ -2,7 +2,7 @@
 title: "Cum se sincronizează stocul WooCommerce cu gestiunea din iConta?"
 description: "Legea contabilității cere evidența cantitativă și valorică a stocurilor — dar conectorul WooCommerce al iConta.eu nu are, azi, nicio legătură cu modulul de gestiune."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ Un magazin WooCommerce ține, de regulă, propriul lui stoc — cantitatea dispo
 
 ## Ce face iConta.eu
 
-Conectorul WooCommerce al iConta.eu (cronul zilnic, plus sincronizarea manuală) face exclusiv un singur lucru: citește comenzile finalizate din magazin și le transformă în facturi emise. **Nu există nicio legătură cu un modul de stoc sau gestiune** — verificat exhaustiv în codul conectorului, care nu conține niciun apel către evidența de stocuri. Dacă firma ține gestiune de stocuri în iConta.eu, ea rămâne complet separată de acest import automat și trebuie actualizată prin mijloace proprii, indiferent de sincronizarea comenzilor WooCommerce.
+Conectorul WooCommerce al iConta.eu (ecranul „Magazin online”: importul automat, zilnic la 07:30, plus butonul „Sincronizează acum”) face exclusiv un singur lucru: citește comenzile din magazin (finalizate sau în procesare) și le transformă în facturi emise. **Nu există nicio legătură cu un modul de stoc sau gestiune** — facturile create din comenzi nu modifică stocurile din gestiune. Dacă firma ține gestiune de stocuri în iConta.eu, ea rămâne complet separată de acest import automat și trebuie actualizată prin mijloace proprii, indiferent de sincronizarea comenzilor WooCommerce.
 
 [iConta.eu](/)

@@ -1,8 +1,8 @@
 ---
 title: Când este scadentă plata impozitului pe profit în 2026
-description: Regularizarea anuală (D101) e scadentă pe 25 iunie a anului următor — confirmat din comportamentul aplicației. Pentru plățile trimestriale anticipate, tiparul general „ziua 25 a lunii următoare trimestrului" se aplică, dar articolul exact din Codul fiscal nu a fost confirmat verbatim în acest dosar.
+description: Declarația anuală D101 se depune până la 25 iunie a anului următor (art. 42 alin. (1) Cod fiscal). În sistemul trimestrial, impozitul pe trimestrele I–III se declară și se plătește până la 25 a primei luni după trimestru, iar definitivarea pe an se face până la termenul D101 (art. 41 alin. (1)).
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,23 +13,25 @@ Impozitul pe profit are, în funcție de modul de plată ales de firmă, două t
 ## Temeiul legal
 
 ::: ghid-temei
-D101 (declarația anuală privind impozitul pe profit) e scadentă pe 25 iunie a anului următor perioadei fiscale raportate — tipar confirmat din comportamentul aplicației (codul care calculează scadențele). Articolul exact din Codul fiscal care reglementează acest termen (indicat în cod ca fiind, posibil, art.42) nu a fost confirmat cu citat verbatim în acest dosar.
-:::
+„Contribuabilii au obligația să depună o declarație anuală privind impozitul pe profit până la data de 25 iunie inclusiv a anului următor, cu excepția contribuabililor prevăzuți la art. 41 alin. (16) și (17) care depun declarația anuală privind impozitul pe profit până la termenele prevăzute în cadrul acestor alineate.”
+— Codul fiscal (Legea 227/2015), art. 42 alin. (1), în forma modificată prin OUG nr. 8/2026, aplicabilă începând cu anul fiscal 2026 (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 
-**De semnalat onest**: registrul de temeiuri legale al aplicației marchează explicit D101 (alături de D100, D112, D205, D394, D406) ca fiind „nesursat încă" formal — adică nu are, în acest moment, un citat verbatim din Codul fiscal verificat automat de un test dedicat, spre deosebire de alte tipuri de declarații (D301, D390) care au un asemenea citat confirmat mecanic. Codul indică drept posibilă locație relevantă art.42 din Codul fiscal pentru D101 și art.41/art.56 pentru plățile anticipate/regimul micro — dar acestea sunt doar indicii de căutare, nu citate confirmate. Nu prezentăm aceste articole ca temei verificat verbatim.
+„Calculul, declararea și plata impozitului pe profit, cu excepțiile prevăzute de prezentul articol, se efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III. Definitivarea și plata impozitului pe profit aferent anului fiscal respectiv se efectuează până la termenul de depunere a declarației privind impozitul pe profit prevăzut la art. 42.”
+— Codul fiscal (Legea 227/2015), art. 41 alin. (1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
 
 ## Ce e confirmat: termenul anual (D101)
 
 D101, care regularizează impozitul pe profit pentru un an fiscal, e scadentă pe **25 iunie a anului următor**. Pentru exercițiul financiar 2025, scadența ar fi 25 iunie 2026; pentru exercițiul 2026, scadența ar fi 25 iunie 2027.
 
-## Ce urmează același tipar, dar fără citat legal confirmat aici
+## Plățile trimestriale (sistemul trimestrial)
 
-Pentru firmele care plătesc impozitul pe profit trimestrial (plăți anticipate), tiparul general folosit de aplicație pentru orice declarație trimestrială e: trimestrul 1 → scadență în luna 4, trimestrul 2 → luna 7, trimestrul 3 → luna 10, trimestrul 4 → luna 1 a anului următor, cu ziua nominală 25 în fiecare caz. Acest tipar e confirmat ca mecanism general de cod, dar dosarul de cercetare nu conține un citat verbatim din Codul fiscal specific plăților anticipate de impozit pe profit — dacă aveți nevoie de certitudine deplină pentru cazul dumneavoastră (mai ales dacă firma trece de la plată trimestrială la anuală sau invers), verificați direct textul actual al Codului fiscal sau consultați un contabil.
+Pentru firmele care declară și plătesc impozitul pe profit trimestrial, termenul este 25 a primei luni după trimestru numai pentru trimestrele I–III: 25 aprilie, 25 iulie și 25 octombrie (art. 41 alin. (1)). Pentru trimestrul IV nu există un termen separat: impozitul pe întregul an se definitivează și se plătește până la termenul declarației anuale D101 (25 iunie a anului următor). Firmele care aplică sistemul anual cu plăți anticipate au alte reguli, inclusiv termenul de 25 decembrie pentru trimestrul IV — vezi [ghidul despre scadența D100 pentru plățile anticipate](/ghid/scadenta-d100-platile-anticipate).
 
 ## Ce se greșește în practică
 
 - Se confundă termenul de plată trimestrială cu cel al regularizării anuale (D101) — sunt două obligații diferite, cu termene diferite.
-- Se presupune că 25 iunie e termenul pentru toate firmele, indiferent de tipul de contribuabil — anumite categorii (de exemplu instituțiile de credit) pot avea termene diferite, neconfirmate în acest dosar.
+- Se presupune că 25 iunie e termenul pentru toate firmele, indiferent de tipul de contribuabil — art. 42 alin. (1) exceptează contribuabilii prevăzuți la art. 41 alin. (16) și (17), care depun declarația anuală la termenele prevăzute în acele alineate.
 
 ## Ce face iConta.eu
 

@@ -29,6 +29,6 @@ Emiterea unei facturi și transmiterea ei efectivă în sistemul RO e-Factura (S
 
 ## Ce face iConta.eu
 
-Dosarul de cercetare care stă la baza acestui ghid documentează în detaliu o singură funcționalitate legată de exportul facturilor emise — „Export facturi emise către SAGA”, exportul XML către programul de contabilitate SAGA, complet separat de sistemul RO e-Factura/SPV. Aplicația are, potrivit acestui dosar, și un modul distinct pentru transmiterea facturilor către e-Factura, dar acest dosar nu a verificat dacă și cum oferă acel modul o listă sau un raport al facturilor emise încă netransmise în SPV. Nu facem, așadar, nicio afirmație despre existența unei astfel de funcții de verificare în iConta.eu, pentru a nu inventa un comportament neconfirmat în cod.
+Fiecare factură emisă are, în fereastra ei de detaliu, butonul „Trimite în SPV” și, după trimitere, starea ei la ANAF: „încărcată, în prelucrare la ANAF”, „trimisă (recipișă primită)”, „respinsă de ANAF”, „eroare la trimitere” sau „blocată la ANAF — verifică în SPV”. O factură care n-a fost trimisă deloc nu afișează nicio stare. Aplicația nu oferă, în schimb, o listă sau un raport al tuturor facturilor emise încă netransmise în SPV și nu semnalează automat depășirea termenului de 5 zile lucrătoare — verificarea pe ansamblu rămâne în sarcina contabilului, factură cu factură sau direct în SPV. Butonul „Export SAGA” de pe aceeași factură e altceva: produce fișierul XML pentru programul de contabilitate SAGA și nu are legătură cu transmiterea în RO e-Factura.
 
 [iConta.eu](/)

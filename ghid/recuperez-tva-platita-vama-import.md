@@ -2,7 +2,7 @@
 title: "Cum recuperez TVA plătită în vamă la import"
 description: Deducerea TVA plătită la vamă se face pe baza declarației vamale de import și a dovezii plății — nu automat, ci prin condițiile exprese de la art. 299 alin. (1) lit. c).
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Acest traseu — plată la vamă, apoi deducere pe baza DVI — este regula gene
 
 Pentru firmele plătitoare de TVA fără certificat de amânare, aplicația calculează baza de TVA și taxa aferentă importului (pe baza valorii vamale, taxelor, accizelor, accesoriilor și cotei declarate explicit) și generează automat nota contabilă corespunzătoare modului „vamă": 4426 = 446, reflectând TVA-ul plătit la vamă și dedus pe baza declarației vamale de import, conform art. 299 alin. (1) lit. c). Documentele efective (DVI, dovada plății) rămân în sarcina contabilului — aplicația calculează suma și generează nota contabilă, dar nu verifică existența fizică a documentelor justificative.
 
-De precizat o limitare curentă: la data acestei cercetări, aplicația nu populează automat rândul de TVA la import (rd.21) în D300 pentru operațiunile cu parteneri din afara UE — acestea rămân clasificate generic pe rd.26, indiferent de modul de tratare calculat la import. Contabilul trebuie să verifice manual reflectarea corectă a deducerii în decontul depus.
+De precizat o limitare curentă: la data acestei cercetări, aplicația nu completează automat în D300 rândul pe care se declară TVA plătită în vamă la import (rândul 24 pentru cota de 21%, rândul 25 pentru cota de 11%) pentru operațiunile cu parteneri din afara UE — acestea rămân încadrate generic la rândul 29 (achiziții scutite sau neimpozabile), indiferent de modul de tratare calculat la import. Contabilul trebuie să verifice manual reflectarea corectă a deducerii în decontul depus.
 
 [iConta.eu](/)

@@ -12,6 +12,19 @@ poarta: v1
 
 Ca la orice serviciu B2B intracomunitar: dacă firma chiriașă din UE are cod de TVA valid, verificat, factura de închiriere se emite fără TVA românesc, cu mențiunea taxării inverse, iar operațiunea se declară în D390. Fără cod valid, operațiunea devine B2C, cu TVA românesc.
 
+## Temeiul legal
+
+::: ghid-temei
+„Prestările de servicii cuprind operațiuni cum sunt: a) închirierea de bunuri sau transmiterea folosinței bunurilor în cadrul unui contract de leasing;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 271 alin. (3) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice. [...] (3) Locul de prestare a serviciilor către o persoană neimpozabilă este locul unde prestatorul își are stabilit sediul activității sale economice.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 278 alin. (2) și (3) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Dacă nu dispune de informații contrare, prestatorul poate considera că un client stabilit în alt stat membru are statutul de persoană impozabilă: a) atunci când respectivul client i-a comunicat codul său individual de înregistrare în scopuri de TVA și dacă prestatorul obține confirmarea validității codului de înregistrare respectiv, precum și a numelui și adresei aferente acestuia [...]”
+— HG nr. 1/2016, Normele metodologice de aplicare a Codului fiscal, titlul VII, pct. 15 alin. (8) lit. a) (sursă: [HG nr. 1/2016 (Normele metodologice ale Codului fiscal)](https://legislatie.just.ro/Public/DetaliiDocument/174822))
+:::
+
 ## Ce se greșește în practică
 
 - Se tratează închirierea ca livrare de bun, cu așteptări legate de transport și de documente specifice AIC — regimul corect e cel al serviciilor, nu al bunurilor.

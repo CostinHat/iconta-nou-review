@@ -2318,3 +2318,25 @@ ghid (DS cap.22 v2.90). **(d)** `X-Robots-Tag: noindex` pe tot ce nu e suprafaț
 sitemap și linkurile publice verificate. **(e)** publicarea înghețată la cele 6.558 de ghiduri (`ghid_publicate.txt`). **C17** contrastul
 paginilor publice (`--p-brand` #0566EA, linkurile subliniate) și **C18** („0” pe listele cu buline din procedură), găsite de Code la proba
 vizuală. R4 BLOCAT. Un commit prin poarta completă (commitul care conține această intrare).
+
+## 13.10.2026 — Lotul §6 COMANDA_13_10: comasarea celor 45, proza despre cod, temeiul celor 73, măsurarea semantică; C19, C20
+
+Comanda verbatim în DECIZII. **(1)** 45 de ghiduri comasate în cele mai complete (conținutul util mutat, 301, lista publicată 6.513,
+`ghid_comasate.csv`). **(2)** proza despre cod rescrisă în 128 de ghiduri (cele 50 numite + 78 cu aceleași tipare); tiparele numite: zero
+peste tot; clasa largă (1.312 ghiduri) sub clichet, la decizie. **(3)** 69 din cele 71 de ghiduri rămase au temeiul citat literal (166
+de citate), 2 fără normă aplicabilă; verificatorul de citate literal (`core/ghid_citate.py`) reparat de două ori în lot. **(4)** măsurarea
+semantică: 324 de grupuri / 674 de pagini (aceeași întrebare), 82 de familii / 234 de pagini (aceeași temă), familia adaos / descărcare /
+K: 36 de ghiduri. Pe drum (CICLUL), corectate în 294 de ghiduri: rândurile D300 după formularul 2026, IMCA 0,5% în 2026, trimestrul I
+2026 la plățile anticipate, casete de temei cu proză, contradicții. **C19** (D394 E / F) consemnată, nerezolvată — decizie; **C20**
+(temeiul D406 pentru PFA) corectat. Lotul a fost întrerupt de două ori de limita de utilizare; munca s-a păstrat pe `wip/2026-10-13-1232`
+și `wip/2026-10-13-1316`. Un commit prin poarta completă (commitul care conține această intrare).
+
+## 14.10.2026 — Lotul §6 COMANDA_13_10, reluat: poarta din 13.10 respinsă la cifre, decizia (c), publicat
+
+Supersedează finalul intrării din 13.10 („Un commit prin poarta completă”): poarta din 13.10 (52:56) a trecut pytest (8.116 passed) și
+verificatorul (TOTAL 0), dar a fost **respinsă la cifrele de referință** — două note-ciornă de închidere la 31.12.2026 create pe F2 în
+producție, pe drumul aplicației, au făcut o lună „cu date” nouă (5 chei noi, nicio cifră schimbată); lotul pus la adăpost pe
+`wip/2026-10-13-1540-lot-par6`. **Decizia Costin 14.10.2026 (verbatim în DECIZII), varianta (c):** unealta de cifre alege lunile numai din
+notele validate (R36) + gard; consecința (F5 balanța 10/2026, intrată numai printr-o ciornă de salarii) întrebată și aprobată, referința
+rescrisă cu amprenta în DECIZII. **C20** probată și în browser (e2e) -> rezolvată. Un commit prin poarta completă (commitul care conține
+această intrare).

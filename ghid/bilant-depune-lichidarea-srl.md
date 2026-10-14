@@ -25,7 +25,7 @@ Din text rezultă două situații diferite, ambele distincte de S1005/S1003 „n
 - **Situațiile financiare de lichidare** propriu-zise (întocmite în vederea fuziunii, divizării, transformării sau lichidării) au aceleași componente ca situațiile financiare anuale obișnuite (art. 28 alin. (1^1)) și se depun „în condițiile prevăzute de reglementările contabile emise în acest sens" (art. 36 alin. (4)) — adică OMFP 897/2015, norme metodologice privind fuziunea, divizarea, dizolvarea și lichidarea.
 - **Raportarea contabilă anuală pe perioada lichidării** — cât timp societatea rămâne în lichidare, la finalul fiecărui an calendaristic, cu termen fix de **90 de zile** de la încheierea anului (art. 36 alin. (3)), diferit atât de termenul de 31 mai/30 aprilie al firmelor în funcțiune, cât și de excepția de 150/120 de zile aplicabilă doar exercițiilor financiare necalendaristice.
 
-Conținutul tehnic exact al Anexei nr. 1 la OMFP 897/2015 (formatul propriu-zis al acestor situații/raportări) nu a putut fi confirmat integral în sursele verificate — textul ordinului indică explicit că anexa „se publică" separat, achiziționabilă de la Monitorul Oficial, și nu e inclusă în mirror-ul consultat.
+Conținutul tehnic exact al Anexei nr. 1 la OMFP 897/2015 (formatul propriu-zis al acestor situații/raportări) nu a putut fi confirmat integral — textul ordinului indică explicit că anexa „se publică" separat, achiziționabilă de la Monitorul Oficial, și nu e reprodusă în acest ghid.
 
 ## Ce se greșește în practică
 
@@ -34,6 +34,6 @@ Conținutul tehnic exact al Anexei nr. 1 la OMFP 897/2015 (formatul propriu-zis 
 
 ## Ce face iConta.eu
 
-Trebuie spus deschis: modulul de lichidare din iConta.eu (funcționalitatea „Lichidare/radiere societate”, aplicația) generează notele contabile aferente operațiunilor de lichidare — vânzarea activelor rămase și partajul către asociați (inclusiv impozitul pe câștigul din lichidare, calculat în regim de dividend) — dar **nu generează niciun formular sau document de raportare de bilanț de lichidare**. Componentele obligatorii de mai sus (situații financiare de lichidare sau raportarea anuală de 90 de zile) nu au azi un corespondent funcțional dedicat în aplicație; ele rămân, la acest moment, de întocmit separat, pe baza temeiului legal descris mai sus.
+Trebuie spus deschis: ecranul „Lichidare / radiere firmă" din iConta.eu generează notele contabile aferente operațiunilor de lichidare — vânzarea activelor rămase și partajul către asociați (inclusiv impozitul pe câștigul din lichidare, calculat în regim de dividend) — dar **nu generează niciun formular sau document de raportare de bilanț de lichidare**. Componentele obligatorii de mai sus (situații financiare de lichidare sau raportarea anuală de 90 de zile) nu au azi un ecran dedicat în aplicație; ele rămân, la acest moment, de întocmit separat, pe baza temeiului legal descris mai sus.
 
 [iConta.eu](/)

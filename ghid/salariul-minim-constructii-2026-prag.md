@@ -1,6 +1,6 @@
 ---
 title: "Salariul minim în construcții 2026: prag special"
-description: Registrul de cote verificat pentru 2026 conține un singur salariu minim la nivel național (pe cele două ferestre ale anului), fără un prag special pentru construcții. Nu presupunem că pragul sectorial a rămas neschimbat — raportăm exact ce arată dosarul.
+description: Pentru sectorul construcții, OUG 156/2024 a stabilit un salariu minim propriu, de 4.582 lei lunar, începând cu 1 ianuarie 2025 — distinct de salariul minim general din 2026 (4.050 lei, apoi 4.325 lei). Calculul salarial din iConta.eu nu îl aplică automat.
 published: 2026-09-25
 modified: 2026-10-13
 poarta: v1
@@ -8,32 +8,37 @@ poarta: v1
 
 # Salariul minim în construcții 2026: prag special
 
-Construcțiile au avut, în anii anteriori, un salariu minim brut distinct, mai mare decât cel general pe economie. Verificând registrul folosit efectiv de motorul de calcul salarial pentru 2026, acest ghid raportează onest: **nu există, în acest registru, un salariu minim separat pentru sectorul construcțiilor** — există un singur salariu minim la nivel național, cu două valori pe cele două ferestre ale anului.
+Pentru sectorul construcții, OUG 156/2024 a stabilit un salariu minim brut propriu, mai mare decât cel general pe economie: 4.582 lei lunar, începând cu 1 ianuarie 2025. Calculul salarial din iConta.eu folosește însă **un singur salariu minim, cel general pe economie**, cu cele două valori din 2026 — pragul sectorial pentru construcții nu e aplicat automat.
 
 ## Temeiul legal
 
 ::: ghid-temei
-„Începând cu data de 1 iulie 2026, salariul de bază minim brut pe țară garantat în plată ... se stabilește ... la suma de 4.325 lei lunar, pentru un program normal de lucru în medie de 166,667 ore pe lună, reprezentând 25,949 lei/oră." — HG 146/2026, art.1
+„Începând cu data de 1 iulie 2026, salariul de bază minim brut pe țară garantat în plată ... se stabilește ... la suma de 4.325 lei lunar, pentru un program normal de lucru în medie de 166,667 ore pe lună, reprezentând 25,949 lei/oră."
+— HG nr. 146/2026, art. 1 (sursă: [HG nr. 146/2026 pentru stabilirea salariului de bază minim brut pe țară garantat în plată](https://legislatie.just.ro/Public/DetaliiDocument/308231))
+
+„(1) Prin derogare de la prevederile art. 164 alin. (1) din Legea nr. 53/2003 - Codul muncii, republicată, cu modificările și completările ulterioare, începând cu data de 1 ianuarie 2025, pentru sectorul construcții, salariul de bază minim brut pe țară garantat în plată se stabilește în bani, fără a include indemnizațiile, sporurile și alte adaosuri, la suma de 4.582 lei lunar, pentru un program normal de lucru în medie de 165,334 ore pe lună, reprezentând în medie 27,714 lei/oră.”
+— OUG nr. 156/2024, art. LXIX alin. (1) (sursă: [OUG nr. 156/2024 privind unele măsuri fiscal-bugetare pentru anul 2025](https://legislatie.just.ro/Public/DetaliiDocument/293109))
 :::
 
-## Ce confirmă registrul verificat
+## Salariul minim general în 2026
 
 | Salariu minim | Valabil | Temei |
 |---|---|---|
 | 4.050 lei | 1 ianuarie – 30 iunie 2026 | HG 1506/2024, art.1 |
 | 4.325 lei | 1 iulie – 31 decembrie 2026 | HG 146/2026, art.1 |
 
-Ambele valori sunt generale, pe economie — niciuna nu e marcată, în registrul verificat, ca aplicabilă specific sau diferit sectorului construcțiilor.
+Ambele valori sunt generale, pe economie. Pentru sectorul construcții, OUG 156/2024 art. LXIX alin. (1) stabilește separat 4.582 lei lunar, începând cu 1 ianuarie 2025 (citatul de mai sus).
 
-**De semnalat onest**: registrul de cote (dict „registrul de cote al aplicației”, „period-aware") conține o singură cheie „salariul minim”, cu cele două valori de mai sus, fără o a treia intrare pentru un prag sectorial distinct (construcții). Funcționalitatea „Calcul salarizare (de la brut la net)” declară, printre temeiurile ei generale, și OUG 34/2024 (actul care a reformat facilitățile fiscale sectoriale), dar dosarul de cercetare nu reproduce textul acelui act și nu confirmă dacă un eventual prag special pentru construcții a fost eliminat sau modificat. Nu presupunem că pragul sectorial a rămas neschimbat din ani anteriori — verificați direct stadiul actual al reglementării dacă aveți nevoie de certitudine.
+**De reținut**: facilitățile fiscale pentru salariații din construcții (scutirea de impozit pe venit de la art. 60 pct. 5 din Codul fiscal) au fost abrogate prin OUG 156/2024, dar aceeași ordonanță a stabilit, separat, un salariu minim propriu sectorului construcții. Cele două se tratează separat: abrogarea facilităților nu înseamnă că dispare și pragul de salariu minim. Dacă pragul de 4.582 lei a fost modificat printr-un act ulterior, acest ghid nu se pronunță — verificați forma în vigoare a OUG 156/2024 la data calculului.
 
 ## Ce se greșește în practică
 
-- Se aplică un salariu minim mai mare, specific construcțiilor, bazat pe o regulă valabilă în anii anteriori, fără verificarea stadiului actual al reglementării pentru 2026.
+- Se aplică salariaților din construcții salariul minim general, deși OUG 156/2024 art. LXIX alin. (1) stabilește pentru acest sector un prag propriu, de 4.582 lei lunar.
+- Se presupune că abrogarea facilităților fiscale pentru construcții (OUG 156/2024) a eliminat și salariul minim propriu sectorului — sunt prevederi distincte.
 - Se confundă cele două ferestre ale salariului minim general (4.050 lei, respectiv 4.325 lei) cu un eventual prag sectorial.
 
 ## Ce face iConta.eu
 
-„salariul minim al lunii” returnează salariul minim general aplicabil lunii calculate — 4.050 sau 4.325 lei, după fereastră — fără un tratament diferit pentru angajatorii din construcții. Dacă aveți nevoie de un prag sectorial specific, verificați direct stadiul actual al reglementării — acest dosar nu-l confirmă.
+Calculul salarial din iConta.eu folosește salariul minim general aplicabil lunii calculate — 4.050 sau 4.325 lei, după perioadă — fără un tratament diferit pentru angajatorii din construcții. Pragul de 4.582 lei pentru sectorul construcții nu e aplicat automat: verificarea încadrării salariaților din construcții la acest prag rămâne în sarcina contabilului.
 
 [iConta.eu](/)

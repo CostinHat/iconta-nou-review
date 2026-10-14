@@ -2,7 +2,7 @@
 title: Diferența dintre suspendare și lichidare
 description: Suspendarea (inactivitatea temporară) este reversibilă și limitată în timp; lichidarea urmează dizolvării și duce, la final, la radierea firmei - iar trecerea de la una la cealaltă nu este automată în cazul societăților.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,26 @@ Suspendarea și lichidarea sunt adesea confundate, dar au efecte juridice comple
 ## Temeiul legal
 
 ::: ghid-temei
-Legea nr. 31/1990 (Legea societăților), art. 233 alin. (1) și (4) (dizolvarea deschide procedura lichidării; societatea își păstrează personalitatea juridică doar până la terminarea lichidării) și art. 237^2, cu referire la art. VIII din Legea nr. 239/2025 (regimul de trecere de la inactivitatea temporară înscrisă la registrul comerțului la dizolvare); Legea nr. 207/2015 (Codul de procedură fiscală), art. 92 alin. (4^1)-(4^3) (dizolvarea contribuabililor rămași inactivi fiscal peste un an).
+„Dizolvarea societății are ca efect deschiderea procedurii lichidării.”
+— Legea 31/1990, art. 233 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
+
+„Societatea își păstrează personalitatea juridică pentru operațiunile lichidării, până la terminarea acesteia.”
+— Legea 31/1990, art. 233 alin. (4) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
+
+„Oficiul Național al Registrului Comerțului, prin registrator, constată întrunirea condițiilor pentru dizolvarea societății [...] b) a încetat activitatea societății sau nu a fost reluată activitatea după perioada de inactivitate temporară, anunțată organelor fiscale și înscrisă în registrul comerțului, perioadă care nu poate depăși 3 ani de la data înscrierii în registrul comerțului”
+— Legea 31/1990, art. 237^2 alin. (1) lit. b) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
+
+„Dacă un contribuabil/plătitor declarat inactiv nu se reactivează în termen de un an de la data la care a fost declarat în inactivitate, acesta se dizolvă potrivit actului normativ de înființare, cu excepția societăților reglementate de Legea societăților nr. 31/1990, republicată, cu modificările și completările ulterioare, care se dizolvă potrivit art. VIII din Legea nr. 239/2025”
+— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (4^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„În cazul contribuabilului/plătitorului declarat inactiv care nu se reactivează în termen de un an de la data declarării în inactivitate, organul fiscal are obligația de a formula cerere de dizolvare”
+— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (4^2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„Prin excepție de la alin. (4^2), în cazul contribuabilului/ plătitorului care are inactivitatea temporară înscrisă la registrul comerțului, formularea cererii de dizolvare se realizează după expirarea termenului de inactivitate temporară, în situația în care nu și-a reluat activitatea.”
+— Codul de procedură fiscală (Legea 207/2015), art. 92 alin. (4^3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„Dacă o societate reglementată de Legea societăților nr. 31/1990, republicată, cu modificările și completările ulterioare, declarată inactivă potrivit art. 92 alin. (4) din Legea nr. 207/2015, cu modificările și completările ulterioare, rămâne în inactivitate pentru o perioadă mai mare decât cea prevăzută de lege, societatea se dizolvă potrivit prevederilor prezentului articol.”
+— Legea 239/2025, art. VIII alin. (1) (sursă: [Legea nr. 239/2025 privind stabilirea unor măsuri de redresare și eficientizare a resurselor publice](https://legislatie.just.ro/Public/DetaliiDocument/305208))
 :::
 
 **Suspendarea** (inactivitatea temporară) este o stare reversibilă: firma își păstrează personalitatea juridică deplină, poate relua activitatea oricând, iar legea îi impune doar un termen maxim (3 ani) în care trebuie fie să se reactiveze, fie să intre pe traseul dizolvării.

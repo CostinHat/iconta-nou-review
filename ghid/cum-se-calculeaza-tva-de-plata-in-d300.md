@@ -2,7 +2,7 @@
 title: Cum se calculează TVA de plată în D300?
 description: TVA de plată rezultă din diferența dintre total taxă colectată și total taxă dedusă, cumulată cu soldul de plată reportat din luna precedentă — sold pe care contabilul trebuie să-l introducă manual la fiecare depunere.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -55,6 +55,6 @@ Firmă cu TVA colectată 24.000 lei (rd.19) și TVA dedusă 19.000 lei (rd.35) �
 
 ## Ce face iConta.eu
 
-Lanțul de la rd.36 la rd.45 e calculat automat, cu formule identice cu cele din OPANAF 174/2026 (codul intern folosește denumirile de atribut R33–R42 pentru aceleași rânduri tipărite 36–45). Ce NU se preia automat: soldul de plată reportat (rd.38) și soldul sumei negative reportat fără rambursare cerută (rd.41) sunt câmpuri complet manuale — contabilul trebuie să le introducă la fiecare depunere, pe baza rd.44/rd.45 din decontul lunii precedente. TVA deductibilă la cota de 9% nu se auto-emite din facturi — apare doar ca avertisment, tocmai pentru că validatorul ANAF o respinge fără o justificare introdusă corect.
+Lanțul de la rd.36 la rd.45 e calculat automat, cu formule identice cu cele din OPANAF 174/2026. Ce NU se preia automat: soldul de plată reportat (rd.38) și soldul sumei negative reportat fără rambursare cerută (rd.41) sunt câmpuri complet manuale — contabilul trebuie să le introducă la fiecare depunere, pe baza rd.44/rd.45 din decontul lunii precedente. TVA deductibilă la cota de 9% nu se auto-emite din facturi — apare doar ca avertisment, tocmai pentru că validatorul ANAF o respinge fără o justificare introdusă corect.
 
 [iConta.eu](/)

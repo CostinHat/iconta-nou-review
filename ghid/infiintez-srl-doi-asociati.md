@@ -2,7 +2,7 @@
 title: Cum înființez un SRL cu doi asociați?
 description: Înființarea unui SRL (act constitutiv, capital social, înmatriculare la Registrul Comerțului) e o etapă notarială și administrativă, distinctă de contabilitatea decontărilor cu asociații — care începe abia după ce firma există.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -10,7 +10,7 @@ poarta: v1
 
 Înainte de orice altceva, trebuie spus clar: **înființarea unei societăți nu e o funcționalitate contabilă** și nu ține de modul în care firma, odată constituită, gestionează relația financiară cu asociații ei. Pașii de înmatriculare (redactarea actului constitutiv, stabilirea capitalului social și a cotelor de participare ale celor doi asociați, depunerea dosarului la Registrul Comerțului, obținerea certificatului de înregistrare) sunt un proces juridico-administrativ care precede orice operațiune contabilă.
 
-Acest subiect nu face parte din dosarul de cercetare pe care se bazează acest ghid și nu are corespondent într-o funcționalitate a iConta.eu — recomandăm consultarea unui notar, avocat sau a unui furnizor de servicii de înființare firme pentru pașii exacți și actualizați.
+Acest ghid nu detaliază pașii de înmatriculare, iar subiectul nu are corespondent într-o funcționalitate a iConta.eu — recomandăm consultarea unui notar, avocat sau a unui furnizor de servicii de înființare firme pentru pașii exacți și actualizați.
 
 ## Temeiul legal
 

@@ -2,7 +2,7 @@
 title: "Greșeala de a nu înregistra concediul medical corect"
 description: "De ce indemnizația de concediu medical trebuie calculată pe baza veniturilor efectiv plătite în ultimele 6 luni, nu pe un recalcul retroactiv, potrivit OUG 158/2005."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce înseamnă corect, pas cu pas:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează baza indemnizației de concediu medical exact pe principiul corect: preferă cifrele din statele de plată deja **emise** pentru fiecare din cele 6 luni anterioare, iar pentru lunile neemise folosește recalculul — dar le numără și le raportează **separat**, astfel încât contabilul să vadă din ce anume s-a compus media. Motivația din codul aplicației e explicită: „ce s-a plătit efectiv e un fapt" — un recalcul „la zi" ar produce o bază de calcul care nu corespunde niciunei realități efectiv plătite salariatului.
+La data acestui ghid, iConta.eu calculează baza indemnizației de concediu medical exact pe principiul corect: preferă cifrele din statele de plată deja **emise** pentru fiecare din cele 6 luni anterioare, iar pentru lunile neemise folosește recalculul — dar le numără și le raportează **separat**, astfel încât contabilul să vadă din ce anume s-a compus media. Motivul e simplu: ce s-a plătit efectiv salariatului e un fapt, iar un recalcul „la zi" ar produce o bază de calcul care nu corespunde niciunei sume plătite efectiv.
 
 [iConta.eu](/)

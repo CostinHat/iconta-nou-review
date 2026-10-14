@@ -10,9 +10,22 @@ poarta: v1
 
 Da. Locul prestării unui serviciu B2B intracomunitar (la sediul beneficiarului, conform art. 278 alin. (2) din Codul fiscal) decide **regimul de TVA** al operațiunii — dacă e neimpozabilă în România, dacă se declară în D390. Nu decide dacă venitul respectiv se cuprinde sau nu în **veniturile totale** pentru impozitul pe veniturile microîntreprinderilor. Sunt două impozite diferite, cu baze de calcul diferite.
 
-Ce confirmă acest citat e faptul că, la nivel de aplicație, obligațiile legate de operațiunile intracomunitare (D390, verificarea VIES) nu depind de regimul de impozitare al firmei — se aplică la fel unei microîntreprinderi ca unei firme plătitoare de impozit pe profit. Regimul micro și existența operațiunilor intracomunitare sunt două perimetre independente.
+În aplicație, obligațiile legate de operațiunile intracomunitare (D390, verificarea VIES) nu depind de regimul de impozitare al firmei — se aplică la fel unei microîntreprinderi ca unei firme plătitoare de impozit pe profit. Regimul micro și existența operațiunilor intracomunitare sunt două perimetre independente.
 
-**Notă de onestitate:** documentația aplicației a fost construit pe latura de TVA a operațiunilor intracomunitare (art. 268, 278, 294, 308-309, 322, 325 din Codul fiscal) și nu conține un citat verificat din Titlul III al Codului fiscal (impozitul pe veniturile microîntreprinderilor). Răspunsul de mai sus e principiul general, cunoscut independent de regulile de TVA din acest dosar: veniturile din exploatare, indiferent dacă provin dintr-o operațiune internă sau intracomunitară, se cuprind în veniturile totale relevante pentru încadrare — sub rezerva excepțiilor limitativ enumerate în lege, care se verifică punctual la data la care se face încadrarea, separat de acest dosar.
+Art. 47 alin. (1^1) din Codul fiscal leagă plafonul de veniturile care constituie cifra de afaceri, definită potrivit reglementărilor contabile aplicabile — criteriul e contabil, nu de TVA. Regimul de TVA al operațiunii (taxabilă, scutită sau cu locul în afara României) nu schimbă, prin el însuși, încadrarea venitului. Plafonul exact și eventualele situații speciale se verifică pe textul în vigoare la data încadrării.
+
+## Temeiul legal
+
+::: ghid-temei
+„Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„În sensul prezentului titlu, o microîntreprindere este o persoană juridică română care îndeplinește cumulativ următoarele condiții, la data de 31 decembrie a anului fiscal precedent: [...] c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 47 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„În aplicarea prevederilor alin. (1) lit. c) limita privind veniturile realizate se verifică luând în calcul veniturile realizate de persoana juridică română, cumulate cu veniturile întreprinderilor legate cu aceasta, iar veniturile care se iau în calcul sunt cele care constituie cifra de afaceri definită potrivit reglementărilor contabile aplicabile [...]”
+— Legea nr. 227/2015 privind Codul fiscal, art. 47 alin. (1^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
 
 ## Ce se greșește în practică
 
@@ -20,6 +33,6 @@ Confuzia cea mai frecventă e să se creadă că o operațiune „specială” f
 
 ## Ce face iConta.eu
 
-Câmpurile „operațiuni intracomunitare (Date firmă)” și „înregistrare art.317 (Date firmă)” din vectorul fiscal al firmei se aplică identic, indiferent dacă firma e la impozit pe veniturile microîntreprinderilor sau la impozit pe profit — nu există o ramură de cod care ar exclude sau ar trata diferit veniturile din operațiuni intracomunitare la calculul plafonului micro. Calculul propriu-zis al veniturilor totale pentru încadrarea sau menținerea ca microîntreprindere nu face parte din funcționalitatea „Operațiuni intracomunitare” cercetată aici — e o funcționalitate distinctă, de impozit pe venit, pe care acest dosar nu a verificat-o.
+În Date firmă, câmpurile „operațiuni intracomunitare” și „înregistrare art.317” se aplică la fel, indiferent dacă firma e la impozit pe veniturile microîntreprinderilor sau la impozit pe profit — regimul micro nu schimbă felul în care aplicația tratează operațiunile intracomunitare. Calculul veniturilor totale pentru încadrarea sau menținerea ca microîntreprindere nu e descris în acest ghid ca funcție a aplicației.
 
 [iConta.eu](/)

@@ -16,6 +16,7 @@ Din obișnuința cu alte declarații ANAF (D100, D112), mulți contabili caută 
 „Nu se admit întocmirea şi depunerea de deconturi rectificative pentru corectarea datelor
 din deconturile anterioare.”
 — OPANAF 174/2026, instrucțiuni de completare, formularul (300) „Decont de taxă pe valoarea
+
 adăugată”
 :::
 

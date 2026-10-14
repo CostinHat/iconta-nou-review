@@ -2,7 +2,7 @@
 title: "Ce fac dacă am omis o factură din D390?"
 description: Dacă declarația nu a fost încă depusă, regenerarea o corectează automat; dacă a fost deja depusă, corectarea presupune o declarație rectificativă pe care aplicația nu o generează încă automat.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,9 +13,11 @@ Ce poți face depinde de momentul în care descoperi omisiunea: înainte de a tr
 ## Temeiul legal
 
 ::: ghid-temei
-**OPANAF 705/2020, Anexa 2, Secțiunea I**:
-> „Declaraţia depusă iniţial se rectifică prin depunerea unei noi declaraţii, pe acelaşi format, bifând căsuţa corespunzătoare de pe formular. În declaraţia rectificativă se rectifică tranzacţii declarate în orice perioadă de raportare anterioară şi se completează toate rubricile formularului cu datele valabile la momentul declarării, indiferent dacă acestea au mai fost declarate.
-> ATENŢIE: Informaţiile completate eronat în perioade de raportare anterioare nu se corectează prin înscrierea cifrei «0» la rubrica «Bază impozabilă» [...] Se completează câte o declaraţie rectificativă pentru fiecare perioadă de raportare pentru care se operează rectificări."
+„Declaraţia depusă iniţial se rectifică prin depunerea unei noi declaraţii, pe acelaşi format, bifând căsuţa corespunzătoare de pe formular. În declaraţia rectificativă se rectifică tranzacţii declarate în orice perioadă de raportare anterioară şi se completează toate rubricile formularului cu datele valabile la momentul declarării, indiferent dacă acestea au mai fost declarate.”
+— OPANAF 705/2020, Anexa 2, Modul de completare a declaraţiei recapitulative, Secţiunea I (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
+
+„Informaţiile completate eronat în perioade de raportare anterioare nu se corectează prin înscrierea cifrei "0" la rubrica "Bază impozabilă" din declaraţia recapitulativă rectificativă. Se completează câte o declaraţie rectificativă pentru fiecare perioadă de raportare pentru care se operează rectificări.”
+— OPANAF 705/2020, Anexa 2, Modul de completare a declaraţiei recapitulative, Secţiunea I (sursă: [OPANAF nr. 705/2020 pentru aprobarea formularului 390 VIES](https://legislatie.just.ro/Public/DetaliiDocument/223871))
 :::
 
 ## Ce se greșește în practică

@@ -22,6 +22,7 @@ Cererea o poate face orice asociat, indiferent de cota lui. Dacă tribunalul adm
 ::: ghid-temei
 „Dizolvarea societății are ca efect deschiderea procedurii lichidării. Dizolvarea are loc fără lichidare, în cazul fuziunii ori divizării totale a societății sau în alte cazuri prevăzute de lege."
 — Legea societăților nr. 31/1990, art. 233 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
+
 „Din momentul dizolvării, directorii, administratorii, respectiv directoratul, nu mai pot întreprinde noi operațiuni. În caz contrar, aceștia sunt personal și solidar răspunzători pentru acțiunile întreprinse."
 — Legea societăților nr. 31/1990, art. 233 alin. (2) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::

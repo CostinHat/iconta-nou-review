@@ -2,7 +2,7 @@
 title: "Cum văd facturile primite în SPV"
 description: "Cum ajung facturile electronice primite de la furnizori la destinatar prin sistemul RO e-Factura, potrivit OUG 120/2021."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Câteva reguli practice care decurg din text:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **automatizează parțial preluarea facturilor primite**: un cron dedicat interoghează periodic mesajele de tip „FACTURĂ PRIMITĂ" din sistemul RO e-Factura pentru fiecare firmă conectată, descarcă facturile noi și le introduce ca ciornă în evidența facturilor primite ale firmei. Aplicația nu creează automat o cheltuială din factura descărcată — contabilul validează manual fiecare factură, potrivit principiului „patru ochi" aplicat consecvent în iConta.eu. Vizualizarea propriu-zisă a facturilor deja transmise de furnizor rămâne, în paralel, disponibilă și direct în Spațiul Privat Virtual al firmei.
+La data acestui ghid, iConta.eu **automatizează parțial preluarea facturilor primite**: aplicația verifică automat, de mai multe ori pe zi, mesajele de tip „FACTURĂ PRIMITĂ" din sistemul RO e-Factura pentru fiecare firmă conectată, descarcă facturile noi și le introduce ca ciornă în evidența facturilor primite ale firmei (lista „Facturi primite din SPV”). Aplicația nu creează automat o cheltuială din factura descărcată — contabilul validează manual fiecare factură, potrivit principiului „patru ochi" aplicat consecvent în iConta.eu. Vizualizarea propriu-zisă a facturilor deja transmise de furnizor rămâne, în paralel, disponibilă și direct în Spațiul Privat Virtual al firmei.
 
 [iConta.eu](/)

@@ -29,6 +29,6 @@ De la intrarea în vigoare deplină a obligației B2B (1 iulie 2024), o factură
 
 ## Ce face iConta.eu
 
-Singura funcționalitate verificată în cod în acest dosar de cercetare pentru cuvintele-cheie apropiate acestui titlu este „Export facturi emise către SAGA” — exportul tehnic al facturilor emise către programul SAGA, care nu are nicio legătură cu sistemul RO e-Factura/SPV și, fiind o punte între două softuri de contabilitate, nu are temei legal propriu, deci nici sancțiuni asociate. Aplicația conține, conform dosarului, un modul separat pentru transmiterea efectivă în e-Factura, dar acest dosar nu a verificat dacă și cum semnalează aplicația riscul de sancțiune pentru facturi netransmise sau transmise cu întârziere — nu facem, deci, nicio afirmație neconfirmată despre asta.
+Exportul facturilor emise către SAGA (butoanele „Export SAGA” din ecranul facturilor) este doar o punte către alt program de contabilitate: nu are legătură cu sistemul RO e-Factura/SPV, nu are temei legal propriu și, deci, nici sancțiuni asociate. Transmiterea efectivă în RO e-Factura este o funcționalitate separată a aplicației, iar starea fiecărei trimiteri se vede în ecranul facturii (vezi [ghidul despre statusul facturii în e-Factura](/ghid/statusul-facturii-factura-inseamna-fiecare)). Acest ghid nu se pronunță asupra faptului dacă aplicația avertizează separat pentru facturile netransmise sau transmise după termenul de 5 zile lucrătoare.
 
 [iConta.eu](/)

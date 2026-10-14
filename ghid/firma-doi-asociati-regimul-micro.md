@@ -10,7 +10,7 @@ poarta: v1
 
 Întrebarea „mai pot rămâne la micro dacă am doi asociați în loc de unul?" pornește de la o presupunere greșită: **numărul de asociați nu e, în sine, un criteriu de încadrare la impozitul pe veniturile microîntreprinderilor.** Încadrarea depinde de plafonul de venituri, de structura acționariatului în raport cu alte firme deținute și de alte condiții din Codul fiscal — nu de câte persoane dețin părțile sociale.
 
-Important de precizat de la început: acest subiect (praguri și condiții pentru regimul micro) nu ține de funcționalitatea „Decontări asociați" a iConta.eu și nu face parte din dosarul de cercetare care stă la baza acestui ghid — pentru condițiile exacte de încadrare la micro în 2026, verificați direct Codul fiscal (Titlul III) sau un consultant fiscal.
+Important de precizat de la început: acest subiect (praguri și condiții pentru regimul micro) nu ține de funcționalitatea „Decontări asociați" a iConta.eu, iar acest ghid nu îl detaliază — pentru condițiile exacte de încadrare la micro în 2026, verificați direct Codul fiscal (Titlul III) sau un consultant fiscal.
 
 ## Temeiul legal
 

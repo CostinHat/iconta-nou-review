@@ -17,6 +17,7 @@ Pentru contabil, contează cine a primit chiria și în ce cont. De asta depinde
 ::: ghid-temei
 „La instituirea sechestrului și în tot cursul executării silite, organul de executare silită poate numi un administrator-sechestru, dacă această măsură este necesară pentru administrarea imobilului urmărit, a chiriilor, a arendei și a altor venituri obținute din administrarea acestuia, inclusiv pentru apărarea în litigii privind imobilul respectiv."
 — Codul de procedură fiscală (Legea 207/2015), art. 243 alin. (1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „Administratorul-sechestru consemnează veniturile încasate potrivit alin. (1) la unitățile abilitate și depune recipisa la organul de executare silită."
 — Codul de procedură fiscală (Legea 207/2015), art. 243 alin. (3) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::

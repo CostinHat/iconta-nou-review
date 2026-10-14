@@ -2,7 +2,7 @@
 title: "e-Factura 500: erori de server SPV și cum le tratez"
 description: "Ce înseamnă o eroare de server la încărcarea unei facturi în SPV, ce spune legea despre nefuncționarea sistemului și cum se retrimite corect."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Când încarci o factură în RO e-Factura și serverul ANAF răspunde cu o eroa
 
 La trimiterea unei facturi, iConta validează întâi structura la validatorul public ANAF, fără token — dacă structura nu e validă, nu se încarcă nimic („nu trimitem gunoi"). Dacă structura e validă, factura ajunge la ANAF printr-un singur apel de încărcare; dacă acel apel se termină cu o eroare de server, factura primește starea **„nok" (respinsă de ANAF)**, cu mesajul brut primit de la ANAF afișat lângă factură, iar semaforul devine roșu.
 
-Important de știut: aplicația **nu reîncearcă automat** trimiterea și nu are niciun cron care să retrimită singur o factură căzută pe eroare de server — retrimiterea e mereu manuală. Spre deosebire de stările „în prelucrare"/„trimisă", starea „nok" nu blochează butonul „Trimite în SPV" — poți apăsa din nou oricând, iar factura nu se dublează, pentru că trimiterea anterioară nu a fost una „vie" (nu are recipisă/în prelucrare). Dacă erorile persistă mai mult de câteva ore, verifică anunțurile oficiale de nefuncționare pe site-ul ANAF înainte de a insista cu reîncercări repetate.
+Important de știut: aplicația **nu reîncearcă automat** trimiterea și nu retrimite singură, în fundal, o factură căzută pe eroare de server — retrimiterea e mereu manuală. Spre deosebire de stările „în prelucrare"/„trimisă", starea „nok" nu blochează butonul „Trimite în SPV" — poți apăsa din nou oricând, iar factura nu se dublează, pentru că trimiterea anterioară nu a fost una „vie" (nu are recipisă/în prelucrare). Dacă erorile persistă mai mult de câteva ore, verifică anunțurile oficiale de nefuncționare pe site-ul ANAF înainte de a insista cu reîncercări repetate.
 
 [iConta.eu](/)

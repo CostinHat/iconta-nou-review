@@ -63,9 +63,13 @@ def _numara(xml, sectiune, element):
 
 
 def _luni_cu_date(cur, schema):
+    """Lunile cu date ale firmei = lunile notelor VALIDATE (o factură emisă intră în evidență prin nota ei). [14.10.2026, decizia
+    Costin, varianta (c), verbatim în DECIZII] „Unealta de cifre alege lunile numai din notele validate (R36).” — o ciornă nu e evidență
+    (balanța și declarațiile o ignoră), deci nu face o lună „cu date”: pe 13.10 două ciorne de închidere la 31.12.2026 pe F2 au adăugat o
+    lună goală și au oprit poarta."""
     s = '"%s"' % schema
-    cur.execute("SELECT DISTINCT to_char(d, 'YYYY-MM') FROM (SELECT data AS d FROM {s}.inregistrari UNION ALL "
-                "SELECT data_emitere FROM {s}.facturi) x WHERE d IS NOT NULL ORDER BY 1".format(s=s))
+    cur.execute("SELECT DISTINCT to_char(data, 'YYYY-MM') FROM {s}.inregistrari WHERE status = 'validata' AND data IS NOT NULL "
+                "ORDER BY 1".format(s=s))
     return [tuple(int(p) for p in r[0].split("-")) for r in cur.fetchall()]
 
 

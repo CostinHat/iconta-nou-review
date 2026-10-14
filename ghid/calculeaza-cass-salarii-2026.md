@@ -14,9 +14,12 @@ CASS (contribuția de asigurări sociale de sănătate) se reține din salariul 
 
 ::: ghid-temei
 Contribuția CAS „nu poate fi mai mică" decât CAS calculat pe salariul minim, „în baza unui contract individual de muncă cu normă întreagă SAU cu timp parțial" — condiția e venitul sub minim, nu norma de lucru. — Codul fiscal, art.146 alin.(5^6)
+
+„Prevederile art. 146 alin. (5^6)-(5^9) se aplică în mod corespunzător.”
+— Codul fiscal (Legea nr. 227/2015), art. 168 alin. (6^1) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
 
-Cota CASS (10%) e confirmată la art.156 din Codul fiscal, activă din 2018-01-01, fără modificări până azi. Dosarul de cercetare arată că regula podelei minime — contribuția nu poate fi calculată sub nivelul corespunzător salariului minim — se aplică ambelor contribuții, CAS și CASS (art.146 alin.(5^6)-(5^9) coroborat cu art.168 alin.(6^1) pentru CASS); citatul verbatim disponibil în corpus se referă explicit la CAS, dar sinteza dosarului confirmă că mecanismul analog acoperă și CASS.
+Cota CASS (10%) e confirmată la art.156 din Codul fiscal, activă din 2018-01-01, fără modificări până azi. Regula podelei minime — contribuția nu poate fi calculată sub nivelul corespunzător salariului minim — e scrisă la CAS (art.146 alin.(5^6)-(5^9)), iar art.168 alin.(6^1) o aplică în mod corespunzător și la CASS, deci acoperă ambele contribuții.
 
 ## Formula de calcul
 
@@ -43,6 +46,6 @@ Cea mai frecventă greșeală e calcularea CASS pe baza rămasă după scăderea
 
 ## Ce face iConta.eu
 
-CASS se calculează în „calculul salariului (Salarii)”, imediat după CAS, din aceeași bază (brut redus cu facilitatea, dacă se aplică). Cota și pragurile aferente vin din registrul „period-aware" „registrul de cote al aplicației”, care aplică automat valorile corecte pentru fereastra din 2026 în care cade luna statului de plată.
+CASS se calculează automat la calculul salariului din ecranul Salariați, imediat după CAS, din aceeași bază (brut redus cu facilitatea, dacă se aplică). Cota și pragurile se aleg automat după luna statului de plată, cu valorile valabile în 2026 pentru acea lună.
 
 [iConta.eu](/)

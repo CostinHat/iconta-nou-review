@@ -17,6 +17,7 @@ Pentru contabilul firmei care are de plătit un furnizor poprit, aceasta e o ope
 ::: ghid-temei
 „în cazul în care sumele datorate debitorului sunt poprite de mai mulți creditori, terțul poprit anunță în scris despre aceasta pe creditori și procedează la distribuirea sumelor potrivit ordinii de preferință prevăzute la art. 258 ."
 — Codul de procedură fiscală (Legea 207/2015), art. 236 alin. (11) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „Pentru plata creanțelor care au aceeași ordine de preferință, dacă legea nu prevede altfel, suma realizată din executare se repartizează între creditori proporțional cu creanța fiecăruia."
 — Codul de procedură fiscală (Legea 207/2015), art. 258 alin. (2) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::

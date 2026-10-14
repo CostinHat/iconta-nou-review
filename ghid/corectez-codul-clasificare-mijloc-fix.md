@@ -8,7 +8,7 @@ poarta: v1
 
 # Cum corectez codul de clasificare al unui mijloc fix?
 
-Ca și la GH-02664, subiectul ține de registrul de mijloace fixe (amortizare, impozit pe profit), nu de TVA. Ce se schimbă aici e situația: nu mai cauți codul pentru prima dată, ci corectezi unul greșit introdus deja.
+Ca și la [găsirea codului de clasificare al unui mijloc fix](/ghid/gasesc-codul-clasificare-mijloc-fix), subiectul ține de registrul de mijloace fixe (amortizare, impozit pe profit), nu de TVA. Ce se schimbă aici e situația: nu mai cauți codul pentru prima dată, ci corectezi unul greșit introdus deja.
 
 ## Temeiul legal
 

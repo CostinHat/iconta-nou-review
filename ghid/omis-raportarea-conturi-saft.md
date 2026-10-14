@@ -30,6 +30,6 @@ Sancțiunea pentru o declarație incompletă e prevăzută explicit: „depunere
 
 Generatorul D406 produce declarația din datele curente din evidență la momentul generării — dacă între timp ai adăugat sau corectat înregistrări (inclusiv conturi omise inițial), o nouă generare pentru aceeași perioadă reflectă starea actualizată a contabilității. Validarea rămâne obligatorie și pentru redepunere, cu același instrument oficial (validatorul ANAF (DUKIntegrator), integrat în aplicație) — o declarație rectificativă trebuie să treacă la fel de „valid" ca prima.
 
-Nu am găsit în dosarul de cercetare un mecanism dedicat, în aplicație, care să marcheze explicit o depunere ca „rectificativă" prin altceva decât redepunerea pentru aceeași perioadă — conform normei citate mai sus, acest statut e automat prin simplul fapt al redepunerii, nu printr-o setare separată.
+Aplicația nu are o setare separată prin care să marcați o depunere D406 drept „rectificativă" și nici nu e nevoie de una: conform normei citate mai sus, acest statut rezultă automat din redepunerea pentru aceeași perioadă.
 
 [iConta.eu](/)

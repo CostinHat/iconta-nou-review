@@ -17,6 +17,7 @@ Combinația e utilă când firma nu e sigură că va câștiga contestația și 
 ::: ghid-temei
 „Pe perioada suspendării executării silite potrivit prezentului articol, contribuabilul poate solicita acordarea eșalonării la plată pentru aceste obligații fiscale suspendate la executarea silită. În acest caz, scrisoarea de garanție poate constitui garanție potrivit art. 193, în scopul acordării eșalonării la plată, cu condiția prelungirii perioadei de valabilitate în condițiile prevăzute la art. 193 alin. (17)."
 — Codul de procedură fiscală (Legea 207/2015), art. 235 alin. (5^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
 „Perioada de valabilitate a scrisorii de garanție/poliței de asigurare de garanție trebuie să fie cu cel puțin 3 luni mai mare decât scadența ultimei rate din eșalonarea la plată."
 — Codul de procedură fiscală (Legea 207/2015), art. 193 alin. (17) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
 :::

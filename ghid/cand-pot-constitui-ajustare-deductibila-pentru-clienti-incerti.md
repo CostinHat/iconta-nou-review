@@ -13,21 +13,12 @@ Constituirea contabilă a ajustării pentru un client incert (cont 491) se poate
 ## Temeiul legal
 
 ::: ghid-temei
-"Evaluarea la inventar a creanțelor și a datoriilor se face la valoarea lor probabilă de încasare sau
-de plată. Diferențele constatate în minus între valoarea de inventar stabilită la inventariere și
-valoarea contabilă a creanțelor se înregistrează în contabilitate pe seama ajustărilor pentru
-deprecierea creanțelor."
+„Evaluarea la inventar a creanțelor și a datoriilor se face la valoarea lor probabilă de încasare sau de plată. Diferențele constatate în minus între valoarea de inventar stabilită la inventariere și valoarea contabilă a creanțelor se înregistrează în contabilitate pe seama ajustărilor pentru deprecierea creanțelor.”
+— OMFP 1802/2014, pct. 89 alin. (1) (sursă: [OMFP nr. 1802/2014 (Reglementările contabile privind situațiile financiare anuale individuale și consolidate)](https://legislatie.just.ro/Public/DetaliiDocument/164320))
 
-"ajustările pentru deprecierea creanțelor, înregistrate potrivit reglementărilor contabile aplicabile,
-reprezentând sume datorate de clienții interni și externi pentru produse, semifabricate, materiale,
-mărfuri vândute, lucrări executate și servicii prestate, în limita unui procent de 30% din valoarea
-acestor ajustări, altele decât cele prevăzute la lit. d)-f), h) și i), dacă creanțele îndeplinesc
-cumulativ următoarele condiții:
-1. sunt neîncasate într-o perioadă ce depășește 270 de zile de la data scadenței;
-2. nu sunt garantate de altă persoană;
-3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului;"
+„ajustările pentru deprecierea creanțelor, înregistrate potrivit reglementărilor contabile aplicabile, reprezentând sume datorate de clienții interni și externi pentru produse, semifabricate, materiale, mărfuri vândute, lucrări executate și servicii prestate, în limita unui procent de 30% din valoarea acestor ajustări, altele decât cele prevăzute la lit. d)-f), h) și i), dacă creanțele îndeplinesc cumulativ următoarele condiții: [...] 1. sunt neîncasate într-o perioadă ce depășește 270 de zile de la data scadenței; [...] 2. nu sunt garantate de altă persoană; [...] 3. sunt datorate de o persoană care nu este persoană afiliată contribuabilului;”
+— Legea 227/2015, art. 26 alin. (1) lit. c) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::
-
 ## Constituire contabilă vs. deducere fiscală
 
 Cele două momente nu coincid:

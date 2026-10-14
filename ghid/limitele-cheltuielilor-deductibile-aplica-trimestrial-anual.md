@@ -22,6 +22,7 @@ Contează în practică pentru că, la plătitorul trimestrial, o cheltuială de
 ::: ghid-temei
 „Rezultatul fiscal se calculează trimestrial/anual, cumulat de la începutul anului fiscal."
 — Codul fiscal (Legea 227/2015), art. 19 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
 „Contribuabilii, alții decât cei prevăzuți la alin. (4) [...] pot opta pentru calculul, declararea și plata impozitului pe profit anual, cu plăți anticipate, efectuate trimestrial."
 — Codul fiscal (Legea 227/2015), art. 41 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
 :::

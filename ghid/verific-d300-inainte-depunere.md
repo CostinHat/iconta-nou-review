@@ -2,7 +2,7 @@
 title: Cum verific D300 înainte de depunere?
 description: Un verde nu e mereu garanție — dacă lipsesc simetric facturi din declarație și din contabilitate, verificarea le poate rata pe amândouă. Un checklist pe cele cinci conturi, înainte de a depune D300.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -18,10 +18,10 @@ Art. 281 din Codul fiscal (Legea 227/2015) — "Faptul generator pentru livrări
 
 ## Checklist, pe cele cinci conturi
 
-1. **4427** (credit) vs rândul TOTAL TAXĂ COLECTATĂ (R17_2).
-2. **4426** (debit) vs rândul TOTAL TAXĂ DEDUCTIBILĂ (R27_2) — nu rândul de ajustări/pro-rata.
-3. **4423** (credit) vs Sold TVA de plată la sfârșitul perioadei (R41_2) — relevant doar dacă unul din cele două e nenul.
-4. **4424** (debit) vs Soldul sumei negative de TVA de recuperat (R42_2) — la fel, relevant doar dacă unul e nenul.
+1. **4427** (credit) vs rândul 19, TOTAL TAXĂ COLECTATĂ (coloana TVA).
+2. **4426** (debit) vs rândul 30, TOTAL TAXĂ DEDUCTIBILĂ (coloana TVA) — nu rândul 34, de ajustări/pro-rata.
+3. **4423** (credit) vs rândul 44, Sold TVA de plată la sfârșitul perioadei de raportare — relevant doar dacă unul din cele două e nenul.
+4. **4424** (debit) vs rândul 45, Soldul sumei negative de TVA la sfârșitul perioadei de raportare — la fel, relevant doar dacă unul e nenul.
 5. **4428** (net, TVA neexigibilă) — verificare informativă, nu obligatorie; nu se așteaptă potrivire exactă, doar plauzibilitate.
 
 Pentru fiecare, verifică mai întâi dacă toate notele contabile relevante sunt **validate** — o notă lăsată în ciornă nu contează ca evidență și poate produce o diferență falsă.

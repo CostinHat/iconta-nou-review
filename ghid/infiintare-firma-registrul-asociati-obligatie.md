@@ -2,7 +2,7 @@
 title: "Înființare firmă și registrul de asociati: obligație legală"
 description: Obligația unui SRL nou-înființat de a ține registrul asociaților, ce trebuie să conțină, cine răspunde pentru el și legătura cu înscrierea în registrul comerțului la orice transfer de părți sociale.
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -44,10 +44,10 @@ Dreptul de consultare nu e limitat la asociați — și creditorii societății 
 — Legea 31/1990 (legea societăților), art. 203 alin. (1) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
-Registrul de asociați nu e izolat de registrul comerțului — orice transfer de părți sociale (vânzare, cesiune, succesiune) trebuie înscris în ambele, nu doar la ONRC. Dacă registrul intern rămâne neactualizat, apare o discrepanță între ce arată ONRC și ce arată evidența internă a firmei.
+Registrul de asociați nu e izolat de registrul comerțului — orice transfer de părți sociale (vânzare, cesiune, succesiune) trebuie înscris în ambele, nu doar la ONRC. Dacă registrul de asociați al firmei rămâne neactualizat, apare o discrepanță între ce arată ONRC și ce arată evidența internă a firmei.
 
 ### Ce se greșește în practică
 
 - Se înființează firma și se lasă registrul de asociați neînceput, presupunând că actul constitutiv și înregistrarea la ONRC sunt suficiente — legea cere un registru separat, ținut și actualizat continuu de administratori.
-- Se actualizează doar la ONRC un transfer de părți sociale, fără să se reflecte și în registrul intern de asociați — deși ambele înscrieri sunt cerute de lege.
+- Se actualizează doar la ONRC un transfer de părți sociale, fără să se reflecte și în registrul de asociați al societății — deși ambele înscrieri sunt cerute de lege.
 - Se refuză accesul unui creditor la registru, presupunând că e un document strict intern — legea acordă expres și creditorilor dreptul de a-l cerceta.

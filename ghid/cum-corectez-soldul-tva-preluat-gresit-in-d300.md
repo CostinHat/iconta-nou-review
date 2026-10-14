@@ -2,7 +2,7 @@
 title: Cum corectez soldul TVA preluat greșit în D300?
 description: Soldul reportat din luna precedentă (rd.38 sau rd.41) e un câmp manual, nu se preia automat — dacă a fost introdus greșit, se corectează editând acel rând în perioada curentă, nu prin depunerea unui decont „rectificativ”, care nu există pentru D300.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -44,6 +44,6 @@ Pentru că formularul D300 nu are bifă de „declarație rectificativă” și 
 
 ## Ce face iConta.eu
 
-Câmpurile pentru soldul reportat (rd.38/rd.41, în cod R35/R38) fac parte din setul de rânduri manuale — nu se preiau automat din decontul generat anterior de aplicație, ci trebuie introduse de contabil la fiecare depunere. Aplicația nu are un parametru sau o funcție de „decont rectificativ” — corectarea unei sume greșite se face prin editarea rândului manual corespunzător pentru perioada curentă, exact ca la orice altă regularizare.
+Câmpurile pentru soldul reportat (rd.38/rd.41) fac parte din setul de rânduri manuale — nu se preiau automat din decontul generat anterior de aplicație, ci trebuie introduse de contabil la fiecare depunere. Aplicația nu are un parametru sau o funcție de „decont rectificativ” — corectarea unei sume greșite se face prin editarea rândului manual corespunzător pentru perioada curentă, exact ca la orice altă regularizare.
 
 [iConta.eu](/)

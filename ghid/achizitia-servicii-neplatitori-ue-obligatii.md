@@ -2,7 +2,7 @@
 title: "Achiziția de servicii de la neplătitori din UE: obligații TVA"
 description: "De ce firma cumpărătoare, chiar neplătitoare de TVA, poate datora taxa prin taxare inversă la achiziția de servicii dintr-un alt stat membru."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -23,16 +23,18 @@ Când o firmă românească achiziționează un serviciu de la un prestator dint
 - Pentru servicii B2B (între firme), locul prestării e locul unde e stabilit **beneficiarul**, nu prestatorul — de aceea taxa „migrează" către firma din România, prin mecanismul de taxare inversă.
 - Dacă firma română nu e deja plătitoare de TVA în regim normal (art. 316), trebuie totuși să solicite **înregistrarea specială** prevăzută de art. 317 din Codul fiscal, înainte de a efectua achiziția, tocmai pentru operațiuni de acest tip (achiziții intracomunitare sau servicii pentru care beneficiarul e obligat la plata taxei).
 - Practic, firma neplătitoare de TVA obținută prin art. 317 calculează și declară TVA aferentă serviciului achiziționat (taxare inversă: colectează și deduce simultan taxa, dacă are drept de deducere; dacă nu are, doar o colectează), fără ca acest lucru s-o transforme într-un plătitor de TVA „obișnuit" pentru restul operațiunilor sale.
-- Declararea acestor operațiuni se face printr-o declarație specială, distinctă de decontul de TVA obișnuit, tocmai pentru că firma nu e înregistrată normal în scopuri de TVA.
+- Spre deosebire de un plătitor de TVA (art. 316), care înregistrează taxa inversă simultan ca taxă colectată și taxă deductibilă (4426 = 4427), cu efect zero asupra TVA de plată, firma înregistrată doar conform art. 317 nu are drept general de deducere: deducerea cere înregistrarea conform art. 316 și îndeplinirea condițiilor de la art. 297. Taxa devine pentru ea un **cost efectiv**, care intră în valoarea achiziției (contul de cheltuială sau de imobilizare), iar suma de plată către stat se evidențiază separat, în contul 446.
+- Declararea acestor operațiuni se face printr-o declarație specială (decontul special de TVA, D301), distinctă de decontul de TVA obișnuit, tocmai pentru că firma nu e înregistrată normal în scopuri de TVA.
 
 ## Ce se greșește în practică
 
 - Se presupune că, nefiind plătitoare de TVA, firma „nu are nicio obligație" la achiziția de servicii din UE — de fapt are obligația de înregistrare specială și de declarare/plată a TVA prin taxare inversă.
 - Se omite înregistrarea specială conform art. 317 înainte de prima achiziție, ceea ce constituie o neconformare distinctă de simpla neplată a TVA.
+- Se înregistrează achiziția ca taxă inversă neutră (4426 = 4427), copiind tratamentul unui plătitor de TVA — la firma neplătitoare TVA nu se deduce, ci intră în costul achiziției, cu datoria către stat în contul 446.
 - Se confundă achiziția de servicii (unde contează locul prestării, art. 278) cu achiziția de bunuri (unde contează plafonul de achiziții intracomunitare) — regulile și declarațiile aferente sunt diferite.
 
 ## Ce face iConta.eu
 
-iConta.eu are un modul dedicat exact acestei situații: decontul special de TVA pentru persoanele neînregistrate normal în scopuri de TVA, care efectuează achiziții intracomunitare de bunuri sau servicii pentru care beneficiarul e obligat la plata taxei conform art. 307 (fostul art. 150). Aplicația urmărește și starea de „înregistrare specială" (art. 317 din Codul fiscal) a firmei, folosită pentru a decide corect persoana obligată la declarare și pentru a genera declarația aferentă.
+iConta.eu are un modul dedicat exact acestei situații: decontul special de TVA pentru persoanele neînregistrate normal în scopuri de TVA, care efectuează achiziții intracomunitare de bunuri sau servicii pentru care beneficiarul e obligat la plata taxei conform art. 307 (fostul art. 150). Aplicația urmărește și starea de „înregistrare specială" (art. 317 din Codul fiscal) a firmei, folosită pentru a decide corect persoana obligată la declarare și pentru a genera declarația aferentă. Nota contabilă a taxării inverse se generează în funcție de statutul firmei: pentru un plătitor de TVA, taxare inversă neutră (4426 = 4427); pentru o firmă înregistrată doar conform art. 317, TVA nedeductibilă intră în costul achiziției, cu suma de plată pe contul 446. Codul de TVA al prestatorului se verifică direct în VIES, pentru a confirma că e vorba de o achiziție intracomunitară reală.
 
 [iConta.eu](/)

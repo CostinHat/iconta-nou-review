@@ -10,6 +10,19 @@ poarta: v1
 
 Mâncarea preparată și neconsumată, rezultată dintr-un proces de preparare culinară, se încadrează legal altfel decât marfa cumpărată și revândută ca atare — distincția contează pentru alegerea temeiului corect.
 
+## Temeiul legal
+
+::: ghid-temei
+„Următoarele cheltuieli au deductibilitate limitată: [...] d) scăzămintele, perisabilitățile, pierderile rezultate din manipulare/depozitare, potrivit legii; [...] e) pierderile tehnologice care sunt cuprinse în norma de consum proprie necesară pentru fabricarea unui produs sau prestarea unui serviciu;”
+— Legea nr. 227/2015 privind Codul fiscal, art. 25 alin. (3) lit. d) și e) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Nu se ajustează deducerea inițială a taxei în cazul: a) bunurilor distruse, pierdute sau furate, în condițiile în care aceste situații sunt demonstrate sau confirmate în mod corespunzător de persoana impozabilă.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 304 alin. (2) lit. a) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Se aprobă Normele privind limitele admisibile de perisabilitate la mărfuri în procesul de comercializare, prevăzute în anexa care face parte integrantă din prezenta hotărâre.”
+— HG nr. 831/2004, art. 1 (sursă: [HG nr. 831/2004 pentru aprobarea Normelor privind limitele admisibile de perisabilitate](https://legislatie.just.ro/Public/DetaliiDocument/52623))
+:::
+
 Mâncarea gătită și neconsumată e, de regulă, rezultatul unui proces de preparare (fabricare/prestare) — încadrarea legală mai potrivită e pierderea tehnologică (lit. e), justificată printr-o normă de consum proprie a firmei, nu perisabilitatea de comercializare (lit. d), al cărei temei (HG 831/2004) vizează explicit mărfurile vândute ca atare, nu ingredientele transformate în bucătărie. Indiferent de încadrare însă, dacă pierderea (bunul distrus) e dovedită corespunzător, art. 304 alin. (2) lit. a) scutește de obligația de a ajusta TVA-ul deja dedus la achiziția ingredientelor — regula se aplică la nivel de lege, nu doar sub umbrela HG 831/2004.
 
 ## Ce se greșește în practică

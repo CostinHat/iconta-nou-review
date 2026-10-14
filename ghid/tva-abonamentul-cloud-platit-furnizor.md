@@ -10,6 +10,16 @@ poarta: v1
 
 Un abonament de cloud, la fel ca orice alt serviciu digital cumpărat de la un furnizor stabilit în alt stat membru, urmează regula B2B de la art. 278 alin. (2) — locul prestării e la beneficiar, adică în România.
 
+## Temeiul legal
+
+::: ghid-temei
+„Locul de prestare a serviciilor către o persoană impozabilă care acționează ca atare este locul unde respectiva persoană care primește serviciile își are stabilit sediul activității sale economice.”
+— Legea nr. 227/2015 privind Codul fiscal, art. 278 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+
+„Taxa este datorată de orice persoană impozabilă, [...] care este beneficiar al serviciilor care au locul prestării în România conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României [...]”
+— Legea nr. 227/2015 privind Codul fiscal, art. 307 alin. (2) (sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282))
+:::
+
 Firma din România, ca beneficiar al serviciului, e cea care datorează taxa — prin taxare inversă, nu prin plata unei sume suplimentare către furnizor. Operațiunea se declară în D390, la codul de achiziții de servicii intracomunitare, iar codul de TVA al furnizorului se verifică în VIES.
 
 ## Ce se greșește în practică

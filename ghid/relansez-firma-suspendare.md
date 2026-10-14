@@ -2,7 +2,7 @@
 title: Cum relansez o firmă după suspendare
 description: Relansarea unei firme după o perioadă de inactivitate temporară înseamnă mai mult decât reluarea vânzărilor - presupune, în paralel, confirmarea reactivării fiscale și reverificarea condițiilor pentru regimurile fiscale aplicate anterior.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-13
 poarta: v1
 ---
 
@@ -13,7 +13,17 @@ Relansarea unei firme aflate în inactivitate temporară nu este doar o decizie 
 ## Temeiul legal
 
 ::: ghid-temei
-Legea nr. 207/2015 (Codul de procedură fiscală), art. 92 alin. (5), (5^1) și (6) (condițiile de reactivare a contribuabililor declarați inactivi fiscal); Legea nr. 31/1990 (Legea societăților), art. 237^2 alin. (1) lit. b) (limita de 3 ani a inactivității temporare, ca termen până la care reluarea activității este posibilă fără alte consecințe).
+„Contribuabilul/Plătitorul declarat inactiv conform alin. (1) lit. a), d)-g) se reactivează dacă sunt îndeplinite, cumulativ, următoarele condiții: a) își îndeplinește toate obligațiile declarative prevăzute de lege; [...] b) nu înregistrează obligații fiscale restante.”
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 92 alin. (5) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„Contribuabilul/Plătitorul declarat inactiv conform alin. (1) lit. b) și c) se reactivează dacă sunt îndeplinite, cumulativ, condițiile prevăzute la alin. (5) și dacă organul fiscal central care a propus reactivarea constată că acesta funcționează la domiciliul fiscal declarat.”
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 92 alin. (5^1) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„În cazul contribuabilului/plătitorului prevăzut la alin. (1) lit. d)-g), în vederea reactivării, pe lângă condițiile prevăzute la alin. (5), trebuie să nu se mai afle în situația pentru care a fost declarat inactiv, conform mențiunilor înscrise în registrele în care a fost înregistrat, precum în nicio altă situație din cele prevăzute la alin. (1) lit. d)-g).”
+— Legea nr. 207/2015 (Codul de procedură fiscală), art. 92 alin. (6) (sursă: [Legea nr. 207/2015 privind Codul de procedură fiscală](https://legislatie.just.ro/Public/DetaliiDocument/170007))
+
+„Oficiul Național al Registrului Comerțului, prin registrator, constată întrunirea condițiilor pentru dizolvarea societății [...] în cazurile în care: [...] b) a încetat activitatea societății sau nu a fost reluată activitatea după perioada de inactivitate temporară, anunțată organelor fiscale și înscrisă în registrul comerțului, perioadă care nu poate depăși 3 ani de la data înscrierii în registrul comerțului;”
+— Legea societăților nr. 31/1990, art. 237^2 alin. (1) lit. b) (sursă: [Legea nr. 31/1990 privind societățile](https://legislatie.just.ro/Public/DetaliiDocument/798))
 :::
 
 Relansarea efectivă presupune, în ordine:

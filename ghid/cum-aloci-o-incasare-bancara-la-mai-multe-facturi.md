@@ -13,9 +13,14 @@ Când un client plătește printr-o singură linie de extras o sumă care acoper
 ## Temeiul legal
 
 ::: ghid-temei
-**Articolul 6 (1)** Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ. **(2)** Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate, după caz.
+„Orice operațiune economico-financiară efectuată se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate, dobândind astfel calitatea de document justificativ.”
+— Legea contabilității nr. 82/1991, art. 6 alin. (1) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
 
-**Art. 1620 - Imputația.** Atunci când mai multe obligații susceptibile de compensație sunt datorate de același debitor, regulile stabilite pentru imputația plății se aplică în mod corespunzător.
+„Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate, după caz.”
+— Legea contabilității nr. 82/1991, art. 6 alin. (2) (sursă: [Legea contabilității nr. 82/1991](https://legislatie.just.ro/Public/DetaliiDocument/1576))
+
+„Atunci când mai multe obligații susceptibile de compensație sunt datorate de același debitor, regulile stabilite pentru imputația plății se aplică în mod corespunzător.”
+— Codul civil (Legea 287/2009), art. 1.620 (sursă: [Legea nr. 287/2009 privind Codul civil](https://legislatie.just.ro/Public/DetaliiDocument/109884))
 :::
 
 ## Cum decide motorul ce facturi se sting
