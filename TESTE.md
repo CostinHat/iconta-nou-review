@@ -50,8 +50,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   dată pe lot, la închidere, legată de mutarea lui `main`; registrul deficiențelor 247–255; 257 (Cloudflare Turnstile).
   - ultim: L5-0 … L5-5, L5-7 făcute (15.10.2026 seara; mutațiile M1–M5 roșii; e2e `e2e_inregistrare_libera.py` 4/4 cu widgetul real);
     L5-6 cod + teste gata pe cheile de test — lotul 5 = commitul care conține această intrare, pe `lucru/lot5-2026-10-15`
-  - urmator: L5-8 (rularea țintită). STARE = IN LUCRU (L5-6 BLOCAT pe producție: cheile Turnstile + nginx-ul, cerute lui Costin;
-    poarta lotului NUMAI la „Lotul 5 e complet”)
+  - urmator: — (lotul 5 deschis: comanda următoare a lui Costin). STARE = IN LUCRU — L5-0…L5-8 făcute (`45b383d2` + commitul care
+    conține această intrare); L5-6 deblocat (cheile Turnstile și nginx-ul puse de Costin, verificate). Poarta lotului NUMAI la
+    „Lotul 5 e complet”
   - pasi:
     L5-0. Registre: TESTE (acest fir), DECIZII (comanda verbatim + PIVOT față de „suita la fiecare commit” din 31.07 / 08.10).
     L5-1. `scripts/githooks/commit-msg` = numai `verifica-mesaj`; poarta completă se pornește NUMAI din `scripts/poarta_lot.sh`

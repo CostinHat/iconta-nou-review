@@ -144,12 +144,10 @@ aplicației**, nu „în așteptarea unei teme”:
   „Poarta o dată pe lot”; firul L5 în TESTE): (1) **poarta o dată pe lot** — commitul NU mai rulează suita; poarta completă = `sh
   scripts/poarta_lot.sh` NUMAI la „Lotul 5 e complet”, iar `main` cere `VERDE <sha>` în `<git-common-dir>/poarta_verdicte.log` (CLAUDE.md
   §2.3 pct.13; în `~/iconta_nou` intră la publicarea lotului 5); între comenzi `scripts/poarta_scurta.py`; (2) **257 Cloudflare
-  Turnstile** — cod + e2e gata pe cheile de test; **așteaptă de la Costin:** cheile widgetului pentru iconta.eu în `~/.iconta/api_keys.env`
-  (`TURNSTILE_SITEKEY`, `TURNSTILE_SECRET`) și nginx-ul cu CSP-ul nou (`sudo install -m 644 /home/costin/iconta_lucru/config/nginx-iconta
-  /etc/nginx/sites-available/iconta && sudo nginx -t && sudo systemctl reload nginx`; până atunci `core/test_nginx_csp.py` e roșu, deci
-  poarta lotului nu poate fi verde); fără chei, după publicare înregistrarea liberă se închide singură, cu motivul; (3) DEFICIENTE 247–257
+  Turnstile** — cod + e2e gata (cheile de test în plasă); cheile de producție în `~/.iconta/api_keys.env` și nginx-ul cu CSP-ul nou puse
+  de Costin (15.10 seara, verificate fără afișarea cheilor; `core/test_nginx_csp.py` verde); activ pe producție la publicarea lotului 5; (3) DEFICIENTE 247–257
   aliniate la răspunsul lui Costin. Lotul 4 publicat 18:01 (`48465e7d`); scriptul de backup instalat de Costin (11:42, identic).
-- **URMEAZĂ:** cheile Turnstile + nginx (Costin); apoi „Lotul 5 e complet” -> `poarta_lot.sh` -> backup -> publicare (acordul lui Costin).
+- **URMEAZĂ:** comanda următoare a lui Costin în lotul 5, sau „Lotul 5 e complet” -> `sh scripts/poarta_lot.sh` (în fundal) -> backup -> publicare (acordul lui Costin; cabinetul nu lucrează).
 - **CE ERA ÎN LUCRU (până la 14.10 15:53):** nimic. Arborele are o singură modificare: această predare (necomisă — un commit trece prin poarta de ~70 min și
   repornește producția la final; se comite odată cu lotul următor sau când aprobă Costin).
 - **URMEAZĂ (comanda 14.10, în ordine, fiecare lot cu raport și ZIP) — NUMAI după comanda lui Costin („După raport, nu porni pct.3;
