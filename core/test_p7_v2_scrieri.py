@@ -274,7 +274,9 @@ def test_numarul_de_instructiuni_se_conserva():
     #   repo_contabilitate.conturi_cu_sold_initial (tenant_plan_conturi_lista + tenant_plan_conturi_sterge) — „niciun cont cu sold nu se
     #     șterge”: lista nu oferă „Șterge”, serverul refuză; repo_contabilitate.conturi_dupa_inceputul_simbolului (tenant_plan_conturi_lista)
     #     — „căutarea după simbol potrivește începutul”. Citiri NOI. (Lista citea planul de două ori fără căutare: o citire, refolosită.)
-    assert _apeluri_catre_repository() == 316
+    # [lotul 2, 15.10.2026] 316 -> 317, cu apelul numit: repo_utilizatori.contul_dupa_email (uc_auth.invitatie_creeaza) — invitația nu
+    #   se creează pentru un email care are deja cont (Conflict). Citire NOUĂ (comanda Costin 14.10.2026 pct.3).
+    assert _apeluri_catre_repository() == 317
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

@@ -57,6 +57,11 @@ produce zero rânduri, iar declarația iese validă structural și goală.
   tot nu oprește operația principală — dar lasă urmă.
 - LIMITĂ DECLARATĂ: acoperă doar măștile peste query. Cele peste conversii numerice sunt
   tratate separat (`numere.numar_fiscal`). Nu verifică dacă eticheta e corectă.
+- ACOPERIT (15.10.2026, C34): eșecul semnalat prin VALOARE, nu prin excepție. `trimite_email_html` întoarce `False` și nu aruncă;
+  garda R73 (`core/test_esec_trimitere_email.py`, 27.08) căuta numai `except`-uri, deci 4 alerte de acces erau moarte și 7 locuri
+  ignorau rezultatul. Acum: `observare.trimite_email_html_sau_semnaleaza` (sursa unică a semnalării) + `core/test_email_html_rezultat.py`
+  (orice apel direct își citește rezultatul; mutația „rezultat aruncat” -> ROȘU). LIMITĂ: regula e pe familia `trimite_email_html`;
+  alte funcții care semnalează eșecul prin `False`/`None` nu sunt inventariate (clasa e scrisă aici ca s-o caute următorul gard).
 
 ### 1. Intrare date
 **Eșec:** câmp lipsă → NULL → 0; import duplicat; valoare cu virgulă zecimală devenită 0;
@@ -426,6 +431,11 @@ fundal pe tenantul greșit; **IDOR** (id tenant din URL neverificat contra useru
   (`core/drepturi.py`), pe 215 rute; nicio rută de scriere pe o firmă fără drept (`core/test_drepturi_rol.py`). Detaliul
   și limitele: secțiunea „04.10.2026 — Testarea ca asistent” de mai jos. `/admin/*` (superadmin) rămâne pe verificarea
   din corp.
+- ACOPERIT (15.10.2026, regimul pilot): conturile noi de cabinet NUMAI prin invitație (`core/invitatii.py`; `/auth/register` refuză
+  fără invitație valabilă, înainte de orice scriere; emailul legat; o singură folosire; numai hash-ul tokenului în bază). Gărzi:
+  `core/test_invitatii.py` (3), `core/test_p4_fault_injection.py` (invitația rămâne valabilă la eșec, consumată la succes),
+  `frontend_test/e2e/e2e_invitatii.py` (3, mutații: „Client nou” deschide formularul / consumarea scoasă / „a plecat” mințit -> ROȘU).
+  LIMITĂ: invitația o creează numai superadminul; nu există expirare automată a invitațiilor vechi din tabel (expiră la citire).
 
 ### 7. Integritate în timp
 **Eșec:** modificare retroactivă în lună închisă; declarație depusă regenerată altfel;
@@ -443,6 +453,14 @@ balanță ≠ sumă înregistrări; backup nerestaurabil.
   „LIPSĂ" fără să verific — vezi ISTORIC 18.07. Ce lipsește e **repetarea automată**: proba a
   fost făcută o dată, manual; nimic n-o reia periodic. De atunci baza a crescut (2 firme -> 5 scheme, 204 MB); după 18.07
   s-a rulat numai `pg_restore -l` (cuprinsul arhivei), nu o restaurare.
+- ACOPERIT (15.10.2026): alerta la eșecul dump-ului LOCAL — `config/iconta-backup.sh` (`trap … ERR` înainte de `pg_dump`; test cu
+  `pg_dump`/`curl` falși, mutația „trap scos” -> ROȘU). Copia rulată e `/usr/local/bin/iconta-backup.sh`: se instalează de Costin (sudo).
+  Plasa independentă: `core/backup_verificare.py`, zilnic 04:30 prin `cron.ruleaza` + bătaie (`RITMURI`): vârstă ≤ 26 h, mărime,
+  citire INTEGRALĂ (`pg_restore -f /dev/null` — `-l` nu prinde o arhivă tăiată, măsurat). `NESUPRAVEGHEATE["iconta-backup"]` nu mai
+  pretinde că „alertează singur”. Gard `core/test_backup_verificare.py` (mutații: vârsta ocolită, citirea integrală scoasă -> ROȘU).
+- ACOPERIT o dată (15.10.2026): proba de restaurare pe bază separată, același server, ștearsă după — `scripts/proba_restaurare.py`;
+  snapshot: 6 scheme / 364 tabele / 48.338 rânduri identice la md5 cu producția; dump-ul de noapte se restaurează fără eroare; mutația
+  „un rând șters” -> PICAT. LIPSĂ: repetarea automată (rularea nocturnă citește datele cabinetului real -> decizie Costin, regula 2b).
 - LIPSĂ: verificare nocturnă Σdebit=Σcredit per perioadă/tenant + orfani.
 
 ### 8. Integritate cod — arbori paraleli
@@ -452,11 +470,28 @@ balanță ≠ sumă înregistrări; backup nerestaurabil.
   `motor.*` nu există aici. Zero module neimportate (toate `migrare_*` sunt scripturi CLI;
   `alerta_acces`, `audit_retentie`, `sinteza_zilnica` rulează din cron).
 - LIPSĂ: gard care să prindă apariția unei a doua copii.
+- ACOPERIT (15.10.2026, regimul pilot): `main` nu se mută fără aprobarea scrisă a lui Costin — `scripts/githooks/reference-transaction`
+  (orice mutare a lui `refs/heads/main`, inclusiv fast-forward, reset, ștergere, cere `.git/APROBARE_MAIN` cu SHA-ul exact și textul
+  aprobării; aprobarea se consumă) + `pre-commit` (commit direct pe `main` refuzat). Gard `core/test_garda_main.py` (6, pe depozit
+  temporar). LIMITĂ: `--no-verify` / alt `core.hooksPath` o ocolesc — oprește greșeala, nu intenția.
 
 ### 9. Onestitatea testelor
 **Eșec:** teste verzi care nu testează nimic (fake-uri pe codul auditat, teste stale,
 fișiere necolectate).
 **Stare: PARȚIAL.**
+- ACOPERIT (15.10.2026): poarta verde despre ALT arbore decât commitul. pytest citește arborele de lucru, commitul — indexul;
+  `fdb20bd6` (lotul 1) a trecut poarta verde, iar exportul lui pica 9 gărzi (straturi, constante, afirmații, registrul de
+  excepții). `scripts/githooks/poarta-suita` respinge acum arborele ≠ index la pornire și fișierele urmărite schimbate cât rulează.
+  Gard `core/test_poarta_ordine.py::test_arborele_diferit_de_index_e_respins_inainte_de_suita` (mutația „verificarea scoasă” ->
+  ROȘU). LIMITĂ: cauza exactă din lotul 1 nu se mai poate reconstitui (arborele de atunci nu s-a păstrat); garda închide toate
+  drumurile prin care verdictul și commitul pot diferi pe fișiere urmărite / neadăugate, nu și un fișier ignorat (`.gitignore`) citit
+  de un test.
+- ACOPERIT (15.10.2026): jurnalele porții reale stricate de teste. Prima poartă a lotului 2 a respins cu „1 failed” FĂRĂ numele
+  testului: `test_poarta_ordine` rula `poarta-suita` pe un depozit de probă, care scria în `/tmp/precommit_pytest.log` cât îl scria
+  pytest-ul porții reale (aceeași clasă cu RAPORT_P3, „două porți în același log”). Testul picat s-a aflat din `.pytest_cache`.
+  Hook-urile scriu acum în `${POARTA_JURNALE:-/tmp}`; `conftest.py` îl pune, pentru toată sesiunea de teste, pe un director temporar al
+  ei. Gard `core/test_poarta_ordine.py::test_hookurile_rulate_din_teste_nu_scriu_in_jurnalele_portii_reale` (mutațiile: o cale
+  `/tmp/precommit_` înapoi într-un hook; `POARTA_JURNALE` scos din conftest -> ROȘU).
 - ACOPERIT de fapt: 1322 teste colectate; fake-uri (`monkeypatch`/`MagicMock`) doar pe
   integrări externe (SPV, e-Factura, e-Transport, JWT). **Zero fake pe generatoarele de
   declarații.**
@@ -488,6 +523,9 @@ fișiere necolectate).
   exportate -> ROȘU). Tot din worktree: `core/test_agenda.py` lua obiectele din `--absolute-git-dir` — acum din `--git-common-dir`.
   **LIMITA:** sentinelele `.git/…` din `post-commit` / `four-way` / `migrari_registru` presupun depozitul principal — publicarea se
   face numai din `~/iconta_nou` (post-commit iese pe orice ramură ≠ `main`), deci nu sunt atinse din worktree.
+  **URMA lăsată înainte de gard (15.10.2026):** în prima poartă, un `git init` dintr-un test, cu `GIT_DIR` moștenit, a scris
+  `core.bare = true` în `.git/config` (comun) — readus manual; ISTORIC 15.10.2026. De verificat la fiecare publicare: `git rev-parse
+  --is-inside-work-tree` în `~/iconta_nou` (fast-forward-ul l-a prins).
 
 ### 10. Joburi de fundal
 **Eșec:** job care crapă nesupravegheat; job mort care arată identic cu unul care n-a avut
@@ -8820,9 +8858,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**785 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**789 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 747
+### `core/` — 751
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8904,6 +8942,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_audit_schema.py` — Teste F165 — auditor conformitate schema tenant vs tenant_template.sql.
 - `core/test_b1_apartenenta_coada.py` — [B1–B4, 17.09.2026] Apartenența pe OBIECT — un cabinet nu lucrează pe elementul altui cabinet.
 - `core/test_b3_owner_drepturi.py` — GARD B3: proprietarul cabinetului (admin_firma creat la înregistrare) primește drepturile
+- `core/test_backup_verificare.py` — Alerta la eșecul backup-ului LOCAL (comanda Costin 14.10.2026, pct.5, verbatim în DECIZII „Lotul 2”) — cele două plase:
 - `core/test_balanta_jurnal.py` — [08.10.2026, decizia Costin W1, verbatim în DECIZII] Balanța nu poate conține ce jurnalul nu arată.
 - `core/test_balanta_pe_ecran.py` — GARD — balanța se poate CITI, nu doar descărca; iar „se închide" nu se afirmă pe gol.
 - `core/test_banca_parser.py` — Test parser extras bancar CSV: delimitator robust (fara csv.Sniffer),
@@ -9212,6 +9251,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_efactura_trimitere.py` — PROBA FUNCTIONALA a use-case-ului de trimitere — cele patru porti, pe DB reala, cu retea MOCK.
 - `core/test_email_html_doua_cai.py` — core/test_email_html_doua_cai.py — cele doua cai C5 ratate de masuratoarea lexicala.
 - `core/test_email_html_dupa_commit.py` — core/test_email_html_dupa_commit.py — `trimite_email_html` nu se mai executa sub o conexiune.
+- `core/test_email_html_rezultat.py` — core/test_email_html_rezultat.py — eșecul unui email nu mai trece neobservat (15.10.2026).
 - `core/test_emitere_factura_f1.py` — GARD — emiterea pe F1: Date firmă la deschidere, forma propusă, cota consemnată, data/scadența/seria, PDF-ul conform art.319
 - `core/test_emitere_randuri_dinamice.py` — GARD cap.24 batch 3b — randuri dinamice emitere factura, re-rulate IN POARTA prin chromium headless.
 - `core/test_esec_trimitere_email.py` — GARD [R73, 27.08.2026]: un eșec de trimitere a emailului nu se mai poate stinge tăcut.
@@ -9258,6 +9298,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_g1_cod_mesaj.py` — core/test_g1_cod_mesaj.py — G1: codul-mașină de business nu mai ajunge brut la utilizator.
 - `core/test_g9_oblig_backend.py` — core/test_g9_oblig_backend.py — GARD care ÎNCHIDE CLASA (nu doar instanțele): un câmp marcat
 - `core/test_gard_masca_zero.py` — core/test_gard_masca_zero.py — GARD C5 (clasa oarba "mascarea erorii / zero tacut", GARZI cat.0).
+- `core/test_garda_main.py` — Garda pe `main` (comanda Costin 14.10.2026, regim pilot, pct.2: „commit refuzat fără aprobare scrisă”, verbatim în DECIZII).
 - `core/test_garzi_inventar.py` — GARD [28.08.2026]: inventarul gărzilor din `GARZI.md` nu poate rămâne în urma codului.
 - `core/test_garzi_mesaje_afisabile.py` — core/test_garzi_mesaje_afisabile.py — GARD STRUCTURAL (C-5, pct.5 Costin): niciun test nu asertează
 - `core/test_garzi_pe_text.py` — GARD PESTE GĂRZI — o gardă asertează pe STRUCTURĂ, nu pe text.
@@ -9301,6 +9342,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_intrare_date_garduri.py` — GARZI cat.1 (Intrare date) — RATCHET: idempotenta importurilor + banii nu ajung NULL, verificate MECANIC.
 - `core/test_inventar_a.py` — Inventar A generat PARTIAL din common.COTE + overlay separat pentru judecatile umane.
 - `core/test_inventar_randuri_dinamice.py` — GARD cap.24 regula 2 — inventar (sectiuneaCV), re-rulat IN POARTA prin chromium headless.
+- `core/test_invitatii.py` — Conturile noi de cabinet NUMAI prin invitație (comanda Costin 14.10.2026, pct.3, verbatim în DECIZII „Lotul 2”).
 - `core/test_izolare_api_key.py` — core/test_izolare_api_key.py — GARD de izolare pe CHEIE API (namespace /api/v1/firme/{tenant_id}).
 - `core/test_izolare_incrucisata.py` — Proba DINAMICA de izolare tenanti: acces incrucisat real prin HTTP.
 - `core/test_izolare_productie.py` — core/test_izolare_productie.py — ACCEPTANTA R68 (arhitect, 11.09.2026).

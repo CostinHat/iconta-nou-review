@@ -83,23 +83,33 @@ def register(date):
     # TIPĂREA la eșec. Ruta refuză din prima linie o înregistrare fără bifă; dar dovada bifei
     # putea lipsi în tăcere, iar contul rămânea. *Fără bifă contul nu se creează — deci nici
     # fără dovada ei.*
+    # [14.10.2026, comanda Costin pct.3, verbatim în DECIZII „Lotul 2”] „Înregistrarea liberă se închide: în pilot, conturile noi se
+    # creează numai prin invitație.” Invitația se verifică ÎNAINTE de orice scriere (fără ea, nicio urmă), iar consumarea ei stă în
+    # ACEEAȘI tranzacție cu contul: un cont fără invitația lui consumată nu există, și nici o invitație consumată fără cont.
+    from core import invitatii as _inv
+    if not str(getattr(date, "invitatie", "") or "").strip():
+        raise _erori.FaraDrept(_inv.MESAJ_FARA_INVITATIE)
     with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            _s = _inv.stare(cur, date.invitatie)
+        if not _s["valida"]:
+            raise _erori.FaraDrept(_s["refuz"]["motiv"])
+        if _s["email"] != date.email.strip().lower():
+            raise _erori.FaraDrept("Invitația e pentru %s. Contul se creează numai cu emailul invitat." % _s["email"])
         r = auth_api.inregistreaza_cabinet(
             conn, date.email, date.parola, date.nume_cabinet,
             nume=date.nume, prenume=date.prenume)
         if r["ok"]:  # [termeni_v1] dovada de consimtamant: cine, cand, ce versiune
             with conn.cursor() as cur:
                 repo_utilizatori.scrie_acordul_termenilor(cur, r.get("user_id"), r.get("firm_id"), date.email.strip().lower(), _versiune_termeni)
+                _inv.consuma(cur, date.invitatie, date.email, r.get("firm_id"))
     if not r["ok"]:
         raise _erori.CerereGresita(r["mesaj"])
-    try:  # register_email_v1: email de bun venit
-        html = ("<p>Buna,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.eu.</p>"
-                "<p>Te poti loga oricand cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>"
-                "<p>Firma proprie a cabinetului este deja adaugata in portofoliu.</p>") % (date.nume_cabinet, date.email)
-        _obs.trimite_email_html(date.email, "Bine ai venit pe iConta.eu", html)
-    except Exception as _e:
-        # [R73] fara alerta: bun venit nu e cale de ACCES, doar politete
-        _obs.esec_secundar("email bun venit cabinet", _e)
+    # register_email_v1: email de bun venit — [R73] fara alerta: bun venit nu e cale de ACCES, doar politete
+    html = ("<p>Buna,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.eu.</p>"
+            "<p>Te poti loga oricand cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>"
+            "<p>Firma proprie a cabinetului este deja adaugata in portofoliu.</p>") % (date.nume_cabinet, date.email)
+    _obs.trimite_email_html_sau_semnaleaza("email bun venit cabinet", date.email, "Bine ai venit pe iConta.eu", html)
     try:  # [alerta_cont_nou_v1] notificare interna la fiecare cont nou de cabinet (fara date personale)
         from datetime import datetime as _dt
         from zoneinfo import ZoneInfo as _Z
@@ -185,3 +195,46 @@ def register(date):
             raspuns["avertisment"] = _firma_motiv
     return raspuns
 
+
+# ── INVITAȚIILE (14.10.2026, comanda Costin pct.3: conturile noi de cabinet numai prin invitație) ─────────────────────────────
+def invitatie_creeaza(date, ctx):
+    """[superadmin] Invită un email: creează invitația și trimite linkul. Întoarce și linkul (superadminul îl poate da direct,
+    dacă emailul nu ajunge) — e singura dată când tokenul apare în clar."""
+    import os
+    from core import invitatii as _inv
+    email = str(date.email or "").strip().lower()
+    if not _uc_comun._email_valid(email):
+        raise _erori.DateInvalide(EMAIL_INVALID)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            if repo_utilizatori.contul_dupa_email(cur, email):
+                raise _erori.Conflict("Există deja un cont cu emailul %s; nu e nevoie de invitație." % email)
+            tok = _inv.creeaza(cur, email, ctx["uid"])
+    link = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010") + "/#invitatie=" + tok
+    html = ("<p>Bună,</p><p>Ești invitat să creezi contul cabinetului tău pe iConta.eu.</p>"
+            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;"
+            "text-decoration:none'>Creează contul</a></p><p>Contul se creează cu emailul <b>%s</b>. Invitația e valabilă %d zile "
+            "și se folosește o singură dată.</p>") % (link, email, _inv.VALABILITATE_ZILE)
+    # superadminul vede pe ecran dacă a plecat (și primește linkul oricum) -> fără alertă
+    trimis = _obs.trimite_email_html_sau_semnaleaza("email invitatie cabinet", email, "Invitație iConta.eu", html)
+    return {"ok": True, "email": email, "link": link, "email_trimis": trimis, "valabila_zile": _inv.VALABILITATE_ZILE}
+
+
+def invitatii_lista(ctx):
+    """[superadmin] Invitațiile trimise (fără tokenuri)."""
+    from core import invitatii as _inv
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            r = _inv.lista(cur)
+        conn.rollback()
+    return {"invitatii": r}
+
+
+def invitatie_stare(token):
+    """[public] Starea unei invitații: emailul invitat, dacă mai e valabilă (ecranul de înregistrare)."""
+    from core import invitatii as _inv
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            s = _inv.stare(cur, token)
+        conn.rollback()
+    return s

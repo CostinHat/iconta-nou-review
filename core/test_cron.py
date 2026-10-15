@@ -59,6 +59,6 @@ def test_toate_joburile_din_crontab_sunt_ambalate():
     import pathlib
     rad = pathlib.Path(__file__).resolve().parent
     for m in ("sinteza_zilnica", "facturi_recurente", "woocommerce", "monitor_fiscal",
-              "notificari_scadenta", "audit_retentie", "alerta_acces"):
+              "notificari_scadenta", "audit_retentie", "alerta_acces", "backup_verificare"):   # [15.10.2026] backup_verificare
         s = (rad / ("%s.py" % m)).read_text(encoding="utf-8")
         assert "cron.ruleaza(" in s, "%s nu e ambalat in cron.ruleaza" % m

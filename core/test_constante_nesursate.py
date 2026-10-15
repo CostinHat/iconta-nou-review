@@ -125,6 +125,10 @@ BASELINE = {
     # l.122 `limita=200` = cate randuri din jurnalul Date firma intoarce ecranul. Niciuna nu e valoare fiscala; amandoua
     # fisierele intra in domeniu fiindca vorbesc despre fiscal (temele ghidurilor; campurile firmei).
     "ghid_teme.py": 1, "repo_firma_profil.py": 1,
+    # [15.10.2026, lotul 2 — prins după lotul 1] +1, aceeași clasă OPERAȚIONALĂ: `import_tabel.py` `RANDURI_CAUTATE_ANTET = 20` = câte
+    # rânduri de titlu / antet ale unui export (SAGA etc.) se cercetează înaintea datelor. Nu e valoare fiscală; fișierul intră în
+    # domeniu fiindcă vorbește despre balanțe și conturi.
+    "import_tabel.py": 1,
 }
 
 

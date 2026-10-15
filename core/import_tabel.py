@@ -269,7 +269,11 @@ def _unit(sus, jos):
     return _antet(out)
 
 
-def gaseste_antet(randuri, campuri, obligatorii=(), cauta=20, nume_fisier=""):
+#: Câte rânduri de la începutul fișierului se cercetează după antet (titlurile exportului stau deasupra lui). OPERAȚIONAL, nu fiscal.
+RANDURI_CAUTATE_ANTET = 20
+
+
+def gaseste_antet(randuri, campuri, obligatorii=(), cauta=RANDURI_CAUTATE_ANTET, nume_fisier=""):
     """`(antet_normalizat, index_primul_rand_de_date)`.
 
     `campuri` = {camp: (aliasuri, ...)}. Se încearcă primele `cauta` rânduri, fiecare singur și unit cu rândul de dedesubt

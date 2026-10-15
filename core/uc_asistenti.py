@@ -195,10 +195,7 @@ def asistent_creeaza(date, ctx):
     html = ("<p>Buna,</p><p>Ai fost adaugat ca asistent in cabinetul tau pe iConta.eu.</p>"
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Activeaza contul</a></p>"
             "<p>Dupa activare, intra cu emailul <b>%s</b> si parola setata. Linkul e valabil 48 de ore.</p>") % (link, email)
-    try:
-        _obs.trimite_email_html(email, "Acces asistent iConta.eu", html)
-    except Exception as _e:
-        # [R73] ALERTA: fara linkul de activare, asistentul nu are cont.
-        _obs.esec_secundar("email invitatie asistent", _e, alerta=True)
+    # [R73] ALERTA: fara linkul de activare, asistentul nu are cont.
+    _obs.trimite_email_html_sau_semnaleaza("email invitatie asistent", email, "Acces asistent iConta.eu", html, alerta=True)
     return {"ok": True, "user_id": uid}
 

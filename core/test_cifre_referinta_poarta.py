@@ -21,7 +21,7 @@ def _citeste(rel):
 def test_poarta_ruleaza_verificarea_si_respinge_la_orice_iesire_nenula():
     """MUTAȚIE: treapta scoasă din poartă -> pică."""
     t = _citeste("scripts/githooks/poarta-suita")
-    m = re.search(r'^"\$PY" scripts/cifre_referinta\.py --productie --verifica > /tmp/precommit_cifre\.log 2>&1\nRC=\$\?', t, re.M)
+    m = re.search(r'^"\$PY" scripts/cifre_referinta\.py --productie --verifica > \$J/precommit_cifre\.log 2>&1\nRC=\$\?', t, re.M)
     assert m, "poarta nu mai confruntă cifrele cu referința aprobată"
     dupa = t[m.end():m.end() + 900]
     linii_dupa = [x.strip() for x in dupa.splitlines()]   # liniile scriptului, nu un sub-șir oarecare din el

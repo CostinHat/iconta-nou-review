@@ -64,13 +64,17 @@ def test_commit_msg_verifica_mesajul_inainte_de_suita():
     assert suita.count("pytest") >= 1 and suita.count("verificator_conformitate.py") >= 1
 
 
-def _ruleaza(continut):
+def _ruleaza(continut, pregatire=None):
     with tempfile.TemporaryDirectory() as d:
         subprocess.run(["git", "init", "-q", "."], cwd=d, check=True, capture_output=True)
-        with open(os.path.join(d, "MSG"), "wb") as f:
+        msg = os.path.join(d, ".git", "COMMIT_EDITMSG")       # unde îl pune git (nu în arborele de lucru)
+        with open(msg, "wb") as f:
             f.write(continut)
+        for nume, cont in (pregatire or {}).items():
+            with open(os.path.join(d, nume), "w") as f:
+                f.write(cont)
         t0 = time.monotonic()
-        r = subprocess.run(["sh", os.path.join(_HOOKS, "commit-msg"), "MSG"], cwd=d, capture_output=True, text=True,
+        r = subprocess.run(["sh", os.path.join(_HOOKS, "commit-msg"), msg], cwd=d, capture_output=True, text=True,
                            timeout=300)
         return r.returncode, (r.stdout or "") + (r.stderr or ""), time.monotonic() - t0
 
@@ -89,6 +93,31 @@ def test_mesajul_bun_ajunge_la_suita():
     cod, iesire, _dur = _ruleaza("Reparație mică, cu diacritice: șțăîâ\n".encode("utf-8"))
     assert iesire.count("[poarta] pytest") == 1, iesire
     assert cod == 1, "pe un depozit fără teste poarta trebuia să respingă:\n%s" % iesire
+
+
+def test_arborele_diferit_de_index_e_respins_inainte_de_suita():
+    """[15.10.2026] Verdictul porții privește COMMITUL: un fișier nou neadăugat (sau modificat și nepus) e respins înainte de pytest —
+    altfel pytest ar judeca arborele de lucru, iar commitul ar înregistra indexul (`fdb20bd6`: poartă verde, exportul pica 9 gărzi).
+    MUTAȚIE: verificarea `arbore_nepus` scoasă din `poarta-suita` -> suita pornește -> pică."""
+    cod, iesire, _dur = _ruleaza("Reparație mică\n".encode("utf-8"), pregatire={"nepus.py": "x = 1\n"})
+    assert cod == 1 and iesire.count("[poarta] pytest") == 0, iesire
+    assert iesire.count("    nepus.py") == 1, iesire
+
+
+def test_hookurile_rulate_din_teste_nu_scriu_in_jurnalele_portii_reale():
+    """[15.10.2026] Poarta lotului 2: `test_mesajul_bun_ajunge_la_suita` a pornit `poarta-suita` pe un depozit de probă, care a scris în
+    `/tmp/precommit_pytest.log` CÂT îl scria pytest-ul porții reale — logul a ieșit stricat și respingerea fără numele testului picat.
+    Acum hook-urile scriu în `$POARTA_JURNALE` (implicit /tmp), iar sesiunea de teste îl pune pe un director al ei (`conftest.py`).
+    MUTAȚIE: o cale `/tmp/precommit_` pusă înapoi într-un hook -> pică; `POARTA_JURNALE` scos din conftest -> pică."""
+    import io
+    for nume in ("poarta-suita", "pre-commit"):
+        t = io.open(os.path.join(_HOOKS, nume), encoding="utf-8").read()
+        assert t.count("/tmp/precommit_") == 0, nume
+    d = os.environ.get("POARTA_JURNALE", "")
+    assert d.startswith(tempfile.gettempdir()) and os.path.basename(d).startswith("poarta_jurnale_teste_"), d
+    cod, iesire, _dur = _ruleaza("Reparație mică\n".encode("utf-8"))
+    assert iesire.count("[poarta] pytest") == 1, iesire
+    assert os.path.isfile(os.path.join(d, "precommit_pytest.log"))
 
 
 def test_poarta_ruleaza_toata_suita_in_paralel_fara_selectie():

@@ -115,15 +115,19 @@ RITMURI = {
     "spv_poll":            2,     # timer spv-poll, la 30 de minute (*:07,37)
     "spv_receive":         2,     # timer spv-receive, la 30 de minute (*:17,47)
     "spv_refresh":         50,    # timer spv-refresh, zilnic 03:30
+    # [14.10.2026, comanda Costin pct.5] backup-ul local al bazei, verificat zilnic la 04:30 (core/backup_verificare.py)
+    "backup_verificare":   50,
 }
 
 # Ce NU se supravegheaza aici, si de ce - ca absenta sa fie declarata, nu tacuta:
 #   `cron`            = heartbeat-ul insusi. Cine il supravegheaza pe el cere un deadman
 #                       EXTERN; limita e scrisa in verifica_batai si nu se rezolva azi.
-#   `iconta-backup`   = shell, nu modul Python: nu poate chema `bate()`. Isi alerteaza singur
-#                       esecurile consecutive (FAIL_PRAG in iconta-backup.sh), deci nu e tacut.
+#   `iconta-backup`   = shell, nu modul Python: nu poate chema `bate()`. [14.10.2026, comanda Costin pct.5] NU mai e
+#                       „alerteaza singur”: el alerta numai la esecul off-site, iar un pg_dump local cazut era tacut. Acum il
+#                       supravegheaza `backup_verificare` (core/backup_verificare.py, zilnic 04:30): dump recent, ne-trunchiat,
+#                       citibil — si lipsa rularii lui alarmeaza prin bataia de mai sus.
 NESUPRAVEGHEATE = {"cron": "heartbeat-ul insusi - cere deadman EXTERN",
-                   "iconta-backup": "shell, nu modul; alerteaza singur (iconta-backup.sh)"}
+                   "iconta-backup": "shell, nu modul; produsul lui (dump-ul) e verificat zilnic de backup_verificare"}
 
 
 # ============================================================

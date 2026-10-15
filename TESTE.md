@@ -46,6 +46,38 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 2 al comenzii Costin 14.10.2026 (răspunsul la §6, pct.2 + 3 + 5; ordinea confirmată 14.10 noaptea; poarta și publicarea
+  aprobate până la 07:00, cu backup înainte)** — garda pe `main`, înregistrarea numai prin invitație, alerta backup-ului + proba de
+  restaurare (numai cifre). Apoi lotul 3 (246 + C26).
+  - ultim: L2-0 … L2-3d implementate și probate (15.10.2026 02:10; subsetul atins + artefactele: 454 passed, e2e invitații 3/3, verificator 0) — lotul 2 = commitul care conține această intrare
+  - urmator: L2-4 (poarta, backup, publicare, four-way, raport + ZIP), apoi lotul 3 (246 + C26, worktree `/home/costin/iconta_lot3`). STARE = IN LUCRU
+  - pasi:
+    L2-0. Registre: TESTE (acest fir), DECIZII (comanda + ce schimb la înregistrare), GARZI.
+    L2-1. Garda pe `main`: `scripts/githooks/reference-transaction` — orice mutare a lui `refs/heads/main` (commit, fast-forward, reset,
+          ștergere) e refuzată dacă `.git/APROBARE_MAIN` nu numește exact SHA-ul țintă (cu textul aprobării); aprobarea se consumă la
+          folosire. Test pe un depozit temporar + mutație; README hook-uri; CLAUDE.md (regimul pilot, publicarea).
+    L2-2. Invitația: `public.invitatii_cabinet` (migrare), `core/invitatii.py` (token aleator, numai hash-ul în bază, 14 zile, o
+          singură folosire, emailul legat), `POST/GET /admin/invitatii` (superadmin), `GET /public/invitatie/{token}`, `/auth/register`
+          cere invitația validă (emailul invitației); ecranul: cardul „Invitații cabinete” (superadmin), „Client nou” fără invitație ->
+          mesajul „numai prin invitație”, cu invitație -> formularul cu emailul invitației; teste + e2e + mutații.
+    L2-3. Backup: `core/backup_verificare.py` (cel mai nou dump din /var/backups/iconta: vârstă, mărime, cuprins citibil) ca job cron
+          zilnic 04:30 prin `cron.ruleaza` (alertă la eșec, bătaie în `RITMURI` -> deadman); `config/iconta-backup.sh` cu alertă și la
+          eșecul dump-ului local (instalarea în /usr/local/bin cere sudo-ul lui Costin); proba de restaurare `scripts/proba_restaurare.py`
+          pe o bază separată, ștearsă după, raport numai cu cifre.
+    L2-3b. [lista crescută pe drum, 15.10.2026] Verificarea zilnică citește arhiva ÎNTREAGĂ (`pg_restore -f /dev/null`): `-l` citește
+          numai cuprinsul — măsurat: o copie tăiată la 70% trece de `-l` (cod 0) și pică la citirea integrală (cod 1). Test + mutație.
+    L2-3c. [lista crescută pe drum, 15.10.2026] C34: `trimite_email_html` întoarce `False` la eșec și nu aruncă — 4 locuri îl prindeau
+          numai pe excepție (alerta de acces R73 moartă), 7 ignorau rezultatul, invitația spunea „a plecat”. `observare.
+          trimite_email_html_sau_semnaleaza` (sursa unică a semnalării); toate cele 11 locuri trecute pe ea; inventarul vede familia;
+          garda R73 (`core/test_esec_trimitere_email.py`) o citește; gard nou `core/test_email_html_rezultat.py`; e2e `test_def_c34_*`.
+    L2-3d. [lista crescută pe drum, 15.10.2026] Gărzile care pică pe exportul lui `fdb20bd6` (poartă verde): `import_tabel.py` în
+          straturi + constanta operațională în clichet; poarta respinge arborele ≠ index (`poarta-suita` + test + mutație). Pe drum, ale
+          lotului 2: refuzul invitației ca afirmație tipată, `invitatii.py` în straturi, învelișurile `/admin/invitatii` cu numele
+          use-case-ului (atribuirea scrierilor), clichetele P7 cu motivul.
+    L2-3e. [lista crescută pe drum, 15.10.2026, prima poartă respinsă] `test_fara_secrete_in_git`: parola din `test_invitatii` generată,
+          `pg_dump` cu `.pgpass` temporar; jurnalele porții în `${POARTA_JURNALE:-/tmp}`, mutate de `conftest.py` pentru teste (+ test, mutații).
+    L2-4. Registre, verificator, testele atinse + artefactele generate, poartă, backup, publicare, four-way, raport + ZIP.
+
 - fir: **Comanda Costin 14.10.2026 seara (răspunsul la §6 al raportului REGIM_PILOT_PREGĂTIRE_IMPORT, verbatim în DECIZII), pct.1 —
   importul din SAGA: C21–C25, codarea, clasa pe toate parserele și modelele `*Rand`** — lot separat pe ramura `lucru/pilot-2026-10-14`;
   poarta NUMAI cu acordul lui Costin (regim pilot, 2c); publicarea NUMAI cu acordul lui; după raport: lotul pct.2+3+5, apoi 246 + C26.

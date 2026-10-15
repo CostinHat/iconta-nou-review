@@ -29,7 +29,8 @@ _METODE = ("get", "post", "put", "delete", "patch")
 PUBLICE = {
     ("get",  "/"),                              # index (SPA shell)
     ("post", "/auth/login"),                    # autentificarea insasi
-    ("post", "/auth/register"),                 # inregistrare cont nou
+    ("post", "/auth/register"),                 # inregistrare cont nou — cere invitatia (14.10.2026, comanda Costin pct.3)
+    ("get",  "/public/invitatie/{token}"),      # starea invitatiei (emailul invitat); tokenul nu se ghiceste (32 de octeti)
     ("get",  "/public/termeni"),                # T&C, obligatoriu public
     ("get",  "/public/config"),                 # config client (fara secrete)
     ("post", "/public/reset-parola/cere"),      # recuperare parola: userul nu e logat

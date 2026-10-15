@@ -2400,3 +2400,43 @@ predare (50: 1222 -> 1220, 77u: 964 -> 960), proba paginii principale și proba 
 inexistentă în TESTE.md și data „ultimei rescrieri” a predării în forma cerută.
 A doua poartă: 1 failed / 8.170 passed — `test_garzi_mesaje_afisabile` (egalitate cu un mesaj afișabil întreg, la linia 194 a testului nou;
 garda opusă celei „pe text”): aserțiunea trecută pe câmpurile respingerii (regula, CUI-ul) și începutul mesajului.
+
+## 15.10.2026 (după publicarea lotului 1) — `core.bare = true` găsit în `.git/config` și readus
+
+La publicarea lui `fdb20bd6`, `git` refuza operațiile în `~/iconta_nou` („must be run in a work tree”): `.git/config` (comun cu
+worktree-ul) avea `core.bare = true`, scris la 21:05:52 — în timpul PRIMEI porți a lotului, adică înainte de reparația din `conftest.py`.
+Cauza: aceeași clasă — un test rulează `git init` într-un depozit temporar, dar cu `GIT_DIR` moștenit de la hook (absolut, al
+worktree-ului) `git init` a reinițializat depozitul REAL, fără arbore de lucru -> `core.bare = true`. Restul config-ului intact (citit
+integral). Readus cu `git config core.bare false`; ambele arbori curați; producția (procesul, statica) n-a fost atinsă — nu folosește
+git. De la reparația din `conftest.py` (în `fdb20bd6`) clasa nu mai poate apărea; a doua și a treia poartă au rulat cu ea.
+
+## 15.10.2026 (noaptea) — Lotul 2: garda pe `main`, conturile noi numai prin invitație, alerta backup-ului + proba de restaurare; C34
+
+Comanda și deciziile: DECIZII 15.10.2026 „Lotul 2”. Pe ramura `lucru/pilot-2026-10-14`, în worktree; poarta și publicarea aprobate de
+Costin până la 07:00, cu backup înainte.
+- **Garda pe `main`** (`scripts/githooks/reference-transaction` + `pre-commit`): orice mutare a lui `main` cere `.git/APROBARE_MAIN`
+  cu SHA-ul exact și textul aprobării; 6 teste pe un depozit temporar. Ștergerea lui `main` trecea în prima formă (SHA-ul vechi vine
+  zero în `prepared`) — prinsă de test, condiția rescrisă.
+- **Invitațiile:** tabelul `public.invitatii_cabinet` (migrare rulată pe baza de test), `core/invitatii.py`, rutele `/admin/invitatii`
+  (superadmin) și `/public/invitatie/{token}`, `/auth/register` cu invitație; ecranul „Invitații cabinete” în Panoul Admin; „Client nou”
+  fără invitație arată mesajul pilotului. e2e: 3 teste, 3 mutații roșii.
+- **Backup:** alerta la eșecul dump-ului local (scriptul — de instalat de Costin, cere sudo); `core/backup_verificare.py` zilnic 04:30
+  (linia din crontab adăugată; crontab-ul vechi salvat în `~/backups_db/crontab_pre_lot2_*.txt`); citirea integrală adăugată după ce o
+  copie tăiată la 70% a trecut de `pg_restore -l` (cod 0; citirea integrală: cod 1). Pe dump-ul real de 14.10: 364 de tabele cu date,
+  1.737.590 octeți, verde.
+- **Proba de restaurare** (`scripts/proba_restaurare.py`, baza `iconta_proba_restaurare`, ștearsă după — verificat: 0 baze cu numele ei):
+  snapshot 15.10 ~00:05 — producție / restaurat: 6 / 6 scheme (5 / 5 de firmă), 364 / 364 tabele, 48.338 / 48.338 rânduri, 364 din 364
+  tabele identice la md5 pe conținut, sha256 global identic (`9b00c148…`); dump 1.745.026 octeți, restaurare fără eroare, durată 6 s.
+  Dump-ul de noapte 14.10 03:00: restaurat fără eroare, 47.841 rânduri, 348 din 364 tabele identice cu producția de acum (diferența =
+  scrierile de după 03:00). Mutația „un rând șters din restaurare” -> 363 din 364, PICAT, cod 1.
+- **C34:** e2e-ul invitației a arătat „Invitația a plecat” pe aplicația fără Brevo -> clasa „eșec semnalat prin `False`, tratat ca
+  excepție sau ignorat”: 11 locuri trecute pe `observare.trimite_email_html_sau_semnaleaza`; garda R73 extinsă; gard nou pe AST.
+- **Poarta judeca alt arbore decât commitul:** subsetul de teste al lotului 2 (3.268 de teste, 19 roșii) a arătat gărzi care pică
+  identic pe exportul lui `fdb20bd6`, deși acela trecuse poarta verde. Reparate pe fond (`import_tabel.py` declarat în straturi,
+  constanta operațională numită și trecută în clichet cu motivul; refuzul invitației ca afirmație tipată; `invitatii.py` declarat;
+  învelișurile rutelor de invitație cu numele use-case-ului, ca atribuirea scrierilor să meargă pe funcție, nu pe modul — 32 de tabele
+  -> 1). Gardă nouă în `poarta-suita`: arborele = indexul, la pornire și la sfârșit.
+- **Prima poartă a lotului 2 (02:09–02:59): RESPINSĂ**, 1 failed / 8.201 passed / 10 skipped / 15 xfailed; verificator TOTAL 0; cifrele
+  F1–F5 identice. Logul pytest al porții stricat de un test care rula hook-ul pe un depozit de probă; testul picat aflat din
+  `.pytest_cache`: `test_fara_secrete_in_git` (o parolă în `core/test_invitatii.py`, `PGPASSWORD` în `scripts/proba_restaurare.py`).
+  Reparate amândouă, plus clasa: jurnalele porții în `${POARTA_JURNALE:-/tmp}`, mutate de `conftest.py` pentru teste.

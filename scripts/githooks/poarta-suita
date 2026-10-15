@@ -9,8 +9,23 @@
 # Respinge commit-ul daca pytest nu iese 0 SAU verificatorul nu da "TOTAL: 0".
 ROOT=$(git rev-parse --show-toplevel) || exit 1
 cd "$ROOT" || exit 1
+# [15.10.2026] jurnalele porții: `POARTA_JURNALE` (testele îl mută într-un director al lor — conftest.py), implicit /tmp
+J=${POARTA_JURNALE:-/tmp}
 PY=./venv/bin/python
 [ -x "$PY" ] || PY=python3
+# ── VERDICTUL PRIVESTE COMMITUL (15.10.2026, prins dupa lotul 1 al regimului pilot) ──────────────────────────────────────
+# pytest si verificatorul citesc ARBORELE DE LUCRU; commitul inregistreaza INDEXUL. Daca difera — un fisier modificat si nepus,
+# unul nou neadaugat, sau o editare facuta CAT RULEAZA poarta (~70 de minute) — verdictul e despre altceva decat ce se comite:
+# `fdb20bd6` a trecut poarta verde, iar exportul lui pica 9 garzi (DECIZII 15.10.2026 „Lotul 2”). Deci: la pornire arborele = indexul
+# (fara modificari nepuse, fara fisiere noi neadaugate); la sfarsit, inaintea verdictului, fisierele urmarite sunt tot neschimbate.
+arbore_nepus() { git diff --name-only; git ls-files --others --exclude-standard; }
+NEPUS=$(arbore_nepus)
+if [ -n "$NEPUS" ]; then
+    echo "[poarta] RESPINS: arborele de lucru difera de ce se comite (poarta ar judeca altceva decat commitul):"
+    echo "$NEPUS" | head -20 | sed 's/^/    /'
+    echo "[poarta]   Pune la index pe NUME ce intra in commit; restul mutat in afara depozitului sau in .gitignore."
+    exit 1
+fi
 # ── OCOLIREA DE CURATENIE (03.09.2026, ceruta de Costin) ──────────────────
 # „Operatiunile de curatenie — stergeri de fisiere, .gitignore, mutari — nu ruleaza teste deloc.
 #  Nu exista cale prin care ele sa strice o declaratie."  (PLAN_LUCRU.md, regula 7 de conducere)
@@ -27,8 +42,8 @@ PY=./venv/bin/python
 # CE SE SARE: pytest si verificatorul (cele ~55 de minute; v. cifra de mai jos). CE A RULAT DEJA:
 # `ruff` (pre-commit) si verificarile mesajului (verifica-mesaj). Nu se ruleaza
 # nici avertismentul de vechime a predarii — un commit de curatenie nu e o tura de lucru.
-if "$PY" scripts/curatenie.py > /tmp/precommit_curatenie.log 2>&1; then
-    sed 's/^/[poarta] /' /tmp/precommit_curatenie.log
+if "$PY" scripts/curatenie.py > $J/precommit_curatenie.log 2>&1; then
+    sed 's/^/[poarta] /' $J/precommit_curatenie.log
     echo "[poarta] OK - COMMIT NUMAI DE CURATENIE: pytest si verificatorul NU se ruleaza."
     echo "[poarta]   Mesajul TREBUIE sa poarte '# doar-curatenie: <motiv>' - o cere verifica-mesaj."
     exit 0
@@ -49,7 +64,7 @@ fi
 NW=${POARTA_PROCESE:-3}
 T0=$(date +%s)
 echo "[poarta] pytest (suita intreaga, $NW procese in paralel; verificatorul si cifrele ruleaza in acelasi timp, plasa dupa)..."
-"$PY" -m pytest -q -n "$NW" --dist loadfile > /tmp/precommit_pytest.log 2>&1 &
+"$PY" -m pytest -q -n "$NW" --dist loadfile > $J/precommit_pytest.log 2>&1 &
 PID_PYTEST=$!
 RC_PYTEST=""
 asteapta_pytest() {
@@ -82,15 +97,15 @@ esac
 # firmelor de test din producție (sesiune READ-ONLY, pe drumul aplicației) și le confruntă cu `scripts/cifre_referinta_aprobate.json`.
 # Orice diferență -> RESPINS; orice eșec al măsurătorii -> RESPINS (fail-closed). Schimbarea voită a referinței: `verifica-mesaj`.
 echo "[poarta] cifrele de referinta F1–F5 (productie, read-only) fata de referinta aprobata..."
-"$PY" scripts/cifre_referinta.py --productie --verifica > /tmp/precommit_cifre.log 2>&1
+"$PY" scripts/cifre_referinta.py --productie --verifica > $J/precommit_cifre.log 2>&1
 RC=$?
-tail -1 /tmp/precommit_cifre.log
+tail -1 $J/precommit_cifre.log
 if [ "$RC" -ne 0 ]; then
     { echo "=== $(date -Is) RESPINS cifre de referinta exit $RC"
       echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
-      head -20 /tmp/precommit_cifre.log | sed "s/^/    /"
+      head -20 $J/precommit_cifre.log | sed "s/^/    /"
     } >> "$ROOT/.poarta_jurnal.log"
-    echo "[poarta] RESPINS: cifrele de referinta difera sau nu s-au putut calcula. Log: /tmp/precommit_cifre.log"
+    echo "[poarta] RESPINS: cifrele de referinta difera sau nu s-au putut calcula. Log: $J/precommit_cifre.log"
     inainte_de_respingere "cifre"
     exit 1
 fi
@@ -100,7 +115,7 @@ fi
 # (proba din 11.10, 22:16): deadlock intre o pornire din pytest si aplicatia plasei care servea, pool-ul aplicatiei epuizat, plasa
 # agatata doua ore. Pe baza de test, pytest si plasa NU se suprapun; se suprapun numai verificatorul si cifrele (productie read-only).
 asteapta_pytest
-tail -1 /tmp/precommit_pytest.log
+tail -1 $J/precommit_pytest.log
 RC=$RC_PYTEST
 if [ "$RC" -ne 0 ]; then
     # JURNALUL PORTII (23.08.2026). Un test rosu OPRESTE commitul, omul repara, si ce ajunge in
@@ -117,10 +132,10 @@ if [ "$RC" -ne 0 ]; then
         # NU se scrie mesajul commitului (pana pe 08.10 suita rula in pre-commit, unde .git/COMMIT_EDITMSG
         # purta mesajul commitului PRECEDENT — dovedit pe prima respingere reala, 23.08).
         echo "    HEAD : $(git rev-parse --short HEAD 2>/dev/null)"
-        grep -E "^(FAILED|ERROR) " /tmp/precommit_pytest.log 2>/dev/null | sed "s/^/    /" | head -40
-        tail -1 /tmp/precommit_pytest.log | sed "s/^/    /"
+        grep -E "^(FAILED|ERROR) " $J/precommit_pytest.log 2>/dev/null | sed "s/^/    /" | head -40
+        tail -1 $J/precommit_pytest.log | sed "s/^/    /"
     } >> "$JURNAL"
-    echo "[poarta] RESPINS: pytest exit $RC (suita rosie). Log complet: /tmp/precommit_pytest.log"
+    echo "[poarta] RESPINS: pytest exit $RC (suita rosie). Log complet: $J/precommit_pytest.log"
     echo "[poarta] consemnat in .poarta_jurnal.log ($(grep -c '^=== ' "$JURNAL" 2>/dev/null) respingeri)"
     inainte_de_respingere "pytest"
     exit 1
@@ -131,19 +146,27 @@ fi
 # comite), pe baza de test, port 8019; testele sunt `frontend_test/e2e/e2e_*.py`. Rosu = commit respins, ca pytest-ul.
 echo "[poarta] plasa: testele de capat la capat ale deficientelor (browser, aplicatia din index)..."
 T_E2E0=$(date +%s)
-"$PY" scripts/e2e_poarta.py /tmp/e2e_poarta_capturi > /tmp/precommit_e2e.log 2>&1
+"$PY" scripts/e2e_poarta.py /tmp/e2e_poarta_capturi > $J/precommit_e2e.log 2>&1
 RC=$?
-tail -1 /tmp/precommit_e2e.log
+tail -1 $J/precommit_e2e.log
 if [ "$RC" -ne 0 ]; then
     { echo "=== $(date -Is) RESPINS plasa e2e exit $RC"
       echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
-      grep -E "^(FAILED|ERROR) " /tmp/precommit_e2e.log | sed "s/^/    /" | head -40
+      grep -E "^(FAILED|ERROR) " $J/precommit_e2e.log | sed "s/^/    /" | head -40
     } >> "$ROOT/.poarta_jurnal.log"
-    echo "[poarta] RESPINS: plasa e2e exit $RC. Log: /tmp/precommit_e2e.log, capturi: /tmp/e2e_poarta_capturi"
+    echo "[poarta] RESPINS: plasa e2e exit $RC. Log: $J/precommit_e2e.log, capturi: /tmp/e2e_poarta_capturi"
     inainte_de_respingere "plasa e2e"
     exit 1
 fi
 T_E2E=$(( $(date +%s) - T_E2E0 ))
+
+# [15.10.2026] arborele urmarit, neschimbat cat a rulat poarta (v. „VERDICTUL PRIVESTE COMMITUL” sus)
+NEPUS=$(git diff --name-only)
+if [ -n "$NEPUS" ]; then
+    echo "[poarta] RESPINS: fisiere urmarite schimbate CAT a rulat poarta — verdictul nu mai e despre ce se comite:"
+    echo "$NEPUS" | head -20 | sed 's/^/    /'
+    exit 1
+fi
 
 # ── vechimea PREDARII (24.08.2026, cerut de Costin) ──────────────────────────
 # Un /clear nu se poate garda din hook. Ce SE poate garda e commitul: daca HEAD a

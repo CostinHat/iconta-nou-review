@@ -1,0 +1,41 @@
+#!/bin/sh
+# reference-transaction — GARDA PE `main` (comanda Costin 14.10.2026, regim pilot, pct.2: „Garda pe main în ~/iconta_nou (commit refuzat
+# fără aprobare scrisă): da.”; verbatim în DECIZII). Din 14.10.2026 producția are datele unui cabinet real, iar `main` din `~/iconta_nou`
+# e versiunea publicată: orice mutare a lui `refs/heads/main` (commit, fast-forward, reset, pull, ștergere) PUBLICĂ (post-commit) sau
+# schimbă ce e pe disc lângă procesul viu.
+#
+# REGULA: `refs/heads/main` se mută NUMAI la SHA-ul numit în aprobarea scrisă `<git-common-dir>/APROBARE_MAIN`:
+#     sha: <SHA complet, 40 de caractere>
+#     aprobat: <textul aprobării lui Costin, verbatim>
+# Fără fișier, cu alt SHA, fără text sau spre ștergerea ramurii -> tranzacția e REFUZATĂ (git o anulează, nimic nu se mută).
+# La reușită aprobarea se CONSUMĂ (se mută în APROBARE_MAIN.folosita-<sha>): o aprobare acoperă o singură mutare.
+# Lucrul se face pe ramuri, în worktree (`/home/costin/iconta_lucru`); publicarea = fast-forward aprobat + post-commit.
+# Gard: core/test_garda_main.py (depozit temporar; mutația „hook-ul trece tot” -> ROȘU).
+STARE="$1"
+case "$STARE" in prepared|committed) ;; *) exit 0 ;; esac
+COMUN=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || exit 0
+APR="$COMUN/APROBARE_MAIN"
+ZERO=0000000000000000000000000000000000000000
+COD=0
+while read -r VECHI NOU REF; do
+    [ "$REF" = "refs/heads/main" ] || continue
+    # la ștergere git poate trimite vechiul SHA ca zero (nu-l verifică): „vechi = nou” ar sări-o — se tratează înainte
+    [ "$NOU" != "$ZERO" ] && [ "$VECHI" = "$NOU" ] && continue
+    SHA=$(sed -n 's/^sha:[[:space:]]*//p' "$APR" 2>/dev/null | head -1 | tr -d '[:space:]')
+    TXT=$(sed -n 's/^aprobat:[[:space:]]*//p' "$APR" 2>/dev/null | head -1)
+    if [ "$STARE" = "prepared" ]; then
+        if [ "$NOU" = "$ZERO" ] || [ -z "$TXT" ] || [ "$SHA" != "$NOU" ]; then
+            echo "" >&2
+            echo "############################################################" >&2
+            echo "## [garda main] REFUZAT: refs/heads/main -> ${NOU} fără aprobare scrisă pentru acest SHA." >&2
+            echo "## main = versiunea publicată (regim pilot). Lucrează pe o ramură; publicarea cere aprobarea lui Costin," >&2
+            echo "## scrisă în $APR:  'sha: <SHA complet>'  și  'aprobat: <textul aprobării>'." >&2
+            echo "############################################################" >&2
+            COD=1
+        fi
+    elif [ "$SHA" = "$NOU" ] && [ -f "$APR" ]; then
+        mv -f "$APR" "$APR.folosita-$NOU" 2>/dev/null || rm -f "$APR"
+        echo "[garda main] aprobarea pentru ${NOU} folosită și consumată" >&2
+    fi
+done
+exit $COD

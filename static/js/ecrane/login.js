@@ -141,6 +141,12 @@ export function ecranLogin(radacina) {
 
   const modal = overlay.querySelector("#acces-modal");
 
+  // [14.10.2026, comanda Costin pct.3, verbatim în DECIZII „Lotul 2”] „Înregistrarea liberă se închide: în pilot, conturile noi se
+  // creează numai prin invitație.” Linkul din emailul de invitație (`/#invitatie=<token>`) deschide direct drumul înregistrării;
+  // fără el, „Client nou” spune cum se cere invitația (formularul nu se mai arată).
+  const INVITATIE = (location.hash.match(/#invitatie=([\w-]+)/) || [])[1] || "";
+  if (INVITATIE) { overlay.hidden = false; randeazaPreturiInainte(); }   // [14.10.2026] linkul de invitație deschide înregistrarea
+
   // ---------- ecran 1: alege Intra in cont / Client nou ----------
   function randeazaAlegere() {
     modal.classList.remove("acces-modal-inreg");
@@ -382,7 +388,23 @@ export function ecranLogin(radacina) {
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
     modal.querySelector("#pr-inapoi").addEventListener("click", randeazaAlegere);
-    modal.querySelector("#pr-continua").addEventListener("click", randeazaInregistrare);
+    modal.querySelector("#pr-continua").addEventListener("click", INVITATIE ? randeazaInregistrare : randeazaFaraInvitatie);
+  }
+
+  // ---------- ecran 2b': fără invitație (pilot) ----------
+  function randeazaFaraInvitatie() {
+    modal.classList.remove("acces-modal-inreg");
+    modal.innerHTML = `
+      <button type="button" class="nav-sageata" id="fi-inapoi" title="Înapoi" aria-label="Înapoi" style="position:absolute;top:14px;left:14px"><span aria-hidden="true">←</span></button>
+      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      <div class="login-brand">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
+        <span class="login-tagline">Contabilitatea cu control fiscal</span>
+      </div>
+      <div class="caseta-info" id="fi-mesaj"><div class="ci-mesaj">În perioada pilot, conturile noi de cabinet se creează numai prin invitație. Dacă vrei să folosești iConta.eu, scrie-ne la <a href="mailto:contact@iconta.eu">contact@iconta.eu</a> și îți trimitem invitația.</div></div>
+    `;
+    modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
+    modal.querySelector("#fi-inapoi").addEventListener("click", randeazaAlegere);
   }
 
   // ---------- ecran 2c: cont creat dar firma proprie neadaugata (ex. CUI invalid) ---------- [register_ecran_esec_v1]
@@ -415,7 +437,17 @@ export function ecranLogin(radacina) {
     });
   }
 
-  function randeazaInregistrare() {
+  async function randeazaInregistrare() {
+    // [14.10.2026] numai cu invitație validă: emailul vine din invitație (contul se creează numai cu el)
+    let inv = null;
+    try { inv = await api.get(`/public/invitatie/${encodeURIComponent(INVITATIE)}`); } catch (e) { inv = { valida: false, refuz: { motiv: (e && e.mesaj) || "Invitația nu se poate verifica acum." } }; }
+    if (!inv || !inv.valida) {
+      randeazaFaraInvitatie();
+      const m = modal.querySelector("#fi-mesaj");
+      m.className = "caseta-atentie";
+      m.innerHTML = `<div class="ca-mesaj">${esc((inv && inv.refuz && inv.refuz.motiv) || "Invitația nu e valabilă.")}</div>`;
+      return;
+    }
     modal.classList.add("acces-modal-inreg");
     modal.innerHTML = `
       <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
@@ -442,7 +474,8 @@ export function ecranLogin(radacina) {
       </label>
       <label class="camp">
         <span class="camp-eticheta">Email<span class="oblig">*</span></span>
-        <input type="email" class="camp-input" id="reg-email" autocomplete="off" placeholder="nume@firma.ro">
+        <input type="email" class="camp-input" id="reg-email" autocomplete="off" placeholder="nume@firma.ro" readonly>
+        <span class="camp-ajutor">Emailul din invitație — contul se creează cu el.</span>
       </label>
       <label class="camp">
         <span class="camp-eticheta">Parol\u0103<span class="oblig">*</span></span>
@@ -464,6 +497,7 @@ export function ecranLogin(radacina) {
     const cabinet = modal.querySelector("#reg-cabinet");
     const numeAdmin = modal.querySelector("#reg-nume-admin");  // null in modul gratuit
     const email = modal.querySelector("#reg-email");
+    email.value = inv.email;   // [14.10.2026] emailul invitației, needitabil
     const parola = modal.querySelector("#reg-parola");
     const parola2 = modal.querySelector("#reg-parola2");
     const buton = modal.querySelector("#reg-buton");
@@ -540,7 +574,9 @@ export function ecranLogin(radacina) {
             nume,
             prenume,
             accept_termeni: !!modal.querySelector("#reg-termeni")?.checked,  /* [termeni_v1] */
+            invitatie: INVITATIE,  /* [14.10.2026] conturile noi numai prin invitație */
         });
+        history.replaceState(null, "", location.pathname);   // invitația s-a consumat: linkul nu mai rămâne în bară
         const _avertReg = (_reg && _reg.firma_creata === false) ? (_reg.avertisment || "") : "";
         if (_avertReg) {
           /* [register_ecran_esec_v1] Firma proprie nu s-a putut adauga (ex. CUI invalid). NU intram tacit

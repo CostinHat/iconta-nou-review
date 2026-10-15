@@ -29,6 +29,9 @@ import os
 import sys
 
 NUME = "trimite_email_html"
+#: Familia (15.10.2026): `trimite_email_html_sau_semnaleaza` (observare) e aceeași trimitere, plus semnalarea eșecului; un loc
+#: trecut pe ea rămâne loc de apel — altfel garda „după commit” n-ar mai vedea locurile reparate.
+FAMILIA = (NUME, "trimite_email_html_sau_semnaleaza")
 
 
 def fisiere(rad):
@@ -84,7 +87,7 @@ def analizeaza(cale, rad):
         f = n.func
         ident = (f.attr if isinstance(f, ast.Attribute)
                  else f.id if isinstance(f, ast.Name) else None)
-        if ident != NUME:
+        if ident not in FAMILIA:
             continue
 
         # urc pana la functia care il contine si adun `with`-urile de pe drum
@@ -113,6 +116,7 @@ def analizeaza(cale, rad):
 
         rez.append({
             "fisier_linie": "%s:%d" % (rel, n.lineno),
+            "apel": ident,
             "functie": fn.name if fn else "(modul)",
             "e_ruta": _e_ruta(fn) if fn else None,
             "sub_conexiune": sub_conexiune,

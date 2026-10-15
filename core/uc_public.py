@@ -102,21 +102,18 @@ def reset_parola_cere(date):
         token, u = _rp.cere_reset(conn, date.email)
         conn.commit()
     if token and u:
-        try:
-            baza = os.environ.get("ICONTA_BAZA_URL", "https://iconta.eu")
-            link = baza + "/#reset=" + token
-            nume = (u.get("prenume") or u.get("nume") or "").strip()
-            html = ("<p>Buna%s,</p>"
-                    "<p>A sosit o cerere de resetare a parolei contului tau de cabinet pe iConta.eu.</p>"
-                    "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Seteaza o parola noua</a></p>"
-                    "<p>Linkul e valabil 60 de minute si poate fi folosit o singura data. "
-                    "Daca nu tu ai cerut resetarea, ignora acest mesaj — parola ramane neschimbata.</p>"
-                    % ((" " + nume) if nume else "", link))
-            _obs.trimite_email_html(u["email"], "Resetare parola iConta.eu", html)
-        except Exception as _e:
-            # [R73] ALERTA: e cale de acces. Tacerea aici inseamna ca omul nu mai poate intra
-            # si nimeni nu afla — chiar criteriul din docstringul lui `esec_secundar`.
-            _obs.esec_secundar("email resetare parola", _e, alerta=True)
+        baza = os.environ.get("ICONTA_BAZA_URL", "https://iconta.eu")
+        link = baza + "/#reset=" + token
+        nume = (u.get("prenume") or u.get("nume") or "").strip()
+        html = ("<p>Buna%s,</p>"
+                "<p>A sosit o cerere de resetare a parolei contului tau de cabinet pe iConta.eu.</p>"
+                "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Seteaza o parola noua</a></p>"
+                "<p>Linkul e valabil 60 de minute si poate fi folosit o singura data. "
+                "Daca nu tu ai cerut resetarea, ignora acest mesaj — parola ramane neschimbata.</p>"
+                % ((" " + nume) if nume else "", link))
+        # [R73] ALERTA: e cale de acces. Tacerea aici inseamna ca omul nu mai poate intra
+        # si nimeni nu afla — chiar criteriul din docstringul lui `esec_secundar`.
+        _obs.trimite_email_html_sau_semnaleaza("email resetare parola", u["email"], "Resetare parola iConta.eu", html, alerta=True)
         try:
             with db.get_conn() as c, c.cursor() as cur:
                 repo_admin.scrie_audit_reset_cerut(cur, u["user_id"])
@@ -149,10 +146,7 @@ def magic_link_cere(date):
     # `_html_magic`, adica exact cand exista utilizatorul. Raspunsul rutei ramane acelasi indiferent,
     # ca sa nu se poata enumera adresele.
     if _html_magic is not None:
-        try:
-            _obs.trimite_email_html(email, "Link de logare iConta.eu", _html_magic)
-        except Exception as _e:
-            # [R73] ALERTA: SINGURA usa de intrare in portalul clientului.
-            _obs.esec_secundar("email link de logare", _e, alerta=True)
+        # [R73] ALERTA: SINGURA usa de intrare in portalul clientului.
+        _obs.trimite_email_html_sau_semnaleaza("email link de logare", email, "Link de logare iConta.eu", _html_magic, alerta=True)
     return {"ok": True, "mesaj": MESAJ_LINK_LOGARE_CERUT}
 

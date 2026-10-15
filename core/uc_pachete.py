@@ -86,7 +86,7 @@ def pachet_poveste_set(tenant_id, an, luna, date, ctx, _aprobare=False):
     # aprobat: commit reusit -> se trimite; commit cazut -> exceptia iese de aici si NU se trimite
     # nimic. In plus, apelul (termen 15 s) nu mai tine o conexiune din pool.
     if _de_trimis is not None:
-        _obs.trimite_email_html(*_de_trimis)
+        _obs.trimite_email_html_sau_semnaleaza("email pachet lunar", *_de_trimis)
     return r
 
 

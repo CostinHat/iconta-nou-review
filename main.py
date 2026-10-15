@@ -854,7 +854,8 @@ def _verifica_si_alerta():
             "<p>Alerta sanatate server iConta.eu:</p><ul>" +
             "".join("<li>" + p + "</li>" for p in alerte) +
             "</ul><p>Verifica panoul 'Sanatate server' din Admin iConta.</p></div>")
-    _obs.trimite_email_html(email, "Alerta iConta.eu - sanatate server", html)
+    # fara alerta: chiar asta e alerta (acelasi canal, Brevo) — esecul ramane in jurnal
+    _obs.trimite_email_html_sau_semnaleaza("email alerta sanatate", email, "Alerta iConta.eu - sanatate server", html)
 
 def _ciclu_sanatate():
     """Un ciclu al buclei de sanatate, cu mai multe procese in minte.
@@ -1072,6 +1073,10 @@ class RegisterIn(BaseModel):
     prenume: Optional[str] = None
     cui: Optional[str] = None  # register_primul_tenant_v1
     accept_termeni: bool = False  # [termeni_v1] bifa obligatorie, validata pe BACKEND
+    invitatie: Optional[str] = None  # [14.10.2026, comanda Costin pct.3] conturile noi de cabinet NUMAI prin invitație
+
+class InvitatieIn(BaseModel):
+    email: str
 
 class DeclaratieIn(BaseModel):
     tenant_id: int
@@ -1429,6 +1434,34 @@ def login(date: LoginIn):
 def register(date: RegisterIn):
     try:
         return _uc_auth.register(date)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+# [14.10.2026, comanda Costin pct.3, verbatim în DECIZII „Lotul 2”] conturile noi de cabinet numai prin invitație
+@app.post("/admin/invitatii")
+def invitatie_creeaza(date: InvitatieIn, ctx=Depends(cere_rol("superadmin"))):
+    """Invită un email să-și creeze contul de cabinet (link valabil 14 zile, o singură folosire)."""
+    try:
+        return _uc_auth.invitatie_creeaza(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/admin/invitatii")
+def invitatii_lista(ctx=Depends(cere_rol("superadmin"))):
+    """Invitațiile trimise, fără tokenuri."""
+    try:
+        return _uc_auth.invitatii_lista(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/public/invitatie/{token}")
+def invitatie_stare(token: str):
+    """Starea unei invitații (emailul invitat, valabilitatea) — ecranul de înregistrare o citește înainte de formular."""
+    try:
+        return _uc_auth.invitatie_stare(token)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

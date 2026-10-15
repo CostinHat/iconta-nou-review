@@ -151,6 +151,26 @@ def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
         return False
 
 
+def trimite_email_html_sau_semnaleaza(eticheta, catre, subiect, html, alerta=False, **k):
+    """`trimite_email_html` + semnalarea eșecului, într-un singur loc. Întoarce True/False (emailul a plecat sau nu).
+
+    DE CE (15.10.2026): `trimite_email_html` semnalează eșecul prin `False` (fără cheie Brevo, Brevo refuză, rețeaua cade) și practic
+    nu aruncă. Patru locuri îl prindeau NUMAI pe excepție (`try: ... except: esec_secundar(..., alerta=True)`) — resetarea parolei,
+    linkul de logare, activarea asistentului, bun venit — deci alerta R73 „cale de acces” nu pleca niciodată la un eșec real; alte
+    șapte ignorau rezultatul cu totul, iar invitația de cabinet îi spunea superadminului „a plecat” fără să știe. Aici eșecul, oricum
+    ar veni, ajunge în `esec_secundar` (cu alertă numai unde tăcerea taie accesul cuiva — criteriul R73 din `esec_secundar`).
+    Gard: `core/test_email_html_rezultat.py` (orice apel direct al lui `trimite_email_html` în producție își citește rezultatul)."""
+    try:
+        ok = trimite_email_html(catre, subiect, html, **k)
+    except Exception as e:  # noqa: BLE001 — eșecul se semnalează mai jos, operația principală continuă
+        esec_secundar(eticheta, e, alerta=alerta)
+        return False
+    if not ok:
+        esec_secundar(eticheta, RuntimeError("emailul către %s nu a plecat (Brevo a refuzat, lipsește cheia sau rețeaua)" % catre),
+                      alerta=alerta)
+    return bool(ok)
+
+
 def alerteaza(cheie, subiect, mesaj, acum=None):
     """
     Trimite alerta DOAR dacă throttling permite. cheie = grupează alertele

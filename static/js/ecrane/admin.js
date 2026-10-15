@@ -31,6 +31,10 @@ const DEF = [
   { cheie:"sanatate", titlu:"Sănătate server", icon: "server", ...CULORI_CARD.piersica,
     sinteza:"Server, aplicație, bază de date, erori",
     actiune:(nav) => nav.deschide("Sănătate server", (corp) => randeazaAdminSanatate(corp, nav)) },
+  // [14.10.2026, comanda Costin pct.3, verbatim în DECIZII „Lotul 2”] conturile noi de cabinet numai prin invitație
+  { cheie:"invitatii", titlu:"Invitații cabinete", icon: "mail", ...CULORI_CARD.verde,
+    sinteza:"Conturile noi se creează numai prin invitație",
+    actiune:(nav) => nav.deschide("Invitații cabinete", (corp) => randeazaAdminInvitatii(corp)) },
 ];
 
 export function desktopAdmin(continut, nav) {
@@ -187,3 +191,47 @@ async function incarcaPropuneri(corp) {
     });
   });
 }
+
+
+// [14.10.2026, comanda Costin pct.3] Invitațiile: emailul invitat primește linkul (14 zile, o singură folosire). Linkul se arată
+// o singură dată, aici, ca superadminul să-l poată da direct dacă emailul nu ajunge.
+async function randeazaAdminInvitatii(corp) {
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Invitații cabinete</h2>
+    <p class="pf-intro">În perioada pilot, conturile noi de cabinet se creează numai prin invitație. Invitația e valabilă 14 zile și se folosește o singură dată, numai cu emailul invitat.</p>
+    <label class="camp" style="max-width:420px"><span class="camp-eticheta">Email cabinet <span class="oblig">*</span></span>
+      <input type="email" id="inv-email" class="camp-input" autocomplete="off" placeholder="nume@cabinet.ro"></label>
+    <button class="buton-primar" id="inv-trimite" data-actiune="POST /admin/invitatii">Trimite invitația</button>
+    <div id="inv-msg" style="margin-top:10px"></div>
+    <div id="inv-lista" style="margin-top:16px"></div>`;
+  const lista = corp.querySelector("#inv-lista");
+  async function incarca() {
+    try {
+      const r = await api.get("/admin/invitatii");
+      const v = (r && r.invitatii) || [];
+      lista.innerHTML = v.length ? `<table class="fd-tabel"><thead><tr><th>Email</th><th>Trimisă</th><th>Expiră</th><th>Folosită</th></tr></thead><tbody>
+        ${v.map((x) => `<tr><td>${esc(x.email)}</td><td>${dataRo(x.creat_la, "cu_ora")}</td><td>${dataRo(x.expira_la, "cu_ora")}</td><td>${x.folosita_la ? dataRo(x.folosita_la, "cu_ora") : "—"}</td></tr>`).join("")}
+        </tbody></table>` : `<div class="stare-goala">Nicio invitație trimisă încă. Scrie emailul cabinetului mai sus și apasă „Trimite invitația”.</div>`;
+    } catch (e) { arataMesaj(lista, (e && e.mesaj) || "Lista invitațiilor nu se poate încărca.", "eroare"); }
+  }
+  corp.querySelector("#inv-trimite").addEventListener("click", async () => {
+    const msg = corp.querySelector("#inv-msg");
+    const email = corp.querySelector("#inv-email").value.trim();
+    if (!email) { arataMesaj(msg, "Scrie emailul cabinetului invitat.", "eroare"); return; }
+    const b = corp.querySelector("#inv-trimite");
+    b.disabled = true; b.textContent = "Se trimite…";
+    try {
+      const r = await api.post("/admin/invitatii", { email });
+      const [cls, m] = r.email_trimis ? ["caseta-info", "ci-mesaj"] : ["caseta-atentie", "ca-mesaj"];   // emailul netrimis = atenție
+      msg.innerHTML = `<div class="${cls}" id="inv-rezultat"><div class="${m}">${r.email_trimis ? `Invitația a plecat pe <b>${esc(r.email)}</b>.` : `Emailul către <b>${esc(r.email)}</b> nu s-a putut trimite — dă-i linkul de mai jos direct.`} Linkul (valabil ${r.valabila_zile} zile, o singură folosire):</div>
+        <input type="text" class="camp-input" id="inv-link" readonly aria-label="Linkul invitației" value="${esc(r.link)}" style="margin-top:6px"></div>`;
+      corp.querySelector("#inv-email").value = "";
+      await incarca();
+    } catch (e) {
+      arataMesaj(msg, (e && e.mesaj) || "Invitația nu s-a putut crea.", "eroare");
+    }
+    b.disabled = false; b.textContent = "Trimite invitația";
+  });
+  await incarca();
+}
+

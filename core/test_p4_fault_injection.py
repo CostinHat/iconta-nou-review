@@ -131,6 +131,7 @@ def _curata():
             # Curatarea se face si pe ADRESA, nu doar pe cabinet: un rand ramas de la o rulare
             # de dinainte a facut proba de inregistrare sa numere doua dovezi in loc de una.
             cur.execute("DELETE FROM public.acord_termeni WHERE email LIKE 'ztest_p4%%'")
+            cur.execute("DELETE FROM public.invitatii_cabinet WHERE email LIKE 'ztest_p4%%'")   # [14.10] invitația probei
             cur.execute("DELETE FROM public.users WHERE email LIKE 'ztest_p4%%'")
             cur.execute("DELETE FROM public.accounting_firms WHERE nume LIKE 'ZTEST P4%%'")
 
@@ -327,8 +328,18 @@ def test_register_contul_nu_ramane_fara_dovada_acordului(monkeypatch):
                 cur.execute("SELECT count(*) FROM public.users WHERE email = %s", (email,))
                 return cur.fetchone()[0]
 
+    # [14.10.2026, comanda Costin pct.3] înregistrarea cere invitația — se creează pe drumul aplicației (`invitatii.creeaza`)
+    from core import invitatii as _inv
+    with _db.get_conn() as conn:
+        with conn.cursor() as cur:
+            tok = _inv.creeaza(cur, email, None)
     corp = {"email": email, "parola": "Parola.P4.2026", "nume_cabinet": "ZTEST P4 CABINET REG",
-            "nume": "P4", "prenume": "Proba", "accept_termeni": True}
+            "nume": "P4", "prenume": "Proba", "accept_termeni": True, "invitatie": tok}
+
+    def _invitatia():
+        with _db.get_conn() as conn:
+            with conn.cursor() as cur:
+                return _inv.stare(cur, tok)["valida"]
 
     # Defectul se injectează pe `acord_termeni.versiune`, care e `NOT NULL` — verificat în
     # `acord_termeni_ddl.sql`. Prima formă a probei dădea un `cabinet_id` inexistent și NU
@@ -355,6 +366,7 @@ def test_register_contul_nu_ramane_fara_dovada_acordului(monkeypatch):
     assert _useri() == 0, (
         "PARTIAL_STATE_AFTER_FAULT: contul a rămas, fără dovada acordului")
     assert dupa == inainte, "starea persistentă s-a mișcat: %s -> %s" % (inainte, dupa)
+    assert _invitatia(), "invitația s-a consumat deși contul n-a rămas (consumarea e în aceeași tranzacție)"
 
     # --- DIRECȚIA 2: fără defect, contul ȘI dovada intră amândouă
     r = cl.post("/auth/register", json=corp)
@@ -366,6 +378,7 @@ def test_register_contul_nu_ramane_fara_dovada_acordului(monkeypatch):
     assert _useri() == 1 and acorduri == 1, (
         "fără defect trebuie să existe și contul, și dovada: %s conturi, %s acorduri"
         % (_useri(), acorduri))
+    assert not _invitatia(), "contul s-a creat, dar invitația a rămas folosibilă"
     _curata()
 
 

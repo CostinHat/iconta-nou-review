@@ -20166,3 +20166,73 @@ ecranul de creare / editare (API), scutirea rămâne cerută explicit — decizi
   nimic” (întreguri: un import parțial ar fi dezechilibrat / sub 100%).
 **Limita:** marcajul „de verificat” apare în statul de plată (calculul salariului, cum a cerut decizia); D112 se generează cu valorile
 importate (0 / „nescutit”) fără avertisment propriu — nu l-a cerut decizia.
+
+## 15.10.2026 (noaptea) — Lotul 2: garda pe `main`, conturile noi numai prin invitație, alerta backup-ului și proba de restaurare; C34
+
+**Comanda, verbatim (răspunsul Costin la §6 al primului raport, 14.10.2026):** „2. Garda pe main în ~/iconta_nou (commit refuzat fără
+aprobare scrisă): da. 3. Înregistrarea liberă se închide: în pilot, conturile noi se creează numai prin invitație. Spune ce schimbi. […]
+5. Backup: repară alerta la eșecul dump-ului local și fă o probă de restaurare pe o bază separată pe același server, ștearsă după probă.
+În raport numai cifre (număr de scheme, de rânduri, sume de control), fără date.” Și (15.10.2026): „Continuă cu lotul 2 (garda pe main,
+înregistrarea numai prin invitație, alerta de backup + proba de restaurare cu numai cifre în raport), apoi lotul 3 (246 + C26). Ai
+acordul să rulezi poarta și să publici fiecare lot până la 07:00, cu backup al bazei înainte de fiecare publicare. După 07:00 nu mai
+publici fără acordul meu.”
+
+**1. Garda pe `main`.** `scripts/githooks/reference-transaction`: ORICE mutare a lui `refs/heads/main` (commit, fast-forward, merge,
+reset, ștergere) se refuză dacă `.git/APROBARE_MAIN` nu are `sha: <exact commitul țintă>` și `aprobat: <textul aprobării lui Costin>`;
+la reușită fișierul se redenumește `APROBARE_MAIN.folosita-<sha>` (o aprobare = o mutare). `pre-commit` refuză în plus commitul direct pe
+`main` (lucrul se face pe ramură, în worktree). Procedura e în `scripts/githooks/README.md` și în CLAUDE.md („REGIM PILOT”).
+**Respinse:** protecția ramurii pe remote (nu oprește mutarea LOCALĂ, care declanșează post-commit = restart pe producție); numai
+`pre-commit` (nu vede fast-forward-ul / reset-ul, adică exact calea de publicare din worktree). **Limita:** hook-urile se pot ocoli cu
+`--no-verify` / `core.hooksPath` schimbat — garda oprește greșeala, nu pe cineva care vrea s-o ocolească.
+
+**2. Ce schimb la înregistrare („Spune ce schimbi”):**
+- `/auth/register` cere o invitație valabilă: fără ea -> 403 „În perioada pilot, conturile noi de cabinet se creează numai prin
+  invitație…”, înainte de orice scriere; cu ea -> emailul contului TREBUIE să fie cel invitat; invitația se consumă în ACEEAȘI
+  tranzacție cu contul și cu dovada acordului termenilor (un cont fără invitație consumată sau o invitație consumată fără cont nu există).
+- Invitația (`public.invitatii_cabinet`, migrarea `core/migrare_invitatii_cabinet.py`): token aleator de 32 de octeți, în bază numai
+  hash-ul (sha256), valabilă 14 zile, o singură folosire, legată de email. O creează numai superadminul: Panou Admin -> „Invitații
+  cabinete” (emailul pleacă prin Brevo; linkul se arată o singură dată pe ecran, pentru cazul în care emailul nu ajunge).
+- Pagina publică: „Client nou” -> prețurile -> „Continuă” arată, fără invitație, mesajul pilotului (contact@iconta.eu), nu formularul;
+  din linkul de invitație arată formularul cu emailul invitației precompletat și needitabil; o invitație folosită / expirată / inexistentă
+  arată motivul.
+- NESCHIMBATE: conturile existente, logarea, asistenții adăugați de cabinet (invitația lor proprie), accesul clienților în portal.
+**Respinse:** închiderea totală a înregistrării (un cabinet nou n-ar mai avea cale de intrare decât prin baza de date); un cod de
+invitație nelegat de email (s-ar putea da mai departe). **Limita:** invitația o trimite numai superadminul, manual — fără cerere de
+invitație din pagină (nu s-a cerut).
+
+**3. Backup.**
+- Alerta la eșecul dump-ului LOCAL: `config/iconta-backup.sh` are `trap … ERR` înaintea lui `pg_dump` (email Brevo „[iConta] Backup
+  LOCAL esuat”, apoi scriptul cade vizibil, ca înainte). Copia instalată e `/usr/local/bin/iconta-backup.sh` (rulată ca `postgres` de
+  timerul systemd): instalarea cere `sudo` cu parolă -> o face Costin (pasul e în raport).
+- Plasa independentă de script: `core/backup_verificare.py`, zilnic 04:30 din crontab, prin `cron.ruleaza` (eșec = alertă; reușită =
+  bătaie -> lipsa rulării alarmează prin `cron.verifica_batai`): ultimul dump trebuie să fie recent (≤ 26 h), ne-trunchiat (≥ 100 KB și ≥
+  jumătate din cel anterior) și citibil INTEGRAL (`pg_restore -l` + `pg_restore -f /dev/null`). Prinde și timerul care n-a pornit.
+  **Respins:** numai `pg_restore -l` — măsurat 15.10: o copie tăiată la 70% trece de `-l` (cod 0) și pică la citirea integrală (cod 1).
+- Proba de restaurare: `scripts/proba_restaurare.py` (refolosește amprenta din `scripts/amprenta_productie.py`): baza separată
+  `iconta_proba_restaurare` pe același server, dump din ACELAȘI snapshot în care se calculează amprenta producției, restaurare, comparație
+  pe tabel (rânduri + md5 pe conținut), `DROP DATABASE … WITH (FORCE)`, ieșire numai cu cifre. Rezultatul e în raportul lotului și în
+  ISTORIC 15.10.2026.
+
+**4. C34 (găsită la e2e-ul invitațiilor):** `observare.trimite_email_html` semnalează eșecul prin `False`, nu prin excepție; patru locuri
+(resetare parolă, link de logare, activare asistent, bun venit) îl prindeau numai pe excepție, deci alerta R73 de acces nu pleca niciodată;
+șapte ignorau rezultatul; invitația îi spunea superadminului „a plecat”. Sursa unică: `observare.trimite_email_html_sau_semnaleaza`
+(semnalează eșecul oricum ar veni, cu `alerta` numai pe căile de acces: resetare, link de logare, activare asistent, acces portal,
+confirmarea adresei noi). **Respins:** schimbarea lui `trimite_email_html` ca să arunce (ar fi schimbat 7 locuri care citesc corect
+rezultatul — `expirare_cote`, sinteza, notificările, pachetele). Gărzi: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`
+(acum vede funcția unică), inventarul `scripts/inventar_email_html.py` (vede familia).
+
+**5. (15.10.2026, prins pe drum) Verdictul porții privește commitul.** Subsetul de teste al lotului 2 a arătat 9 gărzi roșii care pică
+identic pe exportul lui `fdb20bd6` — commit trecut prin poartă verde (14.10, 23:26). pytest citește ARBORELE DE LUCRU, commitul —
+INDEXUL; diferența dintre ele face verdictul să privească altceva decât ce se comite. `poarta-suita` respinge acum: la pornire, orice
+modificare nepusă și orice fișier nou neadăugat; la sfârșit, orice fișier urmărit schimbat cât a rulat poarta. **Respins:** rularea
+pytest pe un export al indexului (ca plasa e2e) — ar dubla timpul de pregătire al porții și n-ar spune nimic despre edițiile din timpul
+rulării. **Limita:** cauza exactă din lotul 1 nu se mai poate reconstitui; cele 9 gărzi au fost reparate pe fond (straturi, clichetul
+constantelor cu motiv, afirmația tipată), nu ridicate.
+
+**6. (15.10.2026, a doua poartă a lotului 2) Testele nu mai scriu în jurnalele porții reale.** Poarta a respins cu „1 failed, 8.201
+passed” fără numele testului: logul ei (`/tmp/precommit_pytest.log`) fusese suprascris, în timpul rulării, de un test care pornește
+`poarta-suita` pe un depozit de probă. Testul picat (`core/test_fara_secrete_in_git.py`: o parolă scrisă în `core/test_invitatii.py`,
+`PGPASSWORD` în `scripts/proba_restaurare.py`) s-a aflat din `.pytest_cache`; reparat fără a lărgi lista închisă (parola generată la
+rulare; `pg_dump` primește parola printr-un `.pgpass` temporar). Jurnalele porții stau în `${POARTA_JURNALE:-/tmp}`, iar sesiunea de teste
+îl mută într-un director al ei (`conftest.py`). **Respins:** nume de fișier unic per rulare (ar rupe instrucțiunile „Log: /tmp/…”
+pe care le citește omul și ar lăsa testele să umple /tmp).

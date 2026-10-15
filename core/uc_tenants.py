@@ -1965,7 +1965,7 @@ def cabinet_solicitari_raspunde(tenant_id, date, ctx):
     # deja in evidenta; apelul la Brevo (termen 15 s) nu mai tine nimic din pool. Se trimite exact
     # cand exista adresa clientului, ca inainte.
     if _de_trimis is not None:
-        _obs.trimite_email_html(*_de_trimis)
+        _obs.trimite_email_html_sau_semnaleaza("email raspuns client", *_de_trimis)
     return {"ok": True}
 
 
@@ -5017,7 +5017,9 @@ def client_acces_creeaza(tenant_id, date, ctx):
     html = ("<p>Buna,</p>" + _pm + "<p>Ai primit acces la portalul iConta.eu pentru firma <b>%s</b>.</p>"
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in portal</a></p>"
             "<p>Linkul e valabil 48 de ore.</p>") % (d.get("nume", ""), link)
-    _obs.trimite_email_html(email, "Acces portal iConta.eu — " + d.get("nume", ""), html)
+    # [R73] ALERTA: linkul e singura usa a clientului in portal (ca linkul de logare)
+    _obs.trimite_email_html_sau_semnaleaza("email acces portal", email, "Acces portal iConta.eu — " + d.get("nume", ""), html,
+                                           alerta=True)
     return {"ok": True, "user_id": uid}
 
 

@@ -113,6 +113,12 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
+    ("register", '_inv.MESAJ_FARA_INVITATIE'): (
+        'Lotul 2 (comanda Costin 14.10.2026 pct.3, verbatim în DECIZII „Lotul 2”): „Înregistrarea liberă se închide: în pilot, conturile noi se creează numai prin invitație.” `/auth/register` refuză (403) fără invitație valabilă și cu alt email decât cel invitat. Gardul: `core/test_invitatii.py`, e2e `frontend_test/e2e/e2e_invitatii.py`.'),
+    ("register", "_s['refuz']['motiv']"): (
+        'Lotul 2 (comanda Costin 14.10.2026 pct.3, verbatim în DECIZII „Lotul 2”): „Înregistrarea liberă se închide: în pilot, conturile noi se creează numai prin invitație.” `/auth/register` refuză (403) fără invitație valabilă și cu alt email decât cel invitat. Gardul: `core/test_invitatii.py`, e2e `frontend_test/e2e/e2e_invitatii.py`.'),
+    ("register", "'Invitația e pentru %s. Contul se creează numai cu emailul invitat.' % _s['email']"): (
+        'Lotul 2 (comanda Costin 14.10.2026 pct.3, verbatim în DECIZII „Lotul 2”): „Înregistrarea liberă se închide: în pilot, conturile noi se creează numai prin invitație.” `/auth/register` refuză (403) fără invitație valabilă și cu alt email decât cel invitat. Gardul: `core/test_invitatii.py`, e2e `frontend_test/e2e/e2e_invitatii.py`.'),
     ("achizitie_ic", "str(e)"): (
         "Deficiența C7 generalizată (10.10.2026): refuzul motivat al creării facturii (`creeaza_factura` ridică `ValueError` — cod partener, serie, cotă) ieșea 500; tradus în 422, ca la `factura_creeaza`. Gardul: `test_refuz_generator_422::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500`."),
     ("achizitie_necorporala", "str(e)"): (
@@ -367,6 +373,24 @@ APELURI_INLOCUITE = {
 #: Creditul NU se dă orb: se numără apelurile din corpul ajutorului (plus funcțiile modulului lui pe care le cheamă direct), deci
 #: un apel care nu există nici acolo rămâne pierdut. Anti-vacuu: `test_EXTRAGERILE_declarate_chiar_cheama_ajutorul`.
 APELURI_EXTRASE_IN_AJUTOR = {
+    'asistent_creeaza': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
+        'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
+    'cabinet_solicitari_raspunde': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
+        'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
+    'client_acces_creeaza': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
+        'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
+    'magic_link_cere': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
+        'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
+    'pachet_poveste_set': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
+        'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
+    'portal_adauga_acces': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
+        'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
+    'portal_schimba_email': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
+        'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
+    'register': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
+        'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
+    'reset_parola_cere': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
+        'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
     "s1005_valideaza": (("core/duk.py", "valideaza"), (
         "Deficiența 222 (comanda Costin 10.10.2026): „mesajul de confirmare apare ca o casetă brută «ok»” — bilanțul rula DUKIntegrator separat și trimitea conținutul fișierului DUK („ok”) ca „erori”, afișate într-o casetă sub „Validare fără erori”. Validarea trece prin sursa unică `duk.valideaza` (fișierul temporar, rularea, citirea rezultatului și normalizarea „ok” trăiesc acolo).")),
     "s1003_valideaza": (("core/duk.py", "valideaza"), (

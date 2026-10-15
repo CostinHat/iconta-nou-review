@@ -35,6 +35,12 @@ VARIABILE_GIT_DE_HOOK = ("GIT_DIR", "GIT_INDEX_FILE", "GIT_WORK_TREE", "GIT_PREF
 for _v in VARIABILE_GIT_DE_HOOK:
     os.environ.pop(_v, None)
 
+# [15.10.2026] Jurnalele porții (`precommit_*.log`) ale hook-urilor rulate din TESTE (depozite de probă) stau într-un director al
+# sesiunii, nu în `/tmp`: în poarta lotului 2, `test_poarta_ordine` a scris în `/tmp/precommit_pytest.log` cât îl scria pytest-ul porții
+# reale — logul a ieșit stricat, iar respingerea fără numele testului picat. Gard: `core/test_poarta_ordine.py`.
+import tempfile as _tempfile   # noqa: E402
+os.environ["POARTA_JURNALE"] = _tempfile.mkdtemp(prefix="poarta_jurnale_teste_")
+
 
 def _incarca(cale):
     """Sourceaza un fisier de mediu in `os.environ` (setdefault). Intoarce numarul de variabile

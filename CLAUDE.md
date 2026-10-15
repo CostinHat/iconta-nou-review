@@ -12,6 +12,17 @@ modules, pe server Hetzner (`costin@iconta-prod`, cod în `~/iconta_nou`,
 serviciu `iconta-nou.service`, port 8010). Costin e în Bucureşti, comunică
 tors, lucrează în sesiuni maraton, preferă corectitudine peste viteză.
 
+## REGIM PILOT — cabinet real în producție (14.10.2026; verbatim în DECIZII „Regim pilot”)
+
+Peste tot ce urmează, de la 14.10.2026: (1) lucrul se face NUMAI în worktree-ul `/home/costin/iconta_lucru`, pe o ramură — `~/iconta_nou`
+rămâne exact pe versiunea publicată, cu `git status` curat; (2) publicare, restart, migrări și poartă NUMAI după ce Costin confirmă că
+cabinetul nu lucrează în aplicație, cu backup al bazei făcut chiar înainte; (3) în datele cabinetului real nu se citește și nu se scrie
+nimic fără aprobarea lui; ele nu intră în rapoarte, ZIP-uri sau probe; (4) observațiile marcate „expert contabil” trec înaintea
+oricărei alte lucrări. `main` e păzit mecanic: `scripts/githooks/reference-transaction` refuză orice mutare a lui fără aprobare scrisă
+pentru SHA-ul țintă (`scripts/githooks/README.md`). Ritualul de început (§5) verifică producția în `~/iconta_nou`, apoi lucrul trece în
+worktree. Publicarea automată din §2.3 pct.10 (commit pe `main` -> post-commit) e înlocuită de: fast-forward aprobat + post-commit rulat
+manual + migrările cu `--productie` + four-way.
+
 ## REGULA DE AUR — verificare la sursă (cea mai importantă)
 
 **Înainte de a declara ceva "absent/inexistent/de construit/lipsă" SAU de a

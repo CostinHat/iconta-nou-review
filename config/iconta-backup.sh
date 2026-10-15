@@ -13,9 +13,23 @@ TS=$(date +%Y%m%d_%H%M%S)
 OUT="$DIR/iconta_v2_$TS.dump"
 
 # ---- 1) BACKUP LOCAL (SACRU) ----
+# [14.10.2026, comanda Costin pct.5] Esecul dump-ului LOCAL era TACUT: `set -e` oprea scriptul inaintea oricarei alerte (alerta
+# exista numai pentru off-site). Acum orice esec pana la sfarsitul pasului local trimite email (acelasi canal Brevo), apoi scriptul
+# cade vizibil, ca inainte. A doua plasa, independenta de acest script: `core/backup_verificare.py` (zilnic 04:30, din aplicatie).
+_alerta_local() {
+  echo "$(date -Is) backup LOCAL ESUAT (linia $1)" >&2
+  if [ -n "${BREVO_API_KEY:-}" ]; then
+    curl -s -X POST https://api.brevo.com/v3/smtp/email \
+      -H "api-key: ${BREVO_API_KEY}" -H "content-type: application/json" \
+      -d "{\"sender\":{\"email\":\"contact@iconta.eu\",\"name\":\"iConta Alerte\"},\"to\":[{\"email\":\"${ICONTA_ALERTA_EMAIL:-contact@iconta.eu}\"}],\"subject\":\"[iConta] Backup LOCAL esuat\",\"textContent\":\"pg_dump-ul local al bazei iconta_v2 a esuat (linia $1 din iconta-backup.sh). Nu exista backup proaspat. Verifica: journalctl -u iconta-backup.\"}" >/dev/null 2>&1 \
+      || echo "$(date -Is) alerta email NETRIMISA (Brevo indisponibil)" >&2
+  fi
+}
+trap '_alerta_local $LINENO' ERR
 pg_dump -d iconta_v2 -Fc -f "$OUT"
 find "$DIR" -name 'iconta_v2_*.dump' -mtime +7 -delete
 echo "$(date -Is) backup LOCAL OK: $OUT ($(du -h "$OUT" | cut -f1))"
+trap - ERR   # pasul local s-a incheiat; off-site-ul are propria lui alerta (mai jos)
 
 # ---- 2) COPIE OFF-SITE (fail-safe) ----
 SB_KEY=/var/lib/postgresql/.ssh/iconta-storagebox

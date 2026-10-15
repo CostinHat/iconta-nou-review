@@ -28,6 +28,24 @@ comanda tastezi nu e poarta - hook-ul ruleaza mereu tot.
 ~55 de minute per commit (suita intreaga; 08.10.2026: 3286 s pe 7.637 de teste). Deliberat: un commit rosu pe o aplicatie
 fiscala costa mai mult. Cifra vie e in `poarta-suita` si in `.poarta_jurnal.log`.
 
+## Verdictul privește commitul — arborele = indexul (15.10.2026)
+
+pytest și verificatorul citesc ARBORELE DE LUCRU, commitul înregistrează INDEXUL. `poarta-suita` respinge deci, la pornire, orice
+modificare nepusă la index și orice fișier nou neadăugat (`git diff --name-only` + `git ls-files --others --exclude-standard`), iar
+la sfârșit, înaintea verdictului, orice fișier urmărit schimbat cât a rulat poarta. Prins după lotul 1: `fdb20bd6` a trecut poarta
+verde, iar exportul lui pica 9 gărzi. Consecință practică: **cât rulează poarta (~70 de minute) nu se editează arborele** — lucrul
+în paralel se face în altă copie. Gard: `core/test_poarta_ordine.py::test_arborele_diferit_de_index_e_respins_inainte_de_suita`.
+
+## Garda pe `main` — `reference-transaction` + `pre-commit` (15.10.2026, regim pilot)
+Comanda Costin 14.10.2026, pct.2: „Garda pe main în ~/iconta_nou (commit refuzat fără aprobare scrisă): da.” (verbatim în DECIZII).
+`main` din `~/iconta_nou` e versiunea publicată. **Orice mutare a lui `refs/heads/main`** (commit, fast-forward, reset, pull, ștergere)
+e refuzată de `reference-transaction` dacă `<git-common-dir>/APROBARE_MAIN` nu are `sha: <SHA-ul țintă, complet>` și
+`aprobat: <textul aprobării lui Costin>`; la reușită aprobarea se consumă (`APROBARE_MAIN.folosita-<sha>`). Un commit DIRECT pe `main`
+e refuzat din prima secundă de `pre-commit` (SHA-ul lui nu poate fi aprobat dinainte). Lucrul: pe o ramură, în worktree
+(`/home/costin/iconta_lucru`). Publicarea: aprobarea scrisă -> `git merge --ff-only <ramura>` în `~/iconta_nou` (un fast-forward NU
+rulează `post-commit`) -> `sh scripts/githooks/post-commit` -> migrările cerute (`core.migrari_registru ruleaza --productie`) ->
+four-way. Gard: `core/test_garda_main.py`.
+
 ## post-commit (cablat 07.08.2026)
 Publica automat pe origin/main SI pe backup/lant-<data> dupa fiecare commit pe `main` (commit-msg a trecut deja poarta verde).
 Fast-forward, NICIODATA `--force`. Daca origin/main a avansat sub tine -> se opreste si cere `pull --rebase`.

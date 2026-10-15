@@ -36,6 +36,13 @@ DOMENIUL, măsurat pe 27.08.2026 înainte de a scrie regula: **17** apeluri `tri
 cele patru reparate. Douăsprezece lasă excepția să urce (deci zgomotoase prin construcție), iar
 unul (`sinteza_zilnica.py:172`) stă într-un `try/finally` fără handler — nu înghite nimic.
 De aceea regula 1 se aplică **peste tot, fără listă de excepții**: n-are niciuna azi.
+
+[15.10.2026] GARDA ERA OARBĂ PE JUMĂTATE DIN CLASĂ. `trimite_email_html` semnalează eșecul prin `False` (fără cheie, Brevo refuză,
+rețeaua cade) și practic nu aruncă; cele patru `except: esec_secundar(...)` de mai sus nu se declanșau deci la un eșec real — alerta
+de acces nu pleca. Prins în e2e (invitația de cabinet spunea „a plecat” pe aplicația fără Brevo). Reparat cu
+`observare.trimite_email_html_sau_semnaleaza`, care semnalează eșecul oricum ar veni; garda o citește ca trimitere cu handler (cu
+`alerta` din apel), iar `core/test_email_html_rezultat.py` cere ca orice apel DIRECT să-și citească rezultatul. Harta de mai jos
+primește și confirmarea adresei noi (acces) și invitația de cabinet (superadminul vede pe ecran -> fără alertă).
 """
 import ast
 import io
@@ -51,7 +58,11 @@ _CELE_PATRU = {
     "Link de logare iConta.eu": True,
     "Acces asistent iConta.eu": True,
     "Bine ai venit pe iConta.eu": False,
+    "Confirmă adresa nouă — iConta.eu": True,      # [15.10.2026] fără confirmare, adresa nu se mută
+    "Invitație iConta.eu": False,                  # [15.10.2026] superadminul vede pe ecran dacă a plecat, și are linkul
 }
+#: Funcția unică (15.10.2026): `trimite_email_html_sau_semnaleaza(eticheta, catre, subiect, html, alerta=False)`.
+UNICA = "trimite_email_html_sau_semnaleaza"
 
 
 # ============================================================
@@ -66,7 +77,7 @@ def _nume(c):
     return None
 
 
-def _alerta(c):
+def _alerta(c, pozitie=2):
     """Valoarea argumentului `alerta` al unui apel `esec_secundar`, ca structură.
 
     `None` = nedat, deci implicit `False` (semnătura: `esec_secundar(eticheta, eroare, alerta=False)`).
@@ -76,8 +87,8 @@ def _alerta(c):
     for kw in c.keywords:
         if kw.arg == "alerta":
             return kw.value.value if isinstance(kw.value, ast.Constant) else ast.unparse(kw.value)
-    if len(c.args) >= 3:
-        a = c.args[2]
+    if len(c.args) > pozitie:
+        a = c.args[pozitie]
         return a.value if isinstance(a, ast.Constant) else ast.unparse(a)
     return None
 
@@ -93,6 +104,12 @@ def trimiteri(sursa):
     tries = [n for n in ast.walk(arb) if isinstance(n, ast.Try)]
     out = []
     for n in ast.walk(arb):
+        if isinstance(n, ast.Call) and _nume(n) == UNICA:
+            # semnalarea e în funcția unică: un „handler” care cheamă `esec_secundar` cu `alerta` din apel
+            subiect = n.args[2].value if len(n.args) >= 3 and isinstance(n.args[2], ast.Constant) else None
+            out.append({"linia": n.lineno, "subiect": subiect, "protejat": True,
+                        "handlere": [{"linia": n.lineno, "tip": UNICA, "esec_secundar": True, "alerta": _alerta(n, 4)}]})
+            continue
         if not isinstance(n, ast.Call) or _nume(n) != "trimite_email_html":
             continue
         gazde = [t for t in tries
@@ -270,6 +287,14 @@ def test_CALIBRARE_alerta_pe_bun_venit_E_prinsa():
     s = _mutant("_obs.esec_secundar('email bun venit cabinet', _e, alerta=True)",
                 subiect="Bine ai venit pe iConta.eu")
     assert incalcari_de_alerta(trimiteri(s))
+
+
+def test_CALIBRARE_functia_unica_cu_alerta_pierduta_pe_o_cale_de_acces_E_prinsa():
+    """[15.10.2026] Funcția unică e văzută ca trimitere cu handler; `alerta` se citește din apel, ca la `esec_secundar`."""
+    bun = "_obs.trimite_email_html_sau_semnaleaza('email link de logare', email, 'Link de logare iConta.eu', h, alerta=True)\n"
+    assert not incalcari_de_tacere(trimiteri(bun)) and not incalcari_de_alerta(trimiteri(bun))
+    assert incalcari_de_alerta(trimiteri(bun.replace(", alerta=True", "")))
+    assert incalcari_de_alerta(trimiteri(bun.replace("alerta=True", "alerta=e_productie()")))
 
 
 def test_CALIBRARE_redenumirea_subiectului_goleste_domeniul_si_SE_VEDE():
