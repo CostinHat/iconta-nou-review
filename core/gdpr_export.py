@@ -4,8 +4,9 @@ Colecteaza din public (accounting_firms/users/tenants/audit_log ale cabinetului)
 zip-uri e-Factura). Intoarce bytes ZIP.
 Citeste cu nume CALIFICAT schema.tabela (NU depinde de search_path)."""
 import io, os, json, glob, zipfile, base64, datetime, decimal
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-EFACTURA_ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.expanduser("~/iconta_nou/efactura_zip"))
+EFACTURA_ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.join(_RAD, "efactura_zip"))
 
 def _default(o):
     if isinstance(o, (datetime.datetime, datetime.date)): return o.isoformat()

@@ -9,9 +9,10 @@ Rulează pe baza de PRODUCȚIE, în citire (`SELECT`), și nu scrie nimic.
 """
 import os
 import sys
+_RAD = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou")
-os.chdir("/home/costin/iconta_nou")
+sys.path.insert(0, _RAD)
+os.chdir(_RAD)
 
 from core import db  # noqa: E402
 from core.nomenclator_status_factura import clauza_sql, clauza_tip_document  # noqa: E402

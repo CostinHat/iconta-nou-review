@@ -6,7 +6,7 @@ import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
 import { fluxConcediu } from "./flux_concediu.js?v=8c49e833bf";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=ca119aa3aa";
-import { ecranRip } from "./rip_ecran.js?v=b0638d5a64";
+import { ecranRip } from "./rip_ecran.js?v=f369fe5c01";
 import { trimiteInCoada, casetaTrimisa } from "./coada_trimite.js?v=feade00646";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=49001da67e";
 import { ecranEtransport } from "./etransport_ecran.js?v=d9952813f1";
@@ -4406,7 +4406,12 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
       // [deficiența 192] ciorna derivată dintr-un document (NIR, raport Z, stoc, amortizare …) nu se editează din jurnal, iar cea
       // indicată din alt tabel nu se șterge de aici — serverul le refuză; ecranul nu le oferă și spune unde se corectează
       const der = n.derivata;
-      const butoane = n.status === "ciorna" ? `
+      // [deficiența 246] ciorna ALTUI utilizator, pentru un asistent: o vede, nu o editează, n-o șterge, n-o trimite la validare — serverul
+      // o refuză (regula din bază, `ciorna_altui`); ecranul spune de ce, cu textul refuzului. „Validează” rămâne (numai cu „Poate valida”).
+      const alt = n.a_altuia;
+      const butoane = n.status === "ciorna" && alt ? `
+        <button class="buton-primar" data-val="${n.id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza">Valideaz\u0103</button>
+        <div class="pf-frand-sub jn-a-altuia">${esc(alt.motiv)}</div>` : n.status === "ciorna" ? `
         <button class="buton-primar" data-val="${n.id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza">Valideaz\u0103</button>${laValidare ? "" : `${der ? "" : `
         <button class="buton-secundar" data-edit="${n.id}">Editeaz\u0103</button>`}${der && !der.se_sterge ? "" : `
         <button class="buton-secundar" data-del="${n.id}" data-actiune="DELETE /tenants/{tenant_id}/jurnal/{nota_id}">\u0218terge</button>`}`}${der && !laValidare ? `

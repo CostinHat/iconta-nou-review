@@ -25,9 +25,10 @@ import os
 import re
 import subprocess
 import sys
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou")
-RAD = "/home/costin/iconta_nou"
+sys.path.insert(0, _RAD)
+RAD = _RAD
 FEREASTRA_ZILE = 14   # ALEGERE declarata: „la scurt timp dupa" = doua saptamani
 
 REPARATIE = re.compile(r"\b(repar|reparat|fix|corect|neconformitate|bug|gresit|greșit)", re.I)

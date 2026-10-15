@@ -692,6 +692,22 @@ def _perioada_an(de, pana):
     return (de or f"{an}-01-01", pana or f"{an}-12-31")
 
 
+def _firme_vizibile(conn, ctx):
+    """[C26, 15.10.2026] Firmele pe care le vede utilizatorul într-o listă a CABINETULUI (consolidarea, coada de validare): None = toate
+    ale cabinetului (administratorul); pentru un asistent (`angajat`) mulțimea id-urilor ALOCATE lui (`user_tenants`, aceeași sursă ca
+    portofoliul — `auth_api.tenantii_userului`). Deficiența C26: consolidarea îi arăta asistentului toate firmele cabinetului."""
+    if ctx.get("rol") != "angajat":
+        return None
+    return {t["id"] for t in auth_api.tenantii_userului(conn, ctx["uid"], doar_active=False)}
+
+
+def _firma_vizibila(conn, ctx, tenant_id):
+    """[C26] Aceeași regulă, pe o singură firmă (un element din coadă): administratorul — orice firmă a cabinetului; asistentul — numai
+    una alocată lui."""
+    vizibile = _firme_vizibile(conn, ctx)
+    return vizibile is None or tenant_id in vizibile
+
+
 def _rip_ctx(conn, ctx, tenant_id):
     schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:

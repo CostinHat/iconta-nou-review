@@ -22,16 +22,18 @@ import base64
 import json
 import re
 import sys
+import os
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou/frontend_test")
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, os.path.join(_RAD, "frontend_test"))
+sys.path.insert(0, _RAD)
 
 import e2_util as U  # noqa: E402
 
 FIRMA = "Comert Micro TVA SRL"
 AN, LUNA, TRIM = 2026, 9, 3
 COD_CLIENT = "DE811907980"
-OUT = "/home/costin/iconta_nou/frontend_test/proba_r187_vanzare_ic.json"
+OUT = os.path.join(_RAD, "frontend_test/proba_r187_vanzare_ic.json")
 
 
 def _xml(r):

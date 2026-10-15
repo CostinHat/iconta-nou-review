@@ -23,15 +23,16 @@ import os
 import re
 import sys
 from decimal import Decimal
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou/frontend_test")
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, os.path.join(_RAD, "frontend_test"))
+sys.path.insert(0, _RAD)
 
 import e2_util as U  # noqa: E402
 
 FIRMA = "Comert Micro TVA SRL"
 AN, TRIM, LUNA = 2026, 3, 9
-OUT = "/home/costin/iconta_nou/frontend_test/proba_e2_d394.json"
+OUT = os.path.join(_RAD, "frontend_test/proba_e2_d394.json")
 LUNI_TRIM = {1: (1, 2, 3), 2: (4, 5, 6), 3: (7, 8, 9), 4: (10, 11, 12)}
 
 _REZ1 = re.compile(r"<rezumat1\b([^>]*)/>")

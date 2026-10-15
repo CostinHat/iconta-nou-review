@@ -43,6 +43,17 @@ def nota_de_amortizare(cur, schema, numar):
     return cur.fetchone()
 
 
+def ciorne_altui(cur, schema, nota_ids, uid):
+    """[deficiența 246] [(nota_id, autorul)] — ciornele dintre `nota_ids` care, pentru utilizatorul `uid`, sunt ale ALTUI utilizator
+    (regula unică `ciorna_altui` din bază, core/migrare_ciorne_proprii.py)."""
+    if not nota_ids:
+        return []
+    cur.execute(f"""SELECT id, {schema}.ciorna_altui(creat_de_id, %s) FROM {schema}.inregistrari
+                    WHERE id = ANY(%s) AND status <> 'validata' AND {schema}.ciorna_altui(creat_de_id, %s) IS NOT NULL""",
+                (uid, list(nota_ids), uid))
+    return [(r[0], r[1]) if not isinstance(r, dict) else (r["id"], r["ciorna_altui"]) for r in cur.fetchall()]
+
+
 def jurnal_pe_an(cur, schema, an, limita):
     cur.execute(f"""
                 WITH pe_an AS (

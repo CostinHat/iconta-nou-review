@@ -30,16 +30,17 @@ import os
 import re
 import sys
 from decimal import Decimal
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou/frontend_test")
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, os.path.join(_RAD, "frontend_test"))
+sys.path.insert(0, _RAD)
 
 import e2_util as U  # noqa: E402
 
 FIRMA = "Panificatie Salarii Speciale SRL"
 AN, LUNA = 2026, 8
 MARCA = "PROBA E2 D"
-OUT = "/home/costin/iconta_nou/frontend_test/proba_e2_d112.json"
+OUT = os.path.join(_RAD, "frontend_test/proba_e2_d112.json")
 
 # CNP care trece cifra de control (cerinta `core/test_cui_cnp_test_valid.py`), si care nu e al
 # niciunui salariat existent al firmei.

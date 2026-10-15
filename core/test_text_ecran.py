@@ -32,11 +32,11 @@ def art():
     return json.load(open(ARTEFACT, encoding="utf-8"))
 
 
-def test_scanul_e_al_ui_ului_de_acum(art):
+def test_scanul_e_proaspat_fata_de_ui(art):
     assert art.get("ui_hash") == ui_hash(), "UI-ul s-a schimbat de la ultimul scan al textului — rulează text_ecran_scan.py --artefact"
 
 
-def test_scanul_e_al_instrumentului_de_acum(art):
+def test_scanul_e_proaspat_fata_de_instrument(art):
     assert art.get("instrument_hash") == instrument_hash(), (
         "detectorul sau lexiconul s-au schimbat de la ultimul scan — rulează text_ecran_scan.py --artefact")
 

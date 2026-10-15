@@ -14,8 +14,9 @@ import io
 import json
 import os
 import sys
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, _RAD)
 sys.path.insert(0, "/home/costin/probe_t006")
 
 from core import db, auth_api  # noqa: E402
@@ -23,11 +24,11 @@ import psycopg2.extras as E  # noqa: E402
 from playwright.sync_api import sync_playwright  # noqa: E402
 
 BAZA = "http://127.0.0.1:8010"
-OUT = "/home/costin/iconta_nou/frontend_test"
+OUT = os.path.join(_RAD, "frontend_test")
 CAB = 1968
 ASISTENT = 6248
-CABINET_JS = "/home/costin/iconta_nou/static/js/ecrane/cabinet.js"
-AXE = open("/home/costin/iconta_nou/frontend_test/vizual/axe.min.js", encoding="utf-8").read()
+CABINET_JS = os.path.join(_RAD, "static/js/ecrane/cabinet.js")
+AXE = open(os.path.join(_RAD, "frontend_test/vizual/axe.min.js"), encoding="utf-8").read()
 
 db.init_pool()
 with db.get_conn() as conn:

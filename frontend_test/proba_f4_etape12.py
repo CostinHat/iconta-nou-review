@@ -6,7 +6,8 @@ import os
 import sys
 
 _RAD = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, "/home/costin/iconta_nou")
+_DEP = os.path.dirname(_RAD)   # rădăcina depozitului, din fișierul însuși (C35)
+sys.path.insert(0, _DEP)
 
 from core import db as _db
 from core import tenant_provisioning as _tp
@@ -41,7 +42,7 @@ def main():
             print("F4 exista deja: tenant_id=%s schema=%s CUI=%s" % (r[0], r[1], CUI))
             tid, sch = r[0], r[1]
         else:
-            tmpl = open("/home/costin/iconta_nou/tenant_template.sql", encoding="utf-8").read()
+            tmpl = open(os.path.join(_DEP, "tenant_template.sql"), encoding="utf-8").read()
             res = _tp.provision_tenant(conn, NUME, CUI, CABINET, UID, tmpl, tip_firma="pfa")
             conn.commit()
             tid, sch = res["tenant_id"], res["schema_name"]

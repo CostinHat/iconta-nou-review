@@ -276,7 +276,9 @@ def test_numarul_de_instructiuni_se_conserva():
     #     — „căutarea după simbol potrivește începutul”. Citiri NOI. (Lista citea planul de două ori fără căutare: o citire, refolosită.)
     # [lotul 2, 15.10.2026] 316 -> 317, cu apelul numit: repo_utilizatori.contul_dupa_email (uc_auth.invitatie_creeaza) — invitația nu
     #   se creează pentru un email care are deja cont (Conflict). Citire NOUĂ (comanda Costin 14.10.2026 pct.3).
-    assert _apeluri_catre_repository() == 317
+    # [lotul 3, 15.10.2026] 317 -> 318, cu apelul numit: repo_contabilitate.ciorne_altui (uc_tenants.tenant_jurnal) — jurnalul îi
+    #   arată asistentului care ciorne sunt ale altuia, cu aceeași funcție din bază ca refuzul (deficiența 246).
+    assert _apeluri_catre_repository() == 318
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

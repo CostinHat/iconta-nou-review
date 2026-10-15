@@ -5,8 +5,9 @@ NU se sterge: backup Storage Box (dump integral, stergere selectiva imposibila, 
 import os
 import psycopg2.extras as _E
 from core import tenant_stergere  # [R72] o singura cale de stergere a unei firme
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-EFACTURA_ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.expanduser("~/iconta_nou/efactura_zip"))
+EFACTURA_ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.join(_RAD, "efactura_zip"))
 NU_SE_STERGE = ("backup Storage Box: dump integral, stergere selectiva imposibila tehnic, expira in 30 zile (retentie off-site)")
 
 def previzualizare(conn, cabinet_id):

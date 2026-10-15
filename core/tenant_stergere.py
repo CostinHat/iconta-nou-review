@@ -53,8 +53,9 @@ import shutil
 import psycopg2.extras as _E
 
 from core import db
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-EFACTURA_ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.expanduser("~/iconta_nou/efactura_zip"))
+EFACTURA_ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.join(_RAD, "efactura_zip"))
 
 # ── CE SE CURĂȚĂ ─────────────────────────────────────────────────────────────
 # Cele 13 tabele din `public` care poartă `tenant_id`, măsurate 27.08.2026 pe producție.

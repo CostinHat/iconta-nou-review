@@ -20,9 +20,11 @@ deschisa e o cifra care minte.*
 """
 import collections
 import sys
+import os
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou/scripts")
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, os.path.join(_RAD, "scripts"))
+sys.path.insert(0, _RAD)
 import scan_stare_proces as S  # noqa: E402
 
 AR, ABD, FP = "ACTION_REQUIRED", "ACCEPTABLE_BY_DESIGN", "FALSE_POSITIVE"

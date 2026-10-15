@@ -38,9 +38,10 @@ import os
 import re
 import sys
 from decimal import Decimal
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou/frontend_test")
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, os.path.join(_RAD, "frontend_test"))
+sys.path.insert(0, _RAD)
 
 import e2_util as U  # noqa: E402
 
@@ -48,7 +49,7 @@ FIRMA = "Distributie Profit IC SRL"
 AN, LUNA, TRIM = 2026, 8, 3
 DATA = "%d-%02d-21" % (AN, LUNA)
 MARCA = "PROBA-E2-C"
-OUT = "/home/costin/iconta_nou/frontend_test/proba_e2_d100_d101.json"
+OUT = os.path.join(_RAD, "frontend_test/proba_e2_d100_d101.json")
 
 VENIT = Decimal("10000")      # 4111 = 704 — venit din exploatare (cont 70x: intra si in D100)
 CHELT = Decimal("4000")       # 6021 = 401 — cheltuiala de exploatare

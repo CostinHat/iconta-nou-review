@@ -22,6 +22,7 @@ import re
 import sys
 
 import os
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 BAZA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "static", "js")
 
 # M1: separatorul de mii intra in tipar. M4: anii se exclud explicit.
@@ -87,7 +88,7 @@ for rad, _, nume in os.walk(BAZA):
 gasite, interpolate = [], 0
 for f in fisiere:
     src = io.open(f, encoding="utf-8").read()
-    rel = f.replace("/home/costin/iconta_nou/", "")
+    rel = f.replace(_RAD + "/", "")
     for nr, s in siruri(src):
         # M3 corectat: se scot ETICHETELE (cu atributele lor), ramane textul citit de om
         text = ETICHETA.sub(" ", s)

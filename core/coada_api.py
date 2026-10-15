@@ -479,6 +479,13 @@ def retrimite_nota(conn, cabinet_id, tenant_id, nota_id, uid, confirma=False):
                 u = cur.fetchone()
                 if not u or u["stare"] == "respinsa":
                     frati.append(x)
+        # [deficiența 246] „Un asistent nu […] trimite la validare notele altui utilizator” — aceeași regulă ca în bază (`ciorna_altui`)
+        cur.execute("SELECT id, ciorna_altui(creat_de_id, %s) AS autor FROM inregistrari WHERE id = ANY(%s) "
+                    "AND ciorna_altui(creat_de_id, %s) IS NOT NULL ORDER BY id LIMIT 1", (uid, [x["id"] for x in frati], uid))
+        _alt = cur.fetchone()
+        if _alt:
+            from core import drepturi as _dr
+            return {"ok": False, "cod": _dr.COD_CIORNA_ALTUI, "mesaj": _dr.MESAJ_CIORNA_ALTUI % (_alt["id"], _alt["autor"], _alt["autor"])}
         membri = []
         for x in frati:
             cid = _insereaza_nota(cur, cabinet_id, tenant_id, x, uid)

@@ -3,8 +3,9 @@
 # Verifica TOATE ecranele din static/js/ecrane. Face parte din trusa de audit
 # (alaturi de grep alert/confirm). Zero modificari — doar raport.
 import re, os
+_RAD = os.path.dirname(os.path.abspath(__file__))   # rădăcina depozitului, din fișierul însuși (C35)
 
-BAZA = os.path.expanduser("~/iconta_nou/static/js/ecrane")
+BAZA = os.path.join(_RAD, "static/js/ecrane")
 fisiere = {}
 for f in sorted(os.listdir(BAZA)):
     if f.endswith(".js") and ".bak" not in f:

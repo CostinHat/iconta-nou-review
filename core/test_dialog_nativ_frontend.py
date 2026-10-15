@@ -67,7 +67,7 @@ def test_verificator_acopera_tot_frontendul():
     scapau TUTUROR regulilor DS (asa a trecut alert() din app.js + strip-html data-lossy din navigator.js).
     Daca cineva revine la ecrane-only, zona neacoperita redevine oarba. Mutatie: scoate _DIRS_FRONTEND -> rosu."""
     src = open(os.path.join(_RAD, "verificator_conformitate.py"), encoding="utf-8").read()
-    assert "_DIRS_FRONTEND" in src and 'os.path.expanduser("~/iconta_nou/static/js")' in src, \
+    assert "_DIRS_FRONTEND" in src and 'os.path.join(_RAD, "static/js")' in src, \
         "verificatorul nu mai scaneaza static/js/*.js (regresie la ecrane-only)"
     assert src.count('nume != "api.js"') >= 4, \
         "lipsesc exceptiile api.js (sursa canonica esc/ICOANE/culori) -> fals-pozitive care tenteaza dez-extinderea"

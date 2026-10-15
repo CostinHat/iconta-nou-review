@@ -20236,3 +20236,105 @@ passed” fără numele testului: logul ei (`/tmp/precommit_pytest.log`) fusese 
 rulare; `pg_dump` primește parola printr-un `.pgpass` temporar). Jurnalele porții stau în `${POARTA_JURNALE:-/tmp}`, iar sesiunea de teste
 îl mută într-un director al ei (`conftest.py`). **Respins:** nume de fișier unic per rulare (ar rupe instrucțiunile „Log: /tmp/…”
 pe care le citește omul și ar lăsa testele să umple /tmp).
+
+## 15.10.2026 (noaptea) — Lotul 3: 246 (ciorna altui utilizator) + C26 (asistentul vede numai firmele lui)
+
+**Comanda, verbatim (14.10.2026, pct.6 și răspunsul la §6):** „246: Ana Asistent (junior, fără „Poate valida”) vede în Registrul jurnal
+F2 notele-ciornă create de B și are pe ele Editează, Șterge, Trimite la validare. Un asistent nu modifică, nu șterge și nu trimite la
+validare notele altui utilizator; le poate doar vedea. Verifică aceeași regulă pe toate ecranele cu documente-ciornă.” „6. După lotul de
+la 1: 246 + C26 (asistentul vede consolidarea tuturor firmelor), lot separat.” (15.10.2026: „apoi lotul 3 (246 + C26). Ai acordul să
+rulezi poarta și să publici fiecare lot până la 07:00, cu backup al bazei înainte de fiecare publicare.”)
+
+**1. 246 — regula în BAZĂ** (`core/migrare_ciorne_proprii.py`, ca regulile de fond): o ciornă a altuia se schimbă pe ~12 drumuri
+(editarea și ștergerea din jurnal, ștergerea operațiunii de casă cu nota ei, recontabilizarea facturii, refacerea NIR-ului, descărcarea
+stocului, înlocuirea notei statului, cota chitanței, raportul Z „fără marfă”, propunerea notei de închidere, legarea de factură) — o
+verificare pe fiecare ar rata drumul de mâine. Triggerele pe `inregistrari`, `inregistrari_linii` și `rip_operatiuni` refuză cu
+`DREPT_CIORNA:` (403, textul pentru contabil) dacă utilizatorul cererii e asistent (`angajat`) și ciorna are alt autor. Trimiterea la
+validare nu atinge nota: o verifică `coada_api.retrimite_nota` cu aceeași funcție (`ciorna_altui`). Jurnalul și registrul de încasări
+și plăți primesc `a_altuia` din aceeași funcție, iar ecranul nu mai oferă Editează / Șterge / Trimite la validare și scrie motivul.
+**Trec:** autorul, administratorul cabinetului, scrierea din afara unei cereri (import, cron), nota fără autor, și decizia
+validatorului (schimbarea stării de către un asistent cu „Poate valida”). **INTERPRETARE:** „un asistent” = orice cont `angajat`, și
+cu „Poate valida” — textul nu face excepție pentru senior; seniorul validează, dar nu editează ciorna altuia. De reconfirmat.
+**Respinse:** verificarea în fiecare use-case (rată drumurile viitoare); ascunderea numai pe ecran (serverul trebuie să refuze).
+**Limita:** documentele fără autor scris (facturi-ciornă, NIR, chitanțe, extrase — tabelele n-au coloană de autor) sunt păzite prin
+nota lor, nu prin document; o factură-ciornă fără notă nu are autor de comparat.
+
+**2. C26 — și clasa ei.** Consolidarea (`GET /cabinet/consolidare`) și coada de validare (`GET /coada` + conținutul, aprobarea,
+respingerea, depunerea unui element) filtrau numai pe cabinet. Acum, pentru un asistent, numai firmele alocate lui
+(`uc_comun._firme_vizibile`, din `auth_api.tenantii_userului` — sursa portofoliului); un element al unei firme nealocate e „negăsit”
+(404), ca un element al altui cabinet. Căutat: toate folosirile lui `ctx["firm"]` în `core/uc_*.py`; celelalte sunt ale cabinetului
+însuși (chei API, anunțuri, setări) sau rute numai pentru administrator (`ADMIN`: capacitate, tipare, firme scoase, importul în masă).
+
+**3. C35 — gărzi care judecă ARBORELE PUBLICAT, nu commitul (găsită în lotul 3; corectarea clasei AȘTEAPTĂ acordul).** `core/scan_constante.py`
+are rădăcina scrisă absolut (`/home/costin/iconta_nou/core`): rulată din worktree, garda constantelor a măsurat `~/iconta_nou`.
+Inventarul clasei (`git grep -nE "/home/costin/iconta_nou|~/iconta_nou" -- '*.py' '*.sh' '*.mjs'`): verificatorul de conformitate
+(`verificator_conformitate.py`, 6 locuri — deci „verificator TOTAL 0” al porților din worktree, loturile 1 și 2, a judecat arborele
+publicat), `verificator_sageti.py`, `verificator_neconformitati.sh`, `core/scan_js_texte.py`, `core/scan_valori_afisate.py`,
+`core/test_d406_jurnal_origine.py`, `scripts/scan_axa_garzi.py`, `scripts/scan_p13_eticheta_verdict.py`, `scripts/p6_clasificare.py`,
+`frontend_test/e2_util.py`, uneltele de probă din `frontend_test/` și `masuratori/`, plus implicitul directorului `efactura_zip` (4 module
+de runtime). **Ce am făcut în lot:** (a) verificatorul rulat în `~/iconta_nou` după publicarea lui 38adb1bb (deci exact pe codul
+loturilor 1–2): TOTAL 0; (b) pentru lotul 3, verificatorul și scanul constantelor rulate manual pe arborele lotului (cifrele în raport);
+(c) clichetul `import_tabel.py: 1` pus în lotul 2 era măsurat pe arborele publicat (fdb20bd6, literalul încă în cod) — real 0, scos.
+**Ce NU am făcut:** rescrierea rădăcinilor (calculate din fișierul însuși) + garda „nicio cale absolută spre arborele publicat” —
+rescrierea în masă a fost refuzată de permisiunile sesiunii (atinge și implicitul de runtime `efactura_zip`). Cerută decizie (§6).
+**Limita, până atunci:** într-un worktree, verificatorul porții și scanurile de mai sus dau verdict despre `~/iconta_nou`, nu despre
+commit; compensat manual la fiecare lot.
+
+## 15.10.2026 (dimineața) — Lotul 3 — C35, prospețimea în poartă, proba de restaurare de noapte; răspunsul Costin la §6 (verbatim)
+
+**Comanda, verbatim (răspunsul la §6 al raportului „LOTUL 3 — PILOT”):** „1. C35 întâi: acord pentru rescrierea întregii clase —
+rădăcina calculată din fișierul însuși în verificator, scanuri și uneltele din poartă; efactura_zip inclus, cu aceeași cale calculată (în
+producție rezultatul identic). Gard „nicio cale absolută spre ~/iconta_nou” în codul judecat de poartă, cu mutație. Plus gard mecanic:
+poarta rulează probele de prospețime (pytest -k proaspat) înainte de suită. 2. Apoi lotul 3: probele reîmprospătate, poarta pe arborele
+lotului (cu C35 reparat), backup, publicare cu migrare_ciorne_proprii.py --productie. Ai acordul să publici azi: cabinetul pilot nu
+lucrează până nu îi spun eu. 3. 246, seniorul cu „Poate valida”: confirm — validează ciorna altuia, nu o editează și nu o șterge.
+4. Proba de restaurare automată în fiecare noapte: da, pe o bază separată ștearsă după probă; în jurnal numai cifre. Răspunde punctual
+pentru fiecare, cu probă și ZIP. Raport după publicare. Trimite-mi și raportul lotului 2, dacă nu l-am primit.”
+
+**1. C35 — rădăcina din fișierul însuși, pe toată clasa.** Python: `_RAD = os.path.dirname(os.path.abspath(__file__))` (urcat cu câte
+un `dirname` pe nivel); shell: `$(dirname "$0")`; ES module: `new URL("..", import.meta.url)`. Atinse: verificatorul de conformitate (6
+locuri), `verificator_sageti.py`, `verificator_neconformitati.sh`, `core/scan_constante.py`, `core/scan_js_texte.py`,
+`core/scan_valori_afisate.py`, `core/test_d406_jurnal_origine.py`, `scripts/scan_axa_garzi.py`, `scripts/scan_p13_eticheta_verdict.py`,
+`scripts/p6_clasificare.py`, `scripts/portal_legislativ.py`, `scripts/sinteza_*.sh`, uneltele de probă din `frontend_test/` (27) și
+`masuratori/` (3), migrările vechi (`migrare_patron_email`, `migrare_portal`), mesajul alertei de heartbeat (`core/cron.py`), testul de
+unități systemd (interpretorul real al proiectului, din rădăcina depozitului). **`efactura_zip`** (`gdpr_export`, `gdpr_sterge`,
+`spv_poll`, `tenant_stergere`): implicitul devine `os.path.join(_RAD, "efactura_zip")` — în producție exact același director
+(`EFACTURA_ZIP_DIR` din mediu are prioritate, ca înainte); confirmat după publicare, în raport. **Garda** `core/test_fara_radacina_absoluta.py`:
+toate fișierele urmărite cu cod executabil (`.py`, `.sh`, `.mjs`, `.js`, hook-urile) — în Python numai literalele de cod (AST), fără
+docstringuri și comentarii; în shell / JS fără liniile de comentariu. Plus e2e `test_def_c35_*`: în arborele exportat al plasei,
+verificatorul porții numește un defect plantat în ACEL arbore. **Respins:** o listă de excepții (ar fi o ușă); scanarea prozei (ar acuza
+documentația care numește checkout-ul de producție). **Limita:** o cale compusă din bucăți (`"~" + "/iconta_nou"`) nu e prinsă; proza din
+docstringuri („rulează pe server, din ~/iconta_nou”) rămâne — nu deschide niciun fișier.
+
+**2. Prospețimea înaintea suitei.** `scripts/githooks/poarta-suita` rulează `pytest -q -k proaspat core/` (~10 s) înaintea suitei; roșu ->
+commit respins, consemnat în `.poarta_jurnal.log`. Cele două teste de prospețime ale textului de pe ecran (`test_text_ecran.py`) n-aveau
+„proaspat” în nume -> redenumite. Garda `core/test_poarta_proaspat.py`: (a) fiecare test care compară un artefact cu arborele
+(`ui_hash()` / `instrument_hash()`) e printre nodurile colectate de `pytest --collect-only -k proaspat core/`; (b) pasul există, înaintea
+suitei, cu `exit 1`; (c) pe hook-ul adevărat, într-un depozit de probă cu un test de prospețime roșu, suita nu pornește.
+**Limita:** prinde artefactele legate de `ui_hash` / `instrument_hash`; un artefact cu altă amprentă trebuie să-și poarte testul cu
+„proaspat” în nume (garda (a) le găsește numai pe cele două funcții).
+
+**3. 246 — PIVOT: interpretarea devine decizie.** Intrarea „Lotul 3” pct.1 scria „INTERPRETARE … De reconfirmat”. Costin a confirmat:
+seniorul cu „Poate valida” validează ciorna altuia, nu o editează și nu o șterge — exact ce aplică triggerele. Nu se schimbă nimic în cod.
+
+**4. Proba de restaurare în fiecare noapte** — `core/proba_restaurare_noapte.py`, zilnic 05:00 din crontab (după backup-ul de 03:00 și
+verificarea de 04:30), prin `cron.ruleaza` (eșec = alertă Brevo + exit 1; bătaia `proba_restaurare_noapte` în `RITMURI`, deci și lipsa
+rulării alarmează). Restaurează ultimul `iconta_v2_*.dump` într-o bază separată (`iconta_proba_restaurare`), compară amprenta cu
+producția de acum, apoi șterge baza (și la eșec). **Criteriul:** restaurare fără eroare + TOATE tabelele din cuprinsul arhivei
+(`pg_restore -l`) + rânduri. **Respins:** „aceeași structură ca producția de acum” — prima rulare (15.10, 08:2x) a picat fals:
+`public.invitatii_cabinet` (migrarea lotului 2) a fost creată după dump-ul de 03:00; publicările se fac noaptea, deci alarma ar fi sunat
+tocmai în nopțile cu publicare. Diferențele față de producție se numără, nu pică. **Numai cifre:** erorile poartă numai etapa și codul
+(textul unei erori `COPY` ar purta rândul); o excepție străină — numai tipul ei. **Limita:** aceeași mașină și același server de baze de
+date — dovedește arhiva, nu recuperarea după pierderea serverului; alerta pleacă pe Brevo (dacă Brevo e jos, rămâne exit 1 în jurnal).
+
+**5. (poarta a treia, 15.10.2026 10:59) Testul 58 aliniat la 246; curățarea plasei reluată la deadlock.** Plasa a respins cu 1 test + 1
+eroare. (a) `test_def_58_*` (deficiența 58, „ciornele de dinainte de mecanism”) avea ca probă ANA care trimite la validare ciorna
+CONTABILULUI-ȘEF — exact ce interzice 246 („Un asistent nu … trimite la validare notele altui utilizator”), confirmat de Costin și pentru
+senior. Ce probează 58 rămâne: o ciornă din afara cozii apare „netrimisă la validare” și se trimite; o trimite AUTORUL ei. Proba nouă:
+ciorna Anei scoasă din coadă (ca o ciornă de dinainte de mecanism) -> Ana o trimite -> la_senior; ciorna șefului din afara cozii
+rămâne la Ana vizibilă, numărată, fără buton, cu motivul. Mutația „butonul scos de pe ciornele din afara cozii” -> ROȘU. Restul plasei
+(273 de teste) și suita întreagă (8226) nu mai aveau alt drum în care un asistent schimbă ciorna altuia. **Respins:** o excepție la 246
+pentru ciornele din afara cozii (ar redeschide exact drumul închis de 246). (b) Eroarea testului 243 era la CURĂȚARE: `DROP SCHEMA …
+CASCADE` al firmei de probă s-a încrucișat cu o cerere a paginii încă deschise (deadlock). `frontend_test/e2e/curatenie.scoate` scoate
+acum fiecare firmă pe tranzacția ei, reluată la `DeadlockDetected` (cel mult 5 încercări, apoi eroarea urcă). Gard
+`core/test_e2e_curatenie_reluare.py` (mutația „fără reluare” -> ROȘU). Izolat, 243 trece (4/4).

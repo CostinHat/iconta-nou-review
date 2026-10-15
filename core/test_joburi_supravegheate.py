@@ -190,14 +190,16 @@ def test_CALIBRARE_crontab_gol_NU_inventeaza_joburi():
 
 
 _TIMER = "[Timer]\nOnCalendar=*-*-* *:07,37:00\n[Install]\nWantedBy=timers.target\n"
-_SERVICE_OK = "[Service]\nExecStart=/home/costin/iconta_nou/venv/bin/python -m core.spv_poll\n"
+# interpretorul real al proiectului, din rădăcina depozitului (C35: fără calea checkout-ului publicat)
+_PY_PROIECT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "venv", "bin", "python")
+_SERVICE_OK = "[Service]\nExecStart=%s -m core.spv_poll\n" % _PY_PROIECT
 _SERVICE_SHELL = "[Service]\nExecStart=/usr/local/bin/iconta-backup.sh\n"
 
 
 def test_CALIBRARE_unitatea_da_modulul_interpretorul_si_calendarul():
     u = cron.unitati_systemd([("spv-poll.timer", _TIMER, "spv-poll.service", _SERVICE_OK)])[0]
     assert u["modul"] == "spv_poll"
-    assert u["interpretor"] == "/home/costin/iconta_nou/venv/bin/python"
+    assert u["interpretor"] == _PY_PROIECT
     assert u["calendar"] == "*-*-* *:07,37:00"
 
 

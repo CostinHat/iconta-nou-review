@@ -11,9 +11,10 @@ import os
 import sys
 import urllib.error
 import urllib.request
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou")
-sys.path.insert(0, "/home/costin/iconta_nou/frontend_test")
+sys.path.insert(0, _RAD)
+sys.path.insert(0, os.path.join(_RAD, "frontend_test"))
 
 from core import auth_api, db  # noqa: E402
 

@@ -436,6 +436,13 @@ fundal pe tenantul greșit; **IDOR** (id tenant din URL neverificat contra useru
   `core/test_invitatii.py` (3), `core/test_p4_fault_injection.py` (invitația rămâne valabilă la eșec, consumată la succes),
   `frontend_test/e2e/e2e_invitatii.py` (3, mutații: „Client nou” deschide formularul / consumarea scoasă / „a plecat” mințit -> ROȘU).
   LIMITĂ: invitația o creează numai superadminul; nu există expirare automată a invitațiilor vechi din tabel (expiră la citire).
+- ACOPERIT (15.10.2026, deficiența 246): asistentul nu modifică / nu șterge / nu trimite la validare ciorna ALTUI utilizator — regula în
+  BAZĂ (`core/migrare_ciorne_proprii.py`: triggere pe `inregistrari`, `inregistrari_linii`, `rip_operatiuni`, refuz `DREPT_CIORNA:` ->
+  403) + `coada_api.retrimite_nota` cu aceeași funcție (`ciorna_altui`). Gărzi: `core/test_ciorne_proprii.py` (schemă efemeră din
+  șablon; paritatea textului cu ecranul), e2e `test_def_246_*`. LIMITĂ: documentele fără coloană de autor (factura-ciornă, NIR,
+  chitanța, extrasul) sunt păzite prin nota lor; o factură-ciornă fără notă n-are autor de comparat.
+- ACOPERIT (15.10.2026, C26 + clasa): listele CABINETULUI văzute de un asistent — consolidarea și coada de validare (lista + acțiunile pe
+  element) — numai pe firmele alocate (`uc_comun._firme_vizibile`, sursa `auth_api.tenantii_userului`). e2e `test_def_c26_*`.
 
 ### 7. Integritate în timp
 **Eșec:** modificare retroactivă în lună închisă; declarație depusă regenerată altfel;
@@ -461,6 +468,11 @@ balanță ≠ sumă înregistrări; backup nerestaurabil.
 - ACOPERIT o dată (15.10.2026): proba de restaurare pe bază separată, același server, ștearsă după — `scripts/proba_restaurare.py`;
   snapshot: 6 scheme / 364 tabele / 48.338 rânduri identice la md5 cu producția; dump-ul de noapte se restaurează fără eroare; mutația
   „un rând șters” -> PICAT. LIPSĂ: repetarea automată (rularea nocturnă citește datele cabinetului real -> decizie Costin, regula 2b).
+- ACOPERIT (15.10.2026, decizia Costin „Proba de restaurare automată în fiecare noapte: da”): `core/proba_restaurare_noapte.py`, zilnic
+  05:00 (crontab), prin `cron.ruleaza` + bătaie (`RITMURI`): ultimul dump restaurat într-o bază separată, ștearsă după; trece numai cu
+  toate tabelele din cuprinsul arhivei și cu rânduri; în jurnal numai cifre. Gard `core/test_proba_restaurare_noapte.py` (mutațiile:
+  codul de ieșire ignorat, textul excepției tipărit, numărătoarea cu `TABLE DATA` -> ROȘU) + mutația funcțională: o copie trunchiată la
+  70% a dump-ului -> „restaurarea a eșuat: pg_restore cod 1, psql cod 3”, PICAT. LIMITĂ: aceeași mașină și același server Postgres.
 - LIPSĂ: verificare nocturnă Σdebit=Σcredit per perioadă/tenant + orfani.
 
 ### 8. Integritate cod — arbori paraleli
@@ -485,7 +497,23 @@ fișiere necolectate).
   Gard `core/test_poarta_ordine.py::test_arborele_diferit_de_index_e_respins_inainte_de_suita` (mutația „verificarea scoasă” ->
   ROȘU). LIMITĂ: cauza exactă din lotul 1 nu se mai poate reconstitui (arborele de atunci nu s-a păstrat); garda închide toate
   drumurile prin care verdictul și commitul pot diferi pe fișiere urmărite / neadăugate, nu și un fișier ignorat (`.gitignore`) citit
-  de un test.
+  de un test. [lotul 3] Cauza probabilă: C35, mai jos.
+- ACOPERIT (15.10.2026, C35; decizia Costin, DECIZII „Lotul 3 — C35”): gărzi cu rădăcina scrisă absolut (`~/iconta_nou`) care, rulate
+  din worktree, judecau arborele publicat — verificatorul de conformitate, scanurile, uneltele de probă, implicitul `efactura_zip`.
+  Rădăcina se calculează acum din fișierul însuși. Gard `core/test_fara_radacina_absoluta.py` (toate fișierele urmărite cu cod
+  executabil; mutațiile: `RAD = "/home/costin/iconta_nou/core"` repus în `scan_constante`, `E=~/iconta_nou/...` repus în
+  `verificator_neconformitati.sh` -> ROȘU) + e2e `test_def_c35_*` (verificatorul din arborele plasei numește un defect plantat acolo;
+  mutația „rădăcina = checkout-ul publicat” -> ROȘU). LIMITĂ: o cale compusă din bucăți nu e prinsă; proza din docstringuri nu se
+  scanează.
+- ACOPERIT (15.10.2026): un deadlock la curățarea plasei (`DROP SCHEMA … CASCADE` al firmei de probă vs. o cerere a paginii încă
+  deschise) respingea un lot verde. `frontend_test/e2e/curatenie.scoate` — o firmă pe tranzacție, reluată la `DeadlockDetected`; gard
+  `core/test_e2e_curatenie_reluare.py` (mutația „fără reluare” -> ROȘU). LIMITĂ: alte erori de curățare (nu deadlock) urcă, vizibile.
+- ACOPERIT (15.10.2026; decizia Costin, DECIZII „Lotul 3 — C35” pct.2): un artefact de probă din browser mai vechi decât UI-ul respingea
+  poarta după 50 de minute (lotul 3, 06:10). `poarta-suita` rulează `pytest -k proaspat core/` (~10 s) înaintea suitei. Gard
+  `core/test_poarta_proaspat.py` (selecția pytest cuprinde fiecare test care compară `ui_hash()` / `instrument_hash()`; pasul există
+  înaintea suitei; pe hook-ul adevărat suita nu pornește peste un artefact vechi). Mutațiile: blocul scos din poartă -> ROȘU (2 teste);
+  `test_scanul_e_proaspat_fata_de_ui` redenumit înapoi -> ROȘU. LIMITĂ: un artefact cu altă amprentă decât cele două funcții trebuie
+  să-și pună singur „proaspat” în numele testului.
 - ACOPERIT (15.10.2026): jurnalele porții reale stricate de teste. Prima poartă a lotului 2 a respins cu „1 failed” FĂRĂ numele
   testului: `test_poarta_ordine` rula `poarta-suita` pe un depozit de probă, care scria în `/tmp/precommit_pytest.log` cât îl scria
   pytest-ul porții reale (aceeași clasă cu RAPORT_P3, „două porți în același log”). Testul picat s-a aflat din `.pytest_cache`.
@@ -1142,7 +1170,7 @@ La revenire se re-ruleaza DOAR `python -m core.agenda` pentru xfail-uri; restul 
 - **Gard care interzice cote literale in cod (`*0.19`) + golden pe cifre calculate manual din exemplu** — cat.3 (LIPSA).
 - **Snapshot de regresie pe fixturi inghetate (iesire ANAF)** — cat.4 (LIPSA). DUK valideaza structura, nu continutul.
 - **Test acces incrucisat (obiect alt tenant -> 404) + gating admin inconsecvent** — cat.6 (LIPSA + DE_FACUT poz.7). Efect: IDOR / rol inconsecvent.
-- **Job nocturn Sdebit=Scredit per perioada/tenant + orfani + reluare automata a probei de restaurare** — cat.7 (LIPSA).
+- **Job nocturn Sdebit=Scredit per perioada/tenant + orfani** — cat.7 (LIPSA). [Reluarea automată a probei de restaurare: ACOPERIT 15.10.2026, `core/proba_restaurare_noapte.py`.]
 - **Gard care prinde aparitia unei a doua copii a unui generator** — cat.8 (LIPSA).
 - **Mutant zero sistematic (fiecare generator fortat sa intoarca [] -> suita rosie)** — cat.9 (LIPSA azi ad-hoc).
 - **Izolare tenant pe BODY/query (POST /coada, POST /declaratii/{tip}) + 1 conexiune bruta in sinteza_zilnica.py** — cat.5 (LIMITA).
@@ -8858,9 +8886,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**789 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**794 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 751
+### `core/` — 756
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8984,6 +9012,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_chei_duplicate.py` — GARDĂ: o cheie care apare de două ori în același dicționar e o intrare MOARTĂ. (21.08.2026)
 - `core/test_chei_unice.py` — GARD — o cheie de registru nu se repetă (comanda Costin 07.10.2026, C7).
 - `core/test_cifre_referinta_poarta.py` — GARD — cifrele de referință ale firmelor F1–F5 opresc publicarea la orice diferență (comanda Costin 10.10.2026 pct.1, verbatim în
+- `core/test_ciorne_proprii.py` — GARD — deficiența 246: un asistent nu modifică, nu șterge și nu trimite la validare ciorna ALTUI utilizator (comanda Costin 14.10.2026,
 - `core/test_citari_plan.py` — GARDĂ: o trimitere la un număr de linie din `PLAN_HARDENING.md` arată spre ce spune că citează.
 - `core/test_citate_verbatim.py` — CLICHET CARE CREȘTE (21.08.2026): numărul de citări verificabile mecanic nu mai scade.
 - `core/test_cititor_js.py` — GARD [04.09.2026]: cititorul comun de JS nu poate orbi tacut peste cod real.
@@ -9243,6 +9272,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_e1_contare_primita_mixt.py` — [E1, 18.09.2026] Contarea unei facturi PRIMITE mixte (21/11) se face PE COTE, nu cu `MAX(cota_tva)`
 - `core/test_e2a_univers.py` — E2a — universul se declară, amestecul se OBSERVĂ.
 - `core/test_e2e_azi_acum.py` — GARD — „azi” fixat la importul unui test e2e, comparat cu ce datează aplicația ACUM (13.10.2026, prins de poarta lotului C14 / C15).
+- `core/test_e2e_curatenie_reluare.py` — Curățarea plasei se reia la DEADLOCK (15.10.2026, poarta a treia a lotului 3: `DROP SCHEMA … CASCADE` al firmei de probă s-a
 - `core/test_e2e_perioada.py` — GARD — perioada declarației în plasa e2e (10.10.2026). `e2e_bloc_d._genereaza` completa numai „Lună”: după C2 (D406 trimestrial la
 - `core/test_echilibru_legat.py` — core/test_echilibru_legat.py — GARDA R33 varianta b'' (26.08.2026).
 - `core/test_echilibru_perioada.py` — core/test_echilibru_perioada.py — GARD C3 (integritate in timp): partida dubla pe perioada + orfani.
@@ -9274,6 +9304,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_fapte_date_firma.py` — GARD — două fapte DA/NU din Date firmă fără implicit în schemă (lotul 07.10 B, comanda Costin A.3).
 - `core/test_faptul_bate_vectorul.py` — GARD (21.08.2026): FAPTUL BATE VECTORUL în selectorul de declarații, iar „lună închisă" nu mai
 - `core/test_fara_probe_imagine.py` — GARDĂ (03.09.2026): **un fișier imagine nu mai intră în repo ca probă vizuală**, și **niciun cod
+- `core/test_fara_radacina_absoluta.py` — GARD C35 — nicio cale absolută spre checkout-ul publicat în codul depozitului (decizia Costin 15.10.2026, verbatim în DECIZII
 - `core/test_fara_secrete_in_git.py` — GARD — niciun secret în fișierele urmărite de git (comanda Costin 05.10.2026).
 - `core/test_fereastra_firmei_grupuri.py` — GARD ÎN BROWSER — fereastra firmei, grupată (comanda Costin 05.10.2026 pct.11): „cele peste 20 de carduri se grupează sub câteva
 - `core/test_fereastra_focusabila.py` — [a11y WCAG 2.1.1 / Regula 14] GARD: corpul modal .fereastra-corp e focusabil din tastatura.
@@ -9449,6 +9480,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_poarta_inainte_de_aprobare.py` — GARD [02.09.2026]: POARTA CONFIRMARII CADE INAINTE DE APROBARE, nu dupa.
 - `core/test_poarta_inchidere.py` — GARDA porții de închidere a perioadei — R58, partea care lipsea.
 - `core/test_poarta_ordine.py` — GARDA deciziei Costin 08.10.2026, pct.3: „Verificarea commit-msg rulează înaintea pytest, nu după. Intră în acest lot, nu
+- `core/test_poarta_proaspat.py` — GARD — poarta rulează probele de prospețime ÎNAINTEA suitei (decizia Costin 15.10.2026, pct.1, verbatim în DECIZII „Lotul 3 — C35”:
 - `core/test_poarta_profil.py` — Garda: verificarea de profil nu e decorativa — daca exista, blocheaza generarea.
 - `core/test_poarta_scurta.py` — GARD (07.09.2026) — poarta scurta din PLAN_LUCRU regula 4 nu poate deveni o formalitate.
 - `core/test_populatii_registre.py` — GARD [R96, 06.09.2026]: cele trei registre obligatorii ori citesc aceeași mulțime, ori abaterea e DECLARATĂ.
@@ -9469,6 +9501,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_premisa_restanta.py` — [Regula 4 + Regula 6] TEST-GARDA: NICIO restanta fara premisa demonstrabila.
 - `core/test_pret_ales.py` — GARD — „un preț pe care nu l-a ales nimeni nu se propune: câmp gol și obligatoriu” (comanda Costin 06.10.2026, pct.1b).
 - `core/test_preview_salvare_poarta.py` — GARD Q5 — preview = salvare, O SINGURA POARTA (tura import CUBUS, 16.08.2026).
+- `core/test_proba_restaurare_noapte.py` — Proba de restaurare de noapte (decizia Costin 15.10.2026, pct.4, verbatim în DECIZII „Lotul 3 — C35”: „Proba de restaurare automată
 - `core/test_profil_blocaje.py` — GARD profil_blocaje: ecranul Date firma NU pretinde 'toate declaratiile se pot genera' cand un
 - `core/test_proprietate_coaja.py` — GARD DE PROPRIETATE (P2, 21.08.2026): un ECRAN nu scrie în COAJĂ. DESIGN_SYSTEM cap.25.
 - `core/test_provenienta.py` — GARDA: fiecare fisier din corpus isi stie provenienta. (23.08.2026)

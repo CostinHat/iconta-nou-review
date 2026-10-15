@@ -44,16 +44,18 @@ import base64
 import json
 import re
 import sys
+import os
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou/frontend_test")
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, os.path.join(_RAD, "frontend_test"))
+sys.path.insert(0, _RAD)
 
 import e2_util as U  # noqa: E402
 
 FIRMA = "Comert Micro TVA SRL"
 AN, TRIM, LUNA = 2026, 3, 9
 MARCA = "PROBA-E2-G"
-OUT = "/home/costin/iconta_nou/frontend_test/proba_e2_lot_g_d394.json"
+OUT = os.path.join(_RAD, "frontend_test/proba_e2_lot_g_d394.json")
 
 #: Două CUI-uri cu cifra de control corectă (cerința `core/test_cui_cnp_test_valid.py`), luate din
 #: portofoliul de test unde au fost deja verificate — nu inventate.

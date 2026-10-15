@@ -46,11 +46,44 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 3 al comenzii Costin 14.10.2026 (pct.6 + răspunsul la §6; poarta și publicarea aprobate până la 07:00, cu backup)** —
+  246 (ciorna altui utilizator: asistentul o vede, n-o modifică, n-o șterge, n-o trimite la validare; pe toate ecranele cu ciorne) +
+  C26 (consolidarea și coada de validare, pentru asistent, numai pe firmele lui).
+  - ultim: L3-0 … L3-3 implementate și probate (15.10.2026 05:10) — lotul 3 = commitul care conține această intrare
+  - urmator: L3-8 (poarta pe arborele lotului cu C35 reparat, backup, publicare, four-way, raport + ZIP). STARE = IN LUCRU
+  - [15.10.2026 06:10] poarta a respins (2 artefacte de prospețime vechi, `proba_pagina_principala`, `proba_decl50`); oprit la 07:00;
+    WIP `wip/2026-10-15-0610-lot3`. Răspunsul Costin la §6 (DECIZII „Lotul 3 — C35”) a adăugat L3-5 … L3-7 și a mutat L3-4 în L3-8.
+  - [15.10.2026 09:42] a doua poartă a respins: 4 teste din `core/test_tranzactii_clasificate.py` — modulul nou
+    `core/proba_restaurare_noapte.py` era candidat P4 fără verdict (pytest: 4 failed / 8222 passed; prospețimea, verificatorul,
+    cifrele — verzi). WIP `wip/2026-10-15-0942-lot3`. Verdictul scris în `core/p4_clasificare.py` (NECRITIC, cu motivul).
+  - [15.10.2026 10:59] a treia poartă: pytest VERDE (8226 / 10 / 15), plasa a respins — `test_def_58_*` (Ana trimitea ciorna șefului:
+    interzis de 246) + eroare la curățarea lui 243 (deadlock cu `DROP SCHEMA`). WIP `wip/2026-10-15-1059-lot3`. Testul 58 aliniat la
+    246 (DECIZII „Lotul 3 — C35” pct.5), curățarea reluată la deadlock (`core/test_e2e_curatenie_reluare.py`).
+  - pasi:
+    L3-0. Registre: TESTE (acest fir), DECIZII „Lotul 3”, GARZI cat.6, DEFICIENTE 246 / C26.
+    L3-1. 246 în bază: `core/migrare_ciorne_proprii.py` (`ciorna_altui`, triggere pe `inregistrari`, `inregistrari_linii`,
+          `rip_operatiuni`, refuz `DREPT_CIORNA:` -> 403 în `main.py`), oglinda în `tenant_template.sql`; `coada_api.retrimite_nota`
+          refuză cu aceeași funcție; jurnalul și registrul de încasări și plăți primesc `a_altuia` (afirmație tipată
+          `drepturi.ciorna_altuia`), iar ecranele nu mai oferă butoanele; `core/test_ciorne_proprii.py` + mutații.
+    L3-2. C26: `uc_comun._firme_vizibile` / `_firma_vizibila` pe consolidare și pe coada de validare (lista + acțiunile pe element).
+    L3-3. e2e `frontend_test/e2e/e2e_ciorne_proprii.py` (`test_def_246_*`, `test_def_c26_*`) + 3 mutații; gărzile-registru
+          (scrieri 318, MIGRARE_UNICA 88, afirmația tipată), artefactele generate. [lista crescută pe drum] C35 găsită (gărzi cu
+          rădăcina absolută): inventariată, compensată manual, corectarea așteaptă decizia; clichetul `import_tabel.py` scos (real 0).
+    L3-4. (înlocuit de L3-8)
+    L3-5. C35: rădăcina din fișierul însuși pe toată clasa (verificatorul, scanurile, uneltele de probă, `efactura_zip`);
+          `core/test_fara_radacina_absoluta.py` + 2 mutații; e2e `frontend_test/e2e/e2e_c35_radacina.py::test_def_c35_*` + mutația.
+    L3-6. Prospețimea înaintea suitei: pasul `pytest -k proaspat core/` în `poarta-suita`; testele text_ecran redenumite;
+          `core/test_poarta_proaspat.py` + 2 mutații; probele `proba_pagina_principala` / `proba_decl50` regenerate pe 8019.
+    L3-7. Proba de restaurare de noapte: `core/proba_restaurare_noapte.py` (crontab 05:00, `cron.ruleaza`, `RITMURI`),
+          `scripts/proba_restaurare.py` (criteriul pe cuprinsul arhivei, numai cifre); `core/test_proba_restaurare_noapte.py` + 3 mutații +
+          mutația funcțională (dump trunchiat); linia de crontab instalată înaintea porții.
+    L3-8. Poartă, backup, publicare (migrarea `--productie`), four-way, rularea probei de noapte din producție, raport + ZIP.
+
 - fir: **Lotul 2 al comenzii Costin 14.10.2026 (răspunsul la §6, pct.2 + 3 + 5; ordinea confirmată 14.10 noaptea; poarta și publicarea
   aprobate până la 07:00, cu backup înainte)** — garda pe `main`, înregistrarea numai prin invitație, alerta backup-ului + proba de
   restaurare (numai cifre). Apoi lotul 3 (246 + C26).
   - ultim: L2-0 … L2-3d implementate și probate (15.10.2026 02:10; subsetul atins + artefactele: 454 passed, e2e invitații 3/3, verificator 0) — lotul 2 = commitul care conține această intrare
-  - urmator: L2-4 (poarta, backup, publicare, four-way, raport + ZIP), apoi lotul 3 (246 + C26, worktree `/home/costin/iconta_lot3`). STARE = IN LUCRU
+  - urmator: niciunul — lotul 2 publicat 15.10.2026 04:20 (38adb1bb, four-way închis). STARE = INCHIS
   - pasi:
     L2-0. Registre: TESTE (acest fir), DECIZII (comanda + ce schimb la înregistrare), GARZI.
     L2-1. Garda pe `main`: `scripts/githooks/reference-transaction` — orice mutare a lui `refs/heads/main` (commit, fast-forward, reset,

@@ -2440,3 +2440,27 @@ Costin până la 07:00, cu backup înainte.
   F1–F5 identice. Logul pytest al porții stricat de un test care rula hook-ul pe un depozit de probă; testul picat aflat din
   `.pytest_cache`: `test_fara_secrete_in_git` (o parolă în `core/test_invitatii.py`, `PGPASSWORD` în `scripts/proba_restaurare.py`).
   Reparate amândouă, plus clasa: jurnalele porții în `${POARTA_JURNALE:-/tmp}`, mutate de `conftest.py` pentru teste.
+
+## 15.10.2026 (noaptea) — Lotul 3: 246 (ciorna altui utilizator) + C26 (asistentul vede numai firmele lui)
+
+Comanda și deciziile: DECIZII 15.10.2026 „Lotul 3”. Lucrat într-un worktree separat (`/home/costin/iconta_lot3`) cât a rulat poarta
+lotului 2, apoi mutat peste commitul lui. 246: regula în bază (triggere + funcția `ciorna_altui`), jurnalul și registrul de încasări și
+plăți nu mai oferă butoanele pe ciorna altuia și scriu motivul, retrimiterea verificată în coadă. C26: consolidarea și coada de validare
+filtrate pe firmele alocate asistentului (lista și acțiunile pe element).
+Pe drum, C35: garda constantelor a picat pe arborele lotului cu „clichet 1, real 0” — rădăcina ei e scrisă absolut (`~/iconta_nou`), deci
+din worktree măsoară arborele publicat; la fel verificatorul de conformitate și alte cinci scanuri. Verificatorul rulat pe codul loturilor
+1–2 (după publicarea lui 38adb1bb) și pe arborele lotului 3: TOTAL 0 amândouă. Corectarea clasei așteaptă acordul (DECIZII „Lotul 3” pct.3).
+
+## 15.10.2026 (dimineața) — Lotul 3, continuare: C35, prospețimea în poartă, proba de restaurare de noapte
+
+Poarta lotului 3 respinsese la 06:10 (două artefacte de probă din browser rămase pe UI-ul vechi); după 07:00 nu s-a mai publicat.
+Răspunsul Costin la §6 (DECIZII „Lotul 3 — C35”): C35 corectată pe toată clasa — rădăcina din fișierul însuși în ~50 de fișiere
+(verificatorul, scanurile, uneltele de probă, `efactura_zip`), garda pe tot codul urmărit + e2e în arborele plasei; poarta rulează probele
+de prospețime (~10 s) înaintea suitei; proba de restaurare rulează în fiecare noapte la 05:00 (prima rulare manuală a picat fals pe
+criteriul „structura producției de acum” — un tabel creat după 03:00 de publicarea lotului 2 —, mutat pe cuprinsul arhivei). 246:
+interpretarea pentru senior confirmată. Probele paginii principale și ale celor 50 de declarații regenerate pe 8019.
+A doua poartă (09:42) a respins: modulul probei de noapte n-avea verdict în inventarul tranzacțiilor (P4); verdictul scris, poarta a
+treia pornită. Pasul de prospețime (nou) a rulat la ambele porți: 21 de teste, ~19 s.
+A treia poartă (10:59): suita verde, plasa a respins — testul deficienței 58 cerea ca asistentul să trimită ciorna șefului (interzis de
+246; proba mutată pe ciorna asistentului, ciorna șefului rămâne fără buton) și un deadlock la curățarea firmei de probă (curățarea se
+reia acum). Poarta a patra pornită.

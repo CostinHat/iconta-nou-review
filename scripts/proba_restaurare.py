@@ -9,7 +9,8 @@ DOUĂ MODURI:
       care se calculează amprenta producției; restaurat; amprenta bazei restaurate trebuie să fie IDENTICĂ, tabel cu tabel (rânduri +
       md5 pe conținut). Exact, chiar dacă producția se mișcă între timp: ambele părți văd același snapshot.
   --dump <fișier> — restaurează un dump EXISTENT (ex. cel de noapte din /var/backups/iconta) și arată câte tabele au rămas identice cu
-      producția de ACUM (diferențele sunt scrierile de după dump, nu defecte ale arhivei; criteriul aici e restaurarea fără eroare).
+      producția de ACUM (diferențele sunt scrierile de după dump, nu defecte ale arhivei). Criteriul: restaurarea fără eroare, toate
+      tabelele din cuprinsul arhivei restaurate și rânduri. Așa rulează și proba de noapte (`core/proba_restaurare_noapte.py`).
 
 Amprenta e cea din `scripts/amprenta_productie.py` (sursă unică: `amprenta`, `globala`, `compara`). Ieșirea are NUMAI cifre: scheme,
 tabele, rânduri, numărul tabelelor identice, sume de control sha256 — niciun nume de firmă, nicio valoare din rânduri. Dump-ul de
@@ -40,7 +41,7 @@ def _psql_postgres(sql, baza="postgres"):
     r = subprocess.run(["sudo", "-n", "-u", "postgres", "psql", "-X", "-At", "-v", "ON_ERROR_STOP=1", "-d", baza, "-c", sql],
                        capture_output=True, text=True)
     if r.returncode != 0:
-        raise RuntimeError("psql (postgres) a eșuat, cod %d: %s" % (r.returncode, r.stderr.strip()[:300]))
+        raise RuntimeError("psql (postgres) a eșuat, cod %d" % r.returncode)   # fără textul erorii: în jurnal numai cifre
     return r.stdout.strip()
 
 
@@ -78,15 +79,27 @@ def _restaureaza(dump, env):
     coll = _psql_postgres("SELECT datcollate || '|' || datctype FROM pg_database WHERE datname = '%s'" % env["DB_NAME"]).split("|")
     _psql_postgres("CREATE DATABASE %s OWNER %s TEMPLATE template0 ENCODING 'UTF8' LC_COLLATE '%s' LC_CTYPE '%s'"
                    % (BAZA_PROBA, env["DB_USER"], coll[0], coll[1]))
-    p1 = subprocess.Popen(["pg_restore", "-f", "-", dump], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p1 = subprocess.Popen(["pg_restore", "-f", "-", dump], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     p2 = subprocess.run(["sudo", "-n", "-u", "postgres", "psql", "-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", BAZA_PROBA],
                         stdin=p1.stdout, capture_output=True, text=True)
     p1.stdout.close()
-    err1 = p1.stderr.read().decode("utf-8", "replace")
     p1.wait()
     if p1.returncode != 0 or p2.returncode != 0:
-        raise RuntimeError("restaurarea a eșuat: pg_restore cod %d, psql cod %d: %s" %
-                           (p1.returncode, p2.returncode, (err1 + p2.stderr).strip()[:400]))
+        # textul erorilor NU se tipărește: o linie COPY respinsă poartă rândul de date (în jurnal numai cifre)
+        raise RuntimeError("restaurarea a eșuat: pg_restore cod %d, psql cod %d" % (p1.returncode, p2.returncode))
+
+
+def tabele_in_arhiva(dump):
+    """Câte tabele are cuprinsul arhivei (`pg_restore -l`, intrările `TABLE`, fără `TABLE DATA`) — numai numărul."""
+    r = subprocess.run(["pg_restore", "-l", dump], capture_output=True, text=True)
+    if r.returncode != 0:
+        raise RuntimeError("cuprinsul arhivei nu se poate citi, pg_restore cod %d" % r.returncode)
+    return numara_tabele(r.stdout)
+
+
+def numara_tabele(cuprins):
+    """Intrările `TABLE` (nu `TABLE DATA`) din textul lui `pg_restore -l`."""
+    return sum(1 for l in cuprins.splitlines() if re.match(r"^\d+; \d+ \d+ TABLE (?!DATA )", l))
 
 
 def _amprenta_restaurata(env):
@@ -128,7 +141,7 @@ def main(argv):
                     dump_snapshot = os.path.join(DIR_DUMP, "proba_restaurare_%s.dump" % datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
                     r = _pg_dump(env, ["-Fc", "--snapshot=%s" % snap, "-f", dump_snapshot])
                     if r.returncode != 0:
-                        raise RuntimeError("pg_dump a eșuat, cod %d: %s" % (r.returncode, r.stderr.strip()[:300]))
+                        raise RuntimeError("pg_dump a eșuat, cod %d" % r.returncode)
                     os.chmod(dump_snapshot, 0o600)
                 a_prod = ap.amprenta(cur)
             prod.rollback()
@@ -150,14 +163,22 @@ def main(argv):
         print("sha256 restaurat: %s" % rr["sha256"])
         identic = not (schimbate or aparute or disparute)
         if dump_dat:
-            cod = 0
-            print("VERDICT: dump-ul existent se restaurează fără eroare; %s" %
-                  ("identic cu producția de acum" if identic else "diferențele = scrierile de după dump"))
+            # [15.10.2026, proba de noapte] dump-ul existent trece dacă se restaurează fără eroare, cu TOATE tabelele din cuprinsul
+            # arhivei și cu rânduri. Față de producția de ACUM diferențele (conținut, dar și tabele noi: o migrare publicată după
+            # 03:00 — `invitatii_cabinet`, 15.10.2026) sunt scrierile de după dump: se numără, nu pică.
+            in_arhiva = tabele_in_arhiva(dump)
+            print("tabele în arhivă %d | restaurate %d" % (in_arhiva, rr["tabele"]))
+            complet = rr["tabele"] == in_arhiva and in_arhiva > 0 and rr["randuri"] > 0
+            cod = 0 if complet else 1
+            print("VERDICT: %s" % (("dump-ul se restaurează fără eroare, cu toate tabelele arhivei; %s" %
+                                    ("identic cu producția de acum" if identic else "diferențele = scrierile de după dump"))
+                                   if complet else "RESTAURARE INCOMPLETĂ (tabele lipsă sau bază goală) — PICAT"))
         else:
             cod = 0 if identic else 1
             print("VERDICT: %s" % ("RESTAURARE IDENTICĂ cu producția (același snapshot)" if identic else "RESTAURARE DIFERITĂ — PICAT"))
     except Exception as e:  # noqa: BLE001 — proba raportează orice eșec și trece totuși prin ștergere
-        print("PICAT: %s" % e)
+        # mesajele proprii (RuntimeError) au numai etapa și codul; o excepție străină (driver, rețea) — numai tipul ei
+        print("PICAT: %s" % (e if isinstance(e, RuntimeError) else type(e).__name__))
     finally:
         try:
             print("baza de probă după DROP: %s (0 = ștearsă)" % _sterge())

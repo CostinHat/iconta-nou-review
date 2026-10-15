@@ -62,6 +62,9 @@ def cabinet_consolidare(an, luna, ctx):
     luna = luna or azi.month
     with db.get_conn() as conn, conn.cursor() as cur:
         tenanti = repo_tenants.firme_cu_schema(cur, ctx["firm"])
+        vizibile = _uc_comun._firme_vizibile(conn, ctx)   # [C26] asistentul: numai firmele alocate lui
+    if vizibile is not None:
+        tenanti = [t for t in tenanti if t[0] in vizibile]
     firme = []
     total = {"venituri": 0, "cheltuieli": 0, "profit": 0,
              "cash": 0, "de_incasat": 0, "de_platit": 0}

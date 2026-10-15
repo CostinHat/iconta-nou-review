@@ -1284,7 +1284,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T05 — Nota contabilă — de la document la registrul-jurnal
 
-**Clasa:** MECANIC · **rute:** 36 (din care schimba date: 28) · **refuzuri explicite:** 198
+**Clasa:** MECANIC · **rute:** 36 (din care schimba date: 28) · **refuzuri explicite:** 200
 
 **Cine:** drept fin: `poate_pregati`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 0 din 28.**
 
@@ -1327,7 +1327,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/registru-inventar` — garda `cere_drept` drept:poate_pregati
 - `GET /tenants/{tenant_id}/registru-inventar/propunere` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `avansuri`, `bacsis`, `coada_api`, `comodat_chirii`, `contare_facturi`, `contracte_speciale`, `cota_tva_incasare`, `credite`, `d406_active`, `decontari_asociati`, `deconturi`, `documente_api`, `fisa_cont`, `inventariere`, `jurnal_api`, `leasing`, `lichidare`, `note_derivate`, `obiecte_inventar`, `ong`, `perisabilitati`, `plan_legal`, `productie`, `provizioane`, `registru_inventar`, `repo_contabilitate`, `repo_declaratii`, `repo_main`, `repo_mijloace_fixe`, `sgr`, `sponsorizari`, `stocuri_cv_api`, `subventii`, `tenant_provisioning`, `tva_incasare`, `uc_comun`
+**Module:** `afirmatii`, `avansuri`, `bacsis`, `coada_api`, `comodat_chirii`, `contare_facturi`, `contracte_speciale`, `cota_tva_incasare`, `credite`, `d406_active`, `decontari_asociati`, `deconturi`, `documente_api`, `drepturi`, `fisa_cont`, `inventariere`, `jurnal_api`, `leasing`, `lichidare`, `note_derivate`, `obiecte_inventar`, `ong`, `perisabilitati`, `plan_legal`, `productie`, `provizioane`, `registru_inventar`, `repo_contabilitate`, `repo_declaratii`, `repo_main`, `repo_mijloace_fixe`, `sgr`, `sponsorizari`, `stocuri_cv_api`, `subventii`, `tenant_provisioning`, `tva_incasare`, `uc_comun`
 
 **Scrie in:** `ai_corectii` (INSERT) · `articole` (INSERT/UPDATE) · `audit_log` (INSERT) · `casa_operatiuni` (DELETE) · `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (INSERT) · `extras_linii` (UPDATE) · `factura_linii` (INSERT) · `facturi` (INSERT) · `firma_profil` (INSERT/UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `metrici_sanatate` (INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `mijloace_fixe_jurnal` (INSERT) · `miscari_stoc` (INSERT) · `perioade_blocate` (DELETE/INSERT) · `plan_conturi` (DELETE/INSERT) · `rapoarte_z_amef` (INSERT) · `rapoarte_z_cote` (INSERT) · `registru_inventar` (INSERT) · `tenants` (INSERT/UPDATE) · `tokene_activare` (DELETE/INSERT) · `urme_portal` (INSERT) · `user_tenants` (INSERT)
 
@@ -1966,7 +1966,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T32 — Registrul de încasări și plăți (partida simplă)
 
-**Clasa:** MECANIC · **rute:** 7 (din care schimba date: 5) · **refuzuri explicite:** 8
+**Clasa:** MECANIC · **rute:** 7 (din care schimba date: 5) · **refuzuri explicite:** 9
 
 **Cine:** drept fin: `poate_pregati`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 0 din 5.**
 
@@ -1980,7 +1980,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `PUT /tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza` — garda `cere_drept` drept:poate_valida
 - `GET /tenants/{tenant_id}/rip/registru` — garda `cere_cabinet`
 
-**Module:** `rip_api`, `uc_comun`
+**Module:** `drepturi`, `rip_api`, `uc_comun`
 
 **Scrie in:** `rip_operatiuni` (DELETE/INSERT/UPDATE)
 

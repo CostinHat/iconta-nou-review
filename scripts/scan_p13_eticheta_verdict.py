@@ -20,7 +20,8 @@ declansatoare: `semaforCard` (semafor.js) arata "Toate firmele la zi" verde cand
 sumarul lipseste — ignorand `sumar.gri` (produs de uc_control_fiscal) si tratand absenta ca verde.
 """
 import os, re, subprocess
-RAD = "/home/costin/iconta_nou"
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
+RAD = _RAD
 JS = os.path.join(RAD, "static/js")
 
 # ─────────────────────────────────────────────────────────────────────────────

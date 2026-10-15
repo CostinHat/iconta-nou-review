@@ -3,8 +3,11 @@
 // Contrast vechi<->nou: forma VECHE arata verde fals; forma NOUA (din semafor.js) nu.
 import assert from "assert";
 import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+// rădăcina depozitului, din fișierul însuși (C35)
+const RAD = fileURLToPath(new URL("..", import.meta.url));
 // Citim sursa REALA a helperului (fara copie) si evaluam functia — proba ramane recomputabila pe fisierul viu.
-const _src = readFileSync("/home/costin/iconta_nou/static/js/ecrane/semafor.js", "utf8");
+const _src = readFileSync(RAD + "static/js/ecrane/semafor.js", "utf8");
 const semaforCard = (0, eval)(_src.replace(/export\s+function/, "function") + "\n;semaforCard");
 
 const MSG = "Toate firmele la zi";

@@ -36,9 +36,10 @@ import os
 import re
 import sys
 from decimal import Decimal
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou/frontend_test")
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, os.path.join(_RAD, "frontend_test"))
+sys.path.insert(0, _RAD)
 
 import e2_util as U  # noqa: E402
 
@@ -48,7 +49,7 @@ FIRMA_D390 = "Distributie Profit IC SRL"      # are operatiuni IC in Vectorul fi
 # a fost cea gresita: alesesem firma campaniei, nu firma careia i se aplica declaratia.
 FIRMA_D301 = "Achizitii IC Neplatitor SRL"
 AN, LUNA = 2026, 8
-OUT = "/home/costin/iconta_nou/frontend_test/proba_e2_d390_d301.json"
+OUT = os.path.join(_RAD, "frontend_test/proba_e2_d390_d301.json")
 
 # ── intrarile ───────────────────────────────────────────────────────────────
 # tipul manual e `P` (prestari servicii IC): `L` e refuzat, si pe drept — livrarile de bunuri IC

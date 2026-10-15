@@ -40,8 +40,9 @@ poate gresi un scan care citeste JavaScript, apoi se construieste. Fiecare mod a
 import os
 import re
 from collections import defaultdict
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-RAD = "/home/costin/iconta_nou/static/js"
+RAD = os.path.join(_RAD, "static/js")
 # minimum un cuvant de 3+ litere (cu diacritice) SI un spatiu: o fraza, nu un identificator
 _CUVANT = re.compile(r"[A-Za-zĂÂÎȘȚăâîșț]{3,}")
 _ZGOMOT = re.compile(r"^[#.\[]|^https?:|^/|^[a-z0-9_-]+$|^\s*$")

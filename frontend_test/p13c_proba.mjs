@@ -2,8 +2,11 @@
 // Intai stare ABSENTA si stare NECUNOSCUTA (nu-verde), apoi verde EXPLICIT (verde).
 import assert from "assert";
 import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+// rădăcina depozitului, din fișierul însuși (C35)
+const RAD = fileURLToPath(new URL("..", import.meta.url));
 
-const PUNCT = "/home/costin/iconta_nou/static/js/ecrane/verdict.js";
+const PUNCT = RAD + "static/js/ecrane/verdict.js";
 const src = readFileSync(PUNCT, "utf8").replace(/export /g, "");
 const mod = (0, eval)(src + "\n;({ VERDICT_POZITIV, verdictDinStare })");
 const { VERDICT_POZITIV, verdictDinStare } = mod;

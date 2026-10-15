@@ -41,6 +41,8 @@ CE NU FACE, declarat: nu rezolvă divergența dintre `users.email` (autentificar
 separat — două identități ale aceleiași persoane, care se pot desincroniza fără ca nimeni să afle.
 """
 import sys
+import os
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
 DDL = """
 CREATE TABLE IF NOT EXISTS public.schimbari_email (
@@ -106,7 +108,7 @@ def aplica(conn):
 
 
 def main():
-    sys.path.insert(0, "/home/costin/iconta_nou")
+    sys.path.insert(0, _RAD)
     from core import db
     db.init_pool()
     with db.get_conn() as conn:

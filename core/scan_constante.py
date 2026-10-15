@@ -65,8 +65,9 @@ import os
 import re
 import tokenize
 from collections import Counter
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-RAD = "/home/costin/iconta_nou/core"
+RAD = os.path.join(_RAD, "core")
 STRUCT = {0, 1, -1, 2, 100}
 FIS = re.compile(r"^(d\d{3}[a-z_]*|salarizare|scadente|stat_plata_api|salariati_api|cote\w*|"
                  r"tva_\w+|bilant\w*|impozit\w*|contributii\w*|control_fiscal\w*|common)\.py$")

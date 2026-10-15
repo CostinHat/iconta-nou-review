@@ -39,9 +39,11 @@ import json
 import sys
 import urllib.error
 import urllib.request
+import os
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou/frontend_test")
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, os.path.join(_RAD, "frontend_test"))
+sys.path.insert(0, _RAD)
 
 import e2_util as U  # noqa: E402
 
@@ -49,7 +51,7 @@ FIRMA = "Comert Micro TVA SRL"
 AN, LUNA, TRIM = 2026, 9, 3   # firma e TRIMESTRIALA: decontul se cere pe TRIMESTRU (art.322 alin.(2)),
 #: iar luna ramane numai pentru datele operatiunilor. Refuzul rutei a fost cel care mi-a corectat asteptarea.
 MARCA = "PROBA-E2-F"
-OUT = "/home/costin/iconta_nou/frontend_test/proba_e2_lot_f_d300.json"
+OUT = os.path.join(_RAD, "frontend_test/proba_e2_lot_f_d300.json")
 
 CUI_FURNIZOR_RO = "95275466"   # Distributie Profit IC SRL — CUI real al portofoliului, cifră de control validă
 COD_TVA_UE = "DE811907980"     # cod TVA UE, formă corectă

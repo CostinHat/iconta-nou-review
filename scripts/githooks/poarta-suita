@@ -61,6 +61,27 @@ fi
 #     O treapta rosie respinge commitul, ca inainte; numai asteptarea se suprapune.
 #     Pe o treapta rosie poarta ASTEAPTA pytest inainte de a iesi (nu-l omoara): un test oprit la jumatate isi lasa datele.
 # Fiecare durata se scrie in .poarta_jurnal.log (`DURATE`), si la verde, ca masuratoarea sa nu depinda de memoria cuiva.
+# ── PROBELE DE PROSPETIME, INAINTEA SUITEI (15.10.2026, decizia Costin pct.1, verbatim in DECIZII „Lotul 3 — C35”: „Plus gard
+# mecanic: poarta rulează probele de prospețime (pytest -k proaspat) înainte de suită.”). Poarta lotului 3 a fost respinsa dupa 50 de
+# minute de doua artefacte de proba din browser ramase pe UI-ul vechi (`proba_pagina_principala.json`, `proba_decl50.json`) — un
+# verdict care costa ~10 secunde. Testele care compara un artefact cu arborele (`ui_hash()` / `instrument_hash()`) poarta „proaspat”
+# in nume — `core/test_poarta_proaspat.py` o cere —, deci le prinde selectia de mai jos. Rosu aici = commit respins INAINTEA suitei.
+# (Fara `core/` — depozitele de proba ale testelor hook-urilor — nu e nimic de verificat.)
+if [ -d core ]; then
+    echo "[poarta] probele de prospetime (pytest -k proaspat), inaintea suitei..."
+    "$PY" -m pytest -q -k proaspat core/ > $J/precommit_proaspat.log 2>&1
+    RC_PROASPAT=$?
+    tail -1 $J/precommit_proaspat.log
+    if [ "$RC_PROASPAT" -ne 0 ]; then
+        { echo "=== $(date -Is) RESPINS probe de prospetime exit $RC_PROASPAT"
+          echo "    HEAD : $(git rev-parse --short HEAD 2>/dev/null)"
+          grep -E "^(FAILED|ERROR) " $J/precommit_proaspat.log 2>/dev/null | sed "s/^/    /" | head -20
+        } >> "$ROOT/.poarta_jurnal.log"
+        echo "[poarta] RESPINS: un artefact de proba nu corespunde UI-ului / instrumentului de acum — regenereaza-l si pune-l la index."
+        echo "[poarta]   Log: $J/precommit_proaspat.log"
+        exit 1
+    fi
+fi
 NW=${POARTA_PROCESE:-3}
 T0=$(date +%s)
 echo "[poarta] pytest (suita intreaga, $NW procese in paralel; verificatorul si cifrele ruleaza in acelasi timp, plasa dupa)..."

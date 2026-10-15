@@ -358,6 +358,9 @@ async def _handler_perioada_blocata(request: Request, exc: Exception):
     # `REGULA_CONTABILA:` — 409 (conflict cu starea evidenței), nu traceback 500
     if "REGULA_CONTABILA:" in msg:
         return _JR(status_code=409, content={"detail": msg.split("REGULA_CONTABILA:")[1].split("\n")[0].strip()})
+    # [15.10.2026, deficiența 246] ciorna altui utilizator (core/migrare_ciorne_proprii.py) — 403: nu e o stare a evidenței, e un drept
+    if "DREPT_CIORNA:" in msg:
+        return _JR(status_code=403, content={"detail": msg.split("DREPT_CIORNA:")[1].split("\n")[0].strip()})
     # [log_500_v1] traceback vizibil pt erori necunoscute inainte de re-raise
     logging.getLogger("iconta").exception("Eroare 500 la %s %s", request.method, request.url.path)
     raise exc

@@ -2,7 +2,7 @@
 # SINTEZA_POST_P2_HARDENING.txt — derivata EXACT din artefactele post-hardening.
 # Nu se scrie de mana: fiecare cifra se citeste din fisierul care a produs-o.
 set -e
-cd /home/costin/iconta_nou
+cd "$(dirname "$0")/.."   # rădăcina depozitului, din fișierul însuși (C35)
 
 M=masuratori/post_p2
 A="$M/suita_completa_POST_P2.iesire.txt"

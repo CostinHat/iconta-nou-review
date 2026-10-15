@@ -24,6 +24,8 @@ from decimal import Decimal
 import pytest
 
 from core import d406
+import os
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
 
 def _nota(nid, jurnal):
@@ -126,7 +128,7 @@ def test_pull_chiar_citeste_sursa_si_genereaza_chiar_avertizeaza():
 
 
 # ──────────────────────────────── FELURILE sunt ale NORMEI, nu ale noastre (interdicția 28)
-_CORPUS = "/home/costin/iconta_nou/anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt"
+_CORPUS = os.path.join(_RAD, "anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt")
 
 
 def test_felurile_de_jurnal_sunt_VERBATIM_din_norma():

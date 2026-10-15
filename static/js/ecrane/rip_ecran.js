@@ -36,7 +36,7 @@ export async function ecranRip(corp, nav, t) {
             <div class="pf-frand-sub">${esc(o.explicatie)} \u00b7 ${esc(o.categorie)}${o.deductibilitate ? " \u00b7 " + esc(o.deductibilitate) : ""}${o.document_numar ? " \u00b7 doc " + esc(o.document_numar) : ""} \u00b7 ${esc(o.metoda)}</div>
           </div>
           ${o.status === "ciorna" ? `<button class="buton-primar" data-val="${o.id}" data-actiune="PUT /tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza">Valideaz\u0103</button>
-          <button class="buton-secundar" data-del="${o.id}" data-actiune="DELETE /tenants/{tenant_id}/rip/operatiuni/{op_id}">\u0218terge</button>` : ""}
+          ${o.a_altuia ? `<div class="pf-frand-sub rip-a-altuia">${esc(o.a_altuia.motiv)}</div>` /* [deficiența 246] ciorna altuia: doar vedere */ : `<button class="buton-secundar" data-del="${o.id}" data-actiune="DELETE /tenants/{tenant_id}/rip/operatiuni/{op_id}">\u0218terge</button>`}` : ""}
         </div>`).join("");
 
     corp.innerHTML = `

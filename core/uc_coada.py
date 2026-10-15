@@ -21,6 +21,7 @@ from core import uc_comun as _uc_comun
 from core import db, auth_api, coada_api, supervizor
 from core.mesaje import (FARA_DREPT_VALIDARE, FARA_DREPT_DEPUNERE, FARA_DREPT_PREGATIRE)
 from core import tranzactie
+from core import drepturi as _drepturi
 
 
 #: [comanda Costin 07.10.2026, C3] Refuzurile DUK la intrarea în coadă: `cod -> (mesaj, acțiune, câmpul de trecere)`. Eroarea n-are
@@ -292,7 +293,9 @@ def coada_lista(stare, ctx):
         raise _erori.DateInvalide("stare necunoscută: %r (stările cozii: %s)"
                                 % (stare, ", ".join(coada_api.STARI)))
     with db.get_conn() as conn:
-        return {"coada": coada_api.lista_coada(conn, ctx["firm"], stare)}
+        lista = coada_api.lista_coada(conn, ctx["firm"], stare)
+        vizibile = _uc_comun._firme_vizibile(conn, ctx)   # [C26, clasa] asistentul: numai elementele firmelor alocate lui
+    return {"coada": lista if vizibile is None else [x for x in lista if x["tenant_id"] in vizibile]}
 
 
 def coada_continut(coada_id, ctx):
@@ -452,6 +455,7 @@ def coada_depune(coada_id, date, ctx):
             _own = repo_declaratii.cabinet_din_coada(_cur, coada_id)
     if _own is None or _own != ctx["firm"]:
         raise _erori.Inexistent("Element de coadă negăsit (sau alt cabinet).")
+    _schema_notei(coada_id, ctx)   # [C26, clasa] și firma elementului trebuie să fie a asistentului
     _tid = _an_d = _luna_d = _schema_d = None
     try:
         with db.get_conn() as _cp:
@@ -566,7 +570,9 @@ def _schema_notei(coada_id, ctx):
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             el = repo_declaratii.element_coada(cur, coada_id)
-    if not el or el[3] != ctx["firm"]:
+        # [C26, clasa] un asistent nu vede, nu aprobă, nu respinge și nu depune elementul unei firme care nu i-a fost alocată
+        vizibil = bool(el) and el[3] == ctx["firm"] and _uc_comun._firma_vizibila(conn, ctx, el[1])
+    if not vizibil:
         raise _erori.Inexistent("Element de coadă negăsit (sau alt cabinet).")
     return el[0], (el[2] if el[0] == "nota" else None), el
 
@@ -585,6 +591,8 @@ def jurnal_retrimite(tenant_id, nota_id, ctx, confirma=False):
     if r.get("cod") == coada_api.COD_NESCHIMBATA:   # [S3] avertisment, nu refuz: ecranul cere confirmarea
         return r
     if not r["ok"]:
+        if r.get("cod") == _drepturi.COD_CIORNA_ALTUI:   # [deficiența 246] un drept, nu o stare: 403, ca refuzul din bază
+            raise _erori.FaraDrept(r.get("mesaj"))
         raise (_erori.Inexistent if r.get("cod") == "INEXISTENT" else _erori.Conflict)(r.get("mesaj"))
     with db.get_conn() as conn:
         _uc_comun._notif_note_de_validat(conn, ctx["firm"], [r["eticheta"]], int(ctx["uid"]), tenant_id=tenant_id,

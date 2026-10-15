@@ -8,7 +8,7 @@
 #
 # Scrie la stdout; cine impacheteaza il redirecteaza unde vrea.
 set -e
-cd /home/costin/iconta_nou
+cd "$(dirname "$0")/.."   # rădăcina depozitului, din fișierul însuși (C35)
 
 POST_P2_COMMIT=$(grep -m1 '^COMMIT' masuratori/post_p2/suita_completa_POST_P2.iesire.txt \
                  | sed 's/^COMMIT    : //')

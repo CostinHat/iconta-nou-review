@@ -776,20 +776,32 @@ def test_def_56_jurnalul_nu_numara_nota_respinsa_de_validat(ana, patron, firma_e
 
 def test_def_58_ciorna_din_afara_cozii_se_trimite_la_validare(ana, patron, firma_e2e):
     """58. Coadă: ciornele de dinainte de mecanism apăreau „de validat”, dar nu erau în coadă.
-    Pașii: o ciornă care nu e în coadă (scrisă de cine validează singur — contabilul-șef, în august) -> Ana deschide Registrul
-    jurnal pe august: antetul spune „1 netrimisă la validare”, rândul are „Trimite la validare”; apasă -> nota e „la validare în
-    cabinet” și chiar e în coadă."""
+    Pașii: o ciornă a Anei care nu e în coadă (ca ciornele de dinainte de mecanism: elementul ei de coadă scos) -> Ana deschide
+    Registrul jurnal pe august: antetul spune „1 netrimisă la validare”, rândul are „Trimite la validare”; apasă -> nota e „la validare
+    în cabinet” și chiar e în coadă.
+    [15.10.2026, 246] Până la 246 proba folosea ciorna CONTABILULUI-ȘEF, trimisă de Ana. Regula 246 (comanda Costin: „Un asistent nu
+    modifică, nu șterge și nu trimite la validare notele altui utilizator; le poate doar vedea”) o interzice: o ciornă din afara cozii o
+    trimite autorul ei. Ciorna șefului din afara cozii rămâne la Ana vizibilă, numărată, fără „Trimite la validare”, cu motivul."""
     _firma_gata(firma_e2e)
     desc = "E2E 58 abonament %d" % (int(_t.time()) % 100000)
-    nid = _nota_prin_ecran(patron, firma_e2e, desc, "2026-08-20", luna=(2026, 8))
-    assert _coada_nota(firma_e2e, nid) is None
+    nid = _nota_prin_ecran(ana, firma_e2e, desc, "2026-08-20", luna=(2026, 8))
+    sql("DELETE FROM public.declaratii_coada WHERE tenant_id = %s AND fel = 'nota' AND perioada = %s",
+        (firma_e2e["tenant_id"], "nota-%d" % nid))                       # ca o ciornă de dinainte de mecanism
+    a_sefului = _nota_prin_ecran(patron, firma_e2e, desc + " sef", "2026-08-21", luna=(2026, 8))
+    assert (_coada_nota(firma_e2e, nid), _coada_nota(firma_e2e, a_sefului)) == (None, None)
     pg = ana.pg
     _jurnal(ana, firma_e2e, (2026, 8))
     antet = pg.inner_text(".fereastra p.pf-intro")
     rand = pg.locator(".pf-frand[data-nota-id='%d']" % nid)
+    al_sefului = pg.locator(".pf-frand[data-nota-id='%d']" % a_sefului)
     ana.captura("inainte")
-    assert "1 netrimisă la validare" in antet and "de validat" not in antet, antet
+    assert "2 netrimise la validare" in antet and "de validat" not in antet, antet
+    assert (al_sefului.locator("[data-retrimite]").count(), al_sefului.locator(".jn-a-altuia").count()) == (0, 1)
     rand.locator("[data-retrimite]").click()
+    pg.wait_for_function("() => document.querySelector('#caseta-atentie-activa #ca-ok') || ((document.querySelector('.fereastra "
+                         "p.pf-intro') || {}).innerText || '').includes('la validare în cabinet')", timeout=20000)
+    if pg.query_selector("#caseta-atentie-activa #ca-ok"):   # retrimisă neschimbată: aplicația cere confirmarea explicită
+        pg.click("#caseta-atentie-activa #ca-ok")
     pg.wait_for_function("() => ((document.querySelector('.fereastra p.pf-intro') || {}).innerText || '').includes('la validare în cabinet')",
                          timeout=20000)
     ana.captura("dupa")

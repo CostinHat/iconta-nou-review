@@ -5,10 +5,11 @@ import os
 from playwright.sync_api import sync_playwright
 from w_auth import INIT, BAZA
 from nav_ecrane import ECRANE
+_RAD = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # rădăcina depozitului, din fișierul însuși (C35)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 AXE = open(os.path.join(HERE, "axe.min.js"), encoding="utf-8").read()
-OUT = os.path.expanduser("~/iconta_nou/frontend_test")
+OUT = os.path.join(_RAD, "frontend_test")
 RUN = """async () => {
   const r = await axe.run(document, {runOnly:{type:'rule',values:['region','landmark-unique','landmark-one-main','landmark-complementary-is-top-level','landmark-no-duplicate-banner','landmark-banner-is-top-level']}, resultTypes:['violations']});
   return r.violations.map(v => ({id:v.id, n:v.nodes.length, targets:v.nodes.slice(0,8).map(nd=>nd.target.join(' '))}));

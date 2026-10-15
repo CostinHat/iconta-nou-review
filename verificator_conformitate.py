@@ -3,8 +3,9 @@
 # v2 adauga: BANI (sume afisate fara formator), SPATIERE (Total0,00), MENIURI (dialecte),
 # CULORI_HARDCODATE (stiluri inline in afara tokenilor), ETICHETE (campuri doar cu placeholder)
 import re, os
+_RAD = os.path.dirname(os.path.abspath(__file__))   # rădăcina depozitului, din fișierul însuși (C35)
 
-BAZA = os.path.expanduser("~/iconta_nou/static/js/ecrane")
+BAZA = os.path.join(_RAD, "static/js/ecrane")
 
 CUVINTE = ["inca", "raspuns", "adauga", "sterge", "stergi", "cauta", "fara",
            "numar", "incarca", "gaseste", "banca", "plata", "pastreaza",
@@ -27,7 +28,7 @@ fisiere = {}
 # [ds_frontend_integral_v1] verificatorul acopera TOT frontendul, nu doar ecrane/: static/js/*.js
 # (app.js/navigator.js/sesiune.js/api.js) intra sub aceleasi reguli DS. api.js = SURSA canonica
 # (esc/ICOANE/paleta culori) -> exceptata la regulile de registru (redef-esc/strip-html/icoane/culoare_card_hex).
-_DIRS_FRONTEND = [BAZA, os.path.expanduser("~/iconta_nou/static/js")]
+_DIRS_FRONTEND = [BAZA, os.path.join(_RAD, "static/js")]
 for _d in _DIRS_FRONTEND:
     for f in sorted(os.listdir(_d)):
         if f.endswith(".js") and ".bak" not in f and f not in fisiere:
@@ -301,7 +302,7 @@ RE_DATA_DISP  = re.compile(r'\.strftime\(\s*["\']%d[./]')          # strftime("%
 RE_FORMATATOR = re.compile(r'\b(bani|data_ro|_lei|_dmy|_data_ro|_f|_q)\s*\(')  # deja canonic/local-ok
 PY_EXCEPT_FILE = {"etransport_send.py", "d406.py", "export_winmentor.py",
                   "pdf_util.py", "verificator_conformitate.py"}
-BAZA_PY = os.path.expanduser("~/iconta_nou")
+BAZA_PY = _RAD
 for pdir in (os.path.join(BAZA_PY, "core"), BAZA_PY):
     for f in sorted(os.listdir(pdir)):
         cale = os.path.join(pdir, f)
@@ -357,7 +358,7 @@ for nume, t in fisiere.items():
 # Grupam pe calea REZOLVATA relativ la fisierul care importa (nu pe basename — doua fisiere omonime din
 # directoare diferite pot avea legitim versiuni proprii). Un modul cu >1 token distinct de versiune = eroare.
 RE_IMPORT_JS = re.compile(r'''(?:from|import\()\s*["']([^"']+\.js(?:\?[^"']*)?)["']''')
-BAZA_JS = os.path.expanduser("~/iconta_nou/static/js")
+BAZA_JS = os.path.join(_RAD, "static/js")
 _imp = {}  # cale_rezolvata -> list de (fisier_relativ, linie, token_versiune)
 for rad, _dirs, _fis in os.walk(BAZA_JS):
     for f in sorted(_fis):
@@ -543,7 +544,7 @@ def _brand_flag(rel, i, text):
     if RE_BRAND_DBL.search(text):
         rap["brand_eu"].append((rel, i, ".eu.eu", s[:60]))
 
-_BRAND_STATIC = os.path.expanduser("~/iconta_nou/static")
+_BRAND_STATIC = os.path.join(_RAD, "static")
 for _rad, _d, _fis in os.walk(_BRAND_STATIC):  # frontend: js/mjs/html
     for _f in sorted(_fis):
         if not _f.endswith((".js", ".mjs", ".html")) or ".bak" in _f:
@@ -1678,7 +1679,7 @@ for _fis, _txt in sorted(fisiere.items()):
 _RX_SEMAFOR_TEXT = re.compile(r"(?<![-\w])color\s*:\s*(?:var\(--galben\)|var\(--gri-semafor\)|var\(--gri-clar\)|#c9961f|#9aa3b2|#8a929e|\$\{CUL\.(?:galben|gri)\})", re.I)
 rap["culoare_semafor_text"] = []
 _surse_css = dict(fisiere)
-with open(os.path.expanduser("~/iconta_nou/static/stil.css"), encoding="utf-8") as _h:
+with open(os.path.join(_RAD, "static/stil.css"), encoding="utf-8") as _h:
     _surse_css["stil.css"] = _h.read()
 for _fis, _txt in sorted(_surse_css.items()):
     for _i, _ln in enumerate(_txt.split("\n"), 1):

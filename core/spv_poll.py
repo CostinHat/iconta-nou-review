@@ -32,10 +32,11 @@ from datetime import datetime, timezone, timedelta
 from core import db
 from core import spv_conector
 from core import efactura_send as efs
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
 INTERVAL_SEC = float(os.environ.get("SPV_POLL_INTERVAL_SEC", "1.0"))       # intre randuri (rata-friendly)
 PRAG_INVESTIGATIE_ZILE = int(os.environ.get("SPV_POLL_PRAG_ZILE", "2"))    # conservator; de confirmat la sursa
-ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.expanduser("~/iconta_nou/efactura_zip"))
+ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.join(_RAD, "efactura_zip"))
 
 
 # ---- DECIZIE PURA (unit-testabila, fara DB/retea) ----

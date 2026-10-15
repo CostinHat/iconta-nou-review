@@ -25,9 +25,12 @@ tipareste si se iese TOT cu cod 1. Un canal de alertare care inghite eroarea pe 
 trebuia s-o semnaleze ar fi aceeasi clasa de bug ca `except: pass`.
 """
 import datetime
+import os
 import sys
 import time
 import traceback
+
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
 MODUL = "cron"
 
@@ -117,6 +120,8 @@ RITMURI = {
     "spv_refresh":         50,    # timer spv-refresh, zilnic 03:30
     # [14.10.2026, comanda Costin pct.5] backup-ul local al bazei, verificat zilnic la 04:30 (core/backup_verificare.py)
     "backup_verificare":   50,
+    # [15.10.2026, decizia Costin pct.4] proba de restaurare a backup-ului de noapte, zilnic 05:00 (core/proba_restaurare_noapte.py)
+    "proba_restaurare_noapte": 50,
 }
 
 # Ce NU se supravegheaza aici, si de ce - ca absenta sa fie declarata, nu tacuta:
@@ -320,7 +325,7 @@ def _main_verificare():
                             "Joburi de fundal care nu au mai rulat",
                             "Urmatoarele joburi n-au mai raportat o rulare reusita:\n\n%s\n\n"
                             "Verifica: crontab -l, systemctl status cron, "
-                            "si logurile din ~/iconta_nou/*.log" % corp)
+                            "si logurile din %s/*.log" % (corp, _RAD))
     except Exception as e:
         print("%s ALERTA NETRIMISA: %s" % (marca, e), flush=True)
     return len(intarziate)

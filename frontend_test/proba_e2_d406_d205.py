@@ -40,9 +40,10 @@ import os
 import re
 import sys
 from decimal import Decimal
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou/frontend_test")
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, os.path.join(_RAD, "frontend_test"))
+sys.path.insert(0, _RAD)
 
 import e2_util as U  # noqa: E402
 
@@ -51,7 +52,7 @@ FIRMA_205 = "ALFA MICRO SRL"
 EMAIL_205 = "fir-intrare@prisma-cont.test"      # cabinetul 4163, caruia ii e atribuita firma
 AN, TRIM, LUNA = 2026, 3, 9
 MARCA = "PROBA-E2-E"
-OUT = "/home/costin/iconta_nou/frontend_test/proba_e2_d406_d205.json"
+OUT = os.path.join(_RAD, "frontend_test/proba_e2_d406_d205.json")
 
 DIVIDEND = Decimal("10000")     # 121 = 457 (distribuire), apoi 457 = 5121 (plata)
 _ATR = re.compile(r'(\w+)="([^"]*)"')

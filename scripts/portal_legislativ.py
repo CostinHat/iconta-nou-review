@@ -17,11 +17,12 @@ import re
 import sys
 import urllib.parse
 import urllib.request
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
 UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
       "Chrome/126.0 Safari/537.36")
 BAZA = "https://legislatie.just.ro"
-DIR = os.path.expanduser("~/iconta_nou/anaf_surse")
+DIR = os.path.join(_RAD, "anaf_surse")
 
 cj = http.cookiejar.CookieJar()
 op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))

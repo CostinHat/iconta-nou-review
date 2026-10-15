@@ -1273,6 +1273,12 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
             # le refuză”] ciorna derivată dintr-un document spune ecranului ce n-o să meargă — aceeași regulă ca refuzul
             # (`jurnal_api.editeaza` / `sterge`, `note_derivate`), nu o listă a ecranului
             from core import note_derivate as _nd
+            from core import drepturi as _drepturi
+            # [deficiența 246] ciorna ALTUI utilizator, pentru un asistent: o vede, nu o schimbă — aceeași funcție ca refuzul din bază
+            # (`ciorna_altui`, core/migrare_ciorne_proprii.py), cu utilizatorul din ctx (la o citire nu e scris pe conexiune)
+            for _nid, _autor in repo_contabilitate.ciorne_altui(cur, schema, [i for i, n in note.items() if n["status"] != "validata"],
+                                                               ctx["uid"]):
+                note[_nid]["a_altuia"] = _drepturi.ciorna_altuia(_nid, _autor)
             for _nid, _n in note.items():
                 if _n["status"] == "ciorna":
                     _doc = _nd.documentul_sursa(cur, schema, _nid)
@@ -2264,8 +2270,16 @@ def rip_lista(tenant_id, an, luna, status, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/rip/registru`; docstringul ei a ramas in stratul HTTP."""
     _uc_comun._cere_perioada(an, luna)
     from core import rip_api as _r
+    from core import drepturi as _drepturi
     with db.get_conn() as conn:
-        return _r.lista(conn, _uc_comun._rip_ctx(conn, ctx, tenant_id), an, luna, status)
+        schema = _uc_comun._rip_ctx(conn, ctx, tenant_id)
+        reg = _r.lista(conn, schema, an, luna, status)
+        # [deficiența 246] ciorna altui utilizator, pentru un asistent: o vede, n-o șterge — aceeași regulă ca refuzul din bază
+        alt = dict(_r.ciorne_altui(conn, schema, [o["id"] for o in reg["operatiuni"] if o["status"] == "ciorna"], ctx["uid"]))
+        for o in reg["operatiuni"]:
+            if o["id"] in alt:
+                o["a_altuia"] = _drepturi.ciorna_altuia(o["id"], alt[o["id"]], rip=True)
+        return reg
 
 
 def rip_adauga(tenant_id, corp, ctx):

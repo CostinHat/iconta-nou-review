@@ -36,16 +36,18 @@ test_d406_amortizare.py`, cu golden pe fiecare metodă) — aici se probează c�
 import json
 import re
 import sys
+import os
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou/frontend_test")
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, os.path.join(_RAD, "frontend_test"))
+sys.path.insert(0, _RAD)
 
 import e2_util as U  # noqa: E402
 
 FIRMA = "Comert Micro TVA SRL"
 AN, LUNA, TRIM = 2026, 9, 3
 MARCA = "PROBA-E2-I"
-OUT = "/home/costin/iconta_nou/frontend_test/proba_e2_lot_i_d406.json"
+OUT = os.path.join(_RAD, "frontend_test/proba_e2_lot_i_d406.json")
 VALOARE_MF = 3000
 
 

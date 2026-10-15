@@ -13,8 +13,9 @@ import re
 import sys
 import urllib.error
 import urllib.request
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, _RAD)
 
 from core import auth_api, db  # noqa: E402
 

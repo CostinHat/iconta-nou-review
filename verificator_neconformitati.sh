@@ -32,8 +32,8 @@
 # Plus ANCORA MOARTA: un marker scos de o rescriere legitima nu e neconformitate, e o verificare
 # care si-a pierdut obiectul. Se raporteaza NEVERIF, cu motivul — nu FAIL pe vecie.
 
-E=~/iconta_nou/static/js/ecrane
-RAD=~/iconta_nou
+RAD=$(cd "$(dirname "$0")" && pwd)   # rădăcina depozitului, din fișierul însuși (C35)
+E=$RAD/static/js/ecrane
 ok=0; fail=0; neverif=0
 
 pass()    { echo "PASS     $1  $2"; ok=$((ok+1)); }

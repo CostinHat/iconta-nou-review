@@ -24,8 +24,27 @@ următoare, nu la următoarea autentificare.
 """
 from __future__ import annotations
 
+from core import afirmatii as _af
 from core import erori as _erori
 from core.mesaje import FARA_ACCES_TENANT
+
+#: [15.10.2026, deficiența 246] textul refuzului „ciorna altui utilizator” — ACELAȘI cu cel din bază (`DREPT_CIORNA:`,
+#: core/migrare_ciorne_proprii.py; paritatea o păzește core/test_ciorne_proprii.py): jurnalul îl arată înainte de apăsare, coada îl dă
+#: la trimiterea la validare (care nu atinge nota, deci nu trece prin trigger).
+MESAJ_CIORNA_ALTUI = ("Nota #%s e ciorna lui %s: o poți vedea, dar n-o modifici, n-o ștergi și n-o trimiți la validare. Dacă trebuie "
+                      "schimbată, spune-i lui %s sau administratorului cabinetului.")
+COD_CIORNA_ALTUI = "CIORNA_ALTUI"
+#: Același refuz pe registrul de încasări și plăți (`rip_operatiuni.creat_de`; triggerul `regula_rip_ciorna_proprie`).
+MESAJ_RIP_ALTUI = ("Operațiunea #%s din registrul de încasări și plăți e ciorna lui %s: o poți vedea, dar n-o modifici și n-o ștergi. "
+                   "Dacă trebuie schimbată, spune-i lui %s sau administratorului cabinetului.")
+REGULA_CIORNA_ALTUI = "Un asistent își modifică, își șterge și își trimite la validare numai ciornele lui; pe ale altora le vede."
+
+
+def ciorna_altuia(nr, autor, rip=False):
+    """[deficiența 246] Afirmația „ciorna e a altuia” pe care o arată ecranul (jurnal / registrul de încasări și plăți), cu textul
+    refuzului din bază (`ciorna_altui`, core/migrare_ciorne_proprii.py)."""
+    return _af.afirmatie("neconformitate", "ciorna_altuia", (MESAJ_RIP_ALTUI if rip else MESAJ_CIORNA_ALTUI) % (nr, autor, autor),
+                         unde=("operațiunea #%s" if rip else "nota #%s") % nr, regula=REGULA_CIORNA_ALTUI, autor=autor)
 
 PREGATI = "poate_pregati"
 VALIDA = "poate_valida"

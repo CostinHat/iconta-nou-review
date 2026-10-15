@@ -33,6 +33,8 @@ Ea rămâne — apare în corpul pachetului ca nume, nu ca destinație, iar înt
 scriere se măsoară separat.
 """
 import sys
+import os
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
 DDL = "ALTER TABLE %s.firma_profil DROP COLUMN IF EXISTS patron_email;"
 
@@ -50,7 +52,7 @@ def aplica(conn, schema):
 
 
 def main():
-    sys.path.insert(0, "/home/costin/iconta_nou")
+    sys.path.insert(0, _RAD)
     from core import db
     db.init_pool()
     with db.get_conn() as conn:

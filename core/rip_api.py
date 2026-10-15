@@ -85,6 +85,18 @@ def _valideaza(op):
     return None
 
 
+def ciorne_altui(conn, schema, op_ids, uid):
+    """[deficiența 246] [(op_id, autorul)] — ciornele dintre `op_ids` care, pentru `uid`, sunt ale ALTUI utilizator (regula unică
+    `ciorna_altui` din bază, core/migrare_ciorne_proprii.py)."""
+    if not op_ids:
+        return []
+    with conn.cursor() as cur:
+        cur.execute(f"""SELECT id, {schema}.ciorna_altui(creat_de, %s) FROM {schema}.rip_operatiuni
+                        WHERE id = ANY(%s) AND status = 'ciorna' AND {schema}.ciorna_altui(creat_de, %s) IS NOT NULL""",
+                    (uid, list(op_ids), uid))
+        return [(r[0], r[1]) for r in cur.fetchall()]
+
+
 def lista(conn, schema, an, luna=None, status=None):
     where, params = ["EXTRACT(YEAR FROM data_operatiune)=%s"], [an]
     if luna:

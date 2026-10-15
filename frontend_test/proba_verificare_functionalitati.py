@@ -30,8 +30,9 @@ import os
 import sys
 import urllib.error
 import urllib.request
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, _RAD)
 
 #: Portul se poate schimba din mediu: reprobarea de dupa o reparatie ruleaza pe o instanta
 #: proaspata (`--port 8011`), fiindca procesul de productie tine codul VECHI pana la repornire.

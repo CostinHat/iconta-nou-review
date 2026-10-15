@@ -35,16 +35,18 @@ import hashlib
 import json
 import re
 import sys
+import os
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou/frontend_test")
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, os.path.join(_RAD, "frontend_test"))
+sys.path.insert(0, _RAD)
 
 import e2_util as U  # noqa: E402
 
 FIRMA = "Panificatie Salarii Speciale SRL"
 AN, LUNA = 2026, 8
 MARCA = "PROBA-E2-H"
-OUT = "/home/costin/iconta_nou/frontend_test/proba_e2_lot_h_d112.json"
+OUT = os.path.join(_RAD, "frontend_test/proba_e2_lot_h_d112.json")
 BRUT = 5000
 
 _ATR = re.compile(r'(\w+)="([^"]*)"')

@@ -534,6 +534,18 @@ CLASIFICARE = {
             "alertelor e idempotenta pe `(sursa, titlu)`, deci o rulare intrerupta se reia fara "
             "sa dubleze nimic.",
     },
+    "core/proba_restaurare_noapte.py::__main__ -> proba()": {
+        "clasa": NECRITIC,
+        "efecte": "baza de proba (CREATE / restaurare / DROP, alta baza decat productia) <-> amprenta productiei (citire "
+                  "REPEATABLE READ, read-only) <-> bataia de heartbeat sau alerta de esec",
+        "de_ce":
+            "[15.10.2026, decizia Costin pct.4: proba de restaurare in fiecare noapte] Nicio scriere in baza productiei in afara "
+            "bataii de heartbeat (`cron.bate`, tranzactia ei, dupa reusita). Tot restul se scrie in `iconta_proba_restaurare`, o "
+            "baza SEPARATA, stearsa in `finally` si verificata absenta — inclusiv la esec; o rulare intrerupta lasa cel mult baza "
+            "de proba, pe care rularea urmatoare o refuza vizibil (nu o suprascrie). Alerta pleaca numai la esec si NU are "
+            "pereche in baza: o alerta trimisa fara bataie e exact semnalul cerut. Semnele C1–C6 vin din apelurile psql / "
+            "pg_restore si din cele doua conexiuni (productie read-only, baza de proba).",
+    },
     "core/firma_rezumat.py::__main__ -> main()": {
         "clasa": NECRITIC,
         "efecte": "recalcularea modelului de citire, lot cu lot <-> bataia de heartbeat",

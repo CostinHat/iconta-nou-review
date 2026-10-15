@@ -16,8 +16,10 @@ rand spune de ce nu putea fi acolo:
 Ce NU se sterge, si se spune: nimic altceva. Daca vreun numar ramane mutat, se scrie in raport.
 """
 import sys
+import os
+_RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
-sys.path.insert(0, "/home/costin/iconta_nou")
+sys.path.insert(0, _RAD)
 from core import db  # noqa: E402
 
 SEMNATURA = "«»@#$%"
