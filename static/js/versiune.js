@@ -54,6 +54,46 @@ async function citeste() {
 // Gard: `core/test_versiune_referinta.py` + proba de browser `frontend_test/proba_versiune_la_incarcare.py`.
 const laIncarcare = citeste().catch(() => null);
 
+const CHEIE_ACTUALIZAT = "iconta_actualizat_la_versiune";
+const ID_ACTUALIZAT = "versiune-actualizata";
+
+/** [256] Pe pagina principală (navigatorul: nicio fereastră deschisă)? */
+function peAcasa() {
+  return typeof window._navPeAcasa === "function" && window._navPeAcasa();
+}
+
+/** [256] Reîncărcare făcută DE APLICAȚIE, ca să ruleze versiunea nouă; după ea, bara spune ce s-a întâmplat. */
+function reincarcaActualizat() {
+  try { sessionStorage.setItem(CHEIE_ACTUALIZAT, "1"); } catch { /* fără stocare: reîncărcarea tot se face, numai fără mesaj */ }
+  window.location.reload();
+}
+
+/** [256] La întoarcerea pe pagina principală: versiunea nouă, dacă e știută (și nimic început); altfel o verificare acum. */
+export function laAcasa() {
+  if (gasita && !formularInceput()) { reincarcaActualizat(); return; }
+  verifica();
+}
+
+/** [256] Deschiderea unui ecran de pe pagina principală, cu versiunea nouă știută: întâi versiunea nouă. `true` = s-a reîncărcat. */
+export function reincarcaInLocDeDeschidere() {
+  if (gasita && !formularInceput()) { reincarcaActualizat(); return true; }
+  return false;
+}
+
+/** [256] După o reîncărcare a aplicației: un rând în bara de stare, „s-a actualizat”. Se cheamă la fiecare randare a cojii. */
+export function aseazaActualizat() {
+  let era = false;
+  try { era = sessionStorage.getItem(CHEIE_ACTUALIZAT) === "1"; } catch { /* fără stocare: fără mesaj */ }
+  if (!era) return false;
+  const n = document.createElement("span");
+  n.className = "versiune-noua-text";
+  n.id = "versiune-actualizata";
+  n.textContent = "Aplicația s-a actualizat la versiunea nouă.";
+  const pus = coaja.pune(coaja.LOCURI.BARA_DE_STARE, ID_ACTUALIZAT, n);
+  if (pus) { try { sessionStorage.removeItem(CHEIE_ACTUALIZAT); } catch { /* idem */ } }
+  return pus;
+}
+
 /** Există un formular început (navigatorul ține minte ce s-a tastat)? Atunci NIMIC nu reîncarcă pagina. */
 function formularInceput() {
   return typeof window._navAreModificari === "function" && window._navAreModificari();
@@ -89,6 +129,7 @@ function nodAnunt() {
  */
 export function aseaza() {
   if (!gasita) return false;
+  coaja.scoate(coaja.LOCURI.BARA_DE_STARE, ID_ACTUALIZAT);   // [256] „s-a actualizat” nu mai e adevărat: există una și mai nouă
   return coaja.pune(coaja.LOCURI.BARA_DE_STARE, ID_ANUNT, nodAnunt());
 }
 
@@ -116,7 +157,10 @@ async function verifica(laAutentificare = false) {
     // [PIVOT față de R129, decizia Costin 07.10.2026] „Reîncărcare automată la autentificare: DA, numai când nu există formular
     // început. Cu formular început rămâne anunțul.” La autentificare nu există încă nimic de pierdut; codul vechi din filă, da
     // (a patra pierdere a facturii, 06.10: retestul a rulat pe un cod care nu mai era pe server). DECIZII 07.10.2026.
-    if (laAutentificare && !formularInceput()) { window.location.reload(); return; }
+    // [15.10.2026, deficiența 256, PIVOT față de R129 — DECIZII „Lotul 4”] „Pagina principală și ecranele se încarcă în versiunea
+    // nouă fără reîncărcare forțată.” Pe pagina principală (nicio fereastră deschisă) nu există nimic de pierdut: reîncărcare
+    // automată, ca la autentificare — tot numai fără formular început.
+    if ((laAutentificare || peAcasa()) && !formularInceput()) { reincarcaActualizat(); return; }
     aseaza();
   }
 }

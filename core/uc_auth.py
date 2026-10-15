@@ -25,6 +25,9 @@ def login(date):
         r = auth_api.login(conn, date.email, date.parola)
     if not r["ok"]:
         _uc_comun._login_esec(_email)
+        if _asteapta_confirmare(_email, date.parola):
+            from core import inregistrare_libera as _il
+            raise _erori.Neautentificat(_il.MESAJ_NECONFIRMAT)
         raise _erori.Neautentificat(r["mesaj"])
     _uc_comun._login_reset(_email)
     # [beta_gate_v1 SCOS 14.08] poarta "Site in lucru" eliminata - acces liber (decizie Costin).
@@ -35,6 +38,20 @@ def login(date):
     except Exception as _e:
         _obs.esec_secundar("audit_log login", _e)  # inghitit, dar nu tacut (27.07.2026)
     return {"token": r["token"], "user": r["user"]}
+
+
+def _asteapta_confirmare(email, parola):
+    """[15.10.2026, lotul 4] Login eșuat: e o înregistrare liberă neconfirmată, cu aceeași parolă? (numai atunci se spune)."""
+    from core import inregistrare_libera as _il
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                rez = _il.asteapta_confirmare(cur, email, parola)
+            conn.rollback()
+        return bool(rez)
+    except Exception as _e:
+        _obs.esec_secundar("login: cererea de inregistrare in asteptare", _e)
+        return False
 
 
 # [comanda Costin 05.10.2026 pct.1a] „un contabil nu pierde niciodată ce a completat — nici la expirarea sesiunii”. Măsurat:
@@ -59,23 +76,41 @@ def reinnoieste(ctx):
     return {"token": s["token"], "user": s["user"]}
 
 
-def register(date):
-    """[P7 · use-case] Corpul rutei `/auth/register`; docstringul ei a ramas in stratul HTTP."""
+def _valideaza_formularul(date):
+    """Verificările comune ale formularului (bifa termenilor, parola, emailul) + versiunea termenilor, ÎNAINTEA oricărei scrieri."""
     if not date.accept_termeni:  # [termeni_v1] fara bifa -> contul NU se creeaza (gard pe backend, nu doar JS)
         raise _erori.CerereGresita("Trebuie să accepți Termenii și condițiile pentru a crea contul.")
     if not _nucleu.parola_ok(date.parola):  # [parola_min_v1] aceeasi cerinta ca activare/reset/schimbare
         raise _erori.CerereGresita(_nucleu.PAROLA_MESAJ)
     if not _uc_comun._email_valid(date.email):  # [email_valid_v1] email obligatoriu + format valid
         raise _erori.CerereGresita(EMAIL_INVALID)
+    if not str(date.nume_cabinet or "").strip():
+        raise _erori.CerereGresita("Completează denumirea cabinetului.")
     # [P4, 09.09.2026] Versiunea termenilor se citește ÎNAINTE de tranzacție. Un fișier care
     # lipsește trebuie să oprească înregistrarea înainte de orice scriere — nu să lase în urmă un
     # cont fără dovada acordului.
     try:
-        _versiune_termeni = _uc_comun._termeni_versiune(open(_uc_comun._TERMENI_PATH, encoding="utf-8").read())
-    except OSError as _e:
+        return _uc_comun._termeni_versiune(open(_uc_comun._TERMENI_PATH, encoding="utf-8").read())
+    except OSError:
         raise _erori.ServiciuIndisponibil("Termenii și condițiile nu se pot citi acum, deci acordul tău "
                                  "nu s-ar putea consemna. Contul nu a fost creat. Încearcă din "
                                  "nou peste câteva minute.")
+
+
+def register(date, ip=None):
+    """[P7 · use-case] Corpul rutei `/auth/register`; docstringul ei a ramas in stratul HTTP.
+
+    [15.10.2026, „Lotul 4”, verbatim în DECIZII] DOUĂ CĂI. Cu INVITAȚIE (lotul 2, „a doua cale, pentru cabinetele pe care le aduc
+    eu”): contul se creează pe loc — linkul a ajuns la emailul invitat, deci emailul e dovedit. FĂRĂ invitație: numai dacă
+    înregistrarea e liberă (comutatorul din Panou Admin, `setari_platforma`) și emailul poate pleca; atunci formularul devine o CERERE
+    ÎN AȘTEPTARE (`inregistrare_libera`) și pleacă linkul de confirmare — contul, acordul și firma apar abia la clic."""
+    _versiune_termeni = _valideaza_formularul(date)
+    if str(getattr(date, "invitatie", "") or "").strip():
+        return _register_cu_invitatie(date, _versiune_termeni)
+    return _register_liber(date, _versiune_termeni, ip)
+
+
+def _register_cu_invitatie(date, _versiune_termeni):
     # [P4] CONTUL ȘI DOVADA ACORDULUI, ÎN ACEEAȘI TRANZACȚIE.
     #
     # Ce era până azi: contul se crea într-o tranzacție, iar `acord_termeni` — dovada
@@ -83,12 +118,10 @@ def register(date):
     # TIPĂREA la eșec. Ruta refuză din prima linie o înregistrare fără bifă; dar dovada bifei
     # putea lipsi în tăcere, iar contul rămânea. *Fără bifă contul nu se creează — deci nici
     # fără dovada ei.*
-    # [14.10.2026, comanda Costin pct.3, verbatim în DECIZII „Lotul 2”] „Înregistrarea liberă se închide: în pilot, conturile noi se
-    # creează numai prin invitație.” Invitația se verifică ÎNAINTE de orice scriere (fără ea, nicio urmă), iar consumarea ei stă în
-    # ACEEAȘI tranzacție cu contul: un cont fără invitația lui consumată nu există, și nici o invitație consumată fără cont.
+    # [14.10.2026, comanda Costin pct.3, verbatim în DECIZII „Lotul 2”] Invitația se verifică ÎNAINTE de orice scriere (fără ea,
+    # nicio urmă), iar consumarea ei stă în ACEEAȘI tranzacție cu contul: un cont fără invitația lui consumată nu există, și nici o
+    # invitație consumată fără cont.
     from core import invitatii as _inv
-    if not str(getattr(date, "invitatie", "") or "").strip():
-        raise _erori.FaraDrept(_inv.MESAJ_FARA_INVITATIE)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             _s = _inv.stare(cur, date.invitatie)
@@ -105,45 +138,154 @@ def register(date):
                 _inv.consuma(cur, date.invitatie, date.email, r.get("firm_id"))
     if not r["ok"]:
         raise _erori.CerereGresita(r["mesaj"])
+    return _dupa_cont_nou(r, date.nume_cabinet, date.email.strip().lower(), date.cui, "invitație")
+
+
+def _register_liber(date, _versiune_termeni, ip):
+    import os
+    from core import inregistrare_libera as _il, setari_platforma as _set, stare_partajata as _sp
+    email = date.email.strip().lower()
+    # câmpul-capcană: completat numai de un robot -> răspunsul de reușită, fără nicio scriere și fără email
+    if str(getattr(date, "site_web", "") or "").strip():
+        print("[inregistrare] capcana completata, ip=%s" % ip, flush=True)
+        return {"confirmare_trimisa": True, "email": email, "valabila_ore": _il.VALABILITATE_ORE}
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            stare = _set.inregistrare_libera(cur)
+        conn.rollback()
+    if not stare["deschisa"]:
+        if stare["mod"] != _set.LIBERA:
+            raise _erori.FaraDrept(stare["refuz"]["motiv"])
+        raise _erori.ServiciuIndisponibil(stare["refuz"]["motiv"])
+    # limitele pe oră se numără ÎNAINTEA jetonului: și încercările cu formular greșit consumă din ele
+    with db.get_conn() as conn:
+        pe_ip = _sp.ritm_incape(conn, "inregistrare_ip", ip or "?", maxreq=_il.LIMITA_IP, fereastra_sec=_il.FEREASTRA_SEC)
+        pe_email = pe_ip and _sp.ritm_incape(conn, "inregistrare_email", email, maxreq=_il.LIMITA_EMAIL, fereastra_sec=_il.FEREASTRA_SEC)
+        conn.commit()
+    if not (pe_ip and pe_email):
+        raise _erori.PreaDes(_il.MESAJ_PREA_DES)
+    motiv = _il.verifica_formular(getattr(date, "formular", None))
+    if motiv:
+        raise _erori.CerereGresita(motiv)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            if repo_utilizatori.contul_dupa_email(cur, email):
+                raise _erori.Conflict("Există deja un cont cu emailul %s. Intră în cont (sau folosește „Am uitat parola”)." % email)
+            tok = _il.creeaza(cur, {"email": email, "nume_cabinet": date.nume_cabinet.strip(), "nume": date.nume, "prenume": date.prenume,
+                                    "cui": (date.cui or "").strip()}, _nucleu.hash_parola(date.parola), _versiune_termeni, ip)
+        conn.commit()
+    link = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010") + "/#confirmare=" + tok
+    html = ("<p>Bună,</p><p>Ai cerut crearea contului cabinetului <b>%s</b> pe iConta.eu.</p>"
+            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;"
+            "text-decoration:none'>Confirmă emailul și activează contul</a></p><p>Linkul e valabil %d de ore și se folosește o "
+            "singură dată. Până la confirmare contul nu există: nu te poți autentifica și nu se creează nicio firmă.</p>"
+            "<p>Dacă nu tu ai cerut contul, ignoră acest email — fără clic nu se creează nimic.</p>") % (
+                _esc(date.nume_cabinet.strip()), link, _il.VALABILITATE_ORE)
+    if not _obs.trimite_email_html_sau_semnaleaza("email confirmare inregistrare", email, "Confirmă contul iConta.eu", html,
+                                                  alerta=True):
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                _il.sterge(cur, tok)
+            conn.commit()
+        raise _erori.ServiciuIndisponibil("Emailul de confirmare nu a putut fi trimis la %s, deci contul nu a fost creat. Verifică "
+                                          "adresa și încearcă din nou peste câteva minute." % email)
+    return {"confirmare_trimisa": True, "email": email, "valabila_ore": _il.VALABILITATE_ORE}
+
+
+def _esc(t):
+    import html as _h
+    return _h.escape(str(t or ""), quote=True)
+
+
+def confirma_inregistrarea(token, ip=None):
+    """Corpul rutei `POST /public/confirma-inregistrare`: clicul pe linkul din email. ÎNTR-O SINGURĂ TRANZACȚIE: cererea (blocată),
+    contul, dovada acordului termenilor (versiunea de la formular) și folosirea cererii — un cont fără cererea lui folosită nu există,
+    și nici o cerere folosită fără cont. Apoi, ca la orice cont nou: bun venit, anunțul către superadmin, firma din CUI."""
+    from core import inregistrare_libera as _il, stare_partajata as _sp
+    with db.get_conn() as conn:
+        incape = _sp.ritm_incape(conn, "confirmare_ip", ip or "?", maxreq=_il.LIMITA_CONFIRMARE_IP, fereastra_sec=_il.FEREASTRA_SEC)
+        conn.commit()
+    if not incape:
+        raise _erori.PreaDes("Prea multe confirmări în ultima oră de la această adresă. Încearcă din nou peste o oră.")
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            s = _il.ia_pentru_confirmare(cur, token)
+            if not s["valida"]:
+                conn.rollback()
+                raise _erori.FaraDrept(s["refuz"]["motiv"])
+            c = s["cerere"]
+            if repo_utilizatori.contul_dupa_email(cur, c["email"]):
+                conn.rollback()
+                raise _erori.Conflict("Există deja un cont cu emailul %s. Intră în cont." % c["email"])
+        r = auth_api.inregistreaza_cabinet(conn, c["email"], None, c["nume_cabinet"], nume=c["nume"], prenume=c["prenume"],
+                                           parola_hash=c["parola_hash"])
+        if not r["ok"]:
+            conn.rollback()
+            raise _erori.CerereGresita(r["mesaj"])
+        with conn.cursor() as cur:
+            repo_utilizatori.scrie_acordul_termenilor(cur, r["user_id"], r["firm_id"], c["email"], c["termeni_versiune"])
+            _il.marcheaza_confirmata(cur, c["id"], r["firm_id"])
+    raspuns = _dupa_cont_nou(r, c["nume_cabinet"], c["email"], c["cui"], "înregistrare liberă")
+    raspuns.update({"ok": True, "email": c["email"], "nume_cabinet": c["nume_cabinet"]})
+    return raspuns
+
+
+def _anunta_cabinet_nou(nume_cabinet, email, cale):
+    """[15.10.2026, „Lotul 4” pct.4: „La fiecare cabinet nou confirmat primesc un email de anunț”] Către superadmin, la FIECARE cabinet
+    (fără pragul de 15 minute al alertelor: un al doilea cabinet în același sfert de oră nu se mai pierde). Înlocuiește alerta
+    `alerta_cont_nou_v1` (fără date: o alegere din cod, nu o decizie — anunțul cerut numește cabinetul)."""
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo as _Z
+    from core import repo_main
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                dest = repo_main.select_public_2(cur)
+            conn.rollback()
+        dest = dest[0] if dest else None
+    except Exception as _e:
+        _obs.esec_secundar("anunt cabinet nou: emailul superadminului", _e)
+        return False
+    if not dest:
+        _obs.esec_secundar("anunt cabinet nou", RuntimeError("niciun superadmin activ"))
+        return False
+    from core.pdf_util import data_ro
+    acum = data_ro(_dt.now(_Z("Europe/Bucharest")), "cu_ora")   # formatorul canonic al datelor (DS cap.4)
+    html = ("<p>Cabinet nou pe iConta.eu: <b>%s</b> (%s), creat la %s, prin %s.</p>"
+            "<p>Îl vezi în Panou Admin &rarr; Activitate cabinete.</p>") % (_esc(nume_cabinet), _esc(email), acum, _esc(cale))
+    return _obs.trimite_email_html_sau_semnaleaza("email anunt cabinet nou", dest, "[iConta.eu] Cabinet nou: %s" % nume_cabinet,
+                                                  html)
+
+
+def _dupa_cont_nou(r, nume_cabinet, email, cui, cale):
+    """Ce urmează oricărui cont nou de cabinet (invitație sau confirmare): bun venit, anunțul către superadmin, firma din CUI."""
     # register_email_v1: email de bun venit — [R73] fara alerta: bun venit nu e cale de ACCES, doar politete
     html = ("<p>Buna,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.eu.</p>"
             "<p>Te poti loga oricand cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>"
-            "<p>Firma proprie a cabinetului este deja adaugata in portofoliu.</p>") % (date.nume_cabinet, date.email)
-    _obs.trimite_email_html_sau_semnaleaza("email bun venit cabinet", date.email, "Bine ai venit pe iConta.eu", html)
-    try:  # [alerta_cont_nou_v1] notificare interna la fiecare cont nou de cabinet (fara date personale)
-        from datetime import datetime as _dt
-        from zoneinfo import ZoneInfo as _Z
-        _acum = _dt.now(_Z("Europe/Bucharest")).strftime("%Y-%m-%d %H:%M:%S")
-        _mesaj_cn = ("S-a inregistrat un cont nou de cabinet pe iConta.eu la %s (ora Romaniei). "
-                     "Alerta nu contine date personale." % _acum)
-        if _obs.trebuie_trimisa("cont_nou_cabinet"):  # [alerta_dedup_v1] throttle anti-flood (implicit 15 min)
-            _ok_cn = _obs._trimite_brevo("Cont nou de cabinet", _mesaj_cn)
-            print("[alerta_cont_nou] trimisa=%s | %s" % (_ok_cn, _mesaj_cn), flush=True)
-        else:
-            print("[alerta_cont_nou] throttled (dedup) | %s" % _mesaj_cn, flush=True)
-    except Exception as _e:
-        print("[alerta_cont_nou] netrimisa: %s" % _e, flush=True)
+            "<p>Firma proprie a cabinetului este deja adaugata in portofoliu.</p>") % (_esc(nume_cabinet), _esc(email))
+    _obs.trimite_email_html_sau_semnaleaza("email bun venit cabinet", email, "Bine ai venit pe iConta.eu", html)
+    _anunta_cabinet_nou(nume_cabinet, email, cale)
     # [register_firma_v2 27.07.2026] Provisionarea primei firme poate esua (ANAF jos, schema
     # incompleta, DB). Inainte, esecul era INGHITIT si raspunsul spunea SUCCES - userul ramanea
     # cu cont valid si FARA firma, fara sa stie. Contul NU se anuleaza (e valid si util), dar
     # raspunsul poarta adevarul, iar ecranul il arata.
     _firma_ok = None                       # None = nu s-a incercat (fara CUI la inregistrare)
     _firma_motiv = ""
-    if date.cui and _uc_comun._TENANT_TEMPLATE:  # register_primul_tenant_v1: entitatea proprie = prima firma
+    if cui and _uc_comun._TENANT_TEMPLATE:  # register_primul_tenant_v1: entitatea proprie = prima firma
         _firma_ok = False
         # [P5 val 3, 11.09.2026] ANAF ÎNAINTE de conexiune: apelul are termen 20 s, iar forma
         # dinainte îl făcea cu tranzacția de creare a cabinetului deschisă. Eșecul se înghite și
         # se consemnează, exact ca înainte — firma rămâne creată, profilul completabil manual.
         try:
-            _d_anaf = tenant_provisioning.date_din_anaf(date.cui)
+            _d_anaf = tenant_provisioning.date_din_anaf(cui)
         except Exception as _e:
             _obs.esec_secundar("precompletare ANAF la register", _e)
             _d_anaf = None
         try:
             with db.get_conn() as conn:
-                _cui = date.cui.replace("RO", "").strip()
+                _cui = cui.replace("RO", "").strip()
                 _t = tenant_provisioning.provision_tenant(
-                    conn, date.nume_cabinet, _cui,
+                    conn, nume_cabinet, _cui,
                     r["firm_id"], r["user_id"], _uc_comun._TENANT_TEMPLATE)
                 # [register_cabinet_cui_v1] CUI-ul a trecut cifra de control in provision_tenant
                 # -> descrie entitatea proprie a cabinetului. Se persista SI pe accounting_firms.cui
@@ -178,7 +320,7 @@ def register(date):
             # SUNT create si userul e logat automat -> mesajul il indruma spre ecranul Firme, nu "te poti loga".
             _obs.esec_secundar("provisionare tenant la register", _e, alerta=True)
             _txt = str(_e).lower()
-            _cui_afis = (date.cui or "").strip()
+            _cui_afis = (cui or "").strip()
             if "cifra de control" in _txt or "cui invalid" in _txt:
                 _motiv = ("CUI-ul introdus (%s) nu este valid \u2014 cifra de control nu corespunde. "
                           "Verific\u0103 cifrele (f\u0103r\u0103 spa\u021bii sau litere)." % _cui_afis)
@@ -238,3 +380,42 @@ def invitatie_stare(token):
             s = _inv.stare(cur, token)
         conn.rollback()
     return s
+
+
+# ── ÎNREGISTRAREA LIBERĂ: starea publică și comutatorul (15.10.2026, „Lotul 4” pct.2 și 6) ─────────────────────────────────────
+def inregistrare_stare():
+    """[public] `{deschisa, mod, refuz[, formular]}` — formularul primește jetonul lui semnat (anti-roboți) numai când e deschisă."""
+    from core import inregistrare_libera as _il, setari_platforma as _set
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            st = _set.inregistrare_libera(cur)
+        conn.rollback()
+    if st["deschisa"]:
+        st["formular"] = _il.jeton_formular()
+        st["valabila_ore"] = _il.VALABILITATE_ORE
+    return st
+
+
+def setare_inregistrare_citeste(ctx):
+    """[superadmin] Modul înregistrării + dacă emailul poate pleca (fără email, „liberă” rămâne închisă)."""
+    from core import setari_platforma as _set
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            m = _set.mod_inregistrare(cur)
+            st = _set.inregistrare_libera(cur)
+        conn.rollback()
+    m.update({"moduri": [{"mod": k, "eticheta": _set.ETICHETE[k]} for k in _set.MODURI], "deschisa": st["deschisa"],
+              "refuz": st["refuz"], "email_functional": _set.email_functional()})
+    return m
+
+
+def setare_inregistrare_scrie(date, ctx):
+    """[superadmin] Schimbă modul înregistrării (fără publicare); cine și când rămân scrise."""
+    from core import setari_platforma as _set
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            try:
+                _set.seteaza_mod_inregistrare(cur, str(date.mod or ""), ctx["uid"])
+            except ValueError as e:
+                raise _erori.DateInvalide(str(e))
+    return setare_inregistrare_citeste(ctx)

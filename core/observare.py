@@ -13,6 +13,7 @@ Logica de throttling + decizie prag e PURĂ (testabilă fără DB/email).
 Trimiterea efectivă Brevo se dovedește pe server.
 """
 from __future__ import annotations
+import os
 import time
 
 from core.common import cfg
@@ -110,6 +111,23 @@ def _trimite_brevo(subiect, mesaj):
         return False
 
 
+def _in_cutia_de_test(director, catre, subiect, html):
+    """[15.10.2026, lotul 4] CUTIA POȘTALĂ DE TEST: pe instanța de probă (`ICONTA_EMAIL_CUTIE`, pus numai de `scripts/e2e_poarta.py`)
+    emailul se scrie ca fișier JSON în director, în loc să plece — probele își iau de acolo linkul de confirmare a înregistrării, pe
+    care altfel numai destinatarul îl vede. Producția nu are variabila (gard `core/test_cutia_email_numai_la_proba.py`)."""
+    import json
+    import time
+    cale = os.path.join(director, "%d_%s.json" % (time.time_ns(), "".join(c if c.isalnum() else "_" for c in catre)))
+    try:
+        os.makedirs(director, exist_ok=True)
+        with open(cale, "w", encoding="utf-8") as f:
+            json.dump({"catre": catre, "subiect": subiect, "html": html}, f, ensure_ascii=False)
+    except OSError as e:          # cutia care nu primește = emailul care n-a plecat (probele îl simulează așa: director needitabil)
+        print("[email netrimis, cutia de test] %s -> %s: %s" % (subiect, catre, e))
+        return False
+    return True
+
+
 # [p30_email_generic]
 def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
                        expeditor_nume="iConta.eu"):
@@ -122,6 +140,9 @@ def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
       pleaca in numele firmei (expeditor_nume='<Firma> prin iConta'), dar reply-to
       = adresa firmei ca raspunsul clientului sa ajunga la ea, nu la iConta.
     expeditor_nume: numele afisat al expeditorului (implicit 'iConta')."""
+    cutie = cfg("ICONTA_EMAIL_CUTIE")
+    if cutie:
+        return _in_cutia_de_test(cutie, catre, subiect, html)
     brevo_key = cfg("BREVO_API_KEY")
     if not brevo_key:
         print("[email netrimis, fara BREVO_API_KEY] %s -> %s" % (subiect, catre))

@@ -4,10 +4,11 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-15** (dimineața; lotul 3 al regimului pilot: 246 + C26 + C35 reparată + prospețimea în poartă + proba de restaurare de noapte — comis și publicat cu acordul lui Costin, SHA în raport), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `38adb1bb` (lotul 2) — **four-way închis 15.10.2026 04:20:40**: HEAD = origin/main = public/main = backup/lant-2026-10-15 =
-  RUNNING = `38adb1bb` (2 din 2 procese); procesul pornit 04:20:40 EEST, după commit (03:09:44); nicio sentinelă; backup înainte
-  `~/backups_db/iconta_v2_pre_lot2_20261015_0418.dump`. Lotul 3 = commitul care conține această predare (four-way-ul lui e în raportul lotului 3).
+- **ultima rescriere**: **2026-10-15** (după-amiaza; lotul 4 al regimului pilot: înregistrarea liberă cu confirmarea emailului, comutatorul, anunțul, 256 — comis pe ramura `lucru/lot4-2026-10-15`, NEPUBLICAT: publicarea numai cu acordul lui Costin), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `fdf3ca5e` (lotul 3) — **four-way închis 15.10.2026 12:37:21**: HEAD = origin/main = public/main = backup/lant-2026-10-15 =
+  RUNNING = `fdf3ca5e` (2 din 2 procese); procesul pornit 12:37:21 EEST, după commit (11:22:33); nicio sentinelă; backup înainte
+  `~/backups_db/iconta_v2_pre_lot3_20261015_1234.dump`. Lotul 4 = commitul care conține această predare, pe ramura de lucru (worktree
+  `/home/costin/iconta_lot4`), NEPUBLICAT.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -137,8 +138,8 @@ aplicației**, nu „în așteptarea unei teme”:
   `sh scripts/githooks/post-commit` (15:52:46–15:53:05). **De reținut pentru loturile următoare: orice commit pe main publică și
   repornește automat — dacă regula „publicarea o aprob eu” rămâne în vigoare, întreabă înainte de fiecare commit / poartă.**
 - **REGIM PILOT (14.10.2026, verbatim în DECIZII):** publicare / restart / migrări / poartă NUMAI după ce Costin confirmă că cabinetul nu lucrează, cu backup chiar înainte; nicio citire / scriere în datele cabinetului fără aprobare; observațiile „expert contabil” au prioritate absolută. Lucrul în `/home/costin/iconta_lucru`; commit pe ramura de lucru tot prin poartă (commit-msg) -> tot cu acord.
-- **CE E ÎN LUCRU ACUM (15.10, dimineața):** lotul 3 = commitul care conține această predare, publicat cu acordul lui Costin (răspunsul la §6, 15.10.2026: „Ai acordul să publici azi: cabinetul pilot nu lucrează până nu îi spun eu.”): backup `~/backups_db/iconta_v2_pre_lot3_*.dump`, aprobarea în `.git/APROBARE_MAIN`, fast-forward pe `main`, post-commit, migrarea `core/migrare_ciorne_proprii.py` pe producție (rulatorul repornește), four-way, prima rulare a probei de restaurare de noapte din producție. Crontab: linia `0 5 * * * … -m core.proba_restaurare_noapte >> proba_restaurare.log` (instalată înaintea porții; copia crontab-ului dinainte în raport). **Pas al lui Costin (cere sudo cu parolă), rămas din lotul 2:** `sudo install -m 755 /home/costin/iconta_nou/config/iconta-backup.sh /usr/local/bin/iconta-backup.sh` — până atunci alerta la eșecul dump-ului local stă numai în depozit; plasele zilnice `core.backup_verificare` (04:30) și `core.proba_restaurare_noapte` (05:00) rulează din crontab.
-- **URMEAZĂ:** **lotul 4** (comanda Costin 15.10.2026, după publicarea lotului 3; verbatim în DECIZII odată cu lotul): Brevo probat pe producție ÎNTÂI (fără email funcțional nu se deschide înregistrarea), înregistrarea liberă cu confirmarea emailului, anti-roboți + limită pe oră (IP și email), anunț la cabinet nou + „Activitate cabinete”, invitațiile rămân, comutatorul din Panou Admin, 256 (pagina veche până la Ctrl+F5). Publicarea lotului 4 NUMAI cu acordul lui Costin; oprire după raport. Deciziile lotului 3 (proba de noapte, 246 senior, C35) — ÎNCHISE (DECIZII „Lotul 3 — C35”). C35 închisă: verificatorul și scanurile judecă de acum arborele commitului și din worktree — compensarea manuală nu mai e necesară. Pct.4 (serverul de lucru) după pilot.
+- **CE E ÎN LUCRU ACUM (15.10, după-amiaza):** lotul 4 = commitul care conține această predare, pe `lucru/lot4-2026-10-15`, trecut prin poartă, NEPUBLICAT. **Publicarea cere acordul lui Costin** (comanda: „Publicarea numai cu acordul meu. Oprește-te după raport.”): backup, aprobarea în `.git/APROBARE_MAIN`, fast-forward, post-commit, migrarea `core/migrare_inregistrare_libera.py --productie` (pune comutatorul pe „liberă” — înregistrarea se deschide la publicare), four-way. Lotul 3 publicat (12:37, `fdf3ca5e`), proba de restaurare de noapte în crontab (05:00). **Pas al lui Costin (sudo), rămas din lotul 2:** `sudo install -m 755 /home/costin/iconta_nou/config/iconta-backup.sh /usr/local/bin/iconta-backup.sh`.
+- **URMEAZĂ:** acordul lui Costin pentru publicarea lotului 4 (și, dacă vrea, comutatorul pus întâi pe „numai prin invitație” la publicare). Deficiențele 247–255 — numerele lui Costin, netrimise (DEFICIENTE: „neverificat”). Pct.4 al comenzii din 14.10 (serverul de lucru) după pilot.
 - **CE ERA ÎN LUCRU (până la 14.10 15:53):** nimic. Arborele are o singură modificare: această predare (necomisă — un commit trece prin poarta de ~70 min și
   repornește producția la final; se comite odată cu lotul următor sau când aprobă Costin).
 - **URMEAZĂ (comanda 14.10, în ordine, fiecare lot cu raport și ZIP) — NUMAI după comanda lui Costin („După raport, nu porni pct.3;
@@ -523,7 +524,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **965** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **976** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

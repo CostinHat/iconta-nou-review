@@ -278,7 +278,12 @@ def test_numarul_de_instructiuni_se_conserva():
     #   se creează pentru un email care are deja cont (Conflict). Citire NOUĂ (comanda Costin 14.10.2026 pct.3).
     # [lotul 3, 15.10.2026] 317 -> 318, cu apelul numit: repo_contabilitate.ciorne_altui (uc_tenants.tenant_jurnal) — jurnalul îi
     #   arată asistentului care ciorne sunt ale altuia, cu aceeași funcție din bază ca refuzul (deficiența 246).
-    assert _apeluri_catre_repository() == 318
+    # [lotul 4, 15.10.2026] 318 -> 322, cu apelurile numite (înregistrarea liberă cu confirmarea emailului, DECIZII „Lotul 4”):
+    #   repo_utilizatori.contul_dupa_email x2 (uc_auth._register_liber, uc_auth.confirma_inregistrarea) — nicio cerere / niciun cont
+    #   pentru un email care are deja cont (Conflict), citiri NOI; repo_utilizatori.scrie_acordul_termenilor (confirma_inregistrarea) —
+    #   dovada acordului, în aceeași tranzacție cu contul creat la confirmare, scriere NOUĂ; repo_main.select_public_2
+    #   (uc_auth._anunta_cabinet_nou) — emailul superadminului pentru anunțul de cabinet nou, citire NOUĂ.
+    assert _apeluri_catre_repository() == 322
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

@@ -653,3 +653,51 @@ def test_emiterea_facturii_nu_lasa_numar_fara_factura(mediu):
     assert final[0] == inainte[0] + 1 and final[1] > inainte[1] and final[2] > inainte[2], (
         "fără defect trebuie să crească și facturile, și liniile, și numărul: %s -> %s"
         % (inainte, final))
+
+
+def test_confirmarea_inregistrarii_nu_lasa_cont_fara_cererea_folosita(monkeypatch):
+    """[15.10.2026, lotul 4] Frontiera probată: **între crearea contului și folosirea cererii în așteptare**
+    (`POST /public/confirma-inregistrare`). Defectul se injectează la marcarea cererii (`marcheaza_confirmata` ridică): contul,
+    cabinetul și dovada acordului trebuie să dispară cu tranzacția, iar linkul să rămână bun; fără defect, același link creează
+    contul o singură dată."""
+    import secrets
+    from core import inregistrare_libera as _il, nucleu, uc_auth
+    email = "ztest_p4_conf_%s@exemplu.ro" % secrets.token_hex(3)
+
+    def _numara():
+        with _db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT (SELECT count(*) FROM public.users WHERE email = %s), (SELECT count(*) FROM public.accounting_firms "
+                            "WHERE nume = 'ZTEST P4 CABINET CONF'), (SELECT count(*) FROM public.acord_termeni WHERE email = %s)",
+                            (email, email))
+                return cur.fetchone()
+
+    with _db.get_conn() as conn:
+        with conn.cursor() as cur:
+            tok = _il.creeaza(cur, {"email": email, "nume_cabinet": "ZTEST P4 CABINET CONF"}, nucleu.hash_parola(secrets.token_urlsafe(12)),
+                              "v-proba", None)
+    try:
+        cu_defect = monkeypatch.context()
+        with cu_defect as m:
+            m.setattr(_il, "marcheaza_confirmata", lambda *a: (_ for _ in ()).throw(RuntimeError("defect injectat")))
+            with pytest.raises(RuntimeError):
+                uc_auth.confirma_inregistrarea(tok, ip="203.0.113.250")
+        assert _numara() == (0, 0, 0), "contul a rămas deși cererea nu s-a folosit (tranzacția nu e una)"
+        with _db.get_conn() as conn:
+            with conn.cursor() as cur:
+                assert _il.ia_pentru_confirmare(cur, tok)["valida"] is True, "linkul s-a stricat deși contul nu s-a creat"
+            conn.rollback()
+        assert uc_auth.confirma_inregistrarea(tok, ip="203.0.113.250")["ok"] is True
+        assert _numara() == (1, 1, 1)
+    finally:
+        with _db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM public.acord_termeni WHERE email = %s", (email,))
+                cur.execute("SELECT accounting_firm_id FROM public.users WHERE email = %s", (email,))
+                fid = [r[0] for r in cur.fetchall()]
+                cur.execute("DELETE FROM public.users WHERE email = %s", (email,))
+                if fid:
+                    cur.execute("DELETE FROM public.accounting_firms WHERE id = ANY(%s)", (fid,))
+                cur.execute("DELETE FROM public.inregistrari_in_asteptare WHERE email = %s", (email,))
+                cur.execute("DELETE FROM public.cereri_ritm WHERE cheie = 'confirmare_ip' AND ip = '203.0.113.250'")
+            conn.commit()

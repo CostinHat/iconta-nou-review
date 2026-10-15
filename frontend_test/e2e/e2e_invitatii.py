@@ -51,6 +51,22 @@ def vizitator(browser, request):
     assert not rele, "cereri cu răspuns 5xx: %s" % rele[:3]
 
 
+def mod_inregistrare(mod):
+    """[15.10.2026, lotul 4] Pune comutatorul înregistrării (`public.setari_platforma`) și întoarce valoarea de dinainte."""
+    era = sql("SELECT valoare FROM public.setari_platforma WHERE cheie = 'inregistrare'")
+    sql("INSERT INTO public.setari_platforma (cheie, valoare) VALUES ('inregistrare', %s) ON CONFLICT (cheie) DO UPDATE SET "
+        "valoare = EXCLUDED.valoare", (mod,))
+    return era[0][0] if era else None
+
+
+@pytest.fixture()
+def numai_invitatie():
+    """Comutatorul pe „numai prin invitație” cât ține testul (invitația trebuie să meargă și cu înregistrarea închisă)."""
+    era = mod_inregistrare("invitatie")
+    yield
+    mod_inregistrare(era or "invitatie")
+
+
 @pytest.fixture()
 def fara_cabinet_de_proba():
     _curata()
@@ -68,12 +84,12 @@ def _client_nou(pg, url):
     pg.click("#pr-continua")
 
 
-def test_invitatie_fara_link_client_nou_nu_mai_deschide_formularul(vizitator):
+def test_invitatie_fara_link_client_nou_nu_mai_deschide_formularul(vizitator, numai_invitatie):
+    from core import setari_platforma
     pg = vizitator.pg
     _client_nou(pg, BAZA + "/")
     pg.wait_for_selector("#fi-mesaj", timeout=10000)
-    assert pg.inner_text("#fi-mesaj") == ("În perioada pilot, conturile noi de cabinet se creează numai prin invitație. Dacă vrei să "
-                                          "folosești iConta.eu, scrie-ne la contact@iconta.eu și îți trimitem invitația.")
+    assert pg.inner_text("#fi-mesaj") == setari_platforma.MESAJ_NUMAI_INVITATIE
     assert pg.query_selector("#reg-email") is None          # formularul de cont nu apare deloc
     vizitator.captura()
 
@@ -92,8 +108,15 @@ def _invita(superadmin):
 
 
 def test_def_c34_invitatia_spune_cand_emailul_n_a_plecat(superadmin, fara_cabinet_de_proba):
-    """Aplicația de probă n-are Brevo: emailul NU pleacă, iar ecranul trebuie s-o spună (15.10.2026: scria „Invitația a plecat”)."""
-    _invita(superadmin)
+    """Emailul NU pleacă, iar ecranul trebuie s-o spună (15.10.2026: scria „Invitația a plecat”). [15.10.2026, lotul 4] Aplicația de
+    probă scrie emailurile în cutia de test; o cutie needitabilă e emailul care n-a plecat."""
+    cutie = os.environ["ICONTA_EMAIL_CUTIE"]
+    os.makedirs(cutie, exist_ok=True)
+    os.chmod(cutie, 0o500)
+    try:
+        _invita(superadmin)
+    finally:
+        os.chmod(cutie, 0o700)
     pg = superadmin.pg
     assert pg.get_attribute("#inv-rezultat", "class") == "caseta-atentie"
     assert pg.inner_text("#inv-rezultat .ca-mesaj") == ("Emailul către %s nu s-a putut trimite — dă-i linkul de mai jos direct. "
@@ -101,7 +124,8 @@ def test_def_c34_invitatia_spune_cand_emailul_n_a_plecat(superadmin, fara_cabine
     superadmin.captura()
 
 
-def test_invitatie_superadminul_invita_iar_linkul_creeaza_contul_o_singura_data(superadmin, browser, request, fara_cabinet_de_proba):
+def test_invitatie_superadminul_invita_iar_linkul_creeaza_contul_o_singura_data(superadmin, browser, request, fara_cabinet_de_proba,
+                                                                                numai_invitatie):
     link = _invita(superadmin)
     pg = superadmin.pg
     assert link.split("#invitatie=")[0] == os.environ["ICONTA_BAZA_URL"] + "/"   # adresa publică a aplicației, din același mediu

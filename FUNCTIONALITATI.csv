@@ -1515,25 +1515,27 @@ Sesiune activă fără introducerea unei parole.
 - Întârzierea: tokenul din link e menit unei folosiri prompte.
 ## Bun de știut
 Pe telefon magic-link e calea recomandată, mai comodă decât tastarea parolei. La activarea unui client de portal, trimite-i această cale ca să intre simplu prima dată."
-Înregistrarea cabinetului din aplicație,"Înregistrarea cabinetului NUMAI PRIN INVITAȚIE (din 15.10.2026, perioada pilot — DECIZII „Lotul 2”): superadminul invită un email (Panou Admin -> Invitații cabinete; link valabil 14 zile, o singură folosire, numai cu emailul invitat); din link, formularul public (/auth/register) creează contul admin_firma + cabinetul (accounting_firm) dintr-o mișcare - email (al invitației), parolă, nume cabinet. Fără invitație, „Client nou” arată că înscrierea se face prin invitație.",F108,transversal,landing / (link de invitație) + Panou Admin -> Invitații cabinete,static/js/ecrane/login.js + static/js/ecrane/admin.js + core/invitatii.py + tenant_provisioning,,LIVE,,,"## Ce face
-Înregistrarea cabinetului din linkul de invitație: formularul creează dintr-o mișcare contul de admin al firmei și cabinetul de contabilitate (emailul invitat, parolă, nume cabinet). În perioada pilot, conturile noi de cabinet se creează numai prin invitație.
+Înregistrarea cabinetului din aplicație,"Înregistrarea cabinetului (din 15.10.2026, DECIZII „Lotul 4”): două căi. LIBERĂ, CU CONFIRMAREA EMAILULUI — „Client nou” -> formularul (email, parolă, nume cabinet, opțional CUI) devine o cerere în așteptare și pleacă un link de confirmare (24 de ore, o singură folosire); contul, cabinetul și firma din CUI se creează abia la clic; până atunci nu există cont. Anti-roboți: jeton semnat al formularului (minimum 3 s), câmp-capcană, limite pe oră pe IP și pe email. PRIN INVITAȚIE — superadminul invită un email (Panou Admin -> Invitații cabinete; 14 zile, o folosire), contul se creează din link. Comutatorul din Panou Admin -> Înregistrare: „liberă, cu confirmarea emailului” / „numai prin invitație”, fără publicare; fără email funcțional, înregistrarea liberă rămâne închisă. La fiecare cabinet nou, superadminul primește un email de anunț; cabinetul apare în Activitate cabinete, cu data și calea.",F108,transversal,"landing / (Client nou, link de confirmare sau de invitație) + Panou Admin -> Înregistrare / Invitații cabinete / Activitate cabinete",static/js/ecrane/login.js + static/js/ecrane/admin.js + core/inregistrare_libera.py + core/setari_platforma.py + core/invitatii.py + core/uc_auth.py + tenant_provisioning,,LIVE,,,"## Ce face
+Creează contul de administrator și cabinetul de contabilitate. Pe două căi: înregistrarea liberă, cu confirmarea emailului (contul apare abia după clicul pe linkul primit pe email), sau linkul de invitație primit de la iConta.eu. Care cale e deschisă decide administratorul platformei.
 ## Când se folosește
-Când un cabinet nou a primit invitația pe email și vrea să înceapă să folosească iConta. Pentru administratorul unui cabinet la prima punere în funcțiune.
+Când un cabinet vrea să înceapă să folosească iConta. Pentru administratorul unui cabinet la prima punere în funcțiune.
 ## Ce trebuie pregătit înainte
-- Linkul din emailul de invitație (valabil 14 zile, o singură folosire); fără el, scrie-ne la contact@iconta.eu.
-- O parolă și numele cabinetului; emailul e cel invitat și nu se schimbă.
-- Opțional: CUI-ul cabinetului. Dacă îl completezi și îl verifici la ANAF, firma proprie a cabinetului se creează automat la înregistrare, iar CUI-ul se reține pe cabinet (îl regăsești în Setări cabinet).
+- Un email la care ai acces: pe el vine linkul de confirmare (valabil 24 de ore) sau invitația (valabilă 14 zile).
+- O parolă și numele cabinetului.
+- Opțional: CUI-ul cabinetului. Dacă îl completezi și îl verifici la ANAF, firma proprie a cabinetului se creează automat odată cu contul, iar CUI-ul se reține pe cabinet (îl regăsești în Setări cabinet).
 ## Pas cu pas
-1. Deschide linkul din emailul de invitație și apasă „Continuă”.
-2. Completează parola și numele cabinetului (emailul e deja completat).
-3. Trimite: contul de admin și cabinetul se creează împreună.
+1. Apasă „Acces” -> „Client nou” -> „Continuă” (sau deschide linkul din emailul de invitație).
+2. Completează numele cabinetului, emailul și parola, bifează Termenii și apasă „Creează cont”.
+3. Fără invitație: deschide emailul de confirmare și apasă linkul din el; abia atunci contul devine activ. Cu invitație: contul se creează imediat.
+4. Intră în cont cu emailul și parola.
 ## Ce iese la capăt
-Un cont de administrator și un cabinet funcțional, gata de folosit imediat.
+Un cont de administrator și un cabinet funcțional.
 ## Greșeli frecvente
-- Linkul folosit a doua oară: după crearea contului invitația nu mai e valabilă — intră în cont.
-- Nume de cabinet ales în grabă, greu de schimbat ulterior.
+- Încercarea de autentificare înainte de clicul pe linkul de confirmare: contul nu există încă — aplicația spune să confirmi emailul.
+- Linkul folosit a doua oară: e valabil o singură dată — după activare, intră în cont.
+- Emailul de confirmare nu apare: verifică și dosarul Spam; după 24 de ore linkul expiră și te înregistrezi din nou.
 ## Bun de știut
-Cabinetul e activ imediat după înregistrare. Invitația se trimite pe un email la care ai acces permanent, pentru recuperare și notificări."
+Până la confirmare nu se creează nimic: nici cont, nici firmă. Folosește un email la care ai acces permanent, pentru recuperare și notificări."
 Suspendare cabinet,"Superadminul suspendă/reactivează un cabinet din Admin > Activitate; verificare per-request (nu doar la login): toate tokenurile cabinetului primesc 403 imediat, inclusiv sesiunile deja deschise. Există și suspendare pe conturile gratuite.",F109,admin,Admin > Activitate,main.py,,LIVE,,,"## Ce face
 Permite superadminului să suspende sau să reactiveze un cabinet din Admin > Activitate. Verificarea e per-request, nu doar la login: la suspendare toate tokenurile cabinetului primesc 403 imediat, inclusiv sesiunile deja deschise. Există și suspendare pe conturile gratuite.
 ## Când se folosește

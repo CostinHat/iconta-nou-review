@@ -2464,3 +2464,14 @@ treia pornită. Pasul de prospețime (nou) a rulat la ambele porți: 21 de teste
 A treia poartă (10:59): suita verde, plasa a respins — testul deficienței 58 cerea ca asistentul să trimită ciorna șefului (interzis de
 246; proba mutată pe ciorna asistentului, ciorna șefului rămâne fără buton) și un deadlock la curățarea firmei de probă (curățarea se
 reia acum). Poarta a patra pornită.
+
+## 15.10.2026 (după-amiaza) — Lotul 4: înregistrarea liberă cu confirmarea emailului, comutatorul, anunțul, 256
+
+Comanda și deciziile: DECIZII 15.10.2026 „Lotul 4”. Brevo probat pe producție întâi (un email de test livrat, după evenimentele Brevo).
+Formularul liber devine o cerere în așteptare; contul, acordul și firma apar la clicul pe linkul din email (24 h, o folosire); jetonul
+semnat al formularului, câmpul-capcană și limitele pe oră (IP, email) opresc roboții; anunț către superadmin la fiecare cabinet nou;
+„Activitate cabinete” arată data și calea; invitațiile rămân; comutatorul din Panou Admin („liberă, cu confirmarea emailului” / „numai
+prin invitație”), fără publicare. 256: pagina principală revalidată la fiecare încărcare, anunțul „Versiune nouă” nu mai e șters la
+superadmin, reîncărcare automată pe pagina principală fără formular început. Pe drum: limitatorul de ritm ștergea rândurile altor chei.
+Prima poartă (15:55) a respins cu 5 teste din gărzile globale (refuzul tăcut în JS, upsert fără motiv, un apel scos nedeclarat în P7);
+reparate pe loc, artefactele vizuale refăcute, poarta a doua pornită.

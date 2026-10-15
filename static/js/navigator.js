@@ -12,7 +12,7 @@ import { sesiune } from "./sesiune.js?v=38c3e6f6fe";
 import { esc, inchidereDialog } from "./api.js?v=2561dbfd34";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=96c0d1308c";  // [bun_venit_v1] "?" general (ansamblu)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import * as _versiune from "./versiune.js?v=89f5446dc9";      // [R129] anunta o publicare noua, fara sa intrerupa
+import * as _versiune from "./versiune.js?v=862390a47a";      // [R129] anunta o publicare noua, fara sa intrerupa
 
 // [p21_bara_lant] contextul barei 1 ca LANT, citit din sesiune.user() (sursa unica)
 function _functieAsistent(u) {
@@ -93,7 +93,10 @@ export function creeazaNavigator(radacina, desktopRandator) {
       // ICRD_SUBBARA_ADMIN_SUMAR_V1
       if (u.rol === "superadmin") {
         subbara.classList.add("subbara--admin");
-        subbara.innerHTML = `${icon}<span class="subbara-gol">Se încarcă centralizatorul...</span>`;
+        // [15.10.2026, deficiența 256] textul centralizatorului stă în span-ul LUI: rescrierea întregii bare (innerHTML) ștergea
+        // anunțul „Versiune nouă” pus între timp de `_versiune.aseaza()` — superadminul nu afla niciodată de publicare.
+        subbara.innerHTML = `${icon}<span class="subbara-gol" data-sumar-admin>Se încarcă centralizatorul...</span>`;
+        const sumarAdmin = subbara.querySelector("[data-sumar-admin]");
         import("./api.js?v=2561dbfd34").then(({ api }) => api.get("/admin/activitate/cabinete")).then((r) => {
           const cabinete = (r && r.cabinete) || [];
           const active = cabinete.filter((c) => c.activ).length;
@@ -102,9 +105,10 @@ export function creeazaNavigator(radacina, desktopRandator) {
           const facturi = cabinete.reduce((s2, c) => s2 + (c.nr_facturi || 0), 0);
           const declaratii = cabinete.reduce((s2, c) => s2 + (c.nr_declaratii || 0), 0);
           const recomandari = cabinete.reduce((s2, c) => s2 + (c.nr_recomandari || 0), 0);
-          subbara.innerHTML = `${icon}<span class="subbara-admin-sumar">${active} cabinete active · ${firme} firme · ${angajati} angajați · ${facturi} facturi emise · ${declaratii} declarații depuse · ${recomandari} recomandări</span>`;
+          sumarAdmin.className = "subbara-admin-sumar";
+          sumarAdmin.textContent = `${active} cabinete active · ${firme} firme · ${angajati} angajați · ${facturi} facturi emise · ${declaratii} declarații depuse · ${recomandari} recomandări`;
         }).catch(() => {
-          subbara.innerHTML = `${icon}<span class="subbara-gol">Centralizatorul nu a putut fi încărcat.</span>`;
+          sumarAdmin.textContent = "Centralizatorul nu a putut fi încărcat.";
         });
       } else {
         subbara.innerHTML = firmaInLucru
@@ -118,6 +122,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       // [R129] Al doilea chirias al barii: daca s-a gasit deja o versiune noua, anuntul revine
       // dupa re-randarea cojii (care sterge locurile si le declara din nou).
       _versiune.aseaza();
+      _versiune.aseazaActualizat();   // [256] „s-a actualizat la versiunea nouă”, după o reîncărcare făcută de aplicație
     }
     // [p25_bara3] bara 3 motivationala — doar asistent (angajat)
     if (u.rol === "angajat") {
@@ -170,6 +175,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     corp.addEventListener("input", murdar, true);
     corp.addEventListener("change", murdar, true);
   }
+  window._navPeAcasa = () => stiva.length === 0;   // [256] pe pagina principală (nicio fereastră deschisă)
   window._navAreModificari = () => {
     const c = _corpCurent();
     return !!((c && c.__murdar) || stiva.some((x) => x.pastrat || (x.pasi || []).some((p) => p.pastrat)));
@@ -291,6 +297,8 @@ export function creeazaNavigator(radacina, desktopRandator) {
 
   const nav = {
     deschide(titlu, randator, optiuni) {
+      // [256] de pe pagina principală, cu o versiune nouă deja știută și fără formular început: întâi versiunea nouă (reîncărcare)
+      if (!stiva.length && _versiune.reincarcaInLocDeDeschidere()) return;
       const c = document.querySelector(".fereastra-corp");
       if (c && stiva.length) {
         const jos = stiva[stiva.length - 1];
@@ -299,7 +307,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
         if (p) jos.pastrat = Object.assign(p, { pentru: jos.curent || jos.randator });
       }
       stiva.push({ titlu, randator, curent: randator, pasi: [], optiuni: optiuni || {} }); randeazaFerestre(); }, /* fereastra_optiuni_v1 + traseu_automat_v1 */
-    inapoi() { stiva.pop(); randeazaFerestre(); },
+    inapoi() { stiva.pop(); randeazaFerestre(); if (!stiva.length) _versiune.laAcasa(); },   // [256] ultima fereastră închisă = acasă
     inapoiPas() {  // faza_b_traseu_v1: un pas inapoi pe traseu, programatic (dupa o actiune reusita)
       if (!stiva.length) return;
       const sus = stiva[stiva.length - 1];
@@ -334,7 +342,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       const sus2 = stiva[stiva.length - 1];
       if (b) b.style.display = (typeof fn === "function" || stiva.length > 1 || (sus2.pasi && sus2.pasi.length > 0)) ? "" : "none";  // traseu_automat_v1
     },
-    acasa() { stiva.length = 0; randeazaFerestre(); },
+    acasa() { stiva.length = 0; randeazaFerestre(); _versiune.laAcasa(); },   // [256] pagina principală se încarcă în versiunea nouă
     // setează firma procesată (bara de jos) și re-randează desktopul
     setFirmaInLucru(nume, id = null) {
       firmaInLucru = nume; firmaInLucruId = nume ? id : null;

@@ -20338,3 +20338,70 @@ pentru ciornele din afara cozii (ar redeschide exact drumul închis de 246). (b)
 CASCADE` al firmei de probă s-a încrucișat cu o cerere a paginii încă deschise (deadlock). `frontend_test/e2e/curatenie.scoate` scoate
 acum fiecare firmă pe tranzacția ei, reluată la `DeadlockDetected` (cel mult 5 încercări, apoi eroarea urcă). Gard
 `core/test_e2e_curatenie_reluare.py` (mutația „fără reluare” -> ROȘU). Izolat, 243 trece (4/4).
+
+## 15.10.2026 (după-amiaza) — Lotul 4: înregistrarea liberă cu confirmarea emailului, comutatorul, anunțul, 256
+
+**Comanda, verbatim (15.10.2026):** „Lotul 4, după publicarea lotului 3 (decizia mea din 15.10, înlocuiește regula „numai prin
+invitație”): 1. Brevo pe producție, primul: probează că emailurile pleacă efectiv (un email de test către adresa mea). Dacă nu pleacă,
+te oprești și raportezi; fără email funcțional nu se deschide înregistrarea. 2. Înregistrare liberă cu confirmarea emailului: oricine
+își creează cabinetul, iar contul devine activ numai după clicul pe linkul de confirmare (valabil limitat, o singură folosire). Până la
+confirmare nu se poate loga și nu se creează firme. 3. Protecție anti-roboți pe formular și limită de încercări pe oră (pe adresă IP și
+pe email). 4. La fiecare cabinet nou confirmat primesc un email de anunț, iar cabinetul apare în „Activitate cabinete”. 5. Invitațiile
+rămân, ca a doua cale, pentru cabinetele pe care le aduc eu. 6. Comutator în Panou Admin: „Înregistrare: liberă, cu confirmarea
+emailului / numai prin invitație”, ca să o pot schimba eu fără publicare. 7. 256: după o publicare, browserul utilizatorului păstrează
+pagina veche până la Ctrl+F5 (am văzut-o la cardul „Invitații cabinete”). Pagina principală și ecranele se încarcă în versiunea nouă
+fără reîncărcare forțată. Răspunde punctual pentru fiecare, cu probă și ZIP. Publicarea numai cu acordul meu. Oprește-te după raport.”
+
+**PIVOT față de „Lotul 2” pct.3 („conturile noi numai prin invitație”):** regula devine un COMUTATOR al superadminului
+(`public.setari_platforma`, cheia `inregistrare`). Migrarea pune `libera` — decizia din 15.10 „înlocuiește regula” —; fără rând, fără
+tabelă sau cu o valoare necunoscută, aplicația citește „numai prin invitație” (închis).
+
+**1. Brevo pe producție, primul.** Un email de test real, trimis din producție prin API-ul Brevo către adresa contului de superadmin:
+`HTTP 201`, iar evenimentele Brevo ale mesajului: `delivered` la 12:39:44 (numai metadate citite). Pct.1 e și MECANIC: înregistrarea
+liberă e deschisă numai dacă emailul poate pleca (`setari_platforma.email_functional`) — fără cheia Brevo, „Client nou” spune că
+înregistrarea nu e disponibilă, chiar cu comutatorul pe „liberă”.
+
+**2. Înregistrarea liberă cu confirmarea emailului.** Formularul NU creează nimic în `users` / `accounting_firms`: devine o CERERE ÎN
+AȘTEPTARE (`public.inregistrari_in_asteptare`: datele formularului, hash-ul parolei — scrypt, ca la cont —, hash-ul tokenului, IP-ul,
+termenul) și pleacă un link de confirmare (`/#confirmare=<token>`, 24 de ore, o folosire). Contul, dovada acordului (cu versiunea
+termenilor DE LA FORMULAR) și folosirea cererii se scriu la clic, ÎNTR-O tranzacție (`uc_auth.confirma_inregistrarea`, cererea blocată
+`FOR UPDATE`); apoi bun venit, anunțul și firma din CUI, ca la orice cont nou (`_dupa_cont_nou`, comun cu calea invitației). Până la
+clic nu există cont — deci nici login, nici firmă. Login-ul cu parola corectă a unei cereri neconfirmate spune „confirmă emailul”
+(numai cu parola corectă: cine n-o știe nu află că cererea există). Emailul care nu pleacă șterge cererea (n-ar putea fi confirmată).
+Cererile neconfirmate se șterg la 7 zile după expirare (date personale fără cont). **Respinse:** contul creat inactiv la formular
+(rânduri de curățat, firme create înainte de confirmare — pct.2 le interzice); linkul de confirmare care și autentifică (o sesiune
+din email e o cale de acces pe care n-a cerut-o nimeni). **Limita:** VALABILITATE_ORE = 24 e o alegere de produs, nu o normă; se
+schimbă dintr-o constantă (`core/inregistrare_libera.py`).
+
+**3. Anti-roboți + limite pe oră**, fără servicii externe (CSP-ul aplicației permite numai `self`; un captcha străin ar cere schimbarea
+CSP-ului și ar trimite vizitatorii la un terț): (a) JETONUL FORMULARULUI — semnat de server la deschiderea formularului (cheie derivată
+din `JWT_SECRET` + scopul, deci nu poate trece drept sesiune), refuzat dacă e trimis sub 3 secunde sau după 2 ore; (b) CÂMPUL-CAPCANĂ
+(`hidden`) — completat -> răspunsul de reușită, fără scriere și fără email; (c) `ritm_incape` pe IP (5/oră) și pe email (3/oră) la
+înregistrare, pe IP (20/oră) la confirmare. Pe drum: `ritm_incape` ștergea rândurile expirate ale TUTUROR limitatoarelor cu fereastra
+apelului curent — un limitator de 15 minute (resetarea parolei) ar fi șters rândurile limitei de o oră; ștergerea e acum pe cheie.
+**Limita:** un robot care cere jetonul, așteaptă 3 secunde și schimbă IP-ul și emailul trece de (a)–(c); îl oprește confirmarea
+(fără căsuța poștală nu există cont), iar cererile lui expiră.
+
+**4. Anunțul la cabinet nou** — email HTML către superadmin (aceeași adresă ca alerta de test din Sănătate server), la FIECARE cabinet
+nou, pe AMBELE căi (confirmare și invitație), cu numele cabinetului, emailul contului, ora și calea. Înlocuiește alerta veche „cont
+nou de cabinet” (text fără date, prag anti-flood de 15 minute în memoria procesului — al doilea cabinet din același sfert de oră nu se
+anunța; „fără date” a fost o alegere din cod, nu o decizie scrisă). „Activitate cabinete” arată, la capătul rândului, data creării și
+calea („invitație” / „înregistrare liberă”).
+
+**5. Invitațiile rămân** a doua cale, în ambele moduri ale comutatorului (proba e2e a invitației rulează cu comutatorul pe „numai prin
+invitație”). Textul „În perioada pilot, …” al refuzului devine al comutatorului (o singură sursă: `setari_platforma.MESAJ_NUMAI_INVITATIE`).
+
+**6. Comutatorul** — Panou Admin -> cardul „Înregistrare”: două opțiuni, „Salvează”, cine și când l-a schimbat; dacă emailul nu poate
+pleca, caseta spune că „liberă” rămâne închisă. Rutele `GET/PUT /admin/setari/inregistrare` (superadmin), `GET /public/inregistrare`.
+
+**7. 256 — PIVOT față de R129 (03.09) și de decizia din 07.10.** Cauzele, măsurate pe producție (`curl -I`): modulele și CSS-ul au
+`Cache-Control: no-cache` (se revalidează), pagina `/` n-avea niciun antet (browserul o socotea proaspătă euristic); iar pe panoul
+superadminului bara de stare se RESCRIA întreagă când venea centralizatorul (`innerHTML`), ștergând anunțul „Versiune nouă” — Costin nu
+avea cum să afle de publicare, iar fila ținea modulele vechi în memorie. Reparat: (a) `/` cu `Cache-Control: no-cache`; (b) centralizatorul
+își scrie textul în span-ul lui; (c) R129 („anunță, nu reîncărca”) + 07.10 („reîncărcare automată la autentificare, numai fără formular
+început”) se extind: aplicația se reîncarcă singură și pe PAGINA PRINCIPALĂ (nicio fereastră deschisă) când află de o versiune nouă, și
+la întoarcerea acasă / deschiderea unui ecran de acolo când versiunea nouă e deja știută — TOT numai fără formular început; după, bara
+spune „Aplicația s-a actualizat la versiunea nouă.” Cu un ecran deschis, rămâne anunțul (decizia din 03.09 neatinsă: un formular
+pierdut e mai rău decât defectul). **Respins:** reîncărcarea la orice navigare (ar pierde ecranul deschis) și jetoanele de versiune în
+cascadă (`versioneaza_assets`, „anti-cascadă” deliberat; cu `no-cache` revalidarea aduce oricum modulul nou). **Limita:** un ecran
+lăsat deschis toată ziua rămâne pe versiunea veche până la închidere (anunțul o spune).

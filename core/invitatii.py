@@ -15,8 +15,8 @@ from core import afirmatii as _af
 
 VALABILITATE_ZILE = 14
 
-MESAJ_FARA_INVITATIE = ("În perioada pilot, conturile noi de cabinet se creează numai prin invitație. Dacă vrei să folosești "
-                        "iConta.eu, scrie-ne la contact@iconta.eu și îți trimitem invitația.")
+# [15.10.2026, lotul 4] o singură sursă: modul „numai prin invitație” al comutatorului (core/setari_platforma.py)
+from core.setari_platforma import MESAJ_NUMAI_INVITATIE as MESAJ_FARA_INVITATIE  # noqa: E402,F401 — re-export: numele vechi al mesajului (teste, contractul P7)
 
 
 def _hash(token):

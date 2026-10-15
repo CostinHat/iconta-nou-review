@@ -46,11 +46,41 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 4 al comenzii Costin 15.10.2026 (după publicarea lotului 3; înlocuiește „numai prin invitație”; publicarea NUMAI cu
+  acordul lui Costin, oprire după raport)** — Brevo probat pe producție, înregistrarea liberă cu confirmarea emailului, anti-roboți +
+  limită pe oră (IP și email), anunț la cabinet nou + „Activitate cabinete”, invitațiile rămân, comutatorul din Panou Admin, 256.
+  - ultim: L4-1 … L4-7 implementate și probate (15.10.2026 după-amiaza; teste unitare + P4 + e2e 3/3 + mutații) — lotul 4 = commitul
+    care conține această intrare
+  - urmator: L4-8 (poarta; publicarea cu acordul lui Costin — „de acord”, 15.10.2026). STARE = IN LUCRU
+  - [15.10.2026 15:55] prima poartă a respins: 5 teste (pytest 5 failed / 8245 passed; prospețimea, verificatorul, cifrele — verzi) —
+    `test_refuz_tacut` (o citire și o scriere din `login.js` care afișau refuzul DUPĂ `catch`, nu în el), `test_upsert_motivat`
+    (comutatorul fără `# upsert-ok`), `test_p7_uc` (`strftime` scos din anunț, nedeclarat). WIP `wip/2026-10-15-1555-lot4`.
+  - pasi:
+    L4-0. Registre: TESTE (acest fir), DECIZII „Lotul 4” (comanda verbatim + PIVOT față de „numai prin invitație” + 256 față de R129).
+    L4-1. Brevo pe producție: un email de test real către superadmin + evenimentele Brevo ale mesajului (numai metadate).
+    L4-2. Comutatorul: `core/migrare_setari_platforma.py` (`public.setari_platforma`), `core/setari_platforma.py`
+          (`mod_inregistrare`: „liberă” / „invitație”; rând lipsă = invitație), rutele superadmin GET/PUT `/admin/setari/inregistrare`,
+          ruta publică GET `/public/inregistrare`, cardul „Înregistrare” din Panou Admin (`admin.js`).
+    L4-3. Înregistrarea liberă cu confirmare: `core/migrare_inregistrari_in_asteptare.py`, `core/inregistrare_confirmare.py`
+          (cererea în așteptare: date + hash-ul parolei + hash-ul tokenului, 24 h, o folosire); `uc_auth.register` fără invitație ->
+          cererea + emailul de confirmare (fără cont, fără firmă); POST `/public/confirma-inregistrare` -> contul, acordul termenilor,
+          firma din CUI; login-ul înainte de confirmare spune „confirmă emailul”; ecranul `login.js` (formular, „verifică emailul”,
+          confirmarea).
+    L4-4. Anti-roboți + limite: câmp-capcană + timpul minim de completare; `ritm_incape` pe IP (5/oră) și pe email (3/oră) la
+          înregistrare, pe IP la confirmare.
+    L4-5. Anunțul: email către superadmin la fiecare cabinet nou (liber confirmat SAU prin invitație), fără prag de 15 minute;
+          „Activitate cabinete” arată data creării și calea.
+    L4-6. Invitațiile rămân a doua cale, în ambele moduri (testul lor + modul „liberă”).
+    L4-7. 256: `Cache-Control: no-cache` pe `/`; anunțul „Versiune nouă” nu mai e șters de bara superadminului; reîncărcarea
+          automată (fără formular început) pe pagina principală și la deschiderea unui ecran de acolo, când versiunea nouă e știută.
+    L4-8. e2e (`frontend_test/e2e/e2e_inregistrare_libera.py`, `test_def_256_*`), gărzile, mutațiile, uneltele vizuale pe ecranele
+          atinse, poarta, registrele, ZIP, raport. Publicarea NUMAI cu acordul lui Costin.
+
 - fir: **Lotul 3 al comenzii Costin 14.10.2026 (pct.6 + răspunsul la §6; poarta și publicarea aprobate până la 07:00, cu backup)** —
   246 (ciorna altui utilizator: asistentul o vede, n-o modifică, n-o șterge, n-o trimite la validare; pe toate ecranele cu ciorne) +
   C26 (consolidarea și coada de validare, pentru asistent, numai pe firmele lui).
   - ultim: L3-0 … L3-3 implementate și probate (15.10.2026 05:10) — lotul 3 = commitul care conține această intrare
-  - urmator: L3-8 (poarta pe arborele lotului cu C35 reparat, backup, publicare, four-way, raport + ZIP). STARE = IN LUCRU
+  - urmator: niciunul — lotul 3 publicat 15.10.2026 12:37 (fdf3ca5e; four-way închis, migrarea pe 5/5 scheme, proba de noapte rulată din producție). STARE = INCHIS
   - [15.10.2026 06:10] poarta a respins (2 artefacte de prospețime vechi, `proba_pagina_principala`, `proba_decl50`); oprit la 07:00;
     WIP `wip/2026-10-15-0610-lot3`. Răspunsul Costin la §6 (DECIZII „Lotul 3 — C35”) a adăugat L3-5 … L3-7 și a mutat L3-4 în L3-8.
   - [15.10.2026 09:42] a doua poartă a respins: 4 teste din `core/test_tranzactii_clasificate.py` — modulul nou

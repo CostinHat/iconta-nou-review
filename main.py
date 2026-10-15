@@ -478,7 +478,9 @@ if os.path.isdir(_STATIC_DIR):
 def index():
     cale = os.path.join(_STATIC_DIR, "index.html")
     if os.path.isfile(cale):
-        return FileResponse(cale)
+        # [15.10.2026, deficiența 256] pagina principală se REVALIDEAZĂ la fiecare încărcare, ca modulele (`_StaticNoCache`). Fără
+        # antet, browserul o socotea proaspătă euristic (10% din vârsta ei, după `Last-Modified`) și o lua din cache după o publicare.
+        return FileResponse(cale, headers={"Cache-Control": "no-cache"})
     raise HTTPException(404, "frontend neinstalat")
 
 
@@ -1077,6 +1079,14 @@ class RegisterIn(BaseModel):
     cui: Optional[str] = None  # register_primul_tenant_v1
     accept_termeni: bool = False  # [termeni_v1] bifa obligatorie, validata pe BACKEND
     invitatie: Optional[str] = None  # [14.10.2026, comanda Costin pct.3] conturile noi de cabinet NUMAI prin invitație
+    formular: Optional[str] = None   # [15.10.2026, lotul 4] jetonul semnat al formularului (anti-roboți), din GET /public/inregistrare
+    site_web: Optional[str] = None   # [15.10.2026, lotul 4] câmpul-capcană: un om îl lasă gol
+
+class ConfirmareIn(BaseModel):
+    token: str
+
+class ModInregistrareIn(BaseModel):
+    mod: str
 
 class InvitatieIn(BaseModel):
     email: str
@@ -1434,9 +1444,46 @@ def login(date: LoginIn):
 
 
 @app.post("/auth/register")
-def register(date: RegisterIn):
+def register(date: RegisterIn, request: Request):
     try:
-        return _uc_auth.register(date)
+        return _uc_auth.register(date, ip=_ip_client(request))
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+# [15.10.2026, „Lotul 4”, verbatim în DECIZII] înregistrarea liberă cu confirmarea emailului + comutatorul ei
+@app.get("/public/inregistrare")
+def inregistrare_stare():
+    """Ce vede vizitatorul la „Client nou”: înregistrarea liberă e deschisă? (+ jetonul formularului, dacă da)."""
+    try:
+        return _uc_auth.inregistrare_stare()
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/public/confirma-inregistrare")
+def confirma_inregistrarea(date: ConfirmareIn, request: Request):
+    """Clicul pe linkul din emailul de confirmare: abia acum se creează contul, acordul termenilor și firma."""
+    try:
+        return _uc_auth.confirma_inregistrarea(date.token, ip=_ip_client(request))
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/admin/setari/inregistrare")
+def setare_inregistrare_citeste(ctx=Depends(cere_rol("superadmin"))):
+    """Comutatorul „Înregistrare: liberă, cu confirmarea emailului / numai prin invitație” (cine și când l-a schimbat)."""
+    try:
+        return _uc_auth.setare_inregistrare_citeste(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.put("/admin/setari/inregistrare")
+def setare_inregistrare_scrie(date: ModInregistrareIn, ctx=Depends(cere_rol("superadmin"))):
+    """Schimbă modul înregistrării, fără publicare."""
+    try:
+        return _uc_auth.setare_inregistrare_scrie(date, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

@@ -146,6 +146,9 @@ export function ecranLogin(radacina) {
   // fără el, „Client nou” spune cum se cere invitația (formularul nu se mai arată).
   const INVITATIE = (location.hash.match(/#invitatie=([\w-]+)/) || [])[1] || "";
   if (INVITATIE) { overlay.hidden = false; randeazaPreturiInainte(); }   // [14.10.2026] linkul de invitație deschide înregistrarea
+  // [15.10.2026, „Lotul 4” pct.2, verbatim în DECIZII] linkul din emailul de confirmare (`/#confirmare=<token>`) activează contul
+  const CONFIRMARE = (location.hash.match(/#confirmare=([\w-]+)/) || [])[1] || "";
+  if (CONFIRMARE) { overlay.hidden = false; randeazaConfirmare(); }
 
   // ---------- ecran 1: alege Intra in cont / Client nou ----------
   function randeazaAlegere() {
@@ -388,11 +391,24 @@ export function ecranLogin(radacina) {
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
     modal.querySelector("#pr-inapoi").addEventListener("click", randeazaAlegere);
-    modal.querySelector("#pr-continua").addEventListener("click", INVITATIE ? randeazaInregistrare : randeazaFaraInvitatie);
+    modal.querySelector("#pr-continua").addEventListener("click", INVITATIE ? () => randeazaInregistrare(null) : randeazaDupaMod);
   }
 
-  // ---------- ecran 2b': fără invitație (pilot) ----------
-  function randeazaFaraInvitatie() {
+  // ---------- [15.10.2026, lotul 4] „Client nou” fără invitație: comutatorul din Panou Admin decide (serverul spune) ----------
+  async function randeazaDupaMod() {
+    let st = null;
+    try { st = await api.get("/public/inregistrare"); } catch (e) {
+      randeazaFaraInvitatie();
+      const m = modal.querySelector("#fi-mesaj");   // refuzul serverului, arătat pe loc (garda „refuz tăcut”)
+      m.className = "caseta-atentie";
+      m.innerHTML = `<div class="ca-mesaj">${esc((e && e.mesaj) || "Nu se poate verifica acum dacă înregistrarea e deschisă. Încearcă din nou peste câteva minute.")}</div>`;
+      return;
+    }
+    if (st && st.deschisa) randeazaInregistrare(st); else randeazaFaraInvitatie(st && st.refuz && st.refuz.motiv);
+  }
+
+  // ---------- ecran 2b': fără invitație, cu înregistrarea închisă ----------
+  function randeazaFaraInvitatie(mesaj) {
     modal.classList.remove("acces-modal-inreg");
     modal.innerHTML = `
       <button type="button" class="nav-sageata" id="fi-inapoi" title="Înapoi" aria-label="Înapoi" style="position:absolute;top:14px;left:14px"><span aria-hidden="true">←</span></button>
@@ -401,7 +417,7 @@ export function ecranLogin(radacina) {
         <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
       </div>
-      <div class="caseta-info" id="fi-mesaj"><div class="ci-mesaj">În perioada pilot, conturile noi de cabinet se creează numai prin invitație. Dacă vrei să folosești iConta.eu, scrie-ne la <a href="mailto:contact@iconta.eu">contact@iconta.eu</a> și îți trimitem invitația.</div></div>
+      <div class="caseta-info" id="fi-mesaj"><div class="ci-mesaj">${esc(mesaj || "Înregistrarea nu e disponibilă acum.").replace("contact@iconta.eu", '<a href="mailto:contact@iconta.eu">contact@iconta.eu</a>')}</div></div>
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
     modal.querySelector("#fi-inapoi").addEventListener("click", randeazaAlegere);
@@ -437,11 +453,63 @@ export function ecranLogin(radacina) {
     });
   }
 
-  async function randeazaInregistrare() {
-    // [14.10.2026] numai cu invitație validă: emailul vine din invitație (contul se creează numai cu el)
+  // ---------- [15.10.2026, lotul 4] după formularul liber: contul nu există până la clicul pe linkul din email ----------
+  function randeazaVerificaEmail(em, ore) {
+    modal.classList.remove("acces-modal-inreg");
+    modal.innerHTML = `
+      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      <div class="login-brand">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
+        <span class="login-tagline">Contabilitatea cu control fiscal</span>
+      </div>
+      <div class="caseta-info" id="reg-verifica"><div class="ci-mesaj">Emailul de confirmare a plecat la <b>${esc(em)}</b>. Apasă linkul din el (valabil ${esc(String(ore || 24))} de ore) ca să activezi contul. Până atunci contul nu există: nu te poți autentifica și nu se creează nicio firmă.</div></div>
+      <p class="ecran-nota" style="margin:12px 0 0">Nu l-ai primit în câteva minute? Verifică și dosarul Spam.</p>
+    `;
+    modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
+  }
+
+  // ---------- [15.10.2026, lotul 4] clicul pe linkul de confirmare: abia acum se creează contul ----------
+  async function randeazaConfirmare() {
+    modal.classList.remove("acces-modal-inreg");
+    const brand = `
+      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      <div class="login-brand">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
+        <span class="login-tagline">Contabilitatea cu control fiscal</span>
+      </div>`;
+    modal.innerHTML = `${brand}<p class="ecran-nota" id="conf-stare">Se activează contul…</p>`;
+    let r = null;
+    try { r = await api.post("/public/confirma-inregistrare", { token: CONFIRMARE }); } catch (e) {
+      history.replaceState(null, "", location.pathname);   // tokenul nu rămâne în bara adresei
+      // refuzul serverului (link folosit, expirat, inexistent), arătat pe loc (garda „refuz tăcut”)
+      modal.innerHTML = `${brand}<div class="caseta-atentie" id="conf-rezultat"><div class="ca-mesaj">${esc((e && e.mesaj) || "Activarea contului nu s-a putut face acum. Încearcă din nou peste câteva minute.")}</div></div>
+        <button class="buton-secundar" id="conf-inapoi" style="margin-top:12px">Înapoi</button>`;
+      modal.querySelector("#conf-inapoi").addEventListener("click", randeazaAlegere);
+      modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
+      return;
+    }
+    history.replaceState(null, "", location.pathname);   // tokenul nu rămâne în bara adresei
+    {
+      modal.innerHTML = `${brand}<div class="caseta-info" id="conf-rezultat"><div class="ci-mesaj">Contul cabinetului <b>${esc(r.nume_cabinet)}</b> e activ. Intră cu emailul <b>${esc(r.email)}</b> și parola aleasă la înregistrare.</div></div>
+        ${r.firma_creata === false && r.avertisment ? `<div class="caseta-atentie" style="margin-top:8px"><div class="ca-mesaj">${esc(r.avertisment)}</div></div>` : ""}
+        <button class="buton-primar" id="conf-intra" style="margin-top:12px">Intră în cont</button>`;
+      modal.querySelector("#conf-intra").addEventListener("click", () => {
+        formCabinet();
+        const em = modal.querySelector("#login-email");
+        if (em) { em.value = r.email; const p = modal.querySelector("#login-parola"); if (p) focusFaraSalt(p); }
+      });
+    }
+    modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
+  }
+
+  async function randeazaInregistrare(liber) {
+    // [14.10.2026] cu invitație validă: emailul vine din invitație (contul se creează numai cu el).
+    // [15.10.2026, lotul 4] `liber` = starea înregistrării libere (cu jetonul formularului): emailul se scrie, contul vine la confirmare.
     let inv = null;
-    try { inv = await api.get(`/public/invitatie/${encodeURIComponent(INVITATIE)}`); } catch (e) { inv = { valida: false, refuz: { motiv: (e && e.mesaj) || "Invitația nu se poate verifica acum." } }; }
-    if (!inv || !inv.valida) {
+    if (!liber) {
+      try { inv = await api.get(`/public/invitatie/${encodeURIComponent(INVITATIE)}`); } catch (e) { inv = { valida: false, refuz: { motiv: (e && e.mesaj) || "Invitația nu se poate verifica acum." } }; }
+    }
+    if (!liber && (!inv || !inv.valida)) {
       randeazaFaraInvitatie();
       const m = modal.querySelector("#fi-mesaj");
       m.className = "caseta-atentie";
@@ -474,9 +542,10 @@ export function ecranLogin(radacina) {
       </label>
       <label class="camp">
         <span class="camp-eticheta">Email<span class="oblig">*</span></span>
-        <input type="email" class="camp-input" id="reg-email" autocomplete="off" placeholder="nume@firma.ro" readonly>
-        <span class="camp-ajutor">Emailul din invitație — contul se creează cu el.</span>
+        <input type="email" class="camp-input" id="reg-email" autocomplete="off" placeholder="nume@firma.ro"${liber ? "" : " readonly"}>
+        <span class="camp-ajutor">${liber ? "Aici vine linkul de confirmare — contul se activează după clic." : "Emailul din invitație — contul se creează cu el."}</span>
       </label>
+      <div hidden><label>Site web <input type="text" class="camp-input" id="reg-site" tabindex="-1" autocomplete="off"></label></div>
       <label class="camp">
         <span class="camp-eticheta">Parol\u0103<span class="oblig">*</span></span>
         <input type="password" class="camp-input" id="reg-parola" autocomplete="off">
@@ -497,7 +566,7 @@ export function ecranLogin(radacina) {
     const cabinet = modal.querySelector("#reg-cabinet");
     const numeAdmin = modal.querySelector("#reg-nume-admin");  // null in modul gratuit
     const email = modal.querySelector("#reg-email");
-    email.value = inv.email;   // [14.10.2026] emailul invitației, needitabil
+    if (!liber) email.value = inv.email;   // [14.10.2026] emailul invitației, needitabil
     const parola = modal.querySelector("#reg-parola");
     const parola2 = modal.querySelector("#reg-parola2");
     const buton = modal.querySelector("#reg-buton");
@@ -574,8 +643,11 @@ export function ecranLogin(radacina) {
             nume,
             prenume,
             accept_termeni: !!modal.querySelector("#reg-termeni")?.checked,  /* [termeni_v1] */
-            invitatie: INVITATIE,  /* [14.10.2026] conturile noi numai prin invitație */
+            invitatie: liber ? null : INVITATIE,  /* [14.10.2026] invitația; [15.10.2026] sau înregistrarea liberă */
+            formular: liber ? liber.formular : null,   /* [15.10.2026, lotul 4] jetonul semnat al formularului (anti-roboți) */
+            site_web: (modal.querySelector("#reg-site") || {}).value || "",   /* câmpul-capcană: un om îl lasă gol */
         });
+        if (_reg && _reg.confirmare_trimisa) { randeazaVerificaEmail(_reg.email, _reg.valabila_ore); return; }
         history.replaceState(null, "", location.pathname);   // invitația s-a consumat: linkul nu mai rămâne în bară
         const _avertReg = (_reg && _reg.firma_creata === false) ? (_reg.avertisment || "") : "";
         if (_avertReg) {

@@ -443,6 +443,14 @@ fundal pe tenantul greșit; **IDOR** (id tenant din URL neverificat contra useru
   chitanța, extrasul) sunt păzite prin nota lor; o factură-ciornă fără notă n-are autor de comparat.
 - ACOPERIT (15.10.2026, C26 + clasa): listele CABINETULUI văzute de un asistent — consolidarea și coada de validare (lista + acțiunile pe
   element) — numai pe firmele alocate (`uc_comun._firme_vizibile`, sursa `auth_api.tenantii_userului`). e2e `test_def_c26_*`.
+- ACOPERIT (15.10.2026, lotul 4): contul unui cabinet nou din înregistrarea LIBERĂ există numai după clicul pe linkul de confirmare
+  (cererea în așteptare, `core/inregistrare_libera.py`; contul + acordul + folosirea cererii într-o tranzacție). Comutatorul
+  (`core/setari_platforma.py`) închide calea liberă — și o închide singur dacă emailul nu poate pleca. Anti-roboți: jetonul semnat al
+  formularului (minimum 3 s), câmpul-capcană, limitele pe oră pe IP și pe email (`ritm_incape`, ștergerea expiratelor acum pe cheie).
+  Gărzi: `core/test_inregistrare_libera.py` (fluxul pe baza de test, cutia poștală de test), `core/test_p4_fault_injection.py::
+  test_confirmarea_inregistrarii_nu_lasa_cont_fara_cererea_folosita`, `core/test_cutia_email_numai_la_proba.py`, e2e
+  `frontend_test/e2e/e2e_inregistrare_libera.py`. LIMITĂ: un robot care așteaptă jetonul și schimbă IP-ul și emailul ajunge la
+  cererea în așteptare; fără căsuța poștală nu ajunge la cont, iar cererile expiră (24 h) și se șterg (7 zile după).
 
 ### 7. Integritate în timp
 **Eșec:** modificare retroactivă în lună închisă; declarație depusă regenerată altfel;
@@ -505,6 +513,11 @@ fișiere necolectate).
   `verificator_neconformitati.sh` -> ROȘU) + e2e `test_def_c35_*` (verificatorul din arborele plasei numește un defect plantat acolo;
   mutația „rădăcina = checkout-ul publicat” -> ROȘU). LIMITĂ: o cale compusă din bucăți nu e prinsă; proza din docstringuri nu se
   scanează.
+- ACOPERIT (15.10.2026, deficiența 256): codul vechi rămas în filă după o publicare. Pagina `/` cu `Cache-Control: no-cache`;
+  anunțul „Versiune nouă” nu mai e șters de bara superadminului; reîncărcarea automată pe pagina principală și la întoarcerea /
+  deschiderea unui ecran de acolo, numai fără formular început (`static/js/versiune.js`). Gărzi: e2e `test_def_256_*` (o publicare
+  simulată în directorul servit), `core/test_versiune_publicata.py` (orice reîncărcare automată e păzită de `!formularInceput()`).
+  LIMITĂ: un ecran lăsat deschis rămâne pe versiunea veche până la închidere (anunțul o spune).
 - ACOPERIT (15.10.2026): un deadlock la curățarea plasei (`DROP SCHEMA … CASCADE` al firmei de probă vs. o cerere a paginii încă
   deschise) respingea un lot verde. `frontend_test/e2e/curatenie.scoate` — o firmă pe tranzacție, reluată la `DeadlockDetected`; gard
   `core/test_e2e_curatenie_reluare.py` (mutația „fără reluare” -> ROȘU). LIMITĂ: alte erori de curățare (nu deadlock) urcă, vizibile.
@@ -8886,9 +8899,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**794 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**796 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 756
+### `core/` — 758
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9064,6 +9077,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_cui_cnp_test_valid.py` — [Date de test — CUI/CNP verificate] GARD: un CUI/CNP folosit ca date de test VALIDE (`cui=`/`cnp="..."`)
 - `core/test_curatenie.py` — GARD [03.09.2026]: ocolirea de curatenie se deschide din INDEX, si numai pentru curatenie.
 - `core/test_curatenie_lot18.py` — GARZI [curatenie lot18]: reparatiile 1a (vanzare marja la pret vanzare), 1b (diferente curs 768/668
+- `core/test_cutia_email_numai_la_proba.py` — Cutia poștală de test (`ICONTA_EMAIL_CUTIE`, `core/observare._in_cutia_de_test`, lotul 4 — 15.10.2026) există NUMAI pe aplicația
 - `core/test_d100.py` — Teste gardian pentru D100 - modulul a fost REFACUT complet 16.07.2026.
 - `core/test_d100_cota.py` — d100: rata default micro(1%)/profit(16%) vine din cota (impozit_micro/impozit_profit), NU din literalul
 - `core/test_d100_cui_checksum.py` — Gard T1 (CATALOG_INVALIDITATE.md, D100 #7/#11/#19): CUI-ul firmei trebuie validat de app
@@ -9368,6 +9382,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_infra_vizuala.py` — GARDĂ: infrastructura de testare vizuală (frontend_test/vizual) nu poate dispărea tăcut.
 - `core/test_inlocuire_afirmata.py` — GARD [YY/METODA §28, 28.08.2026]: o inlocuire de text intr-un document AFIRMA ca a gasit potrivirea.
 - `core/test_input_fara_title_only.py` — GARD: niciun <input> din ecrane nu-și spune sensul DOAR prin `title` (01.10.2026).
+- `core/test_inregistrare_libera.py` — Înregistrarea liberă cu confirmarea emailului (comanda Costin 15.10.2026, „Lotul 4” pct.2, 3, 4, 6; verbatim în DECIZII).
 - `core/test_instrumente_roadmap.py` — [metoda-ca-poarta] GARD: INSTRUMENTE_ROADMAP.md nu minte — un instrument marcat CONSTRUIT trebuie sa
 - `core/test_interpretare.py` — GARDĂ: o interpretare e un OBIECT declarabil, cu variantele obligatorii. (P11, 22.08.2026)
 - `core/test_intrare_date_garduri.py` — GARZI cat.1 (Intrare date) — RATCHET: idempotenta importurilor + banii nu ajung NULL, verificate MECANIC.

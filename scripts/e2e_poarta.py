@@ -47,6 +47,9 @@ def _env_test():
                 k, v = linie.split("=", 1)
                 env[k.strip()] = v.strip().strip('"').strip("'")
     env.pop("BREVO_API_KEY", None)               # nimic trimis în afară din probă
+    # [15.10.2026, lotul 4] emailurile aplicației de probă se scriu în cutia de test (`observare._in_cutia_de_test`): linkul de
+    # confirmare a înregistrării îl vede numai destinatarul, deci proba și-l ia de aici. Cutia needitabilă = emailul care n-a plecat.
+    env["ICONTA_EMAIL_CUTIE"] = os.path.join(TEMP, "cutie_email")
     # [comanda Costin 09.10.2026 pct.7] AI simulat: nicio cerere spre model; testele pregătesc răspunsurile (`core.ai_client`)
     env.pop("ANTHROPIC_API_KEY", None)
     env["ICONTA_AI_SIMULAT"] = os.path.join(TEMP, "ai_simulat")

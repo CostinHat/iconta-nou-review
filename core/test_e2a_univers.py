@@ -93,7 +93,8 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # [14.10.2026, decizia Costin pct.3–4 la lotul 1] 85 -> 86: `core/migrare_salariati_de_verificat.py` (coloana `salariati.de_verificat`)
     # [15.10.2026, lotul 2] 86 -> 87: `core/migrare_invitatii_cabinet.py` (tabela `public.invitatii_cabinet`)
     # [15.10.2026, lotul 3] 87 -> 88: `core/migrare_ciorne_proprii.py` (triggerele ciornei altui utilizator, deficiența 246)
-    assert 40 <= len(mg) <= 88, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [15.10.2026, lotul 4] 88 -> 89: `core/migrare_inregistrare_libera.py` (`public.setari_platforma`, `public.inregistrari_in_asteptare`)
+    assert 40 <= len(mg) <= 89, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

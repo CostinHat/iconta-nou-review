@@ -31,6 +31,8 @@ PUBLICE = {
     ("post", "/auth/login"),                    # autentificarea insasi
     ("post", "/auth/register"),                 # inregistrare cont nou — cere invitatia (14.10.2026, comanda Costin pct.3)
     ("get",  "/public/invitatie/{token}"),      # starea invitatiei (emailul invitat); tokenul nu se ghiceste (32 de octeti)
+    ("get",  "/public/inregistrare"),           # [lotul 4] vizitatorul afla daca inregistrarea libera e deschisa (+ jetonul formularului)
+    ("post", "/public/confirma-inregistrare"),  # [lotul 4] clicul pe linkul din email: tokenul (32 de octeti) e autentificarea
     ("get",  "/public/termeni"),                # T&C, obligatoriu public
     ("get",  "/public/config"),                 # config client (fara secrete)
     ("post", "/public/reset-parola/cere"),      # recuperare parola: userul nu e logat

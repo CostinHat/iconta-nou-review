@@ -155,6 +155,24 @@ CLASIFICARE = {
         "proba": "test_register_contul_nu_ramane_fara_dovada_acordului",
     },
 
+    "POST /public/confirma-inregistrare": {
+        "clasa": CRITIC,
+        "reparat": False,
+        "efecte": "cererea in asteptare folosita (public.inregistrari_in_asteptare) <-> cabinetul + userul admin "
+                  "(public.accounting_firms, public.users) <-> dovada acordului (public.acord_termeni) <-> bun venit, anuntul "
+                  "catre superadmin si firma din CUI (dupa commit)",
+        "de_ce":
+            "[15.10.2026, lotul 4] Construita direct in forma corecta: un cont fara cererea lui folosita ar putea fi creat de doua "
+            "ori de acelasi link; o cerere folosita fara cont ar lasa omul fara cont si fara link. Cererea se blocheaza (`FOR "
+            "UPDATE`) si se marcheaza IN ACEEASI tranzactie cu contul si cu dovada acordului (versiunea termenilor de la formular). "
+            "Emailurile si firma din CUI vin DUPA commit, ca la `/auth/register`: contul e valid si fara firma, iar raspunsul "
+            "poarta adevarul (`firma_creata`, `avertisment`).",
+        "reparatie":
+            "nimic de reparat: ruta s-a nascut in forma de mai sus (o tranzactie: cererea blocata + contul + acordul + folosirea "
+            "cererii; efectele externe dupa commit). Proba de injectie o tine asa.",
+        "proba": "test_confirmarea_inregistrarii_nu_lasa_cont_fara_cererea_folosita",
+    },
+
     "POST /tenants/{tenant_id}/client-acces": {
         "clasa": CRITIC,
         "reparat": True,

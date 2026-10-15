@@ -283,9 +283,11 @@ def actualizeaza_cabinet(conn, firm_id, nume=None, cui=None):
     return {"ok": True, "cabinet": dict(r)} if r else {"ok": False, "cod": "INEXISTENT"}
 
 
-def inregistreaza_cabinet(conn, email, parola, nume_cabinet, nume=None, prenume=None):
+def inregistreaza_cabinet(conn, email, parola, nume_cabinet, nume=None, prenume=None, parola_hash=None):
     """
     Creează un cabinet nou (accounting_firms) + user admin_firma (scrypt).
+    `parola_hash`: [15.10.2026, lotul 4] hash-ul gata făcut (scrypt) — la confirmarea înregistrării libere parola NU se mai știe în
+    clar; s-a păstrat numai hash-ul ei, în cererea în așteptare.
     Respectă chk_firm_required (admin_firma cere accounting_firm_id).
     Întoarce {ok, user_id, firm_id} sau {ok:False, cod, mesaj}.
     """
@@ -297,7 +299,7 @@ def inregistreaza_cabinet(conn, email, parola, nume_cabinet, nume=None, prenume=
         cur.execute("INSERT INTO public.accounting_firms (nume) VALUES (%s) RETURNING id",
                     (nume_cabinet,))
         firm_id = cur.fetchone()["id"]
-        h = nucleu.hash_parola(parola)
+        h = parola_hash or nucleu.hash_parola(parola)
         cur.execute(
             # [B3 06.08.2026] proprietarul cabinetului (radacina) primeste drepturile operationale la
             # creare: nimeni deasupra nu i le poate acorda, iar un cabinet solo are nevoie de tot lantul

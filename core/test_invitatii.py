@@ -46,7 +46,9 @@ def test_tokenul_nu_sta_in_baza_si_invitatia_expira(cur):
 
 
 def test_inregistrarea_fara_invitatie_e_refuzata_inainte_de_orice_scriere(monkeypatch):
-    from core import uc_auth, auth_api
+    """[15.10.2026, lotul 4] cu comutatorul pe „numai prin invitație” (fără invitație, refuzul depinde de mod)."""
+    from core import uc_auth, auth_api, setari_platforma
+    monkeypatch.setattr(setari_platforma, "mod_inregistrare", lambda cur: {"mod": setari_platforma.INVITATIE})
     chemat = []
     monkeypatch.setattr(auth_api, "inregistreaza_cabinet", lambda *a, **k: chemat.append(1) or {"ok": False, "mesaj": "x"})
     date = types.SimpleNamespace(email="nou@exemplu.ro", parola=secrets.token_urlsafe(18),   # refuzată înainte de orice scriere: n-ajunge nicăieri

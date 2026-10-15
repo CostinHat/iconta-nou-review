@@ -113,12 +113,8 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
-    ("register", '_inv.MESAJ_FARA_INVITATIE'): (
-        'Lotul 2 (comanda Costin 14.10.2026 pct.3, verbatim în DECIZII „Lotul 2”): „Înregistrarea liberă se închide: în pilot, conturile noi se creează numai prin invitație.” `/auth/register` refuză (403) fără invitație valabilă și cu alt email decât cel invitat. Gardul: `core/test_invitatii.py`, e2e `frontend_test/e2e/e2e_invitatii.py`.'),
-    ("register", "_s['refuz']['motiv']"): (
-        'Lotul 2 (comanda Costin 14.10.2026 pct.3, verbatim în DECIZII „Lotul 2”): „Înregistrarea liberă se închide: în pilot, conturile noi se creează numai prin invitație.” `/auth/register` refuză (403) fără invitație valabilă și cu alt email decât cel invitat. Gardul: `core/test_invitatii.py`, e2e `frontend_test/e2e/e2e_invitatii.py`.'),
-    ("register", "'Invitația e pentru %s. Contul se creează numai cu emailul invitat.' % _s['email']"): (
-        'Lotul 2 (comanda Costin 14.10.2026 pct.3, verbatim în DECIZII „Lotul 2”): „Înregistrarea liberă se închide: în pilot, conturile noi se creează numai prin invitație.” `/auth/register` refuză (403) fără invitație valabilă și cu alt email decât cel invitat. Gardul: `core/test_invitatii.py`, e2e `frontend_test/e2e/e2e_invitatii.py`.'),
+    ("login", "_il.MESAJ_NECONFIRMAT"): (
+        'Lotul 4 (comanda Costin 15.10.2026 pct.2, verbatim în DECIZII „Lotul 4”): „Până la confirmare nu se poate loga”. Login-ul eșuat al unei înregistrări libere neconfirmate, cu parola corectă a cererii, spune „confirmă emailul” (401) în loc de „email sau parolă greșite”. Gardul: `core/test_inregistrare_libera.py`, e2e `frontend_test/e2e/e2e_inregistrare_libera.py`.'),
     ("achizitie_ic", "str(e)"): (
         "Deficiența C7 generalizată (10.10.2026): refuzul motivat al creării facturii (`creeaza_factura` ridică `ValueError` — cod partener, serie, cotă) ieșea 500; tradus în 422, ca la `factura_creeaza`. Gardul: `test_refuz_generator_422::test_refuzul_emiterii_nu_ajunge_la_contabil_ca_500`."),
     ("achizitie_necorporala", "str(e)"): (
@@ -271,7 +267,18 @@ _MOTIV_EMAIL_OCUPAT = (
     "Testarea ca asistent, comanda Costin 04.10.2026 pct.3: „adresa aparține deja unui cont cu alt rol” — refuz NUMIT, "
     "pe câmp, dintr-o singură funcție (`uc_comun._refuza_email_ocupat`). Până azi trei rute ridicau aceeași stare cu "
     "„Autentifică-te…”, scris pentru proprietarul adresei, nu pentru cel care invită. Codul HTTP rămâne același.")
+_MOTIV_VALIDARI_L4 = ("Lotul 4 (15.10.2026, DECIZII „Lotul 4”): verificările formularului de înregistrare (bifa termenilor, parola, "
+                      "emailul) sunt comune căii cu invitație și celei libere, deci stau în `uc_auth._valideaza_formularul`, chemat "
+                      "de `register` înaintea oricărei scrieri — același refuz, același cod (400).")
 PERECHI_MUTATE_IN_AJUTOR = {
+    ("register", "'Trebuie să accepți Termenii și condițiile pentru a crea contul.'"): ("_valideaza_formularul", _MOTIV_VALIDARI_L4),
+    ("register", "_nucleu.PAROLA_MESAJ"): ("_valideaza_formularul", _MOTIV_VALIDARI_L4),
+    ("register", "EMAIL_INVALID"): ("_valideaza_formularul", _MOTIV_VALIDARI_L4),
+    ("register", "'Termenii și condițiile nu se pot citi acum, deci acordul tău nu s-ar putea consemna. Contul NU a fost creat. "
+                 "Încearcă din nou peste câteva minute.'"): ("_valideaza_formularul", _MOTIV_VALIDARI_L4),
+    ("register", "r['mesaj']"): ("_register_cu_invitatie", (
+        "Lotul 4 (15.10.2026, DECIZII „Lotul 4”): refuzul crearii contului (`inregistreaza_cabinet`, ex. emailul deja inregistrat) "
+        "pe calea cu invitatie sta in `uc_auth._register_cu_invitatie`, chemat de `register` — acelasi refuz, acelasi cod (400).")),
     ("asistent_creeaza", "EMAIL_EXISTA"): ("_refuza_email_ocupat", _MOTIV_EMAIL_OCUPAT),
     ("client_acces_creeaza", "EMAIL_EXISTA"): ("_refuza_email_ocupat", _MOTIV_EMAIL_OCUPAT),
     ("portal_adauga_acces", "EMAIL_EXISTA"): ("_refuza_email_ocupat", _MOTIV_EMAIL_OCUPAT),
@@ -285,7 +292,8 @@ def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
     for (fn_nume, _mesaj), (ajutor, motiv) in PERECHI_MUTATE_IN_AJUTOR.items():
         assert len(motiv) > 80
         _cale, _nod = _ef.functia(fn_nume)
-        chemate = {x.func.attr for x in _ast.walk(_nod) if isinstance(x, _ast.Call) and isinstance(x.func, _ast.Attribute)}
+        chemate = {x.func.attr if isinstance(x.func, _ast.Attribute) else x.func.id for x in _ast.walk(_nod)
+                   if isinstance(x, _ast.Call) and isinstance(x.func, (_ast.Attribute, _ast.Name))}   # [lotul 4] și ajutor local
         assert ajutor in chemate, "%s: mutarea declarată în %s nu e în cod" % (fn_nume, ajutor)
 
 
@@ -387,8 +395,6 @@ APELURI_EXTRASE_IN_AJUTOR = {
         'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
     'portal_schimba_email': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
         'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
-    'register': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
-        'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
     'reset_parola_cere': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
         'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
     "s1005_valideaza": (("core/duk.py", "valideaza"), (
@@ -430,6 +436,38 @@ APELURI_EXTRASE_IN_AJUTOR = {
 }
 
 
+#: [15.10.2026, lotul 4] Corpul extras în MAI MULTE ajutoare: `register` (înregistrarea cu invitație SAU liberă, cu confirmare) are
+#: verificările formularului, calea invitației și pașii de după cont (bun venit, anunț, firma din CUI) în ajutoare ale aceluiași modul,
+#: folosite și de `confirma_inregistrarea` (fără dubluri). Creditul se dă în ORDINEA de aici: un ajutor chemat dintr-unul de mai sus
+#: primește creditul după acela (pe apel efectiv, ca în tabelul de sus). Anti-vacuu: `test_EXTRAGERILE_declarate_chiar_cheama_ajutorul`.
+_MOTIV_LOTUL_4 = ('Lotul 4 (comanda Costin 15.10.2026, verbatim în DECIZII „Lotul 4”): înregistrarea liberă cu confirmarea emailului. '
+                  '`register` are acum două căi (invitația, ca în lotul 2; formularul liber, care devine o cerere în așteptare); '
+                  'verificările formularului (`_valideaza_formularul`), calea invitației (`_register_cu_invitatie`) și pașii de după '
+                  'contul nou (`_dupa_cont_nou`, `_anunta_cabinet_nou`) sunt ajutoare comune cu confirmarea (`confirma_inregistrarea`). '
+                  'Trimiterea emailului: `observare.trimite_email_html_sau_semnaleaza` (C34).')
+APELURI_EXTRASE_IN_AJUTOARE = {
+    "register": ((("core/uc_auth.py", "_valideaza_formularul"), ("core/uc_auth.py", "_register_cu_invitatie"),
+                  ("core/uc_auth.py", "_dupa_cont_nou"), ("core/uc_auth.py", "_anunta_cabinet_nou"),
+                  ("core/observare.py", "trimite_email_html_sau_semnaleaza")),
+                 _MOTIV_LOTUL_4),
+}
+
+#: [15.10.2026, lotul 4] Apeluri SCOASE deliberat, cu motivul. Anti-vacuu: `test_SCOASELE_declarate_chiar_lipsesc`.
+APELURI_SCOASE = {
+    ("register", "_trimite_brevo"): (
+        "Lotul 4 pct.4 (comanda Costin 15.10.2026): alerta internă „cont nou de cabinet” (`observare._trimite_brevo`, text fără date, "
+        "către ICONTA_ALERTA_EMAIL) e înlocuită de anunțul cerut — un email HTML către superadmin, cu cabinetul și calea "
+        "(`_anunta_cabinet_nou`, prin `trimite_email_html_sau_semnaleaza`)."),
+    ("register", "strftime"): (
+        "Lotul 4 (DS cap.4, verificatorul BACKEND_UI_BRUT): data din anunțul de cabinet nou — destinată omului — se formatează prin "
+        "formatorul canonic `pdf_util.data_ro(..., \"cu_ora\")`, nu cu `strftime` local; alerta veche avea `strftime` pe o dată ISO."),
+    ("register", "trebuie_trimisa"): (
+        "Lotul 4 pct.4 (comanda Costin 15.10.2026: „La fiecare cabinet nou confirmat primesc un email de anunț”): alerta „cont nou de "
+        "cabinet” trecea prin pragul anti-flood de 15 minute din memoria procesului (`observare.trebuie_trimisa`) — al doilea cabinet "
+        "din același sfert de oră nu mai era anunțat. Anunțul (`_anunta_cabinet_nou`) pleacă acum la FIECARE cabinet."),
+}
+
+
 def _apeluri_ajutor(cale, nume):
     """Apelurile din corpul ajutorului + din funcțiile aceluiași modul pe care le cheamă direct (un nivel)."""
     arb = ast.parse(io.open(os.path.join(RAD, cale), encoding="utf-8").read())
@@ -450,9 +488,21 @@ def _apeluri_ajutor(cale, nume):
 
 
 def test_EXTRAGERILE_declarate_chiar_cheama_ajutorul():
-    """Anti-vacuu: o extragere declarată fără apelul ajutorului (sau cu un ajutor inexistent) ar scuza apeluri pierdute."""
+    """Anti-vacuu: o extragere declarată fără apelul ajutorului (sau cu un ajutor inexistent) ar scuza apeluri pierdute. Pentru
+    tabelul cu mai multe ajutoare: primul e chemat de funcție, fiecare următor de funcție sau de unul dintre ajutoarele dinaintea lui."""
     import ast as _ast
     from core import scan_sql_efectiv as _ef
+    for fn_nume, (perechi, motiv) in APELURI_EXTRASE_IN_AJUTOARE.items():
+        assert len(motiv) > 80
+        _cale, _nod = _ef.functia(fn_nume)
+        chemate = {x.func.attr if isinstance(x.func, _ast.Attribute) else x.func.id for x in _ast.walk(_nod)
+                   if isinstance(x, _ast.Call) and isinstance(x.func, (_ast.Attribute, _ast.Name))}
+        for cale, ajutor in perechi:
+            assert ajutor in chemate, "%s: extragerea declarată în %s nu e chemată nici de funcție, nici de un ajutor de mai sus" % (
+                fn_nume, ajutor)
+            ale_lui = _apeluri_ajutor(cale, ajutor)
+            assert ale_lui, "%s: ajutorul %s nu cheamă nimic" % (fn_nume, ajutor)
+            chemate |= set(ale_lui)
     for fn_nume, ((cale, ajutor), motiv) in APELURI_EXTRASE_IN_AJUTOR.items():
         assert len(motiv) > 80
         assert _apeluri_ajutor(cale, ajutor), "%s: ajutorul %s nu cheamă nimic" % (fn_nume, ajutor)
@@ -461,6 +511,22 @@ def test_EXTRAGERILE_declarate_chiar_cheama_ajutorul():
         chemate = {x.func.attr if isinstance(x.func, _ast.Attribute) else x.func.id for x in _ast.walk(_nod)
                    if isinstance(x, _ast.Call) and isinstance(x.func, (_ast.Attribute, _ast.Name))}
         assert ajutor in chemate, "%s: extragerea declarată în %s nu e în cod" % (fn_nume, ajutor)
+
+
+def test_SCOASELE_declarate_chiar_lipsesc():
+    """Anti-vacuu pe APELURI_SCOASE: apelul declarat scos lipsește din funcție ȘI din ajutoarele ei declarate (altfel tabelul ar scuza
+    o pierdere care nu s-a întâmplat — sau ar ascunde una care s-a întors)."""
+    import ast as _ast
+    from core import scan_sql_efectiv as _ef
+    for (fn_nume, apel), motiv in APELURI_SCOASE.items():
+        assert len(motiv) > 80
+        _cale, _nod = _ef.functia(fn_nume)
+        toate = {x.func.attr if isinstance(x.func, _ast.Attribute) else x.func.id for x in _ast.walk(_nod)
+                 if isinstance(x, _ast.Call) and isinstance(x.func, (_ast.Attribute, _ast.Name))}
+        for cale, ajutor in APELURI_EXTRASE_IN_AJUTOARE.get(fn_nume, ((None, None),))[0]:
+            if cale:
+                toate |= set(_apeluri_ajutor(cale, ajutor))
+        assert apel not in toate, "%s: apelul declarat scos (%s) e tot acolo" % (fn_nume, apel)
 
 
 def test_INLOCUIRILE_declarate_chiar_exista():
@@ -952,6 +1018,18 @@ def test_NICIUN_APEL_nu_s_a_pierdut_pe_drum():
             _n_apel = acum[APELURI_EXTRASE_IN_AJUTOR[nume][0][1]]
             for k, v in _apeluri_ajutor(*APELURI_EXTRASE_IN_AJUTOR[nume][0]).items():
                 acum[k] = acum.get(k, 0) + v * _n_apel
+        # [15.10.2026, lotul 4] corpul extras în mai multe ajutoare, creditate în ordine (vezi APELURI_EXTRASE_IN_AJUTOARE)
+        for _cale_a, _ajutor in (APELURI_EXTRASE_IN_AJUTOARE.get(nume, ((), ""))[0]):
+            _n_apel = acum.get(_ajutor, 0)
+            # un ajutor din stratul use-case se numără ca ruta (refuzurile `_erori.*` = HTTPException, prin aceeași hartă); unul
+            # din afara lui, ca în tabelul cu un singur ajutor
+            _cheie_uc = (os.path.basename(_cale_a)[:-3], _ajutor)
+            _ale = (_apeluri(uc[_cheie_uc], harta) if _cheie_uc in uc else _apeluri_ajutor(_cale_a, _ajutor))
+            for k, v in _ale.items():
+                acum[k] = acum.get(k, 0) + v * _n_apel
+        for (_fn, _apel), _m in APELURI_SCOASE.items():
+            if _fn == nume:
+                inainte.pop(_apel, None)
         # [lot 19, 03.10.2026] fiecare `_uc_comun.bifa(corp, x)` inlocuieste o pereche `bool(corp.get(x))` (sau, la
         # taxarea inversa, `str(corp.get(x)).strip().lower()`): creditul se da PE APEL efectiv, iar `extra` numeste
         # apelurile scoase deliberat. Anti-vacuu: `test_BIFA_INLOCUIRI_chiar_cheama_bifa`.

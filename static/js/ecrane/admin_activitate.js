@@ -33,7 +33,7 @@ async function randeaza(corp, nav) {
       <div class="pf-frand" data-zebra="${i % 2}">
         <div class="pf-frand-text" data-i="${i}" style="cursor:pointer">
           <div class="pf-frand-nume">${esc(c.nume || "—")}</div>
-          <div class="pf-frand-sub">${c.nr_firme ?? 0} firme · ${c.nr_angajati ?? 0} angajați · ${c.nr_facturi ?? 0} facturi emise · ${c.nr_declaratii ?? 0} declarații depuse · ${c.nr_recomandari ?? 0} recomandări · ultima activitate: ${dataRo(c.ultima_activitate, "cu_ora")}</div>
+          <div class="pf-frand-sub">${c.nr_firme ?? 0} firme · ${c.nr_angajati ?? 0} angajați · ${c.nr_facturi ?? 0} facturi emise · ${c.nr_declaratii ?? 0} declarații depuse · ${c.nr_recomandari ?? 0} recomandări · ultima activitate: ${dataRo(c.ultima_activitate, "cu_ora")}${c.creat_la ? ` · creat: ${dataRo(c.creat_la, "cu_ora")}${c.cale ? ` (${esc(c.cale)})` : ""}` : ""}</div>
         </div>
         ${stare}
         <button class="${c.activ ? 'buton-sters' : 'buton-secundar'}" data-toggle="${i}" style="margin-left:10px">

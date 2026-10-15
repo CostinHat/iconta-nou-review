@@ -14,7 +14,11 @@ care o deține apelantul — contractul P4, care nu se redeschide aici.*
 
 def activitate_pe_cabinete(cur):
     cur.execute("""
-                SELECT f.id, f.nume, f.activ,
+                SELECT f.id, f.nume, f.activ, f.creat_la,
+                       -- [15.10.2026, lotul 4 pct.4] pe ce cale a venit cabinetul (invitația lui sau înregistrarea liberă confirmată)
+                       CASE WHEN EXISTS (SELECT 1 FROM public.invitatii_cabinet ic WHERE ic.firm_id = f.id) THEN 'invitație'
+                            WHEN EXISTS (SELECT 1 FROM public.inregistrari_in_asteptare ia WHERE ia.firm_id = f.id)
+                                 THEN 'înregistrare liberă' END AS cale,
                        (SELECT COUNT(*) FROM public.tenants t WHERE t.accounting_firm_id = f.id) AS nr_firme,
                        (SELECT COUNT(*) FROM public.users u2 WHERE u2.accounting_firm_id = f.id
                           AND u2.activ = true AND u2.rol IN ('admin_firma','angajat')) AS nr_angajati,
@@ -31,7 +35,7 @@ def activitate_pe_cabinete(cur):
                 FROM public.accounting_firms f
                 LEFT JOIN public.users u ON u.accounting_firm_id = f.id
                 LEFT JOIN public.audit_log a ON a.user_id = u.id
-                GROUP BY f.id, f.nume, f.activ
+                GROUP BY f.id, f.nume, f.activ, f.creat_la
                 ORDER BY f.nume
             """)
     return cur.fetchall()

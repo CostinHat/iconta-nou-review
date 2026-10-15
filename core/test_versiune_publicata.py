@@ -73,17 +73,24 @@ def test_reincarcarea_e_doar_la_clic_si_la_autentificare_fara_formular():
     """[PIVOT față de R129, decizia Costin 07.10.2026] Varianta (a) din 03.09.2026 — *„nu forta reincarcarea — un formular pe
     jumatate completat pierdut e mai rau decat defectul”* — ramane INTREAGA pentru formularul inceput. Nou: la autentificare,
     fara formular inceput, aplicatia se reincarca singura (nu exista ce pierde; codul vechi din fila, da).
+    [PIVOT 15.10.2026, deficiența 256, DECIZII „Lotul 4”] „Pagina principală și ecranele se încarcă în versiunea nouă fără reîncărcare
+    forțată.” Reîncărcarea automată se face și pe pagina principală (nicio fereastră deschisă) și la întoarcerea / deschiderea unui
+    ecran de acolo — TOT numai fără formular început.
 
-    NUMARATOARE: exact DOUA reincarcari in modul. Una in ascultatorul de apasare (omul alege), una in ramura de autentificare —
-    si AMANDOUA pazite de `formularInceput()`. O a treia, oriunde, face gardul rosu.
-    MUTATIE: `!formularInceput()` scos din ramura de autentificare -> pica."""
+    NUMARATOARE: exact DOUA locuri care reincarca. Ascultatorul de apasare (omul alege) si `reincarcaActualizat` (singura reincarcare
+    facuta de aplicatie). Fiecare chemare a lui `reincarcaActualizat` e pazita, pe aceeasi linie, de `!formularInceput()`.
+    MUTATIE: `!formularInceput()` scos din oricare din cele trei chemari -> pica."""
     import re
     sursa = io.open(_MODUL, encoding="utf-8").read()
     linii = [x.strip() for x in sursa.splitlines() if re.search(r"location\.reload\(\)", x)]
     assert len(linii) == 2, "versiune.js are %d reincarcari, nu 2: %r" % (len(linii), linii)
     clic = [x for x in linii if re.search(r'addEventListener\("click", \(\) => \(formularInceput\(\) \? spuneDeCe\(\) : window\.location\.reload\(\)\)\)', x)]
-    autent = [x for x in linii if re.match(r"if \(laAutentificare && !formularInceput\(\)\) \{ window\.location\.reload\(\); return; \}$", x)]
-    assert (len(clic), len(autent)) == (1, 1), linii
+    unica = re.search(r"function reincarcaActualizat\(\) \{(.*?)\n\}", sursa, re.S)
+    assert len(clic) == 1 and unica and unica.group(1).count("window.location.reload();") == 1, linii
+    chemari = [x.strip() for x in sursa.splitlines() if re.search(r"reincarcaActualizat\(\);", x)]
+    assert len(chemari) == 3, chemari
+    pazite = [x for x in chemari if re.match(r"if \(.*!formularInceput\(\)\) \{ reincarcaActualizat\(\); return( true)?; \}$", x)]
+    assert pazite == chemari, "o reincarcare automata fara paza formularului inceput: %r" % [x for x in chemari if x not in pazite]
     assert re.search(r"export function porneste\(\) \{[^}]*?verifica\(true\);", sursa)
 
 

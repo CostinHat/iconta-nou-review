@@ -5,7 +5,7 @@
 import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
 import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt } from "../api.js?v=2561dbfd34";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=83cac2dbab";
-import { randeazaAdminActivitate } from "./admin_activitate.js?v=75d0c5150d";
+import { randeazaAdminActivitate } from "./admin_activitate.js?v=eb7f9fe915";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=510e670f0b";
 import { randeazaAdminAnalytics } from "./admin_analytics.js?v=473ece7371";
 
@@ -31,10 +31,14 @@ const DEF = [
   { cheie:"sanatate", titlu:"Sănătate server", icon: "server", ...CULORI_CARD.piersica,
     sinteza:"Server, aplicație, bază de date, erori",
     actiune:(nav) => nav.deschide("Sănătate server", (corp) => randeazaAdminSanatate(corp, nav)) },
-  // [14.10.2026, comanda Costin pct.3, verbatim în DECIZII „Lotul 2”] conturile noi de cabinet numai prin invitație
+  // [14.10.2026, comanda Costin pct.3, verbatim în DECIZII „Lotul 2”] invitațiile; [15.10.2026, lotul 4 pct.5] a doua cale
   { cheie:"invitatii", titlu:"Invitații cabinete", icon: "mail", ...CULORI_CARD.verde,
-    sinteza:"Conturile noi se creează numai prin invitație",
+    sinteza:"Contul unui cabinet adus de tine, creat din invitație",
     actiune:(nav) => nav.deschide("Invitații cabinete", (corp) => randeazaAdminInvitatii(corp)) },
+  // [15.10.2026, „Lotul 4” pct.6, verbatim în DECIZII] comutatorul înregistrării, fără publicare
+  { cheie:"inregistrare", titlu:"Înregistrare", icon: "users", ...CULORI_CARD.albastru,
+    sinteza:"Liberă, cu confirmarea emailului, sau numai prin invitație",
+    actiune:(nav) => nav.deschide("Înregistrare", (corp) => randeazaAdminInregistrare(corp)) },
 ];
 
 export function desktopAdmin(continut, nav) {
@@ -198,7 +202,7 @@ async function incarcaPropuneri(corp) {
 async function randeazaAdminInvitatii(corp) {
   corp.innerHTML = `
     <h2 class="pf-titlu">Invitații cabinete</h2>
-    <p class="pf-intro">În perioada pilot, conturile noi de cabinet se creează numai prin invitație. Invitația e valabilă 14 zile și se folosește o singură dată, numai cu emailul invitat.</p>
+    <p class="pf-intro">Invitația creează contul unui cabinet adus de tine, oricum ar fi setată înregistrarea (cardul „Înregistrare”). E valabilă 14 zile și se folosește o singură dată, numai cu emailul invitat.</p>
     <label class="camp" style="max-width:420px"><span class="camp-eticheta">Email cabinet <span class="oblig">*</span></span>
       <input type="email" id="inv-email" class="camp-input" autocomplete="off" placeholder="nume@cabinet.ro"></label>
     <button class="buton-primar" id="inv-trimite" data-actiune="POST /admin/invitatii">Trimite invitația</button>
@@ -235,3 +239,43 @@ async function randeazaAdminInvitatii(corp) {
   await incarca();
 }
 
+
+// [15.10.2026, „Lotul 4” pct.6, verbatim în DECIZII] „Comutator în Panou Admin: «Înregistrare: liberă, cu confirmarea emailului /
+// numai prin invitație», ca să o pot schimba eu fără publicare.” Valoarea stă în baza de date (`setari_platforma`), nu în cod.
+async function randeazaAdminInregistrare(corp) {
+  corp.innerHTML = `<h2 class="pf-titlu">Înregistrare</h2><p class="ecran-nota">Se încarcă…</p>`;
+  let st;
+  try { st = await api.get("/admin/setari/inregistrare"); } catch (e) {
+    corp.innerHTML = `<h2 class="pf-titlu">Înregistrare</h2><p class="ecran-nota">${esc((e && e.mesaj) || "Setarea nu se poate încărca.")}</p>`;
+    return;
+  }
+  const deseneaza = () => {
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Înregistrare</h2>
+      <p class="pf-intro">Cum își creează contul un cabinet nou. Schimbarea se aplică imediat, fără publicare. Invitațiile (cardul „Invitații cabinete”) funcționează în ambele moduri.</p>
+      <fieldset class="camp" id="ins-moduri" style="border:0;padding:0;margin:0 0 12px">
+        <legend class="camp-eticheta">Înregistrare</legend>
+        ${st.moduri.map((m) => `<label class="set-bifa"><input type="radio" name="ins-mod" value="${esc(m.mod)}" ${m.mod === st.mod ? "checked" : ""}> <span>${esc(m.eticheta)}</span></label>`).join("")}
+      </fieldset>
+      ${st.mod === "libera" && !st.email_functional ? `<div class="caseta-atentie" id="ins-fara-email"><div class="ca-mesaj">Emailul nu poate pleca acum, deci înregistrarea liberă rămâne închisă: ${esc((st.refuz && st.refuz.motiv) || "")}</div></div>` : ""}
+      <p class="ecran-nota" id="ins-stare">Acum: ${esc(st.eticheta)}${st.modificat_la ? ` · schimbat${st.modificat_de ? " de " + esc(st.modificat_de) : ""} la ${dataRo(st.modificat_la, "cu_ora")}` : ""}.</p>
+      <button class="buton-primar" id="ins-salveaza" data-actiune="PUT /admin/setari/inregistrare">Salvează</button>
+      <div id="ins-msg" style="margin-top:10px"></div>`;
+    corp.querySelector("#ins-salveaza").addEventListener("click", async () => {
+      const ales = corp.querySelector("input[name='ins-mod']:checked");
+      const msg = corp.querySelector("#ins-msg");
+      if (!ales) { arataMesaj(msg, "Alege unul din cele două moduri.", "eroare"); return; }
+      const b = corp.querySelector("#ins-salveaza");
+      b.disabled = true; b.textContent = "Se salvează…";
+      try {
+        st = await api.put("/admin/setari/inregistrare", { mod: ales.value });
+        deseneaza();
+        arataMesaj(corp.querySelector("#ins-msg"), `Înregistrarea e acum: ${st.eticheta}.`, "ok");
+      } catch (e) {
+        b.disabled = false; b.textContent = "Salvează";
+        arataMesaj(msg, (e && e.mesaj) || "Setarea nu s-a putut salva.", "eroare");
+      }
+    });
+  };
+  deseneaza();
+}

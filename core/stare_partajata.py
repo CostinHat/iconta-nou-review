@@ -204,7 +204,9 @@ def ritm_incape(conn, cheie, ip, maxreq=PRAG_RITM, fereastra_sec=FEREASTRA_RITM_
     dar exact clasa pe care valul P6 a scos-o din constructie la `login_esec`.
 
     Instructiunea a doua face trei lucruri intr-una singura, deci nu exista fereastra intre ele:
-      · sterge ce a iesit din fereastra — TOATE randurile expirate, ca la `login_esec`;
+      · sterge ce a iesit din fereastra — toate randurile expirate ALE ACESTUI LIMITATOR (`cheie`). [15.10.2026, lotul 4] Pana
+        atunci stergerea era pe toate cheile, cu fereastra apelului: un limitator de 15 minute (resetarea parolei) ar fi sters
+        randurile de 40 de minute ale limitei de o ora a inregistrarii, care ar fi numarat prea putin;
       · numara cererile IP-ului in fereastra (fereastra e in `WHERE`, nu in Python);
       · insereaza **numai daca** numarul de dinainte e sub prag, si intoarce daca a incaput.
     `WITH`-ul care modifica date se executa o singura data si intotdeauna, independent de ce
@@ -220,7 +222,7 @@ def ritm_incape(conn, cheie, ip, maxreq=PRAG_RITM, fereastra_sec=FEREASTRA_RITM_
         cur.execute(
             "WITH sters AS ("
             "    DELETE FROM public.cereri_ritm"
-            "     WHERE la <= now() - make_interval(secs => %(f)s)"
+            "     WHERE cheie = %(k)s AND la <= now() - make_interval(secs => %(f)s)"
             "), nr AS ("
             "    SELECT count(*) AS c FROM public.cereri_ritm"
             "     WHERE cheie = %(k)s AND ip = %(ip)s"
