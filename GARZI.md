@@ -451,6 +451,15 @@ fundal pe tenantul greșit; **IDOR** (id tenant din URL neverificat contra useru
   test_confirmarea_inregistrarii_nu_lasa_cont_fara_cererea_folosita`, `core/test_cutia_email_numai_la_proba.py`, e2e
   `frontend_test/e2e/e2e_inregistrare_libera.py`. LIMITĂ: un robot care așteaptă jetonul și schimbă IP-ul și emailul ajunge la
   cererea în așteptare; fără căsuța poștală nu ajunge la cont, iar cererile expiră (24 h) și se șterg (7 zile după).
+- ACOPERIT (15.10.2026 seara, 257): anti-roboții sunt Cloudflare Turnstile (înlocuiesc jetonul și capcana de mai sus): tokenul widgetului
+  validat pe server (`inregistrare_libera.verifica_turnstile`; respins -> 400 cu motivul, Cloudflare indisponibil -> 503, niciodată
+  „trece”); fără chei, înregistrarea liberă e închisă (`FARA_ANTIROBOT`); cheile de test ale Cloudflare (trec mereu) numai pe instanța de
+  probă — refuzate de cod fără cutia de test și absente din mediul producției. CSP-ul (nginx, root) e versionat în `config/nginx-iconta`
+  și cel instalat trebuie să fie identic. Gărzi: `core/test_inregistrare_libera.py::test_anti_robotii` /
+  `::test_cheile_de_test_numai_pe_instanta_de_proba` / `::test_comutatorul_si_emailul_inchid_inregistrarea`,
+  `core/test_cutia_email_numai_la_proba.py::test_productia_nu_are_cheile_de_test_turnstile`, `core/test_nginx_csp.py` (2), e2e
+  `test_def_257_*`. LIMITĂ: plasa folosește cheile de test (widgetul real, verdict fix); comportamentul pe o provocare interactivă
+  adevărată nu se poate proba automat [NEVERIFICABIL].
 
 ### 7. Integritate în timp
 **Eșec:** modificare retroactivă în lună închisă; declarație depusă regenerată altfel;
@@ -494,6 +503,15 @@ balanță ≠ sumă înregistrări; backup nerestaurabil.
   (orice mutare a lui `refs/heads/main`, inclusiv fast-forward, reset, ștergere, cere `.git/APROBARE_MAIN` cu SHA-ul exact și textul
   aprobării; aprobarea se consumă) + `pre-commit` (commit direct pe `main` refuzat). Gard `core/test_garda_main.py` (6, pe depozit
   temporar). LIMITĂ: `--no-verify` / alt `core.hooksPath` o ocolesc — oprește greșeala, nu intenția.
+- ACOPERIT (15.10.2026 seara, DECIZII „Poarta o dată pe lot”): poarta completă rulează o dată pe lot și `main` nu primește un SHA fără
+  ea. `commit-msg` = numai `verifica-mesaj`; `scripts/poarta_lot.sh` e SINGURUL care pornește `poarta-suita` (arbore curat, pe ramura
+  lotului; refuză `main`, arborele murdar, SHA-ul deja VERDE, a treia rulare pe ramură) și scrie `VERDE|ROSU <sha> <ramura> <data>` în
+  `<git-common-dir>/poarta_verdicte.log`; `reference-transaction` cere `VERDE <sha>` lângă aprobare. Gărzi: `core/test_poarta_lot.py`
+  (5, depozit temporar; M3a–d), `core/test_garda_main.py::test_aprobarea_fara_poarta_verde_a_sha_ului_nu_ajunge` (M2),
+  `core/test_poarta_ordine.py::test_commit_msg_verifica_numai_mesajul` + `::test_poarta_completa_pornita_numai_de_inchiderea_lotului`
+  (M1, M5), `core/test_poarta_scurta.py::test_lansatorul_ruleaza_toata_suita_cand_derivarea_nu_e_sigura` (M4). LIMITĂ: jurnalul
+  verdictelor e un fișier în `.git` — cine scrie de mână `VERDE <sha>` trece garda (oprește greșeala, nu intenția, ca `--no-verify`);
+  în `~/iconta_nou` garda nouă intră la publicarea lotului 5.
 
 ### 9. Onestitatea testelor
 **Eșec:** teste verzi care nu testează nimic (fake-uri pe codul auditat, teste stale,
@@ -8899,9 +8917,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**796 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**798 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 758
+### `core/` — 760
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9440,6 +9458,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_monitor_fiscal.py` — —
 - `core/test_mutant_zero.py` — core/test_mutant_zero.py — GARD C5 (rest): mutant-zero pe generatoare.
 - `core/test_neplatitor_tva_emitere.py` — GARD — factura emisă de o firmă NEplătitoare de TVA nu poartă taxa (lot 19 pct.4d, 02.10.2026).
+- `core/test_nginx_csp.py` — [257] CSP-ul paginii lasă widgetul Cloudflare Turnstile să se încarce — iar nginx-ul instalat e cel versionat.
 - `core/test_nir_408.py` — GARDA deciziilor Costin 08.10.2026 §6 pct.1–3 — NIR-ul „fără factură” pe 408, factura legată îl închide (verbatim în DECIZII 08.10.2026):
 - `core/test_nir_legare_inversa.py` — GARDA deciziei Costin 08.10.2026, pct.2 — D2 în ordinea inversă (verbatim în DECIZII 08.10.2026):
 - `core/test_nir_randuri_dinamice.py` — GARD cap.24 — randuri dinamice NIR (ecranStocuri), re-rulate IN POARTA prin chromium headless.
@@ -9494,7 +9513,8 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_poarta_gol.py` — Teste numar_operatiuni — puntea catre poarta de declaratie goala.
 - `core/test_poarta_inainte_de_aprobare.py` — GARD [02.09.2026]: POARTA CONFIRMARII CADE INAINTE DE APROBARE, nu dupa.
 - `core/test_poarta_inchidere.py` — GARDA porții de închidere a perioadei — R58, partea care lipsea.
-- `core/test_poarta_ordine.py` — GARDA deciziei Costin 08.10.2026, pct.3: „Verificarea commit-msg rulează înaintea pytest, nu după. Intră în acest lot, nu
+- `core/test_poarta_lot.py` — GARDA lansatorului porții de lot `scripts/poarta_lot.sh` (15.10.2026, comanda Costin, verbatim în DECIZII „Poarta o dată pe lot”:
+- `core/test_poarta_ordine.py` — GARDA ordinii hook-urilor și a locului porții.
 - `core/test_poarta_proaspat.py` — GARD — poarta rulează probele de prospețime ÎNAINTEA suitei (decizia Costin 15.10.2026, pct.1, verbatim în DECIZII „Lotul 3 — C35”:
 - `core/test_poarta_profil.py` — Garda: verificarea de profil nu e decorativa — daca exista, blocheaza generarea.
 - `core/test_poarta_scurta.py` — GARD (07.09.2026) — poarta scurta din PLAN_LUCRU regula 4 nu poate deveni o formalitate.

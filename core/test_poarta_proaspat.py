@@ -97,7 +97,8 @@ def test_artefactul_vechi_e_respins_inainte_de_suita():
         r = subprocess.run(["sh", _POARTA], cwd=d, capture_output=True, text=True, timeout=300,
                            env=dict(os.environ, POARTA_JURNALE=jurnale))
         assert r.returncode == 1, r.stdout + r.stderr
-        assert sorted(os.listdir(jurnale)) == ["precommit_curatenie.log", "precommit_proaspat.log"], os.listdir(jurnale)
+        # [15.10.2026] fără `precommit_curatenie.log`: ocolirea de curățenie a ieșit din poartă (DECIZII „Poarta o dată pe lot”)
+        assert sorted(os.listdir(jurnale)) == ["precommit_proaspat.log"], os.listdir(jurnale)
         consemnate = [l.split()[1] for l in open(os.path.join(d, ".poarta_jurnal.log"), encoding="utf-8")
                       if l.startswith("    FAILED ")]
         assert consemnate == ["core/test_artefact.py::test_artefactul_e_proaspat"], consemnate

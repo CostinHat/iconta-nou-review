@@ -688,7 +688,8 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    Publicarea NU se opreste la disc. Dupa ORICE executie care a trecut poarta verde (pytest cu COLLECTED confirmat +
    verificator TOTAL 0 + `git status --porcelain` gol), executorul face TOTI cei cinci pasi de publicare FARA sa fie
    ceruti in comanda - absenta lor e o defectiune, nu o optiune a celui care compune comanda:
-   1. **commit** local pe server (declanseaza poarta verde: `pre-commit` = ruff, apoi `commit-msg` = mesajul INTAI, apoi
+   1. **commit** local pe server (PIVOT 15.10.2026, pct.13: commitul NU mai ruleaza suita — poarta completa e o data pe lot,
+      `scripts/poarta_lot.sh`, iar `main` cere verdictul ei; pana atunci: `pre-commit` = ruff, apoi `commit-msg` = mesajul INTAI, apoi
       pytest + verificatorul — ordinea din 08.10.2026, decizia Costin pct.3, `scripts/githooks/README.md`);
       **registrele intra in ACELASI commit cu lotul** (decizia Costin 08.10.2026 pct.5, verbatim: „Registrele (PREDARE,
       ISTORIC etc.) intră în commitul lotului, nu într-un commit separat cu poartă proprie. O singură poartă completă pe lot,
@@ -768,6 +769,30 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
       `.poarta_jurnal.log`). **PIVOT 12.10.2026 (decizia Costin pct.1, verbatim in DECIZII):** „Poarta: rămâne la 63 de minute. Nu
       schimbăm serverul. Accelerarea testelor lente (varianta b) o faci numai când nu ai nicio deficiență deschisă.” Tinta de 30 de
       minute din 11.10 e inlocuita; accelerarea testelor lente e fir intern, sub regula a).
+
+13. **POARTA O DATA PE LOT (15.10.2026, comanda Costin, verbatim in DECIZII „Poarta o dată pe lot”; SUPERSEDEAZA „suita la fiecare
+   commit” din 31.07 si ordinea din 08.10 pct.3).** Verbatim: *„Poarta completă: o singură dată pe lot, la închiderea lotului, înainte
+   de publicarea pe producție. Lotul se închide doar când o comandă îți spune explicit „Lotul X e complet”. Între timp, după fiecare
+   comandă, doar rularea țintită de azi (poarta_scurta.py / perimetru.py, cu „incert → rulează tot”), pe numărul de procese de acum.
+   a. Muți poarta din hook-ul commit-msg pe mutarea lui main [...]: main acceptă un commit doar dacă jurnalul porții îl arată verde.
+   b. Dacă poarta pică: repari cauza fiecărui test picat, rulezi doar testele picate o dată ca verificare, apoi poarta completă încă o
+   dată. Maximum două rulări complete pe lot; dacă a doua pică, te oprești și raportezi.”* Si: *„Regula se aplică imediat, începând cu
+   această comandă”*.
+   - **Lot** = grupul de comenzi publicate impreuna; comanda spune din ce lot face parte; lotul se inchide NUMAI la „Lotul X e complet”
+     (nu decide executorul).
+   - **Commit** (oricate, pe ramura lotului, in worktree): `pre-commit` (ruff) + `commit-msg` (`verifica-mesaj`). Nicio suita.
+   - **Dupa fiecare comanda:** `./venv/bin/python scripts/poarta_scurta.py` (perimetrul derivat din `git diff`; incert / gol -> suita
+     intreaga `pytest -q -n 3 --dist loadfile`, NU poarta). Niciodata poarta completa „ca sa aflu ce e stricat”.
+   - **Inchiderea lotului:** tot lotul comis, arbore curat, apoi `sh scripts/poarta_lot.sh` in fundal (timeout 7200000) — singurul loc
+     care porneste `scripts/githooks/poarta-suita` (prospetime, pytest, verificator, cifre F1–F5, plasa). Verdictul:
+     `VERDE|ROSU <sha> <ramura> <data>` in `<git-common-dir>/poarta_verdicte.log`. Refuza: `main`, arbore murdar, SHA deja VERDE, a
+     treia rulare pe ramura. Pe ROSU: cauza fiecarui test picat reparata, testele picate rulate O DATA, commit, a doua (ultima) rulare.
+   - **Publicarea:** `reference-transaction` muta `main` numai la un SHA cu aprobarea scrisa a lui Costin SI cu `VERDE <sha>` in jurnal.
+   - Regimul pilot ramane: poarta lotului ruleaza numai cand cabinetul nu lucreaza (citeste productia: cifrele F1–F5).
+   - Garzi: `core/test_poarta_ordine.py` (commit-msg fara suita; `poarta-suita` chemata numai de `poarta_lot.sh`), `core/test_poarta_lot.py`,
+     `core/test_garda_main.py`, `core/test_poarta_scurta.py`.
+   - Ce s-a schimbat in celelalte puncte: pct.10 pasul 1 („commit declanseaza poarta verde”) si pct.12 c-d se citesc acum: poarta =
+     inchiderea lotului; registrele pot intra in commiturile lotului, iar SHA-ul publicat e cel cu verdictul VERDE.
 
 ## 2.1 De unde vin pasii
 
@@ -892,6 +917,9 @@ articolul din lege si compara cu ce face codul. Aia e responsabilitatea lui si n
 externalizeaza.
 
 ## Mecanica portii (lectii 30.07.2026, platite)
+
+(15.10.2026: poarta ruleaza la inchiderea lotului, `scripts/poarta_lot.sh`, pe commitul lotului — §2.3 pct.13. Lectia „commit INTAI,
+apoi poarta” de mai jos e acum chiar forma porții.)
 
 Poarta e ce se ruleaza, nu ce se spune - iar doua capcane au lasat rezultate false:
 

@@ -2475,3 +2475,19 @@ prin invitație”), fără publicare. 256: pagina principală revalidată la fi
 superadmin, reîncărcare automată pe pagina principală fără formular început. Pe drum: limitatorul de ritm ștergea rândurile altor chei.
 Prima poartă (15:55) a respins cu 5 teste din gărzile globale (refuzul tăcut în JS, upsert fără motiv, un apel scos nedeclarat în P7);
 reparate pe loc, artefactele vizuale refăcute, poarta a doua pornită.
+A doua poartă a lotului 4 (17:59) — VERDE: prospețimea 21, pytest 8250 passed / 10 skipped / 15 xfailed (51 min), plasa 277 passed
+(20 min), verificatorul TOTAL 0, cifrele F1–F5 identice; 71 de minute. Publicat la 18:01 cu acordul lui Costin („de acord”, cabinetul
+pilot nu lucra): backup `~/backups_db/iconta_v2_pre_lot4_20261015_1759.dump` (365 de tabele cu date), fast-forward `fdf3ca5e..48465e7d`,
+post-commit (origin, public, backup), migrarea `core/migrare_inregistrare_libera.py` pe producție, restart de către rulator; four-way
+închis pe `48465e7d`. Pe producție: comutatorul pe „liberă”, nicio cerere în așteptare, `/` cu `Cache-Control: no-cache`.
+
+## 15.10.2026 (seara) — Lotul 5, deschis: poarta o dată pe lot, 257 (Cloudflare Turnstile), registrul 247–257
+
+Comanda: DECIZII 15.10.2026 (seara) „Poarta o dată pe lot”. Lucrul s-a mutat în `/home/costin/iconta_lucru` (ramura `lucru/lot5-2026-10-15`,
+din `48465e7d`, cu registrele de după publicarea lotului 4). Poarta a ieșit din commit: `commit-msg` verifică numai mesajul, poarta
+completă o pornește numai `scripts/poarta_lot.sh` la închiderea lotului (cu verdictul scris în jurnalul comun), iar `main` se mută numai
+la un SHA cu aprobare și verdict VERDE; „incert” în rularea țintită pornește suita întreagă, nu poarta; ocolirea de curățenie a ieșit
+(cod mort). 257: anti-roboții lotului 4 (jeton + capcană) înlocuiți cu Cloudflare Turnstile — widgetul pe formular, validarea pe server,
+fail-closed fără chei; CSP-ul din nginx versionat în `config/nginx-iconta`. Plasa: widgetul real cu cheile de test ale Cloudflare (iframe-ul
+stă într-un shadow DOM închis — testul îl caută printre frame-uri). DEFICIENTE: 253 legată de testele lotului 4, 247–249 / 250–252 / 254
+după răspunsul lui Costin, 257 parțial (cheile și nginx-ul de producție).

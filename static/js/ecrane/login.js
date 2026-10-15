@@ -504,7 +504,7 @@ export function ecranLogin(radacina) {
 
   async function randeazaInregistrare(liber) {
     // [14.10.2026] cu invitație validă: emailul vine din invitație (contul se creează numai cu el).
-    // [15.10.2026, lotul 4] `liber` = starea înregistrării libere (cu jetonul formularului): emailul se scrie, contul vine la confirmare.
+    // [15.10.2026, lotul 4] `liber` = starea înregistrării libere (cu cheia publică a widgetului anti-roboți, 257): emailul se scrie, contul vine la confirmare.
     let inv = null;
     if (!liber) {
       try { inv = await api.get(`/public/invitatie/${encodeURIComponent(INVITATIE)}`); } catch (e) { inv = { valida: false, refuz: { motiv: (e && e.mesaj) || "Invitația nu se poate verifica acum." } }; }
@@ -545,7 +545,6 @@ export function ecranLogin(radacina) {
         <input type="email" class="camp-input" id="reg-email" autocomplete="off" placeholder="nume@firma.ro"${liber ? "" : " readonly"}>
         <span class="camp-ajutor">${liber ? "Aici vine linkul de confirmare — contul se activează după clic." : "Emailul din invitație — contul se creează cu el."}</span>
       </label>
-      <div hidden><label>Site web <input type="text" class="camp-input" id="reg-site" tabindex="-1" autocomplete="off"></label></div>
       <label class="camp">
         <span class="camp-eticheta">Parol\u0103<span class="oblig">*</span></span>
         <input type="password" class="camp-input" id="reg-parola" autocomplete="off">
@@ -554,6 +553,7 @@ export function ecranLogin(radacina) {
         <span class="camp-eticheta">Confirm\u0103 parola<span class="oblig">*</span></span>
         <input type="password" class="camp-input" id="reg-parola2" autocomplete="off">
       </label>
+      ${liber ? '<div class="camp" id="reg-robot"></div>' : ""}
       <div class="login-eroare" id="reg-eroare" hidden></div>
       <label class="set-bifa" style="margin:4px 0 12px"><input type="checkbox" id="reg-termeni"> <span>Am citit și accept <a href="/public/termeni" target="_blank" rel="noopener">Termenii și condițiile</a><span class="oblig">*</span></span></label>
       <button class="buton-primar" id="reg-buton">Creează cont</button>
@@ -571,6 +571,21 @@ export function ecranLogin(radacina) {
     const parola2 = modal.querySelector("#reg-parola2");
     const buton = modal.querySelector("#reg-buton");
     const eroare = modal.querySelector("#reg-eroare");
+    // [257] Cloudflare Turnstile: verificarea anti-roboți, numai la înregistrarea liberă (invitația e deja nominală). Tokenul ei se
+    // folosește o singură dată: după un refuz al serverului, widgetul se resetează și dă unul nou.
+    let tokenRobot = null;
+    let widgetRobot = null;
+    if (liber) {
+      incarcaTurnstile(liber.turnstile_script).then((ts) => {
+        widgetRobot = ts.render(modal.querySelector("#reg-robot"), {
+          sitekey: liber.turnstile_sitekey,
+          language: "ro",
+          callback: (t) => { tokenRobot = t; },
+          "expired-callback": () => { tokenRobot = null; },
+          "error-callback": () => { tokenRobot = null; arataEroare("Verificarea anti-roboți nu s-a putut face. Reîncarcă pagina și încearcă din nou."); },
+        });
+      }).catch(() => arataEroare("Verificarea anti-roboți nu s-a putut încărca (Cloudflare nu răspunde). Încearcă din nou peste câteva minute."));
+    }
 
     cuiBtn.addEventListener("click", async () => {
       const val = (cui.value || "").trim();
@@ -627,6 +642,10 @@ export function ecranLogin(radacina) {
         arataEroare("Trebuie să accepți Termenii și condițiile.");
         return;
       }
+      if (liber && !tokenRobot) {
+        arataEroare("Așteaptă bifa verde din caseta de verificare anti-roboți de deasupra butonului, apoi apasă din nou „Creează cont”.");
+        return;
+      }
       buton.disabled = true;
       buton.textContent = "Se creează…";
       const { nume, prenume } = separaNume((numeAdmin && numeAdmin.value) || "");
@@ -644,8 +663,7 @@ export function ecranLogin(radacina) {
             prenume,
             accept_termeni: !!modal.querySelector("#reg-termeni")?.checked,  /* [termeni_v1] */
             invitatie: liber ? null : INVITATIE,  /* [14.10.2026] invitația; [15.10.2026] sau înregistrarea liberă */
-            formular: liber ? liber.formular : null,   /* [15.10.2026, lotul 4] jetonul semnat al formularului (anti-roboți) */
-            site_web: (modal.querySelector("#reg-site") || {}).value || "",   /* câmpul-capcană: un om îl lasă gol */
+            turnstile: liber ? tokenRobot : null,   /* [257] tokenul Cloudflare Turnstile, validat pe server */
         });
         if (_reg && _reg.confirmare_trimisa) { randeazaVerificaEmail(_reg.email, _reg.valabila_ore); return; }
         history.replaceState(null, "", location.pathname);   // invitația s-a consumat: linkul nu mai rămâne în bară
@@ -666,10 +684,28 @@ export function ecranLogin(radacina) {
         arataEroare(e.mesaj || "Nu s-a putut crea contul.");
         buton.disabled = false;
         buton.textContent = "Creează cont";
+        if (widgetRobot !== null) { tokenRobot = null; window.turnstile.reset(widgetRobot); }   // [257] tokenul s-a consumat
       }
     }
     buton.addEventListener("click", creeaza);
   }
+}
+
+// [257] Scriptul Cloudflare Turnstile se încarcă o singură dată, la cerere, numai pe formularul liber
+// (CSP: `script-src` și `frame-src` https://challenges.cloudflare.com — config/nginx-iconta).
+let _turnstile = null;
+function incarcaTurnstile(src) {
+  if (!_turnstile) {
+    _turnstile = new Promise((gata, esec) => {
+      const s = document.createElement("script");
+      s.src = src;
+      s.async = true;
+      s.onload = () => (window.turnstile ? gata(window.turnstile) : esec(new Error("turnstile")));
+      s.onerror = () => { _turnstile = null; esec(new Error("turnstile")); };
+      document.head.appendChild(s);
+    });
+  }
+  return _turnstile;
 }
 
 // landing_diacritice_v1

@@ -6,7 +6,8 @@ prin invitație», ca să o pot schimba eu fără publicare.”).
 Tabela `public.setari_platforma` (core/migrare_inregistrare_libera.py). Primul comutator: `inregistrare`.
 FAIL-CLOSED: un rând lipsă, o valoare necunoscută sau o tabelă lipsă se citesc „numai prin invitație”.
 Pct.1 din aceeași comandă („fără email funcțional nu se deschide înregistrarea”) stă tot aici, mecanic: înregistrarea liberă e
-DESCHISĂ numai dacă modul e `libera` ȘI emailul poate pleca (`email_functional`).
+DESCHISĂ numai dacă modul e `libera` ȘI emailul poate pleca (`email_functional`) ȘI verificarea anti-roboți are cheile ei
+(`inregistrare_libera.chei_turnstile`, deficiența 257).
 """
 import os
 
@@ -19,6 +20,8 @@ ETICHETE = {LIBERA: "liberă, cu confirmarea emailului", INVITATIE: "numai prin 
 
 MESAJ_NUMAI_INVITATIE = ("Acum, conturile noi de cabinet se creează numai prin invitație. Dacă vrei să folosești iConta.eu, scrie-ne "
                          "la contact@iconta.eu și îți trimitem invitația.")
+MESAJ_FARA_ANTIROBOT = ("Înregistrarea nu e disponibilă acum: verificarea anti-roboți nu e configurată. Încearcă din nou mai târziu sau "
+                        "scrie-ne la contact@iconta.eu.")
 MESAJ_FARA_EMAIL = ("Înregistrarea nu e disponibilă acum: emailul de confirmare nu poate pleca. Încearcă din nou mai târziu sau "
                     "scrie-ne la contact@iconta.eu.")
 
@@ -52,8 +55,8 @@ def seteaza_mod_inregistrare(cur, mod, uid):
                 "modificat_la = now()", (mod, uid))
 
 
-REGULA = ("Înregistrarea liberă e deschisă numai cu comutatorul pe „%s” (Panou Admin -> Înregistrare) și numai dacă emailul de "
-          "confirmare poate pleca." % ETICHETE[LIBERA])
+REGULA = ("Înregistrarea liberă e deschisă numai cu comutatorul pe „%s” (Panou Admin -> Înregistrare), numai dacă emailul de "
+          "confirmare poate pleca și numai cu verificarea anti-roboți configurată." % ETICHETE[LIBERA])
 
 
 def _inchisa(cod, motiv):
@@ -62,10 +65,13 @@ def _inchisa(cod, motiv):
 
 def inregistrare_libera(cur):
     """`{deschisa, mod, refuz}` — ce vede vizitatorul la „Client nou” (fără invitație); `refuz` = afirmația tipată `neconformitate`
-    (cod NUMAI_INVITATIE / FARA_EMAIL), sau None când e deschisă."""
+    (cod NUMAI_INVITATIE / FARA_EMAIL / FARA_ANTIROBOT), sau None când e deschisă."""
+    from core import inregistrare_libera as _il
     m = mod_inregistrare(cur)["mod"]
     if m != LIBERA:
         return {"deschisa": False, "mod": m, "refuz": _inchisa("NUMAI_INVITATIE", MESAJ_NUMAI_INVITATIE)}
     if not email_functional():
         return {"deschisa": False, "mod": m, "refuz": _inchisa("FARA_EMAIL", MESAJ_FARA_EMAIL)}
+    if not _il.chei_turnstile():
+        return {"deschisa": False, "mod": m, "refuz": _inchisa("FARA_ANTIROBOT", MESAJ_FARA_ANTIROBOT)}
     return {"deschisa": True, "mod": m, "refuz": None}

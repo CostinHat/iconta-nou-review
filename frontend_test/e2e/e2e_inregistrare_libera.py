@@ -2,7 +2,10 @@
 """Lotul 4 (comanda Costin 15.10.2026, verbatim în DECIZII „Lotul 4”): înregistrarea liberă cu confirmarea emailului, comutatorul din
 Panou Admin, anunțul la cabinet nou și „Activitate cabinete”; 256 — după o publicare, pagina principală și ecranele se încarcă în
 versiunea nouă fără Ctrl+F5. Pe aplicația din index, pe baza de TEST; emailurile aplicației de probă stau în cutia de test
-(`ICONTA_EMAIL_CUTIE`), de unde proba ia linkul de confirmare — linkul pe care altfel numai destinatarul îl vede."""
+(`ICONTA_EMAIL_CUTIE`), de unde proba ia linkul de confirmare — linkul pe care altfel numai destinatarul îl vede.
+253 (decizia Costin 15.10.2026 seara, DECIZII „Poarta o dată pe lot” pct.4a: „253: o leagă testele din e2e_inregistrare_libera.py”) =
+înregistrarea liberă a lotului 4: testele fluxului și ale comutatorului poartă numărul. 257 = Cloudflare Turnstile pe formular: widgetul
+REAL, cu cheile de test ale Cloudflare (`scripts/e2e_poarta.py`), și siteverify real pe server."""
 import glob
 import json
 import os
@@ -94,7 +97,15 @@ def _login(vp, email, parola):
     vp.click("#login-buton")
 
 
-def test_inregistrarea_libera_contul_apare_numai_dupa_clicul_pe_linkul_din_email(superadmin, browser, request, curat):
+def _asteapta_turnstile(vp):
+    """Widgetul Cloudflare a dat tokenul (câmpul ascuns `cf-turnstile-response` din caseta lui), iar verificarea a rulat într-un frame de
+    pe challenges.cloudflare.com (iframe-ul stă într-un shadow DOM închis, deci se caută printre frame-urile paginii, nu cu CSS)."""
+    vp.wait_for_function("() => ((document.querySelector('#reg-robot input[name=\"cf-turnstile-response\"]') || {}).value || '')"
+                         ".length > 0", timeout=30000)
+    assert [f.url for f in vp.frames if f.url.startswith("https://challenges.cloudflare.com/")], [f.url for f in vp.frames]
+
+
+def test_def_253_inregistrarea_libera_contul_apare_numai_dupa_clicul_pe_linkul_din_email(superadmin, browser, request, curat):
     from core import inregistrare_libera as il
     _comuta(superadmin, "libera")
     superadmin.captura("comutator")
@@ -104,14 +115,13 @@ def test_inregistrarea_libera_contul_apare_numai_dupa_clicul_pe_linkul_din_email
         _client_nou(vp, BAZA + "/")
         vp.wait_for_selector("#reg-email", timeout=10000)
         assert vp.get_attribute("#reg-email", "readonly") is None          # emailul se scrie (nu vine dintr-o invitație)
-        assert vp.is_visible("#reg-site") is False                          # câmpul-capcană nu-l vede omul
         vp.fill("#reg-cabinet", CABINET)
         vp.fill("#reg-nume-admin", "Ionescu Maria")
         vp.fill("#reg-email", EMAIL)
         vp.fill("#reg-parola", PAROLA)
         vp.fill("#reg-parola2", PAROLA)
         vp.check("#reg-termeni")
-        vp.wait_for_timeout((il.MIN_SECUNDE + 1) * 1000)                    # un om nu trimite formularul mai repede
+        _asteapta_turnstile(vp)                                             # [257] verificarea anti-roboți a trecut
         viz.captura("formular")
         vp.click("#reg-buton")
         vp.wait_for_selector("#reg-verifica", timeout=20000)
@@ -159,7 +169,7 @@ def test_inregistrarea_libera_contul_apare_numai_dupa_clicul_pe_linkul_din_email
     superadmin.captura("activitate")
 
 
-def test_comutatorul_pe_numai_prin_invitatie_inchide_formularul(superadmin, browser, request, curat):
+def test_def_253_comutatorul_pe_numai_prin_invitatie_inchide_formularul(superadmin, browser, request, curat):
     from core import setari_platforma
     _comuta(superadmin, "invitatie")
     ctx, viz = _pagina(browser, request, "vizitator")
@@ -170,6 +180,50 @@ def test_comutatorul_pe_numai_prin_invitatie_inchide_formularul(superadmin, brow
         assert vp.inner_text("#fi-mesaj") == setari_platforma.MESAJ_NUMAI_INVITATIE
         assert vp.query_selector("#reg-email") is None
         viz.captura()
+    finally:
+        ctx.close()
+
+
+def test_def_257_formularul_liber_trece_prin_cloudflare_turnstile(superadmin, browser, request, curat):
+    """257. „Înregistrează cabinetul tău” arată verificarea Cloudflare Turnstile; fără bifa ei, „Creează cont” spune ce lipsește și nu
+    trimite nimic; cu ea, cererea trece (siteverify real, pe server). Un robot care trimite cererea direct, fără token, e refuzat cu
+    motivul și nu lasă nimic în urmă."""
+    from core import inregistrare_libera as il
+    _comuta(superadmin, "libera")
+    scrisori = len(_scrisori(EMAIL))                                        # cutia de test e a întregii rulări
+    ctx, viz = _pagina(browser, request, "vizitator")
+    try:
+        vp = viz.pg
+        _client_nou(vp, BAZA + "/")
+        vp.wait_for_selector("#reg-email", timeout=10000)
+        vp.fill("#reg-cabinet", CABINET)
+        vp.fill("#reg-email", EMAIL)
+        vp.fill("#reg-parola", PAROLA)
+        vp.fill("#reg-parola2", PAROLA)
+        vp.check("#reg-termeni")
+        vp.evaluate("document.querySelector('#reg-robot').remove()")       # widgetul n-a apucat să dea tokenul
+        vp.click("#reg-buton")
+        vp.wait_for_selector("#reg-eroare:not([hidden])", timeout=10000)
+        assert vp.inner_text("#reg-eroare").startswith("Așteaptă bifa verde din caseta de verificare anti-roboți")
+        viz.captura("fara_bifa")
+        r = vp.request.post(BAZA + "/auth/register", data={"email": EMAIL, "parola": PAROLA, "nume_cabinet": CABINET,
+                                                            "accept_termeni": True})
+        assert r.status == 400 and r.json().get("detail") == il.MESAJ_ANTIROBOT, (r.status, r.text())
+        assert sql("SELECT count(*) FROM public.inregistrari_in_asteptare WHERE email = %s", (EMAIL,)) == [(0,)]
+        assert len(_scrisori(EMAIL)) == scrisori
+        _client_nou(vp, BAZA + "/")                                         # formularul din nou, cu widgetul
+        vp.wait_for_selector("#reg-email", timeout=10000)
+        _asteapta_turnstile(vp)
+        viz.captura("bifa")
+        vp.fill("#reg-cabinet", CABINET)
+        vp.fill("#reg-email", EMAIL)
+        vp.fill("#reg-parola", PAROLA)
+        vp.fill("#reg-parola2", PAROLA)
+        vp.check("#reg-termeni")
+        vp.click("#reg-buton")
+        vp.wait_for_selector("#reg-verifica", timeout=20000)
+        assert len(_scrisori(EMAIL)) == scrisori + 1
+        assert not viz.erori and not viz.cereri_rele
     finally:
         ctx.close()
 

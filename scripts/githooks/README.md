@@ -4,36 +4,38 @@
 
     git config core.hooksPath scripts/githooks
 
-## Ordinea (08.10.2026, decizia Costin pct.3: „Verificarea commit-msg rulează înaintea pytest, nu după.”)
+## Locul porții (15.10.2026, comanda Costin, verbatim în DECIZII „Poarta o dată pe lot”; supersedează ordinea din 08.10)
 
-1. `pre-commit` — `ruff` (nume nedefinite). Rapid.
-2. `commit-msg` -> `verifica-mesaj` — fisierele noi numite, defectul cu loc, fisierele normative citite (`# diff-citit:`),
-   curatenia declarata, octetii de control. Un mesaj respins costa secunde, nu o rulare de suita.
-3. `commit-msg` -> `poarta-suita` — **suita intreaga** (`pytest`) + `verificator_conformitate.py`, MEREU, fara argumente si
-   fara subset (sarita numai la un commit de curatenie, decis de `scripts/curatenie.py` din index). Respinge commit-ul daca:
-   - `pytest` nu iese cu 0 (suita rosie), sau
-   - verificatorul nu da `TOTAL: 0`.
+„Poarta completă: o singură dată pe lot, la închiderea lotului, înainte de publicarea pe producție. [...] main acceptă un commit doar
+dacă jurnalul porții îl arată verde.”
 
-Gard: `core/test_poarta_ordine.py`. Pana pe 08.10 suita statea in `pre-commit`, inaintea mesajului: un mesaj fara
-`# diff-citit:` arunca o rulare verde de ~55 de minute (06.10, 08.10).
+1. `pre-commit` — `ruff` (nume nedefinite) + refuzul commitului direct pe `main`. Secunde.
+2. `commit-msg` -> `verifica-mesaj` — fișierele noi numite, defectul cu loc, `# diff-citit:`, curățenia declarată, octeții de control.
+   **Atât.** Commitul nu mai rulează suita.
+3. **Închiderea lotului:** `sh scripts/poarta_lot.sh` (arbore curat, pe ramura lotului) -> `poarta-suita` (prospețimea, pytest pe
+   `POARTA_PROCESE` procese, verificatorul, cifrele F1–F5, plasa e2e) -> verdictul `VERDE|ROSU <sha> <ramura> <data>` în
+   `<git-common-dir>/poarta_verdicte.log`. Refuză: `main`, arbore murdar, SHA deja VERDE, a treia rulare pe aceeași ramură.
+4. **Publicarea:** `reference-transaction` mută `main` numai la un SHA cu aprobarea scrisă (`APROBARE_MAIN`) **și** `VERDE <sha>`.
 
-### De ce
+Între comenzi: `scripts/poarta_scurta.py` (rularea țintită; incert -> suita întreagă, nu poarta).
+Gărzi: `core/test_poarta_ordine.py`, `core/test_poarta_lot.py`, `core/test_garda_main.py`.
 
-Pe 31.07.2026 un `pytest && git commit` a lasat sa treaca un commit ROSU pentru ca `pytest`
-rulase pe un SUBSET (doar `core/`, ratand un test la radacina). O poarta care depinde de ce
-comanda tastezi nu e poarta - hook-ul ruleaza mereu tot.
+### De ce (istoric)
+
+Pe 31.07.2026 un `pytest && git commit` a lăsat să treacă un commit ROȘU pentru că `pytest` rulase pe un SUBSET: de atunci suita
+rula la fiecare commit (din 08.10 după mesaj, în `commit-msg`). Din 15.10 poarta e tot mecanică, dar legată de ce publică — mutarea
+lui `main` — nu de fiecare commit: un SHA fără verdict VERDE nu ajunge în producție, oricâte commituri are lotul.
 
 ### Durata
 
-~55 de minute per commit (suita intreaga; 08.10.2026: 3286 s pe 7.637 de teste). Deliberat: un commit rosu pe o aplicatie
-fiscala costa mai mult. Cifra vie e in `poarta-suita` si in `.poarta_jurnal.log`.
+~71 de minute (lotul 4, 15.10.2026: pytest 3074 s · plasa 1215 s). Cifra vie e în `.poarta_jurnal.log` (`DURATE`).
 
 ## Verdictul privește commitul — arborele = indexul (15.10.2026)
 
 pytest și verificatorul citesc ARBORELE DE LUCRU, commitul înregistrează INDEXUL. `poarta-suita` respinge deci, la pornire, orice
 modificare nepusă la index și orice fișier nou neadăugat (`git diff --name-only` + `git ls-files --others --exclude-standard`), iar
 la sfârșit, înaintea verdictului, orice fișier urmărit schimbat cât a rulat poarta. Prins după lotul 1: `fdb20bd6` a trecut poarta
-verde, iar exportul lui pica 9 gărzi. Consecință practică: **cât rulează poarta (~70 de minute) nu se editează arborele** — lucrul
+verde, iar exportul lui pica 9 gărzi. Consecință practică: **cât rulează poarta (~70 de minute) nu se editează arborele** (din 15.10 lansatorul cere oricum arbore curat) — lucrul
 în paralel se face în altă copie. Gard: `core/test_poarta_ordine.py::test_arborele_diferit_de_index_e_respins_inainte_de_suita`.
 
 ## Garda pe `main` — `reference-transaction` + `pre-commit` (15.10.2026, regim pilot)
@@ -47,7 +49,7 @@ rulează `post-commit`) -> `sh scripts/githooks/post-commit` -> migrările cerut
 four-way. Gard: `core/test_garda_main.py`.
 
 ## post-commit (cablat 07.08.2026)
-Publica automat pe origin/main SI pe backup/lant-<data> dupa fiecare commit pe `main` (commit-msg a trecut deja poarta verde).
+Publica automat pe origin/main SI pe backup/lant-<data> dupa mutarea lui `main` (din 15.10: numai la un SHA cu poarta VERDE a lotului).
 Fast-forward, NICIODATA `--force`. Daca origin/main a avansat sub tine -> se opreste si cere `pull --rebase`.
 Esec de publicare -> banner + sentinela (`.git/PUSH_MAIN_ESUAT`, `.git/PUSH_BACKUP_ESUAT`; vizibil, nu tacut).
 Backup: fast-forward, FARA --force, creeaza ramura zilei daca nu exista. Cableaza CLAUDE.md §2.3 pct.8.

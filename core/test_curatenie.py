@@ -153,12 +153,12 @@ def _tokenuri(cale):
     return out
 
 
-def test_AMANDOUA_hookurile_cheama_instrumentul():
-    """`poarta-suita` sare poarta, `verifica-mesaj` cere marturia (amandoua chemate de `commit-msg` din 08.10; pana atunci
-    saltul era in `pre-commit`). Daca vreunul nu mai cheama instrumentul, ocolirea devine ori inaccesibila, ori tacuta."""
-    for hook in ("poarta-suita", "verifica-mesaj"):
-        chemat = [t for t in _tokenuri(hook) if t.endswith("curatenie.py")]
-        assert chemat, "%s nu mai cheama scripts/curatenie.py — regula 7 e scrisa, nu cablata" % hook
+def test_verifica_mesaj_cheama_instrumentul():
+    """`verifica-mesaj` cere marturia `# doar-curatenie:` exact cand instrumentul spune „curatenie”. [15.10.2026] `poarta-suita` nu mai
+    are ocolirea: ruleaza numai la inchiderea lotului (`scripts/poarta_lot.sh`), pe arbore curat si index gol, unde instrumentul
+    raspunde mereu „nu e curatenie” (DECIZII „Poarta o dată pe lot”). MUTAȚIE: chemarea scoasa din `verifica-mesaj` -> pica."""
+    chemat = [t for t in _tokenuri("verifica-mesaj") if t.endswith("curatenie.py")]
+    assert chemat, "verifica-mesaj nu mai cheama scripts/curatenie.py — regula 7 e scrisa, nu cablata"
 
 
 def test_commit_msg_cere_ETICHETA_exact_cand_poarta_a_fost_sarita(tmp_path):

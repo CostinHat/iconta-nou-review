@@ -11,8 +11,8 @@
 
 **DE CE DECIDE INDEXUL, SI NU ETICHETA.** Pana pe 08.10.2026 saltul se decidea la `pre-commit`, unde mesajul
 **inca nu exista** (cu `git commit -F`, `.git/COMMIT_EDITMSG` poarta mesajul commitului **PRECEDENT** — dovedit pe
-23.08.2026). Din 08.10 (decizia Costin pct.3) suita ruleaza DUPA mesaj, in `scripts/githooks/poarta-suita`, chemata de
-`commit-msg` — mesajul exista, dar regula ramane: o poarta care s-ar deschide cu o eticheta ar depinde de ce tastezi; singurul
+23.08.2026). Din 08.10 (decizia Costin pct.3) suita a rulat DUPA mesaj, chemata de `commit-msg`; din 15.10 (DECIZII „Poarta o
+dată pe lot”) suita nu mai ruleaza la commit deloc (numai la inchiderea lotului), deci ocolirea a iesit din poarta — mesajul exista, dar regula ramane: o poarta care s-ar deschide cu o eticheta ar depinde de ce tastezi; singurul
 lucru care decide e **ce e in index**. Eticheta `# doar-curatenie:` ramane obligatorie, dar rolul ei e altul,
 si il verifica `scripts/githooks/verifica-mesaj`: **marturia scrisa** ca poarta a fost sarita, si de ce. *O poarta sarita
 in tacere n-ar lasa nicio urma in istorie.* Efectul cerut de conditie e insa exact cel scris: pe un

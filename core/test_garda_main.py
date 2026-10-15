@@ -4,7 +4,9 @@
 Pe un depozit TEMPORAR, cu hook-ul adevărat `scripts/githooks/reference-transaction` (copiat într-un director de hook-uri numai cu el):
 mutarea lui `main` fără aprobare, cu aprobarea altui SHA sau spre ștergere e refuzată și nu mută nimic; cu aprobarea SHA-ului țintă
 trece, iar aprobarea se consumă; ramurile de lucru nu sunt atinse. Plus oprirea rapidă din `pre-commit` (commit direct pe `main`).
-MUTAȚIA: hook-ul `exit 0` la început -> ROȘU."""
+[15.10.2026, comanda Costin, verbatim în DECIZII „Poarta o dată pe lot”: „main acceptă un commit doar dacă jurnalul porții îl arată
+verde.”] Aprobarea singură nu ajunge: SHA-ul țintă cere `VERDE <sha>` în `<git-common-dir>/poarta_verdicte.log` (`scripts/poarta_lot.sh`).
+MUTAȚIILE: hook-ul `exit 0` la început -> ROȘU; ramura `elif ! grep -q "^VERDE $NOU "` scoasă -> ROȘU."""
 import os
 import shutil
 import subprocess
@@ -62,17 +64,40 @@ def test_aprobarea_altui_sha_nu_ajunge(depozit):
     assert _main(d) == inainte
 
 
+def _verdict(d, sha, v="VERDE"):
+    with open(d / ".git" / "poarta_verdicte.log", "a", encoding="utf-8") as f:
+        f.write("%s %s lucru 2026-10-15T20:00:00+03:00\n" % (v, sha))
+
+
 def test_cu_aprobarea_sha_ului_trece_si_se_consuma(depozit):
     d, sha = depozit
     (d / ".git" / "APROBARE_MAIN").write_text("sha: %s\naprobat: Publică lotul (proba garzii)\n" % sha)
+    _verdict(d, sha)
     _git(d, "merge", "--ff-only", "-q", "lucru")
     assert _main(d) == sha
     assert not (d / ".git" / "APROBARE_MAIN").exists() and (d / ".git" / ("APROBARE_MAIN.folosita-%s" % sha)).exists()
     _git(d, "checkout", "-q", "lucru")
     _git(d, "commit", "-q", "--allow-empty", "-m", "al doilea")
     al_doilea = _git(d, "rev-parse", "HEAD").stdout.strip()
+    _verdict(d, al_doilea)
     assert _git(d, "update-ref", "refs/heads/main", al_doilea, ok=False).returncode != 0   # aprobarea s-a consumat
     assert _main(d) == sha
+
+
+@pytest.mark.parametrize("verdict", [None, "ROSU", "VERDE-altul"])
+def test_aprobarea_fara_poarta_verde_a_sha_ului_nu_ajunge(depozit, verdict):
+    """Aprobarea scrisă e bună, dar SHA-ul n-are poarta VERDE (nicio rulare / o rulare roșie / verdele altui commit) -> refuzat,
+    nimic nu se mută, aprobarea rămâne neconsumată."""
+    d, sha = depozit
+    inainte = _main(d)
+    (d / ".git" / "APROBARE_MAIN").write_text("sha: %s\naprobat: Publică lotul (proba garzii)\n" % sha)
+    if verdict == "ROSU":
+        _verdict(d, sha, "ROSU")
+    elif verdict == "VERDE-altul":
+        _verdict(d, inainte)
+    r = _git(d, "merge", "--ff-only", "-q", "lucru", ok=False)
+    assert r.returncode != 0 and "fără poarta VERDE a lotului" in r.stderr, r.stderr
+    assert _main(d) == inainte and (d / ".git" / "APROBARE_MAIN").exists()
 
 
 def test_aprobarea_fara_text_nu_ajunge(depozit):

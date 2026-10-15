@@ -3,7 +3,10 @@
 de probă: pe producție, un email scris într-un fișier în loc să plece ar fi o confirmare de înregistrare care nu ajunge niciodată (iar
 „emailul a plecat” ar fi fals). Garda: mediul producției (fișierele din `~/.iconta` încărcate de unitatea `iconta-nou`, unitatea de
 referință) nu poartă variabila; rulatorul plasei o pune.
-MUTAȚII: `Environment=ICONTA_EMAIL_CUTIE=...` sau `ICONTA_EMAIL_CUTIE=...` adăugat în `config_referinta_iconta-nou.service` -> pică."""
+La fel cheile de TEST ale Cloudflare Turnstile (257): trec mereu, deci pe producție ar deschide formularul oricărui robot — mediul
+producției nu le poartă (iar `inregistrare_libera.chei_turnstile` le refuză oricum fără cutia de test); rulatorul plasei le pune.
+MUTAȚII: `Environment=ICONTA_EMAIL_CUTIE=...` sau `ICONTA_EMAIL_CUTIE=...` adăugat în `config_referinta_iconta-nou.service` -> pică;
+`Environment=TURNSTILE_SECRET=1x0000000000000000000000000000000AA` adăugat acolo -> pică."""
 import os
 import re
 
@@ -33,3 +36,13 @@ def test_productia_nu_are_cutia_postala_de_test():
 def test_rulatorul_plasei_o_pune():
     src = open(os.path.join(_RAD, "scripts", "e2e_poarta.py"), encoding="utf-8").read()
     assert len(re.findall(r'env\["ICONTA_EMAIL_CUTIE"\] = ', src)) == 1
+
+
+def test_productia_nu_are_cheile_de_test_turnstile():
+    from core import inregistrare_libera as il
+    cu_chei = [s for s in _surse_productie() if os.path.isfile(s)
+               and any(k in open(s, encoding="utf-8").read() for k in il.CHEI_DE_TEST)]
+    assert cu_chei == [], "cheile de test Turnstile în mediul producției: %s" % cu_chei
+    src = open(os.path.join(_RAD, "scripts", "e2e_poarta.py"), encoding="utf-8").read()
+    assert sorted(re.findall(r'env\["(TURNSTILE_\w+)"\] = "(\w+)"', src)) == [("TURNSTILE_SECRET", il.CHEI_DE_TEST[5]),
+                                                                          ("TURNSTILE_SITEKEY", il.CHEI_DE_TEST[0])]

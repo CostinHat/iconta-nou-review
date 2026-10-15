@@ -13,8 +13,8 @@ CE PAZESTE, si de ce fiecare proba e aici:
   exact ce interzice regula 5 („o exceptie luata o data face regula o formalitate").
 
   REFUZUL PE NESIGURANTA. Un `.md` atins, sau `main.py`, si derivarea nu mai poate inchide
-  perimetrul. Atunci raspunsul e poarta COMPLETA, nu un perimetru mai mic. *Un perimetru ghicit e
-  mai rau decat o poarta lunga.*
+  perimetrul. Atunci raspunsul e SUITA INTREAGA (15.10.2026; pana atunci poarta completa), nu un
+  perimetru mai mic. *Un perimetru ghicit e mai rau decat o rulare lunga.*
 
   ANTI-VACUU. Daca `perimetru()` ar intoarce liste goale din orice motiv, toate probele de mai sus
   ar trece degeaba. De-aia se cere si ca perimetrul unui modul cunoscut sa NU fie gol.
@@ -81,12 +81,21 @@ def test_derivarea_refuza_ce_nu_poate_vedea(atins, de_ce):
     assert incerte, "derivarea a inchis perimetrul desi s-a atins %s" % atins
 
 
-def test_lansatorul_cere_poarta_completa_cand_derivarea_nu_e_sigura(monkeypatch, capsys):
-    """Nu doar derivarea refuza — si LANSATORUL, cu cod de iesire 2."""
+def test_lansatorul_ruleaza_toata_suita_cand_derivarea_nu_e_sigura(monkeypatch, capsys):
+    """[15.10.2026, comanda Costin: „incert → rulează tot”] Nesiguranța nu mai cere poarta: lansatorul RULEAZĂ suita întreagă, fără
+    selecție, pe procesele porții, și întoarce exit-ul ei. MUTAȚIE: `return 2` în loc de `_ruleaza_tot` -> pică; o cale / `-k` adăugate
+    în `SUITA_INTREAGA` -> pică."""
     monkeypatch.setattr(PS.P, "atinse_din_git", lambda: ["CONFORMITATE.md", "core/plati.py"])
     monkeypatch.setattr(PS.P, "netracked", lambda: [])
+    rulate = []
+
+    class _R:
+        returncode = 5
+
+    monkeypatch.setattr(PS.subprocess, "run", lambda cmd, cwd=None: rulate.append(cmd) or _R())
     cod = PS.main([])
-    assert cod == 2
+    assert (cod, rulate) == (5, [PS.SUITA_INTREAGA])
+    assert PS.SUITA_INTREAGA[1:] == ["-m", "pytest", "-q", "-n", "3", "--dist", "loadfile"], PS.SUITA_INTREAGA
     # se cere ca MOTIVELE sa fie tiparite, numarate ca randuri, nu cautate ca sir
     motive = [x for x in capsys.readouterr().out.splitlines() if x.startswith("   - ")]
     assert len(motive) == 1

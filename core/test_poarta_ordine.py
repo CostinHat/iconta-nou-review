@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
-"""GARDA deciziei Costin 08.10.2026, pct.3: „Verificarea commit-msg rulează înaintea pytest, nu după. Intră în acest lot, nu
-separat.” (verbatim în DECIZII 08.10.2026)
+"""GARDA ordinii hook-urilor și a locului porții.
 
-DE CE. Git rulează `pre-commit` ÎNAINTEA mesajului. Cât timp suita (pytest, ~55 de minute) stătea în `pre-commit`, un mesaj fără
-`# diff-citit:` era respins DUPĂ o rulare verde — pe 06.10 și din nou pe 08.10. Regula „treci mesajul întâi manual” a fost
-ignorată de două ori; ce n-a ținut ca disciplină devine ordine în hook-uri:
+ISTORIC. 08.10.2026 (decizia Costin pct.3: „Verificarea commit-msg rulează înaintea pytest, nu după.”): git rulează `pre-commit`
+ÎNAINTEA mesajului, deci suita s-a mutat în `commit-msg`, după `verifica-mesaj`. 15.10.2026 (comanda Costin, verbatim în DECIZII
+„Poarta o dată pe lot”: „Poarta completă: o singură dată pe lot, la închiderea lotului, înainte de publicarea pe producție. [...] Muți
+poarta din hook-ul commit-msg pe mutarea lui main [...]”): suita a ieșit din commit cu totul.
 
-    pre-commit: ruff  ->  commit-msg: verifica-mesaj (oprește aici)  ->  poarta-suita (pytest + verificatorul)
+    pre-commit: ruff  ->  commit-msg: verifica-mesaj (atât)
+    închiderea lotului: scripts/poarta_lot.sh -> poarta-suita (prospețime, pytest, verificator, cifre, plasa) -> verdictul
+    mutarea lui main: reference-transaction cere `VERDE <sha>` (core/test_garda_main.py)
 
 CE FACE IMPOSIBIL:
-  * ca suita să ruleze înaintea verificării mesajului (structural: `pre-commit` nu cheamă nici pytest, nici verificatorul;
-    `commit-msg` cheamă `verifica-mesaj` ÎNAINTEA `poarta-suita`, fiecare cu `|| exit 1`);
-  * ca un mesaj greșit să pornească suita (funcțional, pe hook-ul adevărat: respins în secunde, fără „[poarta] pytest”);
-  * ca suita să dispară din drum (funcțional: un mesaj bun ajunge la „[poarta] pytest”).
-
-CE NU FACE, declarat: nu rulează suita adevărată (depozitul de probă e gol, deci pytest nu găsește teste și poarta respinge —
-exact ce trebuie să facă o poartă fără teste verzi).
+  * ca un commit să pornească suita (structural: nici `pre-commit`, nici `commit-msg` nu cheamă pytest / `poarta-suita`; funcțional,
+    pe hook-ul adevărat: un mesaj bun trece fără „[poarta] pytest”);
+  * o a doua pornire a porții complete: în tot depozitul, `poarta-suita` e chemată NUMAI de `scripts/poarta_lot.sh`;
+  * ca poarta să judece altceva decât commitul (arborele ≠ indexul -> respins înainte de pytest).
 """
 import os
 import shlex
@@ -49,22 +48,50 @@ def test_pre_commit_nu_mai_porneste_suita():
     assert sum(w.count("RUFF") for w in cuvinte) >= 1, "ruff a dispărut din pre-commit"
 
 
-def test_commit_msg_verifica_mesajul_inainte_de_suita():
-    """Ordinea, ca structură. MUTAȚIE: cele două linii din `commit-msg` inversate -> pică."""
+def test_commit_msg_verifica_numai_mesajul():
+    """[15.10.2026] `commit-msg` cheamă `verifica-mesaj` (cu `|| exit 1`) și NIMIC din poartă. MUTAȚIE: linia `poarta-suita` pusă
+    înapoi în `commit-msg` -> pică."""
     linii = _linii_cod("commit-msg")
-    def _poz(nume):
-        p = [i for i, t in enumerate(linii) if any(w.endswith("/" + nume) for w in t)]
-        assert len(p) == 1, "%s trebuie chemat o dată din commit-msg: %r" % (nume, linii)
-        return p[0]
-    m, s = _poz("verifica-mesaj"), _poz("poarta-suita")
-    assert m < s, "suita e chemată înaintea verificării mesajului"
-    for i in (m, s):
-        assert linii[i][-3:] == ["||", "exit", "1"], "un eșec nu mai oprește commitul: %r" % linii[i]
+    mesaj = [t for t in linii if any(w.endswith("/verifica-mesaj") for w in t)]
+    assert len(mesaj) == 1 and mesaj[0][-3:] == ["||", "exit", "1"], linii
+    cuvinte = [w for t in linii for w in t]
+    assert [w for w in cuvinte if w.endswith("/poarta-suita") or w == "pytest" or w.startswith("verificator_conformitate")] == [], cuvinte
     suita = [w for t in _linii_cod("poarta-suita") for w in t]
     assert suita.count("pytest") >= 1 and suita.count("verificator_conformitate.py") >= 1
 
 
-def _ruleaza(continut, pregatire=None):
+def _chemari_poarta_suita():
+    """Fișierele urmărite (în afara testelor) care CHEAMĂ `poarta-suita`: în scripturile `sh` (`.sh`, hook-urile fără extensie), o linie
+    de cod (nu comentariu, nu `echo`) care o numește; în `.py`, un literal-șir care e calea ei (`"…/poarta-suita"`) — o pomenire în
+    docstring nu e o chemare."""
+    import re as _re
+    fis = subprocess.run(["git", "ls-files"], cwd=_RAD, capture_output=True, text=True).stdout.split()
+    gasite = []
+    for f in fis:
+        if f.startswith("core/test_") or f == "scripts/githooks/poarta-suita":
+            continue
+        sh = f.endswith(".sh") or (f.startswith("scripts/githooks/") and "." not in os.path.basename(f))
+        if not (sh or f.endswith(".py")) or not os.path.isfile(os.path.join(_RAD, f)):
+            continue
+        for linie in open(os.path.join(_RAD, f), encoding="utf-8", errors="replace"):
+            if sh:
+                cod = linie.split("#", 1)[0]
+                gasit = bool(_re.search(r"poarta-suita", cod)) and not _re.match(r"\s*echo\b", cod)
+            else:
+                gasit = bool(_re.search(r"""["'](?:[^"'\s]*/)?poarta-suita["']""", linie))
+            if gasit:
+                gasite.append(f)
+                break
+    return sorted(set(gasite))
+
+
+def test_poarta_completa_pornita_numai_de_inchiderea_lotului():
+    """[15.10.2026] „Poarta completă: o singură dată pe lot, la închiderea lotului”: în tot depozitul, numai `scripts/poarta_lot.sh`
+    cheamă `poarta-suita`. MUTAȚIE: `sh "$DIR/poarta-suita"` pus înapoi în `commit-msg` (sau într-un script nou) -> pică."""
+    assert _chemari_poarta_suita() == ["scripts/poarta_lot.sh"]
+
+
+def _ruleaza(continut, pregatire=None, hook="commit-msg"):
     with tempfile.TemporaryDirectory() as d:
         subprocess.run(["git", "init", "-q", "."], cwd=d, check=True, capture_output=True)
         msg = os.path.join(d, ".git", "COMMIT_EDITMSG")       # unde îl pune git (nu în arborele de lucru)
@@ -74,7 +101,7 @@ def _ruleaza(continut, pregatire=None):
             with open(os.path.join(d, nume), "w") as f:
                 f.write(cont)
         t0 = time.monotonic()
-        r = subprocess.run(["sh", os.path.join(_HOOKS, "commit-msg"), msg], cwd=d, capture_output=True, text=True,
+        r = subprocess.run(["sh", os.path.join(_HOOKS, hook)] + ([msg] if hook == "commit-msg" else []), cwd=d, capture_output=True, text=True,
                            timeout=300)
         return r.returncode, (r.stdout or "") + (r.stderr or ""), time.monotonic() - t0
 
@@ -87,10 +114,17 @@ def test_mesajul_respins_nu_porneste_suita():
     assert iesire.count("[poarta] pytest") == 0, "suita a pornit înaintea verificării mesajului:\n%s" % iesire
 
 
-def test_mesajul_bun_ajunge_la_suita():
-    """Suita n-a dispărut din drum: un mesaj bun trece de `verifica-mesaj` și pornește pytest (care, pe depozitul gol, n-are teste
-    și respinge). MUTAȚIE: linia `poarta-suita` scoasă din `commit-msg` -> commitul trece fără suită -> pică."""
+def test_mesajul_bun_trece_fara_suita():
+    """[15.10.2026] Un commit nu mai pornește poarta: un mesaj bun trece de `commit-msg` în secunde, fără „[poarta] pytest”. MUTAȚIE:
+    `poarta-suita` pusă înapoi în `commit-msg` -> apare „[poarta] pytest” (și respinge, pe depozitul gol) -> pică."""
     cod, iesire, _dur = _ruleaza("Reparație mică, cu diacritice: șțăîâ\n".encode("utf-8"))
+    assert (cod, iesire.count("[poarta] pytest")) == (0, 0), iesire
+
+
+def test_poarta_suita_pe_depozit_fara_teste_respinge():
+    """Suita n-a dispărut din `poarta-suita`: chemată direct (cum o cheamă `poarta_lot.sh`), pornește pytest, care pe depozitul gol
+    n-are teste și respinge. MUTAȚIE: linia pytest scoasă din `poarta-suita` -> pică."""
+    cod, iesire, _dur = _ruleaza(b"x\n", hook="poarta-suita")
     assert iesire.count("[poarta] pytest") == 1, iesire
     assert cod == 1, "pe un depozit fără teste poarta trebuia să respingă:\n%s" % iesire
 
@@ -99,13 +133,13 @@ def test_arborele_diferit_de_index_e_respins_inainte_de_suita():
     """[15.10.2026] Verdictul porții privește COMMITUL: un fișier nou neadăugat (sau modificat și nepus) e respins înainte de pytest —
     altfel pytest ar judeca arborele de lucru, iar commitul ar înregistra indexul (`fdb20bd6`: poartă verde, exportul pica 9 gărzi).
     MUTAȚIE: verificarea `arbore_nepus` scoasă din `poarta-suita` -> suita pornește -> pică."""
-    cod, iesire, _dur = _ruleaza("Reparație mică\n".encode("utf-8"), pregatire={"nepus.py": "x = 1\n"})
+    cod, iesire, _dur = _ruleaza("Reparație mică\n".encode("utf-8"), pregatire={"nepus.py": "x = 1\n"}, hook="poarta-suita")
     assert cod == 1 and iesire.count("[poarta] pytest") == 0, iesire
     assert iesire.count("    nepus.py") == 1, iesire
 
 
 def test_hookurile_rulate_din_teste_nu_scriu_in_jurnalele_portii_reale():
-    """[15.10.2026] Poarta lotului 2: `test_mesajul_bun_ajunge_la_suita` a pornit `poarta-suita` pe un depozit de probă, care a scris în
+    """[15.10.2026] Poarta lotului 2: `test_mesajul_bun_ajunge_la_suita` (azi `test_poarta_suita_pe_depozit_fara_teste_respinge`) a pornit `poarta-suita` pe un depozit de probă, care a scris în
     `/tmp/precommit_pytest.log` CÂT îl scria pytest-ul porții reale — logul a ieșit stricat și respingerea fără numele testului picat.
     Acum hook-urile scriu în `$POARTA_JURNALE` (implicit /tmp), iar sesiunea de teste îl pune pe un director al ei (`conftest.py`).
     MUTAȚIE: o cale `/tmp/precommit_` pusă înapoi într-un hook -> pică; `POARTA_JURNALE` scos din conftest -> pică."""
@@ -115,7 +149,7 @@ def test_hookurile_rulate_din_teste_nu_scriu_in_jurnalele_portii_reale():
         assert t.count("/tmp/precommit_") == 0, nume
     d = os.environ.get("POARTA_JURNALE", "")
     assert d.startswith(tempfile.gettempdir()) and os.path.basename(d).startswith("poarta_jurnale_teste_"), d
-    cod, iesire, _dur = _ruleaza("Reparație mică\n".encode("utf-8"))
+    cod, iesire, _dur = _ruleaza("Reparație mică\n".encode("utf-8"), hook="poarta-suita")
     assert iesire.count("[poarta] pytest") == 1, iesire
     assert os.path.isfile(os.path.join(d, "precommit_pytest.log"))
 

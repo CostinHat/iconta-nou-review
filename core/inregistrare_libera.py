@@ -10,17 +10,20 @@ pleacă numai în link). Contul, acordul termenilor și firma din CUI se creeaz�
 într-o singură tranzacție cu folosirea cererii. Până atunci nu există cont — deci nimic cu care să te loghezi și nicio firmă.
 VALABILITATE_ORE ore, o singură folosire. Cererile neconfirmate se șterg la PASTRARE_ZILE zile după expirare (date personale fără cont).
 
-ANTI-ROBOȚI, fără servicii externe (CSP-ul aplicației permite numai `self`):
-  - JETONUL FORMULARULUI: semnat de server când se deschide formularul (`jeton_formular`); înregistrarea îl cere, mai vechi de
-    MIN_SECUNDE (un om nu completează formularul mai repede) și mai nou de MAX_ORE_FORMULAR. Un robot care trimite direct cererea
-    trebuie întâi să ceară jetonul și să aștepte.
-  - CÂMPUL-CAPCANĂ (`site_web`): ascuns (`hidden`), deci un om nu-l completează; completat -> răspunsul de reușită, fără nicio scriere
-    și fără email (robotul nu află că a fost oprit).
+ANTI-ROBOȚI — Cloudflare Turnstile (deficiența 257, comanda Costin 15.10.2026, verbatim în DECIZII „Poarta o dată pe lot”: „implementezi
+Cloudflare Turnstile pe formularul «Înregistrează cabinetul tău», cum cerea lotul 4”; înlocuiește jetonul semnat + câmpul-capcană
+construite în lotul 4). Sursa, Cloudflare (citită 15.10.2026): widgetul se încarcă din `SCRIPT_WIDGET` (CSP: `script-src` și `frame-src`
+`https://challenges.cloudflare.com` — `config/nginx-iconta`); tokenul lui se validează pe server la `SITEVERIFY` (`secret`,
+`response`, `remoteip`), e valabil 300 s și se folosește o singură dată. Cheile (`TURNSTILE_SITEKEY` public, `TURNSTILE_SECRET` privat)
+vin din mediu; cheile de test publicate de Cloudflare (`CHEI_DE_TEST`, trec/pică mereu) se acceptă NUMAI pe instanța de probă (cutia
+poștală de test) — pe producție o cheie de test ar lăsa orice robot să treacă. FAIL-CLOSED: fără chei, înregistrarea liberă e închisă
+(`setari_platforma`); cu Cloudflare indisponibil, cererea e refuzată, cu motivul.
   - LIMITE PE ORĂ: `ritm_incape` pe IP (LIMITA_IP) și pe email (LIMITA_EMAIL), fereastră de o oră; la confirmare, pe IP.
 Gard: core/test_inregistrare_libera.py + e2e frontend_test/e2e/e2e_inregistrare_libera.py.
 """
 import datetime
 import hashlib
+import os
 import secrets
 
 from core import afirmatii as _af
@@ -28,17 +31,22 @@ from core import nucleu
 
 VALABILITATE_ORE = 24
 PASTRARE_ZILE = 7
-MIN_SECUNDE = 3
-MAX_ORE_FORMULAR = 2
 LIMITA_IP = 5            # încercări de înregistrare pe oră, de la același IP
 LIMITA_EMAIL = 3         # încercări de înregistrare pe oră, pentru același email
 LIMITA_CONFIRMARE_IP = 20
 FEREASTRA_SEC = 3600
-_SCOP = "formular_inregistrare"
+SITEVERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+SCRIPT_WIDGET = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+#: cheile de test publicate de Cloudflare (developers.cloudflare.com/turnstile/troubleshooting/testing): sitekey-uri, apoi secrete
+CHEI_DE_TEST = ("1x00000000000000000000AA", "2x00000000000000000000AB", "1x00000000000000000000BB", "2x00000000000000000000BB",
+                "3x00000000000000000000FF", "1x0000000000000000000000000000000AA", "2x0000000000000000000000000000000AA",
+                "3x0000000000000000000000000000000AA")
 
 MESAJ_PREA_DES = ("Prea multe încercări de înregistrare în ultima oră. Contul nu a fost creat — încearcă din nou peste o oră.")
-MESAJ_FORMULAR = ("Formularul nu se poate trimite așa: redeschide-l („Client nou”), completează-l și trimite-l din nou.")
-MESAJ_PREA_REPEDE = "Formularul a fost trimis prea repede. Verifică datele și apasă din nou „Creează cont”."
+MESAJ_ANTIROBOT = ("Verificarea anti-roboți n-a trecut, deci contul nu a fost creat. Așteaptă bifa verde din caseta de verificare de "
+                   "deasupra butonului, apoi apasă din nou „Creează cont”.")
+MESAJ_ANTIROBOT_INDISPONIBIL = ("Verificarea anti-roboți nu răspunde acum, deci contul nu a fost creat. Încearcă din nou peste câteva "
+                                "minute.")
 MESAJ_NECONFIRMAT = ("Contul nu e încă activ: confirmă adresa de email cu linkul primit la înregistrare (valabil %d de ore). Dacă "
                      "linkul a expirat, înregistrează-te din nou." % VALABILITATE_ORE)
 REGULA = "Linkul de confirmare e valabil %d de ore și se folosește o singură dată." % VALABILITATE_ORE
@@ -48,29 +56,44 @@ def _hash(token):
     return hashlib.sha256(str(token or "").encode("utf-8")).hexdigest()
 
 
-def _secret():
-    """Cheia jetonului de formular, derivată din secretul sesiunilor, cu scopul ei: un jeton de formular nu poate trece drept sesiune."""
-    from core.common import cfg_secret
-    return cfg_secret("JWT_SECRET") + "|" + _SCOP
+def chei_turnstile():
+    """`(sitekey, secret)` din mediu, sau None dacă lipsesc — ori dacă sunt chei de test în afara instanței de probă."""
+    sitekey, secret = os.environ.get("TURNSTILE_SITEKEY", "").strip(), os.environ.get("TURNSTILE_SECRET", "").strip()
+    if not (sitekey and secret):
+        return None
+    if (sitekey in CHEI_DE_TEST or secret in CHEI_DE_TEST) and not os.environ.get("ICONTA_EMAIL_CUTIE"):
+        return None
+    return sitekey, secret
 
 
-def jeton_formular(acum=None):
-    """Jetonul semnat al formularului — se dă la deschiderea lui (GET /public/inregistrare)."""
-    return nucleu.creeaza_token({"scop": _SCOP}, _secret(), durata_sec=MAX_ORE_FORMULAR * 3600, acum=acum)
+def _siteverify(secret, token, ip):
+    import json
+    import urllib.parse
+    import urllib.request
+    campuri = {"secret": secret, "response": token}
+    if ip:
+        campuri["remoteip"] = ip
+    cerere = urllib.request.Request(SITEVERIFY, data=urllib.parse.urlencode(campuri).encode("utf-8"))
+    with urllib.request.urlopen(cerere, timeout=10) as r:
+        return json.loads(r.read().decode("utf-8"))
 
 
-def verifica_formular(jeton, acum=None):
-    """None dacă jetonul e bun; altfel mesajul pentru om (jeton lipsă/falsificat/expirat, sau trimis prea repede)."""
-    import time
-    acum = acum if acum is not None else int(time.time())
-    if not jeton:
-        return MESAJ_FORMULAR
-    r = nucleu.verifica_token(jeton, _secret(), acum=acum)
-    if not r.get("ok") or (r.get("payload") or {}).get("scop") != _SCOP:
-        return MESAJ_FORMULAR
-    if acum - int(r["payload"].get("iat", acum)) < MIN_SECUNDE:
-        return MESAJ_PREA_REPEDE
-    return None
+def verifica_turnstile(token, ip):
+    """None dacă tokenul widgetului e bun; altfel `("respins" | "indisponibil", mesajul pentru om)`."""
+    chei = chei_turnstile()
+    if not chei:
+        return "indisponibil", MESAJ_ANTIROBOT_INDISPONIBIL
+    if not token:
+        return "respins", MESAJ_ANTIROBOT
+    try:
+        r = _siteverify(chei[1], token, ip)
+    except (OSError, ValueError) as e:      # rețea / HTTP (URLError, HTTPError sunt OSError) / răspuns care nu e JSON
+        print("[inregistrare] siteverify indisponibil: %s, ip=%s" % (type(e).__name__, ip), flush=True)
+        return "indisponibil", MESAJ_ANTIROBOT_INDISPONIBIL
+    if r.get("success") is True:
+        return None
+    print("[inregistrare] turnstile respins: %s, ip=%s" % (r.get("error-codes"), ip), flush=True)
+    return "respins", MESAJ_ANTIROBOT
 
 
 def creeaza(cur, date, parola_hash, termeni_versiune, ip, acum=None):

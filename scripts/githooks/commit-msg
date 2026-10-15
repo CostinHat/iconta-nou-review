@@ -1,18 +1,14 @@
 #!/bin/sh
-# commit-msg (iConta): INTAI verificarile mesajului, APOI suita.
+# commit-msg (iConta): NUMAI verificarile mesajului. Suita NU mai ruleaza la commit.
 #
-# [08.10.2026, decizia Costin pct.3] „Verificarea commit-msg rulează înaintea pytest, nu după. Intră în acest lot, nu separat.”
-# Instanta care a cerut-o: pe 06.10 si din nou pe 08.10 o poarta VERDE de ~55 de minute a fost aruncata de verificarea
-# mesajului (lipsea `# diff-citit:`), fiindca suita statea in `pre-commit`, iar git ruleaza `pre-commit` inaintea mesajului.
-# Regula „treci mesajul intai manual prin hook" a fost ignorata si platita de doua ori; ce n-a tinut ca disciplina devine aici
-# ordine: un mesaj respins costa acum secunde, nu o rulare.
+# [15.10.2026, comanda Costin, verbatim in DECIZII „Poarta o dată pe lot”] „Poarta completă: o singură dată pe lot, la închiderea
+# lotului, înainte de publicarea pe producție. [...] Muți poarta din hook-ul commit-msg pe mutarea lui main, cum ai propus: main
+# acceptă un commit doar dacă jurnalul porții îl arată verde.” Supersedeaza 08.10.2026 pct.3 (mesajul, apoi suita, la fiecare commit).
+# Poarta completa se porneste NUMAI din `scripts/poarta_lot.sh` (inchiderea lotului) -> `poarta-suita`; verdictul ei, scris in
+# `<git-common-dir>/poarta_verdicte.log`, il cere `reference-transaction` la mutarea lui `main`.
 #
-#   1. `verifica-mesaj` — fisierele noi numite, defectul cu loc, fisierele normative citite, curatenia declarata, octetii de
-#      control. Respinge -> commitul se opreste AICI, inainte de pytest.
-#   2. `poarta-suita` — pytest pe suita intreaga + verificatorul (sarita numai la un commit de curatenie, decis de
-#      `scripts/curatenie.py` din INDEX).
-# Gard: `core/test_poarta_ordine.py` (ordinea, ca structura si ca efect).
+#   `verifica-mesaj` — fisierele noi numite, defectul cu loc, fisierele normative citite, curatenia declarata, octetii de control.
+# Gard: `core/test_poarta_ordine.py` (commit-msg nu porneste suita; `poarta-suita` e chemata numai de `poarta_lot.sh`).
 DIR=$(dirname "$0")
 sh "$DIR/verifica-mesaj" "$1" || exit 1
-sh "$DIR/poarta-suita" || exit 1
 exit 0

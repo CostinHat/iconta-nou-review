@@ -50,6 +50,10 @@ def _env_test():
     # [15.10.2026, lotul 4] emailurile aplicației de probă se scriu în cutia de test (`observare._in_cutia_de_test`): linkul de
     # confirmare a înregistrării îl vede numai destinatarul, deci proba și-l ia de aici. Cutia needitabilă = emailul care n-a plecat.
     env["ICONTA_EMAIL_CUTIE"] = os.path.join(TEMP, "cutie_email")
+    # [257] Cloudflare Turnstile cu cheile de TEST publicate de Cloudflare (trec mereu; widgetul real se încarcă în browser, siteverify
+    # real pe server); pe producție sunt refuzate (`inregistrare_libera.chei_turnstile`, gard core/test_cutia_email_numai_la_proba.py)
+    env["TURNSTILE_SITEKEY"] = "1x00000000000000000000AA"
+    env["TURNSTILE_SECRET"] = "1x0000000000000000000000000000000AA"
     # [comanda Costin 09.10.2026 pct.7] AI simulat: nicio cerere spre model; testele pregătesc răspunsurile (`core.ai_client`)
     env.pop("ANTHROPIC_API_KEY", None)
     env["ICONTA_AI_SIMULAT"] = os.path.join(TEMP, "ai_simulat")

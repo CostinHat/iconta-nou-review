@@ -1,12 +1,11 @@
 #!/bin/sh
-# POARTA SUITEI (iConta): pytest pe suita intreaga + avertismentul de vechime al predarii + verificator_conformitate.py.
-# Chemata de `scripts/githooks/commit-msg` DUPA verificarile mesajului (`verifica-mesaj`) — decizia Costin 08.10.2026 pct.3:
-# „Verificarea commit-msg rulează înaintea pytest, nu după.” Pana pe 08.10 blocul statea in `pre-commit`, care ruleaza
-# inaintea mesajului. Un fisier separat (nu cod inline in commit-msg): testele care cheama verificarile mesajului
-# (`core/test_mesaj_commit_curat.py`, `core/test_curatenie.py`) cheama `verifica-mesaj`, nu suita — altfel ar porni recursiv
-# toata suita din interiorul ei.
+# POARTA SUITEI (iConta): probele de prospetime + pytest pe suita intreaga + verificator_conformitate.py + cifrele F1–F5 + plasa e2e.
+# [15.10.2026, comanda Costin, verbatim in DECIZII „Poarta o dată pe lot”] Chemata NUMAI de `scripts/poarta_lot.sh`, o data pe lot, la
+# inchiderea lui, pe commitul lotului (arbore curat); verdictul il scrie lansatorul, iar `reference-transaction` il cere la mutarea lui
+# `main`. Pana pe 15.10 o chema `commit-msg` la fiecare commit (din 08.10, dupa verificarile mesajului); inainte, `pre-commit`.
+# Gard: `core/test_poarta_ordine.py` (numai `poarta_lot.sh` o cheama).
 #
-# Respinge commit-ul daca pytest nu iese 0 SAU verificatorul nu da "TOTAL: 0".
+# Respinge daca pytest nu iese 0, verificatorul nu da "TOTAL: 0", cifrele difera sau plasa pica.
 ROOT=$(git rev-parse --show-toplevel) || exit 1
 cd "$ROOT" || exit 1
 # [15.10.2026] jurnalele porții: `POARTA_JURNALE` (testele îl mută într-un director al lor — conftest.py), implicit /tmp
@@ -26,28 +25,9 @@ if [ -n "$NEPUS" ]; then
     echo "[poarta]   Pune la index pe NUME ce intra in commit; restul mutat in afara depozitului sau in .gitignore."
     exit 1
 fi
-# ── OCOLIREA DE CURATENIE (03.09.2026, ceruta de Costin) ──────────────────
-# „Operatiunile de curatenie — stergeri de fisiere, .gitignore, mutari — nu ruleaza teste deloc.
-#  Nu exista cale prin care ele sa strice o declaratie."  (PLAN_LUCRU.md, regula 7 de conducere)
-#
-# CINE DECIDE: `scripts/curatenie.py`, din INDEX — NU eticheta din mesaj. Mesajul exista acum (commit-msg), dar eticheta
-# ramane MARTURIE, nu cheie: o poarta care s-ar deschide cu o eticheta ar fi o poarta care depinde de ce tastezi.
-# Eticheta `# doar-curatenie:` ramane obligatorie, si o cere `verifica-mesaj`: ea e MARTURIA ca poarta
-# a fost sarita. O poarta sarita in tacere n-ar lasa nicio urma in istorie.
-#
-# Instrumentul deschide numai daca TOATE tin: stergeri / mutari identice / .gitignore, niciun `.py`
-# sau `.js`, niciun registru, si nimic din ce dispare nu e numit in ce se comite. Orice esec al lui
-# inseamna „nu e curatenie" — fail closed.
-#
-# CE SE SARE: pytest si verificatorul (cele ~55 de minute; v. cifra de mai jos). CE A RULAT DEJA:
-# `ruff` (pre-commit) si verificarile mesajului (verifica-mesaj). Nu se ruleaza
-# nici avertismentul de vechime a predarii — un commit de curatenie nu e o tura de lucru.
-if "$PY" scripts/curatenie.py > $J/precommit_curatenie.log 2>&1; then
-    sed 's/^/[poarta] /' $J/precommit_curatenie.log
-    echo "[poarta] OK - COMMIT NUMAI DE CURATENIE: pytest si verificatorul NU se ruleaza."
-    echo "[poarta]   Mesajul TREBUIE sa poarte '# doar-curatenie: <motiv>' - o cere verifica-mesaj."
-    exit 0
-fi
+# [15.10.2026] Ocolirea de curatenie (03.09.2026, `scripts/curatenie.py`) a iesit de aici: poarta ruleaza acum pe commitul lotului,
+# cu arborele curat si indexul gol, iar pe index gol instrumentul raspunde mereu „nu e curatenie” — ramura ar fi fost cod mort. Marturia
+# `# doar-curatenie:` din mesaj o cere in continuare `verifica-mesaj`, la commit.
 # [16.09.2026] CIFRA, CORECTATA: scria „~32s" — statut de mult si fals cu trei ordine de
 # marime. Masurat pe sase rulari consecutive: 2156-2216 s, adica ~36 de minute pentru ~6.190
 # de teste. [08.10.2026] Remasurat: 3286,55 s (54:46) pe 7.637 de teste colectate (poarta lui 876e87a2). [11.10.2026] 3953 s (65:53) pe
@@ -106,7 +86,7 @@ case "$TOT" in
     *"TOTAL: 0"*) : ;;
     *) echo "[poarta] RESPINS: verificatorul nu da TOTAL 0." ;
        { echo "=== $(date -Is) RESPINS verificator"; echo "    $TOT";
-         echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)";
+         echo "    commit: $(git rev-parse --short HEAD 2>/dev/null) pe $(git symbolic-ref --short HEAD 2>/dev/null)";
        } >> "$ROOT/.poarta_jurnal.log" ;
        inainte_de_respingere "verificator" ;
        exit 1 ;;
@@ -123,7 +103,7 @@ RC=$?
 tail -1 $J/precommit_cifre.log
 if [ "$RC" -ne 0 ]; then
     { echo "=== $(date -Is) RESPINS cifre de referinta exit $RC"
-      echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
+      echo "    commit: $(git rev-parse --short HEAD 2>/dev/null) pe $(git symbolic-ref --short HEAD 2>/dev/null)"
       head -20 $J/precommit_cifre.log | sed "s/^/    /"
     } >> "$ROOT/.poarta_jurnal.log"
     echo "[poarta] RESPINS: cifrele de referinta difera sau nu s-au putut calcula. Log: $J/precommit_cifre.log"
@@ -149,7 +129,7 @@ if [ "$RC" -ne 0 ]; then
     JURNAL="$ROOT/.poarta_jurnal.log"
     {
         echo "=== $(date -Is) RESPINS pytest exit $RC"
-        echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
+        echo "    commit: $(git rev-parse --short HEAD 2>/dev/null) pe $(git symbolic-ref --short HEAD 2>/dev/null)"
         # NU se scrie mesajul commitului (pana pe 08.10 suita rula in pre-commit, unde .git/COMMIT_EDITMSG
         # purta mesajul commitului PRECEDENT — dovedit pe prima respingere reala, 23.08).
         echo "    HEAD : $(git rev-parse --short HEAD 2>/dev/null)"
@@ -172,7 +152,7 @@ RC=$?
 tail -1 $J/precommit_e2e.log
 if [ "$RC" -ne 0 ]; then
     { echo "=== $(date -Is) RESPINS plasa e2e exit $RC"
-      echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
+      echo "    commit: $(git rev-parse --short HEAD 2>/dev/null) pe $(git symbolic-ref --short HEAD 2>/dev/null)"
       grep -E "^(FAILED|ERROR) " $J/precommit_e2e.log | sed "s/^/    /" | head -40
     } >> "$ROOT/.poarta_jurnal.log"
     echo "[poarta] RESPINS: plasa e2e exit $RC. Log: $J/precommit_e2e.log, capturi: /tmp/e2e_poarta_capturi"
@@ -211,5 +191,5 @@ fi
 
 echo "    DURATE: $(date -Is) VERDE · pytest ${T_PYTEST}s (verificator+cifre simultan) · plasa ${T_E2E}s (dupa pytest) · poarta $(( $(date +%s) - T0 ))s" >> "$ROOT/.poarta_jurnal.log"
 echo "[poarta] durata: pytest ${T_PYTEST}s · plasa ${T_E2E}s · poarta $(( $(date +%s) - T0 ))s"
-echo "[poarta] OK - poarta verde, commit permis."
+echo "[poarta] OK - poarta verde (verdictul il scrie scripts/poarta_lot.sh)."
 exit 0

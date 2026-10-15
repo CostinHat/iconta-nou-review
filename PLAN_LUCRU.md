@@ -555,8 +555,8 @@ redenumit. Celelalte trei perechi n-au încă gardul echivalent: **R123**.
 |---|---|
 | **când se poate scurta** | în timpul turei, între reparații, pe un arbore care **nu se publică încă** |
 | **ce intră în perimetru** | construcția atinsă **plus închiderea tranzitivă a celor care o importă** — citită din cod (graful de import + apelanții), nu din memorie și nu din numele fișierelor |
-| **când NU se poate scurta** | **înainte de publicare** (commit + push + restart) și **înainte de `/clear`**. Acolo poarta e cea completă, fără excepție |
-| **când derivarea nu e sigură** | se rulează **tot**, și se scrie **de ce** derivarea n-a putut închide perimetrul. *Un perimetru ghicit e mai rău decât o poartă lungă*: o poartă lungă costă minute, un perimetru ghicit dă verde despre ce n-a rulat |
+| **când NU se poate scurta** | la **închiderea lotului**, înainte de publicare: poarta completă (`scripts/poarta_lot.sh`), fără excepție. *15.10.2026 (DECIZII „Poarta o dată pe lot”, verbatim): „Poarta completă: o singură dată pe lot, la închiderea lotului” — „înainte de `/clear`” și „la fiecare commit” au ieșit* |
+| **când derivarea nu e sigură** | se rulează **tot** (din 15.10: suita întreagă, `scripts/poarta_scurta.py` o pornește singur — nu poarta), și se scrie **de ce** derivarea n-a putut închide perimetrul. *Un perimetru ghicit e mai rău decât o poartă lungă*: o poartă lungă costă minute, un perimetru ghicit dă verde despre ce n-a rulat |
 
 **DE CE contează cifra.** Poarta completă durează **~21 de minute** (măsurat pe zece rulări,
 01–02.09: 1223s…1256s), iar o tură cu două commituri costă ~42 de minute doar în porți. Regula nu
@@ -661,7 +661,7 @@ rulat 4.161.
 | **ce e INTERZIS** | să treci peste refuzul instrumentului dându-i argumente pe linia de comandă. *Costin, 03.09: „nu-l suprascrie cu judecata ta — o excepție luată o dată face regula o formalitate."* Dacă spune că nu poate scurta, **se rulează tot și se scrie de ce** |
 | **ce se rulează atunci** | gărzile de **registru** — derivate, nu enumerate: un test intră dacă numește el însuși un **registru** (`.md` din rădăcina repo-ului, plus cele două JSON-uri de proveniență), sau dacă importă un scaner din `scripts/` care îl numește |
 | **când NU se aplică** | dacă s-a atins **măcar un** `.py` sau `.js`. Un registru atins **alături de cod** lasă întrebarea deschisă — graful de import nu spune ce cod mai depinde de registru —, iar acolo se rulează tot |
-| **când NU se aplică, oricum** | **înainte de publicare** și **înainte de `/clear`**. Acolo poarta e cea completă, ca la regula 4 |
+| **când NU se aplică, oricum** | la **închiderea lotului**, înainte de publicare: acolo poarta e cea completă (`scripts/poarta_lot.sh`). *15.10.2026 (DECIZII „Poarta o dată pe lot”): „înainte de `/clear`” a ieșit — poarta completă rulează o singură dată pe lot* |
 
 **Cifra care o justifică, MĂSURATĂ pe DOUĂ rulări:** poarta completă durează **~22 de minute**
 (1.300–1.350 s). Perimetrul de registre e **25 de fișiere / 253 de teste** și rulează în
@@ -724,11 +724,11 @@ niciun executabil. Asta spune **când are voie să apară suita întreagă**.
 | | |
 |---|---|
 | **rostul suitei complete** | să prindă **ce n-ai atins și nu poți anticipa**. Despre ce ai atins răspunde perimetrul — mai repede, și cu aceeași putere |
-| **unde are sens** | **înainte de publicare**. Pe repo-ul ăsta publicarea *e* commitul (`post-commit` publică singur, după poarta verde), deci suita completă înseamnă exact hook-ul `pre-commit`: **o dată** |
+| **unde are sens** | **înainte de publicare**. Din 15.10.2026 (DECIZII „Poarta o dată pe lot”): **o dată pe lot**, la închiderea lui (`scripts/poarta_lot.sh`), iar `main` cere verdictul ei |
 | **în rest** | ce ține de ce s-a atins, derivat cu `scripts/perimetru.py` — nu ales, nu judecat |
 
-**Ce NU schimbă:** nimic din ce garantează poarta. Suita completă rulează la fel de des ca înainte —
-o dată per commit. Se taie rulările **dinaintea** ei, nu ea.
+**Ce NU schimbă:** nimic din ce garantează poarta. Suita completă rulează o dată per lot (din 15.10; până atunci per commit),
+iar `main` nu primește un SHA fără verdictul ei. Se taie rulările **dinaintea** ei, nu ea.
 
 ---
 

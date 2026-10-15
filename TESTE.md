@@ -46,12 +46,39 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 5 (comanda Costin 15.10.2026 seara, verbatim în DECIZII „Poarta o dată pe lot” + 257)** — poarta completă o singură
+  dată pe lot, la închidere, legată de mutarea lui `main`; registrul deficiențelor 247–255; 257 (Cloudflare Turnstile).
+  - ultim: L5-0 … L5-5, L5-7 făcute (15.10.2026 seara; mutațiile M1–M5 roșii; e2e `e2e_inregistrare_libera.py` 4/4 cu widgetul real);
+    L5-6 cod + teste gata pe cheile de test — lotul 5 = commitul care conține această intrare, pe `lucru/lot5-2026-10-15`
+  - urmator: L5-8 (rularea țintită). STARE = IN LUCRU (L5-6 BLOCAT pe producție: cheile Turnstile + nginx-ul, cerute lui Costin;
+    poarta lotului NUMAI la „Lotul 5 e complet”)
+  - pasi:
+    L5-0. Registre: TESTE (acest fir), DECIZII (comanda verbatim + PIVOT față de „suita la fiecare commit” din 31.07 / 08.10).
+    L5-1. `scripts/githooks/commit-msg` = numai `verifica-mesaj`; poarta completă se pornește NUMAI din `scripts/poarta_lot.sh`
+          (arbore curat, pe ramură, HEAD = commitul lotului) -> `scripts/githooks/poarta-suita`; verdictul (`VERDE|ROSU <sha> <ramura>
+          <data>`) în `<git-common-dir>/poarta_verdicte.log`; refuz: deja VERDE pe același SHA, a treia rulare pe aceeași ramură
+          (maximum două pe lot), `main`, arbore murdar. Ocolirea de curățenie scoasă din `poarta-suita` (la închidere indexul e gol).
+    L5-2. `scripts/githooks/reference-transaction`: `main` se mută numai la un SHA cu aprobarea scrisă ȘI cu `VERDE <sha>` în jurnal.
+    L5-3. `scripts/poarta_scurta.py`: „incert -> rulează tot” = suita întreagă (`pytest -q -n 3 --dist loadfile`), nu poarta.
+    L5-4. Gărzi: `core/test_poarta_ordine.py` (commit-msg nu mai pornește suita; `poarta-suita` chemată numai de `poarta_lot.sh`),
+          `core/test_poarta_lot.py` (lansatorul, pe depozit temporar), `core/test_garda_main.py` (fără verdict VERDE -> refuz),
+          `core/test_poarta_scurta.py`, `core/test_curatenie.py`; mutații.
+    L5-5. Regula în CLAUDE.md (§2.3 pct.10 + pct.12 + Mecanica porții) + `scripts/githooks/README.md` + PLAN_LUCRU regula 4
+          + memoria sesiunii.
+    L5-6. 257: Cloudflare Turnstile pe „Înregistrează cabinetul tău” (widget + siteverify + CSP `challenges.cloudflare.com`; cheile
+          de test Cloudflare în plasă). BLOCAT: cont / sitekey / secret de la Costin.
+    L5-7. DEFICIENTE: 247–249 nerezolvată (amânate), 250, 251, 254 neverificat — rezolvată după Costin, 252 parțial, 253 rezolvată
+          (testele `test_def_253_*` din `e2e_inregistrare_libera.py`), 257 rândul nou.
+    L5-8. Rularea țintită (`scripts/poarta_scurta.py`); poarta completă NUMAI la „Lotul 5 e complet”.
 - fir: **Lotul 4 al comenzii Costin 15.10.2026 (după publicarea lotului 3; înlocuiește „numai prin invitație”; publicarea NUMAI cu
   acordul lui Costin, oprire după raport)** — Brevo probat pe producție, înregistrarea liberă cu confirmarea emailului, anti-roboți +
   limită pe oră (IP și email), anunț la cabinet nou + „Activitate cabinete”, invitațiile rămân, comutatorul din Panou Admin, 256.
   - ultim: L4-1 … L4-7 implementate și probate (15.10.2026 după-amiaza; teste unitare + P4 + e2e 3/3 + mutații) — lotul 4 = commitul
     care conține această intrare
-  - urmator: L4-8 (poarta; publicarea cu acordul lui Costin — „de acord”, 15.10.2026). STARE = IN LUCRU
+  - urmator: — . STARE = INCHIS (15.10.2026 18:01: a doua poartă VERDE 17:59 — pytest 8250 passed / 10 skipped / 15 xfailed,
+    plasa 277 passed, verificator TOTAL 0, cifrele F1–F5 identice; publicat cu acordul lui Costin „de acord”: backup
+    `iconta_v2_pre_lot4_20261015_1759.dump`, migrarea `core/migrare_inregistrare_libera.py` rulată pe producție, four-way
+    HEAD = origin/main = public/main = backup/lant-2026-10-15 = RUNNING = `48465e7d`, 2 din 2 procese, pornite 18:01:29)
   - [15.10.2026 15:55] prima poartă a respins: 5 teste (pytest 5 failed / 8245 passed; prospețimea, verificatorul, cifrele — verzi) —
     `test_refuz_tacut` (o citire și o scriere din `login.js` care afișau refuzul DUPĂ `catch`, nu în el), `test_upsert_motivat`
     (comutatorul fără `# upsert-ok`), `test_p7_uc` (`strftime` scos din anunț, nedeclarat). WIP `wip/2026-10-15-1555-lot4`.

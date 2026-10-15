@@ -1079,8 +1079,7 @@ class RegisterIn(BaseModel):
     cui: Optional[str] = None  # register_primul_tenant_v1
     accept_termeni: bool = False  # [termeni_v1] bifa obligatorie, validata pe BACKEND
     invitatie: Optional[str] = None  # [14.10.2026, comanda Costin pct.3] conturile noi de cabinet NUMAI prin invitație
-    formular: Optional[str] = None   # [15.10.2026, lotul 4] jetonul semnat al formularului (anti-roboți), din GET /public/inregistrare
-    site_web: Optional[str] = None   # [15.10.2026, lotul 4] câmpul-capcană: un om îl lasă gol
+    turnstile: Optional[str] = None   # [257] tokenul widgetului Cloudflare Turnstile (anti-roboți), validat pe server
 
 class ConfirmareIn(BaseModel):
     token: str

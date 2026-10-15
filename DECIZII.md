@@ -20405,3 +20405,63 @@ spune „Aplicația s-a actualizat la versiunea nouă.” Cu un ecran deschis, r
 pierdut e mai rău decât defectul). **Respins:** reîncărcarea la orice navigare (ar pierde ecranul deschis) și jetoanele de versiune în
 cascadă (`versioneaza_assets`, „anti-cascadă” deliberat; cu `no-cache` revalidarea aduce oricum modulul nou). **Limita:** un ecran
 lăsat deschis toată ziua rămâne pe versiunea veche până la închidere (anunțul o spune).
+
+## 15.10.2026 (seara) — Răspunsul lui Costin la §6 al raportului lotului 4
+
+Verbatim: „a. 247–255: nu e nimic de trimis. 247–249 (ghiduri) sunt amânate intenționat; 250, 251, 254 sunt rezolvate; 252 rămâne
+parțială; 253 e lotul 4. b. Scriptul de backup a fost instalat azi la 11:42 (/usr/local/bin/iconta-backup.sh, -rwxr-xr-x root). Scoate-l
+din restanțe. c. Comutatorul de înregistrare îl decid eu în aplicație. d. Registrele intră în lotul următor, cum am convenit.”
+**Temei / probă:** (b) `ls -la /usr/local/bin/iconta-backup.sh` -> `-rwxr-xr-x root 5321 Oct 15 11:42`; `cmp` cu
+`config/iconta-backup.sh` -> identic. Restanța scoasă din PREDARE. (c) comutatorul rămâne cum l-a lăsat publicarea („liberă”) până îl
+schimbă Costin; nicio acțiune a executorului. (d) TESTE/ISTORIC/PREDARE de după publicarea lotului 4 stau pe
+`lucru/dupa-lot4-2026-10-15` și intră în commitul lotului următor. **Limita (a):** registrul n-are conținutul lui 247–255, iar
+`core/test_deficiente.py` cere pentru „rezolvată” un test `test_def_<nr>_…` (niciunul nu există pentru 250, 251, 254) — stările din
+DEFICIENTE se aliniază în lotul următor după cum decide Costin (întrebarea e în răspunsul de după acest rând).
+
+## 15.10.2026 (seara) — Poarta o dată pe lot; 257 (Cloudflare Turnstile); registrul 247–255 (lotul 5)
+
+**Comanda, verbatim** (după părerea cerută asupra unei comenzi de configurare, care NU s-a trimis spre execuție):
+„1. Oprește măsurătoarea --durations=50. Nu măsura nimic.
+2. Poarta completă: o singură dată pe lot, la închiderea lotului, înainte de publicarea pe producție. Lotul se închide doar când o
+comandă îți spune explicit „Lotul X e complet”. Între timp, după fiecare comandă, doar rularea țintită de azi (poarta_scurta.py /
+perimetru.py, cu „incert → rulează tot”), pe numărul de procese de acum.
+   a. Muți poarta din hook-ul commit-msg pe mutarea lui main, cum ai propus: main acceptă un commit doar dacă jurnalul porții îl arată verde.
+   b. Dacă poarta pică: repari cauza fiecărui test picat, rulezi doar testele picate o dată ca verificare, apoi poarta completă încă o
+   dată. Maximum două rulări complete pe lot; dacă a doua pică, te oprești și raportezi.
+   c. Scrii regula în CLAUDE.md (iconta_lucru) și intră în ~/iconta_nou cu lotul următor.
+3. Deficiența 257: implementezi Cloudflare Turnstile pe formularul „Înregistrează cabinetul tău”, cum cerea lotul 4. Dacă îți trebuie
+ceva de la mine (cont Cloudflare, chei), cere-mi întâi. Intră în lotul următor.
+4. Registrul de deficiențe:
+   a. 253: o leagă testele din e2e_inregistrare_libera.py.
+   b. 250, 251, 254: legi testul existent care acoperă fiecare; dacă nu există, rămâne „neverificat — rezolvată după Costin”. Nu scrii
+   teste noi doar pentru registru.”
+Plus, în aceeași tură: „c. Regula se aplică imediat, începând cu această comandă: muți hook-ul în iconta_lucru acum, scrii regula în
+CLAUDE.md din iconta_lucru și în memoria ta de sesiune, ca să rămână și după /clear. În ~/iconta_nou intră la publicarea lotului 5.” și
+„2. La punctul 3 (deficiența 257): nu doar răspunzi, ci implementezi Cloudflare Turnstile pe formularul „Înregistrează cabinetul tău”.
+Dacă îți trebuie ceva de la mine (cont Cloudflare, chei), cere-mi întâi.”
+
+**PIVOT** față de „suita la fiecare commit” (31.07.2026, `pre-commit`) și de ordinea din 08.10.2026 pct.3 (`commit-msg`: mesajul, apoi
+suita): commitul rulează numai ruff + `verifica-mesaj`; poarta completă (`scripts/githooks/poarta-suita`) o pornește NUMAI
+`scripts/poarta_lot.sh`, la închiderea lotului, pe commitul lotului (arbore curat), și scrie `VERDE|ROSU <sha> <ramura> <data>` în
+`<git-common-dir>/poarta_verdicte.log`; `scripts/githooks/reference-transaction` mută `main` numai cu aprobarea scrisă ȘI `VERDE <sha>`.
+„Maximum două” e mecanic: a treia rulare pe aceeași ramură e refuzată. Ocolirea de curățenie (03.09) a ieșit din poartă (index gol la
+închidere -> cod mort); marturia `# doar-curatenie:` o cere în continuare `verifica-mesaj`. „Incert -> rulează tot” = suita întreagă
+(`pytest -q -n 3 --dist loadfile`, procesele porții), pornită de `scripts/poarta_scurta.py`, nu poarta. Norma: CLAUDE.md §2.3 pct.13,
+`scripts/githooks/README.md`, PLAN_LUCRU regulile 4 și 6. **Alternativa respinsă:** poarta la commit, cu blocare pe SHA deja verde
+(propunerea inițială „i”): un lot are mai multe commituri, iar ce contează e ce se publică — mutarea lui `main`. **Limita:** în
+`~/iconta_nou` hook-urile noi intră la publicarea lotului 5 (fast-forward-ul lotului 5 trece încă prin garda veche, fără verdict);
+regimul pilot rămâne (poarta citește producția — cifrele F1–F5 — deci rulează numai când cabinetul nu lucrează).
+
+**247–255** (răspunsul §6 de mai sus + pct.4): conținutul lor nu e în niciun registru, în `~/ghid_incoming` sau în comenzile primite
+(căutat în toate transcrierile sesiunilor) — deci niciun test existent nu se poate lega de 250, 251, 254 -> „neverificat — rezolvată după
+Costin”; 247–249 „nerezolvată” (amânate intenționat de Costin); 252 „parțial”; 253 = lotul 4, legată de testele `test_def_253_*` din
+`frontend_test/e2e/e2e_inregistrare_libera.py` (testele fluxului liber și al comutatorului, redenumite cu numărul — garda
+`core/test_deficiente.py` cere `test_def_<nr>_…`).
+
+**257** — Turnstile în locul jetonului de formular + câmpului-capcană construite în lotul 4 (anti-roboții „din casă” erau aleși pentru
+că CSP-ul permite numai `self`; Costin cere unealta gata făcută). Sursa (Cloudflare, citită 15.10.2026): widgetul cere `script-src` și
+`frame-src` `https://challenges.cloudflare.com`; validarea pe server `POST https://challenges.cloudflare.com/turnstile/v0/siteverify`
+(`secret`, `response`, opțional `remoteip`), tokenul valabil 300 s, o singură folosire; cheile de test oficiale (sitekey
+`1x00000000000000000000AA` / `2x00000000000000000000AB`, secret `1x0000000000000000000000000000000AA` /
+`2x0000000000000000000000000000000AA`) numai în plasă. Cheile de producție (sitekey + secret ale widgetului pentru `iconta.eu`) le dă
+Costin. Fail-closed: fără chei sau cu siteverify indisponibil, înregistrarea liberă nu primește cereri (motivul afișat).

@@ -145,10 +145,6 @@ def _register_liber(date, _versiune_termeni, ip):
     import os
     from core import inregistrare_libera as _il, setari_platforma as _set, stare_partajata as _sp
     email = date.email.strip().lower()
-    # câmpul-capcană: completat numai de un robot -> răspunsul de reușită, fără nicio scriere și fără email
-    if str(getattr(date, "site_web", "") or "").strip():
-        print("[inregistrare] capcana completata, ip=%s" % ip, flush=True)
-        return {"confirmare_trimisa": True, "email": email, "valabila_ore": _il.VALABILITATE_ORE}
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             stare = _set.inregistrare_libera(cur)
@@ -157,16 +153,16 @@ def _register_liber(date, _versiune_termeni, ip):
         if stare["mod"] != _set.LIBERA:
             raise _erori.FaraDrept(stare["refuz"]["motiv"])
         raise _erori.ServiciuIndisponibil(stare["refuz"]["motiv"])
-    # limitele pe oră se numără ÎNAINTEA jetonului: și încercările cu formular greșit consumă din ele
+    # limitele pe oră se numără ÎNAINTEA verificării anti-roboți: și încercările respinse de ea consumă din ele
     with db.get_conn() as conn:
         pe_ip = _sp.ritm_incape(conn, "inregistrare_ip", ip or "?", maxreq=_il.LIMITA_IP, fereastra_sec=_il.FEREASTRA_SEC)
         pe_email = pe_ip and _sp.ritm_incape(conn, "inregistrare_email", email, maxreq=_il.LIMITA_EMAIL, fereastra_sec=_il.FEREASTRA_SEC)
         conn.commit()
     if not (pe_ip and pe_email):
         raise _erori.PreaDes(_il.MESAJ_PREA_DES)
-    motiv = _il.verifica_formular(getattr(date, "formular", None))
-    if motiv:
-        raise _erori.CerereGresita(motiv)
+    refuz = _il.verifica_turnstile(getattr(date, "turnstile", None), ip)   # [257] Cloudflare Turnstile
+    if refuz:
+        raise (_erori.ServiciuIndisponibil if refuz[0] == "indisponibil" else _erori.CerereGresita)(refuz[1])
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             if repo_utilizatori.contul_dupa_email(cur, email):
@@ -384,14 +380,15 @@ def invitatie_stare(token):
 
 # ── ÎNREGISTRAREA LIBERĂ: starea publică și comutatorul (15.10.2026, „Lotul 4” pct.2 și 6) ─────────────────────────────────────
 def inregistrare_stare():
-    """[public] `{deschisa, mod, refuz[, formular]}` — formularul primește jetonul lui semnat (anti-roboți) numai când e deschisă."""
+    """[public] `{deschisa, mod, refuz[, turnstile_sitekey, turnstile_script, valabila_ore]}` — formularul primește cheia publică a
+    widgetului anti-roboți (Cloudflare Turnstile, deficiența 257) numai când e deschisă."""
     from core import inregistrare_libera as _il, setari_platforma as _set
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             st = _set.inregistrare_libera(cur)
         conn.rollback()
     if st["deschisa"]:
-        st["formular"] = _il.jeton_formular()
+        st["turnstile_sitekey"], st["turnstile_script"] = _il.chei_turnstile()[0], _il.SCRIPT_WIDGET
         st["valabila_ore"] = _il.VALABILITATE_ORE
     return st
 

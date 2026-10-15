@@ -4,11 +4,13 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-15** (după-amiaza; lotul 4 al regimului pilot: înregistrarea liberă cu confirmarea emailului, comutatorul, anunțul, 256 — comis pe ramura `lucru/lot4-2026-10-15`, NEPUBLICAT: publicarea numai cu acordul lui Costin), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `fdf3ca5e` (lotul 3) — **four-way închis 15.10.2026 12:37:21**: HEAD = origin/main = public/main = backup/lant-2026-10-15 =
-  RUNNING = `fdf3ca5e` (2 din 2 procese); procesul pornit 12:37:21 EEST, după commit (11:22:33); nicio sentinelă; backup înainte
-  `~/backups_db/iconta_v2_pre_lot3_20261015_1234.dump`. Lotul 4 = commitul care conține această predare, pe ramura de lucru (worktree
-  `/home/costin/iconta_lot4`), NEPUBLICAT.
+- **ultima rescriere**: **2026-10-15** (după-amiaza; lotul 4 al regimului pilot: înregistrarea liberă cu confirmarea emailului, comutatorul, anunțul, 256 — publicat 18:01 pe `48465e7d`), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `48465e7d` (lotul 4) — **four-way închis 15.10.2026 18:01:29**: HEAD = origin/main = public/main =
+  backup/lant-2026-10-15 = RUNNING = `48465e7d` (2 din 2 procese); procesul pornit 18:01:29 EEST, după commit (16:47:02); nicio
+  sentinelă; backup înainte `~/backups_db/iconta_v2_pre_lot4_20261015_1759.dump`; migrarea `core/migrare_inregistrare_libera.py`
+  rulată pe producție. Înregistrarea e LIBERĂ (comutatorul din Panou Admin). Acest fișier stă pe ramura `lucru/dupa-lot4-2026-10-15`
+  și intră în commitul lotului următor. Scriptul de backup e instalat (Costin, 15.10 11:42; identic cu `config/`). Deficiențele
+  247–255: răspunsul lui Costin în DECIZII 15.10.2026 (seara); stările din DEFICIENTE se aliniază în lotul următor.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -138,8 +140,16 @@ aplicației**, nu „în așteptarea unei teme”:
   `sh scripts/githooks/post-commit` (15:52:46–15:53:05). **De reținut pentru loturile următoare: orice commit pe main publică și
   repornește automat — dacă regula „publicarea o aprob eu” rămâne în vigoare, întreabă înainte de fiecare commit / poartă.**
 - **REGIM PILOT (14.10.2026, verbatim în DECIZII):** publicare / restart / migrări / poartă NUMAI după ce Costin confirmă că cabinetul nu lucrează, cu backup chiar înainte; nicio citire / scriere în datele cabinetului fără aprobare; observațiile „expert contabil” au prioritate absolută. Lucrul în `/home/costin/iconta_lucru`; commit pe ramura de lucru tot prin poartă (commit-msg) -> tot cu acord.
-- **CE E ÎN LUCRU ACUM (15.10, după-amiaza):** lotul 4 = commitul care conține această predare, pe `lucru/lot4-2026-10-15`, trecut prin poartă, NEPUBLICAT. **Publicarea cere acordul lui Costin** (comanda: „Publicarea numai cu acordul meu. Oprește-te după raport.”): backup, aprobarea în `.git/APROBARE_MAIN`, fast-forward, post-commit, migrarea `core/migrare_inregistrare_libera.py --productie` (pune comutatorul pe „liberă” — înregistrarea se deschide la publicare), four-way. Lotul 3 publicat (12:37, `fdf3ca5e`), proba de restaurare de noapte în crontab (05:00). **Pas al lui Costin (sudo), rămas din lotul 2:** `sudo install -m 755 /home/costin/iconta_nou/config/iconta-backup.sh /usr/local/bin/iconta-backup.sh`.
-- **URMEAZĂ:** acordul lui Costin pentru publicarea lotului 4 (și, dacă vrea, comutatorul pus întâi pe „numai prin invitație” la publicare). Deficiențele 247–255 — numerele lui Costin, netrimise (DEFICIENTE: „neverificat”). Pct.4 al comenzii din 14.10 (serverul de lucru) după pilot.
+- **CE E ÎN LUCRU ACUM (15.10, seara): LOTUL 5**, pe `lucru/lot5-2026-10-15`, worktree `/home/costin/iconta_lucru` (comanda în DECIZII
+  „Poarta o dată pe lot”; firul L5 în TESTE): (1) **poarta o dată pe lot** — commitul NU mai rulează suita; poarta completă = `sh
+  scripts/poarta_lot.sh` NUMAI la „Lotul 5 e complet”, iar `main` cere `VERDE <sha>` în `<git-common-dir>/poarta_verdicte.log` (CLAUDE.md
+  §2.3 pct.13; în `~/iconta_nou` intră la publicarea lotului 5); între comenzi `scripts/poarta_scurta.py`; (2) **257 Cloudflare
+  Turnstile** — cod + e2e gata pe cheile de test; **așteaptă de la Costin:** cheile widgetului pentru iconta.eu în `~/.iconta/api_keys.env`
+  (`TURNSTILE_SITEKEY`, `TURNSTILE_SECRET`) și nginx-ul cu CSP-ul nou (`sudo install -m 644 /home/costin/iconta_lucru/config/nginx-iconta
+  /etc/nginx/sites-available/iconta && sudo nginx -t && sudo systemctl reload nginx`; până atunci `core/test_nginx_csp.py` e roșu, deci
+  poarta lotului nu poate fi verde); fără chei, după publicare înregistrarea liberă se închide singură, cu motivul; (3) DEFICIENTE 247–257
+  aliniate la răspunsul lui Costin. Lotul 4 publicat 18:01 (`48465e7d`); scriptul de backup instalat de Costin (11:42, identic).
+- **URMEAZĂ:** cheile Turnstile + nginx (Costin); apoi „Lotul 5 e complet” -> `poarta_lot.sh` -> backup -> publicare (acordul lui Costin).
 - **CE ERA ÎN LUCRU (până la 14.10 15:53):** nimic. Arborele are o singură modificare: această predare (necomisă — un commit trece prin poarta de ~70 min și
   repornește producția la final; se comite odată cu lotul următor sau când aprobă Costin).
 - **URMEAZĂ (comanda 14.10, în ordine, fiecare lot cu raport și ZIP) — NUMAI după comanda lui Costin („După raport, nu porni pct.3;
@@ -524,7 +534,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **976** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **975** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
