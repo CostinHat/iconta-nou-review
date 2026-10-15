@@ -2491,3 +2491,7 @@ la un SHA cu aprobare și verdict VERDE; „incert” în rularea țintită porn
 fail-closed fără chei; CSP-ul din nginx versionat în `config/nginx-iconta`. Plasa: widgetul real cu cheile de test ale Cloudflare (iframe-ul
 stă într-un shadow DOM închis — testul îl caută printre frame-uri). DEFICIENTE: 253 legată de testele lotului 4, 247–249 / 250–252 / 254
 după răspunsul lui Costin, 257 parțial (cheile și nginx-ul de producție).
+Mai departe, în aceeași seară: cheile Turnstile și nginx-ul puse de Costin, verificate fără afișarea cheilor (257 rezolvată, `c4908e24`).
+Răspunsul la §6 (DECIZII „Lotul 5: răspunsul la §6; rularea țintită pe JS/CSS”): 255 = număr nefolosit; rularea țintită nu mai pornește
+suita întreagă pentru JS/CSS sau registre — numai pentru nesiguranța din Python; JS/CSS -> verificatorul, e2e-ul derivat din id-urile DOM,
+gărzile statice și uneltele vizuale.

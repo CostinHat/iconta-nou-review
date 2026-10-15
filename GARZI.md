@@ -509,7 +509,7 @@ balanță ≠ sumă înregistrări; backup nerestaurabil.
   `<git-common-dir>/poarta_verdicte.log`; `reference-transaction` cere `VERDE <sha>` lângă aprobare. Gărzi: `core/test_poarta_lot.py`
   (5, depozit temporar; M3a–d), `core/test_garda_main.py::test_aprobarea_fara_poarta_verde_a_sha_ului_nu_ajunge` (M2),
   `core/test_poarta_ordine.py::test_commit_msg_verifica_numai_mesajul` + `::test_poarta_completa_pornita_numai_de_inchiderea_lotului`
-  (M1, M5), `core/test_poarta_scurta.py::test_lansatorul_ruleaza_toata_suita_cand_derivarea_nu_e_sigura` (M4). LIMITĂ: jurnalul
+  (M1, M5), `core/test_poarta_scurta.py::test_lansatorul_ruleaza_toata_suita_cand_derivarea_python_nu_e_sigura` (M4). LIMITĂ: jurnalul
   verdictelor e un fișier în `.git` — cine scrie de mână `VERDE <sha>` trece garda (oprește greșeala, nu intenția, ca `--no-verify`);
   în `~/iconta_nou` garda nouă intră la publicarea lotului 5.
 

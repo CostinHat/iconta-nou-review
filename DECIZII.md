@@ -20465,3 +20465,27 @@ că CSP-ul permite numai `self`; Costin cere unealta gata făcută). Sursa (Clou
 `1x00000000000000000000AA` / `2x00000000000000000000AB`, secret `1x0000000000000000000000000000000AA` /
 `2x0000000000000000000000000000000AA`) numai în plasă. Cheile de producție (sitekey + secret ale widgetului pentru `iconta.eu`) le dă
 Costin. Fail-closed: fără chei sau cu siteverify indisponibil, înregistrarea liberă nu primește cereri (motivul afișat).
+
+## 15.10.2026 (noaptea) — Lotul 5: răspunsul la §6; rularea țintită pe JS/CSS
+
+**Verbatim:** „1. 255 nu există: e un număr nefolosit. Îl marchezi așa în DEFICIENTE.md.
+2. Turnstile înlocuiește jetonul și câmpul-capcană; limitele pe oră rămân. Nu păstra vechile protecții.
+3. Când o comandă atinge JS/CSS, rularea țintită nu devine suita întreagă: rulezi e2e-ul ecranelor atinse, uneltele vizuale și
+verificatorul, cum ai propus tu. Suita întreagă rămâne doar pentru poarta de lot și pentru cazurile cu adevărat incerte din Python.
+Scrii regula în CLAUDE.md.”
+
+**Aplicare.** (1) DEFICIENTE: 255 „nu se aplică — număr nefolosit”. (2) Confirmă ce era deja în cod (DECIZII „Poarta o dată pe lot”,
+257): jetonul și capcana au ieșit, limitele pe oră rămân; nimic de schimbat. (3) `scripts/poarta_scurta.py` împarte fișierele atinse în
+trei clase (`imparte`): PYTHON -> perimetrul derivat, iar NUMAI nesiguranța lui (conftest, `main.py`, verificatorul) pornește suita
+întreagă; FRONT (`static/**.js|.css|.html`) -> verificatorul + e2e-ul ecranelor atinse (derivat: id-urile DOM ale fișierului JS căutate
+ca `#id` în `frontend_test/e2e/e2e_*.py`, rulat cu `scripts/e2e_poarta.py --arbore --doar=…`) + gărzile statice care citesc `static/`
+(direct sau printr-o unealtă din `scripts/` / rădăcină) + uneltele vizuale (obligația executorului, §2.3 pct.11 — lansatorul le
+numește); RESTUL (registre, hook-uri, config) -> gărzile de registru + testele care numesc fișierul. Norma: CLAUDE.md §2.3 pct.13
+(completarea), PLAN_LUCRU regula 4. **PIVOT** față de „incert -> rulează tot” pentru orice fișier ne-Python (comanda din 15.10 seara,
+primul lot al regulii): prima rulare țintită a lotului 5 a pornit suita întreagă (54 de minute) pentru că atingea JS și registre.
+**În plus față de comandă (declarat):** gărzile statice ale UI-ului (102 fișiere de test) rulează și ele la un JS/CSS atins — două din
+cele cinci picături ale acelei rulări (`?v=` nerestampilat, ancore „apare oricum”) erau de felul ăsta și ar fi ajuns abia la poarta
+lotului, care are voie la două rulări. **Alternativa respinsă:** e2e-ul ales de executor pe ecranele „pe care le crede atinse” (PLAN_LUCRU
+regula 5: perimetrul se derivă, nu se alege). **Limita:** un JS fără id-uri DOM proprii (un utilitar comun) nu derivă niciun e2e — se
+spune („niciun e2e nu folosește id-urile”), iar acolo rămân uneltele vizuale și poarta lotului; un `.css` nu derivă niciun e2e, prin
+construcție (aspectul îl văd uneltele vizuale).

@@ -50,8 +50,8 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   dată pe lot, la închidere, legată de mutarea lui `main`; registrul deficiențelor 247–255; 257 (Cloudflare Turnstile).
   - ultim: L5-0 … L5-5, L5-7 făcute (15.10.2026 seara; mutațiile M1–M5 roșii; e2e `e2e_inregistrare_libera.py` 4/4 cu widgetul real);
     L5-6 cod + teste gata pe cheile de test — lotul 5 = commitul care conține această intrare, pe `lucru/lot5-2026-10-15`
-  - urmator: — (lotul 5 deschis: comanda următoare a lui Costin). STARE = IN LUCRU — L5-0…L5-8 făcute (`45b383d2` + commitul care
-    conține această intrare); L5-6 deblocat (cheile Turnstile și nginx-ul puse de Costin, verificate). Poarta lotului NUMAI la
+  - urmator: — (lotul 5 deschis: comanda următoare a lui Costin). STARE = IN LUCRU — L5-0…L5-9 făcute (`45b383d2`, `c4908e24` +
+    commitul care conține această intrare); L5-6 deblocat (cheile Turnstile și nginx-ul puse de Costin, verificate). Poarta lotului NUMAI la
     „Lotul 5 e complet”
   - pasi:
     L5-0. Registre: TESTE (acest fir), DECIZII (comanda verbatim + PIVOT față de „suita la fiecare commit” din 31.07 / 08.10).
@@ -71,6 +71,10 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     L5-7. DEFICIENTE: 247–249 nerezolvată (amânate), 250, 251, 254 neverificat — rezolvată după Costin, 252 parțial, 253 rezolvată
           (testele `test_def_253_*` din `e2e_inregistrare_libera.py`), 257 rândul nou.
     L5-8. Rularea țintită (`scripts/poarta_scurta.py`); poarta completă NUMAI la „Lotul 5 e complet”.
+    L5-9. (răspunsul §6, 15.10 noaptea) `scripts/poarta_scurta.py`: JS/CSS atins -> verificator + e2e-ul ecranelor atinse (derivat din
+          id-urile DOM) + gărzile statice + uneltele vizuale (executorul), nu suita; registre / hook-uri -> gărzile care le citesc; suita
+          întreagă NUMAI la nesiguranța din Python. Gard `core/test_poarta_scurta.py` (T1–T4). CLAUDE.md §2.3 pct.13 + PLAN_LUCRU regula 4.
+          DEFICIENTE: 255 „nu se aplică”.
 - fir: **Lotul 4 al comenzii Costin 15.10.2026 (după publicarea lotului 3; înlocuiește „numai prin invitație”; publicarea NUMAI cu
   acordul lui Costin, oprire după raport)** — Brevo probat pe producție, înregistrarea liberă cu confirmarea emailului, anti-roboți +
   limită pe oră (IP și email), anunț la cabinet nou + „Activitate cabinete”, invitațiile rămân, comutatorul din Panou Admin, 256.

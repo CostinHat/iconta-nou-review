@@ -781,8 +781,15 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    - **Lot** = grupul de comenzi publicate impreuna; comanda spune din ce lot face parte; lotul se inchide NUMAI la „Lotul X e complet”
      (nu decide executorul).
    - **Commit** (oricate, pe ramura lotului, in worktree): `pre-commit` (ruff) + `commit-msg` (`verifica-mesaj`). Nicio suita.
-   - **Dupa fiecare comanda:** `./venv/bin/python scripts/poarta_scurta.py` (perimetrul derivat din `git diff`; incert / gol -> suita
-     intreaga `pytest -q -n 3 --dist loadfile`, NU poarta). Niciodata poarta completa „ca sa aflu ce e stricat”.
+   - **Dupa fiecare comanda:** `./venv/bin/python scripts/poarta_scurta.py` (perimetrul derivat din `git diff`). Niciodata poarta
+     completa „ca sa aflu ce e stricat”. **Completare 15.10.2026 noaptea (verbatim in DECIZII „Lotul 5: răspunsul la §6; rularea țintită
+     pe JS/CSS”):** *„Când o comandă atinge JS/CSS, rularea țintită nu devine suita întreagă: rulezi e2e-ul ecranelor atinse, uneltele
+     vizuale și verificatorul [...] Suita întreagă rămâne doar pentru poarta de lot și pentru cazurile cu adevărat incerte din Python.”*
+     Lansatorul imparte fisierele atinse: PYTHON -> perimetrul derivat, iar NUMAI nesiguranta lui (conftest, `main.py`, verificatorul)
+     -> suita intreaga `pytest -q -n 3 --dist loadfile`; FRONT (`static/**.js|.css|.html`) -> verificatorul + e2e-ul ecranelor atinse
+     (derivat din id-urile DOM, `scripts/e2e_poarta.py --arbore --doar=…`) + garzile statice ale UI-ului + **uneltele vizuale, rulate de
+     executor** (§2.3 pct.11), dupa `versioneaza_assets.py --scrie`, cu artefactele refacute; RESTUL (registre, hook-uri, config) ->
+     garzile de registru + testele care numesc fisierul. Garda: `core/test_poarta_scurta.py`.
    - **Inchiderea lotului:** tot lotul comis, arbore curat, apoi `sh scripts/poarta_lot.sh` in fundal (timeout 7200000) — singurul loc
      care porneste `scripts/githooks/poarta-suita` (prospetime, pytest, verificator, cifre F1–F5, plasa). Verdictul:
      `VERDE|ROSU <sha> <ramura> <data>` in `<git-common-dir>/poarta_verdicte.log`. Refuza: `main`, arbore murdar, SHA deja VERDE, a

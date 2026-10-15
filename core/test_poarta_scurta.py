@@ -81,24 +81,60 @@ def test_derivarea_refuza_ce_nu_poate_vedea(atins, de_ce):
     assert incerte, "derivarea a inchis perimetrul desi s-a atins %s" % atins
 
 
-def test_lansatorul_ruleaza_toata_suita_cand_derivarea_nu_e_sigura(monkeypatch, capsys):
-    """[15.10.2026, comanda Costin: „incert → rulează tot”] Nesiguranța nu mai cere poarta: lansatorul RULEAZĂ suita întreagă, fără
-    selecție, pe procesele porții, și întoarce exit-ul ei. MUTAȚIE: `return 2` în loc de `_ruleaza_tot` -> pică; o cale / `-k` adăugate
-    în `SUITA_INTREAGA` -> pică."""
-    monkeypatch.setattr(PS.P, "atinse_din_git", lambda: ["CONFORMITATE.md", "core/plati.py"])
+class _R:
+    returncode = 0
+    stdout = "TOTAL: 0 candidate\n"
+
+
+def _lanseaza(monkeypatch, atinse, rc=0):
+    monkeypatch.setattr(PS.P, "atinse_din_git", lambda: list(atinse))
     monkeypatch.setattr(PS.P, "netracked", lambda: [])
     rulate = []
+    real = PS.subprocess.run
 
-    class _R:
-        returncode = 5
+    def _run(cmd, cwd=None, **k):
+        if cmd[0] == "git":                 # derivarea citește depozitul (git ls-files) — rămâne reală
+            return real(cmd, cwd=cwd, **k)
+        rulate.append(cmd)
+        r = _R()
+        r.returncode = rc
+        return r
+    monkeypatch.setattr(PS.subprocess, "run", _run)
+    return PS.main([]), rulate
 
-    monkeypatch.setattr(PS.subprocess, "run", lambda cmd, cwd=None: rulate.append(cmd) or _R())
-    cod = PS.main([])
+
+def test_lansatorul_ruleaza_toata_suita_cand_derivarea_python_nu_e_sigura(monkeypatch, capsys):
+    """[15.10.2026] Nesiguranța din PYTHON (aici `main.py`, citit de scanere care nu-l importă) -> suita întreagă, fără selecție, pe
+    procesele porții, cu exit-ul ei. MUTAȚIE: `return 2` în loc de `_ruleaza_tot` -> pică; o cale / `-k` în `SUITA_INTREAGA` -> pică."""
+    cod, rulate = _lanseaza(monkeypatch, ["main.py", "core/plati.py"], rc=5)
     assert (cod, rulate) == (5, [PS.SUITA_INTREAGA])
     assert PS.SUITA_INTREAGA[1:] == ["-m", "pytest", "-q", "-n", "3", "--dist", "loadfile"], PS.SUITA_INTREAGA
     # se cere ca MOTIVELE sa fie tiparite, numarate ca randuri, nu cautate ca sir
     motive = [x for x in capsys.readouterr().out.splitlines() if x.startswith("   - ")]
     assert len(motive) == 1
+
+
+def test_js_atins_nu_porneste_suita_ci_verificatorul_e2e_si_garzile_statice(monkeypatch):
+    """[15.10.2026 seara, decizia Costin: „Când o comandă atinge JS/CSS, rularea țintită nu devine suita întreagă: rulezi e2e-ul
+    ecranelor atinse, uneltele vizuale și verificatorul”] `login.js` atins: nicio suită întreagă; gărzile statice (printre ele
+    `?v=`), verificatorul și e2e-ul ecranelor lui — derivat din id-urile DOM: înregistrarea liberă și invitațiile.
+    MUTAȚIE: `imparte` lasă JS-ul în „python” -> perimetrul îl vede incert -> suita întreagă -> pică."""
+    cod, rulate = _lanseaza(monkeypatch, ["static/js/ecrane/login.js"])
+    assert cod == 0 and PS.SUITA_INTREAGA not in rulate, rulate
+    (pytest_rulat,) = [c for c in rulate if c[1:3] == ["-m", "pytest"]]
+    assert pytest_rulat.count("core/test_versionare_assets.py") == 1
+    assert [c for c in rulate if c[1:] == ["verificator_conformitate.py"]]
+    e2e = sorted(c[-1] for c in rulate if c[1:3] == ["scripts/e2e_poarta.py", "--arbore"])
+    assert e2e == ["--doar=e2e_inregistrare_libera.py", "--doar=e2e_invitatii.py"], e2e
+
+
+def test_registrul_langa_python_nu_porneste_suita(monkeypatch):
+    """Un registru atins alături de cod: gărzile de registru + perimetrul codului, nu suita întreagă (nesiguranța registrului nu e a
+    Python-ului). MUTAȚIE: registrele lăsate în „python” -> incert -> suita -> pică."""
+    cod, rulate = _lanseaza(monkeypatch, ["CONFORMITATE.md", "core/plati.py"])
+    assert cod == 0 and PS.SUITA_INTREAGA not in rulate, rulate
+    (pytest_rulat,) = rulate
+    assert {"core/test_plata_izolare.py", "core/test_conformitate.py"} <= set(pytest_rulat), pytest_rulat
 
 
 def test_commiturile_reale_de_azi_ar_fi_cerut_poarta_completa():

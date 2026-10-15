@@ -22,8 +22,20 @@ TREI LUCRURI PE CARE LE FACE IMPOSIBILE, si sunt chiar motivul formei:
    pe lot”: „după fiecare comandă, doar rularea țintită de azi (poarta_scurta.py / perimetru.py, cu
    «incert → rulează tot»), pe numărul de procese de acum”.] Pana pe 15.10 iesea cu 2 si cerea poarta.
 
-CE NU RULEAZA, scris ca sa nu se creada altceva: verificatorul de conformitate, cifrele F1–F5, plasa e2e.
-Poarta completa ruleaza O DATA PE LOT, la inchiderea lui (`scripts/poarta_lot.sh`), inaintea publicarii.
+TREI CLASE DE FISIERE ATINSE (15.10.2026 seara, decizia Costin, verbatim in DECIZII „Lotul 5 — rularea țintită pe JS/CSS”: „Când o
+comandă atinge JS/CSS, rularea țintită nu devine suita întreagă: rulezi e2e-ul ecranelor atinse, uneltele vizuale și verificatorul [...]
+Suita întreagă rămâne doar pentru poarta de lot și pentru cazurile cu adevărat incerte din Python.”) — `imparte()`:
+  * PYTHON (`.py`): perimetrul derivat (`perimetru.nivel`); NUMAI nesiguranta lui (conftest, main.py, verificatorul) -> suita intreaga.
+  * FRONT (`static/**.js|.css|.html`): verificatorul (rulat aici); e2e-ul ecranelor atinse — DERIVAT: id-urile DOM ale fisierului JS
+    (`id="…"`, `getElementById("…")`, `querySelector("#…")`) cautate ca `#id` in `frontend_test/e2e/e2e_*.py` (`e2e_atinse`), rulat cu
+    `scripts/e2e_poarta.py --arbore --doar=…`; garzile statice care citesc `static/` (`teste_statice`) — doua din cele cinci picaturi
+    ale rularii din 15.10 erau de felul asta (`?v=`, ancorele). Uneltele vizuale raman obligatia executorului (CLAUDE.md §2.3 pct.11):
+    cer aplicatia vie si un browser pe ecranele atinse; lansatorul le NUMESTE la final, nu le ruleaza.
+  * RESTUL (registre, hook-uri, configuratie, artefacte): garzile de registru (`perimetru.perimetru_documente`) + testele care NUMESC
+    fisierul (`teste_care_numesc`). Un fisier pe care nu-l numeste niciun test se spune, nu porneste suita.
+
+CE NU RULEAZA, scris ca sa nu se creada altceva: cifrele F1–F5 si plasa e2e INTREAGA. Poarta completa ruleaza O DATA PE LOT, la
+inchiderea lui (`scripts/poarta_lot.sh`), inaintea publicarii.
 """
 import os
 import subprocess
@@ -37,6 +49,59 @@ import perimetru as P  # noqa: E402
 
 #: „incert -> ruleaza tot”: suita intreaga, fara selectie, pe procesele portii (`scripts/githooks/poarta-suita`: -n 3, loadfile)
 SUITA_INTREAGA = ["./venv/bin/python", "-m", "pytest", "-q", "-n", "3", "--dist", "loadfile"]
+FRONT = (".js", ".css", ".html")
+
+
+def imparte(atinse):
+    """`(python, front, restul)` — pe extensie și loc, nu prin judecată."""
+    front = [a for a in atinse if a.startswith("static/") and a.endswith(FRONT)]
+    python = [a for a in atinse if a.endswith(".py")]
+    return python, front, [a for a in atinse if a not in front and a not in python]
+
+
+def _teste():
+    return [c for c in P._fisiere_py() if os.path.basename(c).startswith("test_")]
+
+
+def teste_care_numesc(cai):
+    """Testele care numesc fișierul (calea sau numele lui, ca literal-șir — nu în comentariu)."""
+    nume = {x for c in cai for x in (c, os.path.basename(c)) if len(os.path.basename(c)) > 4}
+    return sorted(t for t in _teste() if P._siruri(t) & nume)
+
+
+def teste_statice():
+    """Gărzile care citesc sursele UI: testul numește el însuși `static` / `static/…` / `stil.css` (ex. `os.path.join(RAD, "static",
+    "js")`), sau importă o UNEALTĂ care le numește — din `scripts/` ori din rădăcină (`versioneaza_assets.py`), un singur nivel, ca
+    `perimetru.perimetru_documente`; `main.py` și `conftest.py` nu sunt unelte (ar trage suita întreagă)."""
+    def ui(cale):
+        return any(s == "static" or s.startswith("static/") or s == "stil.css" for s in P._siruri(cale))
+    unelte = {}
+    for c in P._fisiere_py():
+        m = P._module_din_cale(c)
+        if m and (c.startswith("scripts/") or ("/" not in c and c not in ("main.py", "conftest.py"))) and ui(c):
+            unelte[m] = c
+    return sorted(t for t in _teste() if ui(t) or any(m in unelte for m in P.importurile(t)))
+
+
+def e2e_atinse(front):
+    """`{fișier e2e: [id-uri]}` — testele de capăt la capăt care folosesc id-urile DOM ale fișierelor JS atinse."""
+    import glob
+    import re
+    ids = set()
+    for f in front:
+        if not f.endswith(".js") or not os.path.isfile(os.path.join(RAD, f)):
+            continue
+        src = open(os.path.join(RAD, f), encoding="utf-8").read()
+        ids |= set(re.findall(r'\bid="([A-Za-z][\w-]{2,})"', src))
+        ids |= set(re.findall(r'getElementById\(\s*["\']([\w-]{3,})', src))
+        ids |= set(re.findall(r'querySelector(?:All)?\(\s*["\']#([\w-]{3,})', src))
+    out = {}
+    for e in sorted(glob.glob(os.path.join(RAD, "frontend_test", "e2e", "e2e_*.py"))):
+        text = open(e, encoding="utf-8").read()
+        gasite = sorted(i for i in ids if re.search(r"#%s\b" % re.escape(i), text))
+        if gasite:
+            out[os.path.relpath(e, RAD)] = gasite
+    return out
 
 
 def _ruleaza_tot(motiv):
@@ -90,35 +155,59 @@ def main(argv):
     if nt:
         print("(plus %d fisiere neurmarite si nestagiate, care NU intra in perimetru)" % len(nt))
 
-    teste, incerte = P.nivel(nivel, atinse)
+    python, front, restul = imparte(atinse)
+    teste, incerte = P.nivel(nivel, python) if python else ([], [])
+    if restul:
+        teste = sorted(set(teste) | set(P.perimetru_documente()) | set(teste_care_numesc(restul)))
+        for a in restul:
+            if not teste_care_numesc([a]) and not (a.endswith(".md") and "/" not in a):
+                print("(niciun test nu numeste %s: il vede numai poarta lotului)" % a)
+    e2e = {}
+    if front:
+        teste = sorted(set(teste) | set(teste_statice()) | set(teste_care_numesc(front)))
+        e2e = e2e_atinse(front)
+    cod = 0
 
-    # [3] nesiguranta -> suita intreaga, cu motivele scrise
+    # [3] nesiguranta din PYTHON -> suita intreaga, cu motivele scrise
     if incerte:
         print()
         print("Motive de nesiguranta:")
         for m in incerte:
-            print("   -", m)
-        return _ruleaza_tot("%d motive" % len(incerte))
-
-    if not teste:
+            print("   - ", m, sep="")
+        cod = _ruleaza_tot("%d motive" % len(incerte))
+    elif not teste and not front:
         # «nimic de rulat» nu e un raspuns despre ce s-a schimbat
-        return _ruleaza_tot("perimetru gol, desi s-au atins fisiere")
+        cod = _ruleaza_tot("perimetru gol, desi s-au atins fisiere")
+    elif teste:
+        print()
+        print("NIVEL %s — %d fisiere de test." % (nivel.upper(), len(teste)))
+        t0 = time.time()
+        r = subprocess.run(["./venv/bin/python", "-m", "pytest", "-q", "--no-header"] + teste, cwd=RAD)
+        print("nivel %s: %.0f s pe %d fisiere de test" % (nivel, time.time() - t0, len(teste)))
+        cod = r.returncode
 
+    if front:
+        print()
+        print("FRONT ATINS (%d): verificatorul + e2e-ul ecranelor atinse (%d fisiere)." % (len(front), len(e2e)))
+        r = subprocess.run(["./venv/bin/python", "verificator_conformitate.py"], cwd=RAD, capture_output=True, text=True)
+        total = [x for x in r.stdout.splitlines() if x.startswith("TOTAL: ")]
+        print("verificator: %s" % (total[-1] if total else "fara linia TOTAL (exit %d)" % r.returncode))
+        if total != ["TOTAL: 0 candidate"]:
+            cod = cod or 1
+        for f, ids in e2e.items():
+            print("e2e %s (id-uri: %s)" % (f, ", ".join(ids[:6]) + (" …" if len(ids) > 6 else "")))
+            r = subprocess.run(["./venv/bin/python", "scripts/e2e_poarta.py", "--arbore", "--doar=" + os.path.basename(f)], cwd=RAD)
+            cod = cod or r.returncode
+        if not e2e:
+            print("(niciun e2e nu foloseste id-urile fisierelor atinse)")
+        print("OBLIGATIA EXECUTORULUI (CLAUDE.md §2.3 pct.11): `versioneaza_assets.py --scrie`, apoi uneltele vizuale pe ecranele atinse")
+        print("  + artefactele (acoperire_vizuala, text_ecran, proba_pagina_principala, proba_decl50) refacute — le cere poarta lotului.")
     print()
-    print("NIVEL %s — %d fisiere de test." % (nivel.upper(), len(teste)))
-    t0 = time.time()
-    r = subprocess.run(["./venv/bin/python", "-m", "pytest", "-q", "--no-header"] + teste,
-                       cwd=RAD)
-    dt = time.time() - t0
-
-    print()
-    print("nivel %s: %.0f s pe %d fisiere de test" % (nivel, dt, len(teste)))
     urm = {"direct": "subsistem", "subsistem": "integrare", "integrare": "complet"}.get(nivel)
-    if urm:
+    if urm and teste and not incerte:
         print("CE N-A RULAT: tot ce e peste nivelul asta. Urmatoarea treapta: --nivel=%s" % urm)
-    print("CE N-A RULAT, oricum: verificatorul de conformitate.")
     print("Poarta COMPLETA: o data pe lot, la inchiderea lui (scripts/poarta_lot.sh), inaintea publicarii.")
-    return r.returncode
+    return cod
 
 
 if __name__ == "__main__":
