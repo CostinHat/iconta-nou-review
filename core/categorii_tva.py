@@ -39,6 +39,18 @@ CATEGORII = {
         "eticheta": "Livrare intracomunitară scutită (art.294 alin.(2))", "ubl": "K", "vatex": "VATEX-EU-IC",
         "mentiune": "Livrare intracomunitară scutită, art.294 alin.(2) din Legea nr.227/2015 privind Codul fiscal", "rand_d300": "R1",
         "temei": "CF art.294 alin.(2) lit.a, d; OPANAF 174/2026 D300 rd.1"},
+    "serviciu_extern": {
+        # [17.10.2026, decizia Costin pct.1, verbatim în DECIZII] prestările cu locul în afara României (art.278 alin.(2)): D300 rd.3 (+ rd.3.1
+        # la clientul din UE — OPANAF 174/2026: „prestate către persoane impozabile nestabilite în România, dar stabilite în Uniunea
+        # Europeană”), D390 cu P — amândouă din AXA facturii („servicii”, pusă de categorie), nu din codul UBL. UBL (BT-151): la clientul din
+        # UE, AE + „taxare inversă” (EN 16931 / UNCL 5305 AE = taxa datorată de cumpărător; CF art.319 alin.(20) lit.m: „în cazul în care
+        # clientul este persoana obligată la plata TVA, mențiunea «taxare inversă»”); la clientul din afara UE, E cu motivul (Ghidul MF v2.9
+        # cap.3.2: operațiuni „care nu sunt cuprinse în sfera de aplicare a TVA”) — `descriere(cod, tara)`.
+        "eticheta": "Prestare de servicii cu locul în afara României (art.278 alin.(2))", "ubl": "AE", "vatex": "VATEX-EU-AE",
+        "mentiune": "Taxare inversă — prestare de servicii cu locul în alt stat membru, art.278 alin.(2) din Legea nr.227/2015 privind Codul "
+                    "fiscal", "rand_d300": "R3", "temei": "CF art.278 alin.(2); OPANAF 174/2026 D300 rd.3, rd.3.1; D390 cod P",
+        "non_ue": {"ubl": "E", "vatex": None, "mentiune": "Prestare de servicii cu locul în afara Uniunii Europene, art.278 alin.(2) din "
+                                                         "Legea nr.227/2015 privind Codul fiscal"}},
     "export": {
         "eticheta": "Export (art.294 alin.(1) lit.a)", "ubl": "G", "vatex": "VATEX-EU-G",
         "mentiune": "Export, scutit cu drept de deducere, art.294 alin.(1) lit.a din Legea nr.227/2015 privind Codul fiscal",
@@ -59,11 +71,34 @@ MESAJ_LIPSA = "Linia are cota 0%: alege categoria (taxare inversă, scutit cu sa
               "sau în afara sferei TVA). Ea decide codul din e-Factura și rândul din D300."
 
 
-def descriere(cod):
-    """{ubl, vatex, mentiune, ...} pentru un cod din `VALORI`; None pentru linia taxabilă (fără categorie)."""
+#: [17.10.2026] axa facturii (bunuri / servicii) pe care o pune categoria: din ea, nu din codul UBL, se iau D390 (L / P) și D300 (rd.1 /
+#: rd.14 la bunuri, rd.3 / rd.3.1 la servicii)
+AXA = {"livrare_ic": "bunuri", "export": "bunuri", "serviciu_extern": "servicii"}
+
+
+def descriere(cod, tara=None):
+    """{ubl, vatex, mentiune, ...} pentru un cod din `VALORI` (și țara clientului, pentru prestările cu locul în afara României); None pentru
+    linia taxabilă (fără categorie)."""
     if cod == NEPLATITOR["cod"]:
         return NEPLATITOR
-    return CATEGORII.get(cod)
+    d = CATEGORII.get(cod)
+    if d and d.get("non_ue") and tara:
+        from core.d390 import TARI_UE
+        if (tara or "RO").strip().upper() not in TARI_UE:
+            return dict(d, **d["non_ue"])
+    return d
+
+
+def axa_facturii(linii):
+    """Axa pe care o pun categoriile liniilor (None: nicio categorie cu axă). Ridică ValueError dacă liniile cer două axe: D390 și D300 iau
+    axa de pe document, deci bunurile și serviciile către un client din altă țară se emit pe facturi separate."""
+    axe = {AXA[l["categorie_tva"]] for l in linii if l.get("categorie_tva") in AXA}
+    if len(axe) > 1:
+        e = ValueError("Factura are și bunuri (livrare intracomunitară / export), și servicii cu locul în afara României: D390 și D300 iau "
+                       "natura operației de pe document, deci emite-le pe facturi separate.")
+        e.cod = "CATEGORII_AXE_DIFERITE"
+        raise e
+    return axe.pop() if axe else None
 
 
 def verifica_linii(linii, platitor, tert_tara="RO", prefix="em-l"):
@@ -104,6 +139,9 @@ def verifica_linii(linii, platitor, tert_tara="RO", prefix="em-l"):
         elif cat == "export" and (tara == "RO" or tara in TARI_UE):
             rele.append({"camp": camp, "eticheta": "Linia %d: categoria de TVA" % n, "cod": "CATEGORIE_TVA_TARA",
                          "mesaj": "Exportul cere un client din afara Uniunii Europene (țara clientului: %s)." % tara})
+        elif cat == "serviciu_extern" and tara == "RO":
+            rele.append({"camp": camp, "eticheta": "Linia %d: categoria de TVA" % n, "cod": "CATEGORIE_TVA_TARA",
+                         "mesaj": "Prestarea de servicii cu locul în afara României cere un client din altă țară (țara clientului: RO)."})
         elif cat == "taxare_inversa" and tara != "RO":
             rele.append({"camp": camp, "eticheta": "Linia %d: categoria de TVA" % n, "cod": "CATEGORIE_TVA_TARA",
                          "mesaj": "Taxarea inversă din art.331 se aplică între persoane înregistrate în scopuri de TVA în România "

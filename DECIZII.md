@@ -21055,3 +21055,44 @@ Comanda Costin, verbatim:
 - **Proba SPV (pct.5)**: o citire a listei pe producție, 16.10.2026 21:05:01, FISCALOS ICONTA (`tenant_054`, CUI 55229657), tokenul
   cabinetului activ (acces până la 14.01.2027, reîmprospătare până la 16.10.2027): filtrele P, T, E, R — 0 mesaje, ANAF: „Nu aveti
   drept in SPV pentru CIF=55229657”. Citirea automată spune același lucru la fiecare rulare (jurnalul `spv_receive.log`).
+
+## 17.10.2026 — Lotul 6: răspunsul lui Costin la raportul bd3cc8af (servicii IC, SPV fără drept, 268)
+
+Comanda Costin, verbatim:
+
+> Răspuns la raportul bd3cc8af. Rămâi pe ramura lucru/lot6-2026-10-16.
+>
+> 1. 274b, serviciile intracomunitare (art.278 alin.(2)): nu confirm „în afara sferei TVA” fără rând. Prestările intracomunitare de servicii se declară: în D300 la rândul lor (verifică numărul în instrucțiunile OPANAF 174/2026) și în D390 cu codul lor (P). Implementează astfel încât să ajungă în ambele declarații, cu mențiunea „taxare inversă” pe factură (CF art.319 alin.(20) lit.m). Codul UBL (AE sau altul) îl stabilești după Ghidul MF e-Factura și Ghidul de coduri v2.9; nu lăsa codul UBL să decidă rândul din declarații. Probează pe o factură de test cu serviciu către un client UE: rândul D300, D390 cu P, DUK valid.
+> 2. Proba SPV a arătat „Nu aveti drept in SPV pentru CIF=55229657”. Fereastra firmei (starea SPV de la 289) și refuzul de la „Trimite în SPV” trebuie să spună contabilului exact asta: certificatul conectat nu are drept SPV pentru CUI-ul acestei firme, cu ce are de făcut. Conexiunea activă fără drept pe CUI nu se arată ca „conectat”. Aplică pe toată clasa: orice firmă la care citirea automată primește acest răspuns.
+> 3. 268: accept deocamdată antetul pus de Brevo; nu schimba furnizorul în acest lot. Marchează 268 în DEFICIENTE ca amânată, cu motivul.
+>
+> Răspunde punctual pentru fiecare punct de mai sus: rezolvat sau nu, cu testul care îl probează. Nu porni poarta și nu publica. Oprește-te și raportează.
+
+- **Citirea:** raportul la capătul lucrului; poarta și publicarea NU. PIVOT față de decizia de execuție din 16.10.2026 noaptea („serviciile din
+  vânzarea intracomunitară primesc «în afara sferei TVA» (E)”): respinsă de Costin; înlocuită mai jos.
+- **Pct.1 — prestările de servicii cu locul în afara României (PIVOT față de „în afara sferei”, 16.10).** Categoria nouă `serviciu_extern`
+  („Prestare de servicii cu locul în afara României (art.278 alin.(2))”), cerută pe un client din altă țară. **Declarațiile iau operația din
+  AXA facturii, nu din codul UBL**: categoria pune pe document axa „servicii” (`categorii_tva.AXA`; livrarea intracomunitară și exportul
+  pun „bunuri”; amestecul se refuză — o factură, o axă), iar din axă: D390 cu **P** (`d390._tip_din_axa`) și D300 **rd.3**, plus **rd.3.1**
+  când clientul e stabilit în UE (OPANAF 174/2026, rd.3: „prestările de servicii care nu sunt impozabile în România pentru că nu au locul
+  [...] prestării stabilit, conform art. 275 şi 278”; rd.3.1: serviciile art.278 alin.(2) „prestate către persoane impozabile nestabilite
+  în România, dar stabilite în Uniunea Europeană”). **Codul UBL**: Ghidul MF v2.9 / Ghidul de coduri v2.9 nu tratează separat prestarea
+  intracomunitară (categoriile principale: S, E, AE — „conform art. 331”, O); EN 16931 / UNCL 5305 AE = taxa datorată de cumpărător, iar
+  CF art.319 alin.(20) lit.m cere mențiunea „taxare inversă” „în cazul în care clientul este persoana obligată la plata TVA” -> la clientul
+  din UE **AE + VATEX-EU-AE + „Taxare inversă — ... art.278 alin.(2)”** (XML și PDF); la clientul din afara UE (nu e datornic de TVA în
+  sensul Directivei) **E** cu motivul „locul în afara Uniunii Europene, art.278 alin.(2)”. Probă: validatorul ANAF FACT1 ok pe amândouă
+  (singura eroare: identificarea cumpărătorului străin, rezolvată de `extern=DA`); factură de test „serviciu către DE” -> D300 rd.3 = rd.3.1
+  = 2.500, D390 o operație P de 2.500, **DUK valid pe amândouă**.
+- **C43 (găsită la pct.1)**: serviciile către clienți din AFARA UE intrau și ele la rd.3.1 (`R3_1_1` = toată baza rd.3). Acum rd.3.1 = numai
+  serviciile către clienți stabiliți în UE.
+- **Pct.2 — certificatul fără drept pe CUI.** Textul unic `spv_conector.MESAJ_FARA_DREPT` (fereastra firmei, Facturi primite, emiterea,
+  Conectare SPV, refuzul trimiterii), cu ce faci: OMFP 660/2017 art.15 alin.(1) lit.b–d — persoana juridică se identifică în SPV cu
+  certificatul calificat al reprezentantului legal, al reprezentantului desemnat sau al împuternicitului (alin.(6): împuternicitul după
+  CPF art.18). Starea firmei fără drept nu mai spune „conectat” („SPV: fără drept pentru această firmă.”). „Trimite în SPV” nu mai încarcă
+  dacă ultima citire a CUI-ului a primit refuzul (poarta 1b) și spune același text dacă refuzul vine la încărcare. Conectare SPV listează
+  firmele verificate cu certificatul (cu drept / fără drept — „CUI-urile acoperite” din 289). Clasa: orice firmă cu rândul `are_drept =
+  false` în `spv_cui_acoperit` (scris de fiecare citire automată).
+- **Pct.3 — 268 amânată** (starea nouă `amânată` în mulțimea închisă a registrului, cu motiv obligatoriu; `core/test_deficiente.py`).
+- **Pe drum (17.10.2026)**: C44 — contrastul textului secundar pe Suport (`.rap-fir-data`) și în Sănătate server (`.sa-ev-ora`), sub WCAG AA:
+  reparat global pe tokenul `--gri`. E2e 291 avea o cursă (aștepta primul text sub formular — „Se trimite...” — în loc de confirmare):
+  așteaptă acum „Sesizare trimisă” (3/3 verzi); celelalte două așteptări pe „orice text” din plasă primesc conținutul final direct (fără cursă).

@@ -296,7 +296,11 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     #   emisa tip P -> rd.3 (R3_1 baza col.1, fara TVA) + sub-rand rd.3.1 (R3_1_1 "din care servicii IC").
     #   primita tip S -> rd.7 colectat (R7_1/R7_2 + R7_1_1/R7_1_2) + OGLINDA rd.20 deductibil
     #       (R20_1/R20_2 + R20_1_1/R20_1_2), autolichidare la cota interna, net zero (DUK V_13-V_16: R20=R7).
-    ic_prest_serv = Decimal(0)                                    # rd.3 (R3_1): prestari servicii IC (emisa, tip P), 0%
+    ic_prest_serv = Decimal(0)                                    # rd.3 (R3_1) + rd.3.1: prestari servicii IC catre UE (emisa, tip P), 0%
+    # [C43, 17.10.2026] serviciile catre clienti din AFARA UE (locul prestarii in afara RO) merg numai la rd.3: rd.3.1 e „prestate catre
+    # persoane impozabile nestabilite in Romania, dar stabilite in Uniunea Europeana” (OPANAF 174/2026, instructiunile rd.3.1). Inainte
+    # intrau si ele in rd.3.1 (R3_1_1 = toata baza rd.3).
+    prest_serv_non_ue = Decimal(0)
     ic_serv_b = Decimal(0); ic_serv_t = Decimal(0); ic_serv_n = 0 # rd.7 colectat + rd.20 deductibil (achizitii servicii IC, tip S, net zero)
     tr_reclas = []                       # [(directie, tip)] operatiuni reclasificate T/R in D390 (triangulatie/regim) - NEACOPERIT D300, semnalat
     foreign_pos = []                     # [(tara, baza, tva)] factura straina cu cota interna pozitiva (probabil eroare) -> avertisment, nu R9
@@ -424,7 +428,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                         # rd.14 e EXPORT de BUNURI (scutit cu drept). Pana azi orice emisa non-UE cadea
                         # la rd.14, indiferent de axa. Serviciile cer axa='servicii' pe document.
                         if tip_ic == "P":
-                            ic_prest_serv += baza    # rd.3 prestari servicii cu locul in afara RO
+                            prest_serv_non_ue += baza    # rd.3 (numai) prestari servicii cu locul in afara RO, client din afara UE
                         else:
                             export_livr += baza          # rd.14 export bunuri (scutit cu drept)
                 else:
@@ -592,7 +596,8 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     # [F125 reclasificare bun->serviciu, SURSA UNICA D390] Servicii IC reclasificate (MUTA, nu adauga).
     # rd.3 (emisa tip P): R3_1 baza (col.1, 0% fara TVA) + sub-rand rd.3.1 R3_1_1 "din care servicii IC".
     # rd.3/rd.3.1 sunt in allow-list-ul manual (colectata) -> gard anti-dubla auto+manual, ca la rd.1.
-    _r3 = _int(ic_prest_serv)
+    _r3 = _int(ic_prest_serv + prest_serv_non_ue)
+    _r31 = _int(ic_prest_serv)
     if _r3:
         _dbl_p = sorted(k for k in ("R3_1", "R3_1_1") if k in manual)
         if _dbl_p:
@@ -601,7 +606,8 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                 "UE trecute la servicii în D390 (%s lei) și introdus și manual (%s) - dublă numărare. Păstrează "
                 "o singură sursă: reclasifică în panoul D390 sau introdu manual, nu amândouă." % (_f(_r3), ", ".join(map(rand_formular, _dbl_p))))
         R["R3_1"] = _r3
-        R["R3_1_1"] = _r3                      # din care servicii IC (toata baza rd.3 e serviciu IC)
+        if _r31:
+            R["R3_1_1"] = _r31                 # [C43] din care servicii IC — numai cele catre clienti stabiliti in UE
     # rd.7 colectat (primita tip S): R7_1/R7_2 + sub-rand rd.7.1 R7_1_1/R7_1_2, autolichidare la cota interna.
     # OGLINDA rd.20 deductibil: R20_1/R20_2 + R20_1_1/R20_1_2, net zero (DUK V_13-V_16: R20_x==R7_x, R20_1_x==R7_1_x).
     # rd.7/rd.20 sunt in allow-list-ul manual (colectata/deductibila) -> gard anti-dubla auto+manual, ca la rd.5/rd.18.

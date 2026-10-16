@@ -166,3 +166,60 @@ def test_287_pasul_urmator_dupa_starea_reala(monkeypatch):
     stare["efectiv"] = True
     p = uc.pas_urmator(None, ctx)
     assert (p["fel"], p["statut"], p["cod"], p["mesaj"]) == ("statut", "validare", "validare", uc.PAS_VALIDARE), p
+
+
+# ── 289 / completarea 17.10.2026 pct.2: certificatul fără drept pe CUI-ul firmei ───────────────────────────────────────────────────────
+@pytest.mark.skipif(not _DB, reason="DB indisponibil")
+def test_289_fara_drept_pe_cui_nu_e_conectat_si_spune_ce_faci():
+    """MUTAȚIE: `st["mesaj"] = mesaj_fara_drept(...)` scos din `stare_firma` -> starea fără text -> pică."""
+    from core import spv_conector as sc
+    with _db.get_conn() as c:
+        try:
+            with c.cursor() as cur:
+                cur.execute("SELECT id FROM public.accounting_firms ORDER BY id LIMIT 1")
+                af = cur.fetchone()[0]
+                cur.execute("UPDATE public.spv_token SET activ = false WHERE accounting_firm_id = %s AND tenant_id IS NULL", (af,))
+                cur.execute("INSERT INTO public.spv_token (accounting_firm_id, serial_certificat, access_token, refresh_token, access_expira, "
+                            "refresh_expira, activ) VALUES (%s, 'TEST-289', %s, %s, now() + interval '30 days', now() + interval '60 days', "
+                            "true) RETURNING id", (af, sc.cripteaza("a"), sc.cripteaza("r")))
+                tok = cur.fetchone()[0]
+            err = "Nu aveti drept in SPV pentru CIF=55229657"
+            from core import spv_receive as sr
+            sr._inregistreaza_citire(c, tok, "55229657", err, 0)
+            sr._inregistreaza_citire(c, tok, "14399840", None, 3)
+            st = sc.stare_firma(c, sc.principal_firm(af), "RO55229657")
+            assert (st["conectat"], st["are_drept"], st["mesaj"]) == (True, False, sc.mesaj_fara_drept("55229657", err)), st
+            assert sc.stare_firma(c, sc.principal_firm(af), "14399840").get("mesaj") is None, "cu drept: fără mesajul de refuz"
+            l = {x["cui"]: (x["are_drept"], x.get("mesaj")) for x in sc.cuiuri_verificate(c, sc.principal_firm(af))}
+            assert l == {"55229657": (False, sc.mesaj_fara_drept("55229657", err)), "14399840": (True, None)}, l
+        finally:
+            c.rollback()
+
+
+def test_289_trimiterea_fara_drept_nu_incarca_si_spune_acelasi_lucru(monkeypatch):
+    """MUTAȚIE: poarta 1b scoasă din `efactura_trimitere.trimite` -> se generează și se încarcă -> pică."""
+    import contextlib
+    from core import efactura_trimitere as et
+    monkeypatch.setattr(et.db, "get_conn", lambda *a, **k: contextlib.nullcontext(_ConnCui()))
+    monkeypatch.setattr(et.spv_conector, "ia_token_activ", lambda c, p: {"id": 1})
+    monkeypatch.setattr(et.spv_conector, "stare_firma", lambda c, p, cui: {"are_drept": False, "mesaj": "M(%s)" % cui})
+    monkeypatch.setattr(et, "genereaza_din_factura", lambda *a: (_ for _ in ()).throw(AssertionError("XML generat")))
+    assert et.trimite("tenant_x", 5, "P") == {"stare": "fara_drept", "mesaj": "M(55229657)"}
+
+
+class _ConnCui:
+    def cursor(self, *a, **k):
+        return self
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+    def execute(self, *a):
+        pass
+
+    def fetchone(self):
+        return ("RO55229657",)
+

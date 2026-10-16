@@ -299,6 +299,45 @@ def ia_token_activ(conn, principal):
     }
 
 
+#: [17.10.2026, decizia Costin pct.2, verbatim în DECIZII] certificatul conectat fără drept SPV pe CUI-ul firmei — textul UNIC (fereastra
+#: firmei, Facturi primite, emiterea, Conectare SPV, refuzul de la „Trimite în SPV”). Ce are de făcut: OMFP 660/2017 art.15 alin.(1) —
+#: persoana juridică se identifică în SPV „cu certificatul calificat deţinut de persoana fizică reprezentant legal”, „de reprezentantul
+#: desemnat” sau „de împuternicitul persoanei juridice” (lit.b–d); împuternicitul, potrivit art.18 din Codul de procedură fiscală (alin.(6)).
+MESAJ_FARA_DREPT = ("Certificatul conectat al cabinetului nu are drept în SPV pentru CUI-ul acestei firme ({cui}); ANAF răspunde: „{eroare}”. "
+                    "Până se rezolvă, facturile ei nu pleacă în SPV, iar cele de la furnizori nu vin. Ce faci: titularul certificatului "
+                    "trebuie să fie, pentru această firmă, reprezentantul legal, reprezentantul desemnat sau împuternicitul ei înregistrat "
+                    "în SPV (OMFP 660/2017 art.15 alin.(1)) — înregistrarea se face la ANAF; sau conectezi cabinetul cu certificatul cuiva "
+                    "care are deja acest drept. Citirea automată verifică din nou la :17 și :47.")
+
+
+def mesaj_fara_drept(cui, eroare):
+    return MESAJ_FARA_DREPT.format(cui=cui or "—", eroare=(eroare or "fără drept").strip())
+
+
+def cuiuri_verificate(conn, principal):
+    """[17.10.2026, 289 + pct.2] CUI-urile pe care citirea automată le-a verificat cu tokenul activ: [{cui, nume, are_drept, eroare,
+    verificat_la}] — „CUI-urile acoperite” din Conectare SPV, cu cele fără drept arătate ca atare."""
+    where, params, _ = _principal_sql(principal)
+    nume_sql = ("(SELECT t.nume FROM public.tenants t WHERE regexp_replace(t.cui, '\\D', '', 'g') = a.cui AND t.accounting_firm_id = %s "
+                "ORDER BY t.id LIMIT 1)" if principal.kind == "firm" else "NULL")
+    with conn.cursor() as cur:
+        cur.execute("SELECT a.cui, " + nume_sql + ", a.are_drept, a.eroare, a.verificat_la FROM public.spv_cui_acoperit a "
+                    "WHERE a.token_id = (SELECT id FROM public.spv_token WHERE " + where + " AND activ = true ORDER BY id DESC LIMIT 1) "
+                    "ORDER BY a.are_drept NULLS LAST, a.cui",
+                    ((int(principal.id),) if principal.kind == "firm" else ()) + tuple(params))
+        randuri = cur.fetchall()
+    from core import afirmatii as _af
+    out = []
+    for r in randuri:
+        x = {"cui": r[0], "nume": r[1], "are_drept": r[2], "eroare": r[3], "verificat_la": r[4].isoformat() if r[4] else None}
+        if r[2] is False:
+            # statutul CUI-ului față de certificat, ca afirmație tipată (decizia 21.08: obiecte cu `fel`, nu proză în dicționar)
+            m = mesaj_fara_drept(r[0], r[3])
+            x.update(_af.afirmatie("statut", "drept_spv_cui", m, statut="fara_drept", statut_din=x["verificat_la"]), mesaj=m)
+        out.append(x)
+    return out
+
+
 def stare_conexiune(conn, principal, acum_dt=None):
     """
     Stare conexiune pentru ecran (FARA secrete, FARA apel ANAF): conectat + expirari.
@@ -353,6 +392,8 @@ def stare_firma(conn, principal, cui, acum_dt=None):
             r = cur.fetchone()
         if r:
             st.update({"verificat_la": r[0].isoformat() if r[0] else None, "are_drept": r[1], "eroare": r[2], "mesaje": r[3]})
+            if r[1] is False:
+                st["mesaj"] = mesaj_fara_drept(cui, r[2])   # [17.10.2026] spus la fel peste tot (spv_stare.js, refuzul trimiterii)
     return st
 
 

@@ -14,9 +14,9 @@ export function textStareSpv(st) {
       text: "SPV: cabinetul nu e conectat. Facturile nu pleacă în SPV, iar cele de la furnizori nu vin automat." };
   }
   if (st.are_drept === false) {
-    return { tip: "avert", spreConectare: true,
-      text: `SPV: cabinetul e conectat, dar ANAF răspunde pentru CUI ${st.cui}: „${st.eroare || "fără drept"}”. Certificatul n-are împuternicire `
-        + "pentru firmă în SPV: împuternicirea se face la ANAF, apoi conexiunea o acoperă." };
+    // [17.10.2026, decizia Costin pct.2] conexiunea cabinetului fără drept pe CUI-ul firmei NU e „conectat” pentru firmă: textul vine de
+    // la server (`spv_conector.MESAJ_FARA_DREPT`), același cu refuzul de la „Trimite în SPV”
+    return { tip: "avert", spreConectare: true, text: "SPV: fără drept pentru această firmă. " + (st.mesaj || `ANAF: „${st.eroare || "fără drept"}”.`) };
   }
   if (!st.verificat_la) {
     return { tip: "info", spreConectare: false,

@@ -8,7 +8,7 @@
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
 import { api, arataMesaj, cate, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt } from "../api.js?v=9409795a49";
-import { textStareSpv } from "./spv_stare.js?v=f15ed7cbc1";  /* [lotul 6, 275c] */
+import { textStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=627c3c3c38";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
 

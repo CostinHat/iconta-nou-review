@@ -55,6 +55,14 @@ def test_274b_categoria_se_potriveste_cu_tara_clientului(cat, tara, bun):
     assert (rele == []) is bun and (bun or rele[0]["cod"] == "CATEGORIE_TVA_TARA"), rele
 
 
+def test_274b_migrarea_si_sablonul_admit_exact_categoriile():
+    """O categorie nouă în nomenclator cere migrarea (amprenta ei se schimbă) și șablonul firmelor noi."""
+    from core import migrare_categorie_tva_linie as m
+    assert m.VALORI == ct.VALORI
+    sablon = io.open("tenant_template.sql", encoding="utf-8").read()
+    assert sablon.count("categorie_tva IN (%s)" % ", ".join("'%s'" % v for v in ct.VALORI)) == 1
+
+
 # ── (2) XML-ul e-Factura ───────────────────────────────────────────────────────────────────────────────────────────────────────
 def _x(linii, client=RO, furnizor=FURN):
     return ET.fromstring(ef.genereaza_xml({"numar": "F1", "serie": "F", "data_emitere": "2026-10-16", "moneda": "RON"},
@@ -203,3 +211,51 @@ def test_274b_d300_cu_randurile_13_14_15_e_valid_pe_duk(conn):
         (400, 1000, 300, 100, 21), res.R
     v = _duk.valideaza(xml, "d300", an=2026, luna=9)
     assert v["stare"] == "valid", v
+
+
+# ── (5) prestările de servicii cu locul în afara României (decizia Costin 17.10.2026 pct.1) ──────────────────────────────────────────
+def test_274b_serviciul_catre_client_ue_e_AE_cu_taxare_inversa_iar_cel_din_afara_ue_e_E():
+    """MUTAȚIE: `descriere(cod, tara)` fără varianta `non_ue` -> serviciul către SUA iese AE -> pică."""
+    assert _defalcare(_x([_linie("serviciu_extern")], IE)) == [("AE", "0.00", "VATEX-EU-AE")]
+    assert "Taxare inversă" in ct.descriere("serviciu_extern", "IE")["mentiune"]
+    assert _defalcare(_x([_linie("serviciu_extern")], US)) == [("E", "0.00", None)]
+    assert _x([_linie("serviciu_extern")], IE).find("cac:Delivery", NS) is None, "un serviciu n-are livrare de bunuri"
+    from core import factura_pdf as fp
+    assert fp.mentiuni_categorii([_linie("serviciu_extern")], "IE") == ["1 linie (nr. 1): %s." % ct.CATEGORII["serviciu_extern"]["mentiune"]]
+
+
+def test_274b_axa_facturii_vine_din_categorii_si_nu_amesteca():
+    """MUTAȚIE: `axa_ic = _axa_cat` scos din `creeaza_factura` -> D390 declară serviciul cu L -> pică (testul DUK de mai jos)."""
+    assert ct.axa_facturii([_linie("serviciu_extern"), _linie(None, 21)]) == "servicii"
+    assert ct.axa_facturii([_linie("livrare_ic")]) == "bunuri" and ct.axa_facturii([_linie("scutit_cu_drept")]) is None
+    with pytest.raises(ValueError):
+        ct.axa_facturii([_linie("livrare_ic"), _linie("serviciu_extern")])
+
+
+def test_c43_serviciul_catre_client_din_afara_ue_e_numai_la_rd3():
+    """C43: rd.3.1 e „prestate către persoane impozabile nestabilite în România, dar stabilite în Uniunea Europeană” (OPANAF 174/2026).
+    MUTAȚIE: `R3_1_1 = _r31` -> `= _r3` (comportamentul vechi) -> pică."""
+    f = lambda tara, suma: dict(_f([(1, suma, 0, "taxabil", "serviciu_extern")]), tert_tara=tara, axa_ic="servicii")   # noqa: E731
+    res = _d300.calcul_d300(_PROF, Perioada(2026, luna=10), [f("DE", 700), f("US", 300)])
+    assert (res.R.get("R3_1"), res.R.get("R3_1_1")) == (1000, 700), res.R
+
+
+@pytest.mark.skipif(not _duk.poate_valida("d300") or not _duk.poate_valida("d390"), reason="validatorul DUK lipsește")
+def test_274b_serviciul_ic_ajunge_in_d300_rd3_si_in_d390_cu_P_valid_pe_duk(conn):
+    """Proba cerută (decizia Costin 17.10.2026 pct.1): o factură cu un serviciu către un client din UE -> D300 rd.3 + rd.3.1, D390 cu P;
+    amândouă valide pe DUK. Rândurile vin din axa facturii (pusă de categorie), nu din codul UBL."""
+    from core import facturi_api as fa, declaratii_api as da
+    r = fa.creeaza_factura(conn, "S1", "2026-09-12", "emisa", [dict(_linie("serviciu_extern"), pret_unitar=2500)],
+                           tert_nume="KUNDE DE GMBH", tert_cui="DE811569869", tert_tara="DE", status="emisa")
+    with conn.cursor() as cur:
+        cur.execute("SELECT axa_ic FROM facturi WHERE id = %s", (r["factura_id"],))
+        assert cur.fetchone()[0] == "servicii"
+    x3, res = _d300.genereaza(conn, _SCH, Perioada(2026, luna=9))
+    assert (res.R.get("R3_1"), res.R.get("R3_1_1"), res.R.get("R1_1")) == (2500, 2500, None), res.R
+    assert _duk.valideaza(x3, "d300", an=2026, luna=9)["stare"] == "valid"
+    x390, _r = da.genereaza(conn, _SCH, "d390", {"an": 2026, "luna": 9})
+    root = ET.fromstring(x390)
+    ops = [(o.get("tip"), o.get("baza")) for o in root.iter() if o.tag.endswith("operatie")]
+    assert ops == [("P", "2500")], ops
+    assert _duk.valideaza(x390, "d390", an=2026, luna=9)["stare"] == "valid"
+

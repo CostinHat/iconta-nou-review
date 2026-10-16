@@ -351,6 +351,17 @@ export async function panouConectareSPV(zona) {
     const cert = `Certificat ${st.emitent_certificat ? "emis de " + st.emitent_certificat : "(emitent necunoscut)"}; titularul nu e transmis de ANAF.`;
     if (st.expira_curand) arataMesaj(msg, `Conectat, dar accesul expiră curând (${pana}). Reconectează pentru siguranță. ${cert}`, "avert");
     else arataMesaj(msg, `Conectat. ${cert} Acces valabil până la ${pana}.`, "ok");
+    // [289 + 17.10.2026, decizia Costin pct.2] CUI-urile verificate de citirea automată: cu drept / fără drept (cu ce faci)
+    const cuiuri = st.cuiuri || [];
+    if (cuiuri.length) {
+      const z = document.createElement("div");
+      z.id = "spv-cuiuri";
+      z.innerHTML = `<div class="cap-titlu" style="margin-top:12px">Firme verificate în SPV cu acest certificat</div>` + cuiuri.map((c) =>
+        `<div class="${c.are_drept === false ? "caseta-atentie" : "caseta-info"} spv-cui" data-cui="${esc(c.cui)}"><span class="${c.are_drept === false ? "ca-mesaj" : "ci-mesaj"}">`
+        + `<b>${esc(c.nume || "CUI " + c.cui)}</b> · ${c.are_drept === false ? esc(c.mesaj || "fără drept") : (c.are_drept ? "cu drept SPV" : "nedeterminat: " + esc(c.eroare || ""))}`
+        + `${c.verificat_la ? " · verificat " + esc(dataRo(c.verificat_la, "cu_ora")) : ""}</span></div>`).join("");
+      msg.after(z);
+    }
     if (btn) { btn.textContent = "Reconectează SPV"; btn.className = "buton-secundar"; }
   } else {
     arataMesaj(msg, "Neconectat: facturile nu pleacă în SPV, iar cele de la furnizori nu vin automat.", "info");

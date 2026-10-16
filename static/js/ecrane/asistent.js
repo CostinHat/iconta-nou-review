@@ -17,7 +17,7 @@ import { randeazaListaFirme } from "./firme.js?v=d921e045d9";
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=179b6770c5"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=f483669b9f"; // [p63_pachete]
 import { randeazaDeclaratii } from "./declaratii.js?v=9821013934"; // [p44_declaratii]
-import { randeazaSetari } from "./setari.js?v=aeabf02daf"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
+import { randeazaSetari } from "./setari.js?v=4e0144b0fe"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;

@@ -19,11 +19,12 @@ import re
 import subprocess
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STARI = {"rezolvată", "parțial", "nerezolvată", "nu se aplică", "neverificat"}
+# [17.10.2026, decizia Costin pct.3 — „Marchează 268 în DEFICIENTE ca amânată, cu motivul”] + `amânată`: amânare DECISĂ de Costin, cu motiv
+STARI = {"rezolvată", "parțial", "nerezolvată", "nu se aplică", "neverificat", "amânată"}
 STARI_N = {"reală", "nu e reală", "neverificat"}
 #: [CLAUDE.md §2.3 pct.10] rândul rezolvat în commitul care îl conține
 AUTO_COMMIT = "commitul care conține această intrare"
-CU_MOTIV = {"parțial", "nerezolvată", "nu se aplică", "reală"}
+CU_MOTIV = {"parțial", "nerezolvată", "nu se aplică", "reală", "amânată"}
 NR_N = 18
 
 

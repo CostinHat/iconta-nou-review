@@ -88,9 +88,14 @@ def trimite(schema, factura_id, principal, mediu="test"):
         if spv_conector.ia_token_activ(conn, principal) is None:
             # [deficiența 289b] textul refuzului, în cuvintele contabilului; ruta îl trimite cu butonul spre Setări cont → Conectare SPV
             return {"stare": "fara_token", "mesaj": MESAJ_FARA_TOKEN}
-        xml, _factura = genereaza_din_factura(conn, schema, factura_id)
         with conn.cursor() as cur:
             cif = "".join(c for c in str(_repo.cui_emitent(cur, schema)[0] or "") if c.isdigit())
+        # POARTA 1b [17.10.2026, decizia Costin pct.2]: ultima citire a CUI-ului firmei cu tokenul activ a primit „Nu aveti drept in SPV”
+        # -> nu se încarcă; refuzul spune exact asta (același text ca starea firmei). O citire nouă, reușită, ridică poarta.
+        _st = spv_conector.stare_firma(conn, principal, cif)
+        if _st.get("are_drept") is False:
+            return {"stare": "fara_drept", "mesaj": _st["mesaj"]}
+        xml, _factura = genereaza_din_factura(conn, schema, factura_id)
     sha = hashlib.sha256(xml.encode("utf-8")).hexdigest()
 
     # POARTA 2: validare structura pe validatorul ANAF - FARA upload daca nok
@@ -127,10 +132,14 @@ def trimite(schema, factura_id, principal, mediu="test"):
             stare, errmsg = "incarcat", None
         else:
             stare, errmsg = "nok", ("\n".join(errs) if errs else text[:4000])
+            if "nu aveti drept" in (errmsg or "").lower():
+                # [17.10.2026] refuzul de drept venit la încărcare (200 + mesaj, ca la citire): spus ca la starea firmei
+                rez.update({"fara_drept": True, "mesaj": spv_conector.mesaj_fara_drept(cif, errmsg)})
     except spv_conector.EroareSpvFaraDrept as e:
         # 403 = certificatul nu are drept (CIF/serviciu) - NU e eroare de structura
         rez.update({"http": 403, "execution_status": None, "index_incarcare": None,
-                    "errors": [], "raspuns": str(e), "fara_drept": True})
+                    "errors": [], "raspuns": str(e), "fara_drept": True,
+                    "mesaj": spv_conector.mesaj_fara_drept(cif, str(e))})   # [17.10.2026] același text ca starea firmei
         stare, errmsg, index, ex = "eroare_upload", "403 fara drept SPV: %s" % e, None, None
     except Exception as e:
         rez.update({"http": None, "execution_status": None, "index_incarcare": None,

@@ -1107,7 +1107,7 @@ html, body {
 .rap-stare-noua { background:#eef2f9; color:#445; }
 .rap-stare-raspuns { background:#e6f6ec; color:#15803d; }
 .rap-stare-inchisa { background:#f0efe9; color:#8a897f; }
-.rap-fir-data { font-size: var(--text-mic); color:#9a988f; }
+.rap-fir-data { font-size: var(--text-mic); color: var(--gri);   /* [17.10.2026] era #9a988f: contrast 2,8:1 sub WCAG AA (axe color-contrast pe Suport); --gri = textul secundar */ }
 .rap-fir-corp { padding:8px 14px 14px; border-top:0.5px solid #eee; }
 .rap-mesaje { display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
 .rap-mesaj { padding:8px 12px; border-radius:9px; max-width:85%; }
@@ -1763,7 +1763,7 @@ html, body {
 .sa-pct.pct-verde { background: #1d7a4d; }
 .sa-pct.pct-rosu { background: var(--rosu-semafor); }
 .sa-ev-txt { flex: 1; }
-.sa-ev-ora { color: #aaa; font-size: var(--text-mic); }
+.sa-ev-ora { color: var(--gri);   /* [17.10.2026] era #aaa (2,3:1 pe alb), aceeași clasă cu .rap-fir-data */ font-size: var(--text-mic); }
 .sa-link { background: none; border: none; color: #1d4ed8; font-size: var(--text-mic); cursor: pointer; padding: 0; }
 .sa-link:hover { text-decoration: underline; }
 

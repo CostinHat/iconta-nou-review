@@ -1337,7 +1337,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T06 — Importul de e-Factura și transmiterea prin SPV
 
-**Clasa:** MANUAL · **rute:** 10 (din care schimba date: 6) · **refuzuri explicite:** 45
+**Clasa:** MANUAL · **rute:** 10 (din care schimba date: 6) · **refuzuri explicite:** 46
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 6.**
 

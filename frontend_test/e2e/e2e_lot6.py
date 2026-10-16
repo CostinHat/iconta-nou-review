@@ -266,6 +266,53 @@ def test_def_289_starea_spv_in_fereastra_firmei_setari_si_ghid(patron, firma_e2e
             "furnizori nu vin automat.") in ghid, ghid
 
 
+def test_def_289_certificatul_fara_drept_pe_cui_e_spus_exact_peste_tot(patron, firma_e2e):
+    """289, completarea Costin 17.10.2026 pct.2: „Fereastra firmei (starea SPV de la 289) și refuzul de la «Trimite în SPV» trebuie să spună
+    contabilului exact asta: certificatul conectat nu are drept SPV pentru CUI-ul acestei firme, cu ce are de făcut. Conexiunea activă fără
+    drept pe CUI nu se arată ca «conectat».” Pașii: cabinetul conectat (token activ), iar citirea automată a primit pe CUI-ul firmei „Nu aveti
+    drept in SPV” -> fereastra firmei: „fără drept pentru această firmă”, cu ce faci, fără „conectat”; Setări cont -> Conectare SPV: firma
+    în lista celor verificate, fără drept; „Trimite în SPV” pe o factură: același refuz, fără încărcare, cu butonul spre Conectare SPV."""
+    from core import spv_conector as sc
+    pregateste_firma(patron, firma_e2e)
+    tid = firma_e2e["tenant_id"]
+    cab = sql("SELECT accounting_firm_id FROM public.tenants WHERE id = %s", (tid,))[0][0]
+    cui = "".join(c for c in sql('SELECT cui FROM "%s".firma_profil WHERE id = 1' % firma_e2e["schema"])[0][0] if c.isdigit())
+    assert sql("SELECT count(*) FROM public.spv_token WHERE accounting_firm_id = %s AND activ", (cab,)) == [(0,)], "premisa: neconectat"
+    tok = sql("INSERT INTO public.spv_token (accounting_firm_id, serial_certificat, access_token, refresh_token, access_expira, "
+              "refresh_expira, activ) VALUES (%s, 'E2E-289', %s, %s, now() + interval '30 days', now() + interval '300 days', true) "
+              "RETURNING id", (cab, sc.cripteaza("x.e30.y"), sc.cripteaza("r")))[0][0]
+    raspuns = "Nu aveti drept in SPV pentru CIF=%s" % cui
+    sql("INSERT INTO public.spv_cui_acoperit (token_id, cui, verificat_la, are_drept, eroare, mesaje) VALUES (%s, %s, now(), false, %s, 0)",
+        (tok, cui, raspuns))
+    try:
+        f = emite_api(patron, firma_e2e, linii=[{"descriere": "Servicii E2E 289", "cantitate": 1, "um": "buc", "pret_unitar": 200.0,
+                                                 "cota_tva": 21, "cota_propusa": 21, "articol_id": None}])
+        asteptat = sc.mesaj_fara_drept(cui, raspuns)
+        patron.firma(firma_e2e["nume"])
+        pg = patron.pg
+        pg.wait_for_selector("#firma-spv .spv-stare-text", timeout=20000)
+        linie = pg.inner_text("#firma-spv")
+        patron.captura("fereastra_firmei")
+        assert linie.startswith("SPV: fără drept pentru această firmă. " + asteptat) and "conectat" not in linie.replace(
+            "Certificatul conectat", "").replace("conectezi cabinetul", "").replace("Conectare SPV", ""), linie
+        _deschide_factura(patron, firma_e2e, f["factura_id"])
+        pg.click("#fd-spv")
+        pg.click("#ca-ok")
+        pg.wait_for_function("(t) => (document.querySelector('#fd-spv-zona') || {innerText: ''}).innerText.includes(t)",
+                             arg=asteptat[:60], timeout=20000)
+        pg.wait_for_selector("#fd-spv-zona [data-ecran-destinatie='conectare_spv']", timeout=20000)
+        patron.captura("refuz_trimite")
+        assert sql('SELECT count(*) FROM "%s".efactura_trimiteri WHERE factura_id = %%s' % firma_e2e["schema"], (f["factura_id"],)) == [(0,)], \
+            "nimic încărcat"
+        pg.click("#fd-spv-zona [data-ecran-destinatie='conectare_spv']")
+        pg.wait_for_selector("#spv-cuiuri .spv-cui[data-cui='%s']" % cui, timeout=20000)
+        patron.captura("conectare_spv")
+        assert asteptat in pg.inner_text("#spv-cuiuri .spv-cui[data-cui='%s']" % cui)
+    finally:
+        sql("DELETE FROM public.spv_cui_acoperit WHERE token_id = %s", (tok,))
+        sql("DELETE FROM public.spv_token WHERE id = %s", (tok,))
+
+
 def test_def_287_fara_validare_in_doi_pasul_urmator_e_depunerea(patron):
     """287. Declarații / roluri: D300 trimisă de administrator apărea „trimisă seniorului pentru validare”, deși validarea în doi e oprită.
     Pașii administratorului (cabinetul de test: validarea în doi oprită, are dreptul de depunere): D710 -> obligația -> „Trimite în coadă →”:
@@ -637,7 +684,8 @@ def test_def_291_bulina_suport_numai_pentru_vestile_de_la_iconta(patron):
         pg.wait_for_selector("#rap-text", timeout=20000)
         pg.fill("#rap-text", "Proba 291: nu se vede bulina pentru cererea mea.")
         pg.click("#rap-trimite")
-        pg.wait_for_function("() => document.querySelector('#rap-msg').innerText.trim().length > 0", timeout=20000)
+        # confirmarea, nu primul text: „Se trimite...” apare înaintea cererii, iar rândul nu e încă în bază (cursa văzută 17.10.2026)
+        pg.wait_for_function("() => document.querySelector('#rap-msg').innerText.includes('Sesizare trimisă')", timeout=20000)
         rid = sql("SELECT id FROM public.raportari WHERE autor_id = %s AND id > %s ORDER BY id DESC LIMIT 1", (uid, peste))[0][0]
         patron.acasa()
         pg.wait_for_selector("[data-banda='raport']", timeout=20000)
@@ -825,7 +873,8 @@ def test_def_274_linia_cu_0_cere_categoria_de_tva(patron, firma_e2e):
     pg.select_option("#em-l0-cota", "0")
     pg.wait_for_selector("#em-l0-categorie", state="visible", timeout=10000)
     optiuni = pg.eval_on_selector_all("#em-l0-categorie option", "els => els.map(e => e.value).filter(Boolean)")
-    assert optiuni == ["taxare_inversa", "scutit_cu_drept", "scutit_fara_drept", "livrare_ic", "export", "in_afara_sferei"], optiuni
+    assert optiuni == ["taxare_inversa", "scutit_cu_drept", "scutit_fara_drept", "livrare_ic", "serviciu_extern", "export",
+                       "in_afara_sferei"], optiuni   # [17.10.2026] + prestarea de servicii cu locul în afara României (art.278 alin.(2))
     pg.click("#em-emite")
     pg.wait_for_function("() => [...document.querySelectorAll('.em-linie .msg-eroare')].some((m) => m.innerText.includes('alege categoria'))",
                          timeout=20000)

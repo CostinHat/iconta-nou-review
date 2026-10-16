@@ -8,7 +8,10 @@ ele. Sursa UNICĂ = mirror în tenant_template.sql. Idempotent. Se aplică: firm
 `python -m core.migrari_registru ruleaza [--productie] core/migrare_categorie_tva_linie.py`.
 """
 from core import db
-from core.categorii_tva import VALORI
+
+#: valorile admise, SCRISE aici (nu citite din `core/categorii_tva.VALORI` la rulare): o categorie nouă schimbă fișierul, deci amprenta lui
+#: din registrul migrărilor, deci migrarea se rulează din nou. `core/test_274b_categorii_tva.py` cere egalitatea cu `VALORI`.
+VALORI = ('taxare_inversa', 'scutit_cu_drept', 'scutit_fara_drept', 'livrare_ic', 'serviciu_extern', 'export', 'in_afara_sferei', 'neplatitor')
 
 _DDL = [
     'ALTER TABLE "{s}".factura_linii ADD COLUMN IF NOT EXISTS categorie_tva text;',

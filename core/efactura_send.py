@@ -201,7 +201,7 @@ def genereaza_xml(factura, linii, furnizor, client):
         elif cota > 0:
             d = {"ubl": "S", "mentiune": None, "vatex": None}
         else:
-            d = _ct.descriere(l.get("categorie_tva")) or {"ubl": "Z", "mentiune": None, "vatex": None}
+            d = _ct.descriere(l.get("categorie_tva"), client.get("tara")) or {"ubl": "Z", "mentiune": None, "vatex": None}
         cheie = (d["ubl"], cota, d.get("mentiune"), d.get("vatex"))
         line_net.append((l, cota, net, cheie))
         grup[cheie] = grup.get(cheie, _D0) + net

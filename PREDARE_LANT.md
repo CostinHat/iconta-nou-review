@@ -28,7 +28,9 @@ fișiere, verificatorul TOTAL 0, uneltele vizuale și artefactele refăcute. **R
 274b făcută (categoria de TVA pe orice linie cu 0%, XML / D300 / PDF / formular; FACT1 ok, DUK valid; o interpretare de reconfirmat:
 serviciile IC = „în afara sferei”); 273 după sursă (terțul plătitor nu e în UBL și nici în D394); 296 + C42 făcute; 268 redeschisă =
 antetul vine de la Brevo (decizie); proba SPV: „Nu aveti drept in SPV pentru CIF=55229657”; migrare nouă `migrare_categorie_tva_linie`
-(pe baza de test; pe producție la publicare). **Urmează**, după răspuns: 274b (dacă se validează), apoi
+(pe baza de test; pe producție la publicare). **17.10.2026**: serviciile cu locul în afara României -> D300 rd.3 / 3.1 și D390 P (din
+axa facturii; DUK valid); C43; certificatul fără drept pe CUI spus exact peste tot (OMFP 660/2017 art.15), trimiterea oprită; 268
+amânată. **Urmează**, după răspuns: 274b (dacă se validează), apoi
 „Lotul 6 e complet” -> `scripts/poarta_lot.sh` -> publicarea numai cu acordul lui Costin (regim pilot: backup, fast-forward aprobat,
 post-commit, cele 6 migrări noi cu `--productie`, four-way).
 
@@ -560,8 +562,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **987** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **988** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1223** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

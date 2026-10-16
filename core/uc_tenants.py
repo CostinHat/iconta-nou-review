@@ -3658,6 +3658,9 @@ def factura_trimite_spv(tenant_id, factura_id, ctx):
     if st == "fara_token":
         # [deficiența 289b] refuzul are buton spre Setări cont → Conectare SPV (`ecran_destinatie.ECRANE.conectare_spv`)
         raise _erori.Conflict(_uc_comun.refuz_spre_ecran(r.get("mesaj"), COD_SPV_NECONECTAT, "conectare_spv"))
+    if st == "fara_drept" or r.get("fara_drept"):
+        # [17.10.2026, decizia Costin pct.2] certificatul conectat n-are drept SPV pe CUI-ul firmei: spus exact, cu ce are de făcut
+        raise _erori.Conflict(_uc_comun.refuz_spre_ecran(r.get("mesaj"), COD_SPV_FARA_DREPT, "conectare_spv"))
     if st == "deja_trimisa":
         raise _erori.Conflict("Factura are deja o trimitere activă în SPV (%s)." % r.get("stare_existenta"))
     if st == "nevalidat":
@@ -3674,6 +3677,7 @@ REFUZ_TERT_PLATITOR = {"cod": "TERT_PLATITOR_DE_COMPLETAT", "camp": "pr-platitor
 REFUZ_CATEGORIE_331 = {"cod": "CATEGORIE_331_DE_COMPLETAT", "camp": "pr-c331", "mesaj":
                        "Factura e cu taxare inversă (linii „AE”): alege categoria produsului (art.331), pe care D394 o declară cu codul ei."}
 COD_SPV_NECONECTAT = "SPV_NECONECTAT"   # [289b] textul: `efactura_trimitere.MESAJ_FARA_TOKEN`
+COD_SPV_FARA_DREPT = "SPV_FARA_DREPT"   # [17.10.2026] textul: `spv_conector.MESAJ_FARA_DREPT`
 
 
 def facturi_trimiteri_spv(tenant_id, ctx):
@@ -6457,14 +6461,12 @@ def vanzare_ic(tenant_id, corp, ctx):
         try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența C7, generalizată)
             fres = _fa_vic.emite_factura(
                 # [R193] contul de venit al liniei e cel ales mai sus (și pus pe notă), nu unul cerut modelului cu conexiunea ținută
-                # [274b] bunurile: livrare intracomunitară scutită (K, D300 rd.1); serviciile (art.278 alin.(2), locul prestării în
-                # afara României): INTERPRETARE CU TEMEI — „în afara sferei TVA” (E): ghidul MF e-Factura v2.9 cap.3.2 pune la E
-                # operațiunile „care nu sunt cuprinse în sfera de aplicare a TVA”, iar AE e rezervat art.331 (cap.3.3); alternativa
-                # respinsă: AE (taxarea inversă la beneficiar, uzul EN 16931). De reconfirmat dacă ANAF tranșează (§6 al raportului).
-                # D300 le pune oricum pe țară și axă (rd.1 / rd.3), nu pe categorie.
+                # [274b] bunurile: livrare intracomunitară scutită (K, D300 rd.1, D390 L); serviciile (art.278 alin.(2), locul prestării în
+                # alt stat membru): „serviciu_extern” — D300 rd.3 + rd.3.1, D390 P (din axa facturii), AE + „taxare inversă” în XML și pe
+                # PDF. [PIVOT 17.10.2026, decizia Costin pct.1] înlocuiește „în afara sferei TVA” din 16.10, respins.
                 conn, linii=[{"descriere": descr[:200], "cantitate": 1, "pret_unitar": str(val),
                               "cota_tva": 0, "cont_venit": cont_venit,
-                              "categorie_tva": "livrare_ic" if corp.get("tip") == "bunuri" else "in_afara_sferei"}],
+                              "categorie_tva": "livrare_ic" if corp.get("tip") == "bunuri" else "serviciu_extern"}],
                 tert_nume=(v.get("nume") or "").strip() or None,
                 tert_cui=corp["cod_tva_client"], data_emitere=corp["data"],
                 tert_tara=_tara_client, axa_ic=corp.get("tip"))

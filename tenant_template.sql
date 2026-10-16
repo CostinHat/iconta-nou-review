@@ -2585,7 +2585,7 @@ ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS cont_venit
 -- taxabilă sau factură de dinainte. Mirror în core/migrare_categorie_tva_linie.py.
 ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS categorie_tva text;
 ALTER TABLE TENANT_PLACEHOLDER.factura_linii DROP CONSTRAINT IF EXISTS factura_linii_categorie_tva_check;
-ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD CONSTRAINT factura_linii_categorie_tva_check CHECK (categorie_tva IS NULL OR categorie_tva IN ('taxare_inversa', 'scutit_cu_drept', 'scutit_fara_drept', 'livrare_ic', 'export', 'in_afara_sferei', 'neplatitor'));
+ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD CONSTRAINT factura_linii_categorie_tva_check CHECK (categorie_tva IS NULL OR categorie_tva IN ('taxare_inversa', 'scutit_cu_drept', 'scutit_fara_drept', 'livrare_ic', 'serviciu_extern', 'export', 'in_afara_sferei', 'neplatitor'));
 
 -- [R130, 04.09.2026] cine si cand a introdus cursul de mana; v. core/migrare_curs_manual_urma.py
 ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS curs_manual_de text;

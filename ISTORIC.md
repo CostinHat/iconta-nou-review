@@ -2588,3 +2588,10 @@ sferei; O automat), în emitere, XML (validatorul ANAF FACT1: ok pe șapte categ
 plătitor” nu e element UBL și nu se declară în D394 — ajutorul corectat. 296: alertele de sănătate numai cu acțiune; C42 (citirea SPV
 oprită de un termen depășit la ANAF). 268: antetul vine de la Brevo — decizie. Proba SPV pe producție: „Nu aveti drept in SPV pentru
 CIF=55229657” pe toate cele patru liste. 285, 289: interpretările acceptate.
+
+## 17.10.2026 — Lotul 6: răspunsul lui Costin la bd3cc8af (servicii IC, SPV fără drept, 268)
+
+Pe ramură, fără poartă și fără publicare. Pct.1: prestarea de servicii cu locul în afara României — categorie nouă, axa „servicii” pe
+document, D300 rd.3 (+ rd.3.1 în UE), D390 P, AE + „taxare inversă” (E în afara UE); probat pe DUK (D300, D390) și pe FACT1; C43 (rd.3.1
+cu clienți din afara UE) reparată. Pct.2: certificatul fără drept pe CUI-ul firmei spus exact (OMFP 660/2017 art.15) peste tot, trimiterea
+oprită, Conectare SPV cu firmele verificate. Pct.3: 268 amânată.

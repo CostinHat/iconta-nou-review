@@ -290,6 +290,14 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
             _e = ValueError(" ".join(r["mesaj"] for r in _rele))
             _e.cod, _e.campuri = _rele[0]["cod"], _rele
             raise _e
+        # [17.10.2026] axa facturii (bunuri / servicii) vine din categoriile liniilor: din ea se iau D390 (L / P) și D300 (rd.1 / rd.3)
+        _axa_cat = _ct.axa_facturii(linii)
+        if _axa_cat:
+            if axa_ic and str(axa_ic).strip().lower() != _axa_cat:
+                _e = ValueError("Axa facturii (%s) nu se potrivește cu categoria liniilor (%s)." % (axa_ic, _axa_cat))
+                _e.cod = "AXA_CATEGORIE"
+                raise _e
+            axa_ic = _axa_cat
         if any(_l.get("categorie_tva") == "taxare_inversa" for _l in linii):
             taxare_inversa = True
             from core import d394 as _d394

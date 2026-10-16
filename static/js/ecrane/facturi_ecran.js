@@ -4,7 +4,7 @@
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
 import { api, cate, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota } from "../api.js?v=9409795a49";  /* esc_nc27 */
-import { randeazaStareSpv } from "./spv_stare.js?v=f15ed7cbc1";  /* [lotul 6: 273, 275] */
+import { randeazaStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { randeazaEmitere } from "./emitere_ecran.js?v=df557f8645";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
