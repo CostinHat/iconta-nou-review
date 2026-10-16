@@ -4,13 +4,13 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-15** (după-amiaza; lotul 4 al regimului pilot: înregistrarea liberă cu confirmarea emailului, comutatorul, anunțul, 256 — publicat 18:01 pe `48465e7d`), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `48465e7d` (lotul 4) — **four-way închis 15.10.2026 18:01:29**: HEAD = origin/main = public/main =
-  backup/lant-2026-10-15 = RUNNING = `48465e7d` (2 din 2 procese); procesul pornit 18:01:29 EEST, după commit (16:47:02); nicio
-  sentinelă; backup înainte `~/backups_db/iconta_v2_pre_lot4_20261015_1759.dump`; migrarea `core/migrare_inregistrare_libera.py`
-  rulată pe producție. Înregistrarea e LIBERĂ (comutatorul din Panou Admin). Acest fișier stă pe ramura `lucru/dupa-lot4-2026-10-15`
-  și intră în commitul lotului următor. Scriptul de backup e instalat (Costin, 15.10 11:42; identic cu `config/`). Deficiențele
-  247–255: răspunsul lui Costin în DECIZII 15.10.2026 (seara); stările din DEFICIENTE se aliniază în lotul următor.
+- **ultima rescriere**: **2026-10-16** (prânz; lotul 5 publicat 12:45 pe `6c4917d0`), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **pe commit**: `6c4917d0` (lotul 5) — **four-way închis 16.10.2026 12:45:38**: HEAD = origin/main = public/main =
+  backup/lant-2026-10-16 = RUNNING = `6c4917d0` (2 din 2 procese); procesul pornit 12:45:36 EEST, după commit (09:53:19); nicio
+  sentinelă; backup înainte `~/backups_db/iconta_v2_pre_lot5_20261016_1243.dump` (367 de tabele cu date); cele 7 migrări ale lotului
+  rulate pe producție. Poarta lotului: rularea 1 ROȘIE (`c8c64a04`, plafonul migrărilor), rularea 2 VERDE (`6c4917d0`). Pe producție
+  rămâne un singur cabinet, „Cabinet Test Sesiunea B SRL”. Acest fișier stă pe ramura `lucru/dupa-lot5-2026-10-16` și intră în commitul
+  lotului următor.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
@@ -153,13 +153,13 @@ aplicației**, nu „în așteptarea unei teme”:
   zilnică), 271 reparat (sonda citește commitul procesului din `public.instante`), migrarea numelor (269), „scadențe apropiate”. **„Lotul 5 e
   complet”** + acordul de publicare dat pe poarta VERDE (cabinetele de pe producție sunt toate de test — pilotul nu există încă). Ce s-a
   întâmplat la publicare (poarta, backup, four-way) e în raportul comenzii 4 și în ISTORIC.
-- **LA PUBLICAREA LOTULUI 5 (după „Lotul 5 e complet” + poarta VERDE + acordul lui Costin + backup):** migrările cu `--productie`:
-  `migrare_sanatate_load15`, `migrare_emailuri_dezabonate`, `migrare_fisiere_private` (MUTĂ capturile existente — aprobat de Costin în
-  comanda 4: numai date de test), `migrare_ciorne_proprii`, `migrare_reguli_fond`, `migrare_reguli_fond_2` (amprentele noi,
-  eticheta notei), `migrare_nume_conturi_vechi` (269); ștergerea cabinetelor de retest „Cabinet Test Inregistrare”, „Cabinet Test Inregistrare 253” și a cererii neconfirmate
-  pentru costin.hateganu+test253c@gmail.com (rămâne „Cabinet Test Sesiunea B SRL”) — pct.7 al comenzii 3; directorul depozitului privat
-  `~/iconta_date/fisiere` se creează la prima scriere (0700).
-- **URMEAZĂ:** comanda următoare a lui Costin în lotul 5, sau „Lotul 5 e complet” -> `sh scripts/poarta_lot.sh` (în fundal) -> backup -> publicare (acordul lui Costin; cabinetul nu lucrează).
+- **LOTUL 5 — PUBLICAT (16.10.2026 12:45, `6c4917d0`, acordul din comanda 4 pct.4):** backup 12:43, ff `48465e7d..6c4917d0`, post-commit,
+  migrările `sanatate_load15`, `emailuri_dezabonate`, `fisiere_private` (0 capturi de mutat: pe producție `raportari` e goală, iar
+  `static/raportari` nu există), `ciorne_proprii`, `reguli_fond`, `reguli_fond_2` (5 / 5 scheme), `nume_conturi_vechi` (2 conturi);
+  restartul de către rulator. Șterse cu `gdpr_sterge` (log 58, 59): „Cabinet Test Inregistrare” (48766), „Cabinet Test Inregistrare 253”
+  (48767) și cererea neconfirmată costin.hateganu+test253c@gmail.com; alte 2 cereri în așteptare au rămas (necerute). Sonda (271) la 13:00:
+  `repornit=True (deploy)`, fără alertă. Turnstile (257) activ pe producție de la această publicare.
+- **URMEAZĂ:** comanda următoare a lui Costin (lotul 6). Nimic în lucru; ramura `lucru/dupa-lot5-2026-10-16` poartă registrele de după publicare.
 - **CE ERA ÎN LUCRU (până la 14.10 15:53):** nimic. Arborele are o singură modificare: această predare (necomisă — un commit trece prin poarta de ~70 min și
   repornește producția la final; se comite odată cu lotul următor sau când aprobă Costin).
 - **URMEAZĂ (comanda 14.10, în ordine, fiecare lot cu raport și ZIP) — NUMAI după comanda lui Costin („După raport, nu porni pct.3;

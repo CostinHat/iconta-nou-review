@@ -48,10 +48,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 - fir: **Lotul 5, comanda 4 — ultima (Costin 16.10.2026, verbatim în DECIZII „Lotul 5, comanda 4”)** — 268 corectat, răspunsul la §6
   (269 migrarea numelor, capturile mutate, „scadențe apropiate”, 271 reparat), „Lotul 5 e complet”: poarta o dată, publicarea cu acordul dat.
-  - ultim: C4-1 … C4-6a făcute (16.10.2026; mutațiile roșii: dezabonarea 3 + 2 în browser, sonda 1, migrarea numelor 3, parametrii
-    umbriți 1, populația perimetrului 3); poarta 1 ROȘIE (`c8c64a04`, `test_e2a_univers` 93 > 92); lotul 5 = commitul care
-    conține această intrare
-  - urmator: C4-6b poarta lotului, rularea 2 din 2 (ultima), apoi C4-7 publicarea. STARE = IN LUCRU
+  - ultim: C4-1 … C4-7 făcute (16.10.2026): poarta 1 ROȘIE (`c8c64a04`), poarta 2 VERDE (`6c4917d0`); publicat 12:45, four-way pe
+    `6c4917d0`; cabinetele de retest șterse; sonda 13:00 `deploy`
+  - urmator: nimic — firul e închis; comanda următoare a lui Costin. STARE = ÎNCHIS
   - pasi:
     C4-1. 268: `observare.trimite_email_html(…, informativ=False)`; dezabonarea (subsol, antete, refuz) numai pe `dezabonare.INFORMATIVE`
           (recomandările, sinteza zilnică); `cerut_de_destinatar`, `subsol_text`, `motiv_netrimis` scoase; pagina; ecranele de recomandare;

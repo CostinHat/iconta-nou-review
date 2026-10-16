@@ -2539,3 +2539,11 @@ Poarta lotului 5, rularea 1 (16.10, 08:19–09:19, `c8c64a04`): ROȘIE, 1 failed
 TOTAL 0, cifrele F1–F5 identice. Picat: `test_e2a_univers` (MIGRARE_UNICA 93 > 92), din migrarea nouă 269 — rularea țintită nu-l alesese.
 Reparat: plafonul 93; în unealtă, un `.py` adăugat / șters / redenumit face derivarea incertă -> suita întreagă (`perimetru.MOTIV_POPULATIE`,
 3 teste noi în `core/test_poarta_scurta.py`, mutația -> 3 ROȘII). Urmează rularea 2 din 2.
+
+Poarta lotului 5, rularea 2 din 2 (16.10, 09:53–11:14, `6c4917d0`): VERDE — prospețimea 21, pytest 8400 passed / 10 skipped / 15 xfailed
+(59:32; COLLECTED 8425), plasa 295 passed (20:52), verificatorul TOTAL 0, cifrele F1–F5 identice; 81 de minute. Publicat la 12:45 cu acordul
+din comanda 4 pct.4 (pe producție nu lucra nimeni; toate cabinetele de test): backup `~/backups_db/iconta_v2_pre_lot5_20261016_1243.dump`
+(367 de tabele cu date), fast-forward `48465e7d..6c4917d0`, post-commit (origin, public, backup), cele 7 migrări pe producție (pentru 269: 2
+conturi; capturi vechi de mutat: 0, nu existau), restart de către rulator; four-way închis pe `6c4917d0`. Apoi, cu `gdpr_sterge`: cabinetele
+de retest 48766 și 48767 și cererea neconfirmată +test253c — rămâne „Cabinet Test Sesiunea B SRL”. Sonda la 13:00: `repornit=True (deploy)`,
+fără alertă (proba vie a lui 271; la 12:45:01, între mutarea discului și repornire, a citit tot commitul procesului, `48465e7d`).
