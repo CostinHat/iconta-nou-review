@@ -62,9 +62,13 @@ export function randeazaRecomanda(corp, nav) {
       if (r && r.ok) {
         const trimise = (r.rezultate || []).filter((x) => x.stare === "trimis").length;
         const esuate = (r.rezultate || []).filter((x) => x.stare === "esuat").length;
-        arataMesaj(msg, esuate
-          ? `${cate(trimise, "trimisă", "trimise")}, ${cate(esuate, "eșuată", "eșuate")}.`
-          : `Invitație trimisă către ${cate(trimise, "adresă", "adrese")}.`, esuate ? "eroare" : "ok");
+        // [268] adresa dezabonată de la recomandări: refuzul ei, spus pe nume (nu un eșec)
+        const dezabonate = (r.rezultate || []).filter((x) => x.stare === "dezabonat").map((x) => x.email);
+        const parti = [];
+        if (esuate) parti.push(`${cate(trimise, "trimisă", "trimise")}, ${cate(esuate, "eșuată", "eșuate")}.`);
+        else if (trimise) parti.push(`Invitație trimisă către ${cate(trimise, "adresă", "adrese")}.`);
+        if (dezabonate.length) parti.push(`Nu am scris la ${dezabonate.join(", ")}: ${dezabonate.length === 1 ? "adresa s-a dezabonat" : "adresele s-au dezabonat"} de la recomandări.`);
+        arataMesaj(msg, parti.join(" "), esuate ? "eroare" : (dezabonate.length ? "avert" : "ok"));
         if (!esuate) corp.querySelector("#rec-emails").value = "";
       } else {
         arataMesaj(msg, "Nu s-a putut trimite.", "eroare");

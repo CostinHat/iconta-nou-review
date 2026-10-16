@@ -266,7 +266,7 @@ def portal_schimba_email(date, ctx):
         "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;"
         "padding:10px 22px;border-radius:6px;text-decoration:none'>Confirmă adresa</a></p>"
         "<p>Linkul e valabil 48 de ore. Dacă nu ai cerut tu, ignoră mesajul — "
-        "nu se schimbă nimic.</p>" % link, alerta=True, cerut_de_destinatar=True)   # [268] confirmarea propriei adrese
+        "nu se schimbă nimic.</p>" % link, alerta=True)
     # Adresa VECHE afla, chiar daca nu ea confirma: altfel o mutare de cont ar fi tacuta
     # exact pentru cel care pierde accesul.
     _obs.trimite_email_html_sau_semnaleaza("email anunt adresa veche", email_vechi, "Cerere de schimbare a adresei — iConta.eu",

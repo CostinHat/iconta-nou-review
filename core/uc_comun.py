@@ -1110,6 +1110,14 @@ def _bon_imagine_cale(schema, bon_id, n):
     return cai[0] if cai else None
 
 
+def _dezabonata(email):
+    """Adresa e sigur în registrul dezabonărilor? Registrul necitibil -> nu știm -> „eșuat”, nu „dezabonat”."""
+    try:
+        return _obs.adresa_dezabonata(email)
+    except Exception:  # noqa: BLE001 — necunoscut nu e „dezabonat”; rezultatul rămâne „eșuat”
+        return False
+
+
 def _trimite_recomandari(emails, html, subiect):
     if not emails:
         raise _erori.CerereGresita(EMAIL_NICIUNUL_VALID)
@@ -1130,8 +1138,9 @@ def _trimite_recomandari(emails, html, subiect):
         raise _erori.DateInvalide(EMAIL_INVALID_LISTA % ", ".join(rele[:5]))
     rezultate = []
     for em in emails:
-        ok = _obs.trimite_email_html(em, subiect, html)
-        rezultate.append({"email": em, "stare": "trimis" if ok else "esuat"})
+        ok = _obs.trimite_email_html(em, subiect, html, informativ=True)   # [268] recomandarea e promovare: cu dezabonare
+        # [268] adresa care s-a dezabonat de la recomandări nu e un eșec: e refuzul ei, și ecranul îl spune ca atare
+        rezultate.append({"email": em, "stare": "trimis" if ok else ("dezabonat" if _dezabonata(em) else "esuat")})
     return rezultate
 
 

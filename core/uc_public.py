@@ -115,8 +115,7 @@ def reset_parola_cere(date):
                 % ((" " + _h.escape(nume)) if nume else "", link))
         # [R73] ALERTA: e cale de acces. Tacerea aici inseamna ca omul nu mai poate intra
         # si nimeni nu afla — chiar criteriul din docstringul lui `esec_secundar`.
-        _obs.trimite_email_html_sau_semnaleaza("email resetare parola", u["email"], "Resetare parola iConta.eu", html, alerta=True,
-                                               cerut_de_destinatar=True)   # [268] pleacă și la o adresă dezabonată
+        _obs.trimite_email_html_sau_semnaleaza("email resetare parola", u["email"], "Resetare parola iConta.eu", html, alerta=True)
         try:
             with db.get_conn() as c, c.cursor() as cur:
                 repo_admin.scrie_audit_reset_cerut(cur, u["user_id"])
@@ -150,8 +149,7 @@ def magic_link_cere(date):
     # ca sa nu se poata enumera adresele.
     if _html_magic is not None:
         # [R73] ALERTA: SINGURA usa de intrare in portalul clientului.
-        _obs.trimite_email_html_sau_semnaleaza("email link de logare", email, "Link de logare iConta.eu", _html_magic, alerta=True,
-                                               cerut_de_destinatar=True)   # [268] pleacă și la o adresă dezabonată
+        _obs.trimite_email_html_sau_semnaleaza("email link de logare", email, "Link de logare iConta.eu", _html_magic, alerta=True)
     return {"ok": True, "mesaj": MESAJ_LINK_LOGARE_CERUT}
 
 
@@ -175,7 +173,7 @@ body{background:#f4f6f9;margin:0;font-family:-apple-system,BlinkMacSystemFont,'S
 .dz-wrap form{margin:22px 0}
 </style></head><body class="pagina-publica">
 <div class="dz-bara"><a href="/">iConta.eu</a><span>&middot; Dezabonare</span></div>
-<main class="dz-wrap" id="dz-pagina"><h1>Dezabonare de la emailurile iConta.eu</h1>%(corp)s
+<main class="dz-wrap" id="dz-pagina"><h1>Dezabonare de la emailurile informative iConta.eu</h1>%(corp)s
 <p><a href="/">&larr; Înapoi la iConta.eu</a></p></main>
 </body></html>"""
 MESAJ_DEZABONARE_LINK_INVALID = ("Linkul de dezabonare nu e valid. Deschide linkul „Dezabonează-te” din subsolul unui email primit de la "
@@ -204,13 +202,12 @@ def dezabonare_pagina(email, semnatura):
             deja = _dez.e_dezabonata(cur, adresa)
         conn.rollback()
     if deja:
-        return 200, _pagina_dezabonare(_p("Adresa %s e deja dezabonată: nu mai primește emailuri de la iConta.eu." % adresa, "dz-mesaj")
-                                       + _p(_dez.MESAJ_CERUTE))
+        return 200, _pagina_dezabonare(_p("Adresa %s e deja dezabonată de la emailurile informative iConta.eu." % adresa, "dz-mesaj")
+                                       + _p(_dez.MESAJ_CE_RAMANE))
     actiune = _h.escape(_dez.RUTA + "?" + urlencode({"e": adresa, "s": semnatura}), quote=True)
     return 200, _pagina_dezabonare(
-        _p("Dacă te dezabonezi, adresa %s nu mai primește emailuri de la iConta.eu: invitații, anunțuri, alerte, notificări și "
-           "rapoartele lunare." % adresa, "dz-mesaj")
-        + _p(_dez.MESAJ_CERUTE)
+        _p("Dacă te dezabonezi, adresa %s nu mai primește emailurile informative iConta.eu." % adresa, "dz-mesaj")
+        + _p(_dez.MESAJ_CE_RAMANE)
         + '<form method="post" action="%s"><button type="submit" class="buton-primar" id="dz-confirma">Dezabonează-mă</button></form>'
         % actiune)
 
@@ -225,5 +222,5 @@ def dezabonare_confirma(email, semnatura):
         with conn.cursor() as cur:
             _dez.dezaboneaza(cur, adresa)
         conn.commit()
-    return 200, _pagina_dezabonare(_p("Gata: adresa %s e dezabonată. De acum nu mai primești emailuri de la iConta.eu." % adresa,
-                                      "dz-mesaj") + _p(_dez.MESAJ_CERUTE))
+    return 200, _pagina_dezabonare(_p("Gata: adresa %s e dezabonată. De acum nu mai primești emailurile informative iConta.eu."
+                                      % adresa, "dz-mesaj") + _p(_dez.MESAJ_CE_RAMANE))

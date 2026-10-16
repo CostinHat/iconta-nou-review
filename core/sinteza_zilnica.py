@@ -176,7 +176,7 @@ def ruleaza(test_email=None):
             html = _html(nume, zi, d)
             subiect = "Sinteza zilei %s - %s" % (_data_ro(zi, "zi_luna"), nume)
             catre = test_email or p["email"]
-            ok = observare.trimite_email_html(catre, subiect, html)
+            ok = observare.trimite_email_html(catre, subiect, html, informativ=True)   # [268] informativ: cu dezabonare
             if ok:
                 trimise += 1
                 print("trimis ->", catre, "|", nume)

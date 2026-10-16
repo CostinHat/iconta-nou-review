@@ -149,10 +149,14 @@ aplicației**, nu „în așteptarea unei teme”:
   aliniate la răspunsul lui Costin. Lotul 4 publicat 18:01 (`48465e7d`); scriptul de backup instalat de Costin (11:42, identic).
 - **Comanda 3 a lotului 5 (15–16.10.2026):** 258–270 rezolvate (e2e + mutații), 271 cauza aflată (nereparată, la cerere), 6b alerta
   de load; găsite pe drum C36–C40 (C38, C40 „neverificat”). Deciziile de confirmat: DECIZII „Lotul 5, comanda 3: ce s-a hotărât pe drum”.
+- **Comanda 4 a lotului 5 (16.10.2026, ultima; DECIZII „Lotul 5, comanda 4”):** 268 corectat (dezabonarea numai pe recomandări și sinteza
+  zilnică), 271 reparat (sonda citește commitul procesului din `public.instante`), migrarea numelor (269), „scadențe apropiate”. **„Lotul 5 e
+  complet”** + acordul de publicare dat pe poarta VERDE (cabinetele de pe producție sunt toate de test — pilotul nu există încă). Ce s-a
+  întâmplat la publicare (poarta, backup, four-way) e în raportul comenzii 4 și în ISTORIC.
 - **LA PUBLICAREA LOTULUI 5 (după „Lotul 5 e complet” + poarta VERDE + acordul lui Costin + backup):** migrările cu `--productie`:
-  `migrare_sanatate_load15`, `migrare_emailuri_dezabonate`, `migrare_fisiere_private` (MUTĂ capturile existente — numai cu aprobarea
-  lui Costin, pot fi ale cabinetului pilot), `migrare_ciorne_proprii`, `migrare_reguli_fond`, `migrare_reguli_fond_2` (amprentele noi,
-  eticheta notei); ștergerea cabinetelor de retest „Cabinet Test Inregistrare”, „Cabinet Test Inregistrare 253” și a cererii neconfirmate
+  `migrare_sanatate_load15`, `migrare_emailuri_dezabonate`, `migrare_fisiere_private` (MUTĂ capturile existente — aprobat de Costin în
+  comanda 4: numai date de test), `migrare_ciorne_proprii`, `migrare_reguli_fond`, `migrare_reguli_fond_2` (amprentele noi,
+  eticheta notei), `migrare_nume_conturi_vechi` (269); ștergerea cabinetelor de retest „Cabinet Test Inregistrare”, „Cabinet Test Inregistrare 253” și a cererii neconfirmate
   pentru costin.hateganu+test253c@gmail.com (rămâne „Cabinet Test Sesiunea B SRL”) — pct.7 al comenzii 3; directorul depozitului privat
   `~/iconta_date/fisiere` se creează la prima scriere (0700).
 - **URMEAZĂ:** comanda următoare a lui Costin în lotul 5, sau „Lotul 5 e complet” -> `sh scripts/poarta_lot.sh` (în fundal) -> backup -> publicare (acordul lui Costin; cabinetul nu lucrează).

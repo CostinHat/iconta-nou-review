@@ -3,7 +3,7 @@
 import { verdictDinStare } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict din stare
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate } from "../api.js?v=72aa1cbbdb";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaFacturi } from "./facturi_ecran.js?v=82532fe3c9";  // [p116_facturi_modul]
+import { randeazaFacturi } from "./facturi_ecran.js?v=a5dd3d4abb";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -453,7 +453,7 @@ async function ecranRecomanda(corp, nav) {
       const rez = (r && r.rezultate) || [];
       bTr.disabled = false; bTr.textContent = "Trimite recomandarea";
       zona.innerHTML = rez.map((x) =>
-        `<div class="pf-frand"><div class="pf-frand-text ${x.stare === "trimis" ? "msg-ok" : "msg-eroare"}">${esc(x.email)} — ${x.stare === "trimis" ? "trimis" : "eșuat"}</div></div>`
+        `<div class="pf-frand"><div class="pf-frand-text ${x.stare === "trimis" ? "msg-ok" : "msg-eroare"}">${esc(x.email)} — ${x.stare === "trimis" ? "trimis" : x.stare === "dezabonat" ? "nu am scris: adresa s-a dezabonat de la recomandări" : "eșuat"}</div></div>`
       ).join("");
     } catch {
       bTr.disabled = false; bTr.textContent = "Trimite recomandarea";

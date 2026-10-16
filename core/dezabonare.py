@@ -1,24 +1,18 @@
 # -*- coding: utf-8 -*-
-"""core/dezabonare.py — dezabonarea de la emailurile aplicației (deficiența 268, „Lotul 5”, decizia în DECIZII: „emailurile
-tranzacționale (confirmare, invitație, resetare parolă, anunț cabinet nou, alerte) nu au link «Dezabonează-te»”).
+"""core/dezabonare.py — dezabonarea de la emailurile INFORMATIVE ale aplicației (deficiența 268; comanda 4 a lotului 5, verbatim în
+DECIZII: „emailurile tranzacționale nu au deloc «Dezabonează-te» și nici antet List-Unsubscribe … Dezabonarea rămâne numai pe emailurile
+informative/de promovare”).
 
-CE FACE. Dezabonarea e pe ADRESĂ (`public.emailuri_dezabonate`, core/migrare_emailuri_dezabonate.py), nu pe cont: invitația, emailul
-pachetului lunar și alertele pleacă și la adrese fără cont. Fiecare email poartă, adăugate CENTRAL de `observare` (nu de apelanți):
-  - subsolul „Dezabonează-te” (`subsol_html` în `trimite_email_html`, `subsol_text` în alertele text din `_trimite_brevo`);
-  - antetele `List-Unsubscribe` (https) și `List-Unsubscribe-Post: List-Unsubscribe=One-Click` (RFC 8058: programul de email al
-    destinatarului oferă singur butonul „Dezabonează-te” și trimite POST la adresa din antet).
-Linkul e SEMNAT (`semnatura`: HMAC-SHA256 cu o cheie derivată din JWT_SECRET și scopul „dezabonare”), fără termen: un email vechi din
-cutie trebuie să se poată dezabona oricând, iar semnătura împiedică pe oricine să dezaboneze adresa altcuiva. Pagina publică
-(`GET /public/dezabonare`) arată confirmarea cu un buton; abia `POST` dezabonează — un scanner de linkuri care deschide adresa nu
-dezabonează pe nimeni.
-
-DUPĂ DEZABONARE nu mai pleacă nimic la acea adresă (`observare.refuz_dezabonare`, în `trimite_email_html`; refuzul se scrie în jurnal), CU
-EXCEPȚIA emailurilor cerute chiar atunci de destinatar — resetarea parolei, linkul de logare, confirmarea propriei adrese (la
-înregistrare sau la schimbarea adresei) — marcate la apel cu `cerut_de_destinatar=True`. Pagina de dezabonare o spune.
-FAIL-CLOSED la emailuri: dacă registrul nu se poate citi, emailul nu pleacă (nu știm dacă adresa s-a dezabonat). La alertele interne
-(`_trimite_brevo`) invers: o alertă despre o bază căzută trebuie să plece tocmai când registrul nu se poate citi.
-STRATUL: depozit (REPOSITORY) — SQL-ul registrului primește cursorul apelantului, fără conexiuni și commit proprii; conexiunea o deschid
-`observare` (verificarea dinaintea trimiterii) și `uc_public` (pagina).
+CARE SUNT INFORMATIVE: lista închisă `INFORMATIVE` de mai jos — azi sinteza zilnică (seara, către patron) și recomandările (iConta
+recomandat la adrese străine). Numai ele, marcate la apel cu `informativ=True` în `observare.trimite_email_html`, poartă subsolul
+„Dezabonează-te” (`subsol_html`) și antetele `List-Unsubscribe` (https) + `List-Unsubscribe-Post: List-Unsubscribe=One-Click` (RFC 8058),
+și numai ele nu mai pleacă la o adresă dezabonată (fail-closed: registrul necitibil = nu pleacă). TOATE celelalte sunt tranzacționale
+(confirmarea înregistrării, invitațiile, resetarea parolei, linkul de logare, confirmarea adresei noi, anunțul de cabinet nou, alertele
+către admin, facturile, rapoartele lunare, notificările de scadență, răspunsurile cabinetului): fără subsol, fără antet, pleacă oricum.
+Dezabonarea e pe ADRESĂ (`public.emailuri_dezabonate`, core/migrare_emailuri_dezabonate.py), nu pe cont: recomandările pleacă la adrese
+fără cont. Linkul e SEMNAT (`semnatura`: HMAC-SHA256 cu o cheie derivată din JWT_SECRET și scopul „dezabonare”), fără termen; pagina
+publică (`GET /public/dezabonare`) arată confirmarea cu un buton, abia `POST` dezabonează — un scanner de linkuri nu dezabonează pe nimeni.
+STRATUL: depozit (REPOSITORY) — SQL-ul registrului primește cursorul apelantului; conexiunea o deschid `observare` și `uc_public`.
 Gard: core/test_dezabonare.py; e2e frontend_test/e2e/e2e_lot5_emailuri.py::test_def_268_*.
 """
 import base64
@@ -31,8 +25,15 @@ from core.common import cfg, cfg_secret
 
 RUTA = "/public/dezabonare"
 SCOP = b"dezabonare"
-MESAJ_CERUTE = ("Emailurile pe care le ceri chiar tu — resetarea parolei, linkul de logare, confirmarea adresei tale — vin în "
-                "continuare, fiindcă fără ele nu ai putea intra în cont.")
+#: emailurile informative / de promovare — SINGURELE cu dezabonare: {(fișier, funcția care trimite): ce sunt}. Un email informativ nou
+#: intră aici, cu numele lui; garda (core/test_dezabonare.py) cere ca `informativ=True` să stea exact pe aceste locuri.
+INFORMATIVE = {
+    ("core/sinteza_zilnica.py", "ruleaza"): "sinteza zilnică a cabinetului",
+    ("core/uc_comun.py", "_trimite_recomandari"): "recomandările iConta.eu",
+}
+MESAJ_CE_RAMANE = ("Te dezabonezi numai de la emailurile informative: %s. Emailurile legate de contul tău și de lucrul cu cabinetul — "
+                   "confirmări, invitații, resetarea parolei, linkul de logare, facturi, rapoarte, alerte — vin în continuare."
+                   % " și ".join(INFORMATIVE.values()))
 
 
 def normalizeaza(email):
@@ -66,14 +67,9 @@ def antete(email):
 
 def subsol_html(email):
     return ('<hr style="border:none;border-top:1px solid #dbe1ea;margin:28px 0 12px">'
-            '<p style="font-size:12px;color:#5b6b7c;margin:0">Primești acest email de la iConta.eu la adresa %s. '
-            'Nu mai vrei emailuri de la noi? <a href="%s" style="color:#5b6b7c">Dezabonează-te</a>.</p>'
+            '<p style="font-size:12px;color:#5b6b7c;margin:0">Primești acest email informativ de la iConta.eu la adresa %s. '
+            'Nu mai vrei emailuri informative de la noi? <a href="%s" style="color:#5b6b7c">Dezabonează-te</a>.</p>'
             % (_html.escape(normalizeaza(email)), _html.escape(link(email), quote=True)))
-
-
-def subsol_text(email):
-    return ("\n\n--\nPrimești acest mesaj de la iConta.eu la adresa %s. Nu mai vrei aceste emailuri? Dezabonează-te: %s"
-            % (normalizeaza(email), link(email)))
 
 
 def e_dezabonata(cur, email):

@@ -227,7 +227,7 @@ async function randeazaAdminInvitatii(corp) {
     try {
       const r = await api.post("/admin/invitatii", { email });
       const [cls, m] = r.email_trimis ? ["caseta-info", "ci-mesaj"] : ["caseta-atentie", "ca-mesaj"];   // emailul netrimis = atenție
-      msg.innerHTML = `<div class="${cls}" id="inv-rezultat"><div class="${m}">${r.email_trimis ? `Invitația a plecat pe <b>${esc(r.email)}</b>.` : r.motiv_netrimis ? `Emailul către <b>${esc(r.email)}</b> nu a plecat: ${esc(r.motiv_netrimis)}. Dă-i linkul de mai jos direct.` : `Emailul către <b>${esc(r.email)}</b> nu s-a putut trimite — dă-i linkul de mai jos direct.`} Linkul (valabil ${cate(r.valabila_zile, "zi", "zile")}, o singură folosire):</div>
+      msg.innerHTML = `<div class="${cls}" id="inv-rezultat"><div class="${m}">${r.email_trimis ? `Invitația a plecat pe <b>${esc(r.email)}</b>.` : `Emailul către <b>${esc(r.email)}</b> nu s-a putut trimite — dă-i linkul de mai jos direct.`} Linkul (valabil ${cate(r.valabila_zile, "zi", "zile")}, o singură folosire):</div>
         <input type="text" class="camp-input" id="inv-link" readonly aria-label="Linkul invitației" value="${esc(r.link)}" style="margin-top:6px"></div>`;
       corp.querySelector("#inv-email").value = "";
       await incarca();

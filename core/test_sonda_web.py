@@ -104,26 +104,60 @@ def test_deploy_ul_NU_alerteaza_iar_caderea_DA():
     assert f(None, "B", None, "c1") is None, "prima rulare n-are cu ce compara"
 
 
-def test_sonda_NU_citeste_commitul_din_memoria_altui_proces():
-    """`versiune.stare()['running']` e ștampilat în memoria procesului WEB. Un proces CLI îl
-    citește `None`, deci sonda ar raporta veșnic «necunoscut» — și ar alerta la fiecare deploy,
-    exact ce distincția voia să evite. Prins la prima rulare reală, nu la scriere."""
+def test_sonda_citeste_commitul_procesului_din_registrul_instantelor():
+    """[271] Sursa commitului e registrul instanțelor (`instante.vii`), scris de procesul web la pornire — nu `HEAD` de pe disc (publicarea
+    îl mută înaintea repornirii) și nu `versiune.stare()` (memoria procesului web: sonda, alt proces, ar citi mereu None)."""
     arb = _arbore()
-    fn = next(n for n in ast.walk(arb)
-              if isinstance(n, ast.FunctionDef) and n.name == "commitul_de_pe_disc")
-    chemate = {n.func.attr for n in ast.walk(fn)
-               if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)}
-    assert chemate >= {"git_head"}, (
-        "sursa commitului nu mai e `HEAD` de pe disc: %s" % sorted(chemate))
-    assert chemate.isdisjoint({"stare"}), (
-        "sonda citește iar din memoria procesului web — acolo va găsi mereu None")
+    fn = next(n for n in ast.walk(arb) if isinstance(n, ast.FunctionDef) and n.name == "commitul_procesului")
+    chemate = {n.func.attr for n in ast.walk(fn) if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)}
+    assert "vii" in chemate and chemate.isdisjoint({"git_head", "stare"}), sorted(chemate)
 
 
-def test_pe_viu_commitul_se_poate_citi():
-    c = sonda_web.commitul_de_pe_disc()
-    assert c and len(c) >= 7, (
-        "commitul de pe disc nu se poate citi (%r) — sonda ar raporta orice repornire ca "
-        "«necunoscut», deci ar alerta și la deploy" % c)
+def test_def_271_publicarea_nu_mai_e_citita_ca_cadere(monkeypatch):
+    """[271] Reluarea publicării lotului 4 (15.10.2026): discul mutat pe commitul nou la 17:59:35, sonda de la 18:00:02 rulează ÎNAINTEA
+    repornirii (procesul vechi, commitul vechi), repornirea la 18:01:26, sonda de la 18:15:01. Înainte: sonda de la 18:00 nota ora veche
+    lângă commitul NOU (de pe disc), iar cea de la 18:15 vedea „a repornit cu același commit” -> alerta „fără să fi fost un deploy”.
+    Acum: deploy, fără alertă. Și cealaltă direcție rămâne: o repornire cu ACELAȘI commit al procesului alertează.
+    MUTAȚIE: `commitul_procesului` întors la `HEAD` de pe disc -> alerta de cădere -> pică."""
+    from core import db, instante, observare, versiune
+    gazda = instante.eu()[0]
+    stare = {"pornit": "Thu 2026-10-15 16:47:02 EEST", "proces": "OLD", "ultima": (None, None)}
+    alerte = []
+    monkeypatch.setattr(versiune, "git_head", lambda *a, **k: "NEW")       # discul e deja pe commitul nou
+    monkeypatch.setattr(sonda_web, "raspunde", lambda *a, **k: (200, 5000))
+    monkeypatch.setattr(sonda_web, "ora_pornirii", lambda *a, **k: stare["pornit"])
+    monkeypatch.setattr(instante, "vii", lambda conn, *a, **k: [(gazda, 11, stare["proces"], None), (gazda, 12, stare["proces"], None)])
+    monkeypatch.setattr(sonda_web, "_citeste_ultima", lambda conn: stare["ultima"])
+    monkeypatch.setattr(sonda_web, "_scrie_ultima", lambda conn, p, c: stare.update(ultima=(p, c)))
+    monkeypatch.setattr(observare, "alerteaza", lambda cheie, subiect, mesaj, acum=None: alerte.append(subiect))
+    monkeypatch.setattr(db, "init_pool", lambda *a, **k: None)
+
+    class _Conn:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+    monkeypatch.setattr(db, "get_conn", lambda *a, **k: _Conn())
+
+    assert sonda_web.verifica()["fel"] is None                                # 17:45, înainte de publicare
+    assert sonda_web.verifica()["commit"] == "OLD"                            # 18:00:02 — disc mutat, procesul încă vechi
+    stare.update(pornit="Thu 2026-10-15 18:01:26 EEST", proces="NEW")        # repornirea publicării
+    assert sonda_web.verifica()["fel"] == "deploy" and alerte == []           # 18:15:01
+    stare.update(pornit="Thu 2026-10-15 19:02:00 EEST")                       # a repornit singur, cu același commit
+    assert sonda_web.verifica()["fel"] == "cadere"
+    assert alerte == ["Procesul iConta a repornit fără să fi fost un deploy"]
+
+
+def test_commitul_procesului_nu_se_ghiceste(monkeypatch):
+    """Două commituri printre procesele vii (repornire în curs) sau niciun proces -> None („nu se poate deosebi”), nu unul la nimereală;
+    procesele altei gazde nu se numără."""
+    from core import instante
+    gazda = instante.eu()[0]
+    for vii, asteptat in (([(gazda, 1, "A", None), (gazda, 2, "A", None), ("alta", 3, "B", None)], "A"),
+                          ([(gazda, 1, "A", None), (gazda, 2, "B", None)], None), ([], None), ([(gazda, 1, None, None)], None)):
+        monkeypatch.setattr(instante, "vii", lambda conn, *a, _v=vii, **k: _v)
+        assert sonda_web.commitul_procesului(None) == asteptat, vii
 
 
 def test_CALIBRARE_o_unitate_inexistenta_NU_inventeaza_o_ora():

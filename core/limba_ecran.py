@@ -60,7 +60,7 @@ PLURALE = ("parteneri", "facturi", "note", "conturi", "clienți", "furnizori", "
            "destinatari", "e-Facturi", "evenimente", "existente", "eșuate", "fișiere", "funcții", "ieșiri", "imagini", "imobile",
            "importate", "ingrediente", "intrări", "invalide", "livrări", "lucrări", "lucrători", "mijloace", "necunoscute",
            "netrimise", "neverificate", "notificări", "obligații", "ore", "persoane", "plăți", "potriviri", "potrivite",
-           "pregătite", "produse", "propoziții", "părți", "recomandări", "respinse", "restante", "restanțe", "rețete", "scadente",
+           "pregătite", "produse", "propoziții", "părți", "recomandări", "respinse", "restante", "restanțe", "rețete", "scadente", "scadențe",
            "secțiuni", "sărite", "termene", "tipare", "tipuri", "trimise", "urme", "valizi")
 #: un număr LIPIT de o literă face parte dintr-un cod („D390 bunuri IC” — declarația D390, nu „390 de bunuri”), deci nu e numeral
 _ACORD = re.compile(r"(?<![\w.,])(?:1|\d*(?:[2-9]\d|00)) (?:%s)(?![\wăâîșț-])" % "|".join(map(re.escape, PLURALE)))

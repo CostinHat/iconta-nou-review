@@ -183,7 +183,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         if (!(zona.querySelector("#cm-serie-ini").value || "").trim()) eC.push(["cm-serie-ini", "Completează seria certificatului inițial al episodului (de pe certificatul de continuare)."]);
         if (!(zona.querySelector("#cm-numar-ini").value || "").trim()) eC.push(["cm-numar-ini", "Completează numărul certificatului inițial al episodului."]);
       }
-      if (eC.length) { eC.forEach(([c, t]) => eroareCamp(zona, c, t)); return; }
+      if (eC.length) { eC.forEach(([camp, mesaj]) => eroareCamp(zona, camp, mesaj)); return; }
 
       const inc = new Date(inceput);
       const payload = {

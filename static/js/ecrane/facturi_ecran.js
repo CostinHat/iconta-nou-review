@@ -387,7 +387,7 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
       <div id="sc-msg"></div>
       <div class="cf-sumar">
         <span class="cf-pastila"><span class="cf-dot" style="background:${SEM.restanta.dot}"></span>${cate(rez.restanta, "restantă", "restante")}</span>
-        <span class="cf-pastila"><span class="cf-dot" style="background:${SEM.scade_curand.dot}"></span>${cate(rez.scade_curand, "scadentă curând", "scadente curând")}</span>
+        <span class="cf-pastila"><span class="cf-dot" style="background:${SEM.scade_curand.dot}"></span>${cate(rez.scade_curand, "scadență apropiată", "scadențe apropiate")}</span>
         <span class="cf-pastila"><span class="cf-dot" style="background:${SEM.in_termen.dot}"></span>${rez.in_termen || 0} în termen</span>
       </div>
       <p class="pf-intro">
@@ -736,7 +736,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=b430cfcc52");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=e5617fbd32");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }));
   });

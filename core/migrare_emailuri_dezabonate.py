@@ -3,9 +3,8 @@ core/migrare_emailuri_dezabonate.py — registrul adreselor dezabonate de la ema
 în DECIZII).
 
 - `public.emailuri_dezabonate` — o adresă pe rând, normalizată (fără spații, cu litere mici), și momentul dezabonării. Dezabonarea e
-  pe ADRESĂ, nu pe cont: o adresă fără cont (invitația, emailul pachetului lunar) se dezabonează la fel. `core/dezabonare.py` citește
-  și scrie tabela; `observare.trimite_email_html` nu mai trimite la o adresă de aici, afară de emailurile cerute chiar atunci de
-  destinatar (resetarea parolei, linkul de logare, confirmarea propriei adrese).
+  pe ADRESĂ, nu pe cont: recomandările pleacă la adrese fără cont. `core/dezabonare.py` citește și scrie tabela; numai emailurile
+  informative (`dezabonare.INFORMATIVE`, comanda 4 a lotului 5) nu mai pleacă la o adresă de aici — tranzacționalele pleacă oricum.
 Idempotent (CREATE TABLE IF NOT EXISTS). Se aplică prin `python -m core.migrari_registru ruleaza [--productie]
 core/migrare_emailuri_dezabonate.py`.
 """

@@ -2,7 +2,8 @@
 """Lotul 5 — emailurile și salutul, în browser, pe aplicația din index, pe baza de TEST. Emailurile aplicației de probă stau în cutia de
 test (`ICONTA_EMAIL_CUTIE`, `observare._in_cutia_de_test`), de unde proba ia linkul „Dezabonează-te” — linkul pe care altfel numai
 destinatarul îl vede.
-268 — „emailurile tranzacționale (confirmare, invitație, resetare parolă, anunț cabinet nou, alerte) nu au link «Dezabonează-te»”.
+268 — comanda 4 a lotului 5: „emailurile tranzacționale nu au deloc «Dezabonează-te» și nici antet List-Unsubscribe … Dezabonarea
+rămâne numai pe emailurile informative/de promovare” (aici: recomandarea).
 269 — „salutul ia ultimul cuvânt din nume («Salut, 253» pentru «Test 253»)”.
 C37 — numele scris de om ajungea în pagină ca HTML (salutul, bara de sus): se afișează ca text."""
 import os
@@ -21,6 +22,11 @@ PATRON = "patron@prisma-cont.test"
 @pytest.fixture()
 def superadmin(browser, request):
     yield from _ecran(browser, request, "admin@prisma-cont.test")
+
+
+@pytest.fixture()
+def patron(browser, request):
+    yield from _ecran(browser, request, PATRON)
 
 
 @pytest.fixture()
@@ -91,27 +97,45 @@ def test_def_c37_numele_cu_semne_html_se_afiseaza_ca_text(browser, request, patr
         ctx.close()
 
 
+def _recomanda(patron):
+    """Contabilul-șef: pagina principală -> banda „Recomandă” -> adresa -> „Trimite invitația”; întoarce mesajul ecranului."""
+    pg = patron.pg
+    pg.goto(BAZA + "/", wait_until="domcontentloaded")
+    pg.wait_for_selector(".cab-grila", timeout=30000)
+    pg.click("[data-banda='recomanda']")                       # banda de lângă „Suport” (salut.js), nu un card
+    pg.wait_for_selector("#rec-emails", timeout=10000)
+    pg.fill("#rec-emails", EMAIL)
+    pg.click("#rec-trimite")
+    pg.wait_for_function("() => { const t = (document.querySelector('#rec-msg') || {innerText: ''}).innerText; "
+                         "return t && !t.startsWith('Se trimite'); }", timeout=15000)
+    return pg.inner_text("#rec-msg")
+
+
 # [268] ULTIMUL în fișier: invitațiile superadminului sunt scrieri, iar după orice scriere aplicația pornește recalcularea
 # cardurilor în fundal (`firma_rezumat.recalculeaza_in_fundal`), care ține conexiuni din pool cât rulează; pagina principală a
 # contabilului, încărcată imediat după, își vede atunci cererile refuzate („connection pool exhausted” pe GET /coada).
-def test_def_268_linkul_dezaboneaza_te_din_email_opreste_emailurile_urmatoare(superadmin, browser, request, curat):
-    """Superadminul trimite o invitație -> emailul din cutie are linkul „Dezabonează-te” și antetele List-Unsubscribe -> destinatarul
-    deschide linkul: pagina cere confirmarea (deschiderea singură nu dezabonează) -> „Dezabonează-mă” -> adresa e în registru -> a doua
-    invitație nu mai pleacă, iar superadminul vede de ce."""
+def test_def_268_dezabonarea_numai_pe_emailurile_informative(superadmin, patron, browser, request, curat):
+    """Superadminul trimite o invitație (tranzacțională) -> emailul din cutie n-are „Dezabonează-te” și nici antete List-Unsubscribe.
+    Contabilul-șef recomandă iConta.eu aceleiași adrese (promovare) -> emailul are linkul și antetele -> destinatarul deschide linkul:
+    pagina cere confirmarea (deschiderea singură nu dezabonează) și spune că emailurile legate de cont vin în continuare ->
+    „Dezabonează-mă” -> a doua recomandare nu mai pleacă, iar contabilul vede de ce -> o nouă invitație pleacă totuși."""
     inainte = len(_scrisori(EMAIL))
     cls, text = _invita(superadmin)
     assert cls == "caseta-info" and text.startswith("Invitația a plecat pe %s." % EMAIL), (cls, text)
-    scrisori = _scrisori(EMAIL)
-    assert len(scrisori) == inainte + 1
-    scrisoare = scrisori[-1]
-    assert scrisoare["subiect"] == "Invitație iConta.eu"
-    m = re.search(r'<a href="([^"]+)"[^>]*>Dezabonează-te</a>', scrisoare["html"])
-    assert m, scrisoare["html"][-400:]
+    (invitatia,) = _scrisori(EMAIL)[inainte:]
+    assert invitatia["subiect"] == "Invitație iConta.eu"
+    assert invitatia["antete"] == {} and invitatia["html"].count("Dezabonează-te") == 0, invitatia["html"][-400:]
+    superadmin.captura("invitatia_fara_dezabonare")
+
+    assert _recomanda(patron) == "Invitație trimisă către 1 adresă."
+    (recomandarea,) = _scrisori(EMAIL)[inainte + 1:]
+    m = re.search(r'<a href="([^"]+)"[^>]*>Dezabonează-te</a>', recomandarea["html"])
+    assert m, recomandarea["html"][-400:]
     link = m.group(1).replace("&amp;", "&")
-    assert scrisoare["antete"] == {"List-Unsubscribe": "<%s>" % link, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"}
+    assert recomandarea["antete"] == {"List-Unsubscribe": "<%s>" % link, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"}
     parti = urlsplit(link)
     assert parti.scheme == "https" and parti.path == "/public/dezabonare", link
-    superadmin.captura("invitatia_trimisa")
+    patron.captura("recomandarea_trimisa")
 
     ctx = browser.new_context(viewport={"width": LAT, "height": INALT})   # destinatarul: fără cont, din email
     viz = Ecran(ctx.new_page(), request.node.name)
@@ -120,12 +144,13 @@ def test_def_268_linkul_dezaboneaza_te_din_email_opreste_emailurile_urmatoare(su
         vp.goto(BAZA + parti.path + "?" + parti.query, wait_until="domcontentloaded")
         vp.wait_for_selector("#dz-confirma", timeout=10000)
         assert EMAIL in vp.inner_text("#dz-mesaj")
-        assert "resetarea parolei, linkul de logare" in vp.inner_text("#dz-pagina")
+        assert "confirmări, invitații, resetarea parolei, linkul de logare" in vp.inner_text("#dz-pagina")
         assert sql("SELECT count(*) FROM public.emailuri_dezabonate WHERE email = %s", (EMAIL,)) == [(0,)]   # deschiderea nu dezabonează
         viz.captura("pagina")
         vp.click("#dz-confirma")
         vp.wait_for_function("() => (document.querySelector('#dz-mesaj') || {}).innerText?.startsWith('Gata:')", timeout=10000)
-        assert vp.inner_text("#dz-mesaj") == ("Gata: adresa %s e dezabonată. De acum nu mai primești emailuri de la iConta.eu." % EMAIL)
+        assert vp.inner_text("#dz-mesaj") == ("Gata: adresa %s e dezabonată. De acum nu mai primești emailurile informative iConta.eu."
+                                              % EMAIL)
         assert sql("SELECT count(*) FROM public.emailuri_dezabonate WHERE email = %s", (EMAIL,)) == [(1,)]
         viz.captura("dezabonat")
         vp.goto(BAZA + parti.path + "?e=" + EMAIL + "&s=semnatura-falsa", wait_until="domcontentloaded")   # linkul altcuiva, ghicit
@@ -134,9 +159,11 @@ def test_def_268_linkul_dezaboneaza_te_din_email_opreste_emailurile_urmatoare(su
     finally:
         ctx.close()
 
-    cls, text = _invita(superadmin)                                             # următorul email nu mai pleacă
-    assert len(_scrisori(EMAIL)) == inainte + 1
-    assert cls == "caseta-atentie"
-    assert text.startswith("Emailul către %s nu a plecat: adresa %s s-a dezabonat de la emailurile iConta.eu. Dă-i linkul de mai jos "
-                           "direct." % (EMAIL, EMAIL)), text
-    superadmin.captura("a_doua_invitatie")
+    assert _recomanda(patron) == "Nu am scris la %s: adresa s-a dezabonat de la recomandări." % EMAIL
+    assert len(_scrisori(EMAIL)) == inainte + 2                                  # recomandarea n-a plecat
+    patron.captura("a_doua_recomandare")
+    sql("DELETE FROM public.invitatii_cabinet WHERE email = %s", (EMAIL,))
+    cls, text = _invita(superadmin)                                             # invitația (tranzacțională) pleacă oricum
+    assert cls == "caseta-info" and text.startswith("Invitația a plecat pe %s." % EMAIL), (cls, text)
+    assert len(_scrisori(EMAIL)) == inainte + 3
+    superadmin.captura("invitatia_dupa_dezabonare")

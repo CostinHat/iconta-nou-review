@@ -46,6 +46,25 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 5, comanda 4 — ultima (Costin 16.10.2026, verbatim în DECIZII „Lotul 5, comanda 4”)** — 268 corectat, răspunsul la §6
+  (269 migrarea numelor, capturile mutate, „scadențe apropiate”, 271 reparat), „Lotul 5 e complet”: poarta o dată, publicarea cu acordul dat.
+  - ultim: C4-1 … C4-5b făcute (16.10.2026; mutațiile roșii: dezabonarea 3 + 2 în browser, sonda 1, migrarea numelor 3, parametrii
+    umbriți 1); lotul 5 = commitul care
+    conține această intrare
+  - urmator: C4-6 poarta lotului (`sh scripts/poarta_lot.sh`), apoi C4-7 publicarea. STARE = IN LUCRU
+  - pasi:
+    C4-1. 268: `observare.trimite_email_html(…, informativ=False)`; dezabonarea (subsol, antete, refuz) numai pe `dezabonare.INFORMATIVE`
+          (recomandările, sinteza zilnică); `cerut_de_destinatar`, `subsol_text`, `motiv_netrimis` scoase; pagina; ecranele de recomandare;
+          `core/test_dezabonare.py` + e2e `test_def_268_dezabonarea_numai_pe_emailurile_informative`.
+    C4-2. 2d: `facturi_ecran.js` „scadență apropiată / scadențe apropiate”; `limba_ecran.PLURALE` + „scadențe”.
+    C4-3. 271: `sonda_web.commitul_procesului` din `public.instante`; `core/test_sonda_web.py` (scenariul din 15.10).
+    C4-4. 269: `core/migrare_nume_conturi_vechi.py` + test.
+    C4-5. Rularea țintită (Python + e2e atinse + vizual) și registrele.
+    C4-5b. (crescut pe drum, din rularea țintită) Regresia 244 / 245: `firme.js` `deseneaza(mod)`; clasa parametrilor umbriți
+          (`scripts/scan_parametri_umbriti.js` + `core/test_parametri_umbriti.py`, 6 -> 0); selectorul benzii în e2e-ul 268.
+    C4-6. Poarta lotului, o dată (`sh scripts/poarta_lot.sh`, în fundal).
+    C4-7. Pe VERDE: backup, ff main, post-commit, migrările cu `--productie` (sanatate_load15, emailuri_dezabonate, fisiere_private,
+          ciorne_proprii, reguli_fond, reguli_fond_2, nume_conturi_vechi), ștergerea cabinetelor de retest (C3-15), four-way, sonda.
 - fir: **Lotul 5, comanda 3 (Costin 15.10.2026 noaptea, verbatim în DECIZII „Lotul 5 — comanda 3”)** — 258–271 + C36, C37; lotul rămâne
   deschis. Locurile: investigația pe zone din 15.10 noaptea (registru jurnal `firme.js` `ecranJurnal` 4355–4597; plural: `common.cate`
   Python, niciun helper JS, ~168 de locuri + ~80 fără „de”; roluri: `firme.js` `meniuFirma` 562, `asistenti.js` 167–204, `drepturi.js` /

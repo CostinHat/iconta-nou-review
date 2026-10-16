@@ -2518,3 +2518,19 @@ schimbare de drepturi, jurnalul și coada se redesenau trecând prin „Se înca
 redesenare pe loc (`peLoc`). Gol găsit în unealtă: rularea țintită alegea e2e-ul numai după id-urile DOM ale JS-ului atins, deci
 `e2e_lot5_id.py` (nou) și `e2e_ciorne_proprii.py` (schimbat) n-au rulat -> `e2e_din_plasa` (fișierul e2e atins + cine îl importă;
 conftest-ul plasei -> plasa întreagă), cu gardă și mutație.
+
+## 16.10.2026 — Lotul 5, comanda 4 (ultima a lotului): 268 corectat, 271 reparat, migrarea numelor
+
+Comanda: DECIZII „Lotul 5, comanda 4” (verbatim, cu PIVOT-ul pe 268). Poarta nu pornise (jurnalul verdictelor gol). 268: dezabonarea
+(„Dezabonează-te”, List-Unsubscribe, refuzul la o adresă dezabonată) rămâne numai pe cele două emailuri informative / de promovare —
+recomandările și sinteza zilnică (`dezabonare.INFORMATIVE`); toate tranzacționalele (19 locuri de trimitere inventariate) pleacă fără ea,
+iar excepția „cerut de destinatar” a ieșit. Recomandarea către o adresă dezabonată spune de ce n-a plecat. 271: sonda citește commitul
+proceselor vii din registrul instanțelor, nu `HEAD` de pe disc — reluarea secvenței din 15.10 dă „deploy”, nu „cădere”. 269: migrarea
+lipește la loc numele administratorilor de cabinet creați cu formularul vechi. „N scadențe apropiate”. Lotul 5 închis: poarta o dată,
+apoi publicarea (acordul lui Costin, comanda 4 pct.4).
+
+Rularea țintită (16.10, 06:02–07:25): 5 failed / 6229 passed în Python (prospețimea vizualului și clichetul 50 = 1221, de refăcut după
+schimbare), e2e: 3 picate. Cauzele: (1) 244 și 245 picau și pe commitul comenzii 3 — `deseneaza(opt = {})` din 265 acoperea `opt`-ul
+jurnalului (`evidentiaza`); reparată, clasa măsurată pe tot JS-ul (6, toate redenumite) și gardată (`core/test_parametri_umbriti.py`);
+(2) testul nou 268 căuta „Recomandă” ca un card, e o bandă (`[data-banda='recomanda']`). Testele picate, rulate o dată: 4 + 3 passed;
+mutațiile 268 în browser (subsolul pe toate, refuzul scos) -> ROȘII.

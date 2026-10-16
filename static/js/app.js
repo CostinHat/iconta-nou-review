@@ -48,10 +48,10 @@ import { api, arataMesaj, esc } from "./api.js?v=72aa1cbbdb";
 import { ecranBunVenit } from "./ecrane/ansamblu.js?v=0a02b00644";  // [bun_venit_v1]
 import { ecranLogin } from "./ecrane/login.js?v=1f2b087432";
 import { creeazaNavigator } from "./navigator.js?v=05c650cac2";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=06ca688cf4";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=dabca46a6f";
 import { desktopAsistent } from "./ecrane/asistent.js?v=3d823a4f69";
-import { desktopPortal } from "./ecrane/portal.js?v=caa59974d0";
-import { desktopAdmin } from "./ecrane/admin.js?v=3f1cf81cb8"; // [p37_admin_desktop]
+import { desktopPortal } from "./ecrane/portal.js?v=b4682b37d6";
+import { desktopAdmin } from "./ecrane/admin.js?v=e630a45886"; // [p37_admin_desktop]
 import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=34d0fb0afd";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
 const radacina = document.getElementById("app");

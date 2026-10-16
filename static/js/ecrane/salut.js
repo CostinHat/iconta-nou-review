@@ -7,7 +7,7 @@
 // (verificator) + `frontend_test/e2e/e2e_comanda_1210.py`.
 
 import { api, dataRo, esc, ICOANE, CULORI_CARD } from "../api.js?v=72aa1cbbdb";
-import { randeazaRecomanda } from "./recomanda.js?v=57ab4d7acc"; // [p31_recomanda]
+import { randeazaRecomanda } from "./recomanda.js?v=62f148fa2b"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=1f036bd59e"; // [p34_raporteaza]
 
 function svg(nume, culoare) {

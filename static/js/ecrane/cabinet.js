@@ -7,7 +7,7 @@ import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arat
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=b430cfcc52";
+import { randeazaListaFirme } from "./firme.js?v=e5617fbd32";
 import { randeazaMigrare } from "./migrare.js?v=06d45ea83e";
 import { randeazaControl } from "./control.js?v=c32702d644";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=b688817998"; // [p17_activitate]
@@ -208,7 +208,7 @@ function randeazaPanou(continut, nav) {
     } else if (c.cheie === "capacitate") {  // [p71_capacitate]
       card.addEventListener("click", () => nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "brief") {  // [p74_card_brief]
-      card.addEventListener("click", () => nav.deschide("Sinteza zilei", (c) => randeazaSintezaAzi(c, nav), { nivel: "cabinet" }));
+      card.addEventListener("click", () => nav.deschide("Sinteza zilei", (corp) => randeazaSintezaAzi(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "setari") {  // [p28_setari]
       card.addEventListener("click", () => nav.deschide("Setări cont", (corp) => randeazaSetari(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "pachete") {  // [p63_pachete]

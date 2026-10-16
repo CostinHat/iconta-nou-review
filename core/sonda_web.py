@@ -26,6 +26,7 @@ aia e o afirmație mai slabă care se scrie ca atare."*
     · **o repornire petrecută între două sonde**, iar de la 27.08 le și **deosebește**: o
       repornire cu **alt commit** e un **deploy** (`post-commit` repornește serviciul la fiecare
       commit) și **nu alertează**; una cu **același** commit n-a cerut-o nimeni, și alertează.
+      Commitul e al PROCESULUI care rulează (registrul instanțelor), nu cel de pe disc (271).
       Dacă vreun commit nu se poate citi, se alertează spunând că **nu se poate deosebi** — inclusiv una de trei secunde, fiindcă ora de
       pornire se schimbă și rămâne schimbată. **Dar o prinde ca REPORNIRE, nu ca durată**: nu se
       poate spune cât a fost jos, doar că a fost.
@@ -84,23 +85,22 @@ def raspunde(baza=None, cale="/"):
         return r.getcode(), len(corp)
 
 
-def commitul_de_pe_disc():
-    """`HEAD` din checkout, ca text scurt. None dacă nu se poate citi.
+def commitul_procesului(conn):
+    """Commitul pe care RULEAZĂ procesele vii ale aplicației de pe această gazdă, ca text. None dacă nu se poate spune unul singur.
 
-    NU commitul din memoria procesului web: acela e ștampilat la pornirea LUI, iar sonda e un alt
-    proces — l-ar citi mereu `None` și ar raporta veșnic „necunoscut". (Prins la prima rulare
-    reală, 27.08.2026, nu la scriere.)
-
-    Ce discriminează: la un **deploy**, `post-commit` mută `HEAD` **și** repornește serviciul —
-    deci ambele se schimbă. La o **cădere**, procesul repornește cu `HEAD` neatins.
-    Limita, declarată: dacă o cădere se nimerește în aceeași fereastră de 15 minute cu un commit,
-    e citită ca deploy. Fereastra e mică și prețul e o cădere ratată, nu o alarmă falsă.
+    [deficiența 271, comanda 4 a lotului 5: „sonda citește commitul procesului care rulează”] Sursa e registrul instanțelor
+    (`public.instante`): fiecare proces web se trece acolo LA PORNIRE cu commitul ștampilat în memoria lui (`versiune.RUNNING_COMMIT`,
+    `instante.inregistreaza`) și bate din fundal. Sonda e alt proces (cron), deci nu poate citi memoria procesului web — `versiune.stare()`
+    i-ar da mereu None — dar citește registrul.
+    Înainte se citea `HEAD` de pe DISC, iar publicarea mută discul ÎNAINTEA repornirii (fast-forward, apoi migrările, apoi restartul):
+    o sondă nimerită între ele nota ora veche de pornire lângă commitul NOU, iar sonda următoare vedea „a repornit cu același commit” =
+    cădere (alerta din 15.10.2026 18:15, după publicarea lotului 4; la fel pe 14.10).
+    Două commituri diferite printre procesele vii (o repornire în curs) sau niciun proces viu -> None: sonda spune că nu poate deosebi.
     """
-    try:
-        from core import versiune
-        return versiune.git_head(versiune.RAD)
-    except Exception:
-        return None
+    from core import instante
+    gazda = instante.eu()[0]
+    sha = {c for g, _pid, c, _pornit in instante.vii(conn) if g == gazda}
+    return next(iter(sha)) if len(sha) == 1 else None
 
 
 def _citeste_ultima(conn):
@@ -152,9 +152,9 @@ def verifica():
         raise RuntimeError("procesul răspunde %s cu %d octeți — pagina publică e goală sau ruptă"
                            % (cod, octeti))
     pornit = ora_pornirii()
-    commit = commitul_de_pe_disc()
     db.init_pool()
     with db.get_conn() as conn:
+        commit = commitul_procesului(conn)
         pornit_inainte, commit_inainte = _citeste_ultima(conn)
     fel = fel_repornirii(pornit_inainte, pornit, commit_inainte, commit)
     # `deploy` NU alertează: e o repornire pe care am cerut-o noi. Restul, da.

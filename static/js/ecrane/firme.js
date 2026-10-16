@@ -5,11 +5,11 @@ import { api, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, ban
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { ciornaFormular } from "../ciorna_formular.js?v=f59e00811a";  /* [267, clasa] ciorna formularelor lungi de creare */  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
-import { fluxConcediu } from "./flux_concediu.js?v=1fcfadbb27";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=82532fe3c9";
+import { fluxConcediu } from "./flux_concediu.js?v=1ffa12a0e8";  /* cm_flux_v1 */
+import { randeazaFacturi } from "./facturi_ecran.js?v=a5dd3d4abb";
 import { ecranRip } from "./rip_ecran.js?v=70c07ef88f";
 import { trimiteInCoada, casetaTrimisa } from "./coada_trimite.js?v=feade00646";  /* [C11, 07.10.2026] bilanțul prin coadă */
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=663f02c06c";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=12caa430f4";
 import { ecranEtransport } from "./etransport_ecran.js?v=16098440f5";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=06d45ea83e";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=84d7965e4e";  // [decl_firma_v1]
@@ -4394,8 +4394,9 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
   const MESAJ_FARA_DOCUMENT = "Notă fără document justificativ: Registrul-jurnal cere felul, numărul și data documentului care stă la baza ei (col.3). Scrie referința în notă înainte de validare, dacă o ai.";
   let centre = [];  // [F143] centre active, pentru selectorul de pe linia de nota manuala
   // [265] `peLoc`: redesenarea la schimbarea drepturilor nu golește registrul deschis cât se citește (fără „Se încarcă...” intermediar)
-  const deseneaza = async (opt = {}) => {
-    if (!opt.peLoc) corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+  // `mod.peLoc` (redesenarea la drepturi, 265): fără „Se încarcă” intermediar. Nu `opt`: acela e al ecranului (an, luna, evidentiaza)
+  const deseneaza = async (mod = {}) => {
+    if (!mod.peLoc) corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let note = [], jur = {};
     try {
       const r = await api.get(`/tenants/${t.id}/jurnal?an=${an}&luna=${luna}`);

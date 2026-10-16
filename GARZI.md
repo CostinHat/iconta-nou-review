@@ -8651,6 +8651,15 @@ Nu e o constatare nouă.
 face: amândouă sunt defecte numite.*
 
 
+## 16.10.2026 — Lotul 5, comanda 4: 268 corectat, 271 reparat, 269 migrarea numelor (comanda Costin, verbatim în DECIZII „Lotul 5, comanda 4”)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| dezabonarea numai pe emailurile informative (înlocuiește rândul „dezabonarea în toate emailurile” din comanda 3) | `core/test_dezabonare.py` (10; AST: `informativ=True` exact pe `dezabonare.INFORMATIVE`) + e2e `test_def_268_dezabonarea_numai_pe_emailurile_informative` | „Dezabonează-te” / List-Unsubscribe pe un email tranzacțional; un tranzacțional oprit de dezabonare; un informativ fără dezabonare sau trimis la o adresă dezabonată | subsolul pe toate -> 3 ROȘII; `informativ=True` pe invitație -> ROȘU; refuzul scos -> 2 ROȘII | un email informativ NOU nemarcat pleacă fără dezabonare (garda nu știe ce e „informativ” fără listă) |
+| sonda deosebește publicarea de cădere | `core/test_sonda_web.py::test_def_271_*` (+ sursa commitului, structural; commitul nu se ghicește) | alerta „a repornit fără deploy” la fiecare publicare (sonda între mutarea discului și repornire) | `commitul_procesului` întors la `HEAD` de pe disc -> `'NEW' == 'OLD'` ROȘU | registrul instanțelor e scris de procesul web; un proces care n-a ajuns să se înregistreze -> „nu se poate deosebi” |
+| numele conturilor vechi lipit la loc numai unde trebuie | `core/test_migrare_nume_conturi_vechi.py` | asistent / client / cont nou atins; ordinea inversată („253 Test”) | ordinea / rolul / pragul `creat_la` scoase -> 3 ROȘII | un prenume scris separat în Setări de un administrator vechi se lipește și el |
+| parametrul unei funcții interioare nu acoperă parametrul funcției care o conține (regresia lui 244 / 245 din comanda 3, prinsă de rularea țintită) | `core/test_parametri_umbriti.py` (2) + `scripts/scan_parametri_umbriti.js` (acorn, tot `static/js`); e2e `e2e_comanda_1410.py::test_def_244_*`, `test_def_245_*` | `deseneaza(opt = {})` în `ecranJurnal(…, opt)`: `opt.evidentiaza` citea obiectul gol, notele din Bilanț nu se mai evidențiau | `async (mod = {})` întors la `opt` -> ROȘU (`firme.js:4398 deseneaza(opt)`); commitul comenzii 3 -> e2e 244, 245 ROȘII | numai parametrii; o variabilă `let` / `const` din corp care acoperă un parametru exterior nu e în clasă |
+
 ## 15.10.2026 noaptea — Lotul 5, comanda 3: 258–271, C36–C40 (comanda Costin, verbatim în DECIZII „Lotul 5 — comanda 3”)
 
 | gard | fișier | ce face imposibil | mutația | limita |
@@ -8943,9 +8952,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**813 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**815 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 774
+### `core/` — 776
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9320,7 +9329,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_dependenti_act.py` — GARDĂ pentru interdicția 61 — lista dependenților unui articol, generabilă la cerere.
 - `core/test_depunere_contrazice.py` — GARD R6 (21.08.2026): o depunere care contrazice un „nu se datorează" nu mai e invizibilă.
 - `core/test_descarcare_muta.py` — [R131, 04.09.2026] GARD: o descarcare care esueaza spune DE CE.
-- `core/test_dezabonare.py` — Dezabonarea de la emailurile aplicației (deficiența 268, „Lotul 5”, decizia în DECIZII: „emailurile tranzacționale (confirmare,
+- `core/test_dezabonare.py` — Dezabonarea numai pe emailurile INFORMATIVE (deficiența 268; comanda 4 a lotului 5, verbatim în DECIZII: „emailurile tranzacționale nu
 - `core/test_diacritice_afisate.py` — core/test_diacritice_afisate.py — GARD DE DIACRITICE PE TEXTUL AFIȘAT (#4, criteriul lui Costin).
 - `core/test_dialog_nativ_frontend.py` — GARD (09.08.2026): dialoguri native alert()/prompt()/confirm() INTERZISE in TOT frontendul (DS cap.5:
 - `core/test_dividende_interimare.py` — GARD — regularizarea dividendelor interimare (lot 19, defectul 9, 03.10.2026).
@@ -9487,6 +9496,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_mf_destinatie_cd.py` — GARD — amortizarea accelerată a aparaturii de cercetare-dezvoltare din orice cont (lot 19, defectul 11, 03.10.2026).
 - `core/test_migrare_cnp_ingrijit.py` — core/test_migrare_cnp_ingrijit.py — gard: fiecare schema de TENANT are coloana cnp_ingrijit (D_8/D_8a).
 - `core/test_migrare_ignorate_vizibil.py` — [Regula 6 + Regula 14.4] GARD: intrarile ignorate la validarea CUI (strat firme) ajung VIZIBIL pe ecran.
+- `core/test_migrare_nume_conturi_vechi.py` — [269, comanda 4 a lotului 5] Migrarea numelor conturilor vechi (core/migrare_nume_conturi_vechi.py), pe baza de TEST, în tranzacție
 - `core/test_migrare_program_national_cm.py` — core/test_migrare_program_national_cm.py — gard: fiecare schema de tenant are concedii_medicale.program_national (D_9a).
 - `core/test_migrari_registru.py` — GARD — codul nu repornește pe producție înaintea migrării lui (comanda Costin 09.10.2026, pct.2: „Dacă un commit conține o migrare
 - `core/test_mijloace_fixe_import_categorie.py` — Import mijloace fixe: cont de imobilizare lipsă NU se mai completează tacit cu 2131.
@@ -9527,6 +9537,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_p7_v1_citiri.py` — GARDA V1 — nicio citire SQL în corpul unei rute, și un detector de FEL care poate fi arătat greșit.
 - `core/test_p7_v2_scrieri.py` — GARDA V2 — nicio scriere și niciun control de tranzacție în corpul unei rute.
 - `core/test_pagina_principala.py` — GARD (12.10.2026) — pagina principală are aceeași structură la ambele roluri; „Recomandă” și „Suport” sunt benzile de deasupra
+- `core/test_parametri_umbriti.py` — GARD — parametrul unei funcții interioare nu acoperă parametrul funcției care o conține (lotul 5, comanda 4; prins de rularea
 - `core/test_parametru_transmis.py` — GARD — o valoare primită de un înveliș ajunge la funcția pe care o învelește (10.10.2026).
 - `core/test_paritate_p2.py` — GARD P2 — PARITATE: modelul de citire răspunde EXACT ce răspundea calculul direct.
 - `core/test_pas2_panou_editabil_pe_eroare.py` — GARD anti-regresie CHICKEN-AND-EGG (16.08.2026) — pas2 (declaratii.js).

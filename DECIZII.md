@@ -20577,3 +20577,54 @@ poate șterge. (6b) Prag: `load15 ≥ numărul de procesoare` (toate procesoarel
 - **(265) Redesenarea la schimbarea drepturilor e pe loc** (`peLoc`): jurnalul și coada nu mai trec prin „Se încarcă…”, deci ecranul
   deschis nu dispare cât se recitește (prins de e2e 265 în rularea țintită). *Alternativa respinsă:* testul așteaptă și sfârșitul
   redesenării — ar fi ascuns clipirea pe care o vede contabilul.
+
+## 16.10.2026 — Lotul 5, comanda 4 (ultima a lotului): 268 corectat, răspunsul la §6, închiderea și publicarea lotului
+
+**Verbatim:** „Lotul 5, comanda 4 — ultima a lotului. Dacă poarta lotului 5 a pornit, oprește-o: comanda schimbă codul. Rularea oprită
+nu se socotește în cele două; dacă lansatorul o socotește, spune-mi înainte să pornești alta.
+1. 268, corectat: emailurile tranzacționale nu au deloc „Dezabonează-te” și nici antet List-Unsubscribe: confirmarea înregistrării,
+invitațiile (cabinet, asistent, client), resetarea parolei, linkul de logare, confirmarea adresei noi, anunțul de cabinet nou și toate
+alertele către admin. Dezabonarea rămâne numai pe emailurile informative/de promovare, dacă există; dacă nu există niciunul, o scoți cu
+totul.
+2. Răspunsuri la §6:
+   a. „echipa iConta.eu” rămâne, cum cere garda de marcă.
+   b. 269: faci migrarea numelor la conturile vechi. Pe producție nu există încă cabinetul pilot; toate cabinetele sunt de test.
+   c. Capturile vechi: le muți în depozitul privat la publicare. Aceeași situație, numai date de test.
+   d. Textele la plural sunt bune, cu o excepție: „N scadente curând” devine „N scadențe apropiate” („20 de scadențe apropiate”).
+   e. 271: repari acum, în lotul 5: sonda citește commitul procesului care rulează.
+   f. C38 și C40 rămân „neverificat”, fără e2e.
+   g. Hook-ul cu DEFICIENTE <nr>: îl păstrezi.
+3. Lotul 5 e complet. După reparații, rulezi poarta lotului o singură dată.
+4. Dacă poarta e verde, ai acordul meu de publicare, acum (nu lucrează nimeni pe producție): backup înainte, publicare, migrările, apoi
+ștergi cabinetele de retest („Cabinet Test Inregistrare”, „Cabinet Test Inregistrare 253”) și cererea neconfirmată
+costin.hateganu+test253c@gmail.com. Pe producție rămâne doar „Cabinet Test Sesiunea B SRL”. Dacă poarta pică a doua oară, nu publici.
+5. Răspunzi punctual pentru 268 și 271, rezolvate sau nu."
+
+**PIVOT (268).** Supersedează intrarea „Lotul 5, comanda 3: ce s-a hotărât pe drum”, punctul „(268) Excepțiile de la dezabonare” (care
+punea dezabonarea pe TOATE emailurile, cu patru excepții „cerute de destinatar”). Intermediar: dezabonare peste tot. Final: dezabonarea
+numai pe emailurile informative / de promovare — lista închisă `core/dezabonare.INFORMATIVE`; tranzacționalele fără subsol, fără antet și
+fără refuz la o adresă dezabonată; `cerut_de_destinatar` scos (cod mort). Garda: `core/test_dezabonare.py` (AST: `informativ=True` exact pe
+locurile din listă).
+
+**Ce s-a hotărât pe drum (de confirmat de Costin la §6):**
+- **Care emailuri sunt informative / de promovare:** există două, deci dezabonarea rămâne (nu se scoate cu totul): **recomandările**
+  (iConta.eu recomandat de cabinet sau de client unor adrese străine — promovare) și **sinteza zilnică** (seara, către patron — informativă,
+  nu răspunde unei acțiuni). Tranzacționale, pe lângă lista din comandă: bun-venitul cabinetului, răspunsul cabinetului către client,
+  factura trimisă clientului, raportul lunar al clientului, notificările de scadență (trimise în numele firmei, opt-in), anunțul pe adresa
+  veche la mutarea contului. *Alternativa respinsă:* notificările de scadență și raportul lunar ca informative — țin de o factură / un
+  serviciu în curs, nu de promovare. **Limita:** un email informativ nou trebuie trecut în `INFORMATIVE`, altfel pleacă fără dezabonare
+  (garda pică numai dacă e marcat informativ și nu e în listă).
+- **Recomandarea către o adresă dezabonată** nu mai e „eșuată”: ecranul spune „Nu am scris la …: adresa s-a dezabonat de la recomandări”
+  (cabinetul și portalul). Invitația superadminului nu mai poate fi refuzată de dezabonare, deci motivul ei (`motiv_netrimis`) a ieșit.
+- **(271) Sursa commitului procesului:** registrul instanțelor (`public.instante`, scris de fiecare proces web la pornire cu commitul
+  ștampilat în memoria lui), nu `versiune.stare()` cum propusesem: sonda rulează din cron, alt proces, și ar citi din memoria ei `None`
+  (prins deja pe 27.08 — `core/test_sonda_web.py`). Două commituri printre procesele vii sau niciunul -> „nu se poate deosebi”.
+- **(269) Ce conturi:** `admin_firma` cu prenume, create înainte de publicarea lotului 5 (`PANA_LA`): numele întreg, „nume prenume”,
+  prenumele gol. **Limita:** un administrator vechi care și-a scris singur prenumele separat în Setări primește tot numele lipit (fără urmă
+  care să-l deosebească) — numele lui întreg, nu pierdut.
+- **(2d)** `limba_ecran.PLURALE` primește „scadențe” (garda acordului vede „1 scadențe” / „20 scadențe”).
+- **Regresia 244 / 245 din comanda 3 (prinsă de rularea țintită, nepublicată):** `deseneaza(opt = {})` (265) acoperea `opt`-ul lui
+  `ecranJurnal`, deci notele de închidere deschise din Bilanț nu se mai evidențiau. Parametrul a devenit `mod`. Clasa — parametrul unei
+  funcții interioare care acoperă parametrul funcției exterioare — măsurată pe tot `static/js`: 6 apariții, 5 benigne. *Alternativa
+  respinsă:* garda numai pe numele care contează (`opt`) — „benign” nu se poate decide mecanic. Regula e **zero**: cele 5 redenumite
+  (`cabinet.js`, `flux_concediu.js`, `operatiuni_ecran.js`). **Limita:** numai parametrii, nu și `let` / `const` din corp.

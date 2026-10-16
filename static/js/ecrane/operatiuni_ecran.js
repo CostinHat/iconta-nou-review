@@ -435,8 +435,8 @@ export async function ecranOperatiuni(corp, nav, t) {
     }));
   };
 
-  const formular = (c) => {
-    if (c) corp = c;
+  const formular = (corpNou) => {
+    if (corpNou) corp = corpNou;
     const ziAzi = dataIso();
     const camp = (c) => {
       const cond = c.cond ? ` data-cond-camp="${c.cond.camp}" data-cond-val="${[].concat(c.cond.val).join("|")}"` : "";

@@ -179,7 +179,7 @@ def _register_liber(date, _versiune_termeni, ip):
             "<p>Dacă nu tu ai cerut contul, ignoră acest email — fără clic nu se creează nimic.</p>") % (
                 _esc(date.nume_cabinet.strip()), link, _esc(_cate(_il.VALABILITATE_ORE, "oră", "ore")))
     if not _obs.trimite_email_html_sau_semnaleaza("email confirmare inregistrare", email, "Confirmă contul iConta.eu", html,
-                                                  alerta=True, cerut_de_destinatar=True):   # [268] și la o adresă dezabonată
+                                                  alerta=True):
         with db.get_conn() as conn:
             with conn.cursor() as cur:
                 _il.sterge(cur, tok)
@@ -356,10 +356,7 @@ def invitatie_creeaza(date, ctx):
             "și se folosește o singură dată.</p>") % (link, _esc(email), _esc(_cate(_inv.VALABILITATE_ZILE, "zi", "zile")))
     # superadminul vede pe ecran dacă a plecat (și primește linkul oricum) -> fără alertă
     trimis = _obs.trimite_email_html_sau_semnaleaza("email invitatie cabinet", email, "Invitație iConta.eu", html)
-    r = {"ok": True, "email": email, "link": link, "email_trimis": trimis, "valabila_zile": _inv.VALABILITATE_ZILE}
-    if not trimis:
-        r["motiv_netrimis"] = _obs.refuz_dezabonare(email)   # [268] adresa dezabonată: superadminul vede de ce, nu doar că n-a plecat
-    return r
+    return {"ok": True, "email": email, "link": link, "email_trimis": trimis, "valabila_zile": _inv.VALABILITATE_ZILE}
 
 
 def invitatii_lista(ctx):
