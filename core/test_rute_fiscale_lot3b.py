@@ -267,6 +267,36 @@ def test_CHITANTA_stinsa_ajunge_in_rulajul_casei(lume):
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_INCASAREA_DE_CASA_legata_de_factura_ajunge_in_rulajul_clientului(lume):
+    """[lotul 6, 278] `POST /tenants/{id}/casa/operatiuni/{op_id}/leaga` — încasarea în numerar salvată fără factură se leagă de factura
+    pe care o stinge. Nota `5311 = 4111` primește factura (rămâne ciornă), iar după validare rulajul clientului și soldul facturii spun
+    același lucru: încasată. Starea INTERMEDIARĂ: legată, dar nevalidată -> rulajul e ZERO (ciorna nu e evidență)."""
+    from core import reconciliere_api as _rec
+    with lume["conn"].cursor() as cur:
+        cur.execute('INSERT INTO "%s".facturi (serie, numar, data_emitere, directie, total, tva, tert_nume, tert_cui, status) '
+                    "VALUES ('F1A','F1A4',%%s,'emisa',242,42,'CLIENT PROBA','14399840','emisa') RETURNING id" % SCH, (ZI,))
+        fid = cur.fetchone()[0]
+    cl = _client()
+    r = cl.post("/tenants/%d/casa/operatiuni" % lume["tid"], headers=_H(lume),
+                json={"data": ZI, "categorie": "incasare_client", "suma": 242, "partener": "CLIENT PROBA", "cui": "14399840",
+                      "document": "DI-278"})
+    assert r.status_code == 200, r.text[:300]
+    op = r.json()["id"]
+    r = cl.post("/tenants/%d/casa/operatiuni/%d/leaga" % (lume["tid"], op), json={"factura_id": fid}, headers=_H(lume))
+    assert r.status_code == 200 and r.json() == {"ok": True, "factura": "F1A4"}, r.text[:300]
+    with lume["conn"].cursor() as cur:
+        cur.execute('SELECT factura_id, status FROM "%s".inregistrari' % SCH)
+        assert cur.fetchall() == [(fid, "ciorna")]
+    assert _rulaj(lume, "4111")["credit"] == Decimal("0")
+    assert _valideaza_notele(lume, cl) == 1
+    assert _rulaj(lume, "4111")["credit"] == Decimal("242.00")
+    assert _rulaj(lume, "5311")["debit"] == Decimal("242.00")
+    assert {f["id"]: f["sold"] for f in _rec.facturi_deschise(_ConnProxy(lume["conn"]), SCH)}.get(fid, Decimal(0)) == 0
+    r = cl.post("/tenants/%d/casa/operatiuni/%d/leaga" % (lume["tid"], op), json={"factura_id": fid}, headers=_H(lume))
+    assert r.status_code == 400, "a doua legare se refuză (operațiunea e legată deja)"
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_un_BON_care_nu_e_chitanta_se_REFUZA(lume):
     """A doua directie, pe poarta de tip: registrul de casa nu stinge un bon de magazin."""
     cl = _client()

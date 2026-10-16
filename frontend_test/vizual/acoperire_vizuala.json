@@ -1,5 +1,5 @@
 {
- "ui_hash": "f63e1d31134ff09c",
+ "ui_hash": "fa61cd677836a261",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -290,7 +290,7 @@
    "axe_desktop": [],
    "apasare": {
     "vazute": 9,
-    "apasate": 5,
+    "apasate": 7,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },
@@ -403,8 +403,8 @@
   "datefirma": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 6,
-    "apasate": 4,
+    "vazute": 7,
+    "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },

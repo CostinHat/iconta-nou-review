@@ -26,6 +26,13 @@ def element_coada(cur, coada_id):
     return cur.fetchone()
 
 
+def autorul_elementului(cur, coada_id):
+    """[deficiența 293] Cine a pus elementul în coadă (`creat_de_id`), sau None."""
+    cur.execute("SELECT creat_de_id FROM public.declaratii_coada WHERE id=%s", (coada_id,))
+    r = cur.fetchone()
+    return r[0] if r else None
+
+
 def schema_firmei_cabinetului(cur, tenant_id, cabinet_id):
     """[validare_note] Schema firmei, numai dacă firma e a cabinetului (altfel None)."""
     cur.execute("SELECT schema_name FROM public.tenants WHERE id=%s AND accounting_firm_id=%s", (tenant_id, cabinet_id))
@@ -63,3 +70,37 @@ def trimiteri_etransport(cur, schema):
                               FROM {schema}.etransport_trimiteri WHERE mediu='prod'
                               ORDER BY id DESC LIMIT 50""")
     return cur.fetchall()
+
+
+# ── [deficiența 284] declarația de TVA care așteaptă validarea notelor (`public.declaratii_in_asteptare`, uc_coada) ──────────────────────
+def inchide_asteptarea_deschisa(cur, tenant_id, tip, an, luna, trim, rezultat):
+    cur.execute("UPDATE public.declaratii_in_asteptare SET rezolvata_la = now(), rezultat = %s WHERE tenant_id = %s AND tip = %s "
+                "AND an = %s AND COALESCE(luna, 0) = %s AND COALESCE(trim, 0) = %s AND rezolvata_la IS NULL",
+                (rezultat, tenant_id, tip, an, luna or 0, trim or 0))
+
+
+def insereaza_asteptare(cur, cabinet_id, tenant_id, tip, an, luna, trim, cerere, user_id, rol, note_ids):
+    cur.execute("INSERT INTO public.declaratii_in_asteptare (cabinet_id, tenant_id, tip, an, luna, trim, cerere, user_id, rol, note_ids) "
+                "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+                (cabinet_id, tenant_id, tip, an, luna, trim, cerere, user_id, rol, note_ids))
+    return cur.fetchone()[0]
+
+
+def asteptari_deschise(cur, cabinet_id):
+    """[(id, tenant_id, note_ids, schema)] — așteptările deschise ale cabinetului."""
+    cur.execute("SELECT a.id, a.tenant_id, a.note_ids, t.schema_name FROM public.declaratii_in_asteptare a "
+                "JOIN public.tenants t ON t.id = a.tenant_id WHERE a.cabinet_id = %s AND a.rezolvata_la IS NULL ORDER BY a.id",
+                (cabinet_id,))
+    return cur.fetchall()
+
+
+def revendica_asteptarea(cur, aid):
+    """Închide așteptarea și întoarce (cerere, user_id, rol, tip, an, luna, trim) — None dacă a închis-o deja altă cerere."""
+    cur.execute("UPDATE public.declaratii_in_asteptare SET rezolvata_la = now() WHERE id = %s AND rezolvata_la IS NULL "
+                "RETURNING cerere, user_id, rol, tip, an, luna, trim", (aid,))
+    return cur.fetchone()
+
+
+def scrie_rezultatul_asteptarii(cur, aid, rezultat):
+    cur.execute("UPDATE public.declaratii_in_asteptare SET rezultat = %s WHERE id = %s", (rezultat, aid))
+

@@ -167,7 +167,7 @@ def test_validarea_facturii_de_marfa_misca_fisa_end_to_end(monkeypatch):
             yield _ConnProxy(c)
         monkeypatch.setattr(_db, "get_conn", _fake)
         ctx = {"uid": uid, "rol": "admin_firma", "accounting_firm_id": fid}
-        r = uc_tenants.factura_primita_valideaza(tid, pid, {"cont": "371", "destinatii": ["taxabil"], "tert_tara": "RO"}, ctx)
+        r = uc_tenants.factura_primita_valideaza(tid, pid, {"cont": "371", "destinatii": ["taxabil"], "tert_tara": "RO", "tert_platitor_tva": True}, ctx)
         assert r["stare"] == "validata"
         with c.cursor() as cur:
             cur.execute('SET search_path TO "%s", public' % SCH)

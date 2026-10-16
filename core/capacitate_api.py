@@ -61,7 +61,7 @@ def capacitate(conn, cabinet_id):
         r = cur.fetchone()
         in_lucru = int(r["in_lucru"])
         depuse_luna = int(r["depuse_luna"])
-        ritm = round(depuse_luna / zile_lucr, 1)
+        ritm = round(depuse_luna / zile_lucr, 1)  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
         out["cabinet"] = {
             "in_lucru": in_lucru,
             "de_validat": int(r["de_validat"]),

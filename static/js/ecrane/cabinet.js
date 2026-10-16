@@ -3,20 +3,20 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=72aa1cbbdb";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=9409795a49";  /* esc_nc27 */
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=e5617fbd32";
+import { randeazaListaFirme } from "./firme.js?v=d921e045d9";
 import { randeazaMigrare } from "./migrare.js?v=06d45ea83e";
 import { randeazaControl } from "./control.js?v=c32702d644";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=b688817998"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=00f4d66a12"; // [p28_setari]
-import { randeazaRaporteaza } from "./raporteaza.js?v=1f036bd59e"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
+import { randeazaSetari } from "./setari.js?v=aeabf02daf"; // [p28_setari]
+import { randeazaRaporteaza } from "./raporteaza.js?v=ff0c5ffd8d"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=179b6770c5"; // [225 + 231] banda de sus, aceeași la ambele roluri
-import { randeazaPachete } from "./pachete.js?v=5de3efc286"; // [p63_pachete]
+import { randeazaPachete } from "./pachete.js?v=f483669b9f"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=7fbacf46ea";
-import { randeazaValidat } from "./validat.js?v=a8c80dc9d3";
+import { randeazaValidat } from "./validat.js?v=32fae3e49d";
 import { randeazaSupervizor } from "./supervizor.js?v=395f767214"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=d0e1cebc57";
 import { randeazaCapacitate } from "./capacitate.js?v=7ec1c7db14"; // [p71_capacitate]
@@ -74,7 +74,7 @@ let _coadaTitlu = "De validat";
 
 // [p73_sinteza_azi] deschide un ecran existent dupa cheie (refoloseste ecranele, nu duplica)
 function deschideEcran(cheie, nav, continut) {
-  if (cheie === "validat") return nav.deschide(_coadaTitlu, (corp) => randeazaValidat(corp, nav), { nivel: "cabinet" });
+  if (cheie === "validat") return nav.deschide(_coadaTitlu, (corp) => randeazaValidat(corp, nav, { titlu: _coadaTitlu }), { nivel: "cabinet" });
   if (cheie === "supervizor") return nav.deschide("Supervizor", (corp) => randeazaSupervizor(corp, nav), { nivel: "cabinet" });
   if (cheie === "activitate") return nav.deschide("Activitate cabinet", (corp) => randeazaActivitateCabinet(corp, nav), { nivel: "cabinet" });
   if (cheie === "capacitate") return nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav), { nivel: "cabinet" });
@@ -196,7 +196,7 @@ function randeazaPanou(continut, nav) {
     } else if (c.cheie === "termene") {
       card.addEventListener("click", () => nav.deschide("Termene", (corp) => randeazaTermene(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "validat") {
-      card.addEventListener("click", () => nav.deschide(_coadaTitlu, (corp) => randeazaValidat(corp, nav), { nivel: "cabinet" }));
+      card.addEventListener("click", () => nav.deschide(_coadaTitlu, (corp) => randeazaValidat(corp, nav, { titlu: _coadaTitlu }), { nivel: "cabinet" }));
     } else if (c.cheie === "supervizor") {  // [supervizor] rulare la cerere
       card.addEventListener("click", () => nav.deschide("Supervizor", (corp) => randeazaSupervizor(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "asistenti") {
@@ -219,12 +219,23 @@ function randeazaPanou(continut, nav) {
     grila.appendChild(card);
   });
 
-  actualizeazaFirme(grila);
-  actualizeazaControl(grila);
-  actualizeazaTermene(grila);
-  actualizeazaActivitate(grila);
-  actualizeazaValidat(grila);
-  actualizeazaAsistenti(grila);
+  const contoare = () => {
+    actualizeazaFirme(grila);
+    actualizeazaControl(grila);
+    actualizeazaTermene(grila);
+    actualizeazaActivitate(grila);
+    actualizeazaValidat(grila);
+    actualizeazaAsistenti(grila);
+  };
+  contoare();
+  // [deficiența 286, clasa 265] după orice scriere reușită (validare, respingere, depunere, notă nouă), contoarele se recitesc pe loc —
+  // fără reîncărcarea paginii; încă o dată după 3 s, când rezumatul firmelor (recalculat în fundal de server) e la zi
+  const laSchimbare = () => {
+    if (!grila.isConnected) { window.removeEventListener("iconta:schimbare", laSchimbare); return; }
+    contoare();
+    setTimeout(() => { if (grila.isConnected) contoare(); }, 3000);
+  };
+  window.addEventListener("iconta:schimbare", laSchimbare);
   _educatiePatruOchi(continut);
   _indicatorPatruOchi();  // [p51_edu]
 }

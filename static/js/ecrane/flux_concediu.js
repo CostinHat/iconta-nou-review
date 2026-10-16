@@ -1,7 +1,7 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu } from "../api.js?v=72aa1cbbdb";
+import { api, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu, refuzPeRand } from "../api.js?v=9409795a49";
 import { ciornaFormular } from "../ciorna_formular.js?v=f59e00811a";  // [267, clasa] ciorna formularelor lungi de creare
 
 // [cm_coduri_v1 22.08.2026] Lista de coduri NU mai traieste aici. Denumirea vine din
@@ -69,7 +69,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           randeaza(corp);
           if (dupaSalvare) dupaSalvare();
         } catch (e) {
-          b.insertAdjacentHTML("afterend", `<span class="msg-eroare" style="margin-left:8px">${esc(e.mesaj || "eroare")}</span>`);
+          refuzPeRand(b, e.mesaj || "eroare");
         }
       }, { textOk: "\u0218terge" });
     }));

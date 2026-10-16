@@ -7,8 +7,8 @@
 // [270d / C36, 15.10.2026] Cererile de import din alta aplicatie apar in „De la utilizatori”, cu aplicatia in titlu; fisierele
 // firului (capturi si exporturi) se arata si se descarca prin ruta autentificata, nu din /static.
 
-import { api, esc } from "../api.js?v=72aa1cbbdb";
-import { fisiereHTML, legaFisiere } from "./raporteaza.js?v=1f036bd59e";
+import { api, esc, refuzPeRand } from "../api.js?v=9409795a49";
+import { fisiereHTML, legaFisiere } from "./raporteaza.js?v=ff0c5ffd8d";
 
 const LUNI = ["ian.","feb.","mar.","apr.","mai","iun.",
               "iul.","aug.","sep.","oct.","noi.","dec."];
@@ -198,7 +198,7 @@ async function deschideSesizare(corp, nav, id) {
   if (bInc) bInc.addEventListener("click", async () => {
     bInc.disabled = true;
     try { await api.post(`/raportari/${id}/stare`, { stare: "inchisa" }); await incarcaLista(corp, nav); fir.innerHTML = `<div class="rap-gol">Sesizare \u00eenchis\u0103.</div>`; }
-    catch { bInc.disabled = false; bInc.insertAdjacentHTML("afterend", '<span class="msg-eroare"> Nu s-a putut închide sesizarea. Reîncearcă.</span>'); }
+    catch { bInc.disabled = false; refuzPeRand(bInc, "Nu s-a putut închide sesizarea. Reîncearcă."); }
   });
 }
 
@@ -231,9 +231,7 @@ async function trimiteRaspuns(corp, nav, id, fir) {
   // raspunsul (`raportari_api.adauga_mesaj` -> `TEXT_GOL`), dar cererea nu pleca niciodata.
   if (!text && !fisier) {
     const b0 = fir.querySelector("#rap-trimite");
-    b0.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-    b0.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">'
-      + 'Scrie un răspuns sau atașează o imagine înainte de a trimite.</span>');
+    refuzPeRand(b0, "Scrie un răspuns sau atașează o imagine înainte de a trimite.");
     return;
   }
 
@@ -249,8 +247,7 @@ async function trimiteRaspuns(corp, nav, id, fir) {
     }
   } catch {
     btn.disabled = false; btn.textContent = "Trimite";
-    btn.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-    btn.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">Nu s-a putut trimite răspunsul.</span>');
+    refuzPeRand(btn, "Nu s-a putut trimite răspunsul.");
     return;
   }
   await incarcaLista(corp, nav);

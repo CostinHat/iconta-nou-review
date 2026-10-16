@@ -429,10 +429,13 @@ def test_povestea_sta_pe_nivelul_decis(functie):
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_aprobarea_si_trimiterea_povestii_cer_poate_valida(cabinet):
+def test_aprobarea_si_trimiterea_povestii_cer_poate_valida(cabinet, monkeypatch):
     """Asistentul cu „Poate pregăti”: ciorna trece garda; `status=aprobat` pe ruta de ciornă -> refuz numit (altfel aprobarea
     ar fi trecut pe pregătire); ruta de aprobare și trimiterea -> refuzul „Poate valida”. Cu „Poate valida” trec garda."""
     from core import uc_pachete
+    # [deficiența 288] cabinetul sintetic n-are schema firmei: verificarea textului (testată separat, `test_288_povestea_lunii`) nu
+    # e obiectul acestui test — garda drepturilor e
+    monkeypatch.setattr(uc_pachete, "verifica_textul_aprobat", lambda *a, **k: None)
     cl, t, q = _cl(), cabinet["tid"], {"an": 2099, "luna": 1}
     r = cl.post(_cale("pachet_poveste_set", tenant_id=t), params=q, headers=_H(cabinet["asist"]),
                 json={"text": "ZT", "status": "aprobat"})

@@ -143,7 +143,6 @@ def _register_cu_invitatie(date, _versiune_termeni):
 
 
 def _register_liber(date, _versiune_termeni, ip):
-    import os
     from core import inregistrare_libera as _il, setari_platforma as _set, stare_partajata as _sp
     email = date.email.strip().lower()
     with db.get_conn() as conn:
@@ -171,22 +170,69 @@ def _register_liber(date, _versiune_termeni, ip):
             tok = _il.creeaza(cur, {"email": email, "nume_cabinet": date.nume_cabinet.strip(), "nume": date.nume, "prenume": date.prenume,
                                     "cui": (date.cui or "").strip()}, _nucleu.hash_parola(date.parola), _versiune_termeni, ip)
         conn.commit()
-    link = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010") + "/#confirmare=" + tok
-    html = ("<p>Bună,</p><p>Ai cerut crearea contului cabinetului <b>%s</b> pe iConta.eu.</p>"
-            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;"
-            "text-decoration:none'>Confirmă emailul și activează contul</a></p><p>Linkul e valabil %s și se folosește o "
-            "singură dată. Până la confirmare contul nu există: nu te poți autentifica și nu se creează nicio firmă.</p>"
-            "<p>Dacă nu tu ai cerut contul, ignoră acest email — fără clic nu se creează nimic.</p>") % (
-                _esc(date.nume_cabinet.strip()), link, _esc(_cate(_il.VALABILITATE_ORE, "oră", "ore")))
-    if not _obs.trimite_email_html_sau_semnaleaza("email confirmare inregistrare", email, "Confirmă contul iConta.eu", html,
-                                                  alerta=True):
+    if not _trimite_confirmarea(email, date.nume_cabinet.strip(), tok):
         with db.get_conn() as conn:
             with conn.cursor() as cur:
                 _il.sterge(cur, tok)
             conn.commit()
         raise _erori.ServiciuIndisponibil("Emailul de confirmare nu a putut fi trimis la %s, deci contul nu a fost creat. Verifică "
                                           "adresa și încearcă din nou peste câteva minute." % email)
+    with db.get_conn() as conn:   # [deficiența 282] momentul trimiterii, pe cerere (Panou Admin → Înregistrare)
+        with conn.cursor() as cur:
+            _il.marcheaza_trimis(cur, tok)
+        conn.commit()
     return {"confirmare_trimisa": True, "email": email, "valabila_ore": _il.VALABILITATE_ORE}
+
+
+def _trimite_confirmarea(email, nume_cabinet, tok):
+    """Emailul cu linkul de confirmare (la înregistrare și la „Retrimite confirmarea”). True dacă a plecat."""
+    import os
+    from core import inregistrare_libera as _il
+    link = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010") + "/#confirmare=" + tok
+    html = ("<p>Bună,</p><p>Ai cerut crearea contului cabinetului <b>%s</b> pe iConta.eu.</p>"
+            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;"
+            "text-decoration:none'>Confirmă emailul și activează contul</a></p><p>Linkul e valabil %s și se folosește o "
+            "singură dată. Până la confirmare contul nu există: nu te poți autentifica și nu se creează nicio firmă.</p>"
+            "<p>Dacă nu tu ai cerut contul, ignoră acest email — fără clic nu se creează nimic.</p>") % (
+                _esc(nume_cabinet), link, _esc(_cate(_il.VALABILITATE_ORE, "oră", "ore")))
+    return _obs.trimite_email_html_sau_semnaleaza("email confirmare inregistrare", email, "Confirmă contul iConta.eu", html, alerta=True)
+
+
+def inregistrari_neconfirmate(ctx):
+    """[deficiența 282, comanda Costin 16.10.2026, verbatim în DECIZII] Corpul rutei `GET /admin/inregistrari-neconfirmate`: „data,
+    denumirea cabinetului, emailul, dacă emailul de confirmare a plecat și când expiră linkul”."""
+    from core import inregistrare_libera as _il
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            r = _il.neconfirmate(cur)
+        conn.rollback()
+    return {"cereri": r, "valabila_ore": _il.VALABILITATE_ORE}
+
+
+def retrimite_confirmarea(cerere_id, ctx):
+    """[deficiența 282] „Retrimite confirmarea”: link nou (cel vechi nu mai merge), valabil din nou VALABILITATE_ORE. Tokenul nou se
+    scrie numai dacă emailul a plecat — altfel cererea rămâne cu linkul ei de dinainte. Emailul pleacă FĂRĂ conexiune ținută (clasa
+    C5, `core/test_val3_contracte.py`): citirea cererii și scrierea tokenului sunt două tranzacții scurte, de o parte și de alta."""
+    import secrets
+    from core import inregistrare_libera as _il
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            c = _il.cerere_neconfirmata(cur, cerere_id)
+        conn.rollback()
+    if not c:
+        raise _erori.Inexistent("Cererea nu mai așteaptă confirmarea: a fost confirmată sau ștearsă între timp.")
+    email, nume_cabinet = c
+    tok = secrets.token_urlsafe(32)
+    if not _trimite_confirmarea(email, nume_cabinet, tok):
+        raise _erori.ServiciuIndisponibil("Emailul de confirmare nu a putut fi retrimis la %s; linkul de dinainte a rămas "
+                                          "valabil. Încearcă din nou peste câteva minute." % email)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            scris = _il.inlocuieste_tokenul(cur, cerere_id, tok)
+        conn.commit()
+    if not scris:
+        raise _erori.Inexistent("Cererea a fost confirmată sau ștearsă cât pleca emailul: linkul nou nu mai e necesar.")
+    return {"ok": True, "email": email, "valabila_ore": _il.VALABILITATE_ORE}
 
 
 def _esc(t):

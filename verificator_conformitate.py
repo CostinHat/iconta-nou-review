@@ -1947,6 +1947,33 @@ for _cl in ("bara", "subbara", "bara3", "subbara--admin"):
     if not re.search(r"(?m)^\." + re.escape(_cl) + r"\s*\{[^}]*min-height\s*:", _css_b):
         rap["bara_inaltime_minima"].append(("stil.css", 0, "BARA_INALTIME_MINIMA", ".%s fără min-height" % _cl))
 
+# --- FEREASTRA_LOT6 (DS cap.6 + cap.9 v2.92, lotul 6: deficiențele 272, 279, 285): (a) un câmp `readonly` arată needitabil prin regula
+#     GLOBALĂ `.camp-input[readonly]`; (b) acțiunea principală și mesajul ei stau în `.bara-fixa` (sticky); (c) rândul de butoane și stări
+#     al detaliului facturii se rupe (`.fd-antet-sus` cu `flex-wrap: wrap`); (d) navigatorul lățește singur fereastra mai îngustă decât
+#     conținutul ei (`_lateste` -> `fer-tabel`); (e) refuzul de pe rând trece prin `api.refuzPeRand`, nu se lipește de buton. Mutația:
+#     oricare din cele cinci scoasă -> TOTAL > 0. LIMITĂ: vede regulile și apelurile, nu așezarea pe ecran (aia o măsoară e2e 285 / 272).
+rap["fereastra_lot6"] = []
+_css_l6 = _surse_css["stil.css"]
+for _sel, _decl, _cod in ((r"\.camp-input\[readonly\]", r"background\s*:", "READONLY_GLOBAL"),
+                          (r"\.fereastra-corp \.bara-fixa", r"position\s*:\s*sticky", "BARA_FIXA"),
+                          (r"\.fereastra-corp \.bara-fixa:not\(:last-child\)", r"margin-bottom\s*:\s*0", "BARA_NU_ACOPERA"),
+                          (r"\.fd-antet-sus", r"flex-wrap\s*:\s*wrap", "RAND_RUPT")):
+    _ml6 = re.search(r"(?m)^" + _sel + r"\s*\{([^}]*)\}", _css_l6)
+    if not _ml6 or not re.search(_decl, _ml6.group(1)):
+        rap["fereastra_lot6"].append(("stil.css", 0, _cod, "regula %s lipsește sau nu are %s (DS v2.92)" % (_sel, _decl)))
+_nav_l6 = open(os.path.join(BAZA_PY, "static", "js", "navigator.js"), encoding="utf-8").read()
+if not re.search(r"const _lateste = \(\) => \{ if \(_corp\.scrollWidth > _corp\.clientWidth \+ 1[^\n]*fer\.classList\.add\(\"fer-tabel\"\)", _nav_l6):
+    rap["fereastra_lot6"].append(("navigator.js", 0, "LATIRE_AUTOMATA", "fereastra nu se mai lățește singură când conținutul e mai lat (DS cap.9 v2.92)"))
+# (f) [deficiența 290] eroarea unui formular dispare când câmpul se schimbă: ascultarea unică din `api.js`, în faza de captură
+_api_l6 = open(os.path.join(BAZA_PY, "static", "js", "api.js"), encoding="utf-8").read()
+for _ev in ("input", "change"):
+    if 'document.addEventListener("%s", stergeEroriDupaCorectare, true);' % _ev not in _api_l6:
+        rap["fereastra_lot6"].append(("api.js", 0, "ERORI_DUPA_CORECTARE",
+                                      "eroarea nu mai dispare la „%s” pe câmp (stergeEroriDupaCorectare, DS cap.6 v2.92)" % _ev))
+for _nume, _t in fisiere.items():
+    for _m in re.finditer(r"""insertAdjacentHTML\(\s*["']afterend["'],\s*['"`]<span class="msg-eroare""", _t):
+        rap["fereastra_lot6"].append((_nume, _t[:_m.start()].count("\n") + 1, "REFUZ_LIPIT", "refuz lipit de buton: api.refuzPeRand (DS cap.6 v2.92)"))
+
 rap["fereastra_scris"] = []
 _blocuri_pacm = re.findall(r"(?m)^\.pacm \{([^}]*)\}", _surse_css["stil.css"])
 if len(_blocuri_pacm) != 1 or not re.search(r"(?<![-\w])height:\s*calc\(100vh", _blocuri_pacm[0] if _blocuri_pacm else ""):

@@ -6,7 +6,7 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt } from "../api.js?v=72aa1cbbdb";
+import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt } from "../api.js?v=9409795a49";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).

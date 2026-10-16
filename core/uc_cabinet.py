@@ -77,5 +77,5 @@ def cabinet_consolidare(an, luna, ctx):
             firme.append({"tenant_id": tid, "nume": nume, "kpi": k})
             if k:
                 for c in total:
-                    total[c] = round(total[c] + k[c], 2)
+                    total[c] = round(total[c] + k[c], 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     return {"an": an, "luna": luna, "firme": firme, "total": total}

@@ -76,10 +76,16 @@ def _agrega_independent(conn, inceput, sfarsit):
          "f.moneda AS moneda, f.curs_bnr AS curs_bnr, f.total_lei AS total_lei, f.tva_lei AS tva_lei, "  # [A1] a doua cale IN LEI, ca generatorul
          "l.cantitate AS cant, l.pret_unitar AS pret, l.cota_tva AS cota "
          "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
-         # [B1] fereastra pe EXIGIBILITATE (COALESCE(data_faptului_generator, data_emitere); avans->emitere), ca generatorul
-         "WHERE (CASE WHEN f.tip_operatiune = 'avans' THEN f.data_emitere "
+         # [B1] fereastra pe EXIGIBILITATE (COALESCE(data_faptului_generator, data_emitere)), ca generatorul. [lotul 6, 278] avansul:
+         # cea mai devreme dintre emitere și prima încasare legată (CF art.282 alin.(2) lit.a / lit.b) — scrisă aici din nou, nu importată
+         # din d300: calea 2 e independentă prin construcție
+         "WHERE (CASE WHEN f.tip_operatiune = 'avans' THEN LEAST(f.data_emitere, (SELECT MIN(i2.data) FROM inregistrari i2 "
+         "       JOIN inregistrari_linii l2 ON l2.inregistrare_id = i2.id WHERE i2.factura_id = f.id AND l2.cont_credit LIKE '411%%' "
+         "       AND (l2.cont_debit LIKE '51%%' OR l2.cont_debit LIKE '53%%'))) "
          "       ELSE COALESCE(f.data_faptului_generator, f.data_emitere) END) >= %s "
-         "AND (CASE WHEN f.tip_operatiune = 'avans' THEN f.data_emitere "
+         "AND (CASE WHEN f.tip_operatiune = 'avans' THEN LEAST(f.data_emitere, (SELECT MIN(i2.data) FROM inregistrari i2 "
+         "     JOIN inregistrari_linii l2 ON l2.inregistrare_id = i2.id WHERE i2.factura_id = f.id AND l2.cont_credit LIKE '411%%' "
+         "     AND (l2.cont_debit LIKE '51%%' OR l2.cont_debit LIKE '53%%'))) "
          "     ELSE COALESCE(f.data_faptului_generator, f.data_emitere) END) < %s "
          "AND COALESCE(f.taxare_inversa, false) = false "  # [06.08.2026] taxare inversa -> rd.13 auto (nu col/ded), exclusa din cale2 ca in calcul_d300
          "AND COALESCE(f.tert_tara, 'RO') = 'RO' "  # [B1/F125] IC/export -> randuri proprii (rd.1/5/14/18 bunuri; rd.3/rd.7+rd.20 servicii reclasificate P/S in D390), in afara reconcilierii pe cote 21/11/9 (limita) - filtrul pe tert_tara le exclude coerent, ca la IC bunuri

@@ -322,3 +322,15 @@ def test_CALIBRARE_ecranul_numai_al_administratorului_se_vede_prin_alta_functie(
     assert gasite["a"] == ["DELETE /tenants/{tenant_id}"], gasite   # (e) `deseneaza` din ecranMixt n-a intrat la „a”
     assert gasite["b"] == ["POST /cabinet/api-chei"], gasite        # (f) `POST /auth/login` din api.js n-a intrat
     assert not r["nelegate"], r["nelegate"]
+
+
+def test_CALIBRARE_cuvintele_unui_selector_nu_numesc_functii():
+    """[lotul 6, 16.10.2026] `camp` din selectorul „#df-activitate_amef-camp” lega handlerul unui `<select>` de funcția `camp()` din Date
+    firmă (care desenează și butonul corecturii CUI, al administratorului) -> fals-pozitiv „buton spre un ecran numai al
+    administratorului”. Un selector între ghilimele nu numește o funcție; un apel dintr-un șablon (`${camp(c)}`) o numește.
+    MUTAȚIE: `_SELECTOR_SIR.sub('""', txt)` -> `txt` în `_Module.directe` -> `camp` reapare -> pică."""
+    m = S._Module([])
+    _, cuv = m.directe('corp.querySelector("#df-activitate_amef-camp").style.display = "none";')
+    assert set(cuv) & {"camp", "querySelector"} == {"querySelector"}, cuv   # cuvintele (mulțimea), nu text
+    _, cuv = m.directe("x.innerHTML = `${CAMPURI.map((c) => camp(c, v)).join('')}`;")
+    assert set(cuv) & {"camp"} == {"camp"}, cuv

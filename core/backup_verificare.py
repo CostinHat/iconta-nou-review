@@ -55,7 +55,7 @@ def verifica(director=DIR, acum=None, pg_restore="pg_restore"):
     if r.returncode != 0:
         raise RuntimeError("Ultimul backup local al bazei (%s) nu se poate citi integral cu pg_restore (cod %d): %s"
                            % (os.path.basename(ultimul), r.returncode, (r.stderr or "").strip()[:300]))
-    return {"fisier": os.path.basename(ultimul), "ore": round(ore, 1), "octeti": octeti, "tabele_cu_date": tabele}
+    return {"fisier": os.path.basename(ultimul), "ore": round(ore, 1), "octeti": octeti, "tabele_cu_date": tabele}  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
 
 
 if __name__ == "__main__":

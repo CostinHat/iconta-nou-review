@@ -1492,7 +1492,7 @@ def recalculeaza_lot(limita=LOT_RECALCULARE, azi=None, ctx=None, opreste=None):
     r["fara_calcul"] = b["fara_calcul"]
     r["in_eroare"] = b["in_eroare"]
     r["vechime_maxima_sec"] = b["vechime_maxima_sec"]
-    r["secunde"] = round(_time.time() - _t0, 3)
+    r["secunde"] = round(_time.time() - _t0, 3)  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
     return r
 
 

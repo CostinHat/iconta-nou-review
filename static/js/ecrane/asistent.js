@@ -7,17 +7,17 @@
 // sus și benzile „Recomandă” / „Suport” vin din salut.js, ca la cabinet; dedesubt, numai grila de carduri.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, ICOANE, CULORI_CARD } from "../api.js?v=72aa1cbbdb";
+import { api, ICOANE, CULORI_CARD } from "../api.js?v=9409795a49";
 import { semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { randeazaControl } from "./control.js?v=c32702d644";
 import { randeazaTermene } from "./termene.js?v=7fbacf46ea";
-import { randeazaValidat } from "./validat.js?v=a8c80dc9d3";
-import { randeazaListaFirme } from "./firme.js?v=e5617fbd32";
+import { randeazaValidat } from "./validat.js?v=32fae3e49d";
+import { randeazaListaFirme } from "./firme.js?v=d921e045d9";
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=179b6770c5"; // [225 + 231] banda de sus, aceeași la ambele roluri
-import { randeazaPachete } from "./pachete.js?v=5de3efc286"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=84d7965e4e"; // [p44_declaratii]
-import { randeazaSetari } from "./setari.js?v=00f4d66a12"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
+import { randeazaPachete } from "./pachete.js?v=f483669b9f"; // [p63_pachete]
+import { randeazaDeclaratii } from "./declaratii.js?v=9821013934"; // [p44_declaratii]
+import { randeazaSetari } from "./setari.js?v=aeabf02daf"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;
@@ -39,7 +39,7 @@ const NODURI = {
     deschide: (nav) => nav.deschide("Declarații", (corp) => randeazaDeclaratii(corp, nav), { lat: "tabel" }) },   // [08.10, W5]
   validat: { titlu: "De validat", icon: "clipboard", ...CULORI_CARD.piersica,
     sinteza: "Declarații și note de validat de la colegi", cere: "poate_valida",
-    deschide: (nav) => nav.deschide("De validat", (corp) => randeazaValidat(corp, nav)) },
+    deschide: (nav) => nav.deschide("De validat", (corp) => randeazaValidat(corp, nav, { titlu: "De validat" })) },   // [292] titlul cardului
   pachete: { titlu: "Pachete lunare", icon: "mail", ...CULORI_CARD.violet,
     sinteza: "Trimite pachetul lunar către clienți",
     deschide: (nav) => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav)) },

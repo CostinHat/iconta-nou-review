@@ -373,6 +373,10 @@ _FUNCTIE_SUS = re.compile(r"^(?:export\s+)?(?:async\s+)?function\s*\*?\s*(\w+)\s
 _FUNCTIE_IMBRICATA = re.compile(r"^[ \t]+(?:async\s+)?function\s*\*?\s*(\w+)\s*\(", re.M)
 _IMPORT = re.compile(r"""import\s*\{([^}]*)\}\s*from\s*["'](\.{1,2}/[\w./-]+?\.js)""")
 _CUVANT = re.compile(r"\b([A-Za-z_]\w*)\b")
+#: [lotul 6, 16.10.2026] un selector CSS între ghilimele („#df-activitate_amef-camp”, „.fd-rand”) nu numește o funcție: cuvintele lui nu se
+#: urmează. Fals-pozitivul care l-a scos la iveală: `camp` din selectorul de mai sus lega handlerul unui `<select>` de funcția `camp()`
+#: din Date firmă, care acum desenează și butonul corecturii CUI (numai al administratorului).
+_SELECTOR_SIR = re.compile(r"""(["'])[#.\[][^"'\n]*\1""")
 # Transportul, nu un ecran: `api.js` (cererile, reînnoirea tokenului și reautentificarea peste ecran — `POST /auth/…` stă sub
 # ORICE ecran, deci n-ar spune nimic despre ecranul la care duce un buton). Funcțiile lui nu se urmează.
 _TRANSPORT = {"api.js"}
@@ -467,7 +471,7 @@ class _Module:
                 if met == "GET" and not restransa(g):
                     continue   # o citire a oricui nu e o acțiune a ecranului
                 acts[a] = g
-            self._directe[txt] = (acts, set(_CUVANT.findall(txt)))
+            self._directe[txt] = (acts, set(_CUVANT.findall(_SELECTOR_SIR.sub('""', txt))))
         return self._directe[txt]
 
 

@@ -3,7 +3,7 @@
 // puteau vedea, casa sau reevalua din interfata — iar casarea/reevaluarea cereau un mijloc_fix_id
 // pe care niciun ecran nu-l arata (casarea din formular dadea 422 garantat). Aici e sursa acelui id
 // + doua actiuni directe: casare (POST nota-inventariere) si reevaluare (POST reevaluare-imobilizare).
-import { api, cate, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso } from "../api.js?v=72aa1cbbdb";
+import { api, cate, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso, stareNota, pasNota } from "../api.js?v=9409795a49";
 
 // ["01/2026", …, "08/2026", "11/2026"] -> "9 luni: 01–08/2026, 11/2026" (intervalele peste an: "11/2025–02/2026")
 export function luniScurte(luni) {
@@ -83,7 +83,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
 
     corp.innerHTML = `
       <h2 class="pf-titlu">Mijloace fixe</h2>
-      <p class="pf-intro">Registrul activelor firmei: valoare, amortizarea <b>calculată</b> până la sfârșitul lunii ${esc(pana)}, ultima lună încheiată (pe metoda fiecărui activ — liniar, degresiv, accelerat sau superaccelerat, CF art.28), amortizarea <b>înregistrată</b> în contabilitate la aceeași dată (soldul contului de amortizare, note validate) și diferența, cu lunile neînregistrate; rămas. Casarea și reevaluarea generează note contabile drept <b>ciornă</b> — se validează din Registru jurnal. Butonul <b>C&amp;D</b> marchează aparatura și echipamentele destinate cercetării-dezvoltării: ele se pot amortiza accelerat din orice cont (CF art. 20 alin. (1) lit. b)).</p>
+      <p class="pf-intro">Registrul activelor firmei: valoare, amortizarea <b>calculată</b> până la sfârșitul lunii ${esc(pana)}, ultima lună încheiată (pe metoda fiecărui activ — liniar, degresiv, accelerat sau superaccelerat, CF art.28), amortizarea <b>înregistrată</b> în contabilitate la aceeași dată (soldul contului de amortizare, note validate) și diferența, cu lunile neînregistrate; rămas. Casarea și reevaluarea generează note contabile, validate apoi din Registrul jurnal. Butonul <b>C&amp;D</b> marchează aparatura și echipamentele destinate cercetării-dezvoltării: ele se pot amortiza accelerat din orice cont (CF art. 20 alin. (1) lit. b)).</p>
       <div id="mf-mesaj"></div>
       ${lista.length ? `
       <div style="overflow-x:auto">
@@ -114,12 +114,12 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
       const id = b.dataset.caseaza;
       const m = lista.find((x) => String(x.id) === String(id));
       confirmaCaseta(b.closest("tr"),
-        `Casezi <b>${esc(m ? m.denumire : id)}</b>? Se generează nota de casare (ciornă), amortizarea la zi se calculează automat și mijlocul devine inactiv.`,
+        `Casezi <b>${esc(m ? m.denumire : id)}</b>? Se generează nota de casare, amortizarea la zi se calculează automat și mijlocul devine inactiv.`,
         async () => {
           try {
-            await api.post(`/tenants/${tenantId}/nota-inventariere`,
+            const r = await api.post(`/tenants/${tenantId}/nota-inventariere`,
               { operatie: "casare", mijloc_fix_id: Number(id), data: azi });
-            arataMesaj(zona, "Casare înregistrată (ciornă). O validezi din Registru jurnal.", "info");
+            arataMesaj(zona, `Casare înregistrată (${stareNota(r)}). ${pasNota(r)}`, "info");
             await incarca();
           } catch (e) {
             arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu s-a putut casa mijlocul fix.", "eroare");
@@ -147,9 +147,9 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         return;
       }
       try {
-        await api.post(`/tenants/${tenantId}/reevaluare-imobilizare`,
+        const r = await api.post(`/tenants/${tenantId}/reevaluare-imobilizare`,
           { operatie: "reevaluare", mijloc_fix_id: Number(id), valoare_justa: v, data: azi });
-        arataMesaj(zona, "Reevaluare înregistrată (ciornă). O validezi din Registru jurnal.", "info");
+        arataMesaj(zona, `Reevaluare înregistrată (${stareNota(r)}). ${pasNota(r)}`, "info");
         await incarca();
       } catch (e) {
         arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu s-a putut reevalua mijlocul fix.", "eroare");

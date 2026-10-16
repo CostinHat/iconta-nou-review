@@ -495,8 +495,25 @@ def alege_denumirea(conn, tenant_id, alege, user_id):
     return {"tenant_id": tenant_id, "alege": alege, "nume": nume}
 
 
+MESAJ_CUI_PE_CORECTURA = ("CUI-ul nu se schimbă la editarea firmei. Dacă CUI-ul înregistrat e greșit, îl corectează administratorul "
+                          "cabinetului din Date firmă → „Corectează CUI-ul”, cu avertisment.")
+
+
+def cere_cui_unic(conn, tenant_id, cui):
+    """[27.08.2026, mutată la corectura CUI-ului 16.10.2026 — deficiența 272] Două firme ale aceluiași cabinet nu au același CUI."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.tenants WHERE upper(cui) = upper(%s) AND id <> %s "
+                    "AND accounting_firm_id = (SELECT accounting_firm_id FROM public.tenants WHERE id = %s)",
+                    (str(cui), tenant_id, tenant_id))
+        if cur.fetchone():
+            raise ValueError(
+                "Ai deja în portofoliu o firmă cu codul fiscal %s. Două firme nu pot "
+                "avea același cod fiscal — verifică dacă nu e chiar cea pe care o "
+                "cauți." % cui)
+
+
 def actualizeaza_tenant(conn, tenant_id, nume=None, cui=None, user_id=None):
-    """Editează nume/cui (NU schema_name — fix). Întoarce {ok}.
+    """Editează denumirea (NU schema_name — fix; NU CUI-ul — corectura lui e `firma_profil_api.corecteaza_cui`). Întoarce {ok}.
 
     [27.08.2026] Până azi funcția asta era un `UPDATE` gol de orice poartă: nici cifra de control
     a CUI-ului, nici unicitatea lui, nici a numelui. Adică **toate** verificările de la creare se
@@ -505,42 +522,24 @@ def actualizeaza_tenant(conn, tenant_id, nume=None, cui=None, user_id=None):
     Acum trec pe aceleași porți ca la creare: **o regulă care se poate ocoli nu e o regulă.**
     """
     with conn.cursor() as cur:
-        cur.execute("SELECT accounting_firm_id, nume_anaf FROM public.tenants WHERE id = %s",
+        cur.execute("SELECT accounting_firm_id, nume_anaf, cui FROM public.tenants WHERE id = %s",
                     (tenant_id,))
         r = cur.fetchone()
     if not r:
         raise ValueError("firmă inexistentă")
-    cabinet, nume_anaf = r
-    if cui is not None:
-        if not cui_valid(cui):
-            raise ValueError(
-                "CUI-ul %r nu e valid: cifra de control nu corespunde. Un cod fiscal "
-                "greșit nu se oprește aici — îl respinge ANAF, la prima declarație "
-                "depusă." % cui)
-        with conn.cursor() as cur:
-            cur.execute("SELECT id FROM public.tenants "
-                        "WHERE cui = %s AND accounting_firm_id = %s AND id <> %s",
-                        (str(cui), cabinet, tenant_id))
-            if cur.fetchone():
-                raise ValueError(
-                    "Ai deja în portofoliu o firmă cu codul fiscal %s. Două firme nu pot "
-                    "avea același cod fiscal — verifică dacă nu e chiar cea pe care o "
-                    "cauți." % cui)
-    if nume is None and cui is None:
+    _cabinet, nume_anaf, cui_actual = r
+    # [deficiența 272, comanda Costin 16.10.2026, verbatim în DECIZII] „o corectură reală de CUI e o operațiune separată, a
+    # administratorului, cu avertisment.” Ruta asta scria CUI-ul numai în `public.tenants` (`firma_profil` rămânea cel vechi), fără
+    # avertisment și fără jurnal. Acum CUI-ul are un singur drum de corectură — `firma_profil_api.corecteaza_cui` (ruta
+    # `/tenants/{id}/cui/corectura`): cifra de control, perioadele deschise, ambele locuri, jurnalul. Aici, același CUI trece; altul nu.
+    if cui is not None and str(cui).strip().upper() != str(cui_actual or "").strip().upper():
+        raise ValueError(MESAJ_CUI_PE_CORECTURA)
+    if nume is None:
         return {"ok": True, "neschimbat": True}
     # [R81/O1, 28.08.2026] Denumirea trece prin scriitorul UNIC — `public.tenants.nume` și
     # `firma_profil.nume`, aceeași tranzacție, aceeași valoare. `cere_nume_unic` e înăuntrul lui,
     # deci poarta de unicitate rămâne pe calea de redenumire, unde a fost pusă.
-    #
-    # CUI-ul a ieșit din `SET`-ul compus la rulare și are acum instrucțiunea lui, literală. Nu e
-    # cosmetică: un `SET` asamblat din bucăți nu poate fi citit static, deci garda de simetrie
-    # n-ar fi putut spune despre el nici că scrie denumirea, nici că n-o scrie — și ar fi trebuit
-    # să-l declare drept necunoscut. Aici nu mai e nimic de declarat.
-    if nume is not None:
-        scrie_denumirea(conn, tenant_id, nume)
-    if cui is not None:
-        with conn.cursor() as cur:
-            cur.execute("UPDATE public.tenants SET cui = %s WHERE id = %s", (cui, tenant_id))
+    scrie_denumirea(conn, tenant_id, nume)
     # [R77, partea a doua] O redenumire care se depărtează de denumirea de la ANAF e ea însăși o
     # alegere — se consemnează, nu se refuză. Dacă firma n-are `nume_anaf`, nu se consemnează
     # nimic: n-are cu ce să difere, iar o alegere între o denumire și nimic n-ar fi o alegere.

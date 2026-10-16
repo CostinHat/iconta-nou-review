@@ -110,6 +110,39 @@ def creeaza(cur, date, parola_hash, termeni_versiune, ip, acum=None):
     return tok
 
 
+def marcheaza_trimis(cur, token):
+    """[deficiența 282] Emailul de confirmare a plecat (Brevo l-a primit): momentul, pe cerere."""
+    cur.execute("UPDATE public.inregistrari_in_asteptare SET email_trimis_la = now() WHERE token_hash = %s", (_hash(token),))
+
+
+def neconfirmate(cur, acum=None):
+    """[deficiența 282] Cererile neconfirmate (și cele expirate, până la ștergerea lor după PASTRARE_ZILE), cele mai noi întâi."""
+    acum = acum or datetime.datetime.now(datetime.timezone.utc)
+    cur.execute("SELECT id, creat_la, nume_cabinet, email, email_trimis_la, expira_la, retrimiteri FROM public.inregistrari_in_asteptare "
+                "WHERE confirmata_la IS NULL ORDER BY creat_la DESC")
+    return [{"id": r[0], "creat_la": r[1].isoformat(), "nume_cabinet": r[2], "email": r[3],
+             "email_trimis_la": r[4].isoformat() if r[4] else None, "expira_la": r[5].isoformat(), "expirata": r[5] < acum,
+             "retrimiteri": r[6]} for r in cur.fetchall()]
+
+
+def cerere_neconfirmata(cur, cerere_id):
+    """[deficiența 282] (emailul, numele cabinetului) cererii care încă așteaptă confirmarea, sau None."""
+    cur.execute("SELECT email, nume_cabinet FROM public.inregistrari_in_asteptare WHERE id = %s AND confirmata_la IS NULL", (cerere_id,))
+    r = cur.fetchone()
+    return (r[0], r[1]) if r else None
+
+
+def inlocuieste_tokenul(cur, cerere_id, tok, acum=None):
+    """[deficiența 282] „Retrimite confirmarea”, DUPĂ ce emailul cu `tok` a plecat: tokenul se înlocuiește (cel vechi nu se poate
+    retrimite — se păstrează numai hash-ul), valabilitatea pornește din nou și se scrie momentul trimiterii. False dacă cererea a fost
+    confirmată sau ștearsă între timp."""
+    acum = acum or datetime.datetime.now(datetime.timezone.utc)
+    cur.execute("UPDATE public.inregistrari_in_asteptare SET token_hash = %s, expira_la = %s, retrimiteri = retrimiteri + 1, "
+                "email_trimis_la = now() WHERE id = %s AND confirmata_la IS NULL",
+                (_hash(tok), acum + datetime.timedelta(hours=VALABILITATE_ORE), cerere_id))
+    return cur.rowcount == 1
+
+
 def sterge(cur, token):
     """Cererea a cărei confirmare n-a putut pleca pe email nu rămâne (nimeni n-ar putea s-o confirme)."""
     cur.execute("DELETE FROM public.inregistrari_in_asteptare WHERE token_hash = %s AND confirmata_la IS NULL", (_hash(token),))

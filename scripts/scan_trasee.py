@@ -94,7 +94,8 @@ TRASEE = [
     # --- deja scrise în TRASEE.md, partea X ---
     ("T06", "Importul de e-Factura și transmiterea prin SPV",
      [r"^/tenants/\{\}/import-efactura", r"^/tenants/\{\}/facturi-primite",
-      r"^/tenants/\{\}/facturi/\{\}/trimite-spv", r"^/tenants/\{\}/trimiteri-spv"],
+      r"^/tenants/\{\}/facturi/\{\}/trimite-spv", r"^/tenants/\{\}/trimiteri-spv",
+      r"^/tenants/\{\}/spv/(stare|verifica-acum)$"],   # [lotul 6, 273a] starea SPV a firmei și „Verifică acum în SPV”
      ["efactura_primite", "efactura_trimiteri"]),
     ("T07", "Extrasul bancar și potrivirea",
      [r"^/tenants/\{\}/banca"], ["extras_linii"]),
@@ -212,7 +213,7 @@ TRASEE = [
     # firme. Aia e un ciclu de viata, nu administrare."
     # Fara tabela proprie: ciclul nu se masoara in randurile unei firme, ci in existenta ei.
     ("T36", "Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere",
-     [r"^/tenants$", r"^/tenants/\{\}$", r"^/tenants/\{\}/(scoatere|activare|nume-ales)$",
+     [r"^/tenants$", r"^/tenants/\{\}$", r"^/tenants/\{\}/(scoatere|activare|nume-ales|cui/corectura)$",   # [lotul 6, 272] corectura CUI
       r"^/firme-scoase$"],
      []),
 ]

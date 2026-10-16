@@ -43,8 +43,10 @@ from core.common import _q
 # ── Conturile care fac o notă „de factură". Măsurate, nu presupuse — vezi BLOC BBB.
 CONTURI_TERT = ("4111", "401", "404")
 CONTURI_TVA = ("4426", "4427", "4428")
+#: [lotul 6, 278] avansul încasat de la client (OMFP 1802/2014, funcțiunea contului 419) — contul facturii de avans
+CONT_AVANS_CLIENT = "419"
 CONTURI_FOND_PREFIX = ("70", "6")
-CONTURI_FOND_EXACT = ("371", "301", "302", "303", "213")
+CONTURI_FOND_EXACT = ("371", "301", "302", "303", "213", CONT_AVANS_CLIENT)   # [lotul 6, 278] 4111 = 419 (avans la cota 0)
 # [29.08.2026, BLOC GGG] Trezoreria TAIE semnătura de contare, și motivul e măsurat prin citirea
 # codului, nu presupus: `reconciliere_api` adaugă pe nota de PLATĂ, la o firmă cu TVA la încasare, o
 # linie `4428 = 4427` (emisă) sau `4426 = 4428` (primită) — art. 282 alin. 3 și 8. Nota devine atunci
@@ -393,6 +395,21 @@ def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont
 
     if directie == "emisa":
         cvi = cont_venit_implicit or "707"
+        # [lotul 6 pct.3b, 278] Factura de AVANS (și regularizarea ei) nu e venit: OMFP 1802/2014, funcțiunea contului 419 — „În creditul
+        # contului 419 «Clienți - creditori» se înregistrează: sumele facturate clienților reprezentând avansuri pentru livrări de bunuri
+        # sau prestări de servicii (411)”. Nota: 4111 = 419 + 4427; regularizarea (rândurile cu minus) o inversează. Până azi ieșea
+        # 4111 = 707 + 4427, adică venit înaintea livrării.
+        if (f.get("tip_operatiune") or "normal") in ("avans", "regularizare_avans"):
+            cur.execute("SELECT cota_tva, COALESCE(SUM(cantitate*pret_unitar),0) AS baza FROM %sfactura_linii WHERE factura_id=%%s "
+                        "GROUP BY cota_tva ORDER BY cota_tva" % _p(schema), (fid,))
+            grupuri = [dict(r) for r in cur.fetchall()]
+            if not grupuri or any(g["cota_tva"] is None for g in grupuri):
+                raise RefuzContare("FARA_COTA", MSG_FARA_COTA)
+            note = []
+            for g in grupuri:
+                note += _fc.factura_emisa(Decimal(str(g["baza"] or 0)) * _curs, cota=Decimal(str(g["cota_tva"])) / 100, la_data=la_data,
+                                          tva_incasare=tvai, cont_venit=CONT_AVANS_CLIENT)
+            return note
         cur.execute("SELECT COALESCE(NULLIF(cont_venit,''), %%s) AS cv, cota_tva, "
                     "       COALESCE(SUM(cantitate*pret_unitar),0) AS baza "
                     "FROM %sfactura_linii WHERE factura_id=%%s "

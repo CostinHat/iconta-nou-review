@@ -79,7 +79,7 @@ def balanta(conn, schema, an, luna):
             sd, sc = float(sd), float(sc)
             if ant_d or ant_c:   # notele anilor anteriori: soldul de la 1 ianuarie, net
                 net = sd + float(ant_d) - sc - float(ant_c)
-                sd, sc = (round(net, 2), 0.0) if net > 0 else (0.0, round(-net, 2))
+                sd, sc = (round(net, 2), 0.0) if net > 0 else (0.0, round(-net, 2))  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
             tot_d = sd + float(prec_d) + float(rul_d)
             tot_c = sc + float(prec_c) + float(rul_c)
             if not den:
@@ -89,9 +89,9 @@ def balanta(conn, schema, an, luna):
                             "si_d": sd, "si_c": sc,
                             "prec_d": float(prec_d), "prec_c": float(prec_c),
                             "rul_d": float(rul_d), "rul_c": float(rul_c),
-                            "tot_d": round(tot_d, 2), "tot_c": round(tot_c, 2),
-                            "sf_d": round(tot_d - tot_c, 2) if tot_d > tot_c else 0,
-                            "sf_c": round(tot_c - tot_d, 2) if tot_c > tot_d else 0})
+                            "tot_d": round(tot_d, 2), "tot_c": round(tot_c, 2),  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+                            "sf_d": round(tot_d - tot_c, 2) if tot_d > tot_c else 0,  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+                            "sf_c": round(tot_c - tot_d, 2) if tot_c > tot_d else 0})  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
         return randuri
 
 
@@ -143,7 +143,7 @@ def totaluri_balanta(randuri):
     in JS pentru ecran, ar fi fost al doilea calcul al aceluiasi lucru - clasa pe care fluturasul a
     platit-o deja (vezi `stat_plata_api.rand_fluturas`).
     """
-    return {c: round(sum(float(r.get(c) or 0) for r in randuri), 2)
+    return {c: round(sum(float(r.get(c) or 0) for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
             for _ce, d, c_ in PERECHI_BALANTA for c in (d, c_)}
 
 
@@ -160,7 +160,7 @@ def inchidere_balanta(randuri):
     """
     tot = totaluri_balanta(randuri)
     perechi = [{"ce": ce, "debit": tot[d], "credit": tot[c],
-                "diferenta": round(tot[d] - tot[c], 2),
+                "diferenta": round(tot[d] - tot[c], 2),  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
                 "inchisa": abs(tot[d] - tot[c]) < TOLERANTA_BALANTA}
                for ce, d, c in PERECHI_BALANTA]
     if not randuri:

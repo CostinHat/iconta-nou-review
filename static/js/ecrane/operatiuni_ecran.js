@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, cate, esc, bani, arataMesaj, semnAjutor, dataIso } from "../api.js?v=72aa1cbbdb";
+import { api, cate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota } from "../api.js?v=9409795a49";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
@@ -564,9 +564,9 @@ export async function ecranOperatiuni(corp, nav, t) {
         // [258] notele se numesc cum le arată Registrul jurnal (`nota_eticheta` / `note_etichete`, „nr. crt. 5 din 12.03.2026”), nu prin id
         const note = r ? (r.note_etichete || (r.nota_eticheta ? [r.nota_eticheta] : [])) : [];
         zona.innerHTML = note.length === 1
-          ? `<p class="pf-intro">Notă generată (ciornă) ${esc(note[0])}. O validezi din Registru jurnal.</p>`
+          ? `<p class="pf-intro">Notă generată ${esc(note[0])}, ${stareNota(r)}. ${pasNota(r)}</p>`
           : note.length > 1
-          ? `<p class="pf-intro">${cate(note.length, "notă generată", "note generate")} (ciornele ${esc(note.join(", "))}). Le validezi din Registru jurnal.</p>`
+          ? `<p class="pf-intro">${cate(note.length, "notă generată", "note generate")} (${esc(note.join(", "))}), ${stareNota(r, true)}. ${pasNota(r, true)}</p>`
           : `<p class="pf-intro">Calcul (nu s-a generat nicio notă):</p><ul class="pf-intro">${Object.entries(r || {}).map(([k, v]) => `<li>${esc(k.replace(/_/g, " "))}: <b>${esc(String(v))}</b></li>`).join("")}</ul>`;
       } catch (e) {
         arataMesaj(zona, e.mesaj || e.message || "Nu s-a putut genera nota — verifică datele introduse și reîncearcă.", "eroare");

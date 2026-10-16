@@ -138,8 +138,8 @@ def extrage_balanta_detaliat(continut, nume_fisier=""):
     inlocuite = []
     for c in sorted(set(conturi) - set(frunze)):
         fiice = [f for f in set(frunze) if _e_stramos(c, f)]
-        suma = round(sum(net[f] for f in fiice), 2)
-        if abs(round(net[c], 2) - suma) >= 0.01:
+        suma = round(sum(net[f] for f in fiice), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+        if abs(round(net[c], 2) - suma) >= 0.01:  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
             raise _it.FisierNecitit(
                 "Contul %s are în fișier sold final net %s, iar analiticele lui (%s) însumează %s. Balanța amestecă "
                 "sintetice și analitice care nu se potrivesc — exportă balanța numai cu analitice (sau numai sintetică) și "
@@ -149,7 +149,7 @@ def extrage_balanta_detaliat(continut, nume_fisier=""):
     for x in citite:
         if x["cont"] in inlocuite:
             continue
-        if round(x["debit"], 2) == 0 and round(x["credit"], 2) == 0:
+        if round(x["debit"], 2) == 0 and round(x["credit"], 2) == 0:  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
             fara_sold += 1
             continue
         out.append(x)
@@ -183,9 +183,9 @@ def verifica_echilibru(randuri):
     """PURA: (ok, debit, credit, diferenta). O balanta de deschidere trebuie sa aiba
     totalul debitor egal cu cel creditor - altfel toata contabilitatea firmei porneste
     gresit."""
-    td = round(sum(_numar(r.get("debit")) for r in (randuri or [])), 2)
-    tc = round(sum(_numar(r.get("credit")) for r in (randuri or [])), 2)
-    dif = round(td - tc, 2)
+    td = round(sum(_numar(r.get("debit")) for r in (randuri or [])), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+    tc = round(sum(_numar(r.get("credit")) for r in (randuri or [])), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+    dif = round(td - tc, 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     return abs(dif) < 0.01, td, tc, dif
 
 
@@ -199,8 +199,8 @@ def balanta_valida(randuri):
     randuri = randuri or []
     if not randuri:
         return False, "Fișier gol: niciun rând de citit."
-    td = round(sum(_numar(r.get("debit")) for r in randuri), 2)
-    tc = round(sum(_numar(r.get("credit")) for r in randuri), 2)
+    td = round(sum(_numar(r.get("debit")) for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+    tc = round(sum(_numar(r.get("credit")) for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     conturi_cont = sum(1 for r in randuri if str(r.get("cont") or "").strip()[:1].isdigit())
     if conturi_cont == 0:
         return False, ("Fișier nerecunoscut ca balanță: nicio valoare din coloana Cont nu arată "
@@ -293,7 +293,7 @@ def importa(conn, randuri, data_referinta=None):
                 (r["cont"], r.get("denumire", ""), r.get("debit", 0), r.get("credit", 0), data_referinta))
             td += float(r.get("debit", 0) or 0)
             tc += float(r.get("credit", 0) or 0)
-    return {"randuri": len(randuri), "total_debit": round(td, 2), "total_credit": round(tc, 2)}
+    return {"randuri": len(randuri), "total_debit": round(td, 2), "total_credit": round(tc, 2)}  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
 
 
 def rezumat(conn):

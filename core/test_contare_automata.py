@@ -436,7 +436,7 @@ def test_validarea_CU_cont_trece_de_verificarea_de_cont(conn, monkeypatch):
     conn.commit()
     monkeypatch.setattr(main.auth_api, "schema_tenant", lambda c, uid, tid: _SCH)
     with pytest.raises(HTTPException) as e:
-        main.factura_primita_valideaza(1, pid, {"cont": "628"}, {"uid": 1})
+        main.factura_primita_valideaza(1, pid, {"cont": "628", "tert_platitor_tva": True}, {"uid": 1})
     assert e.value.status_code == 422
     cod = e.value.detail.get("cod") if isinstance(e.value.detail, dict) else None
     assert cod != "CONT_CHELTUIALA_OBLIGATORIU", (
@@ -850,3 +850,19 @@ def test_clasificatorul_nu_spune_da_la_tot():
     assert not _cf.e_nota_de_contare([("5121", "4111", 1), ("4428", "4427", 1)])
     assert _cf.valoare_pe_tert([("4111", "707", 1000), ("4111", "4427", 210)]) == Decimal(1210)
     assert _cf.valoare_pe_tert([("371", "401", 1000), ("4426", "401", 210)]) == Decimal(1210)
+
+
+def test_importul_efactura_duplicat_numai_pe_aceeasi_directie(conn):
+    """[16.10.2026, lotul 6 pct.1b, clasa 277] Aceeași factură (număr, terț, dată, DIRECȚIE) importată de două ori rămâne una; o factură
+    PRIMITĂ de la clientul RO14399840, cu numărul și data uneia EMISE către el, e alt document și se importă.
+    MUTAȚIE: `AND directie=%s` scos din `repo_main.select_facturi_3` -> a doua `creat_nou` iese False -> pică."""
+    from core import uc_comun as _uc
+    f = {"numar": "77", "data_emitere": "2026-10-16", "data_scadenta": None, "total": 121, "tva": 21, "moneda": "RON",
+         "directie": "emisa", "xml": "<Invoice/>", "tert_nume": "Partener SRL", "tert_cui": "RO14399840",
+         "linii": [{"descriere": "marfa", "cantitate": 1, "pret_unitar": 100, "cota_tva": 21}]}
+    with conn.cursor() as cur:
+        fid1, nou1 = _uc._factura_din_parsat(cur, _SCH, f)
+        fid1b, nou1b = _uc._factura_din_parsat(cur, _SCH, f)
+        fid2, nou2 = _uc._factura_din_parsat(cur, _SCH, dict(f, directie="primita"))
+    assert (nou1, nou1b, fid1b == fid1) == (True, False, True), "aceeași factură, a doua oară: găsită, nu dublată"
+    assert (nou2, fid2 != fid1) == (True, True), "primită cu același număr și dată: alt document, importat"

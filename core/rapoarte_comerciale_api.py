@@ -32,7 +32,7 @@ TIPURI_RAPORT = {"comercial"}
 
 def _f(v):
     """Decimal/None -> float rotunjit la 2 zecimale (afisare prin bani() in UI)."""
-    return round(float(v or 0), 2)
+    return round(float(v or 0), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
 
 
 def vanzari_pe_partener(conn, schema, de, pana):
@@ -98,7 +98,7 @@ def durata_medie_incasare(conn, schema, de, pana):
         """, (CONT_CLIENTI, CONT_CLIENTI, de, pana))
         r = cur.fetchone() or {}
     zile = r.get("zile")
-    return {"zile_medii": round(float(zile), 1) if zile is not None else None,
+    return {"zile_medii": round(float(zile), 1) if zile is not None else None,  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
             "nr_facturi": r.get("nr") or 0}
 
 

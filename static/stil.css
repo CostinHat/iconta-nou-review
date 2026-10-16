@@ -139,6 +139,13 @@ html, body {
   box-shadow: 0 0 0 3px var(--albastru-clar);
 }
 
+/* [DS cap.6 v2.92, deficiența 272] un câmp care se citește, nu se scrie, arată așa: fundalul paginii, fără cursor de scriere. Global —
+   toate `readonly` din aplicație (CUI-ul din Date firmă, moneda D398, factura primită, linkul invitației). */
+.camp-input[readonly] { background: var(--fundal); cursor: default; }
+.camp-input[readonly]:focus { border-color: #b9c2cf; box-shadow: none; }
+/* un buton pus în coloana unui câmp (sub el) își păstrează lățimea, nu se întinde pe a câmpului */
+.camp > button { align-self: flex-start; }
+
 /* Clase de tip — rol semantic tipografic (Design System cap.14). Inline font-size INTERZIS. */
 .tip-titlu    { font-size: var(--text-titlu); font-weight: 600; color: var(--ardezie); }
 .tip-sectiune { font-size: var(--text-sectiune); font-weight: 600; color: var(--ardezie); }
@@ -670,6 +677,17 @@ html, body {
    ecranului; corpul derulează numai pe verticală. */
 .fereastra.fer-tabel { width: fit-content; min-width: min(1000px, calc(100vw - 48px)); max-width: calc(100vw - 48px); }
 .fereastra.fer-tabel .fereastra-corp { overflow-x: auto; }
+/* [DS cap.9 v2.92, deficiența 285] fereastra care nu încape nici lățită (ecran îngust): celulele de tabel își rup cuvintele lungi,
+   în loc să împingă tabelul peste marginea ferestrei. Lățirea o face navigatorul (`fer-tabel`, când conținutul e mai lat). */
+.fereastra-corp .fd-tabel td, .fereastra-corp .fd-tabel th { overflow-wrap: anywhere; }
+/* [DS cap.6 v2.92, deficiența 285] acțiunea principală a unui formular lung și mesajul ei stau mereu în vedere: zona lor
+   (`.bara-fixa`: bara de butoane + zona de mesaj) rămâne lipită de marginea de jos a ferestrei cât se derulează conținutul. */
+.fereastra-corp .bara-fixa { position: sticky; bottom: -24px; z-index: 2; background: #e9edf3; margin: 0 -24px -24px; padding: 4px 24px 16px;
+  border-top: 1px solid var(--linie); }
+/* o bară urmată de alt conținut (nota de subsol a declarației, jurnalul din Date firmă) nu-l acoperă cu marginea ei de jos (e2e 164) */
+.fereastra-corp .bara-fixa:not(:last-child) { margin-bottom: 0; }
+.fereastra-corp .bara-fixa .dec-bara { margin-top: 10px; }
+.fereastra-corp .bara-fixa > [id$="-mesaj"]:empty, .fereastra-corp .bara-fixa > [id$="-msg"]:empty { display: none; }
 
 /* cap de tabel solduri */
 .mig-sold-cap {
@@ -1909,7 +1927,8 @@ html, body {
 
 /* ===== Detalii factura (fd-*) ===== */
 .fd-antet { margin: 4px 0 16px; }
-.fd-antet-sus { display: flex; align-items: center; gap: 10px; }
+/* [deficiența 275a / 285] butoanele și stările facturii se rup pe rânduri, nu împing fereastra în lateral (măsurat: 1475px > 1000) */
+.fd-antet-sus { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .fd-antet-linie { font-size: var(--text-mic); color: var(--gri); margin-top: 4px; }
 .fd-tabel { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: var(--text-mic);
   background: #fff; border: 1px solid var(--linie); border-radius: var(--raza); overflow: hidden; }
@@ -2001,7 +2020,6 @@ html, body {
 .mf-logo-msg-bun { color: #1d7a4d; }
 
 /* ===== buton Vezi PDF in Detalii ===== */
-.fd-antet-sus { display: flex; align-items: center; gap: 10px; }
 .fd-pdf-btn { margin-left: auto; cursor: pointer; white-space: nowrap; }
 
 /* ===== Trimite pe email (fd-email-*) ===== */
@@ -2888,3 +2906,7 @@ body.pagina-publica .pagina-bara-acces:focus-visible{outline:2px solid var(--p-t
 .em-pregatire:empty { display: none; }
 .em-pregatire { margin: 0 0 12px; }
 .em-l-cota-sel { width: 100%; min-width: 0; padding-left: 6px; padding-right: 6px; }
+/* [deficiența 279, clasa 259] refuzul unei acțiuni de pe rând: sub textul rândului, pe lățimea lui (`api.refuzPeRand`) */
+.msg-refuz-rand { display: block; margin-top: 6px; }
+/* [deficiența 284] notele numite în refuzul porții TVA: câte un buton spre Registrul jurnal */
+.coada-note-refuz { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }

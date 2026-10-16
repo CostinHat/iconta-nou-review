@@ -81,12 +81,19 @@ def test_AMBELE_cai_trec_prin_poarta_de_nume():
         "poarta în loc s-o mute")
 
 
-def test_redenumirea_verifica_si_CUI_ul():
-    """Răspunsul la întrebarea lui Costin: până azi `PUT` nu verifica nimic."""
-    ap = _apeluri(_functia("actualizeaza_tenant"))
-    assert ap >= {"cui_valid"}, (
-        "`actualizeaza_tenant` nu mai verifică cifra de control a CUI-ului — atunci un CUI "
-        "invalid intră printr-o redenumire, deși crearea îl refuză")
+def test_redenumirea_nu_schimba_CUI_ul():
+    """Răspunsul la întrebarea lui Costin: până azi `PUT` nu verifica nimic. [deficiența 272, 16.10.2026] Acum CUI-ul nici nu se mai
+    schimbă pe aici: corectura e operațiunea separată a administratorului (`firma_profil_api.corecteaza_cui`), cu avertisment, care
+    verifică cifra de control și unicitatea (`cere_cui_unic`, mutată de aici) și scrie ambele locuri."""
+    src = ast.get_source_segment(io.open(tp.__file__, encoding="utf-8").read(), _functia("actualizeaza_tenant"))
+    assert "raise ValueError(MESAJ_CUI_PE_CORECTURA)" in src and "SET cui" not in src, (
+        "`actualizeaza_tenant` schimbă din nou CUI-ul — un al doilea drum, fără avertisment și numai în `public.tenants`")
+    from core import firma_profil_api as fp
+    corect = ast.get_source_segment(io.open(fp.__file__, encoding="utf-8").read(),
+                                    [n for n in ast.walk(ast.parse(io.open(fp.__file__, encoding="utf-8").read()))
+                                     if isinstance(n, ast.FunctionDef) and n.name == "corecteaza_cui"][0])
+    chemate = {getattr(n.func, "attr", getattr(n.func, "id", None)) for n in ast.walk(ast.parse(corect)) if isinstance(n, ast.Call)}
+    assert {"_vcui", "cere_cui_unic", "alege_cui"} <= chemate, chemate   # cifra de control, unicitatea, scrierea în ambele locuri
 
 
 def test_normalizarea_ignora_majusculele_si_spatiile():

@@ -283,7 +283,20 @@ def test_numarul_de_instructiuni_se_conserva():
     #   pentru un email care are deja cont (Conflict), citiri NOI; repo_utilizatori.scrie_acordul_termenilor (confirma_inregistrarea) —
     #   dovada acordului, în aceeași tranzacție cu contul creat la confirmare, scriere NOUĂ; repo_main.select_public_2
     #   (uc_auth._anunta_cabinet_nou) — emailul superadminului pentru anunțul de cabinet nou, citire NOUĂ.
-    assert _apeluri_catre_repository() == 322
+    # [lotul 6, 16.10.2026] 322 -> 332, cu apelurile numite (DECIZII „Lotul 6”):
+    #   repo_declaratii.inchide_asteptarea_deschisa + insereaza_asteptare (uc_coada.asteapta_notele) — 284, declarația care așteaptă
+    #     validarea notelor numite se ține minte (o singură așteptare deschisă pe firmă / tip / perioadă), scrieri NOI;
+    #   repo_declaratii.asteptari_deschise + revendica_asteptarea + scrie_rezultatul_asteptarii, repo_contabilitate.cate_nevalidate_dintre
+    #     (uc_coada.reia_declaratiile_in_asteptare) — 284, după validarea notelor declarația se generează din nou și intră singură în
+    #     coadă: citirea așteptărilor, revendicarea (o singură reluare), rezultatul; notele încă nevalidate. Pași NOI;
+    #   repo_declaratii.autorul_elementului (uc_coada.coada_respinge) — 293, „Renunță” e al celui care a pregătit-o sau al celui care
+    #     depune; citire NOUĂ;
+    #   repo_facturi.actualizeaza_clasificarea (uc_tenants.factura_primita_valideaza) — 273c, tipul furnizorului și categoria art.331,
+    #     cerute la validare, se scriu pe factură (D394); scriere NOUĂ;
+    #   repo_firma_profil.cui_firma (uc_tenants.spv_stare_firma) — 273a, starea SPV a firmei se citește pe CUI-ul ei; citire NOUĂ;
+    #   repo_contabilitate.search_path_firma (uc_tenants.tenant_amortizare_restanta) — 281, amortizarea lunilor rămase în urmă se
+    #     generează pe schema firmei; apel de CONTROL NOU.
+    assert _apeluri_catre_repository() == 332
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

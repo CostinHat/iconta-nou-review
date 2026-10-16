@@ -536,6 +536,17 @@ CLASIFICARE = {
             "reproductibile, iar importul fiecarui mesaj e o tranzactie proprie cu poarta lui de "
             "idempotenta pe id-ul mesajului descarcat.",
     },
+    "POST /tenants/{tenant_id}/spv/verifica-acum": {
+        "clasa": NECRITIC,
+        "efecte": "lista de mesaje + descarcarea ZIP-urilor <-> importul facturilor primite <-> randul citirii "
+                  "(public.spv_cui_acoperit) <-> rotatia tokenului",
+        "de_ce":
+            "[lotul 6, 273, 16.10.2026] butonul „Verifică acum în SPV” cheama EXACT `spv_receive.citeste_firma`, calea "
+            "lucratorului de fundal (`core/spv_receive.py::__main__`): aceeasi justificare — apelurile la ANAF sunt "
+            "interogari, fisierele sunt copii reproductibile, importul fiecarui mesaj e tranzactia lui cu poarta de "
+            "idempotenta pe id-ul mesajului, iar randul citirii (drept / eroare / ultima reusita) se scrie DUPA "
+            "raspuns, intr-o tranzactie scurta separata, fara conexiune tinuta peste apelul de retea.",
+    },
     "core/spv_refresh.py::__main__ -> ruleaza()": {
         "clasa": NECRITIC,
         "efecte": "reimprospatarea preventiva a tokenelor SPV",

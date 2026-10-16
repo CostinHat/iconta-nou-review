@@ -3,7 +3,7 @@
 // Backend: GET /tenants, GET /pachete/{tid}/rezumat, POST /pachete/{tid}/genereaza,
 //          GET+POST /pachete/{tid}/poveste, POST /pachete/{tid}/trimite.
 
-import { api, dataRo, esc, arataMesaj, cate } from "../api.js?v=72aa1cbbdb";
+import { api, dataRo, esc, arataMesaj, cate, confirmaCaseta } from "../api.js?v=9409795a49";
 
 // LUNI = pentru pickerul de luna (<option>); etichetele luna-an trec prin dataRo("luna_an"). [G3 23.07]
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
@@ -102,6 +102,7 @@ function randeazaLucru(corp, nav) {
   corp.innerHTML = `
     <p class="mig-intro">${esc(rz.nume_firma||"Firma")} · ${dataRo(`${S.an}-${String(S.luna).padStart(2,"0")}`, "luna_an")}</p>
     <div class="panou pac-rezumat">
+      <p class="ecran-nota" id="pac-perioada" style="margin:0 0 6px">Cifrele lunii — ${esc(rz.perioada || "")}</p>   <!-- [288b] luna, nu cumulat -->
       <div class="pac-rez-rand"><span>Venituri</span><b>${bani(rz.venituri)}</b></div>
       <div class="pac-rez-rand"><span>Cheltuieli</span><b>${bani(rz.cheltuieli)}</b></div>
       <div class="pac-rez-rand pac-rez-total"><span>Rezultat înainte de impozit</span><b>${bani(rz.rezultat)} (${esc(rz.tip)})</b></div>
@@ -238,11 +239,26 @@ function deschideModal(corp, nav) {
     actualizeazaStare();
     arataMesaj(stareEl, "Ciornă salvată.", "info"); _reflectaStareEcran(corp);
   });
-  ov.querySelector("#pacm-aproba").addEventListener("click", async () => {
-    // [comanda Costin 05.10.2026 pct.2] aprobarea are ruta ei („Poate valida”); apelul stă în handlerul butonului care o poartă
-    if (!await _salveaza(ta.value, "aprobat", stareEl, (text) => api.post(`/pachete/${S.tenant_id}/poveste/aproba?an=${S.an}&luna=${S.luna}`, { text }))) return;  // [R159]
+  const aprobata = (text) => {
+    S.status = "aprobat"; S.text = text;
     actualizeazaStare();
     arataMesaj(stareEl, "Aprobată ✓", "ok"); _reflectaStareEcran(corp);
+  };
+  ov.querySelector("#pacm-aproba").addEventListener("click", async () => {
+    // [comanda Costin 05.10.2026 pct.2] aprobarea are ruta ei („Poate valida”); apelul stă în handlerul butonului care o poartă
+    // [deficiența 288] serverul verifică textul înainte de aprobare: o abatere oprește (numită); restanțele cer decizia expresă —
+    // al doilea pas, „Aprob cu restanțele (decizia mea)”
+    const text = (ta.value || "").trim();
+    if (!text) { arataMesaj(stareEl, "Scrie povestea întâi.", "eroare"); return; }
+    const aproba = (cu_restante) => api.post(`/pachete/${S.tenant_id}/poveste/aproba?an=${S.an}&luna=${S.luna}`, { text, cu_restante });
+    try { await aproba(false); aprobata(text); }
+    catch (e) {
+      const det = (e && e.detaliu && typeof e.detaliu === "object") ? e.detaliu : {};
+      arataMesaj(stareEl, (e && e.mesaj) || "Nu s-a putut aproba.", "eroare");
+      if (det.cod === "POVESTE_CU_RESTANTE") confirmaCaseta(stareEl, "Trimiți clientului povestea care pomenește restanțele cabinetului? E decizia ta.", async () => {
+        try { await aproba(true); aprobata(text); } catch (e2) { arataMesaj(stareEl, (e2 && e2.mesaj) || "Nu s-a putut aproba.", "eroare"); }
+      }, { textOk: "Aprob cu restanțele (decizia mea)" });
+    }
   });
   btnTrimite.addEventListener("click", async () => {
     btnTrimite.disabled = true; btnTrimite.textContent = "Se trimite…";

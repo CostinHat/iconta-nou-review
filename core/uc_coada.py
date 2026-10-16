@@ -68,16 +68,44 @@ def poarta_tva_balanta(schema, an, luna, trim=None):
     if not rosii:
         return None
     dif = [{"cont": c["cont"], "rand": c.get("rand"), "eticheta": c.get("eticheta"), "declarat": "%.2f" % c["declarat"],
-            "contabil": "%.2f" % c["contabil"], "diferenta": "%.2f" % c["diferenta"]} for c in rosii]
+            "contabil": "%.2f" % c["contabil"], "diferenta": "%.2f" % c["diferenta"], "note": c.get("ciorne") or [],
+            "note_explica": bool(c.get("ciorne_explica"))} for c in rosii]
     from core import afirmatii as _af
+    from core.pdf_util import bani as _bani   # [284] suma scrisă ca pe ecran (63,00), ca în notele numite mai jos
     mesaj = ("Declarația nu intră în coadă: TVA-ul ei nu se potrivește cu balanța lunii — " + "; ".join(
                 "%s (rândul %s): declarat %s, contul %s are %s, diferență %s lei" % (
-                    d["eticheta"], d["rand"], d["declarat"], d["cont"], d["contabil"], d["diferenta"]) for d in dif)
-                      + ". Toleranța e rotunjirea la leu. Validatorul ANAF verifică structura, nu cifrele: corectează documentele "
-                        "(o factură necontată, o notă nevalidată, o achiziție fără factură) și generează din nou.")
+                    d["eticheta"], d["rand"], _bani(d["declarat"]), d["cont"], _bani(d["contabil"]), _bani(d["diferenta"])) for d in dif)
+                      + ". Toleranța e rotunjirea la leu.")
+    # [deficiența 284] notele nevalidate care mișcă contul se numesc, cu numărul din Registrul-jurnal, documentul și suma
+    numite = [d for d in dif if d["note"]]
+    for d in numite:
+        mesaj += (" %s pe contul %s: %s." % ("Diferența o explică" if d["note_explica"] else
+                                             "Note nevalidate (nu acoperă toată diferența)", d["cont"], "; ".join(
+            eticheta_nota_tva(n) for n in d["note"])))
+    if not numite or not all(d["note_explica"] for d in dif):
+        mesaj += (" Validatorul ANAF verifică structura, nu cifrele: corectează documentele (o factură necontată, o notă nevalidată, o "
+                  "achiziție fără factură) și generează din nou.")
     return dict(_af.afirmatie("neconformitate", "declaratie_tva", mesaj, unde="perioada %02d/%04d" % (luna_ancora, an),
                               regula="R17_2 = rulajul creditor 4427 și R27_2 = rulajul debitor 4426 ale ferestrei TVA (toleranța 1 leu)"),
-                cod=COD_TVA_BALANTA, diferente=dif, mesaj=mesaj)
+                cod=COD_TVA_BALANTA, diferente=dif, mesaj=mesaj, note=_note_unice(dif))
+
+
+def eticheta_nota_tva(n):
+    """„nr. crt. 21 (Factură F1A4 din 16.10.2026, 42,00 lei)” — cum se numește nota în refuz (nr. crt. = Registrul-jurnal)."""
+    from core.pdf_util import bani as _bani
+    return "nr. crt. %d (%s%s lei)" % (n["nr_curent"], (n.get("document") or n.get("descriere") or "fără document") + ", ",
+                                       _bani(n["suma"]))
+
+
+def _note_unice(dif):
+    """Notele numite, o dată fiecare (o notă poate atinge și 4427, și 4426): pentru legăturile ecranului spre Registrul-jurnal."""
+    vazute, out = set(), []
+    for d in dif:
+        for n in d["note"]:
+            if n["nota_id"] not in vazute:
+                vazute.add(n["nota_id"])
+                out.append(dict(n, eticheta=eticheta_nota_tva(n)))
+    return out
 
 
 COD_D406_BALANTA = "D406_DIFERA_DE_BALANTA"
@@ -147,6 +175,10 @@ MESAJ_CIORNE_BLOCAJ = (" În perioadă sunt și %d notă(e) nevalidată(e): dac�
                        "din nou — până atunci evidența e cea validată, iar declarația nu se potrivește cu ea.")
 
 
+MESAJ_ASTEPTARE = (" După validarea %s, declarația se generează din nou și intră singură în coadă; depunerea la ANAF rămâne clicul "
+                   "contabilului.")
+
+
 def decizie_poarta(refuz, ciorne):
     """(blocaj, avertisment) pentru porțile D300 / D394 / D390 / D406 față de balanță. PURĂ.
     [08.10.2026, decizia Costin §6 pct.7 — R36] „Porțile D300/D394/D390/D406 compară validat cu validat; dacă există ciorne în lună,
@@ -156,6 +188,9 @@ def decizie_poarta(refuz, ciorne):
     are ciorne, ca la D300/D394/D390.”] Deci acum, la toate patru: o diferență blochează, iar mesajul numește și ciornele (dacă ele
     corectează diferența, se validează și se generează din nou); ciornele FĂRĂ diferență dau numai avertisment."""
     if refuz:
+        # [deficiența 284] notele care mișcă TVA-ul sunt numite în refuz; „N note nevalidate” fără nume rămâne pentru celelalte porți
+        if refuz.get("note"):
+            return dict(refuz, ciorne=ciorne), None
         return (dict(refuz, mesaj=refuz.get("mesaj", "") + MESAJ_CIORNE_BLOCAJ % ciorne, ciorne=ciorne) if ciorne else refuz), None
     return None, (MESAJ_CIORNE_POARTA % ciorne if ciorne else None)
 
@@ -200,6 +235,10 @@ def coada_adauga(date, ctx):
         _refuz = (poarta_tva_balanta(schema, date.an, date.luna, date.trim) if date.tip in DECLARATII_TVA
                   else poarta_d406_balanta(schema, date.an, _ancora, res))
         _blocaj, _avert = decizie_poarta(_refuz, _ciorne)
+        if _blocaj and _blocaj.get("note"):
+            # [deficiența 284] declarația așteaptă validarea notelor numite; după ea se generează din nou și intră singură în coadă
+            _blocaj = dict(_blocaj, mesaj=_blocaj["mesaj"] + MESAJ_ASTEPTARE % ("notei" if len(_blocaj["note"]) == 1 else "notelor"),
+                           asteptare=asteapta_notele(date, ctx, [n["nota_id"] for n in _blocaj["note"]]))
         if _blocaj:
             raise _erori.DateInvalide(_blocaj)
         if _avert:
@@ -276,6 +315,9 @@ def coada_adauga(date, ctx):
     r["verdict"] = {"stare": _rez.get("stare"), "trecut_cu_motiv": _motiv or None}
     if avertismente_poarta:
         r["avertismente_poarta"] = avertismente_poarta
+    if r.get("ok"):
+        with db.get_conn() as conn:
+            r["pas_urmator"] = pas_urmator(conn, ctx)
     # [p57_notif] notifica validatorii ca e ceva de validat
     if r.get("ok"):
         try:
@@ -286,6 +328,121 @@ def coada_adauga(date, ctx):
         except Exception:
             pass
     return r
+
+
+# ============================================================
+#  [deficiența 284] DECLARAȚIA CARE AȘTEAPTĂ VALIDAREA NOTELOR — comanda Costin 16.10.2026, completarea 1 la lotul 6 (verbatim în DECIZII):
+#  „După validarea notei, declarația se regenerează singură și intră în coadă; depunerea la ANAF rămâne clicul contabilului.”
+# ============================================================
+class _CerereSalvata:
+    """Cererea `POST /coada` refăcută din rândul de așteptare (aceleași câmpuri ca `main.CoadaIn`; `coada_adauga` citește atributele și
+    `model_dump`)."""
+    _CAMPURI = ("tenant_id", "tip", "an", "luna", "trim", "manual", "obligatii", "cota", "date_extra", "ca_an_precedent_eur",
+                "inceput_la", "motiv_trecere")
+
+    def __init__(self, d):
+        for k in self._CAMPURI:
+            setattr(self, k, d.get(k))
+
+    def model_dump(self, exclude_none=False):
+        d = {k: getattr(self, k) for k in self._CAMPURI}
+        return {k: v for k, v in d.items() if v is not None} if exclude_none else d
+
+
+def asteapta_notele(date, ctx, note_ids):
+    """Scrie (sau înlocuiește) așteptarea declarației: o singură așteptare deschisă pe (firmă, declarație, perioadă). Întoarce id-ul."""
+    import json as _json
+    cerere = date.model_dump(exclude_none=True)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            repo_declaratii.inchide_asteptarea_deschisa(cur, date.tenant_id, date.tip, date.an, date.luna, date.trim,
+                                                        _json.dumps({"cod": "INLOCUITA"}))
+            aid = repo_declaratii.insereaza_asteptare(cur, int(ctx["firm"]), date.tenant_id, date.tip, date.an, date.luna, date.trim,
+                                                      _json.dumps(cerere, default=str), int(ctx["uid"]), ctx.get("rol"),
+                                                      sorted({int(i) for i in note_ids}))
+        conn.commit()
+    return aid
+
+
+def reia_declaratiile_in_asteptare(cabinet_id):
+    """Chemată de middleware DUPĂ orice cerere de modificare reușită a cabinetului (validarea unei note trece pe două drumuri: Registrul
+    jurnal și coada — `jurnal_api.valideaza`; ambele sunt cereri de modificare). O așteptare se reia când niciuna din notele ei nu mai e
+    nevalidată (validate sau șterse): declarația se generează din nou prin `coada_adauga`, cu contextul celui care a trimis-o (drepturile
+    se citesc din nou). Rezultatul — intrată în coadă sau refuzată din nou, cu motivul — se scrie pe rând și se anunță prin notificare.
+    Întoarce lista rezultatelor [{id, ok, mesaj}]."""
+    import json as _json
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            deschise = repo_declaratii.asteptari_deschise(cur, int(cabinet_id))
+    from core import repo_contabilitate
+    out = []
+    for aid, tenant_id, note_ids, schema in deschise:
+        with db.get_conn(schema) as conn:
+            with conn.cursor() as cur:
+                ramase = repo_contabilitate.cate_nevalidate_dintre(cur, list(note_ids))
+            conn.rollback()
+        if ramase:
+            continue
+        with db.get_conn() as conn:   # o singură reluare, chiar cu două cereri simultane
+            with conn.cursor() as cur:
+                rand = repo_declaratii.revendica_asteptarea(cur, aid)
+            conn.commit()
+        if not rand:
+            continue
+        cerere, uid, rol, tip, an, luna, trim = rand
+        ctx = {"ok": True, "uid": uid, "rol": rol, "firm": int(cabinet_id)}
+        per = "%s %s/%d" % (tip.upper(), ("%02d" % luna) if luna else ("T%d" % trim if trim else ""), an)
+        try:
+            r = coada_adauga(_CerereSalvata(cerere if isinstance(cerere, dict) else _json.loads(cerere)), ctx)
+            rez = {"ok": True, "coada_id": r.get("coada_id"),
+                   "mesaj": "%s: notele au fost validate, declarația s-a generat din nou și %s" % (
+                       per, (r.get("pas_urmator") or {}).get("mesaj") or "a intrat în coadă.")}
+        except _erori.EroareDeDomeniu as e:
+            det = e.detaliu
+            rez = {"ok": False, "mesaj": "%s: notele au fost validate, dar declarația tot nu intră în coadă — %s" % (
+                per, (det.get("mesaj") if isinstance(det, dict) else str(det)) or "refuzată")}
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                repo_declaratii.scrie_rezultatul_asteptarii(cur, aid, _json.dumps(rez))
+            from core import notificari_api as _notif
+            _notif.adauga(conn, uid, "declaratie_reluata", _uc_comun._cu_firma(conn, tenant_id, rez["mesaj"]),
+                          link=("validat:%d" % rez["coada_id"]) if rez.get("coada_id") else None)
+            conn.commit()
+        out.append(dict(rez, id=aid))
+    return out
+
+
+def reia_in_fundal(cabinet_id):
+    """`reia_declaratiile_in_asteptare` pe un fir separat; eșecul nu e tăcut (`observare.esec_secundar`)."""
+    import threading
+
+    def _ruleaza():
+        try:
+            reia_declaratiile_in_asteptare(cabinet_id)
+        except Exception as e:
+            from core import observare as _obs
+            _obs.esec_secundar("declaratii in asteptare reluate dupa validarea notelor", e)
+    threading.Thread(target=_ruleaza, name="reia-asteptare-%s" % cabinet_id, daemon=True).start()
+
+
+#: [deficiența 287] ce urmează după „Trimite în coadă”, spus după starea REALĂ: validarea în doi efectivă (`coada_api.patru_ochi_stare`) și
+#: dreptul de depunere al celui care a trimis. Fără validare în doi, `depune` trece direct (aprobarea se face la depunere).
+PAS_VALIDARE = "a fost trimisă la validare: validarea în doi e activă, deci un coleg o aprobă înainte de depunere."
+PAS_DEPUNERE = ("e în coadă, gata de depunere: validarea în doi e oprită, deci o depui tu, din „De depus”. Depunerea la ANAF rămâne "
+                "clicul tău.")
+PAS_DEPUNERE_ALTCINEVA = "e în coadă, gata de depunere: o depune cine are în cabinet dreptul de depunere."
+
+
+def pas_urmator(conn, ctx):
+    """Statutul declarației trimise (afirmație tipată, `statut` = `cod`: `validare` / `depunere` / `depunere_altcineva`), cu `mesaj`."""
+    from core import afirmatii as _af
+    if coada_api.patru_ochi_stare(conn, ctx["firm"])["efectiv"]:
+        cod, mesaj = "validare", PAS_VALIDARE
+    elif _uc_comun._are_permisiune(ctx, "poate_depune"):
+        cod, mesaj = "depunere", PAS_DEPUNERE
+    else:
+        cod, mesaj = "depunere_altcineva", PAS_DEPUNERE_ALTCINEVA
+    return dict(_af.afirmatie("statut", "declaratie_trimisa", mesaj, statut=cod, statut_din=None), cod=cod, mesaj=mesaj)
 
 
 def coada_lista(stare, ctx):
@@ -418,6 +575,10 @@ def coada_aproba_mai_multe(ids, ctx):
     return {"ok": True, "validate": validate, "refuzate": refuzate}
 
 
+MESAJ_RENUNTA_ALTUI = ("Declarația a pregătit-o altcineva, iar validarea în doi e oprită: la ea renunță cine a pregătit-o sau cine o "
+                       "depune (dreptul «Poate depune»). Tu o poți vedea.")
+
+
 def coada_respinge(coada_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/coada/{coada_id}/respinge`; docstringul ei a ramas in stratul HTTP."""
     if not _uc_comun._are_permisiune(ctx, "poate_valida"):
@@ -425,6 +586,16 @@ def coada_respinge(coada_id, date, ctx):
     # [retest 07.10 R1] nota se respinge pe schema firmei ei: respingerea stornează în aceeași tranzacție mișcarea de stoc a
     # documentului (`stocuri_anulare.storneaza`) — ori ambele, ori niciuna
     _fel, _schema_nota, _el = _schema_notei(coada_id, ctx)
+    if _fel != "nota":
+        # [deficiența 293, comanda Costin 16.10.2026, verbatim în DECIZII] „Pe o declarație a altcuiva, fără dreptul de depunere, nu se
+        # oferă nicio acțiune în afară de vizualizare; serverul refuză la fel.” Fără validarea în doi, „respinge” e RENUNȚAREA la
+        # declarație — a celui care a pregătit-o sau a celui care o depune; cu validarea în doi e actul validatorului (rămâne).
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                autor = repo_declaratii.autorul_elementului(cur, coada_id)
+            efectiv = coada_api.patru_ochi_stare(conn, ctx["firm"])["efectiv"]
+        if not efectiv and autor != int(ctx["uid"]) and not _uc_comun._are_permisiune(ctx, "poate_depune"):
+            raise _erori.FaraDrept(MESAJ_RENUNTA_ALTUI)
     with db.get_conn(_schema_nota) as conn:
         r = coada_api.respinge(conn, coada_id, str(ctx["uid"]), date.motiv, respins_de_id=int(ctx["uid"]),
                                cabinet_id_apelant=ctx["firm"],  # [B1] apartenenta pe obiect

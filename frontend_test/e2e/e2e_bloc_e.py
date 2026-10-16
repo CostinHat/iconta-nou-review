@@ -409,7 +409,8 @@ def test_def_150_evidenta_e_ce_a_validat_un_om(patron, firma):
             pg.wait_for_selector(".dec-gata", timeout=60000)
         _asteapta_text(patron, "nevalidată")
         txt = patron.fereastra()
-        assert "Trimisă în coada de validare" in txt and "În perioadă sunt 1 notă(e) nevalidată(e)" in txt, txt[:800]
+        # [287] validarea în doi e oprită pe firma de probă: titlul spune „Trimisă în coadă”
+        assert "Trimisă în coadă" in txt and "În perioadă sunt 1 notă(e) nevalidată(e)" in txt, txt[:800]
         patron.captura("d300_in_coada_cu_avertisment")
     finally:
         sql("DELETE FROM public.declaratii_coada WHERE tenant_id = %s AND fel <> 'nota' AND tip = 'd300'", (firma["tenant_id"],))
@@ -493,7 +494,8 @@ def test_def_168_nota_chitantei_numeste_chitanta_si_factura(patron, firma, factu
     nota = [n for n in _randuri_jurnal(patron) if ("chitanța " + eticheta_ch) in n[0]]
     assert len(nota) == 1, _randuri_jurnal(patron)
     antet = nota[0][0]
-    assert "contravaloare factura %s din %s" % (nr, AZI.strftime("%d.%m.%Y")) in antet, antet   # AZI-dat-de-test
+    # [278] nota chitanței stinge factura (`inregistrari.factura_id`): partea ei numește factura ca la orice încasare legată
+    assert "chitanța %s — factura %s din %s" % (eticheta_ch, nr, AZI.strftime("%d.%m.%Y")) in antet, antet   # AZI-dat-de-test
     assert "Client Chitanta SRL" in antet, antet
     assert any(x.startswith("5311 = 4111") and "121,00" in x for x in nota[0][1]), nota
     pg.locator(".fereastra:last-of-type [data-nota-id]", has_text=eticheta_ch).first.scroll_into_view_if_needed()
@@ -582,12 +584,13 @@ def _conteaza_cu_legare(ecran, f, fid, an, luna, nir_numar):
     pg.select_option("#nir-legat", ales[0])
     ecran.captura("caseta_nir")
     pg.click("#nir-leaga")
-    pg.wait_for_selector(".fac-frand-btn[data-id='%s'] ~ * .tip-desc, .tip-desc:has-text('ciorna nr. crt.')" % fid, timeout=60000)
+    pg.wait_for_selector(".fac-frand-btn[data-id='%s'] ~ * .tip-desc, .tip-desc:has-text('ciornă nr. crt.')" % fid, timeout=60000)
     txt = ecran.fereastra()
     # [258] confirmarea numește nota ca Registrul jurnal, nu prin id-ul intern; nota e contarea facturii
     nid = sql('SELECT id FROM "%s".inregistrari WHERE factura_id = %%s AND sursa = \'facturi\' ORDER BY id DESC LIMIT 1' % f["schema"],
               (fid,))[0][0]
-    assert _re.findall(r"ciorna (nr\. crt\. \d+ din [\d.]+)", txt) == [nr_crt(f["schema"], nid)], txt[:800]
+    # [279] starea notei vine din `api.stareNota` („ciornă”, sau „trimisă la validare în cabinet” când a scris-o asistentul)
+    assert _re.findall(r"ciornă (nr\. crt\. \d+ din [\d.]+)", txt) == [nr_crt(f["schema"], nid)], txt[:800]
     return nid, opt
 
 
@@ -766,9 +769,12 @@ def test_def_155_d394_numarul_fara_cifrele_seriei_si_semnal_fara_serie(patron, f
 def _fara_suprapuneri(ecran):
     """Copiii direcți ai corpului ferestrei (DS cap.9 v2.84): conținutul fiecăruia se termină înaintea fratelui următor (nimic nu
     curge peste „Vezi XML-ul generat”, textul de subsol sau „Trimite în coadă”), iar o secțiune pliabilă închisă are doar înălțimea
-    titlului ei (fără gol mare). Întoarce lista problemelor, cu dimensiunile măsurate."""
+    titlului ei (fără gol mare). Întoarce lista problemelor, cu dimensiunile măsurate.
+    [285] Se măsoară cu fereastra derulată la capăt: acolo bara fixă (`.bara-fixa`, sticky) stă în locul ei din flux. Derulată mai sus, bara
+    stă DELIBERAT peste conținutul care trece pe sub ea (acțiunea se vede mereu) — aia nu e o suprapunere de așezare."""
     return ecran.pg.evaluate("""() => {
       const corp = [...document.querySelectorAll('.fereastra')].pop().querySelector('.fereastra-corp');
+      corp.scrollTop = corp.scrollHeight;
       const copii = [...corp.children].filter((e) => e.getBoundingClientRect().height > 0);
       const nume = (e) => (e.tagName === 'DETAILS' ? 'details «' + e.querySelector('summary').innerText.slice(0, 30) + '»' : (e.id || e.className || e.tagName));
       const rele = [];
@@ -1265,8 +1271,9 @@ def test_def_214_nota_de_amortizare_ultima_zi_si_documentul_ei(patron, firma):
 def test_def_215_inchiderea_semnaleaza_amortizarea_lunilor_anterioare(patron, firma_gv):
     """215. Închidere lună: lunile anterioare cu amortizare neînregistrată nu apar ca semnal.
     Pașii: firma cu mijlocul fix MF215 (PIF 10.03.2026, 3.000 lei, 30 de luni -> 100 lei/lună din 04/2026), fără nicio notă de
-    amortizare -> Închidere lună -> luna trecută: sub „Semnale” apare „amortizarea lunilor anterioare nu e înregistrată pe contul
-    2813: … luni (04–…/2026)”, cu suma după calcul; nu e printre ce oprește închiderea (acolo e numai luna însăși)."""
+    amortizare -> Închidere lună -> luna trecută: apare „amortizarea lunilor anterioare nu e înregistrată pe contul 2813: … luni
+    (04–…/2026)”, cu suma după calcul. [PIVOT 16.10.2026, deficiența 281] nu mai e semnal, ci printre ce oprește închiderea
+    (confirmabil: luna se poate închide numai cu confirmarea explicită) — alături de luna însăși."""
     f = firma_gv
     pg = patron.pg
     mid = _mf(f, "MF215", "3000", 30, "2026-03-10")
@@ -1280,14 +1287,14 @@ def test_def_215_inchiderea_semnaleaza_amortizarea_lunilor_anterioare(patron, fi
         patron.captura("inchidere")
     finally:
         sql('DELETE FROM "%s".mijloace_fixe WHERE id = %%s' % f["schema"], (mid,))
-    semnale = zona.split("Semnale (", 1)[1] if "Semnale (" in zona else ""
-    assert "amortizarea lunilor anterioare nu e înregistrată pe contul 2813" in semnale, zona
+    semnale = zona.split("Semnale (", 1)[0]   # [281] zona „Ce oprește închiderea”, înaintea semnalelor
+    assert "Ce oprește închiderea" in semnale and "amortizarea lunilor anterioare nu e înregistrată pe contul 2813" in semnale, zona
     # intervalul: începe cel târziu în aprilie (MF215 intră în funcțiune în martie; firma poate avea și active mai vechi, ale altor
     # probe) și se termină în luna dinaintea celei închise
     m = _re.search(r"amortizarea lunilor anterioare[^:]*: \d+ luni \((\d{2})–(\d{2})/(\d{4})\)", semnale)
     assert m and int(m.group(1)) <= 4 and (int(m.group(3)), int(m.group(2))) == ((trecuta.replace(day=1) - _dt.timedelta(days=1)).year,
                                                                                 (trecuta.replace(day=1) - _dt.timedelta(days=1)).month), zona
-    assert "amortizarea lunilor anterioare" not in zona.split("Semnale (", 1)[0], zona
+    assert "amortizarea lunilor anterioare" not in (zona.split("Semnale (", 1)[1] if "Semnale (" in zona else ""), zona
 
 
 def test_def_149_amortizarea_ciorna_se_inlocuieste_validata_nu(patron, firma_gv):

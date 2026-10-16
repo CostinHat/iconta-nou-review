@@ -107,6 +107,38 @@ def rulaje_interval(conn, schema, data_de, data_pana, conturi):
     return out
 
 
+#: [deficiența 284] contul porții TVA -> coloana din `ciorne_pe_conturi_tva`: suma cu care o notă îl mișcă în sensul rulajului (`compara_tva`)
+_SENS_CIORNA = {"4427": "credit_4427", "4426": "debit_4426"}
+
+
+def ciorne_care_explica(conn, schema, data_de, data_pana, constatari):
+    """[deficiența 284, comanda Costin 16.10.2026, completarea 1 la lotul 6, verbatim în DECIZII] „refuzul [...] numește nota sau notele
+    care explică diferența (aici nr. crt. 21, factura F1A4, 42 lei), cu link spre ele, nu doar «4 note nevalidate».”
+    Pe fiecare constatare ROȘIE pe 4427 / 4426 pune `ciorne`: notele nevalidate din fereastră care mișcă acel cont, în sensul rulajului
+    ({nota_id, nr_curent, data, document, descriere, suma}), și `ciorne_explica`: suma lor acoperă diferența (toleranța 1 leu) — adică,
+    validate, ar închide constatarea. Notele se citesc din aceeași fereastră ca rulajul; ciorna nu intră în rulaj (Regula EVIDENTA)."""
+    rosii = [c for c in constatari if c.get("stare") == "rosu" and c.get("cont") in _SENS_CIORNA]
+    if not rosii:
+        return constatari
+    from core import jurnal_api as _j
+    from psycopg2.extras import RealDictCursor
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        randuri = _repo.ciorne_pe_conturi_tva(cur, schema, data_de, data_pana)
+    for c in rosii:
+        col = _SENS_CIORNA[c["cont"]]
+        note = []
+        for r in randuri:
+            suma = _d(r[col])
+            if suma:
+                note.append({"nota_id": r["id"], "nr_curent": int(r["nr_curent"]), "data": r["data"].isoformat(),
+                             "descriere": r["descriere"] or "", "suma": "%.2f" % suma,
+                             "document": _j.document_justificativ(r["document_ref"], r["f_tip"], r["f_serie"], r["f_numar"], r["f_data"],
+                                                                  r["sursa"], r["numar"])})
+        c["ciorne"] = note
+        c["ciorne_explica"] = bool(note) and abs(sum(_d(n["suma"]) for n in note) - _d(c["diferenta"])) <= TOLERANTA
+    return constatari
+
+
 def rulaje_luna(conn, schema, an, luna, conturi):
     """Rulaje DEBIT/CREDIT pe LUNA (nu cumulat) pentru conturile date. Deleaga la rulaje_interval
     (o singura sursa). Cumulatul din documente_api.balanta() NU se poate compara cu D300 (lunar)."""
@@ -703,6 +735,7 @@ def verifica_tva(conn, schema, an, luna):
     constatari = compara_tva(R, rulaje, an, luna, necontate,
                              sursa_declarat=sursa_declarat,
                              patru_ochi=_patru_ochi_activ(conn, schema))
+    constatari = ciorne_care_explica(conn, schema, _de, _pana, constatari)   # [deficiența 284]
     # [R35, 28.08.2026] A DOUA INSTANTA, in aceeasi functie, si nu se vede din prima: agregarea
     # era `rosu if any(rosu) else verde` - fara ramura de GRI. Orice constatare gri (semnalul pe
     # 4428 exista de dinainte, iar de azi si verdele-peste-necunoscut) se COLAPSA in verde la

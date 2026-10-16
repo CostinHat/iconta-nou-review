@@ -70,6 +70,9 @@ TABELE_TENANT = (
     "audit_log",
     "declaratii_coada",
     "declaratii_depuse",
+    # [lotul 6, 284, 16.10.2026] Cererile de trimitere în coadă care așteaptă nota explicativă. SE ȘTERG: sunt cereri despre
+    # declarațiile firmei; fără firmă nu mai are cine le relua.
+    "declaratii_in_asteptare",
     "pachet_povestea",
     # [R43, 06.09.2026] Perechea `ref -> firmă` a linkurilor de plată. SE ȘTERGE: e o cheie de
     # acces către facturile firmei, iar firma nu mai există. Lăsată în urmă, ar fi o referință

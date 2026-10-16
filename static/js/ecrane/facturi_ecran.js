@@ -3,9 +3,10 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, cate, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=72aa1cbbdb";  /* esc_nc27 */
+import { api, cate, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota } from "../api.js?v=9409795a49";  /* esc_nc27 */
+import { randeazaStareSpv } from "./spv_stare.js?v=f15ed7cbc1";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaEmitere } from "./emitere_ecran.js?v=9b535572d4";
+import { randeazaEmitere } from "./emitere_ecran.js?v=38ae9be8d2";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
@@ -81,31 +82,66 @@ function meniuFacturi(corp, nav, tenantId, opt) {
 // Valideaza (buton-verde) / Respinge (motiv in-ecran), XML brut la click. Fara confirm/alert.
 async function primiteSPV(corp, nav, tenantId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
-  let lista = [];
-  try { const r = await api.get(`/tenants/${tenantId}/facturi-primite`); lista = (r && r.primite) || []; } catch { corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca facturile primite din SPV.</p>`; return; }
-  if (!lista.length) {
-    corp.innerHTML = `<h2 class="pf-titlu">Facturi primite din SPV ${semnAjutor("F043")}</h2>
-      <div class="stare-goala">Nicio factură primită de validat. Facturile de la furnizori apar aici automat din SPV; le validezi înainte să intre în cheltuieli.</div>`;
-    return;
-  }
+  let lista = [], categorii331 = [];
+  try { const r = await api.get(`/tenants/${tenantId}/facturi-primite`); lista = (r && r.primite) || []; categorii331 = (r && r.categorii_331) || []; } catch { corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca facturile primite din SPV.</p>`; return; }
+  // [deficiența 273a/b, lotul 6] starea SPV a firmei (conectată? verificată când? ce a răspuns ANAF?), „Verifică acum în SPV” și importul
+  // manual XML UBL. „apar aici automat” se spune NUMAI când firma chiar e citită automat (conectată și cu drept).
   corp.innerHTML = `
     <h2 class="pf-titlu">Facturi primite din SPV ${semnAjutor("F043")}</h2>
-    <p class="pf-intro">De la furnizori · de validat înainte de cheltuieli.</p>
+    <div id="fp-spv" style="margin-bottom:10px"></div>
+    <p class="pf-intro" id="fp-actiuni">
+      <button class="buton-secundar" id="fp-verifica" data-actiune="POST /tenants/{tenant_id}/spv/verifica-acum">Verifică acum în SPV</button>
+      <label class="buton-secundar" style="margin-left:6px" data-actiune="POST /tenants/{tenant_id}/facturi-primite/import-xml">Importă XML UBL
+        <input type="file" id="fp-xml" accept=".xml,.zip" multiple hidden aria-label="Fișier XML UBL al facturii primite"></label>
+    </p>
+    <div id="fp-mesaj"></div>
+    <div id="fp-lista"></div>`;
+  const zLista = corp.querySelector("#fp-lista"), zMsg = corp.querySelector("#fp-mesaj");
+  // butoanele se leagă înaintea cererii de stare (un clic dat cât se citește starea nu se pierde — `core/test_legari_await.py`)
+  corp.querySelector("#fp-verifica").addEventListener("click", async (ev) => {
+    const b = ev.currentTarget;
+    b.disabled = true;
+    arataMesaj(zMsg, "Se citește SPV…", "info");
+    try {
+      const r = await api.post(`/tenants/${tenantId}/spv/verifica-acum`, {});
+      const c = r.citire || {};
+      const txt = c.eroare ? `ANAF a răspuns: „${c.eroare}”.` : `Citit din SPV: ${cate(c.mesaje || 0, "factură primită", "facturi primite")} în ultimele ${cate(c.zile, "zi", "zile")}; cele noi sunt în listă.`;
+      primiteSPV(corp, nav, tenantId, opt).then(() => arataMesaj(corp.querySelector("#fp-mesaj"), txt, c.eroare ? "avert" : "ok"));
+    } catch (e) { arataMesaj(zMsg, e.mesaj || "Citirea din SPV n-a mers.", "eroare"); b.disabled = false; }
+  });
+  corp.querySelector("#fp-xml").addEventListener("change", async (ev) => {
+    const fs = [...ev.target.files];
+    if (!fs.length) return;
+    const fd = new FormData();
+    fs.forEach((f) => fd.append("fisiere", f));
+    try {
+      const r = await api.postForm(`/tenants/${tenantId}/facturi-primite/import-xml`, fd);
+      const txt = [`${cate(r.importate, "factură importată", "facturi importate")} în lista de validat`
+        + (r.deja ? `; ${cate(r.deja, "era deja", "erau deja")} în listă` : "") + ".", ...(r.erori || [])].join("\n");
+      primiteSPV(corp, nav, tenantId, opt).then(() => arataMesaj(corp.querySelector("#fp-mesaj"), txt, (r.erori || []).length ? "avert" : "ok"));
+    } catch (e) { arataMesaj(zMsg, e.mesaj || "Importul n-a mers.", "eroare"); }
+    ev.target.value = "";
+  });
+  const st = await randeazaStareSpv(corp.querySelector("#fp-spv"), nav, tenantId);
+  const automat = !!(st && st.conectat && st.are_drept !== false);
+  zLista.innerHTML = !lista.length
+    ? `<div class="stare-goala">Nicio factură primită de validat.${automat ? " Facturile de la furnizori apar aici automat din SPV; le validezi înainte să intre în cheltuieli." : " Până la conectarea SPV, le încarci cu „Importă XML UBL”."}</div>`
+    : `<p class="pf-intro">De la furnizori · de validat înainte de cheltuieli.</p>
     <div class="pf-lista zebra-lista">${lista.map((p) => `
       <button class="buton-secundar pf-frand fac-primita-btn" data-id="${p.id}">
         <div class="pf-frand-text">
           <div class="pf-frand-nume">${esc(p.furnizor || p.cif_emitent || "—")}${p.numar ? " · " + esc(p.numar) : ""}</div>
-          <div class="pf-frand-sub">${p.data ? dataRo(p.data) : ""}${p.parsabila ? "" : ' · <span style="color:var(--rosu)">neparsabilă</span>'}</div>
+          <div class="pf-frand-sub">${p.data ? dataRo(p.data) : ""}${p.parsabila ? "" : ' · <span style="color:var(--rosu)">neparsabilă</span>'}${p.de_completat && p.de_completat.length ? ' · de completat: ' + esc(p.de_completat.join(", ")) : ""}</div>
         </div>
         <span class="pf-frand-suma">${p.total ? bani(p.total) + " " + (p.moneda || "lei") : ""}</span>
       </button>`).join("")}</div>`;
   corp.querySelectorAll(".fac-primita-btn").forEach((b) => b.addEventListener("click", () => {
     const p = lista.find((x) => String(x.id) === b.dataset.id);
-    nav.mergi("Validare factură", (c) => primitaDetaliu(c, nav, tenantId, p, opt));
+    nav.mergi("Validare factură", (c) => primitaDetaliu(c, nav, tenantId, p, opt, categorii331));
   }));
 }
 
-function primitaDetaliu(corp, nav, tenantId, p, opt) {
+function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
   const linii = p.linii || [];
   corp.innerHTML = `
     <h2 class="pf-titlu">Factură primită · ${esc(p.numar || "—")}</h2>
@@ -135,6 +171,13 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
         ${selectDaNu('id="pr-furnizor-incasare"', null, "Furnizor cu TVA la încasare")}</label>
       <label class="camp"><span class="camp-eticheta">Țara furnizorului (ISO)</span><input class="camp-input" id="pr-tara" value="${esc(((p.cif_emitent || "").match(/^[A-Za-z]{2}/) || ["RO"])[0].toUpperCase())}" placeholder="RO" aria-label="Țara furnizorului"></label>
     </div>
+    <!-- [deficiența 273c] ce nu vine din XML: de completat înainte de validare -->
+    <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:8px">
+      <label class="camp"><span class="camp-eticheta">Furnizorul e înregistrat în scopuri de TVA (de completat: din XML nu se află; D394 îl declară după tip)<span class="oblig">*</span></span>
+        ${selectDaNu('id="pr-platitor"', null, "Furnizor plătitor de TVA")}</label>
+      ${p.taxare_inversa ? `<label class="camp"><span class="camp-eticheta">Categoria produsului cu taxare inversă (art.331; de completat — codul din D394)<span class="oblig">*</span></span>
+        <select class="camp-input" id="pr-c331" aria-label="Categoria art.331"><option value="">— alege —</option>${categorii331.map((c) => `<option value="${esc(c)}">${esc(c.replace(/_/g, " "))}</option>`).join("")}</select></label>` : ""}
+    </div>
     <div style="margin-top:14px">
       <button class="buton-verde" id="pr-valideaza" data-actiune="POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza">Validează (creează cheltuiala)</button>
       <button data-actiune="POST /tenants/{tenant_id}/facturi-primite/{primita_id}/respinge" class="btn-link" id="pr-respinge" style="margin-left:10px">Respinge</button>
@@ -145,7 +188,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
   const zona = corp.querySelector("#pr-zona");
   corp.querySelector("#pr-valideaza").addEventListener("click", () => {
     curataEroriCamp(corp);
-    if (cereAlegerile(corp, ["#pr-furnizor-incasare"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (cereAlegerile(corp, ["#pr-furnizor-incasare", "#pr-platitor", ...(p.taxare_inversa ? ["#pr-c331"] : [])])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     if (!(corp.querySelector("#pr-tara").value || "").trim()) { eroareCamp(corp, "pr-tara", "Scrie țara furnizorului (codul ISO, ex. RO)."); return; }
     confirmaCaseta(zona, "Validezi factura și creezi cheltuiala? Intră în evidența contabilă.", async () => {
       try {
@@ -156,6 +199,8 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
           api.post(`/tenants/${tenantId}/facturi-primite/${p.id}/valideaza`, {
             cont: corp.querySelector("#pr-cont").value.trim(),
             furnizor_tva_incasare: daNu(corp.querySelector("#pr-furnizor-incasare")),  // [B1 D300] ales de om
+            tert_platitor_tva: daNu(corp.querySelector("#pr-platitor")),   // [273c] tipul furnizorului în D394
+            categorie_331: p.taxare_inversa ? corp.querySelector("#pr-c331").value : null,
             tert_tara: _tara,
             destinatii: _dest, ...alegere }));
         arataMesaj(zona, "Validată. Cheltuiala creată din factura " + (p.numar || "fără număr") + (p.data ? " din " + dataRo(p.data) : "") + ".", "ok");   // [258] factura cum o arată lista, nu id-ul ei
@@ -197,6 +242,16 @@ export function etichetaIncasare(f) {
   return primita ? "neplătită" : "neîncasată";
 }
 
+// [deficiența 275b, lotul 6] Starea în SPV a facturii emise, cu termenul de transmitere (OUG 120/2021 art.10 alin.(7): 5 zile lucrătoare
+// de la emitere) — o singură definiție pentru listă și detaliu (`facturi_api._cu_stare_spv`).
+export function etichetaSpv(f) {
+  const s = f.stare_spv;
+  if (!s) return "";
+  const ce = { netrimisa: "netrimisă în SPV", trimisa: "trimisă în SPV", acceptata: "acceptată în SPV", respinsa: "respinsă în SPV" }[s.stare] || s.stare;
+  const termen = s.stare === "netrimisa" ? ` · termen ${dataRo(s.termen)}${s.depasit ? " (depășit)" : ""}` : "";
+  return ce + termen;
+}
+
 // ---------- ISTORIC ---------- /* facback_null_fix_v1 */
 async function istoricFacturi(corp, nav, tenantId, opt) {
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
@@ -228,11 +283,12 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
           const storno = f.storno_din_id ? ' \u00b7 <span class="fac-storno-tag">storno</span>' : "";
           const tipTag = f.tip && f.tip !== "factura" ? ` \u00b7 <span class="fac-storno-tag">${f.tip}</span>` : "";
           const incasare = f.stare_incasare ? " \u00b7 " + esc(etichetaIncasare(f)) : "";   // [retest 08.10, completarea pct.1]
+          const spv = f.stare_spv ? ` \u00b7 <span class="${f.stare_spv.depasit || f.stare_spv.stare === "respinsa" ? "msg-avert" : ""}">${esc(etichetaSpv(f))}</span>` : "";   // [275b]
           return `
         <button class="buton-secundar pf-frand fac-frand-btn" data-id="${f.id}">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${f.numar || "\u2014"}${f.tert_nume ? " \u00b7 " + esc(f.tert_nume) : ""}</div>
-            <div class="pf-frand-sub">${dataRo(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}${incasare}</div>
+            <div class="pf-frand-sub">${dataRo(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}${incasare}${spv}</div>
           </div>
           <span class="pf-frand-suma">${suma}</span>
           ${(!opt.client && !f.nota_contare) ? `<span class="btn-link fac-cont" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
@@ -295,12 +351,12 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
           confirmaCaseta(b.parentElement || b, r.mesaj, async () => {
             try {
               r = await api.post(url + "?confirma=true" + (q ? "&" + q : ""), {});
-              b.outerHTML = `<span class="tip-desc" style="color:var(--verde);margin-left:8px">ciorna ${esc(r.nota_eticheta || "")}</span>`;
+              b.outerHTML = `<span class="tip-desc" style="color:var(--verde);margin-left:8px">${stareNota(r)} ${esc(r.nota_eticheta || "")}</span>`;
             } catch (e2) { arataMesaj(b.parentElement || corp, (e2 && e2.mesaj) || "eroare", "eroare"); }
           }, { textOk: "Retrimite fără schimbări" });
           return;
         }
-        b.outerHTML = `<span class="tip-desc" style="color:var(--verde);margin-left:8px">ciorna ${esc(r.nota_eticheta || "")}</span>`;
+        b.outerHTML = `<span class="tip-desc" style="color:var(--verde);margin-left:8px">${stareNota(r)} ${esc(r.nota_eticheta || "")}</span>`;
       } catch (e) {
         b.outerHTML = `<span class="tip-desc" style="color:var(--galben-text);margin-left:8px">${esc((e.mesaj || "eroare"))}</span>`;
       } finally { _zl.remove(); }
@@ -513,6 +569,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         ${(!opt.client && f.directie === "emisa" && !f.storno_din_id) ? '<button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/storno" class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
         ${f.stare_incasare ? `<span class="fd-stare${f.stare_incasare.stare === "incasata" ? " fd-stare-verde" : ""}">${esc(etichetaIncasare(f))}</span>` : ""}
+        ${f.stare_spv ? `<span class="fd-stare${f.stare_spv.stare === "acceptata" ? " fd-stare-verde" : ""}" id="fd-stare-spv">${esc(etichetaSpv(f))}</span>` : ""}
         ${f.platita_la && f.plata_confirmata_de === "mock" ? '<span class="fd-stare fd-stare-galben" title="Confirmare de simulare, nu de la un procesator de pl\u0103\u021bi. Nu dovede\u0219te c\u0103 au intrat bani.">pl\u0103tit\u0103 prin SIMULARE</span>' : ""}
         <!-- [06.09.2026] Butonul «Link plata» a fost SCOS: calea de plata online e inchisa prin
              decizie — incasarea se face prin transfer bancar, confirmat din extras. Eticheta
@@ -736,7 +793,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=e5617fbd32");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=d921e045d9");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }));
   });
@@ -750,7 +807,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       await detaliiFactura(corp, nav, tenantId, f.id, opt);
       arataMesaj(corp, `Factura ${r.numar} a fost emis\u0103.`, "ok");
     } catch (e) {
-      btnTransforma.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + ((e && e.mesaj) || "Nu s-a putut transforma.") + '</span>');
+   refuzPeRand(btnTransforma, ((e && e.mesaj) || "Nu s-a putut transforma."));
     }
   });
   const zonaStorno = corp.querySelector("#fd-storno-zona");

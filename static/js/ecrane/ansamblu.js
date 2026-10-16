@@ -12,7 +12,7 @@
 // ca butoanele. Asistentului fără firme i se spune asta, nu i se arată un fir pe care nu-l poate parcurge.
 // [pct.7] Termenul de rezolvare („se rezolvă în maximum 48 de ore”) a ieșit din fraza despre Suport: nu e un angajament
 // decis (Costin). Fraza rămâne, fără termen.
-import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=72aa1cbbdb";
+import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=9409795a49";
 import { STRATURI } from "./migrare.js?v=06d45ea83e";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
@@ -59,6 +59,19 @@ function _sectiuneFir(asistent, pasi) {
   `</section>`;
 }
 
+// [deficiența 289c, comanda Costin 16.10.2026, textul verbatim] conectarea SPV e a cabinetului, o singură dată — nu un pas al fiecărei
+// firme, deci stă înaintea firului de intrare; o face administratorul cabinetului (asistentul n-are ecranul „Conectare SPV”)
+export const PAS_CONECTARE_SPV = "Conectează cabinetul la SPV: Setări cont → Conectare SPV. Te autentifici o singură dată cu certificatul "
+  + "digital; conexiunea acoperă toate firmele pentru care ai împuternicire la ANAF. Fără acest pas facturile nu pleacă în SPV și nici "
+  + "cele de la furnizori nu vin automat.";
+
+function _sectiuneSpv() {
+  return `<section class="ans-sectiune" id="ans-spv">` +
+    `<h3 class="ans-sec-titlu">Primul pas al cabinetului</h3>` +
+    `<p class="ans-fir-unde">${esc(PAS_CONECTARE_SPV)}</p>` +
+  `</section>`;
+}
+
 async function _corpAnsamblu(corp, primaLogare) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă prezentarea…</p>`;
   const asistent = sesiune.rol() === "angajat";
@@ -79,6 +92,7 @@ async function _corpAnsamblu(corp, primaLogare) {
     `<div class="ans-continut">` +
       (primaLogare ? intro : "") +
       `<p class="ans-intro">Orice solicitare de funcționalitate nouă sau modificare a celor existente se raportează din „Suport”, sus pe pagina principală, lângă „Recomandă”.</p>`   /* [deficiența 225, 12.10.2026] bandă, nu card */ +
+      (asistent ? "" : _sectiuneSpv()) +
       (faraFirme
         ? `<p class="msg-avert ans-fara-firme" role="status">Nu ai firme asociate. Cere administratorului cabinetului să ți le aloce, din ecranul Asistenți.</p>`
         : _sectiuneFir(asistent, pasi)) +

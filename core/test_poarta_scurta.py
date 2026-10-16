@@ -126,7 +126,9 @@ def test_js_atins_nu_porneste_suita_ci_verificatorul_e2e_si_garzile_statice(monk
     assert [c for c in rulate if c[1:] == ["verificator_conformitate.py"]]
     e2e = sorted(c[-1] for c in rulate if c[1:3] == ["scripts/e2e_poarta.py", "--arbore"])
     # [lotul 5, 15.10.2026] + e2e_lot5_c3.py: testul 267 (ciorna formularului de înregistrare) folosește id-urile formularului
-    assert e2e == ["--doar=e2e_inregistrare_libera.py", "--doar=e2e_invitatii.py", "--doar=e2e_lot5_c3.py"], e2e
+    # [lotul 6, 16.10.2026] + e2e_lot6.py: testul 290 (eroarea dispare după corectare) folosește formularul de autentificare
+    #   (`#login-email`, `#login-eroare`)
+    assert e2e == ["--doar=e2e_inregistrare_libera.py", "--doar=e2e_invitatii.py", "--doar=e2e_lot5_c3.py", "--doar=e2e_lot6.py"], e2e
 
 
 def test_registrul_langa_python_nu_porneste_suita(monkeypatch):

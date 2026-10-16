@@ -2547,3 +2547,35 @@ din comanda 4 pct.4 (pe producție nu lucra nimeni; toate cabinetele de test): b
 conturi; capturi vechi de mutat: 0, nu existau), restart de către rulator; four-way închis pe `6c4917d0`. Apoi, cu `gdpr_sterge`: cabinetele
 de retest 48766 și 48767 și cererea neconfirmată +test253c — rămâne „Cabinet Test Sesiunea B SRL”. Sonda la 13:00: `repornit=True (deploy)`,
 fără alertă (proba vie a lui 271; la 12:45:01, între mutarea discului și repornire, a citit tot commitul procesului, `48465e7d`).
+
+## 16.10.2026 (după-amiaza – seara) — Lotul 6: comanda 1 (272–282) și patru completări (283–295), pe ramura `lucru/lot6-2026-10-16`
+
+Lucrat în worktree, fără publicare (regim pilot). Răspuns punctual pentru fiecare număr; deciziile, cu temeiul, în DECIZII „Lotul 6”.
+- **Bancă (277, 276):** duplicatul extrasului e mișcarea (dată, sumă, sens, referință / descriere, cont), nu fișierul; soldurile MT940
+  comparate cu 5121; formatele spuse pe ecran; ajutorul fără termeni de programator (gardă nouă pe tot ajutorul).
+- **Casă (278, 279):** dispoziția leagă factura, surplusul = avans (419 la factura de avans, exigibilitatea la încasare în D300),
+  plafonul Legii 70/2015 din formular; starea reală a notei la salvare și pe rând (antetul `X-Iconta-La-Validare`), refuzul pe rând.
+- **SPV (273, 275, 289, citirea pe producție):** starea SPV a firmei, „Verifică acum”, importul XML UBL, „de completat”, starea SPV a
+  facturii emise cu termenul de 5 zile lucrătoare; emitentul certificatului; ghidul de bun venit. Citirea unică pe producție (FISCALOS
+  ICONTA): conexiunea merge, ANAF răspunde „Nu aveți drept în SPV pentru CIF=55229657”. Prima citire a unei firme noi acoperă 60 de zile.
+- **Declarații (283, 284, 287, 294, 295):** datoratele întâi, cu termenul; refuzul D300 numește notele, iar declarația revine singură în
+  coadă după validarea lor; pasul următor după starea reală; perioada implicită scadentă; „Rezumat” D100 cu baza.
+- **Clase (285, 290, 292, 286):** fereastra se lățește singură, acțiunea și mesajul fixe jos; eroarea dispare la corectare (un mecanism
+  în `api.js`); titlul ferestrei = al cardului; contoarele paginii principale după orice scriere.
+- **Rest:** 272 CUI-ul (corectura administratorului, închis și `PUT /tenants`), 281 amortizarea restantă + închiderea cu confirmare,
+  282 cererile neconfirmate (+ retrimiterea), 291 bulina Suport, 293 renunțarea pe declarația altcuiva, 288 Povestea lunii verificată la
+  aprobare, 274a cota articolului. 280: nu e rotunjire la par; clasa `round()` reparată în toată aplicația (5 sume noi pe ROUND_HALF_UP).
+- **Găsite pe drum:** C41 (registrul fiscal pe profit cădea cu 500 la orice firmă — garda 285 l-a prins); scanerul drepturilor lega
+  cuvintele unui selector de funcții (calibrat); rezultatul lunii al pachetului includea închiderea 121.
+- **Rămase:** 274b (0% fără categorie) — propunerea cu temeiul (Ghidul MF e-Factura v2.9 cap.3, OPANAF 174/2026 rd.13–15) așteaptă
+  validarea. Migrări noi (pe baza de test; pe producție la publicare): `migrare_extras_miscare`, `migrare_casa_avans`,
+  `migrare_spv_citiri`, `migrare_declaratii_asteptare`, `migrare_inregistrari_email`, `migrare_raportari_stare_necitita`.
+
+## 16.10.2026 (noaptea) — Lotul 6: rularea țintită roșie, reparată
+
+`poarta_scurta.py` (suita întreagă + e2e-ul atins): 62 de teste Python și 9 e2e roșii. Cauzele, una câte una (DECIZII „Lotul 6: rularea
+țintită”): șase defecte reale ale lotului reparate în cod (emailul de retrimitere ținea conexiunea — 282; ordinea parametrilor rutei de
+închidere — 281; previzualizarea casei pe poarta de citire istorică — 278; cinci refuzuri nevăzute; butoanele SPV legate după cerere —
+273; bara fixă care acoperea nota de subsol — 285, reparat global în CSS); răspunsuri schimbate deliberat — testele vechi aliniate;
+gărzile de structură satisfăcute pe structură (afirmații tipate, coduri de refuz, aserțiuni pe AST), fără plafon ridicat; registrele
+generate (P7, trasee, clichete) refăcute din instrumente pe baza de test. Proba nouă: legarea casei până în rulajul clientului.

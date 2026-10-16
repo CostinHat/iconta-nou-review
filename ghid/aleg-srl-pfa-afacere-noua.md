@@ -32,6 +32,6 @@ Ce înseamnă, practic, în comparație cu un SRL:
 
 ## Ce face iConta.eu
 
-Pentru PFA, iConta.eu are motorul D212 („Motor D212 (PFA/II/IF)”) live: calculează venitul net în sistem real, CAS și CASS pe plafoanele legale (6/12/24 salarii minime), alimentând Fișa D212. Pentru SRL, aplicația calculează impozitul pe profit sau pe veniturile microîntreprinderii (D101/D100) și impozitul pe dividende (D205). Aplicația **nu oferă însă o comparație directă**, pe același venit ipotetic, între sarcina fiscală totală a unui PFA și cea a unui SRL — fiecare calcul rulează separat, în funcție de forma juridică deja aleasă și introdusă în aplicație.
+Pentru PFA, iConta.eu are calculul D212 („Calculul Declarației unice D212 (PFA/II/IF)”) live: calculează venitul net în sistem real, CAS și CASS pe plafoanele legale (6/12/24 salarii minime), alimentând Fișa D212. Pentru SRL, aplicația calculează impozitul pe profit sau pe veniturile microîntreprinderii (D101/D100) și impozitul pe dividende (D205). Aplicația **nu oferă însă o comparație directă**, pe același venit ipotetic, între sarcina fiscală totală a unui PFA și cea a unui SRL — fiecare calcul rulează separat, în funcție de forma juridică deja aleasă și introdusă în aplicație.
 
 [iConta.eu](/)

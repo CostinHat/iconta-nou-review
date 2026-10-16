@@ -95,6 +95,119 @@ def importa_mesaj(schema, principal, cif_tenant, msg, stat):
     stat[status] += 1
 
 
+#: [lotul 6, 273 / comanda Costin pct.2b] prima citire a unui CUI pe tokenul activ cuprinde toată fereastra oficială: o firmă nou adăugată
+#: (sau un cabinet nou conectat) primește facturile din ultimele 60 de zile, nu numai din ultimele `ZILE`.
+ZILE_PRIMA_CITIRE = 60
+#: ANAF: „Nu aveti drept in SPV pentru CIF=…” — certificatul nu are drept pentru firmă (împuternicire)
+_FARA_DREPT = "nu aveti drept"
+
+
+def _citire_anterioara(conn, token_id, cif):
+    with conn.cursor() as cur:
+        cur.execute("SELECT ultima_reusita FROM public.spv_cui_acoperit WHERE token_id = %s AND cui = %s", (token_id, cif))
+        r = cur.fetchone()
+    return r[0] if r else None
+
+
+def _inregistreaza_citire(conn, token_id, cif, eroare, mesaje):
+    """Rândul (token, CUI) din `public.spv_cui_acoperit`: când s-a verificat, dacă certificatul are drept, câte mesaje, ce eroare."""
+    are_drept = None if eroare and _FARA_DREPT not in eroare.lower() else (not eroare)
+    with conn.cursor() as cur:
+        # upsert-ok: starea ULTIMEI citiri pe (token, CUI) — rescrisă la fiecare citire, intenționat; `ultima_reusita` se păstrează la eșec
+        cur.execute("""INSERT INTO public.spv_cui_acoperit (token_id, cui, verificat_la, are_drept, eroare, mesaje, ultima_reusita)
+                       VALUES (%s, %s, now(), %s, %s, %s, CASE WHEN %s IS NULL THEN now() END)
+                       ON CONFLICT (token_id, cui) DO UPDATE SET verificat_la = now(), are_drept = EXCLUDED.are_drept,
+                         eroare = EXCLUDED.eroare, mesaje = EXCLUDED.mesaje,
+                         ultima_reusita = COALESCE(EXCLUDED.ultima_reusita, public.spv_cui_acoperit.ultima_reusita)""",
+                    (token_id, cif, are_drept, eroare, mesaje, eroare))
+
+
+def citeste_firma(schema, stat=None, _dormi=None):
+    """O firmă: lista mesajelor primite (filtru P) + importul celor noi + rândul ei din `spv_cui_acoperit`. Folosită de timer și de
+    „Verifică acum în SPV”. Întoarce {cif, zile, mesaje, eroare}; `eroare` = textul ANAF sau motivul (fără CUI, fără conexiune)."""
+    stat = stat if stat is not None else _stat_nou()
+    _dormi = _dormi or (lambda _s: None)
+    with db.get_conn() as conn:
+        principal = spv_conector.principal_pentru_schema(conn, schema)
+        token = spv_conector.ia_token_activ(conn, principal) if principal else None
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id=1")
+            row = cur.fetchone()
+        cif = _digits(row[0]) if row and row[0] else ""
+        if not cif:
+            stat["tenanti_fara_cif"] += 1
+            return {"cif": "", "zile": 0, "mesaje": 0, "eroare": "Firma n-are CUI în Date firmă."}
+        if not token:
+            stat["skip_auth"] += 1
+            return {"cif": cif, "zile": 0, "mesaje": 0, "eroare": "Cabinetul nu e conectat la SPV."}
+        zile = ZILE if _citire_anterioara(conn, token["id"], cif) else ZILE_PRIMA_CITIRE
+    try:
+        mesaje, eroare = efs.lista_mesaje(principal, cif, MEDIU, zile=zile, filtru="P")
+    except spv_conector.EroareSpvFaraDrept:
+        # 403: refuzul de drept pe CIF (ARHITECTURA_SPV.md, „fara drept” vine de obicei ca 200 + eroare; 403 e aceeași concluzie)
+        stat["skip_auth"] += 1
+        mesaje, eroare = [], "Nu aveti drept in SPV pentru CIF=%s" % cif
+    except spv_conector.EroareSpv as e:
+        stat["skip_auth"] += 1
+        print("  SKIP auth lista %s: %s" % (schema, e), file=sys.stderr)
+        mesaje, eroare = [], str(e)
+    with db.get_conn() as conn:
+        # „Nu exista mesaje in ultimele N zile” e un răspuns reușit (zero facturi), nu o eroare
+        fara_mesaje = bool(eroare) and eroare.lower().startswith("nu exista mesaje")
+        _inregistreaza_citire(conn, token["id"], cif, None if fara_mesaje else eroare, len(mesaje))
+    if eroare and not fara_mesaje:
+        print("  %s: lista fara mesaje/eroare: %s" % (schema, eroare))
+        return {"cif": cif, "zile": zile, "mesaje": 0, "eroare": eroare}
+    for msg in mesaje:
+        try:
+            importa_mesaj(schema, principal, cif, msg, stat)
+        except Exception as e:
+            print("  EROARE import %s/%s: %s" % (schema, msg.get("id"), e), file=sys.stderr)
+        _dormi(INTERVAL_SEC)
+    return {"cif": cif, "zile": zile, "mesaje": len(mesaje), "eroare": None}
+
+
+def _stat_nou():
+    return {"ciorna": 0, "descarcata": 0, "deja": 0, "scurgere_evitata": 0,
+            "skip_auth": 0, "descarca_esec": 0, "fara_xml": 0, "tenanti_fara_cif": 0}
+
+
+def importa_xml_manual(schema, continut, nume_fisier=""):
+    """[lotul 6 pct.7b, 273] „Import manual XML UBL”: factura primită încărcată de contabil intră în ACELAȘI flux ca cele din SPV
+    (`efactura_primite`, ciornă, validată apoi de contabil), nu direct în facturi. Cheia de unicitate: `manual-<sha256 XML>` (același
+    fișier a doua oară nu se dublează). Beneficiarul din XML trebuie să fie firma. Întoarce {"importate", "deja", "erori": [...]}."""
+    rez = {"importate": 0, "deja": 0, "erori": []}
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id=1")
+            row = cur.fetchone()
+    cif = _digits(row[0]) if row and row[0] else ""
+    if not cif:
+        return dict(rez, erori=["Firma n-are CUI în Date firmă: factura nu se poate verifica."])
+    try:
+        perechi = efi.extrage_fisiere(nume_fisier or "f.xml", continut)
+    except Exception as e:
+        return dict(rez, erori=["%s: %s" % (nume_fisier or "fișier", e)])
+    for nume, xml in perechi:
+        try:
+            f = efi.parseaza_xml(xml, cif)
+        except ValueError as e:
+            rez["erori"].append("%s: %s" % (nume, e))
+            continue
+        if f["directie"] != "primita":
+            rez["erori"].append("%s: factura e emisă de firmă, nu primită — se încarcă la facturile emise." % nume)
+            continue
+        xml_txt = xml.decode("utf-8", "replace") if isinstance(xml, (bytes, bytearray)) else xml
+        sha = hashlib.sha256(xml_txt.encode("utf-8")).hexdigest()
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"""INSERT INTO {schema}.efactura_primite (id_mesaj_anaf, cif_emitent, cif_beneficiar, tip, xml_brut, xml_sha256, status)
+                                VALUES (%s,%s,%s,'MANUAL',%s,%s,'ciorna') ON CONFLICT (id_mesaj_anaf) DO NOTHING RETURNING id""",
+                            ("manual-" + sha[:40], _digits(f["tert_cui"]), cif, xml_txt, sha))
+                rez["importate" if cur.fetchone() else "deja"] += 1
+    return rez
+
+
 def ruleaza(_dormi=None):
     import time
     _dormi = _dormi or time.sleep
@@ -104,33 +217,9 @@ def ruleaza(_dormi=None):
             cur.execute("SELECT schema_name FROM information_schema.schemata "
                         "WHERE schema_name ~ '^tenant_[0-9]+$' ORDER BY schema_name")
             scheme = [r[0] for r in cur.fetchall()]
-    stat = {"ciorna": 0, "descarcata": 0, "deja": 0, "scurgere_evitata": 0,
-            "skip_auth": 0, "descarca_esec": 0, "fara_xml": 0, "tenanti_fara_cif": 0}
+    stat = _stat_nou()
     for schema in scheme:
-        with db.get_conn() as conn:
-            principal = spv_conector.principal_pentru_schema(conn, schema)
-            with conn.cursor() as cur:
-                cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id=1")
-                row = cur.fetchone()
-        cif = _digits(row[0]) if row and row[0] else ""
-        if not cif:
-            stat["tenanti_fara_cif"] += 1
-            continue
-        try:
-            mesaje, eroare = efs.lista_mesaje(principal, cif, MEDIU, zile=ZILE, filtru="P")
-        except spv_conector.EroareSpv as e:
-            stat["skip_auth"] += 1
-            print("  SKIP auth lista %s: %s" % (schema, e), file=sys.stderr)
-            continue
-        if eroare:
-            print("  %s: lista fara mesaje/eroare: %s" % (schema, eroare))
-            continue
-        for msg in mesaje:
-            try:
-                importa_mesaj(schema, principal, cif, msg, stat)
-            except Exception as e:
-                print("  EROARE import %s/%s: %s" % (schema, msg.get("id"), e), file=sys.stderr)
-            _dormi(INTERVAL_SEC)
+        citeste_firma(schema, stat, _dormi)
     from datetime import datetime, timezone
     print("%s spv_receive terminat: %s" % (datetime.now(timezone.utc).isoformat(), stat))
     return stat

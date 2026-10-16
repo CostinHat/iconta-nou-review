@@ -1,9 +1,9 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
 import { verdictDinStare } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict din stare
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate } from "../api.js?v=72aa1cbbdb";  /* generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand } from "../api.js?v=9409795a49";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaFacturi } from "./facturi_ecran.js?v=a5dd3d4abb";  // [p116_facturi_modul]
+import { randeazaFacturi } from "./facturi_ecran.js?v=8f18d8cd87";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -354,8 +354,7 @@ async function randeazaSolicitari(corp, nav) {
       await randeazaSolicitari(corp, nav);
     } catch (e) {
       btn.disabled = false; btn.textContent = "Trimite";
-      btn.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-      btn.insertAdjacentHTML("afterend", '<span class="msg-eroare">' + esc(e.mesaj || "Nu s-a putut trimite mesajul.") + '</span>');
+      refuzPeRand(btn, e.mesaj || "Nu s-a putut trimite mesajul.");
     }
   });
 }
@@ -504,8 +503,7 @@ async function ecranDocumente(corp, nav) {
         try {
           await descarca(`/portal/documente/balanta?an=${an}&luna=${parseInt(ll)}`, `balanta_${an}_${ll}.pdf`);
         } catch (e) {
-          b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-          b.insertAdjacentHTML("afterend", `<span class="msg-eroare" style="margin-left:10px">${esc((e && (e.mesaj || e.message)) || "eroare")}</span>`);   // [R131]
+          refuzPeRand(b, (e && (e.mesaj || e.message)) || "eroare");   // [R131]
         }
       });
     });

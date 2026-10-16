@@ -40,7 +40,23 @@ def declaratii_tipuri(tenant_id, ctx):
             _vec, ic_fapt=(lambda: control_fiscal_api.ic_fapt_din_db(conn, schema, azi_ro().year)))
     return {"tipuri": declaratii_api.tipuri(),
             "periodicitate": {t: declaratii_api.periodicitate_firma(t, _vec if row else None) for t in declaratii_api.tipuri()},
-            "neaplicabile": _neap}
+            "neaplicabile": _neap,
+            "datorate": _datorate_firmei(tenant_id, ctx)}
+
+
+def _datorate_firmei(tenant_id, ctx):
+    """[deficiența 283] Ce datorează firma, din vectorul fiscal, cu termenul — din MOTORUL UNIC al termenelor (același calcul ca ecranul
+    „Termene” și semaforul: `firma_rezumat._termene_una_firma` -> `termene_api.termene_firma` -> `control_fiscal_api.obligatii_datorate`;
+    nedepusele cu termenul în următoarele 60 de zile). Firma neevaluabilă (vector necompletat) -> listă goală; ecranul arată toate
+    declarațiile, ca înainte. [{tip, an, luna, perioada, termen}]."""
+    from core import firma_rezumat as _fr
+    try:
+        ev, _ne = _fr._termene_una_firma({"id": tenant_id}, ctx, azi_ro())
+    except Exception as _e:  # noqa: BLE001 — lista ajutătoare nu oprește selectorul; nu e tăcut
+        from core import observare as _obs
+        _obs.esec_secundar("datoratele firmei in selectorul de declaratii", _e)
+        return []
+    return sorted((ev or {}).get("termene") or [], key=lambda d: (d["termen"], d["tip"]))
 
 
 def declaratie_valideaza(tip, date, ctx):

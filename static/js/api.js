@@ -135,8 +135,57 @@ async function _cere(metoda, cale, corp) {
     _butonSpreEcran(eroare, cale);   // [lotul 07.10 pct.2]
     throw eroare;
   }
-  if (metoda !== "GET") _refuzDepasit(cale);   // [deficiența 190] aceeași acțiune a reușit: refuzul de dinainte nu mai e adevărat
+  if (metoda !== "GET") { _refuzDepasit(cale); _anuntaSchimbarea(); }   // [deficiența 190] refuzul de dinainte nu mai e adevărat; [286]
+  return _cuLaValidare(r, date);
+}
+
+// ── [deficiența 286, clasa 265] O SCRIERE REUȘITĂ SE VEDE PE PAGINA PRINCIPALĂ ────────────────────────────────────────────────
+// Contoarele cardurilor („De validat”, „De depus”, notele în ciornă) se citeau o dată, la desenarea paginii: după o validare sau o
+// respingere rămâneau vechi până la reîncărcare. Orice scriere reușită prin `api.*` anunță `iconta:schimbare` (o dată, după ce se
+// liniștesc scrierile în rafală); pagina principală, cât e afișată, își recitește contoarele (`cabinet.js`).
+let _tSchimbare = null;
+function _anuntaSchimbarea() {
+  clearTimeout(_tSchimbare);
+  _tSchimbare = setTimeout(() => window.dispatchEvent(new CustomEvent("iconta:schimbare")), 300);
+}
+
+// ── [deficiența 279, clasa] STAREA REALĂ A NOTELOR SALVATE ─────────────────────────────────────────────────────────────────
+// Notele scrise de cine n-are drept de validare pleacă singure la validare (middleware-ul `main._autor_si_note_in_coada`), DUPĂ
+// ce ruta a răspuns — deci un mesaj compus din răspuns („creată ca ciornă”) mințea. Middleware-ul trimite antetul
+// `X-Iconta-La-Validare` (etichetele elementelor din coadă); aici ajunge pe rezultat ca `laValidare`. Mesajele de salvare spun starea
+// prin `stareNota` / `pasNota`, nu prin cuvântul „ciornă” scris de mână (gard: `core/test_stare_nota_salvata.py`).
+function _cuLaValidare(r, date) {
+  const lv = r.headers && r.headers.get("X-Iconta-La-Validare");
+  if (lv && date && typeof date === "object") {
+    try { date.laValidare = JSON.parse(decodeURIComponent(lv)); } catch { date.laValidare = []; }
+  }
   return date;
+}
+/** Starea notei (notelor) după salvare: „trimisă la validare în cabinet” sau „ciornă”. */
+export function stareNota(r, plural = false) {
+  const lv = r && r.laValidare && r.laValidare.length;
+  return lv ? (plural ? "trimise la validare în cabinet" : "trimisă la validare în cabinet") : (plural ? "ciorne" : "ciornă");
+}
+/** Pasul următor, după starea reală. */
+export function pasNota(r, plural = false) {
+  const lv = r && r.laValidare && r.laValidare.length;
+  return lv ? (plural ? "Cabinetul le validează; până atunci nu se modifică și nu se șterg." : "Cabinetul o validează; până atunci nu se modifică și nu se șterge.")
+    : (plural ? "Le validezi din Registrul jurnal." : "O validezi din Registrul jurnal.");
+}
+
+// ── [deficiența 279 + clasa 259] REFUZUL PE RÂND ───────────────────────────────────────────────────────────────────────────
+// Refuzul unei acțiuni de pe un rând (Șterge, Stornează, Stabilește cota…) se punea ca `<span>` lângă buton, în coloana butoanelor,
+// unde strângea textul rândului. Acum stă sub textul rândului (`.pf-frand-text`), pe lățimea lui; fără rând, sub buton, pe rând propriu.
+export function refuzPeRand(buton, mesaj) {
+  const rand = buton && buton.closest && buton.closest(".pf-frand");
+  const loc = (rand && rand.querySelector(".pf-frand-text")) || null;
+  const vechi = (loc || buton.parentElement || document).querySelectorAll(":scope > .msg-refuz-rand");
+  vechi.forEach((x) => x.remove());
+  const d = document.createElement("div");
+  d.className = "msg-eroare msg-refuz-rand";
+  d.textContent = mesaj || "Acțiunea a fost refuzată.";
+  if (loc) loc.appendChild(d); else buton.insertAdjacentElement("afterend", d);
+  aduInVedere(d);
 }
 
 // [p36_postform] trimitere multipart (FormData) - pt upload fisiere/imagini
@@ -204,7 +253,7 @@ function _butonSpreEcran(eroare, cale) {
     const el = zone[zone.length - 1];
     const cadru = el.closest(".em-curs-box, #refuz-nevazut") || el;
     if (cadru.querySelector("[data-ecran-destinatie]")) return true;
-    const { butonSpreEcran } = await import("./ecrane/ecran_destinatie.js?v=05e032b67b");
+    const { butonSpreEcran } = await import("./ecrane/ecran_destinatie.js?v=627c3c3c38");
     const z = document.createElement("span");
     z.className = "ecran-destinatie";
     el.appendChild(z);
@@ -315,7 +364,8 @@ async function _cereForm(cale, formData) {
     throw eroare;
   }
   _refuzDepasit(cale);   // [deficiența 190]
-  return date;
+  _anuntaSchimbarea();   // [286]
+  return _cuLaValidare(r, date);
 }
 
 export const api = {
@@ -405,6 +455,34 @@ export function eroareCamp(root, idCamp, txt) {
   aduInVedere(inp);   // [lotul 07.10 pct.3] câmpul vinovat (cel mai de sus, dacă sunt mai multe) intră în vedere
   return true;
 }
+
+// [deficiența 290, comanda Costin 16.10.2026, verbatim în DECIZII — clasă, toate formularele] „Mesajele de eroare din formulare nu dispar
+// după ce utilizatorul corectează câmpul […] Regula se aplică tuturor formularelor.” Un singur loc, pentru toate: când un câmp se schimbă
+// (tastare, alegere, fișier atașat), dispare (1) eroarea LUI (`eroareCamp`, cu marcajul roșu) și (2) refuzul de formular din aceeași zonă
+// (`arataMesaj(…, "eroare")` în `form` / fereastra de lucru): formularul nu mai e cel refuzat. Ascultarea e în faza de captură, deci
+// înaintea handlerului ecranului: o eroare nouă pusă de handler (fișierul prea mare) rămâne. Refuzul de pe un rând (`refuzPeRand`) nu
+// ține de formular: rămâne. Gard: e2e `test_def_290_*` + verificator ERORI_DUPA_CORECTARE.
+export const ZONE_EROARE_FORMULAR = ".msg-eroare:not([data-camp]):not(.msg-refuz-rand), .mig-eroare, .dlg-eroare, .login-eroare";
+export function stergeEroriDupaCorectare(ev) {
+  const c = ev && ev.target;
+  if (!(c instanceof Element) || !c.matches("input, select, textarea")) return;
+  if (c.id) {
+    const sp = c.parentElement && c.parentElement.querySelector('.msg-eroare[data-camp="' + c.id + '"]');
+    if (sp) sp.remove();
+  }
+  c.classList.remove("camp-invalid");
+  c.removeAttribute("aria-invalid");
+  const zona = c.closest("form, .fereastra-corp");
+  if (!zona) return;
+  // numai textul: unele zone poartă clasa din șablon și primesc apoi textul direct (`#bc-msg`, `#d-msg` …) — clasa rămâne a lor. Toate
+  // dialectele zonei de eroare a unui formular (`msg-`, `mig-`, `dlg-`, `login-eroare`); `dec-eroare` e rezultatul generării, nu al câmpurilor.
+  zona.querySelectorAll(ZONE_EROARE_FORMULAR).forEach((m) => {
+    m.textContent = "";
+    if (m.classList.contains("login-eroare")) m.hidden = true;   // caseta cu fundal: goală, nu se arată
+  });
+}
+document.addEventListener("input", stergeEroriDupaCorectare, true);
+document.addEventListener("change", stergeEroriDupaCorectare, true);
 
 export function curataEroriCamp(root) {
   const r = root || document;

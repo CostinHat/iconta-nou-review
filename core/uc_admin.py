@@ -134,9 +134,9 @@ def admin_sanatate(ctx):
         disp_kb = info.get("MemAvailable", 0)
         if total_kb:
             ram = {
-                "total_mb": round(total_kb / 1024, 1),
-                "disponibil_mb": round(disp_kb / 1024, 1),
-                "folosit_procent": round(100 * (1 - disp_kb / total_kb), 1),
+                "total_mb": round(total_kb / 1024, 1),  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
+                "disponibil_mb": round(disp_kb / 1024, 1),  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
+                "folosit_procent": round(100 * (1 - disp_kb / total_kb), 1),  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
             }
     except Exception:
         pass
@@ -145,14 +145,14 @@ def admin_sanatate(ctx):
     try:
         total, folosit, liber = _shutil.disk_usage("/")
         disc = {
-            "total_gb": round(total / (1024 ** 3), 1),
-            "liber_gb": round(liber / (1024 ** 3), 1),
-            "folosit_procent": round(100 * folosit / total, 1),
+            "total_gb": round(total / (1024 ** 3), 1),  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
+            "liber_gb": round(liber / (1024 ** 3), 1),  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
+            "folosit_procent": round(100 * folosit / total, 1),  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
         }
     except Exception:
         pass
 
-    uptime_sec = round(_time.time() - _uc_comun._APP_PORNIT_LA)
+    uptime_sec = round(_time.time() - _uc_comun._APP_PORNIT_LA)  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
 
     # --- baza de date ---
     db_info = {"conexiuni": None, "marime": None}

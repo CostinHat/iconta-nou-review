@@ -290,3 +290,37 @@ def test_def_256_pagina_principala_si_ecranele_se_incarca_in_versiunea_noua(supe
     pg.wait_for_function("(t) => (document.querySelector(\"button.cab-card [data-cheie='analytics']\") || {}).innerText === t",
                          arg=nou2, timeout=20000)
     superadmin.captura("acasa_dupa_ecran")
+
+
+def test_def_282_cererile_neconfirmate_apar_in_panou_admin_cu_retrimiterea(superadmin, curat):
+    """282. Panou Admin: cererile de înregistrare neconfirmate nu apăreau nicăieri.
+    Pașii superadminului: o cerere neconfirmată, cu linkul expirat -> Panou Admin -> „Înregistrare”: „Cereri neconfirmate” arată data,
+    cabinetul, emailul, „trimis …” și „a expirat …” -> „Retrimite confirmarea” -> mesajul „Confirmarea a plecat din nou”, rândul spune
+    „1 retrimitere” și noua expirare, iar în cutia poștală sosește emailul cu un link nou."""
+    import datetime as _dt
+    from core import db, inregistrare_libera as il
+    with db.get_conn() as c:
+        with c.cursor() as cur:
+            tok = il.creeaza(cur, {"email": EMAIL, "nume_cabinet": CABINET}, "x", "v1", None,
+                             acum=_dt.datetime.now(_dt.timezone.utc) - _dt.timedelta(hours=30))
+            il.marcheaza_trimis(cur, tok)
+        c.commit()
+    inainte = len(_scrisori(EMAIL))
+    pg = superadmin.pg
+    pg.goto(BAZA + "/", wait_until="domcontentloaded")
+    pg.wait_for_selector(".cab-grila", timeout=30000)
+    pg.click("button.cab-card:has([data-cheie='inregistrare'])")
+    rand = "#ins-cereri tr:has-text('%s')" % CABINET
+    pg.wait_for_selector(rand, timeout=20000)
+    t = pg.inner_text(rand)
+    superadmin.captura("cereri")
+    lat = pg.evaluate("() => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(); return [c.scrollWidth, c.clientWidth]; }")
+    assert lat[0] <= lat[1] + 1, ("285: tabelul nu încape în fereastră", lat)
+    assert EMAIL in t and "trimis " in t and "a expirat " in t, t
+    pg.click(rand + " [data-retrimite]")
+    pg.wait_for_selector("#ins-cereri-msg.msg-ok", timeout=20000)
+    superadmin.captura("retrimisa")
+    t = pg.inner_text(rand)
+    assert "1 retrimitere" in t and "a expirat" not in t, t
+    noi = _scrisori(EMAIL)[inainte:]
+    assert len(noi) == 1 and "#confirmare=" in json.dumps(noi[0]) and tok not in json.dumps(noi[0]), noi

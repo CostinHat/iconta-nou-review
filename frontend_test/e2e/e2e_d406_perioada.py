@@ -62,7 +62,8 @@ def test_def_c2_neplatitorul_alege_d406_pe_trimestru(patron, firma_neplatitoare)
     eticheta = pg.evaluate("() => [...document.querySelectorAll('.fereastra:last-of-type #dec-tip option')]"
                            ".map((o) => o.innerText).find((t) => t.startsWith('D406'))")
     patron.captura("d406_neplatitor_selector")
-    assert eticheta and "trimestrial" in eticheta, eticheta
+    # [283] „De depus” vine întâi și numește perioada scadentă („D406 · T3/2026 · termen …”); în „Alte declarații” scrie „trimestrial”
+    assert eticheta and re.search(r"trimestrial|· T[1-4]/\d{4}", eticheta), eticheta
     assert pg.locator(".fereastra:last-of-type #dec-trim").count() == 1, patron.fereastra()[:1500]
     assert pg.locator(".fereastra:last-of-type #dec-luna").count() == 0, "D406 se alege pe lună la neplătitor"
 

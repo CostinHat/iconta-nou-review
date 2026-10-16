@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate } from "../api.js?v=72aa1cbbdb";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate } from "../api.js?v=9409795a49";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -195,12 +195,26 @@ function _blocJurnal(d) {
 function camp(c, val) {
   const ob = c.ob ? '<span class="oblig">*</span>' : "";
   const aj = c.aj ? `<span class="camp-ajutor">${esc(c.aj)}</span>` : "";
+  if (c.k === "cui" && val) return campCui(c, val, ob);
   return `
     <label class="camp">
       <span class="camp-eticheta">${esc(c.e)}${ob}</span>
       ${aj}
       <input type="text" class="camp-input" id="df-${c.k}" value="${esc(val || "")}">
     </label>`;
+}
+
+// [deficiența 272, comanda Costin 16.10.2026] „CUI-ul nu se modifică din acest ecran, de niciun rol; o corectură reală de CUI e o
+// operațiune separată, a administratorului, cu avertisment.” Câmpul se citește; corectura are butonul ei (ascuns cui n-are dreptul).
+function campCui(c, val, ob) {
+  return `
+    <div class="camp">
+      <label class="camp-eticheta" for="df-cui">${esc(c.e)}${ob}</label>
+      <span class="camp-ajutor">Nu se modifică din Date firmă. Dacă e greșit, îl corectează administratorul cabinetului.</span>
+      <input type="text" class="camp-input" id="df-cui" value="${esc(val)}" readonly aria-readonly="true">
+      <button type="button" class="buton-secundar" id="df-cui-corecteaza" data-actiune="POST /tenants/{tenant_id}/cui/corectura">Corectează CUI-ul</button>
+      <div id="df-cui-corectura"></div>
+    </div>`;
 }
 
 // [vector_date_firma_v1] Vectorul fiscal: cele 4 atribute din firma_profil pe care le
@@ -371,10 +385,10 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     ${_blocChitante(d)}
     ${_blocStoc(d)}
     ${_blocPreluare(d)}
-    <div id="df-msg"></div>
+    <div class="bara-fixa"><div id="df-msg"></div>
     <div class="dec-bara">
       <button class="buton-primar" id="df-salveaza" data-actiune="POST /tenants/{tenant_id}/firma-profil/date|POST /tenants/{tenant_id}/vector|PUT /tenants/{tenant_id}">Salveaz\u0103</button>
-    </div>
+    </div></div>
     ${_blocJurnal(d)}
   `;
   // [retest 08.10, completarea pct.2] deschis dintr-un refuz care numește câmpul (seria chitanțelor, metoda de stoc, forma juridică …):
@@ -382,6 +396,8 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   const _tinta = opt.camp ? corp.querySelector("#" + CSS.escape(opt.camp)) : null;
   if (_tinta) { _tinta.scrollIntoView({ block: "center" }); focusFaraSalt(_tinta); }
 
+  const _btnCui = corp.querySelector("#df-cui-corecteaza");
+  if (_btnCui) _btnCui.addEventListener("click", () => _corecturaCui(corp, nav, tenantId, opt));
   // [D394 Î2] activitatea apare DOAR cu bifa „Da”
   const _amefSel = corp.querySelector("#df-activitate_exceptata_amef");
   if (_amefSel) _amefSel.addEventListener("change", () => {
@@ -500,6 +516,39 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       if (!peCamp) arataMesaj(msg, (e && e.mesaj) || "Nu s-a putut salva.", "eroare");
     }
   });
+}
+
+// [deficiența 272] corectura CUI-ului: CUI-ul corect -> avertismentul serverului -> confirmarea -> scrierea (ambele locuri + jurnal)
+function _corecturaCui(corp, nav, tenantId, opt) {
+  const zona = corp.querySelector("#df-cui-corectura");
+  zona.innerHTML = `<label class="camp"><span class="camp-eticheta">CUI-ul corect<span class="oblig">*</span></span>
+      <input type="text" class="camp-input" id="df-cui-nou" aria-label="CUI-ul corect"></label>
+    <button type="button" class="buton-primar" id="df-cui-continua" data-actiune="POST /tenants/{tenant_id}/cui/corectura">Continuă</button>
+    <div id="df-cui-aviz"></div>
+    <div id="df-cui-msg"></div>`;
+  const msg = zona.querySelector("#df-cui-msg");
+  const cuiScris = () => (zona.querySelector("#df-cui-nou").value || "").trim();
+  const peCamp = (e) => ((e && e.erori_campuri) || []).filter((c) => eroareCamp(zona, "df-cui-nou", c.mesaj)).length;
+  // pasul 1: CUI-ul corect -> avertismentul serverului (nimic scris), cu butonul de confirmare
+  zona.querySelector("#df-cui-continua").addEventListener("click", async () => {
+    curataEroriCamp(zona);
+    zona.querySelector("#df-cui-aviz").innerHTML = "";
+    if (!cuiScris()) { eroareCamp(zona, "df-cui-nou", "Scrie CUI-ul corect."); return; }
+    try {
+      const r = await api.post(`/tenants/${tenantId}/cui/corectura`, { cui: cuiScris(), confirmat: false });
+      zona.querySelector("#df-cui-aviz").innerHTML = `<div class="caseta-atentie"><div class="ca-mesaj">${esc(r.avertisment || "")}</div>
+        <button type="button" class="buton-primar" id="df-cui-confirma" data-actiune="POST /tenants/{tenant_id}/cui/corectura">Corectez CUI-ul</button></div>`;
+      // pasul 2: confirmarea -> scrierea (ambele locuri + jurnal)
+      zona.querySelector("#df-cui-confirma").addEventListener("click", async () => {
+        try {
+          const r2 = await api.post(`/tenants/${tenantId}/cui/corectura`, { cui: cuiScris(), confirmat: true });
+          await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });
+          arataMesaj(corp.querySelector("#df-msg"), `CUI-ul a fost corectat: ${r2.cui}. Schimbarea e în jurnalul de mai jos.`, "ok");
+        } catch (e) { if (!peCamp(e)) arataMesaj(msg, (e && e.mesaj) || "CUI-ul nu s-a putut corecta.", "eroare"); }
+      });
+    } catch (e) { if (!peCamp(e)) arataMesaj(msg, (e && e.mesaj) || "CUI-ul nu s-a putut corecta.", "eroare"); }
+  });
+  zona.querySelector("#df-cui-nou").addEventListener("input", () => { zona.querySelector("#df-cui-aviz").innerHTML = ""; });   // avertismentul era pentru CUI-ul de dinainte
 }
 
 // Câmpurile Date firmă, citite din formular (o singură citire; handlerul „Salvează” le trimite). [08.10.2026] scoasă din handler:

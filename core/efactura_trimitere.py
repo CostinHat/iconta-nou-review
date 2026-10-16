@@ -28,6 +28,11 @@ from core import repo_efactura as _repo
 from core import spv_conector
 
 
+
+#: [deficiența 289b] cabinetul neconectat la SPV — sursa unică a textului (ruta `facturi/{id}/trimite-spv` îl afișează cu butonul spre conectare)
+MESAJ_FARA_TOKEN = ("Cabinetul nu e conectat la SPV, deci factura nu poate pleca la ANAF. Conectarea se face o singură dată, din "
+                    "Setări cont → Conectare SPV, cu certificatul digital al administratorului.")
+
 def incarca_factura(conn, schema, factura_id):
     """
     Citeste factura + linii + emitent (firma_profil) + cumparator (tert_* pe factura),
@@ -80,7 +85,8 @@ def trimite(schema, factura_id, principal, mediu="test"):
     with db.get_conn() as conn:
         # POARTA 1: token viu?
         if spv_conector.ia_token_activ(conn, principal) is None:
-            return {"stare": "fara_token", "mesaj": "Conectează ANAF (SPV) înainte de a trimite factura."}
+            # [deficiența 289b] textul refuzului, în cuvintele contabilului; ruta îl trimite cu butonul spre Setări cont → Conectare SPV
+            return {"stare": "fara_token", "mesaj": MESAJ_FARA_TOKEN}
         xml, _factura = genereaza_din_factura(conn, schema, factura_id)
         with conn.cursor() as cur:
             cif = "".join(c for c in str(_repo.cui_emitent(cur, schema)[0] or "") if c.isdigit())

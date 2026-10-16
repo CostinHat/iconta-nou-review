@@ -78,8 +78,8 @@ def prapastie(brut, elemente=None, la_data=None):
         return {**out, "aplicabil": False, "cod": COD_FARA_BRUT}
     net_acum = _net(brut, el, la_data)
     net_la_prag = _net(prag, el, la_data)
-    out.update({"net_acum": round(net_acum, 2), "net_la_prag": round(net_la_prag, 2),
-                "pierdere": round(net_la_prag - net_acum, 2)})
+    out.update({"net_acum": round(net_acum, 2), "net_la_prag": round(net_la_prag, 2),  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+                "pierdere": round(net_la_prag - net_acum, 2)})  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     if not out["peste_prag"] or out["pierdere"] <= 0:
         # Sub prag, sau peste prag fără scădere: nu e nicio prăpastie de arătat.
         return {**out, "aplicabil": False,

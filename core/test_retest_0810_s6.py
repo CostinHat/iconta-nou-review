@@ -423,7 +423,7 @@ def test_pct13_lunile_lipsa_se_strang_in_intervale(tmp_path):
     src = io.open("static/js/ecrane/mijloace_ecran.js", encoding="utf-8").read()
     (tmp_path / "plural.mjs").write_text(io.open("static/js/plural.js", encoding="utf-8").read(), encoding="utf-8")   # `cate` real
     src = re.sub(r'from "\.\./api\.js[^"]*"', 'from "data:text/javascript,export const api=0,esc=0,arataMesaj=0,confirmaCaseta=0,'
-                 'bani=0,dataRo=0,dataIso=0;export {cate,dupaNumar} from %%22%s%%22"' % (tmp_path / "plural.mjs").as_uri(), src)
+                 'bani=0,dataRo=0,dataIso=0,stareNota=0,pasNota=0;export {cate,dupaNumar} from %%22%s%%22"' % (tmp_path / "plural.mjs").as_uri(), src)
     (tmp_path / "m.mjs").write_text(src, encoding="utf-8")
     cod = ("import('%s').then((m) => console.log(JSON.stringify([m.luniScurte(%s), m.luniScurte(%s), m.luniScurte(%s)])))"
            % ((tmp_path / "m.mjs").as_posix(), ["%02d/2026" % i for i in range(1, 9)], ["11/2025", "12/2025", "01/2026", "03/2026"],

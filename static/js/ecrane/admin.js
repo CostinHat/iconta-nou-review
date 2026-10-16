@@ -3,8 +3,8 @@
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate } from "../api.js?v=72aa1cbbdb";
-import { randeazaAdminRaportari } from "./admin_raportari.js?v=63cfcc2163";
+import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand } from "../api.js?v=9409795a49";
+import { randeazaAdminRaportari } from "./admin_raportari.js?v=a2a0b629a8";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=eb7737e0b3";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=510e670f0b";
 import { randeazaAdminAnalytics } from "./admin_analytics.js?v=65a3ea09d5";
@@ -240,6 +240,33 @@ async function randeazaAdminInvitatii(corp) {
 }
 
 
+// [deficiența 282, comanda Costin 16.10.2026, verbatim în DECIZII] „Cardul «Înregistrare» le listează: data, denumirea cabinetului,
+// emailul, dacă emailul de confirmare a plecat și când expiră linkul, cu acțiunea «Retrimite confirmarea».”
+async function cereriNeconfirmate(zona) {
+  let r;
+  try { r = await api.get("/admin/inregistrari-neconfirmate"); } catch (e) {
+    arataMesaj(zona, (e && e.mesaj) || "Cererile neconfirmate nu se pot încărca.", "eroare");
+    return;
+  }
+  const v = r.cereri || [];
+  if (!v.length) { zona.innerHTML = `<div class="stare-goala">Nicio cerere neconfirmată.</div>`; return; }
+  const trimis = (x) => x.email_trimis_la
+    ? `trimis ${dataRo(x.email_trimis_la, "cu_ora")}${x.retrimiteri ? ` (${cate(x.retrimiteri, "retrimitere", "retrimiteri")})` : ""}` : "netrimis";
+  zona.innerHTML = `<table class="fd-tabel"><thead><tr><th>Data</th><th>Cabinet</th><th>Email</th><th>Emailul de confirmare</th><th>Linkul expiră</th><th></th></tr></thead><tbody>
+    ${v.map((x) => `<tr data-cerere="${x.id}"><td>${dataRo(x.creat_la, "cu_ora")}</td><td>${esc(x.nume_cabinet)}</td><td>${esc(x.email)}</td>
+      <td>${trimis(x)}</td><td>${x.expirata ? "a expirat " : ""}${dataRo(x.expira_la, "cu_ora")}</td>
+      <td><button class="buton-secundar" data-retrimite="${x.id}" data-actiune="POST /admin/inregistrari-neconfirmate/{cerere_id}/retrimite">Retrimite confirmarea</button></td></tr>`).join("")}
+    </tbody></table><div id="ins-cereri-msg" style="margin-top:8px"></div>`;
+  zona.querySelectorAll("[data-retrimite]").forEach((b) => b.addEventListener("click", async () => {
+    b.disabled = true;
+    try {
+      const x = await api.post(`/admin/inregistrari-neconfirmate/${b.dataset.retrimite}/retrimite`, {});
+      await cereriNeconfirmate(zona);
+      arataMesaj(zona.querySelector("#ins-cereri-msg"), `Confirmarea a plecat din nou pe ${x.email}: link nou, valabil ${cate(x.valabila_ore, "oră", "ore")}.`, "ok");
+    } catch (e) { b.disabled = false; refuzPeRand(b, (e && e.mesaj) || "Confirmarea nu s-a putut retrimite."); }
+  }));
+}
+
 // [15.10.2026, „Lotul 4” pct.6, verbatim în DECIZII] „Comutator în Panou Admin: «Înregistrare: liberă, cu confirmarea emailului /
 // numai prin invitație», ca să o pot schimba eu fără publicare.” Valoarea stă în baza de date (`setari_platforma`), nu în cod.
 async function randeazaAdminInregistrare(corp) {
@@ -260,7 +287,11 @@ async function randeazaAdminInregistrare(corp) {
       ${st.mod === "libera" && !st.email_functional ? `<div class="caseta-atentie" id="ins-fara-email"><div class="ca-mesaj">Emailul nu poate pleca acum, deci înregistrarea liberă rămâne închisă: ${esc((st.refuz && st.refuz.motiv) || "")}</div></div>` : ""}
       <p class="ecran-nota" id="ins-stare">Acum: ${esc(st.eticheta)}${st.modificat_la ? ` · schimbat${st.modificat_de ? " de " + esc(st.modificat_de) : ""} la ${dataRo(st.modificat_la, "cu_ora")}` : ""}.</p>
       <button class="buton-primar" id="ins-salveaza" data-actiune="PUT /admin/setari/inregistrare">Salvează</button>
-      <div id="ins-msg" style="margin-top:10px"></div>`;
+      <div id="ins-msg" style="margin-top:10px"></div>
+      <h3 class="pf-subtitlu" style="margin-top:22px">Cereri neconfirmate</h3>
+      <p class="pf-intro">Cabinetele care s-au înregistrat și n-au apăsat încă linkul din email. Contul se creează abia la confirmare. „Retrimite confirmarea” trimite un link nou, valabil din nou; cel vechi nu mai merge.</p>
+      <div id="ins-cereri"><p class="ecran-nota">Se încarcă…</p></div>`;
+    cereriNeconfirmate(corp.querySelector("#ins-cereri"));
     corp.querySelector("#ins-salveaza").addEventListener("click", async () => {
       const ales = corp.querySelector("input[name='ins-mod']:checked");
       const msg = corp.querySelector("#ins-msg");

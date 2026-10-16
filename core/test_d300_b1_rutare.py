@@ -226,6 +226,16 @@ def conn_b1():
                 av = cur.fetchone()[0]
                 cur.execute("INSERT INTO factura_linii (factura_id, descriere, cantitate, pret_unitar, cota_tva) "
                             "VALUES (%s,'avans',1,1000,21)", (av,))
+                # [lotul 6, 278] AV2: avans încasat în numerar pe 28.08 (5311 = 4111, legat), facturat pe 03.09 -> exigibil în AUGUST
+                cur.execute("INSERT INTO facturi (numar, data_emitere, directie, total, tva, tert_tara, tip_operatiune, status) "
+                            "VALUES ('AV2','2026-09-03','emisa',605,105,'RO','avans','emisa') RETURNING id")
+                av2 = cur.fetchone()[0]
+                cur.execute("INSERT INTO factura_linii (factura_id, descriere, cantitate, pret_unitar, cota_tva) "
+                            "VALUES (%s,'avans',1,500,21)", (av2,))
+                cur.execute("INSERT INTO inregistrari (data, factura_id, status, sursa) VALUES ('2026-08-28',%s,'validata','casa') RETURNING id",
+                            (av2,))
+                cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,'5311','4111',605)",
+                            (cur.fetchone()[0],))
                 # Normala in octombrie (contrast: octombrie are 2000/420, NU 3000/630).
                 cur.execute("INSERT INTO facturi (numar, data_emitere, directie, total, tva, tert_tara, "
                             "tip_operatiune, status) "
@@ -457,3 +467,21 @@ def test_recon_sursa_unica_o_scriere_muta_ambele(conn_recon):
         assert r9.rezumat["L"] == 0 and r9.rezumat["A"] == 0, "MUTAT nu adăugat în D390 (L/A dispar)"
     finally:
         _clear_recl(conn_recon)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_avansul_incasat_inainte_de_factura_e_exigibil_la_incasare(conn_b1):
+    """[lotul 6 pct.3b, 278] CF art.282 alin.(2) lit.b: „la data la care se încasează avansul”. AV2 încasat pe 28.08, facturat pe 03.09
+    (art.319 alin.(16) permite până la 15.09): TVA în D300 pe AUGUST, nu pe septembrie. Calea independentă (`d300_reconciliere`) la fel.
+    MUTAȚIE: `LEAST(f.data_emitere, …)` -> `f.data_emitere` în `d300._EXIG_NORMAL` -> august gol, septembrie 500/105 -> pică."""
+    prof, fac_aug = _d300mod.pull(conn_b1, _SCHEMA, Perioada(2026, luna=8))
+    assert (calcul_d300(prof, Perioada(2026, luna=8), fac_aug).R.get("R9_1"),
+            calcul_d300(prof, Perioada(2026, luna=8), fac_aug).R.get("R9_2")) == (500, 105), "avansul e exigibil la încasare (august)"
+    prof, fac_sep = _d300mod.pull(conn_b1, _SCHEMA, Perioada(2026, luna=9))
+    assert "R9_1" not in calcul_d300(prof, Perioada(2026, luna=9), fac_sep).R, "avansul NU reapare la emiterea facturii (septembrie)"
+    from core import d300_reconciliere as _rc
+    with conn_b1.cursor() as cur:
+        cur.execute("SET search_path TO %s, public" % _SCHEMA)
+    import datetime as _dt
+    col, _ded = _rc._agrega_independent(conn_b1, _dt.date(2026, 8, 1), _dt.date(2026, 9, 1))
+    assert col.get(21) == (500, 105), col

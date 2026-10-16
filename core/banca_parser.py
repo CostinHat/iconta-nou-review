@@ -1,6 +1,6 @@
 # banca_parser.py - Parser extras bancar XLS/XLSX/CSV (ING/Jasper).
 # Logica validata pe ING real: grid Data/Detalii/Debit/Credit,
-# semn dupa pozitia coloanei, randuri multi-linie grupate, format dupa magic bytes.
+# semn dupa pozitia coloanei, randuri multi-linie grupate, formatul dupa primii octeti ai fisierului.
 import re
 from io import BytesIO
 
@@ -102,7 +102,7 @@ def _parse_grid(randuri):
             if curenta: tranzactii.append(curenta)
             suma = _extrage_suma(r, celule, col, n_expected)
             det = celule[col["detalii"]] if col.get("detalii") is not None and col["detalii"] < len(celule) else ""
-            curenta = {"data": data_v[:10], "detalii": det, "suma": round(suma, 2)}
+            curenta = {"data": data_v[:10], "detalii": det, "suma": round(suma, 2)}  # round-ok: suma din extras are deja bani; numai curățarea float
         elif curenta:
             extra = " ".join(c for c in celule if c)
             if extra: curenta["detalii"] = (curenta["detalii"] + " " + extra).strip()
@@ -127,35 +127,58 @@ def _fara_antet(randuri):
         if suma is None:
             continue
         det = " ".join(c for c in celule[1:suma_idx] if c) if suma_idx else ""
-        tranzactii.append({"data": celule[0][:10], "detalii": det, "suma": round(suma, 2)})
+        tranzactii.append({"data": celule[0][:10], "detalii": det, "suma": round(suma, 2)})  # round-ok: suma din extras are deja bani; numai curățarea float
     return tranzactii
 
 
+def _sold_mt940(corp):
+    """`:60F:` / `:62F:` (și `M`, soldul intermediar): `{C|D}AAMMZZ<valuta><suma>` -> `{suma, data, valuta}`; suma cu semn (D = sold
+    debitor al contului clientului la bancă, adică negativ pentru firmă), data ISO (soldul de la sfârșitul acelei zile)."""
+    m = re.match(r"([CD])(\d{6})([A-Z]{3})([\d,]+)", corp.strip())
+    if not m:
+        return None
+    semn, aammzz, valuta, suma_s = m.groups()
+    suma = float(suma_s.replace(",", "."))
+    return {"suma": round(-suma if semn == "D" else suma, 2), "valuta": valuta,  # round-ok: suma din extras are deja bani; numai curățarea float
+            "data": "%d-%s-%s" % (2000 + int(aammzz[:2]), aammzz[2:4], aammzz[4:6])}
+
+
 def _parse_mt940(text):
-    """Parser MT940 (SWIFT, format bancar standard).
-    :61: linie tranzactie (data, semn C/D, suma). :86: detalii asociate.
-    Intoarce aceeasi structura ca _parse_grid: {data, detalii, suma}.
-    Sursa: specificatia SWIFT MT940 (Statement Message).
-    """
+    """Parser MT940 (SWIFT, format bancar standard). Sursa: specificatia SWIFT MT940 (Statement Message).
+    `:25:` contul extrasului; `:60F:` / `:62F:` soldul initial / final; `:61:` linia (data, C/D, suma, tipul, referinta
+    clientului[//referinta bancii]); `:86:` detaliile. Intoarce `{tranzactii, cont, sold_initial, sold_final}`; tranzactiile
+    au aceeasi structura ca la `_parse_grid` ({data, detalii, suma}) plus `referinta`. `NONREF` = fara referinta -> "".
+    [16.10.2026, lotul 6 pct.1, 277] Contul si referinta intra in cheia miscarii (`reconciliere_api.importa_extras`); soldurile se
+    compara cu 5121 (276b)."""
     tranzactii, curenta = [], None
+    cont = sold_initial = sold_final = None
     for linie_raw in text.splitlines():
         linie = linie_raw.strip()
-        if linie.startswith(":61:"):
+        if linie.startswith(":25:") and cont is None:
+            cont = linie[4:].strip() or None
+        elif linie[:5] in (":60F:", ":60M:") and sold_initial is None:
+            sold_initial = _sold_mt940(linie[5:])
+        elif linie[:5] in (":62F:", ":62M:"):
+            sold_final = _sold_mt940(linie[5:])
+        elif linie.startswith(":61:"):
             if curenta:
                 tranzactii.append(curenta)
             corp = linie[4:]
-            # format :61: YYMMDD[MMDD]{C|D|RC|RD}suma...
-            m = re.match(r"(\d{6})(\d{4})?(R?[CD])([\d,]+)", corp)
+            # format :61: YYMMDD[MMDD]{C|D|RC|RD}[litera fondurilor]suma{N|F|S}<tip 3>referinta[//referinta bancii]
+            m = re.match(r"(\d{6})(\d{4})?(R?[CD])([A-Z])?([\d,]+)(?:[NFS][A-Z0-9]{3})?(.*)", corp)
             if not m:
                 curenta = None
                 continue
-            yymmdd, _mmdd, semn, suma_s = m.groups()
+            yymmdd, _mmdd, semn, _fond, suma_s, ref = m.groups()
             an = 2000 + int(yymmdd[:2])
             data = f"{yymmdd[4:6]}.{yymmdd[2:4]}.{an}"
             suma = float(suma_s.replace(",", "."))
             if semn in ("D", "RC"):  # D=debit(plata), RC=storno credit
                 suma = -suma
-            curenta = {"data": data, "detalii": "", "suma": round(suma, 2)}
+            ref = (ref or "").strip()
+            if ref.upper().startswith("NONREF"):
+                ref = ref[6:].strip()
+            curenta = {"data": data, "detalii": "", "suma": round(suma, 2), "referinta": ref}  # round-ok: suma din extras are deja bani; numai curățarea float
         elif linie.startswith(":86:") and curenta is not None:
             curenta["detalii"] = linie[4:].strip()
         elif curenta is not None and not linie.startswith(":") and linie:
@@ -163,12 +186,14 @@ def _parse_mt940(text):
             curenta["detalii"] = (curenta["detalii"] + " " + linie).strip()
     if curenta:
         tranzactii.append(curenta)
-    return tranzactii
+    return {"tranzactii": tranzactii, "cont": cont, "sold_initial": sold_initial, "sold_final": sold_final}
 
 
-def parse_extras(continut, nume_fisier=""):
-    """Detecteaza formatul dupa magic bytes si intoarce lista de tranzactii.
+def citeste_extras(continut, nume_fisier=""):
+    """Detecteaza formatul dupa primii octeti si intoarce `{tranzactii, cont, sold_initial, sold_final}`. Contul si soldurile vin
+    numai din MT940; din tabele (xls / xlsx / csv) raman `None` — ecranul spune ca extrasul nu le contine.
     Ridica ValueError (cu FORMAT_ASTEPTAT) daca parsarea esueaza sau da 0 tranzactii."""
+    rez = {"cont": None, "sold_initial": None, "sold_final": None}
     try:
         if continut[:8] == b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1":  # OLE2 = .xls
             import xlrd
@@ -185,7 +210,8 @@ def parse_extras(continut, nume_fisier=""):
         else:  # text: MT940 sau csv
             text = continut.decode("utf-8", errors="replace") if isinstance(continut, bytes) else continut
             if ":61:" in text or ":20:" in text:  # marker MT940
-                tranzactii = _parse_mt940(text)
+                rez = _parse_mt940(text)
+                tranzactii = rez.pop("tranzactii")
             else:
                 import csv
                 delim = _detecteaza_delimitator(text)
@@ -197,4 +223,9 @@ def parse_extras(continut, nume_fisier=""):
         raise ValueError(f"Nu s-a putut citi extrasul ({e}). {FORMAT_ASTEPTAT}")
     if not tranzactii:
         raise ValueError(f"Nu s-au găsit tranzacții în extras. {FORMAT_ASTEPTAT}")
-    return tranzactii
+    return dict(rez, tranzactii=tranzactii)
+
+
+def parse_extras(continut, nume_fisier=""):
+    """Numai tranzactiile din `citeste_extras` (ruta `parse-extras` si testele parserului)."""
+    return citeste_extras(continut, nume_fisier)["tranzactii"]

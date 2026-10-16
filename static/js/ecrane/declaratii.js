@@ -6,8 +6,8 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate } from "../api.js?v=72aa1cbbdb";
-import { trimiteInCoada, casetaTrimisa } from "./coada_trimite.js?v=feade00646";
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate } from "../api.js?v=9409795a49";
+import { trimiteInCoada, casetaTrimisa } from "./coada_trimite.js?v=f55bb652b7";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
   d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
@@ -121,9 +121,10 @@ async function incarcaTipuri(tenantId) {
     S.tipuri = d.tipuri || [];
     S.periodicitate = d.periodicitate || {};
     S.neaplicabile = d.neaplicabile || {};
+    S.datorate = d.datorate || [];   // [283] ce datorează firma, cu termenul (motorul termenelor)
     S.tipuriEsuat = false;
   } catch {
-    S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {}; S.tipuriEsuat = true;
+    S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {}; S.datorate = []; S.tipuriEsuat = true;
   }
 }
 
@@ -140,17 +141,23 @@ function pas1(corp, nav) {
     if (!S.tenant_id) return `<option value="">— alege firma întâi —</option>`;
     if (S.tipuriEsuat) return `<option value="">— nu s-au putut încărca tipurile — reîncarcă firma —</option>`;
     if (!S.tipuri.length) return `<option value="">— nicio declarație aplicabilă —</option>`;
-    return `<option value="">— alege tipul —</option>` + S.tipuri.map((tp) => {
+    // [deficiența 283] întâi ce datorează firma în perioadă (din vectorul fiscal), cu termenul — alegerea fixează și perioada; restul separat
+    const datorate = (S.datorate || []).filter((d) => S.tipuri.includes(d.tip) && !S.neaplicabile[d.tip]);
+    const grupaDatorate = datorate.length ? `<optgroup label="Datorate de firmă (din vectorul fiscal)">${datorate.map((d) =>
+      `<option value="${d.tip}" data-an="${d.an}" data-luna="${d.luna}"${d.tip === S.tip && d.an === S.an && d.luna === S.lunaDatorata ? " selected" : ""}>`
+      + `${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · termen ${esc(dataRo(d.termen))}</option>`).join("")}</optgroup>` : "";
+    const alte = S.tipuri.map((tp) => {
       const et = `${tp.toUpperCase()} · ${S.periodicitate[tp] || ""}`;
       const neap = S.neaplicabile[tp];
       return neap
         ? `<option value="${tp}" disabled title="${esc(neap)}">${esc(neap)}</option>`
-        : `<option value="${tp}" ${tp === S.tip ? "selected" : ""}>${et}</option>`;
+        : `<option value="${tp}" ${tp === S.tip && !S.lunaDatorata ? "selected" : ""}>${et}</option>`;
     }).join("");
+    return `<option value="">— alege tipul —</option>` + grupaDatorate + (datorate.length ? `<optgroup label="Alte declarații">${alte}</optgroup>` : alte);
   }
 
   corp.innerHTML = `
-    <p class="mig-intro">Pasul 1 din 3 — alege firma, tipul declarației și perioada.</p>
+    <p class="mig-intro">Pasul 1 din 3 — ${S.firmaFixa ? "alege" : "alege firma,"} tipul declarației și perioada.</p>
     <div class="dec-form">
 ${S.firmaFixa ? "" : `      <label class="camp">
         <span class="camp-eticheta">Firmă</span>
@@ -175,6 +182,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
   const cont = corp.querySelector("#dec-continua");
   const zonaP = corp.querySelector("#dec-perioada");
 
+  let tipAnterior = S.tip;   // [294] perioada se propune numai la schimbarea tipului (întors din pasul 2, alegerea rămâne)
   async function refresh() {
     if (selFirma) {
       const nou = selFirma.value ? parseInt(selFirma.value) : null;
@@ -185,6 +193,19 @@ ${S.firmaFixa ? "" : `      <label class="camp">
       }
     }
     S.tip = selTip.value || null;
+    // [283] o obligație datorată aleasă din grupa de sus aduce și perioada ei (luna; la trimestru, luna de sfârșit)
+    const o = selTip.selectedOptions[0];
+    S.lunaDatorata = null;
+    if (o && o.dataset.an) {
+      S.an = parseInt(o.dataset.an); S.luna = parseInt(o.dataset.luna); S.trim = Math.ceil(S.luna / 3); S.lunaDatorata = S.luna;
+    } else if (S.tip && S.tip !== tipAnterior) {
+      // [deficiența 294, comanda Costin 16.10.2026] „Perioada implicită la orice declarație este cea mai apropiată perioadă scadentă și
+      // nedepusă” (D100 propunea T4, în curs, în loc de T3, scadent pe 25.10). Ales din „Alte declarații”, tipul primește perioada lui
+      // datorată (dacă e în vectorul fiscal) sau ultima perioadă încheiată (`perioadaImplicita`) — nu perioada în curs.
+      const pi = perioadaImplicita(S.tip);
+      S.an = pi.an; S.luna = pi.luna; S.trim = Math.ceil(pi.luna / 3);
+    }
+    tipAnterior = S.tip;
     const p = S.tip ? S.periodicitate[S.tip] : null;
     zonaP.innerHTML = randPerioada(p);
     legPerioada(zonaP);
@@ -197,6 +218,22 @@ ${S.firmaFixa ? "" : `      <label class="camp">
   legPerioada(zonaP);
   cont.addEventListener("click", () => pas2(corp, nav));
   refresh();
+}
+
+// [deficiența 294] Perioada propusă pentru un tip: cea mai apropiată perioadă scadentă și nedepusă din vectorul fiscal (`S.datorate`, sortată
+// după termen — motorul termenelor, aceeași listă ca la 283); altfel ultima perioadă ÎNCHEIATĂ după periodicitatea tipului (luna trecută,
+// trimestrul trecut, anul trecut) — perioada în curs nu e scadentă. {an, luna}: la trimestru, luna de sfârșit.
+export function perioadaImplicita(tip, azi = new Date()) {
+  const d = (S.datorate || []).find((x) => x.tip === tip);
+  if (d) return { an: d.an, luna: d.luna };
+  const per = S.periodicitate[tip];
+  const an = azi.getFullYear(), l = azi.getMonth() + 1;
+  if (per === "anual") return { an: an - 1, luna: 12 };
+  if (per === "trimestrial") {
+    const t = Math.ceil(l / 3) - 1;
+    return t === 0 ? { an: an - 1, luna: 12 } : { an, luna: t * 3 };
+  }
+  return l === 1 ? { an: an - 1, luna: 12 } : { an, luna: l - 1 };
 }
 
 function randPerioada(per) {
@@ -409,7 +446,7 @@ async function pas2(corp, nav) {
       <summary>Vezi XML-ul generat</summary>
       <pre class="dec-xml-pre">${esc(xml)}</pre>
     </details>
-    ${_esteGoala() ? `<div class="caseta-poarta">
+    <div class="bara-fixa">${_esteGoala() ? `<div class="caseta-poarta">
         <div class="cp-mesaj">Declarația nu conține nicio operațiune. Dacă firma chiar n-a avut activitate în perioadă, se depune așa. Dacă a avut, întoarce-te și verifică dacă documentele perioadei sunt introduse și contabilizate.</div>
         <div class="cp-butoane">
           <button class="buton-primar" id="dec-gol-da">Da, fără activitate — trimite</button>
@@ -418,7 +455,7 @@ async function pas2(corp, nav) {
       </div>` : `<div class="dec-bara">
       <button class="buton-primar" id="dec-trimite" data-actiune="POST /coada">Trimite în coadă →</button>
     </div>`}
-    <div id="dec-coada-mesaj"></div>
+    <div id="dec-coada-mesaj"></div></div>
     <p class="ecran-nota">${esc(S.rezultat.limita || "")}</p>
   `;
   const _bt = corp.querySelector("#dec-trimite");
@@ -3651,7 +3688,7 @@ export function _blocComponente(c) {
   // (DS cap.25.5). Serverul trimite doar cuvantul din nomenclatorul inchis `ACOPERIRE`.
   if (c.acoperire !== "completa") {
     const spune = c.acoperire === "absenta"
-      ? "Declara\u021bia asta nu-\u0219i poate desface \u00eenc\u0103 cifra: motorul care o produce nu \u00eentoarce pozi\u021biile, doar XML-ul. Compozi\u021bia se vede \u00een fi\u0219ierul generat."
+      ? "Declarația asta nu-și poate desface încă cifra pe operațiuni în aplicație. Compoziția se vede în fișierul XML generat."
       : "Cifra acestui tip de declara\u021bie nu se poate desface \u2014 nu e trecut \u00een harta de componente. Ce vezi mai sus e num\u0103rul de opera\u021biuni, nu compozi\u021bia lor.";
     return `<div class="caseta-info"><span class="ci-mesaj">${spune}</span></div>`;
   }
@@ -3697,7 +3734,8 @@ async function pas3(corp, nav) {
 function pas3Gata(corp, nav, r) {
   const f = corp.closest(".fereastra"); if (f) f.classList.remove("fer-larg");
   corp.innerHTML = `
-    ${casetaTrimisa(S.tip.toUpperCase(), etPerioada(), "a fost trimisă seniorului pentru validare.")}
+    ${casetaTrimisa(S.tip.toUpperCase(), etPerioada(), (r && r.pas_urmator && r.pas_urmator.mesaj) || "a intrat în coadă.",
+      r && r.pas_urmator && r.pas_urmator.cod !== "validare" ? "Trimisă în coadă" : "Trimisă în coada de validare")}
     <div id="dec-gata-avert"></div>
     <div class="dec-bara">
       <button class="buton-secundar" id="dec-alta" data-fara-actiune="navigare: alt tip de declarație">+ Altă declarație</button>

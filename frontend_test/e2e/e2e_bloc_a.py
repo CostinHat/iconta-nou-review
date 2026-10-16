@@ -1329,7 +1329,9 @@ def test_def_26_banca_spune_exact_ce_a_importat_si_ce_nota_a_creat(patron, firma
     # [258] nota se numește cum o arată Registrul jurnal („nr. crt. N din ZZ.LL.AAAA”), nu prin id-ul intern
     nid = sql('SELECT i.id FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l ON l.inregistrare_id = i.id '
               'WHERE l.cont_debit = \'627\' AND l.cont_credit = \'5121\' ORDER BY i.id DESC LIMIT 1' % ((firma_e2e["schema"],) * 2))[0][0]
-    assert re.findall(r"Notă 627=5121 creată \(ciorna (nr\. crt\. \d+ din [\d.]+)\)", mesaj) == [nr_crt(firma_e2e["schema"], nid)], mesaj
+    # [279] starea reală a notei: patronul validează el, deci „ciornă” și pasul următor
+    assert re.findall(r"Notă 627=5121 creată \((nr\. crt\. \d+ din [\d.]+), ciornă\)\. O validezi din Registrul jurnal\.", mesaj) == \
+        [nr_crt(firma_e2e["schema"], nid)], mesaj
     assert sql('SELECT l.cont_debit, l.cont_credit, l.suma::text FROM "%s".inregistrari_linii l WHERE l.inregistrare_id = %%s'
                % firma_e2e["schema"], (nid,)) == [("627", "5121", "12.50")]
 

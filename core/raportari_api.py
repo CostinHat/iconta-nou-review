@@ -42,9 +42,14 @@ def creeaza_raportare(conn, autor_id, cabinet_id, subiect, text, tip="sesizare",
     return {"ok": True, "raportare_id": rid, "mesaj_id": mid}
 
 
-def adauga_mesaj(conn, raportare_id, autor_id, rol_autor, text, schimba_stare=True):
+#: [deficiența 291] cine scrie din partea iConta într-un fir (bulina autorului se aprinde la mesajele lor)
+ROLURI_ICONTA = ("admin", "ai")
+
+
+def adauga_mesaj(conn, raportare_id, autor_id, rol_autor, text, schimba_stare=True, veste=True):
     """Adauga un mesaj in fir. rol_autor = 'utilizator', 'admin' sau 'ai' (autor_id NULL).
-    Mesajul nou e necitit pentru destinatar (becul rosu)."""
+    Mesajul nou e necitit pentru destinatar (becul rosu). [deficiența 291] `veste=False`: confirmarea automată a cererii („a fost
+    transmisă echipei”) e ecoul cererii autorului, nu o veste de la iConta — intră deja citită, deci nu aprinde bulina."""
     if rol_autor not in ("utilizator", "admin", "ai"):
         return {"ok": False, "cod": "ROL_INVALID"}
     if not (text or "").strip():
@@ -54,9 +59,9 @@ def adauga_mesaj(conn, raportare_id, autor_id, rol_autor, text, schimba_stare=Tr
         if not cur.fetchone():
             return {"ok": False, "cod": "INEXISTENT"}
         cur.execute(
-            "INSERT INTO public.raportari_mesaje (raportare_id, autor_id, rol_autor, text) "
-            "VALUES (%s,%s,%s,%s) RETURNING id",
-            (raportare_id, autor_id, rol_autor, text.strip()))
+            "INSERT INTO public.raportari_mesaje (raportare_id, autor_id, rol_autor, text, citit) "
+            "VALUES (%s,%s,%s,%s,%s) RETURNING id",
+            (raportare_id, autor_id, rol_autor, text.strip(), not veste))
         mid = cur.fetchone()["id"]
         # [inchidere_v1] mesaj intr-un fir inchis il redeschide
         cur.execute("UPDATE public.raportari SET stare='noua' WHERE id=%s AND stare='inchisa'", (raportare_id,))
@@ -118,16 +123,16 @@ def raportarile_mele(conn, autor_id):
     """Firele deschise de mine + mesaje. Contor = raspunsuri admin necitite (bec rosu)."""
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
-            "SELECT id, subiect, stare, tip, aplicatie, creat_la, ultim_mesaj_la "
+            "SELECT id, subiect, stare, tip, aplicatie, creat_la, ultim_mesaj_la, stare_necitita "
             "  FROM public.raportari WHERE autor_id = %s ORDER BY ultim_mesaj_la DESC",
             (autor_id,))
         fire = [dict(r) for r in cur.fetchall()]
         rez, necitite = [], 0
         for f in fire:
             mesaje = _mesaje_firului(cur, f["id"])
-            # "in asteptare" = firul nu are inca raspuns de la admin (becul)
-            are_raspuns = any(m["rol_autor"] == "admin" for m in mesaje)
-            nc = 0 if are_raspuns else 1
+            # [deficiența 291] „de citit” = vești de la iConta pe care autorul nu le-a văzut: răspunsuri necitite (admin / AI) și
+            # schimbarea stării din Panou Admin — nu cererea lui (până la 16.10 era invers: 1 pe orice fir FĂRĂ răspuns)
+            nc = sum(1 for m in mesaje if m["rol_autor"] in ROLURI_ICONTA and not m.get("citit")) + (1 if f["stare_necitita"] else 0)
             necitite += nc
             rez.append({
                 "id": f["id"], "subiect": f["subiect"], "stare": f["stare"],
@@ -141,25 +146,29 @@ def raportarile_mele(conn, autor_id):
 
 def marcheaza_citit(conn, raportare_id, cine_rol):
     """Marcheaza citite mesajele celuilalt rol (stinge becul).
-    cine_rol='utilizator' -> citeste mesajele de la admin; invers pt admin."""
-    celalalt = "admin" if cine_rol == "utilizator" else "utilizator"
+    cine_rol='utilizator' -> citeste mesajele de la iConta (admin și asistentul AI — [291] AI-ul rămânea necitit) și schimbarea stării;
+    invers pt admin."""
+    celalalt = ROLURI_ICONTA if cine_rol == "utilizator" else ("utilizator",)
     with conn.cursor() as cur:
         cur.execute(
             "UPDATE public.raportari_mesaje SET citit = true "
-            "WHERE raportare_id = %s AND rol_autor = %s AND citit = false",
-            (raportare_id, celalalt))
+            "WHERE raportare_id = %s AND rol_autor = ANY(%s) AND citit = false",
+            (raportare_id, list(celalalt)))
+        if cine_rol == "utilizator":
+            cur.execute("UPDATE public.raportari SET stare_necitita = false WHERE id = %s", (raportare_id,))
     return {"ok": True}
 
 
 def contor_necitite(conn, autor_id):
-    """Cifra rosie = sesizarile mele in asteptare de raspuns (stare 'noua').
-    Se aprinde la trimitere, scade pe masura ce vin raspunsuri reale (admin sau AI);
-    confirmarea de escaladare NU stinge (sesizarea inca asteapta). [triaj_ai]"""
+    """Cifra rosie = firele mele cu vești de la iConta pe care nu le-am văzut: un răspuns necitit (admin sau AI) sau starea schimbată din
+    Panou Admin. [deficiența 291, comanda Costin 16.10.2026, verbatim în DECIZII] „Bulina anunță un răspuns sau o schimbare de stare
+    venită de la iConta, nu propria cerere.” Până azi număra cererile MELE în așteptare (`stare = 'noua'`): se aprindea la trimitere."""
     with conn.cursor() as cur:
         cur.execute(
             "SELECT COUNT(*) FROM public.raportari r "
-            " WHERE r.autor_id = %s AND r.stare = 'noua'",
-            (autor_id,))
+            " WHERE r.autor_id = %s AND (r.stare_necitita OR EXISTS (SELECT 1 FROM public.raportari_mesaje m "
+            "       WHERE m.raportare_id = r.id AND m.rol_autor = ANY(%s) AND NOT m.citit))",
+            (autor_id, list(ROLURI_ICONTA)))
         n = cur.fetchone()[0]
     return {"ok": True, "necitite": int(n)}
 
@@ -230,7 +239,9 @@ def seteaza_stare(conn, raportare_id, stare):
     if stare not in ("noua", "raspuns", "inchisa"):
         return {"ok": False, "cod": "STARE_INVALIDA"}
     with conn.cursor() as cur:
-        cur.execute("UPDATE public.raportari SET stare = %s WHERE id = %s RETURNING id", (stare, raportare_id))
+        # [291] schimbarea stării din Panou Admin e o veste pentru autor (bulina), până deschide firul
+        cur.execute("UPDATE public.raportari SET stare_necitita = stare_necitita OR stare IS DISTINCT FROM %s, stare = %s WHERE id = %s "
+                    "RETURNING id", (stare, stare, raportare_id))
         if not cur.fetchone():
             return {"ok": False, "cod": "INEXISTENT"}
     return {"ok": True, "stare": stare}

@@ -48,9 +48,16 @@ _LIVRARE_RAND = {21: "R9", 11: "R10", 9: "R11"}
 _ACHIZ_RAND = {21: "R22", 11: "R23"}   # R22=Rd.24(21%), R23=Rd.25(11%). 9% deductibil: fara rand DUK-valid (vezi mai jos)
 
 # [B1 D300] Exigibilitatea in regim normal: faptul generator (art.282 alin.1 CF) =
-# COALESCE(data_faptului_generator, data_emitere); EXCEPTIE avansul (art.282 alin.2 lit.b) =
-# data_emitere (exigibil la EMITEREA facturii de avans). Data faptului generator nu mai e cod mort.
-_EXIG_NORMAL = ("(CASE WHEN f.tip_operatiune = 'avans' THEN f.data_emitere "
+# COALESCE(data_faptului_generator, data_emitere). Data faptului generator nu mai e cod mort.
+# EXCEPTIA avansului — [lotul 6 pct.3b, 278, verificat la sursa: anaf_surse/cod_fiscal_227_2015_consolidat.txt] CF art.282 alin.(2):
+# „exigibilitatea taxei intervine: a) la data emiterii unei facturi, înainte de data la care intervine faptul generator; [...] b) la data la
+# care se încasează avansul, pentru plățile în avans efectuate înainte de data la care intervine faptul generator”. Factura de avans se poate
+# emite DUPA incasare, pana la 15 ale lunii urmatoare (art.319 alin.(16)) -> exigibilitatea e cea mai devreme dintre emitere (lit.a) si
+# PRIMA incasare legata de factura de avans (lit.b: nota de trezorerie 51x / 53x = 411x cu `factura_id`). Pana azi: numai emiterea, deci
+# avansul incasat pe 28.08 si facturat pe 03.09 intra in D300 pe septembrie.
+_INCASARE_AVANS = ("(SELECT MIN(ia.data) FROM inregistrari ia JOIN inregistrari_linii la ON la.inregistrare_id = ia.id "
+                   "WHERE ia.factura_id = f.id AND la.cont_credit LIKE '411%%' AND (la.cont_debit LIKE '51%%' OR la.cont_debit LIKE '53%%'))")
+_EXIG_NORMAL = ("(CASE WHEN f.tip_operatiune = 'avans' THEN LEAST(f.data_emitere, " + _INCASARE_AVANS + ") "
                 "ELSE COALESCE(f.data_faptului_generator, f.data_emitere) END)")
 
 

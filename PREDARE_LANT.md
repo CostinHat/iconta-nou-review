@@ -4,7 +4,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-16** (prânz; lotul 5 publicat 12:45 pe `6c4917d0`), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **ultima rescriere**: **2026-10-16** (seara; lotul 6 lucrat pe ramura `lucru/lot6-2026-10-16`, NEPUBLICAT; producția rămâne pe `6c4917d0`), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
 - **pe commit**: `6c4917d0` (lotul 5) — **four-way închis 16.10.2026 12:45:38**: HEAD = origin/main = public/main =
   backup/lant-2026-10-16 = RUNNING = `6c4917d0` (2 din 2 procese); procesul pornit 12:45:36 EEST, după commit (09:53:19); nicio
   sentinelă; backup înainte `~/backups_db/iconta_v2_pre_lot5_20261016_1243.dump` (367 de tabele cu date); cele 7 migrări ale lotului
@@ -15,6 +15,18 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
+
+**LOTUL 6 (16.10.2026, comanda + patru completări, 272–295 + C41) — lucrat, NEPUBLICAT, oprit pentru raport („Te oprești și
+raportezi”).** Pe ramura `lucru/lot6-2026-10-16` (commitul lotului; SHA-ul în raportul lotului), producția neatinsă (four-way de mai sus,
+`6c4917d0`). Rezolvate cu e2e + mutație: 272, 273, 275–279, 281–295, C41; 274 parțial (274a făcută; **274b = propunere cu temeiul, de
+validat**, DECIZII 16.10.2026); 280 nu se aplică (CAM pe total, împărțit pe cartele) + clasa `round()` reparată. **Așteaptă decizia lui
+Costin**: (1) 274b — validarea propunerii (categoriile 0%, rândurile D300 13–15, codurile UBL); (2) 285 — interpretarea „nicio derulare”
+(laterală: zero; verticală: rămâne la conținutul lung, cu acțiunea fixă); (3) 289 — titularul certificatului nu e în tokenul ANAF
+(emitentul da); (4) „terț plătitor” (273) citit ca `tert_platitor_tva`. Rularea țintită de după ultima completare a fost ROȘIE (62 Python +
+9 e2e) și a fost reparată înaintea commitului (DECIZII „Lotul 6: rularea țintită”): suita țintită verde, e2e-ul atins 340 verzi în 24 de
+fișiere, verificatorul TOTAL 0, uneltele vizuale și artefactele refăcute. **Urmează**, după răspuns: 274b (dacă se validează), apoi
+„Lotul 6 e complet” -> `scripts/poarta_lot.sh` -> publicarea numai cu acordul lui Costin (regim pilot: backup, fast-forward aprobat,
+post-commit, cele 6 migrări noi cu `--productie`, four-way).
 
 **O comandă deschisă: registrul unic de parametri fiscali + interdicția 26** (comanda Costin 08.10.2026, verbatim în DECIZII), în
 execuție: R0 și R1 comise (`8de0b0a5`); la R2 a ieșit neconformitatea D406 (C1, C2), închisă și comisă (`5dd1add9`). **Comanda Costin
@@ -544,8 +556,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **974** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1219** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **985** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

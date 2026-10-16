@@ -28,10 +28,10 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=72aa1cbbdb";
+import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=9409795a49";
 import { randA as randConstatare } from "./control_verdict.js?v=751a4f0a85";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma } from "./firme.js?v=e5617fbd32";
+import { deschideFirma } from "./firme.js?v=d921e045d9";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)
@@ -162,6 +162,8 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     };
     window.addEventListener("iconta:drepturi", corp.__laDrepturi);
   }
+  // [292] titlul cardului se ține pe fereastră: redesenările de după o aprobare / respingere / drepturi nu-l mai primesc ca argument
+  if (opt.titlu) corp.dataset.titluCard = opt.titlu;
   // `peLoc` (redesenarea la drepturi): coada rămâne pe ecran cât se citește, fără „Se încarcă” intermediar
   if (!opt.peLoc) corp.innerHTML = `<p class="ecran-nota">Se încarcă coada…</p>`;
   let coada = [];
@@ -211,7 +213,9 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   // [08.10.2026, decizia Costin U4] „Fereastra cu note de validat se numește «De depus». Titlul trebuie să spună ce conține.” Titlul
   // venea din cardul de pe desktop (calculat o dată, fără note), iar navigatorul îl punea ca <h2>. Acum ecranul își scrie titlul din
   // ce are în el: părțile nevide, în ordinea în care apar (`titluCoada`).
-  const titlu = titluCoada({ note: noteDeValidat.length, deValidat: patruOchi ? laSenior.length : 0,
+  // [deficiența 292, comanda Costin 16.10.2026, verbatim în DECIZII] „Titlul ferestrei urmează cardul din care a fost deschisă (rest din
+  // 266; aceeași clasă cu 127).” Cardul își dă titlul (`opt.titlu`); fără card (din notificare) titlul spune ce conține (127, U4).
+  const titlu = corp.dataset.titluCard || titluCoada({ note: noteDeValidat.length, deValidat: patruOchi ? laSenior.length : 0,
                              deDepus: patruOchi ? aprobate.length : declaratii.filter((c) => c.stare === "la_senior" || c.stare === "aprobata").length,
                              poateDepune: !!perm.poate_depune });
   corp.innerHTML = `
@@ -549,8 +553,10 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
         actiuni += `<button class="val-btn val-trece" data-act="trece" data-actiune="POST /coada/{coada_id}/depune">Depune totuși…</button>`;
       }
     }
-    // Cu patru-ochi OFF, mono-utilizatorul poate renunța la un item încă neaprobat (respinge din la_senior)
-    if (!patruOchi && needsAproba && perm.poate_valida) {
+    // Cu patru-ochi OFF, mono-utilizatorul poate renunța la un item încă neaprobat (respinge din la_senior).
+    // [deficiența 293, comanda Costin 16.10.2026] „Pe o declarație a altcuiva, fără dreptul de depunere, nu se oferă nicio acțiune în afară
+    // de vizualizare; serverul refuză la fel.” Renunțarea e a celui care a pregătit-o sau a celui care o depune (`uc_coada.coada_respinge`).
+    if (!patruOchi && needsAproba && perm.poate_valida && (euAmPregatit || perm.poate_depune)) {
       actiuni += `<button class="buton-sters val-btn val-respinge" data-act="respinge" data-actiune="POST /coada/{coada_id}/respinge">Renunță</button>`;
     }
   }

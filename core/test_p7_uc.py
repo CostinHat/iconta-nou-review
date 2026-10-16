@@ -34,6 +34,9 @@ METODE = ("get", "post", "put", "patch", "delete", "head", "options")
 
 #: abaterile acceptate de la „mesaj neschimbat", fiecare cu motivul ei. Orice alta abatere pica.
 ABATERI = {
+    ("factura_trimite_spv", "r.get('mesaj', 'Conectează ANAF (SPV) înainte de a trimite.')"): (
+        "Deficiența 289b (lotul 6, comanda Costin 16.10.2026): același 409, refuzul are acum butonul spre Setări cont → Conectare SPV "
+        "(`refuz_spre_ecran`, ținta `conectare_spv`) și spune ce lipsește în cuvintele contabilului."),
     ('_cere_z_unic', "MESAJ_Z_DUPLICAT % {'numar': numar, 'data': data_ex, 'id': iid, 'cum': 'importata din fisier AMEF' if sursa == 'amef' else 'tastata'}"): (
         "Comanda Costin 09.10.2026, „Retest 2” pct.2 (limba textului afișat): același refuz, același cod; mesajul scris corect "
         "(diacritice, fără nume de câmpuri sau de stări interne, fără majuscule de accent)."),
@@ -113,6 +116,18 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
+    ("coada_respinge", "MESAJ_RENUNTA_ALTUI"): (
+        "Deficiența 293 (lotul 6, completarea Costin 16.10.2026, verbatim în DECIZII): „Pe o declarație a altcuiva, fără dreptul de "
+        "depunere, nu se oferă nicio acțiune în afară de vizualizare; serverul refuză la fel.” Fără validarea în doi, renunțarea (403) e a "
+        "celui care a pregătit-o sau a celui care o depune. Gardul: `core/test_293_renunta_altui.py`."),
+    ("registru_fiscal_citeste", "str(e)"): (
+        "C41 (lotul 6, găsit de garda 285): registrul pe profit trece prin `d101.genereaza` pe conexiunea firmei; refuzul motivat al "
+        "generatorului (date de firmă lipsă, `ValueError`) e 422, ca la S1005 — nu cădere. Gardul: `core/test_registru_fiscal_conexiune.py`."),
+    ("factura_primita_valideaza", "REFUZ_TERT_PLATITOR"): (
+        "Deficiența 273c (lotul 6, comanda Costin 16.10.2026): „Câmpurile pe care importul nu le preia (terț plătitor, categorie) se "
+        "semnalează pe factură ca «de completat»; terțul plătitor intră în D394.” Validarea cere tipul furnizorului (422 numit)."),
+    ("factura_primita_valideaza", "REFUZ_CATEGORIE_331"): (
+        "Deficiența 273c: la factura primită cu taxare inversă (linii „AE”), validarea cere categoria produsului art.331 (codul D394)."),
     ("raportari_imagine", "str(e)"): (
         "C36 (15.10.2026): refuzul tipului (415) și al mărimii (413) vine din `fisiere_private.verifica`, cu numele fișierului și "
         "tipurile permise în cuvinte (`FisierRefuzat`), tradus în aceeași clasă de domeniu. Gardul: `core/test_fisiere_private.py`."),
@@ -311,6 +326,15 @@ def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
+    ("bon_aproba", "round"): (
+        "_q",
+        "Deficiența 280 (lotul 6, comanda Costin 16.10.2026, verbatim în DECIZII): valoarea fără TVA a liniei bonului (× factor) e o sumă "
+        "NOUĂ care intră în notă — rotunjire aritmetică (`common._q`, ROUND_HALF_UP), nu `round()` la par. Gardul: "
+        "`core/test_rotunjire_fiscala.py::test_rotunjirea_in_toata_aplicatia_e_aritmetica_sau_motivata`."),
+    ("banca_rec_import", "parse_extras"): (
+        "citeste_extras",
+        "Deficiența 277 / 276b (lotul 6): importul extrasului citește și contul și soldurile (`banca_parser.citeste_extras`), nu numai "
+        "tranzacțiile; `parse_extras` a rămas numai lista tranzacțiilor din `citeste_extras`."),
     ("reset_parola_cere", "strip"): (
         "nume_de_salut",
         "Deficiența 269 (Lotul 5, 15.10.2026: „salutul ia ultimul cuvânt din nume”): numele din salutul emailului de resetare vine din "
@@ -547,7 +571,7 @@ def test_SCOASELE_declarate_chiar_lipsesc():
         _cale, _nod = _ef.functia(fn_nume)
         toate = {x.func.attr if isinstance(x.func, _ast.Attribute) else x.func.id for x in _ast.walk(_nod)
                  if isinstance(x, _ast.Call) and isinstance(x.func, (_ast.Attribute, _ast.Name))}
-        for cale, ajutor in APELURI_EXTRASE_IN_AJUTOARE.get(fn_nume, ((None, None),))[0]:
+        for cale, ajutor in APELURI_EXTRASE_IN_AJUTOARE.get(fn_nume, ((),))[0]:   # [lotul 6] fără ajutoare: nicio pereche (era `(None, None)`)
             if cale:
                 toate |= set(_apeluri_ajutor(cale, ajutor))
         assert apel not in toate, "%s: apelul declarat scos (%s) e tot acolo" % (fn_nume, apel)
@@ -889,18 +913,19 @@ def _fara_abateri(nume, ramase_v, ramase_n):
             if pereche:
                 ramase_v = [x for x in ramase_v if x != p]
                 ramase_n = [x for x in ramase_n if x != pereche[0]]
-    for (rut, mesaj), _motiv in ABATERI.items():
-        if rut != nume:
-            continue
-        # [04.10.2026] mesajul vechi poate fi și o CONSTANTĂ NUMITĂ (`EMAIL_EXISTA`), nu doar un literal
-        tinte = _forme_mesaj(mesaj)
-        v = [p for p in ramase_v if p[1] in tinte]
-        # [retest 08.10] abaterea = ACELAȘI cod, alt mesaj: se numără perechile noi pe codul ei, nu toate perechile noi ale
-        # funcției (la `coada_depune` mai rămâne una pe 422, scoasă abia de CODURI_ADAUGATE, mai jos)
-        # [Retest 2, 09.10.2026] perechile noi DECLARATE (PERECHI_ADAUGATE, scoase mai jos) nu sunt perechea abaterii: altfel o funcție
-        # care are și o pereche adăugată pe același cod (`facturi_emite`: 422) n-ar mai putea purta nicio abatere de mesaj
-        _adaugate = {f for (r2, m2) in PERECHI_ADAUGATE if r2 == nume for f in _forme_mesaj(m2)}
-        n_cod = [p for p in ramase_n if v and p[0] == v[0][0] and p[1] not in _adaugate]
+    # [04.10.2026] mesajul vechi poate fi și o CONSTANTĂ NUMITĂ (`EMAIL_EXISTA`), nu doar un literal
+    # [retest 08.10] abaterea = ACELAȘI cod, alt mesaj: se numără perechile noi pe codul ei, nu toate perechile noi ale
+    # funcției (la `coada_depune` mai rămâne una pe 422, scoasă abia de CODURI_ADAUGATE, mai jos)
+    # [Retest 2, 09.10.2026] perechile noi DECLARATE (PERECHI_ADAUGATE, scoase mai jos) nu sunt perechea abaterii: altfel o funcție
+    # care are și o pereche adăugată pe același cod (`facturi_emite`: 422) n-ar mai putea purta nicio abatere de mesaj
+    # [lotul 6, 16.10.2026] abaterile ACELEIAȘI funcții pe ACELAȘI cod se socotesc împreună: două mesaje rescrise pe 409
+    # (`factura_trimite_spv`: diacriticele „deja trimisă” + refuzul SPV cu țintă de ecran) cereau fiecare o singură pereche nouă pe
+    # cod, iar fiecare vedea două — deci nicio pereche nu se mai putea declara
+    _tinte = set().union(*[_forme_mesaj(m) for (rut, m) in ABATERI if rut == nume]) if any(rut == nume for (rut, _m) in ABATERI) else set()
+    _adaugate = {f for (r2, m2) in PERECHI_ADAUGATE if r2 == nume for f in _forme_mesaj(m2)}
+    for _cod in sorted({p[0] for p in ramase_v if p[1] in _tinte}, key=str):
+        v = [p for p in ramase_v if p[1] in _tinte and p[0] == _cod]
+        n_cod = [p for p in ramase_n if p[0] == _cod and p[1] not in _adaugate]
         if v and len(n_cod) == len(v):
             ramase_v = [p for p in ramase_v if p not in v]
             ramase_n = [p for p in ramase_n if p not in n_cod]

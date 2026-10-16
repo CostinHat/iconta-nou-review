@@ -28,6 +28,7 @@ CAMPURI = {
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
+from core.common import _q, _dec   # [280] rotunjirea aritmetică a sumelor (ROUND_HALF_UP)
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 
 
@@ -96,7 +97,7 @@ def rezumat(articole):
     ok = [a for a in articole if a["valid"]]
     return {"total": len(articole), "valide": len(ok), "invalide": len(articole) - len(ok),
             "cu_stoc": sum(1 for a in ok if a["cantitate"] > 0),
-            "valoare_totala": round(sum(a["cantitate"] * a["pret"] for a in ok), 2)}
+            "valoare_totala": float(_q(sum((_dec(a["cantitate"]) * _dec(a["pret"]) for a in ok), _dec(0))))}   # [280] aritmetic
 
 
 def importa(conn, schema, articole, data_sold=None):
@@ -131,7 +132,7 @@ def importa(conn, schema, articole, data_sold=None):
                         (a["denumire"], a["um"], a["cont_stoc"], a["cont_cheltuiala"]))
             aid = cur.fetchone()[0]
             if a["cantitate"] > 0:
-                val = round(a["cantitate"] * a["pret"], 2)
+                val = float(_q(_dec(a["cantitate"]) * _dec(a["pret"])))   # [280] valoarea stocului: rotunjire aritmetică, nu la par
                 cur.execute(f"""INSERT INTO {schema}.miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document)
                                 VALUES (%s,%s,'intrare',%s,%s,%s,'sold initial (import)')""",
                             (aid, d, a["cantitate"], a["pret"], val))

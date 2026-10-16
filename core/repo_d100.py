@@ -40,3 +40,19 @@ def select_facturi(cur, _inc, _sf):
     cur.execute("SELECT count(*) FROM facturi WHERE directie='emisa' "
                 "AND data_emitere >= %s AND data_emitere < %s", (_inc.isoformat(), _sf.isoformat()))
     return cur.fetchone()
+
+
+def venituri_pe_conturi(cur, _inc, _sf):
+    """[deficiența 295] Baza micro pe conturi: aceleași note și aceleași conturi ca `select_inregistrari_linii` (70x/75x/76x creditate,
+    709 debitat — se scade; note validate; fără închiderea în 121). [(cont, suma)] — 709 cu semnul minus."""
+    cur.execute("SELECT l.cont_credit, SUM(l.suma) FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
+                "WHERE i.status='validata' AND i.data >= %s AND i.data < %s "
+                "AND (l.cont_credit LIKE '70%%' OR l.cont_credit LIKE '75%%' OR l.cont_credit LIKE '76%%') "
+                "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%' GROUP BY l.cont_credit "
+                "UNION ALL "
+                "SELECT l.cont_debit, -SUM(l.suma) FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
+                "WHERE i.status='validata' AND i.data >= %s AND i.data < %s AND l.cont_debit LIKE '709%%' "
+                "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%' GROUP BY l.cont_debit ORDER BY 1",
+                (_inc.isoformat(), _sf.isoformat(), _inc.isoformat(), _sf.isoformat()))
+    return cur.fetchall()
+

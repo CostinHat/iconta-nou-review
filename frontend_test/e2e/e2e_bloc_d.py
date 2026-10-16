@@ -329,8 +329,9 @@ def test_def_101_titlul_documentului_in_coada_e_scurt(patron, firma_gv):
 
 def test_def_127_fereastra_cozii_spune_ce_contine(patron, firma_gv):
     """127. Coadă: fereastra se numea „De depus”.
-    Pașii contabilului: o notă a asistentului așteaptă validarea -> contabilul-șef deschide coada de pe birou: titlul ferestrei
-    începe cu „Note de validat”, nu „De depus”."""
+    Pașii contabilului: o notă a asistentului așteaptă validarea -> contabilul-șef deschide coada de pe birou: titlul ferestrei nu e
+    „De depus”. [PIVOT 16.10.2026, deficiența 292: „Titlul ferestrei urmează cardul din care a fost deschisă”] titlul e al cardului —
+    „De validat” (cardul îl alege așa când are note de validat) —, iar ce conține spun secțiunile („Note de validat (n)”)."""
     st, r = _api(ASISTENT, "POST", "/tenants/%d/jurnal" % firma_gv["tenant_id"],
                  {"data": AZI.isoformat(), "descriere": "Chirie D127", "linii": [{"debit": "612", "credit": "401", "suma": 100}]})
     assert st == 200, (st, r)
@@ -338,8 +339,8 @@ def test_def_127_fereastra_cozii_spune_ce_contine(patron, firma_gv):
     _coada(patron)
     titlu = patron.pg.inner_text(".fereastra:last-of-type #val-titlu").strip()
     patron.captura()
-    assert titlu.startswith("Note de validat"), titlu
-    assert "De depus" not in titlu.split(" · ")[0], titlu
+    assert titlu == "De validat", titlu
+    assert patron.pg.inner_text(".fereastra:last-of-type #val-note").upper().startswith("NOTE DE VALIDAT ("), "secțiunea spune ce conține (scrisă cu majuscule din CSS)"
 
 
 # ── 114–116, 128–129: clopoțelul, facturi încasate, chitanțe, notele din coadă ─────────────────────────────────────────────
@@ -1164,7 +1165,7 @@ def _trimite_declaratia(ecran):
     assert b, ecran.fereastra()[:1500]
     b.click()
     pg.wait_for_function("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); const m = f.querySelector('#dec-coada-mesaj');"
-                         " return f.innerText.includes('Trimisă în coada de validare') || (m && m.innerText.trim()); }", timeout=90000)
+                         " return f.innerText.includes('Trimisă în coad') || (m && m.innerText.trim()); }", timeout=90000)   # [287] „coada de validare” / „coadă”
     return ecran.fereastra()
 
 
@@ -1174,7 +1175,7 @@ def test_def_120_d300_nu_intra_in_coada_cand_4426_are_tva_neinclus_chiar_cu_cior
     fără factură validate pe 4426 = 401 (115,50 + 126,00), D300 regenerat din documente cu deductibila 0, iar în lună stăteau notele de
     corecție în ciornă (121/122) — iar o ciornă în perioadă făcea din blocaj doar avertisment (R36). Pașii: luna trecută are nota
     validată 4426 = 401 de 241,50 și o ciornă -> Declarații -> D300 pe luna trecută -> „Trimite în coadă”: refuzat, cu diferența pe
-    cont („contul 4426 are 241.50”) și ciorna numită; nu intră în coadă.
+    cont („contul 4426 are 241,50”) și ciorna numită; nu intră în coadă.
     [testul vechi trecea pe defect: avea diferența pe 4427, dar nicio ciornă în lună]"""
     tid = firma_tva["tenant_id"]
     _nota_validata(firma_tva, LUNA_TRECUTA.replace(day=7).isoformat(), "4426", "401", 241.50, "NIR fara factura D120")
@@ -1187,7 +1188,7 @@ def test_def_120_d300_nu_intra_in_coada_cand_4426_are_tva_neinclus_chiar_cu_cior
         text = _trimite_declaratia(patron)
         patron.captura()
         assert "Declarația nu intră în coadă: TVA-ul ei nu se potrivește cu balanța lunii" in text, text[:2000]
-        assert "contul 4426 are 241.50" in text, text[:2000]
+        assert "contul 4426 are 241,50" in text, text[:2000]
         assert "nevalidat" in text, text[:2000]
         assert not sql("SELECT id FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 'd300'", (tid,))
     finally:
@@ -1211,7 +1212,7 @@ def test_def_210_d394_nu_intra_in_coada_cu_diferenta_tva_si_ciorne_in_luna(patro
         text = _trimite_declaratia(patron)
         patron.captura()
         assert "Declarația nu intră în coadă: TVA-ul ei nu se potrivește cu balanța lunii" in text, text[:2000]
-        assert "contul 4426 are 241.50" in text, text[:2000]
+        assert "contul 4426 are 241,50" in text, text[:2000]
         assert not sql("SELECT id FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 'd394'", (tid,))
     finally:
         _api(PATRON, "DELETE", "/tenants/%d/jurnal/%d" % (tid, r["id"]))
@@ -1237,7 +1238,7 @@ def test_def_119_tva_din_nir_fara_factura_nu_e_pe_4426_deci_d300_se_potriveste(a
     text = _trimite_declaratia(patron)
     patron.captura()
     assert "TVA-ul ei nu se potrivește cu balanța" not in text, text[:2000]
-    assert "Trimisă în coada de validare" in text, text[:2000]
+    assert "Trimisă în coadă" in text, text[:2000]   # [287] validarea în doi e oprită pe firma de probă: titlul spune coada, nu validarea
 
 
 def test_def_107_factura_dupa_nir_fara_factura_nu_incarca_371_a_doua_oara(patron, firma_tva):

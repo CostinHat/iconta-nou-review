@@ -52,9 +52,45 @@ MESAJ_APROBARE_PE_RUTA_EI = ("Aprobarea poveștii are acțiunea ei și cere drep
                              "ciorna.")
 
 
+COD_POVESTE_ABATERI = "POVESTE_ABATERI"
+COD_POVESTE_RESTANTE = "POVESTE_CU_RESTANTE"
+
+
+def verifica_textul_aprobat(tenant_id, an, luna, date, ctx):
+    """[deficiența 288] Verificarea automată de dinaintea aprobării (vezi `pachet_poveste_aproba`): ridică refuzul numit, sau nimic."""
+    _uc_comun._cere_perioada(an, luna)
+    schema = _uc_comun._pachet_schema(ctx, tenant_id)
+    with db.get_conn(schema) as cs, db.get_conn() as cp:
+        rz = _pachete.rezumat_luna(cs, cp, tenant_id, an, luna)
+    abateri = _pachete.abateri_termeni(_pachete.text_simplu((date.text or "").strip()), rz)
+    de_decizie = [a for a in abateri if a.startswith(_pachete.ABATERI_CU_DECIZIE)]
+    blocante = [a for a in abateri if a not in de_decizie]
+    from core import afirmatii as _af
+
+    def _refuz(cod, abateri, mesaj, regula):
+        return dict(_af.afirmatie("neconformitate", "poveste_lunii", mesaj, unde="povestea lunii %02d/%04d" % (luna, an), regula=regula),
+                    cod=cod, abateri=abateri, mesaj=mesaj)
+    if blocante:
+        raise _erori.DateInvalide(_refuz(COD_POVESTE_ABATERI, blocante,
+                                         "Povestea nu se aprobă: se abate de la pachet — " + "; ".join(blocante) + ". Corecteaz-o "
+                                         "(pachetul spune venituri, cheltuieli și rezultat, ale lunii) și aprob-o din nou.",
+                                         "povestea spune cifrele lunii, din pachet (deficiența 288, comanda Costin 16.10.2026)"))
+    if de_decizie and not getattr(date, "cu_restante", False):
+        raise _erori.DateInvalide(_refuz(COD_POVESTE_RESTANTE, de_decizie,
+                                         "Povestea pomenește restanțele / declarațiile cabinetului (" + "; ".join(de_decizie) + "). Ele "
+                                         "nu ajung la client fără decizia ta: scoate-le din text, sau confirmă că le trimiți.",
+                                         "restanțele cabinetului ajung la client numai cu decizia contabilului (deficiența 288)"))
+
+
 def pachet_poveste_aproba(tenant_id, an, luna, date, ctx):
     """[comanda Costin 05.10.2026 pct.2] Corpul rutei `/pachete/{tenant_id}/poveste/aproba` („Poate valida”): același
-    corp ca ciorna, cu starea `aprobat` (garda de pe rută a decis deja că apelantul poate aproba)."""
+    corp ca ciorna, cu starea `aprobat` (garda de pe rută a decis deja că apelantul poate aproba).
+    [deficiența 288, comanda Costin 16.10.2026, verbatim în DECIZII] „Povestea folosește termenii corect (venituri ≠ încasări,
+    profit/pierdere) și se verifică automat înainte de aprobare” + „Informațiile despre restanțele cabinetului nu intră în povestea
+    trimisă clientului fără decizia expresă a contabilului.” Verificarea de la generare (`abateri_termeni`) rulează acum și pe textul
+    APROBAT (editat de om): o abatere de termen, sumă, perioadă sau laudă oprește aprobarea, numită; restanțele / declarațiile trec
+    numai cu `cu_restante` — decizia expresă, pe al doilea pas."""
+    verifica_textul_aprobat(tenant_id, an, luna, date, ctx)
     return pachet_poveste_set(tenant_id, an, luna, date, ctx, _aprobare=True)
 
 

@@ -46,6 +46,48 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 6, comanda 1 (Costin 16.10.2026 după-amiaza, verbatim în DECIZII „Lotul 6, comanda 1”)** — 272–282, începând cu 277; răspuns
+  punctual pentru fiecare. Ramura `lucru/lot6-2026-10-16` (din `fe004b18`, registrele de după publicarea lotului 5).
+  - ultim: 272–273, 275–295 și C41 făcute (16.10.2026, comanda + cele patru completări): fiecare cu testul de capăt la capăt și
+    mutația lui; 274a făcută, 274b — propunere cu temeiul, de validat (DECIZII 16.10.2026); 280 — nu e rotunjire la par (CAM pe total,
+    împărțit pe cartele), clasa `round()` reparată în toată aplicația. Rularea țintită (16.10 noaptea) roșie -> reparată: 62 Python +
+    9 e2e (DECIZII „Lotul 6: rularea țintită”); e2e-ul atins 340 verzi în 24 de fișiere; uneltele vizuale și artefactele refăcute. Commitul
+    lotului pe ramură (raportul lotului numește SHA-ul).
+  - urmator: L6-274b după validarea propunerii (§6 al raportului); apoi „Lotul 6 e complet” -> poarta lotului (`scripts/poarta_lot.sh`)
+    -> publicarea numai cu acordul lui Costin (regim pilot). STARE = BLOCAT: decizia lui Costin (274b, 285 interpretarea, 289 titularul)
+  - pasi:
+    L6-277a. `core/banca_parser.py`: `citeste_extras` -> tranzacțiile cu `referinta` (MT940 `:61:` după cod) și contul extrasului (`:25:`), plus
+          soldurile `:60F:` / `:62F:`; `parse_extras` rămâne lista. `extras_linii` + `cont_extras`, `referinta` (migrare + `tenant_template.sql`).
+    L6-277b. `core/reconciliere_api.importa_extras`: duplicat = aceeași mișcare (dată, sumă, sens, referință / descriere, cont) deja în
+          `extras_linii`, cu multiplicitatea ei; serializat pe firmă (lacăt de tranzacție); `extras_import` rămâne registru, nu refuz.
+          Răspunsul: liniile noi + cele găsite deja; `firme.js` mesajul pe amândouă. Teste + e2e `test_def_277_*` + mutație.
+    L6-277c. Clasa: celelalte importuri cu „deja” (e-Factura XML, SPV, WooCommerce, SAGA / articole / rețete, raportul Z) — cheia fiecăruia.
+    L6-276. Bancă: formatele pe bănci pe ecran; soldurile extrasului față de 5121; ajutorul fără termeni de programator.
+    L6-278. Casă: dispoziția legată de factură; avansul de la client (temei CF + OMFP 1802/2014); plafonul Legea 70/2015 în formular.
+    L6-279. Casă / validare: starea reală la salvare și pe rând; fără „Șterge” la nota la validare; refuzul pe rând propriu (clasa 259).
+    L6-275. Factura emisă: detaliul fără derulare orizontală; starea SPV cu termenul; „Conectează ANAF” cu buton.
+    L6-274. Emite factură: cota din nomenclator; „0%” numai cu categoria (D300, e-Factura).
+    L6-273. Facturi primite din SPV: starea conexiunii; import UBL + „Verifică acum”; câmpurile „de completat”; terțul plătitor în D394.
+    L6-272. Date firmă: CUI needitabil; corectura de CUI a administratorului, cu avertisment.
+    L6-281. Mijloace fixe: amortizarea restantă dintr-o acțiune; închiderea lunii cu amortizarea lipsă.
+    L6-280. Salarii: rotunjirea CAM la sursă; clasa rotunjirilor fiscale.
+    L6-282. Panou Admin: cererile de înregistrare neconfirmate + „Retrimite confirmarea”.
+    (completarea, DECIZII „Lotul 6: completarea (283–287)”)
+    L6-283. Declarații: întâi ce datorează firma în perioadă (vectorul fiscal, cu termenul), restul separat; fără „Pasul 1 din 3” cu firma aleasă.
+    L6-284. D300 / control: refuzul numește notele care explică diferența, cu link; după validare, regenerare + coadă automate.
+    L6-285. Clasă: nicio fereastră cu derulare; acțiunea principală și refuzul mereu vizibile — toate ferestrele.
+    L6-286. Pagina principală: contoarele după validare / respingere, fără reîncărcare (clasa 265).
+    L6-287. Declarații / roluri: fără validare în doi, pasul următor e depunerea, iar mesajul o spune.
+    L6-SPV. (a treia completare) Citirea listei SPV o dată pentru FISCALOS ICONTA (producție, numai citire) + când rulează citirea automată.
+    L6-289. Conexiunea SPV: titular + emitent în loc de serie; starea pe fereastra firmei și în refuzul „Trimite în SPV”; pasul în ghidul de bun venit.
+    L6-288. Povestea lunii: venituri ≠ încasări, verificare automată înainte de aprobare; luna vs cumulat, spus explicit; restanțele
+          cabinetului numai cu decizia contabilului.
+    L6-290. Clasă: mesajul de eroare al unui formular dispare când câmpul e corectat (autentificare, Suport → Cerere import, toate formularele).
+    L6-291. Suport: bulina numai pentru răspunsul / schimbarea de stare venite de la iConta, nu pentru cererea proprie.
+    L6-292. „De validat”: titlul și secțiunea ferestrei urmează cardul din care s-a deschis (rest 266, clasa 127).
+    L6-293. Coada: pe declarația altcuiva, fără „Poate depune”, numai vizualizare („Renunță” scos); serverul refuză la fel.
+    L6-294. Perioada implicită la orice declarație = cea mai apropiată perioadă scadentă și nedepusă (D100: T3, nu T4); legat de 283.
+    L6-295. D100 pasul 2: „Rezumat” cu baza (veniturile pe conturi, deducerile), ca la D112; la orice declarație care arată doar sume datorate.
 - fir: **Lotul 5, comanda 4 — ultima (Costin 16.10.2026, verbatim în DECIZII „Lotul 5, comanda 4”)** — 268 corectat, răspunsul la §6
   (269 migrarea numelor, capturile mutate, „scadențe apropiate”, 271 reparat), „Lotul 5 e complet”: poarta o dată, publicarea cu acordul dat.
   - ultim: C4-1 … C4-7 făcute (16.10.2026): poarta 1 ROȘIE (`c8c64a04`), poarta 2 VERDE (`6c4917d0`); publicat 12:45, four-way pe

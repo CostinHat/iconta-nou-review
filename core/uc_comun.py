@@ -99,7 +99,7 @@ def _mesaj_intrare(e):
 
 
 #: ecranul-țintă al unui refuz, cu numele pe care îl vede omul (cheile = `ECRANE` din `ecran_destinatie.js`)
-_UNDE_ECRAN = {"date_firma": "Date firmă"}
+_UNDE_ECRAN = {"date_firma": "Date firmă", "conectare_spv": "Setări cont → Conectare SPV", "produse": "Produse"}
 
 
 def refuz_spre_ecran(mesaj, cod, ecran, regula=None, tip="operatiune"):
@@ -293,11 +293,15 @@ def controale_inchidere(conn, schema, an, luna):
                             if x.get("rata") is not None else ("amortizarea lunii nu se poate calcula pe contul %s: %s — corectează "
                             "mijlocul fix în registru" % (x["cont"], x["eroare"])), cont=x["cont"]))
     for x in anterioare:
-        # [deficiența 215] semnal, nu blocaj: luna închisă acum își are amortizarea; cele dinainte se generează pe fiecare lună
-        semnale.append(_ctl("AMORTIZARE_ANTERIOARA_NEINREGISTRATA", "amortizarea lunilor anterioare nu e înregistrată pe contul %s: %s "
-                            "(%s), %s lei după calcul — generează-o din Registrul jurnal („Generează amortizarea”), lună cu lună, și "
-                            "valideaz-o" % (x["cont"], _cate(len(x["luni"]), "lună", "luni"),
-                                             _mfr.luni_ca_interval(x["luni"]), _bani(x["total"])), cont=x["cont"]))
+        # [deficiența 215] semnal. [PIVOT 16.10.2026, deficiența 281, comanda Costin, verbatim în DECIZII: „La închiderea lunii,
+        # amortizarea lunilor anterioare neînregistrată oprește închiderea sau cere confirmare explicită, pentru că schimbă profitul
+        # (D100/D101).”] Blocaj CONFIRMABIL: oprește închiderea, iar închiderea trece numai cu confirmarea explicită (`confirmabil`,
+        # `perioada_blocheaza(confirma_amortizare=True)`), consemnată în urma închiderii.
+        blocaje.append(_ctl("AMORTIZARE_ANTERIOARA_NEINREGISTRATA", "amortizarea lunilor anterioare nu e înregistrată pe contul %s: %s "
+                            "(%s), %s lei după calcul — generează-o cu „Generează amortizarea restantă” (o notă pe lună) și valideaz-o, "
+                            "sau închide luna confirmând explicit: amortizarea lipsă schimbă profitul (D100/D101)" % (
+                                x["cont"], _cate(len(x["luni"]), "lună", "luni"), _mfr.luni_ca_interval(x["luni"]), _bani(x["total"])),
+                            cont=x["cont"], confirmabil=True, luni=["%04d-%02d" % l for l in x["luni"]]))
     if sold_581:
         semnale.append(_ctl("SOLD_581", "contul 581 (viramente interne) are sold %s lei la sfârșitul lunii: un virament intern se "
                             "închide în aceeași perioadă — lipsește a doua parte (ridicarea sau depunerea)" % _bani(sold_581),

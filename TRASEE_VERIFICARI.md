@@ -57,7 +57,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · supervizor_confirmari (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `coada_api`, `repo_main`, `supervizor`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · declaratii_in_asteptare (INSERT/UPDATE) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · supervizor_confirmari (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `coada_api`, `repo_declaratii`, `repo_main`, `supervizor`*
 
 - [x] ruta refuză o declarație fără verdict de validare păstrat, sau cu verdict pe altă amprentă decât fișierul curent
 - se scrie în `declaratii_depuse`: tip, perioadă, momentul, autorul autorizării, amprenta fișierului, indexul de la autoritate dacă există
@@ -68,7 +68,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `coada_api`, `repo_main`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · declaratii_in_asteptare (INSERT/UPDATE) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `coada_api`, `repo_declaratii`, `repo_main`*
 
 - [x] respingerea poartă **motivul**, obligatoriu
 - declarația nu dispare din coadă — rămâne, cu starea „respinsă" și motivul vizibil
@@ -490,7 +490,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_drept(PREGATI)`*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `coada_api`, `jurnal_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · declaratii_in_asteptare (INSERT/UPDATE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `coada_api`, `jurnal_api`, `repo_declaratii`*
 
 - [x] se retrimite numai o notă CIORNĂ al cărei ultim element din coada de validare e RESPINS (altfel 409: e deja la validare sau validată) — `core/test_validare_note.py::test_respingerea_tine_pana_la_retrimitere`
 - elementul nou intră `la_senior`, iar validatorii primesc notificarea „de validat” (comanda Costin 06.10.2026, răspunsul la §6, pct.1)
@@ -769,7 +769,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T06 — Importul de e-Factura și transmiterea prin SPV
 
-*clasa MANUAL · 7 rute · 4 schimba date · 1 firme il pot exercita azi*
+*clasa MANUAL · 10 rute · 6 schimba date · 1 firme il pot exercita azi*
 
 *clasa MANUAL · 7 rute · 4 schimba date · nicio firma nu-l poate exercita azi*
 
@@ -783,6 +783,26 @@ faptica, pe baza listelor de inventariere.
 
 - [x] respingerea poartă motivul, obligatoriu
 - ciorna rămâne, cu starea „respinsă" — nu se șterge; e o urmă a ceea ce a sosit
+
+### `POST /tenants/{tenant_id}/spv/verifica-acum`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: [lotul 6 pct.7b, 273] „Verifică acum în SPV”: citirea facturilor primite ale firmei, acum (aceeași ca a timerului). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): efactura_primite (INSERT) · spv_cui_acoperit (INSERT) — prin `spv_receive`*
+
+- [x] **citirea e aceeași ca a lucrătorului din fundal** (`spv_receive.citeste_firma`); prima citire a unei firme cuprinde 60 de zile, următoarele 3 (pct.2b, lotul 6)
+- [x] **răspunsul ANAF se ține minte pe CUI** (`public.spv_cui_acoperit`: drept / eroare / ultima citire reușită) și ecranul îl spune la fel peste tot — „Nu aveti drept in SPV pentru CIF=…” nu mai e o listă goală tăcută (273a)
+- „Nu există mesaje” e o citire reușită cu zero facturi, nu o eroare
+
+### `POST /tenants/{tenant_id}/facturi-primite/import-xml`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: [lotul 6 pct.7b, 273] Import manual XML UBL (sau ZIP) al facturilor primite: intră în lista de validat, ca cele din SPV. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): efactura_primite (INSERT) · spv_cui_acoperit (INSERT) — prin `spv_receive`*
+
+- [x] **XML-ul UBL încărcat de mână intră în aceeași listă de validat ca cel din SPV** (`spv_receive.importa_xml_manual`), cu aceeași deduplicare: al doilea import al aceleiași facturi e numărat „era deja”, nu dublat (273b, lotul 6)
+- [x] **ce nu vine din XML (tipul furnizorului, categoria art.331 la taxarea inversă) apare pe factură ca „de completat”** și se cere la validare (273c)
+- un fișier care nu e factură UBL se refuză numit, fără să oprească celelalte fișiere din aceeași încărcare
 
 ### `POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza`
 
@@ -902,7 +922,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T09 — Casa și registrul de casă
 
-*clasa MECANIC · 4 rute · 3 schimba date · 2 firme il pot exercita azi*
+*clasa MECANIC · 6 rute · 5 schimba date · 2 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/casa/registru`*
 
@@ -910,7 +930,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · chitante (UPDATE) · facturi (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · chitante (UPDATE) · facturi (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (INSERT) — prin `casa_api`*
 
 - [x] **soldul casei nu poate deveni negativ** — o plată peste sold se refuză
 - plafonul de plăți în numerar către o persoană juridică se verifică pe zi și pe operațiune
@@ -922,7 +942,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · chitante (UPDATE) · facturi (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · chitante (UPDATE) · facturi (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (INSERT) — prin `casa_api`*
 
 - [x] **o operațiune de casă dintr-o zi închisă nu se șterge** — registrul de casă se închide zilnic
 - ștergerea recalculează soldul; dacă soldul ar deveni negativ la vreo operațiune ulterioară, se refuză
@@ -933,6 +953,25 @@ faptica, pe baza listelor de inventariere.
 - **constatarea de fond:** Registrul de casă (cod 14-4-7A, OMFP 2634/2015) e un registru obligatoriu, iar registrele obligatorii poartă număr curent — la fel ca Registrul-jurnal 14-1-1, unde numărul curent a fost **derivat la citire** pe 24.08 după confruntarea cu norma. **N-am confruntat cu actul** dacă 14-4-7A îl cere; dacă îl cere, e aceeași clasă și aceeași reparație
 - verificarea care rămâne: după ștergere, soldul rulant al zilei se recalculează, iar soldul de la sfârșitul zilei nu depășește plafonul de casierie
 - **[Retest 2 pct.4, 09.10.2026]** o operațiune cu notă validată nu se mai șterge: refuzul spune *„Nota operațiunii e validată, deci operațiunea nu se mai șterge: se corectează prin stornare.”*, iar ecranul arată pe rândul ei butonul „Stornează” în locul lui „Șterge” — aceeași regulă ca la celelalte surse de note (factura, banca, jurnalul)
+
+### `POST /tenants/{tenant_id}/casa/previzualizare`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: [lotul 6 pct.3, 278] Ce ar spune salvarea dispoziției, fără să scrie: facturile deschise ale partenerului, avansul, plafoanele. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · chitante (UPDATE) · facturi (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (INSERT) — prin `casa_api`*
+
+- [x] **nu scrie nimic**: spune înainte de „Adaugă” facturile deschise ale partenerului, avansul (suma peste facturi, cu termenul facturii de avans — CF art.319 alin.(16)) și plafoanele Legii 70/2015 (278c)
+- ridicarea de numerar din bancă nu e încasare de la o persoană: niciun plafon de încasare
+
+### `POST /tenants/{tenant_id}/casa/operatiuni/{op_id}/leaga`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: [lotul 6 pct.3a, 278] Leagă o încasare / plată în numerar (nota ei, ciornă) de factura pe care o stinge — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · chitante (UPDATE) · facturi (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (INSERT) — prin `casa_api`*
+
+- [x] **încasarea / plata salvată fără factură (sau avansul) se leagă de factura pe care o stinge**; soldul facturii scade cu suma operațiunii (278)
+- [x] **o operațiune legată deja, sau cu notă validată, nu se mai leagă** — refuzul are cod (`OPERATIUNE_DEJA_LEGATA`, `NOTA_VALIDATA`); nota validată se corectează prin stornare
+- suma operațiunii nu depășește soldul facturii alese
 
 ### `POST /tenants/{tenant_id}/casa/operatiuni/{op_id}/storneaza`
 
@@ -1564,7 +1603,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in chitante, facturi*
 
-*ce face: Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api (5311=4111, nota ci — scrie chitante (INSERT) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): bonuri (DELETE/INSERT/UPDATE) · casa_operatiuni (DELETE/INSERT/UPDATE) · factura_cota_jurnal (INSERT) · factura_linii (UPDATE) · firma_profil (UPDATE) · firma_profil_jurnal (INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (DELETE/INSERT) — prin `casa_api`, `firma_profil_api`, `repo_casa`, `repo_facturi`, `repo_firma_profil`*
+*ce face: Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api (5311=4111, nota ci — scrie chitante (INSERT) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): bonuri (DELETE/INSERT/UPDATE) · casa_operatiuni (DELETE/INSERT/UPDATE) · factura_cota_jurnal (INSERT) · factura_linii (UPDATE) · firma_profil (UPDATE) · firma_profil_jurnal (INSERT) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `casa_api`, `firma_profil_api`, `repo_casa`, `repo_facturi`, `repo_firma_profil`*
 
 - [x] chitanța se păstrează cu numărul exemplarului, momentul, autorul, amprenta
 - **numerotarea nu are goluri și nu se reia** — o chitanță anulată își păstrează numărul
@@ -1758,7 +1797,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T22 — Mijlocul fix și amortizarea
 
-*clasa MECANIC · 5 rute · 4 schimba date · 2 firme il pot exercita azi*
+*clasa MECANIC · 6 rute · 5 schimba date · 2 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/mijloace-fixe`*
 
@@ -1792,6 +1831,15 @@ faptica, pe baza listelor de inventariere.
 
 - [x] [08.10.2026, decizia Costin W2] codul se verifică pe Catalogul HG 2139/2004 (refuz 422 dacă nu există); durata din afara plajei lui -> avertisment, nu refuz — probat prin HTTP în `core/test_rute_stoc_pana_in_declaratie.py::test_CODUL_DIN_CATALOG…`
 - [x] codul e evidență, nu parametru de calcul: amortizarea declarată (D406 Assets) rămâne aceeași înainte și după (aceeași probă)
+
+### `POST /tenants/{tenant_id}/amortizare/restanta`
+
+*garda `cere_drept` · **fara rol** · drept:poate_valida*
+
+*ce face: [deficiența 281] Amortizarea tuturor lunilor restante până la (an, luna) inclusiv, o notă pe lună, dintr-o singură acțiune. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `repo_contabilitate`, `repo_mijloace_fixe`*
+
+- [x] **amortizarea lunilor anterioare rămase neînregistrate se generează pe fiecare lună, în ordine**, ca note ciornă (281)
+- [x] **închiderea lunii nu trece peste ea fără confirmare explicită**; confirmarea se consemnează în urma închiderii, cu lunile trecute
 
 ### `POST /tenants/{tenant_id}/reevaluare-imobilizare`
 
@@ -1862,7 +1910,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in bonuri, facturi*
 
-*ce face: Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon) — scrie bonuri (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT/UPDATE) · chitante (INSERT/UPDATE) · factura_cota_jurnal (INSERT) · factura_linii (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (DELETE/INSERT) — prin `casa_api`, `repo_casa`, `repo_facturi`*
+*ce face: Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon) — scrie bonuri (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT/UPDATE) · chitante (INSERT/UPDATE) · factura_cota_jurnal (INSERT) · factura_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `casa_api`, `repo_casa`, `repo_facturi`*
 
 - [x] stingerea produce **o singură** operațiune de casă; o a doua apăsare nu produce a doua plată
 - suma stinsă nu depășește soldul neplătit al bonului
@@ -2255,7 +2303,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · d300_manual (DELETE/INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `d300_manual_api`, `repo_main`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · d300_manual (DELETE/INSERT) · declaratii_in_asteptare (INSERT/UPDATE) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `d300_manual_api`, `repo_declaratii`, `repo_main`*
 
 - [x] ștergerea pe o lună cu D300 depus produce contradicție
 - ștergerea se consemnează cu ce conținea rândul
@@ -2677,7 +2725,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 ## T36 — Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere
 
-*clasa MECANIC · 9 rute · 5 schimba date · ? firme il pot exercita azi*
+*clasa MECANIC · 10 rute · 6 schimba date · ? firme il pot exercita azi*
 
 *clasa MECANIC · 8 rute · 4 schimba date · nu se poate sti din date*
 
@@ -2747,7 +2795,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · casa_operatiuni (DELETE/INSERT) · chitante (UPDATE) · facturi (UPDATE) · firma_profil (INSERT/UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tenants (INSERT/UPDATE) · tokene_activare (UPDATE) · user_tenants (DELETE/INSERT) · users (INSERT/UPDATE) — prin `casa_api`, `repo_utilizatori`, `tenant_provisioning`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · casa_operatiuni (DELETE/INSERT) · chitante (UPDATE) · facturi (UPDATE) · firma_profil (INSERT/UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tenants (INSERT/UPDATE) · tokene_activare (UPDATE) · user_tenants (DELETE/INSERT) · users (INSERT/UPDATE) — prin `casa_api`, `repo_utilizatori`, `tenant_provisioning`*
 
 **Ce trebuie să fie adevărat după:**
 
@@ -2782,3 +2830,13 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 **Iar întrebarea de fond, care decide restul:** de ce se poate schimba denumirea unei firme cu CUI validat la ANAF? Dacă numele vine din registru, singura schimbare legitimă e cea care urmează o schimbare la registru — iar atunci se reia validarea, nu se editează câmpul.
 
 **Ce a observat Costin scriind sloturile.** **Trei dintre cele patru rute sunt ireversibile în feluri diferite**, iar ecranul nu spune care e care. Crearea consumă un CUI. Ștergerea distruge schema. Schimbarea identității rescrie ce s-a declarat sub numele vechi. Doar dezactivarea are drum de întoarcere — și e singura care nu pare periculoasă. **Două rute ating tabele neașteptate:** `activare` poate face `tenants (DELETE)`, iar `PUT` poate face `user_tenants (INSERT)`. Amândouă sunt plafon nemăsurat pe rută, deci pot fi artefacte ale instrumentului — dar merită verificate. **Iar întrebarea de fond a traseului**, pe care n-o pot decide singur: de ce se poate schimba denumirea unei firme cu CUI validat la ANAF? Dacă numele vine din registru, editarea liberă a câmpului e chiar cauza duplicatelor. Iar duplicatul a costat deja — pe el a căzut diagnosticul de la pasul 8 al probei R62.
+
+### `POST /tenants/{tenant_id}/cui/corectura`
+
+*garda `cere_drept` · rol:admin_firma*
+
+*ce face: [deficiența 272] Corectura CUI-ului firmei: operațiunea separată a administratorului cabinetului, cu avertisment (Date firmă nu-l mai modifică, de niciun rol) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (UPDATE) — prin `firma_profil_api`*
+
+- [x] **CUI-ul nu se schimbă din Date firmă**; corectura e a administratorului cabinetului, cu avertismentul confirmat (272)
+- [x] **CUI-ul nou are cifra de control validă, nu e al altei firme din cabinet, și se scrie în ambele locuri** (`firma_profil`, `public.tenants`), cu urma în jurnalul firmei
+- [x] **peste o perioadă închisă nu se corectează** (CUI-ul decide declarațiile depuse)

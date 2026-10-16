@@ -404,6 +404,12 @@ def profil_tva(cur):
     return cur.fetchone()
 
 
+def cate_nevalidate_dintre(cur, nota_ids):
+    """[deficiența 284] Câte din notele date sunt încă nevalidate (cele șterse nu se mai numără)."""
+    cur.execute("SELECT count(*) FROM inregistrari WHERE id = ANY(%s) AND status <> 'validata'", (list(nota_ids),))
+    return cur.fetchone()[0]
+
+
 def note_nevalidate_in_interval(cur, de_la, pana_la):
     """[08.10, V1] Câte note NEvalidate sunt în [de_la, pana_la) — balanța le arată, D406 nu."""
     cur.execute("SELECT count(*) FROM inregistrari WHERE status <> 'validata' AND data >= %s AND data < %s", (de_la, pana_la))

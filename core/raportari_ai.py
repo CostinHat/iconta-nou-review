@@ -73,7 +73,8 @@ def proceseaza(raportare_id, subiect, text):
                 raportari_api.seteaza_pentru_admin(conn, raportare_id, True)
                 raportari_api.adauga_mesaj(conn, raportare_id, None, "ai",
                     "Sesizarea ta a fost transmisa echipei iConta. Vei primi raspuns aici, in acest fir.",
-                    schimba_stare=False)
+                    schimba_stare=False, veste=False)   # [291] ecoul cererii, nu o veste: nu aprinde bulina
             conn.commit()
-    except Exception:
-        pass  # crearea sesizarii a reusit deja; esecul triajului nu strica nimic
+    except Exception as e:  # noqa: BLE001 — crearea sesizarii a reusit deja; esecul triajului nu o strica, dar nu e tacut
+        from core import observare as _obs
+        _obs.esec_secundar("triaj AI al sesizarii %s" % raportare_id, e)

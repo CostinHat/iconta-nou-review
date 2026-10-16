@@ -249,6 +249,8 @@ def test_date_firma_cu_luna_inchisa_se_salveaza_daca_nu_schimba_ce_decide(conn):
     r = fpa.salveaza_date(conn, {"cui": "14399840", "telefon": "0712345678"}, tenant_id=tid, user_id=1)
     assert r.get("ok") is True, r
     r = fpa.salveaza_date(conn, {"cui": "40410000"}, tenant_id=tid, user_id=1)
+    assert r.get("ok") is False and r.get("cod") == fpa.COD_CUI_NEMODIFICABIL, r   # [272] CUI-ul nu se schimbă din Date firmă
+    r = fpa.corecteaza_cui(conn, tid, "40410000", user_id=1, confirmat=True)      # corectura administratorului: tot peste perioada închisă
     assert r.get("ok") is False and r.get("camp") == "cui" and re.search(r"perioade închise", r["mesaj"]), r
 
 

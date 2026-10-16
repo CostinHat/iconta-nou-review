@@ -222,8 +222,11 @@ def insert_public_5(cur, uid, tenant_id, fapt, _json_audit):
 
 
 def select_facturi_3(cur, schema, f):
+    """Aceeași factură = același număr, același terț, aceeași dată ȘI aceeași direcție. [16.10.2026, lotul 6 pct.1b, clasa 277] Fără
+    direcție, o factură PRIMITĂ de la clientul X, cu numărul și data uneia EMISE către X, ieșea „duplicat” și nu se mai importa."""
     cur.execute(f"""SELECT id FROM {schema}.facturi
-                WHERE numar=%s AND COALESCE(tert_cui,'')=%s AND data_emitere=%s""", (f["numar"], f["tert_cui"], f["data_emitere"]))
+                WHERE numar=%s AND COALESCE(tert_cui,'')=%s AND data_emitere=%s AND directie=%s""",
+                (f["numar"], f["tert_cui"], f["data_emitere"], f["directie"]))
     return cur.fetchone()
 
 

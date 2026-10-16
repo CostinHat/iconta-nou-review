@@ -28,7 +28,10 @@ def _note_lunii(conn_schema, an, luna):
             "SELECT l.cont_debit, l.cont_credit, l.suma "
             "  FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
             " WHERE EXTRACT(YEAR FROM i.data)=%s AND EXTRACT(MONTH FROM i.data)=%s "
-            "   AND i.status='validata'",
+            "   AND i.status='validata'"
+            # [deficiența 288b, generalizare] închiderea în 121 nu e o operațiune a lunii: ar anula veniturile și cheltuielile
+            # (7xx = 121, 121 = 6xx) — aceeași excludere ca baza D100 (C15)
+            "   AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'",
             (an, luna))
         randuri = cur.fetchall()
     note = []
@@ -74,7 +77,16 @@ def rezumat_luna(conn_schema, conn_public, tenant_id, an, luna):
         "tip": "neutru" if float(rez["rezultat"]) == 0 else rez["tip"],
         "declaratii_depuse": depuse,
         "are_date": bool(note),
+        # [deficiența 288b, comanda Costin 16.10.2026, verbatim în DECIZII] „Lămurești dacă sunt cifrele lunii sau cumulate și o spui
+        # explicit în pachet și în text.” Sunt ale LUNII (notele validate din lună), nu cumulate de la 1 ianuarie.
+        "perioada": perioada_cifrelor(an, luna),
+        "luna_nume": LUNI[luna] if 1 <= luna <= 12 else None,
     }
+
+
+def perioada_cifrelor(an, luna):
+    """[288b] Ce perioadă acoperă cifrele pachetului, spus o dată, pentru pachet, email și poveste."""
+    return "luna %s %d (numai luna, nu cumulat de la 1 ianuarie)" % (LUNI[luna] if 1 <= luna <= 12 else luna, an)
 
 
 # [lot 06.10 pct.14, comanda Costin] „În email apar marcaje «**» netransformate. Emailul se trimite fără marcaje brute.”
@@ -120,6 +132,9 @@ _LAUDE = re.compile(r"(?i)\b(?:excelen\w*|extraordinar\w*|remarcabil\w*|impresio
 # „Povestea lunii: spune doar ce reiese din cifre și nimic despre declarații”] Declarațiile depuse stau în tabelul pachetului și al
 # emailului; povestea nu vorbește despre declarații deloc — nici despre ce s-a depus, nici despre ce era de depus.
 _DECLARATII = re.compile(r"(?i)declara[tț]i|\bD\s?\d{3}\b")
+_CUMULAT = re.compile(r"(?i)\bcumulat\w*|de\s+la\s+[iî]nceputul\s+anului|de\s+la\s+1\s+ianuarie|\b[iî]n\s+acest\s+an\b|\bp[aâ]n[aă]\s+acum\b")
+#: [deficiența 288c] abaterile pe care le poate trece numai decizia expresă a contabilului (restanțele, deci și declarațiile)
+ABATERI_CU_DECIZIE = ("restanțe:", "declarații:")
 _PROPOZITIE = re.compile(r"(?<=[.!?…])\s+")
 _SUMA_LEI = re.compile(r"(\d{1,3}(?:[.\s]\d{3})+(?:,\d{1,2})?|\d+(?:,\d{1,2})?)\s*(?:de\s+)?lei\b", re.I)
 
@@ -130,14 +145,14 @@ def _lei(x):
 
 
 def _suma_din_text(s):
-    return round(float(s.replace(".", "").replace(" ", "").replace("\u00a0", "").replace(",", ".")), 2)
+    return round(float(s.replace(".", "").replace(" ", "").replace("\u00a0", "").replace(",", ".")), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
 
 
 def abateri_termeni(text, rz):
     """Ce scrie textul altfel decât pachetul: [„termen: încasări”, „sumă: 1.200 lei (nu e în pachet)”, …]. Gol = textul
     folosește termenii și sumele pachetului."""
     out = sorted({"termen: " + m.group(0).lower() for m in _SINONIME_INTERZISE.finditer(text or "")})
-    permise = {round(abs(float(rz.get(k) or 0)), 2) for k in TERMENI_PACHET}
+    permise = {round(abs(float(rz.get(k) or 0)), 2) for k in TERMENI_PACHET}  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     for m in _SUMA_LEI.finditer(text or ""):
         try:
             v = _suma_din_text(m.group(1))
@@ -151,6 +166,11 @@ def abateri_termeni(text, rz):
         out.append("termen: pierdere (pachetul arată profit)")
     if _RESTANTE.search(text or ""):   # [lot 06.10 pct.16, decizia A] nu în povestea pentru client
         out.append("restanțe: povestea pentru client nu pomenește declarațiile restante (decizia A)")
+    # [deficiența 288b] cifrele sunt ale lunii: textul nu le numește cumulate / ale anului și spune luna
+    if _CUMULAT.search(text or ""):
+        out.append("perioadă: cifrele pachetului sunt ale lunii, nu cumulate de la începutul anului")
+    if rz.get("luna_nume") and (text or "").strip() and rz["luna_nume"] not in (text or "").lower():
+        out.append("perioadă: textul nu spune luna (%s) — cifrele sunt numai ale ei" % rz["luna_nume"])
     out += sorted({"laudă nesusținută de cifre: %s" % m.group(0).lower() for m in _LAUDE.finditer(text or "")})   # [deficiența 32]
     out += ["declarații: „%s” (povestea nu vorbește despre declarații)" % p for p in _propozitii_fara_sursa(text, rz, numai_declaratii=True)]
     return out
@@ -197,7 +217,8 @@ def _prompt_poveste(rz, an, luna, restante_desc=None, corectie=None):
         "Esti contabilul firmei si scrii un scurt rezumat lunar pentru patronul firmei, "
         "in limba romana, pe intelesul unui om care NU e contabil. Ton profesional, sobru, clar. "
         "2-3 paragrafe scurte. Fara titlu, fara semnatura.\n\n"
-        "Date despre %s, luna %s %d (exact cum apar in pachetul lunar pe care patronul il vede alaturi):\n"
+        "Date despre %s, luna %s %d (exact cum apar in pachetul lunar pe care patronul il vede alaturi). Sunt cifrele LUNII, "
+        "nu cumulate de la inceputul anului: spune explicit «in luna %s» si nu le numi cumulate sau ale anului:\n"
         "- Venituri: %s\n- Cheltuieli: %s\n- Rezultat inainte de impozit: %s (%s)\n\n"
         "TERMENII SI CIFRELE (obligatoriu): foloseste EXACT cuvintele «venituri», «cheltuieli» si «rezultat», cu sumele "
         "de mai sus, scrise la fel. Veniturile NU sunt «incasari» (banii intrati in cont sunt alt lucru) si NU sunt "
@@ -212,7 +233,7 @@ def _prompt_poveste(rz, an, luna, restante_desc=None, corectie=None):
         "NU lauda si NU califica luna (fara «excelenta», «foarte buna», «felicitari», «crestere», «performanta», «succes»): "
         "pachetul are cifrele unei singure luni, fara comparatie cu alte luni — spui cifrele si ce inseamna, atat. "
         "Daca nu sunt date, spune simplu ca luna a fost fara activitate inregistrata.%s"
-    ) % (rz["nume_firma"] or "firma", LUNI[luna] if 1 <= luna <= 12 else str(luna), an,
+    ) % (rz["nume_firma"] or "firma", LUNI[luna] if 1 <= luna <= 12 else str(luna), an, LUNI[luna] if 1 <= luna <= 12 else str(luna),
          _lei(rz["venituri"]), _lei(rz["cheltuieli"]), _lei(rz["rezultat"]), calificativ,
          calificativ, corectie_linie)
 
@@ -289,7 +310,8 @@ def _html(rz, an, luna, poveste, semnatura):
     depuse = ", ".join(rz.get("declaratii_depuse") or []) or "niciuna"
     rand = ("<tr><td style='padding:4px 12px 4px 0;color:#555'>%s</td>"
             "<td style='padding:4px 0;text-align:right;font-weight:600'>%s</td></tr>")
-    cifre_html = ("<table style='border-collapse:collapse;margin:0 0 16px'>%s%s%s%s</table>" % (
+    cifre_html = ("<p style='margin:0 0 6px;color:#555'>Cifrele lunii — %s</p>" % esc(rz.get("perioada") or "")
+                  + "<table style='border-collapse:collapse;margin:0 0 16px'>%s%s%s%s</table>" % (
         rand % ("Venituri", esc(_lei(rz.get("venituri") or 0))),
         rand % ("Cheltuieli", esc(_lei(rz.get("cheltuieli") or 0))),
         rand % ("Rezultat înainte de impozit", esc("%s (%s)" % (_lei(rz.get("rezultat") or 0), calificativ))),

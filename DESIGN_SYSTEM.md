@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.91 · 14 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.92 · 16 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -164,6 +164,25 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - **Mesajul de după un buton se aduce în vedere (v2.74, lotul 07.10 pct.3):** un refuz, o întrebare sau o confirmare apărute după apăsarea unui buton se derulează în zona vizibilă — prin `aduInVedere` din `api.js`, chemat de `arataMesaj`, `eroareCamp`, `confirmaCaseta`, iar casetele scrise direct de un ecran (`.caseta-poarta`, `.em-curs-box`, `.msg-*`, `[role=alert]`) le prinde observatorul după clasă (`SELECTOR_MESAJ`). Fără apăsare recentă nu se derulează nimic. O casetă nouă de după-buton cu altă clasă intră în `SELECTOR_MESAJ`. Gard: verificator `MESAJ_FARA_ADUCERE_IN_VEDERE`.
 - **Refuzul care trimite în alt ecran are buton spre el (v2.74, lotul 07.10 pct.2):** serverul pune ținta în refuz (`detail.ecran`); butonul „Deschide <ecran>” se adaugă lângă mesaj de `api.js`, oriunde e afișat, iar ecranul se deschide PESTE formular (← îl readuce; după salvare, „Înapoi la <formular>”). Ecranele-destinație stau în `ecrane/ecran_destinatie.js` (`ECRANE`). INTERZIS un refuz cu ținta numai în frază („Declar-o în Date firmă”) fără `ecran`. Gard: verificator `REFUZ_ECRAN_FARA_BUTON`.
 - Validări preventive cu mesaj explicativ, nu doar refuz.
+- **Câmpul care se citește, nu se scrie (v2.92, lotul 6, deficiența 272):** e `<input class="camp-input" readonly aria-readonly="true">`,
+  cu `.camp-ajutor` care spune de ce și pe unde se schimbă: o valoare pe care ecranul o arată, dar n-o lasă de modificat (CUI-ul în
+  Date firmă — se corectează numai pe operațiunea separată a administratorului). Arată needitabil prin regula GLOBALĂ
+  `.camp-input[readonly]` din `stil.css` (fundalul paginii, fără cursor de scriere) — nu prin stil pe ecran. Un buton pus sub câmp
+  (`.camp > button`) nu se întinde pe lățimea lui. Gard: verificator FEREASTRA_LOT6 (READONLY_GLOBAL) + e2e `test_def_272_*`.
+- **Eroarea dispare când câmpul e corectat (v2.92, lotul 6, deficiența 290 — clasă, toate formularele):** la orice schimbare a unui câmp
+  (tastare, alegere, fișier atașat) dispar eroarea lui (`eroareCamp`, cu marcajul roșu) și refuzul de formular din aceeași zonă
+  (`form` / fereastra de lucru; toate dialectele zonei: `msg-`, `mig-`, `dlg-`, `login-eroare` — `api.ZONE_EROARE_FORMULAR`): formularul nu mai e cel refuzat. Un singur mecanism, în `api.js` (`stergeEroriDupaCorectare`, faza de
+  captură — o eroare nouă pusă de handlerul ecranului rămâne); ecranele nu-l repetă. Refuzul de pe un rând (`refuzPeRand`) nu ține de
+  formular și rămâne. Gard: verificator FEREASTRA_LOT6 (ERORI_DUPA_CORECTARE) + e2e `test_def_290_*`.
+- **Acțiunea principală și mesajul ei se văd mereu (v2.92, lotul 6, deficiența 285):** stau într-o `.bara-fixa` — la un formular lung,
+  bara de acțiune și zona ei de mesaj, lipite de marginea de jos a ferestrei cât se derulează conținutul: Declarații pasul 2 („Trimite în
+  coadă →” + refuzul), Date firmă („Salvează” + mesajul), Emite factură. Gard: e2e `test_def_285_*` (D300 cu toate secțiunile deschise:
+  butonul în fereastră, zona lipită jos). O bară urmată de alt conținut (nota de subsol a
+  declarației, jurnalul din Date firmă) nu-l acoperă: marginea ei negativă de jos se aplică numai ultimului element
+  (`.fereastra-corp .bara-fixa:not(:last-child)` → `margin-bottom: 0`; verificator FEREASTRA_LOT6 / BARA_NU_ACOPERA, e2e `test_def_164_*`).
+- **Refuzul unei acțiuni de pe rând stă sub textul rândului (v2.92, lotul 6, deficiența 279, clasa 259):** `api.refuzPeRand(buton,
+  mesaj)` (`.msg-refuz-rand`), nu un `<span class="msg-eroare">` lipit de buton, care strângea textul rândului. Gard:
+  `core/test_stare_nota_salvata.py::test_refuzul_de_pe_rand_nu_mai_se_lipeste_de_buton`.
 - **Previzualizarea unui import cu rânduri care nu intră (v2.91, 14.10.2026, decizia Costin pentru C24 / C25):** rândurile pe care salvarea le refuză se arată ÎNAINTE de salvare, într-o `.caseta-atentie` deasupra butonului, fiecare cu „rândul N” (rândul din FIȘIER) și motivul; unde importul admite salvarea parțială (mijloace fixe, istoric declarații, salariați, parteneri — decizia Costin 14.10.2026), butonul spune ce salvează („Salvează cele 2 rânduri bune (declarații)”), iar mesajul de după salvare („avert”) spune câte au intrat și care nu, rând cu rând. Unde importul e un întreg (balanța, cotele asociaților), salvarea rămâne blocată. **Un câmp importat fără valoare** (persoanele în întreținere, scutirea de contribuția minimă) intră cu valoarea neutră și e MARCAT: avertismentul stă pe rândul salariatului din Stat de plată, iar confirmarea e un buton la capătul rândului („De verificat (N)”), cu câmpurile cerute (Da/Nu fără preselecție). Ce s-a citit din fișier și n-a intrat (totaluri, sinteticele înlocuite de analitice) se spune în `.mig-avert`, nu dispare.
 - **Plasarea erorii per-câmp (v2.30, G10)**: eroarea unei acțiuni eșuate se afișează **lângă câmpul care a cauzat-o** (mecanismul A), nu doar într-o zonă generică sus (mecanismul B). G10 e o schimbare de PLASARE, predominant frontend; conținutul mesajelor e deja explicit (G1-G5). Reguli:
   1. **Maparea câmp→eroare.** Validările CLIENT-side cunosc câmpul pe care-l verifică → scriu direct un `<span class="msg-eroare">` imediat după inputul respectiv, printr-un helper unic `eroareCamp(idCamp, txt)`. NU se deduce câmpul din textul mesajului (ar lega plasarea de un șir afișabil — interzis structural, vezi `test_garzi_mesaje_afisabile`).
@@ -222,6 +241,11 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - **Fereastra cu tabele late (v2.81, 08.10.2026, decizia Costin W5)**: `.fer-tabel` (`nav.deschide(…, { lat: "tabel" })`) — lățimea o
   dă conținutul (`fit-content`), între 1000px și marginea ecranului (`100vw - 48px`); la 1920px tabelele Balanței, Mijloacelor fixe și
   Declarațiilor nu mai derulează lateral. Derularea laterală rămâne numai când tabelul e mai lat decât ecranul.
+- **Nicio fereastră cu derulare laterală (v2.92, lotul 6, deficiența 285 — clasă, toate ferestrele):** fereastra al cărei conținut e mai
+  lat decât ea se lățește SINGURĂ (`navigator._lateste`: `fer-tabel` adăugat când `.fereastra-corp` are `scrollWidth > clientWidth`, la
+  fiecare schimbare de conținut și la redimensionare) — nu mai depinde de ecranul care ar fi trebuit s-o ceară. Unde nici lățirea nu
+  ajunge (ecran îngust), rândurile de butoane și stări se rup (`flex-wrap`, ex. `.fd-antet-sus`), iar celulele `.fd-tabel` își rup
+  cuvintele lungi. Gard: e2e `test_def_285_*` (toate cardurile ferestrei firmei, detaliul facturii la 1100px, un conținut lat sintetic).
 - Nicio fereastră nu iese din ecran.
 - **Acțiunile unui rând de tabel stau într-un meniu (v2.83, 08.10.2026, comanda Costin „Retest 08.10” pct.13).** O celulă cu trei
   sau mai multe butoane le ține într-un `<details class="dec-xml"><summary>Acțiuni</summary>` (butoanele unul sub altul la deschidere),
@@ -866,6 +890,7 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.92 (16.10.2026)** — lotul 6 (comanda Costin 16.10.2026 și completările, verbatim în DECIZII): **cap.6** — **câmpul care se citește, nu se scrie** (`.camp-input[readonly]` global, `.camp > button`; 272), **refuzul de pe rând sub textul rândului** (`api.refuzPeRand`; 279, clasa 259), **acțiunea principală și mesajul ei se văd mereu** (`.bara-fixa`; 285), **eroarea dispare când câmpul e corectat** (`api.stergeEroriDupaCorectare`; 290). **cap.9** — **nicio fereastră cu derulare laterală** (lățirea automată `navigator._lateste`, rândurile de butoane rupte; 285).
 **v2.91 (14.10.2026)** — importul din SAGA (comanda Costin 14.10.2026, verbatim în DECIZII): **cap.4** — **caseta de date cu derulare proprie e focusabilă** (`.mig-sold-tabel`, 7 tabele; axe mobil pe previzualizarea istoricului); gard `core/test_fereastra_focusabila.py`. **cap.6** — **previzualizarea importului cu rânduri care nu intră**: caseta cu rândurile refuzate, butonul care numește ce salvează, mesajul de după salvare rând cu rând; gard e2e C24 / C25 (`frontend_test/e2e/e2e_import_saga.py`). Plus: data balanței = câmp obligatoriu (`.oblig`, `.camp-ajutor`, eroare lângă câmp — C22); coloana „Metodă” a previzualizării MF #c0492b -> #a83d22 (4,46 -> 5,63:1 pe rândul cu avertisment).
 **v2.90 (13.10.2026)** — comanda Costin pct.2c: **cap.22** — **`.ghid-actualizat`**, data ultimei actualizări sub titlul fiecărui ghid (fără autori, fără titluri profesionale). Gard: verificator GHID_ACTUALIZAT, `core/test_ghid_publicare.py`. Plus **contrastul paginilor publice** (axe pe /ghid, găsit la proba vizuală a lotului): `--p-brand` #0672FE -> #0566EA (alb pe el 4,33 -> 5,13) și linkurile din pagină subliniate (`--p-link` față de text = 2,7:1, WCAG 1.4.1). Gard: `core/test_a11y_contrast_tokens.py::test_paginile_publice_contrast`.
 **v2.89 (12.10.2026)** — retestul Costin de seară: **cap.6** — **un mesaj, o singură dată; o listă, rând cu rând** (deficiențele 237, 238): nota de lângă butoanele Bilanțului trimite la refuzul de dedesubt în loc să-l repete; zonele de mesaj păstrează rândurile (`white-space: pre-line`), iar refuzul soldurilor fără loc în bilanț are un rând pe cont. Gard: verificator MESAJ_PE_RANDURI, e2e 237 / 238.

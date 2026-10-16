@@ -137,7 +137,7 @@ def stat_plata(conn, schema, an, luna):
             "data_angajare": data_ang.isoformat() if data_ang else None, "ore_zi": ore_zi,
             "brut": float(calc["brut"]), "cas": float(calc["cas"]),
             # [S1] compoziția brutului: salariul de bază lucrat + fiecare element variabil, distinct (fluturaș, stat)
-            "brut_baza_lucrat": round(float(brut_lucrat), 2), "elemente": elem_luna.get(sid, []),
+            "brut_baza_lucrat": round(float(brut_lucrat), 2), "elemente": elem_luna.get(sid, []),  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
             "elemente_variabile": float(calc.get("elemente_variabile", 0)),
             # [lot 19 pct.4c] transparența proratării: salariul din contract și zilele lucrătoare active din lună
             "brut_contractual": float(brut or 0), "zile_active": _za,
@@ -229,7 +229,7 @@ def _imparte_cam(stat, ref):
     for i in ordine[:max(rest, 0)]:
         parti[i] += 1
     for r, cam in zip(stat, parti):
-        r["cost"] = round(r["cost"] - r["cam"] + cam, 2)
+        r["cost"] = round(r["cost"] - r["cam"] + cam, 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
         r["cam"] = float(cam)
         del r["_bazac"]
 

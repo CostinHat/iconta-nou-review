@@ -6,7 +6,7 @@ Motorul de matching e în core/reconciliere.py (pur, testat)."""
 # `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
 # deschide, nu comite.
 import json
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
 from core import reconciliere as _m
 from core.common import cate as _cate
@@ -15,10 +15,27 @@ CONT_CLIENTI, CONT_FURNIZORI = "4111", "401"
 
 
 def _data_iso(v):
-    """dd.mm.yyyy -> yyyy-mm-dd; lasa neschimbat ce e deja ISO/date."""
-    if isinstance(v, str) and len(v) == 10 and v[2] == "." and v[5] == ".":
-        return f"{v[6:]}-{v[3:5]}-{v[:2]}"
+    """z.l.aaaa / zz.ll.aa (cu . / -) -> aaaa-ll-zz; lasă neschimbat ce e deja ISO / date. [16.10.2026, 277] Înainte numai forma de
+    exact 10 caractere cu punct: `1.8.2026` ajungea la Postgres așa cum era, care o citea lună-zi (DateStyle MDY) — 8 ianuarie."""
+    import re
+    m = re.fullmatch(r"(\d{1,2})[./-](\d{1,2})[./-](\d{2}|\d{4})", v.strip()) if isinstance(v, str) else None
+    if m:
+        z, l, a = m.groups()
+        return "%s-%02d-%02d" % (a if len(a) == 4 else "20" + a, int(l), int(z))
     return v
+
+
+def _text_cheie(v):
+    """Referința / descrierea în cheia mișcării: fără spațiile în plus, fără deosebire de majuscule."""
+    return " ".join(str(v or "").split()).lower()
+
+
+def cheie_miscare(data, suma, tip, cont, referinta, descriere):
+    """[16.10.2026, lotul 6 pct.1a, 277, verbatim în DECIZII] „o linie e duplicat numai dacă aceeași mișcare (dată, sumă, sens,
+    referință/descriere, cont) există deja.” Contul necunoscut (extrasele în tabel, liniile de dinainte) rămâne `None` și nu se
+    socotește egal cu un cont cunoscut."""
+    return (str(data), Decimal(str(suma)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP), tip, (cont or "").strip() or None,
+            _text_cheie(referinta), _text_cheie(descriere))
 
 
 def _cont_banca(valuta):
@@ -55,34 +72,48 @@ def facturi_deschise(conn, schema):
         return rez
 
 
-def importa_extras(conn, schema, tranzactii, fisier="", continut=None):
-    """Persistă liniile de extras + rulează matching-ul. Întoarce {"linii": [...]} cu rezultat.
+def importa_extras(conn, schema, tranzactii, fisier="", continut=None, cont=None):
+    """Persistă liniile NOI ale extrasului + rulează matching-ul pe ele. Întoarce `{"linii": [noi], "deja": [găsite], "rezumat"}`.
 
-    [C5] IDEMPOTENȚĂ LA NIVEL DE FIȘIER (decizia Costin 20.09, varianta A): dacă se dă `continut`,
-    hash-ul lui e cheia din `extras_import`. La reimportul aceluiași fișier (dublu-click / răspuns
-    pierdut după commit) `inregistreaza_import` întoarce None (conflict pe cheia UNIQUE) și NU se
-    inserează nicio linie — se întoarce `{"deja_importat": True, "nr_linii": N, "linii": []}`, iar ruta
-    afișează „extras deja importat: N linii". Fără `continut` (apel programatic), comportamentul vechi.
+    [16.10.2026, lotul 6 pct.1, 277 — PIVOT peste C5 (DECIZII „Lotul 6, comanda 1”)] Duplicatul e MIȘCAREA, nu fișierul:
+    `cheie_miscare` (dată, sumă, sens, cont, referință, descriere). O linie e găsită deja numai dacă aceeași mișcare există în
+    `extras_linii`, socotită cu multiplicitatea ei: două comisioane identice în același extras rămân două, iar la reimport amândouă
+    se găsesc. Înainte, hash-ul fișierului întreg hotăra tot: un fișier cu aceiași octeți ca unul vechi era respins în întregime
+    („Extras deja importat: 2 linii”, F1, 16.10 13:18), iar un extras care se suprapunea cu unul vechi îi dubla liniile.
+    Importurile pe aceeași firmă se serializează (`pg_advisory_xact_lock`), ca un dublu-clic să nu insereze de două ori.
+    `extras_import` rămâne registrul fișierelor (hash, nume, număr de linii), nu mai decide nimic.
     """
     import hashlib
+    from collections import Counter
     from core import repo_banca
-    facturi = facturi_deschise(conn, schema)
-    linii = [{"suma": Decimal(str(abs(t.get("suma", 0)))),
+    linii = [{"suma": Decimal(str(abs(t.get("suma", 0)))).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP),
               "tip": "incasare" if t.get("suma", 0) > 0 else "plata",
               "cui": t.get("cui"), "descriere": t.get("detalii", ""),
+              "referinta": (t.get("referinta") or "").strip() or None,
               "data": _data_iso(t.get("data"))} for t in tranzactii]
-    rezultate = _m.potriveste_extras(linii, facturi)
-    out = []
-    # [05.10.2026, comanda Costin pct.8] mesajul spune ce s-a potrivit și ce nu („2 linii importate și potrivite” mințea)
-    rezumat = {"total": len(tranzactii), "potrivite": 0, "fara_potrivire": 0}
+    rezumat = {"total": len(tranzactii), "noi": 0, "deja": 0, "potrivite": 0, "fara_potrivire": 0}
     with conn.cursor() as cur:
+        cur.execute("SELECT pg_advisory_xact_lock(hashtext(%s))", ("extras_import:" + schema,))
+        cur.execute(f"SELECT data, suma, tip, cont_extras, referinta, descriere FROM {schema}.extras_linii "
+                    f"WHERE data = ANY(%s::date[])", (sorted({str(ln["data"]) for ln in linii}),))
+        existente = Counter(cheie_miscare(*r) for r in cur.fetchall())
+        noi, deja = [], []
+        for t, ln in zip(tranzactii, linii):
+            k = cheie_miscare(ln["data"], ln["suma"], ln["tip"], cont, ln["referinta"], ln["descriere"])
+            if existente[k] > 0:
+                existente[k] -= 1
+                deja.append({"data": str(ln["data"]), "suma": str(ln["suma"]), "tip": ln["tip"], "descriere": ln["descriere"]})
+            else:
+                noi.append((t, ln))
+        rezumat["noi"], rezumat["deja"] = len(noi), len(deja)
         if continut is not None:
             h = hashlib.sha256(continut if isinstance(continut, bytes)
                                else str(continut).encode("utf-8")).hexdigest()
-            if repo_banca.inregistreaza_import(cur, schema, h, fisier, len(tranzactii)) is None:
-                # reimport al aceluiasi fisier -> nicio linie noua (idempotent, race-safe pe UNIQUE)
-                n = repo_banca.import_existent_nr_linii(cur, schema, h)
-                return {"deja_importat": True, "nr_linii": n, "linii": []}
+            repo_banca.inregistreaza_import(cur, schema, h, fisier, len(tranzactii))
+        tranzactii = [t for t, _ln in noi]
+        linii = [ln for _t, ln in noi]
+        rezultate = _m.potriveste_extras(linii, facturi_deschise(conn, schema)) if linii else []
+        out = []
         for t, ln, rez in zip(tranzactii, linii, rezultate):
             # [P8] `rez` E DEJA o afirmatie tipata (potriveste_linie); se duce mai departe intreaga,
             # nu se re-extrage `motiv` - altfel ar exista doua surse ale aceluiasi text.
@@ -113,15 +144,43 @@ def importa_extras(conn, schema, tranzactii, fisier="", continut=None):
             cur.execute(f"""
                 INSERT INTO {schema}.extras_linii
                   (data, descriere, suma, valuta, tip, cui_detectat, status,
-                   alocari, nota_propusa, fisier_sursa)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id
+                   alocari, nota_propusa, fisier_sursa, cont_extras, referinta)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id
             """, (ln["data"], ln["descriere"], ln["suma"], bool(t.get("valuta")),
                   ln["tip"], ln["cui"], status, json.dumps(aloc),
-                  json.dumps(t.get("nota"), default=str) if t.get("nota") else None, fisier))
+                  json.dumps(t.get("nota"), default=str) if t.get("nota") else None, fisier,
+                  (cont or "").strip() or None, ln["referinta"]))
             out.append({"id": cur.fetchone()[0], "data": str(ln["data"]),
                         "descriere": ln["descriere"], "suma": str(ln["suma"]),
                         "tip": ln["tip"], "cui": ln["cui"], "status": status, **aloc})
-    return {"linii": out, "rezumat": rezumat}
+    return {"linii": out, "deja": deja, "rezumat": rezumat}
+
+
+def compara_solduri(conn, schema, sold_initial, sold_final):
+    """[16.10.2026, lotul 6 pct.2b, 276] Soldurile din extras (MT940 `:60F:` / `:62F:`) față de contul băncii din contabilitate (5121, la
+    valută 5124, cu analiticele) la aceeași zi: soldul de preluare + notele VALIDATE până la acea zi (`bilant_api.sold_la`). Liniile
+    extrasului încă necontate apar ca diferență la soldul final — de-aia se arată amândouă. `None` la extrasele fără solduri (tabele).
+    Contabilul vede `contabil = None` dacă ziua e dinaintea soldurilor de preluare (aplicația nu știe soldul de atunci)."""
+    import datetime
+    from psycopg2.extras import RealDictCursor as _RD
+    from core import bilant_api as _ba
+    if not (sold_initial or sold_final):
+        return None
+    valuta = (sold_initial or sold_final).get("valuta") or "RON"
+    cont = _cont_banca(valuta != "RON")
+    out = {"cont": cont, "valuta": valuta}
+    with conn.cursor(cursor_factory=_RD) as cur:
+        for nume, s in (("initial", sold_initial), ("final", sold_final)):
+            if not s:
+                out[nume] = None
+                continue
+            sl = _ba.sold_la(cur, schema, datetime.date.fromisoformat(s["data"]))
+            contabil = (None if sl is None else
+                        sum((d - c for k, (d, c) in sl.items() if k == cont or k.startswith(cont + ".")), Decimal("0")))
+            extras = Decimal(str(s["suma"])).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+            out[nume] = {"data": s["data"], "extras": str(extras), "contabil": None if contabil is None else str(contabil),
+                         "diferenta": None if contabil is None else str(extras - contabil)}
+    return out
 
 
 def lista(conn, schema, status=None):

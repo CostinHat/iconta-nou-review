@@ -10,14 +10,14 @@ Lucrează automat: cu cât corectezi și validezi mai des, cu atât propunerile 
 ## De reținut
 Nu trebuie să configurezi nimic - sistemul învață singur din deciziile tale repetate."
 Import Raport Z din AMEF,"Parsează fișierul AMEF (.p7b sau XML, structura OPANAF 146/2018 anexa 2 II.7 verificată la sursă): totalurile zilei pe cote TVA (valoare operațiuni + TVA per cota) și pe tipuri de plată (nomenclator 1=Card, 3=Numerar, 4=Tichete etc.), din care se construiește nota contabilă zilnică a Raportului Z; alimentează și rețetarul GV (descărcarea pe porții). NUI-ul casei și numărul de bonuri (nrB) se păstrează structurat (`rapoarte_z_amef`, la fel ca pe ruta tastată, care le cere contabilului) și alimentează D394 secțiunea Î1 (op2, pe lună).",F003,firma,card Raport Z,core/amef_import.py,OPANAF 146/2018,LIVE,date reale de re-verificat,,"## Ce face
-Parsează fișierul emis de casa de marcat (AMEF), .p7b sau XML, și extrage totalurile zilei: valoarea operațiunilor și TVA pe fiecare cotă, plus încasările pe tipuri de plată (card, numerar, tichete). Din acestea construiește nota contabilă zilnică a Raportului Z și alimentează rețetarul GV (descărcarea pe porții).
+Citește fișierul emis de casa de marcat (AMEF), .p7b sau XML, și preia totalurile zilei: valoarea operațiunilor și TVA pe fiecare cotă, plus încasările pe tipuri de plată (card, numerar, tichete). Din acestea construiește nota contabilă zilnică a Raportului Z și alimentează rețetarul GV (descărcarea pe porții).
 ## Când se folosește
 Zilnic, la firmele cu vânzare cu amănuntul prin casa de marcat (retail, HoReCa) care înregistrează vânzările pe baza Raportului Z.
 ## Ce trebuie pregătit înainte
 Fișierul AMEF exportat pentru ziua respectivă (.p7b sau XML), conturile de vânzări și TVA configurate și cotele de TVA valide pe perioadă.
 ## Pas cu pas
 1. Încarci fișierul AMEF al zilei.
-2. Aplicația parsează totalurile pe cote și pe tipuri de plată.
+2. Aplicația citește totalurile pe cote și pe tipuri de plată.
 3. Verifici corespondența cotelor și a încasărilor.
 4. Generezi nota contabilă zilnică.
 ## Ce iese la capăt
@@ -61,7 +61,7 @@ Cheie API pentru autentificarea cererilor /api/v1/*; listare cu ultima folosire.
 ## Reguli fiscale
 Fără implicații fiscale (securitatea integrării)."
 Contabilii și asistenții cabinetului,"Lista asistenților cu roluri/permisiuni/firme, centralizator și jurnal, sumar calitate, detalii per actor (nivel/tipare/drift), setare patru-ochi, educație pe erori.",F006,cabinet,card Asistenti,core/asistenti_api.py,,LIVE,vizual,,"## Ce face
-Gestionează actorii de cabinet (asistenții): lista cu roluri, permisiuni și firme alocate, centralizator și jurnal, sumar de calitate, detalii per actor (nivel, tipare, drift), setarea modului patru-ochi și educația pe erori.
+Gestionează asistenții cabinetului: lista cu roluri, permisiuni și firme alocate, centralizator și jurnal, sumar de calitate, detalii pe fiecare asistent (nivel, greșeli tipice, cum a evoluat), setarea modului patru-ochi și educația pe erori.
 ## Unde apare / Cum se folosește
 O găsești în zona de administrare a cabinetului, unde adaugi asistenți, le dai acces la firme și le urmărești calitatea muncii.
 ## De reținut
@@ -114,14 +114,14 @@ Note contabile pentru bacșiș cu impozit 10%, fără contribuții sociale.
 ## Reguli fiscale
 Legea 376/2022; Codul fiscal art. 115 (bacșiș: impozit 10%, fără CAS/CASS)."
 Contabilizare extras de cont,"Motor pur pe liniile de extras bancar: detectează tipul operațiunii, extrage CUI-ul partenerului din descriere, aplică reguli de cont pe tipare (comision, dobânda, salarii, TVA, încasare/plata partener) și produce note contabile cu urmă (justificarea regulii aplicate). Alimentat de importul de extrase (XLS/CSV) și de reconciliere; învață din corecții prin F002.",F011,firma,card Banca,core/banca.py,,LIVE,pytest,,"## Ce face
-Contabilizarea extrasului de cont bancar - motor care citește liniile de extras, detectează tipul operațiunii, extrage CUI-ul partenerului din descriere, aplică reguli de cont pe tipare (comision, dobândă, salarii, TVA, încasare/plată partener) și produce note contabile cu justificarea regulii aplicate. Învață din corecțiile tale.
+Contabilizarea extrasului de cont bancar: aplicația citește liniile de extras, detectează tipul operațiunii, extrage CUI-ul partenerului din descriere, aplică reguli de cont pe tipare (comision, dobândă, salarii, TVA, încasare/plată partener) și produce note contabile cu justificarea regulii aplicate. Învață din corecțiile tale.
 ## Când se folosește
 Lunar (sau ori de câte ori primești extrasul), pentru a transforma mișcările bancare în note contabile fără introducere manuală.
 ## Ce trebuie pregătit înainte
 - Fișierul de extras de la bancă (XLS/XLSX/CSV; format ING/Jasper sau MT940 SWIFT).
 ## Pas cu pas
 1. Banca -> importă extrasul.
-2. Aplicația detectează formatul (magic bytes) și propune contarea pe fiecare linie.
+2. Aplicația recunoaște singură formatul fișierului și propune contarea pe fiecare linie.
 3. Verifică propunerile; corectează unde e cazul (sistemul învață din corecție).
 4. Contabilizează liniile (generează notele).
 ## Ce iese la capăt
@@ -132,7 +132,7 @@ Note contabile pe liniile de extras, cu urma regulii aplicate; reconciliere cu f
 ## Reguli fiscale
 Monografie OMFP 1802/2014 pe tipurile de operațiuni bancare."
 Citirea extrasului bancar,"Citește .xls/.xlsx/.csv (ING/Jasper), format detectat după conținut (magic bytes), grid pe poziția coloanelor, rânduri multi-linie.",F012,firma,card Banca,core/banca_parser.py,,LIVE,validat la leu pe ING,,"## Ce face
-Citește extrasul bancar din fișier .xls, .xlsx sau .csv (inclusiv formatele ING și Jasper) și extrage liniile de tranzacții. Formatul e detectat automat după conținut (magic bytes), nu după extensie, iar coloanele sunt citite pe poziție în grid, gestionând și rândurile pe mai multe linii.
+Citește extrasul bancar din fișier .xls, .xlsx sau .csv (inclusiv formatele ING și Jasper) și extrage liniile de tranzacții. Formatul se recunoaște după conținutul fișierului, nu după extensie, iar coloanele se citesc după antet, inclusiv rândurile scrise pe mai multe linii.
 ## Când se folosește
 Pentru contabilul care vrea să încarce mișcările de cont fără să le tasteze manual, indiferent de banca de la care vine fișierul.
 ## Ce trebuie pregătit înainte
@@ -140,7 +140,7 @@ Pentru contabilul care vrea să încarce mișcările de cont fără să le taste
 - Verifică să fie extrasul întreg, nu o captură parțială.
 ## Pas cu pas
 1. Exportă extrasul din aplicația băncii.
-2. Încarcă fișierul în parser.
+2. Încarcă fișierul pe ecranul Bancă.
 3. Lasă detecția după conținut să recunoască formatul.
 4. Verifică liniile citite (data, detalii, suma) înainte de a le folosi.
 ## Ce iese la capăt
@@ -249,14 +249,14 @@ Ori de câte ori apare un client sau furnizor nou, sau trebuie corectate datele 
 2. Alege creare sau selectează un partener pentru editare.
 3. Completează câmpurile și salvează; validările blochează datele incomplete.
 ## Ce iese la capăt
-Partener salvat în schema firmei, disponibil la facturare, solduri și reconciliere.
+Partener salvat în datele firmei, disponibil la facturare, solduri și reconciliere.
 ## Greșeli frecvente
 - Parteneri duplicați cu același CUI.
 - Ștergerea unui partener folosit deja în documente.
 ## Bun de știut
 Ține datele partenerului corecte de la început: se propagă automat pe facturi și în reconciliere. Verifică CUI-ul la ANAF înainte de a salva un partener nou."
 Coada de validare patru-ochi,"Fluxul declarațiilor: pregătită -> aprobată/respinsă (cu motiv) -> depusă (cu index SPV); tranziții de stare validate, hash pe payload, patru-ochi pe ID (pregătitorul nu aprobă), cronometru de efort (început_la).",F019,transversal,De validat / Declaratii,core/coada_api.py,,LIVE,403 dovedit pe self-approval,,"## Ce face
-Duce declarațiile printr-un flux controlat de stări: pregătită -> aprobată sau respinsă (cu motiv) -> depusă (cu index SPV). Tranzițiile de stare sunt validate, payload-ul e sigilat cu hash, iar regula patru-ochi se aplică pe ID: cine a pregătit declarația nu o poate aproba. Un cronometru de efort reține momentul de început.
+Duce declarațiile printr-un flux controlat de stări: pregătită -> aprobată sau respinsă (cu motiv) -> depusă (cu index SPV). Fiecare trecere dintr-o stare în alta e verificată, conținutul declarației e sigilat (o modificare ulterioară se vede), iar regula patru-ochi se aplică pe ID: cine a pregătit declarația nu o poate aproba. Un cronometru de efort reține momentul de început.
 ## Când se folosește
 Pentru echipele în care o persoană pregătește și alta aprobă, ca să existe control și urmă clară înainte de depunere. Utilă oricărui birou contabil cu mai mulți operatori.
 ## Ce trebuie pregătit înainte
@@ -267,12 +267,12 @@ Pentru echipele în care o persoană pregătește și alta aprobă, ca să exist
 2. Un alt utilizator o aprobă sau o respinge cu motiv.
 3. După depunere, înregistrează indexul SPV (starea devine depusă).
 ## Ce iese la capăt
-Declarație cu istoric de stări, hash de integritate și timp de efort măsurat.
+Declarație cu istoric de stări, sigiliu de integritate și timp de efort măsurat.
 ## Greșeli frecvente
 - Încercarea de a aproba propria declarație este blocată de regula patru-ochi.
 - Respingerea fără motiv nu e permisă.
 ## Bun de știut
-- Hash-ul pe payload semnalează dacă conținutul a fost modificat după pregătire."
+- Sigiliul semnalează dacă conținutul a fost modificat după pregătire."
 "Comodat, chirii, refacturări","Note pentru comodat (evidența extrabilanțieră), chirie plătită/încasată, refacturare utilități (art. 271 CF: refacturarea = livrare/prestare în nume propriu).",F020,firma,Operatiuni speciale,core/comodat_chirii.py,OMFP 1802/2014; art. 271 CF,LIVE,pytest,,"## Ce face
 Note pentru comodat (evidență extrabilanțieră), chirie plătită/încasată și refacturare utilități (refacturarea = livrare/prestare în nume propriu, art. 271 CF).
 ## Când se folosește
@@ -330,7 +330,7 @@ La configurarea produselor și la emiterea facturilor, ori de câte ori trebuie 
 Denumirea/descrierea clară a produsului sau serviciului; eventual codul NC pentru bunurile cu cotă redusă.
 ## Pas cu pas
 1. Introduci descrierea produsului.
-2. Motorul propune cota, cu justificarea legală.
+2. Aplicația propune cota, cu justificarea legală.
 3. Verifici și, la nevoie, corectezi manual.
 4. Cota confirmată se folosește la facturare.
 ## Ce iese la capăt
@@ -401,7 +401,7 @@ Anual, până pe 25 iunie a anului următor (CF art. 42 alin. (1), forma dată d
 - Pierderea fiscală reportată din anii anteriori, dacă e cazul.
 - Cifra de afaceri pentru IMCA (0,5% în 2026).
 ## Pas cu pas
-1. Închide anul (motor contabil).
+1. Închide anul (Cartea mare și închiderea perioadei).
 2. Declarații -> D101 -> anul.
 3. Aplicația calculează impozitul pe profit, IMCA și compară.
 4. Verifică sub-rândurile și validează XML-ul, apoi depune.
@@ -451,7 +451,7 @@ XML D205 validat, cu impozitul pe dividende per asociat.
 - Beneficiar nerezident -> se declară pe D207, nu pe D205 (aplicația refuză nerezidentul la generare).
 ## Reguli fiscale
 Codul fiscal art. 97. Cota pe an (8/10/16% după perioada). Termen: ultima zi a lunii februarie."
-Motor D212 (PFA/II/IF),"Calcul sistem real partidă simplă: venit net, CAS pe trepte (12/24 salarii minime, art.148), CASS liniară pe venitul net cu baza minimă de 6 salarii minime (art.174 alin.(6); diferența arătată separat, nedeductibilă la impozit — art.118 alin.(2) lit.b; excepțiile alin.(7)–(8)) și plafon 60/72 salarii minime, pentru Fișa D212 din registrul de încasări/plăți.",F030,firma,RIP > Fisa D212,core/d212_engine.py,"CF art. 148-149, 154, 170",LIVE,pytest,,"## Ce face
+Calculul Declarației unice D212 (PFA/II/IF),"Calcul sistem real partidă simplă: venit net, CAS pe trepte (12/24 salarii minime, art.148), CASS liniară pe venitul net cu baza minimă de 6 salarii minime (art.174 alin.(6); diferența arătată separat, nedeductibilă la impozit — art.118 alin.(2) lit.b; excepțiile alin.(7)–(8)) și plafon 60/72 salarii minime, pentru Fișa D212 din registrul de încasări/plăți.",F030,firma,RIP > Fisa D212,core/d212_engine.py,"CF art. 148-149, 154, 170",LIVE,pytest,,"## Ce face
 Calculează în sistem real, partidă simplă: venitul net (venituri încasate minus cheltuieli deductibile) și contribuțiile CAS și CASS pe plafoanele de salarii minime, pentru Fișa din Declarația unică D212, pornind de la registrul de încasări și plăți.
 ## Când se folosește
 Pentru persoane fizice care obțin venituri din activități independente (PFA, II, IF) impuse în sistem real.
@@ -459,7 +459,7 @@ Pentru persoane fizice care obțin venituri din activități independente (PFA, 
 Registrul de încasări și plăți complet pe an, salariul minim brut al anului și veniturile din alte surse relevante pentru plafoane.
 ## Pas cu pas
 1. Introduci încasările și plățile anului.
-2. Motorul determină venitul net.
+2. Aplicația determină venitul net.
 3. Compară venitul cu plafoanele de 6, 12 și 24 salarii minime.
 4. Calculează CAS și CASS datorate.
 ## Ce iese la capăt
@@ -552,7 +552,7 @@ Este punctul unic care primește cererile pentru declarații: recunoaște tipul 
 ## Unde apare / Cum se folosește
 Rulează automat în fundal când ceri o declarație din ecranul de Declarații - nu necesită acțiune separată.
 ## De reținut
-Este infrastructura internă care leagă butonul de generare de motorul fiecărei declarații."
+Leagă butonul de generare de calculul fiecărei declarații."
 Decontări asociați,"Note pentru dividende (455/457 cu cota pe an), dividende interimare cu regularizare, împrumuturi de la/către asociați (455/456/463).",F039,firma,Operatiuni speciale > Finantare,core/decontari_asociati.py,Legea 31/1990 art. 67; OMFP 1802,LIVE,pytest,,"## Ce face
 Decontări cu asociații - note contabile pentru dividende (455/457 cu cota pe an), dividende interimare cu regularizare, împrumuturi de la/către asociați (455/456/463).
 ## Când se folosește
@@ -587,14 +587,14 @@ Note pentru decont, cu diurnă în/peste plafon corect tratată.
 ## Reguli fiscale
 Codul fiscal (diurnă neimpozabilă în limita plafonului legal, restul impozabil)."
 Diferențe de curs valutar,"Diferențele de curs valutar 665/765 (OMFP 1802/2014 pct. 316-322), cu reguli de semn pe tip de sold: la decontarea creanțelor/datoriilor în valută (automat la încasare/plata) și la reevaluarea LUNARĂ a soldurilor (creanțe, datorii, disponibilități) la cursul BNR din ultima zi bancară a lunii. Motor pur.",F041,firma,Operatiuni speciale / automat la decontare,core/diferente_curs.py,OMFP 1802/2014 pct. 316-322,LIVE,pytest,,"## Ce face
-Calculează diferențele de curs valutar prin conturile 665 (cheltuială) și 765 (venit), cu reguli de semn pe tipul soldului. Se aplică în două momente: la decontarea creanțelor și datoriilor în valută (automat la încasare sau plată) și la reevaluarea LUNARĂ a soldurilor în valută (creanțe, datorii, disponibilități) la cursul BNR din ultima zi bancară a lunii. Este un motor pur de calcul.
+Calculează diferențele de curs valutar prin conturile 665 (cheltuială) și 765 (venit), cu reguli de semn pe tipul soldului. Se aplică în două momente: la decontarea creanțelor și datoriilor în valută (automat la încasare sau plată) și la reevaluarea LUNARĂ a soldurilor în valută (creanțe, datorii, disponibilități) la cursul BNR din ultima zi bancară a lunii.
 ## Când se folosește
 Pentru firmele cu creanțe, datorii sau disponibilități în valută: la fiecare încasare/plată și la închiderea fiecărei luni.
 ## Ce trebuie pregătit înainte
 - Soldurile în valută la data reevaluării.
 - Cursul BNR din ultima zi bancară a lunii.
 ## Pas cu pas
-1. La încasare/plată, lasă motorul să calculeze diferența față de cursul inițial.
+1. La încasare/plată, aplicația calculează diferența față de cursul inițial.
 2. La sfârșit de lună, rulează reevaluarea pe solduri.
 3. Verifică sensul (665 sau 765) propus.
 ## Ce iese la capăt
@@ -622,20 +622,20 @@ Documentele firmei, pe luni, accesibile clientului în regim doar-citire.
 ## Bun de știut
 Apar doar lunile pentru care există documente generate. Dacă un client nu vede o lună, verifică întâi dacă balanța a fost produsă pentru perioada respectivă."
 Import e-Factura (UBL),"Parser pentru XML-urile e-Factura (UBL 2.1 / CIUS-RO): număr, data, scadență, părți, linii cu cote - facturile primite intra în aplicație fără retastare.",F043,firma,Facturi (import),core/efactura_import.py,CIUS-RO,LIVE,pytest (test_efactura_import.py),,"## Ce face
-Importul facturilor primite din e-Factura (format UBL/XML de la SPV) - parsează fișierul și creează ciorna de cheltuială, cu datele extrase (furnizor, sume, TVA), pentru validare de către contabil.
+Importul facturilor primite din e-Factura (format UBL/XML de la SPV): citește fișierul și creează ciorna de cheltuială, cu datele extrase (furnizor, sume, TVA), pentru validare de către contabil.
 ## Când se folosește
 Când primești facturi prin SPV (e-Factura obligatorie B2B) și vrei să le înregistrezi automat, fără tastare manuală.
 ## Ce trebuie pregătit înainte
 - Fișierul UBL/XML descărcat din SPV (sau fluxul automat de primire e-Factura).
 ## Pas cu pas
 1. Import e-Factura -> încarcă fișierul UBL.
-2. Aplicația parsează și arată datele (furnizor, cont sugerat, sume).
+2. Aplicația citește și arată datele (furnizor, cont sugerat, sume).
 3. Verifică și validează (patru-ochi) -> creează cheltuiala.
 ## Ce iese la capăt
 Cheltuiala înregistrată din factura primită, legată de factură, cu contul confirmat de tine.
 ## Greșeli frecvente
 - Validarea fără verificarea contului sugerat.
-- Parserul minimal pierde unele câmpuri (terț plătitor, categorie) - se completează manual.
+- Unele câmpuri nu se preiau din XML (terțul plătitor, categoria): factura le arată „de completat”, iar tu le completezi înainte de validare; terțul plătitor ajunge apoi în D394.
 ## Reguli fiscale
 e-Factura obligatorie B2B (OUG 120/2021 și următoarele); structura CIUS-RO / UBL."
 PDF factură,"Generează PDF-ul facturii (reportlab) cu identitatea vizuală a firmei-client din Model factură: logo (base64), culoare accent, font (sans/serif/mono); folosit la emitere, pe portal și la trimiterea către client.",F045,firma,Facturi / portal,core/factura_pdf.py,,LIVE,,,"## Ce face
@@ -657,7 +657,7 @@ PDF-ul facturii, gata de descărcat sau trimis clientului, cu aspectul firmei.
 ## Bun de știut
 Setează o singură dată Modelul de factură și toate PDF-urile vor arăta unitar. Verifică cum arată logo-ul în PDF înainte de prima trimitere către client."
 "Contarea facturilor, cu TVA și stornare","Motor pur: TVA pe cote, nota pentru factura emisă (4111=70x+4427) și primită (60x+4426=401), taxare inversă, storno cu semn.",F046,firma,Facturi (contare automata ca ciorna),core/facturi.py + core/facturi_api.py,OMFP 1802/2014,LIVE,pytest,,"## Ce face
-Motorul de contare a facturilor: calculează TVA pe cote și construiește nota contabilă pentru factura emisă (4111 = 70x + 4427) și pentru cea primită (60x + 4426 = 401). Tratează taxarea inversă și storno-ul cu semn.
+Contarea facturilor: calculează TVA pe cote și construiește nota contabilă pentru factura emisă (4111 = 70x + 4427) și pentru cea primită (60x + 4426 = 401). Tratează taxarea inversă și storno-ul cu semn.
 ## Când se folosește
 La înregistrarea oricărei facturi emise sau primite și la stornarea unei facturi greșite. Pentru contabilul care ține contabilitatea firmei.
 ## Ce trebuie pregătit înainte
@@ -665,7 +665,7 @@ La înregistrarea oricărei facturi emise sau primite și la stornarea unei fact
 ## Pas cu pas
 1. Introdu factura emisă sau primită cu liniile și cotele ei.
 2. Alege regimul: TVA normal, taxare inversă sau storno.
-3. Motorul generează nota contabilă corespunzătoare.
+3. Aplicația generează nota contabilă corespunzătoare.
 ## Ce iese la capăt
 Nota contabilă a facturii, cu conturile și TVA-ul calculate automat.
 ## Greșeli frecvente
@@ -674,7 +674,7 @@ Nota contabilă a facturii, cu conturile și TVA-ul calculate automat.
 ## Reguli fiscale
 Contarea urmează OMFP 1802/2014 pentru reglementările contabile: factura emisă 4111 = 70x + 4427, factura primită 60x + 4426 = 401, iar la taxare inversă 4426 = 4427. Verifică temeiul în Codul fiscal pentru cotele și operațiunile aplicabile."
 Facturi recurente,"Șabloane cu zi de emitere: lista/adăugare/activare-dezactivare/ștergere; cron-ul zilnic emite scadențele (șablon activ, zi <= azi, o singură dată pe lună).",F047,firma,Facturi > Facturi recurente,core/facturi_recurente.py,,LIVE,de testat cap-coada P1.4,,"## Ce face
-Facturi recurente - șabloane de facturi care se emit automat, periodic (ex. abonamente lunare), pe baza unei configurări (client, articole, ziua din lună). Un cron le generează la scadență.
+Facturi recurente - șabloane de facturi care se emit automat, periodic (ex. abonamente lunare), pe baza unei configurări (client, articole, ziua din lună). Aplicația le generează singură, la scadență.
 ## Când se folosește
 Pentru servicii/abonamente facturate periodic același client cu aceeași valoare (mentenanță, chirie, abonament).
 ## Ce trebuie pregătit înainte
@@ -682,7 +682,7 @@ Pentru servicii/abonamente facturate periodic același client cu aceeași valoar
 - Ziua din lună la care se emite și periodicitatea.
 ## Pas cu pas
 1. Facturi recurente -> configurează șablonul (client, linii, zi).
-2. Cronul emite factura automat la scadență.
+2. Factura se emite automat la scadență.
 3. Verifici facturile generate.
 ## Ce iese la capăt
 Facturi emise automat periodic, după șablon.
@@ -836,7 +836,7 @@ Note contabile pentru leasing, cu bunul și datoria (financiar) sau chiria (oper
 ## Reguli fiscale
 OMFP 1802/2014; IFRS 16 / reglementări naționale pe clasificarea leasingului."
 Lichidare/radiere societate,"Lichidare/radiere societate (OMFP 897/2015 + L31/1990 art. 227+ + L85/2014): monografiile etapelor după aprobarea lichidării - valorificarea activelor (461=7583+4427, descărcare 6583+28xx=21x, stocuri), încasare creanțe și plata datorii, închidere TVA/impozite, rezultat pe 121, apoi PARTAJUL după bilanțul de lichidare cu impozit pe câștigul din lichidare de 10%, final (CF art. 97 alin. (5) - distinct de regimul dividendelor). Motor pur.",F057,firma,Operatiuni speciale,core/lichidare.py,OMFP 897/2015; L31/1990; L85/2014,LIVE,pytest,,"## Ce face
-Generează monografiile etapelor de lichidare și radiere a societății, după aprobarea lichidării: valorificarea activelor (461 = 7583 + 4427, cu descărcare 6583 și 28xx = 21x, plus stocuri), încasarea creanțelor și plata datoriilor, închiderea TVA și a impozitelor, stabilirea rezultatului pe 121, apoi PARTAJUL pe baza bilanțului de lichidare, cu impozitare în regim de dividende pe câștigul asociaților. Este un motor pur.
+Generează monografiile etapelor de lichidare și radiere a societății, după aprobarea lichidării: valorificarea activelor (461 = 7583 + 4427, cu descărcare 6583 și 28xx = 21x, plus stocuri), încasarea creanțelor și plata datoriilor, închiderea TVA și a impozitelor, stabilirea rezultatului pe 121, apoi PARTAJUL pe baza bilanțului de lichidare, cu impozitare în regim de dividende pe câștigul asociaților.
 ## Când se folosește
 Pentru firmele intrate în procedura de lichidare/radiere, după hotărârea de lichidare. Pentru contabilul care trebuie să parcurgă etapele până la partaj.
 ## Ce trebuie pregătit înainte
@@ -867,20 +867,20 @@ Importă registrul de mijloace fixe dintr-un export (valoare, durată, amortizar
 Se folosește la migrare, în pasul de import al mijloacelor fixe pentru o firmă.
 ## De reținut
 Amortizarea cumulată preluată garantează continuitatea calculului lunar."
-Motorul contabil (cartea mare și închiderea),"Nucleul contabilității: cartea mare din note validate, rezultatul, închiderea de luna (TVA, venituri/cheltuieli în 121) și de an (rezervă legală, repartizare 129).",F061,firma,— (motorul tuturor rapoartelor),core/motor.py,OMFP 1802/2014,LIVE,pytest (bug nota neechilibrata prins la rescriere),,"## Ce face
-Motorul contabil - Cartea Mare și operațiunile de închidere: agregarea notelor validate în solduri pe conturi, închiderea conturilor de venituri și cheltuieli, stabilirea rezultatului.
+Cartea mare și închiderea perioadei,"Nucleul contabilității: cartea mare din note validate, rezultatul, închiderea de luna (TVA, venituri/cheltuieli în 121) și de an (rezervă legală, repartizare 129).",F061,firma,— (motorul tuturor rapoartelor),core/motor.py,OMFP 1802/2014,LIVE,pytest (bug nota neechilibrata prins la rescriere),,"## Ce face
+Cartea mare și operațiunile de închidere: agregarea notelor validate în solduri pe conturi, închiderea conturilor de venituri și cheltuieli, stabilirea rezultatului.
 ## Când se folosește
 Lunar/anual, la închiderea perioadei, pentru a obține balanța și rezultatul.
 ## Ce trebuie pregătit înainte
 - Toate notele perioadei validate.
 ## Pas cu pas
-1. Motor contabil -> închide perioada.
+1. Cartea mare și închiderea perioadei -> închide perioada.
 2. Aplicația agregă notele, închide 6xx/7xx și stabilește rezultatul.
 3. Obții balanța și rezultatul.
 ## Ce iese la capăt
 Balanța la zi, conturi de venituri/cheltuieli închise, rezultatul perioadei.
 ## Greșeli frecvente
-- Închiderea cu note neechilibrate (motorul o semnalează).
+- Închiderea cu note neechilibrate (aplicația o semnalează).
 ## Reguli fiscale
 OMFP 1802/2014 (planul de conturi, închiderea exercițiului)."
 Notificări pe evenimente,"O notificare = eveniment către un user (mesaj client, respingere, validare); adresare individuală sau către validatorii cabinetului; contor necitite + marcare citit.",F062,transversal,clopotel,core/notificari_api.py,,LIVE,,,"## Ce face
@@ -953,7 +953,7 @@ Un email cu povestea lunii, salvat în istoric per lună.
 ## Bun de știut
 Draftul AI e punct de plecare, nu text final; verifică cifrele și tonul înainte de aprobare."
 Perisabilități și scăzăminte,"Perisabilități și scăzăminte (HG 831/2004 + art. 25 și 304 CF): limită maximă deductibilă = coeficientul grupei (anexe 1-3) aplicat la prețul de înregistrare al produselor INTRATE, cu condiții (verificare faptică, aprobarea administratorului, proces-verbal). ÎN limită: 607/60x=3xx deductibil fără ajustare TVA; PESTE limită: 607 nedeductibil + ajustare TVA dedusă (635=4426) pe depășire. Motor pur.",F066,firma,Operatiuni speciale,core/perisabilitati.py,"HG 831/2004; art. 25, 304 CF",LIVE,pytest,,"## Ce face
-Calculează perisabilitățile și scăzămintele: limita maximă deductibilă este coeficientul grupei (din anexele HG 831/2004) aplicat la prețul de înregistrare al produselor INTRATE, cu condițiile legale (verificare faptică, aprobarea administratorului, proces-verbal). În limită, cheltuiala (607 sau 60x = 3xx) e deductibilă fără ajustare de TVA; peste limită, 607 e nedeductibil și se ajustează TVA dedusă (635 = 4426) pe depășire. Motor pur.
+Calculează perisabilitățile și scăzămintele: limita maximă deductibilă este coeficientul grupei (din anexele HG 831/2004) aplicat la prețul de înregistrare al produselor INTRATE, cu condițiile legale (verificare faptică, aprobarea administratorului, proces-verbal). În limită, cheltuiala (607 sau 60x = 3xx) e deductibilă fără ajustare de TVA; peste limită, 607 e nedeductibil și se ajustează TVA dedusă (635 = 4426) pe depășire.
 ## Când se folosește
 Pentru firmele cu pierderi naturale în gestiune (perisabilități, scăzăminte) care trebuie încadrate în limita deductibilă. Pentru contabilul care înregistrează minusurile constatate.
 ## Ce trebuie pregătit înainte
@@ -1062,7 +1062,7 @@ O sesizare înregistrată, cu fir de discuție până la rezolvare.
 ## Bun de știut
 O captură de ecran și pașii exacți scurtează mult timpul până la un răspuns util. Firul e bidirecțional, deci verifică-l pentru răspunsul Adminului."
 Reconciliere bancară (potrivirea plăților cu facturile),"Motor pur de potrivire a liniilor de extras pe facturile deschise ale partenerului: exact, combinații, FIFO; alocare parțială pe mai multe facturi.",F073,firma,card Banca,core/reconciliere.py + core/reconciliere_api.py,,LIVE,pytest,,"## Ce face
-Motor pur care potrivește liniile de extras bancar cu facturile deschise ale partenerului: potrivire exactă, pe combinații de facturi și după metoda FIFO, cu alocare parțială pe mai multe facturi.
+Potrivește liniile de extras bancar cu facturile deschise ale partenerului: potrivire exactă, pe combinații de facturi și pe facturile cele mai vechi întâi, cu alocare parțială pe mai multe facturi.
 ## Când se folosește
 Pentru contabilul care vrea să închidă automat facturile pe baza încasărilor și plăților din extras, în loc să le puncteze manual.
 ## Ce trebuie pregătit înainte
@@ -1070,7 +1070,7 @@ Pentru contabilul care vrea să închidă automat facturile pe baza încasărilo
 - Lista facturilor deschise per partener.
 ## Pas cu pas
 1. Importă extrasul și identifică partenerul.
-2. Lasă motorul să caute potrivirea (exactă, combinații, FIFO).
+2. Lasă aplicația să caute potrivirea (exactă, pe combinații, pe facturile cele mai vechi întâi).
 3. Confirmă alocarea, inclusiv cea parțială pe mai multe facturi.
 ## Ce iese la capăt
 Legături între încasări/plăți și facturi, cu soldurile facturilor actualizate.
@@ -1225,7 +1225,7 @@ Note pentru sponsorizare + creditul fiscal aplicabil (în limita legală).
 ## Reguli fiscale
 Codul fiscal (sponsorizare: limita creditului fiscal - profit 0,75%% CA și max 20%% impozit; micro 20%% impozit)."
 Statul de plată și fluturașii,"Statul de plată lunar per firmă: toți salariații prin motorul de salarizare (brut -> contribuții -> net, cu deduceri, facilități, CM), plus fluturașii PDF individuali per salariat (pdf_util, identitate DS cap.7). Alimentează D112 și plata salariilor. Brutul se proratează pe prezența în contract (02.10.2026): angajare/încetare în lună, concediu fără plată / suspendare (butonul „Suspendare / CFP” de pe salariat) și schimbarea salariului în lună — zile lucrătoare active, același calcul în stat, D112 și contare.",F087,firma,Salariati,core/stat_plata_api.py,"Codul muncii art.49 alin.(2), art.54, art.159 alin.(1), art.160 alin.(2); CF art.146 alin.(5^6)",LIVE,vizual + parte din D112 DUK,salariu-minim-2026,"## Ce face
-Calculează statul de plată lunar per firmă: trece toți salariații prin motorul de salarizare (brut -> contribuții -> net, cu deduceri, facilități și concedii medicale) și generează fluturașii PDF individuali. Alimentează D112 și plata salariilor.
+Calculează statul de plată lunar per firmă: calculează salariul fiecărui salariat (brut -> contribuții -> net, cu deduceri, facilități și concedii medicale) și generează fluturașii PDF individuali. Alimentează D112 și plata salariilor.
 ## Când se folosește
 Lunar, la salarizare, de către contabilul de salarizare.
 ## Ce trebuie pregătit înainte
@@ -1233,7 +1233,7 @@ Lunar, la salarizare, de către contabilul de salarizare.
 - pontajul și concediile medicale ale lunii
 ## Pas cu pas
 1. Alege firma și luna.
-2. Rulează motorul de salarizare pentru toți salariații.
+2. Calculează salariile tuturor salariaților.
 3. Verifică brut, contribuții, net, deduceri și facilități.
 4. Generează fluturașii PDF individuali.
 ## Ce iese la capăt
@@ -1296,7 +1296,7 @@ Note pentru subvenție, cu recunoașterea corectă (amânată pt investiții, cu
 ## Reguli fiscale
 OMFP 1802/2014 (subvenții: venituri amânate pentru investiții, venit curent pentru exploatare)."
 Taxare inversă internă,"Taxare inversă internă (art. 331 CF + norme pct. 109): condiție furnizor ȘI beneficiar plătitori de TVA, doar operațiuni interne; beneficiarul înregistrează 4426=4427, furnizorul facturează fără TVA cu mențiunea obligatorie; prag 22.500 lei/factura la telefoane/circuite/console; categoriile c)-f), i)-l) valabile până la 31.12.2026 (OUG 85/2022). Neaplicarea corectă atrage pierderea dreptului de deducere doar în cazul de la norme pct. 109 alin. (4). Motor pur.",F091,firma,Operatiuni speciale > TVA regimuri,core/taxare_inversa.py,art. 331 CF; norme pct. 109,LIVE,pytest,taxare-inversa-interna,"## Ce face
-Aplică mecanismul taxării inverse interne: la operațiuni interne între doi plătitori de TVA, furnizorul facturează fără TVA cu mențiunea de taxare inversă, iar beneficiarul înregistrează 4426 = 4427 (TVA neutră). Motor de calcul și validare a condițiilor.
+Aplică mecanismul taxării inverse interne: la operațiuni interne între doi plătitori de TVA, furnizorul facturează fără TVA cu mențiunea de taxare inversă, iar beneficiarul înregistrează 4426 = 4427 (TVA neutră). Aplicația verifică și condițiile.
 ## Când se folosește
 Pentru livrări interne din categoriile prevăzute de lege (ex. cereale, deșeuri, masă lemnoasă, telefoane, console, circuite integrate), când ambele părți sunt înregistrate în scopuri de TVA.
 ## Ce trebuie pregătit înainte
@@ -1343,7 +1343,7 @@ Rezultatele apar în cardul Tipare de erori și în modulul de educație a asist
 ## De reținut
 Cifrele vin din respingerile efective, nu din estimări."
 Regim special agricultori,"Regim special agricultori (art. 315^1 CF): compensație forfetară 8% aplicată la prețul EXCLUSIV taxa; agricultorul nu colectează și nu deduce TVA; cumpărătorul PJ deduce compensația ca TVA DOAR dacă agricultorul figurează în Registrul agricultorilor la data livrării, cu evidența separată a achizițiilor. Motor pur.",F095,firma,Operatiuni speciale > TVA regimuri,core/tva_agricultori.py,art. 315^1 CF,LIVE,pytest,,"## Ce face
-Aplică regimul special pentru agricultori: o compensație forfetară procentuală calculată la prețul exclusiv taxă. Agricultorul nu colectează și nu deduce TVA, iar cumpărătorul persoană impozabilă poate deduce compensația. Motor de calcul.
+Aplică regimul special pentru agricultori: o compensație forfetară procentuală calculată la prețul exclusiv taxă. Agricultorul nu colectează și nu deduce TVA, iar cumpărătorul persoană impozabilă poate deduce compensația.
 ## Când se folosește
 Pentru livrările de produse agricole și serviciile agricole efectuate de un agricultor înscris în regimul special, către cumpărători persoane impozabile.
 ## Ce trebuie pregătit înainte
@@ -1360,7 +1360,7 @@ Aplicarea compensației la prețul cu taxă în loc de cel fără; deducerea la 
 ## Reguli fiscale
 Art. 315^1 Cod fiscal: procentul de compensare în cotă forfetară este de 8% începând cu anul 2019 (art. 315^1 alin. 2), aplicat la prețul exclusiv taxă. Agricultorul nu colectează și nu deduce TVA."
 Regim special aur de investiții,"Regim special aur de investiții (art. 313 CF): definiții (lingouri >=995‰, monede >=900‰ emise după 1800, preț <= valoarea aurului +80%), livrări scutite cu opțiune de taxare către persoane impozabile -> taxare inversă (art. 331 al. 2 lit. h, factura fără TVA cu mențiune), identificarea clientului obligatorie + evidența 5 ani. Motor pur.",F096,firma,Operatiuni speciale > TVA regimuri,core/tva_aur.py,art. 313 CF,LIVE,pytest,,"## Ce face
-Aplică regimul special pentru aurul de investiții: verifică definițiile (lingouri, monede) și tratează livrările ca scutite, cu opțiune de taxare către persoane impozabile, caz în care se aplică taxare inversă. Motor de calcul și validare.
+Aplică regimul special pentru aurul de investiții: verifică definițiile (lingouri, monede) și tratează livrările ca scutite, cu opțiune de taxare către persoane impozabile, caz în care se aplică taxare inversă. Aplicația verifică și definițiile.
 ## Când se folosește
 La comercializarea aurului de investiții de către operatori specializați.
 ## Ce trebuie pregătit înainte
@@ -1394,7 +1394,7 @@ Colectarea integrală la emitere în loc de la încasare; alocare greșită a î
 ## Reguli fiscale
 Art. 282 Cod fiscal (exigibilitate la încasare). Prin OUG 8/2026, art. 282 alin. (3) a fost modificat: plafonul pentru aplicarea sistemului TVA la încasare este de 5.000.000 lei în perioada 1 martie - 31 decembrie 2026."
 Regim special al marjei (bunuri second-hand),"Regim special marja pentru bunuri second-hand (art. 312 CF, norme pct. 86): TVA = marja (preț vânzare - preț cumpărare) x cota/(100+cota) prin sută mărită; marjă negativă -> TVA 0, fără report (metoda pe fiecare livrare, norme pct. 86); pe factura NU se înscrie TVA distinct, mențiune obligatorie regimul marjei. Motor pur.",F098,firma,Operatiuni speciale > TVA regimuri,core/tva_marja.py,art. 312 CF; norme pct. 86,LIVE,pytest,regim-marja-second-hand,"## Ce face
-Calculează TVA pe regimul marjei pentru bunuri second-hand: TVA = marja (preț vânzare minus preț cumpărare) x cotă / (100 + cotă), prin procedeul sutei mărite. Marja negativă dă TVA zero, reportată în jurnalul special. Motor de calcul.
+Calculează TVA pe regimul marjei pentru bunuri second-hand: TVA = marja (preț vânzare minus preț cumpărare) x cotă / (100 + cotă), prin procedeul sutei mărite. Marja negativă dă TVA zero, reportată în jurnalul special.
 ## Când se folosește
 Pentru revânzători de bunuri second-hand, opere de artă, obiecte de colecție și antichități, care aplică regimul marjei.
 ## Ce trebuie pregătit înainte
@@ -1464,14 +1464,14 @@ Un raport cu verificările trecute și cele picate, fiecare eșec explicat.
 ## Bun de știut
 - Verificatoarele nu corectează singure; arată cauza, corecția rămâne la contabil."
 Conector WooCommerce,"Config per firmă (URL + chei), citirea comenzilor, transformarea în facturi iConta idempotent (comandă deja importată se sare), sincronizare manuală + cron.",F102,firma,card Magazin online,core/woocommerce.py,,LIVE,pytest; de testat P1.5,,"## Ce face
-Conectează magazinul WooCommerce la iConta: configurare per firmă (URL + chei API), citirea comenzilor și transformarea lor în facturi iConta. Importul e idempotent (o comandă deja importată se sare); sincronizarea poate fi manuală sau prin cron.
+Conectează magazinul WooCommerce la iConta: configurare per firmă (URL + chei API), citirea comenzilor și transformarea lor în facturi iConta. Importul e idempotent (o comandă deja importată se sare); sincronizarea poate fi manuală sau automată, periodic.
 ## Când se folosește
 Când firma vinde printr-un magazin WooCommerce și vrea facturile generate automat. Pentru contabilul unei firme de e-commerce.
 ## Ce trebuie pregătit înainte
 - URL-ul magazinului și cheile API WooCommerce.
 ## Pas cu pas
 1. Configurează în firmă URL-ul și cheile WooCommerce.
-2. Pornește sincronizarea manuală sau lasă cron-ul să ruleze.
+2. Pornește sincronizarea manual sau las-o să ruleze automat.
 3. Comenzile noi devin facturi; cele deja importate se sar.
 ## Ce iese la capăt
 Facturi iConta generate din comenzile WooCommerce, fără duplicate.
@@ -1682,12 +1682,12 @@ Adaugă pe ecranul Tipare de erori o analiză generată de AI: pe lângă statis
 Din ecranul principal → Activitate → Tipare de erori, apoi apeși butonul „Generează analiză AI”.
 ## De reținut
 Analiza se generează doar la cerere (este un apel plătit), iar dacă AI-ul nu este disponibil rămân statisticile obișnuite."
-Trimitere e-Transport prin API SPV,"Trimiterea directă a notificării UIT prin API-ul SPV (azi doar XML pentru upload manual, F044). TEMEI TEHNIC CONFIRMAT 17.07.2026: fezabil server-side prin OAuth ANAF (authorize/token la logincert.anaf.ro/anaf-oauth2/v1/; access token 90 zile, refresh 365 zile; iConta = aplicație înrolată cu un Client ID, contabilul autorizează cu certificatul lui). Nu atinge blocantul certificatului (vezi F128).",F121,firma,card e-Transport,core/etransport_send.py + core/migrare_etransport_trimiteri.py + static/js/ecrane/etransport_ecran.js + main.py,—,"LIVE 18.07 (mecanism + UI; mai putin proba live pending drept): upload_uit/stare_uit/lista_uit prin apel_anaf pe spv_principal (drept UNIFICAT cu e-Factura; endpoint-uri ETRANSPORT/ws/v1 path-params la sursa) + GARDA DE TIMP UIT (max 3z inainte, valabil 5z national/15z intracom, dupa expirare BLOCAT) + tabel etransport_trimiteri (dedup xml_sha256 prod) + orchestrator trimite (porti: timp -> idempotency -> validare pe TEST -> upload). UI pe cardul F044: buton Trimite UIT blocat in afara ferestrei (motiv), avertisment de fereastra, lista UIT-uri cu SEMAFOR DE TIMP (valabilitate) SEPARAT de semaforul de trimitere (doua dimensiuni). Fara confirm/alert (confirmaCaseta). LIMITA: proba live upload/UIT pending drept e-Transport pe CIF real (ca F176) - ecran testat cu notificare injectata + poarta TEST.",8 teste unit + backend HTTP (blocat_timp prea-devreme; GET trimiteri 2 semafoare verde/galben/rosu); node+verificator 0; migrare 2/2,,"## Ce face
-Permite trimiterea directă a notificării e-Transport (codul UIT) către SPV prin API-ul ANAF, fără să mai încarci manual fișierul XML. Trimiterea se face server-side prin conexiunea OAuth cu ANAF autorizată de cabinet.
+Trimitere e-Transport direct în SPV,"Trimiterea directă a notificării UIT prin API-ul SPV (azi doar XML pentru upload manual, F044). TEMEI TEHNIC CONFIRMAT 17.07.2026: fezabil server-side prin OAuth ANAF (authorize/token la logincert.anaf.ro/anaf-oauth2/v1/; access token 90 zile, refresh 365 zile; iConta = aplicație înrolată cu un Client ID, contabilul autorizează cu certificatul lui). Nu atinge blocantul certificatului (vezi F128).",F121,firma,card e-Transport,core/etransport_send.py + core/migrare_etransport_trimiteri.py + static/js/ecrane/etransport_ecran.js + main.py,—,"LIVE 18.07 (mecanism + UI; mai putin proba live pending drept): upload_uit/stare_uit/lista_uit prin apel_anaf pe spv_principal (drept UNIFICAT cu e-Factura; endpoint-uri ETRANSPORT/ws/v1 path-params la sursa) + GARDA DE TIMP UIT (max 3z inainte, valabil 5z national/15z intracom, dupa expirare BLOCAT) + tabel etransport_trimiteri (dedup xml_sha256 prod) + orchestrator trimite (porti: timp -> idempotency -> validare pe TEST -> upload). UI pe cardul F044: buton Trimite UIT blocat in afara ferestrei (motiv), avertisment de fereastra, lista UIT-uri cu SEMAFOR DE TIMP (valabilitate) SEPARAT de semaforul de trimitere (doua dimensiuni). Fara confirm/alert (confirmaCaseta). LIMITA: proba live upload/UIT pending drept e-Transport pe CIF real (ca F176) - ecran testat cu notificare injectata + poarta TEST.",8 teste unit + backend HTTP (blocat_timp prea-devreme; GET trimiteri 2 semafoare verde/galben/rosu); node+verificator 0; migrare 2/2,,"## Ce face
+Permite trimiterea directă a notificării e-Transport (codul UIT) direct în SPV, fără să mai încarci manual fișierul XML. Trimiterea se face server-side prin conexiunea OAuth cu ANAF autorizată de cabinet.
 ## Cum ajungi la ea
 Din ecranul principal → cardul e-Transport."
 Cod 10 CM în flux,"Integrarea calculului pentru codul 10 de concediu medical (reducere timp de muncă) în formularul CM și D112 (motorul calcul_cm_cod10 există, F080).",F122,firma,Salariati > Concedii,core/salarizare.py + main.py (calcul-cm),OUG 158/2005,LIVE (13.07 seara),—,concediu-medical-cine-suporta,"## Ce face
-Integrează în formularul de concediu medical și în D112 calculul pentru codul 10 (concediu medical pentru reducerea timpului de muncă), folosind motorul de calcul dedicat.
+Integrează în formularul de concediu medical și în D112 calculul pentru codul 10 (concediu medical pentru reducerea timpului de muncă), cu calculul dedicat.
 ## Cum ajungi la ea
 Din ecranul principal → Salariați → Concedii."
 Provider real de plată,Configurarea Netopia sau Stripe pe cont real (azi F067 funcționează cu provider mock).,F123,firma,Facturi > link de plata,,—,PLANIFICAT,—,,
@@ -1826,7 +1826,7 @@ Articole identificabile prin cod de bare și selectate rapid în mișcările de 
 ## Bun de știut
 - Indexul e parțial: se aplică doar articolelor care au cod completat, deci articolele fără cod rămân valide."
 Inventar pe mobil,"Mod de numărare optimizat mobil (peste PWA F113): scanare cod de bare (keyboard-wedge, F141) sau căutare denumire -> adăugare la numărătoare cu acumulare în timp real pe ecran -> finalizare care postează diferențele prin motorul inventar() existent (note ciorne). Numărare oarbă (nu afișează scripticul, evită influențarea). Fără schema nouă. Sincronizarea live între mai multi numărători (nevoie de tabel de sesiune) NU e inclusă - vezi DECIZII 17.07.",F142,firma,card Stocuri,core/stocuri_cv_api.py + static/js/ecrane/firme.js + main.py,,LIVE (numarare oarba; fara sync multi-utilizator),static/js firme.js (mod inventar mobil) + core/stocuri_cv_api.py inventar(); test functional pe Postgres,,"## Ce face
-Este un mod de numărare a inventarului optimizat pentru telefon (peste aplicația instalabilă PWA): scanezi codul de bare sau cauți după denumire, adaugi la numărătoare cu totalul actualizat în timp real pe ecran, iar la finalizare diferențele se postează prin motorul de inventar existent. Numărarea este oarbă (nu îți arată scripticul, ca să nu te influențeze).
+Este un mod de numărare a inventarului optimizat pentru telefon (aplicația instalată pe telefon): scanezi codul de bare sau cauți după denumire, adaugi la numărătoare cu totalul actualizat în timp real pe ecran, iar la finalizare diferențele se înregistrează ca la inventarul obișnuit. Numărarea este oarbă (nu îți arată scripticul, ca să nu te influențeze).
 ## Cum ajungi la ea
 Din ecranul principal → cardul Stocuri (folosit de pe telefon).
 ## De reținut
@@ -1895,9 +1895,9 @@ Link de plată în contul gratuit,LIVE (verificat 18.07 la sursă): butonul Link
 e-Factura SPV pentru contul gratuit,"XML UBL + încărcare SPV: OAuth ANAF per firmă. Obligatorie legal B2B - diferențiator major, efort mare. TEMEI TEHNIC CONFIRMAT 17.07.2026: fezabil server-side prin OAuth ANAF (authorize/token la logincert.anaf.ro/anaf-oauth2/v1/; access token 90 zile, refresh 365 zile; iConta = aplicație înrolată cu un Client ID, contabilul autorizează cu certificatul lui). Nu atinge blocantul certificatului (vezi F128).",F160,gratuit,Facturare gratuita,core/efactura_send.py + core/spv_conector.py + facturi_ecran.js + main.py,,ELIMINAT 26.07.2026,"ELIMINAT 26.07.2026: contul de facturare gratuita scos definitiv din produs. Motiv: produsul se vinde CABINETELOR; contul gratuit (firma FARA cabinet, accounting_firm_id NULL) nu are consumator in modelul de pret. Cod scos: rute /public/register-gratuit + /admin/conturi-gratuite (+suspenda/reactiveaza) + /admin/coliziuni-cui, auth_api.inregistreaza_cont_gratuit (F185), tenant_provisioning coliziune_gratuit_v1 (F092 sub-logica), ramuri _eGratuit/e_gratuit (portal/emitere/facturi), segment anunturi gratuit, ecran login randeazaInregistrareGratuita, admin_gratuite.js. NEATINSE: portalul clientului (/portal/bon), provisioning cabinet, pre-completare ANAF cabinet. 0 conturi gratuite reale in DB la eliminare.",,
 Vreau contabil (conversie cont gratuit -> cabinet) - RESPINS,"RESPINS 18.07: butonul de conversie / ""vreau contabil"" cu flux de acceptare NU există ca atare. iConta nu aloca clienți către cabinete (nu e agenție de matchmaking - l-ar pune pe founder arbitru între cabinete). Contul gratuit e o firmă care are DEJA contabil; valoarea lui e emiterea în sine (LIVE). Blocajul tehnic de determinare gratuit-vs-cabinet (user vs tenant) rezolvat separat (cb3891f). Ce rămânea - preluare tenant la adăugare firma pe CUI gratuit existent - e acoperit tehnic: create-new corect, datele vin prin migrare + semnal coliziune F092/F185. Se reia doar la un caz real care cere altceva. Vezi DECIZII/ISTORIC 18.07.",F161,gratuit,—,,,RESPINS 18.07.2026,—,,
 Import extras bancar MT940 (SWIFT),"Ramură nouă în parserul de extrase, detectată după markerul :61:/:20:. Un singur format standard acoperă majoritatea băncilor din România (fișier exportat din internet banking), față de câte un parser per bancă. Produce aceeași structura {data, detalii, suma} ca parserul grid XLS/CSV. RĂMAS: validare pe fișier real (câmpul :86: variază per bancă).",F166,contabilitate,Banca - import extras,core/banca_parser.py,specificatia SWIFT MT940 (Statement Message),LIVE,pytest (4 teste),,"## Ce face
-Adaugă o ramură în parserul de extrase pentru fișiere MT940 (SWIFT), detectate după markerii :61: și :20:. Un singur format standard acoperă majoritatea băncilor din România (fișier exportat din internet banking), înlocuind câte un parser per bancă, și produce aceeași structură {data, detalii, suma} ca parserul grid XLS/CSV.
+Citește extrasele în format MT940 (SWIFT), recunoscute după conținut. E un format standard, exportat din internet banking de băncile care îl oferă; liniile ajung pe ecranul Bancă la fel ca din extrasul în tabel, plus contul și soldul inițial și final, comparate cu 5121.
 ## Când se folosește
-Pentru contabilul care exportă extrasul în format MT940 din internet banking, indiferent de bancă. Alternativă la parserele pe format specific de bancă.
+Pentru contabilul care exportă extrasul în format MT940 din internet banking, indiferent de bancă. Alternativă la extrasul în tabel (.xls, .xlsx, .csv).
 ## Ce trebuie pregătit înainte
 - Fișierul MT940 exportat din internet banking.
 - Verifică să conțină blocurile :20: și :61:.
@@ -1906,7 +1906,7 @@ Pentru contabilul care exportă extrasul în format MT940 din internet banking, 
 2. Încarcă fișierul; ramura MT940 e detectată după marker.
 3. Verifică liniile citite (data, detalii, suma).
 ## Ce iese la capăt
-Aceeași structură de tranzacții ca la parserul XLS/CSV, gata de reconciliere.
+Liniile extrasului, gata de reconciliere, ca la extrasul în tabel.
 ## Greșeli frecvente
 - Confundarea unui fișier non-MT940 cu unul standard; detecția se bazează pe markeri.
 - Presupunerea că detaliile (:86:) arată identic la toate băncile; câmpul variază.
@@ -2058,7 +2058,7 @@ Când preiei o firmă cu istoric de la alt contabil, verifică coerența intern�
 ## Cum ajungi la ea
 Din ecranul principal → Control fiscal → detaliu firmă → butonul „Audit de preluare” (îl poți relua).
 ## De reținut
-Este un motor separat de controlul încrucișat obișnuit, pentru că la preluare ambele surse sunt externe (documente de la contabilul anterior)."
+E o verificare separată de controlul încrucișat obișnuit, pentru că la preluare ambele surse sunt externe (documente de la contabilul anterior)."
 "Avertisment: regimul de TVA față de ANAF, în semaforul Control fiscal","La editarea manuală a statutului de plătitor TVA (Configurare emitere / Vector fiscal) se interoghează LIVE ANAF v9 (scpTVA) pe CUI-ul firmei: dacă diferă de ce salvează omul -> AVERTISMENT signal-not-block (salvează oricum), iar snapshot-ul ANAF (coloană SEPARATĂ plătitor_tva_anaf + data) se reîmprospătează. În Control fiscal, constatarea 'Regim TVA vs ANAF' compară OFFLINE plătitor_tva vs snapshot: verde (coincid) / roșu (diferă, remediu=investigație: verifică SPV, corectează vector sau depune mențiuni) / gri (fără snapshot sau ANAF necunoscut). Model snapshot+live ales fiindca F188 suprascrie ACEEAȘI coloană (nu există valoare ANAF de comparat) și /control-fiscal iterează toate firmele (live-per-firma neviabil). Verificat fiscal la sursă (v9 raw 22.07): scpTVA=boolean la data interogării; TVA la încasare/SplitTVA sunt fațete separate -> comparație apples-to-apples, zero fals-pozitiv din granularitate. Vezi DECIZII 22.07 F180.",F180,firma,Configurare emitere + Vector fiscal (avertisment la salvare); Control fiscal (rosu la divergenta),core/firma_profil_api.py + core/control_fiscal_api.py + core/migrare_platitor_tva_anaf.py + main.py (rute regim-tva/vector + prefill F188) + tenant_template.sql,"date publice ANAF (PlatitorTvaRest v9, scpTVA); regim TVA Cod fiscal",LIVE (22.07.2026),"9 teste pure (stare_tva_anaf + avertisment_tva_anaf + constatare_regim_tva: verde/rosu/gri, contract remediu=investigatie/limita) + functional REAL pe tenant_002 (live ANAF 14399840: local!=ANAF->avertisment, ==->none; gri fara snapshot; cale ROSIE end-to-end cu divergenta fortata in tranzactie ROLLBACK, tenant_002 neatins) + migrare 2/2 scheme + suita 447 verde + verificator DS 0",,"## Ce face
 Când editezi manual statutul de plătitor de TVA al firmei, se interoghează live ANAF pe CUI-ul ei: dacă diferă de ce salvezi, primești un avertisment (dar salvarea nu este blocată), iar snapshot-ul ANAF se actualizează. În Control fiscal, constatarea „Regim TVA vs ANAF” compară offline valoarea ta cu snapshotul: verde dacă coincid, roșu dacă diferă, gri dacă nu există snapshot.
 ## Cum ajungi la ea
@@ -2066,7 +2066,7 @@ Din ecranul principal → Configurare emitere sau Vector fiscal (avertismentul a
 ## De reținut
 La divergență, remediul este de investigat: verifici SPV, corectezi vectorul sau depui mențiuni."
 Auditor conformitate schema tenant vs template,"Detectează driftul între schema fiecărui tenant și tenant_template.sql (sursa canonică). Motor: construiește o schema de referință din template intr-o tranzacție ROLLBACK + introspectează information_schema + face diff coloană-cu-coloană (filosofia DUK: lucrul real e judecătorul, nu parsare SQL de mână; normalizează zgomotul nextval din defaults). Direcția HARD (template->tenant: tabelă/coloană lipsă, tip diferit, nullable diferit) = clasa link_plata (template a câștigat ceva, tenantul vechi n-a primit -> codul crapă). Direcția inversă (extra în tenant) = doar raport informativ, NU pica (evită whitelist ever-growing). Expus ca POARTĂ (test în suită, pica la drift template->tenant -> driftul tacut devine roșu la dev) + CLI on-demand (python3 -m core.audit_schema) care SUGEREAZĂ SQL (corp migrare_*, ADD COLUMN IF NOT EXISTS + avertisment pe NOT NULL fără default) dar NU-l APLICĂ - repararea rămâne un migrare_* numit + mirror template, revizuit de om (suggest-don't-apply, nu lasă gaură în procesul de migrări). Fără auto-ALTER, fără ecran (YAGNI). De ce: tenant_provisioning aplică template-ul integral la tenanții NOI, dar cei EXISTENȚI rămân în urmă când template-ul se schimbă fără migrare_*; convenția migrare_* repară pe disciplină, nimic nu prindea driftul mecanic. Vezi DECIZII 22.07 F165.",F165,transversal,CLI (python3 -m core.audit_schema) + poarta in suita (test_audit_schema.py),core/audit_schema.py + core/test_audit_schema.py,conformitate schema-per-tenant vs tenant_template.sql (sursa canonica),LIVE (22.07.2026),11 teste (9 pure compara/sugereaza_alter/normalizare nextval + poarta reala 'toti tenantii conform' + mutatie negativa din ref real) + DOVADA E2E: DROP link_plata REAL pe tenant_002 in tranzactie ROLLBACK -> drift HARD detectat + SQL sugerat corect + tenant neatins. CLI: 0/2 drift HARD (2 tabele extra lazy/legacy = info adnotat). Drift curent verificat = ZERO. Suita 460 verde + verificator DS 0,,"## Ce face
-Detectează diferențele (drift) dintre schema bazei de date a fiecărei firme și șablonul canonic, când șablonul s-a schimbat fără o migrare corespunzătoare. Compară coloană cu coloană și, la cerere, sugerează SQL-ul de reparație, dar nu îl aplică singur — repararea rămâne o migrare scrisă și revizuită de om.
+Găsește diferențele dintre structura datelor fiecărei firme și structura de referință, când aceasta s-a schimbat fără actualizarea firmelor. Compară coloană cu coloană și, la cerere, sugerează SQL-ul de reparație, dar nu îl aplică singur — repararea rămâne o migrare scrisă și revizuită de om.
 ## Cum ajungi la ea
 Este un instrument tehnic pentru dezvoltatori, fără ecran în aplicație — se rulează din linia de comandă și există ca poartă în suita de teste.
 ## De reținut
@@ -2167,7 +2167,7 @@ De persoana fizică (salariat, PFA etc.) care vrea să direcționeze o parte din
 - Datele contribuabilului (nume, CNP).
 - Datele beneficiarului: denumire, cod fiscal (CIF) și contul IBAN al ONG-ului.
 ## Pas cu pas
-1. Pregătește datele contribuabilului și ale ONG-ului (azi prin dispatch/API, fără ecran dedicat de introducere).
+1. Pregătește datele contribuabilului și ale ONG-ului (deocamdată fără ecran de introducere în aplicație).
 2. Declarații -> D230 -> anul venitului.
 3. Aplicația construiește cererea.
 4. Validează și depune XML-ul.
@@ -2186,7 +2186,7 @@ De firma plătitoare de venit către nerezidenți. Anual, până în ultima zi a
 - Lista beneficiarilor nerezidenți: denumire, statul de rezidență, codul de identificare fiscală.
 - Pe fiecare: tipul de venit (din nomenclator), baza și impozitul reținut, actul normativ aplicat (Cod fiscal / convenție / directivă).
 ## Pas cu pas
-1. Pregătește lista beneficiarilor nerezidenți (azi prin dispatch/API, fără ecran dedicat de introducere).
+1. Pregătește lista beneficiarilor nerezidenți (deocamdată fără ecran de introducere în aplicație).
 2. Declarații -> D207 -> anul.
 3. Aplicația agregă pe tip de venit și calculează suma de control.
 4. Validează și depune XML-ul.
@@ -2205,7 +2205,7 @@ De persoana juridică pe impozit pe profit, după depunerea declarației anuale 
 - Beneficiarii: denumire, cod fiscal, IBAN, numărul contractului de sponsorizare.
 - Sumele: suma maximă redirecționabilă, suma deja acordată, suma rămasă.
 ## Pas cu pas
-1. Pregătește beneficiarii și sumele (azi prin dispatch/API, fără ecran dedicat de introducere).
+1. Pregătește beneficiarii și sumele (deocamdată fără ecran de introducere în aplicație).
 2. Declarații -> D177 -> anul.
 3. Aplicația calculează suma de control (totalul redirecționat).
 4. Validează și depune XML-ul.
@@ -2225,7 +2225,7 @@ De firma plătitoare de impozit pe profit sau pe veniturile microîntreprinderil
 - Pe fiecare: suma acordată (Val1), suma reportată (Val2), suma dedusă (Val3).
 - Dacă ai beneficiari neindividualizați: suma reportată pe anexă.
 ## Pas cu pas
-1. Pregătește lista beneficiarilor și sumele (azi prin dispatch/API, fără ecran dedicat de introducere).
+1. Pregătește lista beneficiarilor și sumele (deocamdată fără ecran de introducere în aplicație).
 2. Declarații -> D107 -> anul.
 3. Aplicația calculează totalurile (acordat/reportat/dedus) și suma de control.
 4. Validează și depune XML-ul.
@@ -2245,7 +2245,7 @@ De asociatul desemnat al asocierii fără personalitate juridică, în numele as
 - Profitul impozabil / pierderea asocierii.
 - Pe fiecare asociat: denumire, cod fiscal, cota de participare, venit, cheltuieli, impozit datorat și impozit declarat în cursul anului.
 ## Pas cu pas
-1. Pregătește asociații și sumele (azi prin dispatch/API, fără ecran dedicat de introducere).
+1. Pregătește asociații și sumele (deocamdată fără ecran de introducere în aplicație).
 2. Declarații -> D104 -> trimestrul (3/6/9) sau definitivarea (12).
 3. Aplicația distribuie pe asociați și calculează diferențele.
 4. Validează și depune XML-ul.
@@ -2265,7 +2265,7 @@ De persoana fizică, la începerea activității sau la schimbarea sistemului de
 - Categoria de venit, sistemul de determinare (real/normă), forma de organizare.
 - Venitul brut estimat și cheltuielile deductibile estimate.
 ## Pas cu pas
-1. Pregătește datele PF și estimările (azi prin dispatch/API, fără ecran dedicat de introducere).
+1. Pregătește datele PF și estimările (deocamdată fără ecran de introducere în aplicație).
 2. Declarații -> D220 -> anul.
 3. Aplicația calculează venitul net estimat și suma de control.
 4. Validează și depune XML-ul.
@@ -2285,7 +2285,7 @@ De responsabilul desemnat al asocierii, la începerea activității sau când se
 - Activitatea: categoria de venit, forma de organizare, sistemul de determinare, CAEN, județ/localitate.
 - Venitul brut și cheltuielile estimate; asociații cu cotele de distribuire (suma cotelor = 100).
 ## Pas cu pas
-1. Pregătește asocierea, activitatea și asociații (azi prin dispatch/API, fără ecran dedicat de introducere).
+1. Pregătește asocierea, activitatea și asociații (deocamdată fără ecran de introducere în aplicație).
 2. Declarații -> D223 -> anul.
 3. Aplicația distribuie venitul net pe asociați după cotă.
 4. Validează și depune XML-ul.
@@ -2305,7 +2305,7 @@ De persoana fizică (individual) sau de asocierea agricolă fără personalitate
 - Activitățile agricole: județ, localitate, produse (cod produs + suprafață/nr. capete).
 - La asociere: asociații cu cotele de distribuire (suma = 100).
 ## Pas cu pas
-1. Pregătește activitățile și produsele (azi prin dispatch/API, fără ecran dedicat de introducere).
+1. Pregătește activitățile și produsele (deocamdată fără ecran de introducere în aplicație).
 2. Declarații -> D221 -> anul.
 3. Aplicația construiește declarația (forma individuală sau asociere).
 4. Validează și depune XML-ul.
@@ -2324,7 +2324,7 @@ De plătitorul de venit care a reținut impozit la sursă și trebuie să îl re
 - Obligațiile de regularizat: codul obligației (din nomenclator), suma datorată și suma reținută.
 - Pentru cerere de restituire: IBAN-ul și banca.
 ## Pas cu pas
-1. Pregătește obligațiile (azi prin dispatch/API, fără ecran dedicat de introducere).
+1. Pregătește obligațiile (deocamdată fără ecran de introducere în aplicație).
 2. Declarații -> D110 -> perioada.
 3. Aplicația calculează diferențele, scadența și numărul de evidență.
 4. Validează și depune XML-ul.
@@ -2363,7 +2363,7 @@ Anual, de operatorii de transport rutier internațional de persoane care emit bi
 ## De completat
 CUI și datele operatorului (nume1, adresa1), semnatarul (nume/prenume/funcție declarant) și veniturile din bilete. Suma de control se calculează automat.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D393 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D393 → alegi perioada → Generează."
 Declarația D395 (trimiteri poștale contra ramburs),"D395 - declarație informativă lunară a furnizorilor de servicii poștale privind trimiterile livrate contra ramburs. Generator MANUAL (core/d395.py): antet furnizor + reprezentant + lista trimiterilor (nr_doc, data, val_ramb, expeditor RO/extern, loc preluare, mod returnare). Structura din D395Validator.jar (rădăcina D395, secțiuni lista/lista2, ns declarație:v1); act nu e în corpus.",F219,firma,Declaratii,core/d395.py,OPANAF (model D395); structura din D395Validator.jar (ns declaratie:v1),AMANAT 14.08.2026 (entitate speciala - BNR/inst.financiare/autoritati/OSS/accize; nu un SRL de rand),core/test_declaratii_lot2_duk.py + DUKIntegrator -v D395 'valid',,"## Ce face
 Generează D395 (trimiteri poștale contra ramburs) pentru furnizorii de servicii poștale.
 ## Când se depune
@@ -2371,7 +2371,7 @@ Lunar.
 ## De completat
 Datele furnizorului și ale reprezentantului (ambele blocuri obligatorii) + pentru fiecare trimitere: nr_doc unic, data (zz.ll.aaaa), val_ramb, expeditor (cif RO sau cif+cod țară numeric pentru extern), județ+loc preluare, mod returnare (iban sau ridicat numerar), destinatar. Totalul se calculează automat.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D395 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D395 → alegi perioada → Generează."
 Declarația D397 (transport alternativ cu autoturism și conducător auto),"D397 - declarație informativă lunară privind activitățile de transport alternativ, depusă de platforme, cu sinteza pe operator și defalcare pe autoturisme/conducători. Generator MANUAL (core/d397.py): valorile din input; totalPlata_A și totalurile pe operator se calculează. Structura din D397Validator.jar (rădăcina D397, ns declarație:v1); act nu e în corpus.",F220,firma,Declaratii,core/d397.py,OPANAF (model D397); structura din D397Validator.jar (ns declaratie:v1),AMANAT 14.08.2026 (entitate speciala - BNR/inst.financiare/autoritati/OSS/accize; nu un SRL de rand),core/test_declaratii_lot2_duk.py + DUKIntegrator -v D397 'valid',,"## Ce face
 Generează D397 (transport alternativ) pentru platformele de transport.
 ## Când se depune
@@ -2379,7 +2379,7 @@ Lunar.
 ## De completat
 Declarantul (den, cif, adresa, semnatar) + pentru fiecare operator (cif_O, den_O, data acceptare) autoturismele: nr_auto, km, durata, venituri, sume în numerar, conducător (nume+cnp). Totalurile se calculează automat.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D397 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D397 → alegi perioada → Generează."
 Declarația D200 (venituri realizate din România - persoane fizice),"D200 - declarație privind veniturile realizate din România de persoane fizice, anuală, pe categorii de venit. Generator MANUAL (core/d200.py): CNP + secțiuni pe categorie (venit_brut, chelt, venit_net). Singurul calcul: venit_net=venit_brut-chelt când ambele date; impozitul NU se calculează (il stabilește ANAF). Structura din D200Validator.jar (rădăcina declarație200, ns declarație:v1); act nu e în corpus.",F221,firma,Declaratii,core/d200.py,OPANAF (model D200); Cod fiscal Titlul IV (venituri PF); structura din D200Validator.jar,LIVE 2026-09-23 (formular manual UI: identitate PF nume+prenume + sectiuni pe categorie de venit din nomenclatorul oficial structura_D200 [coduri 1-14]; venit_net calculat; castig/pierdere la categ 14; organizator la categ 13; gol refuzat cu mesaj de contabil; scos din _DOAR_API; backend+DUK valid pe F4),core/test_declaratii_lot2_duk.py + core/test_d200_formular.py + DUKIntegrator -v D200 'valid' + proba F4 tenant_052 (valideaza_cerere refuza gol; genereaza -> DUK valid),,"## Ce face
 Generează D200 (venituri din România, persoane fizice) pe categorii de venit.
 ## Când se depune
@@ -2411,7 +2411,7 @@ Lunar, până pe 25 a lunii următoare autentificării (CF art. 113).
 ## De completat
 Notarul raportează tranzacții deja încheiate; sumele (valoare, baza, impozit) sunt cele din acte - aplicația le însumează, nu le recalculează. Ierarhie: tranzacție (act notarial) -> imobile -> beneficiari (vânzători, cote=100) + părți (cealaltă parte, cote=100).
 ## Cum ajungi la ea
-D208 este disponibilă în interfață (LIVE 24.09.2026): ecranul principal → firma → Declarații → D208 → alegi perioada → completezi antetul biroului notarial, tranzacția, imobilul și listele (beneficiari, părți; Σ cote = 100) → Generează. Motorul de generare și validarea DUK sunt gata."
+D208 este disponibilă în interfață (LIVE 24.09.2026): ecranul principal → firma → Declarații → D208 → alegi perioada → completezi antetul biroului notarial, tranzacția, imobilul și listele (beneficiari, părți; Σ cote = 100) → Generează. Generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata."
 Declarația D216 (impozit special pe bunuri de valoare mare),"D216 - declarație privind impozitul special pe bunurile imobile și mobile de valoare mare, anuală. Generator MANUAL (core/d216.py): bunuri imobile/mobile cu valoare impozabilă, cota și plafon din input; baza și impozitul pe linii + totalurile se calculează (COTA_IMPOZIT 0,3% e constanta impusă de aritmetică validatorului, nu din act). Structura din D216Validator.jar (rădăcina D216, ns declarație:v1, validator generație nouă); act (Legea 296/2023) nu e în corpus.",F225,firma,Declaratii,"core/d216.py, core/declaratii_api.py, static/js/ecrane/declaratii.js",Legea 296/2023 (impozit special bunuri de valoare mare); structura din D216Validator.jar (ns v1),"LIVE 24.09.2026 (formular manual in UI: impozit special bunuri de valoare mare - antet contribuabil (nume, CNP/CUI, domiciliu fiscal, intocmit) + doua liste: bunuri imobile rezidentiale (coduri SIRUTA judet/localitate/strada, nr cadastral, valoare impozabila, cota, plafon) si bunuri mobile (an detinere, niv, valoare, plafon); impozitul se calculeaza live (ROUND baza*0,3/100); valoarea trebuie > plafon; gol refuzat cu mesaj de contabil; scos din _DOAR_API; backend+DUK valid)","core/test_declaratii_lot2_duk.py + core/test_d216_formular.py (garda formular gol + structura XML prin ElementTree, nu 'sir' in xml; valoare>plafon, cota, impozit calculat) + DUKIntegrator -v D216 'valid'",,"## Ce face
 Generează D216 (impozit special pe bunuri imobile și mobile de valoare mare).
 ## Când se depune
@@ -2427,7 +2427,7 @@ Anual, de plătitorii de accize.
 ## De completat
 CIF firma, denumire, adresa, CAEN + declarant. Accizele pe produse se completează în rândurile R0..R41 (coloane C1/C2/C3), sume întregi în lei, consistente cu formulele oficiale de agregare. Nivelurile/cotele de acciză le aduci din propriile calcule; totalPlata_A rămâne 0.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D120 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D120 → alegi perioada → Generează."
 Declarația D600 (baza CAS/CASS estimată - persoane fizice),"D600 - declarație privind venitul pentru CAS și baza CASS (estimare), persoane fizice, anuală. Generator MANUAL (core/d600.py): identificare contribuabil + bifele/bazele CAS/CASS din input; plafoanele (nr. salarii minime, cote) NU se hardcodează. Structura din D600Validator.jar (rădăcina declarație600, ns declarație:v2, luna fix 12); act nu e în corpus.",F227,firma,Declaratii,"core/d600.py, core/declaratii_api.py, static/js/ecrane/declaratii.js",Cod fiscal Titlul V (CAS/CASS venituri independente); structura din D600Validator.jar (ns v2),"LIVE 24.09.2026 (formular manual in UI: baza CAS/CASS estimata PF - identitate (CNP, nume, initiala, prenume, adresa, IBAN optional) + optiunea CAS (bifa) cu baza lunara estimata aplicata pe 12 luni (baza1..baza12, calea DUK-valida); totalPlata_A>0 (R42); structura plata pe <declaratie600>; gol refuzat cu mesaj de contabil; scos din _DOAR_API; backend+DUK valid; CASS pe categorii = increment ulterior)","core/test_declaratii_lot2_duk.py + core/test_d600_formular.py (garda formular gol + structura XML prin ElementTree, nu 'sir' in xml; R42 totalPlata_A>0, cas_opt+baze, luna=12) + DUKIntegrator -v D600 'valid'",,"## Ce face
 Generează D600 (baza CAS/CASS estimată, persoane fizice).
 ## Când se depune
@@ -2443,7 +2443,7 @@ Anual, după aprobarea repartizării profitului.
 ## De completat
 Pentru fiecare acționar: cod fiscal (unic), denumire, cota de participare (0-100%) și dividendul distribuit. Header-ul firmei se preia automat. Suma de control se calculează din dividende. d_rec=1 pentru rectificativă.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D106 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D106 → alegi perioada → Generează."
 Declarația D108 (impozit pe reprezentanță),"D108 - declarație anuală privind impozitul pe reprezentanță (persoană juridică străină). Generator MANUAL (core/d108.py): impozit fix 18.000 lei/an (Cod fiscal Titlul VI), proporțional la înființare/desființare în cursul anului; scadență = ultima zi februarie (anual) sau data+30 zile (înființare)/data desființării. Structura din D108Validator.jar (root D108); temei DEJA în corpus (cod_fiscal_227_2015_consolidat.txt, 18.000 lei/an). Probat DUK valid.",F229,firma,Declaratii,core/d108.py,Cod fiscal (Legea 227/2015) Titlul VI - Impozitul pe reprezentante (18.000 lei/an); structura din D108Validator.jar (D108),AMANAT 14.08.2026 (entitate speciala - BNR/inst.financiare/autoritati/OSS/accize; nu un SRL de rand),core/test_declaratii_lot3_duk.py + DUKIntegrator -v D108 'valid',,"## Ce face
 Generează D108 (impozit pe reprezentanța unei persoane juridice străine): impozit fix 18.000 lei/an.
 ## Când se depune
@@ -2451,7 +2451,7 @@ Anual (scadența ultima zi din februarie); la înființare/desființare - în 30
 ## De completat
 CUI și denumirea reprezentanței, domiciliul fiscal, datele reprezentantului legal. Pentru înființare/desființare în cursul anului adaugi tipul și data - impozitul se proporționează automat pe luni. Sumele și nr. de evidență se calculează.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D108 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D108 → alegi perioada → Generează."
 Declarația D114 (contribuția asiguratorie pentru muncă - CAM),"D114 - declarație lunară privind obligațiile de plată a contribuției asiguratorii pentru muncă (CAM), pentru situațiile care NU se declară prin D112 (ex. lucrători culturali). Generator MANUAL (core/d114.py): declarant + contracte (per lucrător: cui, denumire, contract, venit, contribuție); cod_obligație=489, cont_bugetar=20A470300XX, Nr_evid (checksum), scadență (25 luna următoare), totalPlata_A = suma cifrelor CIF. Structura din D114Validator.jar (root D114); temei CF Titlul V Cap.IX. Probat DUK valid.",F230,firma,Declaratii,"core/d114.py, core/declaratii_api.py, static/js/ecrane/declaratii.js",Cod fiscal Titlul V Cap.IX - contributia asiguratorie pentru munca; structura din D114Validator.jar (D114),"LIVE 24.09.2026 (formular manual in UI: CAM pentru situatii ne-D112 - antet declarant (CIF, denumire, adresa, intocmit) + lista contracte/lucratori (CUI/CNP, nume, NUI, nr+data contract, venit); contributia CAM se calculeaza automat = 1% din venit (regula R32 a validatorului instalat); Nr_evid/Scadenta/totaluri calculate determinist; perioada lunara prin selectorul UI; gol refuzat cu mesaj de contabil; scos din _DOAR_API; backend+DUK valid)","core/test_declaratii_lot3_duk.py + core/test_d114_formular.py (garda formular gol + structura XML prin ElementTree, nu 'sir' in xml; total_venit agregat, contributie=1%, campuri obligatorii) + DUKIntegrator -v D114 'valid'",,"## Ce face
 Generează D114 (CAM) pentru plătitorii care datorează contribuția asiguratorie pentru muncă dar nu o declară prin D112.
 ## Când se depune
@@ -2467,7 +2467,7 @@ Conform actului (sume cumulate pe an, termen 30 aprilie anul următor).
 ## De completat
 CUI și denumirea plătitorului, declarantul, cantitatea de țiței (tone) și impozitul datorat (calculat cu cota legală în vigoare - nu e precompletat). Suma de control se calculează automat.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D130 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D130 → alegi perioada → Generează."
 Declarația D318 (rambursare TVA din alt stat membru UE),"D318 - cerere de rambursare a TVA achitată în alt stat membru UE de persoane impozabile stabilite în România (Directiva 2008/9/CE, art.302 CF). Generator MANUAL (core/d318.py): perioada (trimestru-an), contul de rambursare (IBAN/BIC), statul de rambursare, facturi de achiziție/import cu furnizor UE și cod bun/serviciu; sumaControl = 0 (regula validator). Structura din D318Validator.jar (root D318). Probat DUK valid (inclusiv DecValidation nou).",F232,firma,Declaratii,"core/d318.py, core/declaratii_api.py, static/js/ecrane/declaratii.js",Cod fiscal (Legea 227/2015) art.302; Directiva 2008/9/CE; OPANAF 2810/2016; structura din D318Validator.jar (D318),"LIVE 25.09.2026 (formular manual in UI: rambursare TVA din alt stat UE - perioada de rambursare (implicit anuala 1 ian-31 dec) + stat de rambursare + CUI solicitant + cont de rambursare (IBAN/BIC/titular) + identitate solicitant + declarant + activitate NACE + facturi de achizitie/import cu furnizor UE (baza/TVA/TVA deductibil, cod bun/serviciu); amount=suma TVA deductibila, sumaControl=0 (R8); reguli R5 (annual->luni), R9 (referenceNumber doar la rectificativa), R50/R80 (semne + vatAmount<=taxableAmount) verificate; gol refuzat cu mesaj de contabil; scos din _DOAR_API; backend+DUK valid; reprezentant/pro-rata/copii documente/importuri fara referenceNumber = increment ulterior)","core/test_declaratii_lot3_duk.py + core/test_d318_formular.py (garda formular gol + structura XML prin ElementTree, nu 'sir' in xml; D318>Applicant+BusinessDescription+PurchaseInformation>EuSupplier+GoodsDescriptionP, amount, reguli R5/R9/R50) + DUKIntegrator -v D318 'valid'",,"## Ce face
 Generează D318 (rambursarea TVA plătită în alt stat membru UE).
 ## Când se depune
@@ -2491,7 +2491,7 @@ Lunar (scadența 25 a lunii următoare).
 ## De completat
 CUI, denumire, adresa, contul bancar (IBAN) + suma datorată și suma dedusă. Suma de plată/rămasă, nr. de evidență și scadența se calculează automat. Suma dedusă nu poate depăși suma datorată.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D119 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D119 → alegi perioada → Generează."
 Declarația D169n (neconcordanțe beneficiar real fiducie),"D169n - declarație privind neconcordanțele între informațiile despre beneficiarii reali din Registrul central al fiduciilor și cele deținute de entitățile raportoare (Legea 129/2019 - spălarea banilor; OPANAF 2175/2025). Generator MANUAL (core/d169n.py, root D169n): entitate raportoare + reprezentant + fiduciar + lista beneficiarilor reali (den, cif/CNP, act, calități 1-4, natură, mențiuni). Fără sume. Structura din validator; act OPANAF 2175/2025 (static.anaf.ro). Probat DUK valid.",F235,firma,Declaratii,core/d169n.py,OPANAF 2175/2025; Legea 129/2019 art.19 (beneficiar real); structura din D169nValidator.jar (D169n),AMANAT 14.08.2026 (entitate speciala - BNR/inst.financiare/autoritati/OSS/accize; nu un SRL de rand),core/test_declaratii_lot4_duk.py + DUKIntegrator -v D169N 'valid',,"## Ce face
 Generează D169n (neconcordanțele privind beneficiarul real al unei fiducii/construcții juridice similare).
 ## Când se depune
@@ -2499,7 +2499,7 @@ La constatarea neconcordanței față de Registrul central al fiduciilor.
 ## De completat
 Entitatea raportoare (CUI, adresa), reprezentantul, fiduciarul, contractul de fiducie și, pentru fiecare beneficiar real: nume, CNP/identificare, actul de identitate, calitățile (1-4), natura interesului și mențiunile despre neconcordanță. Sector obligatoriu doar la județ București (40).
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D169n → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D169n → alegi perioada → Generează."
 Declarația D213 (înstrăinare pachet control - terenuri agricole extravilan),"D213 (formular 213) - declarație privind venitul din înstrăinarea prin VÂNZARE a pachetului de control (peste 25% din activ) al persoanelor juridice care dețin terenuri agricole în extravilan (Legea 17/2014 art.42; OPANAF 216/2023). Generator MANUAL (core/d213.py, root D213): vânzător + actul de înstrăinare + terenuri pe UAT (județ, uat, cif_uat, valoare = diferența valorică pozitivă); baza = suma valorilor; totalPlata_A=0 (impozitul il stabilește ANAF). Act OPANAF 216/2023 (ilegis.ro). Probat DUK valid.",F236,firma,Declaratii,core/d213.py,OPANAF 216/2023; Legea 17/2014 art.42; structura din D213Validator.jar (D213),AMANAT 14.08.2026 (entitate speciala - BNR/inst.financiare/autoritati/OSS/accize; nu un SRL de rand),core/test_declaratii_lot4_duk.py + DUKIntegrator -v D213 'valid',,"## Ce face
 Generează D213 (venit din vânzarea pachetului de control al firmelor ce dețin terenuri agricole în extravilan).
 ## Când se depune
@@ -2507,7 +2507,7 @@ La înstrăinare (în max. 8 ani de la dobândire).
 ## De completat
 Vânzătorul (CIF/CNP, nume, adresa), actul de vânzare (numar + data), și pentru fiecare teren pe UAT: județul, localitatea (uat), CIF-ul UAT și valoarea (diferența valorică pozitivă). Baza se însumează; impozitul îl stabilește ANAF (suma de control 0).
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D213 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D213 → alegi perioada → Generează."
 Declarația D214 (înstrăinare teren agricol extravilan prin hotărâre judecătorească),"D214 (formular 214) - cerere de stabilire a impozitului pe venitul din înstrăinarea, PRIN HOTĂRÂRE JUDECĂTOREASCĂ, a terenurilor agricole extravilane / pachetului de control (Legea 17/2014 art.42; OPANAF 216/2023). Generator MANUAL (core/d214.py, root D214): contribuabil + actul de înstrăinare + opțiune; totalPlata_A=0 (impozitul il stabilește ANAF). Act OPANAF 216/2023 (static.anaf.ro). Probat DUK valid.",F237,firma,Declaratii,core/d214.py,OPANAF 216/2023; Legea 17/2014 art.42; structura din D214Validator.jar (D214),AMANAT 14.08.2026 (entitate speciala - BNR/inst.financiare/autoritati/OSS/accize; nu un SRL de rand),core/test_declaratii_lot4_duk.py + DUKIntegrator -v D214 'valid',,"## Ce face
 Generează D214 (stabilirea impozitului pe venitul din înstrăinarea prin hotărâre judecătorească a terenurilor agricole extravilane).
 ## Când se depune
@@ -2515,7 +2515,7 @@ La înstrăinarea dispusă prin hotărâre judecătorească.
 ## De completat
 Contribuabilul (nume, CNP/NIF, adresa), actul de înstrăinare (numar + data), opțiunea și semnatarul. Impozitul îl stabilește organul fiscal (suma de control 0).
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D214 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D214 → alegi perioada → Generează."
 Declarația D401 (proprietăți imobiliare ale nerezidenților - DAC),"D401 - declarație informativă a organului fiscal local (primărie) privind proprietățile imobiliare de pe rază UAT deținute de rezidenți ai altor state, pentru schimbul automat de informații (DAC, Directiva 2011/16/UE). Generator MANUAL (core/d401.py, root declarație401): antet primărie + deținători străini + proprietăți (tip, act dobândire/înstrăinare, suprafețe, valoare/monedă, cote coproprietari); nr_pers și totalPlata_A (suma valorilor) se calculează. Structura din validator (act de adus). Probat DUK valid.",F238,firma,Declaratii,core/d401.py,Cod procedura fiscala (Legea 207/2015) - schimb automat DAC; Directiva 2011/16/UE; structura din D401Validator.jar (declaratie401),AMANAT 14.08.2026 (entitate speciala - BNR/inst.financiare/autoritati/OSS/accize; nu un SRL de rand),core/test_declaratii_lot4_duk.py + DUKIntegrator -v D401 'valid',,"## Ce face
 Generează D401 (proprietățile imobiliare ale rezidenților altor state), depusă de organul fiscal local.
 ## Când se depune
@@ -2523,7 +2523,7 @@ Anual, pentru schimbul automat de informații (DAC).
 ## De completat
 Antetul primăriei (CUI, denumire, localitate, adresa, semnatar) și, pentru fiecare deținător străin, imobilele: tip (clădire/teren), actul de dobândire, suprafețe, destinație, valoarea și moneda, cota de proprietate (100% unic sau coproprietari cu suma cotelor ~100%). Totalurile se calculează automat.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D401 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D401 → alegi perioada → Generează."
 Declarația D402 (venituri salariale ale nerezidenților - DAC1),"D402 - declarație informativă privind veniturile din salarii/asimilate plătite în România nerezidenților rezidenți în alte state membre UE (schimb automat de informații DAC1; OMFP 2727/2015; Directiva 2011/16/UE). Generator MANUAL (core/d402.py, root declarație402): plătitor + beneficiari nerezidenți (cu venituri: tip, perioada, regim fiscal, suma, monedă); totalPlata_A = suma veniturilor. Structura din XSD oficial + validator (static.anaf.ro). Probat DUK valid.",F239,firma,Declaratii,core/d402.py,OMFP/OPANAF 2727/2015; Directiva 2011/16/UE (DAC1); Cod procedura fiscala; structura din D402Validator.jar (declaratie402),AMANAT 14.08.2026 (entitate speciala - BNR/inst.financiare/autoritati/OSS/accize; nu un SRL de rand),core/test_declaratii_lot4_duk.py + DUKIntegrator -v D402 'valid',,"## Ce face
 Generează D402 (venituri salariale plătite în România nerezidenților din alte state UE).
 ## Când se depune
@@ -2531,7 +2531,7 @@ Anual (ultima zi din februarie pentru anul precedent).
 ## De completat
 Plătitorul (CUI, denumire, forma juridica, semnatar) și, pentru fiecare beneficiar nerezident: nume, statul de rezidență (cod UE), CNP/NIF, calitatea și categoria, plus veniturile (tip, perioada, regim fiscal, suma, moneda). Totalul se calculează automat; datele în format zi.luna.an.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D402 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D402 → alegi perioada → Generează."
 Declarația D101G (impozit pe profit - grup fiscal),"D101G - declarație consolidată privind impozitul pe profit determinat de grupul fiscal (persoană juridică responsabilă; CF art.42^1-42^11). Generator MANUAL (core/d101g.py, root declarație, ns v2, rânduri P01-P16, OPANAF 206/2025 - în corpus). NOTA: proba DUK BLOCATĂ de infrastructură - schema de structura v2 nu e deployata în DUK pe server (DecValidation vechi nu cunoaște d101g; cel nou cere v1). Modulul e construit pe v2 (bytecode + act); DATORIE de probat când se instalează DecValidation v2.",F240,firma,Declaratii,core/d101g.py,OPANAF 206/2025; Cod fiscal art.42^1-42^11 (grup fiscal impozit profit); structura din D101GValidator.jar (ns v2),AMANAT 14.08.2026 (grup fiscal/fiducie; nu un SRL de rand),core/test_declaratii_lot5_duk.py (xfail - DecValidation v2 neinstalat in DUK; vezi DECIZII),,"## Ce face
 Generează D101G (declarația consolidată de impozit pe profit a grupului fiscal), depusă de persoana juridică responsabilă.
 ## Când se depune
@@ -2539,9 +2539,9 @@ Anual (scadența 25 iunie an următor; 25 martie dacă membrii au reglementări 
 ## De completat
 Valorile consolidate ale grupului pe rândurile P01-P16 (profit/pierdere, credite fiscale, sponsorizare, comparație IMCA); identitatea vine din Profil firmă. Fiecare membru depune propriul D101 bifat membru de grup. Cota implicită 16% se poate suprascrie.
 ## De reținut
-Structura urmează formularul v2 (OPANAF 206/2025); proba pe validatorul oficial e în curs (schema v2 nu e încă instalată în DUK pe server - vezi DECIZII).
+Structura urmează formularul v2 (OPANAF 206/2025); proba pe validatorul oficial e în curs (validatorul ANAF pentru versiunea 2 nu e încă disponibil în aplicație).
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D101G → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D101G → alegi perioada → Generează."
 Declarația D169 (înregistrare contracte de fiducie),"D169 - declarație de înregistrare a contractelor de fiducie / construcțiilor juridice similare în Registrul central al fiduciilor (Legea 129/2019 art.19 + Cod procedură fiscală). Generator MANUAL (core/d169.py, root D169, ns D169:declarație:v1, generație nouă - probat prin DecValidation nou): contract + fiduciari + constituitori + beneficiari + beneficiari reali. Fără sume. Probat DUK valid.",F241,firma,Declaratii,core/d169.py,Legea 129/2019 art.19 (Registrul central al fiduciilor); Cod procedura fiscala (Legea 207/2015); structura din D169Validator.jar (D169),AMANAT 14.08.2026 (grup fiscal/fiducie; nu un SRL de rand),core/test_declaratii_lot5_duk.py + DUKIntegrator -v D169 'valid',,"## Ce face
 Generează D169 (înregistrarea unui contract de fiducie în Registrul central al fiduciilor), depusă de fiduciarul desemnat.
 ## Când se depune
@@ -2549,7 +2549,7 @@ La încheierea/modificarea/încetarea contractului de fiducie.
 ## De completat
 Semnatarul și CIF-ul fiduciarului declarant, contractul (numar, data, durata, scop), plus fiduciarii, constituitorii, beneficiarii fiduciei și beneficiarii reali (persoana fizică ce deține controlul: CNP, act, calitate). Codul de județ pe 2 cifre (București 40 + sector).
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D169 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D169 → alegi perioada → Generează."
 Declarația D398 (TVA regim special OSS - UE/non-UE),"D398 - declarație specială de TVA pentru regimurile OSS (One Stop Shop): regim UE (art.315 CF) și non-UE (art.314 CF). Generator MANUAL (core/d398.py, root d398 minuscul, generație nouă - probat prin DecValidation nou): pe fiecare stat membru de consum (MS) liniile de livrare (SUPPLY: cota, baza, TVA) + corecții; totalurile și soldurile se calculează. Trimestrială, în EUR. Temei CF art.314/315 (în corpus). Probat DUK valid.",F242,firma,Declaratii,"core/d398.py, core/declaratii_api.py, static/js/ecrane/declaratii.js",Cod fiscal (Legea 227/2015) art.314-315 (regimuri speciale OSS); structura din D398Validator.jar (d398),"LIVE 24.09.2026 (formular manual in UI: OSS - TVA regimuri speciale - regim (UE/non-UE/import) + denumire + cod TVA + livrari pe stat de consum (bunuri/servicii, msid/msest, tip cota, cota, baza; cod TVA de stabilire la msest); TVA=baza*cota/100 (R29), totalurile pe stat si grand_total_vat_due agregate; liniile se grupeaza automat pe stat (MS>SUPPLY); perioada trimestriala din selectorul UI; regulile de regim (bunuri/servicii/msest) verificate; gol refuzat cu mesaj de contabil; scos din _DOAR_API; backend+DUK valid; corectii/multi-perioada = increment ulterior)","core/test_declaratii_lot5_duk.py + core/test_d398_formular.py (garda formular gol + structura XML prin ElementTree, nu 'sir' in xml; vat_amount=baza*cota/100, reguli regim, cota) + DUKIntegrator -v D398 'valid'",,"## Ce face
 Generează D398 (TVA prin regimul special OSS - UE/non-UE) pentru vânzări la distanță / servicii către consumatori din alte state UE.
 ## Când se depune
@@ -2565,7 +2565,7 @@ Trimestrial (lunar la nivel UE; formularul e pe trimestru), în euro.
 ## De completat
 Codul de înregistrare (cifre, cu cifra de control), și pentru fiecare stat membru de consum: cota de TVA și baza impozabilă. TVA-ul și totalurile se calculează automat. Declarație NIL dacă nu au fost prestări.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D399 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D399 → alegi perioada → Generează."
 Declarația D403 (asigurări de viață - schimb automat DAC2/CRS),"D403 - declarație informativă a instituțiilor financiare raportoare privind produsele de asigurare de viață / schimb automat de informații financiare (DAC2/CRS; OMFP 2727/2015; Directiva 2011/16/UE). Generator MANUAL (core/d403.py, root declarație403): pe fiecare poliță valorile de capital + persoanele raportabile (rezidente în alt stat) + evenimentele; totalPlata_A = suma valorilor + sume evenimente. Probat DUK valid.",F244,firma,Declaratii,core/d403.py,OMFP/OPANAF 2727/2015; Directiva 2011/16/UE (DAC2/CRS); structura din D403Validator.jar (declaratie403),AMANAT 14.08.2026 (entitate speciala - BNR/inst.financiare/autoritati/OSS/accize; nu un SRL de rand),core/test_declaratii_lot5_duk.py + DUKIntegrator -v D403 'valid',,"## Ce face
 Generează D403 (produse de asigurare de viață raportate pentru schimbul automat de informații - DAC2/CRS).
 ## Când se depune
@@ -2573,7 +2573,7 @@ Anual, de instituțiile financiare raportoare (asigurători).
 ## De completat
 Datele raportorului și, pentru fiecare poliță: valorile de capital, persoanele raportabile (cel puțin una rezidentă în alt stat participant) și evenimentele (plăți/răscumpărări). Totalurile se calculează automat.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D403 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D403 → alegi perioada → Generează."
 Declarația D407 (instituții financiare raportoare),"D407 - declarație informativă a instituțiilor financiare raportoare: polițe de asigurare de viață (tipDoc=1) sau deținători de instrumente financiare (tipDoc=2), pentru schimbul automat de informații. Generator MANUAL (core/d407.py, root D407, semestrială luna 6/12): pe poliță beneficiari/asigurați/evenimente, sau lista de persoane cu instrumente (isin, cantitate, emitent); totalPlata_A = suma cifrelor CIF. Probat DUK valid.",F245,firma,Declaratii,core/d407.py,Schimb automat de informatii financiare (DAC/CRS); structura din D407Validator.jar (D407),AMANAT 14.08.2026 (entitate speciala - BNR/inst.financiare/autoritati/OSS/accize; nu un SRL de rand),core/test_declaratii_lot5_duk.py + DUKIntegrator -v D407 'valid',,"## Ce face
 Generează D407 (raportarea instituțiilor financiare: polițe de asigurare de viață sau deținători de instrumente financiare).
 ## Când se depune
@@ -2581,7 +2581,7 @@ Semestrial/anual (luna 6 sau 12).
 ## De completat
 Alege tipul documentului: tipDoc=1 (polițe - cu beneficiari, asigurați, evenimente) sau tipDoc=2 (lista persoane - cu ISIN, cantitate, emitent). Datele raportorului în antet. Suma de control se calculează automat.
 ## Cum ajungi la ea
-Stare amânată: motorul de generare și validarea DUK sunt gata, dar declarația nu are încă ecran dedicat în selectorul de declarații al firmei — apare doar în dispecerul intern de declarații, nu în lista pe care o vezi la o firmă. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D407 → alegi perioada → Generează."
+Stare amânată: generarea și validarea pe validatorul oficial ANAF (DUK) sunt gata, dar declarația nu apare încă în lista de declarații a firmei. Deci încă nu o produci din interfață. Când va deveni activă, traseul va fi: ecranul principal → firma → Declarații → D407 → alegi perioada → Generează."
 Declarația D212 (declarația unică),"D212 - declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice (PFA/II/IF, venituri din chirii/investiții/alte surse; CAS și CASS pe plafoane). Generator (core/d212.py, root <d212>, ns mfp:anaf:dgti:d212:declarație:v11) care CALCULEAZĂ rândurile din datele contabilului: identificarea (CIF/CNP, nume, adresa), subsecțiunea I.1.1 (cap11, sistem real) din registrul RIP și subsecțiunea I.1.2 (cap12, venit REALIZAT pe normă de venit, câte o secțiune pe activitate: normă proratată la 365 de zile, zile scutite, impozit 10%) din lista de pe ecran; celelalte venituri din România (subsecțiunea I.1.1, câte o secțiune pe sursă, din lista „Alte venituri”: drepturi de proprietate intelectuală pe cote forfetare 40% sau în sistem real, cedarea folosinței 20%, închirierea în scop turistic, agricole/silvicultură/piscicultură în sistem real, investiții, alte surse; impozit 10%, compensarea pierderilor 70%; doar veniturile 2025); secțiunile 3, 4, 5 și 7 (oblig_realizat: CAS pe trepte cu venitul din DPI, CASS 2.1 cu baza minimă de 6 sm și excepțiile art.174 alin.(7)-(8), CASS 2.2 pe treptele 6/12/24 sm, impozitul în sistem real și pe DPI cu contribuțiile deductibile pe pondere, scutirea pentru handicap pe zile, sumarul de plată) calculate din aceste venituri; cap14 (venituri din străinătate: câte o secțiune pe țară și sursă, 19 categorii, inclusiv premii, jocuri de noroc cu baremul datei plății, transferul proprietăților, moștenirea, pensiile și remunerațiile de administrator cu CAS/CASS în secțiunea lor; credit fiscal plafonat la impozitul român, metoda scutirii, veniturile din străinătate în CAS/CASS cu excepția asiguraților în alt stat; CASS pe pensiile din străinătate refuzată până la formularul ANAF care are secțiunea), obligațiile estimate și coasigurații - etapele următoare; opțiunea CAS sub 12 sm refuzată până la validatorul ANAF pentru OPANAF 2736/2025; venitul agricol pe normă refuzat până la validatorul ANAF pentru OPANAF 2736/2025; totalPlata_A se calculează. Structura din D212Validator.jar. Probat DUK valid.",F246,firma,Declaratii,core/d212.py,"OPANAF (declaratia unica) - anaf_surse/D212_IstoriaVersiunilor.txt; Cod fiscal art.148-149,154,170 (CAS/CASS persoane fizice); structura din D212Validator.jar (root d212, ns v11)",LIVE 2026-09-23 (in selector: formular identitate PF + fisa RIP afisata din registru; genereaza cazul minim DUK-valid identitate; cap11 din RIP 02.10.2026; cap12 pe normă 02.10.2026; oblig_realizat 02.10.2026; alte venituri I.1.1 + CASS 2.2 02.10.2026; cap14 străinătate 03.10.2026; premii/jocuri/transfer/moștenire 03.10.2026; pensii/remunerații 03.10.2026),core/test_declaratii_lot6_duk.py + core/test_d212_formular.py + core/test_d212_cap11.py + core/test_d212_cap12.py + core/test_d212_oblig_realizat.py + core/test_d212_campuri_validator.py + core/test_d212_categorii.py + core/test_d212_cap14.py + proba_d212_f4.py + proba_d212_etapa3.py + proba_d212_etapa4.py + proba_d212_etapa5.py + proba_d212_etapa5c.py + proba_d212_etapa5c2a.py + proba_d212_etapa5c2b.py + DUKIntegrator -v D212 'valid',,"## Ce face
 Generează D212 (declarația unică a persoanelor fizice) - impozitul pe venit și contribuțiile sociale (CAS, CASS) pentru PFA/II/IF și venituri din chirii, investiții, alte surse.
 ## Când se depune
@@ -2598,8 +2598,8 @@ Arată registrul mijloacelor fixe ale firmei: cod, denumire, valoare, amortizat 
 Firme → alegi firma → cardul Mijloace fixe.
 ## Ce pot face
 Vezi registrul complet (activ și casat); apeși Casează pe un mijloc activ (amortizarea la zi se calculează automat, mijlocul devine inactiv); sau introduci valoarea justă și apeși Reevaluează. Ambele intră drept ciornă și se validează din Registru jurnal."
-Jurnal regim marjă (raport),"Raport de citire pentru jurnalul special de vânzări în regim de marjă (second-hand/turism): grupează vânzările pe tip și lună și dă baza, marja și TVA colectată pe marjă. Operațiunea de scriere „Vânzare regim marjă” există deja în Operațiuni, dar raportul de citire nu are încă ecran.",F248,firma,"endpoint intern, fără ecran (GET /tenants/{id}/jurnal-marja)",main.py (jurnal_marja),CF art. 312 (regim special al marjei),API 15.08.2026 (endpoint fără UI),,,"Raport intern al vânzărilor în regim de marjă (art. 312 CF), grupat pe tip și lună. Deocamdată accesibil doar ca API, fără ecran în aplicație."
-Calculator concediu medical (CM),"Calculează indemnizația de concediu medical (media zilnică pe 6 luni, procentul pe codul de indemnizație, plafoanele) și taxele aferente, pornind de la veniturile și zilele transmise. Este un calculator apelabil ca API, fără ecran dedicat.",F249,firma,"endpoint intern, fără ecran (POST /tenants/{id}/calcul-cm)",main.py (calcul_cm_endpoint); core/salarizare.py,OUG 158/2005 (concedii și indemnizații de asigurări sociale de sănătate),API 15.08.2026 (endpoint fără UI),core/test_salarizare.py,,"Calculator al indemnizației pentru concediu medical (OUG 158/2005). Deocamdată accesibil doar ca API, fără ecran dedicat."
+Jurnal regim marjă (raport),"Raport de citire pentru jurnalul special de vânzări în regim de marjă (second-hand/turism): grupează vânzările pe tip și lună și dă baza, marja și TVA colectată pe marjă. Operațiunea de scriere „Vânzare regim marjă” există deja în Operațiuni, dar raportul de citire nu are încă ecran.",F248,firma,"endpoint intern, fără ecran (GET /tenants/{id}/jurnal-marja)",main.py (jurnal_marja),CF art. 312 (regim special al marjei),API 15.08.2026 (endpoint fără UI),,,"Raport intern al vânzărilor în regim de marjă (art. 312 CF), grupat pe tip și lună. Deocamdată fără ecran în aplicație."
+Calculator concediu medical (CM),"Calculează indemnizația de concediu medical (media zilnică pe 6 luni, procentul pe codul de indemnizație, plafoanele) și taxele aferente, pornind de la veniturile și zilele transmise. Este un calculator apelabil ca API, fără ecran dedicat.",F249,firma,"endpoint intern, fără ecran (POST /tenants/{id}/calcul-cm)",main.py (calcul_cm_endpoint); core/salarizare.py,OUG 158/2005 (concedii și indemnizații de asigurări sociale de sănătate),API 15.08.2026 (endpoint fără UI),core/test_salarizare.py,,Calculator al indemnizației pentru concediu medical (OUG 158/2005). Deocamdată fără ecran dedicat în aplicație.
 Reconciliere manuală D394,"A doua cale de verificare a D394: recalcul independent al totalurilor pe cotă din liniile brute, confruntat cu generatorul (divergența blochează generarea). Componenta de reconciliere manuală (clasificări introduse de utilizator) nu are încă ecran care să o alimenteze — doar corpul cererii — la fel ca la D390/D301.",F250,firma,"componentă internă, fără ecran",core/d394_reconciliere.py,ANAF (D394),INTERN 15.08.2026 (componentă fără ecran),core/test_d394_reconciliere.py,,Verificare independentă a totalurilor D394 (a doua cale). Reconcilierea manuală a clasificărilor nu are încă ecran în aplicație.
 Rând manual D300,"Panou de introducere a rândurilor manuale în decontul D300 (ecranul de declarații): rândurile care nu rezultă automat din facturi (ex. R16 regularizări, ajustări) se adaugă manual, se salvează persistat (tabel d300_manual, 3 rute REST) și sunt recitite la generare -> paritate între preview și depunere.",F251,firma,Declaratii,core/d300_manual_api.py,OPANAF 174/2026 (structura D300 v12),LIVE,"core/test_d300_b1_rutare.py (test_persistenta_manual_paritate_preview_depunere, test_antidubla_numarare_ic_livrare_manual_ridica) + traseu Playwright (panou randuri manuale D300)",,"## Ce face
 Panoul de rânduri manuale îți permite să adaugi în decontul D300 sume care nu rezultă automat din facturile perioadei (de exemplu regularizări la rândul R16 sau ajustări de TVA). Rândurile introduse se salvează în aplicație (nu se pierd) și intră în calculul decontului, astfel încât ce vezi în previzualizare este exact ce se depune.

@@ -40,7 +40,7 @@ Pentru RO e-Transport, mecanismul de bază (necontestat, în vigoare) e codul UI
 
 **e-Factura SPV complet („e-Factura SPV complet”)**: aplicația trimite automat facturile emise în SPV, cu reîncercare la indisponibilitate ANAF, și urmărește starea trimiterii (recipisă/erori); primește și facturile de la furnizori din SPV, transformându-le automat în ciornă de NIR/cheltuială, validată însă de om (mecanism „four-eyes": mașina propune, contabilul confirmă contul și validează).
 
-**e-Transport („Trimitere e-Transport prin API SPV”)**: iConta.eu generează și trimite codul UIT prin API SPV, cu o „gardă de timp" proprie — cererea e blocată în afara ferestrei legale (UIT declarat cu maximum 3 zile înainte, valabil 5 zile pentru transport național / 15 zile pentru cel intracomunitar), iar după expirare declanșarea trimiterii e blocată explicit, cu motivul afișat.
+**e-Transport („Trimitere e-Transport direct în SPV”)**: iConta.eu generează și trimite codul UIT direct în SPV, cu o „gardă de timp" proprie — cererea e blocată în afara ferestrei legale (UIT declarat cu maximum 3 zile înainte, valabil 5 zile pentru transport național / 15 zile pentru cel intracomunitar), iar după expirare declanșarea trimiterii e blocată explicit, cu motivul afișat.
 
 **e-TVA**: iConta.eu nu are un modul dedicat de generare sau răspuns automat la notificarea de conformare RO e-TVA — regulile de mai sus rămân, pentru moment, informație de conformitate pe care contabilul o gestionează prin canalele oficiale ANAF.
 

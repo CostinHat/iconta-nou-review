@@ -20636,3 +20636,348 @@ locurile din listă).
   arbitrară. Decizia: un `.py` adăugat / șters / redenumit e **incert** (`perimetru.MOTIV_POPULATIE`) -> suita întreagă, conform „incert
   -> rulează tot” (DECIZII „Poarta o dată pe lot”). **Limita:** numai `.py`. Rularea porții 1 se socotește (1 din 2); a doua e ultima —
   dacă pică, nu public (comanda 4 pct.4).
+
+## 16.10.2026 (după-amiaza) — Lotul 6, comanda 1 (272–282)
+
+Comanda Costin, verbatim:
+
+> Lotul 6, comanda 1. Răspunzi punctual pentru fiecare deficiență, rezolvată sau nu. Începi cu 277.
+>
+> 1. Deficiența 277 (grav), Bancă, F1 Comert Stoc, pe producție: un extras MT940 nou, încărcat o singură dată, e respins cu „Extras deja importat: 2 linii. Nu s-a adăugat nimic.” Liniile nu apar nicăieri. Fișierul:
+>    :20:EXTRAS20261016
+>    :25:RO49AAAA1B31007593840000
+>    :28C:00010/001
+>    :60F:C261015RON10000,00
+>    :61:2610161016C242,00NTRFNONREF
+>    :86:Incasare FISCALOS ICONTA SRL CUI 55229657 contravaloare factura F1A4 din 16.10.2026
+>    :61:2610161016D12,50NCHGNONREF
+>    :86:Comision administrare cont octombrie
+>    :62F:C261016RON10229,50
+>    a. Găsești de ce sunt socotite duplicate și repari: o linie e duplicat numai dacă aceeași mișcare (dată, sumă, sens, referință/descriere, cont) există deja.
+>    b. Verifici clasa la toate formatele de import extras și la orice alt import care respinge „deja importat”.
+>    c. Mesajul spune ce linii au fost găsite deja și ce linii sunt noi.
+>
+> 2. Deficiența 276, Bancă:
+>    a. Ecranul spune ce formate se acceptă, pe bănci (azi scrie doar .xls/.xlsx/.csv, ajutorul spune ING/Jasper și MT940).
+>    b. La import se compară soldul inițial și final din extras cu soldul 5121; diferența se afișează.
+>    c. Ajutorul nu folosește termeni de programator („magic bytes”, „motor”).
+>
+> 3. Deficiența 278, Casă: încasare de 6.000 lei „Încasare factura F1A4” (factura are 242,00).
+>    a. Dispoziția de casă se leagă de factura încasată (alegi factura), ca factura să devină încasată.
+>    b. Suma care depășește facturile deschise ale clientului se semnalează ca avans de la client; verifici la sursă tratamentul contabil și de TVA al avansului și îl aplici.
+>    c. Avertismentul de plafon (Legea 70/2015) apare încă din formular, nu doar după salvare.
+>
+> 4. Deficiența 279, Casă / validare: după salvare mesajul spunea „creată ca ciornă”, dar nota a plecat singură la validare, fără să i se spună Anei; apoi „Șterge” și confirmarea sunt oferite și refuzate („e la validare în cabinet”). Starea reală a notei se spune la salvare și pe rând; pentru o notă la validare nu se oferă ștergerea. Mesajul de refuz nu mai înghesuie rândul (clasa 259).
+>
+> 5. Deficiența 275, factura emisă (F1A4):
+>    a. Detaliul facturii încape fără derulare orizontală; azi „Trimite în SPV” și confirmarea lui sunt ascunse sau tăiate.
+>    b. „Istoric facturi” și detaliul arată starea în SPV: netrimisă / trimisă / acceptată / respinsă, cu termenul de 5 zile lucrătoare.
+>    c. Dacă firma nu e conectată la ANAF, se spune de la emitere; mesajul „Conectează ANAF (SPV)…” are buton spre locul conectării.
+>
+> 6. Deficiența 274, Emite factură: pentru un articol din stoc („Marfa A”), cota TVA rămâne „—” și nu se propune. Cota vine de la articolul din nomenclator; dacă articolul n-are cotă, mesajul spune asta și trimite la Produse. Verifici și că „0%” nu poate pleca fără categoria lui (scutit cu/fără drept de deducere, taxare inversă, neimpozabil), ca suma să ajungă pe rândul corect din D300 și categoria corectă în e-Factura.
+>
+> 7. Deficiența 273, „Facturi primite din SPV”:
+>    a. Ecranul spune dacă firma e conectată la SPV și când s-a verificat ultima dată; dacă nu e, „apar aici automat” nu se afișează.
+>    b. Import manual XML UBL și „Verifică acum în SPV”; ajutorul promite deja importul UBL.
+>    c. Câmpurile pe care importul nu le preia (terț plătitor, categorie) se semnalează pe factură ca „de completat”; terțul plătitor intră în D394.
+>    d. Ajutorul nu folosește termeni de programator („parsează”, „parserul”).
+>
+> 8. Deficiența 272, Date firmă: un asistent junior poate modifica CUI-ul unei firme existente, cu documente. CUI-ul nu se modifică din acest ecran, de niciun rol; o corectură reală de CUI e o operațiune separată, a administratorului, cu avertisment.
+>
+> 9. Deficiența 281, Mijloace fixe / închidere (F2): lunile de amortizare restante după preluare (01–08/2026) se generează cu o singură acțiune, cu câte o notă pe lună, nu lună cu lună. La închiderea lunii, amortizarea lunilor anterioare neînregistrată oprește închiderea sau cere confirmare explicită, pentru că schimbă profitul (D100/D101).
+>
+> 10. Deficiența 280, Salarii: costul pe salariat afișează CAM 112,50 rotunjit la 112 (Ionescu Vasile, brut 5.000), iar 158,52 la 159. Verifici regula de rotunjire la sursă și toate locurile unde se rotunjesc sume fiscale; dacă e rotunjire „la par”, o repari în toată clasa.
+>
+> 11. Deficiența 282, Panou Admin: cererile de înregistrare neconfirmate nu apar nicăieri. Cardul „Înregistrare” le listează: data, denumirea cabinetului, emailul, dacă emailul de confirmare a plecat și când expiră linkul, cu acțiunea „Retrimite confirmarea”. Cele 2 cereri de acum nu le atingi; spune-mi doar data lor și dacă emailul a plecat, fără adrese.
+
+- **Citirea datelor de producție la 277 și 282.** Pe producție nu există cabinetul pilot: toate cabinetele sunt de test (comanda 4 a lotului 5,
+  §6 b). F1 Comert Stoc e firmă de test. Am citit numai: `tenant_049.extras_import` / `extras_linii` (277), jurnalul nginx al cererii și,
+  la 282, data cererilor și starea emailului — fără adrese.
+- **277 — cauza și PIVOT peste C5 (decizia Costin 20.09, varianta A „idempotență pe fișier”).** Pe producție, F1 (`tenant_049`), la
+  13:18:13 cererea `POST …/banca/reconciliere/import` a primit 46 de octeți: `{"deja_importat":true,"nr_linii":2,"linii":[]}`. Răspunsul
+  ăsta vine NUMAI din conflictul pe `extras_import.fisier_hash`: octeții trimiși aveau hash-ul unui import vechi. Singurele două rânduri
+  sunt CSV-urile din 20.09 (`extras_f1.csv`, chiar fixtura din depozit) și 05.10; conținutul MT940 din comandă dă alt hash (4 variante de
+  sfârșit de rând verificate). Fișierul trimis nu-l văd. Indiferent de fișier, mecanismul era greșit pe ambele sensuri: un fișier cu
+  aceiași octeți respingea tot, iar un extras care se suprapunea cu unul vechi îi dubla liniile. **Final:** duplicatul e MIȘCAREA —
+  `reconciliere_api.cheie_miscare` (dată, sumă, sens, cont, referință, descriere), socotită cu multiplicitatea ei (două comisioane identice
+  în același extras rămân două); importurile pe aceeași firmă se serializează (`pg_advisory_xact_lock`); `extras_import` rămâne registrul
+  fișierelor. Contul (MT940 `:25:`) și referința (`:61:`, fără `NONREF`) se păstrează pe linie (`core/migrare_extras_miscare.py`).
+  *Alternativă respinsă:* contul necunoscut (extras în tabel, linii vechi) socotit egal cu orice cont — ar respinge o mișcare reală de pe
+  alt cont; o linie dublată se vede și se ignoră, una pierdută nu se vede. **Limita:** aceeași mișcare venită o dată din tabel (fără cont)
+  și o dată din MT940 (cu cont) nu se recunoaște ca aceeași; descrierea diferă oricum între formate.
+- **277b — clasa la celelalte importuri cu „deja”.** Cheia fiecăruia: SPV (id-ul mesajului ANAF), WooCommerce (numărul comenzii), SAGA /
+  articole / rețete (CUI / denumire), raportul Z (număr), declarațiile depuse (tip + perioadă) — toate pe document. Singura greșită în
+  afara extrasului: importul e-Factura (`repo_main.select_facturi_3`) socotea aceeași factură pe (număr, terț, dată) FĂRĂ direcție —
+  o factură primită de la clientul X, cu numărul și data uneia emise către X, ieșea „duplicat”. Reparat (+ direcția).
+- **276.** (a) Ecranul Bancă spune formatele: MT940 (orice bancă care îl exportă; contul și soldurile), ING (.xls / .xlsx / .csv — singurul
+  verificat pe un extras real, după comentariul parserului), altă bancă (tabel cu Data, Detalii, Debit + Credit sau Sumă). Fereastra de
+  alegere primește acum și .sta / .940 / .txt (înainte ascundea fișierele MT940). Nu am scris pe ecran nume de bănci pentru care n-am un
+  extras real. (b) `reconciliere_api.compara_solduri`: soldul inițial (`:60F:`) și final (`:62F:`) față de 5121 (5124 la valută) la
+  aceeași zi, din soldurile de preluare + notele VALIDATE (`bilant_api.sold_la`); liniile încă necontate apar ca diferență la soldul
+  final, de-aia se arată amândouă. Extrasul în tabel n-are solduri — mesajul o spune. (c) Clasa „termeni de programator în ce citește
+  contabilul”: 67 de texte de ajutor (54 de fraze), 3 titluri pe pagina publică (F030, F061, F121 redenumite; grupele neschimbate), 3
+  fraze pe ecrane („Match exact”, „Fără match”, „motorul care o produce”), motivele potrivirii din server („match exact pe o factura”,
+  „alocare partiala FIFO”) și 3 ghiduri care citau titlurile vechi. Garda: `core/test_ajutor_fara_termeni_tehnici.py`.
+
+## 16.10.2026 (după-amiaza, continuare) — Lotul 6: completarea (283–287)
+
+Comanda Costin, verbatim:
+
+> Completare la lotul 6. Răspunzi punctual pentru fiecare deficiență, rezolvată sau nu.
+>
+> 1. Deficiența 283, Declarații (F1, SRL micro): lista „Tip declarație” oferă toate cele ~40 de declarații, inclusiv ale persoanelor fizice (D200, D212, D221). Contabilul vede întâi ce datorează firma în perioadă, din vectorul fiscal, cu termenul (ex. „D300 · 10/2026 · termen 25.11.2026”); restul separat. Textul „Pasul 1 din 3 — alege firma” nu apare când firma e deja aleasă.
+>
+> 2. Deficiența 284, D300 / control (F1, 10/2026): refuzul de la „Trimite în coadă” numește nota sau notele care explică diferența (aici nr. crt. 21, factura F1A4, 42 lei), cu link spre ele, nu doar „4 note nevalidate”. După validarea notei, declarația se regenerează singură și intră în coadă; depunerea la ANAF rămâne clicul contabilului.
+>
+> 3. Deficiența 285, clasă, toate ferestrele: nicio fereastră nu are derulare; acțiunea principală și mesajele de refuz/eroare se văd mereu (exemple: D300, mesajul de refuz și „Trimite în coadă” jos, tăiate; detaliul facturii, derulare orizontală). Verifici toate ferestrele aplicației.
+>
+> 4. Deficiența 286, pagina principală: contoarele cardurilor („De validat”, „De depus”, „note în ciornă”) nu se actualizează după validare sau respingere, ci abia la reîncărcarea forțată a paginii (Ctrl+Shift+R). Aceeași clasă cu 265.
+>
+> 5. Deficiența 287, Declarații / roluri: D300 trimisă de administratorul cabinetului apare „trimisă seniorului pentru validare”, deși validarea în doi a declarațiilor e oprită și el o depune singur. Pentru cine are dreptul de depunere și fără validare în doi, pasul următor e depunerea, iar mesajul spune asta.
+
+## 16.10.2026 (după-amiaza, a doua completare) — Lotul 6: 288
+
+Comanda Costin, verbatim:
+
+> Completare la lotul 6. Răspunzi punctual, rezolvată sau nu.
+>
+> 1. Deficiența 288, Pachet lunar / Povestea lunii (F1, septembrie 2026, poveste aprobată):
+>    a. Textul scrie „încasări de 1.000 de lei”, dar 1.000 sunt venituri (707). Povestea folosește termenii corect (venituri ≠ încasări, profit/pierdere) și se verifică automat înainte de aprobare.
+>    b. Cifrele (venituri 1.000, cheltuieli 14.713, pierdere 13.713) sunt egale cu cumulatul anului până în septembrie din balanță, iar textul spune „luna s-a încheiat cu o pierdere”. Lămurești dacă sunt cifrele lunii sau cumulate și o spui explicit în pachet și în text.
+>    c. Povestea îi spune clientului că are „un număr mare de declarații nedepuse, cu termenele depășite”. Informațiile despre restanțele cabinetului nu intră în povestea trimisă clientului fără decizia expresă a contabilului.
+- **278 — temeiul, verificat la sursă (anaf_surse/).** CF art.282 alin.(2) lit.b: „exigibilitatea taxei intervine: [...] b) la data la care
+  se încasează avansul, pentru plățile în avans efectuate înainte de data la care intervine faptul generator”; art.319 alin.(16): factura
+  „pentru suma avansurilor încasate [...] cel târziu până în cea de-a 15-a zi a lunii următoare celei în care a încasat avansurile”; OMFP
+  1802/2014, funcțiunea contului 419: „În creditul contului 419 [...] se înregistrează: sumele facturate clienților reprezentând avansuri
+  [...] (411)”. **Aplicat:** (a) dispoziția (și chitanța emisă / a furnizorului) se leagă de factură — nota poartă `factura_id`, deci
+  factura devine încasată pentru reconciliere, starea facturii și D300; nota de stornare poartă aceeași factură (factura redevine
+  neîncasată); chitanțele vechi primesc legătura prin migrare (`core/migrare_casa_avans.py`, numai unde lipsește). (b) Ce depășește
+  facturile alese = operațiune separată marcată `avans` (5311 = 4111 nelegată), cu mesajul termenului facturii de avans; „Leagă de
+  factură” o leagă de factura de avans după emitere. Factura de AVANS (tip „Avans încasat” la emitere) se contează acum 4111 = 419 + 4427
+  (înainte 4111 = 707 + 4427: venit înaintea livrării). D300: exigibilitatea avansului = cea mai devreme dintre emiterea facturii de avans
+  și PRIMA încasare legată de ea (înainte: numai emiterea; un avans încasat pe 28.08 și facturat pe 03.09 intra pe septembrie). Calea
+  independentă `d300_reconciliere` — aceeași regulă, scrisă separat. (c) Plafonul Legii 70/2015 în formular (`casa/previzualizare`, aceeași
+  verificare ca la salvare, cu operațiunea propusă inclusă); găsit pe drum: verificarea primea `categorie`, nu `scop` / `partener_tip` —
+  ridicarea de numerar de la bancă ieșea „încasare de la persoană juridică”, plafonul persoanei fizice (art.4 alin.(1)) nu se aplica.
+  *Alternativă respinsă:* refuzul dispoziției fără factură — o încasare poate stinge o creanță din soldurile preluate, fără factură în
+  aplicație; se semnalează, nu se refuză. *Alternativă respinsă:* o dispoziție cu mai multe note — ștergerea, stornarea, registrul și alți
+  cinci cititori presupun o notă pe operațiune; dispoziția se împarte în operațiuni. **Limite:** D394 raportează avansul pe data facturii
+  (neschimbat); factura de regularizare a avansului se contează pe 419 numai dacă e emisă ca „Regularizare avans” cu rândurile avansului.
+- **279.** Cauza: notele scrise de cine n-are drept de validare intră în coadă în middleware, DUPĂ răspunsul rutei; mesajul spunea
+  „ciornă” din răspuns. Acum middleware-ul trimite antetul `X-Iconta-La-Validare`, `api.js` îl pune pe rezultat, iar mesajele spun starea
+  prin `stareNota` / `pasNota` — clasa: 22 de mesaje în 6 ecrane + textul serverului la nota de închidere propusă (gard
+  `core/test_stare_nota_salvata.py`). Pe rândul de casă: starea din coadă (ciornă / la validare / respinsă / validată); la validare nu se
+  oferă „Șterge” și nici „Leagă de factură”. Refuzul de pe rând (clasa 259): `api.refuzPeRand`, sub textul rândului — 15 apariții în 9
+  fișiere.
+
+## 16.10.2026 (seara) — Lotul 6: a treia completare (SPV citire pe producție, 289)
+
+Comanda Costin, verbatim:
+
+> 2. SPV, doar citire, nimic trimis la ANAF: pe producție am adăugat firma reală FISCALOS ICONTA S.R.L. (CUI 55229657) în „Cabinet Test Sesiunea B SRL” și am conectat cabinetul la SPV (certificat DigiSign, acces valabil până la 14.01.2027). Firma nu are facturi emise sau primite.
+>    a. Rulează o singură dată citirea din SPV pentru această firmă (lista de mesaje e-Factura, ultimele 60 de zile) și spune-mi ce a răspuns ANAF: numărul de mesaje sau eroarea exactă. Așa dovedim că legătura funcționează.
+>    b. Spune-mi când rulează citirea automată pentru o firmă nou adăugată.
+>
+> 3. Deficiența 289, conexiunea SPV:
+>    a. Setări cont → Conectare SPV arată certificatul ca serie hexazecimală; afișează titularul și emitentul (ex. „HATEGANU CONSTANTIN-NICOLAE · DigiSign”).
+>    b. Fereastra firmei arată starea conexiunii SPV, cu trimitere la Setări cont → Conectare SPV; la fel și mesajul de refuz de la „Trimite în SPV”.
+>    c. Ghidul de bun venit primește pasul: „Conectează cabinetul la SPV: Setări cont → Conectare SPV. Te autentifici o singură dată cu certificatul digital; conexiunea acoperă toate firmele pentru care ai împuternicire la ANAF. Fără acest pas facturile nu pleacă în SPV și nici cele de la furnizori nu vin automat.”
+
+- **Citirea pe producție (pct.2a):** aprobarea explicită a lui Costin pentru o singură citire a listei de mesaje e-Factura a firmei FISCALOS
+  ICONTA (date reale, cabinet de test). Numai lista (fără descărcare, fără import, nimic trimis); rezultatul intră în raport ca număr /
+  eroare, nu ca date.
+- **SPV pe producție (a treia completare, pct.2).** (a) Citirea unică, numai listă (fără descărcare, nimic trimis), pentru FISCALOS ICONTA
+  (`tenant_054`, CUI 55229657), 16.10 ~14:36: conexiunea cabinetului e activă (acces până la 14.01.2027), iar ANAF a răspuns HTTP 200 cu
+  `{"eroare": "Nu aveti drept in SPV pentru CIF=55229657"}` — legătura merge (tokenul e primit), certificatul n-are drept SPV pentru CUI
+  (forma documentată în ARHITECTURA_SPV.md, „FINDING 18.07.2026”). (b) Citirea automată: timerul `spv-receive` (systemd), la :17 și :47,
+  pe toate firmele (și pe cele noi, de la prima rulare de după adăugare); la 14:17 FISCALOS încă nu era conectat („nu are token SPV
+  activ”). Găsit: fereastra era 3 zile (`SPV_RECEIVE_ZILE`), deci o firmă nouă nu primea facturile mai vechi. **Acum** prima citire
+  reușită a unui CUI pe tokenul activ cuprinde 60 de zile (`spv_receive.ZILE_PRIMA_CITIRE`), iar fiecare citire se scrie pe CUI în
+  `public.spv_cui_acoperit` (tabela exista, n-o scria nimeni; + `eroare`, `mesaje`, `ultima_reusita`, `core/migrare_spv_citiri.py`).
+- **273.** (a) Starea SPV a firmei (conectat? verificat când? răspunsul ANAF) — `spv_conector.stare_firma`, ecranul o spune; „apar aici
+  automat” numai când firma chiar e citită. (b) „Verifică acum în SPV” (aceeași citire ca timerul) și „Importă XML UBL” — importul intră
+  în ACELAȘI flux ca facturile din SPV (`efactura_primite`, validate de contabil), nu direct în facturi ca ruta internă `import-efactura`.
+  (c) Ce nu vine din XML: tipul furnizorului (D394 — tipul partenerului) și, la taxarea inversă, categoria art.331 (codul D394); „de
+  completat” pe rând, cerute la validare (refuz numit); parserul citește acum categoria TVA a liniei (BT-151) — „AE” = taxare inversă
+  (ghidul MF al codurilor e-Factura v2.9, cap.3). Interpretare (de confirmat): „terț plătitor” din ajutorul vechi = `tert_platitor_tva`
+  (furnizorul plătitor de TVA), nu un terț care plătește factura (UBL PayeeParty) — numele din ajutor era chiar al coloanei.
+- **275.** (b) Starea în SPV pe rând și în detaliu: netrimisă / trimisă / acceptată / respinsă (din ultima trimitere), cu termenul OUG
+  120/2021 art.10 alin.(7) (verificat la sursă: „5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile lucrătoare de
+  la data-limită pentru emiterea facturii prevăzută la art. 319 alin. (16)”, calcul după Reg. 1182/71 — zilele lucrătoare din
+  `scadente.e_zi_lucratoare`). (c) La emitere, firma neconectată / fără drept se spune pe loc, cu butonul spre Conectare SPV, iar
+  formularul nu mai pleacă singur. (a) Fereastra fără derulare: în clasa 285.
+- **289.** (a) Certificatul: emitentul din claim-ul `issuer` al tokenului (DigiSign). Titularul NU e în tokenul ANAF (decodat pe token
+  real, ARHITECTURA_SPV.md) — ecranul o spune; afișarea titularului cere o decizie (§6). (b) Starea SPV în fereastra firmei și butonul
+  spre Setări cont → Conectare SPV pe refuzul „Trimite în SPV” (`refuz_spre_ecran`, ținta `conectare_spv`). (c) Ghidul de bun venit:
+  pasul, verbatim, ca secțiune proprie înaintea firului de intrare (e al cabinetului, nu al fiecărei firme), pentru administrator.
+
+
+## 16.10.2026 (seara, a patra completare) — Lotul 6: 290–295
+
+Textul lui Costin, verbatim:
+
+> Completare la lotul 6 — deficiențe constatate la retestul lotului 5 și la D112/D100 (16.10). Intră în același lot, cu aceeași poartă la final.
+>
+> 1. 290 (clasă) — Mesajele de eroare din formulare nu dispar după ce utilizatorul corectează câmpul: „Completează emailul mai întâi.” rămâne în fereastra de autentificare după completarea emailului; „Adaugă cel puțin o captură sau un fișier de export.” rămâne în Suport → Cerere import după atașarea fișierului. Regula se aplică tuturor formularelor.
+> 2. 291 — Bulina roșie de pe butonul Suport apare pentru cererea trimisă chiar de utilizator. Bulina anunță un răspuns sau o schimbare de stare venită de la iConta, nu propria cerere.
+> 3. 292 — Cardul „De validat” deschide fereastra intitulată „Declarații de depus”, cu secțiunea „DE DEPUS”. Titlul ferestrei urmează cardul din care a fost deschisă (rest din 266; aceeași clasă cu 127).
+> 4. 293 — Ana senior, fără „Poate depune”, vede pe D300 F1 10/2026, pregătită de administrator, butonul „Renunță”. Pe o declarație a altcuiva, fără dreptul de depunere, nu se oferă nicio acțiune în afară de vizualizare; serverul refuză la fel.
+> 5. 294 — La D100, trimestrul propus implicit e T4 (în curs, termen 25.01.2027) în loc de trimestrul scadent T3 (termen 25.10.2026). Perioada implicită la orice declarație este cea mai apropiată perioadă scadentă și nedepusă; se leagă de 283.
+> 6. 295 — D100 pasul 2 arată doar obligația (cod 121, 10 lei, cota 1), fără baza de calcul: veniturile perioadei pe conturi și eventualele deduceri. Adaugă „Rezumat” ca la D112, pentru D100 și pentru orice declarație care afișează doar sume datorate.
+>
+> Răspunde punctual, pentru fiecare număr de mai sus și pentru fiecare dintre 272–289, dacă e rezolvat sau nu. Te oprești și raportezi.
+
+- **Citirea comenzii.** „Te oprești și raportezi” = la capătul lotului (272–295) se scrie raportul punctual și NU se pornește poarta,
+  nici publicarea: „aceeași poartă la final” rămâne la „Lotul 6 e complet” și la acordul de publicare din regimul pilot.
+
+
+## 16.10.2026 (seara) — Lotul 6: deciziile de execuție pentru 283, 284, 286, 287, 272, 281 (PIVOT față de 215)
+
+- **283 (declarațiile datorate întâi).** Lista „Datorate de firmă (din vectorul fiscal)” vine din aceeași sursă ca termenele de pe
+  fereastra firmei (`firma_rezumat._termene_una_firma`, prin `uc_declaratii._datorate_firmei`), cu perioada și termenul; alegerea fixează
+  și perioada. Restul tipurilor rămân, separat („Alte declarații”) — o declarație rară (rectificativă, D710) trebuie să se poată alege.
+  Pasul 1 nu mai cere firma când firma e deja aleasă. Alternativă respinsă: ascunderea tipurilor nedatorate (ar fi oprit cazurile rare).
+- **284 (refuzul D300 numește notele; reluarea automată).** Notele nevalidate din fereastra TVA care mișcă 4427 (credit) / 4426 (debit)
+  — exact conturile și sensul rulajului — se pun pe constatarea roșie (`control_incrucisat.ciorne_care_explica`), cu nr. crt. din
+  Registrul-jurnal, documentul și suma; „explică diferența” = suma lor acoperă diferența (toleranța porții, 1 leu). Refuzul le numește,
+  cu buton spre fiecare (Registrul jurnal, nota evidențiată). Declarația refuzată se ține în `public.declaratii_in_asteptare` (cererea,
+  cine a trimis-o, notele așteptate); după orice modificare reușită a cabinetului (middleware, deci și validarea din jurnal, și cea din
+  coadă), când nicio notă așteptată nu mai e nevalidată, declarația se generează din nou prin `coada_adauga` cu contextul celui care a
+  trimis-o (drepturile recitite), pe un fir de fundal; rezultatul (intrată / refuzată din nou, cu motivul) vine prin notificare.
+  Depunerea rămâne clicul contabilului. Limita: numai porțile TVA (D300 / D394 / D390); D406 numără ciornele, nu le numește (diferența
+  D406 e pe total, nu pe cont). Alternativă respinsă: reluarea în cererea de validare (validarea ar fi așteptat generarea + validatorul ANAF).
+- **286 (contoarele paginii principale).** Orice scriere reușită prin `api.js` anunță `iconta:schimbare`; pagina principală își
+  recitește contoarele la anunț (plus rezerva de 3 s). Alternativă respinsă: reîncărcare periodică (ar fi întârziat și ar fi încărcat serverul).
+- **287 (pasul următor).** Ce urmează după „Trimite în coadă” se spune după starea REALĂ: validarea în doi efectivă
+  (`coada_api.patru_ochi_stare`) -> „la validare”; altfel depunerea, de cine are dreptul (`uc_coada.pas_urmator`).
+- **272 (CUI-ul).** Date firmă nu mai modifică CUI-ul, de niciun rol (același CUI trece, altul se refuză numit; o firmă fără CUI îl
+  primește — completare, nu modificare). Corectura e `POST /tenants/{id}/cui/corectura`, gardată `drepturi.ADMIN`: avertismentul întâi
+  (ce rămâne cu CUI-ul vechi: declarațiile și facturile emise), apoi confirmarea; cifra de control, unicitatea în cabinet
+  (`tenant_provisioning.cere_cui_unic`, mutată), perioadele deschise, ambele locuri (`alege_cui`), jurnalul Date firmă. Găsit la
+  generalizare: `PUT /tenants/{id}` (administrator) schimba CUI-ul numai în `public.tenants`, fără avertisment și fără jurnal — închis
+  (același CUI trece, altul trimite la corectură). Ecranul arată câmpul needitabil prin regula globală `.camp-input[readonly]` (DS v2.92).
+- **281 — PIVOT față de 215 (09.10.2026, „semnal, nu blocaj”).** Intermediar: amortizarea lunilor anterioare neînregistrată era semnal
+  la închiderea lunii. Final (comanda Costin 16.10.2026, verbatim mai sus: „oprește închiderea sau cere confirmare explicită, pentru că
+  schimbă profitul (D100/D101)”): blocaj CONFIRMABIL — oprește închiderea, iar „Închide luna fără amortizarea lunilor anterioare” o închide
+  numai după confirmare, consemnată în `perioade_inchideri.motiv`; confirmarea nu trece peste niciun alt blocaj (nici peste amortizarea
+  lunii însăși, W2). „Generează amortizarea restantă” (`POST /tenants/{id}/amortizare/restanta`) face câte o notă pe fiecare lună
+  rămasă până la luna aleasă, prin aceeași generare ca butonul lunar (`tenant_amortizare`: luna încheiată, deschisă, ciorna înlocuită,
+  validatul neatins); o lună refuzată nu le oprește pe celelalte. Temei: OMFP 1802/2014 (amortizarea, cheltuială a perioadei).
+- **282 (cererile de înregistrare neconfirmate).** Cardul „Înregistrare” din Panou Admin le listează (data, cabinetul, emailul, când a
+  plecat confirmarea și de câte ori s-a retrimis, când expiră / a expirat linkul) cu „Retrimite confirmarea”. Retrimiterea face un link
+  NOU (tokenul se păstrează numai ca hash, deci cel vechi nu se poate retrimite) valabil din nou 24 de ore; tokenul nou se scrie numai
+  dacă emailul a plecat — altfel rămâne linkul de dinainte. `email_trimis_la` se scrie la fiecare trimitere reușită
+  (`core/migrare_inregistrari_email.py`); rândurile existente primesc `creat_la`, fiindcă o cerere rămâne în tabelă numai dacă emailul
+  a plecat (la eșec `_register_liber` o șterge). Citirea pe producție (cerută în comandă, fără adrese): cererile 4, 5, 6 din 16.10.2026
+  (14:43, 14:47, 14:51), neconfirmate, cu `POST /auth/register` 200 în jurnal — emailul a plecat la toate trei (codul răspunde 200 numai
+  după trimitere; altfel 503 și cererea se șterge). Nu s-a atins niciuna.
+- **285 (nicio fereastră cu derulare laterală; acțiunea și mesajul mereu în vedere).** Clasa, nu instanța: navigatorul lățește singur
+  fereastra al cărei conținut e mai lat (`_lateste` -> `fer-tabel`, decizia W5); rândurile de butoane se rup (`.fd-antet-sus`, detaliul
+  facturii: 1475px într-o fereastră de 1000); formularele lungi au bara de acțiune și mesajul ei în `.bara-fixa` (Declarații pas 2, Date
+  firmă, Emite factură). Garda e2e deschide FIECARE card activ al ferestrei firmei și măsoară. INTERPRETARE (de confirmat, §6): „nicio
+  fereastră nu are derulare” e citit ca „nicio derulare laterală, iar acțiunea și mesajele nu se pierd la derularea verticală” — un
+  conținut mai lung decât ecranul (D300 cu toate secțiunile deschise) derulează vertical, cu bara de acțiune fixă jos.
+- **C41 (găsit de garda 285).** Registrul de evidență fiscală pe profit cădea cu 500 la orice firmă: use-case-ul îi dădea lui
+  `d101.genereaza` conexiunea publică (tabelele firmei se citesc fără schemă în nume). Acum conexiunea firmei; refuzul generatorului
+  (date lipsă) e 422. Generalizare: scanare AST a apelurilor de generatoare pe `db.get_conn()` fără schemă (6 locuri), probate funcțional
+  pe baza de test pe conexiunea publică — numai acesta cădea (`registru_pf`, `bilant_api.genereaza` citesc cu schema în nume).
+- **Scanerul drepturilor (`scripts/scan_drepturi_ui.py`).** Un cuvânt dintr-un selector CSS între ghilimele nu mai e urmat ca nume de
+  funcție (fals-pozitiv găsit la 272: `camp` din „#df-activitate_amef-camp” lega un `<select>` de funcția `camp()`). Calibrat cu un test.
+- **290 (clasă: eroarea rămânea după corectare).** Un mecanism, în `api.js` (`stergeEroriDupaCorectare`, ascultare în faza de captură pe
+  `input` / `change`): eroarea câmpului schimbat (`eroareCamp`) și refuzul de formular din aceeași zonă (`form` / fereastra de lucru;
+  toate dialectele zonei de eroare: `msg-`, `mig-`, `dlg-`, `login-eroare`) dispar; o eroare nouă pusă de handlerul ecranului rămâne
+  (captura rulează înaintea lui). Se golește doar TEXTUL zonei (unele zone poartă clasa din șablon). Rămân: refuzul de pe rând
+  (`refuzPeRand`, nu e al formularului) și `dec-eroare` (rezultatul generării / validatorului, nu al câmpurilor).
+- **291 (bulina Suport).** Bulina = firele autorului cu o veste de la iConta necitită: răspuns necitit (admin SAU asistentul AI — AI-ul
+  nici nu se marca citit) sau starea schimbată din Panou Admin (`raportari.stare_necitita`, `core/migrare_raportari_stare_necitita.py`);
+  se stinge la deschiderea firului (ecranul Suport chema `/citit` numai pe partea de admin). Cauza observată: la o sesizare escaladată,
+  triajul AI scria „Sesizarea ta a fost transmisă echipei iConta…” ca mesaj necitit — ecoul cererii proprii; acum intră citit
+  (`adauga_mesaj(veste=False)`). Tot acolo, `except Exception: pass` al triajului devine `esec_secundar` (nu tăcut). Bulina din lista
+  firelor arăta „răspuns primit, necitit” pe orice fir FĂRĂ răspuns — aceeași regulă acum.
+- **292 — PIVOT față de U4 / 127 (08.10.2026, „titlul spune ce conține”).** Intermediar: titlul ferestrei cozii se calcula din conținut
+  („Note de validat · Declarații de depus”). Final (comanda Costin 16.10.2026: „Titlul ferestrei urmează cardul din care a fost
+  deschisă”): fereastra poartă titlul cardului (`randeazaValidat(…, { titlu })`, ținut pe fereastră pentru redesenări); ce conține spun
+  secțiunile. Deschisă fără card (din notificare), titlul rămâne cel calculat din conținut. e2e 127 aliniat (titlul „De validat”, secțiunea
+  „Note de validat (n)”).
+- **293 (renunțarea la declarația altcuiva).** Cu validarea în doi oprită, „Renunță” (respingerea din `la_senior`) e a celui care a
+  pregătit declarația sau a celui care o depune: Ana (Poate valida, fără Poate depune) pe D300 a administratorului vede numai „Vezi
+  declarația…”, iar serverul refuză renunțarea (403, `uc_coada.MESAJ_RENUNTA_ALTUI`). Cu validarea în doi efectivă, „Respinge” rămâne
+  actul validatorului (neatins).
+- **294 (perioada implicită).** La alegerea tipului: perioada lui datorată din vectorul fiscal (cea mai apropiată scadentă și nedepusă —
+  motorul termenelor, aceeași listă ca la 283), altfel ultima perioadă ÎNCHEIATĂ după periodicitate (luna / trimestrul / anul trecut);
+  niciodată perioada în curs. Se propune numai la schimbarea tipului (întors din pasul 2, alegerea omului rămâne).
+- **295 (Rezumat D100).** `d100.sinteza_d100`: baza pe conturi (micro: 70x / 75x / 76x, 709 scăzut — aceleași note și conturi ca baza
+  generatorului, `repo_d100.venituri_pe_conturi`; profit: cumulatul art.41) și calculul impozitului; pleacă pe canalul `sinteza` (caseta
+  „Rezumat”, ca la D112). Clasa „declarații care arată doar sume datorate”: în harta componentelor numai D100 are numai obligații (D710
+  arată sumele inițiale, corectate și deducerile; D112, D301, D394, D397, D406 au deja rezumat).
+- **280 (rotunjirea CAM; clasa rotunjirilor fiscale).** CAM 112,50 -> 112 și 158,52 -> 159 NU e rotunjire „la par”: D112 declară CAM-ul o
+  dată, pe TOTAL (cod 480 = Σ baze × 2,25%, rotunjit aritmetic — 112,50 + 158,52 = 271,02 -> 271), iar cartelele îl împart prin metoda
+  resturilor celor mai mari (`stat_plata_api._imparte_cam`, decizia Costin 06.10.2026 pct.11): partea întreagă fiecăruia (112, 158),
+  leul rămas fracțiunii mai mari (,52 -> 159), ca suma cartelelor să fie CAM-ul declarat. Clasa verificată în TOATĂ aplicația: 102 apeluri
+  `round()` (la par) în 28 de module din afara gărzii de declarații; 5 rotunjeau o sumă NOUĂ la par și sunt trecute pe `common._q`
+  (ROUND_HALF_UP): TVA-ul și totalul în lei la curs (facturi în valută), linia de cheltuială a bonului fiscal × factor (intră în notă),
+  amortizarea cumulată din RIP, valoarea articolelor importate (stoc). Restul (sume de valori care au deja bani, indicatori) poartă
+  `# round-ok: <motiv>`; garda `test_rotunjire_fiscala` acoperă acum tot `core/` + `main.py`. În JavaScript, `Math.round` rotunjește
+  jumătatea în sus (nu la par); declarațiile se recalculează pe server.
+- **288 (Povestea lunii).** (a) Verificarea de la generare (`abateri_termeni`: termeni, sume, laude, declarații) rulează și pe textul
+  APROBAT, editat de om (`uc_pachete.verifica_textul_aprobat`): o abatere oprește aprobarea, numită. PIVOT față de decizia 05.10.2026
+  („aprobarea nu se blochează: textul aprobat e al contabilului”) — intermediar: abaterile se arătau numai la generare; final (comanda
+  Costin 16.10.2026: „se verifică automat înainte de aprobare”): oprește. (b) Cifrele sunt ale LUNII (notele validate din lună), nu
+  cumulate: pe F1 coincid cu cumulatul fiindcă activitatea anului e în septembrie (neverificat pe datele F1 — date de producție). Se spune
+  explicit în pachet, în email („Cifrele lunii — luna septembrie 2026 (numai luna, nu cumulat de la 1 ianuarie)”) și în text (promptul cere
+  luna; textul care n-o numește sau care spune „cumulat / de la începutul anului” e abatere). Generalizare: rezultatul lunii exclude acum
+  închiderea în 121 (7xx = 121 / 121 = 6xx), ca baza D100 (C15) — o lună închisă ar fi arătat venituri 0. (c) Restanțele / declarațiile
+  trec numai cu decizia expresă a contabilului: al doilea pas, „Aprob cu restanțele (decizia mea)” (`cu_restante`).
+- **274a (cota articolului din stoc).** Articolul de stoc n-are cotă proprie: cota vine din nomenclatorul de produse (după denumire), fără
+  potrivirea automată; lipsa ei e un răspuns cu motivul și butonul „Deschide Produse” pe linie (`ARTICOL_FARA_COTA`, ținta `produse` în
+  `ecran_destinatie.ECRANE`). Liniile fără articol (servicii, text liber) păstrează propunerea de până acum.
+- **274b (0% fără categorie) — PROPUNERE, neimplementată, de validat (CLAUDE.md §2: Code propune cu temeiul, arhitectul validează).**
+  Temei verificat la sursă: Ghidul MF al codurilor e-Factura v2.9, cap.3 (anaf_surse/mf_ghid_coduri_facturi_efactura_v2_9.txt): categoriile
+  RO e-Factura sunt S, E („operațiuni scutite de la plata TVA, care nu sunt cuprinse în baza de impozitare a TVA sau în sfera de
+  aplicare”, cu BT-120 motivul sau BT-121 cod VATEX), AE (art.331, VATEX-EU-AE), O (neplătitor, VATEX-EU-O); „Z” nu apare, dar
+  `efactura_send` o pune pe orice linie cu 0% (limita v1 declarată în modul). OPANAF 174/2026, instrucțiunile D300
+  (anaf_surse/opanaf_174_2026_d300.txt): rd.13 = livrări cu taxare inversă art.331; rd.14 = scutite cu drept de deducere art.294 alin.(1),
+  295, 296 (și art.292 alin.(2) lit.a pct.1-5 / lit.b legate de export); rd.15 = livrări scutite fără drept de deducere art.292.
+  Propunerea: pe linia cu 0% a unui plătitor, categoria obligatorie (refuz numit fără ea) din: „Taxare inversă (art.331)” -> AE +
+  VATEX-EU-AE, D300 rd.13; „Scutit cu drept de deducere (art.294 alin.(1), 295, 296)” -> E + BT-120 cu articolul, D300 rd.14; „Scutit fără
+  drept de deducere (art.292)” -> E + BT-120, D300 rd.15; „În afara bazei / sferei TVA (penalități, dobânzi de întârziere, garanții)” -> E
+  + BT-120, nedeclarată în D300; neplătitorul -> O + VATEX-EU-O pe toată factura. Atinge: o coloană nouă pe linia facturii (migrare),
+  formularul de emitere, `efactura_send`, `d300` + calea independentă `d300_reconciliere`, PDF-ul facturii; probă pe DUK (D300) și pe
+  validatorul UBL. Livrările intracomunitare (rd.1) rămân pe drumul D390 existent, în afara propunerii.
+
+## 16.10.2026 (noaptea) — Lotul 6: rularea țintită (62 de teste Python + 9 e2e roșii) — ce s-a reparat în cod și ce s-a aliniat
+
+**Context.** Rularea țintită de după comanda 290–295 (`scripts/poarta_scurta.py`, suita întreagă fiindcă `main.py` e atins) a ieșit
+roșie. Fiecare eșec a fost citit; cauzele sunt de trei feluri, iar deciziile de mai jos spun pe care drum a mers fiecare.
+
+1. **Defecte reale în codul lotului, reparate în cod (nu în test):**
+   - **282 — retrimiterea confirmării ținea o conexiune peste emailul trimis** (clasa C5, `core/test_val3_contracte.py`). Acum: citirea
+     cererii (tranzacție scurtă), emailul FĂRĂ conexiune, apoi tokenul nou + momentul trimiterii într-o tranzacție separată, numai dacă
+     emailul a plecat (`inregistrare_libera.cerere_neconfirmata` / `inlocuieste_tokenul`). Alternativa respinsă: un verdict nou în
+     `p4_clasificare` — ar fi declarat acceptabilă exact clasa pe care P5 a închis-o.
+   - **281 — ruta de închidere avea `confirma_amortizare` înaintea lui `ctx`**: apelul pozițional al rutei (testele porții) ajungea cu
+     `Depends` în locul contextului. Ordinea parametrilor, nu logica.
+   - **278 — previzualizarea casei trecea pe poarta de CITIRE ISTORICĂ** (R84, firmele dezactivate): previzualizarea pregătește o
+     scriere, deci poarta firmelor active (`schema_tenant`).
+   - **Refuzuri care nu se vedeau** (garda `test_refuz_tacut`): previzualizarea casei, corectura CUI (două trepte), marcarea „citit” a
+     firului de Suport, citirea stării SPV (ecran și emitere). Fiecare spune acum refuzul lângă locul lui. La emitere, starea SPV necitită
+     ține mesajul pe ecran (formularul nu mai pleacă singur).
+   - **273 — butoanele „Verifică acum” / „Importă XML” se legau DUPĂ cererea de stare SPV** (un clic dat între timp se pierdea): legate
+     înaintea ei.
+   - **285 — bara fixă acoperea cu marginea ei negativă ce venea după ea** (nota de subsol a declarației: 24px; la fel jurnalul din Date
+     firmă). Global, în `stil.css`: `.fereastra-corp .bara-fixa:not(:last-child) { margin-bottom: 0; }`; DS cap.6 v2.92 + verificator
+     FEREASTRA_LOT6 / BARA_NU_ACOPERA. Alternativa respinsă: mutarea notei înaintea barei în Declarații (rearanjare de ecran = STOP, și
+     n-ar fi acoperit Date firmă).
+2. **Răspunsuri care și-au schimbat forma deliberat în lot — testele vechi aliniate, cu motivul pe linie:** închiderea întoarce și
+   `confirmate` (281); rezumatul importului de extras are `noi` / `deja` (277); Date firmă refuză CUI-ul cu `CUI_NEMODIFICABIL` înaintea
+   porții de perioade, iar poarta de perioade s-a mutat pe corectură (272); titlul după trimitere e „Trimisă în coadă” când validarea în
+   doi e oprită (287); „ciornă” cu diacritice (279); nota chitanței numește factura ca orice încasare legată (278); D406 apare întâi în
+   „De depus”, cu perioada (283). E2e 164 măsoară cu fereastra derulată la capăt: derulată mai sus, bara fixă stă DELIBERAT peste
+   conținutul care trece pe sub ea (285) — mutația (regula CSS scoasă) îl înroșește.
+3. **Gărzi de structură, satisfăcute pe structură (nu prin ridicarea plafoanelor):** afirmațiile noi sunt obiecte tipate (avansul de
+   casă `fapt`, pasul următor `statut`, refuzurile poveștii `neconformitate`, cota lipsă `absenta_observatie`); refuzurile legării casei
+   au cod; aserțiunile noi pe text rescrise pe cod / AST / mulțimi; garda veche de rotunjire contopită în cea extinsă (o singură buclă);
+   scanerul refuzurilor tăcute învață `refuzPeRand` (afișează, ca `insertAdjacentHTML` pe care l-a înlocuit). Cifrele registrelor
+   (P7: 332 de apeluri, 470 de rute, 46 / 4 instrucțiuni; trasee; clichete) au fost regenerate din instrumente, pe baza de TEST.
+   Excluderea nomenclatoarelor din `test_afirmatii_tipate` nu mai numără hărțile cu cheie de formular (`camp`): sunt în afara scopului
+   oricum, deci excluderea nu le ascunde nimic.

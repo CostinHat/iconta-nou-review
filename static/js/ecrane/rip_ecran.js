@@ -1,5 +1,5 @@
 // [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
-import { api, cate, dupaNumar, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=72aa1cbbdb";  /* investigatie_identitate_v1 */
+import { api, cate, dupaNumar, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=9409795a49";  /* investigatie_identitate_v1 */
 
 const CATEGORII_INC = [
   ["activitate", "\u00cencasare din activitate"],

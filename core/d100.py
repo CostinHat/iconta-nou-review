@@ -142,6 +142,8 @@ class RezultatD100:
     obligatii: list = field(default_factory=list)
     total_plata_a: int = 0
     avertismente: list = field(default_factory=list)
+    # [deficiența 295] „Rezumat” ca la D112: baza de calcul (veniturile perioadei pe conturi, ce se scade) și calculul impozitului
+    sinteza: list = field(default_factory=list)
 
 
 def calcul_d100(prof, an, luna, obligatii):
@@ -378,6 +380,38 @@ def deriva_obligatii(prof, venituri, cheltuieli, an, luna, cota=None):
     return obligatii, avert
 
 
+def sinteza_d100(conn, prof, perioada, venituri, cheltuieli, obligatii, cota=None):
+    """[deficiența 295, comanda Costin 16.10.2026, verbatim în DECIZII] „D100 pasul 2 arată doar obligația (cod 121, 10 lei, cota 1), fără
+    baza de calcul: veniturile perioadei pe conturi și eventualele deduceri. Adaugă «Rezumat» ca la D112.” Rândurile Rezumatului, din
+    ACEEAȘI sursă ca obligația (micro: `repo_d100.venituri_pe_conturi`, aceleași note ca `select_inregistrari_linii`; profit: cumulatul
+    din `pull`) — nu un al doilea calcul."""
+    from core.pdf_util import bani as _bani
+    per = "T%d/%d" % (perioada.trim, perioada.an)
+    regim = (prof.get("regim_fiscal") or "").lower()
+    oblig = "; ".join("cod %s: %s lei" % (o["cod_oblig"], format(int(o["suma_dat"]), ",").replace(",", ".")) for o in obligatii)
+    if regim == "micro":
+        _inc, _sf = perioada.interval()
+        with conn.cursor() as cur:
+            conturi = _repo.venituri_pe_conturi(cur, _inc, _sf)
+        c = Decimal(str(cota)) if cota is not None else _rata_impozit_default("micro", perioada.an, perioada.trim * 3)
+        out = ["Baza de calcul %s: veniturile trimestrului din notele validate (conturile 70x, 75x, 76x; reducerile acordate 709 se "
+               "scad)." % per]
+        out += ["cont %s%s: %s lei" % (cont, " (se scade)" if str(cont).startswith("709") else "", _bani(suma)) for cont, suma in conturi]
+        scazute = [s_ for cont, s_ in conturi if str(cont).startswith("709")]
+        out.append("Deduceri din bază: %s." % (("709, %s lei" % _bani(-sum(scazute))) if scazute else "niciuna"))
+        out.append("Baza impozabilă: %s lei × cota %s%% = %s (rotunjit la leu)." % (_bani(venituri), c.normalize(), oblig or "0 lei"))
+        return out
+    if regim == "profit":
+        c = Decimal(str(cota)) if cota is not None else _rata_impozit_default("profit", perioada.an, perioada.trim * 3)
+        return ["Baza de calcul %s: profitul cumulat de la 01.01 (venituri − cheltuieli, note validate), impozitat cumulat (CF art.41)."
+                % per,
+                "Profit cumulat la sfârșitul trimestrului: %s lei; deja impozitat în trimestrele anterioare: %s lei." % (
+                    _bani(venituri), _bani(cheltuieli)),
+                "Baza trimestrului: %s lei × cota %s%% = %s (rotunjit la leu)." % (
+                    _bani(Decimal(str(venituri)) - Decimal(str(cheltuieli))), c.normalize(), oblig or "0 lei")]
+    return []
+
+
 def genereaza(conn, schema, perioada, manual=None):
     """D100 trimestrial (contract uniform A1). `perioada.trim` (1-4) -> luna raportare = trim*3.
     `manual` accepta DOAR cheia 'cota' (procent impozit; micro implicit 1, profit implicit 16)."""
@@ -415,6 +449,7 @@ def genereaza(conn, schema, perioada, manual=None):
     res = calcul_d100(prof, an, luna, obligatii)
     if _avert_profit and _avert_profit != "LOSS":
         res.avertismente.append(_avert_profit)
+    res.sinteza = sinteza_d100(conn, prof, perioada, venituri, cheltuieli, obligatii, cota)
     # POARTA A DOUA CALE (gard continut, pas 4/4 lant reconciliere): recalcul INDEPENDENT al
     # obligatiei din SURSA (venituri cont 70x, note validate) x cota din registru, confruntat
     # cu suma_dat a generatorului. Prinde CATALOG #31 aggregation-loss (venit scapat din pull ->

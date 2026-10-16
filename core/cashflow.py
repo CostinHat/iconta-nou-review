@@ -15,7 +15,7 @@ def aloca_sold(facturi, sold):
         suma = min(float(f.get("total") or 0), ramas)
         if suma <= 0:
             continue
-        deschise.append({"data_scadenta": f.get("data_scadenta") or f.get("data_emitere"), "suma": round(suma, 2)})
+        deschise.append({"data_scadenta": f.get("data_scadenta") or f.get("data_emitere"), "suma": round(suma, 2)})  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
         ramas -= suma
     return deschise
 
@@ -34,9 +34,9 @@ def forecast(cash, emise_deschise, primite_deschise, azi=None, saptamani=8):
             if w == 0:
                 return d < sfarsit
             return inceput <= d < sfarsit
-        inc = round(sum(f["suma"] for f in emise_deschise if _in(f)), 2)
-        pla = round(sum(f["suma"] for f in primite_deschise if _in(f)), 2)
-        sold = round(sold + inc - pla, 2)
+        inc = round(sum(f["suma"] for f in emise_deschise if _in(f)), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+        pla = round(sum(f["suma"] for f in primite_deschise if _in(f)), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+        sold = round(sold + inc - pla, 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
         rez.append({"saptamana": w + 1, "de_la": inceput.isoformat(),
                     "incasari": inc, "plati": pla, "sold": sold})
     return rez
@@ -45,7 +45,7 @@ def forecast(cash, emise_deschise, primite_deschise, azi=None, saptamani=8):
 def obligatii_din_balanta(randuri):
     """Solduri creditoare de platit: fiscale (25 ale lunii) + salarii nete (imediat)."""
     def _sc(prefixe):
-        return round(sum(r["sf_c"] for r in randuri
+        return round(sum(r["sf_c"] for r in randuri  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
                          if any(str(r["cont"]).startswith(p) for p in prefixe)), 2)
     return {"fiscale": _sc(("4423", "431", "436", "444", "4411")),
             "salarii_nete": _sc(("421",))}
@@ -54,10 +54,10 @@ def obligatii_din_balanta(randuri):
 def cheltuieli_lunare_cash(randuri, luni_scurse):
     """Media lunara a cheltuielilor cash: cl.6 fara 68x (amortizari) si 641/645 (acoperite de 421/431)."""
     from core.documente_api import rulaje_cumulate   # cumulatul anului; `rul_*` e acum luna (W1, 08.10)
-    ch = round(sum(rulaje_cumulate(r, "d") - rulaje_cumulate(r, "c") for r in randuri
+    ch = round(sum(rulaje_cumulate(r, "d") - rulaje_cumulate(r, "c") for r in randuri  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
                    if str(r["cont"]).startswith("6")
                    and not str(r["cont"]).startswith(("68", "641", "645"))), 2)
-    return round(ch / max(luni_scurse, 1), 2)
+    return round(ch / max(luni_scurse, 1), 2)  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
 
 
 def plati_estimate(obligatii, medie_lunara, azi=None, saptamani=8):

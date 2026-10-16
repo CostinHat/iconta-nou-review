@@ -48,7 +48,7 @@ def seteaza_activ(conn, schema, centru_id, activ):
 
 
 def _f(v):
-    return round(float(v or 0), 2)
+    return round(float(v or 0), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
 
 
 def raport_realizat(conn, schema, de, pana):
@@ -72,7 +72,7 @@ def raport_realizat(conn, schema, de, pana):
         for r in cur.fetchall():
             ch, ve = _f(r["cheltuieli"]), _f(r["venituri"])
             centre.append({"id": r["id"], "nume": r["nume"], "activ": r["activ"],
-                           "cheltuieli": ch, "venituri": ve, "net": round(ve - ch, 2)})
+                           "cheltuieli": ch, "venituri": ve, "net": round(ve - ch, 2)})  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
         # nealocat: linii de clasa 6/7 din note validate FARA centru (coverage)
         cur.execute(f"""
             SELECT COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) AS cheltuieli,
@@ -139,6 +139,6 @@ def raport_varianta(conn, schema, an):
                 "id": r["id"], "nume": r["nume"], "activ": r["activ"],
                 "buget_cheltuieli": bch, "realizat_cheltuieli": rch,
                 "buget_venituri": bve, "realizat_venituri": rve,
-                "net_buget": round(bve - bch, 2), "net_realizat": round(rve - rch, 2),
+                "net_buget": round(bve - bch, 2), "net_realizat": round(rve - rch, 2),  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
             })
     return {"an": an, "centre": centre}

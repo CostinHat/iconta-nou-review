@@ -162,7 +162,9 @@ def test_excluderea_nomenclatoarelor_ramane_tintita():
                     continue
                 ch = {k.value for k in n.keys
                       if isinstance(k, ast.Constant) and isinstance(k.value, str)}
-                if (ch & s.REVENDICARE) and not (ch & s.REMEDIU):
+                # [lotul 6, 16.10.2026] o hartă cu cheie de FORMULAR (`camp`) e o validare de formular: în afara scopului și fără
+                # excludere (clasa D), deci excluderea n-o scoate din nimic — nu se numără (refuzurile 273c din `uc_tenants`)
+                if (ch & s.REVENDICARE) and not (ch & s.REMEDIU) and not (ch & s.FORMULAR):
                     scoase.append("%s:%d" % (os.path.relpath(p, s.RAD).replace(os.sep, "/"),
                                              n.lineno))
     assert len(scoase) <= 2, (

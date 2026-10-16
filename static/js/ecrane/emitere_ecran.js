@@ -7,9 +7,10 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, cate, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt } from "../api.js?v=72aa1cbbdb";
+import { api, arataMesaj, cate, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt } from "../api.js?v=9409795a49";
+import { textStareSpv } from "./spv_stare.js?v=f15ed7cbc1";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { butonSpreEcran } from "./ecran_destinatie.js?v=05e032b67b";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
+import { butonSpreEcran } from "./ecran_destinatie.js?v=627c3c3c38";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -243,7 +244,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <input class="camp-input" id="em-bon-data" type="date">
       <p class="camp-ajutor">Pentru o factură cerută de client pentru un bon deja emis: vânzarea e în raportul Z, deci factura nu se mai numără a doua oară (D300, D394, evidență, stoc). Pe factură apare „conform bon fiscal nr./data”.</p>
     </div>
-    <div class="em-actiuni">
+    <div class="bara-fixa"><div class="em-actiuni">
       <select id="em-tip" class="camp-input" aria-label="Tipul documentului emis" style="max-width:180px;margin-right:8px">
         <option value="factura" selected>Factura</option>
         <option value="proforma">Proforma</option>
@@ -252,7 +253,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <button class="buton-primar em-emite" id="em-emite" data-actiune="POST /tenants/{tenant_id}/facturi/emite">Emite factură</button>
       <button class="buton-secundar" id="em-renunta" data-fara-actiune="ciorna facturii stă în browser; renunțarea n-are cerere la server" style="margin-left:8px">Renunță la factură</button>
     </div>
-    <div class="em-rezultat" id="em-rezultat"></div>`;
+    <div class="em-rezultat" id="em-rezultat"></div></div>`;
 
   // [comanda Costin 05.10.2026 pct.2] „Datele firmei care blochează emiterea se verifică la deschiderea «Emite factură», nu după
   // completarea întregului formular.” Lipsurile vin de la server (aceeași regulă ca refuzul emiterii, `capital_social.lipsa`).
@@ -347,7 +348,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       // [05.10.2026, comanda Costin pct.9] pe o firmă cu stoc, linia fără articol spune că marfa nu se descarcă din gestiune
       // [lotul 07.10 B, C12b] o atenționare, nu o eroare: casetă informativă (DS cap.5 — roșul rămâne pentru ce blochează)
       const faraArt = `<div class="caseta-info em-l-fara-articol" id="em-l${i}-fara-articol"${(l.descriere && !l.articol_id) ? "" : " hidden"}><span class="ci-mesaj">Linie fără articol de stoc: marfa de pe ea nu se descarcă din gestiune. Dacă e marfă, alege articolul; dacă e serviciu, lasă așa.</span></div>`;
-      return `<div class="em-linie-wrap" data-idx="${i}">${selArticol}<div class="em-linie">${inputsHtml}</div>${faraArt}</div>`;
+      return `<div class="em-linie-wrap" data-idx="${i}">${selArticol}<div class="em-linie">${inputsHtml}</div>${faraArt}<div class="em-l-cota-mesaj" id="em-l${i}-cota-mesaj"></div></div>`;
     }
     return `<div class="em-linie" data-idx="${i}">${inputsHtml}</div>`;
   }
@@ -409,10 +410,19 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       // [lot 19 pct.4d] neplatitor: cota e 0 prin lege, nu o propunere — fara apel de potrivire (care ar fi dat 21)
       if (opt.tvaProfil === false) { l.cota_tva = 0; setCota(l, "0%", 0); recalc(); return; }
       setCota(l, "…");
+      const zCota = zonaLinii.querySelector("#em-l" + linii.indexOf(l) + "-cota-mesaj");
+      if (zCota) zCota.innerHTML = "";
       timer = setTimeout(async () => {
         try {
-          const r = await api.post(`/tenants/${tenantId}/produse/potriveste`, { denumire: d });
-          if (r && r.ok) {
+          const r = await api.post(`/tenants/${tenantId}/produse/potriveste`, { denumire: d, articol: !!l.articol_id });
+          if (r && !r.ok && r.cod === "ARTICOL_FARA_COTA") {   // [274a] articolul de stoc fără cotă în nomenclator: se spune, cu drumul spre Produse
+            const z = zonaLinii.querySelector("#em-l" + linii.indexOf(l) + "-cota-mesaj");
+            if (z) {
+              z.innerHTML = `<div class="caseta-atentie"><div class="ca-mesaj">${esc(r.mesaj)}</div></div>`;
+              butonSpreEcran(z.querySelector(".caseta-atentie"), r.ecran, nav, tenantId, { clasa: "buton-secundar", inapoiLa: "factură" });
+            }
+            setCota(l, "—");
+          } else if (r && r.ok) {
             l.cota_tva = r.cota; l.cota_propusa = r.cota; setCota(l, r.cota === 0 ? "0%" : `${r.cota}%`, r.cota);
             // [05.10.2026, comanda Costin pct.9] din nomenclator: prețul și UM, numai unde omul n-a scris deja altceva
             const p = linii.indexOf(l);
@@ -699,7 +709,25 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       rez2.className = "em-rezultat em-bun";
       stergeCiorna(tenantId);   // [lotul 07.10 pct.2] emisă: ciorna și-a terminat rostul
       ciornaPornita = false;
-      setTimeout(() => { if (opt.dupaEmitere) opt.dupaEmitere(); }, 1200);
+      // [deficiența 275c] firma neconectată la SPV (sau fără drept pentru CUI): se spune DE LA EMITERE, cu drumul spre conectare — și
+      // formularul nu mai pleacă singur, ca mesajul să poată fi citit
+      let stSpv = null;
+      try { stSpv = await api.get(`/tenants/${tenantId}/spv/stare`); } catch (e) {
+        const z = document.createElement("div");
+        rez2.appendChild(z);
+        arataMesaj(z, `Starea SPV a firmei nu s-a putut citi (${e.mesaj || "eroare"}): o vezi în lista facturilor, pe rândul facturii.`, "avert");
+      }
+      const tSpv = stSpv ? textStareSpv(stSpv) : null;
+      if (tSpv && tSpv.spreConectare) {
+        const z = document.createElement("div");
+        z.className = "caseta-atentie";
+        z.style.marginTop = "8px";
+        z.innerHTML = `<div class="ca-mesaj">${esc(tSpv.text)} Factura emisă rămâne netrimisă în SPV; termenul de transmitere e de 5 zile lucrătoare de la emitere (OUG 120/2021 art.10 alin.(7)).</div>`;
+        rez2.appendChild(z);
+        butonSpreEcran(z, "conectare_spv", nav, tenantId, { clasa: "buton-secundar" });
+      } else if (stSpv) {   // starea necitită rămâne pe ecran (mesajul de mai sus), nu pleacă singură
+        setTimeout(() => { if (opt.dupaEmitere) opt.dupaEmitere(); }, 1200);
+      }
     } catch (e) {
       const det = e && e.mesaj;
       const cursIndisp = e && e.cod === 409 && det && typeof det === "object" && det.cod === "CURS_INDISPONIBIL";

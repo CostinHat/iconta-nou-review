@@ -149,7 +149,7 @@ def test_def_244_dupa_propunere_legatura_spre_notele_de_validat(patron, firma_20
         == [tuple(nr_crt(f["schema"], i) for i in note)], zona
     assert "închide clasele 6/7" not in zona and "notele de validat" not in zona, zona
     mesaj = pg.inner_text("%s .bl-inchidere-mesaj" % _F)
-    assert mesaj.startswith("Am propus, ca ciornă, la 31.12.2025") and "în Registrul jurnal, luna decembrie 2025" in mesaj, mesaj
+    assert mesaj.startswith("Am propus la 31.12.2025") and "în Registrul jurnal, luna decembrie 2025" in mesaj, mesaj
     leg = pg.locator("%s .bl-inchidere-jurnal" % _F)
     assert leg.inner_text() == "Deschide notele de închidere în Registrul jurnal — decembrie 2025"
     leg.click()

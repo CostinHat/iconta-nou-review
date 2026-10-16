@@ -39,6 +39,9 @@ CREATE TABLE IF NOT EXISTS public.spv_cui_acoperit (
   cui           TEXT NOT NULL,
   verificat_la  TIMESTAMPTZ,
   are_drept     BOOLEAN,
+  eroare        TEXT,          -- [lotul 6, 273] core/migrare_spv_citiri.py: răspunsul ANAF la ultima citire
+  mesaje        INTEGER,       -- câte mesaje la ultima citire
+  ultima_reusita TIMESTAMPTZ,  -- prima citire reușită pe token cuprinde 60 de zile (spv_receive.ZILE_PRIMA_CITIRE)
   UNIQUE (token_id, cui)
 );
 

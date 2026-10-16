@@ -147,7 +147,7 @@ def test_contarea_pe_factura_poarta_extrasul(conn):
 def test_importul_numara_ce_s_a_potrivit_si_ce_nu(conn):
     """„2 linii importate și potrivite” când una era fără potrivire. MUTAȚIE: `rezumat` scos -> pică."""
     r = _importa(conn, [(-12.5, "Comision administrare cont"), (500.0, "Incasare necunoscuta")])
-    assert r["rezumat"] == {"total": 2, "potrivite": 0, "fara_potrivire": 2}
+    assert r["rezumat"] == {"total": 2, "noi": 2, "deja": 0, "potrivite": 0, "fara_potrivire": 2}   # [277] + noi / deja (duplicatele pe mișcare)
 
 
 def test_filtrul_pe_stare_si_ordinea_liniilor(conn):

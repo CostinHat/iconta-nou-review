@@ -247,7 +247,7 @@ def bate(nume, durata_sec=None):
                     "VALUES (%s, now(), %s, 1) "
                     "ON CONFLICT (nume) DO UPDATE SET ultima_reusita = now(), "
                     "durata_sec = EXCLUDED.durata_sec, rulari = public.cron_batai.rulari + 1",
-                    (nume, round(durata_sec, 2) if durata_sec is not None else None))
+                    (nume, round(durata_sec, 2) if durata_sec is not None else None))  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
             conn.commit()
     except Exception as e:
         print("[bataie neconsemnata: %s] %s: %s" % (nume, type(e).__name__, e), flush=True)
@@ -287,7 +287,7 @@ def verifica_batai(acum=None, ritmuri=None):
             continue
         ore = (acum - ultima).total_seconds() / 3600.0
         if ore > prag_ore:
-            intarziate.append((nume, round(ore, 1),
+            intarziate.append((nume, round(ore, 1),  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
                                "ultima reusita acum %.1f ore (prag %d)" % (ore, prag_ore)))
     return intarziate
 

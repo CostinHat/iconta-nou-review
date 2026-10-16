@@ -46,7 +46,7 @@ def _grup(n, singular, plural, feminin):
 
 def suma_in_litere(suma):
     """1419.50 -> 'una mie patru sute nouăsprezece lei și cincizeci de bani'."""
-    suma = round(float(suma), 2)
+    suma = round(float(suma), 2)  # round-ok: suma are deja bani (din bază); scrierea în litere, nu calcul
     lei = int(suma)
     bani = int(round((suma - lei) * 100))
     if lei == 0:

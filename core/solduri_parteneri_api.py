@@ -107,7 +107,7 @@ def extrage(continut, nume_fisier="", cont_implicit=None):
         except ValueError:
             raise _it.FisierNecitit("Rândul %d (%s): soldul nu e un număr. Corectează celula și încarcă fișierul din nou."
                                     % (nr, den or cui or "?"))
-        if round(deb, 2) == 0 and round(cre, 2) == 0:
+        if round(deb, 2) == 0 and round(cre, 2) == 0:  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
             continue                                       # partener fără sold: nu intră în soldurile inițiale
         out.append({"cont": cont, "cui": cui, "denumire": den, "debit": deb, "credit": cre, "rand_fisier": nr})
     # același partener pe același cont de două ori: baza are UNIQUE(cont, cui) (GARZI cat.1) — refuz numit, nu eroare de bază
@@ -165,10 +165,10 @@ def coerenta(conn, randuri):
 
     out = []
     for rad in sorted(pe_sintetic.keys()):
-        sp = round(pe_sintetic[rad], 2)
+        sp = round(pe_sintetic[rad], 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
         if exista and rad in bal:
-            sb = round(bal[rad], 2)
-            dif = round(sp - sb, 2)
+            sb = round(bal[rad], 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+            dif = round(sp - sb, 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
             out.append({"cont": rad, "suma_parteneri": sp, "sold_balanta": sb,
                         "diferenta": dif, "coincide": abs(dif) < 0.01})
         else:
@@ -283,7 +283,7 @@ def importa(conn, randuri, data_referinta=None):
                  r.get("debit", 0), r.get("credit", 0), data_referinta))
             td += float(r.get("debit", 0) or 0)
             tc += float(r.get("credit", 0) or 0)
-    return {"randuri": len(bune), "total_debit": round(td, 2), "total_credit": round(tc, 2), "respinse": erori}
+    return {"randuri": len(bune), "total_debit": round(td, 2), "total_credit": round(tc, 2), "respinse": erori}  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
 
 
 def rezumat(conn):

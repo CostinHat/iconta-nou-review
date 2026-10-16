@@ -308,7 +308,7 @@ def stare_conexiune(conn, principal, acum_dt=None):
     where, params, _ = _principal_sql(principal)
     with conn.cursor() as cur:
         cur.execute("""
-            SELECT serial_certificat, access_expira, refresh_expira
+            SELECT serial_certificat, access_expira, refresh_expira, access_token
               FROM public.spv_token
              WHERE """ + where + """ AND activ = true
              ORDER BY id DESC LIMIT 1
@@ -320,10 +320,40 @@ def stare_conexiune(conn, principal, acum_dt=None):
     return {
         "conectat": True,
         "serial_certificat": r[0],
+        # [deficiența 289a] emitentul certificatului — claim-ul `issuer` al JWT-ului ANAF (ARHITECTURA_SPV.md, decodat pe tokenul real
+        # din 18.07.2026: „issuer-ul certificatului (ex. DigiSign)”). Titularul NU e în token: ANAF nu-l trimite.
+        "emitent_certificat": emitent_certificat(r[3]),
         "access_expira": r[1].isoformat() if r[1] else None,
         "refresh_expira": r[2].isoformat() if r[2] else None,
         "expira_curand": bool(r[1] and r[1] <= prag),
     }
+
+
+def emitent_certificat(access_token_criptat):
+    """Emitentul certificatului din tokenul (criptat) stocat: claim-ul `issuer`. None dacă tokenul nu se poate citi."""
+    try:
+        return decodeaza_jwt(decripteaza(access_token_criptat)).get("issuer") or None
+    except Exception:  # noqa: BLE001 — un token ilizibil nu oprește ecranul; starea conexiunii rămâne
+        return None
+
+
+def stare_firma(conn, principal, cui, acum_dt=None):
+    """[lotul 6: 273a, 275c, 289b] Starea SPV a unei FIRME: conexiunea cabinetului (`stare_conexiune`) + ultima citire a CUI-ului ei
+    (`public.spv_cui_acoperit`, scrisă de `spv_receive.citeste_firma`): `verificat_la`, `are_drept` (True / False / None = necunoscut),
+    `eroare` (răspunsul ANAF), `mesaje`. Fără apel la ANAF."""
+    st = stare_conexiune(conn, principal, acum_dt)
+    cui = "".join(ch for ch in str(cui or "") if ch.isdigit())
+    st.update({"cui": cui, "verificat_la": None, "are_drept": None, "eroare": None, "mesaje": None})
+    if st["conectat"] and cui:
+        where, params, _ = _principal_sql(principal)
+        with conn.cursor() as cur:
+            cur.execute("SELECT verificat_la, are_drept, eroare, mesaje FROM public.spv_cui_acoperit WHERE cui = %s AND token_id = "
+                        "(SELECT id FROM public.spv_token WHERE " + where + " AND activ = true ORDER BY id DESC LIMIT 1)",
+                        (cui,) + tuple(params))
+            r = cur.fetchone()
+        if r:
+            st.update({"verificat_la": r[0].isoformat() if r[0] else None, "are_drept": r[1], "eroare": r[2], "mesaje": r[3]})
+    return st
 
 
 def dezactiveaza_token(conn, token_id):

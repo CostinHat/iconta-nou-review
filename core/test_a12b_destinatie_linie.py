@@ -107,7 +107,7 @@ def _primita(conn):
 def _valideaza(conn, monkeypatch, pid, corp):
     import main
     monkeypatch.setattr(main.auth_api, "schema_tenant", lambda c, uid, tid: _SCH)
-    return main.factura_primita_valideaza(1, pid, corp, {"uid": 1})
+    return main.factura_primita_valideaza(1, pid, dict({"tert_platitor_tva": True}, **corp), {"uid": 1})   # [273] cerut la validare
 
 
 def _dest_linii(conn, fid):

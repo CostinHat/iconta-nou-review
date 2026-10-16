@@ -247,17 +247,19 @@ def registru_inventar(conn, schema, an):
             luni = (ref.year - r["data_pif"].year) * 12 + (ref.month - r["data_pif"].month)
             luni = max(0, min(luni, r["dnf_luni"]))
             amortizabil = float(r["valoare"]) - float(r["rezidual"] or 0)
-            amort = round(amortizabil * luni / r["dnf_luni"], 2) if r["dnf_luni"] else 0.0
+            # [280] amortizarea cumulată e o sumă nouă: rotunjire aritmetică (`common._q`), nu `round()` la par
+            from core.common import _q as _q_rip, _dec as _dec_rip
+            amort = float(_q_rip(_dec_rip(amortizabil) * luni / _dec_rip(r["dnf_luni"]))) if r["dnf_luni"] else 0.0
             mf.append({"denumire": r["denumire"], "cod": r["cod"],
                        "valoare_intrare": float(r["valoare"]), "amortizare_cumulata": amort,
-                       "valoare_ramasa": round(float(r["valoare"]) - amort, 2)})
+                       "valoare_ramasa": round(float(r["valoare"]) - amort, 2)})  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
         cur.execute(f"""SELECT
               COALESCE(SUM(suma) FILTER (WHERE tip='incasare'),0)
             - COALESCE(SUM(suma) FILTER (WHERE tip='plata'),0) AS sold
             FROM {schema}.rip_operatiuni
             WHERE status='validata' AND data_operatiune <= %s""", (ref,))
         disponibil = float(cur.fetchone()["sold"])
-    total_mf = round(sum(m["valoare_ramasa"] for m in mf), 2)
+    total_mf = round(sum(m["valoare_ramasa"] for m in mf), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     return {"an": an, "data_referinta": str(ref), "mijloace_fixe": mf,
-            "total_mijloace_fixe": total_mf, "disponibilitati": round(disponibil, 2),
-            "total_activ": round(total_mf + disponibil, 2)}
+            "total_mijloace_fixe": total_mf, "disponibilitati": round(disponibil, 2),  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+            "total_activ": round(total_mf + disponibil, 2)}  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5

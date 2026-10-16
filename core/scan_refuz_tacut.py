@@ -43,7 +43,9 @@ _FETCH = re.compile(r"(?<![\w.])fetch\s*\(")
 # Calibrat 27.08.2026 pe instante REALE: `insertAdjacentHTML` chiar afiseaza
 # mesajul (cabinet.js:542, flux_concediu.js:66, citite una cate una). Fara el,
 # detectorul supra-raporta - iar o cifra umflata e la fel de rea ca una mica.
-_ARATA = re.compile(r"\b(arataMesaj|eroareCamp|arataEroare|confirmaCaseta|alert)\s*\(|"
+# [lotul 6, 279, 16.10.2026] `refuzPeRand` (api.js) pune refuzul unei acțiuni de pe rând SUB textul rândului — afișează, ca
+# `insertAdjacentHTML` pe care l-a înlocuit în 11 locuri (`core/test_stare_nota_salvata.py`).
+_ARATA = re.compile(r"\b(arataMesaj|eroareCamp|arataEroare|confirmaCaseta|alert|refuzPeRand)\s*\(|"
                     r"\.insertAdjacent(HTML|Text)\s*\(|"
                     r"\.(innerHTML|textContent|innerText)\s*=|\bthrow\b")
 

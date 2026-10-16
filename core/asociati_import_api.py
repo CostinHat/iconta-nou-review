@@ -108,7 +108,7 @@ def extrage(continut, nume_fisier=""):
 
 def coerenta_cote(randuri):
     """{total, coincide} — suma cotelor vs 100%."""
-    total = round(sum(r.get("cota", 0) for r in randuri), 2)
+    total = round(sum(r.get("cota", 0) for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     return {"total": total, "coincide": abs(total - 100.0) < 0.01}
 
 

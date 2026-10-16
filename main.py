@@ -642,9 +642,20 @@ async def _autor_si_note_in_coada(request: Request, call_next):
     _m = _re_audit.match(r"^/tenants/(\d+)/", request.url.path)
     if _m and response.status_code < 400 and ctx.get("firm"):
         try:
-            await _run_in_threadpool_audit(_uc_coada.note_in_coada, int(_m.group(1)), int(ctx["uid"]), ctx["firm"])
+            _adaugate = await _run_in_threadpool_audit(_uc_coada.note_in_coada, int(_m.group(1)), int(ctx["uid"]), ctx["firm"])
+            if _adaugate:
+                # [deficiența 279, clasa] ecranul spunea „creată ca ciornă” despre o notă plecată singură la validare: răspunsul s-a
+                # scris înainte ca nota să intre în coadă. Antetul îi spune ecranului ce a plecat (`api.js` -> `r.laValidare`).
+                import json as _json_lv
+                from urllib.parse import quote as _quote_lv
+                response.headers["X-Iconta-La-Validare"] = _quote_lv(_json_lv.dumps([a["eticheta"] for a in _adaugate], ensure_ascii=False))
         except Exception as _e:
             _obs.esec_secundar("note pregatite in coada de validare", _e)
+    if response.status_code < 400 and ctx.get("firm"):
+        # [deficiența 284] o notă se validează din Registrul jurnal (`/tenants/…`) sau din coadă (`/coada/…`): după orice modificare
+        # reușită a cabinetului, declarațiile de TVA care așteptau notele validate se generează din nou și intră în coadă. În fundal:
+        # generarea + validatorul ANAF durează secunde, iar validarea notei nu le așteaptă (rezultatul vine prin notificare).
+        _uc_coada.reia_in_fundal(int(ctx["firm"]))
     return response
 
 
@@ -752,12 +763,12 @@ def _citeste_metrici_pentru_alerte():
         total_kb = info.get("MemTotal", 0)
         disp_kb = info.get("MemAvailable", 0)
         if total_kb:
-            rezultat["ram_procent"] = round(100 * (1 - disp_kb / total_kb), 1)
+            rezultat["ram_procent"] = round(100 * (1 - disp_kb / total_kb), 1)  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
     except Exception:
         pass
     try:
         total, folosit, liber = _shutil.disk_usage("/")
-        rezultat["disc_procent"] = round(100 * folosit / total, 1)
+        rezultat["disc_procent"] = round(100 * folosit / total, 1)  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
     except Exception:
         pass
     try:
@@ -1244,6 +1255,7 @@ class VectorIn(BaseModel):  # [p82_vector]
 
 class ProdusPotrivesteIn(BaseModel):  # [p97_produse_rute]
     denumire: str
+    articol: bool = False   # [deficiența 274a] linia are articol de stoc: cota vine numai din nomenclator
     # [lot 19 pct.4d] `platitor_tva` NU mai vine din corp (implicit True -> 21% propus unui neplatitor): ruta il citeste
     # din profilul firmei. Un camp trimis de un client vechi e ignorat de pydantic.
 
@@ -1491,6 +1503,24 @@ def setare_inregistrare_citeste(ctx=Depends(cere_rol("superadmin"))):
     """Comutatorul „Înregistrare: liberă, cu confirmarea emailului / numai prin invitație” (cine și când l-a schimbat)."""
     try:
         return _uc_auth.setare_inregistrare_citeste(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/admin/inregistrari-neconfirmate")
+def inregistrari_neconfirmate(ctx=Depends(cere_rol("superadmin"))):
+    """[deficiența 282] Cererile de înregistrare neconfirmate: data, cabinetul, emailul, trimiterea confirmării, expirarea linkului."""
+    try:
+        return _uc_auth.inregistrari_neconfirmate(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/admin/inregistrari-neconfirmate/{cerere_id}/retrimite")
+def inregistrare_retrimite(cerere_id: int, ctx=Depends(cere_rol("superadmin"))):
+    """[deficiența 282] „Retrimite confirmarea”: link nou, valabil din nou."""
+    try:
+        return _uc_auth.retrimite_confirmarea(cerere_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -2087,8 +2117,8 @@ def solduri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(
     except ValueError as e:
         raise HTTPException(400, str(e))
     randuri = _det["randuri"]
-    td = round(sum(r["debit"] for r in randuri), 2)
-    tc = round(sum(r["credit"] for r in randuri), 2)
+    td = round(sum(r["debit"] for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+    tc = round(sum(r["credit"] for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     valida, motiv = solduri_api.balanta_valida(randuri)
     # [P8] cand fisierul NU e o balanta valida, spunem CE regula nu tine si PE CE fisier - nu doar
     # un text. Domeniul e FISIERUL incarcat (fel de referent adaugat 22.08).
@@ -2335,8 +2365,8 @@ def mijloace_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=
         randuri = mijloace_fixe_import_api.extrage(continut, fisier.filename or "")
     except ValueError as e:
         raise HTTPException(400, str(e))
-    tv = round(sum(r["valoare"] for r in randuri), 2)
-    tr = round(sum(r["rezidual"] for r in randuri), 2)
+    tv = round(sum(r["valoare"] for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+    tr = round(sum(r["rezidual"] for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     cu_avert = sum(1 for r in randuri if not r["ok"])
     erori = migrare_api.erori_verifica(mijloace_fixe_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
     return _raspuns({"randuri": randuri, "total": len(randuri), "total_valoare": tv,
@@ -2657,7 +2687,7 @@ def produse_lista(tenant_id: int, ctx=Depends(cere_context)):
 def produse_potriveste(tenant_id: int, date: ProdusPotrivesteIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     # preview cota (AI), fara salvare - pentru UI la scrierea denumirii; statutul TVA din profilul firmei
     try:
-        return _uc_tenants.produse_potriveste(tenant_id, date.denumire, ctx)
+        return _uc_tenants.produse_potriveste(tenant_id, date.denumire, ctx, din_articol=date.articol)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -2805,6 +2835,21 @@ def firma_profil_date(tenant_id: int, ctx=Depends(cere_context)):
 def firma_profil_date_salveaza(tenant_id: int, date: dict = Body(...),                                ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.firma_profil_date_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+class CorecturaCuiIn(BaseModel):
+    cui: str
+    confirmat: bool = False
+
+
+@app.post("/tenants/{tenant_id}/cui/corectura")
+def firma_cui_corectura(tenant_id: int, date: CorecturaCuiIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
+    """[deficiența 272] Corectura CUI-ului firmei: operațiunea separată a administratorului cabinetului, cu avertisment (Date firmă nu-l
+    mai modifică, de niciun rol). Fără `confirmat` întoarce avertismentul; cu el, scrie CUI-ul în ambele locuri și în jurnal."""
+    try:
+        return _uc_tenants.firma_cui_corectura(tenant_id, date.cui, date.confirmat, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -3317,6 +3362,7 @@ def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn,  
 
 class PachetAprobaIn(BaseModel):
     text: str
+    cu_restante: bool = False   # [deficiența 288c] decizia expresă a contabilului: povestea pomenește restanțele
 
 
 @app.post("/pachete/{tenant_id}/poveste/aproba")
@@ -3593,6 +3639,13 @@ def tenant_amortizare(tenant_id: int, an: int, luna: int,                       
         return _uc_tenants.tenant_amortizare(tenant_id, an, luna, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
+@app.post("/tenants/{tenant_id}/amortizare/restanta")
+def tenant_amortizare_restanta(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.VALIDA))):
+    """[deficiența 281] Amortizarea tuturor lunilor restante până la (an, luna) inclusiv, o notă pe lună, dintr-o singură acțiune."""
+    try:
+        return _uc_tenants.tenant_amortizare_restanta(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 def _perioada_blocata(conn, schema, data_nota):
     """[P7 · use-case] Invelisul HTTP al lui `core/uc_comun._perioada_blocata` — traduce refuzul de
     domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
@@ -3683,9 +3736,10 @@ def _ciorne_in_perioada(cur, schema, an, luna):
 #       poartă. NU se duplică: se cheamă exact `inchidere_luna.blocaj`.
 # Ce NU s-a adăugat, cu motivul lui: echilibrul și orfanii — cer o măsurătoare pe ce s-ar bloca
 # azi pe firme reale, iar aia se discută separat.
-def perioada_blocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.VALIDA))):
+def perioada_blocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.VALIDA)),
+                       confirma_amortizare: bool = False):
     try:
-        return _uc_tenants.perioada_blocheaza(tenant_id, an, luna, ctx)
+        return _uc_tenants.perioada_blocheaza(tenant_id, an, luna, ctx, confirma_amortizare=confirma_amortizare)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -5560,6 +5614,25 @@ def casa_sterge(tenant_id: int, op_id: int, ctx=Depends(cere_drept(_drepturi.PRE
         raise _http_din(e)
 
 
+@app.post("/tenants/{tenant_id}/casa/previzualizare")
+def casa_previzualizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[lotul 6 pct.3, 278] Ce ar spune salvarea dispoziției, fără să scrie: facturile deschise ale partenerului, avansul, plafoanele."""
+    try:
+        return _uc_tenants.casa_previzualizare(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/casa/operatiuni/{op_id}/leaga")
+def casa_leaga(tenant_id: int, op_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[lotul 6 pct.3a, 278] Leagă o încasare / plată în numerar (nota ei, ciornă) de factura pe care o stinge — și avansul, de factura
+    de avans emisă după încasare."""
+    try:
+        return _uc_tenants.casa_leaga(tenant_id, op_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.post("/tenants/{tenant_id}/casa/operatiuni/{op_id}/storneaza")
 def casa_storneaza(tenant_id: int, op_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Stornarea unei operațiuni de casă cu notă validată (Retest 2, pct.4): operațiunea inversă în registru + nota ciornă în roșu."""
@@ -6113,6 +6186,33 @@ def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
     idempotent pe (numar, tert_cui, data_emitere)."""
     try:
         return _uc_tenants.import_efactura(tenant_id, [(_octetii(_f), _f.filename) for _f in fisiere], ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/tenants/{tenant_id}/spv/stare")
+def spv_stare_firma(tenant_id: int, ctx=Depends(cere_context)):
+    """[lotul 6: 273a, 275c, 289b] Starea SPV a firmei: conexiunea cabinetului + ultima citire a CUI-ului ei (fără apel la ANAF)."""
+    try:
+        return _uc_tenants.spv_stare_firma(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/spv/verifica-acum")
+def spv_verifica_acum(tenant_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[lotul 6 pct.7b, 273] „Verifică acum în SPV”: citirea facturilor primite ale firmei, acum (aceeași ca a timerului)."""
+    try:
+        return _uc_tenants.spv_verifica_acum(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/facturi-primite/import-xml")
+def facturi_primite_import_xml(tenant_id: int, fisiere: list[UploadFile] = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[lotul 6 pct.7b, 273] Import manual XML UBL (sau ZIP) al facturilor primite: intră în lista de validat, ca cele din SPV."""
+    try:
+        return _uc_tenants.facturi_primite_import_xml(tenant_id, [(_octetii(_f), _f.filename) for _f in fisiere], ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

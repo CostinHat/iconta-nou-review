@@ -308,6 +308,44 @@ def blocaje(conn, profil):
 # corespondență."* Vectorul și regimul nu sunt în `CAMPURI_FISCALE` — trăiesc pe rutele lor.
 CAMPURI_CARE_DECID = ("cui",)
 
+COD_CUI_NEMODIFICABIL = "CUI_NEMODIFICABIL"
+MESAJ_CUI_NEMODIFICABIL = ("CUI-ul nu se modifică din Date firmă. Dacă CUI-ul înregistrat e greșit, îl corectează administratorul "
+                           "cabinetului, din butonul „Corectează CUI-ul” — operațiune separată, cu avertisment.")
+#: [deficiența 272] ce spune avertismentul corecturii, înainte de confirmare
+AVERTISMENT_CORECTURA_CUI = ("Corectezi CUI-ul firmei din %s în %s. CUI-ul intră în fiecare declarație și factură de acum înainte; "
+                             "declarațiile și facturile emise deja rămân cu CUI-ul vechi (o declarație depusă greșit se corectează "
+                             "cu o declarație rectificativă). Folosește corectura numai dacă CUI-ul înregistrat e greșit — o firmă "
+                             "nouă (alt CUI) se adaugă ca firmă nouă, nu se corectează.")
+
+
+def corecteaza_cui(conn, tenant_id, cui, user_id, confirmat=False):
+    """[deficiența 272] Corectura CUI-ului — operațiunea separată a administratorului (ruta o păzește: `drepturi.ADMIN`). Fără
+    `confirmat`, întoarce avertismentul (nimic scris). Cu el: cifra de control, perioadele deschise (CUI-ul decide declarațiile), scrierea
+    în AMBELE locuri (`tenant_provisioning.alege_cui`) și jurnalul Date firmă, cu autorul. Nu comite (apelantul deține tranzacția)."""
+    _cui = (cui or "").strip().upper()
+    inainte = _instantaneu(conn)
+    _vechi = (inainte.get("cui") or "").strip()
+    if not _cui:
+        return {"ok": False, "camp": "cui", "mesaj": "Scrie CUI-ul corect."}
+    if _cui == _vechi.upper():
+        return {"ok": False, "camp": "cui", "cod": "CUI_NESCHIMBAT", "mesaj": "CUI-ul scris e cel înregistrat deja: nu e nimic de corectat."}
+    from core.solduri_parteneri_api import valideaza_cui as _vcui
+    _ok, _motiv = _vcui(_cui)
+    if not _ok:
+        return {"ok": False, "camp": "cui", "mesaj": "CUI-ul %s nu e valid (%s)." % (_cui, _motiv)}
+    if not confirmat:
+        return {"ok": False, "cod": "CONFIRMARE_CERUTA", "avertisment": AVERTISMENT_CORECTURA_CUI % (_vechi or "—", _cui)}
+    from core import tenant_provisioning as _tp, repo_firma_profil as _rfp
+    try:
+        _tp.cere_cui_unic(conn, tenant_id, _cui)
+        cere_perioade_deschise(conn, "CUI-ul firmei")
+    except ValueError as e:
+        return {"ok": False, "camp": "cui", "mesaj": str(e)}
+    _tp.alege_cui(conn, tenant_id, _cui)
+    with conn.cursor() as cur:
+        _rfp.jurnalizeaza_campuri(cur, inainte, _instantaneu(conn), user_id)
+    return {"ok": True, "cui": _cui}
+
 
 def cere_perioade_deschise(conn, ce):
     """[R46, 26.08.2026] Un câmp care decide ce se datorează nu se schimbă peste o perioadă închisă.
@@ -478,6 +516,14 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
     # să treacă mai departe — altfel poarta ar bloca munca de zi cu zi ca să apere trecutul.
     # [05.10.2026, găsit la proba pct.2] poarta se aplică la SCHIMBAREA unui câmp care decide, nu la prezența lui: formularul
     # trimite mereu CUI-ul, deci pe o firmă cu o lună închisă Date firmă nu se mai putea salva deloc — iar refuzul ieșea 500.
+    # [deficiența 272, comanda Costin 16.10.2026, verbatim în DECIZII] „CUI-ul nu se modifică din acest ecran, de niciun rol; o corectură
+    # reală de CUI e o operațiune separată, a administratorului, cu avertisment.” Formularul trimite mereu CUI-ul: același trece (nu se
+    # rescrie); altul se refuză (`corecteaza_cui` e operațiunea separată). Numai o firmă FĂRĂ CUI îl primește de aici (completare).
+    _cui_vechi = (inainte.get("cui") or "").strip()
+    if "cui" in curat and _cui_vechi:
+        if (curat["cui"] or "").strip().upper() != _cui_vechi.upper():
+            return {"ok": False, "camp": "cui", "cod": COD_CUI_NEMODIFICABIL, "mesaj": MESAJ_CUI_NEMODIFICABIL}
+        curat.pop("cui")
     with conn.cursor() as _cur:
         _cur.execute("SELECT %s FROM firma_profil WHERE id = 1" % ", ".join(CAMPURI_CARE_DECID))
         _act = _cur.fetchone()

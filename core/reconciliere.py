@@ -106,7 +106,7 @@ def potriveste_linie(linie, facturi_deschise):
     f = _match_exact_una(suma, facturi)
     if f:
         return dict(_af.afirmatie(
-            "fapt", "reconciliere extras", "match exact pe o factura",
+            "fapt", "reconciliere extras", "potrivire exactă pe o factură",
             unde=_Unde("linie_extras", cui, "suma %s" % suma),
             temei_completitudine="documentele deschise ale partenerului, la suma exacta"),
             status="verde", alocari=[{"factura_id": f["id"], "suma": suma}])
@@ -114,7 +114,7 @@ def potriveste_linie(linie, facturi_deschise):
     combo = _match_combo(suma, facturi)
     if combo:
         return dict(_af.afirmatie(
-            "fapt", "reconciliere extras", f"match exact pe {_cate(len(combo), 'factură', 'facturi')}",
+            "fapt", "reconciliere extras", f"potrivire exactă pe {_cate(len(combo), 'factură', 'facturi')}",
             unde=_Unde("linie_extras", cui, "suma %s" % suma),
             temei_completitudine="documentele deschise ale partenerului, pe combinație de solduri"),
             status="verde",
@@ -129,7 +129,7 @@ def potriveste_linie(linie, facturi_deschise):
             temei_completitudine="soldurile deschise ale partenerului, însumate"),
             status="galben", alocari=alocari)
     return dict(_af.afirmatie(
-        "fapt", "reconciliere extras", "alocare partiala FIFO",
+        "fapt", "reconciliere extras", "alocare parțială, pe facturile cele mai vechi întâi",
         unde=_Unde("linie_extras", cui, "suma %s" % suma),
         temei_completitudine="documentele deschise, alocate în ordinea vechimii (FIFO)"),
         status="galben", alocari=alocari)

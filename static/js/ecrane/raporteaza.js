@@ -5,7 +5,7 @@
 // exporturi (CSV, XLS/XLSX, ZIP). [C36] Fisierele firului stau in depozitul privat: se arata si se descarca numai prin ruta
 // autentificata `/raportari/fisiere/{id}` (echipa iConta si autorul), iar autorul le poate sterge.
 
-import { api, dataRo, arataMesaj, esc, cereBlob, descarca, deschideLupa, confirmaCaseta, eroareCamp, curataEroriCamp, cate } from "../api.js?v=72aa1cbbdb";
+import { api, dataRo, arataMesaj, esc, cereBlob, descarca, deschideLupa, confirmaCaseta, eroareCamp, curataEroriCamp, cate, refuzPeRand } from "../api.js?v=9409795a49";
 
 function dataScurta(iso) {
   return dataRo(iso, "cu_ora");
@@ -46,7 +46,7 @@ export function legaFisiere(zona, dupaStergere) {
   zona.querySelectorAll("[data-sterge-fisier]").forEach((b) => b.addEventListener("click", () => {
     confirmaCaseta(b, "Ștergi fișierul? Se scoate și din iConta.eu, nu doar din fir.", async () => {
       try { await api.del(`/raportari/fisiere/${b.dataset.stergeFisier}`); if (dupaStergere) await dupaStergere(); }
-      catch (e) { b.insertAdjacentHTML("afterend", `<span class="msg-eroare"> ${esc((e && e.mesaj) || "Fișierul nu s-a putut șterge.")}</span>`); }
+      catch (e) { refuzPeRand(b, (e && e.mesaj) || "Fișierul nu s-a putut șterge."); }
     }, { textOk: "Șterge fișierul" });
   }));
 }
@@ -192,9 +192,9 @@ export async function randeazaRaporteaza(corp, nav) {
   }
 
   function renderFir(f) {
-    const badge = f.stare === "noua"
-      ? `<span class="rap-badge-pct" title="în așteptarea răspunsului"></span>`
-      : (f.necitite > 0 ? `<span class="rap-badge-pct rap-badge-verde" title="răspuns primit, necitit"></span>` : "");
+    // [deficiența 291] bulina = o veste de la iConta necitită (răspuns sau stare schimbată), nu cererea mea în așteptare — aia o spune
+    // starea de lângă („în așteptare”)
+    const badge = f.necitite > 0 ? `<span class="rap-badge-pct rap-badge-verde" title="răspuns sau stare nouă de la iConta.eu, necitită"></span>` : "";
     const stareEt = { noua: "în așteptare", raspuns: "răspuns primit", inchisa: "închisă" }[f.stare] || f.stare;
     // titlul firului = inceputul primului mesaj (al meu)
     const primul = f.tip === "cerere_import" ? `Cerere import din ${f.aplicatie || ""}`
@@ -239,9 +239,21 @@ export async function randeazaRaporteaza(corp, nav) {
       const elNou = lista.querySelector(`.rap-fir[data-id="${f.id}"] .rap-fir-corp`);
       if (elNou) elNou.style.display = "block";
     });
-    cap.addEventListener("click", () => {
+    cap.addEventListener("click", async () => {
       const deschis = corpFir.style.display !== "none";
       corpFir.style.display = deschis ? "none" : "block";
+      if (!deschis && f.necitite > 0) {   // [291] firul deschis = vestea văzută: bulina (aici și pe „Suport”) se stinge
+        try {
+          await api.post(`/raportari/${f.id}/citit`, {});
+          f.necitite = 0;
+          const b = cap.querySelector(".rap-badge-pct"); if (b) b.remove();
+          document.dispatchEvent(new CustomEvent("raportari:schimbat"));
+        } catch (e) {
+          const z = document.createElement("div");
+          corpFir.prepend(z);
+          arataMesaj(z, `Vestea nu s-a putut marca drept citită (${e.mesaj || "eroare"}): bulina rămâne până la următoarea deschidere.`, "avert");
+        }
+      }
       const ta2 = el.querySelector(".rap-replica-text"); if (!deschis && ta2) { ta2.style.height = "auto"; ta2.style.height = Math.max(ta2.scrollHeight, 44) + "px"; }  // [fix_autogrow] scrollHeight e 0 cat firul e ascuns
     });
     const btn = el.querySelector(".rap-replica-btn");
@@ -257,7 +269,7 @@ export async function randeazaRaporteaza(corp, nav) {
         // redeschide firul
         const elNou = lista.querySelector(`.rap-fir[data-id="${f.id}"] .rap-fir-corp`);
         if (elNou) elNou.style.display = "block";
-      } catch { btn.disabled = false; btn.insertAdjacentHTML("afterend", '<span class="msg-eroare"> Nu s-a putut trimite răspunsul. Reîncearcă.</span>'); }
+      } catch { btn.disabled = false; refuzPeRand(btn, "Nu s-a putut trimite răspunsul. Reîncearcă."); }
     });
   }
 

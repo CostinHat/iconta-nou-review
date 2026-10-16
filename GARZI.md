@@ -8953,9 +8953,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**815 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**828 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 776
+### `core/` — 789
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8987,6 +8987,14 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/scan_valori_afisate.py` — Valori FISCALE scrise literal in TEXTUL AFISAT de ecrane.
 - `core/test_11_deducere_copii_gard.py` — GARD #11: deducerea de 100 lei/copil (CF art.77 alin.(10) lit.b) NU se acorda tacit — art.77 alin.(12)-(13)
 - `core/test_12_salariu_minim_luna.py` — GARD #12: CF art.77 alin.(3) teza finala — cand in aceeasi luna se aplica mai multe valori ale
+- `core/test_272_cui_nemodificabil.py` — 272 — Date firmă: CUI-ul nu se modifică din acest ecran, de niciun rol; corectura e operațiunea separată a administratorului, cu
+- `core/test_281_amortizare_restanta.py` — 281 — Mijloace fixe / închidere (comanda Costin 16.10.2026, „Lotul 6, comanda 1” pct.9, verbatim în DECIZII): „lunile de amortizare
+- `core/test_282_inregistrari_neconfirmate.py` — 282 — Panou Admin → Înregistrare: cererile neconfirmate și „Retrimite confirmarea” (comanda Costin 16.10.2026, „Lotul 6, comanda 1”
+- `core/test_284_note_explicative.py` — 284 — D300 / control: refuzul de la „Trimite în coadă” numește notele care explică diferența, iar după validarea lor declarația se
+- `core/test_288_povestea_lunii.py` — 288 — Povestea lunii (comanda Costin 16.10.2026, a doua completare la lotul 6, verbatim în DECIZII): (a) „Povestea folosește termenii
+- `core/test_291_bulina_suport.py` — 291 — bulina de pe „Suport” (comanda Costin 16.10.2026, completarea 290–295 la lotul 6, verbatim în DECIZII): „Bulina roșie de pe
+- `core/test_293_renunta_altui.py` — 293 — coada: pe declarația altcuiva, fără „Poate depune”, numai vizualizare (comanda Costin 16.10.2026, completarea 290–295, verbatim
+- `core/test_295_rezumat_d100.py` — 295 — D100 pasul 2: „Rezumat” cu baza de calcul (comanda Costin 16.10.2026, completarea 290–295, verbatim în DECIZII): „D100 pasul 2
 - `core/test_2b_coloana.py` — GARD — coloana `salariati.salariu_brut` s-a retras (punctul 4, decizia Costin 03.10.2026) și nu se poate întoarce.
 - `core/test_3c_functie_baza.py` — GARD [3c, CF art.77 alin.(1)]: deducerea personala se acorda NUMAI la functia de baza.
 - `core/test_3i_storno_cota.py` — GARD [3i, CF art. 282 alin. (9)]: storno-ul unei facturi cu cota 19% (emisa inainte de 01.08.2025)
@@ -9014,6 +9022,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_agenda.py` — Garda anti-stale a agendei: pica daca TESTE.md a ramas in urma codului. Diferenta fata de DE_FACUT.md
 - `core/test_agenda_urmator.py` — GARD — „URMATORUL PAS” din agendă nu poate propune un fir ÎNCHIS sau BLOCAT și vede ambele forme de scriere.
 - `core/test_ai_incredere.py` — —
+- `core/test_ajutor_fara_termeni_tehnici.py` — GARD — comanda Costin 16.10.2026, „Lotul 6, comanda 1” (verbatim în DECIZII): 276c „Ajutorul nu folosește termeni de programator
 - `core/test_ajutor_periodicitate_tva.py` — GARD [06.09.2026, cerut de Costin]: aceeași alegere, pusă în două ecrane, poartă ACELAȘI criteriu.
 - `core/test_ajutor_prelogin_fallback.py` — GARD ajutor_prelogin: handlerul global al semnului "?" nu depinde DOAR de _navGlobal (shell
 - `core/test_alerta_load.py` — Alerta de load (comanda Costin 15.10.2026 noaptea, „Lotul 5 — comanda 3” pct.6b, verbatim în DECIZII): „Alerta de load pleacă doar
@@ -9062,7 +9071,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_c2_migrare_revenire_firma.py` — C2 (audit tenant_003): dupa salvarea unui strat de import (salariati, solduri, parteneri, asociati,
 - `core/test_c3_pool_scurgere.py` — [C3, 17.09.2026] O conexiune moartă nu se scurge din pool.
 - `core/test_c4_model_csv.py` — C4 (audit tenant_003): fiecare strat de import cu fisier ofera 'Descarca model (CSV)' cu formatul REAL
-- `core/test_c5_extras_idempotent.py` — C5 — importul de extras bancar e IDEMPOTENT la nivel de fisier (audit independent 2026-09-17).
+- `core/test_c5_extras_idempotent.py` — C5 + 277 — importul de extras bancar nu dublează mișcările și nu respinge mișcări noi.
 - `core/test_c6_c5_motiv_acord.py` — GARD C6 + C5 (audit vizual tenant_003, 16.08.2026).
 - `core/test_c7_periodicitate_trimestriala.py` — GARD C7 — generarea TVA-decont (d300/d394/d406) urmeaza periodicitatea EFECTIVA a firmei (tip_decont),
 - `core/test_cache_declarat.py` — P6 valul 2 — un cache admis isi poarta cele cinci lucruri, si dovada nu e o promisiune.
@@ -9074,6 +9083,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_capital_social.py` — GARD — capitalul social pe factură (lot 19, defectul 12, 03.10.2026).
 - `core/test_capturi_numite.py` — GARD [HH, 28.08.2026]: o captură comisă fără proprietar în registru pică poarta.
 - `core/test_cartea_mare.py` — GARD — Cartea mare ajunge la om, și fișa își poartă temeiul de completitudine.
+- `core/test_casa_facturi_avans.py` — 278 — Casă: dispoziția legată de factură, avansul de la client, plafonul Legii 70/2015 (comanda Costin 16.10.2026, „Lotul 6, comanda 1”
 - `core/test_cashflow.py` — —
 - `core/test_catch_vizibil.py` — GARD DEFECT-3 (08.08.2026): (A) frontend - un catch{} GOL care inghite un api.* transforma un 500 intr-o
 - `core/test_categorie_marime.py` — GARD — categoria de mărime nu se rotunjește la „micro", și pragurile citează actul.
@@ -9618,6 +9628,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_registru_evidenta_fiscala.py` — GARD: registrul de evidenta fiscala — si mai ales ca nu devine un AL DOILEA calcul al aceluiasi an.
 - `core/test_registru_exceptii.py` — GARDĂ peste REGISTRUL DE EXCEPȚII al clichetului de afirmații. (P8, 22.08.2026)
 - `core/test_registru_fiscal.py` — GĂRZI R1 — registrul unic de parametri fiscali (`common.COTE`), comanda Costin 08.10.2026 (verbatim în DECIZII).
+- `core/test_registru_fiscal_conexiune.py` — Registrul de evidență fiscală, varianta PROFIT, se construiește pe conexiunea FIRMEI (lotul 6, găsit de garda e2e 285, care deschide
 - `core/test_registru_functionalitati.py` — Garda de integritate a FUNCTIONALITATI.csv (registrul canonic al functionalitatilor).
 - `core/test_registru_inventar.py` — GARD: registrul-inventar (14-1-2) — si mai ales defectul care l-ar face sa arate perfect.
 - `core/test_registru_jurnal_14_1_1.py` — GARD — Registrul-jurnal păstrează cele trei coloane cerute de norma 14-1-1.
@@ -9636,7 +9647,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_rol_pe_efect.py` — core/test_rol_pe_efect.py — GARD: rolul se cere după CE FACE ruta, nu după cum se numește.
 - `core/test_rosu_termen_depasit.py` — GARD — deficiența 220 (comanda Costin 10.10.2026, verbatim în DECIZII): „Control fiscal: declarațiile apar cu roșu încă dinainte de
 - `core/test_rotunjire_explicita.py` — GARDA (lot 06.10, 06.10.2026): niciun `.quantize(...)` fără mod de rotunjire explicit în codul de producție.
-- `core/test_rotunjire_fiscala.py` — [Rotunjire fiscală] GARD: în modulele de declarații (`core/d*.py`, `*engine*.py`) o sumă fiscală NU se
+- `core/test_rotunjire_fiscala.py` — [Rotunjire fiscală] GARD: în tot `core/` + `main.py` (până la 16.10.2026, 280: numai modulele de declarații `core/d*.py`,
 - `core/test_rulari_teste.py` — `core.rulari_teste.in_curs` recunoaște rulările de teste după linia de comandă (pe un `/proc` de probă): pytest, plasa, uneltele
 - `core/test_running_head.py` — GARD detector "running == HEAD" (DECIZII/GARZI iulie: detector vizibil, NU auto-restart).
 - `core/test_ruptura_seed_control.py` — Garda anti-ruptura seed<->control (plimbare vizuala 14.08.2026).
@@ -9675,8 +9686,10 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_sonda_web.py` — GARD [R75 (b), 27.08.2026]: procesul care servește ecranele e supravegheat, și se știe cum.
 - `core/test_sonde_stare.py` — core/test_sonde_stare.py — clichetul interdicției 78: o sondă care nu poate spune dacă a reușit.
 - `core/test_spv_conector.py` — Teste core/spv_conector.py — pe MOCK, niciodata pe ANAF real (brief BRIEF_CODE_CONECTOR_SPV.md).
+- `core/test_spv_lot6.py` — Lotul 6 (comanda Costin 16.10.2026, verbatim în DECIZII „Lotul 6, comanda 1” și „a treia completare”): SPV — 273 (facturile primite:
 - `core/test_spv_poll.py` — Teste core/spv_poll.py (F178) — pe MOCK, niciodata pe ANAF real.
 - `core/test_spv_receive.py` — Teste core/spv_receive.py (F179) — pe MOCK (retea + parser), niciodata pe ANAF real.
+- `core/test_stare_nota_salvata.py` — GARD — deficiența 279 (comanda Costin 16.10.2026, „Lotul 6, comanda 1” pct.4, verbatim în DECIZII): „după salvare mesajul spunea
 - `core/test_stare_proces.py` — Garda instrumentului P6 — inventarul starii din memoria procesului.
 - `core/test_stat_plata_emis.py` — GARDĂ: statul de plată e un DOCUMENT EMIS, nu o vedere recalculată. (21.08.2026)
 - `core/test_status_factura_un_loc.py` — GARDĂ: stările unei FACTURI trăiesc într-un singur loc. (22.08.2026, după reparația de prag 1)
@@ -11156,3 +11169,33 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | 244 motivul bilanțului cu notele de închidere propuse | `core/bilant.motive_31_12` (`inchidere_propusa`), `core/bilant_api._motive_31_12` (`inchidere_an.ciorne`, `solduri_dupa`), afirmația `propuse` -> legătura din ecranul Bilanț + `test_def_244_dupa_propunere_motivul_e_validarea_notelor` + e2e `test_def_244_dupa_propunere_legatura_spre_notele_de_validat` | „închide clasele 6/7” după propunere; o legătură care nu duce la notele propuse pe luna lor | `propuse` nepasat -> ROȘU (unitar și în plasă) | — |
 | 245 sursa notei în cuvinte | `core/jurnal_api.ETICHETE_SURSA` + `core/test_jurnal_sursa_eticheta.py` (4: fiecare sursă scrisă în `inregistrari` are etichetă — scanează toate scrierile; o sursă-parametru nerezolvată pică; ecranul nu afișează codul) + e2e `test_def_245_sursa_notei_se_scrie_in_cuvinte` | o sursă nouă afișată ca cod intern | `inchidere_an` scos din etichete / `esc(n.sursa)` repus -> ROȘU | o scriere cu numele tabelului construit dinamic (azi niciuna) |
 | bomba de calendar: testele nu întreabă regula „perioada s-a încheiat” pe ziua de azi (găsită de Code la 243, 14.10.2026) | `core/test_teste_ziua_fixata.py` (2) | un test verde numai până trece luna (`core/test_retest2.py` afirma `luna_in_curs(2026, 10)` fără zi: ar fi oprit poarta din 01.11.2026) | `azi=zi` scos din `test_retest2` -> ROȘU | numai `luna_in_curs` / `an_incheiat`; alte funcții care citesc ziua de azi nu le vede |
+
+## 16.10.2026 — lotul 6 (272–295, C41): garduri noi
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| 277 duplicatul = mișcarea, nu fișierul | `core/test_c5_extras_idempotent.py` + e2e `test_def_277_…` | un extras nou respins fiindcă fișierul seamănă cu unul vechi; o mișcare dublată la reimport | `if existente:` în `importa_extras` -> ROȘU (browser) | cheia: dată, sumă, sens, referință / descriere, cont |
+| 276 ajutorul fără termeni de programator | `core/test_ajutor_fara_termeni_tehnici.py` (ajutorul din FUNCTIONALITATI.csv, titlurile, frazele JS) | „API”, „endpoint”, „JSON”, „backend” … în textul pentru contabil | un termen repus în CSV -> ROȘU | lista `TERMENI` (calibrată, nu exhaustivă) |
+| 278 încasarea leagă factura, avansul, plafonul din formular | `core/test_casa_facturi_avans.py` (7) + e2e `test_def_278_…` | factura rămasă neîncasată după dispoziție; surplusul nesemnalat; avansul contat pe 707 | ramura 419 scoasă din `contare_facturi` -> ROȘU | D394 raportează avansul pe data facturii |
+| 279 starea reală a notei la salvare; refuzul pe rând | `core/test_stare_nota_salvata.py` (4) + verificator FEREASTRA_LOT6 (REFUZ_LIPIT) | „creată ca ciornă” scris de mână; refuzul lipit de buton | mesajul vechi repus în Casă -> ROȘU | un mesaj fără cuvântul „ciornă” nu e prins de tipar |
+| 273 / 275 / 289 / pct.2b SPV | `core/test_spv_lot6.py` (7) + e2e 273 / 275 / 289 | termenul de transmitere greșit; categoria AE necitită; prima citire pe 3 zile; refuzul de drept uitat | `ZILE` în loc de `ZILE_PRIMA_CITIRE` -> ROȘU | titularul certificatului nu e în tokenul ANAF |
+| 284 notele care explică diferența; reluarea automată | `core/test_284_note_explicative.py` (4) + e2e `test_def_284_…` | refuzul care spune doar „N note nevalidate”; declarația care nu revine în coadă după validare | `cont_credit` -> `cont_debit` în `ciorne_pe_conturi_tva`; `if not ramase` -> ROȘU (unitar + browser) | numai porțile TVA (D406 numără, nu numește) |
+| 272 CUI-ul nu se schimbă din Date firmă | `core/test_272_cui_nemodificabil.py` (4) + `core/test_nume_firma_unic.py::test_redenumirea_nu_schimba_CUI_ul` + e2e | CUI schimbat din formular (orice rol) sau prin `PUT /tenants` (numai în `public.tenants`) | refuzul scos din `salveaza_date` -> ROȘU | — |
+| 281 amortizarea restantă; blocajul confirmabil | `core/test_281_amortizare_restanta.py` (3) + e2e `test_def_281_…` | închiderea lunii peste amortizarea lunilor anterioare fără confirmare | `blocaje.append` -> `semnale.append` -> ROȘU | — |
+| 282 cererile neconfirmate + retrimiterea | `core/test_282_inregistrari_neconfirmate.py` (3) + e2e `test_def_282_…` | link nou scris deși emailul n-a plecat | `if not _trimite_confirmarea` -> `if False` -> ROȘU | — |
+| 285 fereastra se lățește singură; acțiunea fixă jos | verificator FEREASTRA_LOT6 (LATIRE_AUTOMATA, BARA_FIXA, RAND_RUPT, READONLY_GLOBAL) + e2e `test_def_285_…` (toate cardurile ferestrei firmei, detaliul facturii la 1100px, conținut lat sintetic) | o fereastră cu derulare laterală; „Trimite în coadă” sub marginea ferestrei | `_lateste` oprit; `.bara-fixa` scoasă; `flex-wrap` scos -> ROȘU (browser) | ferestrele din afara cardurilor firmei se măsoară numai unde le deschid alte e2e |
+| C41 registrul fiscal pe conexiunea firmei | `core/test_registru_fiscal_conexiune.py` + e2e `test_def_c41_…` | 500 „relation … does not exist” pe varianta profit | `get_conn(schema)` -> `get_conn()` -> ROȘU | generalizarea: scanare AST a generatoarelor pe conexiunea publică (6 locuri, probate) |
+| 290 eroarea dispare la corectare | verificator FEREASTRA_LOT6 (ERORI_DUPA_CORECTARE) + e2e `test_def_290_…` | o eroare de formular rămasă după corectarea câmpului | ascultarea scoasă din `api.js` -> ROȘU | `dec-eroare` (rezultatul generării) rămâne deliberat |
+| 291 bulina = vești de la iConta | `core/test_291_bulina_suport.py` (2) + e2e `test_def_291_…` | bulina pentru cererea proprie; confirmarea escaladării ca veste | contorul înapoi pe `stare='noua'`; `veste=False` scos -> ROȘU | — |
+| 292 titlul ferestrei = al cardului | e2e `test_def_292_…` (+ 127 aliniat) | titlul calculat din conținut când fereastra vine din card | `corp.dataset.titluCard ||` scos -> ROȘU | — |
+| 293 renunțarea pe declarația altcuiva | `core/test_293_renunta_altui.py` + e2e `test_def_293_…` | „Renunță” oferit / acceptat fără Poate depune | condiția autorului scoasă; garda scoasă -> ROȘU | — |
+| 294 perioada implicită scadentă | e2e `test_def_294_…` | perioada în curs propusă | `perioadaImplicita` scoasă -> ROȘU | — |
+| 295 Rezumatul D100 | `core/test_295_rezumat_d100.py` (2) + e2e `test_def_295_…` | D100 fără baza de calcul | `res.sinteza = …` scos -> ROȘU | — |
+| 288 povestea verificată la aprobare | `core/test_288_povestea_lunii.py` (3) + e2e `test_def_288_…` | „încasări”, luna nespusă / „cumulat”, restanțele fără decizie; închiderea 121 în rezultatul lunii | `if blocante` -> `if False`; excluderea 121 scoasă -> ROȘU | — |
+| 280 rotunjirea în toată aplicația | `core/test_rotunjire_fiscala.py::test_rotunjirea_in_toata_aplicatia_e_aritmetica_sau_motivata` + `::test_280_…` | `round()` la par pe o sumă nouă, oriunde în `core/` + `main.py` | valoarea articolului înapoi pe `round()` -> ROȘU | JS: `Math.round` (jumătatea în sus), nescanat |
+| 274a articolul fără cotă în nomenclator | e2e `test_def_274_…` | linia „—” fără explicație | ramura `din_articol` oprită -> ROȘU (browser) | 274b neimplementată (propunere de validat) |
+| scanerul drepturilor: selectorii nu numesc funcții | `core/test_drepturi_ui.py::test_CALIBRARE_cuvintele_unui_selector_nu_numesc_functii` | fals-pozitivul „buton spre un ecran numai al administratorului” din cuvintele unui selector | `_SELECTOR_SIR.sub` scos -> ROȘU | numai selectorii care încep cu `#`, `.`, `[` |
+| 285 bara fixă nu acoperă ce vine după ea | verificator FEREASTRA_LOT6 / `BARA_NU_ACOPERA` (`verificator_conformitate.py`) + e2e `test_def_164_…` | marginea negativă de jos a `.bara-fixa` peste nota de subsol / jurnal | regula CSS scoasă -> verificator TOTAL 1, e2e 164 ROȘU (24px) | măsoară numai ecranele din e2e 164; regula CSS e globală |
+| refuzurile afișate prin `refuzPeRand` | `core/scan_refuz_tacut.py::_ARATA` (+ `core/test_refuz_tacut.py`, clichet 18 / 82) | o scriere care înghite refuzul | — (calibrare: fără `refuzPeRand` scanerul vedea 16 scrieri mute false) | o funcție proprie de afișare, nenumită, rămâne nevăzută (modul 1 declarat) |
+| 278 legarea casei până în rulaj | `core/test_rute_fiscale_lot3b.py::test_INCASAREA_DE_CASA_legata_de_factura_ajunge_in_rulajul_clientului` | ruta nouă care scrie în cifre de declarație fără probă (criteriu `test_rute_probate`) | `leaga` fără factura pe notă -> ROȘU | — |
+| 282 emailul fără conexiune ținută | `core/test_val3_contracte.py` (clasa C5) + `core/test_tranzactii_clasificate.py` | `trimite_email_html` sub o conexiune din pool | trimiterea mutată înapoi în blocul conexiunii -> ROȘU | — |

@@ -175,7 +175,7 @@ def portal_povesti(tenant_id, ctx):
                 r["cheltuieli"] = cur_rz["cheltuieli"]
                 r["rezultat"] = cur_rz["rezultat"]
                 r["rezultat_anterior"] = prev_rz["rezultat"]
-                r["diferenta"] = round(cur_rz["rezultat"] - prev_rz["rezultat"], 2)
+                r["diferenta"] = round(cur_rz["rezultat"] - prev_rz["rezultat"], 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     return {"povesti": rows}
 
 
@@ -429,8 +429,8 @@ def portal_bon(fisiere, tenant_id, ctx):
     # cotele TVA period-aware din common.COTE (Legea 141/2025), nu literali cuplati la anul curent
     _r_std = int(_common.cota("tva_standard", strict=False)[0] * 100)
     _r_red = int(_common.cota("tva_redusa", strict=False)[0] * 100)
-    tva_11 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == _r_red), 2)
-    tva_21 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == _r_std), 2)
+    tva_11 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == _r_red), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+    tva_21 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == _r_std), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     schema = t["schema_name"]
     with db.get_conn() as conn:  # verif_doc_pozate_v1: drafturi abandonate >24h se curata (rand + poze)
         with conn.cursor() as cur:

@@ -99,7 +99,10 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # [15.10.2026, lotul 5] 91 -> 92: `core/migrare_fisiere_private.py` (`public.fisiere_private`, `raportari.tip/aplicatie` — 270d, C36)
     # [16.10.2026, lotul 5, comanda 4] 92 -> 93: `core/migrare_nume_conturi_vechi.py` (numele întreg al administratorilor vechi, 269);
     # prins numai de poarta lotului — rularea țintită nu vedea un `.py` nou (acum: `perimetru.MOTIV_POPULATIE` -> suita întreagă)
-    assert 40 <= len(mg) <= 93, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [16.10.2026, lotul 6] 93 -> 99: `migrare_extras_miscare` (277, mișcarea extrasului), `migrare_casa_avans` (278, avansul și
+    # legătura chitanțelor vechi), `migrare_spv_citiri` (273 / pct.2b, citirile SPV pe CUI), `migrare_declaratii_asteptare` (284),
+    # `migrare_inregistrari_email` (282), `migrare_raportari_stare_necitita` (291) — toate DDL idempotent pe o tabelă / coloană, o dată.
+    assert 40 <= len(mg) <= 99, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

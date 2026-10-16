@@ -188,7 +188,8 @@ CREATE TABLE TENANT_PLACEHOLDER.casa_operatiuni (
     suma numeric(12,2) NOT NULL,
     inregistrare_id integer,
     creat_la timestamp with time zone DEFAULT now() NOT NULL,
-    storno_de integer   -- [Retest 2 pct.4] operațiunea stornată de aceasta (o operațiune cu notă validată nu se șterge, se stornează)
+    storno_de integer,  -- [Retest 2 pct.4] operațiunea stornată de aceasta (o operațiune cu notă validată nu se șterge, se stornează)
+    avans boolean DEFAULT false NOT NULL   -- [lotul 6 pct.3b, 278] partea care depășește facturile alese: avans (core/migrare_casa_avans.py)
 );
 
 
@@ -320,7 +321,9 @@ CREATE TABLE TENANT_PLACEHOLDER.extras_linii (
     alocari jsonb,
     nota_propusa jsonb,
     fisier_sursa character varying(255),
-    creat_la timestamp with time zone DEFAULT now() NOT NULL
+    creat_la timestamp with time zone DEFAULT now() NOT NULL,
+    cont_extras character varying(34),
+    referinta character varying(100)
 );
 
 
@@ -342,9 +345,9 @@ ALTER TABLE TENANT_PLACEHOLDER.extras_linii ALTER COLUMN id ADD GENERATED ALWAYS
 
 --
 -- Name: extras_import; Type: TABLE; Schema: TENANT_PLACEHOLDER; Owner: postgres
--- [C5] Registrul importurilor de extras bancar: un rand per FISIER importat (hash de continut),
--- cheia UNIQUE pe hash face reimportul aceluiasi extras un no-op de INSERT (idempotenta, decizia
--- Costin 20.09 varianta A). Sursa unica a DDL-ului = core/migrare_extras_import.py.
+-- [C5] Registrul importurilor de extras bancar: un rand per FISIER importat (hash de continut). [16.10.2026, lotul 6 pct.1, 277]
+-- Nu mai decide duplicatul (il decide miscarea, `reconciliere_api.importa_extras`); ramane registrul fisierelor.
+-- Sursa unica a DDL-ului = core/migrare_extras_import.py.
 --
 
 CREATE TABLE TENANT_PLACEHOLDER.extras_import (

@@ -422,7 +422,7 @@ def _valori_de_registru():
             except Exception:
                 continue
             if 0 < f < 1:                       # cotele stau ca fractii: 0.21 -> si 21
-                out.add(round(f * 100, 4))
+                out.add(round(f * 100, 4))  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
             out.add(f)
     return {v for v in out if v >= 1}           # pragurile mari raman, fractiile de sub 1 ies
 

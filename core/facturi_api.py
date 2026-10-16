@@ -510,13 +510,72 @@ def lista_facturi(conn, an=None, luna=None, directie=None, limit=None, offset=0)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, numar, data_emitere, directie, total, tva, total_lei, status, "
-            "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id, platita_la "
+            "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id, platita_la, data_faptului_generator "
             "FROM facturi" + where +
             " ORDER BY data_emitere DESC, id DESC" + limitclause, val)
         out = [dict(r) for r in cur.fetchall()]
         _cu_stare_contare(cur, out)
         _cu_stare_incasare(cur, out)
+        _cu_stare_spv(cur, out)   # [lotul 6 pct.5b, 275]
         return out
+
+
+#: [lotul 6 pct.5b, 275] starea în SPV, pe înțelesul contabilului, din ultima trimitere a facturii (`efactura_trimiteri.stare`)
+STARE_SPV = {None: "netrimisa", "pregatit": "netrimisa", "eroare_upload": "netrimisa", "incarcat": "trimisa", "in_prelucrare": "trimisa",
+             "investigatie": "trimisa", "ok": "acceptata", "nok": "respinsa"}
+
+
+def termen_spv(data_emitere, data_fapt_generator=None):
+    """OUG 120/2021 art.10 alin.(7) (anaf_surse/oug_120_2021.txt): „Termenul-limită pentru transmiterea facturilor în sistemul național
+    privind factura electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii, dar nu mai târziu de 5 zile
+    lucrătoare de la data-limită pentru emiterea facturii prevăzută la art. 319 alin. (16) din Legea nr. 227/2015 [...]. Calculul
+    termenului-limită se efectuează conform Regulamentului (CEE, Euratom) nr. 1182/71” — termenul începe a doua zi; zilele lucrătoare,
+    fără sâmbete, duminici și sărbători legale (`scadente.e_zi_lucratoare`, Codul muncii art.139). Cu faptul generator cunoscut, al
+    doilea capăt: 5 zile lucrătoare după 15 ale lunii următoare faptului generator (CF art.319 alin.(16)); se ia cel mai devreme."""
+    import datetime as _dt
+    from core.scadente import e_zi_lucratoare
+
+    def _plus5(d):
+        n = 0
+        while n < 5:
+            d += _dt.timedelta(days=1)
+            if e_zi_lucratoare(d):
+                n += 1
+        return d
+    de = data_emitere if hasattr(data_emitere, "year") else _dt.date.fromisoformat(str(data_emitere)[:10])
+    t = _plus5(de)
+    if data_fapt_generator:
+        fg = data_fapt_generator if hasattr(data_fapt_generator, "year") else _dt.date.fromisoformat(str(data_fapt_generator)[:10])
+        limita_emitere = _dt.date(fg.year + 1, 1, 15) if fg.month == 12 else _dt.date(fg.year, fg.month + 1, 15)
+        t = min(t, _plus5(limita_emitere))
+    return t
+
+
+def _cu_stare_spv(cur, facturi):
+    """[lotul 6 pct.5b, 275] „«Istoric facturi» și detaliul arată starea în SPV: netrimisă / trimisă / acceptată / respinsă, cu termenul de 5
+    zile lucrătoare.” Pe facturile EMISE de tip factură (proforma, avizul nu pleacă în e-Factura): `stare_spv` = {stare, termen,
+    depasit, eroare}. O singură definiție pentru listă și detaliu; starea vine din ultima trimitere (`efactura_trimiteri`)."""
+    from core.common import azi_ro as _azi
+    ids = [f["id"] for f in facturi if f.get("directie") == "emisa" and (f.get("tip") or "factura") == "factura"]
+    for f in facturi:
+        f["stare_spv"] = None
+    if not ids:
+        return
+    cur.execute("SELECT DISTINCT ON (factura_id) factura_id, stare, error_message FROM efactura_trimiteri "
+                "WHERE factura_id = ANY(%s) ORDER BY factura_id, id DESC", (ids,))
+    ultima = {}
+    for r in cur.fetchall():
+        k = r["factura_id"] if isinstance(r, dict) else r[0]
+        ultima[k] = (r["stare"], r["error_message"]) if isinstance(r, dict) else (r[1], r[2])
+    azi = _azi()
+    for f in facturi:
+        if f["id"] not in ids or not f.get("data_emitere"):
+            continue
+        st, err = ultima.get(f["id"], (None, None))
+        stare = STARE_SPV.get(st, "netrimisa")
+        termen = termen_spv(f["data_emitere"], f.get("data_faptului_generator"))
+        f["stare_spv"] = {"stare": stare, "termen": termen.isoformat(), "depasit": stare == "netrimisa" and azi > termen,
+                          "eroare": err if stare in ("respinsa", "netrimisa") and st else None, "stare_tehnica": st}
 
 
 def _cu_stare_incasare(cur, facturi):
@@ -533,8 +592,11 @@ def _cu_stare_incasare(cur, facturi):
         f["stare_incasare"] = None
     if not ids:
         return
-    cur.execute("SELECT factura_id, COALESCE(SUM(suma), 0) FROM chitante WHERE factura_id = ANY(%s) AND NOT anulata GROUP BY factura_id",
-                (ids,))
+    # [lotul 6 pct.3a, 278] chitanța se numără aici numai dacă nota ei NU e legată de factură: de la lotul 6 nota chitanței stinge factura
+    # (`inregistrari.factura_id`, numărată mai jos) — altfel aceeași încasare ar intra de două ori
+    cur.execute("SELECT c.factura_id, COALESCE(SUM(c.suma), 0) FROM chitante c WHERE c.factura_id = ANY(%s) AND NOT c.anulata "
+                "AND NOT EXISTS (SELECT 1 FROM inregistrari i WHERE i.id = c.inregistrare_id AND i.factura_id = c.factura_id) "
+                "GROUP BY c.factura_id", (ids,))
     incasat = {(r["factura_id"] if isinstance(r, dict) else r[0]): _D(str(r["coalesce"] if isinstance(r, dict) else r[1]))
                for r in cur.fetchall()}
     cur.execute("SELECT i.factura_id, COALESCE(SUM(l.suma), 0) FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
@@ -596,6 +658,7 @@ def detalii_factura(conn, factura_id):
         f["linii"] = [dict(r) for r in cur.fetchall()]
         _cu_stare_contare(cur, [f])
         _cu_stare_incasare(cur, [f])
+        _cu_stare_spv(cur, [f])   # [lotul 6 pct.5b, 275]
     return f
 
 
@@ -1133,8 +1196,10 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
             cur.execute("UPDATE facturi SET curs_manual_de=%s, curs_manual_la=%s WHERE id=%s",
                         (_urma_manual[0], _urma_manual[1], _fid))
 
-    _tva_lei = round(float(r["tva"]) * _curs, 2)
-    _total_lei = round(float(r["total"]) * _curs, 2)
+    # [deficiența 280, clasa: rotunjirea fiscală e aritmetică] suma în lei la curs e o sumă NOUĂ: `round()` (la par) greșea pe ,xx5
+    from core.common import _q as _q_lei, _dec as _dec_lei
+    _tva_lei = float(_q_lei(_dec_lei(r["tva"]) * _dec_lei(_curs)))
+    _total_lei = float(_q_lei(_dec_lei(r["total"]) * _dec_lei(_curs)))
     r["curs_bnr"] = _curs
     r["tva_lei"] = _tva_lei
     r["total_lei"] = _total_lei

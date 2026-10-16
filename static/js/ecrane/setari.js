@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca } from "../api.js?v=72aa1cbbdb";
+import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca, refuzPeRand } from "../api.js?v=9409795a49";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export async function randeazaSetari(corp, nav) {
@@ -133,46 +133,9 @@ export async function randeazaSetari(corp, nav) {
   }
 
   async function randeazaSPV() {
-    corp.innerHTML = butonInapoi() + '<p class="ecran-nota">Se încarcă...</p>';
+    corp.innerHTML = butonInapoi() + '<div id="spv-panou"></div>';
     legaInapoi();
-    let st = { conectat: false };
-    try { const r = await api.get("/spv/stare"); if (r) st = r; } catch {}
-    corp.innerHTML = butonInapoi() + `
-      <div class="panou">
-        <div class="cap-titlu">Conectare SPV</div>
-        <p class="ecran-nota">Autorizezi iConta.eu să lucreze cu SPV/ANAF (e-Factura, e-Transport) folosind certificatul tău. Autorizarea se face o singură dată pentru tot cabinetul.</p>
-        <div class="caseta-info"><span class="ci-mesaj">După înrolarea certificatului în SPV, așteaptă 24 de ore înainte de prima conectare. Altfel ANAF răspunde cu eroare, deși totul e configurat corect.</span></div>
-        <div id="spv-stare" style="margin:10px 0"></div>
-        <button class="buton-primar" id="spv-conecteaza">Conectează SPV</button>
-        <span class="camp-ajutor">Certificatul cloud (vToken instalat local) e acceptat, la fel ca cel pe token USB.</span>
-      </div>`;
-    legaInapoi();
-    const msg = corp.querySelector("#spv-stare");
-    const btn = corp.querySelector("#spv-conecteaza");
-    if (st.conectat) {
-      const pana = st.access_expira ? dataRo(st.access_expira, "lung") : "—";
-      if (st.expira_curand) {
-        arataMesaj(msg, `Conectat, dar accesul expiră curând (${pana}). Reconectează pentru siguranță.`, "avert");
-      } else {
-        arataMesaj(msg, `Conectat. Certificat ${st.serial_certificat || "—"}. Acces valabil până la ${pana}.`, "ok");
-      }
-      btn.textContent = "Reconectează SPV";
-      btn.className = "buton-secundar";
-    } else {
-      arataMesaj(msg, "Neconectat.", "info");
-    }
-    btn.addEventListener("click", async () => {
-      const text = btn.textContent;
-      btn.disabled = true; btn.textContent = "Se conectează…";
-      try {
-        const r = await api.get("/spv/autorizare");
-        if (r && r.url) {
-          window.open(r.url, "_blank");
-          arataMesaj(msg, "S-a deschis autorizarea ANAF în altă filă. După ce alegi certificatul și confirmi, revino aici și redeschide ecranul.", "info");
-        } else { arataMesaj(msg, "Nu s-a putut porni autorizarea.", "eroare"); }
-      } catch (e) { arataMesaj(msg, "Eroare la pornirea autorizării.", "eroare"); }
-      btn.disabled = false; btn.textContent = text;
-    });
+    await panouConectareSPV(corp.querySelector("#spv-panou"));
   }
 
   async function randeazaGDPR() {
@@ -334,8 +297,7 @@ async function _incarcaChei(corp) {
     confirmaCaseta(b.closest(".pf-frand") || b, "Revoci cheia? Aplicațiile care o folosesc nu vor mai avea acces.", async () => {
       try { await api.del(`/cabinet/api-chei/${b.dataset.id}`); _incarcaChei(corp); }
       catch (e) {
-        b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-        b.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + esc(e.mesaj || "Nu s-a putut revoca cheia.") + '</span>');
+        refuzPeRand(b, e.mesaj || "Nu s-a putut revoca cheia.");
       }
     }, { textOk: "Revoca" });
   }));
@@ -362,3 +324,47 @@ function _initChei(corp) {
 // audit_cab_lot1_v1
 
 // faza_b2_traseu_v1
+
+// [deficiența 289a/b] Panoul „Conectare SPV” — din Setări cont și din orice refuz / stare care trimite aici (`ecran_destinatie.ECRANE`).
+// Certificatul se arată prin emitentul lui (claim-ul `issuer` din tokenul ANAF), nu prin seria hexazecimală; titularul nu e în token
+// (ANAF nu-l trimite) — se spune. Conectarea o face administratorul cabinetului; ceilalți văd starea și cui să-i ceară.
+export async function panouConectareSPV(zona) {
+  const u = sesiune.user() || {};
+  const eAdmin = u.rol === "admin_firma" || u.rol === "superadmin";
+  zona.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
+  let st = { conectat: false };
+  try { const r = await api.get("/spv/stare"); if (r) st = r; } catch {}
+  zona.innerHTML = `
+    <div class="panou">
+      <div class="cap-titlu">Conectare SPV</div>
+      <p class="ecran-nota">Autorizezi iConta.eu să lucreze cu SPV/ANAF (e-Factura, e-Transport) folosind certificatul tău. Autorizarea se face o singură dată pentru tot cabinetul și acoperă firmele pentru care certificatul are împuternicire la ANAF.</p>
+      <div class="caseta-info"><span class="ci-mesaj">După înrolarea certificatului în SPV, așteaptă 24 de ore înainte de prima conectare. Altfel ANAF răspunde cu eroare, deși totul e configurat corect.</span></div>
+      <div id="spv-stare" style="margin:10px 0"></div>
+      ${eAdmin ? `<button class="buton-primar" id="spv-conecteaza">Conectează SPV</button>
+      <span class="camp-ajutor">Certificatul cloud (vToken instalat local) e acceptat, la fel ca cel pe token USB.</span>`
+        : `<p class="ecran-nota">Conectarea o face administratorul cabinetului, din Setări cont → Conectare SPV.</p>`}
+    </div>`;
+  const msg = zona.querySelector("#spv-stare");
+  const btn = zona.querySelector("#spv-conecteaza");
+  if (st.conectat) {
+    const pana = st.access_expira ? dataRo(st.access_expira, "lung") : "—";
+    const cert = `Certificat ${st.emitent_certificat ? "emis de " + st.emitent_certificat : "(emitent necunoscut)"}; titularul nu e transmis de ANAF.`;
+    if (st.expira_curand) arataMesaj(msg, `Conectat, dar accesul expiră curând (${pana}). Reconectează pentru siguranță. ${cert}`, "avert");
+    else arataMesaj(msg, `Conectat. ${cert} Acces valabil până la ${pana}.`, "ok");
+    if (btn) { btn.textContent = "Reconectează SPV"; btn.className = "buton-secundar"; }
+  } else {
+    arataMesaj(msg, "Neconectat: facturile nu pleacă în SPV, iar cele de la furnizori nu vin automat.", "info");
+  }
+  if (btn) btn.addEventListener("click", async () => {
+    const text = btn.textContent;
+    btn.disabled = true; btn.textContent = "Se conectează…";
+    try {
+      const r = await api.get("/spv/autorizare");
+      if (r && r.url) {
+        window.open(r.url, "_blank");
+        arataMesaj(msg, "S-a deschis autorizarea ANAF în altă filă. După ce alegi certificatul și confirmi, revino aici și redeschide ecranul.", "info");
+      } else { arataMesaj(msg, "Nu s-a putut porni autorizarea.", "eroare"); }
+    } catch (e) { arataMesaj(msg, "Eroare la pornirea autorizării.", "eroare"); }
+    btn.disabled = false; btn.textContent = text;
+  });
+}

@@ -79,7 +79,7 @@ def segmente():
             ordine.append(nume)
             out[nume] = 0.0
         out[nume] += ms
-    return [(n, round(out[n], 2)) for n in ordine]
+    return [(n, round(out[n], 2)) for n in ordine]  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
 
 
 def antete():

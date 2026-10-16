@@ -33,6 +33,32 @@ def select_inregistrari_linii(cur, schema, data_de, data_pana, conturi):
     return cur.fetchall()
 
 
+def ciorne_pe_conturi_tva(cur, schema, data_de, data_pana):
+    """[deficiența 284] Notele NEvalidate din [data_de, data_pana) care ating TVA-ul porții: creditul 4427 (colectată) și debitul 4426
+    (deductibilă) — aceleași conturi, exact, ca rulajul (`select_inregistrari_linii`). `nr_curent` = numărul din Registrul-jurnal (de la
+    1 ianuarie, `jurnal_pe_an`). Rânduri pe nume (cursorul cu dicționare al apelantului): id, data, descriere, document_ref, sursa, numar,
+    nr_curent, f_tip, f_serie, f_numar, f_data, credit_4427, debit_4426."""
+    cur.execute(f"""
+                WITH pe_an AS (
+                    SELECT id, ROW_NUMBER() OVER (PARTITION BY date_trunc('year', data) ORDER BY data, id) AS nr_curent
+                    FROM {schema}.inregistrari
+                )
+                SELECT i.id, i.data, i.descriere, i.document_ref, i.sursa, i.numar, a.nr_curent,
+                       f.tip AS f_tip, f.serie AS f_serie, f.numar AS f_numar, f.data_emitere AS f_data,
+                       COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit = '4427'), 0) AS credit_4427,
+                       COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit = '4426'), 0) AS debit_4426
+                FROM {schema}.inregistrari i
+                JOIN pe_an a ON a.id = i.id
+                JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
+                LEFT JOIN {schema}.facturi f ON f.id = i.factura_id
+                WHERE i.data >= %s AND i.data < %s AND i.status <> 'validata'
+                GROUP BY i.id, a.nr_curent, f.id
+                HAVING SUM(l.suma) FILTER (WHERE l.cont_credit = '4427' OR l.cont_debit = '4426') IS NOT NULL
+                ORDER BY i.data, i.id
+            """, (data_de, data_pana))
+    return cur.fetchall()
+
+
 def select_inregistrari_linii_2(cur, schema, de, pana):
     cur.execute(f"""SELECT COALESCE(SUM(l.suma), 0)
                 FROM {schema}.inregistrari_linii l

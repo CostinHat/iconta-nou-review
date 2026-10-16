@@ -198,6 +198,9 @@ def _pregateste_poveste(m, monkeypatch, conn, cade=False):
     monkeypatch.setattr(_uc_comun, "_cere_perioada", lambda an, luna: None)
     monkeypatch.setattr(_uc_comun, "_pachet_schema", lambda ctx, tid: "tenant_001")
     monkeypatch.setattr(_uc_pachete.db, "get_conn", _conn_fals(conn, cade))
+    # [deficiența 288] verificarea textului de dinaintea aprobării își are testul ei (`test_288_povestea_lunii`); aici contractul e
+    # commit -> email
+    monkeypatch.setattr(_uc_pachete, "verifica_textul_aprobat", lambda *a, **k: None)
     monkeypatch.setattr(_uc_pachete._pachete, "salveaza_poveste",
                         lambda *a, **k: {"ok": True, "status": "aprobat"})
     monkeypatch.setattr(_uc_comun, "_email_client_tenant", lambda c, tid: "client@firma.ro")

@@ -126,7 +126,7 @@ def centralizator(conn, cabinet_id, de=None, pana=None):
         pe_asistent = [dict(r) for r in cur.fetchall()]
     cre = int(tot.get("create_", 0) or 0)
     resp = int(tot.get("respinse", 0) or 0)
-    rata = round(resp / cre, 3) if cre else 0.0
+    rata = round(resp / cre, 3) if cre else 0.0  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
     return {
         "ok": True,
         "interval": {"de": de, "pana": pana},
@@ -702,9 +702,9 @@ def calitate(conn, cabinet_id, user_id, de=None, pana=None):
     respinse = int(a.get("respinse") or 0)
     din_prima = int(a.get("din_prima") or 0)
     evaluate = int(a.get("evaluate") or 0)   # pregătiri cu o decizie (acceptate sau respinse măcar o dată)
-    rata = round(respinse * 100 / evaluate) if evaluate else 0
+    rata = round(respinse * 100 / evaluate) if evaluate else 0  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
     zile = a.get("zile_mediu")
-    zile_mediu = round(float(zile), 1) if zile is not None else None
+    zile_mediu = round(float(zile), 1) if zile is not None else None  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
     tipuri = [t for t in (a.get("tipuri") or []) if t]
 
     # [patch4_tipare_nivel]
@@ -745,6 +745,6 @@ def calitate(conn, cabinet_id, user_id, de=None, pana=None):
             # [lotul 07.10 pct.4] din prima = acceptate fără nicio respingere, din cele care au primit o decizie;
             # fără nicio decizie încă, procentul n-are numitor: „—”, nu „100%”
             {"cheie": "acceptate", "eticheta": "acceptate din prima",
-             "valoare": (str(round(din_prima * 100 / evaluate)) + "%") if evaluate else "\u2014"},
+             "valoare": (str(round(din_prima * 100 / evaluate)) + "%") if evaluate else "\u2014"},  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
         ],
     }

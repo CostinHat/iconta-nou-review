@@ -290,12 +290,12 @@ def test_validarea_din_spv_cere_alegerea_inainte_si_nu_lasa_factura_validata(con
     conn.commit()
     monkeypatch.setattr(main.auth_api, "schema_tenant", lambda c, uid, tid: SCH)
     with pytest.raises(erori.DateInvalide) as e:
-        main._uc_tenants.factura_primita_valideaza(1, pid, {"cont": "371"}, {"uid": 1})
+        main._uc_tenants.factura_primita_valideaza(1, pid, {"cont": "371", "tert_platitor_tva": True}, {"uid": 1})
     assert (e.value.detaliu["cod"], e.value.detaliu["propus"]) == ("NIR_DE_LEGAT", n["id"])
     with conn.cursor() as cur:
         cur.execute("SELECT status, factura_id FROM efactura_primite WHERE id = %s", (pid,))
         assert cur.fetchone() == ("descarcata", None)
         cur.execute("SELECT count(*) FROM facturi")
         assert cur.fetchone()[0] == 0
-    r = main._uc_tenants.factura_primita_valideaza(1, pid, {"cont": "371", "nir_id": n["id"]}, {"uid": 1})
+    r = main._uc_tenants.factura_primita_valideaza(1, pid, {"cont": "371", "nir_id": n["id"], "tert_platitor_tva": True}, {"uid": 1})
     assert r["stare"] == "validata" and r["contare"]["nir_legat"]["nir_id"] == n["id"]

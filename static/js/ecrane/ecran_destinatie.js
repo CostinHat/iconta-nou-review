@@ -9,12 +9,24 @@
 // navigator; iar după salvare, ecranul de destinație oferă singur „Înapoi la <formular>” (`inapoiLa`).
 // Gard: `core/test_refuz_spre_ecran.py` (fiecare `ecran` emis de server are intrare aici, și fiecare ecran care afișează un
 // astfel de refuz trece prin `butonSpreEcran`).
-import { randeazaDateFirma } from "./date_firma.js?v=70c3a0ef56";
+import { randeazaDateFirma } from "./date_firma.js?v=76cf61f9da";
+import { panouConectareSPV } from "./setari.js?v=aeabf02daf";
+import { randeazaProduse } from "./produse_ecran.js?v=4554cd872c";
 
 export const ECRANE = {
   date_firma: {
     titlu: "Date firmă",
     deschide: (nav, tenantId, inapoiLa, camp) => nav.deschide("Date firmă", (c2) => randeazaDateFirma(c2, nav, tenantId, { inapoiLa, camp })),
+  },
+  // [deficiența 289b] starea SPV a firmei și refuzul „Trimite în SPV” trimit aici (Setări cont → Conectare SPV)
+  // [deficiența 274a] articolul fără cotă TVA în nomenclator trimite aici (emiterea facturii)
+  produse: {
+    titlu: "Produse",
+    deschide: (nav, tenantId) => nav.deschide("Produse", (c2) => randeazaProduse(c2, nav, tenantId)),
+  },
+  conectare_spv: {
+    titlu: "Conectare SPV",
+    deschide: (nav) => nav.deschide("Setări cont → Conectare SPV", (c2) => panouConectareSPV(c2)),
   },
 };
 

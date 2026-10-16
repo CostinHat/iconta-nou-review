@@ -1122,7 +1122,7 @@ def _trimite_si_asteapta(ecran):
     pg = ecran.pg
     pg.wait_for_selector("#dec-trimite, #dec-gol-da", timeout=90000)
     pg.click("#dec-trimite" if pg.locator("#dec-trimite").count() else "#dec-gol-da")
-    pg.wait_for_function("() => document.body.innerText.includes('Trimisă în coada de validare') || "
+    pg.wait_for_function("() => document.body.innerText.includes('Trimisă în coad') || "
                          "(document.querySelector('#dec-coada-mesaj') || {innerText: ''}).innerText.trim() !== ''", timeout=90000)
 
 
@@ -1141,7 +1141,7 @@ def test_def_73_d390_intra_in_coada_fara_eroare_500(patron):
         t = patron.fereastra()
         intrata = sql("SELECT count(*) FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 'd390' AND id > %s",
                       (tid, peste))[0][0]
-        assert ("Trimisă în coada de validare" in t and intrata == 1) or (
+        assert ("Trimisă în coad" in t and intrata == 1) or (
             "Declarația nu intră în coadă: TVA-ul ei nu se potrivește cu balanța lunii" in t and intrata == 0), t[-1500:]
     finally:
         _curata_coada(tid, peste)
@@ -1162,7 +1162,7 @@ def test_def_189_ecranul_cozii_nu_se_contrazice(patron):
     finally:
         _curata_coada(tid, peste)
     refuz = "nu intră în coadă" in t
-    intrare = "Trimisă în coada de validare" in t or "Declarația intră în coadă" in t
+    intrare = "Trimisă în coad" in t or "Declarația intră în coadă" in t
     assert refuz != intrare, t[-1500:]
 
 
@@ -1186,7 +1186,7 @@ def test_def_74_declaratia_cu_formular_manual_intra_in_coada(patron):
         _trimite_si_asteapta(patron)
         patron.captura()
         t = patron.fereastra()
-        assert "Trimisă în coada de validare" in t, t[:1200]
+        assert "Trimisă în coad" in t, t[:1200]
         r = sql("SELECT payload->>'xml' FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 'd710' AND id > %s", (tid, peste))
         assert len(r) == 1 and "150" in (r[0][0] or ""), r
     finally:
@@ -1218,7 +1218,7 @@ def test_def_190_eroarea_primei_generari_nu_ramane_dupa_trimitere(patron):
     finally:
         _curata_coada(tid, peste)
     assert "cel puțin o obligație corectată" in inainte, "anti-vacuu: prima generare n-a spus eroarea"
-    assert "Trimisă în coada de validare" in dupa and "cel puțin o obligație corectată" not in dupa, dupa[-1500:]
+    assert "Trimisă în coad" in dupa and "cel puțin o obligație corectată" not in dupa, dupa[-1500:]
 
 
 # ================================================================ 95 — NIR legat de factura primită (global-valoric)

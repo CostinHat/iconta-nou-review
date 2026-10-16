@@ -74,7 +74,7 @@ def test_varianta_a_propunerea_notei_de_inchidere(patron, firma_de_inchis):
     121 și regularizarea TVA 4426/4427 → 4423/4424. Nota apare ca propunere și intră în evidență numai după ce contabilul o validează
     (R36).” TEMEI: OMFP 1802/2014, conturile 121, 4423, 4424, 4426, 4427.
     Pașii: firma cu vânzări 1.000 (+TVA 210) și servicii 200 (+TVA 42), neînchise -> Bilanț 2025: refuzul „închide clasele 6/7” și
-    butonul „Propune nota de închidere la 31.12.2025” -> apăsat: „Am propus, ca ciornă …”, rezultatul închis în 121: profit 800,00 lei;
+    butonul „Propune nota de închidere la 31.12.2025” -> apăsat: „Am propus la 31.12.2025 …” (+ starea notelor, [279]), rezultatul închis în 121: profit 800,00 lei;
     în evidență: două note CIORNĂ (regularizarea TVA — 4427 = 4426 42, 4427 = 4423 168 — și închiderea — 704 = 121, 121 = 628) -> cât
     sunt ciorne, bilanțul se oprește tot („Notele de închidere propuse așteaptă validarea”, 244) -> validate (jurnalul) -> Bilanț 2025: coloana „An precedent” (2024 nu e în aplicație)
     completată -> „Validează”: fără erori, profitul în bilanț (F10 rd.43 = 800), TVA de plată 168 în datorii (rd.13).
@@ -87,7 +87,8 @@ def test_varianta_a_propunerea_notei_de_inchidere(patron, firma_de_inchis):
     pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type .bl-inchidere-mesaj') || {}).innerText", timeout=60000)
     mesaj = pg.inner_text(".fereastra:last-of-type .bl-inchidere-mesaj")
     patron.captura("propunerea")
-    assert mesaj.startswith("Am propus, ca ciornă, la 31.12.2025: Regularizarea TVA la 31.12.2025 (Notă de calcul nr"), mesaj
+    assert mesaj.startswith("Am propus la 31.12.2025: Regularizarea TVA la 31.12.2025 (Notă de calcul nr"), mesaj
+    assert "Notele sunt ciorne. Le validezi din Registrul jurnal." in mesaj, mesaj   # [279] patronul validează el
     assert re.findall(r"Rezultatul închis în 121: (profit [\d.,]+ lei)", mesaj) == ["profit 800,00 lei"], mesaj
     note = sql('SELECT i.id, i.status, l.cont_debit, l.cont_credit, l.suma FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l '
                "ON l.inregistrare_id = i.id WHERE i.sursa = 'inchidere_an' ORDER BY i.id, l.id" % (f["schema"], f["schema"]))

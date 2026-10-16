@@ -95,12 +95,17 @@ def parseaza_xml(continut, cui_firma):
                 cant, _txt(ln, "cac:Price/cbc:PriceAmount") or "0",
                 _txt(ln, "cbc:LineExtensionAmount"), _txt(ln, "cac:Price/cbc:BaseQuantity")),
             "cota_tva": _txt(ln, "cac:Item/cac:ClassifiedTaxCategory/cbc:Percent") or "0",
+            # [lotul 6 pct.7c, 273] codul categoriei de TVA al liniei (BT-151): S / E / AE / O … — ghidul MF al codurilor e-Factura
+            # (anaf_surse/mf_ghid_coduri_facturi_efactura_v2_9.txt, cap.3): „AE” = taxare inversă (art.331 Cod fiscal)
+            "categorie_tva": (_txt(ln, "cac:Item/cac:ClassifiedTaxCategory/cbc:ID") or "").strip().upper() or None,
         })
     return {
         "numar": numar, "data_emitere": data, "data_scadenta": scadenta,
         "directie": "emisa" if emisa else "primita",
         "tert_nume": tert[0], "tert_cui": tert[1],
         "total": total, "tva": tva, "moneda": moneda,
+        # [273] o factură primită cu linii „AE” e cu taxare inversă: la beneficiar 4426 = 4427 (art.331), în D300 rd.12 / rd.25
+        "taxare_inversa": any(l["categorie_tva"] == "AE" for l in linii),
         "linii": linii, "xml": continut,
     }
 
