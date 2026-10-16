@@ -176,7 +176,8 @@ def test_proba_d300_factura_scutita_prin_granita_reparata_duk_valid(conn_schema_
     r = facturi_api.emite_factura(
         conn_schema_d300,
         [{"descriere": "Consultanta IT", "cont_venit": "704", "cantitate": 1, "pret_unitar": 1000, "cota_tva": 21},
-         {"descriere": "Servicii medicale scutite", "cantitate": 1, "pret_unitar": 500, "cota_tva": 0}],
+         {"descriere": "Servicii medicale scutite", "cantitate": 1, "pret_unitar": 500, "cota_tva": 0,
+          "categorie_tva": "scutit_fara_drept"}],   # [274b] categoria e obligatorie pe linia 0% (serviciile medicale: art.292 -> rd.15)
         data_emitere="2026-06-15", moneda="RON", platitor_tva=True,
         tert_cui="RO1234567897")
     assert r.get("factura_id"), "emitere esuata: %r" % r
@@ -193,7 +194,8 @@ def test_proba_d394_factura_scutita_prin_granita_reparata_duk_valid(conn_schema_
     from core import facturi_api, declaratii_api
     r = facturi_api.emite_factura(conn_schema_d300,
         [{"descriere": "Consultanta IT", "cont_venit": "704", "cantitate": 1, "pret_unitar": 1000, "cota_tva": 21},
-         {"descriere": "Servicii medicale scutite", "cantitate": 1, "pret_unitar": 500, "cota_tva": 0}],
+         {"descriere": "Servicii medicale scutite", "cantitate": 1, "pret_unitar": 500, "cota_tva": 0,
+          "categorie_tva": "scutit_fara_drept"}],   # [274b] categoria e obligatorie pe linia 0% (serviciile medicale: art.292 -> rd.15)
         tert_nume="CLIENT RO SRL", tert_cui="RO14399840",
         data_emitere="2026-06-15", moneda="RON", platitor_tva=True)
     assert r.get("factura_id"), "emitere esuata: %r" % r
@@ -208,8 +210,9 @@ def test_proba_d390_livrare_ic_scutita_prin_granita_reparata_duk_valid(conn_sche
     (scutit cu drept, partener UE) -> D390 valid la DUK."""
     from core import facturi_api, declaratii_api
     r = facturi_api.emite_factura(conn_schema_d300,
-        [{"descriere": "Livrare IC bunuri", "cont_venit": "707", "cantitate": 1, "pret_unitar": 2000, "cota_tva": 0}],
-        tert_nume="KUNDE DE GMBH", tert_cui="DE811569869",
+        [{"descriere": "Livrare IC bunuri", "cont_venit": "707", "cantitate": 1, "pret_unitar": 2000, "cota_tva": 0,
+          "categorie_tva": "livrare_ic"}],   # [274b] categoria liniei; livrarea intracomunitară cere țara clientului UE
+        tert_nume="KUNDE DE GMBH", tert_cui="DE811569869", tert_tara="DE",
         data_emitere="2026-06-20", moneda="RON", platitor_tva=True)
     assert r.get("factura_id"), "emitere esuata: %r" % r
     xml, res = declaratii_api.genereaza(conn_schema_d300, SCHEMA_T, "d390", {"an": 2026, "luna": 6})

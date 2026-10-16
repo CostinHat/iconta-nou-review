@@ -171,7 +171,7 @@ class Rezultat:
 
 
 def _segmente(f):
-    """[(cota_int|None, baza_Decimal_LEI), ...] dintr-o factură.
+    """[(cota_int|None, baza_Decimal_LEI, destinatie, categorie_tva), ...] dintr-o factură.
 
     [A1, 17.09.2026] Baza e ÎN LEI: `cantitate × preț × curs` (RON→1). Cursul vine din SURSA UNICĂ
     `core.sume_lei.curs_factura`. O factură în valută FĂRĂ curs nu se poate exprima în lei — atunci
@@ -185,16 +185,17 @@ def _segmente(f):
             cant, pret, cota = lin[0], lin[1], lin[2]
             # [A12 art.300] destinatia TVA a liniei (taxabil/scutit/mixt); tuplu vechi fara ea -> taxabil
             dest = lin[3] if len(lin) > 3 else "taxabil"
+            cat = lin[4] if len(lin) > 4 else None   # [274b] categoria liniei cu 0% (tuplu vechi fără ea -> None)
             baza = Decimal(str(cant)) * Decimal(str(pret)) * curs
             ci = None if cota is None else int(round(float(cota)))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
-            out.append((ci, baza, dest))
+            out.append((ci, baza, dest, cat))
         return out
     total_lei, tva_lei = _sl.antet_lei(f)
     baza = total_lei - tva_lei
     tva = tva_lei
     ci = int(round(float(tva) / float(baza) * 100)) if (baza and tva) else None  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
     # factura fara linii (antet): destinatia nu e pe document -> taxabil (deducere integrala, comportament neschimbat)
-    return [(ci, baza, "taxabil")]
+    return [(ci, baza, "taxabil", None)]
 
 
 def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
@@ -268,7 +269,12 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     # Achizitii 0% CURATE (fara TVA orfan forfetar, fara categorie_331): scutite/neimpozabile -> DERIVATE
     #   la R26_1 (rd.26, informativ, fara TVA) - apar in decont, nu dispar tacit.
     # Achizitii 0% cu categorie_331 (art.331 taxare inversa cu rata pierduta): avertisment dedicat.
-    zero_livr = []      # [Decimal] baze livrari 0% (nu se clasifica auto)
+    zero_livr = []      # [Decimal] baze livrari 0% FĂRĂ categorie (facturi de dinainte de 274b; nu se clasifica auto)
+    # [274b] livrări 0% pe categoria liniei: rândul din decont (core/categorii_tva.CATEGORII[...]["rand_d300"])
+    from core import categorii_tva as _ctv
+    _CAT_RAND = {k: v["rand_d300"] for k, v in _ctv.CATEGORII.items() if v["rand_d300"]}
+    zero_pe_rand = {r: Decimal(0) for r in set(_CAT_RAND.values())}
+    zero_fara_rand = Decimal(0)
     zero_achiz = []     # [Decimal] baze achizitii 0% scutite/neimpozabile -> R26_1
     achiz_331_0 = []    # [Decimal] baze achizitii 0% cu categorie art.331 (rata pierduta)
 
@@ -379,12 +385,16 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                 tva = _tvi.tva_din_incasare(gross, ci) if ci else Decimal(0)
                 # [A12] decontarile (tva la incasare) NU poarta destinatia liniei (agregate pe cota) ->
                 # dest=None; pro-rata pe mixt nu se poate izola in acest regim (limita declarata, vezi R31).
-                segmente.append((ci, gross - tva, tva, None))   # (cota, baza exigibila, tva exigibil, destinatie)
+                segmente.append((ci, gross - tva, tva, None, None))   # (cota, baza exigibila, tva exigibil, destinatie, categorie)
         else:
-            segmente = [(ci, baza, (baza * Decimal(ci) / Decimal(100) if ci else Decimal(0)), dest)
-                        for (ci, baza, dest) in _segmente(f)]
-        for (ci, baza, tva, dest) in segmente:
-            if ti:
+            segmente = [(ci, baza, (baza * Decimal(ci) / Decimal(100) if ci else Decimal(0)), dest, cat)
+                        for (ci, baza, dest, cat) in _segmente(f)]
+        # [274b] o factură emisă cu categorie pe linii (de la 274b încoace) se rutează LINIE CU LINIE: pe ea, taxarea inversă e numai pe
+        # liniile „taxare_inversa”, iar celelalte (cota pozitivă, alte categorii) merg pe rândul lor. O factură de dinainte (nicio linie
+        # cu categorie) rămâne cum era: taxarea inversă de pe antet acoperă toate liniile ei (rd.13).
+        pe_categorie = emisa and any(s[4] for s in segmente)
+        for (ci, baza, tva, dest, cat) in segmente:
+            if ti and not (pe_categorie and cat != "taxare_inversa"):
                 # [decizie Costin 06.08.2026 + Task2 10.08.2026] Taxare inversa art.331 (masuri de
                 # simplificare): FURNIZORUL (emisa) raporteaza livrarea in rd.13 (baza, FARA TVA).
                 # BENEFICIARUL (primita) declara rd.12 colectat + rd.25 deductibil (net zero) - ACUM
@@ -447,7 +457,12 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                     col[ci][0] += baza; col[ci][1] += tva
                 elif ci:   # cotă taxabilă fără rând colectat auto (ex. 19/5%): TVA ar dispărea
                     drop_l_tax_b += baza; drop_l_tax_t += tva; drop_l_tax_n += 1
-                else:      # cotă 0% livrare (scutit/export/neimpozabil): clasificare manuala R14/R15
+                elif cat in _CAT_RAND:
+                    # [274b, decizia Costin 16.10.2026] categoria liniei decide rândul (core/categorii_tva, OPANAF 174/2026 D300)
+                    zero_pe_rand[_CAT_RAND[cat]] += baza
+                elif cat in ("in_afara_sferei", "neplatitor"):
+                    zero_fara_rand += baza   # în afara sferei / bazei TVA: fără rând în decont (spus jos, ca fapt)
+                else:      # cotă 0% fără categorie (factură de dinainte de 274b): clasificare manuala R14/R15
                     zero_livr.append(baza)
             else:
                 if dest == "scutit":
@@ -504,6 +519,10 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     # rd.13 = livrari cu taxare inversa (furnizor art.331): baza AUTO-derivata din facturi emise cu
     # taxare_inversa, FARA TVA (intra in R17_1 baza, nu in R17_2). [decizie Costin 06.08.2026]
     # Anti-dubla-numarare: daca vine SI manual R13_1 -> EROARE (nu insumare tacita).
+    # [274b] liniile interne cu 0% clasificate pe categorie (taxare inversă -> rd.13; scutit cu drept / export -> rd.14; scutit fără
+    # drept -> rd.15; livrare intracomunitară -> rd.1) se adună pe rândurile lor, cu aceleași gărzi anti-dublă-numărare
+    livrare_ti_base += zero_pe_rand.get("R13", Decimal(0))
+    ic_livr_bunuri += zero_pe_rand.get("R1", Decimal(0))
     _r13 = _int(livrare_ti_base)
     if _r13:
         if "R13_1" in manual:
@@ -543,13 +562,22 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                 "D300 rd.1 (livrări intracomunitare de bunuri): calculat automat din facturile emise către "
                 "clienți din UE (%s lei) și introdus și manual pe rândul 1 - dublă numărare. Păstrează o singură sursă." % _f(_r1))
         R["R1_1"] = _r1
-    _r14 = _int(export_livr)
+    _r14 = _int(export_livr + zero_pe_rand.get("R14", Decimal(0)))
     if _r14:
         if "R14_1" in manual:
             raise ValueError(
                 "D300 rd.14 (export și livrări scutite cu drept de deducere): calculat automat din facturile "
-                "emise către clienți din afara UE (%s lei) și introdus și manual pe rândul 14 - dublă numărare." % _f(_r14))
+                "emise (export către clienți din afara UE și linii „scutit cu drept de deducere”, %s lei) și introdus și manual pe "
+                "rândul 14 - dublă numărare." % _f(_r14))
         R["R14_1"] = _r14
+    # [274b] rd.15 = livrări scutite fără drept de deducere (art.292), din liniile cu categoria lor (OPANAF 174/2026 D300 rd.15)
+    _r15 = _int(zero_pe_rand.get("R15", Decimal(0)))
+    if _r15:
+        if "R15_1" in manual:
+            raise ValueError(
+                "D300 rd.15 (livrări scutite fără drept de deducere): calculat automat din liniile facturilor emise cu categoria „scutit "
+                "fără drept de deducere” (%s lei) și introdus și manual pe rândul 15 - dublă numărare." % _f(_r15))
+        R["R15_1"] = _r15
     _r5b = _int(ic_ach_b); _r5t = _int(ic_ach_t)
     if _r5b or _r5t:
         _dbl_ic = sorted(k for k in ("R5_1", "R5_2", "R18_1", "R18_2") if k in manual)
@@ -749,6 +777,10 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             "(sub-declarare). Cotele 19%% și 5%% nu au rând acceptat de ANAF în decontul de azi — nu le adăuga manual "
             "pe rândurile vechi (sunt respinse); corectează cota facturii sau tratează ca regularizare (rd.16)."
             % (_cate(drop_l_tax_n, "linie", "linii"), _f(drop_l_tax_b), _f(drop_l_tax_t)))
+    if zero_fara_rand:
+        res.note_rezultat.append(
+            "Livrări în afara sferei sau a bazei de impozitare a TVA (bază %s lei, linii cu această categorie): nu au rând în decont."
+            % _f(zero_fara_rand))
     for _b in zero_livr:
         res.avertismente.append(
             "Livrare cu cotă 0%% (bază %s lei) — nu se clasifică automat: decontul cere distincţia scutit "
@@ -1212,7 +1244,7 @@ def pull(conn, schema, perioada):
         if r["cantitate"] is not None and r["pret_unitar"] is not None:
             # [A12] destinatia TVA per linie (art.300) calatoreste in segment pentru pro-rata/scutit
             f["linii"].append((r["cantitate"], r["pret_unitar"], r["cota_tva"],
-                               r.get("destinatie_tva") or "taxabil"))
+                               r.get("destinatie_tva") or "taxabil", r.get("categorie_tva")))   # [274b] categoria liniei cu 0%
     return prof, list(fmap.values()) + deferred + rapoarte_z
 
 

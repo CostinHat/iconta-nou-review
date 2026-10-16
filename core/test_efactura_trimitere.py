@@ -110,7 +110,7 @@ def fara_retea(monkeypatch):
     """Tokenul, validatorul si upload-ul — toate in afara a ce a mutat valul D2."""
     monkeypatch.setattr(sc, "ia_token_activ", lambda conn, principal: {"id": 1})
     monkeypatch.setattr(ef, "valideaza", lambda xml, standard="FACT1": (True, []))
-    monkeypatch.setattr(ef, "upload_ubl", lambda p, cif, xml, mediu: _Resp(UPLOAD_OK))
+    monkeypatch.setattr(ef, "upload_ubl", lambda p, cif, xml, mediu, extern=False: _Resp(UPLOAD_OK))
 
 
 def _randuri(schema, factura_id):
@@ -166,7 +166,7 @@ def test_upload_refuzat_lasa_randul_cu_motivul_LA_VEDERE(schema, factura, monkey
     """Poarta 4 scrie randul INDIFERENT de rezultat — `rezultatul_trimiterii`, pe calea de esec."""
     monkeypatch.setattr(sc, "ia_token_activ", lambda conn, principal: {"id": 1})
     monkeypatch.setattr(ef, "valideaza", lambda xml, standard="FACT1": (True, []))
-    monkeypatch.setattr(ef, "upload_ubl", lambda p, cif, xml, mediu: _Resp(UPLOAD_NOK))
+    monkeypatch.setattr(ef, "upload_ubl", lambda p, cif, xml, mediu, extern=False: _Resp(UPLOAD_NOK))
 
     rez = et.trimite(schema, factura, sc.principal_tenant(1), mediu="test")
     assert rez["stare"] == "nok", rez

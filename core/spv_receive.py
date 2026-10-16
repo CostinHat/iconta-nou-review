@@ -21,11 +21,13 @@ GARDURI (nenegociabile):
 import os
 import sys
 import hashlib
+import requests
 
 from core import db
 from core import spv_conector
 from core import efactura_send as efs
 from core import efactura_import as efi
+from core.common import cate
 
 MEDIU = os.environ.get("EFACTURA_MEDIU", "prod")
 ZILE = int(os.environ.get("SPV_RECEIVE_ZILE", "3"))            # fereastra suprapusa, < 60 oficial
@@ -151,6 +153,12 @@ def citeste_firma(schema, stat=None, _dormi=None):
         stat["skip_auth"] += 1
         print("  SKIP auth lista %s: %s" % (schema, e), file=sys.stderr)
         mesaje, eroare = [], str(e)
+    except requests.exceptions.RequestException as e:
+        # [C42, 16.10.2026] ANAF n-a răspuns (16.10 19:47: ReadTimeout după 60 s): se spune pe firma ei și se trece la următoarea —
+        # înainte, excepția oprea citirea TUTUROR firmelor și trimitea alerta „job eșuat” pentru un lucru care trece singur (296)
+        stat["anaf_fara_raspuns"] += 1
+        print("  %s: ANAF n-a răspuns: %s" % (schema, e), file=sys.stderr)
+        mesaje, eroare = [], "ANAF n-a răspuns la timp (%s); citirea se reia la următoarea rulare." % type(e).__name__
     with db.get_conn() as conn:
         # „Nu exista mesaje in ultimele N zile” e un răspuns reușit (zero facturi), nu o eroare
         fara_mesaje = bool(eroare) and eroare.lower().startswith("nu exista mesaje")
@@ -169,7 +177,7 @@ def citeste_firma(schema, stat=None, _dormi=None):
 
 def _stat_nou():
     return {"ciorna": 0, "descarcata": 0, "deja": 0, "scurgere_evitata": 0,
-            "skip_auth": 0, "descarca_esec": 0, "fara_xml": 0, "tenanti_fara_cif": 0}
+            "skip_auth": 0, "descarca_esec": 0, "fara_xml": 0, "tenanti_fara_cif": 0, "anaf_fara_raspuns": 0}
 
 
 def importa_xml_manual(schema, continut, nume_fisier=""):
@@ -218,10 +226,22 @@ def ruleaza(_dormi=None):
                         "WHERE schema_name ~ '^tenant_[0-9]+$' ORDER BY schema_name")
             scheme = [r[0] for r in cur.fetchall()]
     stat = _stat_nou()
+    cazute = []
     for schema in scheme:
-        citeste_firma(schema, stat, _dormi)
+        # [C42] o firmă care cade (alt motiv decât ANAF) nu oprește citirea celorlalte; la capăt jobul eșuează cu toate numite —
+        # ăla e un defect, deci alertă (296: cere acțiune)
+        try:
+            citeste_firma(schema, stat, _dormi)
+        except Exception as e:
+            print("  EROARE citire %s: %s: %s" % (schema, type(e).__name__, e), file=sys.stderr)
+            cazute.append((schema, type(e).__name__, str(e)))
     from datetime import datetime, timezone
     print("%s spv_receive terminat: %s" % (datetime.now(timezone.utc).isoformat(), stat))
+    if cazute:
+        e = RuntimeError("citirea SPV a căzut la %s: %s" % (
+            cate(len(cazute), "firmă", "firme"), "; ".join("%s (%s: %s)" % c for c in cazute)))
+        e.cazute = cazute
+        raise e
     return stat
 
 

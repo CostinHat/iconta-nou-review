@@ -81,13 +81,13 @@ def factura_pentru_ubl(cur, schema, factura_id):
     cur.execute(f"""SELECT id, numar, serie, data_emitere, data_scadenta, moneda,
                                tert_nume, tert_cui, tert_adresa, tert_oras, tert_judet,
                                taxare_inversa, tip, storno_din_id, total, tva,
-                               directie, bon_fiscal_nr, bon_fiscal_data
+                               directie, bon_fiscal_nr, bon_fiscal_data, tert_tara, data_faptului_generator
                           FROM {schema}.facturi WHERE id = %s""", (int(factura_id),))
     return cur.fetchone()
 
 
 def linii_pentru_ubl(cur, schema, factura_id):
-    cur.execute(f"""SELECT descriere, um, cantitate, pret_unitar, cota_tva
+    cur.execute(f"""SELECT descriere, um, cantitate, pret_unitar, cota_tva, categorie_tva
                           FROM {schema}.factura_linii WHERE factura_id = %s ORDER BY id""",
                 (int(factura_id),))
     return cur.fetchall()

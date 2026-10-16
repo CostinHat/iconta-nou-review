@@ -62,6 +62,20 @@ def _logo_flowable(logo_uri, latime_mm=32):
 
 
 #: [lot 19 pct.4d] Trimiterea la scutire pe factura unui emitent neplătitor de TVA (CF art.319 alin.(20) lit.l)).
+def mentiuni_categorii(linii):
+    """[274b] Mențiunile TVA ale liniilor cu 0%, câte una pe categorie, în ordinea liniilor: „1 linie (nr. 2): <motivul>”."""
+    from core import categorii_tva as _ct
+    out, vazute = [], {}
+    for i, l in enumerate(linii or [], 1):
+        d = _ct.CATEGORII.get(l.get("categorie_tva") or "")
+        if d:
+            vazute.setdefault(d["mentiune"], []).append(str(i))
+    from core.common import cate as _cate
+    for motiv, nr in vazute.items():
+        out.append("%s (nr. %s): %s." % (_cate(len(nr), "linie", "linii"), ", ".join(nr), motiv))
+    return out
+
+
 MENTIUNE_NEPLATITOR = ("Scutit de TVA — regim special de scutire pentru întreprinderile mici, "
                        "art. 310 din Codul fiscal (Legea nr. 227/2015).")
 
@@ -275,6 +289,13 @@ def genereaza_pdf(profil, factura):
     if neplatitor:
         el.append(Spacer(1, 8))
         el.append(Paragraph(MENTIUNE_NEPLATITOR, st_cell))
+    else:
+        # [274b] liniile cu 0% poartă trimiterea la scutire (CF art.319 alin.(20) lit.l) „trimiterea la dispozițiile aplicabile [...] din
+        # care să rezulte că livrarea [...] face obiectul unei scutiri”) și, la taxarea inversă, mențiunea „taxare inversă” (lit.m) — motivul
+        # categoriei din `core/categorii_tva` (același text ca BT-120 din e-Factura)
+        for _m in mentiuni_categorii(linii):
+            el.append(Spacer(1, 4))
+            el.append(Paragraph(_m, st_cell))   # motivele din categorii_tva n-au caractere de marcaj
     from core import facturi as _fc
     if _fc.e_din_bon_fiscal(factura):
         # [decizia A 02.10] HG 1/2016 pct.97 alin.(1): „fiind suficientă mențiunea «conform bon fiscal nr./data»”

@@ -57,6 +57,7 @@ def incarca_factura(conn, schema, factura_id):
         "oras": factura.get("tert_oras"),
         "judet": factura.get("tert_judet"),
         "cod_postal": None,   # cod postal cumparator: inca nestructurat (optional BT-53)
+        "tara": (factura.get("tert_tara") or "RO").strip().upper() or "RO",   # [274b] BT-55 (și BT-80 la livrarea intracomunitară)
     }
     return dict(factura), [dict(l) for l in linii], dict(furnizor), client
 
@@ -94,6 +95,14 @@ def trimite(schema, factura_id, principal, mediu="test"):
 
     # POARTA 2: validare structura pe validatorul ANAF - FARA upload daca nok
     val_ok, val_msg = _ef.valideaza(xml)
+    extern = (_factura.get("tert_tara") or "RO").strip().upper() not in ("", "RO")
+    if not val_ok and extern:
+        # [274b] cumpărătorul din afara României: validatorul îl caută în baza contribuabililor români și răspunde mereu
+        # „ERRIdentif — nu a fost identificat cui cumparator” (verificat 16.10.2026, cu un cod de TVA UE real). Asta e identificarea, nu
+        # structura, și o rezolvă încărcarea cu `extern=DA` (MF, „Prezentare servicii web e-Factura”: „se completeaza doar in cazul in
+        # care cumparatorul este din exteriorul Romaniei (nu are CUI sau NIF)”). Orice altă eroare oprește trimiterea, ca până acum.
+        val_msg = [m for m in val_msg if not _ef.e_identificare_cumparator(m)]
+        val_ok = not val_msg
     if not val_ok:
         return {"stare": "nevalidat", "validare_ok": False, "validare_mesaje": val_msg}
 
@@ -109,7 +118,7 @@ def trimite(schema, factura_id, principal, mediu="test"):
 
     # POARTA 4: upload real prin apel_anaf (scrie randul indiferent de rezultat)
     try:
-        r = _ef.upload_ubl(principal, cif, xml, mediu)
+        r = _ef.upload_ubl(principal, cif, xml, mediu, extern=extern)
         text = r.text or ""
         ex, index, errs = _ef._parse_upload(text)
         rez.update({"http": r.status_code, "execution_status": ex,

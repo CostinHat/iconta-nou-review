@@ -2579,3 +2579,12 @@ Lucrat în worktree, fără publicare (regim pilot). Răspuns punctual pentru fi
 273; bara fixă care acoperea nota de subsol — 285, reparat global în CSS); răspunsuri schimbate deliberat — testele vechi aliniate;
 gărzile de structură satisfăcute pe structură (afirmații tipate, coduri de refuz, aserțiuni pe AST), fără plafon ridicat; registrele
 generate (P7, trasee, clichete) refăcute din instrumente pe baza de test. Proba nouă: legarea casei până în rulajul clientului.
+
+## 16.10.2026 (noaptea) — Lotul 6: răspunsul lui Costin la raport (7d718193) — 274b, 273, 296, 268, SPV
+
+Pe ramură, fără poartă și fără publicare. 274b: categoria de TVA pe orice linie cu 0% (AE / E cu drept / E fără drept / K / G / în afara
+sferei; O automat), în emitere, XML (validatorul ANAF FACT1: ok pe șapte categorii; `extern=DA` la cumpărătorul străin), D300 (rd.1, 13,
+14, 15; DUK valid), PDF și formular (+ localitatea și regiunea clientului străin, categoria produsului la taxarea inversă). 273: „terț
+plătitor” nu e element UBL și nu se declară în D394 — ajutorul corectat. 296: alertele de sănătate numai cu acțiune; C42 (citirea SPV
+oprită de un termen depășit la ANAF). 268: antetul vine de la Brevo — decizie. Proba SPV pe producție: „Nu aveti drept in SPV pentru
+CIF=55229657” pe toate cele patru liste. 285, 289: interpretările acceptate.

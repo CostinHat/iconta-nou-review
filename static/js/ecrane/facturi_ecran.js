@@ -6,7 +6,7 @@
 import { api, cate, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota } from "../api.js?v=9409795a49";  /* esc_nc27 */
 import { randeazaStareSpv } from "./spv_stare.js?v=f15ed7cbc1";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaEmitere } from "./emitere_ecran.js?v=38ae9be8d2";
+import { randeazaEmitere } from "./emitere_ecran.js?v=df557f8645";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
@@ -174,7 +174,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
     <!-- [deficiența 273c] ce nu vine din XML: de completat înainte de validare -->
     <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:8px">
       <label class="camp"><span class="camp-eticheta">Furnizorul e înregistrat în scopuri de TVA (de completat: din XML nu se află; D394 îl declară după tip)<span class="oblig">*</span></span>
-        ${selectDaNu('id="pr-platitor"', null, "Furnizor plătitor de TVA")}</label>
+        ${selectDaNu('id="pr-platitor"', null, "Furnizorul e înregistrat în scopuri de TVA")}</label>
       ${p.taxare_inversa ? `<label class="camp"><span class="camp-eticheta">Categoria produsului cu taxare inversă (art.331; de completat — codul din D394)<span class="oblig">*</span></span>
         <select class="camp-input" id="pr-c331" aria-label="Categoria art.331"><option value="">— alege —</option>${categorii331.map((c) => `<option value="${esc(c)}">${esc(c.replace(/_/g, " "))}</option>`).join("")}</select></label>` : ""}
     </div>

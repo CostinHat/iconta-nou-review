@@ -77,11 +77,6 @@ def test_vat_supplier_doar_daca_platitor():
     assert sup_nu.find("cac:PartyTaxScheme", NS) is None
 
 
-def test_taxare_inversa_neimplementata_v1():
-    with pytest.raises(NotImplementedError):
-        ef.genereaza_xml(_factura_minima(taxare_inversa=True), _linii(), _furnizor(), _client())
-
-
 def test_bucuresti_cu_sector_devine_SECTORn():
     xml = ef.genereaza_xml(_factura_minima(), _linii(), _furnizor(), _client())
     sup = ET.fromstring(xml).find("cac:AccountingSupplierParty/cac:Party/cac:PostalAddress", NS)

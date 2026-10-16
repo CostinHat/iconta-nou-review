@@ -24,7 +24,11 @@ Costin**: (1) 274b — validarea propunerii (categoriile 0%, rândurile D300 13�
 (laterală: zero; verticală: rămâne la conținutul lung, cu acțiunea fixă); (3) 289 — titularul certificatului nu e în tokenul ANAF
 (emitentul da); (4) „terț plătitor” (273) citit ca `tert_platitor_tva`. Rularea țintită de după ultima completare a fost ROȘIE (62 Python +
 9 e2e) și a fost reparată înaintea commitului (DECIZII „Lotul 6: rularea țintită”): suita țintită verde, e2e-ul atins 340 verzi în 24 de
-fișiere, verificatorul TOTAL 0, uneltele vizuale și artefactele refăcute. **Urmează**, după răspuns: 274b (dacă se validează), apoi
+fișiere, verificatorul TOTAL 0, uneltele vizuale și artefactele refăcute. **Răspunsul lui Costin (16.10 noaptea)**: 285, 289 acceptate;
+274b făcută (categoria de TVA pe orice linie cu 0%, XML / D300 / PDF / formular; FACT1 ok, DUK valid; o interpretare de reconfirmat:
+serviciile IC = „în afara sferei”); 273 după sursă (terțul plătitor nu e în UBL și nici în D394); 296 + C42 făcute; 268 redeschisă =
+antetul vine de la Brevo (decizie); proba SPV: „Nu aveti drept in SPV pentru CIF=55229657”; migrare nouă `migrare_categorie_tva_linie`
+(pe baza de test; pe producție la publicare). **Urmează**, după răspuns: 274b (dacă se validează), apoi
 „Lotul 6 e complet” -> `scripts/poarta_lot.sh` -> publicarea numai cu acordul lui Costin (regim pilot: backup, fast-forward aprobat,
 post-commit, cele 6 migrări noi cu `--productie`, four-way).
 
@@ -556,8 +560,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **985** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **987** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -620,7 +624,7 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 | cifra | ce e |
 |---|---|
 | **0** | rânduri care trimit la o firmă inexistentă |
-| **20** | tabele din `public` cu `tenant_id`, numărate |
+| **21** | tabele din `public` cu `tenant_id`, numărate |
 
 <!-- CIFRE-DATE:STOP -->
 

@@ -21,13 +21,14 @@ COTA = 21
 # parseFloat->JSON; cota_tva = COTA din potrivirea automata). [05.10.2026, comanda Costin pct.3] payload-ul poarta si
 # `cota_propusa` (propunerea automata, aici = cota aleasa) — pentru jurnalul „propus -> ales”; nu e un camp fiscal al liniei.
 # [05.10.2026, pct.9] si `um` — unitatea de masura a liniei (implicit „buc”), care pana acum aparea doar pe PDF.
+# [16.10.2026, 274b] si `categorie_tva` — categoria liniei cu 0% (null pe o linie cu cota pozitiva).
 FILL = [
     {"descriere": "Serviciu consultanta", "cantitate": "2", "pret_unitar": "100"},
     {"descriere": "Produs marfa vandut", "cantitate": "3", "pret_unitar": "50"},
 ]
 CANONICAL_LINII = [
-    {"descriere": "Serviciu consultanta", "cantitate": 2, "um": "buc", "pret_unitar": 100, "cota_tva": COTA, "cota_propusa": COTA, "articol_id": None},
-    {"descriere": "Produs marfa vandut", "cantitate": 3, "um": "buc", "pret_unitar": 50, "cota_tva": COTA, "cota_propusa": COTA, "articol_id": None},
+    {"descriere": "Serviciu consultanta", "cantitate": 2, "um": "buc", "pret_unitar": 100, "cota_tva": COTA, "cota_propusa": COTA, "articol_id": None, "categorie_tva": None},
+    {"descriere": "Produs marfa vandut", "cantitate": 3, "um": "buc", "pret_unitar": 50, "cota_tva": COTA, "cota_propusa": COTA, "articol_id": None, "categorie_tva": None},
 ]
 
 

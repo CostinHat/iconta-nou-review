@@ -20981,3 +20981,77 @@ roșie. Fiecare eșec a fost citit; cauzele sunt de trei feluri, iar deciziile d
    (P7: 332 de apeluri, 470 de rute, 46 / 4 instrucțiuni; trasee; clichete) au fost regenerate din instrumente, pe baza de TEST.
    Excluderea nomenclatoarelor din `test_afirmatii_tipate` nu mai numără hărțile cu cheie de formular (`camp`): sunt în afara scopului
    oricum, deci excluderea nu le ascunde nimic.
+
+## 16.10.2026 (noaptea) — Lotul 6: răspunsul lui Costin la raport (7d718193) — 274b, 285, 289, 273, 296, 268, SPV
+
+Comanda Costin, verbatim:
+
+> Răspuns la raportul lotului 6 (7d718193). Rămâi pe ramura lucru/lot6-2026-10-16.
+>
+> 1. 274b: validat, cu completări. Categoria e obligatorie pe orice linie cu 0%: taxare inversă (AE), scutit cu drept de deducere (E), scutit fără drept de deducere (E), livrare intracomunitară scutită (K), export (G), în afara sferei TVA. „Neplătitor” (O) nu e opțiune în listă; vine automat din regimul firmei neplătitoare. Verifică la sursă (Ghidul e-Factura, instrucțiunile D300/D390) codul corect pentru „în afara sferei TVA” și rândul D300 pentru fiecare categorie, cu temei în DECIZII.
+> 2. 285: interpretarea ta e acceptată (zero derulare laterală; verticală doar la conținut lung, cu acțiunea principală și mesajul lipite jos).
+> 3. 289: acceptat: emitentul certificatului plus CUI-urile acoperite.
+> 4. 273, „terț plătitor”: nu confirm citirea ca „furnizor înregistrat în scopuri de TVA”. Termenul înseamnă o terță persoană care plătește factura în locul cumpărătorului. Verifică la sursă dacă și unde contează pentru D394 și din ce element al facturii UBL vine; implementează după sursă și spune ce ai găsit.
+> 5. Lipsesc din raport trei puncte trimise în completarea lotului: 296 (alertele de sănătate server prea dese: se trimit numai cele care cer o acțiune), 268 redeschisă (emailul de confirmare a contului primit pe 16.10 la 14:43, după publicarea lotului 5, are încă „Dezabonează-te” în Gmail) și proba de citire din SPV pentru FISCALOS ICONTA, CUI 55229657. Le rezolvi pe ramură; pentru SPV arăți rezultatul citirii (liste de mesaje/facturi, chiar dacă e goală) sau eroarea exactă.
+>
+> Răspunde punctual pentru fiecare număr de mai sus: rezolvat sau nu, cu testul care îl probează. Nu porni poarta lotului și nu publica. Oprește-te și raportează.
+
+- **Citirea:** raportul se scrie la capătul lucrului; poarta lotului și publicarea NU se pornesc. Pct.5 „proba de citire din SPV” = aprobare
+  explicită pentru O citire a listei de mesaje e-Factura a FISCALOS ICONTA pe producție (numai listă, nimic descărcat, nimic trimis, nimic
+  scris în baza de producție).
+- **285, 289:** deciziile lui Costin, de mai sus, închid interpretările din raport (285: derulare laterală zero, verticală numai la conținut
+  lung, cu acțiunea și mesajul lipite jos; 289: emitentul certificatului + CUI-urile acoperite, fără titular).
+
+### Deciziile de execuție pentru răspunsul lui Costin (16.10.2026, noaptea)
+
+- **274b — corespondența categoriilor, verificată la sursă** (sursa unică: `core/categorii_tva.py`). Ghidul MF e-Factura v2.9 cap.3.2
+  (anaf_surse/mf_ghid_coduri_facturi_efactura_v2_9.txt): „E” = „operațiuni scutite de TVA, indiferent dacă acestea sunt scutite cu drept
+  de deducere sau fără drept de deducere, sau pentru operațiuni care nu sunt cuprinse în baza de impozitare a TVA (ex. penalități [...],
+  dobânzi pentru plata cu întârziere) sau care nu sunt cuprinse în sfera de aplicare a TVA (ex. garanții SGR, garanții de bună execuție
+  GBE)” -> **„în afara sferei TVA” = E** cu motivul în BT-120; „O” = „utilizat exclusiv de către persoane impozabile neînregistrate în
+  scopuri de TVA” (automat). K / G: EN 16931 (VATEX-EU-IC / VATEX-EU-G); RO_CIUS (MO 1148, descărcat de pe mfinante.gov.ro) nu le
+  restrânge. D300 (OPANAF 174/2026): AE -> rd.13 („măsurile de simplificare prevăzute la art. 331”); E cu drept și G -> rd.14 („scutite
+  cu drept de deducere, prevăzute la art. 294 alin. (1), art. 295 şi 296” — exportul e art.294 alin.(1) lit.a); E fără drept -> rd.15
+  („scutite fără drept de deducere, prevăzute la art. 292”); K -> rd.1 („scutite conform art. 294 alin. (2) lit. a) şi d)”); în afara
+  sferei -> fără rând. Pe factura emisă, liniile cu categorie se rutează linie cu linie; o factură de dinainte (nicio categorie) rămâne
+  cum era (taxarea inversă de pe antet pe toate liniile — un test vechi o păzește). Calea a doua a D300 exclude numai liniile AE.
+- **274b — taxarea inversă pe linie pune taxarea inversă pe factură** și cere categoria produsului (codul D394, `d394.CODPR`): D394
+  declară livrarea „V” după antet și codul produsului. Alternativa respinsă: categoria numai pe linie (D394 n-ar fi văzut-o).
+- **274b — XML-ul**: S / AE / E / K / G / O cu motivul (BT-120) și codul VATEX (BT-121); O fără cotă și fără codurile de TVA ale
+  părților, cu CUI-urile în BT-30 / BT-47 (validatorul FACT1 cere identificarea: „Nu a fost identificat cui vanzator” altfel); clientul
+  din afara UE fără cod de TVA, cu identificatorul în BT-47 (RO_CIUS BR-RO-120); K cu livrarea (data = data faptului generator, altfel
+  data emiterii: CF art.319 alin.(20) lit.e cere data livrării numai „dacă această dată diferă de data emiterii facturii”) și adresa de
+  livrare completă (RO_CIUS BR-RO-180 / 200 / 210: stradă, localitate, regiune) — formularul cere localitatea și regiunea clientului
+  străin; lipsa lor se refuză la trimitere, nu se ghicește. **Cumpărătorul din afara României**: validatorul răspunde mereu „ERRIdentif —
+  nu a fost identificat cui cumparator” (verificat cu un cod de TVA UE real); MF, „Prezentare servicii web e-Factura” (descărcat de pe
+  mfinante.gov.ro): parametrul `extern` „se completeaza doar in cazul in care cumparatorul este din exteriorul Romaniei (nu are CUI sau
+  NIF)” -> încărcarea îl trimite, iar trimiterea lasă să treacă numai acea eroare de identificare. Probat pe validatorul ANAF FACT1 cu
+  date sintetice: AE+S, E (trei), K, G, O — stare=ok.
+- **274b — INTERPRETARE CU TEMEI (de reconfirmat)**: serviciile din vânzarea intracomunitară (art.278 alin.(2), locul prestării în afara
+  României) primesc „în afara sferei TVA” (E): ghidul pune la E operațiunile „care nu sunt cuprinse în sfera de aplicare a TVA”, iar AE e
+  rezervat art.331. Alternativa respinsă: AE (uzul EN 16931 pentru taxarea la beneficiar). D300 le pune pe țară și axă (rd.3), nu pe
+  categorie. §6 al raportului.
+- **274b — PDF-ul**: trimiterea la scutire pe liniile cu 0% (CF art.319 alin.(20) lit.l) și mențiunea „taxare inversă” (lit.m) — același
+  text ca BT-120.
+- **273 — „terț plătitor”, la sursă**: (1) e-Factura: RO_CIUS n-are niciun element pentru cine plătește factura — numai beneficiarul
+  plății (Payee, BT-59 / BG-10), folosit de RO_CIUS la facturile de executare silită (BR-RO-130); (2) D394 (OPANAF 2194/2025): singurii
+  „terți” sunt cei care EMIT facturi în numele persoanei impozabile (pct.2.4, CF art.319 alin.(19)); partenerul declarat e
+  furnizorul / beneficiarul; (3) CF art.286 alin.(1) lit.a: baza cuprinde contrapartida „din partea cumpărătorului, beneficiarului sau a
+  unui terț” — plata de către un terț nu schimbă baza. Concluzie: plătitorul terț nu se importă și nu se declară; sintagma venea din
+  ajutorul nostru („Parserul minimal pierde unele câmpuri (terț plătitor, categorie)”), unde numea coloana `tert_platitor_tva` (statutul
+  TVA al furnizorului, cerut de D394). Ajutorul F043, eticheta și „de completat” spun acum ce se cere: dacă furnizorul e înregistrat în
+  scopuri de TVA.
+- **296 — „numai cele care cer o acțiune”**: fiecare rând al alertei de sănătate spune ce faci (`alerta_load.ACTIUNI`); RAM-ul și
+  conexiunile DB pleacă numai ținute 15 minute, fără rulări de teste (regula load-ului, lotul 5); disc, erori 500, infrastructura P2 —
+  din prima (cer acțiune). Jobul căzut dintr-o eroare de rețea spre un serviciu extern nu trimite alertă: heartbeat-ul (`RITMURI`)
+  alertează dacă nu mai reușește. Măsurat pe producție înainte (numai metrici de platformă): 02–16.10, 4.056 de rânduri — RAM max 64%,
+  conexiunile la prag o dată (05.10), erori 500: 0, încărcarea veche: 1.037 de rânduri peste 1,4.
+- **C42 — găsită la proba SPV**: rularea `spv_receive` de la 19:47 a căzut (ReadTimeout ANAF, 60 s) și a oprit citirea tuturor firmelor;
+  acum eroarea de rețea se consemnează pe firma ei, celelalte se citesc, iar o firmă căzută din alt motiv eșuează jobul la capăt.
+- **268 redeschisă — sursa antetului**: codul nostru nu pune List-Unsubscribe pe emailurile tranzacționale; Brevo îl adaugă singur pe
+  orice email trimis prin API („For compliance purposes, Brevo automatically adds a list-unsubscribe header”), iar înlocuirea cu
+  List-Help e „available to Enterprise plans” (răspunsul personalului Brevo, community.brevo.com; centrul de ajutor Brevo refuză
+  cititorul automat — sursa oficială n-a putut fi citită). Nu se repară din cod: decizie (§6).
+- **Proba SPV (pct.5)**: o citire a listei pe producție, 16.10.2026 21:05:01, FISCALOS ICONTA (`tenant_054`, CUI 55229657), tokenul
+  cabinetului activ (acces până la 14.01.2027, reîmprospătare până la 16.10.2027): filtrele P, T, E, R — 0 mesaje, ANAF: „Nu aveti
+  drept in SPV pentru CIF=55229657”. Citirea automată spune același lucru la fiecare rulare (jurnalul `spv_receive.log`).

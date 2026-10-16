@@ -121,6 +121,9 @@ def apiv1_factura_emite(tenant_id, corp, actx):
                 status=corp.get("status", "de_preluat"),
                 curs_manual=corp.get("curs_manual"),
                 data_curs_manual=corp.get("data_curs_manual"),   # [R130] data cursului manual
+                categorie_331=corp.get("categorie_331"),   # [274b] categoria produsului la taxarea inversă (linii „taxare_inversa”)
+                # [274b] țara clientului decide livrarea intracomunitară / exportul (categoriile K / G); fără ea, orice client era „RO”
+                tert_tara=corp.get("tert_tara") or "RO",
                 # [R130] Pe calea de API „cine" e CHEIA cabinetului, nu un utilizator — se scrie ca
                 # atare. Un `integer` de utilizator ar fi trebuit sa inventeze unul.
                 curs_manual_de="cheie API a cabinetului %s" % actx["firm"],

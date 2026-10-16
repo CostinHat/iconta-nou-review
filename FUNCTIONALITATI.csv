@@ -635,7 +635,7 @@ Când primești facturi prin SPV (e-Factura obligatorie B2B) și vrei să le în
 Cheltuiala înregistrată din factura primită, legată de factură, cu contul confirmat de tine.
 ## Greșeli frecvente
 - Validarea fără verificarea contului sugerat.
-- Unele câmpuri nu se preiau din XML (terțul plătitor, categoria): factura le arată „de completat”, iar tu le completezi înainte de validare; terțul plătitor ajunge apoi în D394.
+- Unele date nu se află în XML: dacă furnizorul e înregistrat în scopuri de TVA și, la taxarea inversă, categoria produsului (art.331). Factura le arată „de completat”, iar tu le completezi înainte de validare; D394 declară furnizorul și achiziția după ele. Cine a plătit factura (de exemplu un terț, în locul firmei) nu apare în XML și nici în D394.
 ## Reguli fiscale
 e-Factura obligatorie B2B (OUG 120/2021 și următoarele); structura CIUS-RO / UBL."
 PDF factură,"Generează PDF-ul facturii (reportlab) cu identitatea vizuală a firmei-client din Model factură: logo (base64), culoare accent, font (sans/serif/mono); folosit la emitere, pe portal și la trimiterea către client.",F045,firma,Facturi / portal,core/factura_pdf.py,,LIVE,,,"## Ce face

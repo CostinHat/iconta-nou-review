@@ -144,7 +144,7 @@ def test_storno_livrare_ic_scade_rd1(firma):
     cl = _client()
     # livrare IC de bunuri catre un partener DE, cota 0
     r = cl.post(_U(firma, "/tenants/{tenant_id}/facturi/emite"), headers=_H(firma), json={
-        "linii": [{"descriere": "Marfa", "cantitate": 1, "pret_unitar": 5000, "cota_tva": 0}],
+        "linii": [{"descriere": "Marfa", "cantitate": 1, "pret_unitar": 5000, "cota_tva": 0, "categorie_tva": "livrare_ic"}],   # [274b]
         "tert_nume": "KUNDE GMBH", "tert_cui": "DE811569869", "tert_tara": "DE",
         "data_emitere": ZI, "moneda": "RON", "tip_operatiune": "normal"})
     assert r.status_code == 200, r.text

@@ -161,6 +161,9 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   const TARI_NONUE_JS = { US:"Statele Unite", CH:"Elveția", TR:"Turcia", CN:"China",
     MD:"Republica Moldova", NO:"Norvegia", RS:"Serbia", UA:"Ucraina" };
   // [lotul 07.10 B, DS cap.17 corectat] țara se DEDUCE din CUI-ul partenerului (`taraDinCui`), vizibil și modificabil; fără prefix = RO
+  // [274b] categoria de TVA a liniei cu 0% (core/categorii_tva, de la server): obligatorie la plătitor; la neplătitor e „O”, automat
+  const CATEG = num.categorii_tva || [];
+  const C331 = num.categorii_331 || [];
   const optiuniTara = `<option value="RO" selected>România (RO)</option>`
     + `<optgroup label="Uniunea Europeană">`
     + Object.keys(TARI_UE_JS).sort().map((c) => `<option value="${c}">${esc(TARI_UE_JS[c])} (${c})</option>`).join("")
@@ -232,6 +235,12 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <div class="em-eticheta">Clasificare TVA (D300)</div>
       <label class="camp-eticheta" for="em-tara">Țara partenerului</label>
       <select class="camp-input" id="em-tara">${optiuniTara}</select>
+      <label class="camp-eticheta em-strain" for="em-oras" hidden>Localitatea clientului (adresa de livrare din e-Factura)</label>
+      <input class="camp-input em-strain" id="em-oras" type="text" maxlength="100" hidden>
+      <label class="camp-eticheta em-strain" for="em-regiune" hidden>Regiunea clientului (provincie, land, comitat)</label>
+      <input class="camp-input em-strain" id="em-regiune" type="text" maxlength="100" hidden>
+      <label class="camp-eticheta" for="em-c331" id="em-c331-et" hidden>Categoria produsului cu taxare inversă (art.331; codul din D394)</label>
+      <select class="camp-input" id="em-c331" hidden><option value="">— alege —</option>${C331.map((c) => `<option value="${esc(c)}">${esc(c.replace(/_/g, " "))}</option>`).join("")}</select>
       <label class="camp-eticheta" for="em-tipop">Tip operațiune</label>
       <select class="camp-input" id="em-tipop">
         <option value="normal" selected>Operațiune normală</option>
@@ -315,7 +324,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   let pleacaMarfaCurent = null;               // raspunsul la poarta "pleaca marfa acum?" pt emiterea curenta
   let semnMarfa = null;                       // [lotul 07.10 pct.17] articolele pentru care s-a dat răspunsul
 
-  const linieNoua = () => ({ descriere: "", cantitate: "", um: "buc", pret_unitar: "", cota_tva: null, cota_propusa: null, articol_id: null });
+  const linieNoua = () => ({ descriere: "", cantitate: "", um: "buc", pret_unitar: "", cota_tva: null, cota_propusa: null, articol_id: null,
+    categorie_tva: null });
   // [comanda Costin 05.10.2026 pct.3] „contabilul poate corecta cota; schimbarea rămâne consemnată (propus → ales, cine, când)”.
   // Cotele oferite = cele permise la data facturii, de la server (aceeași sursă ca validarea emiterii).
   let COTE = (num.cote_permise && num.cote_permise.length) ? num.cote_permise : [];   // se reîncarcă la schimbarea datei
@@ -338,7 +348,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
              ${COTE.map((c) => `<option value="${c}"${l.cota_tva === c ? " selected" : ""}>${c}%</option>`).join("")}
            </select>`
         : `<span class="em-l-cota${cotaCls}" id="em-l${i}-cota" title="Cota TVA">${cotaTxt}</span>`}
-      <button type="button" class="buton-sters em-l-sterge" data-idx="${i}" title="Șterge">×</button>`;
+      <button type="button" class="buton-sters em-l-sterge" data-idx="${i}" title="Șterge">×</button>
+      ${platitor && CATEG.length ? `<select class="camp-input em-l-categorie" id="em-l${i}-categorie" aria-label="Categoria de TVA a liniei cu cota 0%"${l.cota_tva === 0 ? "" : " hidden"}>
+             <option value="">— categoria de TVA (cota 0%) —</option>
+             ${CATEG.map((c) => `<option value="${esc(c.cod)}"${l.categorie_tva === c.cod ? " selected" : ""}>${esc(c.eticheta)}</option>`).join("")}
+           </select>` : ""}`;
     if (articole.length) {
       const selArticol = `
         <select class="camp-input em-l-articol" id="em-l${i}-articol" aria-label="Articol de stoc" style="margin-bottom:6px">
@@ -357,6 +371,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   function setCota(l, text, cota) {
     const p = linii.indexOf(l);
     if (p < 0) return;
+    aratăCategoria(l);   // [274b] orice cotă stabilită (aleasă, propusă, golită) decide dacă se cere categoria
     const el = zonaLinii.querySelector("#em-l" + p + "-cota");
     if (!el) return;
     const cls = (cota === 11 ? " cota-11" : cota === 0 ? " cota-0" : cota != null ? " cota-21" : "");
@@ -368,6 +383,22 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     }
     el.textContent = text;
     el.className = "em-l-cota" + cls;
+  }
+
+  // [274b] categoria se cere numai pe linia cu 0%; o cotă schimbată de pe 0% o golește. Categoria produsului (art.331) se cere cât timp
+  // o linie e cu taxare inversă.
+  function aratăCategoria(l) {
+    const p = linii.indexOf(l);
+    const sc = p < 0 ? null : zonaLinii.querySelector("#em-l" + p + "-categorie");
+    if (sc) {
+      sc.hidden = l.cota_tva !== 0;
+      if (l.cota_tva !== 0) { sc.value = ""; l.categorie_tva = null; }
+    }
+    actualizeazaC331();
+  }
+  function actualizeazaC331() {
+    const are = linii.some((x) => x.categorie_tva === "taxare_inversa");
+    ["#em-c331", "#em-c331-et"].forEach((s) => { const e = corp.querySelector(s); if (e) e.hidden = !are; });
   }
 
   // [pct.1b] ce a venit din PROPUNERE (prețul de vânzare din nomenclator, UM-ul articolului) nu e ales de om: când denumirea se
@@ -442,6 +473,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       setCota(l, "", l.cota_tva);
       recalc();
     });
+    const selCateg = zonaLinii.querySelector("#em-l" + i + "-categorie");
+    if (selCateg) selCateg.addEventListener("change", () => { l.categorie_tva = selCateg.value || null; actualizeazaC331(); });
     cant.addEventListener("input", () => { l.cantitate = parseFloat(cant.value) || 0; recalc(); });
     um.addEventListener("input", () => { l.um = um.value.trim(); l.umScris = true; l.umPropus = false; });
     // [pct.1b] prețul golit rămâne GOL (era `|| 0`: un câmp șters pleca drept preț 0, pe care nu-l scrisese nimeni)
@@ -565,9 +598,13 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     const pfx = c.slice(0, 2);
     return /^[A-Z]{2}/.test(c) && (TARI_UE_JS[pfx] || TARI_NONUE_JS[pfx]) ? pfx : null;
   };
+  // [274b] clientul din afara României: localitatea și regiunea lui (adresa de livrare a livrării intracomunitare în e-Factura)
+  const aratăStrain = () => { const s = corp.querySelector("#em-tara").value !== "RO"; corp.querySelectorAll(".em-strain").forEach((e) => { e.hidden = !s; }); };
+  corp.querySelector("#em-tara").addEventListener("change", aratăStrain);
   corp.querySelector("#em-cui").addEventListener("change", (ev) => {
     const t = taraDinCui(ev.target.value), sel = corp.querySelector("#em-tara");
     if (t && sel && sel.value !== t) { sel.value = t; salveazaCiorna(); }
+    aratăStrain();
   });
 
   // verificare CUI
@@ -675,7 +712,12 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         pret_unitar: (l.pret_unitar === "" || l.pret_unitar == null) ? null : l.pret_unitar, cota_tva: l.cota_tva,   // [pct.1b] gol = lipsă
         cota_propusa: l.cota_propusa,   // [pct.3] pentru jurnalul „propus → ales”
         articol_id: l.articol_id || null,  // [punte_stoc_v1] F172
+        categorie_tva: l.cota_tva === 0 ? (l.categorie_tva || null) : null,   // [274b] categoria liniei cu 0%
       })),
+      // [274b] categoria produsului la taxarea inversă; localitatea și regiunea clientului străin (adresa de livrare din e-Factura)
+      categorie_331: (() => { const e = corp.querySelector("#em-c331"); return e && !e.hidden ? (e.value || null) : null; })(),
+      tert_oras: corp.querySelector("#em-tara").value !== "RO" ? ((corp.querySelector("#em-oras") || {}).value || "").trim() || null : null,
+      tert_judet: corp.querySelector("#em-tara").value !== "RO" ? ((corp.querySelector("#em-regiune") || {}).value || "").trim() || null : null,
       tert_nume: corp.querySelector("#em-nume").value.trim() || null,
       tert_cui: corp.querySelector("#em-cui").value.trim() || null,
       tert_adresa: corp.querySelector("#em-adresa").value.trim() || null,

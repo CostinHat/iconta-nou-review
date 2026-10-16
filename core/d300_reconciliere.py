@@ -87,7 +87,11 @@ def _agrega_independent(conn, inceput, sfarsit):
          "     JOIN inregistrari_linii l2 ON l2.inregistrare_id = i2.id WHERE i2.factura_id = f.id AND l2.cont_credit LIKE '411%%' "
          "     AND (l2.cont_debit LIKE '51%%' OR l2.cont_debit LIKE '53%%'))) "
          "     ELSE COALESCE(f.data_faptului_generator, f.data_emitere) END) < %s "
-         "AND COALESCE(f.taxare_inversa, false) = false "  # [06.08.2026] taxare inversa -> rd.13 auto (nu col/ded), exclusa din cale2 ca in calcul_d300
+         # [06.08.2026] taxare inversa -> rd.13 auto (nu col/ded), exclusa din cale2 ca in calcul_d300. [274b, 16.10.2026] pe o factura cu
+         # categorii pe linii (de la 274b) se exclud NUMAI liniile „taxare_inversa” — o linie de 21% de pe aceeasi factura e colectata;
+         # factura de dinainte (fara nicio categorie) si cea primita raman excluse intregi, ca pana acum. Scris aici, nu importat.
+         "AND (COALESCE(f.taxare_inversa, false) = false OR (l.categorie_tva IS DISTINCT FROM 'taxare_inversa' AND EXISTS ("
+         "     SELECT 1 FROM factura_linii lc WHERE lc.factura_id = f.id AND lc.categorie_tva IS NOT NULL))) "
          "AND COALESCE(f.tert_tara, 'RO') = 'RO' "  # [B1/F125] IC/export -> randuri proprii (rd.1/5/14/18 bunuri; rd.3/rd.7+rd.20 servicii reclasificate P/S in D390), in afara reconcilierii pe cote 21/11/9 (limita) - filtrul pe tert_tara le exclude coerent, ca la IC bunuri
          "AND " + _nsf.clauza_sql("f") + " "  # [B1] doar facturi DECLARABILE — din nomenclator, nu din lista scrisa aici (P1)
          # [15.09.2026, etapa 2 lotul F] si doar DOCUMENTE FISCALE. Decizia 46 (aceeasi zi)

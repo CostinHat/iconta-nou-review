@@ -1884,6 +1884,9 @@ html, body {
    la mijlocul liniei (dupa input); fixand-o pe grid-row 2, celulele urmatoare (pret/cota/sterge)
    se aseaza inapoi pe randul 1 -> butonul de sters NU mai sare pe rand nou. */
 .em-linie .msg-eroare { grid-column:1/-1; grid-row:2; align-self:start; }
+/* [274b] categoria de TVA a liniei cu 0%: rândul al doilea al liniei, pe toată lățimea; erorile coboară sub ea */
+.em-linie .em-l-categorie { grid-column:1/-1; grid-row:2; }
+.em-linie:has(.em-l-categorie:not([hidden])) .msg-eroare { grid-row:3; }
 /* [ui13] antet de coloane pt liniile de factura, aliniat la grila .em-linie */
 .em-linie-antet { display:grid; grid-template-columns: 1fr 80px 64px 100px 84px 28px; gap:8px; font-size: var(--text-mic); font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#475569; margin-bottom:2px; }  /* [R143] contrast, ca la .em-eticheta */
 .em-linie-antet span { padding:0 10px; }

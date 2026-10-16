@@ -849,15 +849,11 @@ def _verifica_si_alerta():
     alerte = []
     _drift = _verifica_drift_p2()
     if _drift:
-        alerte.append(_drift)
-    if m["ram_procent"] is not None and m["ram_procent"] >= _PRAG_RAM_PROCENT and _poate_alerta("ram"):
-        alerte.append(f"RAM folosita: {m['ram_procent']}% (prag {_PRAG_RAM_PROCENT}%)")
+        alerte.append(_alerta_load.rand("p2_infrastructura", _drift))
     if m["disc_procent"] is not None and m["disc_procent"] >= _PRAG_DISC_PROCENT and _poate_alerta("disc"):
-        alerte.append(f"Disc folosit: {m['disc_procent']}% (prag {_PRAG_DISC_PROCENT}%)")
-    if m["conexiuni_db"] is not None and m["conexiuni_db"] >= _PRAG_CONEXIUNI_DB and _poate_alerta("conexiuni_db"):
-        alerte.append(f"Conexiuni DB active: {m['conexiuni_db']} (prag {_PRAG_CONEXIUNI_DB})")
+        alerte.append(_alerta_load.rand("disc", f"Disc folosit: {m['disc_procent']}% (prag {_PRAG_DISC_PROCENT}%)"))
     if m["erori_noi"] and m["erori_noi"] > 0 and _poate_alerta("erori"):
-        alerte.append(f"{_cate(m['erori_noi'], 'eroare', 'erori')} server (500+) in ultimele 10 minute")
+        alerte.append(_alerta_load.rand("erori", f"{_cate(m['erori_noi'], 'eroare', 'erori')} server (500+) in ultimele 10 minute"))
     # ICRD_ISTORIC_SANATATE_V1 - salveaza instantaneu pentru grafice
     try:
         with db.get_conn() as conn:
@@ -866,17 +862,25 @@ def _verifica_si_alerta():
     except Exception as _e:
         _obs.esec_secundar("metrici sanatate: scriere", _e)  # inghitit, dar nu tacut (27.07.2026)
     # [6b, 15.10.2026] load: media pe 15 minute peste numărul de procesoare, ținută, fără rulări de teste — din istoric, nu dintr-o
-    # singură măsurătoare (core/alerta_load.py)
+    # singură măsurătoare (core/alerta_load.py). [296, 16.10.2026] La fel RAM-ul și conexiunile DB: un vârf care trece singur nu cere
+    # nicio acțiune, deci nu pleacă.
     try:
         with db.get_conn() as conn:
             with conn.cursor() as cur:
-                istoric = _repo.load_recent(cur, _alerta_load.FARA_TESTE_MIN)
+                istoric = _repo.metrici_recente(cur, _alerta_load.FARA_TESTE_MIN)
         if istoric:
-            alerta, motiv = _alerta_load.de_alertat(istoric, m["cpu_count"], istoric[-1][0])
+            acum = istoric[-1][0]
+            alerta, motiv = _alerta_load.de_alertat([(r[0], r[1], r[2]) for r in istoric], m["cpu_count"], acum)
             if alerta and _poate_alerta("load"):
-                alerte.append("Load: " + motiv)
+                alerte.append(_alerta_load.rand("load", "Load: " + motiv))
+            alerta, motiv = _alerta_load.tinut([(r[0], r[3], r[2]) for r in istoric], _PRAG_RAM_PROCENT, acum, "RAM folosită", "%.0f%%")
+            if alerta and _poate_alerta("ram"):
+                alerte.append(_alerta_load.rand("ram", motiv))
+            alerta, motiv = _alerta_load.tinut([(r[0], r[4], r[2]) for r in istoric], _PRAG_CONEXIUNI_DB, acum, "Conexiunile DB active")
+            if alerta and _poate_alerta("conexiuni_db"):
+                alerte.append(_alerta_load.rand("conexiuni_db", motiv))
     except Exception as _e:
-        _obs.esec_secundar("metrici sanatate: load", _e)  # inghitit, dar nu tacut
+        _obs.esec_secundar("metrici sanatate: alerte tinute", _e)  # inghitit, dar nu tacut
 
     if not alerte:
         return
@@ -886,7 +890,8 @@ def _verifica_si_alerta():
     html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
             "<p>Alertă sănătate server iConta.eu:</p><ul>" +
             "".join("<li>" + _esc_html(p) + "</li>" for p in alerte) +
-            "</ul><p>Verifică panoul „Sănătate server” din Panou Admin.</p></div>")
+            "</ul><p>Fiecare rând spune ce faci. Vârfurile trecătoare (RAM, conexiuni, încărcare care scad singure) nu se trimit: le vezi "
+            "în panoul „Sănătate server” din Panou Admin.</p></div>")
     # fara alerta: chiar asta e alerta (acelasi canal, Brevo) — esecul ramane in jurnal
     _obs.trimite_email_html_sau_semnaleaza("email alerta sanatate", email, "Alerta iConta.eu - sanatate server", html)
 
@@ -1147,6 +1152,7 @@ class LinieIn(BaseModel):
     pret_unitar: float
     cota_tva: Optional[float] = None   # None -> potrivire automata / eroare la lipsa (fara valoare implicita)
     um: str = "buc"
+    categorie_tva: Optional[str] = None   # [274b] categoria liniei cu 0% a unei facturi emise
 
 class FacturaIn(BaseModel):
     numar: str
@@ -1162,6 +1168,7 @@ class FacturaIn(BaseModel):
     tert_tara: str = "RO"                       # [B1 D300] cod ISO 2 litere partener (IC/export)
     tip_operatiune: str = "normal"             # [B1 D300] normal|avans|regularizare_avans
     furnizor_tva_incasare: bool = False        # [B1 D300] doar pe primite (deducere amanata)
+    categorie_331: Optional[str] = None        # [274b] emise: categoria produsului când o linie e „taxare_inversa” (codul D394)
 
 class ClientIn(BaseModel):
     nume: str
@@ -1284,6 +1291,7 @@ class LinieEmitereIn(BaseModel):  # [p104_emitere_rute]
     cota_propusa: Optional[float] = None  # [05.10.2026 pct.3] cota propusă automat; diferită de cota_tva -> jurnal „propus → ales”
     articol_id: Optional[int] = None  # [punte_stoc_v1] F172: leaga linia de stoc (CV); None = serviciu
     cont_venit: Optional[str] = None  # [DECIZII 64] cont de venit explicit pe linie: escape cand clasificarea nu poate decide si emiterea s-ar bloca
+    categorie_tva: Optional[str] = None  # [274b] categoria liniei cu 0% (core/categorii_tva.CATEGORII), obligatorie la plătitor
 
 class EmitereIn(BaseModel):
     tip: str = "factura"  # factura|proforma|aviz
@@ -1303,6 +1311,9 @@ class EmitereIn(BaseModel):
     # [decizia A 02.10.2026] factura emisă pe baza bonului fiscal (HG 1/2016 pct.97 alin.(1): „conform bon fiscal nr./data”)
     bon_fiscal_nr: Optional[str] = None
     bon_fiscal_data: Optional[str] = None
+    categorie_331: Optional[str] = None  # [274b] categoria produsului cu taxare inversă (codul D394), cerută când o linie e „AE”
+    tert_oras: Optional[str] = None      # [274b] localitatea clientului din afara României (BT-77 la livrarea intracomunitară)
+    tert_judet: Optional[str] = None     # [274b] regiunea clientului din afara României (BT-79)
 
 class NumerotareIn(BaseModel):
     serie: Optional[str] = None

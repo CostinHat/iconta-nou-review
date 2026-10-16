@@ -8953,9 +8953,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**828 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**830 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 789
+### `core/` — 791
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -8988,6 +8988,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_11_deducere_copii_gard.py` — GARD #11: deducerea de 100 lei/copil (CF art.77 alin.(10) lit.b) NU se acorda tacit — art.77 alin.(12)-(13)
 - `core/test_12_salariu_minim_luna.py` — GARD #12: CF art.77 alin.(3) teza finala — cand in aceeasi luna se aplica mai multe valori ale
 - `core/test_272_cui_nemodificabil.py` — 272 — Date firmă: CUI-ul nu se modifică din acest ecran, de niciun rol; corectura e operațiunea separată a administratorului, cu
+- `core/test_274b_categorii_tva.py` — 274b — categoria de TVA pe orice linie cu 0% (decizia Costin 16.10.2026, răspunsul la raportul lotului 6 pct.1, verbatim în DECIZII):
 - `core/test_281_amortizare_restanta.py` — 281 — Mijloace fixe / închidere (comanda Costin 16.10.2026, „Lotul 6, comanda 1” pct.9, verbatim în DECIZII): „lunile de amortizare
 - `core/test_282_inregistrari_neconfirmate.py` — 282 — Panou Admin → Înregistrare: cererile neconfirmate și „Retrimite confirmarea” (comanda Costin 16.10.2026, „Lotul 6, comanda 1”
 - `core/test_284_note_explicative.py` — 284 — D300 / control: refuzul de la „Trimite în coadă” numește notele care explică diferența, iar după validarea lor declarația se
@@ -9027,6 +9028,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_ajutor_prelogin_fallback.py` — GARD ajutor_prelogin: handlerul global al semnului "?" nu depinde DOAR de _navGlobal (shell
 - `core/test_alerta_load.py` — Alerta de load (comanda Costin 15.10.2026 noaptea, „Lotul 5 — comanda 3” pct.6b, verbatim în DECIZII): „Alerta de load pleacă doar
 - `core/test_alerte_control_fiscal.py` — Teste gardian pentru alerte_control_fiscal — stratul pull->push al controlului fiscal.
+- `core/test_alerte_sanatate_296.py` — 296 — alertele de sănătate server prea dese (comanda Costin 16.10.2026, răspunsul la raportul lotului 6 pct.5, verbatim în DECIZII):
 - `core/test_amortizare_ecran_metoda.py` — GARD amortizare pe METODA (Q6+Q15, tura import 16.08.2026).
 - `core/test_amprenta_declaratie.py` — core/test_amprenta_declaratie.py — GARD C3 (snapshot+hash): regenerare-diff prinde editarea retroactiva.
 - `core/test_amprente_declaratii.py` — GĂRZI R2 — amprentele declarațiilor pe portofoliu (`scripts/amprente_declaratii.py`, comanda Costin 08.10.2026, verbatim în DECIZII;
@@ -11199,3 +11201,6 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | refuzurile afișate prin `refuzPeRand` | `core/scan_refuz_tacut.py::_ARATA` (+ `core/test_refuz_tacut.py`, clichet 18 / 82) | o scriere care înghite refuzul | — (calibrare: fără `refuzPeRand` scanerul vedea 16 scrieri mute false) | o funcție proprie de afișare, nenumită, rămâne nevăzută (modul 1 declarat) |
 | 278 legarea casei până în rulaj | `core/test_rute_fiscale_lot3b.py::test_INCASAREA_DE_CASA_legata_de_factura_ajunge_in_rulajul_clientului` | ruta nouă care scrie în cifre de declarație fără probă (criteriu `test_rute_probate`) | `leaga` fără factura pe notă -> ROȘU | — |
 | 282 emailul fără conexiune ținută | `core/test_val3_contracte.py` (clasa C5) + `core/test_tranzactii_clasificate.py` | `trimite_email_html` sub o conexiune din pool | trimiterea mutată înapoi în blocul conexiunii -> ROȘU | — |
+| 274b categoria liniei cu 0% | `core/test_274b_categorii_tva.py` (17) + e2e `test_def_274_linia_cu_0_cere_categoria_de_tva` | linia 0% fără categorie; categoria nepotrivită cu țara; XML fără categorie / motiv / livrare; D300 fără rândul categoriei | verificarea scoasă, „Z” pe toate, livrarea scoasă, BT-47 scos, rutarea D300 scoasă, verificarea din `creeaza_factura` scoasă -> ROȘU (6); formularul fără categorie -> e2e ROȘU (422) | facturile de dinainte rămân fără categorie (semnalate în D300 ca până acum) |
+| 296 alertele numai cu acțiune | `core/test_alerte_sanatate_296.py` | un rând de alertă fără acțiune; RAM / conexiuni pe o singură măsurătoare; alertă la o eroare de rețea a unui job | `rand` ocolit, `tinut` slăbit, `tranzitoriu` -> `False` -> ROȘU | emailul ca atare nu se vede în probă (fără Brevo pe aplicația de probă) |
+| C42 citirea SPV pe firme | `core/test_alerte_sanatate_296.py::test_c42_*` | ANAF fără răspuns la o firmă oprind citirea tuturor | excepția de rețea neprinsă; bucla fără `try` -> ROȘU | — |

@@ -183,8 +183,11 @@ UBL_PRIMITA = """<?xml version="1.0" encoding="UTF-8"?>
 def test_def_273_facturi_primite_spun_starea_spv_si_primesc_xml(patron, firma_e2e):
     """273. Facturi primite din SPV: „apar aici automat” fără conexiune; fără import UBL; câmpurile nepreluate nesemnalate.
     Pașii contabilului: deschide „Facturi primite” — starea SPV (necontectat, cu butonul spre Conectare SPV), fără „apar aici automat”;
-    importă un XML UBL — factura apare cu „de completat: furnizorul plătitor de TVA (D394)”; o validează fără tipul furnizorului —
-    refuzat pe câmp; cu el — validată, iar factura poartă tipul furnizorului."""
+    importă un XML UBL — factura apare cu „de completat: dacă furnizorul e înregistrat în scopuri de TVA (D394)”; o validează fără tipul
+    furnizorului — refuzat pe câmp; cu el — validată, iar factura poartă tipul furnizorului.
+    [16.10.2026, răspunsul Costin pct.4] „Terț plătitor” = un terț care plătește factura: nu e element UBL / RO_CIUS (numai beneficiarul
+    plății, BT-59) și nu se declară în D394 (partenerul e furnizorul) — deci nu se cere pe factură; câmpul cerut e statutul TVA al
+    furnizorului, numit ca în D394."""
     tag = "E2E273-%d" % time.time()
     pregateste_firma(patron, firma_e2e)
     patron.firma(firma_e2e["nume"])
@@ -202,9 +205,11 @@ def test_def_273_facturi_primite_spun_starea_spv_si_primesc_xml(patron, firma_e2
     pg.wait_for_function("() => (document.querySelector('#fp-mesaj') || {innerText: ''}).innerText.includes('importat')", timeout=20000)
     patron.captura("importata")
     rand = pg.locator(".fac-primita-btn", has_text=tag)
-    assert "de completat: furnizorul plătitor de TVA (D394)" in rand.inner_text(), rand.inner_text()
+    assert "de completat: dacă furnizorul e înregistrat în scopuri de TVA (D394)" in rand.inner_text(), rand.inner_text()
     rand.click()
     pg.wait_for_selector("#pr-platitor", timeout=20000)
+    eticheta = pg.locator("label:has(#pr-platitor)").inner_text()
+    assert "înregistrat în scopuri de TVA" in eticheta and "terț" not in eticheta.lower(), eticheta
     pg.fill("#pr-cont", "628")
     pg.select_option("#pr-furnizor-incasare", "false")
     pg.click("#pr-valideaza")
@@ -802,6 +807,42 @@ def test_def_274_articolul_fara_cota_in_nomenclator_spune_si_trimite_la_produse(
     assert pg.input_value("#em-l0-cota") == ""
     pg.click("#em-l0-cota-mesaj [data-ecran-destinatie='produse']")
     pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('Produse')", timeout=15000)
+
+
+def test_def_274_linia_cu_0_cere_categoria_de_tva(patron, firma_e2e):
+    """274b (decizia Costin 16.10.2026): „Categoria e obligatorie pe orice linie cu 0%” — taxare inversă, scutit cu / fără drept de
+    deducere, livrare intracomunitară, export, în afara sferei; „O” automat la neplătitor.
+    Pașii: Emite factură -> linia cu cota 0% -> sub ea apare „categoria de TVA”; emisă fără categorie -> refuzul stă la câmpul ei;
+    „taxare inversă” -> se cere și categoria produsului (art.331); „scutit fără drept de deducere” -> factura se emite, cu categoria pe
+    linie (D300 rd.15)."""
+    from e2e_bloc_a import _deschide_emiterea, _completeaza_factura
+    pregateste_firma(patron, firma_e2e)
+    _deschide_emiterea(patron, firma_e2e["nume"])
+    pg = patron.pg
+    _completeaza_factura(pg)
+    pg.wait_for_function("() => document.querySelector('#em-l0-cota').value !== ''", timeout=20000)
+    assert pg.locator("#em-l0-categorie").is_hidden(), "pe o linie cu cotă pozitivă nu se cere categoria"
+    pg.select_option("#em-l0-cota", "0")
+    pg.wait_for_selector("#em-l0-categorie", state="visible", timeout=10000)
+    optiuni = pg.eval_on_selector_all("#em-l0-categorie option", "els => els.map(e => e.value).filter(Boolean)")
+    assert optiuni == ["taxare_inversa", "scutit_cu_drept", "scutit_fara_drept", "livrare_ic", "export", "in_afara_sferei"], optiuni
+    pg.click("#em-emite")
+    pg.wait_for_function("() => [...document.querySelectorAll('.em-linie .msg-eroare')].some((m) => m.innerText.includes('alege categoria'))",
+                         timeout=20000)
+    patron.captura("fara_categorie")
+    pg.select_option("#em-l0-categorie", "taxare_inversa")
+    pg.wait_for_selector("#em-c331", state="visible", timeout=10000)
+    patron.captura("taxare_inversa_cere_categoria_produsului")
+    pg.select_option("#em-l0-categorie", "scutit_fara_drept")
+    assert pg.locator("#em-c331").is_hidden()
+    with pg.expect_response(lambda r: r.url.endswith("/facturi/emite"), timeout=60000) as rr:
+        pg.click("#em-emite")
+    assert rr.value.status == 200, rr.value.text()[:300]
+    fid = rr.value.json()["factura_id"]
+    pg.wait_for_selector("#em-rezultat.em-bun", timeout=20000)
+    patron.captura("emisa")
+    assert sql('SELECT cota_tva::int, categorie_tva FROM "%s".factura_linii WHERE factura_id = %%s' % firma_e2e["schema"], (fid,)) == \
+        [(0, "scutit_fara_drept")]
 
 
 def test_def_288_povestea_se_verifica_la_aprobare_si_spune_perioada(patron, firma_e2e):

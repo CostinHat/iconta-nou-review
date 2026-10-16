@@ -35,16 +35,32 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcin
 MODUL = "cron"
 
 
+def tranzitoriu(exc):
+    """[deficiența 296, 16.10.2026] Un eșec de REȚEA spre un serviciu extern (timeout, conexiune căzută) trece singur la rularea
+    următoare și nu cere nicio acțiune — deci nu trimite alertă. Dacă se repetă, jobul nu mai reușește, iar `verifica_batai`
+    (heartbeat, `RITMURI`) alertează după intervalul lui de ore: atunci cere acțiune."""
+    try:
+        import requests
+    except ImportError:   # pragma: no cover — requests e în venv
+        return False
+    return isinstance(exc, (requests.exceptions.Timeout, requests.exceptions.ConnectionError))
+
+
 def ruleaza(nume, fn):
-    """Ruleaza fn() ca job de fundal. Esec -> log + alerta + exit(1)."""
+    """Ruleaza fn() ca job de fundal. Esec -> log + alerta + exit(1). [296] Esec TRANZITORIU (retea spre un serviciu extern) -> log +
+    exit(1), fara alerta: heartbeat-ul alerteaza daca jobul nu mai reuseste in intervalul lui."""
     t0 = time.time()
     inceput = datetime.datetime.now().isoformat(timespec="seconds")
     try:
         rez = fn()
-    except BaseException:
+    except BaseException as exc:
         tb = traceback.format_exc()
         durata = time.time() - t0
         print("%s JOB ESUAT: %s (dupa %.1fs)\n%s" % (inceput, nume, durata, tb), flush=True)
+        if tranzitoriu(exc):
+            print("%s fara alerta: esec de retea spre un serviciu extern (%s), trece la rularea urmatoare; daca persista, alerteaza "
+                  "heartbeat-ul (dupa %s ore)" % (inceput, type(exc).__name__, RITMURI.get(nume, "?")), flush=True)
+            sys.exit(1)
         try:
             from core import observare
             observare.alerteaza(

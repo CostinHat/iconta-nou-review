@@ -53,7 +53,20 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     împărțit pe cartele), clasa `round()` reparată în toată aplicația. Rularea țintită (16.10 noaptea) roșie -> reparată: 62 Python +
     9 e2e (DECIZII „Lotul 6: rularea țintită”); e2e-ul atins 340 verzi în 24 de fișiere; uneltele vizuale și artefactele refăcute. Commitul
     lotului pe ramură (raportul lotului numește SHA-ul).
-  - urmator: L6-274b după validarea propunerii (§6 al raportului); apoi „Lotul 6 e complet” -> poarta lotului (`scripts/poarta_lot.sh`)
+  - răspuns Costin (16.10 noaptea, DECIZII „răspunsul lui Costin la raport”): 274b validat cu completări; 285, 289 acceptate; 273 terț
+    plătitor de verificat la sursă; 296, 268 redeschisă, proba SPV. Pași noi (lista crește întâi, apoi se execută):
+    L6-R1. Proba SPV pe producție (o citire, numai listă) -> rezultatul exact în raport.
+    L6-R2. 268: sursa antetului „Dezabonează-te” pe emailul de confirmare (codul nostru vs Brevo) -> reparat sau decizie.
+    L6-R3. 296: `core/alerta_load.py` ACTIUNI + `tinut` (RAM, conexiuni); `main._verifica_si_alerta` numai prin `rand`; `core/cron.py`
+          `tranzitoriu` (rețea -> fără alertă). C42: `core/spv_receive.py` eroarea de rețea pe firmă + bucla care nu se oprește.
+    L6-R4. 273: „terț plătitor” la sursă (UBL / RO_CIUS, D394, CF) -> ajutorul F043, eticheta și „de completat” după sursă.
+    L6-R5. 274b: `factura_linii.categorie_tva` (migrare + template); emiterea cere categoria pe orice linie 0% a plătitorului (AE, E cu
+          drept, E fără drept, K, G, în afara sferei; O automat la neplătitor); `efactura_send` BT-151/BT-120/BT-121 pe categorie (validator
+          ANAF FACT1); `d300` + `d300_reconciliere`: AE -> rd.13, E cu drept / G -> rd.14, E fără drept -> rd.15, K -> rd.1, în afara sferei
+          nedeclarată (DUK); ecranul de emitere (select pe linie) + e2e 274.
+  - ultim (16.10 noaptea): L6-R1…R5 făcute — 274b rezolvată (e2e + mutații, FACT1, DUK), 273 după sursă, 296 + C42, 268 = decizie
+    (Brevo), proba SPV raportată.
+  - urmator: răspunsul lui Costin la §6 (268 Brevo, interpretarea serviciilor IC la 274b); apoi „Lotul 6 e complet” -> poarta lotului (`scripts/poarta_lot.sh`)
     -> publicarea numai cu acordul lui Costin (regim pilot). STARE = BLOCAT: decizia lui Costin (274b, 285 interpretarea, 289 titularul)
   - pasi:
     L6-277a. `core/banca_parser.py`: `citeste_extras` -> tranzacțiile cu `referinta` (MT940 `:61:` după cod) și contul extrasului (`:25:`), plus

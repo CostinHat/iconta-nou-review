@@ -734,7 +734,8 @@ def factura_creeaza(tenant_id, date, ctx):
                 tert_cui=date.tert_cui, data_scadenta=date.data_scadenta,
                 moneda=date.moneda, status=date.status,
                 tert_tara=date.tert_tara, tip_operatiune=date.tip_operatiune,
-                furnizor_tva_incasare=_fti)
+                furnizor_tva_incasare=_fti,
+                categorie_331=date.categorie_331)   # [274b] la emise: categoria produsului când o linie e cu taxare inversă
     except ValueError as e:
         raise _erori.DateInvalide(str(e))
     return r
@@ -3703,8 +3704,9 @@ def facturi_primite_lista(tenant_id, ctx):
                 try:
                     f = _ef.parseaza_xml((xmlb or "").encode("utf-8"), cifb)
                     # [lotul 6 pct.7c, 273] ce nu vine din XML și trebuie completat de contabil înainte de validare: tipul
-                    # furnizorului pentru D394 (plătitor de TVA sau nu) și, la taxarea inversă, categoria produsului (codul D394)
-                    de_completat = ["furnizorul plătitor de TVA (D394)"] + (
+                    # furnizorului pentru D394 (înregistrat în scopuri de TVA sau nu) și, la taxarea inversă, categoria produsului (codul
+                    # D394). [16.10.2026, 273 pct.4] Plătitorul facturii (un terț) nu e element UBL / RO_CIUS și nu se declară în D394.
+                    de_completat = ["dacă furnizorul e înregistrat în scopuri de TVA (D394)"] + (
                         ["categoria produsului cu taxare inversă (D394)"] if f.get("taxare_inversa") else [])
                     info.update({"parsabila": True, "furnizor": f.get("tert_nume"),
                                  "numar": f.get("numar"), "data": str(f.get("data_emitere") or ""),
@@ -5336,7 +5338,8 @@ def facturi_emite(tenant_id, date, ctx):
                 data_curs_manual=date.data_curs_manual,
                 bon_fiscal_nr=date.bon_fiscal_nr, bon_fiscal_data=date.bon_fiscal_data,
                 tert_platitor_tva=_tert_pl, pleaca_marfa=date.pleaca_marfa,   # [06.10.2026 §6.3]
-                raspunsuri_ai=_ai,
+                raspunsuri_ai=_ai, categorie_331=date.categorie_331,   # [274b] categoria produsului la taxarea inversă
+                tert_oras=date.tert_oras, tert_judet=date.tert_judet,   # [274b] adresa clientului străin (livrarea intracomunitară)
                 # [R130] „consemnat cine și când" — autorul vine din context, nu din corp: cine
                 # trimite cererea nu poate scrie în locul altcuiva cine a ales cursul.
                 curs_manual_de="utilizator %s" % ctx["uid"])
@@ -5397,7 +5400,8 @@ def proforma_transforma(tenant_id, factura_id, ctx):
 
     def _linii_proformei(conn):
         return [{"descriere": l.get("descriere"), "cantitate": l.get("cantitate"),
-                 "pret_unitar": l.get("pret_unitar"), "cota_tva": l.get("cota_tva")}
+                 "pret_unitar": l.get("pret_unitar"), "cota_tva": l.get("cota_tva"),
+                 "categorie_tva": l.get("categorie_tva")}   # [274b] categoria aleasă pe proformă trece pe factură
                 for l in ((facturi_api.detalii_factura(conn, factura_id) or {}).get("linii") or [])]
     # [R193] liniile proformei se citesc într-o tranzacție scurtă, modelul se întreabă cu pool-ul liber, iar tranzacția de mai jos
     # le recitește: o linie schimbată între timp n-are răspuns, deci cota ei iese nedeterminată, nu ghicită
@@ -5419,7 +5423,8 @@ def proforma_transforma(tenant_id, factura_id, ctx):
         try:
             rez = facturi_api.emite_factura(conn, linii, client_id=f.get("client_id"),
                 tert_nume=f.get("tert_nume"), tert_cui=f.get("tert_cui"),
-                moneda=f.get("moneda") or "RON", platitor_tva=platitor, raspunsuri_ai=_ai)
+                moneda=f.get("moneda") or "RON", platitor_tva=platitor, raspunsuri_ai=_ai,
+                tert_tara=f.get("tert_tara") or "RO", categorie_331=f.get("categorie_331"))   # [274b] categoriile, verificate pe țara clientului
         except ValueError as e:
             raise _erori.DateInvalide(str(e))
         with conn.cursor() as cur:
@@ -6452,8 +6457,14 @@ def vanzare_ic(tenant_id, corp, ctx):
         try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența C7, generalizată)
             fres = _fa_vic.emite_factura(
                 # [R193] contul de venit al liniei e cel ales mai sus (și pus pe notă), nu unul cerut modelului cu conexiunea ținută
+                # [274b] bunurile: livrare intracomunitară scutită (K, D300 rd.1); serviciile (art.278 alin.(2), locul prestării în
+                # afara României): INTERPRETARE CU TEMEI — „în afara sferei TVA” (E): ghidul MF e-Factura v2.9 cap.3.2 pune la E
+                # operațiunile „care nu sunt cuprinse în sfera de aplicare a TVA”, iar AE e rezervat art.331 (cap.3.3); alternativa
+                # respinsă: AE (taxarea inversă la beneficiar, uzul EN 16931). De reconfirmat dacă ANAF tranșează (§6 al raportului).
+                # D300 le pune oricum pe țară și axă (rd.1 / rd.3), nu pe categorie.
                 conn, linii=[{"descriere": descr[:200], "cantitate": 1, "pret_unitar": str(val),
-                              "cota_tva": 0, "cont_venit": cont_venit}],
+                              "cota_tva": 0, "cont_venit": cont_venit,
+                              "categorie_tva": "livrare_ic" if corp.get("tip") == "bunuri" else "in_afara_sferei"}],
                 tert_nume=(v.get("nume") or "").strip() or None,
                 tert_cui=corp["cod_tva_client"], data_emitere=corp["data"],
                 tert_tara=_tara_client, axa_ic=corp.get("tip"))

@@ -2581,6 +2581,11 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS inreg_art31
 -- OMFP 1802/2014), editabil de contabil; contabilizarea grupeaza nota pe (cont_venit, cota).
 -- Nullable: linie fara cont -> contabilizarea decide (cont_venit_implicit / legacy 707). Mirror in core/migrare_cont_venit_linie.py.
 ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS cont_venit text;
+-- [274b, 16.10.2026] categoria de TVA a liniei cu cota 0% (core/categorii_tva.VALORI: codul UBL, motivul, rândul D300); NULL = linie
+-- taxabilă sau factură de dinainte. Mirror în core/migrare_categorie_tva_linie.py.
+ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS categorie_tva text;
+ALTER TABLE TENANT_PLACEHOLDER.factura_linii DROP CONSTRAINT IF EXISTS factura_linii_categorie_tva_check;
+ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD CONSTRAINT factura_linii_categorie_tva_check CHECK (categorie_tva IS NULL OR categorie_tva IN ('taxare_inversa', 'scutit_cu_drept', 'scutit_fara_drept', 'livrare_ic', 'export', 'in_afara_sferei', 'neplatitor'));
 
 -- [R130, 04.09.2026] cine si cand a introdus cursul de mana; v. core/migrare_curs_manual_urma.py
 ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS curs_manual_de text;

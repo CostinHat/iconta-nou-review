@@ -179,36 +179,51 @@ def genereaza_xml(factura, linii, furnizor, client):
     Construieste XML-ul UBL 2.1 / CIUS-RO dintr-o factura + linii + emitent + cumparator.
     Pur: nu atinge DB/retea. Rotunjire fiscala ROUND_HALF_UP. Vezi LIMITE v1 in docstring.
     """
-    if factura.get("taxare_inversa"):
-        raise NotImplementedError("taxare inversa (categorie AE) - netratat in v1, se adauga dupa TEST")
     moneda = (factura.get("moneda") or "RON").strip() or "RON"
     # [05.10.2026] numărul facturii emise conține deja seria — compus „serie + număr” ieșea „FCTFCT12” (BT-1 ≠ PDF)
     from core import pdf_util as _pu
     numar_complet = _pu.numar_cu_serie(factura.get("serie"), factura.get("numar"))
 
-    # --- calcule pe linii, grupate pe cota ---
+    # --- calcule pe linii, grupate pe (categorie, cota) ---
+    # [274b, 16.10.2026] categoria de TVA a liniei (BT-151) vine din `core/categorii_tva` (decizia Costin 16.10.2026; Ghidul MF e-Factura
+    # v2.9 cap.3): S pe cota pozitivă; pe 0%: AE / E / K / G din categoria liniei, cu motivul scutirii (BT-120) și codul VATEX (BT-121)
+    # pe defalcarea TVA; O pe toată factura unui neplătitor (fără cota, fără codurile de TVA ale părților — ghidul, regulile BG-23).
+    # O linie cu 0% de dinainte de categorie (NULL) rămâne „Z”, ca până acum.
+    from core import categorii_tva as _ct
+    neplatitor = not furnizor.get("platitor_tva")
     line_net = []
-    grup = {}  # cota (str) -> baza
+    grup = {}  # (cat, cota, motiv, vatex) -> baza
     for l in linii:
         cota = _D(l.get("cota_tva") if l.get("cota_tva") is not None else 0)
         net = _bani(_D(l.get("cantitate")) * _D(l.get("pret_unitar")))
-        line_net.append((l, cota, net))
-        grup[str(cota)] = grup.get(str(cota), _D0) + net
+        if neplatitor:
+            d = _ct.NEPLATITOR
+        elif cota > 0:
+            d = {"ubl": "S", "mentiune": None, "vatex": None}
+        else:
+            d = _ct.descriere(l.get("categorie_tva")) or {"ubl": "Z", "mentiune": None, "vatex": None}
+        cheie = (d["ubl"], cota, d.get("mentiune"), d.get("vatex"))
+        line_net.append((l, cota, net, cheie))
+        grup[cheie] = grup.get(cheie, _D0) + net
 
-    line_ext = _bani(sum((n for _, _, n in line_net), _D0))
+    line_ext = _bani(sum((n for _, _, n, _ in line_net), _D0))
     tax_subtotals = []
     tax_total = _D0
-    for cota_s, baza in grup.items():
-        cota = _D(cota_s)
+    for cheie, baza in grup.items():
+        cat, cota, motiv, vatex = cheie
         taxa = _bani(baza * cota / _D("100"))
         tax_total += taxa
-        cat = "S" if cota > 0 else "Z"   # v1: doar standard (S) / cota zero (Z)
-        tax_subtotals.append((_bani(baza), taxa, cat, cota))
+        tax_subtotals.append((_bani(baza), taxa, cat, cota, motiv, vatex))
     tax_total = _bani(tax_total)
     tax_incl = _bani(line_ext + tax_total)
 
     sup_vat = _vatid(furnizor.get("cui")) if furnizor.get("platitor_tva") else ""
-    cli_vat = _vatid(client.get("cui"))
+    tara_cli = (client.get("tara") or "RO").strip().upper() or "RO"
+    # [274b] O („nu face obiectul TVA”): factura NU conține codul de TVA al cumpărătorului (ghidul MF v2.9, reguli BG-23); pentru un
+    # client străin codul de TVA e chiar al lui (prefixul țării), nu „RO” + cifre
+    from core.d390 import TARI_UE as _UE
+    cli_vat = "" if neplatitor or (tara_cli != "RO" and tara_cli not in _UE) else (
+        _vatid(client.get("cui")) if tara_cli == "RO" else "".join(ch for ch in str(client.get("cui") or "").upper() if ch.isalnum()))
     sup_jud = _jud(furnizor.get("judet"))
 
     P = []
@@ -245,7 +260,11 @@ def genereaza_xml(factura, linii, furnizor, client):
                  '<cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme>' % _e(sup_vat))
     P.append('<cac:PartyLegalEntity>')
     P.append('<cbc:RegistrationName>%s</cbc:RegistrationName>' % _e(furnizor.get("nume") or "-"))
-    if furnizor.get("reg_com"):
+    if not sup_vat and furnizor.get("cui"):
+        # [274b] vânzătorul fără cod de TVA (neplătitor): ANAF îl identifică după CUI în BT-30 („Nu a fost identificat cui vanzator”
+        # cu numărul de la Registrul Comerțului acolo — validatorul FACT1, 16.10.2026)
+        P.append('<cbc:CompanyID>%s</cbc:CompanyID>' % _e("".join(ch for ch in str(furnizor.get("cui")) if ch.isdigit())))
+    elif furnizor.get("reg_com"):
         P.append('<cbc:CompanyID>%s</cbc:CompanyID>' % _e(furnizor.get("reg_com")))
     P.append('</cac:PartyLegalEntity>')
     P.append('</cac:Party></cac:AccountingSupplierParty>')
@@ -258,17 +277,37 @@ def genereaza_xml(factura, linii, furnizor, client):
     P.append('<cbc:CityName>%s</cbc:CityName>' % _e(_localitate(cli_jud, client.get("oras"), client.get("adresa"), "cumparator")))
     if client.get("cod_postal"):
         P.append('<cbc:PostalZone>%s</cbc:PostalZone>' % _e(client.get("cod_postal")))
-    if cli_jud:
+    if cli_jud and tara_cli == "RO":
         P.append('<cbc:CountrySubentity>%s</cbc:CountrySubentity>' % cli_jud)
-    P.append('<cac:Country><cbc:IdentificationCode>RO</cbc:IdentificationCode></cac:Country>')
+    P.append('<cac:Country><cbc:IdentificationCode>%s</cbc:IdentificationCode></cac:Country>' % _e(tara_cli))
     P.append('</cac:PostalAddress>')
     if cli_vat:
         P.append('<cac:PartyTaxScheme><cbc:CompanyID>%s</cbc:CompanyID>'
                  '<cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme>' % _e(cli_vat))
     P.append('<cac:PartyLegalEntity>')
     P.append('<cbc:RegistrationName>%s</cbc:RegistrationName>' % _e(client.get("nume") or "-"))
+    if not cli_vat and client.get("cui"):
+        # [274b] fără cod de TVA al cumpărătorului (O; client din afara UE): identificatorul legal BT-47 (RO_CIUS BR-RO-120)
+        P.append('<cbc:CompanyID>%s</cbc:CompanyID>' % _e(_vatid(client.get("cui"))[2:] if tara_cli == "RO" else
+                                                           "".join(ch for ch in str(client.get("cui")).upper() if ch.isalnum())))
     P.append('</cac:PartyLegalEntity>')
     P.append('</cac:Party></cac:AccountingCustomerParty>')
+
+    # --- Delivery (BT-72, BT-80) --- [274b] livrarea intracomunitară (K) cere data livrării și țara de livrare (EN 16931 BR-IC-11,
+    # BR-IC-12). Data = data faptului generator când e pe factură, altfel data emiterii: CF art.319 alin.(20) lit.e cere data livrării pe
+    # factură numai „dacă această dată diferă de data emiterii facturii”.
+    # RO_CIUS cere, odată ce adresa de livrare există, strada, localitatea și subdiviziunea țării (BR-RO-180 / 200 / 210): se iau din
+    # adresa clientului; lipsa lor se spune, nu se ghicește.
+    if any(c[0] == "K" for c in grup):
+        if not (client.get("adresa") and client.get("oras") and client.get("judet")):
+            raise EDateIncomplete(
+                "Livrarea intracomunitară cere în XML adresa de livrare completă (regulile ANAF BR-RO-180, BR-RO-200, BR-RO-210): adresa, "
+                "localitatea și regiunea clientului. Completează-le pe factură (Localitatea, Regiunea) înainte de trimitere.")
+        P.append('<cac:Delivery><cbc:ActualDeliveryDate>%s</cbc:ActualDeliveryDate><cac:DeliveryLocation><cac:Address>'
+                 '<cbc:StreetName>%s</cbc:StreetName><cbc:CityName>%s</cbc:CityName><cbc:CountrySubentity>%s</cbc:CountrySubentity>'
+                 '<cac:Country><cbc:IdentificationCode>%s</cbc:IdentificationCode></cac:Country></cac:Address></cac:DeliveryLocation>'
+                 '</cac:Delivery>' % (_e(factura.get("data_faptului_generator") or factura.get("data_emitere")), _e(client.get("adresa")),
+                                      _e(client.get("oras")), _e(client.get("judet")), _e(tara_cli)))
 
     # --- PaymentMeans (IBAN) ---
     if furnizor.get("iban"):
@@ -279,13 +318,15 @@ def genereaza_xml(factura, linii, furnizor, client):
     # --- TaxTotal ---
     P.append('<cac:TaxTotal>')
     P.append('<cbc:TaxAmount currencyID="%s">%s</cbc:TaxAmount>' % (moneda, _num(tax_total)))
-    for baza, taxa, cat, cota in tax_subtotals:
+    for baza, taxa, cat, cota, motiv, vatex in tax_subtotals:
         P.append('<cac:TaxSubtotal>')
         P.append('<cbc:TaxableAmount currencyID="%s">%s</cbc:TaxableAmount>' % (moneda, _num(baza)))
         P.append('<cbc:TaxAmount currencyID="%s">%s</cbc:TaxAmount>' % (moneda, _num(taxa)))
-        P.append('<cac:TaxCategory><cbc:ID>%s</cbc:ID><cbc:Percent>%s</cbc:Percent>'
+        P.append('<cac:TaxCategory><cbc:ID>%s</cbc:ID>%s%s%s'
                  '<cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory>'
-                 % (cat, _num(cota)))
+                 % (cat, "" if cat == "O" else "<cbc:Percent>%s</cbc:Percent>" % _num(cota),
+                    "<cbc:TaxExemptionReasonCode>%s</cbc:TaxExemptionReasonCode>" % _e(vatex) if vatex else "",
+                    "<cbc:TaxExemptionReason>%s</cbc:TaxExemptionReason>" % _e(motiv) if motiv else ""))
         P.append('</cac:TaxSubtotal>')
     P.append('</cac:TaxTotal>')
 
@@ -298,17 +339,17 @@ def genereaza_xml(factura, linii, furnizor, client):
     P.append('</cac:LegalMonetaryTotal>')
 
     # --- Linii ---
-    for idx, (l, cota, net) in enumerate(line_net, start=1):
-        cat = "S" if cota > 0 else "Z"
+    for idx, (l, cota, net, cheie) in enumerate(line_net, start=1):
+        cat = cheie[0]
         P.append('<cac:InvoiceLine>')
         P.append('<cbc:ID>%d</cbc:ID>' % idx)
         P.append('<cbc:InvoicedQuantity unitCode="%s">%s</cbc:InvoicedQuantity>'
                  % (_um(l.get("um")), _e(l.get("cantitate"))))
         P.append('<cbc:LineExtensionAmount currencyID="%s">%s</cbc:LineExtensionAmount>' % (moneda, _num(net)))
         P.append('<cac:Item><cbc:Name>%s</cbc:Name>' % _e(l.get("descriere") or "-"))
-        P.append('<cac:ClassifiedTaxCategory><cbc:ID>%s</cbc:ID><cbc:Percent>%s</cbc:Percent>'
+        P.append('<cac:ClassifiedTaxCategory><cbc:ID>%s</cbc:ID>%s'
                  '<cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory>'
-                 % (cat, _num(cota)))
+                 % (cat, "" if cat == "O" else "<cbc:Percent>%s</cbc:Percent>" % _num(cota)))
         P.append('</cac:Item>')
         P.append('<cac:Price><cbc:PriceAmount currencyID="%s">%s</cbc:PriceAmount></cac:Price>'
                  % (moneda, _num(l.get("pret_unitar"))))
@@ -361,9 +402,18 @@ def _parse_stare(text):
     return (st.group(1) if st else None, idd.group(1) if idd else None)
 
 
-def upload_ubl(principal, cif, xml, mediu="test"):
-    """POST /upload?standard=UBL&cif=X prin apel_anaf (pe tokenul principalului). Intoarce Response."""
-    url = "%s/upload?standard=UBL&cif=%s" % (fctel_base(mediu), cif)
+def e_identificare_cumparator(mesaj):
+    """[274b] Mesajul validatorului care spune numai că cumpărătorul nu e un contribuabil român („ERRIdentif — nu a fost identificat
+    cui cumparator”) — la un cumpărător din afara României îl rezolvă `extern=DA` la încărcare."""
+    m = (mesaj or "").lower()
+    return "errident" in m and "cumparator" in m
+
+
+def upload_ubl(principal, cif, xml, mediu="test", extern=False):
+    """POST /upload?standard=UBL&cif=X prin apel_anaf (pe tokenul principalului). Intoarce Response.
+    [274b] `extern=DA` când cumpărătorul e din afara României (MF, „Prezentare servicii web e-Factura”: parametrul „se completeaza doar
+    in cazul in care cumparatorul este din exteriorul Romaniei (nu are CUI sau NIF)”)."""
+    url = "%s/upload?standard=UBL&cif=%s%s" % (fctel_base(mediu), cif, "&extern=DA" if extern else "")
     return spv_conector.apel_anaf(principal, "POST", url, data=xml.encode("utf-8"),
                                   headers={"Content-Type": "application/xml"}, timeout=60)
 

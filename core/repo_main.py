@@ -55,9 +55,10 @@ def insert_public_2(cur, m):
                                                   m["conexiuni_db"], m["erori_noi"]))
 
 
-def load_recent(cur, minute):
-    """[(creat_la, load15, teste)] din ultimele `minute` minute ale buclei de sănătate (core/alerta_load.py)."""
-    cur.execute("SELECT creat_la, load15, coalesce(teste, false) FROM public.metrici_sanatate "
+def metrici_recente(cur, minute):
+    """[(creat_la, load15, teste, ram_procent, conexiuni_db)] din ultimele `minute` minute ale buclei de sănătate (core/alerta_load.py;
+    [296] RAM-ul și conexiunile alertează și ele numai ținute)."""
+    cur.execute("SELECT creat_la, load15, coalesce(teste, false), ram_procent, conexiuni_db FROM public.metrici_sanatate "
                 "WHERE creat_la > now() - make_interval(mins => %s) ORDER BY creat_la", (minute,))
     return cur.fetchall()
 
