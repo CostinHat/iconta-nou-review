@@ -411,7 +411,8 @@ def randuri_brut(r):
     for e in elemente:
         et = "%s — %s" % (e.get("eticheta_tip") or e.get("tip"), e.get("denumire") or "")
         if e.get("ore"):
-            et += " (%s ore)" % ("%g" % float(e["ore"]))
+            _ore = float(e["ore"])
+            et += " (%s)" % (_common.cate(_ore, "oră", "ore") if _ore == int(_ore) else "%g ore" % _ore)
         out.append(("  din care " + et, float(e.get("suma") or 0), FEL_DETALIU))
     return out
 
@@ -471,8 +472,8 @@ def compozitie_fluturas(r):
             linii.insert(i, ("  CASS tichete (10%) — reținut din salariu", -_n("cass_tichete"), FEL_LINIE)); i += 1
             linii.insert(i, ("  Impozit tichete (10%) — reținut din salariu", -_n("impozit_tichete"), FEL_LINIE))
         if are_masa:
-            linii.append(("Tichete de masă (%d zile × %g lei, pe card)"
-                          % (int(_n("tichete_zile")), _n("tichet_masa_valoare")),
+            linii.append(("Tichete de masă (%s × %g lei, pe card)"
+                          % (_common.cate(int(_n("tichete_zile")), "zi", "zile"), _n("tichet_masa_valoare")),
                           _n("tichete_nominal"), FEL_LINIE))
         if are_vac:
             linii.append(("Tichete de vacanță (pe card separat)", _n("tichete_vacanta"), FEL_LINIE))

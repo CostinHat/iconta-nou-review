@@ -57,6 +57,15 @@ def sql(q, p=()):
     return r
 
 
+def nr_crt(schema, nid):
+    """[258] Cum vede contabilul nota `nid` în Registrul jurnal: „nr. crt. N din ZZ.LL.AAAA” — numărul curent pe anul notei, după
+    (data, id), orice stare (aceeași numerotare ca `repo_contabilitate.jurnal_pe_an`), calculat AICI, independent de `eticheta_nota`."""
+    nr, data = sql('SELECT x.nr, x.data FROM (SELECT i.id, i.data, ROW_NUMBER() OVER (ORDER BY i.data, i.id) AS nr FROM "%s".inregistrari i '
+                   'JOIN "%s".inregistrari n ON n.id = %%s AND date_trunc(\'year\', i.data) = date_trunc(\'year\', n.data)) x '
+                   'WHERE x.id = %%s' % (schema, schema), (nid, nid))[0]
+    return "nr. crt. %d din %s" % (nr, data.strftime("%d.%m.%Y"))
+
+
 @pytest.fixture(scope="session")
 def browser():
     from playwright.sync_api import sync_playwright

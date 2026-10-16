@@ -9,6 +9,7 @@ in invelisul din `main.py`, dintr-o harta fixa. Mesajul si ordinea efectelor sun
 from core import db, auth_api, observare as _obs
 from core import repo_admin
 from core import erori as _erori
+from core.common import cate as _cate
 from core import uc_comun as _uc_comun
 from core.mesaje import (EMAIL_INVALID)
 from core import nucleu as _nucleu
@@ -173,12 +174,12 @@ def _register_liber(date, _versiune_termeni, ip):
     link = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010") + "/#confirmare=" + tok
     html = ("<p>Bună,</p><p>Ai cerut crearea contului cabinetului <b>%s</b> pe iConta.eu.</p>"
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;"
-            "text-decoration:none'>Confirmă emailul și activează contul</a></p><p>Linkul e valabil %d de ore și se folosește o "
+            "text-decoration:none'>Confirmă emailul și activează contul</a></p><p>Linkul e valabil %s și se folosește o "
             "singură dată. Până la confirmare contul nu există: nu te poți autentifica și nu se creează nicio firmă.</p>"
             "<p>Dacă nu tu ai cerut contul, ignoră acest email — fără clic nu se creează nimic.</p>") % (
-                _esc(date.nume_cabinet.strip()), link, _il.VALABILITATE_ORE)
+                _esc(date.nume_cabinet.strip()), link, _esc(_cate(_il.VALABILITATE_ORE, "oră", "ore")))
     if not _obs.trimite_email_html_sau_semnaleaza("email confirmare inregistrare", email, "Confirmă contul iConta.eu", html,
-                                                  alerta=True):
+                                                  alerta=True, cerut_de_destinatar=True):   # [268] și la o adresă dezabonată
         with db.get_conn() as conn:
             with conn.cursor() as cur:
                 _il.sterge(cur, tok)
@@ -248,7 +249,7 @@ def _anunta_cabinet_nou(nume_cabinet, email, cale):
     from core.pdf_util import data_ro
     acum = data_ro(_dt.now(_Z("Europe/Bucharest")), "cu_ora")   # formatorul canonic al datelor (DS cap.4)
     html = ("<p>Cabinet nou pe iConta.eu: <b>%s</b> (%s), creat la %s, prin %s.</p>"
-            "<p>Îl vezi în Panou Admin &rarr; Activitate cabinete.</p>") % (_esc(nume_cabinet), _esc(email), acum, _esc(cale))
+            "<p>Îl vezi în Panou Admin &rarr; Activitate cabinete.</p>") % (_esc(nume_cabinet), _esc(email), _esc(acum), _esc(cale))
     return _obs.trimite_email_html_sau_semnaleaza("email anunt cabinet nou", dest, "[iConta.eu] Cabinet nou: %s" % nume_cabinet,
                                                   html)
 
@@ -256,9 +257,9 @@ def _anunta_cabinet_nou(nume_cabinet, email, cale):
 def _dupa_cont_nou(r, nume_cabinet, email, cui, cale):
     """Ce urmează oricărui cont nou de cabinet (invitație sau confirmare): bun venit, anunțul către superadmin, firma din CUI."""
     # register_email_v1: email de bun venit — [R73] fara alerta: bun venit nu e cale de ACCES, doar politete
-    html = ("<p>Buna,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.eu.</p>"
-            "<p>Te poti loga oricand cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>"
-            "<p>Firma proprie a cabinetului este deja adaugata in portofoliu.</p>") % (_esc(nume_cabinet), _esc(email))
+    html = ("<p>Bună,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.eu.</p>"
+            "<p>Te poți autentifica oricând cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>"
+            "<p>Firma proprie a cabinetului este deja adăugată în portofoliu.</p>") % (_esc(nume_cabinet), _esc(email))
     _obs.trimite_email_html_sau_semnaleaza("email bun venit cabinet", email, "Bine ai venit pe iConta.eu", html)
     _anunta_cabinet_nou(nume_cabinet, email, cale)
     # [register_firma_v2 27.07.2026] Provisionarea primei firme poate esua (ANAF jos, schema
@@ -351,11 +352,14 @@ def invitatie_creeaza(date, ctx):
     link = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010") + "/#invitatie=" + tok
     html = ("<p>Bună,</p><p>Ești invitat să creezi contul cabinetului tău pe iConta.eu.</p>"
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;"
-            "text-decoration:none'>Creează contul</a></p><p>Contul se creează cu emailul <b>%s</b>. Invitația e valabilă %d zile "
-            "și se folosește o singură dată.</p>") % (link, email, _inv.VALABILITATE_ZILE)
+            "text-decoration:none'>Creează contul</a></p><p>Contul se creează cu emailul <b>%s</b>. Invitația e valabilă %s "
+            "și se folosește o singură dată.</p>") % (link, _esc(email), _esc(_cate(_inv.VALABILITATE_ZILE, "zi", "zile")))
     # superadminul vede pe ecran dacă a plecat (și primește linkul oricum) -> fără alertă
     trimis = _obs.trimite_email_html_sau_semnaleaza("email invitatie cabinet", email, "Invitație iConta.eu", html)
-    return {"ok": True, "email": email, "link": link, "email_trimis": trimis, "valabila_zile": _inv.VALABILITATE_ZILE}
+    r = {"ok": True, "email": email, "link": link, "email_trimis": trimis, "valabila_zile": _inv.VALABILITATE_ZILE}
+    if not trimis:
+        r["motiv_netrimis"] = _obs.refuz_dezabonare(email)   # [268] adresa dezabonată: superadminul vede de ce, nu doar că n-a plecat
+    return r
 
 
 def invitatii_lista(ctx):

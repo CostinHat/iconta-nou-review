@@ -1561,6 +1561,10 @@ try:
     for _rel, _ln, _act, _tag in _sdu.intrari_in_formular_nemarcate()["nemarcate"]:
         rap["actiune_refuzata_nemarcata"].append((_rel.replace("static/js/", ""), _ln, "data-actiune",
             "buton care deschide formularul %s fara data-actiune / data-fara-actiune" % _act[:60]))
+    # [deficiența 262, 15.10.2026] butonul care deschide, prin ALTĂ funcție, un ecran ale cărui acțiuni sunt toate ale administratorului
+    for _rel, _ln, _acts, _tag in _sdu.intrari_in_ecrane_doar_admin()["nemarcate"]:
+        rap["actiune_refuzata_nemarcata"].append((_rel.replace("static/js/", ""), _ln, "data-actiune",
+            "buton spre un ecran numai al administratorului (%s) fara data-actiune / data-fara-actiune" % "|".join(_acts)[:60]))
 except Exception as _e_ar:
     rap["actiune_refuzata_nemarcata"].append(("verificator", 0, "EROARE", "gard actiune_refuzata_nemarcata: " + str(_e_ar)))
 
@@ -1587,6 +1591,38 @@ for _nume, _t in fisiere.items():
                     rap["mesaj_server_neescapat"].append((_nume, _ln, "esc",
                         "mesaj de eroare de la server interpolat in HTML fara esc(): " + _m.group(0)[:50]))
                     break
+
+# --- DATE_UTILIZATOR_NEESCAPATE (DS cap.10, C37 — Lotul 5, 15.10.2026): un nume, prenume, email, o denumire sau un mesaj scris de
+#     om, pus în HTML (șablon `${…}` sau lipit cu `+` lângă un tag), trece prin `esc()`. Regula din DS exista fără gard; singurul gard
+#     pe `esc` (MESAJ_SERVER_NEESCAPAT) vedea numai mesajele de eroare de la server și numai în `${…}` — așa au trecut prenumele din
+#     salut, numele din bară, emailurile din portal și mesajele clientului către cabinet. Instrumentul: `scripts/scan_date_neescapate.py`
+#     (o singură implementare, două porți: aici și `core/test_date_neescapate.py`), cu limitele scrise acolo. Mutația care o probează:
+#     `esc(` scos din salutul din `salut.js` -> lista nevidă -> TOTAL > 0.
+rap["date_utilizator_neescapate"] = []
+try:
+    import sys as _sys_dn
+    _sys_dn.path.insert(0, os.path.join(BAZA_PY, "scripts"))
+    import scan_date_neescapate as _sdn
+    for _f, _ln, _frag in _sdn.toate(BAZA_PY):
+        rap["date_utilizator_neescapate"].append((_f, _ln, "esc", "dată scrisă de om pusă în HTML fără esc(): " + _frag[:50]))
+except Exception as _e_dn:
+    rap["date_utilizator_neescapate"].append(("verificator", 0, "EROARE", "gard date_utilizator_neescapate: " + str(_e_dn)))
+
+# --- NUMERAL_NEACORDAT (DS cap.0, deficiențele 261 / 263 — Lotul 5, 15.10.2026): un număr afișat se acordă cu substantivul prin
+#     `cate(n, singular, plural)` (static/js/plural.js, oglinda lui `core/common.cate`): „1 notă”, „2 note”, „20 de note”. Clasa avea
+#     ~255 de locuri în JS („1 note”, „1 facturi”, „1 angajați”, „5 absent”), fără niciun gard. Instrumentul: `gaseste_js()` din
+#     `core/test_plural_dupa_numar.py` (o singură implementare, două porți: aici și testul), cu excepțiile numite acolo. Mutația care o
+#     probează: `${note.length} note` pus înapoi în Registrul jurnal (firme.js) -> lista nevidă -> TOTAL > 0.
+rap["numeral_neacordat"] = []
+try:
+    import sys as _sys_pl
+    _sys_pl.path.insert(0, BAZA_PY)
+    from core import test_plural_dupa_numar as _tpl
+    for _g in _tpl.gaseste_js():
+        if not _tpl._exceptat(_g):
+            rap["numeral_neacordat"].append((_g[0], _g[1], "cate", "număr cu substantiv la formă fixă, fără cate(): " + str(_g[3])[:50]))
+except Exception as _e_pl:
+    rap["numeral_neacordat"].append(("verificator", 0, "EROARE", "gard numeral_neacordat: " + str(_e_pl)))
 
 # --- ICOANA_INEXISTENTA (DS cap.13 v2.66, comanda Costin 05.10.2026 pct.5): orice cheie de iconiță folosită într-un ecran
 #     (`icon: "x"`, `ICOANE["x"]`, `ICOANE.x`) există în dicționarul canonic `ICOANE` din api.js. `svg(cheie)` desena

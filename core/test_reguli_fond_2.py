@@ -70,11 +70,11 @@ def test_r8_stocul_nu_devine_negativ(cur):
                        "RETURNING id", (a,))
     from core.stocuri_anulare import MARCAJ_STOC_NEGATIV                  # stornarea la respingere recunoaște refuzul după el
     _refuz(cur, "INSERT INTO miscari_stoc (articol_id, data, tip, cantitate, valoare, document) VALUES (%s, '2099-10-02', 'iesire', 15, 150, 'FCT R8')",
-           (a,), incepe="%s #%d ar deveni negativ (-5.000 după mișcarea „FCT R8”)" % (MARCAJ_STOC_NEGATIV, a))
+           (a,), incepe="%s „Marfă R8” ar deveni negativ (-5.000 după mișcarea „FCT R8”)" % MARCAJ_STOC_NEGATIV)   # [258] denumirea, nu id-ul
     _merge(cur, "INSERT INTO miscari_stoc (articol_id, data, tip, cantitate, valoare, document) VALUES (%s, '2099-10-02', 'iesire', 10, 100, 'FCT R8b')",
            (a,))                                                             # contraproba: exact cât e în stoc
     _refuz(cur, "DELETE FROM miscari_stoc WHERE id = %s", (intr,),                                 # intrarea care a fost vândută
-           incepe="%s #%d ar deveni negativ (-10.000 după mișcarea „NIR R8”)" % (MARCAJ_STOC_NEGATIV, a))
+           incepe="%s „Marfă R8” ar deveni negativ (-10.000 după mișcarea „NIR R8”)" % MARCAJ_STOC_NEGATIV)
 
 
 def test_r9_luna_blocata_nu_primeste_facturi_stoc_casa_chitante(cur):

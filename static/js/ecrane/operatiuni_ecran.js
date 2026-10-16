@@ -1,7 +1,7 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, esc, bani, arataMesaj, semnAjutor, dataIso } from "../api.js?v=2561dbfd34";
-import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] */
+import { api, cate, esc, bani, arataMesaj, semnAjutor, dataIso } from "../api.js?v=72aa1cbbdb";
+import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
   credit:"F024", chirie:"F020", decont:"F040", contract_special:"F021", reevaluare:"F074",
@@ -561,11 +561,12 @@ export async function ecranOperatiuni(corp, nav, t) {
         // [lot 19 defect 13] o operatie de CALCUL (ex. ONG › scutire) nu genereaza nota — nu se spune ca a generat
         // [C5, comanda Costin 07.10.2026] O rută scrie o notă (`inregistrare_id`) sau mai multe (`inregistrari`, ex. chiria cu
         // refacturare): ecranul le citește pe amândouă. Până azi „nicio notă” apărea și când nota-chirie scrisese ciorna (DS cap.27).
-        const note = r ? (r.inregistrari || (r.inregistrare_id ? [r.inregistrare_id] : [])) : [];
+        // [258] notele se numesc cum le arată Registrul jurnal (`nota_eticheta` / `note_etichete`, „nr. crt. 5 din 12.03.2026”), nu prin id
+        const note = r ? (r.note_etichete || (r.nota_eticheta ? [r.nota_eticheta] : [])) : [];
         zona.innerHTML = note.length === 1
-          ? `<p class="pf-intro">Notă generată (ciornă) #${esc(String(note[0]))}. O validezi din Registru jurnal.</p>`
+          ? `<p class="pf-intro">Notă generată (ciornă) ${esc(note[0])}. O validezi din Registru jurnal.</p>`
           : note.length > 1
-          ? `<p class="pf-intro">${note.length} note generate (ciorne #${note.map((n) => esc(String(n))).join(", #")}). Le validezi din Registru jurnal.</p>`
+          ? `<p class="pf-intro">${cate(note.length, "notă generată", "note generate")} (ciornele ${esc(note.join(", "))}). Le validezi din Registru jurnal.</p>`
           : `<p class="pf-intro">Calcul (nu s-a generat nicio notă):</p><ul class="pf-intro">${Object.entries(r || {}).map(([k, v]) => `<li>${esc(k.replace(/_/g, " "))}: <b>${esc(String(v))}</b></li>`).join("")}</ul>`;
       } catch (e) {
         arataMesaj(zona, e.mesaj || e.message || "Nu s-a putut genera nota — verifică datele introduse și reîncearcă.", "eroare");

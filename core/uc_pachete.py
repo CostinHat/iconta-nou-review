@@ -18,6 +18,7 @@ from core import db, observare as _obs
 import core.pachete_api as _pachete
 from core import erori as _erori
 from core import uc_comun as _uc_comun
+from core.common import esc as _esc_html   # [C39] text scris de om în HTML-ul emailurilor
 
 
 def pachet_rezumat(tenant_id, an, luna, ctx):
@@ -75,8 +76,8 @@ def pachet_poveste_set(tenant_id, an, luna, date, ctx, _aprobare=False):
                           "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"]
                 subiect = "Raportul lunar - " + (luni_n[luna] if 1 <= luna <= 12 else str(luna)) + " " + str(an)
                 html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
-                        "<p>Buna,</p><p>Contabilul tau a pregatit raportul lunar pentru <b>" +
-                        (nume or "firma ta") + "</b>. Il gasesti in portalul iConta.eu, la Povestea lunii.</p>"
+                        "<p>Bună,</p><p>Contabilul tău a pregătit raportul lunar pentru <b>" +
+                        _esc_html(nume or "firma ta") + "</b>. Îl găsești în portalul iConta.eu, la Povestea lunii.</p>"
                         "<p><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
                         "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>"
                         "Deschide portalul</a></p></div>")

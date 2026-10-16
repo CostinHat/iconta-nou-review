@@ -2495,3 +2495,26 @@ Mai departe, în aceeași seară: cheile Turnstile și nginx-ul puse de Costin, 
 Răspunsul la §6 (DECIZII „Lotul 5: răspunsul la §6; rularea țintită pe JS/CSS”): 255 = număr nefolosit; rularea țintită nu mai pornește
 suita întreagă pentru JS/CSS sau registre — numai pentru nesiguranța din Python; JS/CSS -> verificatorul, e2e-ul derivat din id-urile DOM,
 gărzile statice și uneltele vizuale.
+
+## 15–16.10.2026 (noaptea) — Lotul 5, comanda 3: 258–271, C36–C40
+
+Comanda: DECIZII „Lotul 5 — comanda 3” (+ „ce s-a hotărât pe drum”). Investigația pe zone (cinci agenți de citire), apoi lucrul pe fișiere
+disjuncte (agenți pe roluri, emailuri, migrare + suport, apoi pe clasele „#id” și „plural”; coordonatorul pe registrul jurnal, diacritice,
+ciorna formularelor, alerta de load, C38–C40). Rezolvate cu e2e și mutație: 258 (eticheta „nr. crt. N din …”, o singură definiție, în
+bază; clasa: 81 de locuri), 259, 260, 261 și 263 (clasa: ~255 JS + ~120 Python prin `cate`), 262 (+5 butoane), 264 (+12 texte, garda
+lărgită pe trei goluri), 265, 266, 267 (+ salariatul nou, concediul medical), 268, 269, 270, C36 (capturile sesizărilor erau publice),
+C37 (XSS stocat în mesajele client–cabinet), C39 (HTML-ul emailurilor). C38 (ștergerea GDPR a unui cabinet cu sesizări cădea) și C40
+(pool-ul dădea 500 pe loc) — reparate și probate, fără e2e. 271: cauza aflată (sonda citește commitul de pe disc; publicarea mută discul
+înaintea repornirii), nereparată, la cerere. 6b: alerta de load pe media pe 15 minute, ținută, fără rulări de teste.
+
+Rularea țintită (16.10.2026, 03:01–04:28; `main.py` atins -> suita întreagă + verificatorul + e2e-ul derivat): 5 failed / 8380 passed /
+10 skipped / 15 xfailed (3775 s), verificator TOTAL 0, e2e 7 picate. Cauzele, toate din comanda 3, reparate: tokenizatorul `sabloane_js`
+ținea ramurile ternarelor într-un atribut al funcției (stare de proces neclasificată) -> le întoarce; `rulari_teste.SEMNE` numea
+`poarta-suita` (garda „numai poarta_lot.sh o cheamă”) -> scos (rularea se vede prin `poarta_lot.sh` și pytest); `test_rulari_teste`
+folosea calea checkout-ului publicat (C35) -> cale sintetică; cele două capturi din `static/raportari`, mutate în fișierele private, ieșite
+din lista pinată; e2e-urile vechi aserteau textele dinainte: „1 facturi importate” (3, magazin), „60 luni” (140), numărul intern citit din
+mesaj (76, 96 -> nota luată din bază, plus aserția că mesajul nu mai poartă „#”). Al șaptelea era un defect real al reparației 265: la o
+schimbare de drepturi, jurnalul și coada se redesenau trecând prin „Se încarcă…”, deci ecranul deschis dispărea cât se recitea ->
+redesenare pe loc (`peLoc`). Gol găsit în unealtă: rularea țintită alegea e2e-ul numai după id-urile DOM ale JS-ului atins, deci
+`e2e_lot5_id.py` (nou) și `e2e_ciorne_proprii.py` (schimbat) n-au rulat -> `e2e_din_plasa` (fișierul e2e atins + cine îl importă;
+conftest-ul plasei -> plasa întreagă), cu gardă și mutație.

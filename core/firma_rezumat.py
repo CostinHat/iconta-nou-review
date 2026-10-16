@@ -68,6 +68,7 @@ import json
 import os
 
 from core import cron as _cron
+from core.common import cate as _cate
 from core.cache_declarat import Declaratie as _Dec
 
 CURENT, INVALIDAT, LIPSESTE, EROARE = "curent", "invalidat", "lipseste", "eroare"
@@ -714,9 +715,9 @@ def verifica_infrastructura(conn):
                     "cod": COD_REGISTRU_DESINCRONIZAT,
                     "ce": {"doar_in_cod": sorted(in_cod - in_baza),
                            "doar_in_baza": sorted(in_baza - in_cod)},
-                    "diagnostic": "registrul `firma_aspect_sursa` diferă de `ASPECTE`: %d perechi doar "
+                    "diagnostic": "registrul `firma_aspect_sursa` diferă de `ASPECTE`: %s doar "
                              "în cod, %d doar în bază"
-                             % (len(in_cod - in_baza), len(in_baza - in_cod))})
+                             % (_cate(len(in_cod - in_baza), "pereche", "perechi"), len(in_baza - in_cod))})
 
     # (5) triggerele, pe fiecare firmă activă
     trg = verifica_triggerele(conn)
@@ -724,8 +725,8 @@ def verifica_infrastructura(conn):
     detaliu["triggere_lipsa"] = trg["lipsa"]
     if trg["lipsa"]:
         probleme.append({"cod": COD_TRIGGERE_LIPSA, "ce": trg["lipsa"],
-                         "diagnostic": "triggere lipsă pe %d perechi (firmă, tabel), primele: %s"
-                                  % (len(trg["lipsa"]), trg["lipsa"][:5])})
+                         "diagnostic": "triggere lipsă pe %s (firmă, tabel), primele: %s"
+                                  % (_cate(len(trg["lipsa"]), "pereche", "perechi"), trg["lipsa"][:5])})
     # ZERO firme NU e o problemă (bază proaspătă, fără tenanți), dar se SPUNE — altfel un „ok" pe
     # zero firme s-ar citi ca „toate firmele sunt în regulă".
     detaliu["domeniu_gol"] = trg["domeniu_gol"]
@@ -733,9 +734,9 @@ def verifica_infrastructura(conn):
         probleme.append({"cod": COD_PROIECTII_LIPSA,
                          "ce": {"proiectii": trg["proiectii_tip_firma"],
                                 "firme": trg["firme_vazute"]},
-                         "diagnostic": "proiecții `tip_firma`: %d pentru %d firme active — lista "
+                         "diagnostic": "proiecții `tip_firma`: %d pentru %s — lista "
                                   "portofoliului ar arăta gol pentru unele"
-                                  % (trg["proiectii_tip_firma"], trg["firme_vazute"])})
+                                  % (trg["proiectii_tip_firma"], _cate(trg["firme_vazute"], "firmă activă", "firme active"))})
 
     # (6) triggerele pe sursele din `public`
     with conn.cursor() as cur:

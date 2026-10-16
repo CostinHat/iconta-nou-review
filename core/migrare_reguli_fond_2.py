@@ -26,6 +26,8 @@ DROP/CREATE TRIGGER, idempotentă; oglinda în `tenant_template.sql`, păzită d
           financiar-contabile la care nu se admit corecturi, cum sunt cele pe baza cărora se primeşte, se eliberează sau se justifică
           numerarul […], documentul întocmit greşit se anulează şi se păstrează sau rămâne în carnetul respectiv.”).
 
+[deficiența 258, 15.10.2026] Refuzul stocului negativ numește articolul prin denumirea lui, nu prin id-ul intern („articolului #7”).
+
 ORDINEA pe producție: după `migrare_reguli_fond` (R1–R5). Rulare:
 `python -m core.migrari_registru ruleaza --productie core/migrare_reguli_fond_2.py`.
 """
@@ -89,8 +91,8 @@ BEGIN
   IF delta < 0 THEN
     SELECT COALESCE(SUM(@S@.efect_stoc(m.tip, m.cantitate)), 0) INTO q FROM @S@.miscari_stoc m WHERE m.articol_id = art;
     IF q + delta < 0 THEN
-      RAISE EXCEPTION 'REGULA_CONTABILA: Stocul articolului #% ar deveni negativ (% după mișcarea „%”): o ieșire nu poate scoate mai mult decât e în stoc.',
-        art, q + delta, COALESCE(CASE WHEN TG_OP = 'DELETE' THEN OLD.document ELSE NEW.document END, 'fără document');
+      RAISE EXCEPTION 'REGULA_CONTABILA: Stocul articolului „%” ar deveni negativ (% după mișcarea „%”): o ieșire nu poate scoate mai mult decât e în stoc.',
+        (SELECT a.denumire FROM @S@.articole a WHERE a.id = art), q + delta, COALESCE(CASE WHEN TG_OP = 'DELETE' THEN OLD.document ELSE NEW.document END, 'fără document');
     END IF;
   END IF;
   IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;

@@ -17,6 +17,7 @@ from __future__ import annotations
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
+from core.common import cate as _cate
 
 
 def _radacina(cont):
@@ -267,9 +268,9 @@ def importa(conn, randuri, data_referinta=None):
         if len(erori) > 6:
             det += " (și încă %d)" % (len(erori) - 6)
         raise ValueError(
-            "%d rânduri nu pot intra în evidență: %s. Soldurile pe parteneri au nevoie "
+            "%s în evidență: %s. Soldurile pe parteneri au nevoie "
             "de CUI valid (intră în D394 și SAF-T) și de un cont care ține parteneri; niciun sold n-a fost scris."
-            % (len(erori), det))
+            % ("Un rând nu poate intra" if len(erori) == 1 else _cate(len(erori), "rând", "rânduri") + " nu pot intra", det))
     asigura_tabel(conn)
     td = tc = 0.0
     with conn.cursor() as cur:

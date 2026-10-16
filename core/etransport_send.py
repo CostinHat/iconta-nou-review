@@ -27,7 +27,7 @@ from datetime import date, datetime, timedelta
 
 from core import db
 from core import spv_conector
-from core.common import cfg, azi_ro
+from core.common import cfg, azi_ro, cate as _cate
 
 # Config din env — citită LA APEL prin cfg() (nu înghețată la import, item 5).
 # ETRANSPORT_BASE (host OAuth, webserviceapl = cert), ETRANSPORT_VERSIUNE (int,
@@ -79,7 +79,7 @@ def fereastra_uit(data_transport, intracom=False, acum=None):
     elif expirat:
         mesaj = "UIT expirat: valabilitatea (%s) a trecut." % valabil_pana.isoformat()
     else:
-        mesaj = "Codul UIT e valabil până la %s (%d zile)." % (valabil_pana.isoformat(), zile_val)
+        mesaj = "Codul UIT e valabil până la %s (%s)." % (valabil_pana.isoformat(), _cate(zile_val, "zi", "zile"))
     return {"poate_trimite": poate_trimite, "prea_devreme": prea_devreme, "expirat": expirat,
             "zile_valabilitate": zile_val, "uit_valabil_pana": valabil_pana,
             "data_transport": dt, "mesaj": mesaj}

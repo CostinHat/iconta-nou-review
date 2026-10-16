@@ -1,5 +1,5 @@
 // [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
-import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=2561dbfd34";  /* investigatie_identitate_v1 */
+import { api, cate, dupaNumar, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=72aa1cbbdb";  /* investigatie_identitate_v1 */
 
 const CATEGORII_INC = [
   ["activitate", "\u00cencasare din activitate"],
@@ -119,11 +119,11 @@ export async function ecranRip(corp, nav, t) {
     });
 
     corp.querySelector("#r-imp-banca").addEventListener("click", async () => {
-      try { const r = await api.post(`/tenants/${t.id}/rip/import-banca?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ciorne importate din bancă.</p>`; deseneaza(); }
+      try { const r = await api.post(`/tenants/${t.id}/rip/import-banca?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ${dupaNumar(r.importate, "ciornă importată", "ciorne importate")} din bancă.</p>`; deseneaza(); }
       catch (e) { arataMesaj(zonaMsg, e.mesaj || e.message || "eroare", "eroare"); }
     });
     corp.querySelector("#r-imp-casa").addEventListener("click", async () => {
-      try { const r = await api.post(`/tenants/${t.id}/rip/import-casa?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ciorne importate din cas\u0103.</p>`; deseneaza(); }
+      try { const r = await api.post(`/tenants/${t.id}/rip/import-casa?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ${dupaNumar(r.importate, "ciornă importată", "ciorne importate")} din cas\u0103.</p>`; deseneaza(); }
       catch (e) { arataMesaj(zonaMsg, e.mesaj || e.message || "eroare", "eroare"); }
     });
 
@@ -153,7 +153,7 @@ export async function ecranRip(corp, nav, t) {
               Baza impozit: <b>${d.baza_impozit}</b> \u00b7 Impozit (10%): <b>${d.impozit}</b> lei<br>
               <b class="tip-total">Total datorat: ${bani(d.total_datorat)} lei</b>
               ${d.cheltuieli_limitate_de_analizat > 0 ? `<br><span style="color:var(--galben-text)">Cheltuieli limitate de analizat: ${bani(d.cheltuieli_limitate_de_analizat)} lei</span>` : ""}
-              ${d.ciorne_nevalidate > 0 ? `<br><span style="color:var(--rosu)">${d.ciorne_nevalidate} ciorne nevalidate \u2014 neincluse \u00een calcul</span>` : ""}
+              ${d.ciorne_nevalidate > 0 ? `<br><span style="color:var(--rosu)">${cate(d.ciorne_nevalidate, "ciornă nevalidată", "ciorne nevalidate")} \u2014 ${d.ciorne_nevalidate === 1 ? "neinclusă" : "neincluse"} \u00een calcul</span>` : ""}
               ${d.avertisment ? `<br><span style="color:var(--galben-text)">${esc(d.avertisment)}</span>` : ""}
             </div>
           </div>`;

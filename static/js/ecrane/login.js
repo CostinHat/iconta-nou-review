@@ -1,9 +1,10 @@
 // login.js — poarta de intrare.
 // Bara sus: logo + buton "Acces". Acces deschide central un modal umbrit
 // cu 2 optiuni: Intra in cont (login existent) / Client nou (inregistrare cabinet).
-import { api, arataMesaj, CULORI_CARD, ICOANE, esc, semnAjutor, inchidereDialog, focusFaraSalt } from "../api.js?v=2561dbfd34";
+import { api, arataMesaj, CULORI_CARD, ICOANE, esc, semnAjutor, inchidereDialog, focusFaraSalt, cate } from "../api.js?v=72aa1cbbdb";
 import { PRETURI_TITLU, preturiHTML } from "./preturi.js?v=0e00a65657";  // [preturi_v1] sursa unica a continutului de preturi
-import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
+import { sesiune } from "../sesiune.js?v=898215e0ee";
+import { ciornaFormular } from "../ciorna_formular.js?v=f59e00811a";  // [267] ciorna formularului de înregistrare
 
 function svgIcon(paths, w = 24) {
   return `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
@@ -462,7 +463,7 @@ export function ecranLogin(radacina) {
         <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
       </div>
-      <div class="caseta-info" id="reg-verifica"><div class="ci-mesaj">Emailul de confirmare a plecat la <b>${esc(em)}</b>. Apasă linkul din el (valabil ${esc(String(ore || 24))} de ore) ca să activezi contul. Până atunci contul nu există: nu te poți autentifica și nu se creează nicio firmă.</div></div>
+      <div class="caseta-info" id="reg-verifica"><div class="ci-mesaj">Emailul de confirmare a plecat la <b>${esc(em)}</b>. Apasă linkul din el (valabil ${esc(cate(ore || 24, "oră", "ore"))}) ca să activezi contul. Până atunci contul nu există: nu te poți autentifica și nu se creează nicio firmă.</div></div>
       <p class="ecran-nota" style="margin:12px 0 0">Nu l-ai primit în câteva minute? Verifică și dosarul Spam.</p>
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
@@ -524,6 +525,7 @@ export function ecranLogin(radacina) {
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
         <div class="login-subtagline">Înregistrează cabinetul tău ${semnAjutor("F108")}</div>
       </div>
+      <p class="ecran-nota" id="reg-ciorna" hidden></p>
       <label class="camp">
         <span class="camp-eticheta">CUI</span>
         <div style="display:flex; gap:8px;">
@@ -571,6 +573,14 @@ export function ecranLogin(radacina) {
     const parola2 = modal.querySelector("#reg-parola2");
     const buton = modal.querySelector("#reg-buton");
     const eroare = modal.querySelector("#reg-eroare");
+    // [267] ce s-a completat rămâne la închidere / ieșirea din pagină și revine la redeschidere — fără parole; se șterge la cont creat
+    const ciorna = ciornaFormular(modal, liber ? "iconta_ciorna_inregistrare" : "iconta_ciorna_inregistrare_invitatie",
+      ["reg-cui", "reg-cabinet", "reg-nume-admin", "reg-email", "reg-termeni"]);
+    if (ciorna.refacuta) {
+      const nota = modal.querySelector("#reg-ciorna");
+      nota.textContent = "Datele completate data trecută au fost păstrate (parolele nu se păstrează).";
+      nota.hidden = false;
+    }
     // [257] Cloudflare Turnstile: verificarea anti-roboți, numai la înregistrarea liberă (invitația e deja nominală). Tokenul ei se
     // folosește o singură dată: după un refuz al serverului, widgetul se resetează și dă unul nou.
     let tokenRobot = null;
@@ -620,14 +630,6 @@ export function ecranLogin(radacina) {
       eroare.textContent = text;
       eroare.hidden = false;
     }
-    function separaNume(numeComplet) {
-      const parti = numeComplet.trim().split(/\s+/).filter(Boolean);
-      if (parti.length === 0) return { nume: null, prenume: null };
-      if (parti.length === 1) return { nume: parti[0], prenume: null };
-      const prenume = parti[parti.length - 1];
-      const nume = parti.slice(0, -1).join(" ");
-      return { nume, prenume };
-    }
     async function creeaza() {
       eroare.hidden = true;
       if (!cabinet.value || !email.value || !parola.value) {
@@ -648,7 +650,8 @@ export function ecranLogin(radacina) {
       }
       buton.disabled = true;
       buton.textContent = "Se creează…";
-      const { nume, prenume } = separaNume((numeAdmin && numeAdmin.value) || "");
+      // [269] numele administratorului se trimite așa cum l-a scris omul — nu se mai împarte („Test 253” dădea prenumele „253”)
+      const nume = ((numeAdmin && numeAdmin.value) || "").trim() || null;
       try {
         /* [register_firma_v2 27.07.2026] Raspunsul de la register poarta `firma_creata`.
            Inainte era ARUNCAT: daca provisionarea primei firme esua, userul intra in
@@ -660,11 +663,12 @@ export function ecranLogin(radacina) {
             nume_cabinet: cabinet.value.trim(),
             cui: (cui.value || "").trim(),  /* register_primul_tenant_v1 */
             nume,
-            prenume,
+            prenume: null,
             accept_termeni: !!modal.querySelector("#reg-termeni")?.checked,  /* [termeni_v1] */
             invitatie: liber ? null : INVITATIE,  /* [14.10.2026] invitația; [15.10.2026] sau înregistrarea liberă */
             turnstile: liber ? tokenRobot : null,   /* [257] tokenul Cloudflare Turnstile, validat pe server */
         });
+        ciorna.sterge();   // [267] contul (sau cererea lui) s-a creat: ciorna nu mai are rost
         if (_reg && _reg.confirmare_trimisa) { randeazaVerificaEmail(_reg.email, _reg.valabila_ore); return; }
         history.replaceState(null, "", location.pathname);   // invitația s-a consumat: linkul nu mai rămâne în bară
         const _avertReg = (_reg && _reg.firma_creata === false) ? (_reg.avertisment || "") : "";
@@ -762,7 +766,7 @@ function deschideDeclaratii() {
     `aria-label="Ce este ${esc(d.tip)}">?</button></li>`).join("");
   const o = _funcOverlay(
     `<div class="fereastra fer-larg"><div class="fereastra-antet">` +
-    `<span class="fereastra-titlu">Toate cele ${DECLARATII_50.length} de declarații</span>` +
+    `<span class="fereastra-titlu">Toate cele ${cate(DECLARATII_50.length, "declarație", "declarații")}</span>` +
     `<button class="nav-x" type="button" title="Închide" aria-label="Închide">✕</button></div>` +
     `<div class="fereastra-corp">` +
     `<ul class="decl-grila">${celule}</ul>` +
@@ -790,10 +794,10 @@ function deschideFunctionalitati() {
   // Numarul NU e scris aici: vine din lista derivata, ca sa nu poata ramane in urma.
   const cardDecl =
     `<button class="func-card func-card-decl" type="button" data-decl="1"><span class="func-card-icon">${svgIcon(ICOANE.declaratii, 26)}</span>` +
-    `<span class="func-card-titlu">Toate declarațiile</span><span class="func-card-nr">${DECLARATII_50.length} tipuri</span></button>`;
+    `<span class="func-card-titlu">Toate declarațiile</span><span class="func-card-nr">${cate(DECLARATII_50.length, "tip", "tipuri")}</span></button>`;
   const carduri = cardPreturi + cardDecl + GRUPE_FUNC.map((gr, i) =>
     `<button class="func-card" type="button" data-i="${i}"><span class="func-card-icon">${svgIcon(ICOANE[gr.icon], 26)}</span>` +
-    `<span class="func-card-titlu">${esc(gr.titlu)}</span><span class="func-card-nr">${gr.functii.length} funcții</span></button>`
+    `<span class="func-card-titlu">${esc(gr.titlu)}</span><span class="func-card-nr">${cate(gr.functii.length, "funcție", "funcții")}</span></button>`
   ).join("");
   const o = _funcOverlay(
     `<div class="fereastra fer-larg"><div class="fereastra-antet"><span class="fereastra-titlu">Funcționalități și prețuri</span>` +

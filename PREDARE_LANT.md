@@ -147,6 +147,14 @@ aplicației**, nu „în așteptarea unei teme”:
   Turnstile** — cod + e2e gata (cheile de test în plasă); cheile de producție în `~/.iconta/api_keys.env` și nginx-ul cu CSP-ul nou puse
   de Costin (15.10 seara, verificate fără afișarea cheilor; `core/test_nginx_csp.py` verde); activ pe producție la publicarea lotului 5; (3) DEFICIENTE 247–257
   aliniate la răspunsul lui Costin. Lotul 4 publicat 18:01 (`48465e7d`); scriptul de backup instalat de Costin (11:42, identic).
+- **Comanda 3 a lotului 5 (15–16.10.2026):** 258–270 rezolvate (e2e + mutații), 271 cauza aflată (nereparată, la cerere), 6b alerta
+  de load; găsite pe drum C36–C40 (C38, C40 „neverificat”). Deciziile de confirmat: DECIZII „Lotul 5, comanda 3: ce s-a hotărât pe drum”.
+- **LA PUBLICAREA LOTULUI 5 (după „Lotul 5 e complet” + poarta VERDE + acordul lui Costin + backup):** migrările cu `--productie`:
+  `migrare_sanatate_load15`, `migrare_emailuri_dezabonate`, `migrare_fisiere_private` (MUTĂ capturile existente — numai cu aprobarea
+  lui Costin, pot fi ale cabinetului pilot), `migrare_ciorne_proprii`, `migrare_reguli_fond`, `migrare_reguli_fond_2` (amprentele noi,
+  eticheta notei); ștergerea cabinetelor de retest „Cabinet Test Inregistrare”, „Cabinet Test Inregistrare 253” și a cererii neconfirmate
+  pentru costin.hateganu+test253c@gmail.com (rămâne „Cabinet Test Sesiunea B SRL”) — pct.7 al comenzii 3; directorul depozitului privat
+  `~/iconta_date/fisiere` se creează la prima scriere (0700).
 - **URMEAZĂ:** comanda următoare a lui Costin în lotul 5, sau „Lotul 5 e complet” -> `sh scripts/poarta_lot.sh` (în fundal) -> backup -> publicare (acordul lui Costin; cabinetul nu lucrează).
 - **CE ERA ÎN LUCRU (până la 14.10 15:53):** nimic. Arborele are o singură modificare: această predare (necomisă — un commit trece prin poarta de ~70 min și
   repornește producția la final; se comite odată cu lotul următor sau când aprobă Costin).
@@ -532,8 +540,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **975** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1220** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **974** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1219** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

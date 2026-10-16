@@ -57,6 +57,7 @@ MODUL = "control_incrucisat"
 
 
 from core.common import cate as _cate   # [Retest 2 pct.14]
+_FEL_1 = {"emise": "emisă", "primite": "primită"}   # „1 factură emisă” / „20 de facturi emise” (plural fix, 15.10.2026)
 
 def _fara_eticheta(e):
     """Mesajul unei excepții, fără eticheta de protocol `PERIOADA_BLOCATA:` (o taie și handlerul global, main.py). [Retest 2 pct.2]"""
@@ -316,7 +317,8 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
                     necunoscut={"cate": len(grup), "tva": (tva_grup if tva_grup else None),
                                 "fara_nota": len(fara_nota), "cu_ciorna": len(cu_ciorna)},
                     mesaj=(f"{eticheta}: D300 și contul {cont} coincid ({_lei(decl)}), dar "
-                           f"{len(grup)} facturi {fel} din lună nu sunt în evidență — "
+                           f"{_cate(len(grup), 'factură ' + _FEL_1[fel] + ' din lună nu e', 'facturi ' + fel + ' din lună nu sunt')} "
+                           f"în evidență — "
                            f"{_tva_txt}. Coincidența nu spune nimic despre ele."),
                     remediu={"fel": "investigatie",
                              "cauza": ("Egalitatea se poate produce și prin absența ambilor "
@@ -333,9 +335,10 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
         # cauza DOVEDITA: diferenta se explica exact prin facturile fara nota validata
         if tva_grup and abs(dif - tva_grup) <= TOLERANTA:
             if fara_nota:
-                cauza = f"{len(fara_nota)} facturi {fel} nu sunt contabilizate"
+                cauza = _cate(len(fara_nota), "factură " + _FEL_1[fel] + " nu e contabilizată",
+                              "facturi " + fel + " nu sunt contabilizate")
                 if cu_ciorna:
-                    cauza += f", iar {len(cu_ciorna)} au note în ciornă, neconfirmate"
+                    cauza += f", iar {_cate(len(cu_ciorna), 'factură are notă', 'facturi au note')} în ciornă, neconfirmate"
                 cauza += f"; TVA-ul lor ({_lei(tva_grup)}) explică exact diferența."
                 rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
                     "fel": "executabil", "cauza": cauza,
@@ -345,7 +348,7 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
             else:
                 rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
                     "fel": "sugerat",
-                    "cauza": (f"{len(cu_ciorna)} note ciornă create, așteaptă validare; "
+                    "cauza": (f"{_cate(len(cu_ciorna), 'notă ciornă creată', 'note ciornă create')}, așteaptă validare; "
                               f"TVA-ul lor ({_lei(tva_grup)}) explică exact diferența."),
                     "actiune": _actiune_valideaza(patru_ochi),
                     "facturi": [],
@@ -504,7 +507,7 @@ def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0, patru_ochi=Tru
         elif note_ciorna:
             rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
                 "fel": "sugerat",
-                "cauza": f"{note_ciorna} note de salarii în ciornă, așteaptă validare.",
+                "cauza": f"{_cate(note_ciorna, 'notă de salarii', 'note de salarii')} în ciornă, așteaptă validare.",
                 "actiune": _actiune_valideaza(patru_ochi),
                 "facturi": [],
             }))
@@ -1243,28 +1246,30 @@ def constatare_cota_tva(linii, an, luna):
               "clasificarea de produs (dacă produsul chiar cere cota standard).")
     if nedeterminabile:
         # linia sarita nu se ascunde: verdictul ramane pe ce s-a putut verifica, dar spune ce n-a intrat.
-        limita += (" %d linie/linii cu o cotă care nu se poate citi — neverificate (verdictul acoperă doar liniile cu "
-                   "cotă citibilă)." % nedeterminabile)
+        limita += (" %s (verdictul acoperă doar liniile cu cotă citibilă)."
+                   % _cate(nedeterminabile, "linie cu o cotă care nu se poate citi — neverificată",
+                           "linii cu o cotă care nu se poate citi — neverificate"))
 
     if not gresite:
         constatari = [] if verificate == 0 else [_fapt_liber(
             "d300", "Cotă TVA facturi emise", temei,
             "Toate facturile emise folosesc cota TVA corectă pentru perioadă.", an, luna,
-            "cele %d linii cu cotă citibilă din facturile emise ale lunii" % verificate)]
+            "linia cu cotă citibilă din facturile emise ale lunii" if verificate == 1
+            else "cele %s cu cotă citibilă din facturile emise ale lunii" % _cate(verificate, "linie", "linii"))]
         return {"an": an, "luna": luna, "stare": "verde", "constatari": constatari,
                 "limita": limita, "modul": MODUL, "reguli": REGULI}
 
     ids = sorted(gresite)
     n = len(ids)
     ex = gresite[ids[0]]
-    mesaj = (f"{n} factur{'ă' if n == 1 else 'i'} emis{'ă' if n == 1 else 'e'} cu cotă TVA greșită pentru "
+    mesaj = (f"{_cate(n, 'factură emisă', 'facturi emise')} cu cotă TVA greșită pentru "
              f"perioadă (ex. {ex['cota_gasita']}% în loc de {ex['cota_corecta']}%).")
     constatare = _neconform_liber(
         "d300", "Cotă TVA facturi emise", temei, mesaj,
         unde="facturile emise %s" % ", ".join(str(i) for i in ids[:6]),
         regula="cota_tva_neconforma_perioadei",
         remediu={"fel": "sugerat",
-                 "cauza": (f"{n} facturi emise au cotă TVA neconformă perioadei "
+                 "cauza": (f"{_cate(n, 'factură emisă are', 'facturi emise au')} cotă TVA neconformă perioadei "
                            f"(cotă veche folosită după schimbarea cotei standard)."),
                  "actiune": ("Verifică și corectează cota (stornare + reemitere sau factură de "
                              "corecție). Cota o confirmă omul, nu se ajustează automat."),
@@ -1884,7 +1889,7 @@ def _pereche_p50(conn, schema, an, p50, d_grup):
         return [_gri_liber(
             "d101", eticheta,
             temei + " Niciun D100 depus prin aplicație pe anul ăsta.",
-            "D101 declară %s plăți anticipate, dar niciun D100 nu e depus prin aplicație pe %d — "
+            "D101 declară plăți anticipate de %s, dar niciun D100 nu e depus prin aplicație pe %d — "
             "nu se poate confrunta. Absența depunerii prin aplicație NU dovedește că n-a fost depusă."
             % (_lei(p50), an), an, 12)]
     suma, cu, fara = _plati_anticipate_din_d100(dep)
@@ -1904,10 +1909,10 @@ def _pereche_p50(conn, schema, an, p50, d_grup):
     if fara:
         return [_gri_liber(
             "d101", eticheta,
-            temei + " %d din %d depuneri D100 n-au rândurile salvate." % (fara, len(dep)),
-            "Nu se poate confrunta: %d din %d depuneri D100 pe %d n-au rândurile salvate, deci suma "
+            temei + " Rândurile salvate lipsesc la %d din %s." % (fara, _cate(len(dep), "depunere D100", "depuneri D100")),
+            "Nu se poate confrunta: rândurile salvate lipsesc la %d din %s pe %d, deci suma "
             "lor nu se poate citi. O depunere fără rânduri nu e o depunere cu zero."
-            % (fara, len(dep), an), an, 12)]
+            % (fara, _cate(len(dep), "depunere D100", "depuneri D100"), an), an, 12)]
     dif = p50 - suma
     baza = {"eticheta": eticheta, "declarat_d101": int(p50), "declarat_d100": int(suma),
             "diferenta": int(dif), "nr_d100": cu, "an": an,
@@ -1916,15 +1921,15 @@ def _pereche_p50(conn, schema, an, p50, d_grup):
         return []
     if abs(dif) <= TOLERANTA:
         return [dict(baza, stare="verde", temei=temei, remediu=None,
-                     mesaj="%s: rândul 50 și suma «de plată» din cele %d D100 depuse coincid (%s)."
-                           % (eticheta, cu, _lei(p50)))]
+                     mesaj="%s: rândul 50 și suma «de plată» din %s coincid (%s)."
+                           % (eticheta, _cate(cu, "D100 depus", "D100 depuse"), _lei(p50)))]
     return [dict(baza, stare="rosu", temei=temei,
                  mesaj="%s: D101 rândul 50 = %s, iar D100 depuse însumează %s (diferență %s)."
                        % (eticheta, _lei(p50), _lei(suma), _lei(dif)),
                  remediu={"fel": "sugerat",
                           "cauza": "Rândul 50 din D101 trebuie să fie suma «de plată» declarată "
-                                   "trimestrial prin D100 pe anul %d; cele %d depuneri D100 "
-                                   "însumează %s." % (an, cu, _lei(suma)),
+                                   "trimestrial prin D100 pe anul %d; %s "
+                                   "însumează %s." % (an, _cate(cu, "depunere D100", "depuneri D100"), _lei(suma)),
                           "actiune": "Verifică dacă rândul 50 a fost completat din alt an, dacă "
                                      "lipsește un trimestru, sau dacă o depunere s-a făcut în afara "
                                      "aplicației. Corecția o confirmă omul.",
@@ -2098,10 +2103,12 @@ def _orizontal_d300_vs_d394(conn, schema):
     if necitibile:
         return [_gri_liber(
             "d394", eticheta,
-            temei + " %d operațiuni din D394 depus n-au putut fi citite." % necitibile,
-            "Nu se poate compara: %d operațiuni din D394 depus au chei care nu se pot citi, deci nu "
+            temei + " %s." % _cate(necitibile, "operațiune din D394 depus n-a putut fi citită",
+                                   "operațiuni din D394 depus n-au putut fi citite"),
+            "Nu se poate compara: %s care nu se pot citi, deci nu "
             "se vede toată latura. O comparație pe o parte din operațiuni ar numi divergență propria "
-            "mea vedere incompletă." % necitibile, an, luna)]
+            "mea vedere incompletă." % _cate(necitibile, "operațiune din D394 depus are chei", "operațiuni din D394 depus au chei"),
+            an, luna)]
 
     baza300 = _d(((r300 or {}).get("R") or {}).get("R12_1") or 0)
     if baza300 == 0 and baza394 == 0:
@@ -2212,11 +2219,11 @@ def _orizontal_efactura_vs_d394(conn, schema):
     if manuale:
         return [_gri_liber(
             "d394", eticheta,
-            temei + " Declarația conține %d operațiuni fără factură în spate (manuale)." % manuale,
-            "Nu se poate confrunta: D394 depus pe %02d/%d are %d operațiuni manuale, fără factură în "
+            temei + " Declarația conține %s fără factură în spate (manuale)." % _cate(manuale, "operațiune", "operațiuni"),
+            "Nu se poate confrunta: D394 depus pe %02d/%d are %s, fără factură în "
             "spate. O factură transmisă ar putea fi acoperită de una dintre ele, iar eu n-aș avea "
             "cum să știu — deci un «transmisă și nedeclarată» ar fi al vederii mele."
-            % (luna, an, manuale), an, luna)]
+            % (luna, an, _cate(manuale, "operațiune manuală", "operațiuni manuale")), an, luna)]
 
     with conn.cursor() as cur:
         row = _repo.select_firma_profil_3(cur, schema)
@@ -2241,11 +2248,13 @@ def _orizontal_efactura_vs_d394(conn, schema):
         return []                           # nimic transmis in fereastra: tacut, fara subiect
     if not lipsa:
         return [dict(baza, stare="verde", temei=temei, remediu=None,
-                     mesaj="%s: toate cele %d facturi transmise la ANAF prin e-Factura apar și în "
-                           "D394 depus." % (eticheta, len(transmise)))]
+                     mesaj=("%s: factura transmisă la ANAF prin e-Factura apare și în D394 depus." % eticheta
+                            if len(transmise) == 1 else
+                            "%s: toate cele %s la ANAF prin e-Factura apar și în D394 depus."
+                            % (eticheta, _cate(len(transmise), "factură transmisă", "facturi transmise"))))]
     return [dict(baza, stare="rosu", temei=temei,
-                 mesaj="%s: %d din %d facturi transmise la ANAF prin e-Factura nu apar în D394 "
-                       "depus." % (eticheta, len(lipsa), len(transmise)),
+                 mesaj="%s: în D394 depus lipsesc %d din %s la ANAF prin e-Factura." % (
+                     eticheta, len(lipsa), _cate(len(transmise), "factură transmisă", "facturi transmise")),
                  remediu={"fel": "sugerat",
                           "cauza": "Facturi cu recipisă acceptată de la ANAF care nu se regăsesc "
                                    "printre cele incluse în D394 depus pe %02d/%d: %s."
@@ -2413,7 +2422,7 @@ def _pereche_amortizare(conn, schema, an):
             continue
         out.append(dict(baza, stare="rosu", temei=temei,
                         limita=LIMITA_D406_ASSETS,
-                        mesaj="%s: registrul de imobilizări declară %s amortizare cumulată, iar "
+                        mesaj="%s: registrul de imobilizări declară o amortizare cumulată de %s, iar "
                               "contul %s are sold %s (diferență %s). Divergența e certă — cele două "
                               "cifre trebuie să coincidă prin construcție —, dar se poate numi doar "
                               "contul, nu activul: amortizarea nu se ține pe mijloc fix."

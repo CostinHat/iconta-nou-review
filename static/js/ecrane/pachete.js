@@ -3,7 +3,7 @@
 // Backend: GET /tenants, GET /pachete/{tid}/rezumat, POST /pachete/{tid}/genereaza,
 //          GET+POST /pachete/{tid}/poveste, POST /pachete/{tid}/trimite.
 
-import { api, dataRo, esc, arataMesaj } from "../api.js?v=2561dbfd34";
+import { api, dataRo, esc, arataMesaj, cate } from "../api.js?v=72aa1cbbdb";
 
 // LUNI = pentru pickerul de luna (<option>); etichetele luna-an trec prin dataRo("luna_an"). [G3 23.07]
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
@@ -200,7 +200,7 @@ function deschideModal(corp, nav) {
         // [deficiențele 32 + 33, retestul Costin 09.10] propozițiile fără sursă în pachet (laude, afirmații despre declarații) au fost
         // scoase din text înainte de editor — ecranul spune care, ca omul să știe ce n-a ajuns
         const scoase = (r.scoase && r.scoase.length)
-          ? "Din textul generat " + (r.scoase.length === 1 ? "s-a scos o propoziție" : "s-au scos " + r.scoase.length + " propoziții")
+          ? "Din textul generat " + (r.scoase.length === 1 ? "s-a scos o propoziție" : "s-au scos " + cate(r.scoase.length, "propoziție", "propoziții"))
             + " fără sursă în pachet: " + r.scoase.map((x) => "„" + x + "”").join(" ") + " "
           : "";
         arataMesaj(abateriEl, scoase + ((r.abateri && r.abateri.length)

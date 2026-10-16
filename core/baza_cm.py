@@ -19,6 +19,7 @@ REGULA, in trei parti:
      doua feluri de cifre in aceeasi medie;
   3. daca nicio luna nu e emisa, comportamentul e cel dinainte - firmele care inca nu emit nu se rup.
 """
+from core.common import cate as _cate
 
 
 def luni_anterioare(an, luna, cate=6):
@@ -56,17 +57,18 @@ def aduna(luni, emise, recalculate, zile_lucratoare):
         n_recalc += int(not e_emisa)
 
     if n_emise and n_recalc:
-        temei = ("media pe %d luni: %d din statele emise (cifrele de pe fluturașii dați), %d "
-                 "recalculate (lunile neemise)" % (n_emise + n_recalc, n_emise, n_recalc))
+        temei = ("media pe %s: %d din statele emise (cifrele de pe fluturașii dați), %s" % (
+            _cate(n_emise + n_recalc, "lună", "luni"), n_emise,
+            _cate(n_recalc, "recalculată (luna neemisă)", "recalculate (lunile neemise)")))
     elif n_emise:
-        temei = "media pe %d luni, toate din statele emise (cifrele de pe fluturașii dați)" % n_emise
+        temei = "media pe %s, numai din statele emise (cifrele de pe fluturașii dați)" % _cate(n_emise, "lună", "luni")
     elif n_recalc:
-        temei = ("media pe %d luni recalculate - niciuna dintre luni nu are stat emis, deci cifrele "
-                 "pot diferi de ce s-a plătit efectiv" % n_recalc)
+        temei = ("media pe %s - niciuna dintre luni nu are stat emis, deci cifrele "
+                 "pot diferi de ce s-a plătit efectiv" % _cate(n_recalc, "lună recalculată", "luni recalculate"))
     else:
         temei = "nicio lună lucrată în intervalul cerut"
     if n_lipsa:
-        temei += "; %d luni fără nicio sursă (salariatul nu era angajat sau datele lipsesc)" % n_lipsa
+        temei += "; %s fără nicio sursă (salariatul nu era angajat sau datele lipsesc)" % _cate(n_lipsa, "lună", "luni")
 
     return {"venituri": venituri, "zile": zile, "nr_luni": n_emise + n_recalc,
             "luni_emise": n_emise, "luni_recalculate": n_recalc, "luni_lipsa": n_lipsa,

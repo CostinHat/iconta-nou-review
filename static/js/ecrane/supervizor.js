@@ -18,8 +18,8 @@
 // însemna că n-a fost ce compara, sau că verificarea n-a rulat deloc. Ecranul le ține despărțite,
 // fiindcă exact aici se naște cifra validă și falsă.
 
-import { api, esc } from "../api.js?v=2561dbfd34";
-import { randA as randConstatare } from "./control_verdict.js?v=2fc749a2a2";
+import { api, esc, dupaNumar } from "../api.js?v=72aa1cbbdb";
+import { randA as randConstatare } from "./control_verdict.js?v=751a4f0a85";
 
 function perioada(r) {
   return `${String(r.luna).padStart(2, "0")}/${r.an}`;
@@ -29,10 +29,10 @@ function antet(r) {
   const z = r.rezumat || {};
   return `<div class="sv-antet">
     <div class="sv-cifre">
-      <span class="sv-cifra"><b>${z.constatari_total || 0}</b> constatări pe <b>${z.CONSTATARI || 0}</b> firme</span>
+      <span class="sv-cifra"><b>${z.constatari_total || 0}</b> ${dupaNumar(z.constatari_total || 0, "constatare", "constatări")} pe <b>${z.CONSTATARI || 0}</b> ${dupaNumar(z.CONSTATARI || 0, "firmă", "firme")}</span>
       <span class="sv-cifra sv-cifra--sec"><b>${z.FARA_SUBIECT || 0}</b> fără subiect</span>
-      <span class="sv-cifra sv-cifra--rau"><b>${z.NEVERIFICAT || 0}</b> neverificate</span>
-      <span class="sv-cifra sv-cifra--sec">din <b>${z.firme_in_domeniu || 0}</b> firme</span>
+      <span class="sv-cifra sv-cifra--rau"><b>${z.NEVERIFICAT || 0}</b> ${dupaNumar(z.NEVERIFICAT || 0, "neverificată", "neverificate")}</span>
+      <span class="sv-cifra sv-cifra--sec">din <b>${z.firme_in_domeniu || 0}</b> ${dupaNumar(z.firme_in_domeniu || 0, "firmă", "firme")}</span>
     </div>
     <div class="cf-incr-temei">Perioada evaluată: ${esc(perioada(r))}. Domeniu: ${esc(r.domeniu || "")}</div>
     <div class="cf-incr-temei">Confruntare între declarații (axa orizontală). Recalculată acum, la

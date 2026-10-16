@@ -87,9 +87,10 @@ def test_r1_nota_validata_nu_se_modifica_nu_se_sterge_nici_randurile(cur):
     v = _nota(cur, "validata")
     for col, val in (("descriere", "alta"), ("data", "2099-10-08"), ("document_ref", "FCT 2"), ("factura_id", 1), ("status", "ciorna"),
                      ("numar", "X"), ("sursa", "alta")):
-        _refuz(cur, "UPDATE inregistrari SET %s = %%s WHERE id = %%s" % col, (val, v), R + "Nota #%d e validată, deci nu se mai modifică" % v)
-    _refuz(cur, "DELETE FROM inregistrari WHERE id = %s", (v,), R + "Nota #%d e validată, deci nu se mai șterge" % v)
-    rand = R + "Nota #%d e validată, deci rândurile ei nu se mai schimbă" % v
+        # [258] nota numită ca în Registrul jurnal (prima notă din 2099 a schemei efemere), nu prin id-ul intern
+        _refuz(cur, "UPDATE inregistrari SET %s = %%s WHERE id = %%s" % col, (val, v), R + "Nota nr. crt. 1 din 07.10.2099 e validată, deci nu se mai modifică")
+    _refuz(cur, "DELETE FROM inregistrari WHERE id = %s", (v,), R + "Nota nr. crt. 1 din 07.10.2099 e validată, deci nu se mai șterge")
+    rand = R + "Nota nr. crt. 1 din 07.10.2099 e validată, deci rândurile ei nu se mai schimbă"
     _refuz(cur, "UPDATE inregistrari_linii SET suma = 1 WHERE inregistrare_id = %s", (v,), rand)
     _refuz(cur, "DELETE FROM inregistrari_linii WHERE inregistrare_id = %s", (v,), rand)
     _refuz(cur, "INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '4426', '401', 21)", (v,), rand)
@@ -144,9 +145,10 @@ def test_r2_luna_blocata_nu_primeste_si_nu_pierde_note_nici_randuri(cur):
 
 def test_r3_nota_nu_se_valideaza_fara_documentul_sursa(cur):
     """MUTAȚIE: verificarea documentului scoasă -> nota fără document se validează -> pică."""
-    for doc in (None, "", "  "):
+    for nr, doc in enumerate((None, "", "  "), 1):
         n = _nota(cur, doc=doc)
-        _refuz(cur, "UPDATE inregistrari SET status = 'validata' WHERE id = %s", (n,), R + "Nota #%d n-are documentul justificativ" % n)
+        _refuz(cur, "UPDATE inregistrari SET status = 'validata' WHERE id = %s", (n,),
+               R + "Nota nr. crt. %d din 07.10.2099 n-are documentul justificativ" % nr)   # [258] Nr. crt. din jurnal, nu id-ul
     _nota(cur, "validata", doc="NIR nr 1")                                                                  # contraproba
 
 
@@ -203,7 +205,7 @@ def test_r5_miscarea_documentului_contat_se_desface_numai_cu_document_de_corecti
     """Exact ce a stricat tenant_049: stornarea intrării unui NIR contat, fără notă de corecție. MUTAȚIE: `regula_stoc` fără ramura
     INSERT -> stornarea fără document trece -> pică."""
     a, m = _nir_contat(cur, "validata")
-    corectie_ceruta = R + "Mișcarea de stoc #%d e a unui document contat: se stornează numai cu un document de corecție" % m
+    corectie_ceruta = R + "Mișcarea de stoc „NIR nr 9” e a unui document contat: se stornează numai cu un document de corecție"   # [258]
     _refuz(cur, *_storno(cur, a, m), corectie_ceruta)
     v = _nota(cur, "validata", doc="NC 1")
     _refuz(cur, *_storno(cur, a, m, v), corectie_ceruta)                                      # nota de corecție trebuie să fie nouă, ciornă

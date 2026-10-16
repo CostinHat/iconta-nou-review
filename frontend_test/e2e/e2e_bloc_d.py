@@ -13,7 +13,7 @@ import urllib.request
 
 import pytest
 
-from conftest import BAZA, PREFIX_FIRMA, _db, _scoate_firmele_e2e, alege_perioada, cui_cu_control, sql
+from conftest import BAZA, PREFIX_FIRMA, _db, _scoate_firmele_e2e, alege_perioada, cui_cu_control, nr_crt, sql
 
 AZI = _dt.date.today()
 LUNA_TRECUTA = (AZI.replace(day=1) - _dt.timedelta(days=1)).replace(day=1)
@@ -619,10 +619,10 @@ def test_def_109_dupa_prima_ciorna_veche_se_inlocuieste_si_merge_la_validare(asi
     _adauga_prima(asistent, "prima D109", "1000")
     pg.click(".fereastra:last-of-type #sp-contare")
     pg.wait_for_selector(".fereastra:last-of-type #sp-contare-scrie", timeout=30000)
-    assert "Ciorna #%d din jurnal are alte sume decât statul afișat" % vechi[0][0] in asistent.fereastra(), asistent.fereastra()
+    assert "Ciorna %s din jurnal are alte sume decât statul afișat" % nr_crt(s, vechi[0][0]) in asistent.fereastra(), asistent.fereastra()
     asistent.captura("alte_sume")
     pg.click(".fereastra:last-of-type #sp-contare-scrie")
-    _asteapta_text(asistent, "Ciorna #%d, cu sumele statului de dinainte, a fost înlocuită" % vechi[0][0], timeout=30000)
+    _asteapta_text(asistent, "Ciorna cu sumele statului de dinainte a fost înlocuită cu nota nr. crt.", timeout=30000)   # [258]
     asistent.captura("inlocuita")
     noi = sql('SELECT i.id, (SELECT sum(suma) FROM "%s".inregistrari_linii l WHERE l.inregistrare_id = i.id AND l.cont_debit = \'641\') '
               'FROM "%s".inregistrari i WHERE i.status = \'ciorna\' AND i.sursa = \'salarii\'' % (s, s))
@@ -857,12 +857,12 @@ def test_def_139_registrul_mf_arata_amortizarea_inregistrata_si_diferenta(patron
 
 def test_def_140_registrul_mf_are_durata_catalogul_si_planul_lunar(patron, firma_mf):
     """140. Mijloace fixe: lipseau durata, codul din catalog și planul lunar.
-    Pașii contabilului: Mijloace fixe -> MF-D1: durata „60 luni”; „Cod din catalog” 2.1.17.2.1 -> Salvează -> apare denumirea din
+    Pașii contabilului: Mijloace fixe -> MF-D1: durata „60 de luni”; „Cod din catalog” 2.1.17.2.1 -> Salvează -> apare denumirea din
     Catalogul HG 2139/2004 cu plaja de ani; „Planul lunar de amortizare” are 60 de luni, 02/2026 „înregistrată”, 03/2026
     „neînregistrată”."""
     pg = patron.pg
     _mijloace(patron, firma_mf)
-    assert _celule_mf(patron, "MF-D1")[3] == "60 luni"
+    assert _celule_mf(patron, "MF-D1")[3] == "60 de luni"
     mid = sql('SELECT id FROM "%s".mijloace_fixe WHERE cod = %%s' % firma_mf["schema"], ("MF-D1",))[0][0]
     pg.fill(".fereastra:last-of-type #mf-catalog-%d" % mid, "2.1.17.2.1")
     pg.click(".fereastra:last-of-type [data-catalog='%d']" % mid)
@@ -870,7 +870,7 @@ def test_def_140_registrul_mf_are_durata_catalogul_si_planul_lunar(patron, firma
                          " return r && /\\d+–\\d+ ani/.test(r.innerText); }",
                          timeout=20000)
     rezumat = pg.locator(".fereastra:last-of-type details summary", has_text="Planul lunar de amortizare")
-    assert "(60 luni)" in rezumat.inner_text(), rezumat.inner_text()
+    assert "(60 de luni)" in rezumat.inner_text(), rezumat.inner_text()
     rezumat.click()
     plan = pg.evaluate("() => [...[...document.querySelectorAll('.fereastra')].pop().querySelectorAll('details[open] .fd-tabel tbody tr')]"
                        ".map((r) => [...r.cells].map((c) => c.innerText.trim()))")
@@ -987,7 +987,7 @@ def _genereaza(ecran, firma, tip, an, luna):
 
 def test_def_137_rezumatul_declaratiei_nu_e_avertisment(patron, firma_sal):
     """137. Declarații: rezumatele corecte în caseta „Avertisment”.
-    Pașii contabilului: Declarații -> D112 pe luna trecută -> pasul 2: rezumatul („D112: 1 salariati - impozit …, CAS …”) e în caseta
+    Pașii contabilului: Declarații -> D112 pe luna trecută -> pasul 2: rezumatul („D112: 1 salariat - impozit …, CAS …”) e în caseta
     albastră „Rezumat”; nu apare în „Avertismente”."""
     _date_firma(firma_sal)
     _genereaza(patron, firma_sal, "d112", LUNA_TRECUTA.year, LUNA_TRECUTA.month)
@@ -996,8 +996,8 @@ def test_def_137_rezumatul_declaratiei_nu_e_avertisment(patron, firma_sal):
                          ".map((c) => c.innerText.trim())")
     patron.captura()
     rezumat = [c for c in casete if c.startswith("Rezumat")]
-    assert rezumat and "D112: 1 salariati - impozit" in rezumat[0], casete
-    assert not [c for c in casete if c.startswith("Avertismente") and "D112: 1 salariati" in c], casete
+    assert rezumat and "D112: 1 salariat - impozit" in rezumat[0], casete
+    assert not [c for c in casete if c.startswith("Avertismente") and "D112: 1 salariat" in c], casete
 
 
 def test_def_136_componentele_d406_arata_cont_debit_credit_suma(patron, firma_mf):

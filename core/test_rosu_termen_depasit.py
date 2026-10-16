@@ -45,6 +45,11 @@ def _randeaza(tmp_path, payload):
     for a, b in _STUB.items():
         src, n = re.subn(a, b, src)
         assert n == 1, a
+    # `cate` (numeralul acordat) e cel real din plural.js, reexportat de stubul lui api.js
+    (tmp_path / "plural.mjs").write_text(io.open(os.path.join(RAD, "static/js/plural.js"), encoding="utf-8").read(), encoding="utf-8")
+    src, n = re.subn(r'export const bani=\(n\)=>String\(n\)"', lambda m: m.group(0)[:-1] + ';export {cate,dupaNumar} from %%22%s%%22"'
+                     % (tmp_path / "plural.mjs").as_uri(), src)
+    assert n == 1
     (tmp_path / "cv.mjs").write_text(src, encoding="utf-8")
     cod = "import('%s').then((m) => console.log(m.randeazaCorpVerdict(%s)))" % ((tmp_path / "cv.mjs").as_posix(), json.dumps(payload))
     r = subprocess.run(["node", "-e", cod], capture_output=True, text=True, timeout=60)

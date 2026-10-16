@@ -46,6 +46,50 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 5, comanda 3 (Costin 15.10.2026 noaptea, verbatim în DECIZII „Lotul 5 — comanda 3”)** — 258–271 + C36, C37; lotul rămâne
+  deschis. Locurile: investigația pe zone din 15.10 noaptea (registru jurnal `firme.js` `ecranJurnal` 4355–4597; plural: `common.cate`
+  Python, niciun helper JS, ~168 de locuri + ~80 fără „de”; roluri: `firme.js` `meniuFirma` 562, `asistenti.js` 167–204, `drepturi.js` /
+  `sesiune.js` / `versiune.js`, `validat.js` 165–227; emailuri: 21 de trimiteri prin `observare.trimite_email_html`, fără dezabonare;
+  migrare: `migrare.js` STRATURI, Suport `raporteaza.js`, atașamente în `static/raportari/` PUBLICE; sonda `core/sonda_web.py`; alerta de
+  load `main.py` `_verifica_si_alerta`).
+  - ultim: C3-1 … C3-14 și C3-16 făcute (15–16.10.2026; fiecare deficiență cu e2e verde + mutație roșie, gărzi noi cu mutații — tabelul
+    din GARZI „Lotul 5, comanda 3”); C38–C40 găsite pe drum (C38, C40 „neverificat” — fără e2e, cu motivul); comanda 3 = commitul care
+    conține această intrare
+  - urmator: C3-15 (la publicarea lotului 5, cu backup: ștergerea cabinetelor de retest) — după „Lotul 5 e complet”. STARE = IN LUCRU
+    (lotul 5 deschis)
+  - pasi:
+    C3-1. 258: mesajele cu id-ul intern al notei („Nota #24”) -> „nota nr. crt. 5 din <data>”: `drepturi.MESAJ_CIORNA_ALTUI` +
+          triggerele `migrare_ciorne_proprii` (paritate) + `note_derivate.mesaj_refuz` + `coada_api.MESAJ_NOTA_LA_VALIDARE` + jurnalul
+          (`firme.js` 4424, 4434, 4519); CLASA „#id intern afișat” peste UI și core (lista din investigație) — Nr. crt. / număr de document
+          / dată, niciodată id-ul; gard: scan pe `#${…id}` / `#%s` în textele afișate.
+    C3-2. 259: motivul (`.jn-a-altuia`, `.jn-derivata`) mutat în `.pf-frand-text`; coloana butoanelor cu lățime proprie (`stil.css`).
+    C3-3. 260: titlul editorului urmează `#je-data` (ascultător `input`/`change`, titlul cu id).
+    C3-4. 261, 263, „1 angajați”: helper JS `cate(n, singular, plural)` (echivalentul lui `common.cate`, cu „de” de la 20) + toate
+          locurile (JS ~123 + ~75, Python ~45 + 5); gard pe sursă (număr + plural fix) + `limba_ecran._ACORD` lărgit.
+    C3-5. 262: „Scoate firma din portofoliu” din fereastra firmei sub poarta de drepturi (`data-actiune`), cu nota lui; clasa: butoane care
+          deschid un ecran numai-administrator fără `data-actiune`.
+    C3-6. 264: diacriticele din `asistenti.js` + celelalte găsite (`firme.js` 1400, 1944; `migrare.js` 507; `setari.js` 329;
+          `cabinet.js` 129; `facturi_ecran.js` 130, 136); garda: template-literalele cu interpolare și etichetele dintr-un cuvânt.
+    C3-7. 265: drepturile reîmprospătate în sesiunea deschisă (`/eu/drepturi` la ceasul din `versiune.js` + întoarcerea acasă):
+          `sesiune` actualizată, poarta `data-actiune` reaplicată (și dezascunde), bara senior/junior și cardurile.
+    C3-8. 266: coada de validare pentru asistent: introducerea / starea goală după `poate_depune` și după note + declarații.
+    C3-9. 267: ciorna formularului de înregistrare (fără parole), refăcută la redeschidere, ștearsă la cont creat; helper comun;
+          clasa: formularele lungi de creare (salariat nou, concediu medical, …).
+    C3-10. 268: dezabonarea în toate emailurile (subsol + antet List-Unsubscribe, link semnat, pagina de dezabonare, registrul
+          adreselor dezabonate; ce trimite totuși — DECIZIE de raportat).
+    C3-11. 269: salutul fără „ultimul cuvânt” (`separaNume`, `cabinet.js` 180, `admin.js` 47, `navigator.js` 492, `uc_public.py` 107);
+          C37: numele escapat în `salut.js` 28 / `admin.js` 50 + clasa.
+    C3-12. 270: „Migrare cabinet” cu butoanele aplicațiilor (registrul aplicațiilor în backend; activ = are cititor), textul cerut, pașii;
+          Suport „Cerere import din altă aplicație” (aplicația, capturi, CSV/XLS/XLSX/ZIP); fișierele în depozitul privat (în afara
+          `/static`, pe cabinet, ștergere de către cabinet, văzute de echipa iConta); ghidul de bun venit, rândul cerut.
+          C36: atașamentele sesizărilor mutate din `/static/raportari` în același depozit privat.
+    C3-13. 271: cauza (sonda citește commitul de pe DISC; publicarea mută discul înaintea repornirii) — raport, fără reparație.
+    C3-14. 6b: alerta de load pe `load15 ≥ procesoare`, ținută 3 cicluri (15 min), niciodată cu o rulare de teste în curs sau în ultimele
+          15 minute; repornirea fără deploy neschimbată.
+    C3-15. pct.7 (la publicare, cu backup): ștergerea cabinetelor „Cabinet Test Inregistrare”, „Cabinet Test Inregistrare 253” și a
+          cererii neconfirmate pentru costin.hateganu+test253c@gmail.com; rămâne „Cabinet Test Sesiunea B SRL”.
+    C3-16. Rularea țintită + uneltele vizuale + e2e-ul ecranelor atinse; registre. (Făcut: 5 + 7 picate, cauzele reparate, testele
+          picate rulate o dată verzi; golul „e2e-ul atins direct nu rulează” închis cu gardă — ISTORIC 15–16.10.)
 - fir: **Lotul 5 (comanda Costin 15.10.2026 seara, verbatim în DECIZII „Poarta o dată pe lot” + 257)** — poarta completă o singură
   dată pe lot, la închidere, legată de mutarea lui `main`; registrul deficiențelor 247–255; 257 (Cloudflare Turnstile).
   - ultim: L5-0 … L5-5, L5-7 făcute (15.10.2026 seara; mutațiile M1–M5 roșii; e2e `e2e_inregistrare_libera.py` 4/4 cu widgetul real);

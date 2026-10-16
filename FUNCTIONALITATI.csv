@@ -855,7 +855,7 @@ Monografiile complete ale lichidării până la partaj.
 - Omiterea ajustărilor de TVA la valorificarea activelor.
 ## Reguli fiscale
 Etapele urmează OMFP 897/2015, Legea 31/1990 (art. 227 și următoarele) și Legea 85/2014; câștigul din partaj se impozitează în regim de dividende."
-Starea migrării pe straturi,Per cabinet: fiecare strat cu stare (gata/în lucru + nota ce mai lipsește) decisă explicit; remindere pentru straturile rămase.,F058,cabinet,Migrare cabinet,core/migrare_api.py,,LIVE,vizual (9 straturi),,"## Ce face
+Starea migrării pe straturi,"Per cabinet: fiecare strat cu stare (gata/în lucru + nota ce mai lipsește) decisă explicit; remindere pentru straturile rămase. Sus (din 15.10.2026, lotul 5, 270): butoanele aplicațiilor din care se migrează (SAGA, WinMentor, Ciel, SmartBill), din registrul `core/aplicatii_migrare.py` — activ numai unde iConta.eu citește exportul (azi SAGA: balanța de verificare, situația clienților / furnizorilor, salariații, imobilizările); cu SAGA ales, fiecare pas spune ce se scoate din SAGA și primește fișierul direct; pașii neacoperiți oferă modelul CSV. Sub butoane, drumul pentru o aplicație fără buton activ (cererea de import din Suport).",F058,cabinet,Migrare cabinet,core/migrare_api.py,,LIVE,vizual (9 straturi),,"## Ce face
 Arată starea migrării pe straturi pentru fiecare cabinet: fiecare strat are o stare stabilită explicit (gata sau în lucru, cu o notă despre ce mai lipsește) și generează remindere pentru straturile rămase.
 ## Unde apare / Cum se folosește
 O găsești în zona de migrare, ca tablou de bord al progresului. Marchezi fiecare strat pe măsură ce îl finalizezi.
@@ -1045,7 +1045,7 @@ Note pentru provizioane/ajustări; impact pe rezultat.
 - Provizioane nedeductibile fiscal tratate ca deductibile.
 ## Reguli fiscale
 OMFP 1802/2014; Codul fiscal (deductibilitatea provizioanelor)."
-Canal de sesizări (Raportează),"Feedback de la utilizatori către Admin iConta: sesizare cu atașamente (capturi), fir de răspunsuri bidirecțional, marcare citit.",F072,transversal,Raporteaza (cabinet/asistent/portal) + Admin > Raportari,core/raportari_api.py,,LIVE,vizual,,"## Ce face
+Canal de sesizări (Raportează),"Feedback de la utilizatori către Admin iConta: sesizare cu atașamente (capturi), fir de răspunsuri bidirecțional, marcare citit. A doua opțiune (din 15.10.2026, lotul 5, 270d): «Cerere import din altă aplicație» — aplicația + capturi și exporturi (CSV, XLS/XLSX, ZIP, max. 8 MB). Fișierele (și capturile sesizărilor, C36) stau în depozitul privat (`core/fisiere_private.py`), în afara directorului public: le văd numai echipa iConta.eu și autorul, izolate pe cabinet; autorul le poate șterge.",F072,transversal,Raporteaza (cabinet/asistent/portal) + Admin > Raportari,core/raportari_api.py,,LIVE,vizual,,"## Ce face
 Canalul Raportează: utilizatorii trimit sesizări către Administratorul iConta, cu atașamente (capturi de ecran), pe un fir de răspunsuri bidirecțional, cu marcare citit.
 ## Când se folosește
 Când întâlnești o problemă, o eroare sau ai o propunere pentru aplicație. Pentru orice utilizator al iConta.

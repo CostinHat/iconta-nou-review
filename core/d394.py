@@ -693,10 +693,10 @@ def calcul_d394(prof, perioada, date, manual=None):
     if excluse_N:
         lista = "; ".join("%s (baza %s lei)" % (n or (c or "fără CUI"), _int(b)) for n, c, b in excluse_N)
         avert.append(
-            "ATENTIE: %d operațiune(i) N (achiziții de la parteneri NEÎNREGISTRAȚI, persoane fizice) EXCLUSE "
-            "din D394 fiindcă le LIPSEȘTE categoria art.331 a bunurilor (op11.codPR e OBLIGATORIU la persoana "
+            "ATENTIE: EXCLUSE din D394 — %s (achiziții de la parteneri NEÎNREGISTRAȚI, persoane fizice), "
+            "fiindcă LIPSEȘTE categoria art.331 a bunurilor (op11.codPR e OBLIGATORIU la persoana "
             "fizica, conform R233.6). Adaugă categoria produsului pe factura ca să fie declarate. Furnizori/sume: "
-            "%s. Restul declarației RAMANE valid." % (len(excluse_N), lista))
+            "%s. Restul declarației RAMANE valid." % (_cate(len(excluse_N), "operațiune N", "operațiuni N"), lista))
 
     # [T1/G-c1 10.08.2026] CHECKSUM cuiP partener, PRE-DUK (altfel DUK il prinde brut: R218.2/R218.3).
     # Sursa canonica core.identitate (import read-only). Un CUI/CIF cu cifra de control gresita / lungime /
@@ -739,11 +739,11 @@ def calcul_d394(prof, perioada, date, manual=None):
         if len(_nume) < 2:
             continue
         avert.append(
-            "Partenerul cu CUI \"%s\" apare în declarație cu %d denumiri diferite (%s) pe aceeași "
+            "Partenerul cu CUI \"%s\" apare în declarație cu %s (%s) pe aceeași "
             "operațiune (tip %s, cota %s) — regula DUK R218.4 cere ca perechea (tip_partener, cotă, "
             "tip, CUI) să fie UNICĂ, deci respinge ÎNTREAGA declarație. Scrie același nume pe toate "
             "facturile către partenerul ăsta și regenerează."
-            % (cuiP, len(_nume), ", ".join('"%s"' % n for n in sorted(_nume)), tip, cota))
+            % (cuiP, _cate(len(_nume), "denumire diferită", "denumiri diferite"), ", ".join('"%s"' % n for n in sorted(_nume)), tip, cota))
 
     # [T4/G-bc1 + G-bc2 10.08.2026] op1 care NECESITA op11 dar NU-l poate obtine -> EXCLUS aici, INAINTE de
     # rezumat1/rezumat2 (totalurile raman coerente) si de reconciliere. ANTERIOR (T4): op1 C/V (tip_partener=1)
@@ -998,11 +998,11 @@ def calcul_d394(prof, perioada, date, manual=None):
             "%s de la parteneri din UE sau din afara UE — nu intră în D394 "
             "(se declară în D390 - VIES)." % _cate(intracom, "achiziție", "achiziții"))
     if nefacturabile:
-        res.avertismente.append("%d facturi excluse din declarație (vezi mai sus)." % nefacturabile)
+        res.avertismente.append("%s din declarație (vezi mai sus)." % _cate(nefacturabile, "factură exclusă", "facturi excluse"))
     if date.get("fara_serie"):
         n = len(date["fara_serie"])
         res.avertismente.append("%s fără serie (%s): în D394 %s cu seria „-”. Seria o stabilește firma la emitere — completeaz-o pe "
-                                "factură." % ("O factură emisă" if n == 1 else "%d facturi emise" % n,
+                                "factură." % ("O factură emisă" if n == 1 else _cate(n, "factură emisă", "facturi emise"),
                                              ", ".join("nr. %s" % x for x in date["fara_serie"][:10]), "apare" if n == 1 else "apar"))
     # [Retest 2 pct.15, comanda Costin 09.10.2026] „Rândul 11% arată «număr facturi 0», deși factura 2 are o linie de 11%.” E regula
     # ANAF, nu o greșeală — OPANAF 2194/2025, anexa 2, secțiunea a 2-a pct.5: „Prin excepţie, în situaţia în care în cuprinsul unei
@@ -1289,7 +1289,8 @@ def pull(conn, schema, perioada):
                  # sa poata SPUNE ce a inclus. Era selectat in SQL si se pierdea chiar aici.
                  "factura_id": r["id"],
                  # [Retest 2 pct.15] documentul, ca nota despre factura cu mai multe cote s-o poată numi
-                 "document": str(r.get("numar") or "").strip() or "#%s" % r["id"]}   # `facturi.numar` conține deja seria
+                 # [258] fără număr scris: se spune așa, nu se arată id-ul intern; `facturi.numar` conține deja seria
+                 "document": str(r.get("numar") or "").strip() or "factura fără număr"}
         pe_cota = {}
         for l in (r["linii"] or []):
             if l.get("cota") is None or l.get("baza") is None:

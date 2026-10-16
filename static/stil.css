@@ -1252,15 +1252,6 @@ html, body {
 .rap-msg-admin { align-self: flex-end; text-align: right; }
 .rap-msg-admin .rap-msg-text { background: var(--albastru); color: var(--alb); }
 
-.rap-msg-img {
-  display: block;
-  max-width: 220px; max-height: 220px;
-  margin-top: 6px;
-  border-radius: 8px;
-  border: 1px solid var(--linie);
-}
-.rap-msg-admin .rap-msg-img { margin-left: auto; }
-
 /* ----- compose (raspuns) ----- */
 .rap-compose {
   flex: 0 0 auto;
@@ -1792,6 +1783,9 @@ html, body {
   padding: 14px; background: var(--alb); border: 1px solid var(--linie); border-radius: var(--raza); margin-bottom: 8px; }  /* portal_ds_audit_a_v1 */
 .pf-frand-nume { font-size: var(--text-titlu); font-weight: 600; }
 .pf-frand-sub { font-size: var(--text); color: var(--gri); margin-top: 2px; }
+/* [deficiența 259] textul rândului ia locul rămas; butoanele își păstrează lățimea lor, fără să strângă textul */
+.pf-frand-text { flex: 1 1 auto; min-width: 0; }
+.pf-frand-butoane { flex: 0 0 auto; display: flex; flex-direction: column; gap: 6px; align-items: stretch; }
 .pf-frand-suma { font-size: var(--text); font-weight: 600; white-space: nowrap; }
 .pf-frand-ok { font-size: var(--text-mic); color: #1d7a4d; font-weight: 600; white-space: nowrap; }
 

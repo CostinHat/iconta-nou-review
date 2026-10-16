@@ -16,6 +16,7 @@ import psycopg2.extras as _E
 from core.pdf_util import data_ro as _data_ro
 
 from core import observare
+from core.common import esc as _esc_html   # [C39] text scris de om în HTML-ul emailurilor
 
 
 def _conn():
@@ -106,9 +107,9 @@ def _html(nume_cabinet, zi, d):  # [p68_doar_pozitive] afiseaza doar randuri cu 
         culoare = accent or "#1a1d21"
         return (
             '<tr>'
-            '<td style="padding:8px 0;color:#444;font-size:14px;">' + eticheta + '</td>'
+            '<td style="padding:8px 0;color:#444;font-size:14px;">' + _esc_html(eticheta) + '</td>'
             '<td style="padding:8px 0;text-align:right;font-size:16px;font-weight:600;color:'
-            + culoare + ';">' + str(val) + '</td>'
+            + culoare + ';">' + _esc_html(val) + '</td>'
             '</tr>')
 
     def sectiune(titlu, randuri_html):
@@ -116,32 +117,32 @@ def _html(nume_cabinet, zi, d):  # [p68_doar_pozitive] afiseaza doar randuri cu 
             return ""
         return (
             '<h3 style="font-size:14px;text-transform:uppercase;letter-spacing:.04em;'
-            'color:#888;margin:0 0 6px;">' + titlu + '</h3>'
+            'color:#888;margin:0 0 6px;">' + _esc_html(titlu) + '</h3>'
             '<table style="width:100%;border-collapse:collapse;border-top:1px solid #eee;'
             'margin-bottom:24px;">' + randuri_html + '</table>')
 
     randuri_azi = (
-        rand("Declaratii pregatite", d["pregatite"]) +
-        rand("Declaratii validate", d["validate"], "#1d7a4d") +
-        rand("Declaratii respinse", d["respinse"], "#ff3b30") +
-        rand("Declaratii depuse", d["depuse"], "#1d7a4d") +
-        rand("Sesizari noi de la clienti", d["sesizari_noi"]) +
+        rand("Declarații pregătite", d["pregatite"]) +
+        rand("Declarații validate", d["validate"], "#1d7a4d") +
+        rand("Declarații respinse", d["respinse"], "#ff3b30") +
+        rand("Declarații depuse", d["depuse"], "#1d7a4d") +
+        rand("Sesizări noi de la clienți", d["sesizari_noi"]) +
         rand("Pachete lunare trimise", d.get("pachete_trimise", 0), "#1d7a4d"))
 
     randuri_asteptare = (
-        rand("De validat (in asteptare)", d["de_validat"], "#c9961f") +
-        rand("Sesizari fara raspuns", d["sesizari_fara_raspuns"], "#ff3b30"))
+        rand("De validat (în așteptare)", d["de_validat"], "#c9961f") +
+        rand("Sesizări fără răspuns", d["sesizari_fara_raspuns"], "#ff3b30"))
 
-    corp = sectiune("Ce s-a petrecut azi", randuri_azi) + sectiune("Ramas de rezolvat", randuri_asteptare)
-    if not corp:
-        corp = '<p style="color:#777;font-size:14px;">Zi linistita, nimic de raportat.</p>'
+    corp_html = sectiune("Ce s-a petrecut azi", randuri_azi) + sectiune("Rămas de rezolvat", randuri_asteptare)
+    if not corp_html:
+        corp_html = '<p style="color:#777;font-size:14px;">Zi liniștită, nimic de raportat.</p>'
 
     return (
         '<div style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;'
         'max-width:560px;margin:0 auto;color:#1a1d21;">'
-        '<h2 style="font-size:19px;margin:0 0 4px;">Sinteza zilei &mdash; ' + nume_cabinet + '</h2>'
-        '<p style="color:#777;font-size:13px;margin:0 0 20px;">' + data_ro + '</p>'
-        + corp +
+        '<h2 style="font-size:19px;margin:0 0 4px;">Sinteza zilei &mdash; ' + _esc_html(nume_cabinet) + '</h2>'
+        '<p style="color:#777;font-size:13px;margin:0 0 20px;">' + _esc_html(data_ro) + '</p>'
+        + corp_html +
         '<div style="text-align:center;margin-top:28px;">'
         '<a href="https://iconta.eu" '
         'style="display:inline-block;background:#1d7a4d;color:#fff;'

@@ -8,11 +8,13 @@
 //   ← stânga-sus -> UN PAS ÎNAPOI pe traseul parcurs (apare doar când există drum);
 //   X dreapta-sus -> ÎNCHIDE fereastra (acasă). Traseul e memorat de navigator (nav.mergi).
 
-import { sesiune } from "./sesiune.js?v=38c3e6f6fe";
-import { esc, inchidereDialog } from "./api.js?v=2561dbfd34";  // esc canonic (cap.10): strip-html data-lossy inlocuit
-import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=96c0d1308c";  // [bun_venit_v1] "?" general (ansamblu)
+import { sesiune } from "./sesiune.js?v=898215e0ee";
+import { esc, inchidereDialog, cate } from "./api.js?v=72aa1cbbdb";  // esc canonic (cap.10): strip-html data-lossy inlocuit
+import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=0a02b00644";  // [bun_venit_v1] "?" general (ansamblu)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import * as _versiune from "./versiune.js?v=862390a47a";      // [R129] anunta o publicare noua, fara sa intrerupa
+import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
+import { numeDeSalut } from "./ecrane/salut.js?v=179b6770c5";   // [269] numele din salut, același loc ca pagina principală
+import { reimprospateazaDrepturi } from "./drepturi.js?v=34d0fb0afd";   // [265] drepturile recitite pe ceasul aplicației
 
 // [p21_bara_lant] contextul barei 1 ca LANT, citit din sesiune.user() (sursa unica)
 function _functieAsistent(u) {
@@ -30,7 +32,7 @@ function contextBara(u) {
       return { verigi: [  // [p23_bara_fix]
         { text: "Cabinet de contabilitate · " + (u.nume_firma || ""), slab: true },
         { text: nume },
-        { text: _functieAsistent(u), slab: true },
+        { text: _functieAsistent(u), slab: true, functie: true },   // [265] rescrisă la o schimbare de drepturi
       ] };
     }
     case "superadmin": // [p37_admin_desktop]
@@ -72,7 +74,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       <img class="bara-logo-img" src="/static/logo_simbol.png" alt="">
       <span class="bara-marca">iConta.eu</span>
       ${ctx.verigi.map((v) => `<span class="bara-chevron" aria-hidden="true">\u203a</span>` +
-        `<span class="${v.slab ? "bara-veriga-slab" : "bara-veriga"}">${v.text}</span>`).join("")}
+        `<span class="${v.slab ? "bara-veriga-slab" : "bara-veriga"}"${v.functie ? " data-functie-asistent" : ""}>${esc(v.text)}</span>`).join("")}
       <span class="bara-spatiu"></span>
       <button class="nav-ghid" id="nav-ghid" title="Prezentarea aplicației (ansamblu)" aria-label="Prezentarea aplicației (ansamblu)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="14" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/></svg><span class="nav-ghid-q">?</span></button>
       <button class="nav-clopot" id="nav-clopot" title="Notificări" aria-label="Notificări"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="nav-clopot-badge" id="nav-clopot-badge"></span></button>
@@ -97,7 +99,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
         // anunțul „Versiune nouă” pus între timp de `_versiune.aseaza()` — superadminul nu afla niciodată de publicare.
         subbara.innerHTML = `${icon}<span class="subbara-gol" data-sumar-admin>Se încarcă centralizatorul...</span>`;
         const sumarAdmin = subbara.querySelector("[data-sumar-admin]");
-        import("./api.js?v=2561dbfd34").then(({ api }) => api.get("/admin/activitate/cabinete")).then((r) => {
+        import("./api.js?v=72aa1cbbdb").then(({ api }) => api.get("/admin/activitate/cabinete")).then((r) => {
           const cabinete = (r && r.cabinete) || [];
           const active = cabinete.filter((c) => c.activ).length;
           const firme = cabinete.reduce((s2, c) => s2 + (c.nr_firme || 0), 0);
@@ -106,13 +108,13 @@ export function creeazaNavigator(radacina, desktopRandator) {
           const declaratii = cabinete.reduce((s2, c) => s2 + (c.nr_declaratii || 0), 0);
           const recomandari = cabinete.reduce((s2, c) => s2 + (c.nr_recomandari || 0), 0);
           sumarAdmin.className = "subbara-admin-sumar";
-          sumarAdmin.textContent = `${active} cabinete active · ${firme} firme · ${angajati} angajați · ${facturi} facturi emise · ${declaratii} declarații depuse · ${recomandari} recomandări`;
+          sumarAdmin.textContent = `${cate(active, "cabinet activ", "cabinete active")} · ${cate(firme, "firmă", "firme")} · ${cate(angajati, "angajat", "angajați")} · ${cate(facturi, "factură emisă", "facturi emise")} · ${cate(declaratii, "declarație depusă", "declarații depuse")} · ${cate(recomandari, "recomandare", "recomandări")}`;
         }).catch(() => {
           sumarAdmin.textContent = "Centralizatorul nu a putut fi încărcat.";
         });
       } else {
         subbara.innerHTML = firmaInLucru
-          ? `${icon}<span class="subbara-cheie">În lucru:</span><span class="subbara-firma">${firmaInLucru}</span>`
+          ? `${icon}<span class="subbara-cheie">În lucru:</span><span class="subbara-firma">${esc(firmaInLucru)}</span>`
           : `${icon}<span class="subbara-gol">Firmă activă: Nicio firmă selectată</span>`;
       }
       antet.appendChild(subbara);
@@ -132,7 +134,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       antet.appendChild(bara3);
       // [lotul 07.10 pct.4] eticheta spune „luna aceasta”: cererea o cere pe luna curentă (înainte: tot istoricul)
       const _azi = new Date(), _de = `${_azi.getFullYear()}-${String(_azi.getMonth() + 1).padStart(2, "0")}-01`;
-      import("./api.js?v=2561dbfd34").then(({ api }) => api.get(`/eu/calitate?de=${_de}`)).then((cal) => {
+      import("./api.js?v=72aa1cbbdb").then(({ api }) => api.get(`/eu/calitate?de=${_de}`)).then((cal) => {
         if (!cal || !cal.ok) { bara3.innerHTML = ""; return; }
         // [p26_motivationale] iteram peste lista din backend - oricate, flexibil
         const lista = cal.motivationale || [];
@@ -357,6 +359,26 @@ export function creeazaNavigator(radacina, desktopRandator) {
   // NU re-randeaza nimic la detectie: aseaza un nod in locul declarat mai sus. *O re-randare ar fi
   // pierdut exact formularul pe jumatate completat pe care decizia lui Costin il apara.*
   _versiune.porneste();
+  // [deficiența 265, comanda Costin 15.10.2026] „Ecranul urmează drepturile fără re-autentificare.” Pe același ceas cu versiunea: dacă
+  // bifele s-au schimbat, drepturi.js a reaplicat deja poarta pe pagină; aici se pun în sesiune (fără redesenare), se rescrie eticheta
+  // senior/junior, iar cardurile paginii principale se redesenează — acum, dacă omul e pe pagina principală fără formular început,
+  // altfel la întoarcerea acasă. Clientul și previzualizarea portalului n-au poartă (app.js), deci nici drepturi de recitit.
+  if (sesiune.rol() !== "client" && !(sesiune.estePreview && sesiune.estePreview())) {
+    let carduriVechi = false;
+    _versiune.peAcelasiCeas("drepturi", async () => {
+      const nou = await reimprospateazaDrepturi();
+      if (nou) {
+        const u = sesiune.actualizeazaInLoc(nou.bife) || {};
+        const et = radacina.querySelector("[data-functie-asistent]");
+        if (et && u.rol === "angajat") et.textContent = _functieAsistent(u);
+        carduriVechi = true;
+      }
+      if (carduriVechi && !stiva.length && !window._navAreModificari()) {
+        const continut = radacina.querySelector(".desktop-continut");
+        if (continut) { carduriVechi = false; desktopRandator(continut, nav); }
+      }
+    });
+  }
   // [clopot_routing] expune nav-ul curent pentru routing-ul notificarilor din clopotel.
   // Handler-ul clopotelului (functie de modul, in afara acestui closure) il citea deja prin
   // window._navGlobal, dar nu era atribuit nicaieri -> routing mort. Aici se realizeaza pattern-ul.
@@ -370,7 +392,7 @@ async function _clopotActualizeazaBadge(container) {  // [p66_badge_ref]
   const badge = (container || document).querySelector("#nav-clopot-badge");
   if (!badge) return;
   try {  // generalizare_zi_v1: notificarile sunt de cabinet; pe client nu interogam (evita 403)
-    const { sesiune } = await import("./sesiune.js?v=38c3e6f6fe");
+    const { sesiune } = await import("./sesiune.js?v=898215e0ee");
     if (((sesiune.user() || {}).rol) === "client") {
       badge.style.display = "none";
       const btn = (container || document).querySelector("#nav-clopot");
@@ -379,7 +401,7 @@ async function _clopotActualizeazaBadge(container) {  // [p66_badge_ref]
     }
   } catch {}
   try {
-    const { api } = await import("./api.js?v=2561dbfd34");
+    const { api } = await import("./api.js?v=72aa1cbbdb");
     const r = await api.get("/notificari/contor");
     const n = (r && r.necitite) || 0;
     badge.textContent = n > 0 ? (n > 9 ? "9+" : String(n)) : "";
@@ -400,7 +422,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
     panou.id = "nav-clopot-panou";
     panou.innerHTML = `<div class="clopot-cap"><span>Notificări</span></div><div class="clopot-lista" id="clopot-lista"><div class="clopot-gol">Se încarcă…</div></div>`;
     ecran.appendChild(panou);
-    const { api } = await import("./api.js?v=2561dbfd34");
+    const { api } = await import("./api.js?v=72aa1cbbdb");
     let date;
     try { date = await api.get("/notificari"); } catch { date = { notificari: [] }; }
     const lista = panou.querySelector("#clopot-lista");
@@ -425,7 +447,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
           if (typeof n.link === "string" && (n.link === "validat" || n.link.startsWith("validat:")) && window._navGlobal) {
             const id = parseInt(n.link.split(":")[1], 10);
             try {
-              const { randeazaValidat } = await import("./ecrane/validat.js?v=f25b959e6d");
+              const { randeazaValidat } = await import("./ecrane/validat.js?v=a8c80dc9d3");
               window._navGlobal.acasa();
               window._navGlobal.deschide("De validat", (corp, nn) => randeazaValidat(corp, nn, Number.isFinite(id) ? { evidentiaza: id } : {}), { nivel: "cabinet" });
             } catch (e) { console.warn("[clopot] nu s-a putut deschide De validat:", e); }
@@ -434,8 +456,8 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             const [, tid, nid, an, luna] = n.link.split(":").map((x) => parseInt(x, 10));
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
-              const { api } = await import("./api.js?v=2561dbfd34");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=dce7943315");
+              const { api } = await import("./api.js?v=72aa1cbbdb");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=b430cfcc52");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();
@@ -449,7 +471,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             const tid = parseInt(n.link.slice("control-fiscal:".length), 10);
             if (!Number.isFinite(tid)) { console.warn("[clopot] link control-fiscal malformat:", n.link); return; }
             try {
-              const { randeazaControl } = await import("./ecrane/control.js?v=d5c4e1f86d");  // ?v=1 aliniat cu cabinet/asistent — fara versiune ar instantia o a doua copie a modulului
+              const { randeazaControl } = await import("./ecrane/control.js?v=c32702d644");  // ?v=1 aliniat cu cabinet/asistent — fara versiune ar instantia o a doua copie a modulului
               window._navGlobal.deschide("Control fiscal", (corp, nn) => randeazaControl(corp, nn, tid), { nivel: "cabinet" });
             } catch (e) { console.warn("[clopot] nu s-a putut deschide control fiscal:", e); }
           }
@@ -472,24 +494,23 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
 function _sumarTextTip(tip, n) {
   const map = {
     // [validare_note 06.10.2026] coada poartă declarații ȘI note: „lucrare” le numește pe amândouă
-    de_validat: n === 1 ? "1 lucrare de validat" : n + " lucrări de validat",
-    aprobata: n === 1 ? "1 lucrare validată" : n + " lucrări validate",
-    respinsa: n === 1 ? "1 lucrare respinsă" : n + " lucrări respinse",
-    depusa: n === 1 ? "1 declarație depusă" : n + " declarații depuse",
+    de_validat: cate(n, "lucrare de validat", "lucrări de validat"),
+    aprobata: cate(n, "lucrare validată", "lucrări validate"),
+    respinsa: cate(n, "lucrare respinsă", "lucrări respinse"),
+    depusa: cate(n, "declarație depusă", "declarații depuse"),
   };
-  return map[tip] || (n === 1 ? "1 notificare" : n + " notificări");
+  return map[tip] || cate(n, "notificare", "notificări");
 }
 async function _sumarLogin(ecran) {
   try {
     if (sessionStorage.getItem("iconta_sumar_aratat") === "1") return;
-    const { api } = await import("./api.js?v=2561dbfd34");
+    const { api } = await import("./api.js?v=72aa1cbbdb");
     const r = await api.get("/notificari/sumar");
     const total = (r && r.necitite) || 0;
     sessionStorage.setItem("iconta_sumar_aratat", "1");
     if (total <= 0) return;
-    const u = sesiune.user() || {};
-    // [deficiența 198, retestul Costin 09.10: „«Buna, Dobrescu!» e fără diacritice”] salutul folosește prenumele, ca desktopul
-    const nume = u.prenume || (u.nume || "").split(" ").slice(-1)[0] || "";
+    // [deficiența 198, retestul Costin 09.10: „«Buna, Dobrescu!» e fără diacritice”] salutul, ca desktopul: [269] `numeDeSalut`
+    const nume = numeDeSalut(sesiune.user());
     const detalii = (r.pe_tip || []).map((x) => _sumarTextTip(x.tip, x.n)).join(", ");
     const t = document.createElement("div");
     t.className = "sumar-toast";
@@ -519,7 +540,7 @@ async function _anunturiBanner(ecran) {
   if (u.rol === "client" || u.rol === "superadmin") return;
   let d;
   try {
-    const { api } = await import("./api.js?v=2561dbfd34");
+    const { api } = await import("./api.js?v=72aa1cbbdb");
     d = await api.get("/eu/anunturi");
   } catch { return; }
   const lista = (d && d.anunturi) || [];
@@ -544,7 +565,7 @@ async function _anunturiBanner(ecran) {
     // citirea — un X care închide fără confirmare ar fi o ușă înapoi spre același anunț la intrarea următoare.
     const confirma = async () => {
       try {
-        const { api } = await import("./api.js?v=2561dbfd34");
+        const { api } = await import("./api.js?v=72aa1cbbdb");
         await api.post(`/eu/anunturi/${a.id}/confirma`, {});
         el.remove();
       } catch (e) {

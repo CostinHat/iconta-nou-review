@@ -16,6 +16,8 @@ from __future__ import annotations
 import re
 from decimal import ROUND_HALF_UP
 
+from core.common import cate as _cate
+
 REGULI = "2026.1"
 MODUL = "salariati_api"
 
@@ -686,10 +688,10 @@ def salveaza_concediu(conn, salariat_id, date):
             raise ValueError(
                 "Nu se poate adăuga certificatul de continuare: recalculul episodului ar modifica certificate din "
                 "perioade deja confirmate la %s (luna %s). Indemnizația se calculează pe episodul întreg "
-                "(OUG 158/2005 art.17(1)): cu acest certificat episodul are %d zile, deci procentul certificatelor "
+                "(OUG 158/2005 art.17(1)): cu acest certificat episodul are %s, deci procentul certificatelor "
                 "anterioare crește de la 55%%/65%% la 75%% (+%s lei). Deschide perioada %s (anulează confirmarea D112) sau "
                 "depune D112 rectificativă pe luna %s, apoi adaugă din nou certificatul."
-                % (_fn, _ll, zile_episod, _delta.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP), _ll, _ll))
+                % (_fn, _ll, _cate(zile_episod, "zi", "zile"), _delta.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP), _ll, _ll))
 
     if cod == "10":  # [cod10] art. 19 OUG 158/2005: baza - venit realizat, plafon 25% din baza; integral FNUASS (art. 12)
         vr = date.get("venit_realizat")

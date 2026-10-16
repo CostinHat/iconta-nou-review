@@ -1,7 +1,7 @@
 // woo_ecran.js — ecranul WooCommerce (config + sincronizare), reutilizabil.  // wc_extras_v1
 // Extras din firme.js ca sa fie folosit si de cabinet (firme.js) si de contul gratuit
 // (facturi_ecran.js). O singura sursa (regula DS 0a). Semnatura pe tenantId, nu obiect firma.
-import { api, arataMesaj, esc } from "../api.js?v=2561dbfd34";
+import { api, cate, arataMesaj, esc } from "../api.js?v=72aa1cbbdb";
 
 export async function ecranMagazin(corp, nav, tenantId) {
   let mesajSucces = "";
@@ -16,7 +16,7 @@ export async function ecranMagazin(corp, nav, tenantId) {
       ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
       <p style="margin:0 0 16px"><b>Stare:</b> ${cfg.configurat ? "configurat pentru " + cfg.url : "neconfigurat"}</p>
       ${cfg.configurat ? '<button class="buton-primar" id="wc-sinc" data-actiune="POST /tenants/{tenant_id}/woocommerce/sincronizeaza" style="margin-bottom:12px">Sincronizează acum</button><br>' : ""}
-      <button class="buton-secundar" id="wc-btn-config">${cfg.configurat ? "Modifică configurarea" : "Configurează magazinul"}</button>
+      <button class="buton-secundar" id="wc-btn-config" data-actiune="PUT /tenants/{tenant_id}/woocommerce/config">${cfg.configurat ? "Modifică configurarea" : "Configurează magazinul"}</button>
       <div class="em-rezultat" id="wc-rezultat"></div>
     `;
     mesajSucces = "";
@@ -28,7 +28,7 @@ export async function ecranMagazin(corp, nav, tenantId) {
       try {
         const r = await api.post(`/tenants/${tenantId}/woocommerce/sincronizeaza`, {});
         const n = (r.importate || []).length;
-        zona.innerHTML = `<span style="color:var(--verde)">${n} facturi importate, ${r.sarite || 0} deja existente.</span>`
+        zona.innerHTML = `<span style="color:var(--verde)">${cate(n, "factură importată", "facturi importate")}, ${cate(r.sarite, "deja existentă", "deja existente")}.</span>`
           // [10.10.2026] comanda pe care emiterea o refuză rămâne neimportată, cu motivul; se reîncearcă la sincronizarea următoare
           + (r.refuzate || []).map((x) => `<br><span class="msg-eroare" data-comanda-refuzata="${esc(x.comanda)}">Comanda ${esc(x.comanda)} n-a devenit factură: ${esc(x.motiv)} Se reîncearcă la sincronizarea următoare.</span>`).join("");
       } catch (e) { zona.innerHTML = `<span style="color:var(--rosu)">${esc(e.mesaj || "eroare")}</span>`; }

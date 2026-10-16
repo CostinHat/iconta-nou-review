@@ -220,7 +220,7 @@ TRASEE = [
 # Suprafețe care NU poartă un document — declarate, ca să nu fie confundate cu o lipsă.
 NEDOCUMENTARE = [
     (r"^/$|^/favicon\.ico$|^/sitemap[a-z0-9{}-]*\.xml$|^/robots\.txt$|^/ghid", "pagini publice"),   # [07.10.2026] + indexul de sitemap-uri
-    (r"^/auth/|^/public/(termeni|config|activare|magic-|reset-parola|invitatie/|inregistrare$|confirma-inregistrare$)", "cont și acces"),   # [15.10.2026] + invitația; + înregistrarea liberă (lotul 4)
+    (r"^/auth/|^/public/(termeni|config|activare|magic-|reset-parola|invitatie/|inregistrare$|confirma-inregistrare$|dezabonare$)", "cont și acces"),   # [15.10.2026] + invitația; + înregistrarea liberă (lotul 4); + dezabonarea din emailuri (lotul 5, 268)
     (r"^/cont/|^/eu/", "contul actorului"),
     (r"^/asistenti|^/cabinet/api-chei|^/capacitate$|^/tipare", "cabinetul și echipa"),
     (r"^/admin/", "administrarea furnizorului"),

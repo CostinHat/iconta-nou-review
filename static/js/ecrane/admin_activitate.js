@@ -1,6 +1,6 @@
 // admin_activitate.js — Admin iConta: activitate + business cabinete (doar superadmin).
 // Sumar + lista cu firme/angajati/recomandari/actiuni, suspenda/reactiveaza, click -> timeline.
-import { api, dataRo, confirmaCaseta, esc } from "../api.js?v=2561dbfd34";  /* audit_cab_lot2_v1 + esc_nc27 */
+import { api, dataRo, confirmaCaseta, esc, cate } from "../api.js?v=72aa1cbbdb";  /* audit_cab_lot2_v1 + esc_nc27 */
 
 
 export async function randeazaAdminActivitate(corp, nav) {
@@ -33,7 +33,7 @@ async function randeaza(corp, nav) {
       <div class="pf-frand" data-zebra="${i % 2}">
         <div class="pf-frand-text" data-i="${i}" style="cursor:pointer">
           <div class="pf-frand-nume">${esc(c.nume || "—")}</div>
-          <div class="pf-frand-sub">${c.nr_firme ?? 0} firme · ${c.nr_angajati ?? 0} angajați · ${c.nr_facturi ?? 0} facturi emise · ${c.nr_declaratii ?? 0} declarații depuse · ${c.nr_recomandari ?? 0} recomandări · ultima activitate: ${dataRo(c.ultima_activitate, "cu_ora")}${c.creat_la ? ` · creat: ${dataRo(c.creat_la, "cu_ora")}${c.cale ? ` (${esc(c.cale)})` : ""}` : ""}</div>
+          <div class="pf-frand-sub">${cate(c.nr_firme ?? 0, "firmă", "firme")} · ${cate(c.nr_angajati ?? 0, "angajat", "angajați")} · ${cate(c.nr_facturi ?? 0, "factură emisă", "facturi emise")} · ${cate(c.nr_declaratii ?? 0, "declarație depusă", "declarații depuse")} · ${cate(c.nr_recomandari ?? 0, "recomandare", "recomandări")} · ultima activitate: ${dataRo(c.ultima_activitate, "cu_ora")}${c.creat_la ? ` · creat: ${dataRo(c.creat_la, "cu_ora")}${c.cale ? ` (${esc(c.cale)})` : ""}` : ""}</div>
         </div>
         ${stare}
         <button class="${c.activ ? 'buton-sters' : 'buton-secundar'}" data-toggle="${i}" style="margin-left:10px">
@@ -134,7 +134,7 @@ async function deschideTimeline(corp, cabinet) {
   zona.innerHTML = `
     <div class="panou" style="margin-top:14px">
       <div class="pf-frand-nume" style="margin-bottom:4px">${esc(c.nume || "")}</div>
-      <div class="pf-frand-sub" style="margin-bottom:10px">${c.nr_firme ?? 0} firme \u00b7 ${c.nr_angajati ?? 0} angaja\u021bi \u00b7 ${c.nr_facturi ?? 0} facturi emise \u00b7 ${c.nr_declaratii ?? 0} declara\u021bii \u00b7 ${c.nr_recomandari ?? 0} recomand\u0103ri</div>
+      <div class="pf-frand-sub" style="margin-bottom:10px">${cate(c.nr_firme ?? 0, "firmă", "firme")} \u00b7 ${cate(c.nr_angajati ?? 0, "angajat", "angajați")} \u00b7 ${cate(c.nr_facturi ?? 0, "factură emisă", "facturi emise")} \u00b7 ${cate(c.nr_declaratii ?? 0, "declarație", "declarații")} \u00b7 ${cate(c.nr_recomandari ?? 0, "recomandare", "recomandări")}</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px">${butoane}</div>
       <div id="aa-evenimente"></div>
     </div>`;

@@ -28,12 +28,14 @@ from decimal import Decimal
 class LipsaCurs(Exception):
     """Factura in valuta fara `curs_bnr` — nu se poate exprima in lei fara sa inventezi cursul."""
 
-    def __init__(self, factura_id=None, moneda=None):
+    def __init__(self, factura_id=None, moneda=None, eticheta=None):
         self.factura_id = factura_id
         self.moneda = moneda
+        self.eticheta = eticheta
+        # [deficiența 258] factura numită cum o vede omul („Factură FCT12 din 05.10.2026”), nu prin id-ul intern
         super().__init__(
-            "factura #%s în %s nu are curs BNR: nu se poate conta și nu poate intra într-o "
-            "declarație în lei (Cod fiscal art. 290)." % (factura_id, moneda or "?"))
+            "%s în %s nu are curs BNR: nu se poate conta și nu poate intra într-o "
+            "declarație în lei (Cod fiscal art. 290)." % (eticheta or "Factura", moneda or "?"))
 
 
 def e_ron(moneda) -> bool:
@@ -48,7 +50,8 @@ def curs_factura(f) -> Decimal:
         return Decimal(str(c))
     if e_ron(f.get("moneda")):
         return Decimal(1)
-    raise LipsaCurs(f.get("id") or f.get("factura_id"), f.get("moneda"))
+    from core import eticheta_nota as _et   # [deficiența 258] factura cum o vede omul, nu id-ul ei
+    raise LipsaCurs(f.get("id") or f.get("factura_id"), f.get("moneda"), _et.factura_din_rand(f))
 
 
 def baza_lei(cantitate, pret_unitar, curs) -> Decimal:

@@ -50,8 +50,16 @@ def select_public_2(cur):
 
 def insert_public_2(cur, m):
     cur.execute("INSERT INTO public.metrici_sanatate "
-                "(ram_procent, disc_procent, load1, conexiuni_db, erori_noi) "
-                "VALUES (%s,%s,%s,%s,%s)", (m["ram_procent"], m["disc_procent"], m["load1"], m["conexiuni_db"], m["erori_noi"]))
+                "(ram_procent, disc_procent, load1, load15, teste, conexiuni_db, erori_noi) "
+                "VALUES (%s,%s,%s,%s,%s,%s,%s)", (m["ram_procent"], m["disc_procent"], m["load1"], m["load15"], m["teste"],
+                                                  m["conexiuni_db"], m["erori_noi"]))
+
+
+def load_recent(cur, minute):
+    """[(creat_la, load15, teste)] din ultimele `minute` minute ale buclei de sănătate (core/alerta_load.py)."""
+    cur.execute("SELECT creat_la, load15, coalesce(teste, false) FROM public.metrici_sanatate "
+                "WHERE creat_la > now() - make_interval(mins => %s) ORDER BY creat_la", (minute,))
+    return cur.fetchall()
 
 
 def select_public_3(cur, tenant_id):

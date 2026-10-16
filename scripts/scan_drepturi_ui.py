@@ -222,35 +222,43 @@ def element_al_apelului(txt, poz_apel):
         poz_legare = sum(len(x) + 1 for x in linii_inainte[:k])
         if not _in_handler(txt, poz_legare, poz_apel):
             continue
-        m = _SELECTOR.search(linie)
-        if not m:
-            v = re.search(r"(\w+)\s*\.(?:addEventListener|onclick)", linie)
-            if v:
-                for j in range(k, max(-1, k - 40), -1):
-                    # și în declarația multiplă: `const info = …, btn = corp.querySelector("#fn-salveaza")`
-                    mm = re.search(r"(?:(?:const|let|var)\s+|,\s*)%s\s*=\s*[\w.]*querySelector(?:All)?\(\s*[\"'`]([^\"'`]+)"
-                                   % re.escape(v.group(1)), linii_inainte[j])
-                    if mm:
-                        m = mm
-                        break
-        tok = _token(m.group(1)) if m else None
-        if not tok:
-            return None
-        sus = txt[:poz_legare]
-        gas = list(re.finditer(tok, sus))
-        if not gas:
-            gas = list(re.finditer(tok, txt[poz_legare:poz_legare + 6000]))
-            if not gas:
-                return None
-            g = gas[0]
-            off = poz_legare
-        else:
-            g = gas[-1]
-            off = 0
-        a = txt.rfind("<", 0, off + g.start())
-        b = txt.find(">", off + g.end())
-        return txt[a:b + 1] if a >= 0 and b > 0 else None
+        return tag_al_legarii(txt, linii_inainte, k)
     return None
+
+
+def tag_al_legarii(txt, linii_inainte, k):
+    """Tagul elementului legat pe rândul `k` (`linii_inainte[k]`, rândul legării): selectorul de pe rând sau din definiția
+    variabilei de pe rândurile de deasupra; None dacă legătura nu se poate dovedi."""
+    linie = linii_inainte[k]
+    poz_legare = sum(len(x) + 1 for x in linii_inainte[:k])
+    m = _SELECTOR.search(linie)
+    if not m:
+        v = re.search(r"(\w+)\s*\.(?:addEventListener|onclick)", linie)
+        if v:
+            for j in range(k, max(-1, k - 40), -1):
+                # și în declarația multiplă: `const info = …, btn = corp.querySelector("#fn-salveaza")`
+                mm = re.search(r"(?:(?:const|let|var)\s+|,\s*)%s\s*=\s*[\w.]*querySelector(?:All)?\(\s*[\"'`]([^\"'`]+)"
+                               % re.escape(v.group(1)), linii_inainte[j])
+                if mm:
+                    m = mm
+                    break
+    tok = _token(m.group(1)) if m else None
+    if not tok:
+        return None
+    sus = txt[:poz_legare]
+    gas = list(re.finditer(tok, sus))
+    if not gas:
+        gas = list(re.finditer(tok, txt[poz_legare:poz_legare + 6000]))
+        if not gas:
+            return None
+        g = gas[0]
+        off = poz_legare
+    else:
+        g = gas[-1]
+        off = 0
+    a = txt.rfind("<", 0, off + g.start())
+    b = txt.find(">", off + g.end())
+    return txt[a:b + 1] if a >= 0 and b > 0 else None
 
 
 def masoara_pe_element():
@@ -345,6 +353,206 @@ def intrari_in_formular_nemarcate():
             elif "data-actiune" not in tag and "data-fara-actiune" not in tag and (rel, tag) not in vazute:
                 vazute.add((rel, tag))
                 nemarcate.append((rel, linie, d.group(1), tag))
+    return {"nemarcate": nemarcate, "nelegate": nelegate}
+
+
+# ── INTRĂRILE ÎN ECRANE NUMAI-ADMINISTRATOR, prin ALTĂ FUNCȚIE (deficiența 262, 15.10.2026) ──────────────────────────────
+# Instanța: „Scoate firma din portofoliu” din fereastra firmei se vedea asistentului — handlerul lui e
+# `() => nav.deschide("Scoate firma", (c2) => ecranScoateFirma(c2, nav, t))`: o săgeată fără acolade, care cheamă ALTĂ funcție.
+# Treapta de mai sus citește numai corpul cu acolade al handlerului, deci n-avea ce vedea. Treapta asta urmează funcțiile
+# numite din handler (cele definite în același fișier și cele importate cu `import { … } from "./…"`), mai departe prin
+# funcțiile chemate de ele, și strânge ACȚIUNILE ecranului: marcajele `data-actiune` și apelurile la rute care schimbă ceva
+# (orice metodă în afară de GET) sau sunt restrânse. Dacă toate sunt numai ale administratorului (`cere_drept(ADMIN)` sau un
+# `cere_rol` fără asistent), elementul legat de handler poartă și el acțiunea (poarta îl ascunde asistentului) sau spune de
+# ce nu e una (`data-fara-actiune="<motiv>"`). Un ecran cu măcar o acțiune a asistentului (previzualizarea portalului,
+# de pildă) nu se ascunde: rămâne, cu acțiunile de administrator scoase de poartă și motivul spus de ea.
+# CE NU VEDE (declarat): o funcție chemată printr-o variabilă sau printr-un obiect (`NODURI[k].deschide(nav)`) nu se poate
+# urma static; elementul construit cu `createElement` se recunoaște numai prin `<variabilă>.dataset.actiune = …` /
+# `.dataset.faraActiune = …`; handlerele nelegabile de element se numără (`nelegate`) — gardul le cere zero.
+_FUNCTIE_SUS = re.compile(r"^(?:export\s+)?(?:async\s+)?function\s*\*?\s*(\w+)\s*\(", re.M)
+_FUNCTIE_IMBRICATA = re.compile(r"^[ \t]+(?:async\s+)?function\s*\*?\s*(\w+)\s*\(", re.M)
+_IMPORT = re.compile(r"""import\s*\{([^}]*)\}\s*from\s*["'](\.{1,2}/[\w./-]+?\.js)""")
+_CUVANT = re.compile(r"\b([A-Za-z_]\w*)\b")
+# Transportul, nu un ecran: `api.js` (cererile, reînnoirea tokenului și reautentificarea peste ecran — `POST /auth/…` stă sub
+# ORICE ecran, deci n-ar spune nimic despre ecranul la care duce un buton). Funcțiile lui nu se urmează.
+_TRANSPORT = {"api.js"}
+
+
+def _paranteza(txt, i, desc="(", inc=")"):
+    """Poziția parantezei care o închide pe cea de la `i`, sau -1."""
+    n = 0
+    for j in range(i, min(len(txt), i + 200000)):
+        if txt[j] == desc:
+            n += 1
+        elif txt[j] == inc:
+            n -= 1
+            if n == 0:
+                return j
+    return -1
+
+
+def _corp_functiei(txt, m):
+    """(început, sfârșit) al corpului `{ … }` al declarației potrivite de `m`, sau None."""
+    p = _paranteza(txt, m.end() - 1)
+    a = txt.find("{", p) if p > 0 else -1
+    b = _paranteza(txt, a, "{", "}") if a > 0 else -1
+    return (a, b) if b > 0 else None
+
+
+def _functii(txt, rx=_FUNCTIE_SUS, de=0, pana=None):
+    """{nume: [(început, sfârșit)]} — declarațiile `function nume(…) { … }` dintre `de` și `pana`. Pe fișier se iau numai cele de
+    pe coloana 0 (de nivel superior): o funcție imbricată stă deja în textul celei care o cuprinde, iar numele ei se repetă de la
+    un ecran la altul (`deseneaza`, `randeazaPrincipal`) — legate pe nume, ar fi adus în același ecran funcțiile altor ecrane."""
+    out = {}
+    for m in rx.finditer(txt, de, len(txt) if pana is None else pana):
+        c = _corp_functiei(txt, m)
+        if c:
+            out.setdefault(m.group(1), []).append(c)
+    return out
+
+
+class _Module:
+    """Fișierele JS, cu funcțiile de nivel superior și importurile lor, citite o dată; acțiunile fiecărui corp, calculate o dată."""
+
+    def __init__(self, rx_garzi):
+        self.cache, self.rx = {}, rx_garzi
+        self.exact = {"%s %s" % (m, c): g for m, c, _rr, g in rx_garzi}
+        self._ruta, self._directe = {}, {}
+
+    def modul(self, cale):
+        cale = os.path.normpath(cale)
+        if cale not in self.cache:
+            try:
+                txt = io.open(cale, encoding="utf-8").read()
+            except OSError:
+                txt = ""
+            importuri = {}
+            for m in _IMPORT.finditer(txt):
+                tinta = os.path.normpath(os.path.join(os.path.dirname(cale), m.group(2)))
+                for nume in m.group(1).split(","):
+                    bucati = nume.strip().split(" as ")
+                    if bucati[0].strip():
+                        importuri[bucati[-1].strip()] = (tinta, bucati[0].strip())
+            self.cache[cale] = (txt, _functii(txt), importuri)
+        return self.cache[cale]
+
+    def corpuri(self, cale, nume):
+        """[(fișierul, (început, sfârșit))] al funcției de nivel superior `nume`, văzute din `cale` (definită acolo sau importată)."""
+        cale = os.path.normpath(cale)
+        _, fn, imp = self.modul(cale)
+        if nume in fn:
+            return [(cale, c) for c in fn[nume]]
+        if nume in imp and os.path.basename(imp[nume][0]) not in _TRANSPORT:
+            tinta, orig = imp[nume]
+            return [(tinta, c) for c in self.modul(tinta)[1].get(orig, [])]
+        return []
+
+    def garda(self, met, ruta):
+        k = (met, ruta)
+        if k not in self._ruta:
+            pot = sorted([(c, g) for m, c, rr, g in self.rx if m == met and rr.match(ruta)], key=lambda p: p[0].count("{"))
+            self._ruta[k] = ("%s %s" % (met, pot[0][0]), pot[0][1]) if pot else ("%s %s" % (met, ruta), None)
+        return self._ruta[k]
+
+    def directe(self, txt):
+        """{„METODĂ /cale”: garda} scrise chiar în `txt`: marcajele și apelurile care nu sunt simple citiri."""
+        if txt not in self._directe:
+            acts = {a: self.exact.get(a) for a in declarate_in(txt)}
+            for mt in _APEL.finditer(txt):
+                ruta = _normalizeaza(mt.group("sir"))
+                if not ruta.startswith("/"):
+                    continue
+                met = _metoda(mt.group("m"), mt.group("fel"), txt[mt.end():])
+                a, g = self.garda(met, ruta)
+                if met == "GET" and not restransa(g):
+                    continue   # o citire a oricui nu e o acțiune a ecranului
+                acts[a] = g
+            self._directe[txt] = (acts, set(_CUVANT.findall(txt)))
+        return self._directe[txt]
+
+
+def actiunile_ecranului(module, cale, regiune, locale=None):
+    """{„METODĂ /cale”: garda} — acțiunile la care duce `regiune` (codul unui handler), direct sau prin funcțiile pe care le
+    numește, urmate până la capăt. `locale` = funcțiile imbricate vizibile din handler ({nume: [(început, sfârșit)]}, în
+    fișierul `cale`). O acțiune pe o cale necunoscută (dinamică) intră cu garda None — nu e a administratorului."""
+    cale = os.path.normpath(cale)
+    acts, vazute, de_vazut, prima = {}, set(), [(cale, regiune)], True
+    while de_vazut:
+        c, txt = de_vazut.pop()
+        directe, cuvinte = module.directe(txt)
+        acts.update(directe)
+        for nume in cuvinte:
+            gasite = module.corpuri(c, nume)
+            if prima and locale and nume in locale:
+                gasite = gasite + [(cale, x) for x in locale[nume]]
+            for c2, (a, b) in gasite:
+                if (c2, a) not in vazute:
+                    vazute.add((c2, a))
+                    de_vazut.append((c2, module.modul(c2)[0][a:b + 1]))
+        prima = False
+    return acts
+
+
+def doar_administrator(garda):
+    """Garda refuză ORICE asistent, indiferent de bife (`cere_drept(ADMIN)`, sau `cere_rol` fără asistent)?"""
+    if not garda:
+        return False
+    fel, val = garda
+    return val == "ADMIN" if fel == "drept" else ("admin_firma" in val and "angajat" not in val)
+
+
+def _regiune_legarii(txt, m):
+    """(început, sfârșit) al codului handlerului: argumentele lui `addEventListener(…)`, sau corpul lui `.onclick = …`."""
+    if "addEventListener" in m.group(0):
+        a = txt.rfind("(", 0, m.end())
+        b = _paranteza(txt, a)
+        return (a, b) if b > 0 else None
+    c = _corp_handler(txt, m.end())
+    if c:
+        return c
+    b = txt.find(";", m.end())
+    return (m.end(), b) if b > 0 else None
+
+
+def intrari_in_ecrane_doar_admin(rad_js=None):
+    """{nemarcate: [(fișier, linie, acțiunile ecranului, tag)], nelegate: [(fișier, linie, acțiunile)]} — butoanele care
+    deschid (prin altă funcție) un ecran ale cărui acțiuni sunt toate numai ale administratorului, fără `data-actiune` /
+    `data-fara-actiune`."""
+    rad_js = rad_js or JS
+    garzi = garzi_din_main()
+    module = _Module([(m, c, _regex_cale(c), g) for (m, c), g in garzi.items()])
+    nemarcate, nelegate = [], []
+    for f in sorted(glob.glob(os.path.join(rad_js, "**", "*.js"), recursive=True)):
+        txt, sus, _ = module.modul(f)
+        rel = os.path.relpath(f, RAD)
+        for m in _LEGARE.finditer(txt):
+            reg = _regiune_legarii(txt, m)
+            if not reg:
+                continue
+            regiune = txt[reg[0]:reg[1] + 1]
+            if 'data-actiune="' in regiune:
+                continue   # formularul se construiește chiar în handler: treapta `intrari_in_formular_nemarcate`
+            # funcțiile imbricate din funcția de nivel superior care cuprinde legarea (`randeazaFormular` din ecranul Acces client)
+            cuprinde = [c for cs in sus.values() for c in cs if c[0] < m.start() < c[1]]
+            locale = _functii(txt, _FUNCTIE_IMBRICATA, cuprinde[0][0], cuprinde[0][1]) if cuprinde else None
+            acts = actiunile_ecranului(module, f, regiune, locale)
+            if not acts or not all(doar_administrator(g) for g in acts.values()):
+                continue
+            linie = txt.count("\n", 0, m.start()) + 1
+            linii = txt[:m.start()].split("\n")
+            k = len(linii) - 1
+            capat = txt.find("\n", m.start())
+            linii[k] = linii[k] + txt[m.start():capat if capat >= 0 else len(txt)]
+            tag = tag_al_legarii(txt, linii, k)
+            if tag is None:
+                v = re.search(r"(\w+)\s*\.(?:addEventListener|onclick)", linii[k])
+                # elementul construit cu `createElement`: marcajul pus pe variabilă, în cele 40 de rânduri de deasupra legării
+                sus40 = txt[sum(len(x) + 1 for x in linii[:max(0, k - 40)]):m.start()]
+                if v and re.search(r"\b%s\.dataset\.(?:actiune|faraActiune)\s*=" % re.escape(v.group(1)), sus40):
+                    continue
+                nelegate.append((rel, linie, sorted(acts)))
+            elif "data-actiune" not in tag and "data-fara-actiune" not in tag:
+                nemarcate.append((rel, linie, sorted(acts), tag))
     return {"nemarcate": nemarcate, "nelegate": nelegate}
 
 

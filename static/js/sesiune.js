@@ -102,6 +102,15 @@ export const sesiune = {
     _anunta();
     return nou;
   },
+  // [deficiența 265] câmpuri ale userului schimbate PESTE ecranul deschis (bifele recitite de drepturi.js): FĂRĂ `_anunta()` — un
+  // anunț ar redesena aplicația (`app.js: sesiune.laSchimbare(randeaza)`) și ar pierde exact ecranul pe care omul lucrează.
+  actualizeazaInLoc(partial) {
+    const u = _user();
+    if (!u) return null;
+    const nou = Object.assign({}, u, partial || {});
+    sessionStorage.setItem(CHEIE_USER, JSON.stringify(nou));
+    return nou;
+  },
   // ascultă schimbările de sesiune (login/logout) -> re-randare
   laSchimbare(callback) {
     _abonati.push(callback);

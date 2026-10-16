@@ -3,7 +3,7 @@
 // puteau vedea, casa sau reevalua din interfata — iar casarea/reevaluarea cereau un mijloc_fix_id
 // pe care niciun ecran nu-l arata (casarea din formular dadea 422 garantat). Aici e sursa acelui id
 // + doua actiuni directe: casare (POST nota-inventariere) si reevaluare (POST reevaluare-imobilizare).
-import { api, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso } from "../api.js?v=2561dbfd34";
+import { api, cate, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso } from "../api.js?v=72aa1cbbdb";
 
 // ["01/2026", …, "08/2026", "11/2026"] -> "9 luni: 01–08/2026, 11/2026" (intervalele peste an: "11/2025–02/2026")
 export function luniScurte(luni) {
@@ -18,7 +18,7 @@ export function luniScurte(luni) {
       ? `${String(a % 12 + 1).padStart(2, "0")}–${eticheta(b)}` : `${eticheta(a)}–${eticheta(b)}`));
     k = j;
   }
-  return `${idx.length} ${idx.length === 1 ? "lună" : "luni"}: ${parti.join(", ")}`;
+  return `${cate(idx.length, "lună", "luni")}: ${parti.join(", ")}`;
 }
 
 export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
@@ -41,15 +41,15 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
   // calculul teoretic, cu lunile neînregistrate … durata, codul din catalog și planul lunar de amortizare”
   const inregistrat = (m) => m.inregistrat != null
     ? bani(m.inregistrat)
-    : (m.inregistrat_pe_cont ? `<span class="tip-desc">pe contul ${esc(m.inregistrat_pe_cont.cont)}: ${bani(m.inregistrat_pe_cont.sold)} (${m.inregistrat_pe_cont.mijloace} mijloace)</span>` : "—");
+    : (m.inregistrat_pe_cont ? `<span class="tip-desc">pe contul ${esc(m.inregistrat_pe_cont.cont)}: ${bani(m.inregistrat_pe_cont.sold)} (${cate(m.inregistrat_pe_cont.mijloace, "mijloc", "mijloace")})</span>` : "—");
   // [08.10.2026, retest pct.13] „Lunile lipsă scurtate («8 luni: 01–08/2026»)” — lunile consecutive se strâng într-un interval.
   const diferenta = (m) => (m.diferenta == null ? "—"
     : `${bani(m.diferenta)}${(m.luni_neinregistrate || []).length ? `<div class="tip-desc">neînregistrate: ${esc(luniScurte(m.luni_neinregistrate))}</div>` : ""}`);
   const catalogCel = (m) => `<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
       <input class="camp-input" style="max-width:120px" id="mf-catalog-${m.id}" value="${esc(m.cod_catalog || "")}" placeholder="ex. 2.1.17.2.1" aria-label="Cod din catalog ${esc(m.denumire || "")}">
       <button class="buton-secundar" data-catalog="${m.id}" data-actiune="PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/cod-catalog">Salvează</button></div>
-    ${m.catalog ? `<div class="tip-desc">${esc(m.catalog.denumire)} · ${m.catalog.ani_min}–${m.catalog.ani_max} ani</div>` : ""}`;
-  const planLunar = (m) => !(m.plan_lunar || []).length ? "" : `<tr><td colspan="13"><details><summary>Planul lunar de amortizare — ${esc(m.cod || m.denumire || "")} (${m.plan_lunar.length} luni)</summary>
+    ${m.catalog ? `<div class="tip-desc">${esc(m.catalog.denumire)} · ${m.catalog.ani_min}–${cate(m.catalog.ani_max, "an", "ani")}</div>` : ""}`;
+  const planLunar = (m) => !(m.plan_lunar || []).length ? "" : `<tr><td colspan="13"><details><summary>Planul lunar de amortizare — ${esc(m.cod || m.denumire || "")} (${cate(m.plan_lunar.length, "lună", "luni")})</summary>
       <table class="fd-tabel"><thead><tr><th>Luna</th><th class="fd-td-num">Rata</th><th>Înregistrare</th></tr></thead><tbody>
       ${m.plan_lunar.map((p) => `<tr><td>${String(p.luna).padStart(2, "0")}/${p.an}</td><td class="fd-td-num">${bani(p.rata)}</td><td>${{ inregistrata: "înregistrată", sold_initial: "în soldul de preluare", neinregistrata: "neînregistrată", in_curs: "luna curentă", viitoare: "—" }[p.stare] || ""}</td></tr>`).join("")}
       </tbody></table></details></td></tr>`;
@@ -60,7 +60,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         <td>${esc(m.cod || "")}</td>
         <td>${esc(m.denumire || "")}</td>
         <td>${catalogCel(m)}</td>
-        <td class="fd-td-num">${m.durata_luni ? m.durata_luni + " luni" : "—"}</td>
+        <td class="fd-td-num">${m.durata_luni ? cate(m.durata_luni, "lună", "luni") : "—"}</td>
         <td class="fd-td-num">${bani(m.valoare)}</td>
         ${m.eroare
           ? `<td class="fd-td-num" colspan="4"><span class="msg-eroare">${esc(m.eroare)}</span></td>`

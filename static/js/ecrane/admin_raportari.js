@@ -3,9 +3,12 @@
 // Master-detail: lista stanga, firul + raspuns dreapta.
 // Backend: GET /raportari/admin, GET /raportari/{id}, POST /raportari/{id}/mesaj,
 //          POST /raportari/{id}/citit, POST /raportari/{id}/pentru-admin,
-//          POST /raportari/mesaj/{mid}/imagine.
+//          POST /raportari/mesaj/{mid}/imagine, GET /raportari/fisiere/{fid}.
+// [270d / C36, 15.10.2026] Cererile de import din alta aplicatie apar in „De la utilizatori”, cu aplicatia in titlu; fisierele
+// firului (capturi si exporturi) se arata si se descarca prin ruta autentificata, nu din /static.
 
-import { api, esc } from "../api.js?v=2561dbfd34";
+import { api, esc } from "../api.js?v=72aa1cbbdb";
+import { fisiereHTML, legaFisiere } from "./raporteaza.js?v=1f036bd59e";
 
 const LUNI = ["ian.","feb.","mar.","apr.","mai","iun.",
               "iul.","aug.","sep.","oct.","noi.","dec."];
@@ -20,8 +23,9 @@ function dataScurta(iso) {
   return `${d.getDate()} ${LUNI[d.getMonth()]} ${ora}`;
 }
 
-function titluFir(r) {  // subiect sau inceputul primului mesaj
-  const t = (r.subiect && r.subiect.trim()) || (r.text || "").trim() || "(sesizare)";
+function titluFir(r) {  // subiect sau inceputul primului mesaj; cererea de import: aplicatia
+  const t = r.tip === "cerere_import" ? `Cerere import din ${r.aplicatie || ""}`
+    : ((r.subiect && r.subiect.trim()) || (r.text || "").trim() || "(sesizare)");
   return t.length > 70 ? t.slice(0, 70) + "\u2026" : t;
 }
 
@@ -205,18 +209,14 @@ function randeazaMesaje(cont, mesaje) {
     const eAdmin = ["admin", "ai"].includes(m.rol_autor || m.rol);  // [triaj_ai] mesajele AI pe partea admin
     const bloc = document.createElement("div");
     bloc.className = "rap-msg " + (eAdmin ? "rap-msg-admin" : "rap-msg-user");
-    let imgHtml = "";
-    (m.atasamente || []).forEach((a) => {
-      const cale = a.cale || a.url || "";
-      const src = cale.startsWith("/") ? cale : `/static/raportari/${cale}`;
-      imgHtml += `<img class="rap-msg-img" src="${src}" alt="${esc(a.nume || "imagine")}">`;
-    });
+    const fis = fisiereHTML(m.atasamente, false);   // [C36] prin ruta autentificată; echipa iConta.eu descarcă, nu șterge
     bloc.innerHTML = `
       <div class="rap-msg-text">${esc(m.text || "")}</div>
-      ${imgHtml}
+      ${fis ? `<div class="rap-mesaj-poze">${fis}</div>` : ""}
       <div class="rap-msg-cand">${dataScurta(m.cand || m.creat_la)}</div>
     `;
     cont.appendChild(bloc);
+    legaFisiere(bloc);
   });
   cont.scrollTop = cont.scrollHeight;
 }

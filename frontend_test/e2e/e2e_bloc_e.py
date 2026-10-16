@@ -20,7 +20,7 @@ from decimal import Decimal
 
 import pytest
 
-from conftest import PREFIX_FIRMA, _ecran, _scoate_firmele_e2e, alege_perioada, cui_cu_control, sql, zile_de_acum
+from conftest import PREFIX_FIRMA, _ecran, _scoate_firmele_e2e, alege_perioada, cui_cu_control, nr_crt, sql, zile_de_acum
 
 IBAN_PROBA = "RO49AAAA1B31007593840000"   # IBAN-ul exemplu ECBS pentru România (cifrele de control valide)
 AZI = _dt.date.today()
@@ -582,11 +582,13 @@ def _conteaza_cu_legare(ecran, f, fid, an, luna, nir_numar):
     pg.select_option("#nir-legat", ales[0])
     ecran.captura("caseta_nir")
     pg.click("#nir-leaga")
-    pg.wait_for_selector(".fac-frand-btn[data-id='%s'] ~ * .tip-desc, .tip-desc:has-text('ciornă #')" % fid, timeout=60000)
+    pg.wait_for_selector(".fac-frand-btn[data-id='%s'] ~ * .tip-desc, .tip-desc:has-text('ciorna nr. crt.')" % fid, timeout=60000)
     txt = ecran.fereastra()
-    m = _re.search(r"ciornă #(\d+)", txt)
-    assert m, txt[:800]
-    return int(m.group(1)), opt
+    # [258] confirmarea numește nota ca Registrul jurnal, nu prin id-ul intern; nota e contarea facturii
+    nid = sql('SELECT id FROM "%s".inregistrari WHERE factura_id = %%s AND sursa = \'facturi\' ORDER BY id DESC LIMIT 1' % f["schema"],
+              (fid,))[0][0]
+    assert _re.findall(r"ciorna (nr\. crt\. \d+ din [\d.]+)", txt) == [nr_crt(f["schema"], nid)], txt[:800]
+    return nid, opt
 
 
 def test_def_144_factura_dupa_nir_fara_factura_se_leaga_fara_a_doua_intrare(patron, firma):
@@ -1126,7 +1128,7 @@ def test_def_156_contoarele_si_eticheta_pe_fapte(patron):
                           " sub: r.querySelector('.mig-frand-sub').innerText, et: r.querySelector('.cf-stare').innerText.trim()}))")
     for r in randuri:
         if r["et"] == "restanță":
-            assert _re.search(r"\b[1-9]\d* restanț", r["sub"]), r
+            assert _re.search(r"\b[1-9]\d* (?:de )?restanț", r["sub"]), r
     # [125 + 224, decizia Costin 11.10.2026] contorul de sus „cu declarații de urmărit” s-a scos: fereastra arată aceleași patru stări
     # ca ale cardului (`e2e_bloc_d.py::test_def_125_…`); faptele rămân pe rând, iar „N de urmărit” de pe rând = grupul din detaliu.
     cu_urmarit = [r for r in randuri if _re.search(r"\b[1-9]\d* de urmărit", r["sub"])]

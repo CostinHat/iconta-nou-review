@@ -289,12 +289,12 @@ def _html(rz, an, luna, poveste, semnatura):
     depuse = ", ".join(rz.get("declaratii_depuse") or []) or "niciuna"
     rand = ("<tr><td style='padding:4px 12px 4px 0;color:#555'>%s</td>"
             "<td style='padding:4px 0;text-align:right;font-weight:600'>%s</td></tr>")
-    cifre = ("<table style='border-collapse:collapse;margin:0 0 16px'>%s%s%s%s</table>" % (
+    cifre_html = ("<table style='border-collapse:collapse;margin:0 0 16px'>%s%s%s%s</table>" % (
         rand % ("Venituri", esc(_lei(rz.get("venituri") or 0))),
         rand % ("Cheltuieli", esc(_lei(rz.get("cheltuieli") or 0))),
         rand % ("Rezultat înainte de impozit", esc("%s (%s)" % (_lei(rz.get("rezultat") or 0), calificativ))),
         rand % ("Declarații depuse", esc(depuse))))
-    corp = esc(text_simplu(poveste)) if (poveste or "").strip() else "<i style='color:#5b6573'>Povestea lunii nu e scrisă încă.</i>"
+    corp_html = esc(text_simplu(poveste)) if (poveste or "").strip() else "<i style='color:#5b6573'>Povestea lunii nu e scrisă încă.</i>"
     return (
         "<div style='font-family:sans-serif;font-size:15px;color:#111;max-width:640px'>"
         "<h2 style='margin:0 0 4px'>Raport lunar &mdash; %s</h2>"
@@ -303,7 +303,7 @@ def _html(rz, an, luna, poveste, semnatura):
         "<div style='background:#f6f8fa;padding:14px;border-radius:8px;white-space:pre-wrap'>%s</div>"
         "<p style='margin-top:14px;white-space:pre-wrap'>%s</p>"
         "<p style='color:#5b6573;font-size:13px;margin-top:20px'>Trimis prin iConta.</p></div>"
-    ) % (esc(rz.get("nume_firma")), luna, an, cifre, corp, esc(semnatura))
+    ) % (esc(rz.get("nume_firma")), luna, an, cifre_html, corp_html, esc(semnatura))
 
 
 def semnatura_cabinet(conn_public, uid, firm_id):

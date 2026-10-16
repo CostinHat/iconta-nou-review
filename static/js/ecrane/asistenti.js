@@ -1,7 +1,7 @@
 // asistenti.js — managementul actorilor de cabinet (cardul Asistenți).
 // Trei niveluri: listă actori -> editare actor (permisiuni + firme atribuite) -> Vizualizează.
 // Doar admin_firma. Stil aliniat la validat.js / control.js (api.js + nav.deschide).
-import { api, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp, dataIso } from "../api.js?v=2561dbfd34";  /* audit_cab_lot2_v1 */
+import { api, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp, dataIso, cate } from "../api.js?v=72aa1cbbdb";  /* audit_cab_lot2_v1 */
 /* [patch11_semafor_explicit] */
 function _semaforEticheta(culoare) {
   // [eticheta_din_fapt 20.08.2026] `gri` lipsea din harta -> M[culoare] || "" randa o bulina
@@ -32,10 +32,9 @@ export async function randeazaAsistenti(corp, nav) {
   const actori = (date && date.actori) || [];
   const sumar = (date && date.sumar) || { administratori: 0, asistenti: 0, asistenti_activi: 0 };
   // [comanda Costin 04.10.2026 pct.6] administratorul cabinetului NU e numărat printre asistenți
-  const _n = (k, unu, multi) => `${k} ${k === 1 ? unu : multi}`;
-  const textSumar = `${_n(sumar.administratori, "administrator", "administratori")} · ` +
-    `${_n(sumar.asistenti, "asistent", "asistenți")}` +
-    (sumar.asistenti ? ` (${_n(sumar.asistenti_activi, "activ", "activi")})` : "");
+  const textSumar = `${cate(sumar.administratori, "administrator", "administratori")} · ` +
+    `${cate(sumar.asistenti, "asistent", "asistenți")}` +
+    (sumar.asistenti ? ` (${cate(sumar.asistenti_activi, "activ", "activi")})` : "");
 
   corp.innerHTML = `
     <p class="mig-intro">Asistenții cabinetului: roluri, permisiuni și firmele pe care le lucrează.
@@ -133,7 +132,7 @@ function randActor(a, corp, nav) {
     <div class="asi-rand-sus">
       <div>
         <div class="asi-nume">${esc(nume)} ${inactivBadge}</div>
-        <div class="asi-rol">${rolText} · ${a.nr_firme} firme</div>
+        <div class="asi-rol">${rolText} · ${cate(a.nr_firme, "firmă", "firme")}</div>
       </div>
       <div class="asi-actiuni-rand">
         <button class="buton-mic mig-buton-mic" data-act="edit">Editează</button>
@@ -164,11 +163,11 @@ async function deschideEditare(uid, corp, nav) {
   const esteAdmin = a.rol === "admin_firma";
   const calcNivel = () => esteAdmin ? "toate drepturile" : nivelText(a.poate_pregati, a.poate_valida, a.poate_depune);
 
-  nav.deschide(`Editeaza \u2014 ${nume}`, (box) => {
+  nav.deschide(`Editează \u2014 ${nume}`, (box) => {
     const sectiuneFirme = a.atribuire_relevanta
       ? `
         <div class="asi-sectiune-titlu">Selectează firme</div>
-        <p class="asi-mic">Asistentul vede doar firmele bifate. Bifarea = stare finala.</p>
+        <p class="asi-mic">Asistentul vede doar firmele bifate. Bifarea = stare finală.</p>
         <label class="camp-eticheta" for="asi-cauta-firme">Caut\u0103 firma</label>
         <input id="asi-cauta-firme" class="camp-input" placeholder="Caută firma (nume sau CUI)..." style="width:100%;margin-bottom:8px;">
         <div id="asi-firme">${firme.map((f) => `
@@ -183,7 +182,7 @@ async function deschideEditare(uid, corp, nav) {
         <span class="asi-nivel-badge" id="asi-nivel-badge">${calcNivel()}</span>
         <span class="tip-desc">${a.rol === "admin_firma" ? "administrator" : (a.functie || "asistent")}</span>
       </div>
-      <div class="asi-sectiune-titlu">${esteAdmin ? "Competențe" : "Alege competente"}</div>
+      <div class="asi-sectiune-titlu">${esteAdmin ? "Competențe" : "Alege competențe"}</div>
       <div id="asi-perm-edit">
         ${esteAdmin
           ? `<p class="asi-mic">Administratorul cabinetului are toate drepturile: ${PERM.map(([, t]) => t).join(", ")}. Nu se bifează.</p>
@@ -199,9 +198,9 @@ async function deschideEditare(uid, corp, nav) {
       <div class="asi-editbtns">
         <button class="buton-primar" id="asi-salveaza" data-actiune="POST /asistenti/{uid}/permisiuni|POST /asistenti/{uid}/firme/{tid}|DELETE /asistenti/{uid}/firme/{tid}|POST /asistenti/{uid}/finalizeaza-firme">Salveaz\u0103</button>
         ${a.rol !== "admin_firma" && a.activ
-          ? `<button class="buton-secundar mig-buton-sec" id="asi-dezactiveaza" data-actiune="POST /asistenti/{uid}/dezactiveaza">Dezactiveaza asistentul</button>` : ""}
+          ? `<button class="buton-secundar mig-buton-sec" id="asi-dezactiveaza" data-actiune="POST /asistenti/{uid}/dezactiveaza">Dezactivează asistentul</button>` : ""}
         ${!a.activ
-          ? `<button class="buton-secundar mig-buton-sec" id="asi-reactiveaza" data-actiune="POST /asistenti/{uid}/reactiveaza">Reactiveaza</button>` : ""}
+          ? `<button class="buton-secundar mig-buton-sec" id="asi-reactiveaza" data-actiune="POST /asistenti/{uid}/reactiveaza">Reactivează</button>` : ""}
       </div>
       <div class="mig-eroare" id="asi-edit-eroare"></div>
     `;
@@ -303,7 +302,7 @@ async function deschideVizualizare(uid, nav) {
   try { d0 = await api.get(`/asistenti/${uid}/activitate`); }
   catch { nav.deschide("Fișa asistentului", (c2) => { c2.innerHTML = '<p class="msg-eroare">Nu s-a putut încărca fișa.</p>'; }); return; }
   if (!d0.ok) return;
-  const nume = [d0.actor.prenume, d0.actor.nume].filter(Boolean).join(" ") || `#${d0.actor.id}`;
+  const nume = [d0.actor.prenume, d0.actor.nume].filter(Boolean).join(" ") || d0.actor.email || "asistent fără nume";   // [258] nu id-ul intern
 
   nav.deschide(`Asistent \u2014 ${nume}`, (box) => {
     async function reincarca(de, pana) {
@@ -359,7 +358,7 @@ function _asiRandeazaFereastra(d, c) {
       <div class="asi-cal-card" style="flex:1;"><div class="asi-cal-eticheta">Respinse</div><div class="asi-cal-cifra asi-cal-rosu">${cal.respinse} \u00b7 ${cal.rata_respins}%</div></div>
     </div>
     <div class="asi-cal-rand2">
-      <span>Timp mediu pregătit\u2192aprobat: <b>${cal.zile_mediu != null ? cal.zile_mediu + " zile" : "\u2014"}</b></span>
+      <span>Timp mediu pregătit\u2192aprobat: <b>${cal.zile_mediu != null ? cate(cal.zile_mediu, "zi", "zile") : "\u2014"}</b></span>
       <span>Acoperire: <b>${(cal.tipuri || []).join(", ") || "\u2014"}</b></span>
     </div>` : `<p class="ecran-nota">Calitatea nu a putut fi incarcata.</p>`;
 
@@ -378,7 +377,7 @@ function _asiRandeazaFereastra(d, c) {
 
   const acte = d.activitate || [];
   const alerta = d.nr_self_approval > 0
-    ? `<div class="asi-alerta-rosu">\u26a0 ${d.nr_self_approval} declara\u021bii aprobate de propriul preg\u0103titor (patru ochi).</div>`
+    ? `<div class="asi-alerta-rosu">\u26a0 ${cate(d.nr_self_approval, "declarație aprobată", "declarații aprobate")} de propriul preg\u0103titor (patru ochi).</div>`
     : `<div class="asi-alerta-verde">\u2713 Nicio declara\u021bie aprobat\u0103 de propriul preg\u0103titor.</div>`;
   const randuri = acte.length ? acte.map((c2) => {
     const roluri = [];
@@ -386,7 +385,7 @@ function _asiRandeazaFereastra(d, c) {
     if (c2.a_aprobat) roluri.push("aprobat");
     if (c2.a_respins) roluri.push("respins");
     const flag = c2.self_approval ? `<span class="asi-flag-rosu">și-a aprobat singur</span>` : "";
-    return `<div class="asi-act-rand ${c2.self_approval ? "asi-act-rosu" : ""}"><div class="asi-act-tip">${c2.tip} \u00b7 ${c2.perioada}</div><div class="asi-act-meta">firma #${c2.tenant_id} \u00b7 ${roluri.join(", ")} \u00b7 stare: ${c2.stare} ${flag}</div></div>`;
+    return `<div class="asi-act-rand ${c2.self_approval ? "asi-act-rosu" : ""}"><div class="asi-act-tip">${c2.tip} \u00b7 ${c2.perioada}</div><div class="asi-act-meta">${esc(c2.firma || "o firmă care nu mai există")} \u00b7 ${roluri.join(", ")} \u00b7 stare: ${c2.stare} ${flag}</div></div>`;
   }).join("") : `<div class="stare-goala">Nicio activitate \u00eenregistrat\u0103.</div>`;
 
   return `${header}${perioada}${calitate}${tipare}${alerta}<div class="asi-sectiune-titlu">Declarații lucrate (max. 200)</div><div id="asi-activitate">${randuri}</div>`;
@@ -403,7 +402,7 @@ async function _asiBannerEchipa(corp, nav) {
   const detalii = [];
   // [pct.6, generalizat] semaforul numără TOȚI cei care lucrează declarații, inclusiv administratorul — deci
   // „persoane din echipă”, nu „asistenți” (aceeași clasă cu contorul de sus)
-  if (cnt.rosu) detalii.push(`${cnt.rosu} ${cnt.rosu === 1 ? "persoană" : "persoane"} din echipă cu gre\u0219eli repetate`);
+  if (cnt.rosu) detalii.push(`${cate(cnt.rosu, "persoană", "persoane")} din echipă cu gre\u0219eli repetate`);
   if (cnt.galben) detalii.push(`${cnt.galben} de urm\u0103rit`);
   if (cnt.verde) detalii.push(`${cnt.verde} f\u0103r\u0103 probleme`);
   const text = detalii.length ? detalii.join(" \u00b7 ") : "nicio declara\u021bie lucrat\u0103 \u00een aceast\u0103 perioad\u0103"; /* semafor_text_explicit_v1 */
@@ -411,7 +410,7 @@ async function _asiBannerEchipa(corp, nav) {
   host.innerHTML = `
     <div class="asi-echipa-banner">
       <span class="asi-sem asi-sem-${s.culoare}"></span>
-      <span class="asi-echipa-text">Calitatea echipei (${s.zile} zile): ${text}</span>
+      <span class="asi-echipa-text">Calitatea echipei (${cate(s.zile, "zi", "zile")}): ${text}</span>
       ${areErori ? `<button class="buton-secundar buton-mic" id="asi-vezi-erori">Vezi erorile</button>` : ""}
     </div>`;
   const b = host.querySelector("#asi-vezi-erori");
@@ -426,7 +425,7 @@ async function deschideEchipaErori(nav) {
   nav.deschide("Erori — echipa", (box) => {
     const lst = d.asistenti || [];
     if (!lst.length) {
-      box.innerHTML = `<div class="asi-alerta-verde">✓ Nicio respingere \u00een ultimele ${d.zile} zile.</div>`;
+      box.innerHTML = `<div class="asi-alerta-verde">✓ Nicio respingere \u00een ${d.zile === 1 ? "ultima zi" : "ultimele " + cate(d.zile, "zi", "zile")}.</div>`;
       return;
     }
     const carduri = lst.map((a) => {
@@ -442,12 +441,12 @@ async function deschideEchipaErori(nav) {
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
             ${_semaforEticheta(a.culoare)}
             <b>${esc(a.nume)}</b>
-            <span class="tip-desc">${a.respinse} respinse · ${a.rata}%</span>
+            <span class="tip-desc">${cate(a.respinse, "respinsă", "respinse")} · ${a.rata}%</span>
           </div>
           ${tipare}
         </div>`;
     }).join("");
-    box.innerHTML = `<p class="mig-intro">Cine a produs respingeri în ultimele ${d.zile} zile, sortat după volum.</p>${carduri}`;
+    box.innerHTML = `<p class="mig-intro">Cine a produs respingeri în ${d.zile === 1 ? "ultima zi" : "ultimele " + cate(d.zile, "zi", "zile")}, sortat după volum.</p>${carduri}`;
   });
 }
 

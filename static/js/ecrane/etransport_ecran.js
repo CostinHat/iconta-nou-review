@@ -1,7 +1,7 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
 // [cap.24 batch 3a] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand +
 // validarea per-camp o face BACKENDUL (autoritatea); frontendul consuma 422.campuri si plaseaza prin eroareCamp.
-import { api, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile } from "../api.js?v=2561dbfd34";
+import { api, cate, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile } from "../api.js?v=72aa1cbbdb";
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
 
 // Garda de timp UIT client-side (oglinda etransport_send.fereastra_uit) — pt avertisment + blocare buton.
@@ -21,7 +21,7 @@ function _fereastraUit(dataTransport, intracom) {
   let mesaj, semafor;
   if (preaDevreme) { mesaj = `Prea devreme: declari cu max 3 zile înainte (transport ${dataRo(dataTransport)}).`; semafor = "rosu"; }
   else if (expirat) { mesaj = `Fereastră expirată: UIT ar fi fost valabil până la ${dataRo(dataIso(valabilPana))}.`; semafor = "rosu"; }
-  else { mesaj = `În fereastră. UIT valabil ${zileVal} zile (până la ${dataRo(dataIso(valabilPana))}).`; semafor = zileRamase <= 1 ? "galben" : "verde"; }
+  else { mesaj = `În fereastră. UIT valabil ${cate(zileVal, "zi", "zile")} (până la ${dataRo(dataIso(valabilPana))}).`; semafor = zileRamase <= 1 ? "galben" : "verde"; }
   return { ok, mesaj, semafor, valabilPana: dataIso(valabilPana), zileVal, zileRamase };
 }
 

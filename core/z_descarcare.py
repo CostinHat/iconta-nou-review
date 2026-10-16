@@ -16,7 +16,9 @@ evaluează pe articol, la CMP — `stocuri_cv`); la global-valoric Z-ul rămâne
 """
 from psycopg2.extras import RealDictCursor
 
-MESAJ_NEDESCARCAT = ("Raportul Z (nota #%s) nu se validează fără descărcarea mărfii vândute: la stocul cantitativ-valoric ieșirea "
+from core.common import cate as _cate
+
+MESAJ_NEDESCARCAT = ("Raportul Z (nota %s) nu se validează fără descărcarea mărfii vândute: la stocul cantitativ-valoric ieșirea "
                      "se face pe articol. Pe ecranul Raport Z, la acest raport: „Ieșire pe articol” sau „Consum pe rețetă” — ori, "
                      "dacă n-a vândut marfă din stoc, „Fără marfă din stoc”.")
 COD_NEDESCARCAT = "Z_NEDESCARCAT"
@@ -54,7 +56,8 @@ def refuz_validare(cur, schema, nota_id):
         return None
     if _ms.citeste(cur, schema) != _ms.CV:
         return None
-    return MESAJ_NEDESCARCAT % nota_id
+    from core import eticheta_nota as _et   # [deficiența 258] nota cum o vede omul, nu id-ul ei
+    return MESAJ_NEDESCARCAT % _et.nota(cur, schema, nota_id)
 
 
 def cere_z(cur, schema, z_id):
@@ -70,7 +73,9 @@ def cere_z(cur, schema, z_id):
     if st is None or not e_z(cur, schema, zid):
         raise ValueError("Raportul Z ales nu există.")
     if st != "ciorna":
-        raise ValueError("Raportul Z #%s e deja validat: descărcarea se leagă numai de un Z nevalidat." % zid)
+        from core import eticheta_nota as _et
+        raise ValueError("Raportul Z ales (nota %s) e deja validat: descărcarea se leagă numai de un Z nevalidat."
+                         % _et.nota(cur, schema, zid))
     return zid
 
 
@@ -80,7 +85,7 @@ def marcheaza_fara_marfa(conn, schema, nota_id, fara_marfa):
         zid = cere_z(cur, schema, nota_id)
         st = stare(cur, schema, zid)
         if fara_marfa and st["iesiri"]:
-            raise ValueError("Raportul Z are deja %d ieșiri din stoc legate de el — nu poate fi „fără marfă”." % st["iesiri"])
+            raise ValueError("Raportul Z are deja %s de el — nu poate fi „fără marfă”." % _cate(st["iesiri"], "ieșire din stoc legată", "ieșiri din stoc legate"))
         cur.execute("UPDATE %srapoarte_z_amef SET fara_marfa = %%s WHERE inregistrare_id = %%s" % _p(schema),
                     (True if fara_marfa else None, zid))
     return {"ok": True, "nota_id": zid, "fara_marfa": True if fara_marfa else None}

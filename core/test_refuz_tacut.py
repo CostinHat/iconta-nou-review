@@ -44,7 +44,10 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # (`plaseazaErori`, modul 1), cealaltă e o căutare de fundal la tastare (`produse/
 # potriveste`, modul 3 — `POST` folosit ca citire).
 _SCRIERI_MUTE = 18
-_CITIRI_MUTE = 76
+_CITIRI_MUTE = 77
+# [15.10.2026, deficiența 265] 76 -> 77: `drepturi.reimprospateazaDrepturi` recitește `/eu/drepturi` pe ceasul aplicației (la cinci
+#   minute, la revenirea în filă, la întoarcerea acasă), în fundal. Dacă citirea cade, poarta rămâne cu lista de până atunci (serverul
+#   rămâne garda) și se spune în consolă — un mesaj pe ecran la fiecare cădere de rețea ar întrerupe omul pentru ceva ce nu-i cere nimic.
 # [Retest 2 pct.12, 09.10.2026] 75 -> 76: cardul „De validat” citește `/eu/ciorne` ca să numere ciornele contabilului; dacă citirea
 #   cade, cardul rămâne cu coada (badge — n-are voie să întrerupă omul), iar lista din fereastră spune eșecul cu `arataMesaj`.
 # [lotul 07.10 pct.8, 06.10.2026] 74 -> 75: clicul pe o notificare `jurnal:<firmă>:<notă>` citește lista firmelor ca să

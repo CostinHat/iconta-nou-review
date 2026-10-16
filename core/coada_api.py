@@ -133,8 +133,8 @@ def adauga_in_coada(conn, cabinet_id, tenant_id, tip, an, payload,
         _cur.execute("SELECT 1 FROM public.tenants WHERE id = %s", (tenant_id,))
         if _cur.fetchone() is None:
             return {"ok": False, "cod": "FIRMA_INEXISTENTA",
-                    "mesaj": "firma #%s nu există — o declarație nu poate intra în coadă "
-                             "legată de o firmă ștearsă sau necreată" % tenant_id}
+                    "mesaj": ("Firma aleasă nu există (a fost ștearsă sau n-a fost creată), deci declarația nu poate "
+                             "intra în coadă.")}
     # [C2/C11, 07.10.2026] `perioada` = scadența, când modulul de scadențe o are SURSATĂ. Un tip fără termen sursat (31 din 52 la
     # 07.10: bilanțul și declarațiile anuale cu formular) intra în coadă cu 500 („scadenta: lipsește luna sau trim”) — deci
     # nicio declarație anuală cu formular nu putea fi depusă prin aplicație. Nu se GHICEȘTE un termen: se pune perioada de
@@ -448,7 +448,7 @@ def retrimite_nota(conn, cabinet_id, tenant_id, nota_id, uid, confirma=False):
         cur.execute(_SELECT_NOTE + "WHERE i.id = %s", (nota_id,))
         n = cur.fetchone()
         if not n:
-            return {"ok": False, "cod": "INEXISTENT", "mesaj": "nota #%s nu există" % nota_id}
+            return {"ok": False, "cod": "INEXISTENT", "mesaj": "Nota nu mai există: a fost ștearsă între timp."}
         cur.execute("SELECT status FROM inregistrari WHERE id = %s", (nota_id,))
         if cur.fetchone()["status"] != "ciorna":
             return {"ok": False, "cod": "STARE_GRESITA", "mesaj": "numai o notă ciornă se trimite la validare"}
@@ -480,12 +480,12 @@ def retrimite_nota(conn, cabinet_id, tenant_id, nota_id, uid, confirma=False):
                 if not u or u["stare"] == "respinsa":
                     frati.append(x)
         # [deficiența 246] „Un asistent nu […] trimite la validare notele altui utilizator” — aceeași regulă ca în bază (`ciorna_altui`)
-        cur.execute("SELECT id, ciorna_altui(creat_de_id, %s) AS autor FROM inregistrari WHERE id = ANY(%s) "
+        cur.execute("SELECT id, ciorna_altui(creat_de_id, %s) AS autor, eticheta_nota(id) AS eticheta FROM inregistrari WHERE id = ANY(%s) "
                     "AND ciorna_altui(creat_de_id, %s) IS NOT NULL ORDER BY id LIMIT 1", (uid, [x["id"] for x in frati], uid))
         _alt = cur.fetchone()
         if _alt:
             from core import drepturi as _dr
-            return {"ok": False, "cod": _dr.COD_CIORNA_ALTUI, "mesaj": _dr.MESAJ_CIORNA_ALTUI % (_alt["id"], _alt["autor"], _alt["autor"])}
+            return {"ok": False, "cod": _dr.COD_CIORNA_ALTUI, "mesaj": _dr.MESAJ_CIORNA_ALTUI % (_alt["eticheta"], _alt["autor"], _alt["autor"])}
         membri = []
         for x in frati:
             cid = _insereaza_nota(cur, cabinet_id, tenant_id, x, uid)
@@ -498,10 +498,16 @@ def retrimite_nota(conn, cabinet_id, tenant_id, nota_id, uid, confirma=False):
 #: [lotul 07.10 pct.6, comanda Costin 06.10.2026] „Cât timp nota e la validare, asistentul o poate edita sau șterge; cabinetul ar
 #: valida altceva decât a văzut.” Nota la validare NU se modifică și NU se șterge, pe niciun drum (jurnal: editare, ștergere;
 #: casa: ștergerea operațiunii cu nota ei; dezlegarea de factură). Calea de corectare: cabinetul o respinge cu motiv.
-MESAJ_NOTA_LA_VALIDARE = ("Nota #%s e la validare în cabinet: cât timp așteaptă, nu se modifică și nu se șterge — cabinetul "
+MESAJ_NOTA_LA_VALIDARE = ("Nota %s e la validare în cabinet: cât timp așteaptă, nu se modifică și nu se șterge — cabinetul "
                           "validează exact ce a văzut. Dacă trebuie corectată, cabinetul o respinge cu motiv, iar după "
                           "corectare o trimiți din nou.")
 COD_NOTA_LA_VALIDARE = "NOTA_LA_VALIDARE"
+
+
+def mesaj_nota_la_validare(cur, schema, nota_id):
+    """[deficiența 258] `MESAJ_NOTA_LA_VALIDARE` cu nota numită cum o vede contabilul („nr. crt. 5 din 12.03.2026”), nu prin id."""
+    from core import eticheta_nota as _et
+    return MESAJ_NOTA_LA_VALIDARE % _et.nota(cur, schema, nota_id)
 
 
 def nota_la_validare(cur, schema, nota_id):

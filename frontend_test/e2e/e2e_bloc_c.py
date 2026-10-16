@@ -20,6 +20,16 @@ AZI = _dt.date.today()
 
 
 # ---------------------------------------------------------------- utilitare
+def _ultima_nota(firma):
+    return sql('SELECT coalesce(max(id), 0) FROM "%s".inregistrari' % firma["schema"])[0][0]
+
+
+def _nota_noua(firma, ultima):
+    """[258] Nota scrisă de pasul de pe ecran, luată din bază: mesajul nu mai poartă numărul intern („#<id>”)."""
+    (nid,) = [r[0] for r in sql('SELECT id FROM "%s".inregistrari WHERE id > %%s' % firma["schema"], (ultima,))]
+    return nid
+
+
 def _uid(email):
     return sql("SELECT id, accounting_firm_id FROM public.users WHERE email = %s", (email,))[0]
 
@@ -743,10 +753,12 @@ def test_def_76_datele_citite_de_server_sunt_cerute_de_formular(patron, firma_cv
     pg.fill("#op-comision", "50")
     pg.select_option("#op-dobanda_angajata", label="Nu")
     pg.fill("#op-descriere", "Rata credit proba 76")
+    ultima = _ultima_nota(firma_cv)
     pg.click("#op-trimite")
     pg.wait_for_function("() => (document.querySelector('#op-mesaj') || {innerText: ''}).innerText.includes('Notă generată')", timeout=15000)
     patron.captura()
-    nid = int(pg.inner_text("#op-mesaj").split("#")[1].split(".")[0])
+    nid = _nota_noua(firma_cv, ultima)
+    assert "#" not in pg.inner_text("#op-mesaj")        # [258] numărul intern nu se afișează
     linii = sql('SELECT cont_debit, cont_credit, suma::text FROM "%s".inregistrari_linii WHERE inregistrare_id = %%s ORDER BY cont_debit'
                 % firma_cv["schema"], (nid,))
     assert ("666", "5121", "200.00") in linii and ("627", "5121", "50.00") in linii, linii
@@ -893,9 +905,11 @@ def test_def_96_raportul_z_nu_se_valideaza_fara_descarcare(patron, firma_cv):
     pg.fill("#z-21", "121")
     pg.fill("#z-num", "121")
     pg.fill("#z-bonuri", "3")
+    ultima = _ultima_nota(firma_cv)
     pg.click("#z-salveaza")
     pg.wait_for_function("() => (document.querySelector('#z-rezultat') || {innerText: ''}).innerText.includes('Nota e ciornă')", timeout=15000)
-    nid = int(pg.inner_text("#z-rezultat").split("#")[1].split(")")[0])
+    nid = _nota_noua(firma_cv, ultima)
+    assert "#" not in pg.inner_text("#z-rezultat")      # [258] numărul intern nu se afișează
     pg.wait_for_function("() => (document.querySelector('#z-descarcare') || {innerText: ''}).innerText.includes('Nedescărcat')", timeout=15000)
     patron.captura("z")
     _deschide(patron, firma_cv["nume"], "jurnal", "#j-nota-noua")
@@ -1005,8 +1019,8 @@ def _contabilizeaza_statul(ecran, firma):
 
 
 def test_def_90_confirmarea_notei_la_validare_e_vizibila(asistent, firma_gv, salariat_gv, asistent_pregatitor):
-    """90. Coadă: confirmarea „Nota #3 e la validare” mică și gri.
-    Pașii: asistentul -> firma -> Salariați -> „Contabilizează statul” -> „Scrie nota ciornă”. Confirmarea „Nota #N e la validare
+    """90. Coadă: confirmarea „Nota nr. crt. 3 din … e la validare” mică și gri.
+    Pașii: asistentul -> firma -> Salariați -> „Contabilizează statul” -> „Scrie nota ciornă”. Confirmarea „Nota nr. crt. N din … e la validare
     în cabinet.” apare într-o casetă informativă (DS cap.5), nu ca text mic gri."""
     pg = asistent.pg
     _contabilizeaza_statul(asistent, firma_gv)
@@ -1023,7 +1037,7 @@ def test_def_81_nota_de_salarii_respinsa_se_reface_din_stat(asistent, patron, fi
     """81. Salarii: nota respinsă o trimitea pe Ana în Registrul jurnal; recontabilizarea n-o refăcea.
     Pașii: cabinetul respinge nota de salarii („lipsește pontajul”) -> asistentul deschide Salariați: statul spune că nota se
     corectează din statul de plată, nu din Registrul-jurnal -> „Contabilizează statul” › „Recontabilizează statul” (confirmă
-    „Retrimite fără schimbări”) -> „Nota respinsă #a a fost înlocuită cu nota #b … și trimisă la validare”; noua notă e la validare."""
+    „Retrimite fără schimbări”) -> „Nota respinsă a fost înlocuită cu nota nr. crt. N din … și trimisă la validare” (258: fără id-ul intern); noua notă e la validare."""
     from core import coada_api, db
     s = firma_gv["schema"]
     if not sql("SELECT 1 FROM public.declaratii_coada WHERE tenant_id = %s AND fel = 'nota' AND stare = 'la_senior'",

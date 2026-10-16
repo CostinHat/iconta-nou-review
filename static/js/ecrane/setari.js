@@ -1,6 +1,6 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca } from "../api.js?v=2561dbfd34";
-import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
+import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca } from "../api.js?v=72aa1cbbdb";
+import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export async function randeazaSetari(corp, nav) {
   const u = sesiune.user() || {};
@@ -235,7 +235,7 @@ export async function randeazaSetari(corp, nav) {
         try {
           const r = await api.post("/gdpr/cerere-stergere", { confirmare_nume: inp.value.trim(), motiv: corp.querySelector("#gdpr-motiv").value.trim() || null });
           if (r && r.ok) {
-            arataMesaj(msg, "Cerere înregistrată (#" + r.cerere_id + "). Îți răspundem în cel mult 5 zile lucrătoare.", "ok");
+            arataMesaj(msg, "Cerere înregistrată. Îți răspundem în cel mult 5 zile lucrătoare.", "ok");   // [258] fără id-ul intern
           } else { arataMesaj(msg, "Nu s-a putut înregistra cererea.", "eroare"); btnCe.disabled = false; }
         } catch (e) { arataMesaj(msg, e.mesaj || "Eroare la trimiterea cererii.", "eroare"); btnCe.disabled = false; }
       }, { textOk: "Trimite cererea" });
@@ -326,7 +326,7 @@ async function _incarcaChei(corp) {
     <div class="pf-frand">
       <div class="pf-frand-text">
         <div class="pf-frand-nume">${esc(c.nume) || "—"} · <code>${c.prefix}…</code></div>
-        <div class="pf-frand-sub">${c.activ ? "activa" : "revocata"}${c.ultima_folosire ? " · folosita: " + c.ultima_folosire.slice(0, 16) : ""}</div>
+        <div class="pf-frand-sub">${c.activ ? "activă" : "revocată"}${c.ultima_folosire ? " · folosită: " + c.ultima_folosire.slice(0, 16) : ""}</div>
       </div>
       ${c.activ ? `<span class="btn-link set-cheie-revoca" data-actiune="DELETE /cabinet/api-chei/{kid}" data-id="${c.id}" style="color:var(--rosu)">Revoca</span>` : ""}
     </div>`).join("");
@@ -335,7 +335,7 @@ async function _incarcaChei(corp) {
       try { await api.del(`/cabinet/api-chei/${b.dataset.id}`); _incarcaChei(corp); }
       catch (e) {
         b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-        b.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + (e.mesaj || "Nu s-a putut revoca cheia.") + '</span>');
+        b.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + esc(e.mesaj || "Nu s-a putut revoca cheia.") + '</span>');
       }
     }, { textOk: "Revoca" });
   }));

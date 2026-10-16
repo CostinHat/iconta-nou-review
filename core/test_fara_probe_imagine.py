@@ -50,14 +50,6 @@ PRODUS = {
     "static/logo_simbol.png": "simbolul din bara de sus",
 }
 
-#: **DATE DE FIRMĂ** — imagini încărcate prin aplicație, ajunse în index. *Nu sunt probe și nu sunt
-#: produs: sunt date. Le las pinate, ca să nu crească tăcut, dar faptul că sunt comise e o
-#: constatare în sine, nu o stare pe care s-o aprob.*
-DATE_INCARCATE = {
-    "static/raportari/r2_m3_c7df89e4.png": "imagine de raportare încărcată prin aplicație",
-    "static/raportari/r4_m6_eefe6d93.png": "imagine de raportare încărcată prin aplicație",
-}
-
 #: **PROBE PINATE** — cele 30 de capturi rămase în index după curățarea din 03.09.2026. Sunt urme ale
 #: unor stări care **nu mai există** (firma ștearsă, cabinetul dus), deci nu se pot reface rulând un
 #: instrument — singura clasă pe care §27 o lasă în repo. **Lista nu are voie să crească.** Fiecare e
@@ -107,7 +99,7 @@ def _facsimile_corpus():
 
 
 FACSIMILE_CORPUS = _facsimile_corpus()
-ADMISE = PROBE_PINATE | set(PRODUS) | set(DATE_INCARCATE) | FACSIMILE_CORPUS
+ADMISE = PROBE_PINATE | set(PRODUS) | FACSIMILE_CORPUS
 
 #: Module care compară/diferențiază imagini. **Prezența unui import de-astea E mecanismul**, oricum
 #: s-ar numi funcția care îl folosește — de-aia garda se uită la import, nu la nume de funcție.

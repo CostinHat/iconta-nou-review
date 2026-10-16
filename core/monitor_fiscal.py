@@ -7,6 +7,7 @@ import requests
 
 from core import clasificator_alerte as _ca
 from core import repo_monitor_fiscal as _repo
+from core.common import cate as _cate
 
 SURSA_LISTA = "https://static.anaf.ro/static/10/Anaf/Legislatie_R/noutati_legislative.htm"
 BAZA = "https://static.anaf.ro/static/10/Anaf/Legislatie_R/"
@@ -141,7 +142,7 @@ def ruleaza(max_buletine=3):
             alerte = []
         with db.get_conn() as conn:                 # scurta, doar scrierea
             # marcam buletinul ca procesat chiar si fara alerte (idempotenta)
-            salveaza(conn, "anaf_buletin", [{"titlu": titlu, "rezumat": f"{len(alerte)} modificari relevante", "relevanta": "info"}], url)
+            salveaza(conn, "anaf_buletin", [{"titlu": titlu, "rezumat": _cate(len(alerte), "modificare relevantă", "modificări relevante"), "relevanta": "info"}], url)
             toate_noi += salveaza(conn, "anaf_alerta", alerte, url)
             conn.commit()
         procesate += 1
@@ -180,7 +181,7 @@ def emite_alerte_programate(conn):
                 if prag == 0:
                     cap = "AZI intra in vigoare: "
                 else:
-                    cap = "In %d zile intra in vigoare: " % prag
+                    cap = "In %s intra in vigoare: " % _cate(prag, "zi", "zile")
                 mesaj = cap + (titlu or "") + ((" - " + rezumat) if rezumat else "")
                 _repo.select_public_4(cur)
                 for (cid,) in cur.fetchall():

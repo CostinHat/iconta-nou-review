@@ -1,11 +1,54 @@
 // raporteaza.js — cardul Raporteaza (perspectiva utilizatorului care proceseaza).
 // Trimite o observatie catre Admin iConta; vede firul cu raspunsuri; bec rosu = raspunsuri necitite.
 // Strat 2 (text + fir). Imagini: strat 3.
+// [270d, comanda Costin 15.10.2026] A doua optiune langa „Sesizare noua”: „Cerere import din alta aplicatie” — aplicatia, capturi si
+// exporturi (CSV, XLS/XLSX, ZIP). [C36] Fisierele firului stau in depozitul privat: se arata si se descarca numai prin ruta
+// autentificata `/raportari/fisiere/{id}` (echipa iConta si autorul), iar autorul le poate sterge.
 
-import { api, dataRo, arataMesaj, esc } from "../api.js?v=2561dbfd34";
+import { api, dataRo, arataMesaj, esc, cereBlob, descarca, deschideLupa, confirmaCaseta, eroareCamp, curataEroriCamp, cate } from "../api.js?v=72aa1cbbdb";
 
 function dataScurta(iso) {
   return dataRo(iso, "cu_ora");
+}
+
+const CAPTURI = ["png", "jpg", "webp"];
+const MARIME_MAXIMA = 8 * 1024 * 1024;   // aceeași ca `core/fisiere_private.MARIME_MAXIMA`
+
+// [C36] fișierele unui mesaj: capturile ca imagini (încărcate prin ruta autentificată), celelalte ca nume de descărcat;
+// autorul sesizării primește și „Șterge”. Folosit și de ecranul echipei iConta (admin_raportari.js).
+export function fisiereHTML(atasamente, poateSterge) {
+  return (atasamente || []).map((a) => {
+    const sterge = poateSterge
+      ? ` <button type="button" class="buton-sters buton-mic" data-sterge-fisier="${a.id}" data-actiune="DELETE /raportari/fisiere/{fid}" aria-label="Șterge fișierul ${esc(a.nume)}">Șterge</button>`
+      : "";
+    if (CAPTURI.includes(a.tip)) {
+      return `<span class="rap-fisier" data-fisier="${a.id}"><a href="#" class="rap-img-link" data-deschide-fisier="${a.id}"><img class="rap-img" data-captura="${a.id}" alt="captura ${esc(a.nume)}"></a>${sterge}</span>`;
+    }
+    return `<span class="rap-fisier" data-fisier="${a.id}"><button type="button" class="btn-link" data-descarca-fisier="${a.id}" data-nume="${esc(a.nume)}" data-fara-actiune="descărcarea unui fișier al sesizării — echipa iConta.eu și autorul">${esc(a.nume)}</button>${sterge}</span>`;
+  }).join(" ");
+}
+
+// leagă imaginile și butoanele dintr-un fir deja randat; `dupaStergere` reîncarcă firul
+export function legaFisiere(zona, dupaStergere) {
+  zona.querySelectorAll("img[data-captura]").forEach(async (img) => {
+    try {
+      const r = await cereBlob(`/raportari/fisiere/${img.dataset.captura}`);
+      img.src = URL.createObjectURL(await r.blob());
+    } catch { img.alt = "captura nu s-a putut încărca"; }
+  });
+  zona.querySelectorAll("[data-deschide-fisier]").forEach((a) => a.addEventListener("click", (e) => {
+    e.preventDefault();
+    const img = a.querySelector("img");
+    if (img && img.src) deschideLupa(img.src);
+  }));
+  zona.querySelectorAll("[data-descarca-fisier]").forEach((b) => b.addEventListener("click", () =>
+    descarca(`/raportari/fisiere/${b.dataset.descarcaFisier}`, b.dataset.nume).catch(() => {})));
+  zona.querySelectorAll("[data-sterge-fisier]").forEach((b) => b.addEventListener("click", () => {
+    confirmaCaseta(b, "Ștergi fișierul? Se scoate și din iConta.eu, nu doar din fir.", async () => {
+      try { await api.del(`/raportari/fisiere/${b.dataset.stergeFisier}`); if (dupaStergere) await dupaStergere(); }
+      catch (e) { b.insertAdjacentHTML("afterend", `<span class="msg-eroare"> ${esc((e && e.mesaj) || "Fișierul nu s-a putut șterge.")}</span>`); }
+    }, { textOk: "Șterge fișierul" });
+  }));
 }
 
 export async function randeazaRaporteaza(corp, nav) {
@@ -13,7 +56,11 @@ export async function randeazaRaporteaza(corp, nav) {
     <p class="mig-intro">Ai observat ceva care nu merge, nu e corect sau nu se înțelege? Trimite-ne o sesizare. Îți răspundem aici.</p>
 
     <div class="rap-nou panou" style="max-width:640px">
-      <h3 class="cap-titlu">Sesizare nouă</h3>
+      <div class="rap-tabs" role="tablist" aria-label="Ce trimiți">
+        <button type="button" class="rap-tab rap-tab-activ" role="tab" aria-selected="true" aria-controls="rap-zona-sesizare" data-tab="sesizare" data-fara-actiune="alegerea formularului — orice cont">Sesizare nouă</button>
+        <button type="button" class="rap-tab" role="tab" aria-selected="false" aria-controls="rap-zona-import" data-tab="import" data-fara-actiune="alegerea formularului — orice cont">Cerere import din altă aplicație</button>
+      </div>
+      <div id="rap-zona-sesizare" role="tabpanel">
       <label class="camp">
         <span class="camp-eticheta">Ce ai observat?</span>
         <textarea id="rap-text" class="camp-input rap-autogrow" rows="6" style="min-height:130px;overflow:hidden;resize:none" placeholder="Descrie ce ai observat, ce nu merge sau ce nu se înțelege... (poți lipi o captură de ecran cu Ctrl+V)"></textarea>
@@ -26,6 +73,21 @@ export async function randeazaRaporteaza(corp, nav) {
         <input type="file" id="rap-file" accept="image/png,image/jpeg,image/webp" multiple style="display:none">
       </div>
       <div id="rap-msg"></div>
+      </div>
+      <div id="rap-zona-import" role="tabpanel" hidden>
+        <p class="ecran-nota" style="margin:8px 0">Trimite-ne o captură cu meniul de export din aplicația ta și exportul unei singure firme (balanța de verificare, partenerii cu soldurile lor, salariații, mijloacele fixe). Analizăm exportul și îți răspundem aici dacă și când îl putem prelua automat.</p>
+        <label class="camp"><span class="camp-eticheta">Aplicația din care migrezi <span class="oblig">*</span></span>
+          <input type="text" id="imp-aplicatie" class="camp-input" maxlength="80" aria-required="true" placeholder="de exemplu WinMentor, Ciel, SmartBill"></label>
+        <div class="camp"><span class="camp-eticheta">Capturi și fișiere de export <span class="oblig">*</span></span>
+          <div id="imp-fisiere-noi"></div>
+          <span class="camp-ajutor">Capturi PNG, JPG sau WEBP și exporturi CSV, XLS, XLSX sau ZIP, până la 8 MB fiecare. Fișierele le vede doar echipa iConta.eu, se folosesc numai pentru import și le poți șterge oricând.</span></div>
+        <div class="rap-actiuni" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px">
+          <button class="buton-primar" id="imp-trimite" data-fara-actiune="cerere de import către iConta.eu — orice cont">Trimite cererea</button>
+          <button class="buton-secundar" id="imp-adauga" data-fara-actiune="fișier într-o cerere de import către iConta.eu — orice cont" type="button">Adaugă fișiere</button>
+          <input type="file" id="imp-file" accept=".png,.jpg,.jpeg,.webp,.csv,.xls,.xlsx,.zip" multiple style="display:none">
+        </div>
+        <div id="imp-msg"></div>
+      </div>
     </div>
 
     <div class="rap-titlu-lista">Sesizările mele</div>
@@ -33,6 +95,17 @@ export async function randeazaRaporteaza(corp, nav) {
   `;
 
   const lista = corp.querySelector("#rap-lista");
+
+  // [270d] cele două opțiuni: sesizarea și cererea de import din altă aplicație
+  corp.querySelectorAll(".rap-tab[data-tab]").forEach((b) => b.addEventListener("click", () => {
+    corp.querySelectorAll(".rap-tab[data-tab]").forEach((x) => {
+      const ales = x === b;
+      x.classList.toggle("rap-tab-activ", ales);
+      x.setAttribute("aria-selected", String(ales));
+    });
+    corp.querySelector("#rap-zona-sesizare").hidden = b.dataset.tab !== "sesizare";
+    corp.querySelector("#rap-zona-import").hidden = b.dataset.tab !== "import";
+  }));
 
   // caseta creste automat cu textul, fara limita
   function autoGrow(ta) {
@@ -124,14 +197,13 @@ export async function randeazaRaporteaza(corp, nav) {
       : (f.necitite > 0 ? `<span class="rap-badge-pct rap-badge-verde" title="răspuns primit, necitit"></span>` : "");
     const stareEt = { noua: "în așteptare", raspuns: "răspuns primit", inchisa: "închisă" }[f.stare] || f.stare;
     // titlul firului = inceputul primului mesaj (al meu)
-    const primul = (f.mesaje.find((m) => m.rol_autor === "utilizator") || f.mesaje[0] || {}).text || "";
+    const primul = f.tip === "cerere_import" ? `Cerere import din ${f.aplicatie || ""}`
+      : ((f.mesaje.find((m) => m.rol_autor === "utilizator") || f.mesaje[0] || {}).text || "");
     const titlu = primul.length > 70 ? primul.slice(0, 70) + "…" : primul;
     const mesaje = f.mesaje.map((m) => {
       const cls = m.rol_autor === "utilizator" ? "rap-msg-eu" : "rap-msg-admin";
       const cine = m.rol_autor === "admin" ? "iConta.eu" : (m.rol_autor === "ai" ? "Asistent AI" : "Eu");
-      const poze = (m.atasamente || []).map((a) =>
-        `<a href="${a.cale}" target="_blank" class="rap-img-link"><img class="rap-img" src="${a.cale}" alt="captura"></a>`
-      ).join("");
+      const poze = fisiereHTML(m.atasamente, true);   // [C36] prin ruta autentificată; autorul firului le poate șterge
       return `
         <div class="rap-mesaj ${cls}">
           <div class="rap-mesaj-cap"><b>${cine}</b><span class="rap-mesaj-data">${dataScurta(m.cand)}</span></div>
@@ -162,6 +234,11 @@ export async function randeazaRaporteaza(corp, nav) {
     if (!el) return;
     const cap = el.querySelector(".rap-fir-cap");
     const corpFir = el.querySelector(".rap-fir-corp");
+    legaFisiere(el, async () => {   // după ștergerea unui fișier: firul se reîncarcă și rămâne deschis
+      await incarcaFire();
+      const elNou = lista.querySelector(`.rap-fir[data-id="${f.id}"] .rap-fir-corp`);
+      if (elNou) elNou.style.display = "block";
+    });
     cap.addEventListener("click", () => {
       const deschis = corpFir.style.display !== "none";
       corpFir.style.display = deschis ? "none" : "block";
@@ -198,7 +275,7 @@ export async function randeazaRaporteaza(corp, nav) {
         arataMesaj(msg, "Se încarcă imaginile...", "info");
         _pozeEsuate = await urcaPoze(r.mesaj_id, pozeNoi.map((p) => p.file));
       }
-      if (_pozeEsuate) { arataMesaj(msg, "Sesizarea a fost trimisă, dar " + _pozeEsuate + " imagine(i) nu s-au încărcat. Deschide firul și reîncarcă-le.", "avert"); }
+      if (_pozeEsuate) { arataMesaj(msg, "Sesizarea a fost trimisă, dar " + cate(_pozeEsuate, "imagine", "imagini") + (_pozeEsuate === 1 ? " nu s-a încărcat" : " nu s-au încărcat") + ". Deschide firul și reîncarcă-le.", "avert"); }
       else arataMesaj(msg, "Sesizare trimisă.", "ok");
       corp.querySelector("#rap-text").value = "";
       pozeNoi.forEach((p) => URL.revokeObjectURL(p.url));
@@ -216,6 +293,58 @@ export async function randeazaRaporteaza(corp, nav) {
       };
       setTimeout(asteaptaAI, 3000);
     } catch { arataMesaj(msg, "Nu s-a putut trimite.", "eroare"); }
+  });
+
+  // --- [270d] cererea de import din altă aplicație ---
+  let fisiereNoi = [];   // File
+  const zonaFis = corp.querySelector("#imp-fisiere-noi");
+  const inputImp = corp.querySelector("#imp-file");
+  function randeazaFisiereNoi() {
+    zonaFis.innerHTML = fisiereNoi.map((f, i) =>
+      `<div class="rap-img-nume">${esc(f.name)} <button type="button" class="btn-link" data-scoate="${i}" data-fara-actiune="scoaterea unui fișier încă netrimis" aria-label="Scoate ${esc(f.name)}">Scoate</button></div>`).join("");
+    zonaFis.querySelectorAll("[data-scoate]").forEach((b) => b.addEventListener("click", () => {
+      fisiereNoi.splice(+b.dataset.scoate, 1); randeazaFisiereNoi();
+    }));
+  }
+  corp.querySelector("#imp-adauga").addEventListener("click", () => inputImp.click());
+  inputImp.addEventListener("change", () => {
+    const msg = corp.querySelector("#imp-msg");
+    const mari = [...inputImp.files].filter((f) => f.size > MARIME_MAXIMA).map((f) => f.name);
+    fisiereNoi.push(...[...inputImp.files].filter((f) => f.size <= MARIME_MAXIMA));
+    inputImp.value = "";
+    randeazaFisiereNoi();
+    if (mari.length) arataMesaj(msg, `Peste 8 MB, nu se trimit: ${mari.join(", ")}.`, "avert");
+  });
+  corp.querySelector("#imp-trimite").addEventListener("click", async () => {
+    const msg = corp.querySelector("#imp-msg");
+    curataEroriCamp(corp.querySelector("#rap-zona-import"));
+    msg.textContent = "";
+    const aplicatie = corp.querySelector("#imp-aplicatie").value.trim();
+    let lipsa = false;
+    if (!aplicatie) { eroareCamp(corp, "imp-aplicatie", "Scrie aplicația din care migrezi."); lipsa = true; }
+    if (!fisiereNoi.length) { arataMesaj(msg, "Adaugă cel puțin o captură sau un fișier de export.", "eroare"); lipsa = true; }
+    if (lipsa) return;
+    arataMesaj(msg, "Se trimite...", "info");
+    try {
+      const r = await api.post("/raportari", { tip: "cerere_import", aplicatie });
+      const esuate = [];
+      for (const f of fisiereNoi) {
+        const fd = new FormData();
+        fd.append("fisier", f);
+        try { await api.postForm(`/raportari/mesaj/${r.mesaj_id}/fisier`, fd); }
+        catch (e) {
+          esuate.push(`${f.name} (${(e && e.mesaj) || "nu s-a încărcat"})`);
+          arataMesaj(msg, `Nu s-a încărcat: ${esuate.join("; ")}.`, "avert");   // se vede pe loc; rezumatul vine la capăt
+        }
+      }
+      if (esuate.length) arataMesaj(msg, `Cererea a fost trimisă, dar ${esuate.length === 1 ? "un fișier nu s-a încărcat" : cate(esuate.length, "fișier", "fișiere") + " nu s-au încărcat"}: ${esuate.join("; ")}.`, "avert");
+      else arataMesaj(msg, "Cererea de import a fost trimisă. Îți răspundem aici.", "ok");
+      corp.querySelector("#imp-aplicatie").value = "";
+      fisiereNoi = [];
+      randeazaFisiereNoi();
+      await incarcaFire();
+      document.dispatchEvent(new CustomEvent("raportari:schimbat"));
+    } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Cererea nu s-a putut trimite.", "eroare"); }
   });
 
   await incarcaFire();

@@ -3,9 +3,9 @@
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, esc } from "../api.js?v=2561dbfd34";  /* esc_nc27 */
+import { api, esc, cate } from "../api.js?v=72aa1cbbdb";  /* esc_nc27 */
 import { semaforPatruLumini, publicaSumarControl } from "./semafor.js?v=60f4db5322";  // [125 + 224] aceleași patru lumini ca ale cardului
-import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2fc749a2a2";  // renderer unic al verdictului (DS cap.20)
+import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=751a4f0a85";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {
@@ -27,7 +27,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
            aceeași funcție (semaforPatruLumini) peste același câmp (sumar din /control-fiscal) — fiecare firmă într-o singură stare -->
       ${semaforPatruLumini(date.sumar)}
     </div>
-    <p class="ecran-nota">Din ${firme.length} ${firme.length === 1 ? "firmă" : "firme"}; fiecare firmă e numărată o singură dată, în starea de pe rândul ei.</p>
+    <p class="ecran-nota">Din ${cate(firme.length, "firmă", "firme")}; fiecare firmă e numărată o singură dată, în starea de pe rândul ei.</p>
     <div class="mig-lista" id="cf-lista"></div>
   `;
 
@@ -45,7 +45,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
     // [08.10.2026, retest pct.7] detaliul numără faptele (restanțe, de urmărit, neverificabile), nu repetă culoarea
     // [deficiențele 156/173, retestul Costin 09.10] „nu se poate verifica” vine de la server (același predicat ca contorul de sus), iar
     // verificările contabile gri sunt spuse acolo — aici rămân numai cele cu constatare (roșu / galben)
-    const fapte = [(f.lipsa || 0) ? `${f.lipsa} restanț${f.lipsa === 1 ? "ă" : "e"}` : "",
+    const fapte = [(f.lipsa || 0) ? cate(f.lipsa, "restanță", "restanțe") : "",
       (f.urmarit || 0) ? `${f.urmarit} de urmărit` : "",
       f.neverificabil ? esc(f.neverificabil) : ""].filter(Boolean);
     let detaliu = fapte.length ? fapte.join(" · ") : (f.stare === "verde" ? VERDICT_POZITIV.control_firma : "");

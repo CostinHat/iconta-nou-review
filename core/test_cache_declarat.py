@@ -227,13 +227,14 @@ def test_static_dir_e_pus_de_stratul_HTTP():
 
     Proba cere exact cusatura: dupa ce `main` s-a importat (deci si-a rulat alegerea), valoarea din
     `core/uc_comun` e chiar cea pe care o serveste aplicatia. Daca cineva scoate punerea, ramane
-    `None`, iar rutele care scriu capturi ar construi cai sub `None/` — tacut, pana in productie."""
+    `None`, iar depozitul privat (`core.fisiere_private.verifica_director`, C36) n-ar mai sti sa refuze
+    un director din interiorul celui servit — tacut, pana in productie."""
     import main
     from core import uc_comun as _uc_comun
     assert _uc_comun._STATIC_DIR == main._STATIC_DIR, (
         "stratul HTTP nu mai pune directorul static in use-case: %r vs %r"
         % (_uc_comun._STATIC_DIR, main._STATIC_DIR))
-    assert _uc_comun._STATIC_DIR, "directorul static a ramas gol — capturile s-ar scrie sub `None/`"
+    assert _uc_comun._STATIC_DIR, "directorul static a ramas gol — depozitul privat n-ar mai refuza directorul servit"
 
 
 def test_sablonul_de_tenant_se_reconstruieste_identic():

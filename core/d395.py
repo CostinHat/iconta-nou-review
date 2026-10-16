@@ -107,9 +107,9 @@ def pull(conn, schema, perioada):
     return {}
 
 
-def _err_trimitere(i, t):
+def _err_trimitere(p, t):
+    """Erorile unei trimiteri; `p` = „trimitere #N”, N = numărul ei de ORDINE în listă (compus la apelant, din `enumerate`)."""
     er = []
-    p = "trimitere #%d" % i
     if not _cif(t.get("nr_doc")) and not str(t.get("nr_doc") or "").strip():
         er.append("%s: lipsă nr_doc." % p)
     d = str(t.get("data_doc") or "").strip()
@@ -183,7 +183,7 @@ def erori_generare(prof, manual):
         er.append("Lipsă trimiteri (cel puțin o trimitere poștală contra ramburs).")
     vazute = set()
     for i, t in enumerate(trim, 1):
-        er.extend(_err_trimitere(i, t))
+        er.extend(_err_trimitere("trimitere #%d" % i, t))
         nd = str(t.get("nr_doc") or "").strip()
         if nd and nd in vazute:
             er.append("trimitere #%d: nr_doc '%s' duplicat (trebuie unic - R.Nrdoc)." % (i, nd))

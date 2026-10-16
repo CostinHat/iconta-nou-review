@@ -18,6 +18,10 @@ făcută de un asistent cu „Poate valida” (validarea e treaba lui; `jurnal_a
 = orice cont `angajat`, cu sau fără „Poate valida” — textul deciziei spune „un asistent”, fără excepție pentru senior; de reconfirmat.
 Pe `rip_operatiuni` (registrul de încasări și plăți, autorul în `creat_de`) aceeași regulă.
 
+[deficiența 258, 15.10.2026] Refuzul numește nota cum o vede contabilul („Nota nr. crt. 5 din 12.03.2026”, `eticheta_nota`), nu id-ul
+intern („Nota #24”): o SINGURĂ definiție a etichetei, aici, folosită și de triggerele din `core/migrare_reguli_fond.py` (plpgsql o
+rezolvă la rulare) și de mesajele din Python (`core/eticheta_nota.py`). Operațiunea RIP: „plata din ZZ.LL.AAAA de 150,00 RON”.
+
 Idempotentă (CREATE OR REPLACE + DROP/CREATE TRIGGER). Oglinda din `tenant_template.sql` e generată de `sql(...)` și păzită de
 `core/test_ciorne_proprii.py`. Rulare: `python -m core.migrari_registru ruleaza --productie core/migrare_ciorne_proprii.py`.
 """
@@ -30,6 +34,23 @@ MARCAJ_SFARSIT = "-- [ciorne_proprii_v1] sfârșit"
 def sql(s):
     """DDL-ul regulii pentru schema `s` (numele exact, sau `TENANT_PLACEHOLDER` pentru șablon)."""
     return """@INC@
+CREATE OR REPLACE FUNCTION @S@.eticheta_nota(nid integer) RETURNS text AS $$
+  -- [deficiența 258] numele notei cum îl vede contabilul în Registrul jurnal: „nr. crt. N din ZZ.LL.AAAA”; N = locul ei în anul
+  -- notei după (data, id), orice stare — numerotarea din `repo_contabilitate.jurnal_pe_an` (paritatea: core/test_eticheta_nota.py);
+  -- NULL dacă nota nu există. Python o cheamă prin `core/eticheta_nota.py`, ca textul din bază și cel din aplicație să fie unul.
+  SELECT 'nr. crt. ' || (SELECT count(*) FROM @S@.inregistrari o
+                          WHERE o.data >= date_trunc('year', n.data)::date AND (o.data, o.id) <= (n.data, n.id))
+         || ' din ' || to_char(n.data, 'DD.MM.YYYY')
+    FROM @S@.inregistrari n WHERE n.id = nid
+$$ LANGUAGE sql STABLE;
+
+CREATE OR REPLACE FUNCTION @S@.eticheta_rip(oid integer) RETURNS text AS $$
+  -- [deficiența 258] operațiunea din registrul de încasări și plăți cum o arată rândul ei: „plata din ZZ.LL.AAAA de 1.234,50 RON”
+  SELECT CASE WHEN r.tip = 'plata' THEN 'plata' ELSE 'încasarea' END || ' din ' || to_char(r.data_operatiune, 'DD.MM.YYYY') || ' de '
+         || translate(to_char(r.suma, 'FM999,999,999,990.00'), ',.', '.,') || ' ' || r.valuta
+    FROM @S@.rip_operatiuni r WHERE r.id = oid
+$$ LANGUAGE sql STABLE;
+
 CREATE OR REPLACE FUNCTION @S@.ciorna_altui(autor integer, utilizator integer) RETURNS text AS $$
   -- numele autorului dacă `utilizator` e asistent (`angajat`) și ciorna e a ALTUI utilizator; NULL altfel (fără autor, fără utilizator,
   -- autorul însuși, administratorul / superadminul)
@@ -58,7 +79,7 @@ BEGIN
   IF autor IS NOT NULL AND NOT (TG_OP = 'UPDATE' AND NEW.status IS DISTINCT FROM OLD.status AND @S@.decizia_validatorului())
      AND (TG_OP = 'DELETE' OR (NEW.data, NEW.numar, NEW.factura_id, NEW.document_ref, NEW.descriere, NEW.sursa, NEW.status)
                               IS DISTINCT FROM (OLD.data, OLD.numar, OLD.factura_id, OLD.document_ref, OLD.descriere, OLD.sursa, OLD.status)) THEN
-    RAISE EXCEPTION 'DREPT_CIORNA: Nota #% e ciorna lui %: o poți vedea, dar n-o modifici, n-o ștergi și n-o trimiți la validare. Dacă trebuie schimbată, spune-i lui % sau administratorului cabinetului.', OLD.id, autor, autor;
+    RAISE EXCEPTION 'DREPT_CIORNA: Nota % e ciorna lui %: o poți vedea, dar n-o modifici, n-o ștergi și n-o trimiți la validare. Dacă trebuie schimbată, spune-i lui % sau administratorului cabinetului.', @S@.eticheta_nota(OLD.id), autor, autor;
   END IF;
   IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
   RETURN NEW;
@@ -78,7 +99,7 @@ BEGIN
     CONTINUE WHEN st IS NULL OR st = 'validata';
     autor := @S@.ciorna_altui(aut, @S@.utilizatorul_cererii());
     IF autor IS NOT NULL THEN
-      RAISE EXCEPTION 'DREPT_CIORNA: Nota #% e ciorna lui %: o poți vedea, dar n-o modifici, n-o ștergi și n-o trimiți la validare. Dacă trebuie schimbată, spune-i lui % sau administratorului cabinetului.', nid, autor, autor;
+      RAISE EXCEPTION 'DREPT_CIORNA: Nota % e ciorna lui %: o poți vedea, dar n-o modifici, n-o ștergi și n-o trimiți la validare. Dacă trebuie schimbată, spune-i lui % sau administratorului cabinetului.', @S@.eticheta_nota(nid), autor, autor;
     END IF;
   END LOOP;
   IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
@@ -98,7 +119,7 @@ BEGIN
   END IF;
   autor := @S@.ciorna_altui(OLD.creat_de, @S@.utilizatorul_cererii());
   IF autor IS NOT NULL AND NOT (TG_OP = 'UPDATE' AND NEW.status IS DISTINCT FROM OLD.status AND @S@.decizia_validatorului()) THEN
-    RAISE EXCEPTION 'DREPT_CIORNA: Operațiunea #% din registrul de încasări și plăți e ciorna lui %: o poți vedea, dar n-o modifici și n-o ștergi. Dacă trebuie schimbată, spune-i lui % sau administratorului cabinetului.', OLD.id, autor, autor;
+    RAISE EXCEPTION 'DREPT_CIORNA: În registrul de încasări și plăți, % e ciorna lui %: o poți vedea, dar n-o modifici și n-o ștergi. Dacă trebuie schimbată, spune-i lui % sau administratorului cabinetului.', @S@.eticheta_rip(OLD.id), autor, autor;
   END IF;
   IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
   RETURN NEW;

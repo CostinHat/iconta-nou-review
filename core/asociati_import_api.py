@@ -60,6 +60,7 @@ CAMPURI = {
 from core.numere import numar as _numar  # sursa unica (15.07.2026); "%" tratat acolo
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 from core.pdf_util import data_ro as _data_ro   # DS cap.4: data din text, canonic
+from core.common import cate as _cate
 
 
 def extrage(continut, nume_fisier=""):
@@ -170,9 +171,9 @@ def importa(conn, randuri, data_cesiune=None):
                          "Dacă chiar vrei să golești lista, e altă operațiune.")
     er = verifica_randuri(randuri)
     if er:
-        raise ValueError("%d probleme: %s. Asociații și cotele lor intră în D205 "
+        raise ValueError("%s: %s. Asociații și cotele lor intră în D205 "
                          "(dividende) - cotele trebuie să dea exact 100%%."
-                         % (len(er), "; ".join(x["mesaj"] for x in er[:6])))
+                         % (_cate(len(er), "problemă", "probleme"), "; ".join(x["mesaj"] for x in er[:6])))
     arhivati = 0
     if data_cesiune:
         import datetime as _dt

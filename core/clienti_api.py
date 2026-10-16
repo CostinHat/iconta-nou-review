@@ -8,6 +8,8 @@ arunce un 500 urât și să strice tranzacția).
 """
 from __future__ import annotations
 
+from core.common import cate as _cate
+
 REGULI = "2026.1"
 MODUL = "clienti_api"
 
@@ -93,7 +95,7 @@ def sterge_client(conn, client_id):
         nr = cur.fetchone()[0]
         if nr:
             return {"ok": False, "cod": "ARE_FACTURI",
-                    "mesaj": "clientul are %d facturi — nu poate fi șters" % nr}
+                    "mesaj": "clientul are %s — nu poate fi șters" % _cate(nr, "factură", "facturi")}
         cur.execute("DELETE FROM clienti WHERE id = %s", (client_id,))
         sters = cur.rowcount > 0
     return {"ok": sters}

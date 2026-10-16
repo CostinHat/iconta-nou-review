@@ -19,6 +19,7 @@ Reguli (agreate cu Costin 17.07.2026):
 """
 from core import common, db
 from core import repo_notificari_scadenta as _repo
+from core.common import esc as _esc_html   # [C39] text în HTML-ul emailurilor
 
 PRAGURI = [-3, 1, 7]
 # [R138] Copia regexului s-a scos: faptul e in `core/common`. Numele ramane exportat, fiindca
@@ -43,10 +44,10 @@ def prag_curent(scadenta, azi, deja_trimise, praguri=PRAGURI):
 
 def _eticheta(prag):
     if prag < 0:
-        return "scade in %d zile" % (-prag)
+        return "scade in %s" % common.cate(-prag, "zi", "zile")
     if prag == 1:
         return "a devenit restanta"
-    return "restanta de %d zile" % prag
+    return "restanta de %s" % common.cate(prag, "zi", "zile")
 
 
 def _email_corp(firma_nume, f, prag):
@@ -62,8 +63,8 @@ def _email_corp(firma_nume, f, prag):
         "<hr><p style='font-size:12px;color:#667'>Acest mesaj vă este trimis "
         "în numele <b>%s</b> prin platforma iConta.eu. Răspundeți la acest "
         "email pentru a contacta direct firma.</p>"
-        % (f.get("numar") or "—", firma_nume, suma, f.get("moneda") or "lei",
-           f.get("data_scadenta"), _eticheta(prag), firma_nume)
+        % (_esc_html(f.get("numar") or "—"), _esc_html(firma_nume), _esc_html(suma), _esc_html(f.get("moneda") or "lei"),
+           _esc_html(f.get("data_scadenta")), _esc_html(_eticheta(prag)), _esc_html(firma_nume))   # [C39] numele firmei e scris de om
     )
 
 

@@ -17,6 +17,7 @@ cheama functia de aici prin adaptorul `_http`.
 from core import db, declaratii_api, coada_api
 from core import repo_declaratii
 from core import erori as _erori
+from core.common import cate as _cate
 from core import uc_comun as _uc_comun
 from core import db, auth_api, coada_api, supervizor
 from core.mesaje import (FARA_DREPT_VALIDARE, FARA_DREPT_DEPUNERE, FARA_DREPT_PREGATIRE)
@@ -316,8 +317,11 @@ def coada_continut(coada_id, ctx):
                     n, linii = repo_declaratii.nota_cu_linii(cur, _schema_nota, int((_pl or {}).get("inregistrare_id") or 0))
                     if n:
                         from core import jurnal_api as _jst   # [08.10, U5] factura stinsă de chitanța notei
+                        from core import eticheta_nota as _eticheta_nota
                         note.append({"nota": {"id": n[0], "data": n[1].isoformat(), "descriere": n[2], "document_ref": n[3],
                                               "status": n[4], "sursa": n[5],
+                                              # [258] nota cum o arată Registrul jurnal, nu prin id-ul intern
+                                              "eticheta": _eticheta_nota.nota(cur, _schema_nota, n[0]),
                                               "stinge": _jst.facturi_stinse(cur, _schema_nota, [n[0]]).get(n[0])},
                                      "linii": [{"debit": a, "credit": b, "suma": float(c)} for a, b, c in linii]})
         if not note:
@@ -398,7 +402,7 @@ def coada_aproba_mai_multe(ids, ctx):
     if not ids:
         raise _erori.DateInvalide("Alege cel puțin o notă de validat.")
     if len(ids) > MAX_APROBARI_DEODATA:
-        raise _erori.DateInvalide("Se validează cel mult %d note deodată; ai ales %d." % (MAX_APROBARI_DEODATA, len(ids)))
+        raise _erori.DateInvalide("Se validează cel mult %s deodată; ai ales %d." % (_cate(MAX_APROBARI_DEODATA, "notă", "note"), len(ids)))
     validate, refuzate = [], []
     for i in ids:
         try:
@@ -408,7 +412,8 @@ def coada_aproba_mai_multe(ids, ctx):
             from core import afirmatii as _af
             d = e.args[0] if e.args else str(e)
             mesaj = d.get("mesaj", str(d)) if isinstance(d, dict) else str(d)
-            refuzate.append(dict(_af.afirmatie("neconformitate", "aprobare_refuzata", mesaj, unde="elementul de coadă #%d" % i,
+            # [258] `unde` fără id-ul intern (elementul îl poartă în `id`)
+            refuzate.append(dict(_af.afirmatie("neconformitate", "aprobare_refuzata", mesaj, unde="nota aleasă la validare",
                                                regula="fiecare notă trece prin porțile aprobării ei"), id=i, mesaj=mesaj))
     return {"ok": True, "validate": validate, "refuzate": refuzate}
 
@@ -499,9 +504,9 @@ def coada_depune(coada_id, date, ctx):
             # refuz fără cale de ieșire pentru om.
             raise _erori.Conflict({
                 "cod": "CONSTATARI_NECONFIRMATE",
-                "mesaj": ("%d constatare/constatări certe pe firma și perioada asta cer o "
-                          "confirmare scrisă înainte de depunere. Depunerea nu e blocată: "
-                          "confirmă-le, cu motiv, și continuă." % len(_ramase)),
+                "mesaj": ("Înainte de depunere se cere o confirmare scrisă pentru %s pe firma și perioada asta. "
+                          "Depunerea nu e blocată: confirmă-le, cu motiv, și continuă."
+                          % _cate(len(_ramase), "constatare certă", "constatări certe")),
                 # constatarile se trimit AȘA CUM SUNT: sunt deja afirmații tipate, produse de
                 # `control_incrucisat`. Reîmpachetarea lor aici ar fi fost o a doua afirmație,
                 # netipată — și cine o citea n-ar fi știut care e cea adevărată.
@@ -584,7 +589,7 @@ def jurnal_retrimite(tenant_id, nota_id, ctx, confirma=False):
         with conn.cursor() as cur:
             n, _linii = repo_declaratii.nota_cu_linii(cur, schema, nota_id)
         if not n:
-            raise _erori.Inexistent("nota #%s nu există" % nota_id)
+            raise _erori.Inexistent("Nota nu mai există: a fost ștearsă între timp.")   # [258] fără id-ul intern
         # R42: o notă dintr-o lună ÎNCHISĂ nu se mai poate valida, deci nici trimite la validare
         _uc_comun._cere_luna_deschisa(conn, schema, n[1])
         r = coada_api.retrimite_nota(conn, ctx["firm"], tenant_id, nota_id, int(ctx["uid"]), confirma=confirma)

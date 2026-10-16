@@ -43,16 +43,16 @@ function _bannerLoginBine(txt) {
 window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.message));
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
-import { sesiune } from "./sesiune.js?v=38c3e6f6fe";
-import { api, arataMesaj } from "./api.js?v=2561dbfd34";
-import { ecranBunVenit } from "./ecrane/ansamblu.js?v=96c0d1308c";  // [bun_venit_v1]
-import { ecranLogin } from "./ecrane/login.js?v=ef07bbf1dd";
-import { creeazaNavigator } from "./navigator.js?v=fd836f3aa8";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=36c9a0df4c";
-import { desktopAsistent } from "./ecrane/asistent.js?v=eac5e4cefd";
-import { desktopPortal } from "./ecrane/portal.js?v=385b370f93";
-import { desktopAdmin } from "./ecrane/admin.js?v=a65229a238"; // [p37_admin_desktop]
-import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=df020d220f";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
+import { sesiune } from "./sesiune.js?v=898215e0ee";
+import { api, arataMesaj, esc } from "./api.js?v=72aa1cbbdb";
+import { ecranBunVenit } from "./ecrane/ansamblu.js?v=0a02b00644";  // [bun_venit_v1]
+import { ecranLogin } from "./ecrane/login.js?v=1f2b087432";
+import { creeazaNavigator } from "./navigator.js?v=05c650cac2";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=06ca688cf4";
+import { desktopAsistent } from "./ecrane/asistent.js?v=3d823a4f69";
+import { desktopPortal } from "./ecrane/portal.js?v=caa59974d0";
+import { desktopAdmin } from "./ecrane/admin.js?v=3f1cf81cb8"; // [p37_admin_desktop]
+import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=34d0fb0afd";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
 const radacina = document.getElementById("app");
 
@@ -159,7 +159,7 @@ async function randeaza() {
       .then(({ ok, d }) => {
         randeaza();
         if (!ok) { _bannerLoginEroare(d.detail || "Nu s-a putut confirma adresa."); return; }
-        _bannerLoginBine("Adresa a fost schimbată în <b>" + (d.email || "adresa nouă")
+        _bannerLoginBine("Adresa a fost schimbată în <b>" + esc(d.email || "adresa nouă")
           + "</b>. De acum intri în portal cu ea.");
       })
       .catch(() => { randeaza(); _bannerLoginEroare("Nu s-a putut confirma adresa (probabil o problemă de rețea). Deschide din nou linkul din email."); });

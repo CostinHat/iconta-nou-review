@@ -300,29 +300,11 @@ CREATE TABLE IF NOT EXISTS public.raportari (
     stare text DEFAULT 'noua'::text NOT NULL,
     creat_la timestamp with time zone DEFAULT now() NOT NULL,
     ultim_mesaj_la timestamp with time zone DEFAULT now() NOT NULL,
-    pentru_admin boolean DEFAULT false NOT NULL
+    pentru_admin boolean DEFAULT false NOT NULL,
+    tip text DEFAULT 'sesizare'::text NOT NULL,       -- [270d] mirror core/migrare_fisiere_private.py
+    aplicatie text,
+    CONSTRAINT raportari_tip_check CHECK (tip IN ('sesizare', 'cerere_import'))
 );
-
-CREATE TABLE IF NOT EXISTS public.raportari_atasamente (
-    id bigint NOT NULL,
-    mesaj_id bigint NOT NULL,
-    cale text NOT NULL,
-    nume_orig text,
-    creat_la timestamp with time zone DEFAULT now() NOT NULL
-);
-
-DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='raportari_atasamente' AND column_name='id' AND is_identity='YES') THEN
-    ALTER TABLE public.raportari_atasamente ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
-    SEQUENCE NAME public.raportari_atasamente_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
-  END IF;
-END $$;
 
 DO $$ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='raportari' AND column_name='id' AND is_identity='YES') THEN
@@ -598,12 +580,6 @@ DO $$ BEGIN
 END $$;
 
 DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='raportari_atasamente_pkey' AND connamespace='public'::regnamespace) THEN
-    ALTER TABLE public.raportari_atasamente ADD CONSTRAINT raportari_atasamente_pkey PRIMARY KEY (id);
-  END IF;
-END $$;
-
-DO $$ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='raportari_mesaje_pkey' AND connamespace='public'::regnamespace) THEN
     ALTER TABLE public.raportari_mesaje ADD CONSTRAINT raportari_mesaje_pkey PRIMARY KEY (id);
   END IF;
@@ -754,11 +730,20 @@ DO $$ BEGIN
   END IF;
 END $$;
 
-DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='raportari_atasamente_mesaj_id_fkey' AND connamespace='public'::regnamespace) THEN
-    ALTER TABLE public.raportari_atasamente ADD CONSTRAINT raportari_atasamente_mesaj_id_fkey FOREIGN KEY (mesaj_id) REFERENCES public.raportari_mesaje(id) ON DELETE CASCADE;
-  END IF;
-END $$;
+-- [C36 / 270d, 15.10.2026] depozitul privat al fișierelor (mirror core/migrare_fisiere_private.py; înlocuiește raportari_atasamente)
+CREATE TABLE IF NOT EXISTS public.fisiere_private (
+    id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cabinet_id  integer,
+    autor_id    integer,
+    mesaj_id    bigint NOT NULL REFERENCES public.raportari_mesaje(id) ON DELETE CASCADE,
+    nume_orig   text NOT NULL,
+    marime      integer NOT NULL,
+    tip         text NOT NULL CHECK (tip IN ('png', 'jpg', 'webp', 'csv', 'xls', 'xlsx', 'zip')),
+    cale        text NOT NULL UNIQUE,
+    creat_la    timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS fisiere_private_mesaj ON public.fisiere_private (mesaj_id);
+CREATE INDEX IF NOT EXISTS fisiere_private_cabinet ON public.fisiere_private (cabinet_id);
 
 DO $$ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='raportari_autor_id_fkey' AND connamespace='public'::regnamespace) THEN

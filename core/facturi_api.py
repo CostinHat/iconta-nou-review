@@ -165,6 +165,7 @@ def totaluri_din_linii(linii):
 #  CREARE — DB
 # ============================================================
 from core import curs_bnr
+from core import eticheta_nota as _et
 
 
 # ─────────────────────────────────────────── CODUL DE PARTENER (prag 2, 23.08.2026)
@@ -291,14 +292,15 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                 raise _cs.refuz(_lips)
     if directie == "emisa" and numar:
         with conn.cursor() as _cur:
-            _cur.execute("SELECT id FROM facturi WHERE numar=%s AND directie='emisa' LIMIT 1",
+            _cur.execute("SELECT data_emitere FROM facturi WHERE numar=%s AND directie='emisa' LIMIT 1",
                          (numar,))
             _existent = _cur.fetchone()
         if _existent:
+            from core import pdf_util as _pu   # [258] factura existentă numită prin numărul și data ei, nu prin id
             raise ValueError(
-                "Numărul %s e deja pe factura #%s. Două documente emise cu același număr rup "
+                "Numărul %s e deja pe factura emisă din %s. Două documente emise cu același număr rup "
                 "secvența cerută de %s. Dacă documentul dinainte e greșit, se stornează — nu se "
-                "reia numărul." % (numar, _existent[0], NUMEROTARE_SECVENTIALA))
+                "reia numărul." % (numar, _pu.data_ro(_existent[0]), NUMEROTARE_SECVENTIALA))
     # [B1 D300] campuri de clasificare/temporizare. tip_operatiune distinge avansul (exigibil la
     # emitere, art.282 alin.2 lit.b); furnizor_tva_incasare doar pe PRIMITE (deducere amanata la
     # plata, art.297 alin.2). Fara default tacit peste o valoare invalida -> refuz cu mesaj clar.
@@ -463,7 +465,7 @@ def _conteaza_la_creare(conn, factura_id, directie, tip):
         return {"stare": "refuzata", "cod": e.cod, "detalii": e.detalii,
                 "afirmatie": _af.afirmatie(
                     "neconformitate", e.cod, e.mesaj,
-                    unde="factura #%s" % factura_id,
+                    unde=_eticheta_factura(conn, factura_id),
                     regula="nota automată se scrie doar când toate intrările ei sunt cunoscute")}
 
 
@@ -618,6 +620,12 @@ def _redeschide_luna(conn, data_emitere):
     _per.deconfirma(conn, "", d.year, d.month, "facturi")
 
 
+def _eticheta_factura(conn, factura_id):
+    """[258] „Factură FCT12 din 05.10.2026” — cum o vede omul (`eticheta_nota.factura`), nu id-ul intern."""
+    with conn.cursor() as cur:
+        return _et.factura(cur, "", factura_id)
+
+
 def _luna_facturii(conn, factura_id):
     with conn.cursor() as cur:
         cur.execute("SELECT data_emitere FROM facturi WHERE id = %s", (factura_id,))
@@ -653,6 +661,9 @@ def sterge_factura(conn, factura_id):
         prim = cur.fetchone()
         n = _cf.contare_existenta(cur, "", factura_id)
         legate = _cf.note_cu_cheia(cur, "", factura_id)
+        # [258] notele se numesc în refuz cum le arată Registrul jurnal, nu prin id-ul intern
+        et_n = _et.nota(cur, "", n["id"]) if n else None
+        et_legata = _et.nota(cur, "", legate[0]["id"]) if legate else None
         cur.execute("SELECT numar FROM nir WHERE factura_id = %s LIMIT 1", (factura_id,))
         nir_legat = cur.fetchone()
     if nir_legat:
@@ -665,8 +676,8 @@ def sterge_factura(conn, factura_id):
     if trim:
         raise _cf.RefuzContare(
             "LEGATA_DE_SPV",
-            "Factura are o trimitere în e-Factura (#%d, stare „%s”) și nu se mai șterge: istoricul trimiterii către ANAF se "
-            "păstrează. Corecția se face prin storno — un al doilea document." % (trim["id"], trim["stare"]),
+            "Factura are o trimitere în e-Factura (stare „%s”) și nu se mai șterge: istoricul trimiterii către ANAF se "
+            "păstrează. Corecția se face prin storno — un al doilea document." % trim["stare"],
             detalii={"efactura_trimitere_id": trim["id"], "stare": trim["stare"], "iesire": "storno"})
     if prim:
         raise _cf.RefuzContare(
@@ -693,17 +704,17 @@ def sterge_factura(conn, factura_id):
         _n0 = legate[0]
         raise _cf.RefuzContare(
             "ARE_NOTA_LEGATA",
-            "Factura are o notă legată care nu e de contare (#%d, %s, %s) — o plată sau o încasare. "
+            "Factura are o notă legată care nu e de contare (nota %s, %s, %s) — o plată sau o încasare. "
             "Dezleag-o întâi: potrivirea rămâne consemnată pe linia de extras, iar factura redevine "
-            "neîncasată." % (_n0["id"], _n0.get("sursa") or "fără sursă", _n0.get("status") or "?"),
+            "neîncasată." % (et_legata, _n0.get("sursa") or "fără sursă", _n0.get("status") or "?"),
             detalii={"inregistrare_id": _n0["id"], "status_nota": _n0.get("status"),
                      "iesire": "dezleaga_nota"})
     if n:
         raise _cf.RefuzContare(
             "ARE_NOTA_DE_CONTARE",
-            "Factura are notă contabilă (#%d) și nu se mai șterge: o notă ștearsă lasă o gaură în "
+            "Factura are notă contabilă (nota %s) și nu se mai șterge: o notă ștearsă lasă o gaură în "
             "evidență. Corecția unei facturi contabilizate se face prin STORNO — un al doilea "
-            "document, care își produce propria notă." % n["id"],
+            "document, care își produce propria notă." % et_n,
             detalii={"inregistrare_id": n["id"], "iesire": "storno"})
     # [Retestul plasei 09.10.2026, regula a (R6) — CF art.330 alin.(1)] o factură EMISĂ nu se șterge, nici fără notă: se corectează prin
     # stornare. Baza o refuză oricum (`trg_regula_factura_emisa`); aici refuzul e numit, cu ieșirea lui, din aceeași sursă a stărilor.

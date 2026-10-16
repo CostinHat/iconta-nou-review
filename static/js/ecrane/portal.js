@@ -1,9 +1,9 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
 import { verdictDinStare } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict din stare
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca } from "../api.js?v=2561dbfd34";  /* generalizare_zi_v1 */
-import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
-import { randeazaFacturi } from "./facturi_ecran.js?v=ca119aa3aa";  // [p116_facturi_modul]
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate } from "../api.js?v=72aa1cbbdb";  /* generalizare_zi_v1 */
+import { sesiune } from "../sesiune.js?v=898215e0ee";
+import { randeazaFacturi } from "./facturi_ecran.js?v=82532fe3c9";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -44,7 +44,7 @@ export function desktopPortal(continut, nav) {
     ${sesiune.estePreview() ? '<div class="caseta-atentie" style="margin-bottom:12px"><span class="ca-mesaj"><b>PREVIZUALIZARE — doar vizualizare.</b> Vezi portalul exact ca acest client. Acțiunile (trimitere solicitări, pozare bon, orice input) sunt dezactivate în acest mod.</span></div>' : ""}
     <div class="cab-salut portal-sus" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
       <div>
-        <div class="cab-salut-nume">${firma}</div>
+        <div class="cab-salut-nume">${esc(firma)}</div>
         <div class="cab-salut-sub">Portal Client</div>
       </div>
       <button class="cab-card cab-card-mic accent-recomanda" id="portal-recomanda-mic">
@@ -107,8 +107,8 @@ async function ecranAccesCont(corp, nav) {
     const p = d.principal || {};
     corp.innerHTML = `
       ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
-      <div style="margin-bottom:6px"><b>Adresa de autentificare:</b> ${p.email || "-"}</div>
-      <div style="margin-bottom:6px"><b>Adresa la care primești pachetul lunar:</b> ${d.email_pachet || "-"}</div>
+      <div style="margin-bottom:6px"><b>Adresa de autentificare:</b> ${esc(p.email || "-")}</div>
+      <div style="margin-bottom:6px"><b>Adresa la care primești pachetul lunar:</b> ${esc(d.email_pachet || "-")}</div>
       ${d.aceeasi_adresa ? '<p class="ecran-nota" style="margin:0 0 10px">Sunt aceeași adresă acum, dar rămân două câmpuri diferite: schimbând-o pe prima nu se schimbă și a doua. Pentru a doua, spune-i contabilului.</p>' : ""}
       ${d.eu_principal ? '<button class="buton-secundar" id="ac-btn-schimba-email" style="margin-bottom:24px">Schimbă adresa de email</button>' : '<p class="ecran-nota" style="margin:0 0 24px">Doar titularul contului poate schimba acest email.</p>'}
       <h3 style="margin:0 0 8px">Alte persoane cu acces</h3>
@@ -123,12 +123,12 @@ async function ecranAccesCont(corp, nav) {
       </div>`).join("") || '<p class="ecran-nota">Niciun acces suplimentar.</p>';
     if (d.eu_principal) {
       lista.querySelectorAll("[data-uid]").forEach((b) => b.addEventListener("click", () => {
-        confirmaCaseta(b.parentElement, "Revoci accesul pentru " + (b.previousElementSibling?.textContent || "") + "?", async () => {
+        confirmaCaseta(b.parentElement, "Revoci accesul pentru " + esc(b.previousElementSibling?.textContent || "") + "?", async () => {
           try {
             await api.del("/portal/acces-cont/acces/" + b.dataset.uid);
             d.suplimentare = d.suplimentare.filter((c) => String(c.id) !== b.dataset.uid);
             randeazaEcran();
-          } catch (e) { b.parentElement.insertAdjacentHTML("afterend", '<p class="msg-eroare">' + (e.mesaj || "Eroare la revocare.") + '</p>'); }
+          } catch (e) { b.parentElement.insertAdjacentHTML("afterend", '<p class="msg-eroare">' + esc(e.mesaj || "Eroare la revocare.") + '</p>'); }
         }, { textOk: "Revocă" });
       }));
       corp.querySelector("#ac-btn-schimba-email").addEventListener("click", randeazaFormEmail);
@@ -142,7 +142,7 @@ async function ecranAccesCont(corp, nav) {
     corp.innerHTML = `
       <div class="camp" style="margin-bottom:10px">
         <label for="ac-email-nou-val" class="camp-eticheta">Adresa nouă de email<span class="oblig">*</span></label>
-        <input class="camp-input" id="ac-email-nou-val" value="${p.email || ""}" autofocus>
+        <input class="camp-input" id="ac-email-nou-val" value="${esc(p.email || "")}" autofocus>
       </div>
       <p class="ecran-nota" style="margin:0 0 14px">Data viitoare când te loghezi, vei primi linkul la această adresă. <b>Pachetul lunar nu urmează schimbarea</b> — el pleacă la adresa firmei, pe care o schimbă contabilul.</p>
       <button class="buton-primar" id="ac-salveaza-email">Salvează</button>
@@ -159,7 +159,7 @@ async function ecranAccesCont(corp, nav) {
         // [R62] Adresa NU se schimba aici: pleaca un link de confirmare pe adresa noua.
         const rasp = await api.put("/portal/acces-cont/email", { email: val });
         d = await api.get("/portal/acces-cont");
-        mesajSucces = rasp.mesaj || "Un link de confirmare a fost trimis pe adresa nouă.";
+        mesajSucces = esc(rasp.mesaj || "Un link de confirmare a fost trimis pe adresa nouă.");
         randeazaEcran();
       } catch (e) { b.disabled = false; b.textContent = "Salvează"; arataMesaj(msg, e.mesaj || "Eroare.", "eroare"); }
     });
@@ -187,7 +187,7 @@ async function ecranAccesCont(corp, nav) {
       try {
         await api.post("/portal/acces-cont/acces", { email });
         d = await api.get("/portal/acces-cont");
-        mesajSucces = "Invitație trimisă către " + email + ".";
+        mesajSucces = "Invitație trimisă către " + esc(email) + ".";
         randeazaEcran();
       } catch (e) { b.disabled = false; b.textContent = "Trimite acces"; arataMesaj(msg, e.mesaj || "Eroare.", "eroare"); }
     });
@@ -221,10 +221,10 @@ async function actualizeazaStatusAcasa(continut) {
 
   let clasa, titlu, sub;
   if (d.stare === "rosu") {
-    clasa = "pa-rosu"; titlu = `${restante.length} ${restante.length === 1 ? "declarație trebuie depusă" : "declarații trebuie depuse"}`;
+    clasa = "pa-rosu"; titlu = cate(restante.length, "declarație trebuie depusă", "declarații trebuie depuse");
     sub = "Contabilul tău se ocupă.";
   } else if (d.stare === "galben") {
-    clasa = "pa-galben"; titlu = `${urmarit.length} ${urmarit.length === 1 ? "termen apropiat" : "termene apropiate"}`;
+    clasa = "pa-galben"; titlu = cate(urmarit.length, "termen apropiat", "termene apropiate");
     sub = "Scadențe în perioada următoare.";
   } else {
     // [P13c] verdictul din stare, din PUNCTUL UNIC (verdict.js): verde EXPLICIT -> pozitiv; stare
@@ -320,13 +320,13 @@ async function randeazaSolicitari(corp, nav) {
     lista = (r && r.solicitari) || [];
   } catch (e) { err = e; }
   let firHtml = err
-    ? '<p class="msg-eroare">' + (err.mesaj || "Nu s-au putut încărca mesajele.") + '</p>'
+    ? '<p class="msg-eroare">' + esc(err.mesaj || "Nu s-au putut încărca mesajele.") + '</p>'
     : '<div class="stare-goala">Niciun mesaj încă.</div>';
   if (lista.length) {
     firHtml = lista.map((s) => {
       const cine = s.autor_rol === "cabinet" ? "Contabil" : "Tu";
       return `<div class="sol-rand sol-${s.autor_rol}">
-        <div class="sol-mesaj">${s.mesaj}</div>
+        <div class="sol-mesaj">${esc(s.mesaj)}</div>
         <div class="sol-meta">${cine} · ${dataRo(s.creat_la)}</div>
       </div>`;
     }).join("");
@@ -355,7 +355,7 @@ async function randeazaSolicitari(corp, nav) {
     } catch (e) {
       btn.disabled = false; btn.textContent = "Trimite";
       btn.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-      btn.insertAdjacentHTML("afterend", '<span class="msg-eroare">' + (e.mesaj || "Nu s-a putut trimite mesajul.") + '</span>');
+      btn.insertAdjacentHTML("afterend", '<span class="msg-eroare">' + esc(e.mesaj || "Nu s-a putut trimite mesajul.") + '</span>');
     }
   });
 }

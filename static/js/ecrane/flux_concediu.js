@@ -1,7 +1,8 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu } from "../api.js?v=2561dbfd34";
+import { api, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu } from "../api.js?v=72aa1cbbdb";
+import { ciornaFormular } from "../ciorna_formular.js?v=f59e00811a";  // [267, clasa] ciorna formularelor lungi de creare
 
 // [cm_coduri_v1 22.08.2026] Lista de coduri NU mai traieste aici. Denumirea vine din
 // nomenclator (`core/nomenclator_cm.py`), procentul din registru (`salarizare.procent_cm`,
@@ -29,7 +30,7 @@ function optiuniCM(lista) {
 
 export async function fluxConcediu(nav, t, sal, dupaSalvare) {
   // sal = { id, nume } (salariatul selectat)
-  const numeSal = [sal.prenume, sal.nume].filter(Boolean).join(" ") || ("Salariat #" + sal.id);
+  const numeSal = [sal.prenume, sal.nume].filter(Boolean).join(" ") || "salariat fără nume";   // [258] nu id-ul intern
   nav.mergi("Concediu medical \u2014 " + numeSal, (corp) => randeaza(corp));
 
   async function randeaza(corp) {
@@ -45,7 +46,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       : lista.map((c) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${esc(numarCuSerie(c.serie, c.numar))} \u00b7 cod ${esc(c.cod || "")} \u00b7 ${c.zile || 0} zile</div>
+            <div class="pf-frand-nume">${esc(numarCuSerie(c.serie, c.numar))} \u00b7 cod ${esc(c.cod || "")} \u00b7 ${cate(c.zile, "zi", "zile")}</div>
             <div class="pf-frand-sub">${dataRo(c.data_inceput)} \u2192 ${dataRo(c.data_sfarsit)} \u00b7 indemniza\u021bie brut\u0103 ${bani(c.indemnizatie || 0)} lei \u00b7 net ${bani(c.net || 0)} lei</div>
           </div>
           <button class="buton-sters buton-mic" data-sterge="${c.id}" data-actiune="DELETE /tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}">\u0218terge</button>
@@ -126,7 +127,13 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     chkCont.addEventListener("change", () => { episodZona.style.display = daNu(chkCont) === true ? "grid" : "none"; });  // [CM-episod] campuri certificat initial, conditionat
 
 
-    zona.querySelector("#cm-renunta").addEventListener("click", () => { zona.innerHTML = ""; });
+    // [267, clasa „formularele lungi”] certificatul început rămâne la închidere / ieșirea din pagină și revine la redeschidere;
+    // ciorna se șterge la salvare și la „Renunță”
+    const ciorna = ciornaFormular(zona, "iconta_ciorna_cm:" + t.id + ":" + sal.id,
+      ["cm-serie", "cm-numar", "cm-cod", "cm-venit", "cm-urgenta", "cm-cnp-ingrijit", "cm-acord", "cm-inceput", "cm-sfarsit", "cm-zile",
+       "cm-continuare", "cm-serie-ini", "cm-numar-ini", "cm-ven6", "cm-zile6", "cm-diag", "cm-spital", "cm-program-national"]);
+    if (ciorna.refacuta) { selCod.dispatchEvent(new Event("change")); chkCont.dispatchEvent(new Event("change")); }
+    zona.querySelector("#cm-renunta").addEventListener("click", () => { ciorna.sterge(); zona.innerHTML = ""; });
 
     // Auto-calcul zile lucratoare (FARA sarbatori legale, OUG 158/2005 art.10) intre inceput
     // si sfarsit; contabilul poate suprascrie. Calendarul e pe backend (sursa unica), NU
@@ -205,6 +212,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       btn.disabled = true; btn.textContent = "Se salveaz\u0103\u2026";
       try {
         const r = await api.post(`/tenants/${t.id}/salariati/${sal.id}/concedii`, payload);
+        ciorna.sterge();
         const c = r.calcul || {};
         rez.innerHTML = `
           <div class="panou" style="margin-top:12px;max-width:520px">

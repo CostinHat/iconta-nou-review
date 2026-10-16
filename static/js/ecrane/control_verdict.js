@@ -6,7 +6,7 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt } from "../api.js?v=2561dbfd34";
+import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt } from "../api.js?v=72aa1cbbdb";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
@@ -247,7 +247,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const sectDocumente = (() => {
     const dp = vc.documente_pozate;
     if (!dp) return "";
-    const det = dp.ok ? "" : (dp.bonuri_neverificate ? `${dp.bonuri_neverificate} neverificate` : "");
+    const det = dp.ok ? "" : (dp.bonuri_neverificate ? cate(dp.bonuri_neverificate, "bon neverificat", "bonuri neverificate") : "");
     return `<div class="cf-grup-titlu">Documente pozate</div><div class="cf-decl">${randVerif("Documente confirmate de client, contate", dp.ok, det)}</div>`;
   })();
 
@@ -362,7 +362,7 @@ export function legaVerdict(corp, nav, firma) {
   }));
   corp.querySelectorAll(".cf-anterior-toate").forEach((b) => b.addEventListener("click", () => {
     const perioade = JSON.parse(b.dataset.perioade || "[]");
-    confirmaCaseta(b.parentElement, `Marchezi ${perioade.length} declarații ca depuse de contabilul anterior? Data depunerii nu se cunoaște; o poți completa apoi pe fiecare.`, async () => {
+    confirmaCaseta(b.parentElement, `Marchezi ${cate(perioade.length, "declarație", "declarații")} ca depuse de contabilul anterior? Data depunerii nu se cunoaște; o poți completa apoi pe fiecare.`, async () => {
       try {
         await api.post(`/control-fiscal/${firma.tenant_id}/depuse-anterior`, { perioade });
         await reincarcaPePozitie(corp, firma, b);
@@ -373,7 +373,7 @@ export function legaVerdict(corp, nav, firma) {
   corp.querySelectorAll(".cf-incr-btn").forEach((b) => b.addEventListener("click", () => {
     const ids = (b.dataset.facturi || "").split(",").filter(Boolean);
     if (!ids.length) return;
-    confirmaCaseta(b.parentElement, `Se creează ${ids.length} note contabile ciornă. Continui?`, async () => {
+    confirmaCaseta(b.parentElement, `Se creează ${cate(ids.length, "notă contabilă ciornă", "note contabile ciornă")}. Continui?`, async () => {
       b.disabled = true;
       b.textContent = "Se contabilizează…";
       let ok = 0;
@@ -396,7 +396,7 @@ export function legaVerdict(corp, nav, firma) {
       if (err.length) {
         b.disabled = false;
         b.textContent = "Contabilizează facturile";
-        arataMesaj(b.parentElement, `${ok} contabilizate. Erori: ${err.join("; ")}`, "avert");
+        arataMesaj(b.parentElement, `${cate(ok, "factură contabilizată", "facturi contabilizate")}. Erori: ${err.join("; ")}`, "avert");
       } else if (typeof firma.reincarca === "function") {
         firma.reincarca();
       }

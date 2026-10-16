@@ -190,8 +190,8 @@ def calcul_d301(prof, perioada, operatiuni_raw):
                    totaluri={t: tuple(tot[t]) for t in TIPURI_OP},
                    total_plata_a=total_plata, mij_transp=mij,
                    ops_raw=list(operatiuni_raw))
-    res.sinteza.append("D301 %d/%d: %d operațiuni, TVA total %s."   # [08.10, V5] sinteza cifrelor, nu avertisment
-                            % (luna, an, len(ops), bani(sum(tot[t][1] for t in TIPURI_OP), "lei")))
+    res.sinteza.append("D301 %d/%d: %s, TVA total %s."   # [08.10, V5] sinteza cifrelor, nu avertisment
+                            % (luna, an, c.cate(len(ops), "operațiune", "operațiuni"), bani(sum(tot[t][1] for t in TIPURI_OP), "lei")))
     return res
 
 
@@ -271,8 +271,8 @@ def _blocante_pre_duk(res):
         if not nr:
             b.append("Operatiunea #%d: fără număr document." % i)
         elif len(nr) > 20:
-            b.append("Operatiunea %s: număr document de %d caractere depășește C(20) (structura ANAF); "
-                     "nu se emite netrunchiat." % (eticheta, len(nr)))
+            b.append("Operatiunea %s: număr document de %s depășește C(20) (structura ANAF); "
+                     "nu se emite netrunchiat." % (eticheta, c.cate(len(nr), "caracter", "caractere")))
         # data_doc: gol (T2)
         dd_raw = r.get("data_doc")
         dd = str(dd_raw).strip() if dd_raw is not None else ""
@@ -420,9 +420,9 @@ def genereaza(conn, schema, perioada, manual=None):
             "Date firmă (altfel declarația e contradictorie), sau reclasifică operațiunea.")
     if _ic_prim:
         res.avertismente.append(
-            "Verifică: există %d achiziție(i) IC înregistrate ca facturi în perioadă - asigură-te că toate "
+            "Verifică: există %s ca facturi în perioadă - asigură-te că toate "
             "sunt reflectate în operațiunile D301 (declarația se construiește din operațiunile introduse în "
-            "ecranul D301, nu automat din facturi)." % len(_ic_prim))
+            "ecranul D301, nu automat din facturi)." % c.cate(len(_ic_prim), "achiziție IC înregistrată", "achiziții IC înregistrate"))
     # [T2 10.08.2026] valideaza(res) era COD MORT: genereaza chema doar erori_generare(prof), deci
     # verificarile prietenoase pe operatiuni (nr_doc/data_doc gol, tip/valuta out-of-nomenclator, T6
     # nr_doc>C(20)) nu ajungeau la contabil - primea eroarea bruta a validatorului la upload. Le cablam

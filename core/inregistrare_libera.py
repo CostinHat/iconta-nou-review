@@ -28,6 +28,7 @@ import secrets
 
 from core import afirmatii as _af
 from core import nucleu
+from core.common import cate as _cate
 
 VALABILITATE_ORE = 24
 PASTRARE_ZILE = 7
@@ -47,9 +48,9 @@ MESAJ_ANTIROBOT = ("Verificarea anti-roboți n-a trecut, deci contul nu a fost c
                    "deasupra butonului, apoi apasă din nou „Creează cont”.")
 MESAJ_ANTIROBOT_INDISPONIBIL = ("Verificarea anti-roboți nu răspunde acum, deci contul nu a fost creat. Încearcă din nou peste câteva "
                                 "minute.")
-MESAJ_NECONFIRMAT = ("Contul nu e încă activ: confirmă adresa de email cu linkul primit la înregistrare (valabil %d de ore). Dacă "
-                     "linkul a expirat, înregistrează-te din nou." % VALABILITATE_ORE)
-REGULA = "Linkul de confirmare e valabil %d de ore și se folosește o singură dată." % VALABILITATE_ORE
+MESAJ_NECONFIRMAT = ("Contul nu e încă activ: confirmă adresa de email cu linkul primit la înregistrare (valabil %s). Dacă "
+                     "linkul a expirat, înregistrează-te din nou." % _cate(VALABILITATE_ORE, "oră", "ore"))
+REGULA = "Linkul de confirmare e valabil %s și se folosește o singură dată." % _cate(VALABILITATE_ORE, "oră", "ore")
 
 
 def _hash(token):
@@ -135,8 +136,8 @@ def ia_pentru_confirmare(cur, token, acum=None):
         return {"valida": False, "cerere": c, "refuz": _refuz("FOLOSITA", "Linkul a fost folosit deja: contul cabinetului e activ. "
                                                                "Intră în cont cu emailul și parola.", c["email"])}
     if c["expira_la"] < acum:
-        return {"valida": False, "cerere": c, "refuz": _refuz("EXPIRATA", "Linkul de confirmare a expirat (era valabil %d de ore). "
-                                                               "Înregistrează-te din nou." % VALABILITATE_ORE, c["email"])}
+        return {"valida": False, "cerere": c, "refuz": _refuz("EXPIRATA", "Linkul de confirmare a expirat (era valabil %s). "
+                                                               "Înregistrează-te din nou." % _cate(VALABILITATE_ORE, "oră", "ore"), c["email"])}
     return {"valida": True, "cerere": c, "refuz": None}
 
 

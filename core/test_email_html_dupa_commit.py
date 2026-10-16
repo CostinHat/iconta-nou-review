@@ -284,7 +284,7 @@ def test_solicitarea_trimite_dupa_commit(m, monkeypatch):
     assert conn.comis >= 1
     catre, subiect, html = postas.trimise[0]
     assert catre == "client@firma.ro"
-    assert subiect == "Raspuns nou de la contabilul tau"
+    assert subiect == "Răspuns nou de la contabilul tău"   # [C39, lotul 5] diacriticele subiectului
     texte, _et = _noduri_text(html)
     assert [t for t in texte if t == "am raspuns la intrebarea ta"], (
         "mesajul nu apare ca text afisat: %r" % texte)

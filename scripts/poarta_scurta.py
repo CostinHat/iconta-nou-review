@@ -104,6 +104,28 @@ def e2e_atinse(front):
     return out
 
 
+def e2e_din_plasa(atinse):
+    """`{fișier e2e: [motive]}` — plasa atinsă DIRECT: un fișier e2e schimbat (sau nou) rulează el însuși, și odată cu el fișierele e2e
+    care îl importă (ajutoarele comune: `from e2e_bloc_d import …`); `conftest.py`-ul plasei sau `scripts/e2e_poarta.py` schimbate ->
+    plasa întreagă (incert pentru plasă). [lotul 5, comanda 3] Înainte, e2e-ul se alegea numai după id-urile DOM ale JS-ului atins:
+    `e2e_lot5_id.py`, nou, și `e2e_ciorne_proprii.py`, schimbat, n-au rulat deloc."""
+    import glob
+    import re
+    toate = sorted(os.path.relpath(e, RAD) for e in glob.glob(os.path.join(RAD, "frontend_test", "e2e", "e2e_*.py")))
+    plasa = [a for a in atinse if a.startswith("frontend_test/e2e/") and a.endswith(".py")]
+    if "scripts/e2e_poarta.py" in atinse or any(a not in toate for a in plasa):
+        return {e: ["plasa (conftest / e2e_poarta.py) atinsă"] for e in toate}
+    out = {e: ["atins"] for e in plasa if e in toate}
+    module = {os.path.basename(e)[:-3] for e in out}
+    for e in toate:
+        if e in out:
+            continue
+        imp = set(re.findall(r"^from (e2e_\w+) import", open(os.path.join(RAD, e), encoding="utf-8").read(), re.M)) & module
+        if imp:
+            out[e] = ["importă %s" % ", ".join(sorted(imp))]
+    return out
+
+
 def _ruleaza_tot(motiv):
     print()
     print("PERIMETRUL NU SE POATE INCHIDE (%s) — se ruleaza SUITA INTREAGA:" % motiv)
@@ -162,10 +184,11 @@ def main(argv):
         for a in restul:
             if not teste_care_numesc([a]) and not (a.endswith(".md") and "/" not in a):
                 print("(niciun test nu numeste %s: il vede numai poarta lotului)" % a)
-    e2e = {}
+    e2e = e2e_din_plasa(atinse)
     if front:
         teste = sorted(set(teste) | set(teste_statice()) | set(teste_care_numesc(front)))
-        e2e = e2e_atinse(front)
+        for f, ids in e2e_atinse(front).items():
+            e2e.setdefault(f, []).append("id-uri: " + ", ".join(ids[:6]) + (" …" if len(ids) > 6 else ""))
     cod = 0
 
     # [3] nesiguranta din PYTHON -> suita intreaga, cu motivele scrise
@@ -188,16 +211,20 @@ def main(argv):
 
     if front:
         print()
-        print("FRONT ATINS (%d): verificatorul + e2e-ul ecranelor atinse (%d fisiere)." % (len(front), len(e2e)))
+        print("FRONT ATINS (%d): verificatorul + e2e-ul ecranelor atinse." % len(front))
         r = subprocess.run(["./venv/bin/python", "verificator_conformitate.py"], cwd=RAD, capture_output=True, text=True)
         total = [x for x in r.stdout.splitlines() if x.startswith("TOTAL: ")]
         print("verificator: %s" % (total[-1] if total else "fara linia TOTAL (exit %d)" % r.returncode))
         if total != ["TOTAL: 0 candidate"]:
             cod = cod or 1
-        for f, ids in e2e.items():
-            print("e2e %s (id-uri: %s)" % (f, ", ".join(ids[:6]) + (" …" if len(ids) > 6 else "")))
-            r = subprocess.run(["./venv/bin/python", "scripts/e2e_poarta.py", "--arbore", "--doar=" + os.path.basename(f)], cwd=RAD)
-            cod = cod or r.returncode
+    if e2e:
+        print()
+        print("E2E (%d fisiere): ecranele atinse + plasa atinsa direct." % len(e2e))
+    for f, motive in sorted(e2e.items()):
+        print("e2e %s (%s)" % (f, "; ".join(motive)))
+        r = subprocess.run(["./venv/bin/python", "scripts/e2e_poarta.py", "--arbore", "--doar=" + os.path.basename(f)], cwd=RAD)
+        cod = cod or r.returncode
+    if front:
         if not e2e:
             print("(niciun e2e nu foloseste id-urile fisierelor atinse)")
         print("OBLIGATIA EXECUTORULUI (CLAUDE.md §2.3 pct.11): `versioneaza_assets.py --scrie`, apoi uneltele vizuale pe ecranele atinse")

@@ -14,6 +14,7 @@ XML identic byte cu byte pe toate testele care genereaza D112 (DECIZII 06.10.202
 DENUMIRE_OFICIALA = 'Declarație privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor asigurate'
 
 from core.common import text_anaf as _t, cere_coloane_cursor, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
+from core.common import cate as _cate
 from dataclasses import dataclass, field
 from core.cache_declarat import Declaratie as _Dec
 import re
@@ -503,7 +504,7 @@ def calcul_d112(prof, salariati, an, luna):
                 _t6 = (("D_1 (serie)", str(x.get("serie") or ""), 5),
                        ("D_2 (număr)", str(x.get("numar") or ""), 10),
                        ("D_23 (diagnostic)", _diag, 3))
-                _ovf = ["%s = %d caractere (max %d)" % (_lbl, len(_v), _lim) for _lbl, _v, _lim in _t6 if len(_v) > _lim]
+                _ovf = ["%s = %s (max %d)" % (_lbl, _cate(len(_v), "caracter", "caractere"), _lim) for _lbl, _v, _lim in _t6 if len(_v) > _lim]
                 if _ovf:
                     raise ValueError(
                         "D112: certificatul de concediu medical (salariat CNP %s) are câmpuri care depășesc "
@@ -653,8 +654,8 @@ def calcul_d112(prof, salariati, an, luna):
               "r07": _c2row(("07",))}   # [cod07] carantina - rand C2 propriu (prevenire imbolnavire, FNUASS)
         # carantina e deja in r2[5]=C2_26 (nu se dubleaza)
         c2["t6"] = sum(c2[k][5] for k in ("r1", "r2", "r3", "r4", "r41", "r5"))
-    sinteza = ["D112: %d salariati - impozit %s, CAS %s, CASS %s, CAM %s lei (luna %d/%d)."
-               % (n, bani(sum_imp), bani(sum_cas), bani(sum_cass), bani(cam_total), luna, an)]   # [08.10, V5] nu e avertisment
+    sinteza = ["D112: %s - impozit %s, CAS %s, CASS %s, CAM %s lei (luna %d/%d)."
+               % (_cate(n, "salariat", "salariați"), bani(sum_imp), bani(sum_cas), bani(sum_cass), bani(cam_total), luna, an)]   # [08.10, V5] nu e avertisment
     return CalculD112(
         rezultat=RezultatD112(an=an, luna=luna, prof=prof, obligatii=obligatii, asigurati=asigurati,
                               total_plata_a=int(total_plata), avertismente=av, sinteza=sinteza),

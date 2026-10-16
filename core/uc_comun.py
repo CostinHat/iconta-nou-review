@@ -294,9 +294,9 @@ def controale_inchidere(conn, schema, an, luna):
                             "mijlocul fix în registru" % (x["cont"], x["eroare"])), cont=x["cont"]))
     for x in anterioare:
         # [deficiența 215] semnal, nu blocaj: luna închisă acum își are amortizarea; cele dinainte se generează pe fiecare lună
-        semnale.append(_ctl("AMORTIZARE_ANTERIOARA_NEINREGISTRATA", "amortizarea lunilor anterioare nu e înregistrată pe contul %s: %d %s "
+        semnale.append(_ctl("AMORTIZARE_ANTERIOARA_NEINREGISTRATA", "amortizarea lunilor anterioare nu e înregistrată pe contul %s: %s "
                             "(%s), %s lei după calcul — generează-o din Registrul jurnal („Generează amortizarea”), lună cu lună, și "
-                            "valideaz-o" % (x["cont"], len(x["luni"]), "lună" if len(x["luni"]) == 1 else "luni",
+                            "valideaz-o" % (x["cont"], _cate(len(x["luni"]), "lună", "luni"),
                                              _mfr.luni_ca_interval(x["luni"]), _bani(x["total"])), cont=x["cont"]))
     if sold_581:
         semnale.append(_ctl("SOLD_581", "contul 581 (viramente interne) are sold %s lei la sfârșitul lunii: un virament intern se "
@@ -356,7 +356,7 @@ def _notif_note_de_validat(conn, cabinet_id, etichete, creat_de_id, tenant_id=No
         return
     ids = _notif.validatorii_cabinetului(conn, cabinet_id, exclude_id=creat_de_id)
     txt = (("Notă pregătită, de validat: %s." % etichete[0]) if len(etichete) == 1
-           else "%d note pregătite, de validat (prima: %s)." % (len(etichete), etichete[0]))
+           else "%s, de validat (prima: %s)." % (_common.cate(len(etichete), "notă pregătită", "note pregătite"), etichete[0]))
     _notif.adauga_multi(conn, ids, "de_validat", _cu_firma(conn, tenant_id, txt), link=_link_element(coada_id))
 
 
@@ -483,6 +483,22 @@ def _urma_portal(cur, tenant_id, actiune, detaliu, autor_id):
     pleca la cel invitat. Append-only, `actiune` dintr-o lista inchisa in BAZA, `detaliu` care nu
     poate fi gol — o urma care nu spune nimic nu e o urma."""
     _repo.insert_public_4(cur, tenant_id, actiune, detaliu, autor_id)
+
+
+def cu_eticheta(schema, rez):
+    """[deficiența 258] Răspunsul unei operațiuni care a scris note, cu notele numite cum le arată Registrul jurnal („nr. crt. 5 din
+    12.03.2026”, `eticheta_nota.in_raspuns`), ca ecranul să nu le mai numească prin id-ul intern („ciornă #24”). Se cheamă DUPĂ
+    commit (conexiune nouă): numărul curent e al notei scrise. Întoarce `rez`."""
+    from core import eticheta_nota as _et
+    with db.get_conn() as conn, conn.cursor() as cur:
+        return _et.in_raspuns(cur, schema, rez)
+
+
+def _cine(cur, user_id):
+    """[deficiența 258] Utilizatorul din urma portalului numit prin adresa lui, nu prin id-ul intern („utilizatorului #57”)."""
+    from core import repo_utilizatori as _ru
+    r = _ru.emailul_contului(cur, user_id)
+    return ((r["email"] if isinstance(r, dict) else r[0]) if r else None) or "un cont șters"
 
 
 def _cere_acelasi_cabinet(ex, firm_id):
@@ -955,8 +971,10 @@ def _cere_z_unic(cur, schema, numar):
     if not r:
         return
     iid, data_ex, sursa = (r["id"], r["data"], r["sursa"]) if isinstance(r, dict) else r
+    from core import eticheta_nota as _et
+    from core import pdf_util as _pu
     raise _erori.Conflict(MESAJ_Z_DUPLICAT % {
-        "numar": numar, "data": data_ex, "id": iid,
+        "numar": numar, "data": _pu.data_ro(data_ex), "nota": _et.nota(cur, schema, iid),
         "cum": "importată din fișier AMEF" if sursa == "amef" else "tastată"})
 
 
@@ -1120,10 +1138,10 @@ def _trimite_recomandari(emails, html, subiect):
 def _mesaj_recomanda_client_html(nume_firma):
     return (
         "<div style='font-family:sans-serif;font-size:15px;color:#111;max-width:540px;line-height:1.55'>"
-        "<p>Buna,</p>"
-        "<p>Sunt client iConta.eu si ma tine departe de batai de cap cu ANAF - "
-        "imi arata din timp daca am ceva de depus sau de platit, inainte sa fie o problema.</p>"
-        "<p>M-am gandit ca ti-ar prinde bine si tie.</p>"
+        "<p>Bună,</p>"
+        "<p>Sunt client iConta.eu și mă ține departe de bătăi de cap cu ANAF — "
+        "îmi arată din timp dacă am ceva de depus sau de plătit, înainte să fie o problemă.</p>"
+        "<p>M-am gândit că ți-ar prinde bine și ție.</p>"
         "<p style='margin:24px 0'><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
         "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>Vezi iConta.eu</a></p>"
         "</div>"
@@ -1132,13 +1150,13 @@ def _mesaj_recomanda_client_html(nume_firma):
 
 def _mesaj_promo_html(nume_cabinet):
     # [p32_mesaj] text cu diacritice, 4 atribute principale ale aplicatiei
-    cine = nume_cabinet or "Un cabinet de contabilitate"
+    cine_html = _common.esc(nume_cabinet or "Un cabinet de contabilitate")   # [C39] numele cabinetului e scris de om
     _li = "margin:0 0 10px 0;padding-left:2px"
     return (
         "<!-- [p32_mesaj] -->"
         "<div style='font-family:sans-serif;font-size:15px;color:#111;max-width:540px;line-height:1.55'>"
         "<p>Bună,</p>"
-        "<p>" + cine + " folosește <b>iConta.eu</b> și s-a gândit că ți-ar prinde bine și ție.</p>"
+        "<p>" + cine_html + " folosește <b>iConta.eu</b> și s-a gândit că ți-ar prinde bine și ție.</p>"
         "<p>iConta.eu e contabilitatea în cloud care lucrează pentru tine și echipa ta:</p>"
         "<ul style='margin:14px 0;padding-left:20px'>"
         "<li style='" + _li + "'><b>Te apără</b> &mdash; semaforul fiscal te avertizează înainte "
@@ -1242,7 +1260,8 @@ _TENANT_TEMPLATE_DECLARATIE = _cache_declarat.Declaratie(
     dovada="core/test_cache_declarat.py::test_sablonul_de_tenant_se_reconstruieste_identic",
 )
 
-#: directorul din care se servesc fisierele statice — si in care se scriu capturile de raportari.
+#: directorul din care se servesc fisierele statice. [C36, 15.10.2026] Nu se mai scrie nimic aici la rulare: capturile si
+#: exporturile cabinetelor stau in depozitul privat (`core.fisiere_private`), care refuza un director din interiorul acestuia.
 _STATIC_DIR = None
 _STATIC_DIR_DECLARATIE = _cache_declarat.Declaratie(
     rol="directorul din care se servesc fisierele statice, ales o data la pornire",
@@ -1267,7 +1286,7 @@ def pune_sablon_tenant(text):
 
 
 def pune_static_dir(cale):
-    """Stratul HTTP a ales directorul static; use-case-ul scrie capturile acolo."""
+    """Stratul HTTP a ales directorul static; depozitul privat (`core.fisiere_private`) refuza sa stea in el."""
     global _STATIC_DIR
     _STATIC_DIR = cale
 

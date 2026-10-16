@@ -94,11 +94,23 @@ def _trimite_brevo(subiect, mesaj):
         return False
     import json
     import urllib.request
+    from core import dezabonare as _dez
+    catre = cfg("ICONTA_ALERTA_EMAIL", _EMAIL_IMPLICIT)
+    # [268] dezabonarea: refuzul dintr-un registru CITIT; registrul care nu se poate citi NU oprește alerta (fail-open, invers decât
+    # la `trimite_email_html`): o alertă despre o bază căzută trebuie să plece tocmai atunci (core/dezabonare.py)
+    try:
+        if _adresa_dezabonata(catre):
+            print("[ALERTĂ netrimisă, adresa %s s-a dezabonat] %s" % (catre, subiect), flush=True)
+            return False
+    except Exception as e:  # noqa: BLE001 — fail-open, cu urmă: alerta pleacă
+        print("[alertă: registrul dezabonărilor nu s-a putut citi (%s: %s); alerta pleacă] %s" % (type(e).__name__, e, subiect),
+              flush=True)
     payload = json.dumps({
         "sender": {"email": cfg("ICONTA_SENDER_EMAIL", _EMAIL_IMPLICIT), "name": "iConta.eu Alerte"},
-        "to": [{"email": cfg("ICONTA_ALERTA_EMAIL", _EMAIL_IMPLICIT)}],
+        "to": [{"email": catre}],
         "subject": "[iConta.eu] " + subiect,
-        "textContent": mesaj,
+        "textContent": mesaj + _dez.subsol_text(catre),
+        "headers": _dez.antete(catre),
     }).encode()
     req = urllib.request.Request(
         "https://api.brevo.com/v3/smtp/email", data=payload,
@@ -111,7 +123,28 @@ def _trimite_brevo(subiect, mesaj):
         return False
 
 
-def _in_cutia_de_test(director, catre, subiect, html):
+def _adresa_dezabonata(catre):
+    """[268] Adresa e în registrul dezabonărilor (core/dezabonare.py)? Ridică dacă registrul nu se poate citi — apelantul alege: emailul
+    nu pleacă (`refuz_dezabonare`, fail-closed), alerta internă pleacă (`_trimite_brevo`, fail-open)."""
+    from core import db, dezabonare as _dez
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            r = _dez.e_dezabonata(cur, catre)
+        conn.rollback()
+    return r
+
+
+def refuz_dezabonare(catre):
+    """De ce NU pleacă un email la `catre` (text), sau None. Nu ridică: registrul care nu se poate citi e un refuz, cu motivul lui."""
+    from core import dezabonare as _dez
+    try:
+        d = _adresa_dezabonata(catre)
+    except Exception as e:  # noqa: BLE001 — devine motivul refuzului, nu se pierde
+        return "registrul dezabonărilor nu s-a putut citi (%s: %s), deci emailul către %s nu pleacă" % (type(e).__name__, e, catre)
+    return ("adresa %s s-a dezabonat de la emailurile iConta.eu" % _dez.normalizeaza(catre)) if d else None
+
+
+def _in_cutia_de_test(director, catre, subiect, html, antete):
     """[15.10.2026, lotul 4] CUTIA POȘTALĂ DE TEST: pe instanța de probă (`ICONTA_EMAIL_CUTIE`, pus numai de `scripts/e2e_poarta.py`)
     emailul se scrie ca fișier JSON în director, în loc să plece — probele își iau de acolo linkul de confirmare a înregistrării, pe
     care altfel numai destinatarul îl vede. Producția nu are variabila (gard `core/test_cutia_email_numai_la_proba.py`)."""
@@ -121,7 +154,7 @@ def _in_cutia_de_test(director, catre, subiect, html):
     try:
         os.makedirs(director, exist_ok=True)
         with open(cale, "w", encoding="utf-8") as f:
-            json.dump({"catre": catre, "subiect": subiect, "html": html}, f, ensure_ascii=False)
+            json.dump({"catre": catre, "subiect": subiect, "html": html, "antete": antete}, f, ensure_ascii=False)
     except OSError as e:          # cutia care nu primește = emailul care n-a plecat (probele îl simulează așa: director needitabil)
         print("[email netrimis, cutia de test] %s -> %s: %s" % (subiect, catre, e))
         return False
@@ -130,7 +163,7 @@ def _in_cutia_de_test(director, catre, subiect, html):
 
 # [p30_email_generic]
 def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
-                       expeditor_nume="iConta.eu"):
+                       expeditor_nume="iConta.eu", cerut_de_destinatar=False):
     """Email HTML catre un destinatar arbitrar (nu doar alerta interna).
     Refoloseste cheia Brevo + sender-ul (env, citit la apel). Intoarce True/False.
 
@@ -139,10 +172,22 @@ def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
       trimite From pe alt domeniu (ar pica SPF/DMARC). Folosit de F131: emailul
       pleaca in numele firmei (expeditor_nume='<Firma> prin iConta'), dar reply-to
       = adresa firmei ca raspunsul clientului sa ajunga la ea, nu la iConta.
-    expeditor_nume: numele afisat al expeditorului (implicit 'iConta')."""
+    expeditor_nume: numele afisat al expeditorului (implicit 'iConta').
+    cerut_de_destinatar: [268] emailul e cerut CHIAR ACUM de destinatar (resetarea parolei, linkul de logare, confirmarea propriei
+      adrese) — pleacă și la o adresă dezabonată. Orice alt email NU pleacă la o adresă din registrul dezabonărilor (refuzul se scrie în
+      jurnal, iar funcția întoarce False). Subsolul „Dezabonează-te” și antetele List-Unsubscribe se pun AICI, la toate emailurile —
+      un singur loc, nu la fiecare apelant (core/dezabonare.py; gard core/test_dezabonare.py)."""
+    from core import dezabonare as _dez
+    if not cerut_de_destinatar:
+        motiv = refuz_dezabonare(catre)
+        if motiv:
+            print("[email netrimis, %s] %s -> %s" % (motiv, subiect, catre), flush=True)
+            return False
+    html = html + _dez.subsol_html(catre)
+    antete = _dez.antete(catre)
     cutie = cfg("ICONTA_EMAIL_CUTIE")
     if cutie:
-        return _in_cutia_de_test(cutie, catre, subiect, html)
+        return _in_cutia_de_test(cutie, catre, subiect, html, antete)
     brevo_key = cfg("BREVO_API_KEY")
     if not brevo_key:
         print("[email netrimis, fara BREVO_API_KEY] %s -> %s" % (subiect, catre))
@@ -154,6 +199,7 @@ def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
         "to": [{"email": catre}],
         "subject": subiect,
         "htmlContent": html,
+        "headers": antete,
     }
     if reply_to:
         corp["replyTo"] = {"email": reply_to}
@@ -187,7 +233,8 @@ def trimite_email_html_sau_semnaleaza(eticheta, catre, subiect, html, alerta=Fal
         esec_secundar(eticheta, e, alerta=alerta)
         return False
     if not ok:
-        esec_secundar(eticheta, RuntimeError("emailul către %s nu a plecat (Brevo a refuzat, lipsește cheia sau rețeaua)" % catre),
+        esec_secundar(eticheta, RuntimeError("emailul către %s nu a plecat (adresa dezabonată, Brevo a refuzat, lipsește cheia sau rețeaua — "
+                                                  "motivul e în rândul de jurnal de dinainte)" % catre),
                       alerta=alerta)
     return bool(ok)
 

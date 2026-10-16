@@ -27,6 +27,7 @@ from core import stare_partajata as _stare_part
 #: [P6 val 3, 12.09.2026] Ce trebuie sa stie un proces care nu mai e singur: cine instaleaza
 #: infrastructura, cine face munca de fundal, si cine poarta ce commit.
 from core import instante as _instante
+from core import rulari_teste as _rulari_teste, alerta_load as _alerta_load   # [6b] alerta de load: media pe 15 min, ținută, fără teste
 # [R23] RE-EXPORT, nu import nefolosit: `core/firma_rezumat.py` cheama `main.pastila_firma` si
 # `main.stare_din_nivel` prin `import main as _main` — lucratorul modelului de citire ii cere
 # de acolo. Scoase de o curatenie automata, sase firme au ajuns cu `control_fiscal` in stare de
@@ -41,6 +42,9 @@ from core import autor_cerere as _autor_cerere   # [validare_note] cine face cer
 from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
 from core.mesaje import (ROL_INSUFICIENT, DOAR_ADMIN_ICONTA)
 from core.common import nomenclator_cerut
+from core.common import cate as _cate
+from core.common import esc as _esc_html   # [C39] text în HTML-ul emailurilor
+from core import aplicatii_migrare, fisiere_private   # [270 / C36, 15.10.2026] registrul aplicațiilor; depozitul privat
 
 
 # ============================================================
@@ -417,8 +421,8 @@ async def _handler_validare_camp(request: Request, exc: _RVE):
     if len(campuri) == 1:
         rezumat = "Cererea nu poate fi acceptată: %s — %s." % (campuri[0]["camp"], campuri[0]["mesaj"])
     else:
-        rezumat = ("Cererea nu poate fi acceptată, %d câmpuri: %s."
-                   % (len(campuri), "; ".join("%s — %s" % (c["camp"], c["mesaj"]) for c in campuri)))
+        rezumat = ("Cererea nu poate fi acceptată, %s: %s."
+                   % (_cate(len(campuri), "câmp", "câmpuri"), "; ".join("%s — %s" % (c["camp"], c["mesaj"]) for c in campuri)))
     return _JR(status_code=422, content={"detail": {"mesaj": rezumat, "erori_campuri": campuri}})
 
 
@@ -737,7 +741,7 @@ _ALERTE_COOLDOWN_SEC = 3600
 def _citeste_metrici_pentru_alerte():
     import os as _os
     import shutil as _shutil
-    rezultat = {"ram_procent": None, "disc_procent": None, "load1": None,
+    rezultat = {"ram_procent": None, "disc_procent": None, "load1": None, "load15": None, "teste": False,
                 "cpu_count": _os.cpu_count() or 1, "conexiuni_db": None, "erori_noi": 0}
     try:
         info = {}
@@ -757,9 +761,12 @@ def _citeste_metrici_pentru_alerte():
     except Exception:
         pass
     try:
-        rezultat["load1"] = _os.getloadavg()[0]
+        _l = _os.getloadavg()
+        rezultat["load1"], rezultat["load15"] = _l[0], _l[2]
     except Exception:
         pass
+    # [6b] o rulare de teste pe server (pytest, plasa, uneltele vizuale) nu e o încărcare de alertat (core/alerta_load.py)
+    rezultat["teste"] = bool(_rulari_teste.in_curs())
     try:
         with db.get_conn() as conn:
             with conn.cursor() as cur:
@@ -836,12 +843,10 @@ def _verifica_si_alerta():
         alerte.append(f"RAM folosita: {m['ram_procent']}% (prag {_PRAG_RAM_PROCENT}%)")
     if m["disc_procent"] is not None and m["disc_procent"] >= _PRAG_DISC_PROCENT and _poate_alerta("disc"):
         alerte.append(f"Disc folosit: {m['disc_procent']}% (prag {_PRAG_DISC_PROCENT}%)")
-    if m["load1"] is not None and m["load1"] >= 0.7 * m["cpu_count"] and _poate_alerta("load"):
-        alerte.append(f"Load average: {round(m['load1'], 2)} (prag {round(0.7 * m['cpu_count'], 2)})")
     if m["conexiuni_db"] is not None and m["conexiuni_db"] >= _PRAG_CONEXIUNI_DB and _poate_alerta("conexiuni_db"):
         alerte.append(f"Conexiuni DB active: {m['conexiuni_db']} (prag {_PRAG_CONEXIUNI_DB})")
     if m["erori_noi"] and m["erori_noi"] > 0 and _poate_alerta("erori"):
-        alerte.append(f"{m['erori_noi']} eroare/erori server (500+) in ultimele 10 minute")
+        alerte.append(f"{_cate(m['erori_noi'], 'eroare', 'erori')} server (500+) in ultimele 10 minute")
     # ICRD_ISTORIC_SANATATE_V1 - salveaza instantaneu pentru grafice
     try:
         with db.get_conn() as conn:
@@ -849,6 +854,18 @@ def _verifica_si_alerta():
                 _repo.insert_public_2(cur, m)
     except Exception as _e:
         _obs.esec_secundar("metrici sanatate: scriere", _e)  # inghitit, dar nu tacut (27.07.2026)
+    # [6b, 15.10.2026] load: media pe 15 minute peste numărul de procesoare, ținută, fără rulări de teste — din istoric, nu dintr-o
+    # singură măsurătoare (core/alerta_load.py)
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                istoric = _repo.load_recent(cur, _alerta_load.FARA_TESTE_MIN)
+        if istoric:
+            alerta, motiv = _alerta_load.de_alertat(istoric, m["cpu_count"], istoric[-1][0])
+            if alerta and _poate_alerta("load"):
+                alerte.append("Load: " + motiv)
+    except Exception as _e:
+        _obs.esec_secundar("metrici sanatate: load", _e)  # inghitit, dar nu tacut
 
     if not alerte:
         return
@@ -856,9 +873,9 @@ def _verifica_si_alerta():
     if not email:
         return
     html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
-            "<p>Alerta sanatate server iConta.eu:</p><ul>" +
-            "".join("<li>" + p + "</li>" for p in alerte) +
-            "</ul><p>Verifica panoul 'Sanatate server' din Admin iConta.</p></div>")
+            "<p>Alertă sănătate server iConta.eu:</p><ul>" +
+            "".join("<li>" + _esc_html(p) + "</li>" for p in alerte) +
+            "</ul><p>Verifică panoul „Sănătate server” din Panou Admin.</p></div>")
     # fara alerta: chiar asta e alerta (acelasi canal, Brevo) — esecul ramane in jurnal
     _obs.trimite_email_html_sau_semnaleaza("email alerta sanatate", email, "Alerta iConta.eu - sanatate server", html)
 
@@ -1730,6 +1747,20 @@ def public_termeni():
     corp = _md.markdown(_termeni_public_md(txt), extensions=["extra", "sane_lists"])
     return Response(content=_TERMENI_PAGINA % {"corp": corp}, media_type="text/html; charset=utf-8")
 
+# [268, Lotul 5] linkul „Dezabonează-te” din subsolul fiecărui email: GET arată confirmarea, POST dezabonează (și ținta antetului
+# List-Unsubscribe-Post). Semnătura din link (`s`) e autentificarea: dezabonează numai adresa pentru care a fost făcută.
+@app.get("/public/dezabonare")
+def public_dezabonare(e: str = "", s: str = ""):
+    cod, pagina = _uc_public.dezabonare_pagina(e, s)
+    return Response(content=pagina, status_code=cod, media_type="text/html; charset=utf-8")
+
+
+@app.post("/public/dezabonare")
+def public_dezabonare_confirma(e: str = "", s: str = ""):
+    cod, pagina = _uc_public.dezabonare_confirma(e, s)
+    return Response(content=pagina, status_code=cod, media_type="text/html; charset=utf-8")
+
+
 @app.get("/public/config")  # [beta_gate_v1] doar STAREA portii (bool), NU valoarea codului
 def public_config():
     return {"beta": False}   # [beta_gate SCOS 14.08] acces liber - campul de cod nu mai apare
@@ -1932,6 +1963,14 @@ def migrare_straturi_aplicabile(tip_firma: str = "srl", ctx=Depends(cere_cabinet
     Sursa unica de adevar = migrare_api.straturi_pentru (filtreaza pe STRATURI_META),
     ca meniul per-firma sa nu reinventeze in JS ce strat apartine carui regim."""
     return {"straturi": migrare_api.straturi_pentru(tip_firma)}
+
+
+@app.get("/migrare/aplicatii")
+def migrare_aplicatii(ctx=Depends(cere_cabinet)):
+    """[270, 15.10.2026] Aplicațiile din care se migrează (SAGA, WinMentor, Ciel, SmartBill), fiecare cu `activa` DERIVAT (are
+    cel puțin un pas al cărui export îl citește iConta.eu) și exportul de scos pe fiecare pas citit — sursa unică
+    `core/aplicatii_migrare.py`. Aceleași drepturi ca ecranul migrării (`/migrare/status`)."""
+    return {"aplicatii": aplicatii_migrare.registru()}
 
 
 @app.post("/migrare/status")
@@ -4953,7 +4992,9 @@ def trimite_recomandari(date: RecomandareIn, ctx=Depends(cere_cabinet)):
 # [p33_raportari]
 class RaportareNouaIn(BaseModel):
     subiect: Optional[str] = None
-    text: str
+    text: str = ""
+    tip: str = "sesizare"               # [270d] „sesizare” | „cerere_import” (cererea de import din altă aplicație)
+    aplicatie: Optional[str] = None     # [270d] aplicația din care migrează cabinetul — numai la cererea de import
 
 
 class MesajIn(BaseModel):
@@ -5038,11 +5079,40 @@ def raportari_pentru_admin(rid: int, date: PentruAdminIn, ctx=Depends(cere_cabin
         raise _http_din(e)
 
 
-# [p35_raportari_imagine]
+# [p35_raportari_imagine] [C36, 15.10.2026] capturile intră în depozitul privat (`core.fisiere_private`), nu în directorul servit
 @app.post("/raportari/mesaj/{mid}/imagine")
 def raportari_imagine(mid: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     try:
-        return _uc_raportari.raportari_imagine(mid, _octetii(fisier), fisier.filename, fisier.content_type, ctx)
+        return _uc_raportari.raportari_imagine(mid, _octetii(fisier), fisier.filename, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+# [270d, 15.10.2026] cererea de import din altă aplicație: capturi și exporturi (CSV, XLS, XLSX, ZIP), după conținut
+@app.post("/raportari/mesaj/{mid}/fisier")
+def raportari_fisier(mid: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_raportari.raportari_fisier(mid, _octetii(fisier), fisier.filename, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+# [C36, 15.10.2026] descărcarea unui fișier al sesizării: echipa iConta și autorul sesizării; oricui altcuiva 404
+@app.get("/raportari/fisiere/{fid}")
+def raportari_fisier_descarca(fid: int, ctx=Depends(cere_cabinet)):
+    try:
+        cale, nume, tip = _uc_raportari.raportari_fisier_descarca(fid, ctx)
+        return FileResponse(cale, media_type=fisiere_private.MIME[tip], filename=nume,
+                            headers={"X-Content-Type-Options": "nosniff", "Cache-Control": "private, no-store"})
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+# [270d, 15.10.2026] autorul sesizării își șterge fișierul (rândul și fișierul de pe disc)
+@app.delete("/raportari/fisiere/{fid}")
+def raportari_fisier_sterge(fid: int, ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_raportari.raportari_fisier_sterge(fid, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 # === /ASISTENTI_API ROUTES ===
@@ -7066,8 +7136,8 @@ def public_ghid_index():
         n = len(pe_tema.get(cheie, []))
         if not n:
             continue
-        items.append('<li><a href="/ghid/tema/%s">%s</a> <span class="ghid-numar">%d ghiduri</span><p>%s</p></li>'
-                     % (tslug, _ghid_html.escape(ttitlu), n, _ghid_html.escape(tdesc)))
+        items.append('<li><a href="/ghid/tema/%s">%s</a> <span class="ghid-numar">%s</span><p>%s</p></li>'
+                     % (tslug, _ghid_html.escape(ttitlu), _cate(n, "ghid", "ghiduri"), _ghid_html.escape(tdesc)))
     corp = ('<h1>Ghiduri fiscale iConta.eu</h1>'
             '<p>Ghiduri practice pentru contabili: temei legal verificat la sursă, procedura manuală și '
             'ce automatizează iConta.eu. Alege tema.</p>'

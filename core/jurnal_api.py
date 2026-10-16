@@ -169,8 +169,10 @@ def creeaza(conn, schema, descriere, data, linii, document_ref=None):
     out = {"ok": True, "id": nota_id}
     if legata:
         out["factura_id"] = legata
-        out["mesaj"] = ("nota a fost legată de factura #%d — o singură factură a lunii se "
-                        "potrivește pe sumă" % legata)
+        from core import eticheta_nota as _et   # [deficiența 258] factura cum o vede omul, nu id-ul ei
+        with conn.cursor() as cur:
+            out["mesaj"] = ("nota a fost legată de %s — o singură factură a lunii se "
+                            "potrivește pe sumă" % _et.factura(cur, schema, legata))
     _av_plan(conn, schema, linii, out)   # [08.10, V3] „nu se poate … folosi fără avertisment”
     return out
 def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None, document_ref=None):
@@ -184,7 +186,7 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None, docum
             return {"eroare": "doar ciornele se pot edita"}
         from core import coada_api as _coada   # [lotul 07.10 pct.6] nota la validare nu se schimbă sub ochii cabinetului
         if _coada.nota_la_validare(cur, schema, nota_id):
-            return {"eroare": _coada.MESAJ_NOTA_LA_VALIDARE % nota_id, "cod": _coada.COD_NOTA_LA_VALIDARE}
+            return {"eroare": _coada.mesaj_nota_la_validare(cur, schema, nota_id), "cod": _coada.COD_NOTA_LA_VALIDARE}
         # [lotul 07.10 B, C9, decizia Costin] nota derivată dintr-un document se corectează numai din documentul-sursă
         from core import note_derivate as _nd
         doc = _nd.documentul_sursa(cur, schema, nota_id)
@@ -246,7 +248,7 @@ def sterge(conn, schema, nota_id):
             return {"eroare": "doar ciornele se pot șterge"}
         from core import coada_api as _coada   # [lotul 07.10 pct.6]
         if _coada.nota_la_validare(cur, schema, nota_id):
-            return {"eroare": _coada.MESAJ_NOTA_LA_VALIDARE % nota_id, "cod": _coada.COD_NOTA_LA_VALIDARE}
+            return {"eroare": _coada.mesaj_nota_la_validare(cur, schema, nota_id), "cod": _coada.COD_NOTA_LA_VALIDARE}
         # [lotul 07.10 B, C9] o notă derivată nu se șterge din jurnal acolo unde ALT tabel o indică (mișcarea de stoc, NIR-ul,
         # chitanța, raportul Z, amortizarea): legătura ar rămâne în aer. Se șterg (ciornă) cele a căror legătură stă pe notă —
         # contarea facturii și nota statului (documentul redevine necontat și se recontabilizează) — și cele care își desfac

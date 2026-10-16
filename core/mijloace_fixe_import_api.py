@@ -277,7 +277,7 @@ def verifica_randuri(randuri):
             coduri[cod] = i
         if dur <= 0:
             er.append(respinge("mijloc fix", i, "durata_lipsa",
-                               "%s: durata %s luni - fără ea nu se calculează amortizarea" % (den, dur)))
+                               "%s: durata în luni lipsește sau nu e pozitivă (%s) - fără ea nu se calculează amortizarea" % (den, dur)))
         if val <= 0:
             er.append(respinge("mijloc fix", i, "valoare_lipsa",
                                "%s: valoare de intrare %s" % (den, val)))

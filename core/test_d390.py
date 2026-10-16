@@ -61,7 +61,7 @@ def test_factura_fara_cui_ue_valid_e_ignorata():
                 "directie": "emisa", "total": 1000, "tva": 210}]
     res = calcul_d390(_prof(), 2026, 6, facturi)
     assert res.nr_opi == 0
-    assert "excluse" in " ".join(res.avertismente)
+    assert "1 factură cu partener intern (RO)/fără CUI - exclusă" in " ".join(res.avertismente)   # acordul cu numărul (plural fix, 15.10.2026)
 
 
 # ---------- F125: clasificare manuala (reclasificare + adaugare) ----------

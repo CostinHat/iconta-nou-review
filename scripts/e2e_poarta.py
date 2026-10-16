@@ -58,6 +58,8 @@ def _env_test():
     env.pop("ANTHROPIC_API_KEY", None)
     env["ICONTA_AI_SIMULAT"] = os.path.join(TEMP, "ai_simulat")
     env["ICONTA_BON_DIR"] = os.path.join(TEMP, "bonuri")   # [pct.7, deficiența 9] pozele bonurilor de probă nu stau lângă cele reale
+    # [C36, 15.10.2026] depozitul privat al probei (capturi, exporturi trimise la Suport), separat de ~/iconta_date/fisiere
+    env["ICONTA_FISIERE_DIR"] = os.path.join(TEMP, "fisiere")
     return env
 
 

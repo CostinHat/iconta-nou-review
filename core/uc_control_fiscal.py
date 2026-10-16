@@ -18,7 +18,7 @@ from core import db, auth_api
 from core import erori as _erori
 from core import repo_tenants
 from core import uc_comun as _uc_comun
-from core.common import azi_ro, pastila_firma
+from core.common import azi_ro, pastila_firma, cate as _cate
 from core import db, auth_api, control_fiscal_api
 
 
@@ -64,7 +64,7 @@ def motiv_neverificabil(f):
         return "în recalculare — rezumatul nu e încă la zi (date schimbate sau o versiune nouă a aplicației)"
     parti = []
     if (f.get("neclar") or 0) > 0:
-        parti.append("%d declarați%s" % (f["neclar"], "e nu se poate verifica" if f["neclar"] == 1 else "i nu se pot verifica"))
+        parti.append(_cate(f["neclar"], "declarație nu se poate verifica", "declarații nu se pot verifica"))
     gri = [(c or {}).get("eticheta") for c in (f.get("contabil") or []) if (c or {}).get("stare") == "gri"]
     if gri:
         parti.append("nu se poate verifica: " + ", ".join(str(x) for x in gri if x))

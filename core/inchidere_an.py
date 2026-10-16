@@ -28,6 +28,7 @@ from decimal import Decimal
 
 from core import bilant_api as _ba
 from core import motor as _m
+from core import eticheta_nota as _et
 from core import note_derivate as _nd
 from core import repo_contabilitate as _rc
 
@@ -75,7 +76,8 @@ def propune(cur, schema, an):
     vechi = _ciorne_existente(cur, schema, zi)
     for nid, _d in vechi:
         if _coada.nota_la_validare(cur, schema, nid):
-            raise ValueError("Propunerea de închidere #%d e la validare în coadă — nu se înlocuiește cât o verifică cabinetul." % nid)
+            raise ValueError("Propunerea de închidere (nota %s) e la validare în coadă — nu se înlocuiește cât o verifică cabinetul."
+                             % _et.nota(cur, schema, nid))
     doc_vechi = {d: _rc.documentul_notei(cur, schema, nid) for nid, d in vechi}
     for nid, _d in vechi:
         if _nd.respinsa(cur, schema, nid):
@@ -128,12 +130,13 @@ def refuz_validare(cur, schema, nota_id, azi=None):
     if sursa != SURSA:
         return None
     if not an_incheiat(zi.year, azi):
-        return ("Nota de închidere #%d nu se validează înainte de 31.12.%d: până la sfârșitul anului urmează operațiuni care schimbă soldurile "
-                "de închis, iar nota validată nu se mai modifică. După 31.12.%d propune-o din nou din Bilanț." % (nota_id, zi.year, zi.year))
+        return ("Nota de închidere %s nu se validează înainte de 31.12.%d: până la sfârșitul anului urmează operațiuni care schimbă soldurile "
+                "de închis, iar nota validată nu se mai modifică. După 31.12.%d propune-o din nou din Bilanț."
+                % (_et.nota(cur, schema, nota_id), zi.year, zi.year))
     if not corespunde(cur, schema, nota_id, zi):
-        return ("Nota de închidere #%d nu mai corespunde soldurilor de la 31.12.%d din notele validate: după propunere s-au validat operațiuni "
+        return ("Nota de închidere %s nu mai corespunde soldurilor de la 31.12.%d din notele validate: după propunere s-au validat operațiuni "
                 "ale anului sau nota a fost modificată. Propune din nou nota de închidere din Bilanț — o recalculează din soldurile de acum."
-                % (nota_id, zi.year))
+                % (_et.nota(cur, schema, nota_id), zi.year))
     return None
 
 
@@ -148,11 +151,12 @@ def solduri_dupa(cur, schema, s, propuse):
 
 
 def ciorne(cur, schema, an, azi=None):
-    """[244] Propunerea care așteaptă validarea la 31.12.`an`: {"an", "luna": 12, "note": [{id, descriere}], "la_zi", "incheiat"} sau None.
+    """[244] Propunerea care așteaptă validarea la 31.12.`an`: {"an", "luna": 12, "note": [{id, descriere, eticheta}], "la_zi", "incheiat"} sau
+    None (`eticheta` = „nr. crt. N din 31.12.AAAA”, cum o arată Registrul jurnal; deficiența 258).
     `la_zi` = toate notele corespund soldurilor validate de acum (`corespunde`)."""
     zi = datetime.date(an, 12, 31)
     note = _ciorne_existente(cur, schema, zi)
     if not note:
         return None
-    return {"an": an, "luna": 12, "note": [{"id": nid, "descriere": d} for nid, d in note],
+    return {"an": an, "luna": 12, "note": [{"id": nid, "descriere": d, "eticheta": _et.nota(cur, schema, nid)} for nid, d in note],
             "la_zi": all(corespunde(cur, schema, nid, zi) for nid, _d in note), "incheiat": an_incheiat(an, azi)}

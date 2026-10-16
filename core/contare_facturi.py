@@ -35,6 +35,7 @@ from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 
 from core import afirmatii as _af
+from core import eticheta_nota as _et
 from core import facturi as _fc
 from core import nomenclator_status_factura as _nsf
 from core.common import _q
@@ -198,6 +199,11 @@ def stare_contare(cur, schema, factura_ids):
     for fid in factura_ids:
         n = next((x for x in pe.get(int(fid), []) if x["e_contare"]), None)
         out[fid] = {"id": n["id"], "status": n["status"], "data": str(n["data"])} if n else None
+    # [258] `eticheta` = nota cum o arată Registrul jurnal („nr. crt. 5 din 12.03.2026”); ecranul facturii n-o mai numește prin id
+    et = dict(_et.note(cur, schema, [v["id"] for v in out.values() if v]))
+    for v in out.values():
+        if v:
+            v["eticheta"] = et.get(v["id"])
     return out
 
 
@@ -328,13 +334,13 @@ def dezleaga_nota(cur, schema, nota_id):
                            detalii={"nota_id": nota_id})
     from core import coada_api as _coada   # [lotul 07.10 pct.6] nota la validare nu se modifică
     if _coada.nota_la_validare(cur, schema, nota_id):
-        raise RefuzContare(_coada.COD_NOTA_LA_VALIDARE, _coada.MESAJ_NOTA_LA_VALIDARE % nota_id, detalii={"nota_id": nota_id})
+        raise RefuzContare(_coada.COD_NOTA_LA_VALIDARE, _coada.mesaj_nota_la_validare(cur, schema, nota_id), detalii={"nota_id": nota_id})
     if e_nota_de_contare(linii):
         raise RefuzContare(
             "E_NOTA_DE_CONTARE",
-            "Nota #%d E chiar evidența contabilă a facturii, nu o plată. Nu se dezleagă: o cifră "
+            "Nota %s e chiar evidența contabilă a facturii, nu o plată. Nu se dezleagă: o cifră "
             "fără documentul care o justifică nu se mai poate desface. Dacă factura trebuie "
-            "corectată, se stornează." % nota_id,
+            "corectată, se stornează." % _et.nota(cur, schema, nota_id),
             detalii={"nota_id": nota_id, "factura_id": cap["factura_id"], "iesire": "storno"})
     cur.execute("UPDATE %sinregistrari SET factura_id = NULL WHERE id = %%s" % _p(schema),
                 (nota_id,))
@@ -542,10 +548,10 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
     except _sl_gate.LipsaCurs as _e:
         raise RefuzContare(
             "LIPSA_CURS_LEI",
-            "Factura #%s e în %s și nu are curs BNR — nota s-ar scrie în valută drept lei. "
+            "%s e în %s și nu are curs BNR — nota s-ar scrie în valută drept lei. "
             "Completează cursul pe factură (ultimul curs comunicat până la data ei); abia apoi se "
             "contează și intră în declarații (A1, Cod fiscal art. 290)."
-            % (factura_id, (f.get("moneda") or "?")),
+            % (_et.factura_din_rand(f), (f.get("moneda") or "?")),
             detalii={"factura_id": factura_id, "moneda": f.get("moneda"),
                      "iesire": "completeaza_curs"})
 
@@ -564,9 +570,9 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
         return {"stare": "deja_contata", "inregistrare_id": ex["id"], "linii": [],
                 "afirmatie": _af.afirmatie(
                     "neconformitate", "CONTARE_EXISTENTA",
-                    "factura are deja notă de contare (#%d); a doua chemare nu face nimic"
-                    % ex["id"],
-                    unde="factura #%s" % factura_id, regula="o factură are o singură contare")}
+                    "factura are deja notă de contare (nota %s); a doua chemare nu face nimic"
+                    % _et.nota(cur, schema, ex["id"]),
+                    unde=_et.factura_din_rand(f), regula="o factură are o singură contare")}
 
     data_nota = data_nota or f.get("data_emitere")
     if luna_blocata(cur, schema, data_nota):
@@ -639,8 +645,8 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
         raise RefuzContare(
             "POSIBILA_DUBLARE",
             "există deja o notă care pare să conteze factura asta, fără să o numească "
-            "(#%s). Nu se scrie automat: leag-o sau contează manual."
-            % ", #".join(str(n["id"]) for n in candidate),
+            "(nota %s). Nu se scrie automat: leag-o sau contează manual."
+            % _et.lista(cur, schema, [n["id"] for n in candidate]),
             detalii={"note": [n["id"] for n in candidate]})
 
     descriere = _descriere(f, data_nota, motiv_data)
@@ -680,9 +686,9 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
             _af.afirmatie(
                 "neconformitate", "POSIBILA_DUBLARE",
                 "există și note fără legătură de factură care se potrivesc pe sumă și lună "
-                "(#%s) — verifică să nu fie o a doua contare"
-                % ", #".join(str(n["id"]) for n in candidate),
-                unde="factura #%s" % factura_id,
+                "(nota %s) — verifică să nu fie o a doua contare"
+                % _et.lista(cur, schema, [n["id"] for n in candidate]),
+                unde=_et.factura_din_rand(f),
                 regula="o factură se contează o singură dată, oricare ar fi calea"),
             cod="POSIBILA_DUBLARE", note=[n["id"] for n in candidate])
     return out

@@ -7,17 +7,17 @@
 // sus și benzile „Recomandă” / „Suport” vin din salut.js, ca la cabinet; dedesubt, numai grila de carduri.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, ICOANE, CULORI_CARD } from "../api.js?v=2561dbfd34";
+import { api, ICOANE, CULORI_CARD } from "../api.js?v=72aa1cbbdb";
 import { semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
-import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
-import { randeazaControl } from "./control.js?v=d5c4e1f86d";
-import { randeazaTermene } from "./termene.js?v=d4437aae0c";
-import { randeazaValidat } from "./validat.js?v=f25b959e6d";
-import { randeazaListaFirme } from "./firme.js?v=dce7943315";
-import { paginaPrincipala, legaBenzile } from "./salut.js?v=742787f71b"; // [225 + 231] banda de sus, aceeași la ambele roluri
-import { randeazaPachete } from "./pachete.js?v=47e9d14abf"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=0f3ab68351"; // [p44_declaratii]
-import { randeazaSetari } from "./setari.js?v=d8764c632e"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
+import { sesiune } from "../sesiune.js?v=898215e0ee";
+import { randeazaControl } from "./control.js?v=c32702d644";
+import { randeazaTermene } from "./termene.js?v=7fbacf46ea";
+import { randeazaValidat } from "./validat.js?v=a8c80dc9d3";
+import { randeazaListaFirme } from "./firme.js?v=b430cfcc52";
+import { paginaPrincipala, legaBenzile } from "./salut.js?v=179b6770c5"; // [225 + 231] banda de sus, aceeași la ambele roluri
+import { randeazaPachete } from "./pachete.js?v=5de3efc286"; // [p63_pachete]
+import { randeazaDeclaratii } from "./declaratii.js?v=84d7965e4e"; // [p44_declaratii]
+import { randeazaSetari } from "./setari.js?v=00f4d66a12"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;
@@ -76,13 +76,12 @@ export function cheiPermise(u) {
 
 export async function desktopAsistent(continut, nav) {
   const u = sesiune.user() || {};
-  const prenume = u.prenume || u.nume || u.email || "";  /* [salut_prenume 27.07.2026] afisa numele de familie */
 
   // [p25_bara3] bara 3 e in navigator acum, nu aici
 
   const sectiuni = cheiPermise(u);
 
-  continut.innerHTML = paginaPrincipala(prenume);
+  continut.innerHTML = paginaPrincipala(u);   // [269] numele din salut: `numeDeSalut` (salut.js)
   legaBenzile(continut, nav);
   const grila = continut.querySelector(".cab-grila");
   // Cardurile, in ordinea sectiunilor (fluxul de lucru al asistentului)

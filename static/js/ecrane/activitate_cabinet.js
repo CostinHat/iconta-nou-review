@@ -3,7 +3,7 @@
 // Jurnal: evenimente cronologice (pregatit/aprobat/respins/depus), tabel scrollabil.
 // Regula design: fer-larg, antet fix, doar tabelul scrolleaza (un singur scrollbar).
 
-import { api, dataIso, esc } from "../api.js?v=2561dbfd34";
+import { api, dataIso, esc, cate } from "../api.js?v=72aa1cbbdb";
 
 // perioade selectabile -> [de, pana] ISO (sau null pentru tot)
 function interval(cheie) {
@@ -101,7 +101,7 @@ export async function randeazaActivitateCabinet(corp, nav) {
         ${card(t.depuse || 0, "depuse")}
         ${card(t.in_asteptare || 0, "în așteptare")}
       </div>
-      <div class="mig-intro">Jurnal cronologic — cine, ce și când (${jur.total || 0} evenimente)</div>
+      <div class="mig-intro">Jurnal cronologic — cine, ce și când (${cate(jur.total || 0, "eveniment", "evenimente")})</div>
       <div class="mig-sold-tabel ac-tabel" tabindex="0" aria-label="Activitatea cabinetului">
         <div class="mig-sold-rand ac-cap">
           <span class="ac-cand">Când</span>

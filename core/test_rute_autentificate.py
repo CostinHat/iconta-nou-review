@@ -34,6 +34,8 @@ PUBLICE = {
     ("get",  "/public/inregistrare"),           # [lotul 4] vizitatorul afla daca inregistrarea libera e deschisa (+ jetonul formularului)
     ("post", "/public/confirma-inregistrare"),  # [lotul 4] clicul pe linkul din email: tokenul (32 de octeti) e autentificarea
     ("get",  "/public/termeni"),                # T&C, obligatoriu public
+    ("get",  "/public/dezabonare"),             # [268] linkul „Dezabonează-te” din email: confirmarea; semnătura HMAC e autentificarea
+    ("post", "/public/dezabonare"),             # [268] dezabonarea (butonul paginii / List-Unsubscribe-Post); aceeași semnătură
     ("get",  "/public/config"),                 # config client (fara secrete)
     ("post", "/public/reset-parola/cere"),      # recuperare parola: userul nu e logat
     ("post", "/public/reset-parola/seteaza"),   # idem, cu token pe email

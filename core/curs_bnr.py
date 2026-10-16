@@ -41,6 +41,7 @@ import xml.etree.ElementTree as ET
 import collections
 import time as _time
 from core.cache_declarat import Declaratie as _Dec
+from core.common import cate as _cate
 
 #: PRAGUL DE VECHIME al unui curs, in zile CALENDARISTICE, intre data cursului si data facturii.
 #: **Decizie de produs, nu norma fiscala** — Costin, 04.09.2026, verbatim: *„pragul e 5 zile
@@ -72,10 +73,10 @@ class CursPreaVechi(ValueError):
         self.moneda, self.data_curs, self.curs = moneda, data_curs, curs
         self.vechime_zile, self.prag_zile = vechime_zile, prag_zile
         super().__init__(
-            "Cel mai recent curs BNR pentru %s la data cerută e din %s — mai vechi cu %d zile decât "
+            "Cel mai recent curs BNR pentru %s la data cerută e din %s — mai vechi cu %s decât "
             "pragul de %d. Peste atât nu mai e pauză de publicare, e flux întrerupt, iar TVA-ul în "
             "lei s-ar calcula cu o cifră care nu mai e a zilei. Cursul găsit: %s."
-            % (moneda, data_curs.isoformat(), vechime_zile, prag_zile, curs))
+            % (moneda, data_curs.isoformat(), _cate(vechime_zile, "zi", "zile"), prag_zile, curs))
 
 
 class FormatNecunoscut(ValueError):

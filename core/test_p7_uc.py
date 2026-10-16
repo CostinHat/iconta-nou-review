@@ -113,6 +113,9 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
+    ("raportari_imagine", "str(e)"): (
+        "C36 (15.10.2026): refuzul tipului (415) și al mărimii (413) vine din `fisiere_private.verifica`, cu numele fișierului și "
+        "tipurile permise în cuvinte (`FisierRefuzat`), tradus în aceeași clasă de domeniu. Gardul: `core/test_fisiere_private.py`."),
     ("login", "_il.MESAJ_NECONFIRMAT"): (
         'Lotul 4 (comanda Costin 15.10.2026 pct.2, verbatim în DECIZII „Lotul 4”): „Până la confirmare nu se poate loga”. Login-ul eșuat al unei înregistrări libere neconfirmate, cu parola corectă a cererii, spune „confirmă emailul” (401) în loc de „email sau parolă greșite”. Gardul: `core/test_inregistrare_libera.py`, e2e `frontend_test/e2e/e2e_inregistrare_libera.py`.'),
     ("achizitie_ic", "str(e)"): (
@@ -270,7 +273,15 @@ _MOTIV_EMAIL_OCUPAT = (
 _MOTIV_VALIDARI_L4 = ("Lotul 4 (15.10.2026, DECIZII „Lotul 4”): verificările formularului de înregistrare (bifa termenilor, parola, "
                       "emailul) sunt comune căii cu invitație și celei libere, deci stau în `uc_auth._valideaza_formularul`, chemat "
                       "de `register` înaintea oricărei scrieri — același refuz, același cod (400).")
+_MOTIV_C36 = ("C36 / 270d (comanda Costin 15.10.2026, verbatim în DECIZII „Lotul 5”): capturile sesizărilor nu se mai scriu în directorul "
+              "servit public (`<static>/raportari`, deschise fără autentificare), ci în depozitul privat `core/fisiere_private.py` — "
+              "`salveaza` verifică tipul DUPĂ CONȚINUT și limita (`verifica`), scrie fișierul și rândul lui din `public.fisiere_private` "
+              "(în locul lui `raportari_api.adauga_atasament` și al tabelei `raportari_atasamente`). Gardul: `core/test_fisiere_private.py`.")
 PERECHI_MUTATE_IN_AJUTOR = {
+    ("raportari_imagine", "'Doar capturi de ecran (PNG, JPG, WEBP).'"): ("salveaza", _MOTIV_C36),
+    ("raportari_imagine", "'Imaginea e prea mare (max 8MB).'"): ("salveaza", _MOTIV_C36),
+    ("raportari_imagine", "mesaj_din_cod(r.get('cod'))"): ("salveaza", _MOTIV_C36 + " Refuzul `MESAJ_INEXISTENT` al lui "
+                                                           "`adauga_atasament` a ieșit cu el: mesajul e verificat mai sus (404), în aceeași tranzacție."),
     ("register", "'Trebuie să accepți Termenii și condițiile pentru a crea contul.'"): ("_valideaza_formularul", _MOTIV_VALIDARI_L4),
     ("register", "_nucleu.PAROLA_MESAJ"): ("_valideaza_formularul", _MOTIV_VALIDARI_L4),
     ("register", "EMAIL_INVALID"): ("_valideaza_formularul", _MOTIV_VALIDARI_L4),
@@ -300,6 +311,10 @@ def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
+    ("reset_parola_cere", "strip"): (
+        "nume_de_salut",
+        "Deficiența 269 (Lotul 5, 15.10.2026: „salutul ia ultimul cuvânt din nume”): numele din salutul emailului de resetare vine din "
+        "funcția comună `common.nume_de_salut` (prenumele scris separat, altfel numele întreg) — `.strip()` e în interiorul ei."),
     ("s1005_valideaza", "TemporaryDirectory"): (
         "valideaza",
         "Deficiența 222 (comanda Costin 10.10.2026, caseta brută «ok»): directorul temporar al validării bilanțului (`TemporaryDirectory`) trăiește acum în `duk.valideaza` (`mkdtemp` + `rmtree` în `finally`), sursa unică a validatorului — un apel `valideaza` îl înlocuiește."),
@@ -446,6 +461,7 @@ _MOTIV_LOTUL_4 = ('Lotul 4 (comanda Costin 15.10.2026, verbatim în DECIZII „L
                   'contul nou (`_dupa_cont_nou`, `_anunta_cabinet_nou`) sunt ajutoare comune cu confirmarea (`confirma_inregistrarea`). '
                   'Trimiterea emailului: `observare.trimite_email_html_sau_semnaleaza` (C34).')
 APELURI_EXTRASE_IN_AJUTOARE = {
+    "raportari_imagine": ((("core/fisiere_private.py", "salveaza"),), _MOTIV_C36),
     "register": ((("core/uc_auth.py", "_valideaza_formularul"), ("core/uc_auth.py", "_register_cu_invitatie"),
                   ("core/uc_auth.py", "_dupa_cont_nou"), ("core/uc_auth.py", "_anunta_cabinet_nou"),
                   ("core/observare.py", "trimite_email_html_sau_semnaleaza")),
@@ -454,6 +470,14 @@ APELURI_EXTRASE_IN_AJUTOARE = {
 
 #: [15.10.2026, lotul 4] Apeluri SCOASE deliberat, cu motivul. Anti-vacuu: `test_SCOASELE_declarate_chiar_lipsesc`.
 APELURI_SCOASE = {
+    ("raportari_imagine", "lower"): (_MOTIV_C36 + " Tipul nu se mai ia din `content_type` (pe care îl trimite browserul, deci îl "
+                                     "poate minți) — `lower()` pe el a ieșit."),
+    ("raportari_imagine", "HTTPException"): (_MOTIV_C36 + " Cele două refuzuri separate (415 tip, 413 mărime) sunt acum UNUL, cu clasa "
+                                             "aleasă după `FisierRefuzat.cod`; refuzul 400 al lui `adauga_atasament` a ieșit cu el."),
+    ("raportari_imagine", "get"): (_MOTIV_C36 + " Au ieșit `harta_extensiilor.get(tip)` (extensia se ia din tipul citit din conținut) "
+                                   "și `r.get(...)` pe rezultatul lui `adauga_atasament`."),
+    ("raportari_imagine", "adauga_atasament"): (_MOTIV_C36 + " Rândul se scrie în `public.fisiere_private`, din `salveaza`."),
+    ("raportari_imagine", "mesaj_din_cod"): (_MOTIV_C36 + " Era mesajul refuzului lui `adauga_atasament`."),
     ("register", "_trimite_brevo"): (
         "Lotul 4 pct.4 (comanda Costin 15.10.2026): alerta internă „cont nou de cabinet” (`observare._trimite_brevo`, text fără date, "
         "către ICONTA_ALERTA_EMAIL) e înlocuită de anunțul cerut — un email HTML către superadmin, cu cabinetul și calea "

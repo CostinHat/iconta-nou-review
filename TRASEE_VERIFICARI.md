@@ -1131,7 +1131,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T14 — Preluarea unei firme
 
-*clasa MECANIC · 32 rute · 21 schimba date · 5 firme il pot exercita azi*
+*clasa MECANIC · 33 rute · 21 schimba date · 5 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/migrare/asociati`, `/migrare/istoric-declaratii`, `/migrare/mijloace-fixe`, `/migrare/parteneri`, `/migrare/plan-conturi`, `/migrare/salariati`, `/migrare/solduri`, `/migrare/status`, `/migrare/straturi`, `/tenants/{tenant_id}/parteneri`, `/tenants/{tenant_id}/solduri`*
 

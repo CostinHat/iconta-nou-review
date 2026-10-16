@@ -136,7 +136,7 @@ def client_acces_revoca(tenant_id, user_id, ctx):
         with conn.cursor() as cur:
             repo_utilizatori.dezactiveaza_clientul_firmei(cur, user_id, tenant_id)
             _uc_comun._urma_portal(cur, tenant_id, "acces_retras",
-                         "cabinetul a retras accesul utilizatorului #%s" % user_id, ctx["uid"])
+                         "cabinetul a retras accesul utilizatorului %s" % _uc_comun._cine(cur, user_id), ctx["uid"])
     return {"ok": True}
 
 
@@ -1070,8 +1070,10 @@ def salarii_contare_propunere(tenant_id, an, luna, ctx):
             # D112 nu se poate genera (profil incomplet). Refuzul lui e scris pentru contabil;
             # fara asta ar ajunge la el ca 500 gol.
             raise _erori.DateInvalide(str(e))
+    from core import eticheta_nota as _et
     with db.get_conn(schema) as conn, conn.cursor() as cur:
         r = repo_contabilitate.id_nota_dupa_numar(cur, p["document_ref"])
+        p["nota_eticheta"] = _et.nota(cur, schema, r[0]) if r else None   # [258] ecranul numește nota ca jurnalul, nu prin id
     p["deja_contata"] = bool(r)
     p["nota_id"] = r[0] if r else None
     from core import inchidere_luna as _il   # [deficiența 216] ecranul spune de ce nota nu se scrie încă, în loc să ofere butonul
@@ -1119,8 +1121,9 @@ def tenant_amortizare(tenant_id, an, luna, ctx):
                     doc_vechi = repo_contabilitate.documentul_notei(cur, schema, ex[0])
                     repo_contabilitate.punct_de_revenire(cur, "amortizare_ciorna")
                 else:
-                    raise _erori.CerereGresita("Amortizarea lunii e deja generată și validată (nota #%d) — nota validată nu se "
-                                               "înlocuiește; o corectură se face printr-o altă notă." % ex[0])
+                    from core import eticheta_nota as _et   # [deficiența 258] nota cum o vede omul, nu id-ul ei
+                    raise _erori.CerereGresita("Amortizarea lunii e deja generată și validată (nota %s) — nota validată nu se "
+                                               "înlocuiește; o corectură se face printr-o altă notă." % _et.nota(cur, schema, ex[0]))
             mf = repo_mijloace_fixe.de_amortizat(cur, schema)
         from core import d406_active as _d406
         linii = []
@@ -1276,9 +1279,12 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
             from core import drepturi as _drepturi
             # [deficiența 246] ciorna ALTUI utilizator, pentru un asistent: o vede, nu o schimbă — aceeași funcție ca refuzul din bază
             # (`ciorna_altui`, core/migrare_ciorne_proprii.py), cu utilizatorul din ctx (la o citire nu e scris pe conexiune)
-            for _nid, _autor in repo_contabilitate.ciorne_altui(cur, schema, [i for i, n in note.items() if n["status"] != "validata"],
-                                                               ctx["uid"]):
-                note[_nid]["a_altuia"] = _drepturi.ciorna_altuia(_nid, _autor)
+            # [deficiența 258] motivul numește nota cum o arată cardul („nr. crt. 5 din 12.03.2026”, `eticheta_nota`), nu prin id
+            from core import eticheta_nota as _et
+            _alt = repo_contabilitate.ciorne_altui(cur, schema, [i for i, n in note.items() if n["status"] != "validata"], ctx["uid"])
+            _et_alt = dict(_et.note(cur, schema, [i for i, _a in _alt]))
+            for _nid, _autor in _alt:
+                note[_nid]["a_altuia"] = _drepturi.ciorna_altuia(_et_alt[_nid], _autor)
             for _nid, _n in note.items():
                 if _n["status"] == "ciorna":
                     _doc = _nd.documentul_sursa(cur, schema, _nid)
@@ -1332,11 +1338,13 @@ def tenant_stat_plata(tenant_id, an, luna, ctx):
             # genereze D112: starea ei în coada de validare vine odată cu statul.
             from core import salarii_contare as _sc
             _rn = repo_contabilitate.id_nota_dupa_numar(_rc, _sc.document_ref(an, luna))
+            from core import eticheta_nota as _et   # [258] nota numită ca în Registrul jurnal, nu prin id
+            _rn_et = _et.nota(_rc, schema, _rn[0]) if _rn else None
     nota = None
     if _rn:
         from core import coada_api as _coada
         with db.get_conn() as conn:
-            nota = {"nota_id": _rn[0], "validare": _coada.stari_note(conn, tenant_id, [_rn[0]]).get(_rn[0])}
+            nota = {"nota_id": _rn[0], "nota_eticheta": _rn_et, "validare": _coada.stari_note(conn, tenant_id, [_rn[0]]).get(_rn[0])}
     return {"stat": stat, "reges_configurat": _reges_ok, "nota_salarii": nota}
 
 
@@ -1957,12 +1965,12 @@ def cabinet_solicitari_raspunde(tenant_id, date, ctx):
         email = _uc_comun._email_client_tenant(conn, tenant_id)
         if email:
             nume = _uc_comun._nume_tenant(conn, tenant_id)
-            subiect = "Raspuns nou de la contabilul tau"
+            subiect = "Răspuns nou de la contabilul tău"
             html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
-                    "<p>Buna,</p><p>Contabilul tau ti-a raspuns la o solicitare pentru <b>" +
-                    (nume or "firma ta") + "</b>:</p>"
+                    "<p>Bună,</p><p>Contabilul tău ți-a răspuns la o solicitare pentru <b>" +
+                    _common.esc(nume or "firma ta") + "</b>:</p>"
                     "<p style='background:#f5f5f5;padding:14px;border-radius:8px'>" +
-                    date.mesaj.replace("<", "&lt;").replace(">", "&gt;") + "</p>"
+                    _common.esc(date.mesaj).replace("\r", "").replace("\n", "<br>") + "</p>"
                     "<p><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
                     "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>"
                     "Deschide portalul</a></p></div>")
@@ -2001,6 +2009,10 @@ def banca_rec_conteaza(tenant_id, linie_id, corp, ctx):
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         rez = _rec.conteaza(conn, schema, linie_id, corp.get("alocari"))
+        if rez and not rez.get("eroare"):
+            from core import eticheta_nota as _et   # [258] notele create, numite ca în Registrul jurnal (nu prin id)
+            with conn.cursor() as _c:
+                _et.in_raspuns(_c, schema, rez)
     if rez is None:
         raise _erori.Inexistent("linie inexistentă")
     if rez.get("eroare"):
@@ -2276,9 +2288,11 @@ def rip_lista(tenant_id, an, luna, status, ctx):
         reg = _r.lista(conn, schema, an, luna, status)
         # [deficiența 246] ciorna altui utilizator, pentru un asistent: o vede, n-o șterge — aceeași regulă ca refuzul din bază
         alt = dict(_r.ciorne_altui(conn, schema, [o["id"] for o in reg["operatiuni"] if o["status"] == "ciorna"], ctx["uid"]))
-        for o in reg["operatiuni"]:
-            if o["id"] in alt:
-                o["a_altuia"] = _drepturi.ciorna_altuia(o["id"], alt[o["id"]], rip=True)
+        from core import eticheta_nota as _et   # [deficiența 258] operațiunea cum o arată rândul ei, nu prin id
+        with conn.cursor() as cur:
+            for o in reg["operatiuni"]:
+                if o["id"] in alt:
+                    o["a_altuia"] = _drepturi.ciorna_altuia(_et.rip(cur, schema, o["id"]), alt[o["id"]], rip=True)
         return reg
 
 
@@ -2764,8 +2778,8 @@ def bilant_inchidere_propunere(tenant_id, an, ctx):
         ce = ("profit %s lei" % bani(rez)) if rez > 0 else (("pierdere %s lei" % bani(-rez)) if rez < 0 else "rezultat zero")
         mesaj = ("Am propus, ca ciornă, la 31.12.%d: %s. Rezultatul închis în 121: %s. Notele intră în evidență numai după ce le validezi "
                  "în Registrul jurnal, luna decembrie %d; apoi bilanțul se generează."
-                 % (an, "; ".join("%s (%s, %d %s)" % (n["descriere"], n["document"] or "fără document", len(n["linii"]),
-                                                        "linie" if len(n["linii"]) == 1 else "linii") for n in r["note"]), ce, an))
+                 % (an, "; ".join("%s (%s, %s)" % (n["descriere"], n["document"] or "fără document",
+                                                     _common.cate(len(n["linii"]), "linie", "linii")) for n in r["note"]), ce, an))
     return {"ok": True, "an": an, "mesaj": mesaj, "nimic": r["nimic"], "inlocuite": r["inlocuite"], "rezultat": str(r["rezultat"]),
             "note": [{"id": n["id"], "descriere": n["descriere"], "document": n["document"], "linii": n["linii"]} for n in r["note"]]}
 
@@ -2984,9 +2998,12 @@ def retete_descarca(tenant_id, corp, ctx):
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         try:
-            return _r.descarca(conn, schema, corp)
+            rez = _r.descarca(conn, schema, corp)
         except (ValueError, KeyError) as e:      # [lotul 7] corp gol dadea `500`
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
+        from core import eticheta_nota as _et   # [258] nota de consum numită ca în Registrul jurnal (nu prin id)
+        with conn.cursor() as _c:
+            return _et.in_raspuns(_c, schema, rez)
 
 
 def verificare_stocuri(tenant_id, ctx):
@@ -3193,6 +3210,9 @@ def factura_contabilizeaza(tenant_id, factura_id, ctx, confirma=False, nir_id=No
             if e.cod in _nl.CODURI:   # [decizia 08.10 pct.2] alegerea NIR-ului: candidații și propunerea, pentru ecran
                 raise _erori.DateInvalide(_nl.detaliu_refuz(e))
             raise _erori.DateInvalide(e.mesaj)
+        from core import eticheta_nota as _et   # [258] nota contării numită ca în Registrul jurnal (nu prin id)
+        with conn.cursor() as _c:
+            _et.in_raspuns(_c, schema, rez)
         conn.commit()
     return rez
 
@@ -3224,13 +3244,13 @@ def vanzare_marja(tenant_id, corp, ctx):
                 if s > 0:
                     repo_contabilitate.adauga_linie_2(cur, schema, iid, d, c, s)
         conn.commit()
-    return dict(_af.afirmatie(
+    return _uc_comun.cu_eticheta(schema, dict(_af.afirmatie(
         "fapt", "vânzare în regim de marjă", r["nota"] or "marjă calculată conform art. 312",
         unde=_Unde("inregistrare", iid),
         temei_completitudine="prețul de vânzare și cel de cumpărare din nota creată "
                              "(Cod fiscal art. 312, regimul marjei)"),
         inregistrare_id=iid, marja_bruta=str(r["marja_bruta"]),
-        tva=str(r["tva"]), marja_neta=str(r["marja_neta"]), avertisment=r["nota"])
+        tva=str(r["tva"]), marja_neta=str(r["marja_neta"]), avertisment=r["nota"]))
 
 
 def vanzare_marja_turism(tenant_id, corp, ctx):
@@ -3280,7 +3300,7 @@ def vanzare_marja_turism(tenant_id, corp, ctx):
                     repo_contabilitate.adauga_linie_2(cur, schema, iid, d, c, s)
         conn.commit()
     rasp["inregistrare_id"] = iid
-    return rasp
+    return _uc_comun.cu_eticheta(schema, rasp)
 
 
 def vanzare_aur_investitii(tenant_id, corp, ctx):
@@ -3316,7 +3336,7 @@ def vanzare_aur_investitii(tenant_id, corp, ctx):
             iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             repo_contabilitate.adauga_linie_venit_marfa(cur, schema, iid, suma)
         conn.commit()
-    return {"inregistrare_id": iid, "regim": regim, "suma": str(suma)}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "regim": regim, "suma": str(suma)})
 
 
 def achizitie_agricultor(tenant_id, corp, ctx):
@@ -3342,8 +3362,8 @@ def achizitie_agricultor(tenant_id, corp, ctx):
             for d, c, s in [(cont, "401", r["pret"]), ("4426", "401", r["compensatie"])]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
         conn.commit()
-    return {"inregistrare_id": iid, "pret": str(r["pret"]),
-            "compensatie": str(r["compensatie"]), "total": str(r["total"])}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "pret": str(r["pret"]),
+            "compensatie": str(r["compensatie"]), "total": str(r["total"])})
 
 
 def vanzare_agricultor(tenant_id, corp, ctx):
@@ -3365,8 +3385,8 @@ def vanzare_agricultor(tenant_id, corp, ctx):
             for s in (r["pret"], r["compensatie"]):
                 repo_contabilitate.adauga_linie_venit_servicii(cur, schema, iid, s)
         conn.commit()
-    return {"inregistrare_id": iid, "pret": str(r["pret"]),
-            "compensatie": str(r["compensatie"]), "total": str(r["total"])}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "pret": str(r["pret"]),
+            "compensatie": str(r["compensatie"]), "total": str(r["total"])})
 
 
 def cabinet_fisa_cont(tenant_id, an, cont, luna, ctx):
@@ -3410,9 +3430,11 @@ def jurnal_marja(tenant_id, tip, luna, ctx):
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
             rows = repo_contabilitate.linii_pentru_jurnal_marja(cur, schema, "%" + marker + "%", luna)
+            from core import eticheta_nota as _et   # [258] nota numită ca în Registrul jurnal (nu prin id)
+            _etj = dict(_et.note(cur, schema, {r[0] for r in rows}))
     note = {}
     for iid, data, descr, status, cont, suma, lid in rows:
-        n = note.setdefault(iid, {"id": iid, "data": str(data), "descriere": descr,
+        n = note.setdefault(iid, {"id": iid, "eticheta": _etj.get(iid), "data": str(data), "descriere": descr,
                                   "status": status, "cost": Decimal("0"),
                                   "marja_neta": Decimal("0"), "tva": Decimal("0")})
         if cont == "4427":
@@ -3680,8 +3702,8 @@ def achizitie_taxare_inversa(tenant_id, corp, ctx):
             for d, c, s in [(cont, "401", val), ("4426", "4427", tva)]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
         conn.commit()
-    return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva),
-            "mentiune": mentiune}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva),
+            "mentiune": mentiune})
 
 
 def achizitie_ic(tenant_id, corp, ctx):
@@ -3768,7 +3790,7 @@ def achizitie_ic(tenant_id, corp, ctx):
                 numar, "%s.%s.%s" % (_z, _l, _a), val, "RON", 1, tva,
                 tara_furnizor, cod_tva_furnizor, furnizor_nume or "", None, factura_id=fid)
         conn.commit()
-    return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva)}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva)})
 
 
 def achizitie_neinregistrat(tenant_id, corp, ctx):
@@ -3816,8 +3838,8 @@ def achizitie_neinregistrat(tenant_id, corp, ctx):
             iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
             repo_contabilitate.adauga_linie_furnizor(cur, schema, iid, cont, val)
         conn.commit()
-    return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val),
-            "categorie": categorie, "in_d394": bool(categorie)}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val),
+            "categorie": categorie, "in_d394": bool(categorie)})
 
 
 def import_extracomunitar(tenant_id, corp, ctx):
@@ -3867,8 +3889,8 @@ def import_extracomunitar(tenant_id, corp, ctx):
             for d, c, s in linii:
                 repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
         conn.commit()
-    return {"inregistrare_id": iid, "taxa_vamala": str(r["taxa_vamala"]),
-            "baza_tva": str(r["baza_tva"]), "tva": str(r["tva"]), "mod_tva": r["mod_tva"]}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "taxa_vamala": str(r["taxa_vamala"]),
+            "baza_tva": str(r["baza_tva"]), "tva": str(r["tva"]), "mod_tva": r["mod_tva"]})
 
 
 def export_extracomunitar(tenant_id, corp, ctx):
@@ -3900,7 +3922,7 @@ def export_extracomunitar(tenant_id, corp, ctx):
             iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], descr[:200])[0]
             repo_contabilitate.adauga_linie_client(cur, schema, iid, cont_venit, val)
         conn.commit()
-    return {"inregistrare_id": iid, "mentiune": ment}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "mentiune": ment})
 
 
 def nota_tva_incasare(tenant_id, corp, ctx):
@@ -3953,7 +3975,7 @@ def nota_tva_incasare(tenant_id, corp, ctx):
             iid = repo_contabilitate.nota_facturi_ciorna(cur, schema, corp["data"], desc[:200])[0]
             repo_contabilitate.adauga_linie_5(cur, schema, iid, debit, credit, tva)
         conn.commit()
-    return {"inregistrare_id": iid, "tva_exigibil": str(tva), "nota": f"{debit}={credit}"}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "tva_exigibil": str(tva), "nota": f"{debit}={credit}"})
 
 
 def reevaluare_valuta(tenant_id, corp, ctx):
@@ -4005,7 +4027,7 @@ def reevaluare_valuta(tenant_id, corp, ctx):
             for dd, cc, ss in linii:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid, "detalii": detalii}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "detalii": detalii})
 
 
 def nota_leasing(tenant_id, corp, ctx):
@@ -4044,7 +4066,7 @@ def nota_leasing(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
 
 
 def nota_credit(tenant_id, corp, ctx):
@@ -4086,7 +4108,7 @@ def nota_credit(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
 
 
 def nota_avans(tenant_id, corp, ctx):
@@ -4145,7 +4167,7 @@ def nota_avans(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
 
 
 def achizitie_necorporala(tenant_id, corp, ctx):
@@ -4210,12 +4232,12 @@ def achizitie_necorporala(tenant_id, corp, ctx):
                 raise _erori.DateInvalide(str(e))
             fid = fres["factura_id"]
             iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, f"Achizitie necorporala {tip}: {corp['denumire']}"
-                                       f" (amortizare {dnf} luni, art. 28(9) CF)"[:200])[0]
+                                       f" (amortizare {_common.cate(dnf, 'lună', 'luni')}, art. 28(9) CF)"[:200])[0]
             for dd, cc, ss in [(cont_imo, "404", val), ("4426", "404", tva)]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid, "factura_id": fid, "mijloc_fix_id": mfid, "dnf_luni": int(dnf),
-            "conturi": [cont_imo, cont_am]}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "factura_id": fid, "mijloc_fix_id": mfid, "dnf_luni": int(dnf),
+            "conturi": [cont_imo, cont_am]})
 
 
 def _cere_amortizarea_inregistrata(conn, schema, cont_amortizare, ref, de_eliminat, denumire):
@@ -4315,8 +4337,8 @@ def reevaluare_imobilizare(tenant_id, corp, ctx):
                     fapt["valoare_bruta_veche"], fapt["amortizare_eliminata"],
                     fapt["valoare_justa"])
         conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **extra}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **extra})
 
 
 def nota_provizion_ep(tenant_id, corp, ctx):
@@ -4356,8 +4378,8 @@ def nota_provizion_ep(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
 
 
 def nota_productie(tenant_id, corp, ctx):
@@ -4390,7 +4412,7 @@ def nota_productie(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
 
 
 def nota_obiect_inventar(tenant_id, corp, ctx):
@@ -4429,7 +4451,7 @@ def nota_obiect_inventar(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
 
 
 def nota_asociati(tenant_id, corp, ctx):
@@ -4477,8 +4499,8 @@ def nota_asociati(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
 
 
 def nota_sponsorizare_ep(tenant_id, corp, ctx):
@@ -4509,8 +4531,8 @@ def nota_sponsorizare_ep(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], "credit_fiscal": info}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], "credit_fiscal": info})
 
 
 def nota_subventie(tenant_id, corp, ctx):
@@ -4546,8 +4568,8 @@ def nota_subventie(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
 
 
 def nota_chirie(tenant_id, corp, ctx):
@@ -4597,7 +4619,7 @@ def nota_chirie(tenant_id, corp, ctx):
                 for dd, cc, ss in linii:
                     repo_contabilitate.adauga_linie_2(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrari": ids, **info}
+    return _uc_comun.cu_eticheta(schema, {"inregistrari": ids, **info})
 
 
 def nota_decont_deplasare(tenant_id, corp, ctx):
@@ -4638,8 +4660,8 @@ def nota_decont_deplasare(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
 
 
 def nota_bacsis(tenant_id, corp, ctx):
@@ -4670,8 +4692,8 @@ def nota_bacsis(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
 
 
 def nota_sgr(tenant_id, corp, ctx):
@@ -4714,7 +4736,7 @@ def nota_sgr(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
 
 
 def nota_perisabilitati(tenant_id, corp, ctx):
@@ -4740,10 +4762,10 @@ def nota_perisabilitati(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid, "limita": str(r["limita"]),
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "limita": str(r["limita"]),
             "deductibil": str(r["deductibil"]), "nedeductibil": str(r["nedeductibil"]),
             "ajustare_tva": str(r["ajustare_tva"]),
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
 
 
 def nota_contract_special(tenant_id, corp, ctx):
@@ -4767,9 +4789,9 @@ def nota_contract_special(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid, "brut": str(r["brut"]), "cas": str(r["cas"]),
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "brut": str(r["brut"]), "cas": str(r["cas"]),
             "cass": str(r["cass"]), "impozit": str(r["impozit"]), "net": str(r["net"]),
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
 
 
 def tenant_mijloace_fixe(tenant_id, ctx):
@@ -4903,7 +4925,7 @@ def nota_inventariere(tenant_id, corp, ctx):
     rez_out = {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
     if mf_nou_id:
         rez_out["mijloc_fix_id"] = mf_nou_id
-    return rez_out
+    return _uc_comun.cu_eticheta(schema, rez_out)
 
 
 def nota_lichidare(tenant_id, corp, ctx):
@@ -4943,8 +4965,8 @@ def nota_lichidare(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid,
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
 
 
 def nota_ong(tenant_id, corp, ctx):
@@ -4973,8 +4995,8 @@ def nota_ong(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid, "cont_venit": r["cont_venit"],
-            "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "cont_venit": r["cont_venit"],
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
 
 
 def tenant_activare(tenant_id, date, ctx):
@@ -5016,7 +5038,7 @@ def client_acces_creeaza(tenant_id, date, ctx):
                 uid = repo_utilizatori.creeaza_cont(cur, email, _nucleu.hash_parola(parola_temp), date.nume or email.split("@")[0], ctx["firm"])["id"]
                 repo_utilizatori.leaga_contul_de_firma(cur, uid, tenant_id)
             _uc_comun._urma_portal(cur, tenant_id, "acces_dat",
-                         "cabinetul a dat acces la portal lui %s (utilizator #%s)" % (email, uid),
+                         "cabinetul a dat acces la portal lui %s" % email,
                          ctx["uid"])
             # [P4, 09.09.2026] TOKENUL INTRĂ CU CONTUL, ÎN ACEEAȘI TRANZACȚIE.
             #
@@ -5027,10 +5049,12 @@ def client_acces_creeaza(tenant_id, date, ctx):
             _uc_comun._pune_token(cur, tok, uid, "48 hours")
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#magic=" + tok
-    _pm = ("<p style='border-left:3px solid #3d8fd6;padding-left:12px;color:#334155'>%s</p>" % date.mesaj.strip()) if (date.mesaj or "").strip() else ""  # client_mesaj_v1
-    html = ("<p>Buna,</p>" + _pm + "<p>Ai primit acces la portalul iConta.eu pentru firma <b>%s</b>.</p>"
-            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in portal</a></p>"
-            "<p>Linkul e valabil 48 de ore.</p>") % (d.get("nume", ""), link)
+    # [C39] mesajul cabinetului și numele firmei sunt scrise de om: escapate (rândurile noi ale mesajului rămân rânduri)
+    _pm_html = ("<p style='border-left:3px solid #3d8fd6;padding-left:12px;color:#334155'>%s</p>"
+           % _common.esc(date.mesaj.strip()).replace("\n", "<br>")) if (date.mesaj or "").strip() else ""  # client_mesaj_v1
+    html = ("<p>Bună,</p>" + _pm_html + "<p>Ai primit acces la portalul iConta.eu pentru firma <b>%s</b>.</p>"
+            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intră în portal</a></p>"
+            "<p>Linkul e valabil 48 de ore.</p>") % (_common.esc(d.get("nume", "")), link)
     # [R73] ALERTA: linkul e singura usa a clientului in portal (ca linkul de logare)
     _obs.trimite_email_html_sau_semnaleaza("email acces portal", email, "Acces portal iConta.eu — " + d.get("nume", ""), html,
                                            alerta=True)
@@ -5120,7 +5144,7 @@ def rip_import_incarca(tenant_id, continut, nume_fisier, ctx):
     with db.get_conn() as conn:
         if respinse:
             migrare_api.seteaza_status(conn, ctx["firm"], "rip", "in_lucru",
-                                       f"{len(respinse)} rânduri respinse la import — de completat")
+                                       f"{_common.cate(len(respinse), 'rând respins', 'rânduri respinse')} la import — de completat")
         else:
             migrare_api.seteaza_status(conn, ctx["firm"], "rip", "gata", "")
     return _uc_comun._raspuns({"importate": rez["importate"], "sarite_duplicat": rez.get("sarite_duplicat", 0), "raport": raport})
@@ -5374,7 +5398,7 @@ def horeca_import_amef(tenant_id, continut, ctx):
             try:
                 tranzactie.savepoint_z_insert(cur)
                 # id-ul se citește ÎNAINTE de `RELEASE`: orice `execute` următor golește cursorul
-                iid = repo_contabilitate.nota_amef_ciorna(cur, schema, rz["data"], _numar_z, f"Raport Z {rz['data']} AMEF {rz['nui']} nr {rz['nr_raport']} ({rz['nr_bonuri']} bonuri) - de verificat cu Z tiparit",
+                iid = repo_contabilitate.nota_amef_ciorna(cur, schema, rz["data"], _numar_z, f"Raport Z {rz['data']} AMEF {rz['nui']} nr {rz['nr_raport']} ({_common.cate(rz['nr_bonuri'] or 0, 'bon', 'bonuri')}) - de verificat cu Z tiparit",
                                                           _jurnal_api.eticheta_document("Raport Z", rz["nr_raport"], rz["data"], "AMEF %s" % rz["nui"]))[0]
                 tranzactie.elibereaza_z_insert(cur)
             except _psycopg2.errors.UniqueViolation:
@@ -5397,8 +5421,10 @@ def horeca_import_amef(tenant_id, continut, ctx):
                                                      cota["valoare"] - cota["tva"], cota["tva"])
             # [D394 op2 Î1, decizia B] casa + bonurile, în ACELAȘI rând ca la ruta tastată (o singură sursă pt D394)
             repo_contabilitate.adauga_z_amef(cur, schema, iid, rz["nui"], rz["nr_bonuri"])
+            from core import eticheta_nota as _et   # [258] nota numită ca în Registrul jurnal (nu prin id)
+            _eticheta = _et.nota(cur, schema, iid)
         conn.commit()
-    return {"inregistrare_id": iid, "status": "ciorna", "data": rz["data"],
+    return {"inregistrare_id": iid, "nota_eticheta": _eticheta, "status": "ciorna", "data": rz["data"],
             "total": str(rz["total"]), "tva_total": str(rz["total_tva"]),
             "cote": [{"cota": x["cota"], "tva": str(x["tva"])} for x in rz["cote"]],
             "numerar": str(numerar), "card_altele": str(rest)}
@@ -5460,7 +5486,9 @@ def horeca_raport_z(tenant_id, rz, ctx):
                     repo_contabilitate.adauga_z_cota(cur, schema, iid, _c, _b, _t)
             # [D394 op2 Î1, decizia B] casa + bonurile, în ACELAȘI rând ca la importul AMEF (o singură sursă pt D394)
             repo_contabilitate.adauga_z_amef(cur, schema, iid, nui, int(rz.nr_bonuri))
-    return {"ok": True, "nota_id": iid, "descarcare_pe_articol": _la_cost,
+            from core import eticheta_nota as _et   # [258] nota numită ca în Registrul jurnal (nu prin id)
+            _eticheta = _et.nota(cur, schema, iid)
+    return {"ok": True, "nota_id": iid, "nota_eticheta": _eticheta, "descarcare_pe_articol": _la_cost,
             "tva_11": float(tva11), "tva_21": float(tva21),
             "baza_11": float(baza11), "baza_21": float(baza21)}
 
@@ -6068,10 +6096,10 @@ def decontare_valuta(tenant_id, corp, ctx):
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
-    return {"inregistrare_id": iid, "curs_decontare": str(curs_dec),
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "curs_decontare": str(curs_dec),
             "lei_evidenta": str(r["lei_evidenta"]),
             "diferenta": {"suma": str(d["diferenta"]), "cont": d["cont"],
-                          "sens": d["sens"]}}
+                          "sens": d["sens"]}})
 
 
 def factura_email(tenant_id, factura_id, date, ctx):
@@ -6097,8 +6125,10 @@ def factura_email(tenant_id, factura_id, date, ctx):
     numar = f.get("numar") or ""
     firma = profil.get("nume") or ""
     subiect = "Factura %s%s" % (numar, (" - " + firma if firma else ""))
-    corp_mesaj = date.mesaj or ("Bună ziua,<br><br>Atașat găsiți factura %s.<br><br>O zi bună!" % numar)
-    html = "<div style='font-family:Arial,sans-serif;font-size:14px;color:#222'>%s</div>" % corp_mesaj
+    # [C39] mesajul scris de om se escapează (rândurile lui rămân rânduri); numărul facturii la fel
+    corp_html = (_common.esc(date.mesaj).replace("\n", "<br>") if date.mesaj
+                  else "Bună ziua,<br><br>Atașat găsiți factura %s.<br><br>O zi bună!" % _common.esc(numar))
+    html = "<div style='font-family:Arial,sans-serif;font-size:14px;color:#222'>%s</div>" % corp_html
     ok = _obs.trimite_email_html(email, subiect, html,
                                  attachments=[{"content": b64, "name": nume_pdf}])
     if not ok:
@@ -6286,8 +6316,8 @@ def vanzare_ic(tenant_id, corp, ctx):
                 cur, schema, corp["data"], fid, descr[:200])[0]
             repo_contabilitate.adauga_linie_client(cur, schema, iid, cont_venit, val)
         conn.commit()
-    return {"inregistrare_id": iid, "factura_id": fid, "numar": fres.get("numar"),
-            "mentiune": ment, "vies": v}
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "factura_id": fid, "numar": fres.get("numar"),
+            "mentiune": ment, "vies": v})
 
 
 

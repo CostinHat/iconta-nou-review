@@ -1,5 +1,5 @@
 {
- "ui_hash": "04a8424502ec23af",
+ "ui_hash": "de289ea8584a79b9",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -631,7 +631,7 @@
   "raporteaza": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 4,
+    "vazute": 8,
     "apasate": 1,
     "console_errors": [],
     "layout_rupt_dupa_click": false

@@ -100,15 +100,57 @@ def config_fara_parola(cfg):
 # ============================================================
 #  POOL — init o dată la pornire
 # ============================================================
+#: [C40, 15.10.2026] cât AȘTEAPTĂ o cerere o conexiune liberă când toate cele `maxconn` sunt împrumutate (ICONTA_POOL_ASTEPTARE_SEC)
+ASTEPTARE_SEC_IMPLICIT = 20
+
+
+def _clasa_pool():
+    """`ThreadedConnectionPool` care AȘTEAPTĂ o conexiune eliberată (până la `asteptare_sec`) în loc să ridice pe loc
+    `PoolError('connection pool exhausted')`. [C40, 15.10.2026] Înainte, un val de cereri paralele (pagina principală cere mai
+    multe rute deodată) peste recalcularea din fundal pornită după orice scriere (`firma_rezumat.recalculeaza_in_fundal`) depășea
+    cele `maxconn` conexiuni, iar cererea în plus primea 500, deși o conexiune se elibera după câteva milisecunde. Văzut în plasa
+    e2e (`GET /coada` 500 după `POST /admin/invitatii`); aceeași fereastră există pe producție. După termen, eroarea rămâne cea a
+    pool-ului (nicio cerere nu atârnă la nesfârșit). Gard: core/test_pool_asteptare.py."""
+    import threading
+    import time
+    from psycopg2.pool import PoolError, ThreadedConnectionPool
+
+    class PoolCuAsteptare(ThreadedConnectionPool):
+        def __init__(self, minconn, maxconn, *a, asteptare_sec=ASTEPTARE_SEC_IMPLICIT, **k):
+            super().__init__(minconn, maxconn, *a, **k)
+            self._eliberata = threading.Condition()
+            self.asteptare_sec = asteptare_sec
+
+        def getconn(self, key=None):
+            termen = time.monotonic() + self.asteptare_sec
+            with self._eliberata:
+                while True:
+                    try:
+                        return super().getconn(key)
+                    except PoolError as e:
+                        ramas = termen - time.monotonic()
+                        if "exhausted" not in str(e) or ramas <= 0:
+                            raise
+                        self._eliberata.wait(ramas)
+
+        def putconn(self, conn=None, key=None, close=False):
+            try:
+                super().putconn(conn, key, close)
+            finally:
+                with self._eliberata:
+                    self._eliberata.notify()
+
+    return PoolCuAsteptare
+
+
 def init_pool(cfg=None):
     """Inițializează pool-ul global. psycopg2 importat lazy aici."""
     global _pool
     if _pool is not None:
         return _pool
     cfg = cfg if cfg is not None else config_din_env()
-    from psycopg2.pool import ThreadedConnectionPool
-    _pool = ThreadedConnectionPool(
-        cfg["minconn"], cfg["maxconn"], dsn_din_config(cfg))
+    _pool = _clasa_pool()(cfg["minconn"], cfg["maxconn"], dsn_din_config(cfg),
+                          asteptare_sec=float(os.environ.get("ICONTA_POOL_ASTEPTARE_SEC", ASTEPTARE_SEC_IMPLICIT)))
     return _pool
 
 

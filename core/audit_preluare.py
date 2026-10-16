@@ -35,6 +35,7 @@ from core import afirmatii as _af  # [P8] constatarea E o afirmatie
 from core.unde import Unde as _Unde  # [P8] domeniul e PACHETUL, nu o luna
 from decimal import Decimal
 from core.pdf_util import bani
+from core.common import cate as _cate
 
 MODUL = "audit_preluare"
 REGULI = "2026.1"
@@ -311,17 +312,17 @@ def constatare_rip(inc, plati, n_total, n_neclasificat):
     if sold < -TOLERANTA:
         out.append(_rosu(et, temei,
                          f"Registru: încasări {_lei(inc)}, plăți {_lei(plati)}, sold implicit "
-                         f"{_lei(sold)} ({n_total} operațiuni).",
+                         f"{_lei(sold)} ({_cate(n_total, 'operațiune', 'operațiuni')}).",
                          cauza="Soldul implicit al registrului preluat e negativ (plăți > încasări cumulat).",
                          actiune=("Verifică registrul de la contabilul anterior: operațiuni de încasare "
                                   "omise, sume sau tip greșite, sold de report neinclus.")))
     else:
         out.append(_verde(et, temei,
                           f"Registrul preluat e coerent: încasări {_lei(inc)}, plăți {_lei(plati)}, "
-                          f"sold implicit {_lei(sold)} ne-negativ ({n_total} operațiuni)."))
+                          f"sold implicit {_lei(sold)} ne-negativ ({_cate(n_total, 'operațiune', 'operațiuni')})."))
     if n_neclasificat:
         out.append(_gri(et, temei,
-                        f"{n_neclasificat} din {n_total} operațiuni sunt „neclasificat” — categoria fiscală lipsește.",
+                        f"Fără categorie fiscală („neclasificat”): {n_neclasificat} din {_cate(n_total, 'operațiune', 'operațiuni')}.",
                         "Reclasifică operațiunile în ecranul RIP (activitate / cheltuială deductibilă / limitată).",
                         cauza="Operațiuni preluate fără categorie fiscală (necesară la D212 / registru)."))
     return out
@@ -357,7 +358,7 @@ def _audit_regim_nedeterminat(e):
             "constatari": [_gri("regim nedeterminabil",
                 "Auditul aplică straturi diferite după regim (SRL partidă dublă / PFA partidă simplă); fără "
                 "regim nu se știe care se aplică, deci nu se poate rula auditul complet.",
-                "Nu s-a putut determina regimul firmei (SRL/PFA) — audit INCOMPLET, %d straturi nerulate." % len(sarite),
+                "Nu s-a putut determina regimul firmei (SRL/PFA) — audit INCOMPLET, %s." % _cate(len(sarite), "strat nerulat", "straturi nerulate"),
                 "Verifică tipul firmei (SRL/PFA) în Date firmă, apoi reia auditul.",
                 cauza="Nu se poate citi tipul firmei din Date firmă (%s)." % e)],
             "coerent": 0, "divergent": 0, "neverificat": 1,

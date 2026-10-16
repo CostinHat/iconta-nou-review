@@ -38,12 +38,14 @@ fi
 #
 # Escape MOTIVAT, ca la celelalte: `# fara-consemnare-ok: <de ce nu are loc>`
 SEMNAL='NEREPARAT|nereparat|nu se repara acum|nu se repară acum|ramane deschis|rămâne deschis|RAMANE DESCHIS|RĂMÂNE DESCHIS|de privit|merita a doua privire|merită a doua privire|am observat|STOP nemiscat|STOP nemișcat'
-LOC='#[ ]?[0-9]{1,2}|R[0-9]{1,2}|interdictia [0-9]|interdicția [0-9]|CONFORMITATE.md|VERIFICARE_FUNCTIONALITATI.md|fara-consemnare-ok'
+# [16.10.2026] + `DEFICIENTE <nr>` / `DEFICIENTE.md <nr>`: registrul canonic al deficiențelor (CLAUDE.md §2.2.0), cu NUMĂRUL ei — fără număr
+# nu spune care rând
+LOC='#[ ]?[0-9]{1,2}|R[0-9]{1,2}|interdictia [0-9]|interdicția [0-9]|CONFORMITATE.md|VERIFICARE_FUNCTIONALITATI.md|DEFICIENTE(\.md)? C?[0-9]{1,4}|fara-consemnare-ok'
 if grep -qE "$SEMNAL" "$MSG"; then
     if ! grep -qE "$LOC" "$MSG"; then
         echo "[commit-msg] RESPINS: mesajul semnaleaza un defect lasat nereparat, dar nu spune UNDE e consemnat."
         grep -nE "$SEMNAL" "$MSG" | head -4 | sed 's/^/    /'
-        echo "[commit-msg] Un defect mentionat are un loc: o interdictie (#n), o restanta (Rn), sau CONFORMITATE.md."
+        echo "[commit-msg] Un defect mentionat are un loc: o interdictie (#n), o restanta (Rn), CONFORMITATE.md sau DEFICIENTE <nr>."
         echo "[commit-msg] Daca CHIAR nu are loc: scrie '# fara-consemnare-ok: <motiv>' in mesaj."
         exit 1
     fi

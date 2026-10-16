@@ -39,7 +39,9 @@ def _q(schema):
 
 
 def documentul_sursa(cur, schema, nota_id):
-    """(fel, eticheta) al documentului din care derivă nota, sau None (notă manuală / din Operațiuni). Cursor dict sau tuplu."""
+    """(fel, eticheta documentului, eticheta notei) al documentului din care derivă nota, sau None (notă manuală / din Operațiuni).
+    Cursor dict sau tuplu. [deficiența 258] Nimic din ce se arată nu e id-ul intern: nota e „nr. crt. N din ZZ.LL.AAAA”
+    (`eticheta_nota`, ca în Registrul jurnal), documentul fără număr scris e numit prin factura lui sau prin data notei."""
     s = _q(schema)
 
     def una(sql, *p):
@@ -49,41 +51,52 @@ def documentul_sursa(cur, schema, nota_id):
             return None
         return list(r.values()) if isinstance(r, dict) else list(r)
 
-    n = una("SELECT sursa, factura_id, numar, document_ref FROM %sinregistrari WHERE id = %%s" % s, nota_id)
+    n = una("SELECT i.sursa, i.factura_id, i.numar, i.document_ref, f.tip AS f_tip, f.serie AS f_serie, f.numar AS f_numar, "
+            "f.data_emitere AS f_data, i.data, %seticheta_nota(i.id) AS eticheta FROM %sinregistrari i "
+            "LEFT JOIN %sfacturi f ON f.id = i.factura_id WHERE i.id = %%s" % (s, s, s), nota_id)
     if not n:
         return None
-    sursa, factura_id, numar, doc = n
-    eticheta = doc or ("#%s" % nota_id)
+    sursa, factura_id, numar, doc, f_tip, f_serie, f_nr, f_data, data, et_nota = n
+    from core import jurnal_api as _j
+    from core import pdf_util as _pu
+    if not doc:
+        doc = (_j.eticheta_factura(f_tip, f_serie, f_nr, f_data).split(" ", 1)[-1] if f_nr is not None
+               else "din %s" % _pu.data_ro(data))
+
+    def d(fel, eticheta=doc):
+        return (fel, eticheta, et_nota)
     if factura_id and sursa == "facturi":
-        return ("factura", eticheta)
+        return d("factura")
     if una("SELECT 1 FROM %smiscari_stoc WHERE inregistrare_id = %%s LIMIT 1" % s, nota_id):
-        return ("stoc", eticheta)
+        return d("stoc")
     r = una("SELECT numar FROM %snir WHERE inregistrari_ids @> to_jsonb(%%s::int) LIMIT 1" % s, nota_id)
     if r:
-        return ("nir", "nr %s" % r[0])
+        return d("nir", "nr %s" % r[0])
     if una("SELECT 1 FROM %scasa_operatiuni WHERE inregistrare_id = %%s LIMIT 1" % s, nota_id):
-        return ("casa", eticheta)
+        return d("casa")
     if una("SELECT 1 FROM %schitante WHERE inregistrare_id = %%s LIMIT 1" % s, nota_id):
-        return ("chitanta", eticheta)
+        return d("chitanta")
     if sursa == "banca" and una("SELECT 1 FROM %sextras_linii WHERE alocari->'inregistrari_ids' @> to_jsonb(%%s::int) LIMIT 1" % s,
                                 nota_id):
-        return ("extras", eticheta)
+        return d("extras")
     if factura_id:                       # plată / încasare legată de factură, fără casă sau extras în spate
-        return ("plata_factura", eticheta)
+        return d("plata_factura")
     if sursa == "salarii" and numar:
-        return ("salarii", numar)
+        return d("salarii", numar)
     if sursa in ("bon", "horeca_z", "amef"):
-        return ("raport_z", eticheta)
+        return d("raport_z")
     if sursa == "amortizare":
-        return ("amortizare", eticheta)
+        return d("amortizare")
     return None
 
 
 def mesaj_refuz(nota_id, doc):
-    fel, eticheta = doc
+    """Refuzul editării / ștergerii din jurnal. [258] Nota se numește prin eticheta ei (`doc[2]`, din `documentul_sursa`), nu prin
+    `nota_id` (păstrat în semnătură pentru apelanți: numărul intern nu ajunge în text)."""
+    fel, eticheta, et_nota = doc
     ce, unde = UNDE[fel]
-    return ("Nota #%s e derivată din %s: se corectează numai de acolo — %s. Dacă a fost respinsă la validare, după corectare "
-            "recontabilizarea o înlocuiește și o trimite din nou la validare." % (nota_id, ce % eticheta, unde))
+    return ("Nota %s e derivată din %s: se corectează numai de acolo — %s. Dacă a fost respinsă la validare, după corectare "
+            "recontabilizarea o înlocuiește și o trimite din nou la validare." % (et_nota, ce % eticheta, unde))
 
 
 def respinsa(cur, schema, nota_id):

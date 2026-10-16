@@ -31,6 +31,7 @@ from datetime import datetime, timezone, timedelta
 
 from core import db
 from core import spv_conector
+from core.common import cate as _cate
 from core import efactura_send as efs
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
@@ -132,7 +133,7 @@ def poll_rand(schema, row, acum, stat):
         stat["in_prelucrare"] += 1
     elif decizie == "investigatie":
         _seteaza(schema, tid, "investigatie",
-                 err="blocat in prelucrare de %d zile - verifica in SPV" % vechime)
+                 err="blocat in prelucrare de %s - verifica in SPV" % _cate(vechime, "zi", "zile"))
         stat["investigatie"] += 1
     elif decizie == "ok":
         path, xsha = _descarca_recipisa(schema, tid, principal, id_desc, mediu)

@@ -355,8 +355,9 @@ def test_pct14_confirmarea_respingerii_numeste_nota_scurt():
 def test_pct14_numeralul_acordat():
     """„«1 parteneri» în Rezumat D394.” `common.cate` acordă numeralul (cu „de” de la 20)."""
     from core.common import cate
-    assert [cate(n, "partener", "parteneri") for n in (1, 2, 19, 20, 101, 120)] == [
-        "1 partener", "2 parteneri", "19 parteneri", "20 de parteneri", "101 parteneri", "120 de parteneri"]
+    from core.test_plural_dupa_numar import TABELA   # aceeași tabelă pe care rulează și `plural.js::cate` (node)
+    assert [cate(n, "partener", "parteneri") for n, _ in TABELA] == [t for _, t in TABELA]
+    assert {(1, "1 partener"), (20, "20 de parteneri"), (101, "101 parteneri"), (120, "120 de parteneri")} <= set(TABELA)
 
 
 # ── pct.15-16 (C15, C16) ────────────────────────────────────────────────────────────────────────────────────────────────────

@@ -5,7 +5,7 @@
 // de la zero și factura dispărea. Acum: fereastra de aici (același email, doar parola), token nou fără redesenare
 // (`sesiune.reinnoieste`), iar cererea care a primit 401 se reia. „Ieși din cont” rămâne o alegere a omului, nu o urmare.
 // Mai multe cereri care primesc 401 deodată așteaptă ACEEAȘI fereastră (o singură promisiune).
-import { sesiune } from "./sesiune.js?v=38c3e6f6fe";
+import { sesiune } from "./sesiune.js?v=898215e0ee";
 
 let _inCurs = null;
 

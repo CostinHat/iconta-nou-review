@@ -22,7 +22,7 @@ def test_nr_doc_peste_20_blocat(monkeypatch):
     monkeypatch.setattr(d301, "pull", lambda conn, schema, perioada: (PROF, [_op(lung)]))
     with pytest.raises(ValueError) as ei:
         d301.genereaza(None, "tenant_014", Perioada(2026, luna=8))
-    assert "C(20)" in str(ei.value) and "30 caractere" in str(ei.value), str(ei.value)
+    assert "C(20)" in str(ei.value) and "30 de caractere" in str(ei.value), str(ei.value)
 
 
 def test_nr_doc_20_exact_trece(monkeypatch):

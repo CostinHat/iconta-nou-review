@@ -3,23 +3,23 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso } from "../api.js?v=2561dbfd34";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=72aa1cbbdb";  /* esc_nc27 */
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
-import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
+import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=dce7943315";
-import { randeazaMigrare } from "./migrare.js?v=ba6b73ad1a";
-import { randeazaControl } from "./control.js?v=d5c4e1f86d";
-import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=5d8bf5f17d"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=d8764c632e"; // [p28_setari]
-import { randeazaRaporteaza } from "./raporteaza.js?v=b330ba128c"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
-import { paginaPrincipala, legaBenzile } from "./salut.js?v=742787f71b"; // [225 + 231] banda de sus, aceeași la ambele roluri
-import { randeazaPachete } from "./pachete.js?v=47e9d14abf"; // [p63_pachete]
-import { randeazaTermene } from "./termene.js?v=d4437aae0c";
-import { randeazaValidat } from "./validat.js?v=f25b959e6d";
-import { randeazaSupervizor } from "./supervizor.js?v=e4014eea6b"; // [supervizor] rulare LA CERERE
-import { randeazaAsistenti } from "./asistenti.js?v=71d1c61bbe";
-import { randeazaCapacitate } from "./capacitate.js?v=b4e5a3063e"; // [p71_capacitate]
+import { randeazaListaFirme } from "./firme.js?v=b430cfcc52";
+import { randeazaMigrare } from "./migrare.js?v=06d45ea83e";
+import { randeazaControl } from "./control.js?v=c32702d644";
+import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=b688817998"; // [p17_activitate]
+import { randeazaSetari } from "./setari.js?v=00f4d66a12"; // [p28_setari]
+import { randeazaRaporteaza } from "./raporteaza.js?v=1f036bd59e"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
+import { paginaPrincipala, legaBenzile } from "./salut.js?v=179b6770c5"; // [225 + 231] banda de sus, aceeași la ambele roluri
+import { randeazaPachete } from "./pachete.js?v=5de3efc286"; // [p63_pachete]
+import { randeazaTermene } from "./termene.js?v=7fbacf46ea";
+import { randeazaValidat } from "./validat.js?v=a8c80dc9d3";
+import { randeazaSupervizor } from "./supervizor.js?v=395f767214"; // [supervizor] rulare LA CERERE
+import { randeazaAsistenti } from "./asistenti.js?v=d0e1cebc57";
+import { randeazaCapacitate } from "./capacitate.js?v=7ec1c7db14"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js?v=450a80b613"; // [p72_tipare]
 
 // iconițe SVG inline (autonome, fără dependență externă de rețea)
@@ -120,13 +120,13 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
     asist = pa.map((a) => `
       <button class="sa-asist sa-clic" data-ecran="capacitate">
         <span class="sa-asist-nume">${esc(a.nume)}</span>
-        <span class="sa-asist-cifre">${a.create_ || 0} pregatite${a.respinse ? " · " + a.respinse + " respinse" : ""}</span>
+        <span class="sa-asist-cifre">${cate(a.create_ || 0, "pregătită", "pregătite")}${a.respinse ? " · " + cate(a.respinse, "respinsă", "respinse") : ""}</span>
       </button>`).join("");
   } else {
     asist = `<p class="stare-goala--inline">Niciun asistent n-a produs încă azi.</p>`;
   }
 
-  const ACT = { pregatit:"a pregatit", aprobat:"a aprobat", respins:"a respins", depus:"a depus" };
+  const ACT = { pregatit:"a pregătit", aprobat:"a aprobat", respins:"a respins", depus:"a depus" };
   let jurnal = "";
   const ev = (jur.evenimente || []).slice(0, 5);
   if (ev.length) {
@@ -176,10 +176,7 @@ export function desktopCabinet(continut, nav) {
 
 // VEDEREA 1: panoul cu cele 9 carduri
 function randeazaPanou(continut, nav) {
-  const u = sesiune.user() || {};
-  const prenume = u.prenume || (u.nume || "").split(" ").slice(-1)[0] || u.nume || "";
-
-  continut.innerHTML = paginaPrincipala(prenume);
+  continut.innerHTML = paginaPrincipala(sesiune.user());   // [269] numele din salut: `numeDeSalut` (salut.js)
   legaBenzile(continut, nav, "cabinet");
   const grila = continut.querySelector(".cab-grila");
   DEF.forEach((c) => {
@@ -242,7 +239,7 @@ async function actualizeazaActivitate(grila) {
     const r = await api.get("/asistenti/echipa/semafor");
     const n = (r.counts?.rosu || 0) + (r.counts?.galben || 0);
     window._activAlerta = n;
-    zona.innerHTML = n === 0 ? "Activitate recentă" : `<b>${n}</b> ${n === 1 ? "tipar necesită atenție" : "tipare necesită atenție"}`;
+    zona.innerHTML = n === 0 ? "Activitate recentă" : `<b>${n}</b> ${dupaNumar(n, "tipar necesită atenție", "tipare necesită atenție")}`;
   } catch {}
 }
 function randeazaMeniuActivitate(corp, nav) {
@@ -255,7 +252,7 @@ function randeazaMeniuActivitate(corp, nav) {
         <div class="firme-optiune-titlu">Activitatea echipei</div>
         <div class="firme-optiune-desc">Centralizator și jurnal cronologic: cine ce a pregătit, validat, depus</div>
       </button>
-      <button class="firme-optiune" id="opt-tipare">
+      <button class="firme-optiune" id="opt-tipare" data-actiune="GET /tipare|GET /tipare/ai">
         <div class="firme-optiune-icon accent-roz">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>
         </div>
@@ -306,7 +303,7 @@ async function actualizeazaFirme(grila) {
     const lista = (r && r.tenants) || [];
     const total = lista.length;
     const active = lista.filter((t) => t.activ).length;
-    zona.innerHTML = `<b>${active}</b> ${active === 1 ? "firmă activă" : "firme active"}`;
+    zona.innerHTML = `<b>${active}</b> ${dupaNumar(active, "firmă activă", "firme active")}`;
   } catch (e) {
     zona.innerHTML = "—";
   }
@@ -404,22 +401,22 @@ async function actualizeazaValidat(grila) {
     const nevalidate = inLucruLista.filter((c) => !c.gata_de_depus).length;
     _coadaTitlu = (patruOchi || noteDeValidat) ? "De validat" : "De depus";
     if (titluEl) titluEl.textContent = _coadaTitlu;
-    const partNote = noteDeValidat ? `<b class="tip-figura">${noteDeValidat}</b> not${noteDeValidat === 1 ? "ă" : "e"} de validat` : "";
+    const partNote = noteDeValidat ? `<b class="tip-figura">${noteDeValidat}</b> ${dupaNumar(noteDeValidat, "notă de validat", "note de validat")}` : "";
     let s;
     if (patruOchi) {
-      s = `<b class="tip-figura">${laSenior}</b> declaraț${laSenior === 1 ? "ie de validat" : "ii de validat"}`;
+      s = `<b class="tip-figura">${laSenior}</b> ${dupaNumar(laSenior, "declarație de validat", "declarații de validat")}`;
       if (apGata) s += ` · <b class="tip-figura">${apGata}</b> de depus`;
-      if (nevalidate) s += ` · <b class="tip-figura">${nevalidate}</b> declaraț${nevalidate === 1 ? "ie neverificată" : "ii neverificate"}`;
+      if (nevalidate) s += ` · <b class="tip-figura">${nevalidate}</b> ${dupaNumar(nevalidate, "declarație neverificată", "declarații neverificate")}`;
     } else {
       const gata = inLucruLista.filter((c) => c.gata_de_depus).length;
-      s = `<b class="tip-figura">${gata}</b> declaraț${gata === 1 ? "ie de depus" : "ii de depus"}`;
-      if (nevalidate) s += ` · <b class="tip-figura">${nevalidate}</b> declaraț${nevalidate === 1 ? "ie neverificată, de deschis" : "ii neverificate, de deschis"}`;
+      s = `<b class="tip-figura">${gata}</b> ${dupaNumar(gata, "declarație de depus", "declarații de depus")}`;
+      if (nevalidate) s += ` · <b class="tip-figura">${nevalidate}</b> ${dupaNumar(nevalidate, "declarație neverificată", "declarații neverificate")}, de deschis`;
     }
     zona.innerHTML = partNote ? `${partNote} · ${s}` : s;
     // [Retest 2 pct.12] ciornele tale, numărate pe card: se văd fără căutare (lista e la capătul ferestrei)
     try {
       const rcm = await api.get("/eu/ciorne");
-      if (rcm && rcm.total) zona.innerHTML += ` · <b class="tip-figura">${rcm.total}</b> ${rcm.total === 1 ? "notă a ta în ciornă" : "note ale tale în ciornă"}`;
+      if (rcm && rcm.total) zona.innerHTML += ` · <b class="tip-figura">${rcm.total}</b> ${dupaNumar(rcm.total, "notă a ta în ciornă", "note ale tale în ciornă")}`;
     } catch (e) { /* cardul rămâne cu coada; lista din fereastră spune eșecul */ }
   } catch {}
 }
@@ -442,7 +439,7 @@ async function actualizeazaAsistenti(grila) {
         const c = sm.counts || {rosu:0, galben:0, verde:0};
         const na = (c.rosu || 0) + (c.galben || 0);
         randuri = na === 0 ? "" : _semaforCard([
-          { n: na, cls: c.rosu ? "pct-rosu" : "pct-galben", txt: na === 1 ? "activitate care necesită atenție" : "activități care necesită atenție" },
+          { n: na, cls: c.rosu ? "pct-rosu" : "pct-galben", txt: dupaNumar(na, "activitate care necesită atenție", "activități care necesită atenție") },
         ], "");
       }
     } catch {}
@@ -545,7 +542,7 @@ async function randeazaConsolidare(corp, nav) {
     </div>`;
   const rand = (nume, k, bold) => `
     <div class="pf-frand" style="${bold ? "font-weight:700;border-top:2px solid #ccc" : ""}">
-      <div class="pf-frand-text" style="flex:2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical" title="${nume}">${nume}</div>
+      <div class="pf-frand-text" style="flex:2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical" title="${esc(nume)}">${esc(nume)}</div>
       <span style="flex:1;text-align:right">${k ? lei(k.venituri) : "\u2014"}</span>
       <span style="flex:1;text-align:right">${k ? lei(k.cheltuieli) : "\u2014"}</span>
       <span style="flex:1;text-align:right;${k && k.profit < 0 ? "color:var(--rosu)" : ""}">${k ? lei(k.profit) : "\u2014"}</span>
@@ -556,7 +553,7 @@ async function randeazaConsolidare(corp, nav) {
     <p class="pf-intro">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${dataRo(`${d.an}-${String(d.luna).padStart(2, "0")}`, "luna_an")}. Valori \u00een lei.</p>
     <div class="pf-lista zebra-lista">
       ${cap}
-      ${(d.firme || []).map((f) => rand(esc(f.nume), f.kpi)).join("")}
+      ${(d.firme || []).map((f) => rand(f.nume, f.kpi)).join("")}
       ${rand("Total", d.total, true)}
     </div>`;
 }

@@ -15,6 +15,8 @@ import json
 import secrets
 import time
 
+from core.common import cate as _cate
+
 REGULI = "2026.1"
 MODUL = "nucleu"
 
@@ -135,7 +137,7 @@ def poate(rol, actiune):
 # [parola_min_v1] Cerinta UNICA de parola, aplicata pe BACKEND peste tot (inregistrare cabinet,
 # activare, schimbare, resetare). DOAR lungime minima — fara complexitate, fara blacklist.
 PAROLA_MIN = 8
-PAROLA_MESAJ = "Parola trebuie să aibă minim %d caractere." % PAROLA_MIN
+PAROLA_MESAJ = "Parola trebuie să aibă minim %s." % _cate(PAROLA_MIN, "caracter", "caractere")
 
 def parola_ok(parola):
     """True daca parola respecta cerinta unica (lungimea minima)."""

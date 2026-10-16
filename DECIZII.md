@@ -20489,3 +20489,91 @@ lotului, care are voie la două rulări. **Alternativa respinsă:** e2e-ul ales 
 regula 5: perimetrul se derivă, nu se alege). **Limita:** un JS fără id-uri DOM proprii (un utilitar comun) nu derivă niciun e2e — se
 spune („niciun e2e nu folosește id-urile”), iar acolo rămân uneltele vizuale și poarta lotului; un `.css` nu derivă niciun e2e, prin
 construcție (aspectul îl văd uneltele vizuale).
+
+## 15.10.2026 (noaptea) — Lotul 5 — comanda 3 (258–271)
+
+**Verbatim:** „Lotul 5, comanda 3. Înlocuiește completările trimise anterior. Răspunzi punctual pentru fiecare deficiență, rezolvată sau nu.
+1. Gărzile statice ale interfeței la JS/CSS atins: le păstrezi.
+2. Registru jurnal: a. 258: mesajul pentru asistent spune „Nota #24”, iar pe card nota e „Nr. crt. 5”; numărul intern nu se afișează
+nicăieri. b. 259: la asistent, mesajul de motiv ocupă coloana butoanelor și înghesuie textul notei într-o coloană îngustă. c. 260:
+formularul „Notă nouă” are titlul „Notă nouă · 01.10.2026” chiar dacă data notei e alta; titlul urmează data aleasă. d. 261, 263 și
+„1 angajați” din Panou Admin → Cabinete: plural fix după număr („1 note”, „1 facturi”). Corectezi clasa peste tot.
+3. Roluri: a. 262: asistentul vede „Scoate firma din portofoliu” în fereastra firmei; se ascunde, ca în lista de firme. b. 264: diacritice
+lipsă în editarea asistentului: „Editeaza”, „competente”, „stare finala”, „Dezactiveaza asistentul”. Verifici clasa în tot UI-ul. c. 265:
+o schimbare de drepturi nu se vede în sesiunea deschisă până la re-autentificare (Ana a rămas „junior” după ce a primit „Poate valida”;
+după retragere, butonul „Validează” a rămas afișat, deși serverul refuză corect). Ecranul urmează drepturile fără re-autentificare. d.
+266: coada de validare îi spune asistentului fără „Poate depune” că „Declarațiile le pregătești și le depui tu”; cardul promite
+„Declarații și note de validat”, iar ecranul vorbește doar de declarații.
+4. Înregistrare și emailuri: a. 267: formularul „Înregistrează cabinetul tău” pierde tot ce s-a completat dacă e închis sau dacă
+utilizatorul iese din pagină. Se păstrează și se reface la redeschidere, mai puțin parolele; se șterge după crearea contului. Verifici
+clasa la formularele lungi. b. 268: emailurile tranzacționale (confirmare, invitație, resetare parolă, anunț cabinet nou, alerte) nu au
+link „Dezabonează-te”. c. 269: salutul ia ultimul cuvânt din nume („Salut, 253” pentru „Test 253”).
+5. 270, Migrare cabinet: a. „Migrare cabinet” are sus câte un buton pentru fiecare aplicație: SAGA, WinMentor, Ciel, SmartBill. Activ e
+doar butonul unei aplicații ale cărei exporturi iConta le citește deja (azi SAGA); el duce la cei 8 pași adaptați acelei aplicații
+(fiecare pas spune ce export se scoate și îl primește direct; unde un pas nu e acoperit, oferă șablonul CSV/Excel). Celelalte butoane sunt
+inactive și devin active fără alte modificări de ecran când iConta începe să le citească exportul. b. Sub butoane, textul: „Dacă
+aplicația ta nu are buton activ: 1. Trimite-ne din «Suport» → «Cerere import din altă aplicație» o captură cu meniul de export din
+aplicația ta și exportul unei singure firme (balanța de verificare, partenerii cu soldurile lor, salariații, mijloacele fixe). 2.
+Analizăm exportul și îți răspundem dacă și când îl putem prelua automat. 3. Până atunci, poți începe preluarea cu pașii de mai jos,
+folosind șabloanele CSV sau Excel. Fișierele trimise sunt văzute doar de echipa iConta, se folosesc numai pentru import și le poți
+șterge oricând.” c. Sub text, cei 8 pași cu șabloanele, ca acum. d. Suport: a doua opțiune lângă „Sesizare nouă”, „Cerere import din
+altă aplicație”, cu câmpul „Aplicația din care migrezi”, capturi și fișiere de export (CSV, XLS/XLSX, ZIP). Fișierele le vede doar
+echipa iConta, sunt izolate pe cabinet și cabinetul le poate șterge. e. Ghidul de bun venit, la „Firul de intrare”, primește rândul:
+„Vii din altă aplicație? Începe din Firme → Migrare cabinet.”
+6. Server: a. 271: azi pe la 18:15 a venit alerta „Procesul iConta a repornit fără să fi fost un deploy”. Spune ce a provocat
+repornirea. Nu repara încă. b. Alertele „sanatate server” vin în serie din rulările tale de teste. Alerta de load pleacă doar dacă media
+pe 15 minute depășește un prag calculat pe numărul de procesoare și rămâne așa; nu pleacă în timpul rulărilor tale de teste. Alerta de
+repornire fără deploy rămâne neschimbată.
+7. La publicarea lotului 5, cu backup înainte: ștergi de pe producție cabinetele create la retest („Cabinet Test Inregistrare”,
+„Cabinet Test Inregistrare 253”) și cererea neconfirmată pentru costin.hateganu+test253c@gmail.com. Pe producție rămâne doar „Cabinet
+Test Sesiunea B SRL”.”
+
+**Găsite de Code în investigație (prefixul C):** C36 — atașamentele sesizărilor se scriu în `static/raportari/` și se servesc public prin
+`/static`, fără autentificare (le protejează numai un nume aleator de 8 caractere hex); C37 — numele utilizatorului intră în `innerHTML`
+neescapat (`salut.js:28`, `admin.js:50`).
+
+**Decizii implicite ale executorului, raportate la §6 (Costin le poate întoarce):**
+(268) Dezabonarea se ține pe ADRESĂ (registrul adreselor dezabonate); după ea nu mai pleacă nimic la acea adresă, CU EXCEPȚIA emailurilor
+cerute chiar atunci de destinatar (resetarea parolei, linkul de logare, confirmarea propriei înregistrări) — altfel omul și-ar bloca
+singur accesul la cont; pagina de dezabonare o spune. Linkul e semnat, nu cere logare. (270d / C36) Fișierele private (capturi, exporturi)
+stau în afara directorului servit public, pe cabinet; le descarcă echipa iConta (superadmin) și autorul lor; cabinetul le vede numele și le
+poate șterge. (6b) Prag: `load15 ≥ numărul de procesoare` (toate procesoarele ocupate, medie pe 15 minute), ținut 3 cicluri la rând (încă
+15 minute), fără nicio rulare de teste în curs sau terminată în ultimele 15 minute.
+
+## 15.10.2026 (noaptea, continuare) — Lotul 5, comanda 3: ce s-a hotărât pe drum (de confirmat de Costin la §6)
+
+- **(270b) „echipa iConta.eu”, nu „echipa iConta”.** Textul cerut spune „Fișierele trimise sunt văzute doar de echipa iConta”; garda
+  BRAND_EU (DESIGN_SYSTEM cap.21, „fără excepții”) refuză marca fără „.eu”. S-a scris „echipa iConta.eu”. *Alternativa respinsă:* o
+  excepție în DS fără decizia lui Costin. **Limita:** dacă Costin vrea textul exact, e o excepție de DS (decizia lui).
+- **(268) Excepțiile de la dezabonare:** pe lângă resetarea parolei, linkul de logare și confirmarea propriei înregistrări (decizia
+  implicită de mai sus), s-a adăugat **confirmarea adresei noi din portal** (aceeași natură: confirmarea propriei adrese). Anunțul trimis
+  pe adresa VECHE la mutarea contului și invitația unui asistent NU sunt excepții — la o adresă dezabonată nu pleacă (invitația
+  asistentului pornește atunci alerta R73). Antetul `List-Unsubscribe` are numai https (RFC 8058), fără `mailto:` (un mailto ar ajunge
+  la contact@iconta.eu fără să dezaboneze pe nimeni).
+- **(269) Conturile vechi:** înregistrarea de până azi a pus ultimul cuvânt al numelui în `prenume`; regula nouă nu-l poate deosebi de un
+  prenume scris separat. Corectarea lor = o migrare pe date reale (inclusiv cabinetul pilot) -> numai cu aprobarea lui Costin.
+- **(261/263) Texte noi la plural**, de confirmat: migrarea („toate cele N … sunt corecte”, „existente deja (sărite)”), facturile
+  („N scadente curând”), pontajul („N zile de absență / de concediu / de învoire / de delegație” — defectul invers „5 absent”), bara
+  asistentului („1 lucrare pregătită luna aceasta”). Numerele cu zecimale iau pluralul fără „de” („12,5 zile”).
+- **(258) Eticheta notei** are o singură definiție, în bază: `<schema>.eticheta_nota(nid)` -> „nr. crt. N din ZZ.LL.AAAA” (N = locul
+  notei în anul ei după (data, id), orice stare — exact `jurnal_pe_an`); Python o cheamă (`core/eticheta_nota.py`), JS folosește
+  `nr_curent`. Operațiunea RIP: „plata/încasarea din ZZ.LL.AAAA de S RON”. Migrările `migrare_ciorne_proprii`, `migrare_reguli_fond`,
+  `migrare_reguli_fond_2` își schimbă amprenta -> se rulează cu `--productie` la publicare.
+- **(C38, C40) „neverificat”, nu „rezolvată”:** reparate și probate pe bază / pe pool (cu mutații roșii), dar fără test de capăt la capăt
+  (ștergerea GDPR a unui cabinet nu are drum de ecran în plasă; fereastra pool-ului nu se reproduce determinist pe aplicația de probă —
+  un test care n-ar pica niciodată ar fi o gardă vacuă).
+- **(270d / C36) Mutarea capturilor existente** din `static/raportari` în depozitul privat (`core/migrare_fisiere_private.py`) se face la
+  publicare NUMAI cu aprobarea lui Costin: pot fi ale cabinetului pilot (regimul pilot, pct. b).
+- **(6b) Regula de load:** `load15 ≥ numărul de procesoare`, 3 măsurători la rând (din 5 în 5 minute), fără nicio rulare de teste în
+  ultimele 30 de minute (`core/rulari_teste.in_curs`: pytest, plasa, uneltele vizuale, aplicația de probă pe 8019).
+- **Scanerul ancorelor de rute (`scripts/scan_ancore_rute.py`):** după ghilimea, ancora e rută numai dacă literalul se oprește acolo sau
+  continuă cu `/` / `?` — textele date lui `cate(...)` („facturi restante”) împingeau ancora „facturi” peste prag și făceau rutele
+  facturilor să pară fără apelant. *Alternativa respinsă:* ridicarea pragului.
+- **(rularea țintită, 16.10.2026) Plasa atinsă direct rulează.** Regula Costin („rulezi e2e-ul ecranelor atinse”) era aplicată numai prin
+  id-urile DOM ale JS-ului atins; un fișier e2e nou sau schimbat (`e2e_lot5_id.py`, `e2e_ciorne_proprii.py`) nu rula până la poarta
+  lotului. Acum (`scripts/poarta_scurta.e2e_din_plasa`): fișierul e2e atins rulează, împreună cu cele care îi importă ajutoarele;
+  `conftest.py`-ul plasei sau `scripts/e2e_poarta.py` atinse -> plasa întreagă. *Alternativa respinsă:* plasa întreagă la orice e2e
+  atins (~25 de minute pentru un test schimbat). **Limita:** importurile se văd ca `from e2e_x import` la început de rând.
+- **(265) Redesenarea la schimbarea drepturilor e pe loc** (`peLoc`): jurnalul și coada nu mai trec prin „Se încarcă…”, deci ecranul
+  deschis nu dispare cât se recitește (prins de e2e 265 în rularea țintită). *Alternativa respinsă:* testul așteaptă și sfârșitul
+  redesenării — ar fi ascuns clipirea pe care o vede contabilul.

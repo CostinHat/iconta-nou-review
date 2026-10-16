@@ -200,7 +200,7 @@ def checksum_vies(tara, cod):
     if tara in ("DE", "HR"):
         n = 9 if tara == "DE" else 11
         if not (cod.isdigit() and len(cod) == n):
-            return "invalid", "format %s cere %d cifre (are %r)" % (tara, n, cod)
+            return "invalid", "format %s cere %s (are %r)" % (tara, c.cate(n, "cifră", "cifre"), cod)
         return ("ok", "ok") if _vies_mod1110(cod[:-1]) == int(cod[-1]) else ("invalid", "cifra de control (MOD 11,10)")
     if tara == "FR":
         if len(cod) == 11 and cod[:2].isdigit() and cod[2:].isdigit():
@@ -270,7 +270,7 @@ def _facturi_ic(facturi):
             continue
         if len(cod) > 12:                            # T6: NU trunchia codO (trunchierea CORUPE VAT-ul)
             diag.append(dict(info, categorie="codO_lung",
-                             motiv="codO are %d caractere (max 12) - trunchierea ar corupe numărul de TVA" % len(cod)))
+                             motiv="codO are %s (max 12) - trunchierea ar corupe numărul de TVA" % c.cate(len(cod), "caracter", "caractere")))
         else:
             st, mo = checksum_vies(tara, cod)
             if st == "invalid":
@@ -348,7 +348,7 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
         if len(cod) > 12:
             diag.append(dict(_af.afirmatie(
                 "neconformitate", "d390",
-                "codO manual are %d caractere (max 12) - trunchierea ar CORUPE numărul de TVA" % len(cod),
+                "codO manual are %s (max 12) - trunchierea ar CORUPE numărul de TVA" % c.cate(len(cod), "caracter", "caractere"),
                 unde="partenerul %s (%s%s)" % (den or "(fără denumire)", tara, cod),
                 regula="cod_tva_peste_12_caractere"),
                 categorie="codO_lung", den=den, cui=(tara + cod), directie="manual", tara=tara,
@@ -398,7 +398,8 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
     # nu declaratia se subtiaza tacit.
     _domestic = [d for d in diag if d["categorie"] == "domestic"]
     if _domestic:
-        res.avertismente.append("%d facturi cu parteneri interni (RO)/fără CUI - excluse (D390 e doar intracomunitar)." % len(_domestic))
+        res.avertismente.append("%s (D390 e doar intracomunitar)." % c.cate(
+            len(_domestic), "factură cu partener intern (RO)/fără CUI - exclusă", "facturi cu parteneri interni (RO)/fără CUI - excluse"))
     # [Q2] factura PRIMITĂ fără CUI furnizor: nu doar in numaratoarea anonima - pentru
     # directia primita un CUI gol e SUSPECT (posibila achizitie IC careia ii lipseste codul de TVA).
     for _dp in _domestic:
@@ -428,7 +429,8 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
                 "introdusă de două ori." % (_tp, _tr, _cd, _dn or "(fără denumire)"))
     _tel = str(prof.get("telefon") or "")
     if len(_tel) > 15:
-        res.avertismente.append("Telefon firma are %d caractere (max 15, C(15)) - va fi trunchiat la 15 la emitere; verifică." % len(_tel))
+        res.avertismente.append("Telefon firma are %s (max 15, C(15)) - va fi trunchiat la 15 la emitere; verifică."
+                                % c.cate(len(_tel), "caracter", "caractere"))
     if not ops:
         res.avertismente.append("Nicio operațiune intracomunitară în lună — D390 se depune doar dacă există operațiuni.")
     res.avertismente.append("Facturile intracomunitare intră automat ca bunuri: cele emise ca livrări (L), cele primite ca achiziții (A). "
@@ -451,7 +453,7 @@ def valideaza(res):
     if not _cui:
         erori.append("Lipsă CUI firma (obligatoriu).")
     elif len(_cui) > 10:
-        erori.append("CUI firma are %d cifre (max 10, N(10)) - clamparea ar corupe identitatea; corectează." % len(_cui))
+        erori.append("CUI firma are %s (max 10, N(10)) - clamparea ar corupe identitatea; corectează." % c.cate(len(_cui), "cifră", "cifre"))
     if not (prof.get("nume")):
         erori.append("Lipsă denumire firma.")
     # codO obligatoriu pentru L,T,P,R. NOTA: catalogul/tura ziceau "DUK cere codO doar pt L,T,P (nu R)";
@@ -754,10 +756,8 @@ def evidenta_incompleta(conn, schema, an, luna):
         return None
     if not n:
         return None
-    return ("%d e-Factur%s primit%s de la ANAF pe %02d.%04d %s încă neînregistrat%s — până atunci nu se poate "
-            "confirma că luna n-a avut operațiuni intracomunitare." %
-            (n, "ă" if n == 1 else "i", "ă" if n == 1 else "e", luna, an,
-             "e" if n == 1 else "sunt", "ă" if n == 1 else "e"))
+    return ("Încă neînregistrate: %s de la ANAF pe %02d.%04d — până atunci nu se poate "
+            "confirma că luna n-a avut operațiuni intracomunitare." % (c.cate(n, "e-Factură primită", "e-Facturi primite"), luna, an))
 
 
 def evidenta_incompleta_sau_neinchisa(conn, schema, an, luna):

@@ -15,7 +15,7 @@ import time as _t
 
 import pytest
 
-from conftest import _ecran, cui_cu_control, sql, zile_de_acum
+from conftest import _ecran, cui_cu_control, nr_crt, sql, zile_de_acum
 
 AZI = _dt.date.today()
 # [deficiența 216] nota salariilor se scrie după ce luna s-a încheiat: probele de salarii lucrează pe ultima lună încheiată
@@ -744,7 +744,7 @@ def test_def_52_cardul_numara_notele_ca_fereastra(ana, patron, firma_e2e):
         pg.wait_for_function("() => /not[ăe] de validat/.test((document.querySelector(\".cab-card-sinteza[data-cheie='validat']\") || {}).innerText || '')",
                              timeout=20000)
         card = pg.inner_text(".cab-card-sinteza[data-cheie='validat']")
-        n_card = int(re.search(r"(\d+)\s+not[ăe] de validat", card).group(1))
+        n_card = int(re.search(r"(\d+)\s+(?:de\s+)?not[ăe] de validat", card).group(1))
         patron.captura("card")
         pg.click("button.cab-card:has([data-cheie='validat'])")
         pg.wait_for_selector("#val-note .cf-grup-titlu", timeout=20000)
@@ -811,7 +811,7 @@ def test_def_58_ciorna_din_afara_cozii_se_trimite_la_validare(ana, patron, firma
 def test_def_46_retrimiterea_nu_e_pregatire_noua(ana2, patron, firma_e2e):
     """46. Asistenți: „Acceptate din prima” număra retrimiterea ca pregătire nouă.
     Pașii: asistentul nou scrie o notă -> contabilul-șef o respinge -> asistentul o retrimite -> contabilul-șef o validează. Bara
-    asistentului: „1 pregătite luna aceasta · 0% acceptate din prima” (nu 2 pregătite, 50%)."""
+    asistentului: „1 lucrare pregătită luna aceasta · 0% acceptate din prima” (nu 2, 50%; nici „1 pregătite”, lotul 5 pct.2d)."""
     _firma_gata(firma_e2e)
     desc = "E2E 46 curatenie %d" % (int(_t.time()) % 100000)
     nid = _nota_prin_ecran(ana2, firma_e2e, desc, "2026-10-06", luna=(2026, 10))
@@ -828,10 +828,10 @@ def test_def_46_retrimiterea_nu_e_pregatire_noua(ana2, patron, firma_e2e):
                          ".includes('La validare în cabinet')", arg=nid, timeout=20000)
     _valideaza_din_coada(patron, firma_e2e, desc)
     ana2.acasa()
-    pg.wait_for_function("() => /pregătite/.test((document.querySelector('.bara3') || {}).innerText || '')", timeout=20000)
+    pg.wait_for_function("() => /pregătit/.test((document.querySelector('.bara3') || {}).innerText || '')", timeout=20000)
     bara = pg.inner_text(".bara3")
     ana2.captura("bara")
-    assert re.search(r"\b1\s+pregătite luna aceasta", bara), bara
+    assert re.search(r"\b1\s+lucrare pregătită luna aceasta", bara), bara
     assert re.search(r"\b0%\s+acceptate din prima", bara), bara
 
 
@@ -1096,7 +1096,7 @@ def test_def_63_fraza_despre_diferente_numai_cu_diferente(patron, firma_e2e):
 def test_def_57_respingerea_se_vede_pe_stat_la_deschidere(ana, patron, firma_e2e):
     """57. Salarii: respingerea apărea pe stat abia după „Contabilizează statul”.
     Pașii: nota de salarii a Anei la validare -> contabilul-șef o respinge cu motiv -> Ana deschide Salariați: statul arată, fără
-    niciun clic, „Nota de salarii #N a fost respinsă la validare: <motiv>”."""
+    niciun clic, „Nota de salarii nr. crt. N din ZZ.LL.AAAA a fost respinsă la validare: <motiv>”."""
     _salariat(firma_e2e)
     nid = sql('SELECT id FROM "%s".inregistrari WHERE sursa = \'salarii\' ORDER BY id DESC LIMIT 1' % firma_e2e["schema"])
     if not nid or (_coada_nota(firma_e2e, nid[0][0]) or (None, None))[1] != "la_senior":
@@ -1115,7 +1115,7 @@ def test_def_57_respingerea_se_vede_pe_stat_la_deschidere(ana, patron, firma_e2e
     _stat(ana, firma_e2e)
     zona = ana.pg.inner_text("#sp-contare-zona")
     ana.captura("stat_la_deschidere")
-    assert ("Nota de salarii #%d a fost respinsă la validare: %s" % (nid, motiv)) in zona, zona[:400]
+    assert ("Nota de salarii %s a fost respinsă la validare: %s" % (nr_crt(firma_e2e["schema"], nid), motiv)) in zona, zona[:400]   # [258]
 
 
 def test_def_42_concediul_medical_intra_in_nota_de_salarii(patron):

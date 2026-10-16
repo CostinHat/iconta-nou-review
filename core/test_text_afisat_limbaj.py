@@ -47,7 +47,10 @@ EXCEPTII_DEV = {"RuntimeError", "TypeError", "KeyError", "AssertionError", "Afir
                 "SystemExit", "ImportError", "AttributeError", "IndexError", "SchemaInvalida", "_SchemaInvalida"}
 
 TRIGGERE = set(_TRIGGERE) | {"atentie", "apartin", "apartine", "apartinand", "incrucisat", "incrucisata", "incrucisate",
-                             "verificari", "buna"}   # „Buna, Dobrescu!” (deficiența 198)
+                             "verificari", "buna",   # „Buna, Dobrescu!” (deficiența 198)
+                             # [deficiența 264] verbe de interfață care fără diacritice nu sunt niciodată corecte (lexiconul corpusului
+                             # legislativ nu le are: legea nu „dezactivează” și nu „descarcă” nimic)
+                             "dezactiveaza", "renunta", "cauta", "descarca", "vizualizeaza"}
 AMBIGUE = {"sa", "tine", "lipsa", "afara", "cheltuiala", "exista"}   # „în afara”, „cheltuiala X”, „a exista” — corecte
 ACRONIME = {"ANAF", "IBAN", "OMFP", "OPANAF", "SPV", "CUI", "CIF", "CNP", "TVA", "DUK", "XML", "XSD", "PDF", "SAGA", "BNR", "CASS",
             "OUG", "CAEN", "EORI", "EUR", "RON", "USD", "REVISAL", "REGES", "INTRASTAT", "VIES", "HTTP", "JSON", "ONRC", "PFA", "SRL",
@@ -313,6 +316,25 @@ def defecte_js():
 
 def crit_js(s):
     return (majuscule(s) + fara_diacritice(s)) or None
+
+
+def cuvant_singur_fara_diacritice(s):
+    """[deficiența 264] Un cuvânt SINGUR afișat (eticheta unui buton, o opțiune: „Reactiveaza”, „Productie”) pe care lexiconul / lista
+    îl știu numai cu diacritice. Criteriile de proză cer spațiu, deci un buton dintr-un cuvânt trecea."""
+    w = s.strip()
+    if not re.fullmatch(r"[A-Za-z]{4,}", w) or not (w.islower() or w == w.capitalize()):
+        return None
+    return [w.lower()] if w.lower() in (LEXICON.keys() | TRIGGERE) - AMBIGUE else None
+
+
+def test_cuvintele_singure_afisate_au_diacritice():
+    """MUTAȚIE: „Reactivează” -> „Reactiveaza” pe butonul din ecranul Asistenți -> pică."""
+    from core.test_diacritice_afisate import scan_js_text
+    rele = []
+    for fn in sorted(glob.glob("static/js/**/*.js", recursive=True)):
+        for ln, rol, s, h in scan_js_text(io.open(fn, encoding="utf-8").read(), flag=cuvant_singur_fara_diacritice):
+            rele.append((fn, ln, rol, ",".join(h), s))
+    assert not rele, "Cuvânt afișat fără diacritice:\n" + "\n".join("  %s:%d [%s] %s <- %r" % r for r in rele)
 
 
 def test_ecranele_fara_majuscule_de_accent():

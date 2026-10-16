@@ -53,6 +53,7 @@ def _da_nu(v):
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
 from core.pdf_util import data_ro as _data_ro   # DS cap.4: data din text, canonic
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
+from core.common import cate as _cate
 
 
 def _data(v):
@@ -328,7 +329,7 @@ def verifica_randuri(randuri, azi=None):
         ore = r.get("ore_zi")
         if ore and not (1 <= float(ore) <= 8):   # 0/None = necunoscut (acoperit de norma_lipsa); doar valoarea PREZENTA gresita
             er.append(respinge("salariat", i, "ore_invalide",
-                            "%s: %s ore/zi (norma legală e de maximum 8)" % (nume, ore)))
+                            "%s: ore/zi = %s (norma legală e de maximum 8)" % (nume, ore)))
         j = str(r.get("judet_casa") or "").strip().upper()
         if j and j not in JUDETE_CASA:
             er.append(respinge("salariat", i, "judet_invalid", "%s: județul '%s' nu există" % (nume, j)))
@@ -368,9 +369,9 @@ def importa(conn, randuri):
         # spunea „2 rânduri nu pot intra", iar omul cauta al doilea. A DOUA instanta a defectului
         # reparat in lotul 1 pe istoricul de declaratii — acolo, cu aceleasi cuvinte.
         _n = len({e["rand"] for e in er})
-        _cate = ("Un rând nu poate intra" if _n == 1 else "%d rânduri nu pot intra" % _n)
+        _cine = ("Un rând nu poate intra" if _n == 1 else _cate(_n, "rând", "rânduri") + " nu pot intra")
         raise ValueError("%s în evidență: %s. Salariații intră în D112 și REGES - datele trebuie "
-                         "să fie cele reale; niciun salariat n-a fost scris." % (_cate, det))
+                         "să fie cele reale; niciun salariat n-a fost scris." % (_cine, det))
     importati = 0
     with conn.cursor() as cur:
         # asiguram constrangerea unica pe cnp pentru upsert (idempotent)

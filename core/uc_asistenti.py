@@ -24,6 +24,7 @@ from core import db, observare as _obs
 import os
 from core import repo_utilizatori
 import psycopg2.extras as _E_audit
+from core.common import esc as _esc_html   # [C39] text scris de om în HTML-ul emailurilor
 
 
 def asistenti_lista(ctx):
@@ -192,9 +193,9 @@ def asistent_creeaza(date, ctx):
             _uc_comun._pune_token(cur, tok, uid, "48 hours")
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#activare=" + tok
-    html = ("<p>Buna,</p><p>Ai fost adaugat ca asistent in cabinetul tau pe iConta.eu.</p>"
-            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Activeaza contul</a></p>"
-            "<p>Dupa activare, intra cu emailul <b>%s</b> si parola setata. Linkul e valabil 48 de ore.</p>") % (link, email)
+    html = ("<p>Bună,</p><p>Ai fost adăugat ca asistent în cabinetul tău pe iConta.eu.</p>"
+            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Activează contul</a></p>"
+            "<p>După activare, intră cu emailul <b>%s</b> și parola setată. Linkul e valabil 48 de ore.</p>") % (link, _esc_html(email))
     # [R73] ALERTA: fara linkul de activare, asistentul nu are cont.
     _obs.trimite_email_html_sau_semnaleaza("email invitatie asistent", email, "Acces asistent iConta.eu", html, alerta=True)
     return {"ok": True, "user_id": uid}

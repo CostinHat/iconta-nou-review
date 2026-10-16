@@ -20,6 +20,8 @@ import os
 import re
 from decimal import Decimal
 
+from core.common import cate as _cate
+
 _CATALOG = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "anaf_surse",
                         "hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt")
 _RAND = re.compile(r"^(\d+(?:\.\d+)+)\.\s+(.*?)[\s;:,.]*\s(\d+)\s*-\s*(\d+)\s*$")
@@ -46,8 +48,8 @@ def verifica_cod(cod, dnf_luni):
         return ("Codul %r nu e în Catalogul privind clasificarea și duratele normale de funcționare (%s) — scrie codul de "
                 "clasificare, de exemplu 2.1.17.2.1." % (cod, TEMEI_CATALOG)), None
     if dnf_luni and not (c["ani_min"] * 12 <= int(dnf_luni) <= c["ani_max"] * 12):
-        return None, ("Durata de %d luni e în afara plajei catalogului pentru codul %s (%d–%d ani)." %
-                      (int(dnf_luni), cod, c["ani_min"], c["ani_max"]))
+        return None, ("Durata de %s e în afara plajei catalogului pentru codul %s (%d–%s)." %
+                      (_cate(dnf_luni, "lună", "luni"), cod, c["ani_min"], _cate(c["ani_max"], "an", "ani")))
     return None, None
 
 

@@ -12,6 +12,7 @@
 - Când se descoperă o inconsistență: STOP, se corectează, apoi se continuă. Zero datorie tehnică vizuală.
 - La orice decizie de schimbare de comportament se verifică TOATE locurile unde comportamentul vechi există, nu doar cel discutat.
 - Textele afișate folosesc diacritice românești complete; codul/comentariile/markerii — fără diacritice.
+- **Numeralul se acordă cu substantivul (Lotul 5, 15.10.2026, deficiențele 261 / 263):** un număr afișat trece prin `cate(n, singular, plural)` (`static/js/plural.js`; în Python `core/common.cate`) — „1 notă”, „2 note”, „20 de note”, „101 note”; niciodată o formă scrisă fix după număr („1 note”, „1 facturi”, „5 absent”). Gard: `NUMERAL_NEACORDAT` în verificator + `core/test_plural_dupa_numar.py` (JS și Python), excepțiile numite acolo cu motivul.
 - **Textul afișat e limba contabilului (v2.84, comanda Costin „Retest 08.10” pct.14):** fără identificatori de cod (`common.COTE`, `R3_1_1`,
   `d100_fapt`, `False`/`None`, nume de coloană) și fără majuscule de accent („ATENTIE”, „NU”, „LIPSĂ”); un rând de cod D300 se spune
   „rândul 5.1”, o cheie de cotă prin eticheta ei. Gard: `core/test_text_afisat_limbaj.py`.
@@ -263,7 +264,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 ## 10. Escape și securitate
 
 - **`esc` din api.js (v2.0) = SINGURA funcție de escape.** Escapează `& < > " '` (5 caractere, inclusiv apostroful). Se **importă** din api.js, niciodată nu se **redefinește local**. INTERZISE: (a) variante locale cu alt nume (`_esc`/`escB`/`escV`/`escS`/`escC`/`escJ`) care omit apostroful; (b) **redefinirea locală a lui `esc`** (`function esc` / `const|let|var esc =`) într-un ecran — o copie locală poate fi mai slabă (ex. una care escapa doar `"` → XSS pe `<>` în conținut de element) și oricum e a doua sursă de adevăr pentru o primitivă de securitate; (c) **strip inline de caractere HTML** (`.replace(/[<>&]/g, "")` și variante) ca sanitizare ad-hoc — nu e XSS (scoate `<>`), dar e **data-lossy** (scoate `&` din nume: „A&B" → „AB") și tot o a doua sursă de sanitizare. Regula **ESC_LOCAL** în verificator prinde toate trei formele (apel de variantă + redefinire locală + strip inline `[…<>&…]`).
-- Orice dată user/import-controlled afișată în innerHTML se trece prin `esc()`.
+- Orice dată user/import-controlled afișată în innerHTML se trece prin `esc()`. **Gard (C37, Lotul 5, 15.10.2026):** `DATE_UTILIZATOR_NEESCAPATE` în verificator (instrumentul `scripts/scan_date_neescapate.py`, același în `core/test_date_neescapate.py`) — un nume, prenume, email, o denumire sau un mesaj scris de om, pus în HTML într-un șablon `${…}` sau lipit cu `+` lângă un tag, fără `esc()` înaintea lui. Un parametru care primește HTML gata făcut (deja escapat de apelant) o spune în nume: `confirmaCaseta(zona, mesajHtml, …)`. Limitele instrumentului (o valoare pusă întâi într-o variabilă cu alt nume, o valoare singură pe rândul ei într-un șablon început mai sus) sunt scrise în antetul lui.
 - **Mesajul de eroare venit de la server (v2.65, 04.10.2026)** — `e.mesaj` / `err.message` / `r.detail` interpolat într-un șablon HTML trece prin `esc()`: mesajul poate cita ce a tastat utilizatorul (nume, email), deci e dată controlată de utilizator. Folosit doar ca test de ternar (`e.mesaj ? … : …`) nu se afișează. Gard: `MESAJ_SERVER_NEESCAPAT` în verificator.
 
 ## 11. Procedură de lucru

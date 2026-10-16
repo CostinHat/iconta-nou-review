@@ -50,8 +50,20 @@ _ABREV = re.compile(r"\b(?!(?:art|alin|lit|pct|nr|rd|ex|cf|str|jud|tel)\.)[a-ză
 #: jargon de programator găsit pe ecrane (retest 09.10): ce înseamnă pentru dezvoltator, nu pentru contabil
 _JARGON = re.compile(r"\b(?:persistat[eăa]?|amprent[aăei]+|payload|endpoint|hash|upsert|fallback|tenant|schema|cache|null|None|"
                      r"True|False|stub|parsabil[aăe]?|neparsabil[aăe]?)\b", re.I)
-_ACORD = re.compile(r"\b1 (?:parteneri|facturi|note|conturi|clienți|furnizori|operațiuni|luni|zile|rânduri|declarații|firme|linii|"
-                    r"documente|perioade|salariați|articole)\b")
+#: [comanda Costin 15.10.2026, lotul 5 pct.2d: „«1 note», «1 facturi», «1 angajați» … Corectezi clasa peste tot.”] substantivele
+#: numărate în interfață, la plural. Lista e DERIVATĂ din cod: `core/test_plural_dupa_numar.py` cere ca substantivul fiecărui plural dat
+#: lui `cate` (JS și Python) să fie aici. Acordul greșit pe ecran: „1 <plural>” și un număr terminat în 00 sau 20–99 fără „de”.
+PLURALE = ("parteneri", "facturi", "note", "conturi", "clienți", "furnizori", "operațiuni", "luni", "zile", "rânduri",
+           "declarații", "firme", "linii", "documente", "perioade", "salariați", "articole", "CNP-uri", "achiziții", "activi",
+           "activități", "administratori", "adrese", "angajați", "ani", "apariții", "asistenți", "asociați", "beneficiari",
+           "bonuri", "bunuri", "cabinete", "caractere", "cifre", "ciorne", "constatări", "câmpuri", "datorate", "deja", "depuse",
+           "destinatari", "e-Facturi", "evenimente", "existente", "eșuate", "fișiere", "funcții", "ieșiri", "imagini", "imobile",
+           "importate", "ingrediente", "intrări", "invalide", "livrări", "lucrări", "lucrători", "mijloace", "necunoscute",
+           "netrimise", "neverificate", "notificări", "obligații", "ore", "persoane", "plăți", "potriviri", "potrivite",
+           "pregătite", "produse", "propoziții", "părți", "recomandări", "respinse", "restante", "restanțe", "rețete", "scadente",
+           "secțiuni", "sărite", "termene", "tipare", "tipuri", "trimise", "urme", "valizi")
+#: un număr LIPIT de o literă face parte dintr-un cod („D390 bunuri IC” — declarația D390, nu „390 de bunuri”), deci nu e numeral
+_ACORD = re.compile(r"(?<![\w.,])(?:1|\d*(?:[2-9]\d|00)) (?:%s)(?![\wăâîșț-])" % "|".join(map(re.escape, PLURALE)))
 #: [comanda Costin 10.10.2026 pct.5: „Vocea «nu pot …» din Control fiscal: se rescrie la persoana a treia («nu se poate verifica …»), pe
 #: toată clasa.”] Persoana întâi a aplicației. „nu pot fi …” e persoana a treia plural („două firme nu pot avea”) — nu intră.
 VOCE = re.compile(r"(?i)(?:(?:^|[.:;—–(,«„“\x22'>\n]\s*|\b(?:deci|dar|iar|că|încă|atunci|ea|el)\s+)nu pot(?!\s+fi\b)(?=\s+[a-zăâîșț])"

@@ -21,6 +21,8 @@ from core.unde import Unde as _Unde  # [P8] domeniul e LINIA, nu o luna
 from decimal import Decimal
 from itertools import combinations
 
+from core.common import cate as _cate
+
 TOLERANTA = Decimal("0.01")
 MAX_COMBO = 4  # max facturi într-o combinație exactă
 
@@ -112,7 +114,7 @@ def potriveste_linie(linie, facturi_deschise):
     combo = _match_combo(suma, facturi)
     if combo:
         return dict(_af.afirmatie(
-            "fapt", "reconciliere extras", f"match exact pe {len(combo)} facturi",
+            "fapt", "reconciliere extras", f"match exact pe {_cate(len(combo), 'factură', 'facturi')}",
             unde=_Unde("linie_extras", cui, "suma %s" % suma),
             temei_completitudine="documentele deschise ale partenerului, pe combinație de solduri"),
             status="verde",

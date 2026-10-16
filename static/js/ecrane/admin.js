@@ -2,12 +2,13 @@
 // Spatiu separat de cabinet: doar functiile de administrare iConta.
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
-import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
-import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt } from "../api.js?v=2561dbfd34";
-import { randeazaAdminRaportari } from "./admin_raportari.js?v=83cac2dbab";
-import { randeazaAdminActivitate } from "./admin_activitate.js?v=eb7f9fe915";
+import { sesiune } from "../sesiune.js?v=898215e0ee";
+import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate } from "../api.js?v=72aa1cbbdb";
+import { randeazaAdminRaportari } from "./admin_raportari.js?v=63cfcc2163";
+import { randeazaAdminActivitate } from "./admin_activitate.js?v=eb7737e0b3";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=510e670f0b";
-import { randeazaAdminAnalytics } from "./admin_analytics.js?v=473ece7371";
+import { randeazaAdminAnalytics } from "./admin_analytics.js?v=65a3ea09d5";
+import { numeDeSalut } from "./salut.js?v=179b6770c5";   // [269] numele din salut, același loc ca pagina principală
 
 // iconite SVG inline (autonome)
 function svg(cheie, fg) {
@@ -42,12 +43,11 @@ const DEF = [
 ];
 
 export function desktopAdmin(continut, nav) {
-  const u = sesiune.user() || {};
   const azi = dataRo(new Date(), "lung");
-  const prenume = u.prenume || (u.nume || "").split(" ").slice(-1)[0] || u.nume || "";
+  const nume = numeDeSalut(sesiune.user());
   continut.innerHTML = `
     <div class="cab-salut">
-      <div class="cab-salut-nume">Bună, ${prenume}</div>
+      <div class="cab-salut-nume">${nume ? "Bună, " + esc(nume) : "Bună"}</div>
       <div class="cab-salut-data">Panou Admin iConta — ${azi}</div>
     </div>
     <div class="cab-grila"></div>
@@ -93,7 +93,7 @@ async function randeazaAdminAnunturi(corp, nav) {
   // [anunturi_meniu_v1] DS cap.2a: optiunile se deschid ca pasi de navigator, nu inline
   const stare = window._anStare = window._anStare || { segment: null, cabIds: null };  // persistenta intre re-randari (mergi/inapoi re-executa radacina)
   const rezumat = () => {
-    if (stare.segment === "cabinete") return stare.cabIds ? `${stare.cabIds.length} cabinete alese` : "toate cabinetele";
+    if (stare.segment === "cabinete") return stare.cabIds ? cate(stare.cabIds.length, "cabinet ales", "cabinete alese") : "toate cabinetele";
     return "nimeni ales înc\u0103";
   };
   const meniu = () => {
@@ -161,7 +161,7 @@ async function randeazaAdminAnunturi(corp, nav) {
       if (!stare.segment) { arataMesaj(msg, "Alege \u00eent\u00e2i destinatarii (Cabinete).", "eroare"); return; }
       try {
         const r = await api.post("/admin/anunturi", { mesaj, segment: stare.segment, cabinet_ids: stare.cabIds, cabinet_id: null, data_afisare: c.querySelector("#an-data").value || null });
-        arataMesaj(msg, `Trimis c\u0103tre ${r.trimise} destinatar${r.trimise === 1 ? "" : "i"}.`, "ok");
+        arataMesaj(msg, `Trimis c\u0103tre ${cate(r.trimise, "destinatar", "destinatari")}.`, "ok");
         ta.value = "";
       } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
     });
@@ -227,7 +227,7 @@ async function randeazaAdminInvitatii(corp) {
     try {
       const r = await api.post("/admin/invitatii", { email });
       const [cls, m] = r.email_trimis ? ["caseta-info", "ci-mesaj"] : ["caseta-atentie", "ca-mesaj"];   // emailul netrimis = atenție
-      msg.innerHTML = `<div class="${cls}" id="inv-rezultat"><div class="${m}">${r.email_trimis ? `Invitația a plecat pe <b>${esc(r.email)}</b>.` : `Emailul către <b>${esc(r.email)}</b> nu s-a putut trimite — dă-i linkul de mai jos direct.`} Linkul (valabil ${r.valabila_zile} zile, o singură folosire):</div>
+      msg.innerHTML = `<div class="${cls}" id="inv-rezultat"><div class="${m}">${r.email_trimis ? `Invitația a plecat pe <b>${esc(r.email)}</b>.` : r.motiv_netrimis ? `Emailul către <b>${esc(r.email)}</b> nu a plecat: ${esc(r.motiv_netrimis)}. Dă-i linkul de mai jos direct.` : `Emailul către <b>${esc(r.email)}</b> nu s-a putut trimite — dă-i linkul de mai jos direct.`} Linkul (valabil ${cate(r.valabila_zile, "zi", "zile")}, o singură folosire):</div>
         <input type="text" class="camp-input" id="inv-link" readonly aria-label="Linkul invitației" value="${esc(r.link)}" style="margin-top:6px"></div>`;
       corp.querySelector("#inv-email").value = "";
       await incarca();

@@ -56,7 +56,7 @@ def test_def_220_rosu_numai_cu_termen_depasit(patron):
     for r in randuri:
         rosu = bool(_ROSU.search(r["dot"] or ""))
         assert rosu == (r["eticheta"] == "restanță"), r
-        assert not rosu or re.search(r"\d+ restanț", r["sub"]), r
+        assert not rosu or re.search(r"\d+ (?:de )?restanț", r["sub"]), r
     assert any(r["eticheta"] == "restanță" for r in randuri), "anti-vacuu: firmele de test au restanțe reale"
     cu_neconcordanta = [r for r in randuri if "nedeclarat" in r["sub"]]
     assert cu_neconcordanta, "anti-vacuu: firmele de test au constatări încrucișate"

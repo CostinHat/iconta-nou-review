@@ -31,6 +31,7 @@ ca sa nu importe aplicatia web (main.py) intr-un cron.
 """
 from core import db
 from core import notificari_api
+from core.common import cate as _cate
 
 REGULI = "2026.1"
 MODUL = "alerte_control_fiscal"
@@ -78,9 +79,7 @@ def decide(rosii_chei, deja_notificate):
 def text_alerta(nume_firma, rosii):
     """Textul AGREGAT per firma. rosii = [(cheie, eticheta)] in ordine canonica."""
     etichete = ", ".join(e for _, e in rosii)
-    n = len(rosii)
-    cuv = "control fiscal" if n == 1 else "controale fiscale"
-    return "%s: %d %s în roșu (%s)" % (nume_firma or "Firmă", n, cuv, etichete)
+    return "%s: %s în roșu (%s)" % (nume_firma or "Firmă", _cate(len(rosii), "control fiscal", "controale fiscale"), etichete)
 
 
 # Jurnal de idempotenta (pattern public.alerte_emise / F103) al alertelor de control.

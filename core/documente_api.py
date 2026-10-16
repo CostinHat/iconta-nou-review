@@ -5,6 +5,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 from core.pdf_fonturi import init_fonturi, font
+from core.common import cate as _cate
 
 def luni_disponibile(conn, schema):
     """Lunile cu miscari contabile, desc."""
@@ -230,9 +231,8 @@ def balanta_pdf(conn, schema, an, luna, nume_firma=""):
         Paragraph(f"Balan\u021ba de verificare \u2014 {luna:02d}/{an}", st_titlu),
         # [retest 08.10 pct.18, DS cap.7] „PDF balanță: CUI-ul firmei și data generării în antet.”
         Paragraph(antet_raport(nume_firma, _cui, platitor_tva=_platitor), st_meta),
-        Paragraph("Cuprinde numai notele validate." + (" %d %s nu %s incluse." % (
-            _n_ci, "ciorn\u0103 nevalidat\u0103" if _n_ci == 1 else "ciorne nevalidate", "este" if _n_ci == 1 else "sunt")
-            if _n_ci else ""), st_meta),
+        Paragraph("Cuprinde numai notele validate." + (" %s." % _cate(
+            _n_ci, "ciorn\u0103 nevalidat\u0103 nu este inclus\u0103", "ciorne nevalidate nu sunt incluse") if _n_ci else ""), st_meta),
         Spacer(1, 8),
     ]
 

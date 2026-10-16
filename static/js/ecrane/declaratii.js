@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu } from "../api.js?v=2561dbfd34";
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate } from "../api.js?v=72aa1cbbdb";
 import { trimiteInCoada, casetaTrimisa } from "./coada_trimite.js?v=feade00646";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
@@ -1055,7 +1055,7 @@ function randeazaFormularD177(corp, nav) {
         <span class="dec-recl-desc">${esc(_d177TipEt(b.tip))} · ${esc(b.den)} (${b.tip === "3" ? "CNP" : "CUI"} ${esc(String(b.cui))}) · ${bani(_n(b.suma))} lei${b.contract ? " · contract " + esc(b.contract) : ""} · ${b.acord ? "cu acord de informare" : "fără acord de informare"}</span>
         <button class="btn-link dec-d177-del" data-idx="${i}">șterge</button></div>`).join("")
     : `<div class="stare-goala stare-goala--inline">Niciun beneficiar. D177 redirecționează o parte din impozitul pe profit către entități nonprofit / unități de cult — adaugă mai jos fiecare beneficiar cu suma redirecționată.</div>`;
-  zona.innerHTML = `<details class="dec-xml" open><summary>Redirecționarea impozitului pe profit (${benef.length} beneficiari)</summary>
+  zona.innerHTML = `<details class="dec-xml" open><summary>Redirecționarea impozitului pe profit (${cate(benef.length, "beneficiar", "beneficiari")})</summary>
     <p class="camp-ajutor">Plătitor de impozit pe profit. Suma maximă redirecționabilă = min(20% din impozitul pe profit, 0,75% din cifra de afaceri) — o calculezi din situația firmei și o treci mai jos.</p>
     <div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">
       <label class="camp" style="width:150px"><span class="camp-eticheta">Perioada de la <span class="oblig">*</span></span><input id="d177-di" type="date" class="camp-input" value="${esc(d.data_inceput)}"></label>
@@ -1232,7 +1232,7 @@ function randeazaFormularD200(corp, nav) {
     '</div>' +
     '<p class="camp-ajutor" id="d200-nota" style="margin:4px 0 0"></p>' +
     '<div id="d200-msg"></div>' +
-    '<p class="camp-ajutor" id="d200-totaluri" style="margin-top:8px">' + sec.length + ' secțiune(i) · suma de control (venit net + câștig + pierdere): <b>' + total + '</b> lei — impozitul NU se declară aici (îl stabilește ANAF prin decizie de impunere).</p>' +
+    '<p class="camp-ajutor" id="d200-totaluri" style="margin-top:8px">' + cate(sec.length, "secțiune", "secțiuni") + ' · suma de control (venit net + câștig + pierdere): <b>' + total + '</b> lei — impozitul NU se declară aici (îl stabilește ANAF prin decizie de impunere).</p>' +
     '<p style="margin-top:8px"><button class="buton-primar" id="d200-regen">Regenerează D200</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   '</details>';
@@ -1361,7 +1361,7 @@ function randeazaFormularD201(corp, nav) {
     "</div>" +
     '<p class="camp-ajutor" id="d201-nota" style="margin:4px 0 0">Coduri oficiale ANAF (D201). Țara = cod ISO-3166 numeric (ex. Germania 276, Franța 250, Italia 380, Austria 40, Spania 724). Categorie 23 = doar venit net; categorie 14 (salarii) = admite impozit pe salarii.</p>' +
     '<div id="d201-msg"></div>' +
-    '<p class="camp-ajutor" id="d201-totaluri" style="margin-top:8px">' + sec.length + " secțiune(i) · venit net total: <b>" + totalNet + "</b> lei · impozit total: <b>" + totalImp + "</b> lei — creditul fiscal extern îl stabilește ANAF, nu se fabrică aici.</p>" +
+    '<p class="camp-ajutor" id="d201-totaluri" style="margin-top:8px">' + cate(sec.length, "secțiune", "secțiuni") + " · venit net total: <b>" + totalNet + "</b> lei · impozit total: <b>" + totalImp + "</b> lei — creditul fiscal extern îl stabilește ANAF, nu se fabrică aici.</p>" +
     '<p style="margin-top:8px"><button class="buton-primar" id="d201-regen">Regenerează D201</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";
@@ -1551,7 +1551,7 @@ function randeazaFormularD204(corp, nav) {
         '<button class="btn-link dec-d204-del" data-idx="' + i + '">șterge</button></div>').join("")
     : '<div class="stare-goala stare-goala--inline">Niciun asociat. Cotele trebuie să însumeze 100, iar venitul repartizat să egaleze venitul net.</div>';
   const okCota = Math.abs(sCota - 100) < 0.005, okVen = sVen === net3, okPier = sPier === pierd3;
-  zona.innerHTML = '<details class="dec-xml" open><summary>Asociere fără personalitate juridică — venit anual (' + aso.length + " asociați)</summary>" +
+  zona.innerHTML = '<details class="dec-xml" open><summary>Asociere fără personalitate juridică — venit anual (' + cate(aso.length, "asociat", "asociați") + ")</summary>" +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Asocierea (entitatea declarată)</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="flex:1 1 220px"><span class="camp-eticheta">Denumire asociere <span class="oblig">*</span></span><input id="d204-aden" type="text" class="camp-input" value="' + esc(a.den || "") + '"></label>' +
@@ -1686,7 +1686,7 @@ function randeazaFormularD223(corp, nav) {
         " · cotă " + esc(String(s.cota_d || 0)) + "%" + (norma ? "" : (" · venit estimat ≈ " + bani(Math.round(net3 * (_n(s.cota_d) || 0) / 100)))) + " lei</span>" +
         '<button class="btn-link dec-d223-del" data-idx="' + i + '">șterge</button></div>').join("")
     : '<div class="stare-goala stare-goala--inline">Niciun asociat. Cotele trebuie să însumeze 100; venitul net estimat se distribuie automat după cotă.</div>';
-  zona.innerHTML = '<details class="dec-xml" open><summary>Venituri estimate — asociere fără personalitate juridică (' + aso.length + " asociați)</summary>" +
+  zona.innerHTML = '<details class="dec-xml" open><summary>Venituri estimate — asociere fără personalitate juridică (' + cate(aso.length, "asociat", "asociați") + ")</summary>" +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Declarantul (persoana care depune)</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Nume declarant <span class="oblig">*</span></span><input id="d223-dnume" type="text" class="camp-input" value="' + esc(d.declarant_nume || "") + '"></label>' +
@@ -1834,7 +1834,7 @@ function randeazaFormularD216(corp, nav) {
           " · valoare " + bani(Math.round(_n(b.valoare_impozabila_mobil) || 0)) + " · impozit " + bani(r.imp) + " lei</span>" +
           '<button class="btn-link dec-d216-delm" data-idx="' + i + '">șterge</button></div>'; }).join("")
     : '<div class="stare-goala stare-goala--inline">Niciun bun mobil.</div>';
-  zona.innerHTML = '<details class="dec-xml" open><summary>Impozit special pe bunuri de valoare mare (' + imob.length + " imobile · " + mob.length + " mobile)</summary>" +
+  zona.innerHTML = '<details class="dec-xml" open><summary>Impozit special pe bunuri de valoare mare (' + cate(imob.length, "imobil", "imobile") + " · " + cate(mob.length, "bun mobil", "bunuri mobile") + ")</summary>" +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Contribuabilul</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Nume <span class="oblig">*</span></span><input id="d216-nume" type="text" class="camp-input" value="' + esc(d.nume || "") + '"></label>' +
@@ -1971,7 +1971,7 @@ function randeazaFormularD208(corp, nav) {
     ? par.map((p, i) => '<div class="dec-man-rand"><span class="dec-recl-desc">' + esc(p.nume || "(parte)") + " · CUI " + esc(p.cui || "?") + " · cotă " + esc(String(p.cota || 0)) + "%</span>" +
         '<button class="btn-link dec-d208-delp" data-idx="' + i + '">șterge</button></div>').join("")
     : '<div class="stare-goala stare-goala--inline">Nicio altă parte contractantă (obligatoriu; cotele însumează 100).</div>';
-  zona.innerHTML = '<details class="dec-xml" open><summary>Transfer proprietăți imobiliare — declarație notarială (' + ben.length + " beneficiari · " + par.length + " părți)</summary>" +
+  zona.innerHTML = '<details class="dec-xml" open><summary>Transfer proprietăți imobiliare — declarație notarială (' + cate(ben.length, "beneficiar", "beneficiari") + " · " + cate(par.length, "parte", "părți") + ")</summary>" +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Biroul notarial</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="flex:1 1 240px"><span class="camp-eticheta">Denumire birou notarial <span class="oblig">*</span></span><input id="d208-nume" type="text" class="camp-input" value="' + esc(d.nume || "") + '"></label>' +
@@ -2126,7 +2126,7 @@ function randeazaFormularD221(corp, nav) {
     ? aso.map((s, i) => '<div class="dec-man-rand"><span class="dec-recl-desc">' + esc(s.nume_d || "(asociat)") + " · CNP " + esc(s.cif_d || "?") + " · cotă " + esc(String(s.cota_d || 0)) + "%</span>" +
         '<button class="btn-link dec-d221-dela" data-idx="' + i + '">șterge</button></div>').join("")
     : '<div class="stare-goala stare-goala--inline">Niciun asociat (forma asociere cere minim 2, cotele însumează 100).</div>';
-  zona.innerHTML = '<details class="dec-xml" open><summary>Venituri agricole pe norme de venit (' + prod.length + " produse" + (forma === "2" ? (" · " + aso.length + " asociați") : "") + ")</summary>" +
+  zona.innerHTML = '<details class="dec-xml" open><summary>Venituri agricole pe norme de venit (' + cate(prod.length, "produs", "produse") + (forma === "2" ? (" · " + cate(aso.length, "asociat", "asociați")) : "") + ")</summary>" +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Contribuabilul / titularul</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Nume declarant <span class="oblig">*</span></span><input id="d221-dnume" type="text" class="camp-input" value="' + esc(d.nume_declar || "") + '"></label>' +
@@ -2404,7 +2404,7 @@ function randeazaFormularD104(corp, nav) {
         " · cotă " + esc(String(s.cota || 0)) + "% · venit " + bani(Math.round(_n(s.venit) || 0)) + " · impozit " + bani(Math.round(_n(s.imp_datorat) || 0)) + " lei</span>" +
         '<button class="btn-link dec-d104-del" data-idx="' + i + '">șterge</button></div>').join("")
     : '<div class="stare-goala stare-goala--inline">Niciun asociat. Adaugă fiecare asociat cu cota și sumele de distribuit.</div>';
-  zona.innerHTML = '<details class="dec-xml" open><summary>Distribuire venituri/cheltuieli pe asociați (' + aso.length + " asociați · " + (defin ? "definitivare an" : "trimestrial cumulat") + ")</summary>" +
+  zona.innerHTML = '<details class="dec-xml" open><summary>Distribuire venituri/cheltuieli pe asociați (' + cate(aso.length, "asociat", "asociați") + " · " + (defin ? "definitivare an" : "trimestrial cumulat") + ")</summary>" +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Declarantul (reprezentantul asocierii)</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Nume <span class="oblig">*</span></span><input id="d104-dnume" type="text" class="camp-input" value="' + esc(d.declarant_nume || "") + '"></label>' +
@@ -2500,7 +2500,7 @@ function randeazaFormularD114(corp, nav) {
           " · venit " + bani(v) + " · CAM (1%) " + bani(Math.round(v / 100)) + " lei</span>" +
           '<button class="btn-link dec-d114-del" data-idx="' + i + '">șterge</button></div>'; }).join("")
     : '<div class="stare-goala stare-goala--inline">Niciun lucrător. Adaugă contractele pentru care se datorează CAM (dar nu se declară prin D112).</div>';
-  zona.innerHTML = '<details class="dec-xml" open><summary>CAM — contribuția asiguratorie pentru muncă (situații ne-D112, ' + ct.length + " lucrători)</summary>" +
+  zona.innerHTML = '<details class="dec-xml" open><summary>CAM — contribuția asiguratorie pentru muncă (situații ne-D112, ' + cate(ct.length, "lucrător", "lucrători") + ")</summary>" +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Declarantul (angajatorul)</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="width:160px"><span class="camp-eticheta">CIF declarant <span class="oblig">*</span></span><input id="d114-cif" type="text" maxlength="10" class="camp-input" value="' + esc(d.cif_declarant || "") + '"></label>' +
@@ -2596,7 +2596,7 @@ function randeazaFormularD110(corp, nav) {
           '<button class="btn-link dec-d110-del" data-idx="' + i + '">șterge</button></div>'; }).join("")
     : '<div class="stare-goala stare-goala--inline">Nicio obligație. Adaugă codul obligației + impozitul datorat și cel reținut.</div>';
   const incoerent = (rest && sRest === 0) || (!rest && sRest > 0);
-  zona.innerHTML = '<details class="dec-xml" open><summary>Regularizare impozit reținut la sursă (' + obl.length + " obligații)</summary>" +
+  zona.innerHTML = '<details class="dec-xml" open><summary>Regularizare impozit reținut la sursă (' + cate(obl.length, "obligație", "obligații") + ")</summary>" +
     '<p class="camp-ajutor" style="margin:2px 0 8px">Identitatea plătitorului (denumire, CUI, adresă, declarant) se preia din profilul firmei.</p>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="width:260px"><span class="camp-eticheta">Tip <span class="oblig">*</span></span><select id="d110-temei" class="camp-input">' + alegeDacaLipseste(d.d_temei) + '<option value="0"' + (String(d.d_temei) === "0" ? " selected" : "") + ">Regularizare (fără restituire)</option><option value=\"1\"" + (rest ? " selected" : "") + ">Cerere de restituire</option></select></label>" +
@@ -2695,7 +2695,7 @@ function randeazaFormularD398(corp, nav) {
           " · cotă " + esc(String(l.vat_rate || 0)) + "% · bază " + esc(String(l.taxable_amount || 0)) + " · TVA " + va.toFixed(2) + "</span>" +
           '<button class="btn-link dec-d398-del" data-idx="' + i + '">șterge</button></div>'; }).join("")
     : '<div class="stare-goala stare-goala--inline">Nicio livrare. Adaugă pe fiecare stat de consum livrările (bunuri/servicii) cu cota și baza.</div>';
-  zona.innerHTML = '<details class="dec-xml" open><summary>OSS — TVA regimuri speciale (' + linii.length + " livrări)</summary>" +
+  zona.innerHTML = '<details class="dec-xml" open><summary>OSS — TVA regimuri speciale (' + cate(linii.length, "livrare", "livrări") + ")</summary>" +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Contribuabilul și regimul</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="width:230px"><span class="camp-eticheta">Regim special <span class="oblig">*</span></span><select id="d398-moes" class="camp-input">' + alegeDacaLipseste(d.moes_voes_imp) + optRegim("1", "1 — UE (bunuri+servicii)") + optRegim("2", "2 — non-UE (servicii)") + optRegim("3", "3 — import (bunuri)") + "</select></label>" +
@@ -2824,7 +2824,7 @@ function randeazaFormularD318(corp, nav) {
         '<button class="btn-link dec-d318-del" data-idx="' + i + '">șterge</button></div>').join("")
     : '<div class="stare-goala stare-goala--inline">Nicio factură. Adaugă cel puțin o factură de achiziție sau de import din statul de rambursare.</div>';
   const inp = (id, lbl, val, w, extra) => '<label class="camp" style="width:' + w + '"><span class="camp-eticheta">' + lbl + '</span><input id="' + id + '" ' + (extra || 'type="text"') + ' class="camp-input" value="' + esc(val || "") + '"></label>';
-  zona.innerHTML = '<details class="dec-xml" open><summary>Rambursare TVA din alt stat UE (' + facturi.length + " facturi)</summary>" +
+  zona.innerHTML = '<details class="dec-xml" open><summary>Rambursare TVA din alt stat UE (' + cate(facturi.length, "factură", "facturi") + ")</summary>" +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Perioada de rambursare și solicitantul</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">' +
       inp("d318-an", "An rambursare <span class=\"oblig\">*</span>", d.an || "", "120px", 'type="number" min="2010" max="2099"') +
@@ -3090,8 +3090,8 @@ function randeazaFormularD212(corp, nav) {
         (a.sediu ? " · " + esc(a.sediu) : "") + " · normă " + bani(_n(a.norma)) + " lei" +
         (a.norma_ajustata !== "" && a.norma_ajustata != null ? " · ajustată " + bani(_n(a.norma_ajustata)) + " lei" : "") +
         (a.data_incep ? " · început " + esc(a.data_incep) : "") + (a.data_sf ? " · încetare " + esc(a.data_sf) : "") +
-        (Number(a.zile_intrerupere) ? " · " + esc(String(a.zile_intrerupere)) + " zile întrerupere" : "") +
-        (Number(a.nr_zile_scutite) ? " · " + esc(String(a.nr_zile_scutite)) + " zile scutite" : "") + "</span>" +
+        (Number(a.zile_intrerupere) ? " · " + esc(cate(a.zile_intrerupere, "zi de întrerupere", "zile de întrerupere")) : "") +
+        (Number(a.nr_zile_scutite) ? " · " + esc(cate(a.nr_zile_scutite, "zi scutită", "zile scutite")) : "") + "</span>" +
         '<button class="buton-sters d212-n-del" data-idx="' + i + '" aria-label="Șterge activitatea ' + (i + 1) + '">Șterge</button></div>').join("")
     : '<div class="stare-goala stare-goala--inline">Nicio activitate pe normă. Dacă persoana a avut venituri impuse pe normă de venit, adaugă fiecare activitate (fiecare loc) mai jos.</div>';
   const optForma = _D212_FORMA_ORG.map((o) => '<option value="' + o[0] + '">' + esc(o[1]) + "</option>").join("");
@@ -3135,7 +3135,7 @@ function randeazaFormularD212(corp, nav) {
         (v.castig_net !== "" && v.castig_net != null ? " · câștig net " + bani(_n(v.castig_net)) + " lei" : "") +
         (v.venit_impozabil !== "" && v.venit_impozabil != null ? " · venit impozabil " + bani(_n(v.venit_impozabil)) + " lei" : "") +
         (Number(v.pierdere_precedenta) ? " · pierderi reportate " + bani(_n(v.pierdere_precedenta)) + " lei" : "") +
-        (v.sediu ? " · " + esc(v.sediu) : "") + (Number(v.nr_zile_scutite) ? " · " + esc(String(v.nr_zile_scutite)) + " zile scutite" : "") + "</span>" +
+        (v.sediu ? " · " + esc(v.sediu) : "") + (Number(v.nr_zile_scutite) ? " · " + esc(cate(v.nr_zile_scutite, "zi scutită", "zile scutite")) : "") + "</span>" +
         '<button class="buton-sters d212-v-del" data-idx="' + i + '" aria-label="Șterge venitul ' + (i + 1) + '">Șterge</button></div>').join("")
     : '<div class="stare-goala stare-goala--inline">Niciun alt venit. Dacă persoana a avut și venituri din drepturi de autor, chirii, investiții, activități agricole, alte surse sau o altă activitate independentă ținută în afara registrului acestei firme, adaugă fiecare sursă mai jos.</div>';
   const optCat = _D212_CATEG.map((o) => '<option value="' + o[0] + '">' + esc(o[1]) + "</option>").join("");
@@ -3662,7 +3662,7 @@ export function _blocComponente(c) {
     const celula = (r, k) => (r[k] == null ? "" : (typeof r[k] === "object" ? celulaObiect(r[k])
       : (mon.has(k) ? bani(r[k]) : (/^\d{4}-\d{2}-\d{2}$/.test(String(r[k])) ? dataRo(r[k]) : esc(String(r[k]))))));   // [Retest 2 pct.14] data în forma românească
     return `<div style="margin-top:10px">
-        <div class="camp-eticheta">${esc(s.nume)} \u2014 ${s.total} ${s.total === 1 ? "r\u00e2nd" : "r\u00e2nduri"}${s.aratate < s.total ? `, se arat\u0103 primele ${s.aratate}` : ""}</div>
+        <div class="camp-eticheta">${esc(s.nume)} \u2014 ${cate(s.total, "r\u00e2nd", "r\u00e2nduri")}${s.aratate < s.total ? `, se arat\u0103 primele ${s.aratate}` : ""}</div>
         <table class="fd-tabel">
           <thead><tr>${coloane.map((k) => `<th${mon.has(k) ? ' class="fd-td-num"' : ""}>${esc(k)}</th>`).join("")}</tr></thead>
           <tbody>${s.randuri.map((r) => `<tr>${coloane.map((k) => `<td${mon.has(k) ? ' class="fd-td-num"' : ""}>${celula(r, k)}</td>`).join("")}</tr>`).join("")}</tbody>
@@ -3672,7 +3672,7 @@ export function _blocComponente(c) {
   const cuRanduri = c.sectiuni.filter((s) => s.randuri.length);
   if (!cuRanduri.length) return "";
   return `<details class="dec-xml">
-      <summary>Din ce e f\u0103cut\u0103 declara\u021bia \u2014 ${c.total} ${c.total === 1 ? "r\u00e2nd" : "r\u00e2nduri"}</summary>
+      <summary>Din ce e f\u0103cut\u0103 declara\u021bia \u2014 ${cate(c.total, "r\u00e2nd", "r\u00e2nduri")}</summary>
       ${cuRanduri.map(tabel).join("")}
     </details>`;
 }

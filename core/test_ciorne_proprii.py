@@ -101,7 +101,8 @@ def test_asistentul_nu_schimba_nu_sterge_ciorna_altuia_pe_niciun_drum(cur):
     asi, _ = _id(cur, "asistent@prisma-cont.test")
     n = _nota(cur, pat)
     _ca(cur, asi)
-    refuz = D + _dr.MESAJ_CIORNA_ALTUI % (n, nume_pat, nume_pat)
+    # [258] nota numită ca în Registrul jurnal: singura notă din 2099 a schemei efemere e „nr. crt. 1 din 07.10.2099” — nu id-ul ei
+    refuz = D + _dr.MESAJ_CIORNA_ALTUI % ("nr. crt. 1 din 07.10.2099", nume_pat, nume_pat)
     _refuz(cur, "UPDATE inregistrari SET descriere = 'alta' WHERE id = %s", (n,), refuz)
     _refuz(cur, "DELETE FROM inregistrari WHERE id = %s", (n,), refuz)
     _refuz(cur, "UPDATE inregistrari_linii SET suma = 5 WHERE inregistrare_id = %s", (n,), refuz)
@@ -136,7 +137,8 @@ def test_asistentul_cu_poate_valida_valideaza_dar_nu_editeaza_ciorna_altuia(cur)
     cur.execute("UPDATE public.users SET poate_valida = true WHERE id = %s", (asi,))   # anulat la final (ROLLBACK)
     n = _nota(cur, pat)
     _ca(cur, asi)
-    _refuz(cur, "UPDATE inregistrari SET descriere = 'alta' WHERE id = %s", (n,), D + _dr.MESAJ_CIORNA_ALTUI % (n, nume_pat, nume_pat))
+    _refuz(cur, "UPDATE inregistrari SET descriere = 'alta' WHERE id = %s", (n,),
+           D + _dr.MESAJ_CIORNA_ALTUI % ("nr. crt. 1 din 07.10.2099", nume_pat, nume_pat))
     cur.execute("UPDATE inregistrari SET status = 'validata' WHERE id = %s", (n,))
     cur.execute("SELECT status FROM inregistrari WHERE id = %s", (n,))
     assert cur.fetchone()[0] == "validata"
@@ -150,6 +152,7 @@ def test_registrul_de_incasari_si_plati_aceeasi_regula(cur):
                 "('2099-10-07', 'plata', 10, 'proba', 'cheltuiala', 'numerar', %s) RETURNING id", (pat,))
     op = cur.fetchone()[0]
     _ca(cur, asi)
-    _refuz(cur, "DELETE FROM rip_operatiuni WHERE id = %s", (op,), D + _dr.MESAJ_RIP_ALTUI % (op, nume_pat, nume_pat))
+    _refuz(cur, "DELETE FROM rip_operatiuni WHERE id = %s", (op,),
+           D + _dr.MESAJ_RIP_ALTUI % ("plata din 07.10.2099 de 10,00 RON", nume_pat, nume_pat))   # [258] cum o arată rândul, nu id-ul
     _ca(cur, pat)
     cur.execute("DELETE FROM rip_operatiuni WHERE id = %s", (op,))

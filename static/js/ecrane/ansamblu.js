@@ -12,10 +12,10 @@
 // ca butoanele. Asistentului fără firme i se spune asta, nu i se arată un fir pe care nu-l poate parcurge.
 // [pct.7] Termenul de rezolvare („se rezolvă în maximum 48 de ore”) a ieșit din fraza despre Suport: nu e un angajament
 // decis (Costin). Fraza rămâne, fără termen.
-import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=2561dbfd34";
-import { STRATURI } from "./migrare.js?v=ba6b73ad1a";
-import { permis } from "../drepturi.js?v=df020d220f";
-import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
+import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=72aa1cbbdb";
+import { STRATURI } from "./migrare.js?v=06d45ea83e";
+import { permis } from "../drepturi.js?v=34d0fb0afd";
+import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 // [deficiența 230, comanda Costin 12.10.2026] numărul pasului e poziția lui în firul AFIȘAT, nu `nr` din STRATURI: pentru asistent
 // pasul „Firme” e al administratorului și lipsește, iar firul începea de la „2”.
@@ -53,6 +53,8 @@ function _sectiuneFir(asistent, pasi) {
     `<p class="ans-fir-unde">Fiecare pas se face pentru firma respectivă, din cardul „Import date” al firmei (ecranul Firme → firma → Import date). Excepție: „Vector fiscal” se completează în ecranul „Date firmă”.` +
     (asistent ? ` Firma o adaugă în portofoliu administratorul cabinetului; tu preiei datele firmelor care ți-au fost alocate.` : "") +
     `</p>` +
+    // [270 e, comanda Costin 15.10.2026] rândul cerut, verbatim; numai unde există pași permiși (fără „Poate pregăti” nu e de unde începe)
+    `<p class="ans-fir-unde" id="ans-alta-aplicatie">Vii din altă aplicație? Începe din Firme → Migrare cabinet.</p>` +
     `<ol class="ans-fir">${_firHTML(pasi)}</ol>` +
   `</section>`;
 }

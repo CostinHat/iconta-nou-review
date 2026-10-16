@@ -30,6 +30,8 @@ din același motiv: o aplicație care nu poate garanta ce pretinde n-are voie s�
 import logging
 import traceback
 
+from core.common import cate as _cate
+
 #: Sursele în care trăiește un raport Z. **Sursa unică** — `main.py` o importă de aici, ca poarta
 #: din cod și indexul din bază să nu poată descrie două mulțimi diferite.
 SURSE = ("horeca_z", "amef")
@@ -192,8 +194,8 @@ def verifica(conn, doar_active=True):
             else:
                 lipsa.append({"tenant_id": tid, "schema": schema})
     return {"ok": not lipsa, "lipsa": lipsa,
-            "detaliu": "index `%s` + tabelele `%s`, `%s` prezente pe %d firme, lipsă pe %d"
-                       % (NUME_INDEX, NUME_TABEL_COTE, NUME_TABEL_AMEF, avute, len(lipsa))}
+            "detaliu": "index `%s` + tabelele `%s`, `%s` prezente pe %s, lipsă pe %d"
+                       % (NUME_INDEX, NUME_TABEL_COTE, NUME_TABEL_AMEF, _cate(avute, "firmă", "firme"), len(lipsa))}
 
 
 #: promisiunea pe care mesajul de eșec TREBUIE s-o poarte. Constantă, nu literal repetat: e o
@@ -225,8 +227,8 @@ def mesaj_esec(raport):
         linii.append("firma %s (%s): %s%s" % (
             e["tenant_id"], e["schema"], e["exceptie"],
             (" — chei duplicate: %s" % ", ".join("%s/%s ×%d" % t for t in d[:5])) if d else ""))
-    return ("[R61] unicitatea raportului Z nu s-a putut impune pe %d firme — aplicația NU "
+    return ("[R61] unicitatea raportului Z nu s-a putut impune pe %s — aplicația NU "
             "pornește. Câtă vreme indexul lipsește, două încărcări simultane ale aceluiași raport "
             "Z pot intra amândouă în evidență, iar asta nu se vede la citire. %s: care din "
             "documentele duplicate e cel bun se decide de om. %s"
-            % (len(raport["esecuri"]), PROMISIUNE_TEXT, " | ".join(linii)))
+            % (_cate(len(raport["esecuri"]), "firmă", "firme"), PROMISIUNE_TEXT, " | ".join(linii)))

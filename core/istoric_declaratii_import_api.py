@@ -16,6 +16,7 @@ import datetime
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 import re as _re
 from core.pdf_util import data_ro as _data_ro   # DS cap.4: data din text, canonic
+from core.common import cate as _cate
 
 from core import import_tabel as _it
 
@@ -236,7 +237,7 @@ def importa(conn, tenant_id, randuri):
         _nr = len({x["rand"] for x in er})
         raise ValueError("%s nu %s intra: %s. Istoricul declarațiilor stă la "
                          "baza termenelor și a controlului fiscal."
-                         % ("Un rând" if _nr == 1 else "%d rânduri" % _nr,
+                         % ("Un rând" if _nr == 1 else _cate(_nr, "rând", "rânduri"),
                             "poate" if _nr == 1 else "pot",
                             "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6])))
     with conn.cursor() as cur:

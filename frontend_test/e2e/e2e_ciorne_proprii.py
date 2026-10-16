@@ -7,7 +7,7 @@ import sys
 
 import pytest
 
-from conftest import _scoate_firmele_e2e, firma_noua, sql
+from conftest import _scoate_firmele_e2e, firma_noua, nr_crt, sql
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from e2e_bloc_d import ASISTENT, PATRON, _api, _firma_noua, _jurnal, _uid   # noqa: E402
@@ -52,7 +52,8 @@ def test_def_246_ciorna_altui_utilizator_se_vede_dar_nu_se_schimba(asistent, fir
                     motiv: m ? m.innerText.trim() : null} : null; })""", [a_patronului, a_ei])
     asistent.captura()
     nume = _nume(PATRON)
-    motiv = _dr.MESAJ_CIORNA_ALTUI % (a_patronului, nume, nume)
+    # [258] nota numită cum o arată cardul („nr. crt. N din ZZ.LL.AAAA”, numărul curent din Registrul jurnal), nu prin id-ul intern
+    motiv = _dr.MESAJ_CIORNA_ALTUI % (nr_crt(firma_246["schema"], a_patronului), nume, nume)
     assert stare[0] == {"edit": False, "del": False, "trimite": False, "motiv": motiv}, stare[0]
     assert stare[1] is not None and stare[1]["motiv"] is None, stare[1]
     for metoda, cale, corp in (("PUT", "/tenants/%d/jurnal/%d" % (tid, a_patronului), {"descriere": "schimbată de Ana"}),

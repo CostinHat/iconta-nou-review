@@ -28,10 +28,10 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=2561dbfd34";
-import { randA as randConstatare } from "./control_verdict.js?v=2fc749a2a2";
-import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
-import { deschideFirma } from "./firme.js?v=dce7943315";
+import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=72aa1cbbdb";
+import { randA as randConstatare } from "./control_verdict.js?v=751a4f0a85";
+import { sesiune } from "../sesiune.js?v=898215e0ee";
+import { deschideFirma } from "./firme.js?v=b430cfcc52";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)
@@ -43,7 +43,7 @@ function rulajNota(n) {
 
 function numeFirma(firme, tid) {
   const f = firme.find((x) => x.tenant_id === tid || x.id === tid);
-  return f ? f.nume : `firma #${tid}`;
+  return f ? f.nume : "o firmă care nu mai e în lista ta";   // [258] niciodată id-ul intern
 }
 
 // [R41 partea II] Eticheta verdictului — DERIVATĂ din starea întoarsă de server (interdicția 31:
@@ -108,21 +108,62 @@ function numeScurt(c) {
   const n = c.nota || {}, p = c.payload || {};
   const doc = (n.document_ref || p.document_ref || "").trim();
   const nr = (c.membri_ids || []).length;
-  if (nr > 1) return `cele ${nr} note ale documentului${doc ? " " + doc : ""}`;
+  if (nr > 1) return `cele ${cate(nr, "notă", "note")} ale documentului${doc ? " " + doc : ""}`;
   const data = n.data || p.data;
   return doc ? `nota (${doc})` : (data ? `nota din ${dataRo(data)}` : "nota");
 }
 function _confirma(ids, text) { _ultimaActiune = { ids: ids.map(Number), text, la: Date.now() }; }
 
 // [08.10.2026, U4] Titlul cozii = ce conține: „Note de validat”, „Declarații de validat”, „Declarații de depus” — părțile nevide,
-// unite cu „ · ”; coada goală -> „Coada de validare și depunere”.
-export function titluCoada({ note = 0, deValidat = 0, deDepus = 0 }) {
+// unite cu „ · ”; coada goală -> „Coada de validare și depunere” (fără dreptul «Poate depune»: „Coada de validare” — deficiența 266).
+export function titluCoada({ note = 0, deValidat = 0, deDepus = 0, poateDepune = true }) {
   const parti = [note ? "Note de validat" : "", deValidat ? "Declarații de validat" : "", deDepus ? "Declarații de depus" : ""].filter(Boolean);
-  return parti.length ? parti.join(" · ") : "Coada de validare și depunere";
+  return parti.length ? parti.join(" · ") : (poateDepune ? "Coada de validare și depunere" : "Coada de validare");
+}
+
+// [deficiența 266, comanda Costin 15.10.2026] „coada de validare îi spune asistentului fără «Poate depune» că «Declarațiile le pregătești
+// și le depui tu»; cardul promite «Declarații și note de validat», iar ecranul vorbește doar de declarații.” Textul de sub titlu urmează
+// dreptul real — `poate_valida` / `poate_depune` din `/eu/permisiuni`, aceleași din care se aleg butoanele cardurilor — și vorbește întâi
+// de note, apoi de declarații. Unde dreptul lipsește, spune cine face pasul, nu „tu”.
+const CINE_VALIDEAZA = "un coleg care are dreptul «Poate valida»";
+const CINE_DEPUNE = "un coleg care are dreptul «Poate depune»";
+export function introCoada({ poateValida = false, poateDepune = false, admin = false, patruOchi = false, politica = false, note = 0 }) {
+  const fraze = [note
+    ? (poateValida ? "Notele de mai sus le-au pregătit asistenții: le validezi sau le respingi."
+      : `Notele de mai sus le-au pregătit asistenții: le validează sau le respinge ${CINE_VALIDEAZA}.`)
+    : (poateValida ? "Aici ajung notele contabile pe care asistenții le trimit la validare: le validezi sau le respingi."
+      : `Aici ajung notele contabile pe care asistenții le trimit la validare: le validează sau le respinge ${CINE_VALIDEAZA}.`)];
+  if (patruOchi) {
+    fraze.push(poateValida
+      ? (poateDepune ? "Declarațiile pregătite de asistenți așteaptă validarea ta înainte de depunere."
+        : `Declarațiile pregătite de asistenți așteaptă validarea ta; după validare, le depune ${CINE_DEPUNE}.`)
+      : (poateDepune ? `Declarațiile pregătite de asistenți le validează ${CINE_VALIDEAZA}; după validare, le depui tu.`
+        : `Declarațiile pregătite de asistenți le validează ${CINE_VALIDEAZA} și le depune ${CINE_DEPUNE}.`));
+    fraze.push("Nimic nu se depune nevalidat.");
+  } else if (politica) {
+    fraze.push((poateValida ? "Validarea în doi a declarațiilor e pornită, dar suspendată: ești singurul validator din cabinet."
+      : "Validarea în doi a declarațiilor e pornită, dar suspendată: cabinetul are un singur validator.")
+      + " Reintră în vigoare de îndată ce un coleg primește dreptul de validare" + (admin ? " (cardul Asistenți)." : "."));
+    fraze.push(poateDepune ? "Până atunci, declarațiile le depui tu." : `Până atunci, declarațiile le depune ${CINE_DEPUNE}.`);
+  } else {
+    fraze.push(poateDepune ? "Declarațiile le depui tu — validarea în doi a declarațiilor nu e pornită."
+      : `Declarațiile le depune ${CINE_DEPUNE} — validarea în doi a declarațiilor nu e pornită.`);
+  }
+  return fraze.join(" ");
 }
 
 export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 pct.8] opt.evidentiaza = id-ul din notificare
-  corp.innerHTML = `<p class="ecran-nota">Se încarcă coada…</p>`;
+  // [265] drepturile schimbate în sesiunea deschisă: coada își alege butoanele și textele la desenare, deci se redesenează la semnalul
+  // din drepturi.js; un singur ascultător pe fereastră, scos când fereastra s-a închis
+  if (!corp.__laDrepturi) {
+    corp.__laDrepturi = () => {
+      if (!corp.isConnected) { window.removeEventListener("iconta:drepturi", corp.__laDrepturi); return; }
+      randeazaValidat(corp, nav, { peLoc: true });
+    };
+    window.addEventListener("iconta:drepturi", corp.__laDrepturi);
+  }
+  // `peLoc` (redesenarea la drepturi): coada rămâne pe ecran cât se citește, fără „Se încarcă” intermediar
+  if (!opt.peLoc) corp.innerHTML = `<p class="ecran-nota">Se încarcă coada…</p>`;
   let coada = [];
   let firme = [];
   let perm = { poate_valida: false, poate_depune: false, rol: null };
@@ -162,20 +203,17 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   // [lotul 07.10 pct.11, comanda Costin 06.10.2026] „Contabilul vede o etichetă pentru ce are de validat și un text fără termeni
   // interni.” Notele au eticheta lor și propoziția lor (le-a pregătit un asistent; le validezi sau le respingi); textul despre
   // declarații vorbește despre declarații, fără „patru-ochi” — „validarea în doi” e numele pe care îl vede omul în Asistenți.
-  const intro = patruOchi
-    ? "Declarațiile pregătite de asistenți așteaptă validarea ta înainte de depunere. Nimic nu se depune nevalidat."
-    : (patruOchiPolitica
-      ? "Validarea în doi e pornită, dar suspendată: ești singurul validator din cabinet, așa că pregătești și depui singur. Reintră în vigoare de îndată ce un coleg primește dreptul de validare (cardul Asistenți)."
-      : (noteDeValidat.length
-        // [deficiența 217, retestul Costin 09.10: „textul «validarea în doi nu e pornită» contrazice notele de validat de pe același
-        // ecran”] validarea în doi privește DECLARAȚIILE; notele pregătite de asistenți se validează întotdeauna — textul o spune
-        ? "Notele de mai sus le-au pregătit asistenții: le validezi sau le respingi. Declarațiile le depui tu — validarea în doi a declarațiilor nu e pornită."
-        : "Declarațiile le pregătești și le depui tu (validarea în doi a declarațiilor nu e pornită). Cele din listă așteaptă depunerea."));
+  // [deficiența 217, retestul Costin 09.10: „textul «validarea în doi nu e pornită» contrazice notele de validat de pe același ecran”]
+  // validarea în doi privește DECLARAȚIILE; notele pregătite de asistenți se validează întotdeauna — textul o spune. [266] `introCoada`.
+  const intro = introCoada({ poateValida: !!perm.poate_valida, poateDepune: !!perm.poate_depune,
+                             admin: perm.rol === "admin_firma" || perm.rol === "superadmin",
+                             patruOchi, politica: patruOchiPolitica, note: noteDeValidat.length });
   // [08.10.2026, decizia Costin U4] „Fereastra cu note de validat se numește «De depus». Titlul trebuie să spună ce conține.” Titlul
   // venea din cardul de pe desktop (calculat o dată, fără note), iar navigatorul îl punea ca <h2>. Acum ecranul își scrie titlul din
   // ce are în el: părțile nevide, în ordinea în care apar (`titluCoada`).
   const titlu = titluCoada({ note: noteDeValidat.length, deValidat: patruOchi ? laSenior.length : 0,
-                             deDepus: patruOchi ? aprobate.length : declaratii.filter((c) => c.stare === "la_senior" || c.stare === "aprobata").length });
+                             deDepus: patruOchi ? aprobate.length : declaratii.filter((c) => c.stare === "la_senior" || c.stare === "aprobata").length,
+                             poateDepune: !!perm.poate_depune });
   corp.innerHTML = `
     <h2 class="pf-titlu" id="val-titlu">${esc(titlu)}</h2>
     <div id="val-note"></div>
@@ -194,7 +232,9 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   const zN = corp.querySelector("#val-note");
   if (noteDeValidat.length) {
     zN.innerHTML = `<div class="cf-grup-titlu cf-galben">Note de validat (${noteDeValidat.length})</div>
-      <p class="mig-intro">Notele pregătite de asistenți: le validezi (intră în evidență) sau le respingi cu motivul, pe care asistentul îl vede lângă notă. Notele aceleiași facturi (contarea și ieșirea din stoc) se validează împreună.</p>`;
+      <p class="mig-intro">${perm.poate_valida
+        ? "Notele pregătite de asistenți: le validezi (intră în evidență) sau le respingi cu motivul, pe care asistentul îl vede lângă notă."
+        : `Notele pregătite de asistenți: le validează (intră în evidență) sau le respinge cu motivul ${CINE_VALIDEAZA}; asistentul vede motivul lângă notă.`} Notele aceleiași facturi (contarea și ieșirea din stoc) se validează împreună.</p>`;
     noteDeValidat.forEach((c) => zN.appendChild(randNota(c, firme, corp, nav, perm)));
     barMaiMulte(zN, corp, nav);
   }
@@ -224,7 +264,8 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   setTimeout(_arataEvidentiat, 0);
   if (laSenior.length === 0 && aprobate.length === 0) {
     if (!noteDeValidat.length) {
-      z1.innerHTML = `<div class="stare-goala">${patruOchi ? "Nimic de validat. Coada e goală." : "Nimic de depus. Coada e goală."}</div>`;
+      // [266] coada goală spune ce n-a venit — note și declarații —, nu „nimic de depus” celui care nu depune
+      z1.innerHTML = `<div class="stare-goala">Coada e goală: nicio notă contabilă și nicio declarație nu așteaptă acum.</div>`;
     }
     return;
   }
@@ -257,7 +298,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
       // DS cap.6: gol + cauză + ieșire. Fundătura („Nimic de depus.") e interzisă, iar aici
       // golul are o cauză precisă — există lucrări, dar niciuna validată.
       z1.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">De depus (0)</div>
-        <div class="stare-goala">Nimic gata de depus. ${dNu.length} ${dNu.length === 1 ? "declarație e generată" : "declarații sunt generate"}, dar ${dNu.length === 1 ? "n-a trecut" : "n-au trecut"} prin validatorul oficial.<br>Deschide-le mai jos — validatorul rulează și verdictul se păstrează.</div>`;
+        <div class="stare-goala">Nimic gata de depus. ${cate(dNu.length, "declarație", "declarații")} ${dNu.length === 1 ? "e generată" : "sunt generate"}, dar ${dNu.length === 1 ? "n-a trecut" : "n-au trecut"} prin validatorul oficial.<br>Deschide-le mai jos — validatorul rulează și verdictul se păstrează.</div>`;
     }
     if (dNu.length) z2.appendChild(zonaNevalidate(dNu, firme, corp, nav, perm, patruOchi, "Generate, nevalidate"));
   }
@@ -306,7 +347,7 @@ function barMaiMulte(zN, corp, nav) {
     try {
       const r = await api.post("/coada/aproba-mai-multe", { ids });
       const refuz = r.refuzate || [];
-      _confirma(r.validate || [], `Ai validat ${(r.validate || []).length} ${(r.validate || []).length === 1 ? "notă" : "note"}.`
+      _confirma(r.validate || [], `Ai validat ${cate((r.validate || []).length, "notă", "note")}.`
         + (refuz.length ? ` Nu s-au validat ${refuz.length}: ${refuz.map((x) => x.mesaj).join(" · ")}` : ""));
       randeazaValidat(corp, nav);
     } catch (e) {
@@ -404,7 +445,7 @@ async function deschideNota(c, nav, ctx = {}) {
     // [lotul 07.10 pct.9] un document cu mai multe note (contarea + ieșirea din stoc a aceleiași facturi): toate, una sub alta
     const note = d.note || [{ nota: d.nota || {}, linii: d.linii || [] }];
     corp.innerHTML = note.map(({ nota: n, linii }) => `
-      <p class="mig-intro">Nota #${esc(String(n.id || ""))} · ${esc(dataRo(n.data))} · ${esc(n.descriere || "")} · ${n.document_ref ? "document: " + esc(n.document_ref) : "fără document justificativ"}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</p>
+      <p class="mig-intro">Nota ${esc(n.eticheta || "")} · ${esc(dataRo(n.data))} · ${esc(n.descriere || "")} · ${n.document_ref ? "document: " + esc(n.document_ref) : "fără document justificativ"}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</p>
       <table class="fd-tabel"><thead><tr><th>Debit</th><th>Credit</th><th>Sumă</th></tr></thead>
         <tbody>${(linii || []).map((l) => `<tr><td>${esc(l.debit)}</td><td>${esc(l.credit)}</td><td>${bani(l.suma)}</td></tr>`).join("")}</tbody>
       </table>`).join("") + (ctx.actiuni ? `<div class="val-actiuni" id="val-nota-actiuni" style="margin-top:12px">${ctx.actiuni}</div><div id="val-nota-eroare"></div>` : "");
@@ -518,7 +559,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   div.innerHTML = `
     <div class="val-info">
       <div class="val-titlu"><b>${(c.tip||"").toUpperCase()}</b> · ${perDecl}</div>
-      <div class="val-sub">${numeFirma(firme, c.tenant_id)} · pregătit de ${c.creat_de_nume || c.creat_de || "—"}</div>
+      <div class="val-sub">${esc(numeFirma(firme, c.tenant_id))} · pregătit de ${esc(c.creat_de_nume || c.creat_de || "—")}</div>
       <div class="val-termen">termen (scadență): ${c.perioada || "—"}</div>
       ${vi.gata ? "" : `<div class="val-lipsa">${esc(vi.lipsa)} <span class="val-lipsa-iesire">${esc(vi.iesire)}</span></div>`}
       ${c.trecere_motiv ? `<div class="val-lipsa">trecut peste refuz, motiv: ${esc(c.trecere_motiv)}</div>` : ""}
@@ -622,7 +663,7 @@ async function actioneaza(c, act, firme, corp, nav) {
 // `n` = câte constatări certe s-au confirmat odată cu depunerea; `0` = drumul obișnuit.
 function casetaDepusa(fc, nav, corpLista, c, firme, perDecl, n) {
   const desprConf = n
-    ? ` ${n === 1 ? "O constatare certă a fost confirmată" : n + " constatări certe au fost confirmate"}`
+    ? ` ${n === 1 ? "O constatare certă a fost confirmată" : cate(n, "constatare certă", "constatări certe") + " au fost confirmate"}`
       + " în scris, cu numele tău și cu motivul. Confirmarea acoperă cifrele de acum: dacă se schimbă,"
       + " se cere din nou."
     : "";
@@ -707,7 +748,7 @@ function pasConfirmariConstatari(nav, c, corpBaza, detaliu, firme, corpLista, pe
         goale.forEach((inp) => eroareCamp(fc, inp.id, "Scrie motivul."));
         er.textContent = goale.length === 1
           ? "O constatare n-are motiv scris."
-          : `${goale.length} constatări n-au motiv scris.`;
+          : `${cate(goale.length, "constatare", "constatări")} n-au motiv scris.`;
         focusFaraSalt(goale[0]);
         return;
       }

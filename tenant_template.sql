@@ -2858,18 +2858,18 @@ CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.regula_nota() RETURNS trigger AS $
 BEGIN
   IF TG_OP = 'DELETE' THEN
     IF OLD.status = 'validata' AND NOT TENANT_PLACEHOLDER.nota_din_tranzactia_curenta(OLD.id) THEN
-      RAISE EXCEPTION 'REGULA_CONTABILA: Nota #% e validată, deci nu se mai șterge. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', OLD.id;
+      RAISE EXCEPTION 'REGULA_CONTABILA: Nota % e validată, deci nu se mai șterge. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', TENANT_PLACEHOLDER.eticheta_nota(OLD.id);
     END IF;
     RETURN OLD;
   END IF;
   IF TG_OP = 'UPDATE' AND OLD.status = 'validata' AND NOT TENANT_PLACEHOLDER.nota_din_tranzactia_curenta(OLD.id)
      AND (NEW.data, NEW.numar, NEW.factura_id, NEW.document_ref, NEW.descriere, NEW.sursa, NEW.status)
          IS DISTINCT FROM (OLD.data, OLD.numar, OLD.factura_id, OLD.document_ref, OLD.descriere, OLD.sursa, OLD.status) THEN
-    RAISE EXCEPTION 'REGULA_CONTABILA: Nota #% e validată, deci nu se mai modifică. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', OLD.id;
+    RAISE EXCEPTION 'REGULA_CONTABILA: Nota % e validată, deci nu se mai modifică. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', TENANT_PLACEHOLDER.eticheta_nota(OLD.id);
   END IF;
   IF NEW.status = 'validata' AND OLD.status IS DISTINCT FROM 'validata' AND COALESCE(btrim(NEW.document_ref), '') = ''
      AND NOT EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.facturi f WHERE f.id = NEW.factura_id) THEN
-    RAISE EXCEPTION 'REGULA_CONTABILA: Nota #% n-are documentul justificativ: o notă nu se validează fără documentul din care provine.', NEW.id;
+    RAISE EXCEPTION 'REGULA_CONTABILA: Nota % n-are documentul justificativ: o notă nu se validează fără documentul din care provine.', TENANT_PLACEHOLDER.eticheta_nota(NEW.id);
   END IF;
   RETURN NEW;
 END $$ LANGUAGE plpgsql;
@@ -2908,7 +2908,7 @@ BEGIN
     CONTINUE WHEN nid IS NULL;
     SELECT status, data INTO st, d FROM TENANT_PLACEHOLDER.inregistrari WHERE id = nid;
     IF st = 'validata' AND NOT TENANT_PLACEHOLDER.nota_din_tranzactia_curenta(nid) THEN
-      RAISE EXCEPTION 'REGULA_CONTABILA: Nota #% e validată, deci rândurile ei nu se mai schimbă. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', nid;
+      RAISE EXCEPTION 'REGULA_CONTABILA: Nota % e validată, deci rândurile ei nu se mai schimbă. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', TENANT_PLACEHOLDER.eticheta_nota(nid);
     END IF;
     IF d IS NOT NULL AND EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.perioade_blocate
                WHERE an = EXTRACT(YEAR FROM d)::int AND luna = EXTRACT(MONTH FROM d)::int) THEN
@@ -2938,7 +2938,7 @@ BEGIN
     SELECT inregistrare_id INTO nota_tinta FROM TENANT_PLACEHOLDER.miscari_stoc WHERE id = NEW.anuleaza_id;
     SELECT status INTO st FROM TENANT_PLACEHOLDER.inregistrari WHERE id = NEW.inregistrare_id;
     IF NEW.inregistrare_id IS NULL OR NEW.inregistrare_id IS NOT DISTINCT FROM nota_tinta OR st IS DISTINCT FROM 'ciorna' THEN
-      RAISE EXCEPTION 'REGULA_CONTABILA: Mișcarea de stoc #% e a unui document contat: se stornează numai cu un document de corecție (o notă nouă, în ciornă).', NEW.anuleaza_id;
+      RAISE EXCEPTION 'REGULA_CONTABILA: Mișcarea de stoc „%” e a unui document contat: se stornează numai cu un document de corecție (o notă nouă, în ciornă).', (SELECT m.document FROM TENANT_PLACEHOLDER.miscari_stoc m WHERE m.id = NEW.anuleaza_id);
     END IF;
   END IF;
   IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
@@ -2977,8 +2977,8 @@ BEGIN
   IF delta < 0 THEN
     SELECT COALESCE(SUM(TENANT_PLACEHOLDER.efect_stoc(m.tip, m.cantitate)), 0) INTO q FROM TENANT_PLACEHOLDER.miscari_stoc m WHERE m.articol_id = art;
     IF q + delta < 0 THEN
-      RAISE EXCEPTION 'REGULA_CONTABILA: Stocul articolului #% ar deveni negativ (% după mișcarea „%”): o ieșire nu poate scoate mai mult decât e în stoc.',
-        art, q + delta, COALESCE(CASE WHEN TG_OP = 'DELETE' THEN OLD.document ELSE NEW.document END, 'fără document');
+      RAISE EXCEPTION 'REGULA_CONTABILA: Stocul articolului „%” ar deveni negativ (% după mișcarea „%”): o ieșire nu poate scoate mai mult decât e în stoc.',
+        (SELECT a.denumire FROM TENANT_PLACEHOLDER.articole a WHERE a.id = art), q + delta, COALESCE(CASE WHEN TG_OP = 'DELETE' THEN OLD.document ELSE NEW.document END, 'fără document');
     END IF;
   END IF;
   IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
@@ -3070,6 +3070,23 @@ CREATE TRIGGER trg_perioada_blocata_chitante BEFORE INSERT OR UPDATE OR DELETE O
   FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_chitante();
 -- [reguli_fond_v2] sfârșit
 -- [ciorne_proprii_v1, 15.10.2026] ciorna altui utilizator (deficiența 246) — SURSA: core/migrare_ciorne_proprii.py
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.eticheta_nota(nid integer) RETURNS text AS $$
+  -- [deficiența 258] numele notei cum îl vede contabilul în Registrul jurnal: „nr. crt. N din ZZ.LL.AAAA”; N = locul ei în anul
+  -- notei după (data, id), orice stare — numerotarea din `repo_contabilitate.jurnal_pe_an` (paritatea: core/test_eticheta_nota.py);
+  -- NULL dacă nota nu există. Python o cheamă prin `core/eticheta_nota.py`, ca textul din bază și cel din aplicație să fie unul.
+  SELECT 'nr. crt. ' || (SELECT count(*) FROM TENANT_PLACEHOLDER.inregistrari o
+                          WHERE o.data >= date_trunc('year', n.data)::date AND (o.data, o.id) <= (n.data, n.id))
+         || ' din ' || to_char(n.data, 'DD.MM.YYYY')
+    FROM TENANT_PLACEHOLDER.inregistrari n WHERE n.id = nid
+$$ LANGUAGE sql STABLE;
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.eticheta_rip(oid integer) RETURNS text AS $$
+  -- [deficiența 258] operațiunea din registrul de încasări și plăți cum o arată rândul ei: „plata din ZZ.LL.AAAA de 1.234,50 RON”
+  SELECT CASE WHEN r.tip = 'plata' THEN 'plata' ELSE 'încasarea' END || ' din ' || to_char(r.data_operatiune, 'DD.MM.YYYY') || ' de '
+         || translate(to_char(r.suma, 'FM999,999,999,990.00'), ',.', '.,') || ' ' || r.valuta
+    FROM TENANT_PLACEHOLDER.rip_operatiuni r WHERE r.id = oid
+$$ LANGUAGE sql STABLE;
+
 CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.ciorna_altui(autor integer, utilizator integer) RETURNS text AS $$
   -- numele autorului dacă `utilizator` e asistent (`angajat`) și ciorna e a ALTUI utilizator; NULL altfel (fără autor, fără utilizator,
   -- autorul însuși, administratorul / superadminul)
@@ -3098,7 +3115,7 @@ BEGIN
   IF autor IS NOT NULL AND NOT (TG_OP = 'UPDATE' AND NEW.status IS DISTINCT FROM OLD.status AND TENANT_PLACEHOLDER.decizia_validatorului())
      AND (TG_OP = 'DELETE' OR (NEW.data, NEW.numar, NEW.factura_id, NEW.document_ref, NEW.descriere, NEW.sursa, NEW.status)
                               IS DISTINCT FROM (OLD.data, OLD.numar, OLD.factura_id, OLD.document_ref, OLD.descriere, OLD.sursa, OLD.status)) THEN
-    RAISE EXCEPTION 'DREPT_CIORNA: Nota #% e ciorna lui %: o poți vedea, dar n-o modifici, n-o ștergi și n-o trimiți la validare. Dacă trebuie schimbată, spune-i lui % sau administratorului cabinetului.', OLD.id, autor, autor;
+    RAISE EXCEPTION 'DREPT_CIORNA: Nota % e ciorna lui %: o poți vedea, dar n-o modifici, n-o ștergi și n-o trimiți la validare. Dacă trebuie schimbată, spune-i lui % sau administratorului cabinetului.', TENANT_PLACEHOLDER.eticheta_nota(OLD.id), autor, autor;
   END IF;
   IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
   RETURN NEW;
@@ -3118,7 +3135,7 @@ BEGIN
     CONTINUE WHEN st IS NULL OR st = 'validata';
     autor := TENANT_PLACEHOLDER.ciorna_altui(aut, TENANT_PLACEHOLDER.utilizatorul_cererii());
     IF autor IS NOT NULL THEN
-      RAISE EXCEPTION 'DREPT_CIORNA: Nota #% e ciorna lui %: o poți vedea, dar n-o modifici, n-o ștergi și n-o trimiți la validare. Dacă trebuie schimbată, spune-i lui % sau administratorului cabinetului.', nid, autor, autor;
+      RAISE EXCEPTION 'DREPT_CIORNA: Nota % e ciorna lui %: o poți vedea, dar n-o modifici, n-o ștergi și n-o trimiți la validare. Dacă trebuie schimbată, spune-i lui % sau administratorului cabinetului.', TENANT_PLACEHOLDER.eticheta_nota(nid), autor, autor;
     END IF;
   END LOOP;
   IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
@@ -3138,7 +3155,7 @@ BEGIN
   END IF;
   autor := TENANT_PLACEHOLDER.ciorna_altui(OLD.creat_de, TENANT_PLACEHOLDER.utilizatorul_cererii());
   IF autor IS NOT NULL AND NOT (TG_OP = 'UPDATE' AND NEW.status IS DISTINCT FROM OLD.status AND TENANT_PLACEHOLDER.decizia_validatorului()) THEN
-    RAISE EXCEPTION 'DREPT_CIORNA: Operațiunea #% din registrul de încasări și plăți e ciorna lui %: o poți vedea, dar n-o modifici și n-o ștergi. Dacă trebuie schimbată, spune-i lui % sau administratorului cabinetului.', OLD.id, autor, autor;
+    RAISE EXCEPTION 'DREPT_CIORNA: În registrul de încasări și plăți, % e ciorna lui %: o poți vedea, dar n-o modifici și n-o ștergi. Dacă trebuie schimbată, spune-i lui % sau administratorului cabinetului.', TENANT_PLACEHOLDER.eticheta_rip(OLD.id), autor, autor;
   END IF;
   IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
   RETURN NEW;

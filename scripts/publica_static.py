@@ -51,8 +51,10 @@ PUBLICAT = os.path.join(os.path.dirname(RAD), "iconta_publicat", "static")
 #: jumatate nu are voie sa fie servita ca si cum ar fi intreaga).
 AMPRENTA = ".publicat.json"
 
-#: Ce nu se sterge niciodata la publicare: artefactele scrise de aplicatie la RULARE.
-PROTEJATE = ("raportari",)
+#: [C36, 15.10.2026] Nimic nu mai e protejat la publicare: singurul artefact scris de aplicatie la RULARE in directorul servit
+#: (capturile sesizarilor, `raportari/`) sta acum in depozitul privat (`core.fisiere_private`), in afara lui. Capturile vechi le
+#: muta `core/migrare_fisiere_private.py`, INAINTEA primei publicari dupa ea: cu migrarea nerulata, post-commit nu publica statica
+#: (restartul e oprit), iar rulatorul migrarilor publica dupa ce a mutat. Directorul servit = exact ce se publica, fara exceptii.
 
 
 def _ruleaza(cmd, **kw):
@@ -143,10 +145,7 @@ def publica(din_arbore=False, acum=None):
             json.dumps(info, ensure_ascii=False, indent=2) + "\n")
 
         os.makedirs(PUBLICAT, exist_ok=True)
-        # `P` = protect: rsync COPIAZA in continuare ce vine, dar nu STERGE ce e protejat pe
-        # destinatie. Fara filtrul asta, fiecare publicare ar sterge rapoartele generate intre timp.
-        filtre = ["--filter=P %s/***" % p for p in PROTEJATE]
-        r = subprocess.run(["rsync", "-a", "--delete"] + filtre + [dest + "/", PUBLICAT + "/"],
+        r = subprocess.run(["rsync", "-a", "--delete", dest + "/", PUBLICAT + "/"],
                            capture_output=True, text=True, timeout=300)
         if r.returncode != 0:
             raise SystemExit("rsync a esuat: %s" % (r.stderr or "").strip())

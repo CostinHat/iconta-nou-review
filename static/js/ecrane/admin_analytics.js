@@ -1,7 +1,7 @@
 // admin_analytics.js — Admin iConta: analytics public (doar superadmin).
 // Cifre ANONIME din public.eveniment_public: pe eveniment, pe zi, pe pagina de provenienta.
 // Tabela nu contine niciun identificator (fara IP/UA/cookie/sesiune) -> fara date personale.
-import { api, esc, CULORI_CARD } from "../api.js?v=2561dbfd34";
+import { api, esc, CULORI_CARD, cate, dupaNumar } from "../api.js?v=72aa1cbbdb";
 
 const C = CULORI_CARD.albastru;
 
@@ -48,8 +48,8 @@ export async function randeazaAdminAnalytics(corp, nav) {
   }
   corp.innerHTML = `
     <div class="an-antet">
-      <h2 class="pf-titlu">Analytics public — ultimele ${d.zile} zile</h2>
-      <p class="ecran-nota"><strong>${Number(d.total) || 0}</strong> evenimente înregistrate. Date anonime:
+      <h2 class="pf-titlu">Analytics public — ${d.zile === 1 ? "ultima zi" : "ultimele " + cate(d.zile, "zi", "zile")}</h2>
+      <p class="ecran-nota"><strong>${Number(d.total) || 0}</strong> ${dupaNumar(Number(d.total) || 0, "eveniment înregistrat", "evenimente înregistrate")}. Date anonime:
         se rețin doar tipul evenimentului, pagina de proveniență și momentul. Fără IP, fără cookie, fără
         amprentă de browser, fără niciun identificator de persoană.</p>
     </div>

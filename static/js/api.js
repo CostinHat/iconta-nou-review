@@ -2,7 +2,7 @@
 // Atașează automat token-ul (Bearer), tratează erorile uniform.
 // Origin relativ: FastAPI servește și frontendul, și API-ul.
 
-import { sesiune } from "./sesiune.js?v=38c3e6f6fe";
+import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { ceraReautentificare } from "./reautentificare.js?v=412d466675";  // [05.10.2026] 401 cu sesiune = parola peste ecran
 
 // [cap1_feedback_async_v1] Design System cap.1: butonul declansator se dezactiveaza
@@ -511,13 +511,13 @@ export function inchidereDialog(ov, inchide, antet) {
   return intrare.inchide;
 }
 
-export function confirmaCaseta(zona, mesaj, laConfirm, optiuni = {}) {
+export function confirmaCaseta(zona, mesajHtml, laConfirm, optiuni = {}) {
   const vechi = document.getElementById("caseta-atentie-activa");
   if (vechi) vechi.remove();
   const div = document.createElement("div");
   div.id = "caseta-atentie-activa";
   div.innerHTML = `
-    <div class="caseta-atentie"><div class="ca-mesaj" style="margin-bottom:0">${mesaj}</div></div>
+    <div class="caseta-atentie"><div class="ca-mesaj" style="margin-bottom:0">${mesajHtml}</div></div>
     <div class="ca-actiuni" style="margin:10px 0 14px;display:flex;gap:8px">
       <button class="buton-primar" id="ca-ok">${optiuni.textOk || "Confirm"}</button>
       <button class="buton-secundar" id="ca-nu">Renun\u021b\u0103</button>
@@ -711,6 +711,10 @@ export function esc(s) {
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   }[c]));
 }
+
+// cate(n, "notă", "note") — numeralul acordat („1 notă”, „20 de note”); dupaNumar — fără număr. Definite în plural.js (fără
+// dependențe, rulat de test cu node)
+export { cate, dupaNumar } from "./plural.js?v=6353d42450";
 
 
 // ============================================================

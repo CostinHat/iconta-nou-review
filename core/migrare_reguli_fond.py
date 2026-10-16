@@ -32,7 +32,10 @@ arată contabilului ca 409, ca pe `PERIOADA_BLOCATA:` -> 423):
       `miscare_in_evidenta`) nu se modifică și nu se șterge; o stornare a ei (`anuleaza_id`) se scrie numai cu documentul de corecție:
       o notă NOUĂ, în ciornă, alta decât nota mișcării stornate.
 ORDINEA pe producție: reparația tenant_049 (`migrare_nota_corectie`) ÎNAINTE — rândurile ei greșite de stornare n-ar mai putea fi
-scoase după R5. Idempotentă (CREATE OR REPLACE + DROP/CREATE TRIGGER). Oglinda în `tenant_template.sql` e generată de `sql(...)` și
+scoase după R5. [deficiența 258, 15.10.2026] Refuzurile numesc nota cum o vede contabilul („Nota nr. crt. 5 din 12.03.2026”), prin
+`eticheta_nota` — definită O SINGURĂ dată, în `core/migrare_ciorne_proprii.py` (plpgsql o rezolvă la rulare, deci ordinea creării nu
+contează; pe o firmă trebuie rulate amândouă) — iar mișcarea de stoc prin documentul ei, ca la R5; niciodată prin id-ul intern.
+Idempotentă (CREATE OR REPLACE + DROP/CREATE TRIGGER). Oglinda în `tenant_template.sql` e generată de `sql(...)` și
 păzită de `core/test_reguli_fond.py`. Rulare: `python -m core.migrari_registru ruleaza --productie core/migrare_reguli_fond.py`.
 """
 from core import db
@@ -62,18 +65,18 @@ CREATE OR REPLACE FUNCTION @S@.regula_nota() RETURNS trigger AS $$
 BEGIN
   IF TG_OP = 'DELETE' THEN
     IF OLD.status = 'validata' AND NOT @S@.nota_din_tranzactia_curenta(OLD.id) THEN
-      RAISE EXCEPTION 'REGULA_CONTABILA: Nota #% e validată, deci nu se mai șterge. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', OLD.id;
+      RAISE EXCEPTION 'REGULA_CONTABILA: Nota % e validată, deci nu se mai șterge. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', @S@.eticheta_nota(OLD.id);
     END IF;
     RETURN OLD;
   END IF;
   IF TG_OP = 'UPDATE' AND OLD.status = 'validata' AND NOT @S@.nota_din_tranzactia_curenta(OLD.id)
      AND (NEW.data, NEW.numar, NEW.factura_id, NEW.document_ref, NEW.descriere, NEW.sursa, NEW.status)
          IS DISTINCT FROM (OLD.data, OLD.numar, OLD.factura_id, OLD.document_ref, OLD.descriere, OLD.sursa, OLD.status) THEN
-    RAISE EXCEPTION 'REGULA_CONTABILA: Nota #% e validată, deci nu se mai modifică. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', OLD.id;
+    RAISE EXCEPTION 'REGULA_CONTABILA: Nota % e validată, deci nu se mai modifică. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', @S@.eticheta_nota(OLD.id);
   END IF;
   IF NEW.status = 'validata' AND OLD.status IS DISTINCT FROM 'validata' AND COALESCE(btrim(NEW.document_ref), '') = ''
      AND NOT EXISTS (SELECT 1 FROM @S@.facturi f WHERE f.id = NEW.factura_id) THEN
-    RAISE EXCEPTION 'REGULA_CONTABILA: Nota #% n-are documentul justificativ: o notă nu se validează fără documentul din care provine.', NEW.id;
+    RAISE EXCEPTION 'REGULA_CONTABILA: Nota % n-are documentul justificativ: o notă nu se validează fără documentul din care provine.', @S@.eticheta_nota(NEW.id);
   END IF;
   RETURN NEW;
 END $$ LANGUAGE plpgsql;
@@ -112,7 +115,7 @@ BEGIN
     CONTINUE WHEN nid IS NULL;
     SELECT status, data INTO st, d FROM @S@.inregistrari WHERE id = nid;
     IF st = 'validata' AND NOT @S@.nota_din_tranzactia_curenta(nid) THEN
-      RAISE EXCEPTION 'REGULA_CONTABILA: Nota #% e validată, deci rândurile ei nu se mai schimbă. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', nid;
+      RAISE EXCEPTION 'REGULA_CONTABILA: Nota % e validată, deci rândurile ei nu se mai schimbă. Corectura se face prin stornare (OMFP 1802/2014 pct.69).', @S@.eticheta_nota(nid);
     END IF;
     IF d IS NOT NULL AND EXISTS (SELECT 1 FROM @S@.perioade_blocate
                WHERE an = EXTRACT(YEAR FROM d)::int AND luna = EXTRACT(MONTH FROM d)::int) THEN
@@ -142,7 +145,7 @@ BEGIN
     SELECT inregistrare_id INTO nota_tinta FROM @S@.miscari_stoc WHERE id = NEW.anuleaza_id;
     SELECT status INTO st FROM @S@.inregistrari WHERE id = NEW.inregistrare_id;
     IF NEW.inregistrare_id IS NULL OR NEW.inregistrare_id IS NOT DISTINCT FROM nota_tinta OR st IS DISTINCT FROM 'ciorna' THEN
-      RAISE EXCEPTION 'REGULA_CONTABILA: Mișcarea de stoc #% e a unui document contat: se stornează numai cu un document de corecție (o notă nouă, în ciornă).', NEW.anuleaza_id;
+      RAISE EXCEPTION 'REGULA_CONTABILA: Mișcarea de stoc „%” e a unui document contat: se stornează numai cu un document de corecție (o notă nouă, în ciornă).', (SELECT m.document FROM @S@.miscari_stoc m WHERE m.id = NEW.anuleaza_id);
     END IF;
   END IF;
   IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;

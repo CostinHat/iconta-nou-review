@@ -17,18 +17,27 @@
 //
 // Garda statică: `core/test_drepturi_ui.py` — orice fișier care cheamă o rută restrânsă își declară
 // marcajul (scanerul `scripts/scan_drepturi_ui.py`).
-import { api } from "./api.js?v=2561dbfd34";
+import { api } from "./api.js?v=72aa1cbbdb";
 
 let _refuzate = new Set();
 let _motive = {};          // „METODĂ /cale” -> nivelul refuzat (poate_pregati / poate_valida / poate_depune / admin_cabinet / rol)
 let _numeNiveluri = {};    // nivel -> numele de pe ecranul Asistenți
+let _bife = {};            // [265] bifele asistentului de la ultima citire (la administrator: niciuna)
+
+function _pune(r) {
+  _refuzate = new Set((r && r.interzise) || []);
+  _motive = (r && r.motive) || {};
+  _numeNiveluri = (r && r.nume_niveluri) || {};
+  _bife = (r && r.bife) || {};
+}
+
+function _amprenta() {
+  return JSON.stringify([[..._refuzate].sort(), Object.keys(_bife).sort().map((k) => [k, !!_bife[k]])]);
+}
 
 export async function incarcaDrepturi() {
   try {
-    const r = await api.get("/eu/drepturi");
-    _refuzate = new Set((r && r.interzise) || []);
-    _motive = (r && r.motive) || {};
-    _numeNiveluri = (r && r.nume_niveluri) || {};
+    _pune(await api.get("/eu/drepturi"));
   } catch (e) {
     // Fără listă nu se ascunde nimic: serverul rămâne garda, iar refuzul lui se vede (pct.1 al comenzii).
     _refuzate = new Set();
@@ -64,7 +73,11 @@ export function aplicaDrepturi(radacina) {
   const campuri = [...radacina.querySelectorAll("[data-actiune-camp]")];
   if (radacina.matches && radacina.matches("[data-actiune-camp]")) campuri.push(radacina);
   campuri.forEach((el) => {
-    if (!permis(el.dataset.actiuneCamp)) { el.disabled = true; el.setAttribute("aria-disabled", "true"); }
+    if (!permis(el.dataset.actiuneCamp) && !el.disabled) {
+      el.disabled = true;
+      el.setAttribute("aria-disabled", "true");
+      el.dataset.dreptCampDezactivat = "1";   // [265] ca acordarea dreptului să-l reactiveze, și numai pe el
+    }
   });
 }
 
@@ -110,7 +123,48 @@ function motivInZona(zona) {
 function refuza(el) {
   el.classList.add("drept-refuzat");
   el.inert = true;
-  if ("disabled" in el) el.disabled = true;
+  // [265] numai ce dezactivează poarta se reactivează la acordarea dreptului: un buton dezactivat de ecran (nimic selectat) rămâne așa
+  if ("disabled" in el && !el.disabled) { el.disabled = true; el.dataset.dreptDezactivat = "1"; }
+}
+
+// [deficiența 265, comanda Costin 15.10.2026] „o schimbare de drepturi nu se vede în sesiunea deschisă până la re-autentificare (Ana
+// a rămas «junior» după ce a primit «Poate valida»; după retragere, butonul «Validează» a rămas afișat, deși serverul refuză corect).
+// Ecranul urmează drepturile fără re-autentificare.” Poarta lua lista o singură dată, la intrare, și nu știa decât să ascundă. Acum
+// lista se recitește pe ceasul aplicației (versiune.js: la cinci minute, la revenirea în filă, la întoarcerea acasă — navigator.js), iar
+// dacă s-a schimbat, poarta se REAPLICĂ pe toată pagina: ascunde ce nu mai e permis și arată la loc ce a devenit permis, cu motivele
+// din ferestre refăcute. Ecranul deschis nu se redesenează (nu se pierde nimic din el). O citire eșuată nu schimbă nimic.
+// Întoarce bifele noi (navigatorul le pune în sesiune, cu eticheta senior/junior), sau null dacă nu s-a schimbat nimic.
+export async function reimprospateazaDrepturi() {
+  let r;
+  try {
+    r = await api.get("/eu/drepturi");
+  } catch (e) {
+    console.warn("drepturi: recitirea n-a reușit; rămân cele de până acum", e);
+    return null;
+  }
+  const inainte = _amprenta();
+  _pune(r);
+  if (_amprenta() === inainte) return null;
+  reaplicaDrepturi(document.body);
+  // [265] ecranele deschise care își calculează textele la desenare (jurnalul, coada) se redesenează la acest semnal
+  window.dispatchEvent(new CustomEvent("iconta:drepturi"));
+  return { bife: Object.assign({}, _bife) };
+}
+
+/** [265] Poarta, din nou, pe tot ce e sub `radacina`: întâi elibereaza tot ce ascunsese ea, apoi aplică lista de acum. */
+export function reaplicaDrepturi(radacina) {
+  radacina.querySelectorAll(".drept-motiv-generic").forEach((m) => m.remove());
+  radacina.querySelectorAll(".drept-refuzat").forEach((el) => {
+    el.classList.remove("drept-refuzat");
+    el.inert = false;
+    if (el.dataset.dreptDezactivat) { el.disabled = false; delete el.dataset.dreptDezactivat; }
+  });
+  radacina.querySelectorAll("[data-drept-camp-dezactivat]").forEach((el) => {
+    el.disabled = false;
+    el.removeAttribute("aria-disabled");
+    delete el.dataset.dreptCampDezactivat;
+  });
+  aplicaDrepturi(radacina);
 }
 
 let _observator = null;

@@ -5,6 +5,7 @@ from core import pdf_util as _pu
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
 from core import stocuri_cv as _m
+from core import eticheta_nota as _et
 
 
 def _miscari(cur, schema, articol_id):
@@ -126,12 +127,13 @@ def intrare_din_factura(conn, schema, factura_id, cont_stoc, data, cont_cheltuia
             cur.execute(f"SELECT id FROM {schema}.articole WHERE lower(denumire)=lower(%s) LIMIT 1", (den,))
             row = cur.fetchone()
             brute.append((row["id"] if row else None, den, cant, pret))
+        document = _et.factura(cur, schema, factura_id)   # [258] documentul mișcării: factura cum o vede omul, nu id-ul ei
     n = 0
     for aid, den, cant, pret in brute:
         intrare(conn, schema, {"articol_id": aid, "denumire": den, "cantitate": str(cant),
                                "pret_unitar": str(pret), "cont_stoc": cont_stoc,
                                "cont_cheltuiala": cont_cheltuiala, "data": str(data),
-                               "document": "factură primită #%s" % factura_id}, factura_id=factura_id)
+                               "document": document}, factura_id=factura_id)
         n += 1
     return {"stare": "intrat", "factura_id": factura_id, "linii": n}
 
@@ -203,7 +205,7 @@ def descarca_factura(conn, schema, factura_id, data):
         cur.execute(f"SELECT tip, serie, numar, data_emitere FROM {schema}.facturi WHERE id=%s", (factura_id,))
         f = cur.fetchone() or {}
     document = (_j.eticheta_factura(f.get("tip"), f.get("serie"), f["numar"], f.get("data_emitere") or data)
-                if f.get("numar") else "Factura #%s" % factura_id)
+                if f.get("numar") else "factura care nu mai există")   # [258] niciodată id-ul intern
     descarcate, erori = [], []
     for l in linii:
         rez = iesire(conn, schema,

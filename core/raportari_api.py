@@ -2,8 +2,15 @@
 core/raportari_api.py — canal de feedback: cei care proceseaza trimit raportari
 catre Admin iConta; raspunsurile vin inapoi in firul fiecaruia.
 Strat 1: text + fir de mesaje + contor necitite (becul rosu). Imagini si AI: ulterior.
+[15.10.2026, deficienta 270d] Doua feluri de fir (`raportari.tip`): `sesizare` si `cerere_import` (cererea de import din alta
+aplicatie, cu `aplicatie` = de unde migreaza cabinetul). Fisierele firului stau in depozitul privat (`core.fisiere_private`, C36).
 """
 import psycopg2.extras as _E
+
+from core import fisiere_private as _fp
+
+#: felurile de fir — multime inchisa, ca CHECK-ul din baza (`core/migrare_fisiere_private.py`)
+TIPURI = ("sesizare", "cerere_import")
 
 
 def _nume(u_pre, u_num, email):
@@ -11,15 +18,21 @@ def _nume(u_pre, u_num, email):
     return n or email or "(necunoscut)"
 
 
-def creeaza_raportare(conn, autor_id, cabinet_id, subiect, text):
-    """Deschide o raportare noua cu primul mesaj (de la utilizator)."""
+def creeaza_raportare(conn, autor_id, cabinet_id, subiect, text, tip="sesizare", aplicatie=None):
+    """Deschide o raportare noua cu primul mesaj (de la utilizator). `tip` = `sesizare` | `cerere_import`; cererea de import
+    cere `aplicatie` (din ce aplicatie migreaza cabinetul)."""
+    if tip not in TIPURI:
+        return {"ok": False, "cod": "TIP_INVALID"}
+    aplicatie = (aplicatie or "").strip() or None
+    if tip == "cerere_import" and not aplicatie:
+        return {"ok": False, "cod": "APLICATIE_LIPSA"}
     if not (text or "").strip():
         return {"ok": False, "cod": "TEXT_GOL"}
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
-            "INSERT INTO public.raportari (autor_id, cabinet_id, subiect) "
-            "VALUES (%s,%s,%s) RETURNING id",
-            (autor_id, cabinet_id, (subiect or "").strip() or None))
+            "INSERT INTO public.raportari (autor_id, cabinet_id, subiect, tip, aplicatie) "
+            "VALUES (%s,%s,%s,%s,%s) RETURNING id",
+            (autor_id, cabinet_id, (subiect or "").strip() or None, tip, aplicatie if tip == "cerere_import" else None))
         rid = cur.fetchone()["id"]
         cur.execute(
             "INSERT INTO public.raportari_mesaje (raportare_id, autor_id, rol_autor, text) "
@@ -74,16 +87,8 @@ def _mesaje_firului(cur, raportare_id):
         " WHERE m.raportare_id = %s ORDER BY m.creat_la ASC",
         (raportare_id,))
     randuri = cur.fetchall()
-    # atasamentele tuturor mesajelor din fir, intr-o singura interogare
-    ids = [r["id"] for r in randuri]
-    atas = {}
-    if ids:
-        cur.execute(
-            "SELECT mesaj_id, cale, nume_orig FROM public.raportari_atasamente "
-            " WHERE mesaj_id = ANY(%s) ORDER BY id ASC", (ids,))
-        for a in cur.fetchall():
-            atas.setdefault(a["mesaj_id"], []).append(
-                {"cale": a["cale"], "nume": a["nume_orig"]})
+    # fisierele tuturor mesajelor din fir, intr-o singura interogare (numele, nu calea: se descarca prin ruta autentificata)
+    atas = _fp.ale_mesajelor(cur, [r["id"] for r in randuri])
     out = []
     for r in randuri:
         out.append({
@@ -95,37 +100,25 @@ def _mesaje_firului(cur, raportare_id):
     return out
 
 
-def adauga_atasament(conn, mesaj_id, cale, nume_orig):
-    """Leaga o imagine (deja salvata pe disc) de un mesaj."""
-    with conn.cursor() as cur:
-        cur.execute("SELECT id FROM public.raportari_mesaje WHERE id = %s", (mesaj_id,))
-        if not cur.fetchone():
-            return {"ok": False, "cod": "MESAJ_INEXISTENT"}
-        cur.execute(
-            "INSERT INTO public.raportari_atasamente (mesaj_id, cale, nume_orig) "
-            "VALUES (%s,%s,%s)", (mesaj_id, cale, nume_orig))
-    return {"ok": True}
-
-
 def autor_mesajului(conn, mesaj_id):
-    """Cine a scris mesajul + firul lui (pt verificare acces la upload)."""
+    """Cine a scris mesajul + firul lui (felul, cabinetul) — pt verificarea accesului la incarcarea unui fisier."""
     with conn.cursor() as cur:
         cur.execute(
-            "SELECT m.autor_id, m.raportare_id, r.autor_id "
+            "SELECT m.autor_id, m.raportare_id, r.autor_id, r.tip, r.cabinet_id "
             "  FROM public.raportari_mesaje m "
             "  JOIN public.raportari r ON r.id = m.raportare_id "
             " WHERE m.id = %s", (mesaj_id,))
         r = cur.fetchone()
     if not r:
         return None
-    return {"mesaj_autor": r[0], "raportare_id": r[1], "fir_autor": r[2]}
+    return {"mesaj_autor": r[0], "raportare_id": r[1], "fir_autor": r[2], "tip": r[3], "cabinet_id": r[4]}
 
 
 def raportarile_mele(conn, autor_id):
     """Firele deschise de mine + mesaje. Contor = raspunsuri admin necitite (bec rosu)."""
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
-            "SELECT id, subiect, stare, creat_la, ultim_mesaj_la "
+            "SELECT id, subiect, stare, tip, aplicatie, creat_la, ultim_mesaj_la "
             "  FROM public.raportari WHERE autor_id = %s ORDER BY ultim_mesaj_la DESC",
             (autor_id,))
         fire = [dict(r) for r in cur.fetchall()]
@@ -138,6 +131,7 @@ def raportarile_mele(conn, autor_id):
             necitite += nc
             rez.append({
                 "id": f["id"], "subiect": f["subiect"], "stare": f["stare"],
+                "tip": f["tip"], "aplicatie": f["aplicatie"],
                 "creat_la": f["creat_la"].isoformat(),
                 "ultim_mesaj_la": f["ultim_mesaj_la"].isoformat(),
                 "necitite": nc, "mesaje": mesaje,
@@ -175,7 +169,7 @@ def toate_raportarile(conn):
     """Pentru Admin iConta: toate firele, cu autor + cabinet + nr mesaje + necitite admin."""
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
-            "SELECT r.id, r.subiect, r.stare, r.creat_la, r.ultim_mesaj_la, "
+            "SELECT r.id, r.subiect, r.stare, r.tip, r.aplicatie, r.creat_la, r.ultim_mesaj_la, "
             "       r.pentru_admin, "  # [p38_pentru_admin]
             "       u.prenume, u.nume, u.email, af.nume AS cabinet, "
             "       (SELECT COUNT(*) FROM public.raportari_mesaje m "
@@ -190,6 +184,7 @@ def toate_raportarile(conn):
         for r in cur.fetchall():
             fire.append({
                 "id": r["id"], "subiect": r["subiect"], "stare": r["stare"],
+                "tip": r["tip"], "aplicatie": r["aplicatie"],
                 "creat_la": r["creat_la"].isoformat(),
                 "ultim_mesaj_la": r["ultim_mesaj_la"].isoformat(),
                 "autor": _nume(r["prenume"], r["nume"], r["email"]),
@@ -207,7 +202,7 @@ def firul_complet(conn, raportare_id, cerut_de_uid=None, e_superadmin=False):
     relaxare la cabinet. Fara context (apel superadmin/intern) ramane pe id. Vezi test_izolare_raportari.py."""
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         _baza = (
-            "SELECT r.id, r.subiect, r.stare, r.autor_id, "
+            "SELECT r.id, r.subiect, r.stare, r.tip, r.aplicatie, r.autor_id, "
             "       u.prenume, u.nume, u.email, af.nume AS cabinet "
             "  FROM public.raportari r "
             "  LEFT JOIN public.users u ON u.id = r.autor_id "
@@ -223,6 +218,7 @@ def firul_complet(conn, raportare_id, cerut_de_uid=None, e_superadmin=False):
         mesaje = _mesaje_firului(cur, raportare_id)
     return {"ok": True, "raportare": {
         "id": f["id"], "subiect": f["subiect"], "stare": f["stare"],
+        "tip": f["tip"], "aplicatie": f["aplicatie"],
         "autor_id": f["autor_id"],
         "autor": _nume(f["prenume"], f["nume"], f["email"]),
         "cabinet": f["cabinet"], "mesaje": mesaje,

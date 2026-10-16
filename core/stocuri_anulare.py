@@ -25,6 +25,7 @@ from decimal import Decimal
 
 import psycopg2 as _pg
 from psycopg2.extras import RealDictCursor
+from core import pdf_util as _pu
 
 #: mișcările VII ale unui document: nici stornări, nici stornate deja
 _VII = "m.anuleaza_id IS NULL AND NOT EXISTS (SELECT 1 FROM {s}.miscari_stoc r WHERE r.anuleaza_id = m.id)"
@@ -92,7 +93,8 @@ def storneaza(conn, schema, grup, note_ids, motiv):
             return {"eroare": MESAJ_IESITA % (doc, den)}
         for m in miscari:
             d = max(azi, m["data"])
-            doc = ("Stornare: %s (respins la validare)" % (m.get("document") or "mișcare #%s" % m["id"]))[:100]
+            # [258] mișcarea fără document se numește prin data ei, nu prin id-ul intern (textul ajunge în fișa de magazie)
+            doc = ("Stornare: %s (respins la validare)" % (m.get("document") or "mișcarea din %s" % _pu.data_ro(m["data"])))[:100]
             try:
                 cur.execute(f"""INSERT INTO {schema}.miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document,
                                     inregistrare_id, locatie, factura_id, nir_id, anuleaza_id)

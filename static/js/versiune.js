@@ -68,8 +68,21 @@ function reincarcaActualizat() {
   window.location.reload();
 }
 
+// [deficiența 265, comanda Costin 15.10.2026] „Ecranul urmează drepturile fără re-autentificare.” Alte verificări merg pe ACELAȘI
+// ceas — intervalul, revenirea în filă, întoarcerea acasă —, nu pe unul al lor: drepturile recitite (navigator.js -> drepturi.js).
+// Cheia face înregistrarea idempotentă (coaja se poate construi de mai multe ori în aceeași filă: o a doua înregistrare o înlocuiește).
+const _peCeas = new Map();
+export function peAcelasiCeas(cheie, fn) { _peCeas.set(cheie, fn); }
+function bataie() {
+  _peCeas.forEach((fn, cheie) => {
+    // o verificare care nu reușește nu oprește ceasul și nu schimbă ecranul; se spune în consolă, ca la amprentă
+    Promise.resolve().then(fn).catch((e) => console.warn("[ceas] " + cheie + ":", e && e.message));
+  });
+}
+
 /** [256] La întoarcerea pe pagina principală: versiunea nouă, dacă e știută (și nimic început); altfel o verificare acum. */
 export function laAcasa() {
+  bataie();   // [265] drepturile, recitite și la întoarcerea acasă
   if (gasita && !formularInceput()) { reincarcaActualizat(); return; }
   verifica();
 }
@@ -170,11 +183,11 @@ export function porneste() {
   if (pornit) return;
   pornit = true;
   verifica(true);   // `porneste` rulează la autentificare (navigatorul se construiește atunci)
-  setInterval(verifica, INTERVAL_MS);
+  setInterval(() => { verifica(); bataie(); }, INTERVAL_MS);
   // La revenirea in fila: momentul in care omul se uita oricum la ecran, deci cel mai ieftin
   // moment in care poate afla. Nu inlocuieste ceasul — o fila lasata vizibila nu revine niciodata.
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") verifica();
+    if (document.visibilityState === "visible") { verifica(); bataie(); }
   });
 }
 

@@ -9,6 +9,7 @@ import json
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 from core import reconciliere as _m
+from core.common import cate as _cate
 
 CONT_CLIENTI, CONT_FURNIZORI = "4111", "401"
 
@@ -103,7 +104,7 @@ def importa_extras(conn, schema, tranzactii, fisier="", continut=None):
                         else:
                             t["nota"] = {"debit": cont_banca, "credit": sug["cont"]}
                         aloc["incredere"] = sug["incredere"]
-                        aloc["motiv"] = aloc["motiv"] + f"; sugestie invatata: {sug['cont']} ({sug['incredere']}, {sug['validari']} validari)"
+                        aloc["motiv"] = aloc["motiv"] + f"; sugestie invatata: {sug['cont']} ({sug['incredere']}, {_cate(sug['validari'], 'validare', 'validări')})"
                 except Exception as _e:
                     from core import observare as _obs
                     _obs.esec_secundar("sugestie invatata la importul extrasului", _e)   # înghițit, dar nu tăcut

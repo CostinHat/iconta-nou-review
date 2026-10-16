@@ -10,6 +10,7 @@ Valorile F* sunt intregi (lei), rotunjite aritmetic."""
 import re
 from decimal import Decimal, ROUND_HALF_UP
 
+from core.common import cate as _cate
 from core.stocuri import CONT_TVA_STOC   # TVA-ul din prețul de raft: numai la rd.05 (decizia Costin 08.10, pct.1 la §6 S6)
 
 def _i(x):
@@ -492,7 +493,7 @@ def inchiderea_6_7(s, an, bilant_pe=None):
 
 def _text_propuse(p):
     """[244] Clasele 6 / 7 au încă sold, iar notele de închidere sunt propuse: motivul e validarea lor, nu o nouă închidere."""
-    an, note = p["an"], "; ".join("#%d %s" % (n["id"], n["descriere"]) for n in p["note"])
+    an, note = p["an"], "; ".join("%s (nota %s)" % (n["descriere"], n["eticheta"]) for n in p["note"])   # [258] nu id-ul intern
     t = "Notele de închidere propuse așteaptă validarea: %s. Se validează în Registrul jurnal, luna decembrie %d" % (note, an)
     if not p["incheiat"]:
         return t + (". Anul %d nu s-a încheiat: se validează numai după 31.12.%d, dacă mai corespund atunci soldurilor; până atunci "
@@ -535,7 +536,7 @@ def refuz(motive, an, bilant_pe=None):
         m = motive[0]
         mesaj = m.get("simplu") or "Bilanțul pe %d nu se poate genera: %s" % (bilant_pe or an, m["text"])
     else:
-        mesaj = ("Bilanțul pe %d nu se poate genera — %d motive; rezolvă-le pe toate, apoi generează din nou.\n" % (bilant_pe or an, len(motive))
+        mesaj = ("Bilanțul pe %d nu se poate genera — %s; rezolvă-le pe toate, apoi generează din nou.\n" % (bilant_pe or an, _cate(len(motive), "motiv", "motive"))
                  + "\n".join("%d. %s:%s%s" % (i, m["titlu"], "\n" if m["fel"] == "fara_loc" else " ", m["text"])
                              for i, m in enumerate(motive, start=1)))
     raise BilantOprit(mesaj, an=an, inchidere=inchidere, propuse=propuse)

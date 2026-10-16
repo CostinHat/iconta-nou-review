@@ -261,7 +261,9 @@ def test_contabilizata_numai_cu_nota_de_contare_validata(conn):
     assert (pe[ids[1]]["contabilizata"], pe[ids[1]]["nota_contare"]) == (False, None)
     assert (pe[ids[2]]["contabilizata"], pe[ids[2]]["nota_contare"]["id"]) == (True, valid)
     d = fa.detalii_factura(conn, ids[0])
-    assert d["contabilizata"] is False and d["nota_contare"] == {"id": ciorna, "status": "ciorna", "data": "2026-10-05"}
+    # [258] `eticheta` = cum o arată Registrul jurnal: prima notă a schemei efemere pe 2026 -> „nr. crt. 1 din 05.10.2026”
+    assert d["contabilizata"] is False and d["nota_contare"] == {"id": ciorna, "status": "ciorna", "data": "2026-10-05",
+                                                                  "eticheta": "nr. crt. 1 din 05.10.2026"}
 
 
 # ── C5: linia de factură ─────────────────────────────────────────────────────────────────────────────────────────────────

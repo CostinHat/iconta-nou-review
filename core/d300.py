@@ -74,6 +74,8 @@ def _exig_d300():
 # staging DESI calea de emitere a aplicatiei il produce — 4 facturi emise, 3.052,00 lei TVA colectata,
 # nu intrau in decont. Vezi decizia de interpretare din antetul nomenclatorului.
 from core import nomenclator_status_factura as _nsf
+from core import eticheta_nota as _et
+from core import pdf_util as _pu
 
 # Coloanele fiecarui rand de intrare, din structura ANAF (anaf_surse/d300_struct_anaf.txt: Rn_1 / Rn_2 inexistent).
 # Un rand manual pe o coloana care nu exista ajungea in XML ca atribut necunoscut — DUK: „eroare atribut: R29_1:
@@ -301,7 +303,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         if f.get("raport_z"):
             # [lot 19 pct.4b] livrare cu bon fiscal (raport Z), pe cotă: aceleași rânduri ca livrarea facturată.
             if f.get("fara_cote"):
-                z_fara_cote.append(f.get("numar") or f.get("id"))
+                z_fara_cote.append(f.get("numar"))
                 continue
             _cz = Decimal(str(f["cota"]))
             ci = int(_cz) if _cz == _cz.to_integral_value() else None
@@ -318,8 +320,8 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         # semnaleaza. Facturile RON / cu curs trec neatinse (curs_factura -> 1 / cursul lor).
         try:
             _sl.curs_factura(f)
-        except _sl.LipsaCurs:
-            fara_curs.append(f.get("id"))
+        except _sl.LipsaCurs as _e:
+            fara_curs.append(f.get("eticheta") or _e.eticheta or "o factură fără număr")   # [258] cum o vede omul, nu prin id
             continue
         emisa = (f.get("directie") == "emisa")
         ti = bool(f.get("taxare_inversa"))
@@ -726,7 +728,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     # [A1, 17.09.2026] Facturi in valuta EXCLUSE fiindca n-au curs BNR: nu intra tacit ca lei, dar
     # nici nu dispar in tacere. Semnalul NUMESTE facturile — corectia e sa li se puna cursul.
     if fara_curs:
-        _ids = ", ".join("#%s" % i for i in fara_curs if i is not None) or "(fără id)"
+        _ids = ", ".join(fara_curs)
         res.avertismente.append(
             "%d factură(i) în valută fără curs BNR — excluse din decont (nu se pot exprima în lei): %s. "
             "Completează cursul pe fiecare (ultimul curs comunicat până la data facturii); altfel suma nu "
@@ -760,21 +762,21 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             % (_cate(drop_a_scutit_n, "linie", "linii"), _f(drop_a_scutit_b), _f(drop_a_scutit_t)))
     if zero_achiz:
         res.avertismente.append(
-            "%d achiziţii cu cotă 0%% (bază %s lei) — raportate automat la rd.29 (scutite de taxă sau "
+            "%s cu cotă 0%% (bază %s lei) — raportate automat la rd.29 (scutite de taxă sau "
             "neimpozabile), fără impact pe TVA. Verifică: dacă sunt achiziţii intracomunitare, "
             "reclasifică-le la taxare inversă (rd.5 și rd.20)."
-            % (len(zero_achiz), _f(sum(zero_achiz, Decimal(0)))))
+            % (_cate(len(zero_achiz), "achiziție", "achiziții"), _f(sum(zero_achiz, Decimal(0)))))
     if achiz_331_0:
         res.avertismente.append(
-            "%d achiziţii cu categorie art.331 (taxare inversă) dar cotă 0%% (bază %s lei) — cota aplicabilă "
+            "%s cu categorie art.331 (taxare inversă) dar cotă 0%% (bază %s lei) — cota aplicabilă "
             "nu e capturată, deci rd.12 și rd.26 (colectat și deductibil) nu se pot calcula. Declar-o manual la "
             "rd.12 și rd.26 sau completează cota (altfel taxarea inversă nu apare în decont)."
-            % (len(achiz_331_0), _f(sum(achiz_331_0, Decimal(0)))))
+            % (_cate(len(achiz_331_0), "achiziție", "achiziții"), _f(sum(achiz_331_0, Decimal(0)))))
     if ti_ben_n:
         res.note_rezultat.append(
-            "%d achiziţii cu taxare inversă primită (bază %s lei, TVA %s lei) — derivate automat: rd.12 "
+            "%s cu taxare inversă primită (bază %s lei, TVA %s lei) — derivate automat: rd.12 "
             "colectat + rd.26 deductibil (net zero, art.331)."
-            % (ti_ben_n, _f(ti_ben_baza), _f(ti_ben_tva)))
+            % (_cate(ti_ben_n, "achiziție", "achiziții"), _f(ti_ben_baza), _f(ti_ben_tva)))
     if ded[9][0]:
         res.avertismente.append(
             "Achiziții deductibile 9%% (bază %s lei, TVA %s lei) — neincluse automat: rândul deductibil 9%% "
@@ -807,10 +809,10 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         _fpb = sum((x[1] for x in foreign_pos), Decimal(0))
         _fpt = sum((x[2] for x in foreign_pos), Decimal(0))
         res.avertismente.append(
-            "%d facturi cu partener străin (%s) dar cotă internă pozitivă (bază %s lei, TVA %s lei) — "
+            "%s cu partener străin (%s) dar cotă internă pozitivă (bază %s lei, TVA %s lei) — "
             "probabil eroare: o operațiune intracomunitară sau un export nu poartă cotă internă. Nu s-a inclus în rd.9; "
             "corectează cota (0%%) sau țara partenerului."
-            % (len(foreign_pos), ", ".join(sorted({x[0] for x in foreign_pos})), _f(_fpb), _f(_fpt)))
+            % (_cate(len(foreign_pos), "factură", "facturi"), ", ".join(sorted({x[0] for x in foreign_pos})), _f(_fpb), _f(_fpt)))
     if ic_livr_bunuri:
         res.avertismente.append(
             "Livrări intracomunitare de bunuri către UE (bază %s lei) — declarate la rd.1 (0%%, art.294 "
@@ -822,11 +824,11 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             "de deducere)." % _f(export_livr))
     if ic_ach_n:
         res.avertismente.append(
-            "%d achiziții intracomunitare de bunuri din UE (bază %s lei, TVA autolichidat %s lei la %d%%) — "
+            "%s de bunuri din UE (bază %s lei, TVA autolichidat %s lei la %d%%) — "
             "declarate la rd.5 colectat + rd.20 deductibil (taxare inversă, net zero). Dacă sunt servicii, "
             "reclasifică operațiunea ca serviciu în panoul D390 (sursă unică) — se mută automat la rd.7 "
             "colectat + rd.22 deductibil."
-            % (ic_ach_n, _f(ic_ach_b), _f(ic_ach_t), cota_std_ic))
+            % (_cate(ic_ach_n, "achiziție intracomunitară", "achiziții intracomunitare"), _f(ic_ach_b), _f(ic_ach_t), cota_std_ic))
     # [F125] Servicii IC reclasificate prin SURSA UNICA D390 (MUTATE, nu adaugate).
     if ic_prest_serv:
         res.note_rezultat.append(
@@ -835,20 +837,20 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             "(livrări de bunuri), nu adăugate — fără dublă numărare." % _f(ic_prest_serv))
     if ic_serv_n:
         res.note_rezultat.append(
-            "%d achiziții de servicii intracomunitare din UE (bază %s lei, TVA autolichidat %s lei la %d%%) — "
+            "%s de servicii intracomunitare din UE (bază %s lei, TVA autolichidat %s lei la %d%%) — "
             "reclasificate ca serviciu în D390, declarate la rd.7 colectat + rd.7.1 + oglindă rd.22 "
             "deductibil + rd.22.1 (taxare inversă, net zero). Mutate din rd.5 și rd.20, nu adăugate."
-            % (ic_serv_n, _f(ic_serv_b), _f(ic_serv_t), cota_std_ic))
+            % (_cate(ic_serv_n, "achiziție", "achiziții"), _f(ic_serv_b), _f(ic_serv_t), cota_std_ic))
     if tr_reclas:
         # LIMITA DECLARATA (marker ASCII intern MARKER_TR_D300_NEACOPERIT): T/R nu e axa bun-serviciu;
         # maparea D300 pt triangulatie (T)/regularizari-regim (R) NU e acoperita de acest lot. Operatiunea
         # ramane rutata numeric (bunuri, rd.1) DAR se semnaleaza explicit - limita declarata, nu tacere.
         _tipuri_tr = ", ".join(sorted({t for _d, t in tr_reclas}))
         res.avertismente.append(
-            "%d operațiuni reclasificate T/R (%s) în D390 — maparea D300 pentru triangulație (T) / regim "
-            "special (R) nu e acoperită de acest lot: au rămas rutate numeric ca bunuri (rd.1). Verifică "
+            "%s T/R (%s) în D390 — maparea D300 pentru triangulație (T) / regim "
+            "special (R) nu e acoperită de acest lot: rutarea rămâne numerică, ca bunuri (rd.1). Verifică "
             "manual încadrarea în decont — limită declarată, nu omisiune tacită."
-            % (len(tr_reclas), _tipuri_tr))
+            % (_cate(len(tr_reclas), "operațiune reclasificată", "operațiuni reclasificate"), _tipuri_tr))
     res.note_rezultat.append("Rezultat TVA %s lei." % rez)
     return res
 
@@ -1076,6 +1078,7 @@ def _pull_taxare_inversa(cur, inceput, sfarsit):
                                       "tert_tara": r["tert_tara"],
                                       # [A1] cursul + sumele in lei (taxarea inversa trece prin _segmente)
                                       "id": r["id"], "moneda": r.get("moneda"),
+                                      "eticheta": _et.factura_din_rand(r),   # [258] „Factură FCT12 din 05.10.2026”
                                       "curs_bnr": r.get("curs_bnr"),
                                       "total_lei": r.get("total_lei"), "tva_lei": r.get("tva_lei"),
                                       "total": r["total"] if r["total"] is not None else 0,
@@ -1122,7 +1125,7 @@ def _pull_rapoarte_z(cur, inceput, sfarsit):
     out, fara = [], {}
     for r in _repo.select_rapoarte_z(cur, _SURSE_Z, inceput, sfarsit):
         if r["cota"] is None:
-            fara[r["id"]] = r["numar"]
+            fara[r["id"]] = r["numar"] or "fără număr, din %s" % _pu.data_ro(r["data"])   # [258] nu id-ul intern
             continue
         out.append({"raport_z": True, "id": r["id"], "numar": r["numar"], "cota": r["cota"],
                     "baza": r["baza"], "tva": r["tva"]})
@@ -1191,6 +1194,7 @@ def pull(conn, schema, perioada):
                                       # pe cea de incasare ea era deja neper-factura, dinainte.
                                       "axa_ic": r.get("axa_ic"),
                                       "id": r["id"],
+                                      "eticheta": _et.factura_din_rand(r),   # [258] „Factură FCT12 din 05.10.2026”
                                       # [A1] cursul si sumele in lei calatoresc cu factura: _segmente
                                       # exprima baza in lei (cantitate x pret x curs), iar o factura
                                       # in valuta fara curs se EXCLUDE (calcul_d300).
@@ -1284,8 +1288,8 @@ def genereaza(conn, schema, perioada, manual=None, reclasificari=None):
         res.nula_asumata = True
         if _nf:
             res.avertismente.append(
-                "Declarație nulă asumată: niciun rând declarat, dar există %d facturi contabilizabile (rezultat TVA zero) în "
-                "perioadă (posibil necontabilizate sau TVA la încasare nedecontată) — confirmă că nu lipsesc date." % _nf)
+                "Declarație nulă asumată: niciun rând declarat, dar există %s (rezultat TVA zero) în "
+                "perioadă (posibil necontabilizate sau TVA la încasare nedecontată) — confirmă că nu lipsesc date." % _cate(_nf, "factură contabilizabilă", "facturi contabilizabile"))
         else:
             res.note_rezultat.append(
                 "Declarație nulă asumată: nicio factură în perioadă și niciun rând declarat. Un plătitor "

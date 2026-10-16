@@ -60,7 +60,12 @@ _RE_ANCORA = {}
 def _re_ancora(ancora):
     r = _RE_ANCORA.get(ancora)
     if r is None:
-        r = _RE_ANCORA[ancora] = re.compile(r"""(?:/|["'`])%s(?![\w-])""" % re.escape(ancora))
+        # [Lotul 5, 15.10.2026] după ghilimea, ancora e o RUTĂ numai dacă literalul se oprește acolo sau continuă cu `/` / `?`
+        # („facturi”, „facturi/12”); „facturi restante” — textul dat lui `cate(n, "factură restantă", "facturi restante")` după
+        # clasa pluralului (261/263) — nu e o referință de rută, iar numărat ca una împingea ancora peste prag și făcea rutele
+        # facturilor să pară fără apelant.
+        e = re.escape(ancora)
+        r = _RE_ANCORA[ancora] = re.compile(r"""/%s(?![\w-])|["'`]%s(?=["'`/?])""" % (e, e))
     return r
 
 

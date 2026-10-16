@@ -388,7 +388,7 @@ CODURI = {
         "(diferență {diferenta} lei) — există linii cu o parte lipsă.",
         "OMFP 1802/2014 — principiul partidei duble"),
     "ORFANI_IN_LEDGER": (
-        "{numar} linie(i) contabile trimit la o înregistrare care nu există — referință ruptă.",
+        "{linii} la o înregistrare care nu există — referință ruptă.",   # linii = cate(n, "linie contabilă trimite", "linii contabile trimit")
         "OMFP 1802/2014 — înregistrările contabile se sprijină pe documente justificative"),
     "BALANTA_SI_DEZECHILIBRATA": (
         "Solduri inițiale dezechilibrate: diferența {diferenta_solduri} lei "
@@ -909,8 +909,12 @@ ETICHETE_COTE = {
 
 def cate(n, singular, plural):
     """„1 linie”, „3 linii”, „20 de linii” — numeralul cu substantivul acordat (româna cere „de” de la 20 în sus, cu excepția
-    numerelor care se termină în 01–19). [Retest 2, pct.14] „«1 parteneri» în Rezumat D394”."""
-    n = int(n)
+    numerelor care se termină în 01–19). [Retest 2, pct.14] „«1 parteneri» în Rezumat D394”.
+    Un număr cu zecimale (cum le arată aplicația, o zecimală: „12,5 zile”) ia pluralul fără „de” — se citește după ultima cifră
+    („doisprezece virgulă cinci zile”). Oglinda: `static/js/plural.js::cate`, pe aceeași tabelă (`core/test_plural_dupa_numar.py`)."""
+    if float(n) != int(float(n)):
+        return "%s %s" % (str(float(n)).replace(".", ","), plural)
+    n = int(float(n))
     if n == 1:
         return "1 %s" % singular
     r = n % 100
@@ -1286,7 +1290,7 @@ def cote_neconfirmate(luni=6, la_data=None, prag_pentru=None):
                 prag_luni, sursa = p, "per articol"
             else:
                 # Mai larg decat azi: se IGNORA, si se spune de ce. Regula 1 de mai sus.
-                sursa = "global (per articol ar fi fost %d luni, mai larg — ignorat)" % p
+                sursa = "global (per articol ar fi fost %s, mai larg — ignorat)" % cate(p, "lună", "luni")
         prag = _adauga_luni(la_data, -prag_luni)
         vl = getattr(temei, "verificat_la", None)
         if vl is None or vl <= prag:
@@ -1434,3 +1438,17 @@ def dir_bonuri():
         return d
     return os.path.expanduser("~/iconta_date/bonuri")
 
+
+
+def nume_de_salut(prenume, nume):
+    """[269, Lotul 5: „salutul ia ultimul cuvânt din nume («Salut, 253» pentru «Test 253»)”] Numele dintr-un salut (email): prenumele,
+    DOAR dacă a fost scris separat (Setări › Profil); altfel numele întreg, așa cum e scris — niciodată „ultimul cuvânt” din nume.
+    Perechea din ecrane e `numeDeSalut` (static/js/ecrane/salut.js). PURĂ."""
+    return str(prenume or "").strip() or str(nume or "").strip()
+
+
+def esc(v):
+    """[C39, 15.10.2026] Text scris de om (nume, mesaj, email, denumire) pus în HTML-ul unui email: escapat — altfel un nume de firmă
+    cu `<` sau un mesaj al cabinetului cu etichete devin markup în emailul destinatarului. Gard: core/test_email_html_escapat.py."""
+    import html as _h
+    return _h.escape("" if v is None else str(v), quote=True)

@@ -127,11 +127,11 @@ class IntinderNerecunoscuta(ValueError):
         super().__init__(str(self))
 
     def __str__(self):
-        return ("D406: perioada raportată se întinde pe %d luni (%s – %s), iar nomenclatorul "
+        return ("D406: perioada raportată se întinde pe %s (%s – %s), iar nomenclatorul "
                 "ANAF are tipuri de depunere doar pentru %s. Verifică perioada fiscală TVA a "
                 "firmei, la Date firmă → Vector fiscal. Temei: %s."
-                % (self.luni, self.di.isoformat(), self.ds.isoformat(),
-                   ", ".join("%d luni (%s)" % (k, v)
+                % (c.cate(self.luni, "lună", "luni"), self.di.isoformat(), self.ds.isoformat(),
+                   ", ".join("%s (%s)" % (c.cate(k, "lună", "luni"), v)
                              for k, v in sorted(HEADER_COMMENT_PER.items())),
                    self.temei))
 

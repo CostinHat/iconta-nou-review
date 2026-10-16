@@ -24,6 +24,8 @@ from __future__ import annotations
 
 import psycopg2.extras as _E
 
+from core.common import cate as _cate
+
 REGULI = "2026.1"
 MODUL = "asistenti_api"
 
@@ -178,7 +180,7 @@ def jurnal(conn, cabinet_id, de=None, pana=None, limit=200):
 
     ev = []
     for r in randuri:
-        firma = r.get("firma") or ("firma #%s" % r["tenant_id"])
+        firma = r.get("firma") or "o firmă care nu mai există"   # [258] niciodată id-ul intern
         # [validare_note] eticheta din sursa unica (`coada_api.eticheta_element`): o nota nu e „NOTA · nota-123”
         from core import coada_api as _coada
         baza = {"coada_id": r["id"], "tip": r["tip"], "fel": r.get("fel") or "declaratie",
@@ -596,14 +598,15 @@ def activitate(conn, cabinet_id, user_id):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             """
-            SELECT id, tenant_id, tip, perioada, stare,
-                   creat_de, creat_la, aprobat_de, aprobat_la,
-                   respins_de, respins_la
-              FROM public.declaratii_coada
-             WHERE cabinet_id = %s
-               AND (creat_de = ANY(%s) OR aprobat_de = ANY(%s)
-                    OR respins_de = ANY(%s))
-             ORDER BY COALESCE(aprobat_la, respins_la, creat_la) DESC
+            SELECT c.id, c.tenant_id, t.nume AS firma, c.tip, c.perioada, c.stare,
+                   c.creat_de, c.creat_la, c.aprobat_de, c.aprobat_la,
+                   c.respins_de, c.respins_la
+              FROM public.declaratii_coada c
+              LEFT JOIN public.tenants t ON t.id = c.tenant_id   -- [258] firma numită, nu „firma #12”
+             WHERE c.cabinet_id = %s
+               AND (c.creat_de = ANY(%s) OR c.aprobat_de = ANY(%s)
+                    OR c.respins_de = ANY(%s))
+             ORDER BY COALESCE(c.aprobat_la, c.respins_la, c.creat_la) DESC
              LIMIT 200
             """,
             (cabinet_id, idents, idents, idents),
@@ -626,7 +629,7 @@ def activitate(conn, cabinet_id, user_id):
         "ok": True,
         "actor": {
             "id": actor["id"], "nume": actor["nume"],
-            "prenume": actor.get("prenume"), "rol": actor["rol"],
+            "prenume": actor.get("prenume"), "email": actor.get("email"), "rol": actor["rol"],
         },
         "activitate": randuri,
         "nr_self_approval": len(incalcari),
@@ -736,8 +739,9 @@ def calitate(conn, cabinet_id, user_id, de=None, pana=None):
         # [p26_motivationale] lista metrici motivationale (POZITIVE). Frontend le afiseaza
         # pe toate, oricate. Adaugi una noua aici -> apare automat in bara 3.
         "motivationale": [
-            {"cheie": "pregatite", "eticheta": "pregătite luna aceasta",
-             "valoare": pregatite},
+            # [lotul 5 pct.2d] eticheta acordată cu numărul (era „1 pregătite”): ce urmează numărului în `common.cate`
+            {"cheie": "pregatite", "valoare": pregatite,
+             "eticheta": _cate(pregatite, "lucrare pregătită luna aceasta", "lucrări pregătite luna aceasta").split(" ", 1)[1]},
             # [lotul 07.10 pct.4] din prima = acceptate fără nicio respingere, din cele care au primit o decizie;
             # fără nicio decizie încă, procentul n-are numitor: „—”, nu „100%”
             {"cheie": "acceptate", "eticheta": "acceptate din prima",

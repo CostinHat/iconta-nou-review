@@ -88,7 +88,7 @@ def portal_revoca_acces(user_id, tenant_id, ctx):
                 # rânduri în `user_tenants` NU se stinge din portal (dezactiveaza_contul_client filtrează pe rol).
                 repo_utilizatori.dezactiveaza_contul_client(cur, user_id)
             _uc_comun._urma_portal(cur, t["id"], "acces_retras",
-                         "clientul a retras accesul utilizatorului #%s" % user_id, ctx["uid"])
+                         "clientul a retras accesul utilizatorului %s" % _uc_comun._cine(cur, user_id), ctx["uid"])
     return {"ok": True}
 
 
@@ -266,13 +266,13 @@ def portal_schimba_email(date, ctx):
         "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;"
         "padding:10px 22px;border-radius:6px;text-decoration:none'>Confirmă adresa</a></p>"
         "<p>Linkul e valabil 48 de ore. Dacă nu ai cerut tu, ignoră mesajul — "
-        "nu se schimbă nimic.</p>" % link, alerta=True)
+        "nu se schimbă nimic.</p>" % link, alerta=True, cerut_de_destinatar=True)   # [268] confirmarea propriei adrese
     # Adresa VECHE afla, chiar daca nu ea confirma: altfel o mutare de cont ar fi tacuta
     # exact pentru cel care pierde accesul.
     _obs.trimite_email_html_sau_semnaleaza("email anunt adresa veche", email_vechi, "Cerere de schimbare a adresei — iConta.eu",
         "<p>Bună,</p><p>S-a cerut mutarea contului tău iConta.eu pe adresa "
         "<b>%s</b>.</p><p>Dacă nu ai cerut tu, spune-i cabinetului acum: "
-        "schimbarea se face doar după confirmarea de pe adresa nouă.</p>" % email_nou)
+        "schimbarea se face doar după confirmarea de pe adresa nouă.</p>" % _common.esc(email_nou))
     return {"ok": True, "confirmare_ceruta": True, "mesaj": MESAJ_EMAIL_DE_CONFIRMAT}
 
 
@@ -303,13 +303,13 @@ def portal_adauga_acces(date, ctx):
             tok = "ml_" + _sec2.token_urlsafe(32)
             _uc_comun._pune_token(cur, tok, uid, "48 hours")
             _uc_comun._urma_portal(cur, t["id"], "acces_dat",
-                         "clientul a dat acces la portal lui %s (utilizator #%s)" % (email, uid),
+                         "clientul a dat acces la portal lui %s" % email,
                          ctx["uid"])
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#magic=" + tok
-    html = ("<p>Buna,</p><p>Ai primit acces la portalul iConta.eu pentru firma <b>%s</b>.</p>"
-            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in portal</a></p>"
-            "<p>Linkul e valabil 48 de ore.</p>") % (t.get("nume", ""), link)
+    html = ("<p>Bună,</p><p>Ai primit acces la portalul iConta.eu pentru firma <b>%s</b>.</p>"
+            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intră în portal</a></p>"
+            "<p>Linkul e valabil 48 de ore.</p>") % (_common.esc(t.get("nume", "")), link)
     # [R73] ALERTA: linkul e singura usa a clientului in portal (ca linkul de logare)
     _obs.trimite_email_html_sau_semnaleaza("email acces portal", email, "Acces portal iConta.eu — " + t.get("nume", ""), html,
                                            alerta=True)

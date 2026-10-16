@@ -7,8 +7,8 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt } from "../api.js?v=2561dbfd34";
-import { sesiune } from "../sesiune.js?v=38c3e6f6fe";
+import { api, cate, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt } from "../api.js?v=72aa1cbbdb";
+import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=05e032b67b";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
@@ -188,7 +188,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <label class="camp"><span class="camp-eticheta">Data scadenței</span>
           <input class="camp-input" id="em-scadenta" type="date"></label>
       </div>
-      <p class="camp-ajutor" id="em-scadenta-ajutor">${num.scadenta_zile ? `Propusă la ${num.scadenta_zile} de zile de la emitere — termenul din lege când contractul nu prevede altul (${esc(num.scadenta_temei || "")}). O poți schimba; ` : ""}scadența intră în scadențar; o factură fără scadență nu are termen de plată urmărit.</p>
+      <p class="camp-ajutor" id="em-scadenta-ajutor">${num.scadenta_zile ? `Propusă la ${cate(num.scadenta_zile, "zi", "zile")} de la emitere — termenul din lege când contractul nu prevede altul (${esc(num.scadenta_temei || "")}). O poți schimba; ` : ""}scadența intră în scadențar; o factură fără scadență nu are termen de plată urmărit.</p>
     </div>
 
     <div class="em-sectiune">
@@ -496,7 +496,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <div class="em-total-rand"><span>Bază</span><b>${cu(baza)}</b></div>
       <div class="em-total-rand"><span>TVA</span><b>${nestiut ? "—" : cu(tva)}</b></div>
       <div class="em-total-rand em-total-mare"><span>Total</span><b>${nestiut ? "—" : cu(baza + tva)}</b></div>
-      ${nestiut ? `<p class="ecran-nota" id="em-total-nota">TVA-ul nu se poate calcula încă: cota nu e stabilită pe ${faraCota} lini${faraCota === 1 ? "e" : "i"}. Se propune automat din denumire — scrie denumirea articolului (sau alege-l din stoc) și așteaptă propunerea.</p>` : ""}`;
+      ${nestiut ? `<p class="ecran-nota" id="em-total-nota">TVA-ul nu se poate calcula încă: cota nu e stabilită pe ${cate(faraCota, "linie", "linii")}. Se propune automat din denumire — scrie denumirea articolului (sau alege-l din stoc) și așteaptă propunerea.</p>` : ""}`;
     salveazaCiorna();   // [lotul 07.10 pct.2] modelul liniilor se schimbă și fără tastă: cota propusă, o linie ștearsă
   }
 
@@ -692,7 +692,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       let notaStoc = "";  // [punte_stoc_v1] rezultatul descarcarii de gestiune, daca poarta a fost DA
       if (r.descarcare) {
         const nd = (r.descarcare.descarcate || []).length, ne = (r.descarcare.erori || []).length;
-        notaStoc = ` · ${nd} articol${nd === 1 ? "" : "e"} descărcat${nd === 1 ? "" : "e"} din gestiune`;
+        notaStoc = ` · ${cate(nd, "articol descărcat", "articole descărcate")} din gestiune`;
         if (ne) notaStoc += ` (${ne} nu — stoc insuficient)`;
       }
       rez2.innerHTML = `✓ Factura <b>${esc(r.numar)}</b> emisă · total ${Number(r.total).toLocaleString("ro-RO", {minimumFractionDigits:2})} ${monedaSel}${notaStoc}. A fost trimisă către contabil.`;
@@ -807,7 +807,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       rez.className = "em-rezultat";
       rez.innerHTML = `
         <div class="caseta-poarta">
-          <div class="cp-mesaj">Pleacă marfa acum? ${cuArticole} articol${cuArticole === 1 ? "" : "e"} de pe factură se descarcă din gestiune dacă marfa pleacă fizic azi. Dacă e avans, livrare ulterioară sau serviciu, alege „Nu, doar factură".</div>
+          <div class="cp-mesaj">Pleacă marfa acum? ${cate(cuArticole, "articol", "articole")} de pe factură se descarcă din gestiune dacă marfa pleacă fizic azi. Dacă e avans, livrare ulterioară sau serviciu, alege „Nu, doar factură".</div>
           <div class="cp-butoane">
             <button class="buton-primar" id="em-poarta-da">Da, pleacă marfa</button>
             <button class="buton-secundar em-buton-sec" id="em-poarta-nu">Nu, doar factură</button>

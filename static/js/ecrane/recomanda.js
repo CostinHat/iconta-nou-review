@@ -1,7 +1,7 @@
 // recomanda.js — cardul Recomanda: invita un cabinet in iConta.
 // Trimite email(uri) de invitatie cu buton "Incearca iConta".
 // "Vezi ce trimite" = preview exact al emailului (acelasi HTML ca cel trimis).
-import { api, esc, arataMesaj, inchidereDialog } from "../api.js?v=2561dbfd34";
+import { api, esc, arataMesaj, inchidereDialog, cate } from "../api.js?v=72aa1cbbdb";
 
 export function randeazaRecomanda(corp, nav) {
   corp.innerHTML = `
@@ -63,8 +63,8 @@ export function randeazaRecomanda(corp, nav) {
         const trimise = (r.rezultate || []).filter((x) => x.stare === "trimis").length;
         const esuate = (r.rezultate || []).filter((x) => x.stare === "esuat").length;
         arataMesaj(msg, esuate
-          ? `${trimise} trimise, ${esuate} eșuate.`
-          : `Invitație trimisă către ${trimise} ${trimise === 1 ? "adresă" : "adrese"}.`, esuate ? "eroare" : "ok");
+          ? `${cate(trimise, "trimisă", "trimise")}, ${cate(esuate, "eșuată", "eșuate")}.`
+          : `Invitație trimisă către ${cate(trimise, "adresă", "adrese")}.`, esuate ? "eroare" : "ok");
         if (!esuate) corp.querySelector("#rec-emails").value = "";
       } else {
         arataMesaj(msg, "Nu s-a putut trimite.", "eroare");

@@ -23,5 +23,7 @@ def test_c6_dropdown_arata_motivul_real_nu_partida_simpla():
 def test_c5_acord_singular_plural_profil_incomplet():
     """RED pe cod vechi: pluralul '${lipsa.length} campuri obligatorii lipsesc' fara ramificare."""
     src = _read("static/js/ecrane/date_firma.js")
-    assert "lipsa.length === 1" in src, "fara ramificare singular/plural la 'Profil incomplet' (C5)"
-    assert "obligatoriu lipse" in src, "forma singulara lipseste (un camp obligatoriu lipseste)"
+    # [lotul 5, 15.10.2026] numeralul trece prin `cate` (cu „de” de la 20); verbul se acordă separat
+    assert 'cate(lipsa.length, "c\\u00e2mp obligatoriu", "c\\u00e2mpuri obligatorii")' in src, \
+        "fara acord singular/plural la 'Profil incomplet' (C5)"
+    assert 'lipsa.length === 1 ? "lipse\\u0219te" : "lipsesc"' in src, "verbul nu se acorda (un camp obligatoriu lipseste)"

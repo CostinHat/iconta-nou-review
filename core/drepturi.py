@@ -30,21 +30,25 @@ from core.mesaje import FARA_ACCES_TENANT
 
 #: [15.10.2026, deficiența 246] textul refuzului „ciorna altui utilizator” — ACELAȘI cu cel din bază (`DREPT_CIORNA:`,
 #: core/migrare_ciorne_proprii.py; paritatea o păzește core/test_ciorne_proprii.py): jurnalul îl arată înainte de apăsare, coada îl dă
-#: la trimiterea la validare (care nu atinge nota, deci nu trece prin trigger).
-MESAJ_CIORNA_ALTUI = ("Nota #%s e ciorna lui %s: o poți vedea, dar n-o modifici, n-o ștergi și n-o trimiți la validare. Dacă trebuie "
+#: la trimiterea la validare (care nu atinge nota, deci nu trece prin trigger). [deficiența 258] Nota se numește cum o vede contabilul în
+#: Registrul jurnal („nr. crt. 5 din 12.03.2026”, `core/eticheta_nota.py` = funcția `eticheta_nota` din bază), nu prin id-ul intern.
+MESAJ_CIORNA_ALTUI = ("Nota %s e ciorna lui %s: o poți vedea, dar n-o modifici, n-o ștergi și n-o trimiți la validare. Dacă trebuie "
                       "schimbată, spune-i lui %s sau administratorului cabinetului.")
 COD_CIORNA_ALTUI = "CIORNA_ALTUI"
 #: Același refuz pe registrul de încasări și plăți (`rip_operatiuni.creat_de`; triggerul `regula_rip_ciorna_proprie`).
-MESAJ_RIP_ALTUI = ("Operațiunea #%s din registrul de încasări și plăți e ciorna lui %s: o poți vedea, dar n-o modifici și n-o ștergi. "
+MESAJ_RIP_ALTUI = ("În registrul de încasări și plăți, %s e ciorna lui %s: o poți vedea, dar n-o modifici și n-o ștergi. "
                    "Dacă trebuie schimbată, spune-i lui %s sau administratorului cabinetului.")
 REGULA_CIORNA_ALTUI = "Un asistent își modifică, își șterge și își trimite la validare numai ciornele lui; pe ale altora le vede."
 
 
-def ciorna_altuia(nr, autor, rip=False):
+def ciorna_altuia(eticheta, autor, rip=False):
     """[deficiența 246] Afirmația „ciorna e a altuia” pe care o arată ecranul (jurnal / registrul de încasări și plăți), cu textul
-    refuzului din bază (`ciorna_altui`, core/migrare_ciorne_proprii.py)."""
-    return _af.afirmatie("neconformitate", "ciorna_altuia", (MESAJ_RIP_ALTUI if rip else MESAJ_CIORNA_ALTUI) % (nr, autor, autor),
-                         unde=("operațiunea #%s" if rip else "nota #%s") % nr, regula=REGULA_CIORNA_ALTUI, autor=autor)
+    refuzului din bază (`ciorna_altui`, core/migrare_ciorne_proprii.py). [258] `eticheta` = cum o vede omul: `eticheta_nota.nota` /
+    `eticheta_nota.rip` („nr. crt. 5 din 12.03.2026” / „plata din 12.03.2026 de 150,00 RON”), niciodată id-ul."""
+    if not isinstance(eticheta, str):
+        raise TypeError("ciorna_altuia cere eticheta notei (core/eticheta_nota.py), nu id-ul intern: %r" % (eticheta,))
+    return _af.afirmatie("neconformitate", "ciorna_altuia", (MESAJ_RIP_ALTUI if rip else MESAJ_CIORNA_ALTUI) % (eticheta, autor, autor),
+                         unde=("operațiunea: %s" if rip else "nota %s") % eticheta, regula=REGULA_CIORNA_ALTUI, autor=autor)
 
 PREGATI = "poate_pregati"
 VALIDA = "poate_valida"

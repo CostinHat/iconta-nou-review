@@ -1,8 +1,11 @@
 """GDPR art. 17 — stergere completa cabinet. Doi pasi: previzualizare + executa (confirmare typed-back a numelui).
-Sterge: scheme tenant (DROP SCHEMA CASCADE), randuri public (audit_log/user_tenants/tenants/users/accounting_firms), fisiere disc.
+Sterge: scheme tenant (DROP SCHEMA CASCADE), randuri public (audit_log/user_tenants/tenants/users/accounting_firms), fisiere disc,
+sesizarile cabinetului cu mesajele si fisierele lor private (C38, 15.10.2026: `raportari.autor_id` -> users e „NO ACTION”, deci un
+cabinet care trimisese o sesizare nu se mai putea sterge; iar depozitul privat `core/fisiere_private.py` tine fisierele pe cabinet).
 Logheaza in public.gdpr_stergeri (FARA date personale) — logul supravietuieste.
 NU se sterge: backup Storage Box (dump integral, stergere selectiva imposibila, expira 30 zile)."""
 import os
+import shutil
 import psycopg2.extras as _E
 from core import tenant_stergere  # [R72] o singura cale de stergere a unei firme
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
@@ -21,6 +24,9 @@ def previzualizare(conn, cabinet_id):
         nu = cur.fetchone()["n"]
         cur.execute("SELECT id FROM public.tenants WHERE accounting_firm_id=%s", (cabinet_id,))
         tid = [t["id"] for t in cur.fetchall()]
+        cur.execute("SELECT (SELECT count(*) FROM public.raportari WHERE cabinet_id=%s) AS sesizari, "
+                    "(SELECT count(*) FROM public.fisiere_private WHERE cabinet_id=%s) AS fisiere", (cabinet_id, cabinet_id))
+        cab_randuri = cur.fetchone()
     # [R50 (c)] Cate randuri dispar din fiecare tabela partajata, INAINTE de a apasa.
     # O stergere care spune doar "se sterge tot" nu se poate confrunta cu nimic dupa.
     randuri = {}
@@ -29,7 +35,7 @@ def previzualizare(conn, cabinet_id):
             randuri[tabel] = randuri.get(tabel, 0) + n
     return {"cabinet_id": cabinet_id, "nume": cab["nume"], "nr_tenanti": len(tens), "nr_useri": nu,
             "scheme": [t["schema_name"] for t in tens], "confirmare_ceruta": cab["nume"],
-            "randuri_de_sters": randuri,
+            "randuri_de_sters": dict(randuri, raportari=cab_randuri["sesizari"], fisiere_private=cab_randuri["fisiere"]),
             "avertisment": "Ireversibil. Nu se șterge: " + NU_SE_STERGE}
 
 def executa(conn, cabinet_id, confirmare, sters_de_user_id):
@@ -57,6 +63,13 @@ def executa(conn, cabinet_id, confirmare, sters_de_user_id):
         for t in tens:
             tenant_stergere.sterge(conn, t["id"], "gdpr_cabinet", sters_de_user_id)
         # Ce ramane specific CABINETULUI: randurile legate de userii lui, nu de firme.
+        # [C38] sesizarile (si cererile de import) ale cabinetului: mesajele si randurile fisierelor private cad in cascada; fisierele
+        # de pe disc (directorul cabinetului din depozit) se scot dupa commit, ca la scheme
+        cur.execute("SELECT count(*) AS n FROM public.fisiere_private WHERE cabinet_id=%s", (cabinet_id,))
+        are_fisiere_private = cur.fetchone()["n"] > 0
+        cur.execute("DELETE FROM public.raportari_mesaje WHERE autor_id=ANY(%s)", (uid,))
+        cur.execute("DELETE FROM public.raportari WHERE cabinet_id=%s OR autor_id=ANY(%s)", (cabinet_id, uid))
+        cur.execute("DELETE FROM public.fisiere_private WHERE cabinet_id=%s", (cabinet_id,))
         cur.execute("DELETE FROM public.audit_log WHERE user_id=ANY(%s)", (uid,))
         cur.execute("DELETE FROM public.user_tenants WHERE user_id=ANY(%s)", (uid,))
         cur.execute("DELETE FROM public.tenants WHERE accounting_firm_id=%s", (cabinet_id,))
@@ -70,5 +83,11 @@ def executa(conn, cabinet_id, confirmare, sters_de_user_id):
     fisiere = 0
     for sch in scheme:
         fisiere += tenant_stergere.sterge_fisiere(sch)   # [R72] aceeasi curatare de disc
+    if are_fisiere_private:                              # [C38] directorul cabinetului din depozitul privat
+        from core import fisiere_private
+        d = os.path.join(fisiere_private.director(), str(int(cabinet_id)))
+        fisiere += sum(len(fs) for _r, _s, fs in os.walk(d))
+        if os.path.isdir(d):
+            shutil.rmtree(d)
     return {"cabinet_id": cabinet_id, "scheme_sterse": scheme, "nr_useri": nr_useri, "nr_tenanti": len(scheme),
             "fisiere_sterse": fisiere, "log_id": log["id"], "sters_la": str(log["sters_la"]), "NU_se_sterge": NU_SE_STERGE}

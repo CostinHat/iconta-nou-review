@@ -2,9 +2,9 @@
 // Trei sectiuni: 1) cabinet (cat e de facut vs ritm), 2) pe asistent
 // (incarcare per procesator), 3) timp mediu pe tip de declaratie.
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
-import { api, esc } from "../api.js?v=2561dbfd34";
-import { randeazaAsistenti } from "./asistenti.js?v=71d1c61bbe";
-import { permis } from "../drepturi.js?v=df020d220f";  /* [drepturi_rol 04.10.2026] */
+import { api, esc, cate } from "../api.js?v=72aa1cbbdb";
+import { randeazaAsistenti } from "./asistenti.js?v=d0e1cebc57";
+import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 
 function celulaCifra(valoare, eticheta, accent) {
   const c = accent || "#1a1d21";
@@ -57,7 +57,7 @@ export async function randeazaCapacitate(corp, nav) {
       ${celulaCifra(cab.depuse_luna ?? 0, "depuse luna asta", (cab.depuse_luna ? "var(--verde)" : null))}
       ${celulaCifra((cab.ritm_pe_zi ?? 0), "ritm / zi lucrătoare")}
     </div>
-    <p class="cap-nota">Ritmul e calculat pe ${cab.zile_lucratoare ?? 0} zile lucrătoare din luna curentă.</p>
+    <p class="cap-nota">Ritmul e calculat pe ${cate(cab.zile_lucratoare ?? 0, "zi lucrătoare", "zile lucrătoare")} din luna curentă.</p>
   `;
 
   // --- 2) PE ASISTENT ---
@@ -118,7 +118,7 @@ export async function randeazaCapacitate(corp, nav) {
         <tbody>${randuriTimp}</tbody>
       </table>
     </div>
-    <p class="cap-nota">Durata = de la deschiderea ecranului până la generare. Pe ${timp.total_mostre} declarații; devine mai precisă în timp.</p>
+    <p class="cap-nota">Durata = de la deschiderea ecranului până la generare. Pe ${cate(timp.total_mostre, "declarație", "declarații")}; devine mai precisă în timp.</p>
   `;
 
   corp.innerHTML = `<div class="cap-ecran">${sectCabinet}${sectAsist}${sectTimp}</div>`;

@@ -184,3 +184,14 @@ def test_plasa_porneste_numai_dupa_verdictul_pytest():
     verdict = [i for i, x in enumerate(linii) if x.strip() == "RC=$RC_PYTEST"]
     assert asteapta and verdict, (asteapta, verdict)
     assert porneste < min(asteapta) < min(verdict) < plasa, (porneste, asteapta, verdict, plasa)
+
+
+def test_defectul_nereparat_poate_trimite_la_deficiente_cu_numarul():
+    """[16.10.2026] Un defect lăsat nereparat se consemnează în `DEFICIENTE.md` (registrul canonic, CLAUDE.md §2.2.0): mesajul care
+    spune „DEFICIENTE 271” are loc; fără loc, sau cu registrul fără număr, e respins. MUTAȚIE: `DEFICIENTE…` scos din `LOC` -> pică."""
+    baza = "Lotul X\n\n- 271: cauza aflată — nereparat, la cerere%s.\n"
+    assert _ruleaza((baza % " (DEFICIENTE 271)").encode("utf-8"))[0] == 0
+    assert _ruleaza((baza % " (DEFICIENTE.md C40)").encode("utf-8"))[0] == 0
+    for fara in ("", " (DEFICIENTE)"):
+        cod, iesire, _dur = _ruleaza((baza % fara).encode("utf-8"))
+        assert cod == 1 and iesire.count("nu spune UNDE") == 1, iesire

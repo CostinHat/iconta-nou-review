@@ -437,8 +437,12 @@ _JS_KEY_RE = re.compile(
 _JS_ASSIGN_RE = re.compile(
     r"\.(innerHTML|textContent|innerText|title|placeholder)\s*\+?=\s*" + _JS_STR)
 _JS_NAV_RE = re.compile(r"nav\.(?:deschide|mergi|inlocuieste)\s*\(\s*" + _JS_STR)
+#: [deficiența 264] titlul ferestrei scris ca template cu interpolare (`nav.deschide(`Editeaza — ${nume}`)`) — interpolarea se șterge
+_JS_NAV_TMPL_RE = re.compile(r"nav\.(?:deschide|mergi|inlocuieste)\s*\(\s*(`(?:[^`\\]|\\.)*`)")
 _JS_INTERP_RE = re.compile(r"\$\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}")
 _JS_TEXTNODE_RE = re.compile(r">([^<>]+)<")
+_RUTA_RE = re.compile(r"(GET|POST|PUT|DELETE|PATCH) /")
+_JS_ATRIBUT_RE = re.compile(r"\b(?:aria-label|title|placeholder|alt)=\"([^\"$]*)\"")
 
 # POZITIILE 5 si 6 (06.09.2026). Gardul vedea `eticheta: "..."` dar NU si cele doua forme in care
 # ecranele scriu de fapt etichetele:
@@ -483,6 +487,78 @@ def _flag_js(s):
     return sorted(hit) if hit else None
 
 
+def sabloane_js(text):
+    """([(start, corp)], [(start, literal)]): FIECARE template literal din sursa JS, inclusiv cele imbricate in `${...}` (ternarele de afisare:
+    `${a.activ ? `<button>Dezactiveaza</button>` : ""}`); in `corp` interpolarile sunt inlocuite cu spatii de aceeasi lungime
+    (offset -> linie ramane valid). [deficienta 264] Inainte, `_JS_TMPL_RE` se rupea la primul backtick imbricat, deci textele din
+    ternare nu se vedeau deloc. Urmareste sirurile, comentariile si acoladele, deci un backtick din comentariu sau din sir nu deschide
+    nimic; limita: o expresie regulata JS care contine un backtick. Al doilea element: ramurile ternarelor din interpolari."""
+    res, n = [], len(text)
+    ternare = []    # [(start, literal cu delimitatori)] — ramurile `? "x" : "y"` din interpolari: text afisat
+
+    def ramura(i):
+        p = text[:i].rstrip()[-1:]
+        return p in ("?", ":")
+
+    def sir(i, q):
+        i += 1
+        while i < n and text[i] != q:
+            i += 2 if text[i] == "\\" else 1
+        return i + 1
+
+    def cod(i, pana_la_acolada):
+        adanc = 0
+        while i < n:
+            c = text[i]
+            if c in "\"'":
+                j = sir(i, c)
+                if pana_la_acolada and ramura(i):
+                    ternare.append((i, text[i:j]))
+                i = j
+                continue
+            if c == "`":
+                j = sablon(i)
+                if pana_la_acolada and ramura(i) and "<" not in res[-1][1]:
+                    ternare.append((i, "`" + res[-1][1] + "`"))
+                i = j
+                continue
+            if c == "/" and text[i + 1:i + 2] == "/":
+                j = text.find("\n", i)
+                i = n if j < 0 else j
+                continue
+            if c == "/" and text[i + 1:i + 2] == "*":
+                j = text.find("*/", i + 2)
+                i = n if j < 0 else j + 2
+                continue
+            if c == "{":
+                adanc += 1
+            elif c == "}":
+                if pana_la_acolada and adanc == 0:
+                    return i + 1
+                adanc -= 1
+            i += 1
+        return i
+
+    def sablon(i):
+        start, i, corp = i, i + 1, []
+        while i < n and text[i] != "`":
+            if text[i] == "\\":
+                corp.append(text[i:i + 2])
+                i += 2
+            elif text[i] == "$" and text[i + 1:i + 2] == "{":
+                j = cod(i + 2, True)
+                corp.append(" " * (j - i))
+                i = j
+            else:
+                corp.append(text[i])
+                i += 1
+        res.append((start + 1, "".join(corp)))
+        return i + 1
+
+    cod(0, False)
+    return res, ternare
+
+
 def _lineno(text, pos):
     return text.count("\n", 0, pos) + 1
 
@@ -506,6 +582,8 @@ def scan_js_text(text, flag=None):
         emit(m.start(2), "atribuire:" + m.group(1), m.group(2))
     for m in _JS_NAV_RE.finditer(text):
         emit(m.start(1), "nav", m.group(1))
+    for m in _JS_NAV_TMPL_RE.finditer(text):
+        emit(m.start(1), "nav", "`" + _JS_INTERP_RE.sub(" ", m.group(1)[1:-1]) + "`")
     for m in _JS_CAMP_RE.finditer(text):
         emit(m.start(1), "camp-eticheta", m.group(1))
     for m in _JS_PERECHE_RE.finditer(text):
@@ -513,15 +591,21 @@ def scan_js_text(text, flag=None):
         if _JS_VAL_INAINTE_RE.search(text[max(0, m.start() - 10):m.start()]):
             continue
         emit(m.start(2), "optiune", m.group(2))
-    for m in _JS_TMPL_RE.finditer(text):
-        base = m.start() + 1
-        # sterge ${...} (1 nivel de acolade), pastrand lungimea -> offset->linie valid
-        body = _JS_INTERP_RE.sub(lambda mm: " " * len(mm.group(0)), m.group(0)[1:-1])
+    sabloane, ternare = sabloane_js(text)
+    for base, body in sabloane:     # [264] toate template-urile, si cele imbricate in ${...}
+        for am in _JS_ATRIBUT_RE.finditer(body):     # [264] aria-label / title / placeholder / alt = citite de om
+            d = _decode_js(am.group(1))
+            h = _flag_js(d)
+            if h:
+                out.append((_lineno(text, base + am.start(1)), "atribut", d.strip(), h))
         for tm in _JS_TEXTNODE_RE.finditer(body):
             d = _decode_js(tm.group(1))
             h = _flag_js(d)
             if h:
                 out.append((_lineno(text, base + tm.start(1)), "text-html", d.strip(), h))
+    for pos, raw in ternare:     # [264] ramurile ternarelor din interpolari
+        if not _RUTA_RE.match(raw[1:]):                          # o ruta (`data-actiune`) nu e text afisat
+            emit(pos, "ternar", raw)
     return out
 
 

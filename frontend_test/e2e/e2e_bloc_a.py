@@ -14,7 +14,7 @@ import io
 import re
 import time
 
-from conftest import ai_pregateste, ai_prompturi, _db, _ecran, sql, cui_cu_control, PREFIX_FIRMA, zile_de_acum
+from conftest import ai_pregateste, ai_prompturi, _db, _ecran, nr_crt, sql, cui_cu_control, PREFIX_FIRMA, zile_de_acum
 
 ecran_cont = contextlib.contextmanager(_ecran)
 AZI = _dt.date.today()
@@ -1284,7 +1284,8 @@ def test_def_24_notele_automate_poarta_documentul_iar_validarea_fara_document_ce
 def test_def_25_factura_spune_nota_propusa_si_duce_la_nota(patron, firma_e2e):
     """25. Factură: detaliul scria „contabilizată” cât nota era ciornă; din factură nu se ajungea la notă.
     Pașii contabilului: deschide o factură abia emisă (nota de contare e ciornă): starea e „notă propusă, de validat”, nu
-    „contabilizată”; butonul „nota #N” deschide Registrul jurnal pe luna notei, cu nota pe ecran."""
+    „contabilizată”; butonul „nota nr. crt. N din ZZ.LL.AAAA” (258: nu id-ul intern) deschide Registrul jurnal pe luna notei, cu nota pe
+    ecran."""
     pregateste_firma(patron, firma_e2e)
     f = emite_api(patron, firma_e2e)
     _deschide_factura(patron, firma_e2e, f["factura_id"])
@@ -1293,7 +1294,9 @@ def test_def_25_factura_spune_nota_propusa_si_duce_la_nota(patron, firma_e2e):
     patron.captura("detaliu")
     assert "notă propusă, de validat" in stari and "contabilizată" not in stari, stari
     nota = pg.inner_text("#fd-vezi-nota")
-    nid = int(re.search(r"#(\d+)", nota).group(1))
+    nid = sql('SELECT id FROM "%s".inregistrari WHERE factura_id = %%s AND sursa = \'facturi\' ORDER BY id LIMIT 1' % firma_e2e["schema"],
+              (f["factura_id"],))[0][0]
+    assert nota.strip() == "nota " + nr_crt(firma_e2e["schema"], nid), nota   # [258] numărul din Registrul jurnal, nu id-ul
     assert sql('SELECT factura_id, status FROM "%s".inregistrari WHERE id = %%s' % firma_e2e["schema"], (nid,)) == \
         [(f["factura_id"], "ciorna")]
     pg.click("#fd-vezi-nota")
@@ -1305,7 +1308,7 @@ def test_def_25_factura_spune_nota_propusa_si_duce_la_nota(patron, firma_e2e):
 def test_def_26_banca_spune_exact_ce_a_importat_si_ce_nota_a_creat(patron, firma_e2e):
     """26. Bancă: mesaje false („2 linii potrivite”, „0 înregistrări”).
     Pașii contabilului: importă un extras cu 2 linii fără facturi de potrivit: mesajul spune „2 linii importate: 0 potrivite pe
-    facturi, 2 fără potrivire”; contează comisionul pe nota propusă: „Notă 627=5121 creată (ciornă #N)”, iar nota există."""
+    facturi, 2 fără potrivire”; contează comisionul pe nota propusă: „Notă 627=5121 creată (ciorna nr. crt. N din ZZ.LL.AAAA)”, iar nota există."""
     pregateste_firma(patron, firma_e2e)
     zi = AZI.strftime("%d.%m.%Y")
     extras = "Data;Detalii;Suma\n%s;Comision administrare cont E2E 26;-12,50\n%s;Incasare client necunoscut E2E 26;500,00\n" % (zi, zi)
@@ -1323,10 +1326,12 @@ def test_def_26_banca_spune_exact_ce_a_importat_si_ce_nota_a_creat(patron, firma
     mesaj = pg.inner_text("#bk-mesaj")
     pg.locator(".pf-frand", has_text="Comision administrare cont E2E 26").get_by_text("Contat ✓").wait_for(timeout=20000)
     patron.captura("contare")
-    m = re.search(r"Notă 627=5121 creată \(ciornă #(\d+)\)", mesaj)
-    assert m, mesaj
+    # [258] nota se numește cum o arată Registrul jurnal („nr. crt. N din ZZ.LL.AAAA”), nu prin id-ul intern
+    nid = sql('SELECT i.id FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l ON l.inregistrare_id = i.id '
+              'WHERE l.cont_debit = \'627\' AND l.cont_credit = \'5121\' ORDER BY i.id DESC LIMIT 1' % ((firma_e2e["schema"],) * 2))[0][0]
+    assert re.findall(r"Notă 627=5121 creată \(ciorna (nr\. crt\. \d+ din [\d.]+)\)", mesaj) == [nr_crt(firma_e2e["schema"], nid)], mesaj
     assert sql('SELECT l.cont_debit, l.cont_credit, l.suma::text FROM "%s".inregistrari_linii l WHERE l.inregistrare_id = %%s'
-               % firma_e2e["schema"], (int(m.group(1)),)) == [("627", "5121", "12.50")]
+               % firma_e2e["schema"], (nid,)) == [("627", "5121", "12.50")]
 
 
 def test_def_27_linia_facturii_cu_um_pret_din_nomenclator_si_fara_articol_semnalat(patron, firma_e2e):

@@ -35,6 +35,7 @@ MESAJ_COD = {
     "TEXT_GOL": "Textul e obligatoriu. Completează-l înainte de a trimite.",
     "GOL": "Câmpul e obligatoriu. Completează-l.",
     "FARA_EMAIL": "Adresa de email lipsește. Completeaz-o.",
+    "APLICATIE_LIPSA": "Scrie aplicația din care migrezi.",   # [270d] cererea de import din altă aplicație
     "FARA_DESTINATAR": "Alege întâi destinatarii.",
     "FARA_IDENTITATE": "Firma nu are datele de identificare completate. Completează Profilul firmei.",
     "FARA_PROFIL": "Profilul firmei lipsește. Completează-l întâi.",
@@ -91,7 +92,8 @@ PERIOADA_INCHISA = ("Perioada e blocată (luna închisă). Cere-i administratoru
                     "redeschidă sau înregistrează în luna curentă.")
 
 # [R61, 26.08.2026] Refuzul NUMEȘTE ce s-a găsit și spune ce se face cu el — nu „duplicat".
-MESAJ_Z_DUPLICAT = ("Raportul Z %(numar)s e deja înregistrat pe %(data)s (nota #%(id)s, "
+# [deficiența 258] nota numită cum o vede contabilul („nr. crt. 5 din 12.03.2026”, `core/eticheta_nota.py`), nu prin id-ul intern.
+MESAJ_Z_DUPLICAT = ("Raportul Z %(numar)s e deja înregistrat pe %(data)s (nota %(nota)s, "
                     "%(cum)s). Un raport Z e unic pe casă de marcat și pe zi. Dacă e o "
                     "corecție, stornează nota existentă; dacă e alt aparat, folosește NUI-ul lui.")
 # [R62, 26.08.2026] Portalul clientului: izolarea între cabinete, și confirmarea adresei.

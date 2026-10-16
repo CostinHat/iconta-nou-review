@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt } from "../api.js?v=2561dbfd34";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate } from "../api.js?v=72aa1cbbdb";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -335,7 +335,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   const blocaje = d.blocaje || [];
   const avert = lipsa.length
     ? `<div class="dec-avert">
-         <div class="dec-avert-cap">Profil incomplet \u2014 ${lipsa.length} ${lipsa.length === 1 ? "c\u00e2mp obligatoriu lipse\u0219te" : "c\u00e2mpuri obligatorii lipsesc"}</div>
+         <div class="dec-avert-cap">Profil incomplet \u2014 ${cate(lipsa.length, "c\u00e2mp obligatoriu", "c\u00e2mpuri obligatorii")} ${lipsa.length === 1 ? "lipse\u0219te" : "lipsesc"}</div>
          <ul>${lipsa.map((l) => `<li><b>${esc(eticheta(l.camp))}</b> \u2014 blocheaz\u0103 ${esc(l.declaratii.join(", "))}</li>`).join("")}</ul>
        </div>`
     : blocaje.length

@@ -6,9 +6,9 @@
 // fără meniu lateral. Un singur loc o scrie (aici), deci cele două pagini nu mai pot diverge; gard `PAGINA_PRINCIPALA_UNA`
 // (verificator) + `frontend_test/e2e/e2e_comanda_1210.py`.
 
-import { api, dataRo, ICOANE, CULORI_CARD } from "../api.js?v=2561dbfd34";
-import { randeazaRecomanda } from "./recomanda.js?v=239a4a2607"; // [p31_recomanda]
-import { randeazaRaporteaza } from "./raporteaza.js?v=b330ba128c"; // [p34_raporteaza]
+import { api, dataRo, esc, ICOANE, CULORI_CARD } from "../api.js?v=72aa1cbbdb";
+import { randeazaRecomanda } from "./recomanda.js?v=57ab4d7acc"; // [p31_recomanda]
+import { randeazaRaporteaza } from "./raporteaza.js?v=1f036bd59e"; // [p34_raporteaza]
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;
@@ -20,12 +20,22 @@ const BENZI = [
   { cheie: "raport", titlu: "Suport", icon: "suport", culori: CULORI_CARD.ardezie, deschide: randeazaRaporteaza },
 ];
 
-// Banda de salut + grila (goală, de umplut de pagină). `prenume` vine din sesiune.
-export function paginaPrincipala(prenume) {
+// [269, Lotul 5: „salutul ia ultimul cuvânt din nume («Salut, 253» pentru «Test 253»)”] Numele din salut, UN SINGUR LOC pentru toate
+// saluturile (pagina principală a ambelor roluri, Panou Admin, mesajul de la logare): prenumele, DOAR dacă a fost scris separat
+// (Setări › Profil are câmpuri separate); altfel numele întreg, așa cum e scris — niciodată „ultimul cuvânt” din nume. Gard
+// `core/test_date_neescapate.py`: nimeni nu mai taie numele (`.split(" ")`) pentru salut.
+export function numeDeSalut(u) {
+  const x = u || {};
+  return String(x.prenume || "").trim() || String(x.nume || "").trim();
+}
+
+// Banda de salut + grila (goală, de umplut de pagină). `u` = utilizatorul din sesiune; numele trece prin `esc` (C37: e text scris de om).
+export function paginaPrincipala(u) {
+  const nume = numeDeSalut(u);
   return `
     <div class="cab-salut">
       <div>
-        <h1 class="cab-salut-nume">Salut, ${prenume}</h1>
+        <h1 class="cab-salut-nume">${nume ? "Salut, " + esc(nume) : "Salut"}</h1>
         <div class="cab-salut-data">Spațiul tău de lucru — ${dataRo(new Date(), "lung")}</div>
       </div>
       <div class="cab-benzi">${BENZI.map((b) => `

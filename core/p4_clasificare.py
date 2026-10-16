@@ -482,6 +482,17 @@ CLASIFICARE = {
             "TRIGGER), marcarea atinge numai randurile nerezolvate, completarea `doc` numai elementele fara el — rularea a doua nu "
             "schimba nimic; niciun efect extern.",
     },
+    "core/migrare_fisiere_private.py::__main__ -> _main()": {
+        "clasa": NECRITIC,
+        "efecte": "DDL-ul public (`fisiere_private`, `raportari.tip` / `aplicatie`) + copierea capturilor vechi în depozitul privat, cu "
+                  "rândurile lor, și scoaterea tabelei `raportari_atasamente` <-> ștergerea fișierelor vechi din directorul publicat <-> "
+                  "verificarea structurii",
+        "de_ce":
+            "o singură tranzacție, comisă la capăt; capturile se COPIAZĂ (sursa rămâne) înainte de INSERT, iar o eroare scoate copiile "
+            "făcute. Fișierele vechi se șterg numai DUPĂ commit (cădere între commit și ștergere = copii rămase în directorul vechi, "
+            "rularea a doua nu le mai atinge fiindcă tabela veche nu mai există — se văd în ieșirea migrării). Un fișier negăsit "
+            "oprește tot ÎNAINTE de orice scriere (C36, comanda Costin 15.10.2026).",
+    },
     "core/migrare_decizii_0710.py::__main__ -> _main()": {
         "clasa": NECRITIC,
         "efecte": "DDL-ul public (notificari.rezolvata + triggerul) <-> DDL-ul fiecarei scheme <-> stornarea documentelor deja "
@@ -958,6 +969,14 @@ EFECTE_EXTERNE = {
         "ce_e": "citirea arborelui git (migrările și șablonul din commit)",
         "verdict": "interogare locală, fără efect: citește arborele unui commit (`git ls-tree`, `git show`) ca să afle ce migrări și "
                    "ce șablon poartă HEAD; un rollback n-are ce desface, iar baza nu e atinsă.",
+    },
+    "core/migrare_fisiere_private.py:muta_atasamentele": {
+        "fel": EFECT,
+        "ce_e": "copierea capturilor vechi (`<static>/raportari`) în depozitul privat (`core/fisiere_private.py`), la migrarea C36",
+        "verdict":
+            "copia se face înaintea rândului ei din `fisiere_private`, în tranzacția migrării; dacă INSERT-ul sau scoaterea tabelei "
+            "vechi cad, copiile făcute se șterg în `except` înainte de a ridica, deci un rollback nu lasă fișiere fără rând. Sursa nu "
+            "se atinge în tranzacție — se șterge din directorul publicat numai după commit, în `_main`.",
     },
     "core/migrari_registru.py:_reporneste_daca_e_cazul": {
         "fel": EFECT,

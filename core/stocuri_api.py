@@ -6,6 +6,7 @@ AI propune (note ciorne), contabilul validează în jurnal."""
 # `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
 # deschide, nu comite.
 from core import afirmatii as _af  # [P8] absenta vanzarilor e un fapt
+from core import eticheta_nota as _et  # [258] notele / facturile numite cum le vede omul
 import json
 from decimal import Decimal, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
@@ -366,7 +367,9 @@ def nir_detaliu(conn, schema, nir_id):
         ids = note_nir(n)
         note = []
         if ids:
-            cur.execute(f"""SELECT i.id, i.status, l.cont_debit, l.cont_credit, l.suma FROM {schema}.inregistrari i
+            # [258] `eticheta` = nota cum o arată Registrul jurnal („nr. crt. 5 din 12.03.2026”); ecranul n-o mai numește prin id
+            cur.execute(f"""SELECT i.id, {schema}.eticheta_nota(i.id) AS eticheta, i.status, l.cont_debit, l.cont_credit, l.suma
+                            FROM {schema}.inregistrari i
                             JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id WHERE i.id = ANY(%s) ORDER BY i.id, l.id""",
                         (ids,))
             note = [dict(x) for x in cur.fetchall()]
@@ -423,9 +426,11 @@ def descarca_luna(conn, schema, an, luna):
         ciorne = [i for i in existente if i not in respinse and _nd.ciorna_nevalidata(cur, schema, i)]
     validate = [i for i in existente if i not in respinse and i not in ciorne]
     if validate:
+        with conn.cursor() as cur:   # [258] notele numite cum le arată Registrul jurnal, nu prin id-ul intern
+            et_validate = _et.lista(cur, schema, validate)
         return {"cod": "DEJA_DESCARCATA", "inregistrari_existente": validate,
-                "eroare": "Gestiunea pe %02d/%d e deja descărcată și validată (notele #%s) — nota validată nu se înlocuiește; o "
-                          "corectură se face printr-o altă notă." % (luna, an, ", #".join(str(x) for x in validate))}
+                "eroare": "Gestiunea pe %02d/%d e deja descărcată și validată (nota %s) — nota validată nu se înlocuiește; o "
+                          "corectură se face printr-o altă notă." % (luna, an, et_validate)}
     if existente:
         with conn.cursor() as cur:
             from core import repo_contabilitate as _rc
@@ -489,8 +494,8 @@ def descarca_luna(conn, schema, an, luna):
             if not respinse and _cq.amprente_note(cur, ciorne, schema) == _cq.amprente_note(cur, ids, schema):
                 _rc.revino_la(cur, "descarcare_ciorna")   # aceleași note: ciornele de dinainte sunt chiar descărcarea de acum
                 return {"cod": "DEJA_DESCARCATA", "inregistrari_existente": ciorne, "aceleasi_sume": True,
-                        "eroare": "Gestiunea pe %02d/%d e deja descărcată, cu aceleași sume (ciornele #%s) — nimic de înlocuit."
-                                  % (luna, an, ", #".join(str(x) for x in ciorne))}
+                        "eroare": "Gestiunea pe %02d/%d e deja descărcată, cu aceleași sume (ciorna %s) — nimic de înlocuit."
+                                  % (luna, an, _et.lista(cur, schema, ciorne))}
             for i in respinse:
                 _nd.sterge_respinsa(cur, schema, i)
             for i in ciorne:

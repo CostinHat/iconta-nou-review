@@ -104,16 +104,19 @@ def reset_parola_cere(date):
     if token and u:
         baza = os.environ.get("ICONTA_BAZA_URL", "https://iconta.eu")
         link = baza + "/#reset=" + token
-        nume = (u.get("prenume") or u.get("nume") or "").strip()
-        html = ("<p>Buna%s,</p>"
-                "<p>A sosit o cerere de resetare a parolei contului tau de cabinet pe iConta.eu.</p>"
-                "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Seteaza o parola noua</a></p>"
-                "<p>Linkul e valabil 60 de minute si poate fi folosit o singura data. "
-                "Daca nu tu ai cerut resetarea, ignora acest mesaj — parola ramane neschimbata.</p>"
-                % ((" " + nume) if nume else "", link))
+        import html as _h
+        from core import common as _common
+        nume = _common.nume_de_salut(u.get("prenume"), u.get("nume"))   # [269] prenumele scris separat, altfel numele întreg
+        html = ("<p>Bună%s,</p>"
+                "<p>A sosit o cerere de resetare a parolei contului tău de cabinet pe iConta.eu.</p>"
+                "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Setează o parolă nouă</a></p>"
+                "<p>Linkul e valabil 60 de minute și poate fi folosit o singură dată. "
+                "Dacă nu tu ai cerut resetarea, ignoră acest mesaj — parola rămâne neschimbată.</p>"
+                % ((" " + _h.escape(nume)) if nume else "", link))
         # [R73] ALERTA: e cale de acces. Tacerea aici inseamna ca omul nu mai poate intra
         # si nimeni nu afla — chiar criteriul din docstringul lui `esec_secundar`.
-        _obs.trimite_email_html_sau_semnaleaza("email resetare parola", u["email"], "Resetare parola iConta.eu", html, alerta=True)
+        _obs.trimite_email_html_sau_semnaleaza("email resetare parola", u["email"], "Resetare parola iConta.eu", html, alerta=True,
+                                               cerut_de_destinatar=True)   # [268] pleacă și la o adresă dezabonată
         try:
             with db.get_conn() as c, c.cursor() as cur:
                 repo_admin.scrie_audit_reset_cerut(cur, u["user_id"])
@@ -137,9 +140,9 @@ def magic_link_cere(date):
             conn.commit()
             baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
             link = baza + "/#magic=" + tok
-            _html_magic = ("<p>Buna,</p><p>Apasa butonul pentru a intra in iConta.eu, fara parola:</p>"
-                    "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in iConta.eu</a></p>"
-                    "<p>Linkul e valabil 15 minute si poate fi folosit o singura data.</p>") % link
+            _html_magic = ("<p>Bună,</p><p>Apasă butonul ca să intri în iConta.eu, fără parolă:</p>"
+                    "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intră în iConta.eu</a></p>"
+                    "<p>Linkul e valabil 15 minute și se folosește o singură dată.</p>") % link
     # [P5 val 3, 11.09.2026] AICI, nu inauntru. Tokenul e COMIS mai sus (`conn.commit()`), deci
     # trimiterea nu mai are ce sa astepte de la tranzactie — dar tinea o conexiune din pool peste un
     # apel cu termen de 15 s. Conditiile de trimitere sunt neschimbate: se trimite exact cand exista
@@ -147,6 +150,80 @@ def magic_link_cere(date):
     # ca sa nu se poata enumera adresele.
     if _html_magic is not None:
         # [R73] ALERTA: SINGURA usa de intrare in portalul clientului.
-        _obs.trimite_email_html_sau_semnaleaza("email link de logare", email, "Link de logare iConta.eu", _html_magic, alerta=True)
+        _obs.trimite_email_html_sau_semnaleaza("email link de logare", email, "Link de logare iConta.eu", _html_magic, alerta=True,
+                                               cerut_de_destinatar=True)   # [268] pleacă și la o adresă dezabonată
     return {"ok": True, "mesaj": MESAJ_LINK_LOGARE_CERUT}
 
+
+
+# ── [268] DEZABONAREA (Lotul 5, decizia în DECIZII) ─────────────────────────────────────────────────────────────────────────────
+# Pagina publică a linkului „Dezabonează-te” din subsolul fiecărui email (core/dezabonare.py). GET arată confirmarea cu un buton, POST
+# dezabonează: un scanner de linkuri care deschide adresa nu dezabonează pe nimeni, iar programul de email care oferă singur butonul
+# (antetul List-Unsubscribe-Post, RFC 8058) trimite POST la aceeași adresă. Pagina e HTML gata făcut (ca termenii): se deschide din
+# email, fără aplicație și fără cont.
+_DEZABONARE_PAGINA = """<!doctype html><html lang="ro" class="pagina-publica"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dezabonare - iConta.eu</title>
+<link rel="stylesheet" href="/static/stil.css">
+<style>
+body{background:#f4f6f9;margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1d3a5f;line-height:1.6}
+.dz-bara{display:flex;align-items:center;gap:10px;padding:14px 22px;background:#1d3a5f;color:#fff;font-weight:600}
+.dz-bara a{color:#fff;text-decoration:none}
+.dz-wrap{max-width:640px;margin:0 auto;padding:30px 22px 90px}
+.dz-wrap h1{font-size:1.5rem;margin:.2em 0 .6em}
+.dz-wrap p{color:#33445a}
+.dz-wrap form{margin:22px 0}
+</style></head><body class="pagina-publica">
+<div class="dz-bara"><a href="/">iConta.eu</a><span>&middot; Dezabonare</span></div>
+<main class="dz-wrap" id="dz-pagina"><h1>Dezabonare de la emailurile iConta.eu</h1>%(corp)s
+<p><a href="/">&larr; Înapoi la iConta.eu</a></p></main>
+</body></html>"""
+MESAJ_DEZABONARE_LINK_INVALID = ("Linkul de dezabonare nu e valid. Deschide linkul „Dezabonează-te” din subsolul unui email primit de la "
+                                 "iConta.eu, întreg, așa cum a venit.")
+
+
+def _pagina_dezabonare(corp):
+    return _DEZABONARE_PAGINA % {"corp": corp}
+
+
+def _p(text, id_=None):
+    import html as _h
+    return '<p%s>%s</p>' % ((' id="%s"' % id_) if id_ else "", _h.escape(text))
+
+
+def dezabonare_pagina(email, semnatura):
+    """`GET /public/dezabonare`: (cod HTTP, pagina). Arată ce se întâmplă și butonul; nu schimbă nimic."""
+    import html as _h
+    from urllib.parse import urlencode
+    from core import dezabonare as _dez
+    if not _dez.semnatura_valida(email, semnatura):
+        return 400, _pagina_dezabonare(_p(MESAJ_DEZABONARE_LINK_INVALID, "dz-mesaj"))
+    adresa = _dez.normalizeaza(email)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            deja = _dez.e_dezabonata(cur, adresa)
+        conn.rollback()
+    if deja:
+        return 200, _pagina_dezabonare(_p("Adresa %s e deja dezabonată: nu mai primește emailuri de la iConta.eu." % adresa, "dz-mesaj")
+                                       + _p(_dez.MESAJ_CERUTE))
+    actiune = _h.escape(_dez.RUTA + "?" + urlencode({"e": adresa, "s": semnatura}), quote=True)
+    return 200, _pagina_dezabonare(
+        _p("Dacă te dezabonezi, adresa %s nu mai primește emailuri de la iConta.eu: invitații, anunțuri, alerte, notificări și "
+           "rapoartele lunare." % adresa, "dz-mesaj")
+        + _p(_dez.MESAJ_CERUTE)
+        + '<form method="post" action="%s"><button type="submit" class="buton-primar" id="dz-confirma">Dezabonează-mă</button></form>'
+        % actiune)
+
+
+def dezabonare_confirma(email, semnatura):
+    """`POST /public/dezabonare`: (cod HTTP, pagina). Butonul paginii sau programul de email (List-Unsubscribe-Post)."""
+    from core import dezabonare as _dez
+    if not _dez.semnatura_valida(email, semnatura):
+        return 400, _pagina_dezabonare(_p(MESAJ_DEZABONARE_LINK_INVALID, "dz-mesaj"))
+    adresa = _dez.normalizeaza(email)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            _dez.dezaboneaza(cur, adresa)
+        conn.commit()
+    return 200, _pagina_dezabonare(_p("Gata: adresa %s e dezabonată. De acum nu mai primești emailuri de la iConta.eu." % adresa,
+                                      "dz-mesaj") + _p(_dez.MESAJ_CERUTE))

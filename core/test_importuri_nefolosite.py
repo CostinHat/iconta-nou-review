@@ -29,8 +29,8 @@ _TINTE = ("core", "main.py", "scripts")
 # Măsurat 23.08.2026. Se COBOARĂ pe măsură ce importurile mor; nu se ridică.
 BASELINE = {
     "core/auth_api.py": 1, "core/banca.py": 3, "core/beneficii_api.py": 1, "core/casa.py": 1,
-    "core/d301.py": 1, "core/d390_clasificare_api.py": 1, "core/d397.py": 2,
-    "core/d406.py": 1, "core/decontari_asociati.py": 1, "core/documente_api.py": 4,
+    "core/d390_clasificare_api.py": 1, "core/d397.py": 2,
+    "core/decontari_asociati.py": 1, "core/documente_api.py": 4,
     "core/factura_pdf.py": 1, "core/facturi.py": 1, "core/lichidare.py": 1,
     "core/scan_constante.py": 1, "core/spv_poll.py": 1, "core/stat_plata_api.py": 3,
     "core/test_a11y_contrast_tokens.py": 1, "core/test_achizitii_factura.py": 1,

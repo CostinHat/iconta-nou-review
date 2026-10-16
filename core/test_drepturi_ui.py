@@ -224,3 +224,101 @@ def test_CALIBRARE_intrarea_in_formular_se_vede_si_sageata_fara_acolade_nu():
     assert [x[2] for x in r["nemarcate"]] == ["POST /tenants/{tenant_id}/reges-config"], r
     assert 'id="a-cfg"' in r["nemarcate"][0][3], r
     assert not r["nelegate"], "o săgeată fără acolade a fost luată drept corp de handler: %s" % r["nelegate"]
+
+
+# ── a patra treaptă: butonul care deschide, prin ALTĂ funcție, un ecran numai al administratorului (deficiența 262) ─────────
+# Handlerele a căror legare de element nu se poate dovedi static, cu ecranul la care duc — fiecare cu motivul. Cheia: (fișier,
+# acțiunile ecranului). O intrare nouă nelegabilă pică testul de mai jos: se leagă (selector `#id` / `[data-x]` / `.clasa`, sau
+# `<variabilă>.dataset.actiune = …` pe elementul construit) sau se pinează aici, cu motivul.
+_ASISTENTI = ("DELETE /asistenti/{uid}/firme/{tid}", "POST /asistenti", "POST /asistenti/{uid}/dezactiveaza",
+              "POST /asistenti/{uid}/finalizeaza-firme", "POST /asistenti/{uid}/firme/{tid}", "POST /asistenti/{uid}/permisiuni",
+              "POST /asistenti/{uid}/reactiveaza")
+_DESKTOP_ADMIN = ("cardurile desktopului administratorului (`desktopCabinet`, construite cu createElement într-o buclă): asistentul are "
+                  "desktopul lui (asistent.js, app.js îl alege după rol), deci cardul nu ajunge la el")
+_INTRARI_NELEGABILE = {
+    ("static/js/ecrane/asistenti.js", _ASISTENTI):
+        "„Editează” de pe cardul unui asistent, în ecranul Asistenți — ecran la care ajunge numai administratorul (cardul lui de pe desktop)",
+    ("static/js/ecrane/cabinet.js", _ASISTENTI): _DESKTOP_ADMIN,
+    ("static/js/ecrane/cabinet.js", ("GET /tipare", "GET /tipare/ai")): _DESKTOP_ADMIN,
+    ("static/js/ecrane/cabinet.js", ("DELETE /asistenti/{uid}/firme/{tid}", "GET /capacitate") + _ASISTENTI[1:]): _DESKTOP_ADMIN,
+    ("static/js/ecrane/cabinet.js", ("POST /eu/educatie/patru-ochi/vazut", "POST /eu/patru-ochi")):
+        "indicatorul „Validarea în doi” din subbara desktopului administratorului (element construit), nu din a asistentului",
+    ("static/js/ecrane/firme.js", ("POST /tenants/{tenant_id}/nume-ales",)):
+        "„Ia denumirea de la ANAF” / „Păstrez denumirea mea”: legate printr-un selector din variabilă (`zona.querySelector(id)`); "
+        "AMBELE butoane poartă `data-actiune=\"POST /tenants/{tenant_id}/nume-ales\"` în același șablon",
+}
+
+
+@pytest.fixture(scope="module")
+def ecrane_admin():
+    return S.intrari_in_ecrane_doar_admin()
+
+
+def test_butonul_spre_un_ecran_numai_al_administratorului_isi_declara_actiunea(ecrane_admin):
+    """Deficiența 262 (comanda Costin 15.10.2026): „asistentul vede «Scoate firma din portofoliu» în fereastra firmei; se ascunde, ca
+    în lista de firme.” Butonul nu chema nicio rută și nu construia formularul în handler — îl deschidea prin `ecranScoateFirma`, o
+    altă funcție —, deci treptele de mai sus nu-l vedeau. Clasa, căutată cu treapta nouă: încă patru intrări în ecrane numai ale
+    administratorului, vizibile asistentului („Firme dezactivate” + „Reactivează”, „Invită client nou”, „Configurează magazinul”),
+    plus „Tipare” de pe desktopul administratorului. Orice buton care duce (prin oricâte funcții, din același fișier sau importate)
+    la un ecran ale cărui acțiuni sunt toate ale administratorului poartă acțiunea sau `data-fara-actiune="<motiv>"`."""
+    rele = ["%s:%d %s pe %s" % (x[0], x[1], "|".join(x[2]), " ".join(x[3].split())[:100]) for x in ecrane_admin["nemarcate"]]
+    assert not rele, "butoane spre ecrane numai ale administratorului, fără data-actiune / data-fara-actiune (%d):\n  %s" % (
+        len(rele), "\n  ".join(rele))
+
+
+def test_intrarile_nelegabile_spre_ecrane_de_administrator_sunt_pinate_cu_motiv(ecrane_admin):
+    gasite = {(x[0], tuple(x[2])) for x in ecrane_admin["nelegate"]}
+    noi = sorted(gasite - set(_INTRARI_NELEGABILE))
+    vechi = sorted(set(_INTRARI_NELEGABILE) - gasite)
+    assert not noi, "intrări noi spre ecrane numai ale administratorului, nelegabile de element — leagă-le sau pinează-le: %s" % noi
+    assert not vechi, "pinuri care nu mai există — scoate-le: %s" % vechi
+    for k, motiv in _INTRARI_NELEGABILE.items():
+        assert len(motiv) > 40, "pin fără motiv: %s" % (k,)
+
+
+def test_CALIBRARE_ecranul_numai_al_administratorului_se_vede_prin_alta_functie():
+    """Modurile proprii de eșec, prinse la construcție: (a) o săgeată fără acolade care cheamă ALTĂ funcție (instanța 262); (b) o
+    funcție importată; (c) o funcție imbricată numită ca handler (`addEventListener("click", randeazaFormular)`); (d) un ecran cu o
+    acțiune a asistentului NU se cere ascuns; (e) funcțiile imbricate cu același nume din ALTE ecrane nu se amestecă; (f) transportul
+    (api.js, cu `POST /auth/…` sub orice ecran) nu se urmează."""
+    import tempfile
+    d = tempfile.mkdtemp()
+    os.makedirs(os.path.join(d, "ecrane"))
+    io.open(os.path.join(d, "api.js"), "w", encoding="utf-8").write(
+        'export function deschide(u) { return fetch("/auth/login", { method: "POST" }); }\n')
+    io.open(os.path.join(d, "ecrane", "alt.js"), "w", encoding="utf-8").write(
+        'export async function ecranCheie(corp) {\n'
+        '  corp.innerHTML = `<button id="k" data-actiune="POST /cabinet/api-chei">Cheie nouă</button>`;\n}\n')
+    io.open(os.path.join(d, "ecrane", "x.js"), "w", encoding="utf-8").write(
+        'import { deschide } from "../api.js?v=1";\n'
+        'import { ecranCheie } from "./alt.js?v=2";\n'
+        'export function meniu(corp, nav, t) {\n'
+        '  corp.innerHTML = `<button id="a">Scoate</button><button id="b">Chei</button><button id="c">Facturi</button>'
+        '<button id="e" data-actiune="DELETE /tenants/{tenant_id}">Scoate (marcat)</button>`;\n'
+        '  corp.querySelector("#a").addEventListener("click", () =>\n'
+        '    nav.deschide("Scoate", (c2) => ecranScoate(c2, nav, t)));\n'
+        '  corp.querySelector("#b").addEventListener("click", () => { deschide(1); nav.deschide("Chei", (c) => ecranCheie(c)); });\n'
+        '  corp.querySelector("#c").addEventListener("click", () => nav.deschide("F", (c) => ecranMixt(c)));\n'
+        '  corp.querySelector("#e").addEventListener("click", () => nav.deschide("S", (c) => ecranScoate(c, nav, t)));\n'
+        '}\n'
+        'async function ecranScoate(corp, nav, t) {\n'
+        '  corp.innerHTML = `<button id="s" data-actiune="DELETE /tenants/{tenant_id}">Șterge</button>`;\n'
+        '  function deseneaza() { return 1; }\n}\n'
+        'function ecranMixt(corp) {\n'
+        '  corp.innerHTML = `<button id="m" data-actiune="POST /tenants/{tenant_id}/facturi">Emite</button>`;\n'
+        '  function deseneaza() { return `<i data-actiune="DELETE /tenants/{tenant_id}"></i>`; }\n}\n'
+        'export function acces(corp) {\n'
+        '  function formular() { corp.innerHTML = `<button data-actiune="POST /tenants/{tenant_id}/client-acces">Trimite</button>`; }\n'
+        '  corp.innerHTML = `<button id="inv">Invită</button>`;\n'
+        '  corp.querySelector("#inv").addEventListener("click", formular);\n}\n')
+    vechi = S.JS, S.RAD
+    try:
+        S.JS, S.RAD = d, d
+        r = S.intrari_in_ecrane_doar_admin(d)
+    finally:
+        S.JS, S.RAD = vechi
+    gasite = {re.search(r'id="(\w+)"', x[3]).group(1): x[2] for x in r["nemarcate"]}
+    assert set(gasite) == {"a", "b", "inv"}, r            # (a) (b) (c) găsite; „e” e marcat; „c” e mixt (d)
+    assert gasite["a"] == ["DELETE /tenants/{tenant_id}"], gasite   # (e) `deseneaza` din ecranMixt n-a intrat la „a”
+    assert gasite["b"] == ["POST /cabinet/api-chei"], gasite        # (f) `POST /auth/login` din api.js n-a intrat
+    assert not r["nelegate"], r["nelegate"]

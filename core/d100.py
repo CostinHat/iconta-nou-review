@@ -256,7 +256,7 @@ def build_xml(res):
         _real = " ".join(str(prof.get(_cheie) or "").split())
         if len(_real) > _lim_c:
             res.avertismente.append(
-                "D100: %s depășește %d caractere și a fost trunchiată pentru XML - verifică." % (_et, _lim_c))
+                "D100: %s depășește %s și a fost trunchiată pentru XML - verifică." % (_et, _common.cate(_lim_c, "caracter", "caractere")))
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
     # d_anulare/d_succ/d_dizolv/d_bonif/d_nInf/d_energie = "0": fara ele bifate,
     # validatorul NU cere campurile suplimentare (temei, cifS etc.) - dovedit
@@ -405,7 +405,7 @@ def genereaza(conn, schema, perioada, manual=None):
         _inc, _sf = perioada.interval()
         with conn.cursor() as _cur:
             _nf = _repo.select_facturi(_cur, _inc, _sf)[0]
-        _hint = (" Există %d facturi emise necontabilizate în perioada - contabilizează-le întâi." % _nf) if _nf else ""
+        _hint = (" Există %s în perioada - contabilizează-le întâi." % _common.cate(_nf, "factură emisă necontabilizată", "facturi emise necontabilizate")) if _nf else ""
         if _avert_profit == "LOSS":
             raise ValueError("D100 nu se depune pe zero: profit cumulat de la 01.01 = %d nu depășește ce s-a "
                              "impozitat deja = %d (pierdere sau profit sub cumulatul anterior), deci nu e avans de "

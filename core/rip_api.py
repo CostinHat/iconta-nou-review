@@ -8,6 +8,7 @@ Convenție: funcții (conn, schema, ...). Tot ce e generat automat = ciorna."""
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 from core import d212_engine as _e
+from core.common import cate as _cate
 
 CATEGORII_INCASARE = {"activitate", "aport", "credit", "subventie", "alte_incasari"}
 CATEGORII_PLATA = {"cheltuiala_deductibila", "cheltuiala_limitata",
@@ -229,7 +230,7 @@ def fisa_d212(conn, schema, an, optiune_cas=False, optiune_cass=False):
     r["ciorne_nevalidate"] = ciorne
     if cl or ciorne:
         r["avertisment"] = ("Cheltuielile limitate NU sunt in calcul - contabilul stabileste "
-                            f"partea deductibila. {ciorne} ciorne neincluse.")
+                            f"partea deductibila. {_cate(ciorne, 'ciornă neinclusă', 'ciorne neincluse')}.")
     return r
 
 

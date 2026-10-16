@@ -60,6 +60,8 @@ _ARTEFACTE = {
     ("GET", "/api/v1/firme/{tenant_id}/kpi"),
     # (b) cerute de BROWSER, nu de JS — legitime prin construcție
     ("GET", "/favicon.ico"), ("GET", "/robots.txt"), ("GET", "/sitemap.xml"),
+    # [268] linkul „Dezabonează-te” din subsolul emailurilor (GET) și butonul paginii / programul de email (POST, List-Unsubscribe-Post)
+    ("GET", "/public/dezabonare"), ("POST", "/public/dezabonare"),
     # (c) cale compusă la rulare, pe care detectorul nu o poate vedea (limita din antet)
     ("GET", "/portal/facturi"), ("GET", "/portal/firme"),
     ("GET", "/portal/solicitari/contor"),

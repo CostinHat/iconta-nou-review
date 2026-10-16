@@ -94,7 +94,7 @@ def test_def_c4_comenzile_magazinului_devin_facturi(patron, firma_neplatitoare, 
     f = firma_neplatitoare
     txt = _sincronizeaza(patron, f, magazin, _comanda(601))
     patron.captura("importata")
-    assert "1 facturi importate" in txt, txt
+    assert "1 factură importată" in txt, txt
     assert sql('SELECT tert_nume, tert_cui FROM "%s".facturi WHERE sursa_externa = \'WC-601\'' % f["schema"]) == [("Ana Pop", None)]
 
 
@@ -107,7 +107,7 @@ def test_def_c5_factura_din_magazin_a_neplatitorului_nu_poarta_tva(patron, firma
     f = firma_neplatitoare
     ai_pregateste('{"cota": 21, "categorie": "standard", "tip": "servicii", "justificare": "regula standard", "incredere": "mare"}')
     txt = _sincronizeaza(patron, f, magazin, _comanda(602, denumire="Servicii de găzduire web", total="300.00"))
-    assert "1 facturi importate" in txt, txt
+    assert "1 factură importată" in txt, txt
     rand = sql('SELECT l.cota_tva::int, f.tva::text FROM "%s".facturi f JOIN "%s".factura_linii l ON l.factura_id = f.id '
                "WHERE f.sursa_externa = 'WC-602'" % (f["schema"], f["schema"]))
     patron.captura("fara_tva")
@@ -165,6 +165,6 @@ def test_def_c7_comanda_refuzata_nu_opreste_sincronizarea(patron, firma_neplatit
     patron.pg.wait_for_selector("#wc-rezultat [data-comanda-refuzata='603']", timeout=60000)
     txt = patron.pg.inner_text("#wc-rezultat")
     patron.captura("refuzata_numita")
-    assert "1 facturi importate" in txt and "Comanda 603 n-a devenit factură: Contul de venit" in txt, txt
+    assert "1 factură importată" in txt and "Comanda 603 n-a devenit factură: Contul de venit" in txt, txt
     assert sql('SELECT sursa_externa FROM "%s".facturi WHERE sursa_externa IN (\'WC-603\', \'WC-604\')' % f["schema"]) == [("WC-604",)]
     assert sql('SELECT wc_ultima_sinc FROM "%s".firma_profil WHERE id = 1' % f["schema"]) == [(None,)]

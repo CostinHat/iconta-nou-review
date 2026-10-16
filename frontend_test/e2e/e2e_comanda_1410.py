@@ -6,7 +6,7 @@ import re
 
 import pytest
 
-from conftest import firma_noua, sql
+from conftest import firma_noua, nr_crt, sql
 from e2e_bloc_d import PATRON, _api, _date_firma, _deschide, _nota_validata
 from e2e_comanda_1010 import _alege_bilant, _solduri
 
@@ -98,7 +98,7 @@ def test_def_243_anul_neincheiat_nu_se_propune(patron, firma_an_curent):
     sql("INSERT INTO \"%s\".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%d, '704', '121', 1000), "
         "(%d, '121', '628', 200)" % (f["schema"], nid, nid))
     st, r = _api(PATRON, "POST", "/tenants/%d/jurnal/%d/valideaza" % (f["tenant_id"], nid), {})
-    assert st >= 400 and ("Nota de închidere #%d nu se validează înainte de 31.12.%d" % (nid, an)) in str(r), (st, r)
+    assert st >= 400 and ("Nota de închidere %s nu se validează înainte de 31.12.%d" % (nr_crt(f["schema"], nid), an)) in str(r), (st, r)   # [258]
     assert _note_inchidere(f) == [(nid, "ciorna")]
 
 
@@ -143,8 +143,10 @@ def test_def_244_dupa_propunere_legatura_spre_notele_de_validat(patron, firma_20
     zona = _propune(patron, 2025)
     patron.captura("propunerea")
     note = [i for i, _s in _note_inchidere(f)]
-    assert re.findall(r"Notele de închidere propuse așteaptă validarea: #(\d+) Regularizarea TVA la 31\.12\.2025; #(\d+) Închiderea", zona) \
-        == [tuple(str(i) for i in note)], zona
+    # [258] notele numite cum le arată Registrul jurnal („nr. crt. N din 31.12.2025”), nu prin id-ul intern
+    assert re.findall(r"Notele de închidere propuse așteaptă validarea: Regularizarea TVA la 31\.12\.2025 \(nota (nr\. crt\. \d+ din [\d.]+)\); "
+                      r"Închiderea conturilor de venituri și cheltuieli în 121 la 31\.12\.2025 \(nota (nr\. crt\. \d+ din [\d.]+)\)", zona) \
+        == [tuple(nr_crt(f["schema"], i) for i in note)], zona
     assert "închide clasele 6/7" not in zona and "notele de validat" not in zona, zona
     mesaj = pg.inner_text("%s .bl-inchidere-mesaj" % _F)
     assert mesaj.startswith("Am propus, ca ciornă, la 31.12.2025") and "în Registrul jurnal, luna decembrie 2025" in mesaj, mesaj

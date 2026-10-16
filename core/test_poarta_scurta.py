@@ -125,7 +125,8 @@ def test_js_atins_nu_porneste_suita_ci_verificatorul_e2e_si_garzile_statice(monk
     assert pytest_rulat.count("core/test_versionare_assets.py") == 1
     assert [c for c in rulate if c[1:] == ["verificator_conformitate.py"]]
     e2e = sorted(c[-1] for c in rulate if c[1:3] == ["scripts/e2e_poarta.py", "--arbore"])
-    assert e2e == ["--doar=e2e_inregistrare_libera.py", "--doar=e2e_invitatii.py"], e2e
+    # [lotul 5, 15.10.2026] + e2e_lot5_c3.py: testul 267 (ciorna formularului de înregistrare) folosește id-urile formularului
+    assert e2e == ["--doar=e2e_inregistrare_libera.py", "--doar=e2e_invitatii.py", "--doar=e2e_lot5_c3.py"], e2e
 
 
 def test_registrul_langa_python_nu_porneste_suita(monkeypatch):
@@ -168,3 +169,19 @@ def test_perimetrul_nu_e_toata_suita():
     assert teste, "perimetrul probei e GOL — anti-vacuu: proba nu mai e importata de niciun test"
     assert len(teste) < len(toate) / 2, "%d din %d fisiere — prea larg ca sa fie o derivare" % (
         len(teste), len(toate))
+
+
+def test_e2e_atins_direct_ruleaza_el_si_cine_il_importa(monkeypatch):
+    """[lotul 5, comanda 3] Plasa atinsă direct rulează: un fișier e2e schimbat sau nou rulează el însuși (înainte, `e2e_lot5_id.py`,
+    nou, n-a rulat: e2e-ul se alegea numai după id-urile DOM ale JS-ului atins), plus fișierele care îi importă ajutoarele; conftest-ul
+    plasei atins -> plasa întreagă. MUTAȚIE: `e2e = {}` în loc de `e2e_din_plasa(atinse)` -> pică."""
+    import glob
+
+    def e2e_rulat(atinse):
+        _cod, rulate = _lanseaza(monkeypatch, atinse)
+        return sorted(c[-1][len("--doar="):] for c in rulate if c[1:3] == ["scripts/e2e_poarta.py", "--arbore"])
+    assert e2e_rulat(["frontend_test/e2e/e2e_magazin.py"]) == ["e2e_magazin.py"]
+    bloc_d = e2e_rulat(["frontend_test/e2e/e2e_bloc_d.py"])
+    assert {"e2e_bloc_d.py", "e2e_lot5_c3.py", "e2e_lot5_id.py"} <= set(bloc_d) and "e2e_magazin.py" not in bloc_d, bloc_d
+    toate = sorted(os.path.basename(e) for e in glob.glob(os.path.join(PS.RAD, "frontend_test", "e2e", "e2e_*.py")))
+    assert e2e_rulat(["frontend_test/e2e/conftest.py"]) == toate

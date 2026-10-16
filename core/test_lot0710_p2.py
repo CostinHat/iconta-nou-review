@@ -189,7 +189,10 @@ def test_rutele_jurnalului_refuza_luna_inchisa_si_nota_la_validare(tx, monkeypat
     c.pune_notele_in_coada(conn, cab, tid, asist)
     with pytest.raises(_erori.CerereGresita) as ei:
         uc_tenants.jurnal_sterge(tid, nid, {"uid": asist})
-    assert ei.value.detaliu == c.MESAJ_NOTA_LA_VALIDARE % nid
+    # [258] nota numită ca în Registrul jurnal (Nr. crt. pe anul ei, după dată și id), nu prin id-ul intern
+    cur.execute("SELECT nr FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY data, id) AS nr FROM %s.inregistrari "
+                "WHERE date_trunc('year', data) = '2026-01-01') x WHERE id = %%s" % SCH, (nid,))
+    assert ei.value.detaliu == c.MESAJ_NOTA_LA_VALIDARE % ("nr. crt. %d din 02.10.2026" % cur.fetchone()[0])
 
 
 def test_casa_nu_sterge_nota_de_la_validare(tx):

@@ -213,7 +213,7 @@ def sterge(conn, schema, op_id):
                 return {"eroare": "Nota operațiunii e validată, deci operațiunea nu se mai șterge: se corectează prin stornare."}
             from core import coada_api as _coada   # [lotul 07.10 pct.6] ștergerea operațiunii ar șterge nota de la validare
             if _coada.nota_la_validare(cur, schema, op["inregistrare_id"]):
-                return {"eroare": _coada.MESAJ_NOTA_LA_VALIDARE % op["inregistrare_id"], "cod": _coada.COD_NOTA_LA_VALIDARE}
+                return {"eroare": _coada.mesaj_nota_la_validare(cur, schema, op["inregistrare_id"]), "cod": _coada.COD_NOTA_LA_VALIDARE}
             cur.execute(f"DELETE FROM {schema}.inregistrari WHERE id=%s",
                         (op["inregistrare_id"],))
         cur.execute(f"DELETE FROM {schema}.casa_operatiuni WHERE id=%s", (op_id,))

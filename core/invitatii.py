@@ -12,6 +12,7 @@ import hashlib
 import secrets
 
 from core import afirmatii as _af
+from core.common import cate as _cate
 
 VALABILITATE_ZILE = 14
 
@@ -33,7 +34,7 @@ def creeaza(cur, email, creat_de, acum=None):
 
 
 #: Regula pe care o încalcă o invitație nefolosibilă (afirmația tipată `neconformitate`, `core/afirmatii.py`).
-REGULA = "Invitația e valabilă %d zile, se folosește o singură dată și numai cu emailul invitat." % VALABILITATE_ZILE
+REGULA = "Invitația e valabilă %s, se folosește o singură dată și numai cu emailul invitat." % _cate(VALABILITATE_ZILE, "zi", "zile")
 
 
 def _refuz(cod, motiv, email):
