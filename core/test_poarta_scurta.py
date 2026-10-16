@@ -185,3 +185,32 @@ def test_e2e_atins_direct_ruleaza_el_si_cine_il_importa(monkeypatch):
     assert {"e2e_bloc_d.py", "e2e_lot5_c3.py", "e2e_lot5_id.py"} <= set(bloc_d) and "e2e_magazin.py" not in bloc_d, bloc_d
     toate = sorted(os.path.basename(e) for e in glob.glob(os.path.join(PS.RAD, "frontend_test", "e2e", "e2e_*.py")))
     assert e2e_rulat(["frontend_test/e2e/conftest.py"]) == toate
+
+
+def test_populatia_din_name_status():
+    """`git diff --name-status HEAD` -> căile `.py` adăugate / șterse / redenumite (la R, amândouă); `M` și ne-Python nu intră."""
+    iesire = "A\tcore/migrare_noua.py\nM\tcore/plati.py\nD\tcore/vechi.py\nR087\tscripts/a.py\tscripts/b.py\nA\tDECIZII_X.md\n"
+    assert P.populatie_din(iesire) == {"core/migrare_noua.py", "core/vechi.py", "scripts/a.py", "scripts/b.py"}
+
+
+@pytest.mark.parametrize("nivel", ["direct", "subsistem", "integrare"])
+def test_un_py_nou_e_incert_la_toate_nivelurile(monkeypatch, nivel):
+    """[16.10.2026, poarta lotului 5] `core/migrare_nume_conturi_vechi.py`, nou, a dus `test_e2a_univers` peste plafon, iar rularea
+    țintită nu l-a ales: graful de import nu vede cine ENUMERĂ directorul. Un `.py` nou / șters -> incert, la orice nivel.
+    MUTAȚIE: `if a in sarite: continue` fără motivul din `_incerte_populatie` (lista goală) -> pică."""
+    monkeypatch.setattr(P, "populatie_schimbata", lambda: {"core/migrare_noua.py"})
+    _teste, incerte = P.nivel(nivel, ["core/migrare_noua.py"])
+    assert [m for m in incerte if m.startswith("core/migrare_noua.py — ") and P.MOTIV_POPULATIE in m], incerte
+    monkeypatch.setattr(P, "populatie_schimbata", lambda: set())
+    teste, incerte = P.nivel(nivel, ["core/plati.py"])
+    assert (incerte, bool(teste)) == ([], True), "un .py doar modificat rămâne derivabil"
+
+
+def test_lansatorul_ruleaza_suita_cand_s_a_adaugat_un_py(monkeypatch):
+    """Același caz, prin lansator: suita întreagă, cu exit-ul ei. Dacă git nu răspunde la `--name-status`, tot suita (fail-closed)."""
+    monkeypatch.setattr(PS.P, "populatie_schimbata", lambda: {"core/migrare_noua.py"})
+    cod, rulate = _lanseaza(monkeypatch, ["core/migrare_noua.py"], rc=4)
+    assert (cod, rulate) == (4, [PS.SUITA_INTREAGA])
+    monkeypatch.setattr(PS.P, "populatie_schimbata", lambda: None)
+    cod, rulate = _lanseaza(monkeypatch, ["core/plati.py"], rc=6)
+    assert (cod, rulate) == (6, [PS.SUITA_INTREAGA])

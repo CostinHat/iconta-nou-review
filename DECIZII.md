@@ -20628,3 +20628,11 @@ locurile din listă).
   funcții interioare care acoperă parametrul funcției exterioare — măsurată pe tot `static/js`: 6 apariții, 5 benigne. *Alternativa
   respinsă:* garda numai pe numele care contează (`opt`) — „benign” nu se poate decide mecanic. Regula e **zero**: cele 5 redenumite
   (`cabinet.js`, `flux_concediu.js`, `operatiuni_ecran.js`). **Limita:** numai parametrii, nu și `let` / `const` din corp.
+- **Poarta 1 a lotului 5 (16.10, 08:19–09:19), ROȘIE — un test din 8395:** `core/test_e2a_univers.py::test_ANTI_VACUU_universul_e_cel_real`,
+  clasa MIGRARE_UNICA 93 > 92, din migrarea nouă 269 (`core/migrare_nume_conturi_vechi.py`). Plafonul crește la 93, cu motivul pe linie
+  (ca la toate migrările de până acum). Cauza de fond e în unealtă: rularea țintită n-a ales testul, fiindcă graful de import nu vede cine
+  ENUMERĂ un director. Măsurat: 216 module enumeră; prin închiderea pe import ating 664 din 748 de fișiere de test (un nivel: 397, prin
+  `core.common` / `core.duk`). *Alternativa respinsă:* derivarea „testelor care enumeră” — iese aproape suita, cu o limită de adâncime
+  arbitrară. Decizia: un `.py` adăugat / șters / redenumit e **incert** (`perimetru.MOTIV_POPULATIE`) -> suita întreagă, conform „incert
+  -> rulează tot” (DECIZII „Poarta o dată pe lot”). **Limita:** numai `.py`. Rularea porții 1 se socotește (1 din 2); a doua e ultima —
+  dacă pică, nu public (comanda 4 pct.4).

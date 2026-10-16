@@ -65,6 +65,41 @@ NEDERIVABILE = {
 #: artefacte. Multe garzi le citesc ca FISIERE.
 EXT_NEDERIVABILE = (".md", ".json", ".sql", ".txt", ".css", ".js", ".html", ".yml", ".yaml")
 
+#: [16.10.2026, poarta lotului 5] Un `.py` ADAUGAT, STERS sau REDENUMIT schimba POPULATIA pe care o enumera garzile (glob, listdir,
+#: `git ls-files`), iar graful de import nu le vede: `core/migrare_nume_conturi_vechi.py`, nou, a dus clasa MIGRARE_UNICA din
+#: `core/test_e2a_univers.py` la 93 > 92, si rularea tintita nu l-a ales. Cei care enumera nu dau o scurtatura: 216 module, care prin
+#: inchiderea pe import ating 664 din 748 de fisiere de test (un singur nivel: 397, prin `core.common` si `core.duk`). Deci incert.
+MOTIV_POPULATIE = ("fisier Python adaugat / sters / redenumit — schimba populatia enumerata de garzi (glob, listdir, git ls-files), "
+                   "pe care graful de import nu o vede")
+
+
+def populatie_din(name_status):
+    """Caile `.py` cu starea A / D / R / C din iesirea `git diff --name-status HEAD` (la R si C, amandoua caile)."""
+    out = set()
+    for rand in name_status.splitlines():
+        p = rand.split("\t")
+        if len(p) >= 2 and p[0][:1] in ("A", "D", "R", "C"):
+            out |= {c for c in p[1:] if c.endswith(".py")}
+    return out
+
+
+def populatie_schimbata():
+    """`populatie_din(git diff --name-status HEAD)`; `None` daca git nu raspunde (atunci derivarea nu stie, deci incert)."""
+    try:
+        r = subprocess.run(["git", "diff", "--name-status", "HEAD"], cwd=RAD, capture_output=True, text=True, timeout=60)
+    except Exception:
+        return None
+    return populatie_din(r.stdout) if r.returncode == 0 else None
+
+
+def _incerte_populatie(atinse):
+    """Motivele de nesiguranta din populatie, comune lui `perimetru()` si `_seminte()`: `(motive, caile de sarit)`."""
+    pop = populatie_schimbata()
+    if pop is None:
+        return ["git diff --name-status n-a raspuns — nu se stie daca s-a schimbat populatia de module"], set()
+    sarite = {a for a in atinse if a in pop}
+    return ["%s — %s" % (a, MOTIV_POPULATIE) for a in sorted(sarite)], sarite
+
 
 def _module_din_cale(cale):
     """`core/d100.py` -> `core.d100`. Cale relativa la radacina repo-ului."""
@@ -307,10 +342,12 @@ def perimetru(atinse):
                     "intors nimic — se ruleaza tot"]
 
     inv = graf_invers()
-    incerte = []
+    incerte, sarite = _incerte_populatie(atinse)
     seminte = set()
     for a in atinse:
         baza = os.path.basename(a)
+        if a in sarite:
+            continue
         if baza in NEDERIVABILE:
             incerte.append("%s — %s" % (a, NEDERIVABILE[baza]))
             continue
@@ -504,9 +541,11 @@ def _module_seminte(atinse):
 def _seminte(atinse):
     """`(teste_atinse, incerte)` — partea comuna a tuturor nivelurilor: ce refuza, refuza pentru
     toate. Un nivel nu poate fi mai indraznet decat derivarea care il hraneste."""
-    incerte = []
+    incerte, sarite = _incerte_populatie(atinse)
     for a in atinse:
         baza = os.path.basename(a)
+        if a in sarite:
+            continue
         if baza in NEDERIVABILE:
             incerte.append("%s — %s" % (a, NEDERIVABILE[baza]))
         elif a.endswith(EXT_NEDERIVABILE):

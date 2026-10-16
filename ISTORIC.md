@@ -2534,3 +2534,8 @@ schimbare), e2e: 3 picate. Cauzele: (1) 244 și 245 picau și pe commitul comenz
 jurnalului (`evidentiaza`); reparată, clasa măsurată pe tot JS-ul (6, toate redenumite) și gardată (`core/test_parametri_umbriti.py`);
 (2) testul nou 268 căuta „Recomandă” ca un card, e o bandă (`[data-banda='recomanda']`). Testele picate, rulate o dată: 4 + 3 passed;
 mutațiile 268 în browser (subsolul pe toate, refuzul scos) -> ROȘII.
+
+Poarta lotului 5, rularea 1 (16.10, 08:19–09:19, `c8c64a04`): ROȘIE, 1 failed / 8394 passed / 10 skipped / 15 xfailed (59:49), verificatorul
+TOTAL 0, cifrele F1–F5 identice. Picat: `test_e2a_univers` (MIGRARE_UNICA 93 > 92), din migrarea nouă 269 — rularea țintită nu-l alesese.
+Reparat: plafonul 93; în unealtă, un `.py` adăugat / șters / redenumit face derivarea incertă -> suita întreagă (`perimetru.MOTIV_POPULATIE`,
+3 teste noi în `core/test_poarta_scurta.py`, mutația -> 3 ROȘII). Urmează rularea 2 din 2.
