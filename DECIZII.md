@@ -21096,3 +21096,55 @@ Comanda Costin, verbatim:
 - **Pe drum (17.10.2026)**: C44 — contrastul textului secundar pe Suport (`.rap-fir-data`) și în Sănătate server (`.sa-ev-ora`), sub WCAG AA:
   reparat global pe tokenul `--gri`. E2e 291 avea o cursă (aștepta primul text sub formular — „Se trimite...” — în loc de confirmare):
   așteaptă acum „Sesizare trimisă” (3/3 verzi); celelalte două așteptări pe „orice text” din plasă primesc conținutul final direct (fără cursă).
+
+## 17.10.2026 — Lotul 6 închis de Costin; poarta 1 ROȘIE (cifre + 2 teste); C45–C47
+
+**Comanda (Costin, 17.10.2026, verbatim):**
+
+> Lotul 6 e complet. Cabinetul nu lucrează.
+>
+> 1. Poarta lotului 6 (scripts/poarta_lot.sh) pe ramura lucru/lot6-2026-10-16 (00351bea). Verde: ai acordul meu scris de publicare — backup întâi, fast-forward pe main, cele 7 migrări pe producție, repornire, four-way. Roșie: nu publica, repară, rulează din nou.
+>
+> 2. După publicare, lotul 7 pe ramură nouă din main. Nu se publică; poarta lotului 7 nu rulează.
+>    2.1. Notificări WhatsApp (decizie DA din 16.10): mesaj scurt, fără conținut fiscal, cu link în aplicație. Emailul rămâne pentru confirmarea contului, resetarea parolei, linkul de logare și ca rezervă când WhatsApp nu livrează.
+>    2.2. Telefonul și canalul: câmp telefon opțional la înregistrarea cabinetului; în Setări cont, fiecare utilizator își pune numărul și alege WhatsApp sau email (implicit email). WhatsApp se activează numai după confirmarea numărului printr-un cod trimis pe WhatsApp și bifa de acord pentru mesaje.
+>    2.3. Notificare pentru mine (superadmin) la fiecare cerere de import și sesizare din Suport; acum ajung doar în Superadmin → Raportări.
+>    2.4. Meta: contul WhatsApp Business 1658480942307403, numărul +40 759 638 499, Phone Number ID 1396364810224559, aplicația 1815754089771073. Înregistrează numărul prin API (PIN-ul ți-l dau eu; cere-l în raport dacă nu-l ai), webhooks, șabloanele de mesaje pregătite pentru aprobare. Tot ce cere contul meu (plată, verificarea firmei) îl listezi exact.
+>    2.5. Emailurile tranzacționale (confirmare, resetare parolă, link de logare) trec pe Postmark (DA, rezolvă 268). Pregătește trimiterea și înregistrările DNS; contul îl fac eu, deci listează exact ce am de făcut.
+>    2.6. Alertele legislative: ultima a plecat pe 05.07. Află de ce s-au oprit, repară, confirmă la sursă că OPANAF 602/2026 (D100) și 603/2026 (CASS, posibil D212) sunt acoperite, iar alertele importante vin la mine pe canalul de notificare, nu pe contact@.
+>    2.7. Search Console: cele 17 pagini 404 (le găsești în jurnalele serverului, după Googlebot) — redirecționare spre pagina corectă sau 410; verifică și cele 98 de pagini accesate, dar neindexate, legat de măsurarea ghidurilor suprapuse.
+>
+> Răspunde punctual pe fiecare punct: rezolvat sau nu, cu proba. Pentru 1: rezultatul porții, backupul, migrările, four-way, commitul de pe producție. Oprește-te și raportează.
+
+**Poarta 1 (rularea 1 din 2, `00351bea`): ROȘIE.** Pytest 2 picate din 8.506 (8.504 trecute, 10 sărite, 15 xfail; 65 min), verificatorul
+TOTAL 0, cifrele F1–F5 RESPINSE (35 de diferențe), plasa e2e nerulată (poarta se oprește la cifre). Reparat:
+
+- **`test_garzi_pe_text` (1223 > 1222)**: patru aserțiuni pe text noi din comanda 17.10 (`test_274b_*`, `test_spv_lot6`) trecute pe structură
+  (avertismentele D300 numărate, mențiunea comparată cu nomenclatorul, eroarea ANAF comparată întreagă). Clichetul nu s-a ridicat.
+- **`test_p7_uc::test_perechile_cod_mesaj_sunt_NESCHIMBATE`**: refuzul nou 409 `COD_SPV_FARA_DREPT` (289, comanda 17.10 pct.2) nedeclarat ->
+  declarat în `PERECHI_ADAUGATE`, cu motivul.
+- **C46 — rularea țintită nu alegea gărzile care citesc arborele.** `test_garzi_pe_text` importă `core.scan_garzi_pe_text`, care parcurge
+  `core/` cu `os.walk`; graful de import nu-l leagă de un test MODIFICAT (populația neschimbată, deci nici `MOTIV_POPULATIE`). Acum
+  `perimetru.garzi_de_arbore()` (testele care importă un `scan_*` care parcurge arborele: 84) intră la orice `.py` atins, pe `subsistem`
+  (lansatorul) și pe `perimetru()`. **Alternativă respinsă**: orice test care conține `os.walk`/`listdir` (124 în plus, amestecați cu cei
+  care listează un director de date — zgomot, nu gardă). **Limita**: un test care parcurge arborele singur, fără `scan_*`, îl vede numai
+  poarta lotului. `test_p7_uc` ERA în perimetru: perechea 289 a intrat după ultima rulare țintită a comenzii — greșeală de proces, nu de unealtă.
+- **C47 — cifrele F1–F5 se măsurau înaintea migrărilor publicării.** Poarta calculează cu codul lotului pe producție, iar migrările vin după
+  verdict: D300 la F1 și F2 ieșea „UndefinedColumn: l.categorie_tva”. Acum, cu migrări ale HEAD-ului nerulate pe producție, cifrele se
+  calculează pe o COPIE: dump nou al producției, restaurat în baza separată `iconta_cifre_copie` (calea probei de restaurare, decizia
+  14.10.2026 pct.5), migrările nerulate rulate pe copie prin registrul migrărilor, apoi aceeași măsurătoare read-only; copia și dump-ul
+  se șterg, inclusiv la eșec (verificat: 0 baze, 0 dump-uri rămase). Producția rămâne read-only. **Alternativă respinsă**: o tranzacție
+  read-write pe producție cu migrările aplicate și anulate (ar ridica garanția read-only a porții și ar ține lacăte pe tabelele firmelor).
+- **C45 — `migrare_casa_avans` scria în notele validate.** Prima rulare pe copie a PICAT: migrarea punea `factura_id` pe nota chitanțelor de
+  dinainte (UPDATE pe `inregistrari`), iar `regula_nota` refuză orice modificare a unei note validate (OMFP 1802/2014 pct.69: corectura se
+  face prin stornare). Pe producție ar fi picat la publicare — sau, fără regulă, ar fi modificat note validate ale firmelor reale. Acum:
+  migrarea e numai DDL; legătura chitanță -> factură se citește din chitanța neanulată la reconcilierea bancară
+  (`reconciliere_api.facturi_deschise`), cum o citea deja `jurnal_api`. Gard: nicio migrare nouă nu scrie în `inregistrari` /
+  `inregistrari_linii` (cele trei istorice, deja rulate, numite cu motivul).
+
+**Cifrele după reparație (copia migrată, 17.10.2026 05:13):** 34 de diferențe — **identice** cu cele ale codului publicat (`6c4917d0`) pe producție.
+Codul lotului 6 nu schimbă nicio cifră a referinței; diferențele vin din DATE: F1 Comert Stoc SRL are în 10/2026 o factură nouă (bază 200,
+TVA 42, client neînregistrat — D394 `tip_partener=2`) cu descărcarea de gestiune (102,38), iar în cabinetul de test a apărut FISCALOS
+ICONTA S.R.L. (tenant_054, neplătitor, fără date). Schimbarea referinței cere aprobarea lui Costin (regula din 10.10.2026); propunerea:
+`~/ghid_incoming/cifre_referinta_propusa_20261017.md` / `.json`. **A doua (ultima) rulare a porții așteaptă aprobarea** — fără ea ar pica
+iar la cifre.

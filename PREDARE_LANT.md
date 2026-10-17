@@ -4,7 +4,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-16** (seara; lotul 6 lucrat pe ramura `lucru/lot6-2026-10-16`, NEPUBLICAT; producția rămâne pe `6c4917d0`), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
+- **ultima rescriere**: **2026-10-17** (dimineața; lotul 6 ÎNCHIS de Costin, poarta 1 ROȘIE și reparată, NEPUBLICAT; producția rămâne pe `6c4917d0`), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
 - **pe commit**: `6c4917d0` (lotul 5) — **four-way închis 16.10.2026 12:45:38**: HEAD = origin/main = public/main =
   backup/lant-2026-10-16 = RUNNING = `6c4917d0` (2 din 2 procese); procesul pornit 12:45:36 EEST, după commit (09:53:19); nicio
   sentinelă; backup înainte `~/backups_db/iconta_v2_pre_lot5_20261016_1243.dump` (367 de tabele cu date); cele 7 migrări ale lotului
@@ -15,6 +15,17 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
+
+**17.10.2026 — LOTUL 6 ÎNCHIS („Lotul 6 e complet. Cabinetul nu lucrează.”, verbatim în DECIZII 17.10.2026), NEPUBLICAT.** Acordul scris de
+publicare există, condiționat de poarta VERDE. Poarta 1 (`00351bea`) ROȘIE: 2 teste + cifrele F1–F5 -> reparate pe ramură (commitul care
+conține această predare): aserțiunile pe text, perechea 409 a lui 289, **C45** (migrarea `migrare_casa_avans` nu mai scrie în note
+validate), **C46** (gărzile de arbore în rularea țintită), **C47** (cifrele pe copia migrată a producției). Cifrele lotului = cifrele
+codului publicat; cele 34 de diferențe vin din date (F1 10/2026 + FISCALOS ICONTA în cabinetul de test). **BLOCAT: aprobarea referinței
+noi de cifre** (`~/ghid_incoming/cifre_referinta_propusa_20261017.md`, plus decizia despre FISCALOS în cabinetul de test). Apoi: a doua
+(ultima) rulare `sh scripts/poarta_lot.sh` -> VERDE -> backup, fast-forward pe `main`, cele 7 migrări `--productie`, restart, four-way.
+**Lotul 7** (WhatsApp, telefonul, notificările superadmin, Meta, Postmark, alertele legislative, Search Console) — NEÎNCEPUT: comanda îl
+pune după publicare, pe ramură nouă din `main`; cercetarea făcută e în raportul din 17.10.
+
 
 **LOTUL 6 (16.10.2026, comanda + patru completări, 272–295 + C41) — lucrat, NEPUBLICAT, oprit pentru raport („Te oprești și
 raportezi”).** Pe ramura `lucru/lot6-2026-10-16` (commitul lotului; SHA-ul în raportul lotului), producția neatinsă (four-way de mai sus,
@@ -563,7 +574,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
 | **77u** | **988** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1223** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **50** | **1219** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

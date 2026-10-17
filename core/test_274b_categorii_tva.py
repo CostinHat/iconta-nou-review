@@ -134,7 +134,7 @@ def test_274b_d300_pune_fiecare_categorie_pe_randul_ei():
     res = _d300.calcul_d300(_PROF, Perioada(2026, luna=10), facturi)
     assert (res.R.get("R14_1"), res.R.get("R15_1"), res.R.get("R13_1"), res.R.get("R9_1"), res.R.get("R9_2")) == \
         (1000, 300, 400, 300, 63), res.R
-    assert not [a for a in res.avertismente if "nu se clasifică automat" in a], res.avertismente
+    assert res.avertismente == [], res.avertismente                    # nicio linie 0% lăsată la „nu se clasifică automat”
     assert [n for n in res.note_rezultat if "în afara sferei" in n], res.note_rezultat
 
 
@@ -142,7 +142,7 @@ def test_274b_factura_de_dinainte_ramane_cum_era():
     """Fără categorie pe linii: taxarea inversă de pe antet acoperă toate liniile (rd.13), iar linia 0% e semnalată ca până acum."""
     res = _d300.calcul_d300(_PROF, Perioada(2026, luna=10), [_f([(1, 500, 21, "taxabil")], ti=True), _f([(1, 70, 0, "taxabil")])])
     assert (res.R.get("R13_1"), res.R.get("R9_1", 0)) == (500, 0), res.R
-    assert [a for a in res.avertismente if "nu se clasifică automat" in a], res.avertismente
+    assert len(res.avertismente) == 1 and (res.R.get("R14_1", 0), res.R.get("R15_1", 0)) == (0, 0), (res.avertismente, res.R)
 
 
 # ── (4) emiterea pe o firmă efemeră + D300 pe DUK ───────────────────────────────────────────────────────────────────────────────
@@ -217,7 +217,8 @@ def test_274b_d300_cu_randurile_13_14_15_e_valid_pe_duk(conn):
 def test_274b_serviciul_catre_client_ue_e_AE_cu_taxare_inversa_iar_cel_din_afara_ue_e_E():
     """MUTAȚIE: `descriere(cod, tara)` fără varianta `non_ue` -> serviciul către SUA iese AE -> pică."""
     assert _defalcare(_x([_linie("serviciu_extern")], IE)) == [("AE", "0.00", "VATEX-EU-AE")]
-    assert "Taxare inversă" in ct.descriere("serviciu_extern", "IE")["mentiune"]
+    assert ct.descriere("serviciu_extern", "IE")["mentiune"] == ct.CATEGORII["serviciu_extern"]["mentiune"]   # mențiunea „taxare inversă”
+    assert ct.descriere("serviciu_extern", "US")["mentiune"] == ct.CATEGORII["serviciu_extern"]["non_ue"]["mentiune"]
     assert _defalcare(_x([_linie("serviciu_extern")], US)) == [("E", "0.00", None)]
     assert _x([_linie("serviciu_extern")], IE).find("cac:Delivery", NS) is None, "un serviciu n-are livrare de bunuri"
     from core import factura_pdf as fp

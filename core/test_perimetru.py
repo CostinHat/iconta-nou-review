@@ -175,3 +175,17 @@ def test_importurile_se_citesc_cu_AST_nu_din_text():
     assert apeluri >= {"parse", "walk"}, (
         "`importurile` nu mai foloseste `ast` — daca a trecut pe expresii regulate, un import "
         "citat intr-un comentariu devine o dependenta, iar perimetrul creste pe proza")
+
+
+def test_garzile_de_arbore_intra_la_orice_py_atins():
+    """[17.10.2026, poarta 1 a lotului 6, ROȘIE] Patru aserțiuni pe text noi într-un test MODIFICAT au urcat
+    `core/test_garzi_pe_text.py` peste clichet, iar rularea țintită nu l-a ales: garda citește conținutul arborelui prin
+    `core.scan_garzi_pe_text`, nu importă fișierul atins. Pe nivelul lansatorului (`subsistem`) și pe `perimetru()`, un test atins
+    aduce gărzile construite pe scanere. MUTAȚIE: `| garzi_de_arbore()` scos din `nivel_subsistem` -> pică."""
+    atins = ["core/test_274b_categorii_tva.py"]
+    n2, inc2 = P.nivel("subsistem", atins)
+    n0, inc0 = P.perimetru(atins)
+    assert not inc2 and not inc0, (inc2, inc0)
+    for teste in (n2, n0):
+        assert {"core/test_garzi_pe_text.py", "core/test_afirmatii_tipate.py"} <= set(teste), len(teste)
+    assert P.garzi_de_arbore() <= set(n2)

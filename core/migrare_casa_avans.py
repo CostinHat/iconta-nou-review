@@ -5,7 +5,11 @@ Comanda Costin 16.10.2026, „Lotul 6, comanda 1” pct.3b (278), verbatim în D
 semnalează ca avans de la client; verifici la sursă tratamentul contabil și de TVA al avansului și îl aplici.” Dispoziția legată de facturi
 (`casa_api.adauga`, `facturi`) se împarte într-o operațiune pe factură, cu nota legată de ea (`inregistrari.factura_id`), plus una marcată
 `avans` pentru rest (5311 = 4111 / 401 = 5311, nelegată, până la factura de avans: CF art.319 alin.(16), exigibilitatea TVA la încasare:
-CF art.282 alin.(2) lit.b). Plus: nota chitanțelor neanulate de dinainte primește factura chitanței (date, idempotent: numai unde lipsește).
+CF art.282 alin.(2) lit.b).
+[17.10.2026, poarta 1 a lotului 6] Forma dintâi mai punea `factura_id` pe nota chitanțelor de dinainte (un UPDATE pe `inregistrari`): pe copia
+producției a picat la regula notelor validate (`regula_nota`: o notă validată nu se mai modifică, OMFP 1802/2014 pct.69) și ar fi atins
+notele validate ale firmelor. Scos: migrarea e numai DDL, iar legătura chitanță -> factură se CITEȘTE din `chitante` la reconciliere
+(`reconciliere_api.facturi_deschise`). Gard: `core/test_migrari_registru.py::test_nicio_migrare_noua_nu_scrie_in_notele_contabile`.
 Sursa UNICĂ = mirror în tenant_template.sql. Idempotent (ADD COLUMN IF NOT EXISTS). Se aplică: firmele NOI prin
 template; cele EXISTENTE prin `python -m core.migrari_registru ruleaza [--productie] core/migrare_casa_avans.py`.
 """
@@ -13,10 +17,6 @@ from core import db
 
 _DDL = [
     'ALTER TABLE "{s}".casa_operatiuni ADD COLUMN IF NOT EXISTS avans boolean NOT NULL DEFAULT false;',
-    # Chitanțele emise / primite pe o factură, de dinainte: nota lor n-avea `factura_id`, deci factura rămânea „deschisă” la
-    # reconcilierea bancară (`reconciliere_api.facturi_deschise`). Nota fiecărei chitanțe neanulate primește factura chitanței.
-    'UPDATE "{s}".inregistrari i SET factura_id = c.factura_id FROM "{s}".chitante c '
-    'WHERE c.inregistrare_id = i.id AND c.factura_id IS NOT NULL AND NOT c.anulata AND i.factura_id IS NULL;',
 ]
 
 

@@ -88,3 +88,66 @@ def test_lunile_cu_date_vin_numai_din_notele_validate():
                 assert cr._luni_cu_date(cur, schema) == [(2099, 1)]
         finally:
             conn.rollback()
+
+
+def test_dsn_copiei_si_acreditarea_din_dsn():
+    """Funcțiile PURE ale copiei: baza schimbată, restul DSN-ului neatins; parola (cu `@` în ea) tăiată de la dreapta."""
+    url = "postgresql://ion:p%40r@la@db.local:6432/iconta_v2?sslmode=require"
+    assert cr.dsn_cu_baza(url, "iconta_cifre_copie") == "postgresql://ion:p%40r@la@db.local:6432/iconta_cifre_copie?sslmode=require"
+    assert cr.env_din_dsn(url) == {"DB_HOST": "db.local", "DB_PORT": "6432", "DB_NAME": "iconta_v2", "DB_USER": "ion",
+                                   "DB_PASSWORD": "p@r@la"}
+
+
+def test_cu_migrari_nerulate_cifrele_se_masoara_pe_copia_migrata(monkeypatch):
+    """[17.10.2026, lotul 6, poarta 1 ROȘIE] Poarta rulează înaintea migrărilor publicării: o coloană nouă citită de generatoare nu există
+    încă pe producție. Cu migrări nerulate, măsurătoarea merge pe copia migrată (DATABASE_URL al copiei), iar la ieșire DSN-ul producției
+    revine. MUTAȚIE: `if not lipsa:` -> `if True:` (măsurat direct, ca înainte) -> pică."""
+    import contextlib
+    vazut = {}
+    monkeypatch.setenv("DATABASE_URL", "postgresql://u:p@h:5432/iconta_v2")
+    monkeypatch.setattr(cr, "migrari_nerulate", lambda: ["core/migrare_x.py"])
+
+    @contextlib.contextmanager
+    def copie(dsn, migrari):
+        vazut["copie"] = (dsn, migrari)
+        yield "postgresql://u:p@h:5432/iconta_cifre_copie"
+    monkeypatch.setattr(cr, "copie_migrata", copie)
+    with cr.baza_masurata() as unde:
+        vazut["masurat_pe"] = os.environ["DATABASE_URL"]
+    assert vazut == {"copie": ("postgresql://u:p@h:5432/iconta_v2", ["core/migrare_x.py"]),
+                     "masurat_pe": "postgresql://u:p@h:5432/iconta_cifre_copie"}, vazut
+    assert unde == "măsurat pe o copie a bazei, după migrările nerulate încă pe producție (1): core/migrare_x.py", unde
+    assert os.environ["DATABASE_URL"] == "postgresql://u:p@h:5432/iconta_v2"
+
+
+def test_copia_se_sterge_si_cand_migrarea_pica(monkeypatch, tmp_path):
+    """Copia (o bază cu toate datele producției) nu rămâne în urmă: o migrare picată pe copie oprește măsurătoarea (fail-closed), iar
+    baza și dump-ul se șterg. MUTAȚIE: `pr._sterge(BAZA_COPIE)` scos din `finally` -> pică."""
+    import subprocess
+    import proba_restaurare as pr
+    pasi = []
+    monkeypatch.setattr(pr, "DIR_DUMP", str(tmp_path))
+    monkeypatch.setattr(pr, "_pg_dump", lambda env, a: (open(a[-1], "w").write("x"), pasi.append(("dump", env["DB_NAME"])),
+                                                         subprocess.CompletedProcess(a, 0))[-1])
+    monkeypatch.setattr(pr, "_restaureaza", lambda dump, env, baza: pasi.append(("restaurat", baza)))
+    monkeypatch.setattr(pr, "_sterge", lambda baza: pasi.append(("sters", baza)))
+    monkeypatch.setattr(cr.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 1, "", "UndefinedTable: t"))
+    try:
+        with cr.copie_migrata("postgresql://u:p@h:5432/iconta_v2", ["core/migrare_x.py"]):
+            raise AssertionError("măsurătoarea n-are voie să pornească pe o copie nemigrată")
+    except RuntimeError as e:
+        assert e.args == ("migrarea core/migrare_x.py a picat pe copie (cod 1): UndefinedTable: t",), e.args
+    assert pasi == [("dump", "iconta_v2"), ("restaurat", "iconta_cifre_copie"), ("sters", "iconta_cifre_copie")], pasi
+    assert list(tmp_path.iterdir()) == [], "dump-ul copiei a rămas pe disc"
+
+
+def test_main_masoara_numai_prin_baza_masurata():
+    """Legătura: `main` cheamă execuția numai în `baza_masurata()` (altfel copia ar exista și n-ar fi folosită).
+    MUTAȚIE: `with baza_masurata() as unde:` scos din `main` -> pică."""
+    import ast
+    arb = ast.parse(_citeste("scripts/cifre_referinta.py"))
+    main = next(n for n in arb.body if isinstance(n, ast.FunctionDef) and n.name == "main")
+    withuri = [w for w in ast.walk(main) if isinstance(w, ast.With)
+               and any(ast.unparse(i.context_expr) == "baza_masurata()" for i in w.items)]
+    assert withuri and any(isinstance(n, ast.Call) and ast.unparse(n.func) == "_executa" for n in ast.walk(withuri[0])), (
+        "main nu măsoară prin baza_masurata()")

@@ -164,3 +164,26 @@ def test_278b_factura_de_avans_se_conteaza_pe_419(conn):
         cur.execute("SELECT * FROM facturi WHERE id = %s", (fav,))
         note = _cf.genereaza_note(cur, _SCH, dict(cur.fetchone()), False, "707")
     assert [(n["debit"], n["credit"], str(n["suma"])) for n in note] == [("4111", "419", "1000.00"), ("4111", "4427", "210.00")], note
+
+
+def test_278_chitanta_de_dinainte_stinge_factura_fara_sa_atinga_nota_validata(conn):
+    """[17.10.2026, poarta 1 a lotului 6] Nota unei chitanțe de dinainte de 278 n-are `factura_id`, iar o notă validată nu se mai modifică
+    (`regula_nota`, OMFP 1802/2014 pct.69) — forma dintâi a migrării o modifica și a picat pe copia producției. Legătura se citește din
+    chitanță: factura încasată cu chitanță nu mai e „deschisă” la reconcilierea bancară; chitanța anulată o redeschide.
+    MUTAȚIE: ramura `chitante` scoasă din `reconciliere_api.facturi_deschise` -> pică."""
+    fid = _factura(conn)
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status, document_ref) VALUES "
+                    "('2026-10-16', 'Chitanță CH 1', 'casa', 'validata', 'CH 1') RETURNING id")
+        nid = cur.fetchone()[0]
+        cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '5311', '4111', 242.00)",
+                    (nid,))
+        cur.execute("INSERT INTO chitante (serie, numar, data, factura_id, suma, inregistrare_id, anulata) VALUES "
+                    "('CH', 1, '2026-10-16', %s, 242.00, %s, false) RETURNING id", (fid, nid))
+        cid = cur.fetchone()[0]
+        cur.execute("SELECT factura_id FROM inregistrari WHERE id = %s", (nid,))
+        assert cur.fetchone() == (None,), "nota de dinainte rămâne cum a fost validată"
+    assert _sold(conn, fid) == 0, "factura încasată cu chitanța ei nu e deschisă"
+    with conn.cursor() as cur:
+        cur.execute("UPDATE chitante SET anulata = true WHERE id = %s", (cid,))
+    assert _sold(conn, fid) == Decimal("242.00"), "chitanța anulată nu mai stinge factura"

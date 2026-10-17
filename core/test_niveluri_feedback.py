@@ -125,4 +125,5 @@ def test_perimetrul_vechi_e_neatins():
     teste, incerte = P.perimetru(["core/plati.py"])
     assert incerte == []
     assert set(teste) >= {"core/test_plata_izolare.py"}
-    assert [t for t in teste if t.lower().count("d406")] == []
+    # [17.10.2026] gărzile de arbore (`P.garzi_de_arbore`) intră la ORICE `.py` atins, deliberat — nu sunt legătura plăți -> D406
+    assert [t for t in teste if t.lower().count("d406") and t not in P.garzi_de_arbore()] == []

@@ -138,3 +138,36 @@ def test_verifica_opreste_pe_trigger_lipsa(conn):
     ale_ei = [ln for ln in linii if ln.startswith("schema %s " % s)]
     assert cod == 1 and ale_ei == ["schema %s e în urma șablonului: tabele lipsă -, coloane lipsă -, triggere lipsă "
                                    "['inregistrari.trg_verifica_perioada_blocata']" % s], linii
+
+
+#: migrările care au scris în note ÎNAINTEA gărzii, deja rulate pe producție — fiecare cu motivul (nu se mai adaugă nimic aici)
+_SCRIU_IN_NOTE_ISTORIC = {
+    "core/migrare_nota_corectie.py": "descrierea notelor de corecție (09.2026), rulată înaintea regulilor de fond (09.10.2026)",
+    "core/migrare_retest2.py": "descrierea notelor de refacere NIR, „Retest 2” (09.10.2026), rulată pe producție",
+    "core/migrare_retest_0810.py": "conturile notelor „Retest 08.10”, rulată pe producție înaintea regulilor de fond",
+}
+
+
+def test_nicio_migrare_noua_nu_scrie_in_notele_contabile():
+    """[17.10.2026, poarta 1 a lotului 6] `migrare_casa_avans` punea `factura_id` pe notele chitanțelor de dinainte — pe copia producției
+    a picat la `regula_nota` (o notă validată nu se mai modifică; corectura = stornare, OMFP 1802/2014 pct.69) și ar fi atins notele
+    validate ale firmelor reale. O migrare schimbă SCHEMA; o notă contabilă se corectează numai prin contabil (stornare). MUTAȚIE:
+    UPDATE-ul pus înapoi în `migrare_casa_avans._DDL` -> pică."""
+    import re
+    rad = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    scrie = re.compile(r"(UPDATE|DELETE\s+FROM|INSERT\s+INTO)\s+[\"'{}A-Za-z_.@]*\binregistrari(_linii)?\b", re.I)
+    gasite = {os.path.relpath(f, rad) for f in glob.glob(os.path.join(rad, "core", "migrare_*.py"))
+              if any(scrie.search(s) for s in _siruri_executate(open(f, encoding="utf-8").read()))}
+    assert gasite <= set(_SCRIU_IN_NOTE_ISTORIC), sorted(gasite - set(_SCRIU_IN_NOTE_ISTORIC))
+    assert gasite == set(_SCRIU_IN_NOTE_ISTORIC), "lista istorică are un fișier care nu mai scrie în note: %s" % sorted(
+        set(_SCRIU_IN_NOTE_ISTORIC) - gasite)
+
+
+def _siruri_executate(src):
+    """Șirurile din cod, fără docstringuri (un docstring care POMENEȘTE un `INSERT INTO inregistrari` nu scrie nimic)."""
+    import ast
+    arb = ast.parse(src)
+    doc = {id(n.body[0].value) for n in ast.walk(arb)
+           if isinstance(n, (ast.Module, ast.FunctionDef, ast.ClassDef)) and n.body and isinstance(n.body[0], ast.Expr)
+           and isinstance(n.body[0].value, ast.Constant)}
+    return [n.value for n in ast.walk(arb) if isinstance(n, ast.Constant) and isinstance(n.value, str) and id(n) not in doc]

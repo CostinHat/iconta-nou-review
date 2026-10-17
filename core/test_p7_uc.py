@@ -126,6 +126,10 @@ PERECHI_ADAUGATE = {
     ("factura_primita_valideaza", "REFUZ_TERT_PLATITOR"): (
         "Deficiența 273c (lotul 6, comanda Costin 16.10.2026): „Câmpurile pe care importul nu le preia (terț plătitor, categorie) se "
         "semnalează pe factură ca «de completat»; terțul plătitor intră în D394.” Validarea cere tipul furnizorului (422 numit)."),
+    ("factura_trimite_spv", "refuz_spre_ecran(r.get('mesaj'), COD_SPV_FARA_DREPT, 'conectare_spv')"): (
+        "Deficiența 289 (lotul 6, comanda Costin 17.10.2026, verbatim în DECIZII): „SPV fără drept: fereastra firmei și refuzul «Trimite "
+        "în SPV» spun exact asta, cu ce e de făcut.” Certificatul fără drept pe CUI-ul firmei e alt refuz decât „neconectat” (409, "
+        "`COD_SPV_FARA_DREPT`, același buton spre Conectare SPV). Gardul: `core/test_spv_lot6.py`."),
     ("factura_primita_valideaza", "REFUZ_CATEGORIE_331"): (
         "Deficiența 273c: la factura primită cu taxare inversă (linii „AE”), validarea cere categoria produsului art.331 (codul D394)."),
     ("raportari_imagine", "str(e)"): (

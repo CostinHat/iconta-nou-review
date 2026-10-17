@@ -94,7 +94,7 @@ def test_prima_citire_cuprinde_60_de_zile_iar_refuzul_de_drept_se_tine_minte(sch
         return [], "Nu aveti drept in SPV pentru CIF=%s" % cif
     monkeypatch.setattr(sr.efs, "lista_mesaje", lista)
     r = sr.citeste_firma(schema_firma)
-    assert citiri == [("55229657", 60, "P")] and "Nu aveti drept in SPV" in r["eroare"], (citiri, r)   # textul ANAF, trecut neschimbat
+    assert citiri == [("55229657", 60, "P")] and r["eroare"] == "Nu aveti drept in SPV pentru CIF=55229657", (citiri, r)   # textul ANAF, neschimbat
     assert inreg == [(7, "55229657", "Nu aveti drept in SPV pentru CIF=55229657", 0)]
     stare["ultima_reusita"] = datetime.datetime.now()
     monkeypatch.setattr(sr.efs, "lista_mesaje", lambda *a, **k: (citiri.append(k["zile"]), ([], "Nu exista mesaje in ultimele 3 zile"))[1])

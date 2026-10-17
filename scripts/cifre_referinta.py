@@ -15,11 +15,13 @@ Uz: python scripts/cifre_referinta.py --productie <iesire_fara_extensie>   -> <i
     python scripts/cifre_referinta.py --productie --verifica                 -> 0 identic / 1 diferă / 2 nu s-a putut (poarta)
     python scripts/cifre_referinta.py --productie --scrie-referinta          -> referința nouă (numai cu aprobarea lui Costin)
 """
+import contextlib
 import datetime as _dt
 import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -292,6 +294,94 @@ def verifica(referinta=REFERINTA):
     return 1
 
 
+#: [17.10.2026, lotul 6, poarta 1 ROȘIE la cifre] Codul lotului se măsoară pe schema pe care producția o va avea DUPĂ publicare. Poarta
+#: rulează înaintea migrărilor (verdict VERDE -> backup -> `main` -> migrări -> restart), deci o coloană nouă citită de generatoare
+#: (`factura_linii.categorie_tva`, lotul 6) nu există încă pe producție: D300 ieșea „UndefinedColumn”, o diferență făcută de ordinea
+#: pașilor, nu de cod. Producția rămâne read-only: cu migrări ale HEAD-ului nerulate acolo, cifrele se calculează pe o COPIE — dump nou al
+#: producției, restaurat într-o bază separată pe același server (calea probei de restaurare, decizia Costin 14.10.2026 pct.5), migrările
+#: nerulate rulate pe copie prin registrul migrărilor (`core.migrari_registru ruleaza`, fără `--productie`), apoi aceeași `culege`
+#: read-only. Copia și dump-ul se șterg, inclusiv la eșec. Fără migrări nerulate: direct pe producție, ca până acum.
+BAZA_COPIE = "iconta_cifre_copie"
+
+
+def migrari_nerulate():
+    """Migrările HEAD-ului fără rând în registrul bazei din `DATABASE_URL` (citire în sesiunea read-only)."""
+    from core import db
+    from core import migrari_registru as mr
+    db.init_pool()
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            lipsa = mr.nerulate(cur, mr.migrari_la_commit("HEAD"))
+        conn.rollback()
+    return [f for f, _a in lipsa]
+
+
+def env_din_dsn(url):
+    """PURĂ. DB_HOST / DB_PORT / DB_NAME / DB_USER / DB_PASSWORD dintr-un DSN `postgresql://user:parola@gazda:port/baza` — tăiat ca
+    `mediu_test.desface_dsn` (de la dreapta pe `@`), dar cu parola, pentru `.pgpass`-ul temporar al lui `pg_dump`."""
+    from urllib.parse import unquote
+    acreditare, adresa = url.split("://", 1)[1].rsplit("@", 1)
+    user, _, parola = acreditare.partition(":")
+    gazda, _, baza = adresa.partition("/")
+    host, _, port = gazda.partition(":")
+    return {"DB_HOST": host, "DB_PORT": port or "5432", "DB_NAME": baza.split("?", 1)[0], "DB_USER": unquote(user),
+            "DB_PASSWORD": unquote(parola)}
+
+
+def dsn_cu_baza(url, baza):
+    """PURĂ. Același DSN, pe altă bază (parametrii de după `?` rămân)."""
+    stanga, dreapta = url.rsplit("/", 1)
+    return stanga + "/" + baza + (("?" + dreapta.split("?", 1)[1]) if "?" in dreapta else "")
+
+
+@contextlib.contextmanager
+def copie_migrata(dsn, migrari):
+    """DSN-ul unei copii a bazei `dsn`, cu `migrari` rulate pe ea; la ieșire copia și dump-ul se șterg (și la eșec)."""
+    import proba_restaurare as pr
+    env = dict(os.environ, **env_din_dsn(dsn))
+    os.makedirs(pr.DIR_DUMP, exist_ok=True)
+    dump = os.path.join(pr.DIR_DUMP, "cifre_copie_%d.dump" % os.getpid())
+    try:
+        r = pr._pg_dump(env, ["-Fc", "-f", dump])
+        if r.returncode != 0:
+            raise RuntimeError("pg_dump a eșuat, cod %d" % r.returncode)
+        os.chmod(dump, 0o600)
+        pr._restaureaza(dump, env, BAZA_COPIE)
+        copie = dsn_cu_baza(dsn, BAZA_COPIE)
+        env_migrare = {k: v for k, v in os.environ.items() if k != "PGOPTIONS"}
+        env_migrare["DATABASE_URL"] = copie
+        for f in migrari:
+            m = subprocess.run([sys.executable, "-m", "core.migrari_registru", "ruleaza", f], cwd=RAD, env=env_migrare,
+                               capture_output=True, text=True)
+            if m.returncode != 0:
+                raise RuntimeError("migrarea %s a picat pe copie (cod %d): %s"
+                                   % (f, m.returncode, " ".join((m.stdout + m.stderr).strip().splitlines()[-1:])))
+        yield copie
+    finally:
+        pr._sterge(BAZA_COPIE)
+        if os.path.exists(dump):
+            os.remove(dump)
+
+
+@contextlib.contextmanager
+def baza_masurata():
+    """Unde se măsoară: (descriere). Pe baza din `DATABASE_URL` dacă are toate migrările HEAD-ului, altfel pe copia ei migrată."""
+    from core import db
+    lipsa = migrari_nerulate()
+    db.inchide_pool()
+    if not lipsa:
+        yield "măsurat direct (toate migrările HEAD-ului sunt rulate)"
+        return
+    dsn = os.environ["DATABASE_URL"]
+    with copie_migrata(dsn, lipsa) as copie:
+        os.environ["DATABASE_URL"] = copie
+        try:
+            yield "măsurat pe o copie a bazei, după migrările nerulate încă pe producție (%d): %s" % (len(lipsa), ", ".join(lipsa))
+        finally:
+            db.inchide_pool()
+            os.environ["DATABASE_URL"] = dsn
+
+
 def amprenta_fisier(cale=REFERINTA):
     return hashlib.sha256(open(cale, "rb").read()).hexdigest()
 
@@ -309,6 +399,16 @@ def main(argv):
             return 2
         os.environ["DATABASE_URL"] = dsn
     os.environ["PGOPTIONS"] = "-c default_transaction_read_only=on"
+    try:
+        with baza_masurata() as unde:
+            print("[cifre] %s" % unde)
+            return _executa(argv)
+    except Exception as e:  # noqa: BLE001 — copia nu s-a putut face / migra: măsurătoarea n-a avut loc, deci nu se publică (fail-closed)
+        print("[cifre] NU s-au putut calcula cifrele (%s: %s) — publicarea se oprește (fail-closed)" % (type(e).__name__, e))
+        return 2
+
+
+def _executa(argv):
     if "--verifica" in argv:
         return verifica()
     rez = culege()

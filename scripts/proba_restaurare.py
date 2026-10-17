@@ -73,14 +73,17 @@ def _rezumat(a):
             "sha256": ap.globala(a)}
 
 
-def _restaureaza(dump, env):
-    if _psql_postgres("SELECT count(*) FROM pg_database WHERE datname = '%s'" % BAZA_PROBA) != "0":
-        raise RuntimeError("baza %s există deja — nu o suprascriu; se șterge de mână după ce se vede de unde vine" % BAZA_PROBA)
+def _restaureaza(dump, env, baza=BAZA_PROBA):
+    """Baza `baza` (nouă; una existentă nu se suprascrie) din `dump`. `baza` e și a copiei de cifre (`cifre_referinta.copie_migrata`)."""
+    if not _NUME.match(baza):
+        raise RuntimeError("nume de bază neașteptat")
+    if _psql_postgres("SELECT count(*) FROM pg_database WHERE datname = '%s'" % baza) != "0":
+        raise RuntimeError("baza %s există deja — nu o suprascriu; se șterge de mână după ce se vede de unde vine" % baza)
     coll = _psql_postgres("SELECT datcollate || '|' || datctype FROM pg_database WHERE datname = '%s'" % env["DB_NAME"]).split("|")
     _psql_postgres("CREATE DATABASE %s OWNER %s TEMPLATE template0 ENCODING 'UTF8' LC_COLLATE '%s' LC_CTYPE '%s'"
-                   % (BAZA_PROBA, env["DB_USER"], coll[0], coll[1]))
+                   % (baza, env["DB_USER"], coll[0], coll[1]))
     p1 = subprocess.Popen(["pg_restore", "-f", "-", dump], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-    p2 = subprocess.run(["sudo", "-n", "-u", "postgres", "psql", "-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", BAZA_PROBA],
+    p2 = subprocess.run(["sudo", "-n", "-u", "postgres", "psql", "-X", "-q", "-v", "ON_ERROR_STOP=1", "-d", baza],
                         stdin=p1.stdout, capture_output=True, text=True)
     p1.stdout.close()
     p1.wait()
@@ -112,9 +115,11 @@ def _amprenta_restaurata(env):
         conn.close()
 
 
-def _sterge():
-    _psql_postgres("DROP DATABASE IF EXISTS %s WITH (FORCE)" % BAZA_PROBA)
-    return _psql_postgres("SELECT count(*) FROM pg_database WHERE datname = '%s'" % BAZA_PROBA)
+def _sterge(baza=BAZA_PROBA):
+    if not _NUME.match(baza):
+        raise RuntimeError("nume de bază neașteptat")
+    _psql_postgres("DROP DATABASE IF EXISTS %s WITH (FORCE)" % baza)
+    return _psql_postgres("SELECT count(*) FROM pg_database WHERE datname = '%s'" % baza)
 
 
 def main(argv):

@@ -42,6 +42,7 @@ import ast
 import functools
 import io
 import os
+import re
 import subprocess
 import sys
 
@@ -377,8 +378,31 @@ def perimetru(atinse):
     for a in atinse:
         if os.path.basename(a).startswith("test_") and a.endswith(".py"):
             fisiere.add(a)
+    # [17.10.2026, poarta 1 a lotului 6] garzile care CITESC CONTINUTUL arborelui intra la orice `.py` atins (v. `garzi_de_arbore`)
+    if seminte:
+        fisiere |= garzi_de_arbore()
     teste = sorted(f for f in fisiere if os.path.basename(f).startswith("test_"))
     return teste, incerte
+
+
+#: un scaner care PARCURGE arborele (nu unul folosit ca biblioteca pe o functie data, ca `scan_sql_efectiv` in testele D406)
+_ENUMERA = re.compile(r"os\.walk\(|os\.listdir\(|os\.scandir\(|glob\.i?glob\(|\.r?glob\(|ls-files")
+
+
+@functools.lru_cache(maxsize=1)
+def garzi_de_arbore():
+    """Testele care importa un scaner de arbore (`*/scan_*.py`): ele citesc CONTINUTUL tuturor fisierelor (aserțiunile pe text,
+    afirmatiile, ancorele, constantele …), nu le importa — deci graful de import nu le leaga de fisierul atins.
+
+    [17.10.2026, poarta 1 a lotului 6, ROSIE] Patru aserțiuni pe text noi, intr-un fisier de test MODIFICAT (nu adaugat: populatia
+    n-a crescut, deci `MOTIV_POPULATIE` nu s-a aprins), au dus `core/test_garzi_pe_text.py` la 1223 > 1222, iar rularea tintita nu
+    l-a ales: `test_garzi_pe_text` importa `core.scan_garzi_pe_text`, care parcurge `core/` si `frontend_test/` cu `os.walk`. Clasa =
+    orice garda construita pe un scaner care parcurge arborele (`_ENUMERA`). Se adauga la orice `.py` atins.
+    Limita, declarata: un test care parcurge arborele SINGUR, fara un `scan_*`, nu e prins de aici (124, amestecati cu cei care
+    listeaza un director de date) — pe acelea le vede poarta lotului."""
+    scanere = {_module_din_cale(f) for f in _fisiere_py() if os.path.basename(f).startswith("scan_")
+               and _ENUMERA.search(io.open(os.path.join(RAD, f), encoding="utf-8", errors="replace").read())}
+    return frozenset(f for f in _fisiere_py() if os.path.basename(f).startswith("test_") and importurile(f) & scanere)
 
 
 # ============================================================================
@@ -458,7 +482,7 @@ def nivel_subsistem(atinse):
     teste, incerte = _seminte(atinse)
     if incerte:
         return [], incerte
-    fisiere = set(teste) | _inchidere(_module_seminte(atinse), opreste_la=set(FRONTIERA))
+    fisiere = set(teste) | _inchidere(_module_seminte(atinse), opreste_la=set(FRONTIERA)) | garzi_de_arbore()
     return sorted(f for f in fisiere if os.path.basename(f).startswith("test_")), []
 
 

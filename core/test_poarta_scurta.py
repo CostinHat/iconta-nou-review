@@ -37,7 +37,8 @@ def test_o_atingere_in_plati_nu_atinge_testele_d406():
     teste, incerte = P.perimetru(["core/plati.py"])
     assert incerte == []
     assert teste, "perimetru gol — anti-vacuu"
-    d406 = [t for t in teste if t.lower().count("d406")]
+    # [17.10.2026] gărzile de arbore (`P.garzi_de_arbore`) intră la ORICE `.py` atins, deliberat — nu sunt legătura plăți -> D406
+    d406 = [t for t in teste if t.lower().count("d406") and t not in P.garzi_de_arbore()]
     assert d406 == [], "perimetrul lui plati.py a ajuns la D406: %s" % d406
     assert set(teste) >= {"core/test_plata_izolare.py"}
 

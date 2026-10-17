@@ -67,8 +67,11 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   - ultim (16.10 noaptea): L6-R1…R5 făcute — 274b rezolvată (e2e + mutații, FACT1, DUK), 273 după sursă, 296 + C42, 268 = decizie
     (Brevo), proba SPV raportată.
   - ultim (17.10): răspunsul la bd3cc8af — servicii IC (rd.3 / 3.1, D390 P, DUK), C43, SPV fără drept peste tot, 268 amânată.
-  - urmator: „Lotul 6 e complet” -> poarta lotului (`scripts/poarta_lot.sh`)
-    -> publicarea numai cu acordul lui Costin (regim pilot). STARE = BLOCAT: decizia lui Costin (274b, 285 interpretarea, 289 titularul)
+  - ultim (17.10, „Lotul 6 e complet”): poarta 1 ROȘIE pe `00351bea` (2 teste + cifrele F1–F5) -> reparată: aserțiunile pe text pe
+    structură, perechea 289 declarată, C45 (migrarea nu mai scrie în note), C46 (gărzile de arbore în rularea țintită), C47 (cifrele pe
+    copia migrată). Cifrele lotului = cifrele codului publicat; diferențele vin din date (DECIZII 17.10.2026).
+  - urmator: aprobarea lui Costin pentru referința nouă de cifre (`~/ghid_incoming/cifre_referinta_propusa_20261017.md`) -> a doua (ultima)
+    rulare a porții -> publicarea (acordul scris există, din 17.10). STARE = BLOCAT: aprobarea referinței de cifre
   - pasi:
     L6-277a. `core/banca_parser.py`: `citeste_extras` -> tranzacțiile cu `referinta` (MT940 `:61:` după cod) și contul extrasului (`:25:`), plus
           soldurile `:60F:` / `:62F:`; `parse_extras` rămâne lista. `extras_linii` + `cont_extras`, `referinta` (migrare + `tenant_template.sql`).

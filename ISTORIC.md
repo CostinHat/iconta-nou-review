@@ -2595,3 +2595,14 @@ Pe ramură, fără poartă și fără publicare. Pct.1: prestarea de servicii cu
 document, D300 rd.3 (+ rd.3.1 în UE), D390 P, AE + „taxare inversă” (E în afara UE); probat pe DUK (D300, D390) și pe FACT1; C43 (rd.3.1
 cu clienți din afara UE) reparată. Pct.2: certificatul fără drept pe CUI-ul firmei spus exact (OMFP 660/2017 art.15) peste tot, trimiterea
 oprită, Conectare SPV cu firmele verificate. Pct.3: 268 amânată.
+
+## 17.10.2026 — Lotul 6 închis; poarta 1 ROȘIE, reparată; a doua rulare așteaptă aprobarea referinței de cifre
+
+Costin: „Lotul 6 e complet. Cabinetul nu lucrează.” (comanda verbatim în DECIZII). Poarta 1 pe `00351bea`: ROȘIE — pytest 2 picate din
+8.506 (`test_garzi_pe_text` 1223 > 1222; `test_p7_uc` refuzul 409 `SPV_FARA_DREPT` nedeclarat), verificatorul TOTAL 0, cifrele F1–F5
+respinse (35 de diferențe), plasa nerulată. Repararea: aserțiunile pe text noi trecute pe structură; perechea 289 declarată; C46 (gărzile de
+arbore intră în rularea țintită); C47 (cifrele pe o copie migrată când producția are migrări nerulate); C45, găsită de C47:
+`migrare_casa_avans` modifica note validate — scos UPDATE-ul, legătura chitanță -> factură citită la reconciliere. Pe copia migrată:
+34 de diferențe, identice cu ale codului publicat — toate din date (F1, 10/2026: o factură nouă de 200 + 42 TVA cu descărcarea ei;
+FISCALOS ICONTA în cabinetul de test). Propunerea de referință: `~/ghid_incoming/cifre_referinta_propusa_20261017.md`. Nepublicat;
+producția rămâne pe `6c4917d0`. Lotul 7 neînceput (comanda îl pune după publicare); cercetarea pentru 2.3–2.7 în raport.

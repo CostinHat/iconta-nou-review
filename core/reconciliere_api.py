@@ -44,7 +44,10 @@ def _cont_banca(valuta):
 
 def facturi_deschise(conn, schema):
     """Facturi cu sold > 0. Sold = total_lei(±total) - sume decontate prin
-    inregistrari legate cu factura_id (credit 4111 la emise / debit 401 la primite)."""
+    inregistrari legate cu factura_id (credit 4111 la emise / debit 401 la primite).
+    [17.10.2026, lotul 6, 278] Nota unei chitanțe de dinainte de 278 n-are `factura_id` (atunci nu se punea), iar o notă validată nu se
+    mai modifică (`regula_nota`) — legătura ei cu factura se citește din chitanța neanulată (`chitante.inregistrare_id` ->
+    `chitante.factura_id`), ca la `jurnal_api`. Fără ea, factura încasată cu chitanță rămânea „deschisă” la reconcilierea bancară."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
             SELECT f.id, f.tert_cui, f.directie, f.data_emitere,
@@ -52,7 +55,10 @@ def facturi_deschise(conn, schema):
                    COALESCE((SELECT SUM(l.suma)
                              FROM {schema}.inregistrari i
                              JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                             WHERE i.factura_id = f.id
+                             WHERE (i.factura_id = f.id
+                                    OR (i.factura_id IS NULL AND EXISTS (
+                                        SELECT 1 FROM {schema}.chitante c
+                                         WHERE c.inregistrare_id = i.id AND c.factura_id = f.id AND NOT c.anulata)))
                                AND ((f.directie='emisa'   AND l.cont_credit=%s)
                                  OR (f.directie='primita' AND l.cont_debit=%s))), 0) AS decontat,
                    COALESCE((SELECT SUM(COALESCE(st.total_lei, st.total))
