@@ -96,5 +96,5 @@ def test_rezultatul_zero_nu_e_profit(monkeypatch):
 
 def test_trimiterea_refuza_povestea_goala(monkeypatch):
     monkeypatch.setattr(P, "rezumat_luna", lambda *a, **k: dict(RZ))
-    monkeypatch.setattr(P, "get_poveste", lambda *a: {"ok": True, "exista": True, "text": "   ", "status": "aprobat"})
+    monkeypatch.setattr(P, "get_poveste", lambda *a, **k: {"ok": True, "exista": True, "text": "   ", "status": "aprobat"})
     assert P.pregateste(None, None, 1, 2026, 8)["cod"] == "POVESTE_GOALA"

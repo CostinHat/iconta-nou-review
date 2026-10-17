@@ -143,10 +143,11 @@ def test_def_244_dupa_propunere_legatura_spre_notele_de_validat(patron, firma_20
     zona = _propune(patron, 2025)
     patron.captura("propunerea")
     note = [i for i, _s in _note_inchidere(f)]
-    # [258] notele numite cum le arată Registrul jurnal („nr. crt. N din 31.12.2025”), nu prin id-ul intern
-    assert re.findall(r"Notele de închidere propuse așteaptă validarea: Regularizarea TVA la 31\.12\.2025 \(nota (nr\. crt\. \d+ din [\d.]+)\); "
-                      r"Închiderea conturilor de venituri și cheltuieli în 121 la 31\.12\.2025 \(nota (nr\. crt\. \d+ din [\d.]+)\)", zona) \
-        == [tuple(nr_crt(f["schema"], i) for i in note)], zona
+    # [258] notele numite cum le arată Registrul jurnal, nu prin id-ul intern; [302] notele propuse sunt nevalidate, deci n-au încă număr
+    # curent: „nota din 31.12.2025” (`nr_crt` citește numărul păstrat, dacă există)
+    assert re.findall(r"Notele de închidere propuse așteaptă validarea: Regularizarea TVA la 31\.12\.2025 — nota ((?:nr\. crt\. \d+ )?din "
+                      r"[\d.]+\d); Închiderea conturilor de venituri și cheltuieli în 121 la 31\.12\.2025 — nota ((?:nr\. crt\. \d+ )?din "
+                      r"[\d.]+\d)", zona) == [tuple(nr_crt(f["schema"], i) for i in note)], zona
     assert "închide clasele 6/7" not in zona and "notele de validat" not in zona, zona
     mesaj = pg.inner_text("%s .bl-inchidere-mesaj" % _F)
     assert mesaj.startswith("Am propus la 31.12.2025") and "în Registrul jurnal, luna decembrie 2025" in mesaj, mesaj

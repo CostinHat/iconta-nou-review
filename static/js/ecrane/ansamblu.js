@@ -100,6 +100,8 @@ async function _corpAnsamblu(corp, primaLogare) {
         `<h3 class="ans-sec-titlu">Ce cuprinde aplicația</h3>` +
         `<div class="ans-grupe">${grupe.length ? _grupeHTML(grupe) : '<p class="ecran-nota">—</p>'}</div>` +
       `</section>` +
+      // [deficiența 320] „ghidul de început rămâne în butonul de ajutor (?)”: cardurile de început ale omului, de citit, cu starea lor
+      `<section class="ans-sec" id="ans-inceput"></section>` +
       `<p class="ans-inchidere">` +
         `Semnul <span class="ans-mostra ans-mostra--general">?</span> din bara de sus redeschide oricând această prezentare de ansamblu. ` +
         `Semnele <span class="ans-mostra ans-mostra--contextual">?</span> de pe ecrane explică fiecare funcționalitate în parte.` +
@@ -108,6 +110,7 @@ async function _corpAnsamblu(corp, primaLogare) {
         ? `<div class="ans-actiuni"><button type="button" class="buton-primar" id="ans-intra">Am înțeles, intru în aplicație</button></div>`
         : "") +
     `</div>`;
+  import("./inceput.js?v=cf800c466e").then((m) => m.ghidulDeInceput(corp.querySelector("#ans-inceput"))).catch(() => {});
 }
 
 // semnul "?" GENERAL din bara de stare -> modalul de ansamblu (oricand)

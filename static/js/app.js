@@ -45,13 +45,13 @@ window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reas
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { api, arataMesaj, esc } from "./api.js?v=9409795a49";
-import { ecranBunVenit } from "./ecrane/ansamblu.js?v=2a2d9af281";  // [bun_venit_v1]
-import { ecranLogin } from "./ecrane/login.js?v=171c52118d";
+import { ecranBunVenit } from "./ecrane/ansamblu.js?v=54e57fd9f5";  // [bun_venit_v1]
+import { ecranLogin } from "./ecrane/login.js?v=7fa86cae59";
 import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=176567463a";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=85d5e40523";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=f9f0ffaa7f";
 import { desktopAsistent } from "./ecrane/asistent.js?v=a2fd8c40cd";
-import { desktopPortal } from "./ecrane/portal.js?v=d291b0bbd4";
-import { desktopAdmin } from "./ecrane/admin.js?v=5b9d6e362b"; // [p37_admin_desktop]
+import { desktopPortal } from "./ecrane/portal.js?v=8291500e22";
+import { desktopAdmin } from "./ecrane/admin.js?v=c338118ad6"; // [p37_admin_desktop]
 import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=34d0fb0afd";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
 const radacina = document.getElementById("app");
@@ -186,6 +186,13 @@ async function randeaza() {
   if (sesiune.rol() !== "client" && !(sesiune.estePreview && sesiune.estePreview())) {
     await incarcaDrepturi();
     pornestePoarta();
+  }
+
+  // [deficiența 320, comanda Costin 17.10.2026 7.2] „La prima intrare, fiecare utilizator își pune obligatoriu telefonul, canalul (WhatsApp
+  // sau email) și bifele de notificări înainte să ajungă în aplicație.” Nu în previzualizarea portalului (nu e omul însuși).
+  if (!(sesiune.estePreview && sesiune.estePreview())) {
+    const pi = await import("./ecrane/inceput.js?v=cf800c466e");
+    if (await pi.primaIntrareDeFacut()) { pi.ecranPrimaIntrare(radacina, () => randeaza()); return; }
   }
 
   switch (sesiune.rol()) {

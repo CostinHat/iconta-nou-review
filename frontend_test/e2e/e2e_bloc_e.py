@@ -20,7 +20,7 @@ from decimal import Decimal
 
 import pytest
 
-from conftest import PREFIX_FIRMA, _ecran, _scoate_firmele_e2e, alege_perioada, cui_cu_control, nr_crt, sql, zile_de_acum
+from conftest import PREFIX_FIRMA, _ecran, _scoate_firmele_e2e, alege_perioada, alege_tipul, cui_cu_control, nr_crt, sql, zile_de_acum
 
 IBAN_PROBA = "RO49AAAA1B31007593840000"   # IBAN-ul exemplu ECBS pentru România (cifrele de control valide)
 AZI = _dt.date.today()
@@ -397,7 +397,7 @@ def test_def_150_evidenta_e_ce_a_validat_un_om(patron, firma):
         patron.captura("balanta_validat_si_ciorna")
         # poarta: D300 07/2026 în coadă — avertisment, nu blocaj
         _card(patron, firma, "declaratii", "#dec-tip")
-        pg.select_option("#dec-tip", "d300")
+        alege_tipul(pg, "d300")
         alege_perioada(pg, 2026, 7)
         pg.click("#dec-continua")
         pg.wait_for_selector("#dec-trimite, #dec-gol-da", timeout=60000)
@@ -407,10 +407,10 @@ def test_def_150_evidenta_e_ce_a_validat_un_om(patron, firma):
             pg.fill("#coada-confirmare", "Probă E2E: declarație fără operațiuni în luna de probă.")
             pg.click("#coada-confirma")
             pg.wait_for_selector(".dec-gata", timeout=60000)
-        _asteapta_text(patron, "nevalidată")
+        _asteapta_text(patron, "Notele nevalidate ale perioadei: ")   # [313] notele se numesc, nu se mai numără („1 notă nevalidată”)
         txt = patron.fereastra()
         # [287] validarea în doi e oprită pe firma de probă: titlul spune „Trimisă în coadă”
-        assert "Trimisă în coadă" in txt and "În perioadă sunt 1 notă(e) nevalidată(e)" in txt, txt[:800]
+        assert "Trimisă în coadă" in txt and "Notele nevalidate ale perioadei: nota din " in txt, txt[:800]   # [313] numite, nu numărate
         patron.captura("d300_in_coada_cu_avertisment")
     finally:
         sql("DELETE FROM public.declaratii_coada WHERE tenant_id = %s AND fel <> 'nota' AND tip = 'd300'", (firma["tenant_id"],))
@@ -584,13 +584,14 @@ def _conteaza_cu_legare(ecran, f, fid, an, luna, nir_numar):
     pg.select_option("#nir-legat", ales[0])
     ecran.captura("caseta_nir")
     pg.click("#nir-leaga")
-    pg.wait_for_selector(".fac-frand-btn[data-id='%s'] ~ * .tip-desc, .tip-desc:has-text('ciornă nr. crt.')" % fid, timeout=60000)
+    pg.wait_for_selector(".fac-frand-btn[data-id='%s'] ~ * .tip-desc, .tip-desc:has-text('ciornă din ')" % fid, timeout=60000)
     txt = ecran.fereastra()
     # [258] confirmarea numește nota ca Registrul jurnal, nu prin id-ul intern; nota e contarea facturii
     nid = sql('SELECT id FROM "%s".inregistrari WHERE factura_id = %%s AND sursa = \'facturi\' ORDER BY id DESC LIMIT 1' % f["schema"],
               (fid,))[0][0]
     # [279] starea notei vine din `api.stareNota` („ciornă”, sau „trimisă la validare în cabinet” când a scris-o asistentul)
-    assert _re.findall(r"ciornă (nr\. crt\. \d+ din [\d.]+)", txt) == [nr_crt(f["schema"], nid)], txt[:800]
+    # [302] nota de contare e ciornă, deci n-are încă număr curent: „ciornă din ZZ.LL.AAAA” (`nr_crt` citește numărul păstrat, dacă există)
+    assert _re.findall(r"ciornă ((?:nr\. crt\. \d+ )?din [\d.]+\d)", txt) == [nr_crt(f["schema"], nid)], txt[:800]
     return nid, opt
 
 
@@ -705,7 +706,7 @@ def facturi_emise(firma):
 def _declaratie(ecran, f, tip, an, luna):
     pg = ecran.pg
     _card(ecran, f, "declaratii", "#dec-tip")
-    pg.select_option("#dec-tip", tip)
+    alege_tipul(pg, tip)
     alege_perioada(pg, an, luna)
     pg.click("#dec-continua")
     pg.wait_for_selector("details.dec-xml summary:text('Vezi XML-ul generat')", timeout=90000)

@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "vizual"))
 
 from playwright.sync_api import sync_playwright  # noqa: E402
+from declaratie_tip import alege_tipul  # noqa: E402
 
 from axe_scan import scaneaza  # noqa: E402
 from core import db  # noqa: E402
@@ -146,7 +147,7 @@ def proba(pw, cap, refuz, r):
         def dec(tip=tip, fir=fir, an=an, luna=luna):
             if isinstance(luna, str):          # trimestrială: „T3”
                 firma(pg, fir); pg.click("#fa-declaratii"); pg.wait_for_selector("#dec-tip", timeout=20000); pg.wait_for_timeout(500)
-                pg.select_option("#dec-tip", tip); pg.wait_for_timeout(300); pg.fill("#dec-an", str(an))
+                alege_tipul(pg, tip); pg.wait_for_timeout(300); pg.fill("#dec-an", str(an))
                 pg.select_option("#dec-trim", luna[1:]); pg.click("#dec-continua")
                 pg.wait_for_function("() => /Pasul 2/.test(document.querySelector('.fereastra-corp').innerText)", timeout=90000)
                 pg.wait_for_timeout(2500)

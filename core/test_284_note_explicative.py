@@ -71,8 +71,9 @@ def test_284_ciornele_de_pe_4427_se_numesc_cu_nr_crt_documentul_si_suma(conn):
         _nota(cur, "2026-09-30", [("4111", "4427", 99)])                                     # în afara ferestrei
     constatari = [{"stare": "rosu", "cont": "4427", "diferenta": D("42")}, {"stare": "verde", "cont": "4426", "diferenta": D("0")}]
     ci.ciorne_care_explica(conn, _SCH, "2026-10-01", "2026-11-01", constatari)
-    assert constatari[0]["ciorne"] == [{"nota_id": nid, "nr_curent": 4, "data": "2026-10-16", "descriere": "n",
-                                        "document": "Factură F1A4 din 16.10.2026", "suma": "42.00"}], constatari[0]
+    # [302] ciorna n-are număr (se dă la validare): se numește prin data ei, ca în Registrul jurnal
+    assert constatari[0]["ciorne"] == [{"nota_id": nid, "nr_curent": None, "eticheta_nota": "din 16.10.2026", "data": "2026-10-16",
+                                        "descriere": "n", "document": "Factură F1A4 din 16.10.2026", "suma": "42.00"}], constatari[0]
     assert constatari[0]["ciorne_explica"] is True and "ciorne" not in constatari[1]
     constatari = [{"stare": "rosu", "cont": "4427", "diferenta": D("50")}]
     assert ci.ciorne_care_explica(conn, _SCH, "2026-10-01", "2026-11-01", constatari)[0]["ciorne_explica"] is False
@@ -90,8 +91,8 @@ def test_284_refuzul_numeste_notele_si_nu_mai_spune_doar_cate(monkeypatch):
     assert r["mesaj"].count(r["note"][0]["eticheta"]) == 1, r["mesaj"]   # refuzul numește nota, cu eticheta ei (nr. crt., document, sumă)
     assert "Validatorul ANAF verifică structura" not in r["mesaj"], "notele explică toată diferența: nu se mai trimite la „corectează”"
     assert [n["nota_id"] for n in r["note"]] == [77] and r["note"][0]["eticheta"].startswith("nr. crt. 21")
-    blocaj, _ = uq.decizie_poarta(r, 4)
-    assert "4 notă(e) nevalidată(e)" not in blocaj["mesaj"] and blocaj["ciorne"] == 4
+    blocaj, _ = uq.decizie_poarta(r, [dict(nota, eticheta=uq.eticheta_nota_tva(nota))] * 4)
+    assert "notă(e) nevalidată(e)" not in blocaj["mesaj"] and blocaj["ciorne"] == 4
 
 
 def test_284_asteptarea_se_scrie_o_data_pe_perioada():

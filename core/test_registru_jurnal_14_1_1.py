@@ -145,15 +145,14 @@ def test_ruta_chiar_cheama_derivarea():
 # ── singura aserțiune pe text, cu motivul declarat mai sus ───────────────────
 def test_CALIBRARE_numerotarea_e_pe_AN_nu_pe_luna():
     """Partea subtila, si singura care poate regresa tacit: norma cere numerotare *incepand de la 1
-    ianuarie*. Daca fereastra ROW_NUMBER ar fi pe luna, fiecare luna ar reincepe de la 1 — raspunsul
-    ar arata la fel de plauzibil, dar registrul ar fi gresit."""
+    ianuarie*. [deficiența 302, 17.10.2026] Numărul nu se mai calculează la citire (ROW_NUMBER pe an, peste
+    toate stările — o notă nouă cu dată mai veche muta numerele notelor validate): se dă la VALIDARE, pe an,
+    și se păstrează în `registru_jurnal_numere`. Ruta îl CITEȘTE de acolo, deci nu-l poate renumerota; că
+    numărul e pe AN (anul următor începe de la 1) se probează pe bază, în
+    `core/test_302_nr_curent.py::test_302_numarul_se_da_la_validare_si_nu_se_muta`."""
     sql = _sql()
-    assert "ROW_NUMBER() OVER" in sql, "numerotarea nu mai e calculata in SQL-ul rutei"
-    i = sql.index("WITH pe_an")
-    fereastra = sql[i:sql.index("ROW_NUMBER() OVER", i) + 200]
-    assert "date_trunc('year'" in fereastra, (
-        "fereastra de numerotare nu mai e pe AN — daca e pe luna, numarul curent reincepe lunar, "
-        "contra normei 14-1-1 col. 1")
+    assert "registru_jurnal_numere" in sql, "ruta nu mai citește numărul păstrat la validare"
+    assert "ROW_NUMBER() OVER" not in sql, "numărul curent se calculează iar la citire — se mută când apare o notă mai veche (302)"
 
 
 def test_CALIBRARE_gardul_citeste_STRUCTURA_nu_PROZA():

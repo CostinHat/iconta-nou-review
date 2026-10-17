@@ -145,10 +145,11 @@ def test_r2_luna_blocata_nu_primeste_si_nu_pierde_note_nici_randuri(cur):
 
 def test_r3_nota_nu_se_valideaza_fara_documentul_sursa(cur):
     """MUTAȚIE: verificarea documentului scoasă -> nota fără document se validează -> pică."""
-    for nr, doc in enumerate((None, "", "  "), 1):
+    for doc in (None, "", "  "):
         n = _nota(cur, doc=doc)
+        # [258] nota numită ca în jurnal, nu prin id; [302] refuzul vine ÎNAINTE de validare, deci nota n-are încă număr curent
         _refuz(cur, "UPDATE inregistrari SET status = 'validata' WHERE id = %s", (n,),
-               R + "Nota nr. crt. %d din 07.10.2099 n-are documentul justificativ" % nr)   # [258] Nr. crt. din jurnal, nu id-ul
+               R + "Nota din 07.10.2099 n-are documentul justificativ")
     _nota(cur, "validata", doc="NIR nr 1")                                                                  # contraproba
 
 

@@ -36,20 +36,94 @@ LOT = 20
 #: variabilă a URL-ului din șablon e un sufix de cale. Mulțime ÎNCHISĂ (o cheie necunoscută duce la pagina principală).
 DESCHIDERI = ("notificari", "raportari", "anunturi", "raport")
 
-#: tipurile clopoțelului -> eticheta trimisă în afara aplicației (fără cifre, fără conținut fiscal) și locul din aplicație. Mulțime ÎNCHISĂ:
-#: un tip nou scris în `notificari_api.adauga` fără intrare aici e prins de `core/test_notificari_canal.py` (scanare AST a apelurilor).
+#: [deficiența 320, comanda Costin 17.10.2026 7.2, verbatim în DECIZII] „În Setări cont → Notificări apar toate tipurile de notificări ale
+#: aplicației, grupate (Termene și declarații, Facturi și SPV, Validări, Clienți, Cont și echipă), fiecare cu un rând care spune ce face
+#: aplicația acolo; utilizatorul bifează ce îl interesează. Fiecare vede doar tipurile care îl privesc după drepturi; termenele și validările
+#: vin bifate din oficiu; emailurile de cont (confirmare, resetare parolă, link de logare) nu sunt în listă și pleacă mereu; bifele decid
+#: doar WhatsApp/email, clopoțelul din aplicație arată tot.”
+GRUPURI = ("Termene și declarații", "Facturi și SPV", "Validări", "Clienți", "Cont și echipă")
+#: grupele bifate din oficiu (cât omul n-a salvat altceva)
+GRUPURI_IMPLICITE = ("Termene și declarații", "Validări")
+#: cine vede tipul în Notificări (și cui i se trimite): `pregatire` / `validare` = bifa din Asistenți („Poate pregăti” / „Poate valida”;
+#: administratorul cabinetului le are pe toate), `admin` = administratorul cabinetului, `cabinet` = orice om al cabinetului, `client` =
+#: clientul din portal, `superadmin` = platforma
+CINE = ("pregatire", "validare", "admin", "cabinet", "client", "superadmin")
+
+#: tipurile clopoțelului -> eticheta trimisă în afara aplicației (fără cifre, fără conținut fiscal), locul din aplicație, grupa, rândul
+#: din Notificări („ce face aplicația aici”) și cine îl vede. Mulțime ÎNCHISĂ: un tip nou scris în `notificari_api.adauga` fără intrare aici
+#: e prins de `core/test_notificari_canal.py` (scanare AST a apelurilor).
 TIPURI = {
-    "de_validat": {"eticheta": "un element nou de validat", "deschide": "notificari"},
-    "aprobata": {"eticheta": "un element pregătit de tine a fost validat", "deschide": "notificari"},
-    "respinsa": {"eticheta": "un element pregătit de tine a fost respins", "deschide": "notificari"},
-    "depusa": {"eticheta": "o declarație pregătită de tine a fost depusă", "deschide": "notificari"},
-    "declaratie_reluata": {"eticheta": "o declarație a revenit în coadă", "deschide": "notificari"},
-    "solicitare_client": {"eticheta": "o solicitare nouă de la un client", "deschide": "notificari"},
-    "control_fiscal": {"eticheta": "o alertă nouă de control fiscal", "deschide": "notificari"},
-    "sesizare": {"eticheta": "o sesizare nouă în Suport", "deschide": "raportari"},
-    "cerere_import": {"eticheta": "o cerere nouă de import din altă aplicație", "deschide": "raportari"},
-    "alerta_legislativa": {"eticheta": "o alertă legislativă importantă", "deschide": "anunturi"},
+    "termen_declaratie": {"eticheta": "o declarație cu termenul aproape, nedepusă", "deschide": "notificari", "grup": "Termene și declarații",
+                          "rand": "Cu trei zile înainte de termenul unei declarații încă nedepuse, pe firmele tale.", "cine": "pregatire"},
+    "declaratie_reluata": {"eticheta": "o declarație a revenit în coadă", "deschide": "notificari", "grup": "Termene și declarații",
+                           "rand": "Când o declarație care aștepta validarea notelor s-a generat din nou și a intrat în coadă.",
+                           "cine": "pregatire"},
+    "depusa": {"eticheta": "o declarație pregătită de tine a fost depusă", "deschide": "notificari", "grup": "Termene și declarații",
+               "rand": "Când un coleg a depus la ANAF o declarație pregătită de tine.", "cine": "pregatire"},
+    "control_fiscal": {"eticheta": "o alertă nouă de control fiscal", "deschide": "notificari", "grup": "Termene și declarații",
+                       "rand": "Când Control fiscal găsește o constatare roșie nouă: o restanță sau o diferență față de evidență.",
+                       "cine": "validare"},
+    "alerta_legislativa": {"eticheta": "o alertă legislativă importantă", "deschide": "anunturi", "grup": "Termene și declarații",
+                           "rand": "Când apare în Monitorul Oficial sau pe Portalul Legislativ un act care schimbă o regulă din aplicație.",
+                           "cine": "superadmin"},
+    "factura_primita": {"eticheta": "facturi noi primite din SPV", "deschide": "notificari", "grup": "Facturi și SPV",
+                        "rand": "Când citirea automată din SPV aduce facturi noi de la furnizorii firmelor tale.", "cine": "pregatire"},
+    "de_validat": {"eticheta": "un element nou de validat", "deschide": "notificari", "grup": "Validări",
+                   "rand": "Când un coleg trimite la validare o notă sau o declarație.", "cine": "validare"},
+    "aprobata": {"eticheta": "un element pregătit de tine a fost validat", "deschide": "notificari", "grup": "Validări",
+                 "rand": "Când o notă sau o declarație pregătită de tine a fost validată.", "cine": "pregatire"},
+    "respinsa": {"eticheta": "un element pregătit de tine a fost respins", "deschide": "notificari", "grup": "Validări",
+                 "rand": "Când o notă sau o declarație pregătită de tine a fost respinsă, cu motivul.", "cine": "pregatire"},
+    "solicitare_client": {"eticheta": "o solicitare nouă de la un client", "deschide": "notificari", "grup": "Clienți",
+                          "rand": "Când un client îți scrie din portal.", "cine": "cabinet"},
+    "pachet_lunar": {"eticheta": "raportul lunar al firmei e gata", "deschide": "notificari", "grup": "Clienți",
+                     "rand": "Când contabilul aprobă raportul lunar al firmei (Povestea lunii).", "cine": "client"},
+    "mesaj_cabinet": {"eticheta": "un mesaj nou de la cabinet", "deschide": "notificari", "grup": "Clienți",
+                      "rand": "Când cabinetul îți scrie în Solicitări — de exemplu, îți cere documente.", "cine": "client"},
+    "asistent_activat": {"eticheta": "un coleg și-a activat contul", "deschide": "notificari", "grup": "Cont și echipă",
+                         "rand": "Când un coleg invitat în Asistenți își activează contul.", "cine": "admin"},
+    "sesizare": {"eticheta": "o sesizare nouă în Suport", "deschide": "raportari", "grup": "Cont și echipă",
+                 "rand": "Când un cabinet trimite o sesizare din Suport.", "cine": "superadmin"},
+    "cerere_import": {"eticheta": "o cerere nouă de import din altă aplicație", "deschide": "raportari", "grup": "Cont și echipă",
+                      "rand": "Când un cabinet cere, din Suport, importul dintr-o aplicație pe care încă n-o citim.", "cine": "superadmin"},
 }
+
+
+def vede_tipul(tip, actor):
+    """PURĂ. Tipul îl privește pe `actor` ({rol, poate_pregati, poate_valida})? Administratorul cabinetului are toate drepturile cabinetului."""
+    cine, rol = TIPURI[tip]["cine"], (actor or {}).get("rol")
+    if cine == "superadmin":
+        return rol == "superadmin"
+    if cine == "client":
+        return rol == "client"
+    if rol == "client":
+        return False
+    if rol in ("admin_firma", "superadmin"):
+        return True
+    return {"pregatire": bool(actor.get("poate_pregati")), "validare": bool(actor.get("poate_valida")), "admin": False,
+            "cabinet": True}[cine]
+
+
+def implicit(tip):
+    return TIPURI[tip]["grup"] in GRUPURI_IMPLICITE
+
+
+def dorit(tip, preferinte):
+    """PURĂ. Tipul pleacă pe WhatsApp / email? Bifa salvată a omului; fără ea, implicitul grupei. Clopoțelul îl arată oricum."""
+    if isinstance(preferinte, dict) and tip in preferinte:
+        return bool(preferinte[tip])
+    return implicit(tip)
+
+
+def lista_pentru(actor, preferinte):
+    """[{grup, tipuri: [{cheie, eticheta, rand, bifat}]}] — tipurile care îl privesc pe `actor`, în ordinea grupelor."""
+    out = []
+    for g in GRUPURI:
+        t = [{"cheie": k, "eticheta": v["eticheta"], "rand": v["rand"], "bifat": dorit(k, preferinte)}
+             for k, v in TIPURI.items() if v["grup"] == g and vede_tipul(k, actor)]
+        if t:
+            out.append({"grup": g, "tipuri": t})
+    return out
 
 
 def _baza():
@@ -116,8 +190,13 @@ def _revendica(limita):
                 conn.rollback()
                 return []
         conn.commit()
-    return [(r[0], r[1], {"uid": r[2], "email": r[3], "canal": r[4], "telefon": r[5], "confirmat": r[6], "acord": r[7], "activ": r[8]})
+    return [(r[0], r[1], {"uid": r[2], "email": r[3], "canal": r[4], "telefon": r[5], "confirmat": r[6], "acord": r[7], "activ": r[8],
+                          "preferinte": r[9]})
             for r in randuri]
+
+
+#: [320] ce scrie jurnalul livrării pentru un tip debifat de om: nu pleacă pe canal, rămâne în clopoțel
+DETALIU_NEBIFAT = "nebifat în Setări cont → Notificări: rămâne în clopoțel"
 
 
 def livreaza_in_asteptare(limita=LOT):
@@ -128,6 +207,11 @@ def livreaza_in_asteptare(limita=LOT):
             canal = "netrimis"
             _jurnal(nid, d["uid"], tip if tip in TIPURI else "de_validat", "email", "netrimis",
                     detaliu="cont inactiv" if not d["activ"] else "tip fără etichetă de livrare: %s" % tip)
+        elif not dorit(tip, d.get("preferinte")):
+            # [320] „bifele decid doar WhatsApp/email, clopoțelul din aplicație arată tot”: nebifat în Notificări -> rămâne în clopoțel
+            canal = "nedorit"
+            _jurnal(nid, d["uid"], tip, d["canal"] if d["canal"] in ("email", "whatsapp") else "email", "netrimis",
+                    detaliu=DETALIU_NEBIFAT)
         else:
             try:
                 canal = livreaza(nid, d, tip)

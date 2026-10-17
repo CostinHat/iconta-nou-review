@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, arataMesaj, cate, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt } from "../api.js?v=9409795a49";
+import { api, arataMesaj, cate, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere } from "../api.js?v=9409795a49";
 import { textStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=627c3c3c38";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
@@ -211,7 +211,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
     <div class="em-sectiune">
       <div class="em-eticheta">Produse și servicii</div>
-      <div class="camp-eticheta">Linie: denumire · cantitate · preț unitar <span class="oblig">*</span> <span class="tip-micut">${opt.tvaProfil === false ? "(firma nu e plătitoare de TVA: liniile nu poartă TVA — regim special de scutire, art. 310 Cod fiscal)" : "(cota TVA e propusă automat pe baza denumirii produsului — verifică încadrarea și schimb-o din listă dacă e altfel; răspunderea corectitudinii cotei îți aparține, iar schimbarea se consemnează)"}</span></div>
+      <div class="camp-eticheta">Linie: denumire · cantitate · preț unitar <span class="oblig">*</span> <span class="tip-micut">${opt.tvaProfil === false ? "(firma nu e plătitoare de TVA: liniile nu poartă TVA — regim special de scutire, art. 310 Cod fiscal)" : "(la un articol din stoc, cota TVA vine din articol; la o linie fără articol, cota e propusă pe baza denumirii — verifică încadrarea și schimb-o din listă dacă e altfel; răspunderea corectitudinii cotei îți aparține, iar schimbarea se consemnează)"}</span></div>
       <div class="em-linie-antet" aria-hidden="true"><span>Denumire</span><span class="ant-cant">Cant.</span><span class="ant-um">UM</span><span class="ant-pret">Preț</span><span class="ant-cota">Cotă</span><span></span></div>
       <div class="em-linii" id="em-linii"></div>
       <button class="buton-secundar em-buton-sec" id="em-add-linie" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ Adaugă linie</button>
@@ -253,7 +253,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <input class="camp-input" id="em-bon-data" type="date">
       <p class="camp-ajutor">Pentru o factură cerută de client pentru un bon deja emis: vânzarea e în raportul Z, deci factura nu se mai numără a doua oară (D300, D394, evidență, stoc). Pe factură apare „conform bon fiscal nr./data”.</p>
     </div>
-    <div class="bara-fixa"><div class="em-actiuni">
+    <div class="bara-fixa"><div class="em-rezultat" id="em-rezultat"></div><div class="em-actiuni">
       <select id="em-tip" class="camp-input" aria-label="Tipul documentului emis" style="max-width:180px;margin-right:8px">
         <option value="factura" selected>Factura</option>
         <option value="proforma">Proforma</option>
@@ -261,8 +261,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       </select>
       <button class="buton-primar em-emite" id="em-emite" data-actiune="POST /tenants/{tenant_id}/facturi/emite">Emite factură</button>
       <button class="buton-secundar" id="em-renunta" data-fara-actiune="ciorna facturii stă în browser; renunțarea n-are cerere la server" style="margin-left:8px">Renunță la factură</button>
-    </div>
-    <div class="em-rezultat" id="em-rezultat"></div></div>`;
+    </div></div>`;
 
   // [comanda Costin 05.10.2026 pct.2] „Datele firmei care blochează emiterea se verifică la deschiderea «Emite factură», nu după
   // completarea întregului formular.” Lipsurile vin de la server (aceeași regulă ca refuzul emiterii, `capital_social.lipsa`).
@@ -600,15 +599,37 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   };
   // [274b] clientul din afara României: localitatea și regiunea lui (adresa de livrare a livrării intracomunitare în e-Factura)
   const aratăStrain = () => { const s = corp.querySelector("#em-tara").value !== "RO"; corp.querySelectorAll(".em-strain").forEach((e) => { e.hidden = !s; }); };
-  corp.querySelector("#em-tara").addEventListener("change", aratăStrain);
+  // [deficiența 304, rest din 290] refuzul calculat pentru clientul de dinainte (categoria față de țară) nu mai rămâne pe ecran după
+  // schimbarea clientului: erorile liniilor și mesajul de jos se scot la orice schimbare a clientului (CUI, țară, denumire), inclusiv când
+  // țara se pune din cod (CUI-ul, VIES) — acolo nu se declanșează niciun „change”
+  const curataRefuzulClientului = () => { curataEroriCamp(corp); const r = corp.querySelector("#em-rezultat"); if (r) r.innerHTML = ""; };
+  corp.querySelector("#em-tara").addEventListener("change", () => { curataRefuzulClientului(); aratăStrain(); });
+  corp.querySelector("#em-nume").addEventListener("change", curataRefuzulClientului);
   corp.querySelector("#em-cui").addEventListener("change", (ev) => {
     const t = taraDinCui(ev.target.value), sel = corp.querySelector("#em-tara");
     if (t && sel && sel.value !== t) { sel.value = t; salveazaCiorna(); }
+    curataRefuzulClientului();
     aratăStrain();
   });
 
   // verificare CUI
-  corp.querySelector("#em-verifica").addEventListener("click", async () => {
+  // [deficiența 303, comanda Costin 17.10.2026 7.2] „«Verifică» CUI nu arată nimic cât așteaptă ANAF; pare stricat”: butonul spune
+  // „Se verifică…” și e blocat cât așteaptă; un ANAF care nu răspunde se spune cu mesajul serverului, nu cu „verificarea a eșuat”
+  const bVerif = corp.querySelector("#em-verifica");
+  bVerif.addEventListener("click", async () => {
+    if (bVerif.disabled) return;
+    bVerif.disabled = true; bVerif.setAttribute("aria-busy", "true"); bVerif.textContent = "Se verifică…";
+    try { await verificaCui(); } finally { bVerif.disabled = false; bVerif.removeAttribute("aria-busy"); bVerif.textContent = "Verifică"; }
+  });
+  // [deficiența 305] VIES dă adresa ca text (de obicei „strada\ncod poștal localitate”): localitatea e ultimul rând fără codul poștal; un
+  // ultim rând care e numai codul poștal (Eircode, „D02 X285”) lasă localitatea pe rândul dinainte
+  const localitateDinAdresa = (adresa) => {
+    const r = String(adresa || "").split(/\n|,/).map((x) => x.trim()).filter(Boolean);
+    while (r.length > 1 && /^[A-Z]{0,3}\d[\dA-Z\s-]{0,7}$/i.test(r[r.length - 1]) && r[r.length - 1].length <= 9) r.pop();
+    const ultim = r.length > 1 ? r[r.length - 1] : "";
+    return ultim.replace(/^[A-Z]{0,3}[-\s]?\d[\d\s-]*\s+/i, "").trim();
+  };
+  async function verificaCui() {
     const cui = corp.querySelector("#em-cui").value.trim();
     const stare = corp.querySelector("#em-cui-stare");
     if (!cui) return;
@@ -623,7 +644,16 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         if (v && v.valid) {
           // unele state (ex. DE) nu divulga nume/adresa -> VIES intoarce "---"
           if (v.nume && v.nume !== "---") corp.querySelector("#em-nume").value = v.nume;
-          if (v.adresa && v.adresa !== "---") corp.querySelector("#em-adresa").value = v.adresa.trim();
+          if (v.adresa && v.adresa !== "---") {
+            corp.querySelector("#em-adresa").value = v.adresa.trim();
+            const oras = corp.querySelector("#em-oras"), loc = localitateDinAdresa(v.adresa);
+            if (oras && loc && !oras.value.trim()) oras.value = loc;   // [305] localitatea clientului străin, din adresa VIES
+          }
+          const sel = corp.querySelector("#em-tara");
+          if (sel && (v.tara || pfx) && sel.value !== (v.tara || pfx)) {
+            const t = v.tara || pfx;   // codurile VIES ale listei (Grecia = EL)
+            if ([...sel.options].some((o) => o.value === t)) { sel.value = t; curataRefuzulClientului(); aratăStrain(); }
+          }
           stare.innerHTML = `<span class="em-cui-info">valid în VIES · ${esc(v.tara || pfx)}</span>`;
           stare.className = "em-cui-stare";
           salveazaCiorna();
@@ -631,8 +661,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
           stare.textContent = "cod TVA invalid în VIES — scutirea intracomunitară nu se aplică";
           stare.className = "em-cui-stare em-cui-rau";
         }
-      } catch {
-        stare.textContent = "VIES indisponibil — reîncearcă";
+      } catch (e) {
+        stare.textContent = (e && e.mesaj) || "VIES nu răspunde acum — încearcă din nou peste un minut.";
         stare.className = "em-cui-stare em-cui-rau";
       }
       return;
@@ -670,11 +700,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         stare.textContent = "CUI negăsit la ANAF";
         stare.className = "em-cui-stare em-cui-rau";
       }
-    } catch {
-      stare.textContent = "verificarea a eșuat";
+    } catch (e) {
+      stare.textContent = (e && e.mesaj) || "ANAF nu răspunde acum la verificarea CUI — încearcă din nou peste un minut.";
       stare.className = "em-cui-stare em-cui-rau";
     }
-  });
+  }
 
   // emitere
   // selector moneda -> actualizeaza starea + totalurile + nota
@@ -764,7 +794,12 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         const z = document.createElement("div");
         z.className = "caseta-atentie";
         z.style.marginTop = "8px";
-        z.innerHTML = `<div class="ca-mesaj">${esc(tSpv.text)} Factura emisă rămâne netrimisă în SPV; termenul de transmitere e de 5 zile lucrătoare de la emitere (OUG 120/2021 art.10 alin.(7)).</div>`;
+        // [307] termenul de 5 zile e al facturii OBLIGATORII (client stabilit / înregistrat în scopuri de TVA în România)
+        const strain = ((corp.querySelector("#em-tara") || {}).value || "RO").toUpperCase() !== "RO"
+          && !/^(RO|\d)/i.test(((corp.querySelector("#em-cui") || {}).value || "").trim());
+        z.innerHTML = `<div class="ca-mesaj">${esc(tSpv.text)} Factura emisă rămâne netrimisă în SPV; ${strain
+          ? "pentru un client care nu e stabilit în România, transmiterea în RO e-Factura nu e obligatorie (OUG 120/2021 art.10 alin.(1))."
+          : "termenul de transmitere e de 5 zile lucrătoare de la emitere (OUG 120/2021 art.10 alin.(7))."}</div>`;
         rez2.appendChild(z);
         butonSpreEcran(z, "conectare_spv", nav, tenantId, { clasa: "buton-secundar" });
       } else if (stSpv) {   // starea necitită rămâne pe ecran (mesajul de mai sus), nu pleacă singură
@@ -775,7 +810,9 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       const cursIndisp = e && e.cod === 409 && det && typeof det === "object" && det.cod === "CURS_INDISPONIBIL";
       const serieLipsa = e && e.detaliu && e.detaliu.cod === "SERIE_LIPSA";
       const spreEcran = e && e.detaliu && typeof e.detaliu === "object" && e.detaliu.ecran && e.detaliu.ecran !== "numerotare";
-      if (cursIndisp) {
+      if (e && e.detaliu && e.detaliu.cod === "INTREABA_PLEACA_MARFA") {
+        intreabaPleacaMarfa();   // [304] liniile au trecut: abia acum întrebarea
+      } else if (cursIndisp) {
         arataCursIndisponibil(det);
       } else if (serieLipsa) {
         arataSerieLipsa(e.detaliu);
@@ -873,6 +910,18 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       // [lotul 07.10 pct.17] întrebarea s-a pus deja pentru exact aceste articole: răspunsul rămâne (seria stabilită din
       // refuz, revenirea din Date firmă, a doua apăsare pe „Emite”); se pune din nou numai dacă s-au schimbat articolele.
       if (pleacaMarfaCurent !== null && semnMarfa === semnArticole()) { trimiteEmitere(null); return; }
+      // [deficiența 304] întâi serverul verifică liniile (fără răspuns la întrebare): un refuz vine acum, nu după „Pleacă marfa acum?”;
+      // numai dacă liniile trec, serverul cere răspunsul (`INTREABA_PLEACA_MARFA`) și atunci se pune întrebarea
+      pleacaMarfaCurent = null;
+      trimiteEmitere(null);
+    } else {
+      pleacaMarfaCurent = null;
+      trimiteEmitere(null);
+    }
+  }
+  function intreabaPleacaMarfa() {
+    const cuArticole = linii.filter((l) => l && l.articol_id).length;
+    {
       const rez = corp.querySelector("#em-rezultat");
       rez.className = "em-rezultat";
       rez.innerHTML = `
@@ -885,9 +934,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         </div>`;
       rez.querySelector("#em-poarta-da").addEventListener("click", () => { pleacaMarfaCurent = true; semnMarfa = semnArticole(); salveazaCiorna(); trimiteEmitere(null); });
       rez.querySelector("#em-poarta-nu").addEventListener("click", () => { pleacaMarfaCurent = false; semnMarfa = semnArticole(); salveazaCiorna(); trimiteEmitere(null); });
-    } else {
-      pleacaMarfaCurent = null;
-      trimiteEmitere(null);
+      aduInVedere(rez);
     }
   }
   function semnArticole() {

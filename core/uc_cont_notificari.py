@@ -54,10 +54,29 @@ def _hash(uid, cod):
     return hashlib.sha256(("%s:%s" % (uid, cod)).encode()).hexdigest()
 
 
+#: [320] emailurile contului nu sunt în listă și pleacă mereu (textul de sub bife)
+NOTA_EMAILURI_CONT = ("Emailurile contului — confirmarea, resetarea parolei, linkul de logare — nu sunt în listă: pleacă mereu, pe email. "
+                      "Bifele decid numai ce pleacă pe WhatsApp sau pe email; clopoțelul din aplicație arată tot.")
+
+
+def _actor(r):
+    return {"rol": r[2], "poate_pregati": r[3], "poate_valida": r[4]}
+
+
 def _stare(cur, uid):
+    from core import notificari as _n
     r = _repo.stare(cur, uid)
-    return {"telefon": r[0], "confirmat": r[1], "canal": r[2], "acord": r[3], "whatsapp_disponibil": _wa.configurat(),
-            "numar_iconta": _wa.NUMAR_AFISAT}
+    p = _repo.preferintele(cur, uid)
+    st = {"telefon": r[0], "confirmat": r[1], "canal": r[2], "acord": r[3], "whatsapp_disponibil": _wa.configurat(),
+          "numar_iconta": _wa.NUMAR_AFISAT}
+    # [deficiența 320] toate tipurile care îl privesc, grupate, cu bifele lui (sau implicitul grupei); prima intrare e completă când
+    # telefonul e scris și bifele (cu canalul) au fost salvate o dată — sau contul exista la publicarea lotului 7 („Numai conturile
+    # noi”, decizia Costin 17.10.2026, `prima_intrare_scutita_la` din `core/migrare_canal_notificari.py`)
+    st["grupuri"] = _n.lista_pentru(_actor(p), p[0])
+    st["salvate"] = bool(p[1])
+    st["complet"] = bool(p[5]) or (bool(r[0]) and bool(p[1]))
+    st["nota_emailuri_cont"] = NOTA_EMAILURI_CONT
+    return st
 
 
 def stare(ctx):
@@ -125,13 +144,28 @@ def confirma_cod(date, ctx):
     raise _refuz_camp(_erori.CerereGresita, COD_COD_GRESIT, "not-cod", MESAJ_COD_GRESIT)
 
 
+COD_TELEFON_OBLIGATORIU = "TELEFON_OBLIGATORIU"
+MESAJ_TELEFON_OBLIGATORIU = ("Scrie numărul tău de telefon și salvează-l: e obligatoriu, chiar dacă notificările vin pe email "
+                             "(prin el te anunțăm pe WhatsApp, dacă alegi canalul).")
+
+
 def canal_seteaza(date, ctx):
-    """Canalul ('email' | 'whatsapp') și acordul. Acordul retras: canalul e email. WhatsApp cere numărul confirmat și acordul."""
+    """Canalul ('email' | 'whatsapp'), acordul și [320] bifele pe tipuri (`date.tipuri`: {tip: bool}, numai tipurile care îl privesc pe om).
+    Acordul retras: canalul e email. WhatsApp cere numărul confirmat și acordul. Salvarea bifelor cere telefonul (prima intrare)."""
+    import json
+    from core import notificari as _n
     if date.canal not in CANALE:
         raise _refuz_camp(_erori.CerereGresita, COD_CANAL_INVALID, "not-canal", MESAJ_CANAL_INVALID)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             st = _stare(cur, ctx["uid"])
+            tipuri = getattr(date, "tipuri", None)
+            if tipuri is not None:
+                if not st["telefon"]:
+                    raise _refuz_camp(_erori.CerereGresita, COD_TELEFON_OBLIGATORIU, "not-telefon", MESAJ_TELEFON_OBLIGATORIU)
+                vazute = {t["cheie"] for g in st["grupuri"] for t in g["tipuri"]}
+                _repo.scrie_preferintele(cur, ctx["uid"], json.dumps({k: bool(v) for k, v in tipuri.items() if k in vazute and k in _n.TIPURI},
+                                                                     sort_keys=True))
             if date.acord is False:
                 _repo.retrage_acordul(cur, ctx["uid"])
             elif date.canal == "whatsapp":

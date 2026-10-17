@@ -42,7 +42,7 @@ def _cont_banca(valuta):
     return "5124" if valuta else "5121"
 
 
-def facturi_deschise(conn, schema):
+def facturi_deschise(conn, schema, cu_asteptare=False):
     """Facturi cu sold > 0. Sold = total_lei(±total) - sume decontate prin
     inregistrari legate cu factura_id (credit 4111 la emise / debit 401 la primite).
     [17.10.2026, lotul 6, 278] Nota unei chitanțe de dinainte de 278 n-are `factura_id` (atunci nu se punea), iar o notă validată nu se
@@ -61,13 +61,24 @@ def facturi_deschise(conn, schema):
                                          WHERE c.inregistrare_id = i.id AND c.factura_id = f.id AND NOT c.anulata)))
                                AND ((f.directie='emisa'   AND l.cont_credit=%s)
                                  OR (f.directie='primita' AND l.cont_debit=%s))), 0) AS decontat,
+                   (SELECT array_agg(DISTINCT i.id ORDER BY i.id)
+                      FROM {schema}.inregistrari i
+                      JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
+                     WHERE i.factura_id = f.id AND i.status <> 'validata'
+                       AND ((f.directie='emisa' AND l.cont_credit=%s) OR (f.directie='primita' AND l.cont_debit=%s))) AS note_nevalidate,
+                   COALESCE((SELECT SUM(l.suma)
+                             FROM {schema}.inregistrari i
+                             JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
+                             WHERE i.factura_id = f.id AND i.status <> 'validata'
+                               AND ((f.directie='emisa'   AND l.cont_credit=%s)
+                                 OR (f.directie='primita' AND l.cont_debit=%s))), 0) AS decontat_nevalidat,
                    COALESCE((SELECT SUM(COALESCE(st.total_lei, st.total))
                              FROM {schema}.facturi st
                              WHERE st.storno_din_id = f.id), 0) AS storno
             FROM {schema}.facturi f
             WHERE f.status NOT IN ('anulata','storno')
               AND f.storno_din_id IS NULL
-        """, (CONT_CLIENTI, CONT_FURNIZORI))
+        """, (CONT_CLIENTI, CONT_FURNIZORI) * 3)
         rez = []
         for r in cur.fetchall():
             sold = Decimal(r["total"] or 0) - Decimal(r["decontat"] or 0) + Decimal(r["storno"] or 0)
@@ -75,6 +86,11 @@ def facturi_deschise(conn, schema):
                 rez.append({"id": r["id"], "tert_cui": r["tert_cui"],
                             "directie": r["directie"],
                             "data_emitere": r["data_emitere"], "sold": sold})
+            elif cu_asteptare and sold + Decimal(r["decontat_nevalidat"] or 0) > Decimal("0.01"):
+                # [deficiența 310] stinsă numai de o încasare / plată a cărei notă e încă la validare: nu e deschisă, dar se spune de ce
+                rez.append({"id": r["id"], "tert_cui": r["tert_cui"], "directie": r["directie"], "data_emitere": r["data_emitere"],
+                            "sold": sold, "in_asteptare": True, "note_nevalidate": list(r["note_nevalidate"] or []),
+                            "sold_validat": sold + Decimal(r["decontat_nevalidat"] or 0)})
         return rez
 
 
@@ -141,7 +157,7 @@ def importa_extras(conn, schema, tranzactii, fisier="", continut=None, cont=None
                         else:
                             t["nota"] = {"debit": cont_banca, "credit": sug["cont"]}
                         aloc["incredere"] = sug["incredere"]
-                        aloc["motiv"] = aloc["motiv"] + f"; sugestie invatata: {sug['cont']} ({sug['incredere']}, {_cate(sug['validari'], 'validare', 'validări')})"
+                        aloc["motiv"] = aloc["motiv"] + f"; sugestie învățată: {sug['cont']} ({sug['incredere']}, {_cate(sug['validari'], 'validare', 'validări')})"
                 except Exception as _e:
                     from core import observare as _obs
                     _obs.esec_secundar("sugestie invatata la importul extrasului", _e)   # înghițit, dar nu tăcut
@@ -189,6 +205,18 @@ def compara_solduri(conn, schema, sold_initial, sold_final):
     return out
 
 
+#: [deficiența 309] motivele scrise la importul extrasului înainte de 7d718193 (engleză, fără diacritice) stau în `extras_linii.alocari`;
+#: se spun ca acum, la citire — linia importată atunci nu se reimportă
+_MOTIVE_VECHI = (("match exact pe o factura", "potrivire exactă pe o factură"), ("match exact pe ", "potrivire exactă pe "),
+                 ("alocare partiala FIFO", "alocare parțială, pe facturile cele mai vechi întâi"), ("sugestie invatata", "sugestie învățată"))
+
+
+def motiv_pe_romaneste(motiv):
+    for vechi, nou in _MOTIVE_VECHI:
+        motiv = motiv.replace(vechi, nou)
+    return motiv
+
+
 def lista(conn, schema, status=None):
     """Liniile de extras cu detaliile facturilor alocate (pentru UI)."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -210,10 +238,22 @@ def lista(conn, schema, status=None):
                             COALESCE(total_lei, total) AS total
                             FROM {schema}.facturi WHERE id = ANY(%s)""", (list(ids),))
             facturi = {f["id"]: f for f in cur.fetchall()}
+        # [deficiența 309, comanda Costin 17.10.2026 7.2] „linia contată arată «Contat ✓» cât nota e încă la validare”: starea notelor
+        # liniei (`alocari.inregistrari_ids`) se citește aici; ecranul spune „contată, nota e la validare” până la validare
+        note_ids = {i for l in linii for i in ((l.get("alocari") or {}).get("inregistrari_ids") or [])}
+        stari = {}
+        if note_ids:
+            cur.execute(f"SELECT id, status FROM {schema}.inregistrari WHERE id = ANY(%s)", (list(note_ids),))
+            stari = {r["id"]: r["status"] for r in cur.fetchall()}
         for l in linii:
             l["suma"] = str(l["suma"])
             l["data"] = str(l["data"])
             l["creat_la"] = str(l["creat_la"])
+            ids_l = (l.get("alocari") or {}).get("inregistrari_ids") or []
+            l["note_de_validat"] = sum(1 for i in ids_l if stari.get(i) not in (None, "validata"))
+            al = l.get("alocari") or {}
+            if al.get("motiv"):
+                al["motiv"] = motiv_pe_romaneste(al["motiv"])
             for a in (l.get("alocari") or {}).get("alocari", []):
                 f = facturi.get(a["factura_id"])
                 if f:
@@ -233,7 +273,7 @@ def conteaza(conn, schema, linie_id, alocari=None):
         if not l:
             return None
         if l["status"] == "contat":
-            return {"eroare": "linia e deja contata"}
+            return {"eroare": "linia e deja contată"}
         aloc = alocari or (l.get("alocari") or {}).get("alocari", [])
         # [05.10.2026, comanda Costin pct.6] fiecare notă din extras poartă extrasul ca document justificativ
         from core import pdf_util as _pu

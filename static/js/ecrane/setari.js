@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca, refuzPeRand, cate } from "../api.js?v=9409795a49";
+import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp } from "../api.js?v=9409795a49";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export async function randeazaSetari(corp, nav) {
@@ -52,7 +52,7 @@ export async function randeazaSetari(corp, nav) {
     try { const r = await api.get("/eu/cabinet"); if (r && r.ok) cab = r.cabinet; } catch {}
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
-        <div class="cap-titlu">Date cabinet</div>
+        <h2 class="pf-titlu">Date cabinet</h2>
         <label class="camp">
           <span class="camp-eticheta">Nume cabinet</span>
           <input id="set-cab-nume" class="camp-input" type="text" value="${esc(cab && cab.nume)}">
@@ -91,7 +91,7 @@ export async function randeazaSetari(corp, nav) {
     const b = (k) => c[k] ? "checked" : "";
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
-        <div class="cap-titlu">Ce pot face</div>
+        <h2 class="pf-titlu">Ce pot face</h2>
         <p class="ecran-nota">Alege ce poți face în fluxul de declarații. Le poți lăsa nebifate dacă procesarea o fac asistenții.</p>
         <label class="set-bifa"><input type="checkbox" id="cmp-preg" ${b("poate_pregati")}> <span>Pot pregăti declarații</span></label>
         <label class="set-bifa"><input type="checkbox" id="cmp-val" ${b("poate_valida")}> <span>Pot valida declarații</span></label>
@@ -122,7 +122,7 @@ export async function randeazaSetari(corp, nav) {
   function randeazaChei() {
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
-        <div class="cap-titlu">Chei API ${semnAjutor("F005")}</div>
+        <h2 class="pf-titlu">Chei API ${semnAjutor("F005")}</h2>
         <p class="mig-intro">Pentru conectarea altor aplicații la datele cabinetului. Cheia se afișează o singură dată.</p>
         <div id="set-chei-lista" data-actiune="GET /cabinet/api-chei"><p class="ecran-nota">Se încarcă...</p></div>
         <label class="camp-eticheta" for="set-cheie-nume">Nume cheie</label>
@@ -210,7 +210,7 @@ export async function randeazaSetari(corp, nav) {
   function randeazaProfil() {
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
-        <div class="cap-titlu">Date profil</div>
+        <h2 class="pf-titlu">Date profil</h2>
         <label class="camp">
           <span class="camp-eticheta">Nume</span>
           <input id="set-nume" class="camp-input" type="text" value="${esc(u.nume)}">
@@ -241,7 +241,7 @@ export async function randeazaSetari(corp, nav) {
   function randeazaParola() {
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
-        <div class="cap-titlu">Schimbă parola</div>
+        <h2 class="pf-titlu">Schimbă parola</h2>
         <label class="camp">
           <span class="camp-eticheta">Parola actuala</span>
           <input id="set-pv" class="camp-input" type="password" autocomplete="current-password">
@@ -334,14 +334,17 @@ function _initChei(corp) {
 // WhatsApp sau email (implicit email). WhatsApp se activează numai după confirmarea numărului printr-un cod trimis pe WhatsApp și bifa
 // de acord pentru mesaje.” Ordinea pe ecran = ordinea serverului (`core/uc_cont_notificari.py`): numărul, acordul + codul, confirmarea,
 // canalul. Opțiunea WhatsApp e inactivă până la confirmare și acord, cu motivul lângă ea. Superadminul îl deschide din cardul lui.
-export async function panouNotificari(zona) {
+// [comanda Costin 17.10.2026 7.2 pct.2] „titlul din Notificări rămâne o singură dată, în corpul ferestrei, ca la celelalte ecrane”: fiecare
+// ecran din Setări cont își scrie titlul ca <h2 class="pf-titlu"> în corp (navigatorul nu-l mai adaugă a doua oară); era și titlul pus
+// de navigator, și „cap-titlu” în panou. Aceeași clasă pe toate cele șapte ecrane ale meniului.
+export async function panouNotificari(zona, opt = {}) {
   zona.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
   let st = null;
   try { st = await api.get("/eu/notificari"); } catch (e) { zona.innerHTML = ""; arataMesaj(zona, e.mesaj || "Setările notificărilor nu s-au putut citi.", "eroare"); return; }
   const deschis = (st) => st.telefon && st.confirmat && st.acord;
   zona.innerHTML = `
     <div class="panou">
-      <div class="cap-titlu">Notificări</div>
+      <h2 class="pf-titlu">Notificări</h2>
       <p class="ecran-nota">Notificările din clopoțel îți vin și pe canalul ales aici. Pe WhatsApp primești un mesaj scurt, fără date fiscale, cu linkul spre aplicație. Confirmarea contului, resetarea parolei și linkul de logare vin mereu pe email.</p>
       <label class="camp">
         <span class="camp-eticheta">Telefon</span>
@@ -367,9 +370,19 @@ export async function panouNotificari(zona) {
         </select>
       </label>
       <div id="not-motiv-canal" class="ecran-nota"></div>
+      <div id="not-tipuri"></div>
       <button class="buton-primar" id="not-salveaza-canal">Salvează</button>
       <div id="not-msg"></div>
     </div>`;
+  // [deficiența 320, comanda Costin 17.10.2026 7.2] toate tipurile care te privesc, grupate, cu un rând despre ce face aplicația la
+  // fiecare; termenele și validările vin bifate din oficiu; emailurile contului nu sunt în listă și pleacă mereu (nota de sub listă)
+  const zTip = zona.querySelector("#not-tipuri");
+  zTip.innerHTML = (st.grupuri || []).length ? `<fieldset class="camp not-tipuri" style="border:0;padding:0;margin:12px 0 8px">
+      <legend class="camp-eticheta">Ce primești pe canalul ales</legend>
+      ${st.grupuri.map((g) => `<div class="not-grup"><div class="cf-grup-titlu">${esc(g.grup)}</div>
+        ${g.tipuri.map((t) => `<label class="set-bifa not-tip"><input type="checkbox" data-tip="${esc(t.cheie)}"${t.bifat ? " checked" : ""}>
+          <span><b>${esc(t.eticheta.charAt(0).toUpperCase() + t.eticheta.slice(1))}</b><br><span class="ecran-nota">${esc(t.rand)}</span></span></label>`).join("")}</div>`).join("")}
+      <p class="ecran-nota">${esc(st.nota_emailuri_cont || "")}</p></fieldset>` : "";
   const $ = (s) => zona.querySelector(s);
   const msg = $("#not-msg");
   function arata(s) {
@@ -400,9 +413,15 @@ export async function panouNotificari(zona) {
   });
   $("#not-salveaza-canal").addEventListener("click", async () => {
     try {
-      arata(await api.put("/eu/notificari", { canal: $("#not-canal").value, acord: $("#not-acord").checked }));
-      arataMesaj(msg, st.canal === "whatsapp" ? "Notificările vin pe WhatsApp." : "Notificările vin pe email.", "ok");
-    } catch (e) { arataMesaj(msg, e.mesaj || "Canalul nu s-a putut salva.", "eroare"); }
+      const tipuri = {};
+      zona.querySelectorAll("#not-tipuri [data-tip]").forEach((c) => { tipuri[c.dataset.tip] = c.checked; });
+      arata(await api.put("/eu/notificari", { canal: $("#not-canal").value, acord: $("#not-acord").checked, tipuri }));
+      arataMesaj(msg, (st.canal === "whatsapp" ? "Notificările vin pe WhatsApp." : "Notificările vin pe email.") + " Alegerile tale sunt salvate.", "ok");
+      if (opt.dupaSalvare) opt.dupaSalvare(st);   // [320] prima intrare: „Continuă” se deblochează
+    } catch (e) {
+      (e.erori_campuri || []).forEach((c) => eroareCamp(zona, c.camp, c.mesaj));
+      arataMesaj(msg, e.mesaj || "Canalul nu s-a putut salva.", "eroare");
+    }
   });
 }
 
@@ -414,7 +433,7 @@ export async function panouConectareSPV(zona) {
   try { const r = await api.get("/spv/stare"); if (r) st = r; } catch {}
   zona.innerHTML = `
     <div class="panou">
-      <div class="cap-titlu">Conectare SPV</div>
+      <h2 class="pf-titlu">Conectare SPV</h2>
       <p class="ecran-nota">Autorizezi iConta.eu să lucreze cu SPV/ANAF (e-Factura, e-Transport) folosind certificatul tău. Autorizarea se face o singură dată pentru tot cabinetul și acoperă firmele pentru care certificatul are împuternicire la ANAF.</p>
       <div class="caseta-info"><span class="ci-mesaj">După înrolarea certificatului în SPV, așteaptă 24 de ore înainte de prima conectare. Altfel ANAF răspunde cu eroare, deși totul e configurat corect.</span></div>
       <div id="spv-stare" style="margin:10px 0"></div>
@@ -434,10 +453,14 @@ export async function panouConectareSPV(zona) {
     if (cuiuri.length) {
       const z = document.createElement("div");
       z.id = "spv-cuiuri";
-      z.innerHTML = `<div class="cap-titlu" style="margin-top:12px">Firme verificate în SPV cu acest certificat</div>` + cuiuri.map((c) =>
-        `<div class="${c.are_drept === false ? "caseta-atentie" : "caseta-info"} spv-cui" data-cui="${esc(c.cui)}"><span class="${c.are_drept === false ? "ca-mesaj" : "ci-mesaj"}">`
-        + `<b>${esc(c.nume || "CUI " + c.cui)}</b> · ${c.are_drept === false ? esc(c.mesaj || "fără drept") : (c.are_drept ? "cu drept SPV" : "nedeterminat: " + esc(c.eroare || ""))}`
-        + `${c.verificat_la ? " · verificat " + esc(dataRo(c.verificat_la, "cu_ora")) : ""}</span></div>`).join("");
+      // [deficiența 315, comanda Costin 17.10.2026 7.2] explicația (OMFP 660/2017) o dată, deasupra; pe fiecare firmă un rând:
+      // „<firmă> · fără drept în SPV · verificat <data, ora>”
+      z.innerHTML = `<div class="cap-titlu" style="margin-top:12px">Firme verificate în SPV cu acest certificat</div>`
+        + (st.explicatie_fara_drept ? `<div class="caseta-atentie" id="spv-explicatie"><span class="ca-mesaj">${esc(st.explicatie_fara_drept)}</span></div>` : "")
+        + `<ul class="spv-cuiuri-lista">` + cuiuri.map((c) =>
+        `<li class="spv-cui${c.are_drept === false ? " spv-cui-fara" : ""}" data-cui="${esc(c.cui)}">`
+        + `<b>${esc(c.nume || "CUI " + c.cui)}</b> · ${c.are_drept === false ? "fără drept în SPV" : (c.are_drept ? "cu drept în SPV" : "nedeterminat: " + esc(c.eroare || ""))}`
+        + `${c.verificat_la ? " · verificat " + esc(dataRo(c.verificat_la, "cu_ora")) : ""}</li>`).join("") + `</ul>`;
       msg.after(z);
     }
     if (btn) { btn.textContent = "Reconectează SPV"; btn.className = "buton-secundar"; }

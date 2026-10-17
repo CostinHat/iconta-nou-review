@@ -284,15 +284,33 @@ def controale_inchidere(conn, schema, an, luna):
         _mf_toate = _rmf.toate(cur)
         lipsa = _mfr.amortizare_lunii_neinregistrata(cur, _mf_toate, an, luna)
         anterioare = _mfr.luni_anterioare_neinregistrate(cur, _mf_toate, an, luna)   # [deficiența 215]
+        # [deficiența 312] lunile a căror amortizare e deja generată (ciornă), pe cont: „generată, de validat”, nu „neînregistrată”
+        in_ciorna = {c: _mfr.luni_in_ciorna(cur, c) for c in {x["cont"] for x in lipsa + anterioare if x.get("cont")}}
         sold_581 = -_mfr.sold_creditor_cont(cur, "581", "%04d-%02d-%02d" % (an, luna, _cal.monthrange(an, luna)[1]))
         sold_401 = -_mfr.sold_creditor_cont(cur, "401", "%04d-%02d-%02d" % (an, luna, _cal.monthrange(an, luna)[1]))
     from core.pdf_util import bani as _bani   # [Retest 2 pct.2] sumele semnalelor și blocajelor în forma românească
     for x in lipsa:
-        blocaje.append(_ctl("AMORTIZARE_NEINREGISTRATA", ("amortizarea lunii nu e înregistrată pe contul %s (%s lei după calcul); "
-                            "generează-o din Registrul jurnal („Generează amortizarea”) și valideaz-o" % (x["cont"], _bani(x["rata"])))
+        # [deficiența 311] butonul e chiar aici, în Închidere lună („Generează amortizarea restantă”), nu în Registrul jurnal;
+        # [312] generată și nevalidată -> „de validat”, iar butonul nu se mai oferă pentru ea
+        generata = x.get("rata") is not None and (an, luna) in in_ciorna.get(x["cont"], set())
+        blocaje.append(_ctl("AMORTIZARE_NEINREGISTRATA", ("amortizarea lunii e generată pe contul %s (%s lei), de validat în Registrul "
+                            "jurnal" % (x["cont"], _bani(x["rata"]))) if generata
+                            else ("amortizarea lunii nu e înregistrată pe contul %s (%s lei după calcul); generează-o cu „Generează "
+                            "amortizarea restantă”, mai jos, și valideaz-o" % (x["cont"], _bani(x["rata"])))
                             if x.get("rata") is not None else ("amortizarea lunii nu se poate calcula pe contul %s: %s — corectează "
-                            "mijlocul fix în registru" % (x["cont"], x["eroare"])), cont=x["cont"]))
+                            "mijlocul fix în registru" % (x["cont"], x["eroare"])), cont=x["cont"], de_validat=generata))
     for x in anterioare:
+        # [312] lunile cu amortizarea generată (ciornă) se spun separat: „generată, de validat”
+        _gen = [l for l in x["luni"] if l in in_ciorna.get(x["cont"], set())]
+        if _gen:
+            blocaje.append(_ctl("AMORTIZARE_ANTERIOARA_NEINREGISTRATA", "amortizarea lunilor anterioare e generată pe contul %s: %s (%s), "
+                                "de validat în Registrul jurnal — sau închide luna confirmând explicit: amortizarea lipsă schimbă profitul "
+                                "(D100/D101)" % (x["cont"], _cate(len(_gen), "lună", "luni"), _mfr.luni_ca_interval(_gen)),
+                                cont=x["cont"], confirmabil=True, de_validat=True, luni=["%04d-%02d" % l for l in _gen]))
+        x = dict(x, luni=[l for l in x["luni"] if l not in _gen], total=x["total"] - sum(
+            (x.get("rate") or {}).get(l, 0) for l in _gen))
+        if not x["luni"]:
+            continue
         # [deficiența 215] semnal. [PIVOT 16.10.2026, deficiența 281, comanda Costin, verbatim în DECIZII: „La închiderea lunii,
         # amortizarea lunilor anterioare neînregistrată oprește închiderea sau cere confirmare explicită, pentru că schimbă profitul
         # (D100/D101).”] Blocaj CONFIRMABIL: oprește închiderea, iar închiderea trece numai cu confirmarea explicită (`confirmabil`,
@@ -308,9 +326,13 @@ def controale_inchidere(conn, schema, an, luna):
                             cont="581", sold=str(sold_581)))
     if sold_401 > 0:
         # [08.10.2026, retest pct.12] „Semnal nou la închidere: furnizor cu sold debitor (F2: 401 D 500, fără factură).” 401 e cont de
-        # pasiv: un sold debitor înseamnă plăți fără factura furnizorului înregistrată (sau un avans care stă pe 401 în loc de 409).
+        # pasiv: un sold debitor înseamnă plăți fără factura furnizorului înregistrată (sau un avans care stă pe 401 în loc de 4091 / 4092).
+        # [deficiența 312, comanda Costin 17.10.2026 7.2 pct.4] „contul propus pentru 401 debitor e 4091 sau 4092, nu 409”: 409 e contul
+        # sintetic (OMFP 1802/2014, planul de conturi: „409. Furnizori - debitori” cu analiticele 4091 bunuri de natura stocurilor, 4092
+        # prestări de servicii, 4093 / 4094 imobilizări), nu se înregistrează pe el.
         semnale.append(_ctl("FURNIZORI_SOLD_DEBITOR", "contul 401 (furnizori) are sold debitor de %s lei la sfârșitul lunii: s-a plătit "
-                            "fără factura furnizorului înregistrată — înregistrează factura, sau trece plata ca avans (409)"
+                            "fără factura furnizorului înregistrată — înregistrează factura, sau trece plata ca avans: 4091 pentru "
+                            "bunuri de natura stocurilor, 4092 pentru servicii"
                             % _bani(sold_401),
                             cont="401", sold=str(sold_401)))
     if not in_curs:
@@ -902,6 +924,19 @@ def _coada_info(conn, coada_id):
             "tenant_id": r[6]}
 
 
+def _notifica_clientii(conn, tenant_id, tip, text, email_direct=None):
+    """[deficiența 320] Clienții din portal ai firmei primesc notificarea `tip` (clopoțelul + canalul ales, după bifele lor). Întoarce
+    True dacă emailul direct de până acum către `email_direct` (adresa firmei) NU mai trebuie trimis: adresa e a unui client care și-a
+    salvat alegerile din Notificări — atunci decid bifele lui (altfel ar primi de două ori, sau ar primi ce a debifat). Un client care
+    încă nu și-a ales notificările primește emailul ca până acum."""
+    from core import repo_inceput as _ri
+    with conn.cursor() as cur:
+        clienti = _ri.clientii_firmei(cur, tenant_id)
+    for uid, _email, _salvate in clienti:
+        _notif.adauga(conn, uid, tip, text)
+    return bool(email_direct) and any(e == email_direct.strip().lower() and salvate for _u, e, salvate in clienti)
+
+
 def _notif_pregatitor(conn, coada_id, tip_eveniment, motiv=None):
     info = _coada_info(conn, coada_id)
     if not info or not info["creat_de_id"]:
@@ -924,17 +959,23 @@ def _notif_pregatitor(conn, coada_id, tip_eveniment, motiv=None):
                 _link += ":%d:%d" % (int(_pl["_an"]), int(_pl["_luna"]))   # luna notei: Registrul jurnal se deschide acolo
         _notif.adauga(conn, info["creat_de_id"], tip_eveniment, _cu_firma(conn, info.get("tenant_id"), txt), link=_link)
         return
+    # [17.10.2026, 7.2: 299 + 317, clasa] perioada DECLARATĂ (10/2026), nu termenul; și cu diacritice
+    _pl = info.get("payload") or {}
+    if _pl.get("_an"):
+        from core.uc_coada import perioada_text as _pt
+        per = _pt(_pl.get("_an"), _pl.get("_luna"), _pl.get("_trim"))
     if tip_eveniment == "respinsa":
-        txt = "Declaratia %s (%s) a fost respinsa." % (tip, per)
+        txt = "Declarația %s (%s) a fost respinsă." % (tip, per)
         if motiv:
             txt += " Motiv: " + motiv
     elif tip_eveniment == "aprobata":
-        txt = "Declaratia %s (%s) a fost aprobata." % (tip, per)
+        txt = "Declarația %s (%s) a fost aprobată." % (tip, per)
     elif tip_eveniment == "depusa":
-        txt = "Declaratia %s (%s) a fost depusa." % (tip, per)
+        txt = "Declarația %s (%s) a fost depusă la ANAF." % (tip, per)
     else:
-        txt = "Actualizare declaratie %s (%s)." % (tip, per)
-    _notif.adauga(conn, info["creat_de_id"], tip_eveniment, txt, link=_link_element(coada_id))   # [08.10 pct.4] cu elementul
+        txt = "Actualizare: declarația %s (%s)." % (tip, per)
+    _notif.adauga(conn, info["creat_de_id"], tip_eveniment, _cu_firma(conn, info.get("tenant_id"), txt),
+                  link=_link_element(coada_id))   # [08.10 pct.4] cu elementul
 
 
 def _interval_cerut(valoare, nume, minim, maxim, unitate):

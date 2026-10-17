@@ -48,7 +48,10 @@ export async function randeazaAsistenti(corp, nav) {
       <div class="camp" style="margin-bottom:10px"><label for="asi-nume" class="camp-eticheta">Nume (op\u021bional)</label>
         <input class="camp-input" id="asi-nume" autocomplete="off"></div>
       <label class="set-bifa" style="margin-bottom:6px"><input type="checkbox" id="asi-pregati" checked> <span>Poate pregăti (munca curentă pe firmele alocate)</span></label>
-      <label class="set-bifa" style="margin-bottom:10px"><input type="checkbox" id="asi-valida"> <span>Poate valida (Nivel 2)</span></label>
+      <label class="set-bifa" style="margin-bottom:6px"><input type="checkbox" id="asi-valida"> <span>Poate valida (Nivel 2)</span></label>
+      <label class="set-bifa" style="margin-bottom:10px"><input type="checkbox" id="asi-depune"> <span>Poate depune (trimite declarațiile la ANAF)</span></label>
+      <fieldset class="camp" id="asi-firme-noi" style="border:0;padding:0;margin:0 0 10px"><legend class="camp-eticheta">Firmele pe care le lucrează (colegul vede numai firmele bifate)</legend>
+        <div id="asi-firme-noi-lista"><span class="ecran-nota">Se încarcă firmele…</span></div></fieldset>
       <button class="buton-primar" id="asi-trimite" data-actiune="POST /asistenti">Trimite invita\u021bia</button>
       <p id="asi-adauga-msg" style="margin:8px 0 0"></p>
     </div>
@@ -61,7 +64,19 @@ export async function randeazaAsistenti(corp, nav) {
     const b = corp.querySelector("#asi-adauga");
     f.hidden = !f.hidden;
     b.classList.toggle("buton-activ", !f.hidden);
+    if (!f.hidden) firmeNoi();
   });
+  // [deficiența 319] firmele cabinetului, de bifat din invitație (aceeași listă ca la „Selectează firme” pe ecranul colegului)
+  async function firmeNoi() {
+    const z = corp.querySelector("#asi-firme-noi-lista");
+    if (z.dataset.incarcat) return;
+    try {
+      const t = ((await api.get("/tenants")).tenants || []);
+      z.innerHTML = t.length ? t.map((x) => `<label class="set-bifa" style="display:block"><input type="checkbox" class="asi-firma-noua" value="${x.id}"> <span>${esc(x.nume || "Firma " + x.id)}</span></label>`).join("")
+        : `<span class="ecran-nota">Cabinetul n-are încă firme: le aloci după ce le adaugi, din ecranul colegului.</span>`;
+      z.dataset.incarcat = "1";
+    } catch (e) { z.innerHTML = `<span class="ecran-nota">${esc((e && e.mesaj) || "Firmele nu s-au putut încărca: le aloci după invitație, din ecranul colegului.")}</span>`; }
+  }
   corp.querySelector("#asi-trimite").addEventListener("click", async () => {
     const msg = corp.querySelector("#asi-adauga-msg");
     const email = corp.querySelector("#asi-email").value.trim();
@@ -72,7 +87,9 @@ export async function randeazaAsistenti(corp, nav) {
       // asistentul nou ieșea fără niciun drept (ecranul îi spunea totuși „Nivel 1”)
       await api.post("/asistenti", { email, nume: corp.querySelector("#asi-nume").value.trim(),
         poate_pregati: corp.querySelector("#asi-pregati").checked,
-        poate_valida: corp.querySelector("#asi-valida").checked });
+        poate_valida: corp.querySelector("#asi-valida").checked,
+        poate_depune: corp.querySelector("#asi-depune").checked,
+        firme: [...corp.querySelectorAll(".asi-firma-noua:checked")].map((c) => Number(c.value)) });
       arataMesaj(msg, "Invita\u021bie trimis\u0103 pe " + email + ".", "info");
       setTimeout(() => randeazaAsistenti(corp, nav), 900);
     } catch (e) {

@@ -6,8 +6,8 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate } from "../api.js?v=9409795a49";
-import { trimiteInCoada, casetaTrimisa } from "./coada_trimite.js?v=f55bb652b7";
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt } from "../api.js?v=9409795a49";
+import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada } from "./coada_trimite.js?v=bce84e526a";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
   d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
@@ -153,7 +153,18 @@ function pas1(corp, nav) {
         ? `<option value="${tp}" disabled title="${esc(neap)}">${esc(neap)}</option>`
         : `<option value="${tp}" ${tp === S.tip && !S.lunaDatorata ? "selected" : ""}>${et}</option>`;
     }).join("");
-    return `<option value="">— alege tipul —</option>` + grupaDatorate + (datorate.length ? `<optgroup label="Alte declarații">${alte}</optgroup>` : alte);
+    // [deficiența 301, comanda Costin 17.10.2026 7.2] „«Alte declarații» pliată, deschisă doar la cerere”: cu datorate, selectorul le arată
+    // numai pe ele; restul apare după „Arată alte declarații” (sau dacă tipul ales e deja unul dintre ele, întors din pasul 2)
+    const alteDeschise = !datorate.length || S.alteDeschise || (S.tip && !datorate.some((d) => d.tip === S.tip));
+    return `<option value="">— alege tipul —</option>` + grupaDatorate
+      + (!datorate.length ? alte : alteDeschise ? `<optgroup label="Alte declarații">${alte}</optgroup>` : "");
+  }
+  function butonAlte() {
+    const datorate = (S.datorate || []).filter((d) => S.tipuri.includes(d.tip) && !S.neaplicabile[d.tip]);
+    if (!S.tenant_id || !datorate.length) return "";
+    const deschise = S.alteDeschise || (S.tip && !datorate.some((d) => d.tip === S.tip));
+    return `<button type="button" class="btn-link" id="dec-alte" aria-expanded="${deschise ? "true" : "false"}">${deschise
+      ? "Ascunde celelalte declarații" : "Arată alte declarații"}</button>`;
   }
 
   corp.innerHTML = `
@@ -170,8 +181,10 @@ ${S.firmaFixa ? "" : `      <label class="camp">
         <span class="camp-eticheta">Tip declarație <span id="dec-ajutor"></span></span>
         <select id="dec-tip" class="camp-input">${optiuniTip()}</select>
       </label>
+      <div id="dec-alte-zona">${butonAlte()}</div>
       <div id="dec-perioada">${randPerioada(per)}</div>
     </div>
+    <div id="dec-existente"></div>
     <div class="dec-bara">
       <button class="buton-primar" id="dec-continua" data-actiune="POST /declaratii/{tip}/valideaza" disabled>Continuă →</button>
     </div>
@@ -189,9 +202,12 @@ ${S.firmaFixa ? "" : `      <label class="camp">
       if (nou !== S.tenant_id) {   // [G1] firma schimbata -> re-cere tipurile+neaplicabile ale ei, re-randeaza selectorul
         S.tenant_id = nou; S.tip = null;
         if (nou) await incarcaTipuri(nou); else { S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {}; }
+        S.alteDeschise = false;
         selTip.innerHTML = optiuniTip();
+        declaratiiExistente(corp.querySelector("#dec-existente"), nou);
       }
     }
+    legaAlte();
     S.tip = selTip.value || null;
     // [283] o obligație datorată aleasă din grupa de sus aduce și perioada ei (luna; la trimestru, luna de sfârșit)
     const o = selTip.selectedOptions[0];
@@ -213,11 +229,46 @@ ${S.firmaFixa ? "" : `      <label class="camp">
     const _za = corp.querySelector("#dec-ajutor");  // [ajutor] "?" urmareste tipul ales
     if (_za) _za.innerHTML = (S.tip && _DECL_AJUTOR[S.tip]) ? semnAjutor(_DECL_AJUTOR[S.tip]) : "";
   }
+  function legaAlte() {
+    const z = corp.querySelector("#dec-alte-zona");
+    if (!z) return;
+    z.innerHTML = butonAlte();
+    const b = z.querySelector("#dec-alte");
+    if (b) b.addEventListener("click", () => {
+      S.alteDeschise = b.getAttribute("aria-expanded") !== "true";
+      const ales = selTip.value;
+      selTip.innerHTML = optiuniTip();
+      if (ales) selTip.value = ales;
+      legaAlte();
+      if (S.alteDeschise) focusFaraSalt(selTip);
+    });
+  }
+  if (S.tenant_id) declaratiiExistente(corp.querySelector("#dec-existente"), S.tenant_id);
   if (selFirma) selFirma.addEventListener("change", refresh);
   selTip.addEventListener("change", refresh);
   legPerioada(zonaP);
   cont.addEventListener("click", () => pas2(corp, nav));
   refresh();
+}
+
+// [deficiența 299, comanda Costin 17.10.2026 7.2] „Ana nu are nicio listă a declarațiilor existente (cardul Declarații deschide direct
+// pregătirea)”: sub alegere, declarațiile firmei aflate în coadă (la validare / de depus), fiecare cu drumul spre ea — înainte de a genera
+// una a doua pe aceeași perioadă. Aceeași listă ca a cozii (`GET /coada`, numai firmele alocate asistentului).
+async function declaratiiExistente(zona, tenantId) {
+  if (!zona) return;
+  zona.innerHTML = "";
+  if (!tenantId) return;
+  let coada = [];
+  try { coada = ((await api.get("/coada")).coada || []).filter((c) => c.tenant_id === tenantId && c.fel !== "nota"
+                                                                 && (c.stare === "la_senior" || c.stare === "aprobata")); }
+  catch { return; }
+  if (!zona.isConnected || !coada.length) return;
+  const stare = (c) => c.depasita ? "depășită, de generat din nou" : c.stare === "aprobata" ? "validată, de depus" : "la validare";
+  zona.innerHTML = `<div class="caseta-info dec-existente"><div class="ci-mesaj"><b>Declarațiile firmei aflate deja în coadă</b>
+      <ul>${coada.map((c, i) => `<li>${esc((c.tip || "").toUpperCase())} · ${esc(c.p_luna ? `${String(c.p_luna).padStart(2, "0")}/${c.p_an}`
+        : c.p_trim ? `T${c.p_trim}/${c.p_an}` : `anul ${c.p_an}`)} · ${esc(stare(c))} · pregătită de ${esc(c.creat_de_nume || "—")}
+        <button type="button" class="btn-link" data-coada="${i}">Deschide</button></li>`).join("")}</ul></div></div>`;
+  zona.querySelectorAll("[data-coada]").forEach((b) => b.addEventListener("click", () => deschideInCoada(coada[Number(b.dataset.coada)].id)));
 }
 
 // [deficiența 294] Perioada propusă pentru un tip: cea mai apropiată perioadă scadentă și nedepusă din vectorul fiscal (`S.datorate`, sortată
@@ -459,7 +510,7 @@ async function pas2(corp, nav) {
     <p class="ecran-nota">${esc(S.rezultat.limita || "")}</p>
   `;
   const _bt = corp.querySelector("#dec-trimite");
-  if (_bt) _bt.addEventListener("click", () => pas3(corp, nav));
+  if (_bt) { _bt.addEventListener("click", () => pas3(corp, nav)); etichetaTrimitere(_bt); }   // [313]
   const _bDa = corp.querySelector("#dec-gol-da");
   if (_bDa) _bDa.addEventListener("click", () => pas3(corp, nav));
   const _bNu = corp.querySelector("#dec-gol-nu");
@@ -3728,7 +3779,7 @@ async function pas3(corp, nav) {
   const body = Object.assign(corpGenerare(), { tip: S.tip, inceput_la: S.inceput_la });   // [C2] același corp ca la pasul 2
   // [C1/C3] drumul comun al cozii; succesul (și după o confirmare a atenționărilor) desenează ecranul „Trimisă”
   const r = await trimiteInCoada(corp.querySelector("#dec-coada-mesaj"), body, (r) => pas3Gata(corp, nav, r));
-  if (!r && btn) { btn.disabled = false; btn.textContent = "Trimite în coadă →"; }
+  if (!r && btn) { btn.disabled = false; btn.textContent = btn.dataset.eticheta || "Trimite în coadă →"; }
 }
 
 function pas3Gata(corp, nav, r) {

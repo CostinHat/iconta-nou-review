@@ -101,8 +101,8 @@ def test_asistentul_nu_schimba_nu_sterge_ciorna_altuia_pe_niciun_drum(cur):
     asi, _ = _id(cur, "asistent@prisma-cont.test")
     n = _nota(cur, pat)
     _ca(cur, asi)
-    # [258] nota numită ca în Registrul jurnal: singura notă din 2099 a schemei efemere e „nr. crt. 1 din 07.10.2099” — nu id-ul ei
-    refuz = D + _dr.MESAJ_CIORNA_ALTUI % ("nr. crt. 1 din 07.10.2099", nume_pat, nume_pat)
+    # [258] nota numită ca în Registrul jurnal, nu prin id-ul ei; [302] ciorna n-are număr: „din 07.10.2099”
+    refuz = D + _dr.MESAJ_CIORNA_ALTUI % ("din 07.10.2099", nume_pat, nume_pat)
     _refuz(cur, "UPDATE inregistrari SET descriere = 'alta' WHERE id = %s", (n,), refuz)
     _refuz(cur, "DELETE FROM inregistrari WHERE id = %s", (n,), refuz)
     _refuz(cur, "UPDATE inregistrari_linii SET suma = 5 WHERE inregistrare_id = %s", (n,), refuz)
@@ -138,7 +138,7 @@ def test_asistentul_cu_poate_valida_valideaza_dar_nu_editeaza_ciorna_altuia(cur)
     n = _nota(cur, pat)
     _ca(cur, asi)
     _refuz(cur, "UPDATE inregistrari SET descriere = 'alta' WHERE id = %s", (n,),
-           D + _dr.MESAJ_CIORNA_ALTUI % ("nr. crt. 1 din 07.10.2099", nume_pat, nume_pat))
+           D + _dr.MESAJ_CIORNA_ALTUI % ("din 07.10.2099", nume_pat, nume_pat))
     cur.execute("UPDATE inregistrari SET status = 'validata' WHERE id = %s", (n,))
     cur.execute("SELECT status FROM inregistrari WHERE id = %s", (n,))
     assert cur.fetchone()[0] == "validata"

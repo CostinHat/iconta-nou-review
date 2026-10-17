@@ -145,7 +145,7 @@ def test_def_253_inregistrarea_libera_contul_apare_numai_dupa_clicul_pe_linkul_d
         assert vp.input_value("#login-email") == EMAIL
         vp.fill("#login-parola", PAROLA)
         vp.click("#login-buton")
-        vp.wait_for_selector(".cab-grila", timeout=30000)
+        vp.wait_for_selector("#prima-intrare", timeout=30000)               # [320] contul nou intră întâi la „Înainte de a începe”
         viz.captura("in_cont")
         assert sql("SELECT activ FROM public.users WHERE email = %s", (EMAIL,)) == [(True,)]
         vp.evaluate("sessionStorage.clear(); localStorage.clear()")         # al doilea clic pe același link, fără sesiune
@@ -316,11 +316,42 @@ def test_def_282_cererile_neconfirmate_apar_in_panou_admin_cu_retrimiterea(super
     superadmin.captura("cereri")
     lat = pg.evaluate("() => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(); return [c.scrollWidth, c.clientWidth]; }")
     assert lat[0] <= lat[1] + 1, ("285: tabelul nu încape în fereastră", lat)
-    assert EMAIL in t and "trimis " in t and "a expirat " in t, t
+    assert EMAIL in t and "trimis " in t and "expirată pe " in t and "se șterge pe " in t, t
     pg.click(rand + " [data-retrimite]")
     pg.wait_for_selector("#ins-cereri-msg.msg-ok", timeout=20000)
     superadmin.captura("retrimisa")
     t = pg.inner_text(rand)
-    assert "1 retrimitere" in t and "a expirat" not in t, t
+    assert "1 retrimitere" in t and "expirată" not in t and "valabilă până la" in t, t
     noi = _scrisori(EMAIL)[inainte:]
     assert len(noi) == 1 and "#confirmare=" in json.dumps(noi[0]) and tok not in json.dumps(noi[0]), noi
+
+
+def test_def_316_cererea_expirata_ramane_in_lista_marcata_iar_randul_nu_se_rupe(superadmin, curat):
+    """316. Panou Admin / Înregistrare: cererile expirate (cele 2 de la persoane necunoscute) dispăreau din listă; tabelul rupea data,
+    emailul și butonul pe mai multe rânduri.
+    Pașii superadminului: o cerere cu linkul expirat de 9 zile (peste vechea ștergere de 7 zile) și o înregistrare nouă (care face
+    curățenia) -> Panou Admin -> „Înregistrare”: cererea expirată e în listă, „expirată pe …, se șterge pe …”; data, emailul și butonul
+    stau fiecare pe un rând."""
+    import datetime as _dt
+    from core import db, inregistrare_libera as il
+    acum = _dt.datetime.now(_dt.timezone.utc)
+    with db.get_conn() as c:
+        with c.cursor() as cur:
+            tok = il.creeaza(cur, {"email": EMAIL, "nume_cabinet": CABINET}, "x", "v1", None, acum=acum - _dt.timedelta(days=10))
+            il.marcheaza_trimis(cur, tok)
+            il.creeaza(cur, {"email": "e2e.inregistrare.2@exemplu.ro", "nume_cabinet": CABINET + " 2"}, "x", "v1", None, acum=acum)
+        c.commit()
+    try:
+        pg = superadmin.pg
+        pg.goto(BAZA + "/", wait_until="domcontentloaded")
+        pg.wait_for_selector(".cab-grila", timeout=30000)
+        pg.click("button.cab-card:has([data-cheie='inregistrare'])")
+        rand = "#ins-cereri tr:has-text('%s')" % EMAIL
+        pg.wait_for_selector(rand, timeout=20000)
+        t = pg.inner_text(rand)
+        superadmin.captura("expirata_in_lista")
+        assert "expirată pe " in t and "se șterge pe " in t, t
+        nerupte = pg.eval_on_selector_all(rand + " td.ins-nerupt", "tds => tds.map((d) => getComputedStyle(d).whiteSpace)")
+        assert nerupte == ["nowrap", "nowrap", "nowrap"], nerupte   # data, emailul, butonul
+    finally:
+        sql("DELETE FROM public.inregistrari_in_asteptare WHERE email = 'e2e.inregistrare.2@exemplu.ro'")

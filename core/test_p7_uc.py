@@ -34,6 +34,9 @@ METODE = ("get", "post", "put", "patch", "delete", "head", "options")
 
 #: abaterile acceptate de la „mesaj neschimbat", fiecare cu motivul ei. Orice alta abatere pica.
 ABATERI = {
+    ("coada_adauga", "r['mesaj']"): (
+        "Deficiența 299 (comanda Costin 17.10.2026 7.2 pct.4, verbatim în DECIZII): același 409 „deja în coadă”, cu perioada declarată, "
+        "tipul cum îl scrie formularul, cine a pregătit-o, starea și drumul („Deschide-o, sau înlocuiește-o”) — `refuz_deja_in_coada`."),
     ("factura_trimite_spv", "r.get('mesaj', 'Conectează ANAF (SPV) înainte de a trimite.')"): (
         "Deficiența 289b (lotul 6, comanda Costin 16.10.2026): același 409, refuzul are acum butonul spre Setări cont → Conectare SPV "
         "(`refuz_spre_ecran`, ținta `conectare_spv`) și spune ce lipsește în cuvintele contabilului."),
@@ -103,7 +106,8 @@ ABATERI = {
                      'pentru fiecare."}'): (
         "Comanda Costin „Retest 08.10” pct.14 („limbaj de programator în ecrane … texte cu majuscule”): același refuz (409, aceeași "
         "cheie CONSTATARI_NECONFIRMATE, aceleași constatări); „NU” devine „nu”, iar `actiune` nu mai arată contabilului corpul "
-        "cererii (`confirmari`: [{amprenta, motiv}]), ci ce are de făcut. Gard: `core/test_text_afisat_limbaj.py`."),
+        "cererii (`confirmari`: [{amprenta, motiv}]), ci ce are de făcut. Gard: `core/test_text_afisat_limbaj.py`. [Deficiența 313, "
+        "17.10.2026] constatările nu se mai numără „1 constatare/constatări”: „o confirmare scrisă pentru <N constatări>” (`common.cate`)."),
     ("vanzare_aur_investitii", "suma invalida"): (
         "G5 (`core/test_g1_cod_mesaj.py`): un input-guard telegrafic primeste constrangerea in "
         "mesaj. Codul ramane 422. Cazul a intrat in domeniul lui G5 odata cu mutarea corpului "
@@ -116,6 +120,19 @@ ABATERI = {
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 PERECHI_ADAUGATE = {
+    ("asistent_creeaza", "mesaj_din_cod(_r.get('cod'))"): (
+        "Deficiența 319 (comanda Costin 17.10.2026 7.2): invitația poartă și „Poate depune” și firmele alocate; refuzul lui "
+        "`set_permisiuni` / `atribuie_firma` (firmă din alt cabinet) oprește invitația întreagă, în aceeași tranzacție cu contul (400)."),
+    ("coada_adauga", "'Declarația de înlocuit nu mai e în coadă (a fost depusă, retrasă sau înlocuită între timp).'"): (
+        "Deficiența 299: „Înlocuiește” pe un element care între timp a ieșit din coadă — refuz numit (409), nu o a doua declarație activă."),
+    ("coada_depune", '{"cod": cod, "mesaj": r["mesaj"], "coada_id": coada_id, "actiune": "Generează din nou"}'): (
+        "Deficiența 297: refuzul depunerii pentru declarația DEPĂȘITĂ (aprobarea implicită a depunătorului, apoi depunerea) — 409 "
+        "structurat, cu „Generează din nou”."),
+    ("coada_depune", '{"cod": _c, "mesaj": _ap["mesaj"], "coada_id": coada_id, "actiune": "Generează din nou"}'): (
+        "Deficiența 297: ca la aprobare — declarația DEPĂȘITĂ nu se depune la ANAF; 409 structurat, cu „Generează din nou”."),
+    ("coada_aproba", '{"cod": cod, "mesaj": r["mesaj"], "coada_id": coada_id, "actiune": "Generează din nou"}'): (
+        "Deficiența 297 (comanda Costin 17.10.2026 7.2 pct.3): declarația DEPĂȘITĂ (datele-sursă s-au schimbat după generare) nu se "
+        "aprobă — 409 structurat, cu drumul „Generează din nou”. Gardul: `core/test_297_298_surse_declaratie.py`."),
     ("coada_respinge", "MESAJ_RENUNTA_ALTUI"): (
         "Deficiența 293 (lotul 6, completarea Costin 16.10.2026, verbatim în DECIZII): „Pe o declarație a altcuiva, fără dreptul de "
         "depunere, nu se oferă nicio acțiune în afară de vizualizare; serverul refuză la fel.” Fără validarea în doi, renunțarea (403) e a "
@@ -496,6 +513,15 @@ APELURI_EXTRASE_IN_AJUTOARE = {
                  _MOTIV_LOTUL_4),
 }
 
+#: [17.10.2026, lotul 7] Apeluri făcute de MAI PUȚINE ori, deliberat: (funcție, apel) -> (câte mai puțin, motivul). Mai strâns decât
+#: APELURI_SCOASE (apelul rămâne, numai numărul scade cu exact cât e declarat). Anti-vacuu: `test_REDUCERILE_declarate_chiar_sunt_in_cod`.
+APELURI_REDUSE = {
+    ("declaratii_tipuri", "tipuri"): (1, (
+        "Deficiența 301 (comanda Costin 17.10.2026 7.2, verbatim în DECIZII): declarațiile pe care forma firmei nu le poate datora nici nu "
+        "apar în selector. Lista tipurilor se citește O DATĂ, filtrată după forma firmei, și aceeași listă dă `tipuri` și `periodicitate` "
+        "(înainte: `declaratii_api.tipuri()` de două ori, nefiltrat).")),
+}
+
 #: [15.10.2026, lotul 4] Apeluri SCOASE deliberat, cu motivul. Anti-vacuu: `test_SCOASELE_declarate_chiar_lipsesc`.
 APELURI_SCOASE = {
     ("raportari_imagine", "lower"): (_MOTIV_C36 + " Tipul nu se mai ia din `content_type` (pe care îl trimite browserul, deci îl "
@@ -579,6 +605,20 @@ def test_SCOASELE_declarate_chiar_lipsesc():
             if cale:
                 toate |= set(_apeluri_ajutor(cale, ajutor))
         assert apel not in toate, "%s: apelul declarat scos (%s) e tot acolo" % (fn_nume, apel)
+
+
+def test_REDUCERILE_declarate_chiar_sunt_in_cod():
+    """Anti-vacuu pe APELURI_REDUSE: apelul e făcut acum EXACT cu `n` mai puțin decât în BAZA (nici scos de tot — atunci e o scoatere —,
+    nici înapoi la numărul vechi — atunci declarația ar scuza o pierdere viitoare)."""
+    harta, uc = _harta_cod(), _module_uc()
+    vechi = {n.name: n for n in ast.parse(_sursa_veche()).body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+    nou = {n.name: n for n in ast.parse(io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read()).body
+           if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+    for (fn, apel), (n, motiv) in APELURI_REDUSE.items():
+        assert len(motiv) > 80 and n > 0
+        inainte = _apeluri(vechi[fn], harta).get(apel, 0)
+        acum = _apeluri(uc[_tinta_invelisului(nou[fn])], harta).get(apel, 0)
+        assert acum >= 1 and acum == inainte - n, (fn, apel, inainte, acum, n)
 
 
 def test_INLOCUIRILE_declarate_chiar_exista():
@@ -877,6 +917,11 @@ def _forme_mesaj(msg_repr):
 #: refuz, același cod, în toate funcțiile care îl ridicau; mesajul vechi -> (mesajul nou, motivul). Se aplică numai perechilor
 #: (cod, mesaj vechi) care au, pe ACELAȘI cod, perechea (cod, mesaj nou).
 MESAJE_RESCRISE = {
+    'f"ANAF indisponibil sau a refuzat cererea: {e}"': ("anaf_api.mesaj_indisponibil(e)",
+        "Deficiența 317 (comanda Costin 17.10.2026 7.2): același 502, fără textul bibliotecii HTTP pe ecran — ANAF a refuzat (cu codul "
+        "lui) sau n-a răspuns. Gardul: `core/test_317_320_alerta_notificari.py`."),
+    '"ANAF indisponibil: %s" % e': ("anaf_api.mesaj_indisponibil(e)",
+        "Deficiența 317: același 502 la verificarea CUI, fără textul bibliotecii HTTP."),
     "'tenant inexistent sau fără acces'": ("'Firma nu există sau nu ai acces la ea.'",
         "Deficiența 172 (retestul Costin 09.10.2026): „tenant” e jargon de programator pe ecranul contabilului; același 404."),
     "'template tenant indisponibil pe server'": ("'Șablonul pentru o firmă nouă lipsește pe server — anunță administratorul platformei.'",
@@ -1083,6 +1128,9 @@ def test_NICIUN_APEL_nu_s_a_pierdut_pe_drum():
         for (_fn, _apel), _m in APELURI_SCOASE.items():
             if _fn == nume:
                 inainte.pop(_apel, None)
+        for (_fn, _apel), (_n, _m) in APELURI_REDUSE.items():
+            if _fn == nume:
+                inainte[_apel] = inainte.get(_apel, 0) - _n
         # [lot 19, 03.10.2026] fiecare `_uc_comun.bifa(corp, x)` inlocuieste o pereche `bool(corp.get(x))` (sau, la
         # taxarea inversa, `str(corp.get(x)).strip().lower()`): creditul se da PE APEL efectiv, iar `extra` numeste
         # apelurile scoase deliberat. Anti-vacuu: `test_BIFA_INLOCUIRI_chiar_cheama_bifa`.
@@ -1109,6 +1157,17 @@ def test_BIFA_INLOCUIRI_chiar_cheama_bifa():
     lipsa = [n for n in BIFA_INLOCUIRI if n not in fn or not any(
         isinstance(x, ast.Call) and getattr(x.func, "attr", None) == "bifa" for x in ast.walk(fn[n]))]
     assert lipsa == [], lipsa
+
+
+#: [17.10.2026] Decoratori schimbați DELIBERAT, cu motivul (textul dintre decorator și `def`). Anti-vacuu: fiecare intrare chiar diferă de
+#: BAZA — altfel se scoate.
+DECORATORI_SCHIMBATI = {
+    "tenant_amortizare": (
+        "Deficiența 311 (comanda Costin 17.10.2026 7.2 pct.4, verbatim în DECIZII): „generarea amortizării (lunară și restantă) la «Poate "
+        "pregăti»”. Comentariul de sub decorator spunea că ruta scrie nota `validata` DIRECT, motivul pentru „Poate valida” — fals de la "
+        "R55 (26.08.2026: scrie CIORNA). Comentariul spune acum ce face ruta și de ce dreptul e „Poate pregăti”; nu e o declarație citită "
+        "de vreun instrument (`grep -rn \"R55, 26.08.2026\" core scripts` — numai acest test)."),
+}
 
 
 def test_DECORATORII_rutelor_sunt_NEATINSI():
@@ -1141,7 +1200,8 @@ def test_DECORATORII_rutelor_sunt_NEATINSI():
     acum = decoratori(io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read())
     comune = sorted(set(vechi) & set(acum))
     assert len(comune) >= 400, "doar %d rute comune — universul s-a golit" % len(comune)
-    dif = [n for n in comune if vechi[n] != acum[n]]
+    dif = [n for n in comune if vechi[n] != acum[n] and n not in DECORATORI_SCHIMBATI]
+    assert all(vechi.get(n) != acum.get(n) for n in DECORATORI_SCHIMBATI), "o schimbare declarată nu mai e schimbare — scoate-o"
     assert not dif, ("decoratori schimbați la %d rute (primele: %s). Un comentariu de pe linia "
                      "decoratorului poate fi o declarație pe care o citește un instrument."
                      % (len(dif), dif[:6]))

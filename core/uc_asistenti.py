@@ -188,6 +188,17 @@ def asistent_creeaza(date, ctx):
             uid = repo_utilizatori.creeaza_cont_asistent(cur, email, _nucleu.hash_parola(_sec.token_urlsafe(16)),
                                                          date.nume or email.split("@")[0], ctx["firm"],
                                                          date.poate_pregati, date.poate_valida)["id"]
+        # [deficiența 319, comanda Costin 17.10.2026 7.2] „Bifează ce poate face [...] Poate depune [...] Bifează firmele pe care le
+        # lucrează”: din aceeași invitație, cu verificările ecranului colegului (`set_permisiuni`, `atribuie_firma`) — în ACEEAȘI
+        # tranzacție cu contul: o firmă din alt cabinet refuză invitația întreagă, nu lasă un cont fără link și fără firme
+        if date.poate_depune:
+            _r = _asist.set_permisiuni(conn, _uc_comun._cer_admin_cabinet(ctx), uid, date.poate_pregati, date.poate_valida, True)
+            if not _r.get("ok"):
+                raise _erori.CerereGresita(mesaj_din_cod(_r.get("cod")))
+        for tid in date.firme or []:
+            _r = _asist.atribuie_firma(conn, _uc_comun._cer_admin_cabinet(ctx), uid, int(tid))
+            if not _r.get("ok"):
+                raise _erori.CerereGresita(mesaj_din_cod(_r.get("cod")))
         with conn.cursor() as cur:
             tok = _sec.token_urlsafe(32)
             _uc_comun._pune_token(cur, tok, uid, "48 hours")

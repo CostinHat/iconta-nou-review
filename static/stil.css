@@ -1903,6 +1903,9 @@ html, body {
 .em-actiuni { margin:16px 0; }
 .em-emite { font-size: var(--text); padding:12px 28px; }
 .em-rezultat { margin-top:12px; font-size: var(--text-mic); min-height:20px; }
+/* [deficiența 304, 17.10.2026] în bara fixă mesajul stă DEASUPRA butoanelor și are înălțime limitată: „Emite factură” rămâne vizibil */
+.bara-fixa > .em-rezultat { margin-top:0; margin-bottom:8px; min-height:0; max-height:35vh; overflow-y:auto; }
+.bara-fixa > .em-rezultat:empty { display:none; }
 .em-bun { color:#15803d; font-weight:600; }
 .em-rau { color:#dc2626; }
 @media (max-width:520px) {
@@ -2396,6 +2399,20 @@ select:focus, textarea:focus {
   border-color: var(--albastru) !important;
   box-shadow: 0 0 0 3px var(--albastru-clar) !important;
   outline: none;
+}
+
+/* [deficiența 318, comanda Costin 17.10.2026 7.2] „câmpul CUI blocat arată ca unul editabil (alb, chenar la clic)”: regula globală a
+   câmpului care se citește (DS cap.6 v2.92, `.camp-input[readonly]`) pierdea în fața blocului de contrast de mai sus (`!important`, alb, cu
+   chenar albastru la focalizare). Blocul rămâne neatins; câmpul `readonly` își recapătă aspectul, cu aceeași specificitate + 1. */
+input[readonly]:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+textarea[readonly] {
+  background: var(--fundal) !important;
+  cursor: default;
+}
+input[readonly]:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="hidden"]):focus,
+textarea[readonly]:focus {
+  border-color: #b9c2cf !important;
+  box-shadow: none !important;
 }
 
 /* ============ [STANDARD_ZEBRA] NU SE MODIFICA (Design System v1.1 cap.4) ============
@@ -2913,3 +2930,30 @@ body.pagina-publica .pagina-bara-acces:focus-visible{outline:2px solid var(--p-t
 .msg-refuz-rand { display: block; margin-top: 6px; }
 /* [deficiența 284] notele numite în refuzul porții TVA: câte un buton spre Registrul jurnal */
 .coada-note-refuz { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+
+/* [deficiența 316, 17.10.2026] Panou Admin → Înregistrare: data, emailul și butonul cererii nu se rup pe rânduri (regula globală 285,
+   `overflow-wrap: anywhere` pe .fd-tabel, rămâne pentru celelalte coloane) */
+.fereastra-corp .fd-tabel.ins-cereri td.ins-nerupt { overflow-wrap: normal; white-space: nowrap; }
+.fd-tabel.ins-cereri tr.ins-expirata td { color: var(--gri); }
+
+/* [deficiențele 319 + 320, 17.10.2026; DS cap.12b] cardurile de început: sub banda de salut, pe lățimea paginii; verde când pasul e făcut
+   în ecranul lui; fără „închide” (dispar toate când sunt toate făcute) */
+.inceput { margin: 0 0 16px; }
+.inceput-cap { font-size: var(--text-sectiune); font-weight: 600; color: #163a5a; margin: 0 0 4px; }
+.inceput-grila { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin-top: 10px; }
+.inceput-card { background: var(--alb); border: 1px solid #b9c2cf; border-left: 4px solid var(--albastru); border-radius: var(--raza);
+  padding: 12px 14px; min-width: 0; }
+.inceput-card.inceput-facut { border-left-color: var(--verde); background: #f1f8f4; }
+.inceput-titlu { font-size: var(--text-mic); font-weight: 600; margin: 0 0 6px; color: #163a5a; }
+.inceput-bifa { color: var(--verde); font-weight: 700; }
+.inceput-ce, .inceput-nota, .inceput-verde { font-size: var(--text-mic); margin: 6px 0; }
+.inceput-verde { color: var(--gri); }
+.inceput-pasi { margin: 6px 0 6px 18px; padding: 0; font-size: var(--text-mic); }
+.inceput-pasi li { margin: 3px 0; }
+.inceput-butoane { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.prima-intrare { max-width: 760px; margin: 24px auto; padding: 0 16px; }
+.not-tip { align-items: flex-start; margin: 6px 0; }
+.not-grup { margin: 8px 0 4px; }
+.spv-cuiuri-lista { margin: 8px 0 0 18px; padding: 0; }
+.spv-cuiuri-lista li { margin: 4px 0; }
+.spv-cui-fara { color: var(--rosu); }

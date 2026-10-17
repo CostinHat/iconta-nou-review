@@ -40,9 +40,9 @@ def pachet_genereaza(tenant_id, an, luna, ctx):
 def pachet_poveste_get(tenant_id, an, luna, ctx):
     """[P7 · use-case] Corpul rutei `/pachete/{tenant_id}/poveste`; docstringul ei a ramas in stratul HTTP."""
     _uc_comun._cere_perioada(an, luna)
-    _uc_comun._pachet_schema(ctx, tenant_id)
-    with db.get_conn() as cp:
-        return _pachete.get_poveste(cp, tenant_id, an, luna)
+    schema = _uc_comun._pachet_schema(ctx, tenant_id)
+    with db.get_conn(schema) as cs, db.get_conn() as cp:   # [314] cu cifrele de acum: povestea aprobată pe altele e depășită
+        return _pachete.get_poveste(cp, tenant_id, an, luna, rz=_pachete.rezumat_luna(cs, cp, tenant_id, an, luna))
 
 
 # [comanda Costin 05.10.2026 pct.2] „generarea, editarea și ciorna rămân la «Poate pregăti»; «Aprobă» și «Trimite» cer
@@ -100,12 +100,21 @@ def pachet_poveste_set(tenant_id, an, luna, date, ctx, _aprobare=False):
         raise _erori.CerereGresita(MESAJ_APROBARE_PE_RUTA_EI)
     status = "aprobat" if _aprobare else "ciorna"
     _uc_comun._cere_perioada(an, luna)
-    _uc_comun._pachet_schema(ctx, tenant_id)
+    schema = _uc_comun._pachet_schema(ctx, tenant_id)
     _de_trimis = None           # ce ramane de trimis DUPA ce blocul s-a inchis si a comis
-    with db.get_conn() as cp:
-        r = _pachete.salveaza_poveste(cp, tenant_id, an, luna, date.text, status=status)
+    with db.get_conn(schema) as cs, db.get_conn() as cp:
+        # [314] aprobarea păstrează amprenta cifrelor pe care s-a aprobat textul
+        _amp = _pachete.amprenta_cifre(_pachete.rezumat_luna(cs, cp, tenant_id, an, luna)) if status == "aprobat" else None
+        r = _pachete.salveaza_poveste(cp, tenant_id, an, luna, date.text, status=status, amprenta=_amp)
         if status == "aprobat":
             email = _uc_comun._email_client_tenant(cp, tenant_id)
+            # [deficiența 320] „pachet_lunar”: clienții din portal primesc notificarea, pe canalul ales; emailul direct rămâne pentru
+            # adresa firmei care nu e (încă) a unui client cu alegerile salvate
+            _luni = ["", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie",
+                     "noiembrie", "decembrie"]
+            if _uc_comun._notifica_clientii(cp, tenant_id, "pachet_lunar", "Raportul lunar pe %s %d e gata: îl găsești la Povestea lunii."
+                                            % (_luni[luna] if 1 <= luna <= 12 else luna, an), email_direct=email):
+                email = None
             if email:
                 nume = _uc_comun._nume_tenant(cp, tenant_id)
                 luni_n = ["", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
@@ -148,8 +157,9 @@ def pachet_trimite(tenant_id, an, luna, ctx):
     r = _pachete.trimite_pregatit(_pregatit)
     if not r.get("ok"):
         cod = r.get("cod")
-        msg = {"FARA_EMAIL": "Firma nu are email setat in profil.",
-               "NEAPROBATA": "Aproba povestea inainte de trimitere.",
+        msg = {"FARA_EMAIL": "Firma nu are email setat în profil.",
+               "NEAPROBATA": "Aprobă povestea înainte de trimitere.",
+               "DEPASITA": _pachete.MESAJ_DEPASITA,
                "POVESTE_GOALA": "Povestea lunii e goală — scrie sau generează povestea, apoi aprob-o.",
                "EMAIL_ESUAT": "Emailul nu a putut fi trimis."}.get(cod, cod or "eroare")
         raise _erori.CerereGresita(msg)

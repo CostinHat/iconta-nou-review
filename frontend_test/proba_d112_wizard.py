@@ -3,6 +3,7 @@
 Citeste ce scrie pe ecran (Regula 14)."""
 import json
 from w_auth import new_page
+from declaratie_tip import alege_tipul  # noqa: E402
 from walk_t001 import deschide_t001, shot
 from playwright.sync_api import sync_playwright
 
@@ -15,7 +16,7 @@ with sync_playwright() as pw:
         "els=>els.map(o=>({v:o.value,t:(o.textContent||'').trim()}))")
     print("TIPURI:", json.dumps(opts, ensure_ascii=False))
     # alege D112
-    pg.select_option("#dec-tip", "d112"); pg.wait_for_timeout(500)
+    alege_tipul(pg, "d112"); pg.wait_for_timeout(500)
     # perioada: an 2026, luna 6
     try:
         pg.fill("#dec-an", "2026")

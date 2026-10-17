@@ -56,7 +56,7 @@ _JARGON = re.compile(r"\b(?:persistat[eăa]?|amprent[aăei]+|payload|endpoint|ha
 PLURALE = ("parteneri", "facturi", "note", "conturi", "clienți", "furnizori", "operațiuni", "luni", "zile", "rânduri",
            "declarații", "firme", "linii", "documente", "perioade", "salariați", "articole", "CNP-uri", "achiziții", "activi",
            "activități", "administratori", "adrese", "angajați", "ani", "apariții", "asistenți", "asociați", "beneficiari",
-           "bonuri", "bunuri", "cabinete", "caractere", "cifre", "ciorne", "constatări", "câmpuri", "datorate", "deja", "depuse",
+           "bonuri", "bunuri", "cabinete", "caractere", "cifre", "ciorne", "constatări", "depășite", "câmpuri", "datorate", "deja", "depuse",
            "destinatari", "e-Facturi", "erau", "avertismente", "evenimente", "existente", "eșuate", "fișiere", "funcții", "ieșiri", "imagini", "imobile",
            "importate", "ingrediente", "intrări", "invalide", "livrări", "lucrări", "lucrători", "mijloace", "necunoscute",
            "netrimise", "neverificate", "notificări", "obligații", "ore", "minute", "persoane", "plăți", "potriviri", "potrivite",

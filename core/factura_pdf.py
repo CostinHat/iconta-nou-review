@@ -84,12 +84,36 @@ MENTIUNE_NEPLATITOR = ("Scutit de TVA — regim special de scutire pentru între
 # sau, după caz, codul de identificare fiscală”; CF art.318 alin.(1): „Codul de înregistrare în scopuri de TVA, atribuit conform
 # art. 316 și 317, are prefixul RO”. Deci: plătitor -> „Cod TVA: RO…”; neplătitor -> „CIF: …”; stare necunoscută -> codul așa cum
 # a fost scris (nu se ghicește).
-def cod_fiscal_pe_factura(cui, platitor_tva):
-    """(eticheta, valoarea) pentru codul furnizorului / beneficiarului pe factură; (None, None) fără cod."""
+#: [deficiența 306] numele țărilor clientului străin pe factură (aceleași coduri și nume ca lista din „Emite factură”, `emitere_ecran.js`
+#: TARI_UE_JS / TARI_NONUE_JS — paritatea: core/test_306_factura_client_ue.py)
+TARI_NUME = {"AT": "Austria", "BE": "Belgia", "BG": "Bulgaria", "CY": "Cipru", "CZ": "Cehia", "DE": "Germania", "DK": "Danemarca",
+             "EE": "Estonia", "EL": "Grecia", "ES": "Spania", "FI": "Finlanda", "FR": "Franța", "HR": "Croația", "HU": "Ungaria",
+             "IE": "Irlanda", "IT": "Italia", "LT": "Lituania", "LU": "Luxemburg", "LV": "Letonia", "MT": "Malta", "NL": "Țările de Jos",
+             "PL": "Polonia", "PT": "Portugalia", "SE": "Suedia", "SI": "Slovenia", "SK": "Slovacia", "GB": "Regatul Unit",
+             "XI": "Irlanda de Nord", "US": "Statele Unite", "CH": "Elveția", "TR": "Turcia", "CN": "China", "MD": "Republica Moldova",
+             "NO": "Norvegia", "RS": "Serbia", "UA": "Ucraina"}
+
+
+def adresa_tert(adresa, oras=None, judet=None, tara=None):
+    """[306] Adresa beneficiarului pe factură: adresa, localitatea, regiunea și — la clientul străin — țara (CF art.319 alin.(20) lit.f:
+    „denumirea/numele și adresa beneficiarului”)."""
+    parti = [x.strip() for x in ((adresa or ""), (oras or ""), (judet or "")) if x and x.strip()]
+    t = (tara or "RO").strip().upper() or "RO"
+    if t != "RO":
+        parti.append(TARI_NUME.get(t, t))
+    return ", ".join(dict.fromkeys(parti))
+
+
+def cod_fiscal_pe_factura(cui, platitor_tva, tara=None):
+    """(eticheta, valoarea) pentru codul furnizorului / beneficiarului pe factură; (None, None) fără cod. [306] Clientul din alt stat:
+    codul lui de TVA așa cum l-a dat (prefixul statului, „IE…”) — nu „CUI”, și nu „RO” + cifre."""
     brut = (cui or "").strip()
     cifre = "".join(ch for ch in brut if ch.isdigit())
     if not cifre:
         return None, None
+    t = (tara or "RO").strip().upper() or "RO"
+    if t != "RO" and not brut.upper().startswith("RO"):
+        return "Cod TVA", brut.upper().replace(" ", "")
     if platitor_tva is True:
         return "Cod TVA", "RO" + cifre
     if platitor_tva is False:
@@ -205,9 +229,9 @@ def genereaza_pdf(profil, factura):
     part = factura.get("tert_nume")
     if part:
         etich = "C\u0103tre" if dir_txt.startswith("Emis") else "De la"
-        _et_t, _cod_t = cod_fiscal_pe_factura(factura.get("tert_cui"), factura.get("tert_platitor_tva"))
+        _et_t, _cod_t = cod_fiscal_pe_factura(factura.get("tert_cui"), factura.get("tert_platitor_tva"), factura.get("tert_tara"))
         meta_linii.append(f"{etich}: {part}" + (f" - {_et_t}: {_cod_t}" if _cod_t else ""))   # [pct.5] art.319 lit.f)
-        adr_tert = (factura.get("tert_adresa") or "").strip()
+        adr_tert = adresa_tert(factura.get("tert_adresa"), factura.get("tert_oras"), factura.get("tert_judet"), factura.get("tert_tara"))
         if adr_tert:
             meta_linii.append(adr_tert)
     for m in meta_linii:

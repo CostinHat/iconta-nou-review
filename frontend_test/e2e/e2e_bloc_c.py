@@ -14,7 +14,7 @@ import os
 
 import pytest
 
-from conftest import BAZA, CAPTURI, INALT, LAT, PREFIX_FIRMA, Ecran, _db, _scoate_firmele_e2e, alege_perioada, cui_cu_control, sql, zile_de_acum
+from conftest import BAZA, CAPTURI, INALT, LAT, PREFIX_FIRMA, Ecran, _db, _scoate_firmele_e2e, alege_perioada, alege_tipul, cui_cu_control, sql, zile_de_acum
 
 AZI = _dt.date.today()
 
@@ -860,7 +860,7 @@ def test_def_79_da_nu_din_schema_cerute_la_prima_folosire(patron, firma_gv):
     assert "alege" in pg.locator("#df-activitate_exceptata_amef option:checked").inner_text()
     patron.captura("date_firma")
     _deschide(patron, firma_gv["nume"], "declaratii", "#dec-tip")
-    pg.select_option("#dec-tip", "d301")
+    alege_tipul(pg, "d301")
     pg.click("#dec-continua")
     pg.wait_for_function("() => document.body.innerText.includes('art. 317 CF?')", timeout=60000)
     patron.captura("d301")
@@ -1112,7 +1112,7 @@ def _curata_coada(tenant_id, peste_id):
 def _declaratie_pas1(ecran, firma, tip, an, luna=None, trim=None):
     pg = ecran.pg
     _deschide(ecran, firma, "declaratii", "#dec-tip")
-    pg.select_option("#dec-tip", tip)
+    alege_tipul(pg, tip)
     pg.wait_for_selector("#dec-an", timeout=10000)
     alege_perioada(pg, an, luna, trim)
     pg.click("#dec-continua")

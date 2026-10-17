@@ -31,7 +31,10 @@ from core import nucleu
 from core.common import cate as _cate
 
 VALABILITATE_ORE = 24
-PASTRARE_ZILE = 7
+#: [deficiența 316, comanda Costin 17.10.2026 7.2] „cererile de înregistrare expirate (cele 2 de la persoane necunoscute) au dispărut din
+#: listă; trebuie arătate «expirat»”: cererea expirată rămâne în Panou Admin, marcată, 30 de zile după expirare (era 7 — după ele ștergerea
+#: le scotea din listă la următoarea înregistrare); apoi se șterge (date personale fără cont). Lista spune când.
+PASTRARE_ZILE = 30
 LIMITA_IP = 5            # încercări de înregistrare pe oră, de la același IP
 LIMITA_EMAIL = 3         # încercări de înregistrare pe oră, pentru același email
 LIMITA_CONFIRMARE_IP = 20
@@ -122,6 +125,7 @@ def neconfirmate(cur, acum=None):
                 "WHERE confirmata_la IS NULL ORDER BY creat_la DESC")
     return [{"id": r[0], "creat_la": r[1].isoformat(), "nume_cabinet": r[2], "email": r[3],
              "email_trimis_la": r[4].isoformat() if r[4] else None, "expira_la": r[5].isoformat(), "expirata": r[5] < acum,
+             "se_sterge_la": (r[5] + datetime.timedelta(days=PASTRARE_ZILE)).isoformat(),   # [316]
              "retrimiteri": r[6]} for r in cur.fetchall()]
 
 

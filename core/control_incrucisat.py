@@ -130,7 +130,7 @@ def ciorne_care_explica(conn, schema, data_de, data_pana, constatari):
         for r in randuri:
             suma = _d(r[col])
             if suma:
-                note.append({"nota_id": r["id"], "nr_curent": int(r["nr_curent"]), "data": r["data"].isoformat(),
+                note.append({"nota_id": r["id"], "nr_curent": r["nr_curent"], "eticheta_nota": r["eticheta_nota"], "data": r["data"].isoformat(),
                              "descriere": r["descriere"] or "", "suma": "%.2f" % suma,
                              "document": _j.document_justificativ(r["document_ref"], r["f_tip"], r["f_serie"], r["f_numar"], r["f_data"],
                                                                   r["sursa"], r["numar"])})
@@ -818,7 +818,7 @@ def _fereastra_tva(tip_dec, an, luna):
     return luni, data_de, data_pana, eticheta
 
 
-def facturi_ic(conn, schema, data_de, data_pana):
+def facturi_ic(conn, schema, data_de, data_pana, cu_servicii=False):
     """Facturile IC (partener UE, non-RO) în [data_de, data_pana), grupate pe directie, fiecare cu
     starea de contabilizare (are notă VALIDATĂ) și are_ciorna. Clasificarea UE = ACEEAȘI ca d390
     (refolosesc _CUI_UE + TARI_UE, nu construiesc paralel): emisă->livrări (L), primită->achiziții (A),
@@ -839,7 +839,9 @@ def facturi_ic(conn, schema, data_de, data_pana):
             # [F3 etapa 7] doar BUNURI IC: D390 cod A e bunuri, serviciile IC (cod S, manual)
             # sunt NEVERIFICATE aici (limita declarata). axa_ic='servicii' se exclude; bunuri +
             # legacy NULL raman - altfel o factura de servicii IC umfla comparatia de bunuri.
-            if (r.get("axa_ic") or "").strip().lower() == "servicii":
+            # [deficiența 300, 17.10.2026] `cu_servicii`: sonda de FAPT a selectorului (există operațiuni IC?) le numără și pe ele — D390
+            # se datorează și pentru prestările de servicii intracomunitare (CF art.325 alin.(1) lit.c)
+            if (r.get("axa_ic") or "").strip().lower() == "servicii" and not cu_servicii:
                 continue
             if r["directie"] in out:
                 out[r["directie"]].append(dict(r))

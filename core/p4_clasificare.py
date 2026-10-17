@@ -314,6 +314,15 @@ CLASIFICARE = {
             "`coada_api.aproba` are cod propriu pentru ea (`FARA_VERDICT`) si refuza aprobarea, cu "
             "mesaj. Deci esecul e anuntat exact acolo unde conteaza — la actul urmator.",
     },
+    "POST /coada/{coada_id}/regenereaza": {
+        "clasa": NECRITIC,
+        "efecte": "elementul nou + ieșirea celui vechi din coadă <-> verdictul validatorului <-> notificarea validatorilor",
+        "de_ce":
+            "[deficiența 297, 17.10.2026] același corp ca `POST /coada` (cererea păstrată în element trece din nou prin `coada_adauga`, "
+            "cu aceleași porți), deci aceeași degradare DECLARATĂ. Actul — înlocuirea — e într-o singură tranzacție: UPDATE-ul care scoate "
+            "elementul vechi și INSERT-ul celui nou stau în același domeniu (`coada_api.inlocuieste` + `adauga_in_coada`, rollback la "
+            "eroare), deci coada nu rămâne nici cu două declarații active, nici cu niciuna. Verdictul și notificarea vin după, logate.",
+    },
     "POST /coada/{coada_id}/aproba": {
         "clasa": NECRITIC,
         "efecte": "aprobarea elementului <-> notificarea pregatitorului",

@@ -111,6 +111,9 @@ def test_coada_cere_poarta_d406(monkeypatch):
     monkeypatch.setattr(uq.db, "get_conn", lambda schema=None: __import__("contextlib").nullcontext(None))
     monkeypatch.setattr(uq, "poarta_d406_balanta", lambda s, an, luna, res: {"cod": uq.COD_D406_BALANTA, "mesaj": "m"})
     monkeypatch.setattr(uq, "ciorne_in_perioada", lambda s, an, luna: 0)   # fără ciorne: diferența blochează (R36)
+    # [297 + 298] sursele perioadei: fără note nevalidate și fără facturi necontate
+    monkeypatch.setattr(uq, "surse_declaratiei", lambda s, tip, an, luna, trim: {
+        "de_la": "2099-01-01", "pana_la": "2099-02-01", "amprenta": "x", "note": [], "facturi": [], "mesaj": None})
     d = types.SimpleNamespace(tip="d406", tenant_id=1, an=2099, luna=10, trim=None, motiv_trecere=None,
                               model_dump=lambda **k: {"tip": "d406", "an": 2099, "luna": 10})
     with pytest.raises(erori.DateInvalide) as e:

@@ -28,6 +28,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from playwright.sync_api import sync_playwright  # noqa: E402
+from declaratie_tip import alege_tipul  # noqa: E402
 
 from core import auth_api, db  # noqa: E402
 from proba_asistent_drepturi import _sesiune  # noqa: E402
@@ -141,7 +142,7 @@ def text(pg, n=1500):
 def declaratie(pg, nume_firma, tip, an, luna=None):
     firma(pg, nume_firma)
     pg.click("#fa-declaratii"); pg.wait_for_selector("#dec-tip", timeout=20000); pg.wait_for_timeout(500)
-    pg.select_option("#dec-tip", tip); pg.wait_for_timeout(300)
+    alege_tipul(pg, tip); pg.wait_for_timeout(300)
     pg.fill("#dec-an", str(an))
     if luna:
         pg.select_option("#dec-luna", str(luna))

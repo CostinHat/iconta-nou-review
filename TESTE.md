@@ -46,6 +46,41 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 7, comanda 7.2 (Costin 17.10.2026, verbatim în DECIZII „Comanda 7.2”)** — 297–320 + răspunsul la 7.1 + titlul din
+  Notificări; ramura `lucru/lot7-2026-10-17` peste `fa4d1622`, fără publicare, fără poartă (poarta o dată, la finalul lotului 7).
+  - ultim: L72-1..L72-9 + L72-10 (teste, mutații, vizual, rularea țintită) — commitul pe ramură care conține această intrare
+    (17.10.2026); lista rescrisă la L72-4 (numărul în tabelul lui, nu în `inregistrari`: garda migrărilor) și la L72-10 (C48).
+  - urmator: L72-11. IN LUCRU — „7.2 – continuare” (Costin 17.10.2026 seara, verbatim în DECIZII): rularea țintită (făcută: ROȘIE, cauzele reparate — ISTORIC 17.10 noaptea), commitul lotului,
+    poarta lotului 7, publicarea (regim pilot: confirmarea că cabinetul nu lucrează + aprobarea SHA-ului). Cheile Meta / WhatsApp și
+    Postmark: lotul 8 (`LANSARE.md`, „Blocate extern”).
+    L72-11. Reluarea după sesiunea pierdută: procesele blocate oprite; mutațiile 320 / titlul / 316; `poarta_scurta.py`; commit; poarta
+            lotului (`scripts/poarta_lot.sh`); publicarea (backup, fast-forward, migrările `--productie`, four-way).
+  - pasi:
+    L72-1. 297 + 298 (prioritare): amprenta datelor-sursă a declarației în coadă (notele validate + facturile perioadei), scrisă la intrarea
+           în coadă; la validarea / respingerea unei note din perioadă intrarea activă se marchează depășită; „Confirmă depunerea” și
+           `coada_depune` refuză pe o declarație depășită, cu „Regenerează”; poarta de la trimitere (`uc_coada.coada_adauga`) numește
+           facturile fără notă validată și notele nevalidate ale perioadei pentru ORICE tip de declarație, nu doar diferența de TVA.
+    L72-2. 299 + 313: refuzul „există deja” cu perioada, tipul în majuscule, linkul spre declarația existentă și „Înlocuiește”; mesajul
+           rămâne; lista declarațiilor existente pentru asistent; titlul ferestrei urmează cardul; „Renunță” pe propria declarație fără
+           motiv obligatoriu; „Trimite în coadă” / „Pregătește pentru depunere” după `pas_urmator`; notele nevalidate numite, cu link.
+    L72-3. 300 + 301: D390 în luna deschisă din facturile IC existente; D112 din fapt (salariați cu contract în lună); „Alte declarații”
+           pliată, fără declarațiile persoanelor fizice la o persoană juridică.
+    L72-4. 302: `Nr. crt.` stocat, dat la validare, neschimbat după (`registru_jurnal_numere` + `core/migrare_nr_curent_note.py`:
+           o migrare nu scrie în `inregistrari`), folosit în registru, etichete, control încrucișat, bilanț.
+    L72-5. 309 + 310 + 311 + 312: Bancă (contat de validat, motivul vechi tradus, comisionul ca notă propusă), Casă (factura cu încasare
+           în așteptare spusă, „Renunță”), amortizarea la „Poate pregăti”, închiderea („generată, de validat”, numărul real, 4091 / 4092).
+    L72-6. 303 + 304 + 305 + 306 + 307 + 317: verificarea CUI (stare, buton blocat, refuz clar, fără 502 crud), refuzul curățat la
+           schimbarea clientului și verificat înaintea întrebării, nota cotei numai pe liniile fără articol, localitatea din VIES,
+           categoria TVA în detaliu și PDF, „Cod TVA” și țara; 307 la sursă; alerta numără numai erorile noastre, cu diacritice.
+    L72-7. 308 + 314 + 315 + 316 + 318 + titlul Notificări (7.2 pct.2): ajutorul importului UBL după ce face importul; povestea depășită;
+           SPV cu explicația o dată; cererile expirate arătate; câmpul CUI blocat arătat blocat.
+    L72-8. 319 + 320: cardurile de început pe actori (administrator: cei trei pași; asistent: Setări cont + firmele și drepturile; client:
+           telefonul, canalul, ce primește), bifate din starea reală; prima intrare cu telefon, canal și bife obligatorii; Notificări pe
+           tipuri, grupate, filtrate după drepturi; preferințele pe tip decid WhatsApp / email.
+    L72-9. 7.1: răspunsul punctual; ce nu e făcut și nu așteaptă chei.
+    L72-10. Teste țintite + e2e `test_def_<nr>` cu mutație pe fiecare număr (și C48: 4092 / 4093 / 4094 în plan); uneltele vizuale;
+            `poarta_scurta.py`; commit pe ramură.
+
 - fir: **Lotul 7 (comenzile Costin 17.10.2026, verbatim în DECIZII „Lotul 6 închis” și „răspunsul la raportul porții 1”)** — ramura
   `lucru/lot7-2026-10-17` (început din `e99aa73a`; mutată peste `590c6170` = `main` publicat, comanda 3 din 17.10.2026 pct.3), worktree
   `/home/costin/iconta_lot7`. Fără publicare, fără poartă. Făcute: 2.1, 2.2, 2.3, 2.6; pregătite fără chei: 2.4 (Meta), 2.5 (Postmark),

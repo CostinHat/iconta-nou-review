@@ -76,6 +76,12 @@ def activare_cont(date):
                 raise _erori.CerereGresita("link de activare invalid sau expirat")
             repo_utilizatori.seteaza_parola(cur, _nucleu.hash_parola(date.parola), r["user_id"])
             repo_utilizatori.marcheaza_tokenul_folosit(cur, _uc_comun._hash_tok(date.token))
+            # [deficiența 320, „Cont și echipă”] administratorul cabinetului află că asistentul invitat și-a activat contul
+            from core import repo_inceput as _ri, notificari_api as _notif
+            rol, nume, admini = _ri.adminii_pentru_activare(cur, r["user_id"])
+            if rol == "angajat":
+                for a in admini:
+                    _notif.adauga(conn, a, "asistent_activat", "%s și-a activat contul de asistent: îl găsești în Asistenți." % nume)
     return {"ok": True}
 
 

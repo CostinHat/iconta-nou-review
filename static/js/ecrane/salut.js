@@ -44,11 +44,14 @@ export function paginaPrincipala(u) {
         </button>`).join("")}
       </div>
     </div>
+    <div class="inceput" id="inceput-carduri" hidden></div>
     <div class="cab-grila"></div>`;
 }
 
 // Leagă benzile (`nivel` = nivelul ferestrei, ca la cardurile paginii) și ține la zi numărul sesizărilor necitite pe „Suport”.
 export function legaBenzile(continut, nav, nivel) {
+  // [deficiențele 319 + 320] cardurile de început, sub banda de salut, la ambele roluri (pagina principală e una — 225 / 231)
+  import("./inceput.js?v=cf800c466e").then((m) => m.cardurileDeInceput(continut.querySelector("#inceput-carduri"), nav)).catch(() => {});
   BENZI.forEach((b) => continut.querySelector(`[data-banda="${b.cheie}"]`)
     .addEventListener("click", () => nav.deschide(b.titlu, (corp) => b.deschide(corp, nav), nivel ? { nivel } : undefined)));
   const suport = continut.querySelector('[data-banda="raport"]');

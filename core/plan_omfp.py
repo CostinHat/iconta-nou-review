@@ -37,6 +37,8 @@ PLAN_OMFP = {
     "401": "Furnizori", "403": "Efecte de plătit", "404": "Furnizori de imobilizări",
     "408": "Furnizori - facturi nesosite", "409": "Furnizori - debitori",
     "4091": "Furnizori - debitori pentru cumpărări de bunuri",
+    "4092": "Furnizori - debitori pentru prestări de servicii", "4093": "Avansuri acordate pentru imobilizări corporale",
+    "4094": "Avansuri acordate pentru imobilizări necorporale",
     "411": "Clienți", "4111": "Clienți", "4118": "Clienți incerți sau în litigiu",
     "413": "Efecte de primit de la clienți", "418": "Clienți - facturi de întocmit",
     "419": "Clienți - creditori",

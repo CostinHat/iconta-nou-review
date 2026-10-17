@@ -826,7 +826,9 @@ def test_def_191_versiunea_noua_se_poate_apasa_cu_o_fereastra_deschisa(patron):
     import json as _json
     pg = patron.pg
     patron.acasa()
-    pg.click("button.cab-card:has([data-cheie='firme'])")
+    # fereastra se deschide din capul paginii, cu bara de stare la vedere (cum o deschide omul de pe pagina principală): `pg.click` ar
+    # derula până la card — sub cardurile de început (319 / 320) — și ar scoate bara din ecran; proba e despre stratul ferestrei
+    pg.evaluate("() => document.querySelector(\"button.cab-card:has([data-cheie='firme'])\").click()")
     pg.wait_for_selector(".fereastra-overlay", timeout=20000)
     pg.route("**/static/.publicat.json*", lambda r: r.fulfill(status=200, content_type="application/json",
                                                               body=_json.dumps({"la": "proba-191-versiune-noua"})))
@@ -1324,13 +1326,14 @@ def test_def_26_banca_spune_exact_ce_a_importat_si_ce_nota_a_creat(patron, firma
     pg.locator(".pf-frand", has_text="Comision administrare cont E2E 26").locator("[data-cont]").click()
     pg.wait_for_function("() => document.querySelector('#bk-mesaj').innerText.includes('creat')", timeout=20000)
     mesaj = pg.inner_text("#bk-mesaj")
-    pg.locator(".pf-frand", has_text="Comision administrare cont E2E 26").get_by_text("Contat ✓").wait_for(timeout=20000)
+    # [309, 17.10.2026] nota comisionului e ciornă: rândul spune „Contată, nota e la validare”, nu „Contat ✓”
+    pg.locator(".pf-frand", has_text="Comision administrare cont E2E 26").get_by_text("Contată, nota e la validare").wait_for(timeout=20000)
     patron.captura("contare")
     # [258] nota se numește cum o arată Registrul jurnal („nr. crt. N din ZZ.LL.AAAA”), nu prin id-ul intern
     nid = sql('SELECT i.id FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l ON l.inregistrare_id = i.id '
               'WHERE l.cont_debit = \'627\' AND l.cont_credit = \'5121\' ORDER BY i.id DESC LIMIT 1' % ((firma_e2e["schema"],) * 2))[0][0]
     # [279] starea reală a notei: patronul validează el, deci „ciornă” și pasul următor
-    assert re.findall(r"Notă 627=5121 creată \((nr\. crt\. \d+ din [\d.]+), ciornă\)\. O validezi din Registrul jurnal\.", mesaj) == \
+    assert re.findall(r"Notă 627=5121 creată \(((?:nr\. crt\. \d+ )?din [\d.]+), ciornă\)\. O validezi din Registrul jurnal\.", mesaj) == \
         [nr_crt(firma_e2e["schema"], nid)], mesaj
     assert sql('SELECT l.cont_debit, l.cont_credit, l.suma::text FROM "%s".inregistrari_linii l WHERE l.inregistrare_id = %%s'
                % firma_e2e["schema"], (nid,)) == [("627", "5121", "12.50")]

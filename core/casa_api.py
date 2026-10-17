@@ -96,6 +96,29 @@ def facturi_partener(conn, schema, categorie, cui=None):
                   key=lambda f: (f["data_emitere"], f["id"]))
 
 
+def facturi_in_asteptare(conn, schema, categorie, cui=None):
+    """[deficiența 310, comanda Costin 17.10.2026 7.2] „F1A4 nu apare la facturile deschise din cauza încasării bancare aflate la validare,
+    fără să se spună asta”: facturile partenerului stinse NUMAI de o notă încă nevalidată — {numar, data_emitere, tert_nume, suma, note}
+    (notele numite ca în Registrul jurnal). Nu se pot alege (ar fi încasate de două ori); se spune de ce nu sunt în listă."""
+    from core import reconciliere_api as _rec, eticheta_nota as _et
+    directie = CATEGORII_CU_FACTURI.get(categorie)
+    if not directie:
+        return []
+    asteapta = [f for f in _rec.facturi_deschise(conn, schema, cu_asteptare=True) if f.get("in_asteptare") and f["directie"] == directie
+                and (not _cifre(cui) or _cifre(f["tert_cui"]) == _cifre(cui))]
+    if not asteapta:
+        return []
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"SELECT id, serie, numar, tert_nume FROM {schema}.facturi WHERE id = ANY(%s)", ([f["id"] for f in asteapta],))
+        nume = {r["id"]: r for r in cur.fetchall()}
+        out = []
+        for f in sorted(asteapta, key=lambda f: (f["data_emitere"], f["id"])):
+            out.append({"id": f["id"], "numar": _ncs(nume[f["id"]]["serie"], nume[f["id"]]["numar"]), "data_emitere": str(f["data_emitere"]),
+                        "tert_nume": nume[f["id"]]["tert_nume"], "suma": str(f["sold_validat"]),
+                        "note": [e for _i, e in _et.note(cur, schema.strip('"'), f["note_nevalidate"])]})
+    return out
+
+
 def alocare_pe_factura(conn, schema, categorie, factura_id, suma):
     """`facturi` pentru `adauga` când documentul (chitanța emisă, chitanța furnizorului) e pe O factură: cât mai e de stins din ea, cel
     mult suma documentului; restul devine avans în `adauga`. Fără factură -> []. Factura stinsă deja integral -> [] (documentul nu se mai
@@ -244,7 +267,8 @@ def previzualizare(conn, schema, op):
                                                 else "plata", "suma": Decimal(str(op.get("suma") or 0)), "partener": op.get("partener"),
                                                 "cui": op.get("cui"), "categorie": op.get("categorie")}])
     return dict(semnale(conn, schema, op), avertismente=_fara_decimal(_m.verifica_plafon(ops)),
-                facturi=facturi_partener(conn, schema, op.get("categorie"), op.get("cui")))
+                facturi=facturi_partener(conn, schema, op.get("categorie"), op.get("cui")),
+                facturi_asteptare=facturi_in_asteptare(conn, schema, op.get("categorie"), op.get("cui")))
 
 
 def leaga(conn, schema, op_id, factura_id):

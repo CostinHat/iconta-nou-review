@@ -289,7 +289,8 @@ CREATE TABLE IF NOT EXISTS public.pachet_povestea (
     luna integer NOT NULL,
     text text NOT NULL,
     status text DEFAULT 'ciorna'::text NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    cifre_amprenta text   -- [314, 17.10.2026] core/migrare_poveste_amprenta.py
 );
 
 CREATE TABLE IF NOT EXISTS public.raportari (

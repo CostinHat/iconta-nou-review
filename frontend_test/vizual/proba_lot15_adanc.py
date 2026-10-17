@@ -30,6 +30,7 @@ sys.path.insert(0, _RAD)
 
 from playwright.sync_api import sync_playwright  # noqa: E402
 import w_auth  # noqa: E402
+from declaratie_tip import alege_tipul  # noqa: E402
 import nav_ecrane  # noqa: E402
 
 INVALID_TEXT = "«»@#$%"
@@ -179,7 +180,7 @@ def proba_declaratii(pg):
     if not tip:
         nota("declaratii", "niciun tip de declaratie in selector", "", pg.evaluate(JS_TEXT))
         return
-    pg.select_option("#dec-tip", tip, timeout=8000)
+    alege_tipul(pg, tip)
     pg.wait_for_timeout(600)
     t0 = pg.evaluate(JS_TEXT)
     pg.click("#dec-continua", timeout=8000)

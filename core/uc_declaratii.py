@@ -38,8 +38,11 @@ def declaratii_tipuri(tenant_id, ctx):
         # INAINTE de inchiderea conexiunii - inainte era calculata dupa `with`, ceea ce n-ar fi mers.
         _neap = control_fiscal_api.neaplicabile_selector(
             _vec, ic_fapt=(lambda: control_fiscal_api.ic_fapt_din_db(conn, schema, azi_ro().year)))
-    return {"tipuri": declaratii_api.tipuri(),
-            "periodicitate": {t: declaratii_api.periodicitate_firma(t, _vec if row else None) for t in declaratii_api.tipuri()},
+    # [deficiența 301] declarațiile pe care forma firmei nu le poate datora nici nu apar (persoanele fizice, la o persoană juridică)
+    _forma = control_fiscal_api.neaplicabile_forma(row[0] if row else None)
+    _tipuri = [t for t in declaratii_api.tipuri() if t not in control_fiscal_api._NEAP_PERSOANA_JURIDICA or t not in _forma]
+    return {"tipuri": _tipuri,
+            "periodicitate": {t: declaratii_api.periodicitate_firma(t, _vec if row else None) for t in _tipuri},
             "neaplicabile": _neap,
             "datorate": _datorate_firmei(tenant_id, ctx)}
 

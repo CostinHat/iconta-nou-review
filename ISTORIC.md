@@ -2623,3 +2623,42 @@ producție, repornire, four-way închis (2 din 2 procese). Lotul 7, pe `lucru/lo
 baza de test; rularea țintită (suita întreagă) a scos 36 de picături, toate în declarații și artefacte, plus două reale de arhitectură: SQL
 în use-case (mutat în `repo_cont_notificari` / `repo_notificari_livrare`) și o rută fără ancoră (`/d/{cheie}` -> `/deschide/{cheie}`).
 E2e: lotul 7 2/2 (plus mutațiile), `bloc_a` 44, `bloc_b` 31, `lot6` 25. Nepublicat (comanda: „Nu se publică”).
+
+## 17.10.2026 — Lotul 7, comanda 7.2: 297–320 + C48, pe ramură, nepublicat
+
+Comanda 7.2 (verbatim în DECIZII „Comanda 7.2”), pe `lucru/lot7-2026-10-17` peste `fa4d1622`, fără publicare și fără poartă. Prioritare:
+297 (declarația din „De depus” se marchează depășită după schimbarea surselor — amprenta notelor și facturilor perioadei, fail-closed;
+„Confirmă depunerea” refuzat; „Generează din nou”) și 298 (declarația numește notele nevalidate pe orice tip și facturile fără notă
+validată pe tipurile de TVA, inclusiv cele cu TVA 0). Găsite la sursă: 302 — „Nr. crt.” se calcula la fiecare citire, deci se muta;
+acum se dă la validare și baza refuză schimbarea lui (`registru_jurnal_numere`); 307 — OUG 120/2021 art.10 alin.(1) și (1^1): factura către
+clientul din Irlanda nu se transmite obligatoriu, aplicația greșea; 308 — importul UBL nu scrie nicio notă, ajutorul spunea altceva;
+317 — 502-ul de la verifica-cui (ANAF căzut, 11:13:11) era numărat „eroare server”, iar căderile reale nu se scriau. 299–306, 309–316,
+318: reparate cum sunt descrise; 319: cardurile administratorului cu textul aprobat (trei alinieri numite); 320: cardurile pe actori,
+prima intrare (telefon, canal, bife), Notificări pe tipuri grupate și filtrate după drepturi. C48 (Code): 4092 / 4093 / 4094 lipseau din
+plan. Teste: 10 fișiere unitare noi, 4 fișiere e2e noi (+316, +C48), fiecare număr cu mutație ROȘIE; verificatorul TOTAL 0. Uneltele vizuale au prins două clase, reparate: cardurile ca `<section>` cu nume (axe landmark-unique în „?”) și alegerea directă a tipului de declarație, care nu mai găsea tipurile pliate în „Alte declarații” (un singur ajutător, `frontend_test/declaratie_tip.alege_tipul`, pazit de `core/test_e2e_perioada.py`). Nepublicat; producția
+rămâne pe `590c6170`.
+
+## 17.10.2026 seara — Lotul 7: reluarea după sesiunea pierdută; prima intrare numai pentru conturile noi
+
+Calculatorul lui Costin s-a resetat în timpul 7.2; inventarul (fără modificări) a găsit lotul pus la index, necomis, și rularea țintită
+blocată pe iconta_test (două tranzacții abandonate, ~50 de minute). Costin („7.2 – continuare”, verbatim în DECIZII): procesele oprite,
+7.2 terminată, lotul 7 închis și publicat, cheile Meta / WhatsApp și Postmark mutate în lotul 8 (`LANSARE.md`). Mutațiile rămase rulate:
+320 și 316 ROȘII; titlul Notificări a supraviețuit — testul compara `innerText` (majuscule pe ecran) — reparat pe `textContent`, apoi
+ROȘU. La întrebările de dinaintea porții: „Numai conturile noi” trec prin prima intrare (`prima_intrare_scutita_la`, scutirea o dată, odată
+cu coloana), fail-closed pe ce există în coadă, cabinetul nu lucrează.
+
+
+## 17.10.2026 noaptea — Lotul 7: rularea țintită pe lotul întreg, cauzele reparate
+
+`poarta_scurta.py` pe lotul pus la index (suita întreagă, 1 h 07 min): 40 de teste Python roșii + 1 eroare, apoi 13 e2e roșii. Nicio
+cădere de zgomot: toate reproductibile, fiecare cu cauza ei. Gărzile de clichet au prins ce scrisesem în lot fără să le respect —
+aserțiuni noi pe text (16 ancore „care apar oricum”, rescrise ca egalități și probe pe comportament: alerta 317 pe interogarea reală, pe
+middleware chemat prin aplicație și pe emailul care pleacă; scutirea 320 pe blocul migrării rulat de două ori), afirmații noi netipate
+(depășirea = `contradictie` / `verificare_rupta`, notele nevalidate = `fapt`; refuzurile cu `ok: False`), trei rute noi fără verdict P4,
+contractul HTTP P7 (abaterile 297 / 299 / 313 / 317 / 319 declarate, cu motivul), registrul TRASEE regenerat, `upsert-ok` și `cate()`.
+Defecte reale găsite pe drum: invitația colegului (319) scria drepturile și firmele în tranzacții separate, după link — o firmă din alt
+cabinet lăsa un cont fără firme; acum o singură tranzacție. Răspunsul la solicitare și anunțul lui (320) se comiteau separat — acum
+împreună. Cardul „De depus” număra declarațiile depășite (fail-closed, 297) drept „neverificate, de deschis” — acum „N depășite, de
+generat din nou”. Consecințele 302 în teste: ciorna n-are număr curent, deci se numește prin dată („nota din ZZ.LL.AAAA”), ca pe card.
+Conturile create de teste trec acum prin prima intrare (invitația e2e o așteaptă). Verificatorul cerea `data-actiune` literal, garda de
+text îl socotea text afișat: excepția gărzii extinsă exact pe atributul `data-actiune="<rută>"`, cu calibrare. Nepublicat încă.

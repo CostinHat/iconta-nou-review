@@ -4,8 +4,9 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-17** (ora 13; lotul 6 PUBLICAT pe `590c6170` — a treia rulare a porții, aprobată ca excepție; lotul 7
-  terminat pe ramură, NEPUBLICAT), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
+- **ultima rescriere**: **2026-10-17** (noaptea; lotul 7 ÎNCHIS — „7.2 – continuare”, verbatim în DECIZII: 7.2 terminată, cheile Meta /
+  WhatsApp / Postmark mutate în lotul 8, publicarea cerută; cabinetul confirmat că nu lucrează), pe secțiunile de stare (lecțiile și
+  CIFRE INVALIDATE se poartă neschimbate).
 - **pe commit**: `590c6170` (lotul 6) — **four-way închis 17.10.2026 10:45**: HEAD = origin/main = public/main =
   backup/lant-2026-10-17 = RUNNING = `590c6170` (2 din 2 procese); procesul pornit 10:44:59 EEST, după commit (08:38:08); nicio
   sentinelă; backup înainte `~/backups_db/iconta_v2_pre_lot6_20261017_1043.dump` (430 de tabele cu date); cele 7 migrări ale lotului
@@ -15,6 +16,30 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
+
+**17.10.2026, noaptea — LOTUL 7 ÎNCHIS, COMIS PE RAMURĂ, ÎN DRUM SPRE PUBLICARE** (DECIZII „Lotul 7: reluarea după pierderea sesiunii;
+lotul 7 se închide și se publică; cheile trec în lotul 8”). Pe `lucru/lot7-2026-10-17` (commitul care conține această predare), în
+`/home/costin/iconta_lot7`: 297–316, 318–320, C48 rezolvate (e2e + mutație); 317 reparată, „neverificat”. Rularea țintită pe lotul întreg a
+fost ROȘIE (40 Python + 13 e2e) și a fost reparată înaintea commitului (ISTORIC „Lotul 7: rularea țintită pe lotul întreg”): gărzile
+verzi, e2e-urile reparate + fișierele lotului verzi, mutațiile noi ROȘII, verificatorul TOTAL 0, uneltele vizuale și probele refăcute.
+**Urmează, în această ordine** (regim pilot, cabinetul confirmat că nu lucrează): `sh scripts/poarta_lot.sh` (fundal, timeout 7200000;
+maximum 2 rulări pe ramură) -> VERDE -> backup `pg_dump -Fc` în `~/backups_db/` -> aprobarea SHA-ului (`scripts/githooks/README.md`) ->
+în `~/iconta_nou`: `git merge --ff-only lucru/lot7-2026-10-17` + `sh scripts/githooks/post-commit` -> migrările `--productie`
+(`migrare_canal_notificari`, `migrare_nr_curent_note`, `migrare_poveste_amprenta`, `migrare_plan_avansuri`, `migrare_ciorne_proprii` +
+ce mai arată `core.migrari_registru verifica`) -> four-way. Rezultatul (SHA, four-way) e în raportul lotului; dacă poarta e ROȘIE: cauzele
+reparate, testele picate rulate o dată, a doua (ultima) rulare. **Lotul 8**: cheile Meta / WhatsApp (F257) și tokenul Postmark (F258) —
+`LANSARE.md`, „Blocate extern”; exportul Search Console (F259). **De știut la publicare**: declarațiile active din coadă și poveștile
+aprobate fără amprentă devin „depășite” (fail-closed, decizia lui Costin) — cardul „De depus” le numește „depășite, de generat din nou”;
+conturile existente intră direct (scutite o dată, la migrare), conturile noi trec prin prima intrare.
+
+**17.10.2026, seara — LOTUL 7, COMANDA 7.2 COMISĂ PE RAMURĂ, NEPUBLICATĂ** (DECIZII „Comanda 7.2”; raportul comenzii 7.2). Pe
+`lucru/lot7-2026-10-17` (commitul care conține această predare), în `/home/costin/iconta_lot7`: 297–316, 318–320 și C48 rezolvate cu e2e
+și mutație (DEFICIENTE); 317 reparată, „neverificat” (fără suprafață în browser); 302 / 307 / 308 / 317 lămurite la sursă. Migrări noi,
+rulate numai pe baza de TEST: `migrare_nr_curent_note`, `migrare_poveste_amprenta`, `migrare_plan_avansuri`, `migrare_canal_notificari`
+(extinsă). Fără poartă (comanda: „poarta rulează o dată, la finalul lotului 7”). **BLOCAT: răspunsul lui Costin la §6 al raportului**
+(prima intrare pentru conturile existente ale cabinetului real; declarațiile / poveștile din producție fără amprentă devin „depășite” la
+publicare; păstrarea 30 de zile; numerotarea notelor validate la migrare), apoi „Lotul 7 e complet” -> `scripts/poarta_lot.sh` -> publicarea
+(backup, fast-forward aprobat, migrările `--productie`, four-way).
 
 **17.10.2026, ora 13 — LOTUL 6 PUBLICAT (`590c6170`, four-way închis); LOTUL 7 TERMINAT PE RAMURĂ, NEPUBLICAT** (DECIZII „a treia rulare
 a porții (excepție aprobată) VERDE”). Lotul 7 (2.1 WhatsApp / email, 2.2 telefonul și canalul în Setări cont, 2.3 notificările
@@ -584,7 +609,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **997** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **1007** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1219** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

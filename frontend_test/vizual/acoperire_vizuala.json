@@ -1,5 +1,5 @@
 {
- "ui_hash": "df7d3ef1398bef14",
+ "ui_hash": "6b4f3eb7c3a7da0a",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -194,8 +194,8 @@
   "declaratii": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 5,
-    "apasate": 3,
+    "vazute": 7,
+    "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },
@@ -346,7 +346,7 @@
   "planconturi": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 188,
+    "vazute": 191,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -365,7 +365,7 @@
   "casa": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 11,
+    "vazute": 12,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -650,7 +650,7 @@
   "ansamblu": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 170,
+    "vazute": 172,
     "apasate": 1,
     "console_errors": [],
     "layout_rupt_dupa_click": false

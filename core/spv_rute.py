@@ -62,6 +62,7 @@ def monteaza(app, dep_context):
             if st.get("conectat"):
                 # [289, decizia Costin 17.10.2026] CUI-urile verificate cu tokenul activ — cu drept / fără drept (ce faci, la cele fără)
                 st["cuiuri"] = spv_conector.cuiuri_verificate(conn, principal)
+                st["explicatie_fara_drept"] = spv_conector.explicatie_fara_drept(st["cuiuri"])   # [315] o dată, nu pe fiecare firmă
             conn.rollback()
             return st
 

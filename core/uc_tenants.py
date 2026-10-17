@@ -1271,11 +1271,15 @@ def tenant_amortizare_restanta(tenant_id, an, luna, ctx):
     for a, l in sorted(luni):
         try:
             r = tenant_amortizare(tenant_id, a, l, ctx)
-            out.append({"an": a, "luna": l, "ok": True, "nota_id": r.get("nota_id"), "total": r.get("total")})
+            out.append({"an": a, "luna": l, "ok": True, "nota_id": r.get("nota_id"), "total": r.get("total"),
+                        "deja_generata": bool(r.get("deja_generata"))})
         except _erori.EroareDeDomeniu as e:
             det = e.detaliu
             out.append({"an": a, "luna": l, "ok": False, "mesaj": det.get("mesaj") if isinstance(det, dict) else str(det)})
-    return {"luni": out, "generate": sum(1 for x in out if x["ok"])}
+    # [deficiența 312] „a doua apăsare spune iar «8 note generate»”: se numără numai notele scrise acum; lunile cu ciorna deja la zi
+    # (aceleași sume) se spun separat, ca „deja generate, de validat”
+    return {"luni": out, "generate": sum(1 for x in out if x["ok"] and not x.get("deja_generata")),
+            "deja_generate": sum(1 for x in out if x["ok"] and x.get("deja_generata"))}
 
 
 def perioada_deblocheaza(tenant_id, an, luna, motiv, ctx):
@@ -1319,6 +1323,7 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         with conn.cursor() as cur:
+            # [302, 17.10.2026] `nr_curent` e PĂSTRAT pe notă (dat la validare); ciorna n-are număr (None).
             # [14-1-1] `nr_curent` se numara de la 1 IANUARIE, nu de la inceputul lunii: norma cere
             # "numarul curent al operatiunilor inregistrate incepand de la 1 ianuarie ... pana la
             # sfarsitul exercitiului financiar". De aceea fereastra e pe AN, iar filtrul pe luna se
@@ -1329,7 +1334,7 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
                  f_tip, f_serie, f_nr, f_data,
                  deb, cre, suma, cc_id, cc_nume) in repo_contabilitate.jurnal_pe_an(cur, schema, f"{an}-01-01", f"{an}-{luna:02d}-01"):
                 if iid not in note:
-                    note[iid] = {"id": iid, "nr_curent": int(nrc), "data": data.isoformat(),
+                    note[iid] = {"id": iid, "nr_curent": int(nrc) if nrc is not None else None, "data": data.isoformat(),
                                  "numar": nr, "descriere": desc, "sursa": sursa, "status": status,
                                  "sursa_eticheta": _j.eticheta_sursa(sursa),   # [deficiența 245] ecranul arată eticheta, nu codul
                                  "factura_id": fid, "document_ref": dref,   # scris de om (editorul îl arată)
@@ -2040,8 +2045,13 @@ def cabinet_solicitari_raspunde(tenant_id, date, ctx):
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             repo_portal.adauga_solicitare_2(cur, tenant_id, date.mesaj, ctx["uid"])
-        conn.commit()
         email = _uc_comun._email_client_tenant(conn, tenant_id)
+        # [deficiența 320] „mesaj_cabinet”: clienții din portal primesc notificarea, pe canalul ales; emailul direct rămâne pentru adresa
+        # firmei care nu e (încă) a unui client cu alegerile salvate. În ACEEAȘI tranzacție cu răspunsul: răspunsul și anunțul lui
+        # se scriu împreună sau deloc
+        if _uc_comun._notifica_clientii(conn, tenant_id, "mesaj_cabinet", "Cabinetul ți-a scris în Solicitări.", email_direct=email):
+            email = None
+        conn.commit()
         if email:
             nume = _uc_comun._nume_tenant(conn, tenant_id)
             subiect = "Răspuns nou de la contabilul tău"
@@ -5329,8 +5339,6 @@ def facturi_emite(tenant_id, date, ctx):
             raise _erori.DateInvalide(MESAJ_FACTURA_BON_STOC)
         # poarta doar la FACTURA (nu proforma/aviz), la firma CV cu linie de stoc; nu și la factura din bon (fără descărcare)
         poarta_ceruta = (date.tip == "factura") and are_stoc and not din_bon
-        if poarta_ceruta and date.pleaca_marfa is None:
-            raise _erori.DateInvalide("Răspunde la întrebare: pleacă marfa acum? (Da: se descarcă gestiunea; Nu: numai evidența fiscală)")
         platitor = _uc_comun._platitor_tva_firma(conn)
         try:
             r = facturi_api.emite_factura(
@@ -5342,6 +5350,7 @@ def facturi_emite(tenant_id, date, ctx):
                 data_curs_manual=date.data_curs_manual,
                 bon_fiscal_nr=date.bon_fiscal_nr, bon_fiscal_data=date.bon_fiscal_data,
                 tert_platitor_tva=_tert_pl, pleaca_marfa=date.pleaca_marfa,   # [06.10.2026 §6.3]
+                intreaba_marfa=poarta_ceruta,   # [304] întrebarea, după verificarea liniilor (refuzul lor vine întâi)
                 raspunsuri_ai=_ai, categorie_331=date.categorie_331,   # [274b] categoria produsului la taxarea inversă
                 tert_oras=date.tert_oras, tert_judet=date.tert_judet,   # [274b] adresa clientului străin (livrarea intracomunitară)
                 # [R130] „consemnat cine și când" — autorul vine din context, nu din corp: cine
@@ -5356,6 +5365,8 @@ def facturi_emite(tenant_id, date, ctx):
                     "%s — %s" % (x["eticheta"], x.get("mesaj") or "") for x in e.campuri),
                 "campuri": e.campuri})
         except ValueError as e:
+            if getattr(e, "cod", None) == facturi_api.COD_INTREABA_MARFA:
+                raise _erori.DateInvalide({"ok": False, "cod": facturi_api.COD_INTREABA_MARFA, "mesaj": str(e)})
             if getattr(e, "cod", None) in ("METODA_STOC_NEDECLARATA", "METODA_STOC_ALTA"):
                 # [06.10.2026 §6.3] refuz STRUCTURAT spre Date firmă (metoda de stoc), factura păstrată pe ecran
                 from core import capital_social as _cs

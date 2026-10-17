@@ -3,7 +3,7 @@
 import { verdictDinStare } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict din stare
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand } from "../api.js?v=9409795a49";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaFacturi } from "./facturi_ecran.js?v=2292618af2";  // [p116_facturi_modul]
+import { randeazaFacturi } from "./facturi_ecran.js?v=52ce1f8c00";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -51,6 +51,7 @@ export function desktopPortal(continut, nav) {
         <div class="cab-card-cap">${SVG(ICON["recomanda"], CULORI_CARD.chihlimbar.fg)}<span class="cab-card-titlu">Recomand\u0103</span></div>
       </button>
     </div>
+    <div class="inceput" id="inceput-carduri" hidden></div>
     <div class="cab-grila">
       <div class="pa-status" id="pa-status" style="grid-column: span 2; margin:0"><p class="ecran-nota">Se verifică situația la ANAF...</p></div>
       <div id="pa-bon-slot" style="display:flex"></div>
@@ -58,6 +59,8 @@ export function desktopPortal(continut, nav) {
   `;
 
   const grila = continut.querySelector(".cab-grila");
+  // [deficiența 320] clientul din portal: cardul lui de început (telefonul, canalul, ce primește); nu în previzualizare
+  if (!sesiune.estePreview()) import("./inceput.js?v=cf800c466e").then((m) => m.cardurileDeInceput(continut.querySelector("#inceput-carduri"), nav)).catch(() => {});
   {
     const c = CARD_BON;
     const card = document.createElement("button");

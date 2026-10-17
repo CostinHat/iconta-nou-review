@@ -310,6 +310,21 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 ### Spacing (decizie 12.07.2026)
 - Margin/padding inline rămân valori literale (6/8/10/12/14/16px, tipar de facto consistent, ~2100 apariții). NU se canonizează în tokeni — raport risc/câștig nefavorabil. Decizie închisă, nu se redeschide fără motiv nou.
 
+## 12b. Cardurile de început (deficiențele 319 + 320, comanda Costin 17.10.2026 7.2, verbatim în DECIZII „Comanda 7.2”)
+
+- **Unde:** pe pagina principală, sub banda de salut (`#inceput-carduri`, `salut.js` — aceeași la administrator și asistent) și în portalul
+  clientului, deasupra grilei. Nu sunt carduri-hub (`.cab-card`): sunt `.inceput-card`, panouri albe cu marginea stângă albastră.
+- **Ce conțin:** titlul pasului, „Ce faci aici”, pașii numerotați, nota (când există), rândul „Cardul devine verde când …” și butoanele spre
+  ecranele REALE (fereastră, ca orice card — cap.2a).
+- **Starea:** verde (`.inceput-facut`, marginea și bifa `--verde`) numai când pasul e făcut în ecranul lui — citit de server
+  (`GET /eu/inceput`), niciodată la apăsarea cardului.
+- **Fără „închide”:** un `.inceput-card` nefăcut nu are buton de închidere și nu se ascunde; nu blochează lucrul (grila de dedesubt rămâne).
+  Când toate sunt făcute (`toate_facute` din `GET /eu/inceput`), `#inceput-carduri` dispare; aceleași carduri, de citit, rămân în „?”
+  (Prezentarea aplicației, „Primii pași”).
+- **Prima intrare:** înainte de pagina principală, ecranul „Înainte de a începe” (telefonul, canalul, bifele din Notificări); „Continuă în
+  aplicație” se deblochează după salvare. Gărzi: `core/test_319_320_inceput.py`, e2e `frontend_test/e2e/e2e_lot72_cont.py::test_def_319_*`,
+  `::test_def_320_*`.
+
 ## 13. Iconițe
 
 - Iconițele de card/UI folosesc EXCLUSIV dicționarul canonic unic `ICOANE` (api.js) — path-uri SVG interne, viewBox 24×24, stroke. NU se duplică dicționarul în ecrane (era copiat divergent în cabinet/admin/asistent).

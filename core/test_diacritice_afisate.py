@@ -442,6 +442,9 @@ _JS_NAV_TMPL_RE = re.compile(r"nav\.(?:deschide|mergi|inlocuieste)\s*\(\s*(`(?:[
 _JS_INTERP_RE = re.compile(r"\$\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}")
 _JS_TEXTNODE_RE = re.compile(r">([^<>]+)<")
 _RUTA_RE = re.compile(r"(GET|POST|PUT|DELETE|PATCH) /")
+#: [17.10.2026, inceput.js] ramura de ternar care e chiar atributul `data-actiune="<rută>"` (forma pe care o cere verificatorul,
+#: ACTIUNE_REFUZATA_NEMARCATA) — tot o rută, nu text afișat; orice alt atribut rămâne judecat
+_ATRIBUT_ACTIUNE_RE = re.compile(r"^\s*data-actiune=\"")
 _JS_ATRIBUT_RE = re.compile(r"\b(?:aria-label|title|placeholder|alt)=\"([^\"$]*)\"")
 
 # POZITIILE 5 si 6 (06.09.2026). Gardul vedea `eticheta: "..."` dar NU si cele doua forme in care
@@ -604,7 +607,7 @@ def scan_js_text(text, flag=None):
             if h:
                 out.append((_lineno(text, base + tm.start(1)), "text-html", d.strip(), h))
     for pos, raw in ternare:     # [264] ramurile ternarelor din interpolari
-        if not _RUTA_RE.match(raw[1:]):                          # o ruta (`data-actiune`) nu e text afisat
+        if not _RUTA_RE.match(_ATRIBUT_ACTIUNE_RE.sub("", raw[1:])):   # o ruta (`data-actiune`) nu e text afisat
             emit(pos, "ternar", raw)
     return out
 
@@ -667,3 +670,13 @@ def test_niciun_text_afisat_js_fara_diacritice():
     assert not fl, (
         "Text AFISAT in JS fara diacritice (pe ecran -> cu diacritice; cod/cai/selectoare -> ASCII). "
         "Adauga diacriticele corecte pe proza:\n" + raport)
+
+
+def test_ternarul_cu_atributul_data_actiune_e_ruta_nu_text():
+    """[17.10.2026] Ramura `' data-actiune="POST /eu/…"'` e o rută (cerută literal de verificator), nu text afișat; o ramură cu text
+    rămâne judecată. MUTAȚIE: `_ATRIBUT_ACTIUNE_RE.sub` scos -> ramura cu ruta e semnalată („inceput”) -> pică."""
+    crit = lambda s: (["inceput"] if "inceput" in s else []) or None   # noqa: E731 — orice cuvânt fără diacritice, ca în gardă
+    ruta = 'x = `<b${a ? \' data-actiune="POST /eu/inceput/lucrez-singur"\' : ""}>`;'
+    text = 'x = `<b>${a ? \'Primii pasi la inceput\' : ""}</b>`;'
+    assert [r for _ln, r, _s, _h in scan_js_text(ruta, crit)] == []
+    assert [r for _ln, r, _s, _h in scan_js_text(text, crit)] == ["ternar"]

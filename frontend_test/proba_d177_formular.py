@@ -4,6 +4,7 @@ _DOAR_API) -> genereaza pe formular gol (refuz cu mesaj de contabil, fara nume i
 plafoanele + adauga un beneficiar (redirectionare) -> Regenereaza -> DUKIntegrator VALID. Capturi privite + axe + mobil (Pixel5)."""
 import os, json, urllib.request, urllib.error
 from playwright.sync_api import sync_playwright
+from declaratie_tip import alege_tipul  # noqa: E402
 BAZA = "http://127.0.0.1:8010"
 TARGET_TID = 8396
 TARGET_NUME = "ALFA MICRO"
@@ -54,7 +55,7 @@ with sync_playwright() as p:
     deschide_d177(pg)
 
     assert pg.query_selector("#dec-tip option[value=\"d177\"]"), "d177 LIPSESTE din selectorul de tipuri"
-    pg.select_option("#dec-tip", "d177"); pg.wait_for_timeout(500)
+    alege_tipul(pg, "d177"); pg.wait_for_timeout(500)
     if pg.query_selector("#dec-an"):
         pg.fill("#dec-an", "2025"); pg.dispatch_event("#dec-an", "change")
     pg.wait_for_timeout(300)
@@ -120,7 +121,7 @@ with sync_playwright() as p:
     mob.add_init_script(INIT)
     mp = mob.new_page()
     deschide_d177(mp)
-    mp.select_option("#dec-tip", "d177"); mp.wait_for_timeout(400)
+    alege_tipul(mp, "d177"); mp.wait_for_timeout(400)
     if mp.query_selector("#dec-an"):
         mp.fill("#dec-an", "2025"); mp.dispatch_event("#dec-an", "change")
     mp.wait_for_selector("#dec-continua:not([disabled])", timeout=8000); mp.click("#dec-continua"); mp.wait_for_timeout(5000)

@@ -92,3 +92,71 @@ def test_helperul_urmeaza_selectorul_afisat_si_pica_fara_el(alege):
     anual = _Pg(set())
     alege(anual, 2025)                                                        # anuală: numai anul
     assert anual.ales == {"#dec-an": "2025"}
+
+
+_FRONT = os.path.join(_RAD, "frontend_test")
+_TIP = re.compile(r"#dec-tip\b")
+
+
+def _alegeri_directe_ale_tipului(cale):
+    """`select_option("…#dec-tip", <valoare>)` pe AST: alegerea pe VALOARE (fără `label=` / `index=`, care aleg rândul afișat)."""
+    for n in ast.walk(ast.parse(open(cale, encoding="utf-8").read())):
+        if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr == "select_option" and n.args:
+            consts = [c.value for c in ast.walk(n.args[0]) if isinstance(c, ast.Constant) and isinstance(c.value, str)]
+            if any(_TIP.search(c) for c in consts) and len(n.args) > 1:
+                yield n.lineno
+
+
+def test_tipul_declaratiei_se_alege_numai_prin_helper():
+    """[deficiența 301, comanda Costin 17.10.2026 7.2] „Alte declarații” e pliată: un tip nedatorat nu e în listă până la clic. Alegerea
+    directă a așteptat o opțiune care nu era acolo (scanul de text, 17.10.2026: 5 ecrane „neatinse”). Tipul se alege numai prin
+    `frontend_test/declaratie_tip.alege_tipul`, în plasă, în uneltele vizuale și în sonde.
+    MUTAȚIE: `pg.select_option("#dec-tip", tip)` înapoi în `e2e_bloc_e._declaratie` -> pică."""
+    fisiere = [f for f in sorted(glob.glob(os.path.join(_FRONT, "**", "*.py"), recursive=True))
+               if os.path.basename(f) != "declaratie_tip.py"]
+    assert len(fisiere) >= 50, len(fisiere)                               # anti-vacuu: plasa, uneltele și sondele
+    directe = ["%s:%d" % (os.path.relpath(f, _RAD), ln) for f in fisiere for ln in _alegeri_directe_ale_tipului(f)]
+    assert directe == [], directe
+    folosiri = sum(open(f, encoding="utf-8").read().count("alege_tipul(") for f in fisiere)
+    assert folosiri >= 10, folosiri                                       # anti-vacuu: helperul e folosit
+
+
+class _PgTip:
+    def __init__(self, datorate, alte):
+        self.dat, self.alte, self.deschis, self.ales = set(datorate), set(alte), False, None
+
+    def _vizibile(self):
+        return self.dat | (self.alte if self.deschis else set())
+
+    def locator(self, s):
+        m = re.search(r"value='([^']+)'", s)
+        n = int(m.group(1) in self._vizibile()) if m else int(s.endswith("#dec-alte"))
+        return type("L", (), {"count": lambda _s: n})()
+
+    def get_attribute(self, s, a):
+        return "true" if self.deschis else "false"
+
+    def click(self, s):
+        self.deschis = not self.deschis
+
+    def wait_for_selector(self, s, **k):
+        pass
+
+    def select_option(self, s, v):
+        self.ales = v
+
+
+def test_helperul_deschide_alte_declaratii_numai_cand_trebuie():
+    """MUTAȚIE: clicul pe „Alte declarații” scos din `alege_tipul` -> D390 nedatorat nu se mai alege -> pică."""
+    sys.path.insert(0, _FRONT)
+    try:
+        from declaratie_tip import alege_tipul
+    finally:
+        sys.path.remove(_FRONT)
+    pg = _PgTip({"d300"}, {"d390"})
+    alege_tipul(pg, "d300")
+    assert (pg.ales, pg.deschis) == ("d300", False)                       # datorată: lista rămâne pliată
+    alege_tipul(pg, "d390")
+    assert (pg.ales, pg.deschis) == ("d390", True)
+    with pytest.raises(AssertionError, match="nici în „Alte declarații”"):
+        alege_tipul(_PgTip({"d300"}, set()), "d200")

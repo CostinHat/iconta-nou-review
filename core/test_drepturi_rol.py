@@ -111,7 +111,8 @@ _PINI = {
     ("POST", "/tenants/{tenant_id}/perioade-blocate"): ("VALIDA", "„blocarea perioadei (închiderea lunii)”"),
     ("POST", "/tenants/{tenant_id}/jurnal/{nota_id}/valideaza"): ("VALIDA", "„validarea notelor contabile”"),
     ("POST", "/coada/{coada_id}/aproba"): ("VALIDA", "„validarea … declarațiilor”"),
-    ("POST", "/tenants/{tenant_id}/amortizare"): ("VALIDA", "„înregistrarea amortizării”"),
+    ("POST", "/tenants/{tenant_id}/amortizare"): ("PREGATI", "311: „generarea amortizării (lunară și restantă) la «Poate pregăti»”"),
+    ("POST", "/tenants/{tenant_id}/amortizare/restanta"): ("PREGATI", "311: „generarea amortizării (lunară și restantă) la «Poate pregăti»”"),
     ("PUT", "/tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd"): ("VALIDA", "decizia Costin 08.10 W4: „schimbă regimul "
                                                                                        "fiscal al activului și cere «Poate valida»”"),
     ("POST", "/coada/{coada_id}/depune"): ("DEPUNE", "„depunerea la ANAF”"),
@@ -436,6 +437,8 @@ def test_aprobarea_si_trimiterea_povestii_cer_poate_valida(cabinet, monkeypatch)
     # [deficiența 288] cabinetul sintetic n-are schema firmei: verificarea textului (testată separat, `test_288_povestea_lunii`) nu
     # e obiectul acestui test — garda drepturilor e
     monkeypatch.setattr(uc_pachete, "verifica_textul_aprobat", lambda *a, **k: None)
+    # [deficiența 314] la fel amprenta cifrelor (rezumatul lunii citește schema firmei), testată în `test_314_poveste_depasita`
+    monkeypatch.setattr(uc_pachete._pachete, "rezumat_luna", lambda *a, **k: {})
     cl, t, q = _cl(), cabinet["tid"], {"an": 2099, "luna": 1}
     r = cl.post(_cale("pachet_poveste_set", tenant_id=t), params=q, headers=_H(cabinet["asist"]),
                 json={"text": "ZT", "status": "aprobat"})

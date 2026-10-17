@@ -84,3 +84,16 @@ def alege_emailul(cur, uid):
 def scrie_telefonul_contului_nou(cur, user_id, telefon):
     """Telefonul din formularul de inregistrare (lotul 7 pct.2.2), NECONFIRMAT."""
     cur.execute("UPDATE public.users SET telefon = %s WHERE id = %s", (telefon, user_id))
+
+
+def preferintele(cur, uid):
+    """[320] (bifele salvate | None, salvate (bool), rol, poate_pregati, poate_valida, scutit de prima intrare (bool)) — cine e omul și
+    ce a bifat în Notificări."""
+    cur.execute("SELECT notificari_tipuri, notificari_salvate_la IS NOT NULL, rol, COALESCE(poate_pregati, false), "
+                "COALESCE(poate_valida, false), prima_intrare_scutita_la IS NOT NULL FROM public.users WHERE id = %s", (uid,))
+    return cur.fetchone()
+
+
+def scrie_preferintele(cur, uid, tipuri_json):
+    """[320] Bifele din Notificări și momentul salvării (prima intrare le cere)."""
+    cur.execute("UPDATE public.users SET notificari_tipuri = %s::jsonb, notificari_salvate_la = now() WHERE id = %s", (tipuri_json, uid))

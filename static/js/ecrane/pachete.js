@@ -83,8 +83,8 @@ async function pasLucru(corp, nav) {
       api.get(`/pachete/${S.tenant_id}/poveste?an=${S.an}&luna=${S.luna}`),
     ]);
     S.rezumat = rz;
-    if (pv && pv.exista) { S.text = pv.text || ""; S.status = pv.status; }
-    else { S.text = ""; S.status = null; }
+    if (pv && pv.exista) { S.text = pv.text || ""; S.status = pv.status; S.depasita = !!pv.depasita; S.motivDepasita = pv.motiv_depasita || ""; }
+    else { S.text = ""; S.status = null; S.depasita = false; S.motivDepasita = ""; }
   } catch (e) {
     // [R156, 05.09.2026] Serverul refuza precis (`an invalid: -99999999 (aștept 1990-2100)`,
     // din `_cere_perioada`), iar ecranul il inlocuia cu „Nu s-au putut încărca datele.” — adica
@@ -169,11 +169,14 @@ function deschideModal(corp, nav) {
   function motivInactiv() {
     if (!(ta.value || "").trim()) return "„Trimite” e inactiv: povestea e goală. Scrie sau generează povestea, apoi aprob-o.";
     if (S.status !== "aprobat") return "„Trimite” e inactiv: povestea nu e aprobată încă.";
+    // [deficiența 314] aprobată pe alte cifre decât cele de acum: depășită, până la regenerare și o nouă aprobare
+    if (S.depasita) return "„Trimite” e inactiv: " + (S.motivDepasita || "povestea e depășită — cifrele lunii s-au schimbat după aprobare.");
     if ((ta.value || "").trim() !== (S.text || "").trim()) return "„Trimite” e inactiv: textul s-a schimbat după aprobare — aprobă din nou.";
     return "";
   }
   function actualizeazaStare() {
-    if (S.status === "aprobat") arataMesaj(stareEl, "Stare: aprobată ✓ — gata de trimis", "ok");
+    if (S.status === "aprobat" && S.depasita) arataMesaj(stareEl, "Stare: aprobată, dar depășită — cifrele lunii s-au schimbat după aprobare", "avert");
+    else if (S.status === "aprobat") arataMesaj(stareEl, "Stare: aprobată ✓ — gata de trimis", "ok");
     else if (S.text) arataMesaj(stareEl, "Stare: ciornă", "info");
     else arataMesaj(stareEl, "", "info");
     const motiv = motivInactiv();
@@ -195,7 +198,7 @@ function deschideModal(corp, nav) {
     try {
       const r = await api.post(`/pachete/${S.tenant_id}/genereaza?an=${S.an}&luna=${S.luna}`, {});
       if (r && r.ok) {
-        ta.value = r.text || ""; S.text = ta.value; S.status = "ciorna"; actualizeazaStare();
+        ta.value = r.text || ""; S.text = ta.value; S.status = "ciorna"; S.depasita = false; actualizeazaStare();
         arataMesaj(stareEl, "Generată de AI — citește, editează și aprobă.", "info");
         // [comanda Costin 05.10.2026 pct.1] ce a scris AI-ul altfel decât pachetul (termen sau sumă) — de corectat înainte de aprobare
         // [deficiențele 32 + 33, retestul Costin 09.10] propozițiile fără sursă în pachet (laude, afirmații despre declarații) au fost
@@ -240,7 +243,7 @@ function deschideModal(corp, nav) {
     arataMesaj(stareEl, "Ciornă salvată.", "info"); _reflectaStareEcran(corp);
   });
   const aprobata = (text) => {
-    S.status = "aprobat"; S.text = text;
+    S.status = "aprobat"; S.text = text; S.depasita = false;
     actualizeazaStare();
     arataMesaj(stareEl, "Aprobată ✓", "ok"); _reflectaStareEcran(corp);
   };

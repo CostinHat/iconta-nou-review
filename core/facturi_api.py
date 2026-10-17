@@ -19,6 +19,10 @@ REGULI = "2026.1"
 MODUL = "facturi_api"
 
 
+COD_INTREABA_MARFA = "INTREABA_PLEACA_MARFA"
+MESAJ_INTREABA_MARFA = "Răspunde la întrebare: pleacă marfa acum? (Da: se descarcă gestiunea; Nu: numai evidența fiscală)"
+
+
 class LiniiIncomplete(ValueError):
     """[cap.24/cap.6] Linii de factura fara denumire sau cu cantitate<=0 -> erori PER-LINIE field-keyed
     {camp, eticheta} (id-uri DOM em-l{i}-*, i = pozitia in lista PRIMITA). Backendul e autoritatea de validare
@@ -546,7 +550,7 @@ def lista_facturi(conn, an=None, luna=None, directie=None, limit=None, offset=0)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, numar, data_emitere, directie, total, tva, total_lei, status, "
-            "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id, platita_la, data_faptului_generator "
+            "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id, platita_la, data_faptului_generator, tert_tara "
             "FROM facturi" + where +
             " ORDER BY data_emitere DESC, id DESC" + limitclause, val)
         out = [dict(r) for r in cur.fetchall()]
@@ -587,6 +591,19 @@ def termen_spv(data_emitere, data_fapt_generator=None):
     return t
 
 
+def spv_obligatorie(tert_tara, tert_cui):
+    """[deficiența 307, comanda Costin 17.10.2026 7.2 pct.6, verificat la sursă] Factura emisă se transmite OBLIGATORIU în RO e-Factura
+    numai către un client stabilit în România sau înregistrat în scopuri de TVA în România. OUG 120/2021 art.10 alin.(1): „În relația
+    comercială B2B, între persoane impozabile stabilite în România [...] pentru livrările de bunuri și prestările de servicii care au locul
+    livrării/prestării în România [...] emitentul facturii electronice are obligația de transmitere”; alin.(1^1) (de la 01.01.2026, OUG
+    89/2025): și către „persoane impozabile nestabilite, dar înregistrate în scopuri de TVA în România” (text din
+    `anaf_surse/oug_120_2021.html`). Clientul din alt stat, cu cod de TVA al lui (F1A5, Irlanda: serviciu cu locul prestării la client,
+    CF art.278 alin.(2)) nu intră în niciunul — fără obligație, deci fără termenul de 5 zile."""
+    tara = (tert_tara or "RO").strip().upper() or "RO"
+    cod = (tert_cui or "").strip().upper()
+    return tara == "RO" or cod.startswith("RO") or (cod.isdigit() and bool(cod))
+
+
 def _cu_stare_spv(cur, facturi):
     """[lotul 6 pct.5b, 275] „«Istoric facturi» și detaliul arată starea în SPV: netrimisă / trimisă / acceptată / respinsă, cu termenul de 5
     zile lucrătoare.” Pe facturile EMISE de tip factură (proforma, avizul nu pleacă în e-Factura): `stare_spv` = {stare, termen,
@@ -609,9 +626,14 @@ def _cu_stare_spv(cur, facturi):
             continue
         st, err = ultima.get(f["id"], (None, None))
         stare = STARE_SPV.get(st, "netrimisa")
+        if not spv_obligatorie(f.get("tert_tara"), f.get("tert_cui")):
+            # [307] clientul nu e stabilit și nu e înregistrat în scopuri de TVA în România: transmiterea nu e obligatorie, deci nici termen
+            f["stare_spv"] = {"stare": stare, "termen": None, "depasit": False, "obligatorie": False,
+                              "eroare": err if stare in ("respinsa", "netrimisa") and st else None, "stare_tehnica": st}
+            continue
         termen = termen_spv(f["data_emitere"], f.get("data_faptului_generator"))
         f["stare_spv"] = {"stare": stare, "termen": termen.isoformat(), "depasit": stare == "netrimisa" and azi > termen,
-                          "eroare": err if stare in ("respinsa", "netrimisa") and st else None, "stare_tehnica": st}
+                          "obligatorie": True, "eroare": err if stare in ("respinsa", "netrimisa") and st else None, "stare_tehnica": st}
 
 
 def _cu_stare_incasare(cur, facturi):
@@ -676,7 +698,7 @@ def detalii_factura(conn, factura_id):
         cur.execute(
             "SELECT id, client_id, numar, serie, data_emitere, data_scadenta, total, tva, "   # [05.10.2026] seria pe PDF (art.319 lit.a)
             "status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
-            "tert_tara, tip_operatiune, furnizor_tva_incasare, "
+            "tert_tara, tip_operatiune, furnizor_tva_incasare, tert_oras, tert_judet, "   # [306] adresa clientului străin
             "taxare_inversa, categorie_331, axa_ic, tert_platitor_tva, data_faptului_generator, "  # [A4] clasificarea storno-ului
             "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, storno_din_id, tip, transformat_in_id, "
             "link_plata, platita_la, plata_confirmata_de, "  # [R43] marca de simulare
@@ -692,6 +714,12 @@ def detalii_factura(conn, factura_id):
             "SELECT id, descriere, um, cantitate, pret_unitar, cota_tva, cont_venit, categorie_tva "
             "FROM factura_linii WHERE factura_id = %s ORDER BY id", (factura_id,))
         f["linii"] = [dict(r) for r in cur.fetchall()]
+        # [deficiența 306] detaliul arată categoria de TVA a liniei cu 0% (eticheta ei), nu numai „0%”; codul și adresa clientului ca pe PDF
+        from core import categorii_tva as _ct, factura_pdf as _fp
+        for l in f["linii"]:
+            l["categorie_tva_eticheta"] = (_ct.CATEGORII.get(l.get("categorie_tva")) or {}).get("eticheta")
+        f["tert_cod_eticheta"], f["tert_cod"] = _fp.cod_fiscal_pe_factura(f.get("tert_cui"), f.get("tert_platitor_tva"), f.get("tert_tara"))
+        f["tert_adresa_completa"] = _fp.adresa_tert(f.get("tert_adresa"), f.get("tert_oras"), f.get("tert_judet"), f.get("tert_tara"))
         _cu_stare_contare(cur, [f])
         _cu_stare_incasare(cur, [f])
         _cu_stare_spv(cur, [f])   # [lotul 6 pct.5b, 275]
@@ -1118,7 +1146,7 @@ def _potriveste_linii(conn, linii, platitor_tva=True, raspunsuri_ai=None):
     return out
 
 
-def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, tert_adresa=None,
+def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=None, tert_cui=None, tert_adresa=None,
                   data_emitere=None, data_scadenta=None, moneda="RON",
                   platitor_tva=True, status="de_preluat", curs_manual=None, tip="factura",
                   tert_tara="RO", tip_operatiune="normal", tert_pf=False,
@@ -1158,6 +1186,12 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
                   "mesaj": "Factura are linii cu taxare inversă (art.331): alege categoria produsului (D394 o declară cu codul ei)."}]
     if _rele:
         raise LiniiIncomplete(_rele)
+    if intreaba_marfa and pleaca_marfa is None:
+        # [deficiența 304, comanda Costin 17.10.2026 7.2] „refuzul vine abia după «Pleacă marfa acum?»”: întrebarea vine DUPĂ ce liniile și
+        # categoriile lor au trecut, nu înainte — un refuz al facturii nu mai așteaptă un răspuns care nu-l schimbă
+        _e = ValueError(MESAJ_INTREABA_MARFA)
+        _e.cod = COD_INTREABA_MARFA
+        raise _e
     if tip == "factura" and not str(bon_fiscal_nr or "").strip() and pleaca_marfa is not False:
         verifica_marfa_si_metoda(conn, linii, pleaca_marfa)   # [06.10.2026 §6.3] o singură descărcare pe ieșire
     # [C1] rezervare ATOMICĂ a numărului (UPDATE ... +1 RETURNING), nu citire-apoi-increment.

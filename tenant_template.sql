@@ -940,6 +940,9 @@ INSERT INTO TENANT_PLACEHOLDER.plan_conturi (simbol, denumire, tip) VALUES
 ('408', 'Furnizori - facturi nesosite', 'Bifunctional'),
 ('409', 'Furnizori - debitori', 'Bifunctional'),
 ('4091', 'Furnizori - debitori pentru cumpărări de bunuri', 'Bifunctional'),
+('4092', 'Furnizori - debitori pentru prestări de servicii', 'Bifunctional'),
+('4093', 'Avansuri acordate pentru imobilizări corporale', 'Bifunctional'),
+('4094', 'Avansuri acordate pentru imobilizări necorporale', 'Bifunctional'),
 ('411', 'Clienți', 'Bifunctional'),
 ('4111', 'Clienți', 'Bifunctional'),
 ('4118', 'Clienți incerți sau în litigiu', 'Bifunctional'),
@@ -3077,15 +3080,53 @@ DROP TRIGGER IF EXISTS trg_perioada_blocata_chitante ON TENANT_PLACEHOLDER.chita
 CREATE TRIGGER trg_perioada_blocata_chitante BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.chitante
   FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_chitante();
 -- [reguli_fond_v2] sfârșit
+-- [nr_curent_v1, 17.10.2026] numărul notei dat la validare (deficiența 302) — SURSA: core/migrare_nr_curent_note.py
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.registru_jurnal_numere (
+    inregistrare_id integer PRIMARY KEY REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE,
+    an integer NOT NULL,
+    nr_curent integer NOT NULL,
+    dat_la timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT registru_jurnal_numere_unic UNIQUE (an, nr_curent)
+);
+INSERT INTO TENANT_PLACEHOLDER.registru_jurnal_numere (inregistrare_id, an, nr_curent)
+SELECT x.id, x.an, x.rn
+  FROM (SELECT id, status, EXTRACT(YEAR FROM data)::int AS an,
+               ROW_NUMBER() OVER (PARTITION BY date_trunc('year', data) ORDER BY data, id) AS rn FROM TENANT_PLACEHOLDER.inregistrari) x
+ WHERE x.status = 'validata' AND NOT EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.registru_jurnal_numere);
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.nr_curent_la_validare() RETURNS trigger AS $$
+DECLARE
+  an_nota integer := EXTRACT(YEAR FROM NEW.data)::int;
+BEGIN
+  IF NEW.status = 'validata' AND NOT EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.registru_jurnal_numere WHERE inregistrare_id = NEW.id) THEN
+    PERFORM pg_advisory_xact_lock(hashtext('nr_curent:' || TG_TABLE_SCHEMA || ':' || an_nota::text));
+    INSERT INTO TENANT_PLACEHOLDER.registru_jurnal_numere (inregistrare_id, an, nr_curent)
+    SELECT NEW.id, an_nota, COALESCE(MAX(nr_curent), 0) + 1 FROM TENANT_PLACEHOLDER.registru_jurnal_numere WHERE an = an_nota;
+  END IF;
+  RETURN NULL;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_nr_curent_la_validare ON TENANT_PLACEHOLDER.inregistrari;
+CREATE TRIGGER trg_nr_curent_la_validare AFTER INSERT OR UPDATE OF status ON TENANT_PLACEHOLDER.inregistrari
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.nr_curent_la_validare();
+
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.nr_curent_neschimbat() RETURNS trigger AS $$
+BEGIN
+  RAISE EXCEPTION 'REGULA_CONTABILA: Nota nr. crt. % din % e în Registrul-jurnal: numărul ei nu se mai schimbă.', OLD.nr_curent, OLD.an;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_nr_curent_neschimbat ON TENANT_PLACEHOLDER.registru_jurnal_numere;
+CREATE TRIGGER trg_nr_curent_neschimbat BEFORE UPDATE ON TENANT_PLACEHOLDER.registru_jurnal_numere
+  FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.nr_curent_neschimbat();
+-- [nr_curent_v1] sfârșit
+
 -- [ciorne_proprii_v1, 15.10.2026] ciorna altui utilizator (deficiența 246) — SURSA: core/migrare_ciorne_proprii.py
 CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.eticheta_nota(nid integer) RETURNS text AS $$
-  -- [deficiența 258] numele notei cum îl vede contabilul în Registrul jurnal: „nr. crt. N din ZZ.LL.AAAA”; N = locul ei în anul
-  -- notei după (data, id), orice stare — numerotarea din `repo_contabilitate.jurnal_pe_an` (paritatea: core/test_eticheta_nota.py);
-  -- NULL dacă nota nu există. Python o cheamă prin `core/eticheta_nota.py`, ca textul din bază și cel din aplicație să fie unul.
-  SELECT 'nr. crt. ' || (SELECT count(*) FROM TENANT_PLACEHOLDER.inregistrari o
-                          WHERE o.data >= date_trunc('year', n.data)::date AND (o.data, o.id) <= (n.data, n.id))
-         || ' din ' || to_char(n.data, 'DD.MM.YYYY')
-    FROM TENANT_PLACEHOLDER.inregistrari n WHERE n.id = nid
+  -- [deficiența 258] numele notei cum îl vede contabilul în Registrul jurnal: „nr. crt. N din ZZ.LL.AAAA”. [deficiența 302, 17.10.2026]
+  -- N = `registru_jurnal_numere.nr_curent`, dat la validare și neschimbat după (core/migrare_nr_curent_note.py); nota nevalidată n-are număr: „din ZZ.LL.AAAA”
+  -- („Nota din 07.10.2026 e ciorna lui …”; starea o spune fraza în care stă eticheta). NULL dacă nota nu există. Python o cheamă prin `core/eticheta_nota.py`, ca textul din
+  -- bază și cel din aplicație să fie unul (paritatea cu Registrul jurnal: core/test_eticheta_nota.py).
+  SELECT CASE WHEN r.nr_curent IS NOT NULL THEN 'nr. crt. ' || r.nr_curent || ' din ' || to_char(n.data, 'DD.MM.YYYY')
+              ELSE 'din ' || to_char(n.data, 'DD.MM.YYYY') END
+    FROM TENANT_PLACEHOLDER.inregistrari n LEFT JOIN TENANT_PLACEHOLDER.registru_jurnal_numere r ON r.inregistrare_id = n.id WHERE n.id = nid
 $$ LANGUAGE sql STABLE;
 
 CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.eticheta_rip(oid integer) RETURNS text AS $$

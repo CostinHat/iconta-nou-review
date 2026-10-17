@@ -13,7 +13,7 @@ import urllib.request
 
 import pytest
 
-from conftest import BAZA, PREFIX_FIRMA, _db, _scoate_firmele_e2e, alege_perioada, cui_cu_control, nr_crt, sql
+from conftest import BAZA, PREFIX_FIRMA, _db, _scoate_firmele_e2e, alege_perioada, alege_tipul, cui_cu_control, nr_crt, sql
 
 AZI = _dt.date.today()
 LUNA_TRECUTA = (AZI.replace(day=1) - _dt.timedelta(days=1)).replace(day=1)
@@ -623,11 +623,14 @@ def test_def_109_dupa_prima_ciorna_veche_se_inlocuieste_si_merge_la_validare(asi
     assert "Ciorna %s din jurnal are alte sume decât statul afișat" % nr_crt(s, vechi[0][0]) in asistent.fereastra(), asistent.fereastra()
     asistent.captura("alte_sume")
     pg.click(".fereastra:last-of-type #sp-contare-scrie")
-    _asteapta_text(asistent, "Ciorna cu sumele statului de dinainte a fost înlocuită cu nota nr. crt.", timeout=30000)   # [258]
+    # [258] nota nouă numită cum o arată Registrul jurnal; [302] e ciornă, deci n-are încă număr curent: „nota din ZZ.LL.AAAA”
+    _asteapta_text(asistent, "Ciorna cu sumele statului de dinainte a fost înlocuită cu nota din ", timeout=30000)
     asistent.captura("inlocuita")
     noi = sql('SELECT i.id, (SELECT sum(suma) FROM "%s".inregistrari_linii l WHERE l.inregistrare_id = i.id AND l.cont_debit = \'641\') '
               'FROM "%s".inregistrari i WHERE i.status = \'ciorna\' AND i.sursa = \'salarii\'' % (s, s))
     assert len(noi) == 1 and noi[0][0] != vechi[0][0] and float(noi[0][1]) == 6000.0, noi
+    assert "Ciorna cu sumele statului de dinainte a fost înlocuită cu nota %s, scrisă din statul de acum" % nr_crt(s, noi[0][0]) \
+        in asistent.fereastra(), asistent.fereastra()
     _in_coada(firma_sal)
     _coada(patron)
     carduri = patron.pg.locator(".fereastra:last-of-type .val-card", has_text=firma_sal["nume"])
@@ -978,7 +981,7 @@ def _genereaza(ecran, firma, tip, an, luna):
     pg = ecran.pg
     ecran.firma(firma["nume"])
     _deschide(ecran, "#fa-declaratii", "Pasul 1 din 3")
-    pg.select_option(".fereastra:last-of-type #dec-tip", tip)
+    alege_tipul(pg, tip, zona=".fereastra:last-of-type ")
     alege_perioada(pg, an, luna, zona=".fereastra:last-of-type ")
     pg.click(".fereastra:last-of-type #dec-continua")
     pg.wait_for_function("() => { const t = [...document.querySelectorAll('.fereastra')].pop().innerText; "

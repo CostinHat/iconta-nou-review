@@ -57,10 +57,11 @@ def ciorne_altui(cur, schema, nota_ids, uid):
 def jurnal_pe_an(cur, schema, an, limita):
     cur.execute(f"""
                 WITH pe_an AS (
-                    SELECT id, data, numar, descriere, sursa, status, factura_id, document_ref,
-                           ROW_NUMBER() OVER (ORDER BY data, id) AS nr_curent
-                    FROM {schema}.inregistrari
-                    WHERE date_trunc('year', data) = %s
+                    -- [deficiența 302] `nr_curent` e cel PĂSTRAT, dat la validare (core/migrare_nr_curent_note.py); ciorna n-are număr
+                    SELECT i.id, i.data, i.numar, i.descriere, i.sursa, i.status, i.factura_id, i.document_ref, r.nr_curent
+                    FROM {schema}.inregistrari i
+                    LEFT JOIN {schema}.registru_jurnal_numere r ON r.inregistrare_id = i.id
+                    WHERE date_trunc('year', i.data) = %s
                 )
                 SELECT n.id, n.data, n.numar, n.descriere, n.sursa, n.status, n.factura_id,
                        n.document_ref, n.nr_curent,

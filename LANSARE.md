@@ -113,6 +113,8 @@ commit, acum gol). Gardurile și limitele lor declarate sunt în `GARZI.md`.
 | Import Ciel | Fără specificație de format. |
 | Art. 317 (cod special TVA) | ANAF nu-l expune în API-ul public. |
 | XSD e-Transport v2 | Schema oficială nepublicată; validare offline imposibilă. |
+| **Lotul 8 — cheile Meta / WhatsApp (F257)** | Notificările pe WhatsApp sunt construite (codul de confirmare, șablonul, căderea pe email), dar pleacă numai cu cheile contului Meta WhatsApp Business și cu șablonul aprobat de Meta. Până atunci: email. Mutat în lotul 8 (comanda Costin 17.10.2026, „7.2 – continuare” pct.2). |
+| **Lotul 8 — tokenul Postmark (F258)** | Emailurile tranzacționale trec pe Postmark numai cu tokenul serverului Postmark; până atunci pleacă pe Brevo. Mutat în lotul 8 (aceeași comandă). |
 
 ### Datorie acceptată explicit (decis, nu uitat)
 | Ce | Decizie |

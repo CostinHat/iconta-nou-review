@@ -52,7 +52,15 @@ def test_def_224_cardul_control_fiscal_semafor_cu_patru_lumini(browser, request,
     c = m["control"]
     assert c["lumini"] == ["rosu", "galben", "verde", "gri"] and c["randuri"] == 1, c
     assert re.fullmatch(r"\d+( \d+){3}", c["text"]), c["text"]                     # numai numerele
-    assert abs(c["h"] - sorted(m["carduri"])[len(m["carduri"]) // 2]) <= 1, (c["h"], m["carduri"])
+    # înălțimea NATURALĂ (fără întinderea pe rândul grilei): un vecin pe două rânduri de text (ex. „De depus” cu declarații depășite)
+    # face rândul mai înalt, dar nu e cardul Control fiscal; o listă cu text în cardul Control fiscal îl face pe el mai înalt
+    nat = patron.pg.evaluate("""() => { const g = document.querySelector('.cab-grila');
+      const cs = [...g.querySelectorAll(':scope > .cab-card')]; cs.forEach((x) => { x.style.alignSelf = 'start'; });
+      const hs = cs.map((x) => Math.round(x.getBoundingClientRect().height));
+      const ctl = Math.round(g.querySelector('[data-cheie="control"]').closest('.cab-card').getBoundingClientRect().height);
+      cs.forEach((x) => { x.style.alignSelf = ''; }); return {ctl, hs}; }""")
+    # rândul de lumini e cu ~2 px mai înalt decât un rând de text; o listă adaugă cel puțin un rând (~27 px): pragul e sub o jumătate de rând
+    assert abs(nat["ctl"] - sorted(nat["hs"])[len(nat["hs"]) // 2]) <= 12, nat
     randuri = _lista_control(patron)
     culoare = lambda r: ("rosu" if "#ff8a80" in r["dot"] else "galben" if "#f0cd7a" in r["dot"] else "verde" if "#6fc494" in r["dot"]   # noqa: E731
                          else "gri")
@@ -103,7 +111,9 @@ def test_def_231_pagina_principala_aceeasi_structura_fara_meniu_lateral(browser,
     with cont_asistent(firme=(T_COMERT,)) as a, ecran_cont(browser, request, a["email"]) as e:
         ma = _pagina(e)
         e.captura("asistent")
-        assert ma["structura"] == mp["structura"] == ["cab-salut", "cab-grila"], (ma["structura"], mp["structura"])
+        # [319 + 320] zona cardurilor de început (`inceput`) stă între banda de salut și grilă, la ambele roluri (DS cap.12b)
+        assert ma["structura"] == mp["structura"] and [x for x in mp["structura"] if x != "inceput"] == ["cab-salut", "cab-grila"], (
+            ma["structura"], mp["structura"])
         assert ma["meniu_lateral"] == mp["meniu_lateral"] == 0, (ma["meniu_lateral"], mp["meniu_lateral"])
         e.pg.click("button.cab-card:has([data-cheie='firme'])")
         e.pg.wait_for_selector("#firme-lista button.firme-rand", timeout=20000)

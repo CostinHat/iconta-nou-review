@@ -231,7 +231,19 @@ def ruleaza(_dormi=None):
         # [C42] o firmă care cade (alt motiv decât ANAF) nu oprește citirea celorlalte; la capăt jobul eșuează cu toate numite —
         # ăla e un defect, deci alertă (296: cere acțiune)
         try:
+            inainte = stat["ciorna"] + stat["descarcata"]
             citeste_firma(schema, stat, _dormi)
+            noi = stat["ciorna"] + stat["descarcata"] - inainte
+            if noi > 0:
+                # [deficiența 320] „Facturi și SPV”: cei care pregătesc pe firmă află că au venit facturi noi (clopoțelul + canalul ales);
+                # o notificare căzută nu e o citire căzută
+                try:
+                    from core import notificari_termene as _nt
+                    _nt.notifica_firma(schema, "factura_primita", lambda nume, n=noi: "%s: %s din SPV, de verificat în Facturi primite." % (
+                        nume, cate(n, "factură nouă primită", "facturi noi primite")))
+                except Exception as _e:  # noqa: BLE001
+                    from core import observare as _obs
+                    _obs.esec_secundar("notificarea facturilor primite %s" % schema, _e)
         except Exception as e:
             print("  EROARE citire %s: %s: %s" % (schema, type(e).__name__, e), file=sys.stderr)
             cazute.append((schema, type(e).__name__, str(e)))

@@ -23,6 +23,7 @@ from playwright.sync_api import sync_playwright
 
 import nav_ecrane
 import w_auth
+from declaratie_tip import alege_tipul  # noqa: E402
 from w_auth import BAZA, INIT
 
 RAD = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -143,7 +144,7 @@ def main():
                 try:
                     w_auth.deschide_firma(pg, firma)
                     pg.click("#fa-declaratii", timeout=8000); pg.wait_for_timeout(2000)
-                    pg.select_option("#dec-tip", tip); pg.wait_for_timeout(800)
+                    alege_tipul(pg, tip); pg.wait_for_timeout(800)
                     for sel, v in (("#dec-an", an), ("#dec-trim", trim), ("#dec-luna", luna)):
                         if v and pg.query_selector(sel):
                             try:

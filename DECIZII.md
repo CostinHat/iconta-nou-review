@@ -21222,3 +21222,124 @@ oprești și raportezi”): **nimic publicat, nicio a treia rulare**. Ambele pic
     cele două taskuri de fundal). Niciun gard nou (pct.2).
   - Testele, nu produsul: fixture-urile de notificare fără element (`notificari_element_ck`) și `Locator.is_disabled()` pe `<option>`
     (Playwright 1.62 nu-l socotește — întorcea mereu False; citit acum din DOM).
+
+## 17.10.2026 — Comanda 7.2 (lotul 7): retestul lotului 6 (297–318), cardurile de bun venit (319), cardurile de început și notificările pe tipuri (320)
+
+**Comanda lui Costin, verbatim:**
+> Comanda 7.2 (lotul 7). Lucrezi pe ramura lucru/lot7-2026-10-17, peste fa4d1622, fără publicare; ordinea și soluțiile le alegi tu. Detaliile sunt în documentul de deficiențe, secțiunea „17.10 — retestul lotului 6”: nr. 297–318, textul cardurilor 319 și decizia 320.
+>
+> 1. Comanda 7.1: răspunde punctual, făcut sau nu, pentru fiecare punct: WhatsApp, telefonul și canalul la înregistrare, notificările către mine la import și la Suport, alertele legislative cu Portalul Legislativ ca a doua sursă, Postmark pentru emailurile tranzacționale, 410 pe adresele vechi. Ce nu e făcut și nu așteaptă chei, faci acum.
+> 2. Decizia ta 1 din raport: titlul din Notificări rămâne o singură dată, în corpul ferestrei, ca la celelalte ecrane.
+> 3. Prioritare: 297 (D300 din „De depus” se regenerează sau se marchează depășită după validarea unei note din perioadă, conform deciziei 284; „Confirmă depunerea” oprit pe o declarație depășită) și 298 (declarațiile se fac numai din notele validate sau numesc explicit notele nevalidate pe care se bazează; garda nu se limitează la TVA).
+> 4. 299–313 și 315–318, cum sunt descrise. La 301: „Alte declarații” pliată, deschisă doar la cerere, numai declarațiile pe care un SRL le poate datora. La 311: generarea amortizării (lunară și restantă) la „Poate pregăti”, validarea rămâne la „Poate valida”. La 312: contul propus pentru 401 debitor e 4091 sau 4092, nu 409.
+> 5. 302: confirmă cum se dă „Nr. crt.” și dacă numărul unei note validate se poate schimba; dacă da, repară astfel încât să nu se mai schimbe.
+> 6. 307 și 308 sunt întâi întrebări: verifică la sursă obligația e-Factura și termenul de 5 zile pentru o factură către un client nestabilit în România, și spune ce înregistrare face importul UBL la o firmă cu stoc; repari numai dacă aplicația greșește.
+> 7. 314: povestea aprobată se marchează depășită și Trimite se oprește dacă cifrele lunii s-au schimbat după aprobare.
+> 8. 317: găsește în jurnal eroarea 500 de pe 17.10, 11:05–11:15, spune cauza și repar-o.
+> 9. 319: cardurile de bun venit pentru administratorul cabinetului, cu textul aprobat întocmai; numele ecranelor, butoanelor și verificările auditului de preluare le aliniezi cu cele reale.
+> 10. 320: carduri de început pentru fiecare actor (administrator, asistent, client din portal), care se bifează singure când acțiunea e făcută și dispar când sunt toate făcute; la prima intrare telefonul, canalul și notificările sunt obligatorii; în Notificări toate tipurile, grupate, cu un rând despre ce face aplicația la fiecare, filtrate după drepturi, termenele și validările bifate din oficiu, emailurile de cont în afara listei. Construiești peste ecranul din 7.1.
+> 11. Teste țintite pe fiecare punct, fără poarta completă; poarta rulează o dată, la finalul lotului 7.
+>
+> În raport răspunde punctual pentru fiecare punct din 7.1 și pentru fiecare deficiență 297–320: rezolvată sau nu, și ce ai găsit la 302, 307, 308 și 317. Înainte de execuție listează operațiile pe care le rulezi, iar în raport dă durata măsurată a fiecăreia. Apoi te oprești și raportezi.
+
+**Textul 297–318** e trecut întocmai în `DEFICIENTE.md` (secțiunea „17.10 — retestul lotului 6 pe producție”). **Textul aprobat al cardurilor 319, verbatim:**
+> Pasul 1 · Adu firmele din aplicația veche. Ce faci aici: muți în iConta firmele pe care le ții acum în altă aplicație de contabilitate, ca să nu le introduci de mână.
+> 1. Deschide aplicația pe care o folosești acum (de exemplu SAGA) și alege prima firmă.
+> 2. Exportă din ea, pe rând, patru fișiere: balanța de verificare la sfârșitul ultimei luni închise, lista partenerilor cu soldurile lor, lista salariaților și lista mijloacelor fixe. Salvează-le într-un dosar cu numele firmei, ca să nu le amesteci.
+> 3. În iConta apasă butonul de mai jos, Deschide Migrare cabinet. Alege aplicația ta din butoanele de sus și urmează pașii din ecran: încarci fișierele unul câte unul, iar iConta îți arată ce a citit înainte să salveze.
+> 4. Verifică pe ecran că soldurile din balanță sunt cele din aplicația veche. Dacă ceva nu se potrivește, nu salva; scrie-ne din Suport.
+> 5. Repetă pentru fiecare firmă.
+> 6. Pentru fiecare firmă importată, rulează auditul de preluare. Aplicația compară ce ai adus cu situația firmei la ANAF și îți arată, într-o listă, ce a găsit: solduri care nu se leagă, declarații nedepuse sau cu diferențe de dinainte de preluare, datorii la buget. Citește lista înainte să începi lucrul pe firmă: ce apare acolo s-a întâmplat înainte de tine, și e bine să-l discuți cu clientul de la început.
+> Dacă aplicația ta nu are buton activ în Migrare cabinet, încă nu o putem citi automat. Atunci deschide Suport, fila Cerere import din altă aplicație, scrie numele aplicației și atașează o captură a meniului ei de export și exportul unei singure firme. Îți răspundem acolo dacă și când o putem prelua.
+> Cardul devine verde când cel puțin o firmă are balanța importată și auditul de preluare făcut.
+>
+> Pasul 2 · Leagă contul de ANAF și alege cum afli noutățile. Ce faci aici: pui iConta în legătură cu Spațiul Privat Virtual (SPV), ca facturile firmelor tale să plece și să vină singure, și alegi pe unde te anunțăm când ai ceva de făcut.
+> 1. Apasă Deschide Setări cont, apoi Conectare SPV.
+> 2. Conectează certificatul digital cu care intri acum în SPV pentru firmele tale. Conectarea se face o singură dată, pentru tot cabinetul.
+> 3. Dacă ai înrolat certificatul în SPV în ultimele 24 de ore, așteaptă o zi înainte de conectare; altfel ANAF răspunde cu eroare, chiar dacă totul e corect.
+> 4. După conectare, iConta îți arată lista firmelor și, la fiecare, dacă certificatul tău are drept în SPV pentru ea. La firmele fără drept scrie exact ce ai de făcut.
+> 5. Tot în Setări cont deschide Notificări. Alege pe unde vrei să fii anunțat (email, WhatsApp) și pentru ce: termene de declarații, facturi primite, note de validat, mesaje de la clienți. Apasă Salvează.
+> Cardul devine verde când certificatul e conectat și notificările sunt salvate.
+>
+> Pasul 3 · Adaugă echipa. Ce faci aici: dai acces colegilor care lucrează cu tine și hotărăști ce are voie să facă fiecare. Dacă lucrezi singur, sari peste acest pas cu butonul Lucrez singur.
+> 1. Apasă Deschide Asistenți, apoi Adaugă asistent.
+> 2. Scrie numele și emailul colegului. El primește pe email linkul cu care își face parola.
+> 3. Bifează ce poate face. Poate pregăti: introduce facturi, note, state de plată și pregătește declarații, dar tot ce face ajunge la tine spre validare. Poate valida: aprobă munca altor colegi, niciodată pe a lui. Poate depune: trimite declarațiile la ANAF.
+> 4. Bifează firmele pe care le lucrează. Colegul vede numai firmele bifate.
+> 5. Apasă Salvează. Poți schimba oricând drepturile și firmele din același ecran.
+> Cardul devine verde când ai adăugat un asistent sau ai ales Lucrez singur.
+
+**Decizia 320, verbatim:**
+> 320 Carduri de început pentru toți actorii și notificări pe tipuri (decizie Costin). Scopul: fiecare utilizator află de la început ce poate face aplicația, făcând, nu citind o listă pe care o uită.
+> 1. Fiecare actor are cardurile lui: administratorul cabinetului cei trei pași de la 319; asistentul Setări cont (telefon, canal, notificări) și un card cu firmele alocate și ce are voie să facă; clientul din portal telefonul, canalul și ce vrea să primească (pachetul lunar, cererile de documente).
+> 2. Cardul duce în ecranul real și se bifează singur doar când acțiunea a fost făcută acolo, nu la apăsarea cardului. Cardurile nu se pot închide cât timp nu sunt făcute, dar nu blochează lucrul; când toate sunt făcute dispar de tot, iar ghidul de început rămâne în butonul de ajutor (?).
+> 3. La prima intrare, fiecare utilizator își pune obligatoriu telefonul, canalul (WhatsApp sau email) și bifele de notificări înainte să ajungă în aplicație.
+> 4. În Setări cont → Notificări apar toate tipurile de notificări ale aplicației, grupate (Termene și declarații, Facturi și SPV, Validări, Clienți, Cont și echipă), fiecare cu un rând care spune ce face aplicația acolo; utilizatorul bifează ce îl interesează. Fiecare vede doar tipurile care îl privesc după drepturi; termenele și validările vin bifate din oficiu; emailurile de cont (confirmare, resetare parolă, link de logare) nu sunt în listă și pleacă mereu; bifele decid doar WhatsApp/email, clopoțelul din aplicație arată tot.
+
+**Consecințe (executor):** ce am ales eu unde comanda lăsa „soluțiile le alegi tu”; ce schimbă CE AJUNGE LA CONTABIL e cerut la
+raport (§6), nu decis aici.
+
+1. **302 — numărul se păstrează într-un tabel al lui** (`registru_jurnal_numere`, `core/migrare_nr_curent_note.py`), nu într-o coloană a
+   notei: garda migrărilor (`core/test_migrari_registru.py::test_nicio_migrare_noua_nu_scrie_in_notele_contabile`) interzice orice scriere
+   în `inregistrari` — și pe drept, o notă validată nu se atinge. Numărul se dă la validare (max + 1 pe an, sub lacăt), iar schimbarea lui
+   e refuzată de trigger. **La migrare, notele validate primesc numărul pe care îl arătau atunci** (aceeași formulă ca citirea veche),
+   ca un număr deja văzut sau tipărit să nu se schimbe; consecința: golurile lăsate de ciornele de azi rămân goluri. Alternativa respinsă:
+   renumerotarea de la 1 a notelor validate (ar schimba numere deja văzute).
+2. **297 / 298 — amprenta surselor** (notele perioadei cu starea și liniile lor, facturile cu sumele, partenerul și categoria) se păstrează
+   la intrarea în coadă; o declarație fără amprentă se socotește depășită (fail-closed). „Generează din nou” o reface pe aceleași date
+   cerute. Garda notelor nevalidate e pe orice tip de declarație; „facturile fără notă validată” numai pe tipurile de TVA.
+3. **299 — „Înlocuiește”** scoate declarația veche din coadă ca respinsă, cu motivul scris, și pune noua în aceeași tranzacție.
+4. **314 — amprenta cifrelor lunii** se păstrează la aprobarea poveștii; o poveste aprobată fără amprentă e depășită (fail-closed).
+5. **316 — cererile neconfirmate se păstrează 30 de zile** (erau 7), ca expirarea să se vadă în listă înainte de ștergere.
+6. **320 — „cererile de documente” din decizie** sunt mesajele cabinetului din Solicitări (tipul `mesaj_cabinet`): un flux separat de
+   cereri de documente nu există în aplicație.
+7. **320 — prima intrare** e o poartă înaintea navigatorului (`static/js/ecrane/inceput.js`); prezentarea de bun venit (bun_venit_v1)
+   rămâne după ea, apoi cardurile.
+8. **311 — rutele de generare a amortizării** (lunară și restantă) cer „Poate pregăti”; notele ies ciornă, validarea rămâne la „Poate
+   valida”.
+9. **C48 — 4092 / 4093 / 4094** intră în planul șablonului și, prin `core/migrare_plan_avansuri.py`, în planul firmelor existente
+   (numai inserare de conturi lipsă, nicio notă atinsă).
+
+## 17.10.2026 — Lotul 7: reluarea după pierderea sesiunii; lotul 7 se închide și se publică; cheile trec în lotul 8
+
+**Comanda Costin (seara), verbatim:**
+
+> 7.2 – continuare
+> 1. Da, oprește procesele blocate și sesiunea veche.
+> 2. Termină 7.2 și închide lotul 7. Ce depinde de cheile Postmark, WhatsApp și Meta trece în lotul 8.
+> 3. Publică lotul 7 pe producție.
+> 4. În raport răspunde punctual la punctele 7.1 rămase și la deficiențele 297–320: rezolvat sau nu.
+
+Înaintea ei, comanda de inventar („7.2 – reluare după pierderea sesiunii”: calculatorul lui Costin s-a resetat; „Acum doar inventariezi,
+fără să modifici nimic”) — raportată: niciun commit după `fa4d1622`, lotul pus la index, rularea țintită blocată pe iconta_test.
+
+**Temei:** N/A — decizie de proces și de scop.
+
+**Consecințe (executor):**
+1. „închide lotul 7” se citește ca „Lotul 7 e complet” (CLAUDE.md §2.3 pct.13): după rularea țintită verde și commitul lotului, poarta
+   lotului (`scripts/poarta_lot.sh`). Regimul pilot rămâne: poarta citește cifrele F1–F5 de pe producție, iar publicarea (backup,
+   fast-forward, migrările `--productie`, repornirea) se face numai după confirmarea că cabinetul nu lucrează în aplicație și cu aprobarea
+   scrisă a SHA-ului pentru `main` (`scripts/githooks/reference-transaction`).
+2. **Lotul 8:** WhatsApp (cheile contului Meta WhatsApp Business și șablonul aprobat de Meta; F257) și Postmark (tokenul serverului;
+   F258). Codul e în lotul 7 și rămâne inactiv fără chei: notificările pleacă pe email, emailurile tranzacționale pe Brevo. Locul:
+   `LANSARE.md`, „Blocate extern”.
+3. **Alternativă respinsă:** publicarea lotului 7 fără WhatsApp / Postmark scoase din cod — codul e testat și cade singur pe email / Brevo
+   fără chei; a-l scoate ar fi lucru dublu la lotul 8.
+
+**Răspunsurile lui Costin la întrebările de dinaintea porții (17.10.2026 seara), verbatim (alegerea din cele propuse):**
+
+> Prima intrare — „Ce fac cu conturile care există deja?”: **„Numai conturile noi”**.
+> Depășite — „Accepți efectul pe ce există acum în coada cabinetului?”: **„Da, fail-closed (Recomandat)”**.
+> Cabinet — „cabinetul nu lucrează în aplicație de acum până la sfârșitul publicării (aproximativ 2 ore)?”: **„Confirm, nu lucrează”**.
+
+**Consecințe (executor):**
+4. **Prima intrare numai pentru conturile noi.** `core/migrare_canal_notificari.py` creează `users.prima_intrare_scutita_la` și, o singură
+   dată, odată cu coloana, scutește toate conturile care există atunci. Contul scutit intră direct, cu bifele implicite ale grupelor
+   (termenele și validările) și canalul email, până își schimbă alegerile în Setări cont -> Notificări; contul creat după publicare trece
+   prin „Înainte de a începe”. Cardul „alege cum afli noutățile” al administratorului rămâne nefăcut până la telefon + bife (nu blochează).
+   Teste: `core/test_319_320_inceput.py::test_320_numai_conturile_noi_trec_prin_prima_intrare` / `::test_320_scutirea_se_da_o_singura_
+   data_odata_cu_coloana`, e2e `test_def_320_contul_existent_intra_direct_fara_prima_intrare` (mutații ROȘII).
+5. **Fail-closed pe ce există:** declarațiile din coadă fără datele-sursă păstrate apar „depășite” (cu „Generează din nou”), iar poveștile
+   aprobate fără amprentă cer o nouă aprobare înainte de Trimite. Nicio migrare nu le „îngheață” amprenta.
+6. **Cabinetul nu lucrează:** poarta lotului 7 și publicarea se fac în seara asta, cu backup chiar înainte.
+

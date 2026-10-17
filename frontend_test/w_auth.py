@@ -73,6 +73,12 @@ def _sesiune(email):
         with conn.cursor(cursor_factory=E.RealDictCursor) as cur:
             cur.execute("SELECT id FROM public.users WHERE email=%s", (email,))
             u = cur.fetchone()
+            if u:
+                # [deficiența 320] contul de probă a trecut de prima intrare (telefonul sintetic și notificările salvate): proba vede
+                # pagina principală, nu ecranul „Înainte de a începe”
+                cur.execute("UPDATE public.users SET telefon = COALESCE(telefon, '+40700000000'), notificari_salvate_la = "
+                            "COALESCE(notificari_salvate_la, now()) WHERE id = %s", (u["id"],))
+                conn.commit()
         if not u:
             conn.rollback()
             raise ContInactiv("nu exista niciun cont cu emailul %r" % email)

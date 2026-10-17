@@ -310,6 +310,25 @@ MESAJ_FARA_DREPT = ("Certificatul conectat al cabinetului nu are drept în SPV p
                     "care are deja acest drept. Citirea automată verifică din nou la :17 și :47.")
 
 
+#: [deficiența 315, comanda Costin 17.10.2026 7.2] în Conectare SPV explicația se spune O DATĂ, deasupra firmelor; pe fiecare firmă, un rând:
+#: „<firmă> · fără drept în SPV · verificat <data, ora>” — același temei ca `MESAJ_FARA_DREPT`, fără CUI-ul unei firme anume
+EXPLICATIE_FARA_DREPT = ("Pe firmele de mai jos marcate „fără drept în SPV”, certificatul conectat al cabinetului nu are drept în SPV pentru "
+                         "CUI-ul lor{eroare}: facturile lor nu pleacă în SPV, iar cele de la furnizori nu vin. Ce faci: titularul "
+                         "certificatului trebuie să fie, pentru fiecare dintre ele, reprezentantul legal, reprezentantul desemnat sau "
+                         "împuternicitul firmei înregistrat în SPV (OMFP 660/2017 art.15 alin.(1)) — înregistrarea se face la ANAF; sau "
+                         "conectezi cabinetul cu certificatul cuiva care are deja acest drept. Citirea automată verifică din nou la :17 și "
+                         ":47.")
+
+
+def explicatie_fara_drept(cuiuri):
+    """[315] Explicația unică pentru firmele fără drept (None dacă nu e niciuna); răspunsurile ANAF, o dată fiecare."""
+    fara = [c for c in cuiuri or [] if c.get("are_drept") is False]
+    if not fara:
+        return None
+    erori = list(dict.fromkeys((c.get("eroare") or "").strip() for c in fara if (c.get("eroare") or "").strip()))
+    return EXPLICATIE_FARA_DREPT.format(eroare=("; ANAF răspunde: " + "; ".join("„%s”" % e for e in erori)) if erori else "")
+
+
 def mesaj_fara_drept(cui, eroare):
     return MESAJ_FARA_DREPT.format(cui=cui or "—", eroare=(eroare or "fără drept").strip())
 

@@ -31,13 +31,18 @@ _MASURA = """() => {
   const r = (e) => { const b = e.getBoundingClientRect(); return {top: Math.round(b.top), bottom: Math.round(b.bottom), h: Math.round(b.height)}; };
   const carduri = [...grila.querySelectorAll(':scope > .cab-card')];
   const control = grila.querySelector('[data-cheie="control"]');
+  // [224] înălțimea NATURALĂ a fiecărui card (fără întinderea pe rândul grilei): un vecin pe două rânduri de text nu e cardul Control fiscal
+  carduri.forEach((c) => { c.style.alignSelf = 'start'; });
+  const naturale = carduri.map((c) => r(c).h), hControl = control ? r(control.closest('.cab-card')).h : null;
+  carduri.forEach((c) => { c.style.alignSelf = ''; });
   return {
     structura: [...salut.parentElement.children].map((e) => e.className),
     meniu_lateral: document.querySelectorAll('.cab-salut ~ nav, .asi-arbore, .asi-nod').length,
     benzi: [...salut.querySelectorAll('.cab-banda')].map((b) => ({titlu: b.innerText.trim(), ...r(b)})),
     grila_top: r(grila).top,
     inaltimi_carduri: carduri.map((c) => r(c).h),
-    control: control ? {h: r(control.closest('.cab-card')).h, text: control.innerText.replace(/\\s+/g, ' ').trim(),
+    inaltimi_naturale: naturale,
+    control: control ? {h: hControl, text: control.innerText.replace(/\\s+/g, ' ').trim(),
                          lumini: [...control.querySelectorAll('.cab-stare')].map((s) => s.dataset.stare),
                          randuri: new Set([...control.querySelectorAll('.cab-stare')].map((s) => Math.round(s.getBoundingClientRect().top))).size}
                      : null,

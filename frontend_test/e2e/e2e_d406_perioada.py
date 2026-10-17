@@ -11,7 +11,7 @@ import re
 
 import pytest
 
-from conftest import alege_perioada, firma_noua, sql
+from conftest import alege_perioada, alege_tipul, firma_noua, sql
 from e2e_bloc_d import PATRON, _date_firma, _deschide, _nota_validata
 
 AZI = _dt.date.today()
@@ -47,7 +47,7 @@ def _alege_d406(ecran, f):
     pg = ecran.pg
     ecran.firma(f["nume"])
     _deschide(ecran, "#fa-declaratii", "Pasul 1 din 3")
-    pg.select_option(".fereastra:last-of-type #dec-tip", "d406")
+    alege_tipul(pg, "d406", zona=".fereastra:last-of-type ")
     alege_perioada(pg, AN_T, zona=".fereastra:last-of-type ")
     pg.wait_for_timeout(300)
 

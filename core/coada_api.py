@@ -144,6 +144,18 @@ def adauga_in_coada(conn, cabinet_id, tenant_id, tip, an, payload,
                 else "%s %d" % ("luna %02d" % luna if luna else "T%d" % trim, an))
     # asigurăm an/luna în payload pentru declaratii_depuse la depunere
     payload = {**(payload or {}), "_an": an, "_luna": luna, "_trim": trim}
+    if not payload.get("_surse"):
+        # [297] orice declarație intră în coadă cu amprenta documentelor perioadei ei — și pe drumurile care nu trec prin `coada_adauga`
+        with conn.cursor() as _cur:
+            _schema = schema_firmei(_cur, tenant_id)
+            if _schema:
+                _cur.execute("SELECT to_regclass(%s) IS NOT NULL AND to_regclass(%s) IS NOT NULL",
+                             (_q(_schema) + "firma_profil", _q(_schema) + "factura_linii"))
+                _schema = _schema if _cur.fetchone()[0] else None   # firma fără tabele (o schemă goală): nimic de amprentat
+            if _schema:
+                de_la, pana_la = fereastra_perioadei(_cur, _schema, tip, an, luna, trim)
+                payload["_surse"] = {"de_la": de_la, "pana_la": pana_la, "amprenta": amprenta_surse(_cur, _schema, de_la, pana_la),
+                                     "note": [], "mesaj": None}
     h = calcul_hash(payload)
     try:
         with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -558,9 +570,11 @@ def lista_coada(conn, cabinet_id, stare=None):
             "c.verdict, c.verdict_erori, c.verdict_amprenta, c.verdict_la, c.verdict_versiune, "
             "c.trecere_motiv, c.trecut_la, c.fel, "
             "CASE WHEN c.fel = 'nota' THEN c.payload END AS nota, "
-            "c.payload->>'xml' AS _xml, c.payload->'confirmare_atentionari' AS _conf "
+            "c.payload->>'xml' AS _xml, c.payload->'confirmare_atentionari' AS _conf, "
+            "c.payload->'_surse' AS _surse, t.schema_name AS _schema "
             "FROM public.declaratii_coada c "
             "LEFT JOIN public.users u ON u.id = c.creat_de_id "
+            "LEFT JOIN public.tenants t ON t.id = c.tenant_id "
             "WHERE " + " AND ".join("c." + x for x in cond) +
             " ORDER BY c.creat_la DESC", val)
         out = []
@@ -571,7 +585,13 @@ def lista_coada(conn, cabinet_id, stare=None):
                 d.pop("verdict", None), d.pop("verdict_erori", None),
                 d.pop("verdict_amprenta", None), d.pop("verdict_la", None),
                 d.pop("verdict_versiune", None), xml, d.pop("_conf", None))
-            d["gata_de_depus"] = gata_de_depus(d["verdict_stare"])
+            _surse, _schema = d.pop("_surse", None), d.pop("_schema", None)
+            if d["fel"] != "nota":
+                # [297 + 298] declarația activă: depășită dacă documentele perioadei s-au schimbat după generare; sursele nevalidate numite
+                d["depasita"] = (depasire(cur, _schema, {"_surse": _surse}) if d["stare"] in STARI_ACTIVE and _schema else None)
+                d["surse_nevalidate"] = (_surse or {}).get("mesaj")
+                d["surse_note"] = [n for n in ((_surse or {}).get("note") or [])]
+            d["gata_de_depus"] = gata_de_depus(d["verdict_stare"]) and not d.get("depasita")
             out.append(d)
         # [lotul 07.10 pct.9-10] notele aceluiași document, în aceeași stare, sunt UN element (o validare, o cifră)
         grupate, vazute = [], {}
@@ -864,6 +884,9 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None, c
             refuz = _poarta_verdict(conn, coada_id, "aproba", motiv_trecere, aprobat_de_id)
             if refuz:
                 return refuz
+            refuz = refuz_depasita(cur, coada_id)   # [297] datele-sursă schimbate după generare: nu se validează cifre vechi
+            if refuz:
+                return refuz
         cur.execute(
             "UPDATE public.declaratii_coada SET stare='aprobata', "
             "aprobat_de=%s, aprobat_de_id=%s, aprobat_la=now() WHERE id=%s",
@@ -1015,6 +1038,9 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
         refuz = _poarta_verdict(conn, coada_id, "depune", motiv_trecere, depus_de_id)
         if refuz:
             return refuz
+        refuz = refuz_depasita(cur, coada_id)   # [297] „«Confirmă depunerea» oprit pe o declarație depășită”
+        if refuz:
+            return refuz
         p = r["payload"] or {}
         an, luna = perioada_din_payload(p)
         cur.execute(
@@ -1039,3 +1065,147 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
              _E.Json(randuri) if randuri is not None else None,
              r["tenant_id"], an, luna, tip_c))
     return {"ok": True, "stare": "depusa", "an": an, "luna": luna}
+
+
+# ============================================================
+#  [deficiențele 297 + 298, comanda Costin 17.10.2026 7.2 pct.3, verbatim în DECIZII] DATELE-SURSĂ ALE DECLARAȚIEI
+#  „D300 din «De depus» se regenerează sau se marchează depășită după validarea unei note din perioadă [...]; «Confirmă depunerea»
+#  oprit pe o declarație depășită” și „declarațiile se fac numai din notele validate sau numesc explicit notele nevalidate pe care se
+#  bazează; garda nu se limitează la TVA”.
+#  La intrarea în coadă declarația poartă amprenta documentelor perioadei ei (notele, cu starea și liniile; facturile, cu sumele,
+#  partenerul, categoria și liniile). Orice validare, respingere, notă nouă sau factură schimbată în perioadă schimbă amprenta: elementul
+#  activ devine DEPĂȘIT, iar aprobarea și depunerea îl refuză până la regenerare.
+# ============================================================
+#: stările în care o declarație din coadă încă urmează să fie depusă
+STARI_ACTIVE = ("la_senior", "aprobata")
+
+
+def _q(schema):
+    return '"%s".' % str(schema).strip('"')
+
+
+#: declarațiile care se fac din facturi și din TVA-ul perioadei fiscale (fereastra TVA a firmei, nu luna calendaristică)
+_TIPURI_FEREASTRA_TVA = ("d300", "d394", "d390", "d406")
+
+
+def fereastra_perioadei(cur, schema, tip, an, luna, trim):
+    """[deficiențele 297 + 298] [de_la, pana_la) — documentele pe care se sprijină declarația: la TVA (D300 / D394 / D390) și D406
+    fereastra fiscală a TVA-ului (`common.fereastra_d406`: trimestrul întreg la plătitorul trimestrial), altfel perioada declarată
+    (luna, trimestrul, anul). Șiruri ISO. O singură definiție (intrarea în coadă și `uc_coada.surse_declaratiei`)."""
+    from core.common import fereastra_d406 as _fd
+    ancora = luna or (int(trim) * 3 if trim else None)
+    if tip in _TIPURI_FEREASTRA_TVA and ancora:
+        cur.execute("SELECT platitor_tva, tip_decont FROM " + _q(schema) + "firma_profil LIMIT 1")
+        r = cur.fetchone()
+        r = (list(r.values()) if isinstance(r, dict) else r) if r else None
+        di, ds = _fd({"platitor_tva": r[0], "tip_decont": r[1]} if r else {}, an, ancora)
+        return di.isoformat(), ds.isoformat()
+    if luna:
+        de, n = (an, int(luna)), 1
+    elif trim:
+        de, n = (an, int(trim) * 3 - 2), 3
+    else:
+        de, n = (an, 1), 12
+    k = de[1] - 1 + n
+    return _dt.date(de[0], de[1], 1).isoformat(), _dt.date(de[0] + k // 12, k % 12 + 1, 1).isoformat()
+
+
+def amprenta_surse(cur, schema, de_la, pana_la):
+    """md5 al documentelor din [de_la, pana_la) pe care se sprijină o declarație: notele (id, stare, data, liniile) și facturile (id,
+    stare, sumele, partenerul, categoria IC, liniile). Starea SPV a facturii NU intră: ea nu schimbă cifrele declarației."""
+    q = _q(schema)
+    cur.execute(
+        "SELECT md5(COALESCE((SELECT string_agg(concat_ws(':', i.id, i.status, i.data, (SELECT string_agg(concat_ws('/', l.cont_debit, "
+        "l.cont_credit, l.suma), ',' ORDER BY l.id) FROM " + q + "inregistrari_linii l WHERE l.inregistrare_id = i.id)), ';' ORDER BY i.id) "
+        "FROM " + q + "inregistrari i WHERE i.data >= %s AND i.data < %s), '') || '#' || COALESCE((SELECT string_agg(concat_ws(':', f.id, "
+        "f.status, f.data_emitere, f.data_faptului_generator, f.directie, f.tip, f.total, f.tva, f.total_lei, f.tva_lei, f.tert_cui, "
+        "f.tert_tara, f.taxare_inversa, f.axa_ic, f.tip_operatiune, f.categorie_331, (SELECT string_agg(md5(fl::text), ',' ORDER BY fl.id) "
+        "FROM " + q + "factura_linii fl WHERE fl.factura_id = f.id)), ';' ORDER BY f.id) FROM " + q + "facturi f "
+        "WHERE f.data_emitere >= %s AND f.data_emitere < %s), ''))", (de_la, pana_la, de_la, pana_la))
+    r = cur.fetchone()
+    return list(r.values())[0] if isinstance(r, dict) else r[0]
+
+
+def note_nevalidate(cur, schema, de_la, pana_la):
+    """[{nota_id, data, eticheta, suma}] — notele NEvalidate din [de_la, pana_la), numite ca în Registrul jurnal (`eticheta_nota`)."""
+    q = _q(schema)
+    cur.execute("SELECT i.id, i.data, " + q + "eticheta_nota(i.id), COALESCE(i.document_ref, i.descriere), "
+                "COALESCE((SELECT SUM(l.suma) FROM " + q + "inregistrari_linii l WHERE l.inregistrare_id = i.id), 0) "
+                "FROM " + q + "inregistrari i WHERE i.status <> 'validata' AND i.data >= %s AND i.data < %s ORDER BY i.data, i.id",
+                (de_la, pana_la))
+    return [{"nota_id": r[0], "data": r[1].isoformat(), "eticheta": r[2], "document": r[3], "suma": "%.2f" % r[4]}
+            for r in (tuple(x.values()) if isinstance(x, dict) else x for x in cur.fetchall())]
+
+
+def stari_note_numite(cur, schema, ids):
+    """{nota_id: stare} pentru notele numite la intrarea în coadă (o notă ștearsă lipsește)."""
+    ids = [int(i) for i in ids or []]
+    if not ids:
+        return {}
+    cur.execute("SELECT id, status FROM " + _q(schema) + "inregistrari WHERE id = ANY(%s)", (ids,))
+    return {r[0]: r[1] for r in (tuple(x.values()) if isinstance(x, dict) else x for x in cur.fetchall())}
+
+
+def schema_firmei(cur, tenant_id):
+    cur.execute("SELECT schema_name FROM public.tenants WHERE id = %s", (tenant_id,))
+    r = cur.fetchone()
+    return (list(r.values())[0] if isinstance(r, dict) else r[0]) if r else None
+
+
+def element_declaratie(cur, coada_id):
+    """(cabinet_id, tenant_id, tip, stare, payload) al elementului, sau None."""
+    cur.execute("SELECT cabinet_id, tenant_id, tip, stare, payload, fel FROM public.declaratii_coada WHERE id = %s", (coada_id,))
+    r = cur.fetchone()
+    return (tuple(r.values()) if isinstance(r, dict) else tuple(r)) if r else None
+
+
+def element_activ(cur, tenant_id, tip, perioada):
+    """(id, stare, an, luna, trim, pregatit_de) — elementul activ al (firmă, declarație, termen), sau None."""
+    cur.execute("SELECT c.id, c.stare, (c.payload->>'_an')::int, (c.payload->>'_luna')::int, (c.payload->>'_trim')::int, "
+                "COALESCE(u.nume, u.email) FROM public.declaratii_coada c LEFT JOIN public.users u ON u.id = c.creat_de_id "
+                "WHERE c.tenant_id = %s AND c.tip = %s AND c.perioada = %s AND c.stare = ANY(%s)", (tenant_id, tip, perioada,
+                                                                                                  list(STARI_ACTIVE)))
+    r = cur.fetchone()
+    return (tuple(r.values()) if isinstance(r, dict) else tuple(r)) if r else None
+
+
+def inlocuieste(cur, coada_id, cabinet_id, uid, motiv):
+    """Elementul activ (`la_senior` / `aprobata`) iese din coadă, înlocuit de declarația generată din nou. Întoarce True dacă a ieșit."""
+    cur.execute("UPDATE public.declaratii_coada SET stare = 'respinsa', motiv_respingere = %s, respins_de = %s, respins_de_id = %s, "
+                "respins_la = now() "
+                "WHERE id = %s AND cabinet_id = %s AND stare = ANY(%s) AND fel IS DISTINCT FROM 'nota'",
+                (motiv, str(uid), int(uid), coada_id, cabinet_id, list(STARI_ACTIVE)))
+    return cur.rowcount == 1
+
+
+def depasire(cur, schema, payload):
+    """None dacă datele-sursă ale declarației sunt cele de la generare; altfel {mesaj, note_validate} — DEPĂȘITĂ. Fail-closed: o
+    declarație intrată în coadă fără amprentă (înainte de 17.10.2026) nu se poate confrunta, deci e depășită."""
+    from core import afirmatii as _af
+    s = (payload or {}).get("_surse")
+    if not s:
+        _m = ("Declarația a intrat în coadă înainte ca aplicația să-i păstreze datele-sursă, deci nu se poate ști dacă cifrele ei mai sunt "
+              "cele din evidență. Generează-o din nou.")
+        return dict(_af.afirmatie("verificare_rupta", "declaratie_depasita", _m, eroare="declarația nu păstrează documentele din care s-a generat",
+                                  mesaj=_m, note_validate=[]))
+    if amprenta_surse(cur, schema, s["de_la"], s["pana_la"]) == s["amprenta"]:
+        return None
+    numite = [n for n in (s.get("note") or [])]
+    stari = stari_note_numite(cur, schema, [n["nota_id"] for n in numite])
+    validate = [n for n in numite if stari.get(n["nota_id"]) == "validata"]
+    motiv = ("după generare s-a validat %s" % ", ".join(n["eticheta"] for n in validate) if validate
+             else "după generare s-au schimbat documentele perioadei (o notă validată, respinsă sau nouă, o factură nouă sau modificată)")
+    _m = "Declarația e depășită: %s. Cifrele ei nu mai sunt cele din evidență; generează-o din nou." % motiv
+    return dict(_af.afirmatie("contradictie", "declaratie_depasita", _m, mesaj=_m, note_validate=validate,
+                              sursele=["documentele perioadei %s – %s la generare (amprenta %s)" % (s["de_la"], s["pana_la"], s["amprenta"]),
+                                       "documentele perioadei acum, în evidență"]))
+
+
+def refuz_depasita(cur, coada_id):
+    """{ok: False, cod: DEPASITA, mesaj, coada_id} dacă declarația activă din coadă e depășită (`depasire`), altfel None."""
+    el = element_declaratie(cur, coada_id)
+    if not el or el[5] == "nota" or el[3] not in STARI_ACTIVE:
+        return None
+    schema = schema_firmei(cur, el[1])
+    dep = depasire(cur, schema, el[4]) if schema else None
+    return {"ok": False, "cod": "DEPASITA", "mesaj": dep["mesaj"], "coada_id": coada_id} if dep else None

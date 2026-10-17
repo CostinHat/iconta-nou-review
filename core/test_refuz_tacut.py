@@ -44,7 +44,11 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # (`plaseazaErori`, modul 1), cealaltă e o căutare de fundal la tastare (`produse/
 # potriveste`, modul 3 — `POST` folosit ca citire).
 _SCRIERI_MUTE = 18
-_CITIRI_MUTE = 78
+# [17.10.2026, comanda 7.2] 78 -> 87, deliberat: citiri AJUTĂTOARE, a căror lipsă nu oprește nimic — eticheta butonului de trimitere
+# (`coada_trimite.etichetaTrimitere`: rămâne „Trimite în coadă”), lista declarațiilor firmei deja în coadă (299), cardurile de început și
+# ghidul lor din „?” (319 / 320: fără ele pagina principală rămâne cum era), poarta primei intrări (o eroare de citire nu blochează
+# intrarea), lista firmelor din invitația asistentului (are mesajul ei), tipurile de notificări.
+_CITIRI_MUTE = 87
 # [17.10.2026, lotul 7 pct.2.2] 77 -> 78: după „Cere codul”, Setări cont → Notificări recitește `/eu/notificari` ca să arate acordul salvat
 #   (și când WhatsApp nu e activ). Mesajul cererii — reușită sau refuz — e deja lângă buton; dacă recitirea cade, ecranul rămâne cu
 #   starea afișată. Măsurat pe HEAD 590c6170: 82, pe lot: 83 (`ecrane/setari.js` 4 -> 5).

@@ -104,3 +104,10 @@ def revendica_asteptarea(cur, aid):
 def scrie_rezultatul_asteptarii(cur, aid, rezultat):
     cur.execute("UPDATE public.declaratii_in_asteptare SET rezultat = %s WHERE id = %s", (rezultat, aid))
 
+
+
+def numele_utilizatorului(cur, uid):
+    """Numele (sau emailul) utilizatorului, cum îl arată ecranele."""
+    cur.execute("SELECT COALESCE(nume, email) FROM public.users WHERE id = %s", (uid,))
+    r = cur.fetchone()
+    return (list(r.values())[0] if isinstance(r, dict) else r[0]) if r else None

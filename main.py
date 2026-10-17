@@ -76,6 +76,7 @@ from core import uc_gdpr as _uc_gdpr
 from core import uc_firme_scoase as _uc_firme_scoase
 from core import uc_eu as _uc_eu
 from core import uc_cont_notificari as _uc_cont_notif   # [17.10.2026, lotul 7] Setări cont -> Notificări
+from core import uc_inceput as _uc_inceput   # [17.10.2026, comanda 7.2] cardurile de început (319, 320)
 from core import notificari as _notificari               # [17.10.2026, lotul 7] livrarea notificărilor pe canal
 from core import whatsapp as _whatsapp                   # [17.10.2026, lotul 7] WhatsApp Cloud API
 from core import uc_declaratii as _uc_declaratii
@@ -547,6 +548,13 @@ def cere_cabinet(ctx=Depends(cere_context)):
                 raise HTTPException(401, "Sesiune încheiată (parola a fost schimbată). Autentifică-te din nou.")
     return ctx
 
+def cere_utilizator(ctx=Depends(cere_context)):
+    """[deficiența 320, 17.10.2026] Rutele CONTULUI PROPRIU (clopoțelul, Setări cont → Notificări, telefonul, cardurile de început): și
+    clientul din portal („clientul din portal telefonul, canalul și ce vrea să primească”), și oamenii cabinetului — pentru ei, aceleași
+    verificări ca `cere_cabinet` (cabinetul suspendat, sesiunea veche). Fiecare rută lucrează numai pe `ctx["uid"]`."""
+    return ctx if ctx["rol"] == "client" else cere_cabinet(ctx)
+
+
 def cere_drept(nivel):
     """Factory: dependență care cere un DREPT de cabinet (`core/drepturi.py`, decizia Costin 04.10.2026).
 
@@ -686,7 +694,20 @@ async def _preview_readonly_guard(request: Request, call_next):
 @app.middleware("http")
 async def _audit_middleware(request: Request, call_next):
     _crono.marca("mw_edge")
-    response = await call_next(request)
+    try:
+        response = await call_next(request)
+    except Exception:
+        # [deficiența 317, comanda Costin 17.10.2026 7.2] o cădere a aplicației (excepție neprinsă -> 500) ieșea din `call_next` înaintea
+        # jurnalului, deci alerta de sănătate n-o număra niciodată, iar un ANAF căzut (502, refuz scris de noi) da „eroare server”. Acum
+        # căderea se scrie cu statusul 500 înainte să urce mai departe.
+        try:
+            path = request.url.path
+            if not any(path.startswith(p) for p in _AUDIT_SKIP_PATHS):
+                await _run_in_threadpool_audit(_inregistreaza_activitate, request.method, path, 500,
+                                               request.headers.get("authorization"))
+        except Exception:
+            pass
+        raise
     _crono.marca("intors_din_ruta")
     try:
         path = request.url.path
@@ -857,7 +878,7 @@ def _verifica_si_alerta():
     if m["disc_procent"] is not None and m["disc_procent"] >= _PRAG_DISC_PROCENT and _poate_alerta("disc"):
         alerte.append(_alerta_load.rand("disc", f"Disc folosit: {m['disc_procent']}% (prag {_PRAG_DISC_PROCENT}%)"))
     if m["erori_noi"] and m["erori_noi"] > 0 and _poate_alerta("erori"):
-        alerte.append(_alerta_load.rand("erori", f"{_cate(m['erori_noi'], 'eroare', 'erori')} server (500+) in ultimele 10 minute"))
+        alerte.append(_alerta_load.rand("erori", f"{_cate(m['erori_noi'], 'eroare', 'erori')} ale aplicației (500) în ultimele 10 minute"))
     # ICRD_ISTORIC_SANATATE_V1 - salveaza instantaneu pentru grafice
     try:
         with db.get_conn() as conn:
@@ -897,7 +918,7 @@ def _verifica_si_alerta():
             "</ul><p>Fiecare rând spune ce faci. Vârfurile trecătoare (RAM, conexiuni, încărcare care scad singure) nu se trimit: le vezi "
             "în panoul „Sănătate server” din Panou Admin.</p></div>")
     # fara alerta: chiar asta e alerta (acelasi canal, Brevo) — esecul ramane in jurnal
-    _obs.trimite_email_html_sau_semnaleaza("email alerta sanatate", email, "Alerta iConta.eu - sanatate server", html)
+    _obs.trimite_email_html_sau_semnaleaza("email alerta sanatate", email, "Alertă iConta.eu — sănătate server", html)
 
 def _ciclu_sanatate():
     """Un ciclu al buclei de sanatate, cu mai multe procese in minte.
@@ -926,6 +947,12 @@ def _ciclu_sanatate():
         sunt_lider = _instante.cere_lider(conn, "sanatate")
     if sunt_lider:
         _verifica_si_alerta()
+        # [deficiența 320, 17.10.2026] termenele de peste trei zile, o dată pe zi, pe instanța lider (`core/notificari_termene.py`)
+        try:
+            from core import notificari_termene as _nt
+            _nt.ruleaza()
+        except Exception as _e:  # noqa: BLE001 — bucla de sănătate nu se oprește; eșecul se semnalează
+            _obs.esec_secundar("notificarea termenelor", _e)
 
 
 async def _bucla_livrare_notificari():
@@ -955,8 +982,8 @@ def admin_sanatate_test_alerta(ctx=Depends(cere_cabinet)):
     email = _email_superadmin()
     if not email:
         raise HTTPException(500, "email superadmin negăsit")
-    r = _obs.trimite_email_html(email, "TEST Alerta iConta.eu - sanatate server",
-        "<p>Test manual alerta sanatate. Daca ai primit acest email, livrarea functioneaza.</p>")
+    r = _obs.trimite_email_html(email, "TEST Alertă iConta.eu — sănătate server",   # [317] diacritice, ca alerta reală
+        "<p>Test manual al alertei de sănătate. Dacă ai primit acest email, livrarea funcționează.</p>")
     return {"trimis_catre": email, "rezultat": str(r)}
 
 @app.get("/admin/sanatate/istoric")
@@ -1428,9 +1455,10 @@ class CoadaIn(BaseModel):
     ca_an_precedent_eur: Optional[float] = None
     inceput_la: Optional[str] = None  # [p15] ISO, momentul deschiderii formularului
     motiv_trecere: Optional[str] = None  # trecerea EXPLICITA peste un verdict care nu e `valid`
+    inlocuieste: Optional[int] = None  # [297 + 299, 17.10.2026] elementul activ pe care declarația generată acum îl înlocuiește
 
 class RespingeIn(BaseModel):
-    motiv: str
+    motiv: str = ""   # [313, 17.10.2026] gol numai la renunțarea la propria declarație (fără validarea în doi); altfel obligatoriu
 
 class AprobaMaiMulteIn(BaseModel):
     """[08.10.2026, decizia Costin pct.3 la §6 S6] „Coada de validare permite validarea mai multor note deodată (Z-urile vin zilnic).”"""
@@ -1945,7 +1973,7 @@ def migrare_valideaza(date: MigrareValideazaIn, ctx=Depends(cere_drept(_drepturi
     try:
         rez = anaf_api.valideaza_cui(date.cui_uri)
     except Exception as e:
-        raise HTTPException(502, f"ANAF indisponibil sau a refuzat cererea: {e}")
+        raise HTTPException(502, anaf_api.mesaj_indisponibil(e))   # [303 + 317]
     return {"rezultate": rez, "ignorate": ignorate}
 
 
@@ -1966,7 +1994,7 @@ def migrare_fisier(fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drept
     try:
         rez = anaf_api.valideaza_cui(cui_uri)
     except Exception as e:
-        raise HTTPException(502, f"ANAF indisponibil sau a refuzat cererea: {e}")
+        raise HTTPException(502, anaf_api.mesaj_indisponibil(e))   # [303 + 317]
     return {"rezultate": rez}
 
 
@@ -1987,7 +2015,7 @@ def migrare_incarca(fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drep
     try:
         rez = anaf_api.valideaza_cui(cui_uri)
     except Exception as e:
-        raise HTTPException(502, f"ANAF indisponibil sau a refuzat cererea: {e}")
+        raise HTTPException(502, anaf_api.mesaj_indisponibil(e))   # [303 + 317]
     return {"rezultate": rez, "extrase": len(cui_uri)}
 
 
@@ -2970,7 +2998,7 @@ def public_verifica_cui(cui: str, request: Request):
     try:
         rez = anaf_api.valideaza_cui([cui])
     except Exception as e:
-        raise HTTPException(502, "ANAF indisponibil: %s" % e)
+        raise HTTPException(502, anaf_api.mesaj_indisponibil(e))   # [303 + 317]
     if not rez:
         return {"gasit": False}
     return rez[0]
@@ -2981,7 +3009,7 @@ def verifica_cui(tenant_id: int, cui: str, ctx=Depends(cere_context)):
     try:
         rez = anaf_api.valideaza_cui([cui])
     except Exception as e:
-        raise HTTPException(502, "ANAF indisponibil: %s" % e)
+        raise HTTPException(502, anaf_api.mesaj_indisponibil(e))   # [303 + 317]
     if not rez:
         return {"gasit": False}
     return rez[0]
@@ -3243,6 +3271,15 @@ def coada_adauga(date: CoadaIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
         raise _http_din(e)
 
 
+@app.post("/coada/{coada_id}/regenereaza")
+def coada_regenereaza(coada_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[deficiența 297] Declarația din coadă se generează din nou din cererea ei (aceleași porți); elementul vechi iese din coadă."""
+    try:
+        return _uc_coada.coada_regenereaza(coada_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.get("/coada")
 def coada_lista(stare: Optional[str] = None, ctx=Depends(cere_cabinet)):
     try:
@@ -3302,27 +3339,27 @@ def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
 
 # [p57_notif] RUTE NOTIFICARI
 @app.get("/notificari")
-def notificari_lista(doar_necitite: bool = False, ctx=Depends(cere_cabinet)):
+def notificari_lista(doar_necitite: bool = False, ctx=Depends(cere_utilizator)):
     try:
         return _uc_notificari.notificari_lista(doar_necitite, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.get("/notificari/contor")
-def notificari_contor(ctx=Depends(cere_cabinet)):
+def notificari_contor(ctx=Depends(cere_utilizator)):
     try:
         return _uc_notificari.notificari_contor(ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 @app.get("/notificari/sumar")  # [p63_notif_sumar]
-def notificari_sumar(ctx=Depends(cere_cabinet)):
+def notificari_sumar(ctx=Depends(cere_utilizator)):
     try:
         return _uc_notificari.notificari_sumar(ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
 @app.post("/notificari/citit")
-def notificari_citit_toate(ctx=Depends(cere_cabinet)):
+def notificari_citit_toate(ctx=Depends(cere_utilizator)):
     try:
         return _uc_notificari.notificari_citit_toate(ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3417,7 +3454,7 @@ def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_d
         raise _http_din(e)
 
 @app.post("/notificari/{nid}/citit")
-def notificari_citit_una(nid: int, ctx=Depends(cere_cabinet)):
+def notificari_citit_una(nid: int, ctx=Depends(cere_utilizator)):
     try:
         return _uc_notificari.notificari_citit_una(nid, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -3655,19 +3692,17 @@ def salarii_contare_scrie(tenant_id: int, an: int, luna: int, confirma: bool = F
 
 
 @app.post("/tenants/{tenant_id}/amortizare")
-# [R55, 26.08.2026] Rolul e aici fiindca ruta scrie nota `validata` DIRECT — deci produce
-# EVIDENTA, nu o propunere, si sare peste poarta de validare. Din cele 40 de rute care scriu
-# in `inregistrari_linii`, 36 scriu `ciorna`; astea trei nu. E aceeasi clasa pe care R33 a
-# reparat-o la nota de salarii (vezi antetul `core/salarii_contare.py`: „status='validata'
-# direct -- ocolea patru-ochi"), ramasa nereparata in trei locuri.
-def tenant_amortizare(tenant_id: int, an: int, luna: int,                       ctx=Depends(cere_drept(_drepturi.VALIDA))):
+# [R55, 26.08.2026] ruta scria nota `validata` direct; de atunci scrie CIORNA (`uc_tenants.tenant_amortizare` ->
+# `nota_amortizare_ciorna`), iar evidența o face validarea notei. [deficiența 311, comanda Costin 17.10.2026 7.2 pct.4, verbatim în
+# DECIZII] „generarea amortizării (lunară și restantă) la «Poate pregăti», validarea rămâne la «Poate valida»”.
+def tenant_amortizare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ."""
     try:
         return _uc_tenants.tenant_amortizare(tenant_id, an, luna, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 @app.post("/tenants/{tenant_id}/amortizare/restanta")
-def tenant_amortizare_restanta(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.VALIDA))):
+def tenant_amortizare_restanta(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """[deficiența 281] Amortizarea tuturor lunilor restante până la (an, luna) inclusiv, o notă pe lună, dintr-o singură acțiune."""
     try:
         return _uc_tenants.tenant_amortizare_restanta(tenant_id, an, luna, ctx)
@@ -4782,6 +4817,8 @@ class AsistentNouIn(BaseModel):
     nume: str = ""
     poate_pregati: bool = True    # [drepturi_rol 04.10.2026] „Poate pregăti” = munca curentă a oricărui asistent
     poate_valida: bool = False
+    poate_depune: bool = False    # [319, 17.10.2026] ce poate face și firmele, din aceeași invitație (cardul „Adaugă echipa”)
+    firme: List[int] = []
 
 @app.post("/asistenti")
 def asistent_creeaza(date: AsistentNouIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
@@ -5032,16 +5069,35 @@ class CodTelefonIn(BaseModel):
 class CanalIn(BaseModel):
     canal: str
     acord: Optional[bool] = None
+    tipuri: Optional[dict] = None   # [320, 17.10.2026] bifele pe tipuri de notificări: {tip: true/false}
+
+
+@app.get("/eu/inceput")
+def eu_inceput(ctx=Depends(cere_utilizator)):
+    """[319 + 320, 17.10.2026] Cardurile de început ale actorului, fiecare cu `facut` citit din ecranele reale."""
+    return _uc_inceput.carduri(ctx)
+
+
+@app.post("/eu/inceput/lucrez-singur")
+def eu_inceput_lucrez_singur(ctx=Depends(cere_drept(_drepturi.ADMIN))):
+    """[319] „Dacă lucrezi singur, sari peste acest pas cu butonul Lucrez singur.”"""
+    return _uc_inceput.lucrez_singur(ctx)
+
+
+@app.post("/eu/inceput/firme-vazute")
+def eu_inceput_firme_vazute(ctx=Depends(cere_cabinet)):
+    """[320] Asistentul a deschis o firmă din lista firmelor lui: cardul „Firmele tale și ce ai voie să faci” e făcut."""
+    return _uc_inceput.firme_vazute(ctx)
 
 
 @app.get("/eu/notificari")
-def eu_notificari(ctx=Depends(cere_cabinet)):
+def eu_notificari(ctx=Depends(cere_utilizator)):
     """Telefonul, confirmarea, acordul și canalul notificărilor utilizatorului."""
     return _uc_cont_notif.stare(ctx)
 
 
 @app.put("/eu/telefon")
-def eu_telefon(date: TelefonIn, ctx=Depends(cere_cabinet)):
+def eu_telefon(date: TelefonIn, ctx=Depends(cere_utilizator)):
     """Numărul de telefon (gol = fără). Un număr nou se confirmă din nou; canalul revine pe email."""
     try:
         return _uc_cont_notif.telefon_seteaza(date, ctx)
@@ -5050,7 +5106,7 @@ def eu_telefon(date: TelefonIn, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/eu/telefon/cod")
-def eu_telefon_cod(date: CerereCodIn, ctx=Depends(cere_cabinet)):
+def eu_telefon_cod(date: CerereCodIn, ctx=Depends(cere_utilizator)):
     """Acordul pentru mesaje pe WhatsApp + codul de confirmare trimis pe WhatsApp."""
     try:
         return _uc_cont_notif.cere_cod(date, ctx)
@@ -5059,7 +5115,7 @@ def eu_telefon_cod(date: CerereCodIn, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/eu/telefon/confirma")
-def eu_telefon_confirma(date: CodTelefonIn, ctx=Depends(cere_cabinet)):
+def eu_telefon_confirma(date: CodTelefonIn, ctx=Depends(cere_utilizator)):
     """Codul primit pe WhatsApp: numărul devine confirmat."""
     try:
         return _uc_cont_notif.confirma_cod(date, ctx)
@@ -5068,7 +5124,7 @@ def eu_telefon_confirma(date: CodTelefonIn, ctx=Depends(cere_cabinet)):
 
 
 @app.put("/eu/notificari")
-def eu_notificari_canal(date: CanalIn, ctx=Depends(cere_cabinet)):
+def eu_notificari_canal(date: CanalIn, ctx=Depends(cere_utilizator)):
     """Canalul notificărilor (email / WhatsApp) și acordul (retras: canalul revine pe email)."""
     try:
         return _uc_cont_notif.canal_seteaza(date, ctx)

@@ -1082,7 +1082,9 @@ def _termene_una_firma(f, ctx, azi):
             # luna deschisa -> AFISAM (nu putem exclude operatiuni pana la finalul lunii); vezi obligatii_datorate.
             from core import d390 as _d390
             _fapt = lambda a, l: _d390.d390_are_operatiuni(cs, schema, a, l, azi)
-            term = termene_api.termene_firma(vector, are_sal, depuse, azi, d390_fapt=_fapt)
+            from core import control_incrucisat as _ci_sal
+            _f112 = lambda a, l: _ci_sal.are_salariat_activ_luna(cs, schema, a, l)   # [300] D112 din fapt, ca semaforul
+            term = termene_api.termene_firma(vector, are_sal, depuse, azi, d390_fapt=_fapt, d112_fapt=_f112)
             # [P2] deschideFirma->meniuFirma cere {id, nume, cui, tip_firma} + [regim_card] regim_contabil
             # (contract STRICT in meniuFirma pe amandoua). Le avem din firma_profil (vector) prin primitiva.
             firme_eval.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),

@@ -8,8 +8,8 @@ import { randeazaAdminRaportari } from "./admin_raportari.js?v=a2a0b629a8";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=eb7737e0b3";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=510e670f0b";
 import { randeazaAdminAnalytics } from "./admin_analytics.js?v=65a3ea09d5";
-import { numeDeSalut } from "./salut.js?v=d51db6501a";
-import { panouNotificari } from "./setari.js?v=74b50c38ea";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală
+import { numeDeSalut } from "./salut.js?v=10719d2154";
+import { panouNotificari } from "./setari.js?v=e0dc218714";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală
 
 // iconite SVG inline (autonome)
 function svg(cheie, fg) {
@@ -258,10 +258,12 @@ async function cereriNeconfirmate(zona) {
   if (!v.length) { zona.innerHTML = `<div class="stare-goala">Nicio cerere neconfirmată.</div>`; return; }
   const trimis = (x) => x.email_trimis_la
     ? `trimis ${dataRo(x.email_trimis_la, "cu_ora")}${x.retrimiteri ? ` (${cate(x.retrimiteri, "retrimitere", "retrimiteri")})` : ""}` : "netrimis";
-  zona.innerHTML = `<table class="fd-tabel"><thead><tr><th>Data</th><th>Cabinet</th><th>Email</th><th>Emailul de confirmare</th><th>Linkul expiră</th><th></th></tr></thead><tbody>
-    ${v.map((x) => `<tr data-cerere="${x.id}"><td>${dataRo(x.creat_la, "cu_ora")}</td><td>${esc(x.nume_cabinet)}</td><td>${esc(x.email)}</td>
-      <td>${trimis(x)}</td><td>${x.expirata ? "a expirat " : ""}${dataRo(x.expira_la, "cu_ora")}</td>
-      <td><button class="buton-secundar" data-retrimite="${x.id}" data-actiune="POST /admin/inregistrari-neconfirmate/{cerere_id}/retrimite">Retrimite confirmarea</button></td></tr>`).join("")}
+  // [deficiența 316, comanda Costin 17.10.2026 7.2] cererea expirată rămâne în listă, marcată „expirată” (cu data la care se șterge);
+  // data, emailul și butonul nu se mai rup pe rânduri (`.ins-cereri`, fără `overflow-wrap: anywhere` pe coloanele lor)
+  zona.innerHTML = `<table class="fd-tabel ins-cereri"><thead><tr><th>Data</th><th>Cabinet</th><th>Email</th><th>Emailul de confirmare</th><th>Starea linkului</th><th></th></tr></thead><tbody>
+    ${v.map((x) => `<tr data-cerere="${x.id}"${x.expirata ? ' class="ins-expirata"' : ""}><td class="ins-nerupt">${dataRo(x.creat_la, "cu_ora")}</td><td>${esc(x.nume_cabinet)}</td><td class="ins-nerupt">${esc(x.email)}</td>
+      <td>${trimis(x)}</td><td>${x.expirata ? `<b>expirată</b> pe ${dataRo(x.expira_la, "cu_ora")} · se șterge pe ${dataRo(x.se_sterge_la)}` : `valabilă până la ${dataRo(x.expira_la, "cu_ora")}`}</td>
+      <td class="ins-nerupt"><button class="buton-secundar" data-retrimite="${x.id}" data-actiune="POST /admin/inregistrari-neconfirmate/{cerere_id}/retrimite">Retrimite confirmarea</button></td></tr>`).join("")}
     </tbody></table><div id="ins-cereri-msg" style="margin-top:8px"></div>`;
   zona.querySelectorAll("[data-retrimite]").forEach((b) => b.addEventListener("click", async () => {
     b.disabled = true;

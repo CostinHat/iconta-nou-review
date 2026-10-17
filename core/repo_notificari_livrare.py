@@ -23,7 +23,7 @@ def revendica(cur, limita):
         return []
     cur.execute("UPDATE public.notificari SET de_livrat = false WHERE id = ANY(%s)", (ids,))
     cur.execute("SELECT n.id, n.tip, u.id, u.email, u.canal_notificari, u.telefon, u.telefon_confirmat_la IS NOT NULL, "
-                "u.acord_whatsapp_la IS NOT NULL, u.activ FROM public.notificari n JOIN public.users u ON u.id = n.user_id "
+                "u.acord_whatsapp_la IS NOT NULL, u.activ, u.notificari_tipuri FROM public.notificari n JOIN public.users u ON u.id = n.user_id "
                 "WHERE n.id = ANY(%s) ORDER BY n.id", (ids,))
     return cur.fetchall()
 

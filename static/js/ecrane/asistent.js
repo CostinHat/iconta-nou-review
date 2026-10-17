@@ -12,12 +12,12 @@ import { semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asisten
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { randeazaControl } from "./control.js?v=c32702d644";
 import { randeazaTermene } from "./termene.js?v=7fbacf46ea";
-import { randeazaValidat } from "./validat.js?v=32fae3e49d";
-import { randeazaListaFirme } from "./firme.js?v=d921e045d9";
-import { paginaPrincipala, legaBenzile } from "./salut.js?v=d51db6501a"; // [225 + 231] banda de sus, aceeași la ambele roluri
-import { randeazaPachete } from "./pachete.js?v=f483669b9f"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=9821013934"; // [p44_declaratii]
-import { randeazaSetari } from "./setari.js?v=74b50c38ea"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
+import { randeazaValidat } from "./validat.js?v=b5512c4e72";
+import { randeazaListaFirme } from "./firme.js?v=32be4e4af7";
+import { paginaPrincipala, legaBenzile } from "./salut.js?v=10719d2154"; // [225 + 231] banda de sus, aceeași la ambele roluri
+import { randeazaPachete } from "./pachete.js?v=a81c2ebc49"; // [p63_pachete]
+import { randeazaDeclaratii } from "./declaratii.js?v=38cee5b22f"; // [p44_declaratii]
+import { randeazaSetari } from "./setari.js?v=e0dc218714"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;

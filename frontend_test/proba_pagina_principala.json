@@ -1,9 +1,10 @@
 {
- "ui_hash": "df7d3ef1398bef14",
+ "ui_hash": "6b4f3eb7c3a7da0a",
  "roluri": {
   "cabinet": {
    "structura": [
     "cab-salut",
+    "inceput",
     "cab-grila"
    ],
    "meniu_lateral": 0,
@@ -21,11 +22,11 @@
      "h": 58
     }
    ],
-   "grila_top": 196,
+   "grila_top": 1289,
    "inaltimi_carduri": [
-    100,
-    100,
-    100,
+    125,
+    125,
+    125,
     98,
     98,
     98,
@@ -36,9 +37,23 @@
     99,
     99
    ],
+   "inaltimi_naturale": [
+    125,
+    100,
+    98,
+    98,
+    98,
+    98,
+    98,
+    122,
+    98,
+    98,
+    99,
+    98
+   ],
    "control": {
     "h": 100,
-    "text": "6 7 0 1",
+    "text": "0 0 0 14",
     "lumini": [
      "rosu",
      "galben",
@@ -63,6 +78,7 @@
   "asistent": {
    "structura": [
     "cab-salut",
+    "inceput",
     "cab-grila"
    ],
    "meniu_lateral": 0,
@@ -90,9 +106,18 @@
     122,
     98
    ],
+   "inaltimi_naturale": [
+    98,
+    100,
+    98,
+    98,
+    122,
+    98,
+    98
+   ],
    "control": {
     "h": 100,
-    "text": "2 1 0 0",
+    "text": "0 0 0 3",
     "lumini": [
      "rosu",
      "galben",

@@ -36,9 +36,11 @@ def select_pg_stat_activity(cur):
 
 def select_public(cur):
     cur.execute("""
+                    -- [deficiența 317] numai erorile APLICAȚIEI (500: căderea, `EsecIntern`); 502 / 503 sunt refuzuri scrise de noi pentru un
+                    -- serviciu extern căzut (ANAF, VIES, emailul) — nu cer o acțiune pe server, le arată panoul „Sănătate server”
                     SELECT count(*) FROM public.audit_log
                     WHERE created_at > now() - interval '10 minutes'
-                      AND (detalii->>'status')::int >= 500
+                      AND (detalii->>'status')::int = 500
                 """)
     return cur.fetchone()
 

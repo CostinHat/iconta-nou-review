@@ -35,13 +35,13 @@ def sql(s):
     """DDL-ul regulii pentru schema `s` (numele exact, sau `TENANT_PLACEHOLDER` pentru șablon)."""
     return """@INC@
 CREATE OR REPLACE FUNCTION @S@.eticheta_nota(nid integer) RETURNS text AS $$
-  -- [deficiența 258] numele notei cum îl vede contabilul în Registrul jurnal: „nr. crt. N din ZZ.LL.AAAA”; N = locul ei în anul
-  -- notei după (data, id), orice stare — numerotarea din `repo_contabilitate.jurnal_pe_an` (paritatea: core/test_eticheta_nota.py);
-  -- NULL dacă nota nu există. Python o cheamă prin `core/eticheta_nota.py`, ca textul din bază și cel din aplicație să fie unul.
-  SELECT 'nr. crt. ' || (SELECT count(*) FROM @S@.inregistrari o
-                          WHERE o.data >= date_trunc('year', n.data)::date AND (o.data, o.id) <= (n.data, n.id))
-         || ' din ' || to_char(n.data, 'DD.MM.YYYY')
-    FROM @S@.inregistrari n WHERE n.id = nid
+  -- [deficiența 258] numele notei cum îl vede contabilul în Registrul jurnal: „nr. crt. N din ZZ.LL.AAAA”. [deficiența 302, 17.10.2026]
+  -- N = `registru_jurnal_numere.nr_curent`, dat la validare și neschimbat după (core/migrare_nr_curent_note.py); nota nevalidată n-are număr: „din ZZ.LL.AAAA”
+  -- („Nota din 07.10.2026 e ciorna lui …”; starea o spune fraza în care stă eticheta). NULL dacă nota nu există. Python o cheamă prin `core/eticheta_nota.py`, ca textul din
+  -- bază și cel din aplicație să fie unul (paritatea cu Registrul jurnal: core/test_eticheta_nota.py).
+  SELECT CASE WHEN r.nr_curent IS NOT NULL THEN 'nr. crt. ' || r.nr_curent || ' din ' || to_char(n.data, 'DD.MM.YYYY')
+              ELSE 'din ' || to_char(n.data, 'DD.MM.YYYY') END
+    FROM @S@.inregistrari n LEFT JOIN @S@.registru_jurnal_numere r ON r.inregistrare_id = n.id WHERE n.id = nid
 $$ LANGUAGE sql STABLE;
 
 CREATE OR REPLACE FUNCTION @S@.eticheta_rip(oid integer) RETURNS text AS $$

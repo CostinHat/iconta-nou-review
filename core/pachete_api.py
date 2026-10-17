@@ -273,30 +273,53 @@ def genereaza_poveste(date, an, luna):
 
 
 # ---------- CRUD poveste ----------
-def get_poveste(conn_public, tenant_id, an, luna):
+def amprenta_cifre(rz):
+    """[deficiența 314, comanda Costin 17.10.2026 7.2 pct.7] Amprenta cifrelor lunii pe care s-a aprobat povestea: veniturile,
+    cheltuielile, rezultatul (cu felul lui) și declarațiile depuse — exact ce citește povestea din pachet (`rezumat_luna`)."""
+    import hashlib
+    import json
+    cifre = {k: rz.get(k) for k in ("venituri", "cheltuieli", "rezultat", "tip")}
+    cifre["declaratii_depuse"] = sorted(str(x) for x in (rz.get("declaratii_depuse") or []))
+    return hashlib.md5(json.dumps(cifre, sort_keys=True, default=str).encode("utf-8")).hexdigest()
+
+
+#: [314] povestea aprobată pe alte cifre decât cele de acum: Trimite oprit până la regenerare
+MESAJ_DEPASITA = ("Povestea aprobată e depășită: cifrele lunii s-au schimbat după aprobare (o notă validată, stornată sau o declarație "
+                  "depusă). Generează-o din nou și aprob-o, apoi trimite-o.")
+
+
+def get_poveste(conn_public, tenant_id, an, luna, rz=None):
+    """Povestea lunii; cu `rz` (rezumatul lunii de acum), și `depasita`: aprobată pe alte cifre (sau aprobată înainte să se păstreze
+    amprenta cifrelor — nu se poate ști, deci depășită)."""
     pass  # tabela creata manual (owner iconta_user)
     with conn_public.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT text, status, updated_at FROM public.pachet_povestea "
+        cur.execute("SELECT text, status, updated_at, cifre_amprenta FROM public.pachet_povestea "
                     "WHERE tenant_id=%s AND an=%s AND luna=%s", (tenant_id, an, luna))
         row = cur.fetchone()
     if not row:
         return {"ok": True, "exista": False}
-    return {"ok": True, "exista": True, "text": row["text"], "status": row["status"]}
+    out = {"ok": True, "exista": True, "text": row["text"], "status": row["status"]}
+    if rz is not None and row["status"] == "aprobat":
+        out["depasita"] = row["cifre_amprenta"] != amprenta_cifre(rz)
+        if out["depasita"]:
+            out["motiv_depasita"] = MESAJ_DEPASITA
+    return out
 
 
-def salveaza_poveste(conn_public, tenant_id, an, luna, text, status="ciorna"):
+def salveaza_poveste(conn_public, tenant_id, an, luna, text, status="ciorna", amprenta=None):
     text = text_simplu((text or "").strip())
     if not text:
         return {"ok": False, "cod": "TEXT_GOL"}
     pass  # tabela creata manual (owner iconta_user)
     with conn_public.cursor() as cur:
         # upsert-ok: salvare text pachet lunar pe (tenant,an,luna) - re-scriere intentionata
+        # [314] amprenta cifrelor se păstrează la APROBARE (`amprenta`); ciorna n-o are
         cur.execute(
-            "INSERT INTO public.pachet_povestea (tenant_id, an, luna, text, status, updated_at) "
-            "VALUES (%s,%s,%s,%s,%s, now()) "
+            "INSERT INTO public.pachet_povestea (tenant_id, an, luna, text, status, updated_at, cifre_amprenta) "
+            "VALUES (%s,%s,%s,%s,%s, now(), %s) "
             "ON CONFLICT (tenant_id, an, luna) DO UPDATE SET "
-            "text=EXCLUDED.text, status=EXCLUDED.status, updated_at=now()",
-            (tenant_id, an, luna, text, status))
+            "text=EXCLUDED.text, status=EXCLUDED.status, updated_at=now(), cifre_amprenta=EXCLUDED.cifre_amprenta",
+            (tenant_id, an, luna, text, status, amprenta if status == "aprobat" else None))
     return {"ok": True, "status": status}
 
 
@@ -373,9 +396,11 @@ def pregateste(conn_schema, conn_public, tenant_id, an, luna, semnatura=""):
     email = rz["email"]
     if not email:
         return {"ok": False, "cod": "FARA_EMAIL"}
-    pov = get_poveste(conn_public, tenant_id, an, luna)
+    pov = get_poveste(conn_public, tenant_id, an, luna, rz=rz)
     if not pov.get("exista") or pov.get("status") != "aprobat":
         return {"ok": False, "cod": "NEAPROBATA"}
+    if pov.get("depasita"):
+        return {"ok": False, "cod": "DEPASITA"}   # [314] „Trimite se oprește dacă cifrele lunii s-au schimbat după aprobare”
     if not (pov.get("text") or "").strip():
         return {"ok": False, "cod": "POVESTE_GOALA"}
     return {"ok": True, "email": email,

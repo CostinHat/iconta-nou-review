@@ -149,7 +149,9 @@ def test_invitatie_superadminul_invita_iar_linkul_creeaza_contul_o_singura_data(
         vp.check("#reg-termeni")
         viz.captura("formular")
         vp.click("#reg-buton")
-        vp.wait_for_selector(".cab-grila", timeout=30000)           # contul s-a creat și a intrat în aplicație
+        # contul s-a creat și a intrat în aplicație; [320, decizia 17.10.2026 „Numai conturile noi”] un cont NOU trece întâi prin prima
+        # intrare (telefonul, canalul, bifele), înaintea paginii principale
+        vp.wait_for_selector("#prima-intrare", timeout=30000)
         assert sql("SELECT count(*) FROM public.users WHERE email = %s", (EMAIL,))[0][0] == 1
         assert sql("SELECT folosita_la IS NOT NULL FROM public.invitatii_cabinet WHERE email = %s", (EMAIL,))[0][0] is True
         assert "#invitatie=" not in vp.url                          # linkul consumat nu mai stă în bară

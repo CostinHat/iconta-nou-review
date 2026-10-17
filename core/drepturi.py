@@ -6,9 +6,9 @@ la prima rută nouă — de aceea interfața nu știe niciun nivel, primește do
 
 Decizia (verbatim în DECIZII.md, 04.10.2026), mereu doar pe firmele alocate asistentului:
   - PREGATI  — „Poate pregăti”: munca curentă (facturi, chitanțe, importuri, note în ciornă, pontaj,
-               mijloace fixe și calculul amortizării, export SAGA/WinMentor, e-Transport, pregătirea
+               mijloace fixe și generarea amortizării — lunară și restantă, ca ciornă (311, 17.10.2026) —, export SAGA/WinMentor, e-Transport, pregătirea
                declarațiilor);
-  - VALIDA   — „Poate valida”: validarea notelor și a declarațiilor, înregistrarea amortizării, blocarea
+  - VALIDA   — „Poate valida”: validarea notelor (inclusiv a celei de amortizare) și a declarațiilor, blocarea
                perioadei (închiderea lunii), bifa C&D a unui mijloc fix (regimul fiscal al activului, 08.10.2026);
   - DEPUNE   — „Poate depune”: depunerea la ANAF;
   - ADMIN    — doar administratorul cabinetului: firme (adăugare/import/scoatere), asistenți și drepturile
@@ -66,7 +66,7 @@ MESAJ = {
     PREGATI: ("Munca pe firmă — facturi, chitanțe, importuri, note contabile, pontaj, mijloace fixe, declarații "
               "de pregătit — cere dreptul «Poate pregăti», pe care nu-l ai. Îl acordă administratorul "
               "cabinetului, din ecranul Asistenți."),
-    VALIDA: ("Validarea — notele contabile, declarațiile, înregistrarea amortizării, închiderea lunii — cere "
+    VALIDA: ("Validarea — notele contabile, declarațiile, închiderea lunii — cere "
              "dreptul «Poate valida», pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul "
              "Asistenți."),
     # [PIVOT 04.10.2026] REGES (trimiterea și răspunsurile) e tot o depunere la o autoritate — decizia Costin

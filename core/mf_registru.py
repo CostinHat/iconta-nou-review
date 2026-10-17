@@ -80,6 +80,15 @@ def luni_inregistrate(cur, cont):
     return {tuple(x.values()) if isinstance(x, dict) else tuple(x) for x in cur.fetchall()}
 
 
+def luni_in_ciorna(cur, cont):
+    """[deficiența 312] {(an, luna)} în care o notă CIORNĂ (generată, nevalidată) creditează contul de amortizare: închiderea spune
+    „generată, de validat”, nu „neînregistrată”, iar „Generează amortizarea restantă” n-o mai oferă pentru ele."""
+    cur.execute("SELECT DISTINCT EXTRACT(YEAR FROM i.data)::int, EXTRACT(MONTH FROM i.data)::int FROM inregistrari i "
+                "JOIN inregistrari_linii l ON l.inregistrare_id = i.id WHERE i.status = 'ciorna' "
+                "AND (l.cont_credit = %s OR l.cont_credit LIKE %s)", (cont, cont + ".%"))
+    return {tuple(x.values()) if isinstance(x, dict) else tuple(x) for x in cur.fetchall()}
+
+
 def _luni(de_la, pana_la):
     an, luna = de_la
     while (an, luna) <= pana_la:
@@ -181,9 +190,10 @@ def luni_anterioare_neinregistrate(cur, rows, an, luna):
         for x in amortizare_lunii_neinregistrata(cur, rows, a, l):
             if x.get("rata") is None:
                 continue
-            d = pe_cont.setdefault(x["cont"], {"cont": x["cont"], "luni": [], "total": Decimal(0)})
+            d = pe_cont.setdefault(x["cont"], {"cont": x["cont"], "luni": [], "total": Decimal(0), "rate": {}})
             d["luni"].append((a, l))
             d["total"] += Decimal(str(x["rata"]))
+            d["rate"][(a, l)] = Decimal(str(x["rata"]))   # [312] rata pe lună: lunile deja generate se scad din total
         a, l = (a + 1, 1) if l == 12 else (a, l + 1)
     return [pe_cont[c] for c in sorted(pe_cont)]
 

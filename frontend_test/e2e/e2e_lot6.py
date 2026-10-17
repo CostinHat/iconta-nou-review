@@ -8,7 +8,7 @@ există deja, iar mesajul spune ce s-a găsit deja și ce e nou.
 278, 279: dispoziția de casă legată de factură, avansul și plafonul în formular; starea reală a notei la salvare și pe rând."""
 import time
 
-from conftest import sql, zile_de_acum
+from conftest import alege_tipul, sql, zile_de_acum
 from e2e_bloc_a import AZI, CLIENT, _card, emite_api, pregateste_firma
 
 MT940 = """:20:EXTRAS20261016
@@ -86,7 +86,9 @@ def test_def_276_banca_spune_formatele_si_compara_soldurile(patron, firma_e2e):
     assert "Sold inițial la 15.10.2026: 10.000,00 RON în extras, 0,00 în 5121 (din notele validate) — diferență 10.000,00." in m, m
     assert "Sold final la 16.10.2026: 10.229,50 RON în extras, 0,00 în 5121 (din notele validate) — diferență 10.229,50." in m, m
     rand = pg.locator(".pf-frand", has_text="Comision administrare cont octombrie " + tag)
-    assert "Fără potrivire" in rand.inner_text() and "match" not in rand.inner_text().lower()
+    # [309, 17.10.2026] comisionul e recunoscut din descriere: n-are factură de potrivit, are nota propusă (nu „Fără potrivire”, roșu)
+    assert "Notă propusă 627 = 5121" in rand.inner_text() and "Fără potrivire" not in rand.inner_text() \
+        and "match" not in rand.inner_text().lower(), rand.inner_text()
 
 
 def _dispozitie(e, suma, cui):
@@ -307,7 +309,10 @@ def test_def_289_certificatul_fara_drept_pe_cui_e_spus_exact_peste_tot(patron, f
         pg.click("#fd-spv-zona [data-ecran-destinatie='conectare_spv']")
         pg.wait_for_selector("#spv-cuiuri .spv-cui[data-cui='%s']" % cui, timeout=20000)
         patron.captura("conectare_spv")
-        assert asteptat in pg.inner_text("#spv-cuiuri .spv-cui[data-cui='%s']" % cui)
+        # [315, 17.10.2026] Conectare SPV: explicația o dată, sus; pe firmă numai rândul „<firmă> · fără drept în SPV · verificat …”
+        rand = pg.inner_text("#spv-cuiuri .spv-cui[data-cui='%s']" % cui)
+        assert "fără drept în SPV · verificat " in rand and "OMFP" not in rand, rand
+        assert pg.inner_text("#spv-cuiuri").count("OMFP 660/2017") == 1 and raspuns in pg.inner_text("#spv-explicatie")
     finally:
         sql("DELETE FROM public.spv_cui_acoperit WHERE token_id = %s", (tok,))
         sql("DELETE FROM public.spv_token WHERE id = %s", (tok,))
@@ -383,6 +388,9 @@ def test_def_283_declaratii_intai_ce_datoreaza_firma_cu_termenul(patron):
     intro = pg.inner_text(".mig-intro")
     assert intro == "Pasul 1 din 3 — alege tipul declarației și perioada.", intro
     grupe = pg.eval_on_selector_all("#dec-tip optgroup", "(gs) => gs.map((g) => g.label)")
+    assert grupe == ["Datorate de firmă (din vectorul fiscal)"], grupe   # [301] „Alte declarații” pliată, la cerere
+    pg.click("#dec-alte")
+    grupe = pg.eval_on_selector_all("#dec-tip optgroup", "(gs) => gs.map((g) => g.label)")
     assert grupe == ["Datorate de firmă (din vectorul fiscal)", "Alte declarații"], grupe
     datorate = pg.eval_on_selector_all("#dec-tip optgroup:first-of-type option", "(os) => os.map((o) => o.textContent)")
     d300 = [t for t in datorate if t.startswith("D300 · T3/2026 · termen ")]
@@ -412,7 +420,7 @@ def test_def_284_refuzul_d300_numeste_nota_iar_dupa_validare_declaratia_intra_si
         pg.wait_for_selector(".coada-note-refuz button", timeout=30000)
         patron.captura("refuz")
         mesaj = pg.inner_text("#dec-coada-mesaj")
-        assert "Diferența o explică pe contul 4427: nr. crt. " in mesaj, mesaj
+        assert "Diferența o explică pe contul 4427: nota din " in mesaj and " — Factură " in mesaj, mesaj   # [302] ciorna n-are nr.
         assert "se generează din nou și intră singură în coadă" in mesaj and "notă(e) nevalidată(e)" not in mesaj, mesaj
         asteptare = sql("SELECT id, note_ids FROM public.declaratii_in_asteptare WHERE tenant_id = %s AND rezolvata_la IS NULL", (tid,))
         assert len(asteptare) == 1, asteptare
@@ -799,11 +807,14 @@ def test_def_294_perioada_implicita_e_cea_scadenta_si_nedepusa(patron):
     datorata = pg.eval_on_selector_all("#dec-tip option[value='d100'][data-an]", "(os) => os.map((o) => [o.dataset.an, o.dataset.luna])")
     asteptat = (int(datorata[0][0]), (int(datorata[0][1]) - 1) // 3 + 1) if datorata else \
         ((AZI.year, t_curent - 1) if t_curent > 1 else (AZI.year - 1, 4))
-    alte = pg.eval_on_selector_all("#dec-tip optgroup:last-of-type option[value='d100']", "(os) => os.length")
+    # [301, 17.10.2026] „Alte declarații” e pliată: se deschide ca omul, apoi se caută acolo D100 (opțiunea fără perioadă datorată)
+    if pg.locator("#dec-alte").count() and pg.get_attribute("#dec-alte", "aria-expanded") != "true":
+        pg.click("#dec-alte")
+    alte = pg.eval_on_selector_all("#dec-tip option[value='d100']:not([data-an])", "(os) => os.length")
     if alte:   # D100 și în „Alte declarații” (nu e datorată): alegerea de acolo propune tot perioada scadentă
         pg.select_option("#dec-tip", index=pg.eval_on_selector("#dec-tip", "(s) => [...s.options].findIndex((o) => o.value === 'd100' && !o.dataset.an)"))
     else:
-        pg.select_option("#dec-tip", "d100")
+        alege_tipul(pg, "d100")
     pg.wait_for_selector("#dec-trim", timeout=10000)
     patron.captura("d100")
     assert (int(pg.input_value("#dec-an")), int(pg.input_value("#dec-trim"))) == asteptat, (pg.input_value("#dec-an"), pg.input_value("#dec-trim"))

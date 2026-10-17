@@ -31,7 +31,7 @@
 import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=9409795a49";
 import { randA as randConstatare } from "./control_verdict.js?v=751a4f0a85";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma } from "./firme.js?v=d921e045d9";
+import { deschideFirma } from "./firme.js?v=32be4e4af7";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)
@@ -116,6 +116,12 @@ function _confirma(ids, text) { _ultimaActiune = { ids: ids.map(Number), text, l
 
 // [08.10.2026, U4] Titlul cozii = ce conține: „Note de validat”, „Declarații de validat”, „Declarații de depus” — părțile nevide,
 // unite cu „ · ”; coada goală -> „Coada de validare și depunere” (fără dreptul «Poate depune»: „Coada de validare” — deficiența 266).
+// [deficiența 313, comanda Costin 17.10.2026 7.2] titlul CARDULUI cozii — o singură regulă, pentru card (cabinet.js) și pentru fereastra
+// deschisă din el: cardul trecea pe „De depus”, iar fereastra rămânea pe titlul de la deschidere („De validat”)
+export function titluCardCoada({ patruOchi = false, note = 0 }) {
+  return (patruOchi || note) ? "De validat" : "De depus";
+}
+
 export function titluCoada({ note = 0, deValidat = 0, deDepus = 0, poateDepune = true }) {
   const parti = [note ? "Note de validat" : "", deValidat ? "Declarații de validat" : "", deDepus ? "Declarații de depus" : ""].filter(Boolean);
   return parti.length ? parti.join(" · ") : (poateDepune ? "Coada de validare și depunere" : "Coada de validare");
@@ -215,6 +221,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   // ce are în el: părțile nevide, în ordinea în care apar (`titluCoada`).
   // [deficiența 292, comanda Costin 16.10.2026, verbatim în DECIZII] „Titlul ferestrei urmează cardul din care a fost deschisă (rest din
   // 266; aceeași clasă cu 127).” Cardul își dă titlul (`opt.titlu`); fără card (din notificare) titlul spune ce conține (127, U4).
+  if (corp.dataset.titluCard) corp.dataset.titluCard = titluCardCoada({ patruOchi, note: noteDeValidat.length });   // [313] urmează cardul
   const titlu = corp.dataset.titluCard || titluCoada({ note: noteDeValidat.length, deValidat: patruOchi ? laSenior.length : 0,
                              deDepus: patruOchi ? aprobate.length : declaratii.filter((c) => c.stare === "la_senior" || c.stare === "aprobata").length,
                              poateDepune: !!perm.poate_depune });
@@ -499,7 +506,7 @@ async function deschideContinut(c, nav, corpLista) {
       ? `<div class="caseta-atentie"><b>Avertismente (${av.length})</b><ul>${av.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div>`
       : "";
     corp.innerHTML = `
-      <p class="mig-intro">Con\u021binutul declara\u021biei \u2014 vizualizare pentru validare (patru ochi). Read-only.</p>
+      <p class="mig-intro">Con\u021binutul declara\u021biei \u2014 vizualizare pentru validare; numai pentru citire.</p>
       ${duk}
       ${avert}
       <details open><summary>XML generat</summary><pre class="dec-xml-pre">${esc(xml)}</pre></details>
@@ -520,7 +527,14 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   const euAmPregatit = uid != null && c.creat_de != null && String(c.creat_de) === uid;
 
   let actiuni = "";
-  if (mod === "valida") {
+  // [deficiența 297] declarația DEPĂȘITĂ (documentele perioadei s-au schimbat după generare): nici aprobare, nici depunere — se generează
+  // din nou; serverul refuză la fel (`coada_api.refuz_depasita`)
+  const dep = c.depasita;
+  if (dep) {
+    actiuni += perm.poate_pregati !== false
+      ? `<button class="buton-primar val-btn val-regenereaza" data-act="regenereaza" data-actiune="POST /coada/{coada_id}/regenereaza">Generează din nou</button>`
+      : `<span class="val-nota-perm">o generează din nou cine are dreptul «Poate pregăti»</span>`;
+  } else if (mod === "valida") {
     // Aprobă — doar dacă pot valida ȘI (patru-ochi activ) nu eu am pregătit-o
     if (!perm.poate_valida) {
       actiuni += `<span class="val-nota-perm">nu ai dreptul de validare</span>`;
@@ -556,9 +570,11 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
     // Cu patru-ochi OFF, mono-utilizatorul poate renunța la un item încă neaprobat (respinge din la_senior).
     // [deficiența 293, comanda Costin 16.10.2026] „Pe o declarație a altcuiva, fără dreptul de depunere, nu se oferă nicio acțiune în afară
     // de vizualizare; serverul refuză la fel.” Renunțarea e a celui care a pregătit-o sau a celui care o depune (`uc_coada.coada_respinge`).
-    if (!patruOchi && needsAproba && perm.poate_valida && (euAmPregatit || perm.poate_depune)) {
-      actiuni += `<button class="buton-sters val-btn val-respinge" data-act="respinge" data-actiune="POST /coada/{coada_id}/respinge">Renunță</button>`;
-    }
+  }
+  // [deficiența 313] fără validarea în doi, „Renunță” pe PROPRIA declarație e retragerea ei — fără „Respinge declarația” cu motiv obligatoriu
+  if (!patruOchi && c.stare === "la_senior" && perm.poate_valida && (euAmPregatit || perm.poate_depune)) {
+    const actRetragere = euAmPregatit ? "renunta" : "respinge";   // cheia acțiunii, nu text pe ecran
+    actiuni += `<button class="buton-sters val-btn val-respinge" data-act="${actRetragere}" data-actiune="POST /coada/{coada_id}/respinge">Renunță</button>`;
   }
 
   const perDecl = fmtPerioadaDecl(c);
@@ -567,7 +583,9 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
       <div class="val-titlu"><b>${(c.tip||"").toUpperCase()}</b> · ${perDecl}</div>
       <div class="val-sub">${esc(numeFirma(firme, c.tenant_id))} · pregătit de ${esc(c.creat_de_nume || c.creat_de || "—")}</div>
       <div class="val-termen">termen (scadență): ${c.perioada || "—"}</div>
-      ${vi.gata ? "" : `<div class="val-lipsa">${esc(vi.lipsa)} <span class="val-lipsa-iesire">${esc(vi.iesire)}</span></div>`}
+      ${dep ? `<div class="val-lipsa val-depasita">${esc(dep.mesaj)}</div>`
+        : vi.gata ? "" : `<div class="val-lipsa">${esc(vi.lipsa)} <span class="val-lipsa-iesire">${esc(vi.iesire)}</span></div>`}
+      ${c.surse_nevalidate ? `<div class="val-lipsa val-surse">${esc(c.surse_nevalidate)}</div><div class="val-surse-note"></div>` : ""}
       ${c.trecere_motiv ? `<div class="val-lipsa">trecut peste refuz, motiv: ${esc(c.trecere_motiv)}</div>` : ""}
       <button type="button" class="btn-link val-vezi" data-act="vezi">Vezi declarația, XML și verdictul DUK →</button>
     </div>
@@ -582,6 +600,9 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   });
   const _vezi = div.querySelector(".val-vezi");
   if (_vezi) _vezi.addEventListener("click", () => deschideContinut(c, nav, corp));
+  // [298 + 313] notele nevalidate pe care se sprijină declarația, fiecare cu butonul ei spre Registrul jurnal
+  const zSurse = div.querySelector(".val-surse-note");
+  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=bce84e526a").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
   return div;
 }
 
@@ -589,6 +610,33 @@ async function actioneaza(c, act, firme, corp, nav) {
   const eroare = corp.querySelector("#val-eroare");
   if (eroare) eroare.textContent = "";
   const perDecl = fmtPerioadaDecl(c);
+  if (act === "regenereaza") {
+    try {
+      const r = await api.post(`/coada/${c.id}/regenereaza`, {});
+      _confirma([r.coada_id], `${(c.tip || "").toUpperCase()} (${perDecl}) s-a generat din nou din documentele de acum; cea veche a ieșit din coadă.`);
+      randeazaValidat(corp, nav);
+    } catch (e) {
+      if (eroare) arataMesaj(eroare, (e && e.mesaj) || "Declarația nu s-a putut genera din nou.", "eroare");
+    }
+    return;
+  }
+  if (act === "renunta") {
+    dialogInput(nav, {
+      titlu: "Renunți la declarație",
+      eticheta: `Retragi din coadă ${(c.tip||"").toUpperCase()} (${perDecl}), pregătită de tine. Motivul — opțional:`,
+      placeholder: "ex: o generez din nou după ce validez nota",
+      obligatoriu: false,
+      buton: "Renunță la declarație",
+      butonClasa: "buton-sters val-respinge",
+      onConfirm: async (motiv) => {
+        await api.post(`/coada/${c.id}/respinge`, { motiv: motiv || "" });
+        _confirma([c.id], `Ai retras din coadă ${(c.tip || "").toUpperCase()} (${perDecl}).`);
+        nav.inapoi();
+        randeazaValidat(corp, nav);
+      },
+    });
+    return;
+  }
   if (act === "respinge") {
     dialogInput(nav, {
       titlu: "Respinge declarația",

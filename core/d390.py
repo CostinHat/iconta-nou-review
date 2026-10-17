@@ -707,14 +707,19 @@ def d390_are_operatiuni(conn, schema, an, luna, azi=None):
     exigibilitatea operatiunilor IC (instr. completare D390, anexa OPANAF 705/2020; principiu identic OPANAF 705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat) la D390). NU e obligatie lunara fixa. Vezi DECIZII 23.07."""
     azi = azi or c.azi_ro()
     prima_urm = datetime.date(an + 1, 1, 1) if luna == 12 else datetime.date(an, luna + 1, 1)
-    if prima_urm > azi:
-        return None                         # luna nu s-a incheiat -> perioada deschisa
+    # [deficiența 300, comanda Costin 17.10.2026 7.2] „D390 · 10/2026 lipsește din «Datorate» deși F1A5 e prestare de servicii UE în
+    # octombrie”: în luna DESCHISĂ, o operațiune IC deja facturată e un fapt — D390 lunii e datorat (aceeași sursă ca la luna încheiată).
+    # Ce rămâne necunoscut în luna deschisă e numai ABSENȚA (alte facturi pot veni): fără facturi IC încă -> None, ca înainte.
+    if prima_urm > azi and conn is None:
+        return None                         # fără conexiune (teste, matrice) faptul lunii deschise nu se citește
     _prof, facturi = pull(conn, schema, an, luna)
     ic, _diag = _facturi_ic(facturi)
     if ic:
         return True
     if pull_manual(conn, schema, an, luna):
         return True
+    if prima_urm > azi:
+        return None                         # luna nu s-a incheiat -> absența operațiunilor nu se poate afirma
     return False
 
 

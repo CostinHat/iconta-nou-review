@@ -13,7 +13,7 @@ from core.common import azi_ro  # [fus] fereastra [azi, azi+60] = VERDICT (ce ve
 ORIZONT_ZILE = 60
 
 
-def termene_firma(vector, are_salariati, depuse, azi=None, *, d390_fapt=None):
+def termene_firma(vector, are_salariati, depuse, azi=None, *, d390_fapt=None, d112_fapt=None):
     """
     Declaratiile datorate VIITOARE (termen in [azi, azi+ORIZONT_ZILE]), nedepuse.
 
@@ -25,11 +25,13 @@ def termene_firma(vector, are_salariati, depuse, azi=None, *, d390_fapt=None):
         ferma. Termene NU reafiseaza gri-ul (privire inainte; "nu pot verifica" e treaba semaforului).
     depuse = set de (tip, an, luna) (tip lowercase, ca 'datorate').
     vector trebuie sa poarte partida_simpla (derivat de caller din tip_firma, ca la semafor).
+    d112_fapt = callback D112 pe fapt lunar (salariat activ în lună, ca semaforul); None = boolean-ul `are_salariati` pe toate lunile.
     d390_fapt = callback D390 pe fapt lunar (caller-ul are conn_schema): luna deschisa (None) -> AFISAM
         (privire inainte; nu putem exclude operatiuni pana la finalul lunii); luna inchisa fara IC -> nu apare.
     """
     azi = azi or azi_ro()   # [fus] fereastra termenelor decide ce apare -> zi RO, robust la OS TZ
-    rez = cf.obligatii_datorate(vector, are_salariati, azi, jos=azi, sus_zile=ORIZONT_ZILE, d390_fapt=d390_fapt)
+    # [deficiența 300, 17.10.2026] D112 din FAPT (salariat activ în lună), ca semaforul — nu din „are salariați” azi aplicat oricărei luni
+    rez = cf.obligatii_datorate(vector, are_salariati, azi, jos=azi, sus_zile=ORIZONT_ZILE, d390_fapt=d390_fapt, d112_fapt=d112_fapt)
     return [d for d in rez["datorate"] if (d["tip"], d["an"], d["luna"]) not in depuse]
 
 

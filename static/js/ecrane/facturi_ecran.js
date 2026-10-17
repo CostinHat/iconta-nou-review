@@ -6,7 +6,7 @@
 import { api, cate, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota } from "../api.js?v=9409795a49";  /* esc_nc27 */
 import { randeazaStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaEmitere } from "./emitere_ecran.js?v=df557f8645";
+import { randeazaEmitere } from "./emitere_ecran.js?v=409084db4c";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
@@ -163,7 +163,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
         </select>
       </div>`).join("") || '<div class="pf-frand-sub">—</div>'}</div>
     <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:12px">
-      <label class="camp"><span class="camp-eticheta">Cont cheltuială (sugerat, confirmă)</span><input class="camp-input" id="pr-cont" value="${esc(p.cont_sugerat || "")}" placeholder="ex. 628" aria-label="Cont cheltuială"></label>
+      <label class="camp"><span class="camp-eticheta">Contul facturii (sugerat, confirmă): cheltuială, sau 371 / 301–303 la marfă și materiale</span><input class="camp-input" id="pr-cont" value="${esc(p.cont_sugerat || "")}" placeholder="ex. 628 sau 371" aria-label="Contul facturii"></label>
     </div>
     <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:8px">
       <!-- [lotul 07.10 B, DS cap.17] DA/NU situațional: ales de om (căsuța nebifată răspundea „Nu” în locul lui) -->
@@ -179,7 +179,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
         <select class="camp-input" id="pr-c331" aria-label="Categoria art.331"><option value="">— alege —</option>${categorii331.map((c) => `<option value="${esc(c)}">${esc(c.replace(/_/g, " "))}</option>`).join("")}</select></label>` : ""}
     </div>
     <div style="margin-top:14px">
-      <button class="buton-verde" id="pr-valideaza" data-actiune="POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza">Validează (creează cheltuiala)</button>
+      <button class="buton-verde" id="pr-valideaza" data-actiune="POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza">Validează (scrie nota pe contul ales)</button>
       <button data-actiune="POST /tenants/{tenant_id}/facturi-primite/{primita_id}/respinge" class="btn-link" id="pr-respinge" style="margin-left:10px">Respinge</button>
       <span class="btn-link" id="pr-xml" style="margin-left:10px">Vezi XML brut</span>
     </div>
@@ -190,7 +190,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
     curataEroriCamp(corp);
     if (cereAlegerile(corp, ["#pr-furnizor-incasare", "#pr-platitor", ...(p.taxare_inversa ? ["#pr-c331"] : [])])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     if (!(corp.querySelector("#pr-tara").value || "").trim()) { eroareCamp(corp, "pr-tara", "Scrie țara furnizorului (codul ISO, ex. RO)."); return; }
-    confirmaCaseta(zona, "Validezi factura și creezi cheltuiala? Intră în evidența contabilă.", async () => {
+    confirmaCaseta(zona, "Validezi factura? Nota se scrie pe contul ales (la un cont de stoc, cu intrarea în stoc) și intră în evidența contabilă.", async () => {
       try {
         const _tara = corp.querySelector("#pr-tara").value.trim().toUpperCase();   // dedusă din CIF-ul emitentului, vizibilă (DS cap.17)
         const _dest = Array.from(corp.querySelectorAll(".pr-dest")).map((s) => s.value);  // [A12b] destinatie TVA per linie, ordinea liniilor
@@ -248,7 +248,9 @@ export function etichetaSpv(f) {
   const s = f.stare_spv;
   if (!s) return "";
   const ce = { netrimisa: "netrimisă în SPV", trimisa: "trimisă în SPV", acceptata: "acceptată în SPV", respinsa: "respinsă în SPV" }[s.stare] || s.stare;
-  const termen = s.stare === "netrimisa" ? ` · termen ${dataRo(s.termen)}${s.depasit ? " (depășit)" : ""}` : "";
+  // [deficiența 307] clientul nestabilit în România (fără cod de TVA românesc): transmiterea nu e obligatorie — fără termen
+  if (s.obligatorie === false) return s.stare === "netrimisa" ? "netrimisă în SPV · nu e obligatorie (clientul nu e stabilit în România)" : ce;
+  const termen = s.stare === "netrimisa" && s.termen ? ` · termen ${dataRo(s.termen)}${s.depasit ? " (depășit)" : ""}` : "";
   return ce + termen;
 }
 
@@ -518,7 +520,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <td>${cant.toLocaleString("ro-RO")}</td>
         <td class="fd-td-um">${esc(l.um || "buc")}</td>
         <td class="fd-td-num">${_bani(pret)}</td>
-        <td>${cota}%</td>
+        <td>${cota}%${cota === 0 && l.categorie_tva_eticheta ? `<div class="tip-micut fd-categorie">${esc(l.categorie_tva_eticheta)}</div>` : ""}</td>
         <td class="fd-td-num">${_bani(baza, mon)}</td>
       </tr>`;
   }).join("");
@@ -548,7 +550,9 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   }
 
   const dir = dirEticheta(f.directie);
-  const partener = f.tert_nume ? `${esc(f.tert_nume)}${f.tert_cui ? " \u00b7 CUI " + esc(f.tert_cui) : ""}` : "";
+  // [deficiența 306] codul clientului cu eticheta lui (Cod TVA / CIF / CUI, ca pe PDF) și adresa completă (cu țara, la clientul străin)
+  const partener = f.tert_nume ? `${esc(f.tert_nume)}${f.tert_cod ? ` \u00b7 ${esc(f.tert_cod_eticheta || "CUI")} ${esc(f.tert_cod)}`
+    : (f.tert_cui ? " \u00b7 CUI " + esc(f.tert_cui) : "")}${f.tert_adresa_completa ? `<div class="tip-micut">${esc(f.tert_adresa_completa)}</div>` : ""}` : "";
   // STATUS_ETICHETA - sincronizat 1:1 cu core/nomenclator_status_factura.ETICHETE (interdictia 31).
   // Garda core/test_eticheta_status_factura.py pica la orice divergenta (stare fara eticheta / eticheta fara stare).
   const STATUS_ETICHETA = { emisa: "emis\u0103", importata: "importat\u0103", de_recunoscut: "de recunoscut", de_preluat: "de preluat", ciorna: "ciorn\u0103", descarcata: "desc\u0103rcat\u0103", anulata: "anulat\u0103", stornata: "stornat\u0103" };
@@ -793,7 +797,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=d921e045d9");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=32be4e4af7");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }));
   });

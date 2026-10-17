@@ -13,6 +13,8 @@ activează numai după confirmarea numărului printr-un cod trimis pe WhatsApp �
 - `public.notificari.de_livrat`: cutia de ieșire a clopoțelului (scrisă de `notificari_api.adauga`, golită de livrare).
 - `public.notificari_jurnal`: fiecare notificare trimisă (tipul, canalul, id-ul mesajului WhatsApp, starea raportată de Meta, rezerva pe
   email) — din el webhook-ul află ce notificare n-a fost livrată și o trimite pe email.
+- [7.2, 17.10.2026] `users.notificari_tipuri` / `notificari_salvate_la` (bifele din Notificări și momentul salvării lor; prima intrare),
+  `users.inceput_firme_vazute_la` (cardul de început al asistentului), `accounting_firms.lucreaza_singur_la` („Lucrez singur”, 319).
 Idempotent. Se aplică prin `python -m core.migrari_registru ruleaza [--productie] core/migrare_canal_notificari.py`.
 """
 from core import db
@@ -61,6 +63,25 @@ CREATE TABLE IF NOT EXISTS public.notificari_jurnal (
     actualizat_la timestamptz NOT NULL DEFAULT now()
 );
 CREATE UNIQUE INDEX IF NOT EXISTS notificari_jurnal_mesaj_uq ON public.notificari_jurnal (mesaj_id) WHERE mesaj_id IS NOT NULL;
+
+-- [comanda Costin 17.10.2026 7.2, deficiențele 319 + 320] bifele din Notificări (tip -> trimis pe WhatsApp / email; NULL = implicitul
+-- grupelor) și momentul salvării (prima intrare: telefonul, canalul și bifele sunt obligatorii); cardurile de început
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS notificari_tipuri jsonb;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS notificari_salvate_la timestamptz;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS inceput_firme_vazute_la timestamptz;
+ALTER TABLE public.accounting_firms ADD COLUMN IF NOT EXISTS lucreaza_singur_la timestamptz;
+
+-- [decizia Costin 17.10.2026, „7.2 – continuare”, verbatim în DECIZII] „Numai conturile noi” trec prin prima intrare: conturile care
+-- există când se creează coloana sunt scutite (o singură dată, odată cu coloana — o rulare ulterioară nu scutește conturile noi);
+-- își schimbă alegerile din Setări cont -> Notificări, cu implicitul grupelor până atunci
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'users'
+                 AND column_name = 'prima_intrare_scutita_la') THEN
+    ALTER TABLE public.users ADD COLUMN prima_intrare_scutita_la timestamptz;
+    UPDATE public.users SET prima_intrare_scutita_la = now();
+  END IF;
+END $$;
 """
 
 
@@ -77,7 +98,11 @@ def verifica(conn):
         cur.execute("SELECT to_regclass('public.telefon_coduri') IS NOT NULL AND to_regclass('public.notificari_jurnal') IS NOT NULL "
                     "AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'notificari' "
                     "AND column_name = 'de_livrat')")
-        return coloane and bool(cur.fetchone()[0])
+        legate = bool(cur.fetchone()[0])
+        cur.execute("SELECT count(*) = 4 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'users' "
+                    "AND column_name IN ('notificari_tipuri', 'notificari_salvate_la', 'inceput_firme_vazute_la', 'prima_intrare_scutita_la')")
+        inceput = bool(cur.fetchone()[0])
+        return coloane and legate and inceput
 
 
 def _main():

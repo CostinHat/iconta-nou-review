@@ -493,7 +493,7 @@ def inchiderea_6_7(s, an, bilant_pe=None):
 
 def _text_propuse(p):
     """[244] Clasele 6 / 7 au încă sold, iar notele de închidere sunt propuse: motivul e validarea lor, nu o nouă închidere."""
-    an, note = p["an"], "; ".join("%s (nota %s)" % (n["descriere"], n["eticheta"]) for n in p["note"])   # [258] nu id-ul intern
+    an, note = p["an"], "; ".join("%s — nota %s" % (n["descriere"], n["eticheta"]) for n in p["note"])   # [258] nu id-ul intern
     t = "Notele de închidere propuse așteaptă validarea: %s. Se validează în Registrul jurnal, luna decembrie %d" % (note, an)
     if not p["incheiat"]:
         return t + (". Anul %d nu s-a încheiat: se validează numai după 31.12.%d, dacă mai corespund atunci soldurilor; până atunci "

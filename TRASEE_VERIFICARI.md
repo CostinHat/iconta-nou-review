@@ -19,7 +19,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T01 — Declarația — generare, validare, coadă, aprobare, depunere
 
-*clasa MECANIC · 20 rute · 12 schimba date · 9 firme il pot exercita azi*
+*clasa MECANIC · 21 rute · 13 schimba date · 9 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/coada`, `/coada/{coada_id}/continut`, `/control-fiscal`, `/control-fiscal/{tenant_id}`, `/declaratii/tipuri`, `/firme/{tenant_id}/verificari`, `/termene`*
 
@@ -32,6 +32,16 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - [x] declarația intră în coadă **numai cu verdict de validare păstrat** — altfel ruta refuză și spune de ce
 - rândul din coadă poartă: tip, perioadă, firmă, cine a pregătit, momentul
 - nu se creează rând în `declaratii_depuse` la intrarea în coadă — depunerea nu s-a întâmplat
+
+### `POST /coada/{coada_id}/regenereaza`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: [deficiența 297] Declarația din coadă se generează din nou din cererea ei (aceleași porți); elementul vechi iese din coadă. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+
+- [x] declarația nouă trece prin **aceleași porți** ca la prima generare (`coada_adauga`, cu cererea păstrată în element) — `core/test_297_298_surse_declaratie.py`, `frontend_test/e2e/e2e_lot72_declaratii.py::test_def_297_declaratia_depasita_nu_se_depune_si_se_genereaza_din_nou`
+- [x] elementul vechi iese din coadă în **aceeași tranzacție** în care intră cel nou: coada nu rămâne nici cu două declarații active pe perioadă, nici cu niciuna (`core/p4_clasificare.py`, verdictul rutei)
+- [x] un element intrat în coadă înainte să i se păstreze cererea e refuzat cu drumul spus (Declarații -> „Înlocuiește”), nu regenerat din altceva
 
 ### `POST /coada/{coada_id}/aproba`
 
@@ -1803,7 +1813,7 @@ faptica, pe baza listelor de inventariere.
 
 ### `POST /tenants/{tenant_id}/amortizare`
 
-*garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+*garda `cere_drept` · **fara rol** · drept:poate_pregati · scrie in inregistrari, inregistrari_linii*
 
 *ce face: Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ. — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · extras_linii (UPDATE) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `coada_api`, `jurnal_api`, `repo_contabilitate`, `repo_mijloace_fixe`*
 
@@ -1834,7 +1844,7 @@ faptica, pe baza listelor de inventariere.
 
 ### `POST /tenants/{tenant_id}/amortizare/restanta`
 
-*garda `cere_drept` · **fara rol** · drept:poate_valida*
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
 
 *ce face: [deficiența 281] Amortizarea tuturor lunilor restante până la (an, luna) inclusiv, o notă pe lună, dintr-o singură acțiune. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `repo_contabilitate`, `repo_mijloace_fixe`*
 
@@ -2538,7 +2548,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · pachet_povestea (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `pachete_api`, `repo_main`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): accounting_firms (UPDATE) · audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · pachet_povestea (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) · users (UPDATE) — prin `pachete_api`, `repo_inceput`, `repo_main`*
 
 - [x] textul scris de contabil se păstrează cu autorul și momentul
 - textul nu conține cifre calculate de el — sau, dacă le conține, ele nu se confruntă cu cele din pachet, iar aia e o divergență posibilă
@@ -2715,7 +2725,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma · scrie in solicitari_client*
 
-*ce face: scrie solicitari_client (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_main`, `repo_portal`*
+*ce face: scrie solicitari_client (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): accounting_firms (UPDATE) · audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) · users (UPDATE) — prin `repo_inceput`, `repo_main`, `repo_portal`*
 
 - [x] **nu pot scrie verificarea fără să știu ce face cabinetul aici.** Răspunde la o solicitare? Creează una în numele clientului?
 - dacă creează în numele clientului, verifică că se distinge de una făcută de client — altfel istoricul devine ambiguu

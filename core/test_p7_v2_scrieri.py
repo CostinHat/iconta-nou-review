@@ -296,7 +296,12 @@ def test_numarul_de_instructiuni_se_conserva():
     #   repo_firma_profil.cui_firma (uc_tenants.spv_stare_firma) — 273a, starea SPV a firmei se citește pe CUI-ul ei; citire NOUĂ;
     #   repo_contabilitate.search_path_firma (uc_tenants.tenant_amortizare_restanta) — 281, amortizarea lunilor rămase în urmă se
     #     generează pe schema firmei; apel de CONTROL NOU.
-    assert _apeluri_catre_repository() == 332
+    # [lotul 7, 17.10.2026] 332 -> 334, cu apelurile numite (DECIZII „Comanda 7.2”):
+    #   repo_declaratii.numele_utilizatorului (uc_coada._cine) — 297 / 299, elementul înlocuit („Înlocuiește”, „Generează din nou”)
+    #     poartă motivul „Înlocuită de declarația generată din nou (<numele celui care a generat-o>)”; citire NOUĂ;
+    #   repo_declaratii.autorul_elementului (uc_coada.coada_depune) — 320, cine a pregătit declarația află că a depus-o altcineva
+    #     (notificarea „declarație depusă”); citire NOUĂ, după depunere, în afara tranzacției ei.
+    assert _apeluri_catre_repository() == 334
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

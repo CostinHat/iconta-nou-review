@@ -17,6 +17,7 @@ sys.path.insert(0, os.path.dirname(HERE))
 
 from playwright.sync_api import sync_playwright  # noqa: E402
 import w_auth  # noqa: E402
+from declaratie_tip import alege_tipul  # noqa: E402
 from vizual import axe_scan  # noqa: E402
 
 IESIRE = os.path.join(HERE, "proba_d212_contributii_ui.json")
@@ -27,7 +28,7 @@ def _formular(pg):
     w_auth.deschide_firma(pg)
     pg.click("#fa-declaratii")
     pg.wait_for_selector("#dec-tip", timeout=15000)
-    pg.select_option("#dec-tip", "d212")
+    alege_tipul(pg, "d212")
     pg.wait_for_timeout(500)
     pg.wait_for_selector("#dec-continua:not([disabled])", timeout=8000)
     pg.click("#dec-continua")

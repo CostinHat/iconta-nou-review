@@ -121,6 +121,20 @@ def separa_cui(lista_cui):
     return curatate, ignorate
 
 
+#: [deficiențele 303 + 317, comanda Costin 17.10.2026 7.2] ANAF care nu răspunde (aștepare peste `timeout`, conexiune căzută) nu e o
+#: eroare a aplicației: refuzul spune ce s-a întâmplat și ce faci, nu textul bibliotecii („HTTPSConnectionPool(...) Read timed out”).
+MESAJ_ANAF_NU_RASPUNDE = ("ANAF nu răspunde acum la verificarea CUI (serviciul lor n-a răspuns în 20 de secunde). Încearcă din nou peste "
+                          "un minut; până atunci poți completa datele de mână.")
+
+
+def mesaj_indisponibil(e):
+    """Textul refuzului pentru o verificare la ANAF care n-a reușit: ANAF a răspuns cu o eroare (codul ei), altfel n-a răspuns deloc
+    (timeout, conexiune căzută) — niciodată textul excepției."""
+    cod = getattr(getattr(e, "response", None), "status_code", None)
+    return ("ANAF a refuzat verificarea CUI (răspunsul serviciului: %s). Încearcă din nou peste un minut." % cod if cod
+            else MESAJ_ANAF_NU_RASPUNDE)
+
+
 def valideaza_cui(lista_cui, data_interogare=None):
     """Întoarce [{cui, denumire, platitor_tva, tva_data_inceput, stare, inactiv, gasit}], ordine păstrată."""
     azi = data_interogare or date.today().isoformat()

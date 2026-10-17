@@ -225,3 +225,14 @@ class _ConnCui:
     def fetchone(self):
         return ("RO55229657",)
 
+
+
+def test_307_clientul_nestabilit_in_romania_n_are_termen_spv():
+    """307 (comanda Costin 17.10.2026 7.2 pct.6, verificat la sursă): OUG 120/2021 art.10 alin.(1) — obligația e „în relația comercială
+    B2B, între persoane impozabile stabilite în România”, iar alin.(1^1) adaugă clientul „nestabilit, dar înregistrat în scopuri de TVA în
+    România”. F1A5 (client din Irlanda, cod de TVA irlandez) nu e în niciunul: fără obligație, fără termen. MUTAȚIE: `spv_obligatorie`
+    întors mereu True -> pică."""
+    from core import facturi_api as fa
+    assert fa.spv_obligatorie("IE", "IE9999999ZZ") is False   # cod sintetic, evident nereal
+    assert fa.spv_obligatorie("RO", "14399840") is True and fa.spv_obligatorie(None, None) is True
+    assert fa.spv_obligatorie("DE", "RO14399840") is True, "nestabilit, dar înregistrat în scopuri de TVA în România (alin.(1^1))"

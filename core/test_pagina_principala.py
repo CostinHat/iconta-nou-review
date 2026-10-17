@@ -44,7 +44,8 @@ def test_aceeasi_structura_fara_meniu_lateral(rol):
     """231: sub conținutul paginii, exact banda de salut și grila de carduri, la ambele roluri; niciun meniu lateral.
     MUTAȚIE: arborele asistentului readus -> structura are trei elemente și meniul lateral apare -> pică."""
     m = _proba()["roluri"][rol]
-    assert m["structura"] == ["cab-salut", "cab-grila"], m["structura"]
+    # [319 + 320] zona cardurilor de început (`inceput`) stă între banda de salut și grilă, cât timp are carduri nefăcute (DS cap.12b)
+    assert [x for x in m["structura"] if x != "inceput"] == ["cab-salut", "cab-grila"], m["structura"]
     assert m["meniu_lateral"] == 0, m["meniu_lateral"]
 
 
@@ -69,8 +70,9 @@ def test_cardul_control_un_rand_de_buline_fara_text(rol):
     assert c and c["lumini"] == ["rosu", "galben", "verde", "gri"], c
     assert c["randuri"] == 1, c
     assert re.fullmatch(r"\d+( \d+){3}", c["text"]), c["text"]                  # numai numerele, fără nume de stare
-    h = sorted(m["inaltimi_carduri"])
-    assert abs(c["h"] - h[len(h) // 2]) <= 1, (c["h"], m["inaltimi_carduri"])   # înălțimea celorlalte carduri
+    # înălțimea NATURALĂ (fără întinderea pe rând): rândul de lumini e cu ~2 px peste un rând de text; o listă adaugă un rând (~27 px)
+    h = sorted(m["inaltimi_naturale"])
+    assert abs(c["h"] - h[len(h) // 2]) <= 12, (c["h"], m["inaltimi_naturale"])   # înălțimea celorlalte carduri
 
 
 @pytest.mark.parametrize("rol", ROLURI)

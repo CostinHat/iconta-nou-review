@@ -61,11 +61,11 @@ Cheie API pentru autentificarea cererilor /api/v1/*; listare cu ultima folosire.
 ## Reguli fiscale
 Fără implicații fiscale (securitatea integrării)."
 Contabilii și asistenții cabinetului,"Lista asistenților cu roluri/permisiuni/firme, centralizator și jurnal, sumar calitate, detalii per actor (nivel/tipare/drift), setare patru-ochi, educație pe erori.",F006,cabinet,card Asistenti,core/asistenti_api.py,,LIVE,vizual,,"## Ce face
-Gestionează asistenții cabinetului: lista cu roluri, permisiuni și firme alocate, centralizator și jurnal, sumar de calitate, detalii pe fiecare asistent (nivel, greșeli tipice, cum a evoluat), setarea modului patru-ochi și educația pe erori.
+Gestionează asistenții cabinetului: lista cu roluri, permisiuni și firme alocate, centralizator și jurnal, sumar de calitate, detalii pe fiecare asistent (nivel, greșeli tipice, cum a evoluat), setarea validării în doi și educația pe erori.
 ## Unde apare / Cum se folosește
 O găsești în zona de administrare a cabinetului, unde adaugi asistenți, le dai acces la firme și le urmărești calitatea muncii.
 ## De reținut
-Modul patru-ochi impune verificarea unei a doua persoane; educația pe erori pornește de la greșelile reale ale fiecărui actor.
+Validarea în doi impune verificarea unei a doua persoane; educația pe erori pornește de la greșelile reale ale fiecărui actor.
 Drepturile, mereu doar pe firmele alocate asistentului: „Poate pregăti” = munca curentă (facturi, chitanțe, importuri, note în ciornă, pontaj, mijloace fixe, export SAGA/WinMentor, e-Transport, declarații de pregătit); „Poate valida” = validarea notelor și a declarațiilor, înregistrarea amortizării, închiderea lunii; „Poate depune” = depunerea la ANAF. Adăugarea și scoaterea firmelor, asistenții, cheile API, GDPR, datele cabinetului și deblocarea unei luni închise le face doar administratorul. Ce nu are voie un asistent nu i se afișează."
 Import asociați (migrare),"Citește .xlsx/.csv cu nume/CNP-CUI/cota %, mapare flexibilă, validare CNP, coerență cotelor (100%), import per firmă pentru D205. Data cesiunii (opțional, 02.10.2026): structura înlocuită se păstrează pentru dividendele distribuite înainte.",F007,firma,Migrare / Import date,core/asociati_import_api.py,Legea 31/1990 art.67 alin.(6),LIVE,,,"## Ce face
 Importă asociații dintr-un fișier .xlsx sau .csv (nume, CNP/CUI, cotă %), cu mapare flexibilă a coloanelor. Validează CNP-ul și verifică coerența cotelor (să însumeze 100%), pe fiecare firmă, pentru declarația D205.
@@ -256,7 +256,7 @@ Partener salvat în datele firmei, disponibil la facturare, solduri și reconcil
 ## Bun de știut
 Ține datele partenerului corecte de la început: se propagă automat pe facturi și în reconciliere. Verifică CUI-ul la ANAF înainte de a salva un partener nou."
 Coada de validare patru-ochi,"Fluxul declarațiilor: pregătită -> aprobată/respinsă (cu motiv) -> depusă (cu index SPV); tranziții de stare validate, hash pe payload, patru-ochi pe ID (pregătitorul nu aprobă), cronometru de efort (început_la).",F019,transversal,De validat / Declaratii,core/coada_api.py,,LIVE,403 dovedit pe self-approval,,"## Ce face
-Duce declarațiile printr-un flux controlat de stări: pregătită -> aprobată sau respinsă (cu motiv) -> depusă (cu index SPV). Fiecare trecere dintr-o stare în alta e verificată, conținutul declarației e sigilat (o modificare ulterioară se vede), iar regula patru-ochi se aplică pe ID: cine a pregătit declarația nu o poate aproba. Un cronometru de efort reține momentul de început.
+Duce declarațiile printr-un flux controlat de stări: pregătită -> aprobată sau respinsă (cu motiv) -> depusă (cu index SPV). Fiecare trecere dintr-o stare în alta e verificată, conținutul declarației e sigilat (o modificare ulterioară se vede), iar regula validării în doi se aplică pe ID: cine a pregătit declarația nu o poate aproba. Un cronometru de efort reține momentul de început.
 ## Când se folosește
 Pentru echipele în care o persoană pregătește și alta aprobă, ca să existe control și urmă clară înainte de depunere. Utilă oricărui birou contabil cu mai mulți operatori.
 ## Ce trebuie pregătit înainte
@@ -269,7 +269,7 @@ Pentru echipele în care o persoană pregătește și alta aprobă, ca să exist
 ## Ce iese la capăt
 Declarație cu istoric de stări, sigiliu de integritate și timp de efort măsurat.
 ## Greșeli frecvente
-- Încercarea de a aproba propria declarație este blocată de regula patru-ochi.
+- Încercarea de a aproba propria declarație este blocată de regula validării în doi.
 - Respingerea fără motiv nu e permisă.
 ## Bun de știut
 - Sigiliul semnalează dacă conținutul a fost modificat după pregătire."
@@ -622,19 +622,20 @@ Documentele firmei, pe luni, accesibile clientului în regim doar-citire.
 ## Bun de știut
 Apar doar lunile pentru care există documente generate. Dacă un client nu vede o lună, verifică întâi dacă balanța a fost produsă pentru perioada respectivă."
 Import e-Factura (UBL),"Parser pentru XML-urile e-Factura (UBL 2.1 / CIUS-RO): număr, data, scadență, părți, linii cu cote - facturile primite intra în aplicație fără retastare.",F043,firma,Facturi (import),core/efactura_import.py,CIUS-RO,LIVE,pytest (test_efactura_import.py),,"## Ce face
-Importul facturilor primite din e-Factura (format UBL/XML de la SPV): citește fișierul și creează ciorna de cheltuială, cu datele extrase (furnizor, sume, TVA), pentru validare de către contabil.
+Importul facturilor primite din e-Factura (format UBL/XML de la SPV): citește fișierul și pune factura în lista „Facturi primite din SPV”, cu datele extrase (furnizor, linii, sume, TVA). Importul nu scrie nicio notă: nota se scrie la validare, pe contul pe care îl confirmi tu — o cheltuială (ex. 628), sau marfă / materiale (371, 301, 302, 303) la o factură de aprovizionare.
 ## Când se folosește
-Când primești facturi prin SPV (e-Factura obligatorie B2B) și vrei să le înregistrezi automat, fără tastare manuală.
+Când primești facturi prin SPV (e-Factura obligatorie B2B) și vrei să le înregistrezi fără tastare manuală. Facturile se citesc singure din SPV când firma e conectată; fișierul îl încarci tu doar când îl ai separat.
 ## Ce trebuie pregătit înainte
-- Fișierul UBL/XML descărcat din SPV (sau fluxul automat de primire e-Factura).
+- Fișierul UBL/XML descărcat din SPV, sau conectarea firmei la SPV (citirea automată).
 ## Pas cu pas
-1. Import e-Factura -> încarcă fișierul UBL.
-2. Aplicația citește și arată datele (furnizor, cont sugerat, sume).
-3. Verifică și validează (patru-ochi) -> creează cheltuiala.
+1. „Importă XML UBL” -> alegi fișierul (sau factura vine singură din SPV).
+2. Deschizi factura din listă: aplicația arată datele și contul sugerat (cel folosit ultima dată pentru același furnizor).
+3. Confirmi contul. La o firmă cu gestiune de stoc, o factură de marfă pe 371 se leagă de NIR-ul furnizorului (sau alegi „altă livrare”), iar cantitățile intră în stoc.
+4. „Validează” -> nota intră în evidență; cu validarea în doi pornită, o aprobă un coleg.
 ## Ce iese la capăt
-Cheltuiala înregistrată din factura primită, legată de factură, cu contul confirmat de tine.
+Nota facturii primite, legată de factură, pe contul confirmat de tine: cheltuială, sau intrare de marfă / materiale în stoc.
 ## Greșeli frecvente
-- Validarea fără verificarea contului sugerat.
+- Validarea fără verificarea contului sugerat: la marfă, contul e 371 (cu NIR-ul), nu un cont de cheltuială.
 - Unele date nu se află în XML: dacă furnizorul e înregistrat în scopuri de TVA și, la taxarea inversă, categoria produsului (art.331). Factura le arată „de completat”, iar tu le completezi înainte de validare; D394 declară furnizorul și achiziția după ele. Cine a plătit factura (de exemplu un terț, în locul firmei) nu apare în XML și nici în D394.
 ## Reguli fiscale
 e-Factura obligatorie B2B (OUG 120/2021 și următoarele); structura CIUS-RO / UBL."
@@ -1924,7 +1925,7 @@ Facturile lunii contabilizate, rulajele 4426/4427 și datele necesare calculului
 3. Citești starea: verde, roșu sau gri.
 4. Când cauza e dovedită mecanic (facturi emise necontabilizate al căror TVA explică exact diferența), aplicația propune și execută remediul în nota ciornă; altfel indică ce să verifici.
 ## Ce iese la capăt
-Un verdict pe lună, cu cifrele divergenței și, când e cazul, nota ciornă de corecție (patru-ochi intact).
+Un verdict pe lună, cu cifrele divergenței și, când e cazul, nota ciornă de corecție (validarea în doi rămâne).
 ## Greșeli frecvente
 Compararea pe exigibilitate când baza e faptul generator; acceptarea stării gri ca fiind în regulă; ajustarea contului fără cauză dovedită.
 ## Reguli fiscale
@@ -1938,7 +1939,7 @@ Exportă facturile emise în formatul XML propriu al programului SAGA, ca să le
 ## Cum ajungi la ea
 Din ecranul principal → Facturi → Export SAGA (buton pe factură pentru XML individual, sau export pe lună)."
 Descărcarea stocului la emiterea facturii,"LIVE 18.07: poartă obligatorie 'Pleacă marfa acum? DA/NU' la emiterea facturii (firma cabinet CV cu linie de articol). DA -> descarcă gestiunea (mișcări_stoc legat prin factura_id, refolosește ieșire() existent, patru-ochi intact); NU -> factura pur fiscală. Elimină dublă introducere + deblochează profit-pe-produs (F144). Schema: articol_id pe factura_linii, factura_id pe mișcări_stoc. core/migrare_punte_stoc.py + stocuri_cv_api.descarcă_factura. Poartă DS = casetă-poartă v2.14.",F172,firma,Facturi > Emitere,core/stocuri_cv_api.py + core/facturi_api.py,,LIVE (18.07),functional real tenant_002 (DA stoc 100->97 legat factura_id; NU neatins; serviciu fara poarta; gratuit exclus),,"## Ce face
-La emiterea unei facturi cu linie de articol, întreabă printr-o poartă obligatorie „Pleacă marfa acum? DA/NU”. Dacă alegi DA, descarcă gestiunea automat (mișcare de stoc legată de factură, cu regula patru-ochi păstrată); dacă alegi NU, factura rămâne pur fiscală. Elimină dubla introducere și deblochează profitul pe produs.
+La emiterea unei facturi cu linie de articol, întreabă printr-o poartă obligatorie „Pleacă marfa acum? DA/NU”. Dacă alegi DA, descarcă gestiunea automat (mișcare de stoc legată de factură, cu regula validării în doi păstrată); dacă alegi NU, factura rămâne pur fiscală. Elimină dubla introducere și deblochează profitul pe produs.
 ## Cum ajungi la ea
 Din ecranul principal → Facturi → Emitere (poarta apare la emiterea facturii)."
 Conectarea la SPV (ANAF),"Auth OAuth server-side UNIC peste care stau e-Factura/e-Transport (F126/F160/F121) - construit o dată, cinci poziții un singur auth. authorize/token la logincert.anaf.ro/anaf-oauth2/v1/; token criptat Fernet în public.spv_token (access 90z / refresh 365z); rotație refresh (salvează AMBELE valori noi); stare per cabinet; funcția unică apel_anaf (401->refresh+retry, 429->backoff, 403->EroareSpvFaraDrept); sondaj empiric per-CIF -> spv_cui_acoperit (drept-ul se citește din TEXTUL răspunsului, nu din status). Un singur auth PER CABINET (accounting_firm_id = cabinetul logat, nu per firmă, nu hardcodat); conexiunea reală din UI (Setări -> Conectare SPV) cu certificatul cabinetului. VALIDAT cap-coada pe PRODUCȚIE 18.07 cu certificatul admin (token de dezvoltare, apoi context în ARHITECTURA_SPV.md): OAuth real -> token criptat -> decriptat -> apel_anaf pe TestOauth/hello (200) + listaMesajeFactura per-CIF (200 + verdict drept). RĂMAS înainte de cabinete reale: cron refresh 90z (spv_refresh.py + timer) = golul #1.",F176,transversal,Setari -> Conectare SPV,core/spv_conector.py + core/spv_rute.py,procedura OAuth ANAF (logincert.anaf.ro),LIVE (flux OAuth validat pe productie 18.07; features F126/F160/F121 peste el; ramane cron refresh 90z),test_spv_conector.py (12 mock) + validare reala productie 18.07 (hello 200; listaMesajeFactura per-CIF 200+eroare drept; token criptat/decriptat confirmat),,"## Ce face
@@ -1960,7 +1961,7 @@ Rulează automat în fundal (nu ai un ecran sau buton dedicat) — verifică sta
 ## De reținut
 Dacă o factură rămâne blocată în prelucrare peste prag, este marcată pentru verificare manuală, nu abandonată tacit."
 Cron receive e-Factura (facturi furnizori din SPV),"Jumătatea de PRIMIRE a F126: cron (spv-receive.timer, 30 min) care listează mesajele filtru=P (FACTURA PRIMITĂ) per tenant prin listaMesajeFactura, descarcă facturile NOI și le inserează CIORNĂ în efactura_primite. GARDURI (toate testate): reutilizează lista_mesaje/descarcă (apel_anaf pe PRINCIPAL, fără client paralel); DEDUP pe id_mesaj_anaf (pre-check + ON CONFLICT DO NOTHING, fereastră 2-3z suprapusă la 30 min); cif_beneficiar VALIDAT la insert (== CIF tenant, altfel SKIP + log anti-scurgere între chiriași, la nivel de insert nu de afișare); token expirat/mort -> apel_anaf refresh sau SKIP (auth-fail != eroare). MAȘINĂ DE STĂRI: descărcată (fallback neparsabil)/ciornă (parsată, prezentată) -> validată/respinsă DOAR prin four-eyes (om); factura_id NULL până la validare; NU auto-creează cheltuială (evidența doar din status=validată, filozofia control_încrucișat). Alimentează efactura_import existent, nu import paralel. Params listaMesajeFactura verificați la sursă oficială (ARHITECTURA_SPV.md).",F179,transversal,— (automat; cron 30 min),core/spv_receive.py + core/migrare_efactura_primite.py + config/spv-receive.service/.timer,,LIVE (18.07 - mecanism; import live pending drept),"4 teste (anti-scurgere cif_beneficiar, ciorna daca parsabila cu factura_id NULL, descarcata fallback neparsabil, dedup nu reimporta) + 23 teste SPV fara regresie; rulare reala prin stack (listaMesajeFactura prod filtru=P -> ANAF verdict fara drept, asteptat). RAMAS F126 complet: UI four-eyes (pasul 5). LIMITA: import live pending drept (ca F176)",,"## Ce face
-Aduce automat din SPV facturile primite de la furnizori: listează mesajele de tip factură primită pentru fiecare firmă, descarcă facturile noi și le introduce ca ciornă. Facturile primite nu creează automat cheltuieli — devin înregistrare validă doar după confirmarea unui om (regula patru-ochi).
+Aduce automat din SPV facturile primite de la furnizori: listează mesajele de tip factură primită pentru fiecare firmă, descarcă facturile noi și le introduce ca ciornă. Facturile primite nu creează automat cheltuieli — devin înregistrare validă doar după confirmarea unui om (regula validării în doi).
 ## Cum ajungi la ea
 Rulează automat în fundal (nu ai un ecran sau buton dedicat) — verifică la fiecare 30 de minute.
 ## De reținut
@@ -2668,7 +2669,7 @@ Propune nota de închidere a exercițiului la 31.12: veniturile și cheltuielile
 ## Ce trebuie să știi
 - Notele intră ca ciornă: nu sunt în evidență până nu le validezi.
 - O nouă cerere înlocuiește propunerea nevalidată; după validare, închide numai ce a rămas."
-Notificări pe canalul ales (email sau WhatsApp),"Fiecare notificare din clopoțel pleacă, după commit, pe canalul utilizatorului: email (implicit) sau WhatsApp (numărul confirmat cu un cod trimis pe WhatsApp + acordul pentru mesaje); afară pleacă eticheta tipului și linkul /deschide/<cheie>, fără textul notificării; WhatsApp nelivrat -> email. Superadminul primește notificare la fiecare cerere de import și sesizare (2.3) și la alertele legislative importante (2.6). Comanda Costin 17.10.2026, lotul 7.",F257,transversal,Setări cont -> Notificări; Panou Admin -> Notificări; registrul de înregistrare (telefon opțional),core/notificari.py + core/whatsapp.py + core/uc_cont_notificari.py + core/migrare_canal_notificari.py,,PARTIAL,core/test_notificari_canal.py + e2e frontend_test/e2e/e2e_lot7.py,,"## Ce face
+Notificări pe canalul ales (email sau WhatsApp),"Fiecare notificare din clopoțel pleacă, după commit, pe canalul utilizatorului: email (implicit) sau WhatsApp (numărul confirmat cu un cod trimis pe WhatsApp + acordul pentru mesaje); afară pleacă eticheta tipului și linkul /deschide/<cheie>, fără textul notificării; WhatsApp nelivrat -> email. Superadminul primește notificare la fiecare cerere de import și sesizare (2.3) și la alertele legislative importante (2.6). Comanda Costin 17.10.2026, lotul 7.",F257,transversal,Setări cont -> Notificări; Panou Admin -> Notificări; registrul de înregistrare (telefon opțional),core/notificari.py + core/whatsapp.py + core/uc_cont_notificari.py + core/migrare_canal_notificari.py,,PARTIAL (WhatsApp așteaptă cheile Meta — lotul 8; emailul pleacă),core/test_notificari_canal.py + e2e frontend_test/e2e/e2e_lot7.py,,"## Ce face
 Notificările din clopoțel îți vin și în afara aplicației, pe canalul ales: email (implicit) sau WhatsApp. Mesajul e scurt, fără date fiscale, cu linkul spre locul din aplicație.
 
 ## Cum se folosește
@@ -2682,5 +2683,25 @@ Notificările din clopoțel îți vin și în afara aplicației, pe canalul ales
 - Confirmarea contului, resetarea parolei și linkul de logare vin mereu pe email.
 - Dacă WhatsApp nu livrează un mesaj, notificarea pleacă pe email.
 - Un număr nou se confirmă din nou; până atunci notificările vin pe email."
-Emailurile tranzacționale pe Postmark,"Confirmarea contului, resetarea parolei și linkul de logare pleacă prin Postmark (fluxul tranzacțional „outbound”, fără antetele de dezabonare — 268) când serverul are tokenul Postmark; până atunci pe Brevo. Comanda Costin 17.10.2026, lotul 7 pct.2.5.",F258,transversal,— (automat),"core/observare.py (_trimite_postmark, trimite_email_html postmark=True)",,PARTIAL,core/test_notificari_canal.py,,
+Emailurile tranzacționale pe Postmark,"Confirmarea contului, resetarea parolei și linkul de logare pleacă prin Postmark (fluxul tranzacțional „outbound”, fără antetele de dezabonare — 268) când serverul are tokenul Postmark; până atunci pe Brevo. Comanda Costin 17.10.2026, lotul 7 pct.2.5.",F258,transversal,— (automat),"core/observare.py (_trimite_postmark, trimite_email_html postmark=True)",,PARTIAL (așteaptă tokenul Postmark — lotul 8; până atunci Brevo),core/test_notificari_canal.py,,
 Adresele retrase (410) și exportul Search Console,"Adresele de la rădăcină culese de Google care n-au existat ca pagini răspund 410; unealta scripts/search_console.py clasifică un export Search Console (404 -> 301 spre ghidul cel mai apropiat / 410; neindexate -> grupurile de ghiduri suprapuse). Comanda Costin 17.10.2026, lotul 7 pct.2.7.",F259,admin,— (site public),main.py (ADRESE_RETRASE) + scripts/search_console.py,,PARTIAL,core/test_notificari_canal.py::test_rutele_publice_ale_lotului,,
+Cardurile de început (primii pași) și prima intrare,"Fiecare actor are cardurile lui pe pagina principală: administratorul cabinetului cei trei pași (adu firmele din aplicația veche, leagă contul de ANAF și alege notificările, adaugă echipa), cu textul aprobat de Costin; asistentul Setări cont și firmele lui cu drepturile; clientul din portal cum află noutățile. Cardul se bifează singur numai când pasul e făcut în ecranul real; nu se închide; când toate sunt făcute dispar, iar „?” le păstrează. La prima intrare, telefonul, canalul și bifele de notificări sunt obligatorii. Comanda Costin 17.10.2026 7.2, deficiențele 319 + 320.",F260,transversal,pagina principală (Primii pași); portalul clientului; ecranul „Înainte de a începe”; „?” -> Primii pași,core/uc_inceput.py + core/repo_inceput.py + static/js/ecrane/inceput.js,,LIVE,core/test_319_320_inceput.py + e2e frontend_test/e2e/e2e_lot72_cont.py,,"## Ce face
+Pe pagina principală, „Primii pași”: cardurile care te duc, pe rând, în ecranele în care pornești lucrul. Fiecare card se bifează singur când ai făcut pasul acolo.
+
+## Cum se folosește
+1. Citește cardul și apasă butonul lui: se deschide ecranul real.
+2. Fă pasul acolo (de exemplu importul firmelor, conectarea SPV, invitarea unui coleg).
+3. Cardul devine verde. Când toate sunt verzi, dispar; le regăsești la „?”, sus, la „Primii pași”.
+
+## De știut
+La prima intrare îți pui numărul de telefon, canalul (email sau WhatsApp) și alegerile de notificări: fără ele nu intri în aplicație (conturile create după 17.10.2026; cele existente intră direct, cu notificările implicite). Le schimbi oricând din Setări cont → Notificări."
+Notificările pe tipuri (ce primești pe WhatsApp / email),"În Setări cont → Notificări, toate tipurile de notificări ale aplicației, grupate (Termene și declarații, Facturi și SPV, Validări, Clienți, Cont și echipă), fiecare cu un rând despre ce face aplicația; fiecare vede doar tipurile care îl privesc după drepturi; termenele și validările vin bifate din oficiu; emailurile contului nu sunt în listă și pleacă mereu. Bifele decid doar ce pleacă pe WhatsApp / email; clopoțelul arată tot. Noi: termenele de peste trei zile, facturile primite din SPV, depunerea de către un coleg, activarea asistentului, raportul lunar și mesajele cabinetului pentru client. Comanda Costin 17.10.2026 7.2, deficiența 320.",F261,transversal,Setări cont -> Notificări; portalul clientului (clopoțelul),"core/notificari.py (TIPURI, lista_pentru, dorit) + core/notificari_termene.py + core/uc_cont_notificari.py",,LIVE,core/test_317_320_alerta_notificari.py + e2e frontend_test/e2e/e2e_lot72_cont.py,,"## Ce face
+Alegi ce notificări îți vin pe canalul ales (email sau WhatsApp). În aplicație, clopoțelul le arată pe toate.
+
+## Cum se folosește
+1. Setări cont → Notificări.
+2. Bifează, pe grupe, ce vrei să primești; fiecare rând spune ce face aplicația acolo.
+3. Apasă Salvează.
+
+## De știut
+Termenele și validările sunt bifate din oficiu. Confirmarea contului, resetarea parolei și linkul de logare vin mereu pe email."

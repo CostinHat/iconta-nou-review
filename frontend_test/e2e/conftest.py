@@ -32,14 +32,24 @@ def _db():
     return db
 
 
-def sesiune(email):
-    """Scriptul care pune tokenul unui cont de TEST în sessionStorage (pe drumul aplicației: `sesiune_pentru_user`)."""
+#: [deficiența 320] numărul de telefon al conturilor de TEST (sintetic: prefixul +40 și cifre de umplutură, nu al cuiva)
+TELEFON_TEST = "+40700000000"
+
+
+def sesiune(email, prima_intrare=False):
+    """Scriptul care pune tokenul unui cont de TEST în sessionStorage (pe drumul aplicației: `sesiune_pentru_user`).
+    [320] Contul de test a trecut de prima intrare (telefonul și notificările salvate), ca pașii testului să înceapă pe pagina principală;
+    `prima_intrare=True` lasă contul cum e (testul primei intrări)."""
     from core import auth_api
     db = _db()
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT id FROM public.users WHERE email=%s", (email,))
             u = cur.fetchone()
+            if u and not prima_intrare:
+                cur.execute("UPDATE public.users SET telefon = COALESCE(telefon, %s), notificari_salvate_la = COALESCE(notificari_salvate_la, "
+                            "now()) WHERE id = %s", (TELEFON_TEST, u[0]))
+                conn.commit()
         s = auth_api.sesiune_pentru_user(conn, u[0]) if u else None
         conn.rollback()
     assert s and s.get("ok"), "contul de test %s nu e disponibil" % email
@@ -58,11 +68,12 @@ def sql(q, p=()):
 
 
 def nr_crt(schema, nid):
-    """[258] Cum vede contabilul nota `nid` în Registrul jurnal: „nr. crt. N din ZZ.LL.AAAA” — numărul curent pe anul notei, după
-    (data, id), orice stare (aceeași numerotare ca `repo_contabilitate.jurnal_pe_an`), calculat AICI, independent de `eticheta_nota`."""
-    nr, data = sql('SELECT x.nr, x.data FROM (SELECT i.id, i.data, ROW_NUMBER() OVER (ORDER BY i.data, i.id) AS nr FROM "%s".inregistrari i '
-                   'JOIN "%s".inregistrari n ON n.id = %%s AND date_trunc(\'year\', i.data) = date_trunc(\'year\', n.data)) x '
-                   'WHERE x.id = %%s' % (schema, schema), (nid, nid))[0]
+    """[258] Cum vede contabilul nota `nid` în Registrul jurnal: „nr. crt. N din ZZ.LL.AAAA”. [302, 17.10.2026] numărul e cel PĂSTRAT,
+    dat la validare (`registru_jurnal_numere`), citit AICI, independent de `eticheta_nota`; nota nevalidată n-are număr: „din ZZ.LL.AAAA”."""
+    nr, data, stare = sql('SELECT r.nr_curent, i.data, i.status FROM "%s".inregistrari i LEFT JOIN "%s".registru_jurnal_numere r '
+                          'ON r.inregistrare_id = i.id WHERE i.id = %%s' % (schema, schema), (nid,))[0]
+    if nr is None:
+        return "din %s" % data.strftime("%d.%m.%Y")
     return "nr. crt. %d din %s" % (nr, data.strftime("%d.%m.%Y"))
 
 
@@ -167,6 +178,8 @@ def cui_cu_control(baza8):
 
 
 from curatenie import PREFIX_FIRMA  # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # frontend_test/: ajutătoarele comune plasei și uneltelor
+from declaratie_tip import alege_tipul  # noqa: E402,F401 — tipul declarației se alege numai prin el (core/test_e2e_perioada.py)
 
 
 def _scoate_firmele_e2e(tenant_id=None):

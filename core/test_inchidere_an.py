@@ -250,8 +250,8 @@ def test_def_243_anul_neincheiat_nu_se_propune_si_nu_se_valideaza(cur):
     nid = _ciorna_inchidere(cur, an, [("704", "121", D(1000)), ("121", "628", D(200))])
     r = jurnal_api.valideaza(cur.connection, _SCHEMA, nid)
     assert r.get("cod") == "INCHIDERE_NEVALIDABILA" and r["eroare"].startswith(   # [258] Nr. crt. din jurnal, nu id-ul
-        "Nota de închidere nr. crt. %d din 31.12.%d nu se validează înainte de 31.12.%d: până la sfârșitul anului"
-        % (dict(_nr_curent(cur, an))[nid], an, an)), r
+        "Nota de închidere din 31.12.%d nu se validează înainte de 31.12.%d: până la sfârșitul anului"   # [302] ciorna n-are nr.
+        % (an, an)), r
     cur.execute("SELECT status FROM inregistrari WHERE id = %s", (nid,))
     assert cur.fetchone()["status"] == "ciorna"
     with pytest.raises(b.BilantOprit) as e:
@@ -271,8 +271,8 @@ def test_def_243_nota_care_nu_mai_corespunde_soldurilor_nu_se_valideaza(cur):
     _nota(cur, datetime.date(2025, 11, 30), "4111", "704", D(500))
     assert ia.ciorne(cur, _SCHEMA, 2025)["la_zi"] is False
     rv = jurnal_api.valideaza(cur.connection, _SCHEMA, inch["id"])
-    assert rv.get("eroare", "").startswith("Nota de închidere nr. crt. %d din 31.12.2025 nu mai corespunde soldurilor de la 31.12.2025"
-                                           % dict(_nr_curent(cur, 2025))[inch["id"]]), rv   # [258] Nr. crt. din jurnal, nu id-ul
+    assert rv.get("eroare", "").startswith("Nota de închidere din 31.12.2025 nu mai corespunde soldurilor de la 31.12.2025"
+                                           ), rv   # [258] cum o numește Registrul jurnal, nu id-ul; [302] ciorna n-are număr
     assert jurnal_api.valideaza(cur.connection, _SCHEMA, tva["id"]) == {"ok": True}
     with pytest.raises(b.BilantOprit) as e:
         ba.coloanele(cur, _SCHEMA, "s1005", 2025, [])
@@ -296,10 +296,10 @@ def test_def_244_dupa_propunere_motivul_e_validarea_notelor(cur):
         ba.coloanele(cur, _SCHEMA, "s1005", 2025, [])
     m = str(e.value)
     # [258] notele numite cum le arată Registrul jurnal („nr. crt. N din 31.12.2025”, numerotarea `jurnal_pe_an`), nu prin id-ul intern
-    nr = {i: n for i, n in _nr_curent(cur, 2025)}
-    assert m == ("Notele de închidere propuse așteaptă validarea: Regularizarea TVA la 31.12.2025 (nota nr. crt. %d din 31.12.2025); "
-                 "Închiderea conturilor de venituri și cheltuieli în 121 la 31.12.2025 (nota nr. crt. %d din 31.12.2025). Se validează în "
-                 "Registrul jurnal, luna decembrie 2025; apoi generează bilanțul." % tuple(nr[n["id"]] for n in r["note"])), m
+    # [302] notele propuse sunt ciorne: n-au număr până la validare
+    assert m == ("Notele de închidere propuse așteaptă validarea: Regularizarea TVA la 31.12.2025 — nota din 31.12.2025; "
+                 "Închiderea conturilor de venituri și cheltuieli în 121 la 31.12.2025 — nota din 31.12.2025. Se validează în "
+                 "Registrul jurnal, luna decembrie 2025; apoi generează bilanțul."), m
     assert [(p["an"], p["luna"], [n["id"] for n in p["note"]], p["la_zi"]) for p in e.value.propuse] == [
         (2025, 12, [n["id"] for n in r["note"]], True)]
     assert e.value.ani_inchidere == [] and "închide clasele 6/7" not in m

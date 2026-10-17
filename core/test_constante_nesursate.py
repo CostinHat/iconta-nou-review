@@ -102,6 +102,11 @@ BASELINE = {
     # `LIMITA_RANDURI = 500` — cate randuri arata o sectiune din „Din ce e facuta declaratia” inainte sa se taie (si sa spuna ca s-a
     # taiat). Operational, nu fiscal; nu e nimic de citat.
     "declaratii_componente.py": 1,
+    # [17.10.2026, comanda 7.2] OPERAȚIONALE, nu fiscale (nimic de citat): `notificari_termene.ZILE_INAINTE = 3` (cu câte zile înaintea
+    # termenului vine notificarea) și `ORA = 8` (ora după care rulează, o dată pe zi); `uc_coada.MAX_NUMITE = 8` (câte documente nevalidate
+    # se numesc într-un mesaj, restul se numără) și `MAX_APROBARI_DEODATA = 200` (de dinainte: câte elemente se validează într-o cerere),
+    # devenit vizibil când textele noi ale cozii au urcat densitatea de vocabular fiscal a modulului peste `PRAG_SEMNAL`.
+    "notificari_termene.py": 2, "uc_coada.py": 2,
     # COBORAT 01.10.2026 (Pachet FiscalOS §2): constantele ancorate cu `common.ancoreaza(..., Temei(...))`
     # - casa 6->0 (7 plafoane Legea 70/2015, inclusiv PLAFON_PLATA_CC_TOTAL nou din §3), d101 6->5 (COTA_STANDARD,
     # CF art.17), d101g 1->0, salarizare 18->17 (PRAG_VENIT_DEDUCERE, CF art.77 alin.3). Clasa E (temei in proza)

@@ -140,6 +140,25 @@ _NEAP_FORMA_SIMPLA = {
 }
 
 
+# [deficiența 301, comanda Costin 17.10.2026 7.2 pct.4, verbatim în DECIZII] „«Alte declarații» pliată, deschisă doar la cerere, numai
+# declarațiile pe care un SRL le poate datora.” Declarațiile de mai jos le depune o PERSOANĂ FIZICĂ (sau asocierea / notarul), niciodată
+# o persoană juridică — denumirea fiecăreia, din antetul generatorului ei (`core/dNNN.py`). Pentru o persoană juridică ies din selector și
+# generarea lor e refuzată; la PFA (partidă simplă) rămân.
+_NEAP_PERSOANA_JURIDICA = {t: "%s nu se depune de o persoană juridică — e declarația %s." % (t.upper(), cine) for t, cine in (
+    ("d200", "persoanelor fizice pentru veniturile realizate din România"),
+    ("d201", "persoanelor fizice pentru veniturile realizate din străinătate"),
+    ("d204", "asocierilor fără personalitate juridică (venitul anual distribuit pe asociați)"),
+    ("d208", "notarilor (impozitul pe transferul proprietăților imobiliare din patrimoniul personal)"),
+    ("d212", "unică a persoanelor fizice (impozitul pe venit și contribuțiile sociale)"),
+    ("d216", "persoanelor fizice pentru impozitul special pe bunurile de valoare mare"),
+    ("d221", "persoanelor fizice (sau a asocierilor lor) pentru veniturile agricole pe norme de venit"),
+    ("d223", "asocierilor fără personalitate juridică (venitul estimat)"),
+    ("d230", "persoanelor fizice pentru redirecționarea a până la 3,5% din impozitul pe venit"),
+    ("d600", "persoanelor fizice pentru venitul estimat (CAS / CASS)"),
+    ("d603", "persoanelor fizice pentru exceptarea de la plata CASS"),
+)}
+
+
 def neaplicabile_forma(tip_firma):
     """Declaratiile NEaplicabile PRIN FORMA pentru o firma cu acest tip_firma (independent de fereastra/fapt).
     Partida simpla (PFA/II/PFL) -> D100/D101/D406 (declaratii de persoana juridica); {} pentru persoane
@@ -147,7 +166,7 @@ def neaplicabile_forma(tip_firma):
     Refolosit de obligatii_datorate (semafor+termene) SI de declaratii_api (selector + poarta backend).
     O mapare (_NEAP_FORMA_SIMPLA), trei consumatori. Vezi DECIZII 23.07."""
     from core.migrare_api import regim_contabil
-    return dict(_NEAP_FORMA_SIMPLA) if regim_contabil(tip_firma) == "simpla" else {}
+    return dict(_NEAP_FORMA_SIMPLA) if regim_contabil(tip_firma) == "simpla" else dict(_NEAP_PERSOANA_JURIDICA)   # [301]
 
 
 def neaplicabile_selector(vector, *, ic_fapt=None):
@@ -232,7 +251,7 @@ def ic_fapt_din_db(conn, schema, an):
 
     from core import control_incrucisat as _ci
     try:
-        fic = _ci.facturi_ic(conn, schema, _dt.date(an - 1, 1, 1), _dt.date(an + 1, 1, 1))
+        fic = _ci.facturi_ic(conn, schema, _dt.date(an - 1, 1, 1), _dt.date(an + 1, 1, 1), cu_servicii=True)   # [300] și serviciile
         if any(fic.get(k) for k in ("primita", "emisa")):
             return True
         for a in (an - 1, an):

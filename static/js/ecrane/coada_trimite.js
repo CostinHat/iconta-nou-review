@@ -19,6 +19,21 @@ export function casetaTrimisa(tip, perioada, cine, titlu = "Trimisă în coada d
     </div>`;
 }
 
+// [deficiența 313, comanda Costin 17.10.2026 7.2] „butonul se numește «Trimite în coadă» și pentru cine depune direct”: numele urmează
+// pasul real — aceeași regulă ca `uc_coada.pas_urmator` (validarea în doi efectivă -> la validare; altfel cine are «Poate depune» o depune
+// el, din „De depus”; altfel o depune un coleg). Eticheta se ține pe buton (`data-eticheta`), ca ecranul s-o pună la loc după „Se trimite…”.
+export const ETICHETE_TRIMITERE = { validare: "Trimite la validare →", depunere: "Pune în „De depus” →", altcineva: "Trimite spre depunere →" };
+export async function etichetaTrimitere(btn) {
+  if (!btn) return;
+  try {
+    const [po, perm] = await Promise.all([api.get("/eu/patru-ochi"), api.get("/eu/permisiuni")]);
+    const e = (po && po.efectiv) ? ETICHETE_TRIMITERE.validare : (perm && perm.poate_depune) ? ETICHETE_TRIMITERE.depunere
+      : ETICHETE_TRIMITERE.altcineva;
+    btn.dataset.eticheta = e;
+    if (!btn.disabled) btn.textContent = e;
+  } catch { /* eticheta veche rămâne: trimiterea funcționează la fel */ }
+}
+
 export async function trimiteInCoada(zona, body, laSucces, confirmare) {
   const corp = Object.assign({}, body);
   if (confirmare) corp.motiv_trecere = confirmare;
@@ -27,7 +42,10 @@ export async function trimiteInCoada(zona, body, laSucces, confirmare) {
     laSucces(r);
     // [08.10.2026, decizia Costin §6 pct.7 — R36] ciornele perioadei nu opresc coada: avertismentul porții se arată după intrare
     // (ecranul care se redesenează la succes îl arată el, din `r`; aici numai dacă zona a rămas pe ecran)
-    if (zona.isConnected && r && (r.avertismente_poarta || []).length) arataMesaj(zona, r.avertismente_poarta.join(" "), "avert");
+    if (zona.isConnected && r && (r.avertismente_poarta || []).length) {
+      arataMesaj(zona, r.avertismente_poarta.join(" "), "avert");
+      if ((r.surse_note || []).length) legaturiNote(zona, body.tenant_id, r.surse_note);
+    }
     return r;
   } catch (e) {
     const det = (e && e.detaliu && typeof e.detaliu === "object") ? e.detaliu : {};
@@ -45,6 +63,22 @@ export async function trimiteInCoada(zona, body, laSucces, confirmare) {
       aduInVedere(zona);
       return null;
     }
+    if (det.cod === "DEJA_IN_COADA") {
+      // [deficiența 299, comanda Costin 17.10.2026 7.2] refuzul spune perioada declarată, cine a pregătit-o și dă drumul: deschide
+      // declarația existentă sau înlocuiește-o cu cea generată acum; mesajul rămâne pe ecran până la alegere
+      arataMesaj(zona, det.mesaj, "eroare");
+      if (det.coada_id) {
+        const b = document.createElement("div");
+        b.className = "coada-deja";
+        b.innerHTML = `<button type="button" class="buton-secundar" id="coada-deja-deschide">Deschide declarația existentă</button>
+          <button type="button" class="buton-primar" id="coada-deja-inlocuieste" data-actiune="POST /coada">Înlocuiește</button>`;
+        zona.appendChild(b);
+        b.querySelector("#coada-deja-deschide").addEventListener("click", () => deschideInCoada(det.coada_id));
+        b.querySelector("#coada-deja-inlocuieste").addEventListener("click", () =>
+          trimiteInCoada(zona, Object.assign({}, body, { inlocuieste: det.coada_id }), laSucces, confirmare));
+      }
+      return null;
+    }
     const text = (typeof (e && e.mesaj) === "string" && e.mesaj) || det.mesaj || "Nu s-a putut trimite în coadă.";
     arataMesaj(zona, text + (det.erori ? " — " + det.erori : ""), "eroare");
     if ((det.note || []).length) legaturiNote(zona, body.tenant_id, det.note);
@@ -54,7 +88,13 @@ export async function trimiteInCoada(zona, body, laSucces, confirmare) {
 
 // [deficiența 284] refuzul porții TVA numește notele nevalidate care explică diferența: fiecare are butonul ei spre Registrul jurnal, în
 // luna notei, cu nota evidențiată (același drum ca legătura „jurnal:” din notificări). Ecranul declarației rămâne dedesubt.
-function legaturiNote(zona, tenantId, note) {
+export async function deschideInCoada(coadaId) {
+  if (!window._navGlobal) return;
+  const { randeazaValidat } = await import("./validat.js?v=b5512c4e72");
+  window._navGlobal.deschide("Coada de validare și depunere", (corp, nn) => randeazaValidat(corp, nn, { evidentiaza: coadaId }), { nivel: "cabinet" });
+}
+
+export function legaturiNote(zona, tenantId, note) {
   const lista = document.createElement("div");
   lista.className = "coada-note-refuz";
   lista.innerHTML = note.map((n, i) => `<button type="button" class="buton-secundar" data-nota="${i}">Deschide nota ${esc(n.eticheta)}</button>`).join(" ");
@@ -62,7 +102,7 @@ function legaturiNote(zona, tenantId, note) {
   lista.querySelectorAll("[data-nota]").forEach((b) => b.addEventListener("click", async () => {
     const n = note[parseInt(b.dataset.nota, 10)];
     const [an, luna] = n.data.split("-").map((x) => parseInt(x, 10));
-    const { ecranJurnal } = await import("./firme.js?v=d921e045d9");
+    const { ecranJurnal } = await import("./firme.js?v=32be4e4af7");
     const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tenantId);
     if (!t || !window._navGlobal) return;
     window._navGlobal.deschide(`Registru jurnal · ${t.nume}`, (corp, nn) => ecranJurnal(corp, nn, t, { evidentiaza: n.nota_id, an, luna }));

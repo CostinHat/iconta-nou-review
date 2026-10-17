@@ -197,7 +197,13 @@ def _pregateste_poveste(m, monkeypatch, conn, cade=False):
     postas = _Postas()
     monkeypatch.setattr(_uc_comun, "_cere_perioada", lambda an, luna: None)
     monkeypatch.setattr(_uc_comun, "_pachet_schema", lambda ctx, tid: "tenant_001")
-    monkeypatch.setattr(_uc_pachete.db, "get_conn", _conn_fals(conn, cade))
+    # [deficiența 314] ruta deschide și conexiunea firmei (citește cifrele lunii pentru amprenta aprobării): una separată, numai de
+    # citire — contractul commit -> email e pe conexiunea publică, în care se scrie povestea
+    _public = _conn_fals(conn, cade)
+    monkeypatch.setattr(_uc_pachete.db, "get_conn",
+                        lambda schema=None, *a, **k: _conn_fals(_Conn())() if schema else _public())
+    monkeypatch.setattr(_uc_pachete._pachete, "rezumat_luna", lambda *a, **k: {})
+    monkeypatch.setattr(_uc_comun, "_notifica_clientii", lambda *a, **k: False)   # [320] notificarea clienților: `test_317_320_*`
     # [deficiența 288] verificarea textului de dinaintea aprobării își are testul ei (`test_288_povestea_lunii`); aici contractul e
     # commit -> email
     monkeypatch.setattr(_uc_pachete, "verifica_textul_aprobat", lambda *a, **k: None)

@@ -29,18 +29,17 @@ def firma_258():
 
 
 def test_def_258_motivul_numeste_nota_prin_nr_crt_de_pe_card_nu_prin_id(asistent, firma_258):
-    """258. Registru jurnal, ca Ana Asistent, pe ciorna contabilului-șef: motivul spune „Nota nr. crt. N din ZZ.LL.AAAA e ciorna lui …”,
-    N e același cu „Nr. crt. N” de pe cardul notei, iar id-ul intern nu apare nicăieri pe rând. Ca numărul curent să difere de id, o
-    primă notă a contabilului-șef se scrie și se șterge (id-ul ei rămâne consumat). Cererea directă de editare primește același text
-    de la server (triggerul din bază), cu aceeași etichetă."""
+    """258. Registru jurnal, ca Ana Asistent, pe ciorna contabilului-șef: motivul numește nota cum o arată cardul ei, iar id-ul intern nu
+    apare nicăieri pe rând. [302, 17.10.2026] Ciorna n-are încă număr curent (îl primește la validare): cardul începe cu data, iar
+    motivul spune „Nota din ZZ.LL.AAAA e ciorna lui …” — fără „Nr. crt.” și fără id. Ca id-ul să nu poată trece drept număr, o primă
+    notă a contabilului-șef se scrie și se șterge (id-ul ei rămâne consumat). Cererea directă de editare primește același text de la
+    server (triggerul din bază), cu aceeași etichetă."""
     tid = firma_258["tenant_id"]
     aruncata = _nota(PATRON, tid, "Nota scoasă D258")
     st, r = _api(PATRON, "DELETE", "/tenants/%d/jurnal/%d" % (tid, aruncata))
     assert st == 200, (st, r)
     nid = _nota(PATRON, tid, "Ciorna contabilului-șef D258")
-    eticheta = nr_crt(firma_258["schema"], nid)      # „nr. crt. N din ZZ.LL.AAAA”, numărat independent de aplicație
-    nr = int(eticheta.split()[2])
-    assert nr != nid, (nr, nid)                      # altfel proba n-ar deosebi numărul curent de id
+    eticheta = nr_crt(firma_258["schema"], nid)      # citit independent de aplicație; ciorna: „din ZZ.LL.AAAA”
     _jurnal(asistent, firma_258)
     rand = asistent.pg.evaluate("""(i) => { const r = document.querySelector(`.fereastra:last-of-type [data-nota-id='${i}']`);
         const m = r && r.querySelector('.jn-a-altuia'), t = r && r.querySelector('.pf-frand-nume');
@@ -48,9 +47,10 @@ def test_def_258_motivul_numeste_nota_prin_nr_crt_de_pe_card_nu_prin_id(asistent
     asistent.captura()
     azi = datetime.date.today().strftime("%d.%m.%Y")
     nume = _nume(PATRON)
-    assert re.findall(r"^Nr\. crt\. (\d+) · (\d\d\.\d\d\.\d{4})", rand["card"]) == [(str(nr), azi)], rand
+    assert eticheta == "din %s" % azi, eticheta
+    assert re.findall(r"^(\d\d\.\d\d\.\d{4}) · ", rand["card"]) == [azi] and "Nr. crt." not in rand["card"], rand
     assert rand["motiv"] == _dr.MESAJ_CIORNA_ALTUI % (eticheta, nume, nume), rand
-    assert re.findall(r"^Nota nr\. crt\. (\d+) din ", rand["motiv"]) == [str(nr)], rand
+    assert re.findall(r"^Nota din (\d\d\.\d\d\.\d{4}) ", rand["motiv"]) == [azi], rand
     assert re.findall(r"#\d+", rand["tot"]) == [], rand            # numărul intern nu se afișează nicăieri pe rând
     st, r = _api(ASISTENT, "PUT", "/tenants/%d/jurnal/%d" % (tid, nid), {"descriere": "schimbată de Ana"})
     assert (st, (r or {}).get("detail")) == (403, rand["motiv"]), (st, r)
