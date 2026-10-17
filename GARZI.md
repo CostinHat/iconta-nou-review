@@ -11214,3 +11214,9 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | C47 cifrele F1–F5 pe schema de DUPĂ publicare | `scripts/cifre_referinta.py` (`baza_masurata`, `copie_migrata`) + `core/test_cifre_referinta_poarta.py` (4 noi) | o diferență de cifre făcută de ordinea pașilor (cod nou pe producția nemigrată); copia producției lăsată pe disc / în server | `if not lipsa:` -> `if True:`; `pr._sterge(BAZA_COPIE)` scos din `finally` -> ROȘU | o migrare care pică pe copie oprește poarta (fail-closed): se vede, nu se ocolește |
 | C45 nicio migrare nouă nu scrie în notele contabile | `core/test_migrari_registru.py::test_nicio_migrare_noua_nu_scrie_in_notele_contabile` | o migrare care modifică / șterge / inserează note (`inregistrari`, `inregistrari_linii`) — o notă se corectează numai prin stornare | UPDATE-ul repus în `migrare_casa_avans._DDL` -> ROȘU | SQL construit prin concatenare de fragmente fără numele tabelului întreg nu e prins; cele trei migrări istorice (deja rulate) numite cu motivul |
 | C46 gărzile de arbore în rularea țintită | `scripts/perimetru.py::garzi_de_arbore` + `core/test_perimetru.py::test_garzile_de_arbore_intra_la_orice_py_atins` | un test atins care urcă un clichet al unei gărzi de arbore fără ca rularea țintită s-o aleagă | `| garzi_de_arbore()` scos din `nivel_subsistem` -> ROȘU | testele care parcurg arborele fără un `scan_*` (le vede poarta lotului) |
+
+## 17.10.2026 — poarta 2 a lotului 6: C46 lărgită
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| gărzile care parcurg depozitul direct, în rularea țintită | `scripts/perimetru.py::_ENUMERA_ARBORE` + `core/test_perimetru.py::test_garzile_de_arbore_intra_la_orice_py_atins` | o gardă de tip `git ls-files` / glob pe `core/` nealeasă de rularea țintită (garda de secrete, a mesajelor afișabile — poarta 2) | `_ENUMERA_ARBORE` scos din `garzi_de_arbore` -> ROȘU | o parcurgere scrisă altfel decât tiparul |

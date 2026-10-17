@@ -52,6 +52,9 @@ _PERMISE = {
     ("core/mediu_test.py", "SIR_CONEXIUNE_CU_PAROLA"): (1, "docstring: forma `user:parola@host`, fără valori"),
     ("core/test_izolare_productie.py", "SIR_CONEXIUNE_CU_PAROLA"): (4, "DSN-uri sintetice (parola `x` / `a@b/c`) și un format `%s:%s`"),
     ("core/test_wave3_instante.py", "SIR_CONEXIUNE_CU_PAROLA"): (1, "DSN sintetic `cineva:x@…/alta_baza`"),
+    # [17.10.2026, poarta 2 a lotului 6] testele copiei migrate a cifrelor (C47): parsarea DSN-ului, cu o parolă care conține `@`
+    ("core/test_cifre_referinta_poarta.py", "SIR_CONEXIUNE_CU_PAROLA"): (2, "DSN-uri sintetice (`u:p@h`, `ion:p%40r@la@db.local`)"),
+    ("core/test_cifre_referinta_poarta.py", "PAROLA_ATRIBUITA"): (1, "parola sintetică `p@r@la` așteptată de testul de parsare"),
     ("masuratori/p3/concurenta.json", "SIR_CONEXIUNE_CU_PAROLA"): (1, "redactat `***` (05.10.2026; parola veche rotită)"),
     ("masuratori/r68/R68_LIVE_BEFORE.txt", "SIR_CONEXIUNE_CU_PAROLA"): (1, "deja redactat `***` la scriere"),
     ("core/test_p4_fault_injection.py", "PAROLA_ATRIBUITA"): (5, "parola unei înregistrări făcute să EȘUEZE (cont șters de "

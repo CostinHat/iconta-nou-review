@@ -21168,3 +21168,19 @@ iar la cifre.
 - **Pct.1**: referința nouă, scrisă pe copia migrată (`--productie --scrie-referinta`) = propunerea aprobată fără FISCALOS (verificat
   JSON contra JSON: identic). **Amprenta referinței aprobate: `e30875dbd5675c3b433ce827158651d861f8350066a7f6e78ec916ff5d264438`.**
   Verificarea imediat după: „identice cu referința aprobată (5 firme)”.
+
+## 17.10.2026 — Lotul 6: poarta 2 (ultima) ROȘIE — nepublicat; cauzele reparate pe ramură (C46 lărgită)
+
+**Poarta 2 (`e99aa73a`, rularea 2 din 2): ROȘIE.** Verificatorul TOTAL 0; cifrele F1–F5 identice cu referința aprobată (5 firme, măsurate
+pe copia migrată — C47 a funcționat); pytest: 2 picate din 8.524 (8.512 trecute, 10 sărite, 15 xfail; 62 min); plasa e2e nerulată.
+Conform comenzii („Roșie: nu publici și raportezi”) și regulii din 15.10 („maximum două rulări complete pe lot; dacă a doua pică, te
+oprești și raportezi”): **nimic publicat, nicio a treia rulare**. Ambele picături vin din reparațiile de după poarta 1 (`1044f104`):
+- `test_fara_secrete_in_git`: DSN-urile sintetice din testele copiei migrate (și exemplul `user:parola@gazda` din docstringul
+  `cifre_referinta.env_din_dsn`) arătau ca șiruri de conexiune cu parolă. Reparat: docstringul fără exemplu, DSN-urile de probă în
+  constante, declarate în lista închisă a gărzii (2 + 1), cu motivul — ca precedentele (`test_izolare_productie`, `test_wave3_instante`).
+- `test_garzi_mesaje_afisabile`: egalitatea pe textul ANAF complet (pusă la poarta 1 ca să nu crească garda pe text) e, pentru garda
+  asta, aserțiune fragilă. Reparat: comparația cu textul pe care l-a întors chiar simularea (`raspuns_anaf % cif`) — structural, fără literal.
+- **Clasa (C46, lărgită):** niciuna din cele două gărzi nu era în rularea țintită de dinaintea porții 2 — parcurg depozitul DIRECT
+  (`git ls-files`, glob pe `core/test_*.py`), nu printr-un `scan_*`. `perimetru.garzi_de_arbore` le include acum (`_ENUMERA_ARBORE`):
+  84 + 84 -> 157 de gărzi la orice `.py` atins. Limita: o parcurgere scrisă altfel decât tiparul.
+**Decizie cerută:** o a treia rulare a porții pe lotul 6 (peste regula „maximum două”), pe commitul cu reparațiile.

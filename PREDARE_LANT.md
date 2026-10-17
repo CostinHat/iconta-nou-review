@@ -16,6 +16,10 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ÎN CE STARE E PROIECTUL
 
+**17.10.2026, ora 08 — POARTA 2 A LOTULUI 6 ROȘIE (2 teste, din reparațiile porții 1) — NEPUBLICAT; BLOCAT: decizia lui Costin pentru a
+treia rulare** (DECIZII „poarta 2 (ultima) ROȘIE”). Referința de cifre aprobată și scrisă (`e99aa73a`); cauzele reparate pe ramură, plus
+C46 lărgită. Lotul 7 pregătit în paralel în `/home/costin/iconta_lot7` (ramura `lucru/lot7-2026-10-17`), nefinalizat, necomis pe bază.
+
 **17.10.2026 — LOTUL 6 ÎNCHIS („Lotul 6 e complet. Cabinetul nu lucrează.”, verbatim în DECIZII 17.10.2026), NEPUBLICAT.** Acordul scris de
 publicare există, condiționat de poarta VERDE. Poarta 1 (`00351bea`) ROȘIE: 2 teste + cifrele F1–F5 -> reparate pe ramură (commitul care
 conține această predare): aserțiunile pe text, perechea 409 a lui 289, **C45** (migrarea `migrare_casa_avans` nu mai scrie în note

@@ -325,7 +325,7 @@ def migrari_nerulate():
 
 
 def env_din_dsn(url):
-    """PURĂ. DB_HOST / DB_PORT / DB_NAME / DB_USER / DB_PASSWORD dintr-un DSN `postgresql://user:parola@gazda:port/baza` — tăiat ca
+    """PURĂ. DB_HOST / DB_PORT / DB_NAME / DB_USER / DB_PASSWORD dintr-un DSN (forma din `~/.iconta/db.env`) — tăiat ca
     `mediu_test.desface_dsn` (de la dreapta pe `@`), dar cu parola, pentru `.pgpass`-ul temporar al lui `pg_dump`."""
     from urllib.parse import unquote
     acreditare, adresa = url.split("://", 1)[1].rsplit("@", 1)

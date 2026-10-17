@@ -2606,3 +2606,10 @@ arbore intră în rularea țintită); C47 (cifrele pe o copie migrată când pro
 34 de diferențe, identice cu ale codului publicat — toate din date (F1, 10/2026: o factură nouă de 200 + 42 TVA cu descărcarea ei;
 FISCALOS ICONTA în cabinetul de test). Propunerea de referință: `~/ghid_incoming/cifre_referinta_propusa_20261017.md`. Nepublicat;
 producția rămâne pe `6c4917d0`. Lotul 7 neînceput (comanda îl pune după publicare); cercetarea pentru 2.3–2.7 în raport.
+
+## 17.10.2026 — Lotul 6: poarta 2 ROȘIE (2 teste, din reparațiile porții 1) — nepublicat, oprit pentru decizie
+
+Referința de cifre aprobată de Costin (F1–F5, FISCALOS iese din ea; amprenta `e30875db…`) — `e99aa73a`. Poarta 2: verificator 0, cifre
+identice (pe copia migrată), pytest 2 picate: garda de secrete (DSN-urile sintetice din testele C47) și garda mesajelor afișabile
+(egalitatea pe textul ANAF). Reparate pe ramură, plus C46 lărgită (gărzile care parcurg depozitul direct intră în rularea țintită: 157).
+Nimic publicat; producția rămâne pe `6c4917d0`. A treia rulare cere decizia lui Costin. Lotul 7: pregătit în paralel, nefinalizat.

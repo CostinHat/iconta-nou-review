@@ -389,6 +389,14 @@ def perimetru(atinse):
 _ENUMERA = re.compile(r"os\.walk\(|os\.listdir\(|os\.scandir\(|glob\.i?glob\(|\.r?glob\(|ls-files")
 
 
+#: [17.10.2026, poarta 2 a lotului 6, ROSIE] o garda care parcurge ea insasi DEPOZITUL — `git ls-files`, glob / walk / listdir pe radacina
+#: sau pe `core/`, `scripts/`, `static/`, `frontend_test/` — fara un `scan_*`: `test_fara_secrete_in_git` (git ls-files) si
+#: `test_garzi_mesaje_afisabile` (glob pe `core/test_*.py`) au picat in poarta, nealese de rularea tintita. Un director de DATE (fixturi,
+#: capturi) nu se potriveste: tiparul cere radacina depozitului sau unul din directoarele lui de cod.
+_ENUMERA_ARBORE = re.compile(r"ls-files|glob\.i?glob\([^)\n]*(?:core|RAD|scripts|static|frontend_test|_TESTE|\"\*\*)|"
+                             r"os\.walk\(\s*(?:RAD|_RAD|ROOT|os\.path\.join\(\s*_?RAD)|os\.listdir\(\s*(?:os\.path\.join\(\s*_?RAD|_?RAD|\"core)")
+
+
 @functools.lru_cache(maxsize=1)
 def garzi_de_arbore():
     """Testele care importa un scaner de arbore (`*/scan_*.py`): ele citesc CONTINUTUL tuturor fisierelor (aserțiunile pe text,
@@ -398,11 +406,12 @@ def garzi_de_arbore():
     n-a crescut, deci `MOTIV_POPULATIE` nu s-a aprins), au dus `core/test_garzi_pe_text.py` la 1223 > 1222, iar rularea tintita nu
     l-a ales: `test_garzi_pe_text` importa `core.scan_garzi_pe_text`, care parcurge `core/` si `frontend_test/` cu `os.walk`. Clasa =
     orice garda construita pe un scaner care parcurge arborele (`_ENUMERA`). Se adauga la orice `.py` atins.
-    Limita, declarata: un test care parcurge arborele SINGUR, fara un `scan_*`, nu e prins de aici (124, amestecati cu cei care
-    listeaza un director de date) — pe acelea le vede poarta lotului."""
+    [17.10.2026, poarta 2] Si testele care parcurg ele insele depozitul (`_ENUMERA_ARBORE`): 84 + 84 -> 157 de garzi. Limita, declarata:
+    o parcurgere scrisa altfel decat tiparul (o cale construita in alt mod) nu e prinsa — o vede poarta lotului."""
     scanere = {_module_din_cale(f) for f in _fisiere_py() if os.path.basename(f).startswith("scan_")
                and _ENUMERA.search(io.open(os.path.join(RAD, f), encoding="utf-8", errors="replace").read())}
-    return frozenset(f for f in _fisiere_py() if os.path.basename(f).startswith("test_") and importurile(f) & scanere)
+    return frozenset(f for f in _fisiere_py() if os.path.basename(f).startswith("test_") and (
+        importurile(f) & scanere or _ENUMERA_ARBORE.search(io.open(os.path.join(RAD, f), encoding="utf-8", errors="replace").read())))
 
 
 # ============================================================================

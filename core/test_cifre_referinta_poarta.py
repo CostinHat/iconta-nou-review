@@ -90,10 +90,15 @@ def test_lunile_cu_date_vin_numai_din_notele_validate():
             conn.rollback()
 
 
+#: DSN-uri SINTETICE (parola `p` / `p@r@la`), declarate în lista închisă a gărzii de secrete (`core/test_fara_secrete_in_git.py`)
+_PROD = "postgresql://u:p@h:5432/iconta_v2"
+_COPIE = _PROD.replace("/iconta_v2", "/iconta_cifre_copie")
+
+
 def test_dsn_copiei_si_acreditarea_din_dsn():
     """Funcțiile PURE ale copiei: baza schimbată, restul DSN-ului neatins; parola (cu `@` în ea) tăiată de la dreapta."""
     url = "postgresql://ion:p%40r@la@db.local:6432/iconta_v2?sslmode=require"
-    assert cr.dsn_cu_baza(url, "iconta_cifre_copie") == "postgresql://ion:p%40r@la@db.local:6432/iconta_cifre_copie?sslmode=require"
+    assert cr.dsn_cu_baza(url, "iconta_cifre_copie") == url.replace("/iconta_v2?", "/iconta_cifre_copie?")
     assert cr.env_din_dsn(url) == {"DB_HOST": "db.local", "DB_PORT": "6432", "DB_NAME": "iconta_v2", "DB_USER": "ion",
                                    "DB_PASSWORD": "p@r@la"}
 
@@ -104,20 +109,19 @@ def test_cu_migrari_nerulate_cifrele_se_masoara_pe_copia_migrata(monkeypatch):
     revine. MUTAȚIE: `if not lipsa:` -> `if True:` (măsurat direct, ca înainte) -> pică."""
     import contextlib
     vazut = {}
-    monkeypatch.setenv("DATABASE_URL", "postgresql://u:p@h:5432/iconta_v2")
+    monkeypatch.setenv("DATABASE_URL", _PROD)
     monkeypatch.setattr(cr, "migrari_nerulate", lambda: ["core/migrare_x.py"])
 
     @contextlib.contextmanager
     def copie(dsn, migrari):
         vazut["copie"] = (dsn, migrari)
-        yield "postgresql://u:p@h:5432/iconta_cifre_copie"
+        yield _COPIE
     monkeypatch.setattr(cr, "copie_migrata", copie)
     with cr.baza_masurata() as unde:
         vazut["masurat_pe"] = os.environ["DATABASE_URL"]
-    assert vazut == {"copie": ("postgresql://u:p@h:5432/iconta_v2", ["core/migrare_x.py"]),
-                     "masurat_pe": "postgresql://u:p@h:5432/iconta_cifre_copie"}, vazut
+    assert vazut == {"copie": (_PROD, ["core/migrare_x.py"]), "masurat_pe": _COPIE}, vazut
     assert unde == "măsurat pe o copie a bazei, după migrările nerulate încă pe producție (1): core/migrare_x.py", unde
-    assert os.environ["DATABASE_URL"] == "postgresql://u:p@h:5432/iconta_v2"
+    assert os.environ["DATABASE_URL"] == _PROD
 
 
 def test_copia_se_sterge_si_cand_migrarea_pica(monkeypatch, tmp_path):
@@ -133,7 +137,7 @@ def test_copia_se_sterge_si_cand_migrarea_pica(monkeypatch, tmp_path):
     monkeypatch.setattr(pr, "_sterge", lambda baza: pasi.append(("sters", baza)))
     monkeypatch.setattr(cr.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 1, "", "UndefinedTable: t"))
     try:
-        with cr.copie_migrata("postgresql://u:p@h:5432/iconta_v2", ["core/migrare_x.py"]):
+        with cr.copie_migrata(_PROD, ["core/migrare_x.py"]):
             raise AssertionError("măsurătoarea n-are voie să pornească pe o copie nemigrată")
     except RuntimeError as e:
         assert e.args == ("migrarea core/migrare_x.py a picat pe copie (cod 1): UndefinedTable: t",), e.args

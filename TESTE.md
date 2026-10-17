@@ -70,8 +70,10 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   - ultim (17.10, „Lotul 6 e complet”): poarta 1 ROȘIE pe `00351bea` (2 teste + cifrele F1–F5) -> reparată: aserțiunile pe text pe
     structură, perechea 289 declarată, C45 (migrarea nu mai scrie în note), C46 (gărzile de arbore în rularea țintită), C47 (cifrele pe
     copia migrată). Cifrele lotului = cifrele codului publicat; diferențele vin din date (DECIZII 17.10.2026).
-  - urmator: aprobarea lui Costin pentru referința nouă de cifre (`~/ghid_incoming/cifre_referinta_propusa_20261017.md`) -> a doua (ultima)
-    rulare a porții -> publicarea (acordul scris există, din 17.10). STARE = BLOCAT: aprobarea referinței de cifre
+  - ultim (17.10, după aprobarea referinței): referința F1–F5 scrisă (`e99aa73a`); poarta 2 ROȘIE (2 teste din reparațiile porții 1) ->
+    reparate pe ramură + C46 lărgită (157 de gărzi de arbore). Nepublicat.
+  - urmator: decizia lui Costin pentru a treia rulare a porții (peste „maximum două”) -> publicarea (acordul scris există). STARE =
+    BLOCAT: decizia lui Costin (a treia rulare)
   - pasi:
     L6-277a. `core/banca_parser.py`: `citeste_extras` -> tranzacțiile cu `referinta` (MT940 `:61:` după cod) și contul extrasului (`:25:`), plus
           soldurile `:60F:` / `:62F:`; `parse_extras` rămâne lista. `extras_linii` + `cont_extras`, `referinta` (migrare + `tenant_template.sql`).
