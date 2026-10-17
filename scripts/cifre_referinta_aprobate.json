@@ -82,17 +82,17 @@
     }
    },
    "10/2026": {
-    "amprenta": "acc524e7e3b9bf7699f9a1f363dfb0ae0926ac8220f25d432c56fe1585bd0516",
+    "amprenta": "e1d9d9abc177f7911c83f0314b5815d9360378730004860a60db54d9b2135132",
     "randuri": {
      "R10_1 (rândul 10, coloana Valoare)": "800",
      "R10_2 (rândul 10, coloana TVA)": "88",
-     "R17_1 (rândul 19, coloana Valoare)": "6000",
-     "R17_2 (rândul 19, coloana TVA)": "1180",
-     "R34_2 (rândul 37, coloana TVA)": "1180",
-     "R37_2 (rândul 40, coloana TVA)": "1180",
-     "R41_2 (rândul 44, coloana TVA)": "1180",
-     "R9_1 (rândul 9, coloana Valoare)": "5200",
-     "R9_2 (rândul 9, coloana TVA)": "1092"
+     "R17_1 (rândul 19, coloana Valoare)": "6200",
+     "R17_2 (rândul 19, coloana TVA)": "1222",
+     "R34_2 (rândul 37, coloana TVA)": "1222",
+     "R37_2 (rândul 40, coloana TVA)": "1222",
+     "R41_2 (rândul 44, coloana TVA)": "1222",
+     "R9_1 (rândul 9, coloana Valoare)": "5400",
+     "R9_2 (rândul 9, coloana TVA)": "1134"
     }
    }
   },
@@ -113,20 +113,21 @@
     ]
    },
    "10/2026": {
-    "amprenta": "87ea98f8cedfeebf543f0377bbb63f0e8dc1f7fd4e64124ebd98368452da6db5",
+    "amprenta": "e674c0483cb7e5c9c546aaa20115fd9ebca214496bf5430310fa46b7a54cba21",
     "antet": {
      "op_efectuate": "1",
      "sistemTVA": "0",
      "tip_D394": "L",
-     "totalPlata_A": "6001"
+     "totalPlata_A": "6202"
     },
     "rezumat1": [
      " tip_partener=\"1\" cota=\"11\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"800\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"88\"/",
-     " tip_partener=\"1\" cota=\"21\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"5200\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"2\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"1092\"/"
+     " tip_partener=\"1\" cota=\"21\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"5200\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"2\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"1092\"/",
+     " tip_partener=\"2\" cota=\"21\" bazaL=\"200\" facturiL=\"1\" tvaL=\"42\"/"
     ],
     "rezumat2": [
      " cota=\"11\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"800\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"88\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
-     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5200\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"2\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"1092\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
+     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5400\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"3\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"1134\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
     ]
    }
   },
@@ -137,7 +138,7 @@
      "TotalCredit": "25106.00",
      "TotalDebit": "25106.00"
     },
-    "amprenta": "bec0082b00c65d6151ae118ba59932ffb4fe154f50e8d224f184c1e84ca54c07",
+    "amprenta": "2c836e9c3a87ca504392a64f8f529664fe2627a6088b647f4bcadf6145dc0c9f",
     "facturi_emise": 1,
     "facturi_primite": 1,
     "jurnale": [
@@ -149,12 +150,12 @@
    },
    "10/2026": {
     "GeneralLedgerEntries": {
-     "NumberOfEntries": "13",
-     "TotalCredit": "15966.50",
-     "TotalDebit": "15966.50"
+     "NumberOfEntries": "17",
+     "TotalCredit": "16310.88",
+     "TotalDebit": "16310.88"
     },
-    "amprenta": "120a0ae039f60a554527b6850843695d170efaa708011a9f9379fba559c49183",
-    "facturi_emise": 2,
+    "amprenta": "309a00309f46975777ad8a2e8f66feba86c9237824ea2ed47407a84068a24967",
+    "facturi_emise": 3,
     "facturi_primite": 0,
     "jurnale": [
      "BANCA",
@@ -439,13 +440,13 @@
      "denumire": "Mărfuri",
      "prec_c": 500.0,
      "prec_d": 1000.0,
-     "rul_c": 200.0,
+     "rul_c": 302.38,
      "rul_d": 1150.0,
      "sf_c": 0.0,
-     "sf_d": 6450.0,
+     "sf_d": 6347.62,
      "si_c": 0.0,
      "si_d": 5000.0,
-     "tot_c": 700.0,
+     "tot_c": 802.38,
      "tot_d": 7150.0
     },
     {
@@ -482,13 +483,13 @@
      "prec_c": 1210.0,
      "prec_d": 1210.0,
      "rul_c": 7180.0,
-     "rul_d": 7180.0,
+     "rul_d": 7422.0,
      "sf_c": 0.0,
-     "sf_d": 2000.0,
+     "sf_d": 2242.0,
      "si_c": 0.0,
      "si_d": 2000.0,
      "tot_c": 8390.0,
-     "tot_d": 10390.0
+     "tot_d": 10632.0
     },
     {
      "cont": "421",
@@ -565,13 +566,13 @@
      "denumire": "TVA colectată",
      "prec_c": 210.0,
      "prec_d": 0.0,
-     "rul_c": 1180.0,
+     "rul_c": 1222.0,
      "rul_d": 0.0,
-     "sf_c": 1390.0,
+     "sf_c": 1432.0,
      "sf_d": 0.0,
      "si_c": 0.0,
      "si_d": 0.0,
-     "tot_c": 1390.0,
+     "tot_c": 1432.0,
      "tot_d": 0.0
     },
     {
@@ -636,13 +637,13 @@
      "prec_c": 0.0,
      "prec_d": 500.0,
      "rul_c": 0.0,
-     "rul_d": 200.0,
+     "rul_d": 302.38,
      "sf_c": 0.0,
-     "sf_d": 700.0,
+     "sf_d": 802.38,
      "si_c": 0.0,
      "si_d": 0.0,
      "tot_c": 0.0,
-     "tot_d": 700.0
+     "tot_d": 802.38
     },
     {
      "cont": "627",
@@ -691,13 +692,13 @@
      "denumire": "Venituri din vânzarea mărfurilor",
      "prec_c": 1000.0,
      "prec_d": 0.0,
-     "rul_c": 6000.0,
+     "rul_c": 6200.0,
      "rul_d": 0.0,
-     "sf_c": 7000.0,
+     "sf_c": 7200.0,
      "sf_d": 0.0,
      "si_c": 0.0,
      "si_d": 0.0,
-     "tot_c": 7000.0,
+     "tot_c": 7200.0,
      "tot_d": 0.0
     }
    ]

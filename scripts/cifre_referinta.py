@@ -27,6 +27,14 @@ import sys
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, RAD)
 CABINET = "Cabinet Test Sesiunea B SRL"
+#: [17.10.2026, decizia Costin, verbatim în DECIZII] „FISCALOS ICONTA S.R.L. rămâne în cabinetul de test, dar iese din referință;
+#: referința rămâne pe F1–F5.” Firmele măsurate = cele ale cabinetului cu numele F1…F5; o firmă nouă în cabinet nu intră în referință.
+FIRMA_REFERINTA = re.compile(r"^F[1-5] ")
+
+
+def in_referinta(nume):
+    """PURĂ. Firma intră în cifrele de referință (F1–F5)?"""
+    return bool(FIRMA_REFERINTA.match(nume or ""))
 _ATRIB = re.compile(r'([A-Za-z_][A-Za-z0-9_]*)="([^"]*)"')
 #: părți care se schimbă la fiecare generare și nu sunt cifre (data generării); se scot înaintea amprentei
 # [10.10.2026] și `AuditFileDateCreated` din antetul SAF-T (D406): pe 10.10, cifrele aprobate pe 09.10 ieșeau identice, iar amprenta
@@ -244,7 +252,7 @@ def culege():
             assert cur.fetchone()[0] == "on", "sesiunea nu e read-only — refuz"
             cur.execute("SELECT t.nume, t.schema_name FROM public.tenants t JOIN public.accounting_firms a ON a.id = t.accounting_firm_id "
                         "WHERE a.nume = %s ORDER BY t.nume", (CABINET,))
-            firme = cur.fetchall()
+            firme = [(n, s) for n, s in cur.fetchall() if in_referinta(n)]
         conn.rollback()
     for nume, schema in firme:
         with db.get_conn(schema) as conn:          # ca aplicația: conexiunea pe schema firmei

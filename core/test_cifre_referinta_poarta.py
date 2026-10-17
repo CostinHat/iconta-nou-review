@@ -151,3 +151,14 @@ def test_main_masoara_numai_prin_baza_masurata():
                and any(ast.unparse(i.context_expr) == "baza_masurata()" for i in w.items)]
     assert withuri and any(isinstance(n, ast.Call) and ast.unparse(n.func) == "_executa" for n in ast.walk(withuri[0])), (
         "main nu măsoară prin baza_masurata()")
+
+
+def test_referinta_e_numai_pe_f1_f5():
+    """[17.10.2026, decizia Costin] „FISCALOS ICONTA S.R.L. rămâne în cabinetul de test, dar iese din referință; referința rămâne pe
+    F1–F5.” MUTAȚIE: filtrul `in_referinta` scos din `culege` -> FISCALOS intră și `test_referinta_e_cea_aprobata` (5 firme) pică la
+    următoarea scriere; aici: regula însăși."""
+    assert [n for n in ("F1 Comert Stoc SRL", "F5 Salarii SRL", "FISCALOS ICONTA S.R.L.", "F6 Ceva SRL", "F10 X") if cr.in_referinta(n)] == [
+        "F1 Comert Stoc SRL", "F5 Salarii SRL"]
+    import ast
+    culege = next(n for n in ast.parse(_citeste("scripts/cifre_referinta.py")).body if isinstance(n, ast.FunctionDef) and n.name == "culege")
+    assert any(isinstance(n, ast.Call) and ast.unparse(n.func) == "in_referinta" for n in ast.walk(culege)), "culege nu filtrează pe F1–F5"

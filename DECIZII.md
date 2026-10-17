@@ -21148,3 +21148,23 @@ TVA 42, client neînregistrat — D394 `tip_partener=2`) cu descărcarea de gest
 ICONTA S.R.L. (tenant_054, neplătitor, fără date). Schimbarea referinței cere aprobarea lui Costin (regula din 10.10.2026); propunerea:
 `~/ghid_incoming/cifre_referinta_propusa_20261017.md` / `.json`. **A doua (ultima) rulare a porții așteaptă aprobarea** — fără ea ar pica
 iar la cifre.
+
+## 17.10.2026 — Lotul 6: răspunsul lui Costin la raportul porții 1 (1044f104) — referința de cifre aprobată, FISCALOS iese din ea
+
+**Comanda (Costin, 17.10.2026, verbatim):**
+
+> Răspuns la raportul porții 1 (1044f104). Cabinetul nu lucrează.
+>
+> 1. Aprob referința nouă de cifre (~/ghid_incoming/cifre_referinta_propusa_20261017.md): diferențele sunt datele mele de test (F1A4 200 + 42 și descărcarea de gestiune pe F1).
+> 2. FISCALOS ICONTA S.R.L. rămâne în cabinetul de test, dar iese din referință; referința rămâne pe F1–F5.
+> 3. A doua rulare a porții lotului 6. Verde: publici cu acordul dat deja (backup, fast-forward, cele 7 migrări, repornire, four-way). Roșie: nu publici și raportezi.
+> 4. După publicare, lotul 7 pe ramură nouă, fără publicare și fără poartă: 2.1, 2.2, 2.3 și 2.6 (a doua sursă legislatie.just.ro, alertele importante pe canalul meu de notificare). 2.4, 2.5 și 2.7 le pregătești până unde se poate fără cheile mele; cheile ți le dau separat.
+>
+> Răspunde punctual pe fiecare punct, cu proba. Pentru 3: rezultatul porții, backupul, migrările, four-way, commitul de pe producție. Oprește-te și raportează.
+
+**Consecințe (executor):**
+- **Pct.2**: `scripts/cifre_referinta.py` măsoară numai firmele cabinetului de test cu numele F1…F5 (`in_referinta`, `^F[1-5] `); o firmă
+  nouă în cabinet nu mai intră în referință. **Alternativă respinsă**: scoaterea FISCALOS din cabinet (Costin: „rămâne în cabinetul de test”).
+- **Pct.1**: referința nouă, scrisă pe copia migrată (`--productie --scrie-referinta`) = propunerea aprobată fără FISCALOS (verificat
+  JSON contra JSON: identic). **Amprenta referinței aprobate: `e30875dbd5675c3b433ce827158651d861f8350066a7f6e78ec916ff5d264438`.**
+  Verificarea imediat după: „identice cu referința aprobată (5 firme)”.
