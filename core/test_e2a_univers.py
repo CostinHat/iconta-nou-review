@@ -103,7 +103,9 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # legătura chitanțelor vechi), `migrare_spv_citiri` (273 / pct.2b, citirile SPV pe CUI), `migrare_declaratii_asteptare` (284),
     # `migrare_inregistrari_email` (282), `migrare_raportari_stare_necitita` (291) — toate DDL idempotent pe o tabelă / coloană, o dată.
     # [16.10.2026 noaptea, lotul 6 — răspunsul la raport] 99 -> 100: `migrare_categorie_tva_linie` (274b, categoria de TVA a liniei cu 0%).
-    assert 40 <= len(mg) <= 100, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [17.10.2026, lotul 7] 100 -> 101: `migrare_canal_notificari` (telefonul, canalul și acordul pe `public.users`, codul de confirmare,
+    # cutia de ieșire și jurnalul notificărilor — 2.1–2.2) — DDL idempotent, o dată.
+    assert 40 <= len(mg) <= 101, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

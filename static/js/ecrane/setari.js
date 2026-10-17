@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca, refuzPeRand } from "../api.js?v=9409795a49";
+import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca, refuzPeRand, cate } from "../api.js?v=9409795a49";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export async function randeazaSetari(corp, nav) {
@@ -16,6 +16,7 @@ export async function randeazaSetari(corp, nav) {
     if (eAdmin) itemi.push({ cheie: "gdpr", titlu: "Datele cabinetului (GDPR)" });
     itemi.push({ cheie: "profil", titlu: "Date profil" });
     itemi.push({ cheie: "parola", titlu: "Schimbă parola" });
+    itemi.push({ cheie: "notificari", titlu: "Notificări" });   // [17.10.2026, lotul 7 pct.2.2]
     corp.innerHTML = `
       <p class="mig-intro">Datele contului tău și setările cabinetului.</p>
       <div class="set-meniu"></div>
@@ -38,6 +39,7 @@ export async function randeazaSetari(corp, nav) {
     else if (cheie === "gdpr") randeazaGDPR();
     else if (cheie === "profil") randeazaProfil();
     else if (cheie === "parola") randeazaParola();
+    else if (cheie === "notificari") panouNotificari(corp);
   }
 
   function butonInapoi() { return ""; }
@@ -328,6 +330,82 @@ function _initChei(corp) {
 // [deficiența 289a/b] Panoul „Conectare SPV” — din Setări cont și din orice refuz / stare care trimite aici (`ecran_destinatie.ECRANE`).
 // Certificatul se arată prin emitentul lui (claim-ul `issuer` din tokenul ANAF), nu prin seria hexazecimală; titularul nu e în token
 // (ANAF nu-l trimite) — se spune. Conectarea o face administratorul cabinetului; ceilalți văd starea și cui să-i ceară.
+// [17.10.2026, lotul 7 pct.2.2, comanda Costin verbatim în DECIZII] „în Setări cont, fiecare utilizator își pune numărul și alege
+// WhatsApp sau email (implicit email). WhatsApp se activează numai după confirmarea numărului printr-un cod trimis pe WhatsApp și bifa
+// de acord pentru mesaje.” Ordinea pe ecran = ordinea serverului (`core/uc_cont_notificari.py`): numărul, acordul + codul, confirmarea,
+// canalul. Opțiunea WhatsApp e inactivă până la confirmare și acord, cu motivul lângă ea. Superadminul îl deschide din cardul lui.
+export async function panouNotificari(zona) {
+  zona.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
+  let st = null;
+  try { st = await api.get("/eu/notificari"); } catch (e) { zona.innerHTML = ""; arataMesaj(zona, e.mesaj || "Setările notificărilor nu s-au putut citi.", "eroare"); return; }
+  const deschis = (st) => st.telefon && st.confirmat && st.acord;
+  zona.innerHTML = `
+    <div class="panou">
+      <div class="cap-titlu">Notificări</div>
+      <p class="ecran-nota">Notificările din clopoțel îți vin și pe canalul ales aici. Pe WhatsApp primești un mesaj scurt, fără date fiscale, cu linkul spre aplicație. Confirmarea contului, resetarea parolei și linkul de logare vin mereu pe email.</p>
+      <label class="camp">
+        <span class="camp-eticheta">Telefon</span>
+        <span class="camp-ajutor">Cu prefixul țării (+40 7xx xxx xxx) sau ca număr românesc (07xx xxx xxx).</span>
+        <input id="not-telefon" class="camp-input" type="tel" autocomplete="tel" value="${esc(st.telefon || "")}">
+      </label>
+      <button class="buton-secundar" id="not-salveaza-telefon">Salvează numărul</button>
+      <div id="not-stare-telefon" class="ecran-nota"></div>
+      <div id="not-confirmare">
+        <label class="set-bifa"><input type="checkbox" id="not-acord"${st.acord ? " checked" : ""}> <span>Sunt de acord să primesc mesaje de la iConta.eu pe WhatsApp (${esc(st.numar_iconta)}), la numărul de mai sus.</span></label>
+        <button class="buton-secundar" id="not-cere-cod">Trimite codul pe WhatsApp</button>
+        <label class="camp">
+          <span class="camp-eticheta">Codul primit pe WhatsApp</span>
+          <input id="not-cod" class="camp-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+        </label>
+        <button class="buton-secundar" id="not-confirma">Confirmă numărul</button>
+      </div>
+      <label class="camp">
+        <span class="camp-eticheta">Primește notificările pe</span>
+        <select id="not-canal" class="camp-input">
+          <option value="email">Email</option>
+          <option value="whatsapp">WhatsApp</option>
+        </select>
+      </label>
+      <div id="not-motiv-canal" class="ecran-nota"></div>
+      <button class="buton-primar" id="not-salveaza-canal">Salvează</button>
+      <div id="not-msg"></div>
+    </div>`;
+  const $ = (s) => zona.querySelector(s);
+  const msg = $("#not-msg");
+  function arata(s) {
+    st = s;
+    $("#not-stare-telefon").textContent = !s.telefon ? "Niciun număr salvat."
+      : s.confirmat ? `Numărul ${s.telefon} e confirmat.` : `Numărul ${s.telefon} nu e confirmat încă.`;
+    $("#not-confirmare").hidden = !s.telefon || s.confirmat;
+    $("#not-acord").checked = !!s.acord;
+    $("#not-canal").value = s.canal;
+    const wa = $("#not-canal").querySelector('option[value="whatsapp"]');
+    wa.disabled = !deschis(s);
+    $("#not-motiv-canal").textContent = deschis(s) ? "" : !s.telefon ? "WhatsApp: salvează întâi numărul, apoi confirmă-l cu codul."
+      : !s.confirmat ? "WhatsApp: confirmă întâi numărul cu codul primit pe WhatsApp." : "WhatsApp: bifează acordul pentru mesaje.";
+  }
+  arata(st);
+  $("#not-salveaza-telefon").addEventListener("click", async () => {
+    try { arata(await api.put("/eu/telefon", { telefon: $("#not-telefon").value.trim() })); arataMesaj(msg, "Numărul a fost salvat.", "ok"); }
+    catch (e) { arataMesaj(msg, e.mesaj || "Numărul nu s-a putut salva.", "eroare"); }
+  });
+  $("#not-cere-cod").addEventListener("click", async () => {
+    try { const r = await api.post("/eu/telefon/cod", { acord: $("#not-acord").checked }); arataMesaj(msg, `Codul a plecat pe WhatsApp. E valabil ${cate(r.minute, "minut", "minute")}.`, "ok"); }
+    catch (e) { arataMesaj(msg, e.mesaj || "Codul nu a putut pleca.", "eroare"); }
+    try { arata(await api.get("/eu/notificari")); } catch { /* starea rămâne cea afișată */ }
+  });
+  $("#not-confirma").addEventListener("click", async () => {
+    try { arata(await api.post("/eu/telefon/confirma", { cod: $("#not-cod").value.trim() })); arataMesaj(msg, "Numărul e confirmat. Poți alege WhatsApp.", "ok"); }
+    catch (e) { arataMesaj(msg, e.mesaj || "Codul nu s-a putut verifica.", "eroare"); }
+  });
+  $("#not-salveaza-canal").addEventListener("click", async () => {
+    try {
+      arata(await api.put("/eu/notificari", { canal: $("#not-canal").value, acord: $("#not-acord").checked }));
+      arataMesaj(msg, st.canal === "whatsapp" ? "Notificările vin pe WhatsApp." : "Notificările vin pe email.", "ok");
+    } catch (e) { arataMesaj(msg, e.mesaj || "Canalul nu s-a putut salva.", "eroare"); }
+  });
+}
+
 export async function panouConectareSPV(zona) {
   const u = sesiune.user() || {};
   const eAdmin = u.rol === "admin_firma" || u.rol === "superadmin";

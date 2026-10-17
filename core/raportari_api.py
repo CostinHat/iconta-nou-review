@@ -42,6 +42,19 @@ def creeaza_raportare(conn, autor_id, cabinet_id, subiect, text, tip="sesizare",
     return {"ok": True, "raportare_id": rid, "mesaj_id": mid}
 
 
+def text_notificare(conn, raportare_id):
+    """[17.10.2026, lotul 7 pct.2.3] Textul notificării de clopoțel pentru superadmin: felul cererii, cabinetul și subiectul (sau
+    aplicația, la importul din altă aplicație). Rămâne în aplicație; pe WhatsApp / email pleacă numai eticheta tipului."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT r.tip, r.subiect, r.aplicatie, a.nume FROM public.raportari r "
+                    "LEFT JOIN public.accounting_firms a ON a.id = r.cabinet_id WHERE r.id = %s", (raportare_id,))
+        tip, subiect, aplicatie, cabinet = cur.fetchone()
+    cine = cabinet or "un utilizator fără cabinet"
+    if tip == "cerere_import":
+        return "Cerere de import din «%s» de la %s." % (aplicatie, cine)
+    return "Sesizare nouă de la %s%s." % (cine, (": " + subiect) if subiect else "")
+
+
 #: [deficiența 291] cine scrie din partea iConta într-un fir (bulina autorului se aprinde la mesajele lor)
 ROLURI_ICONTA = ("admin", "ai")
 

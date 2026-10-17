@@ -1565,7 +1565,7 @@ Zilnic la ora 7:30, importă comenzile din magazinul WooCommerce și le transfor
 Rulează automat în fundal - nu necesită acțiune. Trebuie doar să completezi datele de conectare WooCommerce în profilul firmei.
 ## De reținut
 Este idempotent pe numărul comenzii: aceeași comandă nu produce două facturi."
-Cron monitor fiscal,"Cron săptămânal (luni 8:00): citește buletinele ANAF/MF (PDF), AI filtrează modificările relevante (TVA, salarii, plafoane, declarații) cu data intrării în vigoare, salvează în alerte_fiscale + email; alimentează F103 (emitere 7/3/0 + propuneri admin).",F112,admin,— (automat),core/monitor_fiscal.py + cron,,LIVE (afisarea programata = F103),pytest,,"## Ce face
+Cron monitor fiscal,"Cron săptămânal (luni 8:00): două surse — buletinele ANAF (PDF) și, din 17.10.2026, Portalul Legislativ (actele ANAF, MF, Guvern, Parlament, după data publicării); AI filtrează modificările relevante, salvează în alerte_fiscale; alertele importante devin notificări ale superadminului pe canalul lui (F257); alimentează F103 (emitere 7/3/0 + propuneri admin).",F112,admin,— (automat),"core/monitor_fiscal.py (ruleaza, ruleaza_portal, notifica_importante) + cron",,LIVE (afisarea programata = F103),pytest,,"## Ce face
 Citește săptămânal buletinele oficiale ANAF și Ministerul Finanțelor (PDF), lasă un model AI să filtreze doar modificările relevante (TVA, salarii, plafoane, declarații) împreună cu data intrării în vigoare, le salvează și trimite un email. Alimentează alertele legislative programate care apar apoi utilizatorilor.
 ## Cum ajungi la ea
 Rulează automat în fundal (nu ai un ecran sau buton dedicat) — pornește în fiecare luni la ora 8:00."
@@ -1575,7 +1575,7 @@ Este API-ul public v1, prin care sistemele proprii ale cabinetelor se pot integr
 Se folosește din exterior, de către integratori/programatori, cu o cheie API. Nu este un ecran din aplicație.
 ## De reținut
 Accesul cere o cheie API validă; fără ea, apelurile sunt respinse."
-Notificări în aplicație și pe email,"Clopoțel cu necitite, sumar la login, email zilnic (mesaje clienți, evenimente echipă); notificările de mesaje doar către rolurile de cabinet.",F115,transversal,clopotel antet,core/notificari_api.py,,LIVE,,,"## Ce face
+Notificări în aplicație și pe email,"Clopoțel cu necitite, sumar la login, email zilnic (mesaje clienți, evenimente echipă); notificările de mesaje doar către rolurile de cabinet. Din 17.10.2026 fiecare notificare nouă pleacă și pe canalul ales de om (email implicit sau WhatsApp) — F257.",F115,transversal,clopotel antet,core/notificari_api.py,,LIVE,,,"## Ce face
 Sistemul de notificări in-app și pe email: un clopoțel cu numărul de necitite, un sumar la login și un email zilnic cu mesajele clienților și evenimentele echipei. Notificările de mesaje merg doar către rolurile de cabinet.
 ## Când se folosește
 Zilnic, pentru a nu pierde mesaje de la clienți sau evenimente ale echipei. Pentru contabilii și validatorii cabinetului.
@@ -2668,3 +2668,19 @@ Propune nota de închidere a exercițiului la 31.12: veniturile și cheltuielile
 ## Ce trebuie să știi
 - Notele intră ca ciornă: nu sunt în evidență până nu le validezi.
 - O nouă cerere înlocuiește propunerea nevalidată; după validare, închide numai ce a rămas."
+Notificări pe canalul ales (email sau WhatsApp),"Fiecare notificare din clopoțel pleacă, după commit, pe canalul utilizatorului: email (implicit) sau WhatsApp (numărul confirmat cu un cod trimis pe WhatsApp + acordul pentru mesaje); afară pleacă eticheta tipului și linkul /deschide/<cheie>, fără textul notificării; WhatsApp nelivrat -> email. Superadminul primește notificare la fiecare cerere de import și sesizare (2.3) și la alertele legislative importante (2.6). Comanda Costin 17.10.2026, lotul 7.",F257,transversal,Setări cont -> Notificări; Panou Admin -> Notificări; registrul de înregistrare (telefon opțional),core/notificari.py + core/whatsapp.py + core/uc_cont_notificari.py + core/migrare_canal_notificari.py,,PARTIAL,core/test_notificari_canal.py + e2e frontend_test/e2e/e2e_lot7.py,,"## Ce face
+Notificările din clopoțel îți vin și în afara aplicației, pe canalul ales: email (implicit) sau WhatsApp. Mesajul e scurt, fără date fiscale, cu linkul spre locul din aplicație.
+
+## Cum se folosește
+1. Setări cont -> Notificări.
+2. Scrie numărul de telefon și salvează-l.
+3. Bifează acordul pentru mesaje pe WhatsApp și cere codul.
+4. Scrie codul primit pe WhatsApp și confirmă numărul.
+5. Alege WhatsApp și salvează.
+
+## Ce trebuie să știi
+- Confirmarea contului, resetarea parolei și linkul de logare vin mereu pe email.
+- Dacă WhatsApp nu livrează un mesaj, notificarea pleacă pe email.
+- Un număr nou se confirmă din nou; până atunci notificările vin pe email."
+Emailurile tranzacționale pe Postmark,"Confirmarea contului, resetarea parolei și linkul de logare pleacă prin Postmark (fluxul tranzacțional „outbound”, fără antetele de dezabonare — 268) când serverul are tokenul Postmark; până atunci pe Brevo. Comanda Costin 17.10.2026, lotul 7 pct.2.5.",F258,transversal,— (automat),"core/observare.py (_trimite_postmark, trimite_email_html postmark=True)",,PARTIAL,core/test_notificari_canal.py,,
+Adresele retrase (410) și exportul Search Console,"Adresele de la rădăcină culese de Google care n-au existat ca pagini răspund 410; unealta scripts/search_console.py clasifică un export Search Console (404 -> 301 spre ghidul cel mai apropiat / 410; neindexate -> grupurile de ghiduri suprapuse). Comanda Costin 17.10.2026, lotul 7 pct.2.7.",F259,admin,— (site public),main.py (ADRESE_RETRASE) + scripts/search_console.py,,PARTIAL,core/test_notificari_canal.py::test_rutele_publice_ale_lotului,,

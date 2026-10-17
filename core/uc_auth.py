@@ -77,6 +77,19 @@ def reinnoieste(ctx):
     return {"token": s["token"], "user": s["user"]}
 
 
+def _telefon(date):
+    """Telefonul din formular, în forma internațională (None = gol sau nu e un număr)."""
+    from core import whatsapp as _wa
+    brut = str(getattr(date, "telefon", "") or "").strip()
+    return _wa.normalizeaza(brut) if brut else None
+
+
+def _scrie_telefonul(cur, user_id, telefon):
+    if telefon and user_id:
+        from core import repo_cont_notificari as _rcn
+        _rcn.scrie_telefonul_contului_nou(cur, user_id, telefon)
+
+
 def _valideaza_formularul(date):
     """Verificările comune ale formularului (bifa termenilor, parola, emailul) + versiunea termenilor, ÎNAINTEA oricărei scrieri."""
     if not date.accept_termeni:  # [termeni_v1] fara bifa -> contul NU se creeaza (gard pe backend, nu doar JS)
@@ -87,6 +100,12 @@ def _valideaza_formularul(date):
         raise _erori.CerereGresita(EMAIL_INVALID)
     if not str(date.nume_cabinet or "").strip():
         raise _erori.CerereGresita("Completează denumirea cabinetului.")
+    # [17.10.2026, lotul 7 pct.2.2, verbatim în DECIZII] „câmp telefon opțional la înregistrarea cabinetului” — gol trece; scris, se cere
+    # să fie un număr de telefon (se salvează NECONFIRMAT: confirmarea și canalul WhatsApp sunt în Setări cont -> Notificări)
+    if str(getattr(date, "telefon", "") or "").strip() and not _telefon(date):
+        from core import uc_cont_notificari as _ucn
+        m = _ucn.MESAJ_TELEFON_INVALID
+        raise _erori.CerereGresita({"mesaj": m, "cod": _ucn.COD_TELEFON_INVALID, "erori_campuri": [{"camp": "reg-telefon", "mesaj": m}]})
     # [P4, 09.09.2026] Versiunea termenilor se citește ÎNAINTE de tranzacție. Un fișier care
     # lipsește trebuie să oprească înregistrarea înainte de orice scriere — nu să lase în urmă un
     # cont fără dovada acordului.
@@ -137,6 +156,7 @@ def _register_cu_invitatie(date, _versiune_termeni):
             with conn.cursor() as cur:
                 repo_utilizatori.scrie_acordul_termenilor(cur, r.get("user_id"), r.get("firm_id"), date.email.strip().lower(), _versiune_termeni)
                 _inv.consuma(cur, date.invitatie, date.email, r.get("firm_id"))
+                _scrie_telefonul(cur, r.get("user_id"), _telefon(date))
     if not r["ok"]:
         raise _erori.CerereGresita(r["mesaj"])
     return _dupa_cont_nou(r, date.nume_cabinet, date.email.strip().lower(), date.cui, "invitație")
@@ -168,7 +188,8 @@ def _register_liber(date, _versiune_termeni, ip):
             if repo_utilizatori.contul_dupa_email(cur, email):
                 raise _erori.Conflict("Există deja un cont cu emailul %s. Intră în cont (sau folosește „Am uitat parola”)." % email)
             tok = _il.creeaza(cur, {"email": email, "nume_cabinet": date.nume_cabinet.strip(), "nume": date.nume, "prenume": date.prenume,
-                                    "cui": (date.cui or "").strip()}, _nucleu.hash_parola(date.parola), _versiune_termeni, ip)
+                                    "cui": (date.cui or "").strip(), "telefon": _telefon(date)}, _nucleu.hash_parola(date.parola),
+                            _versiune_termeni, ip)
         conn.commit()
     if not _trimite_confirmarea(email, date.nume_cabinet.strip(), tok):
         with db.get_conn() as conn:
@@ -195,7 +216,7 @@ def _trimite_confirmarea(email, nume_cabinet, tok):
             "singură dată. Până la confirmare contul nu există: nu te poți autentifica și nu se creează nicio firmă.</p>"
             "<p>Dacă nu tu ai cerut contul, ignoră acest email — fără clic nu se creează nimic.</p>") % (
                 _esc(nume_cabinet), link, _esc(_cate(_il.VALABILITATE_ORE, "oră", "ore")))
-    return _obs.trimite_email_html_sau_semnaleaza("email confirmare inregistrare", email, "Confirmă contul iConta.eu", html, alerta=True)
+    return _obs.trimite_email_html_sau_semnaleaza("email confirmare inregistrare", email, "Confirmă contul iConta.eu", html, postmark=True, alerta=True)
 
 
 def inregistrari_neconfirmate(ctx):
@@ -268,6 +289,7 @@ def confirma_inregistrarea(token, ip=None):
         with conn.cursor() as cur:
             repo_utilizatori.scrie_acordul_termenilor(cur, r["user_id"], r["firm_id"], c["email"], c["termeni_versiune"])
             _il.marcheaza_confirmata(cur, c["id"], r["firm_id"])
+            _scrie_telefonul(cur, r["user_id"], c.get("telefon"))
     raspuns = _dupa_cont_nou(r, c["nume_cabinet"], c["email"], c["cui"], "înregistrare liberă")
     raspuns.update({"ok": True, "email": c["email"], "nume_cabinet": c["nume_cabinet"]})
     return raspuns

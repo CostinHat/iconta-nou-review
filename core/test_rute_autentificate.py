@@ -36,6 +36,9 @@ PUBLICE = {
     ("get",  "/public/termeni"),                # T&C, obligatoriu public
     ("get",  "/public/dezabonare"),             # [268] linkul „Dezabonează-te” din email: confirmarea; semnătura HMAC e autentificarea
     ("post", "/public/dezabonare"),             # [268] dezabonarea (butonul paginii / List-Unsubscribe-Post); aceeași semnătură
+    ("get",  "/deschide/{cheie}"),              # [lotul 7] linkul din notificarea trimisă afară: numai o redirecționare spre aplicație (cheie din mulțimea închisă `notificari.DESCHIDERI`); autentificarea o cere aplicația
+    ("get",  "/whatsapp/webhook"),              # [lotul 7] verificarea webhook-ului de către Meta; autentificarea e tokenul de verificare (`WHATSAPP_VERIFY_TOKEN`)
+    ("post", "/whatsapp/webhook"),              # [lotul 7] stările mesajelor, de la Meta; autentificarea e semnătura `X-Hub-Signature-256` (`WHATSAPP_APP_SECRET`)
     ("get",  "/public/config"),                 # config client (fara secrete)
     ("post", "/public/reset-parola/cere"),      # recuperare parola: userul nu e logat
     ("post", "/public/reset-parola/seteaza"),   # idem, cu token pe email

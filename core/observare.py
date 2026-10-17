@@ -152,8 +152,30 @@ def _in_cutia_de_test(director, catre, subiect, html, antete):
 
 
 # [p30_email_generic]
+def _trimite_postmark(token, catre, subiect, html, expeditor_nume, reply_to=None):
+    """[17.10.2026, lotul 7 pct.2.5, comanda Costin verbatim în DECIZII] „Emailurile tranzacționale (confirmare, resetare parolă, link de
+    logare) trec pe Postmark (DA, rezolvă 268).” Postmark (documentația „Email API”): `POST https://api.postmarkapp.com/email`, antetul
+    `X-Postmark-Server-Token`, corpul `From` / `To` / `Subject` / `HtmlBody` / `MessageStream` („outbound” = fluxul tranzacțional);
+    reușita = `ErrorCode` 0. Pe fluxul tranzacțional Postmark NU adaugă antetele List-Unsubscribe (le adaugă numai pe fluxurile
+    Broadcast) — exact ce cerea 268, pe care Brevo nu-l permite (îl pune singur). Întoarce True/False."""
+    import json
+    import urllib.request
+    corp = {"From": "%s <%s>" % (expeditor_nume, cfg("ICONTA_SENDER_EMAIL", _EMAIL_IMPLICIT)), "To": catre, "Subject": subiect,
+            "HtmlBody": html, "MessageStream": cfg("POSTMARK_STREAM", "outbound")}
+    if reply_to:
+        corp["ReplyTo"] = reply_to
+    req = urllib.request.Request("https://api.postmarkapp.com/email", data=json.dumps(corp).encode(), headers={
+        "X-Postmark-Server-Token": token, "Accept": "application/json", "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            return json.load(r).get("ErrorCode") == 0
+    except Exception as e:
+        print("[email esuat Postmark] %s -> %s: %s" % (subiect, catre, e))
+        return False
+
+
 def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
-                       expeditor_nume="iConta.eu", informativ=False):
+                       expeditor_nume="iConta.eu", informativ=False, postmark=False):
     """Email HTML catre un destinatar arbitrar (nu doar alerta interna).
     Refoloseste cheia Brevo + sender-ul (env, citit la apel). Intoarce True/False.
 
@@ -180,6 +202,10 @@ def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
     cutie = cfg("ICONTA_EMAIL_CUTIE")
     if cutie:
         return _in_cutia_de_test(cutie, catre, subiect, html, antete)
+    # [17.10.2026, lotul 7 pct.2.5] confirmarea contului, resetarea parolei, linkul de logare: pe Postmark când există tokenul serverului
+    # Postmark; până atunci (contul îl face Costin) pleacă pe Brevo, ca înainte — nimic nu se pierde la trecere
+    if postmark and not informativ and cfg("POSTMARK_SERVER_TOKEN") and not attachments:
+        return _trimite_postmark(cfg("POSTMARK_SERVER_TOKEN"), catre, subiect, html, expeditor_nume, reply_to)
     brevo_key = cfg("BREVO_API_KEY")
     if not brevo_key:
         print("[email netrimis, fara BREVO_API_KEY] %s -> %s" % (subiect, catre))

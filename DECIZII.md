@@ -21184,3 +21184,41 @@ oprești și raportezi”): **nimic publicat, nicio a treia rulare**. Ambele pic
   (`git ls-files`, glob pe `core/test_*.py`), nu printr-un `scan_*`. `perimetru.garzi_de_arbore` le include acum (`_ENUMERA_ARBORE`):
   84 + 84 -> 157 de gărzi la orice `.py` atins. Limita: o parcurgere scrisă altfel decât tiparul.
 **Decizie cerută:** o a treia rulare a porții pe lotul 6 (peste regula „maximum două”), pe commitul cu reparațiile.
+
+## 17.10.2026 — Lotul 6: a treia rulare a porții (excepție aprobată) VERDE — publicat pe 590c6170; lotul 7 continuat pe ramură
+
+**Răspunsul lui Costin la raportul porții 2 (590c6170), verbatim:**
+> Cabinetul nu lucrează.
+> 1. Aprob o a treia rulare a porții lotului 6, pe 590c6170, ca excepție: ambele picături au fost în gărzi, nu în produs. Verde: publici cu acordul dat (backup, fast-forward, cele 7 migrări, repornire, four-way). Roșie: nu publici și raportezi doar ce a picat.
+> 2. Dacă mai pică ceva, repari doar cauza. Fără gărzi noi peste gărzi și fără extinderea uneltelor de rulare în această comandă (regula din 03.09: nicio gardă pentru o gardă).
+> 3. Lotul 7: după publicare îl continui pe ramura lucru/lot7-2026-10-17, mutată peste commitul publicat: migrarea pe baza de test, testele și e2e-ul. Nu se publică.
+>
+> Răspunde punctual pe fiecare punct. Pentru 1: rezultatul porții, backupul, migrările, four-way, commitul de pe producție. Oprește-te și raportează.
+
+**Consecințe (executor):**
+- **Pct.1 — excepția de la „maximum două rulări pe lot” (15.10) e una singură, pe acest SHA; regula rămâne.** `scripts/poarta_lot.sh`
+  numără rulările pe nume de ramură și refuza a treia; **nu s-a modificat** (pct.2): a treia rulare a pornit pe ramura-alias
+  `lucru/lot6-2026-10-16-r3`, pe același commit. Verdictul și garda lui `main` lucrează pe SHA, deci aprobarea acoperă exact 590c6170.
+  **Alternativă respinsă**: un comutator „rulare aprobată peste limită” în unealtă — extindere de unealtă, interzisă de pct.2.
+- Poarta 3: VERDE 590c61705ee6 (2026-10-17T10:42:03+03:00): prospețimea 21 trecute; pytest 8.514 trecute / 10 sărite / 15 xfail
+  (3.700 s); verificatorul TOTAL 0; cifrele F1–F5 identice cu referința aprobată (5 firme); plasa e2e 321 trecute (1.658 s).
+- Publicat: backup `~/backups_db/iconta_v2_pre_lot6_20261017_1043.dump` (430 de tabele cu date), fast-forward 6c4917d0 -> 590c6170
+  (aprobarea consumată), post-commit (origin/main, public/main, backup/lant-2026-10-17), cele 7 migrări `--productie`, repornire,
+  four-way închis (2 din 2 procese pe 590c6170).
+- **Pct.3**: ramura lotului 7 rebazată peste 590c6170 fără conflicte; `migrare_canal_notificari` rulată pe `iconta_test`. Testele
+  au picat pe FIXTURE, nu pe produs: notificări `de_validat` cu linkul `"validat"` fără element, refuzate de `notificari_element_ck`
+  (08.10). Reparat doar fixture-ul (`validat:<id>` sintetic), fără gardă nouă (pct.2).
+- **Pct.3, ce a cerut rularea țintită (suita întreagă — `main.py` și module noi, deci perimetrul incert) și cum s-a reparat, la cauză:**
+  - **SQL în use-case** (`uc_cont_notificari` 15 instrucțiuni, `uc_auth` 1, plus `notificari` 7): contravine P7 (`PLAN_HARDENING.md:840–842`,
+    use-case-ul deține tranzacția, depozitul e singurul care știe SQL). Mutat în `core/repo_cont_notificari.py` și
+    `core/repo_notificari_livrare.py`; amestecul observat (D4b) revine la 19. **Alternativă respinsă**: plafonul D4b urcat la 22 — ar fi
+    declarat drept „act” trei module care sunt use-case obișnuite.
+  - **`GET /d/{cheie}` -> `GET /deschide/{cheie}`**: un segment de o literă nu e ancoră (verdictul rutelor: GRI 7 -> 8, verificatorul
+    blochează). Linkul din email și din șablonul WhatsApp devine `https://iconta.eu/deschide/<cheie>`; șablonul n-a fost trimis încă la Meta,
+    deci schimbarea nu costă o reaprobare. **Alternativă respinsă**: clichetul GRI urcat la 8.
+  - Declarațiile modulelor și rutelor noi, fiecare cu motivul pe linie (straturi, verdictul de tranzacție al `POST /eu/telefon/cod`,
+    rutele publice și cele chemate de terți `[api_intern_v1]`, suprafața „notificări” din trasee, bifa de acord și selectul canalului,
+    `uc_cont_notificari` în `FARA_FIRMA`, constantele operaționale, citirea tăcută de după „Cere codul”, plafonul migrărilor 100 -> 101,
+    cele două taskuri de fundal). Niciun gard nou (pct.2).
+  - Testele, nu produsul: fixture-urile de notificare fără element (`notificari_element_ck`) și `Locator.is_disabled()` pe `<option>`
+    (Playwright 1.62 nu-l socotește — întorcea mereu False; citit acum din DOM).

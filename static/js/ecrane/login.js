@@ -548,6 +548,11 @@ export function ecranLogin(radacina) {
         <span class="camp-ajutor">${liber ? "Aici vine linkul de confirmare — contul se activează după clic." : "Emailul din invitație — contul se creează cu el."}</span>
       </label>
       <label class="camp">
+        <span class="camp-eticheta">Telefon</span>
+        <input type="tel" class="camp-input" id="reg-telefon" autocomplete="tel" placeholder="07xx xxx xxx">
+        <span class="camp-ajutor">Opțional. După intrarea în cont îl poți folosi pentru notificări pe WhatsApp (Setări cont → Notificări).</span>
+      </label>
+      <label class="camp">
         <span class="camp-eticheta">Parol\u0103<span class="oblig">*</span></span>
         <input type="password" class="camp-input" id="reg-parola" autocomplete="off">
       </label>
@@ -575,7 +580,7 @@ export function ecranLogin(radacina) {
     const eroare = modal.querySelector("#reg-eroare");
     // [267] ce s-a completat rămâne la închidere / ieșirea din pagină și revine la redeschidere — fără parole; se șterge la cont creat
     const ciorna = ciornaFormular(modal, liber ? "iconta_ciorna_inregistrare" : "iconta_ciorna_inregistrare_invitatie",
-      ["reg-cui", "reg-cabinet", "reg-nume-admin", "reg-email", "reg-termeni"]);
+      ["reg-cui", "reg-cabinet", "reg-nume-admin", "reg-email", "reg-telefon", "reg-termeni"]);
     if (ciorna.refacuta) {
       const nota = modal.querySelector("#reg-ciorna");
       nota.textContent = "Datele completate data trecută au fost păstrate (parolele nu se păstrează).";
@@ -667,6 +672,7 @@ export function ecranLogin(radacina) {
             accept_termeni: !!modal.querySelector("#reg-termeni")?.checked,  /* [termeni_v1] */
             invitatie: liber ? null : INVITATIE,  /* [14.10.2026] invitația; [15.10.2026] sau înregistrarea liberă */
             turnstile: liber ? tokenRobot : null,   /* [257] tokenul Cloudflare Turnstile, validat pe server */
+            telefon: (modal.querySelector("#reg-telefon").value || "").trim() || null,   /* [17.10.2026, lotul 7] opțional */
         });
         ciorna.sterge();   // [267] contul (sau cererea lui) s-a creat: ciorna nu mai are rost
         if (_reg && _reg.confirmare_trimisa) { randeazaVerificaEmail(_reg.email, _reg.valabila_ore); return; }

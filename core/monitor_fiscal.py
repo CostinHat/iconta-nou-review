@@ -80,7 +80,7 @@ def salveaza(conn, sursa, alerte, url):
             decl = [str(x)[:16] for x in (a.get("declaratii_atinse") or [])]
             rel = _ca.relevanta_din(directie, decl)
             if _repo.insert_public(cur, sursa, url, rel, dv, directie, decl, a):
-                noi.append(a)
+                noi.append(dict(a, _relevanta=rel))   # relevanța DERIVATĂ (nu cea din răspuns), pentru notificare
     conn.commit()
     return noi
 
@@ -149,9 +149,119 @@ def ruleaza(max_buletine=3):
     return toate_noi
 
 
+# ── A DOUA SURSĂ: Portalul Legislativ (legislatie.just.ro) ─────────────────────────────────────────────────────────────────────────
+# [17.10.2026, lotul 7 pct.2.6, comanda Costin verbatim în DECIZII „Lotul 6 închis”] „Alertele legislative: ultima a plecat pe 05.07. Află
+# de ce s-au oprit, repară [...] (a doua sursă legislatie.just.ro, alertele importante pe canalul meu de notificare)”. Măsurat 17.10:
+# pagina de buletine ANAF are ultima modificare pe 31.08 (ultimul buletin, nr. 30 din 28.08; nr. 31–35 -> 404), iar monitorul o citea ca
+# SINGURĂ sursă — în timp ce ANAF a publicat în Monitorul Oficial 14 acte între 01.09 și 17.10 (portalul, emitentul ANAF), niciunul văzut.
+# Portalul Ministerului Justiției listează actele după EMITENT și DATA PUBLICĂRII: `GET /Public/RezultateCautare?page=N&sectiuneact=<id
+# emitent>&publicatinceputtext=AAAA/LL/ZZ&publicatsfarsittext=AAAA/LL/ZZ` (10 pe pagină), iar `/Public/DetaliiDocument/<id>` dă textul.
+PORTAL = "https://legislatie.just.ro"
+#: emitenții urmăriți (id-ul din lista portalului, citit 17.10.2026); ANAF și MF: orice act merge la analiză; Guvernul și Parlamentul emit
+#: mult în afara fiscalului, deci numai actele al căror text pomenește un subiect fiscal (`_FISCAL`) merg la analiză
+PORTAL_EMITENTI = {"239": "ANAF", "5": "Ministerul Finanțelor", "134": "Ministerul Finanțelor Publice", "3": "Guvernul", "2": "Parlamentul"}
+PORTAL_TOATE = ("239", "5", "134")
+_FISCAL = re.compile(r"Codul fiscal|Codului fiscal|procedur\w+ fiscal|impozit|tax[aăe] pe valoarea adăugată|TVA|contribuți\w+ sociale|"
+                     r"contribuți\w+ de asigurări|salariul de bază minim|declarați\w+ fiscal|e-Factura|SAF-T", re.I)
+PORTAL_ZILE = 45
+PORTAL_MAX_ACTE = 25
+_UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) iConta.eu monitor fiscal"}
+
+
+def acte_din_pagina(html):
+    """PURĂ. [(id document, eticheta)] din pagina de rezultate (`<nr>. ORDIN 1215 08/10/2026`)."""
+    out = []
+    for m in re.finditer(r'href="/Public/DetaliiDocument/(\d+)"[^>]*>\s*\d+\.\s*([^<]+)', html):
+        out.append((m.group(1), " ".join(m.group(2).split())))
+    return out
+
+
+def acte_portal(emitent, de, pana, pagini=20):
+    """Actele unui emitent publicate între `de` și `pana` (date), pe toate paginile."""
+    vazute, out = set(), []
+    for page in range(1, pagini + 1):
+        r = requests.get(PORTAL + "/Public/RezultateCautare", headers=_UA, timeout=60, params={
+            "page": page, "sectiuneact": emitent, "publicatinceputtext": de.strftime("%Y/%m/%d"),
+            "publicatsfarsittext": pana.strftime("%Y/%m/%d")})
+        r.raise_for_status()
+        noi = [a for a in acte_din_pagina(r.text) if a[0] not in vazute]
+        if not noi:
+            break
+        vazute.update(i for i, _ in noi)
+        out += noi
+    return out
+
+
+def text_act(doc_id):
+    """(titlul, textul) unui act din portal — titlul = prima frază care începe cu felul actului."""
+    r = requests.get("%s/Public/DetaliiDocument/%s" % (PORTAL, doc_id), headers=_UA, timeout=60)
+    r.raise_for_status()
+    t = extrage_text(r.text)
+    m = re.search(r"\b(ORDIN|HOTĂRÂRE|ORDONANȚĂ DE URGENȚĂ|ORDONANȚĂ|LEGE|PROCEDURĂ|INSTRUCȚIUNI|DECIZIE)\b nr\..{0,300}", t)
+    titlu = m.group(0) if m else t[:300]
+    return ((titlu.rsplit(" ", 1)[0] + " …") if len(titlu) >= 300 else titlu.strip(), t)
+
+
+def _marcaj(doc_id):
+    return "portal:%s" % doc_id
+
+
+def ruleaza_portal(azi=None, max_acte=PORTAL_MAX_ACTE):
+    """Actele noi din portal: fiecare intră o singură dată (marcajul `portal_act`), cu alertele extrase de analiză (`portal_alerta`).
+    Ca la buletine: HTTP fără conexiune în mână, tranzacții scurte; un act eșuat la citire se reia la rularea următoare."""
+    from core import db
+    import datetime as _dt
+    azi = azi or _dt.date.today()
+    de = azi - _dt.timedelta(days=PORTAL_ZILE)
+    noi, procesate = [], 0
+    for emitent in PORTAL_EMITENTI:
+        try:
+            acte = acte_portal(emitent, de, azi)
+        except Exception as e:  # noqa: BLE001 — un emitent căzut nu-i oprește pe ceilalți; se spune în jurnal
+            print("portal %s: EROARE %s" % (PORTAL_EMITENTI[emitent], e))
+            continue
+        for doc_id, eticheta in acte:
+            if procesate >= max_acte:
+                return noi
+            with db.get_conn() as conn:
+                with conn.cursor() as cur:
+                    deja = _repo.select_marcaj(cur, "portal_act", _marcaj(doc_id))
+            if deja:
+                continue
+            try:
+                titlu, text = text_act(doc_id)
+            except Exception as e:  # noqa: BLE001 — se reia la rularea următoare (marcajul nu se scrie)
+                print("portal %s: EROARE la actul %s: %s" % (PORTAL_EMITENTI[emitent], doc_id, e))
+                continue
+            de_analizat = emitent in PORTAL_TOATE or bool(_FISCAL.search(text))
+            alerte = analizeaza(text) if de_analizat else []
+            url = "%s/Public/DetaliiDocument/%s" % (PORTAL, doc_id)
+            with db.get_conn() as conn:
+                salveaza(conn, "portal_act", [{"titlu": _marcaj(doc_id), "rezumat": "%s — %s: %s" % (
+                    PORTAL_EMITENTI[emitent], titlu[:300], _cate(len(alerte), "modificare relevantă", "modificări relevante")
+                    if de_analizat else "fără subiect fiscal în text"), "relevanta": "info"}], url)
+                noi += salveaza(conn, "portal_alerta", alerte, url)
+            procesate += 1
+    return noi
+
+
+def notifica_importante(noi):
+    """Alertele `mare` -> o notificare pentru fiecare superadmin, pe canalul lui (`core/notificari.py`); restul rămân în Panou Admin ->
+    Anunțuri (propunerile monitorului). Întoarce câte notificări s-au scris."""
+    from core import db
+    from core import notificari as _notif
+    importante = [a for a in noi if a.get("_relevanta") == "mare"]
+    if not importante:
+        return 0
+    text = "Alertă legislativă importantă: %s" % "; ".join(str(a.get("titlu", ""))[:120] for a in importante[:3])
+    with db.get_conn() as conn:
+        r = _notif.pentru_superadmini(conn, "alerta_legislativa", text[:1000], "deschide:anunturi")
+    return r.get("trimise", 0)
+
+
 def _main():
     import sys as _sys
-    from core import db, observare
+    from core import db
     db.init_pool()
     if "--doar-emitere" in _sys.argv:  # [F103 auto] cronul zilnic 7/3/0
         with db.get_conn() as conn:
@@ -159,12 +269,15 @@ def _main():
         print(f"{n} anunturi automate emise")
         return
     noi = ruleaza()                    # [P5 val 3] isi deschide singura tranzactiile scurte
+    noi += ruleaza_portal()            # [17.10.2026, lotul 7 pct.2.6] a doua sursa: Portalul Legislativ
     with db.get_conn() as conn:
         emise = emite_alerte_programate(conn)  # [F103 auto] si dupa detectie
-    print(f"{len(noi)} alerte noi; {emise} anunturi automate")
-    if noi:
-        corp = "\n\n".join(f"[{a.get('relevanta')}] {a.get('titlu')}\n{a.get('rezumat')}" for a in noi)
-        observare._trimite_brevo("iConta — alerte fiscale noi", corp)
+    # [17.10.2026, lotul 7 pct.2.6] „alertele importante vin la mine pe canalul de notificare” — nu mai pleaca un email-rezumat pe
+    # adresa de alerta; cele importante devin notificari ale superadminilor (WhatsApp / email, dupa canalul fiecaruia), toate raman in
+    # Panou Admin -> Anunturi (propunerile monitorului)
+    notificate = notifica_importante(noi)
+    print(f"{len(noi)} alerte noi ({sum(1 for a in noi if a.get('_relevanta') == 'mare')} importante, {notificate} notificari); "
+          f"{emise} anunturi automate")
 
 def emite_alerte_programate(conn):
     """[F103 auto] La 7/3/0 zile inainte de data intrarii in vigoare, anunt automat

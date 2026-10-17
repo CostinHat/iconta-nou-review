@@ -13,7 +13,7 @@ import { esc, inchidereDialog, cate } from "./api.js?v=9409795a49";  // esc cano
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=2a2d9af281";  // [bun_venit_v1] "?" general (ansamblu)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
-import { numeDeSalut } from "./ecrane/salut.js?v=179b6770c5";   // [269] numele din salut, același loc ca pagina principală
+import { numeDeSalut } from "./ecrane/salut.js?v=d51db6501a";   // [269] numele din salut, același loc ca pagina principală
 import { reimprospateazaDrepturi } from "./drepturi.js?v=34d0fb0afd";   // [265] drepturile recitite pe ceasul aplicației
 
 // [p21_bara_lant] contextul barei 1 ca LANT, citit din sesiune.user() (sursa unica)
@@ -77,7 +77,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
         `<span class="${v.slab ? "bara-veriga-slab" : "bara-veriga"}"${v.functie ? " data-functie-asistent" : ""}>${esc(v.text)}</span>`).join("")}
       <span class="bara-spatiu"></span>
       <button class="nav-ghid" id="nav-ghid" title="Prezentarea aplicației (ansamblu)" aria-label="Prezentarea aplicației (ansamblu)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="14" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/></svg><span class="nav-ghid-q">?</span></button>
-      <button class="nav-clopot" id="nav-clopot" title="Notificări" aria-label="Notificări"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="nav-clopot-badge" id="nav-clopot-badge"></span></button>
+      <button class="nav-clopot" id="nav-clopot" data-deschide="notificari" title="Notificări" aria-label="Notificări"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="nav-clopot-badge" id="nav-clopot-badge"></span></button>
       <button class="nav-iesire" id="nav-iesire" title="Ieși din cont" aria-label="Ieși din cont"><span aria-hidden="true">←</span></button>
     `;
     bara.querySelector("#nav-iesire").addEventListener("click", () => sesiune.iesi());
@@ -394,6 +394,22 @@ export function creeazaNavigator(radacina, desktopRandator) {
 }
 
 
+// [17.10.2026, lotul 7 pct.2.1] Locul din aplicație numit de o notificare (email / WhatsApp: `/deschide/<cheie>` -> `/#deschide=<cheie>`;
+// clopoțelul: `deschide:<cheie>`): elementul desktopului cu `data-deschide="<cheie>"` se apasă. Cheile: `core/notificari.DESCHIDERI`.
+export function deschideCheie(cheie) {
+  if (window._navGlobal) window._navGlobal.acasa();
+  const el = document.querySelector(`[data-deschide="${String(cheie).replace(/[^\w-]/g, "")}"]`);
+  if (el) el.click();
+  return !!el;
+}
+
+export function deschideDinAdresa() {
+  const m = (location.hash || "").match(/^#deschide=([\w-]+)$/);
+  if (!m) return false;
+  history.replaceState(null, "", location.pathname + location.search);
+  return deschideCheie(m[1]);
+}
+
 // [p58_clopot] clopotel notificari (badge + panou)
 async function _clopotActualizeazaBadge(container) {  // [p66_badge_ref]
   const badge = (container || document).querySelector("#nav-clopot-badge");
@@ -451,7 +467,12 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
           // [lotul 07.10 pct.8, comanda Costin 06.10.2026] „Click pe notificarea «Notă pregătită, de validat» doar închide lista;
           // trebuie să ducă la nota de validat.” `validat[:<coada_id>]` deschide „De validat” la element; `jurnal:<firmă>:<notă>
           // [:<an>:<lună>]` (cel care a pregătit nota n-are „De validat”) deschide Registrul jurnal al firmei, în luna notei.
-          if (typeof n.link === "string" && (n.link === "validat" || n.link.startsWith("validat:")) && window._navGlobal) {
+          // [17.10.2026, lotul 7 pct.2.3] `deschide:<cheie>` (notificările de platformă ale superadminului) apasă elementul
+          // `[data-deschide="<cheie>"]` al desktopului — același drum ca linkul din email / WhatsApp (`deschideDinAdresa`)
+          if (typeof n.link === "string" && n.link.startsWith("deschide:")) {
+            deschideCheie(n.link.slice("deschide:".length));
+          }
+          else if (typeof n.link === "string" && (n.link === "validat" || n.link.startsWith("validat:")) && window._navGlobal) {
             const id = parseInt(n.link.split(":")[1], 10);
             try {
               const { randeazaValidat } = await import("./ecrane/validat.js?v=32fae3e49d");

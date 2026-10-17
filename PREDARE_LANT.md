@@ -4,17 +4,24 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-17** (dimineața; lotul 6 ÎNCHIS de Costin, poarta 1 ROȘIE și reparată, NEPUBLICAT; producția rămâne pe `6c4917d0`), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă).
-- **pe commit**: `6c4917d0` (lotul 5) — **four-way închis 16.10.2026 12:45:38**: HEAD = origin/main = public/main =
-  backup/lant-2026-10-16 = RUNNING = `6c4917d0` (2 din 2 procese); procesul pornit 12:45:36 EEST, după commit (09:53:19); nicio
-  sentinelă; backup înainte `~/backups_db/iconta_v2_pre_lot5_20261016_1243.dump` (367 de tabele cu date); cele 7 migrări ale lotului
-  rulate pe producție. Poarta lotului: rularea 1 ROȘIE (`c8c64a04`, plafonul migrărilor), rularea 2 VERDE (`6c4917d0`). Pe producție
-  rămâne un singur cabinet, „Cabinet Test Sesiunea B SRL”. Acest fișier stă pe ramura `lucru/dupa-lot5-2026-10-16` și intră în commitul
-  lotului următor.
+- **ultima rescriere**: **2026-10-17** (ora 13; lotul 6 PUBLICAT pe `590c6170` — a treia rulare a porții, aprobată ca excepție; lotul 7
+  terminat pe ramură, NEPUBLICAT), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
+- **pe commit**: `590c6170` (lotul 6) — **four-way închis 17.10.2026 10:45**: HEAD = origin/main = public/main =
+  backup/lant-2026-10-17 = RUNNING = `590c6170` (2 din 2 procese); procesul pornit 10:44:59 EEST, după commit (08:38:08); nicio
+  sentinelă; backup înainte `~/backups_db/iconta_v2_pre_lot6_20261017_1043.dump` (430 de tabele cu date); cele 7 migrări ale lotului
+  rulate pe producție. Poarta lotului 6: rularea 1 ROȘIE (`00351bea`), 2 ROȘIE (`e99aa73a`), 3 VERDE (`590c6170`, excepția aprobată,
+  pe ramura-alias `lucru/lot6-2026-10-16-r3`). Acest fișier stă pe ramura `lucru/lot7-2026-10-17` și intră în commitul lotului 7.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
+
+**17.10.2026, ora 13 — LOTUL 6 PUBLICAT (`590c6170`, four-way închis); LOTUL 7 TERMINAT PE RAMURĂ, NEPUBLICAT** (DECIZII „a treia rulare
+a porții (excepție aprobată) VERDE”). Lotul 7 (2.1 WhatsApp / email, 2.2 telefonul și canalul în Setări cont, 2.3 notificările
+superadminului, 2.6 alertele legislative din portal; 2.4 Meta, 2.5 Postmark, 2.7 Search Console pregătite fără chei) stă pe
+`lucru/lot7-2026-10-17` în `/home/costin/iconta_lot7`, mutată peste `590c6170`; migrarea `migrare_canal_notificari` rulată pe baza de
+TEST, nu pe producție. **BLOCAT: „Lotul 7 e complet” (decizia lui Costin)** — apoi poarta lotului, backup, fast-forward, migrarea
+`--productie`, four-way. Cheile (WhatsApp, Postmark) le dă Costin separat; fără ele notificările merg pe email.
 
 **17.10.2026, ora 08 — POARTA 2 A LOTULUI 6 ROȘIE (2 teste, din reparațiile porții 1) — NEPUBLICAT; BLOCAT: decizia lui Costin pentru a
 treia rulare** (DECIZII „poarta 2 (ultima) ROȘIE”). Referința de cifre aprobată și scrisă (`e99aa73a`); cauzele reparate pe ramură, plus
@@ -577,7 +584,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **988** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **997** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1219** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

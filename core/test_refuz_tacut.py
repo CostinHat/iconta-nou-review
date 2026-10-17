@@ -44,7 +44,10 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # (`plaseazaErori`, modul 1), cealaltă e o căutare de fundal la tastare (`produse/
 # potriveste`, modul 3 — `POST` folosit ca citire).
 _SCRIERI_MUTE = 18
-_CITIRI_MUTE = 77
+_CITIRI_MUTE = 78
+# [17.10.2026, lotul 7 pct.2.2] 77 -> 78: după „Cere codul”, Setări cont → Notificări recitește `/eu/notificari` ca să arate acordul salvat
+#   (și când WhatsApp nu e activ). Mesajul cererii — reușită sau refuz — e deja lângă buton; dacă recitirea cade, ecranul rămâne cu
+#   starea afișată. Măsurat pe HEAD 590c6170: 82, pe lot: 83 (`ecrane/setari.js` 4 -> 5).
 # [15.10.2026, deficiența 265] 76 -> 77: `drepturi.reimprospateazaDrepturi` recitește `/eu/drepturi` pe ceasul aplicației (la cinci
 #   minute, la revenirea în filă, la întoarcerea acasă), în fundal. Dacă citirea cade, poarta rămâne cu lista de până atunci (serverul
 #   rămâne garda) și se spune în consolă — un mesaj pe ecran la fiecare cădere de rețea ar întrerupe omul pentru ceva ce nu-i cere nimic.

@@ -40,7 +40,7 @@ def test_clasificarea_acopera_cele_82_si_fiecare_are_motiv():
     clase = collections.Counter(c for c, _m in S.CLASIFICARE.values())
     # 82 de selecturi (81 de chei: `je-centru` de două ori) + lotul 07.10 B: D204 forma, D208 modalitatea, helperul `selectDaNu`;
     # 6 fapte trecute la PRESELECTAT_PERMIS (emiterea ×4, factura recurentă, D318 tipul cererii) + destinația pe linie (fost CONFLICT)
-    assert clase[S.FISCAL] == 55 and clase[S.PRESELECTAT] == 7 and sum(clase.values()) == 84
+    assert clase[S.FISCAL] == 55 and clase[S.PRESELECTAT] == 7 and sum(clase.values()) == 85   # [17.10.2026, lotul 7] + `setari.js:not-canal` (NEFISCAL)
     assert all(len(m) > 40 for _c, m in S.CLASIFICARE.values())
     assert set(S.HELPERE) <= set(S.CLASIFICARE)
 

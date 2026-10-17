@@ -8,7 +8,8 @@ import { randeazaAdminRaportari } from "./admin_raportari.js?v=a2a0b629a8";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=eb7737e0b3";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=510e670f0b";
 import { randeazaAdminAnalytics } from "./admin_analytics.js?v=65a3ea09d5";
-import { numeDeSalut } from "./salut.js?v=179b6770c5";   // [269] numele din salut, același loc ca pagina principală
+import { numeDeSalut } from "./salut.js?v=d51db6501a";
+import { panouNotificari } from "./setari.js?v=74b50c38ea";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală
 
 // iconite SVG inline (autonome)
 function svg(cheie, fg) {
@@ -36,6 +37,10 @@ const DEF = [
   { cheie:"invitatii", titlu:"Invitații cabinete", icon: "mail", ...CULORI_CARD.verde,
     sinteza:"Contul unui cabinet adus de tine, creat din invitație",
     actiune:(nav) => nav.deschide("Invitații cabinete", (corp) => randeazaAdminInvitatii(corp)) },
+  // [17.10.2026, lotul 7 pct.2.2–2.3] canalul notificărilor superadminului (sesizările, cererile de import, alertele legislative)
+  { cheie:"notificari_cont", titlu:"Notificări", icon: "mail", ...CULORI_CARD.ardezie,
+    sinteza:"Telefonul și canalul tău: email sau WhatsApp",
+    actiune:(nav) => nav.deschide("Notificări", (corp) => panouNotificari(corp)) },
   // [15.10.2026, „Lotul 4” pct.6, verbatim în DECIZII] comutatorul înregistrării, fără publicare
   { cheie:"inregistrare", titlu:"Înregistrare", icon: "users", ...CULORI_CARD.albastru,
     sinteza:"Liberă, cu confirmarea emailului, sau numai prin invitație",
@@ -62,6 +67,7 @@ export function desktopAdmin(continut, nav) {
       <div class="cab-card-cap">${svg(c.icon, c.fg)}<span class="cab-card-titlu">${c.titlu}</span></div>
       <div class="cab-card-sinteza" data-cheie="${c.cheie}">${c.sinteza}</div>
     `;
+    card.dataset.deschide = c.cheie;   // [17.10.2026, lotul 7] ținta unei notificări (`navigator.deschideCheie`)
     card.addEventListener("click", () => c.actiune(nav));
     grila.appendChild(card);
   });

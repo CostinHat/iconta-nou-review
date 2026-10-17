@@ -10,7 +10,7 @@
 // Gard: `core/test_refuz_spre_ecran.py` (fiecare `ecran` emis de server are intrare aici, și fiecare ecran care afișează un
 // astfel de refuz trece prin `butonSpreEcran`).
 import { randeazaDateFirma } from "./date_firma.js?v=76cf61f9da";
-import { panouConectareSPV } from "./setari.js?v=4e0144b0fe";
+import { panouConectareSPV } from "./setari.js?v=74b50c38ea";
 import { randeazaProduse } from "./produse_ecran.js?v=4554cd872c";
 
 export const ECRANE = {

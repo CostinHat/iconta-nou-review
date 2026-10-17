@@ -227,7 +227,7 @@ NEDOCUMENTARE = [
     (r"^/admin/", "administrarea furnizorului"),
     (r"^/gdpr/", "GDPR"),
     (r"^/raportari|^/recomanda|^/api/eveniment-public|^/ajutor/", "suport și telemetrie"),
-    (r"^/notificari", "notificări"),
+    (r"^/notificari|^/deschide/|^/whatsapp/webhook$", "notificări"),   # [17.10.2026, lotul 7] + linkul din notificările trimise afară și webhook-ul WhatsApp (starea mesajelor)
     (r"^/api/v1/firme$", "cheia de integrare"),
 ]
 

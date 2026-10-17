@@ -38,6 +38,12 @@ def raportari_creeaza(date, ctx):
             text += "\n\n" + date.text.strip()
     with db.get_conn() as conn:
         r = _rap.creeaza_raportare(conn, ctx["uid"], ctx.get("firm"), date.subiect, text, tip=tip, aplicatie=date.aplicatie)
+        if r.get("ok"):
+            # [17.10.2026, lotul 7 pct.2.3, verbatim în DECIZII] „Notificare pentru mine (superadmin) la fiecare cerere de import și
+            # sesizare din Suport; acum ajung doar în Superadmin → Raportări.” În aceeași tranzacție cu cererea (o cerere anulată nu
+            # anunță nimic); pleacă pe canalul superadminului după commit (`core/notificari.py`).
+            from core import notificari as _notif_canal
+            _notif_canal.pentru_superadmini(conn, tip, _rap.text_notificare(conn, r["raportare_id"]), "deschide:raportari")
     if not r.get("ok"):
         raise _erori.CerereGresita(mesaj_din_cod(r.get("cod")))
     if tip == "sesizare":

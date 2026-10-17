@@ -294,6 +294,17 @@ CLASIFICARE = {
             "fiindcă s-ar fi schimbat ceva în ea. [R193, 10.10.2026] Modelul nu mai e întrebat deloc pe calea asta: linia facturii poartă "
             "contul de venit ales de contabil (același ca pe notă), deci n-are ce cere; rămâne candidat prin scrierile ei compuse.",
     },
+    "POST /eu/telefon/cod": {
+        "clasa": NECRITIC,
+        "efecte": "acordul pentru WhatsApp (public.users.acord_whatsapp_la) <-> codul de confirmare (public.telefon_coduri) <-> mesajul "
+                  "cu codul, pe WhatsApp (după commit)",
+        "de_ce":
+            "[17.10.2026, lotul 7 pct.2.2] Două tranzacții DELIBERAT: (1) acordul se scrie și rămâne chiar dacă WhatsApp nu e activ pe "
+            "platformă — omul a bifat, iar refuzul îi spune că acordul s-a salvat; (2) codul se scrie ÎNAINTEA trimiterii, fiindcă un cod "
+            "trimis și nescris n-ar mai putea fi confirmat. Nicio combinație nu lasă o stare falsă: acordul fără cod e starea de dinainte "
+            "de cerere (numărul rămâne neconfirmat, canalul pe email); un cod scris și netrimis expiră singur și se poate cere altul "
+            "(`PAUZA_COD_SEC`). Canalul WhatsApp cere în plus numărul confirmat — CHECK-ul `users_canal_notificari_check` din bază.",
+    },
     "POST /coada": {
         "clasa": NECRITIC,
         "efecte": "elementul intra in coada <-> verdictul validatorului <-> notificarea validatorilor",

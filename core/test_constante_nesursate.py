@@ -115,11 +115,15 @@ BASELINE = {
     "d205.py": 0, "d212_engine.py": 11, "d216.py": 0, "d394.py": 2, "d401.py": 2, "d402.py": 3,
     "d403.py": 5, "d406.py": 5, "d406_active.py": 7, "d407.py": 2,
     "decontari_asociati.py": 1, "deconturi.py": 1, "duk.py": 2, "efactura_send.py": 1,
-    "factura_pdf.py": 1, "monitor_fiscal.py": 1, "motor.py": 2, "notificari_scadenta.py": 2,
+    "factura_pdf.py": 1, "monitor_fiscal.py": 4, "motor.py": 2, "notificari.py": 2, "notificari_scadenta.py": 2,
     "ong.py": 2, "produse_api.py": 0, "provizioane.py": 1, "salariati_api.py": 1,
     "salariati_import_api.py": 1, "salarizare.py": 17, "scadentar.py": 2, "scadente.py": 3,
     "scan_constante.py": 1, "sponsorizari.py": 3, "stat_plata_api.py": 1, "termene_api.py": 1,
     "tva_agricultori.py": 2, "tva_aur.py": 1, "tva_marja_turism.py": 1,
+    # [17.10.2026, lotul 7] +5, DELIBERAT si cu motivul — aceeasi clasa OPERATIONALA: `monitor_fiscal.py` 1 -> 4 (`PORTAL_ZILE = 45` =
+    # fereastra de zile in care se cauta actele noi pe portalul legislativ, `PORTAL_MAX_ACTE = 25` = cate acte noi se citesc la o rulare,
+    # `pagini=20` = cate pagini de rezultate se parcurg, 2.6); `notificari.py` 0 -> 2 (`INTERVAL_SEC = 30` = pasul buclei de livrare,
+    # `LOT = 20` = cate notificari pleaca la un pas, 2.1). Niciuna nu e valoare fiscala; nu e nimic de citat.
     # [lot 06.10, 06.10.2026] +2, DELIBERAT si cu motivul — aceeasi clasa OPERATIONALA numita mai sus (nu exista inca o clasa
     # pentru ea): `ghid_teme.py` l.108 `n=6` = cate ghiduri inrudite arata o pagina publica (navigare); `repo_firma_profil.py`
     # l.122 `limita=200` = cate randuri din jurnalul Date firma intoarce ecranul. Niciuna nu e valoare fiscala; amandoua

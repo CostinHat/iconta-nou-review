@@ -88,7 +88,10 @@ FARA_FIRMA = ("core/auth_api.py", "core/email_util.py", "core/notificari.py", "c
               # PROVENIENTA.json si spune DE UNDE vine un act oficial (POSITION_ID, sursa), nu ce s-a
               # constatat la o firma. Aceeasi clasa ca reverificare.py si ca exemptarea `registru_`:
               # un registru DESCRIE, nu produce afirmatii despre datele firmei (DESIGN_SYSTEM cap.25).
-              "scripts/import_corpus_fiscal.py")
+              "scripts/import_corpus_fiscal.py",
+              # 17.10.2026 (lotul 7): Setări cont → Notificări. Refuzurile de acolo (`cod`, `mesaj`) spun ceva despre CONTUL omului —
+              # numărul de telefon, codul primit pe WhatsApp, acordul —, nu despre datele unei firme; aceeași clasă ca `core/notificari.py`.
+              "core/uc_cont_notificari.py")
 
 
 def clasa(fisier, functie, chei):

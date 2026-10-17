@@ -104,9 +104,9 @@ def creeaza(cur, date, parola_hash, termeni_versiune, ip, acum=None):
                 (acum - datetime.timedelta(days=PASTRARE_ZILE),))
     tok = secrets.token_urlsafe(32)
     cur.execute("INSERT INTO public.inregistrari_in_asteptare (email, token_hash, nume_cabinet, nume, prenume, cui, parola_hash, "
-                "termeni_versiune, ip, expira_la) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                "termeni_versiune, ip, expira_la, telefon) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                 (date["email"], _hash(tok), date["nume_cabinet"], date.get("nume"), date.get("prenume"), date.get("cui") or None,
-                 parola_hash, termeni_versiune, ip, acum + datetime.timedelta(hours=VALABILITATE_ORE)))
+                 parola_hash, termeni_versiune, ip, acum + datetime.timedelta(hours=VALABILITATE_ORE), date.get("telefon")))
     return tok
 
 
@@ -157,14 +157,14 @@ def ia_pentru_confirmare(cur, token, acum=None):
     """Rândul cererii, BLOCAT (`FOR UPDATE`: două clicuri simultane pe același link nu creează două conturi) -> `{valida, cerere,
     refuz}`; `refuz` = afirmația tipată `neconformitate` (cod INEXISTENTA / FOLOSITA / EXPIRATA)."""
     acum = acum or datetime.datetime.now(datetime.timezone.utc)
-    cur.execute("SELECT id, email, nume_cabinet, nume, prenume, cui, parola_hash, termeni_versiune, expira_la, confirmata_la "
+    cur.execute("SELECT id, email, nume_cabinet, nume, prenume, cui, parola_hash, termeni_versiune, expira_la, confirmata_la, telefon "
                 "FROM public.inregistrari_in_asteptare WHERE token_hash = %s FOR UPDATE", (_hash(token),))
     r = cur.fetchone()
     if not r:
         return {"valida": False, "cerere": None, "refuz": _refuz("INEXISTENTA", "Linkul de confirmare nu există. Folosește linkul din "
                                                                   "emailul primit la înregistrare.", None)}
     c = dict(zip(("id", "email", "nume_cabinet", "nume", "prenume", "cui", "parola_hash", "termeni_versiune", "expira_la",
-                  "confirmata_la"), r))
+                  "confirmata_la", "telefon"), r))
     if c["confirmata_la"] is not None:
         return {"valida": False, "cerere": c, "refuz": _refuz("FOLOSITA", "Linkul a fost folosit deja: contul cabinetului e activ. "
                                                                "Intră în cont cu emailul și parola.", c["email"])}

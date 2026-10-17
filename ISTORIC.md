@@ -2613,3 +2613,13 @@ Referința de cifre aprobată de Costin (F1–F5, FISCALOS iese din ea; amprenta
 identice (pe copia migrată), pytest 2 picate: garda de secrete (DSN-urile sintetice din testele C47) și garda mesajelor afișabile
 (egalitatea pe textul ANAF). Reparate pe ramură, plus C46 lărgită (gărzile care parcurg depozitul direct intră în rularea țintită: 157).
 Nimic publicat; producția rămâne pe `6c4917d0`. A treia rulare cere decizia lui Costin. Lotul 7: pregătit în paralel, nefinalizat.
+
+## 17.10.2026 — Lotul 6 PUBLICAT pe 590c6170 (a treia rulare, aprobată ca excepție); lotul 7 terminat pe ramură, nepublicat
+
+Costin: a treia rulare a porții pe `590c6170`, ca excepție (comanda verbatim în DECIZII). Rulată pe ramura-alias
+`lucru/lot6-2026-10-16-r3` (același SHA; `poarta_lot.sh` nemodificat): VERDE — pytest 8.514 / 10 / 15, verificatorul 0, cifrele F1–F5
+identice, plasa 321. Publicat: backup `iconta_v2_pre_lot6_20261017_1043.dump`, fast-forward 6c4917d0 -> 590c6170, cele 7 migrări pe
+producție, repornire, four-way închis (2 din 2 procese). Lotul 7, pe `lucru/lot7-2026-10-17` mutată peste 590c6170: migrarea canalului pe
+baza de test; rularea țintită (suita întreagă) a scos 36 de picături, toate în declarații și artefacte, plus două reale de arhitectură: SQL
+în use-case (mutat în `repo_cont_notificari` / `repo_notificari_livrare`) și o rută fără ancoră (`/d/{cheie}` -> `/deschide/{cheie}`).
+E2e: lotul 7 2/2 (plus mutațiile), `bloc_a` 44, `bloc_b` 31, `lot6` 25. Nepublicat (comanda: „Nu se publică”).

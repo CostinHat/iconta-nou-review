@@ -75,6 +75,9 @@ from core import uc_migrare as _uc_migrare
 from core import uc_gdpr as _uc_gdpr
 from core import uc_firme_scoase as _uc_firme_scoase
 from core import uc_eu as _uc_eu
+from core import uc_cont_notificari as _uc_cont_notif   # [17.10.2026, lotul 7] Setări cont -> Notificări
+from core import notificari as _notificari               # [17.10.2026, lotul 7] livrarea notificărilor pe canal
+from core import whatsapp as _whatsapp                   # [17.10.2026, lotul 7] WhatsApp Cloud API
 from core import uc_declaratii as _uc_declaratii
 from core import uc_cor as _uc_cor
 from core import uc_control_fiscal as _uc_control_fiscal
@@ -333,8 +336,9 @@ async def lifespan(app):
     # instalezi, VERIFICI, și abia dacă totul a trecut pornești ce rulează singur.*
     import asyncio as _asyncio_lifespan  # ICRD_LIFESPAN_ALERTE_V1
     _asyncio_lifespan.create_task(_bucla_alerte_sanatate())
+    _asyncio_lifespan.create_task(_bucla_livrare_notificari())   # [17.10.2026, lotul 7] cutia de ieșire a clopoțelului
     global _TASKURI_FUNDAL_PORNITE
-    _TASKURI_FUNDAL_PORNITE += 1
+    _TASKURI_FUNDAL_PORNITE += 2
     try:
         with open(TENANT_TEMPLATE_PATH, encoding="utf-8") as f:
             _uc_comun.pune_sablon_tenant(f.read())
@@ -924,6 +928,17 @@ def _ciclu_sanatate():
         _verifica_si_alerta()
 
 
+async def _bucla_livrare_notificari():
+    """[17.10.2026, lotul 7 pct.2.1] Notificările clopoțelului, după commit, pe canalul fiecărui om (`core/notificari.py`)."""
+    import asyncio as _asyncio
+    while True:
+        try:
+            await _run_in_threadpool_audit(_notificari.livreaza_in_asteptare)
+        except Exception as e:  # noqa: BLE001 — bucla nu se oprește; eșecul se semnalează (o dată la `ICONTA_ALERTA_THROTTLE_MIN`)
+            _obs.esec_secundar("bucla livrare notificari", e)
+        await _asyncio.sleep(_notificari.INTERVAL_SEC)
+
+
 async def _bucla_alerte_sanatate():
     import asyncio as _asyncio
     while True:
@@ -1113,6 +1128,7 @@ class RegisterIn(BaseModel):
     accept_termeni: bool = False  # [termeni_v1] bifa obligatorie, validata pe BACKEND
     invitatie: Optional[str] = None  # [14.10.2026, comanda Costin pct.3] conturile noi de cabinet NUMAI prin invitație
     turnstile: Optional[str] = None   # [257] tokenul widgetului Cloudflare Turnstile (anti-roboți), validat pe server
+    telefon: Optional[str] = None     # [17.10.2026, lotul 7 pct.2.2] opțional; se confirmă abia din Setări cont -> Notificări
 
 class ConfirmareIn(BaseModel):
     token: str
@@ -5000,6 +5016,98 @@ def eu_profil(date: ProfilIn, ctx=Depends(cere_cabinet)):
         raise _http_din(e)
 
 
+# [17.10.2026, lotul 7 pct.2.2] Setări cont -> Notificări: telefonul, codul pe WhatsApp, acordul, canalul (`core/uc_cont_notificari.py`)
+class TelefonIn(BaseModel):
+    telefon: Optional[str] = None
+
+
+class CerereCodIn(BaseModel):
+    acord: bool = False
+
+
+class CodTelefonIn(BaseModel):
+    cod: str
+
+
+class CanalIn(BaseModel):
+    canal: str
+    acord: Optional[bool] = None
+
+
+@app.get("/eu/notificari")
+def eu_notificari(ctx=Depends(cere_cabinet)):
+    """Telefonul, confirmarea, acordul și canalul notificărilor utilizatorului."""
+    return _uc_cont_notif.stare(ctx)
+
+
+@app.put("/eu/telefon")
+def eu_telefon(date: TelefonIn, ctx=Depends(cere_cabinet)):
+    """Numărul de telefon (gol = fără). Un număr nou se confirmă din nou; canalul revine pe email."""
+    try:
+        return _uc_cont_notif.telefon_seteaza(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/eu/telefon/cod")
+def eu_telefon_cod(date: CerereCodIn, ctx=Depends(cere_cabinet)):
+    """Acordul pentru mesaje pe WhatsApp + codul de confirmare trimis pe WhatsApp."""
+    try:
+        return _uc_cont_notif.cere_cod(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/eu/telefon/confirma")
+def eu_telefon_confirma(date: CodTelefonIn, ctx=Depends(cere_cabinet)):
+    """Codul primit pe WhatsApp: numărul devine confirmat."""
+    try:
+        return _uc_cont_notif.confirma_cod(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.put("/eu/notificari")
+def eu_notificari_canal(date: CanalIn, ctx=Depends(cere_cabinet)):
+    """Canalul notificărilor (email / WhatsApp) și acordul (retras: canalul revine pe email)."""
+    try:
+        return _uc_cont_notif.canal_seteaza(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/deschide/{cheie}")  # [api_intern_v1] îl deschid linkurile din notificările trimise pe email și WhatsApp, nu un ecran (lotul 7, 2.1)
+def deschide_din_notificare(cheie: str):
+    """Linkul dintr-o notificare (email / WhatsApp): aplicația, cu locul de deschis după autentificare (`#deschide=<cheie>`)."""
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse("/#deschide=" + cheie if cheie in _notificari.DESCHIDERI else "/", status_code=302)
+
+
+@app.get("/whatsapp/webhook")  # [api_intern_v1] îl cheamă Meta, nu un ecran: verificarea adresei webhook-ului (lotul 7, 2.4)
+def whatsapp_webhook_verificare(request: Request):
+    """Verificarea webhook-ului de către Meta (`hub.mode`, `hub.verify_token`, `hub.challenge`)."""
+    q = request.query_params
+    r = _whatsapp.verificare_webhook(q.get("hub.mode"), q.get("hub.verify_token"), q.get("hub.challenge"))
+    if r is None:
+        raise HTTPException(403, "Token de verificare greșit.")
+    return Response(content=r, media_type="text/plain")
+
+
+@app.post("/whatsapp/webhook")  # [api_intern_v1] îl cheamă Meta, nu un ecran: stările mesajelor WhatsApp (lotul 7, 2.1)
+async def whatsapp_webhook(request: Request):
+    """Stările mesajelor WhatsApp (trimis / livrat / citit / eșuat), semnate de Meta; „eșuat” trimite notificarea pe email."""
+    corp = await request.body()
+    if not _whatsapp.semnatura_valida(corp, request.headers.get("x-hub-signature-256")):
+        raise HTTPException(403, "Semnătură absentă sau greșită.")
+    try:
+        payload = _json_audit.loads(corp or b"{}")
+    except ValueError:
+        raise HTTPException(400, "Corpul nu e JSON.")
+    for mid, stare, detaliu in _whatsapp.stari_din_webhook(payload):
+        await _run_in_threadpool_audit(_notificari.stare_livrare, mid, stare, detaliu)
+    return {"ok": True}
+
+
 # [p29_cabinet_routes]
 class CabinetIn(BaseModel):
     nume: Optional[str] = None
@@ -7351,6 +7459,23 @@ def public_sitemap_ghiduri(n: int):
     if not 1 <= n <= len(buc):
         return _ghid_404()
     return _sitemap_urlset(buc[n - 1])
+
+
+#: [17.10.2026, lotul 7 pct.2.7, comanda Costin verbatim în DECIZII „Lotul 6 închis”] „cele 17 pagini 404 [...] — redirecționare spre pagina
+#: corectă sau 410”. Adresele de la rădăcină culese de Google în iunie–iulie (analiza din `public_robots`, mai jos): n-au existat niciodată
+#: ca pagini (fragmente de rute; „pacht” e o greșeală de tastare), deci n-au succesor — 410 („a dispărut definitiv”), nu 404. Lista e cea
+#: numită în analiza din 27.08 (9 din 17); restul se adaugă din exportul Search Console (`scripts/search_console.py 404 <export.csv>`).
+ADRESE_RETRASE = ("/depune", "/tva", "/d406-mapare", "/d205-beneficiari", "/nota-manuala", "/pacht", "/documents/list",
+                  "/facturi/primita", "/feedback/cabinet")
+
+
+def _adresa_retrasa():
+    """410: adresa n-a fost niciodată o pagină a site-ului și n-are succesor."""
+    return Response(content="Adresa nu există pe iconta.eu.", status_code=410, media_type="text/plain; charset=utf-8")
+
+
+for _cale_retrasa in ADRESE_RETRASE:
+    app.add_api_route(_cale_retrasa, _adresa_retrasa, methods=["GET"], include_in_schema=False)
 
 
 @app.get("/robots.txt")

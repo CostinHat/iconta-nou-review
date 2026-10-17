@@ -441,8 +441,9 @@ def test_taskurile_de_fundal_pornesc_o_data_la_pornire_reusita():
     import main as _main
     inainte = _main._TASKURI_FUNDAL_PORNITE
     assert _porneste_aplicatia() == 200
-    assert _main._TASKURI_FUNDAL_PORNITE == inainte + 1, (
-        "taskul de fundal a pornit de %d ori la o singură pornire"
+    # [17.10.2026, lotul 7] două taskuri, fiecare o dată: bucla de sănătate și livrarea notificărilor (`_bucla_livrare_notificari`)
+    assert _main._TASKURI_FUNDAL_PORNITE == inainte + 2, (
+        "taskurile de fundal au pornit de %d ori la o singură pornire (așteptat: 2, câte o dată fiecare)"
         % (_main._TASKURI_FUNDAL_PORNITE - inainte))
 
 

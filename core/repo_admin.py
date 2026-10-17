@@ -77,7 +77,7 @@ def conexiuni_active(cur):
 
 def alerte_fiscale(cur):
     cur.execute("""SELECT id, sursa, titlu, rezumat, url, relevanta, creat_la
-                       FROM public.alerte_fiscale WHERE NOT vazut AND sursa != 'anaf_buletin' ORDER BY id DESC LIMIT 30""")
+                       FROM public.alerte_fiscale WHERE NOT vazut AND sursa NOT IN ('anaf_buletin', 'portal_act') ORDER BY id DESC LIMIT 30""")
     return cur.fetchall()
 
 

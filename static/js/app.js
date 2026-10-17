@@ -46,12 +46,12 @@ window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reas
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { api, arataMesaj, esc } from "./api.js?v=9409795a49";
 import { ecranBunVenit } from "./ecrane/ansamblu.js?v=2a2d9af281";  // [bun_venit_v1]
-import { ecranLogin } from "./ecrane/login.js?v=5806b31a5d";
-import { creeazaNavigator } from "./navigator.js?v=5faad603f9";
+import { ecranLogin } from "./ecrane/login.js?v=171c52118d";
+import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=176567463a";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=85d5e40523";
 import { desktopAsistent } from "./ecrane/asistent.js?v=a2fd8c40cd";
 import { desktopPortal } from "./ecrane/portal.js?v=d291b0bbd4";
-import { desktopAdmin } from "./ecrane/admin.js?v=ebb4bb188f"; // [p37_admin_desktop]
+import { desktopAdmin } from "./ecrane/admin.js?v=5b9d6e362b"; // [p37_admin_desktop]
 import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=34d0fb0afd";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
 const radacina = document.getElementById("app");
@@ -201,6 +201,8 @@ async function randeaza() {
     default: // admin_firma
       creeazaNavigator(radacina, desktopCabinet);
   }
+  // [17.10.2026, lotul 7 pct.2.1] linkul dintr-o notificare (`/deschide/<cheie>` -> `#deschide=<cheie>`): după autentificare, locul numit
+  deschideDinAdresa();
 
   // [bun_venit_v1] la PRIMA logare (flag server === false) prezentarea de ansamblu, o singura data,
   // peste desktopul deja montat (inainte de operare). Nu in previzualizare portal.

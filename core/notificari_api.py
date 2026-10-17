@@ -1,7 +1,8 @@
 """
 core/notificari_api.py — notificari in-app (clopotel).
 O notificare = un eveniment adresat unui user (user_id), cu tip, text, link optional.
-Faza 1: doar in-app. Email zilnic = faza 2.
+Faza 1: in-app. [17.10.2026, lotul 7] Faza 2: fiecare notificare noua pleaca si pe canalul ales de om (email implicit sau WhatsApp),
+dupa commit — `core/notificari.py` (eticheta tipului + linkul, fara textul notificarii).
 """
 import psycopg2.extras as _E
 
@@ -12,8 +13,10 @@ def adauga(conn, user_id, tip, text, link=None):
         return {"ok": False, "cod": "FARA_DESTINATAR"}
     with conn.cursor() as cur:
         cur.execute(
-            "INSERT INTO public.notificari (user_id, tip, text, link) "
-            "VALUES (%s,%s,%s,%s) RETURNING id",
+            # [17.10.2026, lotul 7 pct.2.1] `de_livrat`: după commit, notificarea pleacă și pe canalul omului (email implicit sau
+            # WhatsApp) — `core/notificari.py`, cutia de ieșire
+            "INSERT INTO public.notificari (user_id, tip, text, link, de_livrat) "
+            "VALUES (%s,%s,%s,%s,true) RETURNING id",
             (int(user_id), tip, text, link))
         nid = cur.fetchone()[0]
     return {"ok": True, "id": nid}

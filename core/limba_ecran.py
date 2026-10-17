@@ -59,7 +59,7 @@ PLURALE = ("parteneri", "facturi", "note", "conturi", "clienți", "furnizori", "
            "bonuri", "bunuri", "cabinete", "caractere", "cifre", "ciorne", "constatări", "câmpuri", "datorate", "deja", "depuse",
            "destinatari", "e-Facturi", "erau", "avertismente", "evenimente", "existente", "eșuate", "fișiere", "funcții", "ieșiri", "imagini", "imobile",
            "importate", "ingrediente", "intrări", "invalide", "livrări", "lucrări", "lucrători", "mijloace", "necunoscute",
-           "netrimise", "neverificate", "notificări", "obligații", "ore", "persoane", "plăți", "potriviri", "potrivite",
+           "netrimise", "neverificate", "notificări", "obligații", "ore", "minute", "persoane", "plăți", "potriviri", "potrivite",
            "pregătite", "produse", "propoziții", "părți", "recomandări", "respinse", "restante", "restanțe", "retrimiteri", "rețete", "scadente", "scadențe",
            "secțiuni", "sărite", "termene", "tipare", "tipuri", "trimise", "urme", "valizi")
 #: un număr LIPIT de o literă face parte dintr-un cod („D390 bunuri IC” — declarația D390, nu „390 de bunuri”), deci nu e numeral

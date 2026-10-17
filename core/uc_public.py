@@ -115,7 +115,8 @@ def reset_parola_cere(date):
                 % ((" " + _h.escape(nume)) if nume else "", link))
         # [R73] ALERTA: e cale de acces. Tacerea aici inseamna ca omul nu mai poate intra
         # si nimeni nu afla — chiar criteriul din docstringul lui `esec_secundar`.
-        _obs.trimite_email_html_sau_semnaleaza("email resetare parola", u["email"], "Resetare parola iConta.eu", html, alerta=True)
+        _obs.trimite_email_html_sau_semnaleaza("email resetare parola", u["email"], "Resetare parola iConta.eu", html, alerta=True,
+                                               postmark=True)
         try:
             with db.get_conn() as c, c.cursor() as cur:
                 repo_admin.scrie_audit_reset_cerut(cur, u["user_id"])
@@ -149,7 +150,8 @@ def magic_link_cere(date):
     # ca sa nu se poata enumera adresele.
     if _html_magic is not None:
         # [R73] ALERTA: SINGURA usa de intrare in portalul clientului.
-        _obs.trimite_email_html_sau_semnaleaza("email link de logare", email, "Link de logare iConta.eu", _html_magic, alerta=True)
+        _obs.trimite_email_html_sau_semnaleaza("email link de logare", email, "Link de logare iConta.eu", _html_magic, alerta=True,
+                                               postmark=True)
     return {"ok": True, "mesaj": MESAJ_LINK_LOGARE_CERUT}
 
 

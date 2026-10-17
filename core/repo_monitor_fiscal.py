@@ -21,6 +21,12 @@ def insert_public(cur, sursa, url, rel, dv, directie, decl, a):
     return cur.fetchone()
 
 
+def select_marcaj(cur, sursa, titlu):
+    """[17.10.2026, lotul 7] Marcajul unei surse deja procesate (buletinul ANAF, actul din portal)."""
+    cur.execute("SELECT 1 FROM public.alerte_fiscale WHERE sursa=%s AND titlu=%s", (sursa, titlu[:500]))
+    return cur.fetchone()
+
+
 def select_public(cur, titlu):
     cur.execute("SELECT 1 FROM public.alerte_fiscale WHERE sursa='anaf_buletin' AND titlu=%s", (titlu[:500],))
     return cur.fetchone()

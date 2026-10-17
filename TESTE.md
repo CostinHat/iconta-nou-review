@@ -46,6 +46,34 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 7 (comenzile Costin 17.10.2026, verbatim în DECIZII „Lotul 6 închis” și „răspunsul la raportul porții 1”)** — ramura
+  `lucru/lot7-2026-10-17` (început din `e99aa73a`; mutată peste `590c6170` = `main` publicat, comanda 3 din 17.10.2026 pct.3), worktree
+  `/home/costin/iconta_lot7`. Fără publicare, fără poartă. Făcute: 2.1, 2.2, 2.3, 2.6; pregătite fără chei: 2.4 (Meta), 2.5 (Postmark),
+  2.7 (Search Console).
+  - ultim: L7-1..L7-9 — ramura peste 590c6170, migrarea pe baza de test, testele lotului și e2e-ul verzi (17.10.2026)
+  - urmator: nimic în lot; publicarea cere „Lotul 7 e complet” + poarta lotului. BLOCAT: decizia lui Costin (lotul nu se publică)
+  - pasi:
+    L7-1. `core/migrare_canal_notificari.py`: `public.users` + `telefon`, `telefon_confirmat_la`, `canal_notificari` ('email' | 'whatsapp',
+          implicit 'email'), `acord_whatsapp_la`; `public.telefon_coduri` (codul de confirmare, hash + expirare + încercări);
+          `public.notificari_jurnal` (fiecare notificare: canal, id-ul mesajului WhatsApp, starea, rezerva pe email).
+    L7-2. `core/whatsapp.py` (Cloud API: trimiterea unui șablon, codul de confirmare, semnătura webhook-ului; neconfigurat = refuz numit)
+          + `core/notificari.py` (`notifica(user, tip, link)`: WhatsApp numai cu numărul confirmat și acordul dat, altfel / la eșec email;
+          mesaj scurt, fără conținut fiscal, cu linkul în aplicație).
+    L7-3. Rutele contului: `GET/PUT /eu/notificari`, `POST /eu/telefon/cod`, `POST /eu/telefon/confirma`; Setări cont -> cardul
+          „Notificări” (telefon, canal, bifa de acord, codul); înregistrarea cabinetului: telefon opțional; e2e.
+    L7-4. Webhook-ul WhatsApp (`GET/POST /whatsapp/webhook`: verificarea, semnătura, stările; „failed” -> rezerva pe email) + șabloanele
+          pentru aprobare + `scripts/whatsapp_meta.py` (înregistrarea numărului cu PIN-ul, trimiterea șabloanelor, abonarea webhook-ului).
+    L7-5. 2.3: `raportari_api.creeaza_raportare` -> notificarea superadminilor (cerere de import, sesizare), pe canalul lor.
+    L7-6. 2.6: `core/monitor_fiscal.py` a doua sursă — legislatie.just.ro (căutarea după emitent ANAF / MF și data publicării); alertele
+          `mare` -> notificarea superadminilor, pe canalul lor, nu pe adresa de alertă.
+    L7-7. 2.5: transportul emailurilor tranzacționale (confirmare, resetare, link de logare) pe Postmark când există tokenul; lista DNS.
+    L7-8. 2.7: cele 17 adrese: 410 pentru rutele de la rădăcină fără succesor (lista din `public_robots`) + unealta care clasifică un export
+          Search Console (404 -> 301 / 410, „accesate, neindexate” -> grupurile de ghiduri suprapuse).
+    L7-9. Comanda 3 pct.3: ramura peste 590c6170; `migrare_canal_notificari` pe baza de test; rularea țintită (suita întreagă — `main.py`
+          și module noi) + e2e-ul ecranelor atinse; ce pică se repară la cauză: SQL-ul din `uc_cont_notificari` / `notificari` / `uc_auth`
+          mutat în `repo_cont_notificari` / `repo_notificari_livrare` (P7: use-case fără SQL), declarațiile modulelor și rutelor noi,
+          `/d/{cheie}` -> `/deschide/{cheie}` (ancora rutei), artefactele generate (versiuni, clichete, inventarul gărzilor, vizual).
+
 - fir: **Lotul 6, comanda 1 (Costin 16.10.2026 după-amiaza, verbatim în DECIZII „Lotul 6, comanda 1”)** — 272–282, începând cu 277; răspuns
   punctual pentru fiecare. Ramura `lucru/lot6-2026-10-16` (din `fe004b18`, registrele de după publicarea lotului 5).
   - ultim: 272–273, 275–295 și C41 făcute (16.10.2026, comanda + cele patru completări): fiecare cu testul de capăt la capăt și

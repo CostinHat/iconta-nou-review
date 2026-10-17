@@ -39,7 +39,7 @@ export function paginaPrincipala(u) {
         <div class="cab-salut-data">Spațiul tău de lucru — ${dataRo(new Date(), "lung")}</div>
       </div>
       <div class="cab-benzi">${BENZI.map((b) => `
-        <button type="button" class="cab-card cab-banda" data-banda="${b.cheie}" style="background:${b.culori.bg};color:${b.culori.fg}">
+        <button type="button" class="cab-card cab-banda" data-banda="${b.cheie}" data-deschide="${b.cheie}" style="background:${b.culori.bg};color:${b.culori.fg}">
           ${svg(b.icon, b.culori.fg)}<span class="cab-card-titlu">${b.titlu}</span>
         </button>`).join("")}
       </div>

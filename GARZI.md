@@ -8953,9 +8953,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**830 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**831 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 791
+### `core/` — 792
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9528,6 +9528,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_nomenclator_pe_norma.py` — GARD [C6, 25.08.2026]: un nomenclator se ia din NORMĂ; validatorul e constrângere, nu sursă.
 - `core/test_norma_implementare.py` — GARDĂ pentru interdicția 60 — elementul care implementează o normă îi poartă articolul?
 - `core/test_note_explicative_micro.py` — GARDĂ: ce datorează o microentitate la notele explicative — și de ce NU e „nimic".
+- `core/test_notificari_canal.py` — Lotul 7 (comanda Costin 17.10.2026, verbatim în DECIZII „Lotul 6 închis”) — notificările pe canalul ales (2.1–2.3), WhatsApp (2.4),
 - `core/test_notificari_element.py` — GARDA deciziei Costin 08.10.2026, pct.4 (verbatim în DECIZII 08.10.2026): „Notificările fără element (44, 45, 46, 48) nu rămân
 - `core/test_numar_fiscal.py` — Teste core.common.numar_fiscal + garda pe generatoarele de declaratii.
 - `core/test_nume_anaf.py` — GARD [27.08.2026]: denumirea de la ANAF se păstrează lângă cea editabilă, cu data ei.
@@ -11220,3 +11221,14 @@ validarea în masă, perioadele sărite la „Marchează toate”) sunt obiecte 
 | gard | fișier | ce face imposibil | mutația | limita |
 |---|---|---|---|---|
 | gărzile care parcurg depozitul direct, în rularea țintită | `scripts/perimetru.py::_ENUMERA_ARBORE` + `core/test_perimetru.py::test_garzile_de_arbore_intra_la_orice_py_atins` | o gardă de tip `git ls-files` / glob pe `core/` nealeasă de rularea țintită (garda de secrete, a mesajelor afișabile — poarta 2) | `_ENUMERA_ARBORE` scos din `garzi_de_arbore` -> ROȘU | o parcurgere scrisă altfel decât tiparul |
+
+## 17.10.2026 — lotul 7 (2.1–2.3, 2.6; pe ramură, nepublicat)
+
+Niciun gard nou peste gărzi (comanda 3 pct.2). Ce păzește comportamentul nou al lotului:
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| canalul WhatsApp cere numărul confirmat și acordul | CHECK `users_canal_notificari_check` (`core/migrare_canal_notificari.py`) + `core/test_notificari_canal.py::test_ordinea_numar_acord_cod_canal` | o scriere (de azi sau viitoare) care pune WhatsApp fără număr confirmat și acord | `repo_cont_notificari.seteaza_telefonul` lasă canalul la schimbarea numărului -> `CheckViolation` | nu păzește că numărul confirmat e al omului (asta o face codul primit pe WhatsApp) |
+| afară pleacă eticheta, nu textul | `core/test_notificari_canal.py::test_notificarea_pleaca_o_data_pe_email_cu_eticheta_nu_cu_textul` + e2e `test_l7_notificarea_pleaca_pe_email_si_linkul_deschide_clopotelul` | cifre / date fiscale în emailul sau mesajul WhatsApp al unei notificări | `notificari.link` fără `/deschide/<cheie>` -> e2e pică | eticheta e un text scris de mână în `TIPURI`; nu se scanează după cifre |
+| fiecare tip de notificare are etichetă de livrare | `core/test_notificari_canal.py` (scanarea AST a apelurilor `adauga` / `adauga_multi` / `pentru_superadmini`) | un tip nou scris în clopoțel care n-ar mai pleca pe canal | — (descris în docstringul testului) | numai tipurile literale; un tip calculat la rulare nu se vede |
+| WhatsApp inactiv până la confirmare și acord, pe ecran | e2e `test_l7_setari_cont_notificari_numar_acord_canal` (`_wa_inactiv`, proprietatea din DOM) | opțiunea WhatsApp aleasă din ecran înaintea confirmării | `wa.disabled = false` -> e2e pică | — |
