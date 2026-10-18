@@ -2674,3 +2674,15 @@ cifrele se calculează și dau 38 de diferențe: 35 vin din datele firmelor F1 �
 17.10 (aceleași 35 ies și cu codul publicat, `590c6170`), iar 6 amprente D406 (F1, F2, F3, F5) se schimbă numai prin conturile 4092 /
 4093 / 4094 adăugate de C48 în planul de conturi (scoase din XML, amprenta revine exact la referință sau la codul publicat). A doua
 rulare a porții (ultima) nu pornește până nu aprobă Costin noua referință.
+
+## 18.10.2026 — Lotul 7, comanda 7.3: referința de cifre F1–F5 aprobată și scrisă; poarta 2; regula permanentă pentru cifre
+
+Comanda 7.3 (verbatim în DECIZII „Comanda 7.3”): Costin aprobă referința nouă (datele noi din F1 / F2 sunt retestul lui de pe 17.10),
+confirmă că cabinetul pilot nu lucrează, cere poarta 2 și publicarea (acordul ține până la 08:00), mută bara de stare fixă în lotul 8 și
+dă regula permanentă: pe o poartă căzută numai pe cifre explicabile (retest pe producție + codul lotului), referința se actualizează,
+se notează în DECIZII și se continuă (CLAUDE.md §2.3 pct.13).
+
+Referința scrisă pe copia migrată de codul lotului (05:30, 7 s): amprenta `b1b111f972864b19cb17a8d339cc5f564df932e7e8cb8ae7f23c10b6c6a33959`;
+verificarea imediat după: identice (5 firme). 126 de valori-frunză schimbate, toate în F1 10/2026, F2 08–09/2026 și T3 (retestul) și în
+amprentele D406 ale conturilor 4092 / 4093 / 4094 (C48). Copia ștearsă. Poarta 2 pornită pe commitul care conține această intrare;
+rezultatul și publicarea — în intrarea următoare.

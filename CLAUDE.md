@@ -794,6 +794,15 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
      care porneste `scripts/githooks/poarta-suita` (prospetime, pytest, verificator, cifre F1–F5, plasa). Verdictul:
      `VERDE|ROSU <sha> <ramura> <data>` in `<git-common-dir>/poarta_verdicte.log`. Refuza: `main`, arbore murdar, SHA deja VERDE, a
      treia rulare pe ramura. Pe ROSU: cauza fiecarui test picat reparata, testele picate rulate O DATA, commit, a doua (ultima) rulare.
+   - **Poarta ROSIE NUMAI pe cifrele de referinta F1–F5 (18.10.2026, comanda Costin 7.3 pct.4, verbatim in DECIZII „Comanda 7.3”).**
+     Verbatim: *„când poarta pică doar pe cifrele de referință, iar diferențele se explică prin datele de retest de pe producție și prin
+     codul lotului, actualizezi singur referința, o notezi în DECIZII și continui. [...] Te oprești doar pentru cifre pe care nu le poți
+     explica.”* Deci: fiecare diferenta se explica INAINTE (datele de retest: aceeasi diferenta si pe codul publicat; codul lotului:
+     diferenta dispare scotand efectul reparatiei, ca sonda D406 / C48 din 18.10), apoi `cifre_referinta.py --productie
+     --scrie-referinta`, intrarea in DECIZII (diferentele, explicatia fiecareia, amprenta noii referinte), commit, a doua rulare. O
+     singura diferenta neexplicata -> OPRIRE si raport (referinta nu se scrie). Nu schimba restul: picaturile de pytest / verificator /
+     plasa urmeaza regula de mai sus; publicarea cere in continuare confirmarea ca cabinetul nu lucreaza si aprobarea SHA-ului (acordul
+     de publicare din 7.3 a tinut pana la 18.10.2026 08:00, numai pentru lotul 7).
    - **Publicarea:** `reference-transaction` muta `main` numai la un SHA cu aprobarea scrisa a lui Costin SI cu `VERDE <sha>` in jurnal.
    - Regimul pilot ramane: poarta lotului ruleaza numai cand cabinetul nu lucreaza (citeste productia: cifrele F1–F5).
    - Garzi: `core/test_poarta_ordine.py` (commit-msg fara suita; `poarta-suita` chemata numai de `poarta_lot.sh`), `core/test_poarta_lot.py`,

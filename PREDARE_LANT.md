@@ -4,7 +4,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-18** (după poarta 1 a lotului 7, ROȘIE: cauzele reparate, poarta 2 așteaptă aprobarea noii referințe de
+- **ultima rescriere**: **2026-10-18** dimineața (comanda 7.3: referința aprobată, poarta 2; înainte: după poarta 1 a lotului 7, ROȘIE: cauzele reparate, poarta 2 așteaptă aprobarea noii referințe de
   cifre F1–F5), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
 - **pe commit**: `590c6170` (lotul 6) — **four-way închis 17.10.2026 10:45**: HEAD = origin/main = public/main =
   backup/lant-2026-10-17 = RUNNING = `590c6170` (2 din 2 procese); procesul pornit 10:44:59 EEST, după commit (08:38:08); nicio
@@ -16,7 +16,12 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ÎN CE STARE E PROIECTUL
 
-**18.10.2026 — LOTUL 7: POARTA 1 ROȘIE, CAUZELE REPARATE; POARTA 2 BLOCATĂ PE APROBAREA REFERINȚEI DE CIFRE** (ISTORIC „Lotul 7: poarta 1
+**18.10.2026 dimineața — COMANDA 7.3: referința de cifre F1–F5 aprobată și scrisă (amprenta `b1b111f9…`, DECIZII „Comanda 7.3”); POARTA 2
+(ULTIMA) PORNITĂ pe commitul care conține această intrare; verde -> publicarea lotului 7 până la 08:00 (backup, fast-forward aprobat,
+migrările `--productie` în ordinea din `verifica`, four-way). Bara de stare fixă -> lotul 8. Regula permanentă pentru cifre: CLAUDE.md
+§2.3 pct.13.**
+
+**(anterior) 18.10.2026 — LOTUL 7: POARTA 1 ROȘIE, CAUZELE REPARATE; POARTA 2 BLOCATĂ PE APROBAREA REFERINȚEI DE CIFRE** (ISTORIC „Lotul 7: poarta 1
 ROȘIE”). Producția rămâne pe `590c6170` (lotul 6), neatinsă. Poarta 1 pe `ad0494c6`: 2 teste roșii (stub-uri vechi pe cheia `mesaj` a lui
 `surse_declaratiei`) + cifrele necalculabile (copia rula migrările alfabetic: `migrare_ciorne_proprii` înaintea lui
 `migrare_nr_curent_note`). Ambele reparate în commitul care conține această predare; ordinea migrărilor e acum în

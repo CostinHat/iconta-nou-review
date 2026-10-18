@@ -21343,3 +21343,44 @@ fără să modifici nimic”) — raportată: niciun commit după `fa4d1622`, lo
    aprobate fără amprentă cer o nouă aprobare înainte de Trimite. Nicio migrare nu le „îngheață” amprenta.
 6. **Cabinetul nu lucrează:** poarta lotului 7 și publicarea se fac în seara asta, cu backup chiar înainte.
 
+## 18.10.2026 — Comanda 7.3: referința de cifre F1–F5 aprobată; poarta 2 a lotului 7 și publicarea; regula permanentă pentru cifre
+
+**Comanda (Costin, 18.10.2026 dimineața, verbatim):**
+
+> 7.3
+>
+> 1. Aprob noua referință de cifre F1–F5. Datele noi din F1 (factura de 1.000 lei, încasarea de 242 lei) și F2 (amortizarea de 200 lei) sunt din retestul meu de ieri.
+> 2. Confirm: cabinetul pilot nu lucrează acum. Rulează poarta 2 și, dacă e verde, publică lotul 7.
+> 3. Bara de stare fixă: da, în lotul 8.
+> 4. Regulă permanentă, scrisă în CLAUDE.md: când poarta pică doar pe cifrele de referință, iar diferențele se explică prin datele de retest de pe producție și prin codul lotului, actualizezi singur referința, o notezi în DECIZII și continui. Acordul meu de publicare ține până la 8 dimineața. Te oprești doar pentru cifre pe care nu le poți explica.
+>
+> Oprește-te după publicare și raportează.
+
+**Consecințe (executor):**
+1. **Pct.1 — referința nouă** scrisă de codul lotului pe copia migrată (`env -u DATABASE_URL ./venv/bin/python scripts/cifre_referinta.py
+   --productie --scrie-referinta`, 05:30). **Amprenta noii referințe (`scripts/cifre_referinta_aprobate.json`):
+   `b1b111f972864b19cb17a8d339cc5f564df932e7e8cb8ae7f23c10b6c6a33959`** (supersedează `e30875dbd567…`, 17.10.2026). Verificarea imediat după:
+   „identice cu referința aprobată (5 firme)”. Cele 126 de valori-frunză schimbate față de referința din 17.10 cad toate în:
+   - **retestul lui Costin din 17.10 pe producție** — F1 10/2026: factura de servicii 704 de 1.000 lei (D300 R3_1 / R3_1_1 = 1000, R17_1
+     6200 -> 7200, D394 rezumat tip 3 / bazaLS 1000, `totalPlata_A` 6202 -> 6203; D406: 17 -> 19 înregistrări, total 16.310,88 ->
+     17.552,88, 3 -> 4 facturi; balanța 704 nou, 4111 / 5121) și încasarea de 242 lei (5121 +242); F2: amortizarea de 200 lei în 08/2026
+     (luna 08/2026 nouă în balanță, 2813 / 6811; 09/2026 cu precedentul +200; D406 T3 4 -> 5 înregistrări, 7.750 -> 7.950). Aceleași
+     diferențe le dă și codul publicat (`590c6170`, măsurat direct, 18.10.2026);
+   - **codul lotului (C48, conturile 4092 / 4093 / 4094 în D406):** amprentele D406 F1 09, F3 T2, F5 T3, F5 T4 (și cele din F1 10 / F2 T3
+     peste datele de mai sus). Scoțând blocurile `<Account>` 409[234], amprentele coincid cu referința veche / cu codul publicat (sonda
+     `proba_d406_conturi.py`, 18.10.2026, raportul porții 1).
+2. **Pct.2 — cabinetul pilot nu lucrează (18.10.2026 dimineața):** poarta 2 (ultima) pe commitul care conține această intrare; verde ->
+   publicare (backup `pg_dump` chiar înainte, `APROBARE_MAIN` pe SHA-ul verde, fast-forward + post-commit, migrările `--productie` în
+   ordinea din `verifica`, four-way). Roșie -> nepublicat, raport. **Limita acordului: 18.10.2026 08:00** (pct.4); după ora asta nu se
+   publică fără un acord nou.
+3. **Pct.3 — bara de stare fixă în lotul 8** (`LANSARE.md`, rândul „Lotul 8 — bara de stare fixă”). Reorganizare de ecran aprobată
+   (CLAUDE.md „Reorganizarea unui ecran existent = STOP”): butonul „Versiune nouă” rămâne vizibil la derulare.
+4. **Pct.4 — regula permanentă** în `CLAUDE.md` §2.3 pct.13 („Poarta ROSIE NUMAI pe cifrele de referinta F1–F5”). Condiția de aplicare:
+   fiecare diferență explicată ÎNAINTE de scriere (datele de retest = aceeași diferență pe codul publicat; codul lotului = diferența
+   dispare scoțând efectul reparației). O singură diferență neexplicată -> oprire. Supersedează, numai pentru acest caz, cerința „o
+   schimbare a referinței de cifre cere aprobarea lui Costin” (17.10.2026); oricare altă schimbare a referinței o cere în continuare.
+   **Alternativă respinsă:** scrierea automată a referinței de către poartă — ar înghiți și o diferență de cod nedorită; explicația pe
+   fiecare diferență rămâne a executorului, cu proba în raport.
+   **Limita:** „se explică” e judecata executorului, nu un mecanism; proba (sursa fiecărei diferențe) intră în raport și în DECIZII.
+
+**Temei:** N/A — decizie de proces.
