@@ -49,7 +49,7 @@ def _refuz_duk(cod, rez, sev):
 
 
 #: [08.10.2026, decizia Costin] declarațiile de TVA: intră în coadă numai dacă TVA-ul lor se potrivește cu balanța lunii
-DECLARATII_TVA = ("d300", "d394", "d390")
+DECLARATII_TVA = coada_api.DECLARATII_DIN_FACTURI   # declarațiile făcute din facturi (o singură listă)
 COD_TVA_BALANTA = "TVA_DIFERA_DE_BALANTA"
 CONTURI_TVA_POARTA = ("4427", "4426")
 
@@ -178,12 +178,8 @@ def fereastra_declaratie(schema, tip, an, luna, trim):
     return r
 
 
-#: câte documente nevalidate se numesc într-un mesaj; restul se numără („și încă 4”)
-MAX_NUMITE = 8
-
-
-def _numite(etichete):
-    return "; ".join(etichete[:MAX_NUMITE]) + ("; și încă %d" % (len(etichete) - MAX_NUMITE) if len(etichete) > MAX_NUMITE else "")
+MAX_NUMITE = coada_api.MAX_NUMITE   # o singură definiție, lângă `nevalidate_acum`
+_numite = coada_api._numite
 
 
 def surse_declaratiei(schema, tip, an, luna, trim):
@@ -192,38 +188,12 @@ def surse_declaratiei(schema, tip, an, luna, trim):
     amprenta documentelor perioadei (din ea, mai târziu, „depășită”), notele nevalidate ale perioadei și — la D300 / D394 / D390, care
     se fac din facturi — facturile fără notă validată (inclusiv cele cu TVA 0, `control_incrucisat.facturi_necontabilizate`).
     {de_la, pana_la, amprenta, note: [{nota_id, data, eticheta, suma}], facturi: [{factura_id, eticheta}], documente_nevalidate: afirmație „fapt” | None}."""
-    from core import control_incrucisat as _ci
-    from core.pdf_util import bani as _bani
     de_la, pana_la = fereastra_declaratie(schema, tip, an, luna, trim)
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
             amp = coada_api.amprenta_surse(cur, schema, de_la, pana_la)
-            note = coada_api.note_nevalidate(cur, schema, de_la, pana_la)
-        facturi = ([{"factura_id": f["id"], "eticheta": "factura %s (%s, %s lei%s)" % (
-                        f["numar"], "emisă către " + (f.get("tert_nume") or "client") if f["directie"] == "emisa"
-                        else "primită de la " + (f.get("tert_nume") or "furnizor"), _bani(f["total"]),
-                        ", nota ei e la validare" if f.get("are_ciorna") else ", fără notă")}
-                    for f in _ci.facturi_necontabilizate(conn, '"%s"' % str(schema).strip('"'), de_la, pana_la)]
-                   if tip in DECLARATII_TVA else [])
+            note, facturi, nevalidate = coada_api.nevalidate_acum(cur, schema, tip, de_la, pana_la)
         conn.rollback()
-    for n in note:   # [302] nota nevalidată n-are număr: „nota din 17.10.2026 — F1A5, 1.000,00 lei”
-        n["eticheta"] = "nota %s — %s, %s lei" % (n["eticheta"], n.get("document") or "fără document", _bani(n["suma"]))
-    parti = []
-    if facturi:
-        parti.append("Declarația cuprinde %s fără notă validată, deci încă în afara evidenței: %s." % (
-            _cate(len(facturi), "factură", "facturi"), _numite([f["eticheta"] for f in facturi])))
-    if note:
-        parti.append("În perioadă %s %s, pe care evidența nu %s cuprinde până nu %s validează un om: %s." % (
-            "este" if len(note) == 1 else "sunt", _cate(len(note), "notă nevalidată", "note nevalidate"),
-            "o" if len(note) == 1 else "le", "o" if len(note) == 1 else "le", _numite([n["eticheta"] for n in note])))
-    from core import afirmatii as _af
-    nevalidate = (_af.afirmatie(
-        "fapt", "documente_nevalidate",
-        " ".join(parti) + " Validează-le înainte de depunere: după validare declarația devine depășită și se generează din nou.",
-        unde="perioada declarației %s – %s" % (de_la, pana_la),
-        temei_completitudine="toate notele perioadei din Registrul jurnal care nu sunt validate"
-                             + (", și toate facturile perioadei fără notă validată" if tip in DECLARATII_TVA else ""))
-                  if parti else None)
     return {"de_la": de_la, "pana_la": pana_la, "amprenta": amp, "note": note, "facturi": facturi, "documente_nevalidate": nevalidate}
 
 
@@ -297,7 +267,8 @@ def coada_adauga(date, ctx):
     # validată ale perioadei, NUMITE — la orice declarație, nu numai la TVA
     _surse = surse_declaratiei(schema, date.tip, date.an, date.luna, date.trim)
     payload["_surse"] = {k: _surse[k] for k in ("de_la", "pana_la", "amprenta")}
-    payload["_surse"]["mesaj"] = (_surse["documente_nevalidate"] or {}).get("motiv")   # [298] citit pe rândul din coadă (`surse_nevalidate`)
+    # [329, 18.10.2026] avertismentul documentelor nevalidate NU se mai îngheață aici: lista cozii îl calculează la fiecare citire
+    # (`coada_api.nevalidate_acum`); notele numite rămân, pentru motivul lui „depășită” (`coada_api.depasire`)
     payload["_surse"]["note"] = [{"nota_id": n["nota_id"], "data": n["data"], "eticheta": n["eticheta"]} for n in _surse["note"]]
     payload["_cerere"] = {k: v for k, v in body.items() if k != "motiv_trecere"}
     payload["_cerere"].update(tenant_id=date.tenant_id, tip=date.tip)
@@ -401,15 +372,7 @@ def coada_adauga(date, ctx):
     if r.get("ok"):
         with db.get_conn() as conn:
             r["pas_urmator"] = pas_urmator(conn, ctx)
-    # [p57_notif] notifica validatorii ca e ceva de validat
-    if r.get("ok"):
-        try:
-            with db.get_conn() as conn:
-                _uc_comun._notif_de_validat(conn, ctx["firm"], date.tip,
-                                  r.get("perioada") or ("%s/%s" % (date.luna or date.trim or "", date.an)),
-                                  int(ctx["uid"]), tenant_id=date.tenant_id, coada_id=r.get("coada_id"))
-        except Exception:
-            pass
+    _anunta_validatorii(r, date, ctx)
     return r
 
 
@@ -441,6 +404,24 @@ def refuz_deja_in_coada(date):
                       "generată acum (cea veche iese din coadă)." % (date.tip.upper(), per, cine or "un coleg",
                                                                   "validată, gata de depunere" if stare == "aprobata" else "la validare")),
             "actiune": "Înlocuiește"}
+
+
+def _anunta_validatorii(r, date, ctx):
+    """[p57_notif] notifica validatorii ca e ceva de validat.
+    [deficiența 339, 18.10.2026] numai cu validarea în doi a declarațiilor EFECTIVĂ (`patru_ochi_stare`, aceeași sursă ca aprobarea și
+    ecranul): fără ea declarația nu așteaptă nicio validare (se aprobă la depunere, `auto_aproba_daca_e_cazul`), iar „un element nou de
+    validat” trimis validatorilor era fals. Notele trimise de asistenți se validează întotdeauna — notificarea lor e alta."""
+    if not r.get("ok"):
+        return
+    try:
+        with db.get_conn() as conn:
+            if coada_api.patru_ochi_stare(conn, ctx["firm"])["efectiv"]:
+                _uc_comun._notif_de_validat(conn, ctx["firm"], date.tip,
+                                            r.get("perioada") or ("%s/%s" % (date.luna or date.trim or "", date.an)),
+                                            int(ctx["uid"]), tenant_id=date.tenant_id, coada_id=r.get("coada_id"))
+    except Exception as _e:   # declarația a intrat; o notificare căzută se scrie în jurnal, nu se înghite
+        import logging
+        logging.getLogger("iconta").warning("notificare de validat esuata (coada %s): %s", r.get("coada_id"), _e)
 
 
 def coada_regenereaza(coada_id, ctx):
@@ -621,6 +602,7 @@ def coada_continut(coada_id, ctx):
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             row = repo_declaratii.continutul_din_coada(cur, coada_id, ctx["firm"])
+            depasita = coada_api.depasire_element(cur, coada_id) if row else None   # [323] fereastra spune „depășită”
     if not row:
         raise _erori.Inexistent("Element de coadă negăsit (sau alt cabinet).")
     tip, payload, _an, _luna = row
@@ -646,7 +628,8 @@ def coada_continut(coada_id, ctx):
             "avertismente": payload.get("avertismente") or [],
             "note_rezultat": payload.get("note_rezultat") or [],
             "stare": rez["stare"], "erori": rez["erori"], "severitate": rez.get("severitate"),
-            "temei": rez.get("temei"), "limita": rez.get("limita")}
+            "temei": rez.get("temei"), "limita": rez.get("limita"),
+            "depasita": depasita}   # [323] afirmația tipată din `coada_api.depasire` (fel, tip, motiv, mesaj), sau None
 
 
 def coada_aproba(coada_id, date, ctx):

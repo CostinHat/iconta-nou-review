@@ -8953,9 +8953,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**839 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**846 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 800
+### `core/` — 807
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9005,6 +9005,11 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_314_poveste_depasita.py` — 314 — povestea lunii aprobată, cu cifrele lunii schimbate după aprobare (comanda Costin 17.10.2026 7.2 pct.7, verbatim în DECIZII):
 - `core/test_317_320_alerta_notificari.py` — 317 + 320 (comanda Costin 17.10.2026 7.2, verbatim în DECIZII „Comanda 7.2”).
 - `core/test_319_320_inceput.py` — 319 + 320 — cardurile de început (comanda Costin 17.10.2026 7.2, verbatim în DECIZII „Comanda 7.2”). Temei: N/A — produs.
+- `core/test_325_deschideri.py` — [deficiența 325, comanda Costin 8.1 pct.2, 18.10.2026, verbatim în DECIZII „Comanda 8.1”] „nicio listă, fereastră, formular sau card nu
+- `core/test_329_nevalidate_acum.py` — [deficiența 329, comanda Costin 8.1, 18.10.2026] Avertismentul documentelor nevalidate se calculează la fiecare listare a cozii
+- `core/test_330_confirmari.py` — [deficiența 330, comanda Costin 8.1, 18.10.2026, verbatim în DECIZII „Comanda 8.1”] „Confirmarea renunțării are «Renunță la factură» și
+- `core/test_332_data_propusa.py` — [deficiența 332, comanda Costin 8.1, 18.10.2026, verbatim în DECIZII „Comanda 8.1”] „Casă: data dispoziției noi vine goală (clasa 68).”
+- `core/test_339_340_notificari.py` — [deficiențele 339 + 340, comanda Costin 8.1, 18.10.2026, verbatim în DECIZII „Comanda 8.1”]
 - `core/test_3c_functie_baza.py` — GARD [3c, CF art.77 alin.(1)]: deducerea personala se acorda NUMAI la functia de baza.
 - `core/test_3i_storno_cota.py` — GARD [3i, CF art. 282 alin. (9)]: storno-ul unei facturi cu cota 19% (emisa inainte de 01.08.2025)
 - `core/test_a10_efactura_baza_linie.py` — [A10, 18.09.2026] Import e-Factura: baza liniei = `LineExtensionAmount` (netul UBL după
@@ -9080,6 +9085,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_c2_import_firme.py` — [C2, 17.09.2026] Import în masă de firme: răspunsul „creat" corespunde bazei.
 - `core/test_c2_migrare_revenire_firma.py` — C2 (audit tenant_003): dupa salvarea unui strat de import (salariati, solduri, parteneri, asociati,
 - `core/test_c3_pool_scurgere.py` — [C3, 17.09.2026] O conexiune moartă nu se scurge din pool.
+- `core/test_c48_d406.py` — [C48 în D406, comanda Costin 8.1 pct.4, 18.10.2026, verbatim în DECIZII „Comanda 8.1”] „Probe pe care browserul nu le poate face: […] C48
 - `core/test_c4_model_csv.py` — C4 (audit tenant_003): fiecare strat de import cu fisier ofera 'Descarca model (CSV)' cu formatul REAL
 - `core/test_c5_extras_idempotent.py` — C5 + 277 — importul de extras bancar nu dublează mișcările și nu respinge mișcări noi.
 - `core/test_c6_c5_motiv_acord.py` — GARD C6 + C5 (audit vizual tenant_003, 16.08.2026).
@@ -9121,6 +9127,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_coduri_cm_din_registru.py` — GARDĂ: codurile de concediu medical vin din registru, nu dintr-o listă scrisă în JS. (22.08.2026)
 - `core/test_coduri_validator.py` — Un cod de validator citat ca temei chiar există în validatorul declarației unde e citat.
 - `core/test_coerenta_salarii.py` — GARD [R33, decizia lui Costin 25.08.2026]: semnalul de coerență notă-vs-D112 apare LA PROPUNERE,
+- `core/test_coloane_numite.py` — [18.10.2026, comanda Costin 8.1 — găsit de e2e-ul 329] Rândul citit „ca tuplu din dict” (`tuple(x.values()) if isinstance(x, dict)`)
 - `core/test_compara_ce_s_a_depus.py` — GARD — D112 ȘI D300 se confruntă cu ce s-a DEPUS, când s-a păstrat; altfel o spun.
 - `core/test_comparatii_clasificate.py` — GARDA PE DIRECTIA INVERSA: o comparatie pe o valoare de registru e CLASIFICATA. (P11, 22.08.2026)
 - `core/test_comportament_chei_suspendare.py` — Ce FAC, de fapt, cheia de API și suspendarea unui cabinet — probate prin lanțul aplicației.
@@ -11280,3 +11287,20 @@ Niciun gard nou peste gărzi (comanda 3 pct.2). Ce păzește comportamentul nou 
 |---|---|---|---|---|
 | ordinea migrărilor, derivată din cod (C49) | `core/migrari_registru.py` (`DUPA`, `in_ordine`, `inainte_nerulate`, refuzul din `ruleaza`) + `core/test_migrari_registru.py::test_ordinea_numeste_tot_ce_creeaza_alta_migrare`, `::test_nerulate_le_da_in_ordinea_rularii`, `::test_ruleaza_refuza_migrarea_inaintea_celei_de_care_depinde` | o migrare care atinge o tabelă creată de altă migrare, rulată înaintea ei — pe copia cifrelor, în comenzile tipărite de `verifica` sau de mână pe producție; o pereche nouă nenumită în `DUPA` | perechea ciorne_proprii -> nr_curent_note scoasă -> 3 ROȘII; `nerulate` sortat alfabetic -> ROȘU; refuzul scos -> ROȘU | dependența se derivă din nume: o tabelă (`CREATE TABLE`) sau o funcție (`CREATE FUNCTION`) creată de altă migrare și numită în SQL-ul executat, ori tabela și coloana adăugată (`ALTER TABLE … ADD COLUMN`) numite în aceeași instrucțiune — 23 de perechi; un nume compus la rulare (tabela dată ca parametru) sau un index / trigger / constrângere al altei migrări nu e derivat |
 | stub-urile lui `surse_declaratiei` urmează forma ei | `core/test_decizii_0810_uvw.py`, `core/test_retest_0810.py` (cheia `documente_nevalidate`) | — (reparație, nu gard: forma întoarsă s-a schimbat în lot, două stub-uri vechi rămăseseră pe `mesaj`) | — | o schimbare de formă a unei funcții înlocuite în teste prin `monkeypatch` nu e prinsă decât de testul care o folosește |
+
+## 18.10.2026 — lotul 8, comanda 8.1 (321–340; pe ramură, nepublicat)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| shell-ul aplicației derulează singur (321) | `verificator_conformitate.py` (`scroll_desktop`) + DS cap.22 §7 | `.desktop` cu `min-height` în loc de `height: 100dvh` + `overflow-y: auto` sub `html, body { overflow-y: hidden }` (rotița nu mai derulează) | `.desktop { min-height: 100dvh;` -> verificator TOTAL 1 | citește regula CSS, nu derularea; e2e `test_def_321_*` o probează în browser |
+| nimic nu se deschide fără clicul omului (325, clasă) | `frontend_test/e2e/conftest.py::GARDA_DESCHIDERI` (pe FIECARE ecran al plasei) + `core/test_325_deschideri.py` | focus din cod pe o listă (`select`), `showPicker`, o fereastră (`role=dialog`, `.fereastra-overlay`) apărută înaintea primului gest al omului, în afara celor trei aprobate (bun venit, anunțul iConta, reautentificarea — `data-deschidere="aplicatie"`, lista în test) și a linkului din notificare | `focusFaraSalt(selTip)` pus înapoi -> e2e `test_def_325_*` ROȘU (focusul pe listă notat); o fereastră nouă marcată „aplicatie” -> `test_325_ferestrele_deschise_de_aplicatie_sunt_cele_aprobate` ROȘU; ce notează scriptul e probat prin comportament (`test_def_325_garda_noteaza_focusul_showpicker_si_fereastra_din_cod`: cele trei deschideri provocate din cod, cerute exact), iar legarea lui de `_ecran` e citită pe AST (`test_325_garda_din_plasa_e_intreaga`); garda a prins pe plasă focusul pe `#df-forma_juridica` / `#df-metoda_stoc` (Date firmă) -> închis în `api.focusFaraSalt` | o fereastră deschisă din cod DUPĂ un prim gest al omului nu se prinde (fără ceas de activare: ar da alarme false la cererile lente); formularele / cardurile desfăcute în pagină se prind numai prin testele lor |
+| confirmarea unei renunțări își numește refuzul (330) | `core/test_330_confirmari.py` (toate apelurile `confirmaCaseta`) | `textOk` care începe cu „Renunț…” lângă refuzul implicit „Renunță” | forma veche în calibrare -> ROȘU | numai `confirmaCaseta`; `dialogInput` are refuzul „Anulează” |
+| data faptului propusă pe formularele noi (332, clasa 68) | `core/test_332_data_propusa.py` (7 câmpuri: casă, chitanță, Z, stoc ×3, RIP) | formularul nou al unui document de azi cu data goală | `value` scos de pe `#c-data` -> ROȘU (și e2e `test_def_332_*`) | lista e închisă: un formular NOU cu dată se adaugă în ea; cele lăsate goale sunt numite în docstring, cu motivul |
+| coloanele citite ca tuplu din dict au nume distincte | `core/test_coloane_numite.py` (toate funcțiile din `core/` cu conversia dict -> tuplu) | două coloane de ieșire cu același nume (`coalesce`, `int4`, `extract`) — pe un cursor dict tuplul iese mai scurt (500 pe `GET /coada`, 18.10) | aliasurile scoase din `mf_registru.luni_inregistrate` -> ROȘU; calibrarea pe cele trei forme vechi | SQL-ul din bucăți nelitarale se citește aproximativ; o coloană dintr-o variabilă nu se vede |
+| C48 în D406, pe validatorul oficial | `core/test_c48_d406.py` | 4092 / 4093 / 4094 lipsă din MasterFiles sau un D406 respins de DUK cu ele | 4092 scos din șablon -> ROȘU | o singură lună, o singură notă |
+| notele derivate din factura emisă / stat nu se șterg din jurnal (328) | `note_derivate.se_sterge` (`FARA_STERGERE` + factura după stare) + e2e `test_def_328_*` + `core/test_lot0710b_note_derivate.py` + `core/test_inchidere_luna.py` | „Șterge” pe contarea unei facturi emise; pe cealaltă parte, ciorna de factură care nu se mai poate șterge (drumul ei cere întâi nota ștearsă) | `se_sterge` -> mereu `True` pe factură: ROȘU (factura emisă își pierde nota); mereu `False`: ROȘU (ciorna nu se mai șterge) | — |
+| „de validat” numai cu validarea în doi efectivă (339) | `uc_coada._anunta_validatorii` + `core/test_339_340_notificari.py` | notificarea validatorilor pentru o declarație care nu așteaptă validare | condiția `efectiv` scoasă -> ROȘU | notele trimise de asistenți rămân anunțate (se validează mereu) |
+| superadminul: numai tipurile lui, bifate (340) | `notificari.vede_tipul` / `implicit` + `core/test_339_340_notificari.py` | tipurile cabinetelor la superadmin; sesizarea / cererea de import nebifate | ramura superadmin la „toate” -> ROȘU; `implicit` numai pe grupe -> ROȘU | — |
+| previzualizarea Casei nu citește formularul cât Casa se reîncarcă (C51) | `firme.js` (`zCampuri.isConnected`, înainte și după cerere) + e2e `test_def_c51_*` (ceasul paginii oprit, registrul lunii ținut pe loc) + aserțiunea „erori JavaScript pe ecran” din `_ecran` | eroarea JS când cronometrul previzualizării pornește după „Adaugă”, în „Se încarcă...” | cele două verificări scoase -> e2e ROȘU (`mut_c51.json`) | celelalte cronometre asincrone verificate de mână (5, curate); un cronometru nou se prinde numai dacă plasa îl exercită sub încărcare |
+| repornirea mașinii numită ca atare (întrebarea 6) | `sonda_web.fel_repornirii` (`server`) + `ora_bootarii` + `core/test_sonda_web.py` | „procesul a căzut” la o repornire a serverului | ramura `server` scoasă -> 2 ROȘII | btime citit din /proc/stat; cine a repornit se vede numai în jurnalul sistemului |
+| fiecare deficiență 321–340 are e2e cu mutație | `frontend_test/e2e/e2e_lot81.py` (25 de teste: 321–340, proba gărzii 325, C50, C51) + `core/test_deficiente.py` | o „rezolvată” fără test de capăt la capăt | cele 21 de mutații (`mutatii81.json`, o rulare) -> 20 de teste ROȘII + o eroare (toate cele de atunci); 321 separat (`mut321.json`: numai 321 ROȘU, „rotița n-a derulat pagina”) | proba gărzii 325 n-are mutație proprie: ea însăși cere cele trei note exact |

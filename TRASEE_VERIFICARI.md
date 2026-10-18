@@ -1753,7 +1753,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · produse (DELETE/INSERT/UPDATE) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `produse_api`, `repo_main`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_cota_jurnal (INSERT) · factura_linii (INSERT/UPDATE) · facturi (INSERT/UPDATE) · metrici_sanatate (INSERT) · produse (DELETE/INSERT/UPDATE) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi`, `produse_api`, `repo_main`*
 
 - [x] potrivirea e o **propunere**, nu o legătură creată — verifică structural că nu scrie
 - fiecare potrivire propusă poartă gradul de certitudine; una slabă nu se prezintă ca sigură

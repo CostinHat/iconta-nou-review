@@ -93,6 +93,8 @@ class Ecran:
         self.pg, self.erori, self.cereri_rele = pg, [], []
         self.nume = nume_test[len("test_def_"):] if nume_test.startswith("test_def_") else nume_test
         pg.on("pageerror", lambda e: self.erori.append(str(e)))
+        self.deschideri_singure = []   # [325] notate de GARDA_DESCHIDERI
+        pg.on("console", lambda m: self.deschideri_singure.append(m.text[6:]) if m.text.startswith("[325] ") else None)
         pg.on("response", lambda r: self.cereri_rele.append((r.status, r.url)) if r.status >= 500 else None)
 
     def acasa(self):
@@ -122,15 +124,57 @@ class Ecran:
         return cale
 
 
+#: [deficiența 325, comanda Costin 8.1 pct.2, 18.10.2026, verbatim în DECIZII] „nicio listă, fereastră, formular sau card nu se deschide
+#: fără clicul utilizatorului. Pune-o ca gardă, ca să nu mai revină.” Garda stă în FIECARE ecran al plasei (toate testele `_ecran`) și
+#: notează (pe consolă, strânse de `Ecran`):
+#:   - orice focus pus din cod pe o listă (`<select>`): focusul îi deschide lista pe telefon / cu tastatura (cauza lui 325, `#dec-tip`);
+#:     focusul dat de om (clic, Tab) nu trece prin `HTMLElement.prototype.focus`, deci nu se notează;
+#:   - orice `showPicker()` (deschide lista / calendarul din cod);
+#:   - orice fereastră (`role=dialog`, `.fereastra-overlay`) apărută ÎNAINTEA primului gest al omului pe pagină
+#:     (`navigator.userActivation.hasBeenActive`), afară de cele pe care aplicația le deschide singură prin decizie: bun venit,
+#:     anunțul iConta, reautentificarea (`data-deschidere="aplicatie"`) și linkul dintr-o notificare (`#deschide=`, omul a apăsat linkul).
+#: Testul pică la final cu lista lor. LIMITA: o fereastră deschisă din cod DUPĂ un prim gest al omului nu se prinde (fără ceas de
+#: activare, care ar da alarme false la cererile lente); formularele / cardurile care se desfac în pagină se prind numai prin testele lor.
+GARDA_DESCHIDERI = r"""
+(() => {
+  // pe consolă (prefixul [325]): `Ecran` le strânge peste navigări (o listă din pagină s-ar pierde la fiecare `goto`)
+  const note = { push: (t) => console.warn("[325] " + t) };
+  const id = (el) => el.tagName.toLowerCase() + (el.id ? "#" + el.id : "") + (el.name ? "[name=" + el.name + "]" : "");
+  const focusVechi = HTMLElement.prototype.focus;
+  HTMLElement.prototype.focus = function (...a) {
+    if (this instanceof HTMLSelectElement) note.push("focus din cod pe lista " + id(this));
+    return focusVechi.apply(this, a);
+  };
+  for (const C of [HTMLSelectElement, HTMLInputElement]) {
+    if (C.prototype.showPicker) {
+      const vechi = C.prototype.showPicker;
+      C.prototype.showPicker = function (...a) { note.push("showPicker pe " + id(this)); return vechi.apply(this, a); };
+    }
+  }
+  const dinLink = /^#deschide=/.test(location.hash);
+  const verifica = (el) => {
+    if (!(el instanceof Element) || dinLink || (navigator.userActivation && navigator.userActivation.hasBeenActive)) return;
+    const f = el.matches('[role="dialog"], .fereastra-overlay') ? el : el.querySelector('[role="dialog"], .fereastra-overlay');
+    if (f && !f.closest('[data-deschidere="aplicatie"]') && !f.querySelector('[data-deschidere="aplicatie"]'))
+      note.push("fereastră deschisă fără clic: " + (f.getAttribute("aria-label") || f.className || f.tagName));
+  };
+  new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach(verifica)))
+    .observe(document, { childList: true, subtree: true });
+})();
+"""
+
+
 def _ecran(browser, request, email):
     ctx = browser.new_context(viewport={"width": LAT, "height": INALT})
     ctx.add_init_script(sesiune(email))
+    ctx.add_init_script(GARDA_DESCHIDERI)
     e = Ecran(ctx.new_page(), request.node.name)
     yield e
-    erori, rele = list(e.erori), list(e.cereri_rele)
+    erori, rele, singure = list(e.erori), list(e.cereri_rele), list(e.deschideri_singure)
     ctx.close()
     assert not erori, "erori JavaScript pe ecran: %s" % erori[:3]
     assert not rele, "cereri cu răspuns 5xx: %s" % rele[:3]
+    assert not singure, "[325] s-a deschis ceva fără clicul omului: %s" % singure[:5]
 
 
 @pytest.fixture()

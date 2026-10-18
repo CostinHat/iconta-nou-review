@@ -4,7 +4,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-18** 07:25 (lotul 7 publicat pe `7ebbf79b`; înainte: comanda 7.3: referința aprobată, poarta 2; înainte: după poarta 1 a lotului 7, ROȘIE: cauzele reparate, poarta 2 așteaptă aprobarea noii referințe de
+- **ultima rescriere**: **2026-10-18** seara (lotul 8, comanda 8.1: 321–340 pe ramura `lucru/lot8-2026-10-18`, nepublicat; înainte: 07:25, lotul 7 publicat pe `7ebbf79b`; înainte: comanda 7.3: referința aprobată, poarta 2; înainte: după poarta 1 a lotului 7, ROȘIE: cauzele reparate, poarta 2 așteaptă aprobarea noii referințe de
   cifre F1–F5), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
 - **pe commit**: `7ebbf79b` (lotul 7) — **four-way închis 18.10.2026 07:19**: HEAD = origin/main = public/main =
   backup/lant-2026-10-18 = RUNNING = `7ebbf79b` (2 din 2 procese, pornite 07:19:39, după commitul de 05:42:05); nicio sentinelă; backup
@@ -18,6 +18,16 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
+
+**18.10.2026 seara — LOTUL 8, COMANDA 8.1 PE RAMURĂ (nepublicat).** Producția rămâne pe `7ebbf79b` (lotul 7), neatinsă. Pe ramura
+`lucru/lot8-2026-10-18` (worktree `/home/costin/iconta_lot7`), în commitul care conține această predare: 321–340 rezolvate, fiecare cu e2e
+în `frontend_test/e2e/e2e_lot81.py` și mutație roșie; garda 325 (nimic nu se deschide fără clicul omului) pe fiecare ecran al plasei;
+proba 337 (cifrele pachetului sunt ale lunii); probele fără browser; registrele lotului 7 completate (pct.0). Fără poartă (doar rularea
+țintită: suita întreagă + plasa ecranelor atinse + uneltele vizuale pe 8019). **Fronturi deschise:** (1) §6 al raportului 8.1 —
+citirea pe producție pentru 316 (`public.inregistrari_in_asteptare`, numai cu aprobarea lui Costin) și confirmările UM „serv.” (E48),
+328 (contarea facturii emise nu se mai șterge din jurnal) și WhatsApp inactiv cât lipsesc cheile Meta; BLOCAT pe răspuns. (2) Restul
+lotului 8 (LANSARE „Lotul 8”: cheile Meta / WhatsApp F257, Postmark F258, Search Console F259, bara de stare fixă) — după §6. (3) Poarta
+lotului 8 numai la „Lotul 8 e complet”, apoi publicarea cu acordul lui Costin (cabinetul nu lucrează, backup înainte).
 
 **18.10.2026 07:19 — LOTUL 7 PUBLICAT pe `7ebbf79b`.** Four-way închis: HEAD = origin/main = public/main = backup/lant-2026-10-18 =
 RUNNING = `7ebbf79b` (2 din 2 procese, pornite 07:19:39, după commitul de 05:42:05); nicio sentinelă; backup înainte

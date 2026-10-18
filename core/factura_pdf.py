@@ -5,6 +5,7 @@ facturi_api.detalii_factura). Iesire: bytes (PDF).
 Personalizare: logo (data URI base64 PNG/JPG), culoare accent, font (sans/serif/mono).
 """
 from __future__ import annotations
+import re
 import base64
 import io as _io
 from decimal import Decimal
@@ -98,6 +99,12 @@ def adresa_tert(adresa, oras=None, judet=None, tara=None):
     """[306] Adresa beneficiarului pe factură: adresa, localitatea, regiunea și — la clientul străin — țara (CF art.319 alin.(20) lit.f:
     „denumirea/numele și adresa beneficiarului”)."""
     parti = [x.strip() for x in ((adresa or ""), (oras or ""), (judet or "")) if x and x.strip()]
+    # [deficiența 331, 18.10.2026] adresa din VIES conține deja localitatea („…\nDUBLIN 4”), iar ecranul o pune și în câmpul localității
+    # (305): „DUBLIN 4, DUBLIN 4”. Localitatea / regiunea care e deja un RÂND întreg al adresei (fără deosebire de litere / spații) nu
+    # se mai repetă; un cuvânt din adresă („Str. Cluj 5”) nu ascunde județul Cluj.
+    _n = lambda x: " ".join(x.upper().split())  # noqa: E731
+    _randuri = {_n(r) for r in re.split(r"[\n,]", adresa or "") if r.strip()}
+    parti = [x for i, x in enumerate(parti) if i == 0 or _n(x) not in _randuri]
     t = (tara or "RO").strip().upper() or "RO"
     if t != "RO":
         parti.append(TARI_NUME.get(t, t))

@@ -282,7 +282,9 @@ def controale_inchidere(conn, schema, an, luna):
     with conn.cursor() as cur:
         repo_contabilitate.search_path_firma(cur, schema)
         _mf_toate = _rmf.toate(cur)
-        lipsa = _mfr.amortizare_lunii_neinregistrata(cur, _mf_toate, an, luna)
+        # [deficiența 333, 18.10.2026] amortizarea LUNII ÎN CURS nu se cere aici: generarea ei e refuzată până la sfârșitul lunii
+        # (`_cere_luna_incheiata`), iar blocajul „LUNA_IN_CURS” spune deja de ce luna nu se închide (ca la e-Facturi, mai sus)
+        lipsa = [] if in_curs else _mfr.amortizare_lunii_neinregistrata(cur, _mf_toate, an, luna)
         anterioare = _mfr.luni_anterioare_neinregistrate(cur, _mf_toate, an, luna)   # [deficiența 215]
         # [deficiența 312] lunile a căror amortizare e deja generată (ciornă), pe cont: „generată, de validat”, nu „neînregistrată”
         in_ciorna = {c: _mfr.luni_in_ciorna(cur, c) for c in {x["cont"] for x in lipsa + anterioare if x.get("cont")}}

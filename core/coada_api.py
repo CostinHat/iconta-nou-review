@@ -571,7 +571,7 @@ def lista_coada(conn, cabinet_id, stare=None):
             "c.trecere_motiv, c.trecut_la, c.fel, "
             "CASE WHEN c.fel = 'nota' THEN c.payload END AS nota, "
             "c.payload->>'xml' AS _xml, c.payload->'confirmare_atentionari' AS _conf, "
-            "c.payload->'_surse' AS _surse, t.schema_name AS _schema "
+            "c.payload->'_surse' AS _surse, (c.payload ? '_cerere') AS _are_cerere, t.schema_name AS _schema "
             "FROM public.declaratii_coada c "
             "LEFT JOIN public.users u ON u.id = c.creat_de_id "
             "LEFT JOIN public.tenants t ON t.id = c.tenant_id "
@@ -585,12 +585,21 @@ def lista_coada(conn, cabinet_id, stare=None):
                 d.pop("verdict", None), d.pop("verdict_erori", None),
                 d.pop("verdict_amprenta", None), d.pop("verdict_la", None),
                 d.pop("verdict_versiune", None), xml, d.pop("_conf", None))
-            _surse, _schema = d.pop("_surse", None), d.pop("_schema", None)
+            _surse, _schema, _are_cerere = d.pop("_surse", None), d.pop("_schema", None), d.pop("_are_cerere", None)
             if d["fel"] != "nota":
                 # [297 + 298] declarația activă: depășită dacă documentele perioadei s-au schimbat după generare; sursele nevalidate numite
-                d["depasita"] = (depasire(cur, _schema, {"_surse": _surse}) if d["stare"] in STARI_ACTIVE and _schema else None)
-                d["surse_nevalidate"] = (_surse or {}).get("mesaj")
-                d["surse_note"] = [n for n in ((_surse or {}).get("note") or [])]
+                activa = d["stare"] in STARI_ACTIVE and _schema
+                d["depasita"] = depasire(cur, _schema, {"_surse": _surse}) if activa else None
+                # [329, 18.10.2026] documentele nevalidate ale perioadei ACUM, nu cele înghețate la intrare: după validarea notei,
+                # avertismentul ei dispare (declarația rămâne „depășită”, cu motivul ei)
+                if activa and (_surse or {}).get("de_la"):
+                    _note, _f, _nev = nevalidate_acum(cur, _schema, d["tip"], _surse["de_la"], _surse["pana_la"])
+                    d["surse_nevalidate"] = (_nev or {}).get("motiv")
+                    d["surse_note"] = [{"nota_id": n["nota_id"], "data": n["data"], "eticheta": n["eticheta"]} for n in _note]
+                else:
+                    d["surse_nevalidate"], d["surse_note"] = None, []
+                # [324, 18.10.2026] „Generează din nou” se oferă numai unde serverul îl poate face (cererea păstrată, `coada_regenereaza`)
+                d["se_poate_regenera"] = bool(_are_cerere)
             d["gata_de_depus"] = gata_de_depus(d["verdict_stare"]) and not d.get("depasita")
             out.append(d)
         # [lotul 07.10 pct.9-10] notele aceluiași document, în aceeași stare, sunt UN element (o validare, o cifră)
@@ -1129,12 +1138,61 @@ def amprenta_surse(cur, schema, de_la, pana_la):
 def note_nevalidate(cur, schema, de_la, pana_la):
     """[{nota_id, data, eticheta, suma}] — notele NEvalidate din [de_la, pana_la), numite ca în Registrul jurnal (`eticheta_nota`)."""
     q = _q(schema)
-    cur.execute("SELECT i.id, i.data, " + q + "eticheta_nota(i.id), COALESCE(i.document_ref, i.descriere), "
-                "COALESCE((SELECT SUM(l.suma) FROM " + q + "inregistrari_linii l WHERE l.inregistrare_id = i.id), 0) "
+    # [18.10.2026] coloanele au NUME: pe un cursor dict (lista cozii) două `COALESCE` fără alias se numesc amândouă „coalesce”, cheia se
+    # suprascrie, iar `tuple(x.values())` ieșea mai scurt (IndexError -> 500 pe `GET /coada`)
+    cur.execute("SELECT i.id, i.data, " + q + "eticheta_nota(i.id) AS eticheta, COALESCE(i.document_ref, i.descriere) AS document, "
+                "COALESCE((SELECT SUM(l.suma) FROM " + q + "inregistrari_linii l WHERE l.inregistrare_id = i.id), 0) AS suma "
                 "FROM " + q + "inregistrari i WHERE i.status <> 'validata' AND i.data >= %s AND i.data < %s ORDER BY i.data, i.id",
                 (de_la, pana_la))
     return [{"nota_id": r[0], "data": r[1].isoformat(), "eticheta": r[2], "document": r[3], "suma": "%.2f" % r[4]}
             for r in (tuple(x.values()) if isinstance(x, dict) else x for x in cur.fetchall())]
+
+
+#: declarațiile făcute din facturi: la ele se numesc și facturile fără notă validată (`uc_coada.DECLARATII_TVA`, aceeași listă)
+DECLARATII_DIN_FACTURI = ("d300", "d394", "d390")
+#: câte documente nevalidate se numesc într-un mesaj; restul se numără („și încă 4”)
+MAX_NUMITE = 8
+
+
+def _numite(etichete):
+    return "; ".join(etichete[:MAX_NUMITE]) + ("; și încă %d" % (len(etichete) - MAX_NUMITE) if len(etichete) > MAX_NUMITE else "")
+
+
+def nevalidate_acum(cur, schema, tip, de_la, pana_la):
+    """[deficiențele 298 + 329] (note, facturi, afirmația „documente_nevalidate” | None) — notele nevalidate ale perioadei și, la declarațiile
+    din facturi, facturile fără notă validată, ACUM. O singură definiție: la intrarea în coadă (`uc_coada.surse_declaratiei`) și la
+    fiecare listare a cozii — [329, 18.10.2026] avertismentul nu mai e cel înghețat la intrare („F1A6 nevalidată” rămânea după validare)."""
+    from core import afirmatii as _af
+    from core import control_incrucisat as _ci
+    from core.common import cate as _cate
+    from core.pdf_util import bani as _bani
+    note = note_nevalidate(cur, schema, de_la, pana_la)
+    # [328, 18.10.2026] „ciornă, nevalidată”, ca în Registrul jurnal: o ciornă nu e neapărat „la validare” (nota scrisă de un validator
+    # nu intră în coadă); „la validare” spunea mai mult decât știe interogarea
+    facturi = ([{"factura_id": f["id"], "eticheta": "factura %s (%s, %s lei%s)" % (
+                    f["numar"], "emisă către " + (f.get("tert_nume") or "client") if f["directie"] == "emisa"
+                    else "primită de la " + (f.get("tert_nume") or "furnizor"), _bani(f["total"]),
+                    ", nota ei e ciornă, nevalidată" if f.get("are_ciorna") else ", fără notă")}
+                for f in _ci.facturi_necontabilizate(cur.connection, '"%s"' % str(schema).strip('"'), de_la, pana_la)]
+               if tip in DECLARATII_DIN_FACTURI else [])
+    for n in note:   # [302] nota nevalidată n-are număr: „nota din 17.10.2026 — F1A5, 1.000,00 lei”
+        n["eticheta"] = "nota %s — %s, %s lei" % (n["eticheta"], n.get("document") or "fără document", _bani(n["suma"]))
+    parti = []
+    if facturi:
+        parti.append("Declarația cuprinde %s fără notă validată, deci încă în afara evidenței: %s." % (
+            _cate(len(facturi), "factură", "facturi"), _numite([f["eticheta"] for f in facturi])))
+    if note:
+        parti.append("În perioadă %s %s, pe care evidența nu %s cuprinde până nu %s validează un om: %s." % (
+            "este" if len(note) == 1 else "sunt", _cate(len(note), "notă nevalidată", "note nevalidate"),
+            "o" if len(note) == 1 else "le", "o" if len(note) == 1 else "le", _numite([n["eticheta"] for n in note])))
+    nevalidate = (_af.afirmatie(
+        "fapt", "documente_nevalidate",
+        " ".join(parti) + " Validează-le înainte de depunere: după validare declarația devine depășită și se generează din nou.",
+        unde="perioada declarației %s – %s" % (de_la, pana_la),
+        temei_completitudine="toate notele perioadei din Registrul jurnal care nu sunt validate"
+                             + (", și toate facturile perioadei fără notă validată" if tip in DECLARATII_DIN_FACTURI else ""))
+                  if parti else None)
+    return note, facturi, nevalidate
 
 
 def stari_note_numite(cur, schema, ids):
@@ -1161,8 +1219,8 @@ def element_declaratie(cur, coada_id):
 
 def element_activ(cur, tenant_id, tip, perioada):
     """(id, stare, an, luna, trim, pregatit_de) — elementul activ al (firmă, declarație, termen), sau None."""
-    cur.execute("SELECT c.id, c.stare, (c.payload->>'_an')::int, (c.payload->>'_luna')::int, (c.payload->>'_trim')::int, "
-                "COALESCE(u.nume, u.email) FROM public.declaratii_coada c LEFT JOIN public.users u ON u.id = c.creat_de_id "
+    cur.execute("SELECT c.id, c.stare, (c.payload->>'_an')::int AS an, (c.payload->>'_luna')::int AS luna, (c.payload->>'_trim')::int AS trim, "
+                "COALESCE(u.nume, u.email) AS pregatit_de FROM public.declaratii_coada c LEFT JOIN public.users u ON u.id = c.creat_de_id "
                 "WHERE c.tenant_id = %s AND c.tip = %s AND c.perioada = %s AND c.stare = ANY(%s)", (tenant_id, tip, perioada,
                                                                                                   list(STARI_ACTIVE)))
     r = cur.fetchone()
@@ -1199,6 +1257,18 @@ def depasire(cur, schema, payload):
     return dict(_af.afirmatie("contradictie", "declaratie_depasita", _m, mesaj=_m, note_validate=validate,
                               sursele=["documentele perioadei %s – %s la generare (amprenta %s)" % (s["de_la"], s["pana_la"], s["amprenta"]),
                                        "documentele perioadei acum, în evidență"]))
+
+
+def depasire_element(cur, coada_id):
+    """[323, 18.10.2026] `depasire` pentru un element din coadă (declarația activă), citit după id; None dacă nu e activă sau nu e
+    depășită. Fereastra conținutului o arată (cuvântul „depășită” lipsea din ea)."""
+    cur.execute("SELECT t.schema_name, c.payload->'_surse', c.stare FROM public.declaratii_coada c JOIN public.tenants t ON t.id = c.tenant_id "
+                "WHERE c.id = %s AND c.fel IS DISTINCT FROM 'nota'", (coada_id,))
+    r = cur.fetchone()
+    r = tuple(r.values()) if isinstance(r, dict) else r
+    if not r or r[2] not in STARI_ACTIVE:
+        return None
+    return depasire(cur, r[0], {"_surse": r[1]})
 
 
 def refuz_depasita(cur, coada_id):

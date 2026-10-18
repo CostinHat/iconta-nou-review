@@ -441,6 +441,8 @@ APELURI_INLOCUITE = {
 #: Creditul NU se dă orb: se numără apelurile din corpul ajutorului (plus funcțiile modulului lui pe care le cheamă direct), deci
 #: un apel care nu există nici acolo rămâne pierdut. Anti-vacuu: `test_EXTRAGERILE_declarate_chiar_cheama_ajutorul`.
 APELURI_EXTRASE_IN_AJUTOR = {
+    'coada_adauga': (("core/uc_coada.py", "_anunta_validatorii"), (
+        'Deficiența 339 (comanda Costin 8.1, 18.10.2026, DECIZII „Comanda 8.1”): „de validat” pentru o declarație pleacă numai cu validarea în doi efectivă (`patru_ochi_stare(...)["efectiv"]`), iar o excepție la trimitere se scrie în jurnal; anunțul a ieșit din corp în `uc_coada._anunta_validatorii`. Gardul: `core/test_339_340_notificari.py`.')),
     'asistent_creeaza': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
         'C34 (15.10.2026, DECIZII „Lotul 2” pct.4): `trimite_email_html` întoarce `False` la eșec și nu aruncă; trimiterea și semnalarea eșecului (`esec_secundar`) stau acum în `observare.trimite_email_html_sau_semnaleaza` — sursa unică. Gardul: `core/test_email_html_rezultat.py`, `core/test_esec_trimitere_email.py`.')),
     'cabinet_solicitari_raspunde': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (

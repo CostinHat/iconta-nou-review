@@ -20,7 +20,7 @@ function _deschide() {
     const ov = document.createElement("div");
     ov.className = "reaut-overlay";  /* fereastra-de-lucru: doar X — are un câmp de parolă; X = „Ieși din cont” */
     ov.innerHTML = `
-      <div class="reaut" role="dialog" aria-modal="true" aria-labelledby="reaut-titlu">
+      <div class="reaut" role="dialog" aria-modal="true" aria-labelledby="reaut-titlu" data-deschidere="aplicatie">
         <div class="reaut-cap">
           <h2 class="reaut-titlu" id="reaut-titlu">Sesiunea a expirat</h2>
           <button type="button" class="nav-x" id="reaut-x" aria-label="Ieși din cont"><span aria-hidden="true">✕</span></button>

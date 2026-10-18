@@ -28,10 +28,10 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=9409795a49";
-import { randA as randConstatare } from "./control_verdict.js?v=751a4f0a85";
+import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=462d75fbab";
+import { randA as randConstatare } from "./control_verdict.js?v=ea86eed4e8";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma } from "./firme.js?v=32be4e4af7";
+import { deschideFirma } from "./firme.js?v=66e35e2a20";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)
@@ -53,6 +53,11 @@ function numeFirma(firme, tid) {
 function verdictInfo(c) {
   const v = (c && c.verdict_stare) || { stare: "lipsa" };
   const gata = !!(c && c.gata_de_depus);
+  // [deficiența 323, 18.10.2026] declarația DEPĂȘITĂ nu e „respinsă de validator”: verdictul DUK poate fi „valid” pe XML-ul vechi, dar
+  // cifrele lui nu mai sunt cele din evidență. Eticheta spune asta, nu „n-a trecut prin validator” / „validator: valid” ca refuz.
+  if (c && c.depasita) {
+    return { gata: false, depasita: true, clasa: "val-coer-atentie", text: "depășită — de generat din nou", lipsa: "", iesire: "" };
+  }
   if (gata) {
     return { gata: true, clasa: "val-coer-ok", text: "validat cu DUKIntegrator",
              lipsa: "", iesire: "" };
@@ -137,8 +142,9 @@ export function introCoada({ poateValida = false, poateDepune = false, admin = f
   const fraze = [note
     ? (poateValida ? "Notele de mai sus le-au pregătit asistenții: le validezi sau le respingi."
       : `Notele de mai sus le-au pregătit asistenții: le validează sau le respinge ${CINE_VALIDEAZA}.`)
-    : (poateValida ? "Aici ajung notele contabile pe care asistenții le trimit la validare: le validezi sau le respingi."
-      : `Aici ajung notele contabile pe care asistenții le trimit la validare: le validează sau le respinge ${CINE_VALIDEAZA}.`)];
+    // [deficiența 323, 18.10.2026] fără note de validat, textul nu mai descrie note care nu sunt: spune că nu așteaptă niciuna
+    : (poateValida ? "Notele pe care asistenții le trimit la validare apar aici, ca să le validezi sau să le respingi; acum nu așteaptă niciuna."
+      : `Notele pe care asistenții le trimit la validare apar aici; le validează sau le respinge ${CINE_VALIDEAZA}. Acum nu așteaptă niciuna.`)];
   if (patruOchi) {
     fraze.push(poateValida
       ? (poateDepune ? "Declarațiile pregătite de asistenți așteaptă validarea ta înainte de depunere."
@@ -232,6 +238,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     <div id="val-deValidat"></div>
     <div id="val-deDepus"></div>
     <div id="val-nevalidate"></div>
+    <div id="val-depasite"></div>
     <div class="mig-eroare" id="val-eroare"></div>
     <div id="val-ciorne"></div>
   `;
@@ -283,15 +290,22 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
 
   // [R41 partea II] «gata de depus» vine de la server, per element. Nu se recalculează aici.
   const gata = (c) => !!c.gata_de_depus;
+  // [deficiența 323, 18.10.2026] declarațiile DEPĂȘITE au grupul lor: nu sunt „nevalidate” (validatorul le poate da valide), ci
+  // generate din documente care între timp s-au schimbat
+  const depasite = [...laSenior, ...aprobate].filter((c) => !!c.depasita);
+  const nedepasita = (c) => !c.depasita;
+  const zD = corp.querySelector("#val-depasite");
+  if (depasite.length) zD.appendChild(zonaDepasite(depasite, firme, corp, nav, perm, patruOchi));
 
   if (patruOchi) {
     // ── patru-ochi ACTIV: validare în doi ──
-    if (laSenior.length) {
-      z1.innerHTML = `<div class="cf-grup-titlu cf-galben">De validat (${laSenior.length})</div>`;
-      laSenior.forEach((c) => z1.appendChild(randDeclaratie(c, firme, corp, nav, "valida", perm, patruOchi)));
+    const deValidat = laSenior.filter(nedepasita);
+    if (deValidat.length) {
+      z1.innerHTML = `<div class="cf-grup-titlu cf-galben">De validat (${deValidat.length})</div>`;
+      deValidat.forEach((c) => z1.appendChild(randDeclaratie(c, firme, corp, nav, "valida", perm, patruOchi)));
     }
     const apGata = aprobate.filter(gata);
-    const apNu = aprobate.filter((c) => !gata(c));
+    const apNu = aprobate.filter((c) => !gata(c) && nedepasita(c));
     if (apGata.length) {
       z2.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">Aprobate, de depus (${apGata.length})</div>`;
       apGata.forEach((c) => z2.appendChild(randDeclaratie(c, firme, corp, nav, "depune", perm, patruOchi)));
@@ -301,15 +315,19 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     // ── patru-ochi DEZACTIVAT: mono-utilizator, pregătește și depune singur ──
     const deDepus = [...laSenior, ...aprobate];
     const dGata = deDepus.filter(gata);
-    const dNu = deDepus.filter((c) => !gata(c));
+    const dNu = deDepus.filter((c) => !gata(c) && nedepasita(c));
     if (dGata.length) {
       z1.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">De depus (${dGata.length})</div>`;
       dGata.forEach((c) => z1.appendChild(randDeclaratie(c, firme, corp, nav, "depune", perm, patruOchi)));
     } else {
       // DS cap.6: gol + cauză + ieșire. Fundătura („Nimic de depus.") e interzisă, iar aici
       // golul are o cauză precisă — există lucrări, dar niciuna validată.
+      // [323] cauza golului se spune după ce e de fapt mai jos: nevalidate (validatorul) și / sau depășite (de generat din nou)
+      const cauze = [];
+      if (dNu.length) cauze.push(`${cate(dNu.length, "declarație", "declarații")} ${dNu.length === 1 ? "e generată, dar n-a trecut" : "sunt generate, dar n-au trecut"} prin validatorul oficial — deschide-le mai jos: validatorul rulează și verdictul se păstrează`);
+      if (depasite.length) cauze.push(`${cate(depasite.length, "declarație e depășită", "declarații sunt depășite")} — documentele perioadei s-au schimbat după generare; se generează din nou`);
       z1.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">De depus (0)</div>
-        <div class="stare-goala">Nimic gata de depus. ${cate(dNu.length, "declarație", "declarații")} ${dNu.length === 1 ? "e generată" : "sunt generate"}, dar ${dNu.length === 1 ? "n-a trecut" : "n-au trecut"} prin validatorul oficial.<br>Deschide-le mai jos — validatorul rulează și verdictul se păstrează.</div>`;
+        <div class="stare-goala">Nimic gata de depus.${cauze.length ? "<br>" + cauze.map((t) => esc(t) + ".").join("<br>") : ""}</div>`;
     }
     if (dNu.length) z2.appendChild(zonaNevalidate(dNu, firme, corp, nav, perm, patruOchi, "Generate, nevalidate"));
   }
@@ -479,6 +497,22 @@ function zonaNevalidate(lista, firme, corp, nav, perm, patruOchi, titlu) {
   return frag;
 }
 
+// [deficiența 323, 18.10.2026] grupul declarațiilor depășite: nici aprobare, nici depunere — se generează din nou (serverul refuză la fel,
+// `coada_api.refuz_depasita`). Nota grupului nu e cea a celor nevalidate („se poate trece peste refuz” nu e adevărat aici).
+function zonaDepasite(lista, firme, corp, nav, perm, patruOchi) {
+  const frag = document.createDocumentFragment();
+  const cap = document.createElement("div");
+  cap.className = "cf-grup-titlu cf-galben";
+  cap.textContent = `Depășite — de generat din nou (${lista.length})`;
+  frag.appendChild(cap);
+  const nota = document.createElement("p");
+  nota.className = "ecran-nota";
+  nota.textContent = "Documentele perioadei s-au schimbat după generare, deci cifrele lor nu mai sunt cele din evidență. Nu se aprobă și nu se depun; se generează din nou.";
+  frag.appendChild(nota);
+  lista.forEach((c) => frag.appendChild(randDeclaratie(c, firme, corp, nav, "depune", perm, patruOchi)));
+  return frag;
+}
+
 // [patru-ochi-vizibil] deschide continutul unui element din coada pentru validare: declaratie
 // (avertismente/note) + XML + verdictul DUK. Read-only. Fara asta, cine aproba nu vede ce aproba.
 async function deschideContinut(c, nav, corpLista) {
@@ -505,8 +539,11 @@ async function deschideContinut(c, nav, corpLista) {
     const avert = av.length
       ? `<div class="caseta-atentie"><b>Avertismente (${av.length})</b><ul>${av.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div>`
       : "";
+    // [deficiența 323, 18.10.2026] fereastra spune „depășită”, cu motivul, înaintea verdictului (verdictul e al XML-ului vechi)
+    const depasita = d.depasita ? `<div class="caseta-atentie val-depasita"><b>Depășită</b> — ${esc(d.depasita.mesaj)}</div>` : "";
     corp.innerHTML = `
       <p class="mig-intro">Con\u021binutul declara\u021biei \u2014 vizualizare pentru validare; numai pentru citire.</p>
+      ${depasita}
       ${duk}
       ${avert}
       <details open><summary>XML generat</summary><pre class="dec-xml-pre">${esc(xml)}</pre></details>
@@ -531,9 +568,13 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   // din nou; serverul refuză la fel (`coada_api.refuz_depasita`)
   const dep = c.depasita;
   if (dep) {
-    actiuni += perm.poate_pregati !== false
-      ? `<button class="buton-primar val-btn val-regenereaza" data-act="regenereaza" data-actiune="POST /coada/{coada_id}/regenereaza">Generează din nou</button>`
-      : `<span class="val-nota-perm">o generează din nou cine are dreptul «Poate pregăti»</span>`;
+    // [deficiența 324, 18.10.2026] „Generează din nou” numai unde serverul îl poate face (cererea păstrată, `se_poate_regenera`); o
+    // declarație intrată în coadă înainte de 17.10.2026 se generează din Declarații — butonul duce acolo, cu firma, tipul și perioada
+    actiuni += perm.poate_pregati === false
+      ? `<span class="val-nota-perm">o generează din nou cine are dreptul «Poate pregăti»</span>`
+      : c.se_poate_regenera
+        ? `<button class="buton-primar val-btn val-regenereaza" data-act="regenereaza" data-actiune="POST /coada/{coada_id}/regenereaza">Generează din nou</button>`
+        : `<button class="buton-primar val-btn val-din-declaratii" data-act="din_declaratii" data-fara-actiune="navigare la Declarații; generarea de acolo poartă acțiunea">Generează din Declarații</button>`;
   } else if (mod === "valida") {
     // Aprobă — doar dacă pot valida ȘI (patru-ochi activ) nu eu am pregătit-o
     if (!perm.poate_valida) {
@@ -602,7 +643,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   if (_vezi) _vezi.addEventListener("click", () => deschideContinut(c, nav, corp));
   // [298 + 313] notele nevalidate pe care se sprijină declarația, fiecare cu butonul ei spre Registrul jurnal
   const zSurse = div.querySelector(".val-surse-note");
-  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=bce84e526a").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
+  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=425f6a2edf").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
   return div;
 }
 
@@ -610,6 +651,13 @@ async function actioneaza(c, act, firme, corp, nav) {
   const eroare = corp.querySelector("#val-eroare");
   if (eroare) eroare.textContent = "";
   const perDecl = fmtPerioadaDecl(c);
+  if (act === "din_declaratii") {
+    // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=8cdaa83e58");
+    nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
+                 { lat: "tabel" });
+    return;
+  }
   if (act === "regenereaza") {
     try {
       const r = await api.post(`/coada/${c.id}/regenereaza`, {});

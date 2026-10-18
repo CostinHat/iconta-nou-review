@@ -31,7 +31,24 @@ UNDE = {
 }
 COD = "NOTA_DERIVATA"
 #: documentele care INDICĂ nota din alt tabel: ștergerea notei din jurnal ar lăsa legătura în aer
-FARA_STERGERE = ("stoc", "nir", "chitanta", "raport_z", "amortizare")
+#: [deficiența 328, 18.10.2026] + nota statului de plată: statul rămâne, iar „Contabilizează statul” își înlocuiește singur ciorna
+#: (`uc_tenants.salarii_contare_scrie`) — ștergerea din jurnal nu e drumul niciunei corecturi.
+FARA_STERGERE = ("stoc", "nir", "chitanta", "raport_z", "amortizare", "salarii")
+
+
+def se_sterge(cur, schema, doc, nota_id):
+    """Nota derivată (ciornă) se poate șterge din Registrul jurnal? [deficiența 328, 18.10.2026] Contarea facturii se șterge numai cât
+    factura e ciornă — e drumul ștergerii ciornei (`facturi_api.sterge_factura` cere întâi nota ștearsă). A facturii emise nu: factura
+    nu se mai șterge (CF art.330 alin.(1), stornare), iar „Șterge” în jurnal o lăsa emisă și necontată, fără ca ceva să fi fost corectat."""
+    if doc[0] in FARA_STERGERE:
+        return False
+    if doc[0] != "factura":
+        return True
+    from core import nomenclator_status_factura as _nsf
+    cur.execute("SELECT COALESCE(f.status, %%s) AS status FROM %sinregistrari i JOIN %sfacturi f ON f.id = i.factura_id "
+                "WHERE i.id = %%s" % (_q(schema), _q(schema)), (_nsf.IMPLICITA, nota_id))
+    r = cur.fetchone()
+    return (r["status"] if isinstance(r, dict) else r[0]) in _nsf.STERGIBILE if r else True
 
 
 def _q(schema):

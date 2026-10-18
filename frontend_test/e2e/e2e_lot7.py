@@ -10,6 +10,7 @@ import os
 import time
 
 from conftest import BAZA, sql
+from core.uc_cont_notificari import MOTIV_WA_INACTIV   # [335] textul aplicației, o singură sursă
 
 EMAIL = "patron@prisma-cont.test"
 
@@ -40,9 +41,9 @@ def _deschide_notificari(patron):
 
 def test_l7_setari_cont_notificari_numar_acord_canal(patron):
     """Pașii contabilului: Setări cont → Notificări; scrie un număr greșit — refuzul lângă câmp; scrie 0759 638 499 — „Numărul a fost
-    salvat”, „nu e confirmat încă”, opțiunea WhatsApp inactivă cu motivul; bifează acordul și cere codul — WhatsApp nu e activ pe platformă
-    (aplicația de probă n-are tokenul): spune asta, acordul rămâne; numărul confirmat (codul primit pe WhatsApp, simulat în bază) ->
-    WhatsApp se poate alege și se salvează."""
+    salvat”, „nu e confirmat încă”. Aplicația de probă n-are tokenul WhatsApp (ca producția până la lotul 8): [335, 18.10.2026] codul pe
+    WhatsApp nu se oferă, opțiunea WhatsApp e inactivă cu motivul „nu e încă activă”; [336] salvarea spune „vin pe email” CU motivul.
+    Chiar cu numărul confirmat (simulat în bază), WhatsApp rămâne inactiv cât nu trimite."""
     _reseteaza()
     try:
         pg = _deschide_notificari(patron)
@@ -56,26 +57,18 @@ def test_l7_setari_cont_notificari_numar_acord_canal(patron):
         pg.click("#not-salveaza-telefon")
         pg.wait_for_function("() => document.querySelector('#not-stare-telefon').innerText.includes('+40759638499')", timeout=20000)
         assert pg.inner_text("#not-stare-telefon") == "Numărul +40759638499 nu e confirmat încă."
-        assert _wa_inactiv(pg), "WhatsApp nu se poate alege înainte de confirmare și acord"
-        assert pg.inner_text("#not-motiv-canal") == "WhatsApp: confirmă întâi numărul cu codul primit pe WhatsApp."
-        pg.check("#not-acord")
-        pg.click("#not-cere-cod")
-        pg.wait_for_function("() => document.querySelector('#not-msg').innerText.includes('WhatsApp')", timeout=20000)
-        patron.captura("fara_whatsapp_pe_platforma")
-        assert "Trimiterea pe WhatsApp nu e încă activă pe iConta.eu. Acordul tău a fost salvat" in pg.inner_text("#not-msg")
-        assert sql("SELECT telefon, acord_whatsapp_la IS NOT NULL, canal_notificari FROM public.users WHERE email = %s", (EMAIL,)) == [
-            ("+40759638499", True, "email")]
-
-        sql("UPDATE public.users SET telefon_confirmat_la = now() WHERE email = %s", (EMAIL,))   # codul primit pe WhatsApp (simulat)
-        pg = _deschide_notificari(patron)
-        assert not _wa_inactiv(pg) and pg.inner_text("#not-motiv-canal") == ""
-        assert pg.is_hidden("#not-confirmare"), "numărul confirmat nu mai cere cod"
-        pg.select_option("#not-canal", "whatsapp")
+        assert _wa_inactiv(pg), "WhatsApp nu se poate alege cât nu trimite"
+        assert pg.inner_text("#not-motiv-canal") == MOTIV_WA_INACTIV
+        assert pg.is_hidden("#not-confirmare") and pg.is_hidden("#not-cere-cod"), "[335] codul pe WhatsApp nu se oferă înainte de lotul 8"
         pg.click("#not-salveaza-canal")
-        pg.wait_for_function("() => document.querySelector('#not-msg').innerText.includes('WhatsApp')", timeout=20000)
-        patron.captura("canal_whatsapp")
-        assert "Notificările vin pe WhatsApp." in pg.inner_text("#not-msg")
-        assert sql("SELECT canal_notificari FROM public.users WHERE email = %s", (EMAIL,)) == [("whatsapp",)]
+        pg.wait_for_function("() => document.querySelector('#not-msg').innerText.includes('email')", timeout=20000)
+        patron.captura("fara_whatsapp_pe_platforma")
+        assert pg.inner_text("#not-msg").startswith("Notificările vin pe email. " + MOTIV_WA_INACTIV), pg.inner_text("#not-msg")   # [336]
+
+        sql("UPDATE public.users SET telefon_confirmat_la = now(), acord_whatsapp_la = now() WHERE email = %s", (EMAIL,))   # simulat
+        pg = _deschide_notificari(patron)
+        assert _wa_inactiv(pg) and pg.inner_text("#not-motiv-canal") == MOTIV_WA_INACTIV, "WhatsApp rămâne inactiv cât nu trimite"
+        assert pg.is_hidden("#not-confirmare"), "numărul confirmat nu mai cere cod"
     finally:
         _reseteaza()
 

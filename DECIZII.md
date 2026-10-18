@@ -21384,3 +21384,76 @@ fără să modifici nimic”) — raportată: niciun commit după `fa4d1622`, lo
    **Limita:** „se explică” e judecata executorului, nu un mecanism; proba (sursa fiecărei diferențe) intră în raport și în DECIZII.
 
 **Temei:** N/A — decizie de proces.
+
+## 18.10.2026 — Comanda 8.1 (lotul 8): deficiențele din retestul lotului 7 (321–340); deciziile de la publicarea lotului 7
+
+**Comanda (Costin, 18.10.2026, verbatim):**
+
+> 8.1 — deficiențele din retestul lotului 7 (18.10.2026)
+>
+> 0. Sesiunea trecută s-a întrerupt înainte de actualizările de final. Verifică ce lipsește din PREDARE_LANT.md, DECIZII.md și DEFICIENTE.md față de lotul 7 publicat (7ebbf79b, 297–320, C48, C49, deciziile de la publicare) și completează din git și din documentul de deficiențe.
+>
+> Pe production, retestul lotului 7 a confirmat 297–315 și 318–320, cu excepțiile de mai jos. Detaliile sunt în documentul de deficiențe, secțiunea „18.10 — retestul lotului 7”.
+>
+> 1. Rezolvă 321–340. 321 are prioritate: pe pagina principală, cardurile „Primii pași” nu mai lasă pagina să se deruleze cu rotița.
+> 2. 325 e regulă pe toată aplicația: nicio listă, fereastră, formular sau card nu se deschide fără clicul utilizatorului. Pune-o ca gardă, ca să nu mai revină.
+> 3. 337: dovedește pe balanța F1 dacă veniturile 1.000 și cheltuielile 14.713 din pachetul 09/2026 sunt ale lunii sau cumulate; dacă sunt cumulate, repară cifrele, nu eticheta.
+> 4. Probe pe care browserul nu le poate face: 303 (starea de așteptare la „Verifică”), 310 (încasarea bancară încă la validare), C48 în D406, 410 pe adresele vechi, notificarea către superadmin la o cerere de import.
+> 5. 316: cele 2 cereri de înregistrare ale persoanelor necunoscute nu mai apar în listă; spune ce s-a întâmplat cu ele.
+> 6. Răspunde la întrebări: D112 la F1 (N12), D710 „trimestrial”, formularea „Fără document justificativ derivabil” (N18), alerta „Procesul iConta a repornit fără deploy” pentru repornirea de la 09:02 din publicare.
+>
+> Răspunde punctual pentru fiecare deficiență: rezolvată sau nu. Fără poartă după comandă, doar testele țintite. Oprește-te și raportează.
+
+**Deciziile de la publicarea lotului 7, din documentul de deficiențe (secțiunea „18.10, 07:19 — lotul 7 publicat”), verbatim** — lipseau din
+registre (sesiunea s-a întrerupt după commitul de stare `d1d2cff0`):
+
+> Decizii luate la publicare: ecranul „Înainte de a începe” apare numai la conturile noi (pentru cele existente, după ce pornește WhatsApp în lotul 8). Declarațiile din „De depus” și poveștile deja aprobate înainte de lot apar „depășite”, cu „Generează din nou” sau „Aprobă”. Referința de cifre F1–F5 a fost refăcută pe datele retestului din 17.10.
+>
+> Lotul 8: cheile Meta/WhatsApp, Postmark, exportul din Search Console, bara de stare fixă. Ana rămâne cu „Poate valida” până la retestul 297/298, apoi revine la junior.
+
+Și din secțiunea „18.10 — retestul lotului 7 pe producție”: *„Ana a revenit la junior la 11:01.”*
+
+**Consecințe (executor):**
+1. **Prima intrare pentru conturile existente = lotul 8, odată cu WhatsApp.** Completează „Numai conturile noi” (17.10.2026, intrarea „Lotul 7:
+   reluarea…”, pct.4): scutirea din `migrare_canal_notificari` (`users.prima_intrare_scutita_la`) se ridică pentru conturile existente când
+   pornește WhatsApp (cheile Meta, F257). Trecut în `LANSARE.md`, „Lotul 8”. **Alternativa respinsă:** prima intrare pentru toți acum — ar
+   cere telefonul confirmat pe un canal (WhatsApp) care încă nu trimite.
+2. **„Depășite” pe ce exista în coadă** — confirmă consecința 5 din aceeași intrare (fail-closed); 323 / 324 / 329 / 337 sunt felul în care
+   apar pe ecran, tratate în comanda asta.
+3. Drepturile Anei pe producție sunt date ale cabinetului de test, schimbate de Costin; executorul nu le atinge.
+
+**Temei:** N/A — decizii de proces și de produs.
+
+**Consecințe de execuție (comanda 8.1; alegeri ale executorului, de confirmat la retest):**
+4. **321:** shell-ul aplicației (`.desktop`) derulează singur (`height: 100dvh; overflow-y: auto`) — DS cap.22 §7 spunea deja „shell-ul
+   aplicației are scroll intern propriu”, dar `.desktop` avea numai `min-height`. Barele de sus derulează odată cu conținutul, ca până acum
+   (bara de stare fixă rămâne lotului 8, decizia 7.3). Gard: verificator `scroll_desktop`.
+5. **325 (regula pe toată aplicația):** garda e în plasa e2e (fiecare ecran): focusul din cod pe o listă, `showPicker` și ferestrele
+   apărute înaintea primului gest al omului. Ferestrele pe care aplicația le deschide singură prin decizie sunt trei — bun venit, anunțul
+   iConta, reautentificarea — și linkul din notificare; o a patra cere decizie și intră în lista din `core/test_325_deschideri.py`.
+   **Alternativă respinsă:** ceas de activare (o fereastră la mai mult de N secunde după clic = „singură”) — cererile lente ar da alarme false.
+   Focusul din cod nu se mai pune pe nicio listă: `api.focusFaraSalt` (singurul drum, `core/test_focus_fara_salt.py`) o aduce în vedere,
+   marcată de cine a chemat-o, și o deschide omul — garda a găsit pe plasă Date firmă (`#df-forma_juridica`, `#df-metoda_stoc`).
+   **Alternativă respinsă:** reparația pe fiecare apelant — un apelant nou ar fi pus focusul din nou.
+6. **324:** la declarațiile fără cererea păstrată (intrate înainte de 17.10.2026) cardul oferă „Generează din Declarații” (Declarații cu
+   firma, tipul și perioada alese; „Înlocuiește” scoate elementul vechi), nu „Generează din nou”. **Alternativă respinsă:** cererea
+   refăcută din tip + perioadă — ar pierde datele scrise de mână ale declarațiilor cu formular (D710, D311 …).
+7. **326:** categoria art.278 alin.(2) (`serviciu_extern`, 0%) se propune numai pe linia de SERVICIU (cuvântul-cheie, apoi modelul — aceeași
+   ordine ca la contul de venit) pentru clientul din alt stat UE cu codul VALID în VIES, verificat pe ecran; alegerea omului nu e înlocuită.
+   Clientul din afara UE nu primește propunerea (calitatea de persoană impozabilă nu se poate verifica pe ecran).
+8. **331 (UM):** linia de serviciu primește UM „serv.” = E48 („service unit”, UN/ECE Rec.20). Verificat 18.10.2026: validatorul ANAF
+   FACT1 o acceptă (calibrare: „BUC” -> BR-CL-23), iar lista validatorului D406 (`D406Validator.jar`, `Parameters_v3`) o conține.
+9. **328:** contarea facturii EMISE și nota statului de plată nu se mai șterg din Registrul jurnal (`note_derivate.se_sterge`): se corectează
+   din document (respinsă la validare -> recontabilizarea o înlocuiește; „Contabilizează statul” își înlocuiește singur ciorna). Contarea
+   unei facturi-ciornă se șterge în continuare: e drumul ștergerii ciornei (`facturi_api.sterge_factura` refuză factura cu notă —
+   decizia Costin 29.08.2026, varianta (i)). Găsit de suita țintită: prima formă (factura în `FARA_STERGERE`, fără stare) bloca și ciornele.
+10. **335 / 336:** cât WhatsApp nu trimite (fără cheile Meta), codul pe WhatsApp nu se oferă și opțiunea WhatsApp e inactivă, cu motivul;
+    mesajul după salvare spune de ce notificările vin pe email.
+11. **338:** același telefon la alt cont = avertisment (fără să se spună al cui), nu refuz — un număr de cabinet poate fi legitim comun.
+12. **339:** „de validat” pentru o declarație pleacă numai cu validarea în doi efectivă; notele trimise de asistenți rămân anunțate.
+13. **340:** superadminul vede numai tipurile platformei (alerte legislative, sesizări, cereri de import), toate bifate din oficiu.
+14. **Întrebarea D710:** pe ecran „D710 · la cerere — corectează un D100 (pe trimestrul lui)” în loc de „trimestrial”; regula de generare
+    (luna 3 / 6 / 9 / 12) rămâne: iConta generează D100 numai pentru 121 și 103, amândouă trimestriale.
+15. **Întrebarea N18:** „Note fără document justificativ (nici document scris, nici factură legată)”.
+16. **Întrebarea alertei de la 09:02:** repornirea a fost a mașinii (`sudo reboot` din contul costin, 09:02:13, kernelul 6.8.0-147 instalat pe
+    14.10); sonda o numește acum „Serverul iConta a repornit (mașina, nu numai procesul)”, nu „procesul a căzut”.

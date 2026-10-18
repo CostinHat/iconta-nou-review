@@ -3,20 +3,20 @@
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=9409795a49";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=462d75fbab";  /* esc_nc27 */
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=32be4e4af7";
+import { randeazaListaFirme } from "./firme.js?v=66e35e2a20";
 import { randeazaMigrare } from "./migrare.js?v=06d45ea83e";
 import { randeazaControl } from "./control.js?v=c32702d644";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=b688817998"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=e0dc218714"; // [p28_setari]
+import { randeazaSetari } from "./setari.js?v=6828bde114"; // [p28_setari]
 import { randeazaRaporteaza } from "./raporteaza.js?v=ff0c5ffd8d"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=10719d2154"; // [225 + 231] banda de sus, aceeași la ambele roluri
-import { randeazaPachete } from "./pachete.js?v=a81c2ebc49"; // [p63_pachete]
+import { randeazaPachete } from "./pachete.js?v=6a0e4eba2f"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=7fbacf46ea";
-import { randeazaValidat, titluCardCoada } from "./validat.js?v=b5512c4e72";
+import { randeazaValidat, titluCardCoada } from "./validat.js?v=da39a46274";
 import { randeazaSupervizor } from "./supervizor.js?v=395f767214"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=a646b8beab";
 import { randeazaCapacitate } from "./capacitate.js?v=7ec1c7db14"; // [p71_capacitate]

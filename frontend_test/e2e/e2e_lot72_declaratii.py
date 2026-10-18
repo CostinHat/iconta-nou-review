@@ -92,8 +92,8 @@ def test_def_297_declaratia_depasita_nu_se_depune_si_se_genereaza_din_nou(patron
 def test_def_298_declaratia_numeste_factura_fara_nota_validata_si_cu_tva_0(patron, firma_e2e):
     """298. D300 cuprindea facturi cu nota nevalidată, iar garda compara doar TVA-ul: o factură cu TVA 0 trecea nesemnalată.
     Pașii: o factură cu linia 0% (scutit fără drept de deducere), nota ei nevalidată -> Declarații -> D300 pe luna curentă -> trimisă:
-    sub confirmare, avertismentul numește factura („Declarația cuprinde 1 factură fără notă validată …: factura …, nota ei e la
-    validare”); același text pe rândul ei din coadă, cu butonul spre notă."""
+    sub confirmare, avertismentul numește factura („Declarația cuprinde 1 factură fără notă validată …: factura …, nota ei e
+    ciornă, nevalidată” — formularea din 328); același text pe rândul ei din coadă, cu butonul spre notă."""
     from e2e_bloc_c import _declaratie_pas1, _trimite_si_asteapta
     pregateste_firma(patron, firma_e2e)
     peste = _peste()
@@ -107,7 +107,7 @@ def test_def_298_declaratia_numeste_factura_fara_nota_validata_si_cu_tva_0(patro
         pg.wait_for_selector("#dec-gata-avert", timeout=30000)
         av = pg.inner_text("#dec-gata-avert")
         patron.captura("avertisment")
-        assert "fără notă validată" in av and ("factura %s" % numar) in av and "nota ei e la validare" in av, av
+        assert "fără notă validată" in av and ("factura %s" % numar) in av and "nota ei e ciornă, nevalidată" in av, av   # [328] „ciornă”, ca în Registrul jurnal
         cid = sql("SELECT max(id) FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 'd300'", (firma_e2e["tenant_id"],))[0][0]
         rand = _deschide_coada(patron, cid)
         assert ("factura %s" % numar) in pg.inner_text(rand + " .val-surse")

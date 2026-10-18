@@ -102,6 +102,9 @@ def test_deploy_ul_NU_alerteaza_iar_caderea_DA():
     assert f("A", "B", None, "c1") == "necunoscut", (
         "fără unul din commituri, sonda trebuie să SPUNĂ că nu poate deosebi, nu să tacă")
     assert f(None, "B", None, "c1") is None, "prima rulare n-are cu ce compara"
+    # [18.10.2026, comanda Costin 8.1 pct.6] același commit, dar mașina a pornit după proces: repornirea serverului, nu o cădere
+    assert f("A", "B", "c1", "c1", server_repornit=True) == "server"
+    assert f("A", "B", "c1", "c2", server_repornit=True) == "deploy", "un deploy rămâne deploy"
 
 
 def test_sonda_citeste_commitul_procesului_din_registrul_instantelor():
@@ -126,6 +129,8 @@ def test_def_271_publicarea_nu_mai_e_citita_ca_cadere(monkeypatch):
     monkeypatch.setattr(versiune, "git_head", lambda *a, **k: "NEW")       # discul e deja pe commitul nou
     monkeypatch.setattr(sonda_web, "raspunde", lambda *a, **k: (200, 5000))
     monkeypatch.setattr(sonda_web, "ora_pornirii", lambda *a, **k: stare["pornit"])
+    import datetime as _dtm   # mașina pornită înaintea scenariului (altfel ceasul real al serverului ar decide)
+    monkeypatch.setattr(sonda_web, "ora_bootarii", lambda *a, **k: _dtm.datetime(2026, 9, 10, 13, 13))
     monkeypatch.setattr(instante, "vii", lambda conn, *a, **k: [(gazda, 11, stare["proces"], None), (gazda, 12, stare["proces"], None)])
     monkeypatch.setattr(sonda_web, "_citeste_ultima", lambda conn: stare["ultima"])
     monkeypatch.setattr(sonda_web, "_scrie_ultima", lambda conn, p, c: stare.update(ultima=(p, c)))
@@ -164,3 +169,19 @@ def test_CALIBRARE_o_unitate_inexistenta_NU_inventeaza_o_ora():
     """Direcția «pretinde că știe»: sonda are voie să nu știe, nu are voie să fabrice."""
     assert sonda_web.ora_pornirii("unitate-care-nu-exista-r75.service") in (None, ""), (
         "a întors o valoare pentru o unitate inexistentă")
+
+
+def test_repornirea_serverului_de_la_0902_e_numita_server(tmp_path, monkeypatch):
+    """[18.10.2026, comanda Costin 8.1 pct.6: alerta „Procesul iConta a repornit fără deploy” la repornirea de la 09:02] Mașina a fost
+    repornită (`sudo reboot`, 09:02:13; boot 09:02:24) și procesul a pornit la 09:02:51 pe același commit `7ebbf79b`. Sonda spunea
+    „procesul a căzut și s-a ridicat singur”; acum spune „Serverul iConta a repornit (mașina, nu numai procesul)”.
+    MUTAȚIE: `server_repornit` neluat în seamă în `fel_repornirii` -> „cadere” -> pică."""
+    import datetime as dt
+    st = tmp_path / "stat"
+    st.write_text("cpu 1 2 3\nbtime %d\n" % int(dt.datetime(2026, 10, 18, 9, 2, 24).timestamp()), encoding="ascii")
+    assert sonda_web.ora_bootarii(str(st)) == dt.datetime(2026, 10, 18, 9, 2, 24)
+    inainte = sonda_web._ca_data("Sun 2026-10-18 07:19:39 EEST")
+    assert inainte == dt.datetime(2026, 10, 18, 7, 19, 39)
+    boot = sonda_web.ora_bootarii(str(st))
+    assert sonda_web.fel_repornirii("Sun 2026-10-18 07:19:39 EEST", "Sun 2026-10-18 09:02:51 EEST", "7ebbf79b", "7ebbf79b",
+                                    server_repornit=boot > inainte) == "server"

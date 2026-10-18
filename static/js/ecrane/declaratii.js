@@ -6,8 +6,8 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt } from "../api.js?v=9409795a49";
-import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada } from "./coada_trimite.js?v=bce84e526a";
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt } from "../api.js?v=462d75fbab";
+import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada } from "./coada_trimite.js?v=425f6a2edf";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
   d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
@@ -32,7 +32,9 @@ export async function declaratiiPerFirma(corp, nav, firma) {
   return randeazaDeclaratii(corp, nav, firma);
 }
 
-export async function randeazaDeclaratii(corp, nav, firmaFixa) {
+// [deficiența 324, 18.10.2026] `preset` = {tenant_id, tip, an, luna, trim}: „Generează din Declarații” din „De depus” deschide ecranul cu
+// firma, tipul și perioada declarației depășite (o declarație veche, fără cererea păstrată); omul apasă „Continuă”, apoi „Înlocuiește”.
+export async function randeazaDeclaratii(corp, nav, firmaFixa, preset = null) {
   if (nav && nav.setInapoi) nav.setInapoi(undefined);
   const acum = new Date();
   S = {
@@ -106,7 +108,16 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     // [deficiența 207, aceeași clasă] ecranul general pornește pe firma în lucru, dacă e în lista contului
     const inLucru = !S.tenant_id && nav && nav.firmaInLucruId ? nav.firmaInLucruId() : null;
     if (inLucru && S.firme.some((fr) => fr.id === inLucru)) S.tenant_id = inLucru;
+    if (preset && S.firme.some((fr) => fr.id === preset.tenant_id)) {
+      S.tenant_id = preset.tenant_id; S.tip = preset.tip || null;
+      if (preset.an) S.an = preset.an;
+      if (preset.luna) { S.luna = preset.luna; S.trim = Math.ceil(preset.luna / 3); }
+      else if (preset.trim) { S.trim = preset.trim; S.luna = preset.trim * 3; }
+      S.presetPerioada = true;
+    }
     if (S.tenant_id) await incarcaTipuri(S.tenant_id);   // [G1] firma fixa -> tipurile+neaplicabile ale ei
+    // [324] tipul dat e ales în listă: în grupa „Datorate” dacă perioada lui e acolo, altfel între celelalte
+    if (S.presetPerioada) S.lunaDatorata = (S.datorate || []).some((d) => d.tip === S.tip && d.an === S.an && d.luna === S.luna) ? S.luna : null;
   } catch {
     corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca firmele.</p>`;
     return;
@@ -120,6 +131,7 @@ async function incarcaTipuri(tenantId) {
     const d = await api.get(`/declaratii/tipuri?tenant_id=${tenantId}`);
     S.tipuri = d.tipuri || [];
     S.periodicitate = d.periodicitate || {};
+    S.periodicitateEticheta = d.periodicitate_eticheta || {};
     S.neaplicabile = d.neaplicabile || {};
     S.datorate = d.datorate || [];   // [283] ce datorează firma, cu termenul (motorul termenelor)
     S.tipuriEsuat = false;
@@ -147,7 +159,7 @@ function pas1(corp, nav) {
       `<option value="${d.tip}" data-an="${d.an}" data-luna="${d.luna}"${d.tip === S.tip && d.an === S.an && d.luna === S.lunaDatorata ? " selected" : ""}>`
       + `${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · termen ${esc(dataRo(d.termen))}</option>`).join("")}</optgroup>` : "";
     const alte = S.tipuri.map((tp) => {
-      const et = `${tp.toUpperCase()} · ${S.periodicitate[tp] || ""}`;
+      const et = `${tp.toUpperCase()} · ${(S.periodicitateEticheta || {})[tp] || S.periodicitate[tp] || ""}`;   // [8.1 pct.6] D710: la cerere
       const neap = S.neaplicabile[tp];
       return neap
         ? `<option value="${tp}" disabled title="${esc(neap)}">${esc(neap)}</option>`
@@ -212,7 +224,9 @@ ${S.firmaFixa ? "" : `      <label class="camp">
     // [283] o obligație datorată aleasă din grupa de sus aduce și perioada ei (luna; la trimestru, luna de sfârșit)
     const o = selTip.selectedOptions[0];
     S.lunaDatorata = null;
-    if (o && o.dataset.an) {
+    if (S.presetPerioada) {
+      S.presetPerioada = false;   // [324] perioada declarației depășite rămâne la prima afișare; o schimbare de tip o propune din nou
+    } else if (o && o.dataset.an) {
       S.an = parseInt(o.dataset.an); S.luna = parseInt(o.dataset.luna); S.trim = Math.ceil(S.luna / 3); S.lunaDatorata = S.luna;
     } else if (S.tip && S.tip !== tipAnterior) {
       // [deficiența 294, comanda Costin 16.10.2026] „Perioada implicită la orice declarație este cea mai apropiată perioadă scadentă și
@@ -240,7 +254,10 @@ ${S.firmaFixa ? "" : `      <label class="camp">
       selTip.innerHTML = optiuniTip();
       if (ales) selTip.value = ales;
       legaAlte();
-      if (S.alteDeschise) focusFaraSalt(selTip);
+      // [deficiența 325, 18.10.2026] focusul rămâne pe buton, NU pe listă: un focus pe lista derulantă îi deschide lista (pe telefon, și cu
+      // tastatura) fără clicul omului. Regula: nicio listă / fereastră / formular nu se deschide singură (garda din plasa e2e).
+      const b2 = z.querySelector("#dec-alte");
+      if (b2) focusFaraSalt(b2);
     });
   }
   if (S.tenant_id) declaratiiExistente(corp.querySelector("#dec-existente"), S.tenant_id);

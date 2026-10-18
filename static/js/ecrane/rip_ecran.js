@@ -1,5 +1,5 @@
 // [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
-import { api, cate, dupaNumar, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=9409795a49";  /* investigatie_identitate_v1 */
+import { api, cate, dupaNumar, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=462d75fbab";  /* investigatie_identitate_v1 */
 
 const CATEGORII_INC = [
   ["activitate", "\u00cencasare din activitate"],
@@ -56,7 +56,7 @@ export async function ecranRip(corp, nav, t) {
       <div id="r-zona" hidden style="margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Opera\u021biune nou\u0103</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:1000px">
-          <label class="camp"><span class="camp-eticheta">Data<span class="oblig">*</span></span><input type="date" id="r-data" class="camp-input"></label>
+          <label class="camp"><span class="camp-eticheta">Data<span class="oblig">*</span></span><input type="date" id="r-data" class="camp-input" value="${dataIso()}"></label>
           <label class="camp"><span class="camp-eticheta">Tip</span><select id="r-tip" class="camp-input">${ALEGE}<option value="incasare">Încasare</option><option value="plata">Plată</option></select></label>
           <label class="camp"><span class="camp-eticheta">Categorie</span><select id="r-cat" class="camp-input"></select></label>
           <label class="camp"><span class="camp-eticheta">Deductibilitate</span><select id="r-ded" class="camp-input" disabled>

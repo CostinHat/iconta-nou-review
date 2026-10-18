@@ -40,7 +40,10 @@ def test_jurnalul_nu_editeaza_si_nu_sterge_nota_derivata(tx):
     r = j.editeaza(conn, SCH, n_contare, descriere="altceva")
     assert (r["cod"], r["document"]) == (nd.COD, "factura")
     assert j.sterge(conn, SCH, n_iesire)["cod"] == nd.COD            # ieșirea din stoc: legătura mișcării ar rămâne în aer
-    assert j.sterge(conn, SCH, n_contare) == {"ok": True}            # contarea: legătura stă pe notă, factura redevine necontată
+    # [deficiența 328, 18.10.2026] contarea facturii EMISE nu se șterge: factura ar rămâne emisă și necontată; a ciornei da (drumul ștergerii ei)
+    assert j.sterge(conn, SCH, n_contare)["cod"] == nd.COD
+    cur.execute("UPDATE facturi SET status='ciorna' WHERE id=%s", (_fid,))
+    assert j.sterge(conn, SCH, n_contare) == {"ok": True}
     manuala = _nota(conn, "Manuală", 10)
     assert j.editeaza(conn, SCH, manuala, descriere="corectată") == {"ok": True}
 

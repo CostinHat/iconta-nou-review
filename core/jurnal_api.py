@@ -250,12 +250,12 @@ def sterge(conn, schema, nota_id):
         if _coada.nota_la_validare(cur, schema, nota_id):
             return {"eroare": _coada.mesaj_nota_la_validare(cur, schema, nota_id), "cod": _coada.COD_NOTA_LA_VALIDARE}
         # [lotul 07.10 B, C9] o notă derivată nu se șterge din jurnal acolo unde ALT tabel o indică (mișcarea de stoc, NIR-ul,
-        # chitanța, raportul Z, amortizarea): legătura ar rămâne în aer. Se șterg (ciornă) cele a căror legătură stă pe notă —
-        # contarea facturii și nota statului (documentul redevine necontat și se recontabilizează) — și cele care își desfac
-        # sursa aici (operațiunea de casă, linia de extras redevine „potrivită”). Editarea rămâne blocată pentru toate.
+        # chitanța, raportul Z, amortizarea). [328, 18.10.2026] Nici nota statului, nici contarea facturii emise: documentul rămâne, iar
+        # nota se corectează din el (`note_derivate.se_sterge`). Se șterg (ciornă) contarea facturii-ciornă (drumul ștergerii ei) și cele
+        # care își desfac sursa aici (operațiunea de casă, linia de extras redevine „potrivită”). Editarea rămâne blocată pentru toate.
         from core import note_derivate as _nd
         doc = _nd.documentul_sursa(cur, schema, nota_id)
-        if doc and doc[0] in _nd.FARA_STERGERE:
+        if doc and not _nd.se_sterge(cur, schema, doc, nota_id):
             return {"eroare": _nd.mesaj_refuz(nota_id, doc), "cod": _nd.COD, "document": doc[0]}
         cur.execute(f"DELETE FROM {schema}.casa_operatiuni WHERE inregistrare_id=%s", (nota_id,))
         cur.execute(f"""UPDATE {schema}.extras_linii SET status='potrivit'

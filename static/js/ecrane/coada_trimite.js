@@ -6,7 +6,7 @@
 //    `motiv_trecere`, păstrată cu numele omului); `ERORI_DUK` -> se arată, fără portiță.
 //  - C1: refuzul spune motivul REAL venit de la server, nu o presupunere („Poate există deja o declarație…” apărea și la o eroare 500).
 //  - C11: bilanțul intră în coadă pe același drum ca orice declarație.
-import { api, esc, arataMesaj, aduInVedere } from "../api.js?v=9409795a49";
+import { api, esc, arataMesaj, aduInVedere } from "../api.js?v=462d75fbab";
 
 // [deficiența 222, comanda Costin 10.10.2026] confirmarea intrării în coadă e ACEEAȘI casetă din orice ecran (Declarații, Bilanț) —
 // nu un rând de text: bifa, „Trimisă în coada de validare”, declarația și perioada. `cine` = ce urmează („a fost trimisă seniorului …”).
@@ -90,19 +90,21 @@ export async function trimiteInCoada(zona, body, laSucces, confirmare) {
 // luna notei, cu nota evidențiată (același drum ca legătura „jurnal:” din notificări). Ecranul declarației rămâne dedesubt.
 export async function deschideInCoada(coadaId) {
   if (!window._navGlobal) return;
-  const { randeazaValidat } = await import("./validat.js?v=b5512c4e72");
+  const { randeazaValidat } = await import("./validat.js?v=da39a46274");
   window._navGlobal.deschide("Coada de validare și depunere", (corp, nn) => randeazaValidat(corp, nn, { evidentiaza: coadaId }), { nivel: "cabinet" });
 }
 
 export function legaturiNote(zona, tenantId, note) {
   const lista = document.createElement("div");
   lista.className = "coada-note-refuz";
-  lista.innerHTML = note.map((n, i) => `<button type="button" class="buton-secundar" data-nota="${i}">Deschide nota ${esc(n.eticheta)}</button>`).join(" ");
+  // [deficiența 329, 18.10.2026] eticheta notei începe deja cu „nota” („nota din 17.10.2026 — F1A6, …”): „Deschide nota nota …”. Cuvântul
+  // „nota” se pune o dată, oricum ar veni eticheta.
+  lista.innerHTML = note.map((n, i) => `<button type="button" class="buton-secundar" data-nota="${i}">Deschide nota ${esc(String(n.eticheta || "").replace(/^nota\s+/i, ""))}</button>`).join(" ");
   zona.appendChild(lista);
   lista.querySelectorAll("[data-nota]").forEach((b) => b.addEventListener("click", async () => {
     const n = note[parseInt(b.dataset.nota, 10)];
     const [an, luna] = n.data.split("-").map((x) => parseInt(x, 10));
-    const { ecranJurnal } = await import("./firme.js?v=32be4e4af7");
+    const { ecranJurnal } = await import("./firme.js?v=66e35e2a20");
     const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tenantId);
     if (!t || !window._navGlobal) return;
     window._navGlobal.deschide(`Registru jurnal · ${t.nume}`, (corp, nn) => ecranJurnal(corp, nn, t, { evidentiaza: n.nota_id, an, luna }));

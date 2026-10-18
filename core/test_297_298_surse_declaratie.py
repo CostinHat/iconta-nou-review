@@ -114,7 +114,7 @@ def test_298_factura_cu_tva_0_fara_nota_validata_e_numita_la_orice_tva(lume, mon
     a = s["documente_nevalidate"]                            # afirmația despre perioadă e tipată (`core/afirmatii.py`)
     assert a["fel"] == "fapt" and a["unde"] == "perioada declarației 2099-10-01 – 2099-11-01", a
     assert a["motiv"] == ("Declarația cuprinde 1 factură fără notă validată, deci încă în afara evidenței: factura F1A5 (emisă către Client "
-                          "Irlanda Ltd, 1.000,00 lei, nota ei e la validare). În perioadă este 1 notă nevalidată, pe care evidența nu o "
+                          "Irlanda Ltd, 1.000,00 lei, nota ei e ciornă, nevalidată). În perioadă este 1 notă nevalidată, pe care evidența nu o "
                           "cuprinde până nu o validează un om: nota din 17.10.2099 — F1A5, 1.000,00 lei. Validează-le înainte de depunere: "
                           "după validare declarația devine depășită și se generează din nou."), a["motiv"]
     s100 = uq.surse_declaratiei(lume, "d100", 2099, None, 4)

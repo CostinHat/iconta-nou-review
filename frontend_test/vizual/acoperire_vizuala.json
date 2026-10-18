@@ -1,5 +1,5 @@
 {
- "ui_hash": "6b4f3eb7c3a7da0a",
+ "ui_hash": "0c918f668e0d2306",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -175,7 +175,7 @@
   "stat_plata": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 44,
+    "vazute": 43,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -688,7 +688,7 @@
   "jurnal": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 11,
+    "vazute": 10,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false

@@ -44,6 +44,7 @@ Rulare: `python3 -m core.sonda_web` (crontab, la 15 minute).
 # `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
 # deschide, nu comite.
 import json
+import re
 import subprocess
 import sys
 import urllib.error
@@ -75,6 +76,26 @@ def ora_pornirii(unitate=None):
         return None
     v = (r.stdout or "").strip()
     return v or None
+
+
+def ora_bootarii(cale="/proc/stat"):
+    """[18.10.2026, comanda Costin 8.1 pct.6] Ora la care a pornit MAȘINA (`btime` din /proc/stat), ca dată locală fără fus; None dacă nu
+    se poate citi. Repornirea serverului de la 09:02 (`sudo reboot`, kernelul nou) a fost numită „procesul a căzut și s-a ridicat singur”."""
+    import datetime as _dtm
+    try:
+        for ln in open(cale, encoding="ascii"):
+            if ln.startswith("btime "):
+                return _dtm.datetime.fromtimestamp(int(ln.split()[1]))
+    except (OSError, ValueError):
+        return None
+    return None
+
+
+def _ca_data(pornit):
+    """`ActiveEnterTimestamp` („Sun 2026-10-18 09:02:51 EEST”) -> datetime local, fără fus; None dacă nu se recunoaște."""
+    import datetime as _dtm
+    m = re.search(r"(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)", pornit or "")
+    return _dtm.datetime.strptime(m.group(1), "%Y-%m-%d %H:%M:%S") if m else None
 
 
 def raspunde(baza=None, cale="/"):
@@ -124,8 +145,8 @@ def _scrie_ultima(conn, pornit_la, commit):
                     (NUME, _E.Json({"pornit_la": pornit_la, "commit": commit})))
 
 
-def fel_repornirii(pornit_inainte, pornit_acum, commit_inainte, commit_acum):
-    """PURĂ. -> None (n-a repornit) | "deploy" | "necunoscut" | "cadere".
+def fel_repornirii(pornit_inainte, pornit_acum, commit_inainte, commit_acum, server_repornit=False):
+    """PURĂ. -> None (n-a repornit) | "deploy" | "necunoscut" | "server" | "cadere".
 
     DE CE EXISTĂ, și e o reparație de dinaintea primei alerte: `post-commit` repornește serviciul
     la **fiecare** commit. Fără distincția asta, sonda ar fi alertat de zece ori pe zi despre
@@ -141,7 +162,11 @@ def fel_repornirii(pornit_inainte, pornit_acum, commit_inainte, commit_acum):
         return None
     if not (commit_inainte and commit_acum):
         return "necunoscut"
-    return "deploy" if commit_inainte != commit_acum else "cadere"
+    if commit_inainte != commit_acum:
+        return "deploy"
+    # [18.10.2026] același commit, dar MAȘINA a pornit după procesul de dinainte: repornirea serverului (cerută sau a furnizorului), nu o
+    # cădere a aplicației — se spune ce a fost
+    return "server" if server_repornit else "cadere"
 
 
 def verifica():
@@ -156,9 +181,19 @@ def verifica():
     with db.get_conn() as conn:
         commit = commitul_procesului(conn)
         pornit_inainte, commit_inainte = _citeste_ultima(conn)
-    fel = fel_repornirii(pornit_inainte, pornit, commit_inainte, commit)
+    boot, inainte = ora_bootarii(), _ca_data(pornit_inainte)
+    fel = fel_repornirii(pornit_inainte, pornit, commit_inainte, commit, server_repornit=bool(boot and inainte and boot > inainte))
     # `deploy` NU alertează: e o repornire pe care am cerut-o noi. Restul, da.
-    if fel in ("cadere", "necunoscut"):
+    if fel == "server":
+        from core import observare
+        from core import pdf_util as _pu
+        observare.alerteaza(
+            "sonda_web_repornire", "Serverul iConta a repornit (mașina, nu numai procesul)",
+            "Mașina a pornit la %s; procesul %s a pornit odată cu ea, pe același commit (%s).\n\n  înainte: %s\n  acum:    %s\n\n"
+            "Nu e o cădere a aplicației și nici un deploy: serverul a fost repornit — cerut de cineva cu acces (de exemplu ca să "
+            "activeze un kernel nou) sau de furnizor. Cine a cerut-o se vede în jurnalul sistemului (`journalctl -b -1`)."
+            % ("%s %s" % (_pu.data_ro(boot), boot.strftime("%H:%M:%S")), UNITATE, commit, pornit_inainte, pornit))
+    elif fel in ("cadere", "necunoscut"):
         from core import observare
         observare.alerteaza(
             "sonda_web_repornire",

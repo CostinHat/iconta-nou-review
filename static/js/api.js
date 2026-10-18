@@ -3,7 +3,7 @@
 // Origin relativ: FastAPI servește și frontendul, și API-ul.
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
-import { ceraReautentificare } from "./reautentificare.js?v=412d466675";  // [05.10.2026] 401 cu sesiune = parola peste ecran
+import { ceraReautentificare } from "./reautentificare.js?v=6d1ca7e110";  // [05.10.2026] 401 cu sesiune = parola peste ecran
 
 // [cap1_feedback_async_v1] Design System cap.1: butonul declansator se dezactiveaza
 // automat pe durata oricarei actiuni asincrone. Textul devine "Se lucreaza..." si se
@@ -253,7 +253,7 @@ function _butonSpreEcran(eroare, cale) {
     const el = zone[zone.length - 1];
     const cadru = el.closest(".em-curs-box, #refuz-nevazut") || el;
     if (cadru.querySelector("[data-ecran-destinatie]")) return true;
-    const { butonSpreEcran } = await import("./ecrane/ecran_destinatie.js?v=627c3c3c38");
+    const { butonSpreEcran } = await import("./ecrane/ecran_destinatie.js?v=df2c3a05b3");
     const z = document.createElement("span");
     z.className = "ecran-destinatie";
     el.appendChild(z);
@@ -559,6 +559,9 @@ document.addEventListener("keydown", (e) => {
 // derulează) — deci derularea strămoșilor se ține minte înainte și se reface după, iar abia apoi `nearest`.
 export function focusFaraSalt(el) {
   if (!el) return;
+  // [deficiența 325, comanda Costin 8.1 pct.2: „nicio listă […] nu se deschide fără clicul utilizatorului”] o listă nu primește focus din cod
+  // (pe unele browsere / pe telefon focusul o deschide): se aduce în vedere, marcată de cine a chemat-o (`eroareCamp`), și o deschide omul
+  if (el.tagName === "SELECT") { if (el.scrollIntoView) el.scrollIntoView({ block: "nearest", inline: "nearest" }); return; }
   const pozitii = [];
   for (let p = el.parentElement; p; p = p.parentElement) pozitii.push([p, p.scrollTop, p.scrollLeft]);
   const doc = document.scrollingElement;
@@ -589,6 +592,21 @@ export function inchidereDialog(ov, inchide, antet) {
   return intrare.inchide;
 }
 
+// [deficiența 331, 18.10.2026] text lung scurtat pentru un rând: tăiat la ultimul cuvânt întreg, cu „…”, fără separatorul rămas la capăt.
+// `.slice(0, 90)` tăia în mijlocul cuvântului și lăsa „octombrie - ” lipit de „ · motiv” („octombrie - · …”, la Bancă).
+export function textScurt(t, n) {
+  let s = String(t == null ? "" : t).replace(/\s+/g, " ").trim();
+  if (s.length > n) {
+    const taiat = s.slice(0, n);
+    const sp = taiat.lastIndexOf(" ");
+    s = (sp > n / 2 ? taiat.slice(0, sp) : taiat).replace(/[\s\-–—,;:·/]+$/, "") + "…";
+  }
+  return s.replace(/[\s\-–—,;:·/]+$/, "");
+}
+
+// [deficiența 330, 18.10.2026] `optiuni.textNu`: refuzul își poate spune numele. Confirmarea unei RENUNȚĂRI („Renunță la factură”) lângă
+// refuzul implicit „Renunță” punea două „Renunță” alăturate, cu sensuri opuse; garda `core/test_330_confirmari.py` cere `textNu` oricând
+// `textOk` începe cu „Renunț”.
 export function confirmaCaseta(zona, mesajHtml, laConfirm, optiuni = {}) {
   const vechi = document.getElementById("caseta-atentie-activa");
   if (vechi) vechi.remove();
@@ -598,7 +616,7 @@ export function confirmaCaseta(zona, mesajHtml, laConfirm, optiuni = {}) {
     <div class="caseta-atentie"><div class="ca-mesaj" style="margin-bottom:0">${mesajHtml}</div></div>
     <div class="ca-actiuni" style="margin:10px 0 14px;display:flex;gap:8px">
       <button class="buton-primar" id="ca-ok">${optiuni.textOk || "Confirm"}</button>
-      <button class="buton-secundar" id="ca-nu">Renun\u021b\u0103</button>
+      <button class="buton-secundar" id="ca-nu">${optiuni.textNu || "Renun\u021b\u0103"}</button>
     </div>`;
   zona.parentNode.insertBefore(div, zona.nextSibling);
   div.querySelector("#ca-nu").addEventListener("click", () => div.remove());

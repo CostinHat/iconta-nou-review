@@ -12,7 +12,7 @@
 // ca butoanele. Asistentului fără firme i se spune asta, nu i se arată un fir pe care nu-l poate parcurge.
 // [pct.7] Termenul de rezolvare („se rezolvă în maximum 48 de ore”) a ieșit din fraza despre Suport: nu e un angajament
 // decis (Costin). Fraza rămâne, fără termen.
-import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=9409795a49";
+import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=462d75fbab";
 import { STRATURI } from "./migrare.js?v=06d45ea83e";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
@@ -133,6 +133,7 @@ export function ecranBunVenit(radacina, laInchidere) {
   ov.setAttribute("role", "dialog");
   ov.setAttribute("aria-modal", "true");
   ov.setAttribute("aria-label", "Bun venit în iConta.eu");
+  ov.dataset.deschidere = "aplicatie";   // [325] deschisă de aplicație, la prima logare (decizie), nu de un clic
   ov.innerHTML = `<div class="bun-venit-box"><div class="bun-venit-antet"><span class="bun-venit-titlu">iConta.eu · bun venit</span></div>` +
                  `<div class="bun-venit-corp"></div></div>`;
   radacina.appendChild(ov);

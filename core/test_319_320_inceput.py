@@ -101,6 +101,7 @@ def test_320_numai_conturile_noi_trec_prin_prima_intrare(monkeypatch):
     st = {"stare": (None, False, "email", False), "pref": (None, False, "admin_firma", True, True, True)}
     monkeypatch.setattr(uc._repo, "stare", lambda cur, uid: st["stare"])
     monkeypatch.setattr(uc._repo, "preferintele", lambda cur, uid: st["pref"])
+    monkeypatch.setattr(uc._repo, "alte_conturi_cu_telefonul", lambda cur, uid, tel: 0)   # [338] fără bază: niciun alt cont
     assert uc._stare(None, 1)["complet"] is True                          # existent: fără telefon, fără bife — intră direct
     st["pref"] = (None, False, "admin_firma", True, True, False)
     assert uc._stare(None, 1)["complet"] is False                         # nou: oprit până la telefon + bife

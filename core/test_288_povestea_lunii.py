@@ -64,3 +64,33 @@ def test_288b_inchiderea_in_121_nu_e_operatiune_a_lunii():
             assert (float(r["venituri"]), float(r["cheltuieli"])) == (1000.0, 300.0), r
         finally:
             c.rollback()
+
+
+def test_337_cifrele_pachetului_sunt_ale_lunii_nu_cumulate():
+    """[deficiența 337, comanda Costin 8.1 pct.3, 18.10.2026, verbatim în DECIZII „Comanda 8.1”] „dovedește pe balanța F1 dacă veniturile
+    1.000 și cheltuielile 14.713 din pachetul 09/2026 sunt ale lunii sau cumulate”. Pe balanța F1 09/2026 (referința aprobată,
+    `scripts/cifre_referinta_aprobate.json`): rulajul lunii 707 = 1.000, 607 + 641 + 646 = 500 + 13.900 + 313 = 14.713, iar „precedent” = 0
+    (septembrie e prima lună cu operațiuni) — deci în 09/2026 lunar = cumulat. Ca să se vadă că pachetul ia LUNA, nu anul: aceleași note
+    în septembrie + o lună anterioară cu venituri și cheltuieli -> pachetul lui septembrie rămâne 1.000 / 14.713.
+    MUTAȚIE: condiția pe lună scoasă din `_note_lunii` (numai anul) -> 1.700 / 14.913 -> pică."""
+    from core import db as _db, motor
+    from core.test_295_rezumat_d100 import _db_ok, _tp
+    if not _db_ok():
+        pytest.skip("DB indisponibil")
+    with _db.get_conn() as c:
+        try:
+            with c.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS efemer_337 CASCADE")
+                cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), "efemer_337"))
+                cur.execute("SET search_path TO efemer_337, public")
+                note = (("2026-09-15", "4111", "707", 1000), ("2026-09-30", "607", "371", 500), ("2026-09-30", "641", "421", 13900),
+                        ("2026-09-30", "646", "436", 313),
+                        ("2026-08-20", "4111", "707", 700), ("2026-08-31", "628", "401", 200))   # luna anterioară: nu intră
+                for data, deb, cre, s_ in note:
+                    cur.execute("INSERT INTO inregistrari (data, descriere, status) VALUES (%s,'n','validata') RETURNING id", (data,))
+                    cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)",
+                                (cur.fetchone()[0], deb, cre, s_))
+            r = motor.rezultat(pa._note_lunii(c, 2026, 9))
+            assert (float(r["venituri"]), float(r["cheltuieli"])) == (1000.0, 14713.0), r   # ale lunii 09/2026, ca pe balanța F1
+        finally:
+            c.rollback()

@@ -147,9 +147,17 @@ def test_stergerea_unei_facturi_redeschide_luna(conn):
     assert e.value.detalii["iesire"] == "storno"
     with _cf.cursor_dict(conn) as cur:
         nota = _cf.contare_existenta(cur, "", r["factura_id"])
-    assert _ja.sterge(conn, SCHEMA, nota["id"])["ok"] is True
+    # [deficiența 328, 18.10.2026] contarea facturii EMISE nu se mai șterge din jurnal (factura emisă nu se șterge — CF art.330 alin.(1)):
+    # refuz numit, nimic schimbat
+    from core import note_derivate as _nd
+    assert _ja.sterge(conn, SCHEMA, nota["id"])["cod"] == _nd.COD
+    # [Retestul plasei, regula a (R6) — CF art.330 alin.(1)] nici fără notă factura EMISĂ nu se șterge: refuz numit, nimic schimbat.
+    # Factura emisă fără notă există în aplicație când contarea e refuzată la emitere (`facturi_api`: „UN REFUZ NU E O EROARE”);
+    # starea se construiește direct, fiindcă din jurnal nota nu se mai șterge (328).
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM inregistrari_linii WHERE inregistrare_id = %s", (nota["id"],))
+        cur.execute("DELETE FROM inregistrari WHERE id = %s", (nota["id"],))
     _il.confirma(conn, SCHEMA, 2026, 6, user_id=7)
-    # [Retestul plasei, regula a (R6) — CF art.330 alin.(1)] nici fără notă factura EMISĂ nu se șterge: refuz numit, nimic schimbat
     with _pt.raises(_cf.RefuzContare) as e:
         _fa.sterge_factura(conn, r["factura_id"])
     assert (e.value.cod, e.value.detalii["iesire"]) == ("FACTURA_EMISA", "storno")

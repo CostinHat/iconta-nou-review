@@ -116,6 +116,7 @@ commit, acum gol). Gardurile și limitele lor declarate sunt în `GARZI.md`.
 | **Lotul 8 — cheile Meta / WhatsApp (F257)** | Notificările pe WhatsApp sunt construite (codul de confirmare, șablonul, căderea pe email), dar pleacă numai cu cheile contului Meta WhatsApp Business și cu șablonul aprobat de Meta. Până atunci: email. Mutat în lotul 8 (comanda Costin 17.10.2026, „7.2 – continuare” pct.2). |
 | **Lotul 8 — tokenul Postmark (F258)** | Emailurile tranzacționale trec pe Postmark numai cu tokenul serverului Postmark; până atunci pleacă pe Brevo. Mutat în lotul 8 (aceeași comandă). |
 | **Lotul 8 — bara de stare fixă** | Bara de stare nu e fixă: butonul „Versiune nouă” iese din ecran la derulare. Aprobat ca reorganizare de ecran, în lotul 8 (comanda Costin 7.3 pct.3, 18.10.2026, DECIZII „Comanda 7.3”). Regula intră în `DESIGN_SYSTEM.md` și în verificator odată cu implementarea. |
+| **Lotul 8 — prima intrare pentru conturile existente** | Conturile care existau la publicarea lotului 7 sunt scutite de „Înainte de a începe” (`users.prima_intrare_scutita_la`). Scutirea se ridică odată cu pornirea WhatsApp (cheile Meta, F257): atunci și conturile existente își aleg telefonul confirmat, canalul și bifele. Decizia Costin la publicarea lotului 7 (18.10.2026, DECIZII „Comanda 8.1”). |
 
 ### Datorie acceptată explicit (decis, nu uitat)
 | Ce | Decizie |

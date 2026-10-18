@@ -74,7 +74,7 @@ def sold_creditor_cont(cur, cont, pana_la):
 
 def luni_inregistrate(cur, cont):
     """{(an, luna)} în care o notă VALIDATĂ creditează contul de amortizare (sau un analitic al lui)."""
-    cur.execute("SELECT DISTINCT EXTRACT(YEAR FROM i.data)::int, EXTRACT(MONTH FROM i.data)::int FROM inregistrari i "
+    cur.execute("SELECT DISTINCT EXTRACT(YEAR FROM i.data)::int AS an, EXTRACT(MONTH FROM i.data)::int AS luna FROM inregistrari i "
                 "JOIN inregistrari_linii l ON l.inregistrare_id = i.id WHERE i.status = 'validata' "
                 "AND (l.cont_credit = %s OR l.cont_credit LIKE %s)", (cont, cont + ".%"))
     return {tuple(x.values()) if isinstance(x, dict) else tuple(x) for x in cur.fetchall()}
@@ -83,7 +83,7 @@ def luni_inregistrate(cur, cont):
 def luni_in_ciorna(cur, cont):
     """[deficiența 312] {(an, luna)} în care o notă CIORNĂ (generată, nevalidată) creditează contul de amortizare: închiderea spune
     „generată, de validat”, nu „neînregistrată”, iar „Generează amortizarea restantă” n-o mai oferă pentru ele."""
-    cur.execute("SELECT DISTINCT EXTRACT(YEAR FROM i.data)::int, EXTRACT(MONTH FROM i.data)::int FROM inregistrari i "
+    cur.execute("SELECT DISTINCT EXTRACT(YEAR FROM i.data)::int AS an, EXTRACT(MONTH FROM i.data)::int AS luna FROM inregistrari i "
                 "JOIN inregistrari_linii l ON l.inregistrare_id = i.id WHERE i.status = 'ciorna' "
                 "AND (l.cont_credit = %s OR l.cont_credit LIKE %s)", (cont, cont + ".%"))
     return {tuple(x.values()) if isinstance(x, dict) else tuple(x) for x in cur.fetchall()}

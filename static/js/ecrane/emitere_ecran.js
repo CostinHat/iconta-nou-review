@@ -7,10 +7,10 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, arataMesaj, cate, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere } from "../api.js?v=9409795a49";
+import { api, arataMesaj, cate, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere } from "../api.js?v=462d75fbab";
 import { textStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { butonSpreEcran } from "./ecran_destinatie.js?v=627c3c3c38";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
+import { butonSpreEcran } from "./ecran_destinatie.js?v=df2c3a05b3";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -323,6 +323,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   let pleacaMarfaCurent = null;               // raspunsul la poarta "pleaca marfa acum?" pt emiterea curenta
   let semnMarfa = null;                       // [lotul 07.10 pct.17] articolele pentru care s-a dat răspunsul
 
+  const UM_SERVICIU = "serv.";   // [331] cod E48 în e-Factura și D406 (`efactura_send._UM`, `d406.UOM_UNECE`)
   const linieNoua = () => ({ descriere: "", cantitate: "", um: "buc", pret_unitar: "", cota_tva: null, cota_propusa: null, articol_id: null,
     categorie_tva: null });
   // [comanda Costin 05.10.2026 pct.3] „contabilul poate corecta cota; schimbarea rămâne consemnată (propus → ales, cine, când)”.
@@ -365,6 +366,28 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     }
     return `<div class="em-linie" data-idx="${i}">${inputsHtml}</div>`;
   }
+
+  // [deficiența 326, 18.10.2026] clientul din alt stat UE, cu codul de TVA VALID în VIES (verificat pe ecran): o linie de SERVICIU are
+  // locul prestării la client (CF art.278 alin.(2)) — se propune cota 0 cu categoria „serviciu_extern”, nu 21%. Numai propunere, pe
+  // liniile la care omul n-a ales el cota; schimbarea clientului (alt CUI / altă țară) o retrage.
+  let viesValid = null;   // țara (codul VIES) pentru care codul de TVA al clientului a ieșit valid
+  const clientUeVies = () => !!viesValid && corp.querySelector("#em-tara").value === viesValid && viesValid !== "RO";
+  function propuneServiciuExtern(l) {
+    if (!platitor || l.tipLinie !== "servicii" || l.cotaAleasa) return;
+    const p = linii.indexOf(l);
+    if (clientUeVies()) {
+      l.cota_tva = 0; l.cota_propusa = 0; l.categorie_tva = "serviciu_extern"; l.categoriePropusa = true;
+      setCota(l, "0%", 0);
+      const sc = zonaLinii.querySelector("#em-l" + p + "-categorie");
+      if (sc) { sc.hidden = false; sc.value = "serviciu_extern"; }
+      actualizeazaC331();
+    } else if (l.categoriePropusa) {   // clientul nu mai e UE valid: propunerea se retrage la cota denumirii
+      l.categoriePropusa = false; l.categorie_tva = null;
+      l.cota_tva = l.cotaDenumire == null ? null : l.cotaDenumire; l.cota_propusa = l.cota_tva;
+      setCota(l, l.cota_tva == null ? "—" : `${l.cota_tva}%`, l.cota_tva);
+    }
+  }
+  const repropuneLiniile = () => { linii.forEach(propuneServiciuExtern); recalc(); };
 
   // actualizeaza afisajul cotei pt OBIECTUL l la pozitia lui CURENTA (splice-safe cu fetch-ul async in zbor)
   function setCota(l, text, cota) {
@@ -434,6 +457,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       golestePropunerea(l, pret, um);
       aratăFaraArticol();
       l.cota_tva = null;  // reset -> se repotriveste
+      l.cotaAleasa = false; l.categoriePropusa = false; l.tipLinie = null; l.categorie_tva = null;   // [326] denumire nouă, propunere nouă
       clearTimeout(timer);
       const d = l.descriere;
       if (d.length < 3) { setCota(l, "—"); recalc(); return; }
@@ -453,7 +477,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
             }
             setCota(l, "—");
           } else if (r && r.ok) {
-            l.cota_tva = r.cota; l.cota_propusa = r.cota; setCota(l, r.cota === 0 ? "0%" : `${r.cota}%`, r.cota);
+            l.cota_tva = r.cota; l.cota_propusa = r.cota; l.cotaDenumire = r.cota; l.tipLinie = r.tip || null;
+            setCota(l, r.cota === 0 ? "0%" : `${r.cota}%`, r.cota);
             // [05.10.2026, comanda Costin pct.9] din nomenclator: prețul și UM, numai unde omul n-a scris deja altceva
             const p = linii.indexOf(l);
             if (r.um && !l.umScris) { l.um = r.um; l.umPropus = true; const e = zonaLinii.querySelector("#em-l" + p + "-um"); if (e) e.value = r.um; }
@@ -461,6 +486,12 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
               l.pret_unitar = r.pret_unitar; l.pretPropus = true;
               const e = zonaLinii.querySelector("#em-l" + p + "-pret_unitar"); if (e) e.value = r.pret_unitar;
             }
+            // [331, 18.10.2026] serviciul nu e „buc”: UM propus „serv.” (E48, „service unit”, UN/ECE Rec.20 — acceptat de validatorul
+            // e-Factura ANAF și în lista D406), numai unde omul n-a scris altceva și nomenclatorul n-a dat UM
+            if (l.tipLinie === "servicii" && !r.um && !l.umScris) {
+              l.um = UM_SERVICIU; l.umPropus = true; const e = zonaLinii.querySelector("#em-l" + p + "-um"); if (e) e.value = UM_SERVICIU;
+            }
+            propuneServiciuExtern(l);   // [326]
           }
         } catch {}
         recalc();
@@ -469,11 +500,12 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     const selCota = zonaLinii.querySelector("select#em-l" + i + "-cota");
     if (selCota) selCota.addEventListener("change", () => {   // [pct.3] contabilul alege; propunerea rămâne pentru jurnal
       l.cota_tva = selCota.value === "" ? null : Number(selCota.value);
+      l.cotaAleasa = true; l.categoriePropusa = false;   // [326] alegerea omului nu mai e înlocuită de propunere
       setCota(l, "", l.cota_tva);
       recalc();
     });
     const selCateg = zonaLinii.querySelector("#em-l" + i + "-categorie");
-    if (selCateg) selCateg.addEventListener("change", () => { l.categorie_tva = selCateg.value || null; actualizeazaC331(); });
+    if (selCateg) selCateg.addEventListener("change", () => { l.categorie_tva = selCateg.value || null; l.cotaAleasa = true; l.categoriePropusa = false; actualizeazaC331(); });
     cant.addEventListener("input", () => { l.cantitate = parseFloat(cant.value) || 0; recalc(); });
     um.addEventListener("input", () => { l.um = um.value.trim(); l.umScris = true; l.umPropus = false; });
     // [pct.1b] prețul golit rămâne GOL (era `|| 0`: un câmp șters pleca drept preț 0, pe care nu-l scrisese nimeni)
@@ -586,7 +618,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     confirmaCaseta(ev.currentTarget, "Renunți la factura începută? Ce ai scris pe ea se șterge; nu se emite nimic.", () => {
       stergeCiorna(tenantId);
       randeazaEmitere(corp, nav, tenantId, opt);
-    }, { textOk: "Renunță la factură" });
+    }, { textOk: "Da, renunț la factură", textNu: "Continui factura" });   // [330] nu două „Renunță” alăturate
   });
 
   // [lotul 07.10 B, DS cap.17 corectat] țara partenerului DEDUSĂ din CUI: prefixul unui stat (DE…, EL…, XI…) -> acel stat; CUI
@@ -603,9 +635,10 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   // schimbarea clientului: erorile liniilor și mesajul de jos se scot la orice schimbare a clientului (CUI, țară, denumire), inclusiv când
   // țara se pune din cod (CUI-ul, VIES) — acolo nu se declanșează niciun „change”
   const curataRefuzulClientului = () => { curataEroriCamp(corp); const r = corp.querySelector("#em-rezultat"); if (r) r.innerHTML = ""; };
-  corp.querySelector("#em-tara").addEventListener("change", () => { curataRefuzulClientului(); aratăStrain(); });
+  corp.querySelector("#em-tara").addEventListener("change", () => { curataRefuzulClientului(); aratăStrain(); repropuneLiniile(); });
   corp.querySelector("#em-nume").addEventListener("change", curataRefuzulClientului);
   corp.querySelector("#em-cui").addEventListener("change", (ev) => {
+    viesValid = null;   // [326] alt cod: verificarea VIES de dinainte nu mai e a lui
     const t = taraDinCui(ev.target.value), sel = corp.querySelector("#em-tara");
     if (t && sel && sel.value !== t) { sel.value = t; salveazaCiorna(); }
     curataRefuzulClientului();
@@ -656,6 +689,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
           }
           stare.innerHTML = `<span class="em-cui-info">valid în VIES · ${esc(v.tara || pfx)}</span>`;
           stare.className = "em-cui-stare";
+          viesValid = v.tara || pfx; repropuneLiniile();   // [326] liniile de serviciu deja scrise primesc categoria
           salveazaCiorna();
         } else {
           stare.textContent = "cod TVA invalid în VIES — scutirea intracomunitară nu se aplică";
@@ -777,8 +811,12 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         notaStoc = ` · ${cate(nd, "articol descărcat", "articole descărcate")} din gestiune`;
         if (ne) notaStoc += ` (${ne} nu — stoc insuficient)`;
       }
-      rez2.innerHTML = `✓ Factura <b>${esc(r.numar)}</b> emisă · total ${Number(r.total).toLocaleString("ro-RO", {minimumFractionDigits:2})} ${monedaSel}${notaStoc}. A fost trimisă către contabil.`;
-      rez2.className = "em-rezultat em-bun";
+      // [deficiența 327, 18.10.2026] „a fost trimisă către contabil” numai când emite clientul (portalul); contabilul care emite e chiar
+      // contabilul. Butonul nu rămâne „Se emite…”: factura e emisă (o a doua emitere nu se oferă). Mesajul de după emitere (și caseta
+      // SPV) nu mai are derulare proprie (285): butonul nu mai are nimic de făcut, deci nu trebuie ținut vizibil sub mesaj.
+      rez2.innerHTML = `✓ Factura <b>${esc(r.numar)}</b> emisă · total ${Number(r.total).toLocaleString("ro-RO", {minimumFractionDigits:2})} ${monedaSel}${notaStoc}.${sesiune.rol() === "client" ? " A fost trimisă către contabil." : ""}`;
+      rez2.className = "em-rezultat em-bun em-emisa";
+      if (btn) btn.textContent = "Emisă ✓";
       stergeCiorna(tenantId);   // [lotul 07.10 pct.2] emisă: ciorna și-a terminat rostul
       ciornaPornita = false;
       // [deficiența 275c] firma neconectată la SPV (sau fără drept pentru CUI): se spune DE LA EMITERE, cu drumul spre conectare — și

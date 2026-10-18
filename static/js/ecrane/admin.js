@@ -3,13 +3,13 @@
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand } from "../api.js?v=9409795a49";
+import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand } from "../api.js?v=462d75fbab";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=a2a0b629a8";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=eb7737e0b3";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=510e670f0b";
 import { randeazaAdminAnalytics } from "./admin_analytics.js?v=65a3ea09d5";
 import { numeDeSalut } from "./salut.js?v=10719d2154";
-import { panouNotificari } from "./setari.js?v=e0dc218714";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală
+import { panouNotificari } from "./setari.js?v=6828bde114";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală
 
 // iconite SVG inline (autonome)
 function svg(cheie, fg) {

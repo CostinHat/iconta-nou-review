@@ -1736,9 +1736,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/retete/descarca` — garda `cere_drept` drept:poate_pregati
 - `DELETE /tenants/{tenant_id}/retete/{reteta_id}` — garda `cere_drept` drept:poate_pregati
 
-**Module:** `afirmatii`, `cote_tva`, `eticheta_nota`, `produse_api`, `repo_main`, `retete_api`, `uc_comun`
+**Module:** `afirmatii`, `cote_tva`, `eticheta_nota`, `facturi`, `produse_api`, `repo_main`, `retete_api`, `uc_comun`
 
-**Scrie in:** `audit_log` (INSERT) · `factura_linii` (INSERT) · `facturi` (INSERT) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `metrici_sanatate` (INSERT) · `miscari_stoc` (INSERT) · `produse` (DELETE/INSERT/UPDATE) · `retete` (DELETE/INSERT/UPDATE) · `retete_linii` (DELETE/INSERT) · `tokene_activare` (DELETE/INSERT) · `urme_portal` (INSERT)
+**Scrie in:** `audit_log` (INSERT) · `factura_cota_jurnal` (INSERT) · `factura_linii` (INSERT/UPDATE) · `facturi` (INSERT/UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `metrici_sanatate` (INSERT) · `miscari_stoc` (INSERT) · `produse` (DELETE/INSERT/UPDATE) · `retete` (DELETE/INSERT/UPDATE) · `retete_linii` (DELETE/INSERT) · `tokene_activare` (DELETE/INSERT) · `urme_portal` (INSERT)
 
 **Stari puse:** `ciorna`, `de_verificat`
 

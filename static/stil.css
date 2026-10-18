@@ -195,7 +195,11 @@ html, body {
 /* ============================================================
    DESKTOP rolului — bară albastră + bară albastru-gri
    ============================================================ */
-.desktop { min-height: 100dvh; display: flex; flex-direction: column; }
+/* [deficiența 321, 18.10.2026] html, body au overflow-y:hidden (mai jos, scroll-lock-ul aplicației): desktopul derulează el însuși, cu
+   rotița și pe telefon — altfel ce trece sub ecran („De depus”, „Firme” sub cardurile „Primii pași”) se ajunge doar cu Tab. DS cap.22 §7,
+   gard SCROLL_DESKTOP în verificator. */
+.desktop { height: 100dvh; overflow-y: auto; display: flex; flex-direction: column; }
+.desktop > * { flex-shrink: 0; }
 .bara-antet { display: flex; flex-direction: column; }  /* [a11y_landmark] banner: bara+subbara+bara3 stivuite */
 
 /* bara albastră (sus) */
@@ -679,7 +683,9 @@ html, body {
 .fereastra.fer-tabel .fereastra-corp { overflow-x: auto; }
 /* [DS cap.9 v2.92, deficiența 285] fereastra care nu încape nici lățită (ecran îngust): celulele de tabel își rup cuvintele lungi,
    în loc să împingă tabelul peste marginea ferestrei. Lățirea o face navigatorul (`fer-tabel`, când conținutul e mai lat). */
-.fereastra-corp .fd-tabel td, .fereastra-corp .fd-tabel th { overflow-wrap: anywhere; }
+/* [deficiența 331, 18.10.2026] `break-word`, nu `anywhere`: se rupe numai cuvântul care nu încape pe rândul lui. `anywhere` scădea lățimea
+   minimă a celulei la o literă, iar tabelul își strângea coloanele până rupea și cuvintele scurte („Can t”, „servici u”). */
+.fereastra-corp .fd-tabel td, .fereastra-corp .fd-tabel th { overflow-wrap: break-word; }
 /* [DS cap.6 v2.92, deficiența 285] acțiunea principală a unui formular lung și mesajul ei stau mereu în vedere: zona lor
    (`.bara-fixa`: bara de butoane + zona de mesaj) rămâne lipită de marginea de jos a ferestrei cât se derulează conținutul. */
 .fereastra-corp .bara-fixa { position: sticky; bottom: -24px; z-index: 2; background: #e9edf3; margin: 0 -24px -24px; padding: 4px 24px 16px;
@@ -1906,6 +1912,8 @@ html, body {
 /* [deficiența 304, 17.10.2026] în bara fixă mesajul stă DEASUPRA butoanelor și are înălțime limitată: „Emite factură” rămâne vizibil */
 .bara-fixa > .em-rezultat { margin-top:0; margin-bottom:8px; min-height:0; max-height:35vh; overflow-y:auto; }
 .bara-fixa > .em-rezultat:empty { display:none; }
+/* [deficiența 327, 18.10.2026] după emitere mesajul (și caseta SPV) se citește întreg, fără derulare proprie (285): butonul e consumat */
+.bara-fixa > .em-rezultat.em-emisa { max-height:none; overflow-y:visible; }
 .em-bun { color:#15803d; font-weight:600; }
 .em-rau { color:#dc2626; }
 @media (max-width:520px) {
@@ -2187,6 +2195,8 @@ html.pagina-publica, body.pagina-publica { overflow-y: auto; }
 .btn-nav { width: 32px; height: 32px; padding: 0; border-radius: 8px; border: none;
   background: #f97316; color: #fff; font-size: 18px; cursor: pointer; box-shadow: 0 2px 6px rgba(20,30,45,0.25); }
 .subbara-edu { min-height: 24px; display: inline-flex; align-items: center; padding: 2px 4px; }  /* a11y: tinta atingere >=24px (AA 2.5.8; era 18px) */
+/* [deficiența 331, 18.10.2026] într-un flex, spațiile dintre text și butoane dispar („singur.Activează·Nu acum”): distanța o dă `gap` */
+.subbara-edu { flex-wrap: wrap; column-gap: 0.35em; }
 /* [a11y 06.09.2026] Butoanele-link ALE BANNER-ULUI stau pe subbara (#9fb1c7), unde
    `.btn-link` #2f6fa6 da 2.43:1 — sub AA. Tokenul fusese verificat pe alb (5.32) si pe
    panoul DESCHIS #e9edf3 (4.53); subbara e mai inchisa decat amandoua. Scoped, ca la
@@ -2932,7 +2942,7 @@ body.pagina-publica .pagina-bara-acces:focus-visible{outline:2px solid var(--p-t
 .coada-note-refuz { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 
 /* [deficiența 316, 17.10.2026] Panou Admin → Înregistrare: data, emailul și butonul cererii nu se rup pe rânduri (regula globală 285,
-   `overflow-wrap: anywhere` pe .fd-tabel, rămâne pentru celelalte coloane) */
+   `overflow-wrap: break-word` pe .fd-tabel, rămâne pentru celelalte coloane) */
 .fereastra-corp .fd-tabel.ins-cereri td.ins-nerupt { overflow-wrap: normal; white-space: nowrap; }
 .fd-tabel.ins-cereri tr.ins-expirata td { color: var(--gri); }
 

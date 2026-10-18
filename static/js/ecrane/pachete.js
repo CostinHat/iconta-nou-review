@@ -3,7 +3,7 @@
 // Backend: GET /tenants, GET /pachete/{tid}/rezumat, POST /pachete/{tid}/genereaza,
 //          GET+POST /pachete/{tid}/poveste, POST /pachete/{tid}/trimite.
 
-import { api, dataRo, esc, arataMesaj, cate, confirmaCaseta } from "../api.js?v=9409795a49";
+import { api, dataRo, esc, arataMesaj, cate, confirmaCaseta } from "../api.js?v=462d75fbab";
 
 // LUNI = pentru pickerul de luna (<option>); etichetele luna-an trec prin dataRo("luna_an"). [G3 23.07]
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
@@ -110,7 +110,7 @@ function randeazaLucru(corp, nav) {
       <div class="pac-rez-rand"><span>Email antreprenor</span><b>${esc(rz.email||"— nesetat —")}</b></div>
     </div>
     <div class="panou pac-deschide-zona">
-      <div class="pac-deschide-stare" id="pac-deschide-stare">${S.status === "aprobat" ? "Povestea e aprobată ✓" : (S.text ? "Există o ciornă salvată" : "Încă nu există o poveste pentru această lună")}</div>
+      <div class="pac-deschide-stare" id="pac-deschide-stare">${esc(stareEcran()) || "Încă nu există o poveste pentru această lună"}</div>
       <button class="buton-primar" id="pac-deschide">${S.text ? "Deschide povestea" : "Scrie povestea"}</button>
     </div>
 
@@ -276,9 +276,17 @@ function deschideModal(corp, nav) {
   });
 }
 
+// [deficiența 337, 18.10.2026] starea poveștii pe ecranul pachetului = cea din fereastra ei (o singură definiție): „aprobată ✓” numai cât
+// cifrele sunt cele de la aprobare; altfel „depășită” (`S.depasita`, amprenta cifrelor — 314), ca în fereastră
+function stareEcran() {
+  if (S.status === "aprobat" && S.depasita) return "Povestea e aprobată, dar depășită — cifrele lunii s-au schimbat după aprobare; aprob-o din nou";
+  if (S.status === "aprobat") return "Povestea e aprobată ✓";
+  return S.text ? "Există o ciornă salvată" : "";
+}
+
 function _reflectaStareEcran(corp) {
   const el = corp.querySelector("#pac-deschide-stare");
-  if (el) el.textContent = S.status === "aprobat" ? "Povestea e aprobată ✓" : (S.text ? "Există o ciornă salvată" : "");
+  if (el) el.textContent = stareEcran();
 }
 
 // [R159, 05.09.2026] Intoarce ACUM daca s-a salvat, si apelantii se uita la raspuns.

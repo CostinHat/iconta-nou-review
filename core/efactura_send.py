@@ -95,6 +95,9 @@ _UM = {
     "kg": "KGM", "g": "GRM", "l": "LTR", "litru": "LTR", "ml": "MLT", "m": "MTR", "mp": "MTK",
     "m2": "MTK", "mc": "MTQ", "m3": "MTQ", "km": "KMT", "luna": "MON", "luni": "MON", "zi": "DAY",
     "zile": "DAY", "set": "SET", "pereche": "PR", "kwh": "KWH", "to": "TNE", "tona": "TNE",
+    # [deficiența 331, 18.10.2026] serviciul: E48 („service unit”). Verificat 18.10.2026 la validatorul ANAF FACT1: E48 trece fără eroare,
+    # „BUC” dă BR-CL-23 (calibrare)
+    "serv": "E48", "serv.": "E48", "serviciu": "E48", "servicii": "E48",
 }
 
 

@@ -27,6 +27,14 @@ def seteaza_telefonul(cur, uid, tel):
     cur.execute("DELETE FROM public.telefon_coduri WHERE user_id = %s AND telefon IS DISTINCT FROM %s", (uid, tel))
 
 
+def alte_conturi_cu_telefonul(cur, uid, tel):
+    """[338] Câte ALTE conturi au salvat același număr (numărul se compară în forma normalizată, +40…)."""
+    if not tel:
+        return 0
+    cur.execute("SELECT count(*) FROM public.users WHERE telefon = %s AND id <> %s", (tel, uid))
+    return cur.fetchone()[0]
+
+
 def telefonul(cur, uid):
     cur.execute("SELECT telefon FROM public.users WHERE id = %s", (uid,))
     return cur.fetchone()[0]

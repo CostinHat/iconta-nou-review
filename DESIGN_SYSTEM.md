@@ -246,6 +246,8 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   fiecare schimbare de conținut și la redimensionare) — nu mai depinde de ecranul care ar fi trebuit s-o ceară. Unde nici lățirea nu
   ajunge (ecran îngust), rândurile de butoane și stări se rup (`flex-wrap`, ex. `.fd-antet-sus`), iar celulele `.fd-tabel` își rup
   cuvintele lungi. Gard: e2e `test_def_285_*` (toate cardurile ferestrei firmei, detaliul facturii la 1100px, un conținut lat sintetic).
+  **(18.10.2026, deficiența 331)** numai cuvântul care nu încape se rupe: `overflow-wrap: break-word`, NU `anywhere` — `anywhere` coboară
+  lățimea minimă a celulei la o literă și tabelul rupe și cuvintele scurte („Can t”, „servici u”). Gard: e2e `test_def_331_*`.
 - Nicio fereastră nu iese din ecran.
 - **Acțiunile unui rând de tabel stau într-un meniu (v2.83, 08.10.2026, comanda Costin „Retest 08.10” pct.13).** O celulă cu trei
   sau mai multe butoane le ține într-un `<details class="dec-xml"><summary>Acțiuni</summary>` (butoanele unul sub altul la deschidere),
@@ -550,6 +552,8 @@ Textul unei pagini stă într-un fișier Markdown separat. Nu în registrul de f
 Shell-ul care randează leagă foaia de stil canonică și folosește clase și tokeni. Fără `<style>` inline, fără culori scrise direct în șablon.
 
 **Scroll de document.** Paginile publice folosesc scroll normal de document. Ele **NU** moștenesc regula globală `html, body { overflow-y: hidden }` — aceea aparține shell-ului aplicației/landing-ului (care are scroll intern propriu). Shell-ul public marchează `<html>` **și** `<body>` cu clasa `.pagina-publica`, iar foaia de stil readuce `overflow-y: auto` pe ea. Un shell public fără această clasă se taie la primul ecran (conținutul de sub fold devine invizibil, iar componentele par „text simplu"). Verificatorul îl prinde.
+
+**Scroll-ul intern al aplicației (18.10.2026, deficiența 321).** Shell-ul aplicației e `.desktop` (navigator.js): are înălțimea ecranului (`height: 100dvh`) și derulează el însuși (`overflow-y: auto`). Cu `html, body { overflow-y: hidden }`, un desktop cu `min-height` în loc de `height` crește peste ecran și nu se mai derulează cu rotița — ce e sub cardurile „Primii pași” („De depus”, „Firme”) se ajungea doar cu Tab. Verificatorul îl prinde (`scroll_desktop`).
 
 ---
 

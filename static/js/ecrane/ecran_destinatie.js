@@ -10,8 +10,9 @@
 // Gard: `core/test_refuz_spre_ecran.py` (fiecare `ecran` emis de server are intrare aici, și fiecare ecran care afișează un
 // astfel de refuz trece prin `butonSpreEcran`).
 import { randeazaDateFirma } from "./date_firma.js?v=76cf61f9da";
-import { panouConectareSPV } from "./setari.js?v=e0dc218714";
+import { panouConectareSPV } from "./setari.js?v=6828bde114";
 import { randeazaProduse } from "./produse_ecran.js?v=4554cd872c";
+import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export const ECRANE = {
   date_firma: {
@@ -26,6 +27,10 @@ export const ECRANE = {
   },
   conectare_spv: {
     titlu: "Conectare SPV",
+    // [deficiența 334, 18.10.2026] conectarea e a administratorului cabinetului (Setări cont o arată numai lui, `setari.js` eAdmin): altui
+    // rol butonul nu se oferă — i se spune cine o face
+    numaiAdmin: true,
+    faraDrept: "Conectarea SPV o face administratorul cabinetului (Setări cont → Conectare SPV).",
     deschide: (nav) => nav.deschide("Setări cont → Conectare SPV", (c2) => panouConectareSPV(c2)),
   },
 };
@@ -33,6 +38,15 @@ export const ECRANE = {
 export function butonSpreEcran(zona, ecran, nav, tenantId, opt = {}) {
   const e = ECRANE[ecran];
   if (!zona || !e || !nav) return null;
+  const rol = (sesiune.user() || {}).rol;
+  if (e.numaiAdmin && rol !== "admin_firma" && rol !== "superadmin") {   // [334]
+    const n = document.createElement("span");
+    n.className = "ecran-nota drept-motiv";
+    n.dataset.ecranDestinatie = ecran;   // un singur element lângă refuz (`api.js` _butonSpreEcran)
+    n.textContent = e.faraDrept;
+    zona.appendChild(n);
+    return null;
+  }
   const b = document.createElement("button");
   b.type = "button";
   b.className = opt.clasa || "buton-primar";

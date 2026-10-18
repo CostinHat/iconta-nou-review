@@ -40,6 +40,12 @@ MESAJ_TELEFON_LIPSA = "Scrie întâi numărul de telefon și salvează-l."
 MESAJ_PREA_DES = "Un cod a plecat acum mai puțin de un minut. Așteaptă-l pe WhatsApp sau cere altul peste un minut."
 MESAJ_WA_INACTIV = ("Trimiterea pe WhatsApp nu e încă activă pe iConta.eu. Acordul tău a fost salvat; notificările rămân pe email până se "
                     "activează.")
+#: [deficiența 335 + 336, 18.10.2026] motivul, spus pe ecran înainte de orice clic (codul pe WhatsApp nu se mai oferă cât WhatsApp nu
+#: trimite) și în mesajul de după salvare („vin pe email” fără motiv)
+MOTIV_WA_INACTIV = "Trimiterea pe WhatsApp nu e încă activă pe iConta.eu, deci notificările vin pe email până se activează."
+#: [deficiența 338, 18.10.2026] același număr la alt cont: avertisment, fără să se spună al cui e contul (alt cabinet, poate)
+AVERTISMENT_TELEFON_DUBLU = ("Același număr e salvat și la alt cont din iConta.eu. Codul de confirmare și mesajele pe WhatsApp pleacă la "
+                             "numărul ăsta pentru fiecare cont care îl are: verifică dacă e numărul tău.")
 MESAJ_COD_EXPIRAT = "Codul a expirat sau a fost încercat de prea multe ori. Cere un cod nou."
 MESAJ_COD_GRESIT = "Codul nu se potrivește. Scrie cele 6 cifre primite pe WhatsApp."
 MESAJ_NECONFIRMAT = "Confirmă întâi numărul cu codul primit pe WhatsApp."
@@ -69,6 +75,9 @@ def _stare(cur, uid):
     p = _repo.preferintele(cur, uid)
     st = {"telefon": r[0], "confirmat": r[1], "canal": r[2], "acord": r[3], "whatsapp_disponibil": _wa.configurat(),
           "numar_iconta": _wa.NUMAR_AFISAT}
+    st["whatsapp_motiv"] = None if st["whatsapp_disponibil"] else MOTIV_WA_INACTIV   # [335]
+    # [338] numărul salvat și la alt cont: avertismentul se vede la fiecare deschidere, nu numai la salvare
+    st["avertisment_telefon"] = AVERTISMENT_TELEFON_DUBLU if _repo.alte_conturi_cu_telefonul(cur, uid, r[0]) else None
     # [deficiența 320] toate tipurile care îl privesc, grupate, cu bifele lui (sau implicitul grupei); prima intrare e completă când
     # telefonul e scris și bifele (cu canalul) au fost salvate o dată — sau contul exista la publicarea lotului 7 („Numai conturile
     # noi”, decizia Costin 17.10.2026, `prima_intrare_scutita_la` din `core/migrare_canal_notificari.py`)

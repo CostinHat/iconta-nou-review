@@ -2701,3 +2701,33 @@ ordinea din `verifica` (07:19:30–07:19:33): `canal_notificari` (aplicată), `n
 fișiere) și a repornit `iconta-nou` (07:19:39, după commitul de 05:42:05). **Four-way închis:** HEAD = origin/main = public/main =
 backup/lant-2026-10-18 = procesul viu = `7ebbf79b` (2 din 2 procese); `verifica HEAD --productie` curat (rc 0), nicio sentinelă;
 site 200. Starea de după publicare intră pe ramura `lucru/lot8-2026-10-18` (commitul care conține această intrare), nepublicată.
+
+## 18.10.2026 — Lotul 8, comanda 8.1: deficiențele din retestul lotului 7 (321–340), garda 325, probele fără browser (pe ramură)
+
+Comanda Costin 8.1 (verbatim în DECIZII „Comanda 8.1”), pe ramura `lucru/lot8-2026-10-18` (worktree `/home/costin/iconta_lot7`), fără poartă
+și fără publicare. **pct.0:** registrele lotului 7 completate din git și din documentul de deficiențe (DECIZII: deciziile de la publicare;
+DEFICIENTE: 297–315, 318–320 confirmate, 321–340; LANSARE: prima intrare). **321–340 rezolvate**, fiecare cu test de capăt la capăt în
+`frontend_test/e2e/e2e_lot81.py` (23 de teste) și mutație roșie (`mutatii81.json`: 21 de mutații într-o rulare -> toate testele de atunci
+ROȘII; 321 separat -> numai 321 ROȘU, „rotița n-a derulat pagina”). 321: `.desktop` derulează singur (garda `scroll_desktop` în verificator,
+DS cap.22 §7). **325, regulă pe toată aplicația:** garda în plasă pe fiecare ecran (`conftest.GARDA_DESCHIDERI`: focus din cod pe o listă,
+`showPicker`, fereastră înaintea primului gest), probată prin comportament; pe plasă a găsit încă două drumuri (Date firmă, focusul pe
+`#df-forma_juridica` / `#df-metoda_stoc`), închise central în `api.focusFaraSalt`. **337:** cifrele pachetului 09/2026 sunt ale lunii
+(707: 1.000; 607 + 641 + 646 = 14.713; luna precedentă 0, deci prima lună cu operațiuni: lunar = cumulat); testul
+`test_288_povestea_lunii.py::test_337_*` le confruntă cu balanța. **Probele fără browser:** 303 și 310 (e2e existente + teste core),
+C48 în D406 (`core/test_c48_d406.py`, DUK „valid”), 410 pe cele 9 adrese vechi (GET pe producție, fără date), notificarea către
+superadmin la o cerere de import (`test_notificari_canal`, plus 340: tipurile lui bifate din oficiu). **316:** nicio cale din cod nu
+șterge cererile în așteptare (purjarea atinge numai cererile expirate de peste 30 de zile); ce s-a întâmplat cu cele două se vede
+numai cu o citire pe producție — cerută la §6. Întrebările (D112 la F1, D710, N18, alerta de la 09:02) la raport; D710 și N18 au
+formularea nouă, iar sonda numește acum o repornire a mașinii „Serverul iConta a repornit” (la 09:02: `sudo reboot` pentru kernelul
+6.8.0-147).
+
+Pe drum (C, găsite de lot): 500 pe `GET /coada` — `coada_api.note_nevalidate` avea două `COALESCE` fără alias, iar pe cursorul dict
+tuplul ieșea mai scurt; aceeași coliziune latentă în `element_activ` și `mf_registru`; garda de clasă `core/test_coloane_numite.py`
+(C50). O eroare JS intermitentă în `e2e_bloc_a::test_def_8` („Cannot read properties of null (reading 'value')”, numai sub încărcare):
+stiva prinsă pe copie a arătat cronometrul previzualizării din Casă pornit după „Adaugă”, cât Casa se reîncărca fără formular; probată cu
+ceasul paginii oprit și registrul ținut pe loc (C51). Două ipoteze anterioare au fost infirmate prin mutație, iar reparația a fost scoasă
+până la dovadă.
+Rularea țintită (suita întreagă, verificatorul și conftest-ul plasei fiind atinse): 22 de roșii, toate reparate — 328 restrâns la
+factura emisă (prima formă bloca și ștergerea ciornelor de factură), clichetele (constanta mutată, ancorele pe text, apelul extras),
+blocurile generate (TRASEE, GARZI), afirmația depășirii trimisă tipată. Plasa ecranelor atinse: garda 325 a găsit focusul pe
+listele din Date firmă (închis în `api.focusFaraSalt`), iar 298 cerea încă textul vechi „la validare”; rulată din nou, verde.

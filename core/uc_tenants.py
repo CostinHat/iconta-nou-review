@@ -991,7 +991,13 @@ def produse_potriveste(tenant_id, denumire, ctx, din_articol=False):
     _ai = cote_tva.intreaba(_de_intrebat, platitor)
     with db.get_conn(schema) as conn:
         # [05.10.2026, comanda Costin pct.9] nomenclatorul firmei întâi (cota, UM, preț), potrivirea automată după
-        return produse_api.propunere_pentru_linie(conn, denumire, platitor_tva=platitor, raspunsuri=_ai)
+        out = produse_api.propunere_pentru_linie(conn, denumire, platitor_tva=platitor, raspunsuri=_ai)
+    # [deficiența 326, 18.10.2026] felul liniei (marfă / produse / servicii), în aceeași ordine ca la emitere (`facturi_api`, contul de
+    # venit): cuvântul-cheie întâi, apoi răspunsul modelului. Ecranul propune din el categoria art.278 alin.(2) și UM-ul serviciului.
+    if isinstance(out, dict) and out.get("ok"):
+        from core import facturi as _fc
+        out["tip"] = _fc.tip_din_denumire(denumire) or out.get("tip")
+    return out
 
 
 def cm_lista(tenant_id, salariat_id, an, ctx):
@@ -1362,7 +1368,7 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
                 if _n["status"] == "ciorna":
                     _doc = _nd.documentul_sursa(cur, schema, _nid)
                     if _doc:
-                        _n["derivata"] = {"fel": _doc[0], "se_sterge": _doc[0] not in _nd.FARA_STERGERE,
+                        _n["derivata"] = {"fel": _doc[0], "se_sterge": _nd.se_sterge(cur, schema, _doc, _nid),
                                           "unde": _nd.mesaj_refuz(_nid, _doc)}
     # [14-1-1] "Sumele debitoare si sumele creditoare se totalizeaza lunar." In partida dubla fiecare
     # linie e simultan debit si credit, deci cele doua totaluri sunt egale prin constructie - se dau

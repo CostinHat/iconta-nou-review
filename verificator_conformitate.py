@@ -1336,6 +1336,21 @@ try:
 except Exception as _e_sp:
     rap["scroll_public"].append(("verificator", 0, "EROARE", "gard scroll_public: " + str(_e_sp)))
 
+# --- GARD SCROLL DESKTOP (DS cap.22 §7, deficiența 321, 18.10.2026): cu html,body{overflow-y:hidden}, shell-ul aplicației
+#     (`.desktop`, navigator.js) derulează EL ÎNSUȘI: înălțime fixă (100dvh) + overflow-y:auto. Fără asta, ce trece sub ecran
+#     (cardurile „Primii pași” împing „De depus” / „Firme” în jos) nu se mai ajunge cu rotița. Mutația: scoate overflow-y:auto
+#     sau pune min-height în loc de height pe `.desktop` -> lista nevidă -> TOTAL > 0.
+rap["scroll_desktop"] = []
+try:
+    _css_sd = open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read()
+    if re.search(r"html\s*,\s*body\s*\{[^}]*overflow-y\s*:\s*hidden", _css_sd):
+        _decl_sd = " ".join(m.group(1) for m in re.finditer(r"(?m)^\.desktop\s*\{([^}]*)\}", _css_sd))
+        if not (re.search(r"(?<![-\w])height\s*:\s*100dvh", _decl_sd) and re.search(r"overflow-y\s*:\s*auto", _decl_sd)):
+            rap["scroll_desktop"].append(("static/stil.css", 0, ".desktop",
+                "shell-ul aplicației fără height:100dvh + overflow-y:auto, sub html,body{overflow-y:hidden} -> rotița nu derulează (321)"))
+except Exception as _e_sd:
+    rap["scroll_desktop"].append(("verificator", 0, "EROARE", "gard scroll_desktop: " + str(_e_sd)))
+
 # --- TINTA BIFEI (DS cap.2, decizia Costin 02.10.2026 — DECIZII „Căsuțele .set-bifa rămân de 16px"): căsuța
 #     are 16px, ținta de clic e ETICHETA `<label class="set-bifa">`, care trebuie să rămână >= 24px (WCAG 2.5.8 AA).
 #     Premisa deciziei se ține prin `min-height` pe regula globală; fără ea, o micșorare de padding/font coboară

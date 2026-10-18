@@ -1,6 +1,6 @@
 // admin_activitate.js — Admin iConta: activitate + business cabinete (doar superadmin).
 // Sumar + lista cu firme/angajati/recomandari/actiuni, suspenda/reactiveaza, click -> timeline.
-import { api, dataRo, confirmaCaseta, esc, cate } from "../api.js?v=9409795a49";  /* audit_cab_lot2_v1 + esc_nc27 */
+import { api, dataRo, confirmaCaseta, esc, cate } from "../api.js?v=462d75fbab";  /* audit_cab_lot2_v1 + esc_nc27 */
 
 
 export async function randeazaAdminActivitate(corp, nav) {

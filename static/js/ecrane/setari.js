@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp } from "../api.js?v=9409795a49";
+import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp } from "../api.js?v=462d75fbab";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export async function randeazaSetari(corp, nav) {
@@ -341,7 +341,13 @@ export async function panouNotificari(zona, opt = {}) {
   zona.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
   let st = null;
   try { st = await api.get("/eu/notificari"); } catch (e) { zona.innerHTML = ""; arataMesaj(zona, e.mesaj || "Setările notificărilor nu s-au putut citi.", "eroare"); return; }
-  const deschis = (st) => st.telefon && st.confirmat && st.acord;
+  const deschis = (st) => st.whatsapp_disponibil && st.telefon && st.confirmat && st.acord;
+  // [deficiențele 335 + 336, 18.10.2026] de ce WhatsApp nu e ales: întâi pentru că nu trimite încă (atunci nici codul nu se oferă), apoi
+  // numărul / confirmarea / acordul. Același motiv sub listă și în mesajul de după salvare.
+  const motivWa = (s) => (deschis(s) ? "" : !s.whatsapp_disponibil ? (s.whatsapp_motiv || "")
+    : !s.telefon ? "WhatsApp: salvează întâi numărul, apoi confirmă-l cu codul."
+    : !s.confirmat ? "WhatsApp: numărul nu e confirmat încă — confirmă-l cu codul primit pe WhatsApp."
+    : "WhatsApp: bifează acordul pentru mesaje.");
   zona.innerHTML = `
     <div class="panou">
       <h2 class="pf-titlu">Notificări</h2>
@@ -353,6 +359,7 @@ export async function panouNotificari(zona, opt = {}) {
       </label>
       <button class="buton-secundar" id="not-salveaza-telefon">Salvează numărul</button>
       <div id="not-stare-telefon" class="ecran-nota"></div>
+      <div id="not-avert-telefon" class="caseta-atentie" hidden><div class="ca-mesaj"></div></div>
       <div id="not-confirmare">
         <label class="set-bifa"><input type="checkbox" id="not-acord"${st.acord ? " checked" : ""}> <span>Sunt de acord să primesc mesaje de la iConta.eu pe WhatsApp (${esc(st.numar_iconta)}), la numărul de mai sus.</span></label>
         <button class="buton-secundar" id="not-cere-cod">Trimite codul pe WhatsApp</button>
@@ -389,13 +396,15 @@ export async function panouNotificari(zona, opt = {}) {
     st = s;
     $("#not-stare-telefon").textContent = !s.telefon ? "Niciun număr salvat."
       : s.confirmat ? `Numărul ${s.telefon} e confirmat.` : `Numărul ${s.telefon} nu e confirmat încă.`;
-    $("#not-confirmare").hidden = !s.telefon || s.confirmat;
+    $("#not-confirmare").hidden = !s.whatsapp_disponibil || !s.telefon || s.confirmat;   // [335] fără WhatsApp activ, nici cod
+    const av = $("#not-avert-telefon");   // [338] același număr la alt cont
+    av.hidden = !s.avertisment_telefon;
+    av.querySelector(".ca-mesaj").textContent = s.avertisment_telefon || "";
     $("#not-acord").checked = !!s.acord;
     $("#not-canal").value = s.canal;
     const wa = $("#not-canal").querySelector('option[value="whatsapp"]');
     wa.disabled = !deschis(s);
-    $("#not-motiv-canal").textContent = deschis(s) ? "" : !s.telefon ? "WhatsApp: salvează întâi numărul, apoi confirmă-l cu codul."
-      : !s.confirmat ? "WhatsApp: confirmă întâi numărul cu codul primit pe WhatsApp." : "WhatsApp: bifează acordul pentru mesaje.";
+    $("#not-motiv-canal").textContent = motivWa(s);
   }
   arata(st);
   $("#not-salveaza-telefon").addEventListener("click", async () => {
@@ -416,7 +425,10 @@ export async function panouNotificari(zona, opt = {}) {
       const tipuri = {};
       zona.querySelectorAll("#not-tipuri [data-tip]").forEach((c) => { tipuri[c.dataset.tip] = c.checked; });
       arata(await api.put("/eu/notificari", { canal: $("#not-canal").value, acord: $("#not-acord").checked, tipuri }));
-      arataMesaj(msg, (st.canal === "whatsapp" ? "Notificările vin pe WhatsApp." : "Notificările vin pe email.") + " Alegerile tale sunt salvate.", "ok");
+      // [336] pe email fiindcă WhatsApp nu se poate încă: motivul, nu doar „vin pe email”
+      const motiv = st.canal !== "whatsapp" && (st.acord || !st.whatsapp_disponibil) ? motivWa(st) : "";
+      arataMesaj(msg, (st.canal === "whatsapp" ? "Notificările vin pe WhatsApp." : "Notificările vin pe email." + (motiv ? " " + motiv : ""))
+        + " Alegerile tale sunt salvate.", "ok");
       if (opt.dupaSalvare) opt.dupaSalvare(st);   // [320] prima intrare: „Continuă” se deblochează
     } catch (e) {
       (e.erori_campuri || []).forEach((c) => eroareCamp(zona, c.camp, c.mesaj));

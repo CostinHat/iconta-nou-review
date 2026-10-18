@@ -91,6 +91,9 @@ UOM_UNECE = {
     "zi": "DAY", "zile": "DAY", "luna": "MON", "luni": "MON", "an": "ANN", "ani": "ANN",
     "set": "SET", "per": "PR", "pereche": "PR",
     "kwh": "KWH", "mwh": "MWH",
+    # [deficiența 331, 18.10.2026] serviciul: E48 („service unit”) — prezent în lista validatorului D406 (D406Validator.jar,
+    # `parameters/Parameters_v3.class`, alături de H87 / MTQ / C62; extras 18.10.2026)
+    "serv": "E48", "serv.": "E48", "serviciu": "E48", "servicii": "E48",
 }
 UOM_IMPLICIT = "H87"
 

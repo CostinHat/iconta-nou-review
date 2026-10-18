@@ -297,7 +297,7 @@ DECLARATII = {
     # `trim`; cere in plus `obligatii` (vezi valideaza_cerere). NU e obligatie periodica -
     # nu intra in semaforul de restante (control_fiscal_api / termene_api): e la cerere,
     # depusa doar cand exista o eroare de corectat. Vezi DECIZII 20.07.
-    "d710": ("trimestrial", _d710),
+    "d710": ("trimestrial", _d710),   # perioada D100-ului corectat; pe ecran: `ETICHETA_PERIODICITATE`
     "d393": ("anual",       _d393),
     "d395": ("lunar",       _d395),
     "d397": ("lunar",       _d397),
@@ -358,6 +358,12 @@ def _inregistrare(tip):
 def tipuri():
     """Lista tipurilor pentru selectorul generic din UI (periodice, an/luna/trim)."""
     return sorted(k for k in DECLARATII if k not in _DOAR_API)
+
+
+#: [18.10.2026, comanda Costin 8.1 pct.6: „D710 «trimestrial»”] ce scrie ecranul lângă tip, unde periodicitatea-parametru (perioada aleasă) nu
+#: e un termen: D710 nu se depune periodic, ci la cerere, când se corectează un D100 — pe perioada acelui D100 (în iConta: impozitul micro,
+#: 121, și impozitul pe profit, 103, amândouă trimestriale). „D710 · trimestrial” se citea ca o obligație trimestrială.
+ETICHETA_PERIODICITATE = {"d710": "la cerere — corectează un D100 (pe trimestrul lui)"}
 
 
 def periodicitate(tip):

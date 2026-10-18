@@ -46,6 +46,38 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 8, comanda 8.1 (Costin 18.10.2026, verbatim în DECIZII „Comanda 8.1”)** — deficiențele din retestul lotului 7 (321–340),
+  garda 325, proba 337, probele fără browser (303, 310, C48 în D406, 410, notificarea superadminului la import), 316, întrebările; ramura
+  `lucru/lot8-2026-10-18` (worktree `/home/costin/iconta_lot7`), fără publicare, fără poartă (doar rularea țintită).
+  - ultim: L81-1..L81-12 (321–340 rezolvate, plus C50 / C51 găsite pe drum, fiecare cu e2e în `e2e_lot81.py` și mutație roșie; garda 325 în plasă + statică; proba 337;
+    probele pct.4; 316 și întrebările la raport) — commitul care conține această intrare, pe ramură, nepublicat. Rularea țintită: suita
+    întreagă (22 de roșii, toate reparate și rulate din nou: 328 restrâns la factura emisă, blocurile generate, clichetele, ancorele pe
+    text), plasa ecranelor atinse, uneltele vizuale pe 8019.
+  - urmator: răspunsul lui Costin la §6 (citirea pe producție pentru 316; confirmările UM „serv.”, 328, WhatsApp inactiv); apoi restul
+    lotului 8 (cheile Meta / Postmark / Search Console, bara de stare fixă) și poarta numai la „Lotul 8 e complet”. BLOCAT: decizia §6.
+  - pasi:
+    L81-1. 321 + 322: `.desktop` derulează singur (`stil.css`, gard `scroll_desktop` în verificator, DS cap.22 §7); `uc_inceput._card` scoate
+           butoanele care bifează pasul (`BUTOANE_CARE_BIFEAZA`) de pe cardul făcut.
+    L81-2. 325: `declaratii.js` nu mai pune focusul pe `<select id="dec-tip">`; garda de clasă: plasa e2e înregistrează orice focus programatic
+           pe o listă (`select`), `showPicker`, și orice fereastră deschisă fără gestul omului (în afara listei aprobate: bun venit, prima
+           intrare, linkul din notificare); garda statică pentru `showPicker` / `autofocus` pe liste.
+    L81-3. 323 + 324 + 329: grup propriu „Depășite” în „De depus” (`validat.js`), verdictul nu mai spune „n-a trecut prin validator” la o
+           declarație depășită, fereastra conținutului spune „depășită” (`uc_coada.coada_continut`); „Generează din nou” numai când cererea
+           e păstrată, altfel drumul spre Declarații; avertismentul notelor recalculat la listare, nu înghețat; „Deschide nota nota”.
+    L81-4. 328 + 333: mesajul D300 spune „ciornă” vs „la validare” după starea reală din coadă; contarea facturii emise nu se șterge
+           din jurnal (`note_derivate.se_sterge`; a ciornei da, e drumul ștergerii ei); amortizarea lunii în curs nu blochează închiderea, iar butonul ei spune de ce nu se poate.
+    L81-5. 326 + 327 + 330: propunerea categoriei `serviciu_extern` (art.278 alin.(2)) pentru client UE valid VIES + linie de serviciu;
+           butonul după emitere, mesajul după rol, caseta SPV fără derulare proprie; `confirmaCaseta` cu `textNu`.
+    L81-6. 331 + 332: tabelele nu rup cuvintele; adresa fără localitatea dublată; descrierea băncii; „Conectare SPV” o dată; UM la serviciu;
+           spațiile din bandă; data dispoziției de casă propusă (azi).
+    L81-7. 334 + 335 + 336 + 338: butonul spre Conectare SPV numai la administrator; WhatsApp ascuns cât nu e configurat; motivul în mesaj;
+           avertisment la telefonul salvat la alt cont.
+    L81-8. 339 + 340: „de validat” pentru declarații numai cu validarea în doi efectivă; tipurile superadminului bifate implicit, numai ale lui.
+    L81-9. 337: povestea din pachet cu starea din fereastră (depășită); proba cifrelor pe balanța F1.
+    L81-10. Probele pct.4 (303, 310, C48 D406, 410, notificarea la import) și răspunsul 316; întrebările pct.6.
+    L81-11. Testele e2e `test_def_321..340` + mutații; uneltele vizuale pe ecranele atinse; rularea țintită (`poarta_scurta.py`).
+    L81-12. Registrele, commitul pe ramură, raportul.
+
 - fir: **Lotul 7, comanda 7.2 (Costin 17.10.2026, verbatim în DECIZII „Comanda 7.2”)** — 297–320 + răspunsul la 7.1 + titlul din
   Notificări; ramura `lucru/lot7-2026-10-17` peste `fa4d1622`, fără publicare, fără poartă (poarta o dată, la finalul lotului 7).
   - ultim: L72-1..L72-9 + L72-10 (teste, mutații, vizual, rularea țintită) — commitul pe ramură care conține această intrare

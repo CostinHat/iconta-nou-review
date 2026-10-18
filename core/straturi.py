@@ -586,7 +586,7 @@ REGISTRU = (
       "SQL-ul lui `core/notificari.py` (lotul 7, 17.10.2026): cutia de ieșire, jurnalul livrării, superadminii — 7 instructiuni SQL, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_cont_notificari.py", REPOSITORY, None,
-      "SQL-ul lui `core/uc_cont_notificari.py` (lotul 7, 17.10.2026): telefonul, codul de confirmare, acordul și canalul; [7.2] bifele pe tipuri de notificări (citirea și scrierea lor) — 17 instructiuni SQL, zero `get_conn`, zero commit",
+      "SQL-ul lui `core/uc_cont_notificari.py` (lotul 7, 17.10.2026): telefonul, codul de confirmare, acordul și canalul; [7.2] bifele pe tipuri de notificări (citirea și scrierea lor); [8.1, 338] celelalte conturi cu același telefon — 18 instructiuni SQL, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_inceput.py", REPOSITORY, None,
       "SQL-ul cardurilor de început (319 + 320, comanda 7.2, 17.10.2026): ce s-a făcut în ecranele reale (preluarea, SPV, echipa, firmele văzute), clienții firmei, administratorii la activare — zero `get_conn`, zero commit",

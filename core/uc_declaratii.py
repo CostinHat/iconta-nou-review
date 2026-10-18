@@ -43,6 +43,7 @@ def declaratii_tipuri(tenant_id, ctx):
     _tipuri = [t for t in declaratii_api.tipuri() if t not in control_fiscal_api._NEAP_PERSOANA_JURIDICA or t not in _forma]
     return {"tipuri": _tipuri,
             "periodicitate": {t: declaratii_api.periodicitate_firma(t, _vec if row else None) for t in _tipuri},
+            "periodicitate_eticheta": {t: e for t, e in declaratii_api.ETICHETA_PERIODICITATE.items() if t in _tipuri},
             "neaplicabile": _neap,
             "datorate": _datorate_firmei(tenant_id, ctx)}
 

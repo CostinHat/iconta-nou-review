@@ -100,8 +100,14 @@ CARD_CLIENT = {
     "butoane": ({"eticheta": "Deschide Notificări", "deschide": "notificari_portal"},)}
 
 
+#: butoanele care FAC pasul (cheamă o rută care îl bifează), nu deschid un ecran. [deficiența 322, 18.10.2026] Pe un card deja făcut
+#: n-au ce face („Lucrez singur” pe pasul bifat nu schimba nimic), deci nu se mai arată; butoanele care deschid ecranul rămân.
+BUTOANE_CARE_BIFEAZA = ("lucrez_singur",)
+
+
 def _card(c, facut, **extra):
-    return dict(c, pasi=list(c["pasi"]), butoane=list(c["butoane"]), facut=bool(facut), **extra)
+    butoane = [b for b in c["butoane"] if not (facut and b["deschide"] in BUTOANE_CARE_BIFEAZA)]
+    return dict(c, pasi=list(c["pasi"]), butoane=butoane, facut=bool(facut), **extra)
 
 
 def carduri(ctx):

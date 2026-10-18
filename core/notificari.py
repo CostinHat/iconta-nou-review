@@ -96,16 +96,19 @@ def vede_tipul(tip, actor):
         return rol == "superadmin"
     if cine == "client":
         return rol == "client"
-    if rol == "client":
+    if rol in ("client", "superadmin"):   # [340, 18.10.2026] superadminul (platforma) vede numai tipurile lui, nu pe ale cabinetelor
         return False
-    if rol in ("admin_firma", "superadmin"):
+    if rol == "admin_firma":
         return True
     return {"pregatire": bool(actor.get("poate_pregati")), "validare": bool(actor.get("poate_valida")), "admin": False,
             "cabinet": True}[cine]
 
 
 def implicit(tip):
-    return TIPURI[tip]["grup"] in GRUPURI_IMPLICITE
+    """Bifat din oficiu: grupele implicite și [340, 18.10.2026] tipurile superadminului — „Notificare pentru mine (superadmin) la fiecare
+    cerere de import și sesizare din Suport” (comanda Costin 17.10.2026 pct.2.3, DECIZII „Lotul 6 închis de Costin”), deci pornite fără
+    o bifă a lui."""
+    return TIPURI[tip]["grup"] in GRUPURI_IMPLICITE or TIPURI[tip]["cine"] == "superadmin"
 
 
 def dorit(tip, preferinte):
