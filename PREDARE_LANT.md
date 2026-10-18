@@ -4,9 +4,12 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-18 07:25** (lotul 7 publicat pe `7ebbf79b`; înainte: comanda 7.3: referința aprobată, poarta 2; înainte: după poarta 1 a lotului 7, ROȘIE: cauzele reparate, poarta 2 așteaptă aprobarea noii referințe de
+- **ultima rescriere**: **2026-10-18** 07:25 (lotul 7 publicat pe `7ebbf79b`; înainte: comanda 7.3: referința aprobată, poarta 2; înainte: după poarta 1 a lotului 7, ROȘIE: cauzele reparate, poarta 2 așteaptă aprobarea noii referințe de
   cifre F1–F5), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
-- **pe commit**: `590c6170` (lotul 6) — **four-way închis 17.10.2026 10:45**: HEAD = origin/main = public/main =
+- **pe commit**: `7ebbf79b` (lotul 7) — **four-way închis 18.10.2026 07:19**: HEAD = origin/main = public/main =
+  backup/lant-2026-10-18 = RUNNING = `7ebbf79b` (2 din 2 procese, pornite 07:19:39, după commitul de 05:42:05); nicio sentinelă; backup
+  înainte `~/backups_db/iconta_v2_pre_lot7_20261018_0717.dump`; cele 5 migrări ale lotului rulate pe producție. (Anterior: `590c6170`
+  (lotul 6) — **four-way închis 17.10.2026 10:45**: HEAD = origin/main = public/main =
   backup/lant-2026-10-17 = RUNNING = `590c6170` (2 din 2 procese); procesul pornit 10:44:59 EEST, după commit (08:38:08); nicio
   sentinelă; backup înainte `~/backups_db/iconta_v2_pre_lot6_20261017_1043.dump` (430 de tabele cu date); cele 7 migrări ale lotului
   rulate pe producție. Poarta lotului 6: rularea 1 ROȘIE (`00351bea`), 2 ROȘIE (`e99aa73a`), 3 VERDE (`590c6170`, excepția aprobată,
