@@ -21457,3 +21457,33 @@ registre (sesiunea s-a întrerupt după commitul de stare `d1d2cff0`):
 15. **Întrebarea N18:** „Note fără document justificativ (nici document scris, nici factură legată)”.
 16. **Întrebarea alertei de la 09:02:** repornirea a fost a mașinii (`sudo reboot` din contul costin, 09:02:13, kernelul 6.8.0-147 instalat pe
     14.10); sonda o numește acum „Serverul iConta a repornit (mașina, nu numai procesul)”, nu „procesul a căzut”.
+
+## 18.10.2026 — Poarta 1 a lotului 8 (ROȘIE numai pe cifrele F1–F5): referința actualizată după regula permanentă din comanda 7.3
+
+**Contextul.** Comanda lui Costin din 18.10.2026: *„Rulează poarta lotului 8 și, dacă e verde, publică lotul pe producție. Confirm: în
+cabinet nu lucrează nimeni, ai acordul să publici fără să mai întrebi.”* Prima rulare (`scripts/poarta_lot.sh` pe `bee07d87`, ramura
+`lucru/lot8-2026-10-18`) a ieșit ROȘIE **numai** pe cifrele de referință: pytest `8641 passed, 10 skipped, 15 xfailed` (exit 0),
+verificatorul `TOTAL: 0`; plasa e2e n-a mai rulat (poarta se oprește la cifre).
+
+**Regula aplicată** — comanda 7.3 pct.4 (verbatim în intrarea „Comanda 7.3”): *„când poarta pică doar pe cifrele de referință, iar
+diferențele se explică prin datele de retest de pe producție și prin codul lotului, actualizezi singur referința, o notezi în DECIZII și
+continui. [...] Te oprești doar pentru cifre pe care nu le poți explica.”*
+
+**Cele 17 diferențe, fiecare explicată** (toate pe `F1 Comert Stoc SRL (tenant_049)`, 10/2026):
+
+1. **Datele de retest (16 diferențe).** Aceeași verificare (`cifre_referinta.py --productie --verifica`) rulată pe codul PUBLICAT
+   (`~/iconta_nou`, `7ebbf79b`) dă exact aceleași 16 diferențe: o factură nouă de 500 lei pe 704, cota 0 (D300 rd.3 / 3.1 / 19
+   coloana Valoare 1000 -> 1500 / 7200 -> 7700 și amprenta D300; D394 rezumat1 tip 3 cota 0: baza 1000 -> 1500, facturi 1 -> 2 și
+   amprenta D394; D406: intrări 19 -> 20, totaluri 17.552,88 -> 18.052,88, facturi emise 4 -> 5; balanța: 4111 rulaj/sold/total
+   debitor +500, 704 rulaj/sold/total creditor +500). Codul nu le produce: le produce documentul introdus la retest.
+2. **Codul lotului (1 diferență): amprenta D406.** Pe codul publicat amprenta e `5a21c2e4…`, pe codul lotului `bb6113f5…`. Sonda
+   (numai citire pe producție, copia de măsurare a scriptului): pe codul lotului, cu efectul reparației **331** scos (cheile
+   „serv” / „serv.” / „serviciu” / „servicii” din `d406.UOM_UNECE` -> UM implicită H87, ca pe codul publicat), amprenta iese
+   `5a21c2e431118aeacc35a65ef03555fa5d50f0ddad02f3d93b95e1a684228f4d` — identică cu cea publicată; cu reparația, `bb6113f5aa1ae89fe1221b52a5f7c1cda8c2c92015baebe751c014a2a3a3608a`.
+   Deci diferența e UM-ul E48 („service unit”) pe liniile de serviciu, decizia **331** confirmată de Costin în comanda 8.2 pct.2a.
+
+**Noua referință** (`scripts/cifre_referinta_aprobate.json`, scrisă cu `cifre_referinta.py --productie --scrie-referinta`), amprenta:
+`221d549f08d75c23e4cd597439d8e191e6b68ec14c5d7cbe0d9f7f67d03aaeae`
+
+**Ce urmează:** commitul acestei intrări împreună cu referința, apoi a doua (ultima) rulare a porții lotului 8; pe VERDE, publicarea
+(backup, aprobarea SHA-ului, fast-forward, post-commit, migrările cu `--productie`, four-way).
