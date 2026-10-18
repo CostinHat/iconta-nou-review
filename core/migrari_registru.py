@@ -81,14 +81,66 @@ def inregistreaza(cur, fisier, amp, fel, commit=None, motiv=None):
                 "ON CONFLICT (fisier, amprenta) DO NOTHING", (fisier, amp, fel, commit, motiv))
 
 
+#: [18.10.2026, poarta 1 a lotului 7] ORDINEA migrărilor: migrarea-cheie folosește o tabelă, o coloană sau o funcție pe care o CREEAZĂ
+#: migrarea din valoare, deci se rulează după ea. Poarta a picat la cifrele F1–F5: copia rula nerulatele în ordine alfabetică, iar `migrare_ciorne_proprii`
+#: (`eticheta_nota` citește `registru_jurnal_numere`) a mers înaintea lui `migrare_nr_curent_note`, care creează tabela — ordinea era
+#: scrisă numai în docstringul migrării. Aici, nu în fișierele migrărilor: o linie nouă acolo le-ar schimba amprenta și le-ar cere din
+#: nou pe producție. Perechile se derivă din cod (SQL-ul executat al unei migrări numește ce creează alta) și sunt păzite de
+#: `core/test_migrari_registru.py::test_ordinea_numeste_tot_ce_creeaza_alta_migrare`; `nerulate` le pune în ordine, iar
+#: `ruleaza` refuză o migrare cât timp una din cele de dinaintea ei e nerulată pe aceeași bază.
+DUPA = {
+    "core/migrare_2b_coloana.py": ("core/migrare_salariu_istoric.py",),
+    "core/migrare_canal_notificari.py": ("core/migrare_inregistrare_libera.py",),
+    "core/migrare_ciorne_proprii.py": ("core/migrare_nr_curent_note.py", "core/migrare_validare_note.py"),
+    "core/migrare_decizii_0710.py": ("core/migrare_punte_stoc.py", "core/migrare_validare_note.py"),
+    "core/migrare_decizii_0810.py": ("core/migrare_decizii_0710.py", "core/migrare_declaratii_depuse_randuri.py", "core/migrare_validare_note.py"),
+    "core/migrare_fapte_date_firma.py": ("core/migrare_art317.py", "core/migrare_d394_i2.py", "core/migrare_firma_profil_jurnal.py"),
+    "core/migrare_grup_coada.py": ("core/migrare_validare_note.py",),
+    "core/migrare_inregistrari_email.py": ("core/migrare_inregistrare_libera.py",),
+    "core/migrare_intrare_date_garduri.py": ("core/migrare_efactura_primite.py", "core/migrare_stoc_lot4.py"),
+    "core/migrare_nota_corectie.py": ("core/migrare_decizii_0710.py", "core/migrare_validare_note.py"),
+    "core/migrare_reguli_fond.py": ("core/migrare_ciorne_proprii.py", "core/migrare_decizii_0710.py"),
+    "core/migrare_retest2.py": ("core/migrare_validare_note.py",),
+    "core/migrare_retest_0810.py": ("core/migrare_metoda_stoc.py",),
+    "core/migrare_schema_seq.py": ("core/migrare_firme_scoase.py",),
+}
+
+
+def in_ordine(perechi):
+    """PURĂ. [(fișier, amprentă)] în ordinea rulării: alfabetic, dar fiecare după migrările din `DUPA` ei aflate în listă."""
+    toate = dict(sorted(perechi))
+    out, puse = [], set()
+
+    def pune(f):
+        if f in puse:
+            return
+        puse.add(f)
+        for d in DUPA.get(f, ()):
+            if d in toate:
+                pune(d)
+        out.append((f, toate[f]))
+    for f in toate:
+        pune(f)
+    return out
+
+
 def nerulate(cur, migrari):
-    """[(fișier, amprentă)] din `migrari` fără rând în registru (tabela absentă = toate)."""
+    """[(fișier, amprentă)] din `migrari` fără rând în registru (tabela absentă = toate), în ordinea rulării (`in_ordine`)."""
     cur.execute("SELECT to_regclass('public.migrari_rulate') IS NOT NULL")
     if not cur.fetchone()[0]:
-        return sorted(migrari.items())
+        return in_ordine(migrari.items())
     cur.execute("SELECT fisier, amprenta FROM public.migrari_rulate")
     are = {(f, a) for f, a in cur.fetchall()}
-    return [(f, a) for f, a in sorted(migrari.items()) if (f, a) not in are]
+    return in_ordine((f, a) for f, a in migrari.items() if (f, a) not in are)
+
+
+def inainte_nerulate(cur, cale):
+    """[fișier] — migrările din `DUPA[cale]` al căror conținut de pe disc n-are rând în registrul bazei: `ruleaza` nu pornește peste ele."""
+    dep = {}
+    for d in DUPA.get(cale, ()):
+        if os.path.exists(os.path.join(RAD, d)):
+            dep[d] = amprenta(open(os.path.join(RAD, d), encoding="utf-8").read())
+    return [f for f, _a in nerulate(cur, dep)]
 
 
 def drift_schema(conn, template_sql):
@@ -212,6 +264,12 @@ def main(argv):
         if not e_migrare(cale, text):
             raise SystemExit("%s nu e o migrare (core/migrare_<nume>.py cu bloc __main__)" % cale)
         if cmd == "ruleaza":
+            inainte = []
+            _cu_registrul(lambda cur: inainte.extend(inainte_nerulate(cur, cale)))
+            if inainte:
+                raise SystemExit("%s se rulează după %s, nerulată încă pe această bază — rulează întâi: %s" % (
+                    cale, ", ".join(inainte), "; ".join("python -m core.migrari_registru ruleaza%s %s" % (
+                        " --productie" if productie else "", f) for f in inainte)))
             import runpy
             sys.argv = [cale]
             runpy.run_path(os.path.join(RAD, cale), run_name="__main__")   # o excepție oprește aici: nimic scris în registru

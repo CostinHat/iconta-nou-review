@@ -11,6 +11,7 @@ partajată (CLAUDE.md: fixture pe tabel partajat = rollback).
 """
 import glob
 import os
+import re
 
 import pytest
 
@@ -153,7 +154,6 @@ def test_nicio_migrare_noua_nu_scrie_in_notele_contabile():
     a picat la `regula_nota` (o notă validată nu se mai modifică; corectura = stornare, OMFP 1802/2014 pct.69) și ar fi atins notele
     validate ale firmelor reale. O migrare schimbă SCHEMA; o notă contabilă se corectează numai prin contabil (stornare). MUTAȚIE:
     UPDATE-ul pus înapoi în `migrare_casa_avans._DDL` -> pică."""
-    import re
     rad = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     scrie = re.compile(r"(UPDATE|DELETE\s+FROM|INSERT\s+INTO)\s+[\"'{}A-Za-z_.@]*\binregistrari(_linii)?\b", re.I)
     gasite = {os.path.relpath(f, rad) for f in glob.glob(os.path.join(rad, "core", "migrare_*.py"))
@@ -171,3 +171,85 @@ def _siruri_executate(src):
            if isinstance(n, (ast.Module, ast.FunctionDef, ast.ClassDef)) and n.body and isinstance(n.body[0], ast.Expr)
            and isinstance(n.body[0].value, ast.Constant)}
     return [n.value for n in ast.walk(arb) if isinstance(n, ast.Constant) and isinstance(n.value, str) and id(n) not in doc]
+
+
+_RE_TABELA = re.compile(r"CREATE TABLE\s+(?:IF NOT EXISTS\s+)?(?:[\w@{}%\"]+\.)?\"?(\w+)\"?\s*\(", re.I)
+_RE_COLOANA = re.compile(r"ALTER TABLE\s+(?:IF EXISTS\s+)?(?:ONLY\s+)?(?:[\w@{}%\"]+\.)?\"?(\w+)\"?\s+ADD COLUMN\s+(?:IF NOT EXISTS\s+)?\"?(\w+)",
+                         re.I)
+_RE_FUNCTIE = re.compile(r"CREATE (?:OR REPLACE )?FUNCTION\s+(?:[\w@{}%\"]+\.)?\"?(\w+)\"?\s*\(", re.I)
+
+
+def _ordinea_din_cod():
+    """({migrare: SQL executat}, {(migrarea care folosește, migrarea care creează)}) — din SQL-ul EXECUTAT (fără docstringuri) al
+    migrărilor de pe disc. Folosește = numește o tabelă sau o funcție creată de cealaltă, ori, în aceeași instrucțiune, tabela și
+    coloana adăugată de cealaltă; ce creează și ea însăși (`IF NOT EXISTS`) nu e o dependență."""
+    sql = {}
+    for f in sorted(glob.glob(os.path.join(_RAD, "core", "migrare_*.py"))):
+        cale, text = os.path.relpath(f, _RAD), open(f, encoding="utf-8").read()
+        if mr.e_migrare(cale, text):
+            sql[cale] = "\n".join(_siruri_executate(text))
+
+    def cuvant(nume, text):
+        return re.search(r"\b%s\b" % re.escape(nume), text) is not None
+
+    def creeaza(text):
+        return ({m.group(1) for m in _RE_TABELA.finditer(text)} | {m.group(1) for m in _RE_FUNCTIE.finditer(text)},
+                {m.groups() for m in _RE_COLOANA.finditer(text)})
+    perechi = set()
+    for a, ta in sql.items():
+        nume_a, coloane_a = creeaza(ta)
+        for b, tb in sql.items():
+            if b == a:
+                continue
+            nume_b, coloane_b = creeaza(tb)
+            if any(cuvant(n, tb) for n in nume_a - nume_b) or any(
+                    cuvant(tab, s) and cuvant(col, s) for tab, col in coloane_a - coloane_b for s in tb.split(";")):
+                perechi.add((b, a))
+    return sql, perechi
+
+
+def test_ordinea_numeste_tot_ce_creeaza_alta_migrare():
+    """[18.10.2026, poarta 1 a lotului 7] O migrare care folosește o tabelă, o coloană sau o funcție create de ALTĂ migrare se rulează după ea: `DUPA` le numește pe
+    toate, exact (o pereche nouă nenumită sau una rămasă după o ștergere pică), iar ordinea rulării (`in_ordine`) le respectă pe toate,
+    fără cicluri. Pățit: copia cifrelor F1–F5 a rulat `migrare_ciorne_proprii` înaintea lui `migrare_nr_curent_note` (alfabetic) și a
+    picat; pe producție ar fi picat la fel. MUTAȚIE: perechea ciorne_proprii -> nr_curent_note scoasă din `DUPA` -> pică."""
+    sql, din_cod = _ordinea_din_cod()
+    declarate = {(b, a) for b, lista in mr.DUPA.items() for a in lista}
+    assert declarate == din_cod, "nenumite în DUPA: %s; în DUPA fără temei în cod: %s" % (
+        sorted(din_cod - declarate), sorted(declarate - din_cod))
+    assert ("core/migrare_ciorne_proprii.py", "core/migrare_nr_curent_note.py") in din_cod, "anti-vacuu: perechea pățită nu mai e găsită"
+    loc = {f: i for i, (f, _a) in enumerate(mr.in_ordine((f, "x") for f in sql))}
+    assert len(loc) == len(sql)
+    assert all(loc[a] < loc[b] for b, a in declarate), sorted((b, a) for b, a in declarate if loc[a] >= loc[b])
+
+
+def test_nerulate_le_da_in_ordinea_rularii(conn):
+    """`verifica` (comenzile tipărite) și copia cifrelor rulează nerulatele în ordinea întoarsă de `nerulate`: întâi cea care creează
+    tabela. MUTAȚIE: `nerulate` întoarce iar `sorted(...)` -> ciorne_proprii înaintea lui nr_curent_note -> pică."""
+    m = {"core/migrare_ciorne_proprii.py": "a" * 64, "core/migrare_nr_curent_note.py": "b" * 64, "core/migrare_zz_proba_c.py": "c" * 64}
+    with conn.cursor() as cur:
+        assert [f for f, _a in mr.nerulate(cur, m)] == [
+            "core/migrare_nr_curent_note.py", "core/migrare_ciorne_proprii.py", "core/migrare_zz_proba_c.py"]
+
+
+def test_ruleaza_refuza_migrarea_inaintea_celei_de_care_depinde(conn, monkeypatch):
+    """Pe producție migrările se rulează de mână, una câte una: `ruleaza` refuză `migrare_ciorne_proprii` cât timp conținutul de azi al lui
+    `migrare_nr_curent_note` n-are rândul lui în registrul aceleiași baze, și o lasă după. MUTAȚIE: verificarea scoasă din `main` ->
+    rulatorul pornește migrarea -> pică (`run_path` e înlocuit, nu rulează nimic)."""
+    import runpy
+    cur = conn.cursor()
+    monkeypatch.setattr(mr, "_cu_registrul", lambda scrie: scrie(cur))
+    monkeypatch.setattr(runpy, "run_path", lambda *a, **k: (_ for _ in ()).throw(AssertionError("a pornit migrarea")))
+    monkeypatch.setattr(mr, "_reporneste_daca_e_cazul", lambda productie: None)
+
+    def rulata(f):
+        mr.inregistreaza(cur, f, mr.amprenta(open(os.path.join(_RAD, f), encoding="utf-8").read()), "rulata", "proba")
+    rulata("core/migrare_validare_note.py")             # cealaltă dinaintea ei (`creat_de_id`), rulată
+    with pytest.raises(SystemExit) as e:
+        mr.main(["ruleaza", "core/migrare_ciorne_proprii.py"])
+    assert str(e.value) == ("core/migrare_ciorne_proprii.py se rulează după core/migrare_nr_curent_note.py, nerulată încă pe această "
+                            "bază — rulează întâi: python -m core.migrari_registru ruleaza core/migrare_nr_curent_note.py")
+    rulata("core/migrare_nr_curent_note.py")
+    assert mr.inainte_nerulate(cur, "core/migrare_ciorne_proprii.py") == []
+    with pytest.raises(AssertionError, match="a pornit migrarea"):
+        mr.main(["ruleaza", "core/migrare_ciorne_proprii.py"])

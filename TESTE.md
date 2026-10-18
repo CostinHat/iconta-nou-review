@@ -50,11 +50,13 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   Notificări; ramura `lucru/lot7-2026-10-17` peste `fa4d1622`, fără publicare, fără poartă (poarta o dată, la finalul lotului 7).
   - ultim: L72-1..L72-9 + L72-10 (teste, mutații, vizual, rularea țintită) — commitul pe ramură care conține această intrare
     (17.10.2026); lista rescrisă la L72-4 (numărul în tabelul lui, nu în `inregistrari`: garda migrărilor) și la L72-10 (C48).
-  - urmator: L72-11. IN LUCRU — „7.2 – continuare” (Costin 17.10.2026 seara, verbatim în DECIZII): rularea țintită (făcută: ROȘIE, cauzele reparate — ISTORIC 17.10 noaptea), commitul lotului,
-    poarta lotului 7, publicarea (regim pilot: confirmarea că cabinetul nu lucrează + aprobarea SHA-ului). Cheile Meta / WhatsApp și
-    Postmark: lotul 8 (`LANSARE.md`, „Blocate extern”).
-    L72-11. Reluarea după sesiunea pierdută: procesele blocate oprite; mutațiile 320 / titlul / 316; `poarta_scurta.py`; commit; poarta
-            lotului (`scripts/poarta_lot.sh`); publicarea (backup, fast-forward, migrările `--productie`, four-way).
+  - urmator: L72-12. BLOCAT: aprobarea noii referințe de cifre F1–F5 (Costin). Poarta 1 pe `ad0494c6` ROȘIE (18.10.2026, ISTORIC):
+    2 stub-uri vechi ale lui `surse_declaratiei` și ordinea migrărilor (C49) — reparate; cifrele dau 38 de diferențe, 35 din datele
+    F1 / F2 schimbate pe producție după 17.10 (aceleași cu codul publicat) și 6 amprente D406 numai prin 4092 / 4093 / 4094 (C48).
+    După aprobare: referința scrisă (`cifre_referinta.py --productie --scrie-referinta`, amprenta în DECIZII), commit, poarta 2
+    (ultima), publicarea (backup, fast-forward aprobat, migrările `--productie` în ordinea din `verifica`, four-way).
+    L72-11. Făcut: procesele blocate oprite; rularea țintită; commitul lotului (`ad0494c6`); poarta 1.
+    L72-12. Cauzele porții 1 reparate (commitul care conține această intrare); poarta 2 așteaptă referința aprobată.
   - pasi:
     L72-1. 297 + 298 (prioritare): amprenta datelor-sursă a declarației în coadă (notele validate + facturile perioadei), scrisă la intrarea
            în coadă; la validarea / respingerea unei note din perioadă intrarea activă se marchează depășită; „Confirmă depunerea” și

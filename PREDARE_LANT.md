@@ -4,9 +4,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-17** (noaptea; lotul 7 ÎNCHIS — „7.2 – continuare”, verbatim în DECIZII: 7.2 terminată, cheile Meta /
-  WhatsApp / Postmark mutate în lotul 8, publicarea cerută; cabinetul confirmat că nu lucrează), pe secțiunile de stare (lecțiile și
-  CIFRE INVALIDATE se poartă neschimbate).
+- **ultima rescriere**: **2026-10-18** (după poarta 1 a lotului 7, ROȘIE: cauzele reparate, poarta 2 așteaptă aprobarea noii referințe de
+  cifre F1–F5), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
 - **pe commit**: `590c6170` (lotul 6) — **four-way închis 17.10.2026 10:45**: HEAD = origin/main = public/main =
   backup/lant-2026-10-17 = RUNNING = `590c6170` (2 din 2 procese); procesul pornit 10:44:59 EEST, după commit (08:38:08); nicio
   sentinelă; backup înainte `~/backups_db/iconta_v2_pre_lot6_20261017_1043.dump` (430 de tabele cu date); cele 7 migrări ale lotului
@@ -16,6 +15,18 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
+
+**18.10.2026 — LOTUL 7: POARTA 1 ROȘIE, CAUZELE REPARATE; POARTA 2 BLOCATĂ PE APROBAREA REFERINȚEI DE CIFRE** (ISTORIC „Lotul 7: poarta 1
+ROȘIE”). Producția rămâne pe `590c6170` (lotul 6), neatinsă. Poarta 1 pe `ad0494c6`: 2 teste roșii (stub-uri vechi pe cheia `mesaj` a lui
+`surse_declaratiei`) + cifrele necalculabile (copia rula migrările alfabetic: `migrare_ciorne_proprii` înaintea lui
+`migrare_nr_curent_note`). Ambele reparate în commitul care conține această predare; ordinea migrărilor e acum în
+`core.migrari_registru.DUPA` (C49, 23 de perechi derivate din cod), `verifica` le tipărește în ordinea rulării, iar `ruleaza` refuză ordinea
+greșită — **pe producție se rulează exact în ordinea tipărită de `verifica`**. Cu ordinea reparată, cifrele dau 38 de diferențe față de
+referința aprobată pe 17.10: 35 din datele F1 (10/2026: o factură de servicii 704 de 1.000 lei, D300 rd.3 / 3.1, și o încasare de 242 lei) și F2
+(o amortizare de 200 lei în 08/2026) schimbate pe producție după aprobare — aceleași 35 ies și cu codul publicat, deci nu vin din cod; 6 amprente D406 (F1, F2, F3, F5) se schimbă numai prin
+conturile 4092 / 4093 / 4094 (C48), probat: scoase din XML, amprenta revine exact la referință / la codul publicat. **BLOCAT: aprobarea lui
+Costin pentru noua referință.** După ea: `python scripts/cifre_referinta.py --productie --scrie-referinta` (pe copia migrată), amprenta în
+DECIZII, commit, `sh scripts/poarta_lot.sh` (rularea 2, ULTIMA), apoi publicarea ca mai jos.
 
 **17.10.2026, noaptea — LOTUL 7 ÎNCHIS, COMIS PE RAMURĂ, ÎN DRUM SPRE PUBLICARE** (DECIZII „Lotul 7: reluarea după pierderea sesiunii;
 lotul 7 se închide și se publică; cheile trec în lotul 8”). Pe `lucru/lot7-2026-10-17` (commitul care conține această predare), în

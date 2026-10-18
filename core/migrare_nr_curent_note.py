@@ -20,7 +20,7 @@ Ce e acum, în baza fiecărei firme:
 - la migrare, fiecare notă validată își păstrează numărul pe care îl arată azi (locul ei de acum în an, orice stare): niciun număr deja
   văzut pe o notă validată nu se schimbă. Numerele de acum ale ciornelor dispar (ciornele n-au număr); la validare primesc următorul număr.
 
-Ordinea: înaintea lui `core/migrare_ciorne_proprii.py` (`eticheta_nota` citește coloana). Oglinda din `tenant_template.sql` e generată de
+Ordinea: înaintea lui `core/migrare_ciorne_proprii.py` (`eticheta_nota` citește tabela) — declarată în `core.migrari_registru.DUPA`. Oglinda din `tenant_template.sql` e generată de
 `sql(...)` și păzită de `core/test_302_nr_curent.py`. Idempotentă. Rulare:
 `python -m core.migrari_registru ruleaza --productie core/migrare_nr_curent_note.py`.
 """

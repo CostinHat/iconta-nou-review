@@ -191,7 +191,7 @@ def surse_declaratiei(schema, tip, an, luna, trim):
     validate sau numesc explicit notele nevalidate pe care se bazează; garda nu se limitează la TVA”. Pentru ORICE declarație:
     amprenta documentelor perioadei (din ea, mai târziu, „depășită”), notele nevalidate ale perioadei și — la D300 / D394 / D390, care
     se fac din facturi — facturile fără notă validată (inclusiv cele cu TVA 0, `control_incrucisat.facturi_necontabilizate`).
-    {de_la, pana_la, amprenta, note: [{nota_id, data, eticheta, suma}], facturi: [{factura_id, eticheta}], mesaj | None}."""
+    {de_la, pana_la, amprenta, note: [{nota_id, data, eticheta, suma}], facturi: [{factura_id, eticheta}], documente_nevalidate: afirmație „fapt” | None}."""
     from core import control_incrucisat as _ci
     from core.pdf_util import bani as _bani
     de_la, pana_la = fereastra_declaratie(schema, tip, an, luna, trim)

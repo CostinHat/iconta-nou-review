@@ -2662,3 +2662,15 @@ cabinet lăsa un cont fără firme; acum o singură tranzacție. Răspunsul la s
 generat din nou”. Consecințele 302 în teste: ciorna n-are număr curent, deci se numește prin dată („nota din ZZ.LL.AAAA”), ca pe card.
 Conturile create de teste trec acum prin prima intrare (invitația e2e o așteaptă). Verificatorul cerea `data-actiune` literal, garda de
 text îl socotea text afișat: excepția gărzii extinsă exact pe atributul `data-actiune="<rută>"`, cu calibrare. Nepublicat încă.
+
+## 18.10.2026 — Lotul 7: poarta 1 ROȘIE; două cauze reparate, a treia e o decizie
+
+Poarta 1 pe `ad0494c6` (1 h 03 min): pytest 2 roșii din 8.639 (două stub-uri vechi ale lui `surse_declaratiei`, pe cheia `mesaj` pe care
+lotul o înlocuise cu afirmația `documente_nevalidate` — schimbată după rularea țintită, verificată numai pe testele picate atunci), iar
+cifrele F1–F5 nu s-au putut calcula: copia rula migrările nerulate alfabetic, deci `migrare_ciorne_proprii` înaintea lui
+`migrare_nr_curent_note`, care creează tabela citită de ea. Ordinea era scrisă numai într-un docstring; acum e în registrul migrărilor
+(`DUPA`, 23 de perechi derivate din cod — tabele, coloane și funcții create de altă migrare — și păzite), iar `ruleaza` refuză ordinea greșită și pe producție (C49). Cu ordinea reparată,
+cifrele se calculează și dau 38 de diferențe: 35 vin din datele firmelor F1 și F2 pe producție, schimbate după aprobarea referinței din
+17.10 (aceleași 35 ies și cu codul publicat, `590c6170`), iar 6 amprente D406 (F1, F2, F3, F5) se schimbă numai prin conturile 4092 /
+4093 / 4094 adăugate de C48 în planul de conturi (scoase din XML, amprenta revine exact la referință sau la codul publicat). A doua
+rulare a porții (ultima) nu pornește până nu aprobă Costin noua referință.
