@@ -2686,3 +2686,18 @@ Referința scrisă pe copia migrată de codul lotului (05:30, 7 s): amprenta `b1
 verificarea imediat după: identice (5 firme). 126 de valori-frunză schimbate, toate în F1 10/2026, F2 08–09/2026 și T3 (retestul) și în
 amprentele D406 ale conturilor 4092 / 4093 / 4094 (C48). Copia ștearsă. Poarta 2 pornită pe commitul care conține această intrare;
 rezultatul și publicarea — în intrarea următoare.
+
+## 18.10.2026 — Lotul 7 PUBLICAT: poarta 2 VERDE pe 7ebbf79b; cele 5 migrări pe producție; four-way închis 07:19
+
+Continuarea intrării „Lotul 7, comanda 7.3” (aceeași zi). **Poarta 2 (ultima) VERDE** pe `7ebbf79b` (05:42:12 -> 07:17:02, 5670 s):
+prospețimea 21 passed; pytest 8617 passed / 10 skipped / 15 xfailed (COLLECTED 8642 = 8639 la poarta 1 + 3 teste C49), 3786 s;
+verificatorul TOTAL 0 (GRI 7); cifrele F1–F5 „identice cu referința aprobată (5 firme)”; plasa e2e 349 passed, 1884 s.
+
+**Publicarea (acordul din 7.3, până la 08:00):** backup `~/backups_db/iconta_v2_pre_lot7_20261018_0717.dump` (431 de tabele cu date,
+6 scheme de firmă; lotul 6: 430 / 6), `APROBARE_MAIN` pe `7ebbf79b` (consumată), `git merge --ff-only` + `post-commit` (origin/main,
+public/main, `backup/lant-2026-10-18` -> `7ebbf79b`; restartul oprit pe migrări, statica nepublicată). Migrările `--productie`, în
+ordinea din `verifica` (07:19:30–07:19:33): `canal_notificari` (aplicată), `nr_curent_note` (6 / 6 scheme), `ciorne_proprii`,
+`plan_avansuri` (4092 / 4093 / 4094: 18 conturi pe 6 scheme), `poveste_amprenta`; după ultima, rulatorul a publicat statica (65 de
+fișiere) și a repornit `iconta-nou` (07:19:39, după commitul de 05:42:05). **Four-way închis:** HEAD = origin/main = public/main =
+backup/lant-2026-10-18 = procesul viu = `7ebbf79b` (2 din 2 procese); `verifica HEAD --productie` curat (rc 0), nicio sentinelă;
+site 200. Starea de după publicare intră pe ramura `lucru/lot8-2026-10-18` (commitul care conține această intrare), nepublicată.

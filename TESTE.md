@@ -50,7 +50,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   Notificări; ramura `lucru/lot7-2026-10-17` peste `fa4d1622`, fără publicare, fără poartă (poarta o dată, la finalul lotului 7).
   - ultim: L72-1..L72-9 + L72-10 (teste, mutații, vizual, rularea țintită) — commitul pe ramură care conține această intrare
     (17.10.2026); lista rescrisă la L72-4 (numărul în tabelul lui, nu în `inregistrari`: garda migrărilor) și la L72-10 (C48).
-  - urmator: L72-13. IN LUCRU: poarta 2 (ultima) și publicarea lotului 7 (comanda 7.3, DECIZII „Comanda 7.3”): referința aprobată și
+  - urmator: lotul 8 (LANSARE „Lotul 8”), la comanda lui Costin. NEINCEPUT. L72-13 FĂCUT: poarta 2 VERDE pe `7ebbf79b`, publicat
+    18.10.2026 07:19, four-way închis (ISTORIC „Lotul 7 PUBLICAT”).
+    (Istoric:) L72-13 fusese: poarta 2 (ultima) și publicarea lotului 7 (comanda 7.3, DECIZII „Comanda 7.3”): referința aprobată și
     scrisă (amprenta `b1b111f9…`), commitul care conține această intrare, `scripts/poarta_lot.sh`; verde -> publicare până la 08:00.
     (Istoric:) L72-12 fusese BLOCAT pe aprobarea noii referințe de cifre F1–F5 (Costin). Poarta 1 pe `ad0494c6` ROȘIE (18.10.2026, ISTORIC):
     2 stub-uri vechi ale lui `surse_declaratiei` și ordinea migrărilor (C49) — reparate; cifrele dau 38 de diferențe, 35 din datele

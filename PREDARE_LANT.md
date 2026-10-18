@@ -4,7 +4,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-18** dimineața (comanda 7.3: referința aprobată, poarta 2; înainte: după poarta 1 a lotului 7, ROȘIE: cauzele reparate, poarta 2 așteaptă aprobarea noii referințe de
+- **ultima rescriere**: **2026-10-18 07:25** (lotul 7 publicat pe `7ebbf79b`; înainte: comanda 7.3: referința aprobată, poarta 2; înainte: după poarta 1 a lotului 7, ROȘIE: cauzele reparate, poarta 2 așteaptă aprobarea noii referințe de
   cifre F1–F5), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
 - **pe commit**: `590c6170` (lotul 6) — **four-way închis 17.10.2026 10:45**: HEAD = origin/main = public/main =
   backup/lant-2026-10-17 = RUNNING = `590c6170` (2 din 2 procese); procesul pornit 10:44:59 EEST, după commit (08:38:08); nicio
@@ -16,7 +16,14 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ÎN CE STARE E PROIECTUL
 
-**18.10.2026 dimineața — COMANDA 7.3: referința de cifre F1–F5 aprobată și scrisă (amprenta `b1b111f9…`, DECIZII „Comanda 7.3”); POARTA 2
+**18.10.2026 07:19 — LOTUL 7 PUBLICAT pe `7ebbf79b`.** Four-way închis: HEAD = origin/main = public/main = backup/lant-2026-10-18 =
+RUNNING = `7ebbf79b` (2 din 2 procese, pornite 07:19:39, după commitul de 05:42:05); nicio sentinelă; backup înainte
+`~/backups_db/iconta_v2_pre_lot7_20261018_0717.dump`; cele 5 migrări ale lotului rulate pe producție (ISTORIC „Lotul 7 PUBLICAT”).
+Următorul: lotul 8 pe ramura `lucru/lot8-2026-10-18` (worktree `/home/costin/iconta_lot7`) — cheile Meta / WhatsApp (F257), tokenul
+Postmark (F258), exportul Search Console (F259), bara de stare fixă (LANSARE „Lotul 8”); fără publicare și fără poartă până la
+„Lotul 8 e complet”.
+
+**(anterior) 18.10.2026 dimineața — COMANDA 7.3: referința de cifre F1–F5 aprobată și scrisă (amprenta `b1b111f9…`, DECIZII „Comanda 7.3”); POARTA 2
 (ULTIMA) PORNITĂ pe commitul care conține această intrare; verde -> publicarea lotului 7 până la 08:00 (backup, fast-forward aprobat,
 migrările `--productie` în ordinea din `verifica`, four-way). Bara de stare fixă -> lotul 8. Regula permanentă pentru cifre: CLAUDE.md
 §2.3 pct.13.**
