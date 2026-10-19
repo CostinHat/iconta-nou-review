@@ -20,7 +20,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-from core import articole_import_api
 #: [P6 val 1, 12.09.2026] Casa comuna a starii business care nu mai are voie sa traiasca
 #: in memoria unui proces. V. docstringul modulului pentru masuratorile de dinainte.
 from core import stare_partajata as _stare_part
@@ -33,13 +32,12 @@ from core import rulari_teste as _rulari_teste, alerta_load as _alerta_load   # 
 # de acolo. Scoase de o curatenie automata, sase firme au ajuns cu `control_fiscal` in stare de
 # EROARE. „Nefolosit aici" nu inseamna „nefolosit" intr-un modul care e citit din afara.
 from core.common import pastila_firma, stare_din_nivel  # noqa: F401
-from core import db, auth_api, anaf_api, migrare_api, solduri_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, observare as _obs
+from core import db, auth_api, anaf_api, migrare_api, istoric_declaratii_import_api, observare as _obs
 # [P7 · V1] Repository-urile de citire: SQL-ul rutelor a plecat acolo.
 from core import raport_z as _raport_z  # [R61] unicitatea raportului Z, impusa in BAZA
 from core import drepturi as _drepturi  # [drepturi_rol 04.10.2026] cine poate face ce (decizia Costin, varianta 2)
 from core import cronometru as _crono   # [P5] segmentele unei cereri; INERT fara ICONTA_CRONOMETRU
 from core import autor_cerere as _autor_cerere   # [validare_note] cine face cererea, pana in `db.get_conn`
-from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
 from core.mesaje import (ROL_INSUFICIENT, DOAR_ADMIN_ICONTA)
 from core.common import nomenclator_cerut
 from core.common import cate as _cate
@@ -1375,6 +1373,7 @@ class SoldRand(BaseModel):
     denumire: str = ""
     debit: float = 0
     credit: float = 0
+    rand_fisier: Optional[int] = None   # [8.2 pct.4] rândul din fișier, de la previzualizare
 
 class SolduriIn(BaseModel):
     randuri: list[SoldRand]
@@ -1426,10 +1425,14 @@ class MijlocFixRand(BaseModel):
     rezidual: float = 0
     dnf_luni: int = 0
     data_pif: Optional[str] = None
-    metoda: str = "liniara"
+    metoda: Optional[str] = "liniara"   # [361] None = metodă necunoscută (rândul se respinge numit, nu devine tăcut liniar)
+    metoda_brut: Optional[str] = None
+    data_pif_brut: Optional[str] = None
     cont_imobilizare: str = ""   # [Q13] fara default tacit 2131 (extrage lasa gol intentionat, DS cap.17); gol = neclasificat -> lit.c
-    cont_amortizare: str = "2813"
+    cont_amortizare: str = ""    # [362] gol -> contul corespunzător contului de imobilizare (`cont_amortizare_asteptat`)
     destinatie_cd: bool = False  # [C24] CF art.20 alin.(1) lit.b); lipsea din model -> bifa C&D se pierdea la salvare
+    amortizat_preluat: Optional[float] = None   # [359] amortizarea cumulată din registrul vechi, la data preluării
+    data_preluare: Optional[str] = None
     rand_fisier: Optional[int] = None
 class MijloaceFixeImportIn(BaseModel):
     randuri: list[MijlocFixRand]
@@ -1439,6 +1442,9 @@ class IstoricDeclRand(BaseModel):
     luna: Optional[int] = None   # [C25] anuala fara luna -> 12 la scriere; lunara fara luna -> refuz numit
     data_depunere: Optional[str] = None
     rand_fisier: Optional[int] = None
+    suma: Optional[int] = None        # [377] suma declarată (D100), în lei
+    suma_brut: Optional[str] = None   # celula din fișier, ca o sumă necitită să se respingă numită, nu să dispară
+    data_brut: Optional[str] = None
 class IstoricDeclImportIn(BaseModel):
     randuri: list[IstoricDeclRand]
 
@@ -1966,15 +1972,11 @@ def tenant_actualizeaza(tenant_id: int, date: TenantEdit,                       
 # ============================================================
 @app.post("/migrare/valideaza")
 def migrare_valideaza(date: MigrareValideazaIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
-    """Verifică o listă de CUI-uri la ANAF; întoarce denumirea + status."""
-    if not date.cui_uri:
-        return {"rezultate": [], "ignorate": []}
-    _curatate, ignorate = anaf_api.separa_cui(date.cui_uri)
+    """Verifică o listă de CUI-uri la ANAF; întoarce denumirea + status (+ cifra de control, + deja în portofoliu — 341 / 342)."""
     try:
-        rez = anaf_api.valideaza_cui(date.cui_uri)
-    except Exception as e:
-        raise HTTPException(502, anaf_api.mesaj_indisponibil(e))   # [303 + 317]
-    return {"rezultate": rez, "ignorate": ignorate}
+        return _uc_migrare.migrare_valideaza(date.cui_uri, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/migrare/fisier")
@@ -2050,6 +2052,15 @@ def migrare_straturi_aplicabile(tip_firma: str = "srl", ctx=Depends(cere_cabinet
     return {"straturi": migrare_api.straturi_pentru(tip_firma)}
 
 
+@app.get("/migrare/firme")
+def migrare_firme_strat(strat: str, ctx=Depends(cere_cabinet)):
+    """[deficiența 371, comanda Costin 8.2] Firmele portofoliului cărora li se aplică stratul (`migrare_api.straturi_pentru`, după regimul
+    fiecărei firme) — lista din Migrare cabinet pentru pașii care se fac pe o firmă (Import RIP, Articole și stoc inițial, Rețete)."""
+    if strat not in migrare_api.STRATURI:
+        raise HTTPException(422, nomenclator_cerut("strat", migrare_api.STRATURI))
+    return _uc_migrare.migrare_firme_strat(strat, ctx)
+
+
 @app.get("/migrare/aplicatii")
 def migrare_aplicatii(ctx=Depends(cere_cabinet)):
     """[270, 15.10.2026] Aplicațiile din care se migrează (SAGA, WinMentor, Ciel, SmartBill), fiecare cu `activa` DERIVAT (are
@@ -2074,14 +2085,22 @@ def migrare_status_seteaza(date: MigrareStatusIn, ctx=Depends(cere_drept(_dreptu
 # [P2, 08.09.2026] CITIREA PORTOFOLIULUI — o singură interogare, indiferent câte firme.
 # Măsurat înainte: cele trei rute de mai jos făceau 2 conexiuni și 3–4 interogări PER FIRMĂ
 # (la 1000 de firme: ~2.000 de conexiuni, 3.000–4.000 de interogări, ~1 s fiecare).
+#: [deficiența 368, comanda Costin 8.2] aspectul rezumatului -> stratul de migrare (`migrare_api.STRATURI_META`): lista unui strat arată
+#: numai firmele cărora li se aplică (un PFA nu apare la Solduri, Solduri parteneri, Asociați, Plan de conturi — „184 de conturi, populat”)
+_STRAT_ASPECT = {"solduri": "solduri", "plan_conturi": "plan_conturi", "vector": "vector_fiscal", "parteneri": "solduri_parteneri",
+                 "salariati": "salariati", "asociati": "asociati", "mijloace_fixe": "mijloace_fixe"}
+
+
 def _portofoliu_din_model(ctx, aspect, implicit):
-    """`[(firma, date, prospetime)]` pentru firmele utilizatorului, dintr-un singur `SELECT`.
+    """`[(firma, date, prospetime)]` pentru firmele utilizatorului cărora li se aplică stratul, dintr-un singur `SELECT`.
 
     `implicit` e valoarea arătată când rezumatul lipsește — și **nu tace**: prospețimea spune
     `lipseste`, deci ecranul poate arăta că firma așteaptă recalcularea, nu o valoare inventată."""
     from core import firma_rezumat as _fr
     with db.get_conn() as conn:
         firme = auth_api.tenantii_userului(conn, ctx["uid"])
+        strat = _STRAT_ASPECT[aspect]
+        firme = [f for f in firme if strat in migrare_api.straturi_pentru(f.get("tip_firma"))]
         ids = [f.get("id") for f in firme]
         model = _fr.citeste(conn, ids, [aspect])
     out = []
@@ -2124,7 +2143,7 @@ def tenant_plan_conturi_lista(tenant_id: int, q: Optional[str] = None, ctx=Depen
 class PlanContIn(BaseModel):  # [p95_plan_conturi]
     simbol: str
     denumire: str
-    tip: Optional[str] = "Bifunctional"
+    tip: Optional[str] = None   # [369] ignorat: funcțiunea se moștenește din planul OMFP (`plan_functiune`), nu se alege
 
 
 @app.delete("/tenants/{tenant_id}/plan-conturi/{simbol}")
@@ -2165,28 +2184,11 @@ def migrare_vector_status(ctx=Depends(cere_cabinet)):
 @app.post("/tenants/{tenant_id}/solduri/incarca")
 def solduri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Parsează o balanță și întoarce preview (nu salvează)."""
-    _schema_sau_404(ctx, tenant_id)
     continut = _octetii(fisier)
     try:
-        _det = solduri_api.extrage_balanta_detaliat(continut, fisier.filename or "")
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    randuri = _det["randuri"]
-    td = round(sum(r["debit"] for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
-    tc = round(sum(r["credit"] for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
-    valida, motiv = solduri_api.balanta_valida(randuri)
-    # [P8] cand fisierul NU e o balanta valida, spunem CE regula nu tine si PE CE fisier - nu doar
-    # un text. Domeniul e FISIERUL incarcat (fel de referent adaugat 22.08).
-    # [C21, 14.10.2026] ecranul arata CE coloane s-au citit (soldul final), ce randuri n-au intrat (totaluri, titluri) si ce
-    # sintetice au fost inlocuite de analiticele lor — nimic din fisier nu dispare fara sa se vada.
-    _baza = {"randuri": randuri, "total_debit": td, "total_credit": tc, "valida": valida,
-             "coloane": _det["coloane"], "ignorate": _det["ignorate"],
-             "sintetice_inlocuite": _det["sintetice_inlocuite"], "fara_sold": _det["fara_sold"]}
-    if valida:
-        return _raspuns(dict(_baza, motiv=motiv))
-    return _raspuns(dict(_baza, **migrare_api.respinge(
-        "balanță de deschidere", _Unde("fisier", fisier.filename or "(fără nume)"),
-        "balanta_nu_se_echilibreaza", motiv)))
+        return _uc_tenants.solduri_incarca(tenant_id, continut, fisier.filename or "", ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/tenants/{tenant_id}/solduri")
@@ -2226,8 +2228,8 @@ def migrare_parteneri_status(ctx=Depends(cere_cabinet)):
     for f, d, prosp in _portofoliu_din_model(ctx, "parteneri", {"are_parteneri": False, "randuri": 0}):
         out.append({"tenant_id": f.get("id"), "nume": f.get("nume"), "cui": f.get("cui"),
                     "are_parteneri": bool(d.get("are_parteneri")), "randuri": d.get("randuri") or 0,
-                    "prospetime": prosp})
-    return {"firme": out}
+                    "prospetime": prosp, "_schema": f.get("schema_name")})
+    return {"firme": _uc_migrare.terti_in_balanta_firme(out)}
 
 
 @app.post("/tenants/{tenant_id}/parteneri/incarca")
@@ -2327,15 +2329,10 @@ def migrare_asociati_status(ctx=Depends(cere_cabinet)):
 
 @app.post("/tenants/{tenant_id}/asociati-import/incarca")
 def asociati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
-    _schema_sau_404(ctx, tenant_id)
-    continut = _octetii(fisier)
     try:
-        randuri = asociati_import_api.extrage(continut, fisier.filename or "")
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    coer = asociati_import_api.coerenta_cote(randuri)
-    erori = migrare_api.erori_verifica(asociati_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
-    return _raspuns({"randuri": randuri, "total": len(randuri), "coerenta": coer, "erori": erori})
+        return _uc_tenants.asociati_import_incarca(tenant_id, _octetii(fisier), fisier.filename, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/asociati-import")
@@ -2349,7 +2346,8 @@ def asociati_import_salveaza(tenant_id: int, date: AsociatiImportIn, ctx=Depends
 
 # === IMPORT RETETE HORECA (F150) ===
 class ReteteImportIn(BaseModel):
-    retete: list[dict]
+    # [375] rândurile previzualizate; potrivirea pe articole și verificarea se refac la salvare
+    randuri: list[dict]
 @app.post("/tenants/{tenant_id}/retete-import/incarca")
 def retete_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
@@ -2364,25 +2362,27 @@ def retete_import_salveaza(tenant_id: int, date: ReteteImportIn, ctx=Depends(cer
         raise _http_din(e)
 # === IMPORT ARTICOLE + STOC INITIAL CV (F151) ===
 class ArticolImportIn(BaseModel):
-    denumire: str
-    um: str = "buc"
-    cantitate: float = 0
-    pret: float = 0
-    cont_stoc: str = "302"
-    cont_cheltuiala: str = "601"
+    # [373, comanda Costin 8.2] fără valori din oficiu („buc”, 302, 601): ce lipsește se respinge numit (`verifica_randuri`)
+    rand_fisier: Optional[int] = None
+    denumire: str = ""
+    um: str = ""
+    cantitate: Optional[float] = 0
+    cantitate_brut: str = ""
+    pret: Optional[float] = 0
+    pret_brut: str = ""
+    cont_stoc: str = ""
+    cont_cheltuiala: str = ""
+    cont_cheltuiala_dedus: bool = False
     # [14.10.2026] `valid` / `motiv` nu se mai citesc din cerere: `articole_import_api.importa` revalidează fiecare rând
 class ArticoleImportIn(BaseModel):
     randuri: list[ArticolImportIn]
     data_sold: Optional[str] = None
 @app.post("/tenants/{tenant_id}/articole-import/incarca")
 def articole_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
-    _schema_sau_404(ctx, tenant_id)
-    continut = _octetii(fisier)
     try:
-        randuri = articole_import_api.extrage(continut, fisier.filename or "")
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    return _raspuns({"randuri": randuri, "rezumat": articole_import_api.rezumat(randuri)})
+        return _uc_tenants.articole_import_incarca(tenant_id, _octetii(fisier), fisier.filename, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.post("/tenants/{tenant_id}/articole-import")
 def articole_import_salveaza(tenant_id: int, date: ArticoleImportIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
@@ -2414,18 +2414,11 @@ def migrare_mijloace_status(ctx=Depends(cere_cabinet)):
 
 @app.post("/tenants/{tenant_id}/mijloace-fixe-import/incarca")
 def mijloace_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
-    _schema_sau_404(ctx, tenant_id)
     continut = _octetii(fisier)
     try:
-        randuri = mijloace_fixe_import_api.extrage(continut, fisier.filename or "")
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    tv = round(sum(r["valoare"] for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
-    tr = round(sum(r["rezidual"] for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
-    cu_avert = sum(1 for r in randuri if not r["ok"])
-    erori = migrare_api.erori_verifica(mijloace_fixe_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
-    return _raspuns({"randuri": randuri, "total": len(randuri), "total_valoare": tv,
-            "total_rezidual": tr, "cu_avertismente": cu_avert, "erori": erori})
+        return _uc_tenants.mijloace_import_incarca(tenant_id, continut, fisier.filename or "", ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.post("/tenants/{tenant_id}/mijloace-fixe-import")
@@ -2470,9 +2463,11 @@ def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=D
         randuri = istoric_declaratii_import_api.extrage(continut, fisier.filename or "")
     except ValueError as e:
         raise HTTPException(400, str(e))
-    cu_avert = sum(1 for r in randuri if not r["ok"])
     erori = migrare_api.erori_verifica(istoric_declaratii_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
-    return _raspuns({"randuri": randuri, "total": len(randuri), "cu_avertismente": cu_avert, "erori": erori})
+    # [357, comanda Costin 8.2] contorul spune ce se întâmplă: respinse (nu intră) / semnalate (intră, cu observație)
+    return _raspuns({"randuri": randuri, "total": len(randuri), "erori": erori,
+                     "respinse": sum(1 for r in randuri if r["stare"] == "respins"),
+                     "semnalate": sum(1 for r in randuri if r["stare"] == "semnalat")})
 
 
 @app.post("/tenants/{tenant_id}/istoric-declaratii-import")
@@ -2488,13 +2483,39 @@ def istoric_import_salveaza(tenant_id: int, date: IstoricDeclImportIn, ctx=Depen
 #  [p_pfa_rip 20.07] Preluarea unui PFA: istoric cronologic al anului curent,
 #  NU balanta de deschidere (partida simpla nu are sold-rand separat).
 # ============================================================
+class RipRand(BaseModel):
+    """[372] rândul previzualizat, trimis înapoi la salvare (aceeași verificare: `rip_migrare_api.verifica_randuri`)."""
+    rand_fisier: Optional[int] = None
+    data: Optional[str] = None
+    data_brut: str = ""
+    tip: Optional[str] = None
+    tip_brut: str = ""
+    explicatie: str = ""
+    suma: Optional[str] = None
+    suma_brut: str = ""
+    metoda: Optional[str] = None
+    metoda_brut: str = ""
+    categorie: str = ""
+    document_numar: str = ""
+
+
+class RipImportIn(BaseModel):
+    randuri: list[RipRand]
+
+
+@app.post("/tenants/{tenant_id}/rip-import")
+def rip_import_salveaza(tenant_id: int, date: RipImportIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    try:
+        return _uc_tenants.rip_import_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.post("/tenants/{tenant_id}/rip-import/incarca")
 def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """
-    Import registru incasari-plati la preluarea unui PFA. Parseaza fisierul, RAPORTEAZA
-    randurile respinse (ambigue/incomplete) INAINTE de commit, apoi importa operatiunile
-    valide intr-o tranzactie atomica (rip_migrare_api.importa) si marcheaza stratul 'rip'
-    pentru reminder(): 'gata' daca nimic respins, 'in_lucru' cu nota daca au ramas randuri.
+    Import registru incasari-plati la preluarea unui PFA — PREVIZUALIZAREA: fiecare rand citit, cu starea lui (ok / semnalat /
+    respins) si motivul; nu scrie nimic [372, comanda Costin 8.2]. Salvarea e `POST /tenants/{tenant_id}/rip-import`.
     """
     try:
         return _uc_tenants.rip_import_incarca(tenant_id, _octetii(fisier), fisier.filename, ctx)
@@ -2652,6 +2673,16 @@ def control_fiscal_anuleaza_marcare(tenant_id: int, date: AnuleazaMarcareIn, ctx
     """[08.10.2026, retest pct.10] Anularea unei marcări „depusă în afara iConta.eu” / „de contabilul anterior”."""
     try:
         return _uc_control_fiscal.control_fiscal_anuleaza_marcare(tenant_id, date.model_dump(), ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/control-fiscal/{tenant_id}/audit-preluare/istoric")
+def control_fiscal_audit_preluare_istoric(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """[deficiența 370, comanda Costin 8.2] Primul audit de preluare (păstrat: dovada a ce s-a primit de la contabilul anterior) și
+    ultimul. Fiecare rulare se păstrează (`artefacte`, R45); aici se citesc."""
+    try:
+        return _uc_control_fiscal.control_fiscal_audit_preluare_istoric(tenant_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -4423,6 +4454,34 @@ def registru_fiscal_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
     """
     try:
         return _uc_tenants.registru_fiscal_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/tenants/{tenant_id}/ajustari-fiscale")
+def ajustari_fiscale_lista(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+    """[deficiența 378, comanda Costin 8.2] Ajustările fiscale ale anului (Registrul de evidență fiscală, varianta pe profit) și rândurile
+    D101 pe care se pot scrie. Sursa unică pentru D100 trimestrial și D101 (`core/ajustari_fiscale.py`)."""
+    try:
+        return _uc_tenants.ajustari_fiscale_lista(tenant_id, an, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/ajustari-fiscale")
+def ajustari_fiscale_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """Scrie o ajustare fiscală pe trimestrul ei (rândul D101, suma, descrierea, documentul)."""
+    try:
+        return _uc_tenants.ajustari_fiscale_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.delete("/tenants/{tenant_id}/ajustari-fiscale/{ajustare_id}")
+def ajustari_fiscale_sterge(tenant_id: int, ajustare_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """Șterge o ajustare fiscală greșită (se scrie din nou corect)."""
+    try:
+        return _uc_tenants.ajustari_fiscale_sterge(tenant_id, ajustare_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

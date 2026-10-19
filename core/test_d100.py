@@ -67,9 +67,12 @@ def test_calcul_profit():
     assert res.obligatii[0].cod_bugetar == "5503XXXXXX"
 
 
-def test_obligatie_cu_suma_zero_nu_intra():
-    res = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "103", "suma_dat": 0}])
+def test_obligatie_cu_suma_zero_nu_intra_cu_exceptia_impozitului_pe_profit():
+    res = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "121", "suma_dat": 0}])
     assert res.obligatii == []
+    # OPANAF 587/2016 anexa 4 pct.3.1.2: la impozitul pe profit, pierdere fiscală -> „la rândul 1 din formular se va înscrie cifra 0”
+    res = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "103", "suma_dat": 0}])
+    assert [(o.cod_oblig, o.suma_dat) for o in res.obligatii] == [("103", 0)]
 
 
 def test_luna_invalida_e_respinsa():

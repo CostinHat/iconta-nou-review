@@ -354,7 +354,7 @@ def test_def_161_semnal_furnizor_cu_sold_debitor(patron, firma):
     """161. Închidere lună: lipsea semnalul pentru furnizor cu sold debitor.
     Pașii contabilului: în 07/2026 s-a plătit un furnizor (401 = 5121, 500 lei) fără factura lui înregistrată -> Închidere lună pe
     07/2026 -> la „Semnale” apare „contul 401 (furnizori) are sold debitor de 500,00 lei la sfârșitul lunii” (semnal, nu blocaj)."""
-    nid = _nota(firma, "2026-07-20", [{"debit": "401", "credit": "5121", "suma": "500.00"}], "Plată furnizor fără factură",
+    nid = _nota(firma, "2026-07-20", [{"debit": "401", "credit": "5121", "suma": "500.00", "partener_nume": "PARTENER PROBA SRL"}], "Plată furnizor fără factură",
                 valideaza=True)
     try:
         pg = patron.pg
@@ -726,15 +726,16 @@ def _deschide_componente(ecran):
 def test_def_154_d406_liniile_facturilor_cu_suma_lor(patron, firma, facturi_emise):
     """154. D406: liniile facturilor „707 · credit 0,00”.
     Pașii contabilului: facturile lunii emise (F1A1 800 lei; F1A2 5.000 lei la 21% + 800 lei la 11%; F1A3 200 lei) -> Declarații, D406
-    pe luna curentă -> „Din ce e făcută declarația”, „Facturi de vânzare”: liniile arată „707 · credit 800,00” / „5.000,00” / „200,00”,
-    nu „credit 0,00” -> XML-ul: F1A2 are câte un total pe cotă (bază 5000.00 la 21% și 800.00 la 11%)."""
+    pe luna curentă -> „Din ce e făcută declarația”, „Facturi de vânzare”: liniile arată „704 · credit 800,00” / „5.000,00” / „200,00”,
+    nu „credit 0,00” -> XML-ul: F1A2 are câte un total pe cotă (bază 5000.00 la 21% și 800.00 la 11%).
+    [380, comanda Costin 8.2] contul e cel din nota de contare (704, contul liniei), nu 707 dedus separat — până la 8.2 testul cerea 707."""
     pg = patron.pg
     _declaratie(patron, firma, "d406", AZI.year, AZI.month)
     _deschide_componente(patron)
     sec = _sectiune(patron, "Facturi de vânzare")
     assert sec, "secțiunea „Facturi de vânzare” lipsește"
     text = " | ".join(" ".join(r) for r in sec[1])
-    for s in ("707 · credit 800,00", "707 · credit 5.000,00", "707 · credit 200,00"):
+    for s in ("704 · credit 800,00", "704 · credit 5.000,00", "704 · credit 200,00"):
         assert s in text, text
     assert "credit 0,00" not in text, text
     pg.locator(".camp-eticheta", has_text="Facturi de vânzare").scroll_into_view_if_needed()

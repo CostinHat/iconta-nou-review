@@ -203,7 +203,7 @@ def neaplicabile_selector(vector, *, ic_fapt=None):
     # D100 nu e declaratia impozitului micro, e «obligatiile de plata la bugetul de stat» si poarta si
     # codul 103 = impozit pe PROFIT (avansul trimestrial) - vezi `core/d100.py` nomenclator si gardul
     # `core/test_d100_profit_baza.py`, care calculeaza baza de profit tocmai pentru D100. O firma pe
-    # profit isi DATOREAZA D100-ul. Ca semaforul nu i-l cere azi e alta restanta, deschisa: R95.
+    # profit isi DATOREAZA D100-ul; semaforul i-l cere pe trimestrele I-III (obligatii_datorate, deficienta 376 — R95 inchisa).
     # D101 insa e exclusiv al regimului de profit, deci blocarea lui pe micro e exacta.
     #
     # BLOCAJ PE O AFIRMATIE DE OM, cu remediul in mesaj - acelasi tipar ca la D390/D301 (21.08.2026):
@@ -393,7 +393,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                 return
         adauga(tip, a, luna_perioada, perioada_txt, tip_scad)
 
-    def _adauga_d100_micro(a, luna_final, perioada_txt):
+    def _adauga_d100(a, luna_final, perioada_txt, cu_baza_venituri=True):
         # [#d100_fapt - audit tenant_006 18.08.2026] D100 micro pe FAPT (baza venituri), simetric cu d390_fapt.
         # Intai poarta de EXISTENTA (an nedemonstrabil -> gri, ca _adauga_existenta). Apoi, pe RESTANTE (jos None,
         # termen<azi), poarta de VENITURI: un trimestru INCHIS fara venituri NU are D100 (nil-ul D100 e structural
@@ -407,7 +407,10 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                     _gri_ex.add(k)
                     gri_an("d100", a, st)
                 return
-        if d100_fapt is not None and jos is None and _termen(a, luna_final, tip="d100") < azi:
+        # [deficiența 376, 18.10.2026] la impozitul pe profit poarta de venituri NU se aplică: trimestrul cu pierdere se declară cu 0
+        # (OPANAF 587/2016 anexa 4 pct.3.1.2: „În situația în care, în perioada de raportare s-a înregistrat pierdere fiscală [...] la
+        # rândul 1 din formular se va înscrie cifra 0”) — `cu_baza_venituri=False`
+        if cu_baza_venituri and d100_fapt is not None and jos is None and _termen(a, luna_final, tip="d100") < azi:
             if d100_fapt(a, luna_final) is False:
                 neaplic_fapt("D100", a, luna_final,
                     "D100 nu se datorează pe %s — fără venituri în trimestru (bază 0). Impozitul pe veniturile "
@@ -525,9 +528,17 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         regim = regim_fiscal.strip().lower()
         if regim == "micro":
             for a, tri, lf in per_trim:
-                _adauga_d100_micro(a, lf, f"T{tri}")
+                _adauga_d100(a, lf, f"T{tri}")
         elif regim == "profit":
-            # D101 pentru anul precedent, termen 25 martie an curent (existenta an-1 demonstrabila -> altfel gri)
+            # [deficiența 376, 18.10.2026 — R95] D100 cod 103 pe trimestrele I–III: CF art.41 alin.(1) „Calculul, declararea și plata
+            # impozitului pe profit [...] se efectuează trimestrial, până la data de 25 inclusiv a primei luni următoare încheierii
+            # trimestrelor I-III. Definitivarea [...] până la termenul de depunere a declarației [...] prevăzut la art. 42” — T4 se
+            # definitivează în D101. Sistemul anual cu plăți anticipate (art.41 alin.(2)) e o opțiune pe care vectorul nu o ține:
+            # nedeclarată, se aplică regula de bază.
+            for a, tri, lf in per_trim:
+                if tri <= 3:
+                    _adauga_d100(a, lf, f"T{tri}", cu_baza_venituri=False)
+            # D101 pentru anul precedent, termen 25 iunie an curent (scadente; existenta an-1 demonstrabila -> altfel gri)
             _adauga_existenta("D101", an - 1, 12, f"anual {an-1}", "d101")
 
     # D390 operatiuni intracomunitare — pe FAPT lunar (nu obligatie fixa). Se depune NUMAI pentru lunile in care ia
@@ -1014,8 +1025,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
         try:
             trim = (luna_final + 2) // 3
             per = _Per(a, trim=trim)
-            prof, venituri, cheltuieli = _d100.pull(conn_schema, schema, per)
-            obl, _av = _d100.deriva_obligatii(prof, venituri, cheltuieli, a, luna_final, None)
+            obl, _det = _d100.obligatii_perioada(conn_schema, schema, per)   # sursa unica a obligatiilor D100 (micro: venituri)
             if obl:
                 return True
             inc, sf = per.interval()

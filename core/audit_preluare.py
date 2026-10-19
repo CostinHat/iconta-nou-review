@@ -56,20 +56,37 @@ def _lei(x):
 # soldurile fiscale au cauze legitime -> remediu investigatie, nu acuzatie mecanica).
 # Ramificare pe regim a TEXTELOR limitei (STRATURI_META are doar (strat, regim), NU textele -> aici
 # e maparea text<->strat care lipseste; regimul insusi vine din straturi_pentru, NU se dubleaza).
-# _VERIFICAT_DESC: ce verifica auditul, pe stratul de care depinde (istoric-fiscal cere balanta=solduri).
-_VERIFICAT_DESC = (
-    ("solduri",           "echilibru balanță"),
-    ("solduri_parteneri", "defalcare parteneri vs sintetic"),
-    ("solduri",           "solduri fiscale vs istoric declarații"),
-    ("rip",               "coerența registrului de încasări-plăți (sold implicit din Σ încasări − Σ plăți)"),
+# _VERIFICARI: SURSA UNICA a planului auditului SI a textului „Verificat” din limita — (straturile cerute, verificarea, ce verifica).
+# [comanda Costin 8.2, 359/374] planul si textul au fost doua liste: la PFA limita spunea „mijloace fixe vs balanță” desi verificarea
+# (care cere balanta) nu rula. Acum o verificare apare in text numai daca apare in plan.
+_VERIFICARI = (
+    (("solduri",),                  "verifica_balanta",        "echilibru balanță"),
+    (("solduri",),                  "verifica_parte_sold",     "soldul fiecărui cont pe partea funcțiunii lui (A / P, planul OMFP)"),  # [369]
+    (("solduri",),                  "verifica_parteneri",      "defalcare parteneri vs sintetic"),
+    (("solduri",),                  "verifica_istoric_fiscal", "solduri fiscale vs istoric declarații"),
+    (("mijloace_fixe", "solduri"),  "verifica_mijloace_fixe",
+     "mijloace fixe vs balanță (valoarea de intrare pe 2xx, amortizarea preluată pe 28xx)"),   # [359]
+    (("articole", "solduri"),       "verifica_stocuri",        "stocul inițial vs balanță (valoarea pe fiecare cont de stoc, clasa 3)"),  # [374]
+    (("rip",),                      "verifica_rip",            "coerența registrului de încasări-plăți (sold implicit din Σ încasări − Σ plăți)"),
 )
-# _NEVERIFICAT_V1: straturi cu verificare NEIMPLEMENTATA in v1 (raman gri vizibil), cu textul lor.
+# _NEVERIFICAT_V1: straturi fara verificare (raman gri vizibil), cu textul lor — (text, stratul, stratul a carui LIPSA o cere sau None).
 _NEVERIFICAT_V1 = (
-    ("asociați/cote",              "asociati"),
-    ("mijloace fixe",              "mijloace_fixe"),
-    ("salariați",                  "salariati"),
-    ("vector fiscal vs documente", "vector_fiscal"),
+    ("asociați/cote",              "asociati",      None),
+    ("salariați",                  "salariati",     None),
+    ("vector fiscal vs documente", "vector_fiscal", None),
+    # [368] la partida simpla mijloacele fixe si stocurile raman, dar n-au conturi cu care sa se confrunte
+    ("registrul mijloacelor fixe (partida simplă n-are conturi cu care să se confrunte)", "mijloace_fixe", "solduri"),
+    ("stocul inițial (partida simplă n-are conturi cu care să se confrunte)",             "articole",      "solduri"),
 )
+
+
+def _verificari(straturi):
+    """[(nume verificare, ce verifica)] care se aplica setului de straturi — planul si limita le citesc de aici."""
+    return [(fn, d) for cerute, fn, d in _VERIFICARI if all(s in straturi for s in cerute)]
+
+
+def _neverificate(straturi):
+    return [t for t, s, fara in _NEVERIFICAT_V1 if s in straturi and (fara is None or fara not in straturi)]
 
 # [tip_lowercase] decl = CHEIE de join (canonic lowercase, ca declaratii_depuse.tip); upper la display.
 CONT_DECL_FISCAL = (
@@ -166,6 +183,110 @@ def verifica_balanta(conn, schema):
                            "balanța corectă (Migrare › Solduri inițiale)."))]
 
 
+def verifica_parte_sold(conn, schema):
+    """[deficiența 369, comanda Costin 8.2: „Fără ea nu se poate semnala un sold pe partea greșită la auditul de preluare”] Contul de activ
+    (A) cu sold creditor sau de pasiv (P) cu sold debitor în balanța de deschidere — funcțiunea din planul OMFP (`plan_functiune`, OMFP
+    1802/2014 pct.593–594); bifuncționalele (A/P) pot avea oricare."""
+    from core.plan_functiune import functiune
+    et = "Solduri pe partea funcțiunii contului"
+    temei = ("Un cont de activ (A) are, în general, sold debitor, iar unul de pasiv (P) sold creditor (OMFP 1802/2014 pct.593 alin.(2)); un "
+             "sold pe partea cealaltă arată o înregistrare greșită sau o balanță exportată greșit.")
+    rows = _rows_solduri_initiale(conn, schema)
+    if not rows:
+        return []   # balanța lipsă e spusă o dată, de `verifica_balanta`
+    gresite = []
+    for r in rows:
+        d, c = float(r["debit"] or 0), float(r["credit"] or 0)
+        f = functiune(r["cont"])
+        if f == "A" and c - d > 0.005:
+            gresite.append("%s (activ) are sold creditor %s" % (r["cont"], _lei(c - d)))
+        elif f == "P" and d - c > 0.005:
+            gresite.append("%s (pasiv) are sold debitor %s" % (r["cont"], _lei(d - c)))
+    if not gresite:
+        return [_verde(et, temei, "Toate soldurile balanței de deschidere stau pe partea funcțiunii contului lor.")]
+    return [_rosu(et, temei, "; ".join(gresite[:20]) + ("; și încă %d" % (len(gresite) - 20) if len(gresite) > 20 else "") + ".",
+                  cauza="%s cu soldul pe partea opusă funcțiunii." % _cate(len(gresite), "cont", "conturi"),
+                  actiune="Verifică în balanța primită de la contabilul anterior contul și sensul soldului (sau o regularizare neînregistrată), "
+                          "apoi reimportă balanța (Migrare › Solduri inițiale).")]
+
+
+def verifica_mijloace_fixe(conn, schema):
+    """[deficiența 359, comanda Costin 8.2] Registrul mijloacelor fixe preluat față de balanța de deschidere: pe fiecare cont de imobilizări
+    valoarea de intrare, pe fiecare cont de amortizare amortizarea cumulată preluată — aceeași regulă ca la import
+    (`mijloace_fixe_import_api.reconciliere_balanta`); plus conturile cu sold în balanță fără niciun mijloc fix în registru."""
+    from core.mijloace_fixe_import_api import reconciliere_balanta
+    et = "Mijloace fixe vs balanță"
+    temei = ("Registrul mijloacelor fixe preluat trebuie să dea, pe fiecare cont de imobilizări, soldul din balanța de deschidere "
+             "(valoarea de intrare), iar amortizarea cumulată preluată, soldul contului de amortizare (28xx).")
+    rows = _rows_solduri_initiale(conn, schema)
+    if not rows:
+        return [_gri(et, temei, "Balanța de deschidere nu a fost importată — registrul mijloacelor fixe nu se poate confrunta cu ea.",
+                     "Importă balanța de deschidere (Migrare › Solduri inițiale), apoi reia auditul.")]
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT cont_imobilizare, cont_amortizare, valoare, amortizare_preluata FROM {schema}.mijloace_fixe "
+                    "WHERE COALESCE(activ, true)")
+        mf = [{"cont_imobilizare": a, "cont_amortizare": b, "valoare": v, "amortizat_preluat": p} for a, b, v, p in cur.fetchall()]
+    solduri = {r["cont"]: (r["debit"], r["credit"]) for r in rows}
+    rec = reconciliere_balanta(mf, solduri)
+    atinse = {c["cont"] for c in rec}
+    for cont, (d, c) in sorted(solduri.items()):
+        s = str(cont).split(".")[0]
+        if s[:2] in ("20", "21", "28") and abs(float(d or 0) - float(c or 0)) > 0.005 and not any(s.startswith(a) for a in atinse):
+            rec.append({"cont": s, "fel": "amortizare" if s.startswith("28") else "imobilizare", "registru": 0.0,
+                        "balanta": abs(float(d or 0) - float(c or 0)), "diferenta": -abs(float(d or 0) - float(c or 0))})
+    if not rec:
+        return [_verde(et, temei, "Nici registrul, nici balanța de deschidere nu au mijloace fixe.")]
+    fara_prel = sum(1 for m in mf if m["amortizat_preluat"] is None)
+    out = []
+    dif = [c for c in rec if c["diferenta"] is not None and abs(c["diferenta"]) > 0.005]
+    for c in dif:
+        out.append(_rosu(et, temei, "Contul %s (%s): registrul %s, balanța %s (diferență %s)." % (
+            c["cont"], "valoarea de intrare" if c["fel"] == "imobilizare" else "amortizarea preluată", _lei(c["registru"]),
+            _lei(c["balanta"]), _lei(c["diferenta"])),
+            cauza="Registrul mijloacelor fixe și balanța de deschidere nu spun același lucru despre contul %s." % c["cont"],
+            actiune="Verifică registrul și balanța primite de la contabilul anterior (mijloace lipsă, cont greșit, amortizare necompletată) "
+                    "și reimportă (Migrare › Mijloace fixe)."))
+    if fara_prel:
+        out.append(_gri(et, temei, "%s fără amortizarea cumulată preluată — conturile 28xx nu se pot confrunta pe ele." % _cate(
+            fara_prel, "mijloc fix", "mijloace fixe"), "Reimportă registrul cu coloana „amortizare cumulată” (Migrare › Mijloace fixe).",
+            cauza="Registrul importat nu avea amortizarea cumulată la data preluării."))
+    if not out:
+        out.append(_verde(et, temei, "Registrul mijloacelor fixe dă soldurile din balanța de deschidere pe %s." % _cate(
+            len(rec), "cont", "conturi")))
+    return out
+
+
+def verifica_stocuri(conn, schema):
+    """[deficiența 374, comanda Costin 8.2: „ca la 359, reconciliere pe fiecare cont de stoc cu balanța, iar verificarea intră în auditul
+    de preluare”] Stocul inițial importat (mișcările „sold initial (import)”), pe fiecare cont de stoc, față de balanța de deschidere —
+    aceeași regulă ca la import (`articole_import_api.reconciliere_balanta`)."""
+    from core.articole_import_api import reconciliere_balanta
+    et = "Stoc inițial vs balanță"
+    temei = ("Valoarea stocului inițial preluat trebuie să dea, pe fiecare cont de stoc (clasa 3), soldul lui din balanța de deschidere.")
+    rows = _rows_solduri_initiale(conn, schema)
+    if not rows:
+        return [_gri(et, temei, "Balanța de deschidere nu a fost importată — stocul inițial nu se poate confrunta cu ea.",
+                     "Importă balanța de deschidere (Migrare › Solduri inițiale), apoi reia auditul.")]
+    with conn.cursor() as cur:
+        cur.execute(f"""SELECT a.cont_stoc, m.cantitate, m.pret_unitar FROM {schema}.miscari_stoc m
+                        JOIN {schema}.articole a ON a.id = m.articol_id WHERE m.document = 'sold initial (import)'""")
+        art = [{"cont_stoc": c, "cantitate": q, "pret": p} for c, q, p in cur.fetchall()]
+    rec = reconciliere_balanta(art, {r["cont"]: (r["debit"], r["credit"]) for r in rows})
+    if not rec:
+        return [_verde(et, temei, "Nici stocul inițial, nici balanța de deschidere nu au solduri pe conturi de stoc.")]
+    out = []
+    for c in rec:
+        if c["diferenta"] is not None and abs(c["diferenta"]) > 0.005:
+            out.append(_rosu(et, temei, "Contul %s: stocul inițial %s, balanța %s (diferență %s)." % (
+                c["cont"], _lei(c["registru"]), _lei(c["balanta"]), _lei(c["diferenta"])),
+                cauza="Stocul inițial importat și balanța de deschidere nu spun același lucru despre contul %s." % c["cont"],
+                actiune="Verifică lista de articole (cantități, prețuri, contul de stoc) și balanța primite de la contabilul anterior, "
+                        "apoi completează importul (Migrare › Articole și stoc inițial)."))
+    if not out:
+        out.append(_verde(et, temei, "Stocul inițial dă soldurile din balanța de deschidere pe %s." % _cate(len(rec), "cont", "conturi")))
+    return out
+
+
 def verifica_parteneri(conn, schema):
     """Sigma solduri parteneri pe sintetic (4111/401) = sold sintetic din balanta.
     Reutilizeaza solduri_parteneri_api.coerenta (search_path e pe schema prin SET LOCAL)."""
@@ -185,7 +306,7 @@ def verifica_parteneri(conn, schema):
     if not randuri:
         return [_gri(et, temei, "Nu există solduri pe parteneri de verificat.",
                      "Importă soldurile pe parteneri (Migrare › Solduri parteneri), apoi reia auditul.")]
-    return constatare_parteneri(coerenta(conn, randuri))
+    return constatare_parteneri(coerenta(conn, schema, randuri))   # [346] aceeași referință ca la import: soldul la data preluării
 
 
 def constatare_parteneri(rez_coerenta):
@@ -347,20 +468,20 @@ def _tip_firma(conn, schema):
         return row[0] if row else None
 
 
-def _audit_regim_nedeterminat(e):
+def _audit_regim_nedeterminat():
     """Regim (SRL/PFA) NEDETERMINABIL dintr-o EROARE (nu absenta legitima): auditul NU ghiceste SRL tacit.
     Un audit care sare peste jumatate din verificari fara sa spuna e mai grav decat unul care crapa vizibil
     -> gri cu temei + lista straturilor nerulate (ambele regimuri). Vezi DECIZII 23.07."""
     from core.migrare_api import straturi_pentru
     toate = set(straturi_pentru("srl")) | set(straturi_pentru("pfa"))
-    sarite = [d for s, d in _VERIFICAT_DESC if s in toate]
+    sarite = [d for _fn, d in _verificari(toate)]
     return {"stare": "gri",
             "constatari": [_gri("regim nedeterminabil",
                 "Auditul aplică straturi diferite după regim (SRL partidă dublă / PFA partidă simplă); fără "
                 "regim nu se știe care se aplică, deci nu se poate rula auditul complet.",
                 "Nu s-a putut determina regimul firmei (SRL/PFA) — audit INCOMPLET, %s." % _cate(len(sarite), "strat nerulat", "straturi nerulate"),
                 "Verifică tipul firmei (SRL/PFA) în Date firmă, apoi reia auditul.",
-                cauza="Nu se poate citi tipul firmei din Date firmă (%s)." % e)],
+                cauza="Nu se poate citi tipul firmei din Date firmă (eroare internă, consemnată în jurnalul aplicației).")],
             "coerent": 0, "divergent": 0, "neverificat": 1,
             "limita": ("Audit NErulat: regimul (SRL/PFA) nu s-a putut determina. Straturi nerulate: %s. "
                        "Lipsa lor e vizibilă prin gri, nu tăcută." % ", ".join(sarite)),
@@ -381,22 +502,22 @@ def audit(conn, schema, tenant_id, conn_public):
         tip = _tip_firma(conn, schema)
     except Exception as e:
         # regim NEDETERMINABIL (eroare reala, nu absenta) -> nu ghicim SRL tacit; gri + straturi sarite.
-        return _audit_regim_nedeterminat(e)
+        # [comanda Costin 8.2 pct.4] textul excepției merge în jurnal, nu în constatare
+        __import__("logging").getLogger("iconta.audit_preluare").exception("regimul firmei nu s-a putut citi: %s", e)
+        return _audit_regim_nedeterminat()
     straturi = set(straturi_pentru(tip))
-    plan = []
-    if "solduri" in straturi:  # partida dubla (SRL): balanta + parteneri + istoric-vs-solduri-fiscale
-        plan += [(verifica_balanta, (conn, schema)),
-                 (verifica_parteneri, (conn, schema)),
-                 (verifica_istoric_fiscal, (conn, schema, tenant_id, conn_public))]
-    if "rip" in straturi:      # partida simpla (PFA): coerenta registrului
-        plan.append((verifica_rip, (conn, schema)))
+    # partida dubla (SRL): balanta, parteneri, istoric-vs-solduri-fiscale, MF si stocuri fata de balanta; partida simpla (PFA): RIP
+    argumente = {"verifica_istoric_fiscal": (conn, schema, tenant_id, conn_public)}
+    plan = [(globals()[fn], argumente.get(fn, (conn, schema))) for fn, _d in _verificari(straturi)]
     constatari = []
     for fn, args in plan:
         try:
             constatari += fn(*args)
-        except Exception as e:  # izolare: un check picat nu ascunde restul
+        except Exception:  # izolare: un check picat nu ascunde restul
+            # [comanda Costin 8.2 pct.4: „erorile interne nu ajung la utilizator”] textul excepției merge în jurnal, nu pe ecran
+            __import__("logging").getLogger("iconta.audit_preluare").exception("verificarea %s a cazut", fn.__name__)
             constatari.append(_gri(fn.__name__, "Verificarea nu a rulat.",
-                                    f"NU se poate rula verificarea ({e}).",
+                                    "NU se poate rula verificarea (eroare internă, consemnată în jurnalul aplicației).",
                                     "Reîncearcă; dacă persistă, verifică datele preluate ale firmei.",
                                     cauza="Eroare la verificare."))
     coerent = [c for c in constatari if c["stare"] == "verde"]
@@ -411,12 +532,12 @@ def audit(conn, schema, tenant_id, conn_public):
 def limita_pe_regim(straturi):
     """PURA. Textul `limita` RAMIFICAT pe regim, din setul de straturi (straturi_pentru) - PFA nu vede
     termeni de partida dubla (balanta/parteneri/asociati/mij.fixe), SRL nu vede RIP. Reutilizeaza
-    mecanismul de regim existent (straturi), nu construieste altul; textele vin din _VERIFICAT_DESC /
+    mecanismul de regim existent (straturi), nu construieste altul; textele vin din _VERIFICARI (aceeasi lista ca planul) /
     _NEVERIFICAT_V1 (STRATURI_META n-are texte, doar (strat, regim))."""
     straturi = set(straturi)
     regim_lbl = "partidă dublă (SRL)" if "solduri" in straturi else "partidă simplă (PFA)"
-    verificat = [d for s, d in _VERIFICAT_DESC if s in straturi]
-    neverif = [t for t, s in _NEVERIFICAT_V1 if s in straturi]
+    verificat = [d for _fn, d in _verificari(straturi)]
+    neverif = _neverificate(straturi)
     limita = "Verificat (%s): %s." % (regim_lbl, ", ".join(verificat) if verificat else "—")
     if neverif:
         limita += (" Neverificat (v1): %s — lipsa lor rămâne vizibilă prin gri, nu tăcută."

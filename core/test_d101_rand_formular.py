@@ -19,10 +19,14 @@ NECONFRUNTABILE = {
     "P122": "textul din structură e stricat la extragere („Sume din anul  fferen”); formularul: rd.12.2 „Sume deductibile în anul curent”",
     "P14": "structura îl numește „Provizioane fiscale”, formularul „Provizioane şi ajustări pentru depreciere” (rd.14, același rând)",
     "P141": "subrândul 14.1 („Filtre prudenţiale”) nu e tipărit ca rând separat în formularul extras",
-    "P38a": "poziție intermediară a structurii (fără rând tipărit în formular)",
-    "P39a": "poziție intermediară a structurii (fără rând tipărit în formular)",
-    "P40a": "poziție intermediară a structurii (fără rând tipărit în formular)",
-    "P43a": "poziție intermediară a structurii (fără rând tipărit în formular)",
+    "P38a": "rândul cu exponent (rd.38^1): formularul extras îl tipărește „381”, pe care confruntarea pe cifre nu-l citește; denumirea lui "
+           "e păzită în core/test_denumiri_randuri.py",
+    "P39a": "rândul cu exponent (rd.39^1): formularul extras îl tipărește „391”, pe care confruntarea pe cifre nu-l citește; denumirea lui "
+           "e păzită în core/test_denumiri_randuri.py",
+    "P40a": "rândul cu exponent (rd.40^1): formularul extras îl tipărește „401”, pe care confruntarea pe cifre nu-l citește; denumirea lui "
+           "e păzită în core/test_denumiri_randuri.py",
+    "P43a": "rândul cu exponent (rd.43^1): formularul extras îl tipărește „431”, pe care confruntarea pe cifre nu-l citește; denumirea lui "
+           "e păzită în core/test_denumiri_randuri.py",
 }
 
 
@@ -76,5 +80,6 @@ def test_textul_randului():
     assert rand_d101("P91") == "rândul 9.1"
     assert rand_d101("P4221") == "rândul 42.2.1"
     assert rand_d101("P53") == "rândul 53"
-    assert rand_d101("P38a") == "rândul 38a"
+    # [379, comanda Costin 8.2] litera e exponentul rândului din formular: P38a = rd.38^1 (d101_struct_anaf.txt: „rd.40^1=rd.38^1”)
+    assert rand_d101("P38a") == "rândul 38^1"
     assert rand_d101("X1") == "X1"

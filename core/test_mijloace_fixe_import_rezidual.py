@@ -22,7 +22,7 @@ def test_coloana_ramas_nu_devine_rezidual():
     r = extrage(ANTET + b"MF1;Strung;12000;6000;60;2024-03-15;liniara;2131\n", "m.csv")[0]
     # OMFP 1802/2014 pct.139 alin.(2): „Valoarea amortizabilă este reprezentată de cost” — rămasul nu e rezidual
     assert r["rezidual"] == 0.0
-    assert r["amortizat"] == 200.0 * _luni_scurse(datetime.date(2024, 3, 15))
+    assert r["amortizat_calculat"] == 200.0 * _luni_scurse(datetime.date(2024, 3, 15))
 
 
 def test_fara_coloana_rezidual_e_zero_nu_valoarea():
@@ -44,9 +44,11 @@ def test_ramas_care_nu_se_leaga_cu_calculul_da_avertisment():
     bun, rau = extrage(ANTET + b"MF1;Strung;12000;%d;60;2024-03-15;liniara;2131\n"
                        b"MF2;Laptop;6000;5900;36;2024-03-15;liniara;2131\n"
                        % (12000 - 200 * _luni_scurse(datetime.date(2024, 3, 15))), "m.csv")
-    assert bun["avertismente"] == [] and bun["ok"]
-    assert len(rau["avertismente"]) == 1 and not rau["ok"], rau["avertismente"]
-    assert rau["avertismente"][0].startswith("valoarea rămasă din fișier (5.900,00 lei)"), rau["avertismente"]   # [14.10.2026] DS cap.4: bani()
+    assert bun["semnale_extra"] == [] and bun["stare"] == "ok"
+    # [359] rămasul care nu se leagă cu calculul: semnalat (intră, iar amortizarea continuă din calcul), cu cifra scrisă în fișier
+    assert len(rau["semnale_extra"]) == 1 and rau["stare"] == "semnalat", rau["semnale_extra"]
+    assert rau["semnale_extra"][0].startswith(   # [14.10.2026] DS cap.4: bani()
+        "amortizarea preluată (100,00 lei = valoarea de intrare 6.000,00 lei − valoarea rămasă din fișier 5.900,00 lei)"), rau["semnale_extra"]
 
 
 def test_ramas_inaintea_valorii_de_intrare_nu_fura_coloana():

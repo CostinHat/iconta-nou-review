@@ -140,10 +140,11 @@ def test_profit_trim2_pe_cumulat_nu_pe_trimestru(firma_profit):
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_profit_trim1_pierdere_se_refuza(firma_profit):
+def test_profit_trim1_pierdere_se_declara_cu_0(firma_profit):
     with firma_profit["conn"].cursor() as c:
         c.execute('SET search_path TO "%s", public' % SCH)
-    # Q1 cumulat = -50.000 (pierdere) -> fără avans de impozit; D100 se refuză pe zero (structural:
-    # genereaza ridică ValueError). Formularea mesajului e testată în test_d100_profit_baza.
-    with pytest.raises(ValueError):
-        declaratii_api.genereaza(_ConnProxy(firma_profit["conn"]), SCH, "d100", {"an": AN, "trim": 1})
+    # Q1 cumulat = -50.000 (pierdere) -> fără impozit de plată, dar D100 se depune (deficiența 376: semaforul îl cere pe T1–T3).
+    # OPANAF 587/2016 anexa 4 pct.3.1.2: „În situația în care, în perioada de raportare s-a înregistrat pierdere fiscală [...] la
+    # rândul 1 din formular se va înscrie cifra 0”
+    _xml, res = declaratii_api.genereaza(_ConnProxy(firma_profit["conn"]), SCH, "d100", {"an": AN, "trim": 1})
+    assert [(str(o.cod_oblig), int(o.suma_dat)) for o in res.obligatii] == [("103", 0)], res.obligatii

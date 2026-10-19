@@ -31,3 +31,14 @@ def rand_formular(cheie):
         return "rândul %s%s, %s" % (RAND_FORMULAR[n], sub, _COLOANA[col])
     from core.d300_manual_api import ETICHETE
     return "rândul „%s”, %s" % (ETICHETE["R%d" % n], _COLOANA[col]) if "R%d" % n in ETICHETE else str(cheie)
+
+
+def denumire_rand(cheie):
+    """[deficiența 379, comanda Costin 8.2] Denumirea OFICIALĂ a rândului din formular pentru un atribut „Rn_c” („R9_1” -> „Livrări de
+    bunuri şi prestări de servicii, taxabile cu cota 21%”), din `core.denumiri_randuri` (generat din OPANAF 174/2026). Atributul fără
+    rând în formularul de azi își are deja numele oficial în `rand_formular`; "" dacă nu e atribut D300."""
+    from core.denumiri_randuri import D300
+    m = _re.fullmatch(r"R(\d+)((?:_\d+)*)_([12])", str(cheie or ""))
+    if not m or int(m.group(1)) not in RAND_FORMULAR:
+        return ""
+    return D300.get("%s%s" % (RAND_FORMULAR[int(m.group(1))], m.group(2).replace("_", ".")), "")

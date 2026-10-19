@@ -172,7 +172,9 @@ _T_CONTROL_FISCAL = (
     # [D394 op2 Î1, decizia B, 02.10.2026] D394 citeste casa si bonurile rapoartelor Z
     "rapoarte_z_amef",
     # [retest 07.10 seara, S1] statul de plata si D112 citesc elementele variabile ale salariului (prime, sporuri, ore supl.)
-    "elemente_salariale")
+    "elemente_salariale",
+    # [376–378, comanda Costin 8.2] D100 pe impozitul pe profit citește ajustările fiscale ale rezultatului (poarta de fapt a semaforului)
+    "ajustari_fiscale")
 
 #: SURSE CONDIȚIONATE — citite de `control_fiscal` doar CÂND o fereastră de obligație e deschisă (spre
 #: scadență), nu în fiecare zi. `efactura_primite`: `control_fiscal` numără e-facturile primite

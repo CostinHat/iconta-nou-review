@@ -2,7 +2,7 @@
 title: "Se recalculează plățile anticipate dacă impozitul pe profit al anului precedent se corectează?"
 description: "Da. Dacă impozitul pe profit al anului precedent se corectează, plățile anticipate din trimestrul corecției se calculează pe impozitul recalculat; trimestrele anterioare rămân la fel."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -56,6 +56,6 @@ Plata pentru trimestrul I 2026 a fost calculată pe profitul contabil al trimest
 
 ## Ce face iConta.eu
 
-iConta.eu generează D100 pentru impozitul pe profit în sistemul trimestrial, pe baza profitului cumulat de la începutul anului, și D101 anual. Declarațiile se validează pe validatorul oficial ANAF. Pentru sistemul anual cu plăți anticipate, aplicația nu are, la acest moment, un calcul dedicat al plăților pe baza impozitului anului precedent, deci nici recalcularea automată după o corecție. Stabilirea acestor sume rămâne a contabilului.
+iConta.eu generează D100 pentru impozitul pe profit în sistemul trimestrial, pe baza rezultatului fiscal cumulat de la începutul anului, și D101 anual. Declarațiile se validează pe validatorul oficial ANAF. Pentru sistemul anual cu plăți anticipate, aplicația nu are, la acest moment, un calcul dedicat al plăților pe baza impozitului anului precedent, deci nici recalcularea automată după o corecție. Stabilirea acestor sume rămâne a contabilului.
 
 [iConta.eu](/)

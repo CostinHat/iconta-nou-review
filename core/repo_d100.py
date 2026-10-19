@@ -56,3 +56,12 @@ def venituri_pe_conturi(cur, _inc, _sf):
                 (_inc.isoformat(), _sf.isoformat(), _inc.isoformat(), _sf.isoformat()))
     return cur.fetchall()
 
+
+
+def d100_depuse_an(cur, schema, an):
+    """[deficiența 377, 18.10.2026] D100-urile depuse ale anului (prin iConta sau preluate din istoric la migrare), cea curentă pe perioadă:
+    [(luna, randuri, sursa, data_depunere)]."""
+    cur.execute("SELECT d.luna, d.randuri, d.sursa, d.data_depunere FROM public.declaratii_depuse_curente d "
+                "JOIN public.tenants t ON t.id = d.tenant_id WHERE t.schema_name = %s AND d.tip = 'd100' AND d.an = %s ORDER BY d.luna",
+                (str(schema).strip('"'), int(an)))
+    return [tuple(r.values()) if isinstance(r, dict) else tuple(r) for r in cur.fetchall()]

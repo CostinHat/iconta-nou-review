@@ -2,7 +2,7 @@
 title: "Diferența dintre micro și profit pentru o firmă mică în 2026"
 description: "Ce deosebește impozitul pe veniturile microîntreprinderilor de impozitul pe profit, pentru o firmă mică din România în 2026."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Diferențele practice cele mai importante pentru o firmă mică:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează impozitul aferent regimului fiscal setat pentru firmă — 1% pe venit pentru microîntreprinderi sau 16% pe profitul impozabil, cu verificarea impozitului minim pe cifra de afaceri pentru contribuabilii mari pe profit — și generează declarațiile corespunzătoare (D100/D112 pentru micro, D101 pentru profit). Aplicația nu decide automat dacă o firmă îndeplinește toate condițiile de încadrare din art. 47 pentru a rămâne la micro — verificarea acestor condiții cumulative rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu calculează impozitul aferent regimului fiscal setat pentru firmă — 1% pe venit pentru microîntreprinderi sau 16% pe profitul impozabil, cu verificarea impozitului minim pe cifra de afaceri pentru contribuabilii mari pe profit — și generează declarațiile corespunzătoare (D100/D112 pentru micro, D100 pe trimestrele I–III și D101 anual pentru profit). Aplicația nu decide automat dacă o firmă îndeplinește toate condițiile de încadrare din art. 47 pentru a rămâne la micro — verificarea acestor condiții cumulative rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

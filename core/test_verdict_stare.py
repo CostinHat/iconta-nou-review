@@ -73,7 +73,7 @@ def test_constatare_esuata_e_gri_cu_temei():
 def test_audit_regim_nedeterminat_e_gri_cu_straturi_sarite():
     # audit_preluare: regimul necitibil (eroare) -> gri + lista straturilor nerulate, NU report fals-curat.
     from core import audit_preluare as ap
-    r = ap._audit_regim_nedeterminat(RuntimeError("DB down"))
+    r = ap._audit_regim_nedeterminat()   # [comanda Costin 8.2 pct.4] excepția merge în jurnal, nu în constatare
     assert r["stare"] == "gri"
     assert "INCOMPLET" in r["constatari"][0]["mesaj"] and r["neverificat"] == 1
     assert "Straturi nerulate" in r["limita"] and "balanță" in r["limita"]

@@ -269,7 +269,8 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const audit = `
     <div class="cf-grup-titlu" style="margin-top:20px">Audit de preluare</div>
     <div class="cf-decl" id="cf-audit-zona">
-      <div class="cf-incr-temei">Coerența internă a pachetului preluat de la contabilul anterior: balanță, solduri parteneri, istoric declarații, registru PFA. Raport datat, repetabil pe măsură ce apar documentele.</div>
+      <div class="cf-incr-temei">Coerența internă a pachetului preluat de la contabilul anterior: balanță, solduri parteneri, mijloace fixe, istoric declarații, registru PFA. Raport datat, repetabil pe măsură ce apar documentele; primul audit rămâne păstrat.</div>
+      <div id="cf-audit-istoric"></div>
       <button class="buton-secundar" id="cf-audit-run" data-actiune="POST /control-fiscal/{tenant_id}/audit-preluare" style="margin-top:10px">Rulează auditul de preluare</button>
     </div>`;
 
@@ -405,19 +406,8 @@ export function legaVerdict(corp, nav, firma) {
     }, { textOk: "Contabilizează" });
   }));
 
-  async function ruleazaAudit() {
-    const zona = corp.querySelector("#cf-audit-zona");
-    const btn = corp.querySelector("#cf-audit-run");
-    if (btn) { btn.disabled = true; btn.textContent = "Se rulează…"; }
-    let a;
-    try {
-      // [R45] POST: auditul e un act (butonul de deasupra), iar verdictul lui se pastreaza.
-      a = await api.post(`/control-fiscal/${firma.tenant_id}/audit-preluare`, {});
-    } catch (e) {
-      if (btn) { btn.disabled = false; btn.textContent = "Rulează auditul de preluare"; }
-      arataMesaj(zona, `Nu s-a putut rula auditul: ${e.mesaj || e.message}`, "avert");
-      return;
-    }
+  // [deficiența 370, comanda Costin 8.2] un audit randat (verdictul păstrat sau cel tocmai rulat) — aceeași formă pentru primul și ultimul
+  const htmlAudit = (a, eticheta) => {
     const grup = (titlu, stare, cls) => {
       const arr = (a.constatari || []).filter((c) => c.stare === stare);
       if (!arr.length) return "";
@@ -426,15 +416,43 @@ export function legaVerdict(corp, nav, firma) {
     // [deficiența 220] auditul nu e o restanță: „divergent” e galben și se spune pe nume (eticheta paletei ar fi zis „restanță”)
     const col = CULORI[stareAfisata(a.stare)] || CULORI.gri;
     const txtAudit = a.stare === "rosu" ? "divergent" : col.txt;
-    zona.innerHTML = `
-      <div class="cf-incr-temei">${a.in_iconta_din ? `Firmă în iConta.eu din ${dataRo(a.in_iconta_din)} · ` : ""}Audit rulat ${dataRo(a.data, "cu_ora")} · <span class="cf-dot" style="background:${col.dot}"></span> ${txtAudit} · ${a.coerent} coerent · ${a.divergent} divergent · ${a.neverificat} neverificat</div>
+    return `<div class="cf-incr-temei">${eticheta}${a.in_iconta_din ? ` · firmă în iConta.eu din ${dataRo(a.in_iconta_din)}` : ""} · rulat ${dataRo(a.data, "cu_ora")} · <span class="cf-dot" style="background:${col.dot}"></span> ${txtAudit} · ${a.coerent} coerent · ${a.divergent} divergent · ${a.neverificat} neverificat</div>
       ${grup("Coerent", "verde", "cf-verde")}
       ${grup("Divergent", "rosu", "cf-galben")}
       ${grup("Neverificat", "gri", "")}
-      ${a.limita ? `<div class="cf-incr-temei">${esc(a.limita)}</div>` : ""}
-      <button class="buton-secundar" id="cf-audit-run" data-actiune="POST /control-fiscal/{tenant_id}/audit-preluare" style="margin-top:12px">Rerulează auditul</button>`;
-    corp.querySelector("#cf-audit-run").addEventListener("click", ruleazaAudit);
+      ${a.limita ? `<div class="cf-incr-temei">${esc(a.limita)}</div>` : ""}`;
+  };
+  // primul audit (dovada a ce s-a primit de la contabilul anterior) stă lângă ultimul; o rulare nouă nu-l înlocuiește
+  async function arataIstoricAudit() {
+    const zona = corp.querySelector("#cf-audit-istoric");
+    if (!zona) return;
+    let ist;
+    try { ist = await api.get(`/control-fiscal/${firma.tenant_id}/audit-preluare/istoric`); } catch { return; }
+    if (!ist || !ist.primul || !ist.primul.audit) { zona.innerHTML = ""; return; }
+    const cine = (x) => x.rulat_de ? ` de ${esc(x.rulat_de)}` : "";
+    const titluPrimul = `<b>Primul audit după preluare</b>${cine(ist.primul)} — păstrat: ce s-a primit de la contabilul anterior`;
+    zona.innerHTML = ist.ultimul && ist.ultimul.audit
+      ? `<div class="cf-audit-ultimul">${htmlAudit(ist.ultimul.audit, `<b>Ultimul audit</b>${cine(ist.ultimul)} (${cate(ist.rulari, "rulare", "rulări")})`)}</div>
+         <details class="cf-audit-primul"><summary>${titluPrimul}, ${dataRo(ist.primul.rulat_la, "cu_ora")}</summary>${htmlAudit(ist.primul.audit, "Primul audit")}</details>`
+      : `<div class="cf-audit-primul">${htmlAudit(ist.primul.audit, titluPrimul)}</div>`;
+    const btn = corp.querySelector("#cf-audit-run");
+    if (btn) btn.textContent = "Rerulează auditul";
   }
+  async function ruleazaAudit() {
+    const btn = corp.querySelector("#cf-audit-run");
+    if (btn) { btn.disabled = true; btn.textContent = "Se rulează…"; }
+    try {
+      // [R45] POST: auditul e un act (butonul de deasupra), iar verdictul lui se pastreaza.
+      await api.post(`/control-fiscal/${firma.tenant_id}/audit-preluare`, {});
+    } catch (e) {
+      if (btn) { btn.disabled = false; btn.textContent = "Rulează auditul de preluare"; }
+      arataMesaj(corp.querySelector("#cf-audit-istoric"), `Nu s-a putut rula auditul: ${e.mesaj || e.message}`, "avert");
+      return;
+    }
+    if (btn) btn.disabled = false;
+    await arataIstoricAudit();
+  }
+  arataIstoricAudit();
   const auditBtn = corp.querySelector("#cf-audit-run");
   if (auditBtn) auditBtn.addEventListener("click", ruleazaAudit);
 }

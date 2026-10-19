@@ -210,6 +210,18 @@ def ai_prompturi():
     return [json.loads(x) for x in open(cale, encoding="utf-8")] if os.path.exists(cale) else []
 
 
+#: [deficiența 381, comanda Costin 8.2] nota manuală pe 401 / 4111 cere partenerul la introducere (`jurnal_api._linii_valide`)
+PARTENER_PROBA = "PARTENER PROBA SRL"
+
+
+def linie_nota(debit, credit, suma):
+    """O linie de notă manuală, cu partenerul scris când unul din conturi e de terți (401 / 4111, cu sau fără analitic)."""
+    linie = {"debit": debit, "credit": credit, "suma": suma}
+    if any(str(c).split(".")[0] in ("401", "4111") for c in (debit, credit)):
+        linie["partener_nume"] = PARTENER_PROBA
+    return linie
+
+
 def cui_cu_control(baza8):
     """CUI valid din 8 cifre de bază + cifra de control (algoritmul oficial, CLAUDE.md „Date de test”) — verificat, nu inventat."""
     from core.tenant_provisioning import cui_valid

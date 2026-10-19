@@ -2,7 +2,7 @@
 title: "Micro la firmele HoReCa: condiția de salariat 2026"
 description: "Excepția specială pentru CAEN-urile de HoReCa de la condiția de salariat s-a încheiat în 2024 — în 2026 aceste firme aplică regula generală, cu grațierile ei uzuale."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă din text pentru condiția de salariat:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu are o constantă sau o verificare dedicată condiției de salariat pentru regimul micro** — comentariile din aplicație confirmă explicit că nu există nicio constantă de plafon sau condiție micro urmărită automat în cod. Regimul fiscal (micro/profit) e un câmp declarat de utilizator, folosit pentru a decide între D100 și D101, dar aplicația nu verifică dacă firma mai are salariat, dacă o suspendare a depășit 30 de zile sau dacă termenul de 90/30 de zile de la art. 48 a expirat. Modulul de salariați urmărește datele de angajare/încetare, dar nu e conectat la o verificare a condiției de menținere în regimul micro. Verificarea acestor termene rămâne, la acest moment, manuală.
+La data acestui ghid, iConta.eu **nu are o constantă sau o verificare dedicată condiției de salariat pentru regimul micro** — comentariile din aplicație confirmă explicit că nu există nicio constantă de plafon sau condiție micro urmărită automat în cod. Regimul fiscal (micro/profit) e un câmp declarat de utilizator, folosit pentru a decide ce declarații de impozit se datorează (D100 la micro; D100 pe trimestrele I–III și D101 anual la profit), dar aplicația nu verifică dacă firma mai are salariat, dacă o suspendare a depășit 30 de zile sau dacă termenul de 90/30 de zile de la art. 48 a expirat. Modulul de salariați urmărește datele de angajare/încetare, dar nu e conectat la o verificare a condiției de menținere în regimul micro. Verificarea acestor termene rămâne, la acest moment, manuală.
 
 [iConta.eu](/)

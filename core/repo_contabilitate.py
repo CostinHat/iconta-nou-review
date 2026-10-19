@@ -66,7 +66,8 @@ def jurnal_pe_an(cur, schema, an, limita):
                 SELECT n.id, n.data, n.numar, n.descriere, n.sursa, n.status, n.factura_id,
                        n.document_ref, n.nr_curent,
                        f.tip, f.serie, f.numar, f.data_emitere,
-                       l.cont_debit, l.cont_credit, l.suma, l.centru_cost_id, cc.nume AS centru_nume
+                       l.cont_debit, l.cont_credit, l.suma, l.centru_cost_id, cc.nume AS centru_nume,
+                       l.partener_cui, l.partener_nume   -- [381] partenerul pe linia de terți
                 FROM pe_an n
                 JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = n.id
                 LEFT JOIN {schema}.facturi f ON f.id = n.factura_id

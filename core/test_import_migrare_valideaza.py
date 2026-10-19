@@ -46,14 +46,16 @@ def test_parser_accepta_fisier_bun_asociati():
 
 def test_articole_stoc_fara_pret_e_invalid():
     # [articol_pret] articol cu cantitate > 0 dar pret 0/lipsa -> valoarea stocului 0 fabricata tacit. Invalid.
+    # [373, comanda Costin 8.2] eticheta rândului vine din aceeași verificare ca salvarea (`eticheteaza` / `verifica_randuri`)
     from core import articole_import_api as ai
-    rez = ai.extrage("denumire,um,cantitate,pret\nCiment,buc,100,50\nNisip,buc,200,\n".encode(), "articole.csv")
+    rez = ai.eticheteaza(ai.extrage("denumire,um,cantitate,pret,cont stoc\nCiment,buc,100,50,371\nNisip,buc,200,,371\n".encode(),
+                                    "articole.csv"))
     d = {r["denumire"]: r for r in rez}
-    assert d["Ciment"]["valid"] is True
-    assert d["Nisip"]["valid"] is False and "stoc" in d["Nisip"]["motiv"].lower()
+    assert d["Ciment"]["stare"] != "respins"
+    assert d["Nisip"]["stare"] == "respins" and "stoc" in d["Nisip"]["motive"][0].lower()
     # coloana pret lipsa complet -> orice articol cu stoc invalid
-    rez2 = ai.extrage("denumire,um,cantitate\nVar,buc,10\n".encode(), "articole.csv")
-    assert rez2[0]["valid"] is False
-    # articol fara stoc (cantitate 0) fara pret -> VALID (nomenclator pur, fara miscare)
-    rez3 = ai.extrage("denumire,um,cantitate,pret\nServiciu,buc,0,\n".encode(), "articole.csv")
-    assert rez3[0]["valid"] is True
+    rez2 = ai.eticheteaza(ai.extrage("denumire,um,cantitate,cont stoc\nVar,buc,10,371\n".encode(), "articole.csv"))
+    assert rez2[0]["stare"] == "respins"
+    # articol fara stoc (cantitate 0) fara pret -> intră (nomenclator pur, fara miscare)
+    rez3 = ai.eticheteaza(ai.extrage("denumire,um,cantitate,pret,cont stoc\nServiciu,buc,0,,371\n".encode(), "articole.csv"))
+    assert rez3[0]["stare"] != "respins"

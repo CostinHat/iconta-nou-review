@@ -69,8 +69,8 @@ def test_profit_datoreaza_si_d100_si_d101():
     """ASIMETRIE DELIBERATA, si e masurata: D100 nu e declaratia micro, e «obligatiile de plata la
     bugetul de stat» si poarta codul 103 = impozit pe PROFIT (avansul trimestrial) - vezi
     nomenclatorul din `core/d100.py` si gardul `core/test_d100_profit_baza.py`. Oglinda
-    «profit -> D100 neaplicabil» ar fi refuzat o declaratie REALA. Ca semaforul nu i-o cere azi e
-    alta restanta (R95), nu un motiv sa o blocam aici."""
+    «profit -> D100 neaplicabil» ar fi refuzat o declaratie REALA; semaforul i-o cere pe trimestrele
+    I-III (deficienta 376, R95 inchisa)."""
     neap = cf.neaplicabile_selector({"tip_firma": "srl", "regim_fiscal": "profit"})
     assert set(neap).isdisjoint({"d100", "d101"})
 

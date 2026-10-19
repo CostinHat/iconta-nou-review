@@ -105,7 +105,7 @@ def _ca(cur, uid):
 
 def _nota(conn, desc, suma, doc=None):
     from core import jurnal_api
-    r = jurnal_api.creeaza(conn, SCH, desc, "2026-10-05", [{"debit": "612", "credit": "401", "suma": suma}], document_ref=doc)
+    r = jurnal_api.creeaza(conn, SCH, desc, "2026-10-05", [{"debit": "612", "credit": "401", "suma": suma, "partener_nume": "PARTENER PROBA SRL"}], document_ref=doc)
     return r["id"]
 
 

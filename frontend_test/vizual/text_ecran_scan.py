@@ -78,6 +78,10 @@ def date_excluse():
                 except Exception:  # noqa: BLE001 — tabelul nu există pe schema asta
                     cur.execute("ROLLBACK TO SAVEPOINT s")
         c.rollback()
+    # [379, comanda Costin 8.2] denumirile oficiale ale rândurilor D300 / D101 sunt CITAT din formularele ANAF (generate din ordine,
+    # `core/denumiri_randuri.py`): „TOTAL TAXĂ COLECTATĂ” e scris așa în formular, nu e textul aplicației
+    from core import denumiri_randuri as _dr
+    out |= set(_dr.D300.values()) | set(_dr.D101.values())
     return out
 
 

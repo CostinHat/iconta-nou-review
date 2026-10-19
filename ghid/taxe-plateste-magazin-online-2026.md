@@ -2,7 +2,7 @@
 title: "Ce taxe plătește un magazin online în 2026?"
 description: "Structura de bază a taxelor pe care le datorează un magazin online din România — impozit pe venit/profit, TVA și contribuții — și pragul de 100.000 euro care decide regimul de impozitare."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Pentru un magazin online organizat ca SRL, structura taxelor din 2026 arată ast
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu urmărește regimul fiscal declarat al firmei (micro sau profit) și generează declarațiile aferente — D100 pentru regimul micro, D101 pentru impozitul pe profit — precum și deconturile de TVA. Pentru magazinele online conectate la un magazin propriu, aplicația poate importa automat comenzile prin conectorul WooCommerce, generând facturi pe baza lor. Aplicația nu decide însă strategia fiscală a firmei (de exemplu momentul optim de trecere de la micro la profit) — aceasta rămâne o analiză pe care contabilul o face pe baza cifrelor reale ale magazinului.
+La data acestui ghid, iConta.eu urmărește regimul fiscal declarat al firmei (micro sau profit) și generează declarațiile aferente — D100 pentru regimul micro, D100 pe trimestrele I–III și D101 anual pentru impozitul pe profit — precum și deconturile de TVA. Pentru magazinele online conectate la un magazin propriu, aplicația poate importa automat comenzile prin conectorul WooCommerce, generând facturi pe baza lor. Aplicația nu decide însă strategia fiscală a firmei (de exemplu momentul optim de trecere de la micro la profit) — aceasta rămâne o analiză pe care contabilul o face pe baza cifrelor reale ale magazinului.
 
 [iConta.eu](/)

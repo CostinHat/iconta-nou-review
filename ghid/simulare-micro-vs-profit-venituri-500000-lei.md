@@ -2,7 +2,7 @@
 title: "Simulare micro vs profit pentru venituri de 500.000 lei"
 description: "Din 2026, pragul de la care o firmă nu mai poate fi microîntreprindere a scăzut la 100.000 euro — un SRL cu venituri de 500.000 lei rămâne, de regulă, sub acest prag și poate alege încă regimul micro."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce înseamnă asta pentru un SRL cu venituri de 500.000 lei:
 
 ## Ce face iConta.eu
 
-iConta.eu **nu are un simulator dedicat** care să compare, pe cifre ipotetice, impozitul micro cu impozitul pe profit pentru o firmă. Vectorul fiscal al firmei (regim micro/profit) este însă o dată stocată și folosită de aplicație pentru a determina automat ce declarații sunt datorate (D100 pentru micro, D101 pentru profit) și pentru a calcula corect impozitul aferent regimului activ. Verificarea pragului valoric de încadrare (100.000 euro în 2026) și decizia de a rămâne sau nu la regimul micro rămân, la data acestui ghid, o evaluare făcută de contabil înainte de a seta regimul firmei în aplicație.
+iConta.eu **nu are un simulator dedicat** care să compare, pe cifre ipotetice, impozitul micro cu impozitul pe profit pentru o firmă. Vectorul fiscal al firmei (regim micro/profit) este însă o dată stocată și folosită de aplicație pentru a determina automat ce declarații sunt datorate (D100 pentru micro; D100 pe trimestrele I–III și D101 anual pentru profit) și pentru a calcula corect impozitul aferent regimului activ. Verificarea pragului valoric de încadrare (100.000 euro în 2026) și decizia de a rămâne sau nu la regimul micro rămân, la data acestui ghid, o evaluare făcută de contabil înainte de a seta regimul firmei în aplicație.
 
 [iConta.eu](/)

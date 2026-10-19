@@ -108,7 +108,7 @@ def test_def_265_ecranul_urmeaza_drepturile_fara_reautentificare(browser, reques
         e.acasa()
         nota = _ok(_api(e, "POST", "/tenants/%d/jurnal" % tid,
                         {"data": AZI.isoformat(), "descriere": "Nota D265", "document_ref": "D265",
-                         "linii": [{"debit": "5311", "credit": "4111", "suma": 26.5}]}), "nota Anei")
+                         "linii": [{"debit": "5311", "credit": "4111", "suma": 26.5, "partener_nume": "PARTENER PROBA SRL"}]}), "nota Anei")
         try:
             e.firma(firma_e2e["nume"])
             pg.click("#fa-jurnal")
@@ -167,7 +167,7 @@ def test_def_266_coada_spune_dreptul_real_si_vorbeste_de_note(browser, request, 
         ej.acasa()
         nota = _ok(_api(ej, "POST", "/tenants/%d/jurnal" % tid,
                         {"data": AZI.isoformat(), "descriere": "Nota D266", "document_ref": "D266",
-                         "linii": [{"debit": "5311", "credit": "4111", "suma": 26.6}]}), "nota juniorului")
+                         "linii": [{"debit": "5311", "credit": "4111", "suma": 26.6, "partener_nume": "PARTENER PROBA SRL"}]}), "nota juniorului")
     try:
         with cont_asistent(valida=True, depune=False, firme=(tid,), eticheta="r266") as a, ecran_cont(browser, request, a["email"]) as e:
             pg = e.pg

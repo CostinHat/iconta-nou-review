@@ -81,19 +81,17 @@ def test_profit_fara_cheltuieli_neschimbat(conn):
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_profit_pierdere_refuz_cu_mesaj_corect(conn):
-    """Cheltuieli > venituri (pierdere) -> fara avans, refuz care numeste PIERDEREA/CUMULATUL
-    (nu mesajul fals 'venituri contabilizate cont 70x = 0' al regimului micro). [A8-profit 18.09.2026]
-    refuzul profit e acum cumulativ (art.41): 'profit cumulat ... nu depaseste ce s-a impozitat deja
-    ... (pierdere sau profit sub cumulatul anterior)'."""
+def test_profit_pierdere_se_declara_cu_0_si_rezumatul_o_spune(conn):
+    """Cheltuieli > venituri (pierdere) -> fara impozit de plata; D100 se depune cu 0 si rezumatul spune de ce (nu mesajul fals
+    'venituri contabilizate cont 70x = 0' al regimului micro). [deficientele 376–378, comanda Costin 8.2]"""
     with conn.cursor() as cur:
         _setup(cur, 50000, 80000)
     conn.commit()
-    with pytest.raises(ValueError) as ei:
-        d100.genereaza(conn, _SCHEMA, Perioada(2026, trim=2))
-    # refuzul profit numeste CUMULATUL (art.41), deci nu poate fi mesajul fals 'venituri cont 70x = 0'
-    # al regimului micro pe o pierdere de profit.
-    assert "cumulat" in str(ei.value).lower(), "pierderea/cumulatul trebuie numite explicit: %s" % ei.value
+    _xml, res = d100.genereaza(conn, _SCHEMA, Perioada(2026, trim=2))
+    # OPANAF 587/2016 anexa 4 pct.3.1.2: pierdere fiscală în perioada de raportare -> „la rândul 1 din formular se va înscrie cifra 0”
+    assert [(str(o.cod_oblig), int(o.suma_dat)) for o in res.obligatii] == [("103", 0)], res.obligatii
+    assert res.sinteza[-1] == ("de plată pe T2/2026: 0,00 lei − 0,00 lei = 0,00 lei (pierdere sau scădere față de cumulatul declarat: se declară 0, "
+                               "OPANAF 587/2016 pct.3.1.2)"), res.sinteza
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

@@ -2,7 +2,7 @@
 title: "Limitele cheltuielilor deductibile se aplică trimestrial sau anual la impozitul pe profit?"
 description: "Depinde de sistemul de plată: la plătitorii trimestriali, limitele se aplică trimestrial, cumulat, și se regularizează la finalul anului; la sistemul anual, limitele se aplică anual."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -52,6 +52,6 @@ Dacă firma ar fi fost în sistemul anual, calculul s-ar fi făcut o singură da
 
 ## Ce face iConta.eu
 
-iConta.eu calculează impozitul pe profit trimestrial pe baza profitului contabil cumulat de la începutul anului (declarația D100, cod 103), fără ajustări fiscale, și generează declarația anuală D101, validată pe validatorul oficial ANAF. Ajustările fiscale, inclusiv partea nedeductibilă a cheltuielilor cu limită, le introduce contabilul în D101; calculul trimestrial din D100 nu le aplică. Aplicația nu calculează automat limitele pentru fiecare categorie de cheltuială.
+iConta.eu calculează impozitul pe profit trimestrial pe rezultatul fiscal cumulat de la începutul anului (declarația D100, cod 103) și generează declarația anuală D101, validată pe validatorul oficial ANAF. Ajustările fiscale, inclusiv partea nedeductibilă a cheltuielilor cu limită, le scrie contabilul pe trimestrul în care s-au produs, în ecranul „Registrul de evidență fiscală” al firmei, secțiunea „Ajustări fiscale”; aplicația le cumulează de la 1 ianuarie în D100 și le preia în D101. Aplicația nu calculează automat limitele pentru fiecare categorie de cheltuială.
 
 [iConta.eu](/)

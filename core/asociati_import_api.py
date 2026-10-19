@@ -3,46 +3,23 @@ core/asociati_import_api.py — import asociati (stratul 5 migrare) per firma.
 
 Citeste un export (.xlsx/.csv) cu nume, CNP/CUI, cota %. Mapeaza flexibil coloanele.
 Importa in tabelul existent `asociati` (DELETE + INSERT per firma).
-Valideaza CNP daca are 13 cifre (cheie 279146358279); CUI persoana juridica acceptat fara validare.
-Coerenta: suma cotelor ar trebui sa dea 100% (informativ, nu blocant).
+Valideaza CNP daca are 13 cifre (cheie 279146358279); CUI-ul persoanei juridice: cifra de control [Q4] si, din comanda Costin 8.2
+[367], existenta la ANAF si numele din fisier fata de cel de la ANAF.
+Coerenta: suma cotelor trebuie sa dea 100% (refuz, `cote_nu_dau_suta`).
 
 """
 # [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
 # `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
 # deschide, nu comite.
 from __future__ import annotations
-import datetime
 from core.identitate import valideaza_cui as _valideaza_cui  # [Q4] CUI juridic validat ca CUI, nu ca CNP
 
-_CHEIE = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9]
 
 
 def valideaza_cnp(cnp):
-    """(valid, motiv). Doar pentru coduri de 13 cifre (persoana fizica)."""
-    cnp = str(cnp or "").strip()
-    if len(cnp) != 13 or not cnp.isdigit():
-        return False, "nu e CNP 13 cifre"
-    if cnp[0] not in "123456789":
-        return False, "prima cifra"
-    s = int(cnp[0]); aa = int(cnp[1:3]); ll = int(cnp[3:5]); zz = int(cnp[5:7])
-    sec = {1: 1900, 2: 1900, 3: 1800, 4: 1800, 5: 2000, 6: 2000,
-           7: 2000, 8: 2000, 9: 1900}.get(s, 1900)
-    an = sec + aa
-    if not (1 <= ll <= 12):
-        return False, "lună invalidă"
-    try:
-        datetime.date(an, ll, zz)
-    except ValueError:
-        return False, "dată invalidă"
-    jj = int(cnp[7:9])
-    if not (1 <= jj <= 52):
-        return False, "județ invalid"
-    suma = sum(int(cnp[i]) * _CHEIE[i] for i in range(12))
-    ctrl = suma % 11
-    ctrl = 1 if ctrl == 10 else ctrl
-    if ctrl != int(cnp[12]):
-        return False, "cifra de control"
-    return True, "ok"
+    """[347] Sursa unică e `core.identitate.valideaza_cnp` (motivul în cuvinte); numele rămâne pentru apelanții de aici."""
+    from core.identitate import valideaza_cnp as _v
+    return _v(cnp)
 
 
 # [14.10.2026, comanda Costin „Importul din SAGA”, verbatim în DECIZII] Citirea fișierului și potrivirea coloanelor trec prin
@@ -58,7 +35,7 @@ CAMPURI = {
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026); "%" tratat acolo
-from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
+from core.migrare_api import respinge, semnaleaza  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 from core.pdf_util import data_ro as _data_ro   # DS cap.4: data din text, canonic
 from core.common import cate as _cate
 
@@ -91,16 +68,20 @@ def extrage(continut, nume_fisier=""):
         nume_v = cel(i_nume)
         cod = cel(i_cod).upper().replace("RO", "").replace(" ", "")
         cota = _numar(cel(i_cota))
-        if not nume_v:
+        # [364, comanda Costin 8.2] rândul fără nume NU mai dispare în tăcere (7 rânduri -> „6 asociați”, totalul cotelor fără el): se
+        # citește și se respinge numit (`verifica_randuri`). Numai rândul complet gol se sare.
+        if not (nume_v or cod or cel(i_cota)):
             continue
-        # persoana fizica daca pare CNP de 13 cifre, altfel juridica
+        # persoana fizica daca pare CNP de 13 cifre; juridica daca are alt cod; [365] fara cod — tipul NU se ghiceste („juridică” din oficiu)
         este_cnp = len(cod) == 13 and cod.isdigit()
         if este_cnp:
             valid, motiv = valideaza_cnp(cod)
             tip = "fizica"
-        else:
-            valid, motiv = True, "CUI"   # juridica, nu validam CNP
+        elif cod:
+            valid, motiv = _valideaza_cui(cod)
             tip = "juridica"
+        else:
+            valid, motiv, tip = False, "fără CNP / CUI", ""
         out.append({"nume": nume_v, "cnp": cod, "cota": cota,
                     "tip": tip, "cnp_valid": valid, "cnp_motiv": motiv, "rand_fisier": nr})
     return out
@@ -122,18 +103,64 @@ def rezumat(conn):
     return {"are_asociati": n > 0, "randuri": n, "total_cota": float(tc)}
 
 
-def verifica_randuri(randuri):
+def _cifre(cod):
+    return "".join(ch for ch in str(cod or "") if ch.isdigit())
+
+
+def _nume_comparabil(nume):
+    """[367] Numele pentru comparația cu ANAF: fără diacritice, fără majuscule și fără punctuație/spații — „S.R.L.” = „SRL”,
+    „Ţ” = „Ț” = „T”. Forma juridică NU se scoate: „Firma” și „Firma SRL” rămân diferite (alt nume, de corectat în fișier)."""
+    import unicodedata
+    t = unicodedata.normalize("NFKD", str(nume or "")).casefold()
+    return "".join(ch for ch in t if ch.isalnum() and not unicodedata.combining(ch))
+
+
+def verificare_anaf(randuri):
+    """[367, comanda Costin 8.2] CUI-urile asociaților persoane juridice (cele care trec cifra de control), întrebate la ANAF:
+    {cui: {gasit, denumire}}; None dacă serviciul ANAF nu răspunde (rândurile intră cu semnalul `anaf_neverificat`, nu cu un refuz
+    fals și nici cu o eroare internă)."""
+    from core import anaf_api
+    cui_uri = []
+    for r in randuri or []:
+        cod = str(r.get("cnp") or "").strip()
+        if cod and not (len(cod) == 13 and cod.isdigit()) and _valideaza_cui(cod)[0]:
+            cui_uri.append(_cifre(cod))
+    cui_uri = list(dict.fromkeys(cui_uri))
+    if not cui_uri:
+        return {}
+    try:
+        rez = anaf_api.valideaza_cui(cui_uri)
+    except Exception:  # noqa: BLE001 — orice cădere a serviciului străin are același răspuns: neverificat, spus pe rând
+        return None
+    out = {c: {"gasit": False, "denumire": ""} for c in cui_uri}
+    for x in rez:
+        c = _cifre(x.get("cui"))
+        if c in out:
+            out[c] = {"gasit": bool(x.get("gasit", True)), "denumire": x.get("denumire") or ""}
+    return out
+
+
+def verifica_randuri(randuri, anaf=None):
     """PURA: [{rand, motiv, mesaj}]. CNP/CUI valid + cotele insumeaza exact 100%.
 
     coerenta_cote() exista de la inceput, dar importa() n-o chema: cotele de 115% au
     intrat, iar migrarea a marcat stratul "gata" verde. D205 nu se poate genera cu ele
     (dovedit 15.07.2026, prin migrare reala).
+
+    [364–367, comanda Costin 8.2] Si: rândul fără nume, rândul fără CNP/CUI (asociatul n-ar putea apărea în D205), același CNP/CUI pe
+    două rânduri, cota negativă sau peste 100; iar cu `anaf` (rezultatul `verificare_anaf`): CUI-ul pe care ANAF nu-l găsește și
+    numele din fișier diferit de cel de la ANAF.
     """
     er = []
+    vazut = {}
     for i, r in enumerate(randuri or [], start=2):   # antetul e randul 1
         i = _it.nr_rand(r, i)
-        nume = str(r.get("nume") or "?").strip()
+        nume = str(r.get("nume") or "").strip()
         cod = str(r.get("cnp") or "").strip()
+        eticheta = nume or ("asociatul cu %s" % cod if cod else "asociatul")
+        if not nume:
+            er.append(respinge("asociat", i, "denumire_lipsa",
+                               "rândul n-are numele asociatului — fără nume nu poate intra în structura firmei"))
         # [Q4] ramifica fizic/juridic ca extrage(): CUI de juridica se valideaza ca CUI (cifra de
         # control), NU ca CNP de 13 cifre. Altfel asociatul-firma acceptat la preview era respins aici.
         if cod:
@@ -142,17 +169,71 @@ def verifica_randuri(randuri):
             if not ok:
                 er.append(respinge(
                     "asociat", i, "cnp_invalid" if este_cnp else "cui_invalid",
-                    "%s: %s invalid (%s)" % (nume, "CNP" if este_cnp else "CUI", motiv)))
+                    "%s: %s invalid (%s)" % (eticheta, "CNP" if este_cnp else "CUI", motiv)))
+            elif not este_cnp and anaf:
+                a = anaf.get(_cifre(cod))
+                if a is not None and not a["gasit"]:
+                    er.append(respinge("asociat", i, "cui_negasit_anaf",
+                                       "%s: CUI-ul %s nu e găsit la ANAF — verifică-l în fișier" % (eticheta, cod)))
+                elif a is not None and nume and _nume_comparabil(a["denumire"]) != _nume_comparabil(nume):
+                    er.append(respinge("asociat", i, "nume_diferit_anaf",
+                                       "%s: la ANAF, CUI-ul %s este al firmei «%s» — corectează numele sau CUI-ul în fișier"
+                                       % (eticheta, cod, a["denumire"])))
+            cheie = _cifre(cod) or cod
+            if cheie in vazut:
+                er.append(respinge("asociat", i, "identificator_dublat",
+                                   "%s: %s %s apare și pe rândul %s — un asociat se trece o singură dată, cu cota lui totală"
+                                   % (eticheta, "CNP-ul" if len(cod) == 13 and cod.isdigit() else "CUI-ul", cod, vazut[cheie])))
+            else:
+                vazut[cheie] = i
+        else:
+            er.append(respinge("asociat", i, "identificator_lipsa",
+                               "%s: lipsește CNP-ul sau CUI-ul — fără el asociatul nu poate apărea în D205" % eticheta))
+        try:
+            cota = float(r.get("cota") or 0)
+        except (TypeError, ValueError):
+            cota = None
+        if cota is None or cota < 0 or cota > 100:
+            er.append(respinge("asociat", i, "cota_invalida",
+                               "%s: cota %s%% nu e o cotă de participare (între 0 și 100)"
+                               % (eticheta, ("%g" % cota).replace(".", ",") if cota is not None else r.get("cota"))))
     c = coerenta_cote(randuri or [])
     if (randuri or []) and not c["coincide"]:
         # randul "-": afirmatia e despre SETUL de asociati, nu despre un rand anume - iar asta se
         # scrie, nu se ascunde alegand arbitrar primul rand.
-        er.append(respinge("asociati (toti)", "-", "cote_nu_dau_suta",
+        # [366] domeniul se scrie în cuvinte („toți asociații”), nu „-”: ecranul îl arată lângă mesaj (era „rând undefined”)
+        er.append(respinge("asociati (toti)", "toți asociații", "cote_nu_dau_suta",
                            "cotele asociaților însumează %s%%, nu 100%%" % c["total"]))
     return er
 
 
-def importa(conn, randuri, data_cesiune=None):
+def semnale_randuri(randuri, anaf=None):
+    """PURĂ: [367] cu ANAF căzut (`anaf` None), asociații persoane juridice intră cu observația că CUI-ul nu s-a putut confrunta."""
+    if anaf is not None:
+        return []
+    out = []
+    for i, r in enumerate(randuri or [], start=2):
+        cod = str(r.get("cnp") or "").strip()
+        if cod and not (len(cod) == 13 and cod.isdigit()) and _valideaza_cui(cod)[0]:
+            out.append(semnaleaza("asociat", _it.nr_rand(r, i), "anaf_neverificat",
+                                  "%s: serviciul ANAF nu a răspuns — CUI-ul %s și numele nu s-au putut confrunta cu ANAF"
+                                  % (str(r.get("nume") or "asociatul").strip(), cod)))
+    return out
+
+
+def eticheteaza(randuri, anaf=None):
+    """[comanda Costin 8.2 pct.4] Starea fiecărui rând (ok / semnalat / respins) din ACEEAȘI verificare ca salvarea."""
+    er, sem = verifica_randuri(randuri, anaf), semnale_randuri(randuri, anaf)
+    for i, r in enumerate(randuri, start=2):
+        n = _it.nr_rand(r, i)
+        resp = [e["mesaj"] for e in er if e.get("rand") == n]
+        obs = [e["mesaj"] for e in sem if e.get("rand") == n]
+        r["stare"] = "respins" if resp else ("semnalat" if obs else "ok")
+        r["motive"] = resp or obs
+    return randuri
+
+
+def importa(conn, randuri, data_cesiune=None, anaf=None):
     """DELETE + INSERT per firma. Intoarce {importati, arhivati}.
     Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri).
 
@@ -169,7 +250,7 @@ def importa(conn, randuri, data_cesiune=None):
         raise ValueError("nu ai trimis niciun rând. Importul ar fi șters lista de asociați a "
                          "firmei, cu cotele lor de participare, și n-ar fi pus nimic în loc. "
                          "Dacă chiar vrei să golești lista, e altă operațiune.")
-    er = verifica_randuri(randuri)
+    er = verifica_randuri(randuri, anaf)
     if er:
         raise ValueError("%s: %s. Asociații și cotele lor intră în D205 "
                          "(dividende) - cotele trebuie să dea exact 100%%."

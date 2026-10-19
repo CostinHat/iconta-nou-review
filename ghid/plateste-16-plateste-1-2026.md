@@ -2,7 +2,7 @@
 title: "Cine plătește 16% și cine plătește 1% în 2026: cum mă încadrez"
 description: "Ce spune Codul fiscal despre pragul de 100.000 euro pentru microîntreprinderi și cum se reflectă regimul fiscal ales în Vectorul fiscal din iConta."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -30,7 +30,7 @@ Cea mai frecventă greșeală este să se aștepte ca aplicația de contabilitat
 
 Regimul fiscal (micro sau profit) e unul dintre cele patru atribute ale Vectorului fiscal al firmei, alături de calitatea de plătitor de TVA, periodicitatea decontului și operațiunile intracomunitare. Contabilul alege manual „micro" sau „profit" în ecranul Date firmă → Vector fiscal (sau, la migrarea unui cabinet, în wizardul de migrare).
 
-Important de știut: **iConta nu urmărește și nu avertizează automat depășirea plafonului de 100.000 euro** — nu există în motorul aplicației nicio constantă sau prag pentru plafonul de ieșire din micro. Verificarea veniturilor cumulate și decizia de a schimba regimul rămân integral responsabilitatea contabilului; aplicația doar reține alegerea făcută și, pe baza ei, calculează declarațiile datorate (D100 trimestrial pentru micro, D101 anual pentru profit).
+Important de știut: **iConta nu urmărește și nu avertizează automat depășirea plafonului de 100.000 euro** — nu există în motorul aplicației nicio constantă sau prag pentru plafonul de ieșire din micro. Verificarea veniturilor cumulate și decizia de a schimba regimul rămân integral responsabilitatea contabilului; aplicația doar reține alegerea făcută și, pe baza ei, calculează declarațiile datorate (D100 trimestrial pentru micro; D100 pe trimestrele I–III și D101 anual pentru profit).
 
 Dacă firma are deja perioade fiscale închise (declarații depuse), schimbarea regimului fiscal e blocată direct din Vector fiscal — trebuie mai întâi redeschisă perioada, apoi modificat regimul, apoi închisă perioada la loc, ca să nu se rescrie trecutul.
 

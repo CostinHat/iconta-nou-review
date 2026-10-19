@@ -502,6 +502,36 @@ def pull(conn, schema, perioada):
     return prof, r
 
 
+def calcul_cu_ajustari(prof, an, intrari, ajustari, la_data, cota=None, cifra_afaceri=0, rezerva=None, **kw):
+    """`calcul_d101` cu ajustările fiscale scrise de contabil (`core.ajustari_fiscale`, deficiența 378) — o singură regulă pentru D101 (anul)
+    și pentru D100 trimestrial (cumulat de la 01.01): ajustările intră pe rândul lor; pierderea din anii anteriori (rd.39) se recuperează
+    la rd.39.1 cel mult 70% din rezultatul dinaintea recuperării (CF art.31 alin.(1)); sponsorizarea (rd.27) se scade din impozit la
+    rd.43.1 în plafonul CF art.25 alin.(4) lit.i) (min 0,75% din cifra de afaceri; 20% din impozit). Ce a dat omul explicit în `intrari`
+    (P39a, P431) are întâietate. -> (RezultatD101, {"pierdere", "recuperata", "sponsorizare", "credit_sponsorizare"})."""
+    from core import ajustari_fiscale as _aj, sponsorizari as _sp
+    I = dict(intrari)
+    for k, v in (ajustari or {}).items():
+        if k not in I:
+            I[k] = _i(v)
+
+    def calc():
+        return calcul_d101(prof, an, I, cota=cota, cifra_afaceri=cifra_afaceri, rezerva=rezerva, **kw)
+
+    res = calc()
+    pierdere, recuperata = _i(I.get("P39", 0)), _i(I.get("P39a", 0))
+    if pierdere and "P39a" not in intrari:
+        recuperata = _i(_aj.recuperare_pierdere(pierdere, res.P.get("P38a", 0)))
+        I["P39a"] = recuperata
+        res = calc()
+    sponsorizare, credit = _i(I.get("P27", 0)), _i(I.get("P431", 0))
+    if sponsorizare and "P431" not in intrari and res.P.get("P41", 0) > 0:
+        credit = min(sponsorizare, _i(_sp.plafon_credit(cifra_afaceri, res.P.get("P41", 0), la_data=la_data)["plafon"]))
+        if credit:
+            I["P431"] = credit
+            res = calc()
+    return res, {"pierdere": pierdere, "recuperata": recuperata, "sponsorizare": sponsorizare, "credit_sponsorizare": credit}
+
+
 def genereaza(conn, schema, perioada, manual=None):
     """D101 anual (contract uniform A1 + reconstructie oficiala 01.08.2026 pe OPANAF 206/2025).
     Foloseste perioada.an. `manual` = ajustari fiscale (chei P8..P51 din formular) + cota/d_grup/
@@ -531,11 +561,17 @@ def genereaza(conn, schema, perioada, manual=None):
     intrari = {"P1": r.get("ven_expl", 0), "P2": r.get("chelt_expl", 0),
                "P4": r.get("ven_fin", 0), "P5": r.get("chelt_fin", 0)}
     intrari.update(manual)   # ajustarile fiscale ale contabilului completeaza/suprascriu baza
-    res = calcul_d101(prof, perioada.an, intrari, cota=cota, d_grup=d_grup, cod_obligatie=cod_obligatie,
-                      cifra_afaceri=r.get("cifra_afaceri", 0), profit_art18=profit_art18,
-                      rezerva={"capital": r.get("capital", 0),
-                               "rezerva_existenta": r.get("rezerva_existenta", 0),
-                               "chelt_impozit": r.get("chelt_impozit", 0)})
+    # [deficiența 378, 18.10.2026] ajustările scrise în Registrul de evidență fiscală (aceeași sursă ca D100 trimestrial); ce vine în
+    # `manual` are întâietate, rând cu rând
+    from core import ajustari_fiscale as _aj
+    import datetime as _dt
+    with conn.cursor() as _c:
+        _ajustari = _aj.cumulat(_c, schema, perioada.an, 4)
+    res, _ = calcul_cu_ajustari(prof, perioada.an, intrari, _ajustari, _dt.date(perioada.an, 12, 31), cota=cota, d_grup=d_grup,
+                                cod_obligatie=cod_obligatie, cifra_afaceri=r.get("cifra_afaceri", 0), profit_art18=profit_art18,
+                                rezerva={"capital": r.get("capital", 0),
+                                         "rezerva_existenta": r.get("rezerva_existenta", 0),
+                                         "chelt_impozit": r.get("chelt_impozit", 0)})
     # [02.09.2026, PRAG 1] CHELTUIALA CU IMPOZITUL PE PROFIT RAMASA NEDEDUSA — se SEMNALEAZA.
     #
     # Contul 691 („Cheltuieli cu impozitul pe profit", OMFP 1802/2014) e un cont 6xx, deci intra

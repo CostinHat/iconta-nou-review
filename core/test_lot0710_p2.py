@@ -64,7 +64,7 @@ def _ca(cur, uid):
 
 def _nota(conn, desc, suma, doc=None, data="2026-10-05"):
     from core import jurnal_api
-    return jurnal_api.creeaza(conn, SCH, desc, data, [{"debit": "4111", "credit": "707", "suma": suma}], document_ref=doc)["id"]
+    return jurnal_api.creeaza(conn, SCH, desc, data, [{"debit": "4111", "credit": "707", "suma": suma, "partener_nume": "PARTENER PROBA SRL"}], document_ref=doc)["id"]
 
 
 def _factura_cu_doua_note(conn, cur):

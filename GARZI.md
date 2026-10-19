@@ -8953,9 +8953,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**846 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**852 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 807
+### `core/` — 813
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9010,6 +9010,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_330_confirmari.py` — [deficiența 330, comanda Costin 8.1, 18.10.2026, verbatim în DECIZII „Comanda 8.1”] „Confirmarea renunțării are «Renunță la factură» și
 - `core/test_332_data_propusa.py` — [deficiența 332, comanda Costin 8.1, 18.10.2026, verbatim în DECIZII „Comanda 8.1”] „Casă: data dispoziției noi vine goală (clasa 68).”
 - `core/test_339_340_notificari.py` — [deficiențele 339 + 340, comanda Costin 8.1, 18.10.2026, verbatim în DECIZII „Comanda 8.1”]
+- `core/test_380_381_d406_surse.py` — 380 / 381 (comanda Costin 8.2, verbatim în DECIZII „Comanda 8.2”):
 - `core/test_3c_functie_baza.py` — GARD [3c, CF art.77 alin.(1)]: deducerea personala se acorda NUMAI la functia de baza.
 - `core/test_3i_storno_cota.py` — GARD [3i, CF art. 282 alin. (9)]: storno-ul unei facturi cu cota 19% (emisa inainte de 01.08.2025)
 - `core/test_a10_efactura_baza_linie.py` — [A10, 18.09.2026] Import e-Factura: baza liniei = `LineExtensionAmount` (netul UBL după
@@ -9036,6 +9037,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_agenda.py` — Garda anti-stale a agendei: pica daca TESTE.md a ramas in urma codului. Diferenta fata de DE_FACUT.md
 - `core/test_agenda_urmator.py` — GARD — „URMATORUL PAS” din agendă nu poate propune un fir ÎNCHIS sau BLOCAT și vede ambele forme de scriere.
 - `core/test_ai_incredere.py` — —
+- `core/test_ajustari_fiscale.py` — Ajustările fiscale ale rezultatului (Registrul de evidență fiscală) — deficiența 378, comanda Costin 8.2: „D100 trimestrial pornește de la
 - `core/test_ajutor_fara_termeni_tehnici.py` — GARD — comanda Costin 16.10.2026, „Lotul 6, comanda 1” (verbatim în DECIZII): 276c „Ajutorul nu folosește termeni de programator
 - `core/test_ajutor_periodicitate_tva.py` — GARD [06.09.2026, cerut de Costin]: aceeași alegere, pusă în două ecrane, poartă ACELAȘI criteriu.
 - `core/test_ajutor_prelogin_fallback.py` — GARD ajutor_prelogin: handlerul global al semnului "?" nu depinde DOAR de _navGlobal (shell
@@ -9169,6 +9171,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_d100_fapt.py` — [Regula 13 + Regula 6] GARDA: D100 micro pe FAPT (baza de venituri), simetric cu d390_fapt/d112_fapt.
 - `core/test_d100_pozitia_116.py` — GARDĂ DE AȘTEPTARE: poziția 116 e o absență DECLARATĂ, și se află când încetează să fie posibilă.
 - `core/test_d100_profit_baza.py` — GARD D100 (16.08.2026, campanie rețeta D300, pas 5/8) — baza impozitului pe PROFIT reparata.
+- `core/test_d100_profit_cumulat.py` — D100 pe impozitul pe profit, pe rezultatul fiscal CUMULAT (deficiențele 377 și 378, comanda Costin 8.2, verbatim în DECIZII „Comanda 8.2”).
 - `core/test_d100_reconciliere.py` — core/test_d100_reconciliere.py — gardul A DOUA CALE D100 (pas 4/4 lant reconciliere).
 - `core/test_d100_scadenta_trimiv.py` — Gard scadenta trim IV D100 (sursa: anaf_surse/d100_struct_anaf.txt + validator DUK R15.1).
 - `core/test_d100_trunchiere.py` — Gard T6 (CATALOG_INVALIDITATE.md, D100 #12): denumirea/adresa firmei care depaseste limita
@@ -9352,6 +9355,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_deconturi.py` — Gard pe plafonul neimpozabil al diurnei (motor pur core/deconturi.py).
 - `core/test_deducere_generalizare.py` — GARD Fix 3 (Task 2 D112): GENERALIZAREA clasei fix 1 (deducere necablata) la CEILALTI apelanti de productie
 - `core/test_deficiente.py` — GARD — registrul deficiențelor (`DEFICIENTE.md`) și plasa lui (comanda Costin 09.10.2026, pct.6–9 și 13, verbatim în DECIZII).
+- `core/test_denumiri_randuri.py` — GARD — denumirea oficială a rândurilor D300 / D101 („Din ce e făcută declarația”) vine din textul formularelor ANAF (deficiența 379,
 - `core/test_dependente_masurate.py` — GARD — registrul de dependențe nu se poate depărta nici de măsurătoare, nici de document.
 - `core/test_dependente_ramuri.py` — GARD P2 — matricea de dependențe acoperă și RAMURILE pe care portofoliul de azi nu le atinge.
 - `core/test_dependenti_act.py` — GARDĂ pentru interdicția 61 — lista dependenților unui articol, generabilă la cerere.
@@ -9582,6 +9586,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_periodicitate_declaratii.py` — GARD — periodicitatea declarațiilor: D208 lunară, „semestrial” cere luna explicit, iar selectorul nu primește o
 - `core/test_plan_conturi_no_upsert.py` — [Regula 4 + Regula 14.4] GARD: adaugarea MANUALA de cont in plan NU suprascrie tacut un simbol existent.
 - `core/test_plan_form_fieldmark.py` — [Regula 14.4 pct.4] GARD: formularul 'Adauga cont' (plan_conturi) semnaleaza obligativitatea INAINTE de
+- `core/test_plan_functiune.py` — GARD — funcțiunea contabilă a conturilor (A / P / A/P) vine din OMFP 1802/2014, nu din ghicit (deficiența 369, comanda Costin 8.2).
 - `core/test_plata_izolare.py` — GARD [06.09.2026, decizia lui Costin]: calea de plată online e ÎNCHISĂ și nu se redeschide tăcut.
 - `core/test_plata_salarii.py` — Teste gardian pentru F134 (plata salariilor pe card, SEPA pain.001).
 - `core/test_plati.py` — —
@@ -9650,6 +9655,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_registru_functionalitati.py` — Garda de integritate a FUNCTIONALITATI.csv (registrul canonic al functionalitatilor).
 - `core/test_registru_inventar.py` — GARD: registrul-inventar (14-1-2) — si mai ales defectul care l-ar face sa arate perfect.
 - `core/test_registru_jurnal_14_1_1.py` — GARD — Registrul-jurnal păstrează cele trei coloane cerute de norma 14-1-1.
+- `core/test_regula_importurilor.py` — GARDA DE CLASĂ — regula importurilor de migrare (comanda Costin 8.2 pct.4, 18.10.2026, verbatim în DECIZII „Comanda 8.2”):
 - `core/test_reguli_ecran.py` — GARD [28.08.2026]: cele două reguli de ecran scrise azi — E1 și E2 (`DESIGN_SYSTEM.md` cap.26/27).
 - `core/test_reguli_fond.py` — GARD — regulile de fond în BAZĂ (comanda Costin 09.10.2026, pct.11, verbatim în DECIZII; `core/migrare_reguli_fond.py`).
 - `core/test_reguli_fond_2.py` — GARD — regulile de fond a, c, d, e, f în BAZĂ (comanda Costin 09.10.2026, „Retestul plasei” pct.6, verbatim în DECIZII;
@@ -11304,3 +11310,19 @@ Niciun gard nou peste gărzi (comanda 3 pct.2). Ce păzește comportamentul nou 
 | previzualizarea Casei nu citește formularul cât Casa se reîncarcă (C51) | `firme.js` (`zCampuri.isConnected`, înainte și după cerere) + e2e `test_def_c51_*` (ceasul paginii oprit, registrul lunii ținut pe loc) + aserțiunea „erori JavaScript pe ecran” din `_ecran` | eroarea JS când cronometrul previzualizării pornește după „Adaugă”, în „Se încarcă...” | cele două verificări scoase -> e2e ROȘU (`mut_c51.json`) | celelalte cronometre asincrone verificate de mână (5, curate); un cronometru nou se prinde numai dacă plasa îl exercită sub încărcare |
 | repornirea mașinii numită ca atare (întrebarea 6) | `sonda_web.fel_repornirii` (`server`) + `ora_bootarii` + `core/test_sonda_web.py` | „procesul a căzut” la o repornire a serverului | ramura `server` scoasă -> 2 ROȘII | btime citit din /proc/stat; cine a repornit se vede numai în jurnalul sistemului |
 | fiecare deficiență 321–340 are e2e cu mutație | `frontend_test/e2e/e2e_lot81.py` (25 de teste: 321–340, proba gărzii 325, C50, C51) + `core/test_deficiente.py` | o „rezolvată” fără test de capăt la capăt | cele 21 de mutații (`mutatii81.json`, o rulare) -> 20 de teste ROȘII + o eroare (toate cele de atunci); 321 separat (`mut321.json`: numai 321 ROȘU, „rotița n-a derulat pagina”) | proba gărzii 325 n-are mutație proprie: ea însăși cere cele trei note exact |
+
+## 18.10.2026 — lotul 8, comanda 8.2 (341–381, regula importurilor; pe ramură, nepublicat)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| regula importurilor de migrare (pct.4), pe clasă | `core/test_regula_importurilor.py` (7 parsere + parteneri; rutele `…/incarca` ↔ previzualizările; handlerele `except Exception` din importuri) | un rând cu date care dispare din parser (fără câmpul-cheie), un partener sărit fără motiv, un import fără previzualizare pe tabelul comun, textul unei excepții interne într-un mesaj | `if not den: continue` în articole; `ignorate.append` scos la parteneri; `tabelPrevizualizare` scos din RIP; `str(e)` în audit -> ROȘU (toate patru) | „înlocuirea tăcută” (o valoare completată din oficiu fără semnal) nu e detectabilă sintactic: e acoperită pe cazurile numite de e2e 341–375, nu pe clasă |
+| semnalul nu poate trece drept respingere (și invers) | `core/migrare_api.py` (`FORME_SEMNAL`, `semnaleaza` / `respinge` refuză regula celeilalte forme) | un semnal numărat ca respingere sau o respingere afișată „intră cu observație” | — (invariant de construcție, `ValueError` la apel) | regula nouă trebuie declarată în `REGULI` cu felul ei |
+| funcțiunea A / P / A/P din OMFP (369) | `scripts/plan_functiune.py` -> `core/plan_functiune.py` + `core/test_plan_functiune.py` | o funcțiune scrisă de mână sau sursa OMFP schimbată fără regenerare | `"1012": "P"` -> `"A/P"` -> ROȘU (`--verifica` iese 1) | clasa 8 și 9 n-au funcțiune de bilanț (None) |
+| denumirile oficiale ale rândurilor D300 / D101 (379) | `scripts/denumiri_randuri.py` -> `core/denumiri_randuri.py` + `core/test_denumiri_randuri.py` (+ `test_d101_rand_formular.py`) | un rând scris de generator fără denumire, o denumire editată de mână, componentele fără denumire | `chei_om` scos din D300 -> ROȘU | exponenții pierduți la extragere: listă închisă, verificată în CF; un exponent nou în formular cere adăugarea lui |
+| D100 profit pe rezultatul fiscal cumulat (376–378) | `core/test_d100_profit_cumulat.py` (schemă efemeră; DUK) | ajustările ignorate, trimestrul declarat ne-scăzut, trimestrul depus fără sumă tratat ca 0, T4 pe D100 | `ajustari_fiscale.cumulat` -> {} (960 -> 800); `suma = 0` la trimestrul depus -> ROȘU | trimestrele depuse vin prin depozitul înlocuit; interogarea reală e probată de e2e 377 |
+| plafonul de 70% la recuperarea pierderii | `core/test_ajustari_fiscale.py` | recuperarea peste 70% (inclusiv prin rotunjire) | `ROUND_DOWN` -> `ROUND_HALF_UP` -> ROȘU pe 10.001 | interpretare (DECIZII „implementarea 341–381” pct.4) |
+| contul de venit dintr-o singură sursă; partenerul pe 401 / 4111 (380 / 381) | `core/test_380_381_d406_surse.py` | D406 cu alt cont decât nota; nota pe terți fără partener sau cu CUI greșit | `return "707"` primul în `cont_venit_linie`; verificarea partenerului scoasă -> ROȘU | 401 / 4111 (și analiticele lor); 461 / 462 nu cer partener |
+| fiecare deficiență 341–381 are e2e cu mutație | `frontend_test/e2e/e2e_lot82.py` (39 de mutații, câte una pe număr, aplicate pe copia exportată — listate în raportul 8.2) | o „rezolvată” fără test de capăt la capăt | toate 39 aplicate pe copie -> fiecare test ROȘU | 367 depinde de ANAF (ramura „ANAF nu a răspuns” e acceptată ca rezultat) |
+| planul auditului de preluare și textul limitei: o singură listă | `core/audit_preluare.py` (`_VERIFICARI`, `_verificari`, `_neverificate`) + `core/test_audit_preluare.py` | o verificare spusă „făcută” în limită fără să ruleze (la PFA: „mijloace fixe vs balanță”), sau rulată fără să fie spusă | `all(...)` -> `any(...)` în `_verificari` -> ROȘU (2: limita PFA, planul PFA) | `_NEVERIFICAT_V1` rămâne o listă scrisă: un strat nou fără verificare și fără rând acolo nu se vede |
+| modelul de salvare primește tot ce produce previzualizarea, și pe drumul JSON | `core/test_import_saga.py::test_modelul_de_salvare_nu_pierde_si_nu_rastoarna_iesirea_previzualizarii` (+ `ArticolImportIn`, `RipRand`; `jsonable_encoder` + `json` înainte de model) | un câmp citit din fișier pierdut la salvare; un rând care trece ca obiect Python dar cade (422) ca JSON | `cont_cheltuiala_dedus` scos din `ArticolImportIn` -> ROȘU („pierde câmpurile ['cont_cheltuiala_dedus']”) | lista modelelor (`CALCULATE`) e scrisă: un import nou trebuie adăugat acolo |
+| perechea de refuz scoasă deliberat dintr-o rută are registru și probă | `core/test_p7_uc.py` (`PERECHI_SCOASE`, `test_SCOASELE_perechi_chiar_lipsesc`) | o pereche (cod, mesaj) dispărută tăcut din contractul HTTP, sau un registru care scuză o pereche încă prezentă | o pereche încă ridicată (`retete_import_incarca`) declarată scoasă -> ROȘU („e tot acolo”) | — |

@@ -2,7 +2,7 @@
 title: "Cum trec un SRL de la micro la impozit pe profit?"
 description: "Pașii și termenele pentru trecerea unui SRL din regimul de microîntreprindere la impozit pe profit, atunci când plafonul de venituri de 100.000 euro e depășit în cursul anului."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Mecanismul trecerii la profit:
 
 ## Ce face iConta.eu
 
-Regimul fiscal e un câmp pe care utilizatorul îl schimbă manual din ecranul de configurare a firmei. iConta.eu **nu calculează automat momentul depășirii plafonului de 100.000 euro** și nu declanșează singură trecerea la profit — aplicația nu urmărește cumulat, în timp real, veniturile firmei față de plafonul legal. Odată ce utilizatorul schimbă regimul în aplicație, D100 continuă să se genereze lunar/trimestrial, dar calculul obligației trece de pe cota micro (cod 121, pe venituri) pe cea de profit (cod 103, pe profitul perioadei) — D101 (declarația anuală de impozit pe profit) devine în plus relevantă pentru perioadele din regimul de profit. Verificarea momentului exact al depășirii și depunerea declarației de mențiuni la ANAF rămân în sarcina contabilului.
+Regimul fiscal e un câmp pe care utilizatorul îl schimbă manual din ecranul de configurare a firmei. iConta.eu **nu calculează automat momentul depășirii plafonului de 100.000 euro** și nu declanșează singură trecerea la profit — aplicația nu urmărește cumulat, în timp real, veniturile firmei față de plafonul legal. Odată ce utilizatorul schimbă regimul în aplicație, D100 continuă să se genereze lunar/trimestrial, dar calculul obligației trece de pe cota micro (cod 121, pe venituri) pe cea de profit (cod 103, pe rezultatul fiscal cumulat de la 1 ianuarie, numai pe trimestrele I–III; trimestrul IV se definitivează în D101) — D101 (declarația anuală de impozit pe profit) devine în plus relevantă pentru perioadele din regimul de profit. Verificarea momentului exact al depășirii și depunerea declarației de mențiuni la ANAF rămân în sarcina contabilului.
 
 [iConta.eu](/)

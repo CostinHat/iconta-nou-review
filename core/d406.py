@@ -577,6 +577,7 @@ class LiniePlata:
     suma: Decimal = Decimal(0)
     sens: str = "D"          # DebitCreditIndicator
     doc_sursa: str = ""      # SourceDocumentID (factura achitată)
+    partener_id: str = ""    # [381] CustomerID / SupplierID al liniei (al partenerului plătit / care a plătit)
 
 
 @dataclass
@@ -608,6 +609,8 @@ class Rezultat:
     plati: list = field(default_factory=list)             # Payments
     avertismente: list = field(default_factory=list)
     sinteza: list = field(default_factory=list)   # [08.10.2026, decizia Costin V5] un rezumat nu e avertisment
+    nepotriviri_jurnal: list = field(default_factory=list)   # [380] (factura, conturile din factură, conturile din notă | None)
+    terti_fara_partener: list = field(default_factory=list)   # [381] (nota, cont, suma)
     # [R165] fereastra REALA a raportarii (perioada fiscala TVA). None -> antetul cade pe
     # luna-ancora, ca inainte: apelantii directi (`d406_active`, `d406_stocuri`) n-o dau.
     data_inceput: object = None
@@ -1251,7 +1254,7 @@ def _source_documents(res):
                 # CustomerID/SupplierID pe PaymentLine: aceeasi regula ca la GL
                 # (AMBELE obligatorii, niciodata ambele "0") - cod propriu pe partea
                 # neaplicabila, partenerul real pe partea de client/furnizor.
-                pl_cust, pl_supp = _cust_supp_linie(l.cont, "", cod_propriu)
+                pl_cust, pl_supp = _cust_supp_linie(l.cont, l.partener_id, cod_propriu)   # [381] partenerul real, nu codul firmei
                 S.append('        <PaymentLine>')
                 S.append('          <LineNumber>%d</LineNumber>' % l.nr)
                 if l.doc_sursa:
@@ -1457,6 +1460,10 @@ def pull(conn, schema, an, luna):
             # inregistrari manuale) raman fara partener - nu se aplica.
             _repo.select_inregistrari(cur, di, ds)
             nmap = {}
+            contare = {}   # [380] factura_id -> {"debit": set, "credit": set} din nota ei de CONTARE (sursa „facturi”), validată
+            gl_parteneri = {}          # [381] "4111"/"401" -> {pid: (nume, cui)} — partenerii liniilor de terți, aduși și în MasterFiles
+            plati_map = {}             # [381] nota -> Plata: plata unui furnizor (401 = 512x / 531x) sau încasarea unui client (512x / 531x = 4111)
+            terti_fara_partener = []   # [381] (nota, cont, suma) — linie pe 401 / 4111 fără partener: codul firmei în locul lui
             surse_necunoscute = []   # R22: sursa nemapata -> DIVERSE, dar NUMITA in avertisment
             for r in cur.fetchall():
                 n = nmap.get(r["id"])
@@ -1470,7 +1477,32 @@ def pull(conn, schema, an, luna):
                              jurnal=jurnal_din_sursa(_s)[0])
                     nmap[r["id"]] = n
                 suma = Decimal(str(r["suma"] or 0))
-                pid = _partener_registration_number(r["tert_cui"], eticheta=r["tert_nume"]) if r["tert_cui"] else ""
+                if r["factura_id"] and (r["sursa"] or "").strip().lower() == "facturi":
+                    _c = contare.setdefault(r["factura_id"], {"debit": set(), "credit": set()})
+                    _c["debit"].add(sintetic_saft(r["cont_debit"] or ""))
+                    _c["credit"].add(sintetic_saft(r["cont_credit"] or ""))
+                # [381] aceeași identitate ca pe factură și în MasterFiles (`_partener_id_saft`: cu cod fiscal 00/01/02, persoana fizică
+                # fără cod 04 + nume) — până azi `_partener_registration_number`, deci partenerul PF al liniei nu se regăsea în master
+                pid = _partener_id_saft(r["tert_cui"], r["tert_nume"], eticheta=r["tert_nume"]) if (r["tert_cui"] or r["tert_nume"]) else ""
+                _deb, _cre = sintetic_saft(r["cont_debit"] or ""), sintetic_saft(r["cont_credit"] or "")
+                for _ct in (_deb, _cre):
+                    if _ct in ("4111", "401"):
+                        if pid:
+                            gl_parteneri.setdefault(_ct, {}).setdefault(pid, (r["tert_nume"] or "", r["tert_cui"] or ""))
+                        else:
+                            terti_fara_partener.append((str(r["id"]), _ct, suma))
+                # [381] Payments (schema ANAF, „4. SourceDocuments” rd.18: secțiunea 4.3 Payments „Mandatory”, raportare lunară /
+                # trimestrială): plățile și încasările prin bancă (512x) sau casă (531x), din aceleași note ca GeneralLedgerEntries
+                _pl = (("401", "D", _cre) if _deb == "401" and _cre[:3] in ("512", "531") else
+                       ("4111", "C", _deb) if _cre == "4111" and _deb[:3] in ("512", "531") else None)
+                if _pl:
+                    _p = plati_map.get(r["id"])
+                    if _p is None:
+                        _p = Plata(ref=str(r["id"]), data=r["data"], metoda="01" if _pl[2].startswith("531") else "03",
+                                   partener_id=pid, descriere=(r["descriere"] or "")[:200])
+                        plati_map[r["id"]] = _p
+                    _p.linii.append(LiniePlata(nr=len(_p.linii) + 1, cont=_pl[0], descriere=(r["descriere"] or "")[:200], suma=suma,
+                                               sens=_pl[1], partener_id=pid))
                 n.linii.append(LinieNota(record_id=str(len(n.linii) + 1), cont=sintetic_saft(r["cont_debit"] or ""),
                                          descriere="", debit=suma, credit=Decimal("0"),
                                          cont_partener_id=pid))
@@ -1478,6 +1510,13 @@ def pull(conn, schema, an, luna):
                                          descriere="", debit=Decimal("0"), credit=suma,
                                          cont_partener_id=pid))
             note = list(nmap.values())
+            # [381] fiecare partener referit în GeneralLedgerEntries trebuie să existe în MasterFiles (Customers / Suppliers)
+            for _ct, _lista in (("4111", clienti), ("401", furnizori)):
+                _avem = {p.id for p in _lista}
+                for _pid, (_nume, _cui) in gl_parteneri.get(_ct, {}).items():
+                    if _pid not in _avem:
+                        _lista.append(Partener(id=_pid, nume=_nume, cui=_cui, oras=""))
+                        _avem.add(_pid)
         except ValueError:
             # Eroare de CONTINUT (checksum CUI/CNP partener, T1): trece nemodificata,
             # nu se mascheaza in RuntimeError (cauza reala ar fi ascunsa).
@@ -1485,7 +1524,8 @@ def pull(conn, schema, an, luna):
         except Exception as e:
             # MASCA SCOASA (27.07.2026) - vezi nota de la blocul facturi.
             raise RuntimeError("D406: citirea notelor a eșuat - %s" % e) from e
-        facturi_vanzare, facturi_cumparare, plati = [], [], []
+        facturi_vanzare, facturi_cumparare = [], []
+        plati = list(plati_map.values())   # [381] până azi mereu goală: „0 plăți” în rezumat, secțiunea Payments niciodată emisă
         um_necunoscute = []  # [B17] UM necunoscute -> H87; (factura, UM) NUMITE in avertisment, nu tacit (T3)
         cote_necunoscute = []  # T3: cota fara cod TaxCode livrari -> 310312 (taxare inversa); (factura, cota) NUMITE
         facturi_fara_curs = []  # [A1] facturi in valuta fara curs -> EXCLUSE (nu se declara valuta drept RON)
@@ -1507,6 +1547,10 @@ def pull(conn, schema, an, luna):
             # factura_linii are descriere/um/cantitate/pret_unitar/cota_tva. uom_unece()
             # exista din 16.07 (d406.py:101) si traducea deja 'buc'/'kg' in H87/KGM -
             # era scrisa si NEAPELATA aici.
+            from core.contare_facturi import cont_venit_linie as _cont_venit_linie
+            from core import facturi as _fc_d406
+            _cvi = _repo.cont_venit_implicit(cur)
+            nepotriviri_jurnal = []   # [380] (factura, ce spun liniile, ce spune nota) — semnalate înainte de „Pune în De depus”
             _repo.select_factura_linii(cur, di, ds)
             linii_pe_factura = {}
             for lr in cur.fetchall():
@@ -1540,7 +1584,16 @@ def pull(conn, schema, an, luna):
                         "D406: factura %s nu are nici cod fiscal nici nume de partener - "
                         "nu se poate emite un SupplierID/CustomerID valid (interzis '0'). "
                         "Completează partenerul pe factura." % (r["numar"] or r["id"]))
-                cont_l = "707" if este_v else "371"
+                # [deficiența 380, 18.10.2026] contul liniei din ACEEAȘI sursă ca nota de contare: la vânzare `cont_venit_linie` (contul
+                # liniei / contul de venit implicit / 707; avansul 419), la cumpărare contul debitor al notei facturii (cheltuiala sau stocul
+                # ales la validare). Până azi: 707 / 371 fix — factura de servicii era 704 în jurnal și 707 în „Facturi de vânzare”.
+                _nota_f = contare.get(r["id"])
+                _fara_tva = {"4426", "4427", "4428", "401", "4111", "404", "411"}
+                if este_v:
+                    cont_l = None
+                else:
+                    _deb = sorted((_nota_f or {}).get("debit", set()) - _fara_tva)
+                    cont_l = _deb[0] if len(_deb) == 1 else sintetic_saft(_fc_d406.ACHIZITIE["marfa"])
                 sens = "C" if este_v else "D"
                 linii = []
                 for idx, lr in enumerate(linii_pe_factura.get(r["id"], []), 1):
@@ -1561,7 +1614,8 @@ def pull(conn, schema, an, luna):
                     um_cod, _um_stiut = uom_unece(lr["um"])
                     if not _um_stiut and lr.get("um"):
                         um_necunoscute.append((r["numar"] or str(r["id"]), str(lr["um"]).strip()))
-                    linii.append(LinieFactura(nr=idx, cont=cont_l,
+                    linii.append(LinieFactura(nr=idx, cont=(sintetic_saft(_cont_venit_linie(lr["cont_venit"], _cvi, r["tip_operatiune"]))
+                                                            if este_v else cont_l),
                                               descriere=lr["descriere"] or "Produs/serviciu",
                                               cantitate=cant, um=um_cod, pret_unitar=pret,
                                               valoare=val, sens=sens, tva_cod=tcod_l,
@@ -1593,11 +1647,16 @@ def pull(conn, schema, an, luna):
                             cote_necunoscute.append((r["numar"] or str(r["id"]), str(cota)))
                     else:
                         tcod_l = "300101" if (r["ti"] or cota == 0) else "300501"
-                    linii = [LinieFactura(nr=1, cont=cont_l,
+                    linii = [LinieFactura(nr=1, cont=(sintetic_saft(_cont_venit_linie(None, _cvi, r["tip_operatiune"])) if este_v else cont_l),
                                           descriere="Factura fără detaliu de linii",
                                           cantitate=Decimal(1), um=UOM_IMPLICIT, pret_unitar=net,
                                           valoare=net, sens=sens, tva_cod=tcod_l,
                                           tva_procent=cota, tva_suma=tva)]
+                # [380] factura față de nota ei de contare: aceleași conturi (vânzare: creditul notei; cumpărare: debitul), fără TVA și terț
+                _in_linii = sorted({lf.cont for lf in linii})
+                _in_nota = sorted((_nota_f or {}).get("credit" if este_v else "debit", set()) - _fara_tva) if _nota_f else None
+                if _in_nota != _in_linii:
+                    nepotriviri_jurnal.append((r["numar"] or str(r["id"]), _in_linii, _in_nota))
                 f = Factura(nr=r["numar"] or str(r["id"]), data=r["data_emitere"],
                             partener_id=pid, partener_nume=r["tert_nume"] or "",
                             tip=itype, cont=("4111" if este_v else "401"), linii=linii)
@@ -1614,7 +1673,7 @@ def pull(conn, schema, an, luna):
             # Clasa de bug din 16.07. Orice garda pusa deasupra ar fi fost inghitita aici.
             raise RuntimeError("D406: citirea facturilor a eșuat - %s" % e) from e
     return (prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati,
-            strain, um_necunoscute, cote_necunoscute, surse_necunoscute, facturi_fara_curs)
+            strain, um_necunoscute, cote_necunoscute, surse_necunoscute, facturi_fara_curs, nepotriviri_jurnal, terti_fara_partener)
 
 
 def erori_generare(prof):
@@ -1640,7 +1699,7 @@ def genereaza(conn, schema, an, luna):
     if luna < 1 or luna > 12:
         raise ValueError("Luna invalidă: %r" % luna)
     (prof, conturi, clienti, furnizori, note, fv, fc, plati, strain, um_necunoscute,
-     cote_necunoscute, surse_necunoscute, facturi_fara_curs) = pull(conn, schema, an, luna)
+     cote_necunoscute, surse_necunoscute, facturi_fara_curs, nepotriviri_jurnal, terti_fara_partener) = pull(conn, schema, an, luna)
     # [R165] antetul urmeaza aceeasi fereastra ca datele: un fisier care spune „septembrie"
     # purtand iulie-septembrie ar inlocui o lipsa cu o minciuna.
     _fdi, _fds = fereastra_d406(prof, an, luna)
@@ -1690,6 +1749,27 @@ def genereaza(conn, schema, an, luna):
                                    "SalesInvoices/PurchaseInvoices (SAF-T declară CurrencyCode=RON — "
                                    "nu se poate raporta valuta drept lei): %s. Completează cursul pe "
                                    "factură (A1)." % (len(facturi_fara_curs), _detfc))
+    if terti_fara_partener:
+        # [deficiența 381: „D406 semnalează liniile de terți fără partener”] fără partener, linia pe 401 / 4111 poartă codul firmei în
+        # SupplierID / CustomerID (schema ANAF, GL.28 / GL.29, cere codul partenerului din MasterFiles)
+        from core.common import cate as _cate_t
+        from core.pdf_util import bani as _bani_t
+        res.avertismente.insert(0, "Atenție (D406): %s pe 401 / 4111 fără partener (furnizor / client): %s. În D406 poartă codul firmei, "
+                                   "nu al partenerului. Scrie partenerul pe linia notei (Registrul jurnal) sau leag-o de factura ei." % (
+                                       _cate_t(len(terti_fara_partener), "linie", "linii"),
+                                       "; ".join("nota %s, %s, %s lei" % (nid, ct, _bani_t(s)) for nid, ct, s in terti_fara_partener[:20])))
+        res.terti_fara_partener = terti_fara_partener
+    if nepotriviri_jurnal:
+        from core.common import cate as _cate
+        # [deficiența 380, comanda Costin 8.2: „nepotrivirea jurnal–facturi se semnalează înainte de «Pune în De depus»”] factura din
+        # „Facturi de vânzare / cumpărare” și nota ei de contare din jurnal (GeneralLedgerEntries) trebuie să spună același cont
+        _detj = "; ".join("factura %s: în factură %s, în nota contabilă %s" % (
+            nr, ", ".join(fl) or "—", (", ".join(fn) or "—") if fn is not None else "nicio notă de contare validată în perioadă")
+            for nr, fl, fn in nepotriviri_jurnal)
+        res.avertismente.insert(0, "Atenție (D406): %s din „Facturi de vânzare / cumpărare” nu se potrivesc cu nota lor din jurnal: %s. "
+                                   "Contabilizează factura (sau validează-i nota) și generează din nou." % (
+                                       _cate(len(nepotriviri_jurnal), "factură", "facturi"), _detj))
+        res.nepotriviri_jurnal = nepotriviri_jurnal
     # POARTA A DOUA CALE (gard de continut, 05.08.2026, pas 4/6): balanta de rulaje per cont
     # INDEPENDENTA din inregistrari_linii, legata de SAF-T emis + invariant Sdebit=Scredit.
     # Divergenta = HARD-BLOCK. Vezi core/d406_reconciliere.py.

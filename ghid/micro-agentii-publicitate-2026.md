@@ -2,7 +2,7 @@
 title: "Micro pentru agenții de publicitate 2026"
 description: "Condițiile din Codul fiscal pentru încadrarea la impozitul pe veniturile microîntreprinderilor în 2026, valabile identic pentru o agenție de publicitate ca pentru orice altă firmă."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ i) a depus în termen situațiile financiare anuale, dacă are această obligaț
 
 ## Ce face iConta.eu
 
-În iConta.eu, regimul fiscal al firmei (impozit pe veniturile microîntreprinderilor sau impozit pe profit) e un câmp pe care contabilul/utilizatorul îl alege explicit pentru firmă, iar aplicația NU îl ghicește — dacă nu e ales, D100 sau D101 nu se pot genera corect. Selecția determină apoi automat declarația trimestrială/anuală potrivită (D100 pentru micro, D101 pentru profit). Aplicația nu verifică însă automat, pe cod CAEN sau altfel, dacă firma îndeplinește condițiile de eligibilitate de la art. 47 (plafonul de venituri, structura acționariatului, existența salariatului) — această verificare rămâne responsabilitatea profesională a contabilului, la fel pentru o agenție de publicitate ca pentru oricare altă firmă.
+În iConta.eu, regimul fiscal al firmei (impozit pe veniturile microîntreprinderilor sau impozit pe profit) e un câmp pe care contabilul/utilizatorul îl alege explicit pentru firmă, iar aplicația NU îl ghicește — dacă nu e ales, D100 sau D101 nu se pot genera corect. Selecția determină apoi automat declarațiile potrivite (D100 trimestrial pentru micro; D100 pe trimestrele I–III și D101 anual pentru profit). Aplicația nu verifică însă automat, pe cod CAEN sau altfel, dacă firma îndeplinește condițiile de eligibilitate de la art. 47 (plafonul de venituri, structura acționariatului, existența salariatului) — această verificare rămâne responsabilitatea profesională a contabilului, la fel pentru o agenție de publicitate ca pentru oricare altă firmă.
 
 [iConta.eu](/)

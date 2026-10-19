@@ -107,7 +107,10 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # cutia de ieșire și jurnalul notificărilor — 2.1–2.2) — DDL idempotent, o dată.
     # [17.10.2026, comanda 7.2] 101 -> 103: `migrare_nr_curent_note` (numărul notei dat la validare, 302) și `migrare_plan_avansuri`
     # (4092–4094 în planul firmelor, C48) — DDL / adăugări idempotente, o dată pe firmă.
-    assert 40 <= len(mg) <= 103, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [18.10.2026, comanda 8.2] 103 -> 106: `migrare_ajustari_fiscale` (ajustările rezultatului fiscal pe trimestru, 378),
+    # `migrare_mf_amortizare_preluata` (amortizarea cumulată preluată, 359), `migrare_partener_linie` (partenerul pe linia notei, 381)
+    # — DDL idempotent, o dată pe firmă.
+    assert 40 <= len(mg) <= 106, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

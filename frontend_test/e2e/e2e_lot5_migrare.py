@@ -31,8 +31,9 @@ TEXT_B = [
     "Până atunci, poți începe preluarea cu pașii de mai jos, folosind șabloanele CSV sau Excel.",
     "Fișierele trimise sunt văzute doar de echipa iConta.eu, se folosesc numai pentru import și le poți șterge oricând.",
 ]
+# [371, comanda Costin 8.2] Migrare cabinet arată toate straturile (și cele care erau numai în meniul firmei), din sursa unică
 PASI = ["Firme", "Vector fiscal", "Solduri inițiale", "Solduri parteneri", "Salariați", "Asociați", "Mijloace fixe", "Istoric declarații",
-        "Plan de conturi"]
+        "Plan de conturi", "Import RIP (PFA)", "Articole și stoc inițial", "Rețete (HoReCa)"]
 CSV_EXPORT = "Simbol cont;Denumirea contului;Sold final debitor;Sold final creditor\n5311;Casa în lei;300;0\n".encode("utf-8")
 
 

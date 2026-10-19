@@ -52,5 +52,9 @@ def test_295_rezumatul_d100_profit_arata_cumulatul(conn):
         _profil(cur, "profit")
         _venit(cur, "2026-08-15", 10000)
     _xml, res = _d100.genereaza(conn, _SCHEMA, Perioada(2026, trim=3))
-    assert res.sinteza.count("Profit cumulat la sfârșitul trimestrului: 10.000,00 lei; deja impozitat în trimestrele anterioare: 0,00 lei.") == 1
-    assert res.sinteza[-1] == "Baza trimestrului: 10.000,00 lei × cota 16% = cod 103: 1.600 lei (rotunjit la leu).", res.sinteza
+    # [376–378, comanda Costin 8.2] rezultatul fiscal cumulat (CF art.19 alin.(1)), iar de plată = cumulat − declarat (OPANAF 587/2016
+    # anexa 4 pct.3.1.2); fiecare rând al calculului e în rezumat
+    assert res.sinteza[1:4] == ["rezultatul contabil: 10.000,00 lei (venituri 10.000,00 − cheltuieli 0,00)",
+                                "deduceri: 0,00 lei; venituri neimpozabile: 0,00 lei; cheltuieli nedeductibile: 0,00 lei",
+                                "profitul impozabil cumulat: 10.000,00 lei; impozitul cumulat: 1.600,00 lei"], res.sinteza
+    assert res.sinteza[-1] == "de plată pe T3/2026: 1.600,00 lei − 0,00 lei = 1.600,00 lei", res.sinteza

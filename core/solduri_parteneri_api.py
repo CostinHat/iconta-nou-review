@@ -55,7 +55,15 @@ _CREDITOARE = ("401", "419")
 CONTURI_ALESE = ("4111", "401")      # ce se poate alege pe ecran când fișierul n-are coloana Cont (situația clienților / furnizorilor)
 
 
-def extrage(continut, nume_fisier="", cont_implicit=None):
+
+def _ignorat(nr, motiv, temei):
+    """[comanda Costin 8.2 pct.4: „orice rând citit e afișat sau semnalat cu motiv”] rândul din fișier care nu intră, spus — o afirmație
+    tipată despre rândul acela (`fapt`, domeniul `Unde("rand")`), cu ce s-a citit din el ca temei."""
+    from core.afirmatii import afirmatie
+    from core.unde import Unde
+    return afirmatie("fapt", "rând ignorat", motiv, unde=Unde("rand", nr), rand=nr, temei_completitudine=temei)
+
+def extrage(continut, nume_fisier="", cont_implicit=None, ignorate=None):
     """
     Intoarce [{cont, cui, denumire, debit, credit}] din fisierul de parteneri.
 
@@ -95,7 +103,11 @@ def extrage(continut, nume_fisier="", cont_implicit=None):
         cui = _curata_cui(_it.celula(r, i_cui))
         cont = _it.celula(r, i_cont) if i_cont >= 0 else cont_ales
         if not cui and (not den or _it.norm(den).startswith("total")):
-            continue                                       # rând de total / titlu, nu partener
+            # rând de total / titlu, nu partener — [comanda Costin 8.2 pct.4] spus, nu sărit în tăcere
+            if ignorate is not None:
+                ignorate.append(_ignorat(nr, "rând de total sau de titlu („%s”) — nu e un partener" % (den or "gol"),
+                                         "rândul n-are cod fiscal, iar denumirea lipsește sau începe cu „total”"))
+            continue
         try:
             if i_sold >= 0:
                 s = _numar(_it.valoare(r, i_sold), strict=True)
@@ -108,7 +120,11 @@ def extrage(continut, nume_fisier="", cont_implicit=None):
             raise _it.FisierNecitit("Rândul %d (%s): soldul nu e un număr. Corectează celula și încarcă fișierul din nou."
                                     % (nr, den or cui or "?"))
         if round(deb, 2) == 0 and round(cre, 2) == 0:  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
-            continue                                       # partener fără sold: nu intră în soldurile inițiale
+            # partener fără sold: nu intră în soldurile inițiale — [comanda Costin 8.2 pct.4] spus, nu sărit în tăcere
+            if ignorate is not None:
+                ignorate.append(_ignorat(nr, "%s: sold 0 — nu intră în soldurile inițiale" % (den or cui),
+                                         "debitul și creditul citite din rând sunt amândouă 0"))
+            continue
         out.append({"cont": cont, "cui": cui, "denumire": den, "debit": deb, "credit": cre, "rand_fisier": nr})
     # același partener pe același cont de două ori: baza are UNIQUE(cont, cui) (GARZI cat.1) — refuz numit, nu eroare de bază
     vazute, dubluri = {}, []
@@ -139,42 +155,85 @@ def asigura_tabel(conn):
         """)
 
 
-def coerenta(conn, randuri):
-    """
-    Compara soldurile partenerilor pe sintetic (radacina) cu soldurile din solduri_initiale.
-    Intoarce [{cont, suma_parteneri, sold_balanta, diferenta, coincide}] per sintetic.
-    Daca solduri_initiale nu exista inca, sold_balanta = None (nu putem verifica).
-    """
-    # suma partenerilor pe radacina sintetica, sold net (debit - credit)
+def terti_in_balanta(conn):
+    """[345] Conturile de terți (`CONTURI_PARTENERI`) cu sold în balanța de deschidere a firmei; [] fără balanță."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass('solduri_initiale')")
+        if cur.fetchone()[0] is None:
+            return []
+        cur.execute("SELECT DISTINCT split_part(cont, '.', 1) FROM solduri_initiale WHERE (sold_debitor <> 0 OR sold_creditor <> 0) "
+                    "AND split_part(cont, '.', 1) = ANY(%s) ORDER BY 1", (list(CONTURI_PARTENERI),))
+        return [r[0] for r in cur.fetchall()]
+
+
+def coerenta(conn, schema, randuri):
+    """[deficiența 346 (grav), comanda Costin 8.2: „Promite verificarea cu balanța, dar pe F2 pune «401: fără balanță» și lasă salvarea unei
+    sume [...] diferite de 401 din contabilitate”] Soldurile partenerilor, pe sintetic, față de soldul contului LA DATA PRELUĂRII, din
+    aceeași sursă ca balanța (`bilant_api.sold_la`): cu balanță de deschidere e chiar soldul ei; fără ea, soldul din contabilitatea firmei
+    (notele validate) la data preluării — sau azi, dacă evidența e întreagă în iConta.eu. Se confruntă și conturile de terți cu sold în
+    referință care lipsesc din fișier (Σ parteneri = 0).
+    -> [{cont, suma_parteneri, sold_balanta, diferenta, coincide, sursa, data}] pe fiecare sintetic de terți atins."""
+    import datetime as _dt
+    import psycopg2.extras as _E
+    from core import bilant_api as _bil
     pe_sintetic = {}
     for r in randuri:
         rad = _radacina(r["cont"])
-        net = float(r.get("debit", 0) or 0) - float(r.get("credit", 0) or 0)
-        pe_sintetic[rad] = pe_sintetic.get(rad, 0.0) + net
-
-    # soldurile din balanta, grupate pe radacina
-    bal = {}
-    with conn.cursor() as cur:
-        cur.execute("SELECT to_regclass('solduri_initiale')")
-        exista = cur.fetchone()[0] is not None
-        if exista:
-            cur.execute("SELECT cont, sold_debitor, sold_creditor FROM solduri_initiale")
-            for cont, sd, sc in cur.fetchall():
-                rad = _radacina(cont)
-                bal[rad] = bal.get(rad, 0.0) + (float(sd) - float(sc))
-
+        pe_sintetic[rad] = pe_sintetic.get(rad, 0.0) + float(r.get("debit", 0) or 0) - float(r.get("credit", 0) or 0)
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        zi = _bil.data_soldurilor(cur, schema)
+        cur.execute("SELECT count(*) AS n FROM solduri_initiale" if _are_tabel(cur, "solduri_initiale") else "SELECT 0 AS n")
+        are_balanta = (cur.fetchone()["n"] or 0) > 0
+        sursa = "balanța de deschidere" if are_balanta else "contabilitatea firmei"
+        zi = zi or _dt.date.today()
+        sold = _bil.sold_la(cur, schema, zi, ref=None if not are_balanta else "calculeaza") or {}
+    ref = {}
+    for cont, (sd, sc) in sold.items():
+        rad = _radacina(cont)
+        if rad in CONTURI_PARTENERI:
+            ref[rad] = ref.get(rad, 0.0) + float(sd) - float(sc)
     out = []
-    for rad in sorted(pe_sintetic.keys()):
-        sp = round(pe_sintetic[rad], 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
-        if exista and rad in bal:
-            sb = round(bal[rad], 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
-            dif = round(sp - sb, 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
-            out.append({"cont": rad, "suma_parteneri": sp, "sold_balanta": sb,
-                        "diferenta": dif, "coincide": abs(dif) < 0.01})
-        else:
-            out.append({"cont": rad, "suma_parteneri": sp, "sold_balanta": None,
-                        "diferenta": None, "coincide": None})
+    for rad in sorted(set(pe_sintetic) | {k for k, v in ref.items() if abs(v) >= 0.01}):
+        sp = round(pe_sintetic.get(rad, 0.0), 2)  # round-ok: sumă de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+        sb = round(ref.get(rad, 0.0), 2)  # round-ok: idem
+        dif = round(sp - sb, 2)  # round-ok: idem
+        out.append({"cont": rad, "suma_parteneri": sp, "sold_balanta": sb, "diferenta": dif, "coincide": abs(dif) < 0.01,
+                    "sursa": sursa, "data": zi.isoformat()})
     return out
+
+
+def _are_tabel(cur, nume):
+    cur.execute("SELECT to_regclass(%s) IS NOT NULL AS e", (nume,))
+    r = cur.fetchone()
+    return bool(r["e"] if isinstance(r, dict) else r[0])
+
+
+def respinse_coerenta(randuri, coer):
+    """[346] Rândurile de pe un sintetic ale cărui solduri pe parteneri nu dau soldul contului (`coerenta`) NU intră: o sumă pe parteneri
+    diferită de contabilitate ar intra în evidență ca adevărată. Fiecare rând se respinge numit, cu cifrele."""
+    from core.pdf_util import bani as _b
+    nepotr = {c["cont"]: c for c in coer if c.get("coincide") is False}
+    er = []
+    for i, r in enumerate(randuri or [], start=2):
+        i = _it.nr_rand(r, i)
+        c = nepotr.get(_radacina(r.get("cont")))
+        if c:
+            er.append(respinge(
+                "sold partener", i, "parteneri_nu_dau_soldul",
+                "pe %s, partenerii din fișier dau %s, iar %s la %s are %s (diferență %s) — rândurile contului nu intră până nu se potrivesc"
+                % (c["cont"], _sold_txt(c["suma_parteneri"], _b), c["sursa"], _data_ro_iso(c["data"]), _sold_txt(c["sold_balanta"], _b),
+                   _b(abs(c["diferenta"]), "lei")), cont=r.get("cont")))
+    return er
+
+
+def _sold_txt(v, bani):
+    return "%s %s" % ("debitor" if v >= 0 else "creditor", bani(abs(v), "lei"))
+
+
+def _data_ro_iso(s):
+    from core.pdf_util import data_ro
+    import datetime as _dt
+    return data_ro(_dt.date.fromisoformat(s)) if s else "—"
 
 
 # Conturile pe care se tin solduri pe parteneri. Restul (5121 banca, 5311 casa,
@@ -247,7 +306,7 @@ def verifica_randuri(randuri):
     return erori, bune
 
 
-def importa(conn, randuri, data_referinta=None):
+def importa(conn, randuri, data_referinta=None, schema=None):
     """Inlocuieste partenerii (DELETE + INSERT) cu randurile BUNE. Intoarce {randuri, total_debit, total_credit, respinse}.
     Randurile respinse (vezi verifica_randuri) nu intra si se intorc numite (decizia Costin 14.10.2026 pct.2); ValueError numai
     cand niciun rand nu poate intra."""
@@ -261,6 +320,12 @@ def importa(conn, randuri, data_referinta=None):
                          "partenerilor și n-ar fi pus nimic în loc. Dacă chiar vrei să le "
                          "golești, e altă operațiune.")
     erori, bune = verifica_randuri(randuri)
+    if schema and bune:
+        # [346] contul ale cărui solduri pe parteneri nu dau soldul lui la data preluării nu intră (cu cifrele, pe fiecare rând)
+        er2 = respinse_coerenta(bune, coerenta(conn, schema, bune))
+        resp = {e["rand"] for e in er2}
+        bune = [r for i, r in enumerate(bune, start=2) if _it.nr_rand(r, i) not in resp]
+        erori = erori + er2
     # [decizia Costin 14.10.2026 pct.2, verbatim în DECIZII] „rândurile bune se salvează, cele refuzate se arată numite, cu motivul
     # în cuvinte” — numai un import fără niciun rând bun se refuză întreg (și atunci soldurile existente rămân neatinse).
     if not bune:

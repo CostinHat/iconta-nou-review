@@ -360,6 +360,30 @@ def valoare(rand, j):
     return "" if v is None else v
 
 
+#: formatele de dată acceptate în fișierele de import: zi înaintea lunii (forma românească) sau ISO. Forma americană (lună/zi) NU se
+#: încearcă: „01/13/2026” nu e o dată românească, iar a o citi ca 13 ianuarie ar fi o înlocuire tăcută (comanda Costin 8.2 pct.4).
+FORMATE_DATA = ("%Y-%m-%d", "%d.%m.%Y", "%d/%m/%Y", "%d-%m-%Y", "%Y/%m/%d")
+
+
+def data(v):
+    """Data dintr-o celulă -> 'AAAA-LL-ZZ', sau None (celula goală SAU o dată imposibilă — „2026-13-01”, „31.02.2026”). Sursa unică pentru
+    importuri (până la comanda 8.2: trei copii — salariați, mijloace fixe, istoric declarații — iar RIP-ul n-o avea deloc și trimitea
+    textul la baza de date, deficiența 372). Cine are nevoie să deosebească golul de invalid compară cu `celula`."""
+    if v is None or str(v).strip() == "":
+        return None
+    if isinstance(v, datetime.datetime):
+        return v.date().isoformat()
+    if isinstance(v, datetime.date):
+        return v.isoformat()
+    t = str(v).strip()
+    for fmt in FORMATE_DATA:
+        try:
+            return datetime.datetime.strptime(t, fmt).date().isoformat()
+        except ValueError:
+            continue
+    return None
+
+
 def rand_gol(rand):
     return not any(str(c if c is not None else "").strip() for c in rand)
 

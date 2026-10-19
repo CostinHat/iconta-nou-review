@@ -5,13 +5,13 @@ import datetime as _dt
 import json
 import time
 
-from conftest import sql
+from conftest import linie_nota, sql
 from e2e_bloc_a import AZI, CLIENT, _api, _card, _ok, emite_api, pregateste_firma
 
 
 def _nota(e, firma, data, descriere, doc, deb, cre, suma):
     return _ok(_api(e, "POST", "/tenants/%d/jurnal" % firma["tenant_id"], {"data": data, "descriere": descriere, "document_ref": doc,
-                                                                        "linii": [{"debit": deb, "credit": cre, "suma": suma}]}), "nota")["id"]
+                                                                        "linii": [linie_nota(deb, cre, suma)]}), "nota")["id"]
 
 
 def _valideaza(e, firma, nid):

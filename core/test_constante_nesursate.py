@@ -116,7 +116,9 @@ BASELINE = {
     # a coborat si ea: bacsis/cote_tva/taxare_inversa/d101.PRAG_IMCA/d394.COTE/d100.PRAG_BRENT -> A.
     # COBORAT 23.08.2026 dupa R26: cele 25 de defaults cu literalul 21 au fost SCOASE, iar
     # clichetul a cerut singur coborarea (`test_baseline_nu_e_stat`). C: 162 -> 134.
-    "asistenti_api.py": 3, "asociati_import_api.py": 1, "audit_preluare.py": 1,
+    # [18.10.2026, comanda 8.2, deficiența 347] `asociati_import_api.py` 1 -> 0 și `salariati_import_api.py` 1 -> 0 (scoase din dicționar):
+    # copiile locale ale validării CNP (cheia de control, tabela secolelor) au ieșit — amândouă trimit la sursa unică `identitate.valideaza_cnp`.
+    "asistenti_api.py": 3, "audit_preluare.py": 1,
     "beneficii_api.py": 1, "casa.py": 0, "cashflow.py": 2, "common.py": 8,
     "contracte_speciale.py": 3, "control_fiscal_api.py": 1, "control_incrucisat.py": 1,
     "cor_api.py": 2, "d101.py": 5, "d101g.py": 0, "d108.py": 1, "d169.py": 1, "d169n.py": 1,
@@ -125,7 +127,7 @@ BASELINE = {
     "decontari_asociati.py": 1, "deconturi.py": 1, "duk.py": 2, "efactura_send.py": 1,
     "factura_pdf.py": 1, "monitor_fiscal.py": 4, "motor.py": 2, "notificari.py": 2, "notificari_scadenta.py": 2,
     "ong.py": 2, "produse_api.py": 0, "provizioane.py": 1, "salariati_api.py": 1,
-    "salariati_import_api.py": 1, "salarizare.py": 17, "scadentar.py": 2, "scadente.py": 3,
+    "salarizare.py": 17, "scadentar.py": 2, "scadente.py": 3,
     "scan_constante.py": 1, "sponsorizari.py": 3, "stat_plata_api.py": 1, "termene_api.py": 1,
     "tva_agricultori.py": 2, "tva_aur.py": 1, "tva_marja_turism.py": 1,
     # [17.10.2026, lotul 7] +5, DELIBERAT si cu motivul — aceeasi clasa OPERATIONALA: `monitor_fiscal.py` 1 -> 4 (`PORTAL_ZILE = 45` =

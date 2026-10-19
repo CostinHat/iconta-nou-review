@@ -10,6 +10,7 @@ TEMEI: N/A — citirea fișierelor de import (tooling); regulile fiscale atinse 
 import ast
 import datetime
 import glob
+import json
 import os
 
 import pytest
@@ -31,7 +32,7 @@ def _cp1250(s):
 
 def test_cnp_urile_de_proba_sunt_cele_declarate():
     assert valideaza_cnp(CNP_OK) == (True, "ok")
-    assert valideaza_cnp(CNP_GRESIT) == (False, "cifra de control")
+    assert valideaza_cnp(CNP_GRESIT) == (False, "cifra de control greșită")
 
 
 # ── C21 / C27: balanța de verificare completă, Windows-1250, antet pe două rânduri, titluri, totaluri, sintetic + analitice ──────
@@ -269,7 +270,7 @@ ISTORIC = ("Tip declarație;An;Lună;Data depunerii\nD300;2026;8;25.09.2026\nD21
 def test_def_c25_istoric_randul_problema_se_arata_restul_se_salveaza():
     import main
     r = ist.extrage(ISTORIC.encode("utf-8"), "ist.csv")
-    assert [(x["tip"], x["ok"]) for x in r] == [("D300", True), ("D212", True), ("D112", False), ("D999", False)]
+    assert [(x["tip"], x["stare"]) for x in r] == [("D300", "ok"), ("D212", "ok"), ("D112", "respins"), ("D999", "respins")]
     randuri = [main.IstoricDeclRand(**x).model_dump() for x in r]     # avertismentele nu mai răstoarnă modelul (C25)
     conn = _ConnFals()
     rez = ist.importa(conn, 77, randuri)
@@ -288,12 +289,18 @@ def test_articolele_revalideaza_pe_server():
 # ── GARDA DE CLASĂ: modelul de salvare primește tot ce produce previzualizarea ─────────────────────────────────────────────────
 # Câmpurile CALCULATE de previzualizare (pe care serverul le recalculează la scriere) — singurele care au voie să lipsească din model.
 CALCULATE = {
-    "SalariatRand": {"cnp_valid", "cnp_motiv"},
+    # [348] `functie`: textul funcției din fișier e numai de afișat — evidența ține codul COR (D112), iar lipsa codului se semnalează
+    # cu funcția din fișier (`salariati_import_api.semnale_randuri`, regula `cor_lipsa`)
+    "SalariatRand": {"cnp_valid", "cnp_motiv", "functie"},
     "AsociatRand": {"cnp_valid", "cnp_motiv"},
-    "MijlocFixRand": {"amortizat", "ramas", "avertismente", "ok"},
-    "IstoricDeclRand": {"tip_cunoscut", "avertisment", "ok"},
+    # [comanda Costin 8.2 pct.4] `stare` / `motive` (eticheta rândului) și semnalele / calculul de la data preluării: salvarea le
+    # recalculează din aceeași verificare (`verifica_randuri`)
+    "MijlocFixRand": {"amortizat_calculat", "semnale_extra", "stare", "motive"},
+    "IstoricDeclRand": {"tip_cunoscut", "anuala", "stare", "motive"},
     "PartenerRand": set(),
     "SoldRand": set(),
+    "ArticolImportIn": set(),     # [373] salvarea revalidează fiecare rând (`articole_import_api.importa`)
+    "RipRand": set(),             # [372] previzualizare, apoi salvare (`rip_migrare_api.importa` reverifică)
 }
 
 
@@ -307,6 +314,11 @@ def _iesire(model):
             "PartenerRand": lambda: sp.extrage(SITUATIE_CLIENTI.encode("utf-8"), "p.csv", cont_implicit="4111"),
             "SoldRand": lambda: solduri_api.extrage_balanta(_cp1250(BALANTA_SAGA), "b.csv"),
             "AsociatRand": lambda: __import__("core.asociati_import_api", fromlist=["x"]).extrage(asoc.encode("utf-8"), "a.csv"),
+            "ArticolImportIn": lambda: __import__("core.articole_import_api", fromlist=["x"]).extrage(
+                "Denumire;UM;Cantitate;Pret;Cont stoc;Cont cheltuiala\nFaina;kg;10;2;371;607\nZahar;kg;zece;3;371;\n".encode("utf-8"), "a.csv"),
+            "RipRand": lambda: __import__("core.rip_migrare_api", fromlist=["x"]).extrage(
+                "Data;Tip;Explicatie;Suma;Metoda;Categorie;Document\n01.03.2026;incasare;Vanzare;100,50;numerar;marfa;F1\n"
+                "2026-13-01;plata;Chirie;x;;;\n".encode("utf-8"), "r.csv"),
             }[model]()
 
 
@@ -322,6 +334,9 @@ def test_modelul_de_salvare_nu_pierde_si_nu_rastoarna_iesirea_previzualizarii(mo
         pierdute = set(r) - set(M.model_fields) - CALCULATE[model]
         assert not pierdute, "%s pierde câmpurile %s la salvare" % (model, sorted(pierdute))
         M(**r)                                                            # fără ValidationError
+        # drumul real trece prin JSON (răspunsul previzualizării, apoi corpul salvării): Decimal / date ajung șiruri sau numere
+        from fastapi.encoders import jsonable_encoder
+        M(**json.loads(json.dumps(jsonable_encoder(r))))
 
 
 # ── GARDA STRUCTURALĂ: citirea unui fișier de import are o singură sursă ──────────────────────────────────────────────────────

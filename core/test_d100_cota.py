@@ -28,9 +28,11 @@ def test_d100_rata_default_prin_helper_nu_literal():
     calls_deriva = [(getattr(x.func, "attr", None) or getattr(x.func, "id", None))
                     for x in ast.walk(fdefs["deriva_obligatii"]) if isinstance(x, ast.Call)]
     assert "_rata_impozit_default" in calls_deriva, "deriva_obligatii nu deleaga rata default catre helper"
-    calls_gen = [(getattr(x.func, "attr", None) or getattr(x.func, "id", None))
-                 for x in ast.walk(fdefs["genereaza"]) if isinstance(x, ast.Call)]
-    assert "deriva_obligatii" in calls_gen, "genereaza nu ruteaza derivarea obligatiilor prin deriva_obligatii"
+    def _apeluri(f):
+        return [(getattr(x.func, "attr", None) or getattr(x.func, "id", None)) for x in ast.walk(fdefs[f]) if isinstance(x, ast.Call)]
+    # [376–378] genereaza -> obligatii_perioada (sursa unica: micro -> deriva_obligatii, profit -> profit_trimestru)
+    assert set(_apeluri("genereaza")) >= {"obligatii_perioada"}, "genereaza nu ruteaza derivarea obligatiilor prin obligatii_perioada"
+    assert set(_apeluri("obligatii_perioada")) >= {"deriva_obligatii"}, "obligatii_perioada nu deriva micro prin deriva_obligatii"
 
 
 def test_d100_apare_in_graful_impozit():

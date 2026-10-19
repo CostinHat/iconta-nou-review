@@ -46,6 +46,44 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 8, comanda 8.2 (Costin 18.10.2026, verbatim în DECIZII „Comanda 8.2”)** — publicarea lotului 8 (321–340, `bee07d87`),
+  316 lămurită, 341–381, regula importurilor de migrare, restul lotului 8 (Meta/WhatsApp, Postmark, Search Console, bara de stare fixă);
+  worktree `/home/costin/iconta_lot8b`, ramura `lucru/lot8b-2026-10-18` (din `bee07d87`).
+  - ultim: L82-1 închis — poarta 1 pe `bee07d87` ROȘIE numai pe cifrele F1–F5 (explicate, referința rescrisă, `fcfa3b3a`), poarta 2 VERDE pe
+    `fcfa3b3a` (21:51), publicat 21:52 (four-way închis, nicio migrare în urmă); L82-2..L82-14 implementate pe ramura lot8b, peste `fcfa3b3a`;
+    L82-15: suita întreagă (114 picături la prima rulare, toate reparate la cauză), plasa întreagă (51 de picături, reparate), `e2e_lot82.py`
+    43 / 43 verzi și 43 / 43 roșii sub cele 41 de mutații, uneltele vizuale pe 8019, registrele (DEFICIENTE 341–381, R95, GARZI, DECIZII,
+    ISTORIC) — commitul care conține această intrare.
+  - urmator: poarta lotului (`scripts/poarta_lot.sh` pe `lucru/lot8b-2026-10-18`), apoi publicarea cu acordul din 18.10 seara, numai înainte de
+    19.10 08:00 (DECIZII „ce a schimbat testarea” pct.14); raportul 8.2. IN LUCRU.
+  - pasi:
+    L82-1. Poarta lotului 8 (`scripts/poarta_lot.sh` pe `lucru/lot8-2026-10-18`, `bee07d87`); VERDE -> backup, `APROBARE_MAIN`, fast-forward,
+           post-commit, migrările `--productie` în ordinea din `verifica`, four-way; starea de după publicare în ISTORIC / PREDARE (aici).
+    L82-2. 376: `control_fiscal_api.obligatii_datorate`, ramura `profit`: D100 cod 103 pe T1–T3 (CF art.41 alin.(1); T4 -> D101), cu poarta
+           de fapt `_d100_fapt`; termenele din `scadente`; aceeași listă pentru Datorate, semafor și restanțe; R95 în CONFORMITATE.
+    L82-3. 377: Istoric declarații: coloana „suma de plată” (`istoric_declaratii_import_api.CAMPURI`, `main.IstoricDeclRand`), scrisă în
+           `declaratii_depuse.randuri.obligatii[cod 103]`; `d100` profit scade impozitul deja declarat pe trimestrele anterioare (iConta
+           sau preluare) și arată sursa.
+    L82-4. 378: D100 profit pe rezultatul fiscal cumulat (CF art.19 alin.(1), art.31, art.25 alin.(4) lit.i); OPANAF 587/2016 anexa 4
+           pct.3.1.2), din aceleași elemente ca D101 (`d101.pull` / `calcul_d101`) pe 01.01–sfârșitul trimestrului; textul „ajustările la
+           D101” scos.
+    L82-5. 380: D406 — contul liniei de factură din aceeași sursă ca nota (`cont_venit` / `cont_cheltuiala`, cu `cont_venit_implicit`);
+           nepotrivirea jurnal–facturi semnalată înainte de „Pune în De depus” (`uc_coada`, lângă `poarta_d406_balanta`).
+    L82-6. 381: partenerul pe liniile notei pe 401 / 4111 (cerut la introducere în Registrul jurnal), dus în D406; D406 semnalează liniile
+           de terți fără partener; Payments (obligatorie? — schema ANAF vs DUK) și rezumatul „furnizori / plăți” pe perioadă.
+    L82-7. 379: denumirea oficială a fiecărui rând în „Din ce e făcută declarația”, la toate declarațiile (din `anaf_surse`).
+    L82-8. 341–346: Firme (portofoliu, cifra de control), Solduri inițiale (cont inexistent, data propusă, caseta informativă), Solduri
+           parteneri (soldurile din balanță / contabilitate arătate, salvarea blocată la nepotrivire, „Finalizează stratul”).
+    L82-9. 347–349 Salariați; 350 modelele pe coloane în Excel; 351–358 Istoric declarații; 357 eticheta contorului.
+    L82-10. 359–363 Mijloace fixe (amortizarea cumulată preluată + reconciliere + audit; previzualizarea; validările; conturile).
+    L82-11. 364–367 Asociați; 369 Plan de conturi (funcțiunea A/P/B din OMFP); 370 auditul de preluare păstrat.
+    L82-12. 368 + 371 straturile din sursa unică, filtrate pe regim (PFA); 372 RIP cu previzualizare; 373–375 Articole, stoc, rețete.
+    L82-13. Regula importurilor (pct.4): garda de clasă pe toate importurile (previzualizare înaintea salvării, rândurile semnalate,
+           modelele cu `;`, erorile interne ascunse).
+    L82-14. Restul lotului 8: bara de stare fixă (DS cap.2, gard BARA_ANTET_FIXA); Meta/WhatsApp, Postmark, Search Console pregătite,
+           cu lista exactă a ce trebuie de la Costin.
+    L82-15. E2E `test_def_341..381` + mutații; uneltele vizuale; rularea țintită; registrele; commitul; poarta lotului; publicarea; raportul.
+
 - fir: **Lotul 8, comanda 8.1 (Costin 18.10.2026, verbatim în DECIZII „Comanda 8.1”)** — deficiențele din retestul lotului 7 (321–340),
   garda 325, proba 337, probele fără browser (303, 310, C48 în D406, 410, notificarea superadminului la import), 316, întrebările; ramura
   `lucru/lot8-2026-10-18` (worktree `/home/costin/iconta_lot7`), fără publicare, fără poartă (doar rularea țintită).

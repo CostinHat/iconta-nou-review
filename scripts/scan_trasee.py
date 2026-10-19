@@ -190,8 +190,11 @@ TRASEE = [
       # obligatorii ale art. 20: acelea sunt CONTABILE (Legea 82/1991), asta e FISCAL — exista ca
       # sa justifice o declaratie, iar varianta pe profit iese chiar din campurile D101. Casa lui
       # e langa completarile manuale ale declaratiilor, nu langa jurnal si Cartea mare.
-      r"^/tenants/\{\}/registru-evidenta-fiscala"],
-     ["d300_manual", "d301_operatiuni", "registru_fiscal_pf"]),
+      r"^/tenants/\{\}/registru-evidenta-fiscala",
+      # [18.10.2026, comanda 8.2, deficiența 378] ajustările fiscale ale rezultatului (cheltuieli nedeductibile, venituri neimpozabile,
+      # deduceri, pe trimestru) se scriu din ecranul registrului și intră în D100 / D101 — aceeași casă
+      r"^/tenants/\{\}/ajustari-fiscale"],
+     ["d300_manual", "d301_operatiuni", "registru_fiscal_pf", "ajustari_fiscale"]),
     ("T32", "Registrul de încasări și plăți (partida simplă)",
      [r"^/tenants/\{\}/rip/(?!inventar)"], ["rip_operatiuni"]),
     ("T33", "Exportul contabil (SAGA, WinMentor)",

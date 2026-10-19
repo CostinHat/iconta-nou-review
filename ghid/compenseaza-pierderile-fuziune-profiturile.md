@@ -2,7 +2,7 @@
 title: "Cum se compensează pierderile din fuziune cu profiturile"
 description: "Regula de recuperare a pierderii fiscale a societății absorbite de firma care preia patrimoniul într-o fuziune, cu limita de 70% pe 5 ani."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Mecanismul de compensare, punctual:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu automatizează** urmărirea și proporționarea pierderilor fiscale preluate în urma unei operațiuni de fuziune sau divizare — motorul de impozit pe profit calculează recuperarea pierderilor fiscale proprii ale firmei, în limita de 70%/an pe 5 ani, dar preluarea unei pierderi de la o societate absorbită rămâne un calcul manual, pe baza proiectului de fuziune/divizare.
+La data acestui ghid, iConta.eu **nu automatizează** urmărirea și proporționarea pierderilor fiscale preluate în urma unei operațiuni de fuziune sau divizare — aplicația calculează recuperarea pierderii fiscale proprii a firmei, scrisă de contabil, în limita de 70% (vechimea fiecărei pierderi nu o urmărește), dar preluarea unei pierderi de la o societate absorbită rămâne un calcul manual, pe baza proiectului de fuziune/divizare.
 
 [iConta.eu](/)

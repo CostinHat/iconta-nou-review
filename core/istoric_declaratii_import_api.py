@@ -11,9 +11,8 @@ NU sterge declaratiile depuse prin iConta (sursa='iconta').
 # `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
 # deschide, nu comite.
 from __future__ import annotations
-import datetime
 
-from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
+from core.migrare_api import respinge, semnaleaza  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 import re as _re
 from core.pdf_util import data_ro as _data_ro   # DS cap.4: data din text, canonic
 from core.common import cate as _cate
@@ -28,6 +27,9 @@ CAMPURI = {
     "an": ("=an", "anul", "an raportare", "an fiscal"),
     "luna": ("luna raportare", "=luna", "perioada", "luna*"),
     "data": ("data depunerii", "data depunere", "depunere", "depus*", "=data"),
+    # [deficiența 377, comanda Costin 8.2] suma declarată: „istoricul preia și suma declarată acolo unde o declarație ulterioară se calculează
+    # cumulat (D100 profit)”
+    "suma": ("suma de plata", "suma de plată", "suma declarata", "suma declarată", "=suma", "suma*", "impozit*"),
 }
 
 
@@ -52,20 +54,6 @@ def _normalizeaza_tip(v):
     return (t or "?"), False   # necunoscut
 
 
-def _data(v):
-    if v is None or str(v).strip() == "":
-        return None
-    if isinstance(v, datetime.datetime):
-        return v.date().isoformat()
-    if isinstance(v, datetime.date):
-        return v.isoformat()
-    t = str(v).strip()
-    for fmt in ("%Y-%m-%d", "%d.%m.%Y", "%d/%m/%Y", "%d-%m-%Y", "%Y/%m/%d"):
-        try:
-            return datetime.datetime.strptime(t, fmt).date().isoformat()
-        except ValueError:
-            continue
-    return None
 
 
 def _perioada(v):
@@ -98,11 +86,13 @@ def extrage(continut, nume_fisier=""):
     i_an = col("an", (i_tip,))
     i_luna = col("luna", (i_tip, i_an))
     i_data = col("data", (i_tip, i_an, i_luna))
+    i_suma = col("suma", (i_tip, i_an, i_luna, i_data))
 
     out = []
     for nr, r in enumerate(brut[start:], start=start + 1):
         tip_raw = _it.celula(r, i_tip)
-        if not tip_raw:
+        # [comanda Costin 8.2 pct.4] se sare numai rândul complet gol; fără tip, rândul se arată respins (`tip_necunoscut`)
+        if _it.rand_gol(r):
             continue
         tip, cunoscut = _normalizeaza_tip(tip_raw)
         luna, an = _perioada(_it.celula(r, i_luna))
@@ -111,15 +101,38 @@ def extrage(continut, nume_fisier=""):
             an = _intreg(_it.celula(r, i_an))
         elif i_an >= 0 and _it.celula(r, i_an):
             an = _intreg(_it.celula(r, i_an))
-        data_dep = _data(_it.valoare(r, i_data)) if i_data >= 0 else None
+        data_dep = _it.data(_it.valoare(r, i_data)) if i_data >= 0 else None
+        suma_brut = _it.celula(r, i_suma) if i_suma >= 0 else ""
         out.append({"tip": tip, "an": an, "luna": luna, "data_depunere": data_dep,
-                    "tip_cunoscut": cunoscut, "rand_fisier": nr})
-    er = verifica_randuri(out)
-    for r in out:
-        mes = [e["mesaj"] for e in er if e["rand"] == r["rand_fisier"]]
-        r["avertisment"] = mes
-        r["ok"] = not mes
+                    "data_brut": str(_it.valoare(r, i_data) or "") if i_data >= 0 else "", "suma": _suma(suma_brut),
+                    "suma_brut": str(suma_brut or ""), "tip_cunoscut": cunoscut, "anuala": tip in TIPURI_ANUALE, "rand_fisier": nr})
+    eticheteaza(out)
     return out
+
+
+def _suma(v):
+    """Suma declarată (lei, întreg — D100 se declară în lei întregi), sau None dacă celula e goală / nu e număr."""
+    s = str(v or "").strip().replace(" ", "")
+    if not s:
+        return None
+    from decimal import ROUND_HALF_UP, Decimal
+    from core import numere as _nr
+    try:
+        return int(Decimal(str(_nr.numar(s, strict=True))).quantize(Decimal(1), rounding=ROUND_HALF_UP))
+    except (TypeError, ValueError, ArithmeticError):
+        return None
+
+
+def eticheteaza(randuri, azi=None):
+    """[comanda Costin 8.2 pct.4] Starea fiecărui rând, din ACEEAȘI verificare pe care o aplică salvarea: `stare` ∈ ok / semnalat (intră,
+    cu observația ei) / respins (nu intră, cu motivul ei); `motive` = textele, în ordinea lor."""
+    er, sem = verifica_randuri(randuri, azi), semnale_randuri(randuri, azi)
+    for r in randuri:
+        resp = [e["mesaj"] for e in er if e.get("rand") == r["rand_fisier"]]
+        obs = [e["mesaj"] for e in sem if e.get("rand") == r["rand_fisier"]]
+        r["stare"] = "respins" if resp else ("semnalat" if obs else "ok")
+        r["motive"] = resp or obs
+    return randuri
 
 
 def rezumat(conn, tenant_id):
@@ -162,12 +175,18 @@ TIPURI_CUNOSCUTE = ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D39
 TIPURI_ANUALE = ("D101", "D205", "D212", "S1003", "S1005")
 
 
+def _perioada_txt(tip, an, luna):
+    return ("%s pe %s" % (tip or "?", an)) if (tip in TIPURI_ANUALE or not luna) else ("%s pe %02d/%s" % (tip or "?", int(luna), an))
+
+
 def verifica_randuri(randuri, azi=None):
-    """PURA: [{rand, motiv, mesaj}]. Nicio validare pana la 15.07.2026: tip D999
-    inexistent, luna 13, data depunerii inaintea perioadei raportate - toate intrau."""
+    """PURĂ: respingerile [{rand, motiv, mesaj}] — rândurile care NU intră. [comanda Costin 8.2] 353: rândul dublat (aceeași declarație pe
+    aceeași perioadă) intră o dată, a doua apariție se respinge numită; 354: depunerea datată înaintea SFÂRȘITULUI perioadei raportate
+    (D112 pe martie depus pe 10.03) sau în viitor se respinge; suma care nu e număr se respinge."""
+    import calendar
     import datetime as _dt
     azi = azi or _dt.date.today()
-    er = []
+    er, vazute = [], {}
     for i, r in enumerate(randuri or [], start=2):
         tip = str(r.get("tip") or "").strip().upper()   # VALIDARE contra TIPURI_CUNOSCUTE (uppercase, nomenclator ANAF)
         an = int(r.get("an") or 0)
@@ -183,33 +202,78 @@ def verifica_randuri(randuri, azi=None):
             luna = None                          # anuală: luna 12 la scriere
         if tip and tip not in TIPURI_CUNOSCUTE:
             er.append(respinge("declarație depusă", i, "tip_necunoscut",
-                               "declarația %s nu există în nomenclatorul ANAF" % tip))
+                               "tipul declarației lipsește" if tip == "?" else "declarația %s nu există în nomenclatorul ANAF" % tip))
         if not (2000 <= an <= azi.year + 1):
             er.append(respinge("declarație depusă", i, "an_invalid",
                                "%s: anul %s e în afara intervalului" % (tip or "?", an)))
+        l = None
         if luna is not None and str(luna).strip() != "":
             try:
                 l = int(luna)
                 if not (1 <= l <= 12):
                     er.append(respinge("declarație depusă", i, "luna_invalida",
                                        "%s: luna %s (așteptat 1-12)" % (tip or "?", l)))
+                    l = None
             except (TypeError, ValueError):
                 er.append(respinge("declarație depusă", i, "luna_invalida",
                                    "%s: luna %r nu e număr" % (tip or "?", luna)))
+        if tip in TIPURI_ANUALE:
+            l = 12
+        cheie = (tip, an, l)
+        if tip and not luna_lipsa and cheie in vazute:
+            er.append(respinge("declarație depusă", i, "rand_dublat",
+                               "%s apare și pe rândul %s: se importă o singură dată" % (_perioada_txt(tip, an, l), vazute[cheie])))
+        elif tip and not luna_lipsa:
+            vazute[cheie] = i
         d = r.get("data_depunere")
+        if not d and str(r.get("data_brut") or "").strip():
+            er.append(respinge("declarație depusă", i, "data_invalida",
+                               "%s: data depunerii %r nu se înțelege" % (tip or "?", r.get("data_brut"))))
         if d and not luna_lipsa:
             try:
                 dd = d if isinstance(d, _dt.date) else _dt.date.fromisoformat(str(d)[:10])
-                l = int(luna) if str(luna or "").strip().isdigit() else 12
-                sfarsit = _dt.date(an, l, 1) if 2000 <= an <= 2100 and 1 <= l <= 12 else None
-                if sfarsit and dd < sfarsit:
-                    er.append(respinge("declarație depusă", i, "data_inainte_de_perioada",
-                                       "%s %s: depusă la %s, înainte de perioada raportată"
-                                       % (tip or "?", ("%02d/%s" % (l, an)) if luna else str(an), _data_ro(dd))))
+                if dd > azi:
+                    er.append(respinge("declarație depusă", i, "data_viitor",
+                                       "%s: depusă la %s, o dată din viitor" % (_perioada_txt(tip, an, l), _data_ro(dd))))
+                elif l and 2000 <= an <= 2100:
+                    sfarsit = _dt.date(an, l, calendar.monthrange(an, l)[1])
+                    if dd < sfarsit:
+                        er.append(respinge("declarație depusă", i, "data_inainte_de_perioada",
+                                           "%s: depusă la %s, înainte de sfârșitul perioadei raportate (%s)"
+                                           % (_perioada_txt(tip, an, l), _data_ro(dd), _data_ro(sfarsit))))
             except ValueError:
                 er.append(respinge("declarație depusă", i, "data_invalida",
                                    "%s: data depunerii %r nu se înțelege" % (tip or "?", d)))
+        if str(r.get("suma_brut") or "").strip() and r.get("suma") is None:
+            er.append(respinge("declarație depusă", i, "suma_invalida",
+                               "%s: suma %r nu e un număr" % (_perioada_txt(tip, an, l), r.get("suma_brut"))))
     return er
+
+
+def semnale_randuri(randuri, azi=None):
+    """PURĂ: semnalele [{rand, motiv, mesaj}] — rândurile care INTRĂ, cu observația lor (comanda Costin 8.2): 355 fără data depunerii;
+    356 anul mai vechi decât anul curent și precedentul (ecranul importă anul curent); 377 D100 fără suma declarată."""
+    import datetime as _dt
+    azi = azi or _dt.date.today()
+    out = []
+    for i, r in enumerate(randuri or [], start=2):
+        i = _it.nr_rand(r, i)
+        tip = str(r.get("tip") or "").strip().upper()
+        an = int(r.get("an") or 0)
+        per = _perioada_txt(tip, an, r.get("luna"))
+        if not r.get("data_depunere") and not str(r.get("data_brut") or "").strip():
+            out.append(semnaleaza("declarație depusă", i, "data_depunere_lipsa",
+                                  "%s: fără data depunerii — se importă (nu mai e cerută ca restanță), dar termenul ei nu se poate "
+                                  "confrunta" % per))
+        if 2000 <= an < azi.year - 1:
+            out.append(semnaleaza("declarație depusă", i, "an_vechi",
+                                  "%s: anul %s e mai vechi decât anii pe care îi urmărește aplicația (%s și %s) — se importă, dar nu "
+                                  "schimbă nimic în termenele de azi" % (per, an, azi.year - 1, azi.year)))
+        if tip == "D100" and r.get("suma") is None and not str(r.get("suma_brut") or "").strip():
+            out.append(semnaleaza("declarație depusă", i, "suma_lipsa_d100",
+                                  "%s: fără suma declarată — la impozitul pe profit, D100 de pe trimestrele următoare n-o poate scădea "
+                                  "(o va cere până o completezi)" % per))
+    return out
 
 
 def importa(conn, tenant_id, randuri):
@@ -240,18 +304,36 @@ def importa(conn, tenant_id, randuri):
                          % ("Un rând" if _nr == 1 else _cate(_nr, "rând", "rânduri"),
                             "poate" if _nr == 1 else "pot",
                             "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6])))
+    import json as _json
     with conn.cursor() as cur:
+        cod_d100 = _cod_d100(cur, tenant_id)
         cur.execute("DELETE FROM public.declaratii_depuse WHERE tenant_id=%s AND sursa='migrare'",
                     (tenant_id,))
         n = 0
         for r in bune:
             _tip = str(r["tip"]).strip().upper()
             _luna = r.get("luna") if str(r.get("luna") or "").strip() not in ("", "0") else (12 if _tip in TIPURI_ANUALE else None)
+            # [377] la D100, suma declarată se păstrează ca obligația ei (forma unei depuneri prin iConta: `randuri.obligatii`), pe codul
+            # impozitului firmei — `d100.profit_trimestru` o scade din cumulat și arată de unde vine
+            randuri_json = (_json.dumps({"obligatii": [{"cod_oblig": cod_d100, "suma_dat": int(r["suma"]), "suma_plata": int(r["suma"])}],
+                                         "sursa": "istoric preluat la migrare"})
+                            if _tip == "D100" and r.get("suma") is not None and cod_d100 else None)
             cur.execute("""
-                INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, data_depunere, sursa)
-                VALUES (%s,%s,%s,%s,%s,'migrare')
+                INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, data_depunere, sursa, randuri)
+                VALUES (%s,%s,%s,%s,%s,'migrare',%s::jsonb)
             """, (tenant_id, r.get("an"), _luna,
                   str(r["tip"]).strip().lower(),   # [tip_lowercase] canonic la STOCARE (CHECK-ul il impune)
-                  r.get("data_depunere")))
+                  r.get("data_depunere"), randuri_json))
             n += 1
-    return {"importati": n, "respinse": er}
+    return {"importati": n, "respinse": er, "semnalate": semnale_randuri(bune)}
+
+
+def _cod_d100(cur, tenant_id):
+    """Codul obligației D100 după regimul firmei: impozit pe profit 103, microîntreprindere 121 (nomenclatorul D100, `core/d100.py`)."""
+    cur.execute("SELECT schema_name FROM public.tenants WHERE id = %s", (tenant_id,))
+    r = cur.fetchone()
+    if not r:
+        return None
+    cur.execute('SELECT regim_fiscal FROM "%s".firma_profil WHERE id = 1' % str(r[0]).replace('"', ""))
+    reg = ((cur.fetchone() or [None])[0] or "").strip().lower()
+    return {"profit": "103", "micro": "121"}.get(reg)

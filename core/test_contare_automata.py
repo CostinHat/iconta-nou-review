@@ -343,8 +343,8 @@ def test_plasa_avertizeaza_omul_in_loc_sa_l_opreasca(conn):
 def test_jurnalul_leaga_factura_cand_potrivirea_e_UNICA(conn):
     r = _factura(conn, "G-J1", "2026-09-05", directie="primita")
     rez = _ja.creeaza(conn, _SCH, "contare manuală", "2026-09-20",
-                      [{"debit": "371", "credit": "401", "suma": 1000},
-                       {"debit": "4426", "credit": "401", "suma": 210}])
+                      [{"debit": "371", "credit": "401", "suma": 1000, "partener_nume": "PARTENER PROBA SRL"},
+                       {"debit": "4426", "credit": "401", "suma": 210, "partener_nume": "PARTENER PROBA SRL"}])
     assert rez.get("factura_id") == r["factura_id"], rez
 
 
@@ -354,15 +354,15 @@ def test_jurnalul_NU_leaga_cand_doua_facturi_se_potrivesc(conn):
     _factura(conn, "G-J2", "2026-09-05", directie="primita")
     _factura(conn, "G-J3", "2026-09-06", directie="primita")
     rez = _ja.creeaza(conn, _SCH, "contare manuală", "2026-09-20",
-                      [{"debit": "371", "credit": "401", "suma": 1000},
-                       {"debit": "4426", "credit": "401", "suma": 210}])
+                      [{"debit": "371", "credit": "401", "suma": 1000, "partener_nume": "PARTENER PROBA SRL"},
+                       {"debit": "4426", "credit": "401", "suma": 210, "partener_nume": "PARTENER PROBA SRL"}])
     assert rez.get("factura_id") is None, rez
 
 
 def test_jurnalul_NU_leaga_o_nota_care_nu_e_contare(conn):
     _factura(conn, "G-J4", "2026-09-05", directie="primita")
     rez = _ja.creeaza(conn, _SCH, "plată furnizor", "2026-09-20",
-                      [{"debit": "401", "credit": "5121", "suma": 1210}])
+                      [{"debit": "401", "credit": "5121", "suma": 1210, "partener_nume": "PARTENER PROBA SRL"}])
     assert rez.get("factura_id") is None, rez
 
 

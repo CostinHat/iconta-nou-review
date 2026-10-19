@@ -2,7 +2,7 @@
 title: Cum aflu ce declarații trebuie să depună firma mea în fiecare lună?
 description: Tiparul lunar de declarații depinde de vectorul fiscal al firmei, nu e același pentru toată lumea — cum îl citești din ecranul Termene al iConta.eu, declarație cu declarație.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -25,7 +25,7 @@ Fiecare tip de declarație are propriul ritm, stabilit de propriul act normativ 
 - **Ești plătitor de TVA?** → D300 (decontul de TVA) și D406 (SAF-T), în ritmul tipului de decont declarat (lunar sau trimestrial); dacă faci și operațiuni intracomunitare, se adaugă D390, lunar, pe faptul concret al lunii (nu doar pe bifa din vector).
 - **Ești neplătitor de TVA?** → D406 se depune totuși, dar trimestrial; dacă ai operațiuni intracomunitare, D301 (nu urmărit pe acest ecran, vezi mai jos).
 - **Ești la regim micro?** → D100, trimestrial, indiferent de venituri.
-- **Ești la regim de profit?** → doar D101, anual — calendarul din iConta.eu nu îți cere, în acest moment, și declarația trimestrială de impozit pe profit (avansul, cod 103 pe formularul D100); e o limitare cunoscută, nu o confirmare că obligația legală nu există.
+- **Ești la regim de profit?** → D100 cu impozitul pe profit (cod 103) pentru trimestrele I, II și III, până pe 25 a lunii următoare trimestrului — și pe un trimestru cu pierdere, când se declară 0 —, plus D101, anual. Trimestrul IV nu are D100: se definitivează în D101, până pe 25 iunie a anului următor.
 
 Combinând aceste reguli, ecranul „Termene" îți arată exact ce iese din vectorul TĂU fiscal pentru fiecare lună din fereastra de 60 de zile — nu o listă „tipică" de SRL.
 
@@ -33,7 +33,7 @@ Combinând aceste reguli, ecranul „Termene" îți arată exact ce iese din vec
 
 - Se presupune un tipar identic pentru toate firmele („orice SRL depune D300, D112, D406 în fiecare lună") — de fapt fiecare declarație depinde de un atribut concret al vectorului fiscal, iar absența lui (neplătitor TVA, fără salariați) elimină declarația corespunzătoare, nu doar o „ascunde".
 - Se ignoră faptul că D390 se calculează pe faptul lunii (operațiuni intracomunitare reale), nu doar pe bifa din vectorul fiscal — o lună fără operațiuni nu generează D390, chiar dacă bifa „operațiuni intracomunitare" e activă la firmă.
-- Se așteaptă avansul trimestrial de impozit pe profit (cod 103) pe calendar, pentru o firmă la regim de profit — momentan nu apare aici, doar D101 anual.
+- Se așteaptă și un D100 pe trimestrul IV pentru o firmă la regim de profit — pe ecran apar D100 pentru trimestrele I–III și D101 anual, pentru că trimestrul IV se definitivează direct în D101.
 
 ## Ce face iConta.eu
 

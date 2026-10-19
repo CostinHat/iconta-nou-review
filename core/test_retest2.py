@@ -431,7 +431,9 @@ def test_pct2_componentele_declaratiei_in_cuvinte():
     from types import SimpleNamespace as NS
     from core.declaratii_componente import componente
     r = componente("d300", NS(R={"R17_2": 210, "R26_1": 0}))["sectiuni"][0]["randuri"]
-    assert r == [{"rând": "rândul 19, coloana TVA", "valoare": 210}]
+    # [379, comanda Costin 8.2] lângă număr, denumirea oficială a rândului (OPANAF 174/2026, anexa 1, D300 rd.19)
+    assert r == [{"rând": "rândul 19, coloana TVA", "denumire în formular": "TOTAL TAXĂ COLECTATĂ (sumă de la rd. 1 până la rd. 18, cu excepţia "
+                  "celor de la rd. 3.1, 5.1, 7.1, 12.1, 12.2)", "valoare": 210}]
     r = componente("d394", NS(op1={("C", 1, 21, "95141537", "ALFA"): [1, 8000, 1680]}, serii=[{"tip": 2, "serieI": "-", "nrI": 4, "nrF": 4}]))
     assert r["sectiuni"][0]["randuri"][0]["tip"] == "achiziții cu taxare inversă"
     assert (r["sectiuni"][0]["randuri"][0]["tip partener"], r["sectiuni"][0]["randuri"][0]["cotă"]) == (

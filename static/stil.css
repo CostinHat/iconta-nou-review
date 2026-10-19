@@ -201,6 +201,13 @@ html, body {
 .desktop { height: 100dvh; overflow-y: auto; display: flex; flex-direction: column; }
 .desktop > * { flex-shrink: 0; }
 .bara-antet { display: flex; flex-direction: column; }  /* [a11y_landmark] banner: bara+subbara+bara3 stivuite */
+/* [lotul 8, bara de stare fixă — comanda Costin 7.3 pct.3, 18.10.2026, DECIZII „Comanda 7.3”] antetul (bara de sus, bara de stare cu
+   „Versiune nouă”, bara 3) rămâne lipit sus cât se derulează `.desktop` (shell-ul derulează el însuși, 321). DS cap.2, gard BARA_ANTET_FIXA. */
+.desktop > .bara-antet { position: sticky; top: 0; z-index: 60; }
+/* [191 + bara fixă] `sticky` cu z-index face din antet un context de suprapunere: „Versiune nouă” (z-index 101) n-ar mai trece peste stratul
+   ferestrei (100). Cât e deschisă o fereastră, `.desktop` nu se derulează, deci antetul revine la poziția lui obișnuită, iar butonul
+   rămâne apăsabil peste strat (e2e `test_def_191_…`). */
+body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-index: auto; }
 
 /* bara albastră (sus) */
 /* [deficiența C8, 11.10.2026] barele aplicației (.bara, .subbara, .bara3) au înălțime MINIMĂ, nu fixă: pe telefon un mesaj lung din
@@ -671,8 +678,6 @@ html, body {
 }
 .mig-sold-rand:last-child { border-bottom: none; }
 .mig-sold-cont { font-family: ui-monospace, monospace; font-weight: 600; color: #2f6fa6; }  /* [a11y 18.08 P3] codul de cont apare in preview-urile de migrare (solduri/parteneri/plan) pe panoul #e9edf3, NU doar pe alb: --albastru #347ab8 = 3.86 < 4.5 (axe: 5121/101 in preview parteneri). #2f6fa6 = 4.53 pe panou si ~4.9 pe alb. Asumptia din fix-ul Control fiscal era gresita. */
-.mig-sold-den { color: var(--ardezie); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.mig-sold-val { text-align: right; color: var(--ardezie); font-variant-numeric: tabular-nums; }
 
 /* fereastra lărgită pe ecranele cu tabel (ex. preview solduri) */
 .fereastra.fer-larg { max-width: 1000px; }
@@ -695,14 +700,6 @@ html, body {
 .fereastra-corp .bara-fixa .dec-bara { margin-top: 10px; }
 .fereastra-corp .bara-fixa > [id$="-mesaj"]:empty, .fereastra-corp .bara-fixa > [id$="-msg"]:empty { display: none; }
 
-/* cap de tabel solduri */
-.mig-sold-cap {
-  display: grid; grid-template-columns: 100px 1fr 110px 110px; gap: 10px;
-  padding: 7px 12px; font-size: var(--text-mic); font-weight: 600; text-transform: uppercase;
-  letter-spacing: 0.03em; color: var(--gri); border-bottom: 1px solid var(--linie);
-}
-.mig-sold-cap span:nth-child(3), .mig-sold-cap span:nth-child(4) { text-align: right; }
-
 /* pe fereastra lărgită: corpul nu scrollează, doar tabelul ia spațiul rămas */
 .fereastra.fer-larg .fereastra-corp { overflow: auto; display: flex; flex-direction: column; }
 /* [layout/a11y; DS cap.9 v2.84, retest 08.10 pct.15] intr-o fereastra larga corpul e flex-column. NICIUN copil direct nu se
@@ -715,18 +712,11 @@ html, body {
 .fereastra.fer-larg .mig-inapoi,
 .fereastra.fer-larg .mig-intro,
 .fereastra.fer-larg .mig-sold-rezumat,
-.fereastra.fer-larg .mig-sold-cap,
-.fereastra.fer-larg .mig-sold-cap,
-.fereastra.fer-larg .mig-cap-part,
 .fereastra.fer-larg .mig-coer,
-.fereastra.fer-larg .mig-cap-sal,
-.fereastra.fer-larg .mig-cap-asoc,
-.fereastra.fer-larg .mig-cap-mf,
-.fereastra.fer-larg .mig-cap-ist,
 .fereastra.fer-larg .mig-buton { flex: 0 0 auto; }
 
 
-/* ---------- STRAT 3: PARTENERI (5 coloane) ---------- */
+/* ---------- banda de coerență a importurilor ---------- */
 .mig-coer {
   display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px;
 }
@@ -734,52 +724,23 @@ html, body {
 .mig-eq-gri {
   background: #eef1f5; color: #5a6678; border: 1px solid #dde2ea;
 }
-.mig-cap-part, .mig-rand-part {
-  grid-template-columns: 80px 110px 1fr 100px 100px !important;
-}
-.mig-cap-part span:nth-child(4), .mig-cap-part span:nth-child(5) { text-align: right; }
-.mig-rand-part .mig-sold-val { text-align: right; }
-.mig-sold-cui { color: #44516b; font-variant-numeric: tabular-nums; }
 
 
-/* ---------- STRAT 4: SALARIATI (5 coloane) ---------- */
-.mig-cap-sal, .mig-rand-sal {
-  grid-template-columns: 1fr 150px 90px 90px 100px !important;
-}
-.mig-cap-sal span:nth-child(4) { text-align: right; }
-.mig-rand-sal .mig-sold-val { text-align: right; }
-.mig-sold-cnp { font-variant-numeric: tabular-nums; }
 .mig-cnp-ok { color: var(--verde-inchis); }  /* [a11y lot 19] #15803d pica axe color-contrast pe randul de previzualizare (DS: verdele care trece 4.5:1) */
 .mig-cnp-no { color: #c0392b; font-weight: 600; }
-.mig-motiv { font-size: var(--text-mic); font-weight: 400; color: #a3231c; }  /* [a11y] motivul de refuz VIZIBIL (nu title-only, pierdut pe touch) */
-.mig-sold-cor, .mig-sold-norma { color: #44516b; font-size: var(--text-mic); }
-.mig-rand-invalid { background: #fdf0ee; }
 
 
-/* ---------- STRAT 5: ASOCIATI (4 coloane) ---------- */
-.mig-cap-asoc, .mig-rand-asoc {
-  grid-template-columns: 1fr 150px 90px 90px !important;
-}
-.mig-cap-asoc span:nth-child(4) { text-align: right; }
-.mig-rand-asoc .mig-sold-val { text-align: right; font-variant-numeric: tabular-nums; }
-.mig-sold-tip { color: #6d28d9; font-size: var(--text-mic); }
-
-
-/* ---------- STRAT 6: MIJLOACE FIXE (6 coloane) ---------- */
-.mig-cap-mf, .mig-rand-mf {
-  grid-template-columns: 70px 1fr 100px 100px 80px 90px !important;
-}
-.mig-cap-mf span:nth-child(3), .mig-cap-mf span:nth-child(4) { text-align: right; }
-.mig-rand-mf .mig-sold-val { text-align: right; font-variant-numeric: tabular-nums; }
-.mig-sold-dur, .mig-sold-met { color: #44516b; font-size: var(--text-mic); }
-.mig-sold-met { color: #a83d22; }  /* [14.10.2026, axe pe previzualizarea importului SAGA] #c0492b = 4,46:1 pe rândul cu avertisment (#fdf0ee); #a83d22 = 5,63:1 (6,26:1 pe alb) */
-
-
-/* ---------- STRAT 7: ISTORIC DECLARATII (4 coloane) ---------- */
-.mig-cap-ist, .mig-rand-ist {
-  grid-template-columns: 90px 70px 70px 1fr !important;
-}
-.mig-sold-an, .mig-sold-luna { color: #44516b; font-size: var(--text-mic); }
+/* ---------- PREVIZUALIZAREA COMUNĂ A IMPORTURILOR (comanda Costin 8.2 pct.4; 349, 352, 357, 358, 360) ----------
+   Tabel, nu grilă: antetul stă deasupra valorilor; starea rândului are coloana ei, iar motivul se rupe la cuvânt pe rândul lui. */
+.mig-prev-cutie { max-height: 55vh; overflow: auto; margin-top: 8px; }
+.mig-prev td { overflow-wrap: break-word; vertical-align: top; }
+.mig-prev-stare { min-width: 9ch; }
+.mig-prev-motive td { border-top: 0; padding-top: 0; }
+.mig-prev-motiv { font-size: var(--text-mic); color: #44516b; margin-top: 2px; }
+.mig-stare-ok { color: #0f6e56; font-weight: 600; }
+.mig-stare-semnalat { color: var(--galben-text); font-weight: 600; }
+.mig-stare-respins { color: var(--rosu); font-weight: 600; }
+.mig-eq-sem { color: var(--galben-text); background: #fdf3e2; }
 
 
 /* ---------- CONTROL FISCAL ---------- */
@@ -2593,8 +2554,10 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
   padding-bottom: 5px; border-bottom: 1px solid #e6ebf1; }
 .ans-fir { list-style: none; margin: 0; padding: 0; }
 .ans-pas { display: flex; align-items: flex-start; gap: 10px; padding: 5px 0; }
-.ans-pas-nr { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; background: #eef4fd;
-  color: #3d8fd6; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; }
+/* [19.10.2026, comanda 8.2 / 371] firul are acum 12 pași: numărul din două cifre ieșea din cerc (axe: color-contrast), iar #3d8fd6 pe #eef4fd
+   nu atingea 4,5:1 — aceeași pereche de culori ca anunțul „Versiune nouă”, iar cercul se lățește la două cifre */
+.ans-pas-nr { flex: 0 0 auto; min-width: 22px; height: 22px; padding: 0 4px; box-sizing: border-box; border-radius: 11px; background: #eef4fd;
+  color: #1f3a5f; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; }
 .ans-pas-txt { font-size: 13.5px; color: #38485a; line-height: 1.5; }
 .mig-model { margin: 0 0 12px; }
 .ans-pas-titlu { display: block; font-weight: 700; color: #17324d; }

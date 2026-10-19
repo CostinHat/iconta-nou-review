@@ -46,10 +46,15 @@ def select_facturi_2(cur):
 
 
 def select_inregistrari(cur, di, ds):
-    cur.execute("SELECT i.id, i.data, i.descriere, i.sursa, l.cont_debit, l.cont_credit, "
-                "l.suma, f.tert_cui, f.tert_nume "
+    # [deficiența 381, 18.10.2026] partenerul liniei: cel scris pe linie (nota manuală pe 401 / 4111), altfel al facturii legate, altfel al
+    # operațiunii de casă din care vine nota — până azi numai factura, deci o plată fără factură n-avea furnizor
+    cur.execute("SELECT i.id, i.data, i.descriere, i.sursa, i.factura_id, l.cont_debit, l.cont_credit, "
+                "l.suma, COALESCE(NULLIF(l.partener_cui, ''), f.tert_cui, co.cui) AS tert_cui, "
+                "COALESCE(NULLIF(l.partener_nume, ''), f.tert_nume, co.partener) AS tert_nume "
                 "FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
                 "LEFT JOIN facturi f ON f.id = i.factura_id "
+                "LEFT JOIN LATERAL (SELECT c.cui, c.partener FROM casa_operatiuni c WHERE c.inregistrare_id = i.id ORDER BY c.id LIMIT 1) co "
+                "ON true "
                 "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s "
                 "ORDER BY i.id, l.id", (di, ds))
 
@@ -60,7 +65,7 @@ def select_factura_linii(cur, di, ds):
     cur.execute("SELECT factura_id, id, descriere, um, "
                 "COALESCE(cantitate,0) AS cantitate, "
                 "COALESCE(pret_unitar,0) AS pret_unitar, "
-                "COALESCE(cota_tva,0) AS cota_tva "
+                "COALESCE(cota_tva,0) AS cota_tva, cont_venit "   # [380] contul de venit al liniei
                 "FROM factura_linii WHERE factura_id IN "
                 "(SELECT id FROM facturi WHERE data_emitere >= %s AND data_emitere < %s "
                 " AND " + _doc_fiscal(None) + " AND " + _status_declarabil(None) + ") "
@@ -73,8 +78,18 @@ def select_facturi_3(cur, di, ds):
                 "COALESCE(total,0) AS total, COALESCE(tva,0) AS tva, "
                 "moneda, curs_bnr, total_lei, tva_lei, "  # [A1] conversia in lei (SAF-T CurrencyCode=RON)
                 "COALESCE(taxare_inversa,false) AS ti, storno_din_id, directie, "
-                "bon_fiscal_nr "   # [punctul 3] factura emisă pe baza bonului fiscal -> TaxCode 310327
+                "bon_fiscal_nr, tip_operatiune "   # [punctul 3] bonul fiscal -> TaxCode 310327; [380] avansul -> 419
                 "FROM facturi WHERE data_emitere >= %s AND data_emitere < %s "
                 "AND " + _doc_fiscal(None) + " AND " + _status_declarabil(None) + " "
                 "ORDER BY id", (di, ds))
     return cur.fetchall()
+
+
+
+def cont_venit_implicit(cur):
+    """[380] contul de venit implicit al firmei (`firma_profil.cont_venit_implicit`), ca la contarea facturii."""
+    cur.execute("SELECT cont_venit_implicit FROM firma_profil WHERE id = 1")
+    r = cur.fetchone()
+    if not r:
+        return None
+    return r["cont_venit_implicit"] if isinstance(r, dict) else r[0]

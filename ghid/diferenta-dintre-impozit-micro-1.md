@@ -2,7 +2,7 @@
 title: "Diferența dintre impozit micro 1% și impozit pe profit 16% în 2026"
 description: "Cum diferă bazele de calcul și cotele celor două regimuri de impozitare a firmelor românești în 2026: impozitul micro (1%, pe venituri) și impozitul pe profit (16%, pe profit)."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Pragul „de rentabilitate" la care cele două regimuri dau aceeași sumă de pl
 
 ## Ce face iConta.eu
 
-iConta.eu calculează separat cele două baze conform legii: pentru profit, motorul D100 determină rezultatul fiscal real (venituri minus cheltuieli, cumulat de la începutul anului, conform art. 41), nu doar venituri brute; pentru micro, baza pornește de la veniturile din orice sursă înregistrate în conturile de clasa 7, cu reducerile comerciale scăzute. La data acestui ghid, aplicația nu are un simulator dedicat care să compare automat, pentru o firmă dată, câte lei ar plăti sub fiecare regim — o astfel de comparație rămâne o analiză pe care contabilul o face separat, folosind cifrele reale din evidența contabilă a firmei.
+iConta.eu calculează separat cele două baze conform legii: pentru profit, D100 pornește de la rezultatul fiscal cumulat de la începutul anului (art. 41) — venituri minus cheltuieli, plus ajustările fiscale scrise de contabil, minus pierderea fiscală de recuperat —, nu de la venituri brute; pentru micro, baza pornește de la veniturile din orice sursă înregistrate în conturile de clasa 7, cu reducerile comerciale scăzute. La data acestui ghid, aplicația nu are un simulator dedicat care să compare automat, pentru o firmă dată, câte lei ar plăti sub fiecare regim — o astfel de comparație rămâne o analiză pe care contabilul o face separat, folosind cifrele reale din evidența contabilă a firmei.
 
 [iConta.eu](/)

@@ -159,7 +159,7 @@ def test_descarcarea_lunii_are_o_singura_situatie_pe_toate_notele(conn):
 
 def test_nota_manuala_ramane_fara_document(conn):
     from core import jurnal_api as j
-    r = j.creeaza(conn, SCH, "Corecție", "2026-10-06", [{"debit": "628", "credit": "401", "suma": 10}])
+    r = j.creeaza(conn, SCH, "Corecție", "2026-10-06", [{"debit": "628", "credit": "401", "suma": 10, "partener_nume": "PARTENER PROBA SRL"}])
     assert _ref(conn, r["id"]) is None
 
 

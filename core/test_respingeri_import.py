@@ -39,8 +39,9 @@ def test_fiecare_regula_spune_ce_inseamna():
     for cod, spec in migrare_api.REGULI.items():
         assert cod == cod.lower() and " " not in cod, "cod neconform: %r" % cod
         assert spec.get("inseamna"), "regula %r nu spune ce înseamnă" % cod
-        assert spec.get("fel") in ("lipsa", "invalid", "duplicat", "incoerent", "esec"), (
-            "regula %r n-are o formă declarată (lipsa/invalid/duplicat/incoerent/esec): %r"
+        # [comanda Costin 8.2 pct.4] „semnal” = rândul intră, cu observația spusă pe el (`migrare_api.semnaleaza`), nu se respinge
+        assert spec.get("fel") in ("lipsa", "invalid", "duplicat", "incoerent", "esec", "semnal"), (
+            "regula %r n-are o formă declarată (lipsa/invalid/duplicat/incoerent/esec/semnal): %r"
             % (cod, spec.get("fel")))
 
 

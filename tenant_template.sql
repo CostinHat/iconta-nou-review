@@ -3213,3 +3213,31 @@ DROP TRIGGER IF EXISTS trg_regula_rip_ciorna_proprie ON TENANT_PLACEHOLDER.rip_o
 CREATE TRIGGER trg_regula_rip_ciorna_proprie BEFORE UPDATE OR DELETE ON TENANT_PLACEHOLDER.rip_operatiuni
   FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.regula_rip_ciorna_proprie();
 -- [ciorne_proprii_v1] sfârșit
+
+-- [deficiența 378, comanda Costin 8.2, 18.10.2026] ajustările fiscale ale rezultatului (Registrul de evidență fiscală, varianta pe profit),
+-- pe rândul oficial D101 (OPANAF 206/2025): sursa unică pentru D100 trimestrial (cumulat) și D101. `trim` NULL = cifră a anului (rd.39,
+-- pierderea de recuperat). Firmele existente: core/migrare_ajustari_fiscale.py. Modulul: core/ajustari_fiscale.py.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.ajustari_fiscale (
+    id serial PRIMARY KEY,
+    an integer NOT NULL,
+    trim smallint CHECK (trim BETWEEN 1 AND 4),
+    rand text NOT NULL,
+    suma numeric(15,2) NOT NULL CHECK (suma > 0),
+    descriere text,
+    document text,
+    creat_de integer,
+    creat_la timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS ajustari_fiscale_an ON TENANT_PLACEHOLDER.ajustari_fiscale (an);
+
+-- [deficiența 381, comanda Costin 8.2, 18.10.2026] partenerul pe linia notei: nota pe 401 / 4111 îl cere la introducere (Registrul jurnal),
+-- iar D406 îl pune pe CustomerID / SupplierID (până azi venea numai din factura legată). Firmele existente:
+-- core/migrare_partener_linie.py.
+ALTER TABLE TENANT_PLACEHOLDER.inregistrari_linii ADD COLUMN IF NOT EXISTS partener_cui text;
+ALTER TABLE TENANT_PLACEHOLDER.inregistrari_linii ADD COLUMN IF NOT EXISTS partener_nume text;
+
+-- [deficiența 359, comanda Costin 8.2, 18.10.2026] amortizarea cumulată preluată din registrul vechi, la data preluării: se compară cu cea
+-- calculată din PIF + durată + metodă și se reconciliază cu balanța de deschidere (auditul de preluare). Firmele existente:
+-- core/migrare_mf_amortizare_preluata.py.
+ALTER TABLE TENANT_PLACEHOLDER.mijloace_fixe ADD COLUMN IF NOT EXISTS amortizare_preluata numeric;
+ALTER TABLE TENANT_PLACEHOLDER.mijloace_fixe ADD COLUMN IF NOT EXISTS data_preluare date;

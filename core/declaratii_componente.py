@@ -29,8 +29,8 @@ import dataclasses
 import datetime
 import decimal
 
-from core.d101_randuri import rand_d101 as _rand_d101
-from core.d300_randuri import rand_formular as _rand_d300
+from core.d101_randuri import denumire_d101 as _den_d101, rand_d101 as _rand_d101
+from core.d300_randuri import denumire_rand as _den_d300, rand_formular as _rand_d300
 
 
 def _chei_d394(parti):
@@ -136,12 +136,13 @@ COMPONENTE = {
     "d205": (Sectiune("Beneficiari", "beneficiari",
                       monetare=("baza1", "imp1", "castig1", "pierdere1", "divid_d", "divid_p"), element="Beneficiar"),),
     "d301": (Sectiune("Operațiuni", "operatiuni", monetare=("val_valuta", "baza", "tva"), element="Operatiune"),),
+    # [379, comanda Costin 8.2] fiecare rând cu denumirea lui oficială din formular, lângă numărul lui
     "d300": (Sectiune("Rânduri completate", "R",
-                      chei=("rând",), valori=("valoare",), fara_zero=True,
-                      monetare=("valoare",), cheie_om=_rand_d300),),
+                      chei=("rând", "denumire în formular"), valori=("valoare",), fara_zero=True,
+                      monetare=("valoare",), chei_om=lambda p: (_rand_d300(p[0]), _den_d300(p[0]))),),
     "d101": (Sectiune("Rânduri completate", "P",
-                      chei=("rând",), valori=("valoare",), fara_zero=True,
-                      monetare=("valoare",), cheie_om=_rand_d101),),
+                      chei=("rând", "denumire în formular"), valori=("valoare",), fara_zero=True,
+                      monetare=("valoare",), chei_om=lambda p: (_rand_d101(p[0]), _den_d101(p[0]))),),
     "d390": (Sectiune("Operațiuni intracomunitare", "ops",
                       chei=("tip", "țară", "cod partener", "denumire partener"),
                       valori=("bază",), monetare=("bază",), cheie_om=_tip_d390),),

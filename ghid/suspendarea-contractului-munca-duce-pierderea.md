@@ -2,7 +2,7 @@
 title: "Suspendarea contractului de muncă duce la pierderea regimului micro?"
 description: "Ce se întâmplă cu încadrarea la impozitul pe veniturile microîntreprinderilor atunci când singurul salariat al firmei are contractul de muncă suspendat, potrivit Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Practic, condiția de la art. 47 alin. (1) lit. g) — „are cel puțin un sala
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu **nu calculează automat** impactul unei suspendări de contract asupra eligibilității pentru regimul micro. Aplicația păstrează, în profilul firmei, un câmp de regim fiscal (`micro`/`profit`, vezi aplicația) pe baza căruia generează declarațiile corespunzătoare (D100 trimestrial pentru micro, D101 anual pentru profit), dar nu urmărește zilele de suspendare ale contractelor de muncă și nu alertează contabilul când pragul de 30 de zile este depășit. Verificarea condiției de salariat, în cazul suspendărilor, rămâne o evaluare manuală a contabilului.
+La data acestui ghid, iConta.eu **nu calculează automat** impactul unei suspendări de contract asupra eligibilității pentru regimul micro. Aplicația păstrează, în profilul firmei, un câmp de regim fiscal (`micro`/`profit`, vezi aplicația) pe baza căruia generează declarațiile corespunzătoare (D100 trimestrial pentru micro; D100 pe trimestrele I–III și D101 anual pentru profit), dar nu urmărește zilele de suspendare ale contractelor de muncă și nu alertează contabilul când pragul de 30 de zile este depășit. Verificarea condiției de salariat, în cazul suspendărilor, rămâne o evaluare manuală a contabilului.
 
 [iConta.eu](/)

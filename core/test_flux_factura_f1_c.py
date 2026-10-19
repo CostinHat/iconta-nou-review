@@ -215,7 +215,7 @@ def test_documentul_justificativ_se_poate_scrie_pe_nota(conn):
     """Avertismentul de la validare spune „scrie referința în notă” — mesajul nu promite ce aplicația nu face (Costin 05.10):
     creează și editează primesc `document_ref`. MUTAȚIE: `document_ref` scos din UPDATE-ul lui `editeaza` -> pică."""
     from core import jurnal_api as j
-    r = j.creeaza(conn, SCH, "Chirie octombrie", "2026-10-05", [{"debit": "612", "credit": "401", "suma": 100}],
+    r = j.creeaza(conn, SCH, "Chirie octombrie", "2026-10-05", [{"debit": "612", "credit": "401", "suma": 100, "partener_nume": "PARTENER PROBA SRL"}],
                   document_ref="Factură CH-9 din 01.10.2026")
     assert r["ok"]
     with conn.cursor() as cur:

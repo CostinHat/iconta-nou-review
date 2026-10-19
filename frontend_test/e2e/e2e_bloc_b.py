@@ -229,6 +229,7 @@ def _nota_prin_ecran(e, firma, descriere, data, luna=None, doc="Contract E2E nr 
     pg.fill("#je-doc", doc)
     pg.fill("#je-linii .je-deb", "612")
     pg.fill("#je-linii .je-cre", "401")
+    pg.fill("#je-linii .je-pnume", "Furnizor E2E SRL")   # [381] nota pe 401 cere partenerul la introducere
     pg.fill("#je-linii .je-sum", suma)
     with pg.expect_response(lambda r: r.url.split("?")[0].endswith("/jurnal") and r.request.method == "POST", timeout=30000) as rr:
         pg.click("#je-salveaza")
@@ -666,7 +667,7 @@ def test_def_48_nota_la_validare_nu_se_editeaza_nici_nu_se_sterge(ana, firma_e2e
     assert "La validare în cabinet: nu se modifică" in txt, txt
     assert rand.locator("[data-edit]").count() == 0 and rand.locator("[data-del]").count() == 0, "butoanele de modificare sunt pe rând"
     put = _cerere(pg, "PUT", "/tenants/%d/jurnal/%d" % (firma_e2e["tenant_id"], nid),
-                  {"descriere": desc + " schimbat", "linii": [{"debit": "612", "credit": "401", "suma": 999}]})
+                  {"descriere": desc + " schimbat", "linii": [{"debit": "612", "credit": "401", "suma": 999, "partener_nume": "PARTENER PROBA SRL"}]})
     dele = _cerere(pg, "DELETE", "/tenants/%d/jurnal/%d" % (firma_e2e["tenant_id"], nid))
     assert put >= 400 and dele >= 400, (put, dele)
     r = sql('SELECT descriere, (SELECT sum(suma) FROM "%s".inregistrari_linii WHERE inregistrare_id = i.id)::text '

@@ -13,7 +13,7 @@ import urllib.request
 
 import pytest
 
-from conftest import BAZA, PREFIX_FIRMA, _db, _scoate_firmele_e2e, alege_perioada, alege_tipul, cui_cu_control, nr_crt, sql
+from conftest import BAZA, PREFIX_FIRMA, _db, _scoate_firmele_e2e, alege_perioada, alege_tipul, cui_cu_control, linie_nota, nr_crt, sql
 
 AZI = _dt.date.today()
 LUNA_TRECUTA = (AZI.replace(day=1) - _dt.timedelta(days=1)).replace(day=1)
@@ -333,7 +333,7 @@ def test_def_127_fereastra_cozii_spune_ce_contine(patron, firma_gv):
     „De depus”. [PIVOT 16.10.2026, deficiența 292: „Titlul ferestrei urmează cardul din care a fost deschisă”] titlul e al cardului —
     „De validat” (cardul îl alege așa când are note de validat) —, iar ce conține spun secțiunile („Note de validat (n)”)."""
     st, r = _api(ASISTENT, "POST", "/tenants/%d/jurnal" % firma_gv["tenant_id"],
-                 {"data": AZI.isoformat(), "descriere": "Chirie D127", "linii": [{"debit": "612", "credit": "401", "suma": 100}]})
+                 {"data": AZI.isoformat(), "descriere": "Chirie D127", "linii": [{"debit": "612", "credit": "401", "suma": 100, "partener_nume": "PARTENER PROBA SRL"}]})
     assert st == 200, (st, r)
     _in_coada(firma_gv)
     _coada(patron)
@@ -487,7 +487,7 @@ def test_def_129_detaliul_notei_are_valideaza_si_respinge(patron, firma_gv):
     „Validează” și „Respinge”; „Validează” din detaliu validează nota (intră în evidență)."""
     st, r = _api(ASISTENT, "POST", "/tenants/%d/jurnal" % firma_gv["tenant_id"],
                  {"data": AZI.isoformat(), "descriere": "Telefon D129", "document_ref": "Factura TEL D129",
-                  "linii": [{"debit": "626", "credit": "401", "suma": 77}]})
+                  "linii": [{"debit": "626", "credit": "401", "suma": 77, "partener_nume": "PARTENER PROBA SRL"}]})
     assert st == 200, (st, r)
     nid = r.get("id")
     _in_coada(firma_gv)
@@ -799,7 +799,7 @@ def test_def_123_fara_declaratie_spune_nedeclarat(patron, firma_sal):
 def _nota_validata(firma, data, debit, credit, suma, descriere):
     st, r = _api(PATRON, "POST", "/tenants/%d/jurnal" % firma["tenant_id"],
                  {"data": data, "descriere": descriere, "document_ref": "Doc %s" % descriere,
-                  "linii": [{"debit": debit, "credit": credit, "suma": suma}]})
+                  "linii": [linie_nota(debit, credit, suma)]})
     assert st == 200 and r.get("id"), (st, r)
     st, r2 = _api(PATRON, "POST", "/tenants/%d/jurnal/%d/valideaza" % (firma["tenant_id"], r["id"]), {})
     assert st == 200, (st, r2)
@@ -1024,7 +1024,7 @@ def test_def_136_componentele_d406_arata_cont_debit_credit_suma(patron, firma_mf
 def _nota_asistent_respinsa(firma, descriere, motiv, suma=100):
     st, r = _api(ASISTENT, "POST", "/tenants/%d/jurnal" % firma["tenant_id"],
                  {"data": AZI.isoformat(), "descriere": descriere, "document_ref": "Doc %s" % descriere,
-                  "linii": [{"debit": "612", "credit": "401", "suma": suma}]})
+                  "linii": [{"debit": "612", "credit": "401", "suma": suma, "partener_nume": "PARTENER PROBA SRL"}]})
     assert st == 200, (st, r)
     el = [a for a in _in_coada(firma) if descriere in a["eticheta"]]
     assert len(el) == 1, el
@@ -1050,7 +1050,7 @@ def test_def_192_nota_din_nir_nu_ofera_ce_serverul_refuza(patron, firma_gv):
     assert st == 200 and r.get("inregistrari"), (st, r)
     nir_ids = r["inregistrari"]
     st, m = _api(PATRON, "POST", "/tenants/%d/jurnal" % tid, {"data": AZI.isoformat(), "descriere": "Manuala D192", "document_ref": "D192",
-                                                            "linii": [{"debit": "5311", "credit": "4111", "suma": 10}]})
+                                                            "linii": [{"debit": "5311", "credit": "4111", "suma": 10, "partener_nume": "PARTENER PROBA SRL"}]})
     assert st == 200 and m.get("id"), (st, m)
     pg = patron.pg
     _jurnal(patron, firma_gv)
@@ -1107,11 +1107,11 @@ def test_def_106_notificarea_de_validat_se_rezolva_la_respingere(patron, firma_g
     „rezolvată: validată”."""
     st, r = _api(ASISTENT, "POST", "/tenants/%d/jurnal" % firma_gv["tenant_id"],
                  {"data": AZI.isoformat(), "descriere": "Curier D106", "document_ref": "Doc D106",
-                  "linii": [{"debit": "624", "credit": "401", "suma": 40}]})
+                  "linii": [{"debit": "624", "credit": "401", "suma": 40, "partener_nume": "PARTENER PROBA SRL"}]})
     assert st == 200, (st, r)
     st, r2 = _api(ASISTENT, "POST", "/tenants/%d/jurnal" % firma_gv["tenant_id"],
                   {"data": AZI.isoformat(), "descriere": "Posta D106", "document_ref": "Doc2 D106",
-                   "linii": [{"debit": "626", "credit": "401", "suma": 30}]})
+                   "linii": [{"debit": "626", "credit": "401", "suma": 30, "partener_nume": "PARTENER PROBA SRL"}]})
     assert st == 200, (st, r2)
     el = {a["eticheta"]: a["coada_id"] for a in _in_coada(firma_gv, notifica=False)}
     c_resp = next(v for k, v in el.items() if "Curier D106" in k)
@@ -1184,7 +1184,7 @@ def test_def_120_d300_nu_intra_in_coada_cand_4426_are_tva_neinclus_chiar_cu_cior
     _nota_validata(firma_tva, LUNA_TRECUTA.replace(day=7).isoformat(), "4426", "401", 241.50, "NIR fara factura D120")
     st, r = _api(PATRON, "POST", "/tenants/%d/jurnal" % tid,
                  {"data": LUNA_TRECUTA.replace(day=9).isoformat(), "descriere": "Plata furnizor ciorna D120", "document_ref": "DP-D120",
-                  "linii": [{"debit": "401", "credit": "5311", "suma": 100}]})
+                  "linii": [{"debit": "401", "credit": "5311", "suma": 100, "partener_nume": "PARTENER PROBA SRL"}]})
     assert st == 200 and r.get("id"), (st, r)
     try:
         _genereaza(patron, firma_tva, "d300", LUNA_TRECUTA.year, LUNA_TRECUTA.month)
@@ -1208,7 +1208,7 @@ def test_def_210_d394_nu_intra_in_coada_cu_diferenta_tva_si_ciorne_in_luna(patro
         _nota_validata(firma_tva, LUNA_TRECUTA.replace(day=7).isoformat(), "4426", "401", 241.50, "NIR fara factura D120")
     st, r = _api(PATRON, "POST", "/tenants/%d/jurnal" % tid,
                  {"data": LUNA_TRECUTA.replace(day=9).isoformat(), "descriere": "Plata furnizor ciorna D210", "document_ref": "DP-D210",
-                  "linii": [{"debit": "401", "credit": "5311", "suma": 100}]})
+                  "linii": [{"debit": "401", "credit": "5311", "suma": 100, "partener_nume": "PARTENER PROBA SRL"}]})
     assert st == 200 and r.get("id"), (st, r)
     try:
         _genereaza(patron, firma_tva, "d394", LUNA_TRECUTA.year, LUNA_TRECUTA.month)

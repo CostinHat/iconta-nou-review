@@ -386,16 +386,17 @@ CLASIFICARE = {
             "nu se scrie, stratul ramane «nefacut» si urmatoarea salvare il reface — starea se "
             "autocorecteaza. Apelul ANAF de dinainte e o INTEROGARE de CUI, nu un efect.",
     },
-    "POST /tenants/{tenant_id}/rip-import/incarca": {
+    "POST /tenants/{tenant_id}/rip-import": {
         "clasa": NECRITIC,
-        "efecte": "importul registrului de incasari-plati (atomic, in `rip_migrare_api.importa`) "
+        "efecte": "importul registrului de incasari-plati (o tranzactie, in `rip_migrare_api.importa`) "
                   "<-> marcajul de progres al migrarii",
         "de_ce":
-            "faptul contabil — operatiunile importate — e atomic prin constructie si refuza la "
-            "prima eroare. A doua tranzactie e marcajul de progres, aceeasi clasa ca la `/vector`. "
-            "Reimportul e aparat de numaratoarea `sarite_duplicat`. Commitul partial semnalat de "
-            "instrument e cele DOUA apeluri ale lui `seteaza_status` din ramurile exclusive ale "
-            "unui `if`, aplatizate de scaner: nu se executa niciodata amandoua.",
+            "[372, comanda Costin 8.2] previzualizarea (`/rip-import/incarca`) nu mai scrie nimic; salvarea reverifica "
+            "randurile si scrie numai pe cele bune, intr-o singura tranzactie, iar pe cele respinse le intoarce numite "
+            "(niciun rand bun -> refuz, nimic scris). A doua tranzactie e marcajul de progres, aceeasi clasa ca la "
+            "`/vector`: nescris, stratul ramane «in lucru» si urmatoarea salvare il reface. Reimportul e aparat de "
+            "numaratoarea `sarite_duplicat`. Commitul partial semnalat de instrument e cele DOUA apeluri ale lui "
+            "`seteaza_status` din ramurile exclusive ale unui `if`, aplatizate de scaner: nu se executa niciodata amandoua.",
     },
     "POST /tenants/{tenant_id}/etransport/trimite": {
         "clasa": NECRITIC,

@@ -2,7 +2,7 @@
 title: "Câți ani se poate reporta pierderea fiscală?"
 description: "Regula actuală de reportare a pierderii fiscale la impozitul pe profit: 5 ani consecutivi, cu o limită de 70% din profitul impozabil al fiecărui an, în ordinea vechimii pierderilor."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă din regula actuală, valabilă și în 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu preia pierderea fiscală de recuperat ca dată introdusă de utilizator în declarația D101 (rândul dedicat deducerilor), fără să calculeze automat plafonul de 70% din profitul anului sau să urmărească vechimea fiecărei pierderi pentru încadrarea în cei 5 ani. Verificarea corectă a sumei recuperabile, an de an, rămâne responsabilitatea contabilului.
+La data acestui ghid, iConta.eu preia pierderea fiscală de recuperat ca dată introdusă de contabil — o dată pe an, în ecranul „Registrul de evidență fiscală” al firmei, secțiunea „Ajustări fiscale”, sau direct în D101 — și calculează singur suma recuperată, cel mult 70% din profitul impozabil dinaintea recuperării, atât în D101, cât și cumulat în D100 pe trimestrele I–III. Aplicația nu urmărește însă vechimea fiecărei pierderi pentru încadrarea în cei 5 ani și nici ordinea lor: suma rămasă de recuperat, an de an, o stabilește contabilul.
 
 [iConta.eu](/)

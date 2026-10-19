@@ -21487,3 +21487,234 @@ continui. [...] Te oprești doar pentru cifre pe care nu le poți explica.”*
 
 **Ce urmează:** commitul acestei intrări împreună cu referința, apoi a doua (ultima) rulare a porții lotului 8; pe VERDE, publicarea
 (backup, aprobarea SHA-ului, fast-forward, post-commit, migrările cu `--productie`, four-way).
+
+
+## 18.10.2026 — Comanda 8.2 (lotul 8): răspunsul la §6 din 8.1, deficiențele 341–381, regula importurilor de migrare, restul lotului 8
+
+**Comanda (Costin, 18.10.2026, verbatim):**
+
+> 8.2
+>
+> 1. La 316: citirea pe producție e aprobată, numai citire.
+> 2. Confirmările a, b și c de la §6.2 sunt aprobate așa cum sunt implementate.
+> 3. Rezolvă deficiențele 341–381 de mai jos.
+> 4. Toate importurile de migrare urmează aceeași regulă: orice rând citit e afișat sau semnalat cu motiv, nimic nu se înlocuiește pe tăcute, totul trece prin previzualizare înainte de salvare, erorile interne nu ajung la utilizator, modelele se deschid pe coloane în Excel.
+> 5. Fă restul lotului 8: Meta/WhatsApp, Postmark, Search Console și bara de stare fixă. Unde e nevoie de chei sau acces de la mine, pregătește tot și spune-mi exact ce îți trebuie.
+> 6. Rulează poarta lotului 8 și, dacă e verde, publică lotul pe producție.
+> 7. Predă raportul, cu răspuns punctual pentru fiecare deficiență 341–381 (rezolvată sau nu) și confirmarea publicării.
+>
+> DEFICIENȚE (testare 18.10, Migrare cabinet cu fișiere de test, nimic salvat, și Declarații pe F2/F5)
+>
+> 341 Migrare / Firme — Firma deja în portofoliu apare „găsită”, bifată și oferită la import; după import, bifă verde mare cu „0 firme adăugate”.
+>
+> 342 Migrare / Firme — CUI cu cifra de control greșită apare „nu a fost găsit la ANAF”; la Parteneri aceeași greșeală e numită corect.
+>
+> 343 Migrare / Solduri inițiale — Contul sintetic inexistent (999) trece fără avertisment și se adaugă tacit în plan.
+>
+> 344 Migrare / Solduri inițiale — „Data balanței” nu e propusă (ultima zi a lunii dinaintea preluării); caseta informativă e galbenă, ca un avertisment.
+>
+> 345 Migrare / Solduri parteneri — Ecranul nu arată soldurile 4111/401 din balanță cu care compară; „Finalizează stratul” e jargon și e activ cu firme cu balanță fără parteneri.
+>
+> 346 (grav) Migrare / Solduri parteneri — Promite verificarea cu balanța, dar pe F2 pune „401: fără balanță” și lasă salvarea unei sume (net creditor 100) diferite de 401 din contabilitate (debitor 500).
+>
+> 347 Migrare / Salariați — CNP cu 11 cifre: mesajul spune „format (13 cifre)”, neclar.
+>
+> 348 Migrare / Salariați — Funcția din fișier („functie”) apare „—”; data angajării nu se vede.
+>
+> 349 Migrare / Salariați — Coloana „Normă” înghesuie un paragraf, rânduri foarte înalte (clasa 285/331).
+>
+> 350 Migrare / toate modelele CSV — Modelele descărcate (istoric declarații, mijloace fixe, RIP etc.) sunt separate prin virgulă: în Excel cu setări românești totul apare în coloana A. Modelul trebuie să se deschidă direct pe coloane (ex. separator ; sau .xlsx). Importul citește deja corect fișierele cu ; — problema e doar modelul.
+>
+> 351 Migrare / Istoric declarații — D101 pe 2025 (anuală) apare în previzualizare cu luna „dec”. Declarațiile anuale se afișează ca anuale.
+>
+> 352 Migrare / Istoric declarații — În previzualizare, titlurile „LUNĂ” și „DATA DEPUNERII” nu stau deasupra valorilor lor.
+>
+> 353 Migrare / Istoric declarații — Rândul dublat (D112 2026 ian, de două ori) e acceptat de două ori ca „ok”. Dublura se semnalează și se importă o singură dată.
+>
+> 354 Migrare / Istoric declarații — Date de depunere imposibile trec ca „ok”: D112 pe martie depus pe 10.03.2026 (înainte de sfârșitul lunii) și D300 pe aprilie cu data 01.12.2026 (în viitor). Trebuie semnalate.
+>
+> 355 Migrare / Istoric declarații — Rând fără dată de depunere trece ca „ok”; trebuie cel puțin semnalat.
+>
+> 356 Migrare / Istoric declarații — D112 pe 2019 trece ca „ok”, deși ecranul spune că se importă anul curent. Anii vechi se semnalează.
+>
+> 357 Migrare / Istoric declarații și Mijloace fixe — Contorul spune „2 cu avertisment” (la Mijloace fixe „5 cu avertisment”), dar rândurile sunt respinse („nu intră”). Eticheta trebuie să spună ce se întâmplă.
+>
+> 358 Migrare / Istoric declarații — Mesajul de eroare e înghesuit în coloana TIP, rândurile devin foarte înalte și textul se taie (clasa 285/331/349).
+>
+> 359 Migrare / Mijloace fixe — Importul nu preia amortizarea cumulată la data migrării (nu există coloană, previzualizarea nu o arată), deși ecranul promite că amortizarea continuă fără reluare de la zero. DECIZIE: amortizarea cumulată (și valoarea rămasă) la data preluării se preia din registrul vechi; iConta o compară cu ce rezultă din PIF + durată + metodă și semnalează diferențele; totalurile pe conturile de imobilizări și de amortizare se reconciliază cu balanța de deschidere de la Solduri inițiale, iar verificarea intră în auditul de preluare (azi mijloacele fixe sunt „neverificat (v1)”, deși F2 are un mijloc fix importat). Valoarea reziduală rămâne opțională (implicit 0) și e numită clar, ca să nu fie confundată cu valoarea rămasă.
+>
+> 360 Migrare / Mijloace fixe — Previzualizarea nu arată data PIF, contul de imobilizare și contul de amortizare. Metoda „liniara” apare cu roșu, ca o eroare, deși rândul e corect.
+>
+> 361 Migrare / Mijloace fixe — Trec ca „ok”: PIF în viitor (01.01.2027) și metodă inexistentă („inventata”).
+>
+> 362 Migrare / Mijloace fixe — Conturile nu sunt verificate: „mijloc fix” pe 5121 nu e semnalat (a picat doar pentru durata 0); licență pe 205 cu amortizare pe 2813 (în loc de 2805) trece. Contul de imobilizare trebuie să fie din clasa 2, iar cel de amortizare să-i corespundă. Terenul (211x) nu se amortizează: durata 0 e corectă acolo și nu trebuie respinsă.
+>
+> 363 Migrare / Mijloace fixe — La valoare -1.500, mesajul de pe rând spune „valoarea reziduală depășește valoarea de intrare”, iar lista de jos „valoare de intrare -1500.0”. Pe rând motivul real; sumele în format românesc (-1.500,00).
+>
+> 364 Migrare / Asociați — Rândul fără nume dispare în tăcere (7 rânduri → „6 asociați”, total cote fără el).
+>
+> 365 Migrare / Asociați — Nesemnalate: același CNP pe două rânduri, rând fără CNP/CUI (clasificat automat „juridică”), cotă negativă (-5). Fără identificator asociatul nu poate apărea în D205.
+>
+> 366 Migrare / Asociați — Mesajul scrie „rând undefined” la totalul cotelor; lista are loc pentru doar 2–3 rânduri.
+>
+> 367 Migrare / Asociați — CUI-ul asociatului PJ e verificat doar ca cifră de control, nu la ANAF; numele din fișier nu e comparat cu ANAF (14399840 acceptat ca „Firma Asociata SRL”).
+>
+> 368 Migrare cabinet / regim PFA — Pe ecranele de migrare la nivel de cabinet, PFA-ul (F4) apare ca un SRL (la Plan de conturi „184 de conturi, populat”). DECIZIE: aceeași regulă în Migrare cabinet și în meniul per firmă: la PFA se ascund Solduri, Solduri parteneri, Asociați, Plan de conturi; Mijloace fixe rămâne vizibil și la PFA (azi meniul per firmă îl ascunde — se corectează).
+>
+> 369 Migrare / Plan de conturi — Toate conturile apar „Bifunctional”, și cele de pasiv (101, 1012, 105, 106, 1061, 1068), și cele de activ (4111). Funcțiunea (A/P/B) trebuie să fie cea din planul OMFP, analiticele o moștenesc de la sintetic; „Adaugă cont nou” nu are cum s-o stabilească. Fără ea nu se poate semnala un sold pe partea greșită la auditul de preluare. Diacritice: „Bifuncțional”.
+>
+> 370 Control fiscal / Audit de preluare — La reluarea auditului, raportul anterior e înlocuit; nu există istoric. DECIZIE: primul audit după preluare rămâne păstrat și vizibil (dovada a ce s-a primit de la contabilul anterior), alături de ultimul.
+>
+> 371 Migrare cabinet — Ghidul Migrare cabinet (pașii 1–9) nu conține Import RIP (PFA), Articole și stoc inițial, Rețete. DECIZIE: Migrare cabinet arată toate straturile, filtrate pe regimul și tipul fiecărei firme, din aceeași sursă unică ca meniul per firmă (cf. 368).
+>
+> 372 Migrare / Import RIP (PFA) — O dată imposibilă (2026-13-01) prăbușește importul cu eroarea brută a bazei de date afișată contabilului („date/time field value out of range… HINT: … datestyle”). Nu există previzualizare cu rânduri respinse înainte de salvare. Fiecare rând se validează înainte de a atinge baza de date. (Verificat: nimic nu a rămas scris.)
+>
+> 373 Migrare / Articole și stoc inițial — 6 rânduri, toate greșite → „3 articole valide, 270 lei”. Rândul fără denumire dispare; cantitatea „zece” devine 0; UM lipsă devine „buc”; marfă pe 5121 acceptată. Contul de stoc trebuie să fie din clasa 3.
+>
+> 374 Migrare / Articole și stoc inițial — Valoarea stocului nu e comparată cu soldul conturilor de stoc din balanța de deschidere; previzualizarea nu arată contul. DECIZIE: ca la 359, reconciliere pe fiecare cont de stoc cu balanța, iar verificarea intră în auditul de preluare.
+>
+> 375 Migrare / Rețete (HoReCa) — Nesemnalate: rândul fără nume de rețetă dispare; aceeași rețetă cu două prețuri (25 și 28) ia tacit 28; rețeta fără preț apare cu 0,00 lei; cantitățile 0 și negative fără mesaj propriu. „Importă 0 rețete” rămâne activ. Ecranul nu spune că articolele din stoc se importă înaintea rețetelor. Cantitatea pe porție nu are UM — să se raporteze la UM-ul articolului și să fie afișat.
+>
+> 376 PRIORITAR Declarații / Vector fiscal / Semafor — F2 (impozit pe profit, TVA trimestrial) nu are D100 în „Datorate de firmă” pe T3/2026 și nici în restanțele T1/T2 din Control fiscal. La F5 D100 T3 apare. DECIZIE: regimul din vectorul fiscal generează obligațiile lui (D100 trimestrial pentru impozit pe profit și pentru micro, D101 anual pentru impozit pe profit), cu termenele legale, în lista de datorate, semafor și restanțe — pentru toate firmele.
+>
+> 377 PRIORITAR Declarații / D100 + Istoric declarații — D100 T3 la F2 consideră „deja impozitat în trimestrele anterioare: 0,00 lei”. La o firmă preluată, D100 T1–T2 au fost depuse în vechiul program, iar istoricul importă doar tip/an/lună/dată, fără sumă → iConta cere din nou impozitul din T1–T2. DECIZIE: istoricul preia și suma declarată acolo unde o declarație ulterioară se calculează cumulat (D100 profit); D100 scade impozitul deja declarat, indiferent dacă a fost depus prin iConta sau înainte de preluare, și arată de unde vine cifra.
+>
+> 378 Declarații / D100 profit — D100 calculează pe profitul contabil și spune că ajustările fiscale se fac doar la D101. DECIZIE: D100 trimestrial pornește de la rezultatul fiscal cumulat din Registrul de evidență fiscală (cheltuieli nedeductibile, venituri neimpozabile, credit fiscal din sponsorizări, recuperarea pierderii fiscale din anii anteriori în limitele legale). Confirmă regula pe textul oficial al Codului fiscal (art. 41 și art. 19–31) înainte de implementare.
+>
+> 379 Declarații / „Din ce e făcută declarația” — La D300 rândurile apar doar ca număr („rândul 9, coloana Valoare”). Fiecare rând se afișează cu denumirea lui oficială din formular, la toate declarațiile.
+>
+> 380 PRIORITAR D406 (SAF-T) — În D406 T3 la F2, factura 1 (5.000 lei) e contată pe 704 în nota contabilă și apare pe 707 în secțiunea Facturi de vânzare. Contul de venit vine dintr-o singură sursă, iar nepotrivirea jurnal–facturi se semnalează înainte de „Pune în De depus”.
+>
+> 381 D406 (SAF-T) — Nota „plata furnizor” (401 = 5311, 500 lei) e în jurnal, dar rezumatul spune „0 furnizori, 0 plăți”: linia pe 401 nu are furnizor. Nota pe 401/4111 cere partenerul la introducere, iar D406 semnalează liniile de terți fără partener. Verifică și dacă secțiunea Plăți e obligatorie la declarația trimestrială.
+
+**Mesajul următor (Costin, 18.10.2026, verbatim):**
+
+> Rulează poarta lotului 8 și, dacă e verde, publică lotul pe producție. Confirm: în cabinet nu lucrează nimeni, ai acordul să publici fără să mai întrebi.
+
+**Consecințe:**
+1. **§6.2 din 8.1 aprobat:** UM „serv.” = E48; contarea facturii emise și nota statului nu se șterg din Registrul jurnal (ciorna de factură da);
+   WhatsApp inactiv cu motiv cât lipsesc cheile Meta. Rămân cum sunt implementate (DECIZII „Comanda 8.1”, consecințele 8–10).
+2. **Poarta și publicarea:** acordul din mesajul al doilea ține pentru starea comisă la primirea lui (`bee07d87`, 321–340 + C50 / C51):
+   poarta lotului pe ramura `lucru/lot8-2026-10-18`, iar pe VERDE publicarea (backup, fast-forward aprobat, migrările `--productie`,
+   four-way). 341–381 și restul lotului 8 (pct.4–5) se lucrează în worktree-ul `/home/costin/iconta_lot8b`, ramura
+   `lucru/lot8b-2026-10-18` (din `bee07d87`), și se publică separat, cu poarta lor. **Alternativă respinsă:** amânarea porții până după
+   341–381 — confirmarea că în cabinet nu lucrează nimeni e dată acum; peste ore n-ar mai ține.
+3. **Regula importurilor de migrare (pct.4), pentru toate importurile:** orice rând citit e afișat sau semnalat cu motiv; nimic nu se
+   înlocuiește pe tăcute; totul trece prin previzualizare înainte de salvare; erorile interne nu ajung la utilizator; modelele se deschid
+   pe coloane în Excel. Norma se aplică în cod și se păzește mecanic (gărzile intră în GARZI).
+4. **Deciziile din deficiențe** (verbatim mai sus): 359 (amortizarea cumulată preluată, comparată și reconciliată cu balanța, în auditul de
+   preluare), 368 (aceeași regulă de straturi la PFA în Migrare cabinet și în meniul firmei; Mijloace fixe vizibil la PFA), 370 (primul
+   audit de preluare păstrat lângă ultimul), 371 (Migrare cabinet arată toate straturile, din sursa unică a meniului firmei), 374 (stocul
+   reconciliat pe fiecare cont cu balanța), 376 (regimul din vectorul fiscal generează D100 / D101 cu termenele legale, la toate firmele),
+   377 (istoricul preia suma declarată pentru D100 profit, scăzută la calcul, cu sursa arătată), 378 (D100 pe rezultatul fiscal cumulat
+   — numai după confirmarea pe textul Codului fiscal).
+5. **316 (citirea aprobată, numai citire, 18.10.2026):** pe producție au existat în total 6 cereri (contorul `inregistrari_in_asteptare_id_seq`
+   = 6), toate de la adrese `costin.hateganu+…@gmail.com`. 1 și 2 au fost confirmate pe 15.10 (cabinetele 48766 „Cabinet Test
+   Inregistrare” și 48767 „Cabinet Test Inregistrare 253”), apoi șterse cu `gdpr_sterge` la publicarea lotului 5 (16.10 12:46:56,
+   `gdpr_stergeri` 58 și 59), cu decizia din DECIZII (comanda 4 pct.7); 3 (`+test253c`, neconfirmată) ștearsă la fel; 4, 5, 6 (16.10,
+   neconfirmate, expirate pe 17.10) sunt în listă, „expirate”. Nicio cerere a altcuiva n-a existat pe producție; cele „2 care lipsesc”
+   sunt cererile confirmate (lista arată numai cererile neconfirmate). Nota din PREDARE (16.10: „alte 2 cereri în așteptare au rămas”) nu
+   se potrivește cu contorul: la 12:46 existau numai cererile 1–3.
+
+## 18.10.2026 — Comanda 8.2: implementarea 341–381 — interpretările, cu temeiul și alternativa respinsă
+
+Intrarea „Comanda 8.2” (mai sus) are comanda verbatim; aici sunt alegerile făcute la implementare care NU sunt scrise în comandă, fiecare cu
+temeiul, alternativa respinsă și limita. Norma trăiește în cod (docstringurile modulelor numite) și e păzită de testele numite.
+
+1. **Regula importurilor (pct.4) — „semnalat” vs „respins”.** Fiecare rând citit are o stare din trei: *intră* / *intră cu observație*
+   (semnal, regulă cu `fel: "semnal"` în `migrare_api.REGULI`, construită numai prin `migrare_api.semnaleaza`) / *respins — nu intră*.
+   Ce se completează din oficiu e un SEMNAL spus pe rând (RIP fără metodă -> bancă; fără categorie -> „neclasificat”; suma negativă ->
+   valoarea absolută; salariatul fără COR / persoane / scutire; contul de cheltuială dedus din contul de stoc; ingredientul potrivit
+   aproximativ). Ce nu se poate presupune fără să schimbe cifrele e RESPINS (UM lipsă, contul de stoc lipsă sau din afara clasei 3,
+   cantitatea text, rețeta cu două prețuri, asociatul fără CNP/CUI). **Alternativă respinsă:** respingerea oricărei valori lipsă — ar fi
+   refuzat exporturile SAGA care n-au coloanele opționale (decizia 14.10 pct.3–4, persoane / scutire). Garda: `core/test_regula_importurilor.py`.
+2. **362 — terenul.** Comanda: „Terenul (211x) nu se amortizează”. Implementat pe 211 / 2111 (Terenuri); **2112 (Amenajări de terenuri) se
+   amortizează** (OMFP 1802/2014 pct.594: 2811 „Amortizarea amenajărilor de terenuri”), deci rămâne cu durata cerută. Limita: dacă Costin
+   voia și 2112 fără durată, e o singură constantă (`mijloace_fixe_import_api.e_teren`).
+3. **359 — continuarea amortizării.** Amortizarea cumulată preluată se stochează (`mijloace_fixe.amortizare_preluata`, `data_preluare`), se
+   compară cu cea calculată din PIF + durată + metodă (semnal pe rând la diferență), se reconciliază pe conturi cu balanța de deschidere și
+   intră în auditul de preluare. Motorul de amortizare continuă de la PIF (cum era); dacă amortizarea preluată diferă de cea calculată, care
+   cifră continuă e o întrebare pusă lui Costin (raportul, §6), nu o alegere a executorului.
+4. **378 — plafonul recuperării pierderii.** CF art.31 alin.(1): „în limita a 70% inclusiv”. Recuperarea se rotunjește ÎN JOS la leu
+   (`ajustari_fiscale.recuperare_pierdere`, `ROUND_DOWN`), ca plafonul să nu fie depășit prin rotunjire. INTERPRETARE CU TEMEI: regula
+   generală a aplicației e rotunjirea aritmetică; aici textul pune o limită superioară „inclusiv”, iar rotunjirea în sus a 70% din 10.001
+   (7.000,70 -> 7.001) ar recupera peste limită. De reconfirmat dacă apare o normă care transează rotunjirea pierderii recuperate.
+5. **378 — ajustările fiscale pe rândurile D101.** Ajustările se scriu o dată, pe trimestrul în care s-au produs, pe rândul OFICIAL al
+   formularului D101 (OPANAF 206/2025), și le citesc amândouă declarațiile (D100 cumulat de la 01.01, D101 pe an) — `core/ajustari_fiscale.py`.
+   Rândurile derivate din contabilitate (rd.1–7), rezerva legală (rd.13) și creditul de sponsorizare (rd.43.1) nu se scriu de mână.
+6. **379 — denumirile oficiale.** Generate din textul ordinelor (`scripts/denumiri_randuri.py` -> `core/denumiri_randuri.py`), cu
+   exponenții pierduți la extragerea din PDF corectați pe o listă ÎNCHISĂ, fiecare verificat în Codul fiscal local: art.278^1 (art.2781 nu
+   există), art.22^1 (art.221 e despre nerezidenți), art.18^1 (art.181 e abrogat), art.40^2 (art.402 e despre accize). Rândurile D101 cu
+   exponent se numesc ca în formular: P38a = „rândul 38^1” (structura: „rd.40^1=rd.38^1”), nu „38a”. Obligațiile D100 / D710 / D112 (coduri
+   103, 602 …) NU sunt rânduri de formular: denumirea lor completă e în Nomenclatorul ANAF, local avem numai structurile cu prescurtări —
+   întrebare în raport (§6), nu completate din memorie.
+7. **367 — ANAF căzut.** CUI-ul asociatului persoană juridică se confruntă cu ANAF (existență + nume, comparat fără diacritice, majuscule și
+   punctuație: „S.R.L.” = „SRL”; forma juridică NU se scoate). Dacă ANAF nu răspunde, rândul intră cu semnalul „serviciul ANAF nu a
+   răspuns” — nu un refuz fals și nici o eroare internă. **Alternativă respinsă:** blocarea importului cât ANAF e căzut.
+8. **373 — contul de stoc obligatoriu.** Până azi lipsa devenea 302; acum rândul se respinge (stocul se reconciliază pe contul lui cu
+   balanța, 374). Contul de cheltuială lipsă se DEDUCE din contul de stoc (`inventariere.CORESPONDENT`: 371 -> 607, 301 -> 601, 302 -> 602 …,
+   OMFP 1802/2014) și se spune pe rând.
+9. **375 — rețeta întreagă sau deloc.** Un rând respins al unei rețete scoate rețeta întreagă (rândurile ei celelalte: „rețeta nu intră:
+   alt rând al ei e respins”) — altfel s-ar salva o rețetă fără un ingredient.
+10. **Formatul de dată al importurilor.** Sursa unică `import_tabel.data` (erau trei copii; RIP-ul n-o avea). Forma americană „LL/ZZ/AAAA”
+    (încercată până azi numai la mijloace fixe) NU se mai acceptă: „01/13/2026” citit ca 13 ianuarie ar fi o înlocuire tăcută.
+
+## 19.10.2026 — Comanda 8.2: ce a schimbat testarea (suita întreagă, gărzile) — un PIVOT și nouă decizii de execuție
+
+Suita întreagă pe ramura `lucru/lot8b-2026-10-18` (peste lotul 8 publicat, `fcfa3b3a`): 114 picături la prima rulare. Fiecare a fost
+reparată la cauză; cele de mai jos sunt alegeri, nu simple aliniere de test.
+
+1. **PIVOT — D100 pe impozitul pe profit, trimestrul cu pierdere: se DEPUNE cu 0.** Supersedează explicit fraza din „De ce s-au atins
+   ambele căi ale lui D100 — impozitul pe profit devine CUMULAT (A8-profit, 18.09.2026)”: *„Refuzul-pe-zero al profitului numește acum
+   CUMULATUL”*. Atunci, pe profit, trimestrul fără impozit de plată se REFUZA (generarea ridica `ValueError`), pe motivul că un D100 fără
+   obligație e respins de DUK. Intermediar: refuzul numea cumulatul. **Final:** OPANAF 587/2016 anexa 4 pct.3.1.2 — *„În situația în care,
+   în perioada de raportare s-a înregistrat pierdere fiscală [...] la rândul 1 din formular se va înscrie cifra 0”* — iar semaforul cere
+   D100 pe fiecare trimestru I–III la profit (deficiența 376), deci generatorul îl produce cu cod 103 = 0. **Proba:** DUK `stare: valid`
+   pe XML-ul cu 0 (`core/test_d100_profit_cumulat.py::test_376_trimestrul_cu_pierdere_se_declara_cu_0_si_e_valid_la_duk`). La micro
+   (cod 121) regula rămâne: trimestrul fără venituri nu are D100 (poarta de fapt), iar 121 = 0 nu intră în declarație.
+2. **381 — partenerul se cere la introducerea MANUALĂ.** Regula stă în `jurnal_api.creeaza` (singurul apelant: ruta Registrului jurnal).
+   Notele derivate (factură, casă, bancă, NIR) poartă partenerul documentului lor și nu trec pe aici. Testele care simulau introducerea
+   manuală pe 401 / 4111 scriu acum partenerul (17 linii în 7 fișiere de test).
+3. **Pragul de 70% (CF art.31) e procent, în forma legii** (`ajustari_fiscale.PRAG_RECUPERARE_PIERDERE = 70`, împărțit la 100 la calcul):
+   garda citatelor cere ca valoarea constantei să apară în textul citat, iar legea scrie „70%”, nu „0,70”.
+4. **Istoricul auditului de preluare (370) se citește pe `GET /control-fiscal/{id}/audit-preluare/istoric`**, nu pe aceeași cale cu
+   `POST`-ul care rulează și păstrează auditul: garda artefactelor judecă pe cale (interdicția 6 — un GET pe calea unui act care scrie).
+5. **Auditul de preluare: planul și textul limitei vin din aceeași listă** (`audit_preluare._VERIFICARI`). Erau două liste, iar la PFA
+   limita spunea „verificat: mijloace fixe vs balanță, stocul inițial vs balanță”, deși verificările acelea (care cer balanța) nu rulau. La
+   PFA, mijloacele fixe și stocul (rămase la partidă simplă, 368) apar acum la „neverificat”, cu motivul.
+6. **Mijloace fixe — metoda necunoscută se judecă pe ce scrie în fișier** (`metoda_brut`): un rând fără coloana metodei era respins cu
+   „metoda None nu există”. Mesajul amortizării preluate pornește de la cifra scrisă de contabil: „(100,00 lei = valoarea de intrare
+   6.000,00 lei − valoarea rămasă din fișier 5.900,00 lei)”, nu de la diferența calculată singură.
+7. **Rândurile ignorate (parteneri) și CUI-ul invalid (Migrare firme) sunt afirmații tipate** (`afirmatii.afirmatie("fapt", …)`, cu
+   domeniul `Unde("rand")` / `Unde("firma")` și temeiul — ce s-a citit din rând), cum cere decizia din 21.08.
+8. **Mesajul CNP spune ce e greșit, cu numeralul acordat** („are 1 cifră; un CNP are 13”, „are 12 cifre; …”, `common.cate`); restul
+   testelor care citeau vechile coduri („format”, „prima cifra”) citesc acum textul nou.
+9. **Ghidul public: 46 de articole corectate.** Clasa: afirmații despre aplicație devenite false după 376–378 — „calendarul nu cere D100
+   la profit / limitare cunoscută”, „D100 pe profitul contabil, ajustările doar la D101”, „plafonul de 70% nu se calculează”. Plus patru
+   afirmații false din aceeași zonă, găsite la căutare: „aplicația nu are registru de evidență fiscală” (îl are), „D100 (micro) în loc de
+   D101 (profit)”, „5 ani” urmăriți de aplicație (nu-i urmărește). Titlurile, slug-urile și datele de publicare neatinse; `modified:
+   2026-10-18`. Neatinse, de verificat separat (nu sunt despre D100 / profit): „rectificativa D101” din `d101-corespunde-d100`.
+10. **P7 — perechea de refuz scoasă deliberat are registru** (`test_p7_uc.PERECHI_SCOASE`, cu proba anti-vacuu): previzualizarea RIP nu mai
+    scrie, deci refuzul „import eșuat” a ieșit din ea (e în salvare, `DateInvalide`). Use-case-urile previzualizărilor de solduri și
+    mijloace fixe poartă numele rutei (`solduri_incarca`, `mijloace_import_incarca`): cu alt nume, scanerul scrierilor nu le găsea și le
+    atribuia 34 de tabele prin modul.
+11. **Tabelul comun al previzualizărilor: motivele pe un sub-rând, pe toată lățimea, sub rândul lor** (349, clasa 285/331). Prima formă le
+    punea în coloana „Starea”: cu zece coloane de date, „Starea” ieșea din cutie (derulare orizontală), iar trei motive într-o coloană
+    îngustă înălțau rândul la 451 px (măsurat de e2e `test_def_349_…`). Celula „Starea” păstrează eticheta scurtă („intră”, „intră, cu
+    observație”, „respins — nu intră”); ambele rânduri poartă `data-rand`. Tabelul e construit în lotul acesta (nepublicat), deci nu e
+    reorganizarea unui ecran existent.
+12. **Antetul fix vs. 191.** Antetul lipit sus (`sticky`, bara de stare fixă din comanda 7.3 pct.3) a făcut din `.bara-antet` un context de
+    suprapunere, iar „Versiune nouă” nu mai trecea peste stratul ferestrei (191, prins de plasă). Cât e deschisă o fereastră, antetul revine
+    la `position: relative` (`body:has(.fereastra-overlay)`): `.desktop` nu se derulează atunci, iar butonul e iar apăsabil. **Alternative
+    respinse:** antetul peste strat (ar acoperi capul ferestrelor înalte, cu ✕ cu tot); stratul sub antet (butoanele antetului ar rămâne
+    active peste o fereastră deschisă). DS cap.2, la regula antetului fix.
+13. **Perioada din Istoric declarații** se scrie prin formatorul canonic (`dataRo(..., "luna_an_numeric")`, „03/2026”, DS cap.4), nu cu un
+    tabel local de luni (verificatorul, `DATA_DIALECT`); declarația anuală rămâne „anuală 2025” (351). Tot la verificator:
+    `core/denumiri_randuri.py` (textul generat al formularelor, 379) intră la excluderile registrului de cote — „taxabile cu cota 11%” e
+    denumirea rândului D300, nu o cotă de calcul.
+14. **Publicarea lui 341–381 (ramura `lucru/lot8b-2026-10-18`).** Comanda 8.2 pct.6 („Rulează poarta lotului 8; dacă e verde, publică”) și
+    mesajul lui Costin din 18.10.2026 seara (*„Confirm: în cabinet nu lucrează nimeni, ai acordul să publici fără să mai întrebi.”*) privesc
+    lotul 8, din care fac parte și 341–381. Lotul 8 (8.1) a fost publicat pe `fcfa3b3a`; 341–381 trec prin poarta lor (prima rulare pe
+    ramura lor). **Limita aleasă, conservatoare, după precedentul lotului 7 („Acordul meu de publicare ține până la 8 dimineața”):** acordul
+    se folosește numai dacă poarta iese VERDE și publicarea se încheie înainte de 19.10.2026 08:00 (cabinetul poate începe lucrul). După
+    08:00 nu se publică: raportul cere confirmarea din nou.

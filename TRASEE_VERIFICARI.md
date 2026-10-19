@@ -1180,7 +1180,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T14 — Preluarea unei firme
 
-*clasa MECANIC · 33 rute · 21 schimba date · 5 firme il pot exercita azi*
+*clasa MECANIC · 36 rute · 22 schimba date · 5 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/migrare/asociati`, `/migrare/istoric-declaratii`, `/migrare/mijloace-fixe`, `/migrare/parteneri`, `/migrare/plan-conturi`, `/migrare/salariati`, `/migrare/solduri`, `/migrare/status`, `/migrare/straturi`, `/tenants/{tenant_id}/parteneri`, `/tenants/{tenant_id}/solduri`*
 
@@ -1235,7 +1235,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Verifică o listă de CUI-uri la ANAF; întoarce denumirea + status.*
+*ce face: Verifică o listă de CUI-uri la ANAF; întoarce denumirea + status (+ cifra de control, + deja în portofoliu*
 
 - [x] fiecare CUI primește un răspuns explicit: găsit / negăsit / **nu s-a putut verifica**
 - „nu s-a putut verifica" nu se convertește în „negăsit" — sunt stări diferite
@@ -1256,7 +1256,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT) · miscari_stoc (INSERT) — prin `articole_import_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT) · miscari_stoc (INSERT) · plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `articole_import_api`, `solduri_api`*
 
 - [x] **previzualizarea scrie în stoc?** Dacă `articole` și `miscari_stoc` se scriu la încărcare, nu e previzualizare — e import. Verifică și spune care e
 - articolele cu cod duplicat în fișier se semnalează, nu se suprascriu între ele
@@ -1292,7 +1292,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · mijloace_fixe (DELETE/INSERT) — prin `migrare_api`, `mijloace_fixe_import_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · mijloace_fixe (DELETE/INSERT) · plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `migrare_api`, `mijloace_fixe_import_api`, `solduri_api`*
 
 - [x] **nu scrie nimic** — verificat structural, nu prin absența efectului
 - durata de amortizare a fiecărui mijloc fix e confruntată cu catalogul; cele din afara intervalului se numesc, cu rândul lor
@@ -1342,13 +1342,24 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Import registru incasari-plati la preluarea unui PFA — poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · rip_operatiuni (INSERT) — prin `migrare_api`, `rip_migrare_api`*
+*ce face: Import registru incasari-plati la preluarea unui PFA — PREVIZUALIZAREA: fiecare rand citit, cu starea lui (ok / semnalat / respins) si motivul; nu scrie nimic [372, coman — poate atinge, prin modul (PLAFON, nemasurat pe ruta): rip_operatiuni (INSERT) — prin `rip_migrare_api`*
 
 - [x] **nu pot scrie verificarea fără să știu ce e RIP.** Registrul de inventar și producție? Registrul imobilizărilor? De completat din cod, ca la `retete-import`
 - **completat din cod (26.08.2026), cum ai cerut** — **RIP = Registrul de Încasări și Plăți** (partidă simplă, PFA). `core/rip_migrare_api.py`: partida simplă **nu are balanță de deschidere**; registrul e CRONOLOGIC, deci la preluare se importă operațiunile anului curent de la 1 ianuarie până la data preluării, iar soldul e implicit din sumă, nu un rând
 - operațiunile importate intră cu `status='validata'` — sunt istoric preluat, nu ciornă de verificat. Verificarea care contează: **preluarea nu certifică** corectitudinea contabilului anterior, iar limita e declarată în antetul modulului
 - sumele se citesc cu parserul din `solduri_api` (paranteze = negativ, format contabil RO/EN, sufixe RON/lei) — un singur loc pentru interpretarea sumelor
 - numărul de operațiuni importate = numărul de linii din fișier minus cele respinse, iar respinsele sunt numite cu rândul lor
+- [18.10.2026, comanda 8.2, deficiența 372] **previzualizare pură**: nu mai scrie nimic — fiecare rând citit se întoarce cu starea (ok / semnalat / respins) și motivul; scrierea e `POST /tenants/{tenant_id}/rip-import`, după ce contabilul a văzut rândurile
+
+### `POST /tenants/{tenant_id}/rip-import`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · rip_operatiuni (INSERT) — prin `migrare_api`, `rip_migrare_api`*
+
+- [x] scrie numai rândurile care trec aceeași verificare ca previzualizarea (`rip_migrare_api.verifica_randuri`, refăcută pe server, nu luată din cerere); cele respinse se întorc numite, cu rândul lor din fișier — probat de e2e `test_def_372_…`
+- niciun rând bun -> refuz numit (422), nimic scris; marcajul stratului (`migrare_status`) rămâne „în lucru” cât timp există rânduri respinse
+- reimportul aceluiași fișier nu dublează operațiunile (`sarite_duplicat`)
 
 ### `POST /tenants/{tenant_id}/salariati-import`
 
@@ -2293,7 +2304,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 ## T31 — Completările manuale la o declarație (D300, D301)
 
-*clasa MECANIC · 8 rute · 5 schimba date · 3 firme il pot exercita azi*
+*clasa MECANIC · 11 rute · 7 schimba date · 3 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/d300-manual`, `/tenants/{tenant_id}/d301-operatiuni`*
 
@@ -2376,6 +2387,25 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 - [x] ștergerea pe o lună cu D301 depus produce contradicție — declarația conținea operațiunea
 - ștergerea se consemnează cu ce conținea operațiunea
 - **fără rol** — o operațiune ștearsă din declarație dispare fără urmă
+
+### `POST /tenants/{tenant_id}/ajustari-fiscale`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: Scrie o ajustare fiscală pe trimestrul ei (rândul D101, suma, descrierea, documentul).*
+
+- [x] ajustarea se scrie numai pe un rând din lista închisă a ajustărilor fiscale (rândurile D101: cheltuieli nedeductibile, venituri neimpozabile, deduceri, pierderea de recuperat), cu suma > 0 și trimestrul ei — altfel refuz numit (`ajustari_fiscale.valideaza`, `core/test_ajustari_fiscale.py`)
+- pierderea din anii anteriori (rd.39) e o cifră a anului: nu se scrie pe trimestru
+- ajustarea intră cumulat în D100 pe trimestrele I–III și în D101 (`ajustari_fiscale.cumulat`), probat de `core/test_d100_profit_cumulat.py` și de e2e `test_def_378_…`
+
+### `DELETE /tenants/{tenant_id}/ajustari-fiscale/{ajustare_id}`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: Șterge o ajustare fiscală greșită (se scrie din nou corect).*
+
+- [x] o ajustare greșită se șterge (nu se scade cu o sumă negativă); D100 / D101 generate după ștergere nu o mai conțin
+- ștergerea se face numai pe firma din cale (`_schema_sau_404`)
 
 ## T32 — Registrul de încasări și plăți (partida simplă)
 

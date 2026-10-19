@@ -2,7 +2,7 @@
 title: "Cum recuperez pierderea fiscală din anii precedenți în 2026?"
 description: "Pierderile fiscale anuale stabilite prin declarația de impozit pe profit se recuperează din profiturile impozabile viitoare, în limita a 70%, pe următorii 5 ani consecutivi, potrivit Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce înseamnă concret pentru recuperarea în 2026:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu calculează automat reportarea și recuperarea pierderilor fiscale din anii precedenți la completarea D101 — evidența pierderilor fiscale, ordinea lor cronologică, limita de 70% și verificarea termenului de 5 ani rămân un calcul pe care contabilul îl face manual, pe baza istoricului declarațiilor de impozit pe profit ale firmei.
+La data acestui ghid, iConta.eu aplică singur limita de 70% la recuperarea pierderii în D101 (și, cumulat, în D100 pe trimestrele I–III), pornind de la pierderea de recuperat pe care o scrie contabilul. Evidența pierderilor fiscale pe ani, ordinea lor cronologică și verificarea termenului de 5 ani rămân un calcul pe care contabilul îl face manual, pe baza istoricului declarațiilor de impozit pe profit ale firmei.
 
 [iConta.eu](/)

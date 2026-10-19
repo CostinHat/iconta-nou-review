@@ -2,7 +2,7 @@
 title: "Micro pentru agențiile de turism 2026"
 description: "Condițiile de încadrare la impozitul pe veniturile microîntreprinderilor pentru o agenție de turism în 2026 și de ce acest regim e complet independent de regimul special de TVA al agențiilor de turism."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ c) a realizat venituri care nu au depășit echivalentul în lei a 100.000 euro.
 
 ## Ce face iConta.eu
 
-Pentru o firmă de turism, iConta.eu tratează separat cele două regimuri: regimul de TVA (normal, special art. 311 sau intermediar, calculat prin motorul dedicat din aplicație) și regimul de impozit pe venit (micro sau profit), setat ca un câmp propriu al firmei, care determină generarea D100 (micro) sau D101 (profit). Aplicația nu unifică sau nu condiționează un regim de celălalt și nu verifică automat, pe baza cifrei de afaceri sau a codului CAEN, dacă agenția îndeplinește condițiile de la art. 47 pentru încadrarea la micro — alegerea și verificarea condițiilor rămân, ca pentru orice firmă, responsabilitatea contabilului.
+Pentru o firmă de turism, iConta.eu tratează separat cele două regimuri: regimul de TVA (normal, special art. 311 sau intermediar, calculat prin motorul dedicat din aplicație) și regimul de impozit pe venit (micro sau profit), setat ca un câmp propriu al firmei, care determină declarațiile de impozit: D100 la micro, respectiv D100 pe trimestrele I–III și D101 anual la profit. Aplicația nu unifică sau nu condiționează un regim de celălalt și nu verifică automat, pe baza cifrei de afaceri sau a codului CAEN, dacă agenția îndeplinește condițiile de la art. 47 pentru încadrarea la micro — alegerea și verificarea condițiilor rămân, ca pentru orice firmă, responsabilitatea contabilului.
 
 [iConta.eu](/)

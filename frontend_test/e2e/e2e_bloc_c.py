@@ -944,7 +944,10 @@ def test_def_97_importul_cere_norma_functia_de_baza_si_scutirea(patron, firma_gv
     pg.set_input_files("#mig-file", files=[{"name": "salariati_proba.csv", "mimeType": "text/csv", "buffer": csv}])
     pg.wait_for_selector("#mig-salveaza-sal", timeout=15000)
     t = patron.fereastra()
-    assert "funcție de bază: —" in t and "scutit minim: Nu — de verificat" in t, t[:800]
+    # [349, comanda Costin 8.2] fiecare câmp are coloana lui în tabelul comun al previzualizării
+    antet = [" ".join(x.split()) for x in pg.locator(".mig-prev thead th").all_inner_texts()]
+    celule = dict(zip(antet, [x.strip() for x in pg.locator(".mig-prev tbody tr:not(.mig-prev-motive)").first.locator("td").all_inner_texts()]))
+    assert (celule["Funcție de bază"], celule["Scutit minim"]) == ("—", "Nu (de verificat)"), celule
     assert "norma de lucru lipsește" in t and "funcția de bază (Da/Nu) lipsește" in t, t[:1500]
     assert "scutirea de contribuția minimă (Da/Nu) lipsește" not in t, t[:1500]
     assert pg.is_disabled("#mig-salveaza-sal")

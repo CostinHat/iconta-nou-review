@@ -11,37 +11,13 @@ Valideaza CNP (cheie de control oficiala 279146358279 + structura data + judet).
 # `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
 # deschide, nu comite.
 from __future__ import annotations
-import datetime
 
-_CHEIE = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9]
 
 
 def valideaza_cnp(cnp):
-    """(valid: bool, motiv: str). Verifica format, data, judet, cifra de control."""
-    cnp = str(cnp or "").strip()
-    if len(cnp) != 13 or not cnp.isdigit():
-        return False, "format (13 cifre)"
-    if cnp[0] not in "123456789":
-        return False, "prima cifra"
-    s = int(cnp[0]); aa = int(cnp[1:3]); ll = int(cnp[3:5]); zz = int(cnp[5:7])
-    sec = {1: 1900, 2: 1900, 3: 1800, 4: 1800, 5: 2000, 6: 2000,
-           7: 2000, 8: 2000, 9: 1900}.get(s, 1900)
-    an = sec + aa
-    if not (1 <= ll <= 12):
-        return False, "lună invalidă"
-    try:
-        datetime.date(an, ll, zz)
-    except ValueError:
-        return False, "dată invalidă"
-    jj = int(cnp[7:9])
-    if not (1 <= jj <= 52):
-        return False, "județ invalid"
-    suma = sum(int(cnp[i]) * _CHEIE[i] for i in range(12))
-    ctrl = suma % 11
-    ctrl = 1 if ctrl == 10 else ctrl
-    if ctrl != int(cnp[12]):
-        return False, "cifra de control"
-    return True, "ok"
+    """[347] Sursa unică e `core.identitate.valideaza_cnp` (motivul în cuvinte); numele rămâne pentru apelanții de aici."""
+    from core.identitate import valideaza_cnp as _v
+    return _v(cnp)
 
 
 def _da_nu(v):
@@ -52,25 +28,10 @@ def _da_nu(v):
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
 from core.pdf_util import data_ro as _data_ro   # DS cap.4: data din text, canonic
-from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
+from core.migrare_api import respinge, semnaleaza  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 from core.common import cate as _cate
 
 
-def _data(v):
-    """Parseaza o data din diverse formate -> 'YYYY-MM-DD' sau None."""
-    if v is None or str(v).strip() == "":
-        return None
-    if isinstance(v, datetime.datetime):
-        return v.date().isoformat()
-    if isinstance(v, datetime.date):
-        return v.isoformat()
-    t = str(v).strip()
-    for fmt in ("%Y-%m-%d", "%d.%m.%Y", "%d/%m/%Y", "%d-%m-%Y", "%Y/%m/%d"):
-        try:
-            return datetime.datetime.strptime(t, fmt).date().isoformat()
-        except ValueError:
-            continue
-    return None
 
 
 def _split_nume(intreg):
@@ -103,6 +64,8 @@ CAMPURI = {
     "cor": ("cod cor", "cor", "cod ocupatie", "ocupatie"),
     "iban": ("iban", "cont iban", "cont bancar", "cont card"),
     "fbaza": ("functie de baza", "functia de baza", "functie baza", "functia baza"),
+    # [348, comanda Costin 8.2] denumirea funcției scrisă în fișier („Funcție”) — numai prin egalitate, ca să nu prindă „Funcție baza”
+    "functie": ("=functie", "=functia", "denumire functie", "denumirea functiei", "=post"),
     "scut": ("scutit contributie minima", "scutit*", "contributie minima"),
 }
 
@@ -189,6 +152,7 @@ def extrage(continut, nume_fisier=""):
     # [decizia Costin 07.10, pct.4] cele două DA/NU cerute explicit: coloana lipsă sau celula goală -> None (rândul se refuză)
     i_fbaza = col("fbaza")
     i_scut = col("scut")
+    i_functie = col("functie", exclus=(i_fbaza, i_cor))
     if i_nume < 0 and i_cnp < 0:
         raise ValueError("nu se găsește coloana nume/CNP salariat - fișier nerecunoscut")
 
@@ -202,7 +166,9 @@ def extrage(continut, nume_fisier=""):
         if not pren_v and i_pren < 0 and " " in nume_v:
             nume_v, pren_v = _split_nume(nume_v)
 
-        if not (cnp or nume_v):   # rand gol
+        # [comanda Costin 8.2 pct.4: „orice rând citit e afișat sau semnalat cu motiv”] se sare numai rândul complet gol; un rând cu
+        # date dar fără nume și CNP se arată, respins (CNP-ul lipsă), nu dispare
+        if _it.rand_gol(r):
             continue
 
         valid, motiv = valideaza_cnp(cnp)
@@ -232,7 +198,7 @@ def extrage(continut, nume_fisier=""):
             "nume": nume_v,
             "prenume": pren_v,
             "cnp": cnp,
-            "data_angajare": _data(_it.valoare(r, i_data)) if i_data >= 0 else None,
+            "data_angajare": _it.data(_it.valoare(r, i_data)) if i_data >= 0 else None,
             "tip_norma": tip_norma,
             "norma_ore_luna": ore_luna,
             "ore_zi": ore,
@@ -240,6 +206,8 @@ def extrage(continut, nume_fisier=""):
             "persoane_intretinere": persoane or 0,
             "judet_casa": cod_judet_casa(cel(i_jud)),
             "cor": cel(i_cor),
+            # [348] funcția așa cum e scrisă în fișier: se AFIȘEAZĂ la previzualizare (codul COR rămâne cel care se salvează)
+            "functie": cel(i_functie) if i_functie >= 0 else "",
             # [iban_import] normalizat (fara spatii, majuscule); gol -> "" (necunoscut, NU fabricat)
             "iban": cel(i_iban).replace(" ", "").upper(),
             "functie_baza": _da_nu(cel(i_fbaza)) if i_fbaza >= 0 else None,
@@ -343,6 +311,43 @@ def verifica_randuri(randuri, azi=None):
                 er.append(respinge("salariat", i, "iban_invalid",
                                 "%s: IBAN-ul (%s) e invalid — verifică-l, altfel salariatul nu intră în fișierul de plată SEPA" % (nume, ib)))
     return er
+
+
+def semnale_randuri(randuri):
+    """PURĂ: semnalele [{rand, motiv, mesaj}] — rândurile care INTRĂ cu ceva de știut (comanda Costin 8.2 pct.4: „nimic nu se
+    înlocuiește pe tăcute”). [348] codul COR lipsă (funcția din fișier se arată, dar nu se transformă în cod); [decizia 14.10 pct.3–4]
+    persoanele în întreținere și scutirea lipsă intră cu 0 / „nescutit” și salariatul e marcat de verificat — acum spus și pe rând."""
+    out = []
+    for i, r in enumerate(randuri or [], start=2):
+        i = _it.nr_rand(r, i)
+        nume = ("%s %s" % (r.get("nume") or "", r.get("prenume") or "")).strip() or "?"
+        if not str(r.get("cor") or "").strip():
+            f = str(r.get("functie") or "").strip()
+            out.append(semnaleaza("salariat", i, "cor_lipsa",
+                                  "%s: codul COR lipsește%s — salariatul intră fără cod; îl alegi în fișa lui"
+                                  % (nume, " (funcția din fișier: «%s»)" % f if f else "")))
+        dv = r.get("de_verificat") or []
+        if "persoane_intretinere" in dv:
+            out.append(semnaleaza("salariat", i, "persoane_lipsa",
+                                  "%s: persoanele în întreținere lipsesc din fișier — intră cu 0 și salariatul e marcat de verificat" % nume))
+        if "scutit_contrib_minim" in dv:
+            out.append(semnaleaza("salariat", i, "scutire_lipsa",
+                                  "%s: scutirea de contribuția minimă lipsește din fișier — intră „nescutit” și salariatul e marcat de "
+                                  "verificat" % nume))
+    return out
+
+
+def eticheteaza(randuri):
+    """[comanda Costin 8.2 pct.4] Starea fiecărui rând, din ACEEAȘI verificare pe care o aplică salvarea (`verifica_randuri`) plus
+    semnalele: `stare` ∈ ok / semnalat / respins, `motive` = textele."""
+    er, sem = verifica_randuri(randuri), semnale_randuri(randuri)
+    for i, r in enumerate(randuri, start=2):
+        n = _it.nr_rand(r, i)
+        resp = [e["mesaj"] for e in er if e.get("rand") == n]
+        obs = [e["mesaj"] for e in sem if e.get("rand") == n]
+        r["stare"] = "respins" if resp else ("semnalat" if obs else "ok")
+        r["motive"] = resp or obs
+    return randuri
 
 
 def importa(conn, randuri):

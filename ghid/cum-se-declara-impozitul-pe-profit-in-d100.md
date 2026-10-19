@@ -2,7 +2,7 @@
 title: Cum se declară impozitul pe profit în D100?
 description: Pentru firmele pe regim de profit, D100 declară trimestrial (trimestrele I-III) impozitul calculat pe baza profitului cumulat de la începutul anului, cu cotă de 16%.
 published: 2026-09-22
-modified: 2026-10-13
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -36,21 +36,23 @@ Declararea trimestrială prin D100 e regula standard pentru impozitul pe profit,
 
 Legea (art. 41 alin. 1) și normele ANAF (OPANAF 587/2016, pct. 1.2 lit. c) limitează explicit declararea trimestrială prin D100 la trimestrele I-III; definitivarea și plata aferentă întregului an fiscal se face prin declarația anuală (D101, art. 42).
 
-Baza nu se calculează izolat pe trimestru, ci **cumulat de la 1 ianuarie**: `bază_trimestru = max(0, profit_cumulat_până_acum) − max(0, profit_cumulat_până_la_trimestrul_anterior)`, apoi se aplică cota de 16%. Practic, dacă un trimestru anterior a fost pe pierdere, iar trimestrul curent revine pe profit, se plătește impozit doar pe diferența cumulată, nu pe tot profitul trimestrului curent.
+Baza nu se calculează izolat pe trimestru, ci **cumulat de la 1 ianuarie**: se stabilește impozitul de 16% pe rezultatul fiscal cumulat până la sfârșitul trimestrului, iar din el se scade impozitul deja declarat pe trimestrele anterioare ale anului. Practic, dacă un trimestru anterior a fost pe pierdere, iar trimestrul curent revine pe profit, se plătește impozit doar pe diferența cumulată, nu pe tot profitul trimestrului curent.
 
-Dacă baza cumulată e ≤ 0 (pierdere), declarația nu se poate depune pe zero — sistemul refuză structural generarea, pentru că secțiunea `<obligatie>` e obligatorie în structura XML oficială a D100.
+Dacă impozitul cumulat iese mai mic decât cel deja declarat — pierdere sau scădere a profitului —, D100 se depune totuși, cu 0 la impozitul pe profit: instrucțiunile formularului (OPANAF 587/2016, anexa 4, pct. 3.1.2) cer înscrierea cifrei 0 în această situație.
 
 ## Ce se greșește în practică
 
-- Se așteaptă ca aplicația să reamintească automat obligația D100 pentru firmele pe profit, ca la firmele pe regim micro — nu se întâmplă (vezi mai jos).
+- Se calculează D100 pe profitul contabil, fără cheltuielile nedeductibile, veniturile neimpozabile și pierderea fiscală de recuperat — baza e rezultatul fiscal cumulat, nu profitul contabil.
 - Se calculează impozitul trimestrial izolat, pe profitul strict al trimestrului, în loc de diferența față de profitul cumulat anterior.
 - Se depune D100 pentru trimestrul IV cu formula standard (profit cumulat), deși legea rezervă D100 trimestrial doar pentru trimestrele I-III, iar trimestrul IV se regularizează prin D101.
-- Se încearcă depunerea unei declarații pe pierdere, deși legea/structura ANAF nu permite un XML fără nicio obligație pozitivă.
+- Nu se depune D100 pe un trimestru cu pierdere, pe motiv că nu e nimic de plată — declarația se depune și atunci, cu 0 la impozitul pe profit.
 
 ## Ce face iConta.eu
 
-Aplicația calculează efectiv obligația cod 103 (impozit pe profit) pentru firmele pe regim „profit", cu bază cumulată de la 1 ianuarie, conform mecanismului descris mai sus. Totuși, în aplicație, semaforul de obligații/restanțe adaugă D100 la lista de urmărit **doar** pentru firmele pe regim „micro" („D100 micro”); pe ramura „profit" se adaugă automat numai D101, nu și D100. Aceasta e o limitare cunoscută a aplicației: deși generatorul calculează corect obligația, o firmă pe profit nu vede D100 în lista de restanțe/obligații urmărite — trebuie generată manual, trimestrial, din ecranul de declarații, pentru trimestrele I-III.
+Pentru firmele cu regimul „profit” în vectorul fiscal, aplicația cere D100 (cod 103) pe trimestrele I, II și III, cu termen 25 a lunii următoare trimestrului: obligația apare în calendarul de termene, pe semafor și, după termen, la restanțe — inclusiv pe un trimestru cu pierdere, când se declară 0.
 
-Pentru trimestrul IV, existența unei obligații cod 103 generate cu formula standard e o zonă tratată diferit intern față de regimul opțional cu plăți anticipate (vezi ghidul despre plățile anticipate 2026) — dacă firma dvs. se încadrează la un regim special, verificați suplimentar cu contabilul acest caz.
+Suma de plată pornește de la rezultatul fiscal cumulat de la 1 ianuarie: veniturile minus cheltuielile din contabilitate, plus ajustările fiscale pe care le scrii, pe trimestrul în care s-au produs, în ecranul „Registrul de evidență fiscală” al firmei, secțiunea „Ajustări fiscale” (cheltuieli nedeductibile, venituri neimpozabile, deduceri), minus pierderea fiscală din anii anteriori, recuperată cel mult 70% (CF art. 31 alin. (1)). Din impozitul cumulat de 16% se scade ce s-a declarat deja pe trimestrele anterioare ale anului — inclusiv trimestrele declarate în programul folosit înainte de preluarea firmei, aduse cu suma lor în istoricul declarațiilor, la migrare. Dacă un trimestru anterior e consemnat ca depus, dar fără suma declarată, aplicația nu calculează D100 și îți cere să completezi suma în Migrare › Istoric declarații; nu presupune 0.
+
+Pentru trimestrul IV, aplicația nu generează D100 pe impozitul pe profit: arată că trimestrul IV se definitivează în D101. Sistemul anual cu plăți anticipate (art. 41 alin. (2)) nu se alege în vectorul fiscal al firmei, deci aplicația aplică sistemul trimestrial descris mai sus; pentru o firmă care a optat pentru sistemul anual, plățile anticipate se stabilesc separat (vezi ghidul despre plățile anticipate 2026).
 
 [iConta.eu](/)

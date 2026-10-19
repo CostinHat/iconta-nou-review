@@ -125,7 +125,35 @@ def _linii_valide(conn, schema, linii):
             return _refuz("linia %d are suma %s: o inregistrare consemneaza o operatiune efectuata, "
                           "deci suma ei e strict pozitiva" % (i, l.get("suma")),
                           TEMEI_CONSEMNARE, camp="suma", linia=i)
+        # [deficiența 381, comanda Costin 8.2, 18.10.2026: „Nota pe 401/4111 cere partenerul la introducere”] o datorie / creanță se ține
+        # pe fiecare partener (D406, nota la GL.28/GL.29: „în câmpurile SupplierID, respectiv CustomerID se va completa codul [...]”)
+        tert = next((str(l.get(k) or "").strip() for k in ("debit", "credit") if _cont_tert(l.get(k))), None)
+        if tert and not str(l.get("partener_nume") or "").strip() and not str(l.get("partener_cui") or "").strip():
+            return _refuz("linia %d e pe contul %s (%s): scrie partenerul — numele și, dacă are, codul fiscal. Fără el, datoria / creanța "
+                          "nu se poate urmări pe partener, iar D406 n-ar ști cui i-ai plătit sau de la cine ai încasat"
+                          % (i, tert, "furnizori" if tert.startswith("401") else "clienți"), TEMEI_CONSEMNARE, camp="partener_nume", linia=i)
+        cifre = "".join(ch for ch in str(l.get("partener_cui") or "") if ch.isdigit())
+        if cifre and len(cifre) != 13:   # 13 cifre = CNP (partener persoană fizică), nu CUI
+            from core import identitate as _id
+            ok, motiv = _id.valideaza_cui(cifre)
+            if not ok:
+                return _refuz("linia %d: codul fiscal al partenerului (%s) nu e valid — %s" % (i, l.get("partener_cui"), motiv),
+                              TEMEI_CONSEMNARE, camp="partener_cui", linia=i)
     return None
+
+
+#: [381] conturile de terți (sintetic de gradul I/II) pe care nota manuală cere partenerul: furnizori și clienți
+CONTURI_TERT = ("401", "4111")
+
+
+def _cont_tert(cont):
+    """Contul e de furnizori / clienți: 401 sau 4111, cu sau fără analitic („401.00012”)."""
+    return str(cont or "").strip().split(".")[0] in CONTURI_TERT
+
+
+def _partener(l):
+    """(cui, nume) al liniei, curățate; (None, None) dacă lipsesc."""
+    return ((str(l.get("partener_cui") or "").strip() or None), (str(l.get("partener_nume") or "").strip()[:200] or None))
 
 
 def _av_plan(conn, schema, linii, out):
@@ -154,10 +182,10 @@ def creeaza(conn, schema, descriere, data, linii, document_ref=None):
         nota_id = cur.fetchone()["id"]
         for l in linii:
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                (inregistrare_id, cont_debit, cont_credit, suma, centru_cost_id)
-                VALUES (%s,%s,%s,%s,%s)""",
+                (inregistrare_id, cont_debit, cont_credit, suma, centru_cost_id, partener_cui, partener_nume)
+                VALUES (%s,%s,%s,%s,%s,%s,%s)""",
                 (nota_id, str(l["debit"]).strip(), str(l["credit"]).strip(),
-                 Decimal(str(l["suma"])), _centru(l)))
+                 Decimal(str(l["suma"])), _centru(l), *_partener(l)))
         # [DDD3] LA SURSĂ: dacă nota contează evident o factură, primește `factura_id` ACUM.
         # Gaura măsurată la BBB era că o notă din calea liberă nu poartă cheia, deci e invizibilă
         # pentru anti-dublare. Plasa (`candidate_fara_cheie`) rămâne plasă tocmai fiindcă legătura
@@ -208,10 +236,10 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None, docum
             cur.execute(f"DELETE FROM {schema}.inregistrari_linii WHERE inregistrare_id=%s", (nota_id,))
             for l in linii:
                 cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                    (inregistrare_id, cont_debit, cont_credit, suma, centru_cost_id)
-                    VALUES (%s,%s,%s,%s,%s)""",
+                    (inregistrare_id, cont_debit, cont_credit, suma, centru_cost_id, partener_cui, partener_nume)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s)""",
                     (nota_id, str(l["debit"]).strip(), str(l["credit"]).strip(),
-                     Decimal(str(l["suma"])), _centru(l)))
+                     Decimal(str(l["suma"])), _centru(l), *_partener(l)))
             # ai_corectie_v2: cont schimbat de contabil => corectie invatata
             try:
                 _cont_nou = str(linii[0]["debit"]).strip()

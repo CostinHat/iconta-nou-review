@@ -2,7 +2,7 @@
 title: "Ce procent din profit poate fi acoperit cu pierderea fiscală reportată?"
 description: "Plafonul de 70% din profitul impozabil până la care se poate recupera o pierdere fiscală reportată, și orizontul de 5 ani în care poate fi folosită."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Din text rezultă mecanismul complet:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu nu automatizează calculul recuperării pierderilor fiscale reportate (plafonul de 70%, ordinea cronologică pe ani, orizontul de 5 ani) în declarația de impozit pe profit — contabilul calculează manual valoarea recuperabilă, respectând regulile de mai sus, și o introduce ca atare în calculul rezultatului fiscal.
+La data acestui ghid, iConta.eu aplică plafonul de 70% la recuperarea pierderii fiscale reportate: pornind de la pierderea de recuperat scrisă de contabil (o dată pe an, în ecranul „Registrul de evidență fiscală” al firmei, secțiunea „Ajustări fiscale”, sau în D101), calculează suma recuperată în D101 și, cumulat, în D100 pe trimestrele I–III. Ordinea cronologică pe ani și orizontul de 5 ani nu sunt urmărite de aplicație — suma rămasă de recuperat o stabilește contabilul, respectând regulile de mai sus.
 
 [iConta.eu](/)

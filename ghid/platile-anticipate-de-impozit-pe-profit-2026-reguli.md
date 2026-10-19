@@ -2,7 +2,7 @@
 title: Plățile anticipate de impozit pe profit 2026: care sunt regulile?
 description: În 2026 coexistă două regimuri de impozit pe profit — declarare trimestrială standard (D100, trimestrele I-III, bază cumulată) și declarare anuală cu plăți anticipate opționale (1/4 din impozitul anului precedent, cu excepția trimestrului I, calculat din 2026 pe profitul contabil al trimestrului; trimestrul IV cu termen 25 decembrie).
 published: 2026-09-22
-modified: 2026-10-13
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -65,6 +65,6 @@ Cele două regimuri nu se amestecă: un contribuabil pe regim standard nu calcul
 
 Vectorul fiscal al firmei reține doar regimurile „micro" și „profit" — nu are un atribut care să marcheze opțiunea pentru regimul anual cu plăți anticipate trimestriale (art. 41 alin. 2-3). Ca urmare, aplicația calculează întotdeauna, pentru o firmă pe „profit", formula regimului standard — bază cumulată de la 1 ianuarie — indiferent dacă firma a optat sau nu pentru regimul cu plăți anticipate. Dacă firma dvs. a exercitat această opțiune, nici formula de 1/4 din impozitul anului precedent, nici plata pentru trimestrul I calculată pe profitul contabil al trimestrului nu sunt calculate automat de aplicație și trebuie determinate separat.
 
-Notă suplimentară: modulul de scadențar folosit de semaforul de obligații nu are o ramură dedicată pentru tipul „d100" și, pentru trimestrul IV, cade pe regula generică (25 ianuarie anul următor) — diferită atât de 25 decembrie (cod 103, regim standard cu formula cumulată aplicată la trimestrul IV), cât și de scadența specifică a regimului opțional. Pentru orice termen din trimestrul IV, verificați data din declarația efectiv generată, nu doar afișajul din semafor.
+Notă suplimentară: pentru o firmă pe „profit", aplicația cere D100 numai pe trimestrele I–III, cu termen 25 a lunii următoare trimestrului. Pe trimestrul IV nu apare D100 nici pe semafor, nici în calendarul de termene, iar generarea lui e refuzată, pentru că în regimul standard trimestrul IV se definitivează în D101. Plata anticipată pentru trimestrul IV din regimul opțional (termen 25 decembrie) nu e urmărită de aplicație și rămâne de urmărit separat.
 
 [iConta.eu](/)

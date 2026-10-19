@@ -2,7 +2,7 @@
 title: "Cum verific ce pierdere fiscală mai am de recuperat?"
 description: "Regula de recuperare a pierderii fiscale anuale — limita de 70% și termenul de 5 ani, în ordinea înregistrării pierderilor."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Ce rezultă din text pentru urmărirea corectă a pierderii rămase:
 
 ## Ce face iConta.eu
 
-iConta.eu calculează rezultatul fiscal curent (profit/pierdere al perioadei) în D101, inclusiv pentru grupul fiscal (D101g), unde pierderea de recuperat din anii precedenți e un câmp introdus de contabil, preluat direct în calcul. Nu am identificat însă în cod un registru automat care să urmărească, an de an, stocul de pierdere fiscală rămas de recuperat pe fiecare tranșă și termenul ei de 5 ani, aplicând singur limita de 70% — această evidență multianuală rămâne, la această dată, în sarcina contabilului, care introduce manual suma de pierdere rămasă de recuperat la fiecare declarație.
+iConta.eu calculează rezultatul fiscal curent (profit/pierdere al perioadei) în D101, inclusiv pentru grupul fiscal (D101g), unde pierderea de recuperat din anii precedenți e un câmp introdus de contabil, preluat direct în calcul. În D101 și, cumulat, în D100 pe trimestrele I–III, aplicația aplică singură limita de 70% la suma recuperată, pornind de la pierderea de recuperat scrisă de contabil. Nu ține însă un registru care să urmărească, an de an, stocul de pierdere fiscală rămas de recuperat pe fiecare tranșă și termenul ei de 5 ani — această evidență multianuală rămâne, la această dată, în sarcina contabilului, care introduce suma de pierdere rămasă de recuperat în fiecare an.
 
 [iConta.eu](/)

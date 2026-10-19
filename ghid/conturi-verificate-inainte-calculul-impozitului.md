@@ -2,7 +2,7 @@
 title: "Ce conturi trebuie verificate înainte de calculul impozitului pe profit?"
 description: "Ce cere legal calculul rezultatului fiscal și de ce verificarea conturilor de venituri și cheltuieli, înainte de aplicarea cotei de 16%, nu e opțională."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -32,6 +32,6 @@ Din formula legii rezultă exact ce merită verificat înainte de aplicarea cote
 
 ## Ce face iConta.eu
 
-La generarea declarației D100, iConta.eu calculează automat baza de plată a impozitului pe profit ca diferență cumulată între veniturile și cheltuielile înregistrate (art. 41 CF — calcul cumulat de la 1 ianuarie), dar aplicația afișează explicit un avertisment că **ajustările fiscale prevăzute de art. 19 și următoarele (cheltuieli nedeductibile, venituri neimpozabile) și regularizarea anuală se fac separat, la D101** — nu sunt automatizate în D100. Verificarea manuală a conturilor din lista de mai sus rămâne, deci, un pas al contabilului, înainte de finalizarea declarației anuale.
+La generarea declarației D100, iConta.eu calculează impozitul pe profit pe rezultatul fiscal cumulat de la 1 ianuarie (art. 41 CF): diferența dintre veniturile și cheltuielile înregistrate, plus ajustările fiscale pe care le scrii, pe trimestrul în care s-au produs, în ecranul „Registrul de evidență fiscală” al firmei, secțiunea „Ajustări fiscale” — cheltuieli nedeductibile, venituri neimpozabile, deduceri —, minus pierderea fiscală din anii anteriori, recuperată cel mult 70%. Aceleași ajustări intră și în D101, la regularizarea anuală. Încadrarea fiecărei cheltuieli și suma ajustării rămân însă decizia contabilului, deci verificarea conturilor din lista de mai sus e un pas al tău înainte de fiecare D100, nu doar înainte de declarația anuală.
 
 [iConta.eu](/)

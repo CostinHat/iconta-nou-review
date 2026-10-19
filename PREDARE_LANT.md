@@ -4,181 +4,28 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-18** seara (lotul 8, comanda 8.1: 321–340 pe ramura `lucru/lot8-2026-10-18`, nepublicat; înainte: 07:25, lotul 7 publicat pe `7ebbf79b`; înainte: comanda 7.3: referința aprobată, poarta 2; înainte: după poarta 1 a lotului 7, ROȘIE: cauzele reparate, poarta 2 așteaptă aprobarea noii referințe de
-  cifre F1–F5), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
-- **pe commit**: `7ebbf79b` (lotul 7) — **four-way închis 18.10.2026 07:19**: HEAD = origin/main = public/main =
-  backup/lant-2026-10-18 = RUNNING = `7ebbf79b` (2 din 2 procese, pornite 07:19:39, după commitul de 05:42:05); nicio sentinelă; backup
-  înainte `~/backups_db/iconta_v2_pre_lot7_20261018_0717.dump`; cele 5 migrări ale lotului rulate pe producție. (Anterior: `590c6170`
-  (lotul 6) — **four-way închis 17.10.2026 10:45**: HEAD = origin/main = public/main =
-  backup/lant-2026-10-17 = RUNNING = `590c6170` (2 din 2 procese); procesul pornit 10:44:59 EEST, după commit (08:38:08); nicio
-  sentinelă; backup înainte `~/backups_db/iconta_v2_pre_lot6_20261017_1043.dump` (430 de tabele cu date); cele 7 migrări ale lotului
-  rulate pe producție. Poarta lotului 6: rularea 1 ROȘIE (`00351bea`), 2 ROȘIE (`e99aa73a`), 3 VERDE (`590c6170`, excepția aprobată,
-  pe ramura-alias `lucru/lot6-2026-10-16-r3`). Acest fișier stă pe ramura `lucru/lot7-2026-10-17` și intră în commitul lotului 7.
+- **ultima rescriere**: **2026-10-19** noaptea (lotul 8, comanda 8.2: 341–381 pe ramura `lucru/lot8b-2026-10-18`; înainte, 18.10 seara:
+  lotul 8 (8.1) publicat pe `fcfa3b3a`), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
+- **pe commit**: `fcfa3b3a` (lotul 8, 8.1) — **four-way închis 18.10.2026 21:52**: HEAD = origin/main = public/main =
+  backup/lant-2026-10-18 = RUNNING = `fcfa3b3a` (2 din 2 procese, pornite 21:52:33, după commitul de 20:15:38); nicio sentinelă; backup
+  înainte `~/backups_db/iconta_v2_pre_lot8_20261018_2151.dump`; nicio migrare în lot. Poarta lotului 8: rularea 1 ROȘIE numai pe cifre
+  (`bee07d87`, explicate, referința rescrisă), rularea 2 VERDE (`fcfa3b3a`). (Anterior: `7ebbf79b`, lotul 7, four-way 18.10.2026 07:19.)
+  Acest fișier stă pe ramura `lucru/lot8b-2026-10-18` și intră în commitul lui 341–381.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
-**18.10.2026 seara — LOTUL 8, COMANDA 8.1 PE RAMURĂ (nepublicat).** Producția rămâne pe `7ebbf79b` (lotul 7), neatinsă. Pe ramura
-`lucru/lot8-2026-10-18` (worktree `/home/costin/iconta_lot7`), în commitul care conține această predare: 321–340 rezolvate, fiecare cu e2e
-în `frontend_test/e2e/e2e_lot81.py` și mutație roșie; garda 325 (nimic nu se deschide fără clicul omului) pe fiecare ecran al plasei;
-proba 337 (cifrele pachetului sunt ale lunii); probele fără browser; registrele lotului 7 completate (pct.0). Fără poartă (doar rularea
-țintită: suita întreagă + plasa ecranelor atinse + uneltele vizuale pe 8019). **Fronturi deschise:** (1) §6 al raportului 8.1 —
-citirea pe producție pentru 316 (`public.inregistrari_in_asteptare`, numai cu aprobarea lui Costin) și confirmările UM „serv.” (E48),
-328 (contarea facturii emise nu se mai șterge din jurnal) și WhatsApp inactiv cât lipsesc cheile Meta; BLOCAT pe răspuns. (2) Restul
-lotului 8 (LANSARE „Lotul 8”: cheile Meta / WhatsApp F257, Postmark F258, Search Console F259, bara de stare fixă) — după §6. (3) Poarta
-lotului 8 numai la „Lotul 8 e complet”, apoi publicarea cu acordul lui Costin (cabinetul nu lucrează, backup înainte).
-
-**18.10.2026 07:19 — LOTUL 7 PUBLICAT pe `7ebbf79b`.** Four-way închis: HEAD = origin/main = public/main = backup/lant-2026-10-18 =
-RUNNING = `7ebbf79b` (2 din 2 procese, pornite 07:19:39, după commitul de 05:42:05); nicio sentinelă; backup înainte
-`~/backups_db/iconta_v2_pre_lot7_20261018_0717.dump`; cele 5 migrări ale lotului rulate pe producție (ISTORIC „Lotul 7 PUBLICAT”).
-Următorul: lotul 8 pe ramura `lucru/lot8-2026-10-18` (worktree `/home/costin/iconta_lot7`) — cheile Meta / WhatsApp (F257), tokenul
-Postmark (F258), exportul Search Console (F259), bara de stare fixă (LANSARE „Lotul 8”); fără publicare și fără poartă până la
-„Lotul 8 e complet”.
-
-**(anterior) 18.10.2026 dimineața — COMANDA 7.3: referința de cifre F1–F5 aprobată și scrisă (amprenta `b1b111f9…`, DECIZII „Comanda 7.3”); POARTA 2
-(ULTIMA) PORNITĂ pe commitul care conține această intrare; verde -> publicarea lotului 7 până la 08:00 (backup, fast-forward aprobat,
-migrările `--productie` în ordinea din `verifica`, four-way). Bara de stare fixă -> lotul 8. Regula permanentă pentru cifre: CLAUDE.md
-§2.3 pct.13.**
-
-**(anterior) 18.10.2026 — LOTUL 7: POARTA 1 ROȘIE, CAUZELE REPARATE; POARTA 2 BLOCATĂ PE APROBAREA REFERINȚEI DE CIFRE** (ISTORIC „Lotul 7: poarta 1
-ROȘIE”). Producția rămâne pe `590c6170` (lotul 6), neatinsă. Poarta 1 pe `ad0494c6`: 2 teste roșii (stub-uri vechi pe cheia `mesaj` a lui
-`surse_declaratiei`) + cifrele necalculabile (copia rula migrările alfabetic: `migrare_ciorne_proprii` înaintea lui
-`migrare_nr_curent_note`). Ambele reparate în commitul care conține această predare; ordinea migrărilor e acum în
-`core.migrari_registru.DUPA` (C49, 23 de perechi derivate din cod), `verifica` le tipărește în ordinea rulării, iar `ruleaza` refuză ordinea
-greșită — **pe producție se rulează exact în ordinea tipărită de `verifica`**. Cu ordinea reparată, cifrele dau 38 de diferențe față de
-referința aprobată pe 17.10: 35 din datele F1 (10/2026: o factură de servicii 704 de 1.000 lei, D300 rd.3 / 3.1, și o încasare de 242 lei) și F2
-(o amortizare de 200 lei în 08/2026) schimbate pe producție după aprobare — aceleași 35 ies și cu codul publicat, deci nu vin din cod; 6 amprente D406 (F1, F2, F3, F5) se schimbă numai prin
-conturile 4092 / 4093 / 4094 (C48), probat: scoase din XML, amprenta revine exact la referință / la codul publicat. **BLOCAT: aprobarea lui
-Costin pentru noua referință.** După ea: `python scripts/cifre_referinta.py --productie --scrie-referinta` (pe copia migrată), amprenta în
-DECIZII, commit, `sh scripts/poarta_lot.sh` (rularea 2, ULTIMA), apoi publicarea ca mai jos.
-
-**17.10.2026, noaptea — LOTUL 7 ÎNCHIS, COMIS PE RAMURĂ, ÎN DRUM SPRE PUBLICARE** (DECIZII „Lotul 7: reluarea după pierderea sesiunii;
-lotul 7 se închide și se publică; cheile trec în lotul 8”). Pe `lucru/lot7-2026-10-17` (commitul care conține această predare), în
-`/home/costin/iconta_lot7`: 297–316, 318–320, C48 rezolvate (e2e + mutație); 317 reparată, „neverificat”. Rularea țintită pe lotul întreg a
-fost ROȘIE (40 Python + 13 e2e) și a fost reparată înaintea commitului (ISTORIC „Lotul 7: rularea țintită pe lotul întreg”): gărzile
-verzi, e2e-urile reparate + fișierele lotului verzi, mutațiile noi ROȘII, verificatorul TOTAL 0, uneltele vizuale și probele refăcute.
-**Urmează, în această ordine** (regim pilot, cabinetul confirmat că nu lucrează): `sh scripts/poarta_lot.sh` (fundal, timeout 7200000;
-maximum 2 rulări pe ramură) -> VERDE -> backup `pg_dump -Fc` în `~/backups_db/` -> aprobarea SHA-ului (`scripts/githooks/README.md`) ->
-în `~/iconta_nou`: `git merge --ff-only lucru/lot7-2026-10-17` + `sh scripts/githooks/post-commit` -> migrările `--productie`
-(`migrare_canal_notificari`, `migrare_nr_curent_note`, `migrare_poveste_amprenta`, `migrare_plan_avansuri`, `migrare_ciorne_proprii` +
-ce mai arată `core.migrari_registru verifica`) -> four-way. Rezultatul (SHA, four-way) e în raportul lotului; dacă poarta e ROȘIE: cauzele
-reparate, testele picate rulate o dată, a doua (ultima) rulare. **Lotul 8**: cheile Meta / WhatsApp (F257) și tokenul Postmark (F258) —
-`LANSARE.md`, „Blocate extern”; exportul Search Console (F259). **De știut la publicare**: declarațiile active din coadă și poveștile
-aprobate fără amprentă devin „depășite” (fail-closed, decizia lui Costin) — cardul „De depus” le numește „depășite, de generat din nou”;
-conturile existente intră direct (scutite o dată, la migrare), conturile noi trec prin prima intrare.
-
-**17.10.2026, seara — LOTUL 7, COMANDA 7.2 COMISĂ PE RAMURĂ, NEPUBLICATĂ** (DECIZII „Comanda 7.2”; raportul comenzii 7.2). Pe
-`lucru/lot7-2026-10-17` (commitul care conține această predare), în `/home/costin/iconta_lot7`: 297–316, 318–320 și C48 rezolvate cu e2e
-și mutație (DEFICIENTE); 317 reparată, „neverificat” (fără suprafață în browser); 302 / 307 / 308 / 317 lămurite la sursă. Migrări noi,
-rulate numai pe baza de TEST: `migrare_nr_curent_note`, `migrare_poveste_amprenta`, `migrare_plan_avansuri`, `migrare_canal_notificari`
-(extinsă). Fără poartă (comanda: „poarta rulează o dată, la finalul lotului 7”). **BLOCAT: răspunsul lui Costin la §6 al raportului**
-(prima intrare pentru conturile existente ale cabinetului real; declarațiile / poveștile din producție fără amprentă devin „depășite” la
-publicare; păstrarea 30 de zile; numerotarea notelor validate la migrare), apoi „Lotul 7 e complet” -> `scripts/poarta_lot.sh` -> publicarea
-(backup, fast-forward aprobat, migrările `--productie`, four-way).
-
-**17.10.2026, ora 13 — LOTUL 6 PUBLICAT (`590c6170`, four-way închis); LOTUL 7 TERMINAT PE RAMURĂ, NEPUBLICAT** (DECIZII „a treia rulare
-a porții (excepție aprobată) VERDE”). Lotul 7 (2.1 WhatsApp / email, 2.2 telefonul și canalul în Setări cont, 2.3 notificările
-superadminului, 2.6 alertele legislative din portal; 2.4 Meta, 2.5 Postmark, 2.7 Search Console pregătite fără chei) stă pe
-`lucru/lot7-2026-10-17` în `/home/costin/iconta_lot7`, mutată peste `590c6170`; migrarea `migrare_canal_notificari` rulată pe baza de
-TEST, nu pe producție. **BLOCAT: „Lotul 7 e complet” (decizia lui Costin)** — apoi poarta lotului, backup, fast-forward, migrarea
-`--productie`, four-way. Cheile (WhatsApp, Postmark) le dă Costin separat; fără ele notificările merg pe email.
-
-**17.10.2026, ora 08 — POARTA 2 A LOTULUI 6 ROȘIE (2 teste, din reparațiile porții 1) — NEPUBLICAT; BLOCAT: decizia lui Costin pentru a
-treia rulare** (DECIZII „poarta 2 (ultima) ROȘIE”). Referința de cifre aprobată și scrisă (`e99aa73a`); cauzele reparate pe ramură, plus
-C46 lărgită. Lotul 7 pregătit în paralel în `/home/costin/iconta_lot7` (ramura `lucru/lot7-2026-10-17`), nefinalizat, necomis pe bază.
-
-**17.10.2026 — LOTUL 6 ÎNCHIS („Lotul 6 e complet. Cabinetul nu lucrează.”, verbatim în DECIZII 17.10.2026), NEPUBLICAT.** Acordul scris de
-publicare există, condiționat de poarta VERDE. Poarta 1 (`00351bea`) ROȘIE: 2 teste + cifrele F1–F5 -> reparate pe ramură (commitul care
-conține această predare): aserțiunile pe text, perechea 409 a lui 289, **C45** (migrarea `migrare_casa_avans` nu mai scrie în note
-validate), **C46** (gărzile de arbore în rularea țintită), **C47** (cifrele pe copia migrată a producției). Cifrele lotului = cifrele
-codului publicat; cele 34 de diferențe vin din date (F1 10/2026 + FISCALOS ICONTA în cabinetul de test). **BLOCAT: aprobarea referinței
-noi de cifre** (`~/ghid_incoming/cifre_referinta_propusa_20261017.md`, plus decizia despre FISCALOS în cabinetul de test). Apoi: a doua
-(ultima) rulare `sh scripts/poarta_lot.sh` -> VERDE -> backup, fast-forward pe `main`, cele 7 migrări `--productie`, restart, four-way.
-**Lotul 7** (WhatsApp, telefonul, notificările superadmin, Meta, Postmark, alertele legislative, Search Console) — NEÎNCEPUT: comanda îl
-pune după publicare, pe ramură nouă din `main`; cercetarea făcută e în raportul din 17.10.
-
-
-**LOTUL 6 (16.10.2026, comanda + patru completări, 272–295 + C41) — lucrat, NEPUBLICAT, oprit pentru raport („Te oprești și
-raportezi”).** Pe ramura `lucru/lot6-2026-10-16` (commitul lotului; SHA-ul în raportul lotului), producția neatinsă (four-way de mai sus,
-`6c4917d0`). Rezolvate cu e2e + mutație: 272, 273, 275–279, 281–295, C41; 274 parțial (274a făcută; **274b = propunere cu temeiul, de
-validat**, DECIZII 16.10.2026); 280 nu se aplică (CAM pe total, împărțit pe cartele) + clasa `round()` reparată. **Așteaptă decizia lui
-Costin**: (1) 274b — validarea propunerii (categoriile 0%, rândurile D300 13–15, codurile UBL); (2) 285 — interpretarea „nicio derulare”
-(laterală: zero; verticală: rămâne la conținutul lung, cu acțiunea fixă); (3) 289 — titularul certificatului nu e în tokenul ANAF
-(emitentul da); (4) „terț plătitor” (273) citit ca `tert_platitor_tva`. Rularea țintită de după ultima completare a fost ROȘIE (62 Python +
-9 e2e) și a fost reparată înaintea commitului (DECIZII „Lotul 6: rularea țintită”): suita țintită verde, e2e-ul atins 340 verzi în 24 de
-fișiere, verificatorul TOTAL 0, uneltele vizuale și artefactele refăcute. **Răspunsul lui Costin (16.10 noaptea)**: 285, 289 acceptate;
-274b făcută (categoria de TVA pe orice linie cu 0%, XML / D300 / PDF / formular; FACT1 ok, DUK valid; o interpretare de reconfirmat:
-serviciile IC = „în afara sferei”); 273 după sursă (terțul plătitor nu e în UBL și nici în D394); 296 + C42 făcute; 268 redeschisă =
-antetul vine de la Brevo (decizie); proba SPV: „Nu aveti drept in SPV pentru CIF=55229657”; migrare nouă `migrare_categorie_tva_linie`
-(pe baza de test; pe producție la publicare). **17.10.2026**: serviciile cu locul în afara României -> D300 rd.3 / 3.1 și D390 P (din
-axa facturii; DUK valid); C43; certificatul fără drept pe CUI spus exact peste tot (OMFP 660/2017 art.15), trimiterea oprită; 268
-amânată. **Urmează**, după răspuns: 274b (dacă se validează), apoi
-„Lotul 6 e complet” -> `scripts/poarta_lot.sh` -> publicarea numai cu acordul lui Costin (regim pilot: backup, fast-forward aprobat,
-post-commit, cele 6 migrări noi cu `--productie`, four-way).
-
-**O comandă deschisă: registrul unic de parametri fiscali + interdicția 26** (comanda Costin 08.10.2026, verbatim în DECIZII), în
-execuție: R0 și R1 comise (`8de0b0a5`); la R2 a ieșit neconformitatea D406 (C1, C2), închisă și comisă (`5dd1add9`). **Comanda Costin
-din 10.10 seara — ÎNCHISĂ**: E1 `5dd1add9`, E2 `72e8b5eb` (220–225 + C8, C9), E3 (/tmp), E4 (raportul punctual + ZIP
-`~/ghid_incoming/iconta_comanda_10_10_seara.zip`). **R2a** (`e798335b`): amprentele „înainte” pe `72e8b5eb` în
-**`/home/costin/iconta_amprente/R2a/`** (în afara depozitului și a /tmp — DECIZII 11.10.2026 „R2a”): producția 5 firme / 259 cereri /
-35 XML, testul 20 / 1321 / 198; `--cod-din` reparat și probat. **R2b** (`5c4a3161`): pluginul
-`scripts/amprente_suita.py` — suita cu plugin 516 teste / 760 de apeluri / 460 de amprente distincte, stabile pe două rulări, în
-`/home/costin/iconta_amprente/R2b/inainte_suita_R2b.json` (DECIZII 11.10.2026 „R2b”: verdict pe amprentele distincte, R8 în aceeași
-zi din worktree). **R3** (în commitul care conține această predare): 4 dubluri / 6 constante mutate în registru (`impozit_profit` din
-2016, `impozit_venit_categorii` nouă, `cote_tva` la data regimului Legii 141/2025), garda `scan_registru.dubluri()` (0); amprentele
-portofoliului identice cu R2a (`e69198fb`). **Comanda Costin 11.10 noaptea („Oprește R4. Nu e aprobat.”, verbatim în DECIZII)**: 125 + 224
-(fereastra = semaforul cardului, o singură sursă), 221 („An precedent” din bilanțul anului precedent din aplicație / evidență / manual,
-niciodată gol), regulile de lucru 4a–e (CLAUDE.md §2.3 pct.12), poarta în paralel — `41aaf93d`. **Răspunsul lui Costin la §6 (12.10.2026,
-verbatim în DECIZII)**: poarta rămâne la 63 de minute pe serverul actual; 221 (b) aprobată; cele 11 bife CF art.17 confirmate; mutația
-scăpată din 221 închisă (`f90a23f6`). **Retestul Costin 12.10.2026 (verbatim în DECIZII)**: 224 și 225 redeschise, 226–232 și `--help`
-la plasă, un singur lot — în commitul care conține această predare; C10 (F20 S1003) găsită și lăsată la decizie, C11 reparată. **R4 e
-BLOCAT până la aprobarea lui Costin**; nu se pornește alt pas fără aprobare. Tot restul e livrat, cu poartă completă, four-way și ZIP în
-`/home/costin/ghid_incoming/`. **Decizii așteaptă răspunsul lui Costin** (FRONTURI);
-restul fronturilor sunt [EXTERN] sau restanțe scrise:
-
-| ce | commit | ZIP |
-|---|---|---|
-| lotul 19 — 433 de ghiduri + defectele 6–13 | `2798f8ce` | `iconta_lot19_publicat.zip` |
-| D394 Î2 — încasările din activități exceptate de la AMEF | `5de03649` | `iconta_d394_i2.zip` |
-| factura din bon marcată în SAGA/WinMentor, D406 (310327), e-Factura (751), încasată la emitere | `4bc13607` | `iconta_export_din_bon.zip` |
-| schemele de test șterse din producție + jurnalul bifei C&D | `57724df6` | — |
-| coloana `salariati.salariu_brut` retrasă (producția migrată DUPĂ deploy, 04.10 05:02) | `7c7a71ff` | `iconta_2b_coloana.zip` |
-| salariul în timp (dată validată, înlocuire explicită, poarta pe lunile atinse) + etichete accesibile în toată aplicația + condiția D112 A1 | `a3210e08` | `iconta_salariu_in_timp.zip` |
-| **testarea ca asistent**: drepturile pe rol și bifă (`cere_drept`, decizia „varianta 2”), interfața care urmează serverul (`data-actiune`), refuzul lângă buton, emailul clientului verificat înainte de creare, X + Esc pe ferestrele informative, ghidul pe rol, contorul Asistenți, fără „48 de ore” | `63c04a95` · `f76ce94b` · `728ce107` | `iconta_testare_asistent.zip` |
-| **confirmările de drepturi**: fluturașul / PDF-ul chitanței / poza bonului la „Poate pregăti” (R52 răsturnat), regimul de TVA jurnalizat (`firma_profil_jurnal`), REGES la „Poate depune”; pe drum: sonda R56 precisă, 18 butoane de intrare marcate, 13 mesaje escapate | `5c086563` | `iconta_drepturi_confirmari.zip` |
-| **secretele scoase din git**: contabil.b resetat (citit din `fe_test.env`), seed-urile din `SEED_CABINET_PAROLA`, parola bazei de producție rotită, tabelul de conturi golit, gard + scanner reparat | `8c3cfe95` | — (fără ZIP: comanda nu l-a cerut) |
-| **testarea ca asistent (2)**: termenii poveștii verificați după generare, `POST /pachete/{id}/poveste/aproba` („Poate valida”), trimiterea la „Poate valida”, nota de motiv din poarta drepturilor, administratorul = toate drepturile (producția normalizată B3), iconițe, un `<select>` pentru firmă, cifrele în email | `2eead087` | — (comanda primită tăiată după „commit,”) |
-| **fluxul de factură F1 — A** (pct.1): sesiune reînnoită (`POST /auth/reinnoieste`), reautentificare peste ecran cu reluarea cererii, navigatorul păstrează ecranul tastat, „versiune nouă” nu reîncarcă peste formular | `f8e08e72` | la final, `iconta_testare_factura_F1.zip` |
-| **fluxul de factură F1 — B** (pct.2–5): lipsurile din Date firmă la deschidere (forma propusă din ANAF/denumire), cota aleasă dintr-o listă și consemnată (`factura_cota_jurnal`, migrat pe producție după backup), data emiterii/scadența/seria pe formular, PDF cu „Cod TVA: RO…”, „Seria”, „Data emiterii”, titlu; poarta R46 la schimbare | `dadd5f86` | la final |
-| **fluxul de factură F1 — C** (pct.6–9): notele automate poartă documentul (factură, extras, casă, NIR, bon, raport Z, stat de plată), jurnalul marchează și cere confirmare la validarea fără document, „notă propusă, de validat” + „nota #”, banca exactă (import numărat, contarea pe nota propusă oprită, liniile noi primele), preț/UM din nomenclator, cantități formatate, seria nedublată (și în e-Factura), culorile de semafor nu mai colorează text | `d582e083` | la final |
-| **fluxul de factură F1 — D** (pct.10–12): Stocuri cu situația stocului întâi, formularele la cerere, Rețete numai HoReCa (CAEN din CF), a doua descărcare a lunii refuzată, descărcarea din factură nedublată, fereastra firmei pe cinci grupuri dintr-o sursă (`GRUPURI_FIRMA`), Solicitări în fereastră | `eafc7b8c` | `iconta_testare_factura_F1.zip` |
-| **lotul 06.10** (comanda Costin, patru părți): P1 seria obligatorie, documentul intern, metoda de stoc, jurnalul Date firmă; P2 /ghid pe teme, 301, înrudite, surse oficiale; P3 salariile din aceleași sume ca D112, 421 la ban, rotunjirea explicită; P4 povestea fără marcaje, „înainte de impozit”, fără restanțe | `14fc0cb6` `2f698e19` `27335044` `c961d8a0` | `iconta_lot_06_10.zip` |
-| **validarea notelor + CM** (răspunsul la §6 din LOT_06_10): coada declarațiilor extinsă la note (autorul din cerere, „Note de validat”, retrimitere, sincronizare cu jurnalul), indemnizația CM în nota de salarii (6458/4382 = 423, reținerile declarate, SEPA cu CM), tichetele peste plafon pe 642, zilele angajatorului pe episod; pct.10: 287 de titluri aprobate nepublicate [cifră corectată în lotul 07.10: 62] | `11cd3150` `a7dcb741` | `iconta_validare_note.zip` |
-| **ciorna facturii, a patra pierdere + parcurgerea g11/g08/g09** (comanda Costin 06.10 seara): cauza = fila încărcată pe codul vechi, iar „Versiune nouă” își lua referința la autentificare (acum: la încărcare); prețul și articolul pe care nu le-a ales omul (emitere, recurentă, stoc, rețetă, transfer, reclasificare, fișa de magazie; prețul lipsă refuzat de server); 67 de puncte parcurse, 15 constatări (5 datorii xfail strict) | `de36b2a1` · `d116ec9f` | `iconta_ciorna_factura.zip` · `iconta_parcurgere_g08_g09_g11.zip` |
-| **C1/C2/C7 + C3/C4/C11 + reîncărcarea** (comanda Costin 07.10, răspunsul la §6): validatoarele DUK la zi (D112 J27.0.6 + D100/D101/D710/B230; manifest + gardă de 30 de zile); atenționarea DUK intră în coadă cu confirmarea scrisă, eroarea oprește; D390 și formularele manuale în coadă; „Achiziție de la agricultor” = achiziția; mijlocul fix din listă; bilanțul prin coadă; fila veche se reîncarcă la autentificare fără formular început | commitul de închidere | `iconta_c1_c2_c7.zip` |
-| **Ecranele scrise de mână — cele 82** (comanda Costin 07.10): 59 de selecturi fiscale pornesc cu „— alege —” și sunt cerute la trimitere (`ALEGE` / `cereAlegerile` în `api.js`), 23 clasificate cu motiv; starea inițială a formularelor-panou nulă | commitul de închidere | — (comanda n-a cerut ZIP) |
-| **Cele 33 de chei — DS cap.17** (comanda Costin 07.10): 31 de chei fiscale intrate în Operațiuni (cu ramurile turism normal/intermediar, aur-monedă, plafon diurnă), 2 rămase cu motiv; niciun select preselectat (36); câmpurile cu implicit tacit obligatorii; verificator `FAPT_FISCAL_NECERUT` | commitul de închidere | `iconta_chei_optionale.zip` (+ `iconta_c5_c6.zip` pentru tura C5/C6) |
-| **C5 + C6 cu clasa** (comanda Costin 07.10): ecranul spune notele scrise (nota-chirie) și ce a venit de la REGES; fiecare DA/NU al serverului cerut explicit în Operațiuni (8 bife adăugate, 3 preselecții scoase; provizionul pe faliment: 0% -> 100%); `puritate` = număr | commitul de închidere | — (comanda n-a cerut ZIP) |
-| **„Deciziile 07.10” + retesturile 07.10** (comenzile Costin 07.10, verbatim în DECIZII): D1 metodele de stoc nesuportate refuzate; D2 NIR legat de factura primită (numai 378/4428); D3 Z la cantitativ-valoric validat numai cu descărcare pe articol / „fără marfă”; D4 salariatul pe API și la import cu cele trei fapte cerute; D5 seria chitanței cerută; R1 respingerea stornează stocul (roșu), NIR-ul se reface; R2 titlul scurt al documentului; S1 prime / sporuri / ore suplimentare (brut, baze, D112 pe DUK, notă, fluturaș; lit.b pe venitul realizat); S2 „de la” = ziua 1 a lunii lucrate; S3 retrimiterea neschimbată cere confirmare, cardul o spune; S4 notificările rezolvate | `876e87a2` (+ registrele zilei, 08.10) | `iconta_decizii_07_10.zip` |
-| **„Răspunsul §6”** (răspunsul Costin la §6 al „Retestul plasei”, verbatim în DECIZII): referința F1–F5 înghețată și confruntată în poartă (producția, fail-closed; amprenta D406 fără data generării); D406 blochează și cu ciorne; vocea a treia pe toată clasa (356 -> 6 declarate); clicul legat după o cerere: 2 -> 0 (220); R193: modelul întrebat cu pool-ul liber pe cele 10 căi + cronul recurentelor; pe drum: 221 (magazinul refuza orice comandă — `tert_pf` pierdut), 222 (plătitorul implicit), 223 (contul de venit al neplătitorului), 224 (comanda refuzată = 500), clasele „parametru netransmis” și „refuzul emiterii neprins” păzite | commitul care conține această predare (SHA în raport) | `iconta_raspunsul_s6.zip` |
-| **„Retestul plasei”** (răspunsul Costin la §6 al „Registrul deficiențelor”, verbatim în DECIZII): 4, 5, 11, 32, 33, 120 (+210, PIVOT R36 la TVA), 156, 173, 181 reproduse și reparate; 12, 159, 162, 172, 188–219 închise; 9, 76, 79, 97, 142, 149, 184, 199 probate în browser; regulile de fond a, c, d, e, f în bază (R6–R10); AI simulat + directorul bonurilor în plasă; cifrele de referință cu excepțiile b, c; pe drum: R6 corectată prin nomenclator, refuzul de stoc al bazei tradus la respingere, R193 (termen AI 60 s, scanerele văd clientul SDK), clicul pierdut la Bilanț, navigarea jurnalului | commitul care conține această predare (SHA în raport) | `iconta_retestul_plasei.zip` |
-| **„Retest 2”** (retestul în aplicație al „Retest 08.10”, comanda Costin 09.10, verbatim în DECIZII): textul judecat pe ECRAN (`core/limba_ecran.py` + `text_ecran_scan.py`, artefact păzit, 0 defecte pe 160+ ecrane; lexicon de diacritice derivat din corpus), rândul D300/D101 = rândul formularului, diferențele de reconciliere în cuvinte; „Înainte de preluare” rămâne deschis și pe rând; contoarele pe o regulă; casa: nota validată se stornează, nu se șterge; amortizarea până la ultima lună încheiată; jurnalul totalizează validatul; rulajul notei; D390 neplătitor pe lunile cu operațiuni; termen și perioadă pe rândurile dinaintea preluării; declarația nedepusă = semnal la închidere; ciornele proprii la vedere; ecranul „Plan de conturi”; confirmările scurte; D394 multi-cotă explicat; „Cod TVA RO…” în antetul PDF; verificarea TVA la trimestrial pe decontul trimestrului | (commitul lotului — raport) | `iconta_retest2.zip` |
-| **„Retest 08.10”** (deciziile Costin la §6 al „Deciziile 08.10 §6” + constatările 4–21, verbatim în DECIZII): TVA-ul din prețul de raft pe 4428.02 (bilanțul o dată, la rd.05); validarea mai multor note; NIR 2/3 F1 refăcute pe 408; D406 liniile + totalurile pe cotă, D394 numărul fără serie; Control fiscal: contoare, „înainte de preluare” pliat + „Marchează toate”, marcarea modificabilă / anulabilă; luna se închide după ce s-a încheiat; 401 debitor semnalat; MF cu meniu de acțiuni; limba ecranelor (gard nou); fereastra largă fără suprapuneri; „Rezumat”; 731–738 scoase; PDF balanță cu CUI + dată; nota de casă descrisă; luna preluării precompletată | commitul lotului (SHA în raport) | `iconta_retest_08_10.zip` |
-| **„Deciziile 08.10 §6”** (răspunsul Costin la §6, verbatim în DECIZII): NIR fără factură pe 408 / 4428.01 închis de factura legată, pe ambele metode și între exerciții; poarta D300 pe 4426; luna preluării în Date firmă; R36 — amortizarea, bonul și Z-ul tastat ciornă, balanța pe validat cu indicatorul ciornelor, porțile avertizează pe ciorne; pe drum: re-contarea, D406 cu analitic, semnalul 4428, bilanțul 4428 debitor | (raportul turei) | `iconta_decizii_08_10_s6.zip` |
-| **„Deciziile 08.10”** (opt mesaje Costin 08.10, verbatim în DECIZII): NIR „fără factură” apoi factura (global-valoric) cere alegerea; poarta verifică mesajul întâi; notificările fără element rezolvate; retestul (ciorna statului înlocuită, CAM pe toate veniturile, „retrimis după respingere”, „Refă NIR-ul”, starea de încasare, refuzul spre câmp, clopoțelul); porțile TVA (4427/4426) și D406 (= rulajele balanței) în coadă; Control fiscal de la luna preluării, „depusă în afara iConta”, „nedeclarat”, 30 de zile, cardul fără întârziere; balanța cu cinci egalități (rulajele lunii = jurnalul lunii); registrul MF (înregistrat / diferență / luni lipsă / catalog / plan) + închiderea lunii (card Zilnic, amortizarea obligatorie, semnalul 581); C&D la «Poate valida»; contul din afara planului legal | commitul care conține această predare (SHA în raport) | `iconta_decizii_08_10.zip` |
-| **lotul 07.10** (comanda Costin, trei părți): P1 D112 pasul D1 (calcul_d112 + build_xml, Perioada, XML identic) + zilele certificatului (ziua de diminuare); P2 retestul F5/F1 pct.2–21 (factura păstrată, butonul spre ecran, mesajele în vedere, coada pe document și pe pregătire, nota la validare blocată, ultima zi a lunii, notificări, scadența propusă, [hidden]); P3 titlurile: 62, registrul sincronizat | `1749dde8` `b8a5d0ce` `f6807786` + închiderea | `iconta_lot_07_10.zip` |
-
-**Starea de lucru, decisă de Costin (17.09.2026, verbatim): „După asta nu urmează nicio temă.”** Proiectul e **în așteptarea folosirii
-aplicației**, nu „în așteptarea unei teme”:
-
-| | |
-|---|---|
-| **ce NU se face** | nu se alege o temă din backlog; nu se ia la rând nicio restanță; nu se deschide o investigație fiindcă „pare următorul lucru rezonabil”. `core.agenda.urmatorul_pas()` arată ce e scris în TESTE, nu dă o comandă |
-| **ce declanșează lucru** | o comandă a lui Costin, sau ce iese din folosirea aplicației (un refuz care nu se înțelege, o cifră care nu se potrivește) |
-| **ce se întâmplă cu restanțele** | rămân scrise (`CONFORMITATE.md`, `core/test_datorie.py`) și se închid **doar când le atinge altă lucrare** |
-| **ce e permis fără să întrebi** | un **prag 1** găsit apăsând |
-
+**19.10.2026 noaptea — LOTUL 8, COMANDA 8.2 PE RAMURĂ.** Producția e pe `fcfa3b3a` (lotul 8, 8.1). Pe ramura `lucru/lot8b-2026-10-18`
+(worktree `/home/costin/iconta_lot8b`), în commitul care conține această predare: 341–381 rezolvate, fiecare cu e2e în
+`frontend_test/e2e/e2e_lot82.py` (43 de teste) și mutație roșie (`mut82.json`); regula importurilor de migrare (pct.4) pe toate importurile;
+R95 închisă (D100 la profit pe semafor); 46 de articole din ghid corectate; restul lotului 8 (bara de stare fixă; lista cheilor Meta /
+WhatsApp, Postmark, Search Console în LANSARE). Trei migrări noi (`migrare_partener_linie`, `migrare_ajustari_fiscale`,
+`migrare_mf_amortizare_preluata`), rulate pe baza de test, de rulat pe producție la publicare în ordinea din `verifica`.
+**Fronturi deschise:** (1) poarta ramurii și publicarea — acordul din 18.10 seara se folosește numai până la 19.10 08:00 (DECIZII „ce a
+schimbat testarea” pct.14); după, publicarea cere confirmarea din nou. (2) §6 al raportului 8.2: 359 (care cifră continuă când amortizarea
+preluată diferă de cea calculată), 362 (2112 se amortizează — confirmare), denumirile obligațiilor D100 / D112 (nomenclatorul ANAF complet
+nu e local). (3) Cheile Meta / WhatsApp, Postmark și exporturile Search Console — de la Costin (LANSARE „Lotul 8, comanda 8.2 pct.5”).
 ## FRONTURI DESCHISE, cu blocajul fiecăruia
 
 - **RESTARTUL OPRIT — ÎNCHIS (10.10.2026, 06:49)**: Costin a rulat `~/ghid_incoming/reguli_fond_2_productie.sh` — backup
@@ -644,9 +491,9 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **136** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **1007** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1219** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77** | **137** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77u** | **1021** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1217** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

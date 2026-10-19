@@ -16,7 +16,7 @@ def _f(p):
 
 
 def test_ruta_intoarce_ignorate():
-    s = _f("main.py")
+    s = _f("core/uc_migrare.py")   # [P7] corpul rutei /migrare/valideaza traieste in use-case
     assert "separa_cui" in s, "ruta nu mai calculeaza intrarile ignorate"
     assert '"ignorate": ignorate' in s, "ruta /migrare/valideaza nu mai intoarce 'ignorate'"
 

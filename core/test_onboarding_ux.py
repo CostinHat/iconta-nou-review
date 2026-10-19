@@ -30,7 +30,8 @@ def test_pas_stivuit():
 def test_solduri_model_descarcabil():
     js = _read("static/js/ecrane/migrare.js")
     assert "descarcaModelSolduri" in js, "lipseste modelul descarcabil de solduri (Q10)"
-    assert 'a.download = "model_solduri_initiale.csv"' in js, "modelul nu se descarca"
+    # [350] modelele se descarcă printr-o singură funcție (separator „;”, deschise pe coloane în Excel)
+    assert "_descarcaModelCSV(MODELE.solduri)" in js, "modelul nu se descarca"
 
 
 def test_solduri_blocheaza_neechilibrul_inainte_de_click():

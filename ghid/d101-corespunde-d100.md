@@ -2,7 +2,7 @@
 title: "Ce faci dacă D101 nu corespunde cu D100?"
 description: "Ce prevede legea când declarația anuală de impozit pe profit (D101) nu se potrivește cu sumele declarate în cursul anului prin D100, și cum se corectează fiecare."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -29,6 +29,6 @@ D100 declară, trimestrial, plățile anticipate sau impozitul pe profit curent;
 
 ## Ce face iConta.eu
 
-D101 are, în iConta.eu, propriul ecran și propriul mecanism de rectificare — o corecție a declarației anuale se face din formularul D101, nu prin funcționalitatea D710. iConta.eu **compară automat** rândul 50 din D101 (plățile anticipate/impozitul declarat pe parcursul anului, așa cum le-a trecut contabilul în declarația anuală) cu suma „de plată" declarată efectiv, trimestrial, prin cele patru D100 depuse prin aplicație pe anul respectiv — o constatare dedicată („D101 vs D100 depuse (plăți anticipate)"), parte din controlul fiscal încrucișat. Când sumele nu coincid (peste toleranța de rotunjire), aplicația semnalează divergența cu roșu și un remediu sugerat; când aplicația nu a văzut vreo depunere D100 pe un trimestru, marchează constatarea ca „nu pot confrunta" (gri), nu ca verde tacit. Dacă identifici o diferență reală, corectarea D100-urilor greșite se face prin formularul 710 (funcționalitatea descrisă în acest ghid pentru codurile 121/103), iar corectarea D101 se face separat, prin propriul ecran de declarație rectificativă D101.
+D101 are, în iConta.eu, propriul ecran și propriul mecanism de rectificare — o corecție a declarației anuale se face din formularul D101, nu prin funcționalitatea D710. iConta.eu **compară automat** rândul 50 din D101 (plățile anticipate/impozitul declarat pe parcursul anului, așa cum le-a trecut contabilul în declarația anuală) cu suma „de plată" declarată efectiv, trimestrial, prin D100-urile depuse pe trimestrele I–III ale anului respectiv — o constatare dedicată („D101 vs D100 depuse (plăți anticipate)"), parte din controlul fiscal încrucișat. Când sumele nu coincid (peste toleranța de rotunjire), aplicația semnalează divergența cu roșu și un remediu sugerat; când aplicația nu a văzut vreo depunere D100 pe un trimestru, marchează constatarea ca „nu pot confrunta" (gri), nu ca verde tacit. Dacă identifici o diferență reală, corectarea D100-urilor greșite se face prin formularul 710 (funcționalitatea descrisă în acest ghid pentru codurile 121/103), iar corectarea D101 se face separat, prin propriul ecran de declarație rectificativă D101.
 
 [iConta.eu](/)

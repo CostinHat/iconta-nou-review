@@ -523,8 +523,8 @@ def test_s4_notificarea_se_rezolva_cand_elementul_isi_schimba_starea(tx):
     conn, cur, tid, cab, asist, valid = tx
     _ca(cur, asist)
     # [09.10.2026, regulile de fond R3] nota se validează numai cu documentul justificativ
-    n1 = j.creeaza(conn, SCH, "Chirie", "2099-10-05", [{"debit": "612", "credit": "401", "suma": 100}], document_ref="Contract chirie 1")["id"]
-    n2 = j.creeaza(conn, SCH, "Telefon", "2099-10-05", [{"debit": "626", "credit": "401", "suma": 50}], document_ref="FCT tel 1")["id"]
+    n1 = j.creeaza(conn, SCH, "Chirie", "2099-10-05", [{"debit": "612", "credit": "401", "suma": 100, "partener_nume": "PARTENER PROBA SRL"}], document_ref="Contract chirie 1")["id"]
+    n2 = j.creeaza(conn, SCH, "Telefon", "2099-10-05", [{"debit": "626", "credit": "401", "suma": 50, "partener_nume": "PARTENER PROBA SRL"}], document_ref="FCT tel 1")["id"]
     el = {a["eticheta"]: a["coada_id"] for a in c.pune_notele_in_coada(conn, cab, tid, asist)}
     c1 = next(v for k, v in el.items() if k.startswith("Notă · Chirie"))
     c2 = next(v for k, v in el.items() if k.startswith("Notă · Telefon"))
@@ -559,7 +559,7 @@ def test_s3_retrimiterea_notei_neschimbate_cere_confirmare_si_cardul_o_spune(tx)
     from core import coada_api as c, jurnal_api as j
     conn, cur, tid, cab, asist, valid = tx
     _ca(cur, asist)
-    nid = j.creeaza(conn, SCH, "Chirie", "2099-10-05", [{"debit": "612", "credit": "401", "suma": 100}])["id"]
+    nid = j.creeaza(conn, SCH, "Chirie", "2099-10-05", [{"debit": "612", "credit": "401", "suma": 100, "partener_nume": "PARTENER PROBA SRL"}])["id"]
     cid = c.pune_notele_in_coada(conn, cab, tid, asist)[0]["coada_id"]
     _ca(cur, valid)
     assert c.respinge(conn, cid, str(valid), "lipsește factura", respins_de_id=valid, cabinet_id_apelant=cab, schema_nota=SCH)["ok"]

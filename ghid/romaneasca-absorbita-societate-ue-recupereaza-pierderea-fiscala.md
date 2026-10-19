@@ -2,7 +2,7 @@
 title: "Firmă românească absorbită de o societate din UE: cine recuperează pierderea fiscală?"
 description: "Pierderea fiscală a firmei românești absorbite se recuperează de sediul permanent din România al societății beneficiare, nu de societatea-mamă din celălalt stat membru."
 published: 2026-10-02
-modified: 2026-10-02
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -55,6 +55,6 @@ Societatea-mamă din Germania nu poate deduce în România această pierdere din
 
 ## Ce face iConta.eu
 
-iConta.eu nu are un modul dedicat fuziunilor transfrontaliere. În declarația 101, pierderea fiscală din anii anteriori și suma recuperată în an se completează de contabil, iar aplicația determină profitul impozabil și impozitul pe profit de 16%. Plafonul de 70% nu se calculează automat. Urmărirea pierderii preluate de la cedentă, pe ani și pe termene, rămâne în sarcina contabilului sediului permanent.
+iConta.eu nu are un modul dedicat fuziunilor transfrontaliere. În declarația 101, pierderea fiscală din anii anteriori o completează contabilul, iar aplicația determină profitul impozabil și impozitul pe profit de 16%. Dacă suma recuperată în an nu e completată, aplicația o calculează singură, cel mult 70% din profitul impozabil dinaintea recuperării; o sumă scrisă de contabil are întâietate. Urmărirea pierderii preluate de la cedentă, pe ani și pe termene, rămâne în sarcina contabilului sediului permanent.
 
 [iConta.eu](/)

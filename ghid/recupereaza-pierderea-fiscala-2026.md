@@ -2,7 +2,7 @@
 title: "Cum se recuperează pierderea fiscală în 2026?"
 description: "Regulile de report al pierderii fiscale pentru firmele plătitoare de impozit pe profit, aplicabile pierderilor înregistrate începând cu 2024."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ O firmă plătitoare de impozit pe profit care închide un an fiscal pe pierdere
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu calculează profitul/pierderea perioadei în cadrul declarației D101, dar nu are o funcție dedicată de urmărire multianuală a pierderilor fiscale reportate (evidența pierderilor pe ani de origine, aplicarea automată a plafonului de 70% și a limitei de 5 respectiv 7 ani). Recuperarea pierderii fiscale rămâne, pentru moment, o evidență pe care contabilul trebuie s-o țină separat, conform regulilor de mai sus.
+La data acestui ghid, iConta.eu calculează profitul/pierderea perioadei în cadrul declarației D101 și aplică automat plafonul de 70% la recuperarea pierderii de recuperat scrise de contabil (în D101 și, cumulat, în D100 pe trimestrele I–III), dar nu are o funcție dedicată de urmărire multianuală a pierderilor fiscale reportate (evidența pierderilor pe ani de origine, limita de 5, respectiv 7 ani). Evidența pierderilor pe ani rămâne, pentru moment, una pe care contabilul trebuie s-o țină separat, conform regulilor de mai sus.
 
 [iConta.eu](/)

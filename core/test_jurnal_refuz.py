@@ -106,20 +106,20 @@ def test_un_cont_din_AFARA_planului_e_refuzat_cu_temei():
 def test_conturile_din_plan_trec():
     """Anti-vacuu pe confruntare: dacă ar refuza orice cont, gardul de mai sus n-ar dovedi nimic."""
     assert _j._linii_valide(_ConnFals(), "ztest",
-                            [{"debit": "4111", "credit": "704", "suma": 1000}]) is None
+                            [{"debit": "4111", "credit": "704", "suma": 1000, "partener_nume": "PARTENER PROBA SRL"}]) is None
 
 
 def test_se_verifica_AMBELE_conturi_nu_doar_primul():
     """Un creditor din afara planului e la fel de rupt ca un debitor."""
     r = _j._linii_valide(_ConnFals(), "ztest",
-                         [{"debit": "4111", "credit": "8888", "suma": 1000}])
+                         [{"debit": "4111", "credit": "8888", "suma": 1000, "partener_nume": "PARTENER PROBA SRL"}])
     assert r and r.get("camp") == "credit"
 
 
 def test_se_verifica_TOATE_liniile_nu_doar_prima():
     r = _j._linii_valide(_ConnFals(), "ztest",
-                         [{"debit": "4111", "credit": "704", "suma": 1000},
-                          {"debit": "7777", "credit": "401", "suma": 500}])
+                         [{"debit": "4111", "credit": "704", "suma": 1000, "partener_nume": "PARTENER PROBA SRL"},
+                          {"debit": "7777", "credit": "401", "suma": 500, "partener_nume": "PARTENER PROBA SRL"}])
     assert r and r["linia"] == 2, "refuzul nu poartă indicele liniei ca DATĂ"
 
 
@@ -128,9 +128,9 @@ def test_se_verifica_TOATE_liniile_nu_doar_prima():
 @pytest.mark.parametrize("linii", [
     [],
     [{"debit": "", "credit": "704", "suma": 1000}],
-    [{"debit": "4111", "credit": "", "suma": 1000}],
-    [{"debit": "4111", "credit": "704", "suma": 0}],
-    [{"debit": "4111", "credit": "704", "suma": -5}],
+    [{"debit": "4111", "credit": "", "suma": 1000, "partener_nume": "PARTENER PROBA SRL"}],
+    [{"debit": "4111", "credit": "704", "suma": 0, "partener_nume": "PARTENER PROBA SRL"}],
+    [{"debit": "4111", "credit": "704", "suma": -5, "partener_nume": "PARTENER PROBA SRL"}],
     [{"debit": "9999", "credit": "704", "suma": 1000}],
 ])
 def test_niciun_refuz_al_liniilor_nu_ramane_fara_temei(linii):

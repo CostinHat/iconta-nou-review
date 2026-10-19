@@ -2,7 +2,7 @@
 title: "Simulare micro vs profit pentru venituri de 300.000 lei"
 description: "Cum se calculează, cu temei legal, impozitul datorat de o firmă cu 300.000 lei venituri sub cele două regimuri — micro (1%) și profit (16%) — în funcție de marja de profit."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -37,6 +37,6 @@ Exemplu concret: cu 300.000 lei venituri și cheltuieli deductibile de 250.000 l
 
 ## Ce face iConta.eu
 
-iConta.eu calculează efectiv, pentru fiecare firmă, atât baza impozitului pe profit (motorul D100, rezultat fiscal real — venituri minus cheltuieli, cumulat de la începutul anului, conform art. 41), cât și baza impozitului micro (venituri din orice sursă, conform art. 53). La data acestui ghid, aplicația nu are un modul dedicat de simulare comparativă „micro vs. profit" care să afișeze, pentru o cifră de venituri și o marjă estimată, impozitul datorat sub fiecare regim — o astfel de comparație se poate obține azi doar rulând cele două calcule separat, pe baza datelor reale din evidența contabilă.
+iConta.eu calculează efectiv, pentru fiecare firmă, atât baza impozitului pe profit (D100, rezultatul fiscal cumulat de la începutul anului, conform art. 41 — venituri minus cheltuieli, cu ajustările fiscale scrise de contabil), cât și baza impozitului micro (venituri din orice sursă, conform art. 53). La data acestui ghid, aplicația nu are un modul dedicat de simulare comparativă „micro vs. profit" care să afișeze, pentru o cifră de venituri și o marjă estimată, impozitul datorat sub fiecare regim — o astfel de comparație se poate obține azi doar rulând cele două calcule separat, pe baza datelor reale din evidența contabilă.
 
 [iConta.eu](/)

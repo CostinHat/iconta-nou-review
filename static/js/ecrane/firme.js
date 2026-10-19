@@ -12,9 +12,9 @@ import { ecranRip } from "./rip_ecran.js?v=cb74120890";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere } from "./coada_trimite.js?v=425f6a2edf";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=3f5aacfa5f";
 import { ecranEtransport } from "./etransport_ecran.js?v=16098440f5";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=06d45ea83e";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=29c89ffcc8";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=8cdaa83e58";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=ea86eed4e8";  // renderer unic verdict control fiscal (DS cap.20)
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=1b49c04aa7";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=4554cd872c";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=7b963851e7";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=76cf61f9da";  // [date_firma_v1]
@@ -2515,8 +2515,9 @@ async function ecranRegistruFiscal(corp, nav, t) {
     if (eroare) {
       corp.innerHTML = `<h2 class="pf-titlu">Registrul de eviden\u021b\u0103 fiscal\u0103</h2>${selector}
         <div class="dec-avert" role="alert"><div class="dec-avert-cap">Nu s-a putut \u00eentocmi registrul pe ${esc(String(an))}.</div>
-        <p>${esc((eroare && (eroare.mesaj || eroare.message)) || "")}</p></div>`;
+        <p>${esc((eroare && (eroare.mesaj || eroare.message)) || "")}</p></div>${varianta === "profit" ? '<div id="rf-ajustari"></div>' : ""}`;
       legaSelector();
+      if (varianta === "profit") ajustari(corp.querySelector("#rf-ajustari"));
       return;
     }
 
@@ -2529,7 +2530,8 @@ async function ecranRegistruFiscal(corp, nav, t) {
           <td>${esc(x.eticheta)}</td><td><small>${esc(x.temei)}</small></td>
           <td><small>${x.randuri.map((r) => `${esc(r.camp)} ${bani(r.valoare)}`).join(" \u00b7 ")}</small></td>
           <td class="fd-td-num">${bani(x.total)} lei</td></tr>`).join("")}</tbody></table></div>
-        <p class="pf-intro" style="margin-top:10px">Cifrele sunt <b>cele din D101</b> pe acela\u0219i an, nu un al doilea calcul. Registrul exist\u0103 ca s\u0103 justifice declara\u021bia, deci nu are voie s-o contrazic\u0103.</p>`;
+        <p class="pf-intro" style="margin-top:10px">Cifrele sunt <b>cele din D101</b> pe acela\u0219i an, nu un al doilea calcul. Registrul exist\u0103 ca s\u0103 justifice declara\u021bia, deci nu are voie s-o contrazic\u0103.</p>
+        <div id="rf-ajustari"></div>`;
     } else {
       const s = d.sectiuni || [];
       corpHtml = !s.length
@@ -2560,6 +2562,62 @@ async function ecranRegistruFiscal(corp, nav, t) {
       ${corpHtml}`;
     legaSelector();
     if (varianta === "venituri_pf") legaFormular(d);
+    if (varianta === "profit") ajustari(corp.querySelector("#rf-ajustari"));
+  };
+
+  // [deficiența 378, comanda Costin 8.2, 18.10.2026] AJUSTĂRILE FISCALE ale rezultatului (cheltuieli nedeductibile, venituri
+  // neimpozabile, deduceri, pierderea din anii anteriori), scrise de contabil pe trimestrul lor și pe rândul D101: aceeași sursă pentru
+  // D100 trimestrial (rezultatul fiscal cumulat de la 01.01) și pentru D101. Până azi nu aveau niciun ecran.
+  const ajustari = async (zona) => {
+    if (!zona) return;
+    let d;
+    try { d = await api.get(`/tenants/${t.id}/ajustari-fiscale?an=${an}`); } catch (e) {
+      zona.innerHTML = `<p class="ecran-nota">Ajust\u0103rile fiscale nu s-au putut \u00eenc\u0103rca: ${esc((e && e.mesaj) || "eroare")}.</p>`; return;
+    }
+    const grupe = { nedeductibile: "Cheltuieli nedeductibile", neimpozabile: "Venituri neimpozabile", deduceri: "Deduceri",
+                    similare: "Elemente similare", pierdere: "Pierderea din anii anteriori" };
+    const optiuni = Object.keys(grupe).map((g) => `<optgroup label="${esc(grupe[g])}">${d.randuri.filter((r) => r.grupa === g)
+      .map((r) => `<option value="${esc(r.rand)}">${esc(r.eticheta)}</option>`).join("")}</optgroup>`).join("");
+    const lista = !d.ajustari.length
+      ? `<div class="stare-goala">Nicio ajustare fiscal\u0103 pe ${esc(String(an))}. Impozitul pe profit (D100 trimestrial \u0219i D101) se calculeaz\u0103 atunci pe rezultatul contabil plus rezerva legal\u0103.</div>`
+      : `<div style="overflow-x:auto"><table class="fd-tabel"><thead><tr><th>Trimestrul</th><th>R\u00e2ndul D101</th><th class="fd-td-num">Suma</th><th>Descriere</th><th>Document</th><th></th></tr></thead>
+        <tbody>${d.ajustari.map((a) => `<tr><td>${a.trim ? `T${a.trim}/${esc(String(a.an))}` : `anul ${esc(String(a.an))}`}</td><td>${esc(a.eticheta)}</td><td class="fd-td-num">${bani(a.suma)} lei</td>
+          <td>${esc(a.descriere || "\u2014")}</td><td>${esc(a.document || "\u2014")}</td>
+          <td><button class="buton-secundar" data-aj-sterge="${a.id}" data-actiune="DELETE /tenants/{tenant_id}/ajustari-fiscale/{ajustare_id}">\u0218terge</button></td></tr>`).join("")}</tbody></table></div>`;
+    zona.innerHTML = `<h3 style="margin-top:22px">Ajust\u0103ri fiscale pe ${esc(String(an))}</h3>
+      <p class="pf-intro">Ce face diferen\u021ba dintre profitul contabil \u0219i cel impozabil (CF art.19 alin.(1)), pe trimestrul \u00een care s-a produs. Intr\u0103 cumulat \u00een D100 pe trimestrele I\u2013III \u0219i \u00een D101. Pierderea din anii anteriori se scrie o dat\u0103 pe an \u0219i se recupereaz\u0103 cel mult 70% din profit (CF art.31).</p>
+      ${lista}
+      <div id="aj-mesaj"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;max-width:960px;margin-top:10px">
+        <label class="camp"><span class="camp-eticheta">R\u00e2ndul D101</span><select id="aj-rand" class="camp-input">${ALEGE}${optiuni}</select></label>
+        <label class="camp" id="aj-trim-camp"><span class="camp-eticheta">Trimestrul</span><select id="aj-trim" class="camp-input">${ALEGE}
+          ${[1, 2, 3, 4].map((q) => `<option value="${q}">T${q}/${esc(String(an))}</option>`).join("")}</select></label>
+        <label class="camp"><span class="camp-eticheta">Suma (lei)</span><input type="number" step="0.01" min="0.01" id="aj-suma" class="camp-input"></label>
+        <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="aj-descriere" class="camp-input"></label>
+        <label class="camp"><span class="camp-eticheta">Document</span><input type="text" id="aj-document" class="camp-input"></label>
+      </div>
+      <div style="margin-top:12px"><button class="buton-primar" id="aj-adauga" data-actiune="POST /tenants/{tenant_id}/ajustari-fiscale">Adaug\u0103 ajustarea</button></div>`;
+    const sel = zona.querySelector("#aj-rand");
+    const potriveste = () => { zona.querySelector("#aj-trim-camp").style.display = (d.anuale || []).includes(sel.value) ? "none" : ""; };
+    sel.addEventListener("change", potriveste);
+    potriveste();
+    zona.querySelector("#aj-adauga").addEventListener("click", async () => {
+      const m = zona.querySelector("#aj-mesaj");
+      m.innerHTML = "";
+      curataEroriCamp(zona);
+      const anuala = (d.anuale || []).includes(sel.value);
+      if (cereAlegerile(zona, anuala ? ["#aj-rand"] : ["#aj-rand", "#aj-trim"])) return;
+      try {
+        await api.post(`/tenants/${t.id}/ajustari-fiscale`, { an, rand: sel.value, trim: anuala ? null : Number(zona.querySelector("#aj-trim").value),
+          suma: zona.querySelector("#aj-suma").value, descriere: zona.querySelector("#aj-descriere").value, document: zona.querySelector("#aj-document").value });
+        deseneaza();
+      } catch (e) { arataMesaj(m, (e && e.mesaj) || "Ajustarea nu s-a scris.", "eroare"); }
+    });
+    zona.querySelectorAll("[data-aj-sterge]").forEach((b) => b.addEventListener("click", async () => {
+      if (!(await confirmaCaseta("\u0218tergi ajustarea? D100 \u0219i D101 se calculeaz\u0103 din nou f\u0103r\u0103 ea.", { textOk: "Da, \u0219terge ajustarea", textNu: "P\u0103streaz\u0103" }))) return;
+      try { await api.del(`/tenants/${t.id}/ajustari-fiscale/${b.dataset.ajSterge}`); deseneaza(); }
+      catch (e) { arataMesaj(zona.querySelector("#aj-mesaj"), (e && e.mesaj) || "Ajustarea nu s-a \u0219ters.", "eroare"); }
+    }));
   };
 
   const formularPf = (d) => `
@@ -4631,7 +4689,7 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
         <div class="pf-frand" data-nota-id="${n.id}">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${n.nr_curent != null ? `Nr. crt. ${n.nr_curent} \u00b7 ` : ""}${dataRo(n.data)} \u00b7 ${esc(n.descriere || n.numar || "fără descriere")} \u00b7 ${badge(n)}</div>
-            <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${bani(l.suma)}${l.centru_nume ? ` \u00b7 <span style="color:var(--teal)">${esc(l.centru_nume)}</span>` : ""}`).join("<br>")}${n.sursa_eticheta ? " \u00b7 sursa: " + esc(n.sursa_eticheta) : ""}<br>${docJustificativ(n)}</div>
+            <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${bani(l.suma)}${l.partener_nume || l.partener_cui ? ` \u00b7 ${esc(l.partener_nume || l.partener_cui)}` : ""}${l.centru_nume ? ` \u00b7 <span style="color:var(--teal)">${esc(l.centru_nume)}</span>` : ""}`).join("<br>")}${n.sursa_eticheta ? " \u00b7 sursa: " + esc(n.sursa_eticheta) : ""}<br>${docJustificativ(n)}</div>
             ${n.status === "ciorna" && !n.document ? `<div class="caseta-atentie jn-fara-doc"><div class="ca-mesaj">${MESAJ_FARA_DOCUMENT}</div></div>` : ""}
             ${stareValidare}${motive}
           </div>
@@ -4646,12 +4704,14 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
         <label class="camp"><span class="camp-eticheta">Document justificativ (fel, număr, dată)</span><input type="text" id="je-doc" class="camp-input" style="width:100%" placeholder="ex: Factură CH-9 din 01.10.2026" value="${esc(n.document_ref || "")}"></label>
         <div class="camp-eticheta" style="margin-top:8px">Linii: cont debit = cont credit \u00b7 sum\u0103</div>
         <div id="je-linii">${n.linii.map((l, i) => `
-          <div style="display:flex;gap:8px;margin-bottom:6px" data-lin="${i}">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px" data-lin="${i}">
             <input type="text" class="camp-input je-deb" placeholder="debit" aria-label="Cont debit" value="${esc(l.debit)}" style="width:90px">
             <span style="align-self:center">=</span>
             <input type="text" class="camp-input je-cre" placeholder="credit" aria-label="Cont credit" value="${esc(l.credit)}" style="width:90px">
             <input type="number" step="0.01" class="camp-input je-sum" aria-label="Suma" value="${l.suma.toFixed(2)}" style="width:120px">
             <select class="camp-input je-centru" aria-label="Centru de cost" style="width:140px">${optCentru(l.centru_cost_id)}</select>
+            <input type="text" class="camp-input je-pcui" placeholder="CUI partener" aria-label="Codul fiscal al partenerului (401 / 4111)" value="${esc(l.partener_cui || "")}" style="width:120px">
+            <input type="text" class="camp-input je-pnume" placeholder="partener (la 401 / 4111)" aria-label="Partenerul (furnizor / client), cerut la 401 și 4111" value="${esc(l.partener_nume || "")}" style="width:200px">
             <button class="buton-secundar je-scoate">\u2212</button>
           </div>`).join("")}</div>
         <p><button class="buton-secundar" id="je-plus" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ linie</button></p>
@@ -4778,12 +4838,14 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
       leaga();
       corp.querySelector("#je-plus").addEventListener("click", () => {
         const d = document.createElement("div");
-        d.style.cssText = "display:flex;gap:8px;margin-bottom:6px";
+        d.style.cssText = "display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px";
         d.innerHTML = `<input type="text" class="camp-input je-deb" placeholder="debit" aria-label="Cont debit" style="width:90px">
           <span style="align-self:center">=</span>
           <input type="text" class="camp-input je-cre" placeholder="credit" aria-label="Cont credit" style="width:90px">
           <input type="number" step="0.01" class="camp-input je-sum" placeholder="0,00" aria-label="Sum\u0103" style="width:120px">
           <select class="camp-input je-centru" aria-label="Centru de cost" style="width:140px">${optCentru(null)}</select>
+          <input type="text" class="camp-input je-pcui" placeholder="CUI partener" aria-label="Codul fiscal al partenerului (401 / 4111)" style="width:120px">
+          <input type="text" class="camp-input je-pnume" placeholder="partener (la 401 / 4111)" aria-label="Partenerul (furnizor / client), cerut la 401 și 4111" style="width:200px">
           <button class="buton-secundar je-scoate">\u2212</button>`;
         zona.appendChild(d); leaga();
       });
@@ -4794,6 +4856,7 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
           credit: r.querySelector(".je-cre").value.trim(),
           suma: parseFloat(r.querySelector(".je-sum").value) || 0,
           centru_cost_id: (r.querySelector(".je-centru") && r.querySelector(".je-centru").value) || null,  // [F143]
+          partener_cui: r.querySelector(".je-pcui").value.trim(), partener_nume: r.querySelector(".je-pnume").value.trim(),   // [381]
         }));
         try {
           let rs;

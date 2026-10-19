@@ -29,9 +29,9 @@
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
 import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=462d75fbab";
-import { randA as randConstatare } from "./control_verdict.js?v=ea86eed4e8";
+import { randA as randConstatare } from "./control_verdict.js?v=1b49c04aa7";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma } from "./firme.js?v=66e35e2a20";
+import { deschideFirma } from "./firme.js?v=50c9c58616";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)

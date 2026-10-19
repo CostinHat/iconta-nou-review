@@ -83,6 +83,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   Un singur loc o scrie: `salut.js` (`paginaPrincipala`, `legaBenzile`). Gard `PAGINA_PRINCIPALA_UNA` (verificator) + proba în browser
   `frontend_test/proba_pagina_principala.py` / `core/test_pagina_principala.py` (structura, benzile deasupra cardurilor, înălțimile).
 
+- **Antetul aplicației rămâne fix la derulare (lotul 8, 18.10.2026 — comanda Costin 7.3 pct.3).** `.bara-antet` (bara de sus, bara de stare, bara 3) are `position: sticky; top: 0` în `.desktop`, care derulează el însuși (cap.22 §7, 321): anunțul „Versiune nouă” din bara de stare rămâne pe ecran oricât se derulează. Gard `BARA_ANTET_FIXA` (verificator). **Excepție (19.10.2026):** cât e deschisă o fereastră, antetul revine la `position: relative` (`body:has(.fereastra-overlay)`) — `sticky` cu z-index ar face din el un context de suprapunere, iar „Versiune nouă” n-ar mai fi apăsabil peste stratul ferestrei (deficiența 191, e2e `test_def_191_…`).
 - **Barele aplicației au înălțime minimă, nu fixă (v2.87, 11.10.2026, deficiența C8).** `.bara`, `.subbara`, `.bara3`, `.subbara--admin`: `min-height`, iar bara de stare se rupe pe rânduri (`flex-wrap`). Pe telefon un mesaj lung din bara de stare ieșea din bara de 40 px și acoperea „?” din bara de sus (atingerea ajungea la mesaj). Gard `BARA_INALTIME_MINIMA` (verificator) + plasa `e2e_comanda_1010.py::test_def_c8_…` (pe 393 px, atingerea din mijlocul fiecărui buton al barelor ajunge la el).
 
 ## 2b. Carduri inactive (feature neconstruit)

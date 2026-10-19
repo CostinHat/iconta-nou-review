@@ -5,7 +5,7 @@ Comanda Costin 09.10.2026, „Retest 2” pct.2: ecranul nu arată numele atribu
 Atributele D101 (anaf_surse/d101_struct_anaf.txt, OPANAF 206/2025) codifică rândul POZIȚIONAL: două cifre de rând (cu zero în față
 sub 10 când urmează un subrând) și câte o cifră pe nivel de subrând — P081 = rd.8.1, P121 = rd.12.1, P4221 = rd.42.2.1; un număr de
 una-două cifre e rândul însuși (P1 … P53), iar P91 (scris și P091 în structură) e rd.9.1, fiindcă formularul n-are rândul 91. Litera
-rămâne pe rând (P38a = rd.38a). Păzit de core/test_d101_rand_formular.py, care confruntă rândul cu textul formularului.
+devine exponentul rândului (P38a = rd.38^1). Păzit de core/test_d101_rand_formular.py, care confruntă rândul cu textul formularului.
 """
 import re as _re
 
@@ -24,4 +24,14 @@ def rand_d101(cheie):
         rand = "%s.%s" % (d[0], d[1])
     else:
         rand = str(int(d[:2])) + "".join("." + c for c in d[2:])
-    return "rândul %s%s" % (rand, lit)
+    # [379, comanda Costin 8.2] litera atributului e EXPONENTUL rândului din formular: P38a = rd.38^1 (anaf_surse/d101_struct_anaf.txt:
+    # „rd.40^1=rd.38^1”, P40a = -P38a), P39a = rd.39^1, P43a = rd.43^1 — nu „38a”, care nu există în formular
+    return "rândul %s%s" % (rand, "^1" if lit == "a" else lit)
+
+
+def denumire_d101(cheie):
+    """[deficiența 379, comanda Costin 8.2] Denumirea OFICIALĂ a rândului din formular pentru un atribut „Pn” („P081” -> „Elemente similare
+    veniturilor potrivit art. 46 din Codul fiscal”), din `core.denumiri_randuri` (generat din OPANAF 206/2025); "" dacă nu e rând tipărit."""
+    from core.denumiri_randuri import D101
+    r = rand_d101(cheie)
+    return D101.get(r[len("rândul "):], "") if r.startswith("rândul ") else ""

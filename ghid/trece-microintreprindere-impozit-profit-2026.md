@@ -2,7 +2,7 @@
 title: "Când trece o microîntreprindere la impozit pe profit în 2026?"
 description: "Situațiile în care o microîntreprindere devine, în cursul anului 2026, plătitoare de impozit pe profit, conform art. 52 din Codul fiscal."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Cele patru trigger-e, aplicabile independent unul de altul:
 
 ## Ce face iConta.eu
 
-iConta.eu calculează impozitul pe profit trimestrial pe baza reală a rezultatului fiscal (venituri minus cheltuieli, nu venituri brute), inclusiv cumulat de la începutul anului conform art. 41 din Codul fiscal — motorul D100 al aplicației a fost corectat explicit pentru a nu confunda „venituri × cotă" cu „profit × cotă". Pentru regimul micro, baza de calcul (venituri din orice sursă, cu ajustările din art. 53) este de asemenea implementată. La data acestui ghid, aplicația nu are însă un declanșator automat care să detecteze depășirea plafonului de 100.000 euro sau pierderea condiției de salariat și să comute singură profilul firmei de la micro la profit — trecerea rămâne o decizie pe care contabilul o marchează manual în aplicație, pe baza urmăririi celor patru situații de mai sus.
+iConta.eu calculează impozitul pe profit trimestrial pe rezultatul fiscal cumulat de la începutul anului, conform art. 41 din Codul fiscal — venituri minus cheltuieli, plus ajustările fiscale scrise de contabil, nu venituri brute. Pentru regimul micro, baza de calcul (venituri din orice sursă, cu ajustările din art. 53) este de asemenea implementată. La data acestui ghid, aplicația nu are însă un declanșator automat care să detecteze depășirea plafonului de 100.000 euro sau pierderea condiției de salariat și să comute singură profilul firmei de la micro la profit — trecerea rămâne o decizie pe care contabilul o marchează manual în aplicație, pe baza urmăririi celor patru situații de mai sus.
 
 [iConta.eu](/)

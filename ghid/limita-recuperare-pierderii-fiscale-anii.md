@@ -2,7 +2,7 @@
 title: "Limita de recuperare a pierderii fiscale din anii precedenți"
 description: "Procentul și numărul de ani în care se poate recupera pierderea fiscală la impozitul pe profit, potrivit Codului fiscal, inclusiv regimul tranzitoriu pentru pierderile din anii dinaintea reformei din 2024."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Legea distinge, de fapt, între două regimuri, în funcție de anul în care a 
 
 ## Ce face iConta.eu
 
-iConta.eu calculează impozitul pe profit, inclusiv reportul și recuperarea pierderii fiscale, pe baza datelor din contabilitatea firmei. Aplicarea corectă a celor două regimuri (5 ani/70% pentru pierderile din 2024 încoace, respectiv termenul tranzitoriu de 7 ani/70% pentru cele mai vechi) depinde de datele istorice introduse pentru firma respectivă.
+iConta.eu aplică plafonul de 70% la recuperarea pierderii fiscale: pornind de la pierderea de recuperat scrisă de contabil (o dată pe an, în ecranul „Registrul de evidență fiscală”, secțiunea „Ajustări fiscale”, sau direct în D101), calculează suma recuperată în D101 și, cumulat, în D100 pe trimestrele I–III. Vechimea fiecărei pierderi (5 ani pentru cele din 2024 încoace, respectiv 7 ani pentru cele mai vechi) aplicația nu o urmărește: ce pierdere mai e de recuperat stabilește contabilul.
 
 [iConta.eu](/)

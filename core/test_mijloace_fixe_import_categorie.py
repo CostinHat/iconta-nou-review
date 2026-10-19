@@ -27,7 +27,7 @@ _FARA_CONT = b"cod;denumire;valoare;durata;pif;metoda\nMF1;Ceva;100000;60;2025-1
 def test_cont_prezent_se_pastreaza():
     r = extrage(_CU_CONT, "mf.csv")[0]
     assert r["cont_imobilizare"] == "2131"
-    assert not any("cont de imobilizare lipsă" in a for a in r["avertismente"])
+    assert not any("cont de imobilizare lipsă" in a for a in r["semnale_extra"]) and r["stare"] == "ok", r
 
 
 def test_cont_lipsa_ramane_gol_nu_2131():
@@ -38,8 +38,10 @@ def test_cont_lipsa_ramane_gol_nu_2131():
 
 def test_cont_lipsa_da_avertisment_si_ok_false():
     r = extrage(_FARA_CONT, "mf.csv")[0]
-    assert any("cont de imobilizare lipsă" in a for a in r["avertismente"]), r["avertismente"]
-    assert r["ok"] is False
+    assert any("cont de imobilizare lipsă" in a for a in r["semnale_extra"]), r["semnale_extra"]
+    # [comanda Costin 8.2 pct.4] metoda accelerată pe activul neclasificat nu se poate calcula -> rândul se respinge numit
+    from core.mijloace_fixe_import_api import verifica_randuri
+    assert r["stare"] == "respins" and [e["regula"] for e in verifica_randuri([r])] == ["amortizare_necalculabila"], r["motive"]
 
 
 def test_activ_neclasificat_refuza_accelerat_la_d406():

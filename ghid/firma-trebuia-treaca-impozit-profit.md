@@ -2,7 +2,7 @@
 title: Ce fac dacă firma trebuia să treacă la impozit pe profit, dar a rămas micro?
 description: Depășirea plafonului de 100.000 euro obligă trecerea la impozit pe profit chiar din trimestrul depășirii — iar aplicația nu detectează automat momentul, corectarea fiind manuală.
 published: 2026-09-25
-modified: 2026-10-13
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -16,7 +16,7 @@ Dacă firma a depășit plafonul de venituri pentru microîntreprindere și a co
 **Art. 52 alin. (1) CF** „Reguli de ieșire din sistemul de impunere pe veniturile microîntreprinderilor în cursul anului": „Dacă în cursul unui an fiscal o microîntreprindere realizează venituri mai mari de 100.000 euro, aceasta datorează impozit pe profit **începând cu trimestrul în care s-a depășit această limită**." Sursă: [Legea nr. 227/2015 privind Codul fiscal](https://legislatie.just.ro/Public/DetaliiDocument/171282) (modificat de OUG 8/2026, art. 6 pct. 20).
 :::
 
-Obligația de trecere la impozit pe profit nu e opțională și nu așteaptă finalul anului — curge de la trimestrul concret în care veniturile cumulate au depășit 100.000 euro (calculat la cursul de schimb valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile, conform art. 47 alin. 1 lit. c). Dacă firma a continuat să depună D100 (micro) în loc de D101 (profit) după acel moment, declarațiile depuse pentru trimestrele ulterioare depășirii au fost pe regimul greșit.
+Obligația de trecere la impozit pe profit nu e opțională și nu așteaptă finalul anului — curge de la trimestrul concret în care veniturile cumulate au depășit 100.000 euro (calculat la cursul de schimb valabil la închiderea exercițiului financiar în care s-au înregistrat veniturile, conform art. 47 alin. 1 lit. c). Dacă firma a continuat să declare impozitul micro (D100, cod 121) în loc de impozitul pe profit (D100, cod 103, pe trimestrele I–III, și D101 anual) după acel moment, declarațiile depuse pentru trimestrele ulterioare depășirii au fost pe regimul greșit.
 
 Corecția are doi pași: identifici exact trimestrul depășirii, cumulând veniturile de la începutul anului, apoi schimbi „regimul fiscal (Date firmă)” din „micro" în „profit" în Vectorul fiscal al firmei, cu data de aplicare corectă. Dacă în acest interval firma are deja perioade fiscale închise (declarații deja depuse și blocate), schimbarea vectorului e refuzată direct de aplicație până redeschizi acele perioade.
 

@@ -21,8 +21,13 @@ def test_limita_pfa_fara_niciun_termen_srl():
     for t in _TERMENI_SRL:
         assert t.lower() not in lim, "termen SRL '%s' aparut la PFA: %s" % (t, lim)
     assert "încasări-plăți" in lim and "partidă simplă" in lim
-    # NEVERIFICAT la PFA = doar salariati + vector (ambele), NU asociati/mijloace fixe (dubla)
+    # NEVERIFICAT la PFA = salariati + vector (ambele), NU asociati (dubla)
     assert "salariați" in lim and "vector fiscal" in lim
+    # [368, comanda Costin 8.2] mijloacele fixe și stocul rămân la PFA, dar fără conturi de confruntat: neverificate, spus — nu „vs balanță”
+    from core import audit_preluare as ap
+    st = set(straturi_pentru("pfa"))
+    assert {s for t, s, _f in ap._NEVERIFICAT_V1 if t in ap._neverificate(st)} >= {"mijloace_fixe", "articole"}
+    assert not {fn for fn, _d in ap._verificari(st)} & {"verifica_mijloace_fixe", "verifica_stocuri"}
 
 
 def test_limita_srl_are_termenii_partidei_duble():

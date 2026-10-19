@@ -114,7 +114,10 @@ def test_superaccel_inainte_de_accel_in_ambii_normalizatori():
         assert f("accelerata") == "accelerata"
         assert f("degresiva") == "degresiva"
         assert f("liniara") == "liniara"
-        assert f("") == "liniara"
+    assert _norm_metoda("") == "liniara"
+    # [361, comanda Costin 8.2 pct.4: „nimic nu se înlocuiește pe tăcute”] la import, celula goală rămâne goală și se semnalează (liniară
+    # se aplică la calcul), iar o metodă necunoscută respinge rândul — nu devine liniară
+    assert _normalizeaza_metoda("") == "" and _normalizeaza_metoda("inventata") is None
 
 
 def test_xml_contine_metoda_si_sume():

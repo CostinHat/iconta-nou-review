@@ -17,7 +17,7 @@ CNP_CTRL_GRESIT = "6010101123458"  # 13 cifre, format ok, dar CIFRA DE CONTROL g
 def test_vectori_de_test_sunt_corecti():
     assert valideaza_cnp(CNP_OK) == (True, "ok")
     assert valideaza_cnp(CNP_CTRL_GRESIT)[0] is False
-    assert valideaza_cnp(CNP_CTRL_GRESIT)[1] == "cifra de control"
+    assert valideaza_cnp(CNP_CTRL_GRESIT)[1] == "cifra de control greșită"
 
 
 def test_valideaza_salariat_refuza_control_gresit():

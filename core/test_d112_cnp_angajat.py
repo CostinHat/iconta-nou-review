@@ -39,9 +39,9 @@ def test_baseline_cnp_cui_valide_emit():
 
 
 @pytest.mark.parametrize("cnp,cheie", [
-    ("12345", "format"),                 # 3.1 lungime (XSD CnpSType pattern)
-    ("19001014X0011", "format"),         # 3.2 alpha (non-numeric)
-    ("0900101410011", "prima cifra"),    # 3.3 leading-zero (prima cifra 1-9)
+    ("12345", "are 5 cifre; un CNP are 13"),                    # 3.1 lungime (XSD CnpSType pattern); motivul în cuvinte (347)
+    ("19001014X0011", "alte caractere decât cifre"),            # 3.2 alpha (non-numeric)
+    ("0900101410011", "prima cifră (sexul și secolul) e 0"),    # 3.3 leading-zero (prima cifra 1-9)
     ("1900101410012", "cifra de control"),  # 3.4 checksum (DUK)
 ])
 def test_cnp_angajat_invalid_blocheaza_cu_motiv(cnp, cheie):

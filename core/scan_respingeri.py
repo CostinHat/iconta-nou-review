@@ -5,7 +5,7 @@ Perechea lui `migrare_api.REGULI`, care le DECLARA. Confruntarea celor doua (ca 
 constante) prinde despartirea: un cod folosit si nedeclarat inseamna ca nomenclatorul nu inchide ce
 crede ca inchide; un cod declarat si nefolosit e o intrare moarta.
 
-CE NU POATE SPUNE. Vede doar codurile scrise LITERAL la apelul lui `respinge(...)`. Un cod calculat
+CE NU POATE SPUNE. Vede doar codurile scrise LITERAL la apelul lui `respinge(...)` / `semnaleaza(...)`. Un cod calculat
 (dintr-o variabila, dintr-un dictionar) nu se vede - si e raportat separat, nu ignorat.
 """
 import ast
@@ -35,9 +35,10 @@ def apeluri():
             if not isinstance(n, ast.Call):
                 continue
             nume = n.func.attr if isinstance(n.func, ast.Attribute) else getattr(n.func, "id", "")
-            if nume != "respinge":
+            if nume not in ("respinge", "semnaleaza"):
                 continue
-            # semnatura: respinge(tip, rand, regula, mesaj, **campuri)
+            # semnatura: respinge / semnaleaza(tip, rand, regula, mesaj, **campuri) — [comanda Costin 8.2 pct.4] semnalele sunt în
+            # același nomenclator (`fel: "semnal"`)
             cod = None
             if len(n.args) >= 3 and isinstance(n.args[2], ast.Constant) \
                and isinstance(n.args[2].value, str):

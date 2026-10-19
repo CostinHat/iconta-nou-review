@@ -95,6 +95,9 @@ BASELINE = {
     "core/d212.py": 38,  # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
     # +1 10.10.2026 (R1, registrul unic): `ancoreaza` refuza temeiul fara `data_in` — refuz de FORMA (o intrare de registru fara data
     # de la care e valabila nu se poate alege dupa data operatiunii), notat langa el; o eroare de program, nu o regula fiscala.
+    # [18.10.2026, comanda 8.2, deficiența 378] `adauga` refuză ajustarea pe care `valideaza` o respinge — refuz de FORMĂ (rândul în afara
+    # listei, anul / trimestrul lipsă sau implauzibil, suma ne-numerică sau ≤ 0); temeiul rândurilor e pe `RANDURI` (D101, OPANAF 206/2025).
+    "core/ajustari_fiscale.py": 1,
     "core/common.py": 17,   # +1 01.10.2026: plafon_cresa(None) - refuz de FORMA (luna lipsa; interdictia 3)
     "core/contracte_speciale.py": 4,
     "core/d406.py": 6,

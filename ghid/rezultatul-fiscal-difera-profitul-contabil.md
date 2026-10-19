@@ -2,7 +2,7 @@
 title: "De ce rezultatul fiscal diferă de profitul contabil?"
 description: "Mecanismul legal prin care profitul din contul de profit și pierdere se transformă în baza de calcul a impozitului pe profit, cu deducerile și cheltuielile nedeductibile prevăzute de Codul fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Practic, profitul contabil e punctul de plecare, nu rezultatul final: rezultatul
 
 ## Ce face iConta.eu
 
-La calculul obligației de impozit pe profit din declarația D100, iConta.eu pornește exact de la diferența contabilă venituri minus cheltuieli (cumulată de la 1 ianuarie, conform art. 41 CF) — dar aplicația nu aplică automat ajustările fiscale din art. 19 și următoarele (venituri neimpozabile, deducerile fiscale, cheltuielile nedeductibile). Avertismentul afișat la generarea D100 o spune explicit: "Ajustările fiscale (nedeductibile/neimpozabile art. 19+ CF) și regularizarea anuală se fac la D101." Practic, profitul contabil e baza de plecare automată, iar transformarea lui în rezultat fiscal final rămâne, pentru moment, o etapă manuală a contabilului, la nivelul regularizării anuale.
+La calculul obligației de impozit pe profit din declarația D100, iConta.eu pornește de la diferența contabilă venituri minus cheltuieli, cumulată de la 1 ianuarie (art. 41 CF), și o transformă în rezultat fiscal cu ajustările din art. 19 și următoarele pe care le scrii, pe trimestrul în care s-au produs, în ecranul „Registrul de evidență fiscală” al firmei, secțiunea „Ajustări fiscale”: venituri neimpozabile, deduceri fiscale, cheltuieli nedeductibile. Pierderea fiscală din anii anteriori se recuperează cel mult 70% (art. 31 alin. (1)). Rezumatul declarației arată pe rânduri rezultatul contabil, ajustările, pierderea recuperată și impozitul cumulat, iar aceleași ajustări intră și în D101. Ce rămâne la contabil e încadrarea: aplicația nu decide singură ce cheltuială e nedeductibilă sau ce venit e neimpozabil.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se calculează IMCA datorat pe un trimestru când calculul se face cumulat de la începutul anului?"
 description: "Se compară IMCA și impozitul pe profit calculate cumulat de la 1 ianuarie, se reține cel mai mare, apoi se scade impozitul datorat pentru trimestrele anterioare; diferența e impozitul trimestrului."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -55,6 +55,6 @@ SC Exemplu SA (peste pragul de 50.000.000 euro, sistem trimestrial), anul 2026, 
 
 ## Ce face iConta.eu
 
-iConta.eu calculează IMCA și comparația cu impozitul pe profit în declarația anuală D101, validată pe validatorul oficial ANAF, cu cota aleasă după anul fiscal. Indicatorii VT, Vs, I și A se introduc de contabil. Calculul trimestrial cumulat și scăderea impozitului datorat în trimestrele anterioare nu sunt automatizate în D100. Suma de declarat pe trimestru o stabilește contabilul.
+iConta.eu calculează IMCA și comparația cu impozitul pe profit în declarația anuală D101, validată pe validatorul oficial ANAF, cu cota aleasă după anul fiscal. Indicatorii VT, Vs, I și A se introduc de contabil. În D100, aplicația calculează cumulat de la 1 ianuarie impozitul pe profit și scade ce s-a declarat deja pe trimestrele anterioare ale anului, dar fără comparația cu IMCA: pentru o firmă care datorează IMCA, comparația trimestrială și suma de declarat pe trimestru le stabilește contabilul.
 
 [iConta.eu](/)

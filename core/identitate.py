@@ -39,27 +39,32 @@ def valideaza_cui(cui):
 
 
 def valideaza_cnp(cnp):
-    """(valid: bool, motiv: str) - CNP romanesc: format 13 cifre + prima 1-9 + data valabila + judet
-    1-52 + cifra de control (cheia 279146358279). motiv in {ok, format (13 cifre), prima cifra,
-    luna invalida, data invalida, judet invalid, cifra de control}."""
+    """(valid: bool, motiv: str) - CNP romanesc: 13 cifre + prima 1-9 + data valabila + judet 1-52 + cifra de control (cheia
+    279146358279). SURSA UNICĂ (salariați, asociați, parteneri — `salariati_import_api` / `asociati_import_api` trimit aici).
+    [deficiența 347, comanda Costin 8.2] motivul spune ce e greșit, în cuvinte: „are 11 cifre; un CNP are 13”, nu „format (13 cifre)”."""
     s = str(cnp or "").strip()
-    if len(s) != 13 or not s.isdigit():
-        return False, "format (13 cifre)"
+    if not s:
+        return False, "lipsește"
+    if not s.isdigit():
+        return False, "conține și alte caractere decât cifre"
+    if len(s) != 13:
+        from core.common import cate   # numeralul acordat („o cifră”, „20 de cifre”); common nu trage db / api, modulul rămâne frunză
+        return False, "are %s; un CNP are 13" % cate(len(s), "cifră", "cifre")
     if s[0] not in "123456789":
-        return False, "prima cifra (1-9)"
+        return False, "prima cifră (sexul și secolul) e 0; trebuie să fie 1–9"
     sx = int(s[0]); aa = int(s[1:3]); ll = int(s[3:5]); zz = int(s[5:7])
     sec = {1: 1900, 2: 1900, 3: 1800, 4: 1800, 5: 2000, 6: 2000, 7: 2000, 8: 2000, 9: 1900}.get(sx, 1900)
     if not (1 <= ll <= 12):
-        return False, "luna invalida"
+        return False, "luna nașterii (cifrele 4–5) e %02d; trebuie să fie 01–12" % ll
     try:
         datetime.date(sec + aa, ll, zz)
     except ValueError:
-        return False, "data invalida"
+        return False, "data nașterii (cifrele 2–7) nu există"
     if not (1 <= int(s[7:9]) <= 52):
-        return False, "judet invalid"
+        return False, "codul județului (cifrele 8–9) e %s; trebuie să fie 01–52" % s[7:9]
     ctrl = sum(int(s[i]) * _CHEIE_CNP[i] for i in range(12)) % 11
     ctrl = 1 if ctrl == 10 else ctrl
-    return (ctrl == int(s[12])), ("ok" if ctrl == int(s[12]) else "cifra de control")
+    return (ctrl == int(s[12])), ("ok" if ctrl == int(s[12]) else "cifra de control greșită")
 
 
 def valideaza_cif(cif):

@@ -29,15 +29,20 @@ def test_motiv_nu_e_title_only():
 
 
 def test_motiv_vizibil_prezent():
-    """Motivul se randeaza ca text vizibil (span.mig-motiv) - macar cele 4 instante reparate."""
+    """[comanda Costin 8.2 pct.4] Motivul se randeaza ca text vizibil intr-un SINGUR loc — tabelul comun al previzualizarilor
+    (`tabelPrevizualizare`, coloana „Starea”, div.mig-prev-motiv) — folosit de fiecare import (solduri, parteneri, salariati, asociati,
+    mijloace fixe, istoric, RIP, articole, retete)."""
     s = _js()
-    n = s.count('class="mig-motiv"')
-    assert n >= 4, "asteptam >=4 randari vizibile ale motivului (mig-motiv), gasit %d" % n
+    corp = s[s.index("function tabelPrevizualizare("):]
+    corp = corp[:corp.index("\n}\n")]
+    assert corp.count('class="mig-prev-motiv"') == 1, "tabelul comun nu mai arata motivul randului"
+    n = s.count("tabelPrevizualizare(") - 1
+    assert n >= 9, "asteptam ca fiecare import (9) sa foloseasca tabelul comun, gasit %d" % n
 
 
 def test_mig_motiv_stilizat():
-    """Clasa .mig-motiv exista in stil.css (altfel textul vizibil n-are forma DS)."""
+    """Clasa .mig-prev-motiv exista in stil.css (altfel textul vizibil n-are forma DS)."""
     p = "static/stil.css"
     if not os.path.exists(p):
         pytest.skip("stil.css absent")
-    assert ".mig-motiv" in open(p, encoding="utf-8").read(), ".mig-motiv lipseste din stil.css"
+    assert ".mig-prev-motiv" in open(p, encoding="utf-8").read(), ".mig-prev-motiv lipseste din stil.css"

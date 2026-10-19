@@ -86,8 +86,8 @@ def test_importul_citeste_coloana_cd():
     r = extrage(b"cod;denumire;valoare;durata;pif;metoda;cont imobilizare;cercetare\n"
                 b"MF1;Spectrometru;60000;60;2025-03-10;accelerata;2132;da\n"
                 b"MF2;Laptop;6000;36;2025-03-10;liniara;2132;poate\n", "m.csv")
-    assert r[0]["destinatie_cd"] is True and r[0]["amortizat"] is not None   # accelerata calculata, nu refuzata
-    assert r[1]["destinatie_cd"] is False and any("C&D" in a for a in r[1]["avertismente"])
+    assert r[0]["destinatie_cd"] is True and r[0]["amortizat_calculat"] is not None   # accelerata calculata, nu refuzata
+    assert r[1]["destinatie_cd"] is False and any("C&D" in a for a in r[1]["semnale_extra"]) and r[1]["stare"] == "semnalat"
 
 
 # ── [decizia Costin 04.10.2026] fiecare schimbare a bifei se jurnalizează: utilizator, dată, veche -> nouă ─────────────

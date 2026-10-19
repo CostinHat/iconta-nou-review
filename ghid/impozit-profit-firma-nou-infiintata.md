@@ -2,7 +2,7 @@
 title: "Impozit pe profit pentru firma nou înființată 2026"
 description: "Regimul de declarare și plată a impozitului pe profit pentru o firmă nou-înființată în 2026: sistem trimestrial obligatoriu în primul an, plăți anticipate pe profitul contabil real."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Regula practică: o firmă nou-înființată în 2026 intră direct în sistemul
 
 ## Ce face iConta.eu
 
-iConta.eu calculează impozitul pe profit al firmei pe baza rezultatului fiscal real (venituri minus cheltuieli), cumulat de la începutul anului fiscal, conform art. 41 — motorul D100 a fost corectat explicit pentru a nu confunda „venituri × cotă" cu „profit × cotă" și pentru a trata corect trecerea de la o obligație de trimestru la alta ca diferență față de ce s-a impozitat deja cumulat. La data acestui ghid, aplicația nu are o verificare automată dedicată a statutului „nou-înființată" al firmei pentru a bloca opțiunea nepermisă pentru sistemul anual în primul an — alegerea sistemului de declarare rămâne o configurare făcută de contabil, pe baza regulilor din art. 41.
+iConta.eu calculează impozitul pe profit al firmei pe rezultatul fiscal cumulat de la începutul anului fiscal, conform art. 41: veniturile minus cheltuielile din contabilitate, plus ajustările fiscale scrise de contabil în ecranul „Registrul de evidență fiscală” al firmei, secțiunea „Ajustări fiscale”, iar fiecare D100 declară diferența față de impozitul deja declarat pe trimestrele anterioare ale anului. Pentru o firmă pe regim de profit, aplicația cere D100 pe trimestrele I–III, iar trimestrul IV se definitivează în D101. Vectorul fiscal al firmei nu are o opțiune pentru sistemul anual cu plăți anticipate, deci aplicația aplică sistemul trimestrial — cel obligatoriu, oricum, pentru o firmă nou-înființată; aplicația nu verifică separat statutul „nou-înființată" al firmei.
 
 [iConta.eu](/)

@@ -1399,14 +1399,17 @@ def _thunk_d100(conn, schema, an, luna):
     from core.common import Perioada
     per = Perioada(an, trim=(luna - 1) // 3 + 1)
     a2, l2 = per.an, per.trim * 3
-    # pull intoarce (prof, venituri, cheltuieli); derivarea obligatiei NU se re-implementeaza aici -
-    # o CHEAMA pe cea din generator (d100.deriva_obligatii), sursa unica -> thunk-ul nu poate drifta
-    # de generator nici in aritate, nici in formula (baza profit = venituri - cheltuieli).
+    # derivarea obligatiei NU se re-implementeaza aici - o CHEAMA pe cea din generator (`d100.obligatii_perioada`, sursa unica: micro pe
+    # venituri, profit pe rezultatul fiscal cumulat [376–378]) -> thunk-ul nu poate drifta de generator.
     prof, venituri, cheltuieli = _g.pull(conn, schema, per)
-    obligatii, _ = _g.deriva_obligatii(prof, venituri, cheltuieli, a2, l2)
+    if (prof.get("regim_fiscal") or "").lower() == "profit" and per.trim == 4:
+        raise _SkipSubiect("D100 pe impozitul pe profit nu se depune pe T4 (se definitivează în D101, CF art.41 alin.(1)).")
+    obligatii, detaliu = _g.obligatii_perioada(conn, schema, per, prof, venituri, cheltuieli)
     if not obligatii:
         raise _SkipSubiect("D100 fără obligație (venituri cont 70x = 0) - nimic de reconciliat.")
     res = _g.calcul_d100(prof, a2, l2, obligatii)
+    if detaliu.get("profit"):
+        res.profit = detaliu["profit"]
     return lambda: _r.reconciliaza(conn, per, res, None)
 
 

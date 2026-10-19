@@ -118,7 +118,8 @@ def extrage_balanta_detaliat(continut, nume_fisier=""):
         except ValueError:
             raise _it.FisierNecitit("Rândul %d (contul %s): soldul final „%s” / „%s” nu e un număr. Corectează celula și "
                                     "încarcă fișierul din nou." % (nr, cont, _it.celula(r, i_deb), _it.celula(r, i_cre)))
-        citite.append({"cont": cont, "denumire": _it.celula(r, i_den), "debit": deb, "credit": cre})
+        # [comanda Costin 8.2 pct.4] numărul rândului din fișier: previzualizarea arată fiecare rând cu starea lui, pe numărul lui
+        citite.append({"cont": cont, "denumire": _it.celula(r, i_den), "debit": deb, "credit": cre, "rand_fisier": nr})
 
     # același cont de două ori: baza are UNIQUE(cont) (GARZI cat.1) — refuz numit, nu o eroare de bază la scriere
     vazute, dubluri = set(), []
@@ -303,3 +304,11 @@ def rezumat(conn):
         cur.execute("SELECT count(*), COALESCE(sum(sold_debitor),0), COALESCE(sum(sold_creditor),0) FROM solduri_initiale")
         n, td, tc = cur.fetchone()
     return {"are_solduri": n > 0, "randuri": n, "total_debit": float(td), "total_credit": float(tc)}
+
+
+def solduri_deschidere(cur):
+    """[359 / 374, comanda Costin 8.2] Balanța de deschidere a firmei: {cont: (sold debitor, sold creditor)} — reconcilierea registrelor
+    preluate (mijloace fixe, stoc) cu ea. Conexiunea e pe schema firmei."""
+    cur.execute("SELECT cont, sold_debitor, sold_creditor FROM solduri_initiale")
+    return {(r["cont"] if isinstance(r, dict) else r[0]): ((r["sold_debitor"], r["sold_creditor"]) if isinstance(r, dict) else (r[1], r[2]))
+            for r in cur.fetchall()}

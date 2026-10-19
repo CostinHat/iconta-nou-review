@@ -108,6 +108,25 @@ def _cheltuieli_independent(conn, perioada, fereastra=None):
         return Decimal(str(_repo.sql_2(cur, q, inc, sf)[0] or 0))
 
 
+def _rezultat_contabil_independent(conn, fereastra):
+    """Rezultatul contabil al ferestrei, ca rândul 7 din D101: (venituri de exploatare − cheltuieli de exploatare) + (venituri financiare
+    76x − cheltuieli financiare 66x), fiecare componentă rotunjită la leu înainte de adunare (ca rândurile 1, 2, 4, 5). Note VALIDATE, fără
+    închiderea în 121. SQL PROPRIU: calea 2 nu cheamă `d101.pull`."""
+    inc, sf = fereastra
+    q = ("SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '7%%' AND l.cont_credit NOT LIKE '76%%' THEN l.suma ELSE 0 END),0), "
+         "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0), "
+         "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '76%%' THEN l.suma ELSE 0 END),0), "
+         "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '66%%' THEN l.suma ELSE 0 END),0) "
+         "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
+         "WHERE i.status='validata' AND i.data >= %s AND i.data < %s "
+         "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'")
+    with conn.cursor() as cur:
+        r = _repo.sql(cur, q, inc, sf)
+    r = tuple(r.values()) if isinstance(r, dict) else r
+    ve, ce, vf, cf = (_q(x or 0) for x in r)
+    return Decimal((ve - ce) + (vf - cf))
+
+
 def _cota_procent(regim, nume_cota, an, luna, manual):
     """Cota ca PROCENT (1/16), la fel ca in generator: `manual['cota']` daca dat (contabilul o
     poate suprascrie), altfel din REGISTRU (cota()[0]*100). NU literal inline (interdictie
@@ -134,27 +153,22 @@ def reconciliaza(conn, perioada, res, manual=None):
                     "D100 pentru el (limita 3)." % regim, res.an, res.luna)}
 
     cod_oblig, nume_cota = _REGIM_OBLIG[regim]
-    # [profit base fix 16.08] profit 103 se impoziteaza pe PROFIT (venituri - cheltuieli 6xx), micro 121 pe
-    # venituri. ACEEASI baza ca generatorul -> reconcilierea nu da fals-pozitiv (limita 5 ramane: ajustarile
-    # FISCALE nedeductibile/neimpozabile art.19+ nu se recalculeaza aici, doar profitul contabil).
+    # micro 121 pe venituri, ACEEASI baza ca generatorul -> reconcilierea nu da fals-pozitiv; profitul 103 are ramura lui, mai jos.
     if regim == "profit":
-        # [A8, 18.09.2026] Impozitul pe profit e CUMULAT de la 01.01 (art.41 CF), plata trimestriala =
-        # diferenta. Baza efectiva a trimestrului = max(0, profit cumulat pana la sfarsitul trim) -
-        # max(0, profit cumulat pana la sfarsitul trim anterior). ACEEASI regula ca `d100.pull` (calea 1) ->
-        # reconcilierea nu da fals-pozitiv. Un trimestru cu profit dupa unul cu pierdere nu se mai impoziteaza
-        # pe tot profitul (bug A8), iar pierderea nu genereaza obligatie negativa (clip la 0).
+        # [deficiențele 376–378, 18.10.2026] impozitul pe profit se calculează pe REZULTATUL FISCAL cumulat, cu aritmetica D101
+        # (`calcul_d101`, păzită de testele D101) și ajustările scrise de contabil; aici se confruntă ce poate greși agregarea
+        # generatorului: rezultatul contabil cumulat 01.01–sfârșitul trimestrului (rd.7 = toate creditările 7x − toate debitările 6x,
+        # definiția D101), din SQL propriu. Ajustările și ce s-a declarat sunt intrări partajate (limita 1 și 5).
         import datetime as _dt
         _inc, _sf = perioada.interval()
-        _an1 = _dt.date(res.an, 1, 1)
-        _p_now = _venituri_independent(conn, perioada, (_an1, _sf)) - _cheltuieli_independent(conn, perioada, (_an1, _sf))
-        _p_prev = _venituri_independent(conn, perioada, (_an1, _inc)) - _cheltuieli_independent(conn, perioada, (_an1, _inc))
-        prof_now = _p_now if _p_now > 0 else Decimal(0)
-        prof_prev = _p_prev if _p_prev > 0 else Decimal(0)
-        baza = prof_now - prof_prev
-        if baza < 0:
-            baza = Decimal(0)
-    else:
-        baza = _venituri_independent(conn, perioada)
+        rez2 = int(_rezultat_contabil_independent(conn, (_dt.date(res.an, 1, 1), _sf)))
+        gen = int((res.profit.get("P") or {}).get("P7", 0)) if getattr(res, "profit", None) else 0
+        divergente = []
+        if gen != rez2:
+            divergente.append({"cod_oblig": cod_oblig, "eticheta": "rezultatul contabil cumulat de la 01.01 (baza impozitului pe profit)",
+                               "generator": gen, "cale2": rez2, "diferenta": gen - rez2})
+        return {"acoperit": True, "neacoperit": None, "divergente": divergente}
+    baza = _venituri_independent(conn, perioada)
     procent = _cota_procent(regim, nume_cota, res.an, res.luna, manual)
     suma_cale2 = _q(baza * procent / Decimal(100))
 

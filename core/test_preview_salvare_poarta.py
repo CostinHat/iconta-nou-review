@@ -47,9 +47,23 @@ def _continut(raspuns):
     return _j.loads(corp)
 
 
+class _ConnFalsa:
+    """Conexiunea falsă: cursorul e None — citirile care au nevoie de el sunt înlocuite în test (data preluării, soldurile)."""
+    def cursor(self, *a, **k):
+        return contextlib.nullcontext(None)
+
+
 @contextlib.contextmanager
 def _fake_conn(*a, **k):
-    yield None
+    yield _ConnFalsa()
+
+
+def _fara_baza_mf(mp):
+    """[359] previzualizarea MF citește data preluării și soldurile de deschidere (reconcilierea): aici, fără preluare."""
+    from core import bilant_api, solduri_api
+    mp.setattr(main.db, "get_conn", _fake_conn)
+    mp.setattr(bilant_api, "data_soldurilor", lambda cur, schema: None)
+    mp.setattr(solduri_api, "solduri_deschidere", lambda cur: [])
 
 
 def _uf():
@@ -68,10 +82,10 @@ CAZURI = [
      [{"nume": "POP ION", "cnp": "1234567890123", "cota": 100}],
      "cnp_invalid", False),
     ("mijloace", main.mijloace_import_incarca, _mf,
-     [{"cod": "MF1", "denumire": "X", "valoare": 5000.0, "rezidual": 0.0, "dnf_luni": 0, "ok": True}],
-     "durata_lipsa", False),
+     [{"cod": "MF1", "denumire": "X", "valoare": 5000.0, "rezidual": 0.0, "dnf_luni": 0, "stare": "ok", "motive": []}],
+     "durata_lipsa", "mf"),
     ("istoric", main.istoric_import_incarca, _ist,
-     [{"tip": "D999", "an": 2025, "luna": 1, "data_depunere": "", "ok": True}],
+     [{"tip": "D999", "an": 2025, "luna": 1, "data_depunere": "", "stare": "ok", "motive": []}],
      "tip_necunoscut", False),
 ]
 
@@ -81,9 +95,11 @@ CAZURI = [
 def test_preview_intoarce_verdictul_salvarii(monkeypatch, nume, endpoint, modul, randuri, motiv, cu_conn):
     monkeypatch.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: "public")
     monkeypatch.setattr(modul, "extrage", lambda *a, **k: randuri)
-    if cu_conn:
+    if cu_conn == "mf":
+        _fara_baza_mf(monkeypatch)
+    elif cu_conn:
         monkeypatch.setattr(main.db, "get_conn", _fake_conn)
-        monkeypatch.setattr(_part, "coerenta", lambda conn, r: [])
+        monkeypatch.setattr(_part, "coerenta", lambda conn, schema, r: [])
 
     res = _continut(endpoint(1, fisier=_uf(), ctx={"uid": 1}))
 
@@ -97,12 +113,13 @@ def test_preview_intoarce_verdictul_salvarii(monkeypatch, nume, endpoint, modul,
 def test_preview_curat_nu_blocheaza():
     """Un rand VALID -> erori == [] (Salvarea nu se blocheaza; fara fals-pozitiv)."""
     randuri = [{"cod": "MF1", "denumire": "Strung", "cont_imobilizare": "2131",
-                "valoare": 5000.0, "rezidual": 0.0, "dnf_luni": 60, "ok": True}]
+                "valoare": 5000.0, "rezidual": 0.0, "dnf_luni": 60, "stare": "ok", "motive": []}]
     import types
     mp = pytest.MonkeyPatch()
     try:
         mp.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: "public")
         mp.setattr(_mf, "extrage", lambda *a, **k: randuri)
+        _fara_baza_mf(mp)
         res = _continut(main.mijloace_import_incarca(1, fisier=_uf(), ctx={"uid": 1}))
     finally:
         mp.undo()

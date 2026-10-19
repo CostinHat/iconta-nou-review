@@ -14,7 +14,7 @@ import io
 import re
 import time
 
-from conftest import ai_pregateste, ai_prompturi, _db, _ecran, nr_crt, sql, cui_cu_control, PREFIX_FIRMA, zile_de_acum
+from conftest import ai_pregateste, ai_prompturi, _db, _ecran, linie_nota, nr_crt, sql, cui_cu_control, PREFIX_FIRMA, zile_de_acum
 
 ecran_cont = contextlib.contextmanager(_ecran)
 AZI = _dt.date.today()
@@ -722,7 +722,7 @@ def _luna_32(patron, firma_e2e):
         if not sql('SELECT 1 FROM "%s".inregistrari WHERE descriere = %%s' % s, (desc,)):
             r = _ok(_api(patron, "POST", "/tenants/%d/jurnal" % firma_e2e["tenant_id"],
                          {"descriere": desc, "data": luna.isoformat(), "document_ref": "PV E2E 32",
-                          "linii": [{"debit": d, "credit": c, "suma": suma}]}), "nota " + desc)
+                          "linii": [linie_nota(d, c, suma)]}), "nota " + desc)
             _ok(_api(patron, "POST", "/tenants/%d/jurnal/%d/valideaza" % (firma_e2e["tenant_id"], r["id"])), "validare " + desc)
     return luna
 
@@ -883,7 +883,7 @@ def test_def_217_coada_nu_se_contrazice_despre_validarea_in_doi(browser, request
         e.acasa()
         nota = _ok(_api(e, "POST", "/tenants/%d/jurnal" % firma_e2e["tenant_id"],
                         {"data": AZI.isoformat(), "descriere": "Nota D217", "document_ref": "D217",
-                         "linii": [{"debit": "5311", "credit": "4111", "suma": 17}]}), "nota asistentului")
+                         "linii": [{"debit": "5311", "credit": "4111", "suma": 17, "partener_nume": "PARTENER PROBA SRL"}]}), "nota asistentului")
     try:
         _coada(patron)
         f = patron.fereastra()

@@ -900,6 +900,7 @@ ETICHETE_COTE = {
     "d212.PREMIU_NEIMPOZABIL": "Suma neimpozabilă a unui premiu (600 lei)",
     "d212.PROCENT_COMPENSARE_INVESTITII": "Limita de recuperare a pierderii din investiții din câștigurile anilor următori (70%)",
     "d212.PROCENT_COMPENSARE_PIERDERE": "Limita de compensare a pierderii fiscale din veniturile anilor următori (70%)",
+    "ajustari_fiscale.PRAG_RECUPERARE_PIERDERE": "Limita de recuperare a pierderii fiscale din anii anteriori la impozitul pe profit (70%)",
     "d212.ZILE_AN_NORMA": "Numărul de zile al anului la proratarea normei de venit (365)",
     "d394.COTE": "Cotele de TVA acceptate în D394",
     "salarizare.PRAG_VENIT_DEDUCERE": "Pragul venitului peste salariul minim până la care se acordă deducerea personală de bază (2.000 lei)",

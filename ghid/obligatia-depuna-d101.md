@@ -2,7 +2,7 @@
 title: Cine are obligația să depună D101?
 description: D101 e declarația anuală de impozit pe profit — o depun persoanele juridice aflate pe acest regim, niciodată firmele pe microîntreprindere sau PFA-urile cu partidă simplă.
 published: 2026-09-25
-modified: 2026-10-13
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -38,6 +38,6 @@ Obligația de a **depune declarația** decurge din calitatea de contribuabil pl�
 
 ## Ce face iConta.eu
 
-Semaforul de conformare fiscală („Semafor conformare fiscală”, aplicația) decide automat între D100 și D101 pe baza regimului fiscal completat în profilul firmei: „micro" generează urmărirea D100 (trimestrial), „profit" generează urmărirea D101, pentru anul precedent, cu termenul calculat conform art. 42 CF. Firmele pe partidă simplă (PFA/II/IF) sunt excluse explicit de la ambele — motorul le marchează „nu se datorează", nu „nedepus", cu motivul: impozitul pe profit e al persoanelor juridice, iar impozitul pe venitul PFA se depune prin Declarația unică (D212). Dacă regimul fiscal nu e completat în profilul firmei, semaforul nu poate decide între D100 și D101 și marchează starea „nu se poate verifica", nu implicit una dintre cele două.
+Semaforul de conformare fiscală („Semafor conformare fiscală”, aplicația) decide automat ce declarații de impozit urmărește, pe baza regimului fiscal completat în profilul firmei: „micro" generează urmărirea D100 (trimestrial), „profit" generează urmărirea D100 pe trimestrele I–III (impozitul pe profit, cod 103) și a D101, pentru anul precedent, cu termenul calculat conform art. 42 CF. Firmele pe partidă simplă (PFA/II/IF) sunt excluse explicit de la ambele — motorul le marchează „nu se datorează", nu „nedepus", cu motivul: impozitul pe profit e al persoanelor juridice, iar impozitul pe venitul PFA se depune prin Declarația unică (D212). Dacă regimul fiscal nu e completat în profilul firmei, semaforul nu poate decide între D100 și D101 și marchează starea „nu se poate verifica", nu implicit una dintre cele două.
 
 [iConta.eu](/)

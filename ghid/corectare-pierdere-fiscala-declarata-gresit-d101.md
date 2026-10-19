@@ -2,7 +2,7 @@
 title: Ai declarat greșit pierderea fiscală în D101? Cum corectezi și ce se propagă
 description: O pierdere fiscală greșită la rd. 38.1/40.1 din D101 nu rămâne izolată în anul respectiv — se propagă în rd. 39 al anilor următori, care o pot recupera doar în limita a 70% din profit, potrivit art. 31 alin. (1) Cod fiscal.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -48,7 +48,7 @@ Instrucțiunile OPANAF sunt clare: rd. 39.1 se completează „numai în situaţ
 
 Lanțul rd. 22 → rd. 35 → rd. 38.1 → rd. 39/39.1 → rd. 40 e calculat conform structurii din OPANAF 206/2025, iar rd. 39.1 respectă condiția din instrucțiuni: nu se completează decât dacă rd. 38.1 e profit, iar suma nu poate depăși rd. 39.
 
-Plafonul de 70% din art. 31 alin. (1) nu e verificat automat de aplicație la completarea rd. 39.1 — valoarea introdusă e verificată doar față de rd. 39, nu față de acest plafon legal. Când corectezi o pierdere, verifică manual dacă recuperarea din anii următori respectă cei 70%.
+Plafonul de 70% din art. 31 alin. (1) se aplică automat când rd. 39.1 nu e completat: aplicația calculează suma recuperată din rd. 39, cel mult 70% din rd. 38.1. O valoare introdusă manual la rd. 39.1 e verificată doar față de rd. 39, nu față de acest plafon legal. Când corectezi o pierdere, verifică dacă recuperarea din anii următori respectă cei 70%.
 
 Vezi și: [pierderea fiscală reportată — plafonul de 70% și termenul de 5 ani](/ghid/pierdere-fiscala-reportata).
 

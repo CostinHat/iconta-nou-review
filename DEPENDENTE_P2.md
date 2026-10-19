@@ -74,12 +74,13 @@ de ea, ci fiindcă datele **acelei** firme nu intrau pe ramura de stocuri. Matri
 | `asociati` | `asociati` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
 | `mijloace_fixe` | `mijloace_fixe` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
 | `termene` | `clienti`, `d390_manual`, `facturi`, `firma_profil`, `salariati` | `declaratii_depuse` | **ziua** (`YYYY-MM-DD`) | `versiune_sursa` = suma contoarelor celor 6 tabele; invalidat când suma se schimbă **sau** când se schimbă epoca |
-| `control_fiscal` | `articole`, `asociati`, `beneficii_lunare`, `bonuri`, `casa_operatiuni`, `chitante`, `clienti`, `concedii_medicale`, `d300_manual`, `d301_operatiuni`, `d390_manual`, `d390_reclasificare`, `efactura_primite`, `elemente_salariale`, `extras_linii`, `factura_linii`, `facturi`, `firma_profil`, `furnizori`, `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, `miscari_stoc`, `perioada_confirmata`, `plan_conturi`, `pontaj`, `rapoarte_z_amef`, `rapoarte_z_cote`, `salariati`, `salariu_istoric`, `solduri_initiale`, `suspendari_contract` | `declaratii_depuse` | **ziua** (`YYYY-MM-DD`) | `versiune_sursa` = suma contoarelor celor 33 tabele; invalidat când suma se schimbă **sau** când se schimbă epoca |
+| `control_fiscal` | `ajustari_fiscale`, `articole`, `asociati`, `beneficii_lunare`, `bonuri`, `casa_operatiuni`, `chitante`, `clienti`, `concedii_medicale`, `d300_manual`, `d301_operatiuni`, `d390_manual`, `d390_reclasificare`, `efactura_primite`, `elemente_salariale`, `extras_linii`, `factura_linii`, `facturi`, `firma_profil`, `furnizori`, `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, `miscari_stoc`, `perioada_confirmata`, `plan_conturi`, `pontaj`, `rapoarte_z_amef`, `rapoarte_z_cote`, `salariati`, `salariu_istoric`, `solduri_initiale`, `suspendari_contract` | `declaratii_depuse` | **ziua** (`YYYY-MM-DD`) | `versiune_sursa` = suma contoarelor celor 34 tabele; invalidat când suma se schimbă **sau** când se schimbă epoca |
 
 **Inversa** — ce invalidează o scriere într-un tabel:
 
 | tabel-sursă | invalidează |
 |---|---|
+| `ajustari_fiscale` | `control_fiscal` |
 | `articole` | `control_fiscal` |
 | `asociati` | `asociati`, `control_fiscal` |
 | `beneficii_lunare` | `control_fiscal` |

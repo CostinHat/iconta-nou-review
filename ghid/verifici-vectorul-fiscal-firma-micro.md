@@ -2,7 +2,7 @@
 title: "Cum verifici în vectorul fiscal dacă firma este micro sau plătitoare de impozit pe profit"
 description: "Ce este vectorul fiscal, unde apare regimul de impozitare al firmei și cum se verifică dacă firma e corect încadrată la micro sau la impozit pe profit."
 published: 2026-09-24
-modified: 2026-10-13
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Din aceste două texte rezultă structura verificării:
 
 ## Ce face iConta.eu
 
-Regimul fiscal al firmei (`micro` sau `profit`) se completează manual de contabil în ecranul **Date firma**, ca parte a vectorului fiscal intern al aplicației („regimul fiscal (Date firmă)”, „plătitor de TVA (Date firmă)”, „periodicitatea TVA (Date firmă)”, „operațiuni intracomunitare (Date firmă)”) — câmp obligatoriu, fără valoare implicită tăcută. Pe baza acestei valori, motorul decide ce declarații datorează firma (D100 trimestrial pentru micro, D101 anual pentru profit). La data acestui ghid, iConta.eu **nu interoghează automat ANAF** pentru a confirma sau contrazice regimul introdus — verificarea față de condițiile art. 47 rămâne responsabilitatea contabilului.
+Regimul fiscal al firmei (`micro` sau `profit`) se completează manual de contabil în ecranul **Date firma**, ca parte a vectorului fiscal intern al aplicației („regimul fiscal (Date firmă)”, „plătitor de TVA (Date firmă)”, „periodicitatea TVA (Date firmă)”, „operațiuni intracomunitare (Date firmă)”) — câmp obligatoriu, fără valoare implicită tăcută. Pe baza acestei valori, motorul decide ce declarații datorează firma (D100 trimestrial pentru micro; D100 pe trimestrele I–III și D101 anual pentru profit). La data acestui ghid, iConta.eu **nu interoghează automat ANAF** pentru a confirma sau contrazice regimul introdus — verificarea față de condițiile art. 47 rămâne responsabilitatea contabilului.
 
 [iConta.eu](/)

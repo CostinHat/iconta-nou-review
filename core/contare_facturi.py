@@ -375,6 +375,16 @@ def _ms_citeste(cur, schema):
     return _ms.citeste(cur, schema)
 
 
+def cont_venit_linie(cont_venit, cont_venit_implicit=None, tip_operatiune=None):
+    """Contul de venit al unei linii de factură EMISĂ — sursa UNICĂ pentru nota de contare (`genereaza_note`) și pentru D406 (SalesInvoices).
+    [deficiența 380, comanda Costin 8.2, 18.10.2026: „Contul de venit vine dintr-o singură sursă”] D406 punea pe linii 707 fix, iar nota
+    contul liniei (704 la servicii): aceeași factură apărea pe două conturi. Ordinea: contul liniei; altfel contul de venit implicit al
+    firmei; altfel 707. Factura de avans (și regularizarea ei) e pe 419 (OMFP 1802/2014, funcțiunea contului 419)."""
+    if (tip_operatiune or "normal") in ("avans", "regularizare_avans"):
+        return CONT_AVANS_CLIENT
+    return (cont_venit or "").strip() or (cont_venit_implicit or "").strip() or "707"
+
+
 def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont_cheltuiala=None):
     """Notele unei facturi, ca listă de dict {debit, credit, suma}. **PUR față de bază la scriere**:
     citește, nu scrie — tiparul NIR, unde validarea se termină înainte ca ceva să înceapă.
@@ -410,11 +420,16 @@ def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont
                 note += _fc.factura_emisa(Decimal(str(g["baza"] or 0)) * _curs, cota=Decimal(str(g["cota_tva"])) / 100, la_data=la_data,
                                           tva_incasare=tvai, cont_venit=CONT_AVANS_CLIENT)
             return note
-        cur.execute("SELECT COALESCE(NULLIF(cont_venit,''), %%s) AS cv, cota_tva, "
-                    "       COALESCE(SUM(cantitate*pret_unitar),0) AS baza "
-                    "FROM %sfactura_linii WHERE factura_id=%%s "
-                    "GROUP BY cv, cota_tva ORDER BY cv, cota_tva" % _p(schema), (cvi, fid))
-        grupuri = [dict(r) for r in cur.fetchall()]
+        # [380] contul liniei prin `cont_venit_linie` (aceeași regulă ca D406), grupat pe (cont, cotă)
+        cur.execute("SELECT cont_venit, cota_tva, COALESCE(SUM(cantitate*pret_unitar),0) AS baza "
+                    "FROM %sfactura_linii WHERE factura_id=%%s GROUP BY cont_venit, cota_tva" % _p(schema), (fid,))
+        _gr = {}
+        for r in cur.fetchall():
+            r = dict(r)
+            k = (cont_venit_linie(r["cont_venit"], cvi), r["cota_tva"])
+            _gr[k] = _gr.get(k, Decimal(0)) + Decimal(str(r["baza"] or 0))
+        grupuri = [{"cv": k[0], "cota_tva": k[1], "baza": v}
+                   for k, v in sorted(_gr.items(), key=lambda kv: (kv[0][0], -1 if kv[0][1] is None else kv[0][1]))]
         total_baza = sum((Decimal(str(g["baza"] or 0)) for g in grupuri), Decimal(0))
         if total_baza == 0:
             # factură fără linii (legacy): cade pe antet, un singur cont. Antetul IN LEI.

@@ -12,6 +12,9 @@ from __future__ import annotations
 # straturile de migrare, în ordinea logică (firme întâi — creează tenant-urile)
 # 'regim' = pentru ce tip de firma se aplica stratul:
 #   'ambele' -> SRL si PFA; 'dubla' -> doar SRL (partida dubla); 'simpla' -> doar PFA (RIP).
+# [deficiențele 368 + 371, comanda Costin 8.2, 18.10.2026] SURSA UNICĂ a straturilor, pentru Migrare cabinet ȘI meniul per firmă: „la PFA se
+# ascund Solduri, Solduri parteneri, Asociați, Plan de conturi; Mijloace fixe rămâne vizibil și la PFA” (registrul de amortizare există și
+# în partida simplă); Migrare cabinet arată toate straturile — inclusiv Import RIP, Articole și stoc inițial, Rețete.
 STRATURI_META = [
     ("firme",              "ambele"),
     ("vector_fiscal",      "ambele"),
@@ -19,10 +22,12 @@ STRATURI_META = [
     ("solduri_parteneri",  "dubla"),
     ("salariati",          "ambele"),
     ("asociati",           "dubla"),
-    ("mijloace_fixe",      "dubla"),
+    ("mijloace_fixe",      "ambele"),
     ("istoric_declaratii", "ambele"),
     ("plan_conturi",       "dubla"),
     ("rip",                "simpla"),
+    ("articole",           "ambele"),
+    ("retete",             "ambele"),
 ]  # [p82_vector] [p95_plan_conturi] [p_pfa_rip 20.07]
 STRATURI = [s for s, _ in STRATURI_META]
 
@@ -225,11 +230,73 @@ REGULI = {
     "cote_nu_dau_suta":       {"fel": "incoerent",
                                "inseamna": "cotele asociatilor nu insumeaza 100%"},
     "data_inainte_de_perioada": {"fel": "incoerent",
-                                 "inseamna": "depunerea e datata inaintea perioadei raportate"},
+                                 "inseamna": "depunerea e datata inaintea sfarsitului perioadei raportate"},
+    # [361 / 362, comanda Costin 8.2] mijloace fixe: metoda din afara CF art.28; conturi care nu sunt de imobilizări / nu-i corespund
+    "metoda_necunoscuta": {"fel": "invalid", "inseamna": "metoda de amortizare nu e una din cele ale CF art.28"},
+    "cont_imobilizare_invalid": {"fel": "invalid", "inseamna": "contul mijlocului fix nu e de imobilizari (clasa 2)"},
+    "cont_amortizare_necorespunzator": {"fel": "incoerent", "inseamna": "contul de amortizare nu corespunde contului de imobilizare"},
+    "amortizare_peste_valoare": {"fel": "incoerent", "inseamna": "amortizarea preluata depaseste valoarea amortizabila"},
+    # [346] soldurile pe parteneri ale unui cont nu dau soldul contului la data preluarii (balanta de deschidere / contabilitate)
+    "parteneri_nu_dau_soldul": {"fel": "incoerent", "inseamna": "partenerii unui cont nu dau soldul contului la data preluarii"},
+    # [353, comanda Costin 8.2] același rând (aceeași declarație pe aceeași perioadă) de două ori în fișier: intră o singură dată
+    # [364–367, comanda Costin 8.2] asociații: fără identificator, același CNP/CUI de două ori, cotă în afara 0–100, CUI confruntat cu ANAF
+    "identificator_lipsa": {"fel": "lipsa", "inseamna": "asociatul n-are CNP/CUI: nu poate aparea in D205"},
+    "identificator_dublat": {"fel": "duplicat", "inseamna": "acelasi CNP/CUI pe doua randuri; un asociat se trece o data"},
+    "cota_invalida":    {"fel": "invalid", "inseamna": "cota de participare nu e intre 0 si 100"},
+    # [373, comanda Costin 8.2] articole / stoc inițial: nimic completat din oficiu
+    "um_lipsa":         {"fel": "lipsa", "inseamna": "articolul n-are unitatea de masura; nu se presupune buc"},
+    "cantitate_invalida": {"fel": "invalid", "inseamna": "cantitatea nu e un numar"},
+    "pret_invalid":     {"fel": "invalid", "inseamna": "pretul nu e un numar"},
+    "cont_stoc_lipsa":  {"fel": "lipsa", "inseamna": "articolul n-are contul de stoc"},
+    "cont_stoc_invalid": {"fel": "invalid", "inseamna": "contul de stoc nu e din clasa 3"},
+    "cont_cheltuiala_lipsa": {"fel": "lipsa", "inseamna": "contul de cheltuiala lipseste si nu se deduce din contul de stoc"},
+    # [375, comanda Costin 8.2] rețete: nimic ales sau completat în tăcere
+    "ingredient_lipsa": {"fel": "lipsa", "inseamna": "randul de reteta n-are ingredientul"},
+    "ingredient_negasit": {"fel": "invalid", "inseamna": "ingredientul nu e in articolele din stoc"},
+    "pret_lipsa":       {"fel": "lipsa", "inseamna": "reteta n-are pret de vanzare (sau e 0)"},
+    "pret_contradictoriu": {"fel": "incoerent", "inseamna": "aceeasi reteta are preturi diferite in fisier"},
+    "reteta_incompleta": {"fel": "incoerent", "inseamna": "alt rand al aceleiasi retete e respins; reteta intra intreaga sau deloc"},
+    "metoda_plata_necunoscuta": {"fel": "invalid", "inseamna": "metoda operatiunii RIP nu e banca sau numerar"},
+    "cui_negasit_anaf": {"fel": "invalid", "inseamna": "CUI-ul nu e gasit la ANAF"},
+    "nume_diferit_anaf": {"fel": "incoerent", "inseamna": "numele din fisier difera de cel de la ANAF pentru acelasi CUI"},
+    "rand_dublat":      {"fel": "duplicat", "inseamna": "acelasi rand apare de doua ori in fisier; intra o singura data"},
+
+    # --- semnal: rândul INTRĂ, dar are ceva de știut (comanda Costin 8.2 pct.4: „orice rând citit e afișat sau semnalat cu motiv”).
+    # Nu oprește salvarea și nu e numărat cu respingerile — `semnaleaza`, nu `respinge`.
+    "data_depunere_lipsa": {"fel": "semnal", "inseamna": "rândul n-are data depunerii: se importă, dar termenul nu se poate confrunta"},
+    "an_vechi":         {"fel": "semnal", "inseamna": "anul e mai vechi decât anul curent și precedentul, pe care le urmărește aplicația"},
+    "suma_lipsa_d100":  {"fel": "semnal", "inseamna": "D100 fără suma declarată: D100 pe profit de mai târziu n-o poate scădea"},
+    "cont_cheltuiala_dedus": {"fel": "semnal", "inseamna": "contul de cheltuiala e dedus din contul de stoc (lipsea din fisier)"},
+    "ingredient_aproximativ": {"fel": "semnal", "inseamna": "ingredientul e potrivit pe un articol cu denumire neidentica"},
+    "metoda_plata_lipsa": {"fel": "semnal", "inseamna": "operatiunea RIP n-are metoda: intra prin banca, spus pe rand"},
+    "categorie_lipsa":  {"fel": "semnal", "inseamna": "operatiunea RIP n-are categorie: intra neclasificat, spus pe rand"},
+    "suma_negativa_rip": {"fel": "semnal", "inseamna": "suma RIP negativa: intra cu valoarea absoluta, sensul il da tipul"},
+    "anaf_neverificat": {"fel": "semnal", "inseamna": "serviciul ANAF n-a raspuns: CUI-ul si numele nu s-au putut confrunta"},
+    "cor_lipsa":        {"fel": "semnal", "inseamna": "salariatul n-are cod COR în fișier: intră fără cod, se alege în fișa lui"},
+    "persoane_lipsa":   {"fel": "semnal", "inseamna": "persoanele în întreținere lipsesc: intră cu 0, salariatul e marcat de verificat"},
+    "scutire_lipsa":    {"fel": "semnal", "inseamna": "scutirea de contribuția minimă lipsește: intră nescutit, marcat de verificat"},
 }
+
+#: [comanda Costin 8.2 pct.4] formele care NU opresc rândul — `semnaleaza` le cere, `respinge` le refuză
+FORME_SEMNAL = ("semnal",)
+
+
+def semnaleaza(tip, unde, regula, mesaj, **campuri):
+    """Un SEMNAL de rând (comanda Costin 8.2 pct.4): rândul intră, dar ceva despre el trebuie spus. Aceeași formă ca `respinge` (afirmație cu
+    regula numită și `rand`), cu `forma` „semnal”; un cod care nu e semnal se refuză, ca o respingere să nu treacă drept observație."""
+    if REGULI.get(regula, {}).get("fel") not in FORME_SEMNAL:
+        raise RuntimeError("regula %r nu e un semnal; respingerile trec prin `respinge`" % (regula,))   # greșeală de programare, nu a fișierului
+    return _respingere_sau_semnal(tip, unde, regula, mesaj, **campuri)
 
 
 def respinge(tip, unde, regula, mesaj, **campuri):
+    """O respingere de rând (rândul NU intră). Pentru observațiile care lasă rândul să intre: `semnaleaza`."""
+    if REGULI.get(regula, {}).get("fel") in FORME_SEMNAL:
+        raise RuntimeError("regula %r e un semnal: rândul intră, deci trece prin `semnaleaza`, nu prin `respinge`" % (regula,))   # programare
+    return _respingere_sau_semnal(tip, unde, regula, mesaj, **campuri)
+
+
+def _respingere_sau_semnal(tip, unde, regula, mesaj, **campuri):
     """O respingere de rand, ca AFIRMATIE. Constructorul UNIC - un cod care nu e in REGULI nu poate
     fi produs, deci o greseala de tastare nu mai trece tacut ca o categorie noua.
 

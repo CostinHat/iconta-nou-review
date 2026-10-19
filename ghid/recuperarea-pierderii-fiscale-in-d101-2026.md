@@ -2,7 +2,7 @@
 title: Cum se reportează pierderea fiscală în D101 2026
 description: Pierderea fiscală se reportează la rd. 39.1 din D101, dar numai dacă rd. 38.1 e profit și numai în limita rd. 39, iar plafonul legal de 70% din profitul anului de recuperare (art. 31 alin. 1 Cod fiscal) nu apare verificat nicăieri în instrucțiunile formularului.
 published: 2026-09-22
-modified: 2026-09-22
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -61,7 +61,7 @@ Dacă la 31 decembrie 2023 mai aveai pierdere nerecuperată din ani anteriori lu
 
 Rd. 39.1 e verificat față de rd. 39 (nu poți introduce mai mult decât ai disponibil) și e completat doar când rd. 38.1 e profit, exact cum cer instrucțiunile OPANAF 206/2025.
 
-**Plafonul legal de 70% din art. 31 alin. (1) nu e verificat automat** la completarea rd. 39.1 — singura verificare aplicată e față de rd. 39. Când completezi reportul pierderii, calculează manual limita de 70% din profitul anului (rd. 38.1) înainte de a introduce suma.
+**Plafonul legal de 70% din art. 31 alin. (1) se aplică automat când rd. 39.1 nu e completat:** aplicația calculează suma recuperată din rd. 39, cel mult 70% din rd. 38.1. O sumă scrisă de tine la rd. 39.1 are întâietate și e verificată doar față de rd. 39, nu față de plafonul de 70% — dacă o completezi manual, calculează întâi limita de 70% din profitul anului (rd. 38.1).
 
 Vezi și: [pierderea fiscală reportată — plafonul de 70% și termenul de 5 ani](/ghid/pierdere-fiscala-reportata).
 

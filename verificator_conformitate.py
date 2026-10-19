@@ -615,9 +615,11 @@ _re_tva_int = re.compile(r"(?<![\w.])(?:21|19|11)(?![\w.%])")
 # ("ca `art. 21` sa nu treaca drept cota 21"). N-are si nu poate avea logica de cota - orice 21 din
 # el e text despre masuratoare. Alternativa era rescrierea prozei ca sa ocoleasca regexul, adica
 # exact felul de ajustare care face un gard sa para verde fara sa se fi schimbat nimic.
+# `denumiri_randuri.py` intra 19.10.2026 (comanda 8.2, deficienta 379): e GENERAT din textul ordinelor ANAF (`scripts/denumiri_randuri.py`,
+# garda `core/test_denumiri_randuri.py`) — „taxabile cu cota 11%” e denumirea oficiala a randului D300, nu o cota folosita la calcul.
 _TVA_EXCLUSE = {"common.py", "verificator_conformitate.py", "cote_tva.py", "scan_constante.py",
                 "d406.py", "d300.py", "d300_reconciliere.py", "d301.py", "d390.py", "d394.py", "amef_import.py",
-                "export_winmentor.py"}
+                "export_winmentor.py", "denumiri_randuri.py"}
 # valoare -> (semantica, temei): sursa unica a citarii. Valoare care NU e aici -> temei=??? -> ROSU.
 _TVA_TEMEI = {
     "21": ("cota standard 21%", "Legea 141/2025 art.291(1) CF, de la 01.08.2025"),
@@ -1350,6 +1352,19 @@ try:
                 "shell-ul aplicației fără height:100dvh + overflow-y:auto, sub html,body{overflow-y:hidden} -> rotița nu derulează (321)"))
 except Exception as _e_sd:
     rap["scroll_desktop"].append(("verificator", 0, "EROARE", "gard scroll_desktop: " + str(_e_sd)))
+
+# --- GARD BARA ANTET FIXA (DS cap.2, lotul 8 — comanda Costin 7.3 pct.3, 18.10.2026): antetul aplicației (`.bara-antet`: bara de sus,
+#     bara de stare cu „Versiune nouă”, bara 3) e copilul lui `.desktop`, care derulează el însuși (321): fără `position: sticky; top: 0`
+#     pe `.desktop > .bara-antet`, anunțul „Versiune nouă” iese din ecran la derulare. Mutația: scoate regula -> TOTAL > 0.
+rap["bara_antet_fixa"] = []
+try:
+    _css_ba = open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read()
+    _decl_ba = " ".join(m.group(1) for m in re.finditer(r"(?m)^\.desktop\s*>\s*\.bara-antet\s*\{([^}]*)\}", _css_ba))
+    if not (re.search(r"position\s*:\s*sticky", _decl_ba) and re.search(r"(?<![-\w])top\s*:\s*0", _decl_ba)):
+        rap["bara_antet_fixa"].append(("static/stil.css", 0, ".bara-antet",
+            "antetul aplicației nu e sticky sus în `.desktop` -> bara de stare („Versiune nouă”) iese din ecran la derulare"))
+except Exception as _e_ba:
+    rap["bara_antet_fixa"].append(("verificator", 0, "EROARE", "gard bara_antet_fixa: " + str(_e_ba)))
 
 # --- TINTA BIFEI (DS cap.2, decizia Costin 02.10.2026 — DECIZII „Căsuțele .set-bifa rămân de 16px"): căsuța
 #     are 16px, ținta de clic e ETICHETA `<label class="set-bifa">`, care trebuie să rămână >= 24px (WCAG 2.5.8 AA).

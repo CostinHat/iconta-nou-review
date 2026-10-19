@@ -201,7 +201,12 @@ def tenant_plan_conturi_lista(tenant_id, q, ctx):
             folosite = repo_contabilitate.conturi_folosite(cur, [r[0] for r in rows])   # [Retest 2 pct.13]
             cu_sold = repo_contabilitate.conturi_cu_sold_initial(cur, [r[0] for r in rows])   # [deficiența 218]
     toate = [x[0] for x in tot]
-    return {"conturi": [{"simbol": r[0], "denumire": r[1], "tip": r[2], "in_afara_planului": r[0] in afara,
+    # [deficiența 369, comanda Costin 8.2] funcțiunea vine din planul OMFP (`plan_functiune`, generat din OMFP 1802/2014 pct.594; analiticul
+    # o moștenește de la sintetic), nu din coloana `tip` — scrisă „Bifunctional” pe toate conturile la crearea firmei
+    from core import plan_functiune as _pf
+    return {"conturi": [{"simbol": r[0], "denumire": r[1], "functiune": _pf.functiune(r[0]),
+                         "tip": _pf.ETICHETA.get(_pf.functiune(r[0]), "funcțiune necunoscută (cont din afara planului general)"),
+                         "in_afara_planului": r[0] in afara,
                          "sintetic": sintetic_al(r[0]), "folosit": r[0] in folosite,
                          "nu_se_sterge": motiv_nestergere(r[0], folosite, cu_sold, afara, toate)} for r in rows]}
 
@@ -288,7 +293,9 @@ def tenant_plan_conturi_adauga(tenant_id, date, ctx):
             if existent:
                 raise _erori.Conflict("Contul %s există deja în plan: „%s”. Caută-l în lista de mai sus; dacă ai nevoie "
                         "de un cont diferit, folosește alt simbol." % (simbol, existent[0]))
-            repo_contabilitate.adauga_cont_in_plan(cur, simbol, denumire, date.tip or "Bifunctional")
+            # [369] funcțiunea nu se alege: contul o moștenește de la sinteticul lui din planul OMFP (`plan_functiune`)
+            from core import plan_functiune as _pf
+            repo_contabilitate.adauga_cont_in_plan(cur, simbol, denumire, _pf.ETICHETA.get(_pf.functiune(simbol), "Nedeterminat"))
             from core import plan_legal as _pl   # [08.10, V3] „nu se poate crea … fără avertisment”
             av = _pl.avertisment(cur, schema, [simbol])
         conn.commit()
@@ -308,10 +315,55 @@ def solduri_salveaza(tenant_id, date, ctx):
     randuri = [{"cont": r.cont, "denumire": r.denumire, "debit": r.debit, "credit": r.credit}
                for r in date.randuri]
     with db.get_conn(schema) as conn:
+        # [deficiența 343, comanda Costin 8.2] un cont din afara planului legal al normei firmei nu intră (și nu se mai adaugă tacit în plan)
+        from core import plan_legal as _pl
+        with conn.cursor() as cur:
+            afara = _pl.in_afara(cur, schema, [r["cont"] for r in randuri])
+        if afara:
+            raise _erori.DateInvalide(MESAJ_CONT_IN_AFARA % ", ".join(afara))
         try:
             return solduri_api.importa(conn, randuri, date.data_referinta)
         except ValueError as e:  # balanta neechilibrata -> 422 cu mesaj explicativ
             raise _erori.DateInvalide(str(e))
+
+
+#: [343] refuzul contului care nu e în planul legal al normei firmei (OMFP 1802/2014 pct.594 la societăți)
+MESAJ_CONT_IN_AFARA = ("Contul %s nu există în planul de conturi al normei firmei, deci balanța nu se poate prelua așa: corectează contul în "
+                       "fișier (un analitic se scrie sub sinteticul lui, de exemplu 401.00012) și încarcă din nou.")
+
+
+def solduri_incarca(tenant_id, continut, nume_fisier, ctx):
+    """[P7 · use-case] Previzualizarea balanței de deschidere (`POST /tenants/{tenant_id}/solduri/incarca`), fără salvare.
+    [343] conturile din afara planului legal al normei se arată respinse, cu motivul; [344] data balanței se propune: ultima zi a lunii
+    dinaintea preluării (`bilant_api.data_soldurilor`, aceeași regulă ca luna preluării din Date firmă)."""
+    from core import plan_legal as _pl
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    try:
+        det = solduri_api.extrage_balanta_detaliat(continut, nume_fisier)
+    except ValueError as e:
+        raise _erori.CerereGresita(str(e))
+    randuri = det["randuri"]
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            afara = set(_pl.in_afara(cur, schema, [r["cont"] for r in randuri]))
+        data_propusa = _data_soldurilor(conn, schema)
+    for r in randuri:
+        r["stare"] = "respins" if r["cont"] in afara else "ok"
+        r["motive"] = ["contul %s nu există în planul de conturi al normei firmei" % r["cont"]] if r["cont"] in afara else []
+    from decimal import Decimal as _D
+    td = float(sum((_D(str(r["debit"] or 0)) for r in randuri), _D(0)))
+    tc = float(sum((_D(str(r["credit"] or 0)) for r in randuri), _D(0)))
+    valida, motiv = solduri_api.balanta_valida(randuri)
+    baza = {"randuri": randuri, "total_debit": td, "total_credit": tc, "valida": valida and not afara,
+            "coloane": det["coloane"], "ignorate": det["ignorate"], "sintetice_inlocuite": det["sintetice_inlocuite"],
+            "fara_sold": det["fara_sold"], "data_propusa": data_propusa, "conturi_in_afara": sorted(afara)}
+    if afara:
+        return _uc_comun._raspuns(dict(baza, motiv=MESAJ_CONT_IN_AFARA % ", ".join(sorted(afara))))
+    if valida:
+        return _uc_comun._raspuns(dict(baza, motiv=motiv))
+    from core.unde import Unde as _Unde
+    return _uc_comun._raspuns(dict(baza, **migrare_api.respinge("balanță de deschidere", _Unde("fisier", nume_fisier or "(fără nume)"),
+                                                                "balanta_nu_se_echilibreaza", motiv)))
 
 
 def _data_soldurilor(conn, schema):
@@ -340,7 +392,7 @@ def parteneri_salveaza(tenant_id, date, ctx):
             # [C22, clasa — 14.10.2026] data soldurilor pe parteneri = data soldurilor de preluare a firmei (sursa unică
             # `bilant_api.data_soldurilor`: data balanței, altfel ziua dinaintea lunii preluării). Ecranul nu trimitea niciodată
             # `data_referinta`, deci soldurile pe parteneri rămâneau fără dată.
-            return solduri_parteneri_api.importa(conn, randuri, date.data_referinta or _data_soldurilor(conn, schema))
+            return solduri_parteneri_api.importa(conn, randuri, date.data_referinta or _data_soldurilor(conn, schema), schema=schema)
         except ValueError as e:  # randuri invalide -> 422 cu mesaj explicativ
             raise _erori.DateInvalide(str(e))
 
@@ -360,18 +412,57 @@ def asociati_import_salveaza(tenant_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/asociati-import`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     randuri = [r.model_dump() for r in date.randuri]
+    anaf = asociati_import_api.verificare_anaf(randuri)   # [367] aceeași confruntare cu ANAF ca la previzualizare (poarta unică)
     with db.get_conn(schema) as conn:
         try:
-            return asociati_import_api.importa(conn, randuri, data_cesiune=getattr(date, "data_cesiune", None))
+            return asociati_import_api.importa(conn, randuri, data_cesiune=getattr(date, "data_cesiune", None), anaf=anaf)
         except ValueError as e:  # randuri invalide -> 422 cu mesaj
             raise _erori.DateInvalide(str(e))
+
+
+def asociati_import_incarca(tenant_id, continut, nume_fisier, ctx):
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/asociati-import/incarca`. [comanda Costin 8.2 pct.4] fiecare rând citit, cu starea
+    lui; [367] CUI-urile asociaților persoane juridice confruntate cu ANAF."""
+    _uc_comun._schema_sau_404(ctx, tenant_id)
+    try:
+        randuri = asociati_import_api.extrage(continut, nume_fisier or "")
+    except ValueError as e:
+        raise _erori.CerereGresita(str(e))
+    anaf = asociati_import_api.verificare_anaf(randuri)
+    asociati_import_api.eticheteaza(randuri, anaf)
+    erori = migrare_api.erori_verifica(asociati_import_api.verifica_randuri(randuri, anaf))  # [Q5] poarta unica
+    return _uc_comun._raspuns({"randuri": randuri, "total": len(randuri), "coerenta": asociati_import_api.coerenta_cote(randuri),
+                               "erori": erori, "anaf_verificat": anaf is not None})
 
 
 def retete_import_salveaza(tenant_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/retete-import`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
-        return retete_import_api.importa(conn, schema, date.retete)
+        try:
+            return retete_import_api.importa(conn, schema, [dict(r) for r in date.randuri])
+        except ValueError as e:
+            raise _erori.DateInvalide(str(e))
+
+
+def articole_import_incarca(tenant_id, continut, nume_fisier, ctx):
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/articole-import/incarca` — previzualizarea. [373] fiecare rând citit, cu starea
+    lui; [374, comanda Costin 8.2: „ca la 359”] valoarea stocului pe fiecare cont de stoc față de balanța de deschidere."""
+    import psycopg2.extras as _E
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    try:
+        randuri = articole_import_api.extrage(continut, nume_fisier or "")
+    except ValueError as e:
+        raise _erori.CerereGresita(str(e))
+    articole_import_api.eticheteaza(randuri)
+    with db.get_conn(schema) as conn:
+        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+            solduri = solduri_api.solduri_deschidere(cur)
+        data_sold = _data_soldurilor(conn, schema)
+    return _uc_comun._raspuns({"randuri": randuri, "rezumat": articole_import_api.rezumat(randuri),
+                               "erori": articole_import_api.verifica_randuri(randuri),
+                               "reconciliere": articole_import_api.reconciliere_balanta(randuri, solduri),
+                               "data_sold": data_sold})
 
 
 def articole_import_salveaza(tenant_id, date, ctx):
@@ -397,6 +488,31 @@ def mijloace_import_salveaza(tenant_id, date, ctx):
             return mijloace_fixe_import_api.importa(conn, randuri)
         except ValueError as e:  # randuri invalide -> 422 cu mesaj
             raise _erori.DateInvalide(str(e))
+
+
+def mijloace_import_incarca(tenant_id, continut, nume_fisier, ctx):
+    """[P7 · use-case] Previzualizarea registrului de mijloace fixe (`POST /tenants/{tenant_id}/mijloace-fixe-import/incarca`).
+    [359, comanda Costin 8.2] amortizarea preluată se compară la DATA PRELUĂRII (data soldurilor de deschidere), iar totalurile pe conturile
+    2xx / 28xx se confruntă cu balanța de deschidere."""
+    import psycopg2.extras as _E
+    from core import bilant_api as _bil
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+            data_prel = _bil.data_soldurilor(cur, schema)
+            solduri = solduri_api.solduri_deschidere(cur)
+    try:
+        randuri = mijloace_fixe_import_api.extrage(continut, nume_fisier, data_preluare=data_prel)
+    except ValueError as e:
+        raise _erori.CerereGresita(str(e))
+    from decimal import Decimal as _D
+    erori = migrare_api.erori_verifica(mijloace_fixe_import_api.verifica_randuri(randuri, data_prel))  # [Q5] poarta unica
+    return _uc_comun._raspuns({"randuri": randuri, "total": len(randuri), "erori": erori,
+            "total_valoare": float(sum((_D(str(r["valoare"] or 0)) for r in randuri), _D(0))),
+            "respinse": sum(1 for r in randuri if r["stare"] == "respins"),
+            "semnalate": sum(1 for r in randuri if r["stare"] == "semnalat"),
+            "data_preluare": data_prel.isoformat() if data_prel else None,
+            "reconciliere": mijloace_fixe_import_api.reconciliere_balanta(randuri, solduri)})
 
 
 def istoric_import_salveaza(tenant_id, date, ctx):
@@ -1338,7 +1454,7 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
             note, tot = {}, {True: Decimal("0"), False: Decimal("0")}   # validat / ciornă
             for (iid, data, nr, desc, sursa, status, fid, dref, nrc,
                  f_tip, f_serie, f_nr, f_data,
-                 deb, cre, suma, cc_id, cc_nume) in repo_contabilitate.jurnal_pe_an(cur, schema, f"{an}-01-01", f"{an}-{luna:02d}-01"):
+                 deb, cre, suma, cc_id, cc_nume, p_cui, p_nume) in repo_contabilitate.jurnal_pe_an(cur, schema, f"{an}-01-01", f"{an}-{luna:02d}-01"):
                 if iid not in note:
                     note[iid] = {"id": iid, "nr_curent": int(nrc) if nrc is not None else None, "data": data.isoformat(),
                                  "numar": nr, "descriere": desc, "sursa": sursa, "status": status,
@@ -1347,7 +1463,8 @@ def tenant_jurnal(tenant_id, an, luna, ctx):
                                  "document": _j.document_justificativ(dref, f_tip, f_serie, f_nr, f_data, sursa, nr),
                                  "linii": []}
                 note[iid]["linii"].append({"debit": deb, "credit": cre, "suma": float(suma),
-                                           "centru_cost_id": cc_id, "centru_nume": cc_nume})
+                                           "centru_cost_id": cc_id, "centru_nume": cc_nume,
+                                           "partener_cui": p_cui, "partener_nume": p_nume})   # [381]
                 tot[status == "validata"] += Decimal(str(suma))
             for _nid, _st in _j.facturi_stinse(cur, schema, list(note)).items():   # [08.10, U5] chitanța: factura pe care o stinge
                 note[_nid]["stinge"] = _st
@@ -1887,6 +2004,54 @@ def registru_fiscal_citeste(tenant_id, an, varianta, totalizare, ctx):
             raise _erori.Conflict(_ref.refuz_totalizare(an, totalizare))
         except ValueError as e:
             raise _erori.DateInvalide(str(e))
+
+
+def _schema_firmei(conn, tenant_id, ctx):
+    schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+    if not schema:
+        raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
+    return schema
+
+
+def ajustari_fiscale_lista(tenant_id, an, ctx):
+    """[P7 · use-case] Corpul rutei `GET /tenants/{tenant_id}/ajustari-fiscale` (deficiența 378)."""
+    _uc_comun._cere_perioada(an=an)
+    from core import ajustari_fiscale as _aj
+    with db.get_conn() as conn:
+        schema = _schema_firmei(conn, tenant_id, ctx)
+        with conn.cursor() as cur:
+            ajustari = _aj.lista(cur, schema, an)
+    return {"an": an, "ajustari": ajustari, "anuale": list(_aj.ANUALE),
+            "randuri": [{"rand": k, "eticheta": v[0], "grupa": v[1]} for k, v in _aj.RANDURI.items()]}
+
+
+def ajustari_fiscale_adauga(tenant_id, corp, ctx):
+    """[P7 · use-case] Corpul rutei `POST /tenants/{tenant_id}/ajustari-fiscale` (deficiența 378)."""
+    from core import ajustari_fiscale as _aj
+    trim = corp.get("trim")
+    trim = int(trim) if str(trim or "").strip().isdigit() else None
+    motiv = _aj.valideaza(corp.get("an"), trim, corp.get("rand"), corp.get("suma"))
+    if motiv:
+        raise _erori.DateInvalide(motiv)
+    with db.get_conn() as conn:
+        schema = _schema_firmei(conn, tenant_id, ctx)
+        with conn.cursor() as cur:
+            aid = _aj.adauga(cur, schema, corp.get("an"), trim, corp.get("rand"), corp.get("suma"), (corp.get("descriere") or "").strip(),
+                             (corp.get("document") or "").strip(), ctx.get("uid"))
+        conn.commit()
+    return {"ok": True, "id": aid}
+
+
+def ajustari_fiscale_sterge(tenant_id, ajustare_id, ctx):
+    """[P7 · use-case] Corpul rutei `DELETE /tenants/{tenant_id}/ajustari-fiscale/{ajustare_id}` (deficiența 378)."""
+    from core import ajustari_fiscale as _aj
+    with db.get_conn() as conn:
+        schema = _schema_firmei(conn, tenant_id, ctx)
+        with conn.cursor() as cur:
+            if not _aj.sterge(cur, schema, ajustare_id):
+                raise _erori.Inexistent("Ajustarea nu mai există (a fost ștearsă între timp).")
+        conn.commit()
+    return {"ok": True}
 
 
 def registru_fiscal_adauga(tenant_id, corp, ctx):
@@ -5223,9 +5388,9 @@ def client_acces_creeaza(tenant_id, date, ctx):
 def parteneri_incarca(tenant_id, continut, nume_fisier, ctx, cont_implicit=None):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/parteneri/incarca`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
-    continut = continut
+    ignorate = []   # [comanda Costin 8.2 pct.4] rândurile de total / titlu și partenerii cu sold 0: spuse, nu sărite în tăcere
     try:
-        randuri = solduri_parteneri_api.extrage(continut, nume_fisier or "", cont_implicit=cont_implicit)
+        randuri = solduri_parteneri_api.extrage(continut, nume_fisier or "", cont_implicit=cont_implicit, ignorate=ignorate)
     except ValueError as e:
         raise _erori.CerereGresita(str(e))
     # [lotul 6] Un `.txt` cu o linie de proza intorcea `{"randuri": []}` — „fisierul n-are parteneri"
@@ -5236,10 +5401,13 @@ def parteneri_incarca(tenant_id, continut, nume_fisier, ctx, cont_implicit=None)
                                  "un fișier gol." % (nume_fisier or "trimis",))
     td = round(sum(r["debit"] for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     tc = round(sum(r["credit"] for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+    er, bune = solduri_parteneri_api.verifica_randuri(randuri)
     with db.get_conn(schema) as conn:
-        coer = solduri_parteneri_api.coerenta(conn, randuri)
-    erori = migrare_api.erori_verifica(solduri_parteneri_api.verifica_randuri(randuri))  # [Q5] poarta unica
-    return _uc_comun._raspuns({"randuri": randuri, "total_debit": td, "total_credit": tc, "coerenta": coer, "erori": erori})
+        coer = solduri_parteneri_api.coerenta(conn, schema, bune)
+    # [Q5] poarta unica; [346] + rândurile contului ale cărui solduri pe parteneri nu dau soldul lui la data preluării (pe ce ar intra)
+    erori = migrare_api.erori_verifica((er, bune)) + solduri_parteneri_api.respinse_coerenta(bune, coer)
+    return _uc_comun._raspuns({"randuri": randuri, "total_debit": td, "total_credit": tc, "coerenta": coer, "erori": erori,
+                               "ignorate": ignorate})
 
 
 
@@ -5262,50 +5430,64 @@ def salariati_import_incarca(tenant_id, continut, nume_fisier, ctx):
                 _cache[c] = _cor.denumire(conn, c)
     for r in randuri:
         r["cor_denumire"] = _cache.get((r.get("cor") or "").strip())
+    salariati_import_api.eticheteaza(randuri)   # [comanda Costin 8.2 pct.4] starea fiecărui rând: ok / semnalat / respins, cu motivul
     return _uc_comun._raspuns({"randuri": randuri, "total": len(randuri), "valizi": valizi,
             "invalizi": len(randuri) - valizi, "erori": erori})
 
 
 
 def retete_import_incarca(tenant_id, continut, nume_fisier, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/retete-import/incarca`; docstringul ei a ramas in stratul HTTP."""
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/randuri-import/incarca` — previzualizarea, pe rândurile fișierului [375]."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
-    continut = continut
     try:
-        retete = retete_import_api.extrage(continut, nume_fisier or "")
+        randuri = retete_import_api.extrage(continut, nume_fisier or "")
     except ValueError as e:
         raise _erori.CerereGresita(str(e))
+    if not randuri:
+        raise _erori.CerereGresita("fișierul nu conține niciun rând de rețetă")
     with db.get_conn(schema) as conn:
-        retete = retete_import_api.potriveste(conn, schema, retete)
-    return _uc_comun._raspuns({"retete": retete, "rezumat": retete_import_api.rezumat(retete)})
+        retete_import_api.potriveste(conn, schema, randuri)
+    # [375, comanda Costin 8.2 pct.4] fiecare rând citit, cu starea lui; rețetele se formează numai din rândurile care intră
+    retete_import_api.eticheteaza(randuri)
+    return _uc_comun._raspuns({"randuri": randuri, "rezumat": retete_import_api.rezumat(randuri),
+                               "erori": retete_import_api.verifica_randuri(randuri)})
 
 
 
 def rip_import_incarca(tenant_id, continut, nume_fisier, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/rip-import/incarca`; docstringul ei a ramas in stratul HTTP."""
-    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
-    continut = continut
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/rip-import/incarca` — PREVIZUALIZAREA (nu scrie nimic).
+    [372, comanda Costin 8.2] până azi ruta scria direct rândurile bune, fără previzualizare; acum fiecare rând citit se întoarce cu
+    starea și motivul lui, iar salvarea e `rip_import_salveaza`."""
+    _uc_comun._schema_sau_404(ctx, tenant_id)
     try:
-        date, raport = rip_migrare_api.extrage_operatiuni(continut, nume_fisier or "")
+        randuri = rip_migrare_api.extrage(continut, nume_fisier or "")
     except ValueError as e:
         raise _erori.CerereGresita(str(e))
-    ops = date.get("operatiuni", [])
-    respinse = raport.get("respinse", [])
-    if not ops and not respinse:
+    if not randuri:
         raise _erori.CerereGresita("fișierul nu conține operațiuni de import")
-    # import atomic (importa face commit/rollback propriu); erori DB -> nimic scris
+    rip_migrare_api.eticheteaza(randuri)
+    erori = rip_migrare_api.verifica_randuri(randuri)   # [Q5] poarta unica previzualizare <-> salvare
+    return _uc_comun._raspuns({"randuri": randuri, "total": len(randuri), "erori": erori})
+
+
+def rip_import_salveaza(tenant_id, date, ctx):
+    """[P7 · use-case] Corpul rutei `POST /tenants/{tenant_id}/rip-import`: rândurile bune se scriu, cele respinse se spun numite."""
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    randuri = [r.model_dump() for r in date.randuri]
     with db.get_conn(schema) as conn:
-        rez = rip_migrare_api.importa(conn, schema, ops)
-    if rez["erori"]:
-        raise _erori.DateInvalide("import eșuat: " + str(rez["erori"][0].get("motiv", "eroare la scriere")))
+        try:
+            rez = rip_migrare_api.importa(conn, schema, randuri)
+        except ValueError as e:
+            raise _erori.DateInvalide(str(e))
+    respinse = rez["respinse"]
     # marcheaza stratul rip (public.migrare_status, per cabinet) pentru reminder()
     with db.get_conn() as conn:
         if respinse:
             migrare_api.seteaza_status(conn, ctx["firm"], "rip", "in_lucru",
-                                       f"{_common.cate(len(respinse), 'rând respins', 'rânduri respinse')} la import — de completat")
+                                       f"{_common.cate(len({e['rand'] for e in respinse}), 'rând respins', 'rânduri respinse')} la import — de completat")
         else:
             migrare_api.seteaza_status(conn, ctx["firm"], "rip", "gata", "")
-    return _uc_comun._raspuns({"importate": rez["importate"], "sarite_duplicat": rez.get("sarite_duplicat", 0), "raport": raport})
+    return _uc_comun._raspuns(rez)
 
 
 

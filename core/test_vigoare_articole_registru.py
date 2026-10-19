@@ -23,6 +23,7 @@ from core import common as c
 # articol -> ultima modificare, citită la sursă 23.08.2026. None = fără marcaj în corpul articolului.
 MODIFICARI = {
     ("CF", "17"): None,
+    ("CF", "31"): None,   # [378, 18.10.2026] masurat cu scripts/vigoare_articol.py pe forma din corpus: in vigoare, fara marcaj de modificare
     ("CF", "28"): datetime.date(2026, 2, 25),
     ("CF", "51"): datetime.date(2026, 1, 1),
     ("CF", "78"): datetime.date(2021, 2, 26),

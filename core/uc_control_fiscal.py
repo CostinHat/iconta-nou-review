@@ -99,6 +99,26 @@ def control_fiscal_audit_preluare(tenant_id, ctx):
     return r
 
 
+def control_fiscal_audit_preluare_istoric(tenant_id, ctx):
+    """[P7 · use-case] `GET /control-fiscal/{tenant_id}/audit-preluare` — [deficiența 370] primul audit de preluare (păstrat, dovada a ce
+    s-a primit de la contabilul anterior) și ultimul, cu momentul și autorul fiecăruia."""
+    import json as _json
+    from core import artefacte as _art
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as c:
+        primul, ultimul, n = _art.primul_si_ultimul(c, schema, "audit_preluare")
+
+    def _desc(x):
+        if not x:
+            return None
+        try:
+            v = _json.loads(x["continut"]) if isinstance(x["continut"], str) else x["continut"]
+        except ValueError:
+            v = None
+        return {"rulat_la": x["produs_la"], "rulat_de": x["produs_de"], "audit": v}
+    return {"primul": _desc(primul), "ultimul": _desc(ultimul), "rulari": n}
+
+
 def control_fiscal_detaliu(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/control-fiscal/{tenant_id}`; docstringul ei a ramas in stratul HTTP."""
     azi = azi_ro()   # [fus] verdict de zi = zi RO (acelasi ca portofoliul)

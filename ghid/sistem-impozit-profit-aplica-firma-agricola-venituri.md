@@ -2,7 +2,7 @@
 title: "Ce sistem de impozit pe profit aplică o firmă agricolă fără venituri majoritare din cereale și viticultură?"
 description: "Firma agricolă care nu mai are venituri majoritare din cereale, plante tehnice, cartof, pomicultură sau viticultură trece, din anul următor, la regimul general: declarare și plată trimestrială."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -55,6 +55,6 @@ SC Exemplu SRL are în 2026 venituri totale de 2.000.000 lei: 800.000 lei din cu
 
 ## Ce face iConta.eu
 
-iConta.eu generează D100 pentru impozitul pe profit în sistemul trimestrial, pe baza profitului cumulat de la începutul anului, și D101 anual, ambele validate pe validatorul oficial ANAF. Aplicația nu verifică automat ponderea veniturilor din activitățile de la art. 41 alin. (5) lit. b) și nu comută singură sistemul de declarare. Încadrarea firmei rămâne decizia contabilului, pe baza veniturilor anului încheiat.
+iConta.eu generează D100 pentru impozitul pe profit în sistemul trimestrial, pe baza rezultatului fiscal cumulat de la începutul anului, și D101 anual, ambele validate pe validatorul oficial ANAF. Aplicația nu verifică automat ponderea veniturilor din activitățile de la art. 41 alin. (5) lit. b) și nu comută singură sistemul de declarare. Încadrarea firmei rămâne decizia contabilului, pe baza veniturilor anului încheiat.
 
 [iConta.eu](/)

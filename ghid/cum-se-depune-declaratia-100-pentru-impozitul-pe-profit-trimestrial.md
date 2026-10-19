@@ -1,14 +1,14 @@
 ---
 title: Cum se depune declarația 100 pentru impozitul pe profit trimestrial?
-description: D100 pentru impozitul pe profit se depune trimestrial (trimestrele I-III), până pe 25 ale lunii următoare, dar pentru firmele pe regim de profit trebuie generată manual — semaforul de obligații nu o reamintește automat.
+description: D100 pentru impozitul pe profit se depune trimestrial (trimestrele I-III), până pe 25 ale lunii următoare; iConta.eu o cere firmelor pe regim de profit în calendar, pe semafor și la restanțe.
 published: 2026-09-22
-modified: 2026-10-13
+modified: 2026-10-18
 poarta: v1
 ---
 
 # Cum se depune declarația 100 pentru impozitul pe profit trimestrial?
 
-Depunerea D100 pentru impozitul pe profit ridică o capcană specifică în iConta.eu: spre deosebire de impozitul micro, unde obligația apare automat în lista de urmărire, pentru firmele pe regim de profit generarea D100 trebuie inițiată manual, trimestru de trimestru.
+Depunerea D100 pentru impozitul pe profit privește numai trimestrele I–III; trimestrul IV se definitivează în D101. În iConta.eu, pentru firmele pe regim de profit, D100 apare automat în lista de urmărire, ca la impozitul micro, pe fiecare din cele trei trimestre.
 
 ## Temeiul legal
 
@@ -39,23 +39,23 @@ Depunerea D100 pentru impozitul pe profit ridică o capcană specifică în iCon
 
 ## Pașii de depunere pentru trimestrele I-III
 
-Pentru trimestrele I-III, termenul legal e ferm: 25 a lunii următoare încheierii trimestrului (25 aprilie, 25 iulie, 25 octombrie). Suma se calculează pe baza profitului cumulat de la 1 ianuarie minus ce s-a impozitat deja în trimestrele anterioare, cu cota de 16%.
+Pentru trimestrele I-III, termenul legal e ferm: 25 a lunii următoare încheierii trimestrului (25 aprilie, 25 iulie, 25 octombrie). Suma se calculează pe rezultatul fiscal cumulat de la 1 ianuarie, cu cota de 16%, minus impozitul deja declarat pe trimestrele anterioare ale anului.
 
-**Atenție critică:** pentru firmele pe regim „profit", semaforul de obligații/restanțe al aplicației **nu adaugă niciodată D100 la lista de urmărit** — doar D101 (declarația anuală) apare automat. Asta înseamnă că trebuie să generați manual D100, din ecranul de declarații, la fiecare din trimestrele I-III, fără să vă bazați pe o alertă a aplicației. Dacă regimul fiscal al firmei nu e completat în vectorul fiscal, nici D100, nici D101 nu pot fi determinate corect — completați regimul fiscal înainte de a genera declarații.
+Pentru firmele pe regim „profit”, aplicația adaugă D100 la lista de urmărit pe fiecare din trimestrele I–III: apare în calendarul de termene, pe semafor și, dacă termenul a trecut fără depunere, la restanțe — și pe un trimestru cu pierdere, când se declară 0. Dacă regimul fiscal al firmei nu e completat în vectorul fiscal, nici D100, nici D101 nu pot fi determinate corect — completați regimul fiscal înainte de a genera declarații.
 
-Pentru trimestrul IV, situația e mai puțin clară: legea (art. 41 alin. 1) și normele ANAF rezervă în mod explicit D100 trimestrial doar trimestrelor I-III, urmând ca definitivarea anuală să se facă prin D101. Structura tehnică D100 permite totuși generarea unei obligații cod 103 și pentru luna 12 (cu scadență 25 decembrie), dar acest caz aparține de regulă regimului opțional cu plăți anticipate (o formulă de calcul diferită de cea standard). Dacă firma dvs. nu a optat explicit pentru regimul cu plăți anticipate trimestriale, tratați cu prudență orice D100 generat pentru trimestrul IV și verificați cu un consultant fiscal dacă nu cumva situația dvs. se rezolvă exclusiv prin D101.
+Pentru trimestrul IV, situația e mai puțin clară: legea (art. 41 alin. 1) și normele ANAF rezervă în mod explicit D100 trimestrial doar trimestrelor I-III, urmând ca definitivarea anuală să se facă prin D101. Structura tehnică D100 permite totuși generarea unei obligații cod 103 și pentru luna 12 (cu scadență 25 decembrie), dar acest caz aparține de regulă regimului opțional cu plăți anticipate (o formulă de calcul diferită de cea standard). iConta.eu nu generează D100 pe impozitul pe profit pentru trimestrul IV: refuză generarea și arată că trimestrul IV se definitivează în D101. Dacă firma dvs. a optat pentru regimul cu plăți anticipate trimestriale, plata pentru trimestrul IV se stabilește separat, în afara aplicației.
 
 ## Ce se greșește în practică
 
-- Se așteaptă ca aplicația să semnaleze D100 restant pentru firmele pe profit, la fel ca la micro — nu se întâmplă, trebuie generat manual.
-- Se ignoră termenul pentru că „nu apare nicio alertă", ceea ce duce direct la penalități de întârziere.
+- Se calculează suma pe profitul contabil, fără ajustările fiscale ale perioadei și fără pierderea fiscală de recuperat din anii anteriori.
+- Se ignoră termenul, ceea ce duce direct la penalități de întârziere.
 - Se calculează scadența trimestrului IV după regula generică „25 a lunii următoare" (adică 25 ianuarie anul următor) — regula corectă de scadență pentru micro trim. IV e 25 iunie anul următor, iar pentru profit cod 103 la luna 12 e 25 decembrie anul curent; niciuna din ele nu e 25 ianuarie.
-- Se depune D100 cu bază de calcul zero sau negativă (pierdere cumulată) — structural, declarația nu poate fi generată fără cel puțin o obligație pozitivă.
+- Nu se depune D100 pe pierdere cumulată, pe motiv că nu e nimic de plată — declarația se depune și atunci, cu 0 la impozitul pe profit (OPANAF 587/2016, anexa 4, pct. 3.1.2).
 
 ## Ce face iConta.eu
 
-Aplicația calculează corect obligația cod 103, cu bază cumulată de la 1 ianuarie și scadență 25 a lunii următoare pentru trimestrele I-III. Totuși, aplicația adaugă D100 la lista de obligații urmărite doar pe ramura „regim micro” (funcția „D100 micro”); pe ramura „regim profit” se adaugă automat numai D101 — D100 nu apare niciodată în „obligații"/„restanțe" pentru o firmă pe profit, deși motorul de calcul o suportă complet. Aceasta e o limitare cunoscută a aplicației: generarea D100 pentru o firmă pe profit rămâne, pentru moment, un pas manual.
+Pentru o firmă pe regim „profit”, aplicația cere D100 (cod 103) pe trimestrele I–III, cu scadență 25 a lunii următoare trimestrului, și o arată în calendarul de termene, pe semafor și, după termen, la restanțe. Pe trimestrul IV nu apare D100: impozitul anului se definitivează în D101, cu termen 25 iunie anul următor.
 
-În plus, modulul de scadențar folosit de semafor nu are o ramură specială pentru tipul „d100" și cade pe regula generică pentru trimestrul IV, care calculează 25 ianuarie anul următor — dată diferită de cea generată efectiv în XML-ul D100 (25 iunie pentru micro, 25 decembrie pentru profit). Dacă folosiți lista de termene/scadențe din aplicație pentru trimestrul IV, verificați suplimentar data reală din declarația generată, nu doar afișajul din semafor.
+Suma de plată pornește de la rezultatul fiscal cumulat de la 1 ianuarie: veniturile minus cheltuielile din contabilitate, plus ajustările fiscale pe care le scrii, pe trimestrul în care s-au produs, în ecranul „Registrul de evidență fiscală” al firmei, secțiunea „Ajustări fiscale” (cheltuieli nedeductibile, venituri neimpozabile, deduceri), minus pierderea fiscală din anii anteriori, recuperată cel mult 70% (CF art. 31 alin. (1)). Din impozitul cumulat de 16% se scade ce s-a declarat deja pe trimestrele anterioare ale anului — inclusiv trimestrele declarate în programul folosit înainte de preluarea firmei, aduse cu suma lor în istoricul declarațiilor, la migrare. Dacă un trimestru anterior e consemnat ca depus, dar fără suma declarată, aplicația nu calculează D100 și îți cere să completezi suma în Migrare › Istoric declarații; nu presupune 0.
 
 [iConta.eu](/)

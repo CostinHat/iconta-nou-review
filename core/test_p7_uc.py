@@ -119,7 +119,16 @@ ABATERI = {
 #: garda P7 pazeste ca MUTAREA a fost verbatim; o functionalitate NOUA adaugata dupa mutare (auth) nu
 #: e o abatere a mutarii, ci un adaus declarat. Anti-vacuu: `test_ADAUGARILE_declarate_chiar_exista`.
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
+_MOTIV_82 = ("Comanda Costin 8.2 (18.10.2026, verbatim în DECIZII „Comanda 8.2”) pct.4, regula importurilor de migrare: „orice rând citit e "
+             "afișat sau semnalat cu motiv, nimic nu se înlocuiește pe tăcute, totul trece prin previzualizare înainte de salvare”.")
 PERECHI_ADAUGATE = {
+    ("retete_import_incarca", "'fișierul nu conține niciun rând de rețetă'"): (
+        _MOTIV_82 + " Deficiența 375: un fișier fără niciun rând de rețetă se refuză numit (400), nu se previzualizează gol."),
+    ("retete_import_salveaza", "str(e)"): (
+        _MOTIV_82 + " Deficiența 375: salvarea refăce potrivirea și verificarea; niciun rând bun -> refuz numit (422), nimic scris."),
+    ("solduri_salveaza", "MESAJ_CONT_IN_AFARA % ', '.join(afara)"): (
+        _MOTIV_82 + " Deficiența 343: contul sintetic din afara planului legal al normei nu se mai adaugă tacit în plan — salvarea "
+        "balanței se refuză (422), cu conturile numite."),
     ("asistent_creeaza", "mesaj_din_cod(_r.get('cod'))"): (
         "Deficiența 319 (comanda Costin 17.10.2026 7.2): invitația poartă și „Poate depune” și firmele alocate; refuzul lui "
         "`set_permisiuni` / `atribuie_firma` (firmă din alt cabinet) oprește invitația întreagă, în aceeași tranzacție cu contul (400)."),
@@ -332,6 +341,27 @@ PERECHI_MUTATE_IN_AJUTOR = {
 }
 
 
+#: Perechi (cod, mesaj) SCOASE deliberat din funcție — refuzul nu mai are ce refuza acolo (operația lui a plecat în altă rută). Anti-vacuu:
+#: `test_SCOASELE_perechi_chiar_lipsesc`.
+PERECHI_SCOASE = {
+    ("rip_import_incarca", "'import eșuat: ' + str(rez['erori'][0].get('motiv', 'eroare la scriere'))"): (
+        _MOTIV_82 + " Deficiența 372: previzualizarea nu mai scrie, deci nu mai poate eșua la scriere; refuzul scrierii e în "
+        "`rip_import_salveaza` (`DateInvalide`, 422), după ce contabilul a văzut rândurile."),
+}
+
+
+def test_SCOASELE_perechi_chiar_lipsesc():
+    """Anti-vacuu pe PERECHI_SCOASE: perechea declarată scoasă nu mai e ridicată de funcția din stratul use-case."""
+    harta = _harta_cod()
+    uc_dupa_nume = {nume: nod for (_mod, nume), nod in _module_uc().items()}
+    for (fn_nume, msg_repr), motiv in PERECHI_SCOASE.items():
+        assert len(motiv) > 80
+        corp = uc_dupa_nume.get(fn_nume)
+        assert corp is not None, "%s: funcția declarată nu există în stratul use-case" % fn_nume
+        assert not (_forme_mesaj(msg_repr) & {p[1] for p in perechi_noi(corp, harta)}), (
+            "%s: perechea declarată scoasă (%s) e tot acolo" % (fn_nume, msg_repr))
+
+
 def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
     """Anti-vacuu: o mutare declarată fără apelul ajutorului ar scuza un refuz PIERDUT."""
     import ast as _ast
@@ -347,6 +377,14 @@ def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
+    ("solduri_incarca", "extrage_balanta"): (
+        "extrage_balanta_detaliat",
+        _MOTIV_82 + " Deficiențele 343–344: previzualizarea balanței poartă numărul rândului din fișier, coloanele recunoscute, rândurile "
+        "ignorate cu motivul lor — `extrage_balanta_detaliat` face tot ce făcea `extrage_balanta`, plus astea."),
+    ("rip_import_incarca", "extrage_operatiuni"): (
+        "extrage",
+        _MOTIV_82 + " Deficiența 372: `rip_migrare_api.extrage` întoarce FIECARE rând citit, cu valorile din fișier lângă cele "
+        "interpretate (data 2026-13-01 nu mai ajunge la baza de date), în loc de operațiunile deja filtrate."),
     ("bon_aproba", "round"): (
         "_q",
         "Deficiența 280 (lotul 6, comanda Costin 16.10.2026, verbatim în DECIZII): valoarea fără TVA a liniei bonului (× factor) e o sumă "
@@ -518,6 +556,10 @@ APELURI_EXTRASE_IN_AJUTOARE = {
 #: [17.10.2026, lotul 7] Apeluri făcute de MAI PUȚINE ori, deliberat: (funcție, apel) -> (câte mai puțin, motivul). Mai strâns decât
 #: APELURI_SCOASE (apelul rămâne, numai numărul scade cu exact cât e declarat). Anti-vacuu: `test_REDUCERILE_declarate_chiar_sunt_in_cod`.
 APELURI_REDUSE = {
+    ("rip_import_incarca", "str"): (1, _MOTIV_82 + " Deficiența 372: mesajul „import eșuat: …” (din eșecul scrierii) a ieșit odată cu "
+                                    "scrierea; rămâne `str(e)` pe fișierul necitit."),
+    ("rip_import_incarca", "HTTPException"): (1, _MOTIV_82 + " Deficiența 372: refuzul 422 la eșecul scrierii a ieșit din previzualizare "
+                                              "(e în `rip_import_salveaza`, `DateInvalide`); rămân refuzurile fișierului necitit / gol."),
     ("declaratii_tipuri", "tipuri"): (1, (
         "Deficiența 301 (comanda Costin 17.10.2026 7.2, verbatim în DECIZII): declarațiile pe care forma firmei nu le poate datora nici nu "
         "apar în selector. Lista tipurilor se citește O DATĂ, filtrată după forma firmei, și aceeași listă dă `tipuri` și `periodicitate` "
@@ -526,6 +568,18 @@ APELURI_REDUSE = {
 
 #: [15.10.2026, lotul 4] Apeluri SCOASE deliberat, cu motivul. Anti-vacuu: `test_SCOASELE_declarate_chiar_lipsesc`.
 APELURI_SCOASE = {
+    ("solduri_incarca", "round"): (_MOTIV_82 + " Totalurile previzualizării se adună acum în `Decimal` (nu `round()` pe float), "
+                                   "aceeași regulă ca restul sumelor de bani."),
+    ("mijloace_import_incarca", "round"): (_MOTIV_82 + " Totalul valorii de intrare se adună în `Decimal`, nu prin `round()` pe float; "
+                                           "reconcilierea cu balanța (359) e în `reconciliere_balanta`."),
+    ("rip_import_incarca", "get"): (_MOTIV_82 + " Deficiența 372: previzualizarea nu mai scrie, deci nu mai citește rezultatul scrierii "
+                                    "(`rez.get(...)`) — salvarea e `rip_import_salveaza`."),
+    ("rip_import_incarca", "get_conn"): (_MOTIV_82 + " Deficiența 372: previzualizarea nu deschide nicio conexiune; scrierea și marcajul "
+                                         "stratului au trecut în `rip_import_salveaza`, după ce contabilul a văzut rândurile."),
+    ("rip_import_incarca", "importa"): (_MOTIV_82 + " Deficiența 372: `importa` se cheamă din `rip_import_salveaza`, după previzualizare, "
+                                        "și reverifică fiecare rând înainte de scriere."),
+    ("rip_import_incarca", "seteaza_status"): (_MOTIV_82 + " Deficiența 372: marcajul stratului RIP (gata / în lucru) se pune la salvare "
+                                               "(`rip_import_salveaza`), nu la citirea fișierului."),
     ("raportari_imagine", "lower"): (_MOTIV_C36 + " Tipul nu se mai ia din `content_type` (pe care îl trimite browserul, deci îl "
                                      "poate minți) — `lower()` pe el a ieșit."),
     ("raportari_imagine", "HTTPException"): (_MOTIV_C36 + " Cele două refuzuri separate (415 tip, 413 mărime) sunt acum UNUL, cu clasa "
@@ -987,6 +1041,9 @@ def _fara_abateri(nume, ramase_v, ramase_n):
             continue
         forme = _forme_mesaj(mesaj)
         ramase_v = [p for p in ramase_v if p[1] not in forme]
+    for (rut, mesaj), _motiv in PERECHI_SCOASE.items():
+        if rut == nume:
+            ramase_v = [p for p in ramase_v if p[1] not in _forme_mesaj(mesaj)]
     # [07.10.2026] Același mesaj, un cod HTTP în plus, DECLARAT: perechea veche și cea nouă se scot împreună, numai dacă
     # diferă exact prin codul declarat.
     for (rut, mesaj), (cod, _motiv) in CODURI_ADAUGATE.items():

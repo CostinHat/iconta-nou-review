@@ -35,8 +35,8 @@ def test_cnp_valide_conform_duk():
 
 
 def test_cnp_invalide_conform_duk():
-    for c, motiv in (("1700510400077", "cifra de control"), ("123456789012", "format"),
-                     ("0123456789012", "prima cifra"), ("9900101410011", "cifra de control")):
+    for c, motiv in (("1700510400077", "cifra de control"), ("123456789012", "are 12 cifre; un CNP are 13"),
+                     ("0123456789012", "prima cifră"), ("9900101410011", "cifra de control")):
         v, m = valideaza_cnp(c)
         assert not v, "CNP %s trebuia invalid" % c
         assert motiv in m, "motiv CNP %s: %r (asteptat %r)" % (c, m, motiv)

@@ -7,7 +7,7 @@ import io
 import re
 from decimal import Decimal
 
-from conftest import sql
+from conftest import linie_nota, sql
 
 FIRMA_TVA = "Comert Micro TVA SRL"              # tenant_003, plătitoare de TVA
 FIRMA_NEPLATITOARE = "Coafor Micro Neplatitor SRL"   # tenant_002
@@ -65,7 +65,7 @@ def _nota(ecran, tid, descriere, suma, debit="5311", credit="4111", document=Non
     """O notă manuală, ciornă, scrisă de contul din `ecran` pe drumul aplicației (POST /tenants/{id}/jurnal)."""
     st, r = _api(ecran, "/tenants/%s/jurnal" % tid, "POST",
                  {"data": _azi().isoformat(), "descriere": descriere, "document_ref": document,
-                  "linii": [{"debit": debit, "credit": credit, "suma": str(suma)}]})
+                  "linii": [linie_nota(debit, credit, str(suma))]})
     assert st == 200 and r and r.get("id"), (st, r)
     return r["id"]
 

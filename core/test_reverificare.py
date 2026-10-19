@@ -97,7 +97,9 @@ DISTRIBUTIE = {
     # intelectuala; CF art.64 alin.(1) - cota 10% pe venitul fiecarei surse. Masurat cu R.inventar: STABIL, prag 6 luni.
     # 13 -> 14 la 03.10.2026 (D212 Etapa 5c-2b): CF art.100 alin.(1) - suma neimpozabila lunara din pensie (3.000 lei).
     # Masurat cu R.inventar: STABIL, prag 6 luni.
-    ("STABIL", "DEPUS"): 14,
+    # 14 -> 15 la 18.10.2026 (comanda 8.2, deficienta 378): CF art.31 alin.(1) - recuperarea pierderii fiscale in limita a 70%
+    # (`ajustari_fiscale.PRAG_RECUPERARE_PIERDERE`). Masurat cu R.inventar: STABIL, prag 6 luni.
+    ("STABIL", "DEPUS"): 15,
     # 13 -> 14 la 01.10.2026 (tichete de cresa): common.PLAFON_CRESA_BAZA ancorat pe Legea 165/2018 art.19 alin.(1).
     # 14 -> 13 la 11.10.2026 (R3): iese `bacsis.COTA_IMPOZIT` (CF art.64 alin.(1) lit.h); cota se citeste din
     # `COTE["impozit_venit_categorii"]`, ale carei doua intrari (CF art.64 / Legea 227/2015 art.64) sunt STABIL/DEPUS — locul lasat de

@@ -2,7 +2,7 @@
 title: "Cum fac calculul trimestrial al impozitului pe profit dacă firma are pierdere într-o lună?"
 description: "De ce impozitul pe profit se calculează cumulat de la începutul anului fiscal, nu lună de lună, și ce se întâmplă când o lună din trimestru a adus pierdere."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Consecința practică a calculului cumulat:
 
 ## Ce face iConta.eu
 
-iConta.eu calculează impozitul pe profit trimestrial exact pe baza logicii cumulate cerute de art. 19 alin. (2): în aplicație, baza efectivă a fiecărui trimestru se determină ca diferență între profitul cumulat de la 1 ianuarie până la sfârșitul trimestrului curent (plafonat la minimum zero) și profitul cumulat până la sfârșitul trimestrului anterior (plafonat la minimum zero) — mecanism care evită eroarea de a impozita integral, la cota de 16%, un trimestru cu profit venit imediat după un trimestru cu pierdere, și care dă corect zero de plată atunci când profitul cumulat scade sub nivelul deja impozitat anterior.
+iConta.eu calculează impozitul pe profit trimestrial pe logica cumulată cerută de art. 19 alin. (2): stabilește impozitul pe rezultatul fiscal cumulat de la 1 ianuarie până la sfârșitul trimestrului curent — rezultatul contabil plus ajustările fiscale scrise de contabil, minus pierderea din anii anteriori recuperată cel mult 70% — și scade din el impozitul deja declarat pe trimestrele anterioare ale anului. Așa nu impozitează integral, la cota de 16%, un trimestru cu profit venit imediat după un trimestru cu pierdere, iar când impozitul cumulat scade sub ce s-a declarat deja, D100 se declară cu 0.
 
 [iConta.eu](/)

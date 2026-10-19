@@ -2,7 +2,7 @@
 title: "Trebuie depusă D700 la ieșirea din regimul micro?"
 description: "Ieșirea din sistemul de impunere pe veniturile microîntreprinderilor se comunică organului fiscal printr-o declarație de mențiuni, până la 31 martie inclusiv a anului fiscal următor, potrivit Codului fiscal."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce rezultă de aici pentru firma care iese din regimul micro:
 
 ## Ce face iConta.eu
 
-La data acestui ghid, iConta.eu urmărește regimul fiscal declarat al firmei (micro sau profit) ca parte din vectorul fiscal configurat în profilul firmei și adaptează în consecință declarațiile generate (D100 trimestrial pentru micro, D101 anual pentru profit). Aplicația nu depune însă automat declarația de mențiuni către ANAF pentru comunicarea ieșirii din regimul micro — schimbarea vectorului fiscal în profilul firmei trebuie făcută manual de utilizator, în paralel cu depunerea declarației de mențiuni la organul fiscal.
+La data acestui ghid, iConta.eu urmărește regimul fiscal declarat al firmei (micro sau profit) ca parte din vectorul fiscal configurat în profilul firmei și adaptează în consecință declarațiile generate (D100 trimestrial pentru micro; D100 pe trimestrele I–III și D101 anual pentru profit). Aplicația nu depune însă automat declarația de mențiuni către ANAF pentru comunicarea ieșirii din regimul micro — schimbarea vectorului fiscal în profilul firmei trebuie făcută manual de utilizator, în paralel cu depunerea declarației de mențiuni la organul fiscal.
 
 [iConta.eu](/)

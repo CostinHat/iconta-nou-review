@@ -2,7 +2,7 @@
 title: "Cum verific D101 cu registrul de evidență fiscală?"
 description: "Obligația legală de a evidenția în registrul de evidență fiscală veniturile impozabile și cheltuielile deductibile care stau la baza rezultatului fiscal raportat prin D101."
 published: 2026-09-24
-modified: 2026-10-13
+modified: 2026-10-18
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Ce înseamnă acest temei pentru verificarea D101:
 
 ## Ce face iConta.eu
 
-Verificat în cod: Aplicația recalculează independent, direct din balanța contabilă („notele contabile”), baza contabilă a rezultatului (veniturile și cheltuielile de exploatare și financiare) și o confruntă cu ce a produs generatorul declarației D101, semnalând orice divergență — conform docstringului modulului, acest mecanism acoperă baza **contabilă**, nu ajustările fiscale ulterioare (deduceri, cheltuieli nedeductibile), care rămân intrări manuale ale contabilului; aplicația nu are, la acest moment, un „registru de evidență fiscală" separat, generat automat, potrivit art. 19 alin. (7).
+Verificat în cod: Aplicația recalculează independent, direct din balanța contabilă („notele contabile”), baza contabilă a rezultatului (veniturile și cheltuielile de exploatare și financiare) și o confruntă cu ce a produs generatorul declarației D101, semnalând orice divergență — această confruntare acoperă baza **contabilă**. Ajustările fiscale (cheltuieli nedeductibile, venituri neimpozabile, deduceri) le scrie contabilul, pe trimestrul în care s-au produs, în ecranul „Registrul de evidență fiscală” al firmei, secțiunea „Ajustări fiscale”; ecranul afișează registrul pe an, în varianta pentru impozitul pe profit (art. 19 alin. (7)), iar aceleași ajustări intră în D100 pe trimestrele I–III și în D101. Încadrarea fiecărei sume rămâne decizia contabilului.
 
 [iConta.eu](/)

@@ -122,3 +122,24 @@ def lista(conn, schema, fel=None, cheie=None):
                     % (schema, unde), val)
         col = [d[0] for d in cur.description]
         return [dict(zip(col, r)) for r in cur.fetchall()]
+
+
+def primul_si_ultimul(conn, schema, fel):
+    """[deficiența 370, comanda Costin 8.2: „primul audit după preluare rămâne păstrat și vizibil (dovada a ce s-a primit de la contabilul
+    anterior), alături de ultimul”] (primul, ultimul, numar) — fiecare {id, produs_la, produs_de, continut} sau None; ultimul e None când
+    există un singur exemplar (e chiar primul)."""
+    if not db.schema_valida(schema):
+        raise _SchemaInvalida(schema)
+    with conn.cursor() as cur:
+        cur.execute('SELECT count(*) FROM "%s".artefacte_produse WHERE fel = %%s' % schema, (fel,))
+        n = cur.fetchone()[0]
+        out = []
+        for ordine in ("ASC", "DESC"):
+            cur.execute('SELECT id, produs_la, produs_de, continut FROM "%s".artefacte_produse WHERE fel = %%s '
+                        "ORDER BY produs_la %s, id %s LIMIT 1" % (schema, ordine, ordine), (fel,))
+            r = cur.fetchone()
+            out.append({"id": r[0], "produs_la": r[1].isoformat() if r[1] else None, "produs_de": r[2], "continut": r[3]} if r else None)
+    primul, ultimul = out
+    if primul and ultimul and primul["id"] == ultimul["id"]:
+        ultimul = None
+    return primul, ultimul, n

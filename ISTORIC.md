@@ -2731,3 +2731,46 @@ Rularea țintită (suita întreagă, verificatorul și conftest-ul plasei fiind 
 factura emisă (prima formă bloca și ștergerea ciornelor de factură), clichetele (constanta mutată, ancorele pe text, apelul extras),
 blocurile generate (TRASEE, GARZI), afirmația depășirii trimisă tipată. Plasa ecranelor atinse: garda 325 a găsit focusul pe
 listele din Date firmă (închis în `api.focusFaraSalt`), iar 298 cerea încă textul vechi „la validare”; rulată din nou, verde.
+
+## 18.10.2026 — Lotul 8 PUBLICAT: poarta 1 ROȘIE numai pe cifre (explicate), poarta 2 VERDE pe fcfa3b3a; four-way închis 21:52
+
+Comanda Costin 18.10.2026 (verbatim în DECIZII „Poarta 1 a lotului 8”): *„Rulează poarta lotului 8 și, dacă e verde, publică lotul pe
+producție. Confirm: în cabinet nu lucrează nimeni, ai acordul să publici fără să mai întrebi.”* Lotul publicat = starea comisă pe
+`lucru/lot8-2026-10-18` (comanda 8.1: 321–340, C50, C51); 341–381 (comanda 8.2) stau pe ramura `lucru/lot8b-2026-10-18`, cu poarta lor.
+
+**Poarta 1** (`bee07d87`, 19:48): ROȘIE numai pe cifrele F1–F5 — pytest `8641 passed, 10 skipped, 15 xfailed`, verificatorul TOTAL 0.
+Cele 17 diferențe (toate pe F1, 10/2026) explicate după regula din comanda 7.3 pct.4: 16 vin din datele de retest (factura de 500 lei pe
+704, aceeași diferență și pe codul publicat `7ebbf79b`), una din codul lotului (amprenta D406: UM E48 pe liniile de serviciu, reparația
+331 — sonda cu efectul ei scos dă amprenta publicată). Referința rescrisă (amprenta `221d549f…`), intrarea în DECIZII, commitul `fcfa3b3a`.
+**Poarta 2** (`fcfa3b3a`, 21:51:29): VERDE — prospețime 21 passed; pytest `8641 passed, 10 skipped, 15 xfailed` (3772 s); verificatorul
+TOTAL 0 (GRI 7); cifrele F1–F5 „identice cu referința aprobată (5 firme)”; plasa e2e `374 passed` (1953 s); poarta 5725 s.
+
+**Publicarea:** backup `~/backups_db/iconta_v2_pre_lot8_20261018_2151.dump` (3270 de intrări în cuprins; lotul 7: 3203), `APROBARE_MAIN`
+pe `fcfa3b3a` (consumată), `git merge --ff-only` în `~/iconta_nou` + `post-commit`: origin/main, public/main, `backup/lant-2026-10-18`
+-> `fcfa3b3a`; statica publicată (65 de fișiere); `iconta-nou` repornit (ExecMainStartTimestamp 21:52:33, după commitul de 20:15:38).
+Nicio migrare nouă în lot: `core.migrari_registru verifica fcfa3b3a` curat (rc 0). **Four-way închis:** HEAD = origin/main = public/main =
+backup/lant-2026-10-18 = procesul viu = `fcfa3b3a` (2 din 2 procese); nicio sentinelă; site 200. Starea de după publicare intră pe ramura
+`lucru/lot8b-2026-10-18` (commitul care conține această intrare), adusă prin fast-forward peste `fcfa3b3a`.
+
+## 18–19.10.2026 — Lotul 8, comanda 8.2: 341–381, regula importurilor de migrare, restul lotului 8 (ramura `lucru/lot8b-2026-10-18`)
+
+Comanda Costin 8.2 (verbatim în DECIZII „Comanda 8.2”), lucrată în worktree-ul `/home/costin/iconta_lot8b`, peste lotul 8 publicat
+(`fcfa3b3a`). **341–381 rezolvate**, fiecare cu test de capăt la capăt în `frontend_test/e2e/e2e_lot82.py` (43 de teste: câte unul pe număr,
+plus cele trei modele CSV ale lui 350) și mutație roșie (`mut82.json`, 41 de mutații, toate aplicate pe copia exportată -> 43 / 43 roșii;
+separat, fiecare mutație a mijloacelor fixe, 350, 359 și 371 -> numai testul ei roșu). **Regula importurilor (pct.4)** pe toate importurile
+de migrare: fiecare rând citit apare în tabelul comun al previzualizării, cu starea („intră”, „intră, cu observație”, „respins — nu intră”)
+și motivul pe sub-rândul lui; nimic nu se completează din oficiu fără să fie spus; RIP-ul, articolele și rețetele trec acum prin
+previzualizare; erorile interne merg în jurnal; modelele CSV au separatorul „;”. Garda de clasă: `core/test_regula_importurilor.py`.
+**PRIORITARE:** 376 (D100 trimestrial la impozitul pe profit, în Datorate / semafor / restanțe — R95 închisă), 377 (trimestrele declarate
+înainte de preluare se scad, cu sursa spusă), 378 (D100 pe rezultatul fiscal cumulat: ajustările din Registrul de evidență fiscală,
+pierderea din anii anteriori cel mult 70%), 380 (contul de venit dintr-o singură sursă, nota și D406). 346 (grav): partenerii care nu dau
+soldul contului din balanța de deschidere nu intră.
+
+**Testarea a schimbat câteva lucruri** (DECIZII „Comanda 8.2: ce a schimbat testarea”): PIVOT — D100 pe profit, trimestrul cu pierdere se
+depune cu 0 (OPANAF 587/2016 pct.3.1.2; DUK valid), nu se refuză; partenerul se cere la introducerea manuală pe 401 / 4111 (testele de note
+au fost aduse la regulă); tabelul comun cu motivele pe sub-rând și „Starea” lângă numărul rândului (349); antetul fix nu mai ascunde
+„Versiune nouă” sub o fereastră (191); planul și textul auditului de preluare dintr-o singură listă (la PFA limita spunea „verificat”
+despre verificări care nu rulau); perioadele D100 / registrul fiscal scrise „T1/2026”. **Ghidul public:** 46 de articole corectate (D100 la
+profit „necerut”, ajustările „doar la D101”, plafonul de 70% „necalculat” — false după 376–378). **Restul lotului 8 (pct.5):** bara de stare
+fixă (DS cap.2, garda `BARA_ANTET_FIXA`); cheile Meta / WhatsApp, Postmark și Search Console — lista exactă a ce trebuie de la Costin în
+LANSARE. Migrări noi (rulate pe baza de test): `migrare_partener_linie`, `migrare_ajustari_fiscale`, `migrare_mf_amortizare_preluata`.

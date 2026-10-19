@@ -71,6 +71,7 @@ def test_def_c22_data_balantei_e_ceruta_si_salvata(patron, firma_import):
     scris -> data 30.09.2026 -> „4 conturi salvate, cu soldurile la 30.09.2026.”; în evidență data soldurilor = 30.09.2026."""
     pg = patron.pg
     _balanta(patron, firma_import)
+    pg.fill("#mig-data-bal", "")   # [344] data se propune (ziua dinaintea lunii preluării); proba cere câmpul golit de contabil
     pg.click("#mig-salveaza-sold")
     pg.wait_for_selector('.msg-eroare[data-camp="mig-data-bal"]', timeout=10000)
     assert "Scrie data la care sunt soldurile din balanță." in pg.inner_text('.msg-eroare[data-camp="mig-data-bal"]')
@@ -138,7 +139,7 @@ def test_def_c28_antetele_saga_se_recunosc_pe_cuvinte_intregi(patron, firma_impo
 def test_def_c30_salvarea_nu_crede_indicatorii_trimisi_de_ecran(patron, firma_import):
     """C30 (găsită de Code): salvarea credea `cnp_valid` (salariați) și `valid` (articole) din cererea ecranului — o cerere cu
     `cnp_valid: true` pe un CNP cu cifra de control greșită intra. Pașii: din sesiunea contabilului, cererea de salvare a unui
-    salariat cu CNP greșit și `cnp_valid: true` -> refuz „CNP invalid (cifra de control)”, nimic scris."""
+    salariat cu CNP greșit și `cnp_valid: true` -> refuz „CNP invalid (cifra de control greșită)”, nimic scris."""
     pg = patron.pg
     patron.firma(firma_import["nume"])
     rasp = pg.evaluate("""async ([tid, cnp]) => {
@@ -148,7 +149,7 @@ def test_def_c30_salvarea_nu_crede_indicatorii_trimisi_de_ecran(patron, firma_im
           body: JSON.stringify({randuri: [{nume: 'Fals', prenume: 'Cnp', cnp: cnp, cnp_valid: true, tip_norma: 'intreaga', ore_zi: 8,
                                           functie_baza: true, scutit_contrib_minim: false, salariu_brut: 5000, judet_casa: 'CJ'}]})});
         return [r.status, await r.text()]; }""", [firma_import["tenant_id"], CNP_GRESIT])
-    assert rasp[0] == 422 and "CNP invalid (cifra de control)" in rasp[1], rasp
+    assert rasp[0] == 422 and "CNP invalid (cifra de control greșită)" in rasp[1], rasp
     assert sql('SELECT count(*) FROM "%s".salariati WHERE nume = %%s' % firma_import["schema"], ("Fals",))[0][0] == 0
 
 
@@ -256,8 +257,11 @@ def test_salariatii_partial_si_de_verificat_pana_la_confirmare(patron, firma_imp
     _pas(patron, firma_import, "Salaria")
     _incarca(patron, "salariati_fara_scutire.csv", _cp1250(SALARIATI_FARA_SCUTIRE), "#mig-salveaza-sal")
     t = patron.fereastra()
-    assert "Un rând nu intră — celelalte se salvează" in t and "rândul 4: Greşit Ion: CNP invalid (cifra de control)" in t, t[:2000]   # Windows-1250: ş cu sedilă
-    assert "scutit minim: Nu — de verificat" in t and "persoane în întreținere: 0 — de completat" in t, t[:2000]
+    assert "Un rând nu intră — celelalte se salvează" in t and "rândul 4: Greşit Ion: CNP invalid (cifra de control greșită)" in t, t[:2000]   # Windows-1250: ş cu sedilă
+    # [349, comanda Costin 8.2] fiecare câmp are coloana lui în tabelul comun al previzualizării
+    antet = [" ".join(x.split()) for x in pg.locator(".mig-prev thead th").all_inner_texts()]
+    celule = dict(zip(antet, [x.strip() for x in pg.locator('.mig-prev tbody tr[data-rand="2"]:not(.mig-prev-motive) td').all_inner_texts()]))
+    assert (celule["Scutit minim"], celule["Persoane în întreținere"]) == ("Nu (de verificat)", "0 (de verificat)"), celule
     assert pg.inner_text("#mig-salveaza-sal").strip() == "Salvează cele 2 rânduri bune (salariați)"
     patron.captura("previzualizare")
     pg.click("#mig-salveaza-sal")
@@ -294,6 +298,11 @@ def test_partenerii_partial_randul_refuzat_se_arata(patron, firma_import):
     """Decizia Costin 14.10.2026 pct.2: salvarea parțială la parteneri. Pașii: situația clienților SAGA cu un CUI greșit, contul 4111
     ales -> „Un rând nu intră”, „Salvează cele 2 rânduri bune (parteneri)” -> „2 parteneri salvați.”, „Un rând nu a intrat”."""
     pg = patron.pg
+    # [346, comanda Costin 8.2] partenerii intră numai dacă dau soldul contului din balanța de deschidere: 4111 = 300 + 50 (rândurile bune)
+    sch = firma_import["schema"]
+    sql('DELETE FROM "%s".solduri_initiale' % sch)
+    sql('INSERT INTO "%s".solduri_initiale (cont, sold_debitor, sold_creditor, data_referinta) VALUES (\'4111\', 350, 0, \'2026-09-30\'), '
+        '(\'1012\', 0, 350, \'2026-09-30\')' % sch)
     _pas(patron, firma_import, "Solduri parteneri")
     pg.select_option("#mig-cont-part", "4111")
     csv = ("Denumire;Cod fiscal/ CNP;Neachitat final\nClient Unu SRL;RO14837428;300\nPopescu Ana;1960101078916;50\n"
