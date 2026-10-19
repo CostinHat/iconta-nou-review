@@ -87,9 +87,12 @@ def extrage(continut, nume_fisier=""):
     return out
 
 
-def coerenta_cote(randuri):
-    """{total, coincide} — suma cotelor vs 100%."""
-    total = round(sum(r.get("cota", 0) for r in randuri), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+def coerenta_cote(randuri, respinse=()):
+    """{total, coincide} — suma cotelor vs 100%, pe rândurile care INTRĂ: [384, retestul 19.10.2026: „«total cote ✓ 100%» adună și
+    rândurile respinse; intră un singur asociat, cu 30%”] rândurile cu `rand_fisier` în `respinse` (respinse pe rând: CNP invalid, fără
+    nume, dublură…) nu intră, deci nici cota lor nu se adună."""
+    respinse = {str(x) for x in respinse}
+    total = round(sum((r.get("cota") or 0) for r in randuri if str(r.get("rand_fisier")) not in respinse), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     return {"total": total, "coincide": abs(total - 100.0) < 0.01}
 
 
@@ -197,13 +200,14 @@ def verifica_randuri(randuri, anaf=None):
             er.append(respinge("asociat", i, "cota_invalida",
                                "%s: cota %s%% nu e o cotă de participare (între 0 și 100)"
                                % (eticheta, ("%g" % cota).replace(".", ",") if cota is not None else r.get("cota"))))
-    c = coerenta_cote(randuri or [])
+    # [384] cotele se adună numai pe rândurile care intră (cele fără respingere pe rând)
+    c = coerenta_cote(randuri or [], {e.get("rand") for e in er})
     if (randuri or []) and not c["coincide"]:
         # randul "-": afirmatia e despre SETUL de asociati, nu despre un rand anume - iar asta se
         # scrie, nu se ascunde alegand arbitrar primul rand.
         # [366] domeniul se scrie în cuvinte („toți asociații”), nu „-”: ecranul îl arată lângă mesaj (era „rând undefined”)
         er.append(respinge("asociati (toti)", "toți asociații", "cote_nu_dau_suta",
-                           "cotele asociaților însumează %s%%, nu 100%%" % c["total"]))
+                           "cotele asociaților care intră însumează %s%%, nu 100%%" % ("%g" % c["total"]).replace(".", ",")))
     return er
 
 

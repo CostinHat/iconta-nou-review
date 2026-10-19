@@ -321,6 +321,19 @@ def valideaza(conn, schema, nota_id):
         _i = _ia.refuz_validare(cur, schema, nota_id)
         if _i:
             return {**_refuz(_i, "OMFP 1802/2014, contul 121"), "cod": "INCHIDERE_NEVALIDABILA"}
+        # [deficiența 406, PRIORITAR] nota care scoate bani din casă nu se validează dacă evidența validată ar arăta casa sub zero (în ziua
+        # notei sau după) — orice drum de scriere (dispoziție, notă manuală, import, stornare) trece pe aici
+        from core import casa_sold as _cs
+        cur.execute(f"SELECT cont_debit, cont_credit, suma FROM {schema}.inregistrari_linii WHERE inregistrare_id=%s", (nota_id,))
+        _var = {}
+        for _l in cur.fetchall():
+            for _c, _s in ((_cs.sintetic_casa(_l["cont_debit"]), 1), (_cs.sintetic_casa(_l["cont_credit"]), -1)):
+                if _c:
+                    _var[_c] = _var.get(_c, Decimal(0)) + _s * Decimal(str(_l["suma"]))
+        for _c in sorted(_var):
+            _r = _cs.refuz_iesire(cur, schema, _c, n["data"], -_var[_c], doar_validate=True, ce="Nota")
+            if _r:
+                return {**_refuz(_r, _cs.TEMEI), "cod": _cs.COD}
         cur.execute(f"UPDATE {schema}.inregistrari SET status='validata' WHERE id=%s", (nota_id,))
         # ai_invatare_v1: invatare din validare (context = descriere, cont = debitul primei linii)
         try:
@@ -339,6 +352,66 @@ def valideaza(conn, schema, nota_id):
             from core import observare as _obs
             _obs.esec_secundar("invatare AI la validare nota", _e)  # inghitit, dar nu tacut (27.07.2026)
     return {"ok": True}
+
+
+# ── [deficiența 368, decizia Costin 19.10.2026 „Se validează automat”, verbatim în DECIZII „Închiderea lotului 9”] ──────────────────────
+# „la PFA nota scrisă în fundal (Casă, Bancă, facturi, Z, salarii) se validează automat la scriere, ca «notă internă», cu documentul ei
+# (regula R3); actul omului rămâne operațiunea din registrul de încasări și plăți.” La partidă simplă (OMFP 170/2015) nota nu e evidență:  # TEMEI LIBER: citat verbatim al deciziei
+# poartă TVA-ul pe cote pentru D300 / D394, care le citesc NUMAI validate (`repo_d300.py`, `repo_d394.py`).
+
+#: etichetele refuzurilor din bază (regulile de fond: R3 documentul, perioada blocată, ciorna altuia) — aceleași ca în `main.py`
+_REFUZURI_BAZA = ("REGULA_CONTABILA:", "PERIOADA_BLOCATA:", "DREPT_CIORNA:")
+
+
+def _motiv_din_baza(exc):
+    """Textul pentru contabil al unui refuz din bază (după eticheta lui), sau None pentru o eroare care nu e un refuz."""
+    msg = str(exc)
+    for et in _REFUZURI_BAZA:
+        if et in msg:
+            t = msg.split(et)[1].split("\n")[0].strip()
+            return ("Perioada %s." % t) if et == "PERIOADA_BLOCATA:" else t
+    return None
+
+
+def _cod_din_baza(exc):
+    """Felul unui refuz din bază (eticheta lui, fără „:”), sau None pentru o eroare care nu e un refuz."""
+    msg = str(exc)
+    return next((et.rstrip(":") for et in _REFUZURI_BAZA if et in msg), None)
+
+
+def valideaza_interne(conn, schema, nota_ids, cu_cod=False):
+    """Validează notele interne ale unei firme în partidă simplă pe ACELAȘI drum ca validarea omului (`valideaza`: nota stornată, Z-ul
+    nedescărcat, închiderea anului, casa sub zero — 406; în bază R3 documentul justificativ și perioada blocată), fiecare în punctul ei
+    de salvare: un refuz lasă nota ciornă, cu motivul, fără să le strice pe celelalte. Ordinea e a Registrului jurnal (data, apoi id-ul):
+    o încasare în casă se validează înaintea plății din aceeași zi. Tranzacția e a apelantului.
+    -> (validate: [nota_id], refuzate: [(nota_id, motiv)]); cu `cu_cod`: refuzate [(nota_id, motiv, cod)] — felul refuzului (codul
+    regulii din `valideaza`, eticheta refuzului din bază, „EROARE”), pentru o numărătoare care nu poartă datele notelor."""
+    import psycopg2
+    validate, refuzate = [], []
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT id FROM {schema}.inregistrari WHERE id = ANY(%s) ORDER BY data, id", ([int(i) for i in nota_ids],))
+        ids = [r[0] for r in cur.fetchall()]
+        for nid in ids:
+            cur.execute("SAVEPOINT nota_interna")
+            try:
+                rez = valideaza(conn, schema, nid)
+            except psycopg2.Error as e:
+                cur.execute("ROLLBACK TO SAVEPOINT nota_interna")
+                motiv = _motiv_din_baza(e)
+                if motiv is None:   # o eroare care nu e un refuz al regulilor: nota rămâne ciornă, iar eroarea nu e tăcută
+                    from core import observare as _obs
+                    _obs.esec_secundar("validarea notei interne %s" % nid, e)
+                    motiv = "nota nu s-a putut valida (eroare la scriere)"
+                refuzate.append((nid, motiv, _cod_din_baza(e) or "EROARE") if cu_cod else (nid, motiv))
+                continue
+            if rez and rez.get("ok"):
+                cur.execute("RELEASE SAVEPOINT nota_interna")
+                validate.append(nid)
+            else:
+                cur.execute("ROLLBACK TO SAVEPOINT nota_interna")
+                _m = str((rez or {}).get("eroare") or "nota nu mai există")
+                refuzate.append((nid, _m, str((rez or {}).get("cod") or "REFUZ")) if cu_cod else (nid, _m))
+    return validate, refuzate
 
 
 #: [deficiența 245, retestul Costin 13.10.2026, comanda 14.10 pct.2, verbatim în DECIZII] „pe note apare «sursa: inchidere_an». Scrie
@@ -430,5 +503,6 @@ def eticheta_factura(fel, serie, numar, data):
     (`pdf_util.data_ro`), nu ISO. Sursa UNICĂ: o folosesc și Registrul-jurnal, și nota de descărcare a stocului."""
     from core import pdf_util
     nr = pdf_util.numar_cu_serie(serie, numar)
-    et = "Factură" if (fel or "factura") == "factura" else str(fel).capitalize()
+    # [401] borderoul de achiziție de la persoana fizică (OMFP 2634/2015, cod 14-4-13) nu e „Factură”
+    et = {"factura": "Factură", "borderou": "Borderou de achiziție"}.get(fel or "factura") or str(fel).capitalize()
     return "%s %s din %s" % (et, nr, pdf_util.data_ro(data))

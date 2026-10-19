@@ -36,5 +36,6 @@ def test_ui_cableaza_editarea_identitatii():
     reg = src[i:j]
     assert "data-date=" in reg and "ed-cnp" in reg and "cnpValid" in reg, \
         "editarea identitatii (nume/prenume/CNP/data angajare/norma) nu mai e cablata in ecranSalariati"
-    assert 'api.put(`/tenants/${t.id}/salariati/${sid}`, { nume, prenume, cnp, data_angajare, tip_norma, ore_zi }' in reg, \
+    # [412, 19.10.2026] corpul poate continua cu alte câmpuri ale fișei (CIM-ul: tip_contract, nr_cim, data_cim) — cele șase rămân
+    assert 'api.put(`/tenants/${t.id}/salariati/${sid}`, { nume, prenume, cnp, data_angajare, tip_norma, ore_zi' in reg, \
         "PUT-ul de corectare identitate nu mai trimite campurile asteptate"

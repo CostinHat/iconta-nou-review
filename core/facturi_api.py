@@ -23,6 +23,13 @@ COD_INTREABA_MARFA = "INTREABA_PLEACA_MARFA"
 MESAJ_INTREABA_MARFA = "Răspunde la întrebare: pleacă marfa acum? (Da: se descarcă gestiunea; Nu: numai evidența fiscală)"
 
 
+def poarta_marfa_ceruta(tip, linii, bon_fiscal_nr=None):
+    """[304 / C63] Când se întreabă „Pleacă marfa acum?”: la FACTURĂ (nu proformă / aviz) cu o linie pe articol de stoc, care nu e emisă
+    din bon fiscal (marfa a ieșit cu bonul, deci nu se mai descarcă). O singură condiție pentru toate drumurile care emit o factură:
+    formularul (`uc_tenants.facturi_emite`) și transformarea proformei / avizului (`uc_tenants.proforma_transforma`)."""
+    return tip == "factura" and any(l.get("articol_id") for l in linii) and not str(bon_fiscal_nr or "").strip()
+
+
 class LiniiIncomplete(ValueError):
     """[cap.24/cap.6] Linii de factura fara denumire sau cu cantitate<=0 -> erori PER-LINIE field-keyed
     {camp, eticheta} (id-uri DOM em-l{i}-*, i = pozitia in lista PRIMITA). Backendul e autoritatea de validare
@@ -372,9 +379,11 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
     # proforma. Cat timp tipul se punea dupa, o proforma ar fi primit nota si abia apoi ar fi devenit
     # proforma.
     tip_v = (tip or "factura").strip().lower() or "factura"
-    if tip_v not in ("factura", "proforma", "aviz"):
+    if tip_v not in ("factura", "proforma", "aviz", "borderou"):
         raise ValueError("Tipul documentului %r nu e recunoscut. Alege: factură, proformă sau aviz."
                          % tip)
+    if tip_v == "borderou" and directie != "primita":   # [401] borderoul e numai al achiziției de la persoana fizică — refuz de FORMA
+        raise ValueError("Borderoul de achiziție e documentul cumpărării de la o persoană fizică: numai pe achiziție.")
     furnizor_incasare_v = bool(furnizor_tva_incasare)
     if furnizor_incasare_v and directie != "primita":
         raise ValueError("TVA la încasare la furnizor se poate bifa doar pe facturile primite "
@@ -642,7 +651,7 @@ def _cu_stare_incasare(cur, facturi):
     pentru listă și detaliu: încasat = chitanțele nenulate ale facturii (`chitante.factura_id`) + plățile legate de factură
     (`inregistrari.factura_id`, nu contarea: 411x pe credit la emisă, 401x pe debit la primită — reconcilierea bancară, casa);
     `platita_la` (pus de chitanța integrală, de bonul stins) = încasare integrală declarată. Comparat cu totalul în lei.
-    `stare_incasare` = {stare: incasata | partial | neincasata, incasat, total}; None la proformă / aviz / storno."""
+    `stare_incasare` = {stare: incasata | partial | neincasata | stornata, incasat, total[, stornat]}; None la proformă / aviz / storno."""
     from decimal import Decimal as _D
     from core import sume_lei as _sl
     ids = [f["id"] for f in facturi if (f.get("tip") or "factura") == "factura" and not f.get("storno_din_id")]
@@ -664,6 +673,13 @@ def _cu_stare_incasare(cur, facturi):
     for r in cur.fetchall():
         k = r["factura_id"] if isinstance(r, dict) else r[0]
         incasat[k] = incasat.get(k, _D(0)) + _D(str(r["coalesce"] if isinstance(r, dict) else r[1]))
+    # [deficiența 416] stornările facturii (în lei, negative): stornată integral -> „stornata” (nu „neîncasată”: nu mai e nimic de
+    # încasat, deci nici scadențar, nici notificare — aceeași definiție, `repo_facturi.SQL_STORNARI`, acolo); parțial -> rămasul e totalul
+    cur.execute("SELECT storno_din_id, COALESCE(SUM(COALESCE(total_lei, total)), 0) FROM facturi WHERE storno_din_id = ANY(%s) "
+                "GROUP BY storno_din_id", (ids,))
+    stornat = {(r["storno_din_id"] if isinstance(r, dict) else r[0]): _D(str(r["coalesce"] if isinstance(r, dict) else r[1]))
+               for r in cur.fetchall()}
+    from core import repo_facturi as _rf_st   # [416] toleranța stornării, lângă SQL_STORNARI
     for f in facturi:
         if f["id"] not in ids:
             continue
@@ -671,11 +687,17 @@ def _cu_stare_incasare(cur, facturi):
             total = _sl.antet_lei(f)[0]
         except _sl.LipsaCurs:
             total = _D(str(f.get("total") or 0))
+        st = stornat.get(f["id"], _D(0))
+        if st and total + st <= _D(str(_rf_st.TOLERANTA_STORNATA)):
+            f["stare_incasare"] = {"stare": "stornata", "incasat": "%.2f" % incasat.get(f["id"], _D(0)), "total": "%.2f" % total,
+                                   "stornat": "%.2f" % -st}
+            continue
+        total = total + st
         inc = incasat.get(f["id"], _D(0))
         stare = ("incasata" if (f.get("platita_la") or (total > 0 and inc >= total - _D("0.005")))
                  else ("partial" if inc > 0 else "neincasata"))
         f["stare_incasare"] = {"stare": stare, "incasat": "%.2f" % (total if (f.get("platita_la") and inc < total) else inc),
-                               "total": "%.2f" % total}
+                               "total": "%.2f" % total, **({"stornat": "%.2f" % -st} if st else {})}
 
 
 def _cu_stare_contare(cur, facturi):
@@ -694,6 +716,7 @@ def _cu_stare_contare(cur, facturi):
 def detalii_factura(conn, factura_id):
     """O factură cu liniile ei, sau None."""
     import psycopg2.extras as _E
+    from core import repo_facturi as _rf   # [417] SQL_STORNO_DIN
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, client_id, numar, serie, data_emitere, data_scadenta, total, tva, "   # [05.10.2026] seria pe PDF (art.319 lit.a)
@@ -703,15 +726,17 @@ def detalii_factura(conn, factura_id):
             "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, storno_din_id, tip, transformat_in_id, "
             "link_plata, platita_la, plata_confirmata_de, "  # [R43] marca de simulare
             "bon_fiscal_nr, bon_fiscal_data, "   # [decizia A 02.10] factura emisă pe baza bonului fiscal
-            "(SELECT numar FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_numar "
-            "FROM facturi WHERE id = %s",
+            "(SELECT numar FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_numar, "
+            + _rf.SQL_STORNO_DIN.format(s="", a="facturi") +   # [417] factura stornată, pentru trimiterea de pe PDF
+            " FROM facturi WHERE id = %s",
             (factura_id,))
         f = cur.fetchone()
         if not f:
             return None
         f = dict(f)
         cur.execute(
-            "SELECT id, descriere, um, cantitate, pret_unitar, cota_tva, cont_venit, categorie_tva "
+            "SELECT id, descriere, um, cantitate, pret_unitar, cota_tva, cont_venit, categorie_tva, "
+            "articol_id "   # [C63] articolul de stoc al liniei: proforma / avizul îl trec pe factură, cu „Pleacă marfa acum?”
             "FROM factura_linii WHERE factura_id = %s ORDER BY id", (factura_id,))
         f["linii"] = [dict(r) for r in cur.fetchall()]
         # [deficiența 306] detaliul arată categoria de TVA a liniei cu 0% (eticheta ei), nu numai „0%”; codul și adresa clientului ca pe PDF
@@ -723,6 +748,11 @@ def detalii_factura(conn, factura_id):
         _cu_stare_contare(cur, [f])
         _cu_stare_incasare(cur, [f])
         _cu_stare_spv(cur, [f])   # [lotul 6 pct.5b, 275]
+        # [419] ce a plecat din magazie cu factura (ieșirile vii): stornarea întreabă dacă se întoarce
+        from core import pdf_util as _pdfu, stocuri_cv_api as _cv
+        f["iesiri_stoc"] = [{"articol": m["denumire"], "cantitate": str(m["cantitate"]), "cantitate_text": _pdfu.cantitate(m["cantitate"], m["um"]),
+                             "valoare": str(m["valoare"])} for m in _cv.iesiri_facturii(cur, None, factura_id)] \
+            if f.get("directie") == "emisa" and not f.get("storno_din_id") else []
     return f
 
 
@@ -1316,17 +1346,30 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
     return r
 
 
-def storneaza(conn, factura_id):
+COD_CERE_RETUR = "CERE_RETUR"
+
+
+def storneaza(conn, factura_id, retur=None):
     """
     Creeaza o factura de stornare: copie a originalului cu cantitati NEGATIVE,
     numar nou din aceeasi serie, referinta la original (storno_din_id).
     Intoarce {ok, factura_id, numar, ...} sau ridica ValueError.
+
+    [deficiența 419] Factura care a descărcat stocul (`iesiri_stoc`) nu se stornează fără răspunsul omului: `retur=True` — marfa se
+    întoarce fizic, ieșirile ei se stornează în roșu (`stocuri_cv_api.retur_la_stornare`); `retur=False` — marfa rămâne la client
+    (numai corecția valorii), stocul nu se atinge. Fără răspuns: ValueError cu `cod = CERE_RETUR`, nimic scris.
     """
     orig = detalii_factura(conn, factura_id)
     if not orig:
         raise ValueError("factura de stornat nu există")
     if orig.get("directie") != "emisa":
         raise ValueError("se storneaza doar facturi emise")
+    if orig.get("iesiri_stoc") and retur is None:
+        _e = ValueError("Factura %s a descărcat din stoc: %s. Marfa se întoarce în stoc (retur) sau rămâne la client (numai corecția "
+                        "valorii)? Alege, apoi confirmă stornarea." % (orig.get("numar"), "; ".join(
+                            "%s × %s" % (x["articol"], x["cantitate_text"]) for x in orig["iesiri_stoc"])))
+        _e.cod = COD_CERE_RETUR
+        raise _e
     # linii negate
     linii_neg = []
     for l in orig.get("linii", []):
@@ -1359,6 +1402,8 @@ def storneaza(conn, factura_id):
     r = creeaza_factura(conn, numar, datetime.date.today().isoformat(), "emisa",
                         linii_neg, client_id=orig.get("client_id"),
                         tert_nume=orig.get("tert_nume"), tert_cui=orig.get("tert_cui"), tert_adresa=orig.get("tert_adresa"),
+                        # [417, prins pe validatorul FACT1] orașul și județul clientului: fără ele stornarea ieșea cu BR-RO-110 (BT-54)
+                        tert_oras=orig.get("tert_oras"), tert_judet=orig.get("tert_judet"),
                         moneda=_mon_orig, status="de_preluat",
                         curs=(None if str(_mon_orig).upper() == "RON" else _curs_orig),
                         data_curs=orig.get("data_curs"), curs_sursa=orig.get("curs_sursa"),
@@ -1379,4 +1424,9 @@ def storneaza(conn, factura_id):
         # [C1] contorul a fost incrementat atomic de `_rezerva_numar`; nu se mai incrementeaza aici.
     r["numar"] = numar
     r["storno_din_id"] = factura_id
+    r["retur"] = []
+    if retur and orig.get("iesiri_stoc"):
+        from core import jurnal_api as _j, stocuri_cv_api as _cv
+        r["retur"] = _cv.retur_la_stornare(conn, None, factura_id, r["factura_id"], datetime.date.today(),
+                                           "Retur la " + _j.eticheta_factura("factura", serie, numar, datetime.date.today()))
     return r

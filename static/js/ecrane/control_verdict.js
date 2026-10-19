@@ -6,7 +6,7 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt } from "../api.js?v=462d75fbab";
+import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt } from "../api.js?v=158edee964";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
@@ -446,7 +446,7 @@ export function legaVerdict(corp, nav, firma) {
       await api.post(`/control-fiscal/${firma.tenant_id}/audit-preluare`, {});
     } catch (e) {
       if (btn) { btn.disabled = false; btn.textContent = "Rulează auditul de preluare"; }
-      arataMesaj(corp.querySelector("#cf-audit-istoric"), `Nu s-a putut rula auditul: ${e.mesaj || e.message}`, "avert");
+      arataMesaj(corp.querySelector("#cf-audit-istoric"), `Nu s-a putut rula auditul: ${e.mesaj || e.message}`, "eroare");
       return;
     }
     if (btn) btn.disabled = false;

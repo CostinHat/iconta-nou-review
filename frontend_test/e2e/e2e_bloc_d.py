@@ -141,7 +141,8 @@ def firma_gv():
 def _nir_cv(firma, numar, articol, cant=10, pret=55, refacut_din=None, articol_id=None, **extra):
     linie = {"cantitate": cant, "pret_achizitie": pret, "cota_tva": 21}
     linie.update({"articol_id": articol_id} if articol_id else {"denumire": articol, "articol_nou": True})
-    corp = {"numar": numar, "data": AZI.isoformat(), "furnizor": "Furnizor Proba E2E SRL", "linii": [linie], **extra}
+    # [399] factura nesosită, aleasă explicit (NIR-ul nu mai presupune 408)
+    corp = {"numar": numar, "data": AZI.isoformat(), "furnizor": "Furnizor Proba E2E SRL", "linii": [linie], "factura_sosita": False, **extra}
     if refacut_din:
         corp["refacut_din_id"] = refacut_din
     st, r = _api(ASISTENT, "POST", "/tenants/%d/stocuri/nir" % firma["tenant_id"], corp)
@@ -246,6 +247,7 @@ def _refa_din_ecran(ecran, firma, numar, cantitate=None):
     _asteapta_text(ecran, "Refaci NIR-ul %s" % numar)
     if cantitate is not None:
         pg.fill(".fereastra:last-of-type #nir-l0-cantitate", str(cantitate))
+    pg.select_option(".fereastra:last-of-type #sn-factura-sosita", "false")   # [399] factura nesosită, aleasă explicit
     pg.click(".fereastra:last-of-type #sn-salveaza")
     _asteapta_text(ecran, "NIR salvat")
 
@@ -316,7 +318,7 @@ def test_def_101_titlul_documentului_in_coada_e_scurt(patron, firma_gv):
     Pașii contabilului: asistentul salvează un NIR la preț de vânzare (4 note: 371=408, 4428=408, 371=378, 371=4428) -> contabilul-șef
     deschide coada: un singur card, titlul „NIR nr D101 din <data> · Furnizor Proba E2E SRL · 4 note” (documentul o dată)."""
     st, r = _api(ASISTENT, "POST", "/tenants/%d/stocuri/nir" % firma_gv["tenant_id"],
-                 {"numar": "D101", "data": AZI.isoformat(), "furnizor": "Furnizor Proba E2E SRL",
+                 {"factura_sosita": False, "numar": "D101", "data": AZI.isoformat(), "furnizor": "Furnizor Proba E2E SRL",
                   "linii": [{"denumire": "Marfa D101", "cantitate": 10, "pret_achizitie": 50, "pret_vanzare": 80, "cota_tva": 21}]})
     assert st == 200 and len(r["inregistrari"]) == 4, (st, r)
     _in_coada(firma_gv)
@@ -809,8 +811,8 @@ def _nota_validata(firma, data, debit, credit, suma, descriere):
 @pytest.fixture(scope="module")
 def firma_mf():
     """Firmă sintetică cu un mijloc fix (12.000 lei, 60 de luni, PIF 15.01.2026, liniar -> 200 lei/lună din 02/2026), adus pe ruta
-    de import a migrării; amortizarea înregistrată numai pe 02/2026 (6811=2813 200, validată); în luna trecută o depunere de
-    numerar la bancă fără a doua parte (581=5311 300, validată)."""
+    de import a migrării; amortizarea înregistrată numai pe 02/2026 (6811=2813 200, validată) și aportul în numerar (5311=1012 300,
+    validată — 406: casa nu ajunge sub zero); în luna trecută o depunere de numerar la bancă fără a doua parte (581=5311 300, validată)."""
     f = _firma_noua("MF")
     try:
         st, r = _api(PATRON, "POST", "/tenants/%d/mijloace-fixe-import" % f["tenant_id"],
@@ -819,6 +821,8 @@ def firma_mf():
                                    "cont_amortizare": "2813"}]})
         assert st == 200 and r.get("importati") == 1, (st, r)
         _nota_validata(f, "2026-02-28", "6811", "2813", 200, "Amortizare 02/2026 D")
+        # [406] casa nu ajunge sub zero: numerarul depus la bancă există întâi în casă (aportul asociatului)
+        _nota_validata(f, "2026-02-28", "5311", "1012", 300, "Aport numerar D141")
         _nota_validata(f, LUNA_TRECUTA.replace(day=20).isoformat(), "581", "5311", 300, "Depunere numerar D141")
         yield f
     finally:
@@ -917,8 +921,8 @@ def test_def_126_inchiderea_lunii_are_card_in_zilnic(patron, firma_mf):
 def test_def_138_balanta_lunii_are_numai_notele_lunii(asistent, firma_mf):
     """138. Registru jurnal: F2 ca Ana „0 note”, balanța cu rulaje 7.750.
     Pașii contabilului (asistentul): luna curentă n-are note -> Registru jurnal pe luna curentă: nicio notă -> Balanță de verificare pe
-    luna curentă: rulajul lunii 0,00 (aceleași note ca jurnalul), iar notele lunilor anterioare (500,00 = 200 + 300) stau la „Sume
-    precedente”."""
+    luna curentă: rulajul lunii 0,00 (aceleași note ca jurnalul), iar notele lunilor anterioare (800,00 = 200 + 300 aportul + 300
+    depunerea) stau la „Sume precedente”."""
     pg = asistent.pg
     asistent.firma(firma_mf["nume"])
     _deschide(asistent, "#fa-jurnal", "Registru")
@@ -934,7 +938,7 @@ def test_def_138_balanta_lunii_are_numai_notele_lunii(asistent, firma_mf):
                         " const tr = [...rows.querySelectorAll('tbody tr')].pop(); return [...tr.cells].map((c) => c.innerText.trim()); }")
     asistent.captura("balanta")
     # [cont, denumire, si_d, si_c, prec_d, prec_c, rul_d, rul_c, tot_d, tot_c, sf_d, sf_c]
-    assert total[1] == "Total" and (total[6], total[7]) == ("0,00", "0,00") and (total[4], total[5]) == ("500,00", "500,00"), total
+    assert total[1] == "Total" and (total[6], total[7]) == ("0,00", "0,00") and (total[4], total[5]) == ("800,00", "800,00"), total
 
 
 def test_def_143_ferestrele_cu_tabele_fara_derulare_laterala_la_1920(patron, firma_mf):
@@ -1045,7 +1049,7 @@ def test_def_192_nota_din_nir_nu_ofera_ce_serverul_refuza(patron, firma_gv):
     manuală ciornă are în continuare amândouă -> cererea directă de ștergere a notei NIR e refuzată (serverul, neschimbat)."""
     tid = firma_gv["tenant_id"]
     st, r = _api(PATRON, "POST", "/tenants/%d/stocuri/nir" % tid,
-                 {"numar": "D192", "data": AZI.isoformat(), "furnizor": "Furnizor D192 SRL", "factura_id": None,
+                 {"factura_sosita": False, "numar": "D192", "data": AZI.isoformat(), "furnizor": "Furnizor D192 SRL", "factura_id": None,
                   "linii": [{"denumire": "Marfa D192", "cantitate": 2, "pret_achizitie": 50, "pret_vanzare": 80, "cota_tva": 21}]})
     assert st == 200 and r.get("inregistrari"), (st, r)
     nir_ids = r["inregistrari"]
@@ -1228,7 +1232,7 @@ def test_def_119_tva_din_nir_fara_factura_nu_e_pe_4426_deci_d300_se_potriveste(a
     deductibila 0 și intră în coadă (nu mai e diferență D300 ↔ 4426)."""
     data = LUNA_DOUA.replace(day=10).isoformat()
     st, r = _api(ASISTENT, "POST", "/tenants/%d/stocuri/nir" % firma_tva["tenant_id"],
-                 {"numar": "D119", "data": data, "furnizor": "Furnizor Proba E2E SRL", "factura_id": None,
+                 {"factura_sosita": False, "numar": "D119", "data": data, "furnizor": "Furnizor Proba E2E SRL", "factura_id": None,
                   "linii": [{"denumire": "Marfa D119", "cantitate": 10, "pret_achizitie": 215, "pret_vanzare": 330, "cota_tva": 21}]})
     assert st == 200 and "eroare" not in r, (st, r)
     for nid in r["inregistrari"]:
@@ -1251,7 +1255,7 @@ def test_def_107_factura_dupa_nir_fara_factura_nu_incarca_371_a_doua_oara(patron
     ales”: nota facturii închide 408 (408 = 401 1.210,00 cu TVA, 4426 = 4428.01 210,00), fără al doilea 371 = 401."""
     cui = cui_cu_control(32000002)
     st, r = _api(ASISTENT, "POST", "/tenants/%d/stocuri/nir" % firma_tva["tenant_id"],
-                 {"numar": "D107", "data": AZI.isoformat(), "furnizor": "Furnizor D107 SRL", "cui": cui,
+                 {"factura_sosita": False, "numar": "D107", "data": AZI.isoformat(), "furnizor": "Furnizor D107 SRL", "cui": cui,
                   "linii": [{"denumire": "Marfa D107", "cantitate": 10, "pret_achizitie": 100, "pret_vanzare": 150, "cota_tva": 21}]})
     assert st == 200 and "eroare" not in r, (st, r)
     st, f = _api(PATRON, "POST", "/tenants/%d/facturi" % firma_tva["tenant_id"],

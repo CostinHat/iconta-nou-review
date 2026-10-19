@@ -182,5 +182,7 @@ def descarca(conn, schema, corp):
         # [06.10.2026, comanda Costin §6.2] consumul pe rețetă se justifică printr-un bon de consum (Legea 82/1991 art.6 alin.(1))
         from core import documente_interne as _di
         _di.genereaza(cur, schema, "bon_consum", d, [iid])
+        if z_id:
+            _zd.deblocat(z_id)   # [368] Z-ul descărcat: la PFA nota lui se reîncearcă la validarea internă
     return _fara_decimal({"inregistrare_id": iid, "cost_total": cons["cost_total"],
                           "linii": cons["linii"]})

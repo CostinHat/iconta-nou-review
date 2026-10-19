@@ -641,15 +641,37 @@ async def _autor_si_note_in_coada(request: Request, call_next):
             ctx = None
     if not (ctx and ctx.get("ok") and ctx.get("uid")):
         return await call_next(request)
+    # [368] începutul cererii: notele născute în cerere au `creat_la` după el
+    _de_la_cerere = _uc_coada.inceputul_scrierii()
     _tok = _autor_cerere.seteaza(ctx["uid"])
+    _tok_ri = _autor_cerere.porneste_reincercarea()   # [368] notele vechi pe care cererea le-a deblocat
     try:
         response = await call_next(request)
+        _reincercate = _autor_cerere.de_reincercat()
     finally:
+        _autor_cerere.opreste_reincercarea(_tok_ri)
         _autor_cerere.reseteaza(_tok)
+    _m = _re_audit.match(r"^/tenants/(\d+)/", request.url.path)
+    if _m and response.status_code < 400 and ctx.get("firm"):
+        # [deficiența 368, decizia Costin 19.10.2026 „Se validează automat”] la o firmă în partidă simplă notele cererii se validează
+        # automat, ca note interne (`uc_coada.note_interne`), ÎNAINTEA cozii; ecranul află din antete ce s-a validat și ce s-a refuzat
+        # (`api.js` -> `r.interne` / `r.interneRefuzate`, spuse de `stareNota` / `pasNota`)
+        try:
+            _ni = await _run_in_threadpool_audit(_uc_coada.note_interne, int(_m.group(1)), int(ctx["uid"]), ctx["firm"], _de_la_cerere,
+                                             _reincercate)
+            import json as _json_ni
+            from urllib.parse import quote as _quote_ni
+            if _ni["interne"]:
+                response.headers["X-Iconta-Note-Interne"] = _quote_ni(_json_ni.dumps(_ni["interne"], ensure_ascii=False))
+            if _ni["refuzate"]:
+                # în antet numai ce spune ecranul (eticheta, motivul): un antet de răspuns are loc puțin
+                response.headers["X-Iconta-Note-Interne-Refuzate"] = _quote_ni(_json_ni.dumps(
+                    [{k: x[k] for k in ("eticheta", "motiv")} for x in _ni["refuzate"]], ensure_ascii=False))
+        except Exception as _e:
+            _obs.esec_secundar("validarea notelor interne (partidă simplă)", _e)
     if response.status_code < 400:   # [08.10, decizia Costin U2] cardul nu așteaptă tura de 5 minute
         from core import firma_rezumat as _fr_fundal
         _fr_fundal.recalculeaza_in_fundal()
-    _m = _re_audit.match(r"^/tenants/(\d+)/", request.url.path)
     if _m and response.status_code < 400 and ctx.get("firm"):
         try:
             _adaugate = await _run_in_threadpool_audit(_uc_coada.note_in_coada, int(_m.group(1)), int(ctx["uid"]), ctx["firm"])
@@ -1251,6 +1273,16 @@ class SalariatIn(BaseModel):
     tichet_masa_valoare: Optional[float] = None  # [F133]
     iban: Optional[str] = None  # [F134] cont beneficiar pt plata pe card
     functie_baza: Optional[bool] = None  # [3c · CF art.77(1)] deducerea personala doar la functia de baza; cerută explicit
+    # [19.10.2026, găsit la 412] ecranul „Salariat nou” le trimitea, modelul nu le avea: pydantic le ignora TACIT (clasa R51) —
+    # data încetării, data nașterii și copiii școlarizați (deducerile suplimentare, CF art.77) se pierdeau la creare
+    data_incetare: Optional[str] = None
+    data_nastere: Optional[str] = None
+    copii_scolarizati: Optional[int] = None
+    declaratie_copii: Optional[bool] = None
+    # [412] contractul individual de muncă pe fișă — Legea 53/2003 art.12 (durata), art.16 alin.(1) (formă scrisă: nr. și dată)
+    tip_contract: Optional[str] = None
+    nr_cim: Optional[str] = None
+    data_cim: Optional[str] = None
 
 class SalariatEdit(BaseModel):
     nume: Optional[str] = None
@@ -1274,6 +1306,9 @@ class SalariatEdit(BaseModel):
     tichet_masa_valoare: Optional[float] = None  # [F133]
     iban: Optional[str] = None  # [F134] cont beneficiar pt plata pe card
     functie_baza: Optional[bool] = None  # [3c · CF art.77(1)]
+    tip_contract: Optional[str] = None  # [412] CIM pe fișă (Legea 53/2003 art.12, art.16 alin.(1))
+    nr_cim: Optional[str] = None
+    data_cim: Optional[str] = None
     # [lot 19 pct.4c] lista COMPLETĂ a suspendărilor fără drepturi salariale (CFP / suspendare) — înlocuiește setul
     # existent; [{data_inceput, data_sfarsit, tip: "cfp"|"suspendare", temei?}]. Absentă = neatinsă.
     suspendari: Optional[list] = None
@@ -1993,11 +2028,15 @@ def migrare_fisier(fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drept
                                  "Se așteaptă un CSV sau un XLSX cu o coloană de CUI-uri "
                                  "— un fișier necitit nu e un fișier gol."
                                  % (fisier.filename or "trimis",))
+    # [393, lotul 9] același drum ca CUI-urile lipite: cifra de control înainte de ANAF și portofoliul (`_uc_migrare.cui_de_trimis` /
+    # `rezultate_validare`)
+    curatate, ignorate = anaf_api.separa_cui(cui_uri)
+    invalide, de_intrebat = _uc_migrare.cui_de_trimis(curatate, din_fisier=True)
     try:
-        rez = anaf_api.valideaza_cui(cui_uri)
+        rez = anaf_api.valideaza_cui(de_intrebat) if de_intrebat else []
     except Exception as e:
         raise HTTPException(502, anaf_api.mesaj_indisponibil(e))   # [303 + 317]
-    return {"rezultate": rez}
+    return _uc_migrare.rezultate_validare(rez, curatate, ignorate, invalide, ctx)
 
 
 @app.post("/migrare/incarca")
@@ -2014,11 +2053,15 @@ def migrare_incarca(fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drep
                                  "Se așteaptă un CSV sau un XLSX cu o coloană de CUI-uri "
                                  "— un fișier necitit nu e un fișier gol."
                                  % (fisier.filename or "trimis",))
+    # [393, lotul 9] același drum ca CUI-urile lipite: cifra de control înainte de ANAF și portofoliul (`_uc_migrare.cui_de_trimis` /
+    # `rezultate_validare`)
+    curatate, ignorate = anaf_api.separa_cui(cui_uri)
+    invalide, de_intrebat = _uc_migrare.cui_de_trimis(curatate, din_fisier=True)
     try:
-        rez = anaf_api.valideaza_cui(cui_uri)
+        rez = anaf_api.valideaza_cui(de_intrebat) if de_intrebat else []
     except Exception as e:
         raise HTTPException(502, anaf_api.mesaj_indisponibil(e))   # [303 + 317]
-    return {"rezultate": rez, "extrase": len(cui_uri)}
+    return dict(_uc_migrare.rezultate_validare(rez, curatate, ignorate, invalide, ctx), extrase=len(cui_uri))
 
 
 @app.post("/migrare/importa")
@@ -2040,7 +2083,7 @@ def migrare_status_citeste(ctx=Depends(cere_cabinet)):
 
 
 @app.get("/migrare/straturi")
-def migrare_straturi_aplicabile(tip_firma: str = "srl", ctx=Depends(cere_cabinet)):
+def migrare_straturi_aplicabile(tip_firma: str = "srl", tenant_id: int | None = None, ctx=Depends(cere_cabinet)):
     # [lotul 6] `tip_firma=ceva-ce-nu-exista` intorcea lista INTREAGA de straturi, ca si cum ar fi
     # raspunsul pentru tipul ala. Un nomenclator nerecunoscut nu se rotunjeste la „toate".
     _TIPURI_FIRMA = ("srl", "pfa", "ii", "ong", "sa")
@@ -2048,7 +2091,13 @@ def migrare_straturi_aplicabile(tip_firma: str = "srl", ctx=Depends(cere_cabinet
         raise HTTPException(422, nomenclator_cerut("tip_firma", _TIPURI_FIRMA))
     """[p_pfa_rip 20.07] Straturile de migrare aplicabile unui regim (srl/pfa).
     Sursa unica de adevar = migrare_api.straturi_pentru (filtreaza pe STRATURI_META),
-    ca meniul per-firma sa nu reinventeze in JS ce strat apartine carui regim."""
+    ca meniul per-firma sa nu reinventeze in JS ce strat apartine carui regim.
+    [371, lotul 9] Cu `tenant_id`: straturile FIRMEI (regimul ei și, la Rețete, HoReCa), aceeași regulă ca `/migrare/firme`."""
+    if tenant_id is not None:
+        try:
+            return _uc_migrare.straturi_firmei(tenant_id, ctx)
+        except _erori.EroareDeDomeniu as e:
+            raise _http_din(e)
     return {"straturi": migrare_api.straturi_pentru(tip_firma)}
 
 
@@ -2463,6 +2512,7 @@ def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=D
         randuri = istoric_declaratii_import_api.extrage(continut, fisier.filename or "")
     except ValueError as e:
         raise HTTPException(400, str(e))
+    _uc_tenants.istoric_cu_perioada(tenant_id, randuri, ctx)   # [389] „T1/2026” la declarațiile trimestriale ale firmei
     erori = migrare_api.erori_verifica(istoric_declaratii_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
     # [357, comanda Costin 8.2] contorul spune ce se întâmplă: respinse (nu intră) / semnalate (intră, cu observație)
     return _raspuns({"randuri": randuri, "total": len(randuri), "erori": erori,
@@ -3016,9 +3066,9 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_drept(_drept
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/storno")
 # [R42] Stornarea nu corectează documentul emis — emite AL DOILEA document (P4).
-def facturi_storno(tenant_id: int, factura_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+def facturi_storno(tenant_id: int, factura_id: int, corp: dict = Body(default={}), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
-        return _uc_tenants.facturi_storno(tenant_id, factura_id, ctx)
+        return _uc_tenants.facturi_storno(tenant_id, factura_id, ctx, corp)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -3087,11 +3137,17 @@ def _moneda_facturii(schema, factura_id):
         raise _http_din(e)
 
 
+class TransformaIn(BaseModel):
+    """[C63] Răspunsul la „Pleacă marfa acum?” la factura născută din proformă / aviz cu articol de stoc (ca `EmitereIn.pleaca_marfa`):
+    lipsă -> refuzul `INTREABA_PLEACA_MARFA`, nimic scris; Da -> se descarcă gestiunea; Nu -> numai evidența fiscală."""
+    pleaca_marfa: Optional[bool] = None
+
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/transforma")
-def proforma_transforma(tenant_id: int, factura_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+def proforma_transforma(tenant_id: int, factura_id: int, date: Optional[TransformaIn] = None,
+                        ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal)."""
     try:
-        return _uc_tenants.proforma_transforma(tenant_id, factura_id, ctx)
+        return _uc_tenants.proforma_transforma(tenant_id, factura_id, ctx, pleaca_marfa=(date.pleaca_marfa if date else None))
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -7580,8 +7636,12 @@ def public_sitemap_ghiduri(n: int):
 #: corectă sau 410”. Adresele de la rădăcină culese de Google în iunie–iulie (analiza din `public_robots`, mai jos): n-au existat niciodată
 #: ca pagini (fragmente de rute; „pacht” e o greșeală de tastare), deci n-au succesor — 410 („a dispărut definitiv”), nu 404. Lista e cea
 #: numită în analiza din 27.08 (9 din 17); restul se adaugă din exportul Search Console (`scripts/search_console.py 404 <export.csv>`).
+#: [19.10.2026, lotul 9 pct.D2] exportul „Nu a fost găsită (404)” din 18.10 (17 adrese, ultima accesare 30.07): cele 10 care răspundeau
+#: încă 404, fără nicio rută a aplicației care să le acopere (verificat cu `Match` pe toate rutele, orice metodă) și fără succesor.
 ADRESE_RETRASE = ("/depune", "/tva", "/d406-mapare", "/d205-beneficiari", "/nota-manuala", "/pacht", "/documents/list",
-                  "/facturi/primita", "/feedback/cabinet")
+                  "/facturi/primita", "/feedback/cabinet",
+                  "/functie", "/pachet/trimite", "/auth/change-password", "/recomandari", "/inchidere", "/portal/documents/list",
+                  "/cost", "/salariati", "/d301-valideaza", "/situatii")
 
 
 def _adresa_retrasa():
@@ -7641,7 +7701,11 @@ def public_robots():
            "Disallow: /static/js/\n"        # bundle-ul app (app.js) expune fragmente de rute API -> Googlebot le culege; nu se scaneaza (05.08: 18x404+1x401)
            "Allow: /sitemap\n"             # /sitemap.xml + indexul și fișierele lui (07.10.2026)
            "Allow: /robots.txt\n"
-           "Disallow: /\n"                  # restul suprafetei (app, /auth, rute API)
+           # [19.10.2026, lotul 9 pct.D2] adresele retrase (410) se lasă accesate: în spatele lui `Disallow: /` Googlebot nu le mai cere,
+           # deci nu vede niciodată 410, iar raportul „Nu a fost găsită (404)” a stat neschimbat (17) din 08.08 până la 12.10. Numai calea
+           # exactă (`$`) și forma ei cu interogare (`?`, cum le-a cules Google: `/tva?an`); orice altă cale de sub ele rămâne Disallow.
+           + "".join("Allow: %s$\nAllow: %s?\n" % (c, c) for c in ADRESE_RETRASE)
+           + "Disallow: /\n"                # restul suprafetei (app, /auth, rute API)
            "Sitemap: %s/sitemap-index.xml\n" % _GHID_BAZA)   # [07.10.2026, comanda Costin B] indexul de sitemap-uri
     return Response(content=txt, media_type="text/plain; charset=utf-8")
 

@@ -301,7 +301,22 @@ def test_numarul_de_instructiuni_se_conserva():
     #     poartă motivul „Înlocuită de declarația generată din nou (<numele celui care a generat-o>)”; citire NOUĂ;
     #   repo_declaratii.autorul_elementului (uc_coada.coada_depune) — 320, cine a pregătit declarația află că a depus-o altcineva
     #     (notificarea „declarație depusă”); citire NOUĂ, după depunere, în afara tranzacției ei.
-    assert _apeluri_catre_repository() == 334
+    # [lotul 9, 19.10.2026] 334 -> 339, cu apelurile numite (DECIZII „Comanda 9.1”):
+    #   repo_firma_profil.profil_fiscal (uc_tenants.istoric_cu_perioada) — 389, perioada „T1/2026” din istoricul declarațiilor se scrie după
+    #     profilul firmei (decontul, regimul); citire NOUĂ;
+    #   repo_contabilitate.search_path_firma + repo_firma_profil.profil_fiscal (uc_tenants._z_in_rip) — 368, raportul Z la PFA intră în
+    #     registrul de încasări și plăți: regimul firmei se citește pe schema ei; apel de CONTROL NOU + citire NOUĂ;
+    #   repo_contabilitate.search_path_firma (uc_tenants.ajustari_fiscale_lista) — 378, rândurile luate din conturi (6581 -> rd.25) se
+    #     citesc pe schema firmei; apel de CONTROL NOU;
+    #   repo_d101.select_inregistrari_linii (uc_tenants.ajustari_fiscale_lista) — 378, rulajul 6581 al anului, arătat pe ecranul
+    #     ajustărilor înainte de D100 / D101; citire NOUĂ (aceeași interogare ca generatorul D101, nu una paralelă).
+    # [lotul 9, comenzile 9.2 / 9.3, 19.10.2026] 339 -> 342 (DECIZII „Comanda 9.2”, „Comanda 9.3”):
+    #   repo_efactura.primita_pentru_validare (uc_tenants.factura_primita_valideaza) — 418a, citirea scurtă a facturii primite, ÎNAINTE
+    #     de apelul ANAF (statutul furnizorului din XML și ANAF, cu conexiunea închisă); citire NOUĂ;
+    #   repo_facturi.actualizeaza_conturi_linii (uc_tenants.factura_primita_valideaza) — 418b, contul fiecărei linii; scriere NOUĂ;
+    #   repo_facturi.seteaza_act_identitate (uc_tenants.achizitie_neinregistrat) — 402, actul de identitate al vânzătorului PF pe
+    #     borderou; scriere NOUĂ.
+    assert _apeluri_catre_repository() == 342
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

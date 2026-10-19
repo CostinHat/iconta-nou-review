@@ -377,6 +377,34 @@ _SELECT_NOTE = ("SELECT i.id, i.data, i.descriere, i.sursa, i.numar, i.document_
                 "FROM inregistrari i LEFT JOIN facturi f ON f.id = i.factura_id ")
 
 
+def partida_simpla(cur):
+    """[368] Firma (schema din calea cursorului) ține evidența în partidă simplă (PFA / II / IF) — `migrare_api.regim_contabil`, sursa
+    unică a regimului."""
+    from core import repo_firma_profil
+    from core.migrare_api import regim_contabil
+    pf = repo_firma_profil.profil_fiscal(cur)
+    if not pf:
+        return False
+    return regim_contabil(pf["tip_firma"] if isinstance(pf, dict) else pf[0]) == "simpla"
+
+
+def ciorne_din_cerere(cur, uid, de_la):
+    """[368] Notele CIORNĂ scrise de `uid` de la `de_la` (începutul cererii) — notele cererii, oricine ar fi autorul (cu sau fără drept de
+    validare; `uid=None` = notele fără autor, ale unui job de fundal). Cursorul e pe schema firmei."""
+    cur.execute("SELECT id FROM inregistrari WHERE status = 'ciorna' AND creat_de_id IS NOT DISTINCT FROM %s AND creat_la >= %s "
+                "ORDER BY data, id",
+                (uid, de_la))
+    return [r["id"] if isinstance(r, dict) else r[0] for r in cur.fetchall()]
+
+
+def ciorne_dintre(cur, ids):
+    """[368] Dintre notele date, cele încă CIORNĂ (în ordinea Registrului jurnal) — notele vechi de reîncercat la validarea internă."""
+    if not ids:
+        return []
+    cur.execute("SELECT id FROM inregistrari WHERE status = 'ciorna' AND id = ANY(%s) ORDER BY data, id", (list(ids),))
+    return [r["id"] if isinstance(r, dict) else r[0] for r in cur.fetchall()]
+
+
 def ciorne_proprii(conn, tenant_id, uid):
     """[Retest 2 pct.12, comanda Costin 09.10.2026] „Ciornele proprii ale contabilului trebuie să fie vizibile undeva fără
     căutare.” Notele CIORNĂ scrise de `uid` pe firmă, cu starea lor în coadă (`la_senior` = trimisă la validare, `respinsa` +
@@ -430,6 +458,10 @@ def _payload_grup(membri):
     if len(membri) > 1:
         p["descrieri"] = [m[1].get("descriere") for m in membri]
         p["total"] = str(sum(_D(str(m[1].get("total") or 0)) for m in membri))
+        # [deficiența 408] rulajul documentului = al tuturor notelor lui (cardul NIR 3 arăta „rulaj 1.000,00” — al primei note —, deși
+        # notele însumau 1.310); payload-urile vechi, fără `rulaj`, cad pe total, ca în `_payload_nota`
+        p["rulaj"] = str(sum(_D(str(m[1].get("rulaj", m[1].get("total")) or 0)) for m in membri))
+        p["rulaj_storno"] = str(sum(_D(str(m[1].get("rulaj_storno") or 0)) for m in membri))
         p["note"] = [m[1] for m in membri]
     return p
 
@@ -600,7 +632,9 @@ def lista_coada(conn, cabinet_id, stare=None):
                     d["surse_nevalidate"], d["surse_note"] = None, []
                 # [324, 18.10.2026] „Generează din nou” se oferă numai unde serverul îl poate face (cererea păstrată, `coada_regenereaza`)
                 d["se_poate_regenera"] = bool(_are_cerere)
-            d["gata_de_depus"] = gata_de_depus(d["verdict_stare"]) and not d.get("depasita")
+            # [383, lotul 9] perioada neîncheiată: declarația nu se oferă spre depunere
+            d["perioada_neincheiata"] = perioada_neincheiata(d.get("p_an"), d.get("p_luna"), d.get("p_trim")) if d["fel"] != "nota" else None
+            d["gata_de_depus"] = gata_de_depus(d["verdict_stare"]) and not d.get("depasita") and not d["perioada_neincheiata"]
             out.append(d)
         # [lotul 07.10 pct.9-10] notele aceluiași document, în aceeași stare, sunt UN element (o validare, o cifră)
         grupate, vazute = [], {}
@@ -1006,6 +1040,25 @@ def perioada_din_payload(payload):
     return an, luna
 
 
+def perioada_neincheiata(an, luna, trim=None, azi=None):
+    """[deficiența 383, retestul 19.10.2026, verbatim în DECIZII „Comanda 9.1”] „O declarație nu se oferă spre depunere înainte de încheierea
+    perioadei.” -> motivul (text pentru om) dacă perioada declarată (luna, trimestrul sau anul: `perioada_din_payload`) nu s-a încheiat
+    încă (ziua României), altfel None. Fără perioadă (declarații pe eveniment) -> None. SURSA UNICĂ: lista cozii (butonul nu se oferă) și
+    ruta de depunere (refuz)."""
+    import calendar as _cal
+    from core.common import azi_ro
+    from core.pdf_util import data_ro
+    if not an:
+        return None
+    an, luna_f = int(an), int(luna or (int(trim) * 3 if trim else 12))
+    sfarsit = _dt.date(an, luna_f, _cal.monthrange(an, luna_f)[1])
+    if (azi or azi_ro()) > sfarsit:
+        return None
+    per = ("Perioada %02d/%d" % (int(luna), an)) if luna else ("Perioada T%d/%d" % (int(trim), an)) if trim else ("Anul %d" % an)
+    return ("%s nu s-a încheiat: declarația se depune după %s, când toate operațiunile perioadei sunt înregistrate."
+            % (per, data_ro(sfarsit)))
+
+
 def firma_si_perioada(conn, coada_id):
     """`(tenant_id, an, luna)` pentru un element din coadă, sau `None` dacă nu există.
 
@@ -1051,6 +1104,11 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
         if refuz:
             return refuz
         p = r["payload"] or {}
+        # [383, lotul 9] „O declarație nu se oferă spre depunere înainte de încheierea perioadei.” — tranziția ireversibilă o refuză și ea,
+        # pe orice drum ar veni (ecranul nu mai oferă butonul: `lista_coada`, „perioada_neincheiata”)
+        neinch = perioada_neincheiata(p.get("_an"), p.get("_luna"), p.get("_trim"))
+        if neinch:
+            return {"ok": False, "cod": "PERIOADA_NEINCHEIATA", "mesaj": neinch}
         an, luna = perioada_din_payload(p)
         cur.execute(
             "UPDATE public.declaratii_coada SET stare='depusa', depus_la=now(), "
@@ -1109,6 +1167,15 @@ def fereastra_perioadei(cur, schema, tip, an, luna, trim):
         r = (list(r.values()) if isinstance(r, dict) else r) if r else None
         di, ds = _fd({"platitor_tva": r[0], "tip_decont": r[1]} if r else {}, an, ancora)
         return di.isoformat(), ds.isoformat()
+    if tip == "d100" and trim and int(trim) in (1, 2, 3):   # T4 la profit se definitivează în D101 (CF art.41 alin.(1))
+        # [deficiența 382, lotul 9] D100 pe impozitul pe profit se calculează CUMULAT de la 01.01 (CF art.41, OPANAF 587/2016 anexa 4
+        # pct.3.1.2): documentele lui sunt ale întregii ferestre cumulate — o notă din ianuarie validată acum o face depășită
+        cur.execute("SELECT regim_fiscal FROM " + _q(schema) + "firma_profil LIMIT 1")
+        r = cur.fetchone()
+        r = (list(r.values()) if isinstance(r, dict) else r) if r else None
+        if r and str(r[0] or "").lower() == "profit":
+            k = int(trim) * 3
+            return _dt.date(an, 1, 1).isoformat(), _dt.date(an + k // 12, k % 12 + 1, 1).isoformat()
     if luna:
         de, n = (an, int(luna)), 1
     elif trim:
@@ -1150,6 +1217,10 @@ def note_nevalidate(cur, schema, de_la, pana_la):
 
 #: declarațiile făcute din facturi: la ele se numesc și facturile fără notă validată (`uc_coada.DECLARATII_TVA`, aceeași listă)
 DECLARATII_DIN_FACTURI = ("d300", "d394", "d390")
+#: [368, 19.10.2026] declarațiile care nu se fac din note: D212 se face din registrul de încasări și plăți (`d212.py` citește
+#: `rip_operatiuni`, nu `inregistrari`) — notele nevalidate nu-i schimbă cifrele, deci nu se numesc („validează-le înainte de depunere”
+#: era fals). Gard: `core/test_pfa_note_interne.py` (D212 nu citește `inregistrari`; dacă începe s-o facă, iese de aici).
+DECLARATII_FARA_NOTE = ("d212",)
 #: câte documente nevalidate se numesc într-un mesaj; restul se numără („și încă 4”)
 MAX_NUMITE = 8
 
@@ -1166,7 +1237,7 @@ def nevalidate_acum(cur, schema, tip, de_la, pana_la):
     from core import control_incrucisat as _ci
     from core.common import cate as _cate
     from core.pdf_util import bani as _bani
-    note = note_nevalidate(cur, schema, de_la, pana_la)
+    note = [] if tip in DECLARATII_FARA_NOTE else note_nevalidate(cur, schema, de_la, pana_la)
     # [328, 18.10.2026] „ciornă, nevalidată”, ca în Registrul jurnal: o ciornă nu e neapărat „la validare” (nota scrisă de un validator
     # nu intră în coadă); „la validare” spunea mai mult decât știe interogarea
     facturi = ([{"factura_id": f["id"], "eticheta": "factura %s (%s, %s lei%s)" % (

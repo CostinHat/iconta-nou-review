@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar } from "../api.js?v=462d75fbab";
+import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar } from "../api.js?v=158edee964";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -82,7 +82,12 @@ async function wizardFirmeStrat(corp, nav, st) {
     const rand = document.createElement("button");
     rand.className = "mig-frand";
     rand.innerHTML = `<div class="mig-frand-text"><div class="mig-frand-nume">${esc(f.nume)}</div><div class="mig-frand-sub">${esc(f.cui || "")}</div></div>`;
-    rand.addEventListener("click", () => nav.mergi(st.titlu + " \u00b7 " + (f.nume || ""), (c) => st.peFirma(c, nav, f)));
+    rand.addEventListener("click", () => {
+      // [396, clasa: ecranul unei firme deschis de la nivelul cabinetului] firma ale cărei date se importă devine firma în lucru, înainte
+      // de pas (meniul firmei, `#fa-import`, o are deja: e deschis din fereastra ei)
+      if (nav.setFirmaInLucru && (!nav.firmaInLucruId || nav.firmaInLucruId() !== f.tenant_id)) nav.setFirmaInLucru(f.nume || "", f.tenant_id);
+      nav.mergi(st.titlu + " \u00b7 " + (f.nume || ""), (c) => st.peFirma(c, nav, f));
+    });
     lista.appendChild(rand);
   });
 }
@@ -113,7 +118,10 @@ function _enumera(xs) {
 }
 
 // [270 b] textul de sub butoane, verbatim din comanda lui Costin
+// [394, decizia Costin 19.10.2026 „Instrucțiunile pliate”, verbatim în DECIZII „Închiderea lotului 9”] textul stă într-un „Cum se face”
+// pliat, deschis la cerere — toggle-ul secundar al aplicației (`<details class="dec-xml">`, DS v2.54 / v2.83); pașii rămân neatinși
 const TEXT_FARA_BUTON = `
+  <details class="dec-xml" id="mig-apl-cum"><summary>Cum se face</summary>
   <div class="mig-intro" id="mig-apl-text">
     <p style="margin:0 0 4px">Dacă aplicația ta nu are buton activ:</p>
     <ol style="margin:0 0 6px;padding-left:22px">
@@ -122,7 +130,8 @@ const TEXT_FARA_BUTON = `
       <li>Până atunci, poți începe preluarea cu pașii de mai jos, folosind șabloanele CSV sau Excel.</li>
     </ol>
     <p style="margin:0">Fișierele trimise sunt văzute doar de echipa iConta.eu, se folosesc numai pentru import și le poți șterge oricând.</p>
-  </div>`;
+  </div>
+  </details>`;
 
 function _randeazaAplicatii(zona, aplicatii, corp, nav) {
   const inactive = aplicatii.filter((a) => !a.activa).map((a) => a.nume);
@@ -221,6 +230,9 @@ async function meniuMigrare(corp, nav) {
       </span>
       ${badge}
     `;
+    // [394 „Rânduri mai compacte”] pe ecranul lat descrierea stă pe rândul titlului, tăiată cu „…” (stil.css `.mig-op-sub`); întreagă aici
+    const subEl = rand.querySelector(".mig-op-sub");
+    subEl.title = subEl.textContent;
     if (st.construit) {
       rand.addEventListener("click", () => {
         if (st.cheie === "firme") nav.deschide("Firme", (cc, nn) => wizardFirme(cc, nn));
@@ -322,7 +334,11 @@ function pasRezultate(corp, nav, rezultate, ignorate) {
     : "";
   nav.setInapoi(() => pasInput(corp, nav));
   corp.innerHTML = `
-    <p class="mig-intro">S-au verificat <b>${rezultate.length} CUI-uri</b> la ANAF. Bifează firmele pe care le aduci în iConta.eu.</p>
+    <p class="mig-intro">${(() => {
+      // [393, lotul 9] numărul spune câte coduri au ajuns la ANAF: cele cu cifra de control greșită nu se trimit
+      const invalide = rezultate.filter((r) => r.cui_invalid).length, laAnaf = rezultate.length - invalide;
+      return `${laAnaf ? `S-au verificat <b>${cate(laAnaf, "CUI", "CUI-uri")}</b> la ANAF.` : "Niciun CUI n-a ajuns la ANAF."}${invalide ? ` ${invalide === 1 ? "Un cod are" : `${invalide} coduri au`} cifra de control greșită și nu ${invalide === 1 ? "a fost trimis" : "au fost trimise"} (motivul e pe rând).` : ""}`;
+    })()} Bifează firmele pe care le aduci în iConta.eu.</p>
     ${bannerIgnorate}
     <div class="mig-lista" id="mig-lista"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
@@ -759,16 +775,25 @@ function descarcaModelSolduri() {
 // coloane (cu virgulă, totul cădea în coloana A). Importul citește deja `;` (`import_tabel._delimitator`).
 const MODELE = {
   solduri: { fisier: "model_solduri_initiale.csv", coloane: ["cont", "denumire", "sold debitor", "sold creditor"],
-    randuri: [["1012", "Capital subscris vărsat", "0", "10000"], ["2131", "Echipamente tehnologice", "25000", "0"], ["371", "Mărfuri", "8000", "0"],
-              ["401", "Furnizori", "0", "15000"], ["4111", "Clienți", "12000", "0"], ["5121", "Conturi la bănci în lei", "0", "20000"]] },
+    // [388, retestul 19.10.2026] 5121 (activ) are sold DEBITOR — modelul vechi îl punea creditor (20.000), pe partea opusă funcțiunii
+    // (OMFP 1802/2014 pct.594: „5121. Conturi la bănci în lei (A)”); balanța rămâne echilibrată: debit = credit = 65.000
+    randuri: [["1012", "Capital subscris vărsat", "0", "10000"], ["2131", "Echipamente tehnologice", "25000", "0"],
+              ["2813", "Amortizarea instalațiilor și mijloacelor de transport", "0", "5000"], ["371", "Mărfuri", "8000", "0"],
+              ["401", "Furnizori", "0", "15000"], ["4111", "Clienți", "12000", "0"], ["5121", "Conturi la bănci în lei", "20000", "0"],
+              ["1171", "Rezultatul reportat reprezentând profitul nerepartizat sau pierderea neacoperită", "0", "35000"]] },
+  // [388] CUI-uri REALE, cu cifra de control bună și găsite la ANAF (19.10.2026): modelul vechi avea 12345678 / 87654321, pe care propria
+  // validare le respingea
   parteneri: { fisier: "model_solduri_parteneri.csv", coloane: ["cont", "cui", "denumire", "sold debitor", "sold creditor"],
-    randuri: [["4111", "RO12345678", "Client Exemplu SRL", "5000", "0"], ["401", "RO87654321", "Furnizor Exemplu SRL", "0", "3000"]] },
+    randuri: [["4111", "RO14399840", "DANTE INTERNATIONAL SA", "5000", "0"], ["401", "RO9010105", "ORANGE ROMANIA SA", "0", "3000"]] },
   salariati: { fisier: "model_salariati.csv",
-    coloane: ["nume", "prenume", "cnp", "data angajare", "functie", "norma", "ore", "functie de baza", "scutit contributie minima", "brut", "judet", "cor", "iban"],
-    randuri: [["Popescu", "Ana", "2900215410011", "2020-01-15", "Contabil", "intreaga", "8", "da", "nu", "5000", "B", "251401", "RO49AAAA1B31007593840000"],
-              ["Ionescu", "Radu", "1850715410012", "2021-03-01", "Ospătar", "partiala", "4", "da", "nu", "6000", "CJ", "522101", ""]] },
+    // [388] coloana „persoane in intretinere” (fără ea fiecare rând intra „cu observație”); CNP-ul scris ca text pentru Excel
+    // (`="…"`, `textExcel`), altfel Excel îl face 2,9E+12 la deschiderea CSV-ului
+    coloane: ["nume", "prenume", "cnp", "data angajare", "functie", "norma", "ore", "functie de baza", "scutit contributie minima",
+              "persoane in intretinere", "brut", "judet", "cor", "iban"],
+    randuri: [["Popescu", "Ana", textExcel("2900215410011"), "2020-01-15", "Contabil", "intreaga", "8", "da", "nu", "0", "5000", "B", "251401", "RO49AAAA1B31007593840000"],
+              ["Ionescu", "Radu", textExcel("1850715410012"), "2021-03-01", "Ospătar", "partiala", "4", "da", "nu", "1", "6000", "CJ", "522101", ""]] },
   asociati: { fisier: "model_asociati.csv", coloane: ["nume", "cnp/cui", "cota %"],
-    randuri: [["Popescu Ana", "2900215410011", "60"], ["Ionescu Radu", "1850715410012", "40"]] },
+    randuri: [["Popescu Ana", textExcel("2900215410011"), "60"], ["Ionescu Radu", textExcel("1850715410012"), "40"]] },
   mijloace: { fisier: "model_mijloace_fixe.csv",
     coloane: ["cod", "denumire", "valoare intrare", "data PIF", "durata luni", "metoda", "cont imobilizare", "cont amortizare",
               "amortizare cumulata", "valoare reziduala"],
@@ -777,14 +802,24 @@ const MODELE = {
   istoric: { fisier: "model_istoric_declaratii.csv", coloane: ["tip", "an", "luna", "data depunere", "suma de plata"],
     randuri: [["D112", "2026", "1", "2026-02-25", ""], ["D300", "2026", "1", "2026-02-25", ""], ["D100", "2026", "3", "2026-04-24", "1200"]] },
   articole: { fisier: "model_articole.csv", coloane: ["denumire", "um", "cantitate", "pret", "cont stoc", "cont cheltuiala"],
-    randuri: [["Făină albă tip 000", "kg", "100", "3,50", "371", "607"], ["Ulei floarea soarelui", "L", "50", "8,20", "371", "607"]] },
+    // [388] făina și uleiul sunt MATERII PRIME (HoReCa, producție): 301 / 601 (OMFP 1802/2014 pct.594: „301. Materii prime (A)”, „601.
+    // Cheltuieli cu materiile prime”), nu marfă (371 / 607); al treilea rând e o marfă revândută ca atare
+    randuri: [["Făină albă tip 000", "kg", "100", "3,50", "301", "601"], ["Ulei floarea soarelui", "L", "50", "8,20", "301", "601"],
+              ["Apă minerală 0,5 L", "buc", "120", "1,90", "371", "607"]] },
   retete: { fisier: "model_retete.csv", coloane: ["reteta", "pret vanzare", "ingredient", "cantitate"],
-    randuri: [["Ciorba de burta", "25", "Burta de vita", "0,15"], ["Ciorba de burta", "25", "Smantana", "0,05"], ["Salata de boeuf", "18", "Cartofi", "0,20"]] },
+    // [388, clasa: modelele trec de propria verificare] ingredientele sunt articolele din modelul de articole (rețeta cere ingredientul
+    // în stoc: `retete_import_api.verifica_randuri`), în UM-ul lor (kg, L)
+    randuri: [["Clătite", "18", "Făină albă tip 000", "0,08"], ["Clătite", "18", "Ulei floarea soarelui", "0,01"],
+              ["Gogoși", "6", "Făină albă tip 000", "0,10"], ["Gogoși", "6", "Ulei floarea soarelui", "0,05"]] },
   rip: { fisier: "model_rip.csv", coloane: ["data", "tip", "explicatie", "suma", "categorie", "metoda"],
     randuri: [["2026-01-10", "incasare", "Factura 1001 client", "1500", "venituri", "banca"], ["2026-01-15", "plata", "Chirie spațiu ianuarie", "600", "cheltuieli", "numerar"]] },
 };
 const SEPARATOR_MODEL = ";";
+// [388] o celulă pe care Excel trebuie s-o lase TEXT (CNP-ul de 13 cifre: altfel devine 2,9E+12 și își pierde cifrele) se scrie ca formula
+// `="…"`, nescăpată; importul o citește ca textul dinăuntru (`import_tabel.celula`)
+function textExcel(v) { return { textExcel: String(v) }; }
 function _celulaCSV(v) {
+  if (v && typeof v === "object" && "textExcel" in v) return "=" + String.fromCharCode(34) + v.textExcel + String.fromCharCode(34);
   const s = String(v ?? "");
   const GHILIMELE = String.fromCharCode(34);   // fără ghilimele literale într-un regex: cititorul JS al gărzilor le-ar lua drept șir
   return [SEPARATOR_MODEL, GHILIMELE, "\r", "\n"].some((c) => s.includes(c)) ? GHILIMELE + s.split(GHILIMELE).join(GHILIMELE + GHILIMELE) + GHILIMELE : s;
@@ -802,7 +837,7 @@ function _descarcaModelCSV(spec) {
 
 function importSolduriFirma(corp, nav, firma, app = null) {   // [270] `app` = aplicația aleasă în Migrare cabinet
   corp.innerHTML = `
-    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor) sau balanța de verificare exportată din programul vechi — din ea se iau numai soldurile finale. Debitul total trebuie să fie egal cu creditul total. Conturile din balanță care nu sunt încă în planul de conturi se adaugă automat (nu sunt respinse).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor) sau balanța de verificare exportată din programul vechi — din ea se iau numai soldurile finale. Debitul total trebuie să fie egal cu creditul total. Analiticele din balanță (de exemplu 4111.01, 401.00012) se adaugă în planul de conturi, sub sinteticul lor; un cont care nu există în planul de conturi al normei firmei e respins, cu motivul. Un sold pe partea opusă funcțiunii contului (de exemplu 5121 creditor) se semnalează pe rând.</p>
     ${_exportHTML(app, "solduri") || `<button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>`}
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/solduri/incarca" accept=".csv,.txt,.tsv,.xlsx,.xls" hidden>
@@ -1242,11 +1277,15 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
   // [decizii 07.10 pct.4] valorile se arată cum au venit din fișier; lipsa e „—”. [PIVOT 14.10 pct.3–4] persoanele și scutirea lipsă
   // intră 0 / „nescutit”, marcate de verificat.
   const dn = (x) => (x === true ? "Da" : x === false ? "Nu" : "—");
+  // [349, retestul 19.10.2026: „rândul cu descriere COR lungă are ~230 px, iar tabelul are derulare orizontală”] denumirea COR lungă
+  // (până la 126 de caractere în nomenclator) stă pe cel mult două rânduri, întreagă în `title`; „(de verificat)” coboară sub valoare
   const functie = (r) => {
     const den = r.functie || r.cor_denumire || "";
     const cod = r.cor ? `COR ${esc(r.cor)}${r.functie && r.cor_denumire ? " · " + esc(r.cor_denumire) : ""}` : "fără cod COR";
-    return `${esc(den || "—")}<div class="mig-prev-motiv">${cod}</div>`;
+    const titlu = r.cor && r.cor_denumire ? ` title="${esc(`COR ${r.cor} · ${r.cor_denumire}`)}"` : "";
+    return `<div class="mig-prev-scurt"${r.cor_denumire && !r.functie ? titlu : ""}>${esc(den || "—")}</div><div class="mig-prev-motiv mig-prev-scurt"${titlu}>${cod}</div>`;
   };
+  const deVerificat = (v) => `${v}<div class="tip-desc">de verificat</div>`;
   const norma = (r) => (r.tip_norma === "partiala" ? `parțială, ${esc(String(r.ore_zi || "—"))} h` : r.tip_norma === "intreaga" ? "întreagă" : "—");
   const dv = (r) => r.de_verificat || [];
   const coloane = [
@@ -1257,8 +1296,8 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     { titlu: "Brut", num: true, celula: (r) => bani(r.salariu_brut) },
     { titlu: "Normă", celula: norma },
     { titlu: "Funcție de bază", celula: (r) => dn(r.functie_baza) },
-    { titlu: "Scutit minim", celula: (r) => (dv(r).includes("scutit_contrib_minim") ? "Nu (de verificat)" : dn(r.scutit_contrib_minim)) },
-    { titlu: "Persoane în întreținere", num: true, celula: (r) => (dv(r).includes("persoane_intretinere") ? "0 (de verificat)" : esc(String(r.persoane_intretinere || 0))) },
+    { titlu: "Scutit minim", celula: (r) => (dv(r).includes("scutit_contrib_minim") ? deVerificat("Nu") : dn(r.scutit_contrib_minim)) },
+    { titlu: "Persoane în întreținere", num: true, celula: (r) => (dv(r).includes("persoane_intretinere") ? deVerificat("0") : esc(String(r.persoane_intretinere || 0))) },
   ];
 
   corp.innerHTML = `
@@ -1625,7 +1664,7 @@ async function wizardIstoric(corp, nav) {
 
 function importIstoricFirma(corp, nav, firma) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă declarațiile depuse (tip · an · lună · data depunerii).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă declarațiile depuse (tip · an · lună · data depunerii · suma de plată). La o declarație trimestrială, luna e ultima a trimestrului (03 = T1). Suma de plată se cere la D100 pe impozitul pe profit: D100 de pe trimestrele următoare scade impozitul deja declarat.</p>
     <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/istoric-declaratii-import/incarca" accept=".csv,.txt,.tsv,.xlsx,.xls" hidden>
@@ -1665,7 +1704,8 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
   const randuri = date.randuri || [];
   // [351] declarația anuală se arată ca anuală, nu cu luna 12 („dec”) sub care se ține în evidență; luna + anul prin formatorul canonic
   // (DS cap.4: „03/2026”); o lună în afara 1–12 sau anul lipsă se arată cum au venit din fișier
-  const perioada = (r) => r.anuala ? `anuală ${r.an || "—"}`
+  // [389, lotul 9] perioada vine de la server, după profilul firmei („T1/2026” la declarațiile ei trimestriale)
+  const perioada = (r) => r.perioada ? r.perioada : r.anuala ? `anuală ${r.an || "—"}`
     : (r.luna >= 1 && r.luna <= 12 && r.an ? dataRo(new Date(r.an, r.luna - 1, 1), "luna_an_numeric") : `${r.luna || "—"} ${r.an || "—"}`);
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · istoric declarații</p>
@@ -1820,7 +1860,8 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
   const tip = firma.tip_firma.toLowerCase();   // backendul garanteaza tip_firma; fara fallback tacit
   let aplicabile = null;
   try {
-    const r = await api.get(`/migrare/straturi?tip_firma=${encodeURIComponent(tip)}`);
+    // [371, lotul 9] straturile FIRMEI (regim + HoReCa la Rețete), din aceeași regulă ca lista din Migrare cabinet
+    const r = await api.get(`/migrare/straturi?tip_firma=${encodeURIComponent(tip)}&tenant_id=${encodeURIComponent(firma.tenant_id)}`);
     aplicabile = (r && r.straturi) || null;
   } catch {}
   if (!aplicabile || !aplicabile.length) {

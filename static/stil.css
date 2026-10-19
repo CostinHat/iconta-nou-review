@@ -605,6 +605,21 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .mig-b-lucru { color: #a32d2d; background: #fcebeb; }
 .mig-b-curand { color: #5a6472; background: #eef0f3; }
 .mig-b-oblig { color: #854f0b; background: #faeeda; }
+/* [394, decizia Costin 19.10.2026 „Rânduri mai compacte”, verbatim în DECIZII „Închiderea lotului 9”] Migrare cabinet (singurul ecran cu
+   `.mig-op`): pe ecranul lat fiecare pas stă pe un singur rând scund (titlul și descrierea alături, descrierea tăiată cu „…”, întreagă în
+   `title`), cu numărul și iconița mai mici — cei 12 pași și „Cum se face” pliat încap în fereastra de 1366×768 (661 px). Pe telefon
+   (≤ 760 px) rândul rămâne cel de sus (≥ 60 px), deci ținta de atingere nu scade (DS cap.4, WCAG 2.5.8). */
+@media (min-width: 761px) {
+  .mig-meniu { gap: 2px; }
+  .mig-op { padding: 3px 12px; gap: 10px; }
+  .mig-op-nr { width: 22px; height: 22px; border-radius: 6px; }
+  .mig-op-icon { width: 24px; height: 24px; border-radius: 6px; }
+  .mig-op-icon svg { width: 18px; height: 18px; }
+  .mig-op-text { flex-direction: row; align-items: baseline; gap: 8px; }
+  .mig-op-titlu { white-space: nowrap; flex-shrink: 0; }
+  .mig-op-sub { flex: 1 1 auto; min-width: 0; margin-top: 0; white-space: nowrap; }
+  .mig-badge { padding: 1px 8px; }
+}
 
 .mig-inapoi {
   align-self: flex-start;
@@ -737,6 +752,10 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .mig-prev-stare { min-width: 9ch; }
 .mig-prev-motive td { border-top: 0; padding-top: 0; }
 .mig-prev-motiv { font-size: var(--text-mic); color: #44516b; margin-top: 2px; }
+/* [349, lotul 9] textul lung dintr-o celulă a previzualizării (denumirea COR, până la 126 de caractere) stă pe cel mult două rânduri,
+   întreg în `title`: altfel rândul crește la ~230 px; motivele rândului au sub-rândul lor (`.mig-prev-motive`) */
+.mig-prev .mig-prev-scurt { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  min-width: 14ch; }
 .mig-stare-ok { color: #0f6e56; font-weight: 600; }
 .mig-stare-semnalat { color: var(--galben-text); font-weight: 600; }
 .mig-stare-respins { color: var(--rosu); font-weight: 600; }
@@ -2277,6 +2296,11 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], i[class*="dot"] {
 input.camp-invalid:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
 select.camp-invalid, textarea.camp-invalid { border-color: #a3231c !important; }
 .msg-eroare[data-camp] { display: block; margin-top: 3px; }
+/* [DS cap.6 v2.95, deficiența 410] „NU s-a salvat” lângă butonul apăsat, cu lista câmpurilor (fiecare cu trimitere) — api.refuzSalvare */
+.refuz-salvare { margin: 6px 0; padding: 8px 12px; border: 1px solid var(--rosu); border-radius: 6px; background: var(--rosu-fundal);
+  color: #a3231c; font-size: var(--text-mic); line-height: 1.45; }
+.refuz-salvare-lista { margin: 4px 0 0; padding-left: 18px; font-weight: 400; }
+.refuz-salvare-lista .btn-link { font-weight: 600; color: #a3231c; text-decoration: underline; padding: 0; }
 .msg-avert  { color: #8a6410; font-weight: 600; font-size: var(--text-mic); white-space: pre-line; }
 .msg-info   { color: var(--gri); font-size: var(--text-mic); white-space: pre-line; }
 .msg-ok     { color: var(--verde); font-weight: 600; font-size: var(--text-mic); white-space: pre-line; }

@@ -66,7 +66,9 @@ from scripts import scan_refuzuri as s
 # și unul din 05.10 (scadența înaintea emiterii — de FORMĂ, notat lângă el). Toate sunt de formă (linie lipsă, dată/lună/an
 # invalide, stare/tip/direcție necunoscută, factură inexistentă); refuzul nou al părții 1 (`SERIE_LIPSA`) poartă temeiul.
 BASELINE = {
-    "core/facturi_api.py": 26,
+    # 26 -> 27 la 19.10.2026 (lotul 9, deficiența 401): +1 refuz de FORMA, marcat lângă el — tipul „borderou” pe altceva decât o
+    # achiziție (invariant intern: borderoul de achiziție îl creează numai `uc_tenants.achizitie_neinregistrat`, nu-l alege omul)
+    "core/facturi_api.py": 27,
     "core/bacsis.py": 2,
     "core/casa.py": 3,
     "core/taxare_inversa.py": 3,

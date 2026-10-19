@@ -102,6 +102,8 @@ def test_operatiunea_din_registrul_de_incasari_si_plati_se_numeste_prin_data_si_
 
 def test_raspunsul_unei_operatiuni_poarta_eticheta_langa_id(cur):
     a, b = _nota(cur, "2099-02-02", "validata"), _nota(cur, "2099-02-01")
-    assert _et.in_raspuns(cur, SCH, {"inregistrare_id": a}) == {"inregistrare_id": a, "nota_eticheta": "nr. crt. 1 din 02.02.2099"}
+    # [401, lotul 9] și conturile notei, ca ecranul s-o arate după generare
+    assert _et.in_raspuns(cur, SCH, {"inregistrare_id": a}) == {"inregistrare_id": a, "nota_eticheta": "nr. crt. 1 din 02.02.2099",
+                                                              "nota": "371 = 401 10,00 lei"}
     assert _et.in_raspuns(cur, SCH, {"inregistrari": [a, b]}) == {
         "inregistrari": [a, b], "note_etichete": ["din 01.02.2099", "nr. crt. 1 din 02.02.2099"]}

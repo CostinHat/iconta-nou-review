@@ -2803,3 +2803,116 @@ după publicare intră pe ramura `lucru/dupa-lot8-2026-10-19` (din `27f4fab3`; c
 
 **Fronturi deschise:** (1) §6 al raportului 8.2: 359, 362, denumirile obligațiilor D100 / D112. (2) Cheile Meta / WhatsApp, Postmark și
 exporturile Search Console — de la Costin (LANSARE „Lotul 8, comanda 8.2 pct.5”). Orice publicare nouă cere confirmarea lui Costin.
+
+## 19.10.2026 — Lotul 9, comanda 9.1: deciziile A.1–A.3, nerezolvatele lotului 8, 382–397, cheile (ramura `lucru/lot9-2026-10-19`)
+
+Worktree `/home/costin/iconta_lot9`, ramura `lucru/lot9-2026-10-19` din `lucru/dupa-lot8-2026-10-19` (peste `27f4fab3`, producția). Comanda
+verbatim în DECIZII „Comanda 9.1”; interpretările cu temei și alternativa respinsă în DECIZII „Comanda 9.1: implementarea”.
+
+**Deciziile lui Costin, puse în cod.** A.1 (359): amortizarea continuă de la cifra din fișier — lunile până la preluare sunt ale registrului
+vechi, rata metodei neschimbată (CF art.28 alin.(6)) până la epuizare, pe toți cititorii registrului (nota lunii, registru, închiderea
+lunii, inventar, reevaluare, D406); coloana „Amortizare” se citește. A.2 (362): 2112 liniar pe 10 ani (CF art.28 alin.(12) lit.e)), 2111
+nu; conturile inversate și terenul cu durată se resping; mesajul motorului fără C&D. A.3: nomenclatorul obligațiilor D100 / D710 / D112
+din ordin + structurile ANAF (descărcate azi, cu sha256), legat în componente și în D710.
+
+**Nerezolvatele lotului 8.** 378: rd.25 din 6581 (cazul retestului: nedeductibile 100, impozit 736, de plată 136). 368: Mijloace fixe la PFA
+(fără note), Raport Z la PFA în registrul de încasări și plăți. 371: Rețete numai la HoReCa. 349: fereastra se lățește și pentru cutia
+previzualizării. 323: „De depus” fără note când nu sunt (PIVOT al gărzii 266). 321 / 322: probate pe un cabinet nou de test, cu codul
+publicat, pe baza de test (cabinetul scos la final). Pe drum: 387 — planul de conturi întreg (577 de conturi din OMFP 1802/2014; lipseau 395),
+cu migrare pentru firmele existente (rulată pe baza de test).
+
+**382–397.** 382 avertismentul ferestrei cumulate D100 / D101 (amortizarea în ciornă, notele nevalidate); 383 perioada neîncheiată nu se
+depune; 384 cotele pe rândurile care intră; 385 dublura de articol (+ C55 dublura de CNP la Salariați, prin garda de clasă); 386 validarea
+fără document nu se mai promite (regula R3 din bază; PIVOT al confirmării din 05.10); 388 modelele CSV trec de propria verificare (CNP ca
+text pentru Excel, mesajul 2,9E+12, CUI-uri reale de la ANAF, 5121 debitor, 301 / 601); 389 „T1/2026” în Istoric declarații și suma pomenită;
+390 D406 numește notele după Nr. crt. și nu semnalează nota manuală; 391 „Renunță la factură” dispare după emitere; 392 textul Soldurilor
+inițiale și 5121 creditor semnalat; 393 un singur drum pentru CUI-urile lipite și din fișier (+ C57); 394 Registrul jurnal lat (Notă nouă fără
+derulare) — Migrare cabinet cere decizia de rearanjare; 395 rândurile în ordinea formularului; 396 bara „În lucru” urmează firma deschisă din
+Control fiscal; 397 grupa „Platformă” la superadmin.
+
+**Restul lotului 8 (chei).** D1: cheile WhatsApp în configurație, fișierul șters; înregistrarea numărului refuzată de Meta (WABA interzis,
+metoda de plată) — EXTERN; webhook-ul gata, cu tokenul de verificare, viu după restart. D2: 10 adrese 404 retrase, `robots.txt` le deschide
+(C54); deciziile de indexare cerute. D3: Brevo nu poate fără dezabonare pe planul gratuit -> Postmark (ce trebuie, în LANSARE). C52: proba nu
+mai primește cheile de trimitere; C53: refuzul Meta spune cauza; C56: o singură extragere a planului de conturi.
+
+**Probe.** `frontend_test/e2e/e2e_lot91.py` 28 / 28 verzi; mutațiile pe copia exportată, câte una pe număr (raportul 9.1); testele țintite pe
+fișierele atinse; uneltele vizuale. Nimic publicat, nimic repornit (E.2); producția rămâne pe `27f4fab3`.
+
+## 19.10.2026 — Lotul 9, comenzile 9.2 (398–417) și 9.3 (418–419), pe aceeași ramură, NEPUBLICAT, fără poartă
+
+Comenzile verbatim în DECIZII „Comanda 9.2”, „Comanda 9.3”; interpretările în DECIZII „Comenzile 9.2 / 9.3: implementarea”. Aceeași ramură
+`lucru/lot9-2026-10-19` (worktree `/home/costin/iconta_lot9`), peste 9.1, necomisă până la raport; nicio poartă (9.2 pct.3), nicio
+publicare, nicio repornire.
+
+**Prioritarele.** 406: casa nu mai ajunge sub zero — refuz la salvarea dispoziției (și la stornarea unei încasări, și în previzualizare) și la
+validarea oricărei note care scoate bani din casă; registrul pornește de la soldul casei la 1 ale lunii. 410: „NU s-a salvat.” lângă
+butonul apăsat, cu lista câmpurilor refuzate și trimitere la fiecare — un mecanism în `api.js`, deci pe toate formularele; pe drum, e2e a
+prins „primul clic pe «Adaugă» se pierde” (eroarea de deasupra butonului dispărea la părăsirea câmpului, rândurile urcau sub mouse) — reparat
+în același mecanism. 411: netul de plată = salariul + indemnizația CM, pe stat, compoziție și fluturaș; costul cu partea angajatorului din
+indemnizație; deducerea sub impozit. 417: trimiterea la factura stornată pe PDF și în e-Factura (BT-22 + BG-3), probată pe validatorul ANAF
+FACT1 (care a găsit că stornarea pierdea orașul și județul clientului — reparat).
+
+**Restul 9.2.** 398–400 NIR-ul: aceeași regulă pe toate liniile (transportul pe contul furnizorului mărfii), factura sosită sau nu aleasă de
+om, TVA-ul transportului, costul unitar final în detaliu; 401–402 borderoul de achiziție (document propriu, `tip = 'borderou'`, BA-n),
+vânzătorul identificat, intrarea în gestiune; 403 documentul vechi din fișa de magazie numit din factura legată; 404 încadrarea lipsei la
+inventar (imputabilă / neimputabilă / justificată, cu ajustarea TVA); 407 avansul acordat furnizorului pe 409x; 408 rulajul documentului din
+coadă; 412 funcția din COR pe adeverință; 413 propunerea orelor suplimentare; 414 niciun buton care scrie nota în luna în curs; 415 articolul
+nou din NIR își ia cota; 416 factura stornată integral e „stornată” (fără scadențar, notificări, cashflow). 405, 409 și o parte din 404 / 412
+cer decizii (raportul).
+
+**9.3.** 418 a: statutul de TVA al furnizorului și TVA la încasare aflate din XML (BT-31) și ANAF (la data facturii), nu tastate; b: contul pe
+linie (`factura_linii.cont_cheltuiala`, migrarea `migrare_cont_linie_primita`), contarea pe (cont, cotă), în stoc numai liniile pe cont de
+stoc; c: confirmarea unui act nu se mai șterge printr-o navigare temporizată (5 locuri, gard CONFIRMARE_TEMPORIZATA). 419: stornarea unei
+facturi care a descărcat stocul întreabă „marfa se întoarce în stoc?”; „Da” readuce marfa (stornare în roșu, notă de corecție în ciornă).
+
+**Probe.** `e2e_lot92.py` 16 / 16 verzi; 32 de mutații pytest ROȘII; mutațiile e2e pe copia exportată (în raport). Două migrări noi:
+`migrare_cont_linie_primita`, `migrare_borderou_achizitie` (DDL idempotent; la publicare `--productie`).
+
+**Superseded mai sus („Probe”): după cererea din chat — „folosește subagenți în paralel acolo unde deficiențele ating fișiere diferite. Nu
+rula teste grele în paralel” — închiderea.** Doi subagenți au scris e2e-urile C57 / C59 citind codul și au găsit, pe drum, două defecte mai
+mari: **C61** — orice factură emisă din formular către un client român ieșea în XML fără județ (FACT1 `nok`, BR-RO-110), deci „Trimite în
+SPV” n-o trimitea; reparată pe drumul trimiterii (localitatea / județul domiciliului fiscal, din ANAF), probată pe FACT1 `stare=ok`; **C62**
+— stornarea n-avea „Trimite în SPV”. Code a mai găsit **C63** (transformarea proformei pierdea adresa clientului, tipul operațiunii,
+unitatea) și **C64** (confirmarea transformării ștergea detaliul). Pe drum: 411–414 picau rulate singure (depindeau de salariatul lui 411),
+403 pica pe datele lui — reparate; 4 picături ale testelor țintite (un import, un plural, numele testelor din DEFICIENTE, inventarul fără
+încadrare) — reparate. Probe: `e2e_lot92.py` 26 / 26 + C57; controlul nemutat al fiecărui test rulat singur, verde; 28 de mutații e2e,
+5 ale verificatorului, C61 / C63 în pytest — toate ROȘII; uneltele vizuale (37 de ecrane, 0 încălcări axe). Deciziile noi cerute: stocul la
+factura din proformă / aviz (C63), stornarea unei facturi 751.
+
+## 19.10.2026 — Închiderea lotului 9: tot ce rămăsese din 9.1–9.3, pe subagenți în paralel
+
+Comanda lui Costin (verbatim în DECIZII „Închiderea lotului 9”): tot ce a rămas, nu doar punctele C; la C63 întrebarea „Pleacă marfa
+acum?”; apoi poarta lotului 9 o singură dată și, pe verde, backup + publicare. Deciziile cerute s-au pus prin întrebări cu variante
+(405, 404, 412, 409, 394, notele la PFA, C61 în formular, stornarea 751; apoi notele PFA „se validează automat” și 394 „rânduri mai
+compacte”) — răspunsurile, verbatim, în DECIZII. Regula permanentă nouă (subagenți în paralel pe fișiere diferite, teste grele niciodată
+în paralel) — CLAUDE.md §2.3 pct.14.
+
+Lucrul: cinci subagenți pe fișiere disjuncte — A (C63 întrebarea, C61 formularul), B (405 avansul pe NIR, 404 nedeductibilul), C (412 CIM
+pe fișă; a găsit C67), D (394 pliat + compact; notele PFA interne; a găsit C65, C66), E (notele interne pe drumurile fără cerere). Sesiunea
+principală a rulat, una după alta, e2e-urile, mutațiile, verificatorul și uneltele vizuale, și a reparat ce au prins: `eroareCamp` arunca la
+un nume de câmp de forma `linii[0].cantitate`; Z-ul PFA refuzat nu-și spunea refuzul și nu se mai reîncerca după „Fără marfă din stoc”
+(reîncercarea: `autor_cerere.reincearca_interna`); confirmarea Casei se citea din alt loc în test; pragul „stornată” redenumit toleranță și
+mutat lângă SQL-ul lui; gărzile de text, refuzuri, rotunjire, selecturi, drepturi, trasee.
+
+Rămâne: 409 (reparația pe datele cabinetului, aprobată — citirea producției refuzată de controlul de permisiuni al sesiunii), ciornele
+PFA de dinainte de lot, câteva alegeri de reconfirmat (raportul §6). Probe: e2e_lot93a–d 13 / 13, controlul nemutat al fiecărui test,
+12 mutații e2e noi + C65 ROȘII, pytest pe fiecare fișier atins.
+
+## 20.10.2026 — Închiderea lotului 9: rularea țintită de dinaintea porții, picăturile ei; comanda 9.4
+
+Rularea țintită (`poarta_scurta.py`, 113 min, după uneltele vizuale) a picat: 14 teste pytest și 23 de teste e2e. Reparate, pe clase:
+- **regresie reală, a lotului:** stingerea chitanței furnizorului fără factură era refuzată (avansul 407 / 405 cerea destinația, pe care
+  ruta n-o are) — chitanța rămâne plată nelegată, 401 = 5311 (DECIZII „chitanța furnizorului nu e avans”; mutația ROȘIE);
+- **gărzi pe codul nou:** trei afirmații netipate (încadrarea lipsei la inventar, refuzul notei interne PFA) -> `afirmatii.afirmatie`;
+  ecranul Z citea `interneRefuzate` direct din răspuns -> `api.refuzuriInterne`; „regula R3” fără forma canonică; regula 394 din DS
+  fără ancoră (ancora trebuie pe primul rând al punctului);
+- **baza de test fără migrările lotului:** cele cinci migrări rulate pe baza de TEST (20 / 20 scheme);
+- **teste vechi care descriau comportamentul de dinaintea lotului:** fixturile care scriau plăți din casă fără numerar (406), conturile
+  7411 / 709 / 6123 create de mână (acum în planul OMFP din șablon), „Nu (de verificat)” (acum sub valoare), „Câmp obligatoriu” (410:
+  lângă câmp), totalul cotelor cu rândurile respinse (384), Rețete la un SRL fără CAEN HoReCa (371), „Cum se face” deschis (394),
+  statutul furnizorului cerut de mână (418a), județul cu codul (C61). Fixtura `firma_horeca` mutată în conftest (import circular).
+Reluarea: 76 / 76 e2e, pytest pe fișierele atinse verde. Văzut, nereparat (cod neatins în lot): două 500 pe `/eu/ciorne` în timpul
+curățeniei e2e — o firmă ștearsă între citirea listei și interogarea ei.
+
+Comanda 9.4 (verbatim în DECIZII): regula permanentă pentru comenzile spre producție. Scrierea ei în setări a fost refuzată de
+clasificatorul sesiunii („Self-Modification”); i s-a dat lui Costin textul regulii, s-o pună el.

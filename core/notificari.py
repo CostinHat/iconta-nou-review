@@ -41,7 +41,10 @@ DESCHIDERI = ("notificari", "raportari", "anunturi", "raport")
 #: aplicația acolo; utilizatorul bifează ce îl interesează. Fiecare vede doar tipurile care îl privesc după drepturi; termenele și validările
 #: vin bifate din oficiu; emailurile de cont (confirmare, resetare parolă, link de logare) nu sunt în listă și pleacă mereu; bifele decid
 #: doar WhatsApp/email, clopoțelul din aplicație arată tot.”
-GRUPURI = ("Termene și declarații", "Facturi și SPV", "Validări", "Clienți", "Cont și echipă")
+GRUPURI = ("Termene și declarații", "Facturi și SPV", "Validări", "Clienți", "Cont și echipă", "Platformă")
+#: [397, retestul 19.10.2026: „Notificări superadmin: «O alertă legislativă importantă» stă sub titlul «Termene și declarații»”] tipurile
+#: PLATFORMEI (`cine: superadmin` — alertele legislative, sesizările și cererile de import ale cabinetelor) au grupa lor, „Platformă”,
+#: văzută numai de superadmin; cele cinci grupe ale utilizatorilor rămân cum le-a numit comanda 7.2
 #: grupele bifate din oficiu (cât omul n-a salvat altceva)
 GRUPURI_IMPLICITE = ("Termene și declarații", "Validări")
 #: cine vede tipul în Notificări (și cui i se trimite): `pregatire` / `validare` = bifa din Asistenți („Poate pregăti” / „Poate valida”;
@@ -63,7 +66,7 @@ TIPURI = {
     "control_fiscal": {"eticheta": "o alertă nouă de control fiscal", "deschide": "notificari", "grup": "Termene și declarații",
                        "rand": "Când Control fiscal găsește o constatare roșie nouă: o restanță sau o diferență față de evidență.",
                        "cine": "validare"},
-    "alerta_legislativa": {"eticheta": "o alertă legislativă importantă", "deschide": "anunturi", "grup": "Termene și declarații",
+    "alerta_legislativa": {"eticheta": "o alertă legislativă importantă", "deschide": "anunturi", "grup": "Platformă",
                            "rand": "Când apare în Monitorul Oficial sau pe Portalul Legislativ un act care schimbă o regulă din aplicație.",
                            "cine": "superadmin"},
     "factura_primita": {"eticheta": "facturi noi primite din SPV", "deschide": "notificari", "grup": "Facturi și SPV",
@@ -82,9 +85,9 @@ TIPURI = {
                       "rand": "Când cabinetul îți scrie în Solicitări — de exemplu, îți cere documente.", "cine": "client"},
     "asistent_activat": {"eticheta": "un coleg și-a activat contul", "deschide": "notificari", "grup": "Cont și echipă",
                          "rand": "Când un coleg invitat în Asistenți își activează contul.", "cine": "admin"},
-    "sesizare": {"eticheta": "o sesizare nouă în Suport", "deschide": "raportari", "grup": "Cont și echipă",
+    "sesizare": {"eticheta": "o sesizare nouă în Suport", "deschide": "raportari", "grup": "Platformă",
                  "rand": "Când un cabinet trimite o sesizare din Suport.", "cine": "superadmin"},
-    "cerere_import": {"eticheta": "o cerere nouă de import din altă aplicație", "deschide": "raportari", "grup": "Cont și echipă",
+    "cerere_import": {"eticheta": "o cerere nouă de import din altă aplicație", "deschide": "raportari", "grup": "Platformă",
                       "rand": "Când un cabinet cere, din Suport, importul dintr-o aplicație pe care încă n-o citim.", "cine": "superadmin"},
 }
 

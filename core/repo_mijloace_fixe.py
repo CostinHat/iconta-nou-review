@@ -33,11 +33,13 @@ _REEV = """COALESCE((SELECT json_agg(json_build_object(
                  '[]'::json)"""
 
 
+# [359, decizia Costin 9.1 A.1] fiecare cititor al registrului pentru amortizare poartă și `amortizare_preluata` / `data_preluare`
+# (`d406_active._preluare`): o singură regulă pentru nota lunii, registru, închiderea lunii și D406
 def de_amortizat(cur, schema):
     cur.execute(f"""
                 SELECT id, denumire, cont_amortizare, valoare, COALESCE(rezidual,0), dnf_luni,
                        data_pif, cont_imobilizare, metoda, {_REEV.format(p=schema + ".")} AS reevaluari,
-                       destinatie_cd
+                       destinatie_cd, amortizare_preluata, data_preluare
                 FROM {schema}.mijloace_fixe WHERE activ = true
             """)
     return cur.fetchall()
@@ -46,7 +48,7 @@ def de_amortizat(cur, schema):
 def active_pentru_d406(cur, schema, an):
     cur.execute(f"""SELECT id, cod, denumire, cont_imobilizare, cont_amortizare,
                                    valoare, rezidual, dnf_luni, data_pif, metoda, activ,
-                                   {_REEV.format(p=schema + ".")} AS reevaluari, destinatie_cd
+                                   {_REEV.format(p=schema + ".")} AS reevaluari, destinatie_cd, amortizare_preluata, data_preluare
                             FROM {schema}.mijloace_fixe
                             WHERE data_pif IS NOT NULL
                               AND EXTRACT(YEAR FROM data_pif) <= %s
@@ -58,7 +60,8 @@ def active_pentru_d406(cur, schema, an):
 def pentru_reevaluare(cur, schema, mijloc_id):
     cur.execute(f"""SELECT denumire, cont_imobilizare, cont_amortizare,
                                            valoare, COALESCE(rezidual,0), dnf_luni, data_pif, metoda,
-                                           {_REEV.format(p=schema + ".")} AS reevaluari, destinatie_cd
+                                           {_REEV.format(p=schema + ".")} AS reevaluari, destinatie_cd, amortizare_preluata,
+                                           data_preluare
                                     FROM {schema}.mijloace_fixe WHERE id=%s AND activ=true""",
                 (mijloc_id,))
     return cur.fetchone()
@@ -67,7 +70,7 @@ def pentru_reevaluare(cur, schema, mijloc_id):
 def toate(cur):
     cur.execute(f"""SELECT id, cod, denumire, cont_imobilizare, cont_amortizare,
                                   valoare, rezidual, dnf_luni, data_pif, metoda, activ,
-                                  {_REEV.format(p="")} AS reevaluari, destinatie_cd, cod_catalog
+                                  {_REEV.format(p="")} AS reevaluari, destinatie_cd, cod_catalog, amortizare_preluata, data_preluare
                            FROM mijloace_fixe ORDER BY activ DESC, id""")
     return cur.fetchall()
 
@@ -81,7 +84,8 @@ def seteaza_cod_catalog(cur, mijloc_id, cod):
 def pentru_inventariere(cur, schema, mijloc_id):
     cur.execute(f"""SELECT denumire, cont_imobilizare, cont_amortizare,
                                                valoare, COALESCE(rezidual,0), dnf_luni, data_pif, metoda,
-                                               {_REEV.format(p=schema + ".")} AS reevaluari, destinatie_cd
+                                               {_REEV.format(p=schema + ".")} AS reevaluari, destinatie_cd, amortizare_preluata,
+                                               data_preluare
                                         FROM {schema}.mijloace_fixe
                                         WHERE id=%s AND activ=true""",
                 (mijloc_id,))

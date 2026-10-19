@@ -442,6 +442,7 @@ def _nir_cv_din_ecran(ecran, firma, numar, articol_nou, cant="10", pret="5"):
     pg.fill("#nir-l0-cantitate", cant)
     pg.fill("#nir-l0-pret_achizitie", pret)
     pg.select_option("#nir-l0-cota_tva", "21")
+    pg.select_option("#sn-factura-sosita", "false")   # [399] factura nesosită, aleasă explicit
     pg.click("#sn-salveaza")
     pg.wait_for_function("() => (document.querySelector('#s-mesaj') || {innerText: ''}).innerText.includes('NIR salvat')",
                          timeout=20000)
@@ -482,6 +483,7 @@ def test_def_85_articolul_nir_se_alege_din_lista(patron, firma_cv):
     pg.fill("#nir-l0-cantitate", "2")
     pg.fill("#nir-l0-pret_achizitie", "4")
     pg.select_option("#nir-l0-cota_tva", "21")
+    pg.select_option("#sn-factura-sosita", "false")   # [399] factura nesosită, aleasă explicit
     pg.click("#sn-salveaza")
     pg.wait_for_selector(".msg-eroare[data-camp='nir-l0-denumire']", timeout=10000)
     msg = pg.inner_text(".msg-eroare[data-camp='nir-l0-denumire']")
@@ -492,6 +494,7 @@ def test_def_85_articolul_nir_se_alege_din_lista(patron, firma_cv):
     pg.fill("#nir-l0-cantitate", "2")
     pg.fill("#nir-l0-pret_achizitie", "4")
     pg.select_option("#nir-l0-cota_tva", "21")
+    pg.select_option("#sn-factura-sosita", "false")   # [399] factura nesosită, aleasă explicit
     pg.click("#sn-salveaza")
     pg.wait_for_function("() => (document.querySelector('#s-mesaj') || {innerText: ''}).innerText.includes('NIR salvat')",
                          timeout=20000)
@@ -716,7 +719,7 @@ def test_def_75_achizitia_de_la_agricultor_deschide_formularul_ei(patron):
 def test_def_78_conturile_vin_precompletate_si_modificabile(patron):
     """78. Operațiuni: conturile trebuiau tastate; acum precompletate și modificabile.
     Pașii: Operațiuni speciale -> „Lichidare / radiere firmă” -> Vânzare activ la lichidare: „Cont imobilizare” vine 2131 și
-    „Cont amortizare” 2813 (cazul uzual, vizibil înainte de generare), se pot schimba; golit, contul se cere („Câmp obligatoriu”)."""
+    „Cont amortizare” 2813 (cazul uzual, vizibil înainte de generare), se pot schimba; golit, contul se cere lângă câmp (410)."""
     pg = patron.pg
     _operatiune(patron, "Comert Micro TVA", "Lichidare / radiere firmă")
     pg.select_option("#op-operatie", "vanzare_activ")
@@ -730,8 +733,10 @@ def test_def_78_conturile_vin_precompletate_si_modificabile(patron):
     for c in ("pret", "valoare_bruta", "amortizare_cumulata", "cota"):
         pg.fill("#op-%s" % c, "21" if c == "cota" else "100")
     pg.click("#op-trimite")
-    pg.wait_for_function("() => (document.querySelector('#op-mesaj') || {innerText: ''}).innerText.includes('Câmp obligatoriu')", timeout=5000)
-    assert "Cont imobilizare" in pg.inner_text("#op-mesaj")
+    # [410] refuzul stă lângă câmpul gol (`eroareCamp`), nu în zona mesajului
+    pg.wait_for_selector("#op-cont_imobilizare[aria-invalid='true']", timeout=5000)
+    assert pg.inner_text(".msg-eroare[data-camp='op-cont_imobilizare']") == "Completează: Cont imobilizare.", \
+        pg.inner_text(".msg-eroare[data-camp='op-cont_imobilizare']")
     patron.captura("golit")
 
 
@@ -947,7 +952,7 @@ def test_def_97_importul_cere_norma_functia_de_baza_si_scutirea(patron, firma_gv
     # [349, comanda Costin 8.2] fiecare câmp are coloana lui în tabelul comun al previzualizării
     antet = [" ".join(x.split()) for x in pg.locator(".mig-prev thead th").all_inner_texts()]
     celule = dict(zip(antet, [x.strip() for x in pg.locator(".mig-prev tbody tr:not(.mig-prev-motive)").first.locator("td").all_inner_texts()]))
-    assert (celule["Funcție de bază"], celule["Scutit minim"]) == ("—", "Nu (de verificat)"), celule
+    assert (celule["Funcție de bază"], celule["Scutit minim"]) == ("—", "Nu\nde verificat"), celule
     assert "norma de lucru lipsește" in t and "funcția de bază (Da/Nu) lipsește" in t, t[:1500]
     assert "scutirea de contribuția minimă (Da/Nu) lipsește" not in t, t[:1500]
     assert pg.is_disabled("#mig-salveaza-sal")

@@ -84,6 +84,8 @@ def schema():
                       "IDENTITY PRIMARY KEY, inregistrare_id integer NOT NULL, cont_debit text, "
                       "cont_credit text, suma numeric NOT NULL)" % SCH)
         _mig.aplica(conn, SCH)          # DDL-ul `reevaluari` din MIGRARE, nu rescris aici
+        from core import migrare_mf_amortizare_preluata as _m359   # [359, lotul 9] cititorii registrului poartă coloanele preluării
+        _m359.aplica(conn, SCH)
         with conn.cursor() as c:
             c.execute('INSERT INTO "%s".mijloace_fixe (cod, denumire, cont_imobilizare, '
                       "cont_amortizare, valoare, rezidual, dnf_luni, data_pif, metoda) "

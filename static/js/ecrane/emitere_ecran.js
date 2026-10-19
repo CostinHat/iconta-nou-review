@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, arataMesaj, cate, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere } from "../api.js?v=462d75fbab";
+import { api, arataMesaj, cate, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere } from "../api.js?v=158edee964";
 import { textStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=df2c3a05b3";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
@@ -125,6 +125,32 @@ async function salveazaConfig(tenantId, serie, numar_start, platitor_tva) {
     await api.post(`/tenants/${tenantId}/firma-profil/regim-tva`, { platitor_tva });
 }
 
+// ---------- „PLEACĂ MARFA ACUM?” ----------
+// [punte_stoc_v1 → C63, decizia Costin 19.10.2026: „la transformarea în factură se pune aceeași întrebare ca la orice factură”] Caseta-
+// poartă (DS cap.5 v2.14: `.caseta-poarta` > `.cp-mesaj` + `.cp-butoane`, două alegeri care merg amândouă înainte) pe care o pune serverul
+// prin refuzul `INTREABA_PLEACA_MARFA`: aceeași întrebare, același text, la emiterea din formular și la „Transformă în factură” (detaliul
+// proformei / avizului, `facturi_ecran.js`). `laRaspuns(true|false)` retrimite cu răspunsul; `ids` = id-urile celor două butoane.
+export function intrebarePleacaMarfa(zona, nrArticole, laRaspuns, ids) {
+  zona.innerHTML = `
+    <div class="caseta-poarta">
+      <div class="cp-mesaj">Pleacă marfa acum? ${cate(nrArticole, "articol", "articole")} de pe factură se descarcă din gestiune dacă marfa pleacă fizic azi. Dacă e avans, livrare ulterioară sau serviciu, alege „Nu, doar factură".</div>
+      <div class="cp-butoane">
+        <button class="buton-primar" id="${ids.da}">Da, pleacă marfa</button>
+        <button class="buton-secundar em-buton-sec" id="${ids.nu}">Nu, doar factură</button>
+      </div>
+    </div>`;
+  zona.querySelector("#" + ids.da).addEventListener("click", () => laRaspuns(true));
+  zona.querySelector("#" + ids.nu).addEventListener("click", () => laRaspuns(false));
+  aduInVedere(zona);
+}
+
+// [punte_stoc_v1 → C63] ce s-a descărcat din gestiune la „Da, pleacă marfa” (gol fără descărcare) — același text la emitere și la transformare
+export function textDescarcare(d) {
+  if (!d) return "";
+  const nd = (d.descarcate || []).length, ne = (d.erori || []).length;
+  return ` · ${cate(nd, "articol descărcat", "articole descărcate")} din gestiune` + (ne ? ` (${ne} nu — stoc insuficient)` : "");
+}
+
 // ---------- CIORNA FACTURII ----------
 // [lotul 07.10 pct.2, comanda Costin 06.10.2026 — GRAV, factura pierdută a treia oară] „O factură începută rămâne păstrată
 // oricum ar naviga contabilul în aplicație, până o emite sau o abandonează explicit.” Navigatorul păstra formularul numai pe
@@ -160,6 +186,14 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     SE:"Suedia", SI:"Slovenia", SK:"Slovacia", GB:"Regatul Unit", XI:"Irlanda de Nord" };
   const TARI_NONUE_JS = { US:"Statele Unite", CH:"Elveția", TR:"Turcia", CN:"China",
     MD:"Republica Moldova", NO:"Norvegia", RS:"Serbia", UA:"Ucraina" };
+  // [C61, decizia Costin 19.10.2026 „Da, câmpuri și la român”] județul clientului român: codul (ISO 3166-2:RO, ca `dcod_JudetAuto` din
+  // ANAF și `efactura_send._JUD`), afișat cu numele; aceeași listă ca `factura_pdf.JUDETE_NUME` (paritatea: core/test_c61_adresa_client_ro.py)
+  const JUDETE_RO = [["AB","Alba"],["AR","Arad"],["AG","Argeș"],["BC","Bacău"],["BH","Bihor"],["BN","Bistrița-Năsăud"],["BT","Botoșani"],
+    ["BV","Brașov"],["BR","Brăila"],["BZ","Buzău"],["CS","Caraș-Severin"],["CL","Călărași"],["CJ","Cluj"],["CT","Constanța"],["CV","Covasna"],
+    ["DB","Dâmbovița"],["DJ","Dolj"],["GL","Galați"],["GR","Giurgiu"],["GJ","Gorj"],["HR","Harghita"],["HD","Hunedoara"],["IL","Ialomița"],
+    ["IS","Iași"],["IF","Ilfov"],["MM","Maramureș"],["MH","Mehedinți"],["MS","Mureș"],["NT","Neamț"],["OT","Olt"],["PH","Prahova"],
+    ["SM","Satu Mare"],["SJ","Sălaj"],["SB","Sibiu"],["SV","Suceava"],["TR","Teleorman"],["TM","Timiș"],["TL","Tulcea"],["VS","Vaslui"],
+    ["VL","Vâlcea"],["VN","Vrancea"],["B","București"]];
   // [lotul 07.10 B, DS cap.17 corectat] țara se DEDUCE din CUI-ul partenerului (`taraDinCui`), vizibil și modificabil; fără prefix = RO
   // [274b] categoria de TVA a liniei cu 0% (core/categorii_tva, de la server): obligatorie la plătitor; la neplătitor e „O”, automat
   const CATEG = num.categorii_tva || [];
@@ -235,8 +269,10 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <div class="em-eticheta">Clasificare TVA (D300)</div>
       <label class="camp-eticheta" for="em-tara">Țara partenerului</label>
       <select class="camp-input" id="em-tara">${optiuniTara}</select>
-      <label class="camp-eticheta em-strain" for="em-oras" hidden>Localitatea clientului (adresa de livrare din e-Factura)</label>
-      <input class="camp-input em-strain" id="em-oras" type="text" maxlength="100" hidden>
+      <label class="camp-eticheta" for="em-oras" id="em-oras-et">Localitatea clientului</label>
+      <input class="camp-input" id="em-oras" type="text" maxlength="100">
+      <label class="camp-eticheta em-ro" for="em-judet">Județul clientului</label>
+      <select class="camp-input em-ro" id="em-judet"><option value="">— alege —</option>${JUDETE_RO.map(([c, n]) => `<option value="${c}">${esc(n)}</option>`).join("")}</select>
       <label class="camp-eticheta em-strain" for="em-regiune" hidden>Regiunea clientului (provincie, land, comitat)</label>
       <input class="camp-input em-strain" id="em-regiune" type="text" maxlength="100" hidden>
       <label class="camp-eticheta" for="em-c331" id="em-c331-et" hidden>Categoria produsului cu taxare inversă (art.331; codul din D394)</label>
@@ -576,7 +612,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
   corp.querySelector("#em-add-linie").addEventListener("click", () => { linii.push(linieNoua()); deseneazaLinii(); salveazaCiorna(); });
   // [lotul 07.10 pct.2] ciorna: câmpurile simple, după id; liniile din model; moneda; răspunsul la „Pleacă marfa acum?”
-  const CAMPURI_CIORNA = ["em-cui", "em-nume", "em-adresa", "em-data", "em-scadenta", "em-tara", "em-tipop", "em-bon-nr", "em-bon-data", "em-tip"];
+  const CAMPURI_CIORNA = ["em-cui", "em-nume", "em-adresa", "em-oras", "em-judet", "em-regiune",   // [C61] și localitatea / județul
+    "em-data", "em-scadenta", "em-tara", "em-tipop", "em-bon-nr", "em-bon-data", "em-tip"];
   const areContinut = () => ["em-cui", "em-nume", "em-adresa", "em-bon-nr"].some((id) => ((corp.querySelector("#" + id) || {}).value || "").trim())
     || linii.some((l) => l && (l.descriere || l.pret_unitar || l.cantitate || l.articol_id));
   let ciornaPornita = false;   // nimic nu se scrie până nu s-a citit (altfel prima redesenare ar suprascrie ciorna cu gol)
@@ -630,7 +667,14 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     return /^[A-Z]{2}/.test(c) && (TARI_UE_JS[pfx] || TARI_NONUE_JS[pfx]) ? pfx : null;
   };
   // [274b] clientul din afara României: localitatea și regiunea lui (adresa de livrare a livrării intracomunitare în e-Factura)
-  const aratăStrain = () => { const s = corp.querySelector("#em-tara").value !== "RO"; corp.querySelectorAll(".em-strain").forEach((e) => { e.hidden = !s; }); };
+  // [C61] clientul român: localitatea și județul (lista), precompletate din ANAF la „Verifică”; aceeași localitate, alt nume la străin
+  const aratăStrain = () => {
+    const s = corp.querySelector("#em-tara").value !== "RO";
+    corp.querySelectorAll(".em-strain").forEach((e) => { e.hidden = !s; });
+    corp.querySelectorAll(".em-ro").forEach((e) => { e.hidden = s; });
+    corp.querySelector("#em-oras-et").textContent = s ? "Localitatea clientului (adresa de livrare din e-Factura)" : "Localitatea clientului";
+  };
+  aratăStrain();   // țara restaurată din ciornă arată câmpurile ei
   // [deficiența 304, rest din 290] refuzul calculat pentru clientul de dinainte (categoria față de țară) nu mai rămâne pe ecran după
   // schimbarea clientului: erorile liniilor și mesajul de jos se scot la orice schimbare a clientului (CUI, țară, denumire), inclusiv când
   // țara se pune din cod (CUI-ul, VIES) — acolo nu se declanșează niciun „change”
@@ -708,6 +752,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       if (r && r.gasit) {
         corp.querySelector("#em-nume").value = r.denumire || "";
         if (r.adresa) corp.querySelector("#em-adresa").value = r.adresa;
+        // [C61] localitatea și județul domiciliului fiscal (aceeași adresă ca `adresa`), modificabile; PDF-ul nu le repetă când adresa
+        // le cuprinde deja (`factura_pdf.adresa_tert`)
+        if (r.localitate) corp.querySelector("#em-oras").value = r.localitate;
+        const selJud = corp.querySelector("#em-judet");
+        if (r.judet && [...selJud.options].some((o) => o.value === r.judet)) selJud.value = r.judet;
         // [p113_doar_gri] doar info TVA cu gri, fara verde/bifa/"gasita"
         stare.innerHTML = `<span class="em-cui-info">${r.platitor_tva ? "plătitor TVA" : "neplătitor TVA"}</span>`;
         stare.className = "em-cui-stare";
@@ -779,9 +828,10 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         categorie_tva: l.cota_tva === 0 ? (l.categorie_tva || null) : null,   // [274b] categoria liniei cu 0%
       })),
       // [274b] categoria produsului la taxarea inversă; localitatea și regiunea clientului străin (adresa de livrare din e-Factura)
+      // [C61] la clientul român localitatea și județul (codul din listă) — scrise pe factură și pe PDF
       categorie_331: (() => { const e = corp.querySelector("#em-c331"); return e && !e.hidden ? (e.value || null) : null; })(),
-      tert_oras: corp.querySelector("#em-tara").value !== "RO" ? ((corp.querySelector("#em-oras") || {}).value || "").trim() || null : null,
-      tert_judet: corp.querySelector("#em-tara").value !== "RO" ? ((corp.querySelector("#em-regiune") || {}).value || "").trim() || null : null,
+      tert_oras: (corp.querySelector("#em-oras").value || "").trim() || null,
+      tert_judet: ((corp.querySelector(corp.querySelector("#em-tara").value !== "RO" ? "#em-regiune" : "#em-judet") || {}).value || "").trim() || null,
       tert_nume: corp.querySelector("#em-nume").value.trim() || null,
       tert_cui: corp.querySelector("#em-cui").value.trim() || null,
       tert_adresa: corp.querySelector("#em-adresa").value.trim() || null,
@@ -805,12 +855,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       const selTip = corp.querySelector("#em-tip");
       if (selTip) payload.tip = selTip.value;
       const r = await api.post(`/tenants/${tenantId}/facturi/emite`, payload);
-      let notaStoc = "";  // [punte_stoc_v1] rezultatul descarcarii de gestiune, daca poarta a fost DA
-      if (r.descarcare) {
-        const nd = (r.descarcare.descarcate || []).length, ne = (r.descarcare.erori || []).length;
-        notaStoc = ` · ${cate(nd, "articol descărcat", "articole descărcate")} din gestiune`;
-        if (ne) notaStoc += ` (${ne} nu — stoc insuficient)`;
-      }
+      const notaStoc = textDescarcare(r.descarcare);  // [punte_stoc_v1] rezultatul descarcarii de gestiune, daca poarta a fost DA
       // [deficiența 327, 18.10.2026] „a fost trimisă către contabil” numai când emite clientul (portalul); contabilul care emite e chiar
       // contabilul. Butonul nu rămâne „Se emite…”: factura e emisă (o a doua emitere nu se oferă). Mesajul de după emitere (și caseta
       // SPV) nu mai are derulare proprie (285): butonul nu mai are nimic de făcut, deci nu trebuie ținut vizibil sub mesaj.
@@ -819,6 +864,12 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       if (btn) btn.textContent = "Emisă ✓";
       stergeCiorna(tenantId);   // [lotul 07.10 pct.2] emisă: ciorna și-a terminat rostul
       ciornaPornita = false;
+      // [391, retestul 19.10.2026: „după emitere (F1A7) e încă oferit «Renunță la factură», cu mesajul fals «Ce ai scris se șterge; nu se
+      // emite nimic»”] factura e emisă: nu mai e nimic la care să renunți
+      const bRenunta = corp.querySelector("#em-renunta");
+      if (bRenunta) bRenunta.remove();
+      const cRenunta = document.getElementById("caseta-atentie-activa");
+      if (cRenunta && corp.contains(cRenunta)) cRenunta.remove();
       // [deficiența 275c] firma neconectată la SPV (sau fără drept pentru CUI): se spune DE LA EMITERE, cu drumul spre conectare — și
       // formularul nu mai pleacă singur, ca mesajul să poată fi citit
       let stSpv = null;
@@ -840,8 +891,14 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
           : "termenul de transmitere e de 5 zile lucrătoare de la emitere (OUG 120/2021 art.10 alin.(7))."}</div>`;
         rez2.appendChild(z);
         butonSpreEcran(z, "conectare_spv", nav, tenantId, { clasa: "buton-secundar" });
-      } else if (stSpv) {   // starea necitită rămâne pe ecran (mesajul de mai sus), nu pleacă singură
-        setTimeout(() => { if (opt.dupaEmitere) opt.dupaEmitere(); }, 1200);
+      }
+      // [418c / 410, DS cap.27] confirmarea emiterii rămâne pe ecran; istoricul se deschide la cererea omului, nu singur după 1,2 s
+      if (opt.dupaEmitere) {
+        const b = document.createElement("button");
+        b.type = "button"; b.className = "buton-secundar"; b.id = "em-spre-istoric"; b.style.marginTop = "8px";
+        b.textContent = "Vezi factura în Istoric facturi \u2192";
+        b.addEventListener("click", () => opt.dupaEmitere());
+        rez2.appendChild(b);
       }
     } catch (e) {
       const det = e && e.mesaj;
@@ -958,22 +1015,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     }
   }
   function intreabaPleacaMarfa() {
-    const cuArticole = linii.filter((l) => l && l.articol_id).length;
-    {
-      const rez = corp.querySelector("#em-rezultat");
-      rez.className = "em-rezultat";
-      rez.innerHTML = `
-        <div class="caseta-poarta">
-          <div class="cp-mesaj">Pleacă marfa acum? ${cate(cuArticole, "articol", "articole")} de pe factură se descarcă din gestiune dacă marfa pleacă fizic azi. Dacă e avans, livrare ulterioară sau serviciu, alege „Nu, doar factură".</div>
-          <div class="cp-butoane">
-            <button class="buton-primar" id="em-poarta-da">Da, pleacă marfa</button>
-            <button class="buton-secundar em-buton-sec" id="em-poarta-nu">Nu, doar factură</button>
-          </div>
-        </div>`;
-      rez.querySelector("#em-poarta-da").addEventListener("click", () => { pleacaMarfaCurent = true; semnMarfa = semnArticole(); salveazaCiorna(); trimiteEmitere(null); });
-      rez.querySelector("#em-poarta-nu").addEventListener("click", () => { pleacaMarfaCurent = false; semnMarfa = semnArticole(); salveazaCiorna(); trimiteEmitere(null); });
-      aduInVedere(rez);
-    }
+    const rez = corp.querySelector("#em-rezultat");
+    rez.className = "em-rezultat";
+    intrebarePleacaMarfa(rez, linii.filter((l) => l && l.articol_id).length, (da) => {
+      pleacaMarfaCurent = da; semnMarfa = semnArticole(); salveazaCiorna(); trimiteEmitere(null);
+    }, { da: "em-poarta-da", nu: "em-poarta-nu" });
   }
   function semnArticole() {
     // cheie internă (nu se afișează): articolele și cantitățile pentru care s-a răspuns

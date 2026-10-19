@@ -870,10 +870,16 @@ def _constatare_esuata(eticheta, nume, e, an, luna):
         "poate lipsi. Reîncarcă; dacă persistă, semnalează." % e, an, luna)
 
 
-def _platitor_tva_tert(cui, tara="RO"):
+def _platitor_tva_tert(cui, tara="RO", adresa=None):
     """[comanda Costin 05.10.2026 pct.5] Beneficiarul român e plătitor de TVA? Din ANAF (PlatitorTvaRest v9), ÎNAINTE de orice
     tranzacție (apel extern, termen 20 s). True/False dacă ANAF îl găsește; None dacă nu se poate ști (ANAF jos, CUI negăsit,
-    beneficiar străin) — atunci factura poartă codul așa cum a fost scris, fără prefix ghicit (CF art.318 alin.(1))."""
+    beneficiar străin) — atunci factura poartă codul așa cum a fost scris, fără prefix ghicit (CF art.318 alin.(1)).
+
+    [C61, 19.10.2026] Faptele clientului român dintr-un SINGUR apel ANAF: dacă `adresa` e un dict, primește din același răspuns
+    `localitate` și `judet` (domiciliul fiscal, `anaf_api.valideaza_cui`) — numai când ANAF le dă; altfel rămâne neatins. Întoarcerea
+    rămâne cea de mai sus, pentru apelanții de azi; iar neutralizarea din teste (core/conftest.py, `_fara_anaf_la_emitere`) acoperă
+    astfel și adresa — niciun test nu ajunge la ANAF real pe drumul ei. Temei: CF art.319 alin.(20) lit.f („denumirea/numele și adresa
+    beneficiarului”); în e-Factura, eFactura regula BR-RO-110 (BT-54 codificat ISO 3166-2:RO când BT-55 = RO)."""
     if (tara or "RO").upper() != "RO" or not cui:
         return None
     try:
@@ -881,7 +887,11 @@ def _platitor_tva_tert(cui, tara="RO"):
     except Exception as e:   # noqa: BLE001 — ANAF indisponibil nu oprește emiterea
         _obs.esec_secundar("platitor TVA beneficiar la emitere", e)
         return None
-    return bool(r[0]["platitor_tva"]) if r and r[0].get("gasit") else None
+    if not (r and r[0].get("gasit")):
+        return None
+    if adresa is not None:
+        adresa.update({k: r[0][k] for k in ("localitate", "judet") if (r[0].get(k) or "").strip()})
+    return bool(r[0]["platitor_tva"])
 
 
 def _intreaba_modelul(schema, linii):

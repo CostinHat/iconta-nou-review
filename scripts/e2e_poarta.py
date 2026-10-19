@@ -36,6 +36,11 @@ LACAT = "/tmp/e2e_poarta.lacat"
 TEMP = os.environ.get("E2E_TEMP", "/tmp/e2e_poarta")
 
 
+#: cheile canalelor care trimit mesaje unor oameni (email, WhatsApp): proba nu le primește. Garda `core/test_proba_fara_trimitere.py`
+#: compară lista cu cheile pe care le citesc modulele de trimitere.
+CHEI_TRIMITERE = ("BREVO_API_KEY", "POSTMARK_SERVER_TOKEN", "WHATSAPP_TOKEN")
+
+
 def _env_test():
     env = dict(os.environ)
     for cale in (os.path.expanduser("~/.iconta/test.env"), os.path.expanduser("~/.iconta/api_keys.env")):
@@ -46,7 +51,10 @@ def _env_test():
             if "=" in linie and not linie.startswith("#"):
                 k, v = linie.split("=", 1)
                 env[k.strip()] = v.strip().strip('"').strip("'")
-    env.pop("BREVO_API_KEY", None)               # nimic trimis în afară din probă
+    # nimic trimis în afară din probă: fiecare cheie a unui canal care TRIMITE spre oameni (`CHEI_TRIMITERE`) se scoate — [C, lotul 9]
+    # cheile WhatsApp au intrat în `api_keys.env` (comanda 9.1 D1), iar proba le-ar fi moștenit
+    for k in CHEI_TRIMITERE:
+        env.pop(k, None)
     # [15.10.2026, lotul 4] emailurile aplicației de probă se scriu în cutia de test (`observare._in_cutia_de_test`): linkul de
     # confirmare a înregistrării îl vede numai destinatarul, deci proba și-l ia de aici. Cutia needitabilă = emailul care n-a plecat.
     env["ICONTA_EMAIL_CUTIE"] = os.path.join(TEMP, "cutie_email")

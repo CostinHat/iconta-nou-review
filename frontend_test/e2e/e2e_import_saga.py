@@ -261,7 +261,7 @@ def test_salariatii_partial_si_de_verificat_pana_la_confirmare(patron, firma_imp
     # [349, comanda Costin 8.2] fiecare câmp are coloana lui în tabelul comun al previzualizării
     antet = [" ".join(x.split()) for x in pg.locator(".mig-prev thead th").all_inner_texts()]
     celule = dict(zip(antet, [x.strip() for x in pg.locator('.mig-prev tbody tr[data-rand="2"]:not(.mig-prev-motive) td').all_inner_texts()]))
-    assert (celule["Scutit minim"], celule["Persoane în întreținere"]) == ("Nu (de verificat)", "0 (de verificat)"), celule
+    assert (celule["Scutit minim"], celule["Persoane în întreținere"]) == ("Nu\nde verificat", "0\nde verificat"), celule
     assert pg.inner_text("#mig-salveaza-sal").strip() == "Salvează cele 2 rânduri bune (salariați)"
     patron.captura("previzualizare")
     pg.click("#mig-salveaza-sal")

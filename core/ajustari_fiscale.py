@@ -50,6 +50,26 @@ RANDURI = {
     "P39": ("rd.39 — pierderi fiscale de recuperat din anii anteriori", "pierdere"),
 }
 
+#: [deficiența 378, lotul 9 — retestul 19.10.2026: „Rândul există pe ecran, dar nu se umple din conturi.”] Rândurile care se iau din
+#: CONTABILITATE cât timp contabilul nu le scrie el în registru: rândul D101 -> (contul, cum se numește pe ecran). Rulajul net debitor al
+#: contului, pe notele validate ale ferestrei (aceeași fereastră ca rd.1–7). Dacă omul scrie rândul în registru (oricare trimestru al
+#: anului), cifra lui înlocuiește contul pe tot rândul — aceeași regulă ca rezerva legală (rd.13), derivată numai cât nu e dată.
+#: Temeiul: CF art.25 alin.(4) lit.b („dobânzile/majorările de întârziere, amenzile, confiscările și penalitățile, datorate către
+#: autoritățile române/străine, potrivit prevederilor legale, cu excepția celor aferente contractelor încheiate cu aceste autorități”);
+#: contul: OMFP 1802/2014, 6581 „Despăgubiri, amenzi și penalități”.
+#: INTERPRETARE CU TEMEI: 6581 ține și despăgubirile / penalitățile contractuale (deductibile). Implicitul ia tot contul ca nedeductibil,
+#: fiindcă omisiunea lui SUBEVALUEAZĂ impozitul (direcția care costă la control); partea deductibilă se scoate scriind rândul 25 cu
+#: suma nedeductibilă reală. Alternativa respinsă: rândul gol până îl scrie omul (retestul 19.10 arată exact ce produce: amenda intră ca
+#: deductibilă, fără niciun semn). De reconfirmat dacă apare o normă care transează.
+DIN_CONTURI = {"P25": ("amenzi", "contul 6581 — despăgubiri, amenzi și penalități")}
+
+
+def din_conturi(rulaje):
+    """{rand D101: suma} — rândurile `DIN_CONTURI`, din rulajele întoarse de `repo_d101.select_inregistrari_linii`."""
+    return {rand: Decimal(str(rulaje.get(cheie) or 0)) for rand, (cheie, _) in DIN_CONTURI.items()
+            if Decimal(str(rulaje.get(cheie) or 0)) > 0}
+
+
 #: pierderea din anii anteriori e o cifră a ANULUI (stabilită prin D101-urile anterioare), nu a unui trimestru
 ANUALE = ("P39",)
 
@@ -88,16 +108,47 @@ def valideaza(an, trim, rand, suma):
 
 
 def lista(cur, schema, an):
+    """Ajustările anului. `automata` = scrisă de aplicație dintr-o notă (`inregistrare_id`); `in_calcul` = intră în D100 / D101 acum
+    (cea scrisă de om, mereu; cea automată, numai cu nota validată — `repo_ajustari_fiscale.cumulat`)."""
     return [{"id": r[0], "an": r[1], "trim": r[2], "rand": r[3], "eticheta": RANDURI.get(r[3], (r[3],))[0], "suma": str(r[4]),
-             "descriere": r[5], "document": r[6]} for r in _repo.lista(cur, schema, an)]
+             "descriere": r[5], "document": r[6], "automata": r[7] is not None, "in_calcul": r[7] is None or bool(r[8])}
+            for r in _repo.lista(cur, schema, an)]
 
 
-def adauga(cur, schema, an, trim, rand, suma, descriere=None, document=None, user_id=None):
+def adauga(cur, schema, an, trim, rand, suma, descriere=None, document=None, user_id=None, inregistrare_id=None):
     motiv = valideaza(an, trim, rand, suma)
     if motiv:
         raise ValueError(motiv)
     return _repo.adauga(cur, schema, int(an), None if rand in ANUALE else int(trim), rand, Decimal(str(suma)), descriere or None,
-                        document or None, user_id)
+                        document or None, user_id, inregistrare_id)
+
+
+#: [deficiența 404, lotul 9, decizia Costin 19.10.2026 „Da, automat”, verbatim în DECIZII „Închiderea lotului 9”] lipsa NEIMPUTABILĂ de la
+#: inventar trece singură la ajustări, pe rândul D101 al „altor cheltuieli nedeductibile”. Temeiul:
+#:   CF art.25 alin.(4) lit.c (`anaf_surse/cod_fiscal_227_2015_consolidat.txt`:1367): „(4) Următoarele cheltuieli nu sunt deductibile: [...]
+#:   c) cheltuielile privind bunurile de natura stocurilor sau a mijloacelor fixe amortizabile constatate lipsă din gestiune ori degradate,
+#:   neimputabile, precum și taxa pe valoarea adăugată aferentă, dacă aceasta este datorată potrivit prevederilor titlului VII”;
+#:   OPANAF 206/2025, instrucțiunile D101 (`anaf_surse/opanaf_206_2025_d101.txt`:693–699): „Rândul 33 se completează cu sumele reprezentând
+#:   alte cheltuieli nedeductibile, cum sunt: [...] cheltuielile prevăzute la art. 25 alin. (4) din Legea nr. 227/2015 [...], cu excepţia
+#:   celor menţionate la lit. a), b), e) şi i)” — lit.c nu e exceptată, deci rândul 33.
+RAND_LIPSA_NEIMPUTABILA = "P33"
+
+
+def trimestrul(data):
+    """Trimestrul (1–4) datei AAAA-LL-ZZ."""
+    return (int(str(data)[5:7]) - 1) // 3 + 1
+
+
+def din_lipsa_neimputabila(cur, schema, data, articol, cheltuiala, tva, inregistrare_id, document=None):
+    """Ajustarea automată a lipsei neimputabile: cheltuiala + TVA-ul ajustat (CF art.25 alin.(4) lit.c), pe trimestrul inventarului, legată
+    de nota lui (în calcul numai cu nota validată; ștearsă odată cu nota). Întoarce (id, suma, trimestrul)."""
+    from core.pdf_util import bani, data_ro
+    suma = Decimal(str(cheltuiala)) + Decimal(str(tva or 0))
+    trim = trimestrul(data)
+    descriere = ("Lipsă neimputabilă la inventarul din %s — %s: cheltuiala %s lei%s (CF art.25 alin.(4) lit.c)" % (
+        data_ro(data), articol, bani(cheltuiala), (" + TVA ajustat %s lei" % bani(tva)) if Decimal(str(tva or 0)) else ""))[:500]
+    aid = adauga(cur, schema, int(str(data)[:4]), trim, RAND_LIPSA_NEIMPUTABILA, suma, descriere, document, None, inregistrare_id)
+    return aid, suma, trim
 
 
 def sterge(cur, schema, ajustare_id):

@@ -78,11 +78,13 @@ def marcheaza_primita_respinsa(cur, schema, motiv_respins, id_):
 # `repo_facturi`: nu sunt „factura", sunt „factura asa cum o cere e-Factura".
 
 def factura_pentru_ubl(cur, schema, factura_id):
+    from core import repo_facturi as _rf   # [417] factura stornată (BG-3)
     cur.execute(f"""SELECT id, numar, serie, data_emitere, data_scadenta, moneda,
                                tert_nume, tert_cui, tert_adresa, tert_oras, tert_judet,
                                taxare_inversa, tip, storno_din_id, total, tva,
-                               directie, bon_fiscal_nr, bon_fiscal_data, tert_tara, data_faptului_generator
-                          FROM {schema}.facturi WHERE id = %s""", (int(factura_id),))
+                               directie, bon_fiscal_nr, bon_fiscal_data, tert_tara, data_faptului_generator,
+                               {_rf.SQL_STORNO_DIN.format(s=schema + ".", a="f")}
+                          FROM {schema}.facturi f WHERE id = %s""", (int(factura_id),))
     return cur.fetchone()
 
 

@@ -6,7 +6,7 @@ import re
 
 import pytest
 
-from conftest import firma_noua
+from conftest import firma_noua, sql
 from e2e_bloc_a import T_COMERT, cont_asistent, ecran_cont
 from e2e_bloc_d import PATRON, _api, _cnp, _control_firma, _date_firma, _deschide, _grupuri_control, _nota_validata
 from e2e_comanda_1010 import _alege_bilant, _lista_control, _rezumate_la_zi, _solduri, _valideaza_bilant
@@ -338,11 +338,10 @@ def firma_s1003():
     for f in firma_noua():
         _date_firma(f)
         _solduri(f, "2024-12-31")
-        # 7411 (analiticul OMFP 1802 al lui 741, „aferente cifrei de afaceri”) și 709 nu sunt în șablonul planului firmei — contabilul le adaugă
-        for simbol, den in (("7411", "Venituri din subvenții de exploatare aferente cifrei de afaceri"),
-                            ("709", "Reduceri comerciale acordate")):
-            st, r = _api(PATRON, "POST", "/tenants/%d/plan-conturi" % f["tenant_id"], {"simbol": simbol, "denumire": den})
-            assert st == 200, (st, r)
+        # 7411 (analiticul OMFP 1802 al lui 741, „aferente cifrei de afaceri”) și 709 sunt în planul firmei de la lotul 9 (planul OMFP
+        # 1802/2014 întreg în șablon, `core/plan_conturi_omfp.py`) — nu se mai adaugă de mână
+        assert {r[0] for r in sql('SELECT simbol FROM "%s".plan_conturi WHERE simbol IN (%%s, %%s)' % f["schema"], ("7411", "709"))} \
+            == {"7411", "709"}
         _nota_validata(f, "2025-03-10", "5121", "704", 5000, "Vanzare C10")
         _nota_validata(f, "2025-04-10", "5121", "7411", 800, "Subventie C10")
         _nota_validata(f, "2025-05-10", "709", "5121", 300, "Reducere C10")
@@ -688,8 +687,8 @@ def firma_c14():
         _date_firma(f)
         st, r = _api(PATRON, "POST", "/tenants/%d/firma-profil/date" % f["tenant_id"], {"data_infiintare": "2025-01-10"})
         assert st == 200 and r.get("ok") is not False, (st, r)
-        st, r = _api(PATRON, "POST", "/tenants/%d/plan-conturi" % f["tenant_id"], {"simbol": "6123", "denumire": "Cheltuieli cu chiriile"})
-        assert st == 200, (st, r)
+        # 6123 e în planul firmei de la lotul 9 (planul OMFP 1802/2014 întreg în șablon)
+        assert sql('SELECT 1 FROM "%s".plan_conturi WHERE simbol = %%s' % f["schema"], ("6123",)) == [(1,)]
         _nota_validata(f, "2025-01-15", "5121", "1012", 1000, "Aport C14")
         _nota_validata(f, "2025-03-10", "5121", "707", 1000, "Vanzare marfa C14")
         _nota_validata(f, "2025-03-11", "607", "5121", 300, "Marfa descarcata C14")

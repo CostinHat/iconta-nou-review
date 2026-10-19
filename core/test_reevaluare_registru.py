@@ -213,6 +213,8 @@ def schema():
         # Tabelul `reevaluari` se ia din MIGRARE, nu se rescrie aici: o a doua definitie a aceluiasi
         # DDL s-ar desparti tacut de prima, iar proba ar trece pe o schema care nu exista nicaieri.
         _mig.aplica(conn, SCH)
+        from core import migrare_mf_amortizare_preluata as _m359   # [359, lotul 9] cititorii registrului poartă coloanele preluării
+        _m359.aplica(conn, SCH)
     try:
         yield db
     finally:

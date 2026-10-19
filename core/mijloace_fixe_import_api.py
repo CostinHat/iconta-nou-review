@@ -33,6 +33,7 @@ import datetime
 
 from core import obiecte_inventar as _oi
 from core.pdf_util import bani as _bani, data_ro as _data_ro   # DS cap.4: sumele și datele din text, canonic
+from core.common import cate as _cate   # [362] numeralul acordat („120 de luni”)
 
 # PRAGUL NU MAI E SCRIS AICI (01.09.2026, R108). Era `PLAFON_MF_2026 = 5000.0` — un literal FARA
 # DATA, deci avertismentul iesea gresit pentru bunurile intrate inainte de 01.01.2026, cand pragul
@@ -72,8 +73,9 @@ def _normalizeaza_metoda(v):
 
 
 def e_teren(cont_imob):
-    """Contul 2111 „Terenuri” (sau sinteticul 211 fără analitic): terenul nu se amortizează (CF art.28 alin.(3) lit.a)), deci durata 0 e
-    corectă. [362] Amenajările de terenuri (2112) se amortizează (2811)."""
+    """Contul 2111 „Terenuri” (sau sinteticul 211 fără analitic): terenul nu se amortizează (CF art.28 alin.(4) lit.a): „Nu reprezintă active
+    amortizabile: a) terenurile, inclusiv cele împădurite”), deci durata 0 e corectă. [362, decizia Costin 9.1 A.2] Amenajările de terenuri
+    (2112) se amortizează (CF art.28 alin.(3) lit.f), liniar, pe 10 ani — alin.(12) lit.e), pe 2811."""
     c = str(cont_imob or "").strip().split(".")[0]
     return c in ("211", "2111")
 
@@ -100,7 +102,11 @@ CAMPURI = {
     "denumire": ("denumire mijloc fix", "denumire", "mijloc fix", "nume"),
     "rezidual": ("valoare reziduala", "rezidual*"),
     "ramas": ("val ramasa", "valoare ramasa", "valoare neamortizata", "ramas", "ramasa", "neamortizat*"),
-    "amortizat": ("amort inreg", "amortizare inregistrata", "amortizare cumulata", "amortizat"),
+    # [359, retestul 19.10.2026: „Importul Mijloace fixe nu citește coloana «amortizare»”] și antetul scurt / formele lui uzuale; NU un
+    # prefix („amortizare*” ar lua și „amortizare lunară”, care e rata, nu cumulul), iar „=amortizare” se potrivește numai prin egalitate
+    # (altfel ar prinde și „cont amortizare”)
+    "amortizat": ("amort inreg", "amortizare inregistrata", "amortizare cumulata", "amortizat", "=amortizare", "amortizare preluata",
+                  "amortizare acumulata", "amortizare la data preluarii", "amortizare cumulata la data preluarii", "amortizare totala"),
     "valoare": ("valoare intrare", "valoare de intrare", "valoare achizitie", "valoare de achizitie", "cost achizitie",
                 "valoare"),
     "valoare_inventar": ("valoare inventar",),
@@ -204,9 +210,15 @@ def extrage(continut, nume_fisier="", data_preluare=None):
         calculat, _ram = _la_zi(valoare, rezidual, durata, _pif, metoda or "liniara", cel(i_cimo), dcd, la)
         if e_teren(cel(i_cimo)) and durata <= 0:
             calculat = 0.0
+        # [359, lotul 9] fără cifra preluată, rândul o SPUNE (nu „—” tăcut): amortizarea continuă din calcul, iar cifra calculată se arată
+        if preluat is None and calculat and not (e_teren(cel(i_cimo)) and durata <= 0):
+            semnale.append("amortizarea cumulată la %s nu e în fișier (nicio coloană „amortizare cumulată” sau „valoare rămasă”): se ia cea "
+                           "calculată din PIF, durată și metodă, %s" % (_data_ro(la), _bani(calculat, "lei")))
         if preluat is not None and calculat is not None and durata > 0 and abs(preluat - calculat) > (valoare - rezidual) / durata + 1:
+            # [359, decizia Costin 9.1 A.1] „amortizarea continuă cu cifra din fișierul preluat; diferența față de calcul rămâne doar afișată”
             semnale.append("amortizarea preluată (%s%s) diferă de cea calculată la %s din PIF, durată și metodă (%s): verifică data PIF, "
-                           "durata și metoda — după preluare amortizarea continuă din calcul" % (
+                           "durata și metoda — după preluare amortizarea continuă de la cifra din fișier, cu rata metodei; diferența "
+                           "rămâne doar afișată" % (
                                _bani(preluat, "lei"), din_ce, _data_ro(la), _bani(calculat, "lei")))
         if i_vinv >= 0 and cel(i_vinv) != "" and abs(_numar(cel(i_vinv)) - valoare) > 0.01:
             semnale.append(
@@ -316,7 +328,7 @@ def verifica_randuri(randuri, azi=None):
         elif rez > val + 0.01:
             er.append(respinge("mijloc fix", i, "rezidual_peste_intrare",
                                "%s: valoarea reziduală (%s) depășește valoarea de intrare (%s)" % (eticheta, _bani(rez, "lei"), _bani(val, "lei"))))
-        if dur <= 0 and not teren:
+        if dur <= 0 and not teren and cimo.split(".")[0] != "2112":   # [362] amenajarea de teren are mesajul ei, cu durata din lege
             er.append(respinge("mijloc fix", i, "durata_lipsa",
                                "%s: durata în luni lipsește sau nu e pozitivă (%s) - fără ea nu se calculează amortizarea" % (eticheta, dur)))
         pif = r.get("data_pif")
@@ -336,9 +348,29 @@ def verifica_randuri(randuri, azi=None):
                                "%s: metoda de amortizare «%s» nu există — CF art.28: liniară, degresivă, accelerată, superaccelerată"
                                % (eticheta, metoda_scrisa)))
         if cimo:
-            if not (cimo[:1] == "2" and cimo.split(".")[0].isdigit()):
+            _sint = cimo.split(".")[0]
+            if not (cimo[:1] == "2" and _sint.isdigit()):
                 er.append(respinge("mijloc fix", i, "cont_imobilizare_invalid",
                                    "%s: contul %s nu e de imobilizări (clasa 2)" % (eticheta, cimo)))
+            elif _sint[:2] not in ("20", "21"):
+                # [362, retestul 19.10.2026: „conturi inversate (2813 ca imobilizare, 2131 ca amortizare) intră”] un mijloc fix stă pe un cont
+                # de imobilizări necorporale (20x) sau corporale (21x) — nu pe amortizare (28x), ajustări (29x), imobilizări în curs (23x) sau
+                # financiare (26x), OMFP 1802/2014 pct.594
+                er.append(respinge("mijloc fix", i, "cont_imobilizare_invalid",
+                                   "%s: contul %s nu e un cont de imobilizări necorporale (20x) sau corporale (21x)%s" % (
+                                       eticheta, cimo, " — e un cont de amortizare; contul de imobilizare și cel de amortizare par inversate"
+                                       if _sint[:2] == "28" else "")))
+            elif e_teren(cimo) and dur > 0:
+                # [362] terenul nu se amortizează: o durată scrisă în fișier nu se folosește pe tăcute
+                er.append(respinge("mijloc fix", i, "durata_teren",
+                                   "%s: terenul (contul %s) nu se amortizează (CF art.28 alin.(4) lit.a)) — durata trebuie să fie 0 sau "
+                                   "goală, nu %s" % (eticheta, cimo, _cate(dur, "lună", "luni"))))
+            elif _sint == "2112" and dur != 120:
+                # [362, decizia A.2] CF art.28 alin.(12) lit.e): „pentru cheltuielile cu investițiile efectuate pentru amenajarea
+                # terenurilor, liniar, pe o perioadă de 10 ani”
+                er.append(respinge("mijloc fix", i, "durata_amenajare_teren",
+                                   "%s: amenajările de terenuri (contul 2112) se amortizează liniar pe 10 ani, adică 120 de luni (CF art.28 "
+                                   "alin.(12) lit.e)), nu %s" % (eticheta, _cate(dur, "lună", "luni") if dur > 0 else "fără durată")))
             else:
                 asteptat = cont_amortizare_asteptat(cimo)
                 if asteptat and camo and not camo.split(".")[0].startswith(asteptat):

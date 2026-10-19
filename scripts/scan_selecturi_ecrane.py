@@ -267,6 +267,7 @@ CASUTE = {
     "admin.js:sel-bifa": "selecție în administrare — nu fapt fiscal",
     "firme.js:data-fid": "ce facturi se alocă plății — selecție de lucru vizibilă, suma alocată se vede",
     "firme.js:data-cf": "[278] ce facturi stinge dispoziția de casă — selecție de lucru vizibilă; suma pe fiecare și avansul se văd în formular",
+    "firme.js:data-cn": "[405] ce NIR-uri fără factură plătește dispoziția de casă (avans 4091 = 5311) — selecție de lucru vizibilă, ca facturile",
     "firme.js:c-avans": "[278] partea fără factură e avans: nota e aceeași (5311 = 4111 / 401 = 5311), se schimbă numai semnalul (termenul facturii de avans) — nu fapt fiscal ales",
     "validat.js:val-sel": "ce note se validează deodată (retest 08.10 pct.3) — selecție de lucru vizibilă; fiecare notă trece prin aceeași validare",
     "validat.js:val-sel-toate": "selectează toate notele din listă — selecție de lucru, nu fapt fiscal",
@@ -301,7 +302,6 @@ INPUTURI = {
     "declaratii.js:d318-li": "(a) uzual: cererea pe an întreg — luna 1; apare numai când cererea NU e anuală, deci e vizibilă și se schimbă",
     "declaratii.js:d318-ls": "idem — luna 12",
     "produse_ecran.js:pr-um": "(a) uzual: unitatea „buc”; (b) vizibilă; (c) se schimbă — unitatea nu schimbă nota, baza sau impozitul",
-    "firme.js:sn-cont-transport": "cont contabil sugerat (401) la NIR, vizibil și modificabil — aceeași regulă ca la conturile din Operațiuni",
     "firme.js:sn-cont-taxe": "cont contabil sugerat (446) la NIR, vizibil și modificabil — idem",
     "declaratii.js:d398-cur": "VALOARE FIXĂ, nu alegere: CF art.314 alin.(10) / art.315 alin.(12) / art.315^2 alin.(22) — „Declarația specială de TVA se întocmește în euro” (readonly)",
 }

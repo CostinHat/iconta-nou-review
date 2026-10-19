@@ -46,6 +46,13 @@ def valideaza_cnp(cnp):
     if not s:
         return False, "lipsește"
     if not s.isdigit():
+        import re as _re
+        # [388, retestul 19.10.2026: „Excel transformă CNP-ul în 2,9E+12; aplicația spune «CNP invalid (conține și alte caractere decât
+        # cifre)», fără cauză și remediu”] forma științifică e semnul Excel-ului: spune cauza și ce e de făcut
+        if _re.fullmatch(r"\d+(?:[.,]\d+)?[eE][+]?\d+", s):
+            return False, ("apare ca „%s”: Excel l-a transformat în număr când a deschis fișierul și a pierdut cifrele. Formatează coloana "
+                           "CNP ca Text și scrie din nou CNP-urile (sau pornește de la modelul descărcat din iConta, unde CNP-ul e scris ca "
+                           "text), apoi salvează și încarcă fișierul din nou" % s)
         return False, "conține și alte caractere decât cifre"
     if len(s) != 13:
         from core.common import cate   # numeralul acordat („o cifră”, „20 de cifre”); common nu trage db / api, modulul rămâne frunză

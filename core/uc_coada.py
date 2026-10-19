@@ -845,7 +845,7 @@ def coada_depune(coada_id, date, ctx):
             if cod == "DEPASITA":
                 raise _erori.Conflict({"cod": cod, "mesaj": r["mesaj"], "coada_id": coada_id, "actiune": "Generează din nou"})
             raise (_erori.Conflict if cod == "STARE_GRESITA" else _erori.FaraDrept if cod == "FARA_VERDICT"
-                   else _erori.DateInvalide if cod in ("ERORI_DUK", "ATENTIONARI_NECONFIRMATE")   # [C3] 422, nu 404
+                   else _erori.DateInvalide if cod in ("ERORI_DUK", "ATENTIONARI_NECONFIRMATE", "PERIOADA_NEINCHEIATA")   # [C3] 422; [383]
                    else _erori.Inexistent)(r.get("mesaj", cod))
     # [deficiența 320] „o declarație pregătită de tine a fost depusă”: cine a pregătit-o află, când a depus-o altcineva
     try:
@@ -862,6 +862,62 @@ def coada_depune(coada_id, date, ctx):
 
 
 # ============================================================
+#  [368] NOTELE INTERNE ALE FIRMEI ÎN PARTIDĂ SIMPLĂ — decizia Costin 19.10.2026 „Se validează automat” (DECIZII „Închiderea lotului 9”)
+# ============================================================
+#: [368] marja pentru ceasul bazei (aplicația și baza sunt pe același server): notele unei scrieri au `creat_la` după începutul ei
+_MARJA_CEAS_SECUNDE = 2
+
+
+def inceputul_scrierii():
+    """[368] Momentul de dinaintea unei scrieri, de la care se caută notele ei (`coada_api.ciorne_din_cerere`): ceasul aplicației minus
+    marja. Aceeași definiție pentru middleware-ul cererii și pentru drumurile fără cerere (API v1, facturile recurente, WooCommerce)."""
+    import datetime as _dt
+    return _dt.datetime.now(_dt.timezone.utc) - _dt.timedelta(seconds=_MARJA_CEAS_SECUNDE)
+
+
+def note_interne(tenant_id, uid, cabinet_id, de_la, in_plus=()):
+    """Chemată de middleware DUPĂ orice cerere de modificare reușită pe `/tenants/{id}/…`, ÎNAINTEA cozii: la o firmă în partidă simplă
+    (PFA / II / IF) notele ciornă scrise în cerere (`coada_api.ciorne_din_cerere`, oricine e autorul) se validează automat, ca note
+    interne, pe drumul validării (`jurnal_api.valideaza_interne`, cu toate regulile ei). Nota refuzată rămâne ciornă: la un autor fără
+    drept de validare intră apoi în coadă (`note_in_coada`), ca orice ciornă; refuzul se întoarce și ecranului (antetul din middleware).
+    -> {"interne": [eticheta], "refuzate": [{"eticheta", "motiv"}]}"""
+    schema = _schema_firmei(tenant_id, cabinet_id)
+    return note_interne_schema(schema, uid, de_la, in_plus) if schema else {"interne": [], "refuzate": []}
+
+
+def _schema_firmei(tenant_id, cabinet_id):
+    """Schema firmei, numai dacă e a cabinetului (altfel None) — o singură citire pentru notele interne și coadă."""
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            return repo_declaratii.schema_firmei_cabinetului(cur, tenant_id, cabinet_id)
+
+
+def note_interne_schema(schema, uid, de_la, in_plus=()):
+    """`note_interne` pe schema firmei — și pentru drumurile care scriu note în afara unei cereri `/tenants/{id}/…` (un job de fundal:
+    `uid=None`, notele fără autor). `in_plus`: note mai vechi de reîncercat (numai cele încă ciornă). Comite."""
+    gol = {"interne": [], "refuzate": []}
+    from core import eticheta_nota as _et
+    from core import jurnal_api as _jurnal
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            if not coada_api.partida_simpla(cur):
+                return gol
+            ids = coada_api.ciorne_din_cerere(cur, uid, de_la)
+            # [368] și ciornele mai vechi a căror cauză de refuz a rezolvat-o cererea (`autor_cerere.reincearca_interna`), încă ciorne
+            ids = ids + [n for n in coada_api.ciorne_dintre(cur, in_plus) if n not in ids]
+        if not ids:
+            return gol
+        validate, refuzate = _jurnal.valideaza_interne(conn, schema, ids, cu_cod=True)
+        with conn.cursor() as cur:
+            et = dict(_et.note(cur, schema, validate + [n for n, _, _ in refuzate]))
+    from core import afirmatii as _af
+    # refuzul e o afirmație despre nota firmei: tipată (`neconformitate` — nota și regula care n-o lasă validată), cu eticheta pentru ecran
+    return {"interne": [et.get(n, _et.NOTA_INEXISTENTA) for n in validate],
+            "refuzate": [_af.afirmatie("neconformitate", "nota_interna_refuzata", m, unde=et.get(n, _et.NOTA_INEXISTENTA), regula=cod,
+                                       eticheta=et.get(n, _et.NOTA_INEXISTENTA)) for n, m, cod in refuzate]}
+
+
+# ============================================================
 #  [validare_note] NOTELE PREGĂTITE DE ASISTENT — comanda Costin 06.10.2026, pct.1, varianta (a)
 # ============================================================
 def note_in_coada(tenant_id, uid, cabinet_id):
@@ -871,8 +927,7 @@ def note_in_coada(tenant_id, uid, cabinet_id):
     with db.get_conn() as conn:
         if coada_api.e_validator(conn, uid):
             return []
-        with conn.cursor() as cur:
-            schema = repo_declaratii.schema_firmei_cabinetului(cur, tenant_id, cabinet_id)
+    schema = _schema_firmei(tenant_id, cabinet_id)
     if not schema:
         return []
     with db.get_conn(schema) as conn:

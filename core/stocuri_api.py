@@ -152,7 +152,34 @@ def _nir_de_refacut(cur, schema, nir_id):
     return {"id": v["id"], "numar": v["numar"], "note": note}, None
 
 
-def adauga_nir(conn, schema, nir):
+#: [deficiența 399] refuzurile deciziei pe care NIR-ul nu o mai ia în locul omului (factura a sosit sau nu; TVA-ul transportului)
+COD_FACTURA_NEDECLARATA, COD_COTA_TRANSPORT = "FACTURA_NIR_NEDECLARATA", "COTA_TRANSPORT_NEALEASA"
+
+
+def _decizia_omului(nir, metoda, factura):
+    """[deficiența 399, retestul Costin 19.10.2026] „pe NIR nu se alege cu factură/fără → 408 fără decizia utilizatorului”; „cost
+    accesoriu (transport 100 lei, furnizor plătitor TVA) fără TVA”. Refuzul (cu câmpul) sau None. Factura nesosită = 408 și TVA-ul pe
+    4428 (OMFP 1802/2014, funcțiunea contului 408: „valoarea bunurilor aprovizionate [...] pentru care nu s-au primit facturile”)."""
+    from core import metoda_stoc as _ms
+    if factura is None:
+        fs = nir.get("factura_sosita")
+        if fs is None:
+            return {"eroare": "Spune dacă factura furnizorului a sosit: fără ea, datoria intră pe 408 «Furnizori - facturi nesosite», iar "
+                              "TVA-ul stă neexigibil până la factură.", "cod": COD_FACTURA_NEDECLARATA,
+                    "erori_campuri": [{"camp": "sn-factura-sosita", "mesaj": "alege: a sosit sau nu"}]}
+        if fs is True:
+            msg = ("Factura a sosit: la stocul la cost, factura primită aduce ea marfa în stoc și în contabilitate (Facturi primite → "
+                   "validare pe contul de stoc). NIR-ul fără factură se face numai când factura n-a sosit." if metoda == _ms.CV else
+                   "Factura a sosit: alege-o în «Factura primită a recepției», ca NIR-ul să se lege de ea (costul vine din factură).")
+            return {"eroare": msg, "cod": COD_FACTURA_NEDECLARATA, "erori_campuri": [{"camp": "sn-factura-sosita", "mesaj": msg}]}
+    if _d(nir.get("transport")) > 0 and nir.get("cota_tva_transport") in (None, ""):
+        msg = ("Alege cota de TVA a transportului (0% dacă transportatorul nu e plătitor de TVA): transportul de la un furnizor plătitor "
+               "are TVA-ul lui, deductibil (CF art.297 alin.(4) lit.a).")
+        return {"eroare": msg, "cod": COD_COTA_TRANSPORT, "erori_campuri": [{"camp": "sn-transport-cota", "mesaj": msg}]}
+    return None
+
+
+def adauga_nir(conn, schema, nir, cere_decizia=False):
     """nir: {numar, data, furnizor?, cui?, factura_ref?, linii: [...]}.
     Calculează prin motor, persistă NIR + linii, creează notele ciorne.
     [cap.24 regula 2] validare per-linie AUTORITARA: un articol incomplet se raporteaza langa campul lui
@@ -200,6 +227,10 @@ def adauga_nir(conn, schema, nir):
             factura, er = _factura_pentru_nir(cur, schema, nir["factura_id"])
         if er:
             return {"eroare": er[1], "cod": er[0], "erori_campuri": [{"camp": "sn-factura", "mesaj": er[1]}]}
+    if cere_decizia:   # [399] drumul omului (ruta): factura sosită sau nu și cota transportului se aleg, nu se presupun
+        _dec = _decizia_omului(nir, metoda, factura)
+        if _dec:
+            return _dec
     lipsa = _nir_campuri_lipsa(nir.get("linii") or [], metoda)
     if lipsa:
         return {"eroare": "Completează articolele: " + "; ".join(x["eticheta"] for x in lipsa),
@@ -215,10 +246,13 @@ def adauga_nir(conn, schema, nir):
         # Factura legată mută apoi 408 = 401 și 4428 -> 4426 (`nir_legare.note_factura_legata`).
         from core import nir_legare as _nl
         fara_factura = factura is None
+        # [deficiența 398] „toate liniile aceeași regulă”: transportul se creditează, implicit, pe contul furnizorului mărfii (408 la
+        # factura nesosită, 401 cu factură) — înainte „401” fix, deci marfa ieșea 371 = 408 și transportul 371 = 401 pe același NIR
+        cont_furn = _nl.CONT_NESOSITE if fara_factura else "401"
         rez = motor(nir["linii"], transport=nir.get("transport", 0), taxe=nir.get("taxe", 0),
-                    cont_transport=nir.get("cont_transport") or "401", cont_taxe=nir.get("cont_taxe") or "446",
-                    cont_furnizor=_nl.CONT_NESOSITE if fara_factura else "401",
-                    cont_tva=_nl.CONT_TVA_NIR if fara_factura else "4426")
+                    cont_transport=(str(nir.get("cont_transport") or "").strip() or cont_furn), cont_taxe=nir.get("cont_taxe") or "446",
+                    cont_furnizor=cont_furn, cont_tva=_nl.CONT_TVA_NIR if fara_factura else "4426",
+                    cota_tva_transport=nir.get("cota_tva_transport"))
     except _m.RefuzLinie as e:
         return {"eroare": str(e), "erori_campuri": [{"camp": "nir-l%d-%s" % (e.linie, e.camp), "mesaj": str(e)}]}
     except (ValueError, KeyError) as e:
@@ -285,6 +319,9 @@ def adauga_nir(conn, schema, nir):
                     cur.execute(f"INSERT INTO {schema}.articole (denumire, um) VALUES (%s, %s) RETURNING id",
                                 (" ".join(str(den).split()), l.get("um") or "buc"))
                     aid = cur.fetchone()["id"]
+                    # [415] cota de pe rândul NIR-ului ajunge în nomenclator: la emitere, articolul nu mai e „fără cotă”
+                    from core import produse_api as _pa
+                    _pa.asigura_din_document(cur, schema, den, l.get("um"), l.get("cota_tva"), document)
                 else:
                     cur.execute(f"SELECT denumire FROM {schema}.articole WHERE id = %s", (aid,))
                     den = cur.fetchone()["denumire"]
@@ -364,6 +401,14 @@ def nir_detaliu(conn, schema, nir_id):
         cur.execute(f"SELECT denumire, cantitate, pret_achizitie, pret_vanzare, cota_tva, articol_id FROM {schema}.nir_linii "
                     "WHERE nir_id = %s ORDER BY id", (nir_id,))
         linii = [dict(x) for x in cur.fetchall()]
+        # [deficiența 400] costul accesoriu repartizat și costul unitar final pe linie — aceeași repartizare ca la salvare
+        # (`stocuri._repartizeaza`, proporțional cu costul de bază), refăcută din liniile și accesoriul NIR-ului
+        if linii:
+            _baze, _rep, _t, _x = _m._repartizeaza(linii, n.get("transport") or 0, n.get("taxe") or 0)
+            for l, b, a in zip(linii, _baze, _rep):
+                l["accesoriu"] = a
+                l["cost_final"] = _q2(b + a)
+                l["cost_unitar_final"] = (_q2(b + a) / Decimal(str(l["cantitate"]))).quantize(Decimal("0.0001"), rounding=ROUND_HALF_UP)
         ids = note_nir(n)
         note = []
         if ids:

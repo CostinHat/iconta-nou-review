@@ -46,6 +46,64 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 9, comenzile 9.2 și 9.3 (Costin 19.10.2026, verbatim în DECIZII „Comanda 9.2”, „Comanda 9.3”)** — deficiențele 398–417
+  (prioritare 406, 410, 411, 417) și 418–419; aceeași ramură `lucru/lot9-2026-10-19`, în `/home/costin/iconta_lot9`.
+  - ultim: L92-1..L92-9 implementate pe ramură; `e2e_lot92.py` 26 / 26 verzi (+ C57 în `e2e_lot91.py`), fiecare test verde și rulat
+    SINGUR (controlul nemutat); mutațiile pytest 32 / 32 + C61 / C63 ROȘII, mutațiile e2e 28 / 28 ROȘII, ale verificatorului 5 / 5;
+    registrele (DEFICIENTE 398–419 + C57–C64, DECIZII, GARZI, ISTORIC, PREDARE) — commitul care conține această intrare.
+  - urmator: raportul 9.1 + 9.2 + 9.3 și oprirea (9.2 pct.4, 9.3 pct.3); poarta lotului 9 o singură dată, după 9.1, 9.2 și 9.3, NUMAI la
+    comanda lui Costin (9.2 pct.3: „Fără poartă, fără publicare, fără repornire”). BLOCAT: deciziile §6 (405, 409, 412, 404; 394 / SC din 9.1).
+  - pasi:
+    L92-1. 406: `core/casa_sold.py` (salvare + validare), registrul de casă de la soldul lunii; 407 (avansul 409x, destinația aleasă).
+    L92-2. 410: `api.refuzSalvare` + `cereAlegerile` complet + refuzurile „avert” -> „eroare”; „primul clic pierdut” (change la apăsare).
+    L92-3. 411 (netul de plată, costul cu CM, deducerea sub impozit), 412 (funcția din COR), 413 (propunerea orelor), 414 (butonul lunii).
+    L92-4. 416 (stornată: stare, scadențar, notificări, cashflow), 417 (mențiunea + BG-3; FACT1), 419 (retur la stornare).
+    L92-5. 398–400 (NIR: aceeași regulă, decizia omului, TVA transport, costul final), 408 (rulajul documentului), 415 (cota articolului nou).
+    L92-6. 401–403 (borderoul de achiziție, identificarea, gestiunea; documentul vechi din fișă), 404 (încadrarea lipsei), 405 / 409 -> decizie.
+    L92-7. 418 a/b/c (statutul din XML / ANAF, contul pe linie — migrare `migrare_cont_linie_primita`; confirmarea nu se mai șterge singură).
+    L92-8. Gărzi (verificator REFUZ_SALVARE, REFUZ_CA_AVERTISMENT, CONFIRMARE_TEMPORIZATA), teste, e2e, mutații, registre; raportul.
+    L92-9. Ce a rămas (cererea din chat: subagenți în paralel pe fișiere diferite, fără teste grele în paralel): e2e C57 / C59 / 402; C61
+           (`efactura_trimitere.completeaza_client_ro`), C62 (`facturi_ecran.js` #fd-spv), C63 (`uc_tenants.antet_din_proforma` /
+           `linii_din_proforma`), C64 (`#fd-act-rez` + verificator CONFIRMARE_PESTE_ECRAN, DS cap.27 v2.94); 411–414 independente.
+    L92-10. Închiderea lotului 9 (Costin, 19.10.2026: „Termină tot ce a rămas din 9.1, 9.2 și 9.3 [...] rulezi poarta lotului 9, o singură
+           dată. Dacă poarta e verde, faci backup și publici”), deciziile din chat (DECIZII „Închiderea lotului 9: deciziile”), pe subagenți:
+           A) C63 „Pleacă marfa acum?” la transformare (`uc_tenants.proforma_transforma`, ruta, `facturi_ecran.js`) + C61 localitatea /
+              județul și la clientul român în formular (`emitere_ecran.js`, `factura_pdf.adresa_tert`);
+           B) 405 plata NIR-ului fără factură = avans 409x (`casa_api`, compensarea la factură) + 404 nedeductibilul automat la ajustările
+              fiscale (`stocuri_cv_api._incadreaza_lipsa`);
+           C) 412 tipul contractului, Nr. / Data CIM în fișa salariatului (migrare nouă, template, formular, adeverință);
+           D) 394 instrucțiunile pliate în Migrare cabinet (`migrare.js`) + notele interne la PFA numite ca interne, nu „de validat”;
+           E) 409 reparația notei vechi pe datele cabinetului (aprobată; la publicare, cu backup: stornare + notă nouă, R1);
+           apoi e2e + mutații + vizual (secvențial), commit, poarta lotului 9 (o dată), backup + publicare numai pe VERDE.
+           STARE: A–D implementate (plus E: drumurile fără cerere; C65, C66, C67 găsite pe drum); e2e_lot93a–d 13 / 13 verzi, fiecare
+           test și singur (control); 12 mutații e2e noi ROȘII; E BLOCAT: citirea producției refuzată de controlul de permisiuni.
+    L92-11. Rularea țintită de dinaintea porții (20.10.2026): 14 pytest + 23 e2e picate -> reparate (chitanța furnizorului nu e avans;
+           afirmațiile tipate; `api.refuzuriInterne`; „regula de fond R3”; ancora 394 în DS; migrările pe baza de test; testele vechi aduse
+           la deciziile lotului; `firma_horeca` în conftest); reluarea 76 / 76 e2e. Apoi: uneltele vizuale, blocurile generate, commit,
+           poarta lotului 9 (o dată). Comanda 9.4: regula de permisiuni — refuzată de clasificator, de pus de Costin (DECIZII 20.10).
+           STARE: IN LUCRU (vizual în rulare); producția (backup, publicare, 409, ciornele PFA) BLOCAT: permisiunile sesiunii.
+
+- fir: **Lotul 9, comanda 9.1 (Costin 19.10.2026, verbatim în DECIZII „Comanda 9.1”)** — deciziile A.1–A.3, nerezolvatele lotului 8 (378, 359,
+  362, 368, 371, 349, 323, 321, 322), deficiențele 382–397, restul lotului 8 (cheile WhatsApp, Search Console, Brevo); worktree
+  `/home/costin/iconta_lot9`, ramura `lucru/lot9-2026-10-19` (din `lucru/dupa-lot8-2026-10-19`, peste `27f4fab3`).
+  - ultim: L9-1..L9-8 implementate pe ramură; `e2e_lot91.py` 28 / 28 verzi, mutațiile pe copia exportată (raportul 9.1); rularea țintită și
+    uneltele vizuale rulate; registrele (DEFICIENTE, DECIZII, GARZI, ISTORIC, LANSARE, SEO, PREDARE) — commitul care conține această intrare.
+  - urmator: poarta lotului 9 (`sh scripts/poarta_lot.sh`, o singură dată pe lot, comanda 9.1 E.1), apoi raportul și oprirea (E.3); publicarea
+    numai cu acordul lui Costin (E.2). BLOCAT după raport: §6 al raportului 9.1 (394 Migrare cabinet, Search Console, notele la PFA) și
+    cheile EXTERNE (Meta, Postmark).
+  - pasi:
+    L9-1. A.1 / 359: coloana „amortizare” citită; amortizarea continuă de la cifra preluată (`d406_active._preluare`), pe toți cititorii
+          registrului (`repo_mijloace_fixe`: nota lunii, registru, inventar, reevaluare, D406); `mf_registru.preluat_pe_cont`.
+    L9-2. A.2 / 362: categoria `amenajari_terenuri` (liniar, 120 de luni), conturile 20x / 21x, terenul fără durată; mesajul motorului fără C&D.
+    L9-3. A.3: nomenclatorul obligațiilor (OPANAF 587/2016 anexa 3, Ordinul 605/2026 anexa 2 + structurile ANAF) legat în componente și D710;
+          387: planul OMFP 1802/2014 întreg (șablon + `migrare_plan_conturi_omfp`, rulată pe baza de test); C56.
+    L9-4. 378 (6581 -> rd.25), 382 (avertismentul ferestrei cumulate), 383 (perioada neîncheiată), 395 (ordinea rândurilor).
+    L9-5. Migrare: 349, 371, 384, 385 + C55, 388, 389, 392, 393 + C57, 368 (Mijloace fixe și Raport Z la PFA).
+    L9-6. Ecrane: 323, 386 (PIVOT validarea fără document), 390, 391, 394 (Registrul jurnal lat; Migrare cabinet -> decizie), 396, 397.
+    L9-7. D1 (cheile WhatsApp, C53), D2 (Search Console, C54), D3 (Brevo -> Postmark), C52 (proba fără chei de trimitere).
+    L9-8. 321 / 322 probate pe un cabinet nou de test, cu codul publicat (baza de test, cabinetul scos la final).
+    L9-9. Poarta lotului; raportul 9.1.
+
 - fir: **Lotul 8, comanda 8.2 (Costin 18.10.2026, verbatim în DECIZII „Comanda 8.2”)** — publicarea lotului 8 (321–340, `bee07d87`),
   316 lămurită, 341–381, regula importurilor de migrare, restul lotului 8 (Meta/WhatsApp, Postmark, Search Console, bara de stare fixă);
   worktree `/home/costin/iconta_lot8b`, ramura `lucru/lot8b-2026-10-18` (din `bee07d87`).

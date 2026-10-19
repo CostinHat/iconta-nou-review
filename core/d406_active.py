@@ -158,8 +158,10 @@ def _categorie_activ(cont_imobilizare):
         return "echipamente_2_1"       # alin.5 lit.b (denumire OMFP = textul legii)
     if c.startswith("2134") or c.startswith("217"):
         return "animale_plantatii"     # subgrupa 2.4
+    if c.startswith("2112"):
+        return "amenajari_terenuri"    # [362, decizia A.2] CF art.28 alin.(3) lit.f) + alin.(12) lit.e): liniar, 10 ani
     if c.startswith("211"):
-        return "terenuri"              # neamortizabil
+        return "terenuri"              # neamortizabil (CF art.28 alin.(4) lit.a))
     return "alt_mijloc_fix"            # lit.c, catch-ul legal: "oricarui altui mijloc fix amortizabil"
 
 def _metode_permise(categorie, pif, destinatie_cd=False):
@@ -167,8 +169,8 @@ def _metode_permise(categorie, pif, destinatie_cd=False):
     si echipamentele destinate cercetarii-dezvoltarii (CF art.20 alin.(1) lit.b), art.20^1 alin.(8))."""
     if categorie == "terenuri":
         return set()                   # terenurile nu se amortizeaza
-    if categorie == "constructii":
-        return {"liniara"}             # lit.a
+    if categorie in ("constructii", "amenajari_terenuri"):
+        return {"liniara"}             # lit.a; amenajările de terenuri: alin.(12) lit.e) „liniar, pe o perioadă de 10 ani”
     permise = {"liniara", "degresiva"}  # lit.b si lit.c permit ambele
     if categorie == "echipamente_2_1":
         permise.add("accelerata")       # lit.b
@@ -187,7 +189,13 @@ def _verifica_categorie(mf, metoda, pif):
     categorie = _categorie_activ(cont)
     permise = _metode_permise(categorie, pif, bool(mf.get("destinatie_cd")))
     if metoda not in permise:
-        temei = "CF art.28 alin.(5); aparatura C&D: CF art.20 alin.(1) lit.b) (bifa «Destinat C&D»)"
+        # [362, retestul 19.10.2026: mesajul „vorbește de aparatura C&D și «bifa Destinat C&D», fără legătură cu cazul”] temeiul spune
+        # numai ce privește categoria activului; C&D numai unde bifa ar schimba ceva (alt mijloc fix, metoda accelerată)
+        temei = {"terenuri": "CF art.28 alin.(4) lit.a): terenurile nu sunt active amortizabile",
+                 "amenajari_terenuri": "CF art.28 alin.(12) lit.e): amenajările de terenuri se amortizează liniar, pe 10 ani",
+                 "constructii": "CF art.28 alin.(5) lit.a)"}.get(categorie, "CF art.28 alin.(5)")
+        if metoda == "accelerata" and categorie == "alt_mijloc_fix":
+            temei += "; aparatura și echipamentele de cercetare-dezvoltare: CF art.20 alin.(1) lit.b) (bifa «Destinat C&D»)"
         if metoda == "superaccelerata":
             temei = ("CF art.28 alin.(8^1) (OUG 8/2026): doar subgrupa 2.1 (echipamente) sau 2.4 "
                      "(animale/plantații), active NOI puse în funcțiune în 2026")
@@ -205,6 +213,7 @@ _ETICHETA_CATEGORIE = {
     "echipamente_2_1": "echipament tehnologic din subgrupa 2.1, CF art.28 alin.(5) lit.b",
     "animale_plantatii": "animale și plantații, subgrupa 2.4",
     "terenuri": "teren — nu se amortizează",
+    "amenajari_terenuri": "amenajare de teren, CF art.28 alin.(12) lit.e)",
     "alt_mijloc_fix": "alt mijloc fix, CF art.28 alin.(5) lit.c",
 }
 _ETICHETA_METODA = {"liniara": "liniară", "degresiva": "degresivă", "accelerata": "accelerată",
@@ -360,6 +369,8 @@ def _acumulat_final_an(mf_ef, pif_real, an):
     Corpul e cel dinainte de R59, mutat aici neschimbat, ca cele doua borne ale anului sa se poata
     calcula pe etape DIFERITE. `pif_real` doar pentru `_verifica_categorie` — v. `_mf_la`.
     """
+    if _preluare(mf_ef) is not None and date(an, 12, 31) >= _preluare(mf_ef)[0]:   # [359, A.1] cumulul pornește de la cifra preluată
+        return amortizat_la_data(mf_ef, date(an, 12, 31))["amortizat"]
     val = _d(mf_ef["valoare"])
     rez = _d(mf_ef.get("rezidual"))
     dnf = int(mf_ef.get("dnf_luni") or 0)
@@ -387,7 +398,19 @@ def amortizat_la_data(mf, la_data):
     (alin.5/8^1) sau date invalide - apelantul decide cum arata randul, NU fabrica liniar tacit.
 
     [R59] Daca activul are reevaluari APLICATE, se raspunde pe ETAPA care contine `la_data`:
-    amortizarea cumulata a fost ELIMINATA la reevaluare, deci dupa ea porneste de la zero."""
+    amortizarea cumulata a fost ELIMINATA la reevaluare, deci dupa ea porneste de la zero.
+
+    [359, decizia A.1] La activul preluat (`_preluare`), de la data preluării încolo cumulul = cifra preluată + ratele de după ea."""
+    pr = _preluare(mf)
+    if pr is not None and la_data >= pr[0]:
+        val = _d(mf["valoare"])
+        if int(mf.get("dnf_luni") or 0) <= 0 or val <= 0:
+            raise ValueError("Mijlocul fix %s: valoarea de intrare sau durata de amortizare lipsește (sau nu e mai mare ca 0) — fără ele amortizarea nu se calculează." % (mf.get('cod') or 'fără cod'))
+        metoda = _norm_metoda(mf.get("metoda"))
+        _verifica_categorie(mf, metoda, mf.get("data_pif"))
+        amortizat = (pr[1] + sum((r for (a, l), r in _plan_dupa_preluare(mf).items() if (a, l) <= (la_data.year, la_data.month)),
+                                 Decimal(0))).quantize(B, rounding=ROUND_HALF_UP)
+        return {"amortizat": amortizat, "ramas": (val - amortizat).quantize(B, rounding=ROUND_HALF_UP), "metoda": metoda}
     mf, _pif_real = _mf_la(mf, la_data)
     val = _d(mf["valoare"])
     rez = _d(mf.get("rezidual"))
@@ -410,7 +433,69 @@ def amortizat_la_data(mf, la_data):
     ramas = (val - amortizat).quantize(B, rounding=ROUND_HALF_UP)
     return {"amortizat": amortizat, "ramas": ramas, "metoda": metoda}
 
+def _preluare(mf):
+    """(data_preluare, amortizarea preluată) pentru activul adus din registrul vechi cu amortizarea cumulată la data preluării, altfel None.
+
+    [deficiența 359, decizia Costin 9.1 A.1, 19.10.2026, verbatim în DECIZII „Comanda 9.1”] „amortizarea continuă cu cifra din fișierul
+    preluat; diferența față de calcul rămâne doar afișată.” Deci: lunile până la data preluării sunt ale registrului vechi (iConta nu le mai
+    înregistrează), cumulul la data preluării e cifra din fișier, iar de acolo înainte rata lunară e cea a metodei — CF art.28 alin.(6): „În
+    cazul metodei de amortizare liniară, amortizarea se stabilește prin aplicarea cotei de amortizare liniară la valoarea fiscală de la data
+    intrării în patrimoniul contribuabilului” (rata nu se reface pe valoarea rămasă) — până se epuizează valoarea amortizabilă.
+    INTERPRETARE CU TEMEI: dacă cifra preluată e sub cea calculată, epuizarea vine după durata normală; după ultima lună a duratei, rata e
+    cea liniară (valoarea amortizabilă / durata). Alternativa respinsă: valoarea rămasă pe durata rămasă (ar schimba rata, contrar alin.(6)).
+    De reconfirmat dacă apare o normă care transează. Nu se aplică peste reevaluări (etapele R59 au regula lor, `_mf_la`)."""
+    p, d = mf.get("amortizare_preluata"), mf.get("data_preluare")
+    if p is None or d is None or _reev_aplicate(mf):
+        return None
+    if isinstance(d, str):
+        d = date.fromisoformat(d[:10])
+    return d, _d(p)
+
+
+def _plan_dupa_preluare(mf):
+    """{(an, luna): rata} — ratele lunilor de după preluare, până la epuizarea valorii amortizabile (cel mult 1200 de luni). Recalculat la
+    fiecare cerere, fără memorie în proces: o stare mutabilă în modul ar cere declarația de cache (P6), iar calculul e o buclă scurtă."""
+    dp, prel = _preluare(mf)
+    val, rez, dnf = _d(mf["valoare"]), _d(mf.get("rezidual")), int(mf.get("dnf_luni") or 0)
+    amortizabil, pif = val - rez, mf.get("data_pif")
+    liniar = (amortizabil / dnf).quantize(B, rounding=ROUND_HALF_UP) if dnf > 0 else Decimal(0)
+    metoda = _norm_metoda(mf.get("metoda"))
+    # rata BRUTĂ a metodei pe luna de amortizare (fără „ultima lună absoarbe restul” al calculului de la PIF: aici restul îl dă cifra
+    # preluată, prin plafonul de mai jos)
+    neliniare = None if (metoda == "liniara" or dnf < _MIN_LUNI_NELINIAR) else _amort_lunar_neliniar(metoda, amortizabil, dnf)
+    plan, cumul, an, luna = {}, prel, dp.year, dp.month
+    for _ in range(1200):
+        if cumul >= amortizabil:
+            break
+        an, luna = (an + 1, 1) if luna == 12 else (an, luna + 1)
+        idx = (an - pif.year) * 12 + (luna - pif.month) if pif else 0
+        if idx < 1:
+            continue
+        rata = neliniare[idx - 1] if (neliniare is not None and idx <= dnf) else liniar
+        rata = min(rata, amortizabil - cumul).quantize(B, rounding=ROUND_HALF_UP)
+        if rata > 0:
+            plan[(an, luna)] = rata
+            cumul += rata
+    return plan
+
+
 def amortizare_luna(mf, an, luna):
+    """Amortizarea lunii (an, luna). [359, decizia A.1] La activul preluat cu amortizarea cumulată (`_preluare`): 0 până la luna preluării
+    inclusiv (luna e a registrului vechi), apoi rata metodei, până la epuizarea valorii amortizabile (`_plan_dupa_preluare`); altfel
+    `_rata_metoda`."""
+    pr = _preluare(mf)
+    if pr is None:
+        return _rata_metoda(mf, an, luna)
+    dnf, val = int(mf.get("dnf_luni") or 0), _d(mf["valoare"])
+    if dnf <= 0 or val <= 0:
+        raise ValueError("Mijlocul fix %s: valoarea de intrare sau durata de amortizare lipsește (sau nu e mai mare ca 0) — fără ele amortizarea nu se calculează." % (mf.get('cod') or 'fără cod'))
+    _verifica_categorie(mf, _norm_metoda(mf.get("metoda")), mf.get("data_pif"))
+    if (an, luna) <= (pr[0].year, pr[0].month):
+        return Decimal("0.00")
+    return _plan_dupa_preluare(mf).get((an, luna), Decimal("0.00"))
+
+
+def _rata_metoda(mf, an, luna):
     """Amortizarea unei SINGURE luni calendaristice (an, luna) pe METODA reala (CF art.28).
     0.00 daca luna e inaintea primei luni de amortizare (luna urmatoare PIF, alin.12) sau dupa
     epuizarea dnf. Ultima luna liniara absoarbe restul de rotunjire, ca suma lunilor 1..dnf =

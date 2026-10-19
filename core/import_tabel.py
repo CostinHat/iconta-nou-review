@@ -349,7 +349,12 @@ def celula(rand, j):
         return str(int(v))
     if isinstance(v, (datetime.datetime, datetime.date)):
         return v.isoformat()[:10]
-    return str(v).strip()
+    t = str(v).strip()
+    # [388, lotul 9] celula scrisă ca text pentru Excel (`="2900215410011"` — forma din modelele descărcate, care păstrează CNP-ul / CUI-ul
+    # întreg la deschiderea CSV-ului) se citește ca textul dinăuntru
+    if len(t) >= 3 and t.startswith('="') and t.endswith('"'):
+        t = t[2:-1].replace('""', '"')
+    return t
 
 
 def valoare(rand, j):

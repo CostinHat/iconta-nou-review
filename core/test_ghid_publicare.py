@@ -103,7 +103,9 @@ def test_robots_e_allow_listul_suprafetei_publice(c):
     #: câte o cale reală pentru fiecare regulă `Allow` (prefixele robots.txt -> o pagină servită de sub ele)
     exemplu = {"/$": "/", "/ghid": "/ghid/tema/tva", "/public/termeni": "/public/termeni", "/static/": "/static/stil.css",
                "/sitemap": "/sitemap-index.xml", "/robots.txt": "/robots.txt"}
-    allow = re.findall(r"^Allow: (\S+)$", t, re.M)
+    #: adresele retrase (410) sunt lăsate accesate ca să se vadă 410 (lotul 9 pct.D2, `core/test_search_console_404.py`); nu sunt suprafață
+    retrase = {r for c_ in main.ADRESE_RETRASE for r in (c_ + "$", c_ + "?")}
+    allow = [a for a in re.findall(r"^Allow: (\S+)$", t, re.M) if a not in retrase]
     assert sorted(allow) == sorted(exemplu)
     assert [a for a in allow if not main._pagina_publica_indexabila(exemplu[a])] == []
     assert re.findall(r"^Disallow: (\S+)$", t, re.M) == ["/static/js/", "/"]

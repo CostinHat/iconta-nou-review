@@ -18,7 +18,6 @@ Uz: python scripts/plan_functiune.py          -> rescrie core/plan_functiune.py
     python scripts/plan_functiune.py --verifica -> 0 identic / 1 diferă (garda: core/test_plan_functiune.py)
 """
 import os
-import re
 import sys
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,20 +25,15 @@ SURSA = os.path.join(RAD, "anaf_surse", "omfp_1802_2014_reglementari_consolidat.
 IESIRE = os.path.join(RAD, "core", "plan_functiune.py")
 
 
-def extrage(text):
-    i = text.index("1012. Capital subscris vărsat (P)")
-    seg = text[text.rfind("Planul de conturi general este următorul", 0, i):]
-    seg = seg[:seg.index("Clasa 9")]
-    parti = re.split(r"(?<![\d.*])(\d{2,4})\. ", seg)
-    scris, conturi = {}, []
-    for k in range(1, len(parti) - 1, 2):
-        cont, rest = parti[k], parti[k + 1]
-        if len(cont) < 3 or cont[0] in "89" or rest.strip().startswith("Eliminat"):
-            continue
-        conturi.append(cont)
-        m = re.search(r"\((A/P|A|P)\)", rest.split("\n (la ")[0])
-        if m:
-            scris.setdefault(cont, m.group(1))
+def extrage(text=None):
+    """[lotul 9, 19.10.2026 — o singură extragere a planului] Conturile și marcajul scris lângă ele vin din `core/plan_conturi_omfp.PLAN`
+    (extragerea unică a pct.594, `scripts/plan_conturi_omfp.py`, cu corecturile ei pe listă închisă); aici se aplică numai regulile
+    (2)–(4). Până azi acest script avea parserul lui, iar cele două extrageri ale aceluiași text difereau (1496, 4315, 463 lipseau de
+    aici, 2016 era în plus). Clasele 8 și 9 nu au funcțiune de bilanț — nu intră. `text` rămâne în semnătură pentru apelanții vechi."""
+    sys.path.insert(0, RAD)
+    from core.plan_conturi_omfp import PLAN
+    conturi = [c for c in PLAN if c[0] not in "89"]
+    scris = {c: PLAN[c][1] for c in conturi if PLAN[c][1]}
     conturi = list(dict.fromkeys(conturi))
     out = {}
     for c in conturi:
@@ -88,7 +82,7 @@ def randeaza(f):
 
 
 def main(argv):
-    f = extrage(open(SURSA, encoding="utf-8").read())
+    f = extrage()
     nou = randeaza(f)
     if "--verifica" in argv:
         vechi = open(IESIRE, encoding="utf-8").read() if os.path.exists(IESIRE) else ""

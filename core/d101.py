@@ -502,17 +502,23 @@ def pull(conn, schema, perioada):
     return prof, r
 
 
-def calcul_cu_ajustari(prof, an, intrari, ajustari, la_data, cota=None, cifra_afaceri=0, rezerva=None, **kw):
+def calcul_cu_ajustari(prof, an, intrari, ajustari, la_data, cota=None, cifra_afaceri=0, rezerva=None, din_conturi=None, **kw):
     """`calcul_d101` cu ajustările fiscale scrise de contabil (`core.ajustari_fiscale`, deficiența 378) — o singură regulă pentru D101 (anul)
     și pentru D100 trimestrial (cumulat de la 01.01): ajustările intră pe rândul lor; pierderea din anii anteriori (rd.39) se recuperează
     la rd.39.1 cel mult 70% din rezultatul dinaintea recuperării (CF art.31 alin.(1)); sponsorizarea (rd.27) se scade din impozit la
     rd.43.1 în plafonul CF art.25 alin.(4) lit.i) (min 0,75% din cifra de afaceri; 20% din impozit). Ce a dat omul explicit în `intrari`
-    (P39a, P431) are întâietate. -> (RezultatD101, {"pierdere", "recuperata", "sponsorizare", "credit_sponsorizare"})."""
+    (P39a, P431) are întâietate. `din_conturi` (`ajustari_fiscale.din_conturi`, 378 lotul 9) = rândurile luate din contabilitate, numai
+    unde nici omul, nici registrul nu le-au scris.
+    -> (RezultatD101, {"pierdere", "recuperata", "sponsorizare", "credit_sponsorizare", "din_conturi"})."""
     from core import ajustari_fiscale as _aj, sponsorizari as _sp
     I = dict(intrari)
     for k, v in (ajustari or {}).items():
         if k not in I:
             I[k] = _i(v)
+    folosite = {}
+    for k, v in (din_conturi or {}).items():
+        if k not in I and _i(v):
+            I[k] = folosite[k] = _i(v)
 
     def calc():
         return calcul_d101(prof, an, I, cota=cota, cifra_afaceri=cifra_afaceri, rezerva=rezerva, **kw)
@@ -529,7 +535,8 @@ def calcul_cu_ajustari(prof, an, intrari, ajustari, la_data, cota=None, cifra_af
         if credit:
             I["P431"] = credit
             res = calc()
-    return res, {"pierdere": pierdere, "recuperata": recuperata, "sponsorizare": sponsorizare, "credit_sponsorizare": credit}
+    return res, {"pierdere": pierdere, "recuperata": recuperata, "sponsorizare": sponsorizare, "credit_sponsorizare": credit,
+                 "din_conturi": folosite}
 
 
 def genereaza(conn, schema, perioada, manual=None):
@@ -568,6 +575,7 @@ def genereaza(conn, schema, perioada, manual=None):
     with conn.cursor() as _c:
         _ajustari = _aj.cumulat(_c, schema, perioada.an, 4)
     res, _ = calcul_cu_ajustari(prof, perioada.an, intrari, _ajustari, _dt.date(perioada.an, 12, 31), cota=cota, d_grup=d_grup,
+                                din_conturi=_aj.din_conturi(r),
                                 cod_obligatie=cod_obligatie, cifra_afaceri=r.get("cifra_afaceri", 0), profit_art18=profit_art18,
                                 rezerva={"capital": r.get("capital", 0),
                                          "rezerva_existenta": r.get("rezerva_existenta", 0),
@@ -591,6 +599,9 @@ def genereaza(conn, schema, perioada, manual=None):
     # Rezerva legala (P13) se deriva automat fiindca omisiunea ei SUPRA-declara — acolo implicitul
     # e in favoarea corectitudinii. Aici nu e, deci se cere omul. *Un implicit minte in amandoua
     # directiile; diferenta e cine plateste minciuna.*
+    # [deficiența 382, lotul 9] ce e în afara evidenței validate a anului se spune la generare
+    res.avertismente.extend(avertismente_evidenta(conn, schema, _dt.date(perioada.an, 1, 1), _dt.date(perioada.an + 1, 1, 1),
+                                                  "D101 pe %d" % perioada.an))
     _imp_691 = _i(r.get("chelt_impozit", 0) or 0)
     if _imp_691 > 0 and not d_grup and _i(res.P.get("P23", 0)) == 0:
         from core.pdf_util import bani as _bani   # formatorul CANONIC de sume (DS cap.7)
@@ -609,3 +620,49 @@ def genereaza(conn, schema, perioada, manual=None):
     from core.reconciliere_emis import verifica_total_plata_a as _vte
     _vte("d101", xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res
     return xml, res
+
+
+def avertismente_evidenta(conn, schema, de_la, pana_la, declaratia, cu_amortizare=True):
+    """[deficiența 382, retestul 19.10.2026, verbatim în DECIZII „Comanda 9.1”] „La F2 amortizarea 01–07/2026 (7 x 200 = 1.400 lei) e în
+    ciornă. D100 T3/2026 calculează fără ea și nu avertizează nimic (D300 avertizează la note nevalidate; Închidere lună o semnalează:
+    «amortizarea lipsă schimbă profitul (D100/D101)»).” Impozitul pe profit se calculează pe notele VALIDATE ale ferestrei CUMULATE
+    [de_la, pana_la) (D100: 01.01 – sfârșitul trimestrului; D101: anul) — deci ce e în afara evidenței se SPUNE la generare, nu tace:
+    (1) amortizarea lunilor încheiate din fereastră, pe cont: generată și nevalidată („de validat”) sau neînregistrată deloc — aceeași
+    regulă ca la Închidere lună (`mf_registru.luni_anterioare_neinregistrate` / `luni_in_ciorna`); (2) celelalte note nevalidate ale
+    ferestrei, numite ca în Registrul jurnal (`coada_api.note_nevalidate`). `cu_amortizare=False` la D100 micro: impozitul pe veniturile
+    microîntreprinderii nu depinde de cheltuieli, dar notele nevalidate de venit da. -> [mesaj]."""
+    import datetime as _dt
+    from core import coada_api as _coada, inchidere_luna as _il, mf_registru as _mfr, repo_contabilitate as _rc, repo_mijloace_fixe as _rmf
+    from core.common import azi_ro, cate as _cate
+    from core.pdf_util import bani as _bani, data_ro as _data_ro
+    de_la = de_la if isinstance(de_la, _dt.date) else _dt.date.fromisoformat(str(de_la)[:10])
+    pana_la = pana_la if isinstance(pana_la, _dt.date) else _dt.date.fromisoformat(str(pana_la)[:10])
+    per = "%s – %s" % (_data_ro(de_la), _data_ro(pana_la - _dt.timedelta(days=1)))
+    # amortizarea se cere numai pe lunile ÎNCHEIATE (generarea ei e refuzată până la sfârșitul lunii — deficiența 333)
+    sf = min(pana_la, _il.ultima_zi_incheiata(azi_ro()) + _dt.timedelta(days=1))
+    out = []
+    with conn.cursor() as cur:
+        _rc.search_path_firma(cur, schema)
+        rows = _rmf.toate(cur) if cu_amortizare else []
+        for x in _mfr.luni_anterioare_neinregistrate(cur, rows, sf.year, sf.month) if cu_amortizare and sf > de_la else []:
+            luni = [m for m in x["luni"] if (de_la.year, de_la.month) <= m]
+            if not luni:
+                continue
+            ciorna = _mfr.luni_in_ciorna(cur, x["cont"])
+            for fel, grup in (("generată, dar nevalidată", [m for m in luni if m in ciorna]),
+                              ("neînregistrată", [m for m in luni if m not in ciorna])):
+                if grup:
+                    suma = sum(x["rate"][m] for m in grup)
+                    out.append("Amortizarea pe %s (contul %s, %s lei) e %s: %s se calculează fără ea, deci profitul și impozitul ies mai "
+                               "mari. %s, apoi generează din nou." % (
+                                   _mfr.luni_ca_interval(grup), x["cont"], _bani(suma), fel, declaratia,
+                                   "Validează notele de amortizare în Registrul jurnal" if fel.startswith("generată")
+                                   else "Generează-o din Închidere lună („Generează amortizarea restantă”) și valideaz-o"))
+        note = _coada.note_nevalidate(cur, schema, de_la.isoformat(), pana_la.isoformat())
+    if note:
+        # fraza nu depinde de număr după cifră (acordul îl face `cate`)
+        out.append("%s nu cuprinde %s din %s: %s. Validează în Registrul jurnal înainte de depunere și generează din nou." % (
+            declaratia, _cate(len(note), "notă nevalidată", "note nevalidate"), per,
+            _coada._numite(["nota %s — %s, %s lei" % (n["eticheta"], n.get("document") or "fără document", _bani(n["suma"]))
+                            for n in note])))
+    return out

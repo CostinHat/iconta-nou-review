@@ -189,12 +189,12 @@ def _profil(firma, forma=True, platitor=True, caen="4711", amef=False):
     return p
 
 
-def pregateste_firma(e, firma, forma=True, platitor=True, caen="4711"):
+def pregateste_firma(e, firma, forma=True, platitor=True, caen="4711", regim_fiscal="micro"):
     """Date firmă + vectorul fiscal + numerotarea facturilor + produsul din nomenclator, prin rutele pe care le cheamă ecranele
     (`POST firma-profil/date`, `POST vector`, `PUT facturi/numerotare`, `POST produse`). Idempotent: o valoare neschimbată nu scrie."""
     tid = firma["tenant_id"]
     _ok(_api(e, "POST", "/tenants/%d/firma-profil/date" % tid, _profil(firma, forma, platitor, caen)), "Date firmă")
-    _ok(_api(e, "POST", "/tenants/%d/vector" % tid, {"regim_fiscal": "micro", "platitor_tva": platitor,
+    _ok(_api(e, "POST", "/tenants/%d/vector" % tid, {"regim_fiscal": regim_fiscal, "platitor_tva": platitor,
                                                      "tip_decont": "lunar" if platitor else None, "operatiuni_ic": False,
                                                      "inreg_art317": False, "tva_data_inceput": "2026-01-01" if platitor else None}),
         "vector fiscal")
@@ -1240,7 +1240,7 @@ def test_def_24_notele_automate_poarta_documentul_iar_validarea_fara_document_ce
     """24. Note automate: notele de stoc (607=371) și comision (627=5121) fără document justificativ; validarea trecea fără avertisment.
     Pașii contabilului: emite o factură cu marfă din stoc („pleacă marfa”), importă un extras cu un comision și îl contează: în
     Registrul jurnal nota 607=371 are documentul „Factură …”, nota 627=5121 „Extras bancar …”; o notă scrisă fără document e marcată
-    pe rând, iar „Validează” pe ea cere confirmare („nu are document justificativ. Validezi totuși?”)."""
+    pe rând, iar „Validează” pe ea spune că nu se validează fără document și duce la „Editează nota” (386, lotul 9)."""
     pregateste_firma(patron, firma_e2e)
     tid, s = firma_e2e["tenant_id"], firma_e2e["schema"]
     art = articol_in_stoc(patron, firma_e2e)
@@ -1279,7 +1279,9 @@ def test_def_24_notele_automate_poarta_documentul_iar_validarea_fara_document_ce
     pg.wait_for_selector("#caseta-atentie-activa #ca-ok", timeout=10000)
     caseta = pg.inner_text("#caseta-atentie-activa")
     patron.captura("confirmare")
-    assert "nu are document justificativ. Validezi totuși?" in caseta and "Validează fără document" in caseta, caseta
+    # [386, lotul 9] regula de fond R3 refuză validarea fără document: caseta spune de ce și duce la „Editează nota”, nu la o validare
+    assert "nu are document justificativ, iar o notă nu se validează fără documentul din care provine" in caseta, caseta
+    assert "Editează nota" in caseta and "Validează fără document" not in caseta, caseta
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % s, (nota_manuala,)) == [("ciorna",)]
 
 

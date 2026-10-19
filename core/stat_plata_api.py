@@ -32,10 +32,11 @@ def stat_plata(conn, schema, an, luna):
     # CM-uri pe luna
     with conn.cursor() as cur:
         cur.execute(f"""
-            SELECT salariat_id, COALESCE(SUM(zile),0), COALESCE(SUM(net),0), COALESCE(SUM(brut_ang+brut_fnuass),0)
+            SELECT salariat_id, COALESCE(SUM(zile),0), COALESCE(SUM(net),0), COALESCE(SUM(brut_ang+brut_fnuass),0),
+                   COALESCE(SUM(brut_ang),0)
             FROM {schema}.concedii_medicale WHERE an = %s AND luna = %s GROUP BY salariat_id
         """, (an, luna))
-        cm = {r[0]: {"zile": int(r[1]), "net": float(r[2]), "brut": float(r[3])} for r in cur.fetchall()}
+        cm = {r[0]: {"zile": int(r[1]), "net": float(r[2]), "brut": float(r[3]), "brut_ang": float(r[4])} for r in cur.fetchall()}
     # [lot 19 pct.4c] suspendările (CFP / suspendare) ale fiecărui salariat — afișate și editate din rândul statului
     with conn.cursor() as cur:
         cur.execute(f"SELECT salariat_id, data_inceput, data_sfarsit, tip, temei FROM {schema}.suspendari_contract "
@@ -176,14 +177,21 @@ def stat_plata(conn, schema, an, luna):
             "impozit_salariu": float(calc["impozit"]) - float(calc.get("impozit_tichete", 0)),
             "retinut_tichete": float(calc.get("cass_tichete", 0)) + float(calc.get("impozit_tichete", 0)),
             "valoare_tichete": float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0) + float(calc.get("tichete_cultural", 0)) + float(calc.get("tichete_cresa", 0)),
-            "total_disponibil": float(calc["net"]) + float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0) + float(calc.get("tichete_cultural", 0)) + float(calc.get("tichete_cresa", 0)),
             "cost": float(calc["cost_angajator"]),
+            # [deficiența 411] costul angajatorului cuprinde și indemnizația CM suportată de el (primele zile, OUG 158/2005 art.12
+            # alin.(1)); partea FNUASS nu e costul lui (se recuperează)
+            "cm_brut_ang": c_cm["brut_ang"] if c_cm else 0.0,
+            # [411] completate de `_cu_de_plata`, după împărțirea CAM-ului și după reținerile CM declarate (`stat_final`)
+            "cost_total": None, "net_de_plata": None, "total_disponibil": None,
             "cm_zile": cm_zile,
             "cm_brut": c_cm["brut"] if c_cm else 0,
             # [salariu_edit] baza contractuala (salariu_istoric) lipsa/0 -> statul e incoerent
             # (net 0 dar apare cost din suprataxa sub-minim); se SEMNALEAZA, nu se afiseaza tacit (MEMORY §13).
             "baza_lipsa": float(brut or 0) <= 0,
             "salariu_baza": float(brut or 0),  # [salariu_edit] baza contractuala (istoric), pt pre-completarea editarii
+            # [deficiența 413] tariful orar al salariului de bază: salariul / orele normei lunii (zile lucrătoare × ore pe zi) — din el
+            # ecranul propune suma orelor suplimentare (Codul muncii art.123 alin.(2): sporul, „din salariul de bază”)
+            "tarif_orar": round(float(brut or 0) / (zile_luna * float(ore_zi or 8)), 4) if zile_luna and float(brut or 0) > 0 else None,  # round-ok: tarif afișat ca propunere, suma se rotunjește la ban pe ecran
             # [stat_emis 21.08.2026] doua campuri pe care fluturasul si le recalcula singur, cu alte
             # intrari. Acum le ia de aici: statul e sursa unica a cifrelor de pe fluturas.
             "facilitate": float(calc.get("facilitate", 0)),
@@ -200,7 +208,27 @@ def stat_plata(conn, schema, an, luna):
         })
     _cs_sal.close()
     _imparte_cam(stat, ref)
+    for r in stat:
+        _cu_de_plata(r)
     return stat
+
+
+def de_plata(r):
+    """[deficiența 411, PRIORITAR] Netul care ajunge la salariat în luna asta: salariul net + indemnizația CM netă — aceeași sumă ca
+    fișierul de plată (`plata_salarii`, OUG 158/2005 art.36 alin.(3) lit.a): „Plata indemnizațiilor se face lunar de către: a)
+    angajator, cel mai târziu odată cu lichidarea drepturilor salariale pe luna respectivă”). Pe două conturi (421 / 423), o singură
+    sumă pe fluturaș."""
+    from decimal import Decimal as _D
+    return _D(str(r.get("net") or 0)) + _D(str(r.get("cm_net") or 0))
+
+
+def _cu_de_plata(r):
+    """Câmpurile afișate din `de_plata`: netul de plată, totalul disponibil (net de plată + tichetele pe card) și costul total al
+    angajatorului (cu partea lui din indemnizația CM)."""
+    r["net_de_plata"] = float(de_plata(r))
+    r["total_disponibil"] = r["net_de_plata"] + float(r.get("valoare_tichete") or 0)
+    r["cost_total"] = float(r.get("cost") or 0) + float(r.get("cm_brut_ang") or 0)
+    return r
 
 
 def _leu(x):
@@ -280,6 +308,7 @@ def stat_final(conn, schema, an, luna):
         r["cm_brut_declarat"] = float(brut_cm.get(r["id"], 0))
         r["cm_net"] = float(brut_cm.get(r["id"], _D(0)) - ret_cm)
         r["cm_retineri_sursa"] = "D112"
+        _cu_de_plata(r)   # [411] netul de plată cu indemnizația declarată
     return stat
 
 
@@ -385,12 +414,18 @@ CAMPURI_COMPUSE = ("brut", "facilitate", "cas", "cass", "deducere_baza", "deduce
                    "deducere_copii", "impozit_salariu", "net", "cm_zile", "cm_net", "cm_brut",
                    "cass_tichete", "impozit_tichete", "tichete_nominal", "tichete_vacanta",
                    "cadou", "tichete_cultural", "tichete_cresa", "valoare_tichete",
-                   "total_disponibil", "cost", "cam", "cas_suprataxa", "cass_suprataxa",
+                   "total_disponibil", "cost_total", "cam", "cas_suprataxa", "cass_suprataxa", "net_de_plata",
                    "brut_baza_lucrat", "elemente_variabile")   # [S1] compoziția brutului
 
 # Ce trimite ruta si compozitia NU arata, cu motivul scris. Fara randul asta, absenta ar arata
 # identic cu o scapare - iar conditia de inchidere a lui R97 cere ori reparatie, ori motiv scris.
 CAMPURI_NEAFISATE_MOTIVATE = {
+    "tarif_orar": ("intrare a propunerii sumei orelor suplimentare (ecranul «Prime, sporuri, ore supl.», 413), nu o cifră a netului: "
+                   "pe fluturaș stă suma orelor, cu orele ei."),
+    "cost": ("costul salariului fără indemnizația CM suportată de angajator; pe fluturaș stă `cost_total`, care îl cuprinde (411) — "
+             "două rânduri de cost ar arăta două cifre pentru același lucru."),
+    "cm_brut_ang": ("partea angajatorului din indemnizația CM, cuprinsă în `cost_total` (afișat, cu eticheta care o numește); "
+                    "indemnizația brută întreagă stă pe rândul ei (`cm_brut`)."),
     "retinut_tichete": ("suma exacta a doua randuri deja aratate - CASS tichete + impozit tichete. "
                         "Un subtotal asezat langa chiar componentele lui nu adauga nimic pe un "
                         "fluturas; ce lipsea era compozitia, nu inca o suma."),
@@ -451,14 +486,23 @@ def compozitie_fluturas(r):
         *([("Facilitate salariu minim (netaxabilă)", _n("facilitate"), FEL_LINIE)] if _n("facilitate") else []),
         ("CAS (25%)", -_n("cas"), FEL_LINIE),
         ("CASS (10%)", -_n("cass"), FEL_LINIE),
-        *[(e, v, FEL_LINIE) for e, v in randuri_deducere(r)],
         ("Impozit pe venit", -_n("impozit_salariu"), FEL_LINIE),
+        # [deficiența 411] deducerea personală nu e o reținere: scade baza impozitului; stă sub impozit, ca defalcare a calculului lui
+        # (CF art.77 alin.(2): „Deducerea personală se acordă pentru fiecare lună a perioadei impozabile numai pentru veniturile din
+        # salarii la locul unde se află funcția de bază”; art.78 alin.(2) lit.a: baza = venitul net minus deducerea personală)
+        *[("  în calculul impozitului, scade baza (nu se reține): " + e[:1].lower() + e[1:], v, FEL_DETALIU)
+          for e, v in randuri_deducere(r)],
         ("Salariu net", _n("net"), FEL_TOTAL),   # [Retest 2 pct.2] rândul îngroșat se vede din `FEL_TOTAL`, nu din majuscule
     ]
     cm_zile = int(_n("cm_zile"))
     if cm_zile:
+        # [deficiența 411, PRIORITAR] netul care ajunge la salariat = salariul net + indemnizația CM netă (`de_plata`, aceeași sumă ca
+        # fișierul de plată); „Salariu net” rămâne subtotalul salariului (contul 421), indemnizația are contul ei (423)
         linii.insert(1, ("Zile de concediu medical: %d" % cm_zile, None, FEL_MENTIUNE))
-        linii.insert(len(linii) - 1, ("Indemnizație CM (netă)", _n("cm_net"), FEL_LINIE))
+        linii[-1] = ("Salariu net", _n("net"), FEL_LINIE)
+        linii.append(("Indemnizație CM (netă)", _n("cm_net"), FEL_LINIE))
+        linii.append(("Net de plată (salariu + indemnizație CM)",
+                      float(r["net_de_plata"]) if r.get("net_de_plata") is not None else float(de_plata(r)), FEL_TOTAL))
     # [F133] tichete: doar TAXA (CASS+impozit) se retine din salariul CASH -> reduce NET-ul, deci
     # ramane INAINTE de SALARIU NET (coloana reconciliaza la net). Valoarea tichetelor se primeste
     # PE CARD SEPARAT (nu cash) -> se arata DUPA net, plus totalul disponibil.
@@ -489,7 +533,7 @@ def compozitie_fluturas(r):
                        else _n("tichete_nominal") + _n("tichete_vacanta") + _n("cadou")
                        + _n("tichete_cultural") + _n("tichete_cresa"))
         total_disp = (float(r["total_disponibil"]) if r.get("total_disponibil") is not None
-                      else _n("net") + val_tichete)
+                      else float(de_plata(r)) + val_tichete)
         linii.append(("Total tichete (pe card)", val_tichete, FEL_LINIE))
         linii.append(("Total disponibil (net + tichete)", total_disp, FEL_TOTAL))
 
@@ -504,7 +548,9 @@ def compozitie_fluturas(r):
     if _n("cm_brut"):
         linii.append(("Indemnizație de concediu medical, brută (suportată de angajator și de FNUASS)",
                       _n("cm_brut"), FEL_NOTA))
-    linii.append(("Cost total angajator", _n("cost"), FEL_NOTA))
+    # [411] costul cu indemnizația suportată de angajator; exemplarele înghețate de dinainte n-au câmpul: costul lor, cum a fost tipărit
+    linii.append(("Cost total angajator (cu indemnizația CM suportată de angajator)" if _n("cm_brut_ang") else "Cost total angajator",
+                  float(r["cost_total"]) if r.get("cost_total") is not None else _n("cost"), FEL_NOTA))
 
     return [{"eticheta": e, "valoare": v, "fel": f} for e, v, f in linii]
 

@@ -104,6 +104,9 @@ def declarabile():
 #: Tipul unui document în `facturi.tip`. Implicit (coloană goală / lipsă) = `factura`, fiindcă așa
 #: s-au scris rândurile înainte ca proformele și avizele să existe ca tip.
 TIP_IMPLICIT = "factura"
+#: documentele fiscale: factura și [deficiențele 401–402, 19.10.2026] borderoul de achiziție de la persoana fizică (OMFP 2634/2015, cod
+#: 14-4-13: „document justificativ de înregistrare în contabilitate a valorii bunurilor cumpărate”) — numai la achiziție
+TIPURI_FISCALE = (TIP_IMPLICIT, "borderou")
 
 
 def nedeclarabile():
@@ -155,7 +158,7 @@ def clauza_tip_document(alias="f", coloana="tip"):
     registrul**.
     """
     pref = ("%s." % alias) if alias else ""
-    return "COALESCE(%s%s, '%s') = '%s'" % (pref, coloana, TIP_IMPLICIT, TIP_IMPLICIT)
+    return "COALESCE(%s%s, '%s') IN (%s)" % (pref, coloana, TIP_IMPLICIT, ", ".join("'%s'" % t for t in TIPURI_FISCALE))
 
 
 def e_declarabila(stare):

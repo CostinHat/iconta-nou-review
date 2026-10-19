@@ -170,7 +170,7 @@ UBL_PRIMITA = """<?xml version="1.0" encoding="UTF-8"?>
          xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2">
   <cbc:ID>{numar}</cbc:ID><cbc:IssueDate>2026-10-10</cbc:IssueDate><cbc:DocumentCurrencyCode>RON</cbc:DocumentCurrencyCode>
   <cac:AccountingSupplierParty><cac:Party><cac:PartyLegalEntity><cbc:RegistrationName>FURNIZOR E2E SRL</cbc:RegistrationName></cac:PartyLegalEntity>
-    <cac:PartyTaxScheme><cbc:CompanyID>RO40372003</cbc:CompanyID></cac:PartyTaxScheme></cac:Party></cac:AccountingSupplierParty>
+    <cac:PartyTaxScheme><cbc:CompanyID>RO40372003</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme></cac:Party></cac:AccountingSupplierParty>
   <cac:AccountingCustomerParty><cac:Party><cac:PartyLegalEntity><cbc:RegistrationName>{client}</cbc:RegistrationName></cac:PartyLegalEntity>
     <cac:PartyTaxScheme><cbc:CompanyID>RO{cui}</cbc:CompanyID></cac:PartyTaxScheme></cac:Party></cac:AccountingCustomerParty>
   <cac:TaxTotal><cbc:TaxAmount>21.00</cbc:TaxAmount></cac:TaxTotal>
@@ -185,8 +185,10 @@ UBL_PRIMITA = """<?xml version="1.0" encoding="UTF-8"?>
 def test_def_273_facturi_primite_spun_starea_spv_si_primesc_xml(patron, firma_e2e):
     """273. Facturi primite din SPV: „apar aici automat” fără conexiune; fără import UBL; câmpurile nepreluate nesemnalate.
     Pașii contabilului: deschide „Facturi primite” — starea SPV (necontectat, cu butonul spre Conectare SPV), fără „apar aici automat”;
-    importă un XML UBL — factura apare cu „de completat: dacă furnizorul e înregistrat în scopuri de TVA (D394)”; o validează fără tipul
-    furnizorului — refuzat pe câmp; cu el — validată, iar factura poartă tipul furnizorului.
+    importă un XML UBL — factura apare; statutul de TVA al furnizorului e numit ca în D394 și AFLAT (ANAF sau codul de TVA RO din XML,
+    BT-31 — deficiența 418a, comanda 9.3: „Contabilul nu trebuie să-l introducă manual”), nu cerut; validată, factura poartă statutul.
+    Ramura „nu se poate afla -> se cere” e în `core/test_418_import_efactura.py` (ANAF simulat): aici aplicația de probă întreabă ANAF
+    real, deci un furnizor „necunoscut” n-ar fi determinist.
     [16.10.2026, răspunsul Costin pct.4] „Terț plătitor” = un terț care plătește factura: nu e element UBL / RO_CIUS (numai beneficiarul
     plății, BT-59) și nu se declară în D394 (partenerul e furnizorul) — deci nu se cere pe factură; câmpul cerut e statutul TVA al
     furnizorului, numit ca în D394."""
@@ -207,22 +209,20 @@ def test_def_273_facturi_primite_spun_starea_spv_si_primesc_xml(patron, firma_e2
     pg.wait_for_function("() => (document.querySelector('#fp-mesaj') || {innerText: ''}).innerText.includes('importat')", timeout=20000)
     patron.captura("importata")
     rand = pg.locator(".fac-primita-btn", has_text=tag)
-    assert "de completat: dacă furnizorul e înregistrat în scopuri de TVA (D394)" in rand.inner_text(), rand.inner_text()
+    assert "de completat: dacă furnizorul e înregistrat în scopuri de TVA" not in rand.inner_text(), rand.inner_text()
     rand.click()
-    pg.wait_for_selector("#pr-platitor", timeout=20000)
-    eticheta = pg.locator("label:has(#pr-platitor)").inner_text()
-    assert "înregistrat în scopuri de TVA" in eticheta and "terț" not in eticheta.lower(), eticheta
+    pg.wait_for_selector("#pr-cont", timeout=20000)
+    assert pg.query_selector("#pr-platitor") is None, "statutul furnizorului se cere de mână deși e aflat"
+    t = " ".join(pg.inner_text(".fereastra:last-of-type").split())
+    assert "înregistrat în scopuri de TVA" in t and "terț plătitor" not in t.lower(), t[:1500]
+    assert "Aflat din ANAF, registrul contribuabililor" in t or "Aflat din XML-ul facturii: codul de TVA RO40372003" in t, t[:1500]
     pg.fill("#pr-cont", "628")
-    pg.select_option("#pr-furnizor-incasare", "false")
-    pg.click("#pr-valideaza")
-    pg.wait_for_timeout(600)
-    assert pg.locator("#pr-platitor[aria-invalid='true']").count() == 1, "tipul furnizorului e cerut pe câmp"
-    pg.select_option("#pr-platitor", "true")
     pg.click("#pr-valideaza")
     pg.click("#ca-ok")
     pg.wait_for_function("() => document.querySelector('#pr-zona').innerText.includes('Validată')", timeout=20000)
     patron.captura("validata")
-    assert sql('SELECT tert_platitor_tva FROM "%s".facturi WHERE numar = %%s' % firma_e2e["schema"], (tag,)) == [(True,)]
+    # statutul e cel aflat (ANAF la data facturii, altfel XML-ul): scris pe factură, nu lăsat necunoscut
+    assert sql('SELECT tert_platitor_tva IS NOT NULL FROM "%s".facturi WHERE numar = %%s' % firma_e2e["schema"], (tag,)) == [(True,)]
 
 
 def test_def_275_factura_emisa_arata_starea_spv_si_drumul_spre_conectare(patron, firma_e2e):

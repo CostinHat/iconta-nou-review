@@ -18,6 +18,8 @@ from core import db, facturi_api, documente_api
 from core import repo_tenants
 from core import erori as _erori
 from core import uc_comun as _uc_comun
+from core import uc_coada as _uc_coada
+from core import observare as _obs
 from core import db, facturi_api, documente_api
 from core import repo_admin
 
@@ -102,6 +104,9 @@ def apiv1_factura_emite(tenant_id, corp, actx):
             "valori": {"true": "marfa pleacă acum — se descarcă gestiunea în aceeași tranzacție",
                        "false": "marfa nu pleacă acum — factura e doar fiscală, stocul rămâne"}})
     _ai = _uc_comun._intreaba_modelul(schema, _linii)   # [R193] modelul, înaintea tranzacției de emitere
+    # [368] începutul scrierii, pe același ceas și cu aceeași marjă ca middleware-ul (`main._autor_si_note_in_coada`): nota facturii
+    # are `creat_la` după el
+    _de_la = _uc_coada.inceputul_scrierii()
     with db.get_conn(schema) as conn:
         # [lot 2, 03.09.2026] Ruta din ecran traducea de mult `ValueError` in `422`; asta nu —
         # deci `linii=[]` sau un cod de partener lipsa ieseau catre integrator ca
@@ -151,6 +156,17 @@ def apiv1_factura_emite(tenant_id, corp, actx):
         raise _erori.Conflict(r)            # [R130] acelasi refuz cu iesire ca in ecran
     if not r.get("ok", True) and r.get("cod") == "CURS_INDISPONIBIL":
         raise _erori.DateInvalide(r.get("mesaj"))
+    # [deficiența 368, decizia Costin 19.10.2026 „Se validează automat”] Cererea cu cheie API nu trece prin middleware-ul care validează
+    # notele unei firme în partidă simplă (n-are `Bearer`), deci nota facturii se validează aici, ca notă internă, după commitul emiterii.
+    # Notele cheii n-au autor (`creat_de_id` NULL). Un refuz nu strică emiterea: factura e emisă, iar refuzul îi spune integratorului de ce
+    # nota a rămas ciornă.
+    try:
+        _ni = _uc_coada.note_interne_schema(schema, None, _de_la)
+    except Exception as e:  # noqa: BLE001 — nota există și rămâne ciornă; eșecul nu e tăcut
+        _obs.esec_secundar("validarea notelor interne (partidă simplă, API)", e)
+    else:
+        if _ni["interne"] or _ni["refuzate"]:
+            r["note_interne"] = _ni
     return r
 
 

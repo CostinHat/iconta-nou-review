@@ -58,6 +58,8 @@ def test_def_c48_avansul_pentru_servicii_se_inregistreaza_pe_4092(patron, firma_
     era refuzată „cont inexistent”.
     Pașii: firmă nouă -> notă „avans furnizor servicii” 4092 = 5311, validată -> Registrul jurnal: nota, cu 4092 pe linie."""
     pregateste_firma(patron, firma_e2e)
+    # numerarul din care se plătește avansul (406: casa nu ajunge sub zero la validare)
+    _valideaza(patron, firma_e2e, _nota(patron, firma_e2e, AZI.isoformat(), "Ridicare numerar C48", "CEC-C48", "5311", "581", 100))
     nid = _nota(patron, firma_e2e, AZI.isoformat(), "Avans furnizor servicii C48", "DP-C48", "4092", "5311", 50)
     _valideaza(patron, firma_e2e, nid)
     patron.firma(firma_e2e["nume"])

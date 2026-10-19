@@ -26,3 +26,30 @@ def reseteaza(token):
 
 def uid():
     return _uid.get()
+
+
+#: [368] notele ciornă (create ÎNAINTEA cererii) a căror validare internă la partidă simplă a fost refuzată, iar cererea curentă le-a
+#: rezolvat cauza (raportul Z descărcat pe articol / pe rețetă, sau declarat „fără marfă din stoc”): middleware-ul le reîncearcă odată
+#: cu notele cererii (`uc_coada.note_interne`). O listă pe cerere, pornită de middleware; în afara unei cereri nu se ține nimic.
+_reincercare = contextvars.ContextVar("iconta_note_de_reincercat", default=None)
+
+
+def porneste_reincercarea():
+    """Întoarce tokenul pentru `opreste_reincercarea`; lista e a cererii (contextul se copiază pe firul rutei, lista rămâne aceeași)."""
+    return _reincercare.set([])
+
+
+def opreste_reincercarea(token):
+    _reincercare.reset(token)
+
+
+def reincearca_interna(nota_id):
+    """Notează o notă de reîncercat la sfârșitul cererii (no-op în afara unei cereri)."""
+    lista = _reincercare.get()
+    if lista is not None and nota_id is not None:
+        lista.append(int(nota_id))
+
+
+def de_reincercat():
+    return list(_reincercare.get() or [])
+

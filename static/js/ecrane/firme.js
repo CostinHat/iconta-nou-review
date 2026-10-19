@@ -1,24 +1,24 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota } from "../api.js?v=462d75fbab";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA } from "../api.js?v=158edee964";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { ciornaFormular } from "../ciorna_formular.js?v=f59e00811a";  /* [267, clasa] ciorna formularelor lungi de creare */  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
-import { fluxConcediu } from "./flux_concediu.js?v=ee3e68a687";  /* cm_flux_v1 */
+import { fluxConcediu } from "./flux_concediu.js?v=bb87bdcbf2";  /* cm_flux_v1 */
 import { randeazaStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi } from "./facturi_ecran.js?v=52ce1f8c00";
+import { randeazaFacturi } from "./facturi_ecran.js?v=acf38f0049";
 import { ecranRip } from "./rip_ecran.js?v=cb74120890";
-import { trimiteInCoada, casetaTrimisa, etichetaTrimitere } from "./coada_trimite.js?v=425f6a2edf";  /* [C11, 07.10.2026] bilanțul prin coadă */
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=3f5aacfa5f";
-import { ecranEtransport } from "./etransport_ecran.js?v=16098440f5";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=29c89ffcc8";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=8cdaa83e58";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=1b49c04aa7";  // renderer unic verdict control fiscal (DS cap.20)
+import { trimiteInCoada, casetaTrimisa, etichetaTrimitere } from "./coada_trimite.js?v=2fc90ca5ef";  /* [C11, 07.10.2026] bilanțul prin coadă */
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=9e99e6d95e";
+import { ecranEtransport } from "./etransport_ecran.js?v=2d47378c52";
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=374541fcbc";  // [p96_import_firma] + [Q4] import in masa
+import { declaratiiPerFirma } from "./declaratii.js?v=92adb5b86c";  // [decl_firma_v1]
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2daa29640d";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=4554cd872c";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=7b963851e7";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=76cf61f9da";  // [date_firma_v1]
-import { ecranMijloace } from "./mijloace_ecran.js?v=1cc80fb25d";  // [ecran_mf_v1]
+import { ecranMijloace } from "./mijloace_ecran.js?v=d2b1e4beb1";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -440,7 +440,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "jurnal", regim: "dubla", grup: "registre", titlu: "Registru jurnal", desc: "Notele contabile ale firmei",
       ...CULORI_CARD.ardezie,
       icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', activ: true },
+    // [368, lotul 9] la PFA nu există note contabile: Z-ul intră în registrul de încasări și plăți (`descSimpla`)
     { cheie: "raportz", regim: "ambele", grup: "zilnic", titlu: "Raport Z", desc: "Încasări zilnice \u2192 notă automată",
+      descSimpla: "Încasări zilnice \u2192 registrul de încasări și plăți",
       ...CULORI_CARD.chihlimbar,
       icon: '<path d="M4 4h16M4 4l16 16M4 20h16"/>', activ: true },
     { cheie: "stocuri", regim: "dubla", grup: "zilnic", titlu: "Stocuri", desc: "NIR, adaos, desc\u0103rcare gestiune",
@@ -480,7 +482,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "operatiuni", regim: "dubla", grup: "speciale", titlu: "Operațiuni speciale", desc: "Leasing, marjă, IC, sponsorizări și altele",
       ...CULORI_CARD.violet,
       icon: '<path d="M12 2l2 4 4 .5-3 3 .8 4.5L12 12l-3.8 2 .8-4.5-3-3 4-.5z"/><path d="M5 18h14M5 21h14"/>', activ: true },
-    { cheie: "mijloace", regim: "dubla", grup: "registre", titlu: "Mijloace fixe", desc: "Registrul activelor: valoare, amortizat, casare, reevaluare",
+    // [368, lotul 9 — decizia Costin 8.2: „Mijloace fixe rămâne vizibil și la PFA”] registrul activelor e și al PFA (amortizarea fiscală în
+    // D212); casarea și reevaluarea, care scriu note, nu se oferă la partidă simplă (`ecranMijloace`, opt.simpla)
+    { cheie: "mijloace", regim: "ambele", grup: "registre", titlu: "Mijloace fixe", desc: "Registrul activelor: valoare, amortizat, casare, reevaluare",
       ...CULORI_CARD.chihlimbar,
       icon: '<rect x="3" y="4" width="18" height="6" rx="1"/><path d="M5 10v10h14V10"/><path d="M9 14h6M12 10v10"/>', activ: true },
     { cheie: "rip", regim: "simpla", grup: "zilnic", titlu: "Încasări/plăți", desc: "Partidă simplă PFA/II/IF, Fișă D212",
@@ -562,7 +566,7 @@ function meniuFirma(corp, nav, t) {
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${o.icon}</svg>
           </div>
           <div class="firme-optiune-titlu">${o.titlu}</div>
-          <div class="firme-optiune-desc">${o.desc}${o.activ ? "" : " \u00b7 \u00een cur\u00e2nd"}</div>
+          <div class="firme-optiune-desc">${(regimFirma === "simpla" && o.descSimpla) || o.desc}${o.activ ? "" : " \u00b7 \u00een cur\u00e2nd"}</div>
         </button>`).join("")}
       </div></section>`;
     }).join("")}
@@ -636,7 +640,9 @@ function meniuFirma(corp, nav, t) {
   }
   const bJurnal = corp.querySelector("#fa-jurnal");
   if (bJurnal) {
-    bJurnal.addEventListener("click", () => { nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t)); });
+    // [394, lotul 9] fereastra lată (ca Mijloace fixe): rândul unei linii de notă (debit = credit · sumă · centru · partener) încape pe un
+    // rând, iar „Notă nouă” nu mai derulează pe un ecran de laptop (1366×768)
+    bJurnal.addEventListener("click", () => { nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t), { lat: "tabel" }); });
   }
   const bMagazin = corp.querySelector("#fa-magazin");  // wc_fe_v1
   if (bMagazin) {
@@ -665,7 +671,7 @@ function meniuFirma(corp, nav, t) {
   const bOperatiuni = corp.querySelector("#fa-operatiuni");
   if (bOperatiuni) bOperatiuni.addEventListener("click", () => { nav.deschide("Operațiuni speciale", (c2) => ecranOperatiuni(c2, nav, t)); });
   const bMijloace = corp.querySelector("#fa-mijloace");  // [ecran_mf_v1]
-  if (bMijloace) bMijloace.addEventListener("click", () => { nav.deschide("Mijloace fixe", (c2) => ecranMijloace(c2, nav, t.id), { lat: "tabel" }); });   // [08.10, W5]
+  if (bMijloace) bMijloace.addEventListener("click", () => { nav.deschide("Mijloace fixe", (c2) => ecranMijloace(c2, nav, t.id, { simpla: t.regim_contabil === "simpla" }), { lat: "tabel" }); });   // [08.10, W5] [368]
   const bEtransport = corp.querySelector("#fa-etransport");
   if (bEtransport) bEtransport.addEventListener("click", () => { nav.deschide("e-Transport", (c2) => ecranEtransport(c2, nav, t)); });
   const bBalanta = corp.querySelector("#fa-balanta");
@@ -951,6 +957,9 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       ${camp("iban", "IBAN (cont salariu pe card)", "text")}
       ${camp("tichet_masa_valoare", "Tichet de mas\u0103 (lei/zi lucrat\u0103, 0 = f\u0103r\u0103)", "numar")}
       ${camp("scutit_contrib_minim", "Scutit contribu\u021bie minim\u0103", "danu")}
+      ${camp("tip_contract", "Tip contract", "select", { optiuni: [["nedeterminata", "nedeterminată"], ["determinata", "determinată"]] })}
+      ${camp("nr_cim", "Nr. CIM", "text")}
+      ${camp("data_cim", "Dată CIM", "data")}
     </div>
     <div id="sn-prapastie"></div>
     <p style="margin-top:12px">
@@ -963,7 +972,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
   const _ciornaSal = ciornaFormular(corp, "iconta_ciorna_salariat:" + t.id,
     ["sn-nume", "sn-prenume", "sn-cnp", "sn-data_angajare", "sn-data_incetare", "sn-tip_norma", "sn-ore_zi", "sn-salariu_brut",
      "sn-persoane_intretinere", "sn-data_nastere", "sn-copii_scolarizati", "sn-declaratie_copii", "sn-functie_baza", "sn-judet_casa",
-     "sn-iban", "sn-tichet_masa_valoare", "sn-scutit_contrib_minim", "sn-cor", "sn-cor-cauta"]);
+     "sn-iban", "sn-tichet_masa_valoare", "sn-scutit_contrib_minim", "sn-cor", "sn-cor-cauta", "sn-tip_contract", "sn-nr_cim", "sn-data_cim"]);
 
   // [R49 (c)] Prapastia salariului minim, cu CIFRE. Nu se calculeaza in ecran (P3): ecranul
   // trimite elementele completate si afiseaza ce intoarce serverul. Apare INAINTE de buton
@@ -1039,6 +1048,10 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       tichet_masa_valoare: corp.querySelector("#sn-tichet_masa_valoare").value ? Number(corp.querySelector("#sn-tichet_masa_valoare").value) : 0,  // [F133]
       scutit_contrib_minim: daNu(corp.querySelector("#sn-scutit_contrib_minim")),
       functie_baza: daNu(corp.querySelector("#sn-functie_baza")),  // [3c · CF art.77(1)] deducerea doar la functia de baza
+      // [412] contractul individual de muncă pe fișă (Codul muncii art.12, art.16): adeverința le precompletează
+      tip_contract: corp.querySelector("#sn-tip_contract").value || null,
+      nr_cim: corp.querySelector("#sn-nr_cim").value.trim() || null,
+      data_cim: corp.querySelector("#sn-data_cim").value || null,
     };
     try {
       await api.post(`/tenants/${t.id}/salariati`, corpReq);
@@ -1137,10 +1150,10 @@ async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {
 }
 
 // F136: formular adeverinta salariat -> PDF (art. 34(5) Codul muncii)
-function formularAdeverinta(corp, nav, t, sid, nume, an, luna) {
+function formularAdeverinta(corp, nav, t, sid, nume, an, luna, cor = "") {
   corp.innerHTML = `
     <h2 class="pf-titlu">Adeverință ${semnAjutor("F136")}</h2>
-    <p class="pf-intro">Pentru ${esc(nume || "salariat")}. Denumirea firmei, numele, CNP-ul, funcția COR, data angajării și salariul brut/net se completează automat din datele firmei. Restul, mai jos.</p>
+    <p class="pf-intro">Pentru ${esc(nume || "salariat")}. Denumirea firmei, numele, CNP-ul, funcția COR, data angajării și salariul brut/net se completează automat din datele firmei. Tipul contractului și Nr. / Dată CIM vin din fișa salariatului — le poți schimba. Restul, mai jos.</p>
     <div class="caseta-atentie" style="margin:0 0 12px"><span class="ca-mesaj">Pentru credit bancar, băncile cer de obicei formularul propriu — un PDF generic nu e acceptat. Din 2026 verifică veniturile direct la ANAF.</span></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;max-width:820px">
       <label class="camp"><span class="camp-eticheta">Scopul<span class="oblig">*</span></span><input id="ad-scop" class="camp-input" placeholder="ex. grădiniță, notar, instanță"></label>
@@ -1160,6 +1173,21 @@ function formularAdeverinta(corp, nav, t, sid, nume, an, luna) {
     <p style="margin-top:14px"><button class="buton-primar" id="ad-gen" data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/adeverinta">Generează PDF</button> <button class="buton-secundar" id="ad-renunta" style="margin-left:8px">Renunță</button></p>
     <div id="ad-msg"></div>`;
   corp.querySelector("#ad-renunta").addEventListener("click", () => nav.inapoi && nav.inapoi());
+  // [deficiența 412] funcția din fișa salariatului: denumirea ocupației COR a lui (nomenclatorul COR), precompletată și modificabilă
+  if (cor) api.get(`/cor?q=${encodeURIComponent(cor)}`).then((r) => {
+    const o = ((r && (r.ocupatii || r.rezultate)) || (Array.isArray(r) ? r : [])).find((x) => String(x.cod) === String(cor));
+    const f = corp.querySelector("#ad-functie");
+    if (o && f && !f.value) f.value = o.denumire || "";
+  }).catch(() => {});
+  // [deficiența 412] tipul contractului și Nr. / Dată CIM din fișa salariatului (salariati.tip_contract / nr_cim / data_cim),
+  // precompletate și modificabile; ce a scris deja omul nu se suprascrie
+  api.get(`/tenants/${t.id}/salariati/${sid}`).then((d) => {
+    if (!d) return;
+    const tip = corp.querySelector("#ad-tip"), nr = corp.querySelector("#ad-nrcim"), dt = corp.querySelector("#ad-datacim");
+    if (tip && d.tip_contract && !tip.value) tip.value = d.tip_contract;
+    if (nr && d.nr_cim && !nr.value) nr.value = d.nr_cim;
+    if (dt && d.data_cim && !dt.value) dt.value = String(d.data_cim).slice(0, 10);
+  }).catch(() => {});
   corp.querySelector("#ad-gen").addEventListener("click", async () => {
     const msg = corp.querySelector("#ad-msg");
     const val = (id) => corp.querySelector(id).value.trim();
@@ -1196,7 +1224,7 @@ function compozitieNet(s) {
   const inTabel = c.filter((x) => x.fel !== "nota");
   const note = c.filter((x) => x.fel === "nota");
   return `<details class="dec-xml" style="flex:1 1 100%">
-      <summary>Compozi\u021bia netului \u2014 din ce se face ${bani(s.net)} lei</summary>
+      <summary>Compozi\u021bia netului \u2014 din ce se face ${bani(s.net_de_plata != null ? s.net_de_plata : s.net)} lei</summary>
       <table class="fd-tabel" style="max-width:560px">
         <tbody>${inTabel.map(rand).join("")}${note.length ? `
           <tr><td colspan="2" style="padding-top:12px"><b>Pl\u0103tit de angajator</b> \u2014 nu se scade din net</td></tr>
@@ -1229,14 +1257,14 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
             ${s.baza_lipsa ? `<div class="pf-frand-sub" style="color:var(--rosu)">Salariul de bază lipsește (0 lei) — completează-l cu butonul „Salariu" de pe salariat. Fără el statul nu e corect: net 0, dar angajatorul apare cu cost din suprataxa CAS/CASS pe podeaua salariului minim (art.146(5^6)/168(6^1)).</div>` : ""}
             ${s.pontaj_neconfirmat ? `<div class="pf-frand-sub" style="color:var(--gri)">Tichetele de masă sunt blocate până la confirmarea pontajului lunii (buton „Pontaj").</div>` : ""}
             ${_avertDeVerificat(s)}
-            <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${cate(s.tichete_zile, "zi", "zile")})</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${s.cadou ? ` · <span style="color:var(--teal)">cadou ${bani(s.cadou)}</span>${s.cadou_taxabil ? ' <span style="color:var(--rosu)">⚠ taxabil (>300 lei/eveniment sau eveniment nelegal)</span>' : ""}` : ""}${s.tichete_cultural ? ` · <span style="color:var(--teal)">cultural ${bani(s.tichete_cultural)}</span>` : ""}${s.tichete_cresa ? ` · <span style="color:var(--teal)">creșă ${bani(s.tichete_cresa)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta || s.cadou) ? ` · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
+            <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net_de_plata != null ? s.net_de_plata : s.net)}</b>${s.cm_zile ? ` (salariu ${bani(s.net)} + indemnizație CM ${bani(s.cm_net)})` : ""} \u00b7 cost ${bani(s.cost_total != null ? s.cost_total : s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${cate(s.tichete_zile, "zi", "zile")})</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${s.cadou ? ` · <span style="color:var(--teal)">cadou ${bani(s.cadou)}</span>${s.cadou_taxabil ? ' <span style="color:var(--rosu)">⚠ taxabil (>300 lei/eveniment sau eveniment nelegal)</span>' : ""}` : ""}${s.tichete_cultural ? ` · <span style="color:var(--teal)">cultural ${bani(s.tichete_cultural)}</span>` : ""}${s.tichete_cresa ? ` · <span style="color:var(--teal)">creșă ${bani(s.tichete_cresa)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta || s.cadou) ? ` · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
           </div>
           ${compozitieNet(s)}
           <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;width:100%">
           <button class="buton-primar" data-flut="${s.id}" data-actiune="GET /tenants/{tenant_id}/fluturas/{salariat_id}">Flutura\u0219</button>
           <button data-actiune="POST /tenants/{tenant_id}/reges-trimite-salariat" class="buton-secundar" data-reges="${s.id}">REGES</button>
           <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}">Concediu</button>
-          <button class="buton-secundar" data-adev="${s.id}" data-nume="${esc(s.nume)}">Adeverință</button>
+          <button class="buton-secundar" data-adev="${s.id}" data-nume="${esc(s.nume)}" data-cor="${esc(s.cor || "")}">Adeverință</button>
           <button class="buton-secundar" data-pontaj="${s.id}" data-nume="${esc(s.nume)}">Pontaj</button>
           <button class="buton-secundar" data-vac="${s.id}" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar" data-val="${s.tichete_vacanta || 0}" data-nume="${esc(s.nume)}">+ vacanță</button>
           <button class="buton-secundar" data-cadou="${s.id}" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar" data-nume="${esc(s.nume)}">+ cadou</button>
@@ -1329,7 +1357,11 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
           <thead><tr><th>Debit</th><th>Credit</th><th>Sumă</th></tr></thead>
           <tbody>${p.note.map((n) => `<tr><td>${esc(n.debit)}</td><td>${esc(n.credit)}</td><td>${bani(n.suma)}</td></tr>`).join("")}</tbody>
         </table>
-        <p style="margin-top:10px">${p.deja_contata
+        <p style="margin-top:10px">${p.neincheiata
+          // [deficiența 414] luna în curs: niciun buton care scrie nota (serverul o refuză, `_cere_luna_incheiata`) — nici înlocuirea, nici
+          // recontabilizarea; ciorna veche, scrisă înainte de încheierea lunii, se spune și se reface după
+          ? `<span class="caseta-info" style="display:block" id="sp-contare-neincheiata"><span class="ci-mesaj">Nota salariilor se scrie după ce luna se încheie: ${esc(p.neincheiata)}${p.deja_contata && p.ciorna_alte_sume ? ` Ciorna ${esc(p.nota_eticheta || "")} din jurnal a fost scrisă înainte de încheierea lunii, din alte sume: după încheiere, „Înlocuiește ciorna” o reface din statul de atunci.` : ""}</span></span>`
+          : p.deja_contata
           ? (p.ciorna_alte_sume
             // [retest 08.10 pct.1, decizia Costin] „nu rămâne niciodată o ciornă cu alte sume decât statul afișat”
             ? `<span class="caseta-atentie" style="display:block"><span class="ca-mesaj">Ciorna ${esc(p.nota_eticheta || "")} din jurnal are alte sume decât statul afișat — e scrisă din statul de dinainte. Contabilizarea o înlocuiește cu nota de mai sus.</span></span>
@@ -1340,10 +1372,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
                <button class="buton-primar" id="sp-contare-scrie" style="margin-top:8px" data-actiune="POST /tenants/{tenant_id}/salarii-contare|POST /tenants/{tenant_id}/salarii-contare/propunere">Recontabilizează statul</button>`
             : `<span class="${p.validare && p.validare.stare_coada === "la_senior" ? "caseta-info" : "tip-micut"}" style="display:block"><span class="ci-mesaj">${p.validare && p.validare.stare_coada === "la_senior" ? `Nota ${esc(p.nota_eticheta || "")} e la validare în cabinet.`
               : (p.validare && p.validare.stare_coada === "aprobata" ? `Nota ${esc(p.nota_eticheta || "")} e validată.` : `Nota există deja în jurnal (${esc(p.nota_eticheta || "")}, ${p.validare && p.validare.stare_coada === "la_senior" ? "la validare în cabinet" : "ciornă"}).`)}${p.divergente.length ? " Diferențele de mai sus se recalculează la fiecare deschidere: rămân afișate până când nota și declarația au aceleași cifre." : ""}</span></span>`)
-          : (p.neincheiata
-            // [deficiența 216, retestul Costin 09.10] nota salariilor se scrie după ce luna s-a încheiat — serverul o refuză înainte
-            ? `<span class="caseta-info" style="display:block"><span class="ci-mesaj">Nota salariilor se scrie după ce luna se încheie: ${esc(p.neincheiata)}</span></span>`
-            : `<button class="buton-primar" id="sp-contare-scrie" data-actiune="POST /tenants/{tenant_id}/salarii-contare|POST /tenants/{tenant_id}/salarii-contare/propunere">Scrie nota ciornă</button>
+          : (`<button class="buton-primar" id="sp-contare-scrie" data-actiune="POST /tenants/{tenant_id}/salarii-contare|POST /tenants/{tenant_id}/salarii-contare/propunere">Scrie nota ciornă</button>
              <span class="tip-micut" style="margin-left:8px">Ciornă, nu validată: validării îi rămâne al doilea om.</span>`)}</p>
       </div>`;
       const b = corp.querySelector("#sp-contare-scrie");
@@ -1457,7 +1486,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
       fluxConcediu(nav, t, { id: parseInt(b.dataset.cm), nume: b.dataset.nume });
     }));
     corp.querySelectorAll("[data-adev]").forEach((b) => b.addEventListener("click", () =>  // f136_adeverinta
-      nav.mergi("Adeverință", (c2) => formularAdeverinta(c2, nav, t, parseInt(b.dataset.adev), b.dataset.nume, an, luna))));
+      nav.mergi("Adeverință", (c2) => formularAdeverinta(c2, nav, t, parseInt(b.dataset.adev), b.dataset.nume, an, luna, b.dataset.cor))));
     corp.querySelectorAll("[data-pontaj]").forEach((b) => b.addEventListener("click", () =>  // f135_pontaj
       nav.mergi("Pontaj", (c2) => ecranPontaj(c2, nav, t, parseInt(b.dataset.pontaj), b.dataset.nume, an, luna))));
     // [F133 Faza 2a] + vacanta: input one-off pe luna curenta, pe randul salariatului
@@ -1682,12 +1711,26 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
             <option value="intreaga" ${norma === "intreaga" ? "selected" : ""}>Întreagă (8h)</option>
             <option value="partiala" ${norma === "partiala" ? "selected" : ""}>Parțială</option></select></label>
           <label class="camp"><span class="camp-eticheta">Ore/zi</span><input type="number" min="1" max="8" step="0.5" id="ed-orezi" class="camp-input" value="${esc(b.dataset.dorezi)}"></label>
+          <label class="camp"><span class="camp-eticheta">Tip contract</span><select id="ed-tipcim" class="camp-input">${ALEGE}<option value="nedeterminata">nedeterminată</option><option value="determinata">determinată</option></select></label>
+          <label class="camp"><span class="camp-eticheta">Nr. CIM</span><input id="ed-nrcim" class="camp-input"></label>
+          <label class="camp"><span class="camp-eticheta">Dată CIM</span><input type="date" id="ed-datacim" class="camp-input"></label>
         </div>
         <div class="camp-eticheta" style="color:var(--gri);margin-top:6px">Corectarea acestor date nu modifică declarațiile deja depuse. CNP-ul se validează la salvare.</div>
         <p style="margin-top:8px"><button class="buton-primar" id="ed-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>
           <button class="buton-secundar" id="ed-cancel" style="margin-left:6px">Renunță</button></p>
         <div id="ed-msg"></div></div>`;
       focusFaraSalt(corp.querySelector("#ed-nume"));
+      // [412] contractul individual de muncă din fișă (Codul muncii art.12, art.16): se arată cel salvat; până nu s-a citit, salvarea
+      // nu-l trimite (un câmp gol pentru că fișa n-a venit încă nu golește ce era salvat)
+      let cimCitit = false;
+      api.get(`/tenants/${t.id}/salariati/${sid}`).then((d) => {
+        if (!d || !corp.querySelector("#ed-tipcim")) return;
+        const tip = corp.querySelector("#ed-tipcim"), nr = corp.querySelector("#ed-nrcim"), dt = corp.querySelector("#ed-datacim");
+        if (d.tip_contract && !tip.value) tip.value = d.tip_contract;   // ce a ales / tastat deja omul nu se suprascrie
+        if (d.nr_cim && !nr.value) nr.value = d.nr_cim;
+        if (d.data_cim && !dt.value) dt.value = String(d.data_cim).slice(0, 10);
+        cimCitit = true;
+      }).catch(() => {});
       corp.querySelector("#ed-cancel").addEventListener("click", () => { zonaDate.innerHTML = ""; });
       corp.querySelector("#ed-save").addEventListener("click", async () => {
         const msg = corp.querySelector("#ed-msg");
@@ -1701,7 +1744,12 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
         if (!nume) { arataMesaj(msg, "Numele e obligatoriu.", "eroare"); return; }
         if (!cnpValid(cnp)) { arataMesaj(msg, "CNP invalid (13 cifre, cifră de control greșită).", "eroare"); return; }
         try {
-          await api.put(`/tenants/${t.id}/salariati/${sid}`, { nume, prenume, cnp, data_angajare, tip_norma, ore_zi });
+          // `undefined` nu intră în JSON: un câmp CIM gol se trimite (golire) numai după ce fișa a fost citită; completat, se trimite mereu
+          const cimVal = (v) => (cimCitit || v ? (v || null) : undefined);
+          const tip_contract = cimVal(corp.querySelector("#ed-tipcim").value);
+          const nr_cim = cimVal(corp.querySelector("#ed-nrcim").value.trim());
+          const data_cim = cimVal(corp.querySelector("#ed-datacim").value);
+          await api.put(`/tenants/${t.id}/salariati/${sid}`, { nume, prenume, cnp, data_angajare, tip_norma, ore_zi, tip_contract, nr_cim, data_cim });
           zonaDate.innerHTML = ""; deseneaza();
         } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
       });
@@ -1781,13 +1829,33 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
           <select class="camp-input" id="el-tip" aria-label="Tipul elementului de salariu" style="width:180px">${ALEGE}<option value="prima">Primă</option><option value="spor">Spor</option><option value="ore_suplimentare">Ore suplimentare</option></select>
           <input type="text" class="camp-input" id="el-denumire" aria-label="Denumirea, cum apare pe fluturaș" placeholder="ex.: prima de performanță" style="flex:1;min-width:200px">
           <input type="number" min="0" step="0.01" class="camp-input" id="el-ore" aria-label="Orele suplimentare (numai la ore suplimentare)" placeholder="ore (numai la ore supl.)" style="width:170px">
+          <input type="number" min="0" step="1" class="camp-input" id="el-spor" aria-label="Sporul pentru orele suplimentare, % din salariul de bază" placeholder="spor % (ore supl.)" style="width:150px">
           <input type="number" min="0" step="0.01" class="camp-input" id="el-suma" aria-label="Suma brută, în lei" placeholder="suma brută, lei" style="width:150px">
           <button class="buton-primar" id="el-adauga" data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/elemente">Adaugă</button>
           <button class="buton-secundar" id="el-renunta">Închide</button>
         </div>
         <div class="tip-micut" style="margin-top:6px">Suma e brută și o stabilești tu (la orele suplimentare, cu sporul din contract — minimum 75%, Codul muncii art.123 alin.(2)). Intră în brut, în CAS, CASS și impozit, și apare distinct pe fluturaș.</div>
+        <div id="el-propunere"></div>
         <div id="el-msg"></div></div>`;
       zonaElem.querySelector("#el-renunta").addEventListener("click", () => { zonaElem.innerHTML = ""; b.classList.remove("buton-activ"); });
+      // [deficiența 413] orele suplimentare: suma propusă = tariful orar × ore × (1 + spor), iar sporul sub 75% e semnalat (Codul muncii
+      // art.123 alin.(2): sporul „nu poate fi mai mic de 75% din salariul de bază”). Propunerea nu suprascrie o sumă scrisă de om.
+      let sumaScrisa = false;
+      zonaElem.querySelector("#el-suma").addEventListener("input", () => { sumaScrisa = true; });
+      const propune = () => {
+        const z = zonaElem.querySelector("#el-propunere");
+        if (zonaElem.querySelector("#el-tip").value !== "ore_suplimentare") { z.innerHTML = ""; return; }
+        const ore = parseFloat(zonaElem.querySelector("#el-ore").value), spor = parseFloat(zonaElem.querySelector("#el-spor").value);
+        const sub = !Number.isNaN(spor) && spor < 75;
+        if (s0.tarif_orar && ore > 0 && !Number.isNaN(spor)) {
+          const suma = Math.round(s0.tarif_orar * ore * (1 + spor / 100) * 100) / 100;
+          if (!sumaScrisa) zonaElem.querySelector("#el-suma").value = suma.toFixed(2);
+          arataMesaj(z, `Propus: ${bani(s0.tarif_orar)} lei/oră (salariul de bază ${bani(s0.salariu_baza)} lei / ora normei lunii) × ${cate(ore, "oră", "ore")} × (1 + ${spor}%) = ${bani(suma)} lei.${sub ? " Sporul e sub 75% din salariul de bază: Codul muncii art.123 alin.(2) nu permite mai puțin." : ""}`, sub ? "avert" : "info");
+        } else {
+          arataMesaj(z, sub ? "Sporul e sub 75% din salariul de bază: Codul muncii art.123 alin.(2) nu permite mai puțin." : "", sub ? "avert" : "info");
+        }
+      };
+      ["#el-tip", "#el-ore", "#el-spor"].forEach((sel) => zonaElem.querySelector(sel).addEventListener(sel === "#el-tip" ? "change" : "input", propune));
       zonaElem.querySelectorAll(".el-sterge").forEach((x) => x.addEventListener("click", () => {
         confirmaCaseta(x.parentElement || x, "Ștergi elementul de salariu? Statul se recalculează.", async () => {
           try { await api.del(`/tenants/${t.id}/salariati/${sid}/elemente/${x.dataset.id}`); zonaElem.innerHTML = ""; deseneaza(); }
@@ -2045,14 +2113,14 @@ export async function sectiuneaCV(corp, t, zonaM) {
         locatie: val("#cv-loc") || null };
       if (val("#cv-art")) corpReq.articol_id = parseInt(val("#cv-art"));
       else corpReq.denumire = val("#cv-den").trim();
-      if (!corpReq.articol_id && !corpReq.denumire) { arataMesaj(zonaM, "Alege articolul sau da-i un nume.", "avert"); return; }
+      if (!corpReq.articol_id && !corpReq.denumire) { arataMesaj(zonaM, "Alege articolul sau da-i un nume.", "eroare"); return; }
       const r = await api.post(`/tenants/${t.id}/stocuri/intrare`, corpReq);
       zonaM.innerHTML = `<p class="pf-intro">Intrare înregistrată \u00b7 ${bani(r.valoare)} lei.</p>`;
       sectiuneaCV(corp, t, zonaM);
     } catch (e) { arataMesaj(zonaM, e.mesaj || "eroare", "eroare"); }
   });
   zona.querySelector("#cv-iesire").addEventListener("click", async () => {
-    if (!val("#cv-art")) { arataMesaj(zonaM, "Alege articolul pentru iesire.", "avert"); return; }
+    if (!val("#cv-art")) { arataMesaj(zonaM, "Alege articolul pentru iesire.", "eroare"); return; }
     try {
       const r = await api.post(`/tenants/${t.id}/stocuri/iesire`, {
         articol_id: parseInt(val("#cv-art")), data: val("#cv-data"),
@@ -2145,15 +2213,29 @@ export async function sectiuneaCV(corp, t, zonaM) {
       <div class="pf-frand"><div class="pf-frand-text">
         <div class="pf-frand-nume">${esc(a.denumire)} \u00b7 scriptic ${esc(cantitate(a.stoc, a.um))}</div>
       </div>
-      <input type="number" step="0.001" class="camp-input cvi-faptic" id="cvi-a${a.id}-faptic" data-aid="${a.id}" placeholder="faptic" aria-label="Stoc faptic" style="width:110px"></div>`).join("")}
+      <input type="number" step="0.001" class="camp-input cvi-faptic" id="cvi-a${a.id}-faptic" data-aid="${a.id}" placeholder="faptic" aria-label="Stoc faptic" style="width:110px">
+      <div class="cvi-lipsa-zona" id="cvi-a${a.id}-lipsa-zona" hidden style="flex:1 1 100%;margin-top:6px">
+        <select class="camp-input" id="cvi-a${a.id}-lipsa" aria-label="Lipsa ${esc(a.denumire)}">${ALEGE}<option value="imputabila">lipsă imputabilă</option><option value="neimputabila">lipsă neimputabilă</option><option value="justificata">lipsă justificată (distrusă, pierdută, furată — dovedit)</option></select>
+        <input type="number" step="0.01" class="camp-input" id="cvi-a${a.id}-cota" placeholder="cota TVA (din nomenclator)" aria-label="Cota TVA ${esc(a.denumire)}" style="width:170px">
+        <input type="number" step="0.01" class="camp-input" id="cvi-a${a.id}-imputat" placeholder="suma imputată" aria-label="Suma imputată ${esc(a.denumire)}" style="width:140px">
+      </div></div>`).join("")}
       <p style="margin-top:8px"><button class="buton-primar" id="cvi-salveaza" data-actiune="POST /tenants/{tenant_id}/stocuri/inventar">Salveaz\u0103 inventarul (note ciorne)</button></p>`;
+    // [deficiența 404] faptic sub scriptic = lipsă: încadrarea ei (imputabilă / neimputabilă / justificată) se cere pe rând
+    z.querySelectorAll(".cvi-faptic").forEach((i) => i.addEventListener("input", () => {
+      const lipsa = i.value.trim() !== "" && Number(i.value) < Number((arts.find((x) => String(x.id) === i.dataset.aid) || {}).stoc);
+      z.querySelector(`#cvi-a${i.dataset.aid}-lipsa-zona`).hidden = !lipsa;
+    }));
     z.querySelector("#cvi-salveaza").addEventListener("click", async () => {
       curataEroriCamp(z);
       // NU se filtreaza randuri (cap.24 regula 2): se trimit TOATE articolele; backendul e autoritatea (sare
       // articolele necontorizate = faptic gol, NU e eroare; eroare per-linie doar la valoare invalida).
       const linii = [...z.querySelectorAll(".cvi-faptic")]
-        .map((i) => ({ articol_id: parseInt(i.dataset.aid), faptic: i.value.trim() === "" ? null : i.value.trim() }));
-      if (!linii.some((l) => l.faptic !== null)) { arataMesaj(zonaM, "Completează stocul faptic la cel puțin un articol.", "avert"); return; }
+        .map((i) => {
+          const g = (suf) => (z.querySelector(`#cvi-a${i.dataset.aid}-${suf}`) || {}).value || "";
+          return { articol_id: parseInt(i.dataset.aid), faptic: i.value.trim() === "" ? null : i.value.trim(),
+            lipsa: g("lipsa") || null, cota_tva: g("cota") === "" ? null : Number(g("cota")), suma_imputata: g("imputat") === "" ? null : Number(g("imputat")) };   // [404]
+        });
+      if (!linii.some((l) => l.faptic !== null)) { arataMesaj(zonaM, "Completează stocul faptic la cel puțin un articol.", "eroare"); return; }
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/inventar`,
           { data: val("#cv-data"), linii });
@@ -2165,7 +2247,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
         zonaM.innerHTML = `<p class="pf-intro">${rest.map((x) =>
           x.eroare ? `${esc(x.denumire || x.articol_id)}: ${esc(x.eroare)}`
           : x.diferenta === "0" ? `${esc(x.denumire)}: fără diferență`
-          : `${esc(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${cantitate(Math.abs(Number(x.diferenta)))} · ${bani(x.valoare)} lei · nota ${esc(x.nota)} (${stareNota(r)})`).join("<br>")}</p>`;
+          : `${esc(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${cantitate(Math.abs(Number(x.diferenta)))} · ${bani(x.valoare)} lei · nota ${esc(x.nota)} (${stareNota(r)})${x.semnal ? " · " + esc(x.semnal.motiv) : ""}`).join("<br>")}</p>`;
         if (!cuEroare.length) sectiuneaCV(corp, t, zonaM);   // refresh doar cand nu sunt erori de camp de aratat
       } catch (e) { arataMesaj(zonaM, e.mesaj || "eroare", "eroare"); }
     });
@@ -2203,7 +2285,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
       </div>`;
     locZona.querySelector("#tr-ok").addEventListener("click", async () => {
       const g = (id) => locZona.querySelector(id).value;
-      if (!g("#tr-art")) { arataMesaj(zonaM, "Alege articolul transferat.", "avert"); return; }
+      if (!g("#tr-art")) { arataMesaj(zonaM, "Alege articolul transferat.", "eroare"); return; }
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/transfer`, {
           articol_id: parseInt(g("#tr-art")), din_locatie: g("#tr-din") || null,
@@ -2228,7 +2310,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
       </div>`;
     locZona.querySelector("#rc-ok").addEventListener("click", async () => {
       const g = (id) => locZona.querySelector(id).value;
-      if (!g("#rc-art")) { arataMesaj(zonaM, "Alege articolul reclasificat.", "avert"); return; }
+      if (!g("#rc-art")) { arataMesaj(zonaM, "Alege articolul reclasificat.", "eroare"); return; }
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/reclasificare`, {
           articol_id: parseInt(g("#rc-art")), cont_stoc_nou: g("#rc-cont").trim(),
@@ -2584,9 +2666,13 @@ async function ecranRegistruFiscal(corp, nav, t) {
         <tbody>${d.ajustari.map((a) => `<tr><td>${a.trim ? `T${a.trim}/${esc(String(a.an))}` : `anul ${esc(String(a.an))}`}</td><td>${esc(a.eticheta)}</td><td class="fd-td-num">${bani(a.suma)} lei</td>
           <td>${esc(a.descriere || "\u2014")}</td><td>${esc(a.document || "\u2014")}</td>
           <td><button class="buton-secundar" data-aj-sterge="${a.id}" data-actiune="DELETE /tenants/{tenant_id}/ajustari-fiscale/{ajustare_id}">\u0218terge</button></td></tr>`).join("")}</tbody></table></div>`;
+    // [378, lotul 9] rândurile luate din conturi cât timp omul nu le scrie (amenzile din 6581 -> rd.25)
+    const dinConturi = (d.din_conturi || []).length ? `<div class="caseta-info" id="aj-din-conturi" style="margin-top:10px"><b>Din conturi, f\u0103r\u0103 s\u0103 le scrii:</b><ul>${d.din_conturi.map((r) =>
+      `<li>${esc(r.eticheta)}: ${bani(r.suma)} lei, din ${esc(r.sursa)}${r.inlocuit ? " \u2014 <b>\u00eenlocuit de r\u00e2ndul scris de tine</b>" : ""}</li>`).join("")}</ul>
+      Dac\u0103 o parte e deductibil\u0103 (o desp\u0103gubire sau o penalitate contractual\u0103), scrie r\u00e2ndul cu suma nedeductibil\u0103: cifra ta \u00eenlocuie\u0219te contul pe tot anul.</div>` : "";
     zona.innerHTML = `<h3 style="margin-top:22px">Ajust\u0103ri fiscale pe ${esc(String(an))}</h3>
       <p class="pf-intro">Ce face diferen\u021ba dintre profitul contabil \u0219i cel impozabil (CF art.19 alin.(1)), pe trimestrul \u00een care s-a produs. Intr\u0103 cumulat \u00een D100 pe trimestrele I\u2013III \u0219i \u00een D101. Pierderea din anii anteriori se scrie o dat\u0103 pe an \u0219i se recupereaz\u0103 cel mult 70% din profit (CF art.31).</p>
-      ${lista}
+      ${dinConturi}${lista}
       <div id="aj-mesaj"></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;max-width:960px;margin-top:10px">
         <label class="camp"><span class="camp-eticheta">R\u00e2ndul D101</span><select id="aj-rand" class="camp-input">${ALEGE}${optiuni}</select></label>
@@ -3111,7 +3197,7 @@ async function ecranBilant(corp, nav, t) {
               + `${dinNou.has(a) ? "Propune din nou" : "Propune"} nota de închidere la 31.12.${esc(String(a))}</button>`).join(" ")}<div class="bl-inchidere-mesaj"></div></div>`);
             zonaPrec.querySelectorAll(".bl-inchidere-jurnal").forEach((b) => b.addEventListener("click", () => {
               nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, { an: parseInt(b.dataset.an, 10), luna: 12,
-                evidentiaza: b.dataset.note.split(",").map(Number) }));
+                evidentiaza: b.dataset.note.split(",").map(Number) }), { lat: "tabel" });   // [394] ca la cardul jurnalului
             }));
             if (ultimaPropunere && ultimaPropunere.cheie === cheie) arataMesaj(zonaPrec.querySelector(".bl-inchidere-mesaj"), ultimaPropunere.mesaj, "ok");
             zonaPrec.querySelectorAll(".bl-inchidere-propune").forEach((b) => b.addEventListener("click", async () => {
@@ -3363,12 +3449,16 @@ export async function ecranStocuri(corp, nav, t) {
           <option value="fara">fără factură — NIR complet (cost, adaos, TVA neexigibilă)</option>
           ${facturiPrimite.map((f) => `<option value="${f.id}">factura ${esc(f.numar)} din ${dataRo(f.data_emitere)} · ${esc(f.tert_nume || "")} · ${bani(f.total)} ${esc(f.moneda || "RON")}</option>`).join("")}
         </select></div>`}
+        ${cuFactura ? "" : `<label class="camp" style="display:block;margin-bottom:8px;max-width:420px"><span class="camp-eticheta">Factura furnizorului a sosit?<span class="oblig">*</span></span>
+          ${selectDaNu('id="sn-factura-sosita"', null, "Factura furnizorului a sosit")}
+          <span class="camp-ajutor">Nu = factură nesosită: datoria intră pe 408, iar TVA-ul stă neexigibil până la factură. ${laCost ? "Da = factura aduce ea marfa în stoc (Facturi primite), fără NIR." : "Da = alege factura, ca NIR-ul să se lege de ea."}</span></label>`}
         <div class="camp-eticheta">${laCost ? "Articole: articolul (din listă sau nou) \u00b7 cantitate \u00b7 pre\u021b achizi\u021bie \u00b7 cot\u0103 TVA — marfa intră la cost (stoc cantitativ-valoric, CMP)" : "Articole: denumire \u00b7 cantitate \u00b7 pre\u021b achizi\u021bie \u00b7 pre\u021b raft (cu TVA) \u00b7 cot\u0103 TVA — marfa intră la preț de vânzare (global-valoric)"}</div>
         <div id="sn-linii">${liniiNir.map((_, i) => randLinieNir(i)).join("")}</div>
         <div class="camp-eticheta">Cost accesoriu (landed cost) — se repartizează proporțional în costul de achiziție (OMFP 1802/2014). Contul de credit se confirmă de contabil.</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
           <input type="number" step="0.01" id="sn-transport" class="camp-input" placeholder="transport" aria-label="Transport" style="width:110px">
-          <input type="text" id="sn-cont-transport" class="camp-input" value="401" aria-label="Cont credit transport" style="width:120px">
+          <select id="sn-transport-cota" class="camp-input" aria-label="Cota TVA a transportului" style="width:130px">${ALEGE}${[21, 11, 0].map((c) => `<option value="${c}">TVA transport ${c}%</option>`).join("")}</select>
+          <input type="text" id="sn-cont-transport" class="camp-input" value="" placeholder="cont furnizor (401 / 408)" aria-label="Cont credit transport" style="width:170px">
           <input type="number" step="0.01" id="sn-taxe" class="camp-input" placeholder="taxe" aria-label="Taxe" style="width:110px">
           <input type="text" id="sn-cont-taxe" class="camp-input" value="446" aria-label="Cont credit taxe" style="width:120px">
         </div>
@@ -3421,7 +3511,13 @@ export async function ecranStocuri(corp, nav, t) {
     corp.querySelector("#sn-salveaza").addEventListener("click", async () => {
       const znir = corp.querySelector("#sn-zona");
       curataEroriCamp(znir);
-      if (cuFactura && cereAlegerile(corp, ["#sn-factura"])) return;   // [FAPT_FISCAL_NECERUT] legat sau nu, se alege
+      // [FAPT_FISCAL_NECERUT] legat sau nu, se alege; [399] factura sosită sau nu și cota TVA a transportului: alese de om, nu presupuse
+      // (serverul le cere și el) — toate deodată
+      let alegereLipsa = false;
+      if (cuFactura && cereAlegerile(corp, ["#sn-factura"])) alegereLipsa = true;
+      if (!cuFactura && cereAlegerile(corp, ["#sn-factura-sosita"])) alegereLipsa = true;
+      if ((parseFloat(corp.querySelector("#sn-transport").value) || 0) > 0 && cereAlegerile(corp, ["#sn-transport-cota"])) alegereLipsa = true;
+      if (alegereLipsa) return;
       const fSel = cuFactura ? corp.querySelector("#sn-factura").value : "";
       // NU se filtreaza randuri (cap.24 regula 2): lista trimisa = lista randata. Un articol incomplet se
       // valideaza pe backend si se raporteaza langa campul lui, nu dispare tacit.
@@ -3442,7 +3538,10 @@ export async function ecranStocuri(corp, nav, t) {
           cui: corp.querySelector("#sn-cui").value || null,
           transport: parseFloat(corp.querySelector("#sn-transport").value) || 0,
           taxe: parseFloat(corp.querySelector("#sn-taxe").value) || 0,
-          cont_transport: corp.querySelector("#sn-cont-transport").value.trim() || null,
+          cont_transport: corp.querySelector("#sn-cont-transport").value.trim() || null,   // [398] gol = contul furnizorului mărfii
+          cota_tva_transport: corp.querySelector("#sn-transport-cota").value === "" ? null : Number(corp.querySelector("#sn-transport-cota").value),   // [399]
+          // [399] factura sosită sau nu: aleasă de om (la NIR-ul legat, factura aleasă o spune singură)
+          factura_sosita: cuFactura ? (fSel === "fara" ? false : null) : daNu(corp.querySelector("#sn-factura-sosita")),
           cont_taxe: corp.querySelector("#sn-cont-taxe").value.trim() || null,
           ...(fSel && fSel !== "fara" ? { factura_id: Number(fSel) } : {}),
           ...(refacere ? { refacut_din_id: refacere.id } : {}),
@@ -3544,8 +3643,8 @@ async function ecranNir(corp, t, nirId) {
     <h2 class="pf-titlu">NIR ${esc(n.numar)} · ${dataRo(n.data)}</h2>
     <p class="pf-intro">${esc(n.furnizor || "furnizor nescris")}${n.cui ? " · CUI " + esc(n.cui) : ""} · ${laCost ? "la cost (cantitativ-valoric)" : "la preț de vânzare (global-valoric)"}${n.factura_id ? ` · legat de factura ${esc(n.factura_ref || "")} (costul e în factură)` : ""}</p>
     ${n.respins ? `<div class="caseta-atentie"><div class="ca-mesaj">Respins la validare: ${esc(n.respins.motiv_respingere || "fără motiv")}.${n.refacut_in ? ` Refăcut în NIR-ul ${esc(n.refacut_in)}.` : (laCost ? " Intrarea lui în stoc a fost stornată; NIR-ul se reface din lista NIR-urilor lunii." : " NIR-ul se reface din lista NIR-urilor lunii.")}</div></div>` : ""}
-    <table class="fd-tabel"><thead><tr><th>Articol</th><th>Cantitate</th><th>Preț achiziție</th>${laCost ? "" : "<th>Preț raft</th>"}<th>Cotă</th></tr></thead>
-      <tbody>${d.linii.map((l) => `<tr><td>${esc(l.denumire)}</td><td>${esc(cantitate(l.cantitate))}</td><td>${bani(l.pret_achizitie)}</td>${laCost ? "" : `<td>${bani(l.pret_vanzare)}</td>`}<td>${esc(String(Number(l.cota_tva)))}%</td></tr>`).join("")}</tbody></table>
+    <table class="fd-tabel" id="nir-detaliu-linii"><thead><tr><th>Articol</th><th>Cantitate</th><th>Preț achiziție</th>${laCost ? "" : "<th>Preț raft</th>"}<th>Cotă</th><th>Transport și taxe repartizate</th><th>Cost final</th><th>Cost unitar final</th></tr></thead>
+      <tbody>${d.linii.map((l) => `<tr><td>${esc(l.denumire)}</td><td>${esc(cantitate(l.cantitate))}</td><td>${bani(l.pret_achizitie)}</td>${laCost ? "" : `<td>${bani(l.pret_vanzare)}</td>`}<td>${esc(String(Number(l.cota_tva)))}%</td><td>${bani(l.accesoriu)}</td><td>${bani(l.cost_final)}</td><td>${esc(pretUnitar(l.cost_unitar_final))}</td></tr>`).join("")}</tbody></table>
     <h3 class="pf-subtitlu">Notele NIR-ului</h3>
     <table class="fd-tabel"><thead><tr><th>Notă</th><th>Debit</th><th>Credit</th><th>Sumă</th><th>Stare</th></tr></thead>
       <tbody>${d.note.map((x) => `<tr><td>${esc(x.eticheta || "")}</td><td>${esc(x.cont_debit)}</td><td>${esc(x.cont_credit)}</td><td>${bani(x.suma)}</td><td>${esc(x.status === "validata" ? "validată" : stare(x.validare))}</td></tr>`).join("") || `<tr><td colspan="5">—</td></tr>`}</tbody></table>`;
@@ -3566,8 +3665,9 @@ function actiuneCasa(o) {
   return `<div class="pf-frand-butoane">${leaga}<button class="buton-secundar" data-del="${o.id}" data-actiune="DELETE /tenants/{tenant_id}/casa/operatiuni/{op_id}">\u0218terge</button></div>`;
 }
 // [deficiența 279] starea REALĂ a notei operațiunii, pe rând (nu presupusă: din coada de validare)
-function stareNotaCasa(o) {
-  if (o.nota_status === "validata") return "notă validată";
+function stareNotaCasa(o, t) {
+  // [368, decizia Costin 19.10.2026] la partidă simplă nota e internă (validată automat; evidența e registrul de încasări și plăți)
+  if (o.nota_status === "validata") return t && t.regim_contabil === "simpla" ? "notă internă" : "notă validată";
   if (o.stare_coada === "la_senior") return "notă la validare în cabinet";
   if (o.stare_coada === "respinsa") return "notă respinsă la validare" + (o.motiv_respingere ? ": " + o.motiv_respingere : "");
   return "notă ciornă";
@@ -3605,7 +3705,7 @@ async function ecranCasa(corp, nav, t) {
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${dataRo(o.data)} \u00b7 ${semnCasa(o)}${bani(Math.abs(Number(o.suma)))} lei \u00b7 sold ${bani(o.sold)} lei${o.storno_de ? " \u00b7 stornare" : ""}${o.stornata ? " \u00b7 stornată" : ""}</div>
-            <div class="pf-frand-sub">${esc(o.partener || "")}${o.document ? " \u00b7 doc " + esc(o.document) : ""} \u00b7 ${esc(o.categorie_eticheta || "")}${o.factura ? " \u00b7 factura " + esc(o.factura) : ""}${o.avans ? " \u00b7 avans" : ""} \u00b7 ${esc(stareNotaCasa(o))}</div>
+            <div class="pf-frand-sub">${esc(o.partener || "")}${o.document ? " \u00b7 doc " + esc(o.document) : ""} \u00b7 ${esc(o.categorie_eticheta || "")}${o.factura ? " \u00b7 factura " + esc(o.factura) : ""}${o.avans ? " \u00b7 avans" : ""}${o.nir ? " pentru " + esc(o.nir) : ""} \u00b7 ${esc(stareNotaCasa(o, t))}</div>
           </div>
           ${actiuneCasa(o)}
           ${exceptata && o.chitanta_neclasificata ? `<select class="camp-input" id="c-cota-${o.chitanta_neclasificata}" aria-label="Cota TVA a chitan\u021bei" style="width:120px;margin-left:8px"><option value="">cota TVA</option>${[21, 11, 0].map((c) => `<option value="${c}">${c ? c + "%" : "0% (scutit)"}</option>`).join("")}</select><button class="buton-secundar" data-cota="${o.chitanta_neclasificata}" data-actiune="PUT /tenants/{tenant_id}/chitante/{chitanta_id}/cota" style="margin-left:6px">Stabile\u0219te cota</button>` : ""}
@@ -3613,7 +3713,7 @@ async function ecranCasa(corp, nav, t) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Cas\u0103 ${semnAjutor("F015")}</h2>
       ${mesajSucces ? '<p class="pf-intro" style="color:var(--verde);font-weight:600">' + mesajSucces + '</p>' : ""}
-      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 sold final <b>${bani(reg.sold_final)} lei</b>
+      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 sold la început <b id="c-sold-inceput">${bani(reg.sold_initial || 0)} lei</b> \u00b7 sold final <b id="c-sold-final">${bani(reg.sold_final)} lei</b>
         <button class="buton-secundar" id="c-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="c-next">luna \u2192</button></p>
       ${avert}
@@ -3723,6 +3823,13 @@ async function ecranCasa(corp, nav, t) {
     // aceeași sursă ca salvarea: `casa_api.semnale` + `casa.verifica_plafon` cu operațiunea propusă inclusă).
     const alese = new Set();
     let facturiPart = [], facturiAsteptare = [], avansFaraFactura = false, tPreviz = null;
+    // [deficiența 405] NIR-urile fără factură ale furnizorului (marfa pe 408), alese ca facturile: plata lor e avans 4091 = 5311
+    const aleseNir = new Set();
+    let niruriPart = [];
+    // [deficiența 407] avansul acordat furnizorului: destinația lui (contul 409x), aleasă de om; `avansInPlata` = previzualizarea a găsit avans
+    let avansDest = "", avansInPlata = false;
+    const DEST_AVANS = [["stocuri", "bunuri (4091)"], ["servicii", "servicii (4092)"], ["imobilizari", "imobilizări corporale (4093)"],
+      ["imobilizari_necorporale", "imobilizări necorporale (4094)"]];
     const zFact = corp.querySelector("#c-facturi"), zPrev = corp.querySelector("#c-previz");
     const cuFacturi = () => ["incasare_client", "plata_furnizor"].includes(corp.querySelector("#c-cat").value);
     const alocari = () => {
@@ -3734,13 +3841,23 @@ async function ecranCasa(corp, nav, t) {
         out.push({ factura_id: f.id, suma: parte.toFixed(2) });
         rest -= parte;
       });
-      return out;
+      // [405] după facturi, NIR-urile alese, fiecare cel mult cât mai e de plătit din el
+      const nir = [];
+      niruriPart.filter((n) => aleseNir.has(n.id)).forEach((n) => {
+        if (rest <= 0.005) return;
+        const parte = Math.min(parseFloat(n.rest), rest);
+        nir.push({ nir_id: n.id, suma: parte.toFixed(2) });
+        rest -= parte;
+      });
+      return { facturi: out, niruri: nir };
     };
     const opPropusa = () => ({
       data: corp.querySelector("#c-data").value, categorie: corp.querySelector("#c-cat").value,
       suma: parseFloat(corp.querySelector("#c-suma").value) || 0, partener: corp.querySelector("#c-part").value || null,
       cui: corp.querySelector("#c-cui").value || null, document: corp.querySelector("#c-doc").value || null,
-      facturi: cuFacturi() ? alocari() : [], avans: cuFacturi() && avansFaraFactura && !alese.size,
+      facturi: cuFacturi() ? alocari().facturi : [], niruri: cuFacturi() ? alocari().niruri : [],   // [405]
+      avans: cuFacturi() && avansFaraFactura && !alese.size && !aleseNir.size,
+      avans_destinatie: avansDest || null,   // [407]
     });
     const deseneazaFacturi = () => {
       if (!cuFacturi()) { zFact.hidden = true; zFact.innerHTML = ""; return; }
@@ -3753,8 +3870,15 @@ async function ecranCasa(corp, nav, t) {
         // [deficiența 310] factura stinsă de o notă încă la validare nu e în listă — și se spune de ce
         facturiAsteptare.map((f) => `<p class="ecran-nota c-fact-asteptare">${esc(f.numar)} din ${dataRo(f.data_emitere)} (${bani(f.suma)} lei) nu e în listă: e ${inc
           ? "încasată" : "plătită"} printr-o notă care așteaptă validarea (${esc(f.note.join(", "))}). Dacă nota se respinge, factura apare din nou aici.</p>`).join("") +
-        `<label class="set-bifa" style="display:block;margin-top:4px"><input type="checkbox" id="c-avans"${avansFaraFactura ? " checked" : ""}${alese.size ? " disabled" : ""}>
-          Avans, fără factură (${inc ? "factura de avans se emite după" : "factura de avans vine de la furnizor"})</label>`;
+        // [deficiența 405] NIR-urile fără factură (datoria pe 408), cu ce mai e de plătit: plata lor e avans acordat furnizorului, compensat la factură
+        (!inc && niruriPart.length ? `<div class="pf-frand-nume" id="c-niruri" style="margin:8px 0 6px">NIR fără factură plătit (avans 4091 = 5311, compensat la sosirea facturii)</div>` +
+          niruriPart.map((n) => `<label class="set-bifa" style="display:block"><input type="checkbox" data-cn="${n.id}"${aleseNir.has(n.id) ? " checked" : ""}>
+          ${esc(n.eticheta)} · ${esc(n.furnizor || "")} · rămas ${bani(n.rest)} lei</label>`).join("") : "") +
+        `<label class="set-bifa" style="display:block;margin-top:4px"><input type="checkbox" id="c-avans"${avansFaraFactura ? " checked" : ""}${alese.size || aleseNir.size ? " disabled" : ""}>
+          Avans, fără factură (${inc ? "factura de avans se emite după" : "factura de avans vine de la furnizor"})</label>` +
+        // [407] la plată, avansul acordat furnizorului merge pe 409x: destinația se alege (bunuri / servicii / imobilizări)
+        (!inc && (avansInPlata || avansFaraFactura) ? `<label class="camp" style="display:block;margin-top:6px;max-width:360px"><span class="camp-eticheta">Avansul e pentru<span class="oblig">*</span></span>
+          <select id="c-avans-dest" class="camp-input" aria-label="Destinația avansului">${avansDest ? "" : ALEGE}${DEST_AVANS.map(([v, l]) => `<option value="${v}"${v === avansDest ? " selected" : ""}>${l}</option>`).join("")}</select></label>` : "");
       zFact.querySelectorAll("[data-cf]").forEach((c) => c.addEventListener("change", () => {
         const id = Number(c.dataset.cf);
         if (c.checked) alese.add(id); else alese.delete(id);
@@ -3765,8 +3889,20 @@ async function ecranCasa(corp, nav, t) {
         }
         programeazaPreviz();
       }));
+      zFact.querySelectorAll("[data-cn]").forEach((c) => c.addEventListener("change", () => {   // [405]
+        const id = Number(c.dataset.cn);
+        if (c.checked) aleseNir.add(id); else aleseNir.delete(id);
+        const n = niruriPart.find((x) => x.id === id);
+        if (c.checked && n && !corp.querySelector("#c-part").value) {
+          corp.querySelector("#c-part").value = n.furnizor || "";
+          corp.querySelector("#c-cui").value = n.cui || "";
+        }
+        programeazaPreviz();
+      }));
       const ca = zFact.querySelector("#c-avans");
       ca.addEventListener("change", () => { avansFaraFactura = ca.checked; programeazaPreviz(); });
+      const cd = zFact.querySelector("#c-avans-dest");
+      if (cd) cd.addEventListener("change", () => { avansDest = cd.value; });
     };
     // [278] previzualizarea (facturile partenerului, avansul, plafonul) se cere la orice schimbare a câmpurilor dispoziției, cu o
     // întârziere de 250 ms la tastare. Ascultarea stă pe zona câmpurilor (`#c-campuri`, marcată cu acțiunea — `scan_drepturi_ui` leagă
@@ -3785,17 +3921,22 @@ async function ecranCasa(corp, nav, t) {
         try { r = await api.post(`/tenants/${t.id}/casa/previzualizare`, op); } catch (e) {
           zPrev.innerHTML = "<div></div>";
           arataMesaj(zPrev.firstChild, `Facturile clientului / furnizorului, avansul și plafonul nu s-au putut calcula (${e.mesaj || "eroare"}); `
-            + "salvarea le verifică oricum.", "avert");
+            + "salvarea le verifică oricum.", "eroare");
           return;
         }
         if (!zCampuri.isConnected) return;   // [C51] aceeași cursă, cu cererea în zbor
         facturiPart = r.facturi || [];
         facturiAsteptare = r.facturi_asteptare || [];
+        avansInPlata = !!r.avans && op.categorie === "plata_furnizor";   // [407]
         [...alese].forEach((id) => { if (!facturiPart.some((f) => f.id === id)) alese.delete(id); });
+        niruriPart = r.niruri || [];   // [405]
+        [...aleseNir].forEach((id) => { if (!niruriPart.some((n) => n.id === id)) aleseNir.delete(id); });
         deseneazaFacturi();
         const linii = [...(r.avans ? [r.avans.mesaj] : []), ...(r.semnale || []),
           ...(r.avertismente || []).map((a) => (a.mesaj || a.cod || "") + (a.temei ? " \u00b7 " + a.temei : ""))];
         zPrev.innerHTML = linii.length ? `<div class="caseta-atentie" id="c-previz-avert">${linii.map((x) => `<div class="ca-mesaj">${esc(x)}</div>`).join("")}</div>` : "";
+        // [deficiența 406] plata care ar duce casa sub zero: refuzul salvării, spus înainte de „Adaugă”
+        if (r.refuz) { zPrev.insertAdjacentHTML("afterbegin", "<div id=\"c-previz-refuz\"></div>"); arataMesaj(zPrev.querySelector("#c-previz-refuz"), r.refuz, "eroare"); }
       }, 250);
     });
     zCampuri.addEventListener("input", programeazaPreviz);
@@ -3839,7 +3980,8 @@ async function ecranCasa(corp, nav, t) {
       try {
         const r = await api.post(`/tenants/${t.id}/casa/operatiuni`, opPropusa());
         const ops = r.operatiuni || [];
-        const parti = ops.map((o) => o.factura_id ? `${bani(o.suma)} lei pe factură` : o.avans ? `${bani(o.suma)} lei avans` : `${bani(o.suma)} lei`);
+        const parti = ops.map((o) => o.factura_id ? `${bani(o.suma)} lei pe factură` : o.nir_id ? `${bani(o.suma)} lei avans pe NIR`
+          : o.avans ? `${bani(o.suma)} lei avans` : `${bani(o.suma)} lei`);
         const av = (r.avertismente || []).length;
         // [R162] se scrie in `mesajSucces`, nu in zona pe care `deseneaza()` o sterge
         // [deficiența 279] starea REALĂ a notei (ciornă sau plecată la validare), nu „ciornă” scris de mână
@@ -4035,7 +4177,7 @@ async function ecranBanca(corp, nav, t) {
         aloc.push({ factura_id: parseInt(c.dataset.fid), suma: parte.toFixed(2) });
         rest -= parte;
       });
-      if (!aloc.length) { arataMesaj(zonaMesaj, "Nicio factură selectată.", "avert"); return; }
+      if (!aloc.length) { arataMesaj(zonaMesaj, "Nicio factură selectată.", "eroare"); return; }
       conteaza(l.id, aloc);
     });
   }
@@ -4321,6 +4463,12 @@ function _bannerFirmaCreata(nume) {
   return _bannerFirma(`Firma <b>${esc(nume)}</b> a fost creată și apare în listă.`);
 }
 
+// [368, lotul 9] ce se întâmplă cu un Z la PFA, spus o singură dată (Z-ul scris și importul AMEF)
+const zInRip = (numerar, card) => (Number(numerar) > 0
+  ? `Numerarul (${bani(numerar)} lei) e în registrul de încasări și plăți, ca încasare de validat (cardul Încasări/plăți).`
+  : "Raportul nu are numerar: în registrul de încasări și plăți nu s-a scris nimic.")
+  + (Number(card) > 0 ? ` Cardul (${bani(card)} lei) intră în registru când banii ajung în cont, din extrasul de bancă.` : "");
+
 // [horeca] Raport Z zilnic
 async function ecranRaportZ(corp, nav, t) {
   const azi = dataIso();
@@ -4342,12 +4490,21 @@ async function ecranRaportZ(corp, nav, t) {
       <label class="camp"><span class="camp-eticheta">Nr. bonuri fiscale</span><input type="number" min="1" step="1" id="z-bonuri" class="camp-input" placeholder="0"></label>
     </div>
     <div id="z-rezultat" style="margin-top:16px"></div>
-    <p style="margin-top:16px"><button class="buton-primar" id="z-salveaza" data-actiune="POST /tenants/{tenant_id}/horeca/raport-z">Genereaz\u0103 not\u0103</button></p>
+    <p style="margin-top:16px"><button class="buton-primar" id="z-salveaza" data-actiune="POST /tenants/{tenant_id}/horeca/raport-z">${t.regim_contabil === "simpla" ? "\u00cenregistreaz\u0103 raportul Z" : "Genereaz\u0103 not\u0103"}</button></p>
     <div id="z-descarcare"></div>`;
   // [decizii 07.10 pct.3] la stocul cantitativ-valoric Z-ul se validează numai cu descărcarea mărfii pe articol (manual sau prin
   // rețetă) — ori cu declarația explicită „fără marfă din stoc”. Rapoartele Z nevalidate ale lunii, cu descărcarea fiecăruia.
   const zDesc = corp.querySelector("#z-descarcare");
   const azd = new Date(); let zAn = azd.getFullYear(), zLuna = azd.getMonth() + 1;
+  // [368] la PFA nota Z-ului se reîncearcă la validarea internă după descărcare / „fără marfă”: rezultatul se spune după redesenare
+  // (validată -> notă internă, în zona de sus; refuzată -> motivul, la rândul Z-ului)
+  const dupaDescarcare = async (r, zid) => {
+    await deseneazaDescarcarea();
+    const rf = refuzuriInterne(r);
+    if (!(r && ((r.interne || []).length || rf.length))) return;
+    const loc = (rf.length && zDesc.querySelector(`#zd-msg-${zid}`)) || zDesc.querySelector("#zd-rez");
+    if (loc) arataMesaj(loc, pasNota(r), rf.length ? "eroare" : "info");
+  };
   const deseneazaDescarcarea = async () => {
     let d, arts = [], rets = [];
     try {
@@ -4361,6 +4518,7 @@ async function ecranRaportZ(corp, nav, t) {
     const optRet = `${ALEGE}` + rets.map((x) => `<option value="${x.id}">${esc(x.denumire)}</option>`).join("");
     zDesc.innerHTML = `<h3 class="pf-subtitlu">Descărcarea mărfii vândute — rapoartele Z nevalidate (${dataRo(`${zAn}-${String(zLuna).padStart(2, "0")}-01`, "luna_an_numeric")})</h3>
       <p class="pf-intro">La stocul cantitativ-valoric raportul Z nu are articole: ce s-a vândut din stoc spui tu, pe articol sau prin rețetă. Z-ul se validează numai după descărcare — sau dacă declari că n-a vândut marfă din stoc.</p>
+      <div id="zd-rez"></div>
       ${!nevalidate.length ? `<div class="stare-goala">Niciun raport Z nevalidat în luna asta.</div>` : nevalidate.map((z) => `
       <div class="pf-frand" style="display:block" data-z="${z.id}">
         <div class="pf-frand-nume">${esc(z.numar || "Z")} · ${dataRo(z.data)} · încasat ${bani(z.incasat)} lei</div>
@@ -4386,8 +4544,8 @@ async function ecranRaportZ(corp, nav, t) {
       const cant = parseFloat(zDesc.querySelector(`#zd-cant-${zid}`).value);
       if (!(cant > 0)) { eroareCamp(zDesc, `zd-cant-${zid}`, "Cantitatea vândută, mai mare ca 0."); return; }
       try {
-        await api.post(`/tenants/${t.id}/stocuri/iesire`, { articol_id: Number(zDesc.querySelector(`#zd-art-${zid}`).value), cantitate: cant, data: b.dataset.data, z_id: Number(zid) });
-        deseneazaDescarcarea();
+        const r = await api.post(`/tenants/${t.id}/stocuri/iesire`, { articol_id: Number(zDesc.querySelector(`#zd-art-${zid}`).value), cantitate: cant, data: b.dataset.data, z_id: Number(zid) });
+        dupaDescarcare(r, zid);
       } catch (e) { arataMesaj(zDesc.querySelector(`#zd-msg-${zid}`), (e && e.mesaj) || "Ieșirea nu s-a salvat.", "eroare"); }
     }));
     zDesc.querySelectorAll(".zd-reteta").forEach((b) => b.addEventListener("click", async () => {
@@ -4396,15 +4554,15 @@ async function ecranRaportZ(corp, nav, t) {
       const portii = parseFloat(zDesc.querySelector(`#zd-portii-${zid}`).value);
       if (!(portii > 0)) { eroareCamp(zDesc, `zd-portii-${zid}`, "Porțiile vândute, mai mult de 0."); return; }
       try {
-        await api.post(`/tenants/${t.id}/retete/descarca`, { reteta_id: Number(zDesc.querySelector(`#zd-ret-${zid}`).value), portii, data: b.dataset.data, z_id: Number(zid) });
-        deseneazaDescarcarea();
+        const r = await api.post(`/tenants/${t.id}/retete/descarca`, { reteta_id: Number(zDesc.querySelector(`#zd-ret-${zid}`).value), portii, data: b.dataset.data, z_id: Number(zid) });
+        dupaDescarcare(r, zid);
       } catch (e) { arataMesaj(zDesc.querySelector(`#zd-msg-${zid}`), (e && e.mesaj) || "Consumul nu s-a salvat.", "eroare"); }
     }));
     zDesc.querySelectorAll(".zd-fara").forEach((b) => b.addEventListener("click", () => {
       const zid = b.dataset.z, retrage = b.textContent.startsWith("Retrage");
       confirmaCaseta(b.parentElement || b, retrage ? "Retragi declarația „fără marfă”? Z-ul nu se mai poate valida fără descărcare."
         : "Declari că în acest raport Z nu s-a vândut nicio marfă din stoc (numai servicii)? Declarația rămâne pe Z.", async () => {
-        try { await api.post(`/tenants/${t.id}/horeca/raport-z/${zid}/fara-marfa`, { fara_marfa: !retrage }); deseneazaDescarcarea(); }
+        try { dupaDescarcare(await api.post(`/tenants/${t.id}/horeca/raport-z/${zid}/fara-marfa`, { fara_marfa: !retrage }), zid); }
         catch (e) { arataMesaj(zDesc.querySelector(`#zd-msg-${zid}`), (e && e.mesaj) || "Nu s-a salvat.", "eroare"); }
       }, { textOk: retrage ? "Retrage" : "Da, fără marfă" });
     }));
@@ -4421,7 +4579,9 @@ async function ecranRaportZ(corp, nav, t) {
           method: "POST", headers: { Authorization: "Bearer " + sesiune.token() }, body: fd });
         const r = await resp.json();
         if (!resp.ok) throw new Error(r.detail || "eroare");
-        zona.innerHTML = `<p class="pf-intro">Importat: Z din ${dataRo(r.data)}, total ${bani(r.total)} (numerar ${bani(r.numerar)}, card ${bani(r.card_altele)}), TVA ${r.tva_total}. Nota ${esc(r.nota_eticheta || "")} e <b>${stareNota(r)}</b> — verifică-o cu Z-ul tipărit.</p>`;
+        zona.innerHTML = r.registru === "rip"   // [368] PFA: registrul de încasări și plăți, nu o notă
+          ? `<p class="pf-intro">Importat: Z din ${dataRo(r.data)}, total ${bani(r.total)}, TVA ${r.tva_total}. ${zInRip(r.numerar, r.card_altele)}</p>`
+          : `<p class="pf-intro">Importat: Z din ${dataRo(r.data)}, total ${bani(r.total)} (numerar ${bani(r.numerar)}, card ${bani(r.card_altele)}), TVA ${r.tva_total}. Nota ${esc(r.nota_eticheta || "")} e <b>${stareNota(r)}</b> — verifică-o cu Z-ul tipărit.</p>`;
       } catch (e) { arataMesaj(zona, e.mesaj || e.message || "eroare", "eroare"); }
       ev.target.value = "";
     });
@@ -4445,6 +4605,17 @@ async function ecranRaportZ(corp, nav, t) {
         total_11: v("#z-11"), total_21: v("#z-21"),
         numerar: v("#z-num"), card: v("#z-card"),
       });
+      if (r.registru === "rip") {   // [368] PFA: registrul de încasări și plăți, nu o notă
+        zona.innerHTML = `<div class="caseta-info" id="z-rip"><span class="ci-mesaj">${zInRip(r.numerar, r.card)}</span></div>`;
+        // [368] nota internă a Z-ului (TVA-ul pentru D300 / D394): validată automat, sau refuzul ei, cu motivul (ex. Z nedescărcat)
+        if (refuzuriInterne(r).length) {
+          zona.insertAdjacentHTML("beforeend", `<div class="caseta-atentie" id="z-interna-refuz"><div class="ca-mesaj">${pasNota(r)}</div></div>`);
+          const dz3 = new Date(corp.querySelector("#z-data").value || new Date());
+          zAn = dz3.getFullYear(); zLuna = dz3.getMonth() + 1;
+          deseneazaDescarcarea();
+        }
+        return;
+      }
       zona.innerHTML = `<div class="pf-frand"><div class="pf-frand-text">
         <div class="pf-frand-nume">Notă generată (${esc(r.nota_eticheta || "")})</div>
         <div class="pf-frand-sub">TVA 11%: ${bani(r.tva_11)} \u00b7 TVA 21%: ${bani(r.tva_21)} \u00b7 baze: ${bani(r.baza_11)} / ${bani(r.baza_21)}</div>
@@ -4755,14 +4926,16 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
     const lunaInCurs = an * 12 + luna >= _azi.getFullYear() * 12 + _azi.getMonth() + 1;
     corp.innerHTML = `
       <h2 class="pf-titlu">Registru jurnal ${semnAjutor("F061")}</h2>
+      ${t.regim_contabil === "simpla" ? `<p class="ecran-nota" id="j-interne">Firmă în partidă simplă: notele sunt interne. ${esc(TEXT_NOTA_INTERNA)}</p>` : ""}
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 ${cate(note.length, "notă", "note")}${partiCiorne ? ` \u00b7 <span style="color:var(--galben-text);font-weight:600">${partiCiorne}</span>` : ""}
         <button class="buton-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="j-next">luna \u2192</button>
-        <button class="buton-primar" id="j-amort" data-actiune="POST /tenants/{tenant_id}/amortizare" style="margin-left:12px"${lunaInCurs ? ` disabled aria-describedby="j-amort-motiv"` : ""}>Genereaz\u0103 amortizarea</button>${lunaInCurs ? `<span class="tip-micut" id="j-amort-motiv"> amortizarea lunii se genereaz\u0103 dup\u0103 ce luna se \u00eencheie</span>` : ""}
+        <button class="buton-primar" id="j-amort" data-actiune="POST /tenants/{tenant_id}/amortizare" style="margin-left:12px"${lunaInCurs ? ` disabled aria-describedby="j-amort-motiv"` : ""}>Genereaz\u0103 amortizarea</button>
         <button class="buton-secundar" id="j-nota-noua" data-actiune="POST /tenants/{tenant_id}/jurnal" style="margin-left:6px">+ Not\u0103 nou\u0103</button>
         <button class="buton-secundar" id="j-lock" style="margin-left:6px"></button>${semnAjutor("F118")}</p>
+      ${lunaInCurs ? `<p class="tip-micut" id="j-amort-motiv">Amortizarea lunii se genereaz\u0103 dup\u0103 ce luna se \u00eencheie.</p>` : ""}
       <div id="j-mesaj"></div>
-      <div class="pf-lista">${randuri}</div>${totalizare}`;
+      <div class="pf-lista">${randuri}</div>${totalizare}`;   // [394, lotul 9] motivul amortizării stă sub rândul de butoane, nu între ele
     const zonaMesaj = corp.querySelector("#j-mesaj");
     // [08.10, U3] o singură copie. NU se așteaptă (rezultatul nu e folosit aici): butoanele jurnalului de mai jos se leagă imediat —
     // un clic dat cât blocarea își citește starea se pierdea (proba plasei, 58 și 96)
@@ -4789,8 +4962,11 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
         catch (e) { eroare(e, "Eroare la validare"); }
       };
       if (n && !n.document) {
-        confirmaCaseta(b.parentElement || b, "Nota" + (n.nr_curent != null ? " nr. crt. " + n.nr_curent : "") + " din " + dataRo(n.data) + " nu are document justificativ. Validezi totuși?",
-          valideaza, { textOk: "Validează fără document" });
+        // [386, retestul 19.10.2026: validarea fără document, după confirmare, „nu face nimic și nu spune de ce”] regula de fond R3 din
+        // bază (comanda Costin 09.10.2026 pct.11: „fiecare notă are documentul-sursă”) refuză validarea fără document, deci butonul nu se
+        // mai oferă: caseta spune de ce și duce la pasul care o face posibilă — referința scrisă în notă
+        confirmaCaseta(b.parentElement || b, "Nota din " + dataRo(n.data) + " nu are document justificativ, iar o notă nu se validează fără documentul din care provine (Registrul-jurnal, col.3: felul, numărul și data). Scrie referința cu „Editează”, apoi validează.",
+          () => { inEditare = n.id; deseneaza(); }, { textOk: "Editează nota" });
         return;
       }
       valideaza();
@@ -5017,7 +5193,7 @@ async function ecranCentreCost(corp, nav, t) {
     const msg = corp.querySelector("#cc-mesaj");
     const adauga = async () => {
       const nume = corp.querySelector("#cc-nume").value.trim();
-      if (!nume) { arataMesaj(msg, "Scrie un nume.", "avert"); return; }
+      if (!nume) { arataMesaj(msg, "Scrie un nume.", "eroare"); return; }
       try { await api.post(`/tenants/${t.id}/centre-cost`, { nume }); deseneaza(); }
       catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la adăugare.", "eroare"); }
     };
@@ -5038,7 +5214,7 @@ async function ecranCentreCost(corp, nav, t) {
       </div>`;
     corp.querySelector("#cc-raport").addEventListener("click", async () => {
       const de = corp.querySelector("#cc-de").value, pana = corp.querySelector("#cc-pana").value;
-      if (!de || !pana) { arataMesaj(msg, "Alege perioada.", "avert"); return; }
+      if (!de || !pana) { arataMesaj(msg, "Alege perioada.", "eroare"); return; }
       raportZona.innerHTML = `<p class="ecran-nota">Se calculează...</p>`;
       try {
         const r = await api.get(`/tenants/${t.id}/centre-cost/raport?de=${de}&pana=${pana}`);

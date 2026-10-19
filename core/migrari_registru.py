@@ -90,6 +90,7 @@ def inregistreaza(cur, fisier, amp, fel, commit=None, motiv=None):
 #: `ruleaza` refuză o migrare cât timp una din cele de dinaintea ei e nerulată pe aceeași bază.
 DUPA = {
     "core/migrare_2b_coloana.py": ("core/migrare_salariu_istoric.py",),
+    "core/migrare_avans_nir_ajustare_nota.py": ("core/migrare_ajustari_fiscale.py",),
     "core/migrare_canal_notificari.py": ("core/migrare_inregistrare_libera.py",),
     "core/migrare_ciorne_proprii.py": ("core/migrare_nr_curent_note.py", "core/migrare_validare_note.py"),
     "core/migrare_decizii_0710.py": ("core/migrare_punte_stoc.py", "core/migrare_validare_note.py"),

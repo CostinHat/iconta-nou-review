@@ -45,7 +45,16 @@ def declaratii_tipuri(tenant_id, ctx):
             "periodicitate": {t: declaratii_api.periodicitate_firma(t, _vec if row else None) for t in _tipuri},
             "periodicitate_eticheta": {t: e for t, e in declaratii_api.ETICHETA_PERIODICITATE.items() if t in _tipuri},
             "neaplicabile": _neap,
-            "datorate": _datorate_firmei(tenant_id, ctx)}
+            "datorate": _datorate_firmei(tenant_id, ctx),
+            # [comanda Costin 9.1, A.3] obligațiile pe care le corectează formularul D710, cu denumirea oficială din nomenclator
+            "obligatii_d710": _obligatii_d710()}
+
+
+def _obligatii_d710():
+    """[{cod, denumire}] — codurile pe care D710 le acceptă (`d710` le ia din `d100.COD_BUGETAR`), cu denumirea din
+    `core.nomenclator_obligatii` (OPANAF 587/2016, anexa nr. 3). Ecranul nu mai ține o listă scrisă de mână."""
+    from core import d100 as _d100, nomenclator_obligatii as _nom
+    return [{"cod": c, "denumire": _nom.denumire("d710", c)} for c in sorted(_d100.COD_BUGETAR, key=int)]
 
 
 def _datorate_firmei(tenant_id, ctx):

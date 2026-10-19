@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """GARD ÎN BROWSER — Registrul jurnal: o ciornă fără document justificativ se vede ÎNAINTE de validare, iar „Validează” pe ea
-cere confirmare (comanda Costin 05.10.2026 pct.6: „validatorul trebuie să vadă lipsa înainte să apese”).
+nu trimite validarea (comanda Costin 05.10.2026 pct.6: „validatorul trebuie să vadă lipsa înainte să apese”; din lotul 9, 386: regula
+de fond R3 din bază refuză validarea fără document, deci caseta duce la editarea notei).
 
 Pe COMPORTAMENT, nu pe sursă (`core/test_garzi_pe_text.py`): ecranul real (`firme.ecranJurnal`) montat în Chromium, cu
-rutele simulate; se numără cererile de validare trimise. MUTAȚIE: confirmarea scoasă din ascultătorul „Validează” -> cererea
-pleacă la primul clic -> pică.
+rutele simulate; se numără cererile de validare trimise. MUTAȚIE: caseta duce iar la `valideaza` -> cererea pleacă -> pică.
 """
 import functools
 import http.server
@@ -75,16 +75,18 @@ def test_lipsa_documentului_se_vede_pe_rand_inainte_de_validare(pagina):
     assert not pg.eval_on_selector('[data-val="8"]', "b => !!b.closest('.pf-frand').querySelector('.jn-fara-doc')")
 
 
-def test_validarea_fara_document_cere_confirmare_iar_cu_document_nu(pagina):
+def test_validarea_fara_document_nu_se_ofera_iar_cu_document_pleaca(pagina):
+    """PIVOT [386, lotul 9, retestul Costin 19.10.2026]: confirmarea „Validează fără document” (05.10.2026) promitea o validare pe care
+    regula de fond R3 din bază (comanda Costin 09.10.2026 pct.11) o refuză. Acum caseta spune de ce și duce la editarea notei; nicio
+    cerere de validare nu pleacă pentru nota fără document, iar nota cu document se validează direct."""
     pg, validari = pagina
     pg.click('[data-val="7"]')
     pg.wait_for_selector("#caseta-atentie-activa #ca-ok", timeout=5000)
-    assert validari == [], "validarea a plecat fără confirmare"
+    assert pg.eval_on_selector("#caseta-atentie-activa #ca-ok", "b => b.textContent.trim()") == "Editează nota"
     pg.click("#caseta-atentie-activa #ca-ok")
-    pg.wait_for_function("() => true")
     pg.wait_for_timeout(300)
-    assert len(validari) == 1 and validari[0].endswith("/jurnal/7/valideaza")
+    assert validari == [], "validarea notei fără document a plecat (regula de fond R3 din bază o refuză)"
     pg.wait_for_selector('[data-val="8"]', timeout=5000)
     pg.click('[data-val="8"]')
     pg.wait_for_timeout(300)
-    assert len(validari) == 2 and validari[1].endswith("/jurnal/8/valideaza"), "nota cu document nu cere confirmare"
+    assert len(validari) == 1 and validari[0].endswith("/jurnal/8/valideaza"), "nota cu document nu cere confirmare"

@@ -199,7 +199,8 @@ def test_casa_nu_sterge_nota_de_la_validare(tx):
     from core import casa_api, coada_api as c
     conn, cur, tid, cab, asist, valid = tx
     _ca(cur, asist)
-    op = casa_api.adauga(conn, SCH, {"data": "2026-10-05", "categorie": sorted(casa_api.CONTURI)[0], "suma": 10,
+    # o încasare: o plată din casa goală e refuzată la salvare (406)
+    op = casa_api.adauga(conn, SCH, {"data": "2026-10-05", "categorie": "ridicare_banca", "suma": 10,
                                      "document": "DP 1"})
     assert op.get("inregistrare_id"), op
     c.pune_notele_in_coada(conn, cab, tid, asist)

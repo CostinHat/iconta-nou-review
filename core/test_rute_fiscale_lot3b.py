@@ -250,6 +250,14 @@ def test_CHITANTA_stinsa_ajunge_in_rulajul_casei(lume):
     operatiunea de casa: o notă fara operatiune ar lasa registrul de casa si contabilitatea sa spuna
     lucruri diferite despre aceeasi plata.
     """
+    # [406] numerarul din care se plătește: ridicarea din bancă, validată, din ziua plății (casa nu ajunge sub zero)
+    with lume["conn"].cursor() as cur:
+        cur.execute('INSERT INTO "%s".inregistrari (data, descriere, sursa, status, document_ref) VALUES (%%s, %%s, %%s, %%s, %%s) RETURNING id'
+                    % SCH, (ZI, "Ridicare numerar", "manual", "ciorna", "Cec 1"))
+        nid = cur.fetchone()[0]
+        cur.execute('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%%s, %%s, %%s, %%s)' % SCH,
+                    (nid, "5311", "581", 1000))
+        cur.execute('UPDATE "%s".inregistrari SET status = %%s WHERE id = %%s' % SCH, ("validata", nid))
     cl = _client()
     r = cl.post("/tenants/%d/bonuri/%d/stinge" % (lume["tid"], lume["bid"]),
                 json={"data": ZI, "suma": float(SUMA_CHITANTA), "partener": "FURNIZOR PROBA",

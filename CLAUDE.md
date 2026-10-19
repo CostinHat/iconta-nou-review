@@ -810,6 +810,15 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    - Ce s-a schimbat in celelalte puncte: pct.10 pasul 1 („commit declanseaza poarta verde”) si pct.12 c-d se citesc acum: poarta =
      inchiderea lotului; registrele pot intra in commiturile lotului, iar SHA-ul publicat e cel cu verdictul VERDE.
 
+14. **SUBAGENTI IN PARALEL, TESTE GRELE NICIODATA IN PARALEL (19.10.2026, regula permanenta ceruta de Costin, verbatim in DECIZII
+   „Subagenți în paralel”).** Verbatim: *„Trece în regulile tale permanente, pentru toate sesiunile de acum înainte: lucrezi cu subagenți
+   în paralel acolo unde lucrul atinge fișiere diferite. Nu rulezi teste grele în paralel, pentru că lucrezi pe serverul de producție.”*
+   - Lucrul unei comenzi se imparte pe subagenti dupa FISIERE disjuncte: fiecare primeste lista fisierelor pe care le poate edita si lista
+     celor interzise (fisierele celorlalti); registrele (DEFICIENTE, DECIZII, GARZI, TESTE, ISTORIC, PREDARE) le scrie sesiunea principala.
+   - Subagentii ruleaza numai pytest pe fisiere individuale, secvential, fara `-n`. Testele grele — suita, poarta lotului,
+     `scripts/poarta_scurta.py`, `scripts/e2e_poarta.py` (e2e si mutatiile lor), uneltele vizuale, verificatorul — le ruleaza sesiunea
+     principala, UNA dupa alta, niciodata doua deodata: serverul e si productia cabinetului real.
+
 ## 2.1 De unde vin pasii
 
 Pasii unui fir traiesc in TESTE.md, la "In lucru acum". NU in conversatie.

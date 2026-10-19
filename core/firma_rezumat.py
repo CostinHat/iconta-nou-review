@@ -174,7 +174,10 @@ _T_CONTROL_FISCAL = (
     # [retest 07.10 seara, S1] statul de plata si D112 citesc elementele variabile ale salariului (prime, sporuri, ore supl.)
     "elemente_salariale",
     # [376–378, comanda Costin 8.2] D100 pe impozitul pe profit citește ajustările fiscale ale rezultatului (poarta de fapt a semaforului)
-    "ajustari_fiscale")
+    "ajustari_fiscale",
+    # [382, lotul 9] D100 / D101 spun amortizarea nevalidată a ferestrei: registrul mijloacelor fixe se citește cu reevaluările lui
+    # (`repo_mijloace_fixe.toate`) — o reevaluare schimbă rata, deci și avertismentul
+    "reevaluari")
 
 #: SURSE CONDIȚIONATE — citite de `control_fiscal` doar CÂND o fereastră de obligație e deschisă (spre
 #: scadență), nu în fiecare zi. `efactura_primite`: `control_fiscal` numără e-facturile primite

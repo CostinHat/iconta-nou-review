@@ -309,6 +309,15 @@ def firma_e2e():
     yield from firma_noua()
 
 
+@pytest.fixture()
+def firma_horeca():
+    """O firmă NOUĂ cu CAEN 5610 (restaurante — în lista HoReCa din CF, `core.horeca.CODURI`): Rețete se oferă numai firmelor HoReCa
+    (371, lotul 9). Aici, nu într-un fișier de teste: o cer mai multe fișiere (`e2e_lot91`, `e2e_lot82`), iar importul între ele e circular."""
+    for f in firma_noua():
+        sql('UPDATE "%s".firma_profil SET caen = %%s WHERE id = 1' % f["schema"], ("5610",))
+        yield f
+
+
 CONTURI_COMUNE = ("patron@prisma-cont.test", "asistent@prisma-cont.test")
 _DREPTURI = ("poate_pregati", "poate_valida", "poate_depune")
 

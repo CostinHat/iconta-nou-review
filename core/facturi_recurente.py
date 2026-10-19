@@ -126,6 +126,9 @@ def emite_scadente(schema, azi=None):
             pass
     raspunsuri_ai = cote_tva.intreaba(de_intrebat, platitor)
     emise = []
+    # [368] începutul scrierii, pe același ceas și cu aceeași marjă ca middleware-ul (`main._autor_si_note_in_coada`)
+    from core import uc_coada as _uc_coada_ni
+    de_la = _uc_coada_ni.inceputul_scrierii()
     with db.get_conn(schema) as conn:
         platitor = _uc._platitor_tva_firma(conn)
         for s in de_emis(lista(conn, schema), azi):   # REVALIDARE: scadente si acum
@@ -144,7 +147,24 @@ def emite_scadente(schema, azi=None):
             except Exception as e:
                 conn.rollback()
                 emise.append({"sablon": s["id"], "eroare": str(e)})
+    if any("eroare" not in e for e in emise):
+        _note_interne(schema, de_la, emise)
     return emise
+
+
+def _note_interne(schema, de_la, emise):
+    """[deficiența 368, decizia Costin 19.10.2026 „Se validează automat”] Cronul nu trece prin middleware-ul care validează notele unei
+    firme în partidă simplă, deci notele facturilor emise se validează aici, ca note interne, după commitul emiterii (conexiunea ei e
+    închisă). Notele cronului n-au autor (`creat_de_id` NULL). Un refuz nu oprește cronul: nota rămâne ciornă, iar refuzul intră în
+    jurnalul jobului (lista întoarsă, tipărită de `_main`), ca eroarea unui șablon."""
+    from core import observare as _obs, uc_coada as _uc_coada
+    try:
+        ni = _uc_coada.note_interne_schema(schema, None, de_la)
+    except Exception as e:  # noqa: BLE001 — facturile sunt emise, notele rămân ciornă; eșecul nu e tăcut
+        _obs.esec_secundar("validarea notelor interne (partidă simplă, facturi recurente %s)" % schema, e)
+        return
+    if ni["interne"] or ni["refuzate"]:
+        emise.append({"note_interne": ni})
 
 
 def _main():

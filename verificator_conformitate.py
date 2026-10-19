@@ -1992,14 +1992,43 @@ for _sel, _decl, _cod in ((r"\.camp-input\[readonly\]", r"background\s*:", "READ
     if not _ml6 or not re.search(_decl, _ml6.group(1)):
         rap["fereastra_lot6"].append(("stil.css", 0, _cod, "regula %s lipsește sau nu are %s (DS v2.92)" % (_sel, _decl)))
 _nav_l6 = open(os.path.join(BAZA_PY, "static", "js", "navigator.js"), encoding="utf-8").read()
-if not re.search(r"const _lateste = \(\) => \{ if \(_corp\.scrollWidth > _corp\.clientWidth \+ 1[^\n]*fer\.classList\.add\(\"fer-tabel\"\)", _nav_l6):
-    rap["fereastra_lot6"].append(("navigator.js", 0, "LATIRE_AUTOMATA", "fereastra nu se mai lățește singură când conținutul e mai lat (DS cap.9 v2.92)"))
+# [349, lotul 9] lățirea privește și cutia previzualizării (`.mig-prev-cutie`, cu derulare proprie): `_prealata` le întreabă pe amândouă
+if not (re.search(r"const _prealata = \(\) => _corp\.scrollWidth > _corp\.clientWidth \+ 1\s*\|\| \[\.\.\._corp\.querySelectorAll\(\"\.mig-prev-cutie\"\)\]", _nav_l6)
+        and re.search(r"const _lateste = \(\) => \{ if \([^\n]*_prealata\(\)\) fer\.classList\.add\(\"fer-tabel\"\)", _nav_l6)):
+    rap["fereastra_lot6"].append(("navigator.js", 0, "LATIRE_AUTOMATA", "fereastra nu se mai lățește singură când conținutul (sau cutia previzualizării) e mai lat (DS cap.9 v2.92, 349)"))
 # (f) [deficiența 290] eroarea unui formular dispare când câmpul se schimbă: ascultarea unică din `api.js`, în faza de captură
 _api_l6 = open(os.path.join(BAZA_PY, "static", "js", "api.js"), encoding="utf-8").read()
 for _ev in ("input", "change"):
     if 'document.addEventListener("%s", stergeEroriDupaCorectare, true);' % _ev not in _api_l6:
         rap["fereastra_lot6"].append(("api.js", 0, "ERORI_DUPA_CORECTARE",
                                       "eroarea nu mai dispare la „%s” pe câmp (stergeEroriDupaCorectare, DS cap.6 v2.92)" % _ev))
+# (g) [deficiența 410, DS cap.6 v2.93] „NU s-a salvat” lângă butonul apăsat: helperii comuni de refuz (câmp și formular) alimentează
+# `refuzSalvare`, iar câmpul corectat iese din listă — un singur mecanism, în `api.js`
+for _ancora, _cod_r in (('refuzSalvare({ camp: inp, txt });', "eroareCamp"),
+                        ('if (txt && tip === "eroare") refuzSalvare({ mesaj: el });', "arataMesaj"),
+                        ('_scoateDinRefuz(c);', "stergeEroriDupaCorectare"),
+                        ('box.innerHTML = \'<b>NU s-a salvat.</b><ul class="refuz-salvare-lista"></ul>\';', "textul")):
+    if _ancora not in _api_l6:
+        rap["fereastra_lot6"].append(("api.js", 0, "REFUZ_SALVARE",
+                                      "%s nu mai alimentează lista „NU s-a salvat” de lângă buton (DS cap.6 v2.93, 410)" % _cod_r))
+if not re.search(r"(?m)^\.refuz-salvare \{", _css_l6):
+    rap["fereastra_lot6"].append(("stil.css", 0, "REFUZ_SALVARE", "regula .refuz-salvare lipsește (DS cap.6 v2.93, 410)"))
+# (g2) [deficiența 410] refuzul unei acțiuni (urmat de `return`) e EROARE, nu avertisment: numai eroarea intră în „NU s-a salvat”
+for _nume, _t in fisiere.items():
+    for _m in re.finditer(r'arataMesaj\([^;]*"avert"\);\s*return;', _t):
+        rap["fereastra_lot6"].append((_nume, _t[:_m.start()].count("\n") + 1, "REFUZ_CA_AVERTISMENT",
+                                      "refuz afișat ca avertisment: arataMesaj(…, \"eroare\") (DS cap.6 v2.93, 410)"))
+# (h) [deficiența 418c, clasa 410, DS cap.27 v2.93] după un act reușit, nicio navigare / redesenare TEMPORIZATĂ care șterge confirmarea
+for _nume, _t in fisiere.items():
+    for _m in re.finditer(r"setTimeout\(\s*(?:async\s*)?\(\)\s*=>\s*\{?[^;{}]*?(?:nav\.inapoi|nav\.acasa|dupaEmitere|\b(?:randeaza|istoric)\w*\()", _t):
+        rap["fereastra_lot6"].append((_nume, _t[:_m.start()].count("\n") + 1, "CONFIRMARE_TEMPORIZATA",
+                                      "navigare/redesenare temporizată după act: confirmarea dispare înainte de a fi citită (DS cap.27 v2.93, 418c)"))
+# (h2) [C64, DS cap.27 v2.94] confirmarea după o redesenare se pune în zona de mesaj a ecranului refăcut: `await randeaza…(corp, …);`
+# urmat de `arataMesaj(corp, …)` scrie mesajul ÎN LOCUL ecranului abia refăcut (fără drum mai departe)
+for _nume, _t in fisiere.items():
+    for _m in re.finditer(r"await\s+[\w.]+\(\s*corp\b[^;]*\);(?:\s*//[^\n]*)*\s*arataMesaj\(\s*corp\s*,", _t):
+        rap["fereastra_lot6"].append((_nume, _t[:_m.start()].count("\n") + 1, "CONFIRMARE_PESTE_ECRAN",
+                                      "mesajul după redesenare înlocuiește ecranul refăcut: zona lui de mesaj (DS cap.27 v2.94, C64)"))
 for _nume, _t in fisiere.items():
     for _m in re.finditer(r"""insertAdjacentHTML\(\s*["']afterend["'],\s*['"`]<span class="msg-eroare""", _t):
         rap["fereastra_lot6"].append((_nume, _t[:_m.start()].count("\n") + 1, "REFUZ_LIPIT", "refuz lipit de buton: api.refuzPeRand (DS cap.6 v2.92)"))

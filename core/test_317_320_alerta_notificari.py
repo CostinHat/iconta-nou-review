@@ -106,3 +106,15 @@ def test_320_termenele_de_notificat_sunt_cele_de_peste_trei_zile():
     termene = [{"tip": "d300", "termen": "2026-10-25", "perioada": "09/2026"}, {"tip": "d390", "termen": "2026-11-25", "perioada": "10/2026"}]
     assert nt.de_notificat(termene, azi) == [termene[0]]
     assert nt.text("Firma X SRL", termene[0]) == "Firma X SRL: D300 · 09/2026 are termenul pe 25.10.2026 (peste 3 zile) și nu e încă depusă."
+
+
+def test_397_tipurile_platformei_au_grupa_lor_vazuta_numai_de_superadmin():
+    """[397, retestul 19.10.2026] „O alertă legislativă importantă” stătea sub „Termene și declarații”. Tipurile superadminului (`cine:
+    superadmin`) stau în grupa „Platformă”, iar grupa nu apare la nimeni altcineva.
+    MUTAȚIA: alerta legislativă înapoi la „Termene și declarații” -> ROȘU."""
+    super_ = [k for k, v in notificari.TIPURI.items() if v["cine"] == "superadmin"]
+    assert sorted(super_) == ["alerta_legislativa", "cerere_import", "sesizare"], super_
+    assert all(notificari.TIPURI[k]["grup"] == "Platformă" for k in super_)
+    assert [g["grup"] for g in notificari.lista_pentru({"rol": "superadmin"}, None)] == ["Platformă"]
+    for actor in ({"rol": "admin_firma"}, {"rol": "angajat", "poate_pregati": True, "poate_valida": True}, {"rol": "client"}):
+        assert "Platformă" not in [g["grup"] for g in notificari.lista_pentru(actor, None)], actor

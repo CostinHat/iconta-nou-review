@@ -320,7 +320,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in facturi*
 
-*ce face: Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_cota_jurnal (INSERT) · factura_linii (INSERT/UPDATE) · firma_profil (UPDATE) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_facturi`, `repo_main`*
+*ce face: Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · factura_cota_jurnal (INSERT) · factura_linii (INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_facturi`, `repo_main`, `stocuri_cv_api`*
 
 - [x] proforma sau avizul devine factură fiscală cu **numerotare nouă**, din seria de facturi, nu cu numărul proformei
 - documentul original rămâne, cu starea „transformat" și legătura către factura rezultată
@@ -2185,7 +2185,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `facturi_api`, `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
+*ce face: Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) — scrie facturi (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · documente_interne_contor (INSERT) · extras_linii (UPDATE) · factura_cota_jurnal (INSERT) · factura_linii (INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `documente_interne`, `facturi_api`, `jurnal_api`, `repo_contabilitate`, `repo_facturi`, `stocuri_cv_api`*
 
 - [x] operațiunea apare în D394 ca tip N, cu `tip_partener=2` — verificat pe declarația generată, nu pe intenția din cod
 - persoana fizică nu are cod fiscal, deci nu se cere; dar se cere o identificare, altfel operațiunea n-are partener

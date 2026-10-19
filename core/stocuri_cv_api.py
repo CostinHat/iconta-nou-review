@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Stocuri cantitativ-valorice — strat API. Motorul: core/stocuri_cv.py.
 Ieșirile la CMP generează notă ciornă (cont_cheltuiala = cont_stoc)."""
+import re
+
 from core import pdf_util as _pu
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
@@ -45,6 +47,29 @@ def retete_vizibile(conn, schema):
         return cur.fetchone() is not None
 
 
+#: [deficiența 403] documentul scris cu id-ul intern („Factura #1”, „factură primită #2”) de versiunile de dinainte de 258 (15.10.2026)
+_DOC_CU_ID = re.compile(r"#\s*\d+")
+
+
+def documente_fisa(cur, schema, linii):
+    """[deficiența 403, retestul Costin 19.10.2026] „Fișa de magazie: documente «Factura #1», «Factura #48», «factură primită #2» (id
+    intern) — toate cu serie, număr, dată.” Mișcările scrise atunci păstrează textul vechi; fișa îl numește din documentul legat
+    (factura: `eticheta_nota.factura`, NIR-ul: `jurnal_api.eticheta_document`), ca Registrul jurnal. {id mișcare: document}."""
+    ids = [l["id"] for l in linii if l.get("id") and (not l.get("document") or _DOC_CU_ID.search(str(l.get("document"))))]
+    if not ids:
+        return {}
+    from core import jurnal_api as _j
+    cur.execute(f"""SELECT m.id, m.factura_id, n.numar AS nir_numar, n.data AS nir_data FROM {schema}.miscari_stoc m
+                    LEFT JOIN {schema}.nir n ON n.id = m.nir_id WHERE m.id = ANY(%s)""", (ids,))
+    out = {}
+    for r in cur.fetchall():
+        if r["factura_id"]:
+            out[r["id"]] = _et.factura(cur, schema, r["factura_id"])
+        elif r["nir_numar"] is not None:
+            out[r["id"]] = _j.eticheta_document("NIR", r["nir_numar"], r["nir_data"])
+    return out
+
+
 def fisa(conn, schema, articol_id):
     """Fișa de magazie a unui articol."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -53,8 +78,9 @@ def fisa(conn, schema, articol_id):
         if not a:
             return None
         linii = _m.fisa_magazie(_miscari(cur, schema, articol_id))
+        doc = documente_fisa(cur, schema, linii)
     return {"articol": {"id": a["id"], "denumire": a["denumire"], "um": a["um"]},
-            "linii": [{"data": str(l["data"]), "tip": l["tip"], "document": l.get("document"),
+            "linii": [{"data": str(l["data"]), "tip": l["tip"], "document": doc.get(l.get("id"), l.get("document")),
                        "cantitate": str(l["cantitate"]),
                        "pret_unitar": str(l["pret_unitar"]) if l.get("pret_unitar") else None,
                        "valoare": str(l["valoare"]), "sold_cantitate": str(l["sold_cantitate"]),
@@ -83,6 +109,9 @@ def intrare(conn, schema, corp, factura_id=None):
                         (corp["denumire"], corp.get("um", "buc"),
                          (str(corp.get("cont_stoc") or "").strip() or "371"), (str(corp.get("cont_cheltuiala") or "").strip() or "607")))
             aid = cur.fetchone()["id"]
+            # [415] articolul creat de un document (factura primită) își ia cota de pe linia lui, în nomenclator
+            from core import produse_api as _pa
+            _pa.asigura_din_document(cur, schema, corp["denumire"], corp.get("um"), corp.get("cota_tva"), corp.get("document"))
         val = (cant * pret).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         cur.execute(f"""INSERT INTO {schema}.miscari_stoc
                         (articol_id, data, tip, cantitate, pret_unitar, valoare, document, locatie, factura_id)
@@ -115,23 +144,26 @@ def intrare_din_factura(conn, schema, factura_id, cont_stoc, data, cont_cheltuia
         _nir = cur.fetchone()
         if _nir:
             return {"stare": "intrat_prin_nir", "factura_id": factura_id, "nir_id": _nir["id"], "linii": 0}
-        cur.execute(f"""SELECT descriere, cantitate, pret_unitar FROM {schema}.factura_linii
+        cur.execute(f"""SELECT descriere, cantitate, pret_unitar, cont_cheltuiala, cota_tva FROM {schema}.factura_linii
                         WHERE factura_id=%s ORDER BY id""", (factura_id,))
         brute = []
+        from core import contare_facturi as _cf
         for l in cur.fetchall():
             den = (l["descriere"] or "").strip()
             cant = Decimal(str(l["cantitate"] or 0))
             pret = Decimal(str(l["pret_unitar"] or 0))
-            if not den or cant <= 0:
+            # [deficiența 418b] contul LINIEI (gol = al facturii): numai liniile contate pe un cont de stoc intră în fișa de magazie
+            cont_l = (l["cont_cheltuiala"] or "").strip() or cont_stoc
+            if not den or cant <= 0 or not any(cont_l.startswith(p) for p in _cf.CONTURI_FOND_EXACT):
                 continue
             cur.execute(f"SELECT id FROM {schema}.articole WHERE lower(denumire)=lower(%s) LIMIT 1", (den,))
             row = cur.fetchone()
-            brute.append((row["id"] if row else None, den, cant, pret))
+            brute.append((row["id"] if row else None, den, cant, pret, cont_l, l["cota_tva"]))
         document = _et.factura(cur, schema, factura_id)   # [258] documentul mișcării: factura cum o vede omul, nu id-ul ei
     n = 0
-    for aid, den, cant, pret in brute:
-        intrare(conn, schema, {"articol_id": aid, "denumire": den, "cantitate": str(cant),
-                               "pret_unitar": str(pret), "cont_stoc": cont_stoc,
+    for aid, den, cant, pret, cont_l, cota in brute:
+        intrare(conn, schema, {"articol_id": aid, "denumire": den, "cantitate": str(cant), "cota_tva": cota,
+                               "pret_unitar": str(pret), "cont_stoc": cont_l,
                                "cont_cheltuiala": cont_cheltuiala, "data": str(data),
                                "document": document}, factura_id=factura_id)
         n += 1
@@ -182,6 +214,8 @@ def iesire(conn, schema, corp, factura_id=None):
                     (a["id"], corp["data"], Decimal(str(corp["cantitate"])), r["valoare"],
                      corp.get("document"), iid, corp.get("locatie") or None, factura_id, z_id))
         mid = cur.fetchone()["id"]
+        if z_id:
+            _zd.deblocat(z_id)   # [368] Z-ul descărcat: la PFA nota lui se reîncearcă la validarea internă
     return {"id": mid, "cmp": str(r["cmp"]), "valoare": str(r["valoare"]),
             "nota": f"{a['cont_cheltuiala']}={a['cont_stoc']}", "inregistrare_id": iid}
 
@@ -221,6 +255,45 @@ def descarca_factura(conn, schema, factura_id, data):
     return {"descarcate": descarcate, "erori": erori}
 
 
+def iesiri_facturii(cur, schema, factura_id):
+    """[deficiența 419] Ieșirile de stoc VII ale facturii (nici stornări, nici stornate deja), cu articolul: ce a plecat din magazie cu ea.
+    `schema` None = schema conexiunii (apelanții din `facturi_api` lucrează pe `search_path`)."""
+    from core import stocuri_anulare as _sa
+    if schema is None:
+        cur.execute("SELECT current_schema() AS s")
+        schema = cur.fetchone()["s"]
+    cur.execute(("SELECT m.*, a.denumire, a.um, a.cont_stoc, a.cont_cheltuiala FROM {s}.miscari_stoc m JOIN {s}.articole a ON a.id = m.articol_id "
+                 "WHERE m.factura_id = %s AND m.tip = 'iesire' AND " + _sa._VII + " ORDER BY m.id").format(s=schema), (factura_id,))
+    return [dict(r) for r in cur.fetchall()]
+
+
+def retur_la_stornare(conn, schema, factura_id, storno_id, data, document):
+    """[deficiența 419, comanda Costin 9.3, PRIORITAR] „Stornarea integrală F1A9 nu a readus marfa în stoc [...] Aplicația nici nu întreabă
+    dacă marfa se întoarce fizic (retur) sau rămâne la client.” La retur: fiecare ieșire a facturii stornate se stornează în ROȘU (cantitatea
+    și valoarea cu minus, `anuleaza_id` = ieșirea, valoarea exact a ieșirii — nu CMP-ul de acum), cu documentul de corecție: o notă NOUĂ în
+    ciornă „cont cheltuială = cont stoc” cu minus (regula de fond R5; OMFP 1802/2014 pct.69: „corectarea cu semnul minus a operațiunii
+    inițiale”), legată de factura de stornare prin document. Data = data stornării. Întoarce [{articol, cantitate, valoare, inregistrare_id}]."""
+    out = []
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        if schema is None:
+            cur.execute("SELECT current_schema() AS s")
+            schema = cur.fetchone()["s"]
+        for m in iesiri_facturii(cur, schema, factura_id):
+            cant, val = Decimal(str(m["cantitate"])), Decimal(str(m["valoare"]))
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
+                            VALUES (%s,%s,'stocuri','ciorna',%s) RETURNING id""",
+                        (data, ("Retur în stoc %s × %s (stornare)" % (m["denumire"], _pu.cantitate(cant, m["um"])))[:200], document))
+            iid = cur.fetchone()["id"]
+            cur.execute(f"INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)",
+                        (iid, m["cont_cheltuiala"], m["cont_stoc"], -val))
+            cur.execute(f"""INSERT INTO {schema}.miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document,
+                                inregistrare_id, locatie, factura_id, anuleaza_id)
+                            VALUES (%s,%s,'iesire',%s,%s,%s,%s,%s,%s,%s,%s)""",
+                        (m["articol_id"], data, -cant, m.get("pret_unitar"), -val, document[:100], iid, m.get("locatie"), storno_id, m["id"]))
+            out.append({"articol": m["denumire"], "cantitate": str(cant), "um": m["um"], "valoare": str(val), "inregistrare_id": iid})
+    return out
+
+
 def inventar(conn, schema, corp):
     """corp: {data, linii: [{articol_id, faptic}]}. Diferente la CMP:
     plus -> intrare + nota 371=607 (ciorna); minus -> iesire + nota 607=371 (ciorna).
@@ -234,6 +307,11 @@ def inventar(conn, schema, corp):
     rez = []
     note_inventar = []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"SELECT COALESCE(platitor_tva, false) AS p, regim_fiscal FROM {schema}.firma_profil WHERE id = 1")
+        _pr = cur.fetchone()
+        platitor = bool(_pr and _pr["p"])
+        # [deficiența 404] microîntreprinderea nu plătește impozit pe profit (CF titlul III): lipsa neimputabilă nu are unde ajusta
+        micro = bool(_pr and str(_pr["regim_fiscal"] or "").lower() == "micro")
         for l in corp.get("linii", []):
             fv = l.get("faptic")
             if fv is None or (isinstance(fv, str) and fv.strip() == ""):
@@ -263,22 +341,42 @@ def inventar(conn, schema, corp):
                     rez.append({"articol_id": a["id"], "denumire": a["denumire"], "camp": "cvi-a%s-faptic" % a["id"], "eroare": "minus peste stocul scriptic"})
                     continue
                 debit, credit, tip = a["cont_cheltuiala"], a["cont_stoc"], "iesire"
+                # [deficiența 404] lipsa se încadrează de om: imputabilă / neimputabilă / justificată (art.304 alin.(2))
+                _lipsa = _incadreaza_lipsa(cur, schema, a, l, val, platitor)
+                if _lipsa.get("eroare"):
+                    rez.append({"articol_id": a["id"], "denumire": a["denumire"], **_lipsa})
+                    continue
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                             VALUES (%s,%s,'stocuri','ciorna') RETURNING id""",
                         (corp["data"], f"Inventar {a['denumire']}: {'plus' if dif > 0 else 'minus'} {_pu.cantitate(abs(dif), a['um'])}"[:200]))
             iid = cur.fetchone()["id"]
             note_inventar.append(iid)
-            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                            (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
-                        (iid, debit, credit, val))
+            linii_nota = [(debit, credit, val)] + (_lipsa["linii"] if dif < 0 else [])
+            for _d_, _c_, _s_ in linii_nota:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                            (iid, _d_, _c_, _s_))
             cur.execute(f"""INSERT INTO {schema}.miscari_stoc
                             (articol_id, data, tip, cantitate, pret_unitar, valoare, document, inregistrare_id)
                             VALUES (%s,%s,%s,%s,%s,%s,'inventar',%s)""",
                         (a["id"], corp["data"], tip, abs(dif),
                          cmp if tip == "intrare" else None, val, iid))
-            rez.append({"articol_id": a["id"], "denumire": a["denumire"],
-                        "diferenta": str(dif), "valoare": str(val),
-                        "nota": f"{debit}={credit}", "inregistrare_id": iid})
+            ajustare = None
+            if dif < 0 and _lipsa.get("nedeductibil"):
+                # [deficiența 404, decizia Costin 19.10.2026 „Da, automat”] cheltuiala + TVA-ul ajustat trec singure la ajustările fiscale
+                # ale impozitului pe profit (rd.33 D101, CF art.25 alin.(4) lit.c), în aceeași tranzacție cu nota și legate de ea
+                ajustare = _lipsa_la_ajustari(cur, schema, corp["data"], a["denumire"], _lipsa, iid, micro)
+            rand = {"articol_id": a["id"], "denumire": a["denumire"], "diferenta": str(dif), "valoare": str(val),
+                    "nota": " + ".join("%s=%s" % (x[0], x[1]) for x in linii_nota), "inregistrare_id": iid,
+                    **({"ajustare_fiscala": ajustare} if ajustare else {})}
+            if dif < 0:
+                # [404] ce înseamnă încadrarea lipsei pentru impozitul pe profit: afirmație tipată despre articolul inventariat
+                from core import afirmatii as _af
+                rand["lipsa"] = _lipsa["lipsa"]
+                rand["semnal"] = _af.afirmatie(
+                    "fapt", "lipsa_inventar", _lipsa["text"], unde="inventarul din %s, articolul %s" % (_pu.data_ro(corp["data"]), a["denumire"]),
+                    temei_completitudine="încadrarea lipsei aleasă de contabil pe rândul inventarului") if _lipsa["text"] else None
+            rez.append(rand)
         if note_inventar:
             # [06.10.2026 §6.2] UN inventar = O listă de inventariere, pe toate notele diferențelor lui
             from core import documente_interne as _di
@@ -286,7 +384,77 @@ def inventar(conn, schema, corp):
     return {"rezultate": rez}
 
 
-def analitica(conn, schema, zile_inert=90):
+#: [deficiența 404] încadrarea lipsei la inventar — alegerea omului
+LIPSE = {"imputabila": "imputabilă (persoana răspunzătoare o plătește)", "neimputabila": "neimputabilă",
+         "justificata": "justificată: bunuri distruse, pierdute sau furate, dovedit (CF art.304 alin.(2) lit.a)"}
+
+
+def _incadreaza_lipsa(cur, schema, a, l, val, platitor):
+    """[deficiența 404, retestul Costin 19.10.2026] „Inventar (lipsă 607=371 205,90): nu întreabă imputabil/neimputabil (TVA 635=4427 +
+    nedeductibil).” Rândurile notei, după încadrare, sau {"eroare", "camp"}.
+    Temei:
+      - HG 1/2016 titlul VII pct.78 alin.(6) lit.a: „[...] trebuie să efectueze o ajustare negativă a taxei deductibile în situații precum: a) bunuri lipsă
+        în gestiune din alte cauze decât cele prevăzute la art. 304 alin. (2) din Codul fiscal. În cazul bunurilor lipsă din gestiune care
+        sunt imputate, sumele imputate nu sunt considerate contravaloarea unor operațiuni în sfera de aplicare a TVA”;
+      - CF art.304 alin.(2) lit.a: nu se ajustează la „bunurile distruse, pierdute sau furate, în condițiile în care aceste situații sunt
+        demonstrate sau confirmate în mod corespunzător”;
+      - CF art.25 alin.(4) lit.c: nedeductibile „cheltuielile privind bunurile de natura stocurilor [...] constatate lipsă din gestiune
+        ori degradate, neimputabile, precum și taxa pe valoarea adăugată aferentă”.
+    Ajustarea TVA: 635 = 4427 (TVA-ul dedus la achiziție, la cota articolului din nomenclator sau cea scrisă pe rând); imputarea: 4282 =
+    7581 (suma imputată, fără TVA — HG 1/2016 de mai sus)."""
+    lipsa = str(l.get("lipsa") or "")
+    if lipsa not in LIPSE:
+        return {"eroare": "Lipsa de %s lei: alege dacă e imputabilă, neimputabilă sau justificată (distrusă, pierdută, furată — dovedit)." % val,
+                "camp": "cvi-a%s-lipsa" % a["id"]}
+    linii, text, nedeductibil = [], None, None
+    if lipsa != "justificata" and platitor:
+        cota = l.get("cota_tva")
+        if cota in (None, ""):   # cota articolului din nomenclatorul Produse (aceeași denumire, ca la emitere — 415)
+            cur.execute(f"SELECT cota_tva FROM {schema}.produse WHERE lower(denumire) = lower(%s) LIMIT 1", (a["denumire"],))
+            _p = cur.fetchone()
+            cota = _p["cota_tva"] if _p else None
+        if cota in (None, ""):
+            return {"eroare": "Cota de TVA a articolului nu e în nomenclator: scrie cota cu care s-a dedus TVA-ul la cumpărare (ajustarea "
+                              "TVA, HG 1/2016 titlul VII pct.78 alin.(6) lit.a).", "camp": "cvi-a%s-cota" % a["id"]}
+        tva = (val * Decimal(str(cota)) / 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        if tva:
+            linii.append(("635", "4427", tva))
+        if lipsa == "neimputabila":
+            text = ("Lipsa neimputabilă: cheltuiala (%s lei) și TVA-ul ajustat (%s lei) sunt nedeductibile la impozitul pe profit (CF "
+                    "art.25 alin.(4) lit.c)." % (val, tva))
+            nedeductibil = (val, tva)
+    elif lipsa == "neimputabila":
+        text = "Lipsa neimputabilă: cheltuiala (%s lei) e nedeductibilă la impozitul pe profit (CF art.25 alin.(4) lit.c)." % val
+        nedeductibil = (val, Decimal(0))
+    if lipsa == "imputabila":
+        try:
+            imp = Decimal(str(l.get("suma_imputata")))
+        except (InvalidOperation, ValueError, TypeError):
+            imp = Decimal(0)
+        if imp <= 0:
+            return {"eroare": "Lipsa imputabilă: scrie suma imputată persoanei răspunzătoare.", "camp": "cvi-a%s-imputat" % a["id"]}
+        linii.append(("4282", "7581", imp.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)))
+    return {"lipsa": lipsa, "linii": linii, "text": text, "nedeductibil": nedeductibil}
+
+
+def _lipsa_la_ajustari(cur, schema, data, articol, lipsa, inregistrare_id, micro):
+    """[deficiența 404] Nedeductibilul lipsei neimputabile (cheltuiala, TVA-ul ajustat) scris la ajustările fiscale (`ajustari_fiscale.
+    din_lipsa_neimputabila`), cu semnalul completat: unde a ajuns și când intră în calcul. La microîntreprindere nu se scrie (nu există
+    impozit pe profit de ajustat) și semnalul o spune. Întoarce {id, suma, trim, rand} sau None."""
+    from core import ajustari_fiscale as _aj
+    if micro:
+        lipsa["text"] += " Firma e microîntreprindere: nu plătește impozit pe profit, deci lipsa nu trece la ajustările fiscale."
+        return None
+    chelt, tva = lipsa["nedeductibil"]
+    aid, suma, trim = _aj.din_lipsa_neimputabila(cur, schema, data, articol, chelt, tva, inregistrare_id,
+                                                 document="Inventarul din %s" % _pu.data_ro(data))
+    lipsa["text"] += (" Suma de %s lei a trecut la ajustările fiscale (Registrul de evidență fiscală, %s, T%d/%s); intră în D100 / D101 "
+                        "după validarea notei inventarului." % (_pu.bani(suma), _aj.RANDURI[_aj.RAND_LIPSA_NEIMPUTABILA][0], trim,
+                                                                str(data)[:4]))
+    return {"id": aid, "suma": str(suma), "trim": trim, "rand": _aj.RAND_LIPSA_NEIMPUTABILA}
+
+
+def analitica(conn, schema, zile_inert):   # pragul inertului vine din ruta (`main.cv_analitica`, implicit 90 de zile)
     """Analitica de stoc (F140). NU introduce valorizare per locatie (CMP global):
       - critic: articole cu nivel_minim setat si stoc <= nivel_minim
                 (necesar aprovizionare = nivel_minim - stoc)

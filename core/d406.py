@@ -502,6 +502,14 @@ _JURNALE = {
 # contabilitate"). Default DECLARAT, nu tacit: cate note au intrat asa dintr-o sursa NECUNOSCUTA
 # se spune in avertisment, cu valoarea numita (acelasi tipar ca UM necunoscute, [B17]).
 _JURNAL_DIVERSE = ("DIVERSE", "alte")
+#: [390, retestul 19.10.2026: al doilea avertisment „cere o corectură pentru o notă manuală normală”] sursele pe care aplicația le
+#: SCRIE (`jurnal_api.ETICHETE_SURSA`, păzit de core/test_jurnal_sursa_eticheta.py) și care nu au jurnal auxiliar propriu intră în
+#: „Diverse” fiindcă ACOLO le e locul (nota manuală, închiderea anului, bonul, Z-ul, soldurile preluate) — nu sunt surse necunoscute
+#: și nu se semnalează; avertismentul rămâne pentru un cod pe care aplicația nu-l scrie
+def _sursa_cunoscuta(sursa):
+    from core.jurnal_api import ETICHETE_SURSA
+    s = (sursa or "").strip().lower()
+    return not s or s in _JURNALE or s in ETICHETE_SURSA or s == "migrare"
 _ANTET_JURNAL = dict([(v[0], v[1]) for v in _JURNALE.values()] + [_JURNAL_DIVERSE])
 #: [Retest 2 pct.14] numele jurnalului pe ECRAN: JournalID-ul („FACTURI”) e al fișierului, contabilul citește „Facturi”
 ETICHETE_JURNAL = {"CASA": "Casă", "BANCA": "Bancă", "FACTURI": "Facturi", "SALARII": "Salarii", "AMORTIZARE": "Amortizare",
@@ -735,7 +743,9 @@ def valideaza(res):
         td = sum(l.debit for l in n.linii)
         tc = sum(l.credit for l in n.linii)
         if abs(td - tc) > Decimal("0.01"):
-            erori.append("Nota %s nu e echilibrată (debit %s ≠ credit %s)." % (n.id, _dec(td), _dec(tc)))
+            # [390, clasa: nota numită prin id-ul intern] contabilul o găsește după dată și descriere, nu după id
+            erori.append("Nota din %s („%s”) nu e echilibrată (debit %s ≠ credit %s)." % (
+                n.data.strftime("%d.%m.%Y") if hasattr(n.data, "strftime") else n.data, n.descriere or "fără descriere", _dec(td), _dec(tc)))
     # coerență facturi: brut = net + tva
     for f in (res.facturi_vanzare + res.facturi_cumparare):
         if not f.linii:
@@ -1310,6 +1320,7 @@ def pull(conn, schema, an, luna):
         di, ds = _di.isoformat(), _ds.isoformat()
         conturi, clienti, furnizori, note = [], [], [], []
         strain = []   # conturi din plan care nu apartin normei declarate
+        strain_cu_sold = set()
         try:
             _repo.select_plan_conturi(cur)
             # Declaram DOAR conturile din planul normei firmei: ANAF respinge restul
@@ -1324,10 +1335,12 @@ def pull(conn, schema, an, luna):
                 # poartă tot sinteticul (`sintetic_saft`) — altfel analiticul ar fi exclus din plan și citat pe linii.
                 simb = r["simbol"]
                 sintetic = sintetic_saft(simb)
+                net = Decimal(str(r["sd"])) - Decimal(str(r["sc"]))
                 if oficial and sintetic not in oficial:
                     strain.append(simb)
+                    if net:
+                        strain_cu_sold.add(simb)
                     continue
-                net = Decimal(str(r["sd"])) - Decimal(str(r["sc"]))
                 c = pe_sintetic.get(sintetic)
                 if c is None:
                     c = pe_sintetic[sintetic] = Cont(id=sintetic, descriere=r["denumire"], cont_standard=sintetic, tip=r["tip"])
@@ -1471,7 +1484,7 @@ def pull(conn, schema, an, luna):
                     # R22: jurnalul de origine, din i.sursa. O sursa necunoscuta NU devine tacit
                     # DIVERSE: se NUMESTE in avertisment (nota, valoarea).
                     _s = (r["sursa"] or "").strip()
-                    if _s and _s.lower() not in _JURNALE:
+                    if not _sursa_cunoscuta(_s):
                         surse_necunoscute.append((str(r["id"]), _s))
                     n = Nota(id=str(r["id"]), data=r["data"], descriere=r["descriere"] or "",
                              jurnal=jurnal_din_sursa(_s)[0])
@@ -1672,6 +1685,12 @@ def pull(conn, schema, an, luna):
             # produca SalesInvoices/PurchaseInvoices goale intr-un XML valid structural.
             # Clasa de bug din 16.07. Orice garda pusa deasupra ar fi fost inghitita aici.
             raise RuntimeError("D406: citirea facturilor a eșuat - %s" % e) from e
+    # [387, 19.10.2026] Planul firmei e acum planul întreg OMFP 1802/2014, iar nomenclatorul D406 al validatorului (Nomen_v3) nu are
+    # conturile introduse după el (6121–6123 OMFP 2649/2023, 6351 OMFP 981/2024). Se exclud din MasterFiles ca până acum; avertismentul
+    # le NUMEȘTE numai când pierderea contează: contul are sold sau apare pe o notă / factură a perioadei. Un cont neatins al planului
+    # n-are ce pierde, iar numit pe fiecare D406 ar fi un avertisment fără acțiune.
+    _pe_linii = {ln.cont for n in note for ln in n.linii} | {ln.cont for f in facturi_vanzare + facturi_cumparare for ln in f.linii}
+    strain = [s_ for s_ in strain if s_ in strain_cu_sold or sintetic_saft(s_) in _pe_linii]
     return (prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati,
             strain, um_necunoscute, cote_necunoscute, surse_necunoscute, facturi_fara_curs, nepotriviri_jurnal, terti_fara_partener)
 
@@ -1726,12 +1745,19 @@ def genereaza(conn, schema, an, luna):
         res.avertismente.insert(0, "Atenție: %d cont(uri) exclus(e) din D406 - nu aparțin normei contabile "
                                    "declarate (%s), ANAF le-ar respinge: %s. Verifică planul de conturi / baza "
                                    "contabilă a firmei." % (len(strain), prof.get("baza_contabila") or "A", lista))
+    # [390, retestul 19.10.2026: avertismentele trimiteau la „nota 3” și „nota 48” (id-ul intern), nu la Nr. crt. din Registrul jurnal]
+    # notele se numesc cum le vede contabilul (`eticheta_nota`: „nr. crt. N din ZZ.LL.AAAA”), o singură dată pentru toate avertismentele
+    from core import eticheta_nota as _et
+    with conn.cursor() as _cur_et:
+        _etic = dict(_et.note(_cur_et, schema, [nid for nid, _ in surse_necunoscute] + [nid for nid, _c, _s in terti_fara_partener]))
+    _nume_nota = lambda nid: "nota %s" % _etic.get(int(nid), "din Registrul jurnal")   # noqa: E731
     if surse_necunoscute:
-        _dets = "; ".join("nota %s: sursa %r" % (nid, s) for nid, s in surse_necunoscute)
-        res.avertismente.insert(0, "Atenție (D406): %d notă/note cu sursă nemapată la un jurnal "
-                                   "auxiliar au intrat în jurnalul de operațiuni diverse („DIVERSE”) "
-                                   "- nu tacit. %s. Corectează sursa notei (sau cere maparea ei la un jurnal "
-                                   "auxiliar)." % (len(surse_necunoscute), _dets))
+        from core.common import cate as _cate_s
+        _dets = "; ".join(_nume_nota(nid) for nid, s in surse_necunoscute)
+        # fraza nu depinde de număr după cifră: „N note … — intrate în jurnalul «Diverse»” (acordul îl face `cate`)
+        res.avertismente.insert(0, "Atenție (D406): %s fără proveniență cunoscută (nu vin dintr-un registru al aplicației), trecute în "
+                                   "jurnalul „Diverse”: %s. Verifică-le în Registrul jurnal." % (
+                                       _cate_s(len(surse_necunoscute), "notă", "note"), _dets))
     if um_necunoscute:
         _detu = "; ".join("factura %s: UM %r" % (nrf, um) for nrf, um in um_necunoscute)
         res.avertismente.insert(0, "Atenție (D406): unitate(i) de masura necunoscută(e) înlocuită(e) "
@@ -1757,7 +1783,7 @@ def genereaza(conn, schema, an, luna):
         res.avertismente.insert(0, "Atenție (D406): %s pe 401 / 4111 fără partener (furnizor / client): %s. În D406 poartă codul firmei, "
                                    "nu al partenerului. Scrie partenerul pe linia notei (Registrul jurnal) sau leag-o de factura ei." % (
                                        _cate_t(len(terti_fara_partener), "linie", "linii"),
-                                       "; ".join("nota %s, %s, %s lei" % (nid, ct, _bani_t(s)) for nid, ct, s in terti_fara_partener[:20])))
+                                       "; ".join("%s, %s, %s lei" % (_nume_nota(nid), ct, _bani_t(s)) for nid, ct, s in terti_fara_partener[:20])))
         res.terti_fara_partener = terti_fara_partener
     if nepotriviri_jurnal:
         from core.common import cate as _cate

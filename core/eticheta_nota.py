@@ -72,12 +72,25 @@ def factura_din_rand(f):
     return _j.eticheta_factura(f.get("tip"), f.get("serie"), f["numar"], f.get("data_emitere"))
 
 
+def conturi(cur, schema, nid):
+    """[401, lotul 9] Ce a scris nota, în conturi: „371 = 401 200,00 lei” (rândurile cu aceleași conturi, însumate, în ordinea lor) — ca
+    ecranul să arate nota după generare, nu numai numărul ei. None fără rânduri."""
+    from core.pdf_util import bani
+    cur.execute("SELECT cont_debit, cont_credit, sum(suma) FROM %sinregistrari_linii WHERE inregistrare_id = %%s "
+                "GROUP BY cont_debit, cont_credit ORDER BY min(id)" % _q(schema), (int(nid),))
+    rows = [tuple(r.values()) if isinstance(r, dict) else tuple(r) for r in cur.fetchall()]
+    return "; ".join("%s = %s %s lei" % (d, c, bani(s)) for d, c, s in rows) or None
+
+
 def in_raspuns(cur, schema, rez):
     """Pune lângă id-urile de note dintr-un răspuns etichetele lor, ca ecranul să numească nota cum o arată Registrul jurnal:
-    `nota_eticheta` lângă `inregistrare_id` / `nota_id`, `note_etichete` (în ordinea din jurnal) lângă `inregistrari`. Întoarce `rez`."""
+    `nota_eticheta` (și `nota`, conturile ei) lângă `inregistrare_id` / `nota_id`, `note_etichete` (în ordinea din jurnal) lângă `inregistrari`. Întoarce `rez`."""
     nid = rez.get("inregistrare_id") or rez.get("nota_id")
     if nid:
         rez["nota_eticheta"] = nota(cur, schema, nid)
+        _c = conturi(cur, schema, nid)   # [401] conturile notei, arătate după generare (o `nota` pusă de operațiune rămâne a ei)
+        if _c and "nota" not in rez:
+            rez["nota"] = _c
     if rez.get("inregistrari"):
         rez["note_etichete"] = [e for _, e in note(cur, schema, rez["inregistrari"])]
     return rez

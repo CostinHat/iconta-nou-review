@@ -380,11 +380,12 @@ def _impozit_cumulat(conn, schema, an, trim, cota=None):
     rezerva = {"capital": r.get("capital", 0), "rezerva_existenta": r.get("rezerva_existenta", 0),
                "chelt_impozit": r.get("chelt_impozit", 0)}
     res, x = _d101.calcul_cu_ajustari(prof101, an, intrari, aj, fer.interval()[1], cota=cota, cifra_afaceri=r.get("cifra_afaceri", 0),
-                                      rezerva=rezerva)
+                                      rezerva=rezerva, din_conturi=_aj.din_conturi(r))
     P = res.P
     pierdere, recuperata, sponsorizare, credit = x["pierdere"], x["recuperata"], x["sponsorizare"], x["credit_sponsorizare"]
     return {"trim": trim, "P": P, "impozit": _i(P.get("P48", 0)), "ajustari": aj, "pierdere": pierdere, "recuperata": recuperata,
             "sponsorizare": sponsorizare, "credit_sponsorizare": credit, "chelt_impozit": _i(r.get("chelt_impozit", 0) or 0),
+            "din_conturi": x["din_conturi"],
             "interval": fer.interval()}
 
 
@@ -408,6 +409,7 @@ def profit_trimestru(conn, schema, perioada, cota=None):
     -> {"suma", "cumulat", "anterioare": [{trim, suma, sursa, data, fel}], "linii", "avertismente"}."""
     import datetime as _dt
     from core.pdf_util import bani as _bani, data_ro as _data_ro
+    from core import ajustari_fiscale as _aj, d101 as _d101
     trim = perioada.trim
     if trim not in (1, 2, 3):
         raise ValueError("D100 pe impozitul pe profit se depune pentru trimestrele I–III; trimestrul IV se definitivează în D101 (CF art.41 "
@@ -441,9 +443,11 @@ def profit_trimestru(conn, schema, perioada, cota=None):
     linii = ["Rezultatul fiscal cumulat %s (CF art.19 alin.(1); aceleași rânduri ca D101):" % per,
              "rezultatul contabil: %s lei (venituri %s − cheltuieli %s)" % (
                  _bani(P.get("P7", 0)), _bani(P.get("P1", 0) + P.get("P4", 0)), _bani(P.get("P2", 0) + P.get("P5", 0))),
-             "deduceri: %s lei%s; venituri neimpozabile: %s lei; cheltuieli nedeductibile: %s lei" % (
+             "deduceri: %s lei%s; venituri neimpozabile: %s lei; cheltuieli nedeductibile: %s lei%s" % (
                  _bani(P.get("P16", 0)), (" (din care rezerva legală %s lei)" % _bani(P.get("P13", 0))) if P.get("P13") else "",
-                 _bani(P.get("P21", 0)), _bani(P.get("P34", 0)))]
+                 _bani(P.get("P21", 0)), _bani(P.get("P34", 0)),
+                 "".join(" (din care %s, din %s: %s lei — scrie rândul în Registrul de evidență fiscală dacă o parte e deductibilă)"
+                         % (_aj.RANDURI[k][0], _aj.DIN_CONTURI[k][1], _bani(v)) for k, v in c["din_conturi"].items()))]
     if c["pierdere"]:
         linii.append("pierderea fiscală din anii anteriori: %s lei de recuperat, recuperată acum %s lei (cel mult 70%%, CF art.31 alin.(1))"
                      % (_bani(c["pierdere"]), _bani(c["recuperata"])))
@@ -462,6 +466,8 @@ def profit_trimestru(conn, schema, perioada, cota=None):
         avert.append("Contul 691 are rulaj debitor %s lei în %s (cheltuiala cu impozitul pe profit), iar ajustarea „rd.23 — cheltuieli cu "
                      "impozitul pe profit” lipsește. Cheltuiala e nedeductibilă (CF art.25 alin.(4) lit.a)) — fără ajustare, impozitul "
                      "cumulat iese mai mic. Scrie-o în Registrul de evidență fiscală." % (_bani(c["chelt_impozit"]), per))
+    # [deficiența 382, lotul 9] fereastra calculului e CUMULATĂ (01.01 – sfârșitul trimestrului): ce e în afara evidenței validate se spune
+    avert.extend(_d101.avertismente_evidenta(conn, schema, inc, sf, "D100 pe T%d/%d" % (trim, perioada.an)))
     return {"suma": suma, "cumulat": c["impozit"], "anterioare": anterioare, "linii": linii, "avertismente": avert, "P": P}
 
 
@@ -533,6 +539,11 @@ def genereaza(conn, schema, perioada, manual=None):
         res.sinteza = list(detaliu["profit"]["linii"])
     else:
         res.sinteza = sinteza_d100(conn, prof, perioada, venituri, cheltuieli, obligatii, cota)
+        # [deficiența 382, lotul 9] micro: notele de venit nevalidate ale trimestrului se spun (amortizarea nu schimbă impozitul micro)
+        from core import d101 as _d101
+        _inc, _sf = perioada.interval()
+        res.avertismente.extend(_d101.avertismente_evidenta(conn, schema, _inc, _sf, "D100 pe T%d/%d" % (perioada.trim, perioada.an),
+                                                            cu_amortizare=False))
     # POARTA A DOUA CALE (gard continut, pas 4/4 lant reconciliere): recalcul INDEPENDENT al
     # obligatiei din SURSA (venituri cont 70x, note validate) x cota din registru, confruntat
     # cu suma_dat a generatorului. Prinde CATALOG #31 aggregation-loss (venit scapat din pull ->

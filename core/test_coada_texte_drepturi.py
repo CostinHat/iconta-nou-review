@@ -6,7 +6,8 @@
 `introCoada` din static/js/ecrane/validat.js, din `poate_valida` / `poate_depune` (`/eu/permisiuni`). Gardul îl rulează (node) pe TOATE
 combinațiile — drept de validare, drept de depunere, administrator, validarea în doi activă / suspendată / oprită, cu sau fără note — și
 cere: (1) nicio frază nu-i spune „tu” validezi celui fără „Poate valida”, nici „tu” depui celui fără „Poate depune”; (2) textul vorbește
-de note ȘI de declarații; (3) celui fără un drept îi spune cine face pasul (dreptul, pe nume).
+de declarații, iar de note NUMAI când sunt note de validat (PIVOT 19.10.2026, deficiența 323); (3) celui fără un drept îi spune cine face
+pasul (dreptul, pe nume) — validatorul, când e ceva de validat.
 
 CE NU VEDE (declarat): celelalte texte ale ecranului (cardurile, titlul) — pe ele le probează testul din browser
 `frontend_test/e2e/e2e_lot5_roluri.py::test_def_266_coada_spune_dreptul_real_si_vorbeste_de_note`.
@@ -60,10 +61,17 @@ def test_textul_cozii_urmeaza_dreptul_real():
             rele.append(("îi spune că depune el, fără «Poate depune»", c, t))
         if not c["poateDepune"] and "«Poate depune»" not in t:
             rele.append(("nu spune cine depune", c, t))
-        if not c["poateValida"] and "«Poate valida»" not in t:
+        # [323, retestul 19.10.2026 — PIVOT al condiției (2), DECIZII „Comanda 9.1”] „În De depus, textul de sus vorbește tot de «notele
+        # pe care asistenții le trimit la validare»”: notele se pomenesc NUMAI când sunt note de validat; validatorul se numește când e
+        # ceva de validat (note, sau declarațiile cu validarea în doi activă)
+        if not c["poateValida"] and (c["note"] or c["patruOchi"]) and "«Poate valida»" not in t:
             rele.append(("nu spune cine validează", c, t))
-        if not re.search(r"\b[Nn]otele\b", t) or "eclarațiile" not in t:
-            rele.append(("nu vorbește de note ȘI de declarații", c, t))
+        if c["note"] and not re.search(r"\b[Nn]otele\b", t):
+            rele.append(("are note de validat și nu vorbește de ele", c, t))
+        if not c["note"] and re.search(r"\b[Nn]ot(a|e|ele)\b", t):
+            rele.append(("nu are note de validat și vorbește de note", c, t))
+        if "eclarațiile" not in t:
+            rele.append(("nu vorbește de declarații", c, t))
     assert not rele, "\n".join("%s: %s -> %s" % r for r in rele[:6])
 
 

@@ -6,8 +6,8 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt } from "../api.js?v=462d75fbab";
-import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada } from "./coada_trimite.js?v=425f6a2edf";
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt } from "../api.js?v=158edee964";
+import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada } from "./coada_trimite.js?v=2fc90ca5ef";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
   d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
@@ -134,6 +134,7 @@ async function incarcaTipuri(tenantId) {
     S.periodicitateEticheta = d.periodicitate_eticheta || {};
     S.neaplicabile = d.neaplicabile || {};
     S.datorate = d.datorate || [];   // [283] ce datorează firma, cu termenul (motorul termenelor)
+    S.obligatiiD710 = d.obligatii_d710 || [];   // [9.1 A.3] codurile D710 cu denumirea oficială din nomenclator
     S.tipuriEsuat = false;
   } catch {
     S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {}; S.datorate = []; S.tipuriEsuat = true;
@@ -725,9 +726,9 @@ async function randeazaOperatiuniD301(corp, nav) {
 // adaugare + stergere + regenerare. Obligatiile stau IN MEMORIE (S.d710_obligatii) - D710 le primeste
 // DIRECT in body (nu are tabel in DB). Fiecare: cod obligatie (121 micro / 103 profit), suma initiala
 // (declarata gresit in D100) + suma corecta; cota % obligatorie la micro (121). Clasele DS din cap.6/D301.
-const _D710_CODURI = [{ val: "121", et: "Impozit pe veniturile microîntreprinderilor (121)" },
-                      { val: "103", et: "Impozit pe profit (103)" }];
-function _d710_et(cod) { const c = _D710_CODURI.find((x) => x.val === cod); return c ? c.et : "Cod " + cod; }
+// [comanda Costin 9.1, A.3] codurile și denumirile vin de la server (`/declaratii/tipuri` -> `obligatii_d710`), din nomenclatorul oficial
+// (OPANAF 587/2016, anexa nr. 3) — nu dintr-o listă scrisă aici
+function _d710_et(cod) { const c = (S.obligatiiD710 || []).find((x) => x.cod === cod); return c ? c.denumire + " (" + c.cod + ")" : "Cod " + cod; }
 
 function randeazaFormularD710(corp, nav) {
   const zona = corp.querySelector("#dec-d710-form");
@@ -743,7 +744,7 @@ function randeazaFormularD710(corp, nav) {
     <div class="camp-eticheta" style="margin:10px 0 4px">Adaugă obligație corectată:</div>
     <div class="dec-man-form">
       <label class="camp" style="width:340px"><span class="camp-eticheta">Obligația <span class="oblig">*</span></span>
-        <select id="d710-cod" class="camp-input">${ALEGE}${_D710_CODURI.map((c) => `<option value="${c.val}">${esc(c.et)}</option>`).join("")}</select></label>
+        <select id="d710-cod" class="camp-input">${ALEGE}${(S.obligatiiD710 || []).map((c) => `<option value="${c.cod}">${esc(_d710_et(c.cod))}</option>`).join("")}</select></label>
       <label class="camp" style="width:160px"><span class="camp-eticheta">Suma declarată inițial <span class="oblig">*</span></span><input id="d710-i" type="number" step="1" class="camp-input"></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">Suma corectă <span class="oblig">*</span></span><input id="d710-c" type="number" step="1" class="camp-input"></label>
       <label class="camp" style="width:120px" id="d710-cota-wrap"><span class="camp-eticheta">Cotă micro (%) <span class="oblig">*</span></span><input id="d710-cota" type="number" step="0.01" class="camp-input" placeholder="1"></label>

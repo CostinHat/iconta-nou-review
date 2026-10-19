@@ -36,14 +36,18 @@ def select_firma_profil(cur):
 
 
 def select_facturi(cur, azi):
-    cur.execute("SELECT f.id, f.numar, f.data_scadenta, COALESCE(f.total,0) AS suma, f.moneda, "
+    # [deficiența 416] factura stornată integral nu primește notificare; cea stornată parțial, cu rămasul ei (`repo_facturi.SQL_STORNARI`)
+    from core import repo_facturi as _rf
+    st = _rf.SQL_STORNARI.format(s="", a="f")
+    cur.execute("SELECT f.id, f.numar, f.data_scadenta, COALESCE(f.total,0) + " + st + " AS suma, f.moneda, "
                 "       c.email AS client_email "
                 "  FROM facturi f LEFT JOIN clienti c ON c.id = f.client_id "
                 " WHERE f.directie='emisa' AND f.platita_la IS NULL "
                 "   AND COALESCE(f.tip,'factura')='factura' AND f.storno_din_id IS NULL "
                 "   AND COALESCE(f.notificare_stop, false) = false "
                 "   AND (f.notificare_amanata_pana IS NULL OR f.notificare_amanata_pana < %s) "
-                "   AND f.data_scadenta IS NOT NULL", (azi,))
+                "   AND f.data_scadenta IS NOT NULL "
+                "   AND COALESCE(f.total,0) + " + st + " > %s", (azi, _rf.TOLERANTA_STORNATA))
     return cur.fetchall()
 
 

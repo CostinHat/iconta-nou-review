@@ -25,12 +25,11 @@ orchestrarea trimiterii si cele 8 instructiuni SQL au trecut in `core/efactura_t
 `PLAN_HARDENING.md:845`: *un motor fiscal nu importa `db`*. Aici a ramas ce produce si ce
 valideaza documentul: XML-ul UBL, validatorul de structura ANAF si invelisurile de apel.
 
-LIMITE v1 (de confirmat pe TEST la pasul 2, NU ghicite aici):
-  - Cumparatorul are in schema doar tert_nume/tert_cui/tert_adresa (adresa libera);
-    CIUS-RO cere oras (BT-52). Pana cand formularul de factura capteaza orasul separat,
-    CityName = oras (daca vine) altfel adresa libera - fallback documentat, TEST confirma.
-  - Doar factura standard cu TVA (categorii S/Z). taxare_inversa (AE), neplatitor TVA (O),
-    storno/nota de credit (381) NU sunt tratate in v1 - se adauga dupa confirmare pe TEST.
+LIMITELE v1 de aici au fost inchise (19.10.2026, C62 — comentariul vechi spunea inca altceva):
+  - Cumparatorul: localitatea / judetul (BT-52 / BT-54) din `facturi.tert_oras` / `tert_judet` (core/migrare_efactura_adresa.py);
+    la clientul roman fara ele, trimiterea le ia din ANAF (`efactura_trimitere.completeaza_client_ro`, C61).
+  - Categoriile pe 0% (AE / E / K / G) si neplatitorul (O): mai jos, din categoria liniei (274b). Stornarea: factura cu valorile
+    cu minus si trimiterea la factura stornata (BG-3, 417), `stare=ok` pe validatorul FACT1.
 
 [punctul 3, 03.10.2026] FACTURA EMISA PE BAZA BONULUI FISCAL -> InvoiceTypeCode 751 + mentiunea in BT-22. Sursa:
 Ministerul Finantelor, „Ghid de utilizare a codurilor dedicate tipurilor de facturi … RO e-Factura” v2.9 (static.anaf.ro),
@@ -245,7 +244,17 @@ def genereaza_xml(factura, linii, furnizor, client):
              % (INVOICE_TYPE_INFORMATIVA_BON if din_bon else INVOICE_TYPE_FACTURA))
     if din_bon:   # BT-22 (Ghidul MF v2.9 pct.2.5: mentiunea documentului care a stat la baza livrarii)
         P.append('<cbc:Note>%s</cbc:Note>' % _e("Factura încasată cu bon fiscal — " + _fc.mentiune_bon(factura)))
+    storno = _fc.mentiune_storno(factura)
+    if storno:   # [deficiența 417] BT-22: mențiunea de pe PDF (CF art.330 alin.(1) lit.b)
+        P.append('<cbc:Note>%s</cbc:Note>' % _e(storno))
     P.append('<cbc:DocumentCurrencyCode>%s</cbc:DocumentCurrencyCode>' % _e(moneda))
+    if storno:
+        # [417] BG-3 „Referință la o factură anterioară”: BT-25 numărul (ca în BT-1 al ei) și BT-26 data facturii stornate. Locul în UBL:
+        # după DocumentCurrencyCode, înaintea părților (ordinea schemei Invoice-2)
+        o = factura["storno_din"]
+        P.append('<cac:BillingReference><cac:InvoiceDocumentReference><cbc:ID>%s</cbc:ID><cbc:IssueDate>%s</cbc:IssueDate>'
+                 '</cac:InvoiceDocumentReference></cac:BillingReference>'
+                 % (_e(_pu.numar_cu_serie(o.get("serie"), o.get("numar"))), _e(str(o.get("data_emitere"))[:10])))
 
     # --- Furnizor (emitent) ---
     P.append('<cac:AccountingSupplierParty><cac:Party>')

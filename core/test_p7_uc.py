@@ -122,6 +122,20 @@ ABATERI = {
 _MOTIV_82 = ("Comanda Costin 8.2 (18.10.2026, verbatim în DECIZII „Comanda 8.2”) pct.4, regula importurilor de migrare: „orice rând citit e "
              "afișat sau semnalat cu motiv, nimic nu se înlocuiește pe tăcute, totul trece prin previzualizare înainte de salvare”.")
 PERECHI_ADAUGATE = {
+    ("proforma_transforma", "{'ok': False, 'cod': facturi_api.COD_INTREABA_MARFA, 'mesaj': str(e)}"): (
+        "C63 (decizia Costin 19.10.2026, DECIZII „Închiderea lotului 9” pct.2): „la transformarea în factură se pune aceeași întrebare ca "
+        "la orice factură, «Pleacă marfa acum?»”. Factura născută din proformă / aviz cu articol de stoc cere răspunsul ca emiterea din "
+        "formular — 422 structurat cu codul `INTREABA_PLEACA_MARFA`, nimic scris; ecranul pune întrebarea și retrimite."),
+    ("proforma_transforma", "_cs.detaliu_metoda_stoc(e)"): (
+        "C63 (decizia Costin 19.10.2026, DECIZII „Închiderea lotului 9” pct.2): cu articolul trecut pe factură, refuzul metodei de stoc "
+        "(nedeclarată / global-valoric cu ieșire pe articol) poate apărea și aici: 422 structurat spre Date firmă, ca la emitere."),
+    ("achizitie_neinregistrat", "refuz"): (
+        "Deficiența 402 (comanda Costin 9.2, 19.10.2026, verbatim în DECIZII „Comanda 9.2”): borderoul de achiziție identifică vânzătorul "
+        "persoană fizică (domiciliul, actul de identitate) și, pe un cont de stoc, cere articolul și cantitatea (OMFP 2634/2015 anexa 1 "
+        "pct.2 și pct.6) — refuz numit cu câmpurile lui (422)."),
+    ("facturi_storno", "refuz"): (
+        "Deficiența 419 (comanda Costin 9.3, 19.10.2026): stornarea facturii care a descărcat stocul cere răspunsul „marfa se întoarce în "
+        "stoc?” (`retur`), iar un `retur` care nu e da/nu se refuză — 422, cu întrebarea și câmpul ei."),
     ("retete_import_incarca", "'fișierul nu conține niciun rând de rețetă'"): (
         _MOTIV_82 + " Deficiența 375: un fișier fără niciun rând de rețetă se refuză numit (400), nu se previzualizează gol."),
     ("retete_import_salveaza", "str(e)"): (
@@ -479,6 +493,10 @@ APELURI_INLOCUITE = {
 #: Creditul NU se dă orb: se numără apelurile din corpul ajutorului (plus funcțiile modulului lui pe care le cheamă direct), deci
 #: un apel care nu există nici acolo rămâne pierdut. Anti-vacuu: `test_EXTRAGERILE_declarate_chiar_cheama_ajutorul`.
 APELURI_EXTRASE_IN_AJUTOR = {
+    'facturi_emite': (("core/facturi_api.py", "poarta_marfa_ceruta"), (
+        "C63 (decizia Costin 19.10.2026, DECIZII „Închiderea lotului 9” pct.2): condiția întrebării „Pleacă marfa acum?” (factură, linie "
+        "cu articol, nu din bon) e una singură pentru emitere și transformare: `facturi_api.poarta_marfa_ceruta` (`any(...)` a plecat "
+        "acolo). Gardul: `core/test_c63_proforma_transformata.py::test_c63_conditia_intrebarii_e_una_singura`.")),
     'coada_adauga': (("core/uc_coada.py", "_anunta_validatorii"), (
         'Deficiența 339 (comanda Costin 8.1, 18.10.2026, DECIZII „Comanda 8.1”): „de validat” pentru o declarație pleacă numai cu validarea în doi efectivă (`patru_ochi_stare(...)["efectiv"]`), iar o excepție la trimitere se scrie în jurnal; anunțul a ieșit din corp în `uc_coada._anunta_validatorii`. Gardul: `core/test_339_340_notificari.py`.')),
     'asistent_creeaza': (("core/observare.py", "trimite_email_html_sau_semnaleaza"), (
@@ -546,6 +564,10 @@ _MOTIV_LOTUL_4 = ('Lotul 4 (comanda Costin 15.10.2026, verbatim în DECIZII „L
                   'contul nou (`_dupa_cont_nou`, `_anunta_cabinet_nou`) sunt ajutoare comune cu confirmarea (`confirma_inregistrarea`). '
                   'Trimiterea emailului: `observare.trimite_email_html_sau_semnaleaza` (C34).')
 APELURI_EXTRASE_IN_AJUTOARE = {
+    "proforma_transforma": ((("core/uc_tenants.py", "linii_din_proforma"), ("core/uc_tenants.py", "antet_din_proforma")), (
+        "C63 (Code, 19.10.2026, DECIZII „Lotul 9: C57–C64”): liniile și antetul facturii născute din proformă / aviz se citesc în "
+        "`uc_tenants.linii_din_proforma` / `antet_din_proforma` (cele 8 `.get` au plecat acolo, cu adresa, localitatea, județul, "
+        "unitatea, contul de venit și articolul). Gardul: `core/test_c63_proforma_transformata.py`.")),
     "raportari_imagine": ((("core/fisiere_private.py", "salveaza"),), _MOTIV_C36),
     "register": ((("core/uc_auth.py", "_valideaza_formularul"), ("core/uc_auth.py", "_register_cu_invitatie"),
                   ("core/uc_auth.py", "_dupa_cont_nou"), ("core/uc_auth.py", "_anunta_cabinet_nou"),

@@ -6039,6 +6039,62 @@ probă: sunt exercițiul financiar precedent, construit deliberat, iar pe el sta
 intraseră prin găurile de mai sus, și două care intră acum legitim, fiindcă erau valide.*
 
 
+## 19.10.2026 — lotul 9, comanda 9.1 (nerezolvatele lotului 8, 382–397, chei; pe ramură, nepublicat)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| amenda pe 6581 la rd.25, din cont (378) | `ajustari_fiscale.DIN_CONTURI` + `core/test_d100_profit_cumulat.py::test_378_*` (schemă efemeră; DUK) | D100 / D101 cu 6581 în rezultat și rd.25 gol; cifra omului adunată peste cont | `din_conturi={}` -> ROȘU (rd.25 lipsă); fără `if k not in I` -> ROȘU (rd.25 = 100 peste 40) | numai 6581 -> rd.25; 691 -> rd.23 rămâne semnal (decizia 02.09) |
+| ce e în afara evidenței validate se spune la D100 / D101 (382) | `d101.avertismente_evidenta` + `core/test_d100_profit_cumulat.py::test_382_*` | amortizarea în ciornă / neînregistrată și notele nevalidate din fereastra CUMULATĂ, tăcute | avertismentul scos din `profit_trimestru` / `d101.genereaza` / ramura micro -> ROȘU (3) | lunile încheiate; fereastra = a calculului |
+| perioada neîncheiată nu se depune (383) | `coada_api.perioada_neincheiata` (lista + `marcheaza_depusa`) + `core/test_383_perioada_neincheiata.py` | „Confirmă depunerea” și depunerea pe o perioadă care nu s-a încheiat | `>` -> `>=` -> ROȘU; refuzul scos -> ROȘU; lista fără regulă -> ROȘU | declarațiile fără perioadă (pe eveniment) nu sunt oprite |
+| validarea fără document nu se promite (386) | `core/test_386_validare_fara_document.py` | un ecran care oferă „Validează fără document” cât timp R3 e în bază | butonul pus înapoi -> ROȘU | caută textul pe ecrane (forma promisiunii) |
+| dublura pe cheia importului, la toate importurile cu cheie (385, C55) | `core/test_regula_importurilor.py::test_dublura_din_fisier_e_respinsa_numit` (5 parsere) | același articol / CNP / cod de inventar / declarație / asociat intrat de două ori sau înlocuit pe tăcute | verificarea scoasă din articole / salariați -> ROȘU | RIP n-are cheie (două încasări identice sunt legitime) |
+| cotele se adună pe rândurile care intră (384) | `core/test_384_cote_asociati.py` | „✓ 100%” cu rânduri respinse; un asociat intrat cu 30% | `coerenta_cote` fără respinse -> ROȘU | — |
+| modelele CSV trec de propria verificare (388) | `core/test_388_modele_csv.py` (fiecare model, generat cu node din `migrare.js`) | un model descărcat care pică la import sau intră „cu observație”; CNP-ul pierdut de Excel; balanța cu sold pe partea greșită | 5121 creditor / CNP fără `="…"` / CUI inventat -> ROȘU (3) | judecă modelele aplicației, nu fișierele omului |
+| proba nu primește cheile de trimitere (C52) | `scripts/e2e_poarta.CHEI_TRIMITERE` + `core/test_proba_fara_trimitere.py` | aplicația de probă cu cheia WhatsApp / Postmark / Brevo (mesaje reale din probă) | lista redusă la Brevo -> ROȘU; `env.pop` scos -> ROȘU | cheile citite cu `cfg` / `environ.get` în modulele de trimitere numite |
+| amortizarea preluată continuă de la cifra din fișier (359, A.1) | `d406_active._preluare` / `_plan_dupa_preluare` + `core/test_359_amortizare_preluata.py` | lunile registrului vechi înregistrate din nou; cumulul refăcut din calcul | `amortizare_luna` fără preluare -> ROȘU; alias „=amortizare” scos -> ROȘU | nu peste reevaluări; interpretare (DECIZII „Comanda 9.1”) |
+| conturile și durata mijlocului fix (362, A.2) | `mijloace_fixe_import_api.verifica_randuri` + `d406_active._categorie_activ` + `core/test_362_conturi_mf.py` | conturi inversate, teren cu durată, 2112 „teren” / altă durată / altă metodă decât liniar pe 10 ani | categoria 2112 scoasă -> ROȘU; regula 20x/21x scoasă -> ROȘU | 2112 cere exact 120 de luni |
+| perioada istoricului ca în formular (389) | `istoric_declaratii_import_api.cu_perioada` + `core/test_389_perioada_istoric.py` | „03/2026” la o declarație trimestrială a firmei | ramura trimestrială scoasă -> ROȘU | D100 trimestrial la profit / micro, D300 / D394 la decontul trimestrial |
+| un singur drum pentru CUI-urile din fișier și cele lipite (393, C57) | `uc_migrare.cui_de_trimis` / `rezultate_validare` + `core/test_393_migrare_firme_un_drum.py` | fișierul trimis la ANAF fără cifra de control / fără portofoliu; remediul „în fișier” la o listă lipită | remediul fix „în fișier” -> ROȘU | — |
+| rândurile formularului în ordinea lui (395) | `declaratii_componente.ordine_formular` + `core/test_395_ordine_formular.py` | D300 / D101 în ordinea dicționarului | sortarea scoasă -> ROȘU | rândurile fără număr trec la sfârșit |
+| tipurile platformei în grupa lor (397) | `notificari.GRUPURI` („Platformă”) + `core/test_317_320_alerta_notificari.py::test_397_*` | o alertă a superadminului sub o grupă a cabinetelor; grupa „Platformă” la un cabinet | alerta înapoi la „Termene” -> ROȘU | — |
+| sold pe partea opusă funcțiunii, la import și la audit: o regulă (392) | `audit_preluare.parte_gresita` + `core/test_392_parte_sold.py` | 5121 creditor tăcut la import | — (structură: amândouă cheamă funcția) | funcțiunea din `plan_functiune` (A / P / A/P) |
+| o singură extragere a planului de conturi (C56, 387) | `scripts/plan_functiune.py` pe `core/plan_conturi_omfp.PLAN` + `core/test_plan_functiune.py` / `core/test_plan_conturi_omfp.py` | două parsere ale aceluiași ordin cu rezultate diferite | conturile 1496 / 4315 / 463 scoase -> ROȘU | — |
+| fiecare deficiență 382–397 (și nerezolvatele lotului 8) are e2e cu mutație | `frontend_test/e2e/e2e_lot91.py` (28 de teste; mutațiile pe copia exportată în raportul 9.1) | o „rezolvată” fără test de capăt la capăt | (listă în raport) | 394 rămâne „parțial” (Migrare cabinet: decizie de rearanjare) |
+
+## 19.10.2026 — lotul 9, comenzile 9.2 și 9.3 (398–419; pe ramură, nepublicat)
+
+| gard | fișier | ce face imposibil | mutația | limita |
+|---|---|---|---|---|
+| casa nu ajunge sub zero, la salvare și la validare (406) | `core/casa_sold.py` (`refuz_iesire`, chemat de `casa_api.adauga` / `storneaza` / `previzualizare` și de `jurnal_api.valideaza`) + `core/test_406_casa_negativa.py` | o plată (sau o stornare a încasării, o notă manuală pe 5311/5314) care duce casa sub zero în ziua ei sau după | condiția `< 0` -> `< -10^9`; refuzul de la validare scos; registrul pornit de la 0 -> ROȘU | băncile (5121/5124) nu sunt acoperite, deliberat (extrasul e documentul) |
+| „NU s-a salvat” lângă buton, pe toate formularele (410) | `static/js/api.js` (`refuzSalvare`, alimentat de `eroareCamp` / `arataMesaj(…,"eroare")` / `cereAlegerile`) + verificator REFUZ_SALVARE, REFUZ_CA_AVERTISMENT + e2e `test_def_410_*` | un refuz de formular fără lista lângă buton; un refuz afișat ca avertisment | apelul din `eroareCamp` scos -> verificator REFUZ_SALVARE; e2e 410 ROȘU | un handler care validează DUPĂ un `await` de citire nu alimentează lista (partea sincronă + cererea de scriere a butonului) |
+| netul de plată și costul cu CM (411) | `stat_plata_api.de_plata` / `_cu_de_plata` (și `plata_salarii`) + `core/test_411_net_cu_cm.py` | un net afișat fără indemnizația CM; costul fără partea angajatorului; deducerea printre rețineri | `de_plata` = numai netul; costul fără CM; deducerea ca linie -> ROȘU | exemplarele emise înainte n-au câmpurile: compoziția cade pe `de_plata(net, cm_net)` și pe costul tipărit |
+| factura stornată integral: o definiție (416) | `repo_facturi.SQL_STORNARI` + `repo_facturi.TOLERANTA_STORNATA` (stare, scadențar, notificări, cashflow) + `core/test_416_stornata.py` | o factură stornată „neîncasată”, în scadențar sau în notificări | `SQL_STORNARI = "0"`; starea „stornata” scoasă -> ROȘU | rapoartele comerciale și reconcilierea aveau deja stornările (verificat), nu trec prin definiția nouă |
+| trimiterea la factura stornată (417) | `facturi.mentiune_storno` (PDF + BT-22) + BG-3 în `efactura_send` + `core/test_417_storno_trimitere.py` (+ validatorul FACT1, o dată) | o stornare fără numărul și data facturii stornate; o stornare fără orașul / județul clientului (BR-RO-110) | mențiunea scoasă; BG-3 scos; orașul necopiat -> ROȘU | validatorul FACT1 e extern: proba lui e în raport, nu în suită |
+| NIR: decizia omului, aceeași regulă pe linii, costul final (398–400) | `stocuri_api._decizia_omului` (ruta) + `stocuri._tva_transport` + `nir_detaliu` + `core/test_398_400_nir.py` + e2e 398/399/400 | 408 fără alegere; transportul pe alt cont decât marfa; transport fără TVA; detaliul fără costul final | decizia scoasă; transportul pe „401” fix; TVA-ul transportului scos; accesoriul 0 -> ROȘU | la NIR-ul legat de factură transportul rămâne refuzat (vine din factura lui) |
+| borderoul de achiziție (401–402) | `facturi.tip = 'borderou'` + `nomenclator_status_factura.TIPURI_FISCALE` + `uc_tenants.achizitie_neinregistrat` + `core/test_401_403_borderou.py` + e2e 401 | borderoul afișat „Factură”; vânzătorul neidentificat; contul de stoc fără intrare în gestiune | `tip="borderou"` scos; refuzul identificării scos; intrarea scoasă -> ROȘU | CNP-ul nu se cere (interpretare cu temei, DECIZII) |
+| documentul vechi din fișa de magazie (403) | `stocuri_cv_api.documente_fisa` + `core/test_401_403_borderou.py::test_403_*` | „Factura #1” pe fișă când mișcarea are factura legată | `ids = []` -> ROȘU | mișcarea veche fără factură / NIR legat rămâne cu textul ei |
+| lipsa la inventar se încadrează (404) | `stocuri_cv_api._incadreaza_lipsa` + `core/test_404_407_lipsa_avans.py` + e2e 404 | o lipsă fără încadrare; ajustarea TVA lipsă la neimputabilă / imputabilă | încadrarea scoasă; 635=4427 scos -> ROȘU | nedeductibilul e spus, nu trecut automat la ajustări (decizie cerută) |
+| avansul acordat furnizorului e 409x (407) | `casa_api.adauga` (`cont_avans`, `COD_AVANS_DESTINATIE`) + `core/test_404_407_lipsa_avans.py` + e2e 407 | avans pe 401 = 5311; avans fără destinație | nota avansului pe `CONTURI[cat]` -> ROȘU | — |
+| rulajul documentului din coadă (408) | `coada_api._payload_grup` + `core/test_398_400_nir.py::test_408_*` | cardul cu rulajul primei note | rândul `rulaj` scos -> ROȘU | — |
+| funcția din COR, tariful orar, butonul lunii în curs (412–414) | `adeverinta.pdf`, `stat_plata_api` (`tarif_orar`), `firme.js` (`#sp-contare-neincheiata`) + e2e 412/413/414 | „___” la funcție; propunerea pe alt tarif; un buton care scrie nota în luna în curs | fallback-ul COR scos; ora normei 7 -> ROȘU (pytest) | 412: tipul și Nr. / Data CIM nu sunt în fișă (decizie) |
+| articolul nou își ia cota (415) | `produse_api.asigura_din_document` (NIR, factura primită) + `core/test_398_400_nir.py::test_415_*` + e2e 415 | articol creat de document, fără cotă în nomenclator | `return None` la intrare -> ROȘU | un produs existent cu aceeași denumire nu se schimbă |
+| statutul furnizorului, contul pe linie (418 a/b) | `anaf_api.statut_furnizori` + `efactura_import` (BT-31) + `factura_linii.cont_cheltuiala` + `core/test_418_import_efactura.py` + e2e 418 | statutul cerut de mână când ANAF / XML îl știu; o factură cu linii de natură diferită pe un singur cont | ANAF ignorat; BT-31 necitit; contul liniei ignorat la contare / la stoc -> ROȘU | ANAF real numai în plasă; în suită e simulat (`core/conftest.py`) |
+| confirmarea nu se șterge singură (418c, clasa 410) | verificator CONFIRMARE_TEMPORIZATA + e2e 418 | `setTimeout(() => nav.inapoi() / randeaza…() / istoric…() / dupaEmitere(), N)` după un act | o navigare temporizată pusă înapoi -> verificator ROȘU | o navigare imediată (fără temporizare) după act nu e prinsă de regulă |
+| stornarea cu marfă (419) | `facturi_api.storneaza(retur=)` + `stocuri_cv_api.retur_la_stornare` + `core/test_419_storno_retur.py` + e2e 419 | stornarea fără întrebarea „se întoarce în stoc?”; returul fără readucerea stocului și fără nota de corecție | întrebarea scoasă; returul scos -> ROȘU | stornarea e integrală (ca înainte); o corecție parțială de cantitate nu are drum propriu |
+| localitatea și județul clientului român în XML (C61) | `efactura_trimitere.completeaza_client_ro` (chemat de `trimite`, după P0) + `anaf_api.valideaza_cui` (`localitate` / `judet` din domiciliul fiscal) + `core/test_c61_adresa_client_ro.py` (9 teste, ANAF simulat) | o factură către un client român, de pe orice drum de emitere, plecată fără BT-54 (FACT1: BR-RO-110) când ANAF îl știe | completarea scoasă din `trimite` -> `('-', None) == ('SECTOR2', 'RO-B')` ROȘU | fără CUI (persoana fizică) sau cu ANAF jos, poarta FACT1 oprește ca azi; fără e2e (în probă SPV nu e conectat) |
+| stornarea se trimite în SPV (C62) | `facturi_ecran.js` (`#fd-spv` pe orice factură emisă) + e2e C62 | o stornare fără drum spre RO e-Factura | `&& !f.storno_din_id` repus -> e2e ROȘU | trimiterea reală a stornării cere SPV conectat (TEST) |
+| factura din proformă păstrează documentul (C63) | `uc_tenants.antet_din_proforma` / `linii_din_proforma` + `core/test_c63_proforma_transformata.py` + e2e C63 | adresa, tipul operațiunii, unitatea, contul pierdute la transformare | `tert_adresa` / `um` scoase -> ROȘU (pytest și e2e) | articolul de stoc nu trece (decizie cerută); un câmp NOU al facturii nu e prins de test dacă nu e în listele lor |
+| confirmarea peste ecranul refăcut (C64) | verificator CONFIRMARE_PESTE_ECRAN + e2e C64 | `await randeaza…(corp, …);` urmat de `arataMesaj(corp, …)` (mesajul în locul ecranului) | `arataMesaj(corp, …)` repus în `facturi_ecran.js` -> TOTAL 1 | prinde numai succesiunea imediată (comentariile dintre ele sunt sărite); un mesaj pe alt container de ecran rămâne disciplină |
+| fiecare deficiență Cxx a lotului 9 cu suprafață pe ecran are e2e cu mutație (C57, C59, C62, C63, C64) | `frontend_test/e2e/e2e_lot91.py` / `e2e_lot92.py` + controlul nemutat al fiecărui test rulat singur (raportul) | un e2e care trece numai după alt test (411–414 depindeau de salariatul creat de 411: reparat cu `_salariat_cu_cm`) | cele 28 de mutații e2e ale lotului, ROȘII | — |
+| „Pleacă marfa acum?” și la transformarea în factură (C63) | `facturi_api.poarta_marfa_ceruta` (condiția unică) + `uc_tenants.proforma_transforma(pleaca_marfa)` + `emitere_ecran.intrebarePleacaMarfa` + `core/test_c63_proforma_transformata.py` (8) + e2e C63 ×2 | o factură din proformă / aviz cu articol de stoc emisă fără întrebare; o a doua condiție a întrebării | `intreaba_marfa=poarta_ceruta` scos -> ROȘU (pytest + e2e); condiția scrisă din nou pe loc -> ROȘU | — |
+| localitatea și județul clientului român în formular și pe factură (C61) | `emitere_ecran.js` (`#em-oras` / `#em-judet` și la RO, din ANAF) + `factura_pdf.adresa_tert` (fără dublare, județul cu numele) + `core/test_c61_adresa_client_ro.py` (10) + e2e C61 ×2 | localitatea / județul lipsă la clientul român; repetarea lor pe PDF | `r.localitate` necitit -> e2e ROȘU; `_cuprinsa_in` mereu False -> ROȘU | adresa care cuprinde doar o parte din localitate o repetă întreagă (raportul §6) |
+| plata NIR-ului fără factură = avans 4091 (405) | `casa_api.niruri_neplatite` / `adauga(niruri)` / `compensare_avans_nir` (chemat de `contare_facturi.contabilizeaza`) + `core/test_405_plata_nir_avans.py` (7) + e2e 405 | plata unui NIR pe 401 sau neoferită; avansul necompensat la factură | nota 401 = 5311 în loc de 4091 -> ROȘU; compensarea peste datorie -> ROȘU | — |
+| nedeductibilul lipsei la ajustările fiscale (404) | `stocuri_cv_api._lipsa_la_ajustari` + `ajustari_fiscale` (P33, legat de notă, ON DELETE CASCADE) + `repo_ajustari_fiscale.cumulat` (numai cu nota validată) + `core/test_404_407_lipsa_avans.py` + e2e 404 | lipsa neimputabilă fără ajustare; ajustarea în calcul cu nota nevalidată | scrierea scoasă -> D100 1.560 în loc de 1.600 ROȘU; filtrul `validata` scos -> ROȘU | la microîntreprindere nu se scrie (alegere de executor, de reconfirmat) |
+| CIM pe fișa salariatului (412) și câmpurile pierdute la creare (C67) | `migrare_cim_salariat` + `salariati_api` + `main.SalariatIn/SalariatEdit` + `adeverinta.pdf` + `core/test_412_cim_salariat.py` (6) + e2e 412 | tipul / Nr. / Data CIM nescrise pe adeverință; data nașterii / copiii pierduți la creare | `nr_cim` scos -> ROȘU; `data_nastere` scos din `SalariatIn` -> ROȘU | „Corectează datele” nu are data nașterii / copiii (decizie, raportul §6) |
+| notele interne la PFA (368, C65, C66) | `main._autor_si_note_in_coada` -> `uc_coada.note_interne` -> `jurnal_api.valideaza_interne` (SAVEPOINT pe notă) + reîncercarea (`autor_cerere.reincearca_interna`, `z_descarcare.deblocat`) + drumurile fără cerere (`uc_api`, `facturi_recurente`, `woocommerce`) + `core/test_pfa_note_interne.py` (9) + `core/test_pfa_note_interne_fundal.py` (16) + e2e 368 / C65 | o notă PFA rămasă „de validat”; Z-ul PFA în afara D300 / D394; un refuz tăcut; o notă deblocată nereîncercată | `partida_simpla` ignorat -> ROȘU; `deblocat` fără efect -> e2e C65 ROȘU; validare prin UPDATE paralel -> ROȘU | ciornele PFA de dinainte de lot nu se validează singure (decizie, raportul §6); marja de 2 s a ceasului |
+| Migrare cabinet încape (394) | `stil.css` (`@media (min-width: 761px)` pentru `.mig-op`) + `migrare.js` (`details#mig-apl-cum`) + `core/test_394_migrare_cum_se_face.py` (4) + e2e 394 ×2 | pașii care derulează pe 1366×768; ținta de atingere micșorată pe telefon | „Cum se face” deschis / padding mare / compactarea globală -> ROȘU | — |
+| un nume de câmp din refuzul serverului nu rupe ecranul (`eroareCamp`) | `api.eroareCamp` (`CSS.escape`) | `'#linii[0].cantitate' is not a valid selector` — excepție în loc de zona generică | e2e C61 (refuzul liniei) a prins-o | — |
+
 ## Inventar (generat, 28.08.2026)
 
 Blocul de mai jos e produs de `scripts/scan_garzi_inventar.py --md` și păzit de
@@ -8953,9 +9009,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**852 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**883 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 813
+### `core/` — 844
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9010,9 +9066,31 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_330_confirmari.py` — [deficiența 330, comanda Costin 8.1, 18.10.2026, verbatim în DECIZII „Comanda 8.1”] „Confirmarea renunțării are «Renunță la factură» și
 - `core/test_332_data_propusa.py` — [deficiența 332, comanda Costin 8.1, 18.10.2026, verbatim în DECIZII „Comanda 8.1”] „Casă: data dispoziției noi vine goală (clasa 68).”
 - `core/test_339_340_notificari.py` — [deficiențele 339 + 340, comanda Costin 8.1, 18.10.2026, verbatim în DECIZII „Comanda 8.1”]
+- `core/test_359_amortizare_preluata.py` — [deficiența 359, retestul + decizia Costin 9.1 A.1, 19.10.2026, verbatim în DECIZII „Comanda 9.1”] „Importul Mijloace fixe nu citește
+- `core/test_362_conturi_mf.py` — [deficiența 362, retestul + decizia Costin 9.1 A.2, 19.10.2026] Import MF: conturile inversate (2813 ca imobilizare) intrau; terenul 2111
 - `core/test_380_381_d406_surse.py` — 380 / 381 (comanda Costin 8.2, verbatim în DECIZII „Comanda 8.2”):
+- `core/test_383_perioada_neincheiata.py` — [deficiența 383, retestul Costin 19.10.2026, verbatim în DECIZII „Comanda 9.1”] „D300 pe 10/2026 e oferită cu «Confirmă depunerea» pe
+- `core/test_384_cote_asociati.py` — [deficiența 384, retestul Costin 19.10.2026, verbatim în DECIZII „Comanda 9.1”] „Import Asociați: «total cote ✓ 100%» adună și rândurile
+- `core/test_386_validare_fara_document.py` — [deficiența 386, retestul Costin 19.10.2026] „Registru jurnal: «Validează fără document» (după confirmare) nu face nimic și nu spune de
+- `core/test_388_modele_csv.py` — [deficiența 388, retestul Costin 19.10.2026] Modelele CSV din Migrare treceau sau picau la propria validare: CNP-ul devenea 2,9E+12 în
+- `core/test_389_perioada_istoric.py` — [deficiența 389, retestul Costin 19.10.2026] „Istoric declarații: perioada apare 03/2026 și 06/2026 în loc de T1/2026, T2/2026.” Perioada
+- `core/test_392_parte_sold.py` — [deficiența 392, retestul Costin 19.10.2026] „Solduri inițiale: 5121 cu sold creditor intră fără avertisment la import (auditul de
+- `core/test_393_migrare_firme_un_drum.py` — [deficiența 393, retestul Costin 19.10.2026] Import firme: CUI-urile din fișier și cele lipite trec pe ACELAȘI drum
+- `core/test_394_migrare_cum_se_face.py` — core/test_394_migrare_cum_se_face.py — deficiența 394, partea „Migrare cabinet” (decizia Costin 19.10.2026, verbatim în DECIZII
+- `core/test_395_ordine_formular.py` — [deficiența 395, retestul Costin 19.10.2026] „D300 «Din ce e făcută declarația»: rândurile vin în ordinea 9, 10, 3, 3.1, 19, nu în
+- `core/test_398_400_nir.py` — [deficiențele 398, 399, 400, 415, 408 — retestul Costin 19.10.2026] NIR-ul:
 - `core/test_3c_functie_baza.py` — GARD [3c, CF art.77 alin.(1)]: deducerea personala se acorda NUMAI la functia de baza.
 - `core/test_3i_storno_cota.py` — GARD [3i, CF art. 282 alin. (9)]: storno-ul unei facturi cu cota 19% (emisa inainte de 01.08.2025)
+- `core/test_401_403_borderou.py` — [deficiențele 401, 402, 403 — retestul Costin 19.10.2026]
+- `core/test_404_407_lipsa_avans.py` — [deficiențele 404 și 407 — retestul Costin 19.10.2026]
+- `core/test_405_plata_nir_avans.py` — [deficiența 405 — retestul Costin 19.10.2026] „Casă plată DANTE: «Nicio factură primită neplătită» deși NIR 1, 2, 3 neplătite; datoriile din
+- `core/test_406_casa_negativa.py` — [deficiența 406, retestul Costin 19.10.2026, PRIORITAR] „Casă: plată 200 cu sold 142 acceptată, registru −58; validarea a trecut;
+- `core/test_411_net_cu_cm.py` — [deficiența 411, retestul Costin 19.10.2026, PRIORITAR] „Stat de plată cu CM (F5 Ionescu Vasile 10/2026, CM cod 01 13–15.10): net în
+- `core/test_412_cim_salariat.py` — [deficiența 412, decizia Costin 19.10.2026, verbatim în DECIZII „Închiderea lotului 9”] „Adeverință: Funcția, Tipul contractului,
+- `core/test_416_stornata.py` — [deficiența 416, retestul Costin 19.10.2026] „După stornarea integrală F1A8 (F1A9, −121 EUR), F1A8 «neîncasată»; trebuie «stornată»,
+- `core/test_417_storno_trimitere.py` — [deficiența 417, retestul Costin 19.10.2026, PRIORITAR] „PDF F1A9 fără trimitere la factura stornată: «Stornare factura F1A nr. 8 din
+- `core/test_418_import_efactura.py` — [deficiența 418, comanda Costin 9.3, 19.10.2026] Import e-Factura XML (F1, DNT-TEST-1019):
+- `core/test_419_storno_retur.py` — [deficiența 419, comanda Costin 9.3, 19.10.2026, PRIORITAR] „F1A8 a descărcat 1 buc Marfa B (22 → 21). Stornarea integrală F1A9 nu a
 - `core/test_a10_efactura_baza_linie.py` — [A10, 18.09.2026] Import e-Factura: baza liniei = `LineExtensionAmount` (netul UBL după
 - `core/test_a11y_contrast_tokens.py` — core/test_a11y_contrast_tokens.py — GARD: token-urile de culoare trec contrastul WCAG AA (4.5:1).
 - `core/test_a11y_landmarks.py` — [Regula 6 + Regula 13] GARD LANDMARKS app-wide (18.08.2026).
@@ -9090,6 +9168,8 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_c48_d406.py` — [C48 în D406, comanda Costin 8.1 pct.4, 18.10.2026, verbatim în DECIZII „Comanda 8.1”] „Probe pe care browserul nu le poate face: […] C48
 - `core/test_c4_model_csv.py` — C4 (audit tenant_003): fiecare strat de import cu fisier ofera 'Descarca model (CSV)' cu formatul REAL
 - `core/test_c5_extras_idempotent.py` — C5 + 277 — importul de extras bancar nu dublează mișcările și nu respinge mișcări noi.
+- `core/test_c61_adresa_client_ro.py` — [deficiența C61, găsită de Code 19.10.2026] Factura emisă din formular către un client din România n-avea localitatea și județul
+- `core/test_c63_proforma_transformata.py` — [deficiența C63, găsită de Code 19.10.2026] Factura născută dintr-o proformă / un aviz („Transformă în factură”) pierdea ce scrisese
 - `core/test_c6_c5_motiv_acord.py` — GARD C6 + C5 (audit vizual tenant_003, 16.08.2026).
 - `core/test_c7_periodicitate_trimestriala.py` — GARD C7 — generarea TVA-decont (d300/d394/d406) urmeaza periodicitatea EFECTIVA a firmei (tip_decont),
 - `core/test_cache_declarat.py` — P6 valul 2 — un cache admis isi poarta cele cinci lucruri, si dovada nu e o promisiune.
@@ -9544,6 +9624,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_niveluri_feedback.py` — GARD P0 (07.09.2026) — cele patru niveluri de feedback nu pot deveni o scurtătură nesigură.
 - `core/test_nomenclatoare_ancorate.py` — GARD DE CLASA (04.08.2026): fiecare nomenclator care ajunge la ANAF e PROBAT pe validatorul INSTALAT.
 - `core/test_nomenclator_cm_eticheta_oficiala.py` — GARD [3b]: etichetele Nomenclatorului 9 din core/nomenclator_cm.py == lista OFICIALA ANAF.
+- `core/test_nomenclator_obligatii.py` — GARD — denumirea obligațiilor de plată D100 / D710 / D112 vine din nomenclatorul oficial, nu din texte scrise de mână (comanda
 - `core/test_nomenclator_pe_norma.py` — GARD [C6, 25.08.2026]: un nomenclator se ia din NORMĂ; validatorul e constrângere, nu sursă.
 - `core/test_norma_implementare.py` — GARDĂ pentru interdicția 60 — elementul care implementează o normă îi poartă articolul?
 - `core/test_note_explicative_micro.py` — GARDĂ: ce datorează o microentitate la notele explicative — și de ce NU e „nimic".
@@ -9584,7 +9665,10 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_perioada.py` — Perioada confirmata (DESIGN_SYSTEM cap.23): ciclul CONFIRMAT/NECONFIRMAT + blocajul motivat.
 - `core/test_perioada_indisponibila.py` — Blocaj MOTIVAT pentru cote de regula cu data_in tarzie (01.08.2026). O cota ceruta de un calcul pentru
 - `core/test_periodicitate_declaratii.py` — GARD — periodicitatea declarațiilor: D208 lunară, „semestrial” cere luna explicit, iar selectorul nu primește o
+- `core/test_pfa_note_interne.py` — GARD — deficiența 368, notele unei firme în partidă simplă (decizia Costin 19.10.2026, verbatim în DECIZII „Închiderea lotului 9”):
+- `core/test_pfa_note_interne_fundal.py` — GARD — deficiența 368 pe drumurile FĂRĂ middleware (decizia Costin 19.10.2026, verbatim în DECIZII „Închiderea lotului 9”): „Se
 - `core/test_plan_conturi_no_upsert.py` — [Regula 4 + Regula 14.4] GARD: adaugarea MANUALA de cont in plan NU suprascrie tacut un simbol existent.
+- `core/test_plan_conturi_omfp.py` — GARD — planul de conturi al firmelor e planul general din OMFP 1802/2014 pct.594, întreg și cu denumirile ordinului (deficiența 387,
 - `core/test_plan_form_fieldmark.py` — [Regula 14.4 pct.4] GARD: formularul 'Adauga cont' (plan_conturi) semnaleaza obligativitatea INAINTE de
 - `core/test_plan_functiune.py` — GARD — funcțiunea contabilă a conturilor (A / P / A/P) vine din OMFP 1802/2014, nu din ghicit (deficiența 369, comanda Costin 8.2).
 - `core/test_plata_izolare.py` — GARD [06.09.2026, decizia lui Costin]: calea de plată online e ÎNCHISĂ și nu se redeschide tăcut.
@@ -9620,6 +9704,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_premisa_restanta.py` — [Regula 4 + Regula 6] TEST-GARDA: NICIO restanta fara premisa demonstrabila.
 - `core/test_pret_ales.py` — GARD — „un preț pe care nu l-a ales nimeni nu se propune: câmp gol și obligatoriu” (comanda Costin 06.10.2026, pct.1b).
 - `core/test_preview_salvare_poarta.py` — GARD Q5 — preview = salvare, O SINGURA POARTA (tura import CUBUS, 16.08.2026).
+- `core/test_proba_fara_trimitere.py` — [C, lotul 9, 19.10.2026] Aplicația de PROBĂ (`scripts/e2e_poarta.py`, pe baza de test) nu primește nicio cheie a unui canal care trimite
 - `core/test_proba_restaurare_noapte.py` — Proba de restaurare de noapte (decizia Costin 15.10.2026, pct.4, verbatim în DECIZII „Lotul 3 — C35”: „Proba de restaurare automată
 - `core/test_profil_blocaje.py` — GARD profil_blocaje: ecranul Date firma NU pretinde 'toate declaratiile se pot genera' cand un
 - `core/test_proprietate_coaja.py` — GARD DE PROPRIETATE (P2, 21.08.2026): un ECRAN nu scrie în COAJĂ. DESIGN_SYSTEM cap.25.
@@ -9696,6 +9781,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_scan_registru.py` — GARDA instrumentului de inventar al registrului unic de parametri fiscali (`core/scan_registru.py`).
 - `core/test_schema_coloane.py` — Garda: coloanele referite in SQL EXISTA in schema reala a tabelelor tenant.
 - `core/test_scrieri_pana_in_declaratie.py` — Rutele care scriu în tabele din care se ridică declarații — probate PÂNĂ ÎN RÂNDUL DECLARAȚIEI.
+- `core/test_search_console_404.py` — GARD — raportul Search Console „Nu a fost găsită (404)” (lotul 9 pct.D2, comanda Costin 19.10.2026, verbatim în DECIZII „Comanda 9.1”).
 - `core/test_secrete_jwt.py` — Teste securitate JWT — default gol pe cheie HMAC = bypass complet de auth (tokenuri forjabile).
 - `core/test_selector_vector.py` — S1 + #2 (plimbare 14.08.2026): selectorul de declaratii respecta vectorul TVA si periodicitatea firmei.
 - `core/test_selecturi_ecrane.py` — GARD — FAPT_FISCAL_NECERUT în ecranele scrise de mână (comanda Costin 07.10.2026: „Extinde regula la ecranele scrise de mână, cu
@@ -9747,6 +9833,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_upsert_motivat.py` — [Regula 4 — fara mutatie tacuta] GARD: orice INSERT ... ON CONFLICT DO UPDATE din codul de PRODUCTIE
 - `core/test_val3_contracte.py` — core/test_val3_contracte.py — valul 3: I/O extern in afara tranzactiei, cu REVALIDARE.
 - `core/test_validare_note.py` — GARDA comenzii Costin 06.10.2026 (răspunsul la §6 din LOT_06_10):
+- `core/test_valideaza_note_interne_pfa.py` — `scripts/valideaza_note_interne_pfa.py` — validarea UNICĂ a ciornelor PFA de dinainte de lotul 9 (decizia Costin 19.10.2026, verbatim în
 - `core/test_valoare_in_citat.py` — GARDĂ pentru interdicția 53: citatul conține VALOAREA pe care o justifică.
 - `core/test_valori_fiscale_js.py` — Valorile fiscale scrise in ECRANE se confrunta cu REGISTRUL, nu cu memoria mea.
 - `core/test_vector_camp_marcat.py` — [Regula 14.4 pct.4] GARD: eroarea de camp obligatoriu la vectorul fiscal NUMESTE campul vinovat ('camp'),

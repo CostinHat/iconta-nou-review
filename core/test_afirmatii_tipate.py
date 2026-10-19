@@ -42,7 +42,10 @@ BASELINE = {
     # . TOTALUL e neschimbat (15 = 15) — datoria si-a schimbat adresa, nu
     # marimea; confruntat inainte si dupa, cu acelasi instrument.
     "core/uc_portal.py": 1,
-    "core/uc_tenants.py": 1,
+    # [19.10.2026, lotul 9, deficiența 368] 1 -> 2, NU o afirmație nouă: cheia numărată e `explicatie` — coloana „Explicație” a
+    # registrului de încasări-plăți (operațiunea scrisă din raportul Z la PFA, `_z_in_rip`), o DATĂ, nu o revendicare a aplicației;
+    # aceeași coliziune de vocabular cu `scan_afirmatii.REVENDICARE` ca la `core/rip_migrare_api.py` (18.10.2026).
+    "core/uc_tenants.py": 2,
     "core/control_fiscal_api.py": 1,
     # [10.10.2026, R193] `core/cote_tva.py` 1 -> 0, SCOS. Nu e o conversie: refuzul „denumire lipsă” (`{ok, cod, mesaj}`) era numărat
     # la importuri numai fiindcă stătea în `potriveste_cota` (`IMPORT_FN` prinde „potriveste” din nume). Mutat în `_fara_model`, ca

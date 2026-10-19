@@ -4,7 +4,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-19** dimineața (lotul 8 complet publicat: 8.2 pe `27f4fab3`, după 8.1 pe `fcfa3b3a`), pe secțiunile de
+- **ultima rescriere**: **2026-10-20** noaptea (lotul 9 — 9.1, 9.2, 9.3 — comis pe ramura `lucru/lot9-2026-10-19`, worktree `/home/costin/iconta_lot9`,
+  în commitul care conține această predare, intrat în poarta lotului; producția rămâne pe `27f4fab3` până la publicare), pe secțiunile de
   stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
 - **pe commit**: `27f4fab3` (lotul 8, 8.2: 341–381) — **four-way închis 19.10.2026 07:32**: HEAD = origin/main = public/main =
   backup/lant-2026-10-19 = RUNNING = `27f4fab3` (2 din 2 procese, pornite 07:32:00, după commitul de 05:48:56); nicio sentinelă; backup
@@ -19,6 +20,35 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
+
+**20.10.2026 noaptea — LOTUL 9 COMIS, LA POARTĂ.** Rularea țintită (113 min) a prins 14 pytest + 23 e2e: o regresie a lotului (chitanța
+furnizorului fără factură era refuzată ca avans fără destinație — reparată, DECIZII 20.10), gărzi pe codul nou, migrările lipsă de pe baza de
+test și teste vechi care descriau comportamentul de dinainte; toate reparate, reluarea 76 / 76 e2e, verificator TOTAL 0, uneltele vizuale
+refăcute. Comanda 9.4: regula de permisiuni pentru producție — pusă de Costin în `/permissions` (clasificatorul refuzase scrierea ei de către
+sesiune). Pe VERDE: backup, `APROBARE_MAIN`, fast-forward, post-commit, cele CINCI migrări `--productie` (`migrare_plan_conturi_omfp`,
+`migrare_cont_linie_primita`, `migrare_borderou_achizitie`, `migrare_avans_nir_ajustare_nota`, `migrare_cim_salariat`), validarea unică a
+ciornelor PFA (`scripts/valideaza_note_interne_pfa.py --productie`, numai numărători), reparația 409, four-way. Pe ROȘU: §2.3 pct.13.
+
+**19.10.2026 noaptea — LOTUL 9 ÎNCHIS DE COSTIN („Lotul 9 se închide așa cum am stabilit”, DECIZII „Închiderea lotului 9”): tot ce rămăsese, făcut pe ramură (405, 404, 412, 394, 368 + C65–C67, C61 în formular, C63 cu „Pleacă marfa acum?”); urmează commitul, poarta lotului 9 (o dată) și, numai pe VERDE, backup + publicare — cu confirmarea că cabinetul nu lucrează. 409 (reparația pe datele cabinetului) cere permisiunea de a citi producția.** (Starea de dinainte: lotul 9 lucrat, nepublicat, fără poartă.)
+Aceeași ramură `lucru/lot9-2026-10-19` (worktree `/home/costin/iconta_lot9`), un commit pe tot lotul (registrele în el). 9.2: 398–417
+(prioritarele 406, 410, 411, 417 rezolvate; 403, 408, 417 cu e2e; 404, 412 parțial; 405, 409 cer decizie); 9.3: 418 a/b/c și 419 rezolvate;
+C57–C64 (C61: XML-ul facturii către un client român fără județ — FACT1 `nok` — completat din ANAF la trimitere; C62: stornarea se trimite în
+SPV; C63: transformarea proformei păstrează documentul, parțial — stocul e decizie; C64: confirmarea transformării nu mai șterge detaliul). `e2e_lot92.py` + mutațiile (raportul). Două migrări noi: `migrare_cont_linie_primita`, `migrare_borderou_achizitie` (plus
+`migrare_plan_conturi_omfp` din 9.1) — la publicare, toate trei cu `--productie`. **Poarta lotului 9: o singură dată, numai la comanda lui
+Costin** (9.2: „Fără poartă, fără publicare, fără repornire”; 9.3: poarta după 9.1, 9.2 și 9.3). **Publicarea și restartul: numai cu acordul
+lui** (backup, `APROBARE_MAIN`, fast-forward, post-commit, cele trei migrări `--productie`, four-way). Deciziile cerute: raportul §6 (9.1:
+394 Migrare cabinet, Search Console, notele la PFA; 9.2: 405, 409, 412, 404; închiderea: stocul la factura din proformă / aviz — C63,
+stornarea unei facturi 751, adresa clientului român în formular — C61).
+
+**19.10.2026 seara — LOTUL 9 (comanda 9.1) LUCRAT, NEPUBLICAT; oprit pentru raport (E.3).** Ramura `lucru/lot9-2026-10-19` (worktree
+`/home/costin/iconta_lot9`, din `lucru/dupa-lot8-2026-10-19`): deciziile A.1 (359 — amortizarea continuă de la cifra preluată, în motor),
+A.2 (362 — 2112 liniar pe 10 ani), A.3 (nomenclatorul obligațiilor); nerezolvatele lotului 8 (378, 359, 362, 368, 371, 349, 323; 321 / 322
+probate pe un cabinet nou de test); 382–397 (394 parțial: Migrare cabinet cere decizia de rearanjare); 387 planul de conturi întreg (+
+`migrare_plan_conturi_omfp`, rulată NUMAI pe baza de test — la publicare: `--productie`); C52–C57; cheile: WhatsApp în `api_keys.env`
+(numărul refuzat de Meta — EXTERN), Search Console (10 adrese retrase + robots), Brevo -> Postmark (EXTERN). `e2e_lot91.py` 28 de teste.
+Poarta lotului 9: o singură dată pe lot (E.1) — rezultatul în raportul 9.1. **Publicarea și restartul: numai cu acordul lui Costin (E.2)**;
+la publicare: backup, `APROBARE_MAIN`, fast-forward, post-commit, migrarea `migrare_plan_conturi_omfp` cu `--productie`, four-way. Restartul
+aduce în procesul viu și cheile WhatsApp (webhook-ul de producție răspunde abia atunci tokenului nou).
 
 **19.10.2026 dimineața — LOTUL 8 PUBLICAT INTEGRAL.** Producția e pe `27f4fab3` (lotul 8, 8.2; four-way 07:32). Publicat din ramura
 `lucru/lot8b-2026-10-18` (worktree `/home/costin/iconta_lot8b`): 341–381 rezolvate, fiecare cu e2e în
@@ -495,9 +525,9 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **137** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **1021** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1217** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77** | **138** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77u** | **1036** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1219** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -545,7 +575,7 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 | **4** | rânduri în `public.firme_scoase` |
 | **3** | nume de schemă distincte în ele |
 | **20** | scheme `tenant_NNN` în bază |
-| **275** | contorul `tenant_schema_seq` |
+| **276** | contorul `tenant_schema_seq` |
 | **48** | maximul istoric de nume de schemă |
 
 **Clasificatorul de alerte**

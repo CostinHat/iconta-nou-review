@@ -6,7 +6,7 @@
 //    `motiv_trecere`, păstrată cu numele omului); `ERORI_DUK` -> se arată, fără portiță.
 //  - C1: refuzul spune motivul REAL venit de la server, nu o presupunere („Poate există deja o declarație…” apărea și la o eroare 500).
 //  - C11: bilanțul intră în coadă pe același drum ca orice declarație.
-import { api, esc, arataMesaj, aduInVedere } from "../api.js?v=462d75fbab";
+import { api, esc, arataMesaj, aduInVedere, TEXT_NOTA_INTERNA } from "../api.js?v=158edee964";
 
 // [deficiența 222, comanda Costin 10.10.2026] confirmarea intrării în coadă e ACEEAȘI casetă din orice ecran (Declarații, Bilanț) —
 // nu un rând de text: bifa, „Trimisă în coada de validare”, declarația și perioada. `cine` = ce urmează („a fost trimisă seniorului …”).
@@ -90,7 +90,7 @@ export async function trimiteInCoada(zona, body, laSucces, confirmare) {
 // luna notei, cu nota evidențiată (același drum ca legătura „jurnal:” din notificări). Ecranul declarației rămâne dedesubt.
 export async function deschideInCoada(coadaId) {
   if (!window._navGlobal) return;
-  const { randeazaValidat } = await import("./validat.js?v=da39a46274");
+  const { randeazaValidat } = await import("./validat.js?v=e06c1f39f6");
   window._navGlobal.deschide("Coada de validare și depunere", (corp, nn) => randeazaValidat(corp, nn, { evidentiaza: coadaId }), { nivel: "cabinet" });
 }
 
@@ -101,12 +101,23 @@ export function legaturiNote(zona, tenantId, note) {
   // „nota” se pune o dată, oricum ar veni eticheta.
   lista.innerHTML = note.map((n, i) => `<button type="button" class="buton-secundar" data-nota="${i}">Deschide nota ${esc(String(n.eticheta || "").replace(/^nota\s+/i, ""))}</button>`).join(" ");
   zona.appendChild(lista);
+  // [368, decizia Costin 19.10.2026 „Se validează automat”] la partidă simplă notele sunt interne și se validează singure; cele numite aici
+  // sunt cele pe care validarea automată le-a refuzat — se spune ce sunt, înaintea legăturilor
+  api.get("/tenants").then((r) => {
+    const t = ((r && r.tenants) || []).find((x) => x.id === tenantId);
+    if (!t || t.regim_contabil !== "simpla") return;
+    const p = document.createElement("p");
+    p.className = "ecran-nota";
+    p.textContent = `Notele de mai jos sunt interne și nu s-au putut valida automat (motivul s-a spus la salvarea lor). ${TEXT_NOTA_INTERNA}`;
+    lista.insertAdjacentElement("beforebegin", p);
+  }).catch(() => {});   // eticheta lipsește, legăturile rămân: lista firmelor e citită și la clic
   lista.querySelectorAll("[data-nota]").forEach((b) => b.addEventListener("click", async () => {
     const n = note[parseInt(b.dataset.nota, 10)];
     const [an, luna] = n.data.split("-").map((x) => parseInt(x, 10));
-    const { ecranJurnal } = await import("./firme.js?v=50c9c58616");
+    const { ecranJurnal } = await import("./firme.js?v=09862e661b");
     const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tenantId);
     if (!t || !window._navGlobal) return;
-    window._navGlobal.deschide(`Registru jurnal · ${t.nume}`, (corp, nn) => ecranJurnal(corp, nn, t, { evidentiaza: n.nota_id, an, luna }));
+    window._navGlobal.deschide(`Registru jurnal · ${t.nume}`, (corp, nn) => ecranJurnal(corp, nn, t, { evidentiaza: n.nota_id, an, luna }),
+      { lat: "tabel" });   // [394] Registrul jurnal se deschide lat de pe orice drum
   }));
 }

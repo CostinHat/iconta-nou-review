@@ -246,6 +246,7 @@ def verifica_randuri(randuri, azi=None):
     import datetime as _dt
     azi = azi or _dt.date.today()
     er = []
+    vazut = {}
 
     for i, r in enumerate(randuri or [], start=2):   # antetul e randul 1
         i = _it.nr_rand(r, i)
@@ -257,6 +258,14 @@ def verifica_randuri(randuri, azi=None):
             er.append(respinge("salariat", i, "cnp_invalid",
                             "%s: CNP invalid (%s)" % (nume, _cnp_motiv)))
             continue
+        # [C, lotul 9 — clasa lui 385: dublura din fișier] același CNP pe două rânduri: salvarea (actualizarea pe CNP) îl
+        # înlocuia pe tăcute pe primul cu al doilea — „nimic nu se înlocuiește pe tăcute” (regula importurilor, comanda 8.2 pct.4)
+        _cnp = str(r.get("cnp") or "").strip()
+        if _cnp in vazut:
+            er.append(respinge("salariat", i, "identificator_dublat",
+                               "%s: CNP-ul %s apare și pe rândul %s — un salariat se trece o singură dată" % (nume, _cnp, vazut[_cnp])))
+            continue
+        vazut[_cnp] = i
         d = r.get("data_angajare")
         if d:
             try:

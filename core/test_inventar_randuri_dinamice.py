@@ -20,9 +20,10 @@ ARTS = [
     {"id": 3, "denumire": "Zahar", "stoc": "20", "um": "kg", "cmp": "4.00"},
 ]
 CANONICAL_LINII = [
-    {"articol_id": 1, "faptic": "12"},
-    {"articol_id": 2, "faptic": "8"},
-    {"articol_id": 3, "faptic": None},
+    # [deficiența 404, lotul 9.2] fiecare rând poartă și încadrarea lipsei (aleasă de om numai când faptic < scriptic): gol aici
+    {"articol_id": 1, "faptic": "12", "lipsa": None, "cota_tva": None, "suma_imputata": None},
+    {"articol_id": 2, "faptic": "8", "lipsa": None, "cota_tva": None, "suma_imputata": None},
+    {"articol_id": 3, "faptic": None, "lipsa": None, "cota_tva": None, "suma_imputata": None},
 ]
 
 

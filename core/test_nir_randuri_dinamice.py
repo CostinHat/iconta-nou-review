@@ -143,11 +143,17 @@ def _randuri(pg):
     return pg.locator("#sn-linii > [data-idx]").count()
 
 
+
+def _factura_nesosita(pg):
+    """[399] factura furnizorului: nesosită, aleasă explicit (NIR-ul nu mai presupune 408)."""
+    if pg.query_selector("#sn-factura-sosita"):
+        pg.select_option("#sn-factura-sosita", "false")
+
 def test_noop_lista_nefiltrata_si_hash(nir_env):
     pg = nir_env["make_page"](); pg.click("#sn-plus")   # row0 (bootstrap) + row1
     _fill_benef(pg)
     _fill_linie(pg, 0, FILL[0]); _fill_linie(pg, 1, FILL[1])
-    pg.click("#sn-salveaza"); pg.wait_for_timeout(300)
+    _factura_nesosita(pg); pg.click("#sn-salveaza"); pg.wait_for_timeout(300)
     payload = nir_env["posted"][-1]
     assert len(payload["linii"]) == 2, "lista trimisa nu are 2 articole (filtrare?): %r" % payload["linii"]
     assert payload["linii"] == CANONICAL_LINII, "liniile POST difera de canonical: %r" % payload["linii"]
@@ -182,7 +188,7 @@ def test_doua_randuri_cu_erori_simultan(nir_env):
     # l1: denumire GOALA + cantitate 0, dar pret_achizitie completat -> exact doua erori
     pg.fill("#nir-l1-pret_achizitie", "5")
     pg.fill("#nir-l1-cantitate", "0")
-    pg.click("#sn-salveaza"); pg.wait_for_timeout(300)
+    _factura_nesosita(pg); pg.click("#sn-salveaza"); pg.wait_for_timeout(300)
     assert pg.locator('.msg-eroare[data-camp="nir-l1-denumire"]').count() == 1, "eroarea nu e langa nir-l1-denumire"
     assert pg.locator('.msg-eroare[data-camp="nir-l1-cantitate"]').count() == 1, "eroarea nu e langa nir-l1-cantitate"
     assert pg.locator('#mount .msg-eroare[data-camp^="nir-l0-"]').count() == 0, "linia completa l0 are erori false"
@@ -194,11 +200,11 @@ def test_revalidare_dupa_corectarea_unuia_singur(nir_env):
     _fill_benef(pg)
     _fill_linie(pg, 0, FILL[0])
     pg.fill("#nir-l1-pret_achizitie", "5"); pg.fill("#nir-l1-cantitate", "0")
-    pg.click("#sn-salveaza"); pg.wait_for_timeout(300)
+    _factura_nesosita(pg); pg.click("#sn-salveaza"); pg.wait_for_timeout(300)
     assert pg.locator('.msg-eroare[data-camp="nir-l1-denumire"]').count() == 1
     assert pg.locator('.msg-eroare[data-camp="nir-l1-cantitate"]').count() == 1
     pg.fill("#nir-l1-denumire", "Zahar")   # corectez DOAR denumirea (cantitate ramane 0)
-    pg.click("#sn-salveaza"); pg.wait_for_timeout(300)
+    _factura_nesosita(pg); pg.click("#sn-salveaza"); pg.wait_for_timeout(300)
     assert pg.locator('.msg-eroare[data-camp="nir-l1-denumire"]').count() == 0, "eroarea denumirii corectate nu a fost curatata"
     assert pg.locator('.msg-eroare[data-camp="nir-l1-cantitate"]').count() == 1, "eroarea cantitatii inca 0 a disparut gresit"
     pg.close()
@@ -210,7 +216,7 @@ def test_rand_incomplet_in_mijloc_nu_dispare(nir_env):
     _fill_linie(pg, 0, FILL[0]); _fill_linie(pg, 2, FILL[1])
     # l1 = mijloc INCOMPLET: cantitate + pret completate, denumire GOALA -> doar denumirea lipseste
     pg.fill("#nir-l1-cantitate", "2"); pg.fill("#nir-l1-pret_achizitie", "3")
-    pg.click("#sn-salveaza"); pg.wait_for_timeout(300)
+    _factura_nesosita(pg); pg.click("#sn-salveaza"); pg.wait_for_timeout(300)
     payload = nir_env["posted"][-1]
     assert len(payload["linii"]) == 3, "articolul incomplet din mijloc a disparut tacit (filtrare?): %r" % payload["linii"]
     assert payload["linii"][1]["denumire"] == "", "articolul din mijloc nu mai e pe pozitia 1 (reordonare/filtrare?)"

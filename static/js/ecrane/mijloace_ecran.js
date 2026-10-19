@@ -3,7 +3,7 @@
 // puteau vedea, casa sau reevalua din interfata — iar casarea/reevaluarea cereau un mijloc_fix_id
 // pe care niciun ecran nu-l arata (casarea din formular dadea 422 garantat). Aici e sursa acelui id
 // + doua actiuni directe: casare (POST nota-inventariere) si reevaluare (POST reevaluare-imobilizare).
-import { api, cate, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso, stareNota, pasNota } from "../api.js?v=462d75fbab";
+import { api, cate, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso, stareNota, pasNota } from "../api.js?v=158edee964";
 
 // ["01/2026", …, "08/2026", "11/2026"] -> "9 luni: 01–08/2026, 11/2026" (intervalele peste an: "11/2025–02/2026")
 export function luniScurte(luni) {
@@ -23,6 +23,9 @@ export function luniScurte(luni) {
 
 export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
   const azi = dataIso();
+  // [368, lotul 9] la PFA (partidă simplă) nu există note contabile: registrul ține activele și amortizarea calculată (deductibilă în
+  // D212), fără coloanele „înregistrat în contabilitate” / „diferență” și fără casarea / reevaluarea care scriu note
+  const simpla = !!opt.simpla;
 
   async function incarca() {
     corp.innerHTML = `<h2 class="pf-titlu">Mijloace fixe</h2><div class="ecran-nota">Se încarcă registrul…</div>`;
@@ -49,9 +52,9 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
       <input class="camp-input" style="max-width:120px" id="mf-catalog-${m.id}" value="${esc(m.cod_catalog || "")}" placeholder="ex. 2.1.17.2.1" aria-label="Cod din catalog ${esc(m.denumire || "")}">
       <button class="buton-secundar" data-catalog="${m.id}" data-actiune="PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/cod-catalog">Salvează</button></div>
     ${m.catalog ? `<div class="tip-desc">${esc(m.catalog.denumire)} · ${m.catalog.ani_min}–${cate(m.catalog.ani_max, "an", "ani")}</div>` : ""}`;
-  const planLunar = (m) => !(m.plan_lunar || []).length ? "" : `<tr><td colspan="13"><details><summary>Planul lunar de amortizare — ${esc(m.cod || m.denumire || "")} (${cate(m.plan_lunar.length, "lună", "luni")})</summary>
-      <table class="fd-tabel"><thead><tr><th>Luna</th><th class="fd-td-num">Rata</th><th>Înregistrare</th></tr></thead><tbody>
-      ${m.plan_lunar.map((p) => `<tr><td>${String(p.luna).padStart(2, "0")}/${p.an}</td><td class="fd-td-num">${bani(p.rata)}</td><td>${{ inregistrata: "înregistrată", sold_initial: "în soldul de preluare", neinregistrata: "neînregistrată", in_curs: "luna curentă", viitoare: "—" }[p.stare] || ""}</td></tr>`).join("")}
+  const planLunar = (m) => !(m.plan_lunar || []).length ? "" : `<tr><td colspan="${simpla ? 11 : 13}"><details><summary>Planul lunar de amortizare — ${esc(m.cod || m.denumire || "")} (${cate(m.plan_lunar.length, "lună", "luni")})</summary>
+      <table class="fd-tabel"><thead><tr><th>Luna</th><th class="fd-td-num">Rata</th>${simpla ? "" : "<th>Înregistrare</th>"}</tr></thead><tbody>
+      ${m.plan_lunar.map((p) => `<tr><td>${String(p.luna).padStart(2, "0")}/${p.an}</td><td class="fd-td-num">${bani(p.rata)}</td>${simpla ? "" : `<td>${{ inregistrata: "înregistrată", sold_initial: "în soldul de preluare", neinregistrata: "neînregistrată", in_curs: "luna curentă", viitoare: "—" }[p.stare] || ""}</td>`}</tr>`).join("")}
       </tbody></table></details></td></tr>`;
 
   function randeaza(lista, pana) {
@@ -63,10 +66,10 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         <td class="fd-td-num">${m.durata_luni ? cate(m.durata_luni, "lună", "luni") : "—"}</td>
         <td class="fd-td-num">${bani(m.valoare)}</td>
         ${m.eroare
-          ? `<td class="fd-td-num" colspan="4"><span class="msg-eroare">${esc(m.eroare)}</span></td>`
+          ? `<td class="fd-td-num" colspan="${simpla ? 2 : 4}"><span class="msg-eroare">${esc(m.eroare)}</span></td>`
           : `<td class="fd-td-num">${m.amortizat_teoretic != null ? bani(m.amortizat_teoretic) : "—"}</td>
-        <td class="fd-td-num">${inregistrat(m)}</td>
-        <td class="fd-td-num">${diferenta(m)}</td>
+        ${simpla ? "" : `<td class="fd-td-num">${inregistrat(m)}</td>
+        <td class="fd-td-num">${diferenta(m)}</td>`}
         <td class="fd-td-num">${m.ramas != null ? bani(m.ramas) : "—"}</td>`}
         <td>${esc(m.metoda_eticheta || "")}</td>
         <td style="white-space:nowrap">${m.data_pif ? dataRo(m.data_pif) : "—"}</td>
@@ -74,24 +77,24 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         <td>${m.activ ? `
           <details class="dec-xml"><summary>Acțiuni</summary>
           <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start;margin-top:6px">
-            <button class="buton-secundar" data-caseaza="${m.id}" data-actiune="POST /tenants/{tenant_id}/nota-inventariere">Casează</button>
+            ${simpla ? "" : `<button class="buton-secundar" data-caseaza="${m.id}" data-actiune="POST /tenants/{tenant_id}/nota-inventariere">Casează</button>
             <input type="number" step="0.01" class="camp-input" style="max-width:130px" id="mf-reeval-${m.id}" placeholder="valoare justă" aria-label="Valoare justă ${esc(m.denumire || "")}">
-            <button class="buton-secundar" data-reeval="${m.id}" data-actiune="POST /tenants/{tenant_id}/reevaluare-imobilizare">Reevaluează</button>
+            <button class="buton-secundar" data-reeval="${m.id}" data-actiune="POST /tenants/{tenant_id}/reevaluare-imobilizare">Reevaluează</button>`}
             <button class="buton-secundar" data-cd="${m.id}" data-actiune="PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd" data-cd-val="${m.destinatie_cd ? 1 : 0}">C&amp;D: ${m.destinatie_cd ? "da" : "nu"}</button>
           </div></details>` : "—"}</td>
       </tr>${planLunar(m)}`).join("");
 
     corp.innerHTML = `
       <h2 class="pf-titlu">Mijloace fixe</h2>
-      <p class="pf-intro">Registrul activelor firmei: valoare, amortizarea <b>calculată</b> până la sfârșitul lunii ${esc(pana)}, ultima lună încheiată (pe metoda fiecărui activ — liniar, degresiv, accelerat sau superaccelerat, CF art.28), amortizarea <b>înregistrată</b> în contabilitate la aceeași dată (soldul contului de amortizare, note validate) și diferența, cu lunile neînregistrate; rămas. Casarea și reevaluarea generează note contabile, validate apoi din Registrul jurnal. Butonul <b>C&amp;D</b> marchează aparatura și echipamentele destinate cercetării-dezvoltării: ele se pot amortiza accelerat din orice cont (CF art. 20 alin. (1) lit. b)).</p>
+      ${simpla ? `<p class="pf-intro" id="mf-intro-simpla">Registrul activelor firmei: valoare, amortizarea <b>calculată</b> până la sfârșitul lunii ${esc(pana)}, ultima lună încheiată (pe metoda fiecărui activ, CF art.28), și rămas. Firma ține contabilitatea în partidă simplă, deci amortizarea nu se înregistrează prin note: ea intră în cheltuielile deductibile ale anului, în fișa D212. Butonul <b>C&amp;D</b> marchează aparatura destinată cercetării-dezvoltării (amortizare accelerată, CF art. 20 alin. (1) lit. b)).</p>` : `<p class="pf-intro">Registrul activelor firmei: valoare, amortizarea <b>calculată</b> până la sfârșitul lunii ${esc(pana)}, ultima lună încheiată (pe metoda fiecărui activ — liniar, degresiv, accelerat sau superaccelerat, CF art.28), amortizarea <b>înregistrată</b> în contabilitate la aceeași dată (soldul contului de amortizare, note validate) și diferența, cu lunile neînregistrate; rămas. Casarea și reevaluarea generează note contabile, validate apoi din Registrul jurnal. Butonul <b>C&amp;D</b> marchează aparatura și echipamentele destinate cercetării-dezvoltării: ele se pot amortiza accelerat din orice cont (CF art. 20 alin. (1) lit. b)).</p>`}
       <div id="mf-mesaj"></div>
       ${lista.length ? `
       <div style="overflow-x:auto">
         <table class="fd-tabel">
           <thead><tr>
             <th>Cod</th><th>Denumire</th><th>Cod din catalog</th><th class="fd-td-num">Durată</th>
-            <th class="fd-td-num">Valoare</th><th class="fd-td-num">Amortizat (calculat, până la ${esc(pana)})</th><th class="fd-td-num">Înregistrat (cont, la ${esc(pana)})</th>
-            <th class="fd-td-num">Diferență</th><th class="fd-td-num">Rămas</th>
+            <th class="fd-td-num">Valoare</th><th class="fd-td-num">Amortizat (calculat, până la ${esc(pana)})</th>${simpla ? "" : `<th class="fd-td-num">Înregistrat (cont, la ${esc(pana)})</th>
+            <th class="fd-td-num">Diferență</th>`}<th class="fd-td-num">Rămas</th>
             <th>Metodă</th><th>PIF</th><th>Stare</th><th>Acțiuni</th>
           </tr></thead>
           <tbody>${randuri}</tbody>
@@ -143,7 +146,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
       const inp = corp.querySelector(`#mf-reeval-${id}`);
       const v = inp && parseFloat(inp.value);
       if (!v || v <= 0) {
-        arataMesaj(zona, "Introdu valoarea justă (din raportul evaluatorului) înainte de reevaluare.", "avert");
+        arataMesaj(zona, "Introdu valoarea justă (din raportul evaluatorului) înainte de reevaluare.", "eroare");
         return;
       }
       try {

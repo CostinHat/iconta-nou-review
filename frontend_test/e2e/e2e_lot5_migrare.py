@@ -120,6 +120,7 @@ def test_def_270_migrare_cabinet_butoanele_aplicatiilor_si_pasii_saga(patron, fi
     assert butoane == [["SAGA", False], ["WinMentor", True], ["Ciel", True], ["SmartBill", True]], butoane
     assert pg.inner_text("#mig-apl-inactive").strip() == ("WinMentor, Ciel și SmartBill: iConta.eu nu le citește încă exporturile. "
                                                           "Butonul devine activ când începe să le citească.")
+    pg.click("#mig-apl-cum > summary")                 # [394] textul (b) stă pliat sub „Cum se face”: contabilul îl deschide
     text = pg.eval_on_selector_all("#mig-apl-text p, #mig-apl-text li", "els => els.map(e => e.innerText.trim())")
     assert text == TEXT_B, text
     assert pg.eval_on_selector_all("#mig-meniu .mig-op .mig-op-titlu", "els => els.map(e => e.textContent.trim())") == PASI

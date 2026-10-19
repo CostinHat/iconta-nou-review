@@ -7,6 +7,7 @@ Personalizare: logo (data URI base64 PNG/JPG), culoare accent, font (sans/serif/
 from __future__ import annotations
 import re
 import base64
+import unicodedata
 import io as _io
 from decimal import Decimal
 
@@ -95,17 +96,77 @@ TARI_NUME = {"AT": "Austria", "BE": "Belgia", "BG": "Bulgaria", "CY": "Cipru", "
              "NO": "Norvegia", "RS": "Serbia", "UA": "Ucraina"}
 
 
+#: [C61, decizia Costin 19.10.2026 „Da, câmpuri și la român”] numele județelor, după codul lor (ISO 3166-2:RO — aceleași coduri ca
+#: `efactura_send._JUD`, aceleași ca `dcod_JudetAuto` din ANAF): formularul de emitere scrie codul („B”), iar PDF-ul și detaliul arată
+#: numele („București”), nu codul. Paritatea cu lista din „Emite factură” (`JUDETE_RO`): core/test_c61_adresa_client_ro.py.
+JUDETE_NUME = {"AB": "Alba", "AR": "Arad", "AG": "Argeș", "BC": "Bacău", "BH": "Bihor", "BN": "Bistrița-Năsăud", "BT": "Botoșani",
+               "BV": "Brașov", "BR": "Brăila", "BZ": "Buzău", "CS": "Caraș-Severin", "CL": "Călărași", "CJ": "Cluj", "CT": "Constanța",
+               "CV": "Covasna", "DB": "Dâmbovița", "DJ": "Dolj", "GL": "Galați", "GR": "Giurgiu", "GJ": "Gorj", "HR": "Harghita",
+               "HD": "Hunedoara", "IL": "Ialomița", "IS": "Iași", "IF": "Ilfov", "MM": "Maramureș", "MH": "Mehedinți", "MS": "Mureș",
+               "NT": "Neamț", "OT": "Olt", "PH": "Prahova", "SM": "Satu Mare", "SJ": "Sălaj", "SB": "Sibiu", "SV": "Suceava",
+               "TR": "Teleorman", "TM": "Timiș", "TL": "Tulcea", "VS": "Vaslui", "VL": "Vâlcea", "VN": "Vrancea", "B": "București"}
+
+#: cuvintele care numesc felul localității / al județului, nu localitatea („Mun. București” = „MUNICIPIUL BUCUREȘTI” = „București”)
+_FEL_LOCALITATE = {"MUNICIPIUL", "MUN", "ORASUL", "ORAS", "COMUNA", "COM", "SATUL", "SAT", "JUDETUL", "JUD"}
+
+
+def _cuvinte_adresa(text):
+    """Cuvintele unui text de adresă, fără diacritice / litere mari / punctuație („Sectorul” = „Sector”)."""
+    s = unicodedata.normalize("NFKD", str(text or ""))
+    s = "".join(c for c in s if not unicodedata.combining(c)).upper()
+    return ["SECTOR" if w == "SECTORUL" else w for w in re.findall(r"[A-Z0-9]+", s)]
+
+
+def _segmente_adresa(text):
+    """Bucățile care numesc câte un loc: rândurile (newline / virgulă), tăiate și la felul localității — „Sector 2 Mun. Bucureşti” are
+    două bucăți, {SECTOR, 2} și {BUCURESTI}; „Cluj-Napoca” are una, {CLUJ, NAPOCA}."""
+    out = []
+    for rand in re.split(r"[\n,]", str(text or "")):
+        bucata = []
+        for w in _cuvinte_adresa(rand) + [None]:
+            if w is None or w in _FEL_LOCALITATE:
+                if bucata:
+                    out.append(set(bucata))
+                bucata = []
+            else:
+                bucata.append(w)
+    return out
+
+
+def _cuprinsa_in(parte, texte):
+    """Localitatea / județul e deja scrisă când bucățile textelor de dinainte făcute NUMAI din cuvintele ei o acoperă toată: „Sector 2
+    Mun. Bucureşti” e cuprinsă în „MUNICIPIUL BUCUREŞTI, SECTOR 2, STR. …”, „București” în „Sector 2 Mun. Bucureşti”; o bucată cu alte
+    cuvinte nu acoperă nimic — „Str. Cluj 5” nu ascunde județul Cluj, nici „Cluj-Napoca”."""
+    cuv = {w for w in _cuvinte_adresa(parte) if w not in _FEL_LOCALITATE}
+    if not cuv:
+        return False
+    acoperite = set()
+    for t in texte:
+        for seg in _segmente_adresa(t):
+            if seg <= cuv:
+                acoperite |= seg
+    return acoperite == cuv
+
+
 def adresa_tert(adresa, oras=None, judet=None, tara=None):
-    """[306] Adresa beneficiarului pe factură: adresa, localitatea, regiunea și — la clientul străin — țara (CF art.319 alin.(20) lit.f:
-    „denumirea/numele și adresa beneficiarului”)."""
-    parti = [x.strip() for x in ((adresa or ""), (oras or ""), (judet or "")) if x and x.strip()]
-    # [deficiența 331, 18.10.2026] adresa din VIES conține deja localitatea („…\nDUBLIN 4”), iar ecranul o pune și în câmpul localității
-    # (305): „DUBLIN 4, DUBLIN 4”. Localitatea / regiunea care e deja un RÂND întreg al adresei (fără deosebire de litere / spații) nu
-    # se mai repetă; un cuvânt din adresă („Str. Cluj 5”) nu ascunde județul Cluj.
-    _n = lambda x: " ".join(x.upper().split())  # noqa: E731
-    _randuri = {_n(r) for r in re.split(r"[\n,]", adresa or "") if r.strip()}
-    parti = [x for i, x in enumerate(parti) if i == 0 or _n(x) not in _randuri]
+    """[306] Adresa beneficiarului pe factură: adresa, localitatea, județul / regiunea și — la clientul străin — țara (CF art.319
+    alin.(20) lit.f: „denumirea/numele și adresa beneficiarului”).
+
+    [deficiența 331, 18.10.2026] adresa din VIES conține deja localitatea („…\nDUBLIN 4”), iar ecranul o pune și în câmpul localității
+    (305): „DUBLIN 4, DUBLIN 4”. [C61, 19.10.2026] la clientul român, adresa ANAF („MUNICIPIUL BUCUREŞTI, SECTOR 2, STR. …”) cuprinde
+    localitatea și județul domiciliului fiscal („Sector 2 Mun. Bucureşti”, „B”), pe care formularul le precompletează: ar fi ieșit
+    „…, Sector 2 Mun. Bucureşti, B”. Localitatea / județul deja cuprinse în adresă (sau județul cuprins în localitate) nu se repetă
+    (`_cuprinsa_in`); județul clientului român apare cu numele lui (`JUDETE_NUME`), nu cu codul. Regiunea clientului străin rămâne cum
+    a scris-o omul."""
     t = (tara or "RO").strip().upper() or "RO"
+    adresa = (adresa or "").strip()
+    judet = (judet or "").strip()
+    if t == "RO":
+        judet = JUDETE_NUME.get(judet.upper(), judet)
+    parti = [adresa] if adresa else []
+    for x in ((oras or "").strip(), judet):
+        if x and not _cuprinsa_in(x, parti):
+            parti.append(x)
     if t != "RO":
         parti.append(TARI_NUME.get(t, t))
     return ", ".join(dict.fromkeys(parti))
@@ -332,6 +393,10 @@ def genereaza_pdf(profil, factura):
         # [decizia A 02.10] HG 1/2016 pct.97 alin.(1): „fiind suficientă mențiunea «conform bon fiscal nr./data»”
         el.append(Spacer(1, 8))
         el.append(Paragraph(_fc.mentiune_bon(factura), st_cell))
+    if _fc.mentiune_storno(factura):
+        # [deficiența 417] factura de stornare poartă numărul și data facturii stornate (CF art.330 alin.(1) lit.b, art.319 alin.(20) lit.r)
+        el.append(Spacer(1, 8))
+        el.append(Paragraph("<b>%s</b>" % _fc.mentiune_storno(factura), st_cell))
 
     # ---- BLOC VALUTA (art. 319) ----
     if este_valuta and factura.get("tva_lei") is not None:

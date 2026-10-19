@@ -312,12 +312,13 @@ def _asociati(patron, firma, csv):
 
 def test_def_364_randul_fara_nume_se_arata(patron, firma_srl):
     """364. Rândul fără nume dispărea (7 rânduri -> „6 asociați”). Pașii: Asociați -> 2 rânduri, al doilea fără nume -> „2 rânduri citite”,
-    rândul 3 „Respins”: „rândul n-are numele asociatului”; totalul cotelor îl include (100%)."""
+    rândul 3 „Respins”: „rândul n-are numele asociatului”; totalul cotelor NU-l include (384, 9.1: se adună numai rândurile care intră
+    — 60%)."""
     _asociati(patron, firma_srl, "Nume;CNP;Cota\nPop Ion;%s;60\n;%s;40\n" % (CNP, "2800101221146"))
     t = _text(patron)
     r = _randul(patron.pg, 3)
     patron.captura()
-    assert "2 rânduri citite" in t and "total cote: ✓ 100%" in t, t[:800]
+    assert "2 rânduri citite" in t and "total cote: ⚠ 60%" in t, t[:800]
     assert "rândul n-are numele asociatului" in r, r
 
 
@@ -334,13 +335,14 @@ def test_def_365_cnp_dublat_fara_identificator_si_cota_negativa(patron, firma_sr
 
 def test_def_366_totalul_cotelor_nu_spune_rand_undefined_si_lista_are_loc(patron, firma_srl):
     """366. „rând undefined” la totalul cotelor; lista avea loc pentru 2–3 rânduri. Pașii: 8 asociați cu cote care dau 90% -> mesajul
-    spune „toți asociații: cotele asociaților însumează 90%”, fără „undefined”; tabelul arată cel puțin 6 rânduri fără derulare."""
+    spune „toți asociații: cotele asociaților care intră însumează 90%” (384), fără „undefined”; tabelul arată cel puțin 6 rânduri fără
+    derulare."""
     csv = "Nume;CNP;Cota\n" + "".join("Asociat %d;%s;%s\n" % (i, cnp_cu_control("1800101221%02d" % (10 + i)), "20" if i < 4 else "2.5")
                                       for i in range(8))
     _asociati(patron, firma_srl, csv)
     t = _text(patron)
     patron.captura()
-    assert "undefined" not in t and "toți asociații: cotele asociaților însumează 90" in t, t[:1500]
+    assert "undefined" not in t and "toți asociații: cotele asociaților care intră însumează 90" in t, t[:1500]
     cutie = patron.pg.locator(".mig-prev-cutie").bounding_box()
     rand = patron.pg.locator(".mig-prev tbody tr:not(.mig-prev-motive)").first.bounding_box()
     assert cutie["height"] >= 6 * rand["height"], (cutie, rand)
@@ -418,11 +420,12 @@ RETETE_82 = ("Reteta;Pret;Ingredient;Cantitate\n"
              "Supa;;Faina;0\n")                               # 5: fără preț, cantitate 0
 
 
-def test_def_375_retetele_nu_se_aleg_in_tacere(patron, firma_srl):
+def test_def_375_retetele_nu_se_aleg_in_tacere(patron, firma_horeca):
     """375. Rândul fără rețetă dispărea; două prețuri -> 28 tacit; rețeta fără preț -> 0,00 lei; cantitatea 0 fără mesaj; „Importă 0
     rețete” activ; ordinea (articolele întâi) nespusă. Pașii: Rețete -> fișierul -> fiecare rând cu motivul lui; butonul inactiv:
-    „Nicio rețetă nu poate intra”; textul spune că articolele se importă înaintea rețetelor."""
-    _pas(patron, firma_srl, "Rețete")
+    „Nicio rețetă nu poate intra”; textul spune că articolele se importă înaintea rețetelor. Firma e HoReCa (CAEN 5610): Rețete se
+    oferă numai firmelor HoReCa (371, lotul 9)."""
+    _pas(patron, firma_horeca, "Rețete")
     t0 = _text(patron)
     assert "articolele se importă înaintea rețetelor" in t0, t0[:800]
     _incarca(patron, "retete.csv", RETETE_82.encode(), "#mig-importa")
@@ -712,7 +715,10 @@ def test_def_381_nota_pe_401_cere_partenerul_si_d406_il_poarta(patron, firma_tva
     from e2e_bloc_b import _jurnal
     from e2e_bloc_e import _declaratie
     from e2e_lot81 import _valideaza_luna
+    from e2e_bloc_d import _nota_validata
     pg = patron.pg
+    # [406] casa nu ajunge sub zero: numerarul plății există întâi în casă (aportul asociatului, validat, înaintea plății)
+    _nota_validata(firma_tva, AZI.replace(day=1).isoformat(), "5311", "1012", 500, "Aport numerar E2E 381")
     _jurnal(patron, firma_tva, None)
     pg.click("#j-nota-noua")
     pg.wait_for_selector("#je-desc", timeout=10000)

@@ -110,7 +110,13 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # [18.10.2026, comanda 8.2] 103 -> 106: `migrare_ajustari_fiscale` (ajustările rezultatului fiscal pe trimestru, 378),
     # `migrare_mf_amortizare_preluata` (amortizarea cumulată preluată, 359), `migrare_partener_linie` (partenerul pe linia notei, 381)
     # — DDL idempotent, o dată pe firmă.
-    assert 40 <= len(mg) <= 106, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [19.10.2026, comanda 9.1] 106 -> 107: `migrare_plan_conturi_omfp` (planul de conturi întreg din OMFP 1802/2014 pe firmele existente,
+    # 387) — migrare unică, rulată o dată pe firmă.
+    # [19.10.2026, comanda 9.3] 107 -> 108: `migrare_cont_linie_primita` (contul pe linia facturii primite, 418b) — DDL idempotent.
+    # [19.10.2026, comanda 9.2] 108 -> 109: `migrare_borderou_achizitie` (actul de identitate al vânzătorului PF, 401–402) — DDL idempotent.
+    # [19.10.2026, închiderea lotului 9] 109 -> 111: `migrare_avans_nir_ajustare_nota` (plata NIR-ului fără factură, 405; ajustarea fiscală din
+    # nota inventarului, 404) și `migrare_cim_salariat` (contractul individual de muncă pe fișa salariatului, 412) — DDL idempotent.
+    assert 40 <= len(mg) <= 111, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

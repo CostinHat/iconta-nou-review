@@ -25,7 +25,9 @@ def select_inregistrari_linii(cur, _inc, _sf):
                 "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '7%%' AND l.cont_credit NOT LIKE '76%%' THEN l.suma ELSE 0 END),0) AS ven_expl, "
                 "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '70%%' THEN l.suma ELSE 0 END),0) AS cifra_afaceri, "
                 "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_fin, "
-                "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_expl "
+                "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_expl, "
+                "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6581%%' THEN l.suma ELSE 0 END),0) "
+                "  - COALESCE(SUM(CASE WHEN l.cont_credit LIKE '6581%%' THEN l.suma ELSE 0 END),0) AS amenzi "   # [378, lotul 9] rd.25
                 "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
                 "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s "
                 "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'", (_inc.isoformat(), _sf.isoformat()))   # [C15] fără închiderea în 121

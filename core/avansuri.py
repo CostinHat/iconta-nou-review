@@ -77,3 +77,14 @@ def nota_regularizare_avans_incasat(suma_fara_tva, cota=None):
     if tva > 0:
         linii.append(("4427", "4111", tva))
     return {"linii": linii, "tva": tva}
+
+def compensare_avans_platit(avans, datorie, destinatie="stocuri"):
+    """[deficiența 405, decizia Costin 19.10.2026 „Avans 409x = 5311”] Avansul plătit furnizorului FĂRĂ factură de avans (plata NIR-ului cu
+    factura nesosită, 409x = 5311) se compensează la sosirea facturii cu datoria din ea: 401 = 409x, cel mult cât datorează factura (restul
+    avansului rămâne pe 409x). Fără TVA: avansul n-a avut factură, deci nici TVA dedusă de regularizat (`nota_regularizare_avans_platit`
+    rămâne pentru avansul CU factură). OMFP 1802/2014, funcțiunea contului 409: „În creditul contului 409 «Furnizori - debitori» se
+    înregistrează: – valoarea avansurilor acordate furnizorilor, cu ocazia regularizării plăților cu aceștia (401, 404)”."""
+    if destinatie not in CONT_AVANS:
+        raise ValueError(nomenclator_cerut("destinatie", CONT_AVANS))
+    s = min(_d(avans), _d(datorie))
+    return [("401", CONT_AVANS[destinatie], s)] if s > 0 else []

@@ -89,6 +89,9 @@ def sincronizeaza(schema):
     raspunsuri_ai = cote_tva.intreaba(de_intrebat, platitor)
     # ── FAZA 2: tranzactie scurta, cu REVALIDARE ────────────────────────────────────────
     importate, sarite = [], 0
+    # [368] începutul scrierii, pe același ceas și cu aceeași marjă ca middleware-ul (`main._autor_si_note_in_coada`)
+    from core import uc_coada as _uc_coada_ni
+    de_la = _uc_coada_ni.inceputul_scrierii()
     with db.get_conn(schema) as conn:
         with conn.cursor() as _c:
             _c.execute(f"SET search_path TO {schema}")
@@ -96,7 +99,26 @@ def sincronizeaza(schema):
         # scrie nimic — acelasi raspuns ca atunci cand n-a fost niciodata.
         if not config(conn, schema):
             return {"eroare": "WooCommerce neconfigurat"}
-        return _importa(conn, schema, lista_c, facturi_api, importate, sarite, raspunsuri_ai)
+        rez = _importa(conn, schema, lista_c, facturi_api, importate, sarite, raspunsuri_ai)
+    if rez["importate"]:
+        _note_interne(schema, de_la, rez)
+    return rez
+
+
+def _note_interne(schema, de_la, rez):
+    """[deficiența 368, decizia Costin 19.10.2026 „Se validează automat”] Cronul de la 07:30 nu trece prin middleware-ul care validează
+    notele unei firme în partidă simplă, deci notele facturilor importate se validează aici, ca note interne, după commitul importului
+    (conexiunea lui e închisă). Notele cronului n-au autor (`creat_de_id` NULL), deci numai ele se iau aici; pe ruta
+    `/tenants/…/woocommerce/sincronizeaza` notele poartă autorul cererii și le validează middleware-ul (apelul de aici nu le găsește). Un
+    refuz nu strică importul: nota rămâne ciornă, iar refuzul intră în rezultat (jurnalul jobului, tipărit de `_main`)."""
+    from core import observare as _obs, uc_coada as _uc_coada
+    try:
+        ni = _uc_coada.note_interne_schema(schema, None, de_la)
+    except Exception as e:  # noqa: BLE001 — facturile sunt importate, notele rămân ciornă; eșecul nu e tăcut
+        _obs.esec_secundar("validarea notelor interne (partidă simplă, WooCommerce %s)" % schema, e)
+        return
+    if ni["interne"] or ni["refuzate"]:
+        rez["note_interne"] = ni
 
 
 def _importa(conn, schema, lista_c, facturi_api, importate, sarite, raspunsuri_ai=None):
@@ -171,6 +193,8 @@ def _main():
             # [P5 val 3] conexiunea de mai sus s-a inchis; `sincronizeaza` si le deschide pe ale ei
             r = sincronizeaza(schema)
             print(f"{schema}: {len(r.get('importate', []))} importate, {r.get('sarite', 0)} sarite")
+            for _n in (r.get("note_interne") or {}).get("refuzate", []):   # [368] refuzul validării interne, în jurnalul jobului
+                print(f"{schema}: nota {_n['eticheta']} a rămas ciornă: {_n['motiv']}")
         except Exception as e:
             print(f"{schema}: EROARE {e}")
 

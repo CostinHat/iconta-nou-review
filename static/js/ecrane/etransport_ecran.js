@@ -1,7 +1,7 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
 // [cap.24 batch 3a] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand +
 // validarea per-camp o face BACKENDUL (autoritatea); frontendul consuma 422.campuri si plaseaza prin eroareCamp.
-import { api, cate, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile } from "../api.js?v=462d75fbab";
+import { api, cate, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile } from "../api.js?v=158edee964";
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
 
 // Garda de timp UIT client-side (oglinda etransport_send.fereastra_uit) — pt avertisment + blocare buton.
@@ -209,7 +209,7 @@ export async function ecranEtransport(corp, nav, t) {
       curataEroriCamp(corp);
       if (cereAlegerile(corp, ["#et-tip", "#s-judet", "#f-judet", ...bunuri.map((_b, i) => `#b${i}-cod_scop`)])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       const f = _fereastraUit(v("t-data"), ["10", "60", "80"].includes(v("et-tip")));
-      if (!f.ok) { arataMesaj(zona, f.mesaj, "avert"); return; }   // poarta de timp (backend re-verifica)
+      if (!f.ok) { arataMesaj(zona, f.mesaj, "eroare"); return; }   // poarta de timp (backend re-verifica)
       confirmaCaseta(zona, `Trimiți notificarea UIT în SPV? Se validează întâi pe TEST. ${f.mesaj}`, async () => {
         curataEroriCamp(corp);
         arataMesaj(zona, "Se validează pe TEST și se trimite…", "info");

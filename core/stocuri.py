@@ -64,7 +64,16 @@ def _repartizeaza(linii, transport, taxe):
     return baze, reparti, transport, taxe
 
 
-def nir_cost(linii, transport=0, taxe=0, cont_transport="401", cont_taxe="446", cont_furnizor="401", cont_tva="4426"):
+def _tva_transport(transport, cota_tva_transport):
+    """[deficiența 399] TVA-ul transportului facturat de un furnizor plătitor de TVA (CF art.297 alin.(4) lit.a): cota lui, aleasă pe
+    NIR; 0 / None = fără TVA (neplătitor, transport scutit)."""
+    if not transport or cota_tva_transport in (None, ""):
+        return Decimal("0.00")
+    return _q(_d(transport) * _d(cota_tva_transport) / 100)
+
+
+def nir_cost(linii, transport=0, taxe=0, cont_transport="401", cont_taxe="446", cont_furnizor="401", cont_tva="4426",
+             cota_tva_transport=None):
     """[lotul 07.10 B, C10] NIR la firma cu stocul la COST (cantitativ-valoric, CMP — `core.metoda_stoc`): marfa intră la costul
     de achiziție (cu accesoriul repartizat), fără adaos și fără TVA neexigibilă — prețul de raft nu se cere și nu se verifică.
     Temei: OMFP 1802/2014 pct.286 alin.(1) — ieșirile se evaluează la cost (CMP / FIFO), iar pct.287 alin.(1)-(2): „Metoda aleasă
@@ -82,17 +91,21 @@ def nir_cost(linii, transport=0, taxe=0, cont_transport="401", cont_taxe="446", 
     # apelantul (`stocuri_api.adauga_nir`) dă conturile; implicit, NIR-ul cu factură: 371 = 401, 4426 = 401.
     note = [{"debit": "371", "credit": cont_furnizor, "suma": cost_baza_total, **_urma(TEMEI_COST)},
             {"debit": cont_tva, "credit": cont_furnizor, "suma": _q(tva_ded), **_urma(TEMEI_COST)}]
+    tva_tr = _tva_transport(transport, cota_tva_transport)
     if transport > 0:
         note.append({"debit": "371", "credit": cont_transport, "suma": transport, **_urma(TEMEI_COST)})
+        if tva_tr:   # [399] TVA-ul transportului, pe aceeași regulă ca TVA-ul mărfii (4426 cu factură / 4428 fără)
+            note.append({"debit": cont_tva, "credit": cont_transport, "suma": tva_tr, **_urma(TEMEI_COST)})
     if taxe > 0:
         note.append({"debit": "371", "credit": cont_taxe, "suma": taxe, **_urma(TEMEI_COST)})
     return {"linii": linii_out, "cost_total": _q(cost_baza_total + transport + taxe), "cost_baza_total": cost_baza_total,
-            "transport": transport, "taxe": taxe, "tva_deductibila": _q(tva_ded), "adaos_total": Decimal("0.00"),
+            "transport": transport, "taxe": taxe, "tva_deductibila": _q(tva_ded + tva_tr), "tva_transport": tva_tr,
+            "adaos_total": Decimal("0.00"),
             "tva_neexigibila": Decimal("0.00"), "valoare_vanzare": Decimal("0.00"), "note": note}
 
 
 def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
-          cont_transport="401", cont_taxe="446", cont_furnizor="401", cont_tva="4426"):
+          cont_transport="401", cont_taxe="446", cont_furnizor="401", cont_tva="4426", cota_tva_transport=None):
     """NIR global-valoric. linii: [{denumire, cantitate, pret_achizitie (unitar, fara TVA),
     pret_vanzare (unitar, cu TVA), cota_tva?}].
     transport/taxe: cost accesoriu (landed cost) care se CAPITALIZEAZA in costul de
@@ -151,8 +164,11 @@ def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
         {"debit": "371", "credit": cont_furnizor, "suma": _q(cost_baza_total), **_urma()},
         {"debit": cont_tva, "credit": cont_furnizor, "suma": _q(tva_ded), **_urma()},
     ]
+    tva_tr = _tva_transport(transport, cota_tva_transport)
     if transport > 0:
         note.append({"debit": "371", "credit": cont_transport, "suma": transport, **_urma()})
+        if tva_tr:   # [399] TVA-ul transportului (vezi `nir_cost`)
+            note.append({"debit": cont_tva, "credit": cont_transport, "suma": tva_tr, **_urma()})
     if taxe > 0:
         note.append({"debit": "371", "credit": cont_taxe, "suma": taxe, **_urma()})
     note += [
@@ -160,7 +176,7 @@ def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
         {"debit": "371", "credit": CONT_TVA_STOC, "suma": tva_neex, **_urma()},
     ]
     return {"linii": linii_out, "cost_total": cost_total, "cost_baza_total": _q(cost_baza_total),
-            "transport": transport, "taxe": taxe, "tva_deductibila": _q(tva_ded),
+            "transport": transport, "taxe": taxe, "tva_deductibila": _q(tva_ded + tva_tr), "tva_transport": tva_tr,
             "adaos_total": adaos_total, "tva_neexigibila": tva_neex,
             "valoare_vanzare": _q(vanzare_total), "note": note}
 

@@ -28,10 +28,10 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=462d75fbab";
-import { randA as randConstatare } from "./control_verdict.js?v=1b49c04aa7";
+import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=158edee964";
+import { randA as randConstatare } from "./control_verdict.js?v=2daa29640d";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma } from "./firme.js?v=50c9c58616";
+import { deschideFirma } from "./firme.js?v=09862e661b";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)
@@ -139,12 +139,12 @@ export function titluCoada({ note = 0, deValidat = 0, deDepus = 0, poateDepune =
 const CINE_VALIDEAZA = "un coleg care are dreptul «Poate valida»";
 const CINE_DEPUNE = "un coleg care are dreptul «Poate depune»";
 export function introCoada({ poateValida = false, poateDepune = false, admin = false, patruOchi = false, politica = false, note = 0 }) {
-  const fraze = [note
-    ? (poateValida ? "Notele de mai sus le-au pregătit asistenții: le validezi sau le respingi."
-      : `Notele de mai sus le-au pregătit asistenții: le validează sau le respinge ${CINE_VALIDEAZA}.`)
-    // [deficiența 323, 18.10.2026] fără note de validat, textul nu mai descrie note care nu sunt: spune că nu așteaptă niciuna
-    : (poateValida ? "Notele pe care asistenții le trimit la validare apar aici, ca să le validezi sau să le respingi; acum nu așteaptă niciuna."
-      : `Notele pe care asistenții le trimit la validare apar aici; le validează sau le respinge ${CINE_VALIDEAZA}. Acum nu așteaptă niciuna.`)];
+  // [deficiența 323, retestul 19.10.2026: „In De depus, textul de sus vorbește tot de «notele pe care asistenții le trimit la validare»”]
+  // fără note de validat, textul nu vorbește deloc de note: spune numai ce e pe ecran — declarațiile
+  const fraze = note
+    ? [poateValida ? "Notele de mai sus le-au pregătit asistenții: le validezi sau le respingi."
+      : `Notele de mai sus le-au pregătit asistenții: le validează sau le respinge ${CINE_VALIDEAZA}.`]
+    : [];
   if (patruOchi) {
     fraze.push(poateValida
       ? (poateDepune ? "Declarațiile pregătite de asistenți așteaptă validarea ta înainte de depunere."
@@ -455,10 +455,11 @@ function legaActiuniNota(zona, c, corpLista, nav, eroare, dinDetaliu) {
       }
       catch (e) { if (eroare) arataMesaj(eroare, (e && e.mesaj) || "Eroare la validare.", "eroare"); }
     };
-    // aceeași confirmare ca în Registrul-jurnal: nota fără document justificativ se validează numai explicit
+    // [386, lotul 9] ca în Registrul-jurnal: regula de fond R3 din bază refuză validarea fără document justificativ — caseta spune de ce
+    // și duce la pasul posibil (respingerea cu motivul, ca cel care a pregătit nota să scrie referința)
     if (!n.document_ref) {
-      confirmaCaseta(btn.parentElement || btn, "Nota nu are document justificativ. Validezi totuși?", valideaza,
-        { textOk: "Validează fără document" });
+      confirmaCaseta(btn.parentElement || btn, "Nota nu are document justificativ, iar o notă nu se validează fără documentul din care provine (Registrul-jurnal, col.3: felul, numărul și data). Respinge-o cu motivul, ca cel care a pregătit-o să scrie referința.",
+        () => { const r = zona.querySelector(".val-respinge"); if (r) r.click(); }, { textOk: "Respinge nota" });
       return;
     }
     valideaza();
@@ -563,7 +564,8 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   const uid = uidCurent();
   const euAmPregatit = uid != null && c.creat_de != null && String(c.creat_de) === uid;
 
-  let actiuni = "";
+  // [383, lotul 9] perioada neîncheiată se spune pe rând, în orice stare (la validare și la depunere); butonul de depunere nu se oferă
+  let actiuni = c.perioada_neincheiata ? `<span class="val-nota-perm val-neincheiata">${esc(c.perioada_neincheiata)}</span>` : "";
   // [deficiența 297] declarația DEPĂȘITĂ (documentele perioadei s-au schimbat după generare): nici aprobare, nici depunere — se generează
   // din nou; serverul refuză la fel (`coada_api.refuz_depasita`)
   const dep = c.depasita;
@@ -592,7 +594,9 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
     // depune -> "Confirmă depunerea". Cu patru-ochi OFF, un item la_senior se aprobă automat înainte de depunere.
     const needsAproba = c.stare === "la_senior";
     const potDepune = perm.poate_depune && (!needsAproba || perm.poate_valida);
-    if (!potDepune) {
+    if (c.perioada_neincheiata) {
+      // [383, lotul 9] „O declarație nu se oferă spre depunere înainte de încheierea perioadei.” (serverul refuză și el; motivul e pe rând)
+    } else if (!potDepune) {
       actiuni += `<span class="val-nota-perm">nu ai dreptul de depunere</span>`;
     } else if (vi.gata) {
       actiuni += `<button class="buton-primar val-btn val-depune" data-act="depune" data-actiune="POST /coada/{coada_id}/depune">Confirmă depunerea</button>`;
@@ -643,7 +647,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   if (_vezi) _vezi.addEventListener("click", () => deschideContinut(c, nav, corp));
   // [298 + 313] notele nevalidate pe care se sprijină declarația, fiecare cu butonul ei spre Registrul jurnal
   const zSurse = div.querySelector(".val-surse-note");
-  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=425f6a2edf").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
+  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=2fc90ca5ef").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
   return div;
 }
 
@@ -653,7 +657,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=8cdaa83e58");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=92adb5b86c");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;

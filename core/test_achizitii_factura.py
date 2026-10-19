@@ -6,6 +6,11 @@ Probe end-to-end pe schema scratch din template (gated DB): handler real -> fact
 import pytest
 
 
+
+#: [402] borderoul de achiziție identifică vânzătorul PF și, pe un cont de stoc (301), aduce marfa în gestiune
+_PF_402 = {"furnizor_adresa": "Str. Florilor 1, Ploiești", "furnizor_act": "PH 123456", "articol": "Deșeuri metalice", "cantitate": 100,
+           "um": "kg"}
+
 def _db_ok():
     try:
         from core import db
@@ -130,7 +135,7 @@ def test_achizitie_neinregistrat_N_ajunge_in_d394_duk_valid(monkeypatch):
                 _scratch(cur)
             conn.commit()
         monkeypatch.setattr(main.auth_api, "schema_tenant", lambda conn, uid, tid: _SCH)
-        r = main.achizitie_neinregistrat(1, {"data": "2026-06-18", "furnizor_nume": "ION POPESCU",
+        r = main.achizitie_neinregistrat(1, {"data": "2026-06-18", "furnizor_nume": "ION POPESCU", **_PF_402,
                                              "valoare": 2000, "cont_cheltuiala": "301", "categorie": "deseuri",
                                              "numar": "BON-1"}, {"uid": 1})
         assert r.get("factura_id") and r.get("in_d394") is True, r
@@ -295,7 +300,7 @@ def test_handlerele_ingheata_flagul_la_creare(monkeypatch):
                 _scratch(cur)
             conn.commit()
         monkeypatch.setattr(main.auth_api, "schema_tenant", lambda conn, uid, tid: _SCH)
-        rn = main.achizitie_neinregistrat(1, {"data": "2026-06-18", "furnizor_nume": "ION", "valoare": 2000,
+        rn = main.achizitie_neinregistrat(1, {"data": "2026-06-18", "furnizor_nume": "ION", "valoare": 2000, **_PF_402,
                                              "cont_cheltuiala": "301", "categorie": "deseuri"}, {"uid": 1})
         rt = main.achizitie_taxare_inversa(1, {"data": "2026-06-15", "categorie": "deseuri", "valoare": 5000,
                                               "cont_destinatie": "371", "cota": 21, "furnizor_platitor_tva": True,

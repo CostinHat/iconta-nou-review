@@ -23,6 +23,7 @@ TIPURI = {
     "bon_consum": "Bon de consum",
     "lista_inventariere": "Listă de inventariere",
     "nota_calcul": "Notă de calcul",
+    "borderou_achizitie": "Borderou de achiziție",   # [401] numărul borderoului (BA-n) când omul nu scrie unul
 }
 
 
@@ -36,22 +37,38 @@ def _data(d):
     return _dt.date.fromisoformat(str(d)[:10])
 
 
-def genereaza(cur, schema, tip, data, nota_ids):
-    """Numerotează un document de tipul dat, la data dată, și îl scrie pe notele `nota_ids` care n-au deja document.
-    Întoarce textul documentului. Un act cu mai multe note (descărcarea lunii, inventarul) primește UN document."""
-    from core import jurnal_api as _j
-    if tip not in TIPURI:
-        raise ValueError("tip de document intern necunoscut: %r" % tip)
-    ids = [int(x) for x in (nota_ids if isinstance(nota_ids, (list, tuple)) else [nota_ids]) if x is not None]
-    if not ids:
-        return None
-    d = _data(data)
+def _numar(cur, schema, tip, d):
     # upsert-ok: contor atomic pe (tip, an) - incrementarea E operatiunea, nu o suprascriere (numarul urmator al documentului)
     cur.execute("INSERT INTO %sdocumente_interne_contor (tip, an, ultim) VALUES (%%s, %%s, 1) "
                 "ON CONFLICT (tip, an) DO UPDATE SET ultim = %sdocumente_interne_contor.ultim + 1 RETURNING ultim"
                 % (_p(schema), _p(schema)), (tip, d.year))
     r = cur.fetchone()
-    numar = r["ultim"] if isinstance(r, dict) else r[0]
+    return r["ultim"] if isinstance(r, dict) else r[0]
+
+
+def _cere_tip(tip):
+    if tip not in TIPURI:
+        raise ValueError("tip de document intern necunoscut: %r" % tip)
+
+
+def urmatorul(conn, schema, tip, data):
+    """Numărul următor al documentului `tip` în anul datei — același contor atomic ca `genereaza`, fără să scrie pe o notă (documentul
+    își poartă singur numărul: borderoul de achiziție)."""
+    _cere_tip(tip)
+    with conn.cursor() as cur:
+        return _numar(cur, schema, tip, _data(data))
+
+
+def genereaza(cur, schema, tip, data, nota_ids):
+    """Numerotează un document de tipul dat, la data dată, și îl scrie pe notele `nota_ids` care n-au deja document.
+    Întoarce textul documentului. Un act cu mai multe note (descărcarea lunii, inventarul) primește UN document."""
+    from core import jurnal_api as _j
+    _cere_tip(tip)
+    ids = [int(x) for x in (nota_ids if isinstance(nota_ids, (list, tuple)) else [nota_ids]) if x is not None]
+    if not ids:
+        return None
+    d = _data(data)
+    numar = _numar(cur, schema, tip, d)
     ref = _j.eticheta_document(TIPURI[tip], numar, d)
     cur.execute("UPDATE %sinregistrari SET document_ref = %%s WHERE id = ANY(%%s) AND document_ref IS NULL" % _p(schema),
                 (ref, ids))

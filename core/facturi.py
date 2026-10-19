@@ -59,6 +59,22 @@ def mentiune_bon(f):
     return "conform bon fiscal nr. %s/%s" % (str(f.get("bon_fiscal_nr")).strip(), data_ro(f.get("bon_fiscal_data")))
 
 
+
+def mentiune_storno(f):
+    """[deficiența 417, retestul Costin 19.10.2026, PRIORITAR] Trimiterea facturii de stornare la factura stornată: „Stornare factura F1A
+    nr. 8 din 19.10.2026”; None pe o factură care nu stornează. Temei: CF art.330 alin.(1) lit.b): „[...] se emite o factură cu valorile
+    cu semnul minus [...] în care se înscriu numărul și data facturii corectate”; CF art.319 alin.(20) lit.r): „o referire la alte
+    facturi sau documente emise anterior, atunci când se emit mai multe facturi ori documente pentru aceeași operațiune”."""
+    o = f.get("storno_din")
+    if not o:
+        return None
+    from core.pdf_util import data_ro
+    serie, numar = str(o.get("serie") or "").strip(), str(o.get("numar") or "").strip()
+    if serie and numar.startswith(serie) and numar[len(serie):].strip():
+        numar = numar[len(serie):].strip()   # numărul emis conține seria („F1A8”): pe hârtie „F1A nr. 8”
+    return "Stornare factura %snr. %s din %s" % ((serie + " ") if serie else "", numar, data_ro(str(o.get("data_emitere"))[:10]))
+
+
 _RADACINI_VENIT = (            # radacina in denumire -> tip (OMFP 1802/2014)
     ("marf", "marfa"),         # marfa (bunuri spre revanzare) -> 707
     ("produs", "produse"),     # produse finite -> 701

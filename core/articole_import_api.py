@@ -107,12 +107,22 @@ def verifica_randuri(randuri):
     """PURĂ: respingerile [{rand, motiv, mesaj}] — rândurile care NU intră. Aceeași funcție la previzualizare ȘI la scriere (până azi
     `importa` credea indicatorul `valid` venit din cererea ecranului)."""
     er = []
+    vazut = {}
     for i, a in enumerate(randuri or [], start=2):
         i = _it.nr_rand(a, i)
         den = str(a.get("denumire") or "").strip()
         et = "„%s”" % den if den else "articolul"
         if not den:
             er.append(respinge("articol", i, "denumire_lipsa", "rândul n-are denumirea articolului"))
+        else:
+            # [385, retestul 19.10.2026: „acelasi articol pe doua randuri («Marfa valida» 10 buc si 3 buc) intra de doua ori, fara
+            # observatie. Celelalte importuri resping dublurile.”] aceeași denumire (fără deosebire de litere mari / spații) = același articol
+            cheie = " ".join(den.lower().split())
+            if cheie in vazut:
+                er.append(respinge("articol", i, "articol_dublat",
+                                   "%s apare și pe rândul %s — un articol se trece o singură dată, cu stocul lui total" % (et, vazut[cheie])))
+            else:
+                vazut[cheie] = i
         if not str(a.get("um") or "").strip():
             er.append(respinge("articol", i, "um_lipsa", "%s: unitatea de măsură lipsește — nu se presupune „buc”" % et))
         cant, pret = a.get("cantitate"), a.get("pret")

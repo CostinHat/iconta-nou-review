@@ -6,6 +6,7 @@ i se permitea accelerat/superaccelerat desi categoria era necunoscuta. Acum: con
 gol + avertisment; gol -> categoria lit.c la calc_asset (doar liniar/degresiv), deci metodele
 ne-permise sunt refuzate pana se completeaza contul. (CF art.28 alin.5.)
 """
+import re
 from datetime import date
 
 from core.mijloace_fixe_import_api import extrage
@@ -27,7 +28,11 @@ _FARA_CONT = b"cod;denumire;valoare;durata;pif;metoda\nMF1;Ceva;100000;60;2025-1
 def test_cont_prezent_se_pastreaza():
     r = extrage(_CU_CONT, "mf.csv")[0]
     assert r["cont_imobilizare"] == "2131"
-    assert not any("cont de imobilizare lipsă" in a for a in r["semnale_extra"]) and r["stare"] == "ok", r
+    # [359, lotul 9] fișierul n-are amortizarea cumulată: singura observație a rândului o spune (nu „—” tăcut)
+    assert not any("cont de imobilizare lipsă" in a for a in r["semnale_extra"]), r
+    assert r["stare"] == "semnalat" and len(r["motive"]) == 1 and re.fullmatch(
+        r"amortizarea cumulată la \d\d\.\d\d\.\d{4} nu e în fișier \(nicio coloană „amortizare cumulată” sau „valoare rămasă”\): se ia "
+        r"cea calculată din PIF, durată și metodă, [\d.]+,\d\d lei", r["motive"][0]), r
 
 
 def test_cont_lipsa_ramane_gol_nu_2131():

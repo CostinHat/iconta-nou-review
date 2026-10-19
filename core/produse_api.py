@@ -123,6 +123,23 @@ def creeaza(conn, denumire, um="buc", pret_unitar=0, cota_tva=None,
             "sursa": sursa_finala, "confirmat": bool(confirmat), "existent": False}
 
 
+def asigura_din_document(cur, schema, denumire, um, cota_tva, document):
+    """[deficiența 415, retestul Costin 19.10.2026] „Articol creat din NIR («+ articol nou», Marfa B, cotă 21%) rămâne fără cotă; preia
+    cota de pe rândul NIR.” Articolul de stoc își ia cota din nomenclatorul Produse (aceeași denumire, `cauta_dupa_denumire`): când
+    un document (NIR, factura primită) creează articolul, nomenclatorul primește cota aleasă pe rândul documentului — dacă denumirea
+    nu e deja acolo (un produs existent nu se schimbă pe tăcute). Cota a ales-o omul pe document, deci produsul e confirmat."""
+    from decimal import Decimal
+    d = " ".join(str(denumire or "").split())
+    if not d or cota_tva is None:
+        return None
+    cur.execute(f"""INSERT INTO {schema}.produse (denumire, um, pret_unitar, cota_tva, justificare, sursa, confirmat)
+                    SELECT %s, %s, 0, %s, %s, 'document', true
+                     WHERE NOT EXISTS (SELECT 1 FROM {schema}.produse WHERE lower(denumire) = lower(%s)) RETURNING id""",
+                (d, um or "buc", Decimal(str(cota_tva)), ("cota de pe " + str(document or "documentul de intrare"))[:500], d))
+    r = cur.fetchone()
+    return (r["id"] if isinstance(r, dict) else r[0]) if r else None
+
+
 def actualizeaza(conn, produs_id, denumire=None, um=None, pret_unitar=None,
                  cota_tva=None, categorie=None, confirmat=None):
     """Actualizeaza campurile date ale unui produs. Daca se schimba cota manual,

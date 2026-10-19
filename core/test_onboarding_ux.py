@@ -41,7 +41,8 @@ def test_solduri_blocheaza_neechilibrul_inainte_de_click():
 
 def test_solduri_transparenta_conturi_noi():
     js = _read("static/js/ecrane/migrare.js")
-    assert "nu sunt respinse" in js, "nu spune ce se intampla cu conturile inexistente (Q10)"
+    # [392, lotul 9 — PIVOT: din 343 contul inexistent e RESPINS, iar textul vechi („se adaugă automat (nu sunt respinse)”) minția]
+    assert "e respins, cu motivul" in js and "nu sunt respinse" not in js, "nu spune ce se intampla cu conturile inexistente (Q10, 343)"
 
 
 def test_import_in_masa_descoperibil_din_firme():

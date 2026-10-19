@@ -57,7 +57,13 @@ OPTIONALE_PERMISE = {
     "nota-sgr:nr_ambalaje": "pereche alternativă cu `suma` (una din două); serverul refuză numit dacă lipsesc amândouă",
     "nota-sgr:suma": "idem (la virare e obligatorie — EXCEPTII)",
     "achizitie-neinregistrat:numar":
-        "numărul documentului (borderou); când lipsește se numerotează `BORDEROU-<dată>` — nu schimbă nota, baza sau impozitul",
+        "numărul borderoului; când lipsește se numerotează `BA-<n>` (contorul documentelor interne, 401) — nu schimbă nota, baza sau "
+        "impozitul",
+    # [402] articolul, cantitatea și UM-ul se cer NUMAI pe un cont de stoc (serverul refuză numit lipsa lor acolo); pe un cont de
+    # cheltuială borderoul n-are intrare în gestiune, deci golul lor nu e o valoare pusă în locul omului
+    "achizitie-neinregistrat:articol": "cerut de server, numit, numai pe un cont de stoc (OMFP 2634/2015 anexa 1 pct.6)",
+    "achizitie-neinregistrat:cantitate": "idem",
+    "achizitie-neinregistrat:um": "unitatea de măsură a articolului de stoc; goală = „buc”, ca la orice intrare de stoc (stocuri_cv_api.intrare)",
     "achizitie-ic:furnizor_nume": "numele furnizorului; identitatea fiscală e codul de TVA (obligatoriu)",
 }
 

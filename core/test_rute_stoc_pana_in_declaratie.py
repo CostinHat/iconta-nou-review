@@ -216,7 +216,7 @@ def test_MINUSUL_de_inventar_ajunge_in_rulaj(lume):
     """
     cl = _client()
     r = cl.post("/tenants/%d/stocuri/inventar" % lume["tid"],
-                json={"data": ZI, "linii": [{"articol_id": lume["aid"], "faptic": 8}]},
+                json={"data": ZI, "linii": [{"articol_id": lume["aid"], "faptic": 8, "lipsa": "justificata"}]},   # [404] lipsa se încadrează de om
                 headers=_H(lume))
     assert r.status_code == 200, r.text[:300]
     assert _valideaza_notele(lume, cl) >= 1

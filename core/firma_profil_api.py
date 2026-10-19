@@ -26,11 +26,13 @@ FONTURI = ("sans", "serif", "mono")
 # clasa 70 (cifra de afaceri) — NU clasa 7 intreaga: 74x (subventii), 76x (venituri
 # financiare), 78x (provizioane) nu sunt venituri din vanzare care se factureaza.
 # Fallback la 707 (marfuri), la fel ca COALESCE-ul de la emitere (main.py). Vezi DECIZII 21.07 F182.
+# [387, 19.10.2026] Cu planul întreg (OMFP 1802/2014 pct.594) grupa 70 are și 709 „Reduceri comerciale acordate” — un cont care
+# micșorează cifra de afaceri, nu unul pe care se facturează o vânzare: nu e cont de venit implicit.
 import re as _re
 from core import plan_omfp as _plan
 
 CONTURI_VENIT = {c: _plan.PLAN_OMFP[c] for c in sorted(_plan.PLAN_OMFP)
-                 if _re.fullmatch(r"70[0-9]", c)}
+                 if _re.fullmatch(r"70[0-8]", c)}
 CONT_VENIT_IMPLICIT_DEFAULT = "707"
 
 

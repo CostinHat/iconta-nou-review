@@ -55,9 +55,12 @@ def verifica_cod(cod, dnf_luni):
 
 def _mf_dict(r):
     (mid, cod, den, ci, ca, val, rez, dnf, pif, met, activ, reev, dcd) = r[:13]
+    # [359, A.1] `toate` poartă la sfârșit amortizarea preluată și data preluării (după `cod_catalog`)
+    prel, dprel = (r[14], r[15]) if len(r) > 15 else (None, None)
     return {"id": mid, "cod": cod, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca or "2813",
             "valoare": Decimal(str(val or 0)), "rezidual": Decimal(str(rez or 0)), "dnf_luni": dnf, "data_pif": pif,
-            "metoda": met, "activ": bool(activ), "reevaluari": reev, "destinatie_cd": bool(dcd)}   # ruta veche: bool (ecranul C&D)
+            "metoda": met, "activ": bool(activ), "reevaluari": reev, "destinatie_cd": bool(dcd),   # ruta veche: bool (ecranul C&D)
+            "amortizare_preluata": prel, "data_preluare": dprel}
 
 
 def sold_creditor_cont(cur, cont, pana_la):
@@ -172,7 +175,14 @@ def amortizare_lunii_neinregistrata(cur, rows, an, luna):
             pe_cont[m["cont_amortizare"]] = pe_cont.get(m["cont_amortizare"], Decimal(0)) + rata
     return necalculabile + [{"cont": c, "rata": str(v)} for c, v in sorted(pe_cont.items())
                             if (an, luna) not in luni_inregistrate(cur, c)
-                            and (an, luna) not in luni_acoperite_de_soldul_initial(mfs[c], sold_initial_cont(cur, c))]
+                            and (an, luna) not in luni_acoperite_de_soldul_initial(mfs[c], sold_initial_cont(cur, c) - preluat_pe_cont(mfs[c]))]
+
+
+def preluat_pe_cont(mfs):
+    """[359, A.1] Amortizarea preluată din registrul vechi a mijloacelor contului: e în soldul inițial, dar lunile ei nu mai sunt ale iConta
+    (`d406_active._preluare` le dă rata 0), deci nu acoperă lunile celorlalte mijloace ale contului."""
+    from core import d406_active as _a
+    return sum((pr[1] for pr in (_a._preluare(m) for m in mfs) if pr is not None), Decimal(0))
 
 
 def luni_anterioare_neinregistrate(cur, rows, an, luna):

@@ -391,3 +391,22 @@ def test_alertele_importante_devin_notificarea_superadminilor(monkeypatch):
             if isinstance(f, ast.FunctionDef) and f.name == "_main"][0]
     chemate = {ast.unparse(n.func) for n in ast.walk(corp) if isinstance(n, ast.Call)}
     assert {"ruleaza_portal", "notifica_importante"} <= chemate and "observare._trimite_brevo" not in chemate, chemate
+
+
+def test_refuzul_meta_spune_cauza_pentru_utilizator(monkeypatch):
+    """Lotul 9 D1 (19.10.2026): `POST /<PHONE_NUMBER_ID>/register` a întors `message: "Invalid parameter"`, iar cauza era numai în
+    `error_user_title` / `error_user_msg` (subcodul 2388001, politica WhatsApp). Refuzul o poartă, ca să nu se ghicească."""
+    import urllib.error
+    corp = json.dumps({"error": {"message": "Invalid parameter", "code": 100, "error_subcode": 2388001,
+                                 "error_user_title": "Nu pot crea certificatul",
+                                 "error_user_msg": "your business doesn't meet WhatsApp's policy requirements"}}).encode()
+
+    def _refuz(req, timeout=0):
+        raise urllib.error.HTTPError(req.full_url, 400, "Bad Request", {}, io.BytesIO(corp))
+    monkeypatch.setenv("WHATSAPP_TOKEN", "t")
+    monkeypatch.setattr("urllib.request.urlopen", _refuz)
+    with pytest.raises(W.Refuzat) as e:
+        W.inregistreaza_numarul("123456")
+    m = str(e.value)
+    assert m == ("Meta a refuzat cererea (HTTP 400, cod 100/2388001): Invalid parameter | Nu pot crea certificatul — your business doesn't "
+                 "meet WhatsApp's policy requirements"), m

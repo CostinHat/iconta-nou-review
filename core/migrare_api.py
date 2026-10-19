@@ -241,7 +241,12 @@ REGULI = {
     # [353, comanda Costin 8.2] același rând (aceeași declarație pe aceeași perioadă) de două ori în fișier: intră o singură dată
     # [364–367, comanda Costin 8.2] asociații: fără identificator, același CNP/CUI de două ori, cotă în afara 0–100, CUI confruntat cu ANAF
     "identificator_lipsa": {"fel": "lipsa", "inseamna": "asociatul n-are CNP/CUI: nu poate aparea in D205"},
-    "identificator_dublat": {"fel": "duplicat", "inseamna": "acelasi CNP/CUI pe doua randuri; un asociat se trece o data"},
+    "identificator_dublat": {"fel": "duplicat", "inseamna": "acelasi CNP/CUI pe doua randuri; un asociat / salariat se trece o data"},
+    # [385, lotul 9] articolul de pe două rânduri intra de două ori, fără observație (celelalte importuri resping dublurile)
+    # [362, lotul 9] terenul cu durată de amortizare; amenajarea de teren cu altă durată decât cea din lege (10 ani)
+    "durata_teren":     {"fel": "incoerent", "inseamna": "terenul nu se amortizeaza, dar fisierul ii da o durata"},
+    "durata_amenajare_teren": {"fel": "incoerent", "inseamna": "amenajarile de terenuri se amortizeaza liniar pe 10 ani (CF art.28 alin.(12) lit.e))"},
+    "articol_dublat":   {"fel": "duplicat", "inseamna": "aceeasi denumire de articol pe doua randuri; un articol se trece o data, cu stocul lui total"},
     "cota_invalida":    {"fel": "invalid", "inseamna": "cota de participare nu e intre 0 si 100"},
     # [373, comanda Costin 8.2] articole / stoc inițial: nimic completat din oficiu
     "um_lipsa":         {"fel": "lipsa", "inseamna": "articolul n-are unitatea de masura; nu se presupune buc"},

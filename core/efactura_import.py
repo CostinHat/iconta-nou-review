@@ -99,8 +99,15 @@ def parseaza_xml(continut, cui_firma):
             # (anaf_surse/mf_ghid_coduri_facturi_efactura_v2_9.txt, cap.3): „AE” = taxare inversă (art.331 Cod fiscal)
             "categorie_tva": (_txt(ln, "cac:Item/cac:ClassifiedTaxCategory/cbc:ID") or "").strip().upper() or None,
         })
+    # [deficiența 418a] BT-31, codul de TVA al vânzătorului (`PartyTaxScheme` cu schema VAT): îl are numai vânzătorul înregistrat în scopuri
+    # de TVA (EN 16931 BR-S-02: factura cu TVA standard cere BT-31)
+    furn_cod_tva = None
+    for pts in root.findall("cac:AccountingSupplierParty/cac:Party/cac:PartyTaxScheme", NS):
+        if (_txt(pts, "cac:TaxScheme/cbc:ID") or "").strip().upper() == "VAT":
+            furn_cod_tva = (_txt(pts, "cbc:CompanyID") or "").strip() or None
     return {
         "numar": numar, "data_emitere": data, "data_scadenta": scadenta,
+        "furnizor_cod_tva": furn_cod_tva,
         "directie": "emisa" if emisa else "primita",
         "tert_nume": tert[0], "tert_cui": tert[1],
         "total": total, "tva": tva, "moneda": moneda,

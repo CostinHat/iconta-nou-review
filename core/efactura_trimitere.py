@@ -62,6 +62,25 @@ def incarca_factura(conn, schema, factura_id):
     return dict(factura), [dict(l) for l in linii], dict(furnizor), client
 
 
+def completeaza_client_ro(client):
+    """[C61, 19.10.2026] Clientul român fără județ pe factură: localitatea și județul din ANAF (domiciliul fiscal), ca XML-ul să treacă
+    eFactura regula BR-RO-110 („Daca Codul tarii Cumparatorului (BT-55) este RO, atunci Subdiviziunea tarii Cumparatorului (BT-54)
+    trebuie sa fie codificata folosind lista de coduri ISO 3166-2:RO”, validatorul FACT1). CF art.319 alin.(20) lit.f: pe factură,
+    „denumirea/numele și adresa beneficiarului”. Completează NUMAI câmpurile goale (ce a scris omul rămâne) și întoarce o copie:
+    factura emisă nu se rescrie în bază, XML-ul trimis se păstrează în `efactura_trimiteri`. ANAF jos / CUI negăsit -> clientul neschimbat
+    (poarta FACT1 spune atunci ce spune). Apel extern: se cheamă cu pool-ul LIBER, niciodată cu o conexiune ținută."""
+    if client.get("tara") != "RO" or not client.get("cui") or (client.get("judet") or "").strip():
+        return client
+    from core import uc_comun as _uc_comun   # un singur apel ANAF pentru faptele clientului, același cu cel de la emitere
+    adr = {}
+    _uc_comun._platitor_tva_tert(client["cui"], "RO", adresa=adr)
+    out = dict(client)
+    for camp, din in (("oras", "localitate"), ("judet", "judet")):
+        if not (out.get(camp) or "").strip() and adr.get(din):
+            out[camp] = adr[din]
+    return out
+
+
 def genereaza_din_factura(conn, schema, factura_id):
     """Convenienta: loader + generator intr-un pas. Intoarce (xml, factura)."""
     factura, linii, furnizor, client = incarca_factura(conn, schema, factura_id)
@@ -79,10 +98,11 @@ def trimite(schema, factura_id, principal, mediu="test"):
       4) UPLOAD prin apel_anaf pe tokenul principalului -> scrie randul INDIFERENT de rezultat
          (ok/eroare_upload + error_message integral).
     Poll-ul (stareMesaj/descarcare) ramane pe cron, NU sincron aici. Intoarce {stare, ...}.
-    genereaza_din_factura poate ridica EDateIncomplete (sector Bucuresti lipsa) / NotImplementedError
+    generatorul (`_ef.genereaza_xml`) poate ridica EDateIncomplete (sector Bucuresti lipsa) / NotImplementedError
     (taxare inversa) - apelantul (ruta) le mapeaza la 422.
     """
-    # P0: genereaza XML (poate ridica EDateIncomplete/NotImplementedError -> prinse de ruta)
+    # P0: citeste factura (XML-ul se genereaza dupa P0, cu clientul roman completat din ANAF; poate ridica EDateIncomplete /
+    # NotImplementedError -> prinse de ruta)
     with db.get_conn() as conn:
         # POARTA 1: token viu?
         if spv_conector.ia_token_activ(conn, principal) is None:
@@ -95,7 +115,9 @@ def trimite(schema, factura_id, principal, mediu="test"):
         _st = spv_conector.stare_firma(conn, principal, cif)
         if _st.get("are_drept") is False:
             return {"stare": "fara_drept", "mesaj": _st["mesaj"]}
-        xml, _factura = genereaza_din_factura(conn, schema, factura_id)
+        _factura, linii, furnizor, client = incarca_factura(conn, schema, factura_id)
+    # [C61] ANAF după P0, cu pool-ul liber (cele trei conexiuni rămân trei); generatorul e pur, nu mai cere conexiunea
+    xml = _ef.genereaza_xml(_factura, linii, furnizor, completeaza_client_ro(client))
     sha = hashlib.sha256(xml.encode("utf-8")).hexdigest()
 
     # POARTA 2: validare structura pe validatorul ANAF - FARA upload daca nok

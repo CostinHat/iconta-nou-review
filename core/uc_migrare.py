@@ -139,15 +139,11 @@ def migrare_importa(date, ctx):
     return {"creat": creat, "erori": erori, "total": len(creat)}
 
 
-def migrare_valideaza(cui_uri, ctx):
-    """[P7 · use-case] `POST /migrare/valideaza` — CUI-urile firmelor de importat, verificate la ANAF.
-    [deficiența 342, comanda Costin 8.2] cifra de control se verifică ÎNAINTE de ANAF (`identitate.valideaza_cui`, ca la Parteneri): un CUI
-    greșit e numit „cifra de control greșită”, nu „nu a fost găsit la ANAF”, și nu se mai trimite; [341] o firmă deja în portofoliu se
-    marchează (`deja_in_portofoliu`, cu numele ei de acolo) — nu se mai bifează și nu se mai oferă la import."""
-    from core import anaf_api, auth_api, db, identitate
-    if not cui_uri:
-        return {"rezultate": [], "ignorate": []}
-    curatate, ignorate = anaf_api.separa_cui(cui_uri)
+def cui_de_trimis(curatate, din_fisier=False):
+    """[342 + 393] (invalide, de_intrebat) pentru codurile curățate (`anaf_api.separa_cui`): cifra de control se verifică ÎNAINTE de ANAF
+    (`identitate.valideaza_cui`); un CUI greșit e numit („cifra de control greșită”, cu locul unde se corectează: „în fișier” / „în lista
+    lipită”) și nu se trimite."""
+    from core import identitate
     invalide, de_intrebat = [], []
     for c in curatate:
         ok, motiv = identitate.valideaza_cui(c)
@@ -156,13 +152,17 @@ def migrare_valideaza(cui_uri, ctx):
         else:
             # [342, comanda Costin 8.2] CUI-ul cu cifra de control greșită nu se trimite la ANAF („negăsit” ar fi fals): se spune ce e greșit
             invalide.append(_afirmatii.afirmatie(
-                "fapt", "cod fiscal invalid", "CUI %s: %s — corectează-l în fișier" % (c, "cifra de control greșită" if motiv == "cifra de control" else motiv),
-                unde=_Unde("firma", str(c)), temei_completitudine="algoritmul cifrei de control a codului fiscal, pe codul citit din fișier",
+                "fapt", "cod fiscal invalid", "CUI %s: %s — corectează-l %s" % (
+                    c, "cifra de control greșită" if motiv == "cifra de control" else motiv, "în fișier" if din_fisier else "în lista lipită"),
+                unde=_Unde("firma", str(c)), temei_completitudine="algoritmul cifrei de control a codului fiscal, pe codul %s" % (
+                    "citit din fișier" if din_fisier else "lipit"),
                 cui=str(c), denumire="", gasit=False, cui_invalid=True))
-    try:
-        rez = anaf_api.valideaza_cui(de_intrebat) if de_intrebat else []
-    except Exception as e:
-        raise _erori.ServiciuStrainCazut(anaf_api.mesaj_indisponibil(e))   # [303 + 317]
+    return invalide, de_intrebat
+
+
+def rezultate_validare(rez, curatate, ignorate, invalide, ctx):
+    """[341] Răspunsul ANAF + codurile greșite, în ordinea listei; o firmă deja în portofoliu se marchează (`deja_in_portofoliu`)."""
+    from core import auth_api, db
     with db.get_conn() as conn:
         portofoliu = {"".join(ch for ch in str(f.get("cui") or "") if ch.isdigit()): f.get("nume")
                       for f in auth_api.tenantii_userului(conn, ctx["uid"])}
@@ -175,13 +175,61 @@ def migrare_valideaza(cui_uri, ctx):
     return {"rezultate": sorted(rez + invalide, key=lambda r: ordine.get(str(r.get("cui")), 10 ** 6)), "ignorate": ignorate}
 
 
+def migrare_valideaza(cui_uri, ctx, din_fisier=False):
+    """[P7 · use-case] `POST /migrare/valideaza` — CUI-urile firmelor de importat, verificate la ANAF.
+    [deficiența 342, comanda Costin 8.2] cifra de control se verifică ÎNAINTE de ANAF (`identitate.valideaza_cui`, ca la Parteneri): un CUI
+    greșit e numit „cifra de control greșită”, nu „nu a fost găsit la ANAF”, și nu se mai trimite; [341] o firmă deja în portofoliu se
+    marchează (`deja_in_portofoliu`, cu numele ei de acolo) — nu se mai bifează și nu se mai oferă la import.
+    [393, lotul 9] Același drum pentru CUI-urile lipite și pentru cele din fișier (`/migrare/incarca` le trecea direct la ANAF, fără
+    cifra de control și fără portofoliu): `cui_de_trimis` + `rezultate_validare`; remediul spune unde e codul."""
+    from core import anaf_api
+    if not cui_uri:
+        return {"rezultate": [], "ignorate": []}
+    curatate, ignorate = anaf_api.separa_cui(cui_uri)
+    invalide, de_intrebat = cui_de_trimis(curatate, din_fisier)
+    try:
+        rez = anaf_api.valideaza_cui(de_intrebat) if de_intrebat else []
+    except Exception as e:
+        raise _erori.ServiciuStrainCazut(anaf_api.mesaj_indisponibil(e))   # [303 + 317]
+    return rezultate_validare(rez, curatate, ignorate, invalide, ctx)
+
+
+#: [371, retestul 19.10.2026: „Rețete (HoReCa) oferă toate firmele, inclusiv PFA și FISCALOS ICONTA. Import RIP e filtrat corect.”] straturile
+#: care, pe lângă regim, cer ca firma să fie HoReCa — regula existentă a ecranului Stocuri (`stocuri_cv_api.retete_vizibile`: CAEN-ul în
+#: lista din CF, sau firma are deja rețete), nu una nouă
+STRATURI_HORECA = ("retete",)
+
+
+def _strat_aplicabil(strat, firma):
+    """Stratul se aplică firmei (`{tip_firma, schema_name}`): regimul (`migrare_api.straturi_pentru`) și, la Rețete, HoReCa."""
+    if strat not in migrare_api.straturi_pentru(firma.get("tip_firma")):
+        return False
+    if strat in STRATURI_HORECA:
+        from core import stocuri_cv_api
+        sch = firma.get("schema_name")
+        if not sch:
+            return False
+        with db.get_conn(sch) as c:
+            return stocuri_cv_api.retete_vizibile(c, sch)
+    return True
+
+
 def migrare_firme_strat(strat, ctx):
     """[P7 · use-case] Corpul rutei `GET /migrare/firme` — [deficiența 371, comanda Costin 8.2] firmele portofoliului
-    cărora li se aplică stratul (`migrare_api.straturi_pentru`, după regimul fiecărei firme)."""
+    cărora li se aplică stratul (`migrare_api.straturi_pentru`, după regimul fiecărei firme; [371, lotul 9] Rețete numai la HoReCa)."""
     with db.get_conn() as conn:
         firme = auth_api.tenantii_userului(conn, ctx["uid"])
     return {"strat": strat, "firme": [{"tenant_id": f.get("id"), "nume": f.get("nume"), "cui": f.get("cui"), "tip_firma": f.get("tip_firma")}
-                                      for f in firme if strat in migrare_api.straturi_pentru(f.get("tip_firma"))]}
+                                      for f in firme if _strat_aplicabil(strat, f)]}
+
+
+def straturi_firmei(tenant_id, ctx):
+    """[371, lotul 9] Straturile aplicabile UNEI firme (meniul ei de import): aceeași regulă ca lista din Migrare cabinet."""
+    with db.get_conn() as conn:
+        firme = [f for f in auth_api.tenantii_userului(conn, ctx["uid"]) if f.get("id") == int(tenant_id)]
+    if not firme:
+        raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
+    return {"straturi": [s for s in migrare_api.straturi_pentru(firme[0].get("tip_firma")) if _strat_aplicabil(s, firme[0])]}
 
 
 def terti_in_balanta_firme(firme):

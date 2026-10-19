@@ -455,20 +455,21 @@ def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont
     # [E1/A6-runda2, 18.09.2026] PRIMITĂ pe COTE, ca emisa — nu `MAX(cota_tva)` pe toată factura.
     # O factură mixtă 21/11 aplica 21% pe toată baza -> 4426 supraevaluat, iar controlul încrucișat cu
     # D300 (care calculează corect pe rânduri) ieșea roșu -> risc de „corectare" a declarației după carte.
-    cur.execute("SELECT cota_tva, COALESCE(SUM(cantitate*pret_unitar),0) AS baza "
-                "FROM %sfactura_linii WHERE factura_id=%%s GROUP BY cota_tva ORDER BY cota_tva"
+    # [deficiența 418b] și pe CONTUL LINIEI (`factura_linii.cont_cheltuiala`, gol = contul facturii), ca emisa pe (cont_venit, cotă)
+    cur.execute("SELECT cota_tva, cont_cheltuiala AS cont_linie, COALESCE(SUM(cantitate*pret_unitar),0) AS baza "
+                "FROM %sfactura_linii WHERE factura_id=%%s GROUP BY cota_tva, cont_cheltuiala ORDER BY cota_tva, cont_cheltuiala"
                 % _p(schema), (fid,))
     grupuri = [dict(r) for r in cur.fetchall()]
     total_baza = sum((Decimal(str(g["baza"] or 0)) for g in grupuri), Decimal(0))
 
-    def _nota_primita(baza_lei, cota_frac):
+    def _nota_primita(baza_lei, cota_frac, cont_linie=None):
+        cont = (cont_linie or "").strip() or cont_cheltuiala or None
         if f.get("taxare_inversa"):
             # art. 331: la beneficiar 4426 = 4427 (autocolectare), nu TVA pe 401. Funcția exista în
             # `core/facturi.py` de la început și nu o chema nimeni — cât timp contarea era un act rar,
             # nu se vedea. De când e automată, se vede la fiecare factură.
-            return _fc.taxare_inversa(baza_lei, cota=cota_frac, la_data=la_data, cont=cont_cheltuiala or None)
-        return _fc.factura_primita(baza_lei, cota=cota_frac, la_data=la_data, tva_incasare=tvai,
-                                   cont=cont_cheltuiala or None)
+            return _fc.taxare_inversa(baza_lei, cota=cota_frac, la_data=la_data, cont=cont)
+        return _fc.factura_primita(baza_lei, cota=cota_frac, la_data=la_data, tva_incasare=tvai, cont=cont)
 
     if total_baza == 0:
         # factură fără linii (legacy): cade pe antet, o singură cotă (MAX). Antetul IN LEI.
@@ -486,7 +487,7 @@ def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont
     note = []
     for g in grupuri:
         note += _nota_primita(Decimal(str(g["baza"] or 0)) * _curs,   # [A1] baza IN LEI
-                              Decimal(str(g["cota_tva"])) / 100)
+                              Decimal(str(g["cota_tva"])) / 100, g.get("cont_linie"))
     return note
 
 
@@ -670,6 +671,9 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
             plan_cv = _nl.plan_ajustare_cv(cur, schema, nir_ales["id"], net_marfa - cost_nir, data_nota)
         note = _nl.note_factura_legata(note, cost_nir, tva_nir, metoda,
                                        d_607=sum((x[1] for x in plan_cv if not x[2]), Decimal(0)))
+        # [deficiența 405, decizia Costin „Avans 409x = 5311”] avansul plătit în numerar pentru NIR se compensează cu factura: 401 = 4091
+        from core import casa_api as _casa
+        note = note + _casa.compensare_avans_nir(cur, schema, nir_ales["id"], note)
 
     # [DDD2] PLASA, ultima verificare înainte de scriere.
     candidate = candidate_fara_cheie(cur, schema, f)

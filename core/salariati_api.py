@@ -30,7 +30,11 @@ _CAMPURI_API = ("cnp", "nume", "prenume", "data_angajare", "tip_norma", "ore_zi"
                 "data_nastere", "copii_scolarizati", "declaratie_copii",  # [deducere suplimentara]
                 "scutit_contrib_minim", "motiv_exceptare", "cor", "functie_baza",  # [3c] CF art.77(1)
                 "tichet_masa_valoare",  # [F133]
-                "iban")  # [F134] cont beneficiar pt plata pe card
+                "iban",  # [F134] cont beneficiar pt plata pe card
+                "tip_contract", "nr_cim", "data_cim")  # [412] CIM pe fișă: Legea 53/2003 art.12 (durata), art.16 alin.(1) (scris)
+# [412] durata CIM — Legea 53/2003 art.12: „(1) [...] se încheie pe durată nedeterminată. (2) Prin excepție, [...] și pe durată
+# determinată”. Același nomenclator ca adeverința (`ad-tip`) și CHECK-ul coloanei (core/migrare_cim_salariat.py).
+TIPURI_CONTRACT = ("nedeterminata", "determinata")
 
 
 import psycopg2 as _pg  # [R164] pentru `UniqueViolation` — refuzul bazei devine refuz citibil
@@ -56,6 +60,9 @@ def _api_spre_db(date):
         tn = d.pop("tip_norma")
         if tn is not None:
             d["part_time"] = (tn == "partiala")
+    for k in ("tip_contract", "nr_cim", "data_cim"):   # [412] câmp gol = necompletat (NULL), nu un text gol în coloană
+        if k in d and d[k] is not None:
+            d[k] = str(d[k]).strip() or None
     return d
 
 
@@ -150,6 +157,17 @@ def valideaza_salariat(date, la_creare=False):
     if iban is not None and str(iban).strip():
         if not iban_valid(iban):
             erori.append(("iban", "IBAN invalid (se așteaptă IBAN românesc: RO + 22 caractere, cifra de control corectă)."))
+    # [412] contractul individual de muncă (opțional pe fișă): durata din nomenclatorul art.12, data CIM o dată din calendar
+    tc = date.get("tip_contract")
+    if tc is not None and str(tc).strip() and str(tc).strip() not in TIPURI_CONTRACT:
+        erori.append(("tip_contract", "Tipul contractului: alege „nedeterminată” sau „determinată” (Codul muncii art. 12)."))
+    dc = date.get("data_cim")
+    if dc is not None and str(dc).strip():
+        try:
+            from datetime import date as _date
+            _date.fromisoformat(str(dc)[:10])
+        except (ValueError, TypeError):
+            erori.append(("data_cim", "Data contractului individual de muncă nu e o dată din calendar."))
     # data_incetare (optional) >= data_angajare - contract activ o perioada coerenta (backstop: CHECK in DB)
     di, da = date.get("data_incetare"), date.get("data_angajare")
     if di is not None and str(di).strip() and da is not None and str(da).strip():
@@ -253,7 +271,8 @@ def detalii_salariat(conn, salariat_id):
         cur.execute(
             "SELECT id, cnp, nume, prenume, data_angajare, part_time, ore_zi, "
             "persoane_intretinere, judet_casa, data_incetare, "
-            "scutit_contrib_minim, motiv_exceptare, cor, tichet_masa_valoare, iban, de_verificat "
+            "scutit_contrib_minim, motiv_exceptare, cor, tichet_masa_valoare, iban, de_verificat, "
+            "tip_contract, nr_cim, data_cim "   # [412] CIM-ul de pe fișă (adeverința îl precompletează)
             "FROM salariati WHERE id = %s", (salariat_id,))
         r = cur.fetchone()
         if r:

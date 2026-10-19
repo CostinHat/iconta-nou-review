@@ -138,7 +138,8 @@ def test_stocul_primeste_bon_de_consum_si_lista_de_inventariere_un_document_pe_a
     e2 = cv.iesire(conn, SCH, {"articol_id": a["articol_id"], "data": "2026-10-06", "cantitate": 1, "document": "Bon consum hârtie 9"})
     assert _ref(conn, e1["inregistrare_id"]) == "Bon de consum nr 1 din 06.10.2026"
     assert _ref(conn, e2["inregistrare_id"]) == "Bon consum hârtie 9"
-    r = cv.inventar(conn, SCH, {"data": "2026-10-31", "linii": [{"articol_id": a["articol_id"], "faptic": 7}, {"articol_id": b["articol_id"], "faptic": 6}]})
+    r = cv.inventar(conn, SCH, {"data": "2026-10-31", "linii": [{"articol_id": a["articol_id"], "faptic": 7, "lipsa": "justificata"},   # [404] lipsa se încadrează
+                                                                {"articol_id": b["articol_id"], "faptic": 6}]})
     refs = {_ref(conn, x["inregistrare_id"]) for x in r["rezultate"]}
     assert refs == {"Listă de inventariere nr 1 din 31.10.2026"}, refs
 

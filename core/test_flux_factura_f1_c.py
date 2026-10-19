@@ -305,7 +305,7 @@ def test_eticheta_documentului_e_derivata_nu_fabricata():
 def test_nota_de_casa_poarta_documentul_operatiunii(conn):
     """MUTAȚIE: `document_ref` scos din INSERT-ul notei în `casa_api.adauga` -> None -> pică."""
     from core import casa_api
-    r = casa_api.adauga(conn, SCH, {"data": "2026-10-05", "categorie": "depunere_banca", "suma": 100, "document": "DP 7"})
+    r = casa_api.adauga(conn, SCH, {"data": "2026-10-05", "categorie": "ridicare_banca", "suma": 100, "document": "DP 7"})
     assert not r.get("eroare"), r
     with conn.cursor() as cur:
         cur.execute("SELECT document_ref FROM inregistrari WHERE sursa = 'casa'")

@@ -132,3 +132,147 @@ def test_376_trimestrul_cu_pierdere_se_declara_cu_0_si_e_valid_la_duk(conn, monk
     assert _103(res) == [0], res.obligatii
     v = duk.valideaza(xml, "d100", an=2026, luna=9)
     assert v["stare"] == "valid", "DUK a respins D100 cu 0: %s" % v
+
+
+# ── 378, lotul 9 (retestul 19.10.2026): rândul 25 se umple din contul 6581 ────────────────────────────────────────────────────────
+@pytest.fixture
+def conn_amenda(conn):
+    """Cazul din retest, refăcut cu cifre minime: venituri cumulate 4.600, amenda 100 pe 6581 validată pe 30.09 (6581 = 5311),
+    rezultatul contabil 4.500; T1 depus cu 600 lei."""
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM inregistrari_linii; DELETE FROM inregistrari")
+        _nota(cur, "2026-01-15", "5311", "704", 3750)
+        _nota(cur, "2026-08-14", "5311", "704", 850)
+        _nota(cur, "2026-09-30", "6581", "5311", 100)
+    return conn
+
+
+def _linia(linii, inceput):
+    """Singura linie care începe cu `inceput` (un mesaj al aplicației se compară întreg, nu prin sub-șir)."""
+    gasite = [x for x in linii if x.startswith(inceput)]
+    assert len(gasite) == 1, (inceput, linii)
+    return gasite[0]
+
+
+def _t1_depus_600(monkeypatch):
+    import datetime as _dt
+    _depuse(monkeypatch, [(3, {"obligatii": [{"cod_oblig": "103", "suma_plata": 600}]}, "iconta", _dt.date(2026, 4, 24))])
+
+
+def test_378_amenda_pe_6581_intra_la_nedeductibile_din_cont(conn_amenda, monkeypatch):
+    """Retestul 19.10: nedeductibile 0, profit 4.500, impozit 720, de plată 120. Corect: nedeductibile 100, profit 4.600, impozit 736,
+    de plată 136.
+    MUTAȚIA: `din_conturi` întors gol în `_impozit_cumulat` -> 120 -> ROȘU."""
+    _t1_depus_600(monkeypatch)
+    xml, res = d100.genereaza(conn_amenda, _SCHEMA, Perioada(2026, trim=3))
+    P = res.profit["P"]
+    # CF art.25 alin.(4) lit.b): „[...] amenzile, confiscările și penalitățile, datorate către autoritățile române/străine [...]” nu sunt
+    # deductibile -> rd.25 = rulajul 6581 = 100; CF art.19 alin.(1): rezultatul fiscal = 4.500 + 100 = 4.600
+    assert (P["P25"], P["P34"], P["P40"]) == (100, 100, 4600), P
+    # CF art.17: 16% × 4.600 = 736; OPANAF 587/2016 pct.3.1.2: − 600 declarat pe T1 = 136
+    assert res.profit["cumulat"] == 736 and _103(res) == [136], res.obligatii
+    assert _linia(res.sinteza, "deduceri:") == (
+        "deduceri: 0,00 lei; venituri neimpozabile: 0,00 lei; cheltuieli nedeductibile: 100,00 lei (din care rd.25 — amenzi, majorări și "
+        "penalități (art.25 alin.(4) lit.b), din contul 6581 — despăgubiri, amenzi și penalități: 100,00 lei — scrie rândul în Registrul "
+        "de evidență fiscală dacă o parte e deductibilă)")
+
+
+def test_378_randul_scris_in_registru_inlocuieste_contul(conn_amenda, monkeypatch):
+    """Partea deductibilă din 6581 (o despăgubire contractuală) se scoate scriind rândul 25: cifra omului înlocuiește contul, nu se adună.
+    MUTAȚIA: în `calcul_cu_ajustari`, `din_conturi` aplicat peste registru (fără `if k not in I`) -> rd.25 = 100 -> ROȘU."""
+    from core import ajustari_fiscale as af
+    with conn_amenda.cursor() as cur:
+        af.adauga(cur, _SCHEMA, 2026, 3, "P25", 40, "amenda ITM; restul e penalitate contractuală")
+    _t1_depus_600(monkeypatch)
+    xml, res = d100.genereaza(conn_amenda, _SCHEMA, Perioada(2026, trim=3))
+    # CF art.19 alin.(1): 4.500 + 40 = 4.540; 16% = 726,4 -> 726 (rotunjit la leu); − 600 = 126
+    assert res.profit["P"]["P25"] == 40 and _103(res) == [126], (res.profit["P"].get("P25"), res.obligatii)
+    assert _linia(res.sinteza, "deduceri:") == ("deduceri: 0,00 lei; venituri neimpozabile: 0,00 lei; cheltuieli nedeductibile: 40,00 "
+                                                "lei")   # fără „din care … din contul 6581”: cifra omului înlocuiește contul
+
+
+def test_378_d101_ia_acelasi_rand_din_cont(conn_amenda):
+    """Aceeași regulă în D101 (o singură sursă): rd.25 = 100 din 6581.
+    MUTAȚIA: `din_conturi=` scos din `d101.genereaza` -> rd.25 = 0 -> ROȘU."""
+    from core import d101
+    xml, res = d101.genereaza(conn_amenda, _SCHEMA, Perioada(2026))
+    # CF art.25 alin.(4) lit.b) -> rd.25 = 100; CF art.19 alin.(1) -> rd.40 = 4.600
+    assert (res.P["P25"], res.P["P40"]) == (100, 4600), res.P
+
+
+def test_378_d100_cu_amenda_e_valid_la_duk(conn_amenda, monkeypatch):
+    """Judecătorul final pe XML-ul cu rd.25 derivat."""
+    from core import duk
+    _t1_depus_600(monkeypatch)
+    xml, res = d100.genereaza(conn_amenda, _SCHEMA, Perioada(2026, trim=3))
+    v = duk.valideaza(xml, "d100", an=2026, luna=9)
+    assert v["stare"] == "valid", "DUK a respins D100: %s" % v
+
+
+# ── 382, lotul 9: amortizarea în ciornă și notele nevalidate se spun la generare ──────────────────────────────────────────────────
+def _amortizare_in_ciorna(cur):
+    """Un mijloc fix de 12.000 lei, pus în funcțiune pe 15.12.2025, 60 de luni, liniar -> 200 lei/lună din 01/2026; amortizarea 01–07/2026
+    generată și nevalidată (ciornă), 08–09/2026 validată."""
+    cur.execute("INSERT INTO mijloace_fixe (cod,denumire,cont_imobilizare,cont_amortizare,valoare,dnf_luni,data_pif,metoda) "
+                "VALUES ('MF1','Laptop','2131','2813',12000,60,'2025-12-15','liniara')")
+    for luna in range(1, 10):
+        cur.execute("INSERT INTO inregistrari (data,status,sursa,descriere,document_ref) VALUES (%s,%s,'amortizare','Amortizare','AM') "
+                    "RETURNING id", ("2026-%02d-28" % luna, "ciorna" if luna <= 7 else "validata"))
+        cur.execute("INSERT INTO inregistrari_linii (inregistrare_id,cont_debit,cont_credit,suma) VALUES (%s,'6811','2813',200)",
+                    (cur.fetchone()[0],))
+
+
+def test_382_d100_spune_amortizarea_nevalidata_din_fereastra_cumulata(conn_amenda, monkeypatch):
+    """Retestul 19.10: „D100 T3/2026 calculează fără ea și nu avertizează nimic”. Acum avertismentul numește lunile, contul și suma, iar
+    ciornele (din toată fereastra 01.01 – 30.09) sunt numite.
+    MUTAȚIA: `avert.extend(_d101.avertismente_evidenta(...))` scos din `profit_trimestru` -> ROȘU."""
+    with conn_amenda.cursor() as cur:
+        _amortizare_in_ciorna(cur)
+    _t1_depus_600(monkeypatch)
+    xml, res = d100.genereaza(conn_amenda, _SCHEMA, Perioada(2026, trim=3))
+    assert _linia(res.avertismente, "Amortizarea") == (
+        "Amortizarea pe 01–07/2026 (contul 2813, 1.400,00 lei) e generată, dar nevalidată: D100 pe T3/2026 se calculează fără ea, deci "
+        "profitul și impozitul ies mai mari. Validează notele de amortizare în Registrul jurnal, apoi generează din nou.")
+    assert _linia(res.avertismente, "D100 pe T3/2026 nu cuprinde").startswith(
+        "D100 pe T3/2026 nu cuprinde 7 note nevalidate din 01.01.2026 – 30.09.2026: nota din 28.01.2026 — AM, 200,00 lei;")
+
+
+def test_382_d101_spune_amortizarea_neinregistrata(conn_amenda, monkeypatch):
+    """Aceeași regulă la D101 (anul): fără nicio notă de amortizare, lunile încheiate apar „neînregistrate”.
+    MUTAȚIA: `res.avertismente.extend(avertismente_evidenta(...))` scos din `d101.genereaza` -> ROȘU."""
+    import datetime as _dt
+    from core import common, d101
+    monkeypatch.setattr(common, "azi_ro", lambda: _dt.date(2026, 10, 19))   # ultima lună încheiată: 09/2026
+    with conn_amenda.cursor() as cur:
+        cur.execute("INSERT INTO mijloace_fixe (cod,denumire,cont_imobilizare,cont_amortizare,valoare,dnf_luni,data_pif,metoda) "
+                    "VALUES ('MF1','Laptop','2131','2813',12000,60,'2025-12-15','liniara')")
+    xml, res = d101.genereaza(conn_amenda, _SCHEMA, Perioada(2026))
+    assert _linia(res.avertismente, "Amortizarea") == (
+        "Amortizarea pe 01–09/2026 (contul 2813, 1.800,00 lei) e neînregistrată: D101 pe 2026 se calculează fără ea, deci profitul și "
+        "impozitul ies mai mari. Generează-o din Închidere lună („Generează amortizarea restantă”) și valideaz-o, apoi generează din nou.")
+
+
+def test_382_d100_micro_numeste_nota_de_venit_nevalidata(conn):
+    """Micro: o notă de venit nevalidată în trimestru se numește (impozitul pe venituri n-o cuprinde).
+    MUTAȚIA: avertismentul scos din ramura micro a lui `d100.genereaza` -> ROȘU."""
+    with conn.cursor() as cur:
+        cur.execute("UPDATE firma_profil SET regim_fiscal='micro'")
+        cur.execute("INSERT INTO inregistrari (data,status,sursa,descriere,document_ref) VALUES ('2026-08-20','ciorna','t','Vânzare','F9') "
+                    "RETURNING id")
+        cur.execute("INSERT INTO inregistrari_linii (inregistrare_id,cont_debit,cont_credit,suma) VALUES (%s,'5311','704',300)",
+                    (cur.fetchone()[0],))
+    xml, res = d100.genereaza(conn, _SCHEMA, Perioada(2026, trim=3))
+    assert _linia(res.avertismente, "D100 pe T3/2026 nu cuprinde") == (
+        "D100 pe T3/2026 nu cuprinde 1 notă nevalidată din 01.07.2026 – 30.09.2026: nota din 20.08.2026 — F9, 300,00 lei. "
+        "Validează în Registrul jurnal înainte de depunere și generează din nou.")
+
+
+def test_382_fereastra_documentelor_d100_la_profit_e_cumulata(conn):
+    """Documentele pe care se sprijină D100 T3 la profit sunt ale ferestrei 01.01 – 30.09 (calculul e cumulat): o notă din ianuarie
+    validată după generare o face depășită. La micro fereastra rămâne trimestrul.
+    MUTAȚIA: ramura „d100 la profit” scoasă din `coada_api.fereastra_perioadei` -> 2026-07-01 -> ROȘU."""
+    from core import coada_api
+    with conn.cursor() as cur:
+        assert coada_api.fereastra_perioadei(cur, _SCHEMA, "d100", 2026, None, 3) == ("2026-01-01", "2026-10-01")
+        cur.execute("UPDATE firma_profil SET regim_fiscal='micro'")
+        assert coada_api.fereastra_perioadei(cur, _SCHEMA, "d100", 2026, None, 3) == ("2026-07-01", "2026-10-01")

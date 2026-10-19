@@ -10,6 +10,7 @@ FIECARE FUNCȚIE PRIMEȘTE CURSORUL APELANTULUI. Nu deschide conexiuni, nu comit
 nu construiește `HTTPException` și nu decide niciun cod HTTP. *Așa rămâne întreagă tranzacția pe
 care o deține apelantul — contractul P4, care nu se redeschide aici.*
 """
+from decimal import Decimal
 
 
 def tip_si_transformare(cur, factura_id):
@@ -37,9 +38,29 @@ def factura_pentru_chitanta(cur, schema, factura_id):
     return cur.fetchone()
 
 
+#: [deficiența 417] factura stornată (seria, numărul, data), adusă pe factura de stornare — același SQL în detaliu / PDF
+#: (`facturi_api.detalii_factura`) și în loaderul e-Factura (`repo_efactura.factura_pentru_ubl`)
+SQL_STORNO_DIN = ("(SELECT json_build_object('serie', o.serie, 'numar', o.numar, 'data_emitere', o.data_emitere) "
+                  "FROM {s}facturi o WHERE o.id = {a}.storno_din_id) AS storno_din")
+
+#: [deficiența 416] suma facturilor de stornare ale facturii `{a}`, în moneda ei (negativă: liniile negate) — o singură definiție pentru
+#: starea de încasare, scadențar, notificările de scadență și cashflow (toleranța: `TOLERANTA_STORNATA`)
+SQL_STORNARI = "COALESCE((SELECT SUM(st.total) FROM {s}facturi st WHERE st.storno_din_id = {a}.id), 0)"
+#: [416] rămasul facturii = total + stornările ei (negative); sub toleranță = „stornată” integral (CF art.330 alin.(1) lit.b: factura cu
+#: valorile cu semnul minus anulează valorile facturii corectate). Toleranța de rotunjire, nu un prag fiscal: jumătate de ban.
+TOLERANTA_STORNATA = Decimal("0.005")
+
+
+def seteaza_act_identitate(cur, schema, factura_id, act):
+    """[402] actul de identitate al vânzătorului persoană fizică, pe borderoul de achiziție."""
+    cur.execute(f"UPDATE {schema}.facturi SET tert_act_identitate = %s WHERE id = %s", (act, factura_id))
+
+
 def pentru_cashflow(cur):
-    cur.execute("""SELECT directie, data_emitere, data_scadenta, total
-                           FROM facturi WHERE tip='factura' AND storno_din_id IS NULL""")
+    # [deficiența 416] totalul de după stornări (`repo_facturi.SQL_STORNARI`); factura stornată integral nu mai intră
+    st = SQL_STORNARI.format(s="", a="facturi")
+    cur.execute("SELECT directie, data_emitere, data_scadenta, total + " + st + " AS total "
+                "FROM facturi WHERE tip='factura' AND storno_din_id IS NULL AND total + " + st + " > %s", (TOLERANTA_STORNATA,))
     return cur.fetchall()
 
 
@@ -109,6 +130,16 @@ def actualizeaza_clasificarea(cur, schema, bucati_set, valori):
     """
     cur.execute(f"UPDATE {schema}.facturi SET " + ", ".join(bucati_set) + " WHERE id=%s",
                 valori)
+
+
+def actualizeaza_conturi_linii(cur, schema, fid, conturi):
+    """[deficiența 418b] Contul fiecărei linii a facturii PRIMITE, în ordinea liniilor (ca `actualizeaza_destinatii_linii`):
+    conturi[i] <-> linia i; gol = contul facturii."""
+    if not conturi:
+        return
+    cur.execute(f"SELECT id FROM {schema}.factura_linii WHERE factura_id=%s ORDER BY id", (fid,))
+    for lid, cont in zip([r[0] for r in cur.fetchall()], conturi):
+        cur.execute(f"UPDATE {schema}.factura_linii SET cont_cheltuiala=%s WHERE id=%s", ((str(cont or "").strip() or None), lid))
 
 
 def actualizeaza_destinatii_linii(cur, schema, fid, destinatii):

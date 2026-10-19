@@ -29,6 +29,20 @@ _common.registru_complet()
 
 
 @pytest.fixture(autouse=True)
+def _fara_anaf_la_statut_furnizor(monkeypatch, request):
+    """[418a] Statutul furnizorului facturii primite se citește din ANAF: în teste, ANAF „nu răspunde” (rămâne XML-ul, apoi alegerea
+    contabilului) — niciodată ANAF real. Un modul care probează funcția declară `STATUT_FURNIZOR_REAL = True` și simulează el ANAF."""
+    if getattr(request.module, "STATUT_FURNIZOR_REAL", False):
+        return
+    import functools
+    from core import anaf_api
+
+    def _jos(*a, **k):
+        raise OSError("ANAF simulat indisponibil (core/conftest.py)")
+    monkeypatch.setattr(anaf_api, "statut_furnizori", functools.partial(anaf_api.statut_furnizori, interogare=_jos))
+
+
+@pytest.fixture(autouse=True)
 def _fara_anaf_la_emitere(monkeypatch, request):
     """[05.10.2026, comanda Costin pct.5] Emiterea consultă ANAF pentru plătitorul de TVA al beneficiarului („RO” pe factură).
     Principiul de mai sus — testele lovesc ANAF pe MOCK, niciodată real — se aplică și aici: consultarea întoarce „nu se știe”.

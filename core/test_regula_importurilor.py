@@ -120,3 +120,29 @@ def test_nicio_exceptie_interna_in_mesaj():
                 elif any(isinstance(x, ast.Name) and x.id == h.name for x in ast.walk(n)):
                     rele.append("%s:%d" % (os.path.basename(fn), n.lineno))
     assert not rele, "textul unei excepții interne poate ajunge la utilizator: %s" % rele
+
+
+# ── 4. [385, lotul 9] dublura din fișier pe cheia importului se respinge numit — la TOATE importurile cu cheie ──────────────────────
+#: parser -> (verificarea, fișierul cu aceeași cheie pe rândurile 2 și 3, regula așteptată pe rândul 3). RIP n-are cheie: două încasări
+#: identice în aceeași zi sunt legitime (două bonuri), deci nu intră aici.
+DUBLURI = {
+    "core.articole_import_api": ("Denumire;UM;Cantitate;Pret;Cont stoc\nMarfa valida;buc;10;2;371\nMarfa valida;buc;3;2;371\n",
+                                 "articol_dublat"),
+    "core.asociati_import_api": ("Nume;CNP;Cota\nPop Ion;%s;50\nIon Pop;%s;50\n" % (CNP, CNP), "identificator_dublat"),
+    "core.salariati_import_api": ("Nume;Prenume;CNP;Functie baza;Norma;Salariu brut\nPop;Ion;%s;Da;8;5000\nPop;Ion;%s;Da;8;5100\n"
+                                  % (CNP, CNP), "identificator_dublat"),
+    "core.mijloace_fixe_import_api": ("Cod;Denumire;Valoare;Data PIF;Durata luni;Cont imobilizare;Cont amortizare\n"
+                                      "MF1;Laptop;5000;01.03.2024;36;2141;2814\nMF1;Imprimanta;900;01.03.2024;36;2141;2814\n", "cod_duplicat"),
+    "core.istoric_declaratii_import_api": ("Tip;Luna;An;Data depunerii\nD300;08;2026;25.09.2026\nD300;08;2026;25.09.2026\n", "rand_dublat"),
+}
+
+
+@pytest.mark.parametrize("modul", sorted(DUBLURI))
+def test_dublura_din_fisier_e_respinsa_numit(modul):
+    m = __import__(modul, fromlist=["x"])
+    text, regula = DUBLURI[modul]
+    randuri = m.extrage(text.encode(), "fisier.csv")
+    er = m.verifica_randuri(randuri)
+    pe3 = [e.get("regula") for e in er if e.get("rand") == 3]
+    assert regula in pe3, (modul, er)
+    assert not [e for e in er if e.get("rand") == 2 and e.get("regula") == regula], (modul, er)   # primul rând intră

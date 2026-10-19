@@ -34,8 +34,14 @@ function blocheazaButon(metoda) {
 
 async function cere(metoda, cale, corp) {
   const deblocheaza = blocheazaButon(metoda);
+  const declansator = metoda !== "GET" && _butonScriere && Date.now() - _butonScriereT < FEREASTRA_REFUZ_MS ? _butonScriere : null;
   try {
     return await _cere(metoda, cale, corp);
+  } catch (e) {
+    // [410] refuzul serverului pentru cererea pornită de butonul apăsat: helperul care îl afișează (în `catch`-ul ecranului) îl pune și în
+    // lista „NU s-a salvat” de lângă buton
+    if (declansator) { _butonScriere = declansator; _butonScriereT = Date.now(); _aprindeButonul(); }
+    throw e;
   } finally { deblocheaza(); }
 }
 // [login_401_v1] mesaj de eroare din raspuns, cu text prietenos pe statusuri fara corp
@@ -154,23 +160,41 @@ function _anuntaSchimbarea() {
 // ce ruta a răspuns — deci un mesaj compus din răspuns („creată ca ciornă”) mințea. Middleware-ul trimite antetul
 // `X-Iconta-La-Validare` (etichetele elementelor din coadă); aici ajunge pe rezultat ca `laValidare`. Mesajele de salvare spun starea
 // prin `stareNota` / `pasNota`, nu prin cuvântul „ciornă” scris de mână (gard: `core/test_stare_nota_salvata.py`).
+// [deficiența 368, decizia Costin 19.10.2026 „Se validează automat”] La o firmă în partidă simplă (PFA / II / IF) notele cererii se validează
+// automat, ca note interne (`uc_coada.note_interne`): antetele `X-Iconta-Note-Interne` (etichetele) și `X-Iconta-Note-Interne-Refuzate`
+// ([{eticheta, motiv}] — nota refuzată rămâne ciornă) ajung pe rezultat ca `interne` / `interneRefuzate`.
 function _cuLaValidare(r, date) {
-  const lv = r.headers && r.headers.get("X-Iconta-La-Validare");
-  if (lv && date && typeof date === "object") {
-    try { date.laValidare = JSON.parse(decodeURIComponent(lv)); } catch { date.laValidare = []; }
+  if (!date || typeof date !== "object" || !r.headers) return date;
+  for (const [antet, cheie] of [["X-Iconta-La-Validare", "laValidare"], ["X-Iconta-Note-Interne", "interne"],
+                                ["X-Iconta-Note-Interne-Refuzate", "interneRefuzate"]]) {
+    const v = r.headers.get(antet);
+    if (v) { try { date[cheie] = JSON.parse(decodeURIComponent(v)); } catch { date[cheie] = []; } }
   }
   return date;
 }
-/** Starea notei (notelor) după salvare: „trimisă la validare în cabinet” sau „ciornă”. */
+/** [368] Ce e nota internă a unei firme în partidă simplă — o singură definiție a textului. */
+export const TEXT_NOTA_INTERNA = "Poartă TVA-ul pentru D300 / D394; evidența PFA e registrul de încasări și plăți.";
+function _numar(x) { return (x && x.length) || 0; }
+/** [368] Notele interne refuzate ale cererii ([{eticheta, motiv}], din antet — nu din corpul rutei): o singură citire, pentru ecrane. */
+export function refuzuriInterne(r) {
+  return (r && r.interneRefuzate) || [];
+}
+/** Starea notei (notelor) după salvare: „notă internă”, „trimisă la validare în cabinet” sau „ciornă”. */
 export function stareNota(r, plural = false) {
-  const lv = r && r.laValidare && r.laValidare.length;
+  if (r && _numar(r.interne) && !_numar(r.interneRefuzate)) return plural ? "note interne" : "notă internă";
+  const lv = r && _numar(r.laValidare);
   return lv ? (plural ? "trimise la validare în cabinet" : "trimisă la validare în cabinet") : (plural ? "ciorne" : "ciornă");
 }
-/** Pasul următor, după starea reală. */
+/** Pasul următor, după starea reală. Refuzul validării interne (R3, casa sub zero, perioada blocată…) se spune, cu motivul. */
 export function pasNota(r, plural = false) {
-  const lv = r && r.laValidare && r.laValidare.length;
-  return lv ? (plural ? "Cabinetul le validează; până atunci nu se modifică și nu se șterg." : "Cabinetul o validează; până atunci nu se modifică și nu se șterge.")
+  const rf = refuzuriInterne(r);
+  if (r && _numar(r.interne) && !rf.length) return TEXT_NOTA_INTERNA;
+  const refuz = rf.map((x) => `Nota ${esc(x.eticheta || "")} nu s-a validat ca notă internă: ${esc(x.motiv || "")}`).join(" ");
+  const lv = r && _numar(r.laValidare);
+  if (refuz && !lv) return refuz + (rf.length > 1 ? " Până atunci rămân ciorne și nu intră în D300 / D394." : " Până atunci rămâne ciornă și nu intră în D300 / D394.");
+  const pas = lv ? (plural ? "Cabinetul le validează; până atunci nu se modifică și nu se șterg." : "Cabinetul o validează; până atunci nu se modifică și nu se șterge.")
     : (plural ? "Le validezi din Registrul jurnal." : "O validezi din Registrul jurnal.");
+  return refuz ? refuz + " " + pas : pas;
 }
 
 // ── [deficiența 279 + clasa 259] REFUZUL PE RÂND ───────────────────────────────────────────────────────────────────────────
@@ -346,8 +370,12 @@ export async function deschide(cale, optiuni = {}) {
 
 async function cereForm(cale, formData) {
   const deblocheaza = blocheazaButon("POST");
+  const declansator = _butonScriere && Date.now() - _butonScriereT < FEREASTRA_REFUZ_MS ? _butonScriere : null;
   try {
     return await _cereForm(cale, formData);
+  } catch (e) {
+    if (declansator) { _butonScriere = declansator; _butonScriereT = Date.now(); _aprindeButonul(); }   // [410] ca la `cere`
+    throw e;
   } finally { deblocheaza(); }
 }
 async function _cereForm(cale, formData) {
@@ -433,12 +461,15 @@ export function arataMesaj(el, txt, tip = "info") {
   el.className = el.className.replace(/\bmsg-(eroare|avert|info|ok)\b/g, "").trim();
   el.classList.add("msg-" + tip);
   if (txt) aduInVedere(el);   // [lotul 07.10 pct.3]
+  if (txt && tip === "eroare") refuzSalvare({ mesaj: el });   // [410] refuzul formularului: „NU s-a salvat” lângă butonul apăsat
 }
 
 // [G10 cap.6 v2.30] eroare de camp: <span class="msg-eroare" data-camp> imediat dupa inputul #idCamp.
 // Intoarce false daca #idCamp nu exista -> apelantul cade la B (zona generica). Fallback OBLIGATORIU.
 export function eroareCamp(root, idCamp, txt) {
-  const inp = (root || document).querySelector("#" + idCamp);
+  // un nume de câmp din refuzul serverului poate fi oricum (`linii[0].cantitate`, de la validarea corpului): selectorul se scapă, iar un
+  // nume fără câmp pe ecran cade la zona generică, nu aruncă
+  const inp = idCamp ? (root || document).querySelector("#" + CSS.escape(String(idCamp))) : null;
   if (!inp) return false;
   // [fieldmark 18.08.2026] marcaj VIZUAL pe campul vinovat (contur rosu + aria-invalid), nu doar mesaj
   // ancorat: la un formular lung, mesajul rosu nu spune singur CARE input e problema. Regula 14 pct.4.
@@ -453,7 +484,93 @@ export function eroareCamp(root, idCamp, txt) {
   }
   sp.textContent = txt;
   aduInVedere(inp);   // [lotul 07.10 pct.3] câmpul vinovat (cel mai de sus, dacă sunt mai multe) intră în vedere
+  refuzSalvare({ camp: inp, txt });   // [410] și în lista „NU s-a salvat” de lângă butonul apăsat
   return true;
+}
+
+// [deficiența 410, retestul Costin 19.10.2026, PRIORITAR — clasă, TOATE formularele] „La orice Salvează refuzat: «NU s-a salvat» lângă
+// buton + lista tuturor câmpurilor lipsă cu trimitere; nu se pierde ce s-a scris.” Instanța: Date firmă, câmpurile marcate erau în afara
+// vederii (sau într-un bloc ascuns), iar lângă „Salvează” nu apărea nimic. UN mecanism, aici, nu câte unul pe ecran:
+//   - butonul apăsat care SCRIE (`data-actiune` cu POST / PUT / PATCH / DELETE, sau fără declarație) e ținut minte la clic (captură);
+//   - orice refuz de câmp (`eroareCamp`, deci și erorile de câmp întoarse de server) și orice refuz de formular (`arataMesaj(…,
+//     "eroare")`) de după acel clic se adună în `.refuz-salvare` (role=alert), pus imediat după rândul butonului: „NU s-a salvat.”, apoi
+//     câmpurile, fiecare cu eticheta lui și cu trimitere (clic = câmpul în vedere, cu focus), iar un refuz fără câmp trimite la mesajul
+//     lui („motivul e mai jos/sus”, DS cap.6 v2.89: același text nu apare de două ori);
+//   - câmpul corectat iese din listă; lista goală dispare; un clic nou pe buton o golește. Nimic nu redesenează formularul, deci ce s-a
+//     scris rămâne. Gard: verificator REFUZ_SALVARE + e2e `test_def_410_*`.
+//   Refuzul se leagă de buton numai dacă vine din clicul lui: în partea sincronă a handlerului (validarea din ecran) sau din cererea
+//   pornită de el (`cere`) — nu un mesaj apărut mai târziu (previzualizarea de după tastare, un buton care doar deschide formularul).
+const _METODA_SCRIERE = /(^|\|)\s*(POST|PUT|PATCH|DELETE)\s/;
+const FEREASTRA_REFUZ_MS = 300;
+let _butonScriere = null, _butonScriereT = 0, _butonViu = false;
+// „viu” = partea sincronă a handlerului clicului (validarea din ecran) sau `catch`-ul de după o cerere pornită de el; se stinge la
+// următorul ciclu al buclei de evenimente
+function _aprindeButonul() { _butonViu = true; setTimeout(() => { _butonViu = false; }, 0); }
+document.addEventListener("click", (e) => {
+  const b = e.target instanceof Element ? e.target.closest("button") : null;
+  if (b && b.closest(".refuz-salvare")) return;   // trimiterile din listă nu schimbă butonul
+  // butonul care poate SCRIE: cu acțiune de scriere declarată, sau fără nicio declarație (formularele generice, ex. Operațiuni — o
+  // acțiune pe rută variabilă); nu cel declarat numai de citire (GET) și nici cel marcat „fără acțiune” (Verifică, + rând)
+  const _da = b && b.getAttribute("data-actiune");
+  _butonScriere = b && !b.hasAttribute("data-fara-actiune") && (_da == null || _METODA_SCRIERE.test(_da + " ")) ? b : null;
+  _butonScriereT = Date.now();
+  _aprindeButonul();
+  if (_butonScriere && _butonScriere._refuz) { _butonScriere._refuz.remove(); _butonScriere._refuz = null; }
+}, true);
+function _etichetaCamp(inp) {
+  const l = inp.closest("label") || (inp.id && document.querySelector('label[for="' + CSS.escape(inp.id) + '"]'));
+  const t = l && (l.querySelector(".camp-eticheta") || l);
+  const txt = ((t && t.textContent) || inp.getAttribute("aria-label") || inp.getAttribute("placeholder") || inp.id || "câmp")
+    .replace(/[*]/g, "").replace(/\s+/g, " ").trim();
+  return txt.length > 60 ? txt.slice(0, 57) + "…" : txt;
+}
+export function refuzSalvare({ camp = null, txt = "", mesaj = null } = {}) {
+  const b = _butonScriere;
+  if (!b || !b.isConnected || !_butonViu) return;
+  let box = b._refuz;
+  if (!box || !box.isConnected) {
+    box = document.createElement("div");
+    box.className = "refuz-salvare";
+    box.setAttribute("role", "alert");
+    box.innerHTML = '<b>NU s-a salvat.</b><ul class="refuz-salvare-lista"></ul>';
+    const rand = b.parentElement && !b.parentElement.matches(".fereastra-corp, body") ? b.parentElement : b;
+    rand.insertAdjacentElement("afterend", box);
+    b._refuz = box;
+  }
+  const lista = box.querySelector(".refuz-salvare-lista");
+  const li = document.createElement("li");
+  const a = document.createElement("button");
+  a.type = "button";
+  a.className = "btn-link";
+  const tinta = camp || mesaj;
+  if (camp) {
+    if ([...lista.children].some((x) => x._tinta === camp)) return;   // un câmp, o dată
+    a.textContent = _etichetaCamp(camp);
+    li.append(a, document.createTextNode(" — " + txt));
+  } else {
+    if ([...lista.children].some((x) => x._tinta === mesaj)) return;
+    const jos = mesaj.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_PRECEDING;
+    a.textContent = "motivul e " + (jos ? "mai jos" : "mai sus");
+    li.append(a);
+  }
+  li._tinta = tinta;
+  a.addEventListener("click", () => {
+    // un bloc închis care ține câmpul se deschide întâi (detalii pliate)
+    for (let d = tinta.closest("details"); d; d = d.parentElement && d.parentElement.closest("details")) d.open = true;
+    tinta.scrollIntoView({ block: "center" });
+    if (camp) focusFaraSalt(camp);
+  });
+  lista.appendChild(li);
+  aduInVedere(box);
+}
+function _scoateDinRefuz(camp) {
+  // după ce zona de refuz a formularului s-a golit (`stergeEroriDupaCorectare`): iese câmpul corectat și orice mesaj rămas gol
+  queueMicrotask(() => document.querySelectorAll(".refuz-salvare").forEach((box) => {
+    [...box.querySelectorAll(".refuz-salvare-lista > li")].forEach((li) => {
+      if (li._tinta === camp || !li._tinta.isConnected || (!li._tinta.matches("input, select, textarea") && !li._tinta.textContent.trim())) li.remove();
+    });
+    if (!box.querySelector(".refuz-salvare-lista > li")) box.remove();
+  }));
 }
 
 // [deficiența 290, comanda Costin 16.10.2026, verbatim în DECIZII — clasă, toate formularele] „Mesajele de eroare din formulare nu dispar
@@ -463,15 +580,25 @@ export function eroareCamp(root, idCamp, txt) {
 // înaintea handlerului ecranului: o eroare nouă pusă de handler (fișierul prea mare) rămâne. Refuzul de pe un rând (`refuzPeRand`) nu
 // ține de formular: rămâne. Gard: e2e `test_def_290_*` + verificator ERORI_DUPA_CORECTARE.
 export const ZONE_EROARE_FORMULAR = ".msg-eroare:not([data-camp]):not(.msg-refuz-rand), .mig-eroare, .dlg-eroare, .login-eroare";
+// [410, găsit de e2e: primul clic pe „Adaugă” se pierdea] `change` vine și la PĂRĂSIREA câmpului, adică la apăsarea butonului: dacă o
+// eroare de deasupra butonului dispare atunci, rândurile urcă între apăsare și eliberare, iar clicul cade pe alt element — butonul „nu
+// face nimic”. Cât e apăsat un buton, `change` nu mai șterge nimic: tastarea (`input`) a șters deja, iar handlerul butonului
+// revalidează oricum.
+let _apasat = false;
+document.addEventListener("pointerdown", () => { _apasat = true; }, true);
+document.addEventListener("pointerup", () => { _apasat = false; }, true);
+document.addEventListener("pointercancel", () => { _apasat = false; }, true);
 export function stergeEroriDupaCorectare(ev) {
   const c = ev && ev.target;
   if (!(c instanceof Element) || !c.matches("input, select, textarea")) return;
+  if (ev.type === "change" && _apasat && c.matches("input:not([type=checkbox]):not([type=radio]):not([type=file]), textarea")) return;
   if (c.id) {
     const sp = c.parentElement && c.parentElement.querySelector('.msg-eroare[data-camp="' + c.id + '"]');
     if (sp) sp.remove();
   }
   c.classList.remove("camp-invalid");
   c.removeAttribute("aria-invalid");
+  _scoateDinRefuz(c);   // [410] câmpul corectat iese din lista „NU s-a salvat”
   const zona = c.closest("form, .fereastra-corp");
   if (!zona) return;
   // numai textul: unele zone poartă clasa din șablon și primesc apoi textul direct (`#bc-msg`, `#d-msg` …) — clasa rămâne a lor. Toate
@@ -513,9 +640,11 @@ export function daNu(el) {
   return !el || el.value === "" ? null : el.value === "true";
 }
 
-// Primul select vizibil din `selectori` rămas pe „— alege —” primește refuzul lângă el; întoarce true dacă lipsește o alegere.
+// Fiecare select vizibil din `selectori` rămas pe „— alege —” primește refuzul lângă el; întoarce true dacă lipsește o alegere.
 export function cereAlegerile(root, selectori) {
+  // [deficiența 410] TOATE alegerile lipsă se marchează (și intră în lista „NU s-a salvat”), nu numai prima
   const r = root || document;
+  let lipsa = false;
   for (const s of selectori) {
     const el = r.querySelector(s);
     if (!el || el.offsetParent === null || el.disabled) continue;      // ascuns / inactiv: nu se cere
@@ -523,10 +652,10 @@ export function cereAlegerile(root, selectori) {
     if (!o || o.hasAttribute("data-alege")) {
       if (el.id) eroareCamp(r, el.id, "Alege o valoare — aplicația nu alege în locul tău.");
       else { el.classList.add("camp-invalid"); el.setAttribute("aria-invalid", "true"); aduInVedere(el); }
-      return true;
+      lipsa = true;
     }
   }
-  return false;
+  return lipsa;
 }
 
 // [STANDARD_ATENTIONARE] confirmare in caseta standard, inlocuieste confirm() nativ.

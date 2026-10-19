@@ -29,6 +29,7 @@ import dataclasses
 import datetime
 import decimal
 
+from core import nomenclator_obligatii as _nom_oblig
 from core.d101_randuri import denumire_d101 as _den_d101, rand_d101 as _rand_d101
 from core.d300_randuri import denumire_rand as _den_d300, rand_formular as _rand_d300
 
@@ -71,8 +72,11 @@ class Sectiune:
     """
 
     def __init__(self, nume, atribut, chei=(), valori=(), fara_zero=False, monetare=(),
-                 proprietati=(), element=None, ascunse=(), cheie_om=None, formate=None, chei_om=None):
+                 proprietati=(), element=None, ascunse=(), cheie_om=None, formate=None, chei_om=None, nomenclator=None):
         self.nume = nume
+        # [comanda Costin 9.1, A.3] declarația (d100 / d710 / d112) al cărei nomenclator de obligații dă, lângă „cod obligație”, coloana
+        # „denumire obligație” — denumirea oficială din ordin (`core.nomenclator_obligatii`), nu un text scris de mână
+        self.nomenclator = nomenclator
         # [Retest 2 pct.2] cheia unui dicționar de rânduri e atributul XML („R17_2”, „P081”); pe ecran pleacă rândul formularului
         # („rândul 19, coloana TVA”, „rândul 8.1”) — funcția vine din modulul de rânduri al declarației, sursa unică
         self.cheie_om = cheie_om
@@ -104,7 +108,7 @@ class Sectiune:
 #: primește antetul de aici, niciodată numele câmpului din cod.
 ETICHETE = {
     # D100 / D710 / D112
-    "cod_oblig": "cod obligație", "suma_dat": "sumă datorată", "suma_plata": "sumă de plată", "cod_bugetar": "cod bugetar",
+    "cod_oblig": "cod obligație", "denumire_oblig": "denumire obligație", "suma_dat": "sumă datorată", "suma_plata": "sumă de plată", "cod_bugetar": "cod bugetar",
     "scadenta": "scadență", "nr_evid": "număr de evidență", "cota": "cotă", "suma_dat_i": "datorat inițial",
     "suma_dat_c": "datorat corectat", "suma_ded_i": "deductibil inițial", "suma_ded_c": "deductibil corectat",
     "suma_plata_i": "de plată inițial", "suma_plata_c": "de plată corectat", "datorat": "datorat",
@@ -126,13 +130,13 @@ ETICHETE = {
 
 # HARTA. Numele coloanelor sunt pentru OM (deci cu diacritice); numele atributelor sunt ale codului.
 COMPONENTE = {
-    "d100": (Sectiune("Obligații de plată", "obligatii", monetare=("suma_dat",), element="Obligatie"),),
+    "d100": (Sectiune("Obligații de plată", "obligatii", monetare=("suma_dat",), element="Obligatie", nomenclator="d100"),),
     # D710 nu e „D100 cu alt nume": `ObligatieRect` poarta suma INITIALA si cea CORECTATA, pe
     # fiecare latura, plus deducerile — iar suma care ajunge pe declaratie e o `@property`.
     "d710": (Sectiune("Obligații rectificate", "obligatii",
                       monetare=("suma_dat_i", "suma_dat_c", "suma_ded_i", "suma_ded_c",
                                 "suma_plata_i", "suma_plata_c"),
-                      proprietati=("suma_plata_i", "suma_plata_c"), element="ObligatieRect"),),
+                      proprietati=("suma_plata_i", "suma_plata_c"), element="ObligatieRect", nomenclator="d710"),),
     "d205": (Sectiune("Beneficiari", "beneficiari",
                       monetare=("baza1", "imp1", "castig1", "pierdere1", "divid_d", "divid_p"), element="Beneficiar"),),
     "d301": (Sectiune("Operațiuni", "operatiuni", monetare=("val_valuta", "baza", "tva"), element="Operatiune"),),
@@ -155,7 +159,7 @@ COMPONENTE = {
     # [R105, 30.08.2026] D112 a intrat aici in ziua in care motorul ei a capatat obiect de rezultat.
     # Doua sectiuni, fiindca declaratia are doua feluri de pozitii: ce datoreaza ANGAJATORUL la buget
     # (randurile `angajatorA`) si contributiile FIECARUI asigurat.
-    "d112": (Sectiune("Obligații de plată la buget", "obligatii", monetare=("datorat",), element="ObligatieD112"),
+    "d112": (Sectiune("Obligații de plată la buget", "obligatii", monetare=("datorat",), element="ObligatieD112", nomenclator="d112"),
              Sectiune("Contribuțiile asiguraților", "asigurati",
                       monetare=("brut", "baza_cas", "cas", "cass", "impozit"), element="AsiguratD112")),
     # liniile notelor și ale facturilor pleacă normalizate la {cont, debit, credit} (`_linie`), indiferent de forma lor în motor
@@ -210,11 +214,16 @@ def _valoare_rand(v):
     return _simplu(v)
 
 
-def _rand_din_lista(element, proprietati=(), ascunse=()):
+def _rand_din_lista(element, proprietati=(), ascunse=(), nomenclator=None):
     if dataclasses.is_dataclass(element) and not isinstance(element, type):
         # câmp cu câmp (nu `asdict`, care ar transforma liniile în dicționare înainte de `_linie`)
-        rand = {ETICHETE.get(f.name, f.name): _valoare_rand(getattr(element, f.name))
-                for f in dataclasses.fields(element) if f.name not in ascunse}
+        rand = {}
+        for f in dataclasses.fields(element):
+            if f.name in ascunse:
+                continue
+            rand[ETICHETE.get(f.name, f.name)] = _valoare_rand(getattr(element, f.name))
+            if nomenclator and f.name == "cod_oblig":
+                rand[ETICHETE["denumire_oblig"]] = _nom_oblig.denumire(nomenclator, getattr(element, f.name))
         for p in proprietati:
             rand[ETICHETE.get(p, p)] = _simplu(getattr(element, p))
         return rand
@@ -239,6 +248,20 @@ def _rand_din_dict(cheie, valoare, sec):
     return rand
 
 
+def ordine_formular(rand_om):
+    """Cheia de ordine a unui rând de formular, din eticheta lui pentru om: „rândul 3.1, coloana TVA” -> ((3, 1), 2); „rândul 38^1” ->
+    ((38, 1), 0); „rândul 9, coloana Valoare” -> ((9,), 1). Un rând fără număr (eticheta oficială a unui atribut din afara formularului
+    de azi) trece la sfârșit, în ordinea etichetei."""
+    import re as _re
+    t = str(rand_om or "")
+    m = _re.match(r"rândul (\d+(?:[.^]\d+)*)", t)
+    if not m:
+        return ((10 ** 6,), 9, t)
+    numar = tuple(int(x) for x in _re.split(r"[.^]", m.group(1)))
+    coloana = 1 if "coloana Valoare" in t else 2 if "coloana TVA" in t else 0
+    return (numar, coloana, "")
+
+
 def _randuri(res, sec):
     sursa = getattr(res, sec.atribut, None)
     if not sursa:
@@ -249,8 +272,12 @@ def _randuri(res, sec):
             randuri = [r for r in randuri
                        if any(v not in (0, 0.0, None, "") for n, v in r.items()
                               if n in sec.valori)]
+        if "rând" in sec.chei:
+            # [395, retestul 19.10.2026: „D300 «Din ce e făcută declarația»: rândurile vin în ordinea 9, 10, 3, 3.1, 19, nu în ordinea
+            # formularului”] rândurile formularului (D300, D101) se arată în ordinea lor din formular, nu în ordinea dicționarului
+            randuri.sort(key=lambda r: ordine_formular(r.get("rând")))
         return randuri
-    randuri = [_rand_din_lista(e, sec.proprietati, sec.ascunse) for e in sursa]
+    randuri = [_rand_din_lista(e, sec.proprietati, sec.ascunse, sec.nomenclator) for e in sursa]
     for camp, f in sec.formate.items():
         et = ETICHETE.get(camp, camp)
         for r in randuri:

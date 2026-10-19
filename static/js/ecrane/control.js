@@ -3,9 +3,9 @@
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, esc, cate } from "../api.js?v=462d75fbab";  /* esc_nc27 */
+import { api, esc, cate } from "../api.js?v=158edee964";  /* esc_nc27 */
 import { semaforPatruLumini, publicaSumarControl } from "./semafor.js?v=60f4db5322";  // [125 + 224] aceleași patru lumini ca ale cardului
-import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=1b49c04aa7";  // renderer unic al verdictului (DS cap.20)
+import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2daa29640d";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {
@@ -62,7 +62,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
         <span class="cf-dot" style="background:${col.dot}"></span>${etichetaStare(f.stare)}
       </span>
     `;
-    rand.addEventListener("click", () => nav.deschide("Detaliu firmă", (cc, nn) => detaliuFirma(cc, nn, f)));  // [p122_nav_stiva]
+    rand.addEventListener("click", () => deschideDetaliu(nav, f));  // [p122_nav_stiva] [396]
     lista.appendChild(rand);
   });
 
@@ -71,7 +71,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
   // portofoliu->detaliu). Firma negasita (fara acces / tid gresit) -> ramai pe portofoliu, nu crapa.
   if (tidAuto != null) {
     const f = firme.find((x) => x.tenant_id === tidAuto);
-    if (f) nav.deschide("Detaliu firmă", (cc, nn) => detaliuFirma(cc, nn, f));
+    if (f) deschideDetaliu(nav, f);
     else console.warn("[control] firma", tidAuto, "negasita in portofoliu (fara acces sau tid gresit)");
   }
 }
@@ -79,6 +79,14 @@ export async function randeazaControl(corp, nav, tidAuto) {
 // Nivel 2 — corpul verdictului per firma. Randarea traieste in control_verdict.js (renderer UNIC, partajat
 // cu cardul din fisa firmei): acelasi payload, aceleasi sectiuni, aceleasi chei. Aici doar anteta (nume +
 // stare) + delegarea. reincarca = re-drill dupa o contabilizare reusita (constatarea trece pe verde).
+// [396, retestul 19.10.2026: „Bara «În lucru» rămâne pe F1 când Control fiscal arată auditul F5”] firma al cărei control se deschide
+// devine firma în lucru — ÎNAINTE de deschiderea ferestrei, ca la `deschideFirma` (bara se redesenează cu tot desktopul; chemată din
+// randarea ferestrei, ar redesena-o la nesfârșit)
+function deschideDetaliu(nav, f) {
+  if (nav.setFirmaInLucru && (!nav.firmaInLucruId || nav.firmaInLucruId() !== f.tenant_id)) nav.setFirmaInLucru(f.nume || "", f.tenant_id);
+  nav.deschide("Detaliu firmă", (cc, nn) => detaliuFirma(cc, nn, f));
+}
+
 async function detaliuFirma(corp, nav, firma) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let d = { lipsa: [], urmarit: [] };

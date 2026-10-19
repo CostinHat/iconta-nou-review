@@ -1,7 +1,7 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu, refuzPeRand } from "../api.js?v=462d75fbab";
+import { api, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu, refuzPeRand } from "../api.js?v=158edee964";
 import { ciornaFormular } from "../ciorna_formular.js?v=f59e00811a";  // [267, clasa] ciorna formularelor lungi de creare
 
 // [cm_coduri_v1 22.08.2026] Lista de coduri NU mai traieste aici. Denumirea vine din
@@ -227,8 +227,11 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
             <div class="pac-rez-rand"><span>Impozit</span><b>${bani(c.impozit || 0)} lei</b></div>
             <div class="pac-rez-rand"><span><b>Net</b></span><b>${bani(c.net || 0)} lei</b></div>
           </div>`;
-        // reincarca lista dupa un moment ca sa apara noul concediu
-        setTimeout(() => randeaza(corp), 1400);
+        // [418c / 410, DS cap.27] lista se reface ACUM, cu noul concediu, iar rezultatul calculului rămâne deasupra ei (înainte lista se
+        // redesena după 1,4 s și îl ștergea)
+        const rezultat = rez.innerHTML;
+        await randeaza(corp);
+        corp.querySelector("#cm-form-zona").innerHTML = `<div id="cm-rezultat">${rezultat}</div>`;
         if (dupaSalvare) dupaSalvare();
       } catch (e) {
         btn.disabled = false; btn.textContent = "Calculeaz\u0103 \u0219i salveaz\u0103";

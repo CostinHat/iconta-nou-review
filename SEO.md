@@ -62,3 +62,17 @@ Cele existente sunt corecte tehnic — nimic nu blochează crawl/index:
 - Trimite `sitemap.xml` în Google Search Console; cere indexare pentru toate paginile din ghid/.
 - Verifică `site:iconta.eu/ghid/{slug}` per pagină; pe confirmare, treci rândul la `Indexat Google = da`.
 - Când toate paginile din ghid/ = `da`, poarta faza 0 se deschide → se pot scrie pagini noi.
+
+## 19.10.2026 — Search Console (comanda 9.1 D2): ce spun exporturile și ce s-a reparat
+
+- **404 (17 adrese, ultima accesare 12.06–30.07):** niciuna nu are rută; 7 răspundeau deja 410 (lotul 7), 10 încă 404 -> retrase (410 +
+  `X-Robots-Tag: noindex`, `main.ADRESE_RETRASE`). `robots.txt` (`Disallow: /`) le închidea, deci Google nu vedea niciodată 410-ul: acum
+  permite numai calea exactă a fiecărei adrese retrase (`Allow: <cale>$` și `<cale>?`, RFC 9309 §2.2.2), restul aplicației rămâne închis
+  (C54, `core/test_search_console_404.py`). După publicare: „Validare remediere” în Search Console.
+- **Accesată, neindexată (98) / descoperită, neindexată (4.185; exportul are primele 1.000):** ghiduri, tehnic curate (200, canonical
+  propriu, fără noindex, `lastmod` din front-matter, la 3 clicuri de `/ghid`). Cauzele verificabile: pagina principală goală pentru crawler
+  (`index.html` are numai `<div id="app">`, JS-ul e în `Disallow`), volumul (6.513 ghiduri deodată pe un domeniu nou: „descoperită” 0 ->
+  3.652 pe 05.10), legăturile interne subțiri (830 de ghiduri fără niciun link de la alt ghid). Googlebot (nginx, 05–19.10): 2.711 cereri pe
+  `/ghid/`, 2.404 ghiduri distincte, niciun 5xx.
+- **Decizii cerute (raportul 9.1):** blocul static pe pagina principală; suprafața indexată (toate / fără cele sub 400 de cuvinte),
+  paginarea temelor mari, legăturile între ghiduri. Analiza: `~/ghid_incoming/lot9_search_console/`.

@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, cate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota } from "../api.js?v=462d75fbab";
+import { api, cate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp } from "../api.js?v=158edee964";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
@@ -210,9 +210,15 @@ const REGISTRU = [
   { cat: "TVA regimuri speciale", cheie: "neinregistrat", titlu: "Achiziție de la neînregistrat (persoană fizică) — D394 op. N", ruta: "achizitie-neinregistrat", campuri: [
     C("data", "Data", "data"),
     C("furnizor_nume", "Furnizor (persoană fizică)", "text"),
+    // [deficiența 402] borderoul identifică vânzătorul (OMFP 2634/2015 anexa 1 pct.2) și, pe un cont de stoc, aduce marfa în gestiune (pct.6)
+    C("furnizor_adresa", "Domiciliul vânzătorului", "text"),
+    C("furnizor_act", "Actul de identitate (seria și numărul)", "text"),
     C("valoare", "Valoare"),
     C("cont_cheltuiala", "Cont cheltuială/stoc", "text", { sugestie: "301" }),
-    C("numar", "Nr. document (borderou)", "text", { optional: true }),
+    C("articol", "Articolul (la un cont de stoc)", "text", { optional: true }),
+    C("cantitate", "Cantitatea (la un cont de stoc)", "numar", { optional: true }),
+    C("um", "UM", "text", { optional: true, sugestie: "buc" }),
+    C("numar", "Nr. borderou (gol = numerotat de aplicație, BA-n)", "text", { optional: true }),
     C("categorie", "Categorie bun (art. 331 lit. D)", "select", { optiuni: [["cereale","Cereale"],["deseuri","Deșeuri"],["masa_lemnoasa","Masă lemnoasă"],["terenuri","Terenuri"],["constructii","Construcții"],["alte_bunuri","Alte bunuri"],["alte_servicii","Alte servicii"]], ajutor: "Fără categorie, operațiunea N rămâne EXCLUSĂ din D394 cu avertisment (nu se ghicește)." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "TVA regimuri speciale", cheie: "agricultor_achizitie", titlu: "Achiziție de la agricultor (compensare 8%)", ruta: "achizitie-agricultor", campuri: [
@@ -445,7 +451,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         // [R151] `neales` = o intrebare la care aplicatia NU are voie sa raspunda in locul
         // omului. Fara ea, un `select` obligatoriu vine cu prima optiune deja aleasa — ceea ce
         // pentru o alegere JURIDICA (art. 291 alin. 5) ar fi un default tacit imbracat in
-        // interfata. Campul ramane OBLIGATORIU: gol -> „Câmp obligatoriu", ca la orice altul.
+        // interfata. Campul ramane OBLIGATORIU: gol -> refuzul lângă câmp (`eroareCamp`), ca la orice altul.
         // [comanda Costin 07.10.2026, „Cele 33 de chei” — DS cap.17] Regula e acum a MOTORULUI: ORICE select obligatoriu
         // pornește cu „— alege —” (sau textul lui `neales`). Măsurat: 36 de selecturi obligatorii veneau cu prima opțiune aleasă
         // (felul operației, termenul creditului 519/162, metoda de amortizare) — o alegere fiscală făcută de ecran.
@@ -462,7 +468,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         input = `<input type="number" step="0.01" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}" placeholder="${c.sugestie || ""}">`;
       } else if (CONT_PRECOMPLETAT(c)) {
         // [lotul 07.10 B, DS cap.17 corectat] un CONT vine precompletat VIZIBIL cu sugestia standard (707, 5124, 612 …): e cazul
-        // uzual, se vede înainte de „Generează nota” și se schimbă; golit, câmpul obligatoriu se refuză („Câmp obligatoriu”).
+        // uzual, se vede înainte de „Generează nota” și se schimbă; golit, câmpul obligatoriu se refuză lângă el (`eroareCamp`).
         input = `<input type="text" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}" value="${esc(c.sugestie)}">`;
       } else {
         input = `<input type="text" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}" placeholder="${c.sugestie || ""}">`;
@@ -532,18 +538,21 @@ export async function ecranOperatiuni(corp, nav, t) {
     corp.querySelector("#op-trimite").addEventListener("click", async () => {
       const zona = corp.querySelector("#op-mesaj");
       const corpReq = {};
-      let lipsa = null;
+      // [deficiența 410, clasa — toate formularele] TOATE câmpurile lipsă, fiecare lângă el (și în lista „NU s-a salvat” de lângă
+      // buton), nu numai primul (fail-fast, DS cap.6 G10 pct.4)
+      curataEroriCamp(corp);
+      let lipsa = 0;
       for (const c of opCurenta.campuri) {
         const el = corp.querySelector(`#op-${c.nume}`);
         const ascuns = el.closest(".camp").style.display === "none";
         if (ascuns) continue;
         const v = el.value;
-        if (!v && !c.optional) { lipsa = c.eticheta; break; }
+        if (!v && !c.optional) { eroareCamp(corp, "op-" + c.nume, "Completează: " + c.eticheta + "."); lipsa++; continue; }
         const val = c.tip === "numar" ? parseFloat(v) : c.tip === "mijloc_fix" ? parseInt(v, 10) : v;
         // `trimiteCa`: aceeași cheie, alt câmp (bacșiș: sursa are alte valori la distribuire); `lista`: serverul cere o listă
         if (v) corpReq[c.trimiteCa || c.nume] = c.lista ? [val] : val;
       }
-      if (lipsa) { arataMesaj(zona, "Câmp obligatoriu: " + lipsa, "avert"); return; }
+      if (lipsa) return;
       const blocMulti = corp.querySelector(".op-multi-bloc");
       if (opCurenta.multi && blocMulti && blocMulti.style.display !== "none") {
         corpReq[opCurenta.multi] = [...corp.querySelectorAll("#op-multi > div")].map((rand) => {
@@ -554,7 +563,7 @@ export async function ecranOperatiuni(corp, nav, t) {
           });
           return o;
         }).filter((o) => Object.keys(o).length > 1 || (Object.keys(o).length === 1 && !o.tip));
-        if (!corpReq[opCurenta.multi].length) { arataMesaj(zona, "Completează cel puțin un rând.", "avert"); return; }
+        if (!corpReq[opCurenta.multi].length) { arataMesaj(zona, "Completează cel puțin un rând.", "eroare"); return; }
       }
       try {
         const r = await api.post(`/tenants/${t.id}/${opCurenta.ruta}`, corpReq);
@@ -563,13 +572,17 @@ export async function ecranOperatiuni(corp, nav, t) {
         // refacturare): ecranul le citește pe amândouă. Până azi „nicio notă” apărea și când nota-chirie scrisese ciorna (DS cap.27).
         // [258] notele se numesc cum le arată Registrul jurnal (`nota_eticheta` / `note_etichete`, „nr. crt. 5 din 12.03.2026”), nu prin id
         const note = r ? (r.note_etichete || (r.nota_eticheta ? [r.nota_eticheta] : [])) : [];
+        // [401] nota se arată după generare (conturile și suma), nu doar numărul ei
+        const nota = r && r.nota ? ` Nota: ${esc(r.nota)}.` : "";
         zona.innerHTML = note.length === 1
-          ? `<p class="pf-intro">Notă generată ${esc(note[0])}, ${stareNota(r)}. ${pasNota(r)}</p>`
+          ? `<p class="pf-intro">Notă generată ${esc(note[0])}, ${stareNota(r)}.${nota} ${pasNota(r)}</p>`
           : note.length > 1
           ? `<p class="pf-intro">${cate(note.length, "notă generată", "note generate")} (${esc(note.join(", "))}), ${stareNota(r, true)}. ${pasNota(r, true)}</p>`
           : `<p class="pf-intro">Calcul (nu s-a generat nicio notă):</p><ul class="pf-intro">${Object.entries(r || {}).map(([k, v]) => `<li>${esc(k.replace(/_/g, " "))}: <b>${esc(String(v))}</b></li>`).join("")}</ul>`;
       } catch (e) {
-        arataMesaj(zona, e.mesaj || e.message || "Nu s-a putut genera nota — verifică datele introduse și reîncearcă.", "eroare");
+        // [410] refuzul serverului care își numește câmpurile: fiecare lângă câmpul lui; restul, în zona formularului
+        const peCamp = ((e && e.erori_campuri) || []).filter((x) => eroareCamp(corp, x.camp, x.mesaj)).length;
+        arataMesaj(zona, (peCamp ? "Nota nu s-a generat: " : "") + (e.mesaj || e.message || "Nu s-a putut genera nota — verifică datele introduse și reîncearcă."), "eroare");
       }
     });
   };

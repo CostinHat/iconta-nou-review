@@ -23,7 +23,7 @@ LUNI = [3 * (TRIM - 1) + k for k in (1, 2, 3)]
 @pytest.fixture(scope="module")
 def firma_neplatitoare():
     """Firmă nouă, neplătitoare de TVA (vectorul fiscal pe drumul ecranului), cu Date firmă completate și câte o notă validată în fiecare
-    lună a trimestrului trecut (581 = 5311, 100 / 200 / 300 lei)."""
+    lună a trimestrului trecut (581 = 5311, 100 / 200 / 300 lei), din numerarul adus înaintea trimestrului (5311 = 1012, 600 lei)."""
     from core import db, vector_fiscal_api as vf
     gen = firma_noua()
     f = next(gen)
@@ -34,6 +34,8 @@ def firma_neplatitoare():
         assert r.get("ok", True) is not False, r
         c.commit()
     assert sql('SELECT platitor_tva FROM "%s".firma_profil WHERE id = 1' % f["schema"]) == [(False,)]
+    # [406] casa nu ajunge sub zero: numerarul depus există întâi în casă — aportul, în ziua dinaintea trimestrului (în afara D406-ului lui)
+    _nota_validata(f, (_dt.date(AN_T, LUNI[0], 1) - _dt.timedelta(days=1)).isoformat(), "5311", "1012", 600, "Aport numerar D225")
     for k, luna in enumerate(LUNI, 1):
         _nota_validata(f, _dt.date(AN_T, luna, 10 + k).isoformat(), "581", "5311", 100 * k, "Depunere numerar D225 %d" % k)
     yield f

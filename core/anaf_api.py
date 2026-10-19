@@ -101,6 +101,39 @@ def furnizor_incasare_freeze(cui, fallback=False, data=None):
     return fallback
 
 
+def statut_furnizori(furnizori, interogare=None):
+    """[deficiența 418a, comanda Costin 9.3] „Statutul se află din XML (CompanyID cu prefix RO în PartyTaxScheme/VAT) și din verificarea
+    ANAF pe care aplicația o face deja; TVA la încasare se verifică în registrul ANAF. Contabilul nu trebuie să-l introducă manual.”
+
+    `furnizori` = [(cui, data facturii ISO, codul de TVA din XML (BT-31) sau None)] -> {(cui, data): {platitor_tva, sursa_platitor,
+    tva_la_incasare, sursa_incasare}}; o valoare None = nu se poate afla (ANAF nu răspunde și XML-ul nu transează) — atunci, și numai
+    atunci, o spune contabilul. ANAF: registrul contribuabililor (scpTVA) și Registrul TVA la încasare (statusTvaIncasare), interogate
+    la DATA FACTURII (HG 1/2016 titlul VII pct.67 alin.(6): dreptul de deducere urmează regimul furnizorului „la data emiterii unei
+    facturi”). XML: BT-31 cu prefixul RO = înregistrat în scopuri de TVA în România (CF art.316)."""
+    from core.pdf_util import data_ro
+    interogare = interogare or valideaza_cui   # testele o simulează (core/conftest.py), niciodată ANAF real
+    out, pe_data = {}, {}
+    for cui, data, cod in furnizori:
+        out[(cui, data)] = {"platitor_tva": None, "sursa_platitor": None, "tva_la_incasare": None, "sursa_incasare": None, "_cod": cod}
+        pe_data.setdefault(data, []).append(cui)
+    for data, cuii in pe_data.items():
+        try:
+            gasite = {str(r["cui"]): r for r in interogare(cuii, data_interogare=data) if r.get("gasit")}
+        except Exception:  # noqa: BLE001 — ANAF indisponibil: rămâne XML-ul
+            gasite = {}
+        for cui in cuii:
+            r, st = gasite.get(_curata(cui)), out[(cui, data)]
+            if r:
+                st.update(platitor_tva=bool(r["platitor_tva"]), tva_la_incasare=bool(r["tva_la_incasare"]),
+                          sursa_platitor="ANAF, registrul contribuabililor la %s" % data_ro(data),
+                          sursa_incasare="ANAF, Registrul persoanelor care aplică TVA la încasare, la %s" % data_ro(data))
+            elif str(st["_cod"] or "").upper().startswith("RO"):
+                st.update(platitor_tva=True, sursa_platitor="XML-ul facturii: codul de TVA %s al furnizorului (BT-31)" % st["_cod"])
+    for st in out.values():
+        st.pop("_cod")
+    return out
+
+
 def separa_cui(lista_cui):
     """Imparte intrarile brute in (curatate_unice, ignorate).
     'ignorate' = intrari care nu contin nicio cifra -> nu pot fi un CUI (antet de coloana, nume, typo).
@@ -136,7 +169,7 @@ def mesaj_indisponibil(e):
 
 
 def valideaza_cui(lista_cui, data_interogare=None):
-    """Întoarce [{cui, denumire, platitor_tva, tva_data_inceput, stare, inactiv, gasit}], ordine păstrată."""
+    """Întoarce [{cui, denumire, platitor_tva, tva_data_inceput, stare, inactiv, adresa, localitate, judet, ..., gasit}], ordine păstrată."""
     azi = data_interogare or date.today().isoformat()
 
     curatate, _ignorate = separa_cui(lista_cui)
@@ -161,6 +194,7 @@ def valideaza_cui(lista_cui, data_interogare=None):
             tva = f.get("inregistrare_scop_Tva", f.get("inregistrarescopTva", {})) or {}
             inactiv = f.get("stare_inactiv", {}) or {}
             rtvai = f.get("inregistrare_RTVAI", {}) or {}   # TVA la incasare
+            dfisc = f.get("adresa_domiciliu_fiscal", {}) or {}   # [C61] structura din anaf_surse/doc_WS_V9.txt
             rezultate.append({
                 "cui": str(dg.get("cui", "")),
                 "denumire": (dg.get("denumire") or "").strip(),
@@ -179,11 +213,17 @@ def valideaza_cui(lista_cui, data_interogare=None):
                 # [deficiența 229, 12.10.2026] documentat în doc_WS_V9.txt (date_generale.data_inregistrare, „Data inregistrare”),
                 # văzut pe răspuns real: '2002-01-23' pentru J2002000372404 — data înființării, de la care curge primul exercițiu
                 "data_inregistrare": (dg.get("data_inregistrare") or "").strip() or None,
+                # [C61, 19.10.2026] documentat în doc_WS_V9.txt (adresa_domiciliu_fiscal.ddenumire_Localitate / dcod_JudetAuto), văzut pe
+                # răspuns real (14399840: „Sector 2 Mun. Bucureşti” / „B”). Domiciliul FISCAL, nu sediul social (adresa_sediu_social.s…):
+                # e aceeași adresă ca `adresa` (date_generale.adresa), deci localitatea și județul se potrivesc cu ce scrie pe factură.
+                "localitate": (dfisc.get("ddenumire_Localitate") or "").strip(),
+                "judet": (dfisc.get("dcod_JudetAuto") or "").strip(),
                 "gasit": True,
             })
         for c in dj.get("notFound", []):
             rezultate.append({
                 "cui": str(c), "denumire": "", "platitor_tva": False, "tva_data_inceput": None, "tva_la_incasare": False,
-                "stare": "", "inactiv": False, "adresa": "", "cod_caen": "", "nr_reg_com": "", "data_inregistrare": None, "gasit": False,
+                "stare": "", "inactiv": False, "adresa": "", "cod_caen": "", "nr_reg_com": "", "data_inregistrare": None,
+                "localitate": "", "judet": "", "gasit": False,
             })
     return rezultate

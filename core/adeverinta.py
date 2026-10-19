@@ -9,6 +9,8 @@ durata activitatii, salariul, vechimea in munca/meserie/specialitate.
 Date AUTO (din DB): firma (denumire/CUI/adresa), salariat (nume/CNP/COR/data angajare/
 brut), net (calcul_salariu). Date de INTRARE (contabilul, in formular): serie/nr CI,
 nr/data CIM, tip contract, departament, vechime, scop, mentiuni, nr. iesire.
+[412, 19.10.2026] Tipul contractului si nr./data CIM vin din fisa salariatului (`salariati.tip_contract / nr_cim / data_cim`,
+core/migrare_cim_salariat.py): formularul le arata precompletate, modificabile; necompletate in formular = cele din fisa.
 
 NU e "adeverinta pentru banca": bancile au formulare proprii tipizate si din 2026
 verifica veniturile direct la ANAF. Ecranul spune asta onest. Cazuri reale: gradinita/
@@ -41,7 +43,8 @@ def date_auto(conn, schema, salariat_id, an, luna):
         f = cur.fetchone() or (None,) * 6
         cur.execute("SELECT nume, prenume, cnp, cor, data_angajare, "
                     "part_time, persoane_intretinere, "
-                    "data_nastere, copii_scolarizati, declaratie_copii "
+                    "data_nastere, copii_scolarizati, declaratie_copii, "
+                    "tip_contract, nr_cim, data_cim "   # [412] CIM-ul de pe fișă
                     "FROM salariati WHERE id = %s", (salariat_id,))
         s = cur.fetchone()
         if s:
@@ -65,6 +68,7 @@ def date_auto(conn, schema, salariat_id, an, luna):
         "reprezentant": f[3] or f[4] or "Administrator", "repr_functie": f[5] or "Administrator",
         "sal_nume": ("%s %s" % (s[0] or "", s[1] or "")).strip(), "cnp": s[2] or "",
         "cor": s[3] or "", "data_angajare": s[4], "brut": brut, "net": float(calc["net"]),
+        "tip_contract": s[10] or "", "nr_cim": s[11] or "", "data_cim": s[12],   # [412] din fișă; formularul le poate schimba
     }
 
 
@@ -99,6 +103,11 @@ def pdf(conn, schema, salariat_id, campuri):
 
     nr = c.get("nr_iesire") or ""
     data_ies = c.get("data_iesire") or date.today().isoformat()
+    # [412] ce scrie omul în formular are întâietate; necompletat = ce e pe fișa salariatului. Fără niciuna: durata nedeterminată
+    # (Legea 53/2003 art.12 alin.(1): „Contractul individual de muncă se încheie pe durată nedeterminată.”)
+    for k in ("tip_contract", "nr_cim", "data_cim"):
+        if not (str(c.get(k)).strip() if c.get(k) is not None else ""):
+            c[k] = a[k]
     tip = "nedeterminată" if (c.get("tip_contract") or "nedeterminata").startswith("nedet") else "determinată"
 
     # antet firma + nr. iesire
@@ -114,6 +123,10 @@ def pdf(conn, schema, salariat_id, campuri):
     cim = ""
     if c.get("nr_cim") or c.get("data_cim"):
         cim = " nr. %s din %s" % (c.get("nr_cim") or "—", _d_ro(c.get("data_cim")))
+    # [deficiența 412] funcția necompletată = ocupația COR din fișa salariatului (nomenclatorul COR), nu „___”
+    if not c.get("functie") and a["cor"]:
+        from core import cor_api as _cor
+        c["functie"] = _cor.denumire(conn, a["cor"]) or ""
     functie = a["cor"] and ("în funcția de %s (cod COR %s)" % (c.get("functie") or "___", a["cor"])) \
         or ("în funcția de %s" % (c.get("functie") or "___"))
 

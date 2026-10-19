@@ -347,9 +347,17 @@ def solduri_incarca(tenant_id, continut, nume_fisier, ctx):
         with conn.cursor() as cur:
             afara = set(_pl.in_afara(cur, schema, [r["cont"] for r in randuri]))
         data_propusa = _data_soldurilor(conn, schema)
+    from core.audit_preluare import parte_gresita as _parte_gresita
     for r in randuri:
         r["stare"] = "respins" if r["cont"] in afara else "ok"
         r["motive"] = ["contul %s nu există în planul de conturi al normei firmei" % r["cont"]] if r["cont"] in afara else []
+        # [392, retestul 19.10.2026: „5121 cu sold creditor intră fără avertisment la import (auditul de preluare îl prinde)”] aceeași regulă
+        # ca auditul (`audit_preluare.parte_gresita`), spusă pe rând, înainte de salvare; rândul intră, cu observația
+        _g = None if r["cont"] in afara else _parte_gresita(r["cont"], r.get("debit"), r.get("credit"))
+        if _g:
+            r["stare"] = "semnalat"
+            r["motive"] = ["%s: soldul stă pe partea opusă funcțiunii contului (OMFP 1802/2014 pct.593 alin.(2)) — verifică sensul în balanța "
+                           "primită" % _g]
     from decimal import Decimal as _D
     td = float(sum((_D(str(r["debit"] or 0)) for r in randuri), _D(0)))
     tc = float(sum((_D(str(r["credit"] or 0)) for r in randuri), _D(0)))
@@ -408,6 +416,15 @@ def salariati_import_salveaza(tenant_id, date, ctx):
             raise _erori.DateInvalide(str(e))
 
 
+def istoric_cu_perioada(tenant_id, randuri, ctx):
+    """[389, lotul 9] Perioada fiecărui rând din istoricul declarațiilor, cum o scrie formularul, după profilul firmei (trimestrial / lunar)."""
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            pf = repo_firma_profil.profil_fiscal(cur)
+    return istoric_declaratii_import_api.cu_perioada(randuri, {"tip_decont": pf[1], "regim_fiscal": pf[4]} if pf else {})
+
+
 def asociati_import_salveaza(tenant_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/asociati-import`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
@@ -431,7 +448,9 @@ def asociati_import_incarca(tenant_id, continut, nume_fisier, ctx):
     anaf = asociati_import_api.verificare_anaf(randuri)
     asociati_import_api.eticheteaza(randuri, anaf)
     erori = migrare_api.erori_verifica(asociati_import_api.verifica_randuri(randuri, anaf))  # [Q5] poarta unica
-    return _uc_comun._raspuns({"randuri": randuri, "total": len(randuri), "coerenta": asociati_import_api.coerenta_cote(randuri),
+    # [384] totalul cotelor din bandă = al rândurilor care intră (fără cele respinse pe rând), aceeași regulă ca salvarea
+    _resp = {e.get("rand") for e in erori if isinstance(e.get("rand"), int)}
+    return _uc_comun._raspuns({"randuri": randuri, "total": len(randuri), "coerenta": asociati_import_api.coerenta_cote(randuri, _resp),
                                "erori": erori, "anaf_verificat": anaf is not None})
 
 
@@ -762,15 +781,21 @@ def fr_sterge(tenant_id, sid, ctx):
     return r
 
 
-def facturi_storno(tenant_id, factura_id, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/facturi/{factura_id}/storno`; docstringul ei a ramas in stratul HTTP."""
+def facturi_storno(tenant_id, factura_id, ctx, corp=None):
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/facturi/{factura_id}/storno`; docstringul ei a ramas in stratul HTTP.
+    [419] `corp.retur`: true (marfa se întoarce în stoc) / false (rămâne la client); obligatoriu la factura care a descărcat stocul."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        try:
-            r = facturi_api.storneaza(conn, factura_id)
-        except ValueError as e:
-            raise _erori.DateInvalide(str(e))
-    return r
+    retur = (corp or {}).get("retur")
+    refuz = "„retur” e da sau nu (true / false)." if retur is not None and not isinstance(retur, bool) else None
+    if not refuz:
+        with db.get_conn(schema) as conn:
+            try:
+                return facturi_api.storneaza(conn, factura_id, retur=retur)
+            except ValueError as e:
+                if getattr(e, "cod", None) != facturi_api.COD_CERE_RETUR:
+                    raise _erori.DateInvalide(str(e))
+                refuz = {"mesaj": str(e), "cod": facturi_api.COD_CERE_RETUR, "camp": "fd-storno-retur"}   # [419] întrebarea retur
+    raise _erori.DateInvalide(refuz)
 
 
 def vector_citeste(tenant_id, ctx):
@@ -1282,13 +1307,13 @@ def tenant_amortizare(tenant_id, an, luna, ctx):
             mf = repo_mijloace_fixe.de_amortizat(cur, schema)
         from core import d406_active as _d406
         linii = []
-        for mid, den, cont_am, val, rez, dnf, pif, cont_imob, met, reev, dcd in mf:
+        for mid, den, cont_am, val, rez, dnf, pif, cont_imob, met, reev, dcd, prel, dprel in mf:
             if not pif or not dnf:
                 continue
             mf_d = {"cod": den, "denumire": den, "cont_imobilizare": cont_imob,
                     "cont_amortizare": cont_am, "valoare": val, "rezidual": rez,
                     "dnf_luni": dnf, "data_pif": pif, "metoda": met, "reevaluari": reev,
-                    "destinatie_cd": dcd}
+                    "destinatie_cd": dcd, "amortizare_preluata": prel, "data_preluare": dprel}   # [359, A.1]
             try:
                 rata = _d406.amortizare_luna(mf_d, an, luna)   # metoda reala (CF art.28), nu liniar
             except ValueError as e:
@@ -1814,7 +1839,7 @@ def chitanta_stinge(tenant_id, bon_id, c, ctx):
                 raise _erori.CerereGresita("documentul nu e în așteptare")
         rez = casa_api.adauga(conn, schema, {"data": c.data, "categorie": "plata_furnizor",
                                              "suma": c.suma, "document": c.document or ("CHIT-%d" % bon_id),
-                                             "fel_document": "chitanța furnizorului",
+                                             "fel_document": "chitanța furnizorului", "avans_automat": False,
                                              "partener": c.partener, "cui": c.cui,
                                              # [lotul 6 pct.3a, 278] nota plății stinge factura (`inregistrari.factura_id`)
                                              "facturi": casa_api.alocare_pe_factura(conn, schema, "plata_furnizor", c.factura_id, c.suma)})
@@ -2021,7 +2046,16 @@ def ajustari_fiscale_lista(tenant_id, an, ctx):
         schema = _schema_firmei(conn, tenant_id, ctx)
         with conn.cursor() as cur:
             ajustari = _aj.lista(cur, schema, an)
-    return {"an": an, "ajustari": ajustari, "anuale": list(_aj.ANUALE),
+        # [378, lotul 9] rândurile care se iau din conturi, pe anul întreg (notele validate), ca omul să vadă cifra înainte de D100 / D101
+        import datetime as _dt
+        from core import repo_d101
+        with conn.cursor(cursor_factory=_E_sol.RealDictCursor) as cur:
+            repo_contabilitate.search_path_firma(cur, schema)
+            rulaje = repo_d101.select_inregistrari_linii(cur, _dt.date(int(an), 1, 1), _dt.date(int(an) + 1, 1, 1)) or {}
+        scrise = {a["rand"] for a in ajustari}
+        din_conturi = [{"rand": k, "eticheta": _aj.RANDURI[k][0], "sursa": _aj.DIN_CONTURI[k][1], "suma": str(v),
+                        "inlocuit": k in scrise} for k, v in _aj.din_conturi(rulaje).items()]
+    return {"an": an, "ajustari": ajustari, "anuale": list(_aj.ANUALE), "din_conturi": din_conturi,
             "randuri": [{"rand": k, "eticheta": v[0], "grupa": v[1]} for k, v in _aj.RANDURI.items()]}
 
 
@@ -2756,7 +2790,7 @@ def stocuri_adauga(tenant_id, corp, ctx):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
-        rez = _s.adauga_nir(conn, schema, corp)
+        rez = _s.adauga_nir(conn, schema, corp, cere_decizia=True)   # [399] decizia omului (factura sosită, cota transportului)
         if rez.get("cod") == "NESCHIMBATA":   # [S3] NIR-ul refăcut identic cu cel respins: confirmare, nimic scris
             conn.rollback()
             return rez
@@ -3893,7 +3927,7 @@ def facturi_primite_lista(tenant_id, ctx):
                     # D394). [16.10.2026, 273 pct.4] Plătitorul facturii (un terț) nu e element UBL / RO_CIUS și nu se declară în D394.
                     de_completat = ["dacă furnizorul e înregistrat în scopuri de TVA (D394)"] + (
                         ["categoria produsului cu taxare inversă (D394)"] if f.get("taxare_inversa") else [])
-                    info.update({"parsabila": True, "furnizor": f.get("tert_nume"),
+                    info.update({"parsabila": True, "furnizor": f.get("tert_nume"), "furnizor_cod_tva": f.get("furnizor_cod_tva"),
                                  "numar": f.get("numar"), "data": str(f.get("data_emitere") or ""),
                                  "total": str(f.get("total") or ""), "tva": str(f.get("tva") or ""),
                                  "moneda": f.get("moneda"), "taxare_inversa": bool(f.get("taxare_inversa")),
@@ -3904,6 +3938,15 @@ def facturi_primite_lista(tenant_id, ctx):
                 except Exception as e:
                     info.update({"parsabila": False, "eroare_parse": str(e)[:200]})
                 out.append(info)
+    # [deficiența 418a] statutul de TVA al furnizorului (și TVA la încasare) din XML și ANAF, la data facturii — cu conexiunea închisă (un
+    # apel ANAF nu ține o conexiune din pool); ce rămâne neaflat se cere contabilului
+    from core import anaf_api as _anaf
+    _st = _anaf.statut_furnizori([(i["cif_emitent"], i["data"], i.get("furnizor_cod_tva")) for i in out if i.get("parsabila") and i.get("data")])
+    for i in out:
+        if i.get("parsabila") and i.get("data"):
+            i["statut_furnizor"] = _st[(i["cif_emitent"], i["data"])]
+            if i["statut_furnizor"]["platitor_tva"] is not None:
+                i["de_completat"] = [x for x in i["de_completat"] if not x.startswith("dacă furnizorul e înregistrat")]
     from core import d394 as _d394
     # categoriile art.331 (codul produsului în D394), pentru alegerea din validare — din `d394.CODPR`, sursa unică
     return {"primite": out, "categorii_331": sorted(_d394.CODPR)}
@@ -4130,13 +4173,47 @@ def achizitie_neinregistrat(tenant_id, corp, ctx):
             furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
             if not furnizor_nume:
                 raise ValueError("nume furnizor obligatoriu (persoana fizica - apare în denP și în avertisment)")
+            # [deficiența 402] borderoul de achiziție identifică vânzătorul persoană fizică: domiciliul și actul de identitate (OMFP
+            # 2634/2015 anexa 1 pct.2: „menționarea părților care participă la efectuarea operațiunii”). *INTERPRETARE CU TEMEI:* datele de
+            # identificare ale unei persoane fizice = domiciliul și actul de identitate (ca la borderoul 14-4-13); CNP-ul nu se cere (nu
+            # îl cere nicio normă citată aici). De reconfirmat dacă apare o normă care transează.
+            adresa_pf = str(corp.get("furnizor_adresa") or "").strip()
+            act_pf = str(corp.get("furnizor_act") or "").strip()
+            lipsa_pf = [c for c, v in (("domiciliul vânzătorului", adresa_pf), ("actul lui de identitate (seria și numărul)", act_pf)) if not v]
+            refuz = None
+            if lipsa_pf:
+                refuz = {"mesaj": "Borderoul de achiziție identifică vânzătorul: completează %s." % " și ".join(lipsa_pf),
+                         "erori_campuri": [x for x in ({"camp": "op-furnizor_adresa", "mesaj": "domiciliul"} if not adresa_pf else None,
+                                                       {"camp": "op-furnizor_act", "mesaj": "actul de identitate"} if not act_pf else None) if x]}
             val = Decimal(str(corp["valoare"]))
             if val <= 0:
                 # [R147] „valoare invalidă" nu spunea nici care valoare, nici ce se aștepta.
                 raise ValueError("Valoarea operațiunii trebuie să fie un număr mai mare "
                                  "decât zero.")
             cont = _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala")  # [R54]
-            numar = str(corp.get("numar") or "").strip() or ("BORDEROU-" + str(corp["data"]))
+            # [deficiența 402] OMFP 2634/2015 anexa 1 pct.6: „Documentele justificative provenite din [...] cumpărare a unor bunuri de la
+            # persoane fizice, pe bază de borderou de achiziție [...] pot fi înregistrate în contabilitate numai în cazul în care se face
+            # dovada intrării în gestiune a bunurilor respective.” Pe un cont de stoc: articolul și cantitatea, iar intrarea în fișă
+            import psycopg2.extras as _E
+            from core import documente_interne as _documente_interne, metoda_stoc as _ms
+            la_stoc = any(cont.startswith(p) for p in ("371", "301", "302", "303"))
+            articol = " ".join(str(corp.get("articol") or "").split())
+            cant = Decimal(str(corp.get("cantitate") or 0)) if str(corp.get("cantitate") or "").strip() else Decimal(0)
+            if la_stoc:
+                with conn.cursor(cursor_factory=_E.RealDictCursor) as _c:
+                    metoda = _ms.citeste(_c, schema)
+                if metoda == _ms.GV:
+                    raise ValueError("La stocul global-valoric, marfa cumpărată intră în gestiune prin NIR, la prețul de vânzare: "
+                                     "înregistrează achiziția cu un NIR, pe care treci borderoul ca document.")
+                if not refuz and (not articol or cant <= 0):
+                    refuz = {"mesaj": "Pe un cont de stoc (%s), borderoul cere articolul și cantitatea: marfa intră în gestiune odată cu el "
+                                      "(OMFP 2634/2015 anexa 1 pct.6)." % cont,
+                             "erori_campuri": [x for x in ({"camp": "op-articol", "mesaj": "articolul"} if not articol else None,
+                                                           {"camp": "op-cantitate", "mesaj": "cantitatea"} if cant <= 0 else None) if x]}
+            if refuz:   # [402] refuzul numit, cu câmpurile lui
+                raise _erori.DateInvalide(refuz)
+            numar = str(corp.get("numar") or "").strip() or ("BA-%d" % _documente_interne.urmatorul(conn, schema, "borderou_achizitie",
+                                                                                                   corp["data"]))
             categorie = str(corp.get("categorie") or "").strip() or None
             if categorie and not _d394.codpr_N_din_categorie(categorie):
                 raise ValueError("categoria N invalidă (nomenclatorul de la lit.D, codurile de produs N): %s" % categorie)
@@ -4150,18 +4227,31 @@ def achizitie_neinregistrat(tenant_id, corp, ctx):
             # deasupra, iar garda noua de la `cere_cod_partener` n-avea cum s-o citeasca. Achizitia de la
             # o persoana neinregistrata E cazul legitim fara cod - acum o spune CODUL, nu proza.
             try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența C7, generalizată)
+                # [401] documentul e BORDEROUL de achiziție (OMFP 2634/2015, cod 14-4-13), nu o factură: `tip = 'borderou'`
                 fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
-                                           linii=[{"descriere": descr[:200], "cantitate": 1,
-                                                   "pret_unitar": str(val), "cota_tva": 0}],
-                                           tert_nume=furnizor_nume, tert_cui="", categorie_331=categorie,
-                                           status="importata", tert_platitor_tva=False, tert_pf=True)
+                                           linii=[{"descriere": (articol if la_stoc else descr)[:200], "cantitate": str(cant) if la_stoc else 1,
+                                                   "pret_unitar": str((val / cant).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)) if la_stoc else str(val),
+                                                   "cota_tva": 0}],
+                                           tert_nume=furnizor_nume, tert_cui="", tert_adresa=adresa_pf, categorie_331=categorie,
+                                           status="importata", tert_platitor_tva=False, tert_pf=True, tip="borderou")
             except ValueError as e:
                 raise _erori.DateInvalide(str(e))
             fid = fres["factura_id"]
+            repo_facturi.seteaza_act_identitate(cur, schema, fid, act_pf)
             iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, descr[:200])[0]
             repo_contabilitate.adauga_linie_furnizor(cur, schema, iid, cont, val)
+            intrare = None
+            if la_stoc:   # [402] intrarea în gestiune, odată cu borderoul (la cost: valoarea borderoului / cantitate)
+                from core import eticheta_nota as _et, stocuri_cv_api as _scv
+                intrare = _scv.intrare(conn, schema, {"denumire": articol, "um": str(corp.get("um") or "").strip() or "buc", "cantitate": str(cant),
+                                                     "pret_unitar": str((val / cant).quantize(Decimal("0.0001"), rounding=ROUND_HALF_UP)), "cont_stoc": cont,
+                                                     "data": corp["data"], "document": _et.factura(cur, schema, fid)}, factura_id=fid)
+                if intrare.get("eroare"):
+                    refuz = intrare["eroare"]
+                    raise _erori.DateInvalide(refuz)
         conn.commit()
-    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val),
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "numar": numar,
+            "intrare_stoc": ({"articol": articol, "cantitate": str(cant)} if intrare else None),
             "categorie": categorie, "in_d394": bool(categorie)})
 
 
@@ -4615,12 +4705,13 @@ def reevaluare_imobilizare(tenant_id, corp, ctx):
                     # [R147] „inexistent/inactiv" lasa omul sa ghiceasca pe care din doua.
                     raise _erori.Inexistent("Mijlocul fix ales nu există în registrul "
                                                  "firmei sau a fost casat. Alege-l din listă.")
-                den, ci, ca, val, rez, dnf, pif, met, reev, dcd = mf
+                den, ci, ca, val, rez, dnf, pif, met, reev, dcd, prel, dprel = mf
                 ref = _date.fromisoformat(corp["data"])
                 from core import d406_active as _d406
                 mf_d = {"cod": den, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
                         "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif,
-                        "metoda": met, "reevaluari": reev, "destinatie_cd": dcd}
+                        "metoda": met, "reevaluari": reev, "destinatie_cd": dcd,
+                        "amortizare_preluata": prel, "data_preluare": dprel}   # [359, A.1]
                 amortizare = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
                 _cere_amortizarea_inregistrata(conn, schema, ca, ref, amortizare, den)
                 r = _rv.nota_reevaluare(val, amortizare, corp["valoare_justa"], ci, ca,
@@ -5215,12 +5306,13 @@ def nota_inventariere(tenant_id, corp, ctx):
                         # [R147] „inexistent/inactiv" lăsa omul să ghicească pe care din două.
                         raise _erori.Inexistent("Mijlocul fix ales nu există în registrul "
                                                      "firmei sau a fost casat. Alege-l din listă.")
-                    den, ci, ca, val, rez, dnf, pif, met, reev, dcd = mf
+                    den, ci, ca, val, rez, dnf, pif, met, reev, dcd, prel, dprel = mf
                     ref = _date.fromisoformat(corp["data"])
                     from core import d406_active as _d406
                     mf_d = {"cod": den, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
                             "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif,
-                            "metoda": met, "reevaluari": reev, "destinatie_cd": dcd}
+                            "metoda": met, "reevaluari": reev, "destinatie_cd": dcd,
+                            "amortizare_preluata": prel, "data_preluare": dprel}   # [359, A.1]
                     am = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
                     r = _iv.nota_casare_mf(val, am, ci, ca)
                     d0 = f"Casare {den} (PV comisie, neamortizat {r['neamortizat']})"
@@ -5520,13 +5612,13 @@ def facturi_emite(tenant_id, date, ctx):
         raise _erori.DateInvalide("Denumirea beneficiarului e obligatorie pe factură. Completeaz-o înainte de emitere.")
     _ai = _uc_comun._intreaba_modelul(schema, linii)   # [R193] modelul, înaintea tranzacției de emitere
     with db.get_conn(schema) as conn:
-        are_stoc = any(l.get("articol_id") for l in linii)
         din_bon = bool((date.bon_fiscal_nr or "").strip())
         if din_bon and date.pleaca_marfa is True:
             # [decizia A 02.10] marfa a plecat cu bonul fiscal (raportul Z): a doua descărcare ar scoate-o de două ori din stoc
             raise _erori.DateInvalide(MESAJ_FACTURA_BON_STOC)
-        # poarta doar la FACTURA (nu proforma/aviz), la firma CV cu linie de stoc; nu și la factura din bon (fără descărcare)
-        poarta_ceruta = (date.tip == "factura") and are_stoc and not din_bon
+        # poarta doar la FACTURA (nu proforma/aviz), cu linie de stoc; nu și la factura din bon (fără descărcare) — aceeași condiție
+        # ca la transformarea proformei / avizului (C63)
+        poarta_ceruta = facturi_api.poarta_marfa_ceruta(date.tip, linii, date.bon_fiscal_nr)
         platitor = _uc_comun._platitor_tva_firma(conn)
         try:
             r = facturi_api.emite_factura(
@@ -5593,8 +5685,37 @@ def facturi_emite(tenant_id, date, ctx):
 
 
 
-def proforma_transforma(tenant_id, factura_id, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/facturi/{factura_id}/transforma`; docstringul ei a ramas in stratul HTTP."""
+def linii_din_proforma(linii):
+    """[C63, găsită de Code 19.10.2026] Liniile facturii născute dintr-o proformă / un aviz: ce a scris omul pe document trece pe
+    factură — și unitatea de măsură și contul de venit (înainte: „buc” și contul ghicit din denumire). CF art.319 alin.(20) lit.h:
+    factura cuprinde „denumirea și cantitatea bunurilor livrate, denumirea serviciilor prestate”. Și articolul de stoc trece (decizia
+    Costin 19.10.2026, „Închiderea lotului 9”: „la transformarea în factură se pune aceeași întrebare ca la orice factură, «Pleacă
+    marfa acum?»”): factura cu articol întreabă ca la emitere (`facturi_api.poarta_marfa_ceruta`), iar marfa se descarcă o singură dată,
+    numai la „Da” (`proforma_transforma`)."""
+    return [{"descriere": l.get("descriere"), "cantitate": l.get("cantitate"), "um": l.get("um") or "buc",
+             "pret_unitar": l.get("pret_unitar"), "cota_tva": l.get("cota_tva"), "cont_venit": l.get("cont_venit"),
+             "categorie_tva": l.get("categorie_tva"),   # [274b] categoria aleasă pe proformă trece pe factură
+             "articol_id": l.get("articol_id")}   # [C63] articolul de stoc: întrebarea „Pleacă marfa acum?” și descărcarea la „Da”
+            for l in linii]
+
+
+def antet_din_proforma(f):
+    """[C63] Beneficiarul și operațiunea facturii născute dintr-o proformă / un aviz: aceleași ca pe document. Înainte se pierdeau adresa
+    (CF art.319 alin.(20) lit.f: „denumirea/numele și adresa beneficiarului”), localitatea / județul (eFactura regula BR-RO-110) și tipul
+    operațiunii (o livrare intracomunitară ar fi ieșit „normală”)."""
+    return {"client_id": f.get("client_id"), "tert_nume": f.get("tert_nume"), "tert_cui": f.get("tert_cui"),
+            "tert_adresa": f.get("tert_adresa"), "tert_oras": f.get("tert_oras"), "tert_judet": f.get("tert_judet"),
+            "moneda": f.get("moneda") or "RON", "tert_tara": f.get("tert_tara") or "RO",
+            "tip_operatiune": f.get("tip_operatiune") or "normal", "tert_platitor_tva": f.get("tert_platitor_tva"),
+            "categorie_331": f.get("categorie_331")}   # [274b] categoriile, verificate pe țara clientului
+
+
+def proforma_transforma(tenant_id, factura_id, ctx, pleaca_marfa=None):
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/facturi/{factura_id}/transforma`; docstringul ei a ramas in stratul HTTP.
+
+    [C63, decizia Costin 19.10.2026] Factura născută din proformă / aviz cu articol de stoc întreabă „Pleacă marfa acum?” exact ca
+    emiterea din formular: aceeași condiție (`facturi_api.poarta_marfa_ceruta`), același refuz structurat (`COD_INTREABA_MARFA`, nimic
+    scris), aceeași descărcare la „Da” (`stocuri_cv_api.descarca_factura`, în tranzacția emiterii); la „Nu” stocul nu se atinge."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     # [P5 val 3] Moneda se citeste intr-o tranzactie SCURTA, apoi cursul se aduce — amandoua
     # inaintea tranzactiei de emitere, ca descarcarea BNR sa nu tina o conexiune din pool.
@@ -5602,10 +5723,7 @@ def proforma_transforma(tenant_id, factura_id, ctx):
     _uc_comun._preincalzeste_cursul(_uc_comun._moneda_facturii(schema, factura_id), _dtx.date.today())
 
     def _linii_proformei(conn):
-        return [{"descriere": l.get("descriere"), "cantitate": l.get("cantitate"),
-                 "pret_unitar": l.get("pret_unitar"), "cota_tva": l.get("cota_tva"),
-                 "categorie_tva": l.get("categorie_tva")}   # [274b] categoria aleasă pe proformă trece pe factură
-                for l in ((facturi_api.detalii_factura(conn, factura_id) or {}).get("linii") or [])]
+        return linii_din_proforma((facturi_api.detalii_factura(conn, factura_id) or {}).get("linii") or [])
     # [R193] liniile proformei se citesc într-o tranzacție scurtă, modelul se întreabă cu pool-ul liber, iar tranzacția de mai jos
     # le recitește: o linie schimbată între timp n-are răspuns, deci cota ei iese nedeterminată, nu ghicită
     with db.get_conn(schema) as conn:
@@ -5622,16 +5740,25 @@ def proforma_transforma(tenant_id, factura_id, ctx):
             raise _erori.Conflict(f"documentul a fost deja transformat în factura nr. {r[1]}")
         f = facturi_api.detalii_factura(conn, factura_id)
         linii = _linii_proformei(conn)
+        poarta_ceruta = facturi_api.poarta_marfa_ceruta("factura", linii)   # [C63] ca la emitere; documentul nou nu vine din bon
         platitor = _uc_comun._platitor_tva_firma(conn)
         try:
-            rez = facturi_api.emite_factura(conn, linii, client_id=f.get("client_id"),
-                tert_nume=f.get("tert_nume"), tert_cui=f.get("tert_cui"),
-                moneda=f.get("moneda") or "RON", platitor_tva=platitor, raspunsuri_ai=_ai,
-                tert_tara=f.get("tert_tara") or "RO", categorie_331=f.get("categorie_331"))   # [274b] categoriile, verificate pe țara clientului
+            rez = facturi_api.emite_factura(conn, linii, platitor_tva=platitor, raspunsuri_ai=_ai,
+                                            intreaba_marfa=poarta_ceruta, pleaca_marfa=pleaca_marfa, **antet_din_proforma(f))
         except ValueError as e:
+            if getattr(e, "cod", None) == facturi_api.COD_INTREABA_MARFA:
+                raise _erori.DateInvalide({"ok": False, "cod": facturi_api.COD_INTREABA_MARFA, "mesaj": str(e)})
+            if getattr(e, "cod", None) in ("METODA_STOC_NEDECLARATA", "METODA_STOC_ALTA"):
+                # [C63] refuzul metodei de stoc, structurat spre Date firmă — ca la emitere
+                from core import capital_social as _cs
+                raise _erori.DateInvalide(_cs.detaliu_metoda_stoc(e))
             raise _erori.DateInvalide(str(e))
         with conn.cursor() as cur:
             repo_facturi.leaga_proforma_de_factura(cur, rez["factura_id"], factura_id)
+        if poarta_ceruta and pleaca_marfa is True:
+            # [C63] descărcarea, o singură dată, în ACEEAȘI tranzacție cu factura (atomic: emitere + descărcare), ca la emitere
+            from core import stocuri_cv_api as _cv
+            rez["descarcare"] = _cv.descarca_factura(conn, schema, rez["factura_id"], _dtx.date.today().isoformat())
         conn.commit()
     return rez
 
@@ -5767,12 +5894,39 @@ def horeca_import_amef(tenant_id, continut, ctx):
             repo_contabilitate.adauga_z_amef(cur, schema, iid, rz["nui"], rz["nr_bonuri"])
             from core import eticheta_nota as _et   # [258] nota numită ca în Registrul jurnal (nu prin id)
             _eticheta = _et.nota(cur, schema, iid)
+            _rip = _z_in_rip(conn, cur, schema, rz["data"], rz["nr_raport"], rz["nui"], numerar, ctx)   # [368] la PFA: registrul
         conn.commit()
+    if _rip is not None:
+        return {"registru": "rip", "rip_id": _rip.get("id"), "data": rz["data"], "total": str(rz["total"]), "tva_total": str(rz["total_tva"]),
+                "cote": [{"cota": x["cota"], "tva": str(x["tva"])} for x in rz["cote"]], "numerar": str(numerar), "card_altele": str(rest)}
     return {"inregistrare_id": iid, "nota_eticheta": _eticheta, "status": "ciorna", "data": rz["data"],
             "total": str(rz["total"]), "tva_total": str(rz["total_tva"]),
             "cote": [{"cota": x["cota"], "tva": str(x["tva"])} for x in rz["cote"]],
             "numerar": str(numerar), "card_altele": str(rest)}
 
+
+
+def _z_in_rip(conn, cur, schema, data, nr_raport, nui, numerar, ctx):
+    """[deficiența 368, retestul 19.10.2026: „Raport Z la PFA spune «Încasări zilnice → notă automată» — la PFA nu există note contabile.”]
+    La partidă simplă evidența e registrul de încasări și plăți (OMFP 170/2015): numerarul Z-ului intră acolo, ca încasare din activitate
+    (ciornă, de validat, ca orice operațiune). Cardul se înregistrează când banii ajung în cont, din extrasul de bancă („Import din bancă”),
+    altfel s-ar număra de două ori. Nota rămâne purtătorul intern al TVA-ului pe cote (D300 rd.9/10, D394) — la PFA ea nu apare în niciun
+    registru. -> {"id": ...} (operațiunea, sau {} fără numerar) la PFA; None la partidă dublă. Aceeași regulă la Z-ul scris și la AMEF."""
+    from core.migrare_api import regim_contabil as _regim
+    repo_contabilitate.search_path_firma(cur, schema)
+    pf = repo_firma_profil.profil_fiscal(cur)
+    if not pf or _regim(pf[0]) != "simpla":
+        return None
+    if not numerar:
+        return {}
+    from core import rip_api as _rip_api
+    r = _rip_api.adauga(conn, schema, {"data_operatiune": str(data)[:10], "tip": "incasare", "document_tip": "raport Z",
+                                       "document_numar": nr_raport, "document_data": str(data)[:10],
+                                       "explicatie": "Încasări în numerar, raport Z nr. %s, casa %s" % (nr_raport, nui),
+                                       "suma": numerar, "metoda": "numerar", "categorie": "activitate"}, user_id=int(ctx["uid"]))
+    if r.get("eroare"):
+        raise _erori.DateInvalide(r["eroare"])
+    return r
 
 
 def horeca_raport_z(tenant_id, rz, ctx):
@@ -5832,6 +5986,11 @@ def horeca_raport_z(tenant_id, rz, ctx):
             repo_contabilitate.adauga_z_amef(cur, schema, iid, nui, int(rz.nr_bonuri))
             from core import eticheta_nota as _et   # [258] nota numită ca în Registrul jurnal (nu prin id)
             _eticheta = _et.nota(cur, schema, iid)
+            _rip = _z_in_rip(conn, cur, schema, rz.data, nr_raport, nui, rz.numerar, ctx)
+    if _rip is not None:
+        return {"ok": True, "registru": "rip", "rip_id": _rip.get("id"), "numerar": float(rz.numerar or 0),
+                "card": float(rz.card or 0), "tva_11": float(tva11), "tva_21": float(tva21),
+                "baza_11": float(baza11), "baza_21": float(baza21)}
     return {"ok": True, "nota_id": iid, "nota_eticheta": _eticheta, "descarcare_pe_articol": _la_cost,
             "tva_11": float(tva11), "tva_21": float(tva21),
             "baza_11": float(baza11), "baza_21": float(baza21)}
@@ -6306,6 +6465,22 @@ def factura_primita_valideaza(tenant_id, primita_id, corp, ctx):
     from core import efactura_import as _ef
     from core import contare_facturi as _cf
     cont = (corp.get("cont") or "").strip()
+    # [deficiența 418a] statutul furnizorului se află din XML și ANAF, nu de la contabil: citirea scurtă a facturii, apoi ANAF cu
+    # conexiunea închisă; ce nu se poate afla (ANAF jos, XML fără BT-31) rămâne pe alegerea contabilului
+    statut, f0 = {"platitor_tva": None, "tva_la_incasare": None}, None
+    with db.get_conn() as conn0:
+        schema0 = auth_api.schema_tenant(conn0, ctx["uid"], tenant_id)
+        if schema0:
+            with conn0.cursor() as cur0:
+                r0 = repo_efactura.primita_pentru_validare(cur0, schema0, primita_id)
+            try:
+                f0 = _ef.parseaza_xml((r0[1] or "").encode("utf-8"), r0[2]) if r0 and r0[1] else None
+            except Exception:  # noqa: BLE001 — XML-ul necitibil e refuzat mai jos, cu motivul
+                f0 = None
+    if f0 and f0.get("data_emitere"):
+        from core import anaf_api as _anaf
+        _cif0, _d0 = f0.get("tert_cui"), str(f0["data_emitere"])   # la factura primită, terțul e furnizorul
+        statut = _anaf.statut_furnizori([(_cif0, _d0, f0.get("furnizor_cod_tva"))])[(_cif0, _d0)]
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -6343,7 +6518,7 @@ def factura_primita_valideaza(tenant_id, primita_id, corp, ctx):
                 raise _erori.DateInvalide("XML-ul nu se poate citi: %s" % str(e)[:200])
             # [lotul 6 pct.7c, 273] ce nu vine din XML se cere aici, înainte de orice scriere: tipul furnizorului (D394 — tipul
             # partenerului) și, la taxarea inversă (linii „AE”), categoria produsului (codul D394, art.331). Fără ele, D394 ghicea.
-            _tp = corp.get("tert_platitor_tva")
+            _tp = statut["platitor_tva"] if statut["platitor_tva"] is not None else corp.get("tert_platitor_tva")   # [418a] faptul, nu tastarea
             _c331 = (corp.get("categorie_331") or "").strip() or None
             from core import d394 as _d394
             if _tp is None:
@@ -6358,7 +6533,7 @@ def factura_primita_valideaza(tenant_id, primita_id, corp, ctx):
             # [B1 D300] optiuni de clasificare pe factura primita, alese de contabil la validare:
             # furnizor cu TVA la incasare (deducere amanata la plata, art.297 alin.2) / tara
             # partenerului (achizitie IC vs import). Setate pe factura legata (fid_final).
-            _ftva = corp.get("furnizor_tva_incasare")
+            _ftva = statut["tva_la_incasare"] if statut["tva_la_incasare"] is not None else corp.get("furnizor_tva_incasare")   # [418a] RTVAI
             _ttara = (corp.get("tert_tara") or "").strip().upper()
             if fid_final and (_ftva is not None or _ttara):
                 _sets, _vals = [], []
@@ -6374,6 +6549,9 @@ def factura_primita_valideaza(tenant_id, primita_id, corp, ctx):
             _dest = corp.get("destinatii")
             if fid_final and _dest:
                 repo_facturi.actualizeaza_destinatii_linii(cur, schema, fid_final, _dest)
+            # [deficiența 418b] contul fiecărei linii (gol = contul facturii): marfa pe 371, cartea de birou pe cheltuială
+            if fid_final and corp.get("conturi"):
+                repo_facturi.actualizeaza_conturi_linii(cur, schema, fid_final, corp.get("conturi"))
         # [FFF1] NOTA SE SCRIE AICI, în același act cu validarea — după ce clasificarea e pusă pe
         # factură, ca nota s-o poată citi. Validarea *este* actul prin care firma recunoaște
         # cheltuiala: patru-ochi s-a consumat deja, contul tocmai a fost ales, regimul tocmai a fost
@@ -6412,9 +6590,11 @@ def factura_primita_valideaza(tenant_id, primita_id, corp, ctx):
         # dublează contabilitatea. Fără asta, 371-contabil urca dar fișa nu se mișca (divergență GL↔fișă,
         # finding SPV↔stoc, DECIZII 20.09). OMFP 1802/2014: recepția mărfii e un act unic.
         stoc = None
-        if fid_final and cont and any(cont.startswith(p) for p in _cf.CONTURI_FOND_EXACT):
+        # [418b] intră în stoc liniile contate pe un cont de stoc — al lor sau al facturii (`intrare_din_factura` le alege pe linie)
+        _conturi_ef = [(str(c or "").strip() or cont or "") for c in (corp.get("conturi") or [])] or [cont or ""]
+        if fid_final and any(any(c.startswith(p) for p in _cf.CONTURI_FOND_EXACT) for c in _conturi_ef):
             from core import stocuri_cv_api as _cv
-            stoc = _cv.intrare_din_factura(conn, schema, fid_final, cont, f.get("data_emitere"))
+            stoc = _cv.intrare_din_factura(conn, schema, fid_final, cont or "", f.get("data_emitere"))
         conn.commit()
     return {"stare": "validata", "factura_id": fid_final, "contare": contare, "stoc": stoc}
 

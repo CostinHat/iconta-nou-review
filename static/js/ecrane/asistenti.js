@@ -1,7 +1,7 @@
 // asistenti.js — managementul actorilor de cabinet (cardul Asistenți).
 // Trei niveluri: listă actori -> editare actor (permisiuni + firme atribuite) -> Vizualizează.
 // Doar admin_firma. Stil aliniat la validat.js / control.js (api.js + nav.deschide).
-import { api, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp, dataIso, cate } from "../api.js?v=462d75fbab";  /* audit_cab_lot2_v1 */
+import { api, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp, dataIso, cate } from "../api.js?v=158edee964";  /* audit_cab_lot2_v1 */
 /* [patch11_semafor_explicit] */
 function _semaforEticheta(culoare) {
   // [eticheta_din_fapt 20.08.2026] `gri` lipsea din harta -> M[culoare] || "" randa o bulina
@@ -90,8 +90,12 @@ export async function randeazaAsistenti(corp, nav) {
         poate_valida: corp.querySelector("#asi-valida").checked,
         poate_depune: corp.querySelector("#asi-depune").checked,
         firme: [...corp.querySelectorAll(".asi-firma-noua:checked")].map((c) => Number(c.value)) });
-      arataMesaj(msg, "Invita\u021bie trimis\u0103 pe " + email + ".", "info");
-      setTimeout(() => randeazaAsistenti(corp, nav), 900);
+      // [418c / 410, DS cap.27] lista se reface ACUM, iar confirmarea stă deasupra ei (înainte se redesena după 0,9 s și o ștergea)
+      await randeazaAsistenti(corp, nav);
+      const conf = document.createElement("p");
+      conf.id = "asi-confirmare";
+      (corp.querySelector(".pf-titlu") || corp.firstElementChild || corp).insertAdjacentElement("afterend", conf);
+      arataMesaj(conf, "Invita\u021bie trimis\u0103 pe " + email + ".", "ok");
     } catch (e) {
       // [comanda Costin 04.10.2026 pct.3] adresa cu alt rol: refuzul numit stă pe câmpul de email
       let peCamp = false;

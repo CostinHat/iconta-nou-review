@@ -79,6 +79,13 @@ def cere_z(cur, schema, z_id):
     return zid
 
 
+def deblocat(zid):
+    """[368] Z-ul descărcat pe articol / pe rețetă sau declarat „fără marfă” nu mai e refuzat la validare: la partidă simplă, unde nota
+    lui se validează automat, middleware-ul o reîncearcă la sfârșitul cererii (`autor_cerere.reincearca_interna`)."""
+    from core import autor_cerere as _ac
+    _ac.reincearca_interna(zid)
+
+
 def marcheaza_fara_marfa(conn, schema, nota_id, fara_marfa):
     """Declarația explicită: în Z nu s-a vândut marfă din stoc (True) / retrasă (None). Numai pe un Z nevalidat."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -88,6 +95,8 @@ def marcheaza_fara_marfa(conn, schema, nota_id, fara_marfa):
             raise ValueError("Raportul Z are deja %s de el — nu poate fi „fără marfă”." % _cate(st["iesiri"], "ieșire din stoc legată", "ieșiri din stoc legate"))
         cur.execute("UPDATE %srapoarte_z_amef SET fara_marfa = %%s WHERE inregistrare_id = %%s" % _p(schema),
                     (True if fara_marfa else None, zid))
+    if fara_marfa:
+        deblocat(zid)
     return {"ok": True, "nota_id": zid, "fara_marfa": True if fara_marfa else None}
 
 

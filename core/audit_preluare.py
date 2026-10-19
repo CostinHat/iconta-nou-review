@@ -183,25 +183,30 @@ def verifica_balanta(conn, schema):
                            "balanța corectă (Migrare › Solduri inițiale)."))]
 
 
+def parte_gresita(cont, debit, credit):
+    """[392, lotul 9] Textul „5121 (activ) are sold creditor 20.000,00 lei” dacă soldul stă pe partea opusă funcțiunii contului (OMFP
+    1802/2014 pct.593 alin.(2)), altfel None. O singură regulă, pentru auditul de preluare și pentru previzualizarea balanței."""
+    from core.plan_functiune import functiune
+    d, c = float(debit or 0), float(credit or 0)
+    f = functiune(cont)
+    if f == "A" and c - d > 0.005:
+        return "%s (activ) are sold creditor %s" % (cont, _lei(c - d))
+    if f == "P" and d - c > 0.005:
+        return "%s (pasiv) are sold debitor %s" % (cont, _lei(d - c))
+    return None
+
+
 def verifica_parte_sold(conn, schema):
     """[deficiența 369, comanda Costin 8.2: „Fără ea nu se poate semnala un sold pe partea greșită la auditul de preluare”] Contul de activ
     (A) cu sold creditor sau de pasiv (P) cu sold debitor în balanța de deschidere — funcțiunea din planul OMFP (`plan_functiune`, OMFP
     1802/2014 pct.593–594); bifuncționalele (A/P) pot avea oricare."""
-    from core.plan_functiune import functiune
     et = "Solduri pe partea funcțiunii contului"
     temei = ("Un cont de activ (A) are, în general, sold debitor, iar unul de pasiv (P) sold creditor (OMFP 1802/2014 pct.593 alin.(2)); un "
              "sold pe partea cealaltă arată o înregistrare greșită sau o balanță exportată greșit.")
     rows = _rows_solduri_initiale(conn, schema)
     if not rows:
         return []   # balanța lipsă e spusă o dată, de `verifica_balanta`
-    gresite = []
-    for r in rows:
-        d, c = float(r["debit"] or 0), float(r["credit"] or 0)
-        f = functiune(r["cont"])
-        if f == "A" and c - d > 0.005:
-            gresite.append("%s (activ) are sold creditor %s" % (r["cont"], _lei(c - d)))
-        elif f == "P" and d - c > 0.005:
-            gresite.append("%s (pasiv) are sold debitor %s" % (r["cont"], _lei(d - c)))
+    gresite = [g for g in (parte_gresita(r["cont"], r["debit"], r["credit"]) for r in rows) if g]
     if not gresite:
         return [_verde(et, temei, "Toate soldurile balanței de deschidere stau pe partea funcțiunii contului lor.")]
     return [_rosu(et, temei, "; ".join(gresite[:20]) + ("; și încă %d" % (len(gresite) - 20) if len(gresite) > 20 else "") + ".",

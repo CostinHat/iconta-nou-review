@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.92 · 16 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.95 · 19 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -147,6 +147,11 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - **`confirm()`, `alert()` și `prompt()` native de browser sunt INTERZISE** (v2.0 — include prompt). Confirmări via `confirmaCaseta(zona, mesaj, laConfirm, {textOk})`. Input via formular în-ecran (câmp + buton), niciodată prompt nativ.
 - Mesajul spune exact ce se întâmplă și dacă e ireversibil.
 
+- **„Pleacă marfa acum?” — o singură implementare (v2.95, 19.10.2026, decizia Costin C63):** întrebarea are o singură implementare,
+`intrebarePleacaMarfa` din `ecrane/emitere_ecran.js` (casetă-poartă, v2.14); o folosesc emiterea din formular și „Transformă în factură”
+(detaliul proformei / avizului, în `#fd-act-rez`). Serverul o cere prin refuzul `INTREABA_PLEACA_MARFA`, după aceeași condiție
+(`facturi_api.poarta_marfa_ceruta`). Un drum nou care emite o factură cu articol de stoc refolosește funcția; nu reproduce caseta.
+
 ## 6. Mesaje de stare, câmpuri obligatorii și ghidaj
 
 - **Alegerea firmei într-un formular = UN control (v2.66, comanda Costin 05.10.2026):** `<select>` cu „— alege firma —”, forma de la Declarații. Nu un câmp „Caută firma” plus o listă derulantă pentru aceeași alegere (instanța: Pachete lunare). Lista de bife a firmelor unui asistent (o alegere multiplă) nu e în regulă. Gard: verificator `ALEGERE_FIRMA_DUBLA`.
@@ -181,6 +186,15 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   butonul în fereastră, zona lipită jos). O bară urmată de alt conținut (nota de subsol a
   declarației, jurnalul din Date firmă) nu-l acoperă: marginea ei negativă de jos se aplică numai ultimului element
   (`.fereastra-corp .bara-fixa:not(:last-child)` → `margin-bottom: 0`; verificator FEREASTRA_LOT6 / BARA_NU_ACOPERA, e2e `test_def_164_*`).
+- **„NU s-a salvat” lângă butonul apăsat, cu lista câmpurilor (v2.93, 19.10.2026, comanda Costin 9.2, deficiența 410 — clasă, TOATE
+  formularele; verbatim: „la orice Salvează refuzat «NU s-a salvat» lângă buton + lista tuturor câmpurilor lipsă cu trimitere; nu se
+  pierde ce s-a scris”):** după apăsarea unui buton care scrie (`data-actiune` cu POST / PUT / PATCH / DELETE, sau fără declarație — nu
+  cel declarat numai de citire și nici cel `data-fara-actiune`), orice refuz de câmp
+  (`eroareCamp`, și erorile de câmp ale serverului) și orice refuz de formular (`arataMesaj(…, "eroare")`) se adună în
+  `.refuz-salvare` (role=alert), imediat după rândul butonului: „NU s-a salvat.”, apoi fiecare câmp cu eticheta lui și trimitere (clic =
+  câmpul în vedere, cu focus; un `<details>` închis se deschide), iar refuzul fără câmp trimite la mesajul lui („motivul e mai jos”, fără
+  să-l repete). Câmpul corectat iese din listă, lista goală dispare. Un singur mecanism, în `api.js` (`refuzSalvare`), chemat de
+  helperii comuni — ecranele nu-l repetă. Gard: verificator REFUZ_SALVARE + e2e `test_def_410_*`.
 - **Refuzul unei acțiuni de pe rând stă sub textul rândului (v2.92, lotul 6, deficiența 279, clasa 259):** `api.refuzPeRand(buton,
   mesaj)` (`.msg-refuz-rand`), nu un `<span class="msg-eroare">` lipit de buton, care strângea textul rândului. Gard:
   `core/test_stare_nota_salvata.py::test_refuzul_de_pe_rand_nu_mai_se_lipeste_de_buton`.
@@ -196,6 +210,11 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - **Câmp obligatoriu (v2.0)**: marcat cu asterisc roșu prin `<span class="oblig">*</span>` lângă etichetă. Câmpurile opționale nu se marchează.
 - **Ghidaj preventiv (v2.0)**: câmp care nu se poate autocompleta din date existente primește `<span class="camp-ajutor">` (albastru #3d8fd6, sub etichetă) care spune de unde ia utilizatorul valoarea. Niciun câmp obligatoriu gol fără context.
 - **Stare goală (v2.13)**: o listă cu ZERO rânduri NU e mesaj de stare — nu se afișează prin `arataMesaj()`. Nu s-a întâmplat nicio acțiune; e conținut de ecran, nu feedback tranzitoriu. Clasă canonică unică: **`.stare-goala`** (modificator `.stare-goala--inline` pentru o linie într-un panou, nu listă goală pe ecran plin — altă anatomie: aliniere stânga, padding mic). Clasele `.cap-gol` și `.sa-gol` sunt ELIMINATE; `.mig-gol` NU se mai folosește pentru stări goale (utilizările lui rămase sunt mesaje de eroare din `catch`, datorie de migrat la `arataMesaj` — vezi DE_FACUT). Trei părți OBLIGATORII: (1) **golul** — ce lipsește; (2) **cauza** — de ce e gol; dacă e precondiție neîndeplinită, cu temei; (3) **ieșirea** — butonul care repară, SAU regula sistemului pe care omul n-o știa (când golul e normal: n-a început încă). INTERZISĂ fundătura: „Niciun X." fără cauză și fără ieșire. Modele: `produse_ecran.js` („Niciun produs încă. Adaugă primul produs — cota se completează automat."), `firme.js` document de verificat („Clienții pozează, aici certifici."). Regula STARE_GOALA în verificator (clasă interzisă + fundătură).
+
+- **Nota internă a unei firme în partidă simplă (v2.95, 19.10.2026, decizia Costin, deficiența 368):** la PFA / II / IF nota scrisă în
+fundal se validează automat; starea ei se spune central, prin `stareNota` / `pasNota` (api.js): „notă internă — Poartă TVA-ul pentru D300 /
+D394; evidența PFA e registrul de încasări și plăți.” (`TEXT_NOTA_INTERNA`, o singură definiție); refuzul validării automate se spune cu
+motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o spune sub titlu (`#j-interne`).
 
 ## 7. Documente PDF
 
@@ -247,6 +266,8 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   fiecare schimbare de conținut și la redimensionare) — nu mai depinde de ecranul care ar fi trebuit s-o ceară. Unde nici lățirea nu
   ajunge (ecran îngust), rândurile de butoane și stări se rup (`flex-wrap`, ex. `.fd-antet-sus`), iar celulele `.fd-tabel` își rup
   cuvintele lungi. Gard: e2e `test_def_285_*` (toate cardurile ferestrei firmei, detaliul facturii la 1100px, un conținut lat sintetic).
+  **(19.10.2026, deficiența 349)** lățirea privește și cutia de previzualizare a importurilor (`.mig-prev-cutie`, cu derulare proprie pe
+  înălțime): un tabel mai lat decât ea lățește fereastra, nu o face să deruleze lateral. Gard: e2e `test_def_349_*`.
   **(18.10.2026, deficiența 331)** numai cuvântul care nu încape se rupe: `overflow-wrap: break-word`, NU `anywhere` — `anywhere` coboară
   lățimea minimă a celulei la o literă și tabelul rupe și cuvintele scurte („Can t”, „servici u”). Gard: e2e `test_def_331_*`.
 - Nicio fereastră nu iese din ecran.
@@ -287,6 +308,13 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   „Unele acțiuni de aici nu se afișează: cer dreptul «…», pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul
   Asistenți.” (nivelul vine de la server, `GET /eu/drepturi` → `motive`). Un ecran care își scrie singur mesajul pentru aceeași
   situație îi dă clasa `drept-motiv` și nota generică nu se mai pune. Gard: verificator `MOTIV_DREPT_ABSENT` + `core/test_drepturi_ui.py`.
+
+- **Lista de pași care trebuie să încapă în fereastră (v2.95, 19.10.2026, decizia Costin, deficiența 394):** `.mig-op`, `test_394_migrare_cum_se_face.py` — instrucțiunile lungi ale unui
+  ecran de pași (text de ajutor, nu date sau stare) stau pliate într-un `<details class="dec-xml"><summary>Cum se face</summary>`, închis la
+  randare (toggle-ul secundar, v2.54 — zero clase noi); pașii rămân la vedere, în ordinea lor, iar de la lățimea desktop (`@media
+  (min-width: 761px)`) rândul e compact: titlul și descrierea pe același rând, descrierea tăiată cu „…” și întreagă în `title`. Pe telefon
+  (≤ 760 px) rândul rămâne cel întreg (≥ 44 px, ținta de atingere, cap.4). Primul ecran: Migrare cabinet. Gard:
+  `core/test_394_migrare_cum_se_face.py` + e2e `test_def_394_*` (1366×768, 1700×1000, 393×851).
 
 ## 10. Escape și securitate
 
@@ -822,6 +850,16 @@ entitatea și consecința.** Nu „Salvat": *„«BORG DESIGN SRL» a fost scoas
 nu mai există."* Demontarea ecranului **nu e** confirmare: „a dispărut" arată identic cu „a reușit"
 și cu „s-a rupt ceva". Cu cât actul e mai puțin reversibil, cu atât confirmarea e mai obligatorie.
 
+**Corolar (v2.93, 19.10.2026, deficiența 418c — „După «Altă livrare», aplicația sare în fereastra firmei fără niciun mesaj de
+confirmare (aceeași clasă cu 410)”):** confirmarea nu se șterge singură printr-o navigare sau o redesenare TEMPORIZATĂ
+(`setTimeout(() => nav.inapoi() / randeaza…() / istoric…() / dupaEmitere(), N)`): rămâne pe ecran, iar drumul mai departe e un
+buton („← Înapoi”, „Vezi factura în Istoric facturi →”); o listă care trebuie reîmprospătată se reface ACUM, iar confirmarea se pune
+peste ea. Instanțele reparate: validarea / respingerea facturii primite, stornarea, emiterea, invitația asistentului, concediul
+medical. Gard: verificator CONFIRMARE_TEMPORIZATA.
+**Completare (v2.94, 19.10.2026, C64):** „peste ea” înseamnă în zona de mesaj a ecranului redesenat, nu în locul lui — o redesenare urmată
+de `arataMesaj(corp, …)` șterge ecranul abia refăcut (la „Transformă în factură” rămânea numai „Factura … a fost emisă.”, fără drum
+spre ea). Gard: verificator CONFIRMARE_PESTE_ECRAN.
+
 ### 27.1 Instanța măsurată, cu liniile ei
 
 27.08.2026, la 19:16:24, Costin a apăsat *„Păstrez denumirea mea"*. Scrierea s-a făcut și e probată
@@ -910,6 +948,14 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.95 (19.10.2026)** — închiderea lotului 9 (deciziile Costin, verbatim în DECIZII „Închiderea lotului 9”): **cap.5** — „Pleacă marfa acum?”
+o singură implementare (C63); **cap.6** — nota internă la partidă simplă (368); **cap.9** — lista de pași care încape: „Cum se face” pliat și
+rândul compact de la lățimea desktop (394).
+**v2.94 (19.10.2026)** — lotul 9 (C64, găsită de Code): **cap.27** — confirmarea după o redesenare stă în zona de mesaj a ecranului
+refăcut, nu în locul lui (gard CONFIRMARE_PESTE_ECRAN).
+**v2.93 (19.10.2026)** — lotul 9 (comanda Costin 9.2, verbatim în DECIZII): **cap.6** — **„NU s-a salvat” lângă butonul apăsat**, cu
+lista câmpurilor refuzate și trimitere la fiecare (`api.refuzSalvare`, `.refuz-salvare`; 410). **cap.9** — lățirea automată privește și
+`.mig-prev-cutie` (349, comanda 9.1).
 **v2.92 (16.10.2026)** — lotul 6 (comanda Costin 16.10.2026 și completările, verbatim în DECIZII): **cap.6** — **câmpul care se citește, nu se scrie** (`.camp-input[readonly]` global, `.camp > button`; 272), **refuzul de pe rând sub textul rândului** (`api.refuzPeRand`; 279, clasa 259), **acțiunea principală și mesajul ei se văd mereu** (`.bara-fixa`; 285), **eroarea dispare când câmpul e corectat** (`api.stergeEroriDupaCorectare`; 290). **cap.9** — **nicio fereastră cu derulare laterală** (lățirea automată `navigator._lateste`, rândurile de butoane rupte; 285).
 **v2.91 (14.10.2026)** — importul din SAGA (comanda Costin 14.10.2026, verbatim în DECIZII): **cap.4** — **caseta de date cu derulare proprie e focusabilă** (`.mig-sold-tabel`, 7 tabele; axe mobil pe previzualizarea istoricului); gard `core/test_fereastra_focusabila.py`. **cap.6** — **previzualizarea importului cu rânduri care nu intră**: caseta cu rândurile refuzate, butonul care numește ce salvează, mesajul de după salvare rând cu rând; gard e2e C24 / C25 (`frontend_test/e2e/e2e_import_saga.py`). Plus: data balanței = câmp obligatoriu (`.oblig`, `.camp-ajutor`, eroare lângă câmp — C22); coloana „Metodă” a previzualizării MF #c0492b -> #a83d22 (4,46 -> 5,63:1 pe rândul cu avertisment).
 **v2.90 (13.10.2026)** — comanda Costin pct.2c: **cap.22** — **`.ghid-actualizat`**, data ultimei actualizări sub titlul fiecărui ghid (fără autori, fără titluri profesionale). Gard: verificator GHID_ACTUALIZAT, `core/test_ghid_publicare.py`. Plus **contrastul paginilor publice** (axe pe /ghid, găsit la proba vizuală a lotului): `--p-brand` #0672FE -> #0566EA (alb pe el 4,33 -> 5,13) și linkurile din pagină subliniate (`--p-link` față de text = 2,7:1, WCAG 1.4.1). Gard: `core/test_a11y_contrast_tokens.py::test_paginile_publice_contrast`.

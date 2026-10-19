@@ -175,6 +175,39 @@ TIPURI_CUNOSCUTE = ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D39
 TIPURI_ANUALE = ("D101", "D205", "D212", "S1003", "S1005")
 
 
+#: [389, retestul 19.10.2026: „perioada apare 03/2026 și 06/2026 în loc de T1/2026, T2/2026”] declarațiile TRIMESTRIALE ale firmei, după
+#: profilul ei: D100 la impozitul pe profit / micro (CF art.41 alin.(1); CF art.56 alin.(1) — trimestrial), D300 / D394 la decontul trimestrial
+#: (CF art.322 alin.(2)-(3)). Restul (D112, D390 …) rămân lunare.
+def trimestriala(tip, profil):
+    """Declarația `tip` e trimestrială pentru firma cu `profil` ({tip_decont, regim_fiscal})."""
+    profil = profil or {}
+    if tip == "D100":
+        return str(profil.get("regim_fiscal") or "").lower() in ("profit", "micro")
+    if tip in ("D300", "D394"):
+        return str(profil.get("tip_decont") or "").lower().startswith("t")
+    return False
+
+
+def cu_perioada(randuri, profil):
+    """PURĂ: fiecare rând primește `perioada` — cum o scrie formularul: „anuală 2026”, „T1/2026” (luna de sfârșit a trimestrului, la o
+    declarație trimestrială a firmei), „03/2026”. Luna care nu încheie un trimestru se arată lunar, cum a venit."""
+    for r in randuri or []:
+        an, luna, tip = r.get("an"), r.get("luna"), str(r.get("tip") or "").upper()
+        try:
+            luna = int(luna)
+        except (TypeError, ValueError):
+            luna = None
+        if r.get("anuala"):
+            r["perioada"] = "anuală %s" % (an or "—")
+        elif luna and an and 1 <= luna <= 12 and luna % 3 == 0 and trimestriala(tip, profil):
+            r["perioada"] = "T%d/%s" % (luna // 3, an)
+        elif luna and an and 1 <= luna <= 12:
+            r["perioada"] = "%02d/%s" % (luna, an)
+        else:
+            r["perioada"] = "%s %s" % (r.get("luna") or "—", an or "—")
+    return randuri
+
+
 def _perioada_txt(tip, an, luna):
     return ("%s pe %s" % (tip or "?", an)) if (tip in TIPURI_ANUALE or not luna) else ("%s pe %02d/%s" % (tip or "?", int(luna), an))
 

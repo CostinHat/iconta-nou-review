@@ -85,7 +85,12 @@ def _cere(cale, corp):
             err = json.load(e).get("error", {})
         except ValueError:
             err = {}
-        raise Refuzat("Meta a refuzat cererea (HTTP %d, cod %s): %s" % (e.code, err.get("code", "?"), err.get("message", "")[:300]))
+        # `message` e generic („Invalid parameter”); cauza o spun `error_user_title` / `error_user_msg` și subcodul (lotul 9 D1: înregistrarea
+        # numărului refuzată cu 2388001 — „Nu pot crea certificatul”, politica WhatsApp)
+        cauza = " — ".join(x for x in (err.get("error_user_title"), err.get("error_user_msg")) if x)
+        raise Refuzat("Meta a refuzat cererea (HTTP %d, cod %s%s): %s" % (
+            e.code, err.get("code", "?"), "/%s" % err["error_subcode"] if err.get("error_subcode") else "",
+            (err.get("message", "") + (" | " + cauza if cauza else ""))[:600]))
 
 
 def normalizeaza(telefon):

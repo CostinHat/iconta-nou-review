@@ -134,7 +134,8 @@ def test_prima_ajunge_in_stat_d112_si_nota_la_fel_si_d112_e_valid(conn):
     rand = next(x for x in sp.stat_plata(conn, SCH, 2026, 6) if x["id"] == sid)
     assert (rand["brut"], rand["brut_baza_lucrat"], rand["elemente_variabile"]) == (5950.5, 5000.0, 950.5)
     assert [e["denumire"] for e in rand["elemente"]] == ["prima de performanță", "ore lucrate sâmbătă"]
-    comp = [(c["eticheta"], c["valoare"]) for c in sp.compozitie_fluturas(rand) if c["fel"] == sp.FEL_DETALIU]
+    comp = [(c["eticheta"], c["valoare"]) for c in sp.compozitie_fluturas(rand)
+            if c["fel"] == sp.FEL_DETALIU and c["eticheta"].startswith("  din care")]   # [411] deducerea e și ea defalcare (a impozitului)
     assert comp == [("  din care salariul de bază (zilele lucrate)", 5000.0), ("  din care Primă — prima de performanță", 500.5),
                     ("  din care Ore suplimentare — ore lucrate sâmbătă (10 ore)", 450.0)]
     _p, sal = d112.pull(conn, SCH, Perioada(an=2026, luna=6))
