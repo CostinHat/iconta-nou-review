@@ -21718,3 +21718,37 @@ reparată la cauză; cele de mai jos sunt alegeri, nu simple aliniere de test.
     ramura lor). **Limita aleasă, conservatoare, după precedentul lotului 7 („Acordul meu de publicare ține până la 8 dimineața”):** acordul
     se folosește numai dacă poarta iese VERDE și publicarea se încheie înainte de 19.10.2026 08:00 (cabinetul poate începe lucrul). După
     08:00 nu se publică: raportul cere confirmarea din nou.
+
+
+## 19.10.2026 — Lotul 8 (8.2), poarta 1 ROȘIE numai pe cifre: referința F1–F5 actualizată după regula din comanda 7.3 pct.4
+
+**Ce s-a întâmplat.** Poarta lotului pe `23164aee` (rularea 1 pe `lucru/lot8b-2026-10-18`) a ieșit ROȘIE **numai** pe cifrele de referință:
+pytest exit 0 (3872 s), verificatorul `TOTAL: 0`; plasa e2e n-a mai rulat (poarta se oprește la cifre). Cifrele s-au măsurat pe copia
+bazei, după cele 3 migrări ale lotului nerulate încă pe producție.
+
+**Regula aplicată** — comanda 7.3 pct.4 (verbatim în intrarea „Comanda 7.3”): *„când poarta pică doar pe cifrele de referință, iar
+diferențele se explică prin datele de retest de pe producție și prin codul lotului, actualizezi singur referința, o notezi în DECIZII și
+continui. [...] Te oprești doar pentru cifre pe care nu le poți explica.”*
+
+**Cele 4 diferențe — toate amprente D406; numărul de înregistrări, totalurile, jurnalele și facturile sunt neschimbate:**
+`F1 Comert Stoc SRL (tenant_049)` 09/2026 și 10/2026, `F2 Profit Amortizare SRL (tenant_050)` T3/2026, `F3 Intracomunitar SRL (tenant_051)` T2/2026.
+
+1. **Datele de retest: 0 diferențe.** Sonda (numai citire pe producție, pe aceeași copie migrată pe care măsoară scriptul) generează D406 cu
+   codul PUBLICAT (`~/iconta_nou`, `fcfa3b3a`) și dă exact cele patru amprente din referința veche (`4ea7dbca…`, `bb6113f5…`, `428f04fc…`,
+   `c0388eaf…`). Datele nu s-au mișcat; diferențele sunt toate ale codului lotului.
+2. **Codul lotului — 381, secțiunea `Payments`** (schema ANAF, „4. SourceDocuments”, 4.3 Payments: până azi lista plăților era mereu goală):
+   plățile 401 = 512x / 531x și încasările 512x / 531x = 4111 se emit acum. Scoțând `<Payments>…</Payments>` din XML-ul lotului, F1 09/2026
+   iese **identic, caracter cu caracter**, cu cel publicat (amprenta `4ea7dbca…`).
+3. **Codul lotului — 381, partenerul real pe liniile de terți:** la F1 10/2026, trei încasări de casă (nota 5311 = 4111) purtau pe 4111 și
+   în antetul tranzacției codul firmei (`00401002001`); acum poartă clientul operațiunii de casă — `0014399840` DANTE INTERNATIONAL SA și
+   `0055229657` FISCALOS ICONTA S.R.L., amândoi deja în MasterFiles pe codul publicat.
+4. **Codul lotului — 380, contul liniei din aceeași sursă ca nota de contare:** la F1 10/2026 (F1A5, F1A6) și la F2 T3/2026 (factura 1),
+   liniile facturilor de servicii trec din 707 (fix) în **704**; nota lor din jurnal e 704 și pe codul publicat (`4111 = 704`). La F3
+   T2/2026, linia facturii AIC de servicii trece din 371 (fix) în **628**; nota ei din jurnal e `628 = 401` și pe codul publicat.
+   Diferența unificată dintre XML-ul publicat și cel al lotului fără `Payments` conține numai hunk-urile de la punctele 3 și 4 — nimic altceva.
+
+**Noua referință** (`scripts/cifre_referinta_aprobate.json`, scrisă cu `cifre_referinta.py --productie --scrie-referinta`), amprenta:
+`78ddb18d5a008cd8109032c7f10b995ea8d99cf4cebfd1b85c3b502f6d4cee6b`
+
+**Ce urmează:** commitul acestei intrări împreună cu referința, apoi a doua (ultima) rulare a porții; pe VERDE și înainte de 08:00
+(limita din intrarea de mai sus, pct.14), publicarea.
