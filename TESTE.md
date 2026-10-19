@@ -54,8 +54,10 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     L82-15: suita întreagă (114 picături la prima rulare, toate reparate la cauză), plasa întreagă (51 de picături, reparate), `e2e_lot82.py`
     43 / 43 verzi și 43 / 43 roșii sub cele 41 de mutații, uneltele vizuale pe 8019, registrele (DEFICIENTE 341–381, R95, GARZI, DECIZII,
     ISTORIC) — commitul care conține această intrare.
-  - urmator: poarta lotului (`scripts/poarta_lot.sh` pe `lucru/lot8b-2026-10-18`), apoi publicarea cu acordul din 18.10 seara, numai înainte de
-    19.10 08:00 (DECIZII „ce a schimbat testarea” pct.14); raportul 8.2. IN LUCRU.
+  - urmator: răspunsul lui Costin la §6 al raportului 8.2 (359, 362, denumirile D100 / D112) și cheile din LANSARE „Lotul 8, comanda 8.2
+    pct.5”. BLOCAT: decizia și cheile lui Costin. L82-16 FĂCUT: poarta 1 pe `23164aee` ROȘIE numai pe cifre (4 amprente D406, explicate,
+    referința rescrisă, `27f4fab3`), poarta 2 VERDE pe `27f4fab3` (07:29), publicat 07:32, cele 3 migrări pe producție, four-way închis
+    (ISTORIC „Lotul 8 (8.2) PUBLICAT”).
   - pasi:
     L82-1. Poarta lotului 8 (`scripts/poarta_lot.sh` pe `lucru/lot8-2026-10-18`, `bee07d87`); VERDE -> backup, `APROBARE_MAIN`, fast-forward,
            post-commit, migrările `--productie` în ordinea din `verifica`, four-way; starea de după publicare în ISTORIC / PREDARE (aici).

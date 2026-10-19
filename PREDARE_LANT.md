@@ -4,26 +4,30 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-19** noaptea (lotul 8, comanda 8.2: 341–381 pe ramura `lucru/lot8b-2026-10-18`; înainte, 18.10 seara:
-  lotul 8 (8.1) publicat pe `fcfa3b3a`), pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
-- **pe commit**: `fcfa3b3a` (lotul 8, 8.1) — **four-way închis 18.10.2026 21:52**: HEAD = origin/main = public/main =
+- **ultima rescriere**: **2026-10-19** dimineața (lotul 8 complet publicat: 8.2 pe `27f4fab3`, după 8.1 pe `fcfa3b3a`), pe secțiunile de
+  stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
+- **pe commit**: `27f4fab3` (lotul 8, 8.2: 341–381) — **four-way închis 19.10.2026 07:32**: HEAD = origin/main = public/main =
+  backup/lant-2026-10-19 = RUNNING = `27f4fab3` (2 din 2 procese, pornite 07:32:00, după commitul de 05:48:56); nicio sentinelă; backup
+  înainte `~/backups_db/iconta_v2_pre_lot8b_20261019_0729.dump`; cele 3 migrări rulate pe producție (`verifica` rc 0). Poarta 8.2: rularea 1
+  ROȘIE numai pe cifre (`23164aee`, 4 amprente D406 explicate prin 380 / 381, referința rescrisă), rularea 2 VERDE (`27f4fab3`, 07:29).
+  Acest fișier stă pe ramura `lucru/dupa-lot8-2026-10-19` (din `27f4fab3`), nepublicată.
+  (Anterior: `fcfa3b3a`, lotul 8, 8.1 — **four-way închis 18.10.2026 21:52**: HEAD = origin/main = public/main =
   backup/lant-2026-10-18 = RUNNING = `fcfa3b3a` (2 din 2 procese, pornite 21:52:33, după commitul de 20:15:38); nicio sentinelă; backup
   înainte `~/backups_db/iconta_v2_pre_lot8_20261018_2151.dump`; nicio migrare în lot. Poarta lotului 8: rularea 1 ROȘIE numai pe cifre
   (`bee07d87`, explicate, referința rescrisă), rularea 2 VERDE (`fcfa3b3a`). (Anterior: `7ebbf79b`, lotul 7, four-way 18.10.2026 07:19.)
-  Acest fișier stă pe ramura `lucru/lot8b-2026-10-18` și intră în commitul lui 341–381.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
-**19.10.2026 noaptea — LOTUL 8, COMANDA 8.2 PE RAMURĂ.** Producția e pe `fcfa3b3a` (lotul 8, 8.1). Pe ramura `lucru/lot8b-2026-10-18`
-(worktree `/home/costin/iconta_lot8b`), în commitul care conține această predare: 341–381 rezolvate, fiecare cu e2e în
+**19.10.2026 dimineața — LOTUL 8 PUBLICAT INTEGRAL.** Producția e pe `27f4fab3` (lotul 8, 8.2; four-way 07:32). Publicat din ramura
+`lucru/lot8b-2026-10-18` (worktree `/home/costin/iconta_lot8b`): 341–381 rezolvate, fiecare cu e2e în
 `frontend_test/e2e/e2e_lot82.py` (43 de teste) și mutație roșie (`mut82.json`); regula importurilor de migrare (pct.4) pe toate importurile;
 R95 închisă (D100 la profit pe semafor); 46 de articole din ghid corectate; restul lotului 8 (bara de stare fixă; lista cheilor Meta /
 WhatsApp, Postmark, Search Console în LANSARE). Trei migrări noi (`migrare_partener_linie`, `migrare_ajustari_fiscale`,
-`migrare_mf_amortizare_preluata`), rulate pe baza de test, de rulat pe producție la publicare în ordinea din `verifica`.
-**Fronturi deschise:** (1) poarta ramurii și publicarea — acordul din 18.10 seara se folosește numai până la 19.10 08:00 (DECIZII „ce a
-schimbat testarea” pct.14); după, publicarea cere confirmarea din nou. (2) §6 al raportului 8.2: 359 (care cifră continuă când amortizarea
+`migrare_mf_amortizare_preluata`), rulate pe producție la publicare (19.10.2026 07:31–07:32).
+**Fronturi deschise:** (1) acordul de publicare din 18.10 seara s-a consumat (lotul 8 publicat la 07:32, înainte de 08:00); orice publicare
+nouă cere confirmarea lui Costin. (2) §6 al raportului 8.2: 359 (care cifră continuă când amortizarea
 preluată diferă de cea calculată), 362 (2112 se amortizează — confirmare), denumirile obligațiilor D100 / D112 (nomenclatorul ANAF complet
 nu e local). (3) Cheile Meta / WhatsApp, Postmark și exporturile Search Console — de la Costin (LANSARE „Lotul 8, comanda 8.2 pct.5”).
 ## FRONTURI DESCHISE, cu blocajul fiecăruia

@@ -2774,3 +2774,32 @@ despre verificări care nu rulau); perioadele D100 / registrul fiscal scrise „
 profit „necerut”, ajustările „doar la D101”, plafonul de 70% „necalculat” — false după 376–378). **Restul lotului 8 (pct.5):** bara de stare
 fixă (DS cap.2, garda `BARA_ANTET_FIXA`); cheile Meta / WhatsApp, Postmark și Search Console — lista exactă a ce trebuie de la Costin în
 LANSARE. Migrări noi (rulate pe baza de test): `migrare_partener_linie`, `migrare_ajustari_fiscale`, `migrare_mf_amortizare_preluata`.
+
+
+## 19.10.2026 — Lotul 8 (8.2) PUBLICAT: poarta 1 ROȘIE numai pe cifre (explicate), poarta 2 VERDE pe 27f4fab3; 3 migrări; four-way închis 07:32
+
+Comanda Costin 18.10.2026 (verbatim în DECIZII „Poarta 1 a lotului 8”): *„Rulează poarta lotului 8 și, dacă e verde, publică lotul pe
+producție. Confirm: în cabinet nu lucrează nimeni, ai acordul să publici fără să mai întrebi.”* Folosită pentru 341–381 numai cu limita din
+DECIZII „ce a schimbat testarea” pct.14 (poarta VERDE și publicarea încheiată înainte de 19.10.2026 08:00).
+
+**Înainte de poartă:** suita întreagă pe ramură `1 failed, 8379 passed, 10 skipped, 15 xfailed` — blocul generat din `DEPENDENTE_P2.md`
+rămăsese în urma lui `firma_rezumat._T_CONTROL_FISCAL` (+`ajustari_fiscale`); regenerat (`scripts.scan_dependente --doc`), testul verde;
+verificatorul TOTAL 0; commitul lotului `23164aee`.
+**Poarta 1** (`23164aee`, 05:46): ROȘIE numai pe cifrele F1–F5 — pytest rc 0 (3872 s), verificatorul TOTAL 0; plasa n-a rulat. Cele 4
+diferențe (amprente D406 la F1 09 și 10/2026, F2 T3/2026, F3 T2/2026) explicate după comanda 7.3 pct.4: codul publicat dă exact referința
+veche pe aceeași copie migrată (datele nu s-au mișcat); codul lotului: 381 (secțiunea Payments; partenerul real pe liniile 4111 ale
+încasărilor de casă) și 380 (contul liniei facturii din aceeași sursă ca nota: 704 / 628 în loc de 707 / 371). Referința rescrisă (amprenta
+`78ddb18d…`), intrarea în DECIZII, commitul `27f4fab3`.
+**Poarta 2** (`27f4fab3`, 07:29:21): VERDE — prospețime 21 passed; pytest `8703 passed, 10 skipped, 15 xfailed` (3870 s); verificatorul
+TOTAL 0 (GRI 7); cifrele F1–F5 „identice cu referința aprobată (5 firme)”; plasa e2e `417 passed` (2111 s); poarta 5992 s.
+
+**Publicarea:** backup `~/backups_db/iconta_v2_pre_lot8b_20261019_0729.dump` (3270 de intrări în cuprins), `APROBARE_MAIN` pe `27f4fab3`
+(consumată), `git merge --ff-only` în `~/iconta_nou` + `post-commit`: origin/main, public/main, `backup/lant-2026-10-19` -> `27f4fab3`;
+restartul oprit pe migrări (cum trebuie). Migrările cu `--productie`, în ordinea din `verifica`: `migrare_ajustari_fiscale`,
+`migrare_mf_amortizare_preluata`, `migrare_partener_linie`; după ultima, rulatorul a publicat statica (65 de fișiere) și a repornit
+`iconta-nou` (ExecMainStartTimestamp 07:32:00, după commitul de 05:48:56). `verifica 27f4fab3` rc 0. **Four-way închis:** HEAD =
+origin/main = public/main = backup/lant-2026-10-19 = procesul viu = `27f4fab3` (2 din 2 procese); nicio sentinelă; site 200. Starea de
+după publicare intră pe ramura `lucru/dupa-lot8-2026-10-19` (din `27f4fab3`; commitul care conține această intrare), nepublicată.
+
+**Fronturi deschise:** (1) §6 al raportului 8.2: 359, 362, denumirile obligațiilor D100 / D112. (2) Cheile Meta / WhatsApp, Postmark și
+exporturile Search Console — de la Costin (LANSARE „Lotul 8, comanda 8.2 pct.5”). Orice publicare nouă cere confirmarea lui Costin.
