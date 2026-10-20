@@ -2916,3 +2916,10 @@ curățeniei e2e — o firmă ștearsă între citirea listei și interogarea ei
 
 Comanda 9.4 (verbatim în DECIZII): regula permanentă pentru comenzile spre producție. Scrierea ei în setări a fost refuzată de
 clasificatorul sesiunii („Self-Modification”); i s-a dat lui Costin textul regulii, s-o pună el.
+
+## 20.10.2026 — Lotul 9, poarta 1 ROȘIE numai pe cifre; referința F1–F5 rescrisă (7.3 pct.4); poarta 2
+
+Poarta lotului pe `f731cbba`: pytest 8937 passed / 10 skipped / 15 xfailed (66 min), verificator TOTAL 0, cifrele F1–F5 cu 64 de diferențe
+(plasa nu rulează după cifre). Explicate toate (DECIZII „Lotul 9, poarta 1”): 61 din datele de retest scrise pe producție pe 19.10 după
+referință (aceleași pe codul publicat), 6 amprente D406 din planul OMFP (391 de conturi cu sold zero în MasterFiles; fără ele XML-ul e
+identic; DUK valid). Referința rescrisă, commit, a doua (ultima) rulare a porții.

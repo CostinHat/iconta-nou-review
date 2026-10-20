@@ -82,17 +82,25 @@
     }
    },
    "10/2026": {
-    "amprenta": "f9e6fa1741a6498f858fb3ee3347ab796beae0c27d16fc61c0a1f5738db638fc",
+    "amprenta": "1db3dfb5ace066a42b394d4c8753319e1cf945185e5ce4c8a640a51c8ff79ad9",
     "randuri": {
      "R10_1 (rândul 10, coloana Valoare)": "800",
      "R10_2 (rândul 10, coloana TVA)": "88",
-     "R17_1 (rândul 19, coloana Valoare)": "7700",
+     "R17_1 (rândul 19, coloana Valoare)": "8700",
      "R17_2 (rândul 19, coloana TVA)": "1222",
-     "R34_2 (rândul 37, coloana TVA)": "1222",
-     "R37_2 (rândul 40, coloana TVA)": "1222",
-     "R3_1 (rândul 3, coloana Valoare)": "1500",
-     "R3_1_1 (rândul 3.1, coloana Valoare)": "1500",
-     "R41_2 (rândul 44, coloana TVA)": "1222",
+     "R22_1 (rândul 24, coloana Valoare)": "500",
+     "R22_2 (rândul 24, coloana TVA)": "105",
+     "R23_1 (rândul 25, coloana Valoare)": "200",
+     "R23_2 (rândul 25, coloana TVA)": "22",
+     "R27_1 (rândul 30, coloana Valoare)": "700",
+     "R27_2 (rândul 30, coloana TVA)": "127",
+     "R28_2 (rândul 31, coloana TVA)": "127",
+     "R32_2 (rândul 35, coloana TVA)": "127",
+     "R34_2 (rândul 37, coloana TVA)": "1095",
+     "R37_2 (rândul 40, coloana TVA)": "1095",
+     "R3_1 (rândul 3, coloana Valoare)": "2500",
+     "R3_1_1 (rândul 3.1, coloana Valoare)": "2500",
+     "R41_2 (rândul 44, coloana TVA)": "1095",
      "R9_1 (rândul 9, coloana Valoare)": "5400",
      "R9_2 (rândul 9, coloana TVA)": "1134"
     }
@@ -115,22 +123,23 @@
     ]
    },
    "10/2026": {
-    "amprenta": "f56ef4b3972b9220bf05ff8d6a941f1c7dfef992121160c8b80cf1d5e28d77c0",
+    "amprenta": "acbf511f7d99530eb887af54d9e99050ff004ec064401c04d4649e52bb8dd7f6",
     "antet": {
      "op_efectuate": "1",
      "sistemTVA": "0",
      "tip_D394": "L",
-     "totalPlata_A": "6203"
+     "totalPlata_A": "6904"
     },
     "rezumat1": [
-     " tip_partener=\"1\" cota=\"11\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"800\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"88\"/",
-     " tip_partener=\"1\" cota=\"21\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"5200\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"2\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"1092\"/",
+     " tip_partener=\"1\" cota=\"11\" bazaA=\"200\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"800\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"0\" tvaA=\"22\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"88\"/",
+     " tip_partener=\"1\" cota=\"21\" bazaA=\"500\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"5200\" facturiA=\"1\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"4\" tvaA=\"105\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"1092\"/",
+     " tip_partener=\"2\" cota=\"0\" bazaLS=\"0\" bazaN=\"100\" document_N=\"1\" facturiLS=\"0\" facturiN=\"1\"",
      " tip_partener=\"2\" cota=\"21\" bazaL=\"200\" facturiL=\"1\" tvaL=\"42\"/",
-     " tip_partener=\"3\" cota=\"0\" bazaLS=\"1500\" facturiLS=\"2\"/"
+     " tip_partener=\"3\" cota=\"0\" bazaLS=\"2500\" facturiLS=\"3\"/"
     ],
     "rezumat2": [
-     " cota=\"11\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"800\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"88\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
-     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5400\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"3\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"1134\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
+     " cota=\"11\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"200\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"800\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"22\" tvaAI=\"0\" tvaL=\"88\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
+     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"500\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5400\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"1\" nrFacturiAI=\"0\" nrFacturiL=\"5\" tvaA=\"105\" tvaAI=\"0\" tvaL=\"1134\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
     ]
    }
   },
@@ -141,7 +150,7 @@
      "TotalCredit": "25106.00",
      "TotalDebit": "25106.00"
     },
-    "amprenta": "ddc4f8f70272c1787dadf79d25d422d8553556ea90426d06dd916443bb5d5b44",
+    "amprenta": "31db8c764f19ad6aa0b2fb26cae07d089139180e14cb47f2830c998cdc96da24",
     "facturi_emise": 1,
     "facturi_primite": 1,
     "jurnale": [
@@ -153,13 +162,13 @@
    },
    "10/2026": {
     "GeneralLedgerEntries": {
-     "NumberOfEntries": "20",
+     "NumberOfEntries": "22",
      "TotalCredit": "18052.88",
      "TotalDebit": "18052.88"
     },
-    "amprenta": "ecb6d21164df97a28c795d98155111aa62f39bdd0ea29598deaeb22e944d2eaf",
-    "facturi_emise": 5,
-    "facturi_primite": 0,
+    "amprenta": "0dd2ea2a7c8548b02e1841d715ed3e44bd29318e1af20078067a96c828f99b74",
+    "facturi_emise": 8,
+    "facturi_primite": 2,
     "jurnale": [
      "BANCA",
      "CASA",
@@ -761,16 +770,17 @@
   "D406": {
    "T3/2026": {
     "GeneralLedgerEntries": {
-     "NumberOfEntries": "5",
-     "TotalCredit": "7950.00",
-     "TotalDebit": "7950.00"
+     "NumberOfEntries": "6",
+     "TotalCredit": "8050.00",
+     "TotalDebit": "8050.00"
     },
-    "amprenta": "d30a1deec5c1f169600f2b2d0cc01c07ab600a6a82fa3fbad15e5fffda5befb6",
+    "amprenta": "ec7e13190ac77a9cc724f696b42536e3f4e585c18aa9e14a15fc6899435881cd",
     "facturi_emise": 1,
     "facturi_primite": 0,
     "jurnale": [
      "AMORTIZARE",
      "CASA",
+     "DIVERSE",
      "FACTURI"
     ]
    }
@@ -980,13 +990,13 @@
      "denumire": "Casa în lei",
      "prec_c": 0.0,
      "prec_d": 0.0,
-     "rul_c": 500.0,
+     "rul_c": 600.0,
      "rul_d": 1000.0,
      "sf_c": 0.0,
-     "sf_d": 500.0,
+     "sf_d": 400.0,
      "si_c": 0.0,
      "si_d": 0.0,
-     "tot_c": 500.0,
+     "tot_c": 600.0,
      "tot_d": 1000.0
     },
     {
@@ -1002,6 +1012,20 @@
      "si_d": 0.0,
      "tot_c": 1000.0,
      "tot_d": 0.0
+    },
+    {
+     "cont": "6581",
+     "denumire": "Despăgubiri, amenzi și penalități",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 100.0,
+     "sf_c": 0.0,
+     "sf_d": 100.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 100.0
     },
     {
      "cont": "6811",
@@ -1049,7 +1073,7 @@
      "TotalCredit": "9075.00",
      "TotalDebit": "9075.00"
     },
-    "amprenta": "9af7b8f983a09dbb6791bb3fbcff2f3c7f2eda0fee0664e41490eaa4fa8fe0a1",
+    "amprenta": "4a4503c77484af8e597632bf6d4be06782b9359e08d52afabf6abbee96b58484",
     "facturi_emise": 0,
     "facturi_primite": 2,
     "jurnale": [
@@ -1237,10 +1261,10 @@
     ]
    },
    "10/2026": {
-    "amprenta": "5070565c37861ad3a3146066bada85f251d37d2dc8649e308be54ea67968bd83",
+    "amprenta": "32d59fa414a6bd3fa9622d55cc1aa74af432d99faca9708ea99badeb14070cc9",
     "angajatorB": [
      {
-      "B_brutSalarii": "12045",
+      "B_brutSalarii": "11860",
       "B_cnp": "2",
       "B_pensie": "2",
       "B_sal": "2",
@@ -1252,33 +1276,33 @@
      {
       "A_codBugetar": "5503XXXXXX",
       "A_codOblig": "602",
-      "A_datorat": "727",
+      "A_datorat": "723",
       "A_deductibil": "0",
-      "A_plata": "727",
+      "A_plata": "723",
       "A_scutit": "0"
      },
      {
       "A_codBugetar": "5503XXXXXX",
       "A_codOblig": "412",
-      "A_datorat": "3011",
+      "A_datorat": "3031",
       "A_deductibil": "0",
-      "A_plata": "3011",
+      "A_plata": "3031",
       "A_scutit": "0"
      },
      {
       "A_codBugetar": "5503XXXXXX",
       "A_codOblig": "432",
-      "A_datorat": "1205",
+      "A_datorat": "1213",
       "A_deductibil": "0",
-      "A_plata": "1205",
+      "A_plata": "1213",
       "A_scutit": "0"
      },
      {
       "A_codBugetar": "20470300XX",
       "A_codOblig": "480",
-      "A_datorat": "271",
+      "A_datorat": "267",
       "A_deductibil": "0",
-      "A_plata": "271",
+      "A_plata": "267",
       "A_scutit": "0"
      },
      {
@@ -1372,7 +1396,7 @@
      "TotalCredit": "15744.00",
      "TotalDebit": "15744.00"
     },
-    "amprenta": "aa210d355aa12b4fe77c31bd3f7ae2a4bc6981a7d1e5aa27d78a3d8f52a22793",
+    "amprenta": "7a93cd6a931d2faeee97c86a83510ceae01532a9163de1b0b26b26377b3d3fe8",
     "facturi_emise": 0,
     "facturi_primite": 0,
     "jurnale": [
@@ -1385,7 +1409,7 @@
      "TotalCredit": "17194.00",
      "TotalDebit": "17194.00"
     },
-    "amprenta": "1a1bcc99991153ed628a9b5e05a3773e527cf9a6ac17ccdd123ee65440a0a0c8",
+    "amprenta": "1224c046ab21073be022db63463e1b4f62bf0be319d47a553b55e7720904b18c",
     "facturi_emise": 0,
     "facturi_primite": 0,
     "jurnale": [
@@ -1395,6 +1419,76 @@
   },
   "balanta": {
    "09/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 10000.0,
+     "sf_d": 0.0,
+     "si_c": 10000.0,
+     "si_d": 0.0,
+     "tot_c": 10000.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "2131",
+     "denumire": "Echipamente tehnologice",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 25000.0,
+     "si_c": 0.0,
+     "si_d": 25000.0,
+     "tot_c": 0.0,
+     "tot_d": 25000.0
+    },
+    {
+     "cont": "371",
+     "denumire": "Mărfuri",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 8000.0,
+     "si_c": 0.0,
+     "si_d": 8000.0,
+     "tot_c": 0.0,
+     "tot_d": 8000.0
+    },
+    {
+     "cont": "401",
+     "denumire": "Furnizori",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 15000.0,
+     "sf_d": 0.0,
+     "si_c": 15000.0,
+     "si_d": 0.0,
+     "tot_c": 15000.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "4111",
+     "denumire": "Clienți",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 12000.0,
+     "si_c": 0.0,
+     "si_d": 12000.0,
+     "tot_c": 0.0,
+     "tot_d": 12000.0
+    },
     {
      "cont": "421",
      "denumire": "Personal - salarii datorate",
@@ -1466,6 +1560,20 @@
      "tot_d": 0.0
     },
     {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 20000.0,
+     "sf_d": 0.0,
+     "si_c": 20000.0,
+     "si_d": 0.0,
+     "tot_c": 20000.0,
+     "tot_d": 0.0
+    },
+    {
      "cont": "641",
      "denumire": "Cheltuieli cu salariile personalului",
      "prec_c": 0.0,
@@ -1495,6 +1603,76 @@
     }
    ],
    "11/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 10000.0,
+     "sf_d": 0.0,
+     "si_c": 10000.0,
+     "si_d": 0.0,
+     "tot_c": 10000.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "2131",
+     "denumire": "Echipamente tehnologice",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 25000.0,
+     "si_c": 0.0,
+     "si_d": 25000.0,
+     "tot_c": 0.0,
+     "tot_d": 25000.0
+    },
+    {
+     "cont": "371",
+     "denumire": "Mărfuri",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 8000.0,
+     "si_c": 0.0,
+     "si_d": 8000.0,
+     "tot_c": 0.0,
+     "tot_d": 8000.0
+    },
+    {
+     "cont": "401",
+     "denumire": "Furnizori",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 15000.0,
+     "sf_d": 0.0,
+     "si_c": 15000.0,
+     "si_d": 0.0,
+     "tot_c": 15000.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "4111",
+     "denumire": "Clienți",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 12000.0,
+     "si_c": 0.0,
+     "si_d": 12000.0,
+     "tot_c": 0.0,
+     "tot_d": 12000.0
+    },
     {
      "cont": "421",
      "denumire": "Personal - salarii datorate",
@@ -1563,6 +1741,20 @@
      "si_c": 0.0,
      "si_d": 0.0,
      "tot_c": 1370.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 20000.0,
+     "sf_d": 0.0,
+     "si_c": 20000.0,
+     "si_d": 0.0,
+     "tot_c": 20000.0,
      "tot_d": 0.0
     },
     {

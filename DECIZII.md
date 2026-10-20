@@ -22195,3 +22195,37 @@ verificare (`uc_tenants.chitanta_stinge`) n-are de unde o cere: refuza orice chi
 furnizorului e documentul plății, iar avansul se recunoaște când omul îl declară (OMFP 1802/2014, funcțiunea contului 409: „valoarea
 avansurilor acordate”). Alternativa respinsă: destinația avansului pe ecranul chitanței — schimbare de ecran necerută. De reconfirmat dacă
 Costin vrea și aici întrebarea avansului. Mutația (marcajul scos din rută) -> ROȘU.
+
+## 20.10.2026 — Lotul 9, poarta 1 ROȘIE numai pe cifre: referința F1–F5 actualizată după regula din comanda 7.3 pct.4
+
+**Ce s-a întâmplat.** Poarta lotului pe `f731cbba` (rularea 1 pe `lucru/lot9-2026-10-19`) a ieșit ROȘIE **numai** pe cifrele de referință:
+pytest `8937 passed, 10 skipped, 15 xfailed` (3978 s), verificatorul `TOTAL: 0`; plasa e2e n-a mai rulat (poarta se oprește la cifre).
+Cifrele s-au măsurat pe copia bazei, după cele 5 migrări ale lotului nerulate încă pe producție. **64 de diferențe** față de referința din
+19.10.2026 07:29.
+
+**Regula aplicată** — comanda 7.3 pct.4 (verbatim în intrarea „Comanda 7.3”): *„când poarta pică doar pe cifrele de referință, iar
+diferențele se explică prin datele de retest de pe producție și prin codul lotului, actualizezi singur referința, o notezi în DECIZII și
+continui. [...] Te oprești doar pentru cifre pe care nu le poți explica.”* Plus comanda lui Costin din chat (20.10.2026): „continuă, explică
+diferențele și rulează a doua oară”.
+
+**Metoda.** Trei măsurători, toate numai citire pe producție: referința aprobată; cifrele cu codul PUBLICAT (`~/iconta_nou`, `27f4fab3`,
+măsurat direct); cifrele cu codul LOTULUI (copia migrată). Referință -> publicat: **61** de diferențe; publicat -> lot: **6**; referință ->
+lot: 64 (3 chei au ambele cauze).
+
+1. **Datele de retest — 61 de diferențe, identice pe codul publicat.** Scrise pe producție pe 19.10.2026 DUPĂ referință (numărate read-only
+   pe `creat_la` / `la`):
+   - F1 Comert Stoc SRL (tenant_049): 5 facturi noi din 19.10 (emise + primite importate) și 13 note în 10/2026 -> D300 10/2026 (15
+     rânduri), D394 10/2026 (9), D406 09 și 10/2026 (5: facturi emise 5 -> 8, primite 0 -> 2, înregistrări 20 -> 22);
+   - F2 Profit Amortizare SRL (tenant_050): o notă validată în 09/2026 (5311 / 6581, 100 lei) -> balanța 09/2026 (4) și D406 T3/2026 (6);
+   - F5 SRL Salariati SRL (tenant_053): un concediu medical (14:26) și un element salarial (14:52) -> D112 10/2026 (10: brutul 12.045 ->
+     11.860, obligațiile); profilul completat la 14:42 (data înființării, capitalul, banca …, 11 câmpuri în `firma_profil_jurnal`) -> soldurile
+     inițiale apar în balanța 09 și 11/2026 (12).
+   F3 și F4: nicio scriere după referință, nicio diferență pe codul publicat.
+2. **Codul lotului — 6 amprente D406, nicio cifră:** F1 09 și 10/2026, F2 T3/2026, F3 T2/2026, F5 T3 și T4/2026. Cauza: planul de conturi
+   OMFP 1802/2014 întreg în șablon (9.1, `core/plan_conturi_omfp.py`, `migrare_plan_conturi_omfp`) — `MasterFiles/GeneralLedgerAccounts`
+   are acum **391 de conturi în plus** (182 -> 573), toate cu solduri de deschidere și închidere 0,00. Scoțând conturile adăugate din XML-ul
+   lotului, toate cele 6 ies **identice, caracter cu caracter**, cu XML-ul codului publicat. Toate 6 — `stare: valid` pe validatorul oficial
+   DUK (D406).
+
+**Referința nouă:** `scripts/cifre_referinta_aprobate.json`, amprenta `2b62f3148cf98e8c06b604f6a4103be277d4486f78f6107c9d90ebbe04949445`;
+`cifre_referinta.py --productie --verifica` -> „identice cu referința aprobată (5 firme)”.
