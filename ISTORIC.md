@@ -2932,3 +2932,9 @@ backup `iconta_v2_pre_lot9_20261020_0503.dump` (509 tabele cu date), `APROBARE_M
 backup, restart oprit pe migrări), cele 5 migrări `--productie` (7 scheme fiecare, 0 eșecuri), restart 05:06:34, four-way închis. Validarea
 unică a ciornelor PFA: 0 validate, 0 refuzate. Reparația 409 pe datele cabinetului (aprobată): stornarea notei vechi + nota corectă cu
 documentul facturii, amândouă validate; rulajul zilei neschimbat.
+
+## 20.10.2026 — după publicarea lotului 9: testele de capăt la capăt pentru 409, C66, C67 (pe ramură, nepublicat)
+
+Cele trei numere ale lotului 9 rămase fără test în browser: 409 (nota de descărcare la factură: documentul facturii și „× 2 buc”),
+C66 (D212 trimisă în coadă nu numește notele nevalidate), C67 („Salariat nou” păstrează data nașterii, copiii, declarația, data
+încetării). Fiecare verde și cu mutația ROȘIE (`scripts/e2e_poarta.py --mutatie=`). Intră în poartă cu lotul următor.

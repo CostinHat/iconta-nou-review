@@ -201,6 +201,32 @@ def test_def_419_stornarea_intreaba_de_retur_si_readuce_marfa(patron, firma_cv):
     assert "stornată" in rand, rand
 
 
+def test_def_409_descarcarea_de_stoc_are_documentul_facturii_si_cantitatea_in_buc(patron, firma_cv):
+    """409. Registrul jurnal: nota de descărcare a stocului la emiterea unei facturi era „nederivat — fără referință” (fără document) și
+    scria „x2.000” (citit 2.000 buc). Pașii: articol în stoc -> factură cu 2 buc din el, „Pleacă marfa acum: Da” -> Registru jurnal:
+    nota de descărcare (607 = 371) are documentul „Factură <număr> din <dată>” și descrierea „× 2 buc”. (Nota veche a cabinetului:
+    stornată și refăcută pe date la publicarea lotului 9, cu aprobarea lui Costin — DECIZII „Închiderea lotului 9”.)
+    MUTAȚIA: în core/stocuri_cv_api.py, descărcarea la factură, `"document": document}` -> `"document": None}` -> ROȘU."""
+    from e2e_bloc_a import ARTICOL, articol_in_stoc, emite_api
+    from e2e_bloc_d import _asteapta_text, _deschide
+    from core import pdf_util
+    s = firma_cv["schema"]
+    aid = articol_in_stoc(patron, firma_cv, cantitate=7, pret=10)
+    f = emite_api(patron, firma_cv, linii=[{"descriere": ARTICOL, "cantitate": 2, "um": "buc", "pret_unitar": 20.0, "cota_tva": 21,
+                                             "cota_propusa": 21, "articol_id": aid}], pleaca_marfa=True)
+    nid, numar, data = sql('SELECT m.inregistrare_id, f.numar, f.data_emitere FROM "%s".miscari_stoc m JOIN "%s".facturi f ON f.id = '
+                           "m.factura_id WHERE m.factura_id = %%s" % (s, s), (f["factura_id"],))[0]
+    patron.firma(firma_cv["nume"])
+    _deschide(patron, "#fa-jurnal", "Registru")
+    pg = patron.pg
+    rand = pg.locator(".fereastra:last-of-type [data-nota-id='%s']" % nid).first
+    rand.wait_for(timeout=30000)
+    txt = " ".join(rand.inner_text().split())
+    patron.captura()
+    assert "Factură %s din %s" % (numar, pdf_util.data_ro(data)) in txt, txt
+    assert "× 2 buc" in txt and "x2.000" not in txt and "fără referință" not in txt, txt
+
+
 def test_def_416_factura_stornata_integral_e_stornata_nu_neincasata(patron, firma_cv):
     """416. Pașii: factură emisă (servicii) -> stornare integrală -> Istoric facturi: factura „stornată”, nu „neîncasată”."""
     from e2e_bloc_a import _api, _card, _ok, emite_api

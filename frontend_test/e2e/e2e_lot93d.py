@@ -169,3 +169,96 @@ def test_def_c65_z_la_pfa_validat_intern_intra_in_d300(patron, pfa_tva):
     patron.captura("d300")
     r9 = [" ".join(" ".join(r).split()) for r in sec[1] if r and r[0].startswith("rândul 9")]
     assert r9 and any("21" in r for r in r9), sec   # CF art.291: 121 lei cu TVA la 21% -> TVA 21,00, baza 100,00; D300 rd.9
+
+
+def test_def_c66_d212_nu_cere_validarea_notelor(patron, pfa_tva):
+    """C66 (găsită de Code la 368, 19.10.2026). La „Trimite în coadă” pe D212, avertismentul „În perioadă sunt N note nevalidate … validează-le
+    înainte de depunere” apărea, deși D212 nu citește notele (se face din registrul de încasări și plăți, `d212.pull`). Pașii: PFA cu o
+    notă ciornă în 2025 -> Declarații -> D212 pe 2025 -> identitatea (CNP, nume, adresă) -> Regenerează -> Trimite în coadă: mesajul nu
+    numește nota și nu cere validarea ei.
+    MUTAȚIA: în core/coada_api.py `    note = [] if tip in DECLARATII_FARA_NOTE else note_nevalidate(cur, schema, de_la, pana_la)` ->
+    `    note = note_nevalidate(cur, schema, de_la, pana_la)` -> ROȘU (mesajul numește nota ciornă)."""
+    from conftest import alege_perioada, alege_tipul, sql
+    from e2e_bloc_a import _card, pregateste_firma
+    f = pfa_tva
+    pregateste_firma(patron, f, forma=False, regim_fiscal=None)   # PFA: fără regim micro / profit (serverul îl refuză)
+    s = f["schema"]
+    # o notă ciornă în anul declarației: la PFA notele din aplicație se validează automat (368), deci ciorna se scrie direct
+    nid = sql('INSERT INTO "%s".inregistrari (data, descriere, sursa, status, document_ref) VALUES (\'2025-12-15\', \'Notă C66\', '
+              '\'manual\', \'ciorna\', \'DI C66\') RETURNING id' % s)[0][0]
+    sql('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%%s, \'5311\', \'5121\', 66)' % s,
+        (nid,))
+    try:
+        pg = patron.pg
+        patron.firma(f["nume"])
+        _card(patron, "declaratii", "#dec-tip")
+        alege_tipul(pg, "d212")
+        alege_perioada(pg, 2025)
+        pg.wait_for_selector("#dec-continua:not([disabled])", timeout=8000)
+        pg.click("#dec-continua")
+        pg.wait_for_selector("#d212-cnp", timeout=30000)
+        for sel, v in (("#d212-cnp", "1800101221144"), ("#d212-nume", "POPESCU ION"), ("#d212-adr", "Bucuresti Sector 1")):   # CNP: cifra de control verificată
+            pg.fill(sel, v)
+            pg.dispatch_event(sel, "change")
+        # alegerile fără implicit (FAPT_FISCAL_NECERUT): fără venit din registru, fără excepție de la baza minimă CASS
+        pg.select_option("#d212-rip", "false")
+        pg.dispatch_event("#d212-rip", "change")
+        pg.select_option("#d212-exccass", label="nicio excepție — CASS cel puțin la baza de 6 salarii minime")
+        pg.dispatch_event("#d212-exccass", "change")
+        pg.click("#d212-regen")
+        pg.wait_for_selector("#dec-trimite", timeout=90000)
+        pg.click("#dec-trimite")
+        pg.wait_for_selector(".dec-gata, .caseta-atentie #coada-confirmare", timeout=60000)
+        if pg.locator("#coada-confirmare").count():
+            pg.fill("#coada-confirmare", "Probă E2E: D212 fără venituri în anul de probă.")
+            pg.click("#coada-confirma")
+            pg.wait_for_selector(".dec-gata", timeout=60000)
+        txt = patron.fereastra()
+        patron.captura()
+        assert "Trimisă în coadă" in txt, txt[:800]
+        assert "nevalidat" not in txt and "validează-le" not in txt and "Notă C66" not in txt, txt[:1500]
+    finally:
+        sql("DELETE FROM public.declaratii_coada WHERE tenant_id = %s AND fel <> 'nota' AND tip = 'd212'", (f["tenant_id"],))
+
+
+# ── C67 — „Salariat nou” păstrează data nașterii, copiii, declarația și data încetării ────────────────────────────────────────────
+@pytest.fixture()
+def srl_nou(patron):
+    from conftest import firma_noua
+    from e2e_bloc_a import pregateste_firma
+    for f in firma_noua():
+        pregateste_firma(patron, f)
+        yield f
+
+
+def test_def_c67_salariat_nou_pastreaza_datele_deducerilor(patron, srl_nou):
+    """C67 (găsită de Code la 412, 19.10.2026). „Salariat nou” trimitea data nașterii, copiii școlarizați, declarația copiilor și data
+    încetării, dar modelul rutei (`main.SalariatIn`) nu le avea: se pierdeau tăcut la creare (deducerile CF art.77). Pașii: Salariați ->
+    „+ Salariat nou” -> completat, cu data nașterii 01.01.1990, 2 copii școlarizați, declarația „Da”, data încetării 31.12.2026 ->
+    Salvează: formularul se golește (salvat), iar în fișa salariatului din bază cele patru valori sunt cele scrise (niciun ecran nu le
+    afișează: intră în calculul deducerilor, `salarizare`).
+    MUTAȚIA: în main.py `    data_nastere: Optional[str] = None\\n` scos din `SalariatIn` -> ROȘU (data nașterii lipsește din fișă)."""
+    from conftest import sql
+    from e2e_bloc_a import _card
+    f = srl_nou
+    pg = patron.pg
+    patron.firma(f["nume"])
+    _card(patron, "salariati", "#sp-salariat-nou")
+    pg.click("#sp-salariat-nou")
+    pg.wait_for_selector("#sn-salveaza", timeout=20000)
+    for sel, v in (("#sn-nume", "POPESCU"), ("#sn-prenume", "MARIA"), ("#sn-cnp", "1900101410011"),   # CNP: cifra de control verificată
+                   ("#sn-data_angajare", "2024-01-01"), ("#sn-data_incetare", "2026-12-31"), ("#sn-salariu_brut", "4050"),
+                   ("#sn-data_nastere", "1990-01-01"), ("#sn-copii_scolarizati", "2"), ("#sn-judet_casa", "B")):
+        pg.fill(sel, v)
+    for sel, v in (("#sn-tip_norma", "intreaga"), ("#sn-declaratie_copii", "true"), ("#sn-functie_baza", "true"),
+                   ("#sn-scutit_contrib_minim", "false"), ("#sn-tip_contract", "nedeterminata")):
+        pg.select_option(sel, v)
+    pg.fill("#sn-cor-cauta", "241107")
+    pg.wait_for_selector("#sn-cor-rez [data-cod='241107']", timeout=20000)
+    pg.click("#sn-cor-rez [data-cod='241107']")
+    pg.click("#sn-salveaza")
+    pg.wait_for_function("() => !(document.querySelector('#sn-nume') || {}).value", timeout=30000)
+    patron.captura()
+    r = sql('SELECT data_nastere::text, copii_scolarizati, declaratie_copii, data_incetare::text FROM "%s".salariati WHERE cnp = %%s'
+            % f["schema"], ("1900101410011",))
+    assert r == [("1990-01-01", 2, True, "2026-12-31")], r
