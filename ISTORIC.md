@@ -2923,3 +2923,12 @@ Poarta lotului pe `f731cbba`: pytest 8937 passed / 10 skipped / 15 xfailed (66 m
 (plasa nu rulează după cifre). Explicate toate (DECIZII „Lotul 9, poarta 1”): 61 din datele de retest scrise pe producție pe 19.10 după
 referință (aceleași pe codul publicat), 6 amprente D406 din planul OMFP (391 de conturi cu sold zero în MasterFiles; fără ele XML-ul e
 identic; DUK valid). Referința rescrisă, commit, a doua (ultima) rulare a porții.
+
+## 20.10.2026 — Lotul 9 publicat (`5907e639`)
+
+Poarta 2 pe `5907e639` VERDE (05:03): prospețime 21 passed; pytest 8937 passed / 10 skipped / 15 xfailed (3937 s); verificator TOTAL 0;
+cifrele F1–F5 identice cu referința; plasa 484 passed (2326 s); durata 6275 s. Publicarea, cu confirmarea lui Costin că cabinetul nu lucrează:
+backup `iconta_v2_pre_lot9_20261020_0503.dump` (509 tabele cu date), `APROBARE_MAIN`, fast-forward, post-commit (push pe origin / public /
+backup, restart oprit pe migrări), cele 5 migrări `--productie` (7 scheme fiecare, 0 eșecuri), restart 05:06:34, four-way închis. Validarea
+unică a ciornelor PFA: 0 validate, 0 refuzate. Reparația 409 pe datele cabinetului (aprobată): stornarea notei vechi + nota corectă cu
+documentul facturii, amândouă validate; rulajul zilei neschimbat.

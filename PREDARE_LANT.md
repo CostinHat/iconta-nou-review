@@ -4,22 +4,30 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-20** noaptea (lotul 9 — 9.1, 9.2, 9.3 — comis pe ramura `lucru/lot9-2026-10-19`, worktree `/home/costin/iconta_lot9`,
-  în commitul care conține această predare, intrat în poarta lotului; producția rămâne pe `27f4fab3` până la publicare), pe secțiunile de
-  stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
-- **pe commit**: `27f4fab3` (lotul 8, 8.2: 341–381) — **four-way închis 19.10.2026 07:32**: HEAD = origin/main = public/main =
-  backup/lant-2026-10-19 = RUNNING = `27f4fab3` (2 din 2 procese, pornite 07:32:00, după commitul de 05:48:56); nicio sentinelă; backup
-  înainte `~/backups_db/iconta_v2_pre_lot8b_20261019_0729.dump`; cele 3 migrări rulate pe producție (`verifica` rc 0). Poarta 8.2: rularea 1
-  ROȘIE numai pe cifre (`23164aee`, 4 amprente D406 explicate prin 380 / 381, referința rescrisă), rularea 2 VERDE (`27f4fab3`, 07:29).
-  Acest fișier stă pe ramura `lucru/dupa-lot8-2026-10-19` (din `27f4fab3`), nepublicată.
-  (Anterior: `fcfa3b3a`, lotul 8, 8.1 — **four-way închis 18.10.2026 21:52**: HEAD = origin/main = public/main =
-  backup/lant-2026-10-18 = RUNNING = `fcfa3b3a` (2 din 2 procese, pornite 21:52:33, după commitul de 20:15:38); nicio sentinelă; backup
-  înainte `~/backups_db/iconta_v2_pre_lot8_20261018_2151.dump`; nicio migrare în lot. Poarta lotului 8: rularea 1 ROȘIE numai pe cifre
-  (`bee07d87`, explicate, referința rescrisă), rularea 2 VERDE (`fcfa3b3a`). (Anterior: `7ebbf79b`, lotul 7, four-way 18.10.2026 07:19.)
+- **ultima rescriere**: **2026-10-20** dimineața (lotul 9 publicat), pe ramura `lucru/dupa-lot9-2026-10-20` (din `5907e639`, worktree
+  `/home/costin/iconta_lot9`), nepublicată; pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
+- **pe commit**: `5907e639` (lotul 9: 9.1, 9.2, 9.3 și închiderea) — **four-way închis 20.10.2026 05:06**: HEAD = origin/main = public/main =
+  backup/lant-2026-10-20 = RUNNING = `5907e639` (2 din 2 procese, pornite 05:06:34, după commitul de 03:17:58); nicio sentinelă; backup
+  înainte `~/backups_db/iconta_v2_pre_lot9_20261020_0503.dump`; cele 5 migrări rulate pe producție (7 scheme fiecare, 0 eșecuri). Poarta
+  lotului 9: rularea 1 ROȘIE numai pe cifre (`f731cbba`, 64 de diferențe: 61 din datele de retest din 19.10, identice pe codul publicat; 6
+  amprente D406 din planul OMFP, conturi cu sold 0 — referința rescrisă, DECIZII), rularea 2 VERDE (`5907e639`, 05:03; pytest 8937 / 10 / 15,
+  plasa 484 passed, verificator 0, cifre identice).
+  (Anterior: `27f4fab3`, lotul 8, 8.2 — four-way 19.10.2026 07:32; `fcfa3b3a`, lotul 8, 8.1 — 18.10.2026 21:52; `7ebbf79b`, lotul 7 — 18.10.2026 07:19.)
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
+
+**20.10.2026 dimineața — LOTUL 9 PUBLICAT INTEGRAL.** Producția e pe `5907e639` (four-way 05:06). La publicare, după backup: cele cinci
+migrări `--productie`; validarea unică a ciornelor PFA (`scripts/valideaza_note_interne_pfa.py --productie`): 0 validate, 0 refuzate (nu era
+nicio ciornă de validat); reparația 409 pe datele cabinetului (aprobată: „Aprob reparația pe date”): nota veche rămâne (R1), stornarea ei +
+nota corectă cu documentul „Factură 2 din 05.10.2026”, amândouă validate; rulajul 607=371 al zilei rămâne 100,00. Scriptul reparației nu e
+idempotent — NU se rulează a doua oară.
+**Fronturi deschise:** (1) acordul de publicare s-a consumat; orice publicare nouă cere confirmarea lui Costin. (2) §6 al raportului de
+închidere a lotului 9 (deciziile cerute acolo). (3) Cursa 500 din `/eu/ciorne` în curățenia e2e (firma ștearsă în timpul cererii) —
+neatinsă de lot, de tratat ca fir propriu.
+**Ce urmează:** comanda următoare a lui Costin (lotul 10); regulile: poarta o dată pe lot (§2.3 pct.13), subagenți în paralel numai pe
+fișiere disjuncte, testele grele secvențial (§2.3 pct.14).
 
 **20.10.2026 noaptea — LOTUL 9 COMIS, LA POARTĂ.** Rularea țintită (113 min) a prins 14 pytest + 23 e2e: o regresie a lotului (chitanța
 furnizorului fără factură era refuzată ca avans fără destinație — reparată, DECIZII 20.10), gărzi pe codul nou, migrările lipsă de pe baza de
