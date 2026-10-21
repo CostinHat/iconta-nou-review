@@ -123,15 +123,58 @@
     ]
    },
    "10/2026": {
-    "refuz": "ValueError: D394 nu se poate genera: lipsește județul pe factură la 2 parteneri fără cod de TVA (persoane fizice sau firme neînregistrate) — D394 îl cere pentru fiecare partener fără cod (structura ANAF a declarației îl face obligatoriu): FISCALOS ICONTA S.R.L. (operațiunea L); Ion Popescu (operațiunea N). Completează județul clientului / furnizorului pe factura lui (sau la operațiunea adăugată manual) și generează din nou."
+    "amprenta": "8c26c7731b7532a018710c467cd3f080b81c790c5fe45dfdf0d4cc157cb36dc2",
+    "antet": {
+     "op_efectuate": "1",
+     "sistemTVA": "0",
+     "tip_D394": "L",
+     "totalPlata_A": "6957"
+    },
+    "rezumat1": [
+     " tip_partener=\"1\" cota=\"11\" bazaA=\"200\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"800\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"0\" tvaA=\"22\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"88\"/",
+     " tip_partener=\"1\" cota=\"21\" bazaA=\"500\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"5253\" facturiA=\"1\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"7\" tvaA=\"105\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"1103\"/",
+     " tip_partener=\"2\" cota=\"0\" bazaLS=\"0\" bazaN=\"100\" document_N=\"1\" facturiLS=\"0\" facturiN=\"1\"",
+     " tip_partener=\"2\" cota=\"21\" bazaL=\"200\" facturiL=\"1\" tvaL=\"42\"/",
+     " tip_partener=\"3\" cota=\"0\" bazaLS=\"2500\" facturiLS=\"3\"/"
+    ],
+    "rezumat2": [
+     " cota=\"11\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"200\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"800\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"22\" tvaAI=\"0\" tvaL=\"88\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
+     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"500\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5453\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"1\" nrFacturiAI=\"0\" nrFacturiL=\"8\" tvaA=\"105\" tvaAI=\"0\" tvaL=\"1145\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
+    ]
    }
   },
   "D406": {
    "09/2026": {
-    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 5 parteneri — D406 cere adresa fiecărui partener (localitatea e obligatorie). Client Test SRL (facturile 1); FISCALOS ICONTA S.R.L.; Furnizor Test SRL (facturile FURN-2026-001); Ion Popescu; Maria Ionescu. Pentru cei cu CUI românesc, ANAF n-a dat localitatea (nu a răspuns sau n-are adresa lor). Completează localitatea pe factura partenerului (Localitatea clientului / furnizorului) sau în datele lui, apoi generează din nou."
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "6",
+     "TotalCredit": "25106.00",
+     "TotalDebit": "25106.00"
+    },
+    "amprenta": "62a6b0d8d6ec7262ca113774c29e89f860eda2c15cd20b05dcc82ab96dea7426",
+    "facturi_emise": 1,
+    "facturi_primite": 1,
+    "jurnale": [
+     "BANCA",
+     "FACTURI",
+     "SALARII",
+     "STOCURI"
+    ]
    },
    "10/2026": {
-    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 5 parteneri — D406 cere adresa fiecărui partener (localitatea e obligatorie). Client Test SRL; FISCALOS ICONTA S.R.L. (facturile F1A4); Furnizor Test SRL; Ion Popescu (facturile BA-1); Maria Ionescu (facturile BA-1). Pentru cei cu CUI românesc, ANAF n-a dat localitatea (nu a răspuns sau n-are adresa lor). Completează localitatea pe factura partenerului (Localitatea clientului / furnizorului) sau în datele lui, apoi generează din nou."
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "27",
+     "TotalCredit": "18096.12",
+     "TotalDebit": "18096.12"
+    },
+    "amprenta": "2fd0799726673a57a4984b8c22ef09ed7b5d23e7cd4552b3bf4a625cddbec40e",
+    "facturi_emise": 11,
+    "facturi_primite": 3,
+    "jurnale": [
+     "BANCA",
+     "CASA",
+     "FACTURI",
+     "STOCURI"
+    ]
    }
   },
   "balanta": {
@@ -593,13 +636,13 @@
      "prec_d": 0.0,
      "prel_c": 0.0,
      "prel_d": 0.0,
-     "rul_c": 1222.0,
+     "rul_c": 1265.24,
      "rul_d": 0.0,
-     "sf_c": 1432.0,
+     "sf_c": 1475.24,
      "sf_d": 0.0,
      "si_c": 0.0,
      "si_d": 0.0,
-     "tot_c": 1432.0,
+     "tot_c": 1475.24,
      "tot_d": 0.0
     },
     {
@@ -697,6 +740,22 @@
      "si_d": 0.0,
      "tot_c": 0.0,
      "tot_d": 15.0
+    },
+    {
+     "cont": "635",
+     "denumire": "Cheltuieli cu alte impozite, taxe și vărsăminte asimilate",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 43.24,
+     "sf_c": 0.0,
+     "sf_d": 43.24,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 43.24
     },
     {
      "cont": "641",
@@ -804,7 +863,20 @@
   },
   "D406": {
    "T3/2026": {
-    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Client Servicii SRL (facturile 1). Pentru cei cu CUI românesc, ANAF n-a dat localitatea (nu a răspuns sau n-are adresa lor). Completează localitatea pe factura partenerului (Localitatea clientului / furnizorului) sau în datele lui, apoi generează din nou."
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "6",
+     "TotalCredit": "8050.00",
+     "TotalDebit": "8050.00"
+    },
+    "amprenta": "ea3ac9842a9af9a7668d8df9f9dc84677292b7f7c2e846d22c7edc03c3fd603a",
+    "facturi_emise": 1,
+    "facturi_primite": 0,
+    "jurnale": [
+     "AMORTIZARE",
+     "CASA",
+     "DIVERSE",
+     "FACTURI"
+    ]
    }
   },
   "balanta": {
@@ -1128,7 +1200,17 @@
   "D394": "nu se aplică: neplătitor de TVA",
   "D406": {
    "T2/2026": {
-    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Lieferant DE GmbH (facturile DE-A-001, DE-B-001). Completează localitatea pe factura partenerului (Localitatea clientului / furnizorului) sau în datele lui, apoi generează din nou."
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "2",
+     "TotalCredit": "9075.00",
+     "TotalDebit": "9075.00"
+    },
+    "amprenta": "6654c9eead2cf7ed7e0eb354b4890be84cfd526e8f9873cf01970b36b4eae9e6",
+    "facturi_emise": 0,
+    "facturi_primite": 2,
+    "jurnale": [
+     "FACTURI"
+    ]
    }
   },
   "balanta": {

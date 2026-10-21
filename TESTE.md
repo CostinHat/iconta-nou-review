@@ -54,7 +54,7 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     lotului verzi la control cu fiecare mutație ROȘIE; plasa întreagă rulată (546 / 553, cele 7 căderi reparate și reluate); uneltele
     vizuale pe codul final (axe 0, fără derulare laterală, text 170 / 0 defecte, firul stabil); verificator TOTAL 0; clasele găsite la
     integrare: C71, C72, C73 (schema firmei + `public`), C74; reparația pe datele F1 pregătită și probată (L10-15) — commitul lotului.
-  - urmator: (L10-17 făcut: picăturile suitei reparate, rerularea țintită 1101 / 1101) -> commitul lotului (pe ramură) -> reconfirmarea lui Costin că nu lucrează cabinetul -> poarta lotului 10 (o dată) -> ZIP -> raport; fără publicare. IN LUCRU
+  - urmator: lotul 10 PUBLICAT (comanda 10.3, 21.10.2026): poarta 1 ROȘIE `3118774c` -> cauzele reparate `22c71846` -> poarta 2 VERDE -> four-way pe `22c71846`; datele de test F1–F3 reparate (localități, 409, 7j, BA-2), referința F1–F5 `a8e833cd…`, 436(b) închis. Rămân pentru lotul 11: răspunsurile din DECIZII „Comanda 10.3” pct.4 (422, C70, …) și deciziile cerute pentru C75 / C76 (raportul 10.3 §6). BLOCAT: așteaptă comanda lotului 11
   - pasi:
     L10-1. Sesiunea principală: 500 `/eu/ciorne` (`core/db.py`, `uc_eu`, `uc_migrare`, `uc_coada`); C61 (`factura_pdf.adresa_tert`); API
            `note_interne` (`uc_api`); schema comună (trei migrări + `tenant_template.sql`); 432 (`firma_rezumat._termene_una_firma`,

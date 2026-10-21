@@ -11521,3 +11521,14 @@ Niciun gard nou peste gărzi (comanda 3 pct.2). Ce păzește comportamentul nou 
 | mesajul reevaluării spune starea reală a notei (clasa 279) | `reevaluare_ecran.js` pe `stareNota` / `pasNota` + `core/test_stare_nota_salvata.py` + `e2e_lot10_valuta.py` | „generată ca ciornă … o validezi” la o notă plecată la validare | — (garda a prins textul în suită) | un mesaj fără cuvântul „ciornă” nu e prins (limita gărzii) |
 | uneltele acorn într-un modul comun | `core/arbore_js.py` (pin în `core/test_module_nelegate.py`) | un fișier de test care depinde de alt fișier de test | — | instrument de măsură, nu cale de producție |
 
+
+## 21.10.2026 — lotul 10, comanda 10.3 (poarta 2, publicarea, datele de test; fără gard nou)
+
+Niciun gard nou: comanda 10.3 a fost poarta, publicarea, reparații pe datele firmelor de test și registre; codul nu s-a schimbat.
+Gărzile lotului 10 (secțiunile 10.1 și 10.2 de mai sus) au intrat în producție cu `22c71846`. **Riscuri deschise, fără gard (decizia lui
+Costin, raportul 10.3 §6):**
+- **C75** — borderourile dinainte de lotul 9 (`tip = 'factura'`) nu sunt văzute de numerotarea BA și de indexul unic
+  `facturi_borderou_numar_an_uniq`: la o firmă cu asemenea borderouri, un număr BA deja dat poate fi dat din nou. Pe firmele de test numai
+  F1 le avea (reparat); cabinetul pilot necitit.
+- **C76** — o notă care ajustează TVA fără factură (635 = 4427 la lipsa de inventar) nu ajunge în D300, iar reconcilierea D300 (recalcul din
+  facturi) n-o vede; niciun gard nu confruntă 4426 / 4427 din registru cu decontul.

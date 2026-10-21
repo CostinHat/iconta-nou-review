@@ -22708,3 +22708,82 @@ publicat -> lot: **213**; referință -> lot: 221 (9 chei au ambele cauze).
 **Referința nouă:** `scripts/cifre_referinta_aprobate.json`, amprenta `c4c2411f4078f8d7d8bc451adaa533221e2f66fcd8e533501197193b21ff867c`
 (supersedează `2b62f3148cf98e8c06b604f6a4103be277d4486f78f6107c9d90ebbe04949445`, 20.10.2026); `cifre_referinta.py --productie
 --verifica` -> „identice cu referința aprobată (5 firme)”. Fără nicio diferență neexplicată.
+
+## 21.10.2026 — Comanda 10.3 (lotul 10): poarta 2, publicarea, datele de test, 436(b); răspunsurile pentru lotul 11 — verbatim
+
+Costin, verbatim (chat, 21.10.2026):
+
+> 10.3
+>
+> 1. Rulează poarta 2 pe 22c71846. Confirm: nu lucrează nimeni în cabinet acum. Dacă iese verde, publică pe producție, cu backup înainte; acordul ține până termini. Dacă pică, nu publica și raportează.
+> 2. După publicare, repară datele de test: completezi localitatea și județul partenerilor pe F1, F2 și F3 și refaci referința F1–F5; repari F1 (409, 7j, al doilea BA-1), cu lipsa de 205,90 lei la inventar încadrată ca neimputabilă. Stabilești tu ce tenant e F1. Datele cabinetului pilot nu le atingi.
+> 3. Citește datele F2 și închide 436(b).
+> 4. Notează în DECIZII răspunsurile de mai jos, pentru lotul 11. Nu le implementezi acum.
+>    - 422: contorul „De validat” și clopoțelul nu se actualizează după acțiuni (clasa 286); se repară.
+>    - 437 nu există.
+>    - C70: refaci D101G pe validatorul v2.
+>    - Compensarea în valută rămâne refuzată, cu motiv.
+>    - Localitatea și județul la PF și la firmele neînregistrate se completează în fișa partenerului; refuzul declarației trimite direct acolo.
+>    - Întocmitorul bilanțului: calitatea întocmitorului în profilul cabinetului, interesul public în Date firmă; ambele blochează dacă lipsesc.
+>    - D205 pe anii depuși după regula veche: fără rectificative.
+>    - 8c: reparația centrală, cu DS cap. 6 actualizat.
+>    - Totalurile și rezumatul fix, mesajele lângă buton, 394 la 1280×720: da, reorganizezi ecranele; totul încape într-un ecran, fără derulare.
+>    - Cursul BNR: aplici textul legal în vigoare (CF art. 290, HG 1/2016 pct. 35), verificat verbatim.
+>    - Rotunjirea TVA: o singură regulă pe toată aplicația, cea cerută de validatorul e-Factura.
+>    - NIR cu număr repetat: refuzat, cu mesaj numit.
+>    - Borderoul se corectează prin stornare, ca factura.
+>    - CUI-ul se păstrează fără „RO” și fără spații; „RO” apare doar la afișare, după starea de plătitor de TVA.
+>    - Semaforul D205 numără 457 preluat ca incomplet până la completarea manuală.
+>    - Reevaluarea valutei se face pe soldul în valută al partenerului, inclusiv plățile nelegate; avansurile intră doar dacă OMFP 1802 pct. 325 le cuprinde, verificat verbatim.
+> 5. Folosește subagenți în paralel unde lucrul atinge fișiere diferite, fără teste grele simultan.
+> 6. Răspunde punctual pe fiecare deficiență, apoi oprește-te și raportează.
+
+**Consecințe (executor):**
+1. **Pct.1 — poarta 2 VERDE, lotul 10 publicat.** `scripts/poarta_lot.sh` pe `22c71846` (rularea 2 din 2): prospețime 21 passed, pytest 9567
+   passed / 10 skipped / 15 xfailed, verificator TOTAL 0, cifrele F1–F5 identice cu referința, plasa 553 passed; `VERDE
+   22c718461b8982283da6b24ee3114acc96a3a3a9` la 16:18. Publicarea, sub acordul din pct.1: backup `~/backups_db/iconta_v2_pre_lot10_20261021_1621.dump`
+   (16:21, 7 scheme de firmă + public, 509 tabele cu date — aceeași formă ca backupul lotului 9) -> `APROBARE_MAIN` cu textul pct.1 ->
+   `git merge --ff-only` -> `post-commit` (push origin/main + backup/lant-2026-10-21; restartul oprit până la migrări) -> pasul „borderou” al
+   reparației F1 (înaintea `migrare_borderou_numar_unic`) -> cele 6 migrări `--productie` (7 firme ok fiecare) -> restart 16:24:12 -> four-way
+   închis: HEAD = origin/main = backup/lant-2026-10-21 = RUNNING = `22c71846`.
+2. **Pct.2 — F1 = `tenant_049`** („F1 Comert Stoc SRL”, cabinetul de test „Cabinet Test Sesiunea B SRL”; F1–F5 = tenant_049–053, niciuna a
+   cabinetului pilot). Reparațiile, fiecare cu `--proba` (ROLLBACK) înainte de `--scrie`, din checkout-ul publicat, prin
+   `mediu_test.dsn_productie()`:
+   - **Localitatea și județul partenerilor** (pe factură: `facturi.tert_oras` / `tert_judet`, de unde le iau D406 și D394; fișele de clienți /
+     furnizori ale firmelor de test sunt goale). Sursa fiecărei valori: ANAF pentru FISCALOS ICONTA (55229657: „Sector 1 Mun. Bucureşti” / B);
+     adresa scrisă pe borderou pentru Maria Ionescu (Cluj-Napoca / CJ); SINTETIC, declarat, pentru partenerii fictivi — Client Test SRL,
+     Furnizor Test SRL (F1), Client Servicii SRL (F2), cu CUI-uri de test negăsite la ANAF, și Ion Popescu (persoană fizică fără adresă):
+     București / B, sediul firmei; Lieferant DE GmbH (F3, VIES valid cu adresa „---”): Berlin, fără județ. 8 facturi.
+   - **409**: nota veche 105 rămâne (R1), stornată de 168 (607=371 −100,00) și înlocuită de 169 (607=371 100,00, „Factură 2 din
+     05.10.2026”), validate.
+   - **7j**: returul stornării F1A9 (Marfa B 1 buc, 27,50 lei, nota 170 — ciornă, cum o scrie aplicația la stornare, `retur_la_stornare`;
+     o validează contabilul); lipsa de 205,90 lei la inventar **neimputabilă**: nota 171 635=4427 43,24 (21%, cota Marfei A din
+     nomenclator), validată; F1 e microîntreprindere, deci nedeductibilul nu trece la ajustările fiscale (la fel ca aplicația, 404); Marfa B
+     primește în Produse cota 21 de pe NIR.
+   - **434 (al doilea BA-1)**: borderoul vechi (Ion Popescu, 19.10, id 54) era `tip = 'factura'` — C75 — și trece pe „borderou”; al
+     doilea BA-1 (Maria Ionescu, 20.10, id 61) devine BA-2.
+3. **Pct.2 — referința F1–F5 refăcută.** Codul publicat = codul lotului, deci diferențele vin numai din reparațiile de mai sus:
+   `cifre_referinta.py --productie --verifica` -> 33 de diferențe, toate explicate: D406 F1 09 și 10/2026, F2 T3/2026, F3 T2/2026 (21 de
+   valori) — refuzul „lipsește localitatea” devine declarație generată; D394 F1 10/2026 (5) — refuzul „lipsește județul … fără cod de TVA”
+   devine declarație generată; balanța F1 10/2026 (4) — 4427 rulaj creditor 1.222,00 -> 1.265,24 și contul 635 43,24 nou: nota 171. 607 /
+   371 nu se mișcă (stornarea și nota nouă se anulează), retur ciornă și cota nu ating cifrele. Cele 5 declarații nou generate trec DUK
+   (`duk.valideaza`: stare valid, fără erori). Referința nouă: `scripts/cifre_referinta_aprobate.json`, amprenta
+   `a8e833cd38eebc7435bf22350d12903362b1ad4eab8528e7965f13a597b643c2` (supersedează `c4c2411f4078f8d7d8bc451adaa533221e2f66fcd8e533501197193b21ff867c`,
+   21.10.2026, poarta 1); `--verifica` -> „identice cu referința aprobată (5 firme)”.
+4. **Pct.3 — 436(b) închis pe datele F2** (`tenant_050`): 08 și 09/2026 au note de amortizare validate (sursa „amortizare”, 6811=2813 200,00
+   — notele 32 și 5); ciornele sunt 01–07 (25–31, 1.400 lei). D100 T3/2026 generat pe producție cu codul publicat numește exact 01–07. Nu
+   există luni încheiate fără amortizare de semnalat; cazul general (lună fără nicio notă) e acoperit de reparația 436.
+5. **Pct.4 — răspunsurile intră în lotul 11, neimplementate acum.** Norma fiecăruia se scrie unde se aplică odată cu implementarea (DS cap.6
+   pentru 8c, docstringurile modulelor); până atunci trăiesc aici. 422 primește textul în DEFICIENTE (nerezolvată, lotul 11, clasa 286); 437
+   devine „nu se aplică”; C70 poartă decizia. „Totul încape într-un ecran, fără derulare” e reorganizarea de ecran aprobată (CLAUDE.md
+   „Reorganizarea unui ecran existent = STOP”) pentru totalurile de sub tabele, rezumatul fix, mesajele lângă buton și 394 la 1280×720.
+6. **Pct.5 — subagenți:** lucrul comenzii 10.3 a fost poarta, publicarea, scripturi pe date rulate pe producție sub acord și registrele, pe
+   care le scrie sesiunea principală; n-a existat lucru de cod pe fișiere disjuncte, deci fără subagenți (motivul, nu omisiunea).
+7. **Găsite pe drum, înregistrate, nereparate în 10.3** (comanda cere oprirea după răspunsuri; reparația cere cod nou și o poartă): **C75**
+   (borderourile dinainte de lotul 9 au `tip = 'factura'`, nevăzute de numerotarea BA și de indexul unic; pe firmele de test numai F1 le
+   avea, reparat; la cabinetul pilot e o migrare pe datele lui — decizia lui Costin) și **C76** (ajustarea TVA a lipsei la inventar, 635 =
+   4427, nu ajunge în D300 și nu e semnalată). Ambele în raportul 10.3 §6.
+
+**Alternativa respinsă:** referința lăsată pe amprenta porții 1 cu refuzurile D406 / D394 — ar fi apărat cifre care spun „lipsește
+localitatea”, adică datele dinainte de reparația cerută. **Limita:** valorile sintetice ale localităților sunt ale firmelor de test și sunt
+declarate ca sintetice aici și în scriptul de reparație; nu sunt adresele reale ale unor parteneri.

@@ -3006,3 +3006,16 @@ DUK; blocul de clichete din PREDARE; un plural fix în `core/arbore_js.py`; un j
 dată: 5 / 5. Cifrele: 17 diferențe din datele scrise pe F1 după referință (identice pe codul publicat), 213 din codul lotului (425: coloanele
 `prel_d` / `prel_c`; C69: refuzurile D406 / D394 pe localitatea / județul partenerului și antetul D406 fără valori inventate) — referința
 rescrisă după regula 7.3 pct.4 (DECIZII 21.10.2026, amprenta `c4c2411f…`). Urmează poarta 2 (ultima), fără publicare.
+
+
+## 21.10.2026 — Lotul 10 PUBLICAT (`22c71846`, comanda 10.3); datele de test F1–F3 reparate, referința refăcută, 436(b) închis
+
+Poarta 2 pe `22c71846` (14:18–16:18) VERDE: pytest 9567 passed / 10 skipped / 15 xfailed, verificator TOTAL 0, cifrele F1–F5 identice,
+plasa 553 passed. Publicat sub acordul lui Costin (10.3 pct.1): backup `iconta_v2_pre_lot10_20261021_1621.dump`, fast-forward aprobat,
+post-commit, pasul „borderou” al reparației F1, cele 6 migrări `--productie`, restart 16:24:12, four-way închis pe `22c71846`. Apoi, pe
+firmele de test (F1 = tenant_049): localitatea / județul partenerilor pe 8 facturi F1–F3 (ANAF, adresa de pe borderou sau sintetic,
+declarat), 409 (stornare + notă legată de factura 2), 7j (returul stornării F1A9 ca ciornă, lipsa de 205,90 neimputabilă -> 635=4427 43,24,
+cota Marfei B), al doilea BA-1 -> BA-2. Referința F1–F5 refăcută: 33 de diferențe, toate din reparații (refuzurile D406 / D394 devin
+declarații, valide pe DUK; 4427 / 635 din nota lipsei), amprenta `a8e833cd…`. 436(b): pe F2, 08 și 09 au note de amortizare validate; D100
+numește corect numai 01–07. Răspunsurile pentru lotul 11 consemnate în DECIZII „Comanda 10.3”; găsite pe drum C75 (borderourile dinainte de
+lotul 9 cu tipul „factura”) și C76 (ajustarea TVA a lipsei nu ajunge în D300), deschise pentru decizie.

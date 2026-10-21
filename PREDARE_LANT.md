@@ -4,33 +4,35 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-21** (lotul 10 comis pe ramura `lucru/lot10-2026-10-20`, worktree `/home/costin/iconta_lot9`, din
-  `d4ebae38`), nepublicat, înaintea porții; pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate). Producția rămâne
-  pe `5907e639` (four-way de mai jos).
-- **pe commit**: `5907e639` (lotul 9: 9.1, 9.2, 9.3 și închiderea) — **four-way închis 20.10.2026 05:06**: HEAD = origin/main = public/main =
-  backup/lant-2026-10-20 = RUNNING = `5907e639` (2 din 2 procese, pornite 05:06:34, după commitul de 03:17:58); nicio sentinelă; backup
-  înainte `~/backups_db/iconta_v2_pre_lot9_20261020_0503.dump`; cele 5 migrări rulate pe producție (7 scheme fiecare, 0 eșecuri). Poarta
-  lotului 9: rularea 1 ROȘIE numai pe cifre (`f731cbba`, 64 de diferențe: 61 din datele de retest din 19.10, identice pe codul publicat; 6
-  amprente D406 din planul OMFP, conturi cu sold 0 — referința rescrisă, DECIZII), rularea 2 VERDE (`5907e639`, 05:03; pytest 8937 / 10 / 15,
-  plasa 484 passed, verificator 0, cifre identice).
-  (Anterior: `27f4fab3`, lotul 8, 8.2 — four-way 19.10.2026 07:32; `fcfa3b3a`, lotul 8, 8.1 — 18.10.2026 21:52; `7ebbf79b`, lotul 7 — 18.10.2026 07:19.)
+- **ultima rescriere**: **2026-10-21 seara** (comanda 10.3: lotul 10 publicat, datele de test reparate), pe ramura `lucru/lot10-2026-10-20`
+  (worktree `/home/costin/iconta_lot9`), în commitul de după publicare — nepublicat, ca la loturile 8 și 9 (producția rămâne pe `22c71846`);
+  pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
+- **pe commit**: `22c71846` (lotul 10: 10.1, 10.2 și cauzele porții 1) — **four-way închis 21.10.2026 16:24**: HEAD = origin/main =
+  backup/lant-2026-10-21 = RUNNING = `22c71846` (2 din 2 procese, pornite 16:24:12, după commitul de 13:43:11); nicio sentinelă; backup
+  înainte `~/backups_db/iconta_v2_pre_lot10_20261021_1621.dump`; cele 6 migrări rulate pe producție (7 scheme fiecare, 0 eșecuri). Poarta
+  lotului 10: rularea 1 ROȘIE (`3118774c`: 5 gărzi + 221 de diferențe la cifre, explicate), rularea 2 VERDE (`22c71846`, 16:18; pytest
+  9567 / 10 / 15, plasa 553 passed, verificator 0, cifre identice).
+  (Anterior: `5907e639`, lotul 9 — four-way 20.10.2026 05:06; `27f4fab3`, lotul 8, 8.2 — 19.10.2026 07:32; `fcfa3b3a`, lotul 8, 8.1 — 18.10.2026 21:52.)
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
-**21.10.2026 — LOTUL 10 (10.1 + 10.2) PE RAMURĂ: POARTA 1 ROȘIE (`3118774c`), CAUZELE REPARATE, LA POARTA 2; NEPUBLICAT.** Poarta 1: 5 gărzi picate + 221 de diferențe la cifrele F1–F5, toate explicate (DECIZII 21.10.2026 „poarta 1 ROȘIE”; referința nouă `c4c2411f…`); reparațiile și referința în commitul care conține această predare. Commitul care conține această predare, pe
-`lucru/lot10-2026-10-20` (din `d4ebae38`). Conținutul: DECIZII „Comanda 10.1”, „Comanda 10.2” și intrările de interpretare ale lotului 10;
-registrul DEFICIENTE (420–438, 383, retestul lotului 9, C68–C74). Înainte de commit: suita întreagă (46 de picături, reparate — ISTORIC
-21.10), rerularea țintită 1101 / 1101, verificator TOTAL 0, e2e-urile lotului verzi cu mutațiile ROȘII, uneltele vizuale refăcute.
-**Fronturi deschise:** (1) **poarta 2 a lotului 10** (ultima; `sh scripts/poarta_lot.sh`) — dacă pică, lotul se oprește și se raportează (§2.3
-pct.13b). Publicarea NU urmează automat: acordul din 21.10 („Dacă pică, nu publica și raportează”) s-a aplicat la poarta 1. (2) **publicarea** —
-cere acordul lui Costin, backup chiar înainte, cele 6 migrări `--productie` (`migrare_profil_c69`, `migrare_tva_incasare_perioade`,
-`migrare_compensari_afiliat`, `migrare_reevaluari_valuta`, `migrare_balanta_rulaje_an`, `migrare_borderou_numar_unic`) și reparația pe
-datele F1 (409, 7j, al doilea BA-1; scriptul din raport, probat pe schemă de test, cere `--lipsa` = încadrarea lipsei de la inventar).
-(3) §6 al raportului lotului 10 (deciziile cerute: 422 / 437, C70 D101G, clasa 8c, totalurile de sub tabele, cursul BNR „ziua anterioară”,
-cele trei reguli de rotunjire TVA ș.a.). (4) C70 (DEFICIENTE C70) nerezolvată.
-**Ce urmează:** poarta 2 -> ZIP-ul lotului -> raportul; fără publicare și fără repornire până la un acord nou al lui Costin (cu confirmarea că nu lucrează cabinetul). Referința F1–F5 poartă acum refuzurile D406 F1 / F2 / F3 și D394 F1 (C69) — completarea localității / județului pe partenerii firmelor de test cere acordul lui (§6).
+**21.10.2026 — LOTUL 10 PUBLICAT INTEGRAL (comanda 10.3).** Producția e pe `22c71846` (four-way 16:24). La publicare, după backup: pasul
+„borderou” al reparației F1, apoi cele 6 migrări `--productie`. După publicare, pe firmele de test (F1 = tenant_049; F1–F5 = tenant_049–053,
+cabinetul „Cabinet Test Sesiunea B SRL”): localitatea / județul partenerilor pe 8 facturi F1–F3; 409 (stornare 168 + nota 169 cu „Factură 2
+din 05.10.2026”); 7j (retur F1A9 — nota 170, ciornă, o validează contabilul —, lipsa 205,90 neimputabilă: nota 171 635=4427 43,24, cota
+Marfei B 21); al doilea BA-1 -> BA-2 (C75). Referința F1–F5 refăcută: amprenta `a8e833cd…` (DECIZII „Comanda 10.3”). Scripturile de reparație
+(în raport): fiecare pas se oprește dacă găsește datele deja reparate; nu se rulează a doua oară.
+Commitul care conține această predare (registrele de după publicare) stă pe ramură, nepublicat.
+**Fronturi deschise:** (1) acordul de publicare din 10.3 s-a consumat; orice publicare nouă cere confirmarea lui Costin. (2) **Lotul 11** —
+răspunsurile din DECIZII „Comanda 10.3” pct.4 (422 clasa 286, C70 D101G v2, compensarea în valută refuzată, localitatea în fișa
+partenerului, întocmitorul bilanțului, D205 fără rectificative, 8c, reorganizarea ecranelor fără derulare, cursul BNR verbatim, o singură
+rotunjire TVA, NIR repetat refuzat, borderoul prin stornare, CUI fără „RO”, semaforul D205 cu 457, reevaluarea pe soldul partenerului).
+(3) Deciziile cerute în raportul 10.3 §6: **C75** (borderourile dinainte de lotul 9 cu `tip = 'factura'` — migrare pe datele cabinetului
+pilot) și **C76** (ajustarea TVA a lipsei la inventar nu ajunge în D300). (4) Nota 170 (retur F1A9) pe F1 e ciornă; F1 mai are ciornele
+135 și 157 (borderourile), deci depunerea pe F1 10/2026 rămâne oprită până la validare (436).
+**Ce urmează:** comanda lotului 11; fără publicare și fără repornire până la un acord nou al lui Costin (cu confirmarea că nu lucrează cabinetul).
 
 **20.10.2026 dimineața — LOTUL 9 PUBLICAT INTEGRAL.** Producția e pe `5907e639` (four-way 05:06). La publicare, după backup: cele cinci
 migrări `--productie`; validarea unică a ciornelor PFA (`scripts/valideaza_note_interne_pfa.py --productie`): 0 validate, 0 refuzate (nu era
@@ -501,7 +503,9 @@ nu e local). (3) Cheile Meta / WhatsApp, Postmark și exporturile Search Console
 
 ## STAREA LA PREDARE
 
-**Ultima poartă completă: `12998290` (14.10.2026, pct.2: 243–245)** — `8129 passed, 10 skipped, 15 xfailed in 3044.81s`, COLLECTED 8154,
+**Ultima poartă completă a unui lot: `22c71846` (21.10.2026, lotul 10, rularea 2)** — `9567 passed, 10 skipped, 15 xfailed in
+4368.19s`, verificator TOTAL 0, cifrele identice (5 firme), e2e 553 passed; poarta întreagă 7166 s (pytest 4369 s, plasa 2797 s).
+Înainte: **`12998290` (14.10.2026, pct.2: 243–245)** — `8129 passed, 10 skipped, 15 xfailed in 3044.81s`, COLLECTED 8154,
 verificator TOTAL 0, cifrele identice (5 firme), e2e 254 passed; poarta întreagă 4131 s (pytest 3045 s, plasa 1086 s). Prima trecere
 (12:44–13:35) respinsă: 2 failed (versionarea `firme.js`, un parametru netransmis) — WIP `wip/2026-10-14-1335-pct2`.
 Înainte: **`5e260e3c` (14.10.2026, §6 COMANDA_13_10 + pct.1)** — `8117 passed, 10 skipped, 15 xfailed in 3204.52s`,
