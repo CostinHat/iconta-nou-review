@@ -19,18 +19,18 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ÎN CE STARE E PROIECTUL
 
-**21.10.2026 — LOTUL 10 (10.1 + 10.2) COMIS PE RAMURĂ, LA POARTĂ; NEPUBLICAT.** Commitul care conține această predare, pe
+**21.10.2026 — LOTUL 10 (10.1 + 10.2) PE RAMURĂ: POARTA 1 ROȘIE (`3118774c`), CAUZELE REPARATE, LA POARTA 2; NEPUBLICAT.** Poarta 1: 5 gărzi picate + 221 de diferențe la cifrele F1–F5, toate explicate (DECIZII 21.10.2026 „poarta 1 ROȘIE”; referința nouă `c4c2411f…`); reparațiile și referința în commitul care conține această predare. Commitul care conține această predare, pe
 `lucru/lot10-2026-10-20` (din `d4ebae38`). Conținutul: DECIZII „Comanda 10.1”, „Comanda 10.2” și intrările de interpretare ale lotului 10;
 registrul DEFICIENTE (420–438, 383, retestul lotului 9, C68–C74). Înainte de commit: suita întreagă (46 de picături, reparate — ISTORIC
 21.10), rerularea țintită 1101 / 1101, verificator TOTAL 0, e2e-urile lotului verzi cu mutațiile ROȘII, uneltele vizuale refăcute.
-**Fronturi deschise:** (1) **poarta lotului 10** (`sh scripts/poarta_lot.sh`, o dată) — numai după reconfirmarea lui Costin că nu lucrează
-cabinetul (confirmarea din 20.10 e veche); ROȘU numai pe cifrele F1–F5 se explică și se rescrie referința (7.3 pct.4). (2) **publicarea** —
+**Fronturi deschise:** (1) **poarta 2 a lotului 10** (ultima; `sh scripts/poarta_lot.sh`) — dacă pică, lotul se oprește și se raportează (§2.3
+pct.13b). Publicarea NU urmează automat: acordul din 21.10 („Dacă pică, nu publica și raportează”) s-a aplicat la poarta 1. (2) **publicarea** —
 cere acordul lui Costin, backup chiar înainte, cele 6 migrări `--productie` (`migrare_profil_c69`, `migrare_tva_incasare_perioade`,
 `migrare_compensari_afiliat`, `migrare_reevaluari_valuta`, `migrare_balanta_rulaje_an`, `migrare_borderou_numar_unic`) și reparația pe
 datele F1 (409, 7j, al doilea BA-1; scriptul din raport, probat pe schemă de test, cere `--lipsa` = încadrarea lipsei de la inventar).
 (3) §6 al raportului lotului 10 (deciziile cerute: 422 / 437, C70 D101G, clasa 8c, totalurile de sub tabele, cursul BNR „ziua anterioară”,
 cele trei reguli de rotunjire TVA ș.a.). (4) C70 (DEFICIENTE C70) nerezolvată.
-**Ce urmează:** reconfirmarea lui Costin -> poarta lotului 10 -> ZIP-ul lotului -> raportul; fără publicare și fără repornire.
+**Ce urmează:** poarta 2 -> ZIP-ul lotului -> raportul; fără publicare și fără repornire până la un acord nou al lui Costin (cu confirmarea că nu lucrează cabinetul). Referința F1–F5 poartă acum refuzurile D406 F1 / F2 / F3 și D394 F1 (C69) — completarea localității / județului pe partenerii firmelor de test cere acordul lui (§6).
 
 **20.10.2026 dimineața — LOTUL 9 PUBLICAT INTEGRAL.** Producția e pe `5907e639` (four-way 05:06). La publicare, după backup: cele cinci
 migrări `--productie`; validarea unică a ciornelor PFA (`scripts/valideaza_note_interne_pfa.py --productie`): 0 validate, 0 refuzate (nu era
@@ -549,7 +549,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 |---|---|---|---|
 | **77** | **170** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
 | **77u** | **1068** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1442** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **50** | **1213** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

@@ -60,6 +60,8 @@ _PERMISE = {
     ("core/test_p4_fault_injection.py", "PAROLA_ATRIBUITA"): (5, "parola unei înregistrări făcute să EȘUEZE (cont șters de "
                                                                  "test) + jetoane OAuth false dintr-un răspuns simulat"),
     ("core/test_post_token_fara_conexiune.py", "PAROLA_ATRIBUITA"): (3, "jetoane OAuth false (`acc-…`, `ref-…`) ale serverului simulat"),
+    ("core/test_lot10_c73_chei_unice.py", "PAROLA_ATRIBUITA"): (1, "jetonul fals `tok-u3` al confirmării de e-mail (C73, U3; în "
+                                                                "bază intră numai hash-ul lui)"),
     ("core/lexicon_diacritice.json", "PAROLA_ATRIBUITA"): (1, "perechea de lexicon `\"parola\": \"parolă\"` (forma fără diacritice "
                                                             "a unui cuvânt, nu o parolă) — Retest 2, lexiconul derivat din corpus"),
     ("core/test_spv_conector.py", "PAROLA_ATRIBUITA"): (3, "jetoane de reîmprospătare false ale serverului simulat"),

@@ -22662,3 +22662,49 @@ test ar fi o cale de cod pe care producția n-o are).
   fișiere din `core/` face ca pytest să nu mai aplice `core/conftest.py` fișierelor colectate după el (reprodus 21.10: cache-ul ANAF rămânea
   plin între teste). Suita și poarta pornesc din director, iar `poarta_scurta.py` sortează căile (grupate pe director) — neafectate.
 
+
+## 21.10.2026 — Lotul 10, poarta 1 ROȘIE (5 teste + cifrele F1–F5): cauzele reparate, referința F1–F5 actualizată după regula 7.3 pct.4
+
+**Ce s-a întâmplat.** Poarta lotului pe `3118774c` (rularea 1 din 2 pe `lucru/lot10-2026-10-20`, pornită 11:19 după confirmarea lui
+Costin „confirm că nu lucrează nimeni în cabinet”) a ieșit ROȘIE: pytest `5 failed, 9562 passed, 10 skipped, 15 xfailed` (4354 s),
+verificatorul `TOTAL: 0`, cifrele F1–F5 **221 de diferențe**; plasa e2e n-a mai rulat (poarta se oprește la cifre). Acordul lui Costin
+(chat, 21.10.2026, verbatim): *„Dacă 10.2 e integrată în acest commit, pornește poarta: confirm că nu lucrează nimeni în cabinet. Dacă nu,
+execută întâi 10.2, apoi poarta. Dacă poarta trece, publică pe producție. Dacă pică, nu publica și raportează.”* Poarta a picat ->
+**nepublicat**; cauzele reparate după §2.3 pct.13 (testele picate rulate o dată: `5 passed`), a doua rulare pe commitul care conține
+această intrare, **fără publicare** — publicarea cere un acord nou.
+
+**Cele 5 teste** (toate gărzi care citesc starea COMISĂ sau tot depozitul — înainte de commit nu le putea vedea rerularea țintită):
+1. `test_agenda::test_verificarile_A_nu_sunt_in_urma_codului` — 5 funcții de test bifate (D710: structura, COD_BUGETAR, R11b, R15; D406:
+   planul pe normă) schimbate în lot numai în fixture (C69: declarantul / telefonul firmei, pe care generatorul nu le mai inventează);
+   aserțiunile neschimbate. Reverificat: rulate pe validatorul DUK d710 / d406 instalat (`5 passed`), bifele reancorate la 21.10 cu
+   `bump:` și motivul în TESTE.md. Respins: excluderea funcțiilor din agendă.
+2–3. `test_clichete_generate` (2 teste) — blocul de clichete din PREDARE purta 1442 la R50; regenerat (`scan_ramas.py --clichete-md`) -> 1213.
+4. `test_plural_dupa_numar` — `core/arbore_js.py` (nou în lot) scria „%d declarații”; acum `common.cate` („1 declarație” / „2 declarații”).
+5. `test_fara_secrete_in_git` — jetonul fals `tok-u3` din `core/test_lot10_c73_chei_unice.py` (C73 / U3; în bază intră numai hash-ul)
+   declarat în lista închisă, ca jetoanele false din `test_post_token_fara_conexiune`.
+
+**Cifrele — metoda lotului 9**, trei măsurători, toate numai citire pe producție, pe drumul aplicației: referința aprobată (`2b62f314…`);
+codul PUBLICAT (`~/iconta_nou`, `5907e639`, măsurat direct); codul LOTULUI (copia migrată, cele 6 migrări). Referință -> publicat: **17**;
+publicat -> lot: **213**; referință -> lot: 221 (9 chei au ambele cauze).
+1. **Datele de pe producție — 17 diferențe, identice pe codul publicat** (F1 Comert Stoc SRL, scrise după referința din 20.10 05:03):
+   D300 10/2026 (R9 5.400 -> 5.453, TVA 1.134 -> 1.145; R17 8.700 -> 8.753; R34 / R37 / R41 1.095 -> 1.106), D394 10/2026 (`totalPlata_A`
+   6.904 -> 6.957, rezumatele), D406 10/2026 (înregistrări 22 -> 24, facturi emise 8 -> 11, primite 2 -> 3) și amprenta D406 09/2026.
+   Sonda XML (`d300.genereaza` F1 10/2026 pe ambele coduri): XML-ul D300 e **identic caracter cu caracter** pe codul publicat și pe al lotului.
+   Rândurile facturilor nu s-au citit (citirea directă a fost refuzată de permisiuni); criteriul regulii 7.3 („aceeași diferență pe codul
+   publicat”) e îndeplinit prin măsurătoare.
+2. **Codul lotului — 213 diferențe, trei efecte:**
+   - **425 (rulajele preluate din balanța importată):** 182 — fiecare rând de balanță al F1, F2, F3, F5 are două chei noi, `prel_d` /
+     `prel_c`, toate 0,0 (firmele de test n-au balanță importată); nicio sumă existentă schimbată.
+   - **C69, localitatea / județul partenerului (deciziile Costin 20.10.2026 „Completez din ANAF … se blochează numai ce rămâne
+     necompletat”):** 29 — D406 refuzat la F1 09 și 10/2026 (5 parteneri fără localitate), F2 T3/2026 (1), F3 T2/2026 (1, partenerul
+     german); D394 F1 10/2026 refuzat (județul lipsă la 2 parteneri fără cod de TVA). Refuzul numește partenerii și unde se completează.
+   - **C69, antetul D406 fără valori inventate:** 2 — amprentele D406 F5 T3 și T4/2026. Sonda XML: singura diferență față de codul publicat
+     e antetul (`PostalCode 000000` scos, contactul „- / F5 SRL Salariati SRL” -> declarantul din profil, `Telephone -` -> telefonul din
+     profil, `IBAN RO00BANK…` -> IBAN-ul din profil); restul fișierului identic.
+   **Limita:** referința nouă poartă refuzul (textul lui) în locul cifrelor D406 pentru F1, F2, F3 și D394 F1 — cifrele acelor declarații
+   nu mai sunt păzite până nu se completează localitatea / județul partenerilor pe firmele de test (scriere pe datele de test din
+   producție: cere acordul lui Costin, raportul lotului 10 §6).
+
+**Referința nouă:** `scripts/cifre_referinta_aprobate.json`, amprenta `c4c2411f4078f8d7d8bc451adaa533221e2f66fcd8e533501197193b21ff867c`
+(supersedează `2b62f3148cf98e8c06b604f6a4103be277d4486f78f6107c9d90ebbe04949445`, 20.10.2026); `cifre_referinta.py --productie
+--verifica` -> „identice cu referința aprobată (5 firme)”. Fără nicio diferență neexplicată.

@@ -2996,3 +2996,13 @@ refuzul previzualizării cursului arătat în afara `catch`. Reparate de patru s
 principală; fiecare rescriere cu mutația ei roșie. Rerularea țintită (95 de fișiere): 1101 / 1101. Pe drum: o capcană de procedură a
 pytest (fișier din rădăcină între fișiere din `core/` -> `core/conftest.py` neaplicat), consemnată în DECIZII.
 
+
+## 21.10.2026 — Lotul 10: poarta 1 ROȘIE (5 gărzi + cifrele F1–F5), cauzele reparate; nepublicat
+
+Poarta pe `3118774c` (11:19–12:32): pytest 5 failed / 9562 passed / 10 skipped / 15 xfailed, verificator TOTAL 0, cifrele F1–F5 221 de
+diferențe, plasa nerulată. Conform acordului lui Costin („Dacă pică, nu publica și raportează”) — nepublicat. Cele cinci picături erau gărzi
+care citesc starea comisă sau tot depozitul (agenda stale pe 5 funcții de test schimbate numai în fixture, reancorate după reverificarea pe
+DUK; blocul de clichete din PREDARE; un plural fix în `core/arbore_js.py`; un jeton fals nedeclarat într-un test C73); reparate, rulate o
+dată: 5 / 5. Cifrele: 17 diferențe din datele scrise pe F1 după referință (identice pe codul publicat), 213 din codul lotului (425: coloanele
+`prel_d` / `prel_c`; C69: refuzurile D406 / D394 pe localitatea / județul partenerului și antetul D406 fără valori inventate) — referința
+rescrisă după regula 7.3 pct.4 (DECIZII 21.10.2026, amprenta `c4c2411f…`). Urmează poarta 2 (ultima), fără publicare.

@@ -16,6 +16,8 @@ import json
 import os
 import subprocess
 
+from core.common import cate
+
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -57,7 +59,7 @@ def functia(arb, nume):
     """Declarația funcției `nume` (oriunde în fișier, și imbricată); exact una."""
     f = [n for n in noduri(arb, "FunctionDeclaration") if n["id"]["name"] == nume]
     if len(f) != 1:
-        raise LookupError("funcția %s: %d declarații, se aștepta exact una" % (nume, len(f)))
+        raise LookupError("funcția %s: %s, se aștepta exact una" % (nume, cate(len(f), "declarație", "declarații")))
     return f[0]
 
 
