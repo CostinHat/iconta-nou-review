@@ -4,7 +4,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-21 seara** (comanda 10.3: lotul 10 publicat, datele de test reparate), pe ramura `lucru/lot10-2026-10-20`
+- **ultima rescriere**: **2026-10-21** (seara, comanda 10.3: lotul 10 publicat, datele de test reparate), pe ramura `lucru/lot10-2026-10-20`
   (worktree `/home/costin/iconta_lot9`), în commitul de după publicare — nepublicat, ca la loturile 8 și 9 (producția rămâne pe `22c71846`);
   pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
 - **pe commit**: `22c71846` (lotul 10: 10.1, 10.2 și cauzele porții 1) — **four-way închis 21.10.2026 16:24**: HEAD = origin/main =
