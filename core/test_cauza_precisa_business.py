@@ -12,6 +12,8 @@ def test_d112_valueerror_business_da_cauza_precisa(monkeypatch):
     def _boom(*a, **k):
         raise ValueError("D112: CAEN firma '6210' nu exista in nomenclatorul acceptat de D112.")
     monkeypatch.setattr(_d112, "genereaza", _boom)
+    # [lotul 10] firma ARE salariați în lună (premisa scenariului): controlul o întreabă acum înaintea generării
+    monkeypatch.setattr(_ci, "are_salariat_activ_luna", lambda *a, **k: True)
     r = _ci.verifica_d112(None, "tenant_x", 2026, 8)
     rem = r["constatari"][0]["remediu"]
     assert "nomenclator" in rem["cauza"], "cauza nu poarta mesajul precis al ValueError-ului de business (Q3)"
@@ -25,5 +27,7 @@ def test_d112_runtimeerror_ramane_generic(monkeypatch):
     def _boom(*a, **k):
         raise RuntimeError("stack trace intern")
     monkeypatch.setattr(_d112, "genereaza", _boom)
+    # [lotul 10] firma ARE salariați în lună (premisa scenariului): controlul o întreabă acum înaintea generării
+    monkeypatch.setattr(_ci, "are_salariat_activ_luna", lambda *a, **k: True)
     r = _ci.verifica_d112(None, "tenant_x", 2026, 8)
     assert r["constatari"][0]["remediu"]["cauza"] == "Date lipsă sau profil incomplet."

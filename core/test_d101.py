@@ -14,8 +14,11 @@ from core.d101 import calcul_d101, build_xml, erori_generare, _nr_evid, _scadent
 
 
 def _prof():
+    # [lotul 10, C69] declarantul face parte din profilul complet: structura D101 „21. nume_declar Nume declarant C(75) DA” (la fel
+    # prenume_declar / functie_declar) — generatorul nu mai pune implicitul „ADMINISTRATOR” / „-”, iar DUK respinge atributul vid
     return {"cui": "14399840", "nume": "DANTE INTERNATIONAL SA",
-            "adresa": "Bd. Timisoara 26Z", "caen": "4711"}
+            "adresa": "Bd. Timisoara 26Z", "caen": "4711",
+            "declarant_nume": "Pop", "declarant_prenume": "Ion", "declarant_functie": "administrator"}
 
 
 def test_namespace_e_v10():

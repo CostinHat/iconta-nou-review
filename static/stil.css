@@ -696,11 +696,8 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 
 /* fereastra lărgită pe ecranele cu tabel (ex. preview solduri) */
 .fereastra.fer-larg { max-width: 1000px; }
-/* [08.10.2026, decizia Costin W5, DS cap.9 v2.81] „Ferestrele cu tabele (Balanță, Mijloace fixe, Declarații) se lățesc cât e nevoie;
-   fără derulare laterală la rezoluția 1920.” Lățimea o dă conținutul (fit-content), între lățimea ferestrei largi și marginea
-   ecranului; corpul derulează numai pe verticală. */
-.fereastra.fer-tabel { width: fit-content; min-width: min(1000px, calc(100vw - 48px)); max-width: calc(100vw - 48px); }
-.fereastra.fer-tabel .fereastra-corp { overflow-x: auto; }
+/* Fereastra cu tabel (`fer-tabel`, W5 08.10.2026 -> lotul 10): regulile ei stau după cele ale ferestrei largi (mai jos, „FEREASTRA CU
+   TABEL”), ca să le bată pe cele de corp ale `.fer-larg` când o fereastră le are pe amândouă. */
 /* [DS cap.9 v2.92, deficiența 285] fereastra care nu încape nici lățită (ecran îngust): celulele de tabel își rup cuvintele lungi,
    în loc să împingă tabelul peste marginea ferestrei. Lățirea o face navigatorul (`fer-tabel`, când conținutul e mai lat). */
 /* [deficiența 331, 18.10.2026] `break-word`, nu `anywhere`: se rupe numai cuvântul care nu încape pe rândul lui. `anywhere` scădea lățimea
@@ -730,6 +727,51 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .fereastra.fer-larg .mig-coer,
 .fereastra.fer-larg .mig-buton { flex: 0 0 auto; }
 
+/* ---------- FEREASTRA CU TABEL (DS cap.9 v2.96; lotul 10, deficiențele 421 și 424 — clasă, toată aplicația) ----------
+   Comanda Costin 10.1 pct.5, verbatim în DECIZII: „Regula: ferestrele cu tabele se deschid aproape pe tot ecranul (cum e deja Balanța
+   de verificare); rezumatul stă fix sus și acțiunea principală fix jos; se derulează doar tabelul din mijloc, niciodată lateral.”
+   Clasa o pune navigatorul singur pe orice fereastră care conține un tabel (`navigator._lateste`), nu ecranul. Fereastra are lățimea
+   și înălțimea ecranului minus marginea overlay-ului (fixe, nu doar maxime: nu se strânge la conținut și nu sare la fiecare lună);
+   un singur element derulează — corpul — și numai pe verticală. Tabelul se încadrează în lățime: celulele își rup cuvântul care nu
+   încape (`break-word`, 331). Dacă nici așa nu încape (Balanța: 14 coloane, 12 de cifre, la 1366 px — măsurat 1.482 px cu sume de
+   6 cifre, 1.654 px cu sume de 7, într-un corp de 1.318), navigatorul strânge tabelul în două trepte, cât e nevoie: `fer-strans` —
+   litera `--text-desc` și celula mai îngustă (măsurat: 1.318 / 1.365 px); `fer-rupt` — `--text-micut`, celula și mai îngustă, iar
+   textul se rupe oriunde (măsurat: 1.318 px și cu sumele de 7 cifre). Cifrele rămân pe un rând în toate treptele (162). Fără asta,
+   corpul, care nu derulează lateral, ar tăia coloanele din dreapta. Fără `transition`: lățirea e imediată, ca navigatorul să măsoare
+   fereastra lată, nu una pe jumătate deschisă (o măsurătoare din mijlocul animației ar strânge tabelul degeaba). */
+.fereastra.fer-tabel { width: calc(100vw - 48px); max-width: calc(100vw - 48px); height: calc(100vh - 48px); transition: none; }
+.fereastra.fer-tabel .fereastra-corp, .fereastra.fer-larg.fer-tabel .fereastra-corp { overflow-x: hidden; overflow-y: auto; }
+.fereastra.fer-tabel .fereastra-corp table { max-width: 100%; }
+.fereastra.fer-tabel .fereastra-corp td, .fereastra.fer-tabel .fereastra-corp th { overflow-wrap: break-word; }
+.fereastra.fer-tabel.fer-strans .fereastra-corp table { font-size: var(--text-desc); }
+.fereastra.fer-tabel.fer-strans .fereastra-corp td, .fereastra.fer-tabel.fer-strans .fereastra-corp th { padding-left: 6px; padding-right: 6px; }
+.fereastra.fer-tabel.fer-rupt .fereastra-corp table { font-size: var(--text-micut); }
+.fereastra.fer-tabel.fer-rupt .fereastra-corp td, .fereastra.fer-tabel.fer-rupt .fereastra-corp th { padding-left: 4px; padding-right: 4px;
+  overflow-wrap: anywhere; }
+/* Rezumatul lipit sus (perechea `.bara-fixa` de jos): ce trebuie să se vadă cât se derulează tabelul — cifrele ecranului, luna,
+   butoanele de antet, zona de mesaj a rândurilor. Lipirea ține cât e în vedere părintele lui: stă direct în corp, sau în același
+   părinte cu tabelul. Gol (zona de mesaj fără mesaj), nu ocupă loc. */
+.fereastra-corp .rezumat-fix { position: sticky; top: -24px; z-index: 3; background: #e9edf3; margin: 0 -24px; padding: 8px 24px;
+  border-bottom: 1px solid var(--linie); }
+.fereastra-corp .rezumat-fix:empty { display: none; }
+/* antetul tabelului canonic rămâne în vedere sub rezumat (`--rezumat-h` = înălțimea rezumatului, pusă de navigator pe corp); `clip`, nu
+   `hidden`: colțurile rotunjite rămân tăiate, dar tabelul nu devine el însuși cutie de derulare (lipirea antetului s-ar raporta la el) */
+.fereastra.fer-tabel .fereastra-corp .fd-tabel { overflow: clip; }
+.fereastra.fer-tabel .fereastra-corp .fd-tabel thead th { position: sticky; top: calc(var(--rezumat-h, 0px) - 24px); z-index: 1; }
+/* [lotul 10, 421 / 424 — DS cap.9 v2.97 pct.3 și 5] lista-tabel (`.mig-sold-tabel`, Activitate cabinet) nu mai derulează ea însăși în
+   fereastra cu tabel: cu `max-height: 280px; overflow-y: auto` corpul nu avea ce derula, deci rezumatul lipit sus n-avea ce ține în vedere,
+   iar jurnalul se citea printr-o cutie de 280 px într-o fereastră de tot ecranul. Antetul ei (`.ac-cap`) se lipește sub rezumat, ca
+   antetul `.fd-tabel`. */
+.fereastra.fer-tabel .fereastra-corp .mig-sold-tabel { max-height: none; overflow: clip; flex: 0 0 auto; }
+.fereastra.fer-tabel .fereastra-corp .mig-sold-tabel .ac-cap { top: calc(var(--rezumat-h, 0px) - 24px); }
+@media (max-width: 560px) {
+  /* pe telefon fereastra e deja tot ecranul (blocul telefonului, mai sus); corpul are 16px margine, nu 24 */
+  .fereastra.fer-tabel { width: 100%; max-width: none; height: 100%; }
+  .fereastra-corp .rezumat-fix { top: -16px; margin: 0 -16px; padding: 8px 16px; }
+  .fereastra.fer-tabel .fereastra-corp .fd-tabel thead th { top: calc(var(--rezumat-h, 0px) - 16px); }
+  .fereastra.fer-tabel .fereastra-corp .mig-sold-tabel .ac-cap { top: calc(var(--rezumat-h, 0px) - 16px); }
+}
+
 
 /* ---------- banda de coerență a importurilor ---------- */
 .mig-coer {
@@ -747,7 +789,9 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 
 /* ---------- PREVIZUALIZAREA COMUNĂ A IMPORTURILOR (comanda Costin 8.2 pct.4; 349, 352, 357, 358, 360) ----------
    Tabel, nu grilă: antetul stă deasupra valorilor; starea rândului are coloana ei, iar motivul se rupe la cuvânt pe rândul lui. */
-.mig-prev-cutie { max-height: 55vh; overflow: auto; margin-top: 8px; }
+/* [lotul 10, 421/424] cutia nu mai derulează ea însăși (era al doilea element care derula, și pe ambele axe): derulează corpul ferestrei,
+   iar tabelul se încadrează în lățime (fereastra cu tabel, DS cap.9 v2.96) */
+.mig-prev-cutie { margin-top: 8px; }
 .mig-prev td { overflow-wrap: break-word; vertical-align: top; }
 .mig-prev-stare { min-width: 9ch; }
 .mig-prev-motive td { border-top: 0; padding-top: 0; }
@@ -2954,3 +2998,7 @@ body.pagina-publica .pagina-bara-acces:focus-visible{outline:2px solid var(--p-t
 .spv-cuiuri-lista { margin: 8px 0 0 18px; padding: 0; }
 .spv-cuiuri-lista li { margin: 4px 0; }
 .spv-cui-fara { color: var(--rosu); }
+
+/* [lotul 10, 421/424] lista rezultatelor căutării COR: derulare verticală proprie (o listă de sugestii, nu un tabel) — fostul stil inline
+   din `campCorLookup`; DS cap.9 v2.96 interzice derularea inline în șabloane */
+.cor-rez-lista { max-height: 180px; overflow-y: auto; }

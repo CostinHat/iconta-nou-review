@@ -403,19 +403,20 @@ def test_def_283_declaratii_intai_ce_datoreaza_firma_cu_termenul(patron):
 
 def test_def_284_refuzul_d300_numeste_nota_iar_dupa_validare_declaratia_intra_singura(patron, firma_e2e):
     """284. D300 / control: refuzul de la „Trimite în coadă” spunea „4 note nevalidate”, fără să le numească.
-    Pașii administratorului: o factură emisă (nota ei e ciornă) -> Declarații -> D300 pe luna curentă -> „Trimite în coadă →”: refuzul
+    Pașii administratorului: o factură emisă (nota ei e ciornă) -> Declarații -> D300 pe luna ei, încheiată -> „Trimite în coadă →”: refuzul
     numește nota („Diferența o explică pe contul 4427: nr. crt. …”), cu butonul spre ea; butonul deschide Registrul jurnal cu nota
     evidențiată. Notele numite se validează -> declarația se generează din nou și intră singură în coadă, iar cine a trimis-o primește
     notificarea. Depunerea rămâne clicul contabilului (elementul e în coadă, nu depus)."""
     from e2e_bloc_a import _api
     from e2e_bloc_c import _curata_coada, _declaratie_pas1, _trimite_si_asteapta
+    from e2e_lot72_declaratii import LUNA, ZI   # [lotul 10, 383] luna în curs nu se generează: factura și D300 pe luna încheiată
     pregateste_firma(patron, firma_e2e)
-    emite_api(patron, firma_e2e)
+    emite_api(patron, firma_e2e, data_emitere=ZI)
     tid = firma_e2e["tenant_id"]
     peste = sql("SELECT COALESCE(max(id), 0) FROM public.declaratii_coada")[0][0]
     pg = patron.pg
     try:
-        _declaratie_pas1(patron, firma_e2e["nume"], "d300", AZI.year, luna=AZI.month)
+        _declaratie_pas1(patron, firma_e2e["nume"], "d300", LUNA.an, luna=LUNA.luna)
         _trimite_si_asteapta(patron)
         pg.wait_for_selector(".coada-note-refuz button", timeout=30000)
         patron.captura("refuz")
@@ -565,8 +566,9 @@ def test_def_285_nicio_fereastra_cu_derulare_laterala_iar_actiunea_se_vede(patro
     singură, `navigator._lateste`); detaliul unei facturi emise la fel; D300 cu „Din ce e făcută declarația” deschis: „Trimite în
     coadă →” și zona de mesaj rămân în fereastră (zona fixă de jos, `.bara-fixa`)."""
     from e2e_bloc_c import _declaratie_pas1
+    from e2e_lot72_declaratii import LUNA, ZI
     pregateste_firma(patron, firma_e2e)
-    fid = emite_api(patron, firma_e2e)["factura_id"]
+    fid = emite_api(patron, firma_e2e)["factura_id"]   # azi: Istoric facturi se deschide pe luna curentă
     pg = patron.pg
     patron.firma(firma_e2e["nume"])
     carduri = pg.eval_on_selector_all(".firme-optiune:not([disabled])", "(bs) => bs.map((b) => b.id)")
@@ -597,7 +599,9 @@ def test_def_285_nicio_fereastra_cu_derulare_laterala_iar_actiunea_se_vede(patro
     pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().classList.contains('fer-tabel')", timeout=5000)
     pg.wait_for_timeout(500)   # `.fereastra { transition: max-width 0.18s }`
     assert _fara_derulare_laterala(pg, "conținut lat sintetic") == []
-    _declaratie_pas1(patron, firma_e2e["nume"], "d300", AZI.year, luna=AZI.month)
+    # [lotul 10, 383] D300 pe luna încheiată (luna în curs nu se mai generează), cu o factură în ea
+    emite_api(patron, firma_e2e, data_emitere=ZI)
+    _declaratie_pas1(patron, firma_e2e["nume"], "d300", LUNA.an, luna=LUNA.luna)
     pg.wait_for_selector("#dec-trimite", timeout=90000)
     pg.evaluate("() => document.querySelectorAll('.fereastra details').forEach((d) => { d.open = true; })")
     pg.wait_for_timeout(500)

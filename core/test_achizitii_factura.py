@@ -146,11 +146,20 @@ def test_achizitie_neinregistrat_N_ajunge_in_d394_duk_valid(monkeypatch):
             assert cur.fetchone() == ("primita", "", "ION POPESCU", "deseuri")
             cur.execute("SELECT factura_id FROM inregistrari WHERE id=%s", (r["inregistrare_id"],))
             assert cur.fetchone()[0] == r["factura_id"], "inregistrare ORFANA"
+            # [lotul 10, C69] judP al furnizorului persoană fizică fără cod (structura D394 pct.222 „Obligatoriu pt tip_partener=2 și
+            # cuiP=null și taraP=RO”) e județul LUI, de pe factură — nu al firmei. Formularul „achiziție de la neînregistrat” n-are încă
+            # câmpul (decizie cerută în raportul N2); aici se scrie pe factură, iar D394 îl citește din `facturi.tert_judet`.
+            cur.execute("UPDATE facturi SET tert_judet = 'DJ' WHERE id = %s", (r["factura_id"],))
+            conn.commit()
         with db.get_conn() as conn:
             with conn.cursor() as cur:
                 cur.execute("SET search_path TO %s" % _SCH)
             xml, res = d394.genereaza(conn, _SCH, Perioada(2026, luna=6))
         assert 'tip="N"' in xml, "operatiunea N NU e in D394 (desi are categorie): %s" % xml[:400]
+        # judP pe op1-ul N (furnizorul neînregistrat fără cuiP), din XML-ul parsat: exact Dolj (16), nu județul firmei
+        import xml.etree.ElementTree as _ET
+        _op1_n = [e.attrib for e in _ET.fromstring(xml).iter() if e.tag.rpartition("}")[2] == "op1" and e.get("tip") == "N"]
+        assert [a.get("judP") for a in _op1_n] == ["16"], "judP = județul furnizorului (Dolj 16), nu al firmei: %r" % _op1_n
         if duk.poate_valida("d394"):
             verdict = duk.valideaza(xml, "d394", an=2026, luna=6)
             assert verdict["stare"] == "valid", "DUK a respins D394 cu N: %s" % verdict.get("erori")

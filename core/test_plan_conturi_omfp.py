@@ -133,9 +133,9 @@ def test_d406_numeste_contul_exclus_numai_cand_e_folosit():
             with conn.cursor() as cur:
                 _schema_din_sablon(cur, schema)
                 cur.execute("SET search_path TO %s, public" % schema)
-                cur.execute("INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, declarant_nume, declarant_prenume, "
+                cur.execute("INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, telefon, declarant_nume, declarant_prenume, "
                             "declarant_functie, platitor_tva, tip_decont, regim_fiscal) VALUES (1, 'TEST SRL', '14399840', 'Str. Testul 1', "
-                            "'Bucuresti', 'B', '6920', 'BCR', 'RO49BCRA0000000000000000', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', 'real')")
+                            "'Bucuresti', 'B', '6920', 'BCR', 'RO49BCRA0000000000000000', '0212223344', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', 'real')")
             _xml, res = d406.genereaza(conn, schema, 2026, 6)
             assert not [x for x in res.avertismente if x.startswith("Atenție: ") and x.find(" exclus(e) din D406") > 0], res.avertismente
             with conn.cursor() as cur:

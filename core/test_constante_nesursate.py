@@ -208,9 +208,13 @@ def test_calibrare_nu_confunda_sursatul(inv):
 
 
 def test_calibrare_separa_nomenclatorul(inv):
-    """`_JUD.get(j, 40)` — codul județului. Are sursă, dar e SIRUTA/XSD, nu Cod fiscal; se revizuiește
-    altfel. Amestecat în C, ar dilua ținta."""
-    assert _clasa(inv, "bilant_api.py", "40", "H2") == "B"
+    """Un cod de NOMENCLATOR (rândul bilanțului din `F10_NOMENCLATOR`) are sursă, dar e XSD/structură ANAF, nu Cod fiscal; se
+    revizuiește altfel. Amestecat în C, ar dilua ținta.
+    [lotul 10, C69] Exemplul de până azi, `_JUD.get(j, 40)` din `bilant_api`, ERA el însuși defectul: un județ lipsă sau nerecunoscut
+    devenea 40 (București) pe bilanț. S-a scos (`bilant_api.cod_judet_sediu` întoarce `None`, iar bilanțul se oprește), deci calibrarea
+    trece pe un cod de nomenclator care rămâne."""
+    assert _clasa(inv, "bilant_api.py", "40", "H2") is None   # defaultul inventat al județului nu mai există
+    assert _clasa(inv, "bilant.py", "301", "H1") == "B"
 
 
 def test_calibrare_vede_temeiul_din_proza(inv):
@@ -466,6 +470,12 @@ def test_ANTIVACUU_largirea_chiar_a_adus_module():
 # NU se schimbă regula (NF peste NOM), fiindcă asta ar muta exact aceste 7 nume în C și ar umfla
 # clichetul cu 15 false pozitive. Gaura e reală, dar AZI GOALĂ; ce se schimbă e că nu mai e tăcută.
 BOTEZ_BASELINE = {
+    ("bilant.py", "constanta de modul `COD_JUDET_MARI_CONTRIBUA"): "codul 41 („DGAMC”) din „Nomenclator ordonatori - Judete” al structurii bilanțului — "
+        "regula „codJJ=41 daca bifa_MC=1” (anaf_surse/structura_SC_1225_270126.txt), nomenclator, nu valoare fiscală (lotul 10, C69)",
+    ("salariati_import_api.py", "tip_norma"): "codul normei de lucru propuse la import („intreaga” / „partiala”, lotul 10, deficiența 420) — "
+        "nomenclator, nu valoare fiscală; `8` din expresie e pragul de ore pe zi care desparte cele două coduri, același ca în `_norma` "
+        "(Legea 53/2003 art.112 alin.(1): „Pentru salariații angajați cu normă întreagă durata normală a timpului de muncă este de 8 ore "
+        "pe zi”)",
     ("d394.py", "ETICHETE_TIP_PARTENER"): "etichetele de ecran ale tipului de partener (cartușele C–F ale formularului D394) — nomenclator de afișare, nu valori fiscale (Retest 2, 09.10.2026)",
     ("d394.py", "ETICHETE_TIP_SERIE"): "etichetele de ecran ale tipului de serie (<serieFacturi tip>: 1 alocate, 2 emise, 3 beneficiari, 4 terți) — nomenclator de afișare (Retest 2, 09.10.2026)",
     ("d201.py", "_CATEG_SALARII"): "cod de categorie de venit salarial (nomenclator ANAF)",

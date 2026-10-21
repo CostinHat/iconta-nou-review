@@ -25,8 +25,11 @@ def test_d390_are_operatiuni_luna_deschisa_none_fara_db():
 
 
 def _prof():
+    # [C69, lotul 10] declarantul e în profil: `build_xml` nu mai are implicitul „ADMINISTRATOR” (poarta `erori_declarant` îl cere la
+    # `genereaza`; testul cheamă `build_xml` direct, deci dă profilul complet — proba e Croația pe DUK, nu declarantul)
     return {"cui": "14399840", "nume": "DANTE INTERNATIONAL SA",
-            "adresa": "Bd. Timisoara 26Z", "telefon": "0212345678"}
+            "adresa": "Bd. Timisoara 26Z", "telefon": "0212345678",
+            "declarant_nume": "POPESCU", "declarant_prenume": "ION", "declarant_functie": "ADMINISTRATOR"}
 
 
 def test_operatiune_emisa_UE_intra_in_calcul():

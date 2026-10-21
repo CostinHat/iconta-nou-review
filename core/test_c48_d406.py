@@ -45,10 +45,10 @@ def test_c48_conturile_de_avans_ajung_in_d406_si_xml_e_valid():
                 cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), SCHEMA))
                 cur.execute("SET search_path TO %s, public" % SCHEMA)
                 cur.execute(
-                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, telefon, "
                     "declarant_nume, declarant_prenume, declarant_functie, platitor_tva, tip_decont, regim_fiscal) "
                     "VALUES (1, 'TEST SRL', '14399840', 'Str. Testul 1', 'Bucuresti', 'B', '6920', 'BCR', "
-                    "'RO49BCRA0000000000000000', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', 'real')")
+                    "'RO49BCRA0000000000000000', '0212223344', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', 'real')")
                 cur.execute("INSERT INTO inregistrari (data, descriere, document_ref, status) VALUES ('2026-06-10', "
                             "'Avans servicii consultanta', 'OP 12', 'validata') RETURNING id")
                 cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '4092', '5121', 1500)",

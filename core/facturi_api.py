@@ -172,11 +172,71 @@ def totaluri_din_linii(linii):
     return {"total": _q(baza + tva), "tva": _q(tva)}
 
 
+def sume_lei(t, curs):
+    """(tva_lei, total_lei) ale facturii cu totalurile `t` (`totaluri_din_linii`) la cursul `curs`. O SINGURĂ definiție a conversiei,
+    pentru ce se scrie pe factură (`creeaza_factura`), ce întoarce emiterea și ce arată formularul înainte de emitere (lotul 10, pct.7g).
+    CF art.319 alin.(20) lit.j): factura cuprinde „suma taxei colectate, exprimate în lei”; rotunjirea fiscală e aritmetică (ROUND_HALF_UP,
+    deficiența 280), nu `round()`."""
+    c = Decimal(str(curs))
+    return _q(Decimal(str(t["tva"])) * c), _q(Decimal(str(t["total"])) * c)
+
+
+def curs_automat(conn, moneda, data_factura):
+    """Cursul BNR cu care se emite AUTOMAT o factură în `moneda` cu data `data_factura`: (curs, data_curs, sursa) — sau refuzul, ca dict
+    `{ok: False, cod, mesaj, …}` (nimic scris). O singură definiție pentru emitere (`emite_factura`) și pentru previzualizarea din formular
+    (`previzualizare_lei`, lotul 10, pct.7g: „cursul BNR și TVA-ul în lei nu se văd înainte de emitere”): formularul arată exact cursul pe
+    care îl va folosi emiterea. Alegerea cursului e a lui `curs_bnr.curs_pentru` (cel mai recent curs BNR cu data <= data facturii, în
+    pragul de vechime); CF art.290 alin.(2): „cursul de schimb care se aplică este ultimul curs de schimb comunicat de Banca Națională a
+    României [...] valabil la data la care intervine exigibilitatea taxei pentru operațiunea în cauză”."""
+    try:
+        return curs_bnr.curs_pentru(conn, moneda, data_factura)
+    except curs_bnr.CursPreaVechi as _pv:
+        # Emiterea AUTOMATĂ se oprește — dar facturarea nu se blochează: refuzul își numește ieșirea, iar cursul găsit merge cu el, ca
+        # omul să vadă de la ce pornește.
+        return {"ok": False, "cod": "CURS_PREA_VECHI", "moneda": moneda,
+                "data": data_factura.isoformat(), "data_curs_gasit": _pv.data_curs.isoformat(),
+                "curs_gasit": str(_pv.curs), "vechime_zile": _pv.vechime_zile,
+                "prag_zile": _pv.prag_zile, "mesaj": str(_pv),
+                "iesire": {"camp": "curs_manual",
+                           "cere": ["curs_manual", "data_curs_manual"],
+                           "cum": "Introdu cursul de mână, cu data la care a fost comunicat. "
+                                  "Se consemnează cine l-a introdus și când."}}
+    except curs_bnr.MonedaNecotata as _mn:
+        # Moneda nu exista: nu e o intarziere, deci nu se ofera nici „reincearca", nici
+        # „curs manual" — al doilea ar baga factura in contabilitate pe o moneda inventata.
+        return {"ok": False, "cod": "MONEDA_NECOTATA", "moneda": moneda,
+                "data": data_factura.isoformat(), "mesaj": str(_mn)}
+    except curs_bnr.CursIndisponibil:
+        return {"ok": False, "cod": "CURS_INDISPONIBIL",
+                "moneda": moneda, "data": data_factura.isoformat(),
+                "mesaj": "Cursul BNR nu e disponibil momentan."}
+
+
+def previzualizare_lei(conn, moneda, data_factura, linii=None):
+    """[lotul 10, comanda 10.2 pct.7g] „Factură în valută: cursul BNR și TVA-ul în lei nu se văd înainte de emitere.” Ce va scrie emiterea,
+    fără să scrie nimic: cursul (`curs_automat`, același ca la emitere), data lui și, pentru liniile date (cantitate, preț, cotă), TVA-ul și
+    totalul în lei (`totaluri_din_linii` + `sume_lei`, aceleași ca la `creeaza_factura`). `linii=None` (cota încă nestabilită pe o
+    linie): numai cursul. Refuzul cursului se întoarce ca atare (ok False, cu mesajul): formularul îl arată, emiterea îl va spune la
+    fel."""
+    c = curs_automat(conn, moneda, data_factura)
+    if isinstance(c, dict):
+        return c
+    curs, data_curs, sursa = c
+    out = {"ok": True, "moneda": moneda, "curs": str(curs), "data_curs": data_curs.isoformat(), "sursa": sursa,
+           "vechime_zile": (data_factura - data_curs).days}
+    if linii is not None:
+        t = totaluri_din_linii(linii)
+        tva_lei, total_lei = sume_lei(t, curs)
+        out.update({"tva": str(t["tva"]), "total": str(t["total"]), "tva_lei": str(tva_lei), "total_lei": str(total_lei)})
+    return out
+
+
 # ============================================================
 #  CREARE — DB
 # ============================================================
 from core import curs_bnr
 from core import eticheta_nota as _et
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] numărul documentului dublat în cursă -> refuz numit, nu 500
 
 
 # ─────────────────────────────────────────── CODUL DE PARTENER (prag 2, 23.08.2026)
@@ -210,6 +270,33 @@ def cere_cod_partener(tert_cui, tert_pf=False, tert_nume=None):
 
 MESAJ_SCADENTA_INAINTE_DE_EMITERE = ("Data scadenței e înaintea datei emiterii — factura nu poate fi scadentă înainte să "
                                      "existe. Alege o scadență egală sau după data emiterii.")
+
+#: [lotul 10, C73 / U2] cheile unice ale numărului documentului (`tenant_template.sql`): factura emisă (serie + număr) și borderoul
+#: de achiziție (număr + an)
+CHEI_NUMAR = ("facturi_numar_emisa_uniq", "facturi_borderou_numar_an_uniq")
+
+
+def _refuz_numar_dublat(cur, numar, directie, tip, data_emitere):
+    """[lotul 10, C73 / U2] Refuzul numit al numărului deja purtat de alt document — UN text, la verificarea dinaintea scrierii și la
+    cursa dintre două salvări (chemat după întoarcerea la savepoint). `CheieDublata` (deci `ValueError`) sau None (nimic găsit)."""
+    from core import pdf_util as _pu   # [258] documentul existent numit prin numărul și data lui, nu prin id
+    if directie == "emisa":
+        cur.execute("SELECT data_emitere FROM facturi WHERE numar=%s AND directie='emisa' LIMIT 1", (numar,))
+        r = cur.fetchone()
+        if r:
+            return _chei.CheieDublata(
+                "Numărul %s e deja pe factura emisă din %s. Două documente emise cu același număr rup "
+                "secvența cerută de %s. Dacă documentul dinainte e greșit, se stornează — nu se "
+                "reia numărul." % (numar, _pu.data_ro(r[0]), NUMEROTARE_SECVENTIALA), valoare=numar)
+    elif tip == "borderou":
+        from core import documente_interne as _di
+        r = _di.borderou_cu_numarul(cur, "", numar, data_emitere)
+        if r:
+            return _chei.CheieDublata(
+                "Numărul %s e deja al borderoului din %s (%s), salvat între timp de altă cerere. Nimic nu s-a scris: lasă câmpul gol, "
+                "iar aplicația dă numărul următor, sau scrie alt număr." % (r[0], _pu.data_ro(r[1]), r[2] or "vânzător fără nume"),
+                valoare=numar, camp="op-numar")
+    return None
 
 
 def creeaza_factura(conn, numar, data_emitere, directie, linii,
@@ -336,15 +423,9 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                 raise _cs.refuz(_lips)
     if directie == "emisa" and numar:
         with conn.cursor() as _cur:
-            _cur.execute("SELECT data_emitere FROM facturi WHERE numar=%s AND directie='emisa' LIMIT 1",
-                         (numar,))
-            _existent = _cur.fetchone()
-        if _existent:
-            from core import pdf_util as _pu   # [258] factura existentă numită prin numărul și data ei, nu prin id
-            raise ValueError(
-                "Numărul %s e deja pe factura emisă din %s. Două documente emise cu același număr rup "
-                "secvența cerută de %s. Dacă documentul dinainte e greșit, se stornează — nu se "
-                "reia numărul." % (numar, _pu.data_ro(_existent[0]), NUMEROTARE_SECVENTIALA))
+            _refuz = _refuz_numar_dublat(_cur, numar, directie, tip, data_emitere)
+        if _refuz:
+            raise _refuz
     # [B1 D300] campuri de clasificare/temporizare. tip_operatiune distinge avansul (exigibil la
     # emitere, art.282 alin.2 lit.b); furnizor_tva_incasare doar pe PRIMITE (deducere amanata la
     # plata, art.297 alin.2). Fara default tacit peste o valoare invalida -> refuz cu mesaj clar.
@@ -401,39 +482,48 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
         _curs_v = Decimal(str(curs))
         _dcurs_v = data_curs or _d_emit_lei
         _sursa_v = curs_sursa or "manual"
-        _total_lei_v = _q(t["total"] * _curs_v)
-        _tva_lei_v = _q(t["tva"] * _curs_v)
+        _tva_lei_v, _total_lei_v = sume_lei(t, _curs_v)   # [lotul 10, 7g] aceeași conversie ca în formular
     else:
         _curs_v = _dcurs_v = _sursa_v = _total_lei_v = _tva_lei_v = None
         try:
             _c_auto, _dc_auto, _s_auto = curs_bnr.curs_pentru(conn, _moneda_v, _d_emit_lei)
             _curs_v, _dcurs_v, _sursa_v = Decimal(str(_c_auto)), _dc_auto, _s_auto
-            _total_lei_v, _tva_lei_v = _q(t["total"] * _curs_v), _q(t["tva"] * _curs_v)
+            _tva_lei_v, _total_lei_v = sume_lei(t, _curs_v)
         except Exception:
             pass   # valută fără curs disponibil: NULL, semnalat la contare/declarație (nu se inventează)
     with conn.cursor() as cur:
-        cur.execute(
-            "INSERT INTO facturi (client_id, numar, data_emitere, data_scadenta, "
-            "total, tva, status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
-            "categorie_331, data_faptului_generator, taxare_inversa, tert_platitor_tva, "
-            "tert_tara, tip_operatiune, furnizor_tva_incasare, tip, axa_ic, "
-            "tert_oras, tert_judet, "   # [274b] localitatea / regiunea clientului (adresa de livrare a livrării intracomunitare în XML)
-            "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, "  # [A1] lei la INSERT
-            "bon_fiscal_nr, bon_fiscal_data, "   # [decizia A 02.10] factura emisă pe baza bonului fiscal
-            # [punctul 3, 03.10.2026] … și ÎNCASATĂ: HG 1/2016 pct.97 alin.(1) „facturile emise și achitate pe bază de bonuri
-            # fiscale”. Fără asta rămânea „neîncasată”: notificarea de scadență (emailul pleacă la CLIENT) o trata ca
-            # restanță, scadențarul la fel, iar ecranul oferea „Emite chitanță” — încasare dublă.
-            "platita_la) "
-            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
-            "%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
-            (client_id, numar, data_emitere, data_scadenta, t["total"], t["tva"],
-             status, moneda, directie, tert_nume, tert_cui, tert_adresa,
-             categorie_331 or None, data_faptului_generator or None, bool(taxare_inversa),
-             tert_platitor_tva, tert_tara_v, tip_op_v, furnizor_incasare_v, tip_v, axa_v,
-             (tert_oras or "").strip() or None, (tert_judet or "").strip() or None,
-             _curs_v, _tva_lei_v, _total_lei_v, _dcurs_v, _sursa_v, _bon_nr, _bon_data,
-             _bon_data if _bon_nr else None))
-        factura_id = cur.fetchone()[0]
+        # [lotul 10, 428, decizia Costin „Bifă pe client”] beneficiarul afiliat (CF art.282 alin.(6) lit.d): „livrările de bunuri/prestările
+        # de servicii pentru care beneficiarul este o persoană afiliată furnizorului/prestatorului potrivit art. 7 pct. 26” nu intră în
+        # sistemul TVA la încasare. Bifa clientului se ÎNGHEAȚĂ pe factura emisă la emitere (o bifă schimbată mâine nu mută regimul unei
+        # facturi de ieri); motorul (`tva_incasare.motiv_excludere`) o citește de pe factură.
+        from core import clienti_api as _cl
+        _afiliat_v = directie == "emisa" and _cl.client_afiliat(cur, client_id, tert_cui)
+        # [lotul 10, C73 / U2] numărul emis (`facturi_numar_emisa_uniq`) și numărul borderoului (`facturi_borderou_numar_an_uniq`) sunt
+        # unici în bază. Verificarea de mai sus (și cea a borderoului, în use-case) ține cererile una după alta; două salvări simultane cu
+        # același număr treceau amândouă, iar a doua cădea aici cu 500. Acum ACELAȘI refuz numit (ValueError -> 422 la toți apelanții).
+        with _chei.refuza_dublura(cur, CHEI_NUMAR, lambda cur, e: _refuz_numar_dublat(cur, numar, directie, tip_v, data_emitere)):
+            cur.execute(
+                "INSERT INTO facturi (client_id, numar, data_emitere, data_scadenta, "
+                "total, tva, status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
+                "categorie_331, data_faptului_generator, taxare_inversa, tert_platitor_tva, "
+                "tert_tara, tip_operatiune, furnizor_tva_incasare, tip, axa_ic, "
+                "tert_oras, tert_judet, "   # [274b] localitatea / regiunea clientului (adresa de livrare a livrării intracomunitare în XML)
+                "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, "  # [A1] lei la INSERT
+                "bon_fiscal_nr, bon_fiscal_data, "   # [decizia A 02.10] factura emisă pe baza bonului fiscal
+                # [punctul 3, 03.10.2026] … și ÎNCASATĂ: HG 1/2016 pct.97 alin.(1) „facturile emise și achitate pe bază de bonuri
+                # fiscale”. Fără asta rămânea „neîncasată”: notificarea de scadență (emailul pleacă la CLIENT) o trata ca
+                # restanță, scadențarul la fel, iar ecranul oferea „Emite chitanță” — încasare dublă.
+                "platita_la, beneficiar_afiliat) "
+                "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,"
+                "%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+                (client_id, numar, data_emitere, data_scadenta, t["total"], t["tva"],
+                 status, moneda, directie, tert_nume, tert_cui, tert_adresa,
+                 categorie_331 or None, data_faptului_generator or None, bool(taxare_inversa),
+                 tert_platitor_tva, tert_tara_v, tip_op_v, furnizor_incasare_v, tip_v, axa_v,
+                 (tert_oras or "").strip() or None, (tert_judet or "").strip() or None,
+                 _curs_v, _tva_lei_v, _total_lei_v, _dcurs_v, _sursa_v, _bon_nr, _bon_data,
+                 _bon_data if _bon_nr else None, bool(_afiliat_v)))
+            factura_id = cur.fetchone()[0]
         for l in linii:
             cur.execute(
                 "INSERT INTO factura_linii (factura_id, descriere, um, cantitate, "
@@ -666,10 +756,14 @@ def _cu_stare_incasare(cur, facturi):
                 "GROUP BY c.factura_id", (ids,))
     incasat = {(r["factura_id"] if isinstance(r, dict) else r[0]): _D(str(r["coalesce"] if isinstance(r, dict) else r[1]))
                for r in cur.fetchall()}
-    cur.execute("SELECT i.factura_id, COALESCE(SUM(l.suma), 0) FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
-                "JOIN facturi f ON f.id = i.factura_id WHERE i.factura_id = ANY(%s) AND i.sursa IS DISTINCT FROM 'facturi' "
+    # [lotul 10, 428, decizia „Construiesc acum”] „fiecare compensare stinge cele două facturi”: nota compensării (401 = 4111) e legată
+    # de AMBELE prin `compensari` (`compensari_api.legaturi`, sursa unică a legăturii notă–factură), nu prin `inregistrari.factura_id`
+    from core import compensari_api as _cz
+    cur.execute("SELECT lg.factura_id, COALESCE(SUM(l.suma), 0) FROM " + _cz.legaturi() + " lg JOIN inregistrari i ON i.id = lg.inregistrare_id "
+                "JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
+                "JOIN facturi f ON f.id = lg.factura_id WHERE lg.factura_id = ANY(%s) AND i.sursa IS DISTINCT FROM 'facturi' "
                 "AND ((f.directie = 'emisa' AND l.cont_credit LIKE '411%%') OR (f.directie = 'primita' AND l.cont_debit LIKE '401%%')) "
-                "GROUP BY i.factura_id", (ids,))
+                "GROUP BY lg.factura_id", (ids,))
     for r in cur.fetchall():
         k = r["factura_id"] if isinstance(r, dict) else r[0]
         incasat[k] = incasat.get(k, _D(0)) + _D(str(r["coalesce"] if isinstance(r, dict) else r[1]))
@@ -748,6 +842,18 @@ def detalii_factura(conn, factura_id):
         _cu_stare_contare(cur, [f])
         _cu_stare_incasare(cur, [f])
         _cu_stare_spv(cur, [f])   # [lotul 6 pct.5b, 275]
+        # [lotul 10, comanda 10.2 pct.7e, deficiența 417] „pe ecranul de detaliu al facturii de stornare nu apare trimiterea la factura
+        # inițială (pe PDF apare)”: aceeași mențiune ca pe PDF (`facturi.mentiune_storno`, CF art.330 alin.(1) lit.b), una singură
+        from core import facturi as _fc
+        f["mentiune_storno"] = _fc.mentiune_storno(f)
+        # [lotul 10, deficiența 428] factura emisă în sistemul TVA la încasare (regimul la DATA ei) poartă mențiunea CF art.319 alin.(20)
+        # lit.p) pe PDF; aceeași definiție ca pe nota de contare (4428) și în XML-ul e-Factura
+        from core import tva_incasare as _tvi
+        f["tva_la_incasare"] = f.get("directie") == "emisa" and _tvi.regim(cur, None, f) == _tvi.REGIM_INCASARE
+        # [lotul 10, 10.2 pct.7e — clasa lui 417: „pe PDF apare”, pe detaliu nu] celelalte mențiuni de pe PDF, din aceleași funcții:
+        # „TVA la încasare” (CF art.319 alin.(20) lit.p) și „conform bon fiscal nr./data” (HG 1/2016 pct.97 alin.(1))
+        f["mentiuni"] = [m for m in ((_tvi.MENTIUNE if f["tva_la_incasare"] else None),
+                                     (_fc.mentiune_bon(f) if _fc.e_din_bon_fiscal(f) else None)) if m]
         # [419] ce a plecat din magazie cu factura (ieșirile vii): stornarea întreabă dacă se întoarce
         from core import pdf_util as _pdfu, stocuri_cv_api as _cv
         f["iesiri_stoc"] = [{"articol": m["denumire"], "cantitate": str(m["cantitate"]), "cantitate_text": _pdfu.cantitate(m["cantitate"], m["um"]),
@@ -823,6 +929,15 @@ def sterge_factura(conn, factura_id):
         et_legata = _et.nota(cur, "", legate[0]["id"]) if legate else None
         cur.execute("SELECT numar FROM nir WHERE factura_id = %s LIMIT 1", (factura_id,))
         nir_legat = cur.fetchone()
+        from core import compensari_api as _cz
+        compensata = _cz.ale_facturii(cur, "", factura_id)
+    if compensata:
+        # [lotul 10, 428] aceeași clasă ca NIR-ul legat: `compensari` ține factura printr-o cheie fără `ON DELETE` — refuzul o numește
+        raise _cf.RefuzContare(
+            "COMPENSATA",
+            "Factura e stinsă (total sau parțial) prin %s și nu se șterge. Ștergi întâi compensarea — nota ei ciornă, din Registrul "
+            "jurnal — sau corectezi prin storno." % (compensata[0][2] or "ordinul de compensare"),
+            detalii={"document": compensata[0][2], "iesire": "storno"})
     if nir_legat:
         # [decizii 07.10 pct.2] NIR-ul legat își ia costul din factură (scrie numai adaosul și TVA neexigibilă): fără factură,
         # 371 ar rămâne cu adaosul unei mărfi fără cost. Cheia `nir_factura_fk` n-are `ON DELETE` — refuzul o numește.
@@ -978,6 +1093,9 @@ SCADENTA_PROPUSA = (30, Temei("Legea", 72, 2013, art="3", alin="3", lit="a", niv
 #: setarea seriei pe loc și emiterea continuă cu factura păstrată. Facturile deja emise nu se ating.
 COD_SERIE_LIPSA = "SERIE_LIPSA"
 TEMEI_SERIE = "CF art.319 alin.(20) lit.a)"
+#: [lotul 10, C74] stornarea anulează valorile facturii corectate — „se emite o factură cu valorile cu semnul minus [...] în care se
+#: înscriu numărul și data facturii corectate”: o factură stornată integral nu mai are ce storna, iar o stornare nu se stornează
+TEMEI_STORNARE = "CF art.330 alin.(1) lit.b)"
 MESAJ_SERIE_LIPSA = ("Factura nu s-a emis: firma n-are serie de facturare. Legea cere ca numărul facturii să fie dat „în baza "
                      "uneia sau a mai multor serii” (CF art.319 alin.(20) lit.a). Stabilește seria și emiterea continuă — "
                      "factura rămâne așa cum ai scris-o; facturile emise deja nu se modifică.")
@@ -1271,35 +1389,14 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
         _curs, _dcurs, _sursa = float(curs_manual), _dcm, "manual"
         _urma_manual = (curs_manual_de.strip(), _dt.datetime.now(_dt.timezone.utc))
     else:
-        try:
-            _c, _dc, _s = curs_bnr.curs_pentru(conn, moneda, _d)
-            _curs, _dcurs, _sursa = float(_c), _dc, _s
-        except curs_bnr.CursPreaVechi as _pv:
-            # Emiterea AUTOMATĂ se oprește — dar facturarea nu se blochează: refuzul își numește
-            # ieșirea, iar cursul găsit merge cu el, ca omul să vadă de la ce pornește. Nimic n-a fost
-            # scris încă (cursul se verifică înaintea creării), dar `_potriveste_linii` a putut salva
-            # în nomenclator — rollback ca înainte.
+        # [lotul 10, 7g] cursul automat și refuzurile lui: `curs_automat`, aceeași definiție ca previzualizarea din formular
+        _ca = curs_automat(conn, moneda, _d)
+        if isinstance(_ca, dict):
+            # Refuzul (curs prea vechi, monedă necotată, BNR indisponibil): nu se emite fără curs valid. Nimic n-a fost scris încă
+            # (cursul se verifică înaintea creării), dar `_potriveste_linii` a putut salva în nomenclator — rollback ca înainte.
             conn.rollback()
-            return {"ok": False, "cod": "CURS_PREA_VECHI", "moneda": moneda,
-                    "data": _d.isoformat(), "data_curs_gasit": _pv.data_curs.isoformat(),
-                    "curs_gasit": str(_pv.curs), "vechime_zile": _pv.vechime_zile,
-                    "prag_zile": _pv.prag_zile, "mesaj": str(_pv),
-                    "iesire": {"camp": "curs_manual",
-                               "cere": ["curs_manual", "data_curs_manual"],
-                               "cum": "Introdu cursul de mână, cu data la care a fost comunicat. "
-                                      "Se consemnează cine l-a introdus și când."}}
-        except curs_bnr.MonedaNecotata as _mn:
-            # Moneda nu exista: nu e o intarziere, deci nu se ofera nici „reincearca", nici
-            # „curs manual" — al doilea ar baga factura in contabilitate pe o moneda inventata.
-            conn.rollback()
-            return {"ok": False, "cod": "MONEDA_NECOTATA", "moneda": moneda,
-                    "data": _d.isoformat(), "mesaj": str(_mn)}
-        except curs_bnr.CursIndisponibil:
-            # nu emit factura in valuta fara curs valid; nimic comis, semnalez frontend-ului
-            conn.rollback()
-            return {"ok": False, "cod": "CURS_INDISPONIBIL",
-                    "moneda": moneda, "data": _d.isoformat(),
-                    "mesaj": "Cursul BNR nu e disponibil momentan."}
+            return _ca
+        _curs, _dcurs, _sursa = float(_ca[0]), _ca[1], _ca[2]
 
     r = creeaza_factura(conn, numar, data_emitere, "emisa", linii, tert_platitor_tva=tert_platitor_tva,   # [05.10.2026 pct.5]
                         client_id=client_id, tert_nume=tert_nume, tert_cui=tert_cui, tert_adresa=tert_adresa,
@@ -1326,9 +1423,8 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
                         (_urma_manual[0], _urma_manual[1], _fid))
 
     # [deficiența 280, clasa: rotunjirea fiscală e aritmetică] suma în lei la curs e o sumă NOUĂ: `round()` (la par) greșea pe ,xx5
-    from core.common import _q as _q_lei, _dec as _dec_lei
-    _tva_lei = float(_q_lei(_dec_lei(r["tva"]) * _dec_lei(_curs)))
-    _total_lei = float(_q_lei(_dec_lei(r["total"]) * _dec_lei(_curs)))
+    # [lotul 10, 7g] aceeași conversie ca la creare și în formular (`sume_lei`)
+    _tva_lei, _total_lei = (float(x) for x in sume_lei(r, _curs))
     r["curs_bnr"] = _curs
     r["tva_lei"] = _tva_lei
     r["total_lei"] = _total_lei
@@ -1364,6 +1460,19 @@ def storneaza(conn, factura_id, retur=None):
         raise ValueError("factura de stornat nu există")
     if orig.get("directie") != "emisa":
         raise ValueError("se storneaza doar facturi emise")
+    # [lotul 10, 10.2 pct.7f (419): după stornare detaliul se redesenează, deci „Stornează” ar fi oferit din nou pe factura stornată] O
+    # factură stornată integral nu se mai stornează: CF art.330 alin.(1) lit.b) — factura „cu valorile cu semnul minus” anulează valorile
+    # facturii corectate, deci a doua stornare ar scădea încă o dată o operațiune care nu mai există (D300, 4111, stocul). Nici o
+    # stornare nu se stornează (ecranul n-o oferea; ruta o primea). „Stornată” = aceeași definiție ca starea de încasare (416).
+    if orig.get("storno_din_id"):
+        raise ValueError("Factura %s e ea însăși o stornare (%s): o stornare nu se stornează la rândul ei (%s)."
+                         % (orig.get("numar"), orig.get("mentiune_storno") or "trimite la factura inițială", TEMEI_STORNARE))
+    if (orig.get("stare_incasare") or {}).get("stare") == "stornata":
+        with conn.cursor() as cur:
+            cur.execute("SELECT numar FROM facturi WHERE storno_din_id = %s ORDER BY id", (factura_id,))
+            prin = [(r["numar"] if isinstance(r, dict) else r[0]) for r in cur.fetchall()]
+        raise ValueError("Factura %s e deja stornată integral (prin %s): nu mai rămâne nimic de stornat (%s)."
+                         % (orig.get("numar"), ", ".join(str(x) for x in prin) or "o factură de stornare", TEMEI_STORNARE))
     if orig.get("iesiri_stoc") and retur is None:
         _e = ValueError("Factura %s a descărcat din stoc: %s. Marfa se întoarce în stoc (retur) sau rămâne la client (numai corecția "
                         "valorii)? Alege, apoi confirmă stornarea." % (orig.get("numar"), "; ".join(

@@ -114,14 +114,15 @@ def _ref(conn, nid):
 
 def test_operatiunile_speciale_si_amortizarea_poarta_documentul_lor_numerotat_pe_tip_si_an(conn):
     """Legea 82/1991 art.6 alin.(1): operațiunea „se consemnează în momentul efectuării ei într-un document”. Numerotarea e pe
-    tip și pe an. MUTAȚIE: `_cu_document_intern` scos din `nota_facturi_ciorna` -> None -> pică."""
+    tip și pe an. MUTAȚIE: `_cu_document_intern` scos din `nota_operatiune_ciorna` -> None -> pică.
+    [lotul 10, 430d] `nota_facturi_ciorna` / `nota_banca_ciorna` s-au scos: operațiunile speciale scriu cu sursa lor."""
     from core import repo_contabilitate as rc
     with conn.cursor() as cur:
         a1 = rc.nota_amortizare_ciorna(cur, SCH, datetime.date(2026, 10, 28), "AMORT-2026-10", "Amortizare 10/2026")[0]
-        n1 = rc.nota_facturi_ciorna(cur, SCH, "2026-10-06", "Leasing")[0]
-        n2 = rc.nota_banca_ciorna(cur, SCH, "2026-10-07", "Reevaluare valută")[0]
-        n3 = rc.nota_facturi_ciorna(cur, SCH, "2027-01-05", "Avans")[0]
-        i1 = rc.nota_facturi_ciorna(cur, SCH, "2026-10-08", "Inventariere", "lista_inventariere")[0]
+        n1 = rc.nota_operatiune_ciorna(cur, SCH, "2026-10-06", "Leasing")[0]
+        n2 = rc.nota_operatiune_ciorna(cur, SCH, "2026-10-07", "Reevaluare valută")[0]
+        n3 = rc.nota_operatiune_ciorna(cur, SCH, "2027-01-05", "Avans")[0]
+        i1 = rc.nota_operatiune_ciorna(cur, SCH, "2026-10-08", "Inventariere", "lista_inventariere")[0]
     assert _ref(conn, a1) == "Tablou de amortizare nr 1 din 28.10.2026"
     assert (_ref(conn, n1), _ref(conn, n2)) == ("Notă de calcul nr 1 din 06.10.2026", "Notă de calcul nr 2 din 07.10.2026")
     assert _ref(conn, n3) == "Notă de calcul nr 1 din 05.01.2027"     # anul nou începe de la 1

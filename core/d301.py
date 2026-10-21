@@ -315,10 +315,6 @@ def _pers_inreg(prof):
 def build_xml(res):
     prof = res.prof
     # [regula 4 - fara default tacit] nume/functie declarant sunt DA (obligatorii); cand lipsesc emitem
-    # un implicit (altfel DUK respinge campul gol) DAR ANUNTAT prin avertisment.
-    if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D301: declarantul (nume/funcție) lipsește din profil — se trece implicit "
-                                "\"ADMINISTRATOR\". Completează declarantul în profilul firmei.")
     cif = _NEDIGIT.sub("", prof.get("cui") or "")
     den = prof.get("nume") or ""
     adr = " ".join(x for x in [prof.get("adresa"), prof.get("oras"), prof.get("judet")] if x).strip()
@@ -339,9 +335,9 @@ def build_xml(res):
                 nr_evidenta(res.an, res.luna, res.mij_transp),
                 t[1][0], t[1][1], t[2][0], t[2][1], t[3][0], t[3][1],
                 t[4][0], t[4][1], t[5][0], t[5][1], res.total_plata_a,
-                _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR", _LIM["d301"]["nume_declarant"])),
-                _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d301"]["prenume_declarant"])),
-                _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d301"]["functia_declarant"]))))
+                _esc(_t(prof.get("declarant_nume"), _LIM["d301"]["nume_declarant"])),   # [C69] fără implicit: `erori_declarant` a blocat deja lipsa
+                _esc(_t(prof.get("declarant_prenume"), _LIM["d301"]["prenume_declarant"])),
+                _esc(_t(prof.get("declarant_functie"), _LIM["d301"]["functia_declarant"]))))
     for op in res.operatiuni:
         # OPANAF 592/2016: serviciile (tip 5 = S4.1) se preiau DIN S4 -> apar ca operatiune de
         # sectiune 4 SI ca detaliu 4.1. DUK cere baza4=suma(sectiuni tip 4) (R24/R25) si o

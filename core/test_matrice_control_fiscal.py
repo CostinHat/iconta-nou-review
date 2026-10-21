@@ -28,8 +28,10 @@ def _stari(tip_firma, platitor_tva, salariati, operatiuni_ic, d205_note, depuse_
         "tva_data_inceput": None,
     }
     rez = cf.declaratii_datorate(vector, are_salariati=(salariati > 0), azi=AZI)
+    # [lotul 10] `dividende_distribuite` întoarce acum (afirmația „fapt” | None, are_note), nu (suma, are_note)
     monkeypatch.setattr(ci, "dividende_distribuite",
-                        lambda *a, **k: ((5000, True) if d205_note else (0, False)))
+                        lambda *a, **k: (({"fel": "fapt", "tip": "d205", "motiv": "dividende distribuite în 2025 (5.000,00 lei)"}, True)
+                                         if d205_note else (None, False)))
     monkeypatch.setattr(ci, "d301_luni_operatiuni", lambda *a, **k: set())
     monkeypatch.setattr(ci, "d301_luni_facturi_ic", lambda *a, **k: set())  # [ruptura D301<->facturi] helper DB nou, monkeypatch ca vechiul (matricea ruleaza fara DB)
     monkeypatch.setattr(ci, "existenta_firma_an", lambda *a, **k: True, raising=False)  # [C existenta] helper DB nou; matricea nu-l atinge (declaratii_datorate fara existenta_fapt), monkeypatch defensiv

@@ -63,7 +63,7 @@ def test_primita_mixta_tva_pe_cote_nu_max(schema_cu_factura):
         f = {"id": schema_cu_factura["fid"], "directie": "primita", "data_emitere": "2026-05-10",
              "moneda": "RON", "taxare_inversa": False, "furnizor_tva_incasare": False,
              "serie": "F", "numar": "100"}
-        note = contare_facturi.genereaza_note(cur, SCH, f, tva_incasare_firma=False,
+        note = contare_facturi.genereaza_note(cur, SCH, f, pe_4428=False,
                                               cont_venit_implicit=None, cont_cheltuiala="628")
 
     def _s(n, k):

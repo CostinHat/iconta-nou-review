@@ -207,6 +207,24 @@ def _deferred_activ(conn, inceput, sfarsit):
         return _repo.select_inregistrari(cur, inceput, sfarsit) is not None
 
 
+def _exigibil_la_decontare(conn, inceput, sfarsit):
+    """[lotul 10, 428] (colectat, deductibil): exista in perioada note validate cu linia de exigibilitate a TVA-ului la incasare —
+    4428 = 4427 (incasarea unei facturi emise in sistem) / 4426 = 4428 (plata unei facturi cu deducerea amanata). SQL PROPRIU, citit din
+    carte, nu din regimul facturii (calea 2 nu importa definitia caii 1). O factura emisa in sistem si incasata DUPA iesire intra in
+    decont pe decontare, nu pe emitere: recalculul pe emitere n-o vede, deci randurile acelei laturi nu se confrunta (limita 3 extinsa)."""
+    q = ("SELECT COALESCE(bool_or(l.cont_debit = '4428' AND l.cont_credit = '4427'), false) AS col, "
+         "COALESCE(bool_or(l.cont_debit = '4426' AND l.cont_credit = '4428'), false) AS ded "
+         "FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
+         # [lotul 10, 428, decizia „Construiesc acum”] și nota unei compensări (fără `factura_id`: stinge două facturi, legate prin
+         # `compensari`) — HG 1/2016 pct.26 alin.(7): încasarea înseamnă și „compensarea”. Scris aici, nu importat (calea 2)
+         "WHERE i.status = 'validata' AND (i.factura_id IS NOT NULL OR EXISTS (SELECT 1 FROM compensari cz WHERE cz.inregistrare_id = i.id)) "
+         "AND i.data >= %s AND i.data < %s")
+    import psycopg2.extras as _E
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        r = _repo.sql(cur, q, inceput, sfarsit)[0]
+    return bool(r["col"]), bool(r["ded"])
+
+
 def reconciliaza(conn, perioada, res, manual=None):
     """Recalculeaza independent si confrunta. NU ridica - intoarce raportul.
     {"acoperit": bool, "neacoperit": afirmatie|None, "divergente": [...], "sarite": [...]}"""
@@ -224,8 +242,11 @@ def reconciliaza(conn, perioada, res, manual=None):
     # [B1] deducere amanata (furnizor la incasare) cu PLATA in perioada: generatorul include deducerea pe
     # calea de PLATA (rd.24/rd.25), recon pe emitere nu o poate verifica -> sare randurile deductibile.
     skip = set(manual_keys)
-    if _deferred_activ(conn, inceput, sfarsit):
+    _col_dec, _ded_dec = _exigibil_la_decontare(conn, inceput, sfarsit)
+    if _deferred_activ(conn, inceput, sfarsit) or _ded_dec:
         skip |= {"R22_1", "R22_2", "R23_1", "R23_2"}
+    if _col_dec:
+        skip |= {"R9_1", "R9_2", "R10_1", "R10_2", "R11_1", "R11_2"}
     divergente, sarite = _confrunta(res.R, col, ded, skip)
     return {"acoperit": True, "neacoperit": None, "divergente": divergente,
             "sarite": sorted(set(sarite))}

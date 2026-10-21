@@ -298,7 +298,12 @@ def portal_adauga_acces(date, ctx):
                 repo_utilizatori.activeaza_contul_cu_nume(cur, date.nume or email.split("@")[0], uid)
                 repo_utilizatori.leaga_contul_de_firma_idempotent(cur, uid, t["id"])
             else:
-                uid = repo_utilizatori.creeaza_cont(cur, email, _nucleu.hash_parola(_sec2.token_urlsafe(16)), date.nume or email.split("@")[0], firm_id)["id"]
+                # [lotul 10, C73 / U3] adresa luată între verificare și scriere -> același refuz ca verificarea, nu 500
+                from core import chei_unice as _chei
+                with _chei.refuza_dublura(cur, _uc_comun.CHEIE_EMAIL, _uc_comun._refuz_email_la_cursa(
+                        "client", email, "persoana pe care o inviți", "email")):
+                    uid = repo_utilizatori.creeaza_cont(cur, email, _nucleu.hash_parola(_sec2.token_urlsafe(16)),
+                                                        date.nume or email.split("@")[0], firm_id)["id"]
                 repo_utilizatori.leaga_contul_de_firma(cur, uid, t["id"])
             tok = "ml_" + _sec2.token_urlsafe(32)
             _uc_comun._pune_token(cur, tok, uid, "48 hours")

@@ -30,9 +30,13 @@ def test_poarta_minima_cui_nume_trece(mod, kcui):
     Testul se schimba fiindca s-a schimbat CONTRACTUL, nu ca sa treaca: un profil cu cui+nume si
     fara declarant NU mai e un profil din care se poate depune. (bilant cere si reg_com - test
     separat.)
+
+    [lotul 10] Contractul a crescut din nou, tot dupa sursa: D112 cere CAEN-ul (427, structura ANAF D112 „caen … DA”, nu „0000”), iar
+    D406 cere in antet localitatea, telefonul si IBAN-ul firmei (C69, schema ANAF S.AD.5 / S.CTH.2 / S.BA.1, nu „-” / RO00BANK…).
     """
     prof = {kcui: "14399840", "nume": "PROBA SRL", "declarant_nume": "Popescu",
-            "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR"}
+            "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR",
+            "caen": "6202", "oras": "Bucuresti", "telefon": "0212223344", "iban": "RO59BTRLRONCRT0C69TEST01"}
     assert not mod.erori_generare(prof), (
         "%s: profil cu cui+nume+declarant respins gresit" % mod.__name__)
 
@@ -44,5 +48,6 @@ def test_bilant_poarta_cere_si_reg_com():
     assert bilant_api.erori_generare({"declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR", "cui_numeric": "14399840", "nume": "PROBA SRL"}), (
         "bilant: profil fara reg_com ar trebui respins (regCom obligatoriu S1005/S1003)")
     assert not bilant_api.erori_generare(
-        {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR", "cui_numeric": "14399840", "nume": "PROBA SRL", "reg_com": "J40/1234/2020"}), (
+        {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR", "cui_numeric": "14399840", "nume": "PROBA SRL", "reg_com": "J40/1234/2020",
+         "cod_judet": 40, "mare_contribuabil": False, "forma_proprietate": "35"}), (   # [lotul 10, C69] bifaMC / codPP „DA” (structura_SC_1225)   # [lotul 10, C69] + codTT „Cod judet sediu … DA” (structura_SC_1225), nu „bucuresti” implicit
         "bilant: profil cu cui+nume+reg_com respins gresit")

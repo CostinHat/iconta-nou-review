@@ -109,6 +109,9 @@ def test_coada_cere_poarta_d406(monkeypatch):
     monkeypatch.setattr(uc_comun, "_schema_sau_404", lambda ctx, tid: "tenant_x")
     monkeypatch.setattr(declaratii_api, "genereaza", lambda c, s, tip, body: ("<x/>", types.SimpleNamespace(note=[], avertismente=[])))
     monkeypatch.setattr(uq.db, "get_conn", lambda schema=None: __import__("contextlib").nullcontext(None))
+    # [lotul 10, C69] localitatea partenerilor din ANAF, înaintea generării (o citire a bazei): aici baza e simulată
+    from core import uc_declaratii
+    monkeypatch.setattr(uc_declaratii, "aduce_localitati_parteneri", lambda schema, tip: None)
     monkeypatch.setattr(uq, "poarta_d406_balanta", lambda s, an, luna, res: {"cod": uq.COD_D406_BALANTA, "mesaj": "m"})
     monkeypatch.setattr(uq, "ciorne_in_perioada", lambda s, an, luna: 0)   # fără ciorne: diferența blochează (R36)
     # [297 + 298] sursele perioadei: fără note nevalidate și fără facturi necontate

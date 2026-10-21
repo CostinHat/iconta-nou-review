@@ -125,6 +125,11 @@ PIN = {
         "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_ancore): singurul lui "
         "consumator legitim e gardul core/test_garzi_pe_text.py, iar sonda exclude importatorii de "
         "test. Un apel din productie ar fi gresit — nu masoara date de firma, masoara garzile",
+    "core/arbore_js.py":
+        "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_garzi_pe_text): arborele acorn "
+        "al ecranelor, citit numai de gardurile lotului 10 care asertează pe nod (test_lot10b_facturi, "
+        "test_lot10b_436, test_lot10_import_mesaje, test_lot10_inlocuire_clasa, test_lot10_operatiuni_frecventa); "
+        "sonda exclude importatorii de test. Un apel din productie ar fi gresit — porneste node",
     "core/scan_valori_afisate.py":
         "FALS POZITIV DECLARAT (modul de esec E2): unealta rulata din linia de comanda, fara garda "
         "`if __name__ == \"__main__\"`, deci sonda n-o poate deosebi de un modul nelegat",

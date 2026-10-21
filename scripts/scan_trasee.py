@@ -64,7 +64,9 @@ TRASEE = [
      [r"^/tenants/\{\}/facturi$", r"^/tenants/\{\}/facturi/emite",
       r"^/tenants/\{\}/facturi/numerotare", r"^/tenants/\{\}/facturi/\{\}$",
       r"^/tenants/\{\}/facturi/\{\}/(pdf|email|storno|transforma|contabilizeaza|notificare|recunoaste)",
-      r"^/tenants/\{\}/facturi-recurente", r"^/api/v1/firme/\{\}/facturi"],
+      r"^/tenants/\{\}/facturi-recurente", r"^/api/v1/firme/\{\}/facturi",
+      # [lotul 10, comanda 10.2 pct.7g] previzualizarea cursului BNR și a sumelor în lei înainte de emitere (nu scrie nimic)
+      r"^/tenants/\{\}/facturi/previzualizare-lei$"],
      ["facturi", "factura_linii", "facturi_recurente"]),
     ("T03", "Statul de plată și fluturașul",
      # [R33, 25.08.2026] `salarii-contare` intra AICI, nu la nota contabila (T05): actul e
@@ -78,6 +80,7 @@ TRASEE = [
      ["concedii_medicale"]),
     ("T05", "Nota contabilă — de la document la registrul-jurnal",
      [r"^/tenants/\{\}/jurnal(/|$)", r"^/tenants/\{\}/nota-", r"^/tenants/\{\}/plan-conturi",
+      r"^/tenants/\{\}/dividende-impartire$",   # [lotul 10, 430b] tabelul împărțirii dividendului pe asociați, arătat înaintea notei
       # [lista 5, 30.08.2026] balanta ca DATE, langa cea ca PDF: acelasi artefact, alta iesire.
       r"^/tenants/\{\}/balanta$",
       # [lista 3, 30.08.2026] Cartea mare (14-1-3) prin fisa de cont 14-6-22: derivata din
@@ -117,8 +120,9 @@ TRASEE = [
      [r"^/tenants/\{\}/s100[35]", r"^/tenants/\{\}/categorie-marime$", r"^/tenants/\{\}/bilant-an-precedent(-manual)?$",
       r"^/tenants/\{\}/bilant-inchidere-propunere$"], []),
     ("T13", "Trecerea de regim fiscal",
-     [r"^/tenants/\{\}/firma-profil", r"^/tenants/\{\}/vector$", r"^/migrare/vector"],
-     ["firma_profil"]),
+     [r"^/tenants/\{\}/firma-profil", r"^/tenants/\{\}/vector$", r"^/migrare/vector",
+      r"^/tenants/\{\}/tva-incasare"],   # [lotul 10, 428] regimul TVA la încasare: perioadele, verificarea ANAF, facturile rămase la ieșire
+     ["firma_profil", "tva_incasare_perioade"]),
     ("T14", "Preluarea unei firme",
      [r"^/migrare/(?!vector)", r"^/tenants/\{\}/solduri",
       r"^/tenants/\{\}/(salariati|asociati|retete|articole|mijloace-fixe)-import",
@@ -141,8 +145,8 @@ TRASEE = [
      [r"^/tenants/\{\}/plata-salarii"], []),
     ("T18", "Chitanța și încasarea",
      [r"^/tenants/\{\}/chitante", r"^/tenants/\{\}/facturi/\{\}/link-plata",
-      r"^/public/plata"],
-     ["chitante"]),
+      r"^/public/plata", r"^/tenants/\{\}/compensari"],   # [lotul 10, 428] compensarea = încasare / plată (HG 1/2016 pct.26 alin.(9))
+     ["chitante", "compensari"]),
     ("T19", "Scadențarul și notificările de scadență",
      [r"^/tenants/\{\}/scadentar"], ["notificari_scadenta"]),
     ("T20", "Mișcarea de stoc — intrare, ieșire, transfer, reclasificare",
@@ -217,8 +221,8 @@ TRASEE = [
     # Fara tabela proprie: ciclul nu se masoara in randurile unei firme, ci in existenta ei.
     ("T36", "Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere",
      [r"^/tenants$", r"^/tenants/\{\}$", r"^/tenants/\{\}/(scoatere|activare|nume-ales|cui/corectura)$",   # [lotul 6, 272] corectura CUI
-      r"^/firme-scoase$"],
-     []),
+      r"^/firme-scoase$", r"^/tenants/\{\}/asociati(/cesiune)?$"],   # [lotul 10, 431] asociații și cotele, cu cesiunile — identitatea firmei
+     ["asociati", "asociati_istoric"]),
 ]
 
 # Suprafețe care NU poartă un document — declarate, ca să nu fie confundate cu o lipsă.

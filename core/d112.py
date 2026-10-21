@@ -134,12 +134,13 @@ def _enum_xsd(tip):
     return vals
 
 def caen_in_nomenclator(caen):
-    """[Q1] True daca CAEN-ul e acceptat de D112 (enumerare inchisa Str_caenListSType). Gol/'0000' ->
-    True (lipsa CAEN e camp obligatoriu, alt tip de problema, nu 'prezent-dar-invalid'). Folosit de
+    """[Q1] True daca CAEN-ul e acceptat de D112 (enumerare inchisa Str_caenListSType). Gol ->
+    True (lipsa CAEN e camp obligatoriu, alt tip de problema, nu 'prezent-dar-invalid'). [lotul 10, 427] '0000' nu mai e
+    sentinela de lipsa a generatorului: scris de om, e un cod in afara nomenclatorului, ca oricare altul. Folosit de
     ecranul Date firma ca sa NU pretinda 'toate declaratiile se pot genera' cand CAEN-ul ar face D112
     respins de ANAF. Aceeasi regula ca poarta din genereaza - o singura sursa a nomenclatorului."""
     caen_f = str(caen or "").strip()
-    if not caen_f or caen_f == "0000":
+    if not caen_f:
         return True
     _caene = _enum_xsd("Str_caenListSType")
     return (caen_f in _caene) if _caene else (len(caen_f) == 4 and caen_f not in ("0000", "9999"))
@@ -274,7 +275,8 @@ def calcul_d112(prof, salariati, an, luna):
     perioada = "%02d.%04d" % (luna, an)
     cui_f = re.sub(r"\D", "", (prof.get("cui") or ""))
     den_f = prof.get("nume") or ""
-    caen_f = re.sub(r"\D", "", (prof.get("caen") or "")) or "0000"
+    # [lotul 10, deficiența 427] fără „or "0000"”: CAEN-ul lipsă OPREȘTE D112 (`erori_generare`), nu pleacă un cod inventat
+    caen_f = re.sub(r"\D", "", (prof.get("caen") or ""))
     casa_ang = _d112_casa(prof.get("judet"))
     # nume_declar/prenume_declar: campul asteapta NUMELE PERSOANEI care depune, nu
     # denumirea firmei. Fallback-ul pe den_f (cand declarant_nume lipseste din profil)
@@ -283,16 +285,12 @@ def calcul_d112(prof, salariati, an, luna):
     # Trunchiem defensiv la 74 (sub limita), pentru orice firma cu denumire lunga -
     # solutia corecta ramane completarea declarant_nume in profil (ecranul Date firma).
     # [:74] local inlocuit cu _t (common.text_anaf) - aceeasi regula, un singur loc.
-    nume_d = _t(prof.get("declarant_nume") or den_f or "ADMINISTRATOR", _LIM["d112"]["nume_declar"])
-    pren_d = _t(prof.get("declarant_prenume") or "-", _LIM["d112"]["prenume_declar"])
-    func_d = _t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d112"]["functie_declar"])   # structura D112: functie_declar C(50)
-    if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        av.append("D112: declarantul (nume/funcție) lipsește din profil — se trece implicit "
-                  "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
+    # [C69] fără implicit („ADMINISTRATOR” / „-”): `erori_declarant` blochează lipsa înainte de build_xml (genereaza:1074)
+    nume_d = _t(prof.get("declarant_nume"), _LIM["d112"]["nume_declar"])
+    pren_d = _t(prof.get("declarant_prenume"), _LIM["d112"]["prenume_declar"])
+    func_d = _t(prof.get("declarant_functie"), _LIM["d112"]["functie_declar"])   # structura D112: functie_declar C(50)
     if not cui_f:
         av.append("CUI firmă lipsă — completează Profil firmă.")
-    if caen_f == "0000":
-        av.append("CAEN firmă lipsă/invalid — D112 cere CAEN valid în Profil firmă.")
     # [T1 identitate firma, 10.08.2026] CUI prezent-dar-invalid (cifra de control / lungime) pleca TACIT ->
     # DUK "CUI invalid". Pre-validam cu core.identitate.valideaza_cui (checksum offline). Golul ramane
     # avertisment / poarta erori_generare; blocam doar valoarea PREZENTA si gresita.
@@ -303,9 +301,9 @@ def calcul_d112(prof, salariati, an, luna):
                 "D112: CUI firmă %s invalid (%s) — se corectează în Profil firmă (ecran Date firmă), "
                 "nu se emite D112 respins de DUK." % (cui_f, _mot_cui))
     # [caen out-of-enum, 10.08.2026] CAEN prezent-dar-neenumerat (ex '9999') pleca TACIT -> XSD reject
-    # (caen type=Str_caenListSType, enumerare INCHISA in d112_06082026.xsd). '0000' = LIPSA (avertisment
-    # mai sus). Validam contra enumerarii din XSD (autoritatea in-repo); fallback pe forma daca XSD lipseste.
-    if caen_f != "0000":
+    # (caen type=Str_caenListSType, enumerare INCHISA in d112_06082026.xsd). Lipsa o opreste `erori_generare` [lotul 10, 427].
+    # Validam contra enumerarii din XSD (autoritatea in-repo); fallback pe forma daca XSD lipseste.
+    if caen_f:
         _caene = _enum_xsd("Str_caenListSType")
         _caen_ok = (caen_f in _caene) if _caene else (len(caen_f) == 4 and caen_f not in ("0000", "9999"))
         if not _caen_ok:
@@ -1065,6 +1063,12 @@ def erori_generare(prof):
         erori.append("Lipsă CUI firmă.")
     if not str(prof.get("nume") or "").strip():
         erori.append("Lipsă denumire firmă.")
+    # [lotul 10, deficiența 427] structura ANAF D112 (anaf_surse/d112_struct_anaf.txt): „6 caen Cod CAEN N(4) DA  Nomenclator 1 –
+    # coduri CAEN si tarife de risc […] ERR caen ‘Cod caen inexistent in nomenclator’”. Generatorul punea „0000” (inventat, în afara
+    # nomenclatorului) și doar avertiza; acum lipsa oprește D112, ca pe celelalte declarații din OBLIGATORII["caen"].
+    if not re.sub(r"\D", "", str(prof.get("caen") or "")):
+        erori.append("Lipsă cod CAEN firmă (obligatoriu în D112: structura ANAF îl cere, din nomenclatorul CAEN). "
+                     "Completează-l în Date firmă.")
     from core.firma_profil_api import erori_declarant as _ed   # [R101] sursa unica
     erori += _ed(prof)
     return erori
@@ -1081,6 +1085,14 @@ def genereaza(conn, schema, perioada):
     """(xml, RezultatD112) — contractul uniform A1: pull -> erori_generare -> calcul_d112 -> build_xml."""
     an, luna = _an_luna(perioada)
     prof, salariati = pull(conn, schema, perioada)
+    # [C69, lotul 10] structura ANAF D112 (anaf_surse/d112_struct_anaf.txt:3167): „prenume Prenume C(75) DA  ERR : daca cnp is not null :
+    # prenume” — prenumele asiguratului e cerut; generatorul punea „-” (inventat). Lipsa oprește D112 și numește salariatul.
+    _fara_pren = [s for s in salariati if not str(s.get("prenume") or "").strip()]
+    if _fara_pren:
+        raise ValueError("D112 nu se poate genera: %s fără prenume în fișa salariatului (structura ANAF îl cere la fiecare asigurat). "
+                         "Completează-l cu „Corectează datele”, în Stat de plată: %s." % (
+                             "un salariat e" if len(_fara_pren) == 1 else _cate(len(_fara_pren), "salariat", "salariați") + " sunt",
+                             ", ".join("%s (CNP %s)" % (x.get("nume") or "?", x.get("cnp") or "?") for x in _fara_pren)))
     _er = erori_generare(prof)
     if _er:
         raise ValueError("D112 nu se poate genera: " + " ".join(_er))

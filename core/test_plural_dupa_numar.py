@@ -250,6 +250,12 @@ EXCEPTII = [
     ("core/uc_coada.py", "'notei' if",
      "[284] genitivul articulat fără numeral („declarația așteaptă validarea notei” / „notelor”): niciun număr afișat, deci nici „de”"),
     ("core/interpretare.py", "%d variante", "invariant al registrului de interpretări, verificat la încărcarea modulului (`InterpretareIncompleta`)"),
+    ("core/d205.py", "'valideaz-o' if",
+     "[lotul 10, 431] pronumele clitic acordat cu notele ENUMERATE înaintea lui („nota … e ciornă. … valideaz-o” / „validează-le”): niciun "
+     "numeral afișat, deci nici „de” — aceeași clasă cu „notei” din `uc_coada`"),
+    ("core/istoric_declaratii_import_api.py", "'anul' if",
+     "[lotul 10, 426] „În anul 2025” / „În anii 2024, 2025”: anii se ENUMERĂ, nu se numără — niciun numeral afișat, deci nici „de”; "
+     "numărul declarațiilor din aceeași frază trece prin `cate`"),
 ]
 
 

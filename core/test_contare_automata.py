@@ -366,16 +366,18 @@ def test_jurnalul_NU_leaga_o_nota_care_nu_e_contare(conn):
     assert rez.get("factura_id") is None, rez
 
 
-# ═══════════════════════════════════════════════ FFF2 — clasa ambiguă de TVA la încasare
-def test_clasa_ambigua_e_refuzata_de_automat(conn):
+# ═══════════════════════════════════════════════ FFF2 — furnizorul cu TVA la încasare
+def test_furnizor_la_incasare_e_contat_de_automat_pe_4428(conn):
+    """[lotul 10, deficiența 428, actualizat] Până azi automatul REFUZA clasa (`TVA_LA_INCASARE_MANUAL`: „exigibilitatea vine din
+    reconcilierea bancară — un act pe care automatul nu-l poate declanșa”). Acum plata, prin bancă SAU casă, mută singură TVA-ul
+    (`tva_incasare.linii_la_incasare`), deci contarea automată scrie nota pe 4428. CF art.297 alin.(2): „Dreptul de deducere [...] este
+    amânat până la data la care taxa [...] a fost plătită furnizorului/prestatorului său.”"""
     r = _factura(conn, "G-TI", "2026-11-10", directie="primita", furnizor_tva_incasare=True)
     with _cf.cursor_dict(conn) as cur:
-        with pytest.raises(_cf.RefuzContare) as e:
-            _cf.contabilizeaza(cur, "", r["factura_id"], automat=True, cont_cheltuiala="371")
-    assert e.value.cod == "TVA_LA_INCASARE_MANUAL"
-    assert e.value.detalii["cont_tva"] == "4428"
-    assert e.value.detalii["temei"] == _cf.TEMEI_TVA_INCASARE
-    assert e.value.detalii["iesire"] == "contabilizare_manuala"
+        rez = _cf.contabilizeaza(cur, "", r["factura_id"], automat=True, cont_cheltuiala="371")
+    assert rez["stare"] == "contata" and rez["tva_la_incasare"] is True, rez
+    conturi = {l["debit"] for l in rez["linii"]}
+    assert conturi >= {"4428"} and not conturi >= {"4426"}, rez["linii"]
 
 
 def test_clasa_ambigua_trece_pe_ruta_manuala_cu_TVA_pe_4428(conn):
@@ -393,7 +395,7 @@ def test_clasa_ambigua_trece_pe_ruta_manuala_cu_TVA_pe_4428(conn):
 
 
 def test_primita_normala_ramane_pe_4426(conn):
-    """Calibrare negativă: fără ea, un `e_clasa_ambigua_tva` care ar întoarce mereu True ar trece
+    """Calibrare negativă: fără ea, un regim (`tva_incasare.regim`) care ar întoarce mereu „la încasare” ar trece
     tot pe 4428 și ar produce o evidență greșită în cealaltă direcție."""
     r = _factura(conn, "G-TI3", "2026-11-10", directie="primita")
     with _cf.cursor_dict(conn) as cur:

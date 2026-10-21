@@ -3,10 +3,10 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, cate, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota } from "../api.js?v=158edee964";  /* esc_nc27 */
+import { api, cate, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota } from "../api.js?v=ff30ebaf3f";  /* esc_nc27 */
 import { randeazaStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaEmitere, intrebarePleacaMarfa, textDescarcare } from "./emitere_ecran.js?v=f02eddbea9";
+import { randeazaEmitere, intrebarePleacaMarfa, textDescarcare } from "./emitere_ecran.js?v=54834f5f71";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 
 // [deficiența 418c, clasa 410, DS cap.27] după un act reușit, confirmarea rămâne pe ecran și drumul înapoi e un buton — nu o navigare
@@ -242,7 +242,8 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
     const xz = corp.querySelector("#pr-xml-zona");
     try {
       const r = await api.get(`/tenants/${tenantId}/facturi-primite/${p.id}/xml`);
-      xz.innerHTML = `<pre style="max-height:320px;overflow:auto;background:var(--gri-fundal-semafor);padding:8px;white-space:pre-wrap">${esc(r.xml || "")}</pre>`;
+      // [lotul 10, 421 / 424] cutia XML-ului canonică (`.dec-xml-pre`: rândurile se rup, deci nu derulează lateral), nu una scrisă inline
+      xz.innerHTML = `<pre class="dec-xml-pre">${esc(r.xml || "")}</pre>`;
     } catch (e) { arataMesaj(xz, e.mesaj || "nu s-a putut încărca XML-ul", "eroare"); }
   });
 }
@@ -579,16 +580,22 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   const nc = f.nota_contare;
   const statusTxt = f.storno_din_id ? "storno" : (f.contabilizata ? "contabilizat\u0103"
     : (nc ? "not\u0103 propus\u0103, de validat" : (STATUS_ETICHETA[f.status] || f.status || "")));
+  // [lotul 10, 10.2 pct.7f, 419] factura stornat\u0103 integral (aceea\u0219i defini\u021bie ca starea \u201estornat\u0103\u201d, 416): nu mai e nimic de stornat \u0219i
+  // nimic de \u00eencasat \u2014 \u201eStorneaz\u0103\u201d \u0219i \u201eEmite chitan\u021b\u0103\u201d nu se mai ofer\u0103 (serverul refuz\u0103 \u0219i el a doua stornare, `facturi_api.storneaza`)
+  const stornata = !!(f.stare_incasare && f.stare_incasare.stare === "stornata");
 
+  // [lotul 10, deficiențele 421 / 424, DS cap.9 v2.96] „rezumatul stă fix sus și acțiunea principală fix jos; se derulează doar tabelul
+  // din mijloc”: antetul facturii (numărul, stările, acțiunile, zona lor de mesaj, data și partenerul) e rezumatul — rămâne lipit sus cât
+  // se derulează liniile, deci rezultatul unei acțiuni („Trimite în SPV”, „Emite chitanță”) se vede și de la capătul tabelului
   corp.innerHTML = `
-    <div class="fd-antet">
+    <div class="fd-antet rezumat-fix">
       <div class="fd-antet-sus">
         <h2 class="pf-titlu">Factur\u0103 ${esc(f.numar || "\u2014")}</h2>
         ${statusTxt ? `<span class="fd-stare">${esc(statusTxt)}</span>` : ""}
         ${(!opt.client && nc) ? `<button class="btn-link" id="fd-vezi-nota">nota ${esc(nc.eticheta || "")}</button>` : ""}
         <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
         <button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/email" class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
-        ${(!opt.client && f.directie === "emisa" && !f.storno_din_id) ? '<button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/storno" class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
+        ${(!opt.client && f.directie === "emisa" && !f.storno_din_id && !stornata) ? '<button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/storno" class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
         ${f.stare_incasare ? `<span class="fd-stare${f.stare_incasare.stare === "incasata" ? " fd-stare-verde" : ""}">${esc(etichetaIncasare(f))}</span>` : ""}
         ${f.stare_spv ? `<span class="fd-stare${f.stare_spv.stare === "acceptata" ? " fd-stare-verde" : ""}" id="fd-stare-spv">${esc(etichetaSpv(f))}</span>` : ""}
@@ -597,7 +604,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
              decizie — incasarea se face prin transfer bancar, confirmat din extras. Eticheta
              «platita prin SIMULARE» de mai sus RAMANE: nicio factura n-o poarta azi, dar daca
              vreuna ar purta-o vreodata, nu are voie sa treaca drept incasare obisnuita. -->
-        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-chitanta" data-actiune="POST /tenants/{tenant_id}/chitante">Emite chitan\u021b\u0103</button>' : ""}
+        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la && !stornata) ? '<button class="buton-secundar em-buton-sec" id="fd-chitanta" data-actiune="POST /tenants/{tenant_id}/chitante">Emite chitan\u021b\u0103</button>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura") ? '<button class="buton-secundar em-buton-sec" id="fd-saga">Export SAGA</button>' : ""}
         <!-- [C62] și stornarea pleacă în SPV: OUG 120/2021 art.4 alin.(10) — „Factura electronică corectată se transmite în cadrul
              aceluiași sistem național privind factura electronică RO e-Factura”; XML-ul ei trimite la factura stornată (BG-3, 417) -->
@@ -612,6 +619,8 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       <div id="fd-act-rez"></div>
       <div class="fd-antet-linie">${dir ? dir.charAt(0).toUpperCase() + dir.slice(1) : ""} \u00b7 ${dataRo(f.data_emitere)}${f.data_scadenta ? " \u00b7 scaden\u021b\u0103 " + dataRo(f.data_scadenta) : ""}</div>
       ${partener ? `<div class="fd-antet-linie">${dir === "primit\u0103" ? "De la" : "C\u0103tre"}: ${partener}</div>` : ""}
+      ${f.mentiune_storno ? `<div class="fd-antet-linie" id="fd-storno-din"><button class="btn-link" id="fd-vezi-stornata">${esc(f.mentiune_storno)}</button></div>` : ""}
+      ${(f.mentiuni || []).map((m) => `<div class="fd-antet-linie">${esc(m)}</div>`).join("")}
     </div>
 
     <table class="fd-tabel">
@@ -671,12 +680,15 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
             const r = await api.post(`/tenants/${tenantId}/facturi/${facturaId}/trimite-spv`, {});
             if (r.stare === "nevalidat") {
               arataMesaj(zonaSpv, "Structură invalidă — NU s-a trimis. ANAF:\n" + (r.erori || []).join("\n"), "avert");
-            } else if (r.stare === "incarcat" || r.stare === "in_prelucrare") {
-              arataMesaj(zonaSpv, "Trimisă în SPV (index " + (r.index_incarcare || "—") + "). ANAF o prelucrează; recipișa se preia separat.", "ok");
-              pictaStareSpv();
             } else {
-              arataMesaj(zonaSpv, "Răspuns ANAF:\n" + (r.erori || [r.mesaj || "eroare"]).join("\n"), "avert");
-              pictaStareSpv();
+              // [lotul 10, 10.2 pct.7f — clasa lui 419: starea veche rămâne pe detaliu după act] trimiterea schimbă starea SPV a facturii:
+              // detaliul se reface ACUM (eticheta „netrimisă în SPV · termen …” din antet nu mai rămâne lângă „în prelucrare”), iar
+              // răspunsul stă în zona de mesaj a detaliului refăcut — nu în zona SPV, pe care starea citită o rescrie (DS cap.27 v2.94)
+              const trimisa = r.stare === "incarcat" || r.stare === "in_prelucrare";
+              await detaliiFactura(corp, nav, tenantId, facturaId, opt);
+              arataMesaj(corp.querySelector("#fd-act-rez") || corp, trimisa
+                ? "Trimisă în SPV (index " + (r.index_incarcare || "—") + "). ANAF o prelucrează; recipișa se preia separat."
+                : "Răspuns ANAF:\n" + (r.erori || [r.mesaj || "eroare"]).join("\n"), trimisa ? "ok" : "avert");
             }
           } catch (e) {
             arataMesaj(zonaSpv, e.mesaj || e.message || "eroare la trimitere", "eroare");
@@ -743,8 +755,12 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         const r = await api.post(`/tenants/${tenantId}/chitante`, { data, suma, factura_id: facturaId });
         const av = (r && r.avertismente) || [];
         form.remove();
-        await arataChitante(`<p style="color:var(--verde);font-weight:600;margin:6px 0">Chitan\u021ba ${r.serie}-${r.numar} a fost emis\u0103 \u0219i \u00eenregistrat\u0103 \u00een Registrul de cas\u0103.${av.length ? " Aten\u021bie: " + av.join(" ") : ""}</p>`);
-        if (rest > 0 && suma >= rest - 0.005 && bChit) bChit.style.display = "none";
+        // [lotul 10, 10.2 pct.7f — clasa lui 419: „rămâne «neîncasată» până la reîmprospătare”] chitanța schimbă starea de încasare:
+        // detaliul se reface ACUM, de la server (starea, lista chitanțelor, „Emite chitanță” numai cât mai e ceva de încasat), iar
+        // confirmarea stă în zona de mesaj a detaliului refăcut (DS cap.27 v2.93–v2.94)
+        await detaliiFactura(corp, nav, tenantId, facturaId, opt);
+        arataMesaj(corp.querySelector("#fd-act-rez") || corp, `Chitan\u021ba ${r.serie}-${r.numar} a fost emis\u0103 \u0219i \u00eenregistrat\u0103 \u00een Registrul de cas\u0103.${av.length ? " Aten\u021bie: " + av.join(" ") : ""}`,
+          av.length ? "avert" : "ok");
       } catch (e) {
         b.disabled = false; b.textContent = "Emite";
         arataMesaj(msg, e.mesaj || "Eroare la emitere.", "eroare");
@@ -818,10 +834,15 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=09862e661b");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=6855dfc0c2");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }), { lat: "tabel" });   // [394]
   });
+  // [lotul 10, 10.2 pct.7e, deficiența 417] „pe ecranul de detaliu al facturii de stornare nu apare trimiterea la factura inițială (pe
+  // PDF apare)”: sub client, aceeași mențiune ca pe PDF („Stornare factura F1A nr. 8 din 19.10.2026”, de la server — `facturi.
+  // mentiune_storno`, CF art.330 alin.(1) lit.b: „se înscriu numărul și data facturii corectate”); clic = factura stornată
+  const btnVeziStornata = corp.querySelector("#fd-vezi-stornata");
+  if (btnVeziStornata) btnVeziStornata.addEventListener("click", () => detaliiFactura(corp, nav, tenantId, f.storno_din_id, opt));
   const btnVeziTransformata = corp.querySelector("#fd-vezi-transformata");
   if (btnVeziTransformata) btnVeziTransformata.addEventListener("click", () => detaliiFactura(corp, nav, tenantId, f.transformat_in_id, opt));
   const btnStorno = corp.querySelector("#fd-storno");
@@ -891,14 +912,24 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         try {
           const r = await api.post(`/tenants/${tenantId}/facturi/${facturaId}/storno`, corpStorno);
           const retur = (r.retur || []).length ? ` Marfa a revenit în stoc: ${esc(r.retur.map((x) => x.articol + " × " + cantitate(x.cantitate, x.um)).join("; "))} (notele de retur sunt ciornă, în Registrul jurnal).` : "";
-          rez.innerHTML = `\u2713 Storno creat: <b>${esc(r.numar || "")}</b>.${retur}`;
-          rez.className = "em-rezultat em-bun";
+          // [lotul 10, 10.2 pct.7f, 419] „după stornare butonul rămâne «Se stornează…»; factura stornată rămâne «neîncasată» până la
+          // reîmprospătare”: detaliul se reface ACUM, de la server (starea „stornată”, fără „Stornează” / „Emite chitanță”), iar confirmarea
+          // se pune în zona de stornare a detaliului refăcut, nu în locul lui (DS cap.27 v2.93–v2.94: „o listă care trebuie reîmprospătată
+          // se reface ACUM, iar confirmarea se pune peste ea”, „în zona de mesaj a ecranului redesenat”)
+          await detaliiFactura(corp, nav, tenantId, facturaId, opt);
+          const zs = corp.querySelector("#fd-storno-zona");
+          if (!zs) {   // detaliul nu s-a putut reîncărca: actul a reușit, deci confirmarea se spune oricum, cu drumul spre el
+            arataMesaj(corp, `Storno creat: ${r.numar || ""}. Factura nu s-a putut reîncărca; o vezi în Istoric facturi.`, "ok");
+            return;
+          }
+          zs.innerHTML = `<div class="em-rezultat em-bun" id="fd-storno-rez">\u2713 Storno creat: <b>${esc(r.numar || "")}</b>.${retur}</div>`;
+          const rezNou = zs.querySelector("#fd-storno-rez");
           // [418c / 410, DS cap.27] confirmarea (și returul) rămâne pe ecran; istoricul se deschide la cererea omului
           const bi = document.createElement("button");
           bi.type = "button"; bi.className = "buton-secundar"; bi.id = "fd-spre-istoric"; bi.style.marginLeft = "10px";
           bi.textContent = "Înapoi la Istoric facturi";
           bi.addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
-          rez.appendChild(bi);
+          rezNou.appendChild(bi);
         } catch (e) {
           arataMesaj(rez, (e && e.mesaj) ? String(e.mesaj) : "Stornarea a e\u0219uat.", "eroare");
           rez.className = "em-rezultat em-rau";

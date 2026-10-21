@@ -8,6 +8,7 @@ from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
 from core import stocuri_cv as _m
 from core import eticheta_nota as _et
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] cheia unică dublată -> refuz numit, nu 500
 
 
 def _miscari(cur, schema, articol_id):
@@ -84,6 +85,8 @@ def fisa(conn, schema, articol_id):
                        "cantitate": str(l["cantitate"]),
                        "pret_unitar": str(l["pret_unitar"]) if l.get("pret_unitar") else None,
                        "valoare": str(l["valoare"]), "sold_cantitate": str(l["sold_cantitate"]),
+                       # [lotul 10, 419] stornarea în roșu a unei mișcări (cantitatea și valoarea cu minus): ecranul o numește și pune un singur semn
+                       "storno": bool(l.get("anuleaza_id")),
                        "sold_valoare": str(l["sold_valoare"]),
                        "cmp": str(l["cmp"]) if l["cmp"] is not None else None}
                       for l in linii]}
@@ -109,9 +112,14 @@ def intrare(conn, schema, corp, factura_id=None):
                         (corp["denumire"], corp.get("um", "buc"),
                          (str(corp.get("cont_stoc") or "").strip() or "371"), (str(corp.get("cont_cheltuiala") or "").strip() or "607")))
             aid = cur.fetchone()["id"]
-            # [415] articolul creat de un document (factura primită) își ia cota de pe linia lui, în nomenclator
+        # [415] articolul creat de un document (factura primită) își ia cota de pe linia lui, în nomenclator. [lotul 10, 435] și articolul
+        # EXISTENT fără produs (creat înaintea lui 415): un produs existent nu se schimbă
+        if corp.get("cota_tva") is not None:
             from core import produse_api as _pa
-            _pa.asigura_din_document(cur, schema, corp["denumire"], corp.get("um"), corp.get("cota_tva"), corp.get("document"))
+            cur.execute(f"SELECT denumire, um FROM {schema}.articole WHERE id = %s", (aid,))
+            _art = cur.fetchone()
+            if _art:
+                _pa.asigura_din_document(cur, schema, _art["denumire"], _art["um"], corp.get("cota_tva"), corp.get("document"))
         val = (cant * pret).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         cur.execute(f"""INSERT INTO {schema}.miscari_stoc
                         (articol_id, data, tip, cantitate, pret_unitar, valoare, document, locatie, factura_id)
@@ -162,6 +170,9 @@ def intrare_din_factura(conn, schema, factura_id, cont_stoc, data, cont_cheltuia
         document = _et.factura(cur, schema, factura_id)   # [258] documentul mișcării: factura cum o vede omul, nu id-ul ei
     n = 0
     for aid, den, cant, pret, cont_l, cota in brute:
+        # [lotul 10, 435] cota 0 de pe factura PRIMITĂ nu spune cota vânzării (furnizor neplătitor, taxare inversă, scutire): articolul
+        # intră în nomenclator „cotă lipsă”, de ales pe rând în Produse, nu „fără TVA” din presupunere
+        cota = cota if cota is not None and Decimal(str(cota)) > 0 else None
         intrare(conn, schema, {"articol_id": aid, "denumire": den, "cantitate": str(cant), "cota_tva": cota,
                                "pret_unitar": str(pret), "cont_stoc": cont_l,
                                "cont_cheltuiala": cont_cheltuiala, "data": str(data),
@@ -191,17 +202,22 @@ def iesire(conn, schema, corp, factura_id=None):
         from core import z_descarcare as _zd
         z_id = _zd.cere_z(cur, schema, corp["z_id"]) if corp.get("z_id") not in (None, "") else None
         try:
-            r = _m.valoare_iesire(_miscari(cur, schema, a["id"]), None, corp["cantitate"])
+            r = _m.valoare_iesire(_miscari(cur, schema, a["id"]), None, corp["cantitate"], a["um"])
         except ValueError as e:
             return {"eroare": str(e)}
+        # [lotul 10, deficiența 438] „descărcarea mărfii vândute pe Z are ca document justificativ «Bon de consum nr 1 din 20.10.2026».
+        # Bonul de consum e pentru consum intern; la vânzarea pe Z documentul e raportul Z (nr. 0042, casa 8000000001).” Ieșirea legată
+        # de un Z poartă documentul Z-ului (același text ca nota Z-ului), pe notă și în fișa de magazie; bonul de consum rămâne numai
+        # ieșirii fără document și fără Z.
+        document = (str(corp.get("document") or "").strip() or (_zd.document_z(cur, schema, z_id) if z_id else None))
         # [05.10.2026, comanda Costin pct.6] nota automată poartă documentul sursă (Registrul-jurnal, col.3). Fără
         # `factura_id`: 607=371 nu e nici contarea facturii, nici o plată — legată, ar bloca ștergerea facturii.
         cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
                         VALUES (%s,%s,'stocuri','ciorna',%s) RETURNING id""",
                     (corp["data"], f"Ieșire stoc {a['denumire']} × {_pu.cantitate(corp['cantitate'], a['um'])}"[:200],
-                     (str(corp.get("document") or "").strip() or None)))
+                     document))
         iid = cur.fetchone()["id"]
-        if not (str(corp.get("document") or "").strip()):
+        if not document:
             # [06.10.2026 §6.2] ieșirea fără document scris de om: bonul de consum, generat odată cu nota
             from core import documente_interne as _di
             _di.genereaza(cur, schema, "bon_consum", corp["data"], [iid])
@@ -212,7 +228,7 @@ def iesire(conn, schema, corp, factura_id=None):
                         (articol_id, data, tip, cantitate, valoare, document, inregistrare_id, locatie, factura_id, z_inregistrare_id)
                         VALUES (%s,%s,'iesire',%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
                     (a["id"], corp["data"], Decimal(str(corp["cantitate"])), r["valoare"],
-                     corp.get("document"), iid, corp.get("locatie") or None, factura_id, z_id))
+                     document[:100] if document else None, iid, corp.get("locatie") or None, factura_id, z_id))
         mid = cur.fetchone()["id"]
         if z_id:
             _zd.deblocat(z_id)   # [368] Z-ul descărcat: la PFA nota lui se reîncearcă la validarea internă
@@ -286,10 +302,18 @@ def retur_la_stornare(conn, schema, factura_id, storno_id, data, document):
             iid = cur.fetchone()["id"]
             cur.execute(f"INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)",
                         (iid, m["cont_cheltuiala"], m["cont_stoc"], -val))
-            cur.execute(f"""INSERT INTO {schema}.miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document,
-                                inregistrare_id, locatie, factura_id, anuleaza_id)
-                            VALUES (%s,%s,'iesire',%s,%s,%s,%s,%s,%s,%s,%s)""",
-                        (m["articol_id"], data, -cant, m.get("pret_unitar"), -val, document[:100], iid, m.get("locatie"), storno_id, m["id"]))
+            # [lotul 10, C73 / U2] o ieșire se stornează o singură dată (`miscari_stoc_anuleaza_uq`): două stornări simultane ale aceleiași
+            # facturi treceau amândouă de verificarea „deja stornată” (`facturi_api.storneaza`), iar a doua cădea aici cu 500. Acum refuz
+            # numit; excepția anulează toată stornarea a doua (use-case-ul o întoarce 422, în tranzacția care se derulează înapoi).
+            with _chei.refuza_dublura(cur, ("miscari_stoc_anuleaza_uq",), lambda cur, e, m=m: _chei.CheieDublata(
+                    "Factura a fost stornată între timp de altă cerere: ieșirea %s × %s e deja întoarsă în stoc. Stornarea ta nu s-a "
+                    "scris; reîncarcă factura ca s-o vezi pe cea făcută." % (m["denumire"], _pu.cantitate(cant, m["um"])),
+                    valoare=str(m["id"]))):
+                cur.execute(f"""INSERT INTO {schema}.miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document,
+                                    inregistrare_id, locatie, factura_id, anuleaza_id)
+                                VALUES (%s,%s,'iesire',%s,%s,%s,%s,%s,%s,%s,%s)""",
+                            (m["articol_id"], data, -cant, m.get("pret_unitar"), -val, document[:100], iid, m.get("locatie"), storno_id,
+                             m["id"]))
             out.append({"articol": m["denumire"], "cantitate": str(cant), "um": m["um"], "valoare": str(val), "inregistrare_id": iid})
     return out
 
@@ -526,20 +550,37 @@ def gaseste_barcode(conn, schema, barcode):
     return dict(a) if a else None
 
 
+#: cheile unice ale codului de bare (`tenant_template.sql`: constrângerea din GARZI cat.1 și indexul parțial F141)
+CHEI_BARCODE = ("articole_barcode_uniq", "articole_barcode_uq")
+
+
+def _refuz_barcode(schema, bc):
+    """[lotul 10, C73 / U2] Refuzul codului de bare dublat, cu articolul care îl are deja (citit după întoarcerea la savepoint)."""
+    def refuz(cur, e):
+        cur.execute(f"SELECT id, denumire FROM {schema}.articole WHERE barcode = %s", (bc,))
+        r = cur.fetchone()
+        unde = (" la articolul %s" % r["denumire"]) if r else ""
+        return _chei.CheieDublata("Codul de bare %s e deja%s. Un cod de bare identifică un singur articol: scrie-l pe articolul "
+                                  "corect, sau scoate-l întâi de pe celălalt." % (bc, unde or " la alt articol"), valoare=bc,
+                                  existent={"articol_id": r["id"], "denumire": r["denumire"]} if r else None, camp="barcode")
+    return refuz
+
+
 def set_barcode(conn, schema, articol_id, barcode):
     """Seteaza (sau sterge, daca gol) codul de bare al unui articol. Unic pe articole
-    (index partial WHERE barcode IS NOT NULL). F141."""
+    (index partial WHERE barcode IS NOT NULL). F141.
+
+    [lotul 10, C73 / U2] Dublura — a doua salvare a aceluiași cod SAU cursa dintre două salvări simultane — o refuză baza, iar refuzul
+    ajunge numit („Codul de bare X e deja la articolul …”, `CheieDublata` pe câmpul `barcode`), prin helperul comun
+    (`core/chei_unice.py`). Verificarea prealabilă de dinainte (un `SELECT`, apoi `UPDATE`) ținea numai cererile una după alta; în
+    cursă, a doua cădea cu 500 pe `articole_barcode_uniq`. Un singur mecanism acum, pentru amândouă."""
     bc = (barcode or "").strip() or None
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"SELECT id FROM {schema}.articole WHERE id=%s", (articol_id,))
         if not cur.fetchone():
             return None
-        if bc is not None:
-            cur.execute(f"SELECT id FROM {schema}.articole WHERE barcode=%s AND id<>%s",
-                        (bc, articol_id))
-            if cur.fetchone():
-                return {"eroare": "codul de bare există deja la alt articol"}
-        cur.execute(f"UPDATE {schema}.articole SET barcode=%s WHERE id=%s", (bc, articol_id))
+        with _chei.refuza_dublura(cur, CHEI_BARCODE, _refuz_barcode(schema, bc)):
+            cur.execute(f"UPDATE {schema}.articole SET barcode=%s WHERE id=%s", (bc, articol_id))
     return {"articol_id": articol_id, "barcode": bc}
 
 
@@ -607,15 +648,17 @@ def transfer(conn, schema, corp):
         din = (corp.get("din_locatie") or "").strip() or None
         catre = (corp.get("in_locatie") or "").strip() or None
         if din == catre:
-            return {"eroare": "locația sursă și destinație sunt identice"}
+            return {"eroare": "Locația sursă și locația destinație sunt aceeași."}
         cant = Decimal(str(corp["cantitate"]))
         if cant <= 0:
-            return {"eroare": "cantitate invalidă"}
+            return {"eroare": "Cantitatea transferată trebuie să fie mai mare ca zero (are %s)." % _pu.cantitate(cant, a["um"])}
         disp = _stoc_locatie(cur, schema, a["id"], din)
         if cant > disp:
-            return {"eroare": f"transfer {cant} peste stocul {disp} la locația sursă"}
+            # [lotul 10, comanda 10.2 pct.8d, clasa] cantitatea în formatul românesc, cu unitatea de măsură (nu „139.000”)
+            return {"eroare": "Transfer de %s peste stocul de %s din locația sursă" % (_pu.cantitate(cant, a["um"]),
+                                                                                       _pu.cantitate(disp, a["um"]))}
         try:
-            r = _m.valoare_iesire(_miscari(cur, schema, a["id"]), None, cant)
+            r = _m.valoare_iesire(_miscari(cur, schema, a["id"]), None, cant, a["um"])
         except ValueError as e:
             return {"eroare": str(e)}
         doc = (corp.get("document") or f"transfer {din or '-'}->{catre or '-'}")[:100]

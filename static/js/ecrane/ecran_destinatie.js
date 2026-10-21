@@ -9,9 +9,9 @@
 // navigator; iar după salvare, ecranul de destinație oferă singur „Înapoi la <formular>” (`inapoiLa`).
 // Gard: `core/test_refuz_spre_ecran.py` (fiecare `ecran` emis de server are intrare aici, și fiecare ecran care afișează un
 // astfel de refuz trece prin `butonSpreEcran`).
-import { randeazaDateFirma } from "./date_firma.js?v=76cf61f9da";
-import { panouConectareSPV } from "./setari.js?v=6828bde114";
-import { randeazaProduse } from "./produse_ecran.js?v=4554cd872c";
+import { randeazaDateFirma } from "./date_firma.js?v=7e69049acd";
+import { panouConectareSPV } from "./setari.js?v=6a36388d13";
+import { randeazaProduse } from "./produse_ecran.js?v=347a522a06";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export const ECRANE = {

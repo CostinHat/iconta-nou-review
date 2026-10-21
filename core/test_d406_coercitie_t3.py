@@ -33,13 +33,13 @@ def _seed(conn, um="parseci", cota=Decimal("7"), pret=Decimal("100")):
         cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)
         cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), SCH))
         cur.execute("SET search_path TO \"%s\", public" % SCH)
-        cur.execute("INSERT INTO firma_profil (id,nume,cui,platitor_tva,tva_la_incasare,tip_decont) VALUES (1,%s,%s,true,false,'L')",
+        cur.execute("INSERT INTO firma_profil (id,nume,cui,platitor_tva,tva_la_incasare,tip_decont,oras,telefon,iban,declarant_nume,declarant_prenume) VALUES (1,%s,%s,true,false,'L','Bucuresti','0212223344','RO59BTRLRONCRT0C69TEST01','POPESCU','ION')",
                     ("ZTEST SRL", "14399840"))
         tva = (pret * cota / 100)
         total = pret + tva
-        cur.execute("INSERT INTO facturi (numar,data_emitere,directie,total,tva,tert_cui,tert_nume,status) "
-                    "VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
-                    ("FX-9", "2026-08-10", "emisa", total, tva, "14399840", "ALFA SRL", "emisa"))
+        cur.execute("INSERT INTO facturi (numar,data_emitere,directie,total,tva,tert_cui,tert_nume,status,tert_oras) "  # [lotul 10, C69] localitatea partenerului: D406 o cere (S.AD.5 City „Mandatory”), nu mai scrie „-”
+                    "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+                    ("FX-9", "2026-08-10", "emisa", total, tva, "14399840", "ALFA SRL", "emisa", "Bucuresti"))
         fid = cur.fetchone()[0]
         cur.execute("INSERT INTO factura_linii (factura_id,descriere,um,cantitate,pret_unitar,cota_tva) "
                     "VALUES (%s,%s,%s,%s,%s,%s)", (fid, "Serviciu", um, 1, pret, cota))
@@ -76,7 +76,8 @@ def test_cota_necunoscuta_avertisment_numeste_factura_si_cota(conn):
 
 def test_payment_method_necunoscut_avertisment_numeste_plata():
     # construieste (fara DB): o plata cu metoda necunoscuta trebuie sa produca avertisment numind-o.
-    prof = {"cui": "14399840", "nume": "TEST SRL", "platitor_tva": True, "tip_decont": "L"}
+    prof = {"cui": "14399840", "nume": "TEST SRL", "platitor_tva": True, "tip_decont": "L",  # [lotul 10, C69] + câmpurile antetului
+            "oras": "Bucuresti", "telefon": "0212223344", "iban": "RO59BTRLRONCRT0C69TEST01", "declarant_nume": "POPESCU", "declarant_prenume": "ION"}
     p = d406.Plata(ref="PL-7", data=date(2026, 8, 10), metoda="bitcoin", partener_id="0014399840")
     p.linii.append(d406.LiniePlata(nr=1, cont="5121", descriere="x", suma=Decimal("100.00"), sens="D"))
     p.linii.append(d406.LiniePlata(nr=2, cont="4111", descriere="y", suma=Decimal("100.00"), sens="C"))
@@ -89,7 +90,8 @@ def test_payment_method_necunoscut_avertisment_numeste_plata():
 
 
 def test_payment_method_cunoscut_nu_avertizeaza():
-    prof = {"cui": "14399840", "nume": "TEST SRL", "platitor_tva": True, "tip_decont": "L"}
+    prof = {"cui": "14399840", "nume": "TEST SRL", "platitor_tva": True, "tip_decont": "L",  # [lotul 10, C69] + câmpurile antetului
+            "oras": "Bucuresti", "telefon": "0212223344", "iban": "RO59BTRLRONCRT0C69TEST01", "declarant_nume": "POPESCU", "declarant_prenume": "ION"}
     p = d406.Plata(ref="PL-8", data=date(2026, 8, 10), metoda="numerar", partener_id="0014399840")
     p.linii.append(d406.LiniePlata(nr=1, cont="5311", descriere="x", suma=Decimal("50.00"), sens="D"))
     p.linii.append(d406.LiniePlata(nr=2, cont="4111", descriere="y", suma=Decimal("50.00"), sens="C"))

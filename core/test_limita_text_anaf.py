@@ -162,10 +162,16 @@ def test_niciun_generator_nu_mai_trunchiaza_local():
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 @pytest.mark.parametrize("tip,body", CERERI)
-def test_atributele_respecta_limita_per_camp(tip, body, firma_nume_lung):
+def test_atributele_respecta_limita_per_camp(tip, body, firma_nume_lung, monkeypatch):
     """Firma efemera cu denumire >75 car. Fiecare atribut text trebuie sa respecte limita LUI oficiala
     din LIMITE_TEXT_ANAF (nu un prag global 75) - denumirea de 129 car. curge acum pana la C(200),
     nu mai e OVER-trunchiata la 74. Un atribut peste limita lui = neconformitate."""
+    # [lotul 10, 383] generarea cere perioada încheiată (`coada_api.perioada_neincheiata`); testul nu e despre poarta ei: generează ca
+    # după încheierea perioadei (ceasul porții mutat peste perioadă), restul ceasului aplicației rămâne cel real
+    import datetime as _dt383, functools as _ft383
+    from core import coada_api as _coada383
+    monkeypatch.setattr(_coada383, "perioada_neincheiata", _ft383.partial(_coada383.perioada_neincheiata,
+                                                                          azi=_dt383.date(_dt383.date.today().year + 2, 1, 1)))
     from core.common import LIMITE_TEXT_ANAF
     conn, schema = firma_nume_lung
     try:

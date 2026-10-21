@@ -26,6 +26,7 @@ import base64
 import hashlib
 
 from core import db
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] exemplarul dat de aplicație: cursa se reia, nu dă 500
 
 # Vocabular FIX. Un fel nou se adauga AICI, nu la locul apelului — altfel apar variante
 # orfane la o litera gresita, si nu se mai poate intreba „cate s-au produs".
@@ -75,9 +76,6 @@ def pastreaza(conn, schema, fel, cheie, continut, produs_de_id=None, produs_de=N
         raise _SchemaInvalida(schema)
     amp = amprenta(continut)
     with conn.cursor() as cur:
-        cur.execute('SELECT COALESCE(max(exemplar), 0) + 1 FROM "%s".artefacte_produse '
-                    "WHERE fel = %%s AND cheie = %%s" % schema, (fel, str(cheie)))
-        exemplar = cur.fetchone()[0]
         # [lotul 11.10.2026, găsit la 221: „completată manual de 1968”] Autorul se scrie cu NUMELE lui: apelanții treceau
         # `ctx.get("nume") or str(uid)`, iar contextul cererii n-are „nume” — deci în `produs_de` ajungea id-ul. Numele se ia aici, o dată
         # pentru toți apelanții, din `public.users` (prenume + nume, altfel e-mailul); textul apelantului rămâne numai dacă utilizatorul
@@ -88,20 +86,29 @@ def pastreaza(conn, schema, fel, cheie, continut, produs_de_id=None, produs_de=N
             r = cur.fetchone()
             if r and r[0]:
                 produs_de = r[0]
-        # `verdict_la` = now() DOAR daca exista verdict; altfel NULL. Un moment de validare
-        # pe un artefact nevalidat ar fi o afirmatie despre ceva ce nu s-a intamplat.
-        cur.execute(
-            'INSERT INTO "%s".artefacte_produse '
-            "(fel, cheie, exemplar, continut, amprenta, produs_de_id, produs_de, "
-            " verdict, verdict_la, verdict_versiune, verdict_amprenta) "
-            "VALUES (%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,"
-            "        CASE WHEN %%s::text IS NULL THEN NULL ELSE now() END,"
-            "        %%s,%%s) RETURNING id" % schema,
-            (fel, str(cheie), exemplar,
-             _pentru_coloana(continut), amp, produs_de_id, produs_de,
-             verdict, verdict,
-             verdict_versiune, verdict_amprenta))
-        aid = cur.fetchone()[0]
+        def _scrie():
+            cur.execute('SELECT COALESCE(max(exemplar), 0) + 1 FROM "%s".artefacte_produse '
+                        "WHERE fel = %%s AND cheie = %%s" % schema, (fel, str(cheie)))
+            exemplar = cur.fetchone()[0]
+            # `verdict_la` = now() DOAR daca exista verdict; altfel NULL. Un moment de validare
+            # pe un artefact nevalidat ar fi o afirmatie despre ceva ce nu s-a intamplat.
+            cur.execute(
+                'INSERT INTO "%s".artefacte_produse '
+                "(fel, cheie, exemplar, continut, amprenta, produs_de_id, produs_de, "
+                " verdict, verdict_la, verdict_versiune, verdict_amprenta) "
+                "VALUES (%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,"
+                "        CASE WHEN %%s::text IS NULL THEN NULL ELSE now() END,"
+                "        %%s,%%s) RETURNING id" % schema,
+                (fel, str(cheie), exemplar,
+                 _pentru_coloana(continut), amp, produs_de_id, produs_de,
+                 verdict, verdict,
+                 verdict_versiune, verdict_amprenta))
+            return cur.fetchone()[0], exemplar
+        # [lotul 10, C73 / U2] exemplarul îl dă APLICAȚIA (`max + 1` pe fel și cheie): două produceri simultane ale aceluiași artefact
+        # (ex. S1003 generat de două ori deodată) citeau același număr, iar a doua cădea cu 500 pe `artefacte_exemplar_unic`. Cursa se
+        # reia cu exemplarul următor — al doilea exemplar e un fapt (P4), nu o greșeală a omului.
+        aid, exemplar = _chei.reincearca_la_dublura(cur, ("artefacte_exemplar_unic",), _scrie, lambda cur, e: _chei.CheieDublata(
+            "Artefactul %s nu s-a putut păstra: prea multe produceri simultane ale lui. Produ-l din nou." % FELURI[fel]))
     return {"ok": True, "id": aid, "exemplar": exemplar, "amprenta": amp}
 
 

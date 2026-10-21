@@ -430,6 +430,8 @@ ETICHETE_SURSA = {
     "horeca_z": "raportul Z",
     "amef": "raportul Z din casa de marcat",
     "inchidere_an": "închiderea anului",
+    # [lotul 10, deficiența 430d] notele din Operațiuni speciale (dividende, leasing, provizioane…): până azi „sursa: facturile”
+    "operatiuni": "operațiunile speciale",
 }
 
 
@@ -476,8 +478,21 @@ def facturi_stinse(cur, schema, nota_ids):
     out = {}
     for x in cur.fetchall():
         v = tuple(x.values()) if isinstance(x, dict) else tuple(x)
-        out[v[0]] = "factura " + eticheta_factura(v[1], v[2], v[3], v[4]).split(" ", 1)[-1] if v[3] is not None else None
+        out[v[0]] = eticheta_factura_in_text(v[1], v[2], v[3], v[4]) if v[3] is not None else None
     return {k: v for k, v in out.items() if v}
+
+
+#: [lotul 10, deficiența 401] felul documentului în mijlocul unei fraze („nota e derivată din …”, „stinge …”), cu articolul hotărât
+_FEL_IN_TEXT = {"factura": "factura", "borderou": "borderoul de achiziție"}
+
+
+def eticheta_factura_in_text(fel, serie, numar, data):
+    """„factura FCT12 din 05.10.2026” / „borderoul de achiziție BA-1 din 19.10.2026” — documentul din `facturi` în mijlocul unei fraze.
+    [lotul 10, deficiența 401, comanda Costin 10.2 pct.7a, verbatim] „sub nota borderoului, textul zice «factura de achiziție BA-1» și
+    trimite la Facturi.” Cauza: textul se compunea din „factura ” + eticheta tăiată la primul cuvânt („Borderou de achiziție BA-1” ->
+    „de achiziție BA-1”). Felul se ia din `facturi.tip`, aceeași sursă ca `eticheta_factura`."""
+    from core import pdf_util
+    return "%s %s din %s" % (_FEL_IN_TEXT.get(fel or "factura") or str(fel), pdf_util.numar_cu_serie(serie, numar), pdf_util.data_ro(data))
 
 
 def eticheta_document(fel, numar=None, data=None, detaliu=None):

@@ -16,6 +16,7 @@ import json
 import datetime as _dt
 
 from core import scadente
+from core import chei_unice as _chei   # [lotul 10, C73 / U3] numărul depunerii (MAX + 1) se reia la cursă
 
 REGULI = "2026.1"
 MODUL = "coada_api"
@@ -603,7 +604,9 @@ def lista_coada(conn, cabinet_id, stare=None):
             "c.trecere_motiv, c.trecut_la, c.fel, "
             "CASE WHEN c.fel = 'nota' THEN c.payload END AS nota, "
             "c.payload->>'xml' AS _xml, c.payload->'confirmare_atentionari' AS _conf, "
-            "c.payload->'_surse' AS _surse, (c.payload ? '_cerere') AS _are_cerere, t.schema_name AS _schema "
+            "c.payload->'_surse' AS _surse, (c.payload ? '_cerere') AS _are_cerere, t.schema_name AS _schema, "
+            # [lotul 10, 383] D318 își poartă perioada de rambursare în formular (`perioada_neincheiata`)
+            "CASE WHEN c.tip = 'd318' THEN c.payload->'_cerere'->'manual' END AS _manual "
             "FROM public.declaratii_coada c "
             "LEFT JOIN public.users u ON u.id = c.creat_de_id "
             "LEFT JOIN public.tenants t ON t.id = c.tenant_id "
@@ -632,9 +635,15 @@ def lista_coada(conn, cabinet_id, stare=None):
                     d["surse_nevalidate"], d["surse_note"] = None, []
                 # [324, 18.10.2026] „Generează din nou” se oferă numai unde serverul îl poate face (cererea păstrată, `coada_regenereaza`)
                 d["se_poate_regenera"] = bool(_are_cerere)
-            # [383, lotul 9] perioada neîncheiată: declarația nu se oferă spre depunere
-            d["perioada_neincheiata"] = perioada_neincheiata(d.get("p_an"), d.get("p_luna"), d.get("p_trim")) if d["fel"] != "nota" else None
-            d["gata_de_depus"] = gata_de_depus(d["verdict_stare"]) and not d.get("depasita") and not d["perioada_neincheiata"]
+            # [383, lotul 9] perioada neîncheiată: declarația nu se oferă spre depunere ([lotul 10] tipul și perioada D318 din formular)
+            _manual = d.pop("_manual", None)
+            d["perioada_neincheiata"] = (perioada_neincheiata(d.get("p_an"), d.get("p_luna"), d.get("p_trim"), tip=d["tip"], manual=_manual)
+                                         if d["fel"] != "nota" else None)
+            # [lotul 10, deficiența 436] declarația care ȘTIE că cifra ei nu cuprinde note nevalidate nu se depune până la validarea lor;
+            # motivul stă pe rând, în locul butonului (o declarație intrată în coadă înainte de regulă, sau o notă trecută înapoi în ciornă)
+            _bl = blocaj_note_nevalidate(d["tip"], d.get("surse_note")) if d["fel"] != "nota" else None
+            d["blocaj_depunere"] = d["perioada_neincheiata"] or (_bl or {}).get("mesaj")
+            d["gata_de_depus"] = gata_de_depus(d["verdict_stare"]) and not d.get("depasita") and not d["blocaj_depunere"]
             out.append(d)
         # [lotul 07.10 pct.9-10] notele aceluiași document, în aceeași stare, sunt UN element (o validare, o cifră)
         grupate, vazute = [], {}
@@ -1010,7 +1019,8 @@ def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None, cabinet_id_a
             grup = (membri[0][1] or {}).get("grup")
             st = _sa.storneaza(conn, schema_nota, grup, note_ids, motiv)
             if st.get("eroare"):
-                return {"ok": False, "cod": "STOC_IESIT", "mesaj": st["eroare"]}
+                # [lotul 10, C73 / U2] codul stornării (DEJA_RESPINS la cursa dintre două respingeri), altfel STOC_IESIT, ca până acum
+                return {"ok": False, "cod": st.get("cod") or "STOC_IESIT", "mesaj": st["eroare"]}
         cur.execute(
             "UPDATE public.declaratii_coada SET stare='respinsa', "
             "respins_de=%s, respins_de_id=%s, respins_la=now(), motiv_respingere=%s WHERE id = ANY(%s)",
@@ -1040,22 +1050,54 @@ def perioada_din_payload(payload):
     return an, luna
 
 
-def perioada_neincheiata(an, luna, trim=None, azi=None):
+#: [lotul 10, deficiența 383, comanda Costin 10.2 pct.1: „O declarație pe o perioadă neîncheiată se refuză la generare, cu motivul scris, la
+#: toate declarațiile.”] EXCEPȚIILE, numai cu temei: formularele în care anul NU e o perioadă de raportare, ci anul unui eveniment (sau al
+#: estimării pentru anul în curs), și care se depun legal ÎN CURSUL lui — o perioadă „neîncheiată” n-are sens pentru ele. Cheia = tipul,
+#: valoarea = temeiul citat (sursa: `anaf_surse/`). Gard: `core/test_lot10b_383_perioada_neincheiata.py` (fiecare temei e în corpus).
+DECLARATII_IN_CURSUL_PERIOADEI = {
+    "d213": ("OPANAF 216/2023 anexa nr.1 (instrucțiunile formularului 213) pct.I.5.1: „Declaraţia se depune la organul fiscal central "
+             "competent în maximum 10 zile de la data transferului” și pct.II.1: „În rubrica «Anul» se înscrie anul în care a avut loc "
+             "înstrăinarea”"),
+    "d214": ("OPANAF 216/2023 anexa nr.2 (instrucțiunile formularului 214) pct.II.1: „În rubrica «Anul» se înscrie anul în care a avut loc "
+             "înstrăinarea, prin hotărâre judecătorească”"),
+    "d169": ("Legea 129/2019 art.57^1 alin.(1): fiduciarii „au obligația de a declara, la înregistrarea contractului de fiducie, informații "
+             "corecte și complete despre beneficiarul real”; alin.(3): „în termen de 30 de zile de la data la care a survenit modificarea”"),
+    "d169n": ("Legea 129/2019 art.19 alin.(7^1): „Entitățile raportoare, după consultarea registrelor centrale [...], informează autoritățile "
+              "care gestionează aceste registre cu privire la orice neconcordanță”"),
+    "d220": ("OPANAF 184/2013 anexa nr.2 (instrucțiunile formularului 220) pct.I.1: „în termen de 15 zile de la data începerii activității, "
+             "în cazul contribuabililor [...] care încep o activitate în cursul anului fiscal”"),
+    "d223": ("OPANAF 184/2013 anexa nr.2 (instrucțiunile formularului 223) pct.1: „în termen de 15 zile de la data începerii activității, în "
+             "cazul asocierilor care încep o activitate în cursul anului fiscal”"),
+}
+
+
+def perioada_neincheiata(an, luna, trim=None, azi=None, tip=None, manual=None):
     """[deficiența 383, retestul 19.10.2026, verbatim în DECIZII „Comanda 9.1”] „O declarație nu se oferă spre depunere înainte de încheierea
     perioadei.” -> motivul (text pentru om) dacă perioada declarată (luna, trimestrul sau anul: `perioada_din_payload`) nu s-a încheiat
-    încă (ziua României), altfel None. Fără perioadă (declarații pe eveniment) -> None. SURSA UNICĂ: lista cozii (butonul nu se oferă) și
-    ruta de depunere (refuz)."""
+    încă (ziua României), altfel None. Fără perioadă (declarații pe eveniment) -> None.
+    [lotul 10, 383, comanda 10.2 pct.1] „se refuză la generare, cu motivul scris, la toate declarațiile” — SURSA UNICĂ pentru generare
+    (`declaratii_api.genereaza`: Declarații, „Trimite în coadă”, „Generează din nou”, API), lista cozii (butonul nu se oferă) și ruta de
+    depunere (refuz). `tip`: la un tip ANUAL perioada e anul (o lună trimisă pe API nu o scurtează); tipurile din
+    `DECLARATII_IN_CURSUL_PERIOADEI` nu au perioadă de raportare (None). `manual`: D318 își poartă perioada de rambursare în formular
+    (`an`, `luna_sfarsit`; DUK regula R5.2: „annual=0 => lunaInceput<>1 sau lunaSfarsit<>12”) — perioada ei se încheie la luna de sfârșit."""
     import calendar as _cal
     from core.common import azi_ro
     from core.pdf_util import data_ro
-    if not an:
+    if not an or tip in DECLARATII_IN_CURSUL_PERIOADEI:
         return None
+    if tip:
+        from core import declaratii_api as _da
+        if tip == "d318" and isinstance(manual, dict) and str(manual.get("an") or "").isdigit() \
+                and str(manual.get("luna_sfarsit") or "").isdigit() and 1 <= int(manual["luna_sfarsit"]) <= 12:
+            an, luna, trim = int(manual["an"]), int(manual["luna_sfarsit"]), None
+        elif _da.periodicitate(tip) == "anual":
+            luna = trim = None
     an, luna_f = int(an), int(luna or (int(trim) * 3 if trim else 12))
     sfarsit = _dt.date(an, luna_f, _cal.monthrange(an, luna_f)[1])
     if (azi or azi_ro()) > sfarsit:
         return None
     per = ("Perioada %02d/%d" % (int(luna), an)) if luna else ("Perioada T%d/%d" % (int(trim), an)) if trim else ("Anul %d" % an)
-    return ("%s nu s-a încheiat: declarația se depune după %s, când toate operațiunile perioadei sunt înregistrate."
+    return ("%s nu s-a încheiat: declarația se generează și se depune după %s, când toate operațiunile perioadei sunt înregistrate."
             % (per, data_ro(sfarsit)))
 
 
@@ -1081,8 +1123,11 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
     """
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        # [lotul 10, C73 / U3] rândul se citește CU LACĂT: două „Confirmă depunerea” simultane pe același element citeau amândouă
+        # „aprobata”, iar a doua scria o a doua depunere (nr_depunere 2) a aceleiași declarații. Acum a doua așteaptă, recitește
+        # „depusa” și e refuzată de tranziție („nu se poate depune din starea 'depusa'”).
         cur.execute("SELECT stare, tenant_id, tip, payload, cabinet_id FROM public.declaratii_coada "
-                    "WHERE id = %s", (coada_id,))
+                    "WHERE id = %s FOR UPDATE", (coada_id,))
         r = cur.fetchone()
         if not r:
             return {"ok": False, "cod": "INEXISTENT",
@@ -1106,9 +1151,15 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
         p = r["payload"] or {}
         # [383, lotul 9] „O declarație nu se oferă spre depunere înainte de încheierea perioadei.” — tranziția ireversibilă o refuză și ea,
         # pe orice drum ar veni (ecranul nu mai oferă butonul: `lista_coada`, „perioada_neincheiata”)
-        neinch = perioada_neincheiata(p.get("_an"), p.get("_luna"), p.get("_trim"))
+        neinch = perioada_neincheiata(p.get("_an"), p.get("_luna"), p.get("_trim"), tip=r["tip"],
+                                      manual=(p.get("_cerere") or {}).get("manual"))
         if neinch:
             return {"ok": False, "cod": "PERIOADA_NEINCHEIATA", "mesaj": neinch}
+        # [lotul 10, deficiența 436] „când declarația știe că are cifra greșită din note nevalidate, depunerea se blochează până la
+        # validare” — pe orice drum (ecranul nu oferă butonul: `lista_coada`, „blocaj_depunere”)
+        refuz = refuz_note_nevalidate(cur, r["tenant_id"], r["tip"], p)
+        if refuz:
+            return refuz
         an, luna = perioada_din_payload(p)
         cur.execute(
             "UPDATE public.declaratii_coada SET stare='depusa', depus_la=now(), "
@@ -1124,13 +1175,19 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
         # (None la d112 -> SQL NULL).
         randuri = p.get("randuri")
         tip_c = (r["tip"] or "").lower()   # [tip_lowercase] canonic la stocare (cheie de join); CHECK il impune
-        cur.execute(
-            "INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
-            "SELECT %s,%s,%s,%s,%s,%s, COALESCE(MAX(nr_depunere),0)+1 "
-            "FROM public.declaratii_depuse WHERE tenant_id=%s AND an=%s AND luna=%s AND tip=%s",
-            (r["tenant_id"], an, luna, tip_c, p.get("xml"),
-             _E.Json(randuri) if randuri is not None else None,
-             r["tenant_id"], an, luna, tip_c))
+
+        def _scrie():
+            cur.execute(
+                "INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
+                "SELECT %s,%s,%s,%s,%s,%s, COALESCE(MAX(nr_depunere),0)+1 "
+                "FROM public.declaratii_depuse WHERE tenant_id=%s AND an=%s AND luna=%s AND tip=%s",
+                (r["tenant_id"], an, luna, tip_c, p.get("xml"),
+                 _E.Json(randuri) if randuri is not None else None,
+                 r["tenant_id"], an, luna, tip_c))
+        # [lotul 10, C73 / U3] `nr_depunere` îl dă APLICAȚIA (MAX + 1): o marcare „depusă extern” sau un istoric scris în aceeași clipă pe
+        # aceeași perioadă lua același număr, iar PK-ul refuza depunerea cu 500. Cursa nu e a omului: se reia cu numărul următor.
+        from core import repo_control_fiscal_api as _rcf
+        _chei.reincearca_la_dublura(cur, ("declaratii_depuse_pkey",), _scrie, _rcf.refuz_nr_depunere)
     return {"ok": True, "stare": "depusa", "an": an, "luna": luna}
 
 
@@ -1264,6 +1321,51 @@ def nevalidate_acum(cur, schema, tip, de_la, pana_la):
                              + (", și toate facturile perioadei fără notă validată" if tip in DECLARATII_DIN_FACTURI else ""))
                   if parti else None)
     return note, facturi, nevalidate
+
+
+#: [lotul 10, deficiența 436, comanda Costin 10.2 pct.6, verbatim în DECIZII: „Decizie: când declarația știe că are cifra greșită din note
+#: nevalidate, depunerea se blochează până la validare, cu motivul lângă buton, la toate declarațiile.”] Declarațiile care ȘTIU: cele calculate
+#: din evidența VALIDATĂ a ferestrei lor (`fereastra_perioadei`), al căror generator spune ce note nevalidate nu cuprinde
+#: (`d101.avertismente_evidenta`: D100 — profit cumulat și micro —, D101, bilanțul). La TVA (D300 / D394 / D390) și D406 cunoașterea e
+#: poarta balanței (`uc_coada.decizie_poarta`: o diferență blochează, ciornele fără diferență avertizează — decizia Costin R36, neatinsă).
+#: Gard: `core/test_lot10b_436_note_nevalidate_blocheaza.py::test_lista_e_exact_a_generatoarelor_care_numesc_notele` (un generator nou care
+#: numește notele nevalidate fără să intre aici -> roșu).
+DECLARATII_DIN_EVIDENTA = ("d100", "d101", "s1005", "s1003")
+MESAJ_NOTE_NEVALIDATE = ("Declarația nu se depune până la validarea notelor: cifra ei nu cuprinde %s din perioada ei — %s. Validează-le în "
+                         "Registrul jurnal, apoi generează din nou.")
+
+
+def blocaj_note_nevalidate(tip, note):
+    """[lotul 10, 436] Refuzul depunerii (dict cu `cod`, `mesaj`, `note` [{nota_id, data, eticheta}]) când declarația `tip` e calculată din
+    evidența validată și `note` (notele nevalidate ale ferestrei ei, numite ca în `nevalidate_acum`) nu e gol; altfel None. PURĂ — o
+    singură frază pentru pasul 2 din Declarații, intrarea în coadă, rândul din „De depus” și ruta de depunere."""
+    if tip not in DECLARATII_DIN_EVIDENTA or not note:
+        return None
+    from core.common import cate as _cate
+    return {"ok": False, "cod": "NOTE_NEVALIDATE",
+            "mesaj": MESAJ_NOTE_NEVALIDATE % (_cate(len(note), "notă nevalidată", "note nevalidate"), _numite([n["eticheta"] for n in note])),
+            "note": [{"nota_id": n["nota_id"], "data": n["data"], "eticheta": n["eticheta"]} for n in note]}
+
+
+def blocaj_declaratie(cur, schema, tip, an, luna, trim, surse=None):
+    """[lotul 10, 436] `blocaj_note_nevalidate` pentru declarația `tip` pe perioada ei, ACUM: fereastra din `surse` (`_surse` al elementului
+    din coadă) sau din perioadă (`fereastra_perioadei`, aceeași definiție), notele din `nevalidate_acum`. Tipurile care nu sunt calculate
+    din evidență -> None fără citire. Pasul 2 din Declarații (`uc_declaratii`) și depunerea (`refuz_note_nevalidate`) o cheamă."""
+    if tip not in DECLARATII_DIN_EVIDENTA:
+        return None
+    s = surse or {}
+    de_la, pana_la = (s["de_la"], s["pana_la"]) if s.get("de_la") else fereastra_perioadei(cur, schema, tip, an, luna, trim)
+    note, _f, _nev = nevalidate_acum(cur, schema, tip, de_la, pana_la)
+    return blocaj_note_nevalidate(tip, note)
+
+
+def refuz_note_nevalidate(cur, tenant_id, tip, payload):
+    """[lotul 10, 436] `blocaj_declaratie` pentru un element din coadă (firma lui, perioada și fereastra din payload)."""
+    if tip not in DECLARATII_DIN_EVIDENTA:
+        return None
+    schema = schema_firmei(cur, tenant_id)
+    p = payload or {}
+    return blocaj_declaratie(cur, schema, tip, p.get("_an"), p.get("_luna"), p.get("_trim"), p.get("_surse")) if schema else None
 
 
 def stari_note_numite(cur, schema, ids):

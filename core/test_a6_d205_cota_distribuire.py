@@ -12,6 +12,11 @@ Caz contabil, de la nota de distribuire în jos:
 D205/2026 include plata (100.000). Cota corectă = 10% (distribuit în 2025) -> imp1 = 10.000.
 BUG (`d205.py:363` folosea cota la 31.12.2026 = 16%): imp1 = 16.000. PICĂ pe codul de dinainte (16.000),
 TRECE după (10.000). Reconcilierea recalculează FIFO INDEPENDENT aceeași atribuire -> 0 divergențe.
+
+[lotul 10, decizia Costin A, PIVOT] „D205 include și dividendele distribuite neplătite la 31.12, pe anul distribuirii, cu
+impozitul datorat”: dividendul distribuit la 20.12.2025 și neplătit la 31.12.2025 are baza și impozitul în D205/2025 (OPANAF
+179/2022 anexa 1 cap.II pct.9), cu cota de la data distribuirii (10%); D205/2026 îl are numai la „plătite” (divid_P 100.000,
+baza și impozitul 0). Corecția A6 de mai sus (punctul de lucru A6, 18.09.2026 — nu o regulă de validator: cota după data distribuirii, nu după anul declarației) rămâne: 10%, nu 16%.
 """
 from __future__ import annotations
 
@@ -67,6 +72,12 @@ def _nota(cur, data, debit, credit, suma):
 
 @pytest.fixture
 def firma_div(monkeypatch):
+    # [lotul 10, 383] generarea cere perioada încheiată (`coada_api.perioada_neincheiata`); testul nu e despre poarta ei: generează ca
+    # după încheierea perioadei (ceasul porții mutat peste perioadă), restul ceasului aplicației rămâne cel real
+    import datetime as _dt383, functools as _ft383
+    from core import coada_api as _coada383
+    monkeypatch.setattr(_coada383, "perioada_neincheiata", _ft383.partial(_coada383.perioada_neincheiata,
+                                                                          azi=_dt383.date(_dt383.date.today().year + 2, 1, 1)))
     from core import tenant_provisioning as _tp
     _db.init_pool()
     p = _db.pool()
@@ -104,19 +115,22 @@ def firma_div(monkeypatch):
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_cota_dupa_data_distribuirii_nu_anul_declaratiei(firma_div):
-    with firma_div["conn"].cursor() as c:
-        c.execute('SET search_path TO "%s", public' % SCH)
-    _xml, res = declaratii_api.genereaza(_ConnProxy(firma_div["conn"]), SCH, "d205", {"an": AN})
-    assert len(res.beneficiari) == 1, "un beneficiar (asociatul cu cota 100%%)"
-    b = res.beneficiari[0]
-    # distribuit 2025 -> 10%; 100.000 x 10% = 10.000 (nu 16.000 = cota 2026 pe anul declarației).
-    assert int(b.baza1) == 100000, "baza1 = dividendul plătit 100.000; găsit %r" % int(b.baza1)
-    assert int(b.imp1) == 10000, (
-        "imp1 = %r (așteptat 10.000 = 10%% cota DISTRIBUIRII 2025; 16.000 = bug pe anul declarației 2026)"
-        % int(b.imp1))
-
-    # A doua cale recalculează FIFO INDEPENDENT -> aceeași atribuire, fără divergențe.
-    with firma_div["conn"].cursor() as c:
-        c.execute('SET search_path TO "%s", public' % SCH)
-    rap = _rec.reconciliaza(_ConnProxy(firma_div["conn"]), SCH, Perioada(AN), res, None)
-    assert rap["divergente"] == [], "reconcilierea D205 trebuie să fie FIFO pe distribuire, fără divergențe: %r" % rap
+    rezultate = {}
+    for an in (AN - 1, AN):
+        with firma_div["conn"].cursor() as c:
+            c.execute('SET search_path TO "%s", public' % SCH)
+        _xml, res = declaratii_api.genereaza(_ConnProxy(firma_div["conn"]), SCH, "d205", {"an": an})
+        assert len(res.beneficiari) == 1, "un beneficiar (asociatul cu cota 100%%)"
+        b = res.beneficiari[0]
+        rezultate[an] = (int(b.divid_d), int(b.divid_p), int(b.baza1), int(b.imp1))
+        # A doua cale recalculează FIFO INDEPENDENT -> aceeași atribuire, fără divergențe.
+        with firma_div["conn"].cursor() as c:
+            c.execute('SET search_path TO "%s", public' % SCH)
+        rap = _rec.reconciliaza(_ConnProxy(firma_div["conn"]), SCH, Perioada(an), res, None)
+        assert rap["divergente"] == [], "reconcilierea D205 trebuie să fie FIFO pe distribuire, fără divergențe: %r" % rap
+    # distribuit 2025 -> 10% (Legea 141/2025 art.VII); 100.000 x 10% = 10.000 (nu 16.000), în D205/2025 — anul distribuirii
+    # (OPANAF 179/2022 cap.II pct.9: impozitul distribuitelor neplătite la sfârșitul anului „se cuprinde în declaraţia aferentă
+    # perioadei în care s-a aprobat distribuirea dividendelor”)
+    assert rezultate[AN - 1] == (100000, 0, 100000, 10000), rezultate
+    # D205/2026: numai plata (col.4), fără bază și impozit — nu se declară de două ori
+    assert rezultate[AN] == (0, 100000, 0, 0), rezultate

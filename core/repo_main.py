@@ -233,6 +233,14 @@ def select_facturi_3(cur, schema, f):
     return cur.fetchone()
 
 
+def factura_emisa_cu_numarul(cur, schema, numar):
+    """[lotul 10, C73 / U2] Factura emisă fără serie care poartă deja `numar` (cheia `facturi_numar_emisa_uniq`, pe care o lovește
+    importul): (data_emitere, tert_nume), sau None."""
+    cur.execute(f"""SELECT data_emitere, tert_nume FROM {schema}.facturi
+                WHERE directie='emisa' AND COALESCE(serie,'')='' AND numar=%s LIMIT 1""", (numar,))
+    return cur.fetchone()
+
+
 def insert_facturi(cur, schema, _stare, f):
     cur.execute(f"""INSERT INTO {schema}.facturi
                 (numar, data_emitere, data_scadenta, total, tva, moneda, directie, status,

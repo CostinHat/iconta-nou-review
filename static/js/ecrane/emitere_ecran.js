@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, arataMesaj, cate, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere } from "../api.js?v=158edee964";
+import { api, arataMesaj, cate, bani, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere } from "../api.js?v=ff30ebaf3f";
 import { textStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=df2c3a05b3";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
@@ -21,13 +21,17 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   // data emiterii implicită = azi (local); cotele permise se cer LA EA, nu la „azi” de pe server
   try { num = await api.get(`/tenants/${tenantId}/facturi/numerotare?data=${dataIso()}`); } catch {}
   // [tva_din_profil_v1] platitor_tva e deja in profil (Date firma/ANAF) - il citim ca sa NU re-intrebam (#16)
-  let tvaProfil = null;
-  try { const _v = await api.get(`/tenants/${tenantId}/vector`); if (_v && typeof _v.platitor_tva === "boolean") tvaProfil = _v.platitor_tva; }
+  let tvaProfil = null, tvaIncasare = null;
+  try {
+    const _v = await api.get(`/tenants/${tenantId}/vector`);
+    if (_v && typeof _v.platitor_tva === "boolean") tvaProfil = _v.platitor_tva;
+    tvaIncasare = (_v && _v.tva_incasare) || null;   // [lotul 10, deficiența 428] regimul TVA la încasare, din perioadele firmei
+  }
   catch { tvaProfil = null; }  // vector indisponibil -> intreaba (nu presupune)
 
   const neconfigurat = !num.configurata;  // numerotare_configurata_v1
   if (neconfigurat) {
-    configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil);
+    configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil, tvaIncasare);
   } else {
     // [punte_stoc_v1] F172: la firma de CABINET cu gestiune cantitativa (are articole), incarca
     // articolele de stoc pentru selectorul pe linie. Portalul client NU tine
@@ -42,7 +46,7 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
 }
 
 // ---------- CONFIGURARE NUMEROTARE (o data) ----------
-function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
+function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null, tvaIncasare = null) {
   if (nav && nav.setInapoi) nav.setInapoi(opt.inapoi || undefined);  // emitere_inapoi_v1
   const inapoi = opt.inapoi || (() => nav.inapoi());
   corp.innerHTML = `
@@ -55,7 +59,8 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
         <button class="buton-secundar em-buton-sec" id="em-tva-da">Da, plătitoare</button>
         <button class="buton-secundar em-buton-sec" id="em-tva-nu">Nu</button>
       </div>
-    </div>` : `<p class="pf-intro">Regim TVA: <b>${tvaProfil ? "plătitoare de TVA" : "neplătitoare"}</b> (din profilul firmei).</p>`}
+    </div>` : `<p class="pf-intro">Regim TVA: <b>${tvaProfil ? "plătitoare de TVA" : "neplătitoare"}</b>${tvaProfil && tvaIncasare && tvaIncasare.aplica_azi
+      ? `, aplică <b>TVA la încasare</b>${tvaIncasare.curenta && tvaIncasare.curenta.de_la ? ` de la ${esc(dataRo(tvaIncasare.curenta.de_la))}` : ""}` : ""} (din profilul firmei).</p>`}
     <div class="em-config">
       <div class="em-intrebare">Ai mai emis facturi până acum (în alt program sau pe hârtie)?</div>
       <div class="em-optiuni">
@@ -254,7 +259,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     <div class="em-total" id="em-total"></div>
     <div class="em-moneda-rand">
       <label class="em-moneda-eticheta" for="em-moneda">Monedă</label>
-      <select class="camp-input" id="em-moneda">
+      <select class="camp-input" id="em-moneda" data-actiune-camp="POST /tenants/{tenant_id}/facturi/previzualizare-lei">
         <option value="RON" selected>RON (lei)</option>
         <option value="EUR">EUR</option>
         <option value="USD">USD</option>
@@ -265,6 +270,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       </select>
       <span class="em-moneda-nota" id="em-moneda-nota"></span>
     </div>
+    <div class="fd-valuta" id="em-valuta" aria-live="polite" hidden></div>
     <div class="em-sectiune">
       <div class="em-eticheta">Clasificare TVA (D300)</div>
       <label class="camp-eticheta" for="em-tara">Țara partenerului</label>
@@ -347,6 +353,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   inScad.addEventListener("input", () => { scadentaScrisa = true; });
   inScad.addEventListener("change", () => { scadentaScrisa = true; });
   corp.querySelector("#em-data").addEventListener("change", propuneScadenta);
+  corp.querySelector("#em-data").addEventListener("change", () => recalc());   // [lotul 10, 7g] altă dată a facturii, alt curs BNR
   propuneScadenta();
   // [comanda Costin 05.10.2026 pct.4] seria se vede și se poate stabili: configurarea numerotării, într-o fereastră PESTE factură
   corp.querySelector("#em-schimba-serie").addEventListener("click", () =>
@@ -538,6 +545,10 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       l.cota_tva = selCota.value === "" ? null : Number(selCota.value);
       l.cotaAleasa = true; l.categoriePropusa = false;   // [326] alegerea omului nu mai e înlocuită de propunere
       setCota(l, "", l.cota_tva);
+      // [lotul 10, 10.2 pct.7d, deficiența 415] „mesajul roșu «Articolul n-are cota TVA» rămâne după ce cota a fost aleasă pe linie”:
+      // mesajul spunea „alege cota pe linie” — aleasă, linia nu mai e cea refuzată, deci mesajul ei (cu butonul spre Produse) dispare
+      // (DS cap.6 v2.92, clasa 290: eroarea dispare când câmpul e corectat). Golită la loc („—”), linia rămâne fără cotă și emiterea o cere.
+      if (l.cota_tva != null) { const z = zonaLinii.querySelector("#em-l" + linii.indexOf(l) + "-cota-mesaj"); if (z) z.innerHTML = ""; }
       recalc();
     });
     const selCateg = zonaLinii.querySelector("#em-l" + i + "-categorie");
@@ -607,7 +618,55 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <div class="em-total-rand"><span>TVA</span><b>${nestiut ? "—" : cu(tva)}</b></div>
       <div class="em-total-rand em-total-mare"><span>Total</span><b>${nestiut ? "—" : cu(baza + tva)}</b></div>
       ${nestiut ? `<p class="ecran-nota" id="em-total-nota">TVA-ul nu se poate calcula încă: cota nu e stabilită pe ${cate(faraCota, "linie", "linii")}. Se propune automat din denumire — scrie denumirea articolului (sau alege-l din stoc) și așteaptă propunerea.</p>` : ""}`;
+    actualizeazaLei(nestiut);   // [lotul 10, 7g] factura în valută: cursul BNR și sumele în lei, înainte de emitere
     salveazaCiorna();   // [lotul 07.10 pct.2] modelul liniilor se schimbă și fără tastă: cota propusă, o linie ștearsă
+  }
+
+  // [lotul 10, comanda 10.2 pct.7g] „Factură în valută: cursul BNR și TVA-ul în lei nu se văd înainte de emitere.” La o monedă străină,
+  // sub totaluri: cursul BNR cu care VA emite serverul (data lui) și TVA-ul / totalul în lei — calculate de server (`facturi_api.
+  // previzualizare_lei`: același curs, aceeași conversie ca la emitere, CF art.319 alin.(20) lit.j: „suma taxei colectate, exprimate în
+  // lei”), nu aici: ecranul nu duplică regula (interdicția 4). Cererea pleacă după ce omul s-a oprit din scris; un răspuns întârziat,
+  // pentru o stare deja schimbată, nu se mai afișează. Cât cota nu e stabilită pe o linie cu valoare, sumele în lei sunt „—”, ca totalul.
+  let leiTimer = null, leiCerere = 0;
+  function actualizeazaLei(nestiut) {
+    const z = corp.querySelector("#em-valuta");
+    if (!z) return;
+    clearTimeout(leiTimer);
+    const nr = ++leiCerere;
+    if (!monedaSel || monedaSel === "RON") { z.hidden = true; z.innerHTML = ""; return; }
+    const moneda = monedaSel, data = (corp.querySelector("#em-data") || {}).value || dataIso();
+    // DS cap.24 regula 2: lista trimisă e lista de pe ecran, nefiltrată — cât un rând e incomplet, numai cursul (ca la cota nestabilită)
+    const incomplet = linii.some((l) => !l || l.cantitate === "" || l.cantitate == null || l.pret_unitar === "" || l.pret_unitar == null);
+    const cerere = { moneda, data_emitere: data, linii: (nestiut || incomplet) ? null : linii
+      .map((l) => ({ cantitate: l.cantitate, pret_unitar: l.pret_unitar, cota_tva: l.cota_tva })) };
+    // refuzul cursului (DS cap.6 v2.93, 410): zona sub monedă, cu titlul ei; mesajul îl pune `arataMesaj`
+    const zonaRefuzului = () => {
+      z.hidden = false;
+      z.innerHTML = `<div class="fd-valuta-titlu">Conversie în lei (art. 319 Cod fiscal)</div><div id="em-valuta-mesaj"></div>`;
+      return z.querySelector("#em-valuta-mesaj");
+    };
+    const reincearca = " La emitere vei putea reîncerca sau scrie cursul de mână, cu data lui.";
+    leiTimer = setTimeout(async () => {
+      let r;
+      try { r = await api.post(`/tenants/${tenantId}/facturi/previzualizare-lei`, cerere); }
+      catch (e) {
+        if (nr === leiCerere && z.isConnected) arataMesaj(zonaRefuzului(), `${(e && e.mesaj) || "Cursul BNR nu s-a putut citi acum."}${reincearca}`, "eroare");
+        return;
+      }
+      if (nr !== leiCerere || !z.isConnected) return;   // între timp s-a schimbat moneda, data sau o linie
+      z.hidden = false;
+      if (!r || !r.ok) {
+        arataMesaj(zonaRefuzului(), `${(r && r.mesaj) || ""}${r && r.cod === "MONEDA_NECOTATA" ? "" : reincearca}`, "eroare");
+        return;
+      }
+      const sume = r.tva_lei != null;
+      z.innerHTML = `
+        <div class="fd-valuta-titlu">Conversie în lei (art. 319 Cod fiscal), cum o va scrie factura</div>
+        <div class="fd-tot-rand"><span>Curs BNR ${esc(moneda)}</span><span id="em-valuta-curs"><b>${Number(r.curs).toLocaleString("ro-RO", { minimumFractionDigits: 4 })}</b> din ${esc(dataRo(r.data_curs))}</span></div>
+        <div class="fd-tot-rand"><span>TVA în lei</span><span id="em-valuta-tva"><b>${sume ? bani(r.tva_lei) + " lei" : "—"}</b></span></div>
+        <div class="fd-tot-rand"><span>Total în lei</span><span id="em-valuta-total">${sume ? bani(r.total_lei) + " lei" : "—"}</span></div>
+        <div class="fd-valuta-sub">Ultimul curs comunicat de BNR până la data facturii (${esc(dataRo(data))}); se fixează la emitere.</div>`;
+    }, 350);
   }
 
   corp.querySelector("#em-add-linie").addEventListener("click", () => { linii.push(linieNoua()); deseneazaLinii(); salveazaCiorna(); });

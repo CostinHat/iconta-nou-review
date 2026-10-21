@@ -60,6 +60,11 @@ TABEL = {
         ABD, "declarat", REGULA_DECLARAT,
         "Indexul pe teme al ghidurilor publice (lot 06.10). Sursele sunt fisiere VERSIONATE; cheia e starea lor pe disc, "
         "deci o schimbare de continut se vede la urmatoarea cerere, iar repornirea de la commit il goleste oricum."),
+    ("core.anaf_api", "_CACHE_LOCALITATI"): V(
+        ABD, "declarat", REGULA_DECLARAT,
+        "[lotul 10, C69] Localitatea partenerilor din ANAF, adusa INAINTEA tranzactiei de generare si citita de generator in "
+        "aceeasi cerere. Doua procese pot avea continut diferit, dar fiecare cerere de generare isi aduce singura ce-i lipseste, "
+        "deci difera prin VECHIME (termen 24 h), nu prin adevar. Plafon `_LOCALITATI_MAX`."),
     ("core.scadente", "_cache_sarb"): V(
         ABD, "declarat", REGULA_DECLARAT,
         "Memo pe o functie PURA, marginit prin `_AN_MIN`/`_AN_MAX` la cel mult 76 de chei. "

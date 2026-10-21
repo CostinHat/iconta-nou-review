@@ -37,6 +37,13 @@ CLASIFICARE = {
     "date_firma.js:df-activitate_exceptata_amef": (LA_FOLOSIRE, "exceptarea AMEF (OUG 28/1999 art.2) — coloana fără implicit (core/migrare_fapte_date_firma.py); neleasă se cere la prima chitanță fără factură și la D394 cu chitanțe fără cotă (`activitati_amef.refuz_nedeclarata`)"),
     "date_firma.js:vf-${c.k}": (EXISTENTA, "builderul vectorului fiscal pune „— alege —” pe regim / plătitor TVA / operațiuni IC (obligatorii) și pe inreg_art317 (`neales`, fără implicit în schemă — cerut la D301), iar periodicitatea are opțiunea goală"),
     "date_firma.js:df-cont_venit": (EXISTENTA, "arată preferința STOCATĂ; „cont_venit_implicit 707 rămâne” (decizia Costin, lotul 07.10 B A.3) — contul e o sugestie vizibilă și schimbabilă, ca la Operațiuni"),
+    # [lotul 10, 428] regimul TVA la încasare e OPȚIONAL (CF art.282 alin.(3): „persoanelor impozabile care optează în acest sens”): firma care
+    # n-a optat niciodată NU aplică — „Nu” e dedus din lege (a), stă lângă „Verifică în registrul ANAF” (b), se schimbă cu data de la care se
+    # aplică (c); cu perioade înregistrate arată starea lor (VALOARE_EXISTENTA)
+    "date_firma.js:vf-tva_incasare": (PRESELECTAT, "(a) DEDUS din lege: sistemul TVA la încasare e opțiune (CF art.282 alin.(3): „persoanelor "
+                                      "impozabile care optează în acest sens”) — firma care n-a optat nu-l aplică, deci „Nu”; cu perioade "
+                                      "înregistrate arată starea lor; (b) vizibil lângă „Verifică în registrul ANAF”; (c) se schimbă pe „Da”, "
+                                      "cu data de la care se aplică"),
     "declaratii.js:dec-tip": (NEFISCAL, "navigare: ce declarație se pregătește; alegerea se vede și se confirmă cu «Continuă», nu se trimite tacit"),
     "declaratii.js:dec-trim": (NEFISCAL, "navigare: trimestrul de lucru (cel din antet), confirmat cu «Continuă»"),
     "declaratii.js:dec-luna": (NEFISCAL, "navigare: luna de lucru (cea din antet), confirmată cu «Continuă»"),

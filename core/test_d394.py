@@ -30,10 +30,12 @@ PROF = {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "cui": "2676605
         "tip_decont": "L"}  # [fix trim 06.08.2026] vector fiscal (perioada TVA) obligatoriu
 
 
-def _f(cui, directie, cota, baza, tva, ti=False, cat=None, nume="P"):
+def _f(cui, directie, cota, baza, tva, ti=False, cat=None, nume="P", judet="B"):
+    # [lotul 10, C69] `judet` = județul partenerului de pe factură (`facturi.tert_judet`): judP la partenerul neînregistrat fără cod
+    # (structura D394 pct.222 „Obligatoriu pt tip_partener=2 și cuiP=null și taraP=RO”) vine de aici, nu din județul firmei
     return {"cui": cui, "nume": nume, "directie": directie, "cota": cota,
             "baza": Decimal(str(baza)), "tva": Decimal(str(tva)),
-            "taxare_inversa": ti, "categorie_331": cat}
+            "taxare_inversa": ti, "categorie_331": cat, "judet": judet}
 
 
 # ---------- clasificarea partenerului (pct. 216) ----------
@@ -474,11 +476,11 @@ def test_op1_fara_tva_pentru_tipuri_in_afara_listei():
 
 
 def test_op1_partener_2_are_tara_si_judet():
-    """R220 + R222.3."""
-    r = calcul_d394(PROF, 2026, 6, [_f("", "emisa", 11, 100, 11, nume="POPESCU")])
+    """R220 + R222.3. [lotul 10, C69] județul e al PARTENERULUI (de pe factura lui), nu al firmei."""
+    r = calcul_d394(PROF, 2026, 6, [_f("", "emisa", 11, 100, 11, nume="POPESCU", judet="Prahova")])
     x = build_xml(r)
     linia = [l for l in x.split("\n") if "<op1 " in l][0]
-    assert 'taraP="RO"' in linia and 'judP="40"' in linia
+    assert 'taraP="RO"' in linia and 'judP="29"' in linia   # pct.222 judP „Nomenclator” — Prahova 29 (firma e în București, 40)
 
 
 def test_op_efectuate_zero_fara_operatiuni():

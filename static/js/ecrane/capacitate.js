@@ -2,7 +2,7 @@
 // Trei sectiuni: 1) cabinet (cat e de facut vs ritm), 2) pe asistent
 // (incarcare per procesator), 3) timp mediu pe tip de declaratie.
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
-import { api, esc, cate } from "../api.js?v=158edee964";
+import { api, esc, cate } from "../api.js?v=ff30ebaf3f";
 import { randeazaAsistenti } from "./asistenti.js?v=e6e5062e27";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 
@@ -50,7 +50,9 @@ export async function randeazaCapacitate(corp, nav) {
   }
 
   // --- 1) CABINET ---
+  // [lotul 10, 421 / 424 — rezumatul fix, DS cap.9 v2.97 pct.5] cifrele cabinetului rămân sus cât derulezi tabelele de dedesubt
   const sectCabinet = `
+    <div class="rezumat-fix">
     <div class="cap-cifre">
       ${celulaCifra(cab.in_lucru ?? 0, "în lucru")}
       ${celulaCifra(cab.de_validat ?? 0, "de validat", cab.de_validat ? "var(--galben-text)" : null)}
@@ -58,6 +60,7 @@ export async function randeazaCapacitate(corp, nav) {
       ${celulaCifra((cab.ritm_pe_zi ?? 0), "ritm / zi lucrătoare")}
     </div>
     <p class="cap-nota">Ritmul e calculat pe ${cate(cab.zile_lucratoare ?? 0, "zi lucrătoare", "zile lucrătoare")} din luna curentă.</p>
+    </div>
   `;
 
   // --- 2) PE ASISTENT ---

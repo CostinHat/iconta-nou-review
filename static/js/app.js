@@ -44,14 +44,14 @@ window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.messag
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
-import { api, arataMesaj, esc } from "./api.js?v=158edee964";
+import { api, arataMesaj, esc } from "./api.js?v=ff30ebaf3f";
 import { ecranBunVenit } from "./ecrane/ansamblu.js?v=1be335b472";  // [bun_venit_v1]
-import { ecranLogin } from "./ecrane/login.js?v=7fa86cae59";
-import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=873302af02";
+import { ecranLogin } from "./ecrane/login.js?v=435ec243ea";
+import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=8dc586b036";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=f9f0ffaa7f";
 import { desktopAsistent } from "./ecrane/asistent.js?v=a2fd8c40cd";
 import { desktopPortal } from "./ecrane/portal.js?v=8291500e22";
-import { desktopAdmin } from "./ecrane/admin.js?v=c338118ad6"; // [p37_admin_desktop]
+import { desktopAdmin } from "./ecrane/admin.js?v=b1da7f9033"; // [p37_admin_desktop]
 import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=34d0fb0afd";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
 const radacina = document.getElementById("app");

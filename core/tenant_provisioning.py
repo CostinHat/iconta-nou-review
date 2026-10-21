@@ -328,6 +328,16 @@ def precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=False):
     ]
     with conn.cursor() as cur:
         cur.execute('UPDATE "%s".firma_profil SET ' % schema_name + ", ".join(seturi), tuple(par))
+        # [lotul 10, deficiența 428] „regimul pe firmă, cu data de la care se aplică”: ANAF dă în registrul RTVAI data de la care
+        # firma aplică sistemul TVA la încasare (`dataInceputTvaInc`). Cu statusul activ, data de început și FĂRĂ dată de sfârșit,
+        # perioada în curs e neechivocă și intră la creare, cu sursa „anaf” (valoarea inițială, ca restul precompletării — nu o
+        # schimbare, deci fără jurnal: DECIZII 04.10.2026, consecința 1). Cu dată de sfârșit (perioadă trecută) sau fără dată nu se
+        # scrie nimic: o propune „Verifică în registrul ANAF” din Date firmă, iar omul alege.
+        _rt = d.get("tva_incasare_rtvai") or {}
+        if _rt.get("status") and _rt.get("data_inceput") and not _rt.get("data_sfarsit"):
+            cur.execute('INSERT INTO "%s".tva_incasare_perioade (de_la, sursa, verificat_anaf_la, stare_anaf) '
+                        "SELECT %%s::date, 'anaf', now(), %%s WHERE NOT EXISTS (SELECT 1 FROM \"%s\".tva_incasare_perioade)"
+                        % (schema_name, schema_name), (_rt["data_inceput"], "aplică (ANAF, la adăugarea firmei)"))
     return True
 
 

@@ -31,6 +31,7 @@ from datetime import datetime, timezone, timedelta
 
 from core import db
 from core import spv_conector
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] a doua trimitere vie a facturii -> numită, nu excepție
 from core.common import cate as _cate
 from core import efactura_send as efs
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
@@ -74,16 +75,25 @@ def de_polat(conn, schema):
 
 
 def _seteaza(schema, tid, stare, err=None, id_desc=None, zip_path=None, xml_sha=None, finalizat=False):
+    """[lotul 10, C73 / U2] Un rând în «investigatie» (blocat la ANAF peste prag, deci în afara indexului `uq_efactura_trimiteri_viu`)
+    poate primi verdictul `ok` după ce factura a fost retrimisă și are deja altă trimitere vie. Atunci rândul NU devine al doilea viu
+    (indexul îl refuză; înainte, excepția oprea interogarea tuturor rândurilor rămase): rămâne în starea lui, cu dublura numită."""
+    from core import repo_efactura as _repo
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute(f"""UPDATE {schema}.efactura_trimiteri
-                SET stare=%s, error_message=COALESCE(%s, error_message),
-                    id_descarcare=COALESCE(%s, id_descarcare),
-                    zip_raspuns_path=COALESCE(%s, zip_raspuns_path),
-                    xml_semnat_sha256=COALESCE(%s, xml_semnat_sha256),
-                    actualizat_la=now(),
-                    finalizat_la=CASE WHEN %s THEN now() ELSE finalizat_la END
-                WHERE id=%s""", (stare, err, id_desc, zip_path, xml_sha, finalizat, tid))
+            try:
+                with _chei.refuza_dublura(cur, ("uq_efactura_trimiteri_viu",), lambda cur, e: _repo.refuz_alta_vie(cur, schema, tid)):
+                    cur.execute(f"""UPDATE {schema}.efactura_trimiteri
+                        SET stare=%s, error_message=COALESCE(%s, error_message),
+                            id_descarcare=COALESCE(%s, id_descarcare),
+                            zip_raspuns_path=COALESCE(%s, zip_raspuns_path),
+                            xml_semnat_sha256=COALESCE(%s, xml_semnat_sha256),
+                            actualizat_la=now(),
+                            finalizat_la=CASE WHEN %s THEN now() ELSE finalizat_la END
+                        WHERE id=%s""", (stare, err, id_desc, zip_path, xml_sha, finalizat, tid))
+            except _chei.CheieDublata as e:
+                cur.execute(f"UPDATE {schema}.efactura_trimiteri SET error_message=%s, actualizat_la=now() WHERE id=%s",
+                            ("ANAF: %s. %s" % (stare, e), tid))
 
 
 def _descarca_recipisa(schema, tid, principal, id_desc, mediu):

@@ -28,7 +28,8 @@ def _fact(cat):
     """Achizitie de cereale de la o persoana fizica fara CUI (tip_partener=2, tip N)."""
     return {"cui": "", "platitor_tva": None, "nume": "IONESCU MARIA PFA",
             "directie": "primita", "taxare_inversa": False,
-            "cota": 0, "baza": 300, "tva": 0, "categorie_331": cat}
+            "cota": 0, "baza": 300, "tva": 0, "categorie_331": cat,
+            "judet": "Dolj"}   # [lotul 10, C69] județul partenerului (judP la tip_partener=2 fără cod), de pe factură
 
 
 _PROF = {"tva_la_incasare": False}

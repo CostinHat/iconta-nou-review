@@ -17,18 +17,24 @@ from core.facturi import clauza_nu_din_bon as _nu_din_bon   # [decizia A 02.10] 
 
 
 def select_inregistrari(cur, _STATUS_FINAL, inceput, sfarsit):
-    cur.execute("SELECT i.factura_id AS fid, f.directie AS directie, SUM(l.suma) AS settled, "
+    # [lotul 10, 428, decizia „Construiesc acum”] decontarea facturii = și compensarea ei (HG 1/2016 pct.26 alin.(9): „se consideră că
+    # furnizorul/prestatorul a încasat, respectiv beneficiarul a plătit [...] la data la care se sting total sau parțial datoriile”);
+    # nota compensării (401 = 4111) stinge ambele facturi — legătura e `compensari_api.legaturi`, sursa unică, nu `i.factura_id`
+    from core import compensari_api as _cz
+    cur.execute("SELECT lg.factura_id AS fid, f.directie AS directie, SUM(l.suma) AS settled, "
                 # [A2, 17.09.2026] Clasificarea partenerului CALATORESTE cu decontarea: fara ea,
                 # `_pull_incasare` intorcea doar {directie, decontari}, iar `calcul_d300` trata orice
                 # operatiune la incasare drept RO interna (tara lipsa -> 'RO'). Consecinta: livrarile/
                 # achizitiile IC, exportul si serviciile la incasare cadeau la rd.26/rd.9 in loc de
                 # rd.1/rd.5/rd.7/rd.14. Cheile sunt PER FACTURA (GROUP BY pe factura le pastreaza unice).
                 "COALESCE(f.tert_tara, 'RO') AS tert_tara, f.tert_cui AS cui, "
-                "f.axa_ic AS axa_ic, f.categorie_331 AS categorie_331 "
-                "FROM inregistrari i "
+                "f.axa_ic AS axa_ic, f.categorie_331 AS categorie_331, "
+                # [lotul 10, 428] furnizorul in sistem (art.297 alin.(2)) desparte in D394 tvaDedAI de tvaDed
+                "COALESCE(f.furnizor_tva_incasare, false) AS furnizor_tva_incasare "
+                "FROM inregistrari i JOIN " + _cz.legaturi() + " lg ON lg.inregistrare_id = i.id "
                 "JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
-                "JOIN facturi f ON f.id = i.factura_id "
-                "WHERE i.status = 'validata' AND i.factura_id IS NOT NULL "
+                "JOIN facturi f ON f.id = lg.factura_id "
+                "WHERE i.status = 'validata' "
                 "AND COALESCE(f.taxare_inversa, false) = false "  # art.282(6)/297(3): taxare inversa = regim general, nu la incasare
                 "AND " + _STATUS_FINAL + " "  # [B1] doar facturi contabilizabile
                 "AND " + _doc_fiscal("f") + " "   # [DECIZII 46] proforma/avizul nu sunt documente fiscale
@@ -36,46 +42,12 @@ def select_inregistrari(cur, _STATUS_FINAL, inceput, sfarsit):
                 "AND i.data >= %s AND i.data < %s "
                 "AND ((f.directie = 'emisa' AND l.cont_credit = '4111') "
                 "  OR (f.directie = 'primita' AND l.cont_debit = '401')) "
-                "GROUP BY i.factura_id, f.directie, f.tert_tara, f.tert_cui, f.axa_ic, f.categorie_331",
+                "GROUP BY lg.factura_id, f.directie, f.tert_tara, f.tert_cui, f.axa_ic, f.categorie_331, f.furnizor_tva_incasare",
                 (inceput, sfarsit))
     return cur.fetchall()
 
 
 def select_facturi(cur, fids):
-    cur.execute("SELECT f.id AS fid, f.total, f.tva, l.cantitate, l.pret_unitar, l.cota_tva "
-                "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
-                "WHERE f.id = ANY(%s)", (fids,))
-
-
-def select_facturi_2(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit):
-    cur.execute("SELECT f.id, f.directie, f.total, f.tva, "
-                "f.tip, f.serie, f.numar, f.data_emitere, "   # [258] factura numită în avertismente cum o vede omul, nu prin id
-                "f.moneda, f.curs_bnr, f.total_lei, f.tva_lei, "  # [A1] conversia in lei (core.sume_lei)
-                "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
-                "COALESCE(f.tert_tara, 'RO') AS tert_tara, "
-                "l.cantitate, l.pret_unitar, l.cota_tva "
-                "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
-                "WHERE " + _EXIG_NORMAL + " >= %s AND " + _EXIG_NORMAL + " < %s "
-                "AND " + _STATUS_FINAL + " "
-                "AND " + _doc_fiscal("f") + " "   # [DECIZII 46]
-                "AND COALESCE(f.taxare_inversa, false) = true ORDER BY f.id", (inceput, sfarsit))
-
-
-def select_inregistrari_2(cur, _STATUS_FINAL, inceput, sfarsit):
-    cur.execute("SELECT i.factura_id AS fid, SUM(l.suma) AS settled "
-                "FROM inregistrari i "
-                "JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
-                "JOIN facturi f ON f.id = i.factura_id "
-                "WHERE i.status = 'validata' AND i.factura_id IS NOT NULL "
-                "AND f.directie = 'primita' AND COALESCE(f.furnizor_tva_incasare, false) = true "
-                "AND COALESCE(f.taxare_inversa, false) = false "
-                "AND " + _STATUS_FINAL + " "
-                "AND i.data >= %s AND i.data < %s AND l.cont_debit = '401' "
-                "GROUP BY i.factura_id", (inceput, sfarsit))
-    return cur.fetchall()
-
-
-def select_facturi_3(cur, fids):
     cur.execute("SELECT f.id AS fid, f.total, f.tva, l.cantitate, l.pret_unitar, l.cota_tva "
                 "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
                 "WHERE f.id = ANY(%s)", (fids,))
@@ -127,9 +99,8 @@ def select_facturi_4(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit):
                 "WHERE " + _EXIG_NORMAL + " >= %s AND " + _EXIG_NORMAL + " < %s "
                 # [B1] doar facturi contabilizabile (exclude ciorna/de_preluat/descarcata/anulata/stornata)
                 "AND " + _STATUS_FINAL + " "
-                # [B1] deducere amanata (art.297 alin.2): primita de la furnizor la incasare -> exclusa din
-                # calea de EMITERE, adusa separat pe calea de PLATA (_pull_furnizor_incasare)
-                "AND NOT (f.directie = 'primita' AND COALESCE(f.furnizor_tva_incasare, false) = true) "
+                # [lotul 10, 428] deducerea amanata (art.297 alin.2-3) si facturile emise in sistem nu se mai scot aici: regimul e al
+                # facturii la data ei, decis in `d300.pull` (`tva_incasare.regim`) — o singura definitie
                 # [DECIZII 46, 15.09.2026] Proforma NU e document fiscal: TVA-ul nu e exigibil pe ea.
                 # Aici se rupea — filtrul era pe dată și pe status, iar proforma are status declarabil.
                 "AND " + _doc_fiscal("f") + " "

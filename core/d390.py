@@ -494,14 +494,10 @@ def build_xml(res):
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
     # [regula 4 - fara default tacut] nume/prenume/functie declarant sunt DA (obligatorii); cand lipsesc
     # din profil emitem un implicit (altfel DUK respinge campul gol) DAR ANUNTAT prin avertisment.
+    # [C69] fără implicit („ADMINISTRATOR” / „-”): `erori_declarant` blochează lipsa înainte de build_xml (genereaza:793)
     _dnume = prof.get("declarant_nume")
     _dfct = prof.get("declarant_functie")
-    if not (_dnume and _dfct):
-        res.avertismente.append("D390: declarantul (nume/funcție) lipsește din profil — se trece implicit "
-                                "\"ADMINISTRATOR\". Completează declarantul în profilul firmei, nu lăsa implicitul.")
-    _dnume = _dnume or "ADMINISTRATOR"
-    _dpren = prof.get("declarant_prenume") or "-"
-    _dfct = _dfct or "ADMINISTRATOR"
+    _dpren = prof.get("declarant_prenume")
     hdr = ('<declaratie390 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
            'xmlns="%s" xsi:schemaLocation="%s D390.xsd" '
            'luna="%d" an="%d" d_rec="0" nume_declar="%s" prenume_declar="%s" '

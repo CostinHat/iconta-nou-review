@@ -1401,7 +1401,10 @@ LIMITE_TEXT_ANAF = {
     # d406 = SAF-T: limitele sunt tipurile din XSD (d406_schema_anaf.xlsx, foaia SimpleTypes):
     # SAFshorttextType=18, SAFmiddle1textType=35, SAFmiddle2textType=70, SAFlongtextType=256.
     "d406": {"CompanyName": 256, "StreetName": 70, "City": 35, "PostalCode": 18, "ContactLastName": 70,
-             "PartnerName": 70, "AccountDescription": 256, "Description": 256, "PaymentMethod": 18},
+             "PartnerName": 70, "AccountDescription": 256, "Description": 256, "PaymentMethod": 18,
+             # [lotul 10, C69] antetul nu mai scrie valori fixe: FirstName (S.PN.2) SAFmiddle1textType, Telephone (S.CTH.2)
+             # SAFshorttextType, IBANNumber (S.BA.1) SAFmiddle1textType — XSD /opt/duk/saft/saft.xsd
+             "ContactFirstName": 35, "Telephone": 18, "IBANNumber": 35},
 }
 
 

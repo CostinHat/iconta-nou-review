@@ -155,7 +155,7 @@ def salveaza_model(conn, font=None, culoare=None, logo=None):
 # Sursa: validatoarele din core/dXXX.py (functiile valideaza()), care ridica
 # "LIPSA <camp>" cand declaratia nu se poate genera. Dovedit 15.07.2026 pe
 # validatorul oficial ANAF. Fiecare camp obligatoriu are asterisc in interfata
-# (DS cap.6) si blocheaza salvarea daca lipseste.
+# (DS cap.6); lipsa lui NU blocheaza salvarea, ci declaratiile din OBLIGATORII [lotul 10, deficienta 427].
 # [R66, 26.08.2026] `patron_nume` a intrat aici fiindca avea drum de CITIRE si niciun drum de
 # SCRIERE: il citesc `adeverinta`, `contracte_api` si `pachete_api` — deci se TIPARESTE pe
 # documente care ajung la oameni — iar nimic din aplicatie nu-l scria. A treia coloana din clasa
@@ -171,9 +171,15 @@ CAMPURI_FISCALE = ("nume", "cui", "reg_com", "caen", "adresa", "oras", "judet",
                    "cod_postal", "banca", "iban", "telefon", "email", "patron_nume",
                    "declarant_nume", "declarant_prenume", "declarant_functie")
 
+#: [lotul 10, deficiența C69, deciziile Costin 20.10.2026, verbatim în DECIZII „Lotul 10, C69 … deciziile lui Costin”] „Câmpuri noi +
+#: blocaj”: „mare contribuabil (Da/Nu)” și „forma de proprietate” (nomenclatorul ANAF, `bilant.FORME_PROPRIETATE`) — bilanțul le cere
+#: (bifaMC / codJJ / codPP) și se oprește fără ele; „Varianta 1”: bifa „nu are cont bancar”, lângă IBAN — D406 scrie atunci „Fara cont
+#: bancar” (S.BA.2), iar rulajul / soldul pe 512x în perioadă o contrazice și oprește D406. Coloanele: core/migrare_profil_c69.py.
+CAMPURI_C69 = ("mare_contribuabil", "forma_proprietate", "fara_cont_bancar")
+
 #: [06.10.2026, comanda Costin §6.4] „Orice modificare [a Date firmă] se jurnalizează (cine, când, valoare veche → nouă),
 #: inclusiv forma juridică și capitalul, iar jurnalul e vizibil cabinetului.” Toate câmpurile ecranului, din toate grupurile.
-CAMPURI_JURNAL = CAMPURI_FISCALE + CAMPURI_CAPITAL + CAMPURI_AMEF + ("cont_venit_implicit", "metoda_stoc", "serie_chitanta",
+CAMPURI_JURNAL = CAMPURI_FISCALE + CAMPURI_CAPITAL + CAMPURI_AMEF + CAMPURI_C69 + ("cont_venit_implicit", "metoda_stoc", "serie_chitanta",
                                                                     "luna_preluare",   # [08.10 §6 pct.4] „Schimbarea se jurnalizează.”
                                                                     "data_infiintare")   # [deficiența 229, 12.10.2026]
 
@@ -192,11 +198,21 @@ def _instantaneu(conn):
 OBLIGATORII = {
     "nume": ("D100", "D101", "D205", "D301", "D390", "D394", "D406"),
     "cui": ("D100", "D101", "D205", "D300", "D301", "D390", "D394", "D406"),
-    "caen": ("D101", "D300", "D394"),
+    # [lotul 10, deficiența 427] + D112: structura ANAF D112 „6 caen Cod CAEN N(4) DA  Nomenclator 1 – coduri CAEN si tarife de
+    # risc […] ERR caen ‘Cod caen inexistent in nomenclator’” (anaf_surse/d112_struct_anaf.txt) — generatorul punea „0000”.
+    "caen": ("D101", "D112", "D300", "D394"),
     "adresa": ("D100", "D101", "D205", "D394"),   # D101: structura ANAF „28. adresa Adresa C(1000) DA" — citit 30.08.2026; codul o oprea deja, harta n-o spunea
     "banca": ("D300", "D301"),
-    "iban": ("D300", "D301"),
-    "telefon": ("D394",),
+    # [lotul 10, deficiența C69] + D406: antetul SAF-T cere localitatea (S.AD.5 City „Mandatory … 1”), telefonul (S.CTH.2
+    # Telephone „Mandatory … 1”), contul bancar (S.CMH.6 BankAccount „Mandatory … 1..*”, S.BA.1 IBANNumber) și persoana de contact
+    # (S.PN.2 FirstName / S.PN.5 LastName „Mandatory … 1”) — anaf_surse/d406_schema_anaf.xlsx, foaia „5. Structures”. Generatorul
+    # le umplea cu „-” / „RO00BANK0000000000000000” / numele firmei; acum lipsa oprește D406 (`d406.erori_generare`).
+    "oras": ("D406",),
+    # [lotul 10, deficiența C69] bilanțul: „16. codTT Cod judet sediu (fara cod 41) N(2) DA Nomenclator Judete”
+    # (anaf_surse/structura_SC_1225_270126.txt); lipsa devenea „bucuresti” (40) — acum oprește bilanțul (`bilant_api.erori_generare`).
+    "judet": ("Bilanț",),
+    "iban": ("D300", "D301", "D406"),   # [lotul 10, C69] D406 nu-l mai cere cu bifa „nu are cont bancar” (`lipsuri`, `d406.erori_generare`)
+    "telefon": ("D394", "D406"),
     "reg_com": ("Bilanț S1005",),
     # [declarant_oblig 17.08.2026] nume+functia declarantului: DUK respinge campul gol al declarantului
     # (nume_declar/functie_declar) -> se cer EXPLICIT (ca regim_fiscal), nu se fabrica "ADMINISTRATOR" tacit.
@@ -206,9 +222,17 @@ OBLIGATORII = {
     # 17.08.2026 care spunea ca „nu orice declarant are prenume in forma ANAF"; decizia s-a
     # ANULAT pe 30.08.2026, cu motivul: daca exista un declarant fara prenume, intrebarea e ce
     # se completeaza acolo, nu un motiv sa lasi campul liber. SURSA BATE DECIZIA.
-    "declarant_prenume": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394"),
-    "declarant_nume": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394", "Bilanț"),
-    "declarant_functie": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394", "Bilanț"),
+    # [lotul 10, C69] + D710: structura D100-D710 „nume_declar / prenume_declar / functie_declar … DA” (generatorul punea ADMINISTRATOR / „-”)
+    # [lotul 10, C69] + Bilanț la prenume („19. nume_admin Nume si prenume Administrator C(75) DA”, structura SC 1225 — administratorul e
+    # declarantul, decizia Costin); + D101G la toate trei: validatorul ANAF D101G v2 (~/duk/dist/lib/D101GValidator.jar, J2.0.0, același
+    # sha256 cu cel publicat de ANAF) respinge lipsa: „eroare atribut: nume_declar: atributul trebuie sa existe” (la fel prenume / functie)
+    "declarant_prenume": ("D100", "D101", "D101G", "D112", "D205", "D300", "D301", "D390", "D394", "D406", "D710", "Bilanț"),
+    "declarant_nume": ("D100", "D101", "D101G", "D112", "D205", "D300", "D301", "D390", "D394", "D406", "D710", "Bilanț"),
+    "declarant_functie": ("D100", "D101", "D101G", "D112", "D205", "D300", "D301", "D390", "D394", "D710", "Bilanț"),
+    # [lotul 10, C69] bilanțul: „10. bifaMC … DA” / „17. codJJ … codJJ=41 daca bifa_MC=1” și „18. codPP Cod forma de proprietate N(2) DA
+    # Nomenclator forme de proprietate” (anaf_surse/structura_SC_1225_270126.txt) — generatorul punea 1 / 10 / 35 oricărei firme
+    "mare_contribuabil": ("Bilanț",),
+    "forma_proprietate": ("Bilanț",),
 }
 
 
@@ -257,10 +281,23 @@ def erori_declarant(prof):
 def lipsuri(profil):
     """PURA: campurile obligatorii necompletate + ce declaratii blocheaza fiecare.
     Intoarce [{camp, declaratii}] - gol daca profilul e complet."""
+    from core.control_fiscal_api import neaplicabile_forma
     out = []
+    profil = profil or {}
+    # [lotul 10, C71] numai declarațiile pe care forma firmei le poate datora: la PFA (partidă simplă) „Mare contribuabil” / „Forma de
+    # proprietate” blocau „Bilanț”, iar CAEN / IBAN blocau D101 / D406 — declarații pe care nu le depune (sursa unică a excluderii
+    # prin formă, `control_fiscal_api.neaplicabile_forma`)
+    neap = neaplicabile_forma(profil.get("tip_firma"))
     for camp, decl in OBLIGATORII.items():
-        if not str((profil or {}).get(camp) or "").strip():
-            out.append({"camp": camp, "declaratii": list(decl)})
+        decl = [d for d in decl if ("bilant" if d.startswith("Bilanț") else d.lower()) not in neap]
+        v = profil.get(camp)
+        # [lotul 10, C69] `mare_contribuabil` = Nu (False) e o alegere făcută, nu o lipsă; lipsă e numai nedeclarat (NULL) sau gol
+        if v is None or (not isinstance(v, bool) and not str(v).strip()):
+            # [lotul 10, C69, decizia Costin „Varianta 1”] firma care a declarat că nu are cont bancar scrie în D406 „Fara cont bancar”
+            # (S.BA.2), deci IBAN-ul gol nu mai blochează D406 (D300 / D301 rămân cum erau)
+            decl = [d for d in decl if not (camp == "iban" and d == "D406" and profil.get("fara_cont_bancar") is True)]
+            if decl:
+                out.append({"camp": camp, "declaratii": list(decl)})
     return out
 
 
@@ -396,11 +433,16 @@ def _activitati_amef():
     return ACTIVITATI
 
 
+def _forme_proprietate():
+    from core.bilant import FORME_PROPRIETATE
+    return FORME_PROPRIETATE
+
+
 def citeste_date(conn):
     """Profilul complet + lipsurile + optiunile de cont venit, pentru ecranul Date firma."""
     import psycopg2.extras as _E
     coloane = (list(CAMPURI_FISCALE) + ["cont_venit_implicit"] + list(CAMPURI_CAPITAL) + ["tip_firma"]
-               + list(CAMPURI_AMEF) + ["metoda_stoc", "serie_chitanta", "data_infiintare"])  # [F182]; [lot 19 d12]; [D394 Î2]; [06.10.2026 §6.3]; [decizii 07.10 pct.5]
+               + list(CAMPURI_AMEF) + ["metoda_stoc", "serie_chitanta", "data_infiintare"] + list(CAMPURI_C69))  # [F182]; [lot 19 d12]; [D394 Î2]; [06.10.2026 §6.3]; [decizii 07.10 pct.5]
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT %s FROM firma_profil LIMIT 1" % ", ".join(coloane))
         r = cur.fetchone()
@@ -419,15 +461,15 @@ def citeste_date(conn):
     return {"profil": prof, "lipsuri": lipsuri(prof), "conturi_venit": CONTURI_VENIT,
             "forme_juridice": [[k, v[0]] for k, v in _cs.FORME.items()],
             "activitati_amef": [[k, v] for k, v in _activitati_amef().items()],
+            "forme_proprietate": [[k, v] for k, v in _forme_proprietate().items()],   # [lotul 10, C69] nomenclatorul ANAF (bilanț codPP)
             "metode_stoc": [[k, v] for k, v in _metode_stoc().items()],
             "blocaje": blocaje(conn, prof)}
 
 
 def salveaza_date(conn, date, tenant_id=None, user_id=None):
-    """Salveaza datele fiscale. Refuza daca un camp obligatoriu ramane gol:
-    fara ele declaratiile nu se pot depune, iar utilizatorul ar afla abia cand
-    ANAF le respinge, cu mesaj criptic (DS cap.6: validari preventive cu mesaj
-    explicativ, nu doar refuz).
+    """Salveaza datele fiscale. [lotul 10, deficiența 427] Un câmp obligatoriu gol NU refuză salvarea: ce s-a completat se
+    salvează, iar lipsa rămâne în `lipsuri` (răspunsul o întoarce — ecranul o spune după salvare) și blochează numai declarațiile
+    care o cer (`OBLIGATORII` -> generatoarele). Se refuză numai o valoare INVALIDĂ (CUI, cont, serie, dată …).
     [06.10.2026 §6.4] Orice câmp schimbat se jurnalizează (`firma_profil_jurnal`: cine, când, vechi -> nou) — de aceea
     salvarea cere utilizatorul."""
     if date and user_id is None:
@@ -514,6 +556,22 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
                              "încasările fără bon nu au temei."}
         _val["activitate_exceptata_amef"] = exc
         _val["activitate_amef"] = lit if exc else None
+    # [lotul 10, C69] mare contribuabil (Da / Nu; gol = nedeclarat, NULL — bilanțul îl cere la generare, DS cap.17 „cerut la prima
+    # folosire”), forma de proprietate (un cod din nomenclatorul ANAF, altfel refuz), „nu are cont bancar” (Da / Nu, coloana NOT NULL)
+    if any(k in (date or {}) for k in CAMPURI_C69):
+        from core.uc_comun import bifa as _bifa
+        for k, implicit in (("mare_contribuabil", None), ("fara_cont_bancar", False)):
+            if k in (date or {}):
+                try:
+                    _val[k] = _bifa(date, k, implicit)
+                except ValueError as e:
+                    return {"ok": False, "camp": k, "mesaj": str(e)}
+        if "forma_proprietate" in (date or {}):
+            _fp_cod = str(date.get("forma_proprietate") or "").strip() or None
+            if _fp_cod is not None and _fp_cod not in _forme_proprietate():
+                return {"ok": False, "camp": "forma_proprietate",
+                        "mesaj": "Forma de proprietate: alege una din lista ANAF (codul din nomenclatorul formelor de proprietate)."}
+            _val["forma_proprietate"] = _fp_cod
     # [R46] Doar câmpurile care DECID. Un telefon corectat pe o firmă cu ianuarie închis trebuie
     # să treacă mai departe — altfel poarta ar bloca munca de zi cu zi ca să apere trecutul.
     # [05.10.2026, găsit la proba pct.2] poarta se aplică la SCHIMBAREA unui câmp care decide, nu la prezența lui: formularul
@@ -537,11 +595,10 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
             cere_perioade_deschise(conn, "CUI-ul firmei" if decid == ["cui"] else ", ".join(decid))
         except ValueError as e:
             return {"ok": False, "camp": decid[0], "mesaj": str(e)}
-    for camp, decl in OBLIGATORII.items():
-        if camp in curat and not curat[camp]:
-            return {"ok": False, "camp": camp,
-                    "mesaj": "%s e obligatoriu — fără el nu se pot depune: %s."
-                             % (ETICHETE.get(camp, camp), ", ".join(decl))}
+    # [lotul 10, deficiența 427] „Ce s-a completat se salvează; lipsurile rămân în «Profil incomplet» și blochează doar declarațiile
+    # afectate, cum spune deja ecranul.” Un câmp obligatoriu GOL nu mai refuză salvarea: rămâne în `lipsuri()` (panoul și mesajul de
+    # după salvare), iar fiecare generator îl oprește pe declarația lui (`core/test_camp_blocant.py` păzește perechile OBLIGATORII).
+    # Refuzul întreg (aici) era a doua poartă peste aceeași lipsă și oprea și restul formularului (vectorul fiscal, capitalul …).
     # [lotul 6, 04.09.2026] CUI-ul firmei: cifra de control, si SIMETRIA celor doua locuri.
     # Probat: `{"cui": "RO1234567890"}` intra fara nicio verificare, si numai in `firma_profil` —
     # `public.tenants.cui` ramanea cel vechi. Validatorul exista deja in aplicatie, pentru
@@ -614,6 +671,8 @@ ETICHETE = {
     "telefon": "Telefon", "email": "E-mail",
     "declarant_nume": "Nume declarant", "declarant_prenume": "Prenume declarant",
     "declarant_functie": "Functia declarantului",
+    "mare_contribuabil": "Mare contribuabil", "forma_proprietate": "Forma de proprietate",   # [lotul 10, C69]
+    "fara_cont_bancar": "Nu are cont bancar",
 }
 
 

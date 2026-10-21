@@ -43,11 +43,6 @@ def select(cur, dv, prag):
     return cur.fetchone()
 
 
-def select_public_3(cur, aid, prag):
-    cur.execute("SELECT 1 FROM public.alerte_emise WHERE alerta_id=%s AND prag=%s", (aid, prag))
-    return cur.fetchone()
-
-
 def select_public_4(cur):
     cur.execute("SELECT id FROM public.accounting_firms WHERE activ")
 
@@ -56,5 +51,10 @@ def insert_public_2(cur, cid, mesaj):
     cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj) VALUES (%s, %s)", (cid, mesaj))
 
 
-def insert_public_3(cur, aid, prag):
-    cur.execute("INSERT INTO public.alerte_emise (alerta_id, prag) VALUES (%s, %s)", (aid, prag))
+def revendica_pragul(cur, aid, prag):
+    """[lotul 10, C73 / U3] Pragul (alertă, 7/3/0 zile) se REVENDICĂ înainte de anunțuri: True numai pentru cine l-a scris. Înainte, pragul
+    se verifica (SELECT), anunțurile plecau, iar rândul se scria la urmă — două rulări suprapuse ale cronului (emiterea zilnică și cea de
+    după detecție) trimiteau amândouă anunțurile, iar a doua cădea pe `alerte_emise_pkey`. `ON CONFLICT DO NOTHING` e intenționat: cheia
+    E jurnalul de idempotență; a doua rulare așteaptă rândul primei și, după commit-ul ei, nu mai emite nimic."""
+    cur.execute("INSERT INTO public.alerte_emise (alerta_id, prag) VALUES (%s, %s) ON CONFLICT DO NOTHING RETURNING 1", (aid, prag))
+    return cur.fetchone() is not None

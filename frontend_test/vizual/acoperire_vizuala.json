@@ -1,5 +1,5 @@
 {
- "ui_hash": "04333a6f5c32ee1a",
+ "ui_hash": "9d50c9e511e759d1",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -403,7 +403,7 @@
   "datefirma": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 7,
+    "vazute": 10,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -443,6 +443,44 @@
    "apasare": {
     "vazute": 39,
     "apasate": 5,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "compensari": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 5,
+    "apasate": 3,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "clienti": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 5,
+    "apasate": 3,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },
@@ -650,7 +688,7 @@
   "ansamblu": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 172,
+    "vazute": 178,
     "apasate": 1,
     "console_errors": [],
     "layout_rupt_dupa_click": false

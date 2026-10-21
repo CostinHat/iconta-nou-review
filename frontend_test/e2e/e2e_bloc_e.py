@@ -20,10 +20,17 @@ from decimal import Decimal
 
 import pytest
 
-from conftest import PREFIX_FIRMA, _ecran, _scoate_firmele_e2e, alege_perioada, alege_tipul, cui_cu_control, nr_crt, sql, zile_de_acum
+from conftest import PREFIX_FIRMA, _ecran, _scoate_firmele_e2e, alege_perioada, alege_tipul, cui_cu_control, nr_crt, perioada_incheiata, \
+    sql, zile_de_acum
 
 IBAN_PROBA = "RO49AAAA1B31007593840000"   # IBAN-ul exemplu ECBS pentru România (cifrele de control valide)
+# [lotul 10, C69] „Localitatea / Județul clientului” de pe factură: D406 cere adresa fiecărui partener (S.AD.5 City „Mandatory”,
+# `d406.parteneri_fara_localitate`), iar CUI-urile de probă (`cui_cu_control`) nu sunt firme reale — ANAF nu le-o poate completa
+LOCALITATE_PARTENER = {"tert_oras": "București", "tert_judet": "B"}
 AZI = _dt.date.today()
+# [lotul 10, deficiența 383 — comanda Costin 10.2 pct.1: „O declarație pe o perioadă neîncheiată se refuză la generare, cu motivul scris,
+# la toate declarațiile.”] D406 / D394 ale firmei (plătitoare lunar) se generează pe luna încheiată: facturile lor se emit în ea
+LUNA_DECL = perioada_incheiata("lunar")
 
 
 # ------------------------------------------------------------------------------------------------ ajutoare comune
@@ -42,7 +49,10 @@ def _completeaza(f, metoda):
                                  "judet": "București", "banca": "Banca Probă", "iban": IBAN_PROBA, "telefon": "0712345678",
                                  "email": "proba@prisma-cont.test", "declarant_nume": "Popescu", "declarant_prenume": "Ion",
                                  "declarant_functie": "Administrator", "forma_juridica": "SRL", "capital_subscris": "200",
-                                 "capital_varsat": "200", "metoda_stoc": metoda, "serie_chitanta": "CHE"},
+                                 "capital_varsat": "200", "metoda_stoc": metoda, "serie_chitanta": "CHE",
+                                 # [lotul 10, C69] antetul bilanțului (151, 188): bifaMC și codPP „35” („Societăți cu răspundere
+                                 # limitată”, `bilant.FORME_PROPRIETATE`); fără ele Date firmă (147) spune „Salvat. Lipsesc …”
+                                 "mare_contribuabil": False, "forma_proprietate": "35"},
                              tenant_id=f["tenant_id"], user_id=uid)
         assert r.get("ok"), r
         r = vf.salveaza(c, "micro", True, "lunar", False, inreg_art317=False, user_id=uid)
@@ -476,7 +486,7 @@ def test_def_168_nota_chitantei_numeste_chitanta_si_factura(patron, firma, factu
     pg = patron.pg
     cui = cui_cu_control(31000168)
     fe = _ok(_api(patron, "POST", "/tenants/%d/facturi/emite" % firma["tenant_id"], {
-        "tert_nume": "Client Chitanta SRL", "tert_cui": cui, "data_emitere": AZI.isoformat(),
+        "tert_nume": "Client Chitanta SRL", "tert_cui": cui, "data_emitere": AZI.isoformat(), **LOCALITATE_PARTENER,
         "linii": [{"descriere": "Servicii probă 168", "cantitate": 1, "pret_unitar": 100, "cota_tva": 21, "cont_venit": "704"}]}))
     fid, nr = fe["factura_id"], fe["numar"]
     _card(patron, firma, "facturi", "#fac-istoric")
@@ -560,7 +570,7 @@ def _factura_primita(f, numar, data, furnizor, cui, cantitate, pret):
     with db.get_conn(f["schema"]) as c:
         r = facturi_api.creeaza_factura(c, numar, data, "primita",
                                         [{"descriere": "Marfa", "cantitate": cantitate, "pret_unitar": pret, "cota_tva": 21}],
-                                        tert_nume=furnizor, tert_cui="RO" + cui)
+                                        tert_nume=furnizor, tert_cui="RO" + cui, **LOCALITATE_PARTENER)
         c.commit()
     return r["factura_id"]
 
@@ -677,7 +687,7 @@ def test_def_145_nir_din_exercitiul_trecut_se_leaga_cat_408_e_deschis(patron, fi
 
 @pytest.fixture(scope="module")
 def facturi_emise(firma):
-    """Facturile emise în luna curentă pe drumul emiterii: F1A1 (800 la 21%), F1A2 (5.000 la 21% + 800 la 11%), F1A3 (200 la 21%) din
+    """Facturile emise în luna încheiată a declarațiilor (`LUNA_DECL`) pe drumul emiterii: F1A1 (800 la 21%), F1A2 (5.000 la 21% + 800 la 11%), F1A3 (200 la 21%) din
     seria F1A, plus o factură veche fără serie, nr. „2” (`facturi_api.creeaza_factura`, cum intrau înainte de seria obligatorie)."""
     from core import db, facturi_api
     with db.get_conn(firma["schema"]) as c:
@@ -691,13 +701,13 @@ def facturi_emise(firma):
         for ls in linii:
             r = facturi_api.emite_factura(c, [{"descriere": "Servicii consultanță %s" % p, "cantitate": 1, "pret_unitar": p,
                                                 "cota_tva": q, "cont_venit": "704"} for p, q in ls],
-                                          tert_nume="Client D406 SRL", tert_cui=cui, data_emitere=AZI.replace(day=3).isoformat(),
-                                          status="emisa")
+                                          tert_nume="Client D406 SRL", tert_cui=cui, data_emitere=LUNA_DECL.inceput.replace(day=3).isoformat(),
+                                          status="emisa", **LOCALITATE_PARTENER)
             assert r.get("ok"), r
             emise.append((r["factura_id"], r["numar"]))
-        r = facturi_api.creeaza_factura(c, "2", AZI.replace(day=4).isoformat(), "emisa",
+        r = facturi_api.creeaza_factura(c, "2", LUNA_DECL.inceput.replace(day=4).isoformat(), "emisa",
                                         [{"descriere": "Servicii fără serie", "cantitate": 1, "pret_unitar": 300, "cota_tva": 21}],
-                                        tert_nume="Client D406 SRL", tert_cui=cui)
+                                        tert_nume="Client D406 SRL", tert_cui=cui, **LOCALITATE_PARTENER)
         emise.append((r["factura_id"], "2"))
         c.commit()
     return emise
@@ -726,11 +736,11 @@ def _deschide_componente(ecran):
 def test_def_154_d406_liniile_facturilor_cu_suma_lor(patron, firma, facturi_emise):
     """154. D406: liniile facturilor „707 · credit 0,00”.
     Pașii contabilului: facturile lunii emise (F1A1 800 lei; F1A2 5.000 lei la 21% + 800 lei la 11%; F1A3 200 lei) -> Declarații, D406
-    pe luna curentă -> „Din ce e făcută declarația”, „Facturi de vânzare”: liniile arată „704 · credit 800,00” / „5.000,00” / „200,00”,
+    pe luna lor, încheiată -> „Din ce e făcută declarația”, „Facturi de vânzare”: liniile arată „704 · credit 800,00” / „5.000,00” / „200,00”,
     nu „credit 0,00” -> XML-ul: F1A2 are câte un total pe cotă (bază 5000.00 la 21% și 800.00 la 11%).
     [380, comanda Costin 8.2] contul e cel din nota de contare (704, contul liniei), nu 707 dedus separat — până la 8.2 testul cerea 707."""
     pg = patron.pg
-    _declaratie(patron, firma, "d406", AZI.year, AZI.month)
+    _declaratie(patron, firma, "d406", LUNA_DECL.an, LUNA_DECL.luna)
     _deschide_componente(patron)
     sec = _sectiune(patron, "Facturi de vânzare")
     assert sec, "secțiunea „Facturi de vânzare” lipsește"
@@ -748,14 +758,17 @@ def test_def_154_d406_liniile_facturilor_cu_suma_lor(patron, firma, facturi_emis
 
 def test_def_155_d394_numarul_fara_cifrele_seriei_si_semnal_fara_serie(patron, firma, facturi_emise):
     """155. D394: F1A3 cu nr. 13; lipsea semnalul pentru factură fără serie.
-    Pașii contabilului: facturile lunii F1A1–F1A3 și una veche fără serie („2”) -> Declarații, D394 pe luna curentă -> „Serii de facturi
+    Pașii contabilului: facturile lunii F1A1–F1A3 și una veche fără serie („2”) -> Declarații, D394 pe luna lor -> „Serii de facturi
     declarate”: seria F1A de la 1 la 3 (nu 11–13) -> avertismentul „O factură emisă fără serie (nr. 2)”."""
     pg = patron.pg
-    _declaratie(patron, firma, "d394", AZI.year, AZI.month)
+    _declaratie(patron, firma, "d394", LUNA_DECL.an, LUNA_DECL.luna)
     _deschide_componente(patron)
     sec = _sectiune(patron, "Serii de facturi declarate")
     assert sec, "secțiunea „Serii de facturi declarate” lipsește"
-    nrs = sorted(int(x[0][3:]) for x in sql('SELECT numar FROM "%s".facturi WHERE serie = \'F1A\'' % firma["schema"]))   # „F1A3” -> 3
+    # facturile seriei F1A emise în LUNA declarației („F1A3” -> 3): D394 declară plaja lunii. [lotul 10, 383] F1A4 a lui 168 (emisă azi,
+    # cu Istoric facturi și Registrul jurnal pe luna curentă) e în luna în curs, deci nu e a acestei declarații
+    nrs = sorted(int(x[0][3:]) for x in sql('SELECT numar FROM "%s".facturi WHERE serie = \'F1A\' AND data_emitere BETWEEN %%s AND %%s'
+                                            % firma["schema"], (LUNA_DECL.inceput, LUNA_DECL.sfarsit)))
     f1a = [r for r in sec[1] if "F1A" in r]
     assert f1a and nrs[0] == 1, (sec, nrs)
     assert str(nrs[0]) in f1a[-1] and str(nrs[-1]) in f1a[-1], (f1a, nrs)
@@ -773,14 +786,18 @@ def _fara_suprapuneri(ecran):
     curge peste „Vezi XML-ul generat”, textul de subsol sau „Trimite în coadă”), iar o secțiune pliabilă închisă are doar înălțimea
     titlului ei (fără gol mare). Întoarce lista problemelor, cu dimensiunile măsurate.
     [285] Se măsoară cu fereastra derulată la capăt: acolo bara fixă (`.bara-fixa`, sticky) stă în locul ei din flux. Derulată mai sus, bara
-    stă DELIBERAT peste conținutul care trece pe sub ea (acțiunea se vede mereu) — aia nu e o suprapunere de așezare."""
+    stă DELIBERAT peste conținutul care trece pe sub ea (acțiunea se vede mereu) — aia nu e o suprapunere de așezare.
+    [lotul 10, 421 / DS cap.9 v2.97 pct.5] Simetric, rezumatul lipit sus (`.rezumat-fix`, sticky): perechea care începe cu el se măsoară
+    cu fereastra derulată la ÎNCEPUT, unde rezumatul stă în locul lui din flux; derulată mai jos, conținutul trece deliberat pe sub el."""
     return ecran.pg.evaluate("""() => {
       const corp = [...document.querySelectorAll('.fereastra')].pop().querySelector('.fereastra-corp');
-      corp.scrollTop = corp.scrollHeight;
+      const rele = [];
+      for (const sus of [false, true]) {
+      corp.scrollTop = sus ? 0 : corp.scrollHeight;
       const copii = [...corp.children].filter((e) => e.getBoundingClientRect().height > 0);
       const nume = (e) => (e.tagName === 'DETAILS' ? 'details «' + e.querySelector('summary').innerText.slice(0, 30) + '»' : (e.id || e.className || e.tagName));
-      const rele = [];
       copii.forEach((e, i) => {
+        if (e.classList.contains('rezumat-fix') !== sus) return;   // rezumatul: măsurat sus; restul: la capăt
         const r = e.getBoundingClientRect();
         let jos = r.bottom;
         e.querySelectorAll('*').forEach((x) => {
@@ -795,15 +812,16 @@ def _fara_suprapuneri(ecran):
         if (u && u.getBoundingClientRect().top < jos - 1)
           rele.push(nume(u) + ' acoperit de conținutul lui ' + nume(e) + ' (' + Math.round(jos - u.getBoundingClientRect().top) + 'px)');
       });
+      }
       return rele; }""")
 
 
 def test_def_164_d406_d394_fara_suprapuneri_si_goluri(patron, firma, facturi_emise):
     """164. D406/D394: suprapuneri și spații goale.
-    Pașii contabilului: D406 pe luna curentă -> deschide „Din ce e făcută declarația” -> tabelul nu curge peste „Vezi XML-ul generat”,
+    Pașii contabilului: D406 pe luna încheiată -> deschide „Din ce e făcută declarația” -> tabelul nu curge peste „Vezi XML-ul generat”,
     peste textul de subsol și peste „Trimite în coadă”, iar între secțiuni nu sunt goluri mari -> la fel pe D394."""
     for tip in ("d406", "d394"):
-        _declaratie(patron, firma, tip, AZI.year, AZI.month)
+        _declaratie(patron, firma, tip, LUNA_DECL.an, LUNA_DECL.luna)
         assert _fara_suprapuneri(patron) == [], tip
         _deschide_componente(patron)
         patron.pg.wait_for_timeout(300)
@@ -815,9 +833,9 @@ def test_def_164_d406_d394_fara_suprapuneri_si_goluri(patron, firma, facturi_emi
 
 def test_def_165_d406_caseta_rezumat_se_vede(patron, firma, facturi_emise):
     """165. D406: caseta „Rezumat” nu se vedea.
-    Pașii contabilului: Declarații, D406 pe luna curentă -> la pasul 2 se vede caseta „Rezumat” cu cifrele declarației."""
+    Pașii contabilului: Declarații, D406 pe luna încheiată -> la pasul 2 se vede caseta „Rezumat” cu cifrele declarației."""
     pg = patron.pg
-    _declaratie(patron, firma, "d406", AZI.year, AZI.month)
+    _declaratie(patron, firma, "d406", LUNA_DECL.an, LUNA_DECL.luna)
     caseta = pg.locator(".caseta-info:has(.ci-mesaj:text-is('Rezumat'))")
     assert caseta.count() == 1 and caseta.is_visible()
     assert len(caseta.locator("li").all_inner_texts()) >= 1
@@ -848,7 +866,7 @@ def test_def_163_texte_fara_limbaj_de_programator(patron, firma, facturi_emise):
     defecte["control fiscal"] = _defecte_limba(patron.fereastra())
     patron.captura("control_fiscal")
     for tip in ("d406", "d394"):
-        _declaratie(patron, firma, tip, AZI.year, AZI.month)
+        _declaratie(patron, firma, tip, LUNA_DECL.an, LUNA_DECL.luna)
         pg.evaluate("() => document.querySelectorAll('details.dec-xml').forEach((d) => { if (!d.innerText.includes('<?xml')) d.open = true; })")
         t = pg.evaluate("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); const p = [...f.querySelectorAll('pre.dec-xml-pre')];"
                         " p.forEach((x) => { x.style.display = 'none'; }); const t = f.innerText; p.forEach((x) => { x.style.display = ''; }); return t; }")
@@ -865,7 +883,7 @@ def test_def_163_texte_fara_limbaj_de_programator(patron, firma, facturi_emise):
 def test_def_184_formatele_pe_declaratii_si_casa(patron, firma, facturi_emise):
     """184. Formate: date ISO, jurnale majuscule, perioade în patru formate, „1 parteneri”, mesaje de respingere lungi.
     [partea rămasă, registrul: „fără test: cere generarea D406/D394 pe o firmă comună (scriere)”; acum pe firma sintetică a rulării]
-    Pașii: firma cu facturile emise în luna curentă -> D394 și D406 generate, cu componentele deschise (XML-ul lăsat deoparte) -> Casă:
+    Pașii: firma cu facturile emise în luna încheiată -> D394 și D406 generate pe ea, cu componentele deschise (XML-ul lăsat deoparte) -> Casă:
     textul judecat de aceeași măsură ca ecranele (`core.limba_ecran.defecte`), pe cele patru feluri ale deficienței — nicio dată ISO,
     nicio perioadă în altă formă decât LL/AAAA, T3/2026 sau anul, niciun „1 parteneri”, niciun cuvânt (numele unui jurnal) în
     majuscule. (Respingerea numită scurt: `e2e_bloc_c.py::test_def_91_respingerea_e_confirmata_pe_ecran`.)"""
@@ -877,7 +895,7 @@ def test_def_184_formatele_pe_declaratii_si_casa(patron, firma, facturi_emise):
     feluri = {"data", "perioada", "acord", "majuscule"}
     gasite = {}
     for tip in ("d394", "d406"):
-        _declaratie(patron, firma, tip, AZI.year, AZI.month)
+        _declaratie(patron, firma, tip, LUNA_DECL.an, LUNA_DECL.luna)
         pg.evaluate("() => document.querySelectorAll('details.dec-xml').forEach((d) => { if (!d.innerText.includes('<?xml')) d.open = true; })")
         t = pg.evaluate("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); const p = [...f.querySelectorAll('pre.dec-xml-pre')];"
                         " p.forEach((x) => { x.style.display = 'none'; }); const t = f.innerText; p.forEach((x) => { x.style.display = ''; }); return t; }")

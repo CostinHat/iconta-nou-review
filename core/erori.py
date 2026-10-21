@@ -111,3 +111,34 @@ class ServiciuIndisponibil(EroareDeDomeniu):
 #: acopere pe toate: o clasă nouă fără traducere ar ieși din aplicație ca `500`.
 TOATE = (Inexistent, FaraDrept, Neautentificat, DateInvalide, CerereGresita, Conflict, Blocat,
          IntrarePreaMare, FormatNeacceptat, PreaDes, EsecIntern, ServiciuStrainCazut, ServiciuIndisponibil)
+
+
+#: Ecranul-țintă al unui refuz, în limba contabilului (`unde` al afirmației de refuz). O singură tabelă pentru refuzurile cu țintă
+#: de ecran: `uc_comun.refuz_spre_ecran` și `RefuzGenerare.detaliu` (mutată aici din `uc_comun`, lotul 10, ca refuzul generatoarelor
+#: să aibă aceeași formă tipată fără ca acest modul de vocabular să importe un use-case).
+UNDE_ECRAN = {"date_firma": "Date firmă", "conectare_spv": "Setări cont → Conectare SPV", "produse": "Produse"}
+
+
+class RefuzGenerare(ValueError):
+    """[lotul 10, deficiența 431 — „mesajul de refuz trimite la ce lipsește”] Refuzul unui generator de declarație care spune și UNDE se
+    repară: notele de deschis (`note` = [{nota_id, eticheta, data}], aceeași formă ca `coada_trimite.legaturiNote`) și / sau ecranul
+    de deschis (`ecran`, ex. „date_firma”). E `ValueError`, deci orice cale care prindea refuzul ca text îl prinde la fel; use-case-ul
+    declarațiilor îl trimite ecranului ca obiect (`detaliu`), nu doar ca frază."""
+
+    #: ce document refuză să se genereze (`tip` al afirmației); subclasele îl numesc pe al lor (`efactura_send.EDateIncomplete`)
+    TIP = "generare document"
+
+    def __init__(self, mesaj, note=None, ecran=None, camp_ecran=None):
+        super().__init__(mesaj)
+        self.note = list(note or [])
+        self.ecran = ecran
+        self.camp_ecran = camp_ecran   # câmpul adus în vedere pe ecranul de destinație (ca `detail.camp_ecran`, `core/mesaje`)
+
+    def detaliu(self):
+        """Corpul refuzului, ca AFIRMAȚIE TIPATĂ (`neconformitate`, decizia Costin 21.08.2026: afirmațiile despre datele firmei sunt
+        obiecte), în aceeași formă ca `uc_comun.refuz_spre_ecran`: `unde` = ecranul sau notele unde se repară, plus cheile pe care
+        le citește ecranul (`mesaj`, `note`, `ecran`, `camp_ecran`)."""
+        from core import afirmatii as _af
+        unde = UNDE_ECRAN.get(self.ecran, self.ecran) if self.ecran else ("notele contabile numite" if self.note else self.TIP)
+        return _af.afirmatie("neconformitate", self.TIP, str(self), unde=unde, regula="refuz de generare, cu ținta reparării",
+                             mesaj=str(self), note=self.note, ecran=self.ecran, camp_ecran=self.camp_ecran)

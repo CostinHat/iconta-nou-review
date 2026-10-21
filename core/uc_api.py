@@ -164,11 +164,19 @@ def apiv1_factura_emite(tenant_id, corp, actx):
         _ni = _uc_coada.note_interne_schema(schema, None, _de_la)
     except Exception as e:  # noqa: BLE001 — nota există și rămâne ciornă; eșecul nu e tăcut
         _obs.esec_secundar("validarea notelor interne (partidă simplă, API)", e)
+        # [lotul 10, observația „răspunsul API note_interne” decisă de Code — DECIZII „Comanda 10.1: observațiile din lotul 9”] integratorul
+        # află și când validarea internă n-a rulat (până acum răspunsul tăcea): factura e emisă, nota ei a rămas ciornă
+        r["note_interne"] = {"interne": [], "refuzate": [], "nevalidate": NOTE_INTERNE_NERULATE}
     else:
         if _ni["interne"] or _ni["refuzate"]:
             r["note_interne"] = _ni
     return r
 
+
+
+#: [lotul 10] textul din răspunsul API când validarea internă a notei (firma în partidă simplă) n-a rulat
+NOTE_INTERNE_NERULATE = ("Factura e emisă, dar nota ei contabilă n-a putut fi validată automat (eroare la validare) și a rămas "
+                         "ciornă; o validează contabilul firmei.")
 
 
 def eveniment_public(date):

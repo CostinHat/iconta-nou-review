@@ -10,6 +10,8 @@ FIECARE FUNCȚIE PRIMEȘTE CURSORUL APELANTULUI. Nu deschide conexiuni, nu comit
 nu construiește `HTTPException` și nu decide niciun cod HTTP. *Așa rămâne întreagă tranzacția pe
 care o deține apelantul — contractul P4, care nu se redeschide aici.*
 """
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] suspendarea dublată în cursă -> refuz numit, nu 500
+from core.pdf_util import data_ro as _data_ro
 
 
 def salariatul_exista(cur, salariat_id):
@@ -98,10 +100,16 @@ def suspendari_firma(cur):
 
 
 def inlocuieste_suspendari(cur, salariat_id, lista):
-    cur.execute("DELETE FROM suspendari_contract WHERE salariat_id=%s", (salariat_id,))
-    for a, b, tip, temei in lista:
-        cur.execute("INSERT INTO suspendari_contract (salariat_id, data_inceput, data_sfarsit, tip, temei) "
-                    "VALUES (%s, %s, %s, %s, %s)", (salariat_id, a, b, tip, temei))
+    """Lista suspendărilor salariatului, înlocuită întreagă. [lotul 10, C73 / U2] Două salvări simultane ale aceleiași fișe: a doua
+    aștepta la `DELETE`, nu vedea rândurile scrise de prima și cădea cu 500 pe `suspendari_contract_uniq`. Acum refuz numit, iar
+    savepoint-ul helperului cuprinde și ștergerea, deci din salvarea a doua nu rămâne nimic."""
+    with _chei.refuza_dublura(cur, ("suspendari_contract_uniq",), lambda cur, e: _chei.CheieDublata(
+            "În timp ce salvai, altă salvare a scris deja suspendările acestui salariat (începutul %s). Din lista ta nu s-a scris "
+            "nimic: reîncarcă fișa și verifică suspendările." % _data_ro((_chei.valoarea(e) or "").split(", ")[-1]))):
+        cur.execute("DELETE FROM suspendari_contract WHERE salariat_id=%s", (salariat_id,))
+        for a, b, tip, temei in lista:
+            cur.execute("INSERT INTO suspendari_contract (salariat_id, data_inceput, data_sfarsit, tip, temei) "
+                        "VALUES (%s, %s, %s, %s, %s)", (salariat_id, a, b, tip, temei))
 
 
 def contract_salariat(cur, salariat_id):

@@ -6,8 +6,9 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt } from "../api.js?v=158edee964";
-import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada } from "./coada_trimite.js?v=2fc90ca5ef";
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt } from "../api.js?v=ff30ebaf3f";
+import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=2fc90ca5ef";
+import { butonSpreEcran } from "./ecran_destinatie.js?v=df2c3a05b3";   // [lotul 10, 431] refuzul care trimite la ce lipsește
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
   d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
@@ -61,6 +62,9 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa, preset = null) {
     // [formular_manual_d207] beneficiarii nerezidenti carora firma le-a platit venituri cu retinere la sursa
     // (lista in memorie, pt body.manual, ca d107). Grupati pe tip_venit -> Sect_II; suma de control calculata.
     d207: { beneficiari: [], d_rec: 0 },
+    // [lotul 10, decizia Costin B] D205 completat manual: beneficiarii de dividende pe care notele nu-i au (firma preluată — dividendele
+    // plătite înainte de preluare există numai în balanța de deschidere). Gol = D205 din notele validate (calea automată).
+    d205: { beneficiari: [] },
     // [formular_manual_d200] identitate PF + sectiuni pe categorie de venit (in memorie, pt body.manual, ca d207).
     d200: { cif_i: "", nume_c: "", prenume_c: "", adresa_i: "", cont_c: "", sectiuni: [], d_rec: 0 },
     // [formular_manual_d212] Declaratia unica PF: identitate (cif=CNP/nume/adresa) + fisa RIP AFISATA
@@ -156,9 +160,13 @@ function pas1(corp, nav) {
     if (!S.tipuri.length) return `<option value="">— nicio declarație aplicabilă —</option>`;
     // [deficiența 283] întâi ce datorează firma în perioadă (din vectorul fiscal), cu termenul — alegerea fixează și perioada; restul separat
     const datorate = (S.datorate || []).filter((d) => S.tipuri.includes(d.tip) && !S.neaplicabile[d.tip]);
-    const grupaDatorate = datorate.length ? `<optgroup label="Datorate de firmă (din vectorul fiscal)">${datorate.map((d) =>
-      `<option value="${d.tip}" data-an="${d.an}" data-luna="${d.luna}"${d.tip === S.tip && d.an === S.an && d.luna === S.lunaDatorata ? " selected" : ""}>`
-      + `${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · termen ${esc(dataRo(d.termen))}</option>`).join("")}</optgroup>` : "";
+    const optDatorata = (d) => `<option value="${d.tip}" data-an="${d.an}" data-luna="${d.luna}"${d.tip === S.tip && d.an === S.an && d.luna === S.lunaDatorata ? " selected" : ""}>`
+      + `${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · termen ${esc(dataRo(d.termen))}${d.inainte_de_preluare ? " · înainte de preluare" : ""}</option>`;
+    // [lotul 10, deficiența 432] obligațiile pe perioade dinaintea preluării rămân vizibile (termenul cade după preluare), dar într-un grup
+    // separat, marcate — regula de la 157 (decizia U2, 08.10); marcajul vine din motorul termenelor (`luna_preluare.inainte`)
+    const deLaPreluare = datorate.filter((d) => !d.inainte_de_preluare), inainte = datorate.filter((d) => d.inainte_de_preluare);
+    const grupaDatorate = (deLaPreluare.length ? `<optgroup label="Datorate de firmă (din vectorul fiscal)">${deLaPreluare.map(optDatorata).join("")}</optgroup>` : "")
+      + (inainte.length ? `<optgroup label="Datorate de firmă — înainte de preluare în iConta.eu">${inainte.map(optDatorata).join("")}</optgroup>` : "");
     const alte = S.tipuri.map((tp) => {
       const et = `${tp.toUpperCase()} · ${(S.periodicitateEticheta || {})[tp] || S.periodicitate[tp] || ""}`;   // [8.1 pct.6] D710: la cerere
       const neap = S.neaplicabile[tp];
@@ -354,6 +362,7 @@ function corpGenerare() {
   if (S.tip === "d107") body.manual = _d107Manual();              // [formular_manual_d107] beneficiarii din memorie
   if (S.tip === "d177") body.manual = _d177Manual();              // [formular_manual_d177] redirectionarea din memorie
   if (S.tip === "d207") body.manual = _d207Manual();              // [formular_manual_d207] beneficiarii nerezidenti din memorie
+  if (S.tip === "d205" && (S.d205.beneficiari || []).length) body.manual = _d205Manual();   // [lotul 10, decizia B] numai dacă s-au scris
   if (S.tip === "d200") body.manual = _d200Manual();              // [formular_manual_d200] sectiunile de venit din memorie
   if (S.tip === "d212") body.manual = _d212Manual();              // [formular_manual_d212] identitatea PF din memorie
   if (S.tip === "d201") body.manual = _d201Manual();              // [formular_manual_d201] identitate + sectiuni strainatate
@@ -399,6 +408,7 @@ async function pas2(corp, nav) {
       ${S.tip === "d107" ? '<div id="dec-d107-form"></div>' : ""}
       ${S.tip === "d177" ? '<div id="dec-d177-form"></div>' : ""}
       ${S.tip === "d207" ? '<div id="dec-d207-form"></div>' : ""}
+    ${S.tip === "d205" ? '<div id="dec-d205-form"></div>' : ""}
     ${S.tip === "d200" ? '<div id="dec-d200-form"></div>' : ""}
     ${S.tip === "d212" ? '<div id="dec-d212-form"></div>' : ""}
     ${S.tip === "d201" ? '<div id="dec-d201-form"></div>' : ""}
@@ -418,6 +428,12 @@ async function pas2(corp, nav) {
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu s-a putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
+    // [lotul 10, deficiența 431] „mesajul de refuz trimite la ce lipsește”: refuzul generatorului (`RefuzGenerare`) poartă notele de
+    // deschis (nota de dividende în ciornă -> Registrul jurnal, în luna ei) și / sau ecranul (Date firmă → Asociați)
+    const _det = (e && e.detaliu && typeof e.detaliu === "object") ? e.detaliu : {};
+    const _zEr = corp.querySelector(".dec-eroare");
+    if (_zEr && (_det.note || []).length) legaturiNote(_zEr, S.tenant_id, _det.note);
+    if (_zEr && _det.ecran) butonSpreEcran(_zEr, _det.ecran, nav, S.tenant_id, { clasa: "buton-secundar", inapoiLa: "declarație", camp: _det.camp_ecran || null });
     if (S.tip === "d301") randeazaOperatiuniD301(corp, nav);
     if (S.tip === "d300") randeazaManualD300(corp, nav);
     if (S.tip === "d710") randeazaFormularD710(corp, nav);
@@ -426,6 +442,7 @@ async function pas2(corp, nav) {
     if (S.tip === "d107") randeazaFormularD107(corp, nav);
     if (S.tip === "d177") randeazaFormularD177(corp, nav);
     if (S.tip === "d207") randeazaFormularD207(corp, nav);
+    if (S.tip === "d205") randeazaFormularD205(corp, nav, true);
   if (S.tip === "d200") randeazaFormularD200(corp, nav);
   if (S.tip === "d212") randeazaFormularD212(corp, nav);
   if (S.tip === "d201") randeazaFormularD201(corp, nav);
@@ -448,6 +465,10 @@ async function pas2(corp, nav) {
   const f = corp.closest(".fereastra"); if (f) f.classList.add("fer-larg");
   const avert = S.rezultat.avertismente || [];
   const constat = S.rezultat.note_rezultat || [];   // fapte NEUTRE despre rezultat (sectiune informativa separata, nu avertisment)
+  // [lotul 10, deficiența 436, comanda Costin 10.2 pct.6] „când declarația știe că are cifra greșită din note nevalidate, depunerea se
+  // blochează până la validare, cu motivul lângă buton, la toate declarațiile.” Serverul spune refuzul (`uc_declaratii.blocaj_depunere`,
+  // același ca la intrarea în coadă): „Trimite în coadă” rămâne vizibil, dar inactiv, cu motivul imediat sub el, în bara fixă
+  const _blocaj = S.rezultat.blocaj_depunere || null;
   const xml = S.rezultat.xml_b64 ? _dinB64(S.rezultat.xml_b64) : (S.rezultat.xml || "");
   const stare = S.rezultat.stare || "gri";
   const erANAF = (S.rezultat.erori || "").trim();
@@ -471,7 +492,7 @@ async function pas2(corp, nav) {
            </div>`);
 
   corp.innerHTML = `
-    <p class="mig-intro">Pasul 2 din 3 — verifică <b>${S.tip.toUpperCase()}</b> · ${etPerioada()}</p>
+    <div class="rezumat-fix"><p class="mig-intro">Pasul 2 din 3 — verifică <b>${S.tip.toUpperCase()}</b> · ${etPerioada()}</p></div>   <!-- [lotul 10, 421 / 424, DS cap.9 v2.97 pct.5] declarația și perioada rămân sus -->
     ${S.tip === "d390" ? '<div id="dec-d390-clasif"></div>' : ""}
     ${S.tip === "d301" ? '<div id="dec-d301-op"></div>' : ""}
     ${S.tip === "d300" ? '<div id="dec-d300-manual"></div>' : ""}
@@ -481,6 +502,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d107" ? '<div id="dec-d107-form"></div>' : ""}
     ${S.tip === "d177" ? '<div id="dec-d177-form"></div>' : ""}
     ${S.tip === "d207" ? '<div id="dec-d207-form"></div>' : ""}
+    ${S.tip === "d205" ? '<div id="dec-d205-form"></div>' : ""}
     ${S.tip === "d200" ? '<div id="dec-d200-form"></div>' : ""}
     ${S.tip === "d212" ? '<div id="dec-d212-form"></div>' : ""}
     ${S.tip === "d201" ? '<div id="dec-d201-form"></div>' : ""}
@@ -515,7 +537,9 @@ async function pas2(corp, nav) {
       <summary>Vezi XML-ul generat</summary>
       <pre class="dec-xml-pre">${esc(xml)}</pre>
     </details>
-    <div class="bara-fixa">${_esteGoala() ? `<div class="caseta-poarta">
+    <div class="bara-fixa">${_blocaj ? `<div class="dec-bara">
+      <button class="buton-primar" id="dec-trimite" data-actiune="POST /coada" disabled aria-describedby="dec-blocaj">Trimite în coadă →</button>
+    </div>` : _esteGoala() ? `<div class="caseta-poarta">
         <div class="cp-mesaj">Declarația nu conține nicio operațiune. Dacă firma chiar n-a avut activitate în perioadă, se depune așa. Dacă a avut, întoarce-te și verifică dacă documentele perioadei sunt introduse și contabilizate.</div>
         <div class="cp-butoane">
           <button class="buton-primar" id="dec-gol-da">Da, fără activitate — trimite</button>
@@ -524,9 +548,11 @@ async function pas2(corp, nav) {
       </div>` : `<div class="dec-bara">
       <button class="buton-primar" id="dec-trimite" data-actiune="POST /coada">Trimite în coadă →</button>
     </div>`}
-    <div id="dec-coada-mesaj"></div></div>
+    <div id="dec-coada-mesaj">${_blocaj ? `<div class="caseta-atentie" id="dec-blocaj" role="status"><div class="ca-mesaj">${esc(_blocaj.mesaj || "")}</div></div>` : ""}</div></div>
     <p class="ecran-nota">${esc(S.rezultat.limita || "")}</p>
   `;
+  // [lotul 10, 436] notele care opresc depunerea: fiecare cu drumul ei spre Registrul jurnal, în luna notei (ca refuzul porții TVA, 284)
+  if (_blocaj && (_blocaj.note || []).length) legaturiNote(corp.querySelector("#dec-blocaj .ca-mesaj"), S.tenant_id, _blocaj.note);
   const _bt = corp.querySelector("#dec-trimite");
   if (_bt) { _bt.addEventListener("click", () => pas3(corp, nav)); etichetaTrimitere(_bt); }   // [313]
   const _bDa = corp.querySelector("#dec-gol-da");
@@ -542,6 +568,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d107") randeazaFormularD107(corp, nav);
   if (S.tip === "d177") randeazaFormularD177(corp, nav);
   if (S.tip === "d207") randeazaFormularD207(corp, nav);
+  if (S.tip === "d205") randeazaFormularD205(corp, nav, false);
   if (S.tip === "d200") randeazaFormularD200(corp, nav);
   if (S.tip === "d212") randeazaFormularD212(corp, nav);
   if (S.tip === "d201") randeazaFormularD201(corp, nav);
@@ -3533,6 +3560,64 @@ function _d207Manual() {
       act_n: b.act_n, baza: b.baza, imp: b.imp, imp_suportat: b.imp_suportat })),
     d_rec: d.d_rec ? 1 : 0,
   };
+}
+
+// [lotul 10, decizia Costin B: „Da, cu completare manuală”] D205 cu beneficiarii scriși de contabil. Cazul: firma preluată, cu dividende
+// plătite înainte de preluare (debitul 457 din balanța de deschidere): notele lor nu sunt în iConta.eu, deci nici împărțirea pe asociați.
+// Coloanele urmează instrucțiunile D205 (OPANAF 179/2022, cap.II pct.9): col.3 dividendul distribuit, col.4 plătit, col.5 baza, col.6
+// impozitul. Lista goală = D205 din notele validate. Deschis după un refuz (sau cu rânduri scrise), altfel pliat.
+function _d205Manual() {
+  // sumele ca NUMERE (câmpul gol = 0): serverul le rotunjește aritmetic (`d205._i`), un text gol nu e o sumă
+  return { beneficiari: (S.d205.beneficiari || []).map((b) => ({ categ: "1.a", nume: b.nume, cif: b.cif, divid_d: _n(b.divid_d),
+    divid_p: _n(b.divid_p), baza: _n(b.baza), imp: _n(b.imp) })) };
+}
+
+function randeazaFormularD205(corp, nav, deschis) {
+  const zona = corp.querySelector("#dec-d205-form");
+  if (!zona) return;
+  const benef = S.d205.beneficiari || [];
+  const tot = (k) => benef.reduce((a, b) => a + Math.round(_n(b[k]) || 0), 0);
+  const grila = benef.length
+    ? benef.map((b, i) => '<div class="dec-man-rand"><span class="dec-recl-desc">' + esc(b.nume) + ' · CNP ' + esc(b.cif) +
+        ' · distribuit ' + bani(_n(b.divid_d)) + ' · plătit ' + bani(_n(b.divid_p)) + ' · bază ' + bani(_n(b.baza)) +
+        ' · impozit ' + bani(_n(b.imp)) + ' lei</span><button class="btn-link dec-d205-del" data-idx="' + i + '">șterge</button></div>').join("")
+    : '<div class="stare-goala stare-goala--inline">Niciun beneficiar scris de mână: D205 se face din notele de dividende validate. ' +
+      'Completează beneficiarii aici numai când notele nu-i au (de exemplu, dividendele plătite înainte de preluarea firmei).</div>';
+  const camp = (id, et, lat, tip) => '<label class="camp" style="' + lat + '"><span class="camp-eticheta">' + et + '</span>' +
+    '<input id="' + id + '" type="' + (tip || "number") + '"' + (tip ? "" : ' step="1" min="0"') + ' class="camp-input"></label>';
+  zona.innerHTML = '<details class="dec-xml"' + (deschis || benef.length ? " open" : "") + '><summary>Beneficiari completați manual (' + benef.length + ')</summary>' +
+    grila +
+    '<div class="camp-eticheta" style="margin:12px 0 4px">Adaugă beneficiar (asociat):</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">' +
+      camp("d205-nume", 'Nume și prenume <span class="oblig">*</span>', "flex:1 1 220px", "text") +
+      camp("d205-cif", 'CNP <span class="oblig">*</span>', "width:170px", "text") +
+      camp("d205-divd", "Dividende distribuite (lei)", "width:170px") +
+      camp("d205-divp", "Dividende plătite (lei)", "width:170px") +
+      camp("d205-baza", "Baza impozitului (lei)", "width:160px") +
+      camp("d205-imp", "Impozit reținut (lei)", "width:160px") +
+      '<button class="buton-secundar" id="d205-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ adaugă</button>' +
+    '</div><div id="d205-msg"></div>' +
+    '<p class="camp-ajutor" style="margin-top:8px">' + benef.length + ' beneficiar(i) · distribuit <b>' + bani(tot("divid_d")) + '</b> · plătit <b>' +
+      bani(tot("divid_p")) + '</b> · bază <b>' + bani(tot("baza")) + '</b> · impozit <b>' + bani(tot("imp")) + '</b> lei (Cod fiscal art.97 alin.(7)).</p>' +
+    '<p style="margin-top:8px"><button class="buton-primar" id="d205-regen">Regenerează D205</button></p></details>';
+  const gv = (id) => zona.querySelector(id);
+  zona.querySelectorAll(".dec-d205-del").forEach((b) => b.addEventListener("click", () => {
+    S.d205.beneficiari.splice(parseInt(b.dataset.idx, 10), 1); randeazaFormularD205(corp, nav, true);
+  }));
+  gv("#d205-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const nume = gv("#d205-nume").value.trim(), cif = gv("#d205-cif").value.trim();
+    const err = [];
+    if (!nume) err.push(["d205-nume", "Completează numele asociatului."]);
+    if (!/^\d{13}$/.test(cif)) err.push(["d205-cif", "Completează CNP-ul asociatului (13 cifre)."]);
+    if (!["#d205-divd", "#d205-divp", "#d205-baza", "#d205-imp"].some((s) => _n(gv(s).value) > 0))
+      err.push(["d205-divd", "Completează cel puțin o sumă: dividendele distribuite, plătite, baza sau impozitul."]);
+    if (err.length) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
+    S.d205.beneficiari.push({ nume: nume, cif: cif, divid_d: gv("#d205-divd").value, divid_p: gv("#d205-divp").value,
+      baza: gv("#d205-baza").value, imp: gv("#d205-imp").value });
+    randeazaFormularD205(corp, nav, true);
+  });
+  gv("#d205-regen").addEventListener("click", () => { curataEroriCamp(zona); pas2(corp, nav); });
 }
 
 function randeazaFormularD207(corp, nav) {

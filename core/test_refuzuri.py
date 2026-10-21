@@ -117,6 +117,18 @@ BASELINE = {
     "core/stocuri_cv.py": 8,
     "core/tva_marja.py": 3,
     "core/tva_marja_turism.py": 7,
+    # [lotul 10, 20.10.2026, deficiența 429] `uc_comun.py` INTRAT ÎN DOMENIU, nu refuzuri noi — controlul de închidere „Reevaluare valută”
+    # citează `reevaluare_valuta.TEMEI` (OMFP 1802/2014 pct.325), deci modulul „citează legea”, iar cele 23 de refuzuri de dinainte (toate
+    # din HEAD-ul lotului 9) trec din umbră aici. Toate sunt de FORMĂ sau de stare a aplicației: da/nu, lună / an / exercițiu în afara
+    # intervalului, interval întreg, firma de ales, email ocupat / invalid / prea multe, client din alt cabinet, lună încă în curs, dată
+    # lipsă, perioadă închisă (lacătul aplicației), raport Z duplicat, element de coadă lipsă, eroarea jurnalului. Niciunul nu aplică o normă.
+    "core/uc_comun.py": 23,
+    # [lotul 10, 20.10.2026, deficiența 429] module NOI ale reevaluării lunare în valută. Refuzurile de FORMĂ sunt marcate lângă ele: în
+    # `reevaluare_valuta` (4) — element ieșit din propunere, câmp needitabil, sold în valută nenumeric / nepozitiv; în `uc_reevaluare` (6) —
+    # forma completărilor (×2), luna / anul nenumerice, completarea respinsă de motor (×2, mesajul lui), câmp lipsă pe care aplicația nu-l
+    # ghicește. Refuzul normativ (cursul BNR din ultima zi bancară lipsă, OMFP 1802/2014 pct.325 alin.(1)) poartă `temei` în corp.
+    "core/reevaluare_valuta.py": 4,
+    "core/uc_reevaluare.py": 6,
 }
 
 #: Cele două cifre care NU se gardează, dar se scriu ca să nu se piardă. Dacă vreuna scade mult,

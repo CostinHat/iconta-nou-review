@@ -289,8 +289,8 @@ def emite_alerte_programate(conn):
             for prag in (7, 3, 0):
                 if not _repo.select(cur, dv, prag)[0]:
                     continue
-                if _repo.select_public_3(cur, aid, prag):
-                    continue  # deja emis pragul asta
+                if not _repo.revendica_pragul(cur, aid, prag):
+                    continue  # deja emis pragul asta (sau îl emite chiar acum altă rulare) — [lotul 10, C73 / U3] revendicat ÎNAINTE de anunțuri
                 if prag == 0:
                     cap = "AZI intra in vigoare: "
                 else:
@@ -300,7 +300,6 @@ def emite_alerte_programate(conn):
                 for (cid,) in cur.fetchall():
                     _repo.insert_public_2(cur, cid, mesaj)
                     emise += 1
-                _repo.insert_public_3(cur, aid, prag)
     conn.commit()
     return emise
 

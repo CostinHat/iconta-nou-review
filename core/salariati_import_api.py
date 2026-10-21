@@ -173,7 +173,8 @@ def extrage(continut, nume_fisier=""):
 
         valid, motiv = valideaza_cnp(cnp)
         # [Q11] fara default tacit (DS cap.17): coloana norma lipsa / celula goala -> tip_norma
-        # necunoscut (""), NU "intreaga" fabricata. Doar o valoare PREZENTA se interpreteaza.
+        # necunoscut (""), NU "intreaga" fabricata. Doar o valoare PREZENTA se interpreteaza. [420] Lipsa devine mai jos o PROPUNERE
+        # vizibilă, editabilă și marcată „de verificat” — nu un implicit tăcut.
         tip_norma, ore_norma, ore_luna = _norma(cel(i_norma)) if i_norma >= 0 else ("", 0.0, False)
         ore = _numar(cel(i_ore)) if i_ore >= 0 else 0.0
         if ore <= 0:
@@ -187,6 +188,21 @@ def extrage(continut, nume_fisier=""):
         # din fișier (coloana absentă — exportul SAGA nu le are — sau celula goală) nu mai refuză rândul: intră cu 0 / „nescutit” și
         # salariatul e MARCAT („de verificat”), vizibil în statul de plată până la confirmare (`salariati.de_verificat`).
         de_verificat = []
+        # [lotul 10, deficiența 420, comanda Costin 10.1, verbatim în DECIZII „Comanda 10.1”] „rândurile fără normă de lucru și funcție
+        # de bază sunt respinse întregi […] Câmpurile lipsă se completează pe ecran, înainte de import, cu propunere editabilă (normă
+        # întreagă, funcție de bază Da), la fel cum sunt tratate deja COR, scutirea și persoanele în întreținere (intră marcate „de
+        # verificat”).” Norma lipsă (coloana absentă / celula goală; NU „0 = ore pe lună”, care rămâne refuzată) -> propusă întreagă, 8
+        # ore — sau parțială cu orele din fișier, când fișierul are ore pe zi sub 8; funcția de bază lipsă -> propusă „Da”. Amândouă
+        # marcate „de verificat” până le confirmă contabilul (pe ecranul importului sau în Stat de plată).
+        if not tip_norma and not ore_luna:
+            tip_norma = "partiala" if 0 < ore < 8 else "intreaga"
+            if tip_norma == "intreaga" and ore <= 0:      # orele din fișier peste 8 rămân, refuzate numit (`ore_invalide`)
+                ore = 8
+            de_verificat.append("tip_norma")
+        fbaza = _da_nu(cel(i_fbaza)) if i_fbaza >= 0 else None
+        if fbaza is None:
+            fbaza = True
+            de_verificat.append("functie_baza")
         persoane = int(_numar(cel(i_intr))) if (i_intr >= 0 and cel(i_intr)) else None
         if persoane is None:
             de_verificat.append("persoane_intretinere")
@@ -210,7 +226,7 @@ def extrage(continut, nume_fisier=""):
             "functie": cel(i_functie) if i_functie >= 0 else "",
             # [iban_import] normalizat (fara spatii, majuscule); gol -> "" (necunoscut, NU fabricat)
             "iban": cel(i_iban).replace(" ", "").upper(),
-            "functie_baza": _da_nu(cel(i_fbaza)) if i_fbaza >= 0 else None,
+            "functie_baza": fbaza,                         # [420] lipsă -> propus „Da”, marcat de verificat
             "scutit_contrib_minim": bool(scutit),          # lipsă -> „nescutit”, marcat de verificat
             "de_verificat": de_verificat,
             "cnp_valid": valid,
@@ -220,14 +236,15 @@ def extrage(continut, nume_fisier=""):
 
 
 def rezumat(conn):
-    """{are_salariati, randuri} pentru firma curenta (tabel existent salariati)."""
+    """{are_salariati, randuri, de_verificat} pentru firma curenta (tabel existent salariati). [lotul 10, deficiența 423 b] „starea «gata»
+    nu spune câți salariați rămân «de verificat»” — `de_verificat` = câți salariați au încă un câmp importat neconfirmat."""
     with conn.cursor() as cur:
         cur.execute("SELECT to_regclass('salariati')")
         if cur.fetchone()[0] is None:
-            return {"are_salariati": False, "randuri": 0}
-        cur.execute("SELECT count(*) FROM salariati")
-        n = cur.fetchone()[0]
-    return {"are_salariati": n > 0, "randuri": n}
+            return {"are_salariati": False, "randuri": 0, "de_verificat": 0}
+        cur.execute("SELECT count(*), count(*) FILTER (WHERE cardinality(de_verificat) > 0) FROM salariati")
+        n, dv = cur.fetchone()
+    return {"are_salariati": n > 0, "randuri": n, "de_verificat": dv}
 
 
 JUDETE_CASA = ("AB","AR","AG","BC","BH","BN","BT","BV","BR","BZ","CS","CL","CJ","CT",
@@ -343,6 +360,16 @@ def semnale_randuri(randuri):
             out.append(semnaleaza("salariat", i, "scutire_lipsa",
                                   "%s: scutirea de contribuția minimă lipsește din fișier — intră „nescutit” și salariatul e marcat de "
                                   "verificat" % nume))
+        # [420] propunerile editabile: ce se propune și că se poate schimba pe rând, înainte de salvare
+        if "tip_norma" in dv:
+            out.append(semnaleaza("salariat", i, "norma_propusa",
+                                  "%s: norma de lucru lipsește din fișier — propusă %s; schimb-o pe rând dacă nu e așa (intră marcată de "
+                                  "verificat)" % (nume, "normă întreagă (8 ore)" if r.get("tip_norma") == "intreaga"
+                                                  else "normă parțială, %s pe zi (din fișier)" % _cate(r.get("ore_zi"), "oră", "ore"))))
+        if "functie_baza" in dv:
+            out.append(semnaleaza("salariat", i, "functie_baza_propusa",
+                                  "%s: funcția de bază lipsește din fișier — propusă „Da”; schimb-o pe rând dacă nu e așa (intră marcată "
+                                  "de verificat)" % nume))
     return out
 
 
@@ -359,12 +386,57 @@ def eticheteaza(randuri):
     return randuri
 
 
-def importa(conn, randuri):
+def existent(conn, cnp_uri):
+    """[lotul 10, deficiența 426 — clasa] Salariații firmei pe care fișierul îi ACTUALIZEAZĂ (același CNP) și ce se sprijină pe fișele lor:
+    {total (salariații firmei), randuri (câți din fișier există deja), nume: [„Nume Prenume”], state_plata: {numar, ultima}} — statele
+    de plată deja emise pentru ei (calculate pe fișele vechi)."""
+    cnp_uri = sorted({str(c or "").strip() for c in cnp_uri or []} - {""})
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass('salariati')")
+        if cur.fetchone()[0] is None:
+            return {"total": 0, "randuri": 0, "nume": [], "state_plata": {"numar": 0, "ultima": None}}
+        cur.execute("SELECT count(*) FROM salariati")
+        total = cur.fetchone()[0]
+        cur.execute("SELECT id, trim(coalesce(nume,'') || ' ' || coalesce(prenume,'')) FROM salariati WHERE cnp = ANY(%s) "
+                    "ORDER BY nume, prenume", (cnp_uri,))
+        gasiti = cur.fetchall()
+        cur.execute("SELECT count(*), max(luna) FROM state_plata WHERE salariat_id = ANY(%s)", ([g[0] for g in gasiti],))
+        ns, ultima = cur.fetchone()
+    return {"total": int(total), "randuri": len(gasiti), "nume": [g[1] for g in gasiti],
+            "state_plata": {"numar": int(ns or 0), "ultima": ultima.isoformat() if ultima else None}}
+
+
+def text_inlocuire(vechi, nou):
+    """[426] „spune că există deja […], arată [ce e] vechi și nou […]; dacă există [date dependente], spune” — textul comun avertismentului
+    din previzualizare și refuzului de la salvare. Câmpurile numite sunt exact cele pe care le rescrie `importa` (upsert-ul pe CNP
+    + `salariu_istoric.seteaza` la data angajării)."""
+    nume = ", ".join(vechi["nume"][:5]) + (" și încă %d" % (len(vechi["nume"]) - 5) if len(vechi["nume"]) > 5 else "")
+    unul = vechi["randuri"] == 1
+    cine = ("salariatul din fișier există deja" if nou["randuri"] == 1
+            else "din cei %d din fișier, %s" % (nou["randuri"], "unul există deja" if unul else "%d există deja" % vechi["randuri"]))
+    t = ("Firma are deja %s; %s după CNP: %s. Salvarea %s cu datele din fișier — numele, data angajării, codul COR, casa de sănătate, "
+         "norma, persoanele în întreținere, scutirea, funcția de bază și salariul de bază de la data angajării (un câmp lipsă din fișier și "
+         "IBAN-ul gol nu șterg ce era)." % (_cate(vechi["total"], "salariat", "salariați"), cine, nume,
+                                           "îi actualizează fișa" if unul else "le actualizează fișele"))
+    sp = vechi.get("state_plata") or {}
+    if sp.get("numar"):
+        luna_sp = "%s/%s" % (sp["ultima"][5:7], sp["ultima"][:4])
+        t += (" Pentru %s %s pe %s."   # participiul acordat cu numeralul, în aceeași ramură cu el (`cate`)
+              % ("acest salariat" if unul else "acești salariați",
+                 "este deja emis un stat de plată (pe %s), calculat" % luna_sp if sp["numar"] == 1
+                 else "sunt deja emise %s (ultimul pe %s), calculate" % (_cate(sp["numar"], "stat de plată", "state de plată"), luna_sp),
+                 "fișa veche" if unul else "fișele vechi"))
+    return t
+
+
+def importa(conn, randuri, inlocuieste=False):
     """
     Insereaza salariatii in tabelul existent. UPSERT pe CNP (daca exista, actualizeaza).
     Ridica ValueError daca vreun rand nu poate intra (vezi verifica_randuri).
     Refuzul e PRIMA POARTA: nimic nu se scrie dintr-un import cu randuri invalide.
-    Intoarce {importati}. NU exista skip: importa ridica la primul CNP invalid (prima poarta).
+    Intoarce {importati, respinse, actualizati}. NU exista skip: importa ridica la primul CNP invalid (prima poarta).
+    [lotul 10, deficiența 426 — clasa] fișele salariaților existenți (același CNP) se actualizează NUMAI cu `inlocuieste=True`
+    (confirmarea de pe ecran); fără ea -> `migrare_api.InlocuireNeconfirmata` (409), cu cine se actualizează și ce.
     """
     # [lotul 6] Aceeasi clasa ca la articole: o cerere fara randuri nu e un import de zero.
     if not randuri:
@@ -386,6 +458,10 @@ def importa(conn, randuri):
         _cine = ("Un rând nu poate intra" if _n == 1 else _cate(_n, "rând", "rânduri") + " nu pot intra")
         raise ValueError("%s în evidență: %s. Salariații intră în D112 și REGES - datele trebuie "
                          "să fie cele reale; niciun salariat n-a fost scris." % (_cine, det))
+    vechi = existent(conn, [r.get("cnp") for r in bune])
+    from core import migrare_api as _mig
+    _mig.cere_confirmarea_inlocuirii(vechi["randuri"] > 0, inlocuieste, text_inlocuire(vechi, {"randuri": len(bune)}), vechi,
+                                     {"randuri": len(bune)}, vechi["state_plata"])   # [426] poarta comună a clasei
     importati = 0
     with conn.cursor() as cur:
         # asiguram constrangerea unica pe cnp pentru upsert (idempotent)
@@ -403,22 +479,26 @@ def importa(conn, randuri):
         for r in bune:
             # rândurile respinse au rămas pe dinafară (`respinse`, întoarse numite) — aici numai rândurile bune
             part_time = (r.get("tip_norma") == "partiala")   # norma e cerută mai sus (norma_lipsa): fără „intreaga” implicit
-            # upsert-ok: re-import salariat pe CNP - actualizeaza fisa existenta (IBAN pazit separat)
+            # upsert-ok: re-import salariat pe CNP (cheie naturala) - actualizeaza fisa existenta NUMAI dupa confirmarea inlocuirii
+            # (poarta [426] de mai sus, `inlocuieste=True`); campurile absente / propunerile nu strica fisa, IBAN pazit separat
             cur.execute("""
                 INSERT INTO salariati
                   (cnp, nume, prenume, data_angajare, part_time, ore_zi,
                    persoane_intretinere, judet_casa, cor, iban, functie_baza, scutit_contrib_minim, de_verificat)
                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 ON CONFLICT (cnp) DO UPDATE SET
-                  functie_baza=EXCLUDED.functie_baza,
                   -- [14.10.2026] un câmp ABSENT din fișierul de acum (marcat în EXCLUDED.de_verificat) nu șterge valoarea existentă,
                   -- iar marcajul rămâne numai dacă era încă neconfirmat (intersecția): un reimport nu strică ce a confirmat contabilul
                   scutit_contrib_minim=CASE WHEN 'scutit_contrib_minim' = ANY(EXCLUDED.de_verificat)
                                             THEN salariati.scutit_contrib_minim ELSE EXCLUDED.scutit_contrib_minim END,
+                  -- [lotul 10, 420] aceeași regulă pentru propunerile de normă și funcție de bază: o propunere nu strică fișa existentă
+                  functie_baza=CASE WHEN 'functie_baza' = ANY(EXCLUDED.de_verificat)
+                                    THEN salariati.functie_baza ELSE EXCLUDED.functie_baza END,
                   de_verificat=ARRAY(SELECT unnest(EXCLUDED.de_verificat) INTERSECT SELECT unnest(salariati.de_verificat)),
                   nume=EXCLUDED.nume, prenume=EXCLUDED.prenume,
-                  data_angajare=EXCLUDED.data_angajare, part_time=EXCLUDED.part_time,
-                  ore_zi=EXCLUDED.ore_zi,
+                  data_angajare=EXCLUDED.data_angajare,
+                  part_time=CASE WHEN 'tip_norma' = ANY(EXCLUDED.de_verificat) THEN salariati.part_time ELSE EXCLUDED.part_time END,
+                  ore_zi=CASE WHEN 'tip_norma' = ANY(EXCLUDED.de_verificat) THEN salariati.ore_zi ELSE EXCLUDED.ore_zi END,
                   persoane_intretinere=CASE WHEN 'persoane_intretinere' = ANY(EXCLUDED.de_verificat)
                                             THEN salariati.persoane_intretinere ELSE EXCLUDED.persoane_intretinere END,
                   judet_casa=EXCLUDED.judet_casa, cor=EXCLUDED.cor,
@@ -439,10 +519,12 @@ def importa(conn, randuri):
             from datetime import date as _dm
             _si.seteaza(cur, _sid, r.get("salariu_brut", 0), r.get("data_angajare") or _dm.today().isoformat())
             importati += 1
-    return {"importati": importati, "respinse": er}
+    return {"importati": importati, "respinse": er, "actualizati": vechi if vechi["randuri"] else None}
 
 
-DE_VERIFICAT = ("persoane_intretinere", "scutit_contrib_minim")
+#: Câmpurile care pot intra „de verificat” (sursa unică: importul le marchează, salvarea din Stat de plată le confirmă —
+#: `salariati_api.actualizeaza_salariat`). [lotul 10, 420] + norma și funcția de bază propuse la import.
+DE_VERIFICAT = ("persoane_intretinere", "scutit_contrib_minim", "tip_norma", "functie_baza")
 
 
 def _de_verificat(r):

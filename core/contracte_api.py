@@ -11,6 +11,7 @@ from io import BytesIO
 from datetime import date
 from psycopg2.extras import RealDictCursor
 from core.pdf_fonturi import init_fonturi, font
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] numele dublat -> NUME_EXISTA și la cursă, nu 500
 
 # Vocabular FIX de marcaje (marcaj -> descriere pentru UI). Un marcaj in afara listei =
 # orfan (ramane necompletat) -> se respinge la scrierea sablonului.
@@ -52,21 +53,25 @@ def salveaza_sablon(conn, schema, sablon_id, nume, continut, creat_de):
     necunoscute = _marcaje_folosite(continut) - set(MARCAJE)
     if necunoscute:
         return {"ok": False, "cod": "MARCAJ_INVALID", "marcaj": sorted(necunoscute)[0]}
+    # [lotul 10, C73 / U2] numele dublat îl refuză baza (`contracte_sabloane_nume_unic`), prin helperul comun: ACELAȘI cod NUME_EXISTA
+    # la a doua salvare și la cursa dintre două salvări simultane. Verificarea prealabilă de dinainte (`SELECT`, apoi scrierea) ținea
+    # numai cererile una după alta; în cursă, a doua cădea cu 500.
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"SELECT id FROM {schema}.contracte_sabloane WHERE nume=%s AND id<>%s",
-                    (nume, sablon_id or -1))
-        if cur.fetchone():
+        try:
+            with _chei.refuza_dublura(cur, ("contracte_sabloane_nume_unic",), lambda cur, e: _chei.CheieDublata("NUME_EXISTA", nume)):
+                if sablon_id:
+                    cur.execute(f"UPDATE {schema}.contracte_sabloane SET nume=%s, continut=%s WHERE id=%s RETURNING id",
+                                (nume, continut, sablon_id))
+                    row = cur.fetchone()
+                else:
+                    cur.execute(f"INSERT INTO {schema}.contracte_sabloane (nume, continut, creat_de) "
+                                f"VALUES (%s,%s,%s) RETURNING id", (nume, continut, creat_de))
+                    row = cur.fetchone()
+        except _chei.CheieDublata:
             return {"ok": False, "cod": "NUME_EXISTA"}
-        if sablon_id:
-            cur.execute(f"UPDATE {schema}.contracte_sabloane SET nume=%s, continut=%s WHERE id=%s RETURNING id",
-                        (nume, continut, sablon_id))
-            row = cur.fetchone()
-            if not row:
-                return {"ok": False, "cod": "INEXISTENT"}
-            return {"ok": True, "id": row["id"]}
-        cur.execute(f"INSERT INTO {schema}.contracte_sabloane (nume, continut, creat_de) "
-                    f"VALUES (%s,%s,%s) RETURNING id", (nume, continut, creat_de))
-        return {"ok": True, "id": cur.fetchone()["id"]}
+        if not row:
+            return {"ok": False, "cod": "INEXISTENT"}
+        return {"ok": True, "id": row["id"]}
 
 
 def sterge_sablon(conn, schema, sablon_id):

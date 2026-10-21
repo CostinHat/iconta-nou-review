@@ -32,9 +32,9 @@ def _gen(platitor):
                 cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA))
                 cur.execute("SET search_path TO %s, public" % _SCHEMA)
                 cur.execute(
-                    "INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,"
+                    "INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,telefon,"
                     "declarant_nume,declarant_prenume,declarant_functie,platitor_tva,tip_decont,regim_fiscal) "
-                    "VALUES (1,'TEST SRL','14399840','Str 1','Buc','B','6920','BCR','RO49BCRA0000000000000000',"
+                    "VALUES (1,'TEST SRL','14399840','Str 1','Buc','B','6920','BCR','RO49BCRA0000000000000000','0212223344',"
                     "'POPESCU','GHEORGHE','EXPERT',%s,'L','real')", (platitor,))
             xml, _res = _d406.genereaza(conn, _SCHEMA, 2026, 6)
             return xml
@@ -48,16 +48,19 @@ def _company_reg(xml):
 
 
 def test_registration_number_functie_nu_mai_e_cod_mort():
-    """Regresie: registration_number e acum APELAT in _header (nu mai e cod mort). AST: _header contine apelul."""
+    """Regresie: registration_number e acum APELAT la construirea antetului (nu mai e cod mort). AST.
+    [lotul 10, C69] `<Company>` se construieste in `antet_firma` (sursa unica pentru D406 lunar si anual), chemata din `_header`:
+    deci garda cere lantul `_header` -> `antet_firma` -> `registration_number`."""
     import ast, io
     src = io.open(_d406.__file__, encoding="utf-8").read()
     tree = ast.parse(src)
-    header = next((n for n in ast.walk(tree)
-                   if isinstance(n, ast.FunctionDef) and n.name == "_header"), None)
-    assert header is not None
-    apeluri = {n.func.id for n in ast.walk(header)
-               if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
-    assert "registration_number" in apeluri, "_header trebuie sa cheme registration_number (nu CUI brut)"
+
+    def _apeluri(nume):
+        fn = next((n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name == nume), None)
+        assert fn is not None, nume
+        return {n.func.id for n in ast.walk(fn) if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
+    assert _apeluri("_header") >= {"antet_firma"}, "_header trebuie sa construiasca <Company> prin antet_firma"
+    assert _apeluri("antet_firma") >= {"registration_number"}, "antet_firma trebuie sa cheme registration_number (nu CUI brut)"
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

@@ -18,7 +18,7 @@
 // însemna că n-a fost ce compara, sau că verificarea n-a rulat deloc. Ecranul le ține despărțite,
 // fiindcă exact aici se naște cifra validă și falsă.
 
-import { api, esc, dupaNumar } from "../api.js?v=158edee964";
+import { api, esc, dupaNumar } from "../api.js?v=ff30ebaf3f";
 import { randA as randConstatare } from "./control_verdict.js?v=2daa29640d";
 
 function perioada(r) {

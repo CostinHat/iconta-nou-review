@@ -18,6 +18,7 @@ from __future__ import annotations
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 from core.common import cate as _cate
+from core import chei_unice as _chei   # [lotul 10, C73] cheia naturală dublată -> refuz numit, nu 500
 
 
 def _radacina(cont):
@@ -127,16 +128,36 @@ def extrage(continut, nume_fisier="", cont_implicit=None, ignorate=None):
             continue
         out.append({"cont": cont, "cui": cui, "denumire": den, "debit": deb, "credit": cre, "rand_fisier": nr})
     # același partener pe același cont de două ori: baza are UNIQUE(cont, cui) (GARZI cat.1) — refuz numit, nu eroare de bază
-    vazute, dubluri = {}, []
-    for x in out:
-        k = (x["cont"], x["cui"])
-        if x["cui"] and k in vazute:
-            dubluri.append("%s / %s (rândurile %s și %s)" % (x["cont"], x["cui"], vazute[k], x["rand_fisier"]))
-        vazute.setdefault(k, x["rand_fisier"])
+    dubluri = parteneri_dublati(out)
     if dubluri:
-        raise _it.FisierNecitit("Același partener apare de două ori pe același cont: %s. Un partener are un singur sold pe un cont; "
-                                "adună rândurile în fișier și încarcă-l din nou." % "; ".join(dubluri[:6]))
+        raise _it.FisierNecitit(MESAJ_PARTENER_DUBLAT % "; ".join(dubluri[:6]))
     return out
+
+
+#: [lotul 10, C73] același partener pe același cont — la citirea fișierului ȘI la scriere (rândurile pot veni și direct, prin API)
+MESAJ_PARTENER_DUBLAT = ("Același partener apare de două ori pe același cont: %s. Un partener are un singur sold pe un cont; "
+                         "adună rândurile în fișier și încarcă-l din nou.")
+
+
+def parteneri_dublati(randuri):
+    """PURĂ: perechile (cont, CUI) care apar pe mai multe rânduri, ca text („4111 / 14399840 (rândurile 2 și 3)”). Baza are
+    UNIQUE(cont, cui) (`solduri_parteneri_cont_cui_uniq`)."""
+    vazute, dubluri = {}, []
+    for i, x in enumerate(randuri or [], start=2):
+        k = (x.get("cont"), x.get("cui"))
+        nr = x.get("rand_fisier") or i
+        if x.get("cui") and k in vazute:
+            dubluri.append("%s / %s (rândurile %s și %s)" % (x.get("cont"), x.get("cui"), vazute[k], nr))
+        vazute.setdefault(k, nr)
+    return dubluri
+
+
+def _refuz_partener_scris_intre_timp(cur, e):
+    """[lotul 10, C73] Rândurile de scris n-au perechea (cont, CUI) dublată (verificat înainte), deci violarea vine de la o altă salvare
+    a soldurilor pe parteneri, terminată în timpul acesteia."""
+    return _chei.CheieDublata("În timp ce salvai, altă salvare a scris deja soldul partenerului (cont, CUI) %s. Din soldurile tale nu "
+                              "s-a scris nimic: reîncarcă pagina, verifică soldurile pe parteneri și salvează-le din nou dacă e cazul."
+                              % _chei.valoarea(e), valoare=_chei.valoarea(e))
 
 
 def asigura_tabel(conn):
@@ -306,10 +327,48 @@ def verifica_randuri(randuri):
     return erori, bune
 
 
-def importa(conn, randuri, data_referinta=None, schema=None):
-    """Inlocuieste partenerii (DELETE + INSERT) cu randurile BUNE. Intoarce {randuri, total_debit, total_credit, respinse}.
+def existent(conn):
+    """[lotul 10, deficiența 426 — clasa] Soldurile pe parteneri deja salvate ale firmei: {randuri, total_debit, total_credit,
+    data_referinta} (data = cea mai recentă a rândurilor, 'YYYY-MM-DD' sau None). Înlocuirea lor se confirmă cu cifrele astea.
+    Numai citire (o cheamă și previzualizarea): fără tabel, firma n-are solduri pe parteneri."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass('solduri_parteneri')")
+        if cur.fetchone()[0] is None:
+            return {"randuri": 0, "total_debit": 0.0, "total_credit": 0.0, "data_referinta": None}
+        cur.execute("SELECT count(*), COALESCE(sum(sold_debitor),0), COALESCE(sum(sold_creditor),0), max(data_referinta) "
+                    "FROM solduri_parteneri")
+        n, td, tc, dr = cur.fetchone()
+    return {"randuri": int(n), "total_debit": float(td), "total_credit": float(tc),
+            "data_referinta": dr.isoformat() if hasattr(dr, "isoformat") else (str(dr)[:10] if dr else None)}
+
+
+def totaluri(randuri):
+    """[426] Ce aduce fișierul: {randuri, total_debit, total_credit} pe rândurile care intră (sume în Decimal, fără zgomot float)."""
+    from decimal import Decimal as _D
+    return {"randuri": len(randuri or []),
+            "total_debit": float(sum((_D(str(r.get("debit") or 0)) for r in randuri or []), _D(0))),
+            "total_credit": float(sum((_D(str(r.get("credit") or 0)) for r in randuri or []), _D(0)))}
+
+
+def text_inlocuire(vechi, nou):
+    """[426] „spune că există deja […], arată totalurile vechi și noi” — textul comun avertismentului din previzualizare și refuzului
+    de la salvare. Soldurile pe parteneri nu stau sub nicio cifră calculată (le citesc numai confruntarea cu balanța și auditul de
+    preluare), deci n-au date dependente de numit."""
+    from core.pdf_util import bani as _b
+
+    def _parte(x):
+        return "%s, debit %s, credit %s" % (_cate(x["randuri"], "partener", "parteneri"), _b(x["total_debit"], "lei"),
+                                            _b(x["total_credit"], "lei"))
+    return ("Firma are deja solduri pe parteneri%s: %s. Fișierul nou: %s. Salvarea le înlocuiește pe cele vechi."
+            % ((" la %s" % _data_ro_iso(vechi["data_referinta"])) if vechi.get("data_referinta") else "", _parte(vechi), _parte(nou)))
+
+
+def importa(conn, randuri, data_referinta=None, schema=None, inlocuieste=False):
+    """Inlocuieste partenerii (DELETE + INSERT) cu randurile BUNE. Intoarce {randuri, total_debit, total_credit, respinse, inlocuita}.
     Randurile respinse (vezi verifica_randuri) nu intra si se intorc numite (decizia Costin 14.10.2026 pct.2); ValueError numai
-    cand niciun rand nu poate intra."""
+    cand niciun rand nu poate intra.
+    [lotul 10, deficiența 426 — clasa] soldurile existente se înlocuiesc NUMAI cu `inlocuieste=True` (confirmarea de pe ecran); fără
+    ea -> `migrare_api.InlocuireNeconfirmata` (409), cu totalurile vechi și noi."""
     # [probare invalid, 03.09.2026 — aceeasi clasa ca importul de istoric] UN IMPORT GOL
     # STERGEA TOT, IN TACERE. Lista vida trecea de verificare (n-are ce respinge), ajungea la
     # `DELETE FROM solduri_parteneri` de mai jos, si raspundea ca un import reusit cu zero randuri. Un fisier gol,
@@ -336,19 +395,27 @@ def importa(conn, randuri, data_referinta=None, schema=None):
             "%s în evidență: %s. Soldurile pe parteneri au nevoie "
             "de CUI valid (intră în D394 și SAF-T) și de un cont care ține parteneri; niciun sold n-a fost scris."
             % ("Un rând nu poate intra" if len(erori) == 1 else _cate(len(erori), "rând", "rânduri") + " nu pot intra", det))
+    dubluri = parteneri_dublati(bune)   # [lotul 10, C73] înaintea scrierii: refuzul numit, nu `UniqueViolation` -> 500
+    if dubluri:
+        raise ValueError(MESAJ_PARTENER_DUBLAT % "; ".join(dubluri[:6]))
     asigura_tabel(conn)
+    vechi, nou = existent(conn), totaluri(bune)
+    from core import migrare_api as _mig
+    _mig.cere_confirmarea_inlocuirii(vechi["randuri"] > 0, inlocuieste, text_inlocuire(vechi, nou), vechi, nou)   # [426] poarta comună
     td = tc = 0.0
     with conn.cursor() as cur:
         cur.execute("DELETE FROM solduri_parteneri")
-        for r in bune:
-            cur.execute(
-                "INSERT INTO solduri_parteneri (cont, cui, denumire, sold_debitor, sold_creditor, data_referinta) "
-                "VALUES (%s,%s,%s,%s,%s,%s)",
-                (r["cont"], r.get("cui", ""), r.get("denumire", ""),
-                 r.get("debit", 0), r.get("credit", 0), data_referinta))
-            td += float(r.get("debit", 0) or 0)
-            tc += float(r.get("credit", 0) or 0)
-    return {"randuri": len(bune), "total_debit": round(td, 2), "total_credit": round(tc, 2), "respinse": erori}  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+        with _chei.refuza_dublura(cur, ("solduri_parteneri_cont_cui_uniq",), _refuz_partener_scris_intre_timp):
+            for r in bune:
+                cur.execute(
+                    "INSERT INTO solduri_parteneri (cont, cui, denumire, sold_debitor, sold_creditor, data_referinta) "
+                    "VALUES (%s,%s,%s,%s,%s,%s)",
+                    (r["cont"], r.get("cui", ""), r.get("denumire", ""),
+                     r.get("debit", 0), r.get("credit", 0), data_referinta))
+                td += float(r.get("debit", 0) or 0)
+                tc += float(r.get("credit", 0) or 0)
+    return {"randuri": len(bune), "total_debit": round(td, 2), "total_credit": round(tc, 2), "respinse": erori,  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+            "inlocuita": vechi if vechi["randuri"] else None}
 
 
 def rezumat(conn):

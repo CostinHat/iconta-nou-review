@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.95 · 19 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.97 · 21 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -255,21 +255,66 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
 ## 9. Ferestre de lucru
 
 - Overlay umbrit uniform rgba(20,30,45,0.55) pentru TOATE ferestrele. Card central alb.
-- max-height calc(100vh - 48px); la tabele lungi: antet + butoane fixe, doar tabelul derulează.
+- max-height calc(100vh - 48px); la tabele lungi: antet + butoane fixe, doar tabelul derulează (aplicat mecanic din v2.96: „Fereastra cu
+  tabel”, mai jos).
 - Grile de câmpuri în ferestre: clasa `.grila-doc` (copiii primesc `min-width:0` ca să se strângă) — fără grile inline cu display:grid care lasă inputurile să împingă fereastra în scroll orizontal.
 - `.fer-larg` max-width 1000px doar pentru tabele.
 - **Fereastra cu tabele late (v2.81, 08.10.2026, decizia Costin W5)**: `.fer-tabel` (`nav.deschide(…, { lat: "tabel" })`) — lățimea o
   dă conținutul (`fit-content`), între 1000px și marginea ecranului (`100vw - 48px`); la 1920px tabelele Balanței, Mijloacelor fixe și
-  Declarațiilor nu mai derulează lateral. Derularea laterală rămâne numai când tabelul e mai lat decât ecranul.
+  Declarațiilor nu mai derulează lateral. Derularea laterală rămâne numai când tabelul e mai lat decât ecranul. **Înlocuit în v2.96**
+  („Fereastra cu tabel”, mai jos): lățimea și înălțimea sunt ale ecranului, nu ale conținutului, și nicio derulare laterală.
 - **Nicio fereastră cu derulare laterală (v2.92, lotul 6, deficiența 285 — clasă, toate ferestrele):** fereastra al cărei conținut e mai
   lat decât ea se lățește SINGURĂ (`navigator._lateste`: `fer-tabel` adăugat când `.fereastra-corp` are `scrollWidth > clientWidth`, la
   fiecare schimbare de conținut și la redimensionare) — nu mai depinde de ecranul care ar fi trebuit s-o ceară. Unde nici lățirea nu
   ajunge (ecran îngust), rândurile de butoane și stări se rup (`flex-wrap`, ex. `.fd-antet-sus`), iar celulele `.fd-tabel` își rup
   cuvintele lungi. Gard: e2e `test_def_285_*` (toate cardurile ferestrei firmei, detaliul facturii la 1100px, un conținut lat sintetic).
   **(19.10.2026, deficiența 349)** lățirea privește și cutia de previzualizare a importurilor (`.mig-prev-cutie`, cu derulare proprie pe
-  înălțime): un tabel mai lat decât ea lățește fereastra, nu o face să deruleze lateral. Gard: e2e `test_def_349_*`.
+  înălțime): un tabel mai lat decât ea lățește fereastra, nu o face să deruleze lateral. Gard: e2e `test_def_349_*`. **(v2.96)** cutia nu
+  mai derulează ea însăși: derulează corpul ferestrei.
   **(18.10.2026, deficiența 331)** numai cuvântul care nu încape se rupe: `overflow-wrap: break-word`, NU `anywhere` — `anywhere` coboară
   lățimea minimă a celulei la o literă și tabelul rupe și cuvintele scurte („Can t”, „servici u”). Gard: e2e `test_def_331_*`.
+- **Fereastra cu tabel: aproape tot ecranul, rezumat sus, acțiune jos (v2.96, lotul 10, 421 și 424)**: `fer-tabel`, `rezumat-fix`, `bara-fixa`; gard `FEREASTRA_TABEL` / `ACTIUNE_TABEL_NEFIXATA` / `DERULARE_INLINE`.
+  Comanda Costin 10.1 pct.5 (clasă, toată aplicația; verbatim în DECIZII): „Regula: ferestrele cu tabele se deschid aproape pe tot ecranul
+  (cum e deja Balanța de verificare); rezumatul stă fix sus și acțiunea principală fix jos; se derulează doar tabelul din mijloc,
+  niciodată lateral.” Concret:
+  1. Orice fereastră de lucru care CONȚINE un tabel (`<table>` sau lista-tabel `.mig-sold-tabel`) devine fereastră cu tabel — clasa
+     `fer-tabel` o pune navigatorul singur (`navigator._lateste`, la fiecare schimbare de conținut), nu ecranul; `{ lat: "tabel" }` o
+     pune doar mai devreme. Clasa nu se scoate cât fereastra e deschisă (fereastra nu sare la fiecare „Se încarcă…”).
+  2. Fereastra cu tabel are lățimea `calc(100vw - 48px)` și înălțimea `calc(100vh - 48px)` — fixe, nu maxime. Pe telefon (≤ 560 px)
+     rămâne tot ecranul.
+  3. Un singur element derulează: corpul ferestrei (`overflow-x: hidden; overflow-y: auto`), niciodată lateral. Nicio cutie cu
+     derulare proprie în fereastră: `.mig-prev-cutie` nu mai derulează, iar stilul inline `overflow(-x): auto|scroll` e interzis în
+     șabloanele din `static/js` (gard `DERULARE_INLINE`). **(v2.97)** Nici lista-tabel `.mig-sold-tabel` (Activitate cabinet) nu mai
+     derulează ea însăși în fereastra cu tabel (`max-height: none; overflow: clip`; cutia ei de 280 px lăsa corpul fără ce derula, deci
+     rezumatul fix n-avea ce ține în vedere); antetul ei (`.ac-cap`) se lipește sub rezumat, ca antetul `.fd-tabel` (gard
+     `FEREASTRA_TABEL`).
+  4. Tabelul se încadrează în lățime: celula își rupe cuvântul care nu încape (`break-word`, 331); dacă nici așa nu încape, navigatorul
+     îl strânge în trepte, cât e nevoie — `fer-strans` (litera `--text-desc`, celula mai îngustă), apoi `fer-rupt` (`--text-micut`,
+     textul rupt oriunde). Cifrele (`.fd-td-num`) rămân pe un rând în toate treptele (162).
+  5. **Rezumatul lipit sus** (`.rezumat-fix`: ce trebuie văzut cât derulezi tabelul — luna, cifrele ecranului, antetul documentului cu
+     acțiunile lui, zona de mesaj a acțiunilor de pe rânduri); gol, nu ocupă loc. **Acțiunea principală și mesajele ei de blocare lipite
+     jos** (`.bara-fixa`, cap.6 v2.92). Amândouă se lipesc numai cât e în vedere părintele lor, deci stau direct în corp sau în același
+     părinte cu tabelul. Antetul tabelului `.fd-tabel` rămâne în vedere sub rezumat (`--rezumat-h`, pus de navigator).
+     **Rezumatul e obligatoriu pe orice ecran care desenează un tabel de date în fereastră (v2.97, gard `REZUMAT_TABEL_LIPSA`).** Intră
+     în `.rezumat-fix` blocul care stă DEJA deasupra tabelului și trebuie văzut cât derulezi: perioada / luna / anul, filtrele (contul,
+     varianta, registrul), cifrele ecranului, antetul documentului cu acțiunile lui, zona de mesaj a acțiunilor; titlul și textele de
+     prezentare nu se cer în el (pot rămâne deasupra lui, nelipite). Rezumatul nu mută nimic: ce stă sub tabel (totalurile Fișei de cont, luna Stocurilor)
+     rămâne acolo până decide Costin (reorganizarea unui ecran = STOP). Nu se cer: tabelele de machetă (`mfp-tabel`) și formularele
+     cu tabele mici în ele (Date firmă, Operațiuni — se derulează formularul, nu un tabel; acțiunea stă deja în `.bara-fixa`). Fiecare
+     excepție stă în verificator (`rezumat_exceptii`), cu motivul; cele „de decis de Costin” (Tipare, Înregistrare — cererile
+     neconfirmate, Stocuri — situația stocului) așteaptă decizia lui. O excepție fără obiect (ecranul are acum rezumat, sau nu mai
+     desenează tabel) pică gardul.
+  6. Un buton care scrie (`data-actiune` POST / PUT / PATCH / DELETE), pus în corpul unei ferestre cu tabel, stă în `.bara-fixa` sau în
+     `.rezumat-fix` — nu la capătul conținutului (gard `ACTIUNE_TABEL_NEFIXATA`). Nu se cer: acțiunile de pe un rând (în celulă, sau cu
+     identificatorul rândului) și tabelele de machetă (`mfp-tabel`, modelul facturii). **(v2.97)** Regula privește și ZONELE ferestrei:
+     un buton care scrie, pus după un tabel într-o zonă desenată separat (lista ajustărilor fiscale, coloana „An precedent” a
+     bilanțului, propunerea contării salariilor) sau într-un formular adăugat după tabel (înscrierea în registrul fiscal PF), stă și el
+     în `.bara-fixa`, cu mesajul lui când e lângă el. Butonul de deasupra tabelului ține de rezumat (pct.5). Excepții cu motiv, în
+     verificator (`actiuni_exceptii`): „Adaugă” din panoul elementelor de salariu (e în rândul câmpurilor formularului; lipirea lui jos
+     ar muta rândul întreg).
+  Gard: `core/test_lot10_fereastra_tabel.py` (regula verificatorului pe fragmente bune / rele + navigatorul și stil.css reale, în
+  Chromium) + e2e `test_def_421_*` / `test_def_424_*` (Balanța, Registrul-inventar, statul de plată și importul salariaților la 1366×768);
+  rezumatul pe toate ecranele cu tabel: `core/test_lot10_rezumat_fix.py` (v2.97).
 - Nicio fereastră nu iese din ecran.
 - **Acțiunile unui rând de tabel stau într-un meniu (v2.83, 08.10.2026, comanda Costin „Retest 08.10” pct.13).** O celulă cu trei
   sau mai multe butoane le ține într-un `<details class="dec-xml"><summary>Acțiuni</summary>` (butoanele unul sub altul la deschidere),
@@ -948,6 +993,20 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.97 (21.10.2026)** — lotul 10 (comanda Costin 10.1 pct.5, deficiențele 421 și 424 — clasa, toată aplicația): **cap.9** — **rezumatul
+lipit sus e obligatoriu pe orice ecran care desenează un tabel în fereastră** (`.rezumat-fix`: perioada, filtrele, cifrele, antetul
+documentului, zona de mesaj — blocul care stătea deja deasupra tabelului, fără mutări); pus pe 12 ecrane (Activitate cabinet, Invitații
+cabinete, Capacitate, Declarații pasul 2, Cartea mare, Jurnal regim marjă, Registrul de evidență fiscală, Registre art. 321, Bilanț, NIR,
+Rapoarte comerciale, nota de validat); lista-tabel `.mig-sold-tabel` fără derulare proprie în fereastra cu tabel. Excepții cu motiv:
+formularele (Date firmă, Operațiuni) și trei ecrane de decis de Costin (Tipare, Înregistrare, Stocuri). **Cap.9 pct.6** — acțiunea care scrie
+lipită jos și în zonele ferestrei cu tabel (Adaugă ajustarea, Înscrie în registru PF, Salvează coloana „An precedent”, contarea statului
+de plată). Gard: verificator `REZUMAT_TABEL_LIPSA` (+ `FEREASTRA_TABEL` pentru lista-tabel), `ACTIUNE_TABEL_NEFIXATA` lărgită la zone;
+`core/test_lot10_rezumat_fix.py`.
+**v2.96 (20.10.2026)** — lotul 10 (comanda Costin 10.1 pct.5, deficiențele 421 și 424, verbatim în DECIZII): **cap.9** — **fereastra cu
+tabel**: aproape tot ecranul (lățime și înălțime fixe), pusă de navigator pe orice fereastră care conține un tabel; un singur element
+derulează (corpul), niciodată lateral; tabelul se strânge în trepte cât să încapă (`fer-strans`, `fer-rupt`); rezumatul lipit sus
+(`.rezumat-fix`, nou) și acțiunea principală lipită jos (`.bara-fixa`); fără cutii cu derulare proprie (`.mig-prev-cutie`, stilul inline).
+Gărzi: verificator `FEREASTRA_TABEL`, `DERULARE_INLINE`, `ACTIUNE_TABEL_NEFIXATA`; `core/test_lot10_fereastra_tabel.py`; e2e 421 / 424.
 **v2.95 (19.10.2026)** — închiderea lotului 9 (deciziile Costin, verbatim în DECIZII „Închiderea lotului 9”): **cap.5** — „Pleacă marfa acum?”
 o singură implementare (C63); **cap.6** — nota internă la partidă simplă (368); **cap.9** — lista de pași care încape: „Cum se face” pliat și
 rândul compact de la lățimea desktop (394).

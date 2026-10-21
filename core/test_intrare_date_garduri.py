@@ -31,6 +31,12 @@ BANI = ("suma", "valoare", "total", "pret", "tva", "baza", "salariu", "cost", "p
 # (A+B au fost puse NOT NULL.) (C) LEGITIM nullable — declarate cu motiv. Gardul cere ca fiecare sa fie
 # chiar o coloana de bani nullable existenta (fara whitelist stale).
 NULLABLE_OK = {
+    # [lotul 10, 425] balanța de deschidere: NULL = fișierul are numai soldurile finale (nu „zero”); cu solduri inițiale și rulaje,
+    # cele patru se scriu (`core/migrare_balanta_rulaje_an.py`), iar cititorii (`core/rulaje_preluate.py`) disting cele două cazuri
+    ("solduri_initiale", "si_an_debit"): "NULL = balanța preluată are numai soldurile finale (425)",
+    ("solduri_initiale", "si_an_credit"): "NULL = balanța preluată are numai soldurile finale (425)",
+    ("solduri_initiale", "rulaj_an_debit"): "NULL = balanța preluată are numai soldurile finale (425)",
+    ("solduri_initiale", "rulaj_an_credit"): "NULL = balanța preluată are numai soldurile finale (425)",
     ("nir_linii", "pret_vanzare"): "prețul de raft există numai la stocul la preț de vânzare (global-valoric); la cost "
                                    "(cantitativ-valoric) nu se cere și nu se verifică — NULL = „nu există”, nu 0 (lotul 07.10 B, C10)",
     ("facturi", "curs_bnr"): "curs BNR doar pe facturi in valuta; RON -> NULL (A1)",

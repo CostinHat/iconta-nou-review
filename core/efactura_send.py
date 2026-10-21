@@ -47,7 +47,8 @@ import unicodedata
 from decimal import Decimal, ROUND_HALF_UP
 from xml.sax.saxutils import escape as _xml_escape
 
-from core.common import cfg
+from core.common import cfg, cate as _cate
+from core import erori as _erori
 
 # ============================================================
 #  CONFIG HOST — env citit LA APEL (cfg), o singura sursa per host
@@ -124,9 +125,57 @@ def _jud(judet):
 _SECTOR_RE = re.compile(r"sector\s*([1-6])", re.IGNORECASE)
 
 
-class EDateIncomplete(ValueError):
+class EDateIncomplete(_erori.RefuzGenerare):
     """Date de factura insuficiente pentru un XML valid (ex. sector Bucuresti lipsa).
-    Butonul de trimitere blocheaza cu mesajul asta, NU trimite structura falsa."""
+    Butonul de trimitere blocheaza cu mesajul asta, NU trimite structura falsa.
+    [lotul 10, C69] `ecran` / `camp_ecran`: unde se completează (datele firmei -> „date_firma”). E un `core.erori.RefuzGenerare`
+    (rămâne `ValueError`): același corp tipat al refuzului (`detaliu`, afirmație `neconformitate`), nu o copie a lui."""
+
+    TIP = "factură e-Factura"
+
+    def __init__(self, mesaj, ecran=None, camp_ecran=None):
+        super().__init__(mesaj, ecran=ecran, camp_ecran=camp_ecran)
+
+
+#: [lotul 10, deficiența C69 — „valoare inventată pe documentul ANAF în loc de blocaj”] Câmpurile părților pe care generatorul le
+#: completa cu „-” și pe care CIUS-RO le cere. Sursa: validatorul ANAF FACT1 (schematron CIUS-RO), probat 20.10.2026 pe XML sintetic
+#: din care s-a scos câte un element (scratchpad N2/p_fact1.out): „[BR-RO-080]-Adresa Vanzatorului - Linia 1 (BT-35) trebuie
+#: furnizata”, „[BR-RO-080]-Adresa Cumparatorului - Linia 1 (BT-50) trebuie furnizata” (cod BR-RO-082), „[BR-RO-090]-Localitatea
+#: Vanzatorului (BT-37) trebuie furnizata” (BR-RO-091), „[BR-RO-090]-Localitatea Cumparatorului (BT-52) trebuie furnizata” (BR-RO-092),
+#: „[BR-06]-An Invoice shall contain the Seller name (BT-27)”, „[BR-07]-An Invoice shall contain the Buyer name (BT-44)”. Cu „-”
+#: FACT1 răspunde „ok” la toate șase — deci numai blocajul de aici oprește o factură cu date inventate.
+#: (parte, cheie, ce lipsește, regula, câmpul din Date firmă pentru vânzător)
+CAMPURI_PARTI_CERUTE = (
+    ("vanzator", "nume", "denumirea firmei", "BR-06 (BT-27)", "df-nume-portofoliu"),
+    ("vanzator", "adresa", "adresa firmei (strada)", "BR-RO-080 (BT-35)", "df-adresa"),
+    ("vanzator", "oras", "localitatea firmei", "BR-RO-090 (BT-37)", "df-oras"),
+    ("cumparator", "nume", "denumirea clientului", "BR-07 (BT-44)", None),
+    ("cumparator", "adresa", "adresa clientului (strada)", "BR-RO-082 (BT-50)", None),
+    ("cumparator", "oras", "localitatea clientului", "BR-RO-092 (BT-52)", None),
+)
+
+
+def cere_partile(furnizor, client):
+    """Refuzul (`EDateIncomplete`) când lipsește un câmp cerut al vânzătorului sau al cumpărătorului — numit, cu locul de completare.
+    În București localitatea se poate scrie și numai în adresă („Sector 2”): `_localitate` o derivă de acolo (BR-RO-100)."""
+    lipsa_v, lipsa_c = [], []
+    for parte, cheie, ce, regula, camp in CAMPURI_PARTI_CERUTE:
+        d = furnizor if parte == "vanzator" else client
+        v = str(d.get(cheie) or "").strip()
+        if cheie == "oras" and not v and _jud(d.get("judet")) == "RO-B" and _SECTOR_RE.search(str(d.get("adresa") or "")):
+            v = "sector din adresă"
+        if not v:
+            (lipsa_v if parte == "vanzator" else lipsa_c).append((ce, regula, camp))
+    if lipsa_v:
+        raise EDateIncomplete(
+            "Factura nu se poate trimite în e-Factura: lipsesc %s — ANAF le cere (regulile %s). Completează-le în Date firmă; factura nu "
+            "pleacă cu „-” în locul lor." % (", ".join(c for c, _r, _k in lipsa_v), ", ".join(r for _c, r, _k in lipsa_v)),
+            ecran="date_firma", camp_ecran=lipsa_v[0][2])
+    if lipsa_c:
+        raise EDateIncomplete(
+            "Factura nu se poate trimite în e-Factura: pe factură lipsesc %s — ANAF le cere (regulile %s). Factura nu pleacă cu „-” în "
+            "locul lor; completează datele clientului pe factură." % (", ".join(c for c, _r, _k in lipsa_c),
+                                                                     ", ".join(r for _c, r, _k in lipsa_c)))
 
 
 def _localitate(judet_code, oras, adresa="", eticheta="firma"):
@@ -143,7 +192,9 @@ def _localitate(judet_code, oras, adresa="", eticheta="firma"):
         raise EDateIncomplete(
             "Localitate incompletă (%s): firma e în București dar lipsește sectorul "
             "(SECTOR1..6) în adresa. Completează sectorul înainte de trimitere." % eticheta)
-    return oras or "-"
+    if not str(oras or "").strip():   # [lotul 10, C69] BR-RO-090: era „-”; `cere_partile` a oprit deja lipsa
+        raise EDateIncomplete("Localitate lipsă (%s): e-Factura o cere (regula ANAF BR-RO-090); nu se scrie „-”." % eticheta)
+    return oras
 
 
 def _um(um):
@@ -227,6 +278,15 @@ def genereaza_xml(factura, linii, furnizor, client):
     cli_vat = "" if neplatitor or (tara_cli != "RO" and tara_cli not in _UE) else (
         _vatid(client.get("cui")) if tara_cli == "RO" else "".join(ch for ch in str(client.get("cui") or "").upper() if ch.isalnum()))
     sup_jud = _jud(furnizor.get("judet"))
+    cere_partile(furnizor, client)   # [lotul 10, C69] numele, strada, localitatea părților: cerute, nu „-”
+    # [lotul 10, C69, generalizarea clasei] numele articolului (BT-153, validatorul FACT1, probat 20.10.2026: „[BR-25]-Each Invoice line (BG-25) shall contain the Item name (BT-153).”)
+    # era `descriere or "-"`; emiterea îl cere deja (`facturi_api`), deci un rând fără el e o factură veche / importată — se numește
+    _fara_den = [str(i) for i, l in enumerate(linii, start=1) if not str(l.get("descriere") or "").strip()]
+    if _fara_den:
+        raise EDateIncomplete("Factura nu se poate trimite în e-Factura: %s fără denumirea articolului (rândul %s) — ANAF o cere "
+                              "(regula BR-25, BT-153); factura nu pleacă cu „-” în locul ei." % (
+                                  "un rând e" if len(_fara_den) == 1 else _cate(len(_fara_den), "rând", "rânduri") + " sunt",
+                                  ", ".join(_fara_den)))
 
     P = []
     P.append('<?xml version="1.0" encoding="UTF-8"?>')
@@ -247,6 +307,12 @@ def genereaza_xml(factura, linii, furnizor, client):
     storno = _fc.mentiune_storno(factura)
     if storno:   # [deficiența 417] BT-22: mențiunea de pe PDF (CF art.330 alin.(1) lit.b)
         P.append('<cbc:Note>%s</cbc:Note>' % _e(storno))
+    if factura.get("tva_la_incasare"):
+        # [lotul 10, deficiența 428] BT-22: mențiunea obligatorie CF art.319 alin.(20) lit.p), „TVA la încasare”. Locul ei, din ghidul MF
+        # (anaf_surse/mf_ghid_coduri_facturi_efactura_v2_9.txt): „Conform RO_CIUS: În Comentariu (BT-22) se trec orice mențiuni obligatoriu
+        # a fi înscrise în facturi potrivit legislației în vigoare, necuprinse în altă parte [...] ca de exemplu: [...] «TVA la încasare»”
+        from core import tva_incasare as _tvi
+        P.append('<cbc:Note>%s</cbc:Note>' % _e(_tvi.MENTIUNE))
     P.append('<cbc:DocumentCurrencyCode>%s</cbc:DocumentCurrencyCode>' % _e(moneda))
     if storno:
         # [417] BG-3 „Referință la o factură anterioară”: BT-25 numărul (ca în BT-1 al ei) și BT-26 data facturii stornate. Locul în UBL:
@@ -259,7 +325,7 @@ def genereaza_xml(factura, linii, furnizor, client):
     # --- Furnizor (emitent) ---
     P.append('<cac:AccountingSupplierParty><cac:Party>')
     P.append('<cac:PostalAddress>')
-    P.append('<cbc:StreetName>%s</cbc:StreetName>' % _e(furnizor.get("adresa") or "-"))
+    P.append('<cbc:StreetName>%s</cbc:StreetName>' % _e(furnizor.get("adresa")))
     P.append('<cbc:CityName>%s</cbc:CityName>' % _e(_localitate(sup_jud, furnizor.get("oras"), furnizor.get("adresa"), "vanzator")))
     if furnizor.get("cod_postal"):
         P.append('<cbc:PostalZone>%s</cbc:PostalZone>' % _e(furnizor.get("cod_postal")))
@@ -271,7 +337,7 @@ def genereaza_xml(factura, linii, furnizor, client):
         P.append('<cac:PartyTaxScheme><cbc:CompanyID>%s</cbc:CompanyID>'
                  '<cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme>' % _e(sup_vat))
     P.append('<cac:PartyLegalEntity>')
-    P.append('<cbc:RegistrationName>%s</cbc:RegistrationName>' % _e(furnizor.get("nume") or "-"))
+    P.append('<cbc:RegistrationName>%s</cbc:RegistrationName>' % _e(furnizor.get("nume")))
     if not sup_vat and furnizor.get("cui"):
         # [274b] vânzătorul fără cod de TVA (neplătitor): ANAF îl identifică după CUI în BT-30 („Nu a fost identificat cui vanzator”
         # cu numărul de la Registrul Comerțului acolo — validatorul FACT1, 16.10.2026)
@@ -285,7 +351,7 @@ def genereaza_xml(factura, linii, furnizor, client):
     cli_jud = _jud(client.get("judet"))
     P.append('<cac:AccountingCustomerParty><cac:Party>')
     P.append('<cac:PostalAddress>')
-    P.append('<cbc:StreetName>%s</cbc:StreetName>' % _e(client.get("adresa") or "-"))
+    P.append('<cbc:StreetName>%s</cbc:StreetName>' % _e(client.get("adresa")))
     P.append('<cbc:CityName>%s</cbc:CityName>' % _e(_localitate(cli_jud, client.get("oras"), client.get("adresa"), "cumparator")))
     if client.get("cod_postal"):
         P.append('<cbc:PostalZone>%s</cbc:PostalZone>' % _e(client.get("cod_postal")))
@@ -297,7 +363,7 @@ def genereaza_xml(factura, linii, furnizor, client):
         P.append('<cac:PartyTaxScheme><cbc:CompanyID>%s</cbc:CompanyID>'
                  '<cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme>' % _e(cli_vat))
     P.append('<cac:PartyLegalEntity>')
-    P.append('<cbc:RegistrationName>%s</cbc:RegistrationName>' % _e(client.get("nume") or "-"))
+    P.append('<cbc:RegistrationName>%s</cbc:RegistrationName>' % _e(client.get("nume")))
     if not cli_vat and client.get("cui"):
         # [274b] fără cod de TVA al cumpărătorului (O; client din afara UE): identificatorul legal BT-47 (RO_CIUS BR-RO-120)
         P.append('<cbc:CompanyID>%s</cbc:CompanyID>' % _e(_vatid(client.get("cui"))[2:] if tara_cli == "RO" else
@@ -358,7 +424,7 @@ def genereaza_xml(factura, linii, furnizor, client):
         P.append('<cbc:InvoicedQuantity unitCode="%s">%s</cbc:InvoicedQuantity>'
                  % (_um(l.get("um")), _e(l.get("cantitate"))))
         P.append('<cbc:LineExtensionAmount currencyID="%s">%s</cbc:LineExtensionAmount>' % (moneda, _num(net)))
-        P.append('<cac:Item><cbc:Name>%s</cbc:Name>' % _e(l.get("descriere") or "-"))
+        P.append('<cac:Item><cbc:Name>%s</cbc:Name>' % _e(l.get("descriere")))   # [C69] cerută mai sus, nu „-”
         P.append('<cac:ClassifiedTaxCategory><cbc:ID>%s</cbc:ID>%s'
                  '<cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory>'
                  % (cat, "" if cat == "O" else "<cbc:Percent>%s</cbc:Percent>" % _num(cota)))

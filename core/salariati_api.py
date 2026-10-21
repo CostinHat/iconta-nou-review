@@ -37,7 +37,7 @@ _CAMPURI_API = ("cnp", "nume", "prenume", "data_angajare", "tip_norma", "ore_zi"
 TIPURI_CONTRACT = ("nedeterminata", "determinata")
 
 
-import psycopg2 as _pg  # [R164] pentru `UniqueViolation` — refuzul bazei devine refuz citibil
+from core import chei_unice as _chei  # [R164 -> lotul 10, C73] refuzul bazei (CNP dublat) devine refuz citibil, prin helperul comun
 
 
 def iban_valid(iban):
@@ -217,6 +217,20 @@ def _eroare_campuri(erori):
     return e
 
 
+#: cheia naturală a salariatului: un CNP = un singur dosar la firmă
+CONSTRANGERE_CNP = "salariati_cnp_uniq"
+
+
+def _refuz_cnp(cnp):
+    """[R164] Refuzul CNP-ului dublat, pe câmp (422) — la creare și [lotul 10, C73] la schimbarea CNP-ului unei fișe."""
+    return _eroare_campuri([(
+        "cnp",
+        "Există deja un salariat cu CNP-ul %s la firma asta. Dacă e aceeași "
+        "persoană reangajată, deschide-i fișa și completează noua dată de angajare "
+        "— nu se creează un al doilea dosar pentru același om."
+        % (cnp or ""))])
+
+
 def creeaza_salariat(conn, **date):  # [R164] traduce refuzul bazei in refuzul casei
     """Inserează un salariat (după validare). Întoarce {ok, salariat_id} sau ridică
     ValueError cu erorile."""
@@ -232,26 +246,17 @@ def creeaza_salariat(conn, **date):  # [R164] traduce refuzul bazei in refuzul c
     from core import salariu_istoric as _si
     from datetime import date as _dm
     with conn.cursor() as cur:
-        try:
+        # [R164, 05.09.2026] Constrangerea `salariati_cnp_uniq` apara datele corect, dar
+        # refuzul ei nu ajungea la om: exceptia iesea neprinsa si ruta raspundea **500**.
+        # Se traduce in refuzul casei — `ValueError` cu eroare PE CAMP —, pe care ruta il
+        # intoarce ca 422. *O poarta al carei mesaj se pierde pe drum apara datele si
+        # lasa omul fara nimic de citit* — clasa R163/R134/R131.
+        # [lotul 10, C73] prin helperul comun al clasei (`core/chei_unice.py`), nu printr-un `except` propriu
+        with _chei.refuza_dublura(cur, (CONSTRANGERE_CNP,), lambda cur, e: _refuz_cnp(date.get("cnp"))):
             cur.execute(
                 "INSERT INTO salariati (%s) VALUES (%s) RETURNING id"
                 % (", ".join(cols), ph), vals)
-        except _pg.errors.UniqueViolation as e:
-            # [R164, 05.09.2026] Constrangerea `salariati_cnp_uniq` apara datele corect, dar
-            # refuzul ei nu ajungea la om: exceptia iesea neprinsa si ruta raspundea **500**.
-            # Se traduce in refuzul casei — `ValueError` cu eroare PE CAMP —, pe care ruta il
-            # intoarce ca 422. *O poarta al carei mesaj se pierde pe drum apara datele si
-            # lasa omul fara nimic de citit* — clasa R163/R134/R131.
-            _c = getattr(getattr(e, "diag", None), "constraint_name", "") or ""
-            if "cnp" not in _c:
-                raise
-            raise _eroare_campuri([(
-                "cnp",
-                "Există deja un salariat cu CNP-ul %s la firma asta. Dacă e aceeași "
-                "persoană reangajată, deschide-i fișa și completează noua dată de angajare "
-                "— nu se creează un al doilea dosar pentru același om."
-                % (date.get("cnp") or ""))])
-        sid = cur.fetchone()[0]
+            sid = cur.fetchone()[0]
         # [PASUL 2b] salariul de baza traieste pe salariu_istoric (SURSA UNICA)
         _sb = date.get("salariu_brut")
         if _sb is not None:
@@ -272,7 +277,9 @@ def detalii_salariat(conn, salariat_id):
             "SELECT id, cnp, nume, prenume, data_angajare, part_time, ore_zi, "
             "persoane_intretinere, judet_casa, data_incetare, "
             "scutit_contrib_minim, motiv_exceptare, cor, tichet_masa_valoare, iban, de_verificat, "
-            "tip_contract, nr_cim, data_cim "   # [412] CIM-ul de pe fișă (adeverința îl precompletează)
+            "tip_contract, nr_cim, data_cim, "   # [412] CIM-ul de pe fișă (adeverința îl precompletează)
+            # [lotul 10, SalariatEdit] „Corectează datele” le arată pe cele salvate (deducerile CF art.77 alin.(1), (10), (12) depind de ele)
+            "functie_baza, data_nastere, copii_scolarizati, declaratie_copii "
             "FROM salariati WHERE id = %s", (salariat_id,))
         r = cur.fetchone()
         if r:
@@ -435,11 +442,15 @@ def actualizeaza_salariat(conn, salariat_id, _golite=(), **date):
                 _verifica_cor(conn, campuri_api.get("cor"))
             campuri = _api_spre_db(campuri_api)
             seturi = ", ".join("%s = %%s" % k for k in campuri)
-            cur.execute("UPDATE salariati SET %s WHERE id = %%s" % seturi,
-                        list(campuri.values()) + [salariat_id])
+            # [lotul 10, C73] CNP-ul schimbat pe al altui salariat -> același refuz pe câmp ca la creare, nu 500
+            with _chei.refuza_dublura(cur, (CONSTRANGERE_CNP,), lambda cur, e: _refuz_cnp(campuri_api.get("cnp"))):
+                cur.execute("UPDATE salariati SET %s WHERE id = %%s" % seturi,
+                            list(campuri.values()) + [salariat_id])
             # [decizia Costin 14.10.2026 pct.3–4] câmpul salvat de contabil e CONFIRMAT: iese din marcajul de import
             # („persoane în întreținere de completat”, „scutirea de verificat”) — avertismentul din statul de plată dispare
-            _confirmate = [c for c in ("persoane_intretinere", "scutit_contrib_minim") if c in campuri_api]
+            # [lotul 10, deficiența 420] și norma / funcția de bază propuse la import (sursa unică a câmpurilor marcabile: DE_VERIFICAT)
+            from core.salariati_import_api import DE_VERIFICAT as _DV
+            _confirmate = [c for c in _DV if c in campuri_api]
             if _confirmate:
                 cur.execute("UPDATE salariati SET de_verificat = ARRAY(SELECT x FROM unnest(de_verificat) x "
                             "WHERE x <> ALL(%s::text[])) WHERE id = %s", (_confirmate, salariat_id))

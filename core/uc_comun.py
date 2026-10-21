@@ -98,16 +98,13 @@ def _mesaj_intrare(e):
     return str(e)
 
 
-#: ecranul-țintă al unui refuz, cu numele pe care îl vede omul (cheile = `ECRANE` din `ecran_destinatie.js`)
-_UNDE_ECRAN = {"date_firma": "Date firmă", "conectare_spv": "Setări cont → Conectare SPV", "produse": "Produse"}
-
-
 def refuz_spre_ecran(mesaj, cod, ecran, regula=None, tip="operatiune"):
     """[lotul 07.10 pct.2] Corpul refuzului care trimite în alt ecran, ca AFIRMAȚIE TIPATĂ (`neconformitate`, decizia 21.08):
-    `cod`, `mesaj` și `ecran` (ținta butonului „Deschide …”). O singură formă pentru toate drumurile."""
+    `cod`, `mesaj` și `ecran` (ținta butonului „Deschide …”). O singură formă pentru toate drumurile; numele ecranului-țintă vine din
+    `erori.UNDE_ECRAN` (cheile = `ECRANE` din `ecran_destinatie.js`), aceeași tabelă ca `erori.RefuzGenerare.detaliu`."""
     from core import afirmatii as _af
     from core import mesaje as _mesaje   # [retest 08.10, completarea pct.2] câmpul cerut, în ecranul-țintă
-    return _af.afirmatie("neconformitate", tip, mesaj, unde=_UNDE_ECRAN.get(ecran, ecran),
+    return _af.afirmatie("neconformitate", tip, mesaj, unde=_erori.UNDE_ECRAN.get(ecran, ecran),
                          regula=regula or "refuz cu țintă de ecran", cod=cod, mesaj=mesaj, ecran=ecran,
                          camp_ecran=_mesaje.camp_ecran(cod))
 
@@ -338,6 +335,22 @@ def controale_inchidere(conn, schema, an, luna):
                             % _bani(sold_401),
                             cont="401", sold=str(sold_401)))
     if not in_curs:
+        # [lotul 10, deficiența 429, comanda Costin 10.1 pct.8] „Reevaluarea apare în «Ce oprește închiderea» când există solduri în
+        # valută.” Temei: OMFP 1802/2014 pct.325 alin.(1) „La finele fiecărei luni, creanțele și datoriile în valută se evaluează la
+        # cursul [...] din ultima zi bancară a lunii în cauză” — reevaluarea e LUNARĂ și obligatorie, deci blocaj, nu semnal. Oprește
+        # elementul cu diferență neînregistrată sau fără ce trebuie ca s-o calculeze (soldul în valută al unui cont 5124, cursul BNR);
+        # o reevaluare a lunii aflată în ciornă îl acoperă (CIORNE o spune separat). Propunerea, sursa unică: `reevaluare_valuta`.
+        from core import reevaluare_valuta as _rv
+        with conn.cursor() as cur:
+            _de = _rv.de_reevaluat(_rv.propunere(cur, schema, an, luna, cu_ciorna_lunii=True))
+        if _de:
+            _fact = sum(1 for e in _de if e["factura_id"])
+            _ce = ", ".join(x for x in (_cate(_fact, "factură", "facturi") if _fact else "",
+                                        _cate(len(_de) - _fact, "cont de disponibilități", "conturi de disponibilități")
+                                        if len(_de) > _fact else "") if x)
+            blocaje.append(_ctl("REEVALUARE_VALUTA", "soldurile în valută de la sfârșitul lunii nu sunt reevaluate la cursul BNR din "
+                                "ultima zi bancară (%s: %s); deschide „Reevaluare valută”, verifică propunerea și generează nota"
+                                % (_rv.TEMEI, _ce), elemente=len(_de)))
         semnale += [_ctl("DECLARATIE_NEDEPUSA", m, tip=t) for t, m in declaratii_nedepuse_cu_termen_in_luna(schema, an, luna)]
     return {"blocaje": blocaje, "semnale": semnale}
 
@@ -488,7 +501,12 @@ def _refuza_email_ocupat(ex, rol_dorit, email, pentru, camp, clasa=None):
     """Ca `_refuz_email_ocupat`, dar ridică refuzul — pe CÂMP (`erori_campuri`), ca ecranul să-l pună acolo."""
     m = _refuz_email_ocupat(ex, rol_dorit, email, pentru)
     if m:
-        raise (clasa or _erori.CerereGresita)({"mesaj": m, "erori_campuri": [{"camp": camp, "mesaj": m}]})
+        raise _refuz_pe_camp(m, camp, clasa)
+
+
+def _refuz_pe_camp(m, camp, clasa=None):
+    """Refuzul cu mesajul și lângă câmp (forma G10 a lui `erori_campuri`)."""
+    return (clasa or _erori.CerereGresita)({"mesaj": m, "erori_campuri": [{"camp": camp, "mesaj": m}]})
 
 
 def _adresa_e_libera(cur, email, exclude_user_id):
@@ -501,6 +519,25 @@ def _adresa_e_libera(cur, email, exclude_user_id):
         from core.mesaje import EMAIL_OCUPAT
         # [drepturi_rol 04.10.2026] „autentifică-te” nu i se spune celui care își schimbă adresa: e deja autentificat
         raise _erori.CerereGresita({"mesaj": EMAIL_OCUPAT % email, "erori_campuri": [{"camp": "email", "mesaj": EMAIL_OCUPAT % email}]})
+
+
+#: [lotul 10, C73 / U3] cheia unică a adresei de autentificare (`public.users`), una pe toate cabinetele
+CHEIE_EMAIL = ("users_email_key",)
+
+
+def _refuz_email_la_cursa(rol_dorit, email, pentru, camp, clasa=None):
+    """[lotul 10, C73 / U3] `refuz` pentru `chei_unice.refuza_dublura(cur, CHEIE_EMAIL, …)` la scrierea adresei unui cont: o cerere
+    simultană a luat adresa între verificarea prealabilă și scriere, iar baza a refuzat-o pe `users_email_key` (înainte: 500). Refuzul
+    e ACELAȘI text ca al verificării (`_refuz_email_ocupat`), citit din contul scris între timp — după `ROLLBACK TO SAVEPOINT`
+    tranzacția îl vede; când verificarea l-ar fi lăsat să treacă (clientul inactiv al reactivării, `rol_dorit=None` la schimbarea
+    adresei), textul general „adresa e folosită de alt cont”. Schema `public` e a tuturor cabinetelor: refuzul nu spune AL CUI e
+    contul (nici cabinetul, nici numele), numai că adresa e luată — exact cât spunea și verificarea prealabilă."""
+    def refuz(cur, _e):
+        from core import repo_utilizatori as _ru
+        from core.mesaje import EMAIL_OCUPAT
+        m = _refuz_email_ocupat(_ru.contul_dupa_email(cur, email), rol_dorit, email, pentru) if rol_dorit else None
+        return _refuz_pe_camp(m or EMAIL_OCUPAT % email, camp, clasa)
+    return refuz
 
 
 def _urma_portal(cur, tenant_id, actiune, detaliu, autor_id):
@@ -690,11 +727,12 @@ def _schema_cabinet_sau_404(ctx, tenant_id):
 def _mesaj_scurt_inventar(e):
     """Pe camp incape o propozitie, nu o norma. Cauza e singura care are nevoie de mai mult de
     „cerut de norma": omul trebuie sa stie CA exista o diferenta, nu doar ca lipseste un camp."""
+    # [lotul 10, deficiența 402, clasa 410] o frază întreagă (ce lipsește și ce se cere), nu un fragment
     if e.camp == "cauza":
-        return "există o diferență între valoarea contabilă și cea de inventar — scrie cauza ei"
+        return "Există o diferență între valoarea contabilă și cea de inventar: scrie cauza ei."
     if e.camp == "valoare_inventar":
-        return "valoarea numărată; nu se completează singură din valoarea contabilă"
-    return "cerut de normă, nu poate lipsi"
+        return "Scrie valoarea numărată: nu se completează singură din valoarea contabilă."
+    return "Completează câmpul cu o valoare validă: registrul îl cere."
 
 
 def _api_schema(actx, tenant_id):
@@ -1285,6 +1323,20 @@ def _urma_dezlegare(conn, uid, tenant_id, nota_id, factura_id, motiv):
         _repo.insert_public_5(cur, uid, tenant_id, fapt, _json_audit)
 
 
+def _refuz_import_numar(cur, schema, f):
+    """[lotul 10, C73 / U2] Refuzul facturii emise din fișier al cărei număr îl poartă deja altă factură emisă (citită după savepoint)."""
+    from core import chei_unice as _chei
+    from core import pdf_util as _pu
+    r = _repo.factura_emisa_cu_numarul(cur, schema, f["numar"])
+    if not r:
+        return None
+    return _chei.CheieDublata(
+        "Factura emisă %s din %s (către %s) nu s-a importat: numărul %s e deja pe factura emisă din %s, către %s. Două facturi emise "
+        "nu pot purta același număr (%s): verifică fișierul." % (f["numar"], _pu.data_ro(f["data_emitere"]), f["tert_nume"] or "—",
+                                                                f["numar"], _pu.data_ro(r[0]), r[1] or "—", _common.NUMEROTARE_SECVENTIALA),
+        valoare=f["numar"])
+
+
 def _factura_din_parsat(cur, schema, f):
     """Insereaza o factura parsata (dict de la efactura_import.parseaza_xml) in facturi + linii.
     Idempotent pe (numar, tert_cui, data_emitere). Intoarce (factura_id, creat_nou): daca exista
@@ -1301,7 +1353,11 @@ def _factura_din_parsat(cur, schema, f):
     # **NICIUNA nu primește notă aici** — la fel ca înainte. Ce se schimbă e că absența nu mai e o
     # scăpare declarată, ci o etapă cu act propriu.
     _stare = "de_recunoscut" if f["directie"] == "emisa" else "importata"
-    fid = _repo.insert_facturi(cur, schema, _stare, f)[0]
+    # [lotul 10, C73 / U2] o factură EMISĂ din fișier cu numărul altei facturi emise (alt client sau altă dată — deci nu dublura de mai
+    # sus) cădea cu 500 pe `facturi_numar_emisa_uniq` și oprea tot importul. Acum refuz numit, pe factura aceea (`CheieDublata`).
+    from core import chei_unice as _chei
+    with _chei.refuza_dublura(cur, ("facturi_numar_emisa_uniq",), lambda cur, e: _refuz_import_numar(cur, schema, f)):
+        fid = _repo.insert_facturi(cur, schema, _stare, f)[0]
     for ln in f["linii"]:
         _repo.insert_factura_linii(cur, schema, fid, ln)
     return fid, True

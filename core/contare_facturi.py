@@ -48,8 +48,9 @@ CONT_AVANS_CLIENT = "419"
 CONTURI_FOND_PREFIX = ("70", "6")
 CONTURI_FOND_EXACT = ("371", "301", "302", "303", "213", CONT_AVANS_CLIENT)   # [lotul 6, 278] 4111 = 419 (avans la cota 0)
 # [29.08.2026, BLOC GGG] Trezoreria TAIE semnătura de contare, și motivul e măsurat prin citirea
-# codului, nu presupus: `reconciliere_api` adaugă pe nota de PLATĂ, la o firmă cu TVA la încasare, o
-# linie `4428 = 4427` (emisă) sau `4426 = 4428` (primită) — art. 282 alin. 3 și 8. Nota devine atunci
+# codului, nu presupus: încasarea / plata unei facturi în sistemul TVA la încasare (bancă — `reconciliere_api`, casă — `casa_api`,
+# prin punctul unic `tva_incasare.linii_la_incasare`) adaugă pe nota ei o linie `4428 = 4427` (emisă) sau `4426 = 4428` (primită) —
+# art. 282 alin. 3 și 8, art. 297 alin. 2-3. Nota devine atunci
 # **terț + TVA**, adică exact semnătura de contare. Fără regula asta, fals-pozitivul închis la DDD1
 # s-ar fi întors pe altă ușă: o factură plătită de o firmă la încasare ar fi părut deja contată.
 # **Clasa e LATENTĂ azi** — nicio firmă din portofoliu nu e în regim de TVA la încasare, deci n-are
@@ -76,7 +77,7 @@ class RefuzContare(Exception):
     (clichetul 50 / METODA §23).
 
     Felurile: `INEXISTENTA` · `NU_E_DOCUMENT_FISCAL` · `LUNA_INCHISA` · `FARA_COTA` ·
-    `TVA_LA_INCASARE_MANUAL` · `POSIBILA_DUBLARE` · `FACTURA_EMISA` (regula a, R6: nu se șterge, se stornează) · `EMISA_DIN_BON` (factura din bon: vânzarea e în nota Z) ·
+    `POSIBILA_DUBLARE` · `FACTURA_EMISA` (regula a, R6: nu se șterge, se stornează) · `EMISA_DIN_BON` (factura din bon: vânzarea e în nota Z) ·
     `NIR_DE_LEGAT` / `NIR_NELEGABIL` / `COST_DIFERIT_DE_FACTURA` (NIR-ul „fără factură” al livrării, decizia 08.10 pct.2).
     """
 
@@ -353,23 +354,6 @@ def dezleaga_nota(cur, schema, nota_id):
 MSG_FARA_COTA = ("factura fără cotă de TVA pe linii — nu se poate genera nota "
                  "(declară cota pe factură)")
 
-TEMEI_TVA_INCASARE = "Cod fiscal art. 297 alin. 2"
-
-MSG_TVA_INCASARE = (
-    "Furnizorul aplică TVA la încasare, iar firma e în regim normal: deducerea se amână până la "
-    "plată (Cod fiscal art. 297 alin. 2), deci TVA-ul intră pe 4428, nu pe 4426, iar exigibilitatea "
-    "vine din reconcilierea bancară — un act pe care automatul nu-l poate declanșa. Factura se "
-    "contează din butonul de contabilizare, de către om.")
-
-
-def e_clasa_ambigua_tva(f, tva_incasare_firma):
-    """[FFF2] Furnizor la încasare + firmă în regim normal. **2 facturi** pe portofoliul de azi
-    (`tenant_004` #9, `tenant_017` #8). Automatul refuză clasa asta; omul o poate conta."""
-    return (f.get("directie") == "primita"
-            and bool(f.get("furnizor_tva_incasare"))
-            and not bool(tva_incasare_firma))
-
-
 def _ms_citeste(cur, schema):
     from core import metoda_stoc as _ms
     return _ms.citeste(cur, schema)
@@ -385,16 +369,16 @@ def cont_venit_linie(cont_venit, cont_venit_implicit=None, tip_operatiune=None):
     return (cont_venit or "").strip() or (cont_venit_implicit or "").strip() or "707"
 
 
-def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont_cheltuiala=None):
+def genereaza_note(cur, schema, f, pe_4428, cont_venit_implicit, cont_cheltuiala=None):
     """Notele unei facturi, ca listă de dict {debit, credit, suma}. **PUR față de bază la scriere**:
     citește, nu scrie — tiparul NIR, unde validarea se termină înainte ca ceva să înceapă.
 
-    `tva_incasare` nu mai e regimul PROPRIU al firmei aplicat pe amândouă direcțiile, cum era în rută:
-    pe **primită** contează și `furnizor_tva_incasare`. Divergența cu D300 — care rutează deja pe
-    câmpul ăla (`core/test_d300_b1_rutare.py`) — a fost măsurată pe 2 facturi înainte de reparație."""
+    `pe_4428` = TVA-ul facturii e neexigibil (emisă) / cu deducerea amânată (primită) și intră pe 4428 în loc de 4427 / 4426. Îl decide
+    apelantul din REGIMUL FACTURII LA DATA EI (`tva_incasare.regim`), nu din bifa firmei de azi — [lotul 10, deficiența 428]: „totul
+    trebuie să decidă pe DATA documentului”. Înainte era bifa firmei (`firma_profil.tva_la_incasare`) aplicată pe amândouă direcțiile."""
     fid = f["id"]
     directie = f.get("directie")
-    tvai = bool(tva_incasare_firma) or (directie == "primita" and bool(f.get("furnizor_tva_incasare")))
+    tvai = bool(pe_4428)
     la_data = str(f["data_emitere"])
     # [A1, 17.09.2026] CARTEA E IN LEI. Baza notelor (4111/401/4426/4427) se inmulteste cu cursul
     # facturii — altfel o factura in valuta ar posta valuta drept lei, iar D300/D394/D406 (care citesc
@@ -543,7 +527,10 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
     alegere: `RefuzContare(NIR_DE_LEGAT)` cu candidații și propunerea dedusă, ÎNAINTE de orice scriere — pe ambele căi
     (automat sau act explicit), fiindcă nici automatul nu poate ști dacă e aceeași livrare.
     """
-    cur.execute("SELECT * FROM %sfacturi WHERE id=%%s" % _p(schema), (factura_id,))
+    # [lotul 10, C73 / U2] contarea e SERIALIZATĂ pe factură (lacătul ține până la comiterea notei): două contări simultane treceau
+    # amândouă de verificarea „deja contată” de mai jos, scriau două note, iar dacă alegeau NIR-uri diferite a doua cădea cu 500 pe
+    # `nir_factura_id_uq` (`nir_legare.leaga`). Acum a doua așteaptă, apoi vede nota primei („deja_contata”).
+    cur.execute("SELECT * FROM %sfacturi WHERE id=%%s FOR NO KEY UPDATE" % _p(schema), (factura_id,))
     f = cur.fetchone()
     if not f:
         raise RefuzContare("INEXISTENTA", "factură inexistentă")
@@ -616,15 +603,16 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
             detalii={"data_nota": str(data_nota)[:10],
                      "data_emitere": str(f.get("data_emitere"))[:10]})
 
-    cur.execute("SELECT COALESCE(tva_la_incasare,false) AS tvai, cont_venit_implicit "
-                "FROM %sfirma_profil WHERE id=1" % _p(schema))
+    cur.execute("SELECT cont_venit_implicit FROM %sfirma_profil WHERE id=1" % _p(schema))
     prof = cur.fetchone()
-    prof = dict(prof) if prof else {"tvai": False, "cont_venit_implicit": None}
-
-    if automat and e_clasa_ambigua_tva(f, prof.get("tvai")):
-        raise RefuzContare("TVA_LA_INCASARE_MANUAL", MSG_TVA_INCASARE,
-                           detalii={"cont_tva": "4428", "temei": TEMEI_TVA_INCASARE,
-                                    "iesire": "contabilizare_manuala"})
+    prof = dict(prof) if prof else {"cont_venit_implicit": None}
+    # [lotul 10, deficiența 428] Regimul TVA al FACTURII, la DATA EI (CF art.282 alin.(3), (6), (7); art.297 alin.(2)-(3)): emisă în
+    # sistem -> TVA pe 4428 (neexigibil până la încasare); primită de la un furnizor în sistem sau de o firmă în sistem -> 4428 (deducerea
+    # amânată până la plată); stornarea urmează factura stornată (alin.(10)). Până azi: bifa firmei de AZI, iar automatul REFUZA
+    # factura primită de la un furnizor în sistem („exigibilitatea vine din reconcilierea bancară”) — acum plata, prin bancă sau casă,
+    # mută singură TVA-ul (`tva_incasare.linii_la_incasare`), deci contarea nu mai are de ce să aștepte omul.
+    from core import tva_incasare as _tvi
+    regim_tva = _tvi.regim(cur, schema, f)
 
     if cont_cheltuiala is None and f.get("directie") == "primita":
         cur.execute("SELECT cont_cheltuiala FROM %sefactura_primite WHERE factura_id=%%s "
@@ -634,8 +622,12 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
         if r:
             cont_cheltuiala = (r["cont_cheltuiala"] if isinstance(r, dict) else r[0]) or None
 
-    note = genereaza_note(cur, schema, f, prof.get("tvai"), prof.get("cont_venit_implicit"),
+    note = genereaza_note(cur, schema, f, regim_tva in (_tvi.REGIM_INCASARE, _tvi.REGIM_STORNO), prof.get("cont_venit_implicit"),
                           cont_cheltuiala=cont_cheltuiala)
+    if regim_tva == _tvi.REGIM_STORNO:
+        # CF art.282 alin.(10) lit.a): stornarea anulează întâi TVA-ul rămas neexigibil pe factura stornată (4428), iar ce depășește
+        # devine exigibil / deductibil la data stornării (4427 / 4426)
+        note = _tvi.note_storno(note, f.get("directie"), _tvi.anulare_storno(cur, schema, f)[0])
 
     # [decizia Costin 08.10.2026, pct.2] NIR-ul „fără factură” al aceleiași livrări: legarea se propune, alegerea e a omului
     from core import nir_legare as _nl
@@ -705,7 +697,7 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
     elif nir_ales:
         stornare_nir = _nl.leaga(cur, schema, nir_ales["id"], f, data_nota)
     out = {"stare": "contata", "inregistrare_id": iid,
-           "tva_la_incasare": bool(prof.get("tvai")) or bool(f.get("furnizor_tva_incasare")),
+           "tva_la_incasare": regim_tva == _tvi.REGIM_INCASARE,
            "linii": [{"debit": n["debit"], "credit": n["credit"], "suma": str(n["suma"])}
                      for n in note]}
     if nir_ales:

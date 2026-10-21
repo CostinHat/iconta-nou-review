@@ -46,6 +46,10 @@ def incarca_factura(conn, schema, factura_id):
             raise ValueError("factura %s inexistentă în %s" % (factura_id, schema))
         linii = _repo.linii_pentru_ubl(cur, schema, factura_id)
         furnizor = _repo.emitent_pentru_ubl(cur, schema)
+        # [lotul 10, deficiența 428] mențiunea „TVA la încasare” (CF art.319 alin.(20) lit.p), BT-22) — regimul facturii la data ei
+        from core import tva_incasare as _tvi
+        factura = dict(factura)
+        factura["tva_la_incasare"] = factura.get("directie") == "emisa" and _tvi.regim(cur, schema, factura_id) == _tvi.REGIM_INCASARE
     if not furnizor:
         raise ValueError("Datele firmei emitente nu sunt completate: completează-le în Date firmă înainte de a trimite factura.")
     if not linii:
@@ -69,7 +73,9 @@ def completeaza_client_ro(client):
     „denumirea/numele și adresa beneficiarului”. Completează NUMAI câmpurile goale (ce a scris omul rămâne) și întoarce o copie:
     factura emisă nu se rescrie în bază, XML-ul trimis se păstrează în `efactura_trimiteri`. ANAF jos / CUI negăsit -> clientul neschimbat
     (poarta FACT1 spune atunci ce spune). Apel extern: se cheamă cu pool-ul LIBER, niciodată cu o conexiune ținută."""
-    if client.get("tara") != "RO" or not client.get("cui") or (client.get("judet") or "").strip():
+    # [lotul 10, C69] și clientul cu județul scris, dar fără localitate (BR-RO-090 / BT-52 o cere): o completează tot ANAF — „se blochează
+    # numai ce rămâne necompletat” (decizia Costin C69 pct.1, aplicată și aici)
+    if client.get("tara") != "RO" or not client.get("cui") or ((client.get("judet") or "").strip() and (client.get("oras") or "").strip()):
         return client
     from core import uc_comun as _uc_comun   # un singur apel ANAF pentru faptele clientului, același cu cel de la emitere
     adr = {}
@@ -85,6 +91,20 @@ def genereaza_din_factura(conn, schema, factura_id):
     """Convenienta: loader + generator intr-un pas. Intoarce (xml, factura)."""
     factura, linii, furnizor, client = incarca_factura(conn, schema, factura_id)
     return _ef.genereaza_xml(factura, linii, furnizor, client), factura
+
+
+#: [lotul 10, C73 / U2] cât timp o trimitere «pregătit» e socotită „în curs”: încărcarea la ANAF are timeout 60 s (`efactura_send.upload_ubl`),
+#: iar fereastra îl acoperă de zece ori. Peste ea, rândul «pregătit» e al unei încercări întrerupte și nu mai oprește o trimitere nouă.
+FEREASTRA_IN_CURS_MIN = 10
+MESAJ_IN_CURS = ("O trimitere a acestei facturi către SPV e deja în curs (pornită la %s). Așteaptă câteva secunde rezultatul ei și "
+                 "reîncarcă lista; o a doua încărcare ar pune factura de două ori în SPV.")
+
+
+def _ora_ro(t):
+    """Momentul trimiterii (`trimis_la`, timestamptz), în ora României (zz.ll.aaaa hh:mm, `pdf_util.data_ro`), pentru mesaj."""
+    from zoneinfo import ZoneInfo
+    from core import pdf_util as _pu
+    return _pu.data_ro(t.astimezone(ZoneInfo("Europe/Bucharest")), "cu_ora")
 
 
 def trimite(schema, factura_id, principal, mediu="test"):
@@ -134,11 +154,16 @@ def trimite(schema, factura_id, principal, mediu="test"):
         return {"stare": "nevalidat", "validare_ok": False, "validare_mesaje": val_msg}
 
     # POARTA 3: idempotency (send viu existent) + insert 'pregatit' in aceeasi tranzactie
+    # [lotul 10, C73 / U2] serializată pe factură (lacătul din `trimitere_in_curs`), iar o trimitere «pregătit» pornită de curând e
+    # „în curs”: a doua cerere simultană se oprește AICI, înainte de încărcarea la ANAF, nu cade cu 500 după ea
     with db.get_conn() as conn:
         with conn.cursor() as cur:
+            in_curs = _repo.trimitere_in_curs(cur, schema, factura_id, mediu, FEREASTRA_IN_CURS_MIN)
             viu = _repo.trimitere_vie(cur, schema, factura_id, mediu)
             if viu:
                 return {"stare": "deja_trimisa", "trimitere_id": viu[0], "stare_existenta": viu[1]}
+            if in_curs:
+                return {"stare": "in_curs", "trimitere_id": in_curs[0], "mesaj": MESAJ_IN_CURS % _ora_ro(in_curs[1])}
             tid = _repo.insereaza_trimitere_pregatita(cur, schema, factura_id, mediu, xml, sha)[0]
 
     rez = {"trimitere_id": tid, "cif": cif, "xml_sha256": sha, "mediu": mediu, "validare_ok": True}
@@ -171,6 +196,9 @@ def trimite(schema, factura_id, principal, mediu="test"):
     # 3) scrie rezultatul complet (commit) - INDIFERENT de rezultat
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            _repo.rezultatul_trimiterii(cur, schema, stare, index, ex, errmsg, tid)
+            dublura = _repo.rezultatul_trimiterii(cur, schema, stare, index, ex, errmsg, tid)
+    if dublura:   # [lotul 10, C73 / U2] încărcată, dar factura avea deja o trimitere vie: rândul e în «investigatie», cu dublura numită
+        stare = "investigatie"
+        rez["mesaj"] = dublura
     rez["stare"] = stare
     return rez

@@ -99,6 +99,7 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
     q = ("SELECT f.id AS fid, f.directie AS directie, f.total AS total, f.tva AS tva, "
          "f.moneda AS moneda, f.curs_bnr AS curs_bnr, f.total_lei AS total_lei, f.tva_lei AS tva_lei, "  # [A1] a doua cale IN LEI
          "f.taxare_inversa AS ti, f.tert_cui AS tert_cui, f.tert_platitor_tva AS tert_ptva, "
+         "COALESCE(f.furnizor_tva_incasare, false) AS furnizor_tvai, "   # [lotul 10, 428] achiziția AI (art.297 alin.(2))
          "c.cui AS c_cui, "
          "COALESCE(json_agg(json_build_object('cota', l.cota_tva, "
          "  'baza', ROUND(l.cantitate * l.pret_unitar, 2)) ORDER BY l.id) "
@@ -125,7 +126,7 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
         if cota <= 0:
             return
         r = acc.setdefault(cota, {"bazaL": Decimal(0), "tvaL": Decimal(0),
-                                  "bazaA": Decimal(0), "tvaA": Decimal(0)})
+                                  "bazaA": Decimal(0), "tvaA": Decimal(0), "bazaAI": Decimal(0), "tvaAI": Decimal(0)})
         r["baza" + bucket] += Decimal(baza)
         r["tva" + bucket] += Decimal(tva)
 
@@ -149,6 +150,11 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
             if p in ("NEINREG", "STRAIN"):
                 continue                 # N (persoane fizice, cota 0) / intracom (D390) - excluse
             bucket = "A"                 # achizitie RO (A) sau taxare inversa RO (C) -> pliate pe A
+            if r["furnizor_tvai"] and not ti:
+                # [lotul 10, deficienta 428] achizitia de la un furnizor in sistemul TVA la incasare are rubrica ei (op1 tip AI ->
+                # rezumat2 bazaAI/tvaAI; OPANAF 2194/2025: „AI - achiziţii de la persoane impozabile care aplică sistemul de TVA la
+                # încasare”). Pana azi calea 2 o plia pe A, iar generatorul nu — orice firma cu o asemenea factura avea D394 BLOCAT.
+                bucket = "AI"
         linii = r["linii"] or []
         pe_cota = {}
         for l in linii:
@@ -306,7 +312,9 @@ def _confrunta(rezumat2, cale2):
         gen = rezumat2.get(cota, {})
         c2 = cale2.get(cota, {})
         for camp, eticheta in (("bazaL", "livrări, baza"), ("tvaL", "livrări, TVA"),
-                               ("bazaA", "achiziții, baza"), ("tvaA", "achiziții, TVA")):
+                               ("bazaA", "achiziții, baza"), ("tvaA", "achiziții, TVA"),
+                               ("bazaAI", "achiziții de la furnizori cu TVA la încasare, baza"),
+                               ("tvaAI", "achiziții de la furnizori cu TVA la încasare, TVA")):
             g = int(gen.get(camp, 0) or 0)
             v = int(c2.get(camp, 0) or 0)
             if g != v:

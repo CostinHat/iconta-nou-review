@@ -8,6 +8,7 @@ Fiecare operațiune generează notă ciornă (AI propune, contabilul validează)
 from decimal import Decimal, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
 from core import casa as _m
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] stornarea dublă -> refuz numit și la cursă, nu 500
 from core.pdf_util import bani as _bani, data_ro as _data_ro, numar_cu_serie as _ncs
 
 # categorie -> (debit, credit) ; 5311 = casa in lei
@@ -349,7 +350,7 @@ def adauga(conn, schema, op, linii=None):
             return {"eroare": "Plata cuprinde un avans acordat furnizorului (%s lei): alege pentru ce e avansul — bunuri (4091), servicii "
                               "(4092), imobilizări corporale (4093) sau necorporale (4094); nota avansului e 409x = 5311." % _bani(
                                   sum((p[0] for p in parti if p[3]), Decimal(0))),
-                    "cod": COD_AVANS_DESTINATIE, "erori_campuri": [{"camp": "c-avans-dest", "mesaj": "alege destinația avansului"}]}
+                    "cod": COD_AVANS_DESTINATIE, "erori_campuri": [{"camp": "c-avans-dest", "mesaj": "Alege pentru ce e avansul: bunuri (4091), servicii (4092), imobilizări (4093 / 4094)."}]}
     create = []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         from core import avansuri as _av
@@ -357,6 +358,12 @@ def adauga(conn, schema, op, linii=None):
             rand = ([(d, c, Decimal(str(v))) for d, c, v in linii if Decimal(str(v))] if linii
                     else [(_av.CONT_AVANS[DESTINATIE_AVANS_NIR], "5311", s_p)] if nid   # [405] NIR-ul plătit: 4091 = 5311
                     else [(cont_avans, "5311", s_p)] if (avans and cont_avans) else [CONTURI[cat] + (s_p,)])   # [407]
+            if fid:
+                # [lotul 10, deficiența 428] încasarea / plata prin casă a unei facturi în sistemul TVA la încasare mută partea ei de TVA
+                # (4428 -> 4427 la emisă, CF art.282 alin.(3), (8); 4428 -> 4426 la primită, CF art.297 alin.(2)-(3)) — punctul unic,
+                # același cu banca. Înainte, casa nu muta nimic: TVA-ul facturii încasate în numerar rămânea neexigibil.
+                from core import tva_incasare as _tvi
+                rand = rand + _tvi.linii_la_incasare(cur, schema, fid, s_p)
             op_p = dict(op, suma=s_p, stinge=(stinge if nid else "avans " + ("de la client" if tip == "incasare" else "către furnizor"))
                         if avans else stinge)
             # [05.10.2026, comanda Costin pct.6] documentul scris pe operațiune (chitanța/dispoziția) e și al notei
@@ -439,6 +446,11 @@ def leaga(conn, schema, op_id, factura_id):
     with conn.cursor() as cur:
         cur.execute(f"UPDATE {schema}.inregistrari SET factura_id = %s, descriere = %s WHERE id = %s",
                     (fid, descriere_nota(dict(op, stinge=stinge, fel_document=None)), op["inregistrare_id"]))
+        # [lotul 10, deficiența 428] legată acum de factură, încasarea / plata mută și TVA-ul ei la încasare (punctul unic, ca la adăugare)
+        from core import tva_incasare as _tvi
+        for d, c, v in _tvi.linii_la_incasare(cur, schema, fid, op["suma"]):
+            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
+                            VALUES (%s,%s,%s,%s)""", (op["inregistrare_id"], d, c, v))
     return {"ok": True, "factura": f["numar"]}
 
 
@@ -525,6 +537,10 @@ def verifica_plafon(conn, schema, la_data):
     return _fara_decimal(_m.verifica_plafon(_pentru_motor(rows), sold_initial))
 
 
+#: refuzul stornării a doua — la a doua cerere conștientă și la cursa dintre două cereri simultane (un singur text)
+MESAJ_DEJA_STORNATA = "Operațiunea e deja stornată."
+
+
 def storneaza(conn, schema, op_id, data):
     """Stornarea unei operațiuni de casă a cărei notă e VALIDATĂ. Comanda Costin 09.10.2026 („Retest 2” pct.4, verbatim în DECIZII):
     „o operațiune cu notă validată nu se șterge, se corectează prin stornare. Aceeași regulă pentru toate sursele de note.”
@@ -541,7 +557,7 @@ def storneaza(conn, schema, op_id, data):
             return {"eroare": "Operațiunea e ea însăși o stornare; nu se stornează a doua oară."}
         cur.execute(f"SELECT 1 FROM {schema}.casa_operatiuni WHERE storno_de = %s", (op_id,))
         if cur.fetchone():
-            return {"eroare": "Operațiunea e deja stornată."}
+            return {"eroare": MESAJ_DEJA_STORNATA}
         cur.execute(f"SELECT status, descriere, factura_id FROM {schema}.inregistrari WHERE id=%s", (op["inregistrare_id"],))
         n = cur.fetchone()
         if not n or n["status"] != "validata":
@@ -553,20 +569,27 @@ def storneaza(conn, schema, op_id, data):
             if _r:
                 return {"eroare": _r, "cod": _cs.COD}
         doc = ("STORNO " + (op["document"] or "op. %s" % op["id"]))[:50]   # casa_operatiuni.document varchar(50)
-        # [lotul 6 pct.3a, 278] nota în roșu stinge aceeași factură ca nota inițială, în minus: factura redevine neîncasată
-        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref, factura_id)
-                        VALUES (%s, %s, 'casa', 'ciorna', %s, %s) RETURNING id""",
-                    (data, ("Stornare: " + (n["descriere"] or ""))[:200], doc, n["factura_id"]))
-        iid = cur.fetchone()["id"]
-        cur.execute(f"""INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
-                        SELECT %s, cont_debit, cont_credit, -suma FROM {schema}.inregistrari_linii WHERE inregistrare_id = %s""",
-                    (iid, op["inregistrare_id"]))
-        # [405] stornarea plății unui NIR poartă NIR-ul, cu suma cu minus: NIR-ul redevine neplătit (`niruri_neplatite`)
-        cur.execute(f"""INSERT INTO {schema}.casa_operatiuni (data, tip, categorie, document, partener, cui, suma, inregistrare_id, storno_de,
-                                                              nir_id)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
-                    (data, op["tip"], op["categorie"], doc, op["partener"], op["cui"], -op["suma"], iid, op_id, op.get("nir_id")))
-        oid = cur.fetchone()["id"]
+        # [lotul 10, C73 / U2] o operațiune se stornează o singură dată (`casa_operatiuni_storno_de_uq`). Două stornări simultane treceau
+        # amândouă de verificarea de mai sus, iar a doua cădea cu 500. Savepoint-ul helperului cuprinde și nota în roșu, deci la cursă
+        # nu rămâne nimic scris, iar refuzul e ACELAȘI ca la a doua stornare conștientă.
+        try:
+            with _chei.refuza_dublura(cur, ("casa_operatiuni_storno_de_uq",), lambda cur, e: _chei.CheieDublata(MESAJ_DEJA_STORNATA)):
+                # [lotul 6 pct.3a, 278] nota în roșu stinge aceeași factură ca nota inițială, în minus: factura redevine neîncasată
+                cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref, factura_id)
+                                VALUES (%s, %s, 'casa', 'ciorna', %s, %s) RETURNING id""",
+                            (data, ("Stornare: " + (n["descriere"] or ""))[:200], doc, n["factura_id"]))
+                iid = cur.fetchone()["id"]
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
+                                SELECT %s, cont_debit, cont_credit, -suma FROM {schema}.inregistrari_linii WHERE inregistrare_id = %s""",
+                            (iid, op["inregistrare_id"]))
+                # [405] stornarea plății unui NIR poartă NIR-ul, cu suma cu minus: NIR-ul redevine neplătit (`niruri_neplatite`)
+                cur.execute(f"""INSERT INTO {schema}.casa_operatiuni (data, tip, categorie, document, partener, cui, suma, inregistrare_id,
+                                                                      storno_de, nir_id)
+                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+                            (data, op["tip"], op["categorie"], doc, op["partener"], op["cui"], -op["suma"], iid, op_id, op.get("nir_id")))
+                oid = cur.fetchone()["id"]
+        except _chei.CheieDublata as e:
+            return {"eroare": str(e)}
         cur.execute(f"UPDATE {schema}.chitante SET anulata = true WHERE casa_operatiune_id = %s AND NOT anulata RETURNING factura_id", (op_id,))
         for (fid,) in [(r["factura_id"],) for r in cur.fetchall() if r["factura_id"]]:
             cur.execute(f"SELECT 1 FROM {schema}.chitante WHERE factura_id = %s AND NOT anulata", (fid,))

@@ -27,6 +27,7 @@ from datetime import date, datetime, timedelta
 
 from core import db
 from core import spv_conector
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] a doua trimitere vie a notificării -> numită, nu 500
 from core.common import cfg, azi_ro, cate as _cate
 
 # Config din env — citită LA APEL prin cfg() (nu înghețată la import, item 5).
@@ -155,11 +156,9 @@ def trimite(schema, principal, cif, xml, data_transport, intracom=False, mediu="
     if mediu == "prod":                                          # POARTA 2
         with db.get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute(f"""SELECT id, stare, uit FROM {schema}.etransport_trimiteri
-                    WHERE xml_sha256=%s AND mediu='prod' AND stare IN ('incarcat','ok') LIMIT 1""", (sha,))
-                viu = cur.fetchone()
-                if viu:
-                    return {"stare": "deja_trimisa", "trimitere_id": viu[0], "uit": viu[2]}
+                refuz = _poarta_vie(cur, schema, sha)
+                if refuz:
+                    return refuz
 
     val_ok, _vidx, val_err = valideaza_pe_test(principal, cif, xml)   # POARTA 3
     if not val_ok:
@@ -168,8 +167,13 @@ def trimite(schema, principal, cif, xml, data_transport, intracom=False, mediu="
         return {"stare": "validat_test", "fereastra": fer}
 
     # POARTA 4: upload prod + scrie randul
+    # [lotul 10, C73 / U2] poarta 2 se reia AICI, sub lacăt, în tranzacția rândului «pregătit»: între ea și scriere a trecut validarea
+    # pe test, iar o a doua cerere simultană ar fi încărcat aceeași notificare (UIT dublu) și ar fi căzut cu 500 la scrierea rezultatului
     with db.get_conn() as conn:
         with conn.cursor() as cur:
+            refuz = _poarta_vie(cur, schema, sha)
+            if refuz:
+                return refuz
             cur.execute(f"""INSERT INTO {schema}.etransport_trimiteri
                 (mediu, stare, data_transport, intracom, uit_valabil_pana, ref_declarant, xml_trimis, xml_sha256, trimis_la)
                 VALUES ('prod','pregatit',%s,%s,%s,%s,%s,%s, now()) RETURNING id""",
@@ -193,8 +197,48 @@ def trimite(schema, principal, cif, xml, data_transport, intracom=False, mediu="
         stare, errmsg, index, ex, uit = "eroare_upload", "exceptie upload: %s" % str(e)[:2000], None, None, None
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute(f"""UPDATE {schema}.etransport_trimiteri
-                SET stare=%s, index_incarcare=%s, execution_status=%s, uit=%s, error_message=%s, actualizat_la=now()
-                WHERE id=%s""", (stare, index, ex, uit, errmsg, tid))
+            # [lotul 10, C73 / U2] rândul ar deveni al doilea viu al notificării (numai peste o încărcare mai lungă decât fereastra porții):
+            # UIT-ul primit nu se pierde într-un 500 — se scrie, cu dublura numită, iar rândul rămâne «pregătit» (nu e al doilea viu)
+            try:
+                with _chei.refuza_dublura(cur, ("uq_etransport_trimiteri_viu",), lambda cur, e: _chei.CheieDublata(
+                        "ANAF a primit și această încărcare (UIT %s), dar notificarea avea deja o trimitere vie: verifică în SPV și "
+                        "anulează UIT-ul dublat." % (uit or "?"))):
+                    cur.execute(f"""UPDATE {schema}.etransport_trimiteri
+                        SET stare=%s, index_incarcare=%s, execution_status=%s, uit=%s, error_message=%s, actualizat_la=now()
+                        WHERE id=%s""", (stare, index, ex, uit, errmsg, tid))
+            except _chei.CheieDublata as e:
+                cur.execute(f"""UPDATE {schema}.etransport_trimiteri
+                    SET index_incarcare=%s, execution_status=%s, uit=%s, error_message=%s, actualizat_la=now() WHERE id=%s""",
+                            (index, ex, uit, str(e), tid))
+                stare, rez["mesaj"] = "dublura", str(e)
     rez["stare"] = stare
     return rez
+
+
+#: [lotul 10, C73 / U2] cât timp o trimitere «pregătit» e „în curs” (aceeași fereastră ca la e-Factura, `efactura_trimitere`)
+FEREASTRA_IN_CURS_MIN = 10
+MESAJ_IN_CURS = ("Notificarea aceasta e deja în curs de trimitere către ANAF (pornită la %s). Așteaptă câteva secunde rezultatul ei; o a "
+                 "doua încărcare ar da un al doilea cod UIT pentru același transport.")
+
+
+def _poarta_vie(cur, schema, sha):
+    """[lotul 10, C73 / U2] Poarta de idempotență, SERIALIZATĂ pe notificare (lacăt de tranzacție pe amprenta XML-ului, ca în
+    `migrare_nr_curent_note`): trimiterea vie (incarcat/ok) -> „deja_trimisa”; o trimitere «pregătit» pornită în ultimele
+    `FEREASTRA_IN_CURS_MIN` minute -> „in_curs”. Altfel None. Rândul «pregătit» nu e în indexul `uq_etransport_trimiteri_viu`, deci
+    fără poarta asta două cereri simultane încărcau amândouă."""
+    cur.execute("SELECT pg_advisory_xact_lock(hashtext(%s))", ("etransport:%s:%s" % (schema, sha),))
+    cur.execute(f"""SELECT id, stare, uit FROM {schema}.etransport_trimiteri
+        WHERE xml_sha256=%s AND mediu='prod' AND stare IN ('incarcat','ok') LIMIT 1""", (sha,))
+    viu = cur.fetchone()
+    if viu:
+        return {"stare": "deja_trimisa", "trimitere_id": viu[0], "uit": viu[2]}
+    cur.execute(f"""SELECT id, trimis_la FROM {schema}.etransport_trimiteri
+        WHERE xml_sha256=%s AND mediu='prod' AND stare='pregatit' AND trimis_la > now() - %s * interval '1 minute'
+        ORDER BY id DESC LIMIT 1""", (sha, FEREASTRA_IN_CURS_MIN))
+    r = cur.fetchone()
+    if r:
+        from zoneinfo import ZoneInfo
+        from core import pdf_util as _pu
+        return {"ok": False, "stare": "in_curs", "trimitere_id": r[0],
+                "mesaj": MESAJ_IN_CURS % _pu.data_ro(r[1].astimezone(ZoneInfo("Europe/Bucharest")), "cu_ora")}
+    return None

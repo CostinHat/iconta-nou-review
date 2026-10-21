@@ -93,7 +93,10 @@ def portal_confirma_email(date):
             if not r:
                 raise _erori.CerereGresita(MESAJ_EMAIL_TOKEN_INVALID)
             _uc_comun._adresa_e_libera(cur, r["email_nou"], r["user_id"])
-            repo_utilizatori.schimba_emailul(cur, r["email_nou"], r["user_id"])
+            # [lotul 10, C73 / U3] adresa luată între verificare și scriere -> același refuz ca `_adresa_e_libera`, nu 500
+            from core import chei_unice as _chei
+            with _chei.refuza_dublura(cur, _uc_comun.CHEIE_EMAIL, _uc_comun._refuz_email_la_cursa(None, r["email_nou"], None, "email")):
+                repo_utilizatori.schimba_emailul(cur, r["email_nou"], r["user_id"])
             repo_utilizatori.confirma_schimbarea_de_email(cur, r["id"])
             _uc_comun._urma_portal(cur, r["tenant_id"], "email_confirmat",
                          "adresa de autentificare schimbata: %s -> %s"

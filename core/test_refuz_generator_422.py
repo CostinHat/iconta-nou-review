@@ -47,7 +47,8 @@ def _aliasuri_core(fn, globale):
 
 
 def _ridica_valueerror(modul, functie):
-    """True daca `core/<modul>.py::<functie>` contine un `raise ValueError` in corpul ei."""
+    """True daca `core/<modul>.py::<functie>` contine un `raise ValueError` in corpul ei. [lotul 10, C69] `RefuzGenerare` e un
+    `ValueError` (core/erori.py) — refuzul care trimite la ecran; bilanțul îl ridică de acum, deci se numără la fel."""
     cale = os.path.join(_RAD, "core", modul + ".py")
     if not os.path.exists(cale):
         return False
@@ -60,7 +61,7 @@ def _ridica_valueerror(modul, functie):
             for r in ast.walk(n):
                 if isinstance(r, ast.Raise) and r.exc is not None:
                     e = r.exc.func if isinstance(r.exc, ast.Call) else r.exc
-                    if isinstance(e, ast.Name) and e.id == "ValueError":
+                    if isinstance(e, ast.Name) and e.id in ("ValueError", "RefuzGenerare"):
                         return True
     return False
 

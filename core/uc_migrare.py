@@ -241,6 +241,6 @@ def terti_in_balanta_firme(firme):
         sch = x.pop("_schema")
         x["terti_in_balanta"] = []
         if not x["are_parteneri"] and sch:
-            with db.get_conn(sch) as c:
-                x["terti_in_balanta"] = solduri_parteneri_api.terti_in_balanta(c)
+            # [lotul 10] firma ștearsă între timp: rămâne fără terți (ca firma fără schemă), nu 500
+            x["terti_in_balanta"] = db.pe_firma_existenta(sch, solduri_parteneri_api.terti_in_balanta)[1] or []
     return firme

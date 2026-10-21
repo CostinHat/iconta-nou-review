@@ -156,7 +156,9 @@ def firma_gv():
                                                 "adresa": "Str. Proba nr. 1", "oras": "Bucuresti", "judet": "București",
                                                 "banca": "Banca Test", "iban": "RO49AAAA1B31007593840000", "telefon": "0210000001",
                                                 "declarant_nume": "Popescu", "declarant_prenume": "Ion",
-                                                "declarant_functie": "ADMINISTRATOR"}, f["tenant_id"], uid)
+                                                "declarant_functie": "ADMINISTRATOR",
+                                                # [lotul 10, C69] bilanțul (testul 72) cere bifaMC și codPP („35” = SRL)
+                                                "mare_contribuabil": False, "forma_proprietate": "35"}, f["tenant_id"], uid)
         assert rr.get("ok", True) is not False, rr
         c.commit()
     asist = _uid("asistent@prisma-cont.test")[0]
@@ -936,10 +938,12 @@ def _cnp(baza12):
 def test_def_97_importul_cere_norma_functia_de_baza_si_scutirea(patron, firma_gv):
     """97. Salariați: prin API/import trebuie cerute funcția de bază, scutirea și norma.
     [PIVOT, decizia Costin 14.10.2026 pct.4, verbatim în DECIZII] scutirea lipsă nu mai refuză rândul: se importă „nescutit”, marcată
-    de verificat. Funcția de bază și norma rămân cerute.
+    de verificat. [PIVOT, lotul 10, deficiența 420, comanda Costin 10.1] nici norma și funcția de bază lipsă: „Câmpurile lipsă se
+    completează pe ecran, înainte de import, cu propunere editabilă (normă întreagă, funcție de bază Da) […] (intră marcate «de
+    verificat»)”. Cererea rămâne: valoarea e ALEASĂ pe ecran (propunerea vizibilă, schimbabilă), nu luată tăcut.
     Pașii: firma -> Import date -> Salariați -> încarcă un fișier fără coloanele „norma”, „functie de baza”, „scutit contributie
-    minima”. Previzualizarea arată „—” la funcția de bază, „Nu — de verificat” la scutire; rândul e refuzat cu motivul numit (norma,
-    funcția de bază), „Salvează” e inactiv (niciun rând bun); nimic nu se scrie."""
+    minima”. Previzualizarea arată pe rând câmpurile propuse („întreagă (8 h)”, „Da”, „propusă — de verificat”), „Nu — de verificat” la
+    scutire; rândul intră cu observație, cu propunerile numite; „Salvează” e activ; nimic nu se scrie înainte de salvare."""
     pg = patron.pg
     cnp = _cnp("185071541001")
     csv = ("nume,prenume,cnp,data angajare,brut,judet,cor\nPopescu,Ana,%s,2025-01-15,5000,B,251401\n" % cnp).encode("utf-8")
@@ -952,10 +956,11 @@ def test_def_97_importul_cere_norma_functia_de_baza_si_scutirea(patron, firma_gv
     # [349, comanda Costin 8.2] fiecare câmp are coloana lui în tabelul comun al previzualizării
     antet = [" ".join(x.split()) for x in pg.locator(".mig-prev thead th").all_inner_texts()]
     celule = dict(zip(antet, [x.strip() for x in pg.locator(".mig-prev tbody tr:not(.mig-prev-motive)").first.locator("td").all_inner_texts()]))
-    assert (celule["Funcție de bază"], celule["Scutit minim"]) == ("—", "Nu\nde verificat"), celule
-    assert "norma de lucru lipsește" in t and "funcția de bază (Da/Nu) lipsește" in t, t[:1500]
-    assert "scutirea de contribuția minimă (Da/Nu) lipsește" not in t, t[:1500]
-    assert pg.is_disabled("#mig-salveaza-sal")
+    assert celule["Scutit minim"] == "Nu\nde verificat", celule
+    assert (pg.input_value("#mig-norma-2"), pg.input_value("#mig-fbaza-2")) == ("intreaga", "true")
+    assert "norma de lucru lipsește din fișier — propusă normă întreagă (8 ore)" in t and "funcția de bază lipsește din fișier — propusă „Da”" in t, t[:1500]
+    assert "scutirea de contribuția minimă (Da/Nu) lipsește" not in t and "intră, cu observație" in t, t[:1500]
+    assert not pg.is_disabled("#mig-salveaza-sal")
     patron.captura()
     assert sql('SELECT count(*) FROM "%s".salariati' % firma_gv["schema"])[0][0] == 0
 

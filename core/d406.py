@@ -313,6 +313,92 @@ def _partener_id_saft(cui_brut, nume, eticheta=None):
     return ("04" + cod) if cod else None
 
 
+# ── [lotul 10, deficiența C69, decizia Costin 20.10.2026 „Completez din ANAF”, verbatim în DECIZII] Localitatea partenerului. Schema
+# ANAF („5. Structures”): S.C.3 Address „Address of the company … Mandatory … 1..*”, S.AD.5 City „Numele orașului/districtului poștal …
+# Mandatory … 1”, iar factura are BillingAddress „Mandatory … 1” (S.I.25 / S.I.28). Până azi `oras or "-"` (Customers / Suppliers) și
+# „-” fix pe orice factură. Acum, în ordine: localitatea scrisă de contabil (nomenclatorul partenerului, factura), apoi ANAF pentru
+# partenerii cu CUI românesc (adusă înaintea tranzacției, `uc_declaratii.aduce_localitati_parteneri` -> `anaf_api.aduce_localitati`;
+# aici numai cache-ul), iar ce rămâne necompletat OPREȘTE D406 cu lista partenerilor (`parteneri_fara_localitate`).
+_VAT_TO_ISO = {"EL": "GR"}
+#: temeiul refuzului pe localitatea lipsă (schema ANAF, citată mai sus)
+TEMEI_ADRESA_PARTENER = ("structura ANAF a D406, „5. Structures”: S.C.3 Address „Mandatory”, S.AD.5 City „Mandatory … 1”, S.I.25 / S.I.28 "
+                         "BillingAddress „Mandatory … 1”")   # prefixul de TVA al Greciei e EL; țara (S.AD.8, ISO 3166) e GR
+
+
+def tara_partener(pid, tara_factura=None):
+    """Country (S.AD.8, ISO 3166; „Valoare implicită ”RO” pentru România”): 01 / 02 + țară + cod -> țara din identitatea SAF-T; altfel
+    țara scrisă pe factură, altfel RO (valoarea implicită a schemei)."""
+    if pid and pid[:2] in ("01", "02") and len(pid) >= 4:
+        return _VAT_TO_ISO.get(pid[2:4], pid[2:4])
+    return (str(tara_factura or "").strip().upper() or "RO")[:2]
+
+
+def _pid_sau_none(cui, nume):
+    """Identitatea SAF-T a unui rând-sursă de localitate; None când codul rândului e invalid (un cod greșit nu identifică partenerul,
+    deci nu poate fi sursa localității lui — refuzul codului greșit e al liniei / facturii pe care apare)."""
+    try:
+        return _partener_id_saft(cui, nume)
+    except ValueError:
+        return None
+
+
+def localitati_locale(randuri):
+    """{pid: localitate} din rândurile `repo_d406.parteneri_si_localitati` (nomenclatorul întâi, apoi facturile, cea mai nouă întâi)."""
+    out = {}
+    for r in randuri:
+        oras = str(r["oras"] or "").strip()
+        if oras:
+            pid = _pid_sau_none(r["cui"], r["nume"])
+            if pid and pid not in out:
+                out[pid] = oras
+    return out
+
+
+def cuiuri_de_cerut_anaf(randuri):
+    """CUI-urile românești (identitatea 00 + CUI) fără nicio localitate scrisă de contabil — cele pe care ANAF le poate completa."""
+    locale = localitati_locale(randuri)
+    out = []
+    for r in randuri:
+        pid = _pid_sau_none(r["cui"], r["nume"])
+        if pid and pid.startswith("00") and pid not in locale and pid[2:] not in out:
+            out.append(pid[2:])
+    return out
+
+
+def _localitate_anaf(pid):
+    if not (pid or "").startswith("00"):
+        return ""
+    from core import anaf_api as _anaf   # numai cache-ul (adus înaintea tranzacției); fără rețea în generator
+    return ((_anaf.localitate_din_cache(pid[2:]) or {}).get("localitate") or "").strip()
+
+
+def completeaza_localitati(clienti, furnizori, facturi, locale):
+    """Localitatea (și țara) fiecărui partener din MasterFiles și a fiecărei facturi: scrisă de contabil, apoi ANAF; nimic inventat."""
+    master = {}
+    for p in list(clienti) + list(furnizori):
+        p.tara = tara_partener(p.id, p.tara)
+        p.oras = str(p.oras or "").strip() or locale.get(p.id) or _localitate_anaf(p.id)
+        if p.oras:
+            master.setdefault(p.id, p.oras)
+    for f in facturi:
+        f.oras = str(f.oras or "").strip() or locale.get(f.partener_id) or master.get(f.partener_id) or _localitate_anaf(f.partener_id)
+
+
+def parteneri_fara_localitate(clienti, furnizori, facturi):
+    """[(nume, pid, [facturi])] — partenerii (MasterFiles sau facturi) rămași fără localitate, cu facturile perioadei pe care apar."""
+    lipsa = {}
+    for p in list(clienti) + list(furnizori):
+        if not str(p.oras or "").strip():
+            lipsa.setdefault(p.id, [p.nume, []])
+    for f in facturi:
+        if not str(f.oras or "").strip():
+            lipsa.setdefault(f.partener_id, [f.partener_nume, []])
+    for f in facturi:
+        if f.partener_id in lipsa and f.nr not in lipsa[f.partener_id][1]:
+            lipsa[f.partener_id][1].append(f.nr)
+    return [(v[0], pid, v[1]) for pid, v in lipsa.items()]
+
+
 def registration_number(prof):
     """RegistrationNumber conform schemei oficiale ANAF (d406_schema_anaf.xlsx,
     foaia "5. Structures", S.CMH.1 CompanyHeaderStructure), citat integral:
@@ -563,6 +649,8 @@ class Factura:
     cont: str = "4111"       # AccountID
     self_billing: str = "0"  # SelfBillingIndicator
     linii: list = field(default_factory=list)
+    oras: str = ""           # [lotul 10, C69] BillingAddress/City (S.I.25 / S.I.28 „Mandatory”): factura, altfel partenerul
+    tara: str = "RO"         # BillingAddress/Country (S.AD.8: „Valoare implicită ”RO” pentru România”); partenerul străin: țara lui
 
     @property
     def net(self):
@@ -773,29 +861,9 @@ def _header(res):
     H.append('    <SoftwareCompanyName>iConta</SoftwareCompanyName>')
     H.append('    <SoftwareID>iConta SaaS</SoftwareID>')
     H.append('    <SoftwareVersion>1.0</SoftwareVersion>')
-    H.append('    <Company>')
-    # [reg number firma proprie 16.08] S.CMH.1: platitor TVA -> RO+CIF; neplatitor -> CIF.
-    # registration_number() implementa regula dar era COD MORT (0 apeluri) - headerul emitea CUI
-    # brut (fara RO) -> "format invalid" la DUK pt platitorii de TVA (exact ce docstring-ul functiei descrie).
-    H.append('      <RegistrationNumber>%s</RegistrationNumber>' % _esc(registration_number(prof)))
-    H.append('      <Name>%s</Name>' % _esc(_t(prof.get("nume") or "", _LIM["d406"]["CompanyName"])))
-    H.append('      <Address>')
-    H.append('        <StreetName>%s</StreetName>' % _esc(_t(prof.get("adresa") or "-", _LIM["d406"]["StreetName"])))
-    H.append('        <City>%s</City>' % _esc(_t(prof.get("oras") or "-", _LIM["d406"]["City"])))
-    H.append('        <PostalCode>%s</PostalCode>' % _esc(_t(prof.get("cod_postal") or "000000", _LIM["d406"]["PostalCode"])))
-    H.append('        <Country>RO</Country>')
-    H.append('      </Address>')
-    H.append('      <Contact>')
-    H.append('        <ContactPerson>')
-    H.append('          <FirstName>-</FirstName>')
-    H.append('          <LastName>%s</LastName>' % _esc(_t(prof.get("nume") or "-", _LIM["d406"]["ContactLastName"])))
-    H.append('        </ContactPerson>')
-    H.append('        <Telephone>-</Telephone>')
-    H.append('      </Contact>')
-    H.append('      <BankAccount>')
-    H.append('        <IBANNumber>RO00BANK0000000000000000</IBANNumber>')
-    H.append('      </BankAccount>')
-    H.append('    </Company>')
+    # [reg number firma proprie 16.08] registration_number() implementa regula dar era COD MORT (0 apeluri) - headerul emitea CUI
+    # brut (fara RO) -> "format invalid" la DUK pt platitorii de TVA. [lotul 10, C69] `<Company>` vine din `antet_firma`.
+    H.extend(antet_firma(prof))
     H.append('    <DefaultCurrencyCode>RON</DefaultCurrencyCode>')
     # [R165c, 05.09.2026] Perioada declarata = perioada ACOPERITA de fisier, nu luna-ancora.
     # Schema ANAF (`d406_schema_anaf.xlsx`, 5.12 SelectionCriteriaStructure): PeriodStart =
@@ -822,6 +890,13 @@ def _header(res):
              % ((res.prof.get("baza_contabila") or TAB_IMPLICIT).upper()))
     H.append('  </Header>')
     return H
+
+
+def _localitate_master(p):
+    """City din Customer / Supplier (S.C.3 Address „Mandatory”, S.AD.5 City „Mandatory … 1”). [lotul 10, C69] era `oras or "-"`."""
+    if not str(p.oras or "").strip():
+        raise ValueError("D406: partenerul %s (%s) n-are localitate — nu se scrie „-” (%s)." % (p.nume, p.id, TEMEI_ADRESA_PARTENER))
+    return p.oras
 
 
 def _masterfiles(res):
@@ -865,7 +940,7 @@ def _masterfiles(res):
         M.append('          <RegistrationNumber>%s</RegistrationNumber>' % _esc(c.id))
         M.append('          <Name>%s</Name>' % _esc(_t(c.nume, _LIM["d406"]["PartnerName"])))
         M.append('          <Address>')
-        M.append('            <City>%s</City>' % _esc(_t(c.oras or "-", _LIM["d406"]["City"])))
+        M.append('            <City>%s</City>' % _esc(_t(_localitate_master(c), _LIM["d406"]["City"])))   # [C69] nu „-”
         M.append('            <Country>%s</Country>' % _esc(c.tara or "RO"))
         M.append('          </Address>')
         M.append('        </CompanyStructure>')
@@ -885,7 +960,7 @@ def _masterfiles(res):
         M.append('          <RegistrationNumber>%s</RegistrationNumber>' % _esc(f.id))
         M.append('          <Name>%s</Name>' % _esc(_t(f.nume, _LIM["d406"]["PartnerName"])))
         M.append('          <Address>')
-        M.append('            <City>%s</City>' % _esc(_t(f.oras or "-", _LIM["d406"]["City"])))
+        M.append('            <City>%s</City>' % _esc(_t(_localitate_master(f), _LIM["d406"]["City"])))   # [C69] nu „-”
         M.append('            <Country>%s</Country>' % _esc(f.tara or "RO"))
         M.append('          </Address>')
         M.append('        </CompanyStructure>')
@@ -1122,6 +1197,19 @@ def _gl_entries(res):
     return G
 
 
+def _adresa_facturare(f, sp):
+    """BillingAddress (S.I.25 / S.I.28 „AddressStructure … Mandatory … 1”): City „Mandatory” (S.AD.5). [lotul 10, C69] Până azi „-” pe
+    orice factură; acum localitatea facturii sau a partenerului (`completeaza_localitati`) — lipsa ei a oprit deja generarea, iar aici
+    nu se mai scrie nimic inventat."""
+    if not str(f.oras or "").strip():
+        raise ValueError("D406: factura %s n-are localitatea partenerului (%s) — nu se scrie „-” (%s)." % (
+            f.nr, f.partener_nume, TEMEI_ADRESA_PARTENER))
+    return ['%s    <BillingAddress>' % sp,
+            '%s      <City>%s</City>' % (sp, _esc(_t(f.oras, _LIM["d406"]["City"]))),
+            '%s      <Country>%s</Country>' % (sp, _esc(f.tara or "RO")),
+            '%s    </BillingAddress>' % sp]
+
+
 def _factura_xml(f, este_vanzare, indent):
     """Generează un element <Invoice> conform InvoiceStructure din XSD."""
     sp = " " * indent
@@ -1131,18 +1219,12 @@ def _factura_xml(f, este_vanzare, indent):
     if este_vanzare:
         X.append('%s  <CustomerInfo>' % sp)
         X.append('%s    <CustomerID>%s</CustomerID>' % (sp, _esc(f.partener_id)))
-        X.append('%s    <BillingAddress>' % sp)
-        X.append('%s      <City>-</City>' % sp)
-        X.append('%s      <Country>RO</Country>' % sp)
-        X.append('%s    </BillingAddress>' % sp)
+        X.extend(_adresa_facturare(f, sp))
         X.append('%s  </CustomerInfo>' % sp)
     else:
         X.append('%s  <SupplierInfo>' % sp)
         X.append('%s    <SupplierID>%s</SupplierID>' % (sp, _esc(f.partener_id)))
-        X.append('%s    <BillingAddress>' % sp)
-        X.append('%s      <City>-</City>' % sp)
-        X.append('%s      <Country>RO</Country>' % sp)
-        X.append('%s    </BillingAddress>' % sp)
+        X.extend(_adresa_facturare(f, sp))
         X.append('%s  </SupplierInfo>' % sp)
     X.append('%s  <AccountID>%s</AccountID>' % (sp, _esc(f.cont)))
     X.append('%s  <InvoiceDate>%s</InvoiceDate>' % (sp, _d(f.data)))
@@ -1672,7 +1754,9 @@ def pull(conn, schema, an, luna):
                     nepotriviri_jurnal.append((r["numar"] or str(r["id"]), _in_linii, _in_nota))
                 f = Factura(nr=r["numar"] or str(r["id"]), data=r["data_emitere"],
                             partener_id=pid, partener_nume=r["tert_nume"] or "",
-                            tip=itype, cont=("4111" if este_v else "401"), linii=linii)
+                            tip=itype, cont=("4111" if este_v else "401"), linii=linii,
+                            oras=(r.get("tert_oras") or "").strip(),
+                            tara=tara_partener(pid, r.get("tert_tara")))
                 (facturi_vanzare if este_v else facturi_cumparare).append(f)
         except ValueError:
             # Eroare de CONTINUT (reconciliere linii-antet), nu de citire: trece
@@ -1689,6 +1773,10 @@ def pull(conn, schema, an, luna):
     # conturile introduse după el (6121–6123 OMFP 2649/2023, 6351 OMFP 981/2024). Se exclud din MasterFiles ca până acum; avertismentul
     # le NUMEȘTE numai când pierderea contează: contul are sold sau apare pe o notă / factură a perioadei. Un cont neatins al planului
     # n-are ce pierde, iar numit pe fiecare D406 ar fi un avertisment fără acțiune.
+    # [lotul 10, C69] localitatea partenerilor și a facturilor: scrisă de contabil, apoi ANAF (cache); lipsa o numește `genereaza`
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        _locale = localitati_locale(_repo.parteneri_si_localitati(cur))
+    completeaza_localitati(clienti, furnizori, facturi_vanzare + facturi_cumparare, _locale)
     _pe_linii = {ln.cont for n in note for ln in n.linii} | {ln.cont for f in facturi_vanzare + facturi_cumparare for ln in f.linii}
     strain = [s_ for s_ in strain if s_ in strain_cu_sold or sintetic_saft(s_) in _pe_linii]
     return (prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati,
@@ -1711,7 +1799,118 @@ def erori_generare(prof):
                          "(DUK regula S.CMH.1)." % (_cui, _motiv))
     if not str(prof.get("nume") or "").strip():
         erori.append("Lipsă denumire firma.")
+    # [lotul 10, deficiența C69 — clasa „valoare inventată pe documentul ANAF în loc de blocaj”] Antetul (Header/Company) cere
+    # câmpurile de mai jos; până azi lipsa lor era umplută cu „-” / „RO00BANK0000000000000000” / numele FIRMEI ca persoană, iar
+    # DUK le accepta pe toate (proba din raportul C69: „telefon_liniuta stare=valid”, „iban_fals_RO00BANK stare=valid”) — deci
+    # nimic nu oprea o declarație cu date fabricate. Fiecare e OBLIGATORIU în schema ANAF (anaf_surse/d406_schema_anaf.xlsx,
+    # foaia „5. Structures”) și în XSD (/opt/duk/saft/saft.xsd); lipsa lui OPREȘTE generarea, numită, cu locul de completare:
+    #   S.AD.5  City        „Numele orașului/districtului poștal. … Mandatory … 1”   (XSD AddressStructure: City fără minOccurs="0")
+    #   S.CTH.2 Telephone   „număr telefonic. … Mandatory … 1”                       (XSD ContactHeaderStructure: Telephone)
+    #   S.PN.2  FirstName   „Prenumele persoanei. … Mandatory … 1”                   (XSD PersonNameStructure: FirstName)
+    #   S.PN.5  LastName    „Numele de familie al persoanei. … Mandatory … 1”        (XSD PersonNameStructure: LastName)
+    #   S.CMH.6 BankAccount „Mandatory … 1..*”; S.BA.1 IBANNumber „Număr de cont bancar internațional, ISO 13616 … Mandatory”
+    # Persoana de contact = DECLARANTUL din Date firmă (INTERPRETARE CU TEMEI: schema cere „Numele persoanei de contact” al firmei,
+    # iar declarantul e persoana pe care firma o numește în fața ANAF pe celelalte opt declarații; alternativa respinsă:
+    # `patron_nume` cu FirstName „NotUsed” — nume nestructurat, câmp opțional al ecranului. De reconfirmat dacă ANAF tranșează).
+    # Câmpurile se citesc EXPLICIT, cu numele lor: sonda gardului (`core/scan_camp_blocant.py`) citește `prof.get("X")` literal.
+    _cere = "D406 %s cere obligatoriu în antetul fișierului (%s). Completează „%s” în Date firmă."
+    if not str(prof.get("oras") or "").strip():
+        erori.append("Lipsă localitatea firmei: " + _cere % ("o", "adresa firmei", "Localitatea"))
+    if not str(prof.get("telefon") or "").strip():
+        erori.append("Lipsă telefonul firmei: " + _cere % ("îl", "datele de contact ale firmei", "Telefon"))
+    if not str(prof.get("declarant_prenume") or "").strip():
+        erori.append("Lipsă prenumele declarantului: " + _cere % ("îl", "persoana de contact a firmei", "Prenume declarant"))
+    if not str(prof.get("declarant_nume") or "").strip():
+        erori.append("Lipsă numele declarantului: " + _cere % ("îl", "persoana de contact a firmei", "Nume declarant"))
+    # [lotul 10, C69, decizia Costin „Varianta 1”] S.BA.2 BankAccountNumber (anaf_surse/d406_schema_anaf.xlsx, „5. Structures”): „Pentru
+    # companiile care nu detin cont bancar se va inscrie in sectiunea Header, subsectiunea CompanyHeaderStructure, la campul
+    # BankAccountNumber : "Fara cont bancar"”. Deci: fără bifă -> IBAN-ul e cerut (refuzul de până azi); cu bifă -> „Fara cont bancar”,
+    # iar un IBAN completat lângă bifă e o contradicție (firma are cont, după propriile date) — numită, nu aleasă de aplicație.
+    _fara_cont = prof.get("fara_cont_bancar") is True
+    if not _fara_cont and not str(prof.get("iban") or "").strip():
+        erori.append("Lipsă IBAN-ul firmei: " + _cere % ("îl", "contul bancar al firmei", "IBAN") +
+                     " Dacă firma nu are cont bancar, alege „Nu are cont bancar: Da”.")
+    if _fara_cont and str(prof.get("iban") or "").strip():
+        erori.append("Firma e declarată fără cont bancar, dar are IBAN completat în Date firmă (%s). D406 nu poate declara și că firma nu are "
+                     "cont bancar, și contul: șterge IBAN-ul sau alege „Nu are cont bancar: Nu”." % prof.get("iban"))
     return erori
+
+
+#: [lotul 10, C69] elementul cerut de schema ANAF (S.BA.2) firmei fără cont bancar — textul verbatim, fără diacritice, cum îl scrie schema
+FARA_CONT_BANCAR_XML = "<BankAccountNumber>Fara cont bancar</BankAccountNumber>"
+
+
+def contradictie_fara_cont(conn, schema, prof, di, ds):
+    """[lotul 10, deficiența C69, decizia Costin 20.10.2026 „Varianta 1, cu o condiție: dacă firma are bifa «nu are cont bancar», dar are
+    rulaj sau sold pe 512x în perioadă, D406 se oprește și spune contradicția.”] Conturile 512x cu sold la începutul perioadei, rulaj în
+    perioadă sau sold la sfârșit, din balanța de verificare (`documente_api.balanta`: soldurile preluate + notele validate — aceeași
+    balanță pe care o vede contabilul), lună cu lună pe fereastra D406 [di, ds). [(cont, sold_inceput, rulaj_d, rulaj_c, sold_sfarsit)]
+    în lei (Decimal, sold = debit − credit); listă goală = nicio contradicție. Nu se cheamă fără bifă."""
+    from core import documente_api as _doc
+    luni, z = [], date(di.year, di.month, 1)
+    while z < ds:
+        luni.append((z.year, z.month))
+        z = date(z.year + (z.month == 12), z.month % 12 + 1, 1)
+    D = lambda x: Decimal(str(x or 0)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)   # noqa: E731 — balanța dă float cu bani
+    pe_cont = {}
+    for i, (an_l, luna_l) in enumerate(luni):
+        for r in _doc.balanta(conn, schema, an_l, luna_l):
+            if not str(r["cont"]).startswith("512"):
+                continue
+            v = pe_cont.setdefault(r["cont"], [Decimal(0), Decimal(0), Decimal(0), Decimal(0)])
+            if i == 0:   # soldul la începutul ferestrei: soldul inițial al anului + sumele precedente ale primei luni
+                v[0] = D(r["si_d"]) + D(r["prec_d"]) - D(r["si_c"]) - D(r["prec_c"])
+            v[1] += D(r["rul_d"])
+            v[2] += D(r["rul_c"])
+            v[3] = D(r["sf_d"]) - D(r["sf_c"])   # soldul final al ultimei luni citite
+    return [(cont, v[0], v[1], v[2], v[3]) for cont, v in sorted(pe_cont.items()) if any(v)]
+
+
+def antet_firma(prof):
+    """Elementul `<Company>` al antetului D406 (CompanyHeaderStructure), din Date firmă — SURSA UNICĂ pentru D406 lunar/trimestrial
+    (`_header`) și pentru fișierul anual de active (`d406_active.xml_d406_anual_active`), care îl scria a doua oară, cu aceleași
+    valori inventate (și cu CUI-ul fără „RO”, S.CMH.1).
+
+    [lotul 10, deficiența C69] Nu inventează nimic: un profil căruia îi lipsește un câmp cerut (`erori_generare`) e REFUZAT aici, nu
+    completat — ca nicio cale (nici `build_xml` chemat direct) să nu poată scrie „-” sau un IBAN fals pe un document ANAF. Câmpurile
+    OPȚIONALE lipsă se OMIT (XSD le permite absența; DUK: „fara_StreetName stare=valid”, „fara_PostalCode stare=valid”):
+      S.AD.1 StreetName „Optional … 0..1” (XSD minOccurs="0") — lipsă -> elementul nu se scrie (era „-”);
+      S.AD.6 PostalCode „Optional … 0..1 … Nicio validare pentru Codului poștal” (XSD minOccurs="0") — lipsă -> nu se scrie (era
+      „000000”)."""
+    _er = erori_generare(prof)
+    if _er:
+        raise ValueError("D406 nu se poate genera: " + " ".join(_er))
+    C = ['    <Company>']
+    # S.CMH.1: platitor TVA -> RO+CIF; neplatitor -> CIF.
+    C.append('      <RegistrationNumber>%s</RegistrationNumber>' % _esc(registration_number(prof)))
+    C.append('      <Name>%s</Name>' % _esc(_t(prof.get("nume"), _LIM["d406"]["CompanyName"])))
+    C.append('      <Address>')
+    if str(prof.get("adresa") or "").strip():
+        C.append('        <StreetName>%s</StreetName>' % _esc(_t(prof.get("adresa"), _LIM["d406"]["StreetName"])))
+    C.append('        <City>%s</City>' % _esc(_t(prof.get("oras"), _LIM["d406"]["City"])))
+    if str(prof.get("cod_postal") or "").strip():
+        C.append('        <PostalCode>%s</PostalCode>' % _esc(_t(prof.get("cod_postal"), _LIM["d406"]["PostalCode"])))
+    C.append('        <Country>RO</Country>')
+    C.append('      </Address>')
+    C.append('      <Contact>')
+    C.append('        <ContactPerson>')
+    C.append('          <FirstName>%s</FirstName>' % _esc(_t(prof.get("declarant_prenume"), _LIM["d406"]["ContactFirstName"])))
+    C.append('          <LastName>%s</LastName>' % _esc(_t(prof.get("declarant_nume"), _LIM["d406"]["ContactLastName"])))
+    C.append('        </ContactPerson>')
+    C.append('        <Telephone>%s</Telephone>' % _esc(_t(prof.get("telefon"), _LIM["d406"]["Telephone"])))
+    C.append('      </Contact>')
+    C.append('      <BankAccount>')
+    if prof.get("fara_cont_bancar") is True:
+        # [lotul 10, C69] S.BA.2: „Pentru companiile care nu detin cont bancar se va inscrie [...] la campul BankAccountNumber : "Fara cont
+        # bancar"” — XSD BankAccountStructure: choice IBANNumber | (BankAccountNumber, BankAccountName?, SortCode?)
+        C.append('        ' + FARA_CONT_BANCAR_XML)
+    else:
+        # IBAN-ul se scrie fără spații (ISO 13616: forma electronică n-are separatori; DUK verifică formatul pe țară: „Pentru IBANNumber
+        # 'RO12' formatul este invalid pentru codul tarii 'RO'”) — aceeași valoare, nu alta.
+        C.append('        <IBANNumber>%s</IBANNumber>' % _esc(_t(re.sub(r"\s", "", str(prof.get("iban"))).upper(), _LIM["d406"]["IBANNumber"])))
+    C.append('      </BankAccount>')
+    C.append('    </Company>')
+    return C
 
 
 def genereaza(conn, schema, an, luna):
@@ -1724,7 +1923,44 @@ def genereaza(conn, schema, an, luna):
     _fdi, _fds = fereastra_d406(prof, an, luna)
     _er = erori_generare(prof)
     if _er:
-        raise ValueError("D406 nu se poate genera: " + " ".join(_er))
+        # [lotul 10, C69] refuzul trimite la ecranul unde se repară (butonul „Date firmă”, cu primul câmp lipsă adus în vedere); câmpul
+        # se caută în harta canonică `OBLIGATORII` (aceeași care scrie „Profil incomplet — blochează … D406”), nu într-o a doua listă
+        from core.erori import RefuzGenerare
+        from core.firma_profil_api import OBLIGATORII
+        _fara_cont = prof.get("fara_cont_bancar") is True   # [lotul 10, C69] cu bifa, IBAN-ul gol nu e lipsa; IBAN-ul completat e contradicția
+        _camp = next((c for c, decl in OBLIGATORII.items() if "D406" in decl and c not in ("nume", "cui")
+                      and not (c == "iban" and _fara_cont) and not str(prof.get(c) or "").strip()), None)
+        if _camp is None and _fara_cont and str(prof.get("iban") or "").strip():
+            _camp = "iban"
+        raise RefuzGenerare("D406 nu se poate genera: " + " ".join(_er), ecran="date_firma",
+                            camp_ecran=("df-" + _camp) if _camp else None)
+    _fara_loc = parteneri_fara_localitate(clienti, furnizori, fv + fc)
+    if _fara_loc:
+        # [lotul 10, C69, decizia Costin „Completez din ANAF”] „se blochează numai ce rămâne necompletat” — cu lista partenerilor și
+        # facturile pe care apar (localitatea se scrie pe factură, la „Localitatea clientului”, sau în nomenclatorul partenerului)
+        from core.erori import RefuzGenerare
+        _cu_cui = sum(1 for _n, _p, _fs in _fara_loc if _p.startswith("00"))
+        raise RefuzGenerare(
+            "D406 nu se poate genera: lipsește localitatea pentru %s — D406 cere adresa fiecărui partener (localitatea e obligatorie). %s. "
+            "%sCompletează localitatea pe factura partenerului (Localitatea clientului / furnizorului) sau în datele lui, apoi generează "
+            "din nou." % (
+                c.cate(len(_fara_loc), "partener", "parteneri"),
+                "; ".join("%s%s" % (_n or _p, (" (facturile %s)" % ", ".join(_fs[:5]) + (" …" if len(_fs) > 5 else "")) if _fs else "")
+                          for _n, _p, _fs in _fara_loc[:30]) + (" … (+%d)" % (len(_fara_loc) - 30) if len(_fara_loc) > 30 else ""),
+                ("Pentru cei cu CUI românesc, ANAF n-a dat localitatea (nu a răspuns sau n-are adresa lor). " if _cu_cui else "")))
+    if prof.get("fara_cont_bancar") is True:
+        _contr = contradictie_fara_cont(conn, schema, prof, _fdi, _fds)
+        if _contr:
+            from core.erori import RefuzGenerare
+            from core.pdf_util import bani as _bani_b, data_ro as _data_ro_b
+            raise RefuzGenerare(
+                "D406 nu se poate genera: firma e declarată fără cont bancar (Date firmă), dar balanța arată cont bancar în perioada %s – %s: "
+                "%s. D406 ar declara că firma nu are cont bancar, contrazis de propria evidență. Completează IBAN-ul firmei și alege „Nu are cont bancar: Nu”, sau "
+                "corectează notele pe 512." % (
+                    _data_ro_b(_fdi), _data_ro_b(_fds - timedelta(days=1)),
+                    "; ".join("contul %s — sold la început %s lei, rulaj debitor %s lei, rulaj creditor %s lei, sold la sfârșit %s lei" % (
+                        ct, _bani_b(si), _bani_b(rd), _bani_b(rc), _bani_b(sf)) for ct, si, rd, rc, sf in _contr)),
+                ecran="date_firma", camp_ecran="df-fara_cont_bancar")
     res = construieste(prof, an, luna, conturi, clienti, furnizori, note=note,
                        facturi_vanzare=fv, facturi_cumparare=fc, plati=plati)
     res.data_inceput, res.data_sfarsit = _fdi, _fds - timedelta(days=1)

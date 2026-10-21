@@ -180,8 +180,15 @@ def test_eroarea_validarii_interne_nu_rupe_drumul(drum, pfa, monkeypatch):
     r, ni = _ruleaza(drum, pfa, monkeypatch)
     note = _note_facturilor(pfa)
     assert _emise(drum, r) == 1, r
-    assert ni is None and _stari(pfa, note) == {note[0]: "ciorna"}
+    assert _stari(pfa, note) == {note[0]: "ciorna"}
     assert [e for _et, e in vazute] == ["baza a căzut la validarea internă"], vazute
+    if drum == "api":
+        # [lotul 10, observația „răspunsul API note_interne”] integratorul află că nota a rămas ciornă (înainte răspunsul tăcea).
+        # MUTAȚIA: atribuirea din ramura `except` a lui `uc_api.apiv1_factura_emite` scoasă -> ROȘU.
+        from core import uc_api
+        assert ni == {"interne": [], "refuzate": [], "nevalidate": uc_api.NOTE_INTERNE_NERULATE}, ni
+    else:
+        assert ni is None, ni   # cronul și magazinul: eroarea e în jurnalul jobului (`observare.esec_secundar`)
 
 
 # ── începutul scrierii: o ciornă de fundal mai veche nu e a drumului ──────────────────────────────────────────────────────

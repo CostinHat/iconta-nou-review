@@ -16,7 +16,7 @@ def _fake_pull(monkeypatch, prof):
     monkeypatch.setattr(d710, "pull", lambda conn, schema, per: (prof, {}))
 
 
-_PROF = {"cui": "14399840", "nume": "T SRL", "adresa": "Str. Testului nr. 1"}
+_PROF = {"cui": "14399840", "nume": "T SRL", "adresa": "Str. Testului nr. 1", "declarant_nume": "POPESCU", "declarant_prenume": "ION", "declarant_functie": "ADMINISTRATOR"}  # [lotul 10, C69] + declarantul: structura D100-D710 „nume_declar/prenume_declar/functie_declar … DA”
 
 
 def test_d710_formular_gol_refuza():

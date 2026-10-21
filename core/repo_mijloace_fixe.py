@@ -10,6 +10,7 @@ FIECARE FUNCȚIE PRIMEȘTE CURSORUL APELANTULUI. Nu deschide conexiuni, nu comit
 nu construiește `HTTPException` și nu decide niciun cod HTTP. *Așa rămâne întreagă tranzacția pe
 care o deține apelantul — contractul P4, care nu se redeschide aici.*
 """
+from core import chei_unice as _chei   # [lotul 10, C73] codul de inventar dublat -> refuz numit, nu 500
 
 
 #: Coloana `reevaluari` — reevaluarile APLICATE ale activului, ca JSON, in ordine cronologica.
@@ -94,13 +95,42 @@ def pentru_inventariere(cur, schema, mijloc_id):
 
 # ── P7 · V2: scrierile, mutate din rute ──────────────────────────────
 
+#: cheia naturală a registrului (`core/migrare_intrare_date_garduri.UNIQUE`): un cod de inventar = un singur mijloc fix, activ sau scos
+CONSTRANGERE_COD = "mijloace_fixe_cod_uniq"
+
+
+def cod_liber(cur, schema, cod):
+    """[lotul 10, C73] Codul de inventar pe care îl dă aplicația când omul n-a scris unul (ecranele de operațiuni n-au câmp de cod):
+    `cod` dacă e liber, altfel primul `cod-2`, `cod-3`, … liber. Înainte, a doua licență primea același „NEC-LIC” ca prima și
+    scrierea cădea cu 500 pe `mijloace_fixe_cod_uniq` — o dublură produsă de aplicație, nu de om."""
+    cur.execute(f"SELECT cod FROM {schema}.mijloace_fixe WHERE cod = %s OR left(cod, length(%s) + 1) = %s || '-'", (cod, cod, cod))
+    folosite = {r[0] for r in cur.fetchall()}
+    if cod not in folosite:
+        return cod
+    n = 2
+    while "%s-%d" % (cod, n) in folosite:
+        n += 1
+    return "%s-%d" % (cod, n)
+
+
+def _refuz_cod(cur, e, schema, cod):
+    """Refuzul codului de inventar dublat, cu mijlocul fix care îl are deja (citit după ROLLBACK TO SAVEPOINT, pe cursorul apelantului)."""
+    cur.execute(f"SELECT id, denumire, activ FROM {schema}.mijloace_fixe WHERE cod = %s", (cod,))
+    r = cur.fetchone()
+    unde = (" la %s%s" % (r[1], "" if r[2] else " (scos din evidență)")) if r else ""
+    return _chei.CheieDublata("Codul de inventar %s e deja în registrul mijloacelor fixe%s. Un cod de inventar aparține unui "
+                              "singur mijloc fix: dă-i acestuia alt cod." % (cod, unde), valoare=cod,
+                              existent={"mijloc_fix_id": r[0], "denumire": r[1]} if r else None, camp="cod")
+
+
 def adauga(cur, schema, cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni):
-    cur.execute(f"""INSERT INTO {schema}.mijloace_fixe
-                            (cod, denumire, cont_imobilizare, cont_amortizare, valoare,
-                             rezidual, dnf_luni, data_pif, metoda, activ)
-                            VALUES (%s,%s,%s,%s,%s,0,%s,%s,'liniara',true) RETURNING id""",
-                (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni))
-    return cur.fetchone()
+    with _chei.refuza_dublura(cur, (CONSTRANGERE_COD,), lambda c, e: _refuz_cod(c, e, schema, cod)):   # [lotul 10, C73]
+        cur.execute(f"""INSERT INTO {schema}.mijloace_fixe
+                                (cod, denumire, cont_imobilizare, cont_amortizare, valoare,
+                                 rezidual, dnf_luni, data_pif, metoda, activ)
+                                VALUES (%s,%s,%s,%s,%s,0,%s,%s,'liniara',true) RETURNING id""",
+                    (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni))
+        return cur.fetchone()
 
 
 def scoate_din_evidenta(cur, schema, id_):
@@ -119,13 +149,14 @@ def urca_valoarea(cur, schema, id_, valoare):
 
 
 def adauga_cu_reevaluare(cur, schema, cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni, data_pif, metoda, destinatie_cd=False):
-    cur.execute(f"""INSERT INTO {schema}.mijloace_fixe
-                                (cod, denumire, cont_imobilizare, cont_amortizare, valoare,
-                                 rezidual, dnf_luni, data_pif, metoda, activ, destinatie_cd)
-                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true,%s) RETURNING id""",
-                (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni, data_pif, metoda,
-                 bool(destinatie_cd)))
-    return cur.fetchone()
+    with _chei.refuza_dublura(cur, (CONSTRANGERE_COD,), lambda c, e: _refuz_cod(c, e, schema, cod)):   # [lotul 10, C73]
+        cur.execute(f"""INSERT INTO {schema}.mijloace_fixe
+                                    (cod, denumire, cont_imobilizare, cont_amortizare, valoare,
+                                     rezidual, dnf_luni, data_pif, metoda, activ, destinatie_cd)
+                                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true,%s) RETURNING id""",
+                    (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual, dnf_luni, data_pif, metoda,
+                     bool(destinatie_cd)))
+        return cur.fetchone()
 
 
 def seteaza_destinatie_cd(cur, schema, id_, destinatie_cd, user_id):

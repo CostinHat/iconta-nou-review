@@ -3,13 +3,13 @@
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand } from "../api.js?v=158edee964";
+import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand } from "../api.js?v=ff30ebaf3f";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=a2a0b629a8";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=eb7737e0b3";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=510e670f0b";
 import { randeazaAdminAnalytics } from "./admin_analytics.js?v=65a3ea09d5";
 import { numeDeSalut } from "./salut.js?v=10719d2154";
-import { panouNotificari } from "./setari.js?v=6828bde114";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală
+import { panouNotificari } from "./setari.js?v=6a36388d13";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală
 
 // iconite SVG inline (autonome)
 function svg(cheie, fg) {
@@ -209,10 +209,12 @@ async function randeazaAdminInvitatii(corp) {
   corp.innerHTML = `
     <h2 class="pf-titlu">Invitații cabinete</h2>
     <p class="pf-intro">Invitația creează contul unui cabinet adus de tine, oricum ar fi setată înregistrarea (cardul „Înregistrare”). E valabilă 14 zile și se folosește o singură dată, numai cu emailul invitat.</p>
+    <div class="rezumat-fix">   <!-- [lotul 10, 421 / 424, DS cap.9 v2.97 pct.5-6] invitația nouă și mesajul ei rămân sus cât derulezi lista -->
     <label class="camp" style="max-width:420px"><span class="camp-eticheta">Email cabinet <span class="oblig">*</span></span>
       <input type="email" id="inv-email" class="camp-input" autocomplete="off" placeholder="nume@cabinet.ro"></label>
     <button class="buton-primar" id="inv-trimite" data-actiune="POST /admin/invitatii">Trimite invitația</button>
     <div id="inv-msg" style="margin-top:10px"></div>
+    </div>
     <div id="inv-lista" style="margin-top:16px"></div>`;
   const lista = corp.querySelector("#inv-lista");
   async function incarca() {
@@ -260,7 +262,7 @@ async function cereriNeconfirmate(zona) {
     ? `trimis ${dataRo(x.email_trimis_la, "cu_ora")}${x.retrimiteri ? ` (${cate(x.retrimiteri, "retrimitere", "retrimiteri")})` : ""}` : "netrimis";
   // [deficiența 316, comanda Costin 17.10.2026 7.2] cererea expirată rămâne în listă, marcată „expirată” (cu data la care se șterge);
   // data, emailul și butonul nu se mai rup pe rânduri (`.ins-cereri`, fără `overflow-wrap: anywhere` pe coloanele lor)
-  zona.innerHTML = `<table class="fd-tabel ins-cereri"><thead><tr><th>Data</th><th>Cabinet</th><th>Email</th><th>Emailul de confirmare</th><th>Starea linkului</th><th></th></tr></thead><tbody>
+  zona.innerHTML = `<table class="fd-tabel ins-cereri"><thead><tr><th>Data</th><th>Cabinet</th><th>Email</th><th>Emailul de confirmare</th><th>Starea linkului</th><th>Acțiune</th></tr></thead><tbody>
     ${v.map((x) => `<tr data-cerere="${x.id}"${x.expirata ? ' class="ins-expirata"' : ""}><td class="ins-nerupt">${dataRo(x.creat_la, "cu_ora")}</td><td>${esc(x.nume_cabinet)}</td><td class="ins-nerupt">${esc(x.email)}</td>
       <td>${trimis(x)}</td><td>${x.expirata ? `<b>expirată</b> pe ${dataRo(x.expira_la, "cu_ora")} · se șterge pe ${dataRo(x.se_sterge_la)}` : `valabilă până la ${dataRo(x.expira_la, "cu_ora")}`}</td>
       <td class="ins-nerupt"><button class="buton-secundar" data-retrimite="${x.id}" data-actiune="POST /admin/inregistrari-neconfirmate/{cerere_id}/retrimite">Retrimite confirmarea</button></td></tr>`).join("")}

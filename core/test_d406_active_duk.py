@@ -26,6 +26,20 @@ def _db_ok():
         return False
 
 
+# [lotul 10, C69] Antetul D406 nu mai inventează câmpurile lipsă ale firmei (localitate, telefon, IBAN, declarant — schema ANAF
+# S.AD.5, S.CTH.2, S.BA.1, S.PN.2/5): un profil incomplet e refuzat de `d406.antet_firma`. Profilul firmei de test tenant_013 nu le
+# are pe toate, iar proba asta măsoară <Assets>, nu antetul — deci câmpurile LIPSĂ se completează AICI, în test, cu valori sintetice
+# (IBAN cu cifra de control mod-97 corectă); cele pe care firma le are rămân ale ei.
+_ANTET_SINTETIC = {"oras": "Bucuresti", "telefon": "0212223344", "iban": "RO59BTRLRONCRT0C69TEST01",
+                   "declarant_nume": "POPESCU", "declarant_prenume": "ION"}
+
+
+def _cu_antet(prof):
+    prof = dict(prof or {})
+    prof.update({k: v for k, v in _ANTET_SINTETIC.items() if not str(prof.get(k) or "").strip()})
+    return prof
+
+
 def _mf(met):
     # cont 2131 = echipamente (lit.b) -> lin/deg/accel permise; superaccel cere PIF in 2026 (alin.8^1)
     pif = date(2026, 12, 20) if met == "superaccelerata" else date(2025, 12, 20)
@@ -42,7 +56,7 @@ def test_d406_anual_active_toate_metodele_duk_valid():
         with conn.cursor() as cur:
             cur.execute("SET search_path TO %s, public" % _SCHEMA)
             prof = d406.pull(conn, _SCHEMA, 2026, 12)
-            prof = prof[0] if isinstance(prof, tuple) else prof
+            prof = _cu_antet(prof[0] if isinstance(prof, tuple) else prof)
             cur.execute("""SELECT id,cod,denumire,cont_imobilizare,cont_amortizare,valoare,
                                   rezidual,dnf_luni,data_pif,metoda,activ
                            FROM mijloace_fixe WHERE data_pif IS NOT NULL ORDER BY id""")
@@ -74,7 +88,7 @@ def test_apreciere_nenula_e_DUK_valida():
         with conn.cursor() as cur:
             cur.execute("SET search_path TO %s, public" % _SCHEMA)
             prof = d406.pull(conn, _SCHEMA, 2026, 12)
-            prof = prof[0] if isinstance(prof, tuple) else prof
+            prof = _cu_antet(prof[0] if isinstance(prof, tuple) else prof)
         conn.rollback()
 
     reevaluat = dict(_mf("liniara"), cod="MF-REEV-R59", valoare=3500,

@@ -232,3 +232,16 @@ def mesaj_esec(raport):
             "Z pot intra amândouă în evidență, iar asta nu se vede la citire. %s: care din "
             "documentele duplicate e cel bun se decide de om. %s"
             % (_cate(len(raport["esecuri"]), "firmă", "firme"), PROMISIUNE_TEXT, " | ".join(linii)))
+
+
+def mesaj_plata_diferita(total, numerar, card):
+    """[lotul 10, comanda 10.2 pct.8b] „La refuzul «numerar + card ≠ total» mesajul nu dă cifrele (total 231,00, încasat 200,00,
+    diferență 31,00).” Refuzul raportului Z scris de mână, cu cifrele lui: totalul pe cote, încasatul (numerar + card) și diferența, în
+    formatul românesc (DS cap.7, `pdf_util.bani`). Pe o notă Z, 5311 + 5125 = 707 dă totalul încasat, iar TVA-ul se scoate din totalul
+    pe cote — dacă cele două diferă, nota n-ar spune aceeași vânzare."""
+    from decimal import Decimal as D
+    from core import pdf_util as _pu
+    total, numerar, card = D(str(total)), D(str(numerar or 0)), D(str(card or 0))
+    incasat = numerar + card
+    return ("Numerarul și cardul trebuie să dea totalul pe cote: total %s lei, încasat %s lei (numerar %s + card %s), diferență %s lei."
+            % (_pu.bani(total), _pu.bani(incasat), _pu.bani(numerar), _pu.bani(card), _pu.bani(abs(total - incasat))))

@@ -71,15 +71,20 @@ def platitor_tva_2(cur, schema):
 # (utilizator, dată, vechi → nou), ca la bifa C&D.” Câmpurile care schimbă ce declarații de TVA datorează firma și cum.
 # Orice scriere a lor după crearea firmei trece prin `jurnalizeaza_regim_tva`, în ACEEAȘI tranzacție (gardat de
 # `core/test_jurnal_regim_tva.py`); precompletarea din ANAF de la creare e valoarea inițială, nu o schimbare.
-CAMPURI_REGIM_TVA = ("platitor_tva", "tip_decont", "inreg_art317")
+# [lotul 10, deficiența 428] + `tva_la_incasare` (indicatorul „aplică sistemul TVA la încasare azi”, sincronizat din perioade de
+# `regim_tva_incasare.sincronizeaza`) — o scriere a lui e o schimbare a regimului de TVA, deci intră sub același gard.
+CAMPURI_REGIM_TVA = ("platitor_tva", "tip_decont", "inreg_art317", "tva_la_incasare")
+#: [428] câmpurile de jurnal ale regimului care NU sunt coloane ale `firma_profil`: perioadele sistemului TVA la încasare (tabela
+#: `tva_incasare_perioade`), jurnalizate ca text („de la 01.03.2026 până la 31.12.2026”), prin aceeași funcție
+CAMPURI_REGIM_TVA_JURNAL = CAMPURI_REGIM_TVA + ("tva_incasare_perioade",)
 
 
 def regim_tva_pentru_schimbare(cur):
     """Valorile curente ale câmpurilor de regim TVA, cu rândul BLOCAT (FOR UPDATE: două salvări simultane nu scriu același
     „vechi”); None dacă firma n-are încă profil."""
-    cur.execute("SELECT platitor_tva, tip_decont, inreg_art317 FROM firma_profil WHERE id = 1 FOR UPDATE")
+    cur.execute("SELECT platitor_tva, tip_decont, inreg_art317, tva_la_incasare FROM firma_profil WHERE id = 1 FOR UPDATE")
     r = cur.fetchone()
-    return None if r is None else dict(zip(CAMPURI_REGIM_TVA, r))
+    return None if r is None else dict(zip(CAMPURI_REGIM_TVA, list(r.values()) if isinstance(r, dict) else r))
 
 
 def jurnalizeaza_regim_tva(cur, vechi, nou, user_id):
@@ -88,7 +93,7 @@ def jurnalizeaza_regim_tva(cur, vechi, nou, user_id):
     if user_id is None:
         raise ValueError("schimbarea regimului de TVA se jurnalizează cu utilizatorul care o face — lipsește")
     scrise = 0
-    for camp in CAMPURI_REGIM_TVA:
+    for camp in CAMPURI_REGIM_TVA_JURNAL:
         if camp not in nou:
             continue
         v, n = (vechi or {}).get(camp), nou[camp]

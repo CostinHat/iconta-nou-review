@@ -43,6 +43,7 @@ from core.common import cate as _cate   # [362] numeralul acordat („120 de lun
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
+from core import chei_unice as _chei   # [lotul 10, C73] codul de inventar dublat -> refuz numit, nu 500
 
 
 def _intreg(v):
@@ -409,9 +410,85 @@ def _motiv_necalculabil(r, dur):
     return ""
 
 
-def importa(conn, randuri):
-    """DELETE + INSERT per firma. Intoarce {importati, respinse}: rândurile bune se scriu, cele respinse se întorc numite
-    (C24). Ridica ValueError numai daca NICIUN rand nu poate intra (vezi verifica_randuri)."""
+def _luna_an(iso):
+    """'2099-05-31' -> '05/2099' (luna notei, DS cap.4); None -> '—'."""
+    return "%s/%s" % (str(iso)[5:7], str(iso)[:4]) if iso else "—"
+
+
+def existent(conn):
+    """[lotul 10, deficiența 426 — clasa] Registrul de mijloace fixe deja salvat și ce se sprijină pe el: {randuri, total_valoare,
+    total_amortizare (preluată), note_amortizare: {numar, prima, ultima} (notele `sursa='amortizare'`, calculate pe registru),
+    istoric_fisa: [cod] (mijloacele cu reevaluări sau cu schimbări consemnate pe fișă — `reevaluari.mijloc_fix_id`,
+    `mijloace_fixe_jurnal.mijloc_id` țin de `id`-ul rândului, pe care DELETE + INSERT îl schimbă)}."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT count(*), COALESCE(sum(valoare),0), COALESCE(sum(amortizare_preluata),0) FROM mijloace_fixe")
+        n, tv, ta = cur.fetchone()
+        cur.execute("SELECT count(*), min(data), max(data) FROM inregistrari WHERE sursa = 'amortizare'")
+        na, prima, ultima = cur.fetchone()
+        cur.execute("SELECT m.cod FROM mijloace_fixe m WHERE EXISTS (SELECT 1 FROM reevaluari r WHERE r.mijloc_fix_id = m.id) "
+                    "OR EXISTS (SELECT 1 FROM mijloace_fixe_jurnal j WHERE j.mijloc_id = m.id) ORDER BY m.cod")
+        istoric = [r[0] for r in cur.fetchall()]
+    return {"randuri": int(n), "total_valoare": float(tv), "total_amortizare": float(ta),
+            "note_amortizare": {"numar": int(na or 0), "prima": prima.isoformat() if prima else None,
+                                "ultima": ultima.isoformat() if ultima else None},
+            "istoric_fisa": istoric}
+
+
+def totaluri(randuri):
+    """[426] Ce aduce fișierul, pe rândurile care intră: {randuri, total_valoare, total_amortizare} (Decimal, fără zgomot float)."""
+    from decimal import Decimal as _D
+    rs = randuri or []
+    return {"randuri": len(rs), "total_valoare": float(sum((_D(str(r.get("valoare") or 0)) for r in rs), _D(0))),
+            "total_amortizare": float(sum((_D(str(r.get("amortizat_preluat") or 0)) for r in rs), _D(0)))}
+
+
+def text_inlocuire(vechi, nou):
+    """[426] „spune că există deja […], arată totalurile vechi și noi […]; dacă există [date dependente], spune” — textul comun
+    avertismentului din previzualizare și refuzului de la salvare: valoarea de intrare și amortizarea preluată, vechi și noi, și notele
+    de amortizare deja înregistrate pe registrul vechi."""
+    def _parte(x):
+        return "%s, valoare de intrare %s, amortizare preluată %s" % (
+            _cate(x["randuri"], "mijloc fix", "mijloace fixe"), _bani(x["total_valoare"], "lei"), _bani(x["total_amortizare"], "lei"))
+    t = ("Firma are deja un registru de mijloace fixe: %s. Fișierul nou: %s. Salvarea înlocuiește registrul vechi."
+         % (_parte(vechi), _parte(nou)))
+    na = vechi.get("note_amortizare") or {}
+    if na.get("numar"):
+        t += (" În contabilitate %s de amortizare (%s), calculate pe registrul vechi: rămân cum sunt, iar amortizarea lunilor "
+              "încă negenerate se calculează pe registrul nou." % (
+                  "este o notă" if na["numar"] == 1 else "sunt %s" % _cate(na["numar"], "notă", "note"),
+                  ("pe %s" % _luna_an(na["prima"])) if _luna_an(na["prima"]) == _luna_an(na["ultima"])
+                  else ("din %s până în %s" % (_luna_an(na["prima"]), _luna_an(na["ultima"])))))
+    return t
+
+
+def refuz_inlocuire(vechi):
+    """[426] Textul refuzului când registrul existent are reevaluări sau schimbări consemnate pe fișă (`existent`: `istoric_fisa`), altfel
+    None. Ele țin de `id`-ul mijlocului fix, pe care DELETE + INSERT îl schimbă: jurnalul fișei ar opri ștergerea (cheie străină), iar
+    reevaluarea ar rămâne pe un mijloc fix care nu mai există."""
+    cod = vechi.get("istoric_fisa") or []
+    if not cod:
+        return None
+    ce = "reevaluări sau schimbări consemnate pe fișă"   # verbul acordat cu numeralul, în formele date lui `cate`
+    return ("Registrul existent nu se poate înlocui prin import: %s (%s), care țin de mijlocul fix din registru și s-ar pierde odată cu "
+            "el. Corectează mijloacele fixe pe fișa lor (Mijloace fixe), nu prin import; registrul existent a rămas neatins." % (
+                _cate(len(cod), "mijloc fix are " + ce, "mijloace fixe au " + ce),
+                ", ".join(cod[:6]) + (" și încă %d" % (len(cod) - 6) if len(cod) > 6 else "")))
+
+
+def _refuz_cod_scris_intre_timp(cur, e):
+    """[lotul 10, C73] Refuzul numit al codului de inventar scris între timp de altă salvare a registrului."""
+    return _chei.CheieDublata("În timp ce salvai, altă salvare a scris deja mijlocul fix cu codul de inventar %s. Din registrul tău nu "
+                              "s-a scris nimic: reîncarcă pagina, verifică registrul mijloacelor fixe și salvează din nou dacă e cazul."
+                              % _chei.valoarea(e), valoare=_chei.valoarea(e))
+
+
+def importa(conn, randuri, inlocuieste=False):
+    """DELETE + INSERT per firma. Intoarce {importati, respinse, inlocuit}: rândurile bune se scriu, cele respinse se întorc numite
+    (C24). Ridica ValueError numai daca NICIUN rand nu poate intra (vezi verifica_randuri).
+    [lotul 10, deficiența 426 — clasa] un registru existent se înlocuiește NUMAI cu `inlocuieste=True` (confirmarea de pe ecran); fără
+    ea -> `migrare_api.InlocuireNeconfirmata` (409), cu valorile vechi și noi și notele de amortizare deja înregistrate. Un registru
+    cu reevaluări sau schimbări consemnate pe fișă nu se înlocuiește prin import (ValueError numit): ele țin de rândul mijlocului fix,
+    pe care înlocuirea îl șterge."""
     # [probare invalid, 03.09.2026 — aceeasi clasa ca importul de istoric] UN IMPORT GOL
     # STERGEA TOT, IN TACERE. Lista vida trecea de verificare (n-are ce respinge), ajungea la
     # `DELETE FROM mijloace_fixe` de mai jos, si raspundea ca un import reusit cu zero randuri. Un fisier gol,
@@ -431,22 +508,31 @@ def importa(conn, randuri):
         raise ValueError("Niciun rând nu poate intra: %s. Mijloacele fixe intră în amortizare și în D406 SAF-T; registrul "
                          "existent a rămas neatins."
                          % "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6]))
+    vechi, nou = existent(conn), totaluri(bune)
+    if refuz_inlocuire(vechi):
+        raise ValueError(refuz_inlocuire(vechi))
+    from core import migrare_api as _mig
+    _mig.cere_confirmarea_inlocuirii(vechi["randuri"] > 0, inlocuieste, text_inlocuire(vechi, nou), vechi, nou,
+                                     vechi["note_amortizare"])   # [426] poarta comună a clasei
     with conn.cursor() as cur:
         cur.execute("DELETE FROM mijloace_fixe")
         n = 0
-        for r in bune:
-            cur.execute("""
-                INSERT INTO mijloace_fixe
-                  (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual,
-                   dnf_luni, data_pif, metoda, activ, destinatie_cd, amortizare_preluata, data_preluare)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true,%s,%s,%s)
-            """, (r["cod"], r["denumire"], r.get("cont_imobilizare") or "",   # fara default 2131; gol = neclasificat -> lit.c la calc_asset
-                  r.get("cont_amortizare") or cont_amortizare_asteptat(r.get("cont_imobilizare")) or "",
-                  r.get("valoare", 0), r.get("rezidual", 0), r.get("dnf_luni", 0),
-                  r.get("data_pif"), r.get("metoda") or "liniara", bool(r.get("destinatie_cd")),
-                  r.get("amortizat_preluat"), r.get("data_preluare")))
-            n += 1
-    return {"importati": n, "respinse": er}
+        # [lotul 10, C73] `verifica_randuri` a respins deja codul dublat din rânduri; o violare a lui `mijloace_fixe_cod_uniq` aici
+        # vine de la o altă salvare a registrului, terminată în timpul acesteia -> refuz numit, nu 500
+        with _chei.refuza_dublura(cur, ("mijloace_fixe_cod_uniq",), _refuz_cod_scris_intre_timp):
+            for r in bune:
+                cur.execute("""
+                    INSERT INTO mijloace_fixe
+                      (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual,
+                       dnf_luni, data_pif, metoda, activ, destinatie_cd, amortizare_preluata, data_preluare)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true,%s,%s,%s)
+                """, (r["cod"], r["denumire"], r.get("cont_imobilizare") or "",   # fara default 2131; gol = neclasificat -> lit.c la calc_asset
+                      r.get("cont_amortizare") or cont_amortizare_asteptat(r.get("cont_imobilizare")) or "",
+                      r.get("valoare", 0), r.get("rezidual", 0), r.get("dnf_luni", 0),
+                      r.get("data_pif"), r.get("metoda") or "liniara", bool(r.get("destinatie_cd")),
+                      r.get("amortizat_preluat"), r.get("data_preluare")))
+                n += 1
+    return {"importati": n, "respinse": er, "inlocuit": vechi if vechi["randuri"] else None}
 
 
 def reconciliere_balanta(randuri, solduri):

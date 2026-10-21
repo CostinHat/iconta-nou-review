@@ -3656,3 +3656,39 @@ ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS tert_act_identit
 -- core/migrare_avans_nir_ajustare_nota.py.
 ALTER TABLE TENANT_PLACEHOLDER.casa_operatiuni ADD COLUMN IF NOT EXISTS nir_id integer REFERENCES TENANT_PLACEHOLDER.nir(id);
 ALTER TABLE TENANT_PLACEHOLDER.ajustari_fiscale ADD COLUMN IF NOT EXISTS inregistrare_id integer REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE;
+
+-- [deficiența 425, lotul 10, 20.10.2026] balanța de deschidere cu soldurile inițiale ale anului și rulajele lui (NULL = numai solduri
+-- finale). Firmele existente: core/migrare_balanta_rulaje_an.py.
+ALTER TABLE TENANT_PLACEHOLDER.solduri_initiale ADD COLUMN IF NOT EXISTS si_an_debit numeric(15,2);
+ALTER TABLE TENANT_PLACEHOLDER.solduri_initiale ADD COLUMN IF NOT EXISTS si_an_credit numeric(15,2);
+ALTER TABLE TENANT_PLACEHOLDER.solduri_initiale ADD COLUMN IF NOT EXISTS rulaj_an_debit numeric(15,2);
+ALTER TABLE TENANT_PLACEHOLDER.solduri_initiale ADD COLUMN IF NOT EXISTS rulaj_an_credit numeric(15,2);
+
+-- [deficiența 428, lotul 10, 20.10.2026] perioadele sistemului TVA la încasare (CF art.282 alin.(3), (3^1), (5), (7)).
+-- Firmele existente: core/migrare_tva_incasare_perioade.py.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.tva_incasare_perioade (id serial PRIMARY KEY, de_la date NOT NULL, pana_la date, sursa text NOT NULL DEFAULT 'manual' CHECK (sursa IN ('manual', 'anaf')), verificat_anaf_la timestamptz, stare_anaf text, creat_la timestamptz NOT NULL DEFAULT now(), CHECK (pana_la IS NULL OR pana_la >= de_la));
+
+-- [deficiența 429, lotul 10, 20.10.2026] reevaluarea lunară a soldurilor în valută (OMFP 1802/2014 pct.325), un rând pe element.
+-- Firmele existente: core/migrare_reevaluari_valuta.py.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.reevaluari_valuta (id serial PRIMARY KEY, data date NOT NULL, inregistrare_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE, factura_id integer REFERENCES TENANT_PLACEHOLDER.facturi(id) ON DELETE CASCADE, cont text NOT NULL, moneda text NOT NULL, sold_valuta numeric(15,2) NOT NULL, curs_vechi numeric(12,4) NOT NULL, curs_nou numeric(12,4) NOT NULL, diferenta numeric(15,2) NOT NULL, creat_la timestamptz NOT NULL DEFAULT now());
+CREATE INDEX IF NOT EXISTS reevaluari_valuta_factura ON TENANT_PLACEHOLDER.reevaluari_valuta (factura_id, data);
+ALTER TABLE TENANT_PLACEHOLDER.reevaluari_valuta ADD COLUMN IF NOT EXISTS sursa text NOT NULL DEFAULT 'propunere' CHECK (sursa IN ('propunere', 'manual'));
+
+-- [deficiența 428, lotul 10, deciziile Costin 20.10.2026] compensările de creanțe și datorii (o factură emisă stinsă cu o factură primită,
+-- același partener; mută TVA-ul la încasare prin același punct ca banca și casa) și beneficiarul afiliat (CF art.282 alin.(6) lit.d).
+-- Firmele existente: core/migrare_compensari_afiliat.py.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.compensari (id serial PRIMARY KEY, data date NOT NULL, factura_emisa_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.facturi(id), factura_primita_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.facturi(id), suma numeric(15,2) NOT NULL CHECK (suma > 0), inregistrare_id integer REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE, document_ref text, creat_la timestamptz NOT NULL DEFAULT now());
+CREATE INDEX IF NOT EXISTS compensari_emisa ON TENANT_PLACEHOLDER.compensari (factura_emisa_id);
+CREATE INDEX IF NOT EXISTS compensari_primita ON TENANT_PLACEHOLDER.compensari (factura_primita_id);
+ALTER TABLE TENANT_PLACEHOLDER.clienti ADD COLUMN IF NOT EXISTS afiliat boolean NOT NULL DEFAULT false;
+ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS beneficiar_afiliat boolean NOT NULL DEFAULT false;
+
+-- [C69, lotul 10, deciziile Costin 20.10.2026] câmpurile firmei cerute de bilanț (mare contribuabil, forma de proprietate) și de D406
+-- (fără cont bancar), până acum inventate. Firmele existente: core/migrare_profil_c69.py.
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS mare_contribuabil boolean;
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS forma_proprietate text;
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS fara_cont_bancar boolean NOT NULL DEFAULT false;
+
+-- [deficiența 434, lotul 10, comanda Costin 10.2 pct.4] „Numerotarea borderourilor e unică și continuă”: numărul borderoului de achiziție e
+-- unic în anul lui (aceeași formă ca verificarea din aplicație). Firmele existente: core/migrare_borderou_numar_unic.py.
+CREATE UNIQUE INDEX IF NOT EXISTS facturi_borderou_numar_an_uniq ON TENANT_PLACEHOLDER.facturi (upper(btrim(numar)), (EXTRACT(YEAR FROM data_emitere))) WHERE tip = 'borderou';

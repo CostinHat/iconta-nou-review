@@ -121,7 +121,74 @@ ABATERI = {
 #: Cheia mesajului e ori NUMELE constantei (FARA_DREPT_PREGATIRE), ori chiar literalul (404 pe obiect).
 _MOTIV_82 = ("Comanda Costin 8.2 (18.10.2026, verbatim în DECIZII „Comanda 8.2”) pct.4, regula importurilor de migrare: „orice rând citit e "
              "afișat sau semnalat cu motiv, nimic nu se înlocuiește pe tăcute, totul trece prin previzualizare înainte de salvare”.")
+_MOTIV_C69 = ("Deficiența C69 (lotul 10, deciziile Costin 20.10.2026, verbatim în DECIZII „Lotul 10, C69”): bilanțul fără mare contribuabil / "
+              "forma de proprietate / județ / administrator și e-Factura fără datele firmei se opresc — același 422, dar ca obiect "
+              "{mesaj, ecran, camp_ecran} (butonul spre Date firmă, cu câmpul lipsă în vedere); celelalte refuzuri rămân text.")
+_MOTIV_C73 = ("Deficiența C73 (lotul 10, găsită de e2e la 428, 21.10.2026): cheia naturală dublată (CUI-ul clientului, codul de inventar, "
+              "exemplarul statului de plată) cădea cu 500 din `UniqueViolation`; acum refuzul numit `chei_unice.CheieDublata`, ca obiect "
+              "{mesaj, cod, valoare, existent[, erori_campuri]} — 409 cu lucrul existent (clientul, exemplarul), 422 pe câmpul `cod` la mijlocul fix.")
+_MOTIV_C73_U2 = ("Deficiența C73, clasa închisă peste toată schema firmei (lotul 10, U2, 21.10.2026; gardul `test_lot10_c73_chei_unice`): "
+                 "codul de bare dublat (și la cursă) -> 422 pe câmpul `barcode`, cu articolul care îl are (înainte: 400 cu textul verificării "
+                 "prealabile, iar cursa dădea 500); numărul dat de aplicație (registratura, registrele art.321, registrul-inventar) se reia "
+                 "la cursă, iar abia după reluări pierdute la rând -> 409 numit; a doua trimitere e-Factura simultană -> 409 „deja în curs”, "
+                 "înainte de încărcarea la ANAF.")
+_MOTIV_C73_U3 = ("Deficiența C73 pe schema `public` (lotul 10, U3, 21.10.2026; gardul `test_lot10_c73_chei_unice::test_gardul_cheilor_unice_"
+                 "public`): CUI-ul altui cabinet pe Setări cabinet (`accounting_firms_cui_key`, unic pe toată platforma) cădea cu 500 din "
+                 "`UniqueViolation`; acum 422 pe câmpul `cui`, cu `CheieDublata.detaliu()` — fără să numească cabinetul care îl are.")
+_MOTIV_102_8B = ("Comanda Costin 10.2 pct.8b (lotul 10, verbatim în DECIZII „Comanda 10.2”): „La refuzul «numerar + card ≠ total» mesajul nu "
+                  "dă cifrele (total 231,00, încasat 200,00, diferență 31,00).” Același 400, cu cifrele (`raport_z.mesaj_plata_diferita`); "
+                  "comparația pe lei în Decimal, nu în float cu toleranța 0,01.")
 PERECHI_ADAUGATE = {
+    ("horeca_raport_z", "_rz.mesaj_plata_diferita(total, rz.numerar, rz.card)"): _MOTIV_102_8B,
+    ("cv_barcode_set", "e.detaliu()"): _MOTIV_C73_U2,
+    ("registratura_creeaza", "e.detaliu()"): _MOTIV_C73_U2,
+    ("registre_art321_adauga", "e.detaliu()"): _MOTIV_C73_U2,
+    ("registru_inventar_adauga", "e.detaliu()"): _MOTIV_C73_U2,
+    ("factura_trimite_spv", "r['mesaj']"): _MOTIV_C73_U2,
+    ("client_creeaza", "e.detaliu()"): _MOTIV_C73,
+    ("client_actualizeaza", "e.detaliu()"): _MOTIV_C73,
+    ("achizitie_necorporala", "e.detaliu()"): _MOTIV_C73,
+    ("nota_inventariere", "e.detaliu()"): _MOTIV_C73,
+    ("tenant_stat_emite", "e.detaliu()"): _MOTIV_C73,
+    ("eu_cabinet_set", "e.detaliu()"): _MOTIV_C73_U3,
+    ("s1005_xml", "e.detaliu() if isinstance(e, RefuzGenerare) else str(e)"): _MOTIV_C69,
+    ("s1005_valideaza", "e.detaliu() if isinstance(e, RefuzGenerare) else str(e)"): _MOTIV_C69,
+    ("s1003_xml", "e.detaliu() if isinstance(e, RefuzGenerare) else str(e)"): _MOTIV_C69,
+    ("s1003_valideaza", "e.detaliu() if isinstance(e, RefuzGenerare) else str(e)"): _MOTIV_C69,
+    ("factura_trimite_spv", "e.detaliu() if getattr(e, 'ecran', None) else str(e)"): _MOTIV_C69,
+    ("declaratie_genereaza", "e.detaliu() if isinstance(e, RefuzGenerare) else str(e)"): (
+        "Deficiența 431 (comanda Costin 10.1, 20.10.2026, verbatim în DECIZII „Comanda 10.1”): „mesajul de refuz trimite la ce lipsește” — "
+        "refuzul generatorului cu trimitere (`erori.RefuzGenerare`: nota de dividende în ciornă, Date firmă → Asociați) ajunge la ecran ca "
+        "obiect {mesaj, note, ecran, camp_ecran}; celelalte refuzuri rămân text (același 422)."),
+    ("declaratie_valideaza", "e.detaliu() if isinstance(e, RefuzGenerare) else str(e)"): (
+        "Deficiența 431 (comanda Costin 10.1, 20.10.2026): aceeași trimitere ca la `declaratie_genereaza` — pasul 2 al Declarațiilor "
+        "generează prin ruta de validare, deci refuzul D205 cu nota de deschis vine pe aici (422, obiect în loc de text)."),
+    ("reevaluare_valuta", "MESAJ_REEVALUARE_PE_FACTURI % ', '.join(_dublate)"): (
+        "Deficiența 429 (comanda Costin 10.1, 20.10.2026): formularul manual rămâne pentru cazuri speciale; pe un cont de terți ale cărui "
+        "facturi în valută le reevaluează propunerea din Închidere lună, aceeași diferență s-ar înregistra a doua oară — refuz numit (422) "
+        "cu trimiterea la propunere (OMFP 1802/2014 pct.325 alin.(1): o reevaluare pe lună a fiecărui element)."),
+    ("solduri_salveaza", "{'mesaj': MESAJ_METODA_STOC, 'erori_campuri': [{'camp': 'metoda_stoc', 'mesaj': MESAJ_METODA_STOC}]}"): (
+        "Deficiența 425 (comanda Costin 10.1, 20.10.2026, verbatim în DECIZII „Comanda 10.1”): „când balanța are sold pe 371, metoda de "
+        "stoc se cere la migrare, nu rămâne «nedeclarată»” — salvarea fără alegere se refuză numit, pe câmpul metodei (422)."),
+    ("solduri_salveaza", "str(e)"): (
+        "Deficiența 426 (comanda Costin 10.1, 20.10.2026): „al doilea import de balanță … o înlocuiește pe prima fără avertisment” — fără "
+        "confirmarea înlocuirii (`inlocuieste`), `BalantaExistenta` devine 409 cu totalurile vechi și noi (`solduri_api.text_inlocuire`)."),
+    ("parteneri_salveaza", "str(e)"): (
+        "Deficiența 426, clasa (comanda Costin 10.1, 20.10.2026): soldurile pe parteneri existente se înlocuiau tăcut (DELETE + INSERT) — "
+        "fără `inlocuieste`, `migrare_api.InlocuireNeconfirmata` devine 409 cu totalurile vechi și noi (`solduri_parteneri_api.text_inlocuire`)."),
+    ("mijloace_import_salveaza", "str(e)"): (
+        "Deficiența 426, clasa (comanda Costin 10.1, 20.10.2026): registrul mijloacelor fixe se înlocuia tăcut — fără `inlocuieste`, 409 cu "
+        "valoarea de intrare și amortizarea preluată, vechi și noi, și notele de amortizare înregistrate (`mijloace_fixe_import_api.text_inlocuire`)."),
+    ("istoric_import_salveaza", "str(e)"): (
+        "Deficiența 426, clasa (comanda Costin 10.1, 20.10.2026): istoricul declarațiilor preluat se înlocuia tăcut — fără `inlocuieste`, 409 "
+        "cu declarațiile și perioadele vechi și noi și depunerile prin iConta din anii lor (`istoric_declaratii_import_api.text_inlocuire`)."),
+    ("asociati_import_salveaza", "str(e)"): (
+        "Deficiența 426, clasa (comanda Costin 10.1, 20.10.2026): importul asociaților fără dată de cesiune (corectura) înlocuia tăcut "
+        "structura (DELETE + INSERT) — fără `inlocuieste`, 409 cu structura veche și nouă, cotele și notele de dividende care se împart "
+        "după ea (`asociati_import_api.text_inlocuire`)."),
+    ("salariati_import_salveaza", "str(e)"): (
+        "Deficiența 426, clasa (comanda Costin 10.1, 20.10.2026): fișele salariaților existenți (același CNP) se suprascriau tăcut (ON CONFLICT "
+        "DO UPDATE) — fără `inlocuieste`, 409 cu cine se actualizează și statele de plată deja emise (`salariati_import_api.text_inlocuire`)."),
     ("proforma_transforma", "{'ok': False, 'cod': facturi_api.COD_INTREABA_MARFA, 'mesaj': str(e)}"): (
         "C63 (decizia Costin 19.10.2026, DECIZII „Închiderea lotului 9” pct.2): „la transformarea în factură se pune aceeași întrebare ca "
         "la orice factură, «Pleacă marfa acum?»”. Factura născută din proformă / aviz cu articol de stoc cere răspunsul ca emiterea din "
@@ -195,6 +262,11 @@ PERECHI_ADAUGATE = {
         "rulajele balanței (D406_DIFERA_DE_BALANTA). Refuz 422 structurat, înaintea validatorului DUK. [§6 pct.7, R36] „compară "
         "validat cu validat; dacă există ciorne în lună, dau doar avertisment, nu blocaj” — cele două refuzuri au devenit unul "
         "(`_blocaj`, din `decizie_poarta`), ridicat numai fără ciorne în perioadă."),
+    ("coada_adauga", "_bl_note"): (
+        "Deficiența 436 (comanda Costin 10.2 pct.6, 21.10.2026, verbatim în DECIZII): „când declarația știe că are cifra greșită din note "
+        "nevalidate, depunerea se blochează până la validare, cu motivul lângă buton, la toate declarațiile.” Refuz 422 structurat "
+        "(NOTE_NEVALIDATE, notele numite, așteptarea de la 284), la declarațiile calculate din evidența validată "
+        "(`coada_api.DECLARATII_DIN_EVIDENTA`)."),
     ("factura_contabilizeaza", "_nl.detaliu_refuz(e)"): (
         "Decizia Costin 08.10.2026, pct.2: „la contarea facturii se propune legarea cu NIR-ul nelegat de la același furnizor "
         "(preselecție permisă — dedusă din date, vizibilă, modificabilă). Dacă contabilul nu leagă, confirmă explicit «altă "
@@ -358,6 +430,20 @@ PERECHI_MUTATE_IN_AJUTOR = {
 #: Perechi (cod, mesaj) SCOASE deliberat din funcție — refuzul nu mai are ce refuza acolo (operația lui a plecat în altă rută). Anti-vacuu:
 #: `test_SCOASELE_perechi_chiar_lipsesc`.
 PERECHI_SCOASE = {
+    ("horeca_raport_z", "'numerar + card trebuie să fie egal cu totalul pe cote'"): _MOTIV_102_8B + " Pereche înlocuită (PERECHI_ADAUGATE).",
+    ("cv_barcode_set", "rez['eroare']"): _MOTIV_C73_U2 + " Verificarea prealabilă (400 „codul de bare există deja la alt articol”) a ieșit: "
+                                         "dublura o refuză constrângerea, prin `chei_unice.refuza_dublura`, cu articolul numit (PERECHI_ADAUGATE).",
+    ("s1005_xml", "str(e)"): _MOTIV_C69 + " Pereche înlocuită de expresia cu `RefuzGenerare` (PERECHI_ADAUGATE).",
+    ("s1005_valideaza", "str(e)"): _MOTIV_C69 + " Pereche înlocuită de expresia cu `RefuzGenerare` (PERECHI_ADAUGATE).",
+    ("s1003_xml", "str(e)"): _MOTIV_C69 + " Pereche înlocuită de expresia cu `RefuzGenerare` (PERECHI_ADAUGATE).",
+    ("s1003_valideaza", "str(e)"): _MOTIV_C69 + " Pereche înlocuită de expresia cu `RefuzGenerare` (PERECHI_ADAUGATE).",
+    ("factura_trimite_spv", "str(e)"): _MOTIV_C69 + " Pereche înlocuită de `e.detaliu() if getattr(e, 'ecran', None) else str(e)`.",
+    ("declaratie_genereaza", "str(e)"): (
+        "Deficiența 431 (comanda Costin 10.1, 20.10.2026): „mesajul de refuz trimite la ce lipsește” — refuzul generatorului nu mai e "
+        "numai text: `e.detaliu() if isinstance(e, RefuzGenerare) else str(e)` (PERECHI_ADAUGATE), același cod 422."),
+    ("declaratie_valideaza", "str(e)"): (
+        "Deficiența 431 (comanda Costin 10.1, 20.10.2026): ca la `declaratie_genereaza` — refuzul D205 cu nota de deschis ajunge ca obiect; "
+        "pereche înlocuită de expresia cu `RefuzGenerare` (PERECHI_ADAUGATE), același cod 422."),
     ("rip_import_incarca", "'import eșuat: ' + str(rez['erori'][0].get('motiv', 'eroare la scriere'))"): (
         _MOTIV_82 + " Deficiența 372: previzualizarea nu mai scrie, deci nu mai poate eșua la scriere; refuzul scrierii e în "
         "`rip_import_salveaza` (`DateInvalide`, 422), după ce contabilul a văzut rândurile."),
@@ -388,9 +474,44 @@ def test_MUTARILE_in_ajutor_chiar_cheama_ajutorul():
         assert ajutor in chemate, "%s: mutarea declarată în %s nu e în cod" % (fn_nume, ajutor)
 
 
+_MOTIV_430D = (
+    "Lotul 10, deficiența 430d (comanda Costin 20.10.2026: pe nota de dividende „scrie «sursa: facturile»”) — clasa: notele scrise "
+    "din Operațiuni speciale își scriu sursa lor, `operatiuni` („operațiunile speciale”), prin `repo_contabilitate.nota_operatiune_ciorna`"
+    "; același INSERT (data, descriere, ciornă) și același document intern numerotat ca `nota_facturi_ciorna` / `nota_banca_ciorna` / "
+    "`nota_casa_ciorna` / `nota_salarii_ciorna`, plus documentul extern când operația îl are (hotărârea AGA, 430c).")
+
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
+    ("achizitie_agricultor", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("decontare_valuta", "nota_banca_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_tva_incasare", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("reevaluare_valuta", "nota_banca_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("export_extracomunitar", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("import_extracomunitar", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_asociati", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_avans", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_bacsis", "nota_casa_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_chirie", "nota_facturi_ciorna_2"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_contract_special", "nota_salarii_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_credit", "nota_banca_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_decont_deplasare", "nota_casa_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_inventariere", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_leasing", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_lichidare", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_obiect_inventar", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_ong", "nota_casa_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_perisabilitati", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_productie", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_provizion_ep", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_sgr", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_sponsorizare_ep", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("nota_subventie", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("reevaluare_imobilizare", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("vanzare_agricultor", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("vanzare_aur_investitii", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("vanzare_marja", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
+    ("vanzare_marja_turism", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
     ("solduri_incarca", "extrage_balanta"): (
         "extrage_balanta_detaliat",
         _MOTIV_82 + " Deficiențele 343–344: previzualizarea balanței poartă numărul rândului din fișier, coloanele recunoscute, rândurile "
@@ -564,6 +685,11 @@ _MOTIV_LOTUL_4 = ('Lotul 4 (comanda Costin 15.10.2026, verbatim în DECIZII „L
                   'contul nou (`_dupa_cont_nou`, `_anunta_cabinet_nou`) sunt ajutoare comune cu confirmarea (`confirma_inregistrarea`). '
                   'Trimiterea emailului: `observare.trimite_email_html_sau_semnaleaza` (C34).')
 APELURI_EXTRASE_IN_AJUTOARE = {
+    "nota_asociati": ((("core/uc_tenants.py", "_dividend_propus"),), (
+        "Lotul 10, deficiența 430 (comanda Costin 20.10.2026): nota de dividende se face din datele firmei — asociații și cotele la data "
+        "hotărârii, contul care are profitul și verificarea că dividendul nu-l depășește, împărțirea pe asociați, hotărârea ca document. "
+        "Calculul (`nota_dividend`, data, felul anual / interimar prin `bifa`) a plecat în `uc_tenants._dividend_propus`, ajutorul comun "
+        "cu propunerea afișată înainte de generare (`dividende_impartire`). Gardul: `core/test_lot10_dividende.py`.")),
     "proforma_transforma": ((("core/uc_tenants.py", "linii_din_proforma"), ("core/uc_tenants.py", "antet_din_proforma")), (
         "C63 (Code, 19.10.2026, DECIZII „Lotul 9: C57–C64”): liniile și antetul facturii născute din proformă / aviz se citesc în "
         "`uc_tenants.linii_din_proforma` / `antet_din_proforma` (cele 8 `.get` au plecat acolo, cu adresa, localitatea, județul, "
@@ -578,6 +704,8 @@ APELURI_EXTRASE_IN_AJUTOARE = {
 #: [17.10.2026, lotul 7] Apeluri făcute de MAI PUȚINE ori, deliberat: (funcție, apel) -> (câte mai puțin, motivul). Mai strâns decât
 #: APELURI_SCOASE (apelul rămâne, numai numărul scade cu exact cât e declarat). Anti-vacuu: `test_REDUCERILE_declarate_chiar_sunt_in_cod`.
 APELURI_REDUSE = {
+    ("cv_barcode_set", "get"): (1, _MOTIV_C73_U2 + " `rez.get(\"eroare\")` a ieșit cu verificarea prealabilă: `set_barcode` nu mai "
+                                "întoarce refuzul ca valoare, ridică `CheieDublata`; rămâne `corp.get(\"barcode\")`."),
     ("rip_import_incarca", "str"): (1, _MOTIV_82 + " Deficiența 372: mesajul „import eșuat: …” (din eșecul scrierii) a ieșit odată cu "
                                     "scrierea; rămâne `str(e)` pe fișierul necitit."),
     ("rip_import_incarca", "HTTPException"): (1, _MOTIV_82 + " Deficiența 372: refuzul 422 la eșecul scrierii a ieșit din previzualizare "
@@ -590,6 +718,8 @@ APELURI_REDUSE = {
 
 #: [15.10.2026, lotul 4] Apeluri SCOASE deliberat, cu motivul. Anti-vacuu: `test_SCOASELE_declarate_chiar_lipsesc`.
 APELURI_SCOASE = {
+    ("horeca_raport_z", "abs"): (_MOTIV_102_8B + " `abs(float(total) - …) > 0.01` a ieșit: egalitatea se verifică exact, în Decimal "
+                                 "(`raport_z.mesaj_plata_diferita` primește sumele)."),
     ("solduri_incarca", "round"): (_MOTIV_82 + " Totalurile previzualizării se adună acum în `Decimal` (nu `round()` pe float), "
                                    "aceeași regulă ca restul sumelor de bani."),
     ("mijloace_import_incarca", "round"): (_MOTIV_82 + " Totalul valorii de intrare se adună în `Decimal`, nu prin `round()` pe float; "
@@ -1022,6 +1152,15 @@ FRAGMENTE_RESCRISE = {
     "Nu pot ": ("Nu se poate ", "Comanda Costin 10.10.2026 pct.5 („Vocea «nu pot …» … se rescrie la persoana a treia, pe toată clasa”): același refuz, același cod."),
     "n-am putut ": ("nu s-a putut ", "Comanda Costin 10.10.2026 pct.5 („Vocea «nu pot …» … se rescrie la persoana a treia, pe toată clasa”): același refuz, același cod."),
     "Aștept ": ("Se așteaptă ", "Comanda Costin 10.10.2026 pct.5 („Vocea «nu pot …» … se rescrie la persoana a treia, pe toată clasa”): același refuz, același cod."),
+    # [lotul 10, deficiența 402, clasa 410 — comanda Costin 10.2 pct.7b: „refuzurile ... spun doar «articolul» / «cantitatea»”] mesajul de
+    # lângă câmp e o frază întreagă (gardul: `core/test_lot10b_402_mesaje_camp.py`); același refuz, același cod
+    "Constant(value='an'), Constant(value='cerut, nu poate lipsi')": ("Constant(value='an'), Constant(value='Scrie anul rândului.')",
+        "Deficiența 402, clasa 410 (comanda Costin 10.2 pct.7b): mesajul de câmp e o frază întreagă; același 400."),
+    "Constant(value='exercitiu'), Constant(value='cerut, nu poate lipsi')": (
+        "Constant(value='exercitiu'), Constant(value='Scrie exercițiul financiar (anul).')",
+        "Deficiența 402, clasa 410 (comanda Costin 10.2 pct.7b): mesajul de câmp e o frază întreagă; același 400."),
+    "Constant(value='cerut de normă, nu poate lipsi')": ("Constant(value='Completează câmpul cu o valoare validă: registrul o cere.')",
+        "Deficiența 402, clasa 410 (comanda Costin 10.2 pct.7b): mesajul de câmp e o frază întreagă; același 400."),
 }
 
 
@@ -1235,8 +1374,13 @@ def test_BIFA_INLOCUIRI_chiar_cheama_bifa():
     src = io.open(os.path.join(RAD, "core", "uc_tenants.py"), encoding="utf-8").read()
     arb = ast.parse(src)
     fn = {n.name: n for n in arb.body if isinstance(n, ast.FunctionDef)}
+
+    def noduri(n):
+        # [lotul 10, 430] și ajutoarele din `uc_tenants` în care corpul a fost EXTRAS declarat (creditul de mai sus le numără la fel)
+        ajut = [a for c, a in APELURI_EXTRASE_IN_AJUTOARE.get(n, ((), ""))[0] if c == "core/uc_tenants.py" and a in fn]
+        return [fn[n]] + [fn[a] for a in ajut]
     lipsa = [n for n in BIFA_INLOCUIRI if n not in fn or not any(
-        isinstance(x, ast.Call) and getattr(x.func, "attr", None) == "bifa" for x in ast.walk(fn[n]))]
+        isinstance(x, ast.Call) and getattr(x.func, "attr", None) == "bifa" for nod in noduri(n) for x in ast.walk(nod))]
     assert lipsa == [], lipsa
 
 

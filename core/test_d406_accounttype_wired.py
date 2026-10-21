@@ -30,7 +30,7 @@ def conn():
             cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)
             cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), SCH))
             cur.execute("SET search_path TO \"%s\", public" % SCH)
-            cur.execute("INSERT INTO firma_profil (id,nume,cui,platitor_tva,tva_la_incasare,tip_decont) VALUES (1,%s,%s,true,false,'L')",
+            cur.execute("INSERT INTO firma_profil (id,nume,cui,platitor_tva,tva_la_incasare,tip_decont,oras,telefon,iban,declarant_nume,declarant_prenume) VALUES (1,%s,%s,true,false,'L','Bucuresti','0212223344','RO59BTRLRONCRT0C69TEST01','POPESCU','ION')",
                         ("ZTEST SRL", "14399840"))
             cur.execute("UPDATE plan_conturi SET tip=%s WHERE simbol=%s", ("Neclasificat", "4111"))
         yield c

@@ -185,7 +185,10 @@ def _profil(firma, forma=True, platitor=True, caen="4711", amef=False):
          "metoda_stoc": "cantitativ_valoric", "serie_chitanta": "E2ECH",
          "activitate_exceptata_amef": "1" if amef else "0", "activitate_amef": None}
     if forma:
-        p.update({"forma_juridica": "SRL", "capital_subscris": "200", "capital_varsat": None})
+        # [lotul 10, C69] bilanțul cere din Date firmă „Mare contribuabil” (bifaMC) și „Forma de proprietate” (codPP, nomenclatorul ANAF:
+        # „35” = „Societăți cu răspundere limitată”, `bilant.FORME_PROPRIETATE`) — firma de probă e un SRL mic, nu mare contribuabil
+        p.update({"forma_juridica": "SRL", "capital_subscris": "200", "capital_varsat": None,
+                  "mare_contribuabil": False, "forma_proprietate": "35"})
     return p
 
 
@@ -225,13 +228,16 @@ def articol_in_stoc(e, firma, cantitate=10, pret=12.5):
     return r["articol_id"]
 
 
-def emite_api(e, firma, linii=None, pleaca_marfa=None, scadenta=True):
-    """O factură emisă pe ruta formularului (`POST facturi/emite`), cu payload-ul pe care îl trimite ecranul."""
+def emite_api(e, firma, linii=None, pleaca_marfa=None, scadenta=True, data_emitere=None):
+    """O factură emisă pe ruta formularului (`POST facturi/emite`), cu payload-ul pe care îl trimite ecranul. `data_emitere` (o dată;
+    implicit azi): data scrisă de contabil în formular — [lotul 10, 383] o factură pentru o declarație se datează în perioada încheiată
+    pe care se generează declarația (`conftest.perioada_incheiata`)."""
+    zi = data_emitere or AZI
     corp = {"linii": linii or [{"descriere": PRODUS, "cantitate": 2, "um": "ora", "pret_unitar": 150.0, "cota_tva": 21,
                                 "cota_propusa": 21, "articol_id": None}],
             "tert_nume": CLIENT["#em-nume"], "tert_cui": CLIENT["#em-cui"], "tert_adresa": CLIENT["#em-adresa"], "moneda": "RON",
             "tert_tara": "RO", "tip_operatiune": "normal", "bon_fiscal_nr": None, "bon_fiscal_data": None,
-            "data_emitere": AZI.isoformat(), "data_scadenta": (AZI + _dt.timedelta(days=30)).isoformat() if scadenta else None,
+            "data_emitere": zi.isoformat(), "data_scadenta": (zi + _dt.timedelta(days=30)).isoformat() if scadenta else None,
             "tip": "factura"}
     if pleaca_marfa is not None:
         corp["pleaca_marfa"] = pleaca_marfa
@@ -897,18 +903,23 @@ def test_def_217_coada_nu_se_contrazice_despre_validarea_in_doi(browser, request
 def test_def_200_prezentarea_fara_goluri_intre_grupe(patron):
     """200. Prezentarea aplicației: coloane inegale, goluri mari.
     Pașii: ecran de 1700 × 1000 -> „?” din bara de sus -> „Ce cuprinde aplicația”: sub fiecare grupă urmează, la cel mult 30 px,
-    grupa de dedesubt (sau capătul secțiunii) — fără goluri mari sub grupele scurte, iar coloanele se termină la cel mult 60 px
-    una de alta."""
+    grupa de dedesubt din aceeași coloană — fără goluri mari sub grupele scurte, iar coloanele se termină la cel mult 60 px una de
+    alta (golul de sub ultima grupă a unei coloane E diferența dintre coloane: se măsoară o dată, cu pragul ei).
+    [lotul 10, 21.10.2026] Forma de dinainte cerea ≤30 px și pentru capătul coloanei, adică două praguri (30 și 60) pentru aceeași
+    mărime; cu cele 6 funcționalități noi (F262–F267) diferența dintre coloane a urcat de la ≤30 la 36 px fără nicio schimbare de
+    așezare — echilibrarea coloanelor nu poate fi mai fină decât un rând nerupt (~50 px, două linii cu „?”). Măsurat în Chromium
+    pe grupele reale: 952 px -> 58, 1000 px -> 36, 1100 px -> 19 (diferența oscilează cu conținutul, nu cu defectul 200, care
+    lăsa goluri de până la 969 px)."""
     pg = patron.pg
     pg.set_viewport_size({"width": 1700, "height": 1000})
     _prezentarea(patron)
     m = pg.evaluate("""() => { const z = document.querySelector('.fereastra .ans-grupe'); const zr = z.getBoundingClientRect();
       const bx = [...z.querySelectorAll('.ans-grupa')].flatMap(g => [...g.getClientRects()]).map(r => ({l: r.left, r: r.right, t: r.top, b: r.bottom}));
-      const goluri = bx.map(g => { const jos = bx.filter(o => o !== g && o.t >= g.b - 1 && o.l < g.r - 1 && o.r > g.l + 1).map(o => o.t);
-        return Math.round((jos.length ? Math.min(...jos) : zr.bottom) - g.b); });
+      const goluri = bx.filter(g => bx.some(o => o !== g && o.t >= g.b - 1 && o.l < g.r - 1 && o.r > g.l + 1)).map(g =>
+        Math.round(Math.min(...bx.filter(o => o !== g && o.t >= g.b - 1 && o.l < g.r - 1 && o.r > g.l + 1).map(o => o.t)) - g.b));
       const col = {}; bx.forEach(g => { const k = Math.round(g.l); col[k] = Math.max(col[k] || 0, g.b); });
       const fund = Object.values(col);
-      return {gol_max: Math.max(...goluri), coloane: fund.length, diferenta: Math.round(Math.max(...fund) - Math.min(...fund))}; }""")
+      return {gol_max: Math.max(0, ...goluri), coloane: fund.length, diferenta: Math.round(Math.max(...fund) - Math.min(...fund))}; }""")
     pg.eval_on_selector(".fereastra .ans-grupe", "e => e.scrollIntoView({block: 'start'})")
     patron.captura("prezentarea")
     assert m["gol_max"] <= 30 and m["diferenta"] <= 60, m
@@ -1240,7 +1251,8 @@ def test_def_24_notele_automate_poarta_documentul_iar_validarea_fara_document_ce
     """24. Note automate: notele de stoc (607=371) și comision (627=5121) fără document justificativ; validarea trecea fără avertisment.
     Pașii contabilului: emite o factură cu marfă din stoc („pleacă marfa”), importă un extras cu un comision și îl contează: în
     Registrul jurnal nota 607=371 are documentul „Factură …”, nota 627=5121 „Extras bancar …”; o notă scrisă fără document e marcată
-    pe rând, iar „Validează” pe ea spune că nu se validează fără document și duce la „Editează nota” (386, lotul 9)."""
+    pe rând, cu motivul („nu se validează fără documentul din care provine”) și pasul („Editează”), iar „Validează” pe ea e inactiv
+    (386, lotul 9; un singur mesaj — lotul 10, 10.2 pct.7k)."""
     pregateste_firma(patron, firma_e2e)
     tid, s = firma_e2e["tenant_id"], firma_e2e["schema"]
     art = articol_in_stoc(patron, firma_e2e)
@@ -1275,13 +1287,11 @@ def test_def_24_notele_automate_poarta_documentul_iar_validarea_fara_document_ce
     assert "Notă fără document justificativ" not in r_stoc and "Notă fără document justificativ" not in r_com, (r_stoc, r_com)
     assert "Document justificativ: Extras bancar" in r_com, r_com
     assert "Notă fără document justificativ" in r_man, r_man
-    pg.click("[data-nota-id='%s'] [data-val]" % nota_manuala)
-    pg.wait_for_selector("#caseta-atentie-activa #ca-ok", timeout=10000)
-    caseta = pg.inner_text("#caseta-atentie-activa")
-    patron.captura("confirmare")
-    # [386, lotul 9] regula de fond R3 refuză validarea fără document: caseta spune de ce și duce la „Editează nota”, nu la o validare
-    assert "nu are document justificativ, iar o notă nu se validează fără documentul din care provine" in caseta, caseta
-    assert "Editează nota" in caseta and "Validează fără document" not in caseta, caseta
+    # [386, lotul 9] regula de fond R3 refuză validarea fără document; [lotul 10, 10.2 pct.7k] un singur mesaj, pe rând (nu și o casetă de
+    # confirmare în dreapta), cu pasul care o face validabilă, iar „Validează” e inactiv
+    assert r_man.count("nu se validează fără documentul din care provine") == 1 and "Scrie referința cu „Editează”" in r_man, r_man
+    assert pg.is_disabled("[data-nota-id='%s'] [data-val]" % nota_manuala)
+    assert "Validează fără document" not in r_man, r_man
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % s, (nota_manuala,)) == [("ciorna",)]
 
 

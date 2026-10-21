@@ -60,11 +60,12 @@ def conn_smoke():
                 i2 = cur.fetchone()[0]
                 cur.execute("INSERT INTO inregistrari_linii (inregistrare_id,cont_debit,cont_credit,suma) VALUES (%s,'457','5121',50000)", (i2,))
                 # factura UE emisa iunie -> d390; domestica iunie -> d300/d394/d406
-                cur.execute("INSERT INTO facturi (numar,data_emitere,total,tva,directie,tert_nume,tert_cui) "
-                            "VALUES ('F001','2026-06-15',10000,0,'emisa','EU GMBH','DE811128135')")
+                # [lotul 10, C69] + tert_oras: D406 cere localitatea partenerului (S.AD.5 City „Mandatory”), nu „-”
+                cur.execute("INSERT INTO facturi (numar,data_emitere,total,tva,directie,tert_nume,tert_cui,tert_oras) "
+                            "VALUES ('F001','2026-06-15',10000,0,'emisa','EU GMBH','DE811128135','Berlin')")
                 # factura DOMESTICA emisa iunie (tert RO, TVA 21%) -> d394/d300/d406
-                cur.execute("INSERT INTO facturi (numar,data_emitere,total,tva,directie,tert_nume,tert_cui) "
-                            "VALUES ('F002','2026-06-20',6050,1050,'emisa','CLIENT RO SRL','RO14399840')")
+                cur.execute("INSERT INTO facturi (numar,data_emitere,total,tva,directie,tert_nume,tert_cui,tert_oras) "
+                            "VALUES ('F002','2026-06-20',6050,1050,'emisa','CLIENT RO SRL','RO14399840','Bucuresti')")
                 # operatiune D301 (tip 4 servicii, fara dependenta art.317) - D301 refuza generarea pe zero
                 cur.execute("INSERT INTO d301_operatiuni (an,luna,tip,nr_doc,data_doc,val_valuta,tip_valuta,curs,tva) "
                             "VALUES (2026,6,4,'D301A','2026-06-10',1000,'EUR',4.97,190)")

@@ -83,6 +83,13 @@ def schema():
             c.execute('CREATE TABLE "%s".inregistrari_linii (id integer GENERATED ALWAYS AS '
                       "IDENTITY PRIMARY KEY, inregistrare_id integer NOT NULL, cont_debit text, "
                       "cont_credit text, suma numeric NOT NULL)" % SCH)
+            # [lotul 10, deficiența 425] perechea citește și soldul preluat al contului (balanța de deschidere): tabela ca în
+            # `tenant_template.sql`, coloanele anului din migrarea lor
+            c.execute('CREATE TABLE "%s".solduri_initiale (id integer GENERATED ALWAYS AS IDENTITY, cont text NOT NULL, '
+                      "denumire text DEFAULT '' NOT NULL, sold_debitor numeric(15,2) DEFAULT 0 NOT NULL, "
+                      "sold_creditor numeric(15,2) DEFAULT 0 NOT NULL, data_referinta date)" % SCH)
+        from core import migrare_balanta_rulaje_an as _m425
+        _m425.aplica(conn, SCH)
         _mig.aplica(conn, SCH)          # DDL-ul `reevaluari` din MIGRARE, nu rescris aici
         from core import migrare_mf_amortizare_preluata as _m359   # [359, lotul 9] cititorii registrului poartă coloanele preluării
         _m359.aplica(conn, SCH)

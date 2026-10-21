@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp } from "../api.js?v=158edee964";
+import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp } from "../api.js?v=ff30ebaf3f";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export async function randeazaSetari(corp, nav) {
@@ -78,7 +78,12 @@ export async function randeazaSetari(corp, nav) {
           sesiune.intra(sesiune.token(), us);
           arataMesaj(msg, "Date cabinet salvate.", "ok");
         } else { arataMesaj(msg, "Nu s-a putut salva.", "eroare"); }
-      } catch (e) { arataMesaj(msg, "Eroare la salvare.", "eroare"); }
+      } catch (e) {
+        // [lotul 10, C73 / U3] refuzul numit al serverului (CUI-ul altui cabinet, 422 cu erori_campuri), lângă câmp și sub buton
+        const peCui = ((e && e.erori_campuri) || []).find((x) => x.camp === "cui");
+        if (peCui) eroareCamp(corp, "set-cab-cui", peCui.mesaj);
+        arataMesaj(msg, (e && e.mesaj) || "Eroare la salvare.", "eroare");
+      }
     });
   }
 
@@ -114,7 +119,7 @@ export async function randeazaSetari(corp, nav) {
           sesiune.actualizeazaUser({ poate_pregati: r.poate_pregati, poate_valida: r.poate_valida, poate_depune: r.poate_depune });
           arataMesaj(msg, "Competențe salvate.", "ok");
         } else { arataMesaj(msg, "Nu s-a putut salva.", "eroare"); }
-      } catch (e) { arataMesaj(msg, "Eroare la salvare.", "eroare"); }
+      } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
       btnCmp.disabled = false;
     });
   }
@@ -234,7 +239,7 @@ export async function randeazaSetari(corp, nav) {
           sesiune.intra(sesiune.token(), r.user);
           arataMesaj(msg, "Profil salvat.", "ok");
         } else { arataMesaj(msg, "Nu s-a putut salva.", "eroare"); }
-      } catch (e) { arataMesaj(msg, "Eroare la salvare.", "eroare"); }
+      } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
     });
   }
 
@@ -272,7 +277,7 @@ export async function randeazaSetari(corp, nav) {
         corp.querySelector("#set-pv").value = "";
         corp.querySelector("#set-pn").value = "";
         corp.querySelector("#set-pc").value = "";
-      } catch (e) { arataMesaj(msg, "Parola actuală greșită sau eroare.", "eroare"); }
+      } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Parola actuală greșită sau eroare.", "eroare"); }
     });
   }
 
@@ -488,7 +493,7 @@ export async function panouConectareSPV(zona) {
         window.open(r.url, "_blank");
         arataMesaj(msg, "S-a deschis autorizarea ANAF în altă filă. După ce alegi certificatul și confirmi, revino aici și redeschide ecranul.", "info");
       } else { arataMesaj(msg, "Nu s-a putut porni autorizarea.", "eroare"); }
-    } catch (e) { arataMesaj(msg, "Eroare la pornirea autorizării.", "eroare"); }
+    } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la pornirea autorizării.", "eroare"); }
     btn.disabled = false; btn.textContent = text;
   });
 }

@@ -14,7 +14,9 @@ anaf_surse/opanaf_592_2016_d301.txt:
     contradictorie. Marcajul nu e populat fiabil -> AVERTISMENT (nu blocaj care ar opri orice D301 sectiunea 1).
 
 (3) DECLARANT fabricat tacit (regula 4): build_xml emitea tacit nume/functie declarant = "ADMINISTRATOR".
-    FIX: implicitul ramane (DUK cere campul) DAR e ANUNTAT prin avertisment.
+    FIX 16.08: implicitul ramane DAR e ANUNTAT prin avertisment. RASTURNAT de lotul 10, C69: lipsa declarantului
+    OPRESTE generarea, cu refuzul numit (structura D301 „29. nume_declarant … DA”, „30. prenume_declarant … DA”,
+    „31. functia_declarant … DA”, toate „ERR- camp necompletat”).
 
 Aserturi/markere ASCII.
 """
@@ -22,23 +24,24 @@ import pytest
 
 from core.common import Perioada
 from core import d301
-from core.d301 import calcul_d301, build_xml
 
 
 # ============================================================
-#  (3) declarant fabricat -> avertisment (PUR)
+#  (3) declarant lipsa -> refuz numit (PUR) [lotul 10, C69]
 # ============================================================
-def test_declarant_lipsa_avertisment_nu_tacut():
-    """Profil fara declarant -> nume/functie emise implicit 'ADMINISTRATOR' DAR cu avertisment.
-    RED pre-fix: 'ADMINISTRATOR' emis tacit."""
-    prof = {"cui": "14399840", "nume": "PROBA SRL", "adresa": "Str 1", "oras": "Buc", "judet": "B"}
-    ops = [{"tip": 1, "nr_doc": "D1", "data_doc": "2026-08-05", "val_valuta": 1000,
-            "tip_valuta": "EUR", "curs": 4.97, "tva": 200}]
-    res = calcul_d301(prof, Perioada(2026, luna=8), ops)
-    xml = build_xml(res)
-    assert 'nume_declarant="ADMINISTRATOR"' in xml, "implicitul încă emis (DUK cere campul)"
-    assert any("declarantul (nume/funcție) lipsește" in a for a in res.avertismente), \
-        "implicitul declarant trebuie ANUNTAT"
+def test_declarant_lipsa_refuz_numit_nu_implicit():
+    """[lotul 10, C69] Profil fara declarant -> D301 NU se genereaza: cele trei campuri ale declarantului sunt refuzate NUMIT
+    (`firma_profil_api.erori_declarant`, sursa unica), nu completate cu „ADMINISTRATOR” / „-”. Forma veche (implicit + avertisment)
+    a fost RASTURNATA de C69: structura D301 „29. nume_declarant Nume Declarant C(75) DA ERR- camp necompletat” (la fel
+    prenume_declarant / functia_declarant) — un document ANAF semnat in numele cuiva care n-a declarat."""
+    from core.firma_profil_api import erori_declarant
+    prof = {"cui": "14399840", "nume": "PROBA SRL", "adresa": "Str 1", "oras": "Buc", "judet": "B",
+            "banca": "BCR", "iban": "RO49AAAA1B31007593840000", "inreg_art317": False}
+    refuzuri = erori_declarant(prof)
+    # structura D301 „29. nume_declarant … DA”, „30. prenume_declarant … DA”, „31. functia_declarant … DA”: trei refuzuri, unul per camp
+    assert len(refuzuri) == 3, refuzuri
+    # profilul e altfel complet: refuzurile D301 sunt EXACT cele trei ale declarantului (nimic implicit, nimic in plus)
+    assert d301.erori_generare(prof) == refuzuri
 
 
 # ============================================================
@@ -153,3 +156,21 @@ def test_d301_normal_ramane_duk_valid(conn):
     xml, _res = d301.genereaza(conn, _SCHEMA, Perioada(2026, luna=8))
     rez = duk.valideaza(xml, "d301", an=2026, luna=8)
     assert rez["stare"] == "valid", "D301 normal trebuie DUK-valid; rez=%r" % rez
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_genereaza_fara_declarant_refuza(conn):
+    """[lotul 10, C69] Pe calea contabilului (`genereaza`, din Date firmă), declarantul lipsă OPRESTE D301 cu refuzul numit —
+    nu mai iese un XML cu nume_declarant="ADMINISTRATOR". Structura D301 „29. nume_declarant Nume Declarant C(75) DA”."""
+    with conn.cursor() as cur:
+        _setup(cur, art317=True, declarant=False)   # nume / functie NULL in Date firma
+        _op1(cur)
+    conn.commit()
+    with pytest.raises(ValueError) as ei:
+        d301.genereaza(conn, _SCHEMA, Perioada(2026, luna=8))
+    msg = str(ei.value)
+    prof, _ops = d301.pull(conn, _SCHEMA, Perioada(2026, luna=8))
+    er = d301.erori_generare(prof)
+    # structura D301 „29. nume_declarant … DA”, „31. functia_declarant … DA”: refuzul numit, nu un XML cu implicit
+    assert [e.split(" (", 1)[0] for e in er] == ["Lipsă numele declarantului", "Lipsă funcția declarantului"], er
+    assert msg.split(": ", 1) == ["D301 nu se poate genera", " ".join(er)], msg

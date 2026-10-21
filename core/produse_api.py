@@ -29,6 +29,34 @@ def lista(conn, doar_confirmate=False):
             # din ecranul de NIR, dar in Python - clasa pe care R26 o declarase golita.
             d["cota_tva"] = float(d["cota_tva"]) if d["cota_tva"] is not None else None
             out.append(d)
+        if not doar_confirmate:
+            out = sorted(out + _din_stoc_fara_produs(cur), key=lambda x: (x["denumire"] or "").lower())
+    return out
+
+
+#: [435] aceeași denumire în stoc și în nomenclator: fără deosebire de literă și de spații (forma lui `asigura_din_document`)
+_DEN = "lower(regexp_replace(btrim(%s), '\\s+', ' ', 'g'))"
+
+
+def _din_stoc_fara_produs(cur):
+    """[lotul 10, deficiența 435 — comanda Costin 10.2 pct.5, verbatim] „la F1, Produse arată doar Marfa A și Marfa C. Marfa B (din NIR 3),
+    Carte tehnica (din importul XML) și grâu (din borderou) sunt în stoc, dar lipsesc din nomenclator, iar cota Marfei B nu se poate
+    completa nicăieri, deși factura trimite la Produse. Orice articol din stoc apare în nomenclator.”
+    Cauza: nomenclatorul primea articolul numai când documentul de intrare avea cota (`asigura_din_document`, 415); fără cotă (borderoul,
+    un NIR / import de dinainte de 415, importul de articole) articolul rămânea numai în stoc. Reparația ține de CITIRE, deci acoperă orice
+    drum, de azi și de mâine: fiecare articol din stoc (`articole`) fără produs cu aceeași denumire apare în listă „cotă lipsă”, iar cota
+    aleasă pe rând îl scrie în nomenclator (POST /produse, cu cota). Cota nu se ghicește: rândul vine fără cotă (`cota_tva` None)."""
+    cur.execute("SELECT a.id AS articol_id, a.denumire, a.um FROM articole a WHERE NOT EXISTS (SELECT 1 FROM produse p WHERE "
+                + _DEN % "p.denumire" + " = " + _DEN % "a.denumire" + ") ORDER BY lower(a.denumire), a.id")
+    vazute, out = set(), []
+    for r in cur.fetchall():
+        cheie = " ".join(str(r["denumire"] or "").split()).lower()
+        if cheie in vazute:
+            continue
+        vazute.add(cheie)
+        out.append({"id": None, "articol_id": r["articol_id"], "denumire": " ".join(str(r["denumire"]).split()), "um": r["um"] or "buc",
+                    "pret_unitar": 0.0, "cota_tva": None, "categorie": None, "justificare": None, "sursa": "stoc",
+                    "confirmat": False, "din_stoc": True})
     return out
 
 

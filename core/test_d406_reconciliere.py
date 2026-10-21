@@ -73,10 +73,10 @@ def conn_recon():
                     open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA))
                 cur.execute("SET search_path TO %s, public" % _SCHEMA)
                 cur.execute(
-                    "INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,"
+                    "INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,telefon,"
                     "declarant_nume,declarant_prenume,declarant_functie,platitor_tva,tip_decont,regim_fiscal) "
                     "VALUES (1,'TEST SRL','14399840','Str 1','Bucuresti','B','6920','BCR',"
-                    "'RO49BCRA0000000000000000','POP','ION','EXPERT CONTABIL',true,'L','real')")
+                    "'RO49BCRA0000000000000000','0212223344','POP','ION','EXPERT CONTABIL',true,'L','real')")
                 _nota(cur, '2026-06-05', 'Vanzare', '4111', '707', 1000)
                 _nota(cur, '2026-06-10', 'Incasare', '5121', '4111', 600)
                 _nota(cur, '2026-06-12', 'Achizitie', '371', '401', 400)

@@ -12,8 +12,11 @@ from core.d300 import calcul_d300
 
 
 def _prof(pro_rata=100):
+    # [lotul 10, C69] declarantul face parte din profilul complet: structura D300 „6. nume_declar Nume declarant C(75) DA” (la fel
+    # prenume_declar / functie_declar) — generatorul nu mai pune implicitul „ADMINISTRATOR” / „-”, iar DUK respinge atributul vid
     return {"cui": "14399840", "nume": "X", "adresa": "Y", "banca": "BCR",
-            "iban": "RO1", "caen": "4711", "tip_decont": "L", "pro_rata": pro_rata}
+            "iban": "RO1", "caen": "4711", "tip_decont": "L", "pro_rata": pro_rata,
+            "declarant_nume": "Pop", "declarant_prenume": "Ion", "declarant_functie": "administrator"}
 
 
 def test_lantul_R27_R42_se_calculeaza_complet():
@@ -197,13 +200,16 @@ def test_tva_la_incasare_neincasat_nu_e_exigibil():
     assert res.R.get("R9_1", 0) == 0 and res.R.get("R9_2", 0) == 0
 
 
-def test_firma_fara_tva_incasare_ramane_pe_emitere():
-    # GARD anti-regresie: firma normala (fara flag) -> exigibilitate la faptul generator (emitere),
-    # `decontari` sunt IGNORATE, comportamentul vechi neschimbat.
-    res = calcul_d300(_prof(), Perioada(2026, luna=6),
-                      [{"directie": "emisa", "total": 1210, "tva": 210,
-                        "decontari": [{"suma": 99999, "cota": 21}]}])
-    assert (res.R["R9_1"], res.R["R9_2"]) == (1000, 210)   # din emitere, decontari ignorate
+def test_factura_de_pe_emitere_ramane_pe_emitere_si_la_firma_in_sistem():
+    # [lotul 10, deficienta 428, actualizat] Pana azi: bifa firmei (`tva_la_incasare`) muta TOATE facturile pe decontari, iar o firma
+    # fara bifa ignora `decontari`. Acum regimul e al FACTURII la data ei (CF art.282 alin.(7): factura emisa inainte de intrare ramane
+    # pe regulile generale) si il decide `pull`: o intrare de pe calea de emitere (fara `decontari`) ramane pe emitere chiar daca firma
+    # a aplicat sistemul in perioada; o intrare de decontare se declara pe decontare. Bifa din profil nu mai ruteaza nimic.
+    res = calcul_d300(dict(_prof(), tva_la_incasare=True), Perioada(2026, luna=6),
+                      [{"directie": "emisa", "total": 1210, "tva": 210}])
+    assert (res.R["R9_1"], res.R["R9_2"]) == (1000, 210)   # din emitere, desi firma e in sistem
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), [{"directie": "emisa", "decontari": [{"suma": 605, "cota": 21}]}])
+    assert (res.R["R9_1"], res.R["R9_2"]) == (500, 105)    # decontarea, si la firma iesita din sistem (alin.(7) lit.b)
 
 
 # ============================================================
@@ -241,6 +247,8 @@ def conn_tvai():
                     "VALUES (1,'TVAI SRL','14399840','Str Test 1','Bucuresti','B','4711','BCR','RO49AAAA1B31007593840000',"
                     "'real',true,'L',true,'Pop','Ion','administrator') "
                     "ON CONFLICT (id) DO UPDATE SET tva_la_incasare=true")
+                # [lotul 10, 428] regimul e pe perioade (Date firma), nu pe bifa de azi: firma aplica sistemul din 01.05.2026
+                cur.execute("INSERT INTO tva_incasare_perioade (de_la) VALUES ('2026-05-01')")
                 # F1 emisa (luna 5), incasata luna 6
                 cur.execute("INSERT INTO facturi (numar, data_emitere, total, tva, directie) "
                             "VALUES ('F1','2026-05-20',1210,210,'emisa') RETURNING id")

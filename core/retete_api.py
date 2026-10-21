@@ -39,14 +39,14 @@ def _cmp_la_data(cur, schema, articol_id, data_iso):
     if not fisa or not fisa[-1]["sold_cantitate"]:
         return Decimal("0")
     return Decimal(str(fisa[-1]["cmp"] or 0))
-def _valideaza_iesire_la_data(cur, schema, articol_id, data_iso, cantitate):
+def _valideaza_iesire_la_data(cur, schema, articol_id, data_iso, cantitate, um=""):
     """Replay complet cu iesirea noua inserata cronologic - prinde si spargerea
-    miscarilor ULTERIOARE de o iesire antedatata. [gv_crono]"""
+    miscarilor ULTERIOARE de o iesire antedatata. [gv_crono] `um` numai pentru refuz („Ieșire de 2 kg peste stocul de 1 kg”)."""
     miscari = _miscari(cur, schema, articol_id)
     pana = [m for m in miscari if str(m["data"]) <= data_iso]
     dupa = [m for m in miscari if str(m["data"]) > data_iso]
     noua = {"data": data_iso, "tip": "iesire", "cantitate": cantitate, "pret_unitar": None}
-    _m.fisa_magazie(pana + [noua] + dupa)
+    _m.fisa_magazie(pana + [noua] + dupa, None, um)
 
 
 def lista(conn, schema):
@@ -95,7 +95,7 @@ def salveaza(conn, schema, corp):
     raporteaza langa campul lui (rt-l{i}-..), nu il filtreaza tacit frontendul."""
     linii = corp.get("linii") or []
     if not (corp.get("denumire") or "").strip():
-        return {"eroare": "Denumirea retetei e obligatorie."}
+        return {"eroare": "Denumirea rețetei e obligatorie."}
     if not linii:
         return {"eroare": "Adaugă cel puțin un ingredient."}
     lipsa = _ingrediente_campuri_lipsa(linii)
@@ -139,14 +139,14 @@ def descarca(conn, schema, corp):
         cur.execute(f"SELECT * FROM {schema}.retete WHERE id=%s", (corp["reteta_id"],))
         ret = cur.fetchone()
         if not ret:
-            raise ValueError("reteta inexistentă")
-        cur.execute(f"""SELECT l.*, a.denumire, a.cont_stoc, a.cont_cheltuiala
+            raise ValueError("Rețeta aleasă nu există.")
+        cur.execute(f"""SELECT l.*, a.denumire, a.um, a.cont_stoc, a.cont_cheltuiala
                         FROM {schema}.retete_linii l
                         JOIN {schema}.articole a ON a.id = l.articol_id
                         WHERE l.reteta_id=%s ORDER BY l.id""", (corp["reteta_id"],))
         linii_r = [dict(r) for r in cur.fetchall()]
         if not linii_r:
-            raise ValueError("reteta fără ingrediente")
+            raise ValueError("Rețeta aleasă nu are ingrediente: adaug-o pe ecranul Rețete, apoi descarcă.")
         import datetime as _dt
         d = corp.get("data") or _dt.date.today().isoformat()  # [gv_fix] fara data -> azi
         pentru_motor = []
@@ -159,12 +159,16 @@ def descarca(conn, schema, corp):
         for l in linii_r:
             c = pe_art[l["articol_id"]]
             try:  # [gv_crono] iesirea la data ei nu are voie sa sparga fisa
-                _valideaza_iesire_la_data(cur, schema, l["articol_id"], d, c["cantitate"])
+                _valideaza_iesire_la_data(cur, schema, l["articol_id"], d, c["cantitate"], l["um"])
             except ValueError as e:
-                raise ValueError(f"stoc insuficient la {l['denumire']}: {e}")
-        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                        VALUES (%s,%s,'stocuri','ciorna') RETURNING id""",
-                    (d, f"Consum reteta {ret['denumire']} x{corp['portii']}"[:200]))
+                # [lotul 10, comanda 10.2 pct.8d, clasa] cu diacritice, iar cantitatea în formatul românesc, cu unitatea de măsură
+                raise ValueError("Stoc insuficient la %s. %s" % (l["denumire"], e))
+        # [lotul 10, deficiența 438, clasa] consumul pe rețetă care descarcă un raport Z e vânzarea de pe Z: documentul lui e raportul Z
+        # („Bonul de consum e pentru consum intern; la vânzarea pe Z documentul e raportul Z”), pe notă și în fișa de magazie
+        doc_z = _zd.document_z(cur, schema, z_id) if z_id else None
+        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
+                        VALUES (%s,%s,'stocuri','ciorna',%s) RETURNING id""",
+                    (d, f"Consum reteta {ret['denumire']} x{corp['portii']}"[:200], doc_z))
         iid = cur.fetchone()["id"]
         pe_cont = {}
         for l in linii_r:
@@ -173,15 +177,16 @@ def descarca(conn, schema, corp):
             pe_cont[cheie] = pe_cont.get(cheie, Decimal("0")) + c["valoare"]
             cur.execute(f"""INSERT INTO {schema}.miscari_stoc
                             (articol_id, data, tip, cantitate, valoare, document, inregistrare_id, z_inregistrare_id)
-                            VALUES (%s,%s,'iesire',%s,%s,'reteta',%s,%s)""",
-                        (l["articol_id"], d, c["cantitate"], c["valoare"], iid, z_id))
+                            VALUES (%s,%s,'iesire',%s,%s,%s,%s,%s)""",
+                        (l["articol_id"], d, c["cantitate"], c["valoare"], (doc_z or "reteta")[:100], iid, z_id))
         for (deb, cred), suma in pe_cont.items():
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                             (inregistrare_id, cont_debit, cont_credit, suma)
                             VALUES (%s,%s,%s,%s)""", (iid, deb, cred, suma))
         # [06.10.2026, comanda Costin §6.2] consumul pe rețetă se justifică printr-un bon de consum (Legea 82/1991 art.6 alin.(1))
-        from core import documente_interne as _di
-        _di.genereaza(cur, schema, "bon_consum", d, [iid])
+        if not doc_z:
+            from core import documente_interne as _di
+            _di.genereaza(cur, schema, "bon_consum", d, [iid])
         if z_id:
             _zd.deblocat(z_id)   # [368] Z-ul descărcat: la PFA nota lui se reîncearcă la validarea internă
     return _fara_decimal({"inregistrare_id": iid, "cost_total": cons["cost_total"],

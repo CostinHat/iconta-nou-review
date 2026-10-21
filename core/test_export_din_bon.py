@@ -119,15 +119,16 @@ def lume():
                 cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA))
                 cur.execute("SET search_path TO %s, public" % _SCHEMA)
                 cur.execute(
-                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, declarant_nume, "
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, telefon, declarant_nume, "
                     "declarant_prenume, declarant_functie, platitor_tva, tip_decont, regim_fiscal, forma_juridica, "
                     "capital_subscris) VALUES (1, 'BON SRL', '14399840', 'Str. Testul 1', 'Sector 1', 'B', '5610', 'BCR', "
-                    "'RO49BCRA0000000000000000', 'POPESCU', 'GHEORGHE', 'ADMINISTRATOR', true, 'L', 'real', 'SRL', 200)")
+                    "'RO49BCRA0000000000000000', '0212223344', 'POPESCU', 'GHEORGHE', 'ADMINISTRATOR', true, 'L', 'real', 'SRL', 200)")   # [lotul 10, C69] + telefon (D406 S.CTH.2)
             ids = {}
             for et, marca in (("obisnuita", {}), ("din_bon", DIN_BON)):
                 r = facturi_api.creeaza_factura(conn, "PROBA-%s" % et.upper(), "2026-10-02", "emisa",
                                                 [dict(LINIE, cont_venit="707")], tert_nume="CLIENT SRL",
-                                                tert_cui="RO14399840", data_scadenta="2026-10-17", status="emisa", **marca)
+                                                tert_cui="RO14399840", data_scadenta="2026-10-17", status="emisa",
+                                                tert_oras="Sector 2", **marca)   # [lotul 10, C69] D406 cere localitatea clientului
                 ids[et] = r["factura_id"]
             yield conn, ids
         finally:

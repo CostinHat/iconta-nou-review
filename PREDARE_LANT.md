@@ -4,8 +4,9 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-20** dimineața (lotul 9 publicat), pe ramura `lucru/dupa-lot9-2026-10-20` (din `5907e639`, worktree
-  `/home/costin/iconta_lot9`), nepublicată; pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
+- **ultima rescriere**: **2026-10-21** (lotul 10 comis pe ramura `lucru/lot10-2026-10-20`, worktree `/home/costin/iconta_lot9`, din
+  `d4ebae38`), nepublicat, înaintea porții; pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate). Producția rămâne
+  pe `5907e639` (four-way de mai jos).
 - **pe commit**: `5907e639` (lotul 9: 9.1, 9.2, 9.3 și închiderea) — **four-way închis 20.10.2026 05:06**: HEAD = origin/main = public/main =
   backup/lant-2026-10-20 = RUNNING = `5907e639` (2 din 2 procese, pornite 05:06:34, după commitul de 03:17:58); nicio sentinelă; backup
   înainte `~/backups_db/iconta_v2_pre_lot9_20261020_0503.dump`; cele 5 migrări rulate pe producție (7 scheme fiecare, 0 eșecuri). Poarta
@@ -17,6 +18,19 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
+
+**21.10.2026 — LOTUL 10 (10.1 + 10.2) COMIS PE RAMURĂ, LA POARTĂ; NEPUBLICAT.** Commitul care conține această predare, pe
+`lucru/lot10-2026-10-20` (din `d4ebae38`). Conținutul: DECIZII „Comanda 10.1”, „Comanda 10.2” și intrările de interpretare ale lotului 10;
+registrul DEFICIENTE (420–438, 383, retestul lotului 9, C68–C74). Înainte de commit: suita întreagă (46 de picături, reparate — ISTORIC
+21.10), rerularea țintită 1101 / 1101, verificator TOTAL 0, e2e-urile lotului verzi cu mutațiile ROȘII, uneltele vizuale refăcute.
+**Fronturi deschise:** (1) **poarta lotului 10** (`sh scripts/poarta_lot.sh`, o dată) — numai după reconfirmarea lui Costin că nu lucrează
+cabinetul (confirmarea din 20.10 e veche); ROȘU numai pe cifrele F1–F5 se explică și se rescrie referința (7.3 pct.4). (2) **publicarea** —
+cere acordul lui Costin, backup chiar înainte, cele 6 migrări `--productie` (`migrare_profil_c69`, `migrare_tva_incasare_perioade`,
+`migrare_compensari_afiliat`, `migrare_reevaluari_valuta`, `migrare_balanta_rulaje_an`, `migrare_borderou_numar_unic`) și reparația pe
+datele F1 (409, 7j, al doilea BA-1; scriptul din raport, probat pe schemă de test, cere `--lipsa` = încadrarea lipsei de la inventar).
+(3) §6 al raportului lotului 10 (deciziile cerute: 422 / 437, C70 D101G, clasa 8c, totalurile de sub tabele, cursul BNR „ziua anterioară”,
+cele trei reguli de rotunjire TVA ș.a.). (4) C70 (DEFICIENTE C70) nerezolvată.
+**Ce urmează:** reconfirmarea lui Costin -> poarta lotului 10 -> ZIP-ul lotului -> raportul; fără publicare și fără repornire.
 
 **20.10.2026 dimineața — LOTUL 9 PUBLICAT INTEGRAL.** Producția e pe `5907e639` (four-way 05:06). La publicare, după backup: cele cinci
 migrări `--productie`; validarea unică a ciornelor PFA (`scripts/valideaza_note_interne_pfa.py --productie`): 0 validate, 0 refuzate (nu era
@@ -533,9 +547,9 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **138** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **1036** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1219** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77** | **170** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77u** | **1068** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1442** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -583,7 +597,7 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 | **4** | rânduri în `public.firme_scoase` |
 | **3** | nume de schemă distincte în ele |
 | **20** | scheme `tenant_NNN` în bază |
-| **276** | contorul `tenant_schema_seq` |
+| **277** | contorul `tenant_schema_seq` |
 | **48** | maximul istoric de nume de schemă |
 
 **Clasificatorul de alerte**

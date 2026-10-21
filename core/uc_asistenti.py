@@ -185,9 +185,13 @@ def asistent_creeaza(date, ctx):
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             _uc_comun._refuza_email_ocupat(repo_utilizatori.contul_dupa_email(cur, email), "angajat", email,
                                            "asistent", "email", _erori.DateInvalide)
-            uid = repo_utilizatori.creeaza_cont_asistent(cur, email, _nucleu.hash_parola(_sec.token_urlsafe(16)),
-                                                         date.nume or email.split("@")[0], ctx["firm"],
-                                                         date.poate_pregati, date.poate_valida)["id"]
+            # [lotul 10, C73 / U3] adresa luată între verificare și scriere -> același refuz ca verificarea (422 pe câmp), nu 500
+            from core import chei_unice as _chei
+            with _chei.refuza_dublura(cur, _uc_comun.CHEIE_EMAIL, _uc_comun._refuz_email_la_cursa("angajat", email, "asistent", "email",
+                                                                                                _erori.DateInvalide)):
+                uid = repo_utilizatori.creeaza_cont_asistent(cur, email, _nucleu.hash_parola(_sec.token_urlsafe(16)),
+                                                             date.nume or email.split("@")[0], ctx["firm"],
+                                                             date.poate_pregati, date.poate_valida)["id"]
         # [deficiența 319, comanda Costin 17.10.2026 7.2] „Bifează ce poate face [...] Poate depune [...] Bifează firmele pe care le
         # lucrează”: din aceeași invitație, cu verificările ecranului colegului (`set_permisiuni`, `atribuie_firma`) — în ACEEAȘI
         # tranzacție cu contul: o firmă din alt cabinet refuză invitația întreagă, nu lasă un cont fără link și fără firme

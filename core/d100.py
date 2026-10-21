@@ -241,9 +241,6 @@ def erori_generare(prof):
 
 def build_xml(res):
     prof = res.prof
-    if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D100: declarantul (nume/funcție) lipsește din profil — se trece implicit "
-                                "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     # [31.08.2026] ABSENȚĂ DECLARATĂ, nu tăcere. OPANAF 602/2026 a adăugat poziția 116
     # «Contribuție de solidaritate» în nomenclatorul obligațiilor D100, declarabilă LUNAR. Nu o
     # construim (zero firme purtătoare, deci zero instanțe pe care s-o probăm) — dar nici nu tăcem:
@@ -271,9 +268,9 @@ def build_xml(res):
            'nume_declar=%s prenume_declar=%s functie_declar=%s '
            'cui=%s den=%s adresa=%s'
            % (NS, NS, res.luna, res.an,
-              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR", _LIM["d100"]["nume_declar"])),
-              _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d100"]["prenume_declar"])),
-              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d100"]["functie_declar"])),
+              _esc(_t(prof.get("declarant_nume"), _LIM["d100"]["nume_declar"])),   # [C69] fără implicit: `erori_declarant` a blocat deja lipsa
+              _esc(_t(prof.get("declarant_prenume"), _LIM["d100"]["prenume_declar"])),
+              _esc(_t(prof.get("declarant_functie"), _LIM["d100"]["functie_declar"])),
               _esc(prof.get("cui")), _esc(_t(prof.get("nume"), _LIM["d100"]["den"])), _esc(_t(prof.get("adresa"), _LIM["d100"]["adresa"]))))
     tel = (prof.get("telefon") or "").strip()
     if tel:
@@ -468,6 +465,12 @@ def profit_trimestru(conn, schema, perioada, cota=None):
                      "cumulat iese mai mic. Scrie-o în Registrul de evidență fiscală." % (_bani(c["chelt_impozit"]), per))
     # [deficiența 382, lotul 9] fereastra calculului e CUMULATĂ (01.01 – sfârșitul trimestrului): ce e în afara evidenței validate se spune
     avert.extend(_d101.avertismente_evidenta(conn, schema, inc, sf, "D100 pe T%d/%d" % (trim, perioada.an)))
+    # [lotul 10, deficiența 425] cumulul de la 01.01 fără rulajele dinainte de preluare: se spune (`rulaje_preluate.avertisment`)
+    from core import rulaje_preluate as _rp
+    with conn.cursor() as cur:
+        _av_rul = _rp.avertisment(cur, schema, perioada.an, "d100")
+    if _av_rul:
+        avert.append(_av_rul["motiv"])
     return {"suma": suma, "cumulat": c["impozit"], "anterioare": anterioare, "linii": linii, "avertismente": avert, "P": P}
 
 

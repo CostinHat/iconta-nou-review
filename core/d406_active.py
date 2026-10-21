@@ -586,7 +586,11 @@ def xml_d406_anual_active(prof, lista_mf, an, data_creata=None):
     amortizarea pe metoda (calc_asset). Dovedit DUK-valid pe tenant_013 (13.08.2026,
     DUKIntegrator_AnLunaUI, pachet oficial ANAF)."""
     e = escape
-    cui = "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit())
+    # [lotul 10, deficiența C69] `<Company>` din aceeași sursă cu D406 lunar (`d406.antet_firma`): aici se scria a doua oară, cu
+    # „-” la stradă / localitate / prenume / telefon, „000000” la codul poștal, IBAN-ul fix „RO00BANK0000000000000000”, numele FIRMEI
+    # ca persoană de contact și CUI-ul fără „RO” (S.CMH.1). Un profil incomplet e refuzat acolo, numit, nu completat.
+    from core.d406 import antet_firma
+    companie = "\n".join(antet_firma(prof))
     tab = (prof.get("baza_contabila") or "A").upper()
     frag = xml_assets(lista_mf, an).replace("nsSAFT:", "")   # plicul anual are ns implicit (fara prefix)
     dc = data_creata or date.today().isoformat()
@@ -599,26 +603,7 @@ def xml_d406_anual_active(prof, lista_mf, an, data_creata=None):
     <SoftwareCompanyName>iConta</SoftwareCompanyName>
     <SoftwareID>iConta SaaS</SoftwareID>
     <SoftwareVersion>1.0</SoftwareVersion>
-    <Company>
-      <RegistrationNumber>{e(cui)}</RegistrationNumber>
-      <Name>{e(prof.get('nume') or '-')}</Name>
-      <Address>
-        <StreetName>{e(prof.get('adresa') or '-')}</StreetName>
-        <City>{e(prof.get('oras') or '-')}</City>
-        <PostalCode>{e(prof.get('cod_postal') or '000000')}</PostalCode>
-        <Country>RO</Country>
-      </Address>
-      <Contact>
-        <ContactPerson>
-          <FirstName>-</FirstName>
-          <LastName>{e(prof.get('nume') or '-')}</LastName>
-        </ContactPerson>
-        <Telephone>-</Telephone>
-      </Contact>
-      <BankAccount>
-        <IBANNumber>RO00BANK0000000000000000</IBANNumber>
-      </BankAccount>
-    </Company>
+{companie}
     <DefaultCurrencyCode>RON</DefaultCurrencyCode>
     <SelectionCriteria>
       <PeriodStart>1</PeriodStart>

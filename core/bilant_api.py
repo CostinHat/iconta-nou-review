@@ -5,6 +5,7 @@ from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 from core import bilant as _b
 from core.common import cere_coloane_cursor  # [garda coloane 27.07.2026]
+from core.erori import RefuzGenerare
 from core.pdf_util import data_ro
 _COLOANE_PROFIL = ("nume", "cui", "adresa", "caen")   # minimul citit de aici
 
@@ -161,6 +162,15 @@ def _ultimul(cur, schema, fel, cheie, numai_valid=False):
     return dict(r) if r else None
 
 
+def rulaje_an_cunoscute(cur, schema, ref, an):
+    """Aplicația are rulajele ÎNTREGULUI an `an`? Da dacă evidența îl acoperă întreg (fără solduri de preluare, sau soldurile sunt de
+    dinainte de 1 ianuarie), ori — [lotul 10, deficiența 425] — dacă preluarea e în `an` și balanța de deschidere a adus rulajele lui
+    01.01 .. data preluării (`rulaje_preluate.are_rulaje`): „ele intră ca sold inițial și sume precedente”."""
+    import datetime
+    from core import rulaje_preluate as _rp
+    return ref is None or ref < datetime.date(an, 1, 1) or (ref.year == an and _rp.are_rulaje(cur, schema, an))
+
+
 def coloana_precedenta(cur, schema, tip, an):
     """„An precedent” al bilanțului `tip` pe `an`, pe secțiuni: {"F10": {rând: lei} | None, "F20": … | None, "sursa": {secțiune: fel},
     "bilant"/"manual": cine și când}. Ordinea surselor (DECIZII 11.10.2026):
@@ -217,11 +227,11 @@ def coloana_precedenta(cur, schema, tip, an):
         return out
     if s_p is not None:
         motive = _motive_31_12(cur, schema, s_p, an - 1)   # [C15, 242] și coloana „An precedent” din evidență, la 31.12.an-1
-        rl_p = _rulaje_67(cur, schema, an - 1) if (ref is None or ref < datetime.date(an - 1, 1, 1)) else None
+        rl_p = _rulaje_67(cur, schema, an - 1) if rulaje_an_cunoscute(cur, schema, ref, an - 1) else None
         m = motiv_rulaje(tip, rl_p) if rl_p is not None else None
         _b.refuz(motive + ([m] if m else []), an - 1, bilant_pe=an)
         out["F10"], out["sursa"]["F10"] = _b.f10_din_balanta(s_p), "evidenta"
-    if ref is None or ref < datetime.date(an - 1, 1, 1):
+    if rulaje_an_cunoscute(cur, schema, ref, an - 1):
         f20 = _b.f20_complet_din_rulaje if tip == "s1003" else _b.f20_din_rulaje
         rl_p = _rulaje_67(cur, schema, an - 1)
         out["F20"], out["sursa"]["F20"] = f20(rl_p), "evidenta"
@@ -343,15 +353,26 @@ def avertisment_manual(an, sectiuni, meta, respins=None):
 
 
 def _rulaje_67(cur, schema, an):
-    """Rulajele conturilor din clasele 6 / 7 pe `an`, din notele validate: {cont: (rulaj debitor, rulaj creditor)}. [C15] FĂRĂ închiderea
-    în 121 (o linie cu 121 de partea cealaltă): închiderea mută soldul, nu e venit sau cheltuială — numărată, ar face 0 rulajul net al
-    lui 711 / 712 (variația stocurilor) după ce contabilul închide anul, cum îi cere bilanțul (`bilant.inchiderea_6_7`)."""
+    """Rulajele conturilor din clasele 6 / 7 pe anul `an` — `rulaje_67` pe [01.01.an, 01.01.an+1)."""
+    return rulaje_67(cur, schema, _dt.date(an, 1, 1), _dt.date(an + 1, 1, 1))
+
+
+def rulaje_67(cur, schema, de_la, pana_la):
+    """Rulajele conturilor din clasele 6 / 7 pe [de_la, pana_la), din notele validate: {cont: (rulaj debitor, rulaj creditor)}. [C15] FĂRĂ
+    închiderea în 121 (o linie cu 121 de partea cealaltă): închiderea mută soldul, nu e venit sau cheltuială — numărată, ar face 0 rulajul
+    net al lui 711 / 712 (variația stocurilor) după ce contabilul închide anul, cum îi cere bilanțul (`bilant.inchiderea_6_7`).
+
+    [lotul 10, deficiența 425, comanda Costin 10.1] „Cifra de afaceri a anului (707 = 180.000 lei) și cheltuielile dispar, deci D101,
+    bilanțul anual [...] ies greșite pentru o firmă preluată în cursul anului.” Plus rulajele PRELUATE din balanța de deschidere pe
+    fereastră (`rulaje_preluate.rulaje`, tot fără închiderea în 121 — OMFP 1802/2014, funcțiunea contului 121). O singură sursă a
+    veniturilor și cheltuielilor anului: F20 / F30, categoria de mărime, D101 și D100 pe profit (`d101.baza_contabila`)."""
+    from core import rulaje_preluate as _rp
     cur.execute(f"""
         SELECT l.cont_debit, l.cont_credit, l.suma
         FROM {schema}.inregistrari_linii l
         JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-        WHERE i.status = 'validata' AND i.data BETWEEN %s AND %s""",
-        (f"{an}-01-01", f"{an}-12-31"))
+        WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s""",
+        (de_la, pana_la))
     rl = {}
     for r in cur.fetchall():
         if str(r["cont_debit"]).startswith("121") or str(r["cont_credit"]).startswith("121"):
@@ -362,16 +383,32 @@ def _rulaje_67(cur, schema, an):
                 v = rl.get(cont, [Decimal("0"), Decimal("0")])
                 v[idx] += s
                 rl[cont] = v
+    for cont, (d, c) in _rp.rulaje(cur, schema, de_la, pana_la, fara_inchidere_121=True).items():
+        if str(cont)[:1] in ("6", "7") and (d or c):
+            v = rl.get(cont, [Decimal("0"), Decimal("0")])
+            v[0] += d
+            v[1] += c
+            rl[cont] = v
     return {c: (v[0], v[1]) for c, v in rl.items()}
 
-_JUD = {"bucuresti": 40, "alba": 1, "arad": 2, "arges": 3, "bacau": 4, "bihor": 5,
-        "bistrita-nasaud": 6, "botosani": 7, "brasov": 8, "braila": 9, "buzau": 10,
-        "caras-severin": 11, "calarasi": 51, "cluj": 12, "constanta": 13, "covasna": 14,
-        "dambovita": 15, "dolj": 16, "galati": 17, "giurgiu": 52, "gorj": 18, "harghita": 19,
-        "hunedoara": 20, "ialomita": 21, "iasi": 22, "ilfov": 23, "maramures": 24,
-        "mehedinti": 25, "mures": 26, "neamt": 27, "olt": 28, "prahova": 29, "satu mare": 30,
-        "salaj": 31, "sibiu": 32, "suceava": 33, "teleorman": 34, "timis": 35, "tulcea": 36,
-        "vaslui": 37, "valcea": 38, "vrancea": 39}
+
+def avertismente_rulaje(cur, schema, an):
+    """[lotul 10, deficiența 425] „Când are doar solduri finale [...] aplicația spune clar că rulajele anului lipsesc și ce afectează.”
+    Textul afirmației `rulaje_preluate.avertisment` pe F20, ca listă (goală când rulajele anului sunt în aplicație)."""
+    from core import rulaje_preluate as _rp
+    a = _rp.avertisment(cur, schema, an, "bilant")
+    return [a["motiv"]] if a else []
+
+
+def avertismente_evidenta_an(conn, schema, an):
+    """[lotul 10, deficiența 436, comanda Costin 10.2 pct.6 — generalizarea pe clasă: „08 și 09/2026 sunt încheiate, dar fără amortizare
+    generată, iar D100 pe T3 nu semnalează”] Bilanțul se face din balanța notelor VALIDATE ale anului, deci spune, ca D100 / D101, ce e în
+    afara evidenței validate: amortizarea lunilor încheiate negenerată sau nevalidată și notele nevalidate ale anului — aceeași funcție
+    (`d101.avertismente_evidenta`), iar notele nevalidate opresc depunerea (`coada_api.DECLARATII_DIN_EVIDENTA`)."""
+    from core import d101 as _d101
+    return _d101.avertismente_evidenta(conn, schema, _dt.date(an, 1, 1), _dt.date(an + 1, 1, 1), "Bilanțul pe %d" % an,
+                                       efect="rezultatul exercițiului și valoarea netă a imobilizărilor ies mai mari")
+
 
 def erori_generare(prof):
     """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
@@ -386,11 +423,65 @@ def erori_generare(prof):
     if not str(prof.get("reg_com") or "").strip():
         erori.append("Nr. registrul comerțului lipsește — obligatoriu în bilanț; fără el declarația e "
                      "respinsă de validatorul ANAF. Se completează la Date firmă.")
+    # [lotul 10, deficiența C69 — „valoare inventată pe documentul ANAF în loc de blocaj”] județul sediului, marele contribuabil, forma
+    # de proprietate și administratorul: verificarea e a antetului (`bilant.erori_antet`, sursa unică, citată acolo din structura ANAF),
+    # aceeași pe care `xml_s1005` o face înainte să scrie ceva
+    erori.extend(_b.erori_antet(prof))
     return erori
 
 
-def genereaza(conn, schema, an):
+def cod_judet_sediu(judet):
+    """Codul din Nomenclatorul Județe (01 Alba … 40 Municipiul București, 51 Călărași, 52 Giurgiu — anaf_surse/d394_struct_anaf.txt,
+    „Nomenclator 1- Judete”), ca număr, din județul scris în Date firmă: nume („Cluj”, „București”), prescurtare („CJ”, „B”, cum îl
+    aduce ANAF în `dcod_JudetAuto`) sau cod. `None` când lipsește sau nu e în nomenclator — NU un cod implicit. [lotul 10, C69]
+    Refolosește `d394.jud_siruta` (aceeași conversie, sursa unică) și o restrânge la codurile nomenclatorului (fără 41: „fara cod 41”)."""
+    from core.d394 import jud_siruta, JUDETE_SIRUTA
+    cod = jud_siruta(judet)
+    return int(cod) if cod in set(JUDETE_SIRUTA.values()) else None
+
+
+def profil_bilant(p):
+    """Datele antetului bilanțului, din rândul `firma_profil` — un singur loc pentru S1005 și S1003. [lotul 10, C69] + marele
+    contribuabil, forma de proprietate și prenumele declarantului (antetul le cere: `bilant.erori_antet`); fără administrator implicit."""
     import re
+    return {
+        "cui_numeric": re.sub(r"\D", "", p.get("cui") or ""),
+        "nume": p.get("nume"), "caen": re.sub(r"\D", "", p.get("caen") or ""),
+        "reg_com": p.get("reg_com") or "", "adresa": p.get("adresa") or "",
+        "cod_judet": cod_judet_sediu(p.get("judet")),   # [lotul 10, C69] fără „bucuresti” / 40 implicit
+        "mare_contribuabil": p.get("mare_contribuabil"),   # NULL = nedeclarat -> refuz
+        "forma_proprietate": p.get("forma_proprietate"),
+        "declarant_nume": p.get("declarant_nume"),
+        "declarant_prenume": p.get("declarant_prenume"),
+    }
+
+
+#: [lotul 10, C69] câmpul din Date firmă pe care refuzul îl aduce în vedere, în ordinea verificărilor (primul lipsă)
+_CAMP_ECRAN = (("reg_com", lambda pr: not str(pr.get("reg_com") or "").strip()),
+               ("judet", lambda pr: not pr.get("cod_judet")),
+               ("mare_contribuabil", lambda pr: pr.get("mare_contribuabil") is None),
+               ("forma_proprietate", lambda pr: str(pr.get("forma_proprietate") or "").strip() not in _b.FORME_PROPRIETATE),
+               ("declarant_nume", lambda pr: not _b.nume_administrator(pr)))
+
+
+def camp_lipsa(prof):
+    """Câmpul din Date firmă pe care refuzul îl aduce în vedere (`RefuzGenerare.camp_ecran`): primul lipsă, în ordinea verificărilor."""
+    _camp = next((c for c, lipsa in _CAMP_ECRAN if lipsa(prof)), None)
+    return ("df-" + _camp) if _camp else None
+
+
+def cere_an_incheiat(an, tip):
+    """[lotul 10, deficiența 383, comanda Costin 10.2 pct.1: „O declarație pe o perioadă neîncheiată se refuză la generare, cu motivul scris,
+    la toate declarațiile.”] Ecranul Bilanț generează pe drumul lui (`uc_tenants.s1005_xml` / `s1005_valideaza` / `s1003_*`), nu prin
+    dispecer — refuzul stă deci și în generator, cu aceeași regulă (`coada_api.perioada_neincheiata`)."""
+    from core import coada_api as _coada
+    motiv = _coada.perioada_neincheiata(an, None, tip=tip)
+    if motiv:
+        raise RefuzGenerare(motiv)
+
+
+def genereaza(conn, schema, an):
+    cere_an_incheiat(an, "s1005")
     av = []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
@@ -398,34 +489,24 @@ def genereaza(conn, schema, an):
         p = dict(cur.fetchone() or {})
         f10p, f10c, f20p, f30p = coloanele(cur, schema, "s1005", an, av)
         rl = _rulaje_67(cur, schema, an)
-    j = (p.get("judet") or "bucuresti").strip().lower()
-    prof = {
-        "cui_numeric": re.sub(r"\D", "", p.get("cui") or ""),
-        "nume": p.get("nume"), "caen": re.sub(r"\D", "", p.get("caen") or ""),
-        "reg_com": p.get("reg_com") or "", "adresa": p.get("adresa") or "",
-        "cod_judet": _JUD.get(j, 40),
-        "declarant_nume": p.get("declarant_nume"),
-        "intocmit_nume": p.get("declarant_nume"),
-    }
+        av.extend(avertismente_rulaje(cur, schema, an))
+    av.extend(avertismente_evidenta_an(conn, schema, an))   # [lotul 10, 436] ce e în afara evidenței validate a anului
+    prof = profil_bilant(p)
     if not prof["reg_com"]:
         av.append("Nr. Reg. Com. lipsă în Profil firma (câmp obligatoriu S1005).")
-    if not prof.get("declarant_nume"):
-        # [declarant thread 3] Regula 4: fara fabricare tacita a administratorului
-        av.append("Bilanț: declarantul (administrator) lipsește din profil — se trece implicit "
-                  "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     f20c = _b.f20_din_rulaje(rl)
     if f10c.get(15) != f10c.get(49):
         av.append(f"Verificare: rândul 15 (F) = {f10c.get(15)} diferă de rândul 49 (J) = {f10c.get(49)} — datoriile peste un an, "
                   "provizioanele sau veniturile în avans pot explica diferența.")
     _er = erori_generare(prof)
-    if _er:
-        raise ValueError("Bilanț nu se poate genera: " + " ".join(_er))
+    if _er:   # [lotul 10, C69] refuzul trimite la Date firmă (butonul și câmpul de completat), ca la D406
+        raise RefuzGenerare("Bilanț nu se poate genera: " + " ".join(_er), ecran="date_firma", camp_ecran=camp_lipsa(prof))
     return _b.xml_s1005(prof, an, f10p, f10c, f20p, f20c, f30p, _b.f30_din_rulaje(rl)), av
 
 
 def genereaza_s1003(conn, schema, an):
     """S1003 (mici): F10 identic, F20 complet."""
-    import re
+    cere_an_incheiat(an, "s1003")
     av = []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
@@ -433,17 +514,11 @@ def genereaza_s1003(conn, schema, an):
         p = dict(cur.fetchone() or {})
         f10p, f10c, f20p, _f30p = coloanele(cur, schema, "s1003", an, av)
         rl = _rulaje_67(cur, schema, an)
-    j = (p.get("judet") or "bucuresti").strip().lower()
-    prof = {
-        "cui_numeric": re.sub(r"\D", "", p.get("cui") or ""),
-        "nume": p.get("nume"), "caen": re.sub(r"\D", "", p.get("caen") or ""),
-        "reg_com": p.get("reg_com") or "", "adresa": p.get("adresa") or "",
-        "cod_judet": _JUD.get(j, 40),
-        "declarant_nume": p.get("declarant_nume"),
-        "intocmit_nume": p.get("declarant_nume"),
-    }
+        av.extend(avertismente_rulaje(cur, schema, an))
+    av.extend(avertismente_evidenta_an(conn, schema, an))   # [lotul 10, 436] ce e în afara evidenței validate a anului
+    prof = profil_bilant(p)
     f20c = _b.f20_complet_din_rulaje(rl)
     _er = erori_generare(prof)
-    if _er:
-        raise ValueError("Bilanț nu se poate genera: " + " ".join(_er))
+    if _er:   # [lotul 10, C69] refuzul trimite la Date firmă (butonul și câmpul de completat), ca la D406
+        raise RefuzGenerare("Bilanț nu se poate genera: " + " ".join(_er), ecran="date_firma", camp_ecran=camp_lipsa(prof))
     return _b.xml_s1003(prof, an, f10p, f10c, f20p, f20c), av

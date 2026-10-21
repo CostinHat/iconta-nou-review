@@ -634,7 +634,11 @@ export function alegeDacaLipseste(salvat) {
 // citește: true / false / null (neales). `atribute` = restul atributelor (`id="…"`, `aria-label` …); clasa `camp-input` și `aria-label` (din `eticheta`) le pune helperul.
 export function selectDaNu(atribute, salvat, eticheta) {
   const v = salvat === true || salvat === 1 || salvat === "true" ? "true" : (salvat === false || salvat === 0 || salvat === "false" ? "false" : "");
-  return `<select class="camp-input" aria-label="${esc(eticheta || "Da sau Nu")}" ${atribute}>${v ? "" : ALEGE}<option value="true"${v === "true" ? " selected" : ""}>Da</option><option value="false"${v === "false" ? " selected" : ""}>Nu</option></select>`;
+  // [lotul 10, C72] clasa apelantului se UNEȘTE cu `camp-input`: un al doilea atribut `class` pe același element e ignorat de browser
+  // (Clienți: `class="cl-afiliat"` pierdut -> ascultătorul nelegat -> „Salvează” inactiv pentru totdeauna)
+  const m = /\bclass="([^"]*)"/.exec(atribute || "");
+  const rest = m ? atribute.replace(m[0], "") : (atribute || "");
+  return `<select class="camp-input${m ? " " + m[1] : ""}" aria-label="${esc(eticheta || "Da sau Nu")}" ${rest}>${v ? "" : ALEGE}<option value="true"${v === "true" ? " selected" : ""}>Da</option><option value="false"${v === "false" ? " selected" : ""}>Nu</option></select>`;
 }
 export function daNu(el) {
   return !el || el.value === "" ? null : el.value === "true";

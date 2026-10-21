@@ -26,11 +26,12 @@ def _db_ok():
 
 def _profil(cur, reg_com):
     rc = "NULL" if reg_com is None else "'%s'" % reg_com
+    # [lotul 10, C69] + mare_contribuabil / forma_proprietate: bilanțul le cere (bifaMC / codJJ, codPP), altfel se oprește
     cur.execute("""INSERT INTO firma_profil
         (id,nume,cui,reg_com,adresa,oras,judet,caen,banca,iban,tip_decont,platitor_tva,
-         declarant_nume,declarant_prenume,declarant_functie)
+         declarant_nume,declarant_prenume,declarant_functie,mare_contribuabil,forma_proprietate)
         VALUES (1,'ZTEST BILANT SRL','14399840',%s,'Str 1','Buc','B','6202','Banca Test',
-         'RO49AAAA1B31007593840000','T',false,'Ada','Ada','ADMINISTRATOR')""" % rc)
+         'RO49AAAA1B31007593840000','T',false,'Ada','Ada','ADMINISTRATOR',false,'35')""" % rc)
 
 
 def _cu_schema(reg_com, fn):

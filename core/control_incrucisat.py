@@ -151,16 +151,22 @@ def rulaje_luna(conn, schema, an, luna, conturi):
 #      control_fiscal_api le CHEAMA, nu le absoarbe (motoarele raman separate - DECIZII 18.07 B).
 
 def dividende_distribuite(conn, schema, an):
-    """(suma_457, are_note) pentru anul `an`, DOAR note validate. Dividende distribuite = rulaj pe
-    cont_debit LIKE '457%' (ACEEASI sursa ca d205.py, care genereaza D205). are_note = exista MACAR o
-    nota validata pe an - ca sa distingem "nu s-au distribuit dividende" de "nu pot verifica, lipsesc
-    note". Faptul pe care se decide D205 (semafor fact-aware)."""
+    """(fapt, are_note) pentru anul `an`. `fapt` = AFIRMAȚIA tipată (fel „fapt”, pe an) de ce se datorează D205, sau None.
+    [lotul 10, deciziile Costin A și B, verbatim în DECIZII] Faptul vine din ACEEAȘI citire ca generatorul (`d205.motiv_datorat`):
+    dividendele distribuite în an — și cele neplătite la 31.12 („D205 include și dividendele distribuite neplătite la 31.12, pe
+    anul distribuirii”) —, cele plătite în an și, la firma preluată în an, cele din balanța de deschidere („dividende plătite înainte
+    de preluare, din balanța de deschidere — beneficiarii se completează manual în D205”). Înainte: numai debitul 457 din note, deci
+    o distribuire neplătită și dividendele dinainte de preluare nu făceau D205 datorat. are_note = există MĂCAR o notă validată pe an
+    - ca să distingem „nu s-au distribuit dividende” de „nu pot verifica, lipsesc note”."""
+    from core import d205 as _d205
     de = "%04d-01-01" % an
     pana = "%04d-01-01" % (an + 1)
+    motiv = _d205.motiv_datorat(conn, an)
     with conn.cursor() as cur:
-        suma = _d(_repo.select_inregistrari_linii_2(cur, schema, de, pana)[0])
         are_note = _repo.select_inregistrari(cur, schema, de, pana) is not None
-    return suma, are_note
+    fapt = _af.afirmatie("fapt", "d205", motiv, an=an, luna=None,
+                         temei_completitudine="notele validate pe %d (conturile 457 / 456) și balanța de deschidere" % an) if motiv else None
+    return fapt, are_note
 
 
 def d301_luni_operatiuni(conn, schema, an):
@@ -596,9 +602,22 @@ def _d112_depus_xml(conn, schema, an, luna):
     return r[0] if r and r[0] else None
 
 
+def _d112_nedatorata(an, luna):
+    """Fără salariați, D112 nu se datorează -> NU producem verdict. Verdele pe 0-vs-0 ar fi minciuna („am verificat, coincide” despre un
+    subiect inexistent) - absent, nu verde. DECIZII 23.07."""
+    return {"an": an, "luna": luna, "stare": "verde", "constatari": [],
+            "limita": "Fără salariați în lună — D112 nu se datorează, nimic de verificat.",
+            "modul": MODUL, "reguli": REGULI}
+
+
 def verifica_d112(conn, schema, an, luna):
     """F162: D112 vs contabilitate. Gri daca declaratia nu se poate genera."""
     from core import d112 as _d112
+    # [lotul 10] Întâi faptul care decide dacă D112 se datorează (salariat activ în lună), apoi generarea: generatorul cere acum
+    # profilul complet (CAEN, C69 / 427), iar o firmă fără salariați primea „nu se poate verifica — lipsește CAEN-ul” în loc de
+    # „nu se datorează”.
+    if not are_salariat_activ_luna(conn, schema, an, luna):
+        return _d112_nedatorata(an, luna)
     # [interdictia 32] Intai ce s-a DEPUS. Daca s-a pastrat, aia e declaratia care traieste la ANAF
     # si aia trebuie confruntata cu evidenta. Regenerarea e a doua alegere, si se spune in temei.
     sursa_declarat = "regenerat"
@@ -636,11 +655,7 @@ def verifica_d112(conn, schema, an, luna):
     ciorne = note_salarii_ciorna(conn, schema, an, luna)
     nr_sal = int(totaluri.get("_nr_salariati", 0))
     if nr_sal == 0:
-        # gardă: fără salariați, D112 nu se datorează -> NU producem verdict. Verdele pe 0-vs-0 ar fi
-        # minciuna ("am verificat, coincide" despre un subiect inexistent) - absent, nu verde. DECIZII 23.07.
-        return {"an": an, "luna": luna, "stare": "verde", "constatari": [],
-                "limita": "Fără salariați în lună — D112 nu se datorează, nimic de verificat.",
-                "modul": MODUL, "reguli": REGULI}
+        return _d112_nedatorata(an, luna)
     constatari = compara_d112(totaluri, rulaje, ciorne, nr_sal,
                               sursa_declarat=sursa_declarat,
                               patru_ochi=_patru_ochi_activ(conn, schema))
@@ -1439,7 +1454,7 @@ def _thunk_d205(conn, schema, an, luna):
     # replica de aici împărțea după cotele actuale și ar fi divergit FALS de generator pe orice firmă cu o cesiune.
     prof, beneficiari = _g.pull_beneficiari(conn, schema, per)
     if not beneficiari:
-        raise _SkipSubiect("D205 fără dividende plătite (cont 457) - nimic de reconciliat.")
+        raise _SkipSubiect("D205 fără dividende distribuite sau plătite (conturile 457 / 456) - nimic de reconciliat.")
     res = _g.calcul_d205(prof, per.an, beneficiari)
     return lambda: _r.reconciliaza(conn, schema, per, res, None)
 
@@ -2009,6 +2024,13 @@ def _pereche_691(conn, schema, an, p48, d_grup):
     rulaje = rulaje_interval(conn, schema, "%d-01-01" % an, "%d-01-01" % (an + 1),
                              [CONT_IMPOZIT_PROFIT])
     contabil = _d(rulaje.get(CONT_IMPOZIT_PROFIT, {}).get("debit") or 0)
+    # [lotul 10, deficiența 425] plus rulajul debitor PRELUAT al lui 691 (01.01 .. data preluării, din balanța de deschidere): la o firmă
+    # preluată în cursul anului, impozitul trimestrelor dinainte de preluare e în balanța importată, nu în note
+    import datetime as _dt
+    from core import rulaje_preluate as _rp
+    with conn.cursor() as cur:
+        prel = _rp.rulaje(cur, schema, _dt.date(an, 1, 1), _dt.date(an + 1, 1, 1), fara_inchidere_121=True)
+    contabil += prel.get(CONT_IMPOZIT_PROFIT, (Decimal("0"), Decimal("0")))[0]   # același cont ca `rulaje_interval` (exact)
     dif = p48 - contabil
     # O nota de regularizare inca in CIORNA explica LEGITIM diferenta — iar o explicatie legitima
     # strica definitia unei constatari CERTE (criteriul lui Costin). Se inchide numind-o: cat timp
@@ -2393,7 +2415,14 @@ def _amortizare_inregistrata(conn, schema, an, conturi):
     if not conturi:
         return {}
     r = rulaje_interval(conn, schema, "1900-01-01", "%d-01-01" % (an + 1), sorted(conturi))
-    return {c: _d(v.get("credit")) - _d(v.get("debit")) for c, v in r.items()}
+    # [lotul 10, deficiența 425 — generalizarea pe clasă] plus soldul PRELUAT al contului (balanța de deschidere,
+    # `rulaje_preluate.sold_preluat`): la o firmă preluată, amortizarea cumulată de dinainte de preluare e în soldul de deschidere, nu
+    # în note — fără el, perechea ieșea „roșie, divergență certă” pe o evidență corectă
+    import datetime as _dt
+    from core import rulaje_preluate as _rp
+    with conn.cursor() as cur:
+        prel = {c: _rp.sold_preluat(cur, schema, c, _dt.date(an + 1, 1, 1)) for c in r}
+    return {c: _d(v.get("credit")) - _d(v.get("debit")) + prel[c][1] - prel[c][0] for c, v in r.items()}
 
 
 def _cu_motiv(motiv, constatare):

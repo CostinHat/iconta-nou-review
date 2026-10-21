@@ -23,6 +23,33 @@ def zile_de_acum(inceput):
     return sorted({inceput, _dt.date.today()})
 
 
+Perioada = __import__("collections").namedtuple("Perioada", "an luna trim inceput sfarsit")
+
+
+def perioada_incheiata(periodicitate="lunar", azi=None):
+    """[lotul 10, deficiența 383 — comanda Costin 10.2 pct.1: „O declarație pe o perioadă neîncheiată se refuză la generare, cu motivul
+    scris, la toate declarațiile.”] Cea mai recentă perioadă ÎNCHEIATĂ după periodicitatea declarației („lunar” / „trimestrial” /
+    „anual”): luna trecută, trimestrul trecut, anul trecut — aceeași regulă ca perioada propusă de ecranul Declarații când nimic nu e
+    scadent (`static/js/ecrane/declaratii.js::perioadaImplicita`) și ca refuzul serverului (`coada_api.perioada_neincheiata`). Granițele:
+    în ianuarie luna trecută e 12/anul trecut; în prima lună a unui trimestru, trimestrul trecut e cel dinainte (în ianuarie T4/anul
+    trecut). -> `Perioada(an, luna, trim, inceput, sfarsit)`: `luna` numai la lunar, `trim` numai la trimestrial (altfel None); `inceput` /
+    `sfarsit` = prima / ultima zi a perioadei — documentele de probă se datează între ele (`inceput.replace(day=n)` la lunar).
+    Un test care pune documentele în perioada asta și generează pe ea descrie pașii contabilului pe o perioadă pe care aplicația o
+    generează. Calculată o dată, la importul testului: o rulare care trece peste miezul nopții (și peste o lună) o găsește tot încheiată."""
+    import calendar
+    a = azi or _dt.date.today()
+    if periodicitate == "anual":
+        return Perioada(a.year - 1, None, None, _dt.date(a.year - 1, 1, 1), _dt.date(a.year - 1, 12, 31))
+    if periodicitate == "trimestrial":
+        t = (a.month - 1) // 3                      # trimestrele încheiate în anul de azi: 0 în T1 -> T4 al anului trecut
+        an, trim = (a.year, t) if t else (a.year - 1, 4)
+        return Perioada(an, None, trim, _dt.date(an, trim * 3 - 2, 1), _dt.date(an, trim * 3, calendar.monthrange(an, trim * 3)[1]))
+    if periodicitate != "lunar":
+        raise ValueError("periodicitate necunoscută: %r" % (periodicitate,))
+    sf = a.replace(day=1) - _dt.timedelta(days=1)
+    return Perioada(sf.year, sf.month, None, sf.replace(day=1), sf)
+
+
 def _db():
     from core import db
     try:

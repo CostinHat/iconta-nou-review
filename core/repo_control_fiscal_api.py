@@ -74,10 +74,23 @@ def select_depusa_curenta(cur, tenant_id, an, luna, tip):
 def insert_depusa_extern(cur, tenant_id, an, luna, tip, data_depunere, recipisa, sursa="extern"):
     """[08.10, U2] Depunere MARCATĂ (`extern` / `contabil_anterior`): versiune nouă (nr_depunere = max + 1), ca orice depunere (F163v2).
     O marcare modificată e o versiune nouă; cea veche rămâne istoric."""
-    cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, data_depunere, sursa, recipisa, nr_depunere) "
-                "SELECT %s, %s, %s, %s, %s, %s, %s, COALESCE(MAX(nr_depunere), 0) + 1 "
-                "FROM public.declaratii_depuse WHERE tenant_id = %s AND an = %s AND luna = %s AND tip = %s",
-                (tenant_id, an, luna, tip, data_depunere, sursa, recipisa, tenant_id, an, luna, tip))
+    from core import chei_unice as _chei
+
+    def _scrie():
+        cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, data_depunere, sursa, recipisa, nr_depunere) "
+                    "SELECT %s, %s, %s, %s, %s, %s, %s, COALESCE(MAX(nr_depunere), 0) + 1 "
+                    "FROM public.declaratii_depuse WHERE tenant_id = %s AND an = %s AND luna = %s AND tip = %s",
+                    (tenant_id, an, luna, tip, data_depunere, sursa, recipisa, tenant_id, an, luna, tip))
+    # [lotul 10, C73 / U3] `nr_depunere` îl dă aplicația (MAX + 1): cursa cu altă depunere pe aceeași perioadă se reia, nu cade cu 500
+    _chei.reincearca_la_dublura(cur, ("declaratii_depuse_pkey",), _scrie, refuz_nr_depunere)
+
+
+def refuz_nr_depunere(cur, e):
+    """[lotul 10, C73 / U3] Refuzul după `chei_unice.INCERCARI_LA_CURSA` curse pierdute la rând pe `nr_depunere` (MAX + 1) — n-are drum în
+    practică; aceeași formă la orice scriere a unei depuneri (`coada_api.marcheaza_depusa`, marcarea „depusă extern”)."""
+    from core import chei_unice as _chei
+    return _chei.CheieDublata("Depunerea nu s-a putut înregistra: în același timp s-au scris prea multe depuneri pe aceeași declarație și "
+                              "perioadă. Nimic nu s-a scris; încearcă din nou.")
 
 
 def delete_marcari(cur, tenant_id, an, luna, tip):

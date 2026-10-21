@@ -21,6 +21,7 @@ Conventia de sold/storno e IDENTICA cu core/reconciliere_api.py (sursa unica):
 import json
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] numele dublat -> NUME_EXISTA și la cursă, nu 500
 
 CONT_CLIENTI, CONT_FURNIZORI = "4111", "401"
 
@@ -69,7 +70,11 @@ def durata_medie_incasare(conn, schema, de, pana):
     """Durata medie (zile) de la emitere la incasarea EFECTIVA, pe facturi emise
     din perioada care sunt integral incasate. Data incasarii = ultima decontare
     (nota cu cont_credit=4111), NU `platita_la` (care prinde doar platile online
-    prin provider si ar da un numar partinitor)."""
+    prin provider si ar da un numar partinitor).
+    [lotul 10, 428, decizia Costin „Construiesc acum”] decontarea = și compensarea (nota 401 = 4111 legată de factură prin `compensari`,
+    `compensari_api.nota_de_compensare`): HG 1/2016 pct.26 alin.(7) — încasarea se face și prin „compensarea”."""
+    from core import compensari_api as _cz
+    cz = _cz.nota_de_compensare("i", "f.id", f"{schema}.")
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
             WITH e AS (
@@ -78,14 +83,14 @@ def durata_medie_incasare(conn, schema, de, pana):
                        - COALESCE((SELECT SUM(l.suma)
                                    FROM {schema}.inregistrari i
                                    JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                                   WHERE i.factura_id = f.id AND l.cont_credit = %s), 0)
+                                   WHERE (i.factura_id = f.id OR {cz}) AND l.cont_credit = %s), 0)
                        + COALESCE((SELECT SUM(COALESCE(st.total_lei, st.total))
                                    FROM {schema}.facturi st
                                    WHERE st.storno_din_id = f.id), 0) AS sold,
                      (SELECT MAX(i.data)
                         FROM {schema}.inregistrari i
                         JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                        WHERE i.factura_id = f.id AND l.cont_credit = %s) AS data_incasare
+                        WHERE (i.factura_id = f.id OR {cz}) AND l.cont_credit = %s) AS data_incasare
               FROM {schema}.facturi f
               WHERE f.directie = 'emisa' AND f.tip = 'factura'
                 AND f.status NOT IN ('anulata', 'storno')
@@ -117,7 +122,10 @@ def lista_parteneri(conn, schema):
 
 def fisa_partener(conn, schema, cui, de, pana):
     """Fisa unui partener (dupa CUI): facturile lui (ambele directii) din perioada,
-    fiecare cu decontat si sold (conventia reconciliere), + sumar. Read-only."""
+    fiecare cu decontat si sold (conventia reconciliere), + sumar. Read-only.
+    [lotul 10, 428] decontat = și compensarea (ca `reconciliere_api.facturi_deschise`, `compensari_api.nota_de_compensare`)."""
+    from core import compensari_api as _cz
+    cz = _cz.nota_de_compensare("i", "f.id", f"{schema}.")
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
             SELECT f.id, f.numar, f.data_emitere, f.directie, f.tert_nume,
@@ -125,7 +133,7 @@ def fisa_partener(conn, schema, cui, de, pana):
                    COALESCE((SELECT SUM(l.suma)
                              FROM {schema}.inregistrari i
                              JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                             WHERE i.factura_id = f.id
+                             WHERE (i.factura_id = f.id OR {cz})
                                AND ((f.directie = 'emisa'   AND l.cont_credit = %s)
                                  OR (f.directie = 'primita' AND l.cont_debit  = %s))), 0) AS decontat,
                    COALESCE((SELECT SUM(COALESCE(st.total_lei, st.total))
@@ -186,15 +194,17 @@ def salveaza_varianta(conn, schema, tip_raport, nume, filtru, creat_de):
     nume = (nume or "").strip()
     if not nume:
         return {"ok": False, "cod": "NUME_GOL"}
+    # [lotul 10, C73 / U2] numele dublat îl refuză baza (`rapoarte_salvate_tip_nume_unic`), prin helperul comun: ACELAȘI cod NUME_EXISTA
+    # la a doua salvare și la cursa dintre două salvări simultane (înainte: `SELECT`, apoi `INSERT` — în cursă, a doua cădea cu 500).
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"SELECT 1 FROM {schema}.rapoarte_salvate WHERE tip_raport=%s AND nume=%s",
-                    (tip_raport, nume))
-        if cur.fetchone():
+        try:
+            with _chei.refuza_dublura(cur, ("rapoarte_salvate_tip_nume_unic",), lambda cur, e: _chei.CheieDublata("NUME_EXISTA", nume)):
+                cur.execute(f"""INSERT INTO {schema}.rapoarte_salvate (tip_raport, nume, filtru, creat_de)
+                                VALUES (%s,%s,%s,%s) RETURNING id""",
+                            (tip_raport, nume, json.dumps(filtru or {}), creat_de))
+                vid = cur.fetchone()["id"]
+        except _chei.CheieDublata:
             return {"ok": False, "cod": "NUME_EXISTA"}
-        cur.execute(f"""INSERT INTO {schema}.rapoarte_salvate (tip_raport, nume, filtru, creat_de)
-                        VALUES (%s,%s,%s,%s) RETURNING id""",
-                    (tip_raport, nume, json.dumps(filtru or {}), creat_de))
-        vid = cur.fetchone()["id"]
     return {"ok": True, "id": vid}
 
 

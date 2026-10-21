@@ -15,6 +15,7 @@ rollback al notei anulează și numărul. Documentul se scrie în `inregistrari.
 15.10.2026”), sursa unică pe care o citesc Registrul-jurnal și validarea (`jurnal_api.document_justificativ`).
 """
 import datetime as _dt
+import re
 
 #: tipul -> felul documentului, cum îl citește omul
 TIPURI = {
@@ -25,6 +26,9 @@ TIPURI = {
     "nota_calcul": "Notă de calcul",
     "borderou_achizitie": "Borderou de achiziție",   # [401] numărul borderoului (BA-n) când omul nu scrie unul
 }
+
+#: [401, 434] numărul borderoului de achiziție scris de aplicație: „BA-<n>”
+PREFIX_BORDEROU = "BA-"
 
 
 def _p(schema):
@@ -37,13 +41,39 @@ def _data(d):
     return _dt.date.fromisoformat(str(d)[:10])
 
 
-def _numar(cur, schema, tip, d):
-    # upsert-ok: contor atomic pe (tip, an) - incrementarea E operatiunea, nu o suprascriere (numarul urmator al documentului)
-    cur.execute("INSERT INTO %sdocumente_interne_contor (tip, an, ultim) VALUES (%%s, %%s, 1) "
-                "ON CONFLICT (tip, an) DO UPDATE SET ultim = %sdocumente_interne_contor.ultim + 1 RETURNING ultim"
-                % (_p(schema), _p(schema)), (tip, d.year))
+def _unu(cur):
     r = cur.fetchone()
-    return r["ultim"] if isinstance(r, dict) else r[0]
+    return (list(r.values())[0] if isinstance(r, dict) else r[0]) if r else None
+
+
+def cel_mai_mare(cur, schema, tip, an):
+    """[lotul 10, deficiența 434] Cel mai mare număr pe care îl poartă DEJA un document `tip` din anul `an`, oricine l-ar fi scris.
+    Comanda Costin 10.2 pct.4, verbatim: „la F1, borderoul de achiziție nou (Maria Ionescu, 20.10) a primit numărul BA-1, deși BA-1
+    există deja (Ion Popescu, 19.10). Numerotarea borderourilor e unică și continuă.” Cauza: contorul era SINGURA sursă a numărului,
+    dar numărul se poate scrie și de mână — borderoul („Nr. borderou”), nota („Document justificativ”) —, iar un număr scris de mână
+    (sau scris înaintea contorului) nu-l mișca. Sursele: borderoul = `facturi.numar` „BA-<n>” (tip `borderou`, anul datei); celelalte
+    documente interne = `inregistrari.document_ref` „<Fel> nr <n> din zz.ll.<an>” (forma `jurnal_api.eticheta_document`)."""
+    _cere_tip(tip)
+    if tip == "borderou_achizitie":
+        cur.execute("SELECT COALESCE(max((regexp_match(upper(btrim(numar)), %%s))[1]::bigint), 0) FROM %sfacturi "
+                    "WHERE tip = 'borderou' AND EXTRACT(YEAR FROM data_emitere) = %%s" % _p(schema),
+                    ("^" + re.escape(PREFIX_BORDEROU) + "([0-9]{1,9})$", int(an)))
+    else:
+        cur.execute("SELECT COALESCE(max((regexp_match(btrim(document_ref), %%s))[1]::bigint), 0) FROM %sinregistrari "
+                    "WHERE document_ref LIKE %%s" % _p(schema),
+                    ("^" + re.escape(TIPURI[tip]) + r" nr ([0-9]{1,9}) din [0-9]{2}\.[0-9]{2}\." + str(int(an)) + "( |$)",
+                     TIPURI[tip] + " nr %"))
+    return int(_unu(cur) or 0)
+
+
+def _numar(cur, schema, tip, d):
+    # [434] contorul pornește de la cel mai mare număr existent al anului: un număr nu se dă de două ori, iar șirul continuă
+    peste = cel_mai_mare(cur, schema, tip, d.year)
+    # upsert-ok: contor atomic pe (tip, an) - incrementarea E operatiunea, nu o suprascriere (numarul urmator al documentului)
+    cur.execute("INSERT INTO %sdocumente_interne_contor (tip, an, ultim) VALUES (%%s, %%s, %%s + 1) "
+                "ON CONFLICT (tip, an) DO UPDATE SET ultim = GREATEST(%sdocumente_interne_contor.ultim, %%s) + 1 RETURNING ultim"
+                % (_p(schema), _p(schema)), (tip, d.year, peste, peste))
+    return _unu(cur)
 
 
 def _cere_tip(tip):
@@ -57,6 +87,15 @@ def urmatorul(conn, schema, tip, data):
     _cere_tip(tip)
     with conn.cursor() as cur:
         return _numar(cur, schema, tip, _data(data))
+
+
+def borderou_cu_numarul(cur, schema, numar, data):
+    """[434] Borderoul de achiziție care poartă deja numărul `numar` în anul datei (aceeași formă ca indexul unic din bază:
+    `upper(btrim(numar))`, anul datei) — (numărul, data, vânzătorul) sau None. Un număr scris de mână nu se dă a doua oară."""
+    cur.execute("SELECT numar, data_emitere, tert_nume FROM %sfacturi WHERE tip = 'borderou' AND upper(btrim(numar)) = upper(btrim(%%s)) "
+                "AND EXTRACT(YEAR FROM data_emitere) = %%s ORDER BY id LIMIT 1" % _p(schema), (str(numar), _data(data).year))
+    r = cur.fetchone()
+    return (tuple(r.values()) if isinstance(r, dict) else tuple(r)) if r else None
 
 
 def genereaza(cur, schema, tip, data, nota_ids):

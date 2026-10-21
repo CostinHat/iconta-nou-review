@@ -86,7 +86,8 @@ def _nir(conn, articol=None, data="2099-10-07"):
 def _factura(conn, pret=55, data="2099-10-20"):
     from core import facturi_api as fa
     return fa.creeaza_factura(conn, "FP1", data, "primita", [{"descriere": "Marfa A", "cantitate": 10, "pret_unitar": pret, "cota_tva": 21}],
-                              tert_nume="FURNIZOR", tert_cui="RO" + CUI)["factura_id"]
+                              tert_nume="FURNIZOR", tert_cui="RO" + CUI,
+                              tert_oras="Iasi")["factura_id"]   # [lotul 10, C69] D406 cere localitatea partenerului (S.AD.5 City)
 
 
 def _conteaza(conn, fid, nir_legat=None):
@@ -298,7 +299,9 @@ def test_d406_analiticul_se_declara_pe_sintetic_si_trece_a_doua_cale(lume):
         _conteaza(conn, _factura(conn, data="2099-09-20"), nir_legat=n["id"])
         with conn.cursor() as cur:
             cur.execute("UPDATE inregistrari SET status = 'validata'")
-            cur.execute("UPDATE firma_profil SET adresa = 'Str. Proba 1', oras = 'Bucuresti', reg_com = 'J40/1/2099', tip_decont = 'L'")
+            # [lotul 10, C69] + telefon, IBAN, declarant: antetul D406 le cere (schema ANAF S.CTH.2, S.BA.1, S.PN.2/5), nu le mai inventează
+            cur.execute("UPDATE firma_profil SET adresa = 'Str. Proba 1', oras = 'Bucuresti', reg_com = 'J40/1/2099', tip_decont = 'L', "
+                        "telefon = '0212223344', iban = 'RO59BTRLRONCRT0C69TEST01', declarant_nume = 'POPESCU', declarant_prenume = 'ION'")
         from core import d406
         xml, res = d406.genereaza(conn, SCH, 2099, 9)
         from xml.etree import ElementTree as ET

@@ -125,6 +125,7 @@ ETICHETE = {
     # D406 — note și facturi
     "id": "notă", "data": "data", "descriere": "descriere", "jurnal": "jurnal", "linii": "linii", "nr": "număr",
     "partener_nume": "partener", "cont": "cont",
+    "oras": "localitatea partenerului", "tara": "țara partenerului",   # [lotul 10, C69] BillingAddress din D406 (nu mai e „-”)
 }
 
 

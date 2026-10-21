@@ -20,6 +20,14 @@ Retrimiterea: o notă ciornă nouă, scrisă de un utilizator fără drept de va
 UNDE = {
     "factura": ("factura %s", "în Facturi: corectezi factura (stornare / factură nouă), apoi «Contabilizează»"),
     "plata_factura": ("plata facturii %s", "în Bancă sau Casă, unde s-a înregistrat plata"),
+    # [lotul 10, deficiența 401, comanda Costin 10.2 pct.7a, verbatim] „sub nota borderoului, textul zice «factura de achiziție BA-1» și
+    # trimite la Facturi.” Borderoul de achiziție (OMFP 2634/2015, cod 14-4-13) e documentul firmei, scris din Operațiuni; nu e o factură
+    # și nu se stornează din Facturi (`facturi_api.storneaza`: numai facturi emise) — după validare, greșeala lui se corectează printr-o
+    # notă de corecție, ca la NIR-ul aflat în evidență (`stocuri_api._nir_de_refacut`)
+    "borderou": ("borderoul de achiziție %s", "în Operațiuni › „Achiziție de la neînregistrat”, unde s-a scris (borderoul nu e o factură și "
+                                              "nu se stornează din Facturi); după validare, o greșeală în el se corectează printr-o notă de "
+                                              "corecție în Registrul jurnal"),
+    "plata_borderou": ("plata borderoului de achiziție %s", "în Bancă sau Casă, unde s-a înregistrat plata"),
     "stoc": ("mișcarea de stoc %s", "în Stoc: din documentul mișcării (factura, NIR-ul, inventarul, rețeta)"),
     "nir": ("NIR-ul %s", "în Stoc › NIR-urile lunii: deschizi NIR-ul"),
     "casa": ("operațiunea de casă %s", "în Casă: ștergi operațiunea și o scrii din nou"),
@@ -28,6 +36,11 @@ UNDE = {
     "salarii": ("statul de plată %s", "în Salarizare: corectezi statul (salariați, pontaj, contracte) și apeși «Contabilizează statul»"),
     "raport_z": ("raportul Z %s", "în Casa de marcat: raportul Z"),
     "amortizare": ("amortizarea %s", "în Mijloace fixe: amortizarea lunii"),
+    # [lotul 10, 428] nota compensării derivă din ordinul de compensare (HG 685/1999 anexa 2 art.11: „Ordinul de compensare se anexeaza la
+    # nota contabila”) și din rândul `compensari`: editată în jurnal, suma notei s-ar despărți de compensare. Ștergerea (ciornă) rămâne:
+    # rândul `compensari` cade odată cu nota (ON DELETE CASCADE), iar facturile redevin deschise
+    "compensare": ("%s", "în Compensări: ștergi nota ciornă a compensării din Registrul jurnal și generezi "
+                                                  "compensarea din nou"),
 }
 COD = "NOTA_DERIVATA"
 #: documentele care INDICĂ nota din alt tabel: ștergerea notei din jurnal ar lăsa legătura în aer
@@ -42,7 +55,7 @@ def se_sterge(cur, schema, doc, nota_id):
     nu se mai șterge (CF art.330 alin.(1), stornare), iar „Șterge” în jurnal o lăsa emisă și necontată, fără ca ceva să fi fost corectat."""
     if doc[0] in FARA_STERGERE:
         return False
-    if doc[0] != "factura":
+    if doc[0] not in ("factura", "borderou"):   # [401] borderoul: aceeași regulă ca factura primită (statusul lui)
         return True
     from core import nomenclator_status_factura as _nsf
     cur.execute("SELECT COALESCE(f.status, %%s) AS status FROM %sinregistrari i JOIN %sfacturi f ON f.id = i.factura_id "
@@ -74,16 +87,18 @@ def documentul_sursa(cur, schema, nota_id):
     if not n:
         return None
     sursa, factura_id, numar, doc, f_tip, f_serie, f_nr, f_data, data, et_nota = n
-    from core import jurnal_api as _j
     from core import pdf_util as _pu
     if not doc:
-        doc = (_j.eticheta_factura(f_tip, f_serie, f_nr, f_data).split(" ", 1)[-1] if f_nr is not None
+        # [401] numărul și data documentului, fără felul lui (felul îl spune `UNDE`): înainte, eticheta tăiată la primul cuvânt
+        # („Borderou de achiziție BA-1” -> „de achiziție BA-1”) ajungea în „factura %s” -> „factura de achiziție BA-1”
+        doc = ("%s din %s" % (_pu.numar_cu_serie(f_serie, f_nr), _pu.data_ro(f_data)) if f_nr is not None
                else "din %s" % _pu.data_ro(data))
+    borderou = f_tip == "borderou"
 
     def d(fel, eticheta=doc):
         return (fel, eticheta, et_nota)
     if factura_id and sursa == "facturi":
-        return d("factura")
+        return d("borderou" if borderou else "factura")
     if una("SELECT 1 FROM %smiscari_stoc WHERE inregistrare_id = %%s LIMIT 1" % s, nota_id):
         return d("stoc")
     r = una("SELECT numar FROM %snir WHERE inregistrari_ids @> to_jsonb(%%s::int) LIMIT 1" % s, nota_id)
@@ -96,8 +111,10 @@ def documentul_sursa(cur, schema, nota_id):
     if sursa == "banca" and una("SELECT 1 FROM %sextras_linii WHERE alocari->'inregistrari_ids' @> to_jsonb(%%s::int) LIMIT 1" % s,
                                 nota_id):
         return d("extras")
+    if una("SELECT 1 FROM %scompensari WHERE inregistrare_id = %%s LIMIT 1" % s, nota_id):
+        return d("compensare")
     if factura_id:                       # plată / încasare legată de factură, fără casă sau extras în spate
-        return d("plata_factura")
+        return d("plata_borderou" if borderou else "plata_factura")
     if sursa == "salarii" and numar:
         return d("salarii", numar)
     if sursa in ("bon", "horeca_z", "amef"):

@@ -74,9 +74,9 @@ def eu_ciorne(ctx):
     for t in firme:
         if not t.get("schema_name"):
             continue
-        with db.get_conn(t["schema_name"]) as conn:
-            note = coada_api.ciorne_proprii(conn, t["id"], uid)
-        if note:
+        # [lotul 10] o firmă ștearsă între citirea listei și interogarea ei iese din listă (era 500)
+        exista, note = db.pe_firma_existenta(t["schema_name"], lambda c, _t=t: coada_api.ciorne_proprii(c, _t["id"], uid))
+        if exista and note:
             out.append({"tenant_id": t["id"], "firma": t["nume"], "note": note})
     return {"total": sum(len(f["note"]) for f in out), "firme": out}
 
@@ -159,8 +159,12 @@ def eu_cabinet_set(date, ctx):
     """[P7 · use-case] Corpul rutei `/eu/cabinet`; docstringul ei a ramas in stratul HTTP."""
     if ctx["rol"] not in ("admin_firma", "superadmin"):
         raise _erori.FaraDrept("Doar administratorul cabinetului poate edita datele cabinetului.")
-    with db.get_conn() as conn:
-        r = auth_api.actualizeaza_cabinet(conn, ctx["firm"], nume=date.nume, cui=date.cui)
+    from core import chei_unice as _chei
+    try:
+        with db.get_conn() as conn:
+            r = auth_api.actualizeaza_cabinet(conn, ctx["firm"], nume=date.nume, cui=date.cui)
+    except _chei.CheieDublata as e:   # [lotul 10, C73 / U3] CUI-ul altui cabinet: refuz numit lângă câmpul `cui` (422), nu 500
+        raise _erori.DateInvalide(e.detaliu())
     if not r.get("ok"):
         raise _erori.DateInvalide(mesaj_din_cod(r.get("cod")))
     return r

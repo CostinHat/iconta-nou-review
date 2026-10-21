@@ -29,11 +29,11 @@ def _seed(conn, cui_firma="14399840", tert_cui="14399841", tert_nume="BADCO SRL"
         cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)
         cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), SCH))
         cur.execute("SET search_path TO \"%s\", public" % SCH)
-        cur.execute("INSERT INTO firma_profil (id,nume,cui,platitor_tva,tva_la_incasare,tip_decont) VALUES (1,%s,%s,true,false,'L')",
+        cur.execute("INSERT INTO firma_profil (id,nume,cui,platitor_tva,tva_la_incasare,tip_decont,oras,telefon,iban,declarant_nume,declarant_prenume) VALUES (1,%s,%s,true,false,'L','Bucuresti','0212223344','RO59BTRLRONCRT0C69TEST01','POPESCU','ION')",
                     ("ZTEST SRL", cui_firma))
-        cur.execute("INSERT INTO facturi (numar,data_emitere,directie,total,tva,tert_cui,tert_nume,status) "
-                    "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
-                    ("F1", "2026-08-10", directie, 119, 19, tert_cui, tert_nume, directie))
+        cur.execute("INSERT INTO facturi (numar,data_emitere,directie,total,tva,tert_cui,tert_nume,status,tert_oras) "  # [lotul 10, C69] localitatea partenerului: D406 o cere (S.AD.5 City „Mandatory”), nu mai scrie „-”
+                    "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                    ("F1", "2026-08-10", directie, 119, 19, tert_cui, tert_nume, directie, "Iasi"))
 
 
 @pytest.fixture

@@ -13,6 +13,7 @@ from psycopg2.extras import RealDictCursor
 from core import stocuri as _m
 from core import sume_lei as _sl
 from core import stocuri_anulare as _an  # [neconformitatea 09.10.2026] definiția „în evidență”, una singură
+from core import chei_unice as _chei  # [lotul 10, C73 / U2] NIR-ul dublat în cursă -> refuzul numit al verificării, nu 500
 
 
 def _noteaza(cur, schema, data, descriere, note, document_ref=None, numar=None):
@@ -43,7 +44,8 @@ def _nir_campuri_lipsa(linii, metoda=None):
     for i, l in enumerate(linii):
         n = i + 1
         if not str(l.get("denumire") or "").strip() and not l.get("articol_id"):
-            lipsa.append({"camp": "nir-l%d-denumire" % i, "eticheta": "Articolul %d: denumirea" % n})
+            lipsa.append({"camp": "nir-l%d-denumire" % i, "eticheta": "Articolul %d: denumirea" % n,
+                          "mesaj": "Scrie denumirea articolului %d sau alege-l din stoc." % n})
         cerute = [("cantitate", "cantitatea"), ("pret_achizitie", "prețul de achiziție")]
         if metoda == _ms.GV:
             cerute.append(("pret_vanzare", "prețul de raft (cu TVA)"))
@@ -53,7 +55,9 @@ def _nir_campuri_lipsa(linii, metoda=None):
             except (TypeError, ValueError):
                 ok = False
             if not ok:
-                lipsa.append({"camp": "nir-l%d-%s" % (i, camp), "eticheta": "Articolul %d: %s" % (n, et)})
+                # [lotul 10, 402, clasa 410] lângă câmp, fraza întreagă: ce lipsește și ce se cere, nu „Articolul 1: cantitatea”
+                lipsa.append({"camp": "nir-l%d-%s" % (i, camp), "eticheta": "Articolul %d: %s" % (n, et),
+                              "mesaj": "Articolul %d: scrie %s, un număr mai mare decât zero." % (n, et)})
     return lipsa
 
 
@@ -152,6 +156,21 @@ def _nir_de_refacut(cur, schema, nir_id):
     return {"id": v["id"], "numar": v["numar"], "note": note}, None
 
 
+def _refuz_nir_dublat(schema, nir):
+    """[lotul 10, C73 / U2] Refuzul cursei pierdute la salvarea NIR-ului: verificarea de dinainte, refăcută după întoarcerea la savepoint
+    (acum vede NIR-ul celeilalte cereri, deci întoarce exact refuzul pe care l-ar fi dat a doua salvare conștientă). Codul refuzului
+    stă în `existent["cod"]`; câmpul, la factura legată (`sn-factura`, ca refuzul de dinainte)."""
+    def refuz(cur, e):
+        if _chei.constrangerea(e) == "nir_factura_id_uq":
+            er, camp = _factura_pentru_nir(cur, schema, nir["factura_id"])[1], "sn-factura"
+        else:
+            er, camp = _nir_de_refacut(cur, schema, nir["refacut_din_id"])[1], None
+        if not er:   # n-a găsit NIR-ul celeilalte cereri: excepția bazei trece neatinsă
+            return None
+        return _chei.CheieDublata(er[1], existent={"cod": er[0]}, camp=camp)
+    return refuz
+
+
 #: [deficiența 399] refuzurile deciziei pe care NIR-ul nu o mai ia în locul omului (factura a sosit sau nu; TVA-ul transportului)
 COD_FACTURA_NEDECLARATA, COD_COTA_TRANSPORT = "FACTURA_NIR_NEDECLARATA", "COTA_TRANSPORT_NEALEASA"
 
@@ -166,7 +185,7 @@ def _decizia_omului(nir, metoda, factura):
         if fs is None:
             return {"eroare": "Spune dacă factura furnizorului a sosit: fără ea, datoria intră pe 408 «Furnizori - facturi nesosite», iar "
                               "TVA-ul stă neexigibil până la factură.", "cod": COD_FACTURA_NEDECLARATA,
-                    "erori_campuri": [{"camp": "sn-factura-sosita", "mesaj": "alege: a sosit sau nu"}]}
+                    "erori_campuri": [{"camp": "sn-factura-sosita", "mesaj": "Alege dacă factura furnizorului a sosit sau nu."}]}
         if fs is True:
             msg = ("Factura a sosit: la stocul la cost, factura primită aduce ea marfa în stoc și în contabilitate (Facturi primite → "
                    "validare pe contul de stoc). NIR-ul fără factură se face numai când factura n-a sosit." if metoda == _ms.CV else
@@ -191,7 +210,7 @@ def adauga_nir(conn, schema, nir, cere_decizia=False):
         return {"eroare": "Nota de recepție n-are niciun articol. O recepție consemnează ce a "
                           "intrat efectiv în gestiune — fără articole n-ar avea ce înregistra, "
                           "nici ce trece în jurnalul de cumpărări.",
-                "erori_campuri": [{"camp": "nir-linii", "mesaj": "cel puțin un articol"}]}
+                "erori_campuri": [{"camp": "nir-linii", "mesaj": "Adaugă cel puțin un articol pe NIR."}]}
     # [lotul 07.10 B, C10, decizia Costin] „evaluarea stocului (la cost CMP/FIFO sau la preț de vânzare cu amănuntul) e setare a
     # firmei și se aplică identic la intrări și ieșiri”. Setarea e `metoda_stoc` (etichetele ei spun evaluarea): cantitativ-
     # valoric = cost (ieșirile 607=371 la CMP), global-valoric = preț cu amănuntul (descărcarea lunară cu K). Nedeclarată -> se
@@ -218,11 +237,11 @@ def adauga_nir(conn, schema, nir, cere_decizia=False):
             return {"eroare": "La firma cu stocul la cost (cantitativ-valoric), factura primită aduce ea însăși marfa în fișa de "
                               "magazie și în contabilitate — NIR-ul nu se leagă de ea. Salvează NIR-ul fără factură, sau doar "
                               "factura.", "cod": "NIR_LEGAT_LA_COST",
-                    "erori_campuri": [{"camp": "sn-factura", "mesaj": "nu se leagă la stocul la cost"}]}
+                    "erori_campuri": [{"camp": "sn-factura", "mesaj": "La stocul la cost, NIR-ul nu se leagă de factură: lasă factura nealeasă."}]}
         if _d(nir.get("transport")) or _d(nir.get("taxe")):
             return {"eroare": "NIR-ul legat de factură nu adaugă transport sau taxe: costul vine din facturi (și accesoriul, din "
                               "factura lui). Lasă transportul și taxele la 0.", "cod": "TRANSPORT_LA_NIR_LEGAT",
-                    "erori_campuri": [{"camp": "sn-transport", "mesaj": "0 la NIR-ul legat de factură"}]}
+                    "erori_campuri": [{"camp": "sn-transport", "mesaj": "Lasă transportul la 0: la NIR-ul legat de factură costul vine din factură."}]}
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             factura, er = _factura_pentru_nir(cur, schema, nir["factura_id"])
         if er:
@@ -234,7 +253,7 @@ def adauga_nir(conn, schema, nir, cere_decizia=False):
     lipsa = _nir_campuri_lipsa(nir.get("linii") or [], metoda)
     if lipsa:
         return {"eroare": "Completează articolele: " + "; ".join(x["eticheta"] for x in lipsa),
-                "erori_campuri": [{"camp": x["camp"], "mesaj": x["eticheta"]} for x in lipsa]}
+                "erori_campuri": [{"camp": x["camp"], "mesaj": x["mesaj"]} for x in lipsa]}
     try:
         for _i, _l in enumerate(nir["linii"]):
             if _l.get("cota_tva") is None:
@@ -264,7 +283,7 @@ def adauga_nir(conn, schema, nir, cere_decizia=False):
             _tl, _vl = _sl.antet_lei(factura)
         except _sl.LipsaCurs as e:
             return {"eroare": "Factura %s e în valută fără curs: %s" % (factura["eticheta"], e), "cod": "FACTURA_FARA_CURS",
-                    "erori_campuri": [{"camp": "sn-factura", "mesaj": "factura n-are curs"}]}
+                    "erori_campuri": [{"camp": "sn-factura", "mesaj": "Factura aleasă e în valută și n-are curs: completează cursul pe factură."}]}
         net = _q2(_tl - _vl)
         if _q2(rez["cost_baza_total"]) != net:   # amândouă la ban: egale, nu „aproape”
             msg = ("Costul din NIR (%s lei fără TVA) nu e costul din factura %s (%s lei fără TVA). La NIR-ul legat, costul vine din "
@@ -285,16 +304,25 @@ def adauga_nir(conn, schema, nir, cere_decizia=False):
         desc = f"NIR {nir['numar']} {nir.get('furnizor') or ''}".strip()
         from core import jurnal_api as _j   # [05.10.2026, comanda Costin pct.6] NIR-ul e documentul notelor lui
         ids = _noteaza(cur, schema, nir["data"], desc, rez["note"], _j.eticheta_document("NIR", nir["numar"], nir["data"]))
-        cur.execute(f"""INSERT INTO {schema}.nir
-                        (numar, data, furnizor, cui, factura_ref, cost_total,
-                         valoare_vanzare, adaos_total, tva_neexigibila, transport, taxe,
-                         inregistrari_ids, metoda_stoc, factura_id, refacut_din_id)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
-                    (nir["numar"], nir["data"], nir.get("furnizor"), nir.get("cui"),
-                     nir.get("factura_ref"), rez["cost_total"], rez["valoare_vanzare"],
-                     rez["adaos_total"], rez["tva_neexigibila"], rez["transport"], rez["taxe"],
-                     json.dumps(ids), metoda, factura["id"] if factura else None, vechi["id"] if vechi else None))
-        nid = cur.fetchone()["id"]
+        # [lotul 10, C73 / U2] factura are un singur NIR (`nir_factura_id_uq`), iar NIR-ul respins se reface o singură dată
+        # (`nir_refacut_din_uq`). Verificările de mai sus (`_factura_pentru_nir`, `_nir_de_refacut`) țin cererile una după alta; două
+        # salvări simultane treceau amândouă, iar a doua cădea aici cu 500. Acum ACELAȘI refuz ca verificarea (refăcută după întoarcerea
+        # la savepoint, vede NIR-ul celeilalte cereri), iar notele NIR-ului scrise mai sus se derulează și ele înapoi.
+        try:
+            with _chei.refuza_dublura(cur, ("nir_factura_id_uq", "nir_refacut_din_uq"), _refuz_nir_dublat(schema, nir)):
+                cur.execute(f"""INSERT INTO {schema}.nir
+                                (numar, data, furnizor, cui, factura_ref, cost_total,
+                                 valoare_vanzare, adaos_total, tva_neexigibila, transport, taxe,
+                                 inregistrari_ids, metoda_stoc, factura_id, refacut_din_id)
+                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+                            (nir["numar"], nir["data"], nir.get("furnizor"), nir.get("cui"),
+                             nir.get("factura_ref"), rez["cost_total"], rez["valoare_vanzare"],
+                             rez["adaos_total"], rez["tva_neexigibila"], rez["transport"], rez["taxe"],
+                             json.dumps(ids), metoda, factura["id"] if factura else None, vechi["id"] if vechi else None))
+                nid = cur.fetchone()["id"]
+        except _chei.CheieDublata as e:
+            cur.execute("ROLLBACK TO SAVEPOINT nir_salvare")
+            return {"eroare": str(e), "cod": e.existent["cod"], **({"erori_campuri": e.detaliu()["erori_campuri"]} if e.camp else {})}
         if vechi:
             # [retest 07.10 R1] NIR-ul refăcut înlocuiește ciornele respinse ale celui vechi (altfel ar rămâne ciorne în jurnal,
             # validabile pe alt drum); elementele lor din coadă rămân, cu motivul, ca istoric
@@ -319,12 +347,13 @@ def adauga_nir(conn, schema, nir, cere_decizia=False):
                     cur.execute(f"INSERT INTO {schema}.articole (denumire, um) VALUES (%s, %s) RETURNING id",
                                 (" ".join(str(den).split()), l.get("um") or "buc"))
                     aid = cur.fetchone()["id"]
-                    # [415] cota de pe rândul NIR-ului ajunge în nomenclator: la emitere, articolul nu mai e „fără cotă”
-                    from core import produse_api as _pa
-                    _pa.asigura_din_document(cur, schema, den, l.get("um"), l.get("cota_tva"), document)
                 else:
                     cur.execute(f"SELECT denumire FROM {schema}.articole WHERE id = %s", (aid,))
                     den = cur.fetchone()["denumire"]
+                # [415] cota de pe rândul NIR-ului ajunge în nomenclator: la emitere, articolul nu mai e „fără cotă”. [lotul 10, 435] și
+                # pentru articolul EXISTENT care n-are încă produs (Marfa B, creată înaintea lui 415): un produs existent nu se schimbă
+                from core import produse_api as _pa
+                _pa.asigura_din_document(cur, schema, den, l.get("um"), l.get("cota_tva"), document)
                 # intrarea în fișa de magazie, la COST (cu accesoriul repartizat): stocul și CMP-ul se văd imediat (C11e)
                 # [retest 07.10 R1] `nir_id`: intrarea e a NIR-ului — respingerea lui o găsește și o stornează (`stocuri_anulare`)
                 cur.execute(f"""INSERT INTO {schema}.miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document, nir_id)
@@ -441,7 +470,17 @@ def _rulaj(cur, schema, cont, parte, pana_exclusiv, de_la=None, surse=None):
 def descarca_luna(conn, schema, an, luna):
     """Descărcarea gestiunii pe luna dată, din rulajele reale (note validate).
     Cumulat de la 1 ianuarie (OMFP 1802); soldurile inițiale de exercițiu
-    se preiau din solduri_initiale dacă există."""
+    se preiau din solduri_initiale dacă există.
+
+    [lotul 10, deficiența 425] TEMEI: OMFP 1802/2014 pct.286 alin.(4) — coeficientul de repartizare = („Soldul inițial al diferențelor
+    de preț” + „Diferențe de preț aferente intrărilor în cursul perioadei, cumulat de la începutul exercițiului financiar până la finele
+    perioadei de referință”) / („Soldul inițial al stocurilor la preț de înregistrare” + „Valoarea intrărilor în cursul perioadei la preț
+    de înregistrare, cumulat de la începutul exercițiului financiar până la finele perioadei de referință”); nota *2): „soldul inițial al
+    contului de mărfuri și valoarea intrărilor de mărfuri nu vor include TVA neexigibilă”. „Soldul inițial” e cel de la începutul
+    EXERCIȚIULUI: (1) în anul preluării, cu balanța de deschidere CU RULAJE, soldul de la 1 ianuarie (`si_an`) și intrările preluate
+    01.01 .. data preluării (`rulaje_preluate.preluate`) — înainte K se calcula din soldul de la data preluării plus intrările de după
+    ea, adică alt raport; (2) într-un an de după preluare (sau fără preluare), soldul preluat plus notele anilor anteriori, ca balanța
+    (`documente_api.balanta`) — înainte notele anilor anteriori lipseau din soldul inițial."""
     from datetime import date
     inceput_an = date(an, 1, 1)
     inceput_luna = date(an, luna, 1)
@@ -483,19 +522,29 @@ def descarca_luna(conn, schema, an, luna):
             _rc.punct_de_revenire(cur, "descarcare_ciorna")
     else:
         doc_vechi = None
+    from core import rulaje_preluate as _rp
     with conn.cursor() as cur:
-        si = {}
+        si, prel_rul = {}, {}
+        prel = _rp.preluate(cur, schema, an)
+        prel = prel["conturi"] if prel and prel["ref"] < sfarsit else None   # [425] balanța de deschidere a anului, cu rulaje
         # [08.10.2026, decizia Costin pct.1 la §6 S6] TVA-ul din prețul de raft stă pe analiticul lui (`stocuri.CONT_TVA_STOC`): K îl
         # citește EXACT — nici TVA-ul la încasare (4428), nici al NIR-ului fără factură (4428.01) nu intră în stoc
         for cont, conditie in (("371", "cont LIKE %s"), ("378", "cont LIKE %s"), (_m.CONT_TVA_STOC, "cont = %s")):
-            cur.execute(f"""SELECT COALESCE(SUM(sold_debitor),0), COALESCE(SUM(sold_creditor),0)
-                            FROM {schema}.solduri_initiale WHERE {conditie}""", (cont + "%" if "LIKE" in conditie else cont,))
-            d, c = cur.fetchone()
-            si[cont] = Decimal(d or 0) - Decimal(c or 0)   # debitor pozitiv
-        # rulaje cumulate de la inceputul anului pana la sfarsitul lunii
-        rd_371 = _rulaj(cur, schema, "371", "debit", sfarsit, inceput_an)
-        rc_378 = _rulaj(cur, schema, "378", "credit", sfarsit, inceput_an)
-        rc_4428 = _rulaj(cur, schema, _m.CONT_TVA_STOC, "credit", sfarsit, inceput_an)
+            if prel is not None:   # [425] soldul de la 1 ianuarie și rulajele preluate 01.01 .. data preluării
+                pot = [v for k, v in prel.items() if (str(k).startswith(cont) if "LIKE" in conditie else k == cont)]
+                d, c = sum((v["si_d"] for v in pot), Decimal(0)), sum((v["si_c"] for v in pot), Decimal(0))
+                prel_rul[cont] = (sum((v["rul_d"] for v in pot), Decimal(0)), sum((v["rul_c"] for v in pot), Decimal(0)))
+            else:
+                cur.execute(f"""SELECT COALESCE(SUM(sold_debitor),0), COALESCE(SUM(sold_creditor),0)
+                                FROM {schema}.solduri_initiale WHERE {conditie}""", (cont + "%" if "LIKE" in conditie else cont,))
+                d, c = cur.fetchone()
+            # [425] soldul inițial al EXERCIȚIULUI: + notele anilor anteriori (ca `documente_api.balanta`)
+            si[cont] = (Decimal(d or 0) - Decimal(c or 0)   # debitor pozitiv
+                        + _rulaj(cur, schema, cont, "debit", inceput_an) - _rulaj(cur, schema, cont, "credit", inceput_an))
+        # rulaje cumulate de la inceputul anului pana la sfarsitul lunii (+ cele preluate, [425])
+        rd_371 = _rulaj(cur, schema, "371", "debit", sfarsit, inceput_an) + prel_rul.get("371", (0, 0))[0]
+        rc_378 = _rulaj(cur, schema, "378", "credit", sfarsit, inceput_an) + prel_rul.get("378", (0, 0))[1]
+        rc_4428 = _rulaj(cur, schema, _m.CONT_TVA_STOC, "credit", sfarsit, inceput_an) + prel_rul.get(_m.CONT_TVA_STOC, (0, 0))[1]
         # vanzari de marfuri DOAR pe luna
         # [PIVOT 06.10.2026, comanda Costin §6.3 — supersedă nota din 05.10] Descărcarea globală rulează NUMAI la firma
         # global-valorică, unde ieșirile pe articol se refuză; deci vânzările din FACTURI (sursa `facturi`, cu sau fără articol)

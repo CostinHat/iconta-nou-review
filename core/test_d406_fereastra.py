@@ -35,7 +35,8 @@ from core import scan_sql_efectiv as _efectiv
 
 PROF_L = {"cui": "14399840", "nume": "FIRMA TEST SRL", "adresa": "Str. Test 1",
           "oras": "Bucuresti", "cod_postal": "010101", "baza_contabila": "A",
-          "platitor_tva": True, "tip_decont": "L"}
+          "platitor_tva": True, "tip_decont": "L",  # [lotul 10, C69] + câmpurile cerute de antetul D406
+          "telefon": "0212223344", "iban": "RO59BTRLRONCRT0C69TEST01", "declarant_nume": "POPESCU", "declarant_prenume": "ION"}
 
 
 def _prof(**kw):

@@ -29,7 +29,12 @@ def test_q11_extrage_nu_fabrica_norma():
     # fisier FARA coloana norma
     randuri = s.extrage(b"nume,cnp,brut\nPOP ION,1960101078911,3000\n", "x.csv")
     assert randuri, "extrage n-a produs randuri"
-    assert randuri[0]["tip_norma"] == "", "norma fabricata 'intreaga' cand coloana lipseste (Q11): %r" % randuri[0]["tip_norma"]
+    # [PIVOT, lotul 10, deficiența 420, comanda Costin 10.1] lipsa normei nu mai e „necunoscut” tăcut nici „întreagă” tăcut: e o
+    # PROPUNERE vizibilă și editabilă pe ecran, marcată „de verificat” (comanda: „propunere editabilă (normă întreagă …) […] intră
+    # marcate «de verificat»”). Q11 rămâne: nicio valoare NEMARCATĂ.
+    assert (randuri[0]["tip_norma"], randuri[0]["ore_zi"]) == ("intreaga", 8), randuri[0]
+    assert randuri[0]["de_verificat"] == ["tip_norma", "functie_baza", "persoane_intretinere", "scutit_contrib_minim"], \
+        "norma propusă fără marcaj de verificat (Q11): %r" % randuri[0]["de_verificat"]
 
 
 def test_q11_norma_lipsa_semnalata():

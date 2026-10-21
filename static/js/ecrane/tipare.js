@@ -2,7 +2,7 @@
 // Trei sectiuni statistice: motive de respingere, tipuri cu rata, firme cu respingeri.
 // Plus [F120] buton "Genereaza analiza AI" care cere lui Claude explicatii + recomandari.
 // Doar patron (regula 4).
-import { api, esc } from "../api.js?v=158edee964";
+import { api, esc } from "../api.js?v=ff30ebaf3f";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 
 function bara(pct) {
@@ -83,7 +83,7 @@ export async function randeazaTipare(corp, nav) {
       <table class="cap-tabel">
         <thead><tr>
           <th>Declarație</th><th class="cap-num">Respinse</th>
-          <th class="cap-num">Rată</th><th></th>
+          <th class="cap-num">Rată</th><th>Acțiune</th>
         </tr></thead>
         <tbody>${randTipuri}</tbody>
       </table>

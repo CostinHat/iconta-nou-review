@@ -62,6 +62,12 @@ def _db_ok():
 
 @pytest.fixture
 def firma(monkeypatch):
+    # [lotul 10, 383] generarea cere perioada încheiată (`coada_api.perioada_neincheiata`); testul nu e despre poarta ei: generează ca
+    # după încheierea perioadei (ceasul porții mutat peste perioadă), restul ceasului aplicației rămâne cel real
+    import datetime as _dt383, functools as _ft383
+    from core import coada_api as _coada383
+    monkeypatch.setattr(_coada383, "perioada_neincheiata", _ft383.partial(_coada383.perioada_neincheiata,
+                                                                          azi=_dt383.date(_dt383.date.today().year + 2, 1, 1)))
     from core import tenant_provisioning as _tp
     _db.init_pool()
     p = _db.pool()

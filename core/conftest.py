@@ -51,3 +51,18 @@ def _fara_anaf_la_emitere(monkeypatch, request):
         return
     from core import uc_comun
     monkeypatch.setattr(uc_comun, "_platitor_tva_tert", lambda *a, **k: None)
+
+
+@pytest.fixture(autouse=True)
+def _fara_anaf_la_localitati(monkeypatch, request):
+    """[lotul 10, C69] Localitatea partenerilor (D406 / D394) se aduce din ANAF înaintea generării (`anaf_api.aduce_localitati`). În
+    teste ANAF „nu răspunde” și cache-ul pornește gol la fiecare test — niciodată ANAF real, nicio localitate rămasă de la alt test.
+    Un modul care probează funcția declară `LOCALITATI_ANAF_REAL = True` și simulează el interogarea (`interogare=`)."""
+    from core import anaf_api
+    monkeypatch.setattr(anaf_api, "_CACHE_LOCALITATI", {})
+    if getattr(request.module, "LOCALITATI_ANAF_REAL", False):
+        return
+
+    def _jos(*a, **k):
+        raise OSError("ANAF simulat indisponibil (core/conftest.py)")
+    monkeypatch.setattr(anaf_api, "aduce_localitati", lambda lista, interogare=None: _jos())

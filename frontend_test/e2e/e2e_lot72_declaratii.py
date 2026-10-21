@@ -5,8 +5,15 @@ import datetime as _dt
 import re
 import time
 
-from conftest import sql
+from conftest import perioada_incheiata, sql
 from e2e_bloc_a import AZI, CLIENT, _api, _ok, emite_api, pregateste_firma
+
+# [lotul 10, deficiența 383 — comanda Costin 10.2 pct.1: „O declarație pe o perioadă neîncheiată se refuză la generare, cu motivul scris,
+# la toate declarațiile.”] D300 (firma plătitoare lunar) se generează pe luna ÎNCHEIATĂ cea mai recentă: documentele de probă se datează
+# în ea (ZI), iar declarația se cere pe ea (LUNA) — cum lucrează contabilul, după încheierea lunii
+LUNA = perioada_incheiata("lunar")
+ZI = LUNA.inceput.replace(day=15)
+PER = "%02d/%d" % (LUNA.luna, LUNA.an)
 
 
 def _nota_facturii(firma, fid):
@@ -19,7 +26,9 @@ def _valideaza_notele(e, firma, fid):
 
 
 def _in_coada(e, firma, tip="d300", luna=None, an=None, inlocuieste=None):
-    corp = {"tenant_id": firma["tenant_id"], "tip": tip, "an": an or AZI.year, "luna": luna or AZI.month}
+    """„Trimite în coadă” pe ruta ecranului (`POST /coada`); perioada implicită = luna încheiată (`LUNA`): pe luna în curs generarea se
+    refuză (383, comanda 10.2 pct.1)."""
+    corp = {"tenant_id": firma["tenant_id"], "tip": tip, "an": an or LUNA.an, "luna": luna or LUNA.luna}
     if inlocuieste:
         corp["inlocuieste"] = inlocuieste
     return _api(e, "POST", "/coada", corp)
@@ -43,19 +52,19 @@ def _deschide_coada(e, coada_id):
 
 def test_def_297_declaratia_depasita_nu_se_depune_si_se_genereaza_din_nou(patron, firma_e2e):
     """297. D300 din „De depus” nu se regenera și nu se marca depășită după validarea unei note din perioadă; „Confirmă depunerea” rămânea.
-    Pașii: o factură cu nota validată -> D300 pe luna curentă intră în coadă; o a doua factură în aceeași lună, cu nota validată după
+    Pașii: o factură cu nota validată -> D300 pe luna încheiată intră în coadă; o a doua factură în aceeași lună, cu nota validată după
     -> pe rândul din coadă: „Declarația e depășită …”, fără „Confirmă depunerea”, cu „Generează din nou”; depunerea trimisă direct e
     refuzată (409, DEPASITA); „Generează din nou” -> declarația nouă intră în coadă, cea veche iese („Înlocuită de declarația generată din
     nou”)."""
     pregateste_firma(patron, firma_e2e)
     peste = _peste()
     try:
-        f1 = emite_api(patron, firma_e2e)
+        f1 = emite_api(patron, firma_e2e, data_emitere=ZI)
         _valideaza_notele(patron, firma_e2e, f1["factura_id"])
         r = _in_coada(patron, firma_e2e)
         assert r["status"] == 200, r
         cid = r["json"]["coada_id"]
-        f2 = emite_api(patron, firma_e2e)
+        f2 = emite_api(patron, firma_e2e, data_emitere=ZI)
         _valideaza_notele(patron, firma_e2e, f2["factura_id"])
         rand = _deschide_coada(patron, cid)
         pg = patron.pg
@@ -91,7 +100,7 @@ def test_def_297_declaratia_depasita_nu_se_depune_si_se_genereaza_din_nou(patron
 
 def test_def_298_declaratia_numeste_factura_fara_nota_validata_si_cu_tva_0(patron, firma_e2e):
     """298. D300 cuprindea facturi cu nota nevalidată, iar garda compara doar TVA-ul: o factură cu TVA 0 trecea nesemnalată.
-    Pașii: o factură cu linia 0% (scutit fără drept de deducere), nota ei nevalidată -> Declarații -> D300 pe luna curentă -> trimisă:
+    Pașii: o factură cu linia 0% (scutit fără drept de deducere), nota ei nevalidată -> Declarații -> D300 pe luna încheiată -> trimisă:
     sub confirmare, avertismentul numește factura („Declarația cuprinde 1 factură fără notă validată …: factura …, nota ei e
     ciornă, nevalidată” — formularea din 328); același text pe rândul ei din coadă, cu butonul spre notă."""
     from e2e_bloc_c import _declaratie_pas1, _trimite_si_asteapta
@@ -99,9 +108,10 @@ def test_def_298_declaratia_numeste_factura_fara_nota_validata_si_cu_tva_0(patro
     peste = _peste()
     try:
         f = emite_api(patron, firma_e2e, linii=[{"descriere": "Servicii scutite E2E 298", "cantitate": 1, "um": "buc", "pret_unitar": 300.0,
-                                                 "cota_tva": 0, "cota_propusa": 0, "articol_id": None, "categorie_tva": "scutit_fara_drept"}])
+                                                 "cota_tva": 0, "cota_propusa": 0, "articol_id": None, "categorie_tva": "scutit_fara_drept"}],
+                     data_emitere=ZI)
         numar = sql('SELECT numar FROM "%s".facturi WHERE id = %%s' % firma_e2e["schema"], (f["factura_id"],))[0][0]
-        _declaratie_pas1(patron, firma_e2e["nume"], "d300", AZI.year, luna=AZI.month)
+        _declaratie_pas1(patron, firma_e2e["nume"], "d300", LUNA.an, luna=LUNA.luna)
         _trimite_si_asteapta(patron)
         pg = patron.pg
         pg.wait_for_selector("#dec-gata-avert", timeout=30000)
@@ -120,15 +130,15 @@ def test_def_298_declaratia_numeste_factura_fara_nota_validata_si_cu_tva_0(patro
 def test_def_299_refuzul_spune_perioada_deschide_si_inlocuieste(patron, firma_e2e):
     """299. Refuzul „există deja o declarație activă d300 pentru perioada 25.11.2026” punea termenul, cu literă mică, fără link și fără
     „Înlocuiește”, iar mesajul dispărea singur; asistentul n-avea lista declarațiilor existente.
-    Pașii: D300 pe luna curentă în coadă -> Declarații: sub alegere, „Declarațiile firmei aflate deja în coadă” (D300 · LL/AAAA, la
+    Pașii: D300 pe luna încheiată în coadă -> Declarații: sub alegere, „Declarațiile firmei aflate deja în coadă” (D300 · LL/AAAA, la
     validare / de depus) -> D300 din nou -> „Există deja în coadă o declarație D300 pentru LL/AAAA, pregătită de …”, cu „Deschide declarația
     existentă” și „Înlocuiește”; după 15 secunde mesajul și titlul ferestrei sunt tot acolo -> „Înlocuiește” -> intră, cea veche iese."""
     from e2e_bloc_c import _declaratie_pas1, _deschide
     pregateste_firma(patron, firma_e2e)
     peste = _peste()
-    per = "%02d/%d" % (AZI.month, AZI.year)
+    per = PER
     try:
-        f = emite_api(patron, firma_e2e)
+        f = emite_api(patron, firma_e2e, data_emitere=ZI)
         _valideaza_notele(patron, firma_e2e, f["factura_id"])
         r = _in_coada(patron, firma_e2e)
         assert r["status"] == 200, r
@@ -138,7 +148,7 @@ def test_def_299_refuzul_spune_perioada_deschide_si_inlocuieste(patron, firma_e2
         pg.wait_for_selector(".dec-existente", timeout=20000)
         ex = pg.inner_text(".dec-existente")
         assert "D300 · " + per in ex, ex
-        _declaratie_pas1(patron, firma_e2e["nume"], "d300", AZI.year, luna=AZI.month)
+        _declaratie_pas1(patron, firma_e2e["nume"], "d300", LUNA.an, luna=LUNA.luna)
         pg.wait_for_selector("#dec-trimite", timeout=90000)
         pg.click("#dec-trimite")
         pg.wait_for_selector("#coada-deja-inlocuieste", timeout=90000)
@@ -215,13 +225,13 @@ def test_def_313_coada_titlul_urmeaza_cardul_renuntarea_fara_motiv_si_notele_num
     peste = _peste()
     tid, sch = firma_e2e["tenant_id"], firma_e2e["schema"]
     try:
-        f = emite_api(patron, firma_e2e)
+        f = emite_api(patron, firma_e2e, data_emitere=ZI)
         _valideaza_notele(patron, firma_e2e, f["factura_id"])
         nid = sql('INSERT INTO "%s".inregistrari (data, descriere, status, document_ref) VALUES (%%s, \'Comision E2E 313\', \'ciorna\', '
-                  '\'EXTRAS E2E 313\') RETURNING id' % sch, (AZI.isoformat(),))[0][0]
+                  '\'EXTRAS E2E 313\') RETURNING id' % sch, (ZI.isoformat(),))[0][0]
         sql('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%%s, \'627\', \'5121\', 100)' % sch,
             (nid,))
-        _declaratie_pas1(patron, firma_e2e["nume"], "d300", AZI.year, luna=AZI.month)
+        _declaratie_pas1(patron, firma_e2e["nume"], "d300", LUNA.an, luna=LUNA.luna)
         pg = patron.pg
         pg.wait_for_selector("#dec-trimite", timeout=90000)
         pg.wait_for_function("() => (document.querySelector('#dec-trimite') || {}).dataset && document.querySelector('#dec-trimite').dataset.eticheta",
@@ -230,7 +240,7 @@ def test_def_313_coada_titlul_urmeaza_cardul_renuntarea_fara_motiv_si_notele_num
         pg.click("#dec-trimite")
         pg.wait_for_selector("#dec-gata-avert", timeout=90000)
         av = pg.inner_text("#dec-gata-avert")
-        assert "nota din %s — EXTRAS E2E 313" % AZI.strftime("%d.%m.%Y") in av and "notă(e)" not in av, av   # AZI-dat-de-test: data notei
+        assert "nota din %s — EXTRAS E2E 313" % ZI.strftime("%d.%m.%Y") in av and "notă(e)" not in av, av   # data notei, dată de test
         patron.captura("notele_numite")
         cid = sql("SELECT max(id) FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 'd300'", (tid,))[0][0]
         patron.acasa()

@@ -16,6 +16,8 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Inventarul ecranelor de firmă la 19.08.2026. Un ecran nou => se adaugă AICI (conștient) + de preferat în ECRANE.
 _BASELINE = {
+    # [lotul 10, 428, deciziile Costin 20.10.2026] compensările și fișele clienților — ecrane noi, scanate (`nav_ecrane.ECRANE`)
+    "fa-compensari", "fa-clienti",
     "fa-acces", "fa-balanta", "fa-banca", "fa-bilant", "fa-bonuri", "fa-casa", "fa-centrecost", "fa-contracte",
     # [Retest 2, 09.10.2026] planul de conturi (decizia Costin O12), scanat (nav_ecrane.ECRANE „planconturi”)
     "fa-planconturi",

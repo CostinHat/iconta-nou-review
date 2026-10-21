@@ -138,6 +138,9 @@ def test_clasificarea_chiar_discrimineaza():
     assert s.clasa("core/x.py", "verifica", "eticheta,mesaj,remediu,stare,temei") == "A_verdict"
     assert s.clasa("core/x_import_api.py", "verifica_randuri", "mesaj,motiv,rand") == "C_import"
     assert s.clasa("core/x.py", "salveaza", "cod,mesaj,ok") == "B_operatie"
+    # [lotul 10] răspunsul unei rute care a scris o notă (`inregistrare_id`) e rezultat de operație, ca `ok`
+    assert s.clasa("core/x.py", "nota_x", "avertisment,inregistrare_id,nota") == "B_operatie"
+    assert s.clasa("core/x.py", "nota_x", "avertisment,nota") == "A_verdict"
     assert s.clasa("core/x.py", "adauga", "camp,mesaj") == "D_formular"
 
 

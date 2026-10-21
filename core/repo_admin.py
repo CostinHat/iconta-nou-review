@@ -173,3 +173,9 @@ def scrie_audit_reset_schimbat(cur, user_id):
 def scrie_eveniment_public(cur, tip, pagina):
     cur.execute("INSERT INTO public.eveniment_public (tip, pagina) VALUES (%s, %s)",
                 (tip, pagina))
+
+
+def schema_exista(cur, schema):
+    """[lotul 10, eroarea 500 din `/eu/ciorne`] Schema firmei există încă în bază (`pg_namespace`)?"""
+    cur.execute("SELECT 1 FROM pg_namespace WHERE nspname = %s", (schema,))
+    return cur.fetchone() is not None

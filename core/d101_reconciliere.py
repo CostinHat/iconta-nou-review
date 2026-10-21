@@ -37,9 +37,13 @@ def _q(x):
     return int(Decimal(x).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
-def _baza_contabila_independenta(conn, an):
+def _baza_contabila_independenta(conn, an, schema):
     """P1/P2/P4/P5 din inregistrari_linii (note VALIDATE, anul), SQL PROPRIU. Split exploatare/
-    financiar dupa clasa de cont (76/66 = financiar), ca planul RO. Independent de d101.pull."""
+    financiar dupa clasa de cont (76/66 = financiar), ca planul RO. Independent de d101.pull.
+
+    [lotul 10, deficiența 425] Plus rulajele PRELUATE ale anului din balanța de deschidere (`rulaje_preluate.rulaje`, fără închiderea în
+    121), adunate AICI pe aceeași regulă 76/66 — nu prin `bilant_api.rulaje_67` / `d101.baza_contabila` (calea generatorului). Intrarea
+    (balanța preluată) e partajată, ca notele (§8); agregarea rămâne a acestei căi."""
     inc, sf = date(an, 1, 1).isoformat(), date(an + 1, 1, 1).isoformat()
     q = ("SELECT "
          "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '76%%' THEN l.suma ELSE 0 END),0) AS ven_fin, "
@@ -49,8 +53,20 @@ def _baza_contabila_independenta(conn, an):
          "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
          "WHERE i.status='validata' AND i.data >= %s AND i.data < %s "
          "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'")   # [C15] fără închiderea în 121
+    from core import rulaje_preluate as _rp
     with conn.cursor() as cur:
         ven_fin, ven_expl, chelt_fin, chelt_expl = _repo.sql(cur, q, inc, sf)
+        prel = _rp.rulaje(cur, schema, date(an, 1, 1), date(an + 1, 1, 1), fara_inchidere_121=True)
+    for cont, (d, c) in prel.items():
+        k = str(cont)
+        if k.startswith("76"):
+            ven_fin = (ven_fin or 0) + c
+        elif k.startswith("7"):
+            ven_expl = (ven_expl or 0) + c
+        elif k.startswith("66"):
+            chelt_fin = (chelt_fin or 0) + d
+        elif k.startswith("6"):
+            chelt_expl = (chelt_expl or 0) + d
     return {"P1": _q(ven_expl or 0), "P2": _q(chelt_expl or 0),
             "P4": _q(ven_fin or 0), "P5": _q(chelt_fin or 0)}
 
@@ -62,7 +78,7 @@ _ETICHETA = {"P1": "venituri din exploatare", "P2": "cheltuieli de exploatare",
 def reconciliaza(conn, schema, perioada, res, manual=None):
     """NU ridica. {"divergente":[...], "sarite":[P suprascrise manual]}."""
     manual = manual or {}
-    exp = _baza_contabila_independenta(conn, perioada.an)
+    exp = _baza_contabila_independenta(conn, perioada.an, schema)
     divergente, sarite = [], []
     for p in ("P1", "P2", "P4", "P5"):
         if p in manual:

@@ -28,10 +28,10 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=158edee964";
+import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=ff30ebaf3f";
 import { randA as randConstatare } from "./control_verdict.js?v=2daa29640d";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma } from "./firme.js?v=09862e661b";
+import { deschideFirma } from "./firme.js?v=6855dfc0c2";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)
@@ -340,7 +340,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
 async function ciorneleMele(zona, firme, nav) {
   if (!zona) return;
   let r;
-  try { r = await api.get("/eu/ciorne"); } catch (e) { arataMesaj(zona, "Nu s-au putut încărca notele tale în ciornă.", "eroare"); return; }
+  try { r = await api.get("/eu/ciorne"); } catch (e) { arataMesaj(zona, "Nu s-au putut încărca notele tale în ciornă" + (e && e.mesaj ? " (" + e.mesaj + ")" : "") + ".", "eroare"); return; }
   if (!r || !r.total) return;
   const stare = (n) => n.in_coada === "la_senior" ? "trimisă la validare"
     : (n.in_coada === "respinsa" ? `respinsă${n.motiv_respingere ? ": " + n.motiv_respingere : ""}` : "nevalidată, netrimisă");
@@ -475,10 +475,12 @@ async function deschideNota(c, nav, ctx = {}) {
     // [lotul 07.10 pct.9] un document cu mai multe note (contarea + ieșirea din stoc a aceleiași facturi): toate, una sub alta
     const note = d.note || [{ nota: d.nota || {}, linii: d.linii || [] }];
     corp.innerHTML = note.map(({ nota: n, linii }) => `
-      <p class="mig-intro">Nota ${esc(n.eticheta || "")} · ${esc(dataRo(n.data))} · ${esc(n.descriere || "")} · ${n.document_ref ? "document: " + esc(n.document_ref) : "fără document justificativ"}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</p>
+      <div class="rezumat-fix"><p class="mig-intro">Nota ${esc(n.eticheta || "")} · ${esc(dataRo(n.data))} · ${esc(n.descriere || "")} · ${n.document_ref ? "document: " + esc(n.document_ref) : "fără document justificativ"}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</p></div>   <!-- [lotul 10, 421 / 424, DS cap.9 v2.97 pct.5] antetul notei rămâne sus -->
       <table class="fd-tabel"><thead><tr><th>Debit</th><th>Credit</th><th>Sumă</th></tr></thead>
         <tbody>${(linii || []).map((l) => `<tr><td>${esc(l.debit)}</td><td>${esc(l.credit)}</td><td>${bani(l.suma)}</td></tr>`).join("")}</tbody>
-      </table>`).join("") + (ctx.actiuni ? `<div class="val-actiuni" id="val-nota-actiuni" style="margin-top:12px">${ctx.actiuni}</div><div id="val-nota-eroare"></div>` : "");
+      </table>`).join("") + (ctx.actiuni   // [lotul 10, 421 / 424, DS cap.9 v2.96] „acțiunea principală fix jos”: validarea și refuzul ei, lipite jos
+      ? `<div class="bara-fixa"><div class="val-actiuni" id="val-nota-actiuni" style="margin-top:12px">${ctx.actiuni}</div><div id="val-nota-eroare"></div></div>`
+      : "");
     if (ctx.actiuni && ctx.corpLista) legaActiuniNota(corp, c, ctx.corpLista, nav, corp.querySelector("#val-nota-eroare"), true);
   }, { nivel: "cabinet" });
 }
@@ -565,7 +567,9 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   const euAmPregatit = uid != null && c.creat_de != null && String(c.creat_de) === uid;
 
   // [383, lotul 9] perioada neîncheiată se spune pe rând, în orice stare (la validare și la depunere); butonul de depunere nu se oferă
-  let actiuni = c.perioada_neincheiata ? `<span class="val-nota-perm val-neincheiata">${esc(c.perioada_neincheiata)}</span>` : "";
+  // [lotul 10, 436] la fel declarația care știe că cifra ei nu cuprinde note nevalidate (`blocaj_depunere` = perioada sau notele, serverul)
+  let actiuni = c.blocaj_depunere
+    ? `<span class="val-nota-perm ${c.perioada_neincheiata ? "val-neincheiata" : "val-blocaj-note"}">${esc(c.blocaj_depunere)}</span>` : "";
   // [deficiența 297] declarația DEPĂȘITĂ (documentele perioadei s-au schimbat după generare): nici aprobare, nici depunere — se generează
   // din nou; serverul refuză la fel (`coada_api.refuz_depasita`)
   const dep = c.depasita;
@@ -594,8 +598,9 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
     // depune -> "Confirmă depunerea". Cu patru-ochi OFF, un item la_senior se aprobă automat înainte de depunere.
     const needsAproba = c.stare === "la_senior";
     const potDepune = perm.poate_depune && (!needsAproba || perm.poate_valida);
-    if (c.perioada_neincheiata) {
+    if (c.blocaj_depunere) {
       // [383, lotul 9] „O declarație nu se oferă spre depunere înainte de încheierea perioadei.” (serverul refuză și el; motivul e pe rând)
+      // [lotul 10, 436] „depunerea se blochează până la validare, cu motivul lângă buton” — notele nevalidate, la fel
     } else if (!potDepune) {
       actiuni += `<span class="val-nota-perm">nu ai dreptul de depunere</span>`;
     } else if (vi.gata) {
@@ -657,7 +662,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=92adb5b86c");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=24daa85dec");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;

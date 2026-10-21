@@ -30,28 +30,55 @@ def select_asociati_istoric(cur):
     return cur.fetchall()
 
 
-def select_inregistrari_linii(cur, _inc, _sf):
-    cur.execute("SELECT "
-                "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '457%%' THEN l.suma ELSE 0 END),0) AS distribuit, "
-                "COALESCE(SUM(CASE WHEN l.cont_debit  LIKE '457%%' THEN l.suma ELSE 0 END),0) AS platit "
-                "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-                "WHERE i.status='validata' "
-                "AND (l.cont_credit LIKE '457%%' OR l.cont_debit LIKE '457%%') "
-                "AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
-    return cur.fetchone()
+#: [lotul 10, deficiența 431] coloanele mișcărilor de dividende pe NOTĂ — anualele pe 457, interimarele pe 456 (din 463); vezi
+#: `dividende_curs._transe`
+_MISCARI_DIVIDENDE = (
+    "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '457%%' THEN l.suma ELSE 0 END),0) AS distribuit, "
+    "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '457%%' AND l.cont_credit LIKE '446%%' THEN l.suma ELSE 0 END),0) AS impozit, "
+    "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '457%%' AND l.cont_credit NOT LIKE '463%%' AND l.cont_credit NOT LIKE '446%%' "
+    "THEN l.suma ELSE 0 END),0) AS platit, "
+    "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '457%%' AND l.cont_credit LIKE '463%%' THEN l.suma ELSE 0 END),0) AS compensat, "
+    "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '456%%' AND l.cont_debit LIKE '463%%' THEN l.suma ELSE 0 END),0) AS distribuit_interimar, "
+    "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '456%%' AND l.cont_credit LIKE '446%%' THEN l.suma ELSE 0 END),0) AS impozit_interimar, "
+    "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '456%%' AND (l.cont_credit LIKE '512%%' OR l.cont_credit LIKE '531%%') "
+    "THEN l.suma ELSE 0 END),0) AS platit_interimar ")
+_LINII_DIVIDENDE = ("(l.cont_credit LIKE '457%%' OR l.cont_debit LIKE '457%%' "
+                    "OR (l.cont_credit LIKE '456%%' AND l.cont_debit LIKE '463%%') OR l.cont_debit LIKE '456%%')")
 
 
-def select_457_miscari(cur, _sf):
-    """[A6] Mișcările contului 457 pe NOTĂ (credit=distribuire, debit=plată) cu DATA, din tot registrul
-    până la `_sf` (sfârșitul anului declarației, exclusiv). Ordonate cronologic pentru atribuirea FIFO
-    plată->distribuire (cota se ia după data distribuirii). Include distribuirile din ANII ANTERIORI, ca
-    o plată de la începutul anului să se lege de distribuirea ei reală (Legea 141/2025 art.VII)."""
-    cur.execute("SELECT i.data, "
-                "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '457%%' THEN l.suma ELSE 0 END),0) AS distribuit, "
-                "COALESCE(SUM(CASE WHEN l.cont_debit  LIKE '457%%' THEN l.suma ELSE 0 END),0) AS platit "
+def select_dividende_miscari(cur, _sf):
+    """[A6] Mișcările de dividende pe NOTĂ, cu DATA, din tot registrul până la `_sf` (sfârșitul anului declarației,
+    exclusiv): credit 457 = distribuire, 457 = 446 = impozitul înregistrat, celălalt debit 457 = plata netului, 457 = 463 =
+    compensarea cu interimarele; [lotul 10, deficiența 431] interimarele pe 456 (463 = 456 distribuire, 456 = 446 impozitul,
+    456 = 512x / 531x plata netului). Ordonate cronologic pentru atribuirea FIFO
+    plată->distribuire (cota se ia după data distribuirii). Include distribuirile din ANII ANTERIORI, ca o plată de la începutul
+    anului să se lege de distribuirea ei reală (Legea 141/2025 art.VII)."""
+    cur.execute("SELECT i.data, " + _MISCARI_DIVIDENDE +
                 "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-                "WHERE i.status='validata' "
-                "AND (l.cont_credit LIKE '457%%' OR l.cont_debit LIKE '457%%') "
-                "AND i.data < %s "
+                "WHERE i.status='validata' AND " + _LINII_DIVIDENDE + " AND i.data < %s "
                 "GROUP BY i.id, i.data ORDER BY i.data, i.id", (_sf.isoformat(),))
+    return cur.fetchall()
+
+
+def select_note_dividende_nevalidate(cur, _inc, _sf):
+    """[lotul 10, deficiența 431] Notele de dividende NEVALIDATE din anul declarației (ciornă / la validare): D205 le ignoră
+    (preia numai notele validate), iar refuzul le numește. [(id, data, status, suma distribuită)] în ordinea Registrului jurnal."""
+    cur.execute("SELECT i.id, i.data, i.status, COALESCE(SUM(CASE WHEN l.cont_credit LIKE '457%%' OR "
+                "(l.cont_credit LIKE '456%%' AND l.cont_debit LIKE '463%%') THEN l.suma ELSE 0 END),0) AS suma "
+                "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
+                "WHERE i.status <> 'validata' AND " + _LINII_DIVIDENDE + " AND i.data >= %s AND i.data < %s "
+                "GROUP BY i.id, i.data, i.status HAVING SUM(CASE WHEN l.cont_credit LIKE '457%%' OR l.cont_debit LIKE '457%%' OR "
+                "(l.cont_credit LIKE '456%%' AND l.cont_debit LIKE '463%%') THEN l.suma ELSE 0 END) > 0 "
+                "ORDER BY i.data, i.id", (_inc.isoformat(), _sf.isoformat()))
+    return cur.fetchall()
+
+
+def select_457_preluat(cur, _sf):
+    """[lotul 10, decizia Costin A — generalizarea pe clasă] Soldul creditor al lui 457 din balanța de deschidere, pe data ei de
+    referință, înainte de `_sf`: dividendele distribuite înainte de evidența din iConta.eu și neplătite la preluare
+    (`dividende_curs._transe`, cheia `preluat`). [(data_referinta, sold)] cu sold > 0, cronologic."""
+    cur.execute("SELECT data_referinta AS data, SUM(sold_creditor - sold_debitor) AS preluat FROM solduri_initiale "
+                "WHERE cont LIKE '457%%' AND data_referinta IS NOT NULL AND data_referinta < %s "
+                "GROUP BY data_referinta HAVING SUM(sold_creditor - sold_debitor) > 0 ORDER BY data_referinta",
+                (_sf.isoformat(),))
     return cur.fetchall()

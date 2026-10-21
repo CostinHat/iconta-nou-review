@@ -1,8 +1,8 @@
 // termene.js — scadente fiscale viitoare pe portofoliu (orizont 60 zile).
 // Grupate pe data-termen; click pe o declaratie -> firmele; click pe o firma -> fisa firmei.
 
-import { api, cate, dupaNumar, dataRo, esc } from "../api.js?v=158edee964";
-import { deschideFirma } from "./firme.js?v=09862e661b";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+import { api, cate, dupaNumar, dataRo, esc } from "../api.js?v=ff30ebaf3f";
+import { deschideFirma } from "./firme.js?v=6855dfc0c2";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
 
 // [P1c] anul se afiseaza pe eticheta de perioada DOAR cand difera de asta (fereastra de 60z poate trece in an+1).
 const ANUL_CURENT = new Date().getFullYear();
@@ -110,7 +110,7 @@ function detaliuTermen(corp, nav, grup, item) {
     rand.innerHTML = `
       <div class="mig-frand-text">
         <div class="mig-frand-nume">${esc(f.nume)}</div>
-        <div class="mig-frand-sub">perioada ${etichetaPerioada(f.perioada, item.an)}</div>
+        <div class="mig-frand-sub">perioada ${etichetaPerioada(f.perioada, item.an)}${f.inainte_de_preluare ? " · înainte de preluare în iConta.eu" : ""}</div>
       </div>
     `;
     // [P2] tenant_id -> id; deschideFirma->meniuFirma cere {id, nume, cui, tip_firma} (contract strict, meniuFirma:241).

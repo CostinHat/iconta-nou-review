@@ -139,6 +139,9 @@ MESAJ_FACTURA_BON_STOC = ("Factura emisă pe baza bonului fiscal nu mai descarc�
 COD_SERIE_CHITANTA_LIPSA = "SERIE_CHITANTA_LIPSA"
 MESAJ_SERIE_CHITANTA_LIPSA = ("Chitanța nu s-a emis: firma n-are serie pentru chitanțe. Seria o stabilește firma (OMFP 2634/2015 "
                               "anexa 1 pct.24) — scrie-o în Date firmă, la «Chitanțe», o singură dată; numerotarea continuă pe ea.")
+# [lotul 10, deficiența 430b] nota de dividende fără asociați la data hotărârii / cu cote care nu însumează 100%: se repară în
+# Date firmă → Asociați (Legea 31/1990 art.67 alin.(2): „Dividendele se distribuie asociaților proporțional cu cota de participare”)
+COD_ASOCIATI_DE_COMPLETAT = "ASOCIATI_DE_COMPLETAT"
 # [retest 08.10, completarea pct.2, comanda Costin] „Butonul «Deschide Date firmă» din refuzul chitanței deschide pagina de sus;
 # trebuie să ducă direct la secțiunea «Chitanțe», cu câmpul seriei în focus.” CLASA: orice refuz cu țintă de ecran duce la câmpul
 # pe care îl cere. Câmpul = id-ul DOM din ecranul-țintă (contractul DS cap.6: serverul numește câmpul prin id), sub cheia
@@ -148,6 +151,7 @@ CAMP_ECRAN_PE_COD = {
     COD_SERIE_CHITANTA_LIPSA: "df-serie_chitanta",
     "METODA_STOC_NEDECLARATA": "df-metoda_stoc", "METODA_STOC_NESUPORTATA": "df-metoda_stoc", "METODA_STOC_ALTA": "df-metoda_stoc",
     "AMEF_EXCEPTARE_NEDECLARATA": "df-activitate_exceptata_amef",
+    COD_ASOCIATI_DE_COMPLETAT: "as-adauga",   # butonul „+ Asociat”, ca refuzul D205 fără asociați (`d205`, lotul 10, 431)
 }
 
 

@@ -47,7 +47,10 @@ def _firma_gata(firma):
     _profil(firma, {"reg_com": "J40/1/2020", "caen": "4711", "adresa": "Str. Probei 1", "oras": "București", "judet": "B",
                     "cod_postal": "010101", "banca": "Banca Probă", "iban": "RO49AAAA1B31007593840000", "telefon": "0700000000",
                     "declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "Administrator",
-                    "forma_juridica": "SRL", "capital_subscris": "200", "capital_varsat": "200", "cont_venit_implicit": "704"})
+                    "forma_juridica": "SRL", "capital_subscris": "200", "capital_varsat": "200", "cont_venit_implicit": "704",
+                    # [lotul 10, C69] cerute de bilanț (bifaMC, codPP „35” = SRL, `bilant.FORME_PROPRIETATE`); fără ele Date firmă spune
+                    # „Salvat. Lipsesc …” în loc de „Datele firmei au fost salvate”
+                    "mare_contribuabil": False, "forma_proprietate": "35"})
     with db.get_conn(firma["schema"]) as c:
         r = vector_fiscal_api.salveaza(c, "micro", True, "lunar", False, inreg_art317=False, user_id=_patron()[0])
         c.commit()

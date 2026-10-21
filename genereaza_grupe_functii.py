@@ -36,7 +36,13 @@ EXPLICIT = {"F061": "Contabilitate", "F016": "Cabinet și portal client", "F143"
     "F083": "Cabinet și portal client",   # sinteza zilnica pe email (card + email)
     "F113": "Cabinet și portal client",   # PWA (aplicatie instalabila pe mobil)
     "F199": "Cabinet și portal client",
-    "F253": "Fiscalitate"}  # [curatenie lot18] achizitie de la neinregistrat (D394 op. N, regim TVA special)
+    "F253": "Fiscalitate",  # [curatenie lot18] achizitie de la neinregistrat (D394 op. N, regim TVA special)
+    # [lotul 10, 428] compensarea creantelor si datoriilor: o nota contabila 401 = 4111 pe ordinul de compensare (HG 685/1999); numele
+    # („Compensari”) nu atinge niciun cuvant-cheie, iar grupa e a notelor, ca reevaluarea si decontarile (F264, F266)
+    "F262": "Contabilitate",
+    # [lotul 10] cuvintele-cheie le puneau dupa SURSA, nu dupa ce face: regimul TVA la incasare cadea in „Facturare” (sursa numeste
+    # `contare_facturi`), balanta de deschidere in „Fiscalitate” (sursa numeste `d101`)
+    "F265": "Fiscalitate", "F267": "Contabilitate"}
 # cross-check-urile fiscale -> Control fiscal (NU Fiscalitate, desi numele incepe cu declaratia)
 CROSS = {"F162", "F163", "F169", "F180", "F184"}
 # EXCLUSE: infrastructura invizibila utilizatorului + variante superadmin + pagina insasi + cont gratuit inchis

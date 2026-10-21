@@ -99,33 +99,43 @@ def test_def_382_d100_avertizeaza_amortizarea_din_ciorna(patron, firma_amenda):
 # ── 383 — declarația pe o perioadă neîncheiată nu se oferă spre depunere ─────────────────────────────────────────────────────────
 @pytest.fixture()
 def firma_tva_luna(patron):
-    """O firmă NOUĂ plătitoare de TVA (lunar), cu o factură emisă azi și nota ei validată."""
+    """O firmă NOUĂ plătitoare de TVA (lunar), cu o factură emisă în luna încheiată (`e2e_lot72_declaratii.LUNA`, pe care se generează
+    declarațiile: luna în curs se refuză — 383, comanda 10.2 pct.1) și nota ei validată."""
     from e2e_bloc_a import emite_api, pregateste_firma
-    from e2e_lot72_declaratii import _valideaza_notele
+    from e2e_lot72_declaratii import ZI, _valideaza_notele
     for f in firma_noua():
         pregateste_firma(patron, f)
-        fct = emite_api(patron, f)
+        fct = emite_api(patron, f, data_emitere=ZI)
         _valideaza_notele(patron, f, fct["factura_id"])
         yield f
 
 
 def test_def_383_d300_pe_luna_in_curs_nu_se_ofera_spre_depunere(patron, firma_tva_luna):
-    """383 (grav). D300 pe 10/2026 era oferită cu „Confirmă depunerea” pe 19.10.2026. Pașii: D300 pe luna curentă -> „De depus” -> pe rândul
-    ei, în locul butonului: „Perioada LL/AAAA nu s-a încheiat: declarația se depune după <ultima zi a lunii> …”; fără „Confirmă depunerea”;
-    depunerea cerută direct e refuzată, iar declarația nu e depusă."""
+    """383 (grav). D300 pe 10/2026 era oferită cu „Confirmă depunerea” pe 19.10.2026. [lotul 10, comanda 10.2 pct.1] Generarea pe o perioadă
+    neîncheiată se refuză acum de la început (`e2e_lot10b_declaratii.py::test_def_383_d300_pe_luna_in_curs_se_refuza_la_generare`); aici
+    rămâne stratul de dedesubt, pentru o declarație intrată în coadă ÎNAINTE de regulă (cazul F1 din 20.10): ea e refăcută ca element din luna
+    trecută (generabil) mutat pe luna curentă. Pașii: „De depus” -> pe rândul ei, în locul butonului: „Perioada LL/AAAA nu s-a încheiat:
+    declarația se generează și se depune după <ultima zi a lunii> …”; fără „Confirmă depunerea”; depunerea cerută direct e refuzată, iar
+    declarația nu e depusă."""
+    import json as _json
     from e2e_bloc_a import _api
     from e2e_lot72_declaratii import _curata, _deschide_coada, _in_coada, _peste
     peste = _peste()
+    trecuta = AZI.replace(day=1) - _dt.timedelta(days=1)
     try:
-        r = _in_coada(patron, firma_tva_luna)
+        r = _in_coada(patron, firma_tva_luna, luna=trecuta.month, an=trecuta.year)
         assert r["status"] == 200, r
         cid = r["json"]["coada_id"]
+        # declarația „de dinainte de regulă”: aceeași, pe luna curentă (perioada declarată din payload)
+        p = sql("SELECT payload FROM public.declaratii_coada WHERE id = %s", (cid,))[0][0]
+        p.update({"_an": AZI.year, "_luna": AZI.month})
+        sql("UPDATE public.declaratii_coada SET payload = %s::jsonb WHERE id = %s", (_json.dumps(p), cid))
         rand = _deschide_coada(patron, cid)
         pg = patron.pg
         txt = " ".join(pg.inner_text(rand).split())
         patron.captura()
         per = "%02d/%d" % (AZI.month, AZI.year)
-        assert ("Perioada %s nu s-a încheiat: declarația se depune după" % per) in txt, txt
+        assert ("Perioada %s nu s-a încheiat: declarația se generează și se depune după" % per) in txt, txt
         assert pg.locator(rand + " .val-depune, " + rand + " .val-trece").count() == 0, "butonul de depunere pe o perioadă neîncheiată"
         # depunerea cerută direct nu trece (poarta verdictului / validarea în doi pot refuza înaintea perioadei; refuzul perioadei însuși e
         # probat pe tranziție în core/test_383_perioada_neincheiata.py)
@@ -143,7 +153,9 @@ def test_def_323_textul_de_depus_nu_vorbeste_de_note_care_nu_sunt(patron, firma_
     from e2e_lot72_declaratii import _curata, _deschide_coada, _in_coada, _peste
     peste = _peste()
     try:
-        cid = _in_coada(patron, firma_tva_luna)["json"]["coada_id"]
+        # [lotul 10, 383] luna curentă nu se mai generează (perioada neîncheiată): o declarație în coadă pe luna trecută
+        trecuta = AZI.replace(day=1) - _dt.timedelta(days=1)
+        cid = _in_coada(patron, firma_tva_luna, luna=trecuta.month, an=trecuta.year)["json"]["coada_id"]
         _deschide_coada(patron, cid)
         pg = patron.pg
         intro = " ".join(" ".join(pg.eval_on_selector_all(".fereastra:last-of-type .mig-intro", "es => es.map(x => x.innerText)")).split())
@@ -298,8 +310,9 @@ def test_def_c55_salariatul_de_pe_doua_randuri_e_respins_numit(patron, firma_srl
 def test_def_386_nota_fara_document_spune_de_ce_si_duce_la_editare(patron, firma_srl):
     """386. „Validează fără document” (după confirmare) nu făcea nimic și nu spunea de ce; nota rămânea Ciornă (6581 = 5311, 100 lei).
     Regula de fond din bază (R3, comanda Costin 09.10.2026: „fiecare notă are documentul-sursă”) refuză validarea fără document, deci
-    butonul care o promitea era greșit. Pașii: o notă 6581 = 5311 de 100 lei, fără document -> Registru jurnal -> „Validează” -> caseta:
-    „… nu se validează fără documentul din care provine …”, butonul „Editează nota” (nu „Validează fără document”) -> editorul notei ->
+    butonul care o promitea era greșit. Pașii: o notă 6581 = 5311 de 100 lei, fără document -> Registru jurnal -> pe rând, o dată:
+    „… nu se validează fără documentul din care provine … Scrie referința cu «Editează», apoi validează.”, „Validează” inactiv (lotul 10,
+    10.2 pct.7k: mesajul nu se mai repetă în dreapta) -> „Editează” -> editorul notei ->
     documentul „Proces-verbal ITM nr. 12 din <azi>” -> „Salvează” -> „Validează” -> nota e validată."""
     from e2e_bloc_a import _api, _ok
     from e2e_bloc_e import _nota
@@ -313,13 +326,13 @@ def test_def_386_nota_fara_document_spune_de_ce_si_duce_la_editare(patron, firma
     pg = patron.pg
     pg.click("#fa-jurnal")
     pg.wait_for_selector("[data-nota-id='%s'] [data-val]" % nid, timeout=30000)
-    pg.click("[data-nota-id='%s'] [data-val]" % nid)
-    pg.wait_for_selector("#caseta-atentie-activa #ca-ok", timeout=10000)
-    caseta = " ".join(pg.inner_text("#caseta-atentie-activa").split())
+    # [lotul 10, 10.2 pct.7k] un singur mesaj, pe rând; „Validează” inactiv, legat de el (nu mai e și caseta de confirmare din dreapta)
+    rand = " ".join(pg.inner_text("[data-nota-id='%s']" % nid).split())
     patron.captura("caseta")
-    assert "nu se validează fără documentul din care provine" in caseta and "Editează nota" in caseta, caseta
-    assert "Validează fără document" not in caseta, caseta
-    pg.click("#caseta-atentie-activa #ca-ok")
+    assert rand.count("nu se validează fără documentul din care provine") == 1 and "Editează" in rand, rand
+    assert pg.is_disabled("[data-nota-id='%s'] [data-val]" % nid)
+    assert "Validează fără document" not in rand, rand
+    pg.click("[data-nota-id='%s'] [data-edit]" % nid)
     pg.wait_for_selector("#je-doc", timeout=10000)
     pg.fill("#je-doc", "Proces-verbal ITM nr. 12 din %s" % AZI.strftime("%d.%m.%Y"))   # AZI-dat-de-test
     pg.click("#je-salveaza")
@@ -350,19 +363,20 @@ def test_def_389_istoricul_spune_suma_si_arata_trimestrul(patron, firma_amenda):
 def test_def_390_d406_numeste_nota_dupa_nr_crt_si_nu_cere_corectura_notei_manuale(patron, firma_tva_luna):
     """390. Avertismentele D406 trimiteau la „nota 3” și „nota 48”, nu la Nr. crt. din Registrul jurnal; al doilea era tehnic („sursa
     'manual'”, „jurnal auxiliar”, „maparea”) și cerea o corectură pentru o notă manuală normală. Pașii: o notă manuală validată (6581 =
-    5311) și o notă cu o proveniență pe care aplicația n-o scrie (adusă direct în bază) -> Declarații -> D406 pe luna curentă: nota
+    5311) și o notă cu o proveniență pe care aplicația n-o scrie (adusă direct în bază) -> Declarații -> D406 pe luna încheiată: nota
     manuală nu e semnalată; cealaltă e numită „nota nr. crt. N din ZZ.LL.AAAA”; niciun „sursa”, „jurnal auxiliar”, „maparea”."""
     from conftest import nr_crt
     from e2e_bloc_e import _declaratie, _nota
+    from e2e_lot72_declaratii import LUNA, ZI
     f = firma_tva_luna
-    _nota(f, AZI.isoformat(), [{"debit": "5311", "credit": "581", "suma": 100}], "Ridicare numerar E2E 390", valideaza=True,
+    _nota(f, ZI.isoformat(), [{"debit": "5311", "credit": "581", "suma": 100}], "Ridicare numerar E2E 390", valideaza=True,
           document_ref="Cec 390")   # numerarul plăților de mai jos (406)
-    _nota(f, AZI.isoformat(), [{"debit": "6581", "credit": "5311", "suma": 10}], "Amendă E2E 390", valideaza=True, document_ref="PV 390")
-    straina = _nota(f, AZI.isoformat(), [{"debit": "6022", "credit": "5311", "suma": 5}], "Notă adusă E2E 390", document_ref="Bon 390")
+    _nota(f, ZI.isoformat(), [{"debit": "6581", "credit": "5311", "suma": 10}], "Amendă E2E 390", valideaza=True, document_ref="PV 390")
+    straina = _nota(f, ZI.isoformat(), [{"debit": "6022", "credit": "5311", "suma": 5}], "Notă adusă E2E 390", document_ref="Bon 390")
     sql('UPDATE "%s".inregistrari SET sursa = %%s WHERE id = %%s' % f["schema"], ("import_vechi", straina))   # ciornă: încă se poate
     from e2e_bloc_e import _valideaza_note
     _valideaza_note(f, [straina])
-    _declaratie(patron, f, "d406", AZI.year, AZI.month)
+    _declaratie(patron, f, "d406", LUNA.an, LUNA.luna)
     t = _text(patron)
     patron.captura()
     assert ("nota %s" % nr_crt(f["schema"], straina)) in t, t[:2000]
@@ -458,22 +472,22 @@ def test_def_394_jurnalul_e_lat_si_motivul_amortizarii_nu_rupe_butoanele(patron,
 
 # ── 395 — D300 „Din ce e făcută declarația”: rândurile în ordinea formularului ───────────────────────────────────────────────────
 def test_def_395_randurile_d300_in_ordinea_formularului(patron, firma_tva_luna):
-    """395. Rândurile veneau în ordinea 9, 10, 3, 3.1, 19, nu în ordinea formularului. Pașii: Declarații -> D300 pe luna curentă -> „Din ce e
+    """395. Rândurile veneau în ordinea 9, 10, 3, 3.1, 19, nu în ordinea formularului. Pașii: Declarații -> D300 pe luna încheiată -> „Din ce e
     făcută declarația” -> „Rânduri completate”: numerele rândurilor cresc de sus în jos (coloana Valoare înaintea coloanei TVA)."""
     import re
     from e2e_bloc_a import PRODUS, _api, _ok
     from e2e_bloc_e import _declaratie, _deschide_componente, _sectiune
-    from e2e_lot72_declaratii import _valideaza_notele
+    from e2e_lot72_declaratii import LUNA, ZI, _valideaza_notele
     # pe lângă factura de 21% (rândurile 9 și 19), o prestare de servicii cu locul în afara României (rândul 3 / 3.1): dicționarul motorului
     # le pune în ordinea în care le întâlnește (9 înaintea lui 3) — ecranul trebuie să le arate în ordinea formularului
     corp = {"linii": [{"descriere": PRODUS, "cantitate": 1, "um": "buc", "pret_unitar": 1000.0, "cota_tva": 0, "cota_propusa": 0,
                        "articol_id": None, "categorie_tva": "serviciu_extern"}],
             "tert_nume": "Client Irlanda E2E Ltd", "tert_cui": "IE9999999ZZ", "tert_adresa": "1 Grand Canal Square", "tert_oras": "Dublin",
             "moneda": "RON", "tert_tara": "IE", "tip_operatiune": "normal", "bon_fiscal_nr": None, "bon_fiscal_data": None,
-            "data_emitere": AZI.isoformat(), "data_scadenta": (AZI + _dt.timedelta(days=30)).isoformat(), "tip": "factura"}
+            "data_emitere": ZI.isoformat(), "data_scadenta": (ZI + _dt.timedelta(days=30)).isoformat(), "tip": "factura"}
     fid = _ok(_api(patron, "POST", "/tenants/%d/facturi/emite" % firma_tva_luna["tenant_id"], corp), "factura serviciu extern")["factura_id"]
     _valideaza_notele(patron, firma_tva_luna, fid)
-    _declaratie(patron, firma_tva_luna, "d300", AZI.year, AZI.month)
+    _declaratie(patron, firma_tva_luna, "d300", LUNA.an, LUNA.luna)
     _deschide_componente(patron)
     sec = _sectiune(patron, "Rânduri completate")
     patron.captura()

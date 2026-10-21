@@ -309,9 +309,59 @@ def semnale_randuri(randuri, azi=None):
     return out
 
 
-def importa(conn, tenant_id, randuri):
+def _perioade(perechi):
+    """[426] (an, luna) -> „din 01/2025 până în 09/2026” (sau „pe 03/2026” când e una singură); fără perechi -> „—”."""
+    ps = sorted((int(a), int(l or 12)) for a, l in perechi if a)
+    if not ps:
+        return "—"
+    def f(p):   # formatul perioadei din previzualizare (DS cap.4: „03/2026”)
+        return "%02d/%d" % (p[1], p[0])
+    return ("pe %s" % f(ps[0])) if ps[0] == ps[-1] else ("din %s până în %s" % (f(ps[0]), f(ps[-1])))
+
+
+def existent(conn, tenant_id):
+    """[lotul 10, deficiența 426 — clasa] Istoricul preluat la migrare (sursa='migrare') al firmei și ce se sprijină pe el:
+    {randuri, tipuri, perioade, depuse_iconta: {numar, ani}} — `depuse_iconta` = declarațiile depuse prin iConta în anii istoricului
+    preluat: termenele, restanțele și suma D100 deja declarată pe trimestrele anterioare se socotesc pe istoric."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT tip, an, luna FROM public.declaratii_depuse WHERE tenant_id=%s AND sursa='migrare'", (tenant_id,))
+        rs = cur.fetchall()
+        ani = sorted({int(r[1]) for r in rs})
+        cur.execute("SELECT count(*) FROM public.declaratii_depuse WHERE tenant_id=%s AND sursa <> 'migrare' AND an = ANY(%s)",
+                    (tenant_id, ani))
+        ni = cur.fetchone()[0]
+    return {"randuri": len(rs), "tipuri": sorted({str(r[0]).upper() for r in rs}), "perioade": _perioade([(r[1], r[2]) for r in rs]),
+            "depuse_iconta": {"numar": int(ni or 0), "ani": ani}}
+
+
+def totaluri(randuri):
+    """[426] Ce aduce fișierul, pe rândurile care intră: {randuri, tipuri, perioade}."""
+    rs = randuri or []
+    return {"randuri": len(rs), "tipuri": sorted({str(r.get("tip") or "").strip().upper() for r in rs} - {""}),
+            "perioade": _perioade([(r.get("an"), r.get("luna")) for r in rs])}
+
+
+def text_inlocuire(vechi, nou):
+    """[426] „spune că există deja […], arată [ce e] vechi și nou […]; dacă există [date dependente], spune” — textul comun avertismentului
+    din previzualizare și refuzului de la salvare: declarațiile și perioadele, vechi și noi, și depunerile prin iConta din anii lor."""
+    def _parte(x):
+        return "%s (%s), %s" % (_cate(x["randuri"], "declarație", "declarații"), ", ".join(x["tipuri"]) or "—", x["perioade"])
+    t = ("Firma are deja un istoric de declarații preluat: %s. Fișierul nou: %s. Salvarea înlocuiește istoricul preluat; declarațiile "
+         "depuse prin iConta rămân." % (_parte(vechi), _parte(nou)))
+    di = vechi.get("depuse_iconta") or {}
+    if di.get("numar"):
+        t += (" În %s %s %s prin iConta: termenele, restanțele și suma D100 deja declarată pe trimestrele anterioare se socotesc "
+              "pe istoricul nou." % ("anul" if len(di["ani"]) == 1 else "anii", ", ".join(str(a) for a in di["ani"]),
+                                     "s-a depus o declarație" if di["numar"] == 1 else "s-au depus " + _cate(di["numar"], "declarație",
+                                                                                                             "declarații")))
+    return t
+
+
+def importa(conn, tenant_id, randuri, inlocuieste=False):
     """DELETE doar randurile de migrare ale firmei + INSERT. NU atinge sursa='iconta'.
-    Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri)."""
+    Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri).
+    [lotul 10, deficiența 426 — clasa] un istoric preluat existent se înlocuiește NUMAI cu `inlocuieste=True` (confirmarea de pe ecran);
+    fără ea -> `migrare_api.InlocuireNeconfirmata` (409), cu declarațiile și perioadele vechi și noi."""
     # [probare invalid, 03.09.2026] UN IMPORT GOL STERGEA ISTORICUL, IN TACERE.
     # `randuri=[]` trecea de verificare (n-are ce respinge), ajungea la DELETE-ul de mai jos, care
     # sterge TOATE randurile de migrare ale firmei, nu insera nimic, si raspundea `200 {"importati": 0}`.
@@ -326,7 +376,8 @@ def importa(conn, tenant_id, randuri):
     # [C25, decizia Costin 14.10.2026, verbatim în DECIZII: „fără blocare la salvare; rândul problemă se arată, restul se
     # salvează”] Rândurile respinse nu intră și se întorc numite; numai un import fără niciun rând bun se refuză întreg.
     respinse_idx = {x["rand"] for x in er}
-    bune = [r for i, r in enumerate(randuri, start=2) if _it.nr_rand(r, i) not in respinse_idx]
+    bune_nr = [(_it.nr_rand(r, i), r) for i, r in enumerate(randuri, start=2) if _it.nr_rand(r, i) not in respinse_idx]
+    bune = [r for _n, r in bune_nr]
     if not bune:
         # [probare invalid, 03.09.2026] Se numără RÂNDURILE, nu erorile: un singur rând gol
         # produce două erori, iar mesajul spunea „2 rânduri nu pot intra" despre un rând. O
@@ -337,13 +388,18 @@ def importa(conn, tenant_id, randuri):
                          % ("Un rând" if _nr == 1 else _cate(_nr, "rând", "rânduri"),
                             "poate" if _nr == 1 else "pot",
                             "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6])))
+    vechi, nou = existent(conn, tenant_id), totaluri(bune)
+    from core import migrare_api as _mig
+    _mig.cere_confirmarea_inlocuirii(vechi["randuri"] > 0, inlocuieste, text_inlocuire(vechi, nou), vechi, nou,
+                                     vechi["depuse_iconta"])   # [426] poarta comună a clasei
     import json as _json
+    from core import chei_unice as _chei
     with conn.cursor() as cur:
         cod_d100 = _cod_d100(cur, tenant_id)
         cur.execute("DELETE FROM public.declaratii_depuse WHERE tenant_id=%s AND sursa='migrare'",
                     (tenant_id,))
         n = 0
-        for r in bune:
+        for nr, r in bune_nr:
             _tip = str(r["tip"]).strip().upper()
             _luna = r.get("luna") if str(r.get("luna") or "").strip() not in ("", "0") else (12 if _tip in TIPURI_ANUALE else None)
             # [377] la D100, suma declarată se păstrează ca obligația ei (forma unei depuneri prin iConta: `randuri.obligatii`), pe codul
@@ -351,14 +407,41 @@ def importa(conn, tenant_id, randuri):
             randuri_json = (_json.dumps({"obligatii": [{"cod_oblig": cod_d100, "suma_dat": int(r["suma"]), "suma_plata": int(r["suma"])}],
                                          "sursa": "istoric preluat la migrare"})
                             if _tip == "D100" and r.get("suma") is not None and cod_d100 else None)
-            cur.execute("""
-                INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, data_depunere, sursa, randuri)
-                VALUES (%s,%s,%s,%s,%s,'migrare',%s::jsonb)
-            """, (tenant_id, r.get("an"), _luna,
-                  str(r["tip"]).strip().lower(),   # [tip_lowercase] canonic la STOCARE (CHECK-ul il impune)
-                  r.get("data_depunere"), randuri_json))
+            # [lotul 10, C73 / U3] rândul istoric ia `nr_depunere` 1 (implicit): pe o perioadă pe care firma are deja prima depunere scrisă
+            # prin iConta.eu (sau marcată, `sursa` ≠ migrare — nu se șterge mai sus), PK-ul îl refuza și tot importul cădea cu 500. Acum
+            # rândul acela se respinge NUMIT, ca orice rând care nu intră (C25: „rândul problemă se arată, restul se salvează”).
+            try:
+                with _chei.refuza_dublura(cur, ("declaratii_depuse_pkey",), _refuz_deja_depusa(tenant_id, _tip, r.get("an"), _luna)):
+                    cur.execute("""
+                        INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, data_depunere, sursa, randuri)
+                        VALUES (%s,%s,%s,%s,%s,'migrare',%s::jsonb)
+                    """, (tenant_id, r.get("an"), _luna,
+                          str(r["tip"]).strip().lower(),   # [tip_lowercase] canonic la STOCARE (CHECK-ul il impune)
+                          r.get("data_depunere"), randuri_json))
+            except _chei.CheieDublata as e:
+                er.append(respinge("declarație depusă", nr, "deja_exista", str(e)))
+                continue
             n += 1
-    return {"importati": n, "respinse": er, "semnalate": semnale_randuri(bune)}
+        if not n:   # niciun rând n-a intrat: importul nu șterge istoricul vechi ca să nu pună nimic în loc (ca la `bune` gol, mai sus)
+            raise ValueError("Niciun rând nu poate intra: %s." % "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6]))
+    return {"importati": n, "respinse": er, "semnalate": semnale_randuri(bune), "inlocuit": vechi if vechi["randuri"] else None}
+
+
+def _refuz_deja_depusa(tenant_id, tip, an, luna):
+    """[lotul 10, C73 / U3] `refuz` pentru rândul istoric a cărui perioadă are deja depunerea ei (nu din istoric): numește depunerea
+    curentă (cum s-a depus și când), citită după `ROLLBACK TO SAVEPOINT` (`repo_control_fiscal_api.select_depusa_curenta`)."""
+    def refuz(cur, _e):
+        from core import chei_unice as _chei, repo_control_fiscal_api as _rcf
+        ex = _rcf.select_depusa_curenta(cur, tenant_id, an, luna, tip.lower())
+        if not ex:
+            return None
+        data, sursa = ex
+        cum = {"iconta": "prin iConta.eu la %s" % _data_ro(data), "extern": "în afara iConta.eu, la %s" % _data_ro(data),
+               # `contabil_anterior`: data depunerii nu se cunoaște (`uc_control_fiscal`), deci nu se arată
+               "contabil_anterior": "de contabilul anterior"}.get(sursa, "la %s" % _data_ro(data))
+        return _chei.CheieDublata("%s e deja depusă %s: rândul din istoric nu se importă peste ea."
+                                  % (_perioada_txt(tip, int(an), luna), cum), valoare=tip)
+    return refuz
 
 
 def _cod_d100(cur, tenant_id):

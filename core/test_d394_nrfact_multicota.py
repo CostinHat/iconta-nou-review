@@ -9,12 +9,14 @@
     marcheaza nrFact=1 doar pe cota cu TVA max (dep. cota max), 0 pe rest; calcul_d394 respecta f["nrFact"].
 
 (2) IMPLICITE FABRICATE TACUT (regula 4): denR/functie_reprez/calitate_intocmit="ADMINISTRATOR", judP="40"
-    (Bucuresti) cand lipsesc din profil. COD VECHI: le emitea TACIT. FIX: implicitul se emite tot (DUK cere
-    campul completat) DAR ANUNTAT prin avertisment vizibil.
+    (Bucuresti) cand lipsesc din profil. COD VECHI: le emitea TACIT. FIX 16.08: implicitul se emite tot DAR ANUNTAT.
+    RASTURNAT de lotul 10, C69: lipsa declarantului / a judetului partenerului OPRESTE D394, numit (structura D394
+    „7. nume_declar … DA”, pct.222 „judP … Obligatoriu pt tip_partener=2 și cuiP=null și taraP=RO”).
 
 Aserturi/markere ASCII. Numerele verificabile (21% x baza).
 """
 import pytest
+import xml.etree.ElementTree as ET
 from decimal import Decimal
 
 from core.common import Perioada
@@ -61,18 +63,24 @@ def test_calcul_nrfact_default_1_fara_cheie():
 
 
 # ============================================================
-#  (2) Implicite fabricate -> AVERTISMENT (nu tacut)
+#  (2) Implicite fabricate -> [lotul 10, C69] OPRIRE numita (nu implicit, nici avertisment)
 # ============================================================
-def test_reprezentant_lipsa_avertisment_nu_tacut():
-    """Profil fara reprezentant/declarant -> denR/functie emise implicit 'ADMINISTRATOR' DAR cu avertisment.
-    RED pre-fix: 'ADMINISTRATOR' emis tacut, fara niciun avertisment."""
-    prof = _prof(reprezentant_nume=None, reprezentant_functie=None, declarant_functie=None,
-                 declarant_nume=None)
+def test_reprezentant_lipsa_se_opreste_nu_se_fabrica():
+    """[C69, lotul 10 — supersedează forma din 17.08: „implicit 'ADMINISTRATOR' DAR cu avertisment”] Fără reprezentant, denR / funcția /
+    calitatea cad pe declarant, pe care `erori_generare` (-> `erori_declarant`, R101) îl cere ÎNAINTE de build_xml; implicitul
+    „ADMINISTRATOR” și avertismentul lui erau cod mort și s-au scos. MUTAȚIE: `rep_den = ... or "ADMINISTRATOR"` repus -> pică."""
+    from core.d394 import erori_generare
+    from core.firma_profil_api import erori_declarant
+    prof = _prof(reprezentant_nume=None, reprezentant_functie=None, declarant_functie=None, declarant_nume=None)
+    # structura D394 „7. nume_declar Nume declarant C(75) DA” (la fel functie_declar): numele și funcția lipsă, refuzate numit
+    asteptate = erori_declarant(prof)
+    assert len(asteptate) == 2, asteptate
+    assert [e for e in erori_generare(prof) if e in asteptate] == asteptate, erori_generare(prof)
     res = calcul_d394(prof, Perioada(2026, luna=6), {"facturi": []})
-    build_xml(res)
-    txt = " ".join(res.avertismente)
-    assert "reprezentantului (denR) lipsește" in txt, "lipsă denR trebuie ANUNTATA"
-    assert "calitatea întocmitorului" in txt, "lipsă calitate_intocmit trebuie ANUNTATA"
+    rad = ET.fromstring(build_xml(res).encode("utf-8"))
+    # chemat direct, build_xml nu completează nimic din capul lui (era „ADMINISTRATOR” pe toate trei) și nu mai avertizează
+    assert (rad.get("denR"), rad.get("functie_reprez"), rad.get("calitate_intocmit")) == ("", "", "")
+    assert res.avertismente == []
 
 
 def test_reprezentant_prezent_fara_avertisment():
@@ -83,16 +91,22 @@ def test_reprezentant_prezent_fara_avertisment():
     assert "se trece implicit" not in txt
 
 
-def test_judet_lipsa_partener_neinreg_avertisment():
-    """Partener NEINREGISTRAT (tip 2) fara cod + profil FARA judet -> judP emis implicit '40' DAR anuntat.
-    RED pre-fix: judP='40' (Bucuresti) emis tacit."""
+def test_judet_lipsa_partener_neinreg_opreste_nu_inventeaza():
+    """Partener NEINREGISTRAT (tip 2) fara cod si fara judet -> [lotul 10, C69] D394 se OPRESTE, numit (pana la 10.08 judP '40' tacit;
+    pana la C69 '40' anuntat). Structura D394 pct.222: „judP … Obligatoriu pt tip_partener=2 și cuiP=null și taraP=RO”."""
+    import pytest
     prof = _prof(judet=None)
     manual = {"operatiuni": [{"tip": "LS", "tip_partener": 2, "cuiP": "", "denP": "PF ANONIM",
                               "cota": 0, "baza": Decimal(100)}]}
-    res = calcul_d394(prof, Perioada(2026, luna=6), {"facturi": []}, manual)
-    xml = build_xml(res)
-    assert 'judP="40"' in xml, "judP implicit încă emis (DUK cere campul)"
-    assert any("se trece implicit codul de județ „40”" in a for a in res.avertismente), "implicitul judP trebuie ANUNTAT"
+    with pytest.raises(ValueError) as ei:
+        calcul_d394(prof, Perioada(2026, luna=6), {"facturi": []}, manual)
+    assert "lipsește județul" in str(ei.value), str(ei.value)
+    # partenerul fără județ, numit (și numai el): lista refuzului `d394.judete_partener`, între „obligatoriu): ” și „. Completează”
+    assert str(ei.value).split("obligatoriu): ", 1)[1].split(". Completează", 1)[0] == "PF ANONIM (operațiunea LS)"
+    # județul scris de contabil la operațiunea manuală e al partenerului -> judP-ul lui (Iași 22), nu al firmei și nu „40”
+    manual["operatiuni"][0]["judP"] = "IS"
+    rad = ET.fromstring(build_xml(calcul_d394(prof, Perioada(2026, luna=6), {"facturi": []}, manual)).encode("utf-8"))
+    assert [e.get("judP") for e in rad.iter() if e.tag.rsplit("}", 1)[-1] == "op1"] == ["22"]   # Nomenclator 1 - Judete: Iași 22
 
 
 # ============================================================

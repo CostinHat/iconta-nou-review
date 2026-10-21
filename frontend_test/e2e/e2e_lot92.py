@@ -21,18 +21,24 @@ def _refuz(pg):
 
 # ── 410 — „NU s-a salvat” lângă buton, cu lista câmpurilor ───────────────────────────────────────────────
 def test_def_410_date_firma_refuzul_se_vede_langa_salveaza_cu_campurile(patron, firma_srl):
-    """410 (PRIORITAR). Date firmă: „Salvează” refuzat fără mesaj vizibil. Pașii: fereastra firmei -> Date firmă -> golește Telefon și
-    Banca, scrie o adresă nouă -> Salvează: lângă buton „NU s-a salvat.” și câmpurile refuzate, fiecare cu trimitere; adresa scrisă
-    rămâne; clic pe „Telefon” -> câmpul primește focus; completat -> iese din listă."""
+    """410 (PRIORITAR). Date firmă: „Salvează” refuzat fără mesaj vizibil. Pașii: fereastra firmei -> Date firmă -> golește denumirea
+    firmei, scrie o serie de chitanțe invalidă („CH-410!”) și o adresă nouă -> Salvează: lângă buton „NU s-a salvat.” și câmpurile
+    refuzate (denumirea — din ecran; seria — de la server), fiecare cu trimitere; adresa scrisă rămâne; clic pe „Seria chitanțelor” ->
+    câmpul primește focus; corectat -> iese din listă.
+    [lotul 10, deficiența 427] Până la 427 refuzul se proba golind Telefon și Banca; acum un câmp obligatoriu gol NU mai refuză
+    salvarea („Ce s-a completat se salvează; lipsurile rămân în «Profil incomplet»”), deci refuzul se probează pe valori invalide."""
     from e2e_bloc_a import _card
     pg = patron.pg
     patron.firma(firma_srl["nume"])
     _card(patron, "datefirma", "#df-salveaza")
-    pg.fill("#df-telefon", "")
-    pg.fill("#df-banca", "")
+    nume = pg.input_value("#df-nume-portofoliu")
+    pg.fill("#df-nume-portofoliu", "")
+    pg.fill("#df-serie_chitanta", "CH-410!")
     pg.fill("#df-adresa", "Str. Refuzului 410")
     pg.click("#df-salveaza")
     pg.wait_for_selector(".refuz-salvare", timeout=10000)
+    pg.wait_for_function("() => [...document.querySelectorAll('.refuz-salvare-lista > li')].some(li => li.textContent.includes('Seria'))",
+                         timeout=20000)
     patron.captura()
     box = pg.eval_on_selector(".refuz-salvare", "b => ({ text: b.querySelector('b').textContent, langa: b.previousElementSibling "
                                                 "&& b.previousElementSibling.contains(document.querySelector('#df-salveaza')), "
@@ -40,15 +46,17 @@ def test_def_410_date_firma_refuzul_se_vede_langa_salveaza_cu_campurile(patron, 
     assert box == {"text": "NU s-a salvat.", "langa": True, "vizibil": True}, box
     invalide = pg.eval_on_selector_all(".camp-invalid", "els => els.map(e => e.id)")
     lista = _refuz(pg)
-    assert len(lista) == len(invalide) and {"df-telefon", "df-banca"} <= set(invalide), (lista, invalide)
-    assert ["Telefon", "— Completează Telefon."] in lista and ["Banca", "— Completează Banca."] in lista, lista
+    assert len(lista) == len(invalide) and {"df-nume-portofoliu", "df-serie_chitanta"} <= set(invalide), (lista, invalide)
+    assert ["Denumirea firmei", "— Completează denumirea din portofoliu."] in lista, lista
+    assert ["Seria chitanțelor", "— Seria chitanțelor: litere și cifre, cel mult 10 (ex. CH, CA)."] in lista, lista
     assert pg.input_value("#df-adresa") == "Str. Refuzului 410"   # ce s-a scris nu se pierde
-    pg.locator(".refuz-salvare-lista button", has_text="Telefon").click()
-    assert pg.evaluate("() => document.activeElement && document.activeElement.id") == "df-telefon"
-    pg.fill("#df-telefon", "0722000410")
-    pg.wait_for_function("() => ![...document.querySelectorAll('.refuz-salvare-lista > li')].some(li => li.textContent.includes('Telefon'))",
+    pg.locator(".refuz-salvare-lista button", has_text="Seria chitanțelor").click()
+    assert pg.evaluate("() => document.activeElement && document.activeElement.id") == "df-serie_chitanta"
+    pg.fill("#df-serie_chitanta", "CH410")
+    pg.wait_for_function("() => ![...document.querySelectorAll('.refuz-salvare-lista > li')].some(li => li.textContent.includes('Seria'))",
                          timeout=5000)
-    assert ["Telefon", "— Completează Telefon."] not in _refuz(pg)
+    assert not any(e[0] == "Seria chitanțelor" for e in _refuz(pg))
+    pg.fill("#df-nume-portofoliu", nume)
 
 
 # ── 406 — casa nu ajunge sub zero ────────────────────────────────────────────────────────────────────

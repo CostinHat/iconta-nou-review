@@ -1992,10 +1992,11 @@ for _sel, _decl, _cod in ((r"\.camp-input\[readonly\]", r"background\s*:", "READ
     if not _ml6 or not re.search(_decl, _ml6.group(1)):
         rap["fereastra_lot6"].append(("stil.css", 0, _cod, "regula %s lipsește sau nu are %s (DS v2.92)" % (_sel, _decl)))
 _nav_l6 = open(os.path.join(BAZA_PY, "static", "js", "navigator.js"), encoding="utf-8").read()
-# [349, lotul 9] lățirea privește și cutia previzualizării (`.mig-prev-cutie`, cu derulare proprie): `_prealata` le întreabă pe amândouă
-if not (re.search(r"const _prealata = \(\) => _corp\.scrollWidth > _corp\.clientWidth \+ 1\s*\|\| \[\.\.\._corp\.querySelectorAll\(\"\.mig-prev-cutie\"\)\]", _nav_l6)
-        and re.search(r"const _lateste = \(\) => \{ if \([^\n]*_prealata\(\)\) fer\.classList\.add\(\"fer-tabel\"\)", _nav_l6)):
-    rap["fereastra_lot6"].append(("navigator.js", 0, "LATIRE_AUTOMATA", "fereastra nu se mai lățește singură când conținutul (sau cutia previzualizării) e mai lat (DS cap.9 v2.92, 349)"))
+# [349, lotul 9 -> lotul 10] cutia previzualizării (`.mig-prev-cutie`) nu mai derulează ea însăși (421/424), deci depășirea ei se vede în
+# lățimea corpului: `_prealata` întreabă corpul, iar `_lateste` lățește fereastra și când conținutul e mai lat (285)
+if not (re.search(r"const _prealata = \(\) => _corp\.scrollWidth > _corp\.clientWidth \+ 1;", _nav_l6)
+        and re.search(r"const _lateste = \(\) => \{[^}]*?_prealata\(\)\)\) f\.classList\.add\(\"fer-tabel\"\)", _nav_l6)):
+    rap["fereastra_lot6"].append(("navigator.js", 0, "LATIRE_AUTOMATA", "fereastra nu se mai lățește singură când conținutul e mai lat (DS cap.9 v2.92, 285)"))
 # (f) [deficiența 290] eroarea unui formular dispare când câmpul se schimbă: ascultarea unică din `api.js`, în faza de captură
 _api_l6 = open(os.path.join(BAZA_PY, "static", "js", "api.js"), encoding="utf-8").read()
 for _ev in ("input", "change"):
@@ -2032,6 +2033,340 @@ for _nume, _t in fisiere.items():
 for _nume, _t in fisiere.items():
     for _m in re.finditer(r"""insertAdjacentHTML\(\s*["']afterend["'],\s*['"`]<span class="msg-eroare""", _t):
         rap["fereastra_lot6"].append((_nume, _t[:_m.start()].count("\n") + 1, "REFUZ_LIPIT", "refuz lipit de buton: api.refuzPeRand (DS cap.6 v2.92)"))
+
+
+# --- FEREASTRA_TABEL (DS cap.9 v2.96; lotul 10, deficiențele 421 și 424 — clasă, toată aplicația). Comanda Costin 10.1 pct.5, verbatim
+#     în DECIZII: „Regula: ferestrele cu tabele se deschid aproape pe tot ecranul (cum e deja Balanța de verificare); rezumatul stă fix
+#     sus și acțiunea principală fix jos; se derulează doar tabelul din mijloc, niciodată lateral.” Patru coduri, fiecare cu mutația lui:
+#     FEREASTRA_TABEL — (a) navigatorul pune singur `fer-tabel` pe fereastra care conține un tabel (`_cuTabel`) și strânge tabelul care
+#       nu încape (`fer-strans` / `fer-rupt`); (b) stil.css: fereastra cu tabel are lățimea și înălțimea ecranului (`calc(100vw/100vh -
+#       48px)`), corpul ei derulează numai vertical (`overflow-x: hidden`), nicio regulă `fer-tabel` nu mai permite derularea laterală,
+#       `.rezumat-fix` e lipit sus, `.mig-prev-cutie` nu mai derulează ea însăși. Mutații: `_cuTabel() || ` scos din navigator; `height:
+#       calc(100vh - 48px)` scos; `overflow-x: hidden` -> `overflow-x: auto`; `position: sticky` scos de pe `.rezumat-fix`; `max-height:
+#       55vh; overflow: auto` repus pe `.mig-prev-cutie` -> TOTAL > 0 (fiecare, `core/test_lot10_fereastra_tabel.py`).
+#     DERULARE_INLINE — niciun `overflow(-x): auto|scroll` scris în stilul inline al unui șablon / șir din static/js (o cutie cu derulare
+#       proprie ascunde derularea laterală și de navigator, și de măsurătorile e2e). Mutația: `<div style="overflow-x:auto">` repus în
+#       mijloace_ecran.js -> TOTAL > 0.
+#     ACTIUNE_TABEL_NEFIXATA — în corpul unei ferestre cu tabel (șablonul pus în `<corp>.innerHTML`, unde `<corp>` e primul parametru al
+#       funcției de nivel întâi care randează un `<table` sau cheamă `tabelPrevizualizare(`), un buton care scrie (`data-actiune` POST /
+#       PUT / PATCH / DELETE) stă în `.bara-fixa` (jos) sau în `.rezumat-fix` (sus) — nu la capătul conținutului, unde ajungi numai
+#       derulând tot tabelul. Nu se cer: butoanele de pe rând (într-o celulă `<td>`, sau cu un `data-…="${…}"` al rândului) și tabelele
+#       de machetă (`tabele_macheta`, o listă scrisă ca să poată fi contrazisă). Mutația: `<div class="bara-fixa">` scos de lângă
+#       „Înscrie în registru” (firme.js, Registrul-inventar) -> TOTAL > 0.
+#       **(v2.97, ZONE)** Lărgită de la `corp.innerHTML` la orice șablon al funcției cu tabel (zona ferestrei: `zona.innerHTML = info +
+#       `…``, șablonul unui arrow adăugat după tabel `corpHtml += formular(d)`), cu butonul care scrie stând DUPĂ tabel în același
+#       șablon — tabelul fiind `<table`, o variabilă cu tabel `${lista}` sau un producător de tabel (arrow-ul `sectiune` din funcție, o
+#       funcție-șablon a fișierului) chemat sau dat ca referință (`.map(sectiune)`). Butonul de DEASUPRA tabelului nu e al ei (îl cere
+#       REZUMAT_TABEL_LIPSA). Excepțiile, cu motiv: `actiuni_exceptii`. Mutația: bara scoasă de pe „Adaugă ajustarea” (firme.js) ->
+#       TOTAL > 0 (`core/test_lot10_rezumat_fix.py`).
+#     LIMITĂ (declarată): vede șabloanele scrise literal; un buton construit din bucăți (`"<button" + …`) sau adus printr-o variabilă
+#       (`${ctx.actiuni}`) nu se vede, iar un tabel adus prin variabilă se vede numai dacă variabila e atribuită în aceeași funcție. Nu
+#       vede așezarea pe ecran (lățimea reală, butonul în vedere) — aia o măsoară e2e `test_def_421_*` / `test_def_424_*`.
+#     REZUMAT_TABEL_LIPSA (DS cap.9 v2.97 pct.5; lotul 10, 421 / 424 — „rezumatul stă fix sus”): orice ecran care desenează un tabel de
+#       date (`<table>` care nu e de machetă, sau lista-tabel `.mig-sold-tabel`) în corpul unei ferestre are rezumatul lipit sus
+#       (`class="… rezumat-fix …"` într-un șablon al lui). Unitatea e funcția de nivel întâi: „desenează” = are tabelul într-un șablon
+#       al ei sau cheamă o funcție-șablon a fișierului (care nu scrie `innerHTML`, ex. `_blocComponente`, `tabelPrevizualizare`) care
+#       îl are; „în fereastră” = scrie `….innerHTML =`. Rezumatul poate veni și dintr-o funcție-șablon (`_cadruPrev`, migrare) sau din
+#       funcția care o cheamă în ACEEAȘI fereastră (zona desenată de `randeazaFisa` stă sub rezumatul ecranului care o cheamă; un apel
+#       de pe un rând cu `deschide(` / `mergi(` deschide altă fereastră și nu acoperă). Excepțiile stau în `rezumat_exceptii`, fiecare
+#       cu motivul (formularele cu tabel mic și ecranele „de decis de Costin”, unde rezumatul ar cere mutarea a ce e sub tabel); o
+#       excepție rămasă fără obiect (funcția a dispărut, nu mai desenează tabel, sau are acum rezumat) pică și ea. Tot aici (pct.3):
+#       lista-tabel `.mig-sold-tabel` nu mai derulează ea însăși în fereastra cu tabel (cu cutia ei de 280 px corpul n-avea ce derula).
+#       Mutații: `rezumat-fix` scos din Balanță / din `_cadruPrev`; toate scoase (anti-vacuu); `max-height: none; overflow: clip` scos
+#       de pe lista-tabel -> TOTAL > 0 (`core/test_lot10_rezumat_fix.py`). LIMITĂ: vede șabloanele scrise literal și apelurile pe nume
+#       din același fișier; un tabel construit din bucăți (`"<tab" + "le"`) sau un ecran deschis din alt fișier peste o funcție-șablon a
+#       acestuia nu se văd; nu vede dacă rezumatul e chiar deasupra tabelului — aia o măsoară e2e 421 / 424.
+def analiza_fereastra_tabel(css, nav, fisiere):
+    """Gărzile ferestrei cu tabel (421 / 424), ca FUNCȚIE PURĂ: primește textele (stil.css, navigator.js, {nume: sursă JS}) și întoarce
+    [(fișier, linie, COD, text)]. E funcție, nu cod la nivel de modul, ca `core/test_lot10_fereastra_tabel.py` să cheme logica reală
+    pe fragmente sintetice (known-good / known-bad) — o copie a ei în test ar fi logică paralelă."""
+    import re as _re
+    out = []
+    # Tabelele de MACHETĂ (o imagine a documentului tipărit, nu date de citit) nu fac din fereastra lor o „fereastră cu tabel” pentru
+    # ACTIUNE_TABEL_NEFIXATA. Lista se scrie, ca să poată fi contrazisă: `mfp-tabel` = previzualizarea modelului de factură (două
+    # rânduri de exemplu), lângă controalele modelului — „Salvează” stă în coloana controalelor, nu sub un tabel lung.
+    tabele_macheta = {"mfp-tabel"}
+
+    def _sabloane(t):
+        """[(start, stop, fel)] ale șabloanelor `…` exterioare (cu tot cu `${…}` imbricate, fel „sablon”) și ale șirurilor '…' / "…" din cod
+        (fel „sir”). Comentariile și expresiile regulate se sar: un backtick dintr-un comentariu nu deschide un șablon."""
+        spans, i, n, stiva, start, prev = [], 0, len(t), [], None, ""
+        while i < n:
+            c = t[i]
+            top = stiva[-1] if stiva else None
+            if top == "T":
+                if c == "\\":
+                    i += 2
+                    continue
+                if c == "`":
+                    stiva.pop()
+                    i += 1
+                    if not stiva:
+                        spans.append((start, i, "sablon"))
+                    prev = "`"
+                    continue
+                if c == "$" and t[i + 1:i + 2] == "{":
+                    stiva.append(0)
+                    i += 2
+                    prev = "{"
+                    continue
+                i += 1
+                continue
+            if c == "/" and t[i + 1:i + 2] == "/":
+                j = t.find("\n", i)
+                i = n if j < 0 else j
+                continue
+            if c == "/" and t[i + 1:i + 2] == "*":
+                j = t.find("*/", i + 2)
+                i = n if j < 0 else j + 2
+                continue
+            if c in "'\"":
+                j = i + 1
+                while j < n and t[j] != c and t[j] != "\n":
+                    j += 2 if t[j] == "\\" else 1
+                if not stiva:
+                    spans.append((i, j + 1, "sir"))
+                i, prev = j + 1, c
+                continue
+            if c == "/" and (prev == "" or prev in "(,=:[!&|?{};+-*%<>~^" or _re.search(r"\breturn\s*$", t[max(0, i - 8):i])):
+                j, cls = i + 1, False
+                while j < n and t[j] != "\n":
+                    if t[j] == "\\":
+                        j += 2
+                        continue
+                    if t[j] == "[":
+                        cls = True
+                    elif t[j] == "]":
+                        cls = False
+                    elif t[j] == "/" and not cls:
+                        break
+                    j += 1
+                i, prev = j + 1, "/"
+                continue
+            if c == "`":
+                if not stiva:
+                    start = i
+                stiva.append("T")
+                i += 1
+                continue
+            if isinstance(top, int):
+                if c == "{":
+                    stiva[-1] += 1
+                elif c == "}":
+                    if top == 0:
+                        stiva.pop()
+                        i += 1
+                        prev = "}"
+                        continue
+                    stiva[-1] -= 1
+            if not c.isspace():
+                prev = c
+            i += 1
+        return spans
+
+    def _linie(t, p):
+        return t[:p].count("\n") + 1
+
+    # (a) navigatorul
+    if not _re.search(r'const _cuTabel = \(\) => !!_corp\.querySelector\("table\b[^"]*"\);', nav):
+        out.append(("navigator.js", 0, "FEREASTRA_TABEL", "navigatorul nu mai recunoaște singur fereastra care conține un tabel (`_cuTabel`)"))
+    if not _re.search(r'const _lateste = \(\) => \{[^}]*?\(_cuTabel\(\) \|\| _prealata\(\)\)\) f\.classList\.add\("fer-tabel"\)', nav):
+        out.append(("navigator.js", 0, "FEREASTRA_TABEL", "`_lateste` nu pune `fer-tabel` pe fereastra cu tabel"))
+    if not _re.search(r'for \(const treapta of \["fer-strans", "fer-rupt"\]\) \{ if \(!_prealata\(\)\) break; f\.classList\.add\(treapta\); \}', nav):
+        out.append(("navigator.js", 0, "FEREASTRA_TABEL", "tabelul care nu încape nu se mai strânge (`fer-strans` / `fer-rupt`): corpul fără derulare laterală l-ar tăia"))
+
+    # (b) stil.css
+    def _bloc(sel):
+        m = _re.search(r"(?m)^" + _re.escape(sel) + r"\s*\{([^}]*)\}", css)
+        return m.group(1) if m else None
+    b = _bloc(".fereastra.fer-tabel") or ""
+    for decl, ce in ((r"(?<![-\w])width:\s*calc\(100vw - 48px\)", "lățimea ecranului"),
+                     (r"(?<![-\w])height:\s*calc\(100vh - 48px\)", "înălțimea ecranului")):
+        if not _re.search(decl, b):
+            out.append(("stil.css", 0, "FEREASTRA_TABEL", "`.fereastra.fer-tabel` nu mai are %s (DS cap.9 v2.96)" % ce))
+    mc = _re.search(r"(?m)^\.fereastra\.fer-tabel \.fereastra-corp[^{]*\{([^}]*)\}", css)
+    if not mc or not _re.search(r"overflow-x:\s*hidden", mc.group(1)) or not _re.search(r"overflow-y:\s*auto", mc.group(1)):
+        out.append(("stil.css", 0, "FEREASTRA_TABEL", "corpul ferestrei cu tabel nu mai derulează numai vertical (`overflow-x: hidden`)"))
+    for m in _re.finditer(r"([^{}]*\bfer-tabel\b[^{}]*)\{([^}]*)\}", css):
+        if _re.search(r"overflow(?:-x)?\s*:\s*(?:auto|scroll)", m.group(2)):
+            out.append(("stil.css", _linie(css, m.start(2)), "FEREASTRA_TABEL", "derulare laterală permisă: %s" % m.group(1).strip()[-60:]))
+    r = _bloc(".fereastra-corp .rezumat-fix") or ""
+    if not (_re.search(r"position:\s*sticky", r) and _re.search(r"(?<![-\w])top:\s*-24px", r)):
+        out.append(("stil.css", 0, "FEREASTRA_TABEL", "`.rezumat-fix` nu mai e lipit sus (position: sticky; top: -24px)"))
+    for m in _re.finditer(r"(?m)^[^{}\n]*\.mig-prev-cutie[^{}]*\{([^}]*)\}", css):
+        if _re.search(r"max-height|overflow", m.group(1)):
+            out.append(("stil.css", _linie(css, m.start(1)), "FEREASTRA_TABEL", "`.mig-prev-cutie` derulează iar ea însăși (al doilea element care derulează)"))
+    # [lotul 10, REZUMAT_TABEL_LIPSA] a doua cutie cu derulare proprie a clasei: lista-tabel `.mig-sold-tabel` (Activitate cabinet)
+    ms = _re.search(r"(?m)^\.fereastra\.fer-tabel \.fereastra-corp \.mig-sold-tabel \{([^}]*)\}", css)
+    if not ms or not (_re.search(r"max-height:\s*none", ms.group(1)) and _re.search(r"(?<![-\w])overflow:\s*clip", ms.group(1))):
+        out.append(("stil.css", 0, "FEREASTRA_TABEL", "lista-tabel `.mig-sold-tabel` derulează iar ea însăși în fereastra cu tabel (DS cap.9 v2.97)"))
+
+    # (c) + (d) șabloanele JS
+    re_fn = _re.compile(r"(?m)^(?:export\s+)?(?:async\s+)?function\s+\w+\s*\(\s*(\w*)")
+    re_tab = _re.compile(r"<table\b(?![^>]*class=\"[^\"]*\b(?:%s)\b)|tabelPrevizualizare\(" % "|".join(sorted(tabele_macheta)))
+    re_btn = _re.compile(r'<button\b[^>]*data-actiune="(?:POST|PUT|PATCH|DELETE)\b[^>]*>')
+    re_inl = _re.compile(r"overflow(?:-x)?\s*:\s*(?:auto|scroll)\b")
+
+    def _in_zona(s, p, cls):
+        # [lotul 10, ZONE] adâncimea de la deschiderea zonei: zona s-a închis dacă adâncimea ajunge la 0 înaintea butonului. Numărarea
+        # simplă (închideri <= deschideri) dădea „în zonă” unui buton pus într-un `<div>` frate rămas deschis după zona închisă.
+        q = s.rfind(cls, 0, p)
+        if q < 0:
+            return False
+        adanc = 1
+        for m in _re.finditer(r"<(/?)div\b", s[q:p]):
+            adanc += -1 if m.group(1) else 1
+            if adanc <= 0:
+                return False
+        return True
+
+    # [lotul 10, ZONE] acțiunile lăsate unde sunt, cu motivul (cheia: fișier, id-ul butonului). O excepție pe care regula n-o mai vede
+    # (butonul a dispărut sau a ajuns în bară) pică, ca lista să nu putrezească.
+    actiuni_exceptii = {
+        ("firme.js", "el-adauga"):
+            "formular: în panoul „Prime, sporuri, ore suplimentare” al unui salariat, tabelul elementelor lunii lui (câteva rânduri) stă "
+            "deasupra formularului de adăugare; „Adaugă” e în rândul câmpurilor formularului, iar lipirea lui jos ar cere mutarea rândului întreg",
+    }
+    actiuni_vazute = set()
+    for nume, t in sorted(fisiere.items()):
+        spans = _sabloane(t)
+        for a, z, _f in spans:
+            for m in re_inl.finditer(t, a, z):
+                out.append((nume, _linie(t, m.start()), "DERULARE_INLINE", t[a:z][max(0, m.start() - a - 30):m.end() - a + 10].strip()[:80]))
+        for m in _re.finditer(r"\.style\.overflow(?:X)?\s*=\s*[\"'](?:auto|scroll)", t):
+            out.append((nume, _linie(t, m.start()), "DERULARE_INLINE", m.group(0)))
+        sabl = [(a, z) for a, z, f in spans if f == "sablon"]
+        cod = list(t)
+        for a, z in sabl:           # codul fără șabloane (pozițiile rămân): `;` din HTML nu mai încheie o instrucțiune
+            cod[a:z] = " " * (z - a)
+        cod = "".join(cod)
+        fns = [(m.start(), m.group(1) or "corp") for m in re_fn.finditer(t)]
+        # funcțiile-șablon ale fișierului care întorc un tabel (nu scriu `innerHTML`): un `${f(…)}` în șablon e un tabel
+        prod_fisier = set()
+        for (q0, _c), (q1, _y) in zip(fns, fns[1:] + [(len(t), "")]):
+            mn = _re.match(r"(?:export\s+)?(?:async\s+)?function\s+(\w+)", t[q0:q1])
+            if mn and any(q0 <= a < q1 and re_tab.search(t, a, z) for a, z in sabl) and not _re.search(r"\.innerHTML\s*\+?=", cod[q0:q1]):
+                prod_fisier.add(mn.group(1))
+        for (s0, corp), (s1, _x) in zip([(0, "corp")] + fns, fns + [(len(t), "")]):
+            if not re_tab.search(t, s0, s1):
+                continue
+            # variabilele funcției care țin un tabel: `const tabel = … `<table…`` (instrucțiunea până la șablon, fără `;` între)
+            var_tab = set()
+            for a, z in sabl:
+                if s0 <= a < s1 and re_tab.search(t, a, z):
+                    st = max(cod.rfind(";", s0, a), cod.rfind("\n\n", s0, a), s0)
+                    mv = _re.search(r"(?:const|let|var)?\s*(\w+)\s*\+?=(?!=)[^=]*$", cod[st:a].replace("\n", " "))
+                    if mv:
+                        var_tab.add(mv.group(1))
+            # [lotul 10, ZONE] producătorii de tabel ai funcției: arrow-urile `const X = (…) =>` al căror șablon are un tabel
+            prod = set(prod_fisier)
+            for mp in _re.finditer(r"(?:const|let)\s+(\w+)\s*=\s*(?:async\s*)?(?:\([^)]*\)|\w+)\s*=>", cod[s0:s1]):
+                for a, z in sabl:
+                    if a >= s0 + mp.end() and re_tab.search(t, a, z) and not _re.search(r"(?:const|let)\s+\w+\s*=\s*(?:async\s*)?(?:\([^)]*\)|\w+)\s*=>", cod[s0 + mp.end():a]):
+                        prod.add(mp.group(1))
+                        break
+            adaugate = {m.group(2) for v in var_tab for m in _re.finditer(r"\b(%s)\s*\+=\s*(\w+)\(" % _re.escape(v), cod[s0:s1])}
+            for a, z in sabl:
+                if not (s0 <= a < s1):
+                    continue
+                s = t[a:z]
+                ma = _re.search(r"(?:const|let)\s+(\w+)\s*=\s*(?:async\s*)?(?:\([^)]*\)|\w+)\s*=>\s*$", cod[max(s0, a - 120):a])
+                dupa_tabel = bool(ma and ma.group(1) in adaugate)     # șablonul adăugat după tabel (`corpHtml += formular(d)`)
+                pozt = [m.start() for m in re_tab.finditer(s)] + [m.start() for v in var_tab for m in _re.finditer(r"\$\{\s*%s\b" % _re.escape(v), s)] \
+                    + [m.start() for g in prod for m in _re.finditer(r"(?<![\w.$])%s\b(?=\s*[(),])" % _re.escape(g), s)]
+                if not pozt and not dupa_tabel:
+                    continue
+                for mb in re_btn.finditer(s):
+                    p = mb.start()
+                    if not dupa_tabel and p < min(pozt):
+                        continue                      # butonul de DEASUPRA tabelului: îl cere rezumatul (REZUMAT_TABEL_LIPSA), nu bara
+                    if s.rfind("<td", 0, p) > s.rfind("</td>", 0, p) or _re.search(r'\sdata-(?!actiune)[\w-]+="\$\{', mb.group(0)):
+                        continue                      # acțiunea unui rând, nu a ecranului
+                    if _in_zona(s, p, "bara-fixa") or _in_zona(s, p, "rezumat-fix"):
+                        continue
+                    idm = _re.search(r'id="([^"]+)"', mb.group(0))
+                    if idm and (nume, idm.group(1)) in actiuni_exceptii:
+                        actiuni_vazute.add((nume, idm.group(1)))
+                        continue
+                    out.append((nume, _linie(t, a + p), "ACTIUNE_TABEL_NEFIXATA",
+                                "„%s” la capătul conținutului: în .bara-fixa (jos) sau .rezumat-fix (sus) — DS cap.9 v2.96" % (
+                                    idm.group(1) if idm else mb.group(0)[:50])))
+
+    for (fis, ida), _motiv in sorted(actiuni_exceptii.items()):
+        if fis in fisiere and (fis, ida) not in actiuni_vazute:
+            out.append((fis, 0, "ACTIUNE_TABEL_NEFIXATA", "excepția „%s” nu mai are obiect: butonul nu mai e la capătul unui tabel" % ida))
+
+    # (e) REZUMAT_TABEL_LIPSA — rezumatul lipit sus al ferestrei cu tabel (DS cap.9 v2.97 pct.5). Excepțiile se scriu, ca să poată fi
+    # contrazise; cheia e (fișier, funcția care desenează tabelul).
+    rezumat_exceptii = {
+        ("date_firma.js", "randeazaDateFirma"):
+            "formular: Date firmă e un formular lung cu patru tabele mici în el (perioadele TVA la încasare, asociații, cesiunile, istoricul); "
+            "se derulează formularul, nu un tabel, iar „Salvează” stă deja în bara fixă (DS cap.9 pct.5: rezumatul e ce trebuie văzut cât "
+            "derulezi TABELUL)",
+        ("operatiuni_ecran.js", "ecranOperatiuni"):
+            "formular: tabelul împărțirii dividendului pe asociați e rezultatul câmpurilor de deasupra (câteva rânduri și totalul lor), "
+            "iar „Generează nota” stă deja în bara fixă",
+        ("tipare.js", "randeazaTipare"):
+            "de decis de Costin: deasupra celor trei tabele nu stă nimic de fixat (numai titlurile lor), iar butonul „Generează analiză AI” "
+            "stă sub ele",
+        ("admin.js", "cereriNeconfirmate"):
+            "de decis de Costin: în fereastra Înregistrare zona de mesaj a lui „Retrimite confirmarea” (`#ins-cereri-msg`) stă SUB tabelul "
+            "cererilor, iar deasupra lui e formularul comutatorului; rezumatul fix ar cere mutarea mesajului deasupra tabelului",
+        ("firme.js", "randeazaSituatiaStocului"):
+            "de decis de Costin: în Stocuri tabelul situației stocului stă primul (decizia din 05.10.2026 pct.10), iar luna, „Descarcă "
+            "gestiunea lunii” și zona ei de mesaj (`#s-mesaj`) stau SUB el; rezumatul fix ar cere mutarea lor deasupra tabelului",
+    }
+    re_fn_n = _re.compile(r"(?m)^(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*\(")
+    re_tab_d = _re.compile(r"<table\b(?![^>]*class=\"[^\"]*\b(?:%s)\b)|class=\"[^\"]*\bmig-sold-tabel\b" % "|".join(sorted(tabele_macheta)))
+    re_rez = _re.compile(r"class=\"[^\"]*\brezumat-fix\b")
+    for nume, t in sorted(fisiere.items()):
+        lit = [(a, z) for a, z, _f in _sabloane(t)]
+        fc, prec = [], 0                                       # codul fără comentarii (șabloanele rămân, cu tot cu `${…}`)
+        for a, z in lit + [(len(t), len(t))]:
+            seg = _re.sub(r"/\*.*?\*/|//[^\n]*", lambda m: _re.sub(r"[^\n]", " ", m.group(0)), t[prec:a], flags=_re.S)
+            fc.append(seg + t[a:z])
+            prec = z
+        fc = "".join(fc)
+        defs = [(m.start(), m.group(1)) for m in re_fn_n.finditer(t)]
+        fn = {}
+        for (s0, n0), (s1, _x) in zip(defs, defs[1:] + [(len(t), "")]):
+            texte = " ".join(t[a:z] for a, z in lit if s0 <= a < s1)
+            fn[n0] = {"s0": s0, "cod": fc[s0:s1], "tab": bool(re_tab_d.search(texte)), "rez": bool(re_rez.search(texte)),
+                      "scrie": bool(_re.search(r"\.innerHTML\s*\+?=(?!=)", fc[s0:s1]))}
+        for n0, f in fn.items():
+            f["cheama"] = {g for g in fn if g != n0 and _re.search(r"(?<![\w.$])%s\(" % g, f["cod"])}
+        sablon = lambda g, cheie: fn[g][cheie] and not fn[g]["scrie"]       # funcție-șablon: întoarce HTML, nu scrie în fereastră
+        for f in fn.values():
+            f["deseneaza"] = f["tab"] or any(sablon(g, "tab") for g in f["cheama"])
+            f["are_rez"] = f["rez"] or any(sablon(g, "rez") for g in f["cheama"])
+
+        def _aceeasi_fereastra(g, n0):                         # g cheamă n0 pe un rând care NU deschide altă fereastră
+            return any(not _re.search(r"\b(?:deschide|mergi)\(", fn[g]["cod"][fn[g]["cod"].rfind("\n", 0, m.start()) + 1:
+                                                                            (fn[g]["cod"] + "\n").find("\n", m.start())])
+                       for m in _re.finditer(r"(?<![\w.$])%s\(" % n0, fn[g]["cod"]))
+
+        def _acoperit(n0, vazut, cu_exceptii=True):
+            if n0 in vazut:
+                return False
+            vazut = vazut | {n0}
+            if fn[n0]["are_rez"] or (cu_exceptii and (nume, n0) in rezumat_exceptii):
+                return True
+            return any(_acoperit(g, vazut, cu_exceptii) for g in fn if n0 in fn[g]["cheama"] and _aceeasi_fereastra(g, n0))
+
+        for n0, f in sorted(fn.items(), key=lambda x: x[1]["s0"]):
+            if f["deseneaza"] and f["scrie"] and not _acoperit(n0, set()):
+                out.append((nume, _linie(t, f["s0"]), "REZUMAT_TABEL_LIPSA",
+                            "„%s” desenează un tabel în fereastră fără rezumatul lipit sus (`.rezumat-fix`) — DS cap.9 v2.97 pct.5" % n0))
+        for (fis, n0), motiv in sorted(rezumat_exceptii.items()):
+            if fis != nume:
+                continue
+            if n0 not in fn or not (fn[n0]["deseneaza"] and fn[n0]["scrie"]):
+                out.append((nume, 0, "REZUMAT_TABEL_LIPSA", "excepția „%s” nu mai are obiect: funcția nu mai desenează un tabel în fereastră" % n0))
+            elif _acoperit(n0, set(), cu_exceptii=False):
+                out.append((nume, _linie(t, fn[n0]["s0"]), "REZUMAT_TABEL_LIPSA", "excepția „%s” nu mai are obiect: are acum rezumatul lipit sus" % n0))
+    return out
+
+rap["fereastra_tabel"] = analiza_fereastra_tabel(_surse_css["stil.css"], _nav_l6, fisiere)
 
 rap["fereastra_scris"] = []
 _blocuri_pacm = re.findall(r"(?m)^\.pacm \{([^}]*)\}", _surse_css["stil.css"])

@@ -77,6 +77,14 @@ def de_unde(salvata, creat_la, data_solduri=None, prima_nota=None):
     return None
 
 
+def inainte(an, luna, preluare):
+    """[08.10, decizia Costin U2; lotul 10, deficiența 432] Obligația pe perioada (an, luna) e dinaintea lunii preluării: perioada unei
+    declarații trimestriale / anuale e luna ei de ancoră (3/6/9/12; anuala = 12), deci un trimestru care cuprinde luna preluării NU e
+    „înainte”. `preluare` = (an, lună) sau None (nu se știe -> nimic nu e „înainte”). Predicatul UNIC — Control fiscal
+    (`control_fiscal_api.separa_inainte_de_preluare`) și lista termenelor (`firma_rezumat._termene_una_firma`) îl folosesc pe acesta."""
+    return bool(preluare) and (an, luna or 12) < tuple(preluare)
+
+
 def luna_dinainte(luna):
     """(an, lună) -> luna precedentă: ultima perioadă „înainte de preluare”."""
     return (luna[0] - 1, 12) if luna[1] == 1 else (luna[0], luna[1] - 1)

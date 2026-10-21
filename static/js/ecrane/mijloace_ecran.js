@@ -3,7 +3,7 @@
 // puteau vedea, casa sau reevalua din interfata — iar casarea/reevaluarea cereau un mijloc_fix_id
 // pe care niciun ecran nu-l arata (casarea din formular dadea 422 garantat). Aici e sursa acelui id
 // + doua actiuni directe: casare (POST nota-inventariere) si reevaluare (POST reevaluare-imobilizare).
-import { api, cate, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso, stareNota, pasNota } from "../api.js?v=158edee964";
+import { api, cate, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso, stareNota, pasNota } from "../api.js?v=ff30ebaf3f";
 
 // ["01/2026", …, "08/2026", "11/2026"] -> "9 luni: 01–08/2026, 11/2026" (intervalele peste an: "11/2025–02/2026")
 export function luniScurte(luni) {
@@ -84,12 +84,14 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
           </div></details>` : "—"}</td>
       </tr>${planLunar(m)}`).join("");
 
+    // [lotul 10, deficiențele 421 / 424, DS cap.9 v2.96] „se derulează doar tabelul din mijloc, niciodată lateral”: tabelul stă direct în
+    // corp (fără cutia lui cu derulare laterală), iar zona de mesaj a acțiunilor de pe rânduri e lipită sus (`.rezumat-fix`) — refuzul
+    // unui „Salvează” de la capătul tabelului se vede fără să urci
     corp.innerHTML = `
       <h2 class="pf-titlu">Mijloace fixe</h2>
       ${simpla ? `<p class="pf-intro" id="mf-intro-simpla">Registrul activelor firmei: valoare, amortizarea <b>calculată</b> până la sfârșitul lunii ${esc(pana)}, ultima lună încheiată (pe metoda fiecărui activ, CF art.28), și rămas. Firma ține contabilitatea în partidă simplă, deci amortizarea nu se înregistrează prin note: ea intră în cheltuielile deductibile ale anului, în fișa D212. Butonul <b>C&amp;D</b> marchează aparatura destinată cercetării-dezvoltării (amortizare accelerată, CF art. 20 alin. (1) lit. b)).</p>` : `<p class="pf-intro">Registrul activelor firmei: valoare, amortizarea <b>calculată</b> până la sfârșitul lunii ${esc(pana)}, ultima lună încheiată (pe metoda fiecărui activ — liniar, degresiv, accelerat sau superaccelerat, CF art.28), amortizarea <b>înregistrată</b> în contabilitate la aceeași dată (soldul contului de amortizare, note validate) și diferența, cu lunile neînregistrate; rămas. Casarea și reevaluarea generează note contabile, validate apoi din Registrul jurnal. Butonul <b>C&amp;D</b> marchează aparatura și echipamentele destinate cercetării-dezvoltării: ele se pot amortiza accelerat din orice cont (CF art. 20 alin. (1) lit. b)).</p>`}
-      <div id="mf-mesaj"></div>
+      <div id="mf-mesaj" class="rezumat-fix"></div>
       ${lista.length ? `
-      <div style="overflow-x:auto">
         <table class="fd-tabel">
           <thead><tr>
             <th>Cod</th><th>Denumire</th><th>Cod din catalog</th><th class="fd-td-num">Durată</th>
@@ -98,8 +100,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
             <th>Metodă</th><th>PIF</th><th>Stare</th><th>Acțiuni</th>
           </tr></thead>
           <tbody>${randuri}</tbody>
-        </table>
-      </div>` : `<p class="ecran-nota">Firma nu are mijloace fixe înregistrate. Se adaugă la migrare sau prin Operațiuni speciale → Inventariere anuală (plus mijloc fix).</p>`}`;
+        </table>` : `<p class="ecran-nota">Firma nu are mijloace fixe înregistrate. Se adaugă la migrare sau prin Operațiuni speciale → Inventariere anuală (plus mijloc fix).</p>`}`;
 
     const zona = corp.querySelector("#mf-mesaj");
 

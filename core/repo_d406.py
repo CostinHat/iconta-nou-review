@@ -16,8 +16,14 @@ from core.nomenclator_status_factura import (clauza_sql as _status_declarabil,  
 
 
 def select_firma_profil(cur):
-    cur.execute("SELECT nume, cui, adresa, oras, cod_postal, platitor_tva, tip_decont "
-                "FROM firma_profil WHERE id = 1")
+    # [lotul 10, deficiența C69] + telefon, iban, declarant_nume, declarant_prenume: antetul D406 le cere (S.CTH.2, S.BA.1,
+    # S.PN.2, S.PN.5), iar până azi nu se citeau deloc — de-aia generatorul le „completa” cu „-” și cu un IBAN fix.
+    # + baza_contabila: generatorul o citea (`TaxAccountingBasis`, planul oficial al normei) din `prof`, dar SELECT-ul nu o aducea,
+    # deci fișierul spunea mereu „A” (valoarea implicită), oricare ar fi fost norma firmei (aceeași clasă: valoare pusă în locul
+    # celei a firmei).
+    # [lotul 10, C69, decizia Costin „Varianta 1”] + fara_cont_bancar: bifa „nu are cont bancar” din Date firmă (S.BA.2 „Fara cont bancar”)
+    cur.execute("SELECT nume, cui, adresa, oras, cod_postal, platitor_tva, tip_decont, telefon, iban, declarant_nume, "
+                "declarant_prenume, baza_contabila, fara_cont_bancar FROM firma_profil WHERE id = 1")
     return cur.fetchone()
 
 
@@ -43,6 +49,22 @@ def select_facturi(cur):
 def select_facturi_2(cur):
     cur.execute("SELECT tert_cui, tert_nume FROM facturi "
                 "WHERE directie='primita' ORDER BY id")
+
+
+def parteneri_si_localitati(cur):
+    """[lotul 10, deficiența C69, decizia Costin „Completez din ANAF”] Toți partenerii cunoscuți firmei, cu localitatea scrisă de
+    contabil unde există: nomenclatorul de clienți / furnizori, facturile (`tert_oras`, cea mai nouă întâi), liniile notelor și
+    operațiunile de casă (fără localitate). [{cui, nume, oras}] — `d406.localitati_locale` le face hartă pe identitatea SAF-T, iar
+    partenerii cu CUI românesc rămași fără localitate se cer ANAF-ului înaintea generării."""
+    cur.execute("SELECT cui, nume, oras FROM ("
+                " SELECT cui, nume, oras, 1 AS o, id FROM clienti"
+                " UNION ALL SELECT cui, nume, oras, 2, id FROM furnizori"
+                " UNION ALL SELECT tert_cui, tert_nume, tert_oras, 3, -id FROM facturi"
+                " UNION ALL SELECT partener_cui, partener_nume, NULL, 4, id FROM inregistrari_linii"
+                "  WHERE COALESCE(partener_cui, '') <> '' OR COALESCE(partener_nume, '') <> ''"
+                " UNION ALL SELECT cui, partener, NULL, 5, id FROM casa_operatiuni WHERE COALESCE(cui, '') <> ''"
+                ") p ORDER BY o, id")
+    return cur.fetchall()
 
 
 def select_inregistrari(cur, di, ds):
@@ -74,7 +96,8 @@ def select_factura_linii(cur, di, ds):
 
 def select_facturi_3(cur, di, ds):
     # [A3] D406 nu filtra status/tip — facturile anulate/proforme intrau in SAF-T. Se adauga filtrele.
-    cur.execute("SELECT id, numar, data_emitere, tert_cui, tert_nume, "
+    # [lotul 10, C69] + tert_oras, tert_tara: adresa de facturare a facturii (S.I.25 / S.I.28 BillingAddress „Mandatory”), în locul „-”
+    cur.execute("SELECT id, numar, data_emitere, tert_cui, tert_nume, tert_oras, tert_tara, "
                 "COALESCE(total,0) AS total, COALESCE(tva,0) AS tva, "
                 "moneda, curs_bnr, total_lei, tva_lei, "  # [A1] conversia in lei (SAF-T CurrencyCode=RON)
                 "COALESCE(taxare_inversa,false) AS ti, storno_din_id, directie, "

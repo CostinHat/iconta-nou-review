@@ -105,12 +105,18 @@ def test_bilantul_anului_precedent_din_aplicatie_are_intaietate(cur):
     assert ba.coloana_precedenta(cur, _SCHEMA, "s1003", 2026)["sursa"]["F20"] != "bilant"   # alt formular: rândurile F20 diferă
 
 
-def test_fara_sursa_nu_se_genereaza_iar_manualul_se_spune(cur):
+def test_fara_sursa_nu_se_genereaza_iar_manualul_se_spune(cur, monkeypatch):
     """Solduri de preluare la 31.08.2026: anul 2025 nu e deloc în aplicație -> bilanțul 2026 se refuză („coloana «An precedent» goală (F10,
     F20)”); completată manual -> se generează, cu avertismentul vizibil (cine, „completată manual”, verifică față de bilanțul depus), iar
     cifrele manuale ajung în XML (F10_0081). Bilanțul 2025 se refuză (31.12.2025 e înainte de preluare). MUTAȚIE: refuzul pe secțiunea
     lipsă scos (coloana goală) -> pică; avertismentul manual scos -> pică; verificarea `zi < ref` scoasă din `sold_la` -> 2025 se
     generează cu soldul de preluare -> pică."""
+    # [lotul 10, 383] generarea cere perioada încheiată (`coada_api.perioada_neincheiata`); testul nu e despre poarta ei: generează ca
+    # după încheierea perioadei (ceasul porții mutat peste perioadă), restul ceasului aplicației rămâne cel real
+    import datetime as _dt383, functools as _ft383
+    from core import coada_api as _coada383
+    monkeypatch.setattr(_coada383, "perioada_neincheiata", _ft383.partial(_coada383.perioada_neincheiata,
+                                                                          azi=_dt383.date(_dt383.date.today().year + 2, 1, 1)))
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
     with pytest.raises(ValueError, match=r"coloana „An precedent” goală \(F10, F20, F30\)"):
@@ -122,7 +128,8 @@ def test_fara_sursa_nu_se_genereaza_iar_manualul_se_spune(cur):
     assert len(av) == 1, av
     assert re.search(r"completată manual de (.+?), la ", av[0]).group(1) == "Contabil Probă", av          # cine
     assert re.findall(r"bilanțul depus pe (\d{4})", av[0]) == ["2025"], av                              # față de ce se verifică
-    cur.execute("UPDATE firma_profil SET reg_com = 'J40/1/2020', declarant_nume = 'Ion Popescu' WHERE id = 1")
+    cur.execute("UPDATE firma_profil SET reg_com = 'J40/1/2020', declarant_nume = 'Popescu', declarant_prenume = 'Ion', judet = 'B', "
+                "mare_contribuabil = false, forma_proprietate = '35' WHERE id = 1")  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
     xml, _ = ba.genereaza(cur.connection, _SCHEMA, 2026)
     assert re.findall(r'\bF10_0081="(\d+)"', xml) == ["4321"] and re.findall(r'\bF10_0082="(\d+)"', xml) == ["10000"], xml[:600]
     with pytest.raises(ValueError, match="nu se poate întocmi"):
@@ -258,7 +265,8 @@ def test_primul_exercitiu_coloana_an_precedent_ramane_goala(cur, monkeypatch):
     refuz -> pică; anul înființării comparat cu `an - 1` -> pică."""
     from core import duk, erori
     cur.execute("UPDATE firma_profil SET data_infiintare = '2025-03-15', reg_com = 'J40/1/2025', caen = '6202', adresa = 'Str 1', "
-                "oras = 'Buc', judet = 'B', declarant_nume = 'Popescu', declarant_prenume = 'Ion', declarant_functie = 'ADMINISTRATOR' WHERE id = 1")
+                "oras = 'Buc', judet = 'B', declarant_nume = 'Popescu', declarant_prenume = 'Ion', declarant_functie = 'ADMINISTRATOR', "
+                "mare_contribuabil = false, forma_proprietate = '35' WHERE id = 1")  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
     _nota(cur, datetime.date(2025, 3, 20), "5121", "1012", Decimal("1000"))
     cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2025)
     assert cp["sursa"] == {"F10": "primul_exercitiu", "F20": "primul_exercitiu", "F30": "primul_exercitiu"} and cp["F10"] == {} \

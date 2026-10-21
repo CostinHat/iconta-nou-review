@@ -49,8 +49,10 @@ def test_def_c21_balanta_completa_se_citeste_cu_soldurile_finale(patron, firma_i
     MUTAȚIA din plasă: perechea de sold final -> prima pereche -> ROȘU."""
     t = _balanta(patron, firma_import)
     patron.captura()
-    assert "Soldurile s-au citit din coloanele „Solduri finale Debit” și „Solduri finale Credit”." in t, t[:1500]
-    assert "5311 Casa în lei 300,00 0,00" in " ".join(t.split()), t[:1500]
+    # [lotul 10, deficiența 425] balanța are și soldurile inițiale ale anului și totalul sumelor: soldurile FINALE rămân cele citite ca sold,
+    # iar soldul la 1 ianuarie (250 D) și rulajele anului (650 / 600 = total sume − sold inițial) intră și ele, pe coloanele lor
+    assert "Soldurile finale s-au citit din coloanele „Solduri finale Debit” și „Solduri finale Credit”." in t, t[:1500]
+    assert "5311 Casa în lei 250,00 D 650,00 600,00 300,00 0,00" in " ".join(t.split()), t[:1500]
 
 
 def test_def_c29_totalurile_si_sinteticele_dublate_nu_intra(patron, firma_import):
@@ -96,6 +98,10 @@ def test_def_c27_csv_windows_1250_cu_diacriticele_intacte(patron, firma_import):
     patron.captura()
     pg.fill("#mig-data-bal", "2026-09-30")
     pg.click("#mig-salveaza-sold")
+    # [lotul 10, deficiența 426] după C22 firma are deja balanța: înlocuirea se confirmă explicit („Înlocuiesc balanța”)
+    pg.wait_for_function("() => document.querySelector('#ca-ok') || document.body.innerText.includes('4 conturi salvate')", timeout=20000)
+    if pg.locator("#ca-ok").count():
+        pg.click("#ca-ok")
     pg.wait_for_function("() => document.body.innerText.includes('4 conturi salvate')", timeout=20000)
     assert sql('SELECT denumire FROM "%s".solduri_initiale ORDER BY cont' % firma_import["schema"]) == [
         ("Capital subscris vărsat",), ("Furnizor Şerban",), ("Furnizor Ţăndărei",), ("Casa în lei",)]
@@ -109,6 +115,10 @@ def _salariati(patron, firma):
     assert not pg.is_disabled("#mig-salveaza-sal"), patron.fereastra()[:1500]
     patron.captura("previzualizare")
     pg.click("#mig-salveaza-sal")
+    # [lotul 10, deficiența 426] firma modulului are deja datele (alt test le-a importat): înlocuirea se confirmă explicit
+    pg.wait_for_function("() => document.querySelector('#ca-ok') || document.body.innerText.includes('2 salariați importați.')", timeout=20000)
+    if pg.locator("#ca-ok").count():
+        pg.click("#ca-ok")
     pg.wait_for_function("() => document.body.innerText.includes('2 salariați importați.')", timeout=20000)
     patron.captura("salvat")
 
@@ -161,6 +171,10 @@ def _mijloace(patron, firma, nume="mijloace_fixe_saga.csv", continut=None):
     t = patron.fereastra()
     patron.captura("previzualizare")
     pg.click("#mig-salveaza-mf")
+    # [lotul 10, deficiența 426] firma modulului are deja datele (alt test le-a importat): înlocuirea se confirmă explicit
+    pg.wait_for_function("() => document.querySelector('#ca-ok') || document.body.innerText.includes('Un mijloc fix importat.')", timeout=20000)
+    if pg.locator("#ca-ok").count():
+        pg.click("#ca-ok")
     pg.wait_for_function("() => document.body.innerText.includes('Un mijloc fix importat.')", timeout=20000)
     return t, patron.fereastra()
 
@@ -265,6 +279,10 @@ def test_salariatii_partial_si_de_verificat_pana_la_confirmare(patron, firma_imp
     assert pg.inner_text("#mig-salveaza-sal").strip() == "Salvează cele 2 rânduri bune (salariați)"
     patron.captura("previzualizare")
     pg.click("#mig-salveaza-sal")
+    # [lotul 10, deficiența 426] firma modulului are deja datele (alt test le-a importat): înlocuirea se confirmă explicit
+    pg.wait_for_function("() => document.querySelector('#ca-ok') || document.body.innerText.includes('2 salariați importați.')", timeout=20000)
+    if pg.locator("#ca-ok").count():
+        pg.click("#ca-ok")
     pg.wait_for_function("() => document.body.innerText.includes('2 salariați importați.')", timeout=20000)
     assert "2 salariați au date de verificat în Stat de plată" in patron.fereastra()
     assert sql('SELECT nume, persoane_intretinere, scutit_contrib_minim, de_verificat FROM "%s".salariati '
@@ -290,6 +308,10 @@ def test_salariatii_partial_si_de_verificat_pana_la_confirmare(patron, firma_imp
     _pas(patron, firma_import, "Salaria")
     _incarca(patron, "salariati_fara_scutire.csv", _cp1250(SALARIATI_FARA_SCUTIRE), "#mig-salveaza-sal")
     pg.click("#mig-salveaza-sal")
+    # [lotul 10, deficiența 426] firma modulului are deja datele (alt test le-a importat): înlocuirea se confirmă explicit
+    pg.wait_for_function("() => document.querySelector('#ca-ok') || document.body.innerText.includes('2 salariați importați.')", timeout=20000)
+    if pg.locator("#ca-ok").count():
+        pg.click("#ca-ok")
     pg.wait_for_function("() => document.body.innerText.includes('2 salariați importați.')", timeout=20000)
     assert sql('SELECT persoane_intretinere, de_verificat FROM "%s".salariati WHERE id = %%s' % sch, (pid,)) == [(1, [])]
 

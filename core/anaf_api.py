@@ -70,6 +70,31 @@ def _tva_perioade(tva):
     return out
 
 
+def _data_iso(x):
+    """'AAAA-LL-ZZ' (forma datelor serviciului v9, ex. date_generale.data_inregistrare) -> același text; altceva / gol -> None.
+    O dată în altă formă nu se ghicește: apelantul are și textul brut."""
+    import re as _re_d
+    t = str(x or "").strip()[:10]
+    return t if _re_d.fullmatch(r"\d{4}-\d{2}-\d{2}", t) else None
+
+
+def _rtvai(rtvai):
+    """[lotul 10, deficiența 428] Registrul persoanelor care aplică sistemul TVA la încasare, cu toate câmpurile documentate în
+    anaf_surse/doc_WS_V9.txt (inregistrare_RTVAI): „dataInceputTvaInc -- Data de la care aplica sistemul TVA la incasare”,
+    „dataSfarsitTvaInc -- Data pana la care aplica sistemul TVA la încasare”, „dataActualizareTvaInc -- Data actualizarii”,
+    „dataPublicareTvaInc -- Data publicarii”, „tipActTvaInc -- Tip actualizare”, „statusTvaIncasare -- true -pentru platitor TVA
+    la incasare/ false […] la data cautata”. Până azi se citea numai statusul. `brut` = câmpurile așa cum au venit."""
+    rtvai = rtvai or {}
+    return {"status": bool(rtvai.get("statusTvaIncasare")),
+            "data_inceput": _data_iso(rtvai.get("dataInceputTvaInc")),
+            "data_sfarsit": _data_iso(rtvai.get("dataSfarsitTvaInc")),
+            "data_actualizare": _data_iso(rtvai.get("dataActualizareTvaInc")),
+            "data_publicare": _data_iso(rtvai.get("dataPublicareTvaInc")),
+            "tip_act": str(rtvai.get("tipActTvaInc") or "").strip() or None,
+            "brut": {k: rtvai.get(k) for k in ("dataInceputTvaInc", "dataSfarsitTvaInc", "dataActualizareTvaInc",
+                                                "dataPublicareTvaInc", "tipActTvaInc", "statusTvaIncasare")}}
+
+
 def platitor_tva_freeze(cui, fallback=None):
     """Statutul de platitor TVA al unui CUI, INGHETAT din ANAF F004 (best-effort) - pentru stocare pe factura
     (fapt contabil imutabil). ANAF indisponibil / CUI negasit -> `fallback` (declaratia contabilului / semantica
@@ -202,6 +227,7 @@ def valideaza_cui(lista_cui, data_interogare=None):
                 "tva_data_inceput": _tva_inceput_activ(tva),   # data începerii înregistrării TVA active (fapt ANAF)
                 "tva_perioade": _tva_perioade(tva),   # TOATE perioadele (istoric intreg, pt backfill)
                 "tva_la_incasare": bool(rtvai.get("statusTvaIncasare")),   # F188: RTVAI.statusTvaIncasare
+                "tva_incasare_rtvai": _rtvai(rtvai),   # [lotul 10, 428] statusul + datele de început / sfârșit ale sistemului
                 "stare": (dg.get("stare_inregistrare") or dg.get("stareinregistrare") or "").strip(),
                 "inactiv": bool(inactiv.get("statusInactivi")),
                 "adresa": (dg.get("adresa") or "").strip(),
@@ -223,7 +249,69 @@ def valideaza_cui(lista_cui, data_interogare=None):
         for c in dj.get("notFound", []):
             rezultate.append({
                 "cui": str(c), "denumire": "", "platitor_tva": False, "tva_data_inceput": None, "tva_la_incasare": False,
+                "tva_incasare_rtvai": None,
                 "stare": "", "inactiv": False, "adresa": "", "cod_caen": "", "nr_reg_com": "", "data_inregistrare": None,
                 "localitate": "", "judet": "", "gasit": False,
             })
     return rezultate
+
+
+# ── [lotul 10, deficiența C69, decizia Costin 20.10.2026 „Completez din ANAF”, verbatim în DECIZII] „pentru partenerii cu CUI
+# românesc, localitatea se aduce automat din ANAF la generare; se blochează numai ce rămâne necompletat.” Adresa partenerului e
+# obligatorie în D406 (schema ANAF, „5. Structures”: S.C.3 Address „Mandatory … 1..*”, S.AD.5 City „Mandatory … 1”) și județul lui în
+# D394 la partenerul neînregistrat (structura D394, pct.222 judP „Obligatoriu pt tip_partener=2 și cuiP=null și taraP=RO”).
+# Apelul se face ÎNAINTEA tranzacției de generare (`uc_declaratii.aduce_localitati_parteneri`, ca `_aduce_cursurile` la reevaluare);
+# generatorul citește numai CACHE-ul (`localitate_din_cache`), fără rețea. Cache-ul e în proces (pierdut la repornire, separat pe
+# proces) — ANAF dă domiciliul fiscal, care se schimbă rar; după `_TTL_LOCALITATE` se recere.
+import time as _time
+
+from core.cache_declarat import Declaratie as _Dec
+
+_TTL_LOCALITATE = 24 * 3600
+_LOCALITATI_MAX = 5000
+_CACHE_LOCALITATI = {}   # cui (cifre) -> (momentul, {"localitate", "judet"})
+_CACHE_LOCALITATI_DECLARATIE = _Dec(
+    rol="localitatea și județul domiciliului fiscal al partenerilor cu CUI românesc, aduse din ANAF înaintea tranzacției de "
+        "generare (D406 / D394), ca generatorul să le citească fără rețea",
+    sursa="serviciul ANAF v9 (`valideaza_cui`); aplicația nu le scrie, le cere din nou după termen",
+    motiv="generatorul rulează în tranzacție, fără rețea; o singură cerere ANAF pe lot de CUI-uri, nu una per partener",
+    invalidare="termen `_TTL_LOCALITATE` (24 h, după care `localitate_din_cache` întoarce None și se recere) + plafon "
+               "`_LOCALITATI_MAX` (expiratele scoase întâi, apoi cele mai vechi) + repornirea procesului",
+    dovada="core/test_cache_declarat.py::test_localitatile_anaf_se_reconstruiesc_identic",
+)
+
+
+def _pune_localitate(cui, valoare):
+    """Scrie în cache cu plafon: la depășire scoate întâi intrările expirate, apoi pe cele mai vechi."""
+    _CACHE_LOCALITATI[cui] = (_time.time(), valoare)
+    if len(_CACHE_LOCALITATI) > _LOCALITATI_MAX:
+        acum = _time.time()
+        for c in [c for c, v in _CACHE_LOCALITATI.items() if acum - v[0] > _TTL_LOCALITATE]:
+            del _CACHE_LOCALITATI[c]
+        for c, _v in sorted(_CACHE_LOCALITATI.items(), key=lambda kv: kv[1][0])[:len(_CACHE_LOCALITATI) - _LOCALITATI_MAX]:
+            del _CACHE_LOCALITATI[c]
+
+
+def localitate_din_cache(cui):
+    """{"localitate", "judet"} din ultima interogare ANAF a CUI-ului (în `_TTL_LOCALITATE`), sau None. Fără rețea."""
+    c = _curata(cui or "")
+    v = _CACHE_LOCALITATI.get(c) if c else None
+    if not v or _time.time() - v[0] > _TTL_LOCALITATE:
+        return None
+    return dict(v[1])
+
+
+def aduce_localitati(lista_cui, interogare=None):
+    """Aduce din ANAF (v9, `valideaza_cui`, în loturi de `MAX_CUI`) localitatea și județul domiciliului fiscal pentru CUI-urile care nu
+    sunt deja în cache, și le pune în cache. Întoarce câte CUI-uri au primit localitatea. ANAF jos / CUI negăsit -> CUI-ul rămâne
+    fără localitate (generatorul îl numește în refuz); eșecul NU se ascunde: ridică mai departe, apelantul îl spune (`ANAF_JOS`)."""
+    de_cerut = sorted({c for c in (_curata(x or "") for x in lista_cui) if c} - {c for c in list(_CACHE_LOCALITATI) if localitate_din_cache(c)})
+    if not de_cerut:
+        return 0
+    gasite = 0
+    for r in (interogare or valideaza_cui)(de_cerut):
+        loc, jud = (r.get("localitate") or "").strip(), (r.get("judet") or "").strip()
+        if r.get("gasit") and loc:
+            _pune_localitate(_curata(r.get("cui")), {"localitate": loc, "judet": jud})
+            gasite += 1
+    return gasite

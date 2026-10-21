@@ -28,7 +28,13 @@ DINAMICE = {
     "${tip()}": ("static/js/ecrane/firme.js", r'<option value="(s100[35])">'),
 }
 #: (fișier, cheie) citite deliberat fără să fie produse, cu motivul — goală: fiecare citire are producătorul ei
-EXCEPTII = {}
+EXCEPTII = {
+    # [lotul 10, deficiența 430 b/f] citite CONDIȚIONAT (`if (r.avertisment)`, `if (zonaProp && r.asociati)`): le produce numai ruta
+    # `nota-asociati` (tabelul împărțirii pe asociați, avertismentul contului 117) — și `vanzare-marja` avertismentul; ruta dinamică a
+    # Operațiunilor e desfăcută pe toate cele 34, iar celelalte nu le au (citirea lipsă nu anunță nimic fals)
+    ("operatiuni_ecran.js", "asociati"): "numai dividendul (nota-asociati) le produce; citire condiționată",
+    ("operatiuni_ecran.js", "avertisment"): "nota-asociati (117 fără analitic) și vanzare-marja; citire condiționată",
+}
 _FARA = {"length", "map", "join", "forEach", "filter", "slice", "some", "find"}
 
 

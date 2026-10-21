@@ -976,8 +976,19 @@ def _date_firma(firma):
                   "cod_postal": "010101", "banca": "Banca Probă", "iban": "RO49AAAA1B31007593840000", "telefon": "0211234567",
                   "email": "proba@prisma-cont.test", "patron_nume": "Ion Popescu", "declarant_nume": "Popescu",
                   "declarant_prenume": "Ion", "declarant_functie": "Administrator",
-                  "forma_juridica": "SRL", "capital_subscris": "200", "capital_varsat": "200"})
+                  "forma_juridica": "SRL", "capital_subscris": "200", "capital_varsat": "200",
+                  # [lotul 10, C69] antetul bilanțului: bifaMC (firma de probă nu e mare contribuabil) și codPP „35” („Societăți cu
+                  # răspundere limitată”, nomenclatorul ANAF din `bilant.FORME_PROPRIETATE`) — lipsa lor oprește bilanțul
+                  "mare_contribuabil": False, "forma_proprietate": "35"})
     assert st == 200 and r.get("ok") is not False, (st, r)
+
+
+def _localitatea_partenerului(firma, factura_id, oras="București", judet="B"):
+    """[lotul 10, C69] Localitatea (și județul) partenerului scrise pe factură — „Localitatea / Județul clientului” din formularul
+    facturii. D406 cere adresa fiecărui partener (S.AD.5 City „Mandatory”; `d406.parteneri_fara_localitate`), iar un CUI de probă
+    (`cui_cu_control`) nu e o firmă reală, deci ANAF nu i-o poate completa. Ruta `POST /facturi` nu primește localitatea (`FacturaIn`),
+    de aceea se scrie pe factura creată."""
+    sql('UPDATE "%s".facturi SET tert_oras = %%s, tert_judet = %%s WHERE id = %%s' % firma["schema"], (oras, judet, factura_id))
 
 
 def _genereaza(ecran, firma, tip, an, luna):
@@ -1263,6 +1274,7 @@ def test_def_107_factura_dupa_nir_fara_factura_nu_incarca_371_a_doua_oara(patron
                   "tert_cui": cui, "linii": [{"descriere": "Marfa D107", "cantitate": 10, "pret_unitar": 100, "cota_tva": 21}]})
     assert st == 200, (st, f)
     fid = f["factura_id"]
+    _localitatea_partenerului(firma_tva, fid)   # [lotul 10, C69] D406 (testul 134) cere localitatea furnizorului
     pg = patron.pg
     _istoric(patron, firma_tva)
     rand = pg.locator(".fereastra:last-of-type .fac-frand-btn", has_text="FD107").first
@@ -1308,6 +1320,7 @@ def test_def_131_factura_multi_cota_spune_regula_anaf_in_rezumat(patron, firma_t
                   "linii": [{"descriere": "Marfa 21", "cantitate": 1, "pret_unitar": 1000, "cota_tva": 21},
                             {"descriere": "Carte 11", "cantitate": 1, "pret_unitar": 200, "cota_tva": 11}]})
     assert st == 200, (st, r)
+    _localitatea_partenerului(firma_tva, r["factura_id"])   # [lotul 10, C69] clientul în D406-urile firmei (lista clienților din facturi)
     _genereaza(patron, firma_tva, "d394", LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     casete = patron.pg.evaluate("() => [...[...document.querySelectorAll('.fereastra')].pop().querySelectorAll('.caseta-info')]"
                                 ".map((c) => c.innerText.trim())")

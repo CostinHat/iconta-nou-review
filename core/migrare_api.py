@@ -280,6 +280,9 @@ REGULI = {
     "cor_lipsa":        {"fel": "semnal", "inseamna": "salariatul n-are cod COR în fișier: intră fără cod, se alege în fișa lui"},
     "persoane_lipsa":   {"fel": "semnal", "inseamna": "persoanele în întreținere lipsesc: intră cu 0, salariatul e marcat de verificat"},
     "scutire_lipsa":    {"fel": "semnal", "inseamna": "scutirea de contribuția minimă lipsește: intră nescutit, marcat de verificat"},
+    # [lotul 10, deficiența 420] norma și funcția de bază lipsă din fișier: propuse pe ecran (editabile), intră marcate de verificat
+    "norma_propusa":    {"fel": "semnal", "inseamna": "norma lipsește din fișier: propusă (întreagă, 8 ore), editabilă, marcată de verificat"},
+    "functie_baza_propusa": {"fel": "semnal", "inseamna": "funcția de bază lipsește din fișier: propusă „Da”, editabilă, marcată de verificat"},
 }
 
 #: [comanda Costin 8.2 pct.4] formele care NU opresc rândul — `semnaleaza` le cere, `respinge` le refuză
@@ -337,3 +340,41 @@ def _respingere_sau_semnal(tip, unde, regula, mesaj, **campuri):
     a["forma"] = REGULI[regula]["fel"]   # lipsa | invalid | duplicat | incoerent - pt grupare la randare
     a.update(campuri)
     return a
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# [lotul 10, deficiența 426 — CLASA] ÎNLOCUIREA CONFIRMATĂ, comună importurilor de migrare care înlocuiesc ce exista.
+# Comanda Costin 10.1 (verbatim în DECIZII „Comanda 10.1”): „al doilea import de balanță pentru aceeași firmă o înlocuiește pe prima
+# fără avertisment. Înainte de înlocuire: spune că există deja o balanță, arată totalurile vechi și noi, cere confirmare; dacă există
+# note pe lunile de după preluare, spune că soldurile lor se recalculează.” Clasa: ORICE import de migrare care șterge / suprascrie ce
+# exista (balanța, soldurile pe parteneri, registrul mijloacelor fixe, istoricul declarațiilor, fișele salariaților). Fiecare modul își
+# spune ce există și ce aduce fișierul (textul, cu cifrele lui); poarta e una singură, aici. Gard: core/test_lot10_inlocuire_clasa.py
+# (orice `importa` dintr-un modul de import care șterge (`DELETE FROM`) sau suprascrie printr-un upsert trece pe aici, cu `inlocuieste`).
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+#: fraza de încheiere a refuzului, aceeași peste toate importurile (ecranul deschide confirmarea pe 409)
+CERE_CONFIRMAREA = "Confirmă înlocuirea și salvează din nou."
+
+
+class InlocuireNeconfirmata(ValueError):
+    """Importul ar înlocui date existente ale firmei, iar cererea n-a confirmat înlocuirea. `vechi` / `nou` = ce există și ce aduce
+    fișierul; `dependente` = ce se sprijină pe datele înlocuite. Use-case-ul o traduce în `erori.Conflict` (409), cu textul ei."""
+
+    def __init__(self, mesaj, vechi=None, nou=None, dependente=None):
+        super().__init__(mesaj)
+        self.vechi, self.nou, self.dependente = vechi, nou, dependente
+
+
+def cere_confirmarea_inlocuirii(exista, inlocuieste, text, vechi=None, nou=None, dependente=None, exceptie=InlocuireNeconfirmata):
+    """Poarta unică a înlocuirii: când firma are deja datele pe care importul le înlocuiește (`exista`) și cererea n-a confirmat
+    (`inlocuieste` fals) -> `exceptie` (o `InlocuireNeconfirmata`) cu `text` + `CERE_CONFIRMAREA`. Se cheamă ÎNAINTE de orice scriere."""
+    if exista and not inlocuieste:
+        raise exceptie("%s %s" % (str(text).rstrip(), CERE_CONFIRMAREA), vechi, nou, dependente)
+
+
+def randuri_care_intra(randuri, erori):
+    """[426] Rândurile previzualizate care intră la salvare (fără cele respinse în `erori`, pe numărul rândului din fișier — aceeași
+    regulă ca `importa`: `import_tabel.nr_rand`). Din ele se spune, înainte de salvare, ce aduce fișierul nou."""
+    from core import import_tabel as _it
+    resp = {e.get("rand") for e in erori or [] if e.get("rand") is not None}
+    return [r for i, r in enumerate(randuri or [], start=2) if _it.nr_rand(r, i) not in resp]

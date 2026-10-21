@@ -47,7 +47,12 @@ def facturi_deschise(conn, schema, cu_asteptare=False):
     inregistrari legate cu factura_id (credit 4111 la emise / debit 401 la primite).
     [17.10.2026, lotul 6, 278] Nota unei chitanțe de dinainte de 278 n-are `factura_id` (atunci nu se punea), iar o notă validată nu se
     mai modifică (`regula_nota`) — legătura ei cu factura se citește din chitanța neanulată (`chitante.inregistrare_id` ->
-    `chitante.factura_id`), ca la `jurnal_api`. Fără ea, factura încasată cu chitanță rămânea „deschisă” la reconcilierea bancară."""
+    `chitante.factura_id`), ca la `jurnal_api`. Fără ea, factura încasată cu chitanță rămânea „deschisă” la reconcilierea bancară.
+    [lotul 10, 428, decizia Costin „Construiesc acum”] „fiecare compensare stinge cele două facturi”: nota compensării (401 = 4111, fără
+    `factura_id`) stinge ambele facturi prin `compensari` (`compensari_api.nota_de_compensare`) — altfel banca și casa ar mai încasa o dată
+    partea compensată."""
+    from core import compensari_api as _cz
+    cz = _cz.nota_de_compensare("i", "f.id", f"{schema}.")
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
             SELECT f.id, f.tert_cui, f.directie, f.data_emitere,
@@ -58,18 +63,19 @@ def facturi_deschise(conn, schema, cu_asteptare=False):
                              WHERE (i.factura_id = f.id
                                     OR (i.factura_id IS NULL AND EXISTS (
                                         SELECT 1 FROM {schema}.chitante c
-                                         WHERE c.inregistrare_id = i.id AND c.factura_id = f.id AND NOT c.anulata)))
+                                         WHERE c.inregistrare_id = i.id AND c.factura_id = f.id AND NOT c.anulata))
+                                    OR {cz})
                                AND ((f.directie='emisa'   AND l.cont_credit=%s)
                                  OR (f.directie='primita' AND l.cont_debit=%s))), 0) AS decontat,
                    (SELECT array_agg(DISTINCT i.id ORDER BY i.id)
                       FROM {schema}.inregistrari i
                       JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                     WHERE i.factura_id = f.id AND i.status <> 'validata'
+                     WHERE (i.factura_id = f.id OR {cz}) AND i.status <> 'validata'
                        AND ((f.directie='emisa' AND l.cont_credit=%s) OR (f.directie='primita' AND l.cont_debit=%s))) AS note_nevalidate,
                    COALESCE((SELECT SUM(l.suma)
                              FROM {schema}.inregistrari i
                              JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                             WHERE i.factura_id = f.id AND i.status <> 'validata'
+                             WHERE (i.factura_id = f.id OR {cz}) AND i.status <> 'validata'
                                AND ((f.directie='emisa'   AND l.cont_credit=%s)
                                  OR (f.directie='primita' AND l.cont_debit=%s))), 0) AS decontat_nevalidat,
                    COALESCE((SELECT SUM(COALESCE(st.total_lei, st.total))
@@ -312,24 +318,14 @@ def conteaza(conn, schema, linie_id, alocari=None):
                 INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
                 VALUES (%s,%s,%s,%s)
             """, (iid, debit, credit, Decimal(str(a["suma"]))))
-            # [tvai_v1] TVA la incasare: exigibilitate la incasare/plata (art.282(3),(8))
-            cur.execute(f"SELECT COALESCE(tva_la_incasare, false) AS b FROM {schema}.firma_profil WHERE id = 1")
-            if (cur.fetchone() or {}).get("b"):
-                from core import tva_incasare as _tv
-                cur.execute(f"""SELECT f.directie, (SELECT cota_tva FROM {schema}.factura_linii
-                                        WHERE factura_id = f.id LIMIT 1) AS cota
-                                FROM {schema}.facturi f WHERE f.id = %s""", (a["factura_id"],))
-                _f = cur.fetchone()
-                if _f:
-                    if _f["cota"] is None:
-                        raise ValueError("factura fără cota TVA pe linii - TVA la încasare nu se "
-                                         "poate calcula (declara cota pe factura)")
-                    _tva = _tv.tva_din_incasare(a["suma"], _f["cota"])
-                    if _tva > 0:
-                        _deb, _cred = ("4428", "4427") if _f["directie"] == "emisa" else ("4426", "4428")
-                        cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                        (inregistrare_id, cont_debit, cont_credit, suma)
-                                        VALUES (%s,%s,%s,%s)""", (iid, _deb, _cred, _tva))
+            # [lotul 10, deficiența 428] TVA la încasare: partea încasată / plătită trece 4428 -> 4427 (emisă, CF art.282 alin.(3), (8)) /
+            # 4428 -> 4426 (primită, CF art.297 alin.(2)-(3)), pe regimul FACTURII la data ei — punctul unic, același cu casa. Înainte:
+            # bifa firmei de azi, cota primei linii (o factură cu două cote ieșea greșit) și nimic pentru furnizorul în sistem.
+            from core import tva_incasare as _tv
+            for _deb, _cred, _tva in _tv.linii_la_incasare(cur, schema, a["factura_id"], a["suma"]):
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, _deb, _cred, _tva))
             create.append(iid)
         cur.execute(f"UPDATE {schema}.extras_linii SET status='contat', alocari=%s WHERE id=%s",
                     (json.dumps({**(l.get("alocari") or {}),

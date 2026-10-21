@@ -40,7 +40,8 @@ def test_clasificarea_acopera_cele_82_si_fiecare_are_motiv():
     clase = collections.Counter(c for c, _m in S.CLASIFICARE.values())
     # 82 de selecturi (81 de chei: `je-centru` de două ori) + lotul 07.10 B: D204 forma, D208 modalitatea, helperul `selectDaNu`;
     # 6 fapte trecute la PRESELECTAT_PERMIS (emiterea ×4, factura recurentă, D318 tipul cererii) + destinația pe linie (fost CONFLICT)
-    assert clase[S.FISCAL] == 55 and clase[S.PRESELECTAT] == 7 and sum(clase.values()) == 85   # [17.10.2026, lotul 7] + `setari.js:not-canal` (NEFISCAL)
+    # [lotul 10, 428] + `date_firma.js:vf-tva_incasare` (PRESELECTAT: „Nu” dedus din CF art.282 alin.(3) — sistemul e opțiune)
+    assert clase[S.FISCAL] == 55 and clase[S.PRESELECTAT] == 8 and sum(clase.values()) == 86   # [17.10.2026, lotul 7] + `setari.js:not-canal` (NEFISCAL)
     assert all(len(m) > 40 for _c, m in S.CLASIFICARE.values())
     assert set(S.HELPERE) <= set(S.CLASIFICARE)
 
@@ -77,7 +78,7 @@ def test_CALIBRARE_select_fiscal_necerut_de_handler_e_prins():
 def test_preselectiile_permise_isi_scriu_criteriile():
     """DS cap.17 corectat: o preselecție e permisă numai cu (a) uzual/dedus, (b) vizibil, (c) schimbabil — scrise în motiv."""
     pres = {k: m for k, (c, m) in S.CLASIFICARE.items() if c == S.PRESELECTAT}
-    assert sorted(pres) == ["declaratii.js:d318-drec", "emitere_ecran.js:em-moneda", "emitere_ecran.js:em-tara", "emitere_ecran.js:em-tip",
+    assert sorted(pres) == ["date_firma.js:vf-tva_incasare", "declaratii.js:d318-drec", "emitere_ecran.js:em-moneda", "emitere_ecran.js:em-tara", "emitere_ecran.js:em-tip",
                             "emitere_ecran.js:em-tipop", "facturi_ecran.js:fr-moneda", "facturi_ecran.js:pr-dest"]
     assert [k for k, m in pres.items() if not all(x in m for x in ("(a)", "(b)", "(c)"))] == []
 
@@ -85,7 +86,7 @@ def test_preselectiile_permise_isi_scriu_criteriile():
 def test_CALIBRARE_preselectat_cu_alege_e_prins():
     p = "static/js/ecrane/emitere_ecran.js"
     s = _js(p)
-    a = '<select class="camp-input" id="em-moneda">'
+    a = '<select class="camp-input" id="em-moneda" data-actiune-camp="POST /tenants/{tenant_id}/facturi/previzualizare-lei">'
     assert s.count(a) == 1
     rele = dict(S.masoara([(p, s.replace(a, a + "${ALEGE}"))]))
     assert rele.get("emitere_ecran.js:em-moneda", "").startswith("clasificat preselectat permis")

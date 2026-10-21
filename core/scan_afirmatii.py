@@ -66,6 +66,13 @@ IMPORT_FN = ("verifica_randuri", "extrage", "importa", "potriveste", "extrage_op
 OPERATIE_FN = ("salveaza", "creeaza", "sterge", "marcheaza", "seteaza", "adauga", "modifica",
                "actualizeaza", "trimite", "genereaza_", "aproba", "respinge", "anuleaza")
 
+# Chei care spun ca dictionarul e REZULTATUL unei scrieri (clasa B), ca `ok`. [lotul 10, 20.10.2026] `inregistrare_id`: raspunsul unei
+# rute care a SCRIS o nota contabila (id-ul notei). Use-case-urile poarta numele rutei (`nota_tva_incasare`), nu un verb din
+# OPERATIE_FN, deci numele functiei nu le poate clasa. Masurat la introducere: reclaseaza EXACT UN sit — `uc_tenants.nota_tva_incasare`,
+# al carui `avertisment` e o indicatie de folosire a formularului („nota manuala e pentru cazurile speciale”), nu o afirmatie despre
+# datele firmei. LIMITA: un verdict despre firma pus in raspunsul unei scrieri de nota n-ar mai fi numarat — acelasi pret ca la `ok`.
+OPERATIE_CHEI = {"ok", "inregistrare_id"}
+
 # Functii care vorbesc despre UTILIZATORI sau despre disponibilitatea unei unelte, nu despre datele
 # firmei. Lista e DECLARATA, ca oricine sa poata contesta o intrare.
 FARA_FIRMA_FN = ("jurnal", "calitate", "analiza_ai", "_eroare_campuri")
@@ -101,7 +108,7 @@ def clasa(fisier, functie, chei):
         return "D_formular"
     if "rand" in ch or any(k in functie for k in IMPORT_FN) or "_import_" in fisier:
         return "C_import"
-    if "ok" in ch or any(functie.startswith(k) for k in OPERATIE_FN):
+    if (ch & OPERATIE_CHEI) or any(functie.startswith(k) for k in OPERATIE_FN):
         return "B_operatie"
     return "A_verdict"
 

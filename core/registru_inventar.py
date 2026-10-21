@@ -22,6 +22,7 @@ from core.afirmatii import afirmatie
 from core.common import Temei
 from core.unde import Unde
 from core import repo_registru_inventar as _repo
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] numărul dat de aplicație: cursa se reia, nu dă 500
 
 MODUL = "registru_inventar"
 
@@ -160,8 +161,14 @@ def adauga(conn, schema, exercitiu, date):
     campuri = list(CAMPURI_CERUTE) + [c for c in ("gestiune", "cauza", "data_inventariere",
                                                   "document") if not _gol(date.get(c))]
     with conn.cursor() as cur:
-        nr = _repo.select_s(cur, schema, exercitiu, date)[0]
-        iid = _repo.insert_s(cur, schema, campuri, exercitiu, nr, date)[0]
+        def _scrie():
+            nr = _repo.select_s(cur, schema, exercitiu, date)[0]
+            return _repo.insert_s(cur, schema, campuri, exercitiu, nr, date)[0], nr
+        # [lotul 10, C73 / U2] `nr_curent` îl dă APLICAȚIA (`MAX + 1`): două înscrieri simultane citeau același număr, iar a doua cădea
+        # cu 500 pe `registru_inventar_ordine_unica`. Cursa se reia cu numărul următor, sub savepoint.
+        iid, nr = _chei.reincearca_la_dublura(cur, ("registru_inventar_ordine_unica",), _scrie, lambda cur, e: _chei.CheieDublata(
+            "Registrul-inventar a primit în același timp prea multe înscrieri și numărul curent nu s-a putut aloca. Nimic nu s-a "
+            "scris: salvează din nou."))
     conn.commit()
     return {"id": iid, "nr_curent": nr}
 

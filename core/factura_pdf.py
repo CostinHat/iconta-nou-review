@@ -157,12 +157,24 @@ def adresa_tert(adresa, oras=None, judet=None, tara=None):
     localitatea și județul domiciliului fiscal („Sector 2 Mun. Bucureşti”, „B”), pe care formularul le precompletează: ar fi ieșit
     „…, Sector 2 Mun. Bucureşti, B”. Localitatea / județul deja cuprinse în adresă (sau județul cuprins în localitate) nu se repetă
     (`_cuprinsa_in`); județul clientului român apare cu numele lui (`JUDETE_NUME`), nu cu codul. Regiunea clientului străin rămâne cum
-    a scris-o omul."""
+    a scris-o omul.
+
+    [lotul 10, limita C61 decisă de Code — DECIZII „Comanda 10.1: observațiile din lotul 9”] Adresa care cuprinde numai o PARTE din
+    localitate („Str. Lalelelor 3, Sector 2” + „Sector 2 Mun. Bucureşti”) ieșea „…, Sector 2, Sector 2 Mun. Bucureşti”. Localitatea se
+    scrie întreagă, iar rândul adresei făcut numai din cuvintele ei („Sector 2”) nu se mai scrie o dată în plus: „Str. Lalelelor 3,
+    Sector 2 Mun. Bucureşti”. Un rând cu alte cuvinte („Str. Cluj 5”) rămâne neatins."""
     t = (tara or "RO").strip().upper() or "RO"
     adresa = (adresa or "").strip()
     judet = (judet or "").strip()
     if t == "RO":
         judet = JUDETE_NUME.get(judet.upper(), judet)
+    oras_ = (oras or "").strip()
+    if adresa and oras_ and not _cuprinsa_in(oras_, [adresa]):
+        cuv_oras = {w for w in _cuvinte_adresa(oras_) if w not in _FEL_LOCALITATE}
+        randuri = [r.strip() for r in re.split(r"[\n,]", adresa)]
+        pastrate = [r for r in randuri if not (_segmente_adresa(r) and all(seg <= cuv_oras for seg in _segmente_adresa(r)))]
+        if pastrate != randuri and pastrate:
+            adresa = ", ".join(r for r in pastrate if r)
     parti = [adresa] if adresa else []
     for x in ((oras or "").strip(), judet):
         if x and not _cuprinsa_in(x, parti):
@@ -388,6 +400,12 @@ def genereaza_pdf(profil, factura):
         for _m in mentiuni_categorii(linii, factura.get("tert_tara")):
             el.append(Spacer(1, 4))
             el.append(Paragraph(_m, st_cell))   # motivele din categorii_tva n-au caractere de marcaj
+        if factura.get("tva_la_incasare"):
+            # [lotul 10, deficiența 428] CF art.319 alin.(20) lit.p): „în cazul în care exigibilitatea TVA intervine la data încasării
+            # contravalorii integrale sau parțiale [...], mențiunea «TVA la încasare»” — regimul facturii la data ei (`tva_incasare.regim`)
+            from core import tva_incasare as _tvi
+            el.append(Spacer(1, 8))
+            el.append(Paragraph("<b>%s</b>" % _tvi.MENTIUNE, st_cell))
     from core import facturi as _fc
     if _fc.e_din_bon_fiscal(factura):
         # [decizia A 02.10] HG 1/2016 pct.97 alin.(1): „fiind suficientă mențiunea «conform bon fiscal nr./data»”

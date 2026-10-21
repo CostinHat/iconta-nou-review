@@ -30,8 +30,9 @@ def _furnizor(platitor=True):
 
 
 def _client():
+    # [lotul 10, C69] localitatea clientului e cerută (FACT1 BR-RO-092: „Localitatea Cumparatorului (BT-52) trebuie furnizata”) — nu „-”
     return {"nume": "CLIENT SRL", "cui": "RO12345678", "adresa": "Str. Exemplu 1, Cluj",
-            "oras": None, "judet": None, "cod_postal": None}
+            "oras": "Cluj-Napoca", "judet": None, "cod_postal": None}
 
 
 def _linii():

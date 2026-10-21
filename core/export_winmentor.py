@@ -144,7 +144,7 @@ def facturi_txt(firma, facturi, an, luna):
         L.append("Scadenta=%s" % _d_ro(f.get("data_scadenta")))
         L.append("CodClient=%s" % (f.get("tert_cui") or ""))     # CIF (decizie #1)
         L.append("Localitate=")                                   # gol (decizie #5)
-        L.append("TVAINCASARE=%s" % ("D" if firma.get("tva_la_incasare") else "N"))
+        L.append("TVAINCASARE=%s" % ("D" if f.get("tva_la_incasare") else "N"))   # [lotul 10, 428] regimul FACTURII la data ei
         L.append("TaxareInversa=%s" % ("D" if f.get("taxare_inversa") else "N"))
         L.append("TipTVA=0")                                       # intern standard (decizie #3)
         L.append("ClasificareSAFT=%s" % cls)                      # 380 / 381 storno / 751 cu factura la bon

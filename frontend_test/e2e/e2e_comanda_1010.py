@@ -214,7 +214,31 @@ def _valideaza_bilant(ecran, an, alege=True):
     return pg.inner_text(".fereastra:last-of-type #bl-rez"), {(f, nr(r)): (p, c) for f, r, _den, p, c in randuri}
 
 
-def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e):
+@pytest.fixture()
+def firma_bilant_2024_validat():
+    """[lotul 10, 383 — comanda Costin 10.2 pct.1: „O declarație pe o perioadă neîncheiată se refuză la generare, cu motivul scris, la toate
+    declarațiile.”] Firma în al doilea an cu bilanț în aplicație, pe ANI ÎNCHEIAȚI: soldurile de preluare la 31.12.2022 (bancă 10.000 =
+    capital), un aport validat în 03/2024 (+2.000) și bilanțul S1005 pe 2024 VALIDAT în aplicație — XML-ul e cel generat de aplicație pe
+    2024 (ruta ecranului, `GET s1005-xml`), păstrat ca exemplarul „valid” al anului (`artefacte.pastreaza`, ca `uc_tenants.s1005_valideaza`).
+    De ce verdictul se scrie aici, nu prin „Validează”: validatorul DUK alege versiunea formularului după an, iar formularul pe care îl
+    generează aplicația e al anului 2025 — pe 2024 răspunde „an: valoarea '2024' nu se incadreaza in intervalul cerut”. Un bilanț 2024
+    validat e cel depus la vremea lui, cu formularul anului 2024; ce verifică 221 e că bilanțul 2025 îl ia drept „An precedent”."""
+    from core import artefacte
+    for f in firma_noua():
+        _date_firma(f)
+        _solduri(f, "2022-12-31")
+        _nota_validata(f, "2024-03-10", "5121", "1012", 2000, "Aport capital D221 2024")
+        st, r = _api(PATRON, "GET", "/tenants/%d/s1005-xml?an=2024" % f["tenant_id"])
+        assert st == 200 and "<Bilant1005 " in r["xml"] and ' an="2024" ' in r["xml"], (st, str(r)[:400])
+        with _db().get_conn(f["schema"]) as c:
+            a = artefacte.pastreaza(c, f["schema"], "s1005", "2024", r["xml"], produs_de_id=sql(
+                "SELECT id FROM public.users WHERE email = %s", (PATRON,))[0][0], verdict="valid", verdict_amprenta=artefacte.amprenta(r["xml"]))
+            assert a.get("ok"), a
+            c.commit()
+        yield f
+
+
+def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e, firma_bilant_2024_validat):
     """221. Bilanț: coloana „An precedent” e copiată din anul curent (grav, cifre greșite în declarație).
     [Decizia Costin 11.10.2026] „coloana «An precedent» din bilanț se completează din bilanțul anului anterior, dacă firma îl are în
     aplicație. Dacă nu îl are, se completează manual, cu avertisment vizibil. Bilanțul nu poate fi generat cu coloana goală.”
@@ -222,9 +246,12 @@ def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e):
     anual 2025, S1005: ecranul spune că F10 vine din evidența pe 2024 și cere, cu avertisment, F20 (anul 2024 nu e în aplicație) ->
     „Validează” e inactiv fără F20 (228: motivul lângă el) -> completează F20 (zero pe toate rândurile) și salvează: avertismentul
     rămâne, „completată manual” -> „Validează”: rândul băncilor „An precedent” 10.000, „An curent” 12.000, validare fără erori, cu
-    avertismentul în rezultat -> Bilanț 2026: „An precedent” vine din bilanțul pe 2025 validat în aplicație (12.000 pe rândul băncilor), fără
-    formular manual -> 2024: acțiunile inactive, coloana „An precedent” goală (2023 nu e în aplicație) -> 2023: acțiunile inactive, cu
-    motivul „nu se poate întocmi” (soldurile de la 31.12.2023 sunt dinaintea preluării).
+    avertismentul în rezultat -> 2024: acțiunile inactive, coloana „An precedent” goală (2023 nu e în aplicație) -> 2023: acțiunile
+    inactive, cu motivul „nu se poate întocmi” (soldurile de la 31.12.2023 sunt dinaintea preluării).
+    Al doilea an, cu bilanțul anului anterior în aplicație: firma cu bilanțul pe 2024 validat în aplicație (`firma_bilant_2024_validat`) ->
+    Bilanț 2025: „An precedent” vine din bilanțul pe 2024 validat în aplicație (12.000 pe rândul băncilor), fără formular manual.
+    [lotul 10, 383, comanda 10.2 pct.1] până la 10.2 „al doilea an” era 2026 pe aceeași firmă; pe anul în curs bilanțul nu se mai
+    generează, deci pasul stă pe anii încheiați 2024 -> 2025.
     MUTAȚIILE din plasă: refuzul coloanei goale scos; bilanțul anului precedent ignorat."""
     f = firma_e2e
     pg = patron.pg
@@ -253,12 +280,6 @@ def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e):
     assert "completată manual" in text, text[:800]                          # avertismentul ajunge și în rezultatul validării
     assert rand.get(("F10", 8)) == ("10.000,00", "12.000,00"), (rand, text[:600])   # rd.08 „Casa și conturi la bănci”
     assert any(p != c for p, c in rand.values()), rand          # anti-copie: nu toate rândurile au coloanele egale
-    zona = _alege_bilant(patron, 2026)
-    patron.captura("an_precedent_din_bilantul_2025")
-    assert "F10: bilanțul pe 2025 validat în aplicație; F20: bilanțul pe 2025 validat în aplicație" in zona, zona
-    assert pg.locator(".fereastra:last-of-type .bl-prec-tabel").count() == 0, zona
-    text, rand = _valideaza_bilant(patron, 2026, alege=False)
-    assert rand.get(("F10", 8), ("?", "?"))[0] == "12.000,00", (rand, text[:600])
     zona = _alege_bilant(patron, 2024)
     patron.captura("an_preluarii_fara_precedent")
     motiv = pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
@@ -272,6 +293,16 @@ def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e):
     motiv = pg.inner_text(".fereastra:last-of-type #bl-precedent")
     assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled() and "31.12.2024" in motiv, motiv
     assert "motivul e mai jos" in pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
+    # al doilea an: „An precedent” din bilanțul anului anterior validat în aplicație (2024 -> 2025)
+    g = firma_bilant_2024_validat
+    patron.firma(g["nume"])
+    _deschide(patron, "#fa-bilant", "Bilanț anual")
+    zona = _alege_bilant(patron, 2025)
+    patron.captura("an_precedent_din_bilantul_2024")
+    assert "F10: bilanțul pe 2024 validat în aplicație; F20: bilanțul pe 2024 validat în aplicație" in zona, zona
+    assert pg.locator(".fereastra:last-of-type .bl-prec-tabel").count() == 0, zona
+    text, rand = _valideaza_bilant(patron, 2025, alege=False)
+    assert rand.get(("F10", 8), ("?", "?"))[0] == "12.000,00", (rand, text[:600])
 
 
 # ── C8 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

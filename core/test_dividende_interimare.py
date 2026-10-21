@@ -67,8 +67,10 @@ def test_ecranul_poate_inregistra_interimare_si_restituirea():
     assert campuri["impozit_interimar"]["cond"] == ("operatie", ["regularizare"])
     uc = io.open(os.path.join(RAD, "core/uc_tenants.py"), encoding="utf-8").read()
     import ast
-    fn = [n for n in ast.parse(uc).body if isinstance(n, ast.FunctionDef) and n.name == "nota_asociati"][0]
-    bife = [n for n in ast.walk(fn) if isinstance(n, ast.Call) and getattr(n.func, "attr", None) == "bifa"
+    # [lotul 10, 430] dividendul se calculează în ajutorul comun al notei și al propunerii (`_dividend_propus`), chemat de nota_asociati
+    fns = {n.name: n for n in ast.parse(uc).body if isinstance(n, ast.FunctionDef)}
+    assert any(isinstance(n, ast.Call) and getattr(n.func, "id", None) == "_dividend_propus" for n in ast.walk(fns["nota_asociati"]))
+    bife = [n for n in ast.walk(fns["_dividend_propus"]) if isinstance(n, ast.Call) and getattr(n.func, "attr", None) == "bifa"
             and len(n.args) > 1 and isinstance(n.args[1], ast.Constant) and n.args[1].value == "interimar"]
-    assert bife, "„0” din select ar fi citit ca interimar (bifa nu mai e folosită în nota_asociati)"
+    assert bife, "„0” din select ar fi citit ca interimar (bifa nu mai e folosită la dividend)"
     assert re.search(r'op == "restituire_dividend"', uc)

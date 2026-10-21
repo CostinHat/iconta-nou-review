@@ -39,7 +39,8 @@ CHEI_IN_AFARA_ECRANULUI = {
         "numai text adăugat în explicația notei („- <nume>”); liniile, baza și compensația 8% nu depind de el, iar câmpul "
         "Descriere acoperă explicația",
     "achizitie-necorporala:cod":
-        "codul activului în registru; când lipsește se generează `NEC-<tip>` — nu schimbă nota, baza sau amortizarea",
+        "codul activului în registru; când lipsește se generează primul cod liber `NEC-<tip>`, `NEC-<tip>-2`, … (lotul 10, C73) — nu "
+        "schimbă nota, baza sau amortizarea",
 }
 
 #: Chei citite pe o ramură pe care câmpul lor e ASCUNS, care rămân așa — cu motivul.

@@ -120,7 +120,8 @@ def _salariati(conn, schema):
     """[P3 val B] Cheamă `salariati_import_api.rezumat`, ca ruta."""
     from core import salariati_import_api
     r = salariati_import_api.rezumat(conn)
-    return {"are_salariati": r["are_salariati"], "randuri": r["randuri"]}
+    # [lotul 10, 423 b] și câți salariați au încă date „de verificat” (starea „gata” îi numără)
+    return {"are_salariati": r["are_salariati"], "randuri": r["randuri"], "de_verificat": r.get("de_verificat", 0)}
 
 
 def _asociati(conn, schema):
@@ -177,7 +178,10 @@ _T_CONTROL_FISCAL = (
     "ajustari_fiscale",
     # [382, lotul 9] D100 / D101 spun amortizarea nevalidată a ferestrei: registrul mijloacelor fixe se citește cu reevaluările lui
     # (`repo_mijloace_fixe.toate`) — o reevaluare schimbă rata, deci și avertismentul
-    "reevaluari")
+    "reevaluari",
+    # [428, lotul 10] D300 / D394 citesc perioadele sistemului TVA la încasare (regimul facturii pe data ei) și compensările (încasarea
+    # prin compensare face exigibilă partea compensată — CF art.282 alin.(3), (8))
+    "tva_incasare_perioade", "compensari")
 
 #: SURSE CONDIȚIONATE — citite de `control_fiscal` doar CÂND o fereastră de obligație e deschisă (spre
 #: scadență), nu în fiecare zi. `efactura_primite`: `control_fiscal` numără e-facturile primite
@@ -189,7 +193,8 @@ _T_CONTROL_FISCAL = (
 #: *Scris aici ca să fie o alegere, nu o omisiune* (ca `NEURMARITE_PUBLIC`).
 TABELE_CONDITIONALE = ("efactura_primite",)
 
-_T_TERMENE = ("clienti", "d390_manual", "facturi", "firma_profil", "salariati")
+#: [432, lotul 10] + luna preluării (`repo_firma_profil.fapte_preluare`: soldurile de preluare și prima notă) — marcajul „înainte de preluare”
+_T_TERMENE = ("clienti", "d390_manual", "facturi", "firma_profil", "salariati", "inregistrari", "solduri_initiale")
 
 ASPECTE = {
     "solduri": {
@@ -199,7 +204,8 @@ ASPECTE = {
         "tabele": ("plan_conturi",), "tabele_public": (), "timp": None,
         "calcul": _plan_conturi},
     "vector": {
-        "tabele": ("firma_profil",), "tabele_public": (), "timp": None,
+        # [428, lotul 10] vectorul arată și regimul TVA la încasare (perioadele lui)
+        "tabele": ("firma_profil", "tva_incasare_perioade"), "tabele_public": (), "timp": None,
         "calcul": _vector},
     # ── [P3 val B, 09.09.2026] cele patru straturi de migrare ──
     #
@@ -1064,6 +1070,11 @@ def _termene_una_firma(f, ctx, azi):
                 are_sal = False
                 if cur.fetchone()[0]:
                     are_sal = _repo.select_salariati(cur)[0] > 0
+                # [lotul 10, deficiența 432] luna EFECTIVĂ a preluării (aceeași ca în Control fiscal): obligațiile pe perioade dinainte
+                # rămân în listă (termenul cade după preluare), marcate „înainte de preluare” — regula de la 157 (decizia U2, 08.10)
+                from core import luna_preluare as _lp, repo_firma_profil as _rfp
+                _fpr = _rfp.fapte_preluare(cur)
+                preluare = _lp.efectiva(_fpr["salvata"], _fpr["creat_la"], _fpr["data_solduri"], _fpr["prima_nota"])
             if not vector:
                 # [T1] firma exista dar vectorul fiscal e gol -> nu se ascunde: gri cu temei (ca evalueaza_firma)
                 # [P8] NECUNOASTERE declarata, nu o cauza in proza: „nu pot evalua" e o afirmatie
@@ -1090,6 +1101,8 @@ def _termene_una_firma(f, ctx, azi):
             from core import control_incrucisat as _ci_sal
             _f112 = lambda a, l: _ci_sal.are_salariat_activ_luna(cs, schema, a, l)   # [300] D112 din fapt, ca semaforul
             term = termene_api.termene_firma(vector, are_sal, depuse, azi, d390_fapt=_fapt, d112_fapt=_f112)
+            for _t in term:   # [432] predicatul unic, `luna_preluare.inainte`
+                _t["inainte_de_preluare"] = _lp.inainte(_t["an"], _t.get("luna"), preluare)
             # [P2] deschideFirma->meniuFirma cere {id, nume, cui, tip_firma} + [regim_card] regim_contabil
             # (contract STRICT in meniuFirma pe amandoua). Le avem din firma_profil (vector) prin primitiva.
             firme_eval.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),

@@ -226,6 +226,13 @@ def erori_generare(prof):
         erori.append("Lipsă cod CAEN (obligatoriu în D101G).")
     elif not re.fullmatch(r"\d{4}", _caen):
         erori.append("D101G: cod CAEN invalid (%s): trebuie exact 4 cifre — N(4). Corectează în Profil firma." % _caen)
+    # [lotul 10, deficiența C69 — „valoare inventată pe documentul ANAF în loc de blocaj”] Declarantul: aceeași poartă ca la D101
+    # (`firma_profil_api.erori_declarant`). Sursa, în lipsa unei structuri D101G în anaf_surse/: validatorul ANAF D101G v2 instalat
+    # (~/duk/dist/lib/D101GValidator.jar, J2.0.0 — sha256 identic cu cel publicat de ANAF la update5/D101G_3), probat 20.10.2026 pe XML
+    # sintetic fără câmp: „eroare atribut: nume_declar: atributul trebuie sa existe” (la fel `prenume_declar`, `functie_declar`). Până azi
+    # generatorul scria „ADMINISTRATOR” / „-” în locul lor.
+    from core.firma_profil_api import erori_declarant
+    erori.extend(erori_declarant(prof))
     return erori
 
 
@@ -247,10 +254,15 @@ def build_xml(res):
     a.append('totalPlata_A="%d"' % res.total_plata_a)
     if res.d_anulare == 1 and res.temei:
         a.append('temei=%s' % _esc(res.temei))
+    # [lotul 10, C69] declarantul din Date firmă / din `manual`, fără „ADMINISTRATOR” / „-” (lipsa îl oprește în `erori_generare`)
+    from core.firma_profil_api import erori_declarant
+    _er_decl = erori_declarant(prof)
+    if _er_decl:
+        raise ValueError("D101G nu se poate genera: " + " ".join(_er_decl))
     a.append('nume_declar=%s prenume_declar=%s functie_declar=%s' % (
-        _esc((prof.get("declarant_nume") or "ADMINISTRATOR")[:75]),
-        _esc((prof.get("declarant_prenume") or "-")[:75]),
-        _esc((prof.get("declarant_functie") or "ADMINISTRATOR")[:75])))
+        _esc(str(prof["declarant_nume"]).strip()[:75]),
+        _esc(str(prof["declarant_prenume"]).strip()[:75]),
+        _esc(str(prof["declarant_functie"]).strip()[:75])))
     a.append('cif="%s" denumire=%s adresa=%s' % (
         cif_num, _esc((prof.get("nume") or "")[:200]), _esc((prof.get("adresa") or "")[:200])))
     caen = (prof.get("caen") or "").strip()

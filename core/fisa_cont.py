@@ -21,7 +21,8 @@ explicatia · CONTUL CORESPONDENT · debit · credit · soldul curent, cu sensul
 CE NU FACE, declarat:
   - nu inventeaza sold initial: daca nu i se da unul, porneste de la zero si O SPUNE in antet
     (`sold_initial_declarat=False`), fiindca o fisa care porneste tacit de la zero afirma ca inainte
-    n-a fost nimic;
+    n-a fost nimic. [lotul 10, 425] Ruta (Cartea mare) i-l da: `sold_initial_preluat`, din balanta de deschidere
+    si notele dinainte, cu aceeasi regula ca balanta;
   - nu face analitic pe partener: contul corespondent e cel din nota, nu o desfasurare pe terti;
   - nu randeaza. Randarea e alta munca (lista 5), iar aici se opreste producatorul.
 """
@@ -69,11 +70,52 @@ def _q(x):
     return Decimal(str(x or 0)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
-def fisa_cont(conn, schema, cont, an, luna=None, sold_initial=None):
+def _fereastra(an, luna):
+    di = "%d-%02d-01" % (an, luna) if luna else "%d-01-01" % an
+    ds = ("%d-%02d-01" % (an + 1, 1) if luna == 12 else
+          "%d-%02d-01" % (an, luna + 1)) if luna else "%d-01-01" % (an + 1)
+    return di, ds
+
+
+def sold_initial_preluat(conn, schema, cont, an, luna=None):
+    """[lotul 10, deficiența 425, comanda Costin 10.1] Soldul de la începutul ferestrei fișei (Cartea mare) și rulajul preluat care intră în
+    ea — (sold cu semn: + debitor / − creditor, (data_preluarii, debit, credit) sau None). ACEEAȘI regulă ca balanța
+    (`documente_api.balanta`), din `core/rulaje_preluate` (fără logică proprie): „Când fișierul are soldurile inițiale ale anului și
+    rulajele, ele intră ca sold inițial și sume precedente [...]. Când are doar solduri finale, comportamentul de acum rămâne”.
+      * fereastra cuprinde întreg intervalul preluat [01.01, data preluării] (`rulaje_preluate.rulaje`: anul întreg) -> soldul de la
+        1 ianuarie (`si_an`) + rulajul preluat ca prim rând al fișei; soldul final iese același;
+      * altfel -> partea preluată a soldului la începutul ferestrei (`rulaje_preluate.sold_preluat`: `si_an` la 1 ianuarie, soldul final
+        de la data preluării în rest);
+    plus notele VALIDATE ale contului dinaintea ferestrei. Conturile preluate se iau pe prefix (`sold_preluat`: analiticele contului)."""
+    from core import rulaje_preluate as _rp
+    di, ds = _fereastra(an, luna)
+    d_i, d_s = _date.fromisoformat(di), _date.fromisoformat(ds)
+    with conn.cursor() as cur:
+        rul = {k: v for k, v in _rp.rulaje(cur, schema, d_i, d_s).items() if str(k).startswith(cont)}
+        rulaj = None
+        if rul:
+            p = _rp.preluate(cur, schema, d_i.year)
+            sd = sum((v["si_d"] for k, v in p["conturi"].items() if str(k).startswith(cont)), Decimal("0"))
+            sc = sum((v["si_c"] for k, v in p["conturi"].items() if str(k).startswith(cont)), Decimal("0"))
+            rulaj = (p["ref"], sum((v[0] for v in rul.values()), Decimal("0")), sum((v[1] for v in rul.values()), Decimal("0")))
+        else:
+            sd, sc = _rp.sold_preluat(cur, schema, cont, d_i)
+        cur.execute(f"""SELECT COALESCE(SUM(CASE WHEN l.cont_debit = %s THEN l.suma ELSE 0 END), 0)
+                              - COALESCE(SUM(CASE WHEN l.cont_credit = %s THEN l.suma ELSE 0 END), 0)
+                          FROM {schema}.inregistrari i JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
+                         WHERE i.status = 'validata' AND i.data < %s AND (l.cont_debit = %s OR l.cont_credit = %s)""",
+                    (cont, cont, di, cont, cont))
+        r = cur.fetchone()
+        note = Decimal(str((list(r.values())[0] if isinstance(r, dict) else r[0]) or 0))
+    return _q(sd - sc + note), rulaj
+
+
+def fisa_cont(conn, schema, cont, an, luna=None, sold_initial=None, rulaj_preluat=None):
     """Fisa de cont pentru operatiuni diverse, pe un cont sintetic sau analitic.
 
     `luna=None` inseamna tot anul. `sold_initial` e un Decimal cu semn (+ debitor / − creditor);
-    daca lipseste, fisa porneste de la 0 si o declara.
+    daca lipseste, fisa porneste de la 0 si o declara. `rulaj_preluat` = (data preluarii, debit, credit) — [lotul 10, 425] rulajul
+    anului adus de balanta de deschidere (`sold_initial_preluat`), primul rand al fisei.
 
     Se citesc DOAR notele VALIDATE.
 
@@ -93,9 +135,7 @@ def fisa_cont(conn, schema, cont, an, luna=None, sold_initial=None):
     if luna is not None and not (1 <= int(luna) <= 12):
         raise ValueError("Fișa de cont: luna invalidă (%r)." % luna)
 
-    di = "%d-%02d-01" % (an, luna) if luna else "%d-01-01" % an
-    ds = ("%d-%02d-01" % (an + 1, 1) if luna == 12 else
-          "%d-%02d-01" % (an, luna + 1)) if luna else "%d-01-01" % (an + 1)
+    di, ds = _fereastra(an, luna)
 
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
@@ -113,6 +153,17 @@ def fisa_cont(conn, schema, cont, an, luna=None, sold_initial=None):
     sold = _q(sold_initial if sold_initial is not None else 0)
     randuri = []
     td = tc = Decimal("0.00")
+    if rulaj_preluat:
+        # [lotul 10, 425] rulajul 01.01 .. data preluării, din balanța de deschidere: „sume precedente” ale anului, ca în balanță
+        from core.pdf_util import data_ro
+        ref, rd, rc = rulaj_preluat
+        rd, rc = _q(rd), _q(rc)
+        sold = _q(sold + rd - rc)
+        td += rd
+        tc += rc
+        randuri.append(RandFisa(data=ref, document=None, jurnal="preluare", cont_corespondent="",
+                                explicatie="Rulajele preluate din balanța de deschidere, %s – %s" % (data_ro("%d-01-01" % ref.year), data_ro(ref)),
+                                debit=rd, credit=rc, sold=abs(sold), sens_sold="D" if sold > 0 else ("C" if sold < 0 else "0")))
     for r in brut:
         suma = _q(r["suma"])
         pe_debit = r["cont_debit"] == cont
@@ -187,9 +238,8 @@ def conturi_cu_miscare(conn, schema, an, luna=None):
     Exista ca sa nu se ceara o fisa pe un cont ales din plan si sa iasa goala: o fisa goala pe un
     cont fara miscare NU e o eroare, dar nici nu e ce cere organul de control.
     """
-    di = "%d-%02d-01" % (an, luna) if luna else "%d-01-01" % an
-    ds = ("%d-01-01" % (an + 1) if luna == 12 else
-          "%d-%02d-01" % (an, luna + 1)) if luna else "%d-01-01" % (an + 1)
+    di, ds = _fereastra(an, luna)
+    from core import rulaje_preluate as _rp
     with conn.cursor() as cur:
         cur.execute(f"""
             SELECT DISTINCT c FROM (
@@ -202,4 +252,7 @@ def conturi_cu_miscare(conn, schema, an, luna=None):
                  WHERE i.status='validata' AND i.data >= %s AND i.data < %s
             ) t WHERE c IS NOT NULL AND c <> '' ORDER BY 1
         """, (di, ds, di, ds))
-        return [r[0] for r in cur.fetchall()]
+        conturi = {(r[0] if not isinstance(r, dict) else list(r.values())[0]) for r in cur.fetchall()}
+        # [lotul 10, 425] „cu toate conturile care au rulaj”: și cele cu rulaj numai în balanța de deschidere a anului
+        conturi |= {k for k, (d, c) in _rp.rulaje(cur, schema, _date.fromisoformat(di), _date.fromisoformat(ds)).items() if d or c}
+        return sorted(conturi)

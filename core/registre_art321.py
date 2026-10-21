@@ -19,6 +19,7 @@ from decimal import Decimal
 from core.afirmatii import afirmatie
 from core.common import Temei
 from core.unde import Unde
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] numărul dat de aplicație: cursa se reia, nu dă 500
 
 MODUL = "registre_art321"
 
@@ -141,15 +142,21 @@ def adauga(conn, schema, fel, date):
         if not _gol(date.get(c)):
             campuri.append(c)
     with conn.cursor() as cur:
-        cur.execute("SELECT COALESCE(MAX(nr_ordine), 0) + 1 FROM {s}.registre_art321 "
-                    "WHERE fel = %s".format(s=schema), (fel,))
-        nr = cur.fetchone()[0]
-        cur.execute(
-            "INSERT INTO {s}.registre_art321 (fel, nr_ordine, {c}) VALUES (%s, %s, {p}) "
-            "RETURNING id".format(s=schema, c=", ".join(campuri),
-                                  p=", ".join(["%s"] * len(campuri))),
-            [fel, nr] + [date.get(c) for c in campuri])
-        iid = cur.fetchone()[0]
+        def _scrie():
+            cur.execute("SELECT COALESCE(MAX(nr_ordine), 0) + 1 FROM {s}.registre_art321 "
+                        "WHERE fel = %s".format(s=schema), (fel,))
+            nr = cur.fetchone()[0]
+            cur.execute(
+                "INSERT INTO {s}.registre_art321 (fel, nr_ordine, {c}) VALUES (%s, %s, {p}) "
+                "RETURNING id".format(s=schema, c=", ".join(campuri),
+                                      p=", ".join(["%s"] * len(campuri))),
+                [fel, nr] + [date.get(c) for c in campuri])
+            return cur.fetchone()[0], nr
+        # [lotul 10, C73 / U2] `nr_ordine` îl dă APLICAȚIA (`MAX + 1`, docstringul de mai sus): două înscrieri simultane citeau același
+        # număr, iar a doua cădea cu 500 pe `registre_art321_ordine_unica`. Cursa se reia cu numărul următor, sub savepoint.
+        iid, nr = _chei.reincearca_la_dublura(cur, ("registre_art321_ordine_unica",), _scrie, lambda cur, e: _chei.CheieDublata(
+            "Registrul a primit în același timp prea multe înscrieri și numărul de ordine nu s-a putut aloca. Nimic nu s-a scris: "
+            "salvează din nou."))
     conn.commit()
     return {"id": iid, "nr_ordine": nr}
 

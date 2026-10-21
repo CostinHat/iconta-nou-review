@@ -11,6 +11,7 @@ serviciilor”. Sursa faptului: ANAF PlatitorTvaRest v9, `adresa_domiciliu_fisca
 
 ANAF e SIMULAT (răspunsul cu structura din doc_WS_V9; valorile sunt sintetice), niciodată real. Schemă efemeră din tenant_template,
 o singură conexiune reală, anulată la final."""
+import re
 import contextlib
 import io
 import xml.etree.ElementTree as ET
@@ -195,9 +196,14 @@ def test_c61_xml_trimis_are_judetul_si_sectorul_din_anaf_fara_sa_rescrie_factura
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_c61_xml_trimis_cu_anaf_jos_ramane_ca_azi(conn, monkeypatch):
+    """[lotul 10, C69] Cu ANAF jos și fără localitate pe factură, XML-ul nu mai pleacă cu CityName „-”: trimiterea se oprește numit
+    (FACT1 BR-RO-092: „Localitatea Cumparatorului (BT-52) trebuie furnizata”; cu „-” validatorul răspundea „ok”)."""
     fid = _factura_fara_judet(conn)
     _anaf(monkeypatch, jos=True)
-    assert _xml_trimis(monkeypatch, fid) == ("-", None)
+    with pytest.raises(_ef.EDateIncomplete) as ei:
+        _xml_trimis(monkeypatch, fid)
+    # numai localitatea lipsește (strada e pe factură), cu regula ei: FACT1 „[BR-RO-090]-Localitatea Cumparatorului (BT-52) trebuie furnizata”
+    assert re.findall(r"lipsesc (.+?) — ANAF le cere \(regulile (.+?)\)\.", str(ei.value)) == [("localitatea clientului", "BR-RO-092 (BT-52)")], str(ei.value)
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

@@ -678,6 +678,8 @@ def test_d112_perioada_neconfirmata_da_cauza_precisa(monkeypatch):
     def _boom(*a, **k):
         raise PerioadaNeconfirmata("Tichetele de masă (D112)", 2026, 8, "pontaj", "HG 1045/2018 art.10(3)")
     monkeypatch.setattr(_d112, "genereaza", _boom)
+    # [lotul 10] firma ARE salariați în lună (premisa scenariului): controlul o întreabă acum înaintea generării
+    monkeypatch.setattr(_ci, "are_salariat_activ_luna", lambda *a, **k: True)
     r = _ci.verifica_d112(None, "tenant_x", 2026, 8)
     rem = r["constatari"][0]["remediu"]
     assert "nu e confirmat" in rem["cauza"] and "pontaj" in rem["cauza"].lower()
@@ -691,6 +693,8 @@ def test_d112_exceptie_necunoscuta_pastreaza_remediu_generic(monkeypatch):
     def _boom(*a, **k):
         raise RuntimeError("cu totul altceva")
     monkeypatch.setattr(_d112, "genereaza", _boom)
+    # [lotul 10] firma ARE salariați în lună (premisa scenariului): controlul o întreabă acum înaintea generării
+    monkeypatch.setattr(_ci, "are_salariat_activ_luna", lambda *a, **k: True)
     r = _ci.verifica_d112(None, "tenant_x", 2026, 8)
     rem = r["constatari"][0]["remediu"]
     assert rem["cauza"] == "Date lipsă sau profil incomplet."

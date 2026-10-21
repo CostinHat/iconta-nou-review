@@ -41,7 +41,7 @@ def cur():
                 c.execute("INSERT INTO firma_profil (id, nume, cui) VALUES (1, 'PROBA SRL', '14399840') ON CONFLICT (id) DO NOTHING")
                 c.execute("UPDATE firma_profil SET data_infiintare = '2025-01-10', reg_com = 'J40/1/2025', caen = '6202', adresa = 'Str 1', "
                           "oras = 'Buc', judet = 'B', declarant_nume = 'Popescu', declarant_prenume = 'Ion', "
-                          "declarant_functie = 'ADMINISTRATOR' WHERE id = 1")
+                          "declarant_functie = 'ADMINISTRATOR', mare_contribuabil = false, forma_proprietate = '35' WHERE id = 1")  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
                 yield c
         finally:
             conn.rollback()
@@ -119,7 +119,8 @@ def test_def_c16_s1003_unitatile_cu_profit_sunt_din_profitul_net():
     imobilizări). MUTAȚIE: `rezultat` scos din `xml_s1003` -> F30_0012 = rd.08 -> pică."""
     f20 = b.f20_complet_din_rulaje({"704": (0, 5000), "641": (1000, 0), "711": (300, 0), "721": (0, 200)})
     assert (f20[8], f20[9], f20[69], f20[70]) == (300, 200, 3900, 0), f20
-    x = b.xml_s1003({"cui_numeric": 14399840, "nume": "Z", "reg_com": "J40/1/2020", "caen": "6202"}, 2025, {}, {}, {}, f20)
+    x = b.xml_s1003({"cui_numeric": 14399840, "nume": "Z", "reg_com": "J40/1/2020", "caen": "6202", "cod_judet": 40, "mare_contribuabil": False,
+                     "forma_proprietate": "35", "declarant_nume": "Pop", "declarant_prenume": "Ion"}, 2025, {}, {}, {}, f20)  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
     assert dict(((int(r), int(c)), int(v)) for r, c, v in re.findall(r'\bF30_00(\d)(\d)="(\d+)"', x)) == {
         (1, 1): 1, (1, 2): 3900, (2, 1): 0, (2, 2): 0, (3, 1): 0, (3, 2): 0}, x
 
@@ -129,7 +130,7 @@ def test_c15_inchiderea_in_121_nu_e_rulaj_in_nicio_interogare_pe_clasele_6_7():
     exclude închiderea în 121 — altfel, după închiderea cerută de bilanț, 709 închis umflă veniturile (D100, D101), 609 cheltuielile, iar
     centrele de cost văd anul de două ori. Locurile găsite: D100 (repo + reconcilierea), D101 (repo + reconcilierea), centrele de cost;
     bilanțul (`bilant_api._rulaje_67`) o face în Python — probat de testul C15 de mai sus. Un loc nou fără excludere pică aici.
-    MUTAȚIE: excluderea scoasă din `repo_d101.select_inregistrari_linii` -> pică."""
+    MUTAȚIE: excluderea scoasă din `repo_d100.select_inregistrari_linii` -> pică."""
     rele = []
     for f in sorted(os.listdir(os.path.join(_RAD, "core"))):
         if not f.endswith(".py") or f.startswith("test_"):
@@ -143,9 +144,11 @@ def test_c15_inchiderea_in_121_nu_e_rulaj_in_nicio_interogare_pe_clasele_6_7():
 
 def test_c15_d101_fara_inchiderea_in_121(cur):
     """C15 pe D101: veniturile din exploatare ale anului = 704 1.000 + 711 50 + 7812 10 = 1.060 — nimic din închidere (nota 121 = 709
-    creditează 709 cu 100 și s-ar fi adunat la venituri). MUTAȚIE: excluderea scoasă -> 1.160 -> pică."""
-    from core import repo_d101
+    creditează 709 cu 100 și s-ar fi adunat la venituri). MUTAȚIE: excluderea scoasă -> 1.160 -> pică.
+    [lotul 10, deficiența 425] baza D101 se citește acum din `bilant_api.rulaje_67` (note + rulajele preluate), prin
+    `d101.rulaje_fereastra` — aceeași excludere a închiderii ca F20, o singură sursă (fostul `repo_d101.select_inregistrari_linii`)."""
+    from core import d101
     _anul_2025(cur)
     _inchide(cur)
-    r = repo_d101.select_inregistrari_linii(cur, datetime.date(2025, 1, 1), datetime.date(2026, 1, 1))
+    r = d101.rulaje_fereastra(cur, _SCHEMA, datetime.date(2025, 1, 1), datetime.date(2026, 1, 1))
     assert (r["ven_expl"], r["chelt_expl"]) == (1060, 270), r

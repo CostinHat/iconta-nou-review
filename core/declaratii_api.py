@@ -57,7 +57,9 @@ def _d112(conn, schema, b):
     return d112.genereaza(conn, schema, Perioada(an=b["an"], luna=b["luna"]))
 
 def _d205(conn, schema, b):
-    return d205.genereaza(conn, schema, Perioada(b["an"]))
+    # [lotul 10, decizia Costin B: „Da, cu completare manuală”] beneficiarii scriși de contabil (firma preluată: dividendele plătite
+    # înainte de preluare n-au notele lor) — calea `manual["beneficiari"]` a generatorului, până acum nelegată
+    return d205.genereaza(conn, schema, Perioada(b["an"]), b.get("manual"))
 
 def _d300(conn, schema, b):
     return d300.genereaza(conn, schema, Perioada(b["an"], luna=b["luna"]), b.get("manual"))
@@ -664,6 +666,24 @@ def valideaza_cerere(tip, body, per_efectiv=None):
     return erori
 
 
+def refuza_perioada_neincheiata(tip, body):
+    """[lotul 10, deficiența 383, comanda Costin 10.2 pct.1, verbatim în DECIZII] „la F1, alegând manual luna octombrie, D300 pe 10/2026 se
+    generează pe 20.10 și «Pune în De depus» e oferit. O declarație pe o perioadă neîncheiată se refuză la generare, cu motivul scris, la
+    toate declarațiile.” Dispecerul (`genereaza`) e drumul COMUN al generării — Declarații pasul 2, „Trimite în coadă”, „Generează din nou”,
+    reluarea după validarea notelor, API —, deci refuzul stă aici o dată, cu aceeași regulă ca depunerea (`coada_api.perioada_neincheiata`),
+    PRIMUL: înaintea formularului manual și a citirii firmei (perioada aleasă greșit se spune înainte de „completează formularul”). O
+    cerere cu forma greșită (anul sau luna în afara intervalului) trece mai departe, la refuzul ei de formă (`valideaza_cerere`). PURĂ."""
+    an, luna, trim = body.get("an"), body.get("luna"), body.get("trim")
+    if not (periodicitate(tip) and isinstance(an, int) and 2020 <= an <= 2100
+            and (luna is None or (isinstance(luna, int) and 1 <= luna <= 12)) and (trim is None or (isinstance(trim, int) and 1 <= trim <= 4))):
+        return
+    from core import coada_api as _coada
+    from core.erori import RefuzGenerare as _RefuzGenerare
+    motiv = _coada.perioada_neincheiata(an, luna, trim, tip=tip, manual=body.get("manual"))
+    if motiv:
+        raise _RefuzGenerare(motiv)
+
+
 # ============================================================
 #  DISPATCH — alege adaptorul, cheamă genereaza. Parte DB (pe server).
 # ============================================================
@@ -673,6 +693,7 @@ def genereaza(conn, schema, tip, body):
     Întoarce (xml, rezultat) de la modul.
     Ridică ValueError cu erorile dacă cererea e invalidă.
     """
+    refuza_perioada_neincheiata(tip, body)
     # [C7] periodicitatea EFECTIVĂ a firmei pentru setul TVA-decont (d300/d394/d406): urmează
     # tip_decont (ca /declaratii/tipuri și wizardul). Fără asta, firma trimestrială trimite `trim`,
     # iar validatorul static (lunar) cere `luna` -> "luna invalidă: None (aștept 1-12)".

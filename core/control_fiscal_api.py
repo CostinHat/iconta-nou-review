@@ -27,6 +27,7 @@ from core import scadente  # sursa unica de scadente + zile lucratoare (fara imp
 from core.common import azi_ro, pastila_firma, perioada_tva_tip, perioada_d406_tip  # [fus] ziua RO; [semafor] escaladare; [ruptura] normalizare tip_decont
 from core import firma_profil_api as _fp  # [F180] stare_tva_anaf (comparatie platitor_tva vs snapshot)
 from core import repo_control_fiscal_api as _repo
+from core import luna_preluare as _lp   # [432] predicatul unic „înainte de preluare”
 
 # [08.10.2026, decizia Costin U2, verbatim in DECIZII] „Declarațiile scadente în următoarele 30 de zile apar la «de urmărit»
 # (acum arată 0, deși sunt 4 scadente pe 26.10).” Era 7.
@@ -109,7 +110,7 @@ def separa_inainte_de_preluare(lipsa, urmarit, preluare):
     def _imparte(lst):
         rest = []
         for e in lst:
-            if (e["an"], e.get("luna") or 12) < preluare:
+            if _lp.inainte(e["an"], e.get("luna"), preluare):   # predicatul unic (și lista termenelor, 432)
                 inainte.append(dict(e, motiv=e.get("motiv") or ""))
             else:
                 rest.append(e)
@@ -137,6 +138,10 @@ _NEAP_FORMA_SIMPLA = {
             "simplă) depune Declarația unică (D212).",
     "d406": "D406 (SAF-T) nu se datorează — OPANAF 407/2025, Anexa 5 pct.4 lit.a)–d) exclude "
             "persoanele fizice (PFA, II, IF, PFL) de la obligația SAF-T (enumerare necondiționată).",
+    # [lotul 10, C71] Legea 82/1991 art.28 alin.(1): „Persoanele prevăzute la art. 1 alin. (1)-(4) au obligația să întocmească situații
+    # financiare anuale.” — persoana fizică în partidă simplă e la art.1 alin.(5), nu la (1)-(4)
+    "bilant": "Bilanțul nu se depune — situațiile financiare anuale le întocmesc persoanele de la art.1 alin.(1)–(4) din Legea "
+              "82/1991 (art.28 alin.(1)); PFA (partidă simplă) e la art.1 alin.(5).",
 }
 
 
@@ -695,11 +700,10 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
     Y = an - 1
     term205 = scadente.scadenta_data("d205", Y)
     if term205 <= limita:
-        suma, are_note = _ci.dividende_distribuite(conn_schema, schema, Y)
-        if suma > 0:
+        fapt205, are_note = _ci.dividende_distribuite(conn_schema, schema, Y)
+        if fapt205:   # [lotul 10, deciziile A și B] afirmația tipată: distribuite (și neplătite), plătite, preluate din balanță
             datorate.append({"tip": "d205", "an": Y, "luna": 12, "perioada": perioada_canonica(Y, 12, "an"),
-                             "termen": term205.isoformat(),
-                             "fapt": f"dividende distribuite în {Y} (rulaj cont 457)"})
+                             "termen": term205.isoformat(), "fapt": fapt205["motiv"], "afirmatie": fapt205})
         elif are_note:
             # [absenta_observatie 21.08.2026 — a PATRA instanta a clasei, dupa cele trei D301 (R2')]
             # „niciun rulaj pe 457" NU e un fapt despre lume: e absenta unei inregistrari in registrul

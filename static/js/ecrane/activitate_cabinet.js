@@ -3,7 +3,7 @@
 // Jurnal: evenimente cronologice (pregatit/aprobat/respins/depus), tabel scrollabil.
 // Regula design: fer-larg, antet fix, doar tabelul scrolleaza (un singur scrollbar).
 
-import { api, dataIso, esc, cate } from "../api.js?v=158edee964";
+import { api, dataIso, esc, cate } from "../api.js?v=ff30ebaf3f";
 
 // perioade selectabile -> [de, pana] ISO (sau null pentru tot)
 function interval(cheie) {
@@ -90,7 +90,9 @@ export async function randeazaActivitateCabinet(corp, nav) {
         </div>${motiv}`;
     }).join("");
 
+    // [lotul 10, 421 / 424 — rezumatul fix, DS cap.9 v2.97 pct.5] perioada, cifrele și numărul evenimentelor rămân sus cât derulezi jurnalul
     corp.innerHTML = `
+      <div class="rezumat-fix">
       <div class="ac-perbar">
         ${selBtn("azi", "Azi")}${selBtn("luna", "Luna")}${selBtn("an", "Anul")}${selBtn("tot", "Tot")}
       </div>
@@ -102,6 +104,7 @@ export async function randeazaActivitateCabinet(corp, nav) {
         ${card(t.in_asteptare || 0, "în așteptare")}
       </div>
       <div class="mig-intro">Jurnal cronologic — cine, ce și când (${cate(jur.total || 0, "eveniment", "evenimente")})</div>
+      </div>
       <div class="mig-sold-tabel ac-tabel" tabindex="0" aria-label="Activitatea cabinetului">
         <div class="mig-sold-rand ac-cap">
           <span class="ac-cand">Când</span>

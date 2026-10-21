@@ -14,22 +14,23 @@ from conftest import BAZA, _ecran, ai_pregateste, sql, zile_de_acum
 from e2e_bloc_a import AZI, CLIENT, PRODUS, _api, _card, _deschide_emiterea, _deschide_factura, _ok, cont_asistent, emite_api, \
     pregateste_firma
 from e2e_lot72_cont import cabinet_nou, deschide_setari_panou  # noqa: F401 — fixture (321, 322)
-from e2e_lot72_declaratii import _curata, _deschide_coada, _in_coada, _nota_facturii, _peste, _valideaza_notele
+from e2e_lot72_declaratii import LUNA, ZI, _curata, _deschide_coada, _in_coada, _nota_facturii, _peste, _valideaza_notele
 
 
-def _valideaza_luna(e, firma):
-    """Notele ciornă ale lunii, validate (firma e comună fișierului: facturile testelor de dinainte lasă note nevalidate, iar poarta TVA
-    refuză D300 cât TVA-ul lor lipsește din balanță — 10.10.2026, deficiențele 120 + 210)."""
-    for (nid,) in sql('SELECT id FROM "%s".inregistrari WHERE status = \'ciorna\' AND date_trunc(\'month\', data) = date_trunc(\'month\', '
-                      'CURRENT_DATE)' % firma["schema"]):
+def _valideaza_luna(e, firma, luna=None):
+    """Notele ciornă ale lunii declarației, validate (firma e comună fișierului: facturile testelor de dinainte lasă note nevalidate, iar
+    poarta TVA refuză D300 cât TVA-ul lor lipsește din balanță — 10.10.2026, deficiențele 120 + 210). `luna` = prima zi a lunii; implicit
+    luna încheiată pe care se generează declarațiile (`e2e_lot72_declaratii.LUNA`; luna în curs nu se generează — 383, comanda 10.2 pct.1)."""
+    for (nid,) in sql('SELECT id FROM "%s".inregistrari WHERE status = \'ciorna\' AND date_trunc(\'month\', data) = %%s::date'
+                      % firma["schema"], ((luna or LUNA.inceput).isoformat(),)):
         _api(e, "POST", "/tenants/%d/jurnal/%d/valideaza" % (firma["tenant_id"], nid), {})
 
 
 def _factura_fara_tva(e, firma):
-    """O factură de servicii către clientul din Irlanda (0%, art.278 alin.(2)): nota ei, NEvalidată, nu schimbă TVA-ul lunii — D300 intră
-    în coadă și numește nota (ca F1A6 din retestul lui Costin)."""
+    """O factură de servicii către clientul din Irlanda (0%, art.278 alin.(2)), în luna încheiată a declarației: nota ei, NEvalidată, nu
+    schimbă TVA-ul lunii — D300 intră în coadă și numește nota (ca F1A6 din retestul lui Costin)."""
     from e2e_lot72_facturi import _emite_ie
-    return _emite_ie(e, firma)
+    return _emite_ie(e, firma, data_emitere=ZI)
 
 
 @contextlib.contextmanager
@@ -90,7 +91,7 @@ def test_def_322_lucrez_singur_nu_se_mai_arata_pe_pasul_facut(browser, request, 
 def _proba_323_329(patron, firma_e2e):
     """323. Declarația depășită stătea la „Generate, nevalidate”, cu „n-a trecut prin validatorul oficial”; „depășită” lipsea din fereastră.
     329. Avertismentul vechi („F1A6 nevalidată”) rămânea după validare; „Deschide nota nota”.
-    Pașii: o factură cu nota NEvalidată -> D300 în coadă: cardul numește nota, butonul „Deschide nota din …” (o dată „nota”); nota se
+    Pașii: o factură cu nota NEvalidată -> D300 pe luna încheiată în coadă: cardul numește nota, butonul „Deschide nota din …” (o dată „nota”); nota se
     validează -> cardul stă la „Depășite — de generat din nou”, eticheta „depășită — de generat din nou”, fără „n-a trecut prin validatorul
     oficial” și fără avertismentul notei (validată); „Vezi declarația” -> fereastra începe cu „Depășită — Declarația e depășită: …”."""
     pregateste_firma(patron, firma_e2e)
@@ -144,7 +145,7 @@ def test_def_324_declaratia_veche_fara_cerere_merge_in_declaratii_nu_e_refuzata(
     peste = _peste()
     pg = patron.pg
     try:
-        emite_api(patron, firma_e2e)
+        emite_api(patron, firma_e2e, data_emitere=ZI)
         _valideaza_luna(patron, firma_e2e)
         cid = _ok(_in_coada(patron, firma_e2e), "în coadă")["coada_id"]
         sql("UPDATE public.declaratii_coada SET payload = payload - '_cerere' - '_surse' WHERE id = %s", (cid,))   # ca înainte de 17.10
@@ -157,7 +158,7 @@ def test_def_324_declaratia_veche_fara_cerere_merge_in_declaratii_nu_e_refuzata(
         alese = pg.evaluate("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); return [(f.querySelector('#dec-firma') || {}).value, "
                             "(f.querySelector('#dec-luna') || {}).value]; }")
         patron.captura("declaratii")
-        assert alese == [str(firma_e2e["tenant_id"]), str(AZI.month)], alese   # AZI-dat-de-test: luna declarației pusă în coadă de `_in_coada`
+        assert alese == [str(firma_e2e["tenant_id"]), str(LUNA.luna)], alese   # luna declarației pusă în coadă de `_in_coada` (dată de test)
     finally:
         _curata(firma_e2e, peste)
 
@@ -399,8 +400,8 @@ def test_def_333_amortizarea_lunii_in_curs_nu_e_ceruta_si_nu_e_oferita(patron, f
 # ── 328 — Registru jurnal ────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_def_328_nota_din_factura_nu_se_sterge_iar_mesajul_spune_ciorna(patron, firma_e2e):
     """328. Nota din factură apărea „Ciornă” în Registru jurnal, iar mesajul D300 spunea „la validare”; „Șterge” oferit pe nota derivată.
-    Pașii: o factură emisă, nota ei ciornă (nevalidată) -> D300 în coadă: avertismentul spune „nota ei e ciornă, nevalidată”, nu „la
-    validare”; Registru jurnal: pe nota facturii nu e „Șterge”; ștergerea cerută direct e refuzată, cu drumul prin factură."""
+    Pașii: o factură emisă, nota ei ciornă (nevalidată) -> D300 pe luna încheiată în coadă: avertismentul spune „nota ei e ciornă, nevalidată”, nu „la
+    validare”; Registru jurnal, pe luna ei: pe nota facturii nu e „Șterge”; ștergerea cerută direct e refuzată, cu drumul prin factură."""
     pregateste_firma(patron, firma_e2e)
     peste = _peste()
     pg = patron.pg
@@ -414,6 +415,8 @@ def test_def_328_nota_din_factura_nu_se_sterge_iar_mesajul_spune_ciorna(patron, 
         assert "nota ei e ciornă, nevalidată" in av and "nota ei e la validare" not in av, av
         patron.firma(firma_e2e["nume"])
         _card(patron, "jurnal", "#j-nota-noua")
+        from e2e_bloc_b import _mergi_la_luna
+        _mergi_la_luna(patron, LUNA.an, LUNA.luna)   # nota facturii e în luna declarației (încheiată); jurnalul se deschide pe luna curentă
         pg.wait_for_selector("[data-nota-id='%d']" % nid, timeout=20000)
         patron.captura("jurnal")
         assert pg.locator("[data-nota-id='%d'] [data-del]" % nid).count() == 0, "„Șterge” oferit pe nota facturii"
@@ -504,7 +507,7 @@ def test_def_338_acelasi_telefon_la_doi_utilizatori_are_avertisment(patron):
 # ── 339 / 340 — cine primește ce ─────────────────────────────────────────────────────────────────────────────────────────────
 def test_def_339_fara_validarea_in_doi_declaratia_proprie_nu_anunta_validatorii(patron, firma_e2e):
     """339. Ana a primit „un element nou de validat” când B a pus propria D300 în „De depus” (validarea în doi a declarațiilor oprită).
-    Pașii: validarea în doi oprită -> administratorul pune D300 în coadă -> niciun validator nu primește „de validat” pentru ea; cu
+    Pașii: validarea în doi oprită -> administratorul pune D300 (luna încheiată) în coadă -> niciun validator nu primește „de validat” pentru ea; cu
     validarea în doi pornită (doi validatori), aceeași acțiune îi anunță."""
     pregateste_firma(patron, firma_e2e)
     cab = sql("SELECT accounting_firm_id FROM public.tenants WHERE id = %s", (firma_e2e["tenant_id"],))[0][0]
@@ -512,7 +515,7 @@ def test_def_339_fara_validarea_in_doi_declaratia_proprie_nu_anunta_validatorii(
     peste = _peste()
     try:
         sql("UPDATE public.accounting_firms SET patru_ochi_activ = false WHERE id = %s", (cab,))
-        emite_api(patron, firma_e2e)
+        emite_api(patron, firma_e2e, data_emitere=ZI)
         _valideaza_luna(patron, firma_e2e)
         cid = _ok(_in_coada(patron, firma_e2e), "în coadă")["coada_id"]
         n = sql("SELECT count(*) FROM public.notificari WHERE tip = 'de_validat' AND link LIKE %s", ("%%%d%%" % cid,))[0][0]
@@ -562,7 +565,7 @@ def test_def_337_ecranul_pachetului_spune_depasita_ca_fereastra_povestii(patron,
 def test_def_c50_coada_se_listeaza_cand_perioada_are_o_nota_nevalidata(patron, firma_e2e):
     """C50. `GET /coada` dădea 500 când perioada unei declarații din coadă avea o notă nevalidată: `coada_api.note_nevalidate` citea două
     `COALESCE` fără alias, iar pe cursorul dict cheile se suprascriau (tuplul ieșea mai scurt -> IndexError). Pașii: o factură cu nota
-    NEvalidată -> D300 în coadă -> lista cozii răspunde 200, iar declarația își numește nota."""
+    NEvalidată -> D300 pe luna încheiată în coadă -> lista cozii răspunde 200, iar declarația își numește nota."""
     pregateste_firma(patron, firma_e2e)
     peste = _peste()
     try:

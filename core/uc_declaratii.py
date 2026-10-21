@@ -50,6 +50,25 @@ def declaratii_tipuri(tenant_id, ctx):
             "obligatii_d710": _obligatii_d710()}
 
 
+def aduce_localitati_parteneri(schema, tip):
+    """[lotul 10, deficiența C69, decizia Costin 20.10.2026 „Completez din ANAF”, verbatim în DECIZII] „pentru partenerii cu CUI
+    românesc, localitatea se aduce automat din ANAF la generare; se blochează numai ce rămâne necompletat.” Înaintea tranzacției de
+    generare (ca `uc_reevaluare._aduce_cursurile`): o citire scurtă a partenerilor fără localitate scrisă (`d406.cuiuri_de_cerut_anaf`),
+    apoi ANAF cu pool-ul liber (`anaf_api.aduce_localitati`, cache în proces). D406 (localitatea, S.AD.5 City) și D394 (județul
+    partenerului neînregistrat, judP) citesc apoi numai cache-ul. ANAF jos nu oprește aici: generatorul numește partenerii rămași."""
+    if tip not in ("d406", "d394"):
+        return
+    import psycopg2.extras as _E
+    from core import anaf_api as _anaf, d406 as _d406, repo_d406 as _repo_d406
+    with db.get_conn(schema) as conn, conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cuiuri = _d406.cuiuri_de_cerut_anaf(_repo_d406.parteneri_si_localitati(cur))
+    try:
+        _anaf.aduce_localitati(cuiuri)
+    except Exception as e:   # noqa: BLE001 — ANAF indisponibil: refuzul generatorului numește partenerii fără localitate
+        from core import observare as _obs
+        _obs.esec_secundar("localitatea partenerilor din ANAF (%s)" % tip, e)
+
+
 def _obligatii_d710():
     """[{cod, denumire}] — codurile pe care D710 le acceptă (`d710` le ia din `d100.COD_BUGETAR`), cu denumirea din
     `core.nomenclator_obligatii` (OPANAF 587/2016, anexa nr. 3). Ecranul nu mai ține o listă scrisă de mână."""
@@ -82,11 +101,13 @@ def declaratie_valideaza(tip, date, ctx):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
         raise _erori.Inexistent(FARA_ACCES_TENANT)
+    aduce_localitati_parteneri(schema, tip)   # [lotul 10, C69] ANAF înaintea tranzacției de generare
     try:
         with db.get_conn(schema) as conn:
             xml, res = declaratii_api.genereaza(conn, schema, tip, body)
-    except ValueError as e:
-        raise _erori.DateInvalide(str(e))
+            blocaj = blocaj_depunere(conn, schema, tip, body)
+    except ValueError as e:   # [lotul 10, 431] refuzul cu trimitere (`RefuzGenerare`) ajunge la ecran ca obiect, celelalte ca text
+        raise _erori.DateInvalide(e.detaliu() if isinstance(e, _erori.RefuzGenerare) else str(e))
     # an/luna OBLIGATORII pentru D406 (27.07.2026): SAF-T se valideaza cu
     # DUKIntegrator_AnLunaUI.jar, care le primeste ca parametri; fara ele
     # _valideaza_saft intoarce GRI intotdeauna - deci validarea D406 din aplicatie
@@ -106,8 +127,18 @@ def declaratie_valideaza(tip, date, ctx):
     return {"tip": tip, "stare": rez["stare"], "erori": rez["erori"],
             "severitate": rez.get("severitate"),  # [A2] E:(eroare) vs A:(atentionare) - frontendul il citeste
             "temei": rez["temei"], "limita": rez["limita"],
-            **campuri_rezultat(tip, res),
+            **campuri_rezultat(tip, res), "blocaj_depunere": blocaj,
             "xml_b64": _b64.b64encode(xml.encode()).decode()}
+
+
+def blocaj_depunere(conn, schema, tip, body):
+    """[lotul 10, deficiența 436, comanda Costin 10.2 pct.6, verbatim în DECIZII] „când declarația știe că are cifra greșită din note
+    nevalidate, depunerea se blochează până la validare, cu motivul lângă buton, la toate declarațiile.” Refuzul pe care pasul 2 îl arată
+    lângă „Trimite în coadă” (butonul inactiv) — același ca la intrarea în coadă (`uc_coada.coada_adauga`) și la depunere
+    (`coada_api.refuz_note_nevalidate`): `coada_api.blocaj_declaratie` pe perioada CERERII. {cod, mesaj, note} | None."""
+    from core import coada_api as _coada
+    with conn.cursor() as cur:
+        return _coada.blocaj_declaratie(cur, schema, tip, body.get("an"), body.get("luna"), body.get("trim"))
 
 
 def campuri_rezultat(tip, res):
@@ -140,9 +171,11 @@ def declaratie_genereaza(tip, date, ctx):
         raise _erori.Inexistent(FARA_ACCES_TENANT)
     # 2) pe schema tenantului (SET LOCAL search_path în get_conn, PgBouncer-safe):
     #    modulul rulează pe conexiunea deja poziționată, NU mai setează el search_path
+    aduce_localitati_parteneri(schema, tip)   # [lotul 10, C69] ANAF înaintea tranzacției de generare
     try:
         with db.get_conn(schema) as conn:
             xml, res = declaratii_api.genereaza(conn, schema, tip, body)
-    except ValueError as e:
-        raise _erori.DateInvalide(str(e))
-    return {"tip": tip, "xml": xml, **campuri_rezultat(tip, res)}
+            blocaj = blocaj_depunere(conn, schema, tip, body)
+    except ValueError as e:   # [lotul 10, 431] refuzul cu trimitere (`RefuzGenerare`) ajunge la ecran ca obiect, celelalte ca text
+        raise _erori.DateInvalide(e.detaliu() if isinstance(e, _erori.RefuzGenerare) else str(e))
+    return {"tip": tip, "xml": xml, **campuri_rezultat(tip, res), "blocaj_depunere": blocaj}

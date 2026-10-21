@@ -633,6 +633,81 @@ def neconcordante_f20_f30(f20, f30):
     return out
 
 
+#: [lotul 10, deficiența C69, decizia Costin 20.10.2026 „Câmpuri noi + blocaj”, verbatim în DECIZII] „Nomenclator forme de proprietate”
+#: al structurii ANAF a bilanțului (anaf_surse/structura_SC_1225_270126.txt, ultimele pagini; câmpul „18. codPP Cod forma de proprietate
+#: N(2) DA Nomenclator forme de proprietate”), transcris cod cu cod. Până azi bilanțul scria `codPP=35` (SRL) oricărei firme: o SA
+#: pleca declarată SRL. Acum codul vine din Date firmă („Forma de proprietate”), iar lipsa lui oprește bilanțul.
+FORME_PROPRIETATE = {
+    "11": "Regii autonome",
+    "12": "Societăți cu capital integral de stat",
+    "13": "Institute naționale de cercetare-dezvoltare",
+    "14": "Companii și societăți naționale",
+    "15": "Societăți reprezentând filiale ale unor societăți cu capital integral de stat și societăți la care una sau mai multe "
+          "societăți cu capital integral de stat dețin capitalul social",
+    "16": "Alte unități economice de stat netransformate în societăți sau regii autonome",
+    "21": "Societăți cu capital de stat autohton și de stat străin (capital de stat sub 50%)",
+    "22": "Societăți cu capital de stat și privat autohton și străin (capital de stat sub 50%)",
+    "23": "Societăți cu capital de stat și privat autohton (capital de stat sub 50%)",
+    "24": "Societăți cu capital de stat și privat străin (capital de stat sub 50%)",
+    "25": "Societăți cu capital de stat autohton și de stat străin (capital de stat >= 50%)",
+    "26": "Societăți cu capital de stat și privat autohton și străin (capital de stat >= 50%)",
+    "27": "Societăți cu capital de stat și privat autohton (capital de stat >= 50%)",
+    "28": "Societăți cu capital de stat și privat străin (capital de stat >= 50%)",
+    "29": "Societăți reprezentând filiale ale unor societăți cu capital de stat de peste 50%, inclusiv, și societăți la care una sau mai "
+          "multe societăți cu capital de stat de peste 50%, inclusiv, dețin între 50% și 100% din capitalul social al acestora",
+    "31": "Societăți în nume colectiv",
+    "32": "Societăți în comandită simplă",
+    "33": "Societăți în comandită pe acțiuni",
+    "34": "Societăți pe acțiuni",
+    "35": "Societăți cu răspundere limitată",
+    "36": "Societăți agricole",
+    "37": "Societăți cu capital de stat, privatizate în cursul anului de raportare",
+    "41": "Cooperative de consum",
+    "42": "Cooperative meșteșugărești",
+    "43": "Cooperative și asociații agricole netransformate",
+    "44": "Cooperative de credit",
+    "50": "Societăți aparținând organizațiilor și instituțiilor politice și obștești",
+}
+
+#: „17. codJJ Cod judet (incl.cod 41) pt. … codJJ=codTT daca bifa_MC=0; codJJ=41 daca bifa_MC=1” (aceeași structură); 41 = „DGAMC”
+#: în „Nomenclator ordonatori - Judete”
+COD_JUDET_MARI_CONTRIBUABILI = 41
+
+
+def nume_administrator(prof):
+    """„19. nume_admin Nume si prenume Administrator C(75) DA” — numele și prenumele declarantului din Date firmă (decizia Costin C69:
+    „administratorul din declarant”), în ordinea structurii („Nume si prenume”). None când lipsește oricare din ele: nu se completează
+    cu „ADMINISTRATOR”."""
+    nume, prenume = str(prof.get("declarant_nume") or "").strip(), str(prof.get("declarant_prenume") or "").strip()
+    return ("%s %s" % (nume, prenume))[:75] if nume and prenume else None
+
+
+def erori_antet(prof):
+    """[lotul 10, deficiența C69 — „valoare inventată pe documentul ANAF în loc de blocaj”] Câmpurile antetului bilanțului care vin din
+    Date firmă și pe care generatorul le completa singur. Structura ANAF (anaf_surse/structura_SC_1225_270126.txt) le cere pe toate „DA”:
+      „10. bifaMC Bifa pt. Mari contribuabili care depun bilantul la Bucuresti N(1) DA bifaMC=1 pt. Mari contribuabili bifaMC=0 pt.restul
+      entitatilor” (era 1 pentru orice firmă);
+      „16. codTT Cod judet sediu (fara cod 41) N(2) DA Nomenclator Judete” (era 40, București, când lipsea);
+      „17. codJJ … codJJ=codTT daca bifa_MC=0; codJJ=41 daca bifa_MC=1” (era 10, Buzău, pentru orice firmă);
+      „18. codPP Cod forma de proprietate N(2) DA Nomenclator forme de proprietate” (era 35, SRL, pentru orice firmă);
+      „19. nume_admin Nume si prenume Administrator C(75) DA” (era „ADMINISTRATOR” când lipsea declarantul).
+    Lipsa oricăruia OPREȘTE bilanțul (decizia Costin 20.10.2026 „Câmpuri noi + blocaj”). Câmpurile se citesc explicit, cu numele lor."""
+    erori = []
+    if not prof.get("cod_judet"):
+        erori.append("Județul firmei lipsește sau nu e recunoscut — bilanțul cere codul județului sediului. Completează „Județul” în "
+                     "Date firmă (numele județului, de ex. „Cluj”, sau prescurtarea lui, „CJ”).")
+    if prof.get("mare_contribuabil") is None:
+        erori.append("Nu e declarat dacă firma e mare contribuabil — bilanțul o cere (bifa marilor contribuabili și codul județului). "
+                     "Alege „Mare contribuabil” (Da / Nu) în Date firmă.")
+    if str(prof.get("forma_proprietate") or "").strip() not in FORME_PROPRIETATE:
+        erori.append("Forma de proprietate a firmei lipsește — bilanțul cere codul ei din nomenclatorul ANAF. Alege „Forma de "
+                     "proprietate” în Date firmă.")
+    if not nume_administrator(prof):
+        erori.append("Numele și prenumele administratorului lipsesc — bilanțul le cere. Completează „Nume declarant” și „Prenume "
+                     "declarant” în Date firmă.")
+    return erori
+
+
 def _a(nume, val):
     from xml.sax.saxutils import quoteattr
     # ANAF respinge "atribut prezent dar vid" (dovedit 15.07.2026 pe regCom/banca/cont).
@@ -652,6 +727,11 @@ def xml_s1005(prof, an, f10p, f10c, f20p, f20c, f30p=None, f30c=None, rezultat=N
     construieste dinamic in validator. Absenta dintr-un extras NU inseamna absenta;
     singura dovada e rularea validatorului pe XML real."""
     NS = "mfp:anaf:dgti:s1005:declaratie:v15"
+    # [lotul 10, C69] antetul nu se completează cu valori inventate pe nicio cale (nici chemat direct, fără `bilant_api`)
+    _er = erori_antet(prof)
+    if _er:
+        raise ValueError("Bilanț nu se poate genera: " + " ".join(_er))
+    mc = bool(prof.get("mare_contribuabil"))
     at = []
     at.append(_a("luna", 12)); at.append(_a("an", an))
     at.append(_a("cui", prof.get("cui_numeric")))
@@ -660,14 +740,16 @@ def xml_s1005(prof, an, f10p, f10c, f20p, f20c, f30p=None, f30c=None, rezultat=N
     at.append(_a("regCom", prof.get("reg_com") or ""))
     at.append(_a("caen", prof.get("caen"))); at.append(_a("caenE", prof.get("caen")))
     at.append(_a("bifa_aprob", 1)); at.append(_a("AN_CAEN", an))
-    at.append(_a("bifaMC", 1)); at.append(_a("bifaDD", 0))
+    # [lotul 10, C69] bifaMC, codTT, codJJ, codPP și nume_admin din Date firmă (`erori_antet` a oprit deja lipsa lor)
+    at.append(_a("bifaMC", 1 if mc else 0)); at.append(_a("bifaDD", 0))
     at.append(_a("bifaGG", 0)); at.append(_a("bifaAA", 0))
     at.append(_a("bifa_art27", 0)); at.append(_a("tipBIL", "UU"))
     at.append(_a("interes_public", 0))
-    at.append(_a("codTT", prof.get("cod_judet") or 40))
-    at.append(_a("codJJ", 10)); at.append(_a("codPP", 35))
-    at.append(_a("nume_admin", prof.get("declarant_nume") or "ADMINISTRATOR"))
-    at.append(_a("nume_intocmit", prof.get("intocmit_nume") or prof.get("declarant_nume") or "ADMINISTRATOR"))
+    at.append(_a("codTT", prof["cod_judet"]))
+    at.append(_a("codJJ", COD_JUDET_MARI_CONTRIBUABILI if mc else prof["cod_judet"]))
+    at.append(_a("codPP", str(prof["forma_proprietate"]).strip()))
+    at.append(_a("nume_admin", nume_administrator(prof)))
+    at.append(_a("nume_intocmit", prof.get("intocmit_nume") or nume_administrator(prof)))
     at.append(_a("calit_intocmit", prof.get("calit_intocmit") or 12))
     if prof.get("cif_intocmit"): at.append(_a("cif_intocmit", prof["cif_intocmit"]))
     at.append(_a("totalPlata_A", f10c.get(49, 0)))

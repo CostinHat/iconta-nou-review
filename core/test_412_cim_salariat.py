@@ -125,7 +125,8 @@ def test_reimportul_salariatilor_nu_sterge_cim_de_pe_fisa(conn):
     rand = main.SalariatRand(nume="IONESCU", prenume="VASILE", cnp=CNP, data_angajare="2024-01-01", tip_norma="intreaga",
                              functie_baza=True, scutit_contrib_minim=False, ore_zi=8, salariu_brut=4050, judet_casa="B",
                              cor=COR, rand_fisier=2).model_dump()
-    imp.importa(conn, [rand])
+    # [lotul 10, 426] actualizarea salariaților existenți din fișier se face numai confirmat („Confirmă înlocuirea”)
+    imp.importa(conn, [rand], inlocuieste=True)
     d = sa.detalii_salariat(conn, sid)
     assert (d["tip_contract"], d["nr_cim"], str(d["data_cim"])) == ("determinata", "12/2023", "2023-12-20"), d
 

@@ -27,7 +27,7 @@ _DUK = duk.poate_valida("d710")
 
 def _prof():
     return {"cui": "456789123", "nume": "TEST RECTIFICATIVA SRL",
-            "adresa": "Str. Test nr.1 Bucuresti Sector 1"}
+            "adresa": "Str. Test nr.1 Bucuresti Sector 1", "declarant_nume": "POPESCU", "declarant_prenume": "ION", "declarant_functie": "ADMINISTRATOR"}  # [lotul 10, C69] + declarantul: structura D100-D710 „nume_declar/prenume_declar/functie_declar … DA”
 
 
 def _gen(obl, luna=3):

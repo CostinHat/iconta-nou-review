@@ -2,7 +2,8 @@
 core/asociati_import_api.py — import asociati (stratul 5 migrare) per firma.
 
 Citeste un export (.xlsx/.csv) cu nume, CNP/CUI, cota %. Mapeaza flexibil coloanele.
-Importa in tabelul existent `asociati` (DELETE + INSERT per firma).
+Importa in tabelul existent `asociati` (DELETE + INSERT per firma); [lotul 10, 426] peste o structura existenta, fara data de
+cesiune, numai confirmat (`inlocuieste`).
 Valideaza CNP daca are 13 cifre (cheie 279146358279); CUI-ul persoanei juridice: cifra de control [Q4] si, din comanda Costin 8.2
 [367], existenta la ANAF si numele din fisier fata de cel de la ANAF.
 Coerenta: suma cotelor trebuie sa dea 100% (refuz, `cote_nu_dau_suta`).
@@ -38,6 +39,7 @@ from core.numere import numar as _numar  # sursa unica (15.07.2026); "%" tratat 
 from core.migrare_api import respinge, semnaleaza  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 from core.pdf_util import data_ro as _data_ro   # DS cap.4: data din text, canonic
 from core.common import cate as _cate
+from core import chei_unice as _chei   # [lotul 10, C73] cheia naturală dublată -> refuz numit, nu 500
 
 
 def extrage(continut, nume_fisier=""):
@@ -237,9 +239,113 @@ def eticheteaza(randuri, anaf=None):
     return randuri
 
 
-def importa(conn, randuri, data_cesiune=None, anaf=None):
-    """DELETE + INSERT per firma. Intoarce {importati, arhivati}.
+def arhiveaza_pentru_cesiune(conn, data_cesiune):
+    """[lot 19 pct.4e; scoasă în funcție comună la lotul 10, deficiența 431] Structura CURENTĂ intră în `asociati_istoric`, valabilă
+    până în ziua dinaintea cesiunii (Legea 31/1990 art.67 alin.(6): „Dividendele care se cuvin după data transmiterii acțiunilor
+    aparțin cesionarului, în afară de cazul în care părțile au convenit altfel.”). Chemată de import (`importa`) și de cesiunea din
+    Date firmă (`asociati_api.cesiune`) — o singură logică. Întoarce câte rânduri a arhivat; ValueError numit la refuz.
+
+    GARANȚIA „istoric fără goluri” (pentru D205 / nota de dividende): fiecare structură arhivată e valabilă de la ziua de după
+    precedenta până la `valabil_pana_la` ei, iar cea curentă de la ziua de după ultima. De aceea: (a) o cesiune vine după ultima
+    înregistrată; (b) [lotul 10, 431] o cesiune cere o structură curentă (altfel intervalul de dinaintea ei ar rămâne fără
+    asociați); (c) data cesiunii nu e în viitor."""
+    import datetime as _dt
+    try:
+        dc = _dt.date.fromisoformat(str(data_cesiune)[:10])
+    except ValueError:
+        raise ValueError("data cesiunii %r nu e o dată (AAAA-LL-ZZ)." % data_cesiune)
+    if dc > _dt.date.today():
+        raise ValueError("data cesiunii (%s) e în viitor: o transmitere se înregistrează după ce a avut loc." % _data_ro(dc))
+    pana = dc - _dt.timedelta(days=1)
+    arhivati = 0
+    with conn.cursor() as cur:
+        cur.execute("SELECT max(valabil_pana_la) FROM asociati_istoric")
+        ultima = cur.fetchone()[0]
+        if ultima is not None and pana <= ultima:
+            raise ValueError("data cesiunii (%s) trebuie să fie după ultima cesiune înregistrată (structura "
+                             "anterioară e valabilă până la %s)." % (_data_ro(dc), _data_ro(ultima)))
+        cur.execute("SELECT nume, cnp, cota FROM asociati WHERE cota > 0")
+        vechi = cur.fetchall()
+        if not vechi:
+            raise ValueError("firma n-are înregistrată structura asociaților de dinaintea cesiunii — fără ea, perioada de "
+                             "până la %s ar rămâne fără asociați (dividendele de atunci n-ar avea cui se împărți). "
+                             "Înregistrează întâi structura de dinainte (ca o corectură, fără dată de cesiune), apoi cesiunea."
+                             % _data_ro(pana))
+        # [lotul 10, C73] data e verificată mai sus (după ultima cesiune); o violare a lui `asociati_istoric_uniq` aici vine de la o
+        # cesiune înregistrată între timp de altă salvare, pe aceeași dată -> refuz numit, nu 500
+        with _chei.refuza_dublura(cur, ("asociati_istoric_uniq",), lambda cur, e: _chei.CheieDublata(
+                "În timp ce salvai, altă salvare a înregistrat deja o cesiune cu structura valabilă până la %s. Cesiunea ta nu s-a "
+                "scris: reîncarcă pagina și verifică istoricul asociaților." % _data_ro(pana), valoare=_chei.valoarea(e))):
+            for nume, cnp, cota in vechi:
+                cur.execute("INSERT INTO asociati_istoric (cnp, nume, cota, valabil_pana_la) VALUES (%s,%s,%s,%s)",
+                            (cnp or "", nume, cota, pana))
+                arhivati += 1
+    return arhivati
+
+
+def _refuz_asociat_scris_intre_timp(cur, e):
+    """[lotul 10, C73] Refuzul numit al CNP-ului / CUI-ului de asociat scris între timp de altă salvare."""
+    return _chei.CheieDublata("În timp ce salvai, altă salvare a scris deja asociatul cu CNP-ul / CUI-ul %s. Din structura ta nu s-a "
+                              "scris nimic: reîncarcă pagina, verifică asociații firmei și salvează din nou dacă e cazul."
+                              % _chei.valoarea(e), valoare=_chei.valoarea(e))
+
+
+def _procent(cota):
+    """„60%”, „33,5%” — cota de participare cum o citește contabilul (fără zecimale inutile)."""
+    return "%s%%" % ("%g" % float(cota or 0)).replace(".", ",")
+
+
+def existent(conn):
+    """[lotul 10, deficiența 426 — clasa] Structura asociaților deja salvată și ce se sprijină pe ea: {randuri, structura: [{nume, cnp,
+    cota}], note_dividende: [{nota_id, eticheta, data, suma}]}. Notele de dividende care depind de structura de acum = distribuirile
+    (credit 457; interimarele 463 = 456) de după ultima cesiune înregistrată (`asociati_istoric`): D205 și nota de dividende le împart
+    după structura valabilă la data lor (`dividende_curs.structura_la`), deci după cea de acum — o corectură le schimbă împărțirea."""
+    from core import eticheta_nota as _et
+    with conn.cursor() as cur:
+        cur.execute("SELECT nume, cnp, cota FROM asociati ORDER BY cota DESC, nume")
+        structura = [{"nume": n, "cnp": c or "", "cota": float(q or 0)} for n, c, q in cur.fetchall()]
+        cur.execute("SELECT max(valabil_pana_la) FROM asociati_istoric")
+        ultima = cur.fetchone()[0]
+        cur.execute("SELECT i.id, i.data, SUM(l.suma) FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
+                    "WHERE (l.cont_credit LIKE '457%%' OR (l.cont_credit LIKE '456%%' AND l.cont_debit LIKE '463%%')) "
+                    "AND (%s::date IS NULL OR i.data > %s::date) GROUP BY i.id, i.data ORDER BY i.data, i.id", (ultima, ultima))
+        note = cur.fetchall()
+        etichete = dict(_et.note(cur, "", [r[0] for r in note]))
+    return {"randuri": len(structura), "structura": structura,
+            "note_dividende": [{"nota_id": i, "eticheta": etichete.get(i) or "", "data": d.isoformat(), "suma": float(sm)}
+                               for i, d, sm in note]}
+
+
+def text_inlocuire(vechi, nou):
+    """[426] „spune că există deja […], arată [ce e] vechi și nou […]; dacă există [date dependente], spune” — textul comun
+    avertismentului din previzualizare și refuzului de la salvare: structura de acum și cea din fișier, cu cotele, și notele de dividende
+    care se împart după structura de acum, numite. `nou` = rândurile care intră (`migrare_api.randuri_care_intra`)."""
+    from core.pdf_util import bani as _bani
+
+    def _str(lst):
+        return ", ".join("%s %s" % (str(a.get("nume") or "").strip() or "—", _procent(a.get("cota"))) for a in lst) or "niciun asociat"
+    t = ("Firma are deja %s: %s. Fișierul nou: %s. Fără dată de cesiune, salvarea e o corectură: structura de acum se înlocuiește "
+         "și nu rămâne în istoric." % (_cate(vechi["randuri"], "asociat", "asociați"), _str(vechi["structura"]), _str(nou)))
+    note = vechi.get("note_dividende") or []
+    if note:
+        # [lotul 10] numeralul acordat prin `cate` (gardul `test_plural_dupa_numar`): „3 note de dividende se împart”, „20 de note …”
+        t += (" %s după structura de acum: %s — D205 %s va împărți după cotele noi, iar înregistrarea din Registrul jurnal rămâne "
+              "neschimbată." % (
+                  "Nota de dividende se împarte" if len(note) == 1 else _cate(len(note), "notă de dividende", "note de dividende")
+                  + " se împart",
+                  "; ".join("nota %s (%s lei)" % (n["eticheta"], _bani(n["suma"])) for n in note[:6])
+                  + (" și încă %d" % (len(note) - 6) if len(note) > 6 else ""), "o" if len(note) == 1 else "le"))
+    t += (" Dacă asociații s-au schimbat printr-o cesiune, scrie data cesiunii: structura de acum rămâne în istoric pentru dividendele "
+          "distribuite înainte.")
+    return t
+
+
+def importa(conn, randuri, data_cesiune=None, anaf=None, inlocuieste=False):
+    """DELETE + INSERT per firma. Intoarce {importati, arhivati, inlocuit}.
     Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri).
+    [lotul 10, deficiența 426 — clasa] o structură existentă se înlocuiește FĂRĂ dată de cesiune (corectură) NUMAI cu `inlocuieste=True`
+    (confirmarea de pe ecran); fără ea -> `migrare_api.InlocuireNeconfirmata` (409), cu structura veche și nouă și notele de dividende
+    care depind de ea. Cu dată de cesiune structura veche nu se pierde (intră în istoric, `arhiveaza_pentru_cesiune`) — nu se cere.
 
     [lot 19 pct.4e, 02.10.2026] `data_cesiune` (opțional): data de la care NOUA structură e valabilă (transmiterea
     părților sociale). Structura curentă se ARHIVEAZĂ în `asociati_istoric`, valabilă până în ziua dinainte — ca D205 să
@@ -259,33 +365,22 @@ def importa(conn, randuri, data_cesiune=None, anaf=None):
         raise ValueError("%s: %s. Asociații și cotele lor intră în D205 "
                          "(dividende) - cotele trebuie să dea exact 100%%."
                          % (_cate(len(er), "problemă", "probleme"), "; ".join(x["mesaj"] for x in er[:6])))
-    arhivati = 0
-    if data_cesiune:
-        import datetime as _dt
-        try:
-            dc = _dt.date.fromisoformat(str(data_cesiune)[:10])
-        except ValueError:
-            raise ValueError("data cesiunii %r nu e o dată (AAAA-LL-ZZ)." % data_cesiune)
-        if dc > _dt.date.today():
-            raise ValueError("data cesiunii (%s) e în viitor: o transmitere se înregistrează după ce a avut loc." % _data_ro(dc))
-        pana = dc - _dt.timedelta(days=1)
-        with conn.cursor() as cur:
-            cur.execute("SELECT max(valabil_pana_la) FROM asociati_istoric")
-            ultima = cur.fetchone()[0]
-            if ultima is not None and pana <= ultima:
-                raise ValueError("data cesiunii (%s) trebuie să fie după ultima cesiune înregistrată (structura "
-                                 "anterioară e valabilă până la %s)." % (_data_ro(dc), _data_ro(ultima)))
-            cur.execute("SELECT nume, cnp, cota FROM asociati WHERE cota > 0")
-            for nume, cnp, cota in cur.fetchall():
-                cur.execute("INSERT INTO asociati_istoric (cnp, nume, cota, valabil_pana_la) VALUES (%s,%s,%s,%s)",
-                            (cnp or "", nume, cota, pana))
-                arhivati += 1
+    vechi = existent(conn)
+    from core import migrare_api as _mig
+    # [426] poarta comună a clasei: corectura peste o structură existentă cere confirmarea, ÎNAINTEA oricărei scrieri
+    _mig.cere_confirmarea_inlocuirii(vechi["randuri"] > 0 and not data_cesiune, inlocuieste, text_inlocuire(vechi, randuri), vechi,
+                                     {"randuri": len(randuri)}, vechi["note_dividende"])
+    arhivati = arhiveaza_pentru_cesiune(conn, data_cesiune) if data_cesiune else 0
     with conn.cursor() as cur:
         cur.execute("DELETE FROM asociati")
         n = 0
-        for r in randuri:
-            cur.execute(
-                "INSERT INTO asociati (nume, cnp, cota) VALUES (%s,%s,%s)",
-                (r["nume"], r.get("cnp", ""), r.get("cota", 0)))
-            n += 1
-    return {"importati": n, "arhivati": arhivati}
+        # [lotul 10, C73] `verifica_randuri` a refuzat deja identificatorul dublat din rânduri; o violare a lui `asociati_cnp_uniq`
+        # aici vine de la o altă salvare a structurii, terminată în timpul acesteia -> refuz numit, nu 500
+        with _chei.refuza_dublura(cur, ("asociati_cnp_uniq",), _refuz_asociat_scris_intre_timp):
+            for r in randuri:
+                cur.execute(
+                    "INSERT INTO asociati (nume, cnp, cota) VALUES (%s,%s,%s)",
+                    (r["nume"], r.get("cnp", ""), r.get("cota", 0)))
+                n += 1
+    return {"importati": n, "arhivati": arhivati,
+            "inlocuit": {"randuri": vechi["randuri"]} if vechi["randuri"] and not data_cesiune else None}

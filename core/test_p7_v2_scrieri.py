@@ -316,7 +316,38 @@ def test_numarul_de_instructiuni_se_conserva():
     #   repo_facturi.actualizeaza_conturi_linii (uc_tenants.factura_primita_valideaza) — 418b, contul fiecărei linii; scriere NOUĂ;
     #   repo_facturi.seteaza_act_identitate (uc_tenants.achizitie_neinregistrat) — 402, actul de identitate al vânzătorului PF pe
     #     borderou; scriere NOUĂ.
-    assert _apeluri_catre_repository() == 342
+    # [lotul 10, comanda 10.1, 20.10.2026] 342 -> 349 (DECIZII „Comanda 10.1”):
+    #   repo_contabilitate.documentul_notei (uc_reevaluare.reevaluare_valuta_genereaza) — 429, documentul ciornei înlocuite a lunii
+    #     trece pe nota nouă; citire NOUĂ;
+    #   repo_contabilitate.search_path_firma (uc_reevaluare.reevaluare_valuta_genereaza) — 429 / 430d, nota care păstrează documentul
+    #     ciornei înlocuite se scrie pe schema firmei; apel de CONTROL NOU;
+    #   repo_contabilitate.nota_cu_sursa_si_status (uc_reevaluare.reevaluare_valuta_genereaza) — 429 / 430d, nota de reevaluare cu
+    #     documentul vechi; scriere NOUĂ;
+    #   repo_contabilitate.nota_operatiune_ciorna (uc_reevaluare.reevaluare_valuta_genereaza) — 429 / 430d, nota de reevaluare propusă
+    #     de aplicație, fără document vechi; scriere NOUĂ;
+    #   repo_contabilitate.adauga_linie (uc_reevaluare.reevaluare_valuta_genereaza) — 429, rândurile notei (câte unul pe element în
+    #     valută cu diferență); scriere NOUĂ;
+    #   repo_contabilitate.adauga_linie_partener (uc_tenants.nota_asociati) — 430b, câte un rând de dividend pe fiecare asociat, cu
+    #     asociatul ca partener; scriere NOUĂ;
+    #   repo_contabilitate.dividende_nevalidate_din (uc_tenants._sursa_profitului) — 430a, dividendele încă nevalidate din contul de
+    #     profit, rezervate din profitul disponibil; citire NOUĂ;
+    #   repo_tenants.nume_si_cui_spatiat (uc_regim_tva_incasare._rtvai_firma) — 428, CUI-ul firmei pentru registrul ANAF al TVA la
+    #     încasare; citire NOUĂ;
+    #   MINUS repo_d101.select_inregistrari_linii (uc_tenants.ajustari_fiscale_lista) — 425, înlocuit cu `d101.rulaje_fereastra`
+    #     (notele + rulajele preluate, aceeași bază ca generatorul D101), care nu e repository: −1.
+    #   Neutre (aceeași numărătoare): `nota_facturi_ciorna` / `nota_facturi_ciorna_2` / `nota_banca_ciorna` / `nota_casa_ciorna` /
+    #   `nota_salarii_ciorna` -> `nota_operatiune_ciorna` în 29 de use-case-uri (430d, sursa notei); `cate_nevalidate_dintre` mutat din
+    #   `uc_coada.reia_declaratiile_in_asteptare` în funcția ei internă `_ramase` (firma ștearsă între timp). Nenumărat de instrument:
+    #   `uc_declaratii.aduce_localitati_parteneri` -> `_repo_d406.parteneri_si_localitati` (C69), fiindcă e chemat printr-un alias
+    #   (`_repo_d406`), nu prin numele modulului.
+    # [lotul 10, prins de e2e 430, 20.10.2026] 349 -> 350:
+    #   repo_contabilitate.search_path_firma (uc_tenants._dividend_propus) — 430, `dividende_impartire` / `nota_asociati` țin conexiunea pe
+    #     `public`, iar SQL-ul asociaților e necalificat (500 „relation asociati does not exist” pe ecran); apel de CONTROL NOU.
+    # [lotul 10, deficiența C73, 21.10.2026] 350 -> 352: două citiri NOI, ambele `repo_mijloace_fixe.cod_liber` — codul de inventar
+    #   implicit, primul liber („NEC-LIC”, „NEC-LIC-2”, …; „MF-PLUS”, „MF-PLUS-2”, …), în `uc_tenants.achizitie_necorporala` și
+    #   `uc_tenants.nota_inventariere` (plus_mf). Ecranele n-au câmp de cod, iar codul fix făcea ca a doua operațiune să cadă cu 500 pe
+    #   `mijloace_fixe_cod_uniq`.
+    assert _apeluri_catre_repository() == 352
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

@@ -114,7 +114,7 @@ def xml_factura(firma, factura, linii):
         _t("FacturaNumar", factura.get("numar")) + _t("FacturaData", _d_ro(factura.get("data_emitere"))) +
         _t("FacturaScadenta", _d_ro(factura.get("data_scadenta"))) +
         _t("FacturaTaxareInversa", "Da" if factura.get("taxare_inversa") else "Nu") +
-        _t("FacturaTVAIncasare", "Da" if firma.get("tva_la_incasare") else "Nu") +
+        _t("FacturaTVAIncasare", "Da" if factura.get("tva_la_incasare") else "Nu") +   # [lotul 10, 428] regimul FACTURII la data ei
         (_t("FacturaTip", SAGA_TIP_FACTURA_CU_BON) if _din_bon(factura) else "") +
         _t("FacturaInformatiiSuplimentare", "") +
         _t("FacturaMoneda", factura.get("moneda") or "RON") +
@@ -168,6 +168,11 @@ def date_factura(conn, schema, factura_id):
                "tert_adresa": f[8], "serie": f[11], "tert_oras": f[12],
                # [punctul 3] marca „din bon” (SAGA FacturaTip=f, WinMentor InfoCM) + storno (WinMentor 381)
                "bon_fiscal_nr": f[13], "bon_fiscal_data": f[14], "storno_din_id": f[15]}
+    # [lotul 10, deficiența 428] „TVA la încasare” e al FACTURII, la data ei (CF art.282 alin.(3), (7) — `tva_incasare.regim`), nu bifa
+    # firmei de azi: o factură emisă înainte de intrare / după ieșire nu e în sistem
+    from core import tva_incasare as _tvi
+    with conn.cursor() as cur:
+        factura["tva_la_incasare"] = _tvi.regim(cur, schema, factura_id) == _tvi.REGIM_INCASARE
     return _firma(conn, schema), factura, linii
 
 

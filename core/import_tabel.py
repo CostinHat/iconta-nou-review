@@ -330,10 +330,63 @@ def pereche_sold_final(antet, nume_fisier=""):
         return fd[0], fc[0]
     raise FisierNecitit(
         "Balanța din fișierul %s are mai multe coloane de debit (%s) și de credit (%s), iar soldul final nu se poate "
-        "deosebi neechivoc de celelalte. Se importă numai soldurile finale: lasă în fișier coloanele „Sold final debitor” "
-        "și „Sold final creditor” (sau numai perechea soldurilor finale) și încarcă-l din nou."
+        "deosebi neechivoc de celelalte. Numește perechea soldurilor finale „Sold final debitor” / „Sold final creditor” (sau "
+        "„Solduri finale” deasupra lui „Debit / Credit”) și încarcă fișierul din nou."
         % ("«%s»" % nume_fisier if nume_fisier else "trimis",
            ", ".join("«%s»" % eticheta(antet, j) for j in deb), ", ".join("«%s»" % eticheta(antet, j) for j in cre)))
+
+
+# ── celelalte perechi ale unei balanțe de verificare (deficiența 425, comanda Costin 10.1, verbatim în DECIZII „Comanda 10.1”) ──
+# „Când fișierul are soldurile inițiale ale anului și rulajele, ele intră ca sold inițial și sume precedente, cu toate conturile care
+# au rulaj.” Termenii grupurilor vin din manualul SAGA C, „Preluare date contabile” (anaf_surse/saga_manual_topic12_…): „Debit iniţial
+# an” / „Credit iniţial an”, „Debit precedent” / „Credit precedent” = „rulajele cumulate (inclusiv soldurile iniţiale) - coloanele
+# «Total Sume debitoare/creditoare» din balanţa lunii anterioare”. Balanța de verificare SAGA are cinci perechi: solduri inițiale an,
+# sume precedente, rulaje (ale lunii), total sume, solduri finale.
+#: grupul -> cum îl recunosc în antetul normalizat (cuvinte întregi / început de cuvânt). Ordinea contează: „final” întâi („Sold final”),
+#: „precedent” înaintea lui „total” („Total sume precedente” = sume precedente), „total sume” / „cumulat” înaintea lui „rulaj”.
+GRUPURI_BALANTA = (
+    ("sf", "solduri finale", lambda w: any(x.startswith("final") for x in w)),
+    ("sp", "sume precedente", lambda w: any(x.startswith("precedent") for x in w)),
+    ("si", "solduri inițiale an", lambda w: any(x.startswith("initial") for x in w)),
+    ("ts", "total sume", lambda w: (("total" in w and any(x.startswith(("sum", "rulaj")) for x in w))
+                                    or any(x.startswith("cumulat") for x in w))),
+    ("rl", "rulaje", lambda w: any(x.startswith(("rulaj", "curent")) for x in w)),
+)
+
+
+def perechi_balanta(antet, nume_fisier=""):
+    """`{grup: (i_debit, i_credit)}` — perechile RECUNOSCUTE în afară de soldul final: `si` (solduri inițiale an), `sp` (sume
+    precedente), `rl` (rulajele lunii), `ts` (total sume). Un grup are exact o coloană de debit și una de credit; o jumătate de
+    pereche sau două coloane pentru același grup -> REFUZ numit (nu aleg una — defectul C21). O balanță cu o singură pereche
+    (balanța de deschidere „Sold debitor / Sold creditor”) -> `{}`. O pereche nerecunoscută rămâne necitită (ca până acum)."""
+    deb = [j for j, h in enumerate(antet) if h and _e_debit(h)]
+    cre = [j for j, h in enumerate(antet) if h and _e_credit(h)]
+    if len(deb) <= 1 and len(cre) <= 1:
+        return {}
+
+    def grup(h):
+        w = h.split()
+        for g, _et, potriveste in GRUPURI_BALANTA:
+            if potriveste(w):
+                return g
+        return None
+
+    out = {}
+    for g, et, _p in GRUPURI_BALANTA:
+        if g == "sf":
+            continue
+        d = [j for j in deb if grup(antet[j]) == g]
+        c = [j for j in cre if grup(antet[j]) == g]
+        if not d and not c:
+            continue
+        if len(d) != 1 or len(c) != 1:
+            raise FisierNecitit(
+                "Balanța din fișierul %s are pentru „%s” coloanele %s — se așteaptă exact una de debit și una de credit. "
+                "Lasă în fișier perechea întreagă (sau scoate-o de tot) și încarcă-l din nou."
+                % ("«%s»" % nume_fisier if nume_fisier else "trimis", et,
+                   ", ".join("«%s»" % eticheta(antet, j) for j in d + c)))
+        out[g] = (d[0], c[0])
+    return out
 
 
 

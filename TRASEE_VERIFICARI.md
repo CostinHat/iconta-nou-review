@@ -21,13 +21,13 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *clasa MECANIC · 21 rute · 13 schimba date · 9 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/coada`, `/coada/{coada_id}/continut`, `/control-fiscal`, `/control-fiscal/{tenant_id}`, `/declaratii/tipuri`, `/firme/{tenant_id}/verificari`, `/termene`*
+*citiri (nu schimba nimic): `/coada`, `/coada/{coada_id}/continut`, `/control-fiscal`, `/control-fiscal/{tenant_id}`, `/declaratii/tipuri`, `/firme/{tenant_id}/verificari`, `/supervizor`, `/termene`*
 
 ### `POST /coada`
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `coada_api`, `repo_main`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `coada_api`, `declaratii_api`, `repo_main`*
 
 - [x] declarația intră în coadă **numai cu verdict de validare păstrat** — altfel ruta refuză și spune de ce
 - rândul din coadă poartă: tip, perioadă, firmă, cine a pregătit, momentul
@@ -88,7 +88,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: intoarce ce da `_uc_declaratii.declaratie_genereaza()`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `declaratii_api`*
 
 - [x] fiecare operațiune din evidență care ar trebui să apară în declarație, apare — absența nu e vizibilă în structură
 - `operatiuni` conține și cele excluse, cu motivul și temeiul excluderii, nu doar cele incluse
@@ -99,7 +99,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: Genereaza declaratia si o trece prin validatorul OFICIAL ANAF (DUKIntegrator)*
+*ce face: Genereaza declaratia si o trece prin validatorul OFICIAL ANAF (DUKIntegrator) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `declaratii_api`*
 
 - [x] verdictul se **păstrează**, cu momentul, versiunea validatorului și **amprenta fișierului validat**
 - un verdict pe un XML regenerat între timp nu mai e verdict — dacă amprenta diferă, se marchează stătut
@@ -109,7 +109,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_depuse (DELETE/INSERT) — prin `istoric_declaratii_import_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_depuse (DELETE/INSERT) · migrare_status (INSERT) — prin `istoric_declaratii_import_api`, `migrare_api`*
 
 - [x] același conținut ca la pasul de încărcare — ce s-a văzut la previzualizare e ce s-a salvat
 - o a doua rulare cu același fișier nu dublează rândurile
@@ -155,7 +155,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T02 — Factura emisă — creare, contabilizare, ieșiri
 
-*clasa MECANIC · 20 rute · 14 schimba date · 12 firme il pot exercita azi*
+*clasa MECANIC · 21 rute · 15 schimba date · 12 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/facturi`, `/tenants/{tenant_id}/facturi`, `/tenants/{tenant_id}/facturi-recurente`, `/tenants/{tenant_id}/facturi/numerotare`, `/tenants/{tenant_id}/facturi/{factura_id:int}`, `/tenants/{tenant_id}/facturi/{factura_id}/pdf`*
 
@@ -233,6 +233,16 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - nota contabilă generată respectă partida dublă, iar conturile vin din mapare, nu din literali
 - mișcările de stoc au aceeași dată cu factura
 - factura fără cod fiscal de partener se refuză — nu intră în D394 și nu se corelează în VIES
+
+### `POST /tenants/{tenant_id}/facturi/previzualizare-lei`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: [lotul 10, comanda 10.2 pct.7g] Cursul BNR cu care se va emite factura în valută și TVA-ul / totalul ei în lei — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
+
+- [ ] nu scrie nimic în baza firmei (PLAFON-ul e al modulului `facturi_api`, nu al rutei): după previzualizare, `facturi` și `factura_linii` neschimbate
+- [ ] cursul arătat e cel cu care emite `facturi/emite` (aceeași funcție `curs_automat`), iar TVA-ul / totalul în lei sunt cele scrise apoi pe factură (`sume_lei`)
+- [ ] refuzul cursului (prea vechi, moneda necotată, indisponibil) e același ca la emitere
 
 ### `PUT /tenants/{tenant_id}/facturi/numerotare`
 
@@ -428,9 +438,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T05 — Nota contabilă — de la document la registrul-jurnal
 
-*clasa MECANIC · 36 rute · 28 schimba date · 20 firme il pot exercita azi*
+*clasa MECANIC · 37 rute · 28 schimba date · 20 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/balanta`, `/tenants/{tenant_id}/balanta`, `/tenants/{tenant_id}/documente/balanta`, `/tenants/{tenant_id}/fisa-cont`, `/tenants/{tenant_id}/jurnal`, `/tenants/{tenant_id}/plan-conturi`, `/tenants/{tenant_id}/registru-inventar`, `/tenants/{tenant_id}/registru-inventar/propunere`*
+*citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/balanta`, `/tenants/{tenant_id}/balanta`, `/tenants/{tenant_id}/dividende-impartire`, `/tenants/{tenant_id}/documente/balanta`, `/tenants/{tenant_id}/fisa-cont`, `/tenants/{tenant_id}/jurnal`, `/tenants/{tenant_id}/plan-conturi`, `/tenants/{tenant_id}/registru-inventar`, `/tenants/{tenant_id}/registru-inventar/propunere`*
 
 ### `POST /tenants/{tenant_id}/jurnal`
 
@@ -510,7 +520,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie dividend|regularizare|restituire_dividend|imprumut, descriere?, + dividend{brut, interimar?, cu_plata?}; regularizare{total_interimar, dividend_anua — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
+*ce face: corp: {data, operatie dividend|regularizare|restituire_dividend|imprumut, descriere?, + dividend{brut, numar_hotarare, data_hotarare, interimar?, cu_plata?}; regularizare — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
 
 - [x] distincția între aport, împrumut și retragere e obligatorie: au tratamente fiscale diferite
 - retragerea de bani fără temei e chiar cazul din ghidul „bani din firmă fără temei" — verifică dacă ruta o permite fără să semnaleze
@@ -783,7 +793,7 @@ faptica, pe baza listelor de inventariere.
 
 *clasa MANUAL · 7 rute · 4 schimba date · nicio firma nu-l poate exercita azi*
 
-*citiri (nu schimba nimic): `/tenants/{tenant_id}/facturi-primite`, `/tenants/{tenant_id}/facturi-primite/{primita_id}/xml`, `/tenants/{tenant_id}/trimiteri-spv`*
+*citiri (nu schimba nimic): `/tenants/{tenant_id}/facturi-primite`, `/tenants/{tenant_id}/facturi-primite/{primita_id}/xml`, `/tenants/{tenant_id}/spv/stare`, `/tenants/{tenant_id}/trimiteri-spv`*
 
 ### `POST /tenants/{tenant_id}/facturi-primite/{primita_id}/respinge`
 
@@ -915,7 +925,7 @@ faptica, pe baza listelor de inventariere.
 
 *clasa MECANIC · 2 rute · 1 schimba date · nicio firma nu-l poate exercita azi*
 
-*citiri (nu schimba nimic): `/tenants/{tenant_id}/stocuri/nir`*
+*citiri (nu schimba nimic): `/tenants/{tenant_id}/stocuri/nir`, `/tenants/{tenant_id}/stocuri/nir/{nir_id}`*
 
 ### `POST /tenants/{tenant_id}/stocuri/nir`
 
@@ -1020,7 +1030,7 @@ faptica, pe baza listelor de inventariere.
 
 *clasa MECANIC · 7 rute · 4 schimba date · 1 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/tenants/{tenant_id}/facturi/perioada`, `/tenants/{tenant_id}/perioade-blocate`*
+*citiri (nu schimba nimic): `/tenants/{tenant_id}/facturi/perioada`, `/tenants/{tenant_id}/perioade-blocate`, `/tenants/{tenant_id}/perioade-blocate/istoric`*
 
 ### `POST /tenants/{tenant_id}/facturi/perioada/confirma`
 
@@ -1062,7 +1072,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in perioade_blocate*
 
-*ce face: scrie perioade_blocate (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_inchideri (INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `migrare_inchideri`, `repo_contabilitate`, `repo_mijloace_fixe`*
+*ce face: scrie perioade_blocate (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_inchideri (INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) · reevaluari_valuta (INSERT) — prin `migrare_inchideri`, `reevaluare_valuta`, `repo_contabilitate`, `repo_mijloace_fixe`*
 
 - [x] închiderea e un act deliberat, cu **autor și moment** consemnate
 - după închidere, nicio scriere în perioada aceea nu mai trece — verificat pe toate cele 39 de operațiuni, nu doar pe cele testate
@@ -1079,7 +1089,7 @@ faptica, pe baza listelor de inventariere.
 
 *clasa PARTIAL · 4 rute · 2 schimba date · nu se poate sti din date*
 
-*citiri (nu schimba nimic): `/tenants/{tenant_id}/s1003-xml`, `/tenants/{tenant_id}/s1005-xml`*
+*citiri (nu schimba nimic): `/tenants/{tenant_id}/bilant-an-precedent`, `/tenants/{tenant_id}/categorie-marime`, `/tenants/{tenant_id}/s1003-xml`, `/tenants/{tenant_id}/s1005-xml`*
 
 ### `POST /tenants/{tenant_id}/bilant-an-precedent-manual`
 
@@ -1126,9 +1136,9 @@ faptica, pe baza listelor de inventariere.
 
 ## T13 — Trecerea de regim fiscal
 
-*clasa MECANIC · 8 rute · 4 schimba date · 20 firme il pot exercita azi*
+*clasa MECANIC · 12 rute · 6 schimba date · 20 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/migrare/vector`, `/tenants/{tenant_id}/firma-profil`, `/tenants/{tenant_id}/firma-profil/date`, `/tenants/{tenant_id}/vector`*
+*citiri (nu schimba nimic): `/migrare/vector`, `/tenants/{tenant_id}/firma-profil`, `/tenants/{tenant_id}/firma-profil/date`, `/tenants/{tenant_id}/tva-incasare/neexigibile`, `/tenants/{tenant_id}/tva-incasare/verifica-anaf`, `/tenants/{tenant_id}/vector`*
 
 ### `POST /tenants/{tenant_id}/firma-profil/date`
 
@@ -1178,11 +1188,30 @@ faptica, pe baza listelor de inventariere.
 - o declarație deja generată pentru o poziție scoasă din vector se marchează, nu dispare
 - vectorul se confruntă cu faptele: dacă firma are operațiuni intracomunitare și vectorul nu are D390, se semnalează — e chiar cazul de la 006
 
+### `POST /tenants/{tenant_id}/tva-incasare`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: Perioada curentă a sistemului TVA la încasare (aplică / nu, de la, până la), apoi verificarea în registrul ANAF consemnată pe ea*
+
+- [ ] „Da” fără data de la care se aplică se refuză numit; o perioadă nu începe și nu se schimbă într-o lună închisă
+- [ ] schimbarea regimului intră în jurnalul datelor firmei (vechi -> nou, cine), iar `firma_profil.tva_la_incasare` urmează perioada în curs
+- [ ] verificarea în registrul ANAF se consemnează pe perioadă (`verificat_anaf_la`, `stare_anaf`) și NU schimbă perioada: ANAF propune, omul salvează
+
+### `DELETE /tenants/{tenant_id}/tva-incasare/{perioada_id}`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: Ștergerea unei perioade a sistemului TVA la încasare scrise din greșeală (nu pe o lună închisă), cu jurnalul regimului.*
+
+- [ ] o perioadă care atinge o lună închisă nu se șterge
+- [ ] fără perioade rămase, firma iese din sistem (`tva_la_incasare = false`), iar ștergerea intră în jurnalul regimului
+
 ## T14 — Preluarea unei firme
 
 *clasa MECANIC · 36 rute · 22 schimba date · 5 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/migrare/asociati`, `/migrare/istoric-declaratii`, `/migrare/mijloace-fixe`, `/migrare/parteneri`, `/migrare/plan-conturi`, `/migrare/salariati`, `/migrare/solduri`, `/migrare/status`, `/migrare/straturi`, `/tenants/{tenant_id}/parteneri`, `/tenants/{tenant_id}/solduri`*
+*citiri (nu schimba nimic): `/control-fiscal/{tenant_id}/audit-preluare/istoric`, `/migrare/aplicatii`, `/migrare/asociati`, `/migrare/firme`, `/migrare/istoric-declaratii`, `/migrare/mijloace-fixe`, `/migrare/parteneri`, `/migrare/plan-conturi`, `/migrare/salariati`, `/migrare/solduri`, `/migrare/status`, `/migrare/straturi`, `/tenants/{tenant_id}/parteneri`, `/tenants/{tenant_id}/solduri`*
 
 ### `POST /control-fiscal/{tenant_id}/audit-preluare`
 
@@ -1207,7 +1236,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Creează câte un tenant pentru fiecare firmă selectată — poate atinge, prin modul (PLAFON, nemasurat pe ruta): accounting_firms (UPDATE) · audit_log (INSERT) · firma_profil (INSERT/UPDATE) · migrare_status (INSERT) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `migrare_api`, `repo_tenants`, `tenant_provisioning`*
+*ce face: Creează câte un tenant pentru fiecare firmă selectată — poate atinge, prin modul (PLAFON, nemasurat pe ruta): accounting_firms (UPDATE) · audit_log (INSERT) · firma_profil (INSERT/UPDATE) · migrare_status (INSERT) · tenants (INSERT/UPDATE) · tva_incasare_perioade (INSERT) · user_tenants (INSERT) — prin `migrare_api`, `repo_tenants`, `tenant_provisioning`*
 
 - [x] fiecare firmă selectată primește **schemă proprie**, iar `tenants` are rândul ei — o firmă fără schemă e o afirmație falsă despre lume
 - `user_tenants` leagă firma de cabinetul care a importat-o
@@ -1265,7 +1294,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): asociati (DELETE/INSERT) · asociati_istoric (INSERT) — prin `asociati_import_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): asociati (DELETE/INSERT) · asociati_istoric (INSERT) · migrare_status (INSERT) — prin `asociati_import_api`, `migrare_api`*
 
 - [x] `DELETE/INSERT` — verifică ce se întâmplă cu asociații care nu mai sunt în fișier: se șterg, iar aia e o schimbare de structură a firmei, nu un import
 
@@ -1282,7 +1311,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): mijloace_fixe (DELETE/INSERT) — prin `mijloace_fixe_import_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · mijloace_fixe (DELETE/INSERT) — prin `migrare_api`, `mijloace_fixe_import_api`*
 
 - [x] ce s-a văzut la previzualizare e ce s-a importat
 - amortizarea cumulată la data preluării nu depășește valoarea de intrare
@@ -1302,7 +1331,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Salveaza soldurile partenerilor unei firme (inlocuieste ce era). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): solduri_parteneri (DELETE/INSERT) — prin `solduri_parteneri_api`*
+*ce face: Salveaza soldurile partenerilor unei firme (inlocuieste ce era). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · solduri_parteneri (DELETE/INSERT) — prin `migrare_api`, `solduri_parteneri_api`*
 
 - [x] ce s-a văzut la previzualizare e ce s-a salvat
 - divergența față de balanță, dacă a existat, rămâne vizibilă după salvare — nu se stinge prin acceptare
@@ -1365,7 +1394,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Importa salariatii cu CNP valid (upsert pe CNP) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): salariati (INSERT) — prin `salariati_import_api`*
+*ce face: Importa salariatii cu CNP valid (upsert pe CNP) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · salariati (INSERT) — prin `migrare_api`, `salariati_import_api`*
 
 - [x] upsert-ul nu suprascrie date existente fără să spună ce a schimbat
 - un salariat existent cu alt nume la același CNP e o divergență, nu o actualizare tăcută
@@ -1384,7 +1413,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Salvează soldurile inițiale ale unei firme (înlocuiește ce era). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `solduri_api`*
+*ce face: Salvează soldurile inițiale ale unei firme (înlocuiește ce era). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (UPDATE) · migrare_status (INSERT) · plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `metoda_stoc`, `migrare_api`, `solduri_api`*
 
 - [x] ce s-a văzut la previzualizare e ce s-a salvat
 - „înlocuiește ce era" — verifică ce se întâmplă cu soldurile anterioare: se șterg, sau se păstrează ca versiune?
@@ -1394,7 +1423,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Parsează o balanță și întoarce preview (nu salvează). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `migrare_api`, `solduri_api`*
+*ce face: Parsează o balanță și întoarce preview (nu salvează). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (UPDATE) · migrare_status (INSERT) · plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `metoda_stoc`, `migrare_api`, `solduri_api`*
 
 - [x] **previzualizarea nu salvează** — ruta spune că întoarce preview; verifică structural că nu scrie în `solduri_initiale`
 - dacă totuși scrie (numele tabelelor sugerează că da), atunci previzualizarea nu e previzualizare, iar aia e o constatare
@@ -1404,7 +1433,7 @@ faptica, pe baza listelor de inventariere.
 
 *clasa MANUAL · 20 rute · 14 schimba date · 8 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/contracte/marcaje`, `/cor`, `/tenants/{tenant_id}/contracte/sabloane`, `/tenants/{tenant_id}/salariati`, `/tenants/{tenant_id}/salariati/{salariat_id}`*
+*citiri (nu schimba nimic): `/contracte/marcaje`, `/cor`, `/tenants/{tenant_id}/contracte/sabloane`, `/tenants/{tenant_id}/salariati`, `/tenants/{tenant_id}/salariati/{salariat_id}`, `/tenants/{tenant_id}/salariati/{salariat_id}/elemente`*
 
 ### `POST /tenants/{tenant_id}/contracte/genereaza`
 
@@ -1599,9 +1628,9 @@ faptica, pe baza listelor de inventariere.
 
 ## T18 — Chitanța și încasarea
 
-*clasa MECANIC · 4 rute · 2 schimba date · 1 firme il pot exercita azi*
+*clasa MECANIC · 6 rute · 3 schimba date · 1 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/public/plata/{ref}`, `/tenants/{tenant_id}/chitante`, `/tenants/{tenant_id}/chitante/{chitanta_id}/pdf`*
+*citiri (nu schimba nimic): `/tenants/{tenant_id}/chitante`, `/tenants/{tenant_id}/chitante/{chitanta_id}/pdf`, `/tenants/{tenant_id}/compensari/propunere`*
 
 ### `POST /public/plata/{ref}/confirma`
 
@@ -1651,6 +1680,17 @@ faptica, pe baza listelor de inventariere.
 - [x] link-ul poartă suma exactă a facturii, nu una editabilă de plătitor
 - link-ul expiră; expirarea e o stare, nu o eroare
 - un al doilea link pe aceeași factură invalidează primul, sau se refuză — nu coexistă două
+
+### `POST /tenants/{tenant_id}/compensari`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: Ordinul de compensare: o notă ciornă pe pereche (401 = 4111 + TVA la încasare) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · compensari (INSERT) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `compensari_api`, `jurnal_api`*
+
+- [ ] câte o notă ciornă 401 = 4111 pe pereche, cu suma cel mult restul fiecăreia dintre cele două facturi, la data ordinului
+- [ ] numai facturi în lei, contabilizate, ale aceluiași partener — altfel refuz numit, fără nicio notă scrisă
+- [ ] pe o factură în sistemul TVA la încasare, partea compensată mută TVA-ul ca o încasare (4428 -> 4427) sau ca o plată
+- [ ] restul facturilor scade cu suma compensată (aceeași reconciliere ca banca și casa)
 
 ## T19 — Scadențarul și notificările de scadență
 
@@ -1964,7 +2004,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · audit_log (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_main`*
+*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · audit_log (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (INSERT) · firma_profil (UPDATE) · metrici_sanatate (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `jurnal_api`, `metoda_stoc`, `repo_contabilitate`, `repo_main`*
 
 - [x] **nu pot scrie verificarea fără să știu ce o deosebește de `import-amef`.** Ambele produc nota de raport Z; una are rol, cealaltă nu
 - dacă e introducere manuală a raportului Z, verifică: totalurile pe cote de TVA se adună la totalul general
@@ -2064,7 +2104,7 @@ faptica, pe baza listelor de inventariere.
 
 *clasa MECANIC · 12 rute · 6 schimba date · 2 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/public/verifica-cui/{cui}`, `/tenants/{tenant_id}/d390-clasificare`, `/tenants/{tenant_id}/registre-art321/{fel}`, `/tenants/{tenant_id}/intrastat-praguri`, `/tenants/{tenant_id}/verifica-cui/{cui}`, `/tenants/{tenant_id}/verifica-vies`*
+*citiri (nu schimba nimic): `/public/verifica-cui/{cui}`, `/tenants/{tenant_id}/d390-clasificare`, `/tenants/{tenant_id}/intrastat-praguri`, `/tenants/{tenant_id}/registre-art321/{fel}`, `/tenants/{tenant_id}/verifica-cui/{cui}`, `/tenants/{tenant_id}/verifica-vies`*
 
 ### `POST /tenants/{tenant_id}/achizitie-ic`
 
@@ -2185,7 +2225,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) — scrie facturi (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · documente_interne_contor (INSERT) · extras_linii (UPDATE) · factura_cota_jurnal (INSERT) · factura_linii (INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `documente_interne`, `facturi_api`, `jurnal_api`, `repo_contabilitate`, `repo_facturi`, `stocuri_cv_api`*
+*ce face: Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) — scrie facturi (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · documente_interne_contor (INSERT) · extras_linii (UPDATE) · factura_cota_jurnal (INSERT) · factura_linii (INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `documente_interne`, `facturi_api`, `jurnal_api`, `metoda_stoc`, `repo_contabilitate`, `repo_facturi`, `stocuri_cv_api`*
 
 - [x] operațiunea apare în D394 ca tip N, cu `tip_partener=2` — verificat pe declarația generată, nu pe intenția din cod
 - persoana fizică nu are cod fiscal, deci nu se cere; dar se cere o identificare, altfel operațiunea n-are partener
@@ -2273,9 +2313,9 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 ## T30 — Operațiunile în valută
 
-*clasa MECANIC · 2 rute · 2 schimba date · ? firme il pot exercita azi*
+*clasa MECANIC · 4 rute · 3 schimba date · ? firme il pot exercita azi*
 
-*clasa MECANIC · 2 rute · 2 schimba date · nu se poate sti din date*
+*citiri (nu schimba nimic): `/tenants/{tenant_id}/reevaluare-valuta`*
 
 ### `POST /tenants/{tenant_id}/decontare-valuta`
 
@@ -2293,12 +2333,22 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Reevaluare lunara solduri valuta (OMFP 1802 pct — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
+*ce face: Reevaluare lunara solduri valuta (OMFP 1802/2014 pct.325), curs BNR auto — formularul manual (cazurile speciale) — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) · reevaluari_valuta (INSERT) — prin `jurnal_api`, `reevaluare_valuta`, `repo_contabilitate`*
 
 - [x] reevaluarea se face la **finalul lunii**, pe soldurile în valută rămase — verifică dacă ruta o poate rula la orice dată
 - cursul e cel din ultima zi bancară a lunii
 - reevaluarea se aplică tuturor soldurilor în valută, nu doar celor selectate — o reevaluare parțială lasă bilanțul greșit
 - o a doua reevaluare pe aceeași lună nu produce a doua notă — sau, dacă o produce, prima se stornează
+
+### `POST /tenants/{tenant_id}/reevaluare-valuta/nota`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: Nota reevaluării lunii, din propunere (ciornă; a doua generare înlocuiește ciorna nevalidată a lunii) — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) · reevaluari_valuta (INSERT) — prin `jurnal_api`, `reevaluare_valuta`, `repo_contabilitate`*
+
+- [ ] nota e ciornă, la ultima zi a lunii, cu cursul BNR din ultima zi bancară; fără curs nu se scrie nimic
+- [ ] a doua generare înlocuiește ciorna nevalidată (sau respinsă) a lunii, niciodată nota validată
+- [ ] fiecare element reevaluat se consemnează în `reevaluari_valuta`; cursul nou devine cursul din evidență al lunii următoare
 
 ---
 
@@ -2306,7 +2356,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *clasa MECANIC · 11 rute · 7 schimba date · 3 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/tenants/{tenant_id}/d300-manual`, `/tenants/{tenant_id}/d301-operatiuni`*
+*citiri (nu schimba nimic): `/tenants/{tenant_id}/ajustari-fiscale`, `/tenants/{tenant_id}/d300-manual`, `/tenants/{tenant_id}/d301-operatiuni`, `/tenants/{tenant_id}/registru-evidenta-fiscala`*
 
 ### `POST /tenants/{tenant_id}/d300-manual`
 
@@ -2561,7 +2611,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *clasa MECANIC · 39 rute · 17 schimba date · 1 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/pachete/{tenant_id}/poveste`, `/pachete/{tenant_id}/preview`, `/pachete/{tenant_id}/rezumat`, `/portal/acasa`, `/portal/acces-cont`, `/portal/cashflow`, `/portal/declaratii`, `/portal/documente/balanta`, `/portal/documente/luni`, `/portal/facturi`, `/portal/firma`, `/portal/firme`, `/portal/kpi`, `/portal/povesti`, `/portal/recomanda/preview`, `/portal/solicitari`, `/portal/solicitari/contor`, `/tenants/{tenant_id}/client-acces`, `/tenants/{tenant_id}/clienti`, `/tenants/{tenant_id}/clienti/{client_id}`, `/tenants/{tenant_id}/solicitari`*
+*citiri (nu schimba nimic): `/pachete/{tenant_id}/poveste`, `/pachete/{tenant_id}/preview`, `/pachete/{tenant_id}/rezumat`, `/portal/acasa`, `/portal/acces-cont`, `/portal/cashflow`, `/portal/declaratii`, `/portal/documente/balanta`, `/portal/documente/luni`, `/portal/facturi`, `/portal/firma`, `/portal/firme`, `/portal/kpi`, `/portal/povesti`, `/portal/recomanda/preview`, `/portal/solicitari`, `/portal/solicitari/contor`, `/tenants/{tenant_id}/client-acces`, `/tenants/{tenant_id}/clienti`, `/tenants/{tenant_id}/clienti/{client_id}`, `/tenants/{tenant_id}/solicitari`, `/tenants/{tenant_id}/urme-portal`*
 
 ### `POST /pachete/{tenant_id}/genereaza`
 
@@ -2698,7 +2748,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma,verificat-în-corp · scrie in user_tenants, users*
 
-*ce face: scrie user_tenants (INSERT) · users (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · firma_profil (INSERT/UPDATE) · metrici_sanatate (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tenants (INSERT/UPDATE) · tokene_activare (DELETE/INSERT/UPDATE) · urme_portal (INSERT) — prin `repo_main`, `repo_utilizatori`, `tenant_provisioning`*
+*ce face: scrie user_tenants (INSERT) · users (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · firma_profil (INSERT/UPDATE) · metrici_sanatate (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tenants (INSERT/UPDATE) · tokene_activare (DELETE/INSERT/UPDATE) · tva_incasare_perioade (INSERT) · urme_portal (INSERT) — prin `repo_main`, `repo_utilizatori`, `tenant_provisioning`*
 
 - [x] **ruta creează un utilizator** — verifică ce drepturi primește: doar pe firma respectivă, doar citire, doar portalul
 - un utilizator existent legat de altă firmă nu primește acces la asta fără o operațiune explicită
@@ -2765,11 +2815,9 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 ## T36 — Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere
 
-*clasa MECANIC · 10 rute · 6 schimba date · ? firme il pot exercita azi*
+*clasa MECANIC · 13 rute · 8 schimba date · 4 firme il pot exercita azi*
 
-*clasa MECANIC · 8 rute · 4 schimba date · nu se poate sti din date*
-
-*citiri (nu schimba nimic): `/firme-scoase`, `/tenants`, `/tenants/{tenant_id}`, `/tenants/{tenant_id}/scoatere`*
+*citiri (nu schimba nimic): `/firme-scoase`, `/tenants`, `/tenants/{tenant_id}`, `/tenants/{tenant_id}/asociati`, `/tenants/{tenant_id}/scoatere`*
 
 **Ce e diferit la traseul ăsta.** Cele patru rute nu schimbă date **ale** unei firme — schimbă **existența** ei. Iar trei dintre ele sunt ireversibile în feluri diferite: crearea consumă un CUI, ștergerea distruge schema, iar schimbarea identității rescrie ce s-a declarat sub numele vechi. Verificările de mai jos pornesc de aici, nu de la tabelele atinse.
 
@@ -2815,7 +2863,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: [R77] Alegerea între denumirea din aplicație și cea de la ANAF — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `tenant_provisioning`*
+*ce face: [R77] Alegerea între denumirea din aplicație și cea de la ANAF — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · tva_incasare_perioade (INSERT) · user_tenants (INSERT) — prin `tenant_provisioning`*
 
 **Ce trebuie să fie adevărat după:**
 
@@ -2835,7 +2883,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · casa_operatiuni (DELETE/INSERT) · chitante (UPDATE) · facturi (UPDATE) · firma_profil (INSERT/UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tenants (INSERT/UPDATE) · tokene_activare (UPDATE) · user_tenants (DELETE/INSERT) · users (INSERT/UPDATE) — prin `casa_api`, `repo_utilizatori`, `tenant_provisioning`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): acord_termeni (INSERT) · audit_log (INSERT) · casa_operatiuni (DELETE/INSERT) · chitante (UPDATE) · facturi (UPDATE) · firma_profil (INSERT/UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (INSERT) · schimbari_email (DELETE/INSERT/UPDATE) · tenants (INSERT/UPDATE) · tokene_activare (UPDATE) · tva_incasare_perioade (INSERT) · user_tenants (DELETE/INSERT) · users (INSERT/UPDATE) — prin `casa_api`, `repo_utilizatori`, `tenant_provisioning`*
 
 **Ce trebuie să fie adevărat după:**
 
@@ -2855,7 +2903,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `tenant_provisioning`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · tva_incasare_perioade (INSERT) · user_tenants (INSERT) — prin `tenant_provisioning`*
 
 **Ce trebuie să fie adevărat după:**
 
@@ -2880,3 +2928,21 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 - [x] **CUI-ul nu se schimbă din Date firmă**; corectura e a administratorului cabinetului, cu avertismentul confirmat (272)
 - [x] **CUI-ul nou are cifra de control validă, nu e al altei firme din cabinet, și se scrie în ambele locuri** (`firma_profil`, `public.tenants`), cu urma în jurnalul firmei
 - [x] **peste o perioadă închisă nu se corectează** (CUI-ul decide declarațiile depuse)
+
+### `POST /tenants/{tenant_id}/asociati`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: Corectura structurii curente a asociaților (scrisă greșit), fără istoric*
+
+- [ ] cotele însumează 100%, iar CNP-ul / CUI-ul fiecărui asociat e valid — altfel refuz lângă rând
+- [ ] corectura înlocuiește structura curentă fără istoric și intră în jurnalul datelor firmei
+
+### `POST /tenants/{tenant_id}/asociati/cesiune`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: Cesiunea părților sociale de la o dată: structura de până atunci intră în istoric (Legea 31/1990 art.202 alin.(1))*
+
+- [ ] structura de până la data cesiunii intră în `asociati_istoric`, valabilă până în ziua dinainte
+- [ ] dividendele hotărâte înainte de cesiune se împart după structura veche, cele de după, după cea nouă

@@ -19,8 +19,8 @@ PROFIL = ("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,cod_postal,ca
           "VALUES (1,'ZTEST D406 SRL','14399840','Str 1','Buc','B','010101','6202','BT',"
           "'RO49AAAA1B31007593840000','0712','z@z.ro','A','A','ADMIN','micro',true,'lunar',true)")
 # Factura PRIMITA de la o persoana fizica FARA cod fiscal (tert_cui gol) - cazul defect.
-FACT_PF = ("INSERT INTO facturi (numar,data_emitere,directie,total,tva,tert_cui,tert_nume,status) "
-           "VALUES ('PF-T','2026-08-10','primita',119,19,'','IONESCU MARIA PFA','primita')")
+FACT_PF = ("INSERT INTO facturi (numar,data_emitere,directie,total,tva,tert_cui,tert_nume,status,tert_oras) "  # [lotul 10, C69] localitatea partenerului: D406 o cere (S.AD.5 City „Mandatory”), nu mai scrie „-”
+           "VALUES ('PF-T','2026-08-10','primita',119,19,'','IONESCU MARIA PFA','primita','Brasov')")
 
 
 def _db_ok():

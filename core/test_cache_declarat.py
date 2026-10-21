@@ -39,6 +39,8 @@ import p6_clasificare as CL  # noqa: E402
 from core.cache_declarat import Declaratie, numele_declaratiei  # noqa: E402
 
 ACEST_FISIER = os.path.abspath(__file__)
+#: `core/conftest.py` lasă `anaf_api.aduce_localitati` real aici: proba localităților simulează ANAF prin `interogare=`, fără rețea.
+LOCALITATI_ANAF_REAL = True
 
 
 def _cache_declarate():
@@ -220,6 +222,36 @@ def test_predarea_bnr_se_reconstruieste_identic():
         assert "_PREDARE" not in nume and "_preluare" not in nume, (
             "o cale de SUCCES a lui `curs_pentru` foloseste predarea (linia %d) — atunci golirea "
             "ei ar putea schimba cursul, nu doar diagnosticul" % r.lineno)
+
+
+def test_localitatile_anaf_se_reconstruiesc_identic():
+    """[lotul 10, C69] Golit, cache-ul se reface din ANAF la fel: aceeasi interogare (simulata, fara retea) da acelasi raspuns.
+    Anti-vacuum: raspunsul are localitatea. Plus invalidarea: o intrare peste termen nu mai e intoarsa, iar plafonul tine."""
+    from core import anaf_api as A
+
+    def anaf(lista):
+        return [{"cui": c, "gasit": True, "localitate": "Loc" + c, "judet": "Jud" + c} for c in lista]
+
+    vechi = dict(A._CACHE_LOCALITATI)
+    try:
+        A._CACHE_LOCALITATI.clear()
+        assert A.aduce_localitati(["2864518"], interogare=anaf) == 1
+        intai = A.localitate_din_cache("2864518")
+        A._CACHE_LOCALITATI.clear()
+        assert A.localitate_din_cache("2864518") is None
+        A.aduce_localitati(["2864518"], interogare=anaf)
+        assert A.localitate_din_cache("2864518") == intai == {"localitate": "Loc2864518", "judet": "Jud2864518"}
+
+        A._CACHE_LOCALITATI["2864518"] = (-10 ** 9, intai)
+        assert A.localitate_din_cache("2864518") is None, "o intrare peste termen e inca intoarsa"
+
+        A._CACHE_LOCALITATI.clear()
+        for i in range(A._LOCALITATI_MAX + 10):
+            A._pune_localitate(str(i), {"localitate": "x", "judet": "y"})
+        assert len(A._CACHE_LOCALITATI) == A._LOCALITATI_MAX, "plafonul nu tine: %d chei" % len(A._CACHE_LOCALITATI)
+    finally:
+        A._CACHE_LOCALITATI.clear()
+        A._CACHE_LOCALITATI.update(vechi)
 
 
 def test_static_dir_e_pus_de_stratul_HTTP():

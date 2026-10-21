@@ -136,8 +136,12 @@ def test_d4_importul_refuza_randul_fara_cele_trei_cu_coloana_numita():
     reguli = {e.get("regula") for e in si.verifica_randuri([rand])}
     assert {"functie_baza_lipsa", "ore_lipsa"} <= reguli and "scutire_minim_lipsa" not in reguli, reguli
     r = si.extrage(b"nume,prenume,cnp,data angajare,norma,brut\nPOP,I,1900101410011,2099-01-01,partiala,5000\n", "x.csv")[0]
-    assert (r["functie_baza"], r["ore_zi"] or None) == (None, None)   # nimic presupus
-    assert r["scutit_contrib_minim"] is False and r["de_verificat"] == ["persoane_intretinere", "scutit_contrib_minim"]
+    # [PIVOT, lotul 10, deficiența 420, comanda Costin 10.1] funcția de bază lipsă din fișier nu mai refuză rândul la previzualizare:
+    # „Câmpurile lipsă se completează pe ecran, înainte de import, cu propunere editabilă (normă întreagă, funcție de bază Da) […] (intră
+    # marcate «de verificat»)”. Orele normei parțiale lipsă rămân nepresupuse (refuz `ore_lipsa`); calea API fără propunere rămâne refuzată.
+    assert (r["functie_baza"], r["ore_zi"] or None) == (True, None)
+    assert r["scutit_contrib_minim"] is False
+    assert r["de_verificat"] == ["functie_baza", "persoane_intretinere", "scutit_contrib_minim"]
 
 
 # ── D5 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

@@ -67,7 +67,9 @@ def surse_scrise(fisiere=None):
 def test_scrierile_gasite():
     """Calibrare: scanarea găsește scrierile cunoscute (facturi, închiderea anului, salariile prin parametru)."""
     s = surse_scrise()
-    assert {"facturi", "inchidere_an", "salarii", "manual", "horeca_z"} <= set(s) and sum(len(v) for v in s.values()) >= 25, s
+    # [lotul 10, 430d] 25 -> 23: cele cinci ciorne de operațiuni speciale duplicate din repo_contabilitate (`nota_facturi_ciorna`,
+    # `_2`, `nota_banca_ciorna`, `nota_casa_ciorna`, `nota_salarii_ciorna`) s-au contopit în `nota_operatiune_ciorna` (sursa `operatiuni`)
+    assert {"facturi", "inchidere_an", "salarii", "manual", "horeca_z", "operatiuni"} <= set(s) and sum(len(v) for v in s.values()) >= 23, s
 
 
 def test_fiecare_sursa_scrisa_are_eticheta():

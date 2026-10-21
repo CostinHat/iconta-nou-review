@@ -5,8 +5,9 @@ EXPLICIT (ca regim_fiscal), nu se fabrica tacit "ADMINISTRATOR".
 DEFECT (audit tenant_001, 17.08.2026): declarant_nume/prenume/functie erau CAMPURI_FISCALE dar NU in
 firma_profil_api.OBLIGATORII -> ecranul Date firma nu le cerea, iar generatoarele (d100/d101/d205/d112/d300/
 bilant) emiteau "ADMINISTRATOR" fabricat cand lipseau (Regula 4). FIX: declarant_nume + declarant_functie in
-OBLIGATORII (Date firma le cere in panoul "Profil incomplet" + salveaza_date valideaza) + ob:true in
-date_firma.js (g9 pastreaza corespondenta).
+OBLIGATORII (Date firma le cere in panoul "Profil incomplet"; generatoarele opresc declaratiile care le cer) + ob:true in
+date_firma.js (g9 pastreaza corespondenta). [lotul 10, deficienta 427] salveaza_date NU mai refuza salvarea cand lipsesc:
+„Ce s-a completat se salvează; lipsurile rămân în «Profil incomplet» și blochează doar declarațiile afectate”.
 
 TEMEI: Regula 4 (fara valori fabricate) + DS cap.6 (validari preventive). DUK respinge campul declarant gol,
 deci se cere EXPLICIT la sursa (profilul firmei), ca regim_fiscal.

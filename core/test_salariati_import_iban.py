@@ -48,12 +48,18 @@ def test_importa_scrie_iban():
             return False
 
         def execute(self, sql, params=None):
+            self.ultim = sql
             if "INSERT INTO salariati" in sql:
                 captured["sql"] = sql
                 captured["params"] = params
 
         def fetchone(self):
-            return (1,)
+            # [lotul 10, 426 — clasa] statele de plată ale salariaților existenți (`existent`): niciunul, firma n-are salariați
+            # tabela citită (după FROM), nu un sub-șir al instrucțiunii
+            return (0, None) if self.ultim.upper().partition(" FROM ")[2].split()[:1] == ["STATE_PLATA"] else (1,)
+
+        def fetchall(self):
+            return []                                 # [426] niciun salariat cu același CNP: importul nu actualizează nicio fișă
 
     class _Conn:
         def cursor(self):

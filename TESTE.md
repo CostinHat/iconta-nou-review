@@ -46,6 +46,69 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 10, comanda 10.1 (Costin 20.10.2026, verbatim în DECIZII „Comanda 10.1”)** — deficiențele 420–432, punctul 9 (operațiunile
+  speciale lunare / rare), observațiile din lotul 9 (500 `/eu/ciorne`, 409x, localitatea parțială, SalariatEdit, răspunsul API
+  `note_interne`), testele 409 / C66 / C67 de pe `lucru/dupa-lot9-2026-10-20`; ramura `lucru/lot10-2026-10-20` (din `d4ebae38`), în
+  `/home/costin/iconta_lot9`. Poarta lotului 10 o singură dată, la final; fără publicare și fără repornire (comanda pct.6).
+  - ultim: 10.1 și 10.2 lucrate și integrate (subagenții M, R, W, F, T, V, D, M2, K, D2, N, N2, G, P; A–E; Q, Z, U, U2, U3); e2e-urile
+    lotului verzi la control cu fiecare mutație ROȘIE; plasa întreagă rulată (546 / 553, cele 7 căderi reparate și reluate); uneltele
+    vizuale pe codul final (axe 0, fără derulare laterală, text 170 / 0 defecte, firul stabil); verificator TOTAL 0; clasele găsite la
+    integrare: C71, C72, C73 (schema firmei + `public`), C74; reparația pe datele F1 pregătită și probată (L10-15) — commitul lotului.
+  - urmator: (L10-17 făcut: picăturile suitei reparate, rerularea țintită 1101 / 1101) -> commitul lotului (pe ramură) -> reconfirmarea lui Costin că nu lucrează cabinetul -> poarta lotului 10 (o dată) -> ZIP -> raport; fără publicare. IN LUCRU
+  - pasi:
+    L10-1. Sesiunea principală: 500 `/eu/ciorne` (`core/db.py`, `uc_eu`, `uc_migrare`, `uc_coada`); C61 (`factura_pdf.adresa_tert`); API
+           `note_interne` (`uc_api`); schema comună (trei migrări + `tenant_template.sql`); 432 (`firma_rezumat._termene_una_firma`,
+           `uc_declaratii`, `declaratii.js`); legarea ecranelor noi în `firme.js` după ce termină M.
+    L10-2. M — importurile de migrare: 425 (`solduri_api`, `import_tabel`, ecranul balanței, metoda de stoc la 371), 426 (al doilea import),
+           420 (norma / funcția de bază propuse, „de verificat”), 423 a–c (confirmarea, „gata” cu „de verificat”, textul Salariați),
+           SalariatEdit (data nașterii, copiii, declarația, funcția de bază în „Corectează datele”). Fișiere: `migrare.js`, `firme.js`
+           (Stat de plată), `salariati_import_api`, `salariati_api`, `migrare_api`, `aplicatii_migrare`, modelele din `main.py`.
+    L10-3. R — cititorii rulajelor preluate (425): balanța (sold inițial an + sume precedente), D101, F20, rulajele cumulate, avertismentul
+           când lipsesc rulajele anului. Fișiere: `documente_api`, `repo_d101` / `d101`, `bilant_api`, `categorie_marime`, `core/rulaje_preluate.py`.
+    L10-4. W — 421 / 424, clasa ferestrelor cu tabele (aproape tot ecranul, rezumat sus, acțiunea jos, numai tabelul derulează, niciodată
+           lateral): `navigator.js`, `stil.css`, DS + verificator, ecranele cu tabele în afara `firme.js` / `migrare.js` / `operatiuni_ecran.js`.
+    L10-5. F — 427 (salvarea parțială a Datelor firmei), regimul TVA la încasare pe firmă (perioade, verificarea RTVAI), asociații și cotele cu
+           cesiunile în Date firmă (431). Fișiere: `date_firma.js`, `firma_profil_api`, `vector_fiscal_api`, `anaf_api`, `repo_firma_profil`,
+           `core/asociati_api.py`.
+    L10-6. T — 428, motorul TVA la încasare (mențiunea pe factură, 4428 la emitere pe perioada sistemului, încasarea din bancă / casă /
+           compensare, D300 / D394, ieșirea după CF art.282 alin.(7), cumpărarea de la furnizor în sistem). Fișiere: `tva_incasare`,
+           `factura_pdf`, `efactura_send`, `contare_facturi`, `reconciliere_api`, `casa_api`, `d300` / `d394` și repo-urile lor.
+    L10-7. V — 429, reevaluarea valutei propusă la închiderea lunii + „Ce oprește închiderea”. Fișiere: `core/reevaluare_valuta.py`,
+           `uc_comun.controale_inchidere`, `static/js/ecrane/reevaluare_ecran.js`.
+    L10-8. D — 430 a–f (dividende), 431 (D205: asociații, nota împărțită, refuzul care trimite la ce lipsește), pct.9 (operațiunile speciale
+           lunare / rare). Fișiere: `operatiuni_ecran.js`, `decontari_asociati`, `d205` / `repo_d205`, `repo_contabilitate` (sursa notei),
+           `jurnal_api.ETICHETE_SURSA`.
+    L10-9. Sesiunea principală: e2e-urile lotului (`frontend_test/e2e/e2e_lot10_*.py`) și mutațiile lor, rularea țintită, uneltele vizuale,
+           verificatorul, registrele, commitul, poarta lotului 10 (o dată), ZIP-ul, raportul.
+    L10-10. Comanda 10.2 (Costin 20.10.2026, verbatim în DECIZII „Comanda 10.2”), A — declarațiile: 383 (perioada neîncheiată se refuză la
+           generare, la toate declarațiile, cu motivul), 436 (cifra știută greșită din note nevalidate blochează depunerea, motivul lângă
+           buton, la toate declarațiile; D100 T3 semnalează lunile încheiate fără amortizare). Fișiere: `declaratii_api`, `uc_declaratii`,
+           `coada_api` / `uc_coada` (De depus), `declaratii.js`, generatoarele numai unde e nevoie.
+    L10-11. B — salarii și Registru jurnal: 433 (formularul COR nu se deschide singur după „Contabilizează statul”), 7h (Suma din „Notă nouă”
+           goală, nu „0,00”), 7i (394: „Notă nouă” fără derulare verticală), 7k (386: mesajul notei fără document o singură dată).
+           Fișiere: `firme.js` (Stat de plată, Registru jurnal), `jurnal_api` dacă e nevoie.
+    L10-12. C — stoc și achiziții: 434 (numerotarea borderourilor BA unică și continuă), 435 (orice articol din stoc în nomenclatorul Produse;
+           cota completabilă), 7a (401: textul de sub nota borderoului și trimiterea), 7b (402: refuzurile numesc articolul / cantitatea
+           pe ce lipsește), 7c (404: rândul inventarului cu lipsă), 7f (419: fișa de magazie — rândul de retur). Fișiere: `documente_interne`,
+           `uc_tenants` (borderoul), `stocuri*`, `produse_ecran.js`, ecranele stocului.
+    L10-13. D — facturi: 7d (415: mesajul „n-are cota” dispare după alegerea cotei), 7e (417: trimiterea la factura inițială pe detaliul
+           stornării), 7f (419: butonul „Se stornează…” și starea „stornată” fără reîmprospătare), 7g (factura în valută: cursul BNR și
+           TVA-ul în lei înainte de emitere). Fișiere: `emitere_ecran.js`, `facturi_ecran.js`, `facturi_api` dacă e nevoie.
+    L10-14. E — Raport Z: 8a (438: documentul descărcării = raportul Z, nu „Bon de consum”), 8b (refuzul numerar + card ≠ total cu cifrele),
+           8c (după generare: titlul, conturile notei, butonul inactiv), 8d (ieșirea peste stoc: diacritice, unitatea, cantitatea fără
+           „139.000”), 8e (valoarea descărcată și validarea Z-ului după descărcare). Fișiere: `raport_z`, `stocuri_cv` (mesajul), ecranul Z.
+    L10-15. Sesiunea principală — datele: pct.2 (409 pe F1: stornare + notă nouă legată de factura 2) și 7j (F1: stornarea F1A9 fără retur,
+           inventarul fără TVA-ul lipsei, Marfa B fără cotă) — script de reparație pregătit și probat pe copie; rulat pe producție numai la
+           publicare, cu acordul lui Costin și backup.
+    L10-16. Z — clasa 421 (rezumatul lipit sus pe toate ferestrele cu tabel, DS cap.9 pct.5): găsită la e2e (Registrul-inventar fără
+           `.rezumat-fix`); generalizare pe toate ecranele cu tabel + gard.
+    L10-17. Suita întreagă (21.10.2026: 46 picate / 9515 trecute) — S1 (declarațiile după C69/C71 + clichetul pe text, 13 fișiere), S2
+           (quantize cu mod la compensări / asociați, C73, D205, dividende), S3 (upsert-urile din import, `test_q16_cor`, 17 fișiere), S4
+           (`test_lot10b_*`: SET LOCAL search_path, clichetul, mesajele afișabile); sesiunea principală: cache-ul de localități ANAF declarat
+           (P6), scrierea mută din previzualizarea cursului (7g), mesajul reevaluării pe `stareNota` / `pasNota` (clasa 279), defectul 428 din
+           `tva_incasare.firma_in_sistem_in` (fără tranziție), `core/arbore_js.py` (uneltele acorn, din fișierul de test în modul comun);
+           rerulare țintită 1101 / 1101.
+
 - fir: **Lotul 9, comenzile 9.2 și 9.3 (Costin 19.10.2026, verbatim în DECIZII „Comanda 9.2”, „Comanda 9.3”)** — deficiențele 398–417
   (prioritare 406, 410, 411, 417) și 418–419; aceeași ramură `lucru/lot9-2026-10-19`, în `/home/costin/iconta_lot9`.
   - ultim: L92-1..L92-9 implementate pe ramură; `e2e_lot92.py` 26 / 26 verzi (+ C57 în `e2e_lot91.py`), fiecare test verde și rulat

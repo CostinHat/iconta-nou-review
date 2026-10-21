@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate } from "../api.js?v=158edee964";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani } from "../api.js?v=ff30ebaf3f";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -29,11 +29,15 @@ const CAMPURI = [
   { k: "caen", e: "Cod CAEN", ob: true,
     aj: "4 cifre, din certificatul constatator. ANAF nu \u00eel d\u0103 pentru toate firmele \u2014 completeaz\u0103-l manual." },
   { k: "adresa", e: "Adresa", ob: true },
-  { k: "oras", e: "Localitatea" },
-  { k: "judet", e: "Jude\u021bul" },
+  { k: "oras", e: "Localitatea", ob: true },   // [C69] D406 o cere în antet (S.AD.5 City „Mandatory”)
+  { k: "judet", e: "Jude\u021bul", ob: true },   // [C69] bilanțul o cere (codTT „Cod judet sediu … DA”)
   { k: "cod_postal", e: "Cod po\u0219tal" },
   { k: "banca", e: "Banca", ob: true, aj: "Banca prin care se fac decont\u0103rile." },
   { k: "iban", e: "IBAN", ob: true },
+  // [lotul 10, C69, decizia Costin „Varianta 1”] lângă IBAN: firma fără cont bancar scrie în D406 „Fara cont bancar” (schema ANAF S.BA.2);
+  // rulajul / soldul pe 512 în perioadă o contrazice și oprește D406. Coloana are valoare mereu (Nu), deci se arată cea salvată.
+  { k: "fara_cont_bancar", e: "Nu are cont bancar", tip: "danu",
+    aj: "Da numai dacă firma nu are niciun cont la bancă: D406 declară atunci că firma nu are cont bancar, în locul IBAN-ului." },
   { k: "telefon", e: "Telefon", ob: true },
   // [R63] Nu „E-mail": la adresa asta pleaca pachetul lunar (`pachete_api`), iar ea NU e adresa
   // cu care clientul intra in portal. Doua campuri, doua nume.
@@ -48,6 +52,12 @@ const CAMPURI = [
   // fabrica drept "-" — o valoare inventata pe un document care pleaca la ANAF.
   { k: "declarant_prenume", e: "Prenume declarant", ob: true },
   { k: "declarant_functie", e: "Func\u021bia declarantului", ob: true },
+  // [lotul 10, C69, decizia Costin „Câmpuri noi + blocaj”] cerute de bilanț (bifa marilor contribuabili / codul județului și forma de
+  // proprietate, din nomenclatorul ANAF); neales = „— alege —”, salvarea îl lasă necompletat, bilanțul îl cere (DS cap.17, pct.5)
+  { k: "mare_contribuabil", e: "Mare contribuabil", ob: true, tip: "danu",
+    aj: "Da dacă firma e administrată de Direcția Generală de Administrare a Marilor Contribuabili. Cerut la bilanț." },
+  { k: "forma_proprietate", e: "Forma de proprietate", ob: true, tip: "lista", lista: "forme_proprietate",
+    aj: "Din nomenclatorul ANAF al bilanțului (ex. societăți cu răspundere limitată). Cerut la bilanț." },
 ];
 
 // [D394 Î2] Activitatea exceptată de la casa de marcat — OUG 28/1999 art. 2. Cu ea, chitanțele fără factură (cu cota
@@ -167,13 +177,16 @@ function _blocPreluare(d) {
 const ETICHETE_JURNAL = { forma_juridica: "Forma juridică", capital_subscris: "Capital subscris", capital_varsat: "Capital vărsat",
   metoda_stoc: "Metoda de stoc", serie_chitanta: "Seria chitanțelor", platitor_tva: "Plătitor de TVA", tip_decont: "Periodicitatea decontului",
   inreg_art317: "Înregistrat cf. art.317", activitate_exceptata_amef: "Exceptată de la AMEF", activitate_amef: "Activitatea exceptată",
-  cont_venit_implicit: "Cont venit implicit", luna_preluare: "Luna preluării", data_infiintare: "Data înființării" };
+  cont_venit_implicit: "Cont venit implicit", luna_preluare: "Luna preluării", data_infiintare: "Data înființării",
+  // [lotul 10, 428 / 431] regimul TVA la încasare (perioadele și „se aplică azi”), asociații și cotele
+  tva_incasare_perioade: "TVA la încasare (perioadele)", tva_la_incasare: "Aplică TVA la încasare azi", asociati: "Asociații și cotele" };
 // [lotul 07.10 pct.19] valorile se arată cu eticheta pe care omul a ales-o pe ecran, nu cu cheia tehnică („cantitativ_valoric”):
 // aceleași liste pe care le randează formularul (`metode_stoc`, `forme_juridice`, `activitati_amef`, opțiunile periodicității),
 // iar „true” / „false” devin „da” / „nu”. O valoare fără etichetă cunoscută se arată așa cum e — nu se ghicește.
 function _valoareJurnal(d, camp, x) {
   if (x == null || x === "") return "\u2014";
   const liste = { metoda_stoc: d.metode_stoc, forma_juridica: d.forme_juridice, activitate_amef: d.activitati_amef,
+    forma_proprietate: d.forme_proprietate,   // [lotul 10, C69]
     tip_decont: [["lunar", "Lunar"], ["trimestrial", "Trimestrial"], ["L", "Lunar"], ["T", "Trimestrial"]] };
   const gasit = (liste[camp] || []).find(([k]) => String(k) === String(x));
   if (gasit) return esc(gasit[1]);
@@ -192,10 +205,109 @@ function _blocJurnal(d) {
         <td>${_valoareJurnal(d, r.camp, r.vechi)}</td><td>${_valoareJurnal(d, r.camp, r.nou)}</td></tr>`).join("")}</tbody></table></div>`}`;
 }
 
-function camp(c, val) {
+// [lotul 10, deficiența 428, comanda Costin 10.1] „Firma nu poate fi declarată ca aplicând sistemul [TVA la încasare]: vectorul fiscal are doar
+// «Înregistrată în scopuri de TVA: Da/Nu» […]. Construiește regimul pe firmă, cu data de la care se aplică și verificarea în registrul ANAF.”
+// Sub „Înregistrată în scopuri de TVA” (vizibil numai la „Da”): Nu / Da, de la …, până la … (ieșirea), verificarea ANAF (citire: propune
+// datele, nu scrie), perioadele înregistrate. Regulile și temeiul (CF art.282 alin.(3^1), (5)) sunt pe server: core/regim_tva_incasare.py.
+function _blocTvaIncasare(v) {
+  const t = (v && v.tva_incasare) || {};
+  const c = t.curenta || null;
+  const da = !!c || !!t.fara_data;
+  const per = t.perioade || [];
+  const azi = t.aplica_azi ? "Azi firma aplică sistemul TVA la încasare." : (c ? "Azi firma nu aplică sistemul TVA la încasare." : "");
+  const faraData = t.fara_data ? " Firma e marcată ca aplicând sistemul (din ANAF, la adăugare), dar fără dată: scrie data de la care se aplică." : "";
+  const sursa = (p) => (p.sursa === "anaf" ? "ANAF" : "manual");
+  return `
+    <div class="camp" id="vf-camp-tva_incasare">
+      <label class="camp-eticheta" for="vf-tva_incasare">Aplică sistemul TVA la încasare (Cod fiscal art. 282)</label>
+      <span class="camp-ajutor">TVA-ul facturilor emise devine exigibil la încasare, nu la facturare (art. 282 alin. (3)). Numai la firmele înregistrate în scopuri de TVA.</span>
+      <select class="camp-input" id="vf-tva_incasare"><option value="nu"${da ? "" : " selected"}>Nu</option><option value="da"${da ? " selected" : ""}>Da</option></select>
+      ${azi || faraData ? `<span class="camp-ajutor" id="vf-tva_incasare-azi">${esc(azi + faraData)}</span>` : ""}
+      <button type="button" class="buton-secundar" id="vf-tva-incasare-anaf" data-actiune="GET /tenants/{tenant_id}/tva-incasare/verifica-anaf">Verifică în registrul ANAF</button>
+      <div id="vf-tva-incasare-anaf-rez"></div>
+      ${per.length ? `<table class="fd-tabel" id="vf-tva-incasare-perioade">
+        <thead><tr><th>De la</th><th>Până la</th><th>Sursa</th><th>Verificat la ANAF</th><th>Acțiune</th></tr></thead>
+        <tbody>${per.map((p) => `<tr><td>${dataRo(p.de_la)}</td><td>${p.pana_la ? dataRo(p.pana_la) : "în continuare"}</td><td>${sursa(p)}</td>
+          <td>${p.verificat_anaf_la ? dataRo(p.verificat_anaf_la) : "\u2014"}</td>
+          <td>${p.pana_la ? `<button type="button" class="buton-secundar" data-iesire="${esc(p.pana_la)}" data-actiune="GET /tenants/{tenant_id}/tva-incasare/neexigibile">Facturile rămase în sistem</button> ` : ""}<button type="button" class="buton-sters" data-perioada="${esc(p.id)}" data-actiune="DELETE /tenants/{tenant_id}/tva-incasare/{perioada_id}" aria-label="Șterge perioada de la ${esc(dataRo(p.de_la))}">Șterge</button></td></tr>`).join("")}</tbody></table>` : ""}
+      ${(t.avertismente || []).map((a) => `<span class="camp-ajutor">${esc(a)}</span>`).join("")}
+      <div id="vf-tva-incasare-iesire"></div>
+    </div>
+    <label class="camp" id="vf-camp-tva_incasare_de_la">
+      <span class="camp-eticheta">Aplică de la<span class="oblig">*</span></span>
+      <span class="camp-ajutor">Prima zi a perioadei fiscale de după opțiune, sau data înregistrării în scopuri de TVA (art. 282 alin. (3^1)).</span>
+      <input type="date" class="camp-input" id="vf-tva_incasare_de_la" value="${esc((c && c.de_la) || "")}">
+    </label>
+    <label class="camp" id="vf-camp-tva_incasare_pana_la">
+      <span class="camp-eticheta">Aplică până la (ieșirea din sistem)</span>
+      <span class="camp-ajutor">Ultima zi în care s-a aplicat — sfârșitul unei perioade fiscale (art. 282 alin. (5)). Gol = se aplică în continuare.</span>
+      <input type="date" class="camp-input" id="vf-tva_incasare_pana_la" value="${esc((c && c.pana_la) || "")}">
+    </label>`;
+}
+
+// [lotul 10, deficiența 431, comanda Costin 10.1] „Fluxul e unul singur: asociații și cotele (cu istoricul cesiunilor) în datele firmei;
+// nota de dividende împarte automat pe asociați; D205 preia din notele validate”. Până azi asociații intrau numai din importul CSV. Tabelul
+// e un formular cu rânduri (DS cap.24: re-randare din model, id-ul `as-<rând>-<câmp>`, rândul adăugabil e și ștergibil); verificarea e pe
+// server (aceeași cu importul: CNP / CUI cu cifra de control, cota, dubluri, suma 100%). Se salvează cu „Salvează” de jos, ca restul.
+function _randuriAsociati(model) {
+  return model.map((r, i) => `<tr>
+      <td><input type="text" class="camp-input" id="as-${i + 1}-nume" value="${esc(r.nume || "")}" aria-label="Numele asociatului, rândul ${i + 1}"></td>
+      <td><input type="text" class="camp-input" id="as-${i + 1}-cnp" value="${esc(r.cnp || "")}" inputmode="numeric" aria-label="CNP sau CUI, rândul ${i + 1}"></td>
+      <td><input type="text" class="camp-input" id="as-${i + 1}-cota" value="${esc(r.cota || "")}" inputmode="decimal" aria-label="Cota în procente, rândul ${i + 1}"></td>
+      <td><button type="button" class="buton-sters" data-as-sterge="${i}" data-fara-actiune="rând în formular; „Salvează” poartă acțiunea" aria-label="Scoate rândul ${i + 1}">Scoate</button></td>
+    </tr>`).join("");
+}
+function _procent(x) { return String(x == null ? "" : x).replace(".", ",") + "%"; }
+function _blocAsociati(a) {
+  if (!a) return `
+    <h2 class="pf-titlu" style="margin-top:26px">Asociați</h2>
+    <div id="as-msg"></div>`;
+  const ist = a.istoric || [];
+  const perioada = (s) => (s.de_la ? `${dataRo(s.de_la)} – ${dataRo(s.pana_la)}` : `până la ${dataRo(s.pana_la)}`);
+  return `
+    <h2 class="pf-titlu" style="margin-top:26px">Asociați</h2>
+    <p class="pf-intro">Cine deține părțile sociale și în ce cotă (Legea 31/1990 art. 7 lit. d)). Dividendele se împart după cote (art. 67 alin. (2)), după structura de la data distribuirii.${a.valabila_de_la ? ` Structura de acum e valabilă de la ${dataRo(a.valabila_de_la)}.` : ""}</p>
+    <table class="fd-tabel" id="as-tabel">
+      <thead><tr><th>Nume</th><th>CNP / CUI</th><th>Cota (%)</th><th>Acțiune</th></tr></thead>
+      <tbody id="as-randuri"></tbody>
+    </table>
+    <p><button type="button" class="buton-secundar" id="as-adauga" data-fara-actiune="rând în formular; „Salvează” poartă acțiunea">+ Asociat</button>
+      <span class="camp-ajutor" id="as-total" role="status" aria-label="Totalul cotelor"></span></p>
+    <div class="grila-doc">
+      <label class="camp">
+        <span class="camp-eticheta">Data cesiunii (numai la o cesiune de părți sociale)</span>
+        <span class="camp-ajutor">Gol = corectezi structura de acum, scrisă greșit. Cu o dată = de la ea e valabilă structura de mai sus (Legea 31/1990 art. 202), iar cea de până atunci rămâne în istoric: dividendele de dinainte se cuvin vechilor asociați (art. 67 alin. (6)).</span>
+        <input type="date" class="camp-input" id="as-data-cesiune" value="">
+      </label>
+    </div>
+    <h3 class="pf-titlu">Istoricul cesiunilor</h3>
+    ${ist.length ? `<table class="fd-tabel" id="as-istoric">
+      <thead><tr><th>Perioada</th><th>Asociații și cotele</th></tr></thead>
+      <tbody>${ist.map((s) => `<tr><td>${perioada(s)}</td><td>${s.asociati.map((x) => `${esc(x.nume)} — ${esc(_procent(x.cota))}`).join("; ")}</td></tr>`).join("")}</tbody></table>`
+      : `<div class="stare-goala stare-goala--inline" id="as-istoric-gol">Nicio cesiune înregistrată: structura de mai sus e cea de la început. O cesiune se înregistrează cu data ei, mai sus.</div>`}`;
+}
+
+function camp(c, val, d) {
   const ob = c.ob ? '<span class="oblig">*</span>' : "";
   const aj = c.aj ? `<span class="camp-ajutor">${esc(c.aj)}</span>` : "";
   if (c.k === "cui" && val) return campCui(c, val, ob);
+  // [lotul 10, C69] Da / Nu (valoarea salvată, altfel „— alege —”) și lista din nomenclator (codul se trimite, denumirea se arată)
+  if (c.tip === "danu") return `
+    <label class="camp">
+      <span class="camp-eticheta">${esc(c.e)}${ob}</span>
+      ${aj}
+      <select class="camp-input" id="df-${c.k}">${alegeDacaLipseste(val)}
+        <option value="0"${val === false ? " selected" : ""}>Nu</option>
+        <option value="1"${val === true ? " selected" : ""}>Da</option>
+      </select>
+    </label>`;
+  if (c.tip === "lista") return `
+    <label class="camp">
+      <span class="camp-eticheta">${esc(c.e)}${ob}</span>
+      ${aj}
+      <select class="camp-input" id="df-${c.k}">${alegeDacaLipseste(val)}${((d || {})[c.lista] || []).map(([k, t]) =>
+        `<option value="${esc(k)}"${String(k) === String(val) ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
+    </label>`;
   return `
     <label class="camp">
       <span class="camp-eticheta">${esc(c.e)}${ob}</span>
@@ -333,11 +445,14 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   let d = { profil: {}, lipsuri: [] };
   let v = {};
   let t = {};   // [R77] rândul din `public.tenants`: denumirea din portofoliu + ce spune ANAF
+  let a = null;   // [lotul 10, 431] asociații și cotele; null = necitite (secțiunea spune de ce)
+  let aEroare = null;
   try {
-    [d, v, t] = await Promise.all([
+    [d, v, t, a] = await Promise.all([
       api.get(`/tenants/${tenantId}/firma-profil/date`),
       api.get(`/tenants/${tenantId}/vector`).catch(() => ({})),
       api.get(`/tenants/${tenantId}`).catch(() => ({})),
+      api.get(`/tenants/${tenantId}/asociati`).catch((e) => { aEroare = (e && e.mesaj) || "Asociații nu s-au putut citi."; return null; }),
     ]);
   } catch (e) {
     corp.innerHTML = `<div id="df-msg"></div>`;
@@ -361,14 +476,14 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
 
   corp.innerHTML = `
     <h2 class="pf-titlu">Date firm\u0103</h2>
-    <p class="pf-intro">Datele pe care ANAF le cere \u00een declara\u021bii. C\u00e2mpurile cu <span class="oblig">*</span> sunt obligatorii \u2014 f\u0103r\u0103 ele declara\u021biile nu se pot depune.</p>
+    <p class="pf-intro">Datele pe care ANAF le cere în declarații. Câmpurile cu <span class="oblig">*</span> sunt obligatorii pentru declarații — ce lipsește nu oprește salvarea, ci declarațiile care îl cer (lista de mai jos).</p>
     ${avert}
     ${_blocDenumire(t, d.profil)}
-    <div class="grila-doc">${CAMPURI.map((c) => camp(c, d.profil[c.k])).join("")}</div>
+    <div class="grila-doc">${CAMPURI.map((c) => camp(c, d.profil[c.k], d)).join("")}</div>
 
     <h2 class="pf-titlu" style="margin-top:26px">Vector fiscal</h2>
     <p class="pf-intro">Ce declara\u021bii datoreaz\u0103 firma. Termenele \u0219i controlul fiscal pornesc de aici.</p>
-    <div class="grila-doc">${VECTOR.map((c) => campVector(c, v[c.k])).join("")}</div>
+    <div class="grila-doc">${VECTOR.map((c) => campVector(c, v[c.k]) + (c.k === "platitor_tva" ? _blocTvaIncasare(v) : "")).join("")}</div>
 
     <h2 class="pf-titlu" style="margin-top:26px">Cont contabil</h2>
     <p class="pf-intro">Contul de venit folosit implicit la emiterea facturilor. Se poate schimba pe fiecare factur\u0103.</p>
@@ -381,16 +496,18 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       </label>
     </div>
     ${d.profil.tip_firma === "pfa" ? "" : _blocCapital(d)}
+    ${d.profil.tip_firma === "pfa" ? "" : _blocAsociati(a)}
     ${_blocAmef(d)}
     ${_blocChitante(d)}
     ${_blocStoc(d)}
     ${_blocPreluare(d)}
     <div class="bara-fixa"><div id="df-msg"></div>
     <div class="dec-bara">
-      <button class="buton-primar" id="df-salveaza" data-actiune="POST /tenants/{tenant_id}/firma-profil/date|POST /tenants/{tenant_id}/vector|PUT /tenants/{tenant_id}">Salveaz\u0103</button>
+      <button class="buton-primar" id="df-salveaza" data-actiune="POST /tenants/{tenant_id}/firma-profil/date|POST /tenants/{tenant_id}/vector|POST /tenants/{tenant_id}/tva-incasare|POST /tenants/{tenant_id}/asociati|POST /tenants/{tenant_id}/asociati/cesiune|PUT /tenants/{tenant_id}">Salvează</button>
     </div></div>
     ${_blocJurnal(d)}
   `;
+  if (aEroare && corp.querySelector("#as-msg")) arataMesaj(corp.querySelector("#as-msg"), aEroare, "eroare");
   // [retest 08.10, completarea pct.2] deschis dintr-un refuz care numește câmpul (seria chitanțelor, metoda de stoc, forma juridică …):
   // câmpul vine în vedere și primește focus — nu pagina de sus
   const _tinta = opt.camp ? corp.querySelector("#" + CSS.escape(opt.camp)) : null;
@@ -404,90 +521,104 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     corp.querySelector("#df-activitate_amef-camp").style.display = _amefSel.value === "1" ? "" : "none";
   });
   // [tva_inceput] campul "Data inregistrarii TVA" apare DOAR la platitor; comuta live la schimbarea selectului.
+  // [lotul 10, 428] la fel regimul TVA la încasare; datele lui, numai cu „Da”
   const _tvaSel = corp.querySelector("#vf-platitor_tva");
-  const _tvaCamp = corp.querySelector("#vf-camp-tva_data_inceput");
-  const _tvaToggle = () => { if (_tvaCamp) _tvaCamp.style.display = (_tvaSel && _tvaSel.value === "da") ? "" : "none"; };
+  const _tvaiSel = corp.querySelector("#vf-tva_incasare");
+  const _tvaToggle = () => {
+    const plat = !!(_tvaSel && _tvaSel.value === "da");
+    const aratat = (id, da) => { const el = corp.querySelector(id); if (el) el.style.display = da ? "" : "none"; };
+    aratat("#vf-camp-tva_data_inceput", plat);
+    aratat("#vf-camp-tva_incasare", plat);
+    aratat("#vf-camp-tva_incasare_de_la", plat && _tvaiSel && _tvaiSel.value === "da");
+    aratat("#vf-camp-tva_incasare_pana_la", plat && _tvaiSel && _tvaiSel.value === "da");
+  };
   if (_tvaSel) _tvaSel.addEventListener("change", _tvaToggle);
+  if (_tvaiSel) _tvaiSel.addEventListener("change", _tvaToggle);
   _tvaToggle();
+  _legaTvaIncasare(corp, nav, tenantId, opt);
+  const asoc = _legaAsociati(corp, a);
 
   // [BLOC R, 28.08.2026] Legarea celor două casete de denumire a fost scoasă odată cu a doua
   // casetă. Era reparația corectă cât timp duplicatul exista; nu mai are ce lega.
 
+  // [lotul 10, deficiența 427, comanda Costin 10.1] „completarea vectorului fiscal nu se poate salva cât timp lipsesc Nr. registrul
+  // comerțului, CAEN și adresa. Ce s-a completat se salvează; lipsurile rămân în «Profil incomplet» și blochează doar declarațiile
+  // afectate, cum spune deja ecranul.” Un câmp obligatoriu gol NU mai oprește salvarea (nici aici, nici pe server): după salvare,
+  // mesajul spune ce lipsește și ce declarații blochează. Părțile formularului se salvează FIECARE pe drumul ei — un refuz al uneia
+  // (o valoare invalidă) nu le mai pierde pe celelalte; refuzul stă lângă câmpul lui (DS cap.6, G10) și în „NU s-a salvat” (410).
+  // Refuzul fiecărei cereri se pune pe loc, în `catch`-ul ei (atunci leagă `api.js` refuzul de buton, 410); `pre` = prefixul id-urilor
+  // DOM ale părții (`df-` profilul, `vf-` vectorul și regimul TVA la încasare; asociații trimit id-ul întreg).
   corp.querySelector("#df-salveaza").addEventListener("click", async () => {
     const btn = corp.querySelector("#df-salveaza");
     const msg = corp.querySelector("#df-msg");
     const date = _dateDinFormular(corp);
-    // validare preventiva in ecran: nu trimitem ca sa aflam de la server (DS cap.6)
-    // [G10 cap.6 v2.30] validare preventiva CLIENT: colecteaza TOATE erorile de camp si le plaseaza fiecare
-    // LANGA campul ei (eroareCamp), nu un mesaj generic sus si nu fail-fast. B (arataMesaj) ramane pentru
-    // erorile de business/backend fara camp (catch-ul de mai jos).
     curataEroriCamp(corp);
-    const goale = CAMPURI.filter((c) => c.ob && !date[c.k]);
-    goale.forEach((c) => eroareCamp(corp, "df-" + c.k, "Completează " + c.e + "."));
     // [R77] denumirea din portofoliu: alt tabel, deci alt apel — dar o singură apăsare pentru om.
     const numePortofoliu = (corp.querySelector("#df-nume-portofoliu").value || "").trim();
-    if (!numePortofoliu) {
-      eroareCamp(corp, "df-nume-portofoliu", "Completează denumirea din portofoliu.");
-      goale.push({ k: "nume-portofoliu" });
-    }
-    // vectorul: periodicitatea TVA e obligatorie DOAR la platitorii de TVA (vector_fiscal_api.salveaza - sursa unica)
-    // [alege] tri-stare: "" (placeholder neales) -> null, NU false tacit. Backendul refuza null cu mesaj
-    // clar (regim REGIM_INVALID pt SRL, TVA_LIPSA, IC_LIPSA); dar validam preventiv aici (DS cap.6).
-    const _regimV = corp.querySelector("#vf-regim_fiscal").value;
-    const _tvaV = corp.querySelector("#vf-platitor_tva").value;
-    const _icV = corp.querySelector("#vf-operatiuni_ic").value;
-    const triBool = (x) => (x === "da" ? true : x === "nu" ? false : null);
-    const vf = {
-      regim_fiscal: _regimV || null,
-      platitor_tva: triBool(_tvaV),
-      tip_decont: corp.querySelector("#vf-tip_decont").value || null,
-      operatiuni_ic: triBool(_icV),
-      inreg_art317: triBool(corp.querySelector("#vf-inreg_art317").value),   // [lotul 07.10 B] neales -> null
-      // [tva_inceput] are sens doar la platitor; la neplatitor trimitem null (backendul o goleste oricum)
-      tva_data_inceput: _tvaV === "da"
-        ? (corp.querySelector("#vf-tva_data_inceput").value || null) : null,
-    };
-    // [alege] alegerile obligatorii ale vectorului. regim NU se cere la partida simpla (PFA/II/PFL n-are
-    // micro/profit — vine din payload, fapt unic backend). tva si ic se cer la orice firma.
-    const vecOblig = [];
-    if (!(v && v.partida_simpla) && !vf.regim_fiscal)
-      vecOblig.push(["vf-regim_fiscal", "Alege regimul fiscal (micro sau profit) — decide D100/D101."]);
-    if (vf.platitor_tva === null)
-      vecOblig.push(["vf-platitor_tva", "Alege dacă firma e înregistrată în scopuri de TVA (Da sau Nu) — decide D300/D394."]);
-    if (vf.operatiuni_ic === null)
-      vecOblig.push(["vf-operatiuni_ic", "Alege dacă firma are operațiuni intracomunitare (Da sau Nu) — decide D390."]);
-    vecOblig.forEach(([id, m]) => eroareCamp(corp, id, m));
-    const tvaLipsa = vf.platitor_tva === true && !vf.tip_decont;
-    if (tvaLipsa) eroareCamp(corp, "vf-tip_decont", "Periodicitatea TVA e obligatorie la plătitorii de TVA (decide dacă D300 se depune lunar sau trimestrial).");
-    if (goale.length || vecOblig.length || tvaLipsa) {
-      focusFaraSalt((corp.querySelector(`#df-${(goale[0] || {}).k}`)
-        || corp.querySelector(`#${(vecOblig[0] || [])[0]}`)
-        || corp.querySelector("#vf-tip_decont")));
-      return;
-    }
+    const refuzuriClient = numePortofoliu ? [] : [["df-nume-portofoliu", "Completează denumirea din portofoliu."]];
+    const { vf, vecOblig } = _vectorDinFormular(corp, v);
+    refuzuriClient.push(...vecOblig);
+    // [428] regimul TVA la încasare: se trimite numai dacă s-a schimbat (fiecare salvare a lui întreabă și registrul ANAF)
+    const tvai = _tvaiDinFormular(corp, v, vf.platitor_tva);
+    if (tvai && tvai.aplica && !tvai.de_la) refuzuriClient.push(["vf-tva_incasare_de_la", "Scrie data de la care firma aplică sistemul TVA la încasare."]);
+    // [431] asociații: se trimit numai dacă tabelul s-a schimbat; cu data cesiunii = cesiune, fără ea = corectură
+    const as = asoc ? asoc.dinFormular() : null;
+    if (as && as.dataCesiune && !as.schimbat) refuzuriClient.push(["as-data-cesiune", "Scrie în tabel noua structură a asociaților: cesiunea o înregistrează de la data ei."]);
+    refuzuriClient.forEach(([id, m]) => eroareCamp(corp, id, m));
+    const refuzat = new Set(refuzuriClient.map(([id]) => id));
     btn.disabled = true;
     btn.textContent = "Se salveaz\u0103\u2026";
-    let pas = 0;
+    const salvate = [];
+    const faraCamp = [];
+    const pune = (pre) => (e) => {
+      const ec = (e && e.erori_campuri) || [];
+      const peCamp = ec.filter((c) => eroareCamp(corp, c.camp === "cont_venit_implicit" ? "df-cont_venit" : pre + c.camp, c.mesaj)).length;
+      if (!peCamp) faraCamp.push((e && e.mesaj) || "Nu s-a putut salva.");
+      return null;
+    };
+    const parte = (nume, p, pre) => p.then((r) => { salvate.push(nume); return r || {}; }, pune(pre));
+    const asteptate = ["datele firmei"];   // părțile trimise; „toate bune” = toate au intrat
+    const pProfil = parte("datele firmei", api.post(`/tenants/${tenantId}/firma-profil/date`, date), "df-");
+    let pVector = Promise.resolve(null);
+    if (!vecOblig.length) {
+      asteptate.push("vectorul fiscal");
+      pVector = parte("vectorul fiscal", api.post(`/tenants/${tenantId}/vector`, vf), "vf-");
+    }
+    // regimul TVA la încasare cere firma înregistrată în scopuri de TVA: dacă „Da” vine chiar acum, după vector; altfel odată cu restul
+    let pTvai = Promise.resolve(null);
+    if (tvai && !refuzat.has("vf-tva_incasare_de_la")) {
+      asteptate.push("regimul TVA la încasare");
+      const trimite = () => parte("regimul TVA la încasare", api.post(`/tenants/${tenantId}/tva-incasare`, tvai), "vf-");
+      pTvai = v.platitor_tva === true ? trimite() : pVector.then((r) => (r ? trimite()
+        : (eroareCamp(corp, "vf-tva_incasare", "Nu s-a salvat: întâi vectorul fiscal (înregistrată în scopuri de TVA)."), null)));
+    }
+    let pAsoc = Promise.resolve(null);
+    if (as && as.schimbat && !refuzat.has("as-data-cesiune")) {
+      asteptate.push("asociații");
+      pAsoc = parte("asociații", as.dataCesiune
+        ? api.post(`/tenants/${tenantId}/asociati/cesiune`, { data_cesiune: as.dataCesiune, randuri: as.randuri })
+        : api.post(`/tenants/${tenantId}/asociati`, { randuri: as.randuri }), "");
+    }
+    const [rProfil, , rTvai] = await Promise.all([pProfil, pVector, pTvai, pAsoc]);
+    if (refuzuriClient.length || faraCamp.length || salvate.length !== asteptate.length) {
+      btn.disabled = false;
+      btn.textContent = "Salveaz\u0103";
+      const linii = salvate.length ? ["S-au salvat: " + salvate.join(", ") + ". Restul NU — " + (faraCamp.length ? "motivele:" : "vezi câmpurile marcate.")] : [];
+      linii.push(...faraCamp);
+      if (faraCamp.length || salvate.length) arataMesaj(msg, linii.join("\n"), "eroare");   // [410] nu tot s-a salvat = refuz, nu avertisment
+      return;
+    }
+    let redenumit = false;
     try {
-      // [LOTUL 11, 04.09.2026] ORDINEA E REPARAȚIA. Până azi redenumirea pleca PRIMA: dacă
-      // datele erau apoi refuzate, omul citea „Nu s-a putut salva" pe un ecran în care firma
-      // TOCMAI fusese redenumită. Măsurat apăsând, cu formularul umplut cu semne:
-      // `PUT /tenants/4838` → 200, `POST /firma-profil/date` → 422. Refuz pe ecran, denumire
-      // schimbată în bBază, în două tabele, si de acolo pe `den` din D394.
-      // Aceeași clasă ca R128 („poarta cădea DUPĂ aprobare"), a doua instanță: un act care se
-      // refuză nu are voie să lase în urmă jumătate din el. Se scrie întâi ce poate fi refuzat,
-      // și abia la urmă ce schimbă IDENTITATEA firmei.
-      await api.post(`/tenants/${tenantId}/firma-profil/date`, date);
-      await api.post(`/tenants/${tenantId}/vector`, vf);
-      pas = 2;
-      // [R77] Denumirea din portofoliu stă în alt tabel, deci e alt apel — dar o singură
-      // apăsare pentru om. Se trimite DOAR dacă s-a schimbat: un `PUT` la fiecare salvare ar
-      // consemna o „alegere" pe care nimeni n-a făcut-o.
-      if (numePortofoliu !== ((t && t.nume) || "")) {
-        await api.put(`/tenants/${tenantId}`, { nume: numePortofoliu });
-      }
+      // [LOTUL 11, 04.09.2026] Denumirea (identitatea firmei) se scrie LA URMĂ și numai după ce restul a intrat: un act care se refuză nu
+      // lasă în urmă o firmă redenumită. Se trimite DOAR dacă s-a schimbat (un `PUT` la fiecare salvare ar consemna o „alegere" pe care
+      // nimeni n-a făcut-o). Confirmarea vizibilă stă în același bloc cu actul (DS cap.27).
+      if (numePortofoliu !== ((t && t.nume) || "")) await api.put(`/tenants/${tenantId}`, { nume: numePortofoliu });
+      redenumit = true;
       await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });   // [retest 08.10] după salvare nu se mai sare la câmp
-      arataMesaj(corp.querySelector("#df-msg"), "Datele firmei au fost salvate.", "ok");
+      // [427] „Salvat. Lipsesc X, Y — blochează D…” (din lipsurile întoarse de salvare); [428] avertismentele regimului + verificarea ANAF
+      arataMesaj(corp.querySelector("#df-msg"), _mesajSalvat(rProfil, rTvai), ((rProfil && rProfil.lipsuri) || []).length
+        || (rTvai && ((rTvai.avertismente || []).length || (rTvai.anaf && rTvai.anaf.fel !== "fapt"))) ? "avert" : "ok");
       // [lotul 07.10 pct.2] deschis dintr-un refuz al altui formular (factura): drumul înapoi, la formularul păstrat
       if (opt.inapoiLa && nav && nav.inapoi) {
         const bi = document.createElement("button");
@@ -497,25 +628,167 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
         corp.querySelector("#df-msg").appendChild(bi);
       }
     } catch (e) {
-      // [LOTUL 11] Mesajul spune CE a apucat să intre. `pas === 2` = profilul și vectorul sunt
-      // înregistrate și a căzut DOAR redenumirea — acolo „Nu s-a putut salva" ar fi o afirmație
-      // falsă despre date. *Actul rămâne cu confirmarea lui vizibilă pe calea de reușită (DS
-      // cap.27): un `try` propriu pentru redenumire ar fi mutat confirmarea din blocul actului.*
-      if (pas === 2) {
-        await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });   // [retest 08.10] după salvare nu se mai sare la câmp
-        arataMesaj(corp.querySelector("#df-msg"),
-          "Restul datelor s-au salvat, dar DENUMIREA nu: "
-          + ((e && e.mesaj) || "a fost refuzată")
-          + " Ecranul de mai jos arată ce e înregistrat acum.", "eroare");
+      if (redenumit) {   // actele au intrat; a căzut numai redesenarea ecranului
+        arataMesaj(msg, "Datele s-au salvat, dar ecranul nu s-a putut reîncărca: " + ((e && e.mesaj) || "redeschide Date firmă."), "eroare");
         return;
       }
-      btn.disabled = false;
-      btn.textContent = "Salveaz\u0103";
-      // [08.10 §6 pct.4, generalizat] refuzul serverului își numește câmpul: mesajul stă lângă el (DS cap.6, G10); fără câmp -> zona generală
-      const peCamp = ((e && e.erori_campuri) || []).filter((c) => eroareCamp(corp, c.camp === "cont_venit_implicit" ? "df-cont_venit" : "df-" + c.camp, c.mesaj)).length;
-      if (!peCamp) arataMesaj(msg, (e && e.mesaj) || "Nu s-a putut salva.", "eroare");
+      // [LOTUL 11] Mesajul spune CE a apucat să intre: restul datelor e înregistrat și a căzut DOAR redenumirea.
+      await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });
+      arataMesaj(corp.querySelector("#df-msg"), "Restul datelor s-au salvat, dar DENUMIREA nu: " + ((e && e.mesaj) || "a fost refuzată")
+        + " Ecranul de mai jos arată ce e înregistrat acum.", "eroare");
     }
   });
+}
+
+// [427 / 428] Mesajul de după salvare: lipsurile profilului cu declarațiile pe care le blochează, avertismentele regimului TVA la încasare
+// și verificarea ANAF, când nu confirmă.
+function _mesajSalvat(rProfil, rTvai) {
+  const lip = (rProfil && rProfil.lipsuri) || [];
+  const linii = [lip.length ? `Salvat. ${lip.length === 1 ? "Lipsește" : "Lipsesc"} ${lip.map((l) => eticheta(l.camp)).join(", ")} — blochează ${[...new Set(lip.flatMap((l) => l.declaratii))].join(", ")}.` : "Datele firmei au fost salvate."];
+  if (rTvai) {
+    linii.push(...(rTvai.avertismente || []));
+    if (rTvai.anaf && rTvai.anaf.fel !== "fapt") linii.push(rTvai.anaf.mesaj);   // afirmația tipată: „fapt” = confirmare
+  }
+  return linii.join("\n");
+}
+
+// Vectorul fiscal citit din formular + alegerile lui obligatorii (validare preventivă, DS cap.6). Scoasă din handlerul „Salvează”, ca
+// `_dateDinFormular`: sonda drepturilor leagă un apel de butonul lui pe o fereastră de 80 de linii.
+function _vectorDinFormular(corp, v) {
+  // [alege] tri-stare: "" (placeholder neales) -> null, NU false tacit. Backendul refuza null cu mesaj
+  // clar (regim REGIM_INVALID pt SRL, TVA_LIPSA, IC_LIPSA); dar validam preventiv aici (DS cap.6).
+  const _tvaV = corp.querySelector("#vf-platitor_tva").value;
+  const triBool = (x) => (x === "da" ? true : x === "nu" ? false : null);
+  const vf = {
+    regim_fiscal: corp.querySelector("#vf-regim_fiscal").value || null,
+    platitor_tva: triBool(_tvaV),
+    tip_decont: corp.querySelector("#vf-tip_decont").value || null,
+    operatiuni_ic: triBool(corp.querySelector("#vf-operatiuni_ic").value),
+    inreg_art317: triBool(corp.querySelector("#vf-inreg_art317").value),   // [lotul 07.10 B] neales -> null
+    // [tva_inceput] are sens doar la platitor; la neplatitor trimitem null (backendul o goleste oricum)
+    tva_data_inceput: _tvaV === "da" ? (corp.querySelector("#vf-tva_data_inceput").value || null) : null,
+  };
+  // [alege] alegerile obligatorii ale vectorului. regim NU se cere la partida simpla (PFA/II/PFL n-are
+  // micro/profit — vine din payload, fapt unic backend). tva si ic se cer la orice firma. Periodicitatea: DOAR la plătitori.
+  const vecOblig = [];
+  if (!(v && v.partida_simpla) && !vf.regim_fiscal)
+    vecOblig.push(["vf-regim_fiscal", "Alege regimul fiscal (micro sau profit) — decide D100/D101."]);
+  if (vf.platitor_tva === null)
+    vecOblig.push(["vf-platitor_tva", "Alege dacă firma e înregistrată în scopuri de TVA (Da sau Nu) — decide D300/D394."]);
+  if (vf.operatiuni_ic === null)
+    vecOblig.push(["vf-operatiuni_ic", "Alege dacă firma are operațiuni intracomunitare (Da sau Nu) — decide D390."]);
+  if (vf.platitor_tva === true && !vf.tip_decont)
+    vecOblig.push(["vf-tip_decont", "Periodicitatea TVA e obligatorie la plătitorii de TVA (decide dacă D300 se depune lunar sau trimestrial)."]);
+  return { vf, vecOblig };
+}
+
+// [lotul 10, 428] Ce trimite „Salvează” pentru regimul TVA la încasare, sau null dacă nu s-a schimbat nimic (sau firma nu e înregistrată
+// în scopuri de TVA: secțiunea e ascunsă și nu se trimite). Starea de la încărcare: `v.tva_incasare`.
+function _tvaiDinFormular(corp, v, platitor) {
+  const sel = corp.querySelector("#vf-tva_incasare");
+  if (!sel || platitor !== true) return null;
+  const t = (v && v.tva_incasare) || {};
+  const c = t.curenta || {};
+  const aplica = sel.value === "da";
+  const de_la = aplica ? (corp.querySelector("#vf-tva_incasare_de_la").value || null) : null;
+  const pana_la = aplica ? (corp.querySelector("#vf-tva_incasare_pana_la").value || null) : null;
+  const eraDa = !!t.curenta || !!t.fara_data;
+  if (aplica === eraDa && (!aplica || (de_la === (c.de_la || null) && pana_la === (c.pana_la || null)))) return null;
+  return { aplica, de_la, pana_la };
+}
+
+// [lotul 10, 428] „Verifică în registrul ANAF” (citire: propune datele, spune dacă diferă; nu scrie) și ștergerea unei perioade scrise greșit.
+function _legaTvaIncasare(corp, nav, tenantId, opt) {
+  const btn = corp.querySelector("#vf-tva-incasare-anaf");
+  const rez = corp.querySelector("#vf-tva-incasare-anaf-rez");
+  if (btn) btn.addEventListener("click", async () => {
+    rez.innerHTML = "";
+    try {
+      const r = await api.get(`/tenants/${tenantId}/tva-incasare/verifica-anaf`);
+      arataMesaj(rez, r.mesaj, r.fel === "fapt" ? "ok" : "avert");   // afirmația tipată (`compara_anaf`): „fapt” = coincide
+      if (r.propunere) {
+        const b = document.createElement("button");
+        b.type = "button"; b.className = "buton-secundar"; b.id = "vf-tva-incasare-anaf-preia";
+        b.setAttribute("data-fara-actiune", "completează formularul cu datele ANAF; „Salvează” poartă acțiunea");
+        b.textContent = "Completează cu datele ANAF";
+        b.addEventListener("click", () => {
+          corp.querySelector("#vf-tva_incasare").value = "da";
+          corp.querySelector("#vf-tva_incasare_de_la").value = r.propunere.de_la || "";
+          corp.querySelector("#vf-tva_incasare_pana_la").value = r.propunere.pana_la || "";
+          corp.querySelector("#vf-tva_incasare").dispatchEvent(new Event("change"));
+          arataMesaj(rez, "Completat cu datele ANAF — verifică și apasă „Salvează”.", "info");
+        });
+        rez.appendChild(b);
+      }
+    } catch (e) { arataMesaj(rez, (e && e.mesaj) || "Verificarea în registrul ANAF nu s-a putut face.", "eroare"); }
+  });
+  // [lotul 10, deficiența 428] „ieșirea din sistem face regularizarea”: la data ieșirii, facturile emise / primite în sistem cu TVA încă
+  // neexigibil (4428) și ce se întâmplă cu fiecare — CF art.282 alin.(7) lit.b: cele emise înainte de ieșire rămân în sistem până la
+  // încasare; nimic nu se mută în 4427 fără încasare (citire, `GET …/tva-incasare/neexigibile`)
+  corp.querySelectorAll("#vf-tva-incasare-perioade button[data-iesire]").forEach((b) => b.addEventListener("click", async () => {
+    const z = corp.querySelector("#vf-tva-incasare-iesire");
+    z.innerHTML = "";
+    try {
+      const r = await api.get(`/tenants/${tenantId}/tva-incasare/neexigibile?la=${encodeURIComponent(b.dataset.iesire)}`);
+      const f = r.facturi || [];
+      z.innerHTML = !f.length
+        ? `<p class="pf-intro">La ieșirea din ${esc(dataRo(r.la))} nu rămâne nicio factură cu TVA neexigibil: nimic de regularizat.</p>`
+        : `<p class="pf-intro">La ieșirea din ${esc(dataRo(r.la))} rămân în sistem ${cate(f.length, "factură", "facturi")}: TVA neexigibil pe emise ${bani(r.tva_neexigibil_emise)} lei, TVA nededus pe primite ${bani(r.tva_nededus_primite)} lei (Cod fiscal art. 282 alin. (7) lit. b).</p>
+          <table class="fd-tabel" id="vf-tva-incasare-iesire-tabel"><thead><tr><th>Factura</th><th>Data</th><th class="fd-td-num">TVA</th>
+            <th class="fd-td-num">Exigibil până acum</th><th class="fd-td-num">Rămas pe 4428</th><th>Ce se întâmplă</th></tr></thead>
+          <tbody>${f.map((x) => `<tr><td>${esc(x.directie === "emisa" ? "emisă" : "primită")} ${esc([x.serie, x.numar].filter(Boolean).join(" "))}</td>
+            <td>${esc(dataRo(x.data_emitere))}</td><td class="fd-td-num">${bani(x.tva)}</td><td class="fd-td-num">${bani(x.exigibil)}</td>
+            <td class="fd-td-num">${bani(x.rest_neexigibil)}</td><td>${esc(x.ce_se_intampla)}</td></tr>`).join("")}</tbody></table>`;
+    } catch (e) { arataMesaj(z, (e && e.mesaj) || "Lista facturilor rămase în sistem nu s-a putut încărca.", "eroare"); }
+  }));
+  corp.querySelectorAll("#vf-tva-incasare-perioade button[data-perioada]").forEach((b) => b.addEventListener("click", () => {
+    confirmaCaseta(b.closest("table"), "Ștergi perioada? Se face numai pentru o perioadă scrisă din greșeală; ieșirea din sistem se scrie la „Aplică până la”.",
+      async () => {
+        try {
+          await api.del(`/tenants/${tenantId}/tva-incasare/${b.dataset.perioada}`);
+          await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });
+          arataMesaj(corp.querySelector("#df-msg"), "Perioada a fost ștearsă. Schimbarea e în istoricul de mai jos.", "ok");
+        } catch (e) { refuzPeRand(b, (e && e.mesaj) || "Perioada nu s-a putut șterge."); }
+      }, { textOk: "Șterge perioada" });
+  }));
+}
+
+// [lotul 10, 431] Tabelul asociaților: modelul, re-randarea la adăugare / scoatere (DS cap.24), totalul cotelor, ce trimite „Salvează”.
+function _legaAsociati(corp, a) {
+  const tb = corp.querySelector("#as-randuri");
+  if (!tb || !a) return null;
+  const initial = (a.asociati || []).map((x) => ({ nume: x.nume, cnp: x.cnp, cota: String(x.cota) }));
+  let model = initial.length ? initial.map((x) => ({ ...x })) : [{ nume: "", cnp: "", cota: "" }];
+  const citeste = () => model.forEach((r, i) => {
+    r.nume = (corp.querySelector(`#as-${i + 1}-nume`).value || "").trim();
+    r.cnp = (corp.querySelector(`#as-${i + 1}-cnp`).value || "").trim();
+    r.cota = (corp.querySelector(`#as-${i + 1}-cota`).value || "").trim();
+  });
+  const total = () => {
+    const s = model.reduce((x, r) => x + (parseFloat(String(r.cota).replace(",", ".")) || 0), 0);
+    const el = corp.querySelector("#as-total");
+    const txt = (Math.round(s * 100) / 100).toString().replace(".", ",");
+    el.textContent = `Total cote: ${txt}%` + (Math.abs(s - 100) < 0.005 ? "" : " — cotele trebuie să însumeze 100% (tot capitalul social).");
+  };
+  const randeaza = () => {
+    tb.innerHTML = _randuriAsociati(model);
+    tb.querySelectorAll("button[data-as-sterge]").forEach((b) => b.addEventListener("click", () => {
+      citeste(); model.splice(Number(b.dataset.asSterge), 1); randeaza();
+    }));
+    total();
+  };
+  tb.addEventListener("input", () => { citeste(); total(); });
+  corp.querySelector("#as-adauga").addEventListener("click", () => { citeste(); model.push({ nume: "", cnp: "", cota: "" }); randeaza(); });
+  randeaza();
+  return {
+    dinFormular() {
+      citeste();
+      // un rând complet gol (cel pus din oficiu la o firmă fără asociați) nu e un asociat început: nu se trimite
+      const randuri = model.filter((r) => r.nume || r.cnp || r.cota);
+      const schimbat = JSON.stringify(randuri) !== JSON.stringify(initial);
+      return { randuri, schimbat, dataCesiune: corp.querySelector("#as-data-cesiune").value || null };
+    },
+  };
 }
 
 // [deficiența 272] corectura CUI-ului: CUI-ul corect -> avertismentul serverului -> confirmarea -> scrierea (ambele locuri + jurnal)

@@ -12,11 +12,14 @@ IE = {"tert_nume": "Client Irlanda E2E Ltd", "tert_cui": "IE9999999ZZ", "tert_ad
       "tert_tara": "IE"}
 
 
-def _emite_ie(e, firma):
+def _emite_ie(e, firma, data_emitere=None):
+    """Factura de servicii către clientul din Irlanda (0%, prestare cu locul în afara României), pe ruta formularului; `data_emitere`
+    implicit azi — [lotul 10, 383] pentru o declarație, în perioada încheiată pe care se generează (`conftest.perioada_incheiata`)."""
+    zi = data_emitere or AZI
     corp = dict(IE, linii=[{"descriere": PRODUS, "cantitate": 1, "um": "buc", "pret_unitar": 1000.0, "cota_tva": 0, "cota_propusa": 0,
                             "articol_id": None, "categorie_tva": "serviciu_extern"}],
-                moneda="RON", tip_operatiune="normal", bon_fiscal_nr=None, bon_fiscal_data=None, data_emitere=AZI.isoformat(),
-                data_scadenta=(AZI + _dt.timedelta(days=30)).isoformat(), tip="factura")
+                moneda="RON", tip_operatiune="normal", bon_fiscal_nr=None, bon_fiscal_data=None, data_emitere=zi.isoformat(),
+                data_scadenta=(zi + _dt.timedelta(days=30)).isoformat(), tip="factura")
     return _ok(_api(e, "POST", "/tenants/%d/facturi/emite" % firma["tenant_id"], corp), "factura IE")
 
 

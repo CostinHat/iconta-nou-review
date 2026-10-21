@@ -7,6 +7,7 @@ contabilitate. Vezi DECIZII.md 17.07 "Lot 6 F146".
 """
 import datetime
 from psycopg2.extras import RealDictCursor
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] numărul dat de aplicație: cursa se reia, nu dă 500
 
 DIRECTII = {"intrare", "iesire"}
 
@@ -37,11 +38,17 @@ def inregistreaza(conn, schema, corp, creat_de):
     partener = (corp.get("partener") or "").strip() or None
     document_ref = (corp.get("document_ref") or "").strip() or None
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"SELECT COALESCE(MAX(numar),0)+1 AS urm FROM {schema}.registratura WHERE an=%s", (an,))
-        numar = cur.fetchone()["urm"]
-        cur.execute(f"""INSERT INTO {schema}.registratura
-                        (directie, numar, an, data, descriere, partener, document_ref, creat_de)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
-                    (directie, numar, an, data, descriere, partener, document_ref, creat_de))
-        rid = cur.fetchone()["id"]
+        def _scrie():
+            cur.execute(f"SELECT COALESCE(MAX(numar),0)+1 AS urm FROM {schema}.registratura WHERE an=%s", (an,))
+            numar = cur.fetchone()["urm"]
+            cur.execute(f"""INSERT INTO {schema}.registratura
+                            (directie, numar, an, data, descriere, partener, document_ref, creat_de)
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+                        (directie, numar, an, data, descriere, partener, document_ref, creat_de))
+            return cur.fetchone()["id"], numar
+        # [lotul 10, C73 / U2] numărul de înregistrare îl dă APLICAȚIA (`MAX + 1`): două înregistrări simultane citeau același număr, iar
+        # a doua cădea cu 500 pe `registratura_an_numar_unic`. Cursa nu e a omului — se reia cu numărul următor, sub savepoint.
+        rid, numar = _chei.reincearca_la_dublura(cur, ("registratura_an_numar_unic",), _scrie, lambda cur, e: _chei.CheieDublata(
+            "Registrul de intrări-ieșiri a primit în același timp prea multe înregistrări și numărul nu s-a putut aloca. Nimic nu s-a "
+            "scris: salvează din nou."))
     return {"ok": True, "id": rid, "numar": numar, "an": an, "directie": directie}

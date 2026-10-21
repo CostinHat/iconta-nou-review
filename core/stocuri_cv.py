@@ -24,10 +24,30 @@ def _q4(v):
     return _d(v).quantize(Decimal("0.0001"), rounding=ROUND_HALF_UP)
 
 
-def fisa_magazie(miscari, stoc_initial=None):
+def _c(x, um):
+    """Cantitatea în mesajul către contabil: formatul românesc și unitatea de măsură („1.000 buc”, „1,5 kg”), nu `Decimal`-ul coloanei
+    NUMERIC(12,3) („139.000” se citea 139 de mii). [lotul 10, comanda 10.2 pct.8d] „La ieșirea peste stoc mesajul e «iesire 1000 peste
+    stocul 139.000»: fără diacritice, iar «139.000» se citește 139 de mii. Corect: «Ieșire de 1.000 buc peste stocul de 139 buc».”"""
+    from core import pdf_util
+    return pdf_util.cantitate(x, um)
+
+
+def _la(d):
+    """„ la 20.10.2026” — data mișcării, în forma românească (DS cap.4); nimic dacă mișcarea n-o poartă."""
+    from core import pdf_util
+    return (" la %s" % pdf_util.data_ro(d)) if d not in (None, "") else ""
+
+
+def mesaj_peste_stoc(cantitate, stoc, um="", data=None):
+    """Refuzul ieșirii peste stoc, în cuvintele contabilului (sursa unică: fișa, ieșirea nouă, rețeta, transferul)."""
+    return "Ieșire de %s peste stocul de %s%s" % (_c(cantitate, um), _c(stoc, um), _la(data))
+
+
+def fisa_magazie(miscari, stoc_initial=None, um=""):
     """miscari: [{tip: 'intrare'|'iesire'|'ajustare' (de valoare, cantitate 0, `valoare`), cantitate, pret_unitar? (doar la intrare),
     data, document?}] in ordine cronologica.
     stoc_initial: {cantitate, valoare} sau None.
+    um: unitatea de măsură a articolului — numai pentru mesajele de refuz (cantitatea „1.000 buc”).
     Intoarce liniile fisei cu sold cantitate/valoare/CMP dupa fiecare miscare.
     Ridica ValueError la iesire peste stoc."""
     cant = _d((stoc_initial or {}).get("cantitate", 0))
@@ -44,7 +64,7 @@ def fisa_magazie(miscari, stoc_initial=None):
             v = _q(m["valoare"])
             if m["tip"] == "intrare":
                 if cant + c < 0:
-                    raise ValueError(f"stornarea intrării {-c} peste stocul {cant} la {m.get('data')}")
+                    raise ValueError("Stornarea intrării de %s peste stocul de %s%s" % (_c(-c, um), _c(cant, um), _la(m.get("data"))))
                 cant += c
                 val += v
             else:
@@ -60,22 +80,22 @@ def fisa_magazie(miscari, stoc_initial=None):
             # VALOARE (cantitate 0), în perioada facturii; CMP-ul se recalculează din soldul de după ea. Pe stoc zero nu are pe ce sta
             # (apelantul o duce atunci pe 607, nu în fișă).
             if c != 0:
-                raise ValueError(f"ajustarea de valoare are cantitate 0: {m}")
+                raise ValueError("Ajustarea de valoare%s nu poate avea cantitate (are %s)" % (_la(m.get("data")), _c(c, um)))
             if cant <= 0:
-                raise ValueError(f"ajustare de valoare pe stoc zero la {m.get('data')}")
+                raise ValueError("Ajustarea de valoare nu are pe ce stoc să se aplice: stocul e zero%s" % _la(m.get("data")))
             v = _q(m["valoare"])
             val += v
             out.append({**m, "valoare": v, "sold_cantitate": cant, "sold_valoare": _q(val), "cmp": _q4(val / cant)})
             continue
         if c <= 0:
-            raise ValueError(f"cantitate invalidă: {m}")
+            raise ValueError("Cantitatea mișcării de stoc trebuie să fie mai mare ca zero (are %s%s)" % (_c(c, um), _la(m.get("data"))))
         if m["tip"] == "intrare":
             v = _q(c * _d(m["pret_unitar"]))
             cant += c
             val += v
         elif m["tip"] == "iesire":
             if c > cant:
-                raise ValueError(f"iesire {c} peste stocul {cant} la {m.get('data')}")
+                raise ValueError(mesaj_peste_stoc(c, cant, um, m.get("data")))
             cmp_curent = val / cant  # cant > 0 garantat de conditia de mai sus
             v = _q(c * cmp_curent)
             cant -= c
@@ -83,17 +103,17 @@ def fisa_magazie(miscari, stoc_initial=None):
             if cant == 0:
                 val = Decimal("0.00")
         else:
-            raise ValueError(f"tip necunoscut: {m['tip']!r}")
+            raise ValueError("Tipul mișcării de stoc nu e cunoscut: %r" % m["tip"])
         out.append({**m, "valoare": _q(v), "sold_cantitate": cant,
                     "sold_valoare": _q(val),
                     "cmp": _q4(val / cant) if cant > 0 else None})
     return out
 
 
-def valoare_iesire(miscari, stoc_initial, cantitate):
+def valoare_iesire(miscari, stoc_initial, cantitate, um=""):
     """Valoarea unei iesiri noi de `cantitate`, la CMP-ul rezultat din istoric.
-    Intoarce {cantitate, cmp, valoare, temei}."""
-    fisa = fisa_magazie(miscari, stoc_initial)
+    Intoarce {cantitate, cmp, valoare, temei}. `um` numai pentru refuz („Ieșire de 1.000 buc peste stocul de 139 buc”)."""
+    fisa = fisa_magazie(miscari, stoc_initial, um)
     if fisa:
         cant, val = fisa[-1]["sold_cantitate"], _d(fisa[-1]["sold_valoare"])
     else:
@@ -101,9 +121,9 @@ def valoare_iesire(miscari, stoc_initial, cantitate):
         val = _d((stoc_initial or {}).get("valoare", 0))
     c = _d(cantitate)
     if c <= 0:
-        raise ValueError("cantitate invalidă")
+        raise ValueError("Cantitatea ieșirii trebuie să fie mai mare ca zero (are %s)" % _c(c, um))
     if c > cant:
-        raise ValueError(f"iesire {c} peste stocul {cant}")
+        raise ValueError(mesaj_peste_stoc(c, cant, um))
     cmp_curent = val / cant
     return {"cantitate": c, "cmp": _q4(cmp_curent), "valoare": _q(c * cmp_curent),
             "temei": TEMEI_CMP, "modul": MODUL, "reguli": REGULI}

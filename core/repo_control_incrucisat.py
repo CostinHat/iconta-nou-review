@@ -55,14 +55,6 @@ def ciorne_pe_conturi_tva(cur, schema, data_de, data_pana):
     return cur.fetchall()
 
 
-def select_inregistrari_linii_2(cur, schema, de, pana):
-    cur.execute(f"""SELECT COALESCE(SUM(l.suma), 0)
-                FROM {schema}.inregistrari_linii l
-                JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-                WHERE i.data >= %s AND i.data < %s AND i.status='validata'
-                  AND l.cont_debit LIKE '457%%'""", (de, pana))
-    return cur.fetchone()
-
 
 def select_inregistrari(cur, schema, de, pana):
     cur.execute(f"""SELECT 1 FROM {schema}.inregistrari

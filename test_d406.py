@@ -22,9 +22,13 @@ import pytest
 from core import d406 as m
 
 # --- profil minim izolat, toate campurile completate ---
+# [lotul 10, C69] antetul cere telefonul (S.CTH.2 Telephone „Mandatory … 1”), persoana de contact = declarantul (S.PN.2 FirstName /
+# S.PN.5 LastName „Mandatory … 1”) și contul (S.BA.1 IBANNumber „Mandatory”) — anaf_surse/d406_schema_anaf.xlsx, foaia „5. Structures”;
+# generatorul nu le mai inventează („-” / IBAN fals), ci refuză (`d406.erori_generare`). Valorile sunt cele din celelalte teste D406.
 PROF = {"cui": "14399840", "nume": "FIRMA TEST SRL", "adresa": "Str. Test 1",
         "oras": "Bucuresti", "cod_postal": "010101", "baza_contabila": "A",
-        "platitor_tva": True}
+        "platitor_tva": True, "telefon": "0212223344", "iban": "RO59BTRLRONCRT0C69TEST01",
+        "declarant_nume": "POPESCU", "declarant_prenume": "ION"}
 
 CUI_CLIENT = "004221306"     # 00 + ALTEX (RO4221306), format S.C.1
 
@@ -54,7 +58,10 @@ def _factura_vanzare():
                            pret_unitar=Decimal("1000"), valoare=Decimal("1000"), sens="C",
                            tva_cod="310344", tva_procent=Decimal("21"), tva_suma=Decimal("210"))
     return m.Factura(nr="1", data=date(2026, 6, 10), partener_id=CUI_CLIENT,
-                     partener_nume="ALTEX ROMANIA SRL", tip="380", cont="4111", linii=[linie])
+                     partener_nume="ALTEX ROMANIA SRL", tip="380", cont="4111", linii=[linie],
+                     # [lotul 10, C69] BillingAddress/City (S.I.25 „Mandatory … 1”, S.AD.5 City „Mandatory … 1”): localitatea
+                     # partenerului din `_client()`; generatorul nu mai scrie „-” în lipsa ei, ci refuză
+                     oras="Bucuresti")
 
 def _res(note=None, fv=None, fc=None, plati=None):
     return m.construieste(PROF, 2026, 6, _conturi(), _client(), [],

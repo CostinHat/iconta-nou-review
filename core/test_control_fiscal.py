@@ -304,7 +304,9 @@ def test_semafor_d390_neplatitor_flag_false_nu_consulta_faptul():
 
 # ---- G1: neaplicabile_forma = sursa unica excludere prin forma (partida simpla) ----
 def test_neaplicabile_forma_pfa_vs_juridic():
-    assert set(cf.neaplicabile_forma("pfa")) == {"d100", "d101", "d406"}
+    # [lotul 10, C71] + bilanțul: Legea 82/1991 art.28 alin.(1) „Persoanele prevăzute la art. 1 alin. (1)-(4) au obligația să întocmească
+    # situații financiare anuale.” — PFA (partidă simplă) e la art.1 alin.(5), deci nu le întocmește
+    assert set(cf.neaplicabile_forma("pfa")) == {"d100", "d101", "d406", "bilant"}
     assert "D212" in cf.neaplicabile_forma("pfa")["d101"]
     # [301, 17.10.2026] persoana juridică: declarațiile persoanelor fizice (D212, D200, …) nu se datorează
     assert set(cf.neaplicabile_forma("srl")) == set(cf._NEAP_PERSOANA_JURIDICA)

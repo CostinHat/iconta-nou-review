@@ -21,7 +21,62 @@ def cota_dividend(la_data=None):
     """Cota impozit pe dividende (PROCENT), period-aware din common.COTE. Peticul 'if ref>=2026 else 10'
     (16/10) mutat in registru (PAS 0 versionare, regula 0a: eliminare, nu petic). Vezi common.COTE."""
     from core import common as _c
-    return _c.cota("impozit_dividend", la_data)[0] * 100
+    q = _c.cota("impozit_dividend", la_data)[0] * 100
+    # [lotul 10, deficiența 430e] „16.00%” în loc de 16%: cota se întoarce fără zecimale inutile (Decimal("16"), nu „16.00”)
+    return q.quantize(Decimal(1), rounding=ROUND_HALF_UP) if q == q.to_integral_value() else q.normalize()
+
+
+def procent_text(cota):
+    """[lotul 10, deficiența 430e] Cota afișată contabilului: „16%”, nu „16.00%” (cota e procent, `cota_dividend`)."""
+    q = Decimal(str(cota))
+    q = q.quantize(Decimal(1), rounding=ROUND_HALF_UP) if q == q.to_integral_value() else q.normalize()
+    return "%s%%" % str(q).replace(".", ",")
+
+
+#: [lotul 10, deficiența 430b/431] refuzul fără asociați trimite unde se adaugă (comanda Costin: „mesajul de refuz trimite la ce lipsește”)
+FARA_ASOCIATI = ("Firma nu are asociați înregistrați la data hotărârii: adaugă asociații și cotele lor în Date firmă → Asociați. "
+                 "Nota de dividende împarte dividendul pe asociați, după cote (Legea 31/1990 art.67 alin.(2)).")
+
+
+class StructuraAsociati(ValueError):
+    """[lotul 10, deficiența 430b] Refuzul care se repară în Date firmă → Asociați (lipsă asociați, cote care nu însumează 100%)."""
+
+
+def imparte_dividend(brut, structura, cota):
+    """[lotul 10, deficiența 430b] Dividendul brut împărțit pe asociați, după structura valabilă la data hotărârii.
+
+    Legea 31/1990 art.67 alin.(1): „Cota-parte din profit ce se plătește fiecărui asociat constituie dividend.” Alin.(2):
+    „Dividendele se distribuie asociaților proporțional cu cota de participare la capitalul social vărsat [...] dacă prin actul
+    constitutiv nu se prevede altfel.” Impozitul se calculează PE FIECARE asociat, din dividendul lui: CF art.97 alin.(7) —
+    „Veniturile sub formă de dividende [...] se impozitează cu o cotă de 16% din suma acestora”, iar „Obligația calculării și
+    reținerii impozitului [...] revine persoanelor juridice, odată cu plata dividendelor [...] de către acționari/asociați” —
+    rotunjit aritmetic pe asociat (Decimal, ROUND_HALF_UP).
+
+    `structura` = [(cnp, nume, cota_procent)] (`dividende_curs.structura_la`). Cotele trebuie să însumeze 100%: altfel o parte din
+    dividend n-ar avea beneficiar. INTERPRETARE CU TEMEI (rotunjirea părților): partea fiecăruia se rotunjește la ban, iar
+    diferența de rotunjire (cel mult un ban pe asociat) trece la asociatul cu cota cea mai mare, ca suma părților să fie exact
+    dividendul aprobat de adunare; alternativa respinsă — părți care nu însumează dividendul aprobat (nota n-ar mai fi suma din
+    hotărâre). De reconfirmat dacă apare o normă care tranșează.
+    Întoarce [{cnp, nume, cota, brut, impozit, net}] (Decimal), în ordinea cotelor descrescătoare."""
+    b = _d(brut)
+    if b <= 0:
+        raise ValueError("Dividendul brut trebuie să fie un număr pozitiv.")
+    parti = sorted(((str(c or ""), n, Decimal(str(q))) for c, n, q in (structura or ()) if Decimal(str(q)) > 0),
+                   key=lambda x: (-x[2], str(x[1] or "")))
+    if not parti:
+        raise StructuraAsociati(FARA_ASOCIATI)
+    total = sum(q for _, _, q in parti)
+    if total != 100:
+        raise StructuraAsociati("Cotele asociaților valabile la data hotărârii însumează %s, nu 100%%: corectează structura în "
+                         "Date firmă → Asociați, ca tot dividendul să aibă beneficiar (Legea 31/1990 art.67 alin.(2))."
+                         % procent_text(total))
+    sume = [(b * q / 100).quantize(B, rounding=ROUND_HALF_UP) for _, _, q in parti]
+    sume[0] += b - sum(sume)
+    out = []
+    for (cnp, nume, q), s in zip(parti, sume):
+        imp = _imp(s, cota)
+        out.append({"cnp": cnp, "nume": nume, "cota": q, "brut": s, "impozit": imp, "net": s - imp})
+    return out
 
 def _d(x):
     return Decimal(str(x or 0)).quantize(B, rounding=ROUND_HALF_UP)
@@ -29,23 +84,35 @@ def _d(x):
 def _imp(brut, cota):
     return (_d(brut) * cota / 100).quantize(B, rounding=ROUND_HALF_UP)
 
-def nota_dividend(brut, la_data=None, interimar=False, cu_plata=True):
-    """Repartizare + impozit + (optional) plata. Anual: 1171/457; interimar: 463/456."""
+def nota_dividend(brut, la_data=None, interimar=False, cu_plata=True, asociati=None, cont_sursa="1171"):
+    """Repartizare + impozit + (optional) plata. Anual: <sursa>/457; interimar: 463/456.
+
+    [lotul 10, deficiența 430] Cu `asociati` (structura de la data hotărârii), nota se împarte PE ASOCIAȚI (`imparte_dividend`):
+    câte un rând <sursa> = 457, 457 = 446 [și 457 = 5121] pentru fiecare, cu impozitul calculat pe dividendul lui; `parti` poartă
+    rândurile fiecăruia. `cont_sursa` = contul care ține profitul nerepartizat (1171 sau, preluat fără analitic, 117) — OMFP
+    1802/2014, funcțiunea contului 457: „În creditul contului 457 [...] se înregistrează: – dividendele datorate
+    acționarilor/asociaților din profitul realizat în exercițiile precedente (117).” Fără `asociati`: un singur rând pe fiecare cont
+    (motorul de dinainte)."""
     b = _d(brut)
     if b <= 0:
         raise ValueError("Dividendul brut trebuie să fie un număr pozitiv.")
     cota = cota_dividend(la_data)
+    sursa, dat = ("463", "456") if interimar else (cont_sursa, "457")
+
+    def linii_pentru(s, imp):
+        ln = [(sursa, dat, s), (dat, "446", imp)]
+        if cu_plata:
+            ln.append((dat, "5121", s - imp))
+        return [x for x in ln if x[2] > 0]
+    if asociati is not None:
+        parti = imparte_dividend(b, asociati, cota)
+        for p in parti:
+            p["linii"] = linii_pentru(p["brut"], p["impozit"])
+        imp = sum((p["impozit"] for p in parti), Decimal("0.00"))
+        return {"linii": [l for p in parti for l in p["linii"]], "parti": parti, "impozit": imp, "net": b - imp,
+                "cota": str(cota)}
     imp = _imp(b, cota)
-    net = b - imp
-    if interimar:
-        linii = [("463", "456", b), ("456", "446", imp)]
-        if cu_plata:
-            linii.append(("456", "5121", net))
-    else:
-        linii = [("1171", "457", b), ("457", "446", imp)]
-        if cu_plata:
-            linii.append(("457", "5121", net))
-    return {"linii": linii, "impozit": imp, "net": net, "cota": str(cota)}
+    return {"linii": linii_pentru(b, imp), "impozit": imp, "net": b - imp, "cota": str(cota)}
 
 def nota_regularizare_interimar(total_interimar, dividend_anual_aprobat, impozit_interimar=None):
     """Dupa aprobarea situatiilor anuale: 1171=457 anual + compensare 457=463 (OMFP 1802/2014 pct.423^2).

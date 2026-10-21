@@ -84,10 +84,10 @@ def test_conturi_straine_de_norma_sunt_semnalate_nu_excluse_tacit():
                     open("tenant_template.sql", encoding="utf-8").read(), SCHEMA))
                 cur.execute("SET search_path TO %s, public" % SCHEMA)
                 cur.execute(
-                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, telefon, "
                     "declarant_nume, declarant_prenume, declarant_functie, platitor_tva, tip_decont, regim_fiscal) "
                     "VALUES (1, 'TEST SRL', '14399840', 'Str. Testul 1', 'Bucuresti', 'B', '6920', 'BCR', "
-                    "'RO49BCRA0000000000000000', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', 'real')")
+                    "'RO49BCRA0000000000000000', '0212223344', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', 'real')")
                 # 731 = venituri ONG (OMFP 3103/2017) - NU e in planul soc-com 'A' -> cont STRAIN
                 cur.execute("INSERT INTO plan_conturi (simbol, denumire, tip, sold_creditor) "
                             "VALUES ('731', 'Venituri din cotizatii ONG', 'Pasiv', 100) "
@@ -249,8 +249,10 @@ def _res_d406_complet():
     from decimal import Decimal
     from datetime import date
     from core import d406 as m
+    # [lotul 10, C69] + telefon / IBAN / declarant: antetul D406 le cere (S.CTH.2, S.BA.1, S.PN.2/5); IBAN sintetic cu cifra de control mod-97 corectă
     prof = {"cui": "14399840", "nume": "FIRMA TEST SRL", "adresa": "Str. Test 1", "oras": "Bucuresti",
-            "cod_postal": "010101", "baza_contabila": "A", "platitor_tva": True}
+            "cod_postal": "010101", "baza_contabila": "A", "platitor_tva": True, "telefon": "0212223344",
+            "iban": "RO59BTRLRONCRT0C69TEST01", "declarant_nume": "POPESCU", "declarant_prenume": "ION"}
     CID = "004221306"
     conturi = [m.Cont(id="4111", descriere="Clienti", cont_standard="4111", tip="Activ"),
                m.Cont(id="707", descriere="Venituri marfuri", cont_standard="707", tip="Pasiv"),
@@ -264,11 +266,11 @@ def _res_d406_complet():
         m.LinieNota(record_id="1", cont="4111", descriere="", debit=Decimal("1210"), credit=Decimal("0"), cont_partener_id=CID),
         m.LinieNota(record_id="2", cont="707", descriere="", debit=Decimal("0"), credit=Decimal("1000"), cont_partener_id=CID),
         m.LinieNota(record_id="3", cont="4427", descriere="", debit=Decimal("0"), credit=Decimal("210"), cont_partener_id=CID)])
-    fv = m.Factura(nr="1", data=date(2026, 6, 10), partener_id=CID, partener_nume="ALTEX ROMANIA SRL",
+    fv = m.Factura(nr="1", data=date(2026, 6, 10), partener_id=CID, partener_nume="ALTEX ROMANIA SRL", oras="Bucuresti",   # [C69]
                    tip="380", cont="4111", linii=[m.LinieFactura(nr=1, cont="707", descriere="Marfa",
                    cantitate=Decimal("1"), pret_unitar=Decimal("1000"), valoare=Decimal("1000"), sens="C",
                    tva_cod="310344", tva_procent=Decimal("21"), tva_suma=Decimal("210"))])
-    fc = m.Factura(nr="F100", data=date(2026, 6, 12), partener_id=CID, partener_nume="ALTEX ROMANIA SRL",
+    fc = m.Factura(nr="F100", data=date(2026, 6, 12), partener_id=CID, partener_nume="ALTEX ROMANIA SRL", oras="Bucuresti",   # [C69]
                    tip="380", cont="401", linii=[m.LinieFactura(nr=1, cont="371", descriere="Marfa cump",
                    cantitate=Decimal("1"), pret_unitar=Decimal("500"), valoare=Decimal("500"), sens="D",
                    tva_cod="301344", tva_procent=Decimal("21"), tva_suma=Decimal("105"))])
@@ -345,14 +347,14 @@ def test_genereaza_emite_liniile_reale_din_factura_linii():
                     open("tenant_template.sql", encoding="utf-8").read(), SCHEMA))
                 cur.execute("SET search_path TO %s, public" % SCHEMA)
                 cur.execute(
-                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, telefon, "
                     "declarant_nume, declarant_prenume, declarant_functie, platitor_tva, tip_decont, regim_fiscal) "
                     "VALUES (1, 'TEST SRL', '14399840', 'Str. Testul 1', 'Bucuresti', 'B', '4711', 'BCR', "
-                    "'RO49BCRA0000000000000000', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', 'real')")
+                    "'RO49BCRA0000000000000000', '0212223344', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', 'real')")
                 # factura de vanzare cu DOUA linii reale, reconciliate cu antetul (net 6000 + tva 1260 = 7260)
                 cur.execute(
-                    "INSERT INTO facturi (numar, data_emitere, tert_cui, tert_nume, total, tva, directie) "
-                    "VALUES ('FV100', '2026-06-10', 'RO14399840', 'Client SRL', 7260, 1260, 'emisa') RETURNING id")
+                    "INSERT INTO facturi (numar, data_emitere, tert_cui, tert_nume, total, tva, directie, tert_oras) "   # [C69] localitatea
+                    "VALUES ('FV100', '2026-06-10', 'RO14399840', 'Client SRL', 7260, 1260, 'emisa', 'Bucuresti') RETURNING id")
                 fid = cur.fetchone()[0]
                 cur.execute("INSERT INTO factura_linii (factura_id, descriere, um, cantitate, pret_unitar, cota_tva) "
                             "VALUES (%s, 'Deseuri fier vechi', 'kg', 1000, 5, 21)", (fid,))

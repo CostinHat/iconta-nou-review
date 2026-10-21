@@ -305,6 +305,17 @@ CLASIFICARE = {
             "de cerere (numărul rămâne neconfirmat, canalul pe email); un cod scris și netrimis expiră singur și se poate cere altul "
             "(`PAUZA_COD_SEC`). Canalul WhatsApp cere în plus numărul confirmat — CHECK-ul `users_canal_notificari_check` din bază.",
     },
+    "POST /tenants/{tenant_id}/reevaluare-valuta/nota": {
+        "clasa": NECRITIC,
+        "efecte": "cursul BNR al lunii în cache (public.curs_bnr_zilnic, înaintea tranzacției) <-> nota de reevaluare (ciornă) cu rândurile "
+                  "ei din reevaluari_valuta și înlocuirea ciornei vechi a lunii",
+        "de_ce":
+            "[lotul 10, deficiența 429, 20.10.2026] Două tranzacții DELIBERAT, ca la emiterea în valută: (1) cursul BNR al ultimei zile "
+            "bancare se aduce și se scrie în cache ÎNAINTEA tranzacției notei (`uc_curs_bnr.asigura_cursul`, decizia din 04.09.2026: "
+            "cache-ul supraviețuiește eșecului actului, iar descărcarea nu ține o conexiune); (2) actul — ștergerea ciornei vechi a lunii, "
+            "nota nouă, liniile și rândurile `reevaluari_valuta` — e într-o singură tranzacție, tot-sau-nimic. Un curs scris și o notă "
+            "neînregistrată lasă numai cache-ul mai bogat, care nu e stare a firmei.",
+    },
     "POST /coada": {
         "clasa": NECRITIC,
         "efecte": "elementul intra in coada <-> verdictul validatorului <-> notificarea validatorilor",
@@ -667,6 +678,27 @@ CLASIFICARE = {
             "(Nota de forma: textul asta NU numeste tabelul urmat de cuvinte, fiindca prima lui "
             "forma a aprins `test_schema_coloane` — scanerul de coloane a citit proza mea ca pe "
             "referinte SQL, si avea dreptate ca tipar.)",
+    },
+    # [lotul 10, deficiența 431] asociații și cotele în Date firmă (corectura și cesiunea) — aceeași formă, același verdict
+    "POST /tenants/{tenant_id}/asociati": {
+        "clasa": FALS,
+        "efecte": "-",
+        "de_ce":
+            "OMONIMIE in domeniul #0 (in afara oricarei conexiuni): verificarea comuna a randurilor "
+            "(`asociati_import_api.verifica_randuri`) cheama `respinge`, iar scanerul il reuneste cu "
+            "omonimul din coada declaratiilor; verificarea doar construieste refuzuri, nu scrie. Apelul "
+            "ANAF de acolo e o INTEROGARE de CUI, facuta inaintea conexiunii pe schema firmei. Toate "
+            "scrierile reale — structura asociatilor si randul din jurnalul Date firma — sunt intr-o "
+            "singura tranzactie, a use-case-ului (`uc_asociati._scrie`); un refuz o anuleaza intreaga.",
+    },
+    "POST /tenants/{tenant_id}/asociati/cesiune": {
+        "clasa": FALS,
+        "efecte": "-",
+        "de_ce":
+            "aceeasi forma ca POST /tenants/{tenant_id}/asociati: OMONIMIE in domeniul #0 (`respinge` "
+            "din verificarea comuna reunit cu omonimul din coada declaratiilor), interogarea ANAF "
+            "inaintea conexiunii; arhivarea structurii de dinainte, structura noua si jurnalul sunt "
+            "intr-o singura tranzactie (`uc_asociati._scrie`), intreaga sau deloc.",
     },
     "POST /tenants/{tenant_id}/solduri": {
         "clasa": NECRITIC,

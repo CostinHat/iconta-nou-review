@@ -662,16 +662,18 @@ def test_def_378_d100_porneste_de_la_rezultatul_fiscal_cumulat(patron, firma_pro
 # ── 379–381 — declarațiile: rândurile, D406 ───────────────────────────────────────────────────────────────────────────────────
 @pytest.fixture()
 def firma_tva(patron):
-    """O firmă NOUĂ plătitoare de TVA (lunar), cu o factură de 5.000 lei la 21% pe 704, emisă azi, și nota ei validată."""
+    """O firmă NOUĂ plătitoare de TVA (lunar), cu o factură de 5.000 lei la 21% pe 704, emisă în luna încheiată (`e2e_lot72_declaratii.LUNA`:
+    pe luna în curs declarațiile nu se generează — 383, comanda 10.2 pct.1), și nota ei validată."""
     from core import db, facturi_api
     from e2e_bloc_a import pregateste_firma
+    from e2e_lot72_declaratii import LUNA
     from e2e_lot81 import _valideaza_luna
     for f in firma_noua():
         pregateste_firma(patron, f)
         with db.get_conn(f["schema"]) as c:
             r = facturi_api.emite_factura(c, [{"descriere": "Servicii consultanță", "cantitate": 1, "pret_unitar": 5000, "cota_tva": 21,
                                               "cont_venit": "704"}], tert_nume="DANTE INTERNATIONAL SA", tert_cui=CUI_DANTE,
-                                          data_emitere=AZI.replace(day=2).isoformat(), status="emisa")
+                                          data_emitere=LUNA.inceput.replace(day=2).isoformat(), status="emisa")
             assert r.get("ok"), r
             c.commit()
         _valideaza_luna(patron, f)
@@ -679,11 +681,12 @@ def firma_tva(patron):
 
 
 def test_def_379_randurile_d300_au_denumirea_oficiala(patron, firma_tva):
-    """379. La D300 rândurile apăreau doar ca număr („rândul 9, coloana Valoare”). Pașii: Declarații -> D300 pe luna curentă -> „Din ce e
+    """379. La D300 rândurile apăreau doar ca număr („rândul 9, coloana Valoare”). Pașii: Declarații -> D300 pe luna încheiată -> „Din ce e
     făcută declarația” -> „Rânduri completate” are coloana „denumire în formular”: rândul 9 = „Livrări de bunuri şi prestări de servicii,
     taxabile cu cota 21%”, rândul 19 = „TOTAL TAXĂ COLECTATĂ …”."""
     from e2e_bloc_e import _declaratie, _deschide_componente, _sectiune
-    _declaratie(patron, firma_tva, "d300", AZI.year, AZI.month)
+    from e2e_lot72_declaratii import LUNA
+    _declaratie(patron, firma_tva, "d300", LUNA.an, LUNA.luna)
     _deschide_componente(patron)
     sec = _sectiune(patron, "Rânduri completate")
     patron.captura()
@@ -694,10 +697,11 @@ def test_def_379_randurile_d300_au_denumirea_oficiala(patron, firma_tva):
 
 
 def test_def_380_contul_de_venit_al_facturii_e_cel_din_nota(patron, firma_tva):
-    """380 (PRIORITAR). Factura contată pe 704 apărea pe 707 în „Facturi de vânzare”. Pașii: Declarații -> D406 pe luna curentă -> „Din ce e
+    """380 (PRIORITAR). Factura contată pe 704 apărea pe 707 în „Facturi de vânzare”. Pașii: Declarații -> D406 pe luna încheiată -> „Din ce e
     făcută declarația” -> „Facturi de vânzare”: „704 · credit 5.000,00”, niciun 707; fără avertismentul de nepotrivire jurnal–facturi."""
     from e2e_bloc_e import _declaratie, _deschide_componente, _sectiune
-    _declaratie(patron, firma_tva, "d406", AZI.year, AZI.month)
+    from e2e_lot72_declaratii import LUNA
+    _declaratie(patron, firma_tva, "d406", LUNA.an, LUNA.luna)
     t = _text(patron)
     _deschide_componente(patron)
     sec = _sectiune(patron, "Facturi de vânzare")
@@ -710,19 +714,21 @@ def test_def_380_contul_de_venit_al_facturii_e_cel_din_nota(patron, firma_tva):
 def test_def_381_nota_pe_401_cere_partenerul_si_d406_il_poarta(patron, firma_tva):
     """381. Nota „plata furnizor” (401 = 5311) n-avea furnizor: D406 spunea „0 furnizori, 0 plăți”.
     Pașii: Registrul jurnal -> Notă nouă 401 = 5311, 500 lei, fără partener -> „Salvează”: refuzul „scrie partenerul” lângă câmp, nimic
-    scris -> partenerul DANTE INTERNATIONAL SA, CUI 14399840 -> salvată și validată -> D406 pe luna curentă: fără avertismentul „fără
+    scris -> partenerul DANTE INTERNATIONAL SA, CUI 14399840 -> salvată și validată -> D406 pe luna încheiată (a notelor): fără avertismentul „fără
     partener”, iar XML-ul are plata cu SupplierID-ul partenerului."""
     from e2e_bloc_b import _jurnal
     from e2e_bloc_e import _declaratie
     from e2e_lot81 import _valideaza_luna
     from e2e_bloc_d import _nota_validata
+    from e2e_lot72_declaratii import LUNA
     pg = patron.pg
-    # [406] casa nu ajunge sub zero: numerarul plății există întâi în casă (aportul asociatului, validat, înaintea plății)
-    _nota_validata(firma_tva, AZI.replace(day=1).isoformat(), "5311", "1012", 500, "Aport numerar E2E 381")
+    # [406] casa nu ajunge sub zero: numerarul plății există întâi în casă (aportul asociatului, validat, înaintea plății); notele stau
+    # în luna încheiată, pe care se generează D406 (383)
+    _nota_validata(firma_tva, LUNA.inceput.isoformat(), "5311", "1012", 500, "Aport numerar E2E 381")
     _jurnal(patron, firma_tva, None)
     pg.click("#j-nota-noua")
     pg.wait_for_selector("#je-desc", timeout=10000)
-    pg.fill("#je-data", AZI.replace(day=3).isoformat())
+    pg.fill("#je-data", LUNA.inceput.replace(day=3).isoformat())
     pg.fill("#je-desc", "Plata furnizor E2E 381")
     pg.fill("#je-doc", "OP 381")
     pg.fill("#je-linii .je-deb", "401")
@@ -738,7 +744,7 @@ def test_def_381_nota_pe_401_cere_partenerul_si_d406_il_poarta(patron, firma_tva
         pg.click("#je-salveaza")
     assert rr.value.status < 400, rr.value.text()
     _valideaza_luna(patron, firma_tva)
-    _declaratie(patron, firma_tva, "d406", AZI.year, AZI.month)
+    _declaratie(patron, firma_tva, "d406", LUNA.an, LUNA.luna)
     t = _text(patron)
     xml = pg.locator("details.dec-xml:has(summary:text('Vezi XML-ul generat')) pre").text_content()
     patron.captura("d406")

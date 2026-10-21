@@ -33,6 +33,12 @@ TEMEI_291_5 = _c.Temei(
                 "livrării/prestării, pentru care se aplică cota în vigoare la data la care a fost "
                 "emisă factura ori la data la care a fost încasat avansul."))
 
+#: [lotul 10, deficiența 428] „Formularul manual rămâne doar pentru cazuri speciale.” Încasarea / plata prin bancă sau casă legată de
+#: factură mută singură TVA-ul (`tva_incasare.linii_la_incasare`); nota manuală e pentru ce nu trece pe acolo.
+AVERTISMENT_CAZ_SPECIAL = (
+    "Nota manuală e pentru cazurile speciale (o compensare, o încasare care nu e legată de o factură). Încasările și plățile din bancă "
+    "sau din casă legate de factură mută TVA-ul singure, pe partea încasată; pentru ele nota aceasta ar muta TVA-ul a doua oară.")
+
 #: Nomenclator ÎNCHIS: norma numește exact două situații, nu o listă exemplificativă.
 #: Cheia e ce trimite ecranul; valoarea, cum se numește situația într-un refuz sau într-o notă.
 RAMURI = {

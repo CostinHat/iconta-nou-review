@@ -62,7 +62,7 @@ def conn():
             # structura inițială, apoi cesiunea cu data ei — prin importul REAL al asociaților
             asociati_import_api.importa(c, [{"nume": "ASOCIAT A", "cnp": _A, "cota": 100}])
             r = asociati_import_api.importa(c, [{"nume": "ASOCIAT B", "cnp": _B, "cota": 100}], data_cesiune="2026-04-01")
-            assert r == {"importati": 1, "arhivati": 1}
+            assert r == {"importati": 1, "arhivati": 1, "inlocuit": None}   # [lotul 10, 426] cesiunea nu înlocuiește (arhivează)
             yield c
         finally:
             c.rollback()

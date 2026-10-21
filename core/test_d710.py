@@ -24,7 +24,7 @@ import core.duk as duk
 
 def _prof():
     return {"cui": "456789123", "nume": "TEST RECTIFICATIVA SRL",
-            "adresa": "Str. Test nr.1 Bucuresti Sector 1"}
+            "adresa": "Str. Test nr.1 Bucuresti Sector 1", "declarant_nume": "POPESCU", "declarant_prenume": "ION", "declarant_functie": "ADMINISTRATOR"}  # [lotul 10, C69] + declarantul: structura D100-D710 „nume_declar/prenume_declar/functie_declar … DA”
 
 
 def _obl(cod="121", i=100, c=150, cota="1"):
@@ -145,7 +145,7 @@ def test_structura_cota_bidirectional_gard():
     import pytest
     from core.d710 import calcul_d710 as _c, build_xml
     from core.common import Perioada
-    prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti"}
+    prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti", "declarant_nume": "POPESCU", "declarant_prenume": "ION", "declarant_functie": "ADMINISTRATOR"}
     def mk(obl, luna=3):
         return build_xml(_c(prof, Perioada(2025, luna=luna), {}, {"obligatii": obl}))
 
@@ -180,7 +180,7 @@ def test_cod_bugetar_nomenclator_duk_si_antidrop():
     from core.d100 import COD_BUGETAR
     from core.common import Perioada
     import core.duk as duk
-    prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti"}
+    prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti", "declarant_nume": "POPESCU", "declarant_prenume": "ION", "declarant_functie": "ADMINISTRATOR"}
 
     # sursa unica + valorile dominante
     assert COD_BUGETAR["121"] == COD_BUGETAR["103"] == "5503XXXXXX"
@@ -221,7 +221,7 @@ def test_checksum_r11b_multi_obligatie_si_duk():
     from core.common import Perioada
     import core.duk as duk
     import re
-    prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti"}
+    prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti", "declarant_nume": "POPESCU", "declarant_prenume": "ION", "declarant_functie": "ADMINISTRATOR"}
     obl = [{"cod_oblig": "121", "suma_dat_i": 100, "suma_dat_c": 150, "cota": "1"},
            {"cod_oblig": "103", "suma_dat_i": 200, "suma_dat_c": 300}]
     res = _c(prof, Perioada(2025, luna=6), {}, {"obligatii": obl})
@@ -258,7 +258,7 @@ def test_r15_termen_definitivare_micro_trim4_duk():
 
     # DUK-backed: scadenta calculata (25.06.2026) valida; una gresita -> R15 cu 25.06.2026 revelat (dinti)
     if duk.poate_valida("d710"):
-        prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti"}
+        prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti", "declarant_nume": "POPESCU", "declarant_prenume": "ION", "declarant_functie": "ADMINISTRATOR"}
         def mk(scad=None):
             o = {"cod_oblig": "121", "suma_dat_i": 100, "suma_dat_c": 150, "cota": "1"}
             if scad:
@@ -288,7 +288,7 @@ def test_scadente_nr_evid_urmeaza_scadenta_emisa():
     assert _scadenta_d710("103", 2025, 3) == (25, 4, 2025)
     assert _scadenta_d710("103", 2025, 12) == (25, 1, 2026)
 
-    prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti"}
+    prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti", "declarant_nume": "POPESCU", "declarant_prenume": "ION", "declarant_functie": "ADMINISTRATOR"}
 
     # nr_evid URMEAZA scadenta emisa: cu override, poz.12-17 (index 11:17) = ZZLLAA al scadentei override
     o = {"cod_oblig": "103", "suma_dat_i": 500, "suma_dat_c": 400, "scadenta": "25.12.2025"}

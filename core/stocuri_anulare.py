@@ -26,6 +26,12 @@ from decimal import Decimal
 import psycopg2 as _pg
 from psycopg2.extras import RealDictCursor
 from core import pdf_util as _pu
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] mișcarea stornată de două ori în cursă -> refuz numit, nu 500
+
+#: [lotul 10, C73 / U2] refuzul respingerii a doua, la cursă: altă cerere a respins documentul și i-a stornat mișcările între timp
+COD_DEJA_STORNAT = "DEJA_RESPINS"
+MESAJ_DEJA_STORNAT = ("Documentul a fost respins între timp de altă cerere: mișcarea „%s” e deja stornată în fișa de magazie. "
+                      "Respingerea ta nu s-a scris; reîncarcă lista ca să vezi starea lui.")
 
 #: mișcările VII ale unui document: nici stornări, nici stornate deja
 _VII = "m.anuleaza_id IS NULL AND NOT EXISTS (SELECT 1 FROM {s}.miscari_stoc r WHERE r.anuleaza_id = m.id)"
@@ -96,19 +102,26 @@ def storneaza(conn, schema, grup, note_ids, motiv):
             # [258] mișcarea fără document se numește prin data ei, nu prin id-ul intern (textul ajunge în fișa de magazie)
             doc = ("Stornare: %s (respins la validare)" % (m.get("document") or "mișcarea din %s" % _pu.data_ro(m["data"])))[:100]
             try:
-                cur.execute(f"""INSERT INTO {schema}.miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document,
-                                    inregistrare_id, locatie, factura_id, nir_id, anuleaza_id)
-                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
-                            (m["articol_id"], d, m["tip"], -Decimal(str(m["cantitate"])), m.get("pret_unitar"),
-                             -Decimal(str(m["valoare"])), doc, m.get("inregistrare_id"), m.get("locatie"), m.get("factura_id"),
-                             m.get("nir_id"), m["id"]))
+                # [lotul 10, C73 / U2] o mișcare se stornează o singură dată (`miscari_stoc_anuleaza_uq`): două respingeri simultane ale
+                # aceluiași document treceau amândouă de starea din coadă, iar a doua cădea aici cu 500. Acum refuz numit, nimic scris.
+                with _chei.refuza_dublura(cur, ("miscari_stoc_anuleaza_uq",), lambda cur, e: _chei.CheieDublata(
+                        MESAJ_DEJA_STORNAT % (m.get("document") or "din %s" % _pu.data_ro(m["data"])))):
+                    cur.execute(f"""INSERT INTO {schema}.miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document,
+                                        inregistrare_id, locatie, factura_id, nir_id, anuleaza_id)
+                                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+                                (m["articol_id"], d, m["tip"], -Decimal(str(m["cantitate"])), m.get("pret_unitar"),
+                                 -Decimal(str(m["valoare"])), doc, m.get("inregistrare_id"), m.get("locatie"), m.get("factura_id"),
+                                 m.get("nir_id"), m["id"]))
+                    noi.append(cur.fetchone()["id"])
+            except _chei.CheieDublata as e:
+                cur.execute("ROLLBACK TO SAVEPOINT stornare")
+                return {"eroare": str(e), "cod": COD_DEJA_STORNAT}
             except _pg.errors.RaiseException as e:
                 # [Retestul plasei, regula d (R8) în bază] stocul net ar deveni negativ: baza refuză chiar rândul, înaintea fișei de
                 # mai jos — același refuz, cu nimic scris (altfel tranzacția apelantului rămânea abandonată)
                 if MARCAJ_STOC_NEGATIV not in str(e):
                     raise
                 return refuz(m["articol_id"])
-            noi.append(cur.fetchone()["id"])
         # fișa fiecărui articol atins se recalculează cu stornările: o intrare a cărei marfă a ieșit deja nu se poate storna (fișa e
         # cronologică — stricteța ei trece de regula din bază, care vede numai stocul net)
         for aid in sorted({m["articol_id"] for m in miscari}):

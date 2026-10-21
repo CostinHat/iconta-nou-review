@@ -111,7 +111,11 @@ def _cheltuieli_independent(conn, perioada, fereastra=None):
 def _rezultat_contabil_independent(conn, fereastra):
     """Rezultatul contabil al ferestrei, ca rândul 7 din D101: (venituri de exploatare − cheltuieli de exploatare) + (venituri financiare
     76x − cheltuieli financiare 66x), fiecare componentă rotunjită la leu înainte de adunare (ca rândurile 1, 2, 4, 5). Note VALIDATE, fără
-    închiderea în 121. SQL PROPRIU: calea 2 nu cheamă `d101.pull`."""
+    închiderea în 121. SQL PROPRIU: calea 2 nu cheamă `d101.pull`.
+
+    [lotul 10, deficiența 425] Plus rulajele PRELUATE din balanța de deschidere care intră în fereastră (`rulaje_preluate.rulaje`, fără
+    închiderea în 121), adunate aici pe aceeași regulă 76/66 — intrarea e partajată (§8), agregarea e a acestei căi."""
+    from core import rulaje_preluate as _rp
     inc, sf = fereastra
     q = ("SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '7%%' AND l.cont_credit NOT LIKE '76%%' THEN l.suma ELSE 0 END),0), "
          "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0), "
@@ -122,7 +126,14 @@ def _rezultat_contabil_independent(conn, fereastra):
          "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'")
     with conn.cursor() as cur:
         r = _repo.sql(cur, q, inc, sf)
-    r = tuple(r.values()) if isinstance(r, dict) else r
+        prel = _rp.rulaje(cur, None, inc, sf, fara_inchidere_121=True)
+    r = list(r.values()) if isinstance(r, dict) else list(r)
+    for cont, (d, c) in prel.items():
+        k = str(cont)
+        i, v = ((2, c) if k.startswith("76") else (0, c) if k.startswith("7") else (3, d) if k.startswith("66") else (1, d)
+                if k.startswith("6") else (None, None))
+        if i is not None:
+            r[i] = (r[i] or 0) + v
     ve, ce, vf, cf = (_q(x or 0) for x in r)
     return Decimal((ve - ce) + (vf - cf))
 

@@ -8,10 +8,12 @@ from core import export_winmentor as wm
 
 
 def _factura(numar="17", serie="AA", tva_incasare=False, taxare_inversa=False):
-    firma = {"nume": "FIRMA SRL", "cui": "14399840", "tva_la_incasare": tva_incasare}
+    # [lotul 10, deficiența 428, actualizat] TVA la încasare e al FACTURII la data ei (`export_saga.date_factura` îl pune pe factură din
+    # `tva_incasare.regim`), nu bifa firmei de azi
+    firma = {"nume": "FIRMA SRL", "cui": "14399840"}
     factura = {"numar": numar, "serie": serie, "data_emitere": date(2026, 2, 12),
                "data_scadenta": date(2026, 3, 14), "tert_cui": "RO1234567",
-               "taxare_inversa": taxare_inversa, "tert_nume": "CLIENT SA"}
+               "taxare_inversa": taxare_inversa, "tert_nume": "CLIENT SA", "tva_la_incasare": tva_incasare}
     linii = [{"descriere": "Consultanță IT", "um": "ore", "cantitate": 10, "pret_unitar": 100, "cota_tva": 21}]
     return firma, factura, linii
 

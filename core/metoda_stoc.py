@@ -57,3 +57,31 @@ def cere(cur, schema, metoda, actiune):
             actiune, ETICHETE[m], "lunar, din toate vânzările (descărcarea gestiunii)" if m == GV
             else "pe articol, la fiecare ieșire"))
     return m
+
+
+def declara_la_migrare(cur, schema, metoda, user_id):
+    """[deficiența 425, comanda Costin 10.1, verbatim în DECIZII „Comanda 10.1”] „când balanța are sold pe 371, metoda de stoc se cere la
+    migrare, nu rămâne «nedeclarată»”. Scrie metoda pe firma care N-O ARE încă, cu aceleași reguli ca Date firmă
+    (`firma_profil_api.salveaza_date`): numai global-valoric / cantitativ-valoric, combinațiile nesuportate refuzate clar, iar schimbarea
+    rămâne în jurnalul Date firmă (`firma_profil_jurnal`, cine și când — §6.4). O metodă deja declarată NU se schimbă de aici (se schimbă
+    din Date firmă, cu jurnal) — întoarce metoda existentă. Ridică `ValueError` numit (`cod`) pe o valoare greșită sau pe o firmă fără
+    profil."""
+    from core import repo_firma_profil as _rfp
+    m = str(metoda or "").strip() or None
+    existenta = citeste(cur, schema)
+    if existenta:
+        return existenta
+    if m is None:
+        raise refuz(COD_NEDECLARATA, "Balanța are sold pe mărfuri (371): alege metoda de stoc a firmei (global-valoric sau "
+                                     "cantitativ-valoric) — de ea depinde cum se descarcă marfa.")
+    if m in NESUPORTATE:
+        raise refuz(COD_NESUPORTATA, MESAJ_NESUPORTATA % NESUPORTATE[m])
+    if m not in (GV, CV):
+        raise refuz(COD_NEDECLARATA, "Metoda de stoc e global-valorică sau cantitativ-valorică.")
+    p = ('"%s".' % schema) if schema else ""
+    cur.execute("UPDATE %sfirma_profil SET metoda_stoc = %%s WHERE id = 1 AND metoda_stoc IS NULL" % p, (m,))
+    if cur.rowcount != 1:
+        raise refuz(COD_NEDECLARATA, "Firma nu are încă datele de profil (Date firmă), deci metoda de stoc nu se poate scrie. Completează "
+                                     "Date firmă și salvează balanța din nou.")
+    _rfp.jurnalizeaza_campuri(cur, {"metoda_stoc": None}, {"metoda_stoc": m}, user_id)
+    return m

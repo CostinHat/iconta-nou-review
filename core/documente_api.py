@@ -40,7 +40,16 @@ def balanta(conn, schema, an, luna):
     [08.10.2026, decizia Costin §6 pct.7 — R36, verbatim in DECIZII] „evidența = ce a validat un om. Balanța arată implicit doar
     validatul, iar ciornele apar separat, cu indicator.” Toate cele cinci perechi citesc numai notele VALIDATE; ciornele lunii (si cele
     de dinainte, inca nevalidate) le da `ciorne_balanta`, separat.
+
+    [lotul 10, deficiența 425, comanda Costin 10.1, verbatim în DECIZII] „Când fișierul are soldurile inițiale ale anului și rulajele, ele
+    intră ca sold inițial și sume precedente, cu toate conturile care au rulaj. Când are doar solduri finale, comportamentul de acum
+    rămâne”. În anul preluării, pe lunile care se termină după data soldurilor de preluare, cu balanța de deschidere CU RULAJE
+    (`rulaje_preluate.preluate`): `si_*` = soldul de la 1 ianuarie (`si_an`), `prec_*` cuprind și rulajele preluate 01.01 .. data
+    preluării (`prel_*` le numesc, ca cititorii cumulului să le poată lua fără închiderea în 121 — `rulaje_cumulate`); soldul final iese
+    același (sold de la 1 ianuarie + rulajele = soldul final preluat). Anul următor își ia soldul inițial ca până acum (soldul preluat +
+    notele anilor anteriori). Fără rulaje (NULL), totul rămâne ca înainte; `avertisment_balanta` spune ce lipsește.
     """
+    from core import rulaje_preluate as _rp
     inceput_an = date(an, 1, 1)
     inceput = date(an, luna, 1)
     sfarsit = date(an + (luna == 12), (luna % 12) + 1, 1)
@@ -74,9 +83,17 @@ def balanta(conn, schema, an, luna):
             LEFT JOIN {schema}.plan_conturi pc ON pc.simbol = COALESCE(si.cont, r.cont)
             ORDER BY 1
         """, (sfarsit, sfarsit, inceput_an, inceput_an, inceput_an, inceput, inceput_an, inceput, inceput, inceput))
+        rows = cur.fetchall()
+        prel = _rp.preluate(cur, schema, an)
+        prel = prel["conturi"] if prel and prel["ref"] < sfarsit else {}
         randuri = []
-        for cont, den, sd, sc, ant_d, ant_c, prec_d, prec_c, rul_d, rul_c in cur.fetchall():
+        for cont, den, sd, sc, ant_d, ant_c, prec_d, prec_c, rul_d, rul_c in rows:
             sd, sc = float(sd), float(sc)
+            p = prel.get(cont)
+            prel_d, prel_c = (float(p["rul_d"]), float(p["rul_c"])) if p else (0.0, 0.0)
+            if p:   # [425] soldul de la 1 ianuarie și rulajele preluate, în locul soldului final de la data preluării
+                sd, sc = float(p["si_d"]), float(p["si_c"])
+                prec_d, prec_c = float(prec_d) + prel_d, float(prec_c) + prel_c
             if ant_d or ant_c:   # notele anilor anteriori: soldul de la 1 ianuarie, net
                 net = sd + float(ant_d) - sc - float(ant_c)
                 sd, sc = (round(net, 2), 0.0) if net > 0 else (0.0, round(-net, 2))  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
@@ -88,6 +105,7 @@ def balanta(conn, schema, an, luna):
             randuri.append({"cont": cont, "denumire": den,
                             "si_d": sd, "si_c": sc,
                             "prec_d": float(prec_d), "prec_c": float(prec_c),
+                            "prel_d": prel_d, "prel_c": prel_c,   # [425] partea preluată din `prec_*` (0 fără rulaje preluate)
                             "rul_d": float(rul_d), "rul_c": float(rul_c),
                             "tot_d": round(tot_d, 2), "tot_c": round(tot_c, 2),  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
                             "sf_d": round(tot_d - tot_c, 2) if tot_d > tot_c else 0,  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
@@ -121,8 +139,23 @@ def rulaje_cumulate(r, parte):
     """Rulajul de la 1 ianuarie pana la finalul lunii (sume precedente + rulaje curente), pe 'd' sau 'c'.
 
     Pentru cititorii care voiau cumulatul anului (KPI, cash-flow): inainte il luau din `rul_*`, cand `rul_*` era
-    cumulat; acum `rul_*` e luna, deci cumulatul se cere pe nume."""
-    return r["prec_" + parte] + r["rul_" + parte]
+    cumulat; acum `rul_*` e luna, deci cumulatul se cere pe nume.
+
+    [lotul 10, deficiența 425] Rulajele PRELUATE din `prec_*` (`prel_*`) intră fără închiderea în 121 (`rulaje_preluate.fara_inchidere`):
+    la o firmă care închidea lunar, 707 preluat are 180.000 pe credit și tot 180.000 pe debit (închiderea), iar cumulul net ar fi 0."""
+    from core import rulaje_preluate as _rp
+    d, c = r.get("prel_d", 0), r.get("prel_c", 0)
+    fd, fc = _rp.fara_inchidere(r["cont"], d, c)
+    inchidere = (d - fd) if parte == "d" else (c - fc)
+    return r["prec_" + parte] + r["rul_" + parte] - inchidere
+
+
+def avertisment_balanta(conn, schema, an):
+    """[lotul 10, deficiența 425] Afirmația „rulajele dinainte de preluare lipsesc” pentru balanța pe `an` (`rulaje_preluate.avertisment`),
+    sau None. O sursă pentru ecran (ruta) și pentru PDF."""
+    from core import rulaje_preluate as _rp
+    with conn.cursor() as cur:
+        return _rp.avertisment(cur, schema, an, "balanta")
 
 # Cele trei perechi pe care o balanta de verificare trebuie sa le inchida. Constanta, nu literale
 # imprastiate: gardul citeste MULTIMEA, nu cauta un sir intr-un text (METODA §23).
@@ -233,8 +266,11 @@ def balanta_pdf(conn, schema, an, luna, nume_firma=""):
         Paragraph(antet_raport(nume_firma, _cui, platitor_tva=_platitor), st_meta),
         Paragraph("Cuprinde numai notele validate." + (" %s." % _cate(
             _n_ci, "ciorn\u0103 nevalidat\u0103 nu este inclus\u0103", "ciorne nevalidate nu sunt incluse") if _n_ci else ""), st_meta),
-        Spacer(1, 8),
     ]
+    _av = avertisment_balanta(conn, schema, an)   # [lotul 10, 425] rulajele dinainte de preluare lipsesc: se spune și pe hârtie
+    if _av:
+        el.append(Paragraph(_av["motiv"], st_meta))
+    el.append(Spacer(1, 8))
 
     cap = ["Cont", "Denumire", "SI D", "SI C", "Prec. D", "Prec. C", "Rulaj D", "Rulaj C", "Total D", "Total C", "SF D", "SF C"]
     _col = [c for _ce, d, c_ in PERECHI_BALANTA for c in (d, c_)]

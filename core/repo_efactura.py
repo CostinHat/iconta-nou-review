@@ -10,6 +10,7 @@ FIECARE FUNCȚIE PRIMEȘTE CURSORUL APELANTULUI. Nu deschide conexiuni, nu comit
 nu construiește `HTTPException` și nu decide niciun cod HTTP. *Așa rămâne întreagă tranzacția pe
 care o deține apelantul — contractul P4, care nu se redeschide aici.*
 """
+from core import chei_unice as _chei   # [lotul 10, C73 / U2] a doua trimitere vie a facturii -> numită, nu 500
 
 
 def primite_in_asteptare(cur, schema):
@@ -122,10 +123,47 @@ def insereaza_trimitere_pregatita(cur, schema, factura_id, mediu, xml, sha):
     return cur.fetchone()
 
 
+def trimitere_in_curs(cur, schema, factura_id, mediu, minute):
+    """[lotul 10, C73 / U2] Poarta trimiterii, SERIALIZATĂ pe factură: lacătul pe rândul facturii (`FOR UPDATE`, ține până la
+    comiterea rândului «pregătit») face ca două trimiteri simultane să treacă prin poartă una după alta. Întoarce trimiterea
+    «pregătit» a facturii pornită în ultimele `minute` (încărcarea ei la ANAF încă rulează), sau None.
+
+    De ce: rândul «pregătit» nu e în indexul `uq_efactura_trimiteri_viu` (numai incarcat/in_prelucrare/ok), deci două cereri
+    simultane îl scriau amândouă, încărcau AMÂNDOUĂ factura la ANAF (dublă factură în SPV), iar a doua cădea abia la scrierea
+    rezultatului, cu 500 și cu indexul ANAF pierdut."""
+    cur.execute(f"SELECT id FROM {schema}.facturi WHERE id = %s FOR UPDATE", (factura_id,))
+    cur.execute(f"""SELECT id, trimis_la FROM {schema}.efactura_trimiteri
+                WHERE factura_id = %s AND mediu = %s AND stare = 'pregatit' AND trimis_la > now() - %s * interval '1 minute'
+                ORDER BY id DESC LIMIT 1""", (factura_id, mediu, minute))
+    return cur.fetchone()
+
+
+def refuz_alta_vie(cur, schema, trimitere_id):
+    """Refuzul: factura avea deja altă trimitere vie (citită după întoarcerea la savepoint)."""
+    cur.execute(f"""SELECT a.id FROM {schema}.efactura_trimiteri a JOIN {schema}.efactura_trimiteri t ON t.factura_id = a.factura_id
+                WHERE t.id = %s AND a.id <> t.id AND a.mediu = 'prod' AND a.stare IN ('incarcat','in_prelucrare','ok')""",
+                (trimitere_id,))
+    r = cur.fetchone()
+    return _chei.CheieDublata("ANAF a primit și această încărcare, dar factura avea deja o trimitere vie (trimiterea %s): factura "
+                              "e de două ori în SPV. Verifică în SPV și anulează dublura." % (r[0] if r else "?"),
+                              existent={"trimitere_id": r[0]} if r else None)
+
+
 def rezultatul_trimiterii(cur, schema, stare, index_incarcare, execution_status, errmsg, trimitere_id):
-    cur.execute(f"""UPDATE {schema}.efactura_trimiteri
-                SET stare=%s, index_incarcare=%s, execution_status=%s, error_message=%s,
-                    actualizat_la=now(),
-                    finalizat_la=CASE WHEN %s IN ('nok','eroare_upload') THEN now() ELSE finalizat_la END
-                WHERE id=%s""",
-                (stare, index_incarcare, execution_status, errmsg, stare, trimitere_id))
+    """Rezultatul încărcării, pe rândul «pregătit». [lotul 10, C73 / U2] Dacă rândul ar deveni al doilea viu al facturii
+    (`uq_efactura_trimiteri_viu`; poarta `trimitere_in_curs` o face posibilă numai peste o încărcare mai lungă decât fereastra ei),
+    rezultatul nu se pierde într-un 500: rândul trece în «investigatie», cu indexul ANAF și cu dublura numită."""
+    try:
+        with _chei.refuza_dublura(cur, ("uq_efactura_trimiteri_viu",), lambda cur, e: refuz_alta_vie(cur, schema, trimitere_id)):
+            cur.execute(f"""UPDATE {schema}.efactura_trimiteri
+                        SET stare=%s, index_incarcare=%s, execution_status=%s, error_message=%s,
+                            actualizat_la=now(),
+                            finalizat_la=CASE WHEN %s IN ('nok','eroare_upload') THEN now() ELSE finalizat_la END
+                        WHERE id=%s""",
+                        (stare, index_incarcare, execution_status, errmsg, stare, trimitere_id))
+    except _chei.CheieDublata as e:
+        cur.execute(f"""UPDATE {schema}.efactura_trimiteri
+                    SET stare='investigatie', index_incarcare=%s, execution_status=%s, error_message=%s, actualizat_la=now()
+                    WHERE id=%s""", (index_incarcare, execution_status, str(e), trimitere_id))
+        return str(e)
+    return None

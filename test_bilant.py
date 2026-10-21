@@ -59,9 +59,16 @@ def test_f20_pierdere():
     r = bilant.f20_din_rulaje(rl)
     assert r[8] == 0 and r[9] == 4000
 
+# [lotul 10, C69] câmpurile antetului pe care generatorul nu le mai inventează (`bilant.erori_antet` refuză lipsa lor), din structura ANAF
+# anaf_surse/structura_SC_1225_270126.txt: „10. bifaMC … DA”, „16. codTT Cod judet sediu (fara cod 41) N(2) DA”, „18. codPP Cod forma de
+# proprietate N(2) DA Nomenclator forme de proprietate”, „19. nume_admin Nume si prenume Administrator C(75) DA”. CUI-ul 14399840 are
+# cifra de control corectă (cel vechi, 12345678, n-o avea).
+_ANTET = {"cui_numeric": "14399840", "cod_judet": 40, "mare_contribuabil": False, "forma_proprietate": "35",
+          "declarant_nume": "POPESCU", "declarant_prenume": "ION"}
+
+
 def test_xml_are_antet_si_valori():
-    prof = {"cui_numeric": "12345678", "nume": "TEST SRL", "reg_com": "J40/1/2020",
-            "caen": "6920", "cod_judet": 40, "declarant_nume": "POPESCU ION"}
+    prof = dict(_ANTET, nume="TEST SRL", reg_com="J40/1/2020", caen="6920")
     x = bilant.xml_s1005(prof, 2025, {}, {2: 80000, 4: 80000}, {}, {1: 49500, 8: 9000})
     # v15 e versiunea acceptata de validatorul oficial; v14 e RESPINSA (namespace).
     assert 'xmlns="mfp:anaf:dgti:s1005:declaratie:v15"' in x
@@ -73,7 +80,7 @@ def test_f10_atribut_creante_3011():
     # Randurile >=100 (301/302 creante) -> F10_3011/F10_3021, NU F10_03011 (atribut
     # necunoscut in XSD). Regula validator F10_68: F10_0061 = F10_3011 + F10_3021.
     # f10p = an precedent (coloana 1: F10_xxx1)
-    x = bilant.xml_s1005({"cui_numeric": "12345678", "nume": "T"}, 2025,
+    x = bilant.xml_s1005(dict(_ANTET, nume="T"), 2025,
                          {301: 19040, 6: 19040}, {}, {}, {})
     assert 'F10_3011="19040"' in x
     assert 'F10_03011' not in x

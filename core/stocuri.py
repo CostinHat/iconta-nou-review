@@ -215,7 +215,9 @@ def descarcare_gv(rc_707, tva_vanzari, si_378, rc_378, si_371, rd_371, si_4428, 
     cmv = _q(rc_707 - adaos)
     tva = _q(tva_vanzari)
     if cmv < 0:
-        raise ValueError("CMV negativ: K > 1, verifica soldurile")
+        # [lotul 10, comanda 10.2 pct.8d, clasa: mesajele motorului de stoc, cu diacritice și în cuvintele contabilului]
+        raise ValueError("Costul mărfurilor vândute iese negativ: coeficientul de adaos e peste 1 (adaosul din contul 378 depășește "
+                         "valoarea mărfurilor fără TVA). Verifică soldurile și rulajele conturilor 371, 378 și 4428 pe perioada aleasă.")
     note = [
         {"debit": "607", "credit": "371", "suma": cmv, **_urma()},
         {"debit": "378", "credit": "371", "suma": adaos, **_urma()},

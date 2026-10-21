@@ -213,6 +213,8 @@ def test_coada_cere_poarta_pentru_toate_declaratiile_de_tva(monkeypatch):
     monkeypatch.setattr(uc_comun, "_schema_sau_404", lambda ctx, tid: "tenant_x")
     monkeypatch.setattr(declaratii_api, "genereaza", lambda c, s, tip, body: ("<x/>", []))
     monkeypatch.setattr(uq.db, "get_conn", lambda schema=None: __import__("contextlib").nullcontext(None))
+    from core import uc_declaratii   # [lotul 10, C69] localitatea partenerilor din ANAF înaintea generării: baza e simulată aici
+    monkeypatch.setattr(uc_declaratii, "aduce_localitati_parteneri", lambda schema, tip: None)
     monkeypatch.setattr(uq, "poarta_tva_balanta", lambda s, an, luna, trim=None: chemat.append(an) or {"cod": uq.COD_TVA_BALANTA,
                                                                                                     "mesaj": "m", "diferente": []})
     monkeypatch.setattr(uq, "ciorne_in_perioada", lambda s, an, luna: 0)   # fără ciorne: diferența blochează (R36)

@@ -72,7 +72,7 @@ def test_c21_mai_multe_perechi_fara_sold_final_se_refuza_numit():
     csv = "Cont;Denumire;Rulaj debit;Rulaj credit;Total sume debit;Total sume credit\n5311;Casa;10;5;100;50\n".encode()
     with pytest.raises(it.FisierNecitit) as e:
         solduri_api.extrage_balanta(csv, "b.csv")
-    assert str(e.value) == 'Balanța din fișierul «b.csv» are mai multe coloane de debit («Rulaj debit», «Total sume debit») și de credit («Rulaj credit», «Total sume credit»), iar soldul final nu se poate deosebi neechivoc de celelalte. Se importă numai soldurile finale: lasă în fișier coloanele „Sold final debitor” și „Sold final creditor” (sau numai perechea soldurilor finale) și încarcă-l din nou.'
+    assert str(e.value) == 'Balanța din fișierul «b.csv» are mai multe coloane de debit («Rulaj debit», «Total sume debit») și de credit («Rulaj credit», «Total sume credit»), iar soldul final nu se poate deosebi neechivoc de celelalte. Numește perechea soldurilor finale „Sold final debitor” / „Sold final creditor” (sau „Solduri finale” deasupra lui „Debit / Credit”) și încarcă fișierul din nou.'   # [lotul 10, 425] celelalte perechi se citesc acum (sold inițial, rulaje); textul nu mai spune „numai soldurile finale”
 
 
 def test_c21_sinteticul_care_nu_se_potriveste_cu_analiticele_se_refuza():
@@ -404,7 +404,29 @@ class _CurFals:
         self._ultim = s
 
     def fetchone(self):
-        return None if self._ultim.lstrip().upper().startswith("SELECT") else (1,)
+        s = self._ultim.lstrip()
+        if not s.upper().startswith("SELECT"):
+            return (1,)
+        if s.upper().startswith("SELECT TO_REGCLASS("):   # instrucțiunea însăși, nu un sub-șir al alteia
+            return ("tabel",)                         # [426] tabelele firmei există (citirea `existent` nu face DDL)
+        if "count(" not in s.lower():
+            return None
+        # [lotul 10, 426 — clasa] agregatele pe o firmă FĂRĂ date (count / sum -> 0, min / max -> NULL): `existent` al fiecărui import
+        # citește ce există înainte de înlocuire, iar falsul ăsta e o firmă goală (prima preluare)
+        import re as _re
+        lista, adanc, parti, bucata = s[6:s.upper().index(" FROM ")], 0, [], ""
+        for ch in lista:
+            adanc += (ch == "(") - (ch == ")")
+            if ch == "," and not adanc:
+                parti.append(bucata)
+                bucata = ""
+            else:
+                bucata += ch
+        parti.append(bucata)
+        return tuple(None if _re.match(r"\s*(min|max)\(", x, _re.I) else 0 for x in parti)
+
+    def fetchall(self):
+        return []                                     # [426] o firmă fără date: nimic de înlocuit
 
 
 def test_mesajele_importului_nu_au_sume_si_date_brute():

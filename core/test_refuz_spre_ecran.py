@@ -18,12 +18,23 @@ _DF = io.open(os.path.join(_RAD, "static", "js", "ecrane", "date_firma.js"), enc
 
 #: fișierele care emit un refuz spre Date firmă și codurile lor (citite la sursă, 08.10.2026)
 EMITATORI = {
-    "core/uc_tenants.py": {"SERIE_CHITANTA_LIPSA"},
+    # [lotul 10, 430b] nota de dividende fără asociați / cu cote care nu însumează 100% -> Date firmă → Asociați, câmpul „+ Asociat”
+    "core/uc_tenants.py": {"SERIE_CHITANTA_LIPSA", "ASOCIATI_DE_COMPLETAT"},
     "core/metoda_stoc.py": {"METODA_STOC_NEDECLARATA", "METODA_STOC_NESUPORTATA", "METODA_STOC_ALTA"},
     "core/activitati_amef.py": {"AMEF_EXCEPTARE_NEDECLARATA"},
     "core/d394.py": {"AMEF_EXCEPTARE_NEDECLARATA"},
     "core/capital_social.py": {"CAPITAL_SOCIAL_LIPSA", "METODA_STOC_NEDECLARATA", "METODA_STOC_NESUPORTATA", "METODA_STOC_ALTA"},
-    "core/uc_comun.py": set(),   # `refuz_spre_ecran` / `_UNDE_ECRAN`: transportă codul primit, nu emite unul propriu
+    # `UNDE_ECRAN` (numele ecranului-țintă, folosit de `uc_comun.refuz_spre_ecran` și `RefuzGenerare.detaliu`): transportă ținta
+    # primită, nu emite un refuz propriu. [lotul 10] mutată din `uc_comun._UNDE_ECRAN`, ca refuzul generatoarelor să fie tipat la fel.
+    "core/erori.py": set(),
+    # [lotul 10, 431] D205 fără asociați trimite la Date firmă → Asociați (`RefuzGenerare`, câmpul „+ Asociat”), fără cod propriu
+    "core/d205.py": set(),
+    # [lotul 10, C69] antetul D406 (localitate / telefon / declarant / IBAN / „nu are cont bancar”), antetul bilanțului (județ, mare
+    # contribuabil, forma de proprietate, administrator) și datele firmei pe factura e-Factura trimit la Date firmă cu câmpul lipsă
+    # (`RefuzGenerare` / `EDateIncomplete`, `camp_ecran` = id-ul din date_firma.js), fără cod propriu
+    "core/d406.py": set(),
+    "core/bilant_api.py": set(),
+    "core/efactura_send.py": set(),
 }
 
 

@@ -34,12 +34,11 @@ beneficiarii cu tip_venit1=25 (castiguri), deci = 0 pt. o declaratie de dividend
 DIVIDENDE distribuite vs. platite (col. 7.V divid_D / 8.V divid_P din structura ANAF, rand
 39.a/39.b): contul 457 "Dividende de plata" e bifunctional. CREDIT 457 = dividend DISTRIBUIT
 (se creeaza datoria: 117/121 = 457) -> divid_D. DEBIT 457 = dividend PLATIT (se stinge datoria:
-457 = 5121/446) -> divid_P. baza1/imp1 se calculeaza pe dividendul PLATIT (impozitul pe
-dividende se retine la PLATA; aliniat cu calea 2 de reconciliere care recalculeaza din Σ debit
-457). Regula fully-paid (documentata): divid_D >= divid_P mereu (nu poti plati cumulat mai mult
-decat s-a distribuit); daca fereastra anului nu contine creditul de distribuire (dividend
-distribuit intr-un an anterior, platit in anul curent), Σ credit 457 in fereastra = 0 < platit
-=> divid_D = platit (dividend integral platit).
+457 = 5121/446) -> divid_P. [lotul 10, decizia Costin A, verbatim in DECIZII] „Varianta 2: D205 include și dividendele
+distribuite neplătite la 31.12, pe anul distribuirii, cu impozitul datorat” — baza1/imp1 = distribuirile ANULUI cu impozitul
+lor (platite sau nu la 31.12), divid_P = platile anului; un dividend distribuit intr-un an si platit in anul urmator apare in
+anul platii numai la divid_P (baza si impozitul 0). Temeiul si incadrarea pe coloane: antetul `core/dividende_curs.py`
+(OPANAF 179/2022 anexa 1 cap.II pct.9; CF art.97 alin.(7)). Supersedeaza regula veche „baza1 = platit, divid_D >= divid_P”.
 
 Rezid (col. 2 Rezident/Nerezident, rand 32) se DERIVA din identitate: CNP romanesc valid ->
 Rezid=1 (rezident); NIF strain / pasaport / cod invalid -> Rezid=2 (nerezident). Pentru
@@ -60,6 +59,7 @@ from core.common import text_anaf as _t, cheie_manual, LIMITE_TEXT_ANAF as _LIM 
 from core.identitate import valideaza_cui, valideaza_cnp  # T1: checksum CUI/CNP pre-DUK, read-only (LEAF, fara import circular)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
+from datetime import date as _dt_date
 from core import repo_d205 as _repo
 
 NS = "mfp:anaf:dgti:d205:declaratie:v3"
@@ -170,9 +170,6 @@ def erori_generare(prof):
 
 def build_xml(res):
     prof = res.prof
-    if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D205: declarantul (nume/funcție) lipsește din profil — se trece implicit "
-                                "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     if not res.beneficiari:
         raise ValueError("D205 fără niciun beneficiar de venit - nu se generează "
                          "declarație fără conținut.")
@@ -275,9 +272,9 @@ def build_xml(res):
            'nume_declar=%s prenume_declar=%s functie_declar=%s '
            'cui="%s" den=%s adresa=%s totalPlata_A="%d">'
            % (NS, NS, res.an,
-              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR", _LIM["d205"]["nume_declar"])),
-              _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d205"]["prenume_declar"])),
-              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d205"]["functie_declar"])),  # C(50) ANAF (DUK: 51 respins)
+              _esc(_t(prof.get("declarant_nume"), _LIM["d205"]["nume_declar"])),   # [C69] fără implicit: `erori_declarant` a blocat deja lipsa
+              _esc(_t(prof.get("declarant_prenume"), _LIM["d205"]["prenume_declar"])),
+              _esc(_t(prof.get("declarant_functie"), _LIM["d205"]["functie_declar"])),  # C(50) ANAF (DUK: 51 respins)
               "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()),
               _esc(_t(prof.get("nume"), _LIM["d205"]["den"])), _esc(_t(prof.get("adresa"), _LIM["d205"]["adresa"])), total_control))  # den C(200)/adresa C(1000) ANAF (DUK 201/1001 respinse)
     H.append(hdr)
@@ -311,12 +308,21 @@ def build_xml(res):
     return "\n".join(H)
 
 
+def _miscari(cur, _sf):
+    """Mișcările de dividende din note (`select_dividende_miscari`) plus [lotul 10, decizia A — generalizarea pe clasă] soldul
+    creditor 457 din balanța de deschidere (`select_457_preluat`, cheia `preluat` din `dividende_curs._transe`), cronologic; la aceeași
+    dată, soldul de deschidere înaintea notelor."""
+    prel = [{"data": r["data"], "preluat": r["preluat"]} for r in _repo.select_457_preluat(cur, _sf)]
+    return sorted(prel + list(_repo.select_dividende_miscari(cur, _sf)), key=lambda m: (m["data"], "preluat" not in m))
+
+
 def pull(conn, schema, perioada):
-    """Profil + asociatii cu cota>0 + dividende din contul 457 (note VALIDATE) in fereastra
-    anului [inceput, sfarsit) din perioada.interval():
-      total_distribuit = Σ CREDIT 457 (se creeaza datoria: 117/121 = 457) -> divid_D
-      total_platit     = Σ DEBIT  457 (se stinge datoria: 457 = 5121/446) -> divid_P
-    Intoarce (prof, asoc, total_distribuit, total_platit)."""
+    """Profil + asociatii cu cota>0 + dividende din note VALIDATE: anualele pe 457 si [lotul 10, deficienta 431] interimarele pe
+    456 (din 463), atribuite FIFO plata->distribuire (`dividende_curs._transe`), in anul perioadei:
+      total_distribuit = distribuirile anului (credit 457 / 463 = 456), fara partea compensata cu interimarele -> divid_D si baza1
+      total_platit     = platile anului (debit 457 / 456 = 512x, 531x, 446) -> divid_P
+      impozit_ponderat = impozitul pe distribuirile anului, cu cota de la data fiecareia -> imp1 ([lotul 10, decizia A])
+    Intoarce (prof, asoc, total_distribuit, total_platit, impozit_ponderat)."""
     import psycopg2.extras as _E
     from core import common as _c
     from core import dividende_curs as _dc
@@ -327,16 +333,13 @@ def pull(conn, schema, perioada):
             prof["adresa"] = " ".join(x for x in
                 (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
         asoc = _repo.select_asociati(cur)
-        row = _repo.select_inregistrari_linii(cur, _inc, _sf) or {"distribuit": 0, "platit": 0}
-        total_distribuit = _i(row["distribuit"] or 0)
-        total_platit = _i(row["platit"] or 0)
-        # [A6] Impozitul PONDERAT pe rata fiecărei distribuiri (cota după data creditului 457, art.VII
-        # Legea 141/2025), nu 16% aplicat pe tot ce s-a plătit în an. Mișcările 457 din tot registrul
-        # (inclusiv distribuiri din ani anteriori), atribuite FIFO plată->distribuire în modulul neutru.
-        miscari = _repo.select_457_miscari(cur, _sf)
-    impozit_ponderat, _pl, _di = _dc.impozit_ponderat(
+        # [A6] Impozitul PONDERAT pe rata fiecărei distribuiri (cota după data distribuirii, art.VII Legea 141/2025), nu 16%
+        # aplicat pe tot ce s-a plătit în an. Mișcările din tot registrul (inclusiv distribuiri din ani anteriori), atribuite
+        # FIFO plată->distribuire în modulul neutru.
+        miscari = _miscari(cur, _sf)
+    impozit_ponderat, platit, distribuit = _dc.impozit_ponderat(
         miscari, perioada.an, lambda d: _c.cota("impozit_dividend", d)[0])
-    return prof, asoc, total_distribuit, total_platit, impozit_ponderat
+    return prof, asoc, _i(distribuit), _i(platit), impozit_ponderat
 
 
 def pull_beneficiari(conn, schema, perioada):
@@ -351,12 +354,12 @@ def pull_beneficiari(conn, schema, perioada):
     from core import common as _c
     from core import dividende_curs as _dc
     prof, asoc, total_distribuit, total_platit, _imp = pull(conn, schema, perioada)
-    if total_platit <= 0:
+    if total_platit <= 0 and total_distribuit <= 0:   # [lotul 10, decizia A] și distribuitele neplătite la 31.12
         return prof, []
     _inc, _sf = perioada.interval()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         istoric = _repo.select_asociati_istoric(cur)
-        miscari = _repo.select_457_miscari(cur, _sf)
+        miscari = _miscari(cur, _sf)
     if not asoc and not istoric:
         return prof, []
     struct = _dc.structura_la([(a["nume"], a.get("cnp"), a["cota"]) for a in asoc],
@@ -370,13 +373,123 @@ def pull_beneficiari(conn, schema, perioada):
         if not r:
             continue
         platit = _i(r["platit"])
-        if platit > 0:
-            # baza1/imp1 pe dividendul PLĂTIT (impozitul se reține la plată); divid_D >= divid_P mereu (un dividend
-            # distribuit într-un an anterior și plătit acum e integral plătit) — regula de dinainte, neschimbată.
-            beneficiari.append({"categ": "1.a", "nume": r["nume"], "cif": cnp, "baza": platit,
+        distribuit = _i(r["distribuit"])
+        if platit > 0 or distribuit > 0:
+            # [lotul 10, decizia Costin A] baza1/imp1 = distribuirile ANULUI cu impozitul datorat, plătite sau nu la 31.12 (OPANAF
+            # 179/2022 anexa 1 cap.II pct.9: „Impozitul aferent dividendelor distribuite, dar care nu au fost plătite [...] se cuprinde în
+            # declaraţia aferentă perioadei în care s-a aprobat distribuirea dividendelor”); divid_P = plățile anului. Un dividend
+            # distribuit într-un an anterior și plătit acum: numai divid_P, baza și impozitul 0 (declarate în anul distribuirii).
+            beneficiari.append({"categ": "1.a", "nume": r["nume"], "cif": cnp, "baza": distribuit,
                                 "imp": _i(r["impozit"]), "castig": 0, "pierdere": 0,
-                                "divid_d": max(_i(r["distribuit"]), platit), "divid_p": platit, "tip_plata": "2"})
+                                "divid_d": distribuit, "divid_p": platit, "tip_plata": "2"})
     return prof, beneficiari
+
+
+#: [lotul 10, deficiența 431] prefixul refuzului fără beneficiari (gardul `test_mutant_zero` îl caută: „beneficiar”)
+FARA_BENEFICIARI = "D205 pe %d fără niciun beneficiar de venit"
+
+
+def motiv_fara_beneficiari(conn, schema, perioada):
+    """[lotul 10, deficiența 431] De ce D205 n-are beneficiari — cauza reală, în ordinea comenzii Costin („mesajul de refuz trimite
+    la ce lipsește”): (1) firma n-are asociați -> Date firmă → Asociați; (2) note de dividende nevalidate în an -> le numește, cu
+    data și suma, și trimite la Registrul jurnal; (3) niciun dividend distribuit sau plătit în an. [lotul 10, decizia Costin A] Fostul
+    caz „distribuite și neplătite în an” nu mai e motiv de refuz: D205 le cuprinde pe anul distribuirii, cu impozitul datorat. Textul
+    nu conține coduri interne. Întoarce `RefuzGenerare` (textul + notele de deschis / ecranul „date_firma”), pe care `genereaza` îl
+    ridică."""
+    import psycopg2.extras as _E
+    from core import eticheta_nota as _et
+    from core.pdf_util import bani as _bani
+    an = perioada.an
+    cap = FARA_BENEFICIARI % an
+    _inc, _sf = perioada.interval()
+    _p, asoc, _dist, _pl, _imp = pull(conn, schema, perioada)
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        istoric = _repo.select_asociati_istoric(cur)
+        ciorne = _repo.select_note_dividende_nevalidate(cur, _inc, _sf)
+        etichete = dict(_et.note(cur, "", [r["id"] for r in ciorne]))
+    from core.erori import RefuzGenerare
+    if not asoc and not istoric:
+        return RefuzGenerare(cap + ": firma nu are asociați înregistrați. Adaugă asociații și cotele lor în Date firmă → Asociați; nota "
+                             "de dividende împarte dividendul pe asociați, iar D205 preia dividendele din notele validate.", ecran="date_firma",
+                             camp_ecran="as-adauga")
+    if ciorne:
+        lista = "; ".join("nota de dividende %s (%s lei) e %s" % (
+            etichete.get(r["id"]) or "", _bani(r["suma"]), "ciornă" if r["status"] == "ciorna" else "nevalidată")
+            for r in ciorne)
+        return RefuzGenerare(cap + ": %s. D205 preia numai notele validate: %s în Registrul jurnal, apoi generează din nou."
+                             % (lista, "valideaz-o" if len(ciorne) == 1 else "validează-le"),
+                             note=[{"nota_id": r["id"], "eticheta": etichete.get(r["id"]) or "", "data": str(r["data"])[:10]}
+                                   for r in ciorne])
+    return RefuzGenerare(cap + ": în %d nu există dividende distribuite sau plătite în notele validate (conturile 457 / 456). Dacă firma "
+            "a distribuit dividende, înregistrează nota din Operațiuni speciale → Decontări asociați." % an)
+
+
+def dividende_preluate(conn, an):
+    """[lotul 10, decizia Costin B, verbatim în DECIZII] „Da, cu completare manuală” — la o firmă preluată în cursul anului `an`,
+    dividendele plătite (rulajul DEBITOR al lui 457) sau distribuite (rulajul CREDITOR) între 1 ianuarie și data preluării există numai
+    în balanța de deschidere (`rulaje_preluate.preluate`, rulajele anului fără soldul inițial), fără note și fără beneficiari.
+    {"ref": data preluării, "platit": Decimal, "distribuit": Decimal} sau None (nicio mișcare 457 preluată pe `an`)."""
+    from core import rulaje_preluate as _rp
+    with conn.cursor() as cur:
+        p = _rp.preluate(cur, "", an)
+    if not p:
+        return None
+    pl = sum((v["rul_d"] for c, v in p["conturi"].items() if str(c).startswith("457")), Decimal(0))
+    di = sum((v["rul_c"] for c, v in p["conturi"].items() if str(c).startswith("457")), Decimal(0))
+    return {"ref": p["ref"], "platit": pl, "distribuit": di} if (pl > 0 or di > 0) else None
+
+
+def _ce_preluate(prel):
+    """„dividende plătite înainte de preluare (5.000,00 lei) [și dividende distribuite înainte de preluare (… lei)]”."""
+    from core.pdf_util import bani as _bani
+    ce = []
+    if prel["platit"] > 0:
+        ce.append("dividende plătite înainte de preluare (%s lei)" % _bani(prel["platit"]))
+    if prel["distribuit"] > 0:
+        ce.append("dividende distribuite înainte de preluare (%s lei)" % _bani(prel["distribuit"]))
+    return " și ".join(ce)
+
+
+def motiv_preluate(an, prel):
+    """Textul faptului „D205 datorat” pentru dividendele din balanța de deschidere (`dividende_preluate`), în cuvintele comenzii
+    Costin: „dividende plătite înainte de preluare, din balanța de deschidere — beneficiarii se completează manual în D205”."""
+    return "%s, din balanța de deschidere — beneficiarii se completează manual în D205" % _ce_preluate(prel)
+
+
+def motiv_datorat(conn, an):
+    """[lotul 10, deciziile Costin A și B] De ce se datorează D205 pe `an` — textul faptului pentru controlul fiscal
+    (`control_incrucisat.dividende_distribuite`), din ACEEAȘI citire ca generatorul (`_miscari` + `dividende_curs`), sau None.
+    Se datorează pentru dividendele distribuite în an (plătite sau nu la 31.12 — decizia A), pentru cele plătite în an (și cele
+    distribuite într-un an anterior: rândul lor de „plătite”) și, la firma preluată în an, pentru dividendele din balanța de
+    deschidere (decizia B, `dividende_preluate`)."""
+    import psycopg2.extras as _E
+    from core import common as _c
+    from core import dividende_curs as _dc
+    from core.pdf_util import bani as _bani
+    _sf = _dt_date(an + 1, 1, 1)
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        miscari = _miscari(cur, _sf)
+    _imp, platit, distribuit = _dc.impozit_ponderat(miscari, an, lambda d: _c.cota("impozit_dividend", d)[0])
+    ce = []
+    if _i(distribuit) > 0:
+        ce.append("dividende distribuite în %d (%s lei)" % (an, _bani(distribuit)))
+    if _i(platit) > 0:
+        ce.append("dividende plătite în %d (%s lei)" % (an, _bani(platit)))
+    prel = dividende_preluate(conn, an)
+    if prel:
+        ce.append(motiv_preluate(an, prel))
+    return "; ".join(ce) or None
+
+
+def refuz_preluate(an, prel):
+    """[lotul 10, decizia Costin B] Refuzul generării automate a D205 pe anul preluării când balanța de deschidere are mișcări pe 457:
+    iConta.eu nu are notele lor, deci nici beneficiarii; o declarație generată numai din notele de după preluare ar fi incompletă."""
+    from core.erori import RefuzGenerare
+    from core.pdf_util import data_ro as _dr
+    return RefuzGenerare(
+        "D205 pe %d: %s, din balanța de deschidere la %s. iConta.eu nu are notele acestor dividende, deci nici împărțirea lor pe "
+        "asociați. Completează beneficiarii manual în D205 — pentru fiecare asociat: numele, CNP-ul, dividendele distribuite și plătite "
+        "în %d, baza și impozitul — inclusiv dividendele din notele de după preluare." % (an, _ce_preluate(prel), _dr(prel["ref"]), an))
 
 
 def genereaza(conn, schema, perioada, manual=None):
@@ -394,8 +507,15 @@ def genereaza(conn, schema, perioada, manual=None):
 
     beneficiari = manual.get("beneficiari")
     if beneficiari is None:
+        # [lotul 10, decizia Costin B] anul preluării cu dividende în balanța de deschidere -> numai beneficiari completați manual
+        prel = dividende_preluate(conn, perioada.an)
+        if prel:
+            raise refuz_preluate(perioada.an, prel)
         beneficiari = beneficiari_auto
 
+    if not beneficiari and manual.get("beneficiari") is None:
+        # [lotul 10, deficiența 431] refuzul spune CAUZA și unde se repară, nu doar „fără beneficiar”
+        raise motiv_fara_beneficiari(conn, schema, perioada)
     res = calcul_d205(prof, perioada.an, beneficiari)
     # POARTA A DOUA CALE (gard continut, 05.08.2026, pas 6/6): recalcul INDEPENDENT al bazei/
     # impozitului pe dividende din 457 (NU cross-check cu D100 = same-source trap).

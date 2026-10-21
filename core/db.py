@@ -247,3 +247,30 @@ def get_conn(schema=None):
                 conn.close()
             except Exception:
                 pass
+
+
+# ============================================================
+#  pe_firma_existenta — o firmă a portofoliului, citită într-o buclă din cerere
+# ============================================================
+def schema_exista(schema):
+    """True dacă schema firmei există încă în bază (pe o conexiune proprie; citirea e a depozitului, `repo_admin.schema_exista`)."""
+    from core import repo_admin
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            return repo_admin.schema_exista(cur, schema)
+
+
+def pe_firma_existenta(schema, fn):
+    """[lotul 10, eroarea 500 din `/eu/ciorne`] `fn(conn)` pe schema unei firme din portofoliu, citită în bucla unei cereri.
+    Între citirea listei firmelor și interogarea uneia, firma se poate șterge (schema ei dispare): atunci întoarce
+    `(False, None)` și bucla trece mai departe — firma nu mai e în portofoliu. Orice altă eroare (sau aceeași eroare pe o
+    schemă care încă există, adică un defect real: o tabelă lipsă, o migrare nerulată) se ridică mai departe, neschimbată.
+    Întoarce `(True, fn(conn))`."""
+    import psycopg2.errors as _pe
+    try:
+        with get_conn(schema) as conn:
+            return True, fn(conn)
+    except (_pe.UndefinedTable, _pe.InvalidSchemaName):
+        if schema_exista(schema):
+            raise
+        return False, None

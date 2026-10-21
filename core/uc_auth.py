@@ -386,7 +386,10 @@ def _dupa_cont_nou(r, nume_cabinet, email, cui, cale):
             _obs.esec_secundar("provisionare tenant la register", _e, alerta=True)
             _txt = str(_e).lower()
             _cui_afis = (cui or "").strip()
-            if "cifra de control" in _txt or "cui invalid" in _txt:
+            from core import chei_unice as _chei
+            if isinstance(_e, _chei.CheieDublata):   # [lotul 10, C73 / U3] CUI-ul e al altui cabinet: refuzul numit, nu „eroare tehnică”
+                _motiv = str(_e)
+            elif "cifra de control" in _txt or "cui invalid" in _txt:
                 _motiv = ("CUI-ul introdus (%s) nu este valid \u2014 cifra de control nu corespunde. "
                           "Verific\u0103 cifrele (f\u0103r\u0103 spa\u021bii sau litere)." % _cui_afis)
             elif "exist" in _txt and "deja" in _txt:

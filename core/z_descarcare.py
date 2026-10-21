@@ -79,6 +79,27 @@ def cere_z(cur, schema, z_id):
     return zid
 
 
+def document_z(cur, schema, z_id):
+    """[lotul 10, deficiența 438] Documentul justificativ al vânzării de pe un raport Z: raportul Z însuși, cu textul notei lui
+    („Raport Z nr 0042 din 20.10.2026 (casa 8000000001)” — `jurnal_api.eticheta_document`, scris la înregistrarea Z-ului, pe ambele
+    rute). Comanda 10.2 pct.8a: „Bonul de consum e pentru consum intern; la vânzarea pe Z documentul e raportul Z (nr. 0042, casa
+    8000000001).” Un Z fără text de document (scris înainte de 05.10.2026) se numește din cheia lui (casa + numărul, `Z-<casa>-<nr>`)
+    și din dată — numai din ce există în date. Temei: Legea 82/1991 art.6 alin.(1): „Orice operațiune economico-financiară efectuată
+    se consemnează în momentul efectuării ei într-un document care stă la baza înregistrărilor în contabilitate”."""
+    cur.execute("SELECT i.document_ref, i.numar, i.data, z.nui FROM %sinregistrari i JOIN %srapoarte_z_amef z ON z.inregistrare_id = i.id "
+                "WHERE i.id = %%s" % (_p(schema), _p(schema)), (int(z_id),))
+    r = cur.fetchone()
+    if not r:
+        return None
+    doc, numar, data, nui = (r["document_ref"], r["numar"], r["data"], r["nui"]) if isinstance(r, dict) else tuple(r)
+    if doc and str(doc).strip():
+        return str(doc).strip()
+    from core import jurnal_api as _j
+    pref = "Z-%s-" % nui
+    nr = numar[len(pref):] if numar and str(numar).startswith(pref) else None
+    return _j.eticheta_document("Raport Z", nr, data, "casa %s" % nui)
+
+
 def deblocat(zid):
     """[368] Z-ul descărcat pe articol / pe rețetă sau declarat „fără marfă” nu mai e refuzat la validare: la partidă simplă, unde nota
     lui se validează automat, middleware-ul o reîncearcă la sfârșitul cererii (`autor_cerere.reincearca_interna`)."""
@@ -101,7 +122,8 @@ def marcheaza_fara_marfa(conn, schema, nota_id, fara_marfa):
 
 
 def lista_luna(conn, schema, an, luna):
-    """Rapoartele Z ale lunii, cu starea descărcării (pentru ecranul Raport Z)."""
+    """Rapoartele Z ale lunii, cu starea descărcării (pentru ecranul Raport Z). [lotul 10, comanda 10.2 pct.8e] „După descărcare nu se
+    vede valoarea descărcată” -> `valoare_descarcata`: suma ieșirilor VII legate de Z (la CMP, cât a ieșit din 371 pe 607)."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""SELECT i.id, i.data, i.numar, i.status, z.nui, z.nr_bonuri, z.fara_marfa,
                                (SELECT COALESCE(SUM(l.suma), 0) FROM {_p(schema)}inregistrari_linii l
@@ -111,7 +133,18 @@ def lista_luna(conn, schema, an, luna):
         out = []
         for r in cur.fetchall():
             st = stare(cur, schema, r["id"])
+            v = valoare_descarcata(cur, schema, r["id"])
             out.append({"id": r["id"], "data": r["data"].isoformat(), "numar": r["numar"], "status": r["status"], "nui": r["nui"],
                         "nr_bonuri": r["nr_bonuri"], "incasat": str(r["incasat"]), "iesiri": st["iesiri"],
-                        "fara_marfa": st["fara_marfa"]})
+                        "fara_marfa": st["fara_marfa"], "valoare_descarcata": str(v)})
     return out
+
+
+def valoare_descarcata(cur, schema, nota_id):
+    """Valoarea ieșirilor VII legate de Z (nici stornări, nici stornate) — ce s-a descărcat din stoc pentru vânzarea de pe el."""
+    p = _p(schema)
+    cur.execute(f"""SELECT COALESCE(SUM(m.valoare), 0) AS v FROM {p}miscari_stoc m WHERE m.z_inregistrare_id = %s
+                      AND m.anuleaza_id IS NULL AND NOT EXISTS (SELECT 1 FROM {p}miscari_stoc r WHERE r.anuleaza_id = m.id)""",
+                (int(nota_id),))
+    r = cur.fetchone()
+    return r["v"] if isinstance(r, dict) else r[0]

@@ -225,6 +225,7 @@ def test_pct5_d406_totalurile_facturii_pe_fiecare_cota():
     from xml.etree import ElementTree as ET
     from core import d406
     f = d406.Factura(nr="2", data=__import__("datetime").date(2026, 10, 5), partener_id="0014399840", partener_nume="DANTE",
+                     oras="Bucuresti",   # [lotul 10, C69] BillingAddress City (S.I.25), nu „-”
                      linii=[d406.LinieFactura(nr=1, cont="707", descriere="Marfa A", valoare=Decimal("5000"), tva_cod="310344",
                                               tva_procent=Decimal(21), tva_suma=Decimal("1050")),
                             d406.LinieFactura(nr=2, cont="707", descriere="Carte", valoare=Decimal("800"), tva_cod="310351",

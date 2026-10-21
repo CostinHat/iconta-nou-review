@@ -448,6 +448,8 @@ class Rezultat:
     i2_neclasificate: list = field(default_factory=list)
     # [D394 Î2] încasările din casă fără chitanță la firma exceptată — semnal (și în avertismente), nu blocaj
     casa_nelegate: list = field(default_factory=list)
+    # [lotul 10, C69] judP al fiecărei op1 cu partener neînregistrat fără cuiP (cheia op1 -> cod SIRUTA), din `judete_partener`
+    judP: dict = field(default_factory=dict)
     avertismente: list = field(default_factory=list)
 
 
@@ -562,6 +564,42 @@ def _op2_din_chitante(chitante):
     return op2, neclasificate
 
 
+def judete_partener(op1, judete_p, cuiuri_p):
+    """[lotul 10, deficiența C69 — „valoare inventată pe documentul ANAF în loc de blocaj”] judP pentru fiecare op1 cu partener
+    neînregistrat fără cuiP. Structura ANAF D394 (anaf_surse/d394_struct_anaf.txt, pct.222): „judP Judet beneficiar/ furnizor/ prestator
+    C(2) Nomenclator … Obligatoriu pt tip_partener=2 și cuiP=null și taraP=RO”. Până azi se scria județul FIRMEI (proxy, „partenerul
+    neinregistrat n-are adresa stocata”) și, fără el, „40” (București). Acum, prin analogie cu decizia Costin C69 pct.1 („Completez din
+    ANAF … se blochează numai ce rămâne necompletat”, verbatim în DECIZII): județul PARTENERULUI — cel scris pe factură / pe operațiunea
+    manuală, altfel cel din ANAF pentru codul lui fiscal (domiciliul fiscal, adus înaintea tranzacției; aici numai cache-ul) — iar ce
+    rămâne fără județ oprește D394, cu partenerii numiți. {cheie op1: cod SIRUTA}."""
+    from core import anaf_api as _anaf
+    out, lipsa = {}, []
+    for k in op1:
+        tip, tp, _cota, cuiP, denP = k
+        if tp != P_NEINREG or cuiP:
+            continue
+        coduri = judete_p.get(k) or set()
+        if not coduri:
+            for cb in sorted(cuiuri_p.get(k) or ()):
+                cod = jud_siruta((_anaf.localitate_din_cache(cb) or {}).get("judet"))
+                if cod:
+                    coduri = {cod}
+                    break
+        if len(coduri) == 1:
+            out[k] = next(iter(coduri))
+        else:
+            lipsa.append((denP or "?", tip, sorted(coduri)))
+    if lipsa:
+        raise ValueError(
+            "D394 nu se poate genera: lipsește județul pe factură la %s fără cod de TVA (persoane fizice sau firme neînregistrate) — D394 îl "
+            "cere pentru fiecare partener fără cod (structura ANAF a declarației îl face obligatoriu): %s. Completează județul clientului / "
+            "furnizorului pe factura lui (sau la operațiunea adăugată manual) și generează din nou." % (
+                _cate(len(lipsa), "partener", "parteneri"),
+                "; ".join("%s (operațiunea %s%s)" % (n, t, (", pe facturi cu județe diferite: %s" % ", ".join(c)) if c else "")
+                          for n, t, c in lipsa)))
+    return out
+
+
 def calcul_d394(prof, perioada, date, manual=None):
     """PUR. facturi: [{cui, nume, directie, taxare_inversa, cota, baza, tva, tip_N?}].
     manual: [{tip, tip_partener, cota, cuiP, denP, nrFact, baza, tva}] pentru
@@ -582,7 +620,11 @@ def calcul_d394(prof, perioada, date, manual=None):
     nefacturabile = 0
     excluse_N = []   # (nume, cui, baza) operatiuni N excluse - decizie Costin 04.08 (approach b)
 
-    def _adauga(tip, tp, cota, cuiP, denP, nrFact, baza, tva, cat=None, fid=None):
+    # [lotul 10, C69] judP al partenerului neînregistrat fără cuiP (structura D394 pct.222: „Obligatoriu pt tip_partener=2 și cuiP=null și
+    # taraP=RO”): județul scris pe factură / pe operațiunea manuală, sau codul lui fiscal (pentru ANAF), pe cheia op1
+    judete_p, cuiuri_p = {}, {}
+
+    def _adauga(tip, tp, cota, cuiP, denP, nrFact, baza, tva, cat=None, fid=None, judet=None, cui_brut=None):
         # [V_cota0 10.08.2026] R217.2 (validator, PROBAT pe date populate + DUK): tip in
         # (LS,AS,N,V) => cota TREBUIE sa fie 0. V (livrare cu taxare inversa) nu declara TVA
         # (reverse charge la beneficiar); cota bunului sta in op11/detaliu (bazaLivV la
@@ -591,6 +633,11 @@ def calcul_d394(prof, perioada, date, manual=None):
         # cota<>0) + R35. LS/AS/N sunt deja emise cu cota 0; V era singurul care purta cota
         # bunului. Centralizat aici ca sa acopere ambele cai (facturi + manual).
         k = (tip, tp, (0 if tip == "V" else int(cota)), cuiP or "", (denP or "")[:200])
+        if tp == P_NEINREG and not cuiP:
+            if jud_siruta(judet):
+                judete_p.setdefault(k, set()).add(jud_siruta(judet))
+            if str(cui_brut or "").strip():
+                cuiuri_p.setdefault(k, set()).add(str(cui_brut).strip())
         if cat:
             categorii.setdefault(k, set()).add(cat)
         # [R119] Ce factura a produs randul. Pe aceeasi cheie ca `categorii`, deci se curata prin
@@ -634,7 +681,7 @@ def calcul_d394(prof, perioada, date, manual=None):
             # Fara categorie -> N nu poate fi declarat valid -> ramane EXCLUS cu avertisment (contabilul o adauga).
             if codpr_N_din_categorie(f.get("categorie_331")):
                 _adauga("N", P_NEINREG, 0, cui, f.get("nume"), f.get("nrFact", 1), f.get("baza"), 0,
-                        f.get("categorie_331"), fid=f.get("factura_id"))
+                        f.get("categorie_331"), fid=f.get("factura_id"), judet=f.get("judet"), cui_brut=f.get("cui"))
             else:
                 excluse_N.append((f.get("nume"), f.get("cui"), f.get("baza")))
             continue
@@ -660,7 +707,7 @@ def calcul_d394(prof, perioada, date, manual=None):
                 nefacturabile += 1
                 continue
         _adauga(tip, tp, cota, cui, f.get("nume"), f.get("nrFact", 1), f.get("baza"), f.get("tva"),
-                f.get("categorie_331"), fid=f.get("factura_id"))
+                f.get("categorie_331"), fid=f.get("factura_id"), judet=f.get("judet"), cui_brut=f.get("cui"))
 
     for op in ops:
         if op.get("tip") not in TIPURI:
@@ -673,7 +720,7 @@ def calcul_d394(prof, perioada, date, manual=None):
             # (R233.6 persoana fizica). Fara categorie -> exclus cu avertisment (vezi calea auto).
             if codpr_N_din_categorie(op.get("categorie_331")):
                 _adauga("N", P_NEINREG, 0, op.get("cuiP"), op.get("denP"), op.get("nrFact") or 1,
-                        op.get("baza"), 0, op.get("categorie_331"))
+                        op.get("baza"), 0, op.get("categorie_331"), judet=op.get("judP"))
             else:
                 excluse_N.append((op.get("denP"), op.get("cuiP"), op.get("baza")))
             continue
@@ -688,7 +735,7 @@ def calcul_d394(prof, perioada, date, manual=None):
         # op1 fara op11 (neconformitate confirmata).
         _adauga(op["tip"], int(op.get("tip_partener") or P_TVA_RO), op.get("cota") or 0,
                 op.get("cuiP"), op.get("denP"), op.get("nrFact") or 1,
-                op.get("baza"), op.get("tva"), op.get("categorie_331"))
+                op.get("baza"), op.get("tva"), op.get("categorie_331"), judet=op.get("judP"))
 
     if excluse_N:
         lista = "; ".join("%s (baza %s lei)" % (n or (c or "fără CUI"), _int(b)) for n, c, b in excluse_N)
@@ -869,14 +916,20 @@ def calcul_d394(prof, perioada, date, manual=None):
     # [A9 part 2 art.297 alin.2] tvaDedAI = TVA pe facturile AI (furnizor cu TVA la incasare) ACHITATE
     # in perioada (d394_struct:1909 „facturi achitate"), per cota. Calculat in pull() din decontari
     # (DB), pasat aici prin date - calcul_d394 ramane PUR. Absent (apelant pur / nicio plata AI) -> 0.
+    # [lotul 10, deficiența 428] la sistemTVA = 1, tvaCol / tvaDed poartă cifrele (OPANAF 2194/2025, D394 pct.5.1 „TVA colectată aferentă
+    # facturilor încasate în perioada de raportare indiferent de data la care acestea au fost emise [...], defalcată pe fiecare cotă”;
+    # pct.5.2 „TVA deductibilă aferentă facturilor achitate în perioada de raportare [...] de la persoane impozabile care aplică sistemul
+    # normal de TVA”). Până azi: 0 fix, deși decontările existau.
     _tva_ded_ai = date.get("tva_ded_ai") or {}
+    _tva_ded = date.get("tva_ded") or {}
+    _tva_col = date.get("tva_col") or {}
     for c in COTE:
         if not c:
             continue
         inf["tvaDedAI%d" % c] = _int(_tva_ded_ai.get(c, 0))
         if prof.get("tva_la_incasare"):
-            inf["tvaDed%d" % c] = 0
-            inf["tvaCol%d" % c] = 0
+            inf["tvaDed%d" % c] = _int(_tva_ded.get(c, 0))
+            inf["tvaCol%d" % c] = _int(_tva_col.get(c, 0))
 
     # [D394 op2 Î1, decizia B 02.10.2026] încasările prin casa de marcat, pe lună, din rapoartele Z (o singură sursă).
     op2, z_incomplete = _op2_din_rapoarte_z(date.get("rapoarte_z") or [], date.get("facturi_din_bon") or [])
@@ -984,7 +1037,8 @@ def calcul_d394(prof, perioada, date, manual=None):
     # confrunta cu e-Factura trebuie sa STIE cate sunt: fara cifra asta, o factura acoperita de o
     # operatiune manuala ar aparea ca "transmisa si nedeclarata", adica un rosu fals.
     manuale_fara_factura = sum(1 for k, v in op1.items() if k not in incluse)
-    res = Rezultat(an=an, luna=luna, prof=prof, op1=op1_int, rezumat1=rez1_int,
+    judp = judete_partener(op1, judete_p, cuiuri_p)
+    res = Rezultat(an=an, luna=luna, prof=prof, op1=op1_int, rezumat1=rez1_int, judP=judp,
                    rezumat2=rez2_int, op11=op11, detaliu=detaliu, serii=serii,
                    informatii=inf, total_plata_a=total_plata, op_efectuate=op_efectuate,
                    facturi_incluse=incluse_int, manuale_fara_factura=manuale_fara_factura,
@@ -1051,24 +1105,11 @@ def build_xml(res):
     #    atunci calitate_intocmit trebuie sa fie completata"
     # Cabinetul/firma depune in nume propriu -> tip_intocmit=0 (persoana juridica),
     # cif_intocmit = CUI-ul firmei, calitate_intocmit completata, functie_intocmit=null.
-    # [regula 4 - fara default tacut] denR/functie_reprez/calitate_intocmit sunt OBLIGATORII la ANAF;
-    # cand lipsesc din profil emitem tot un implicit (altfel DUK respinge campul gol), DAR ANUNTAT prin
-    # avertisment - implicit DECLARAT, nu tacit. Contabilul completeaza profilul firmei.
+    # [regula 4; C69, lotul 10] denR / functie_reprez / calitate_intocmit sunt obligatorii la ANAF: reprezentantul din profil, altfel
+    # declarantul — pe care `erori_declarant` l-a cerut deja înainte de build_xml (genereaza:1499). Fără implicit „ADMINISTRATOR”.
     rep_den = prof.get("reprezentant_nume") or prof.get("declarant_nume")
     rep_fct = prof.get("reprezentant_functie") or prof.get("declarant_functie")
     calitate = prof.get("declarant_functie") or prof.get("reprezentant_functie")
-    if not rep_den:
-        res.avertismente.append("D394: numele reprezentantului (denR) lipsește din profil — se trece implicit "
-                                "\"ADMINISTRATOR\". Completează reprezentantul în profilul firmei, nu lăsa implicitul.")
-        rep_den = "ADMINISTRATOR"
-    if not rep_fct:
-        res.avertismente.append("D394: funcția reprezentantului lipsește din Date firmă — se trece "
-                                "implicit \"ADMINISTRATOR\". Completează în profil.")
-        rep_fct = "ADMINISTRATOR"
-    if not calitate:
-        res.avertismente.append("D394: calitatea întocmitorului lipsește din Date firmă — se trece "
-                                "implicit \"ADMINISTRATOR\". Completează în profil.")
-        calitate = "ADMINISTRATOR"
     # [prsAfiliat 10.08.2026] SPEC OFICIAL anaf_surse/d394_struct_anaf.txt poz.6.a:
     # "prsAfiliat - Au fost efectuate operatiuni cu persoane afiliate in perioada de
     # raportare", N(1), camp OBLIGATORIU: =0 NU, =1 Da. NU e derivabil din datele iConta -
@@ -1142,16 +1183,11 @@ def build_xml(res):
         if cuiP:
             at = ' cuiP="%s"' % _esc(cuiP)
         else:
-            # R222.3: tip_partener=2, cuiP necompletat, taraP='RO' -> judP obligatoriu. Proxy = judetul
-            # FIRMEI (partenerul neinregistrat n-are adresa stocata). [regula 4] lipsa judetului NU se
-            # acopera tacit cu "40" (Bucuresti) - se anunta o singura data.
-            _jud = jud_siruta(prof.get("judet"))
+            # R222.3: tip_partener=2, cuiP necompletat, taraP='RO' -> judP obligatoriu. [lotul 10, C69] județul PARTENERULUI
+            # (`judete_partener`, rezolvat în `calcul_d394`), nu al firmei și nu „40” implicit
+            _jud = res.judP.get(k)
             if not _jud:
-                if not any("se trece implicit codul de județ" in a for a in res.avertismente):
-                    res.avertismente.append("D394: județul firmei lipsește din profil — pentru partenerii neînregistrați fără cod se trece "
-                                            "implicit codul de județ „40” (București). "
-                                            "Completează județul în profil.")
-                _jud = "40"
+                raise ValueError("D394: partenerul %s n-are județul (judP) — nu se scrie unul inventat." % (denP or "?"))
             at = ' taraP="RO" judP="%s"' % _jud
         at += ' denP="%s" nrFact="%d" baza="%d"' % (_esc(_t(denP, _LIM["d394"]["denP"])), nr, baza)
         if tip in OP1_CU_TVA:
@@ -1237,6 +1273,12 @@ def pull(conn, schema, perioada):
         _inc, _sf = _fer(perioada, _ptv(prof))
         inceput = _inc.isoformat()
         sfarsit = _sf.isoformat()
+        # [lotul 10, deficiența 428] sistemTVA = firma a aplicat sistemul TVA la încasare în perioadă (perioadele din Date firmă), nu bifa
+        # de azi — OPANAF 2194/2025: „e) sistem de TVA la încasare - se completează în cazul în care persoana impozabilă care depune
+        # declaraţia a optat pentru aplicarea sistemului de TVA la încasare”
+        from core import tva_incasare as _tvi
+        prof["tva_la_incasare"] = _tvi.firma_in_sistem_in(cur, None, inceput, sfarsit)
+        decontari = _tva_la_decontare(cur, inceput, sfarsit)
         # partener: de pe FACTURA (tert_*), in ambele directii. Vezi decizia de mai jos.
         # proformele nu se raporteaza (nu sunt facturi fiscale).
         rows = _repo.select_facturi(cur, inceput, sfarsit)
@@ -1281,6 +1323,9 @@ def pull(conn, schema, perioada):
         except _sl.LipsaCurs:
             continue
         comun = {"cui": cui, "nume": nume, "directie": r["directie"],
+                 # [lotul 10, C69] județul partenerului de pe factură (judP la partenerul neînregistrat fără cod): `facturi.tert_judet`,
+                 # când selecția facturilor îl aduce (`repo_d394.select_facturi`)
+                 "judet": (r.get("tert_judet") or "").strip(),
                  "taxare_inversa": bool(r["ti"]), "categorie_331": r["categorie_331"],
                  "platitor_tva": r["tert_platitor_tva"],
                  # [A9 art.297 alin.2] furnizor RO cu TVA la incasare -> op1.tip = AI (deducere amanata)
@@ -1334,7 +1379,7 @@ def pull(conn, schema, perioada):
                   "serii": serii_emise(conn, schema, inceput, sfarsit),
                   "nr_facturi": nr_facturi_emise(conn, inceput, sfarsit),
                   "fara_serie": facturi_fara_serie(conn, inceput, sfarsit),
-                  "tva_ded_ai": _tva_ded_ai_platite(conn, inceput, sfarsit)}
+                  "tva_ded_ai": decontari["ded_ai"], "tva_ded": decontari["ded"], "tva_col": decontari["col"]}
 
 
 def _pull_rapoarte_z(cur, inceput, sfarsit):
@@ -1370,34 +1415,24 @@ def _pull_facturi_din_bon(cur, inceput, sfarsit):
     return list(out.values())
 
 
-def _tva_ded_ai_platite(conn, inceput, sfarsit):
-    """[A9 part 2 art.297 alin.2] TVA dedusa pe facturile AI (furnizor cu TVA la incasare) ACHITATE
-    in perioada (d394_struct:1909), per cota: {cota: tva}. SURSA UNICA cu D300 - aceeasi interogare de
-    plati-AI (`repo_d300.select_inregistrari_2`, cont 401 pe primite cu furnizor_tva_incasare) si
-    aceeasi apartajare a sumei platite pe cote (`d300._aloca_pe_cote`). Fara plati AI -> {}."""
-    import psycopg2.extras as _E
-    from core import repo_d300 as _r300, d300 as _d300m
-    out = {}
-    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        plati = _r300.select_inregistrari_2(cur, _d300m._STATUS_FINAL, inceput, sfarsit)
-        if not plati:
-            return out
-        fids = [p["fid"] for p in plati]
-        _r300.select_facturi_3(cur, fids)
-        linii, tot = {}, {}
-        for lr in cur.fetchall():
-            tot[lr["fid"]] = (lr["total"], lr["tva"])
-            if lr["cantitate"] is not None and lr["cota_tva"] is not None:
-                linii.setdefault(lr["fid"], []).append((lr["cantitate"], lr["pret_unitar"], lr["cota_tva"]))
-    for p in plati:
-        gross = _d(p["settled"] or 0)
-        if gross <= 0:
-            continue
-        for d in _d300m._aloca_pe_cote(gross, linii.get(p["fid"]), tot.get(p["fid"])):
-            ci = d["cota"]
-            if ci:
-                out[ci] = out.get(ci, Decimal(0)) + d["suma"] * Decimal(ci) / Decimal(100 + ci)
-    return {c: _int(v) for c, v in out.items()}
+def _tva_la_decontare(cur, inceput, sfarsit):
+    """[lotul 10, deficiența 428] TVA-ul devenit exigibil / deductibil prin decontările din perioadă, pe cote: {"col", "ded", "ded_ai"} ->
+    {cota: tva}. SURSA UNICĂ cu D300: `d300._pull_la_incasare` (aceleași decontări, același regim al facturii, aceeași alocare pe cote).
+      col    — facturile EMISE în sistem încasate în perioadă (D394 pct.5.1, tvaCol);
+      ded    — facturile PRIMITE de la furnizori în sistemul NORMAL, cu deducerea amânată pentru că FIRMA e în sistem (art.297 alin.(3)),
+               plătite în perioadă (pct.5.2, tvaDed);
+      ded_ai — facturile PRIMITE de la furnizori în sistem (art.297 alin.(2)), plătite în perioadă (pct.4.1 / 5.3, tvaDedAI).
+    Înlocuiește `_tva_ded_ai_platite` (numai furnizorul în sistem; tvaCol / tvaDed erau 0)."""
+    from core import d300 as _d300m, tva_incasare as _tvi
+    out = {"col": {}, "ded": {}, "ded_ai": {}}
+    for f in _d300m._pull_la_incasare(cur, inceput, sfarsit):
+        k = "col" if f["directie"] == "emisa" else ("ded_ai" if f.get("furnizor_tva_incasare") else "ded")
+        for d in f["decontari"]:
+            ci, g = d["cota"], d["suma"]
+            if ci and g:
+                t = _tvi.tva_din_incasare(abs(g), ci) * (1 if g > 0 else -1)   # CF art.282 alin.(8): suta mărită, ca D300
+                out[k][ci] = out[k].get(ci, Decimal(0)) + t
+    return {k: {c: _int(v) for c, v in d.items()} for k, d in out.items()}
 
 
 def nr_facturi_emise(conn, inceput, sfarsit):

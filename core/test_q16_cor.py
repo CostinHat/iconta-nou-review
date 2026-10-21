@@ -21,6 +21,12 @@ def _fake_conn(*a, **k):
     yield None
 
 
+def _fara_existenti(conn, cnp_uri):
+    """[lotul 10, 426] Previzualizarea întreabă și ce salariați există deja (același CNP), pe conexiunea firmei. Proba asta e despre
+    COR, deci firma n-are salariați: structura goală întoarsă de `salariati_import_api.existent` pe o firmă fără salariați."""
+    return {"total": 0, "randuri": 0, "nume": [], "state_plata": {"numar": 0, "ultima": None}}
+
+
 def _continut(raspuns):
     """Conținutul unui răspuns de rută, indiferent dacă e dicționar sau `Response`.
 
@@ -46,6 +52,7 @@ def test_preview_salariati_ataseaza_denumirea_cor(monkeypatch):
     monkeypatch.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: "public")
     monkeypatch.setattr(_sal, "extrage", lambda *a, **k: [dict(rand)])
     monkeypatch.setattr(main.db, "get_conn", _fake_conn)
+    monkeypatch.setattr(_sal, "existent", _fara_existenti)
     monkeypatch.setattr(_cor, "denumire", lambda conn, cod: "Programator" if cod == "251401" else None)
 
     res = _continut(main.salariati_import_incarca(1, fisier=_uf(), ctx={"uid": 1}))
@@ -61,6 +68,7 @@ def test_preview_salariati_cor_necunoscut_ramane_none(monkeypatch):
     monkeypatch.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: "public")
     monkeypatch.setattr(_sal, "extrage", lambda *a, **k: [dict(rand)])
     monkeypatch.setattr(main.db, "get_conn", _fake_conn)
+    monkeypatch.setattr(_sal, "existent", _fara_existenti)
     monkeypatch.setattr(_cor, "denumire", lambda conn, cod: None)
     res = _continut(main.salariati_import_incarca(1, fisier=_uf(), ctx={"uid": 1}))
     assert res["randuri"][0]["cor_denumire"] is None   # necunoscut ramane necunoscut (fallback la cod in UI)

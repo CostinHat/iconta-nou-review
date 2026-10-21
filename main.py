@@ -75,6 +75,10 @@ from core import uc_firme_scoase as _uc_firme_scoase
 from core import uc_eu as _uc_eu
 from core import uc_cont_notificari as _uc_cont_notif   # [17.10.2026, lotul 7] Setări cont -> Notificări
 from core import uc_inceput as _uc_inceput   # [17.10.2026, comanda 7.2] cardurile de început (319, 320)
+from core import uc_regim_tva_incasare as _uc_tvai   # [20.10.2026, lotul 10, deficiența 428] regimul TVA la încasare pe firmă
+from core import uc_asociati as _uc_asociati   # [20.10.2026, lotul 10, deficiența 431] asociații și cotele în Date firmă
+from core import uc_reevaluare as _uc_reevaluare   # [20.10.2026, lotul 10, deficiența 429] reevaluarea în valută propusă
+from core import uc_compensari as _uc_compensari   # [20.10.2026, lotul 10, deficiența 428] compensarea creanțelor și datoriilor
 from core import notificari as _notificari               # [17.10.2026, lotul 7] livrarea notificărilor pe canal
 from core import whatsapp as _whatsapp                   # [17.10.2026, lotul 7] WhatsApp Cloud API
 from core import uc_declaratii as _uc_declaratii
@@ -1243,6 +1247,7 @@ class ClientIn(BaseModel):
     judet: Optional[str] = None
     cod_postal: Optional[str] = None
     status: str = "activ"
+    afiliat: bool = False   # [lotul 10, 428] persoană afiliată (CF art.7 pct.26) -> regulile generale de exigibilitate (art.282 alin.(6) lit.d)
 
 class ClientEdit(BaseModel):
     nume: Optional[str] = None
@@ -1254,6 +1259,7 @@ class ClientEdit(BaseModel):
     judet: Optional[str] = None
     cod_postal: Optional[str] = None
     status: Optional[str] = None
+    afiliat: Optional[bool] = None   # [lotul 10, 428] bifa „persoană afiliată (Cod fiscal art.7 pct.26)”
 
 class SalariatIn(BaseModel):
     nume: str
@@ -1306,6 +1312,11 @@ class SalariatEdit(BaseModel):
     tichet_masa_valoare: Optional[float] = None  # [F133]
     iban: Optional[str] = None  # [F134] cont beneficiar pt plata pe card
     functie_baza: Optional[bool] = None  # [3c · CF art.77(1)]
+    # [lotul 10, observația „SalariatEdit” din lotul 9] „Salariat nou” le are (C67), dar corectarea le arunca TACIT (clasa R51): data
+    # nașterii, copiii școlarizați și declarația părintelui — deducerile suplimentare CF art.77 alin.(10) lit.a / lit.b și alin.(12)
+    data_nastere: Optional[str] = None
+    copii_scolarizati: Optional[int] = None
+    declaratie_copii: Optional[bool] = None
     tip_contract: Optional[str] = None  # [412] CIM pe fișă (Legea 53/2003 art.12, art.16 alin.(1))
     nr_cim: Optional[str] = None
     data_cim: Optional[str] = None
@@ -1409,10 +1420,17 @@ class SoldRand(BaseModel):
     debit: float = 0
     credit: float = 0
     rand_fisier: Optional[int] = None   # [8.2 pct.4] rândul din fișier, de la previzualizare
+    # [425] soldul la 1 ianuarie și rulajele anului (fără soldul inițial), când balanța le are; None = numai solduri finale
+    si_debit: Optional[float] = None
+    si_credit: Optional[float] = None
+    rulaj_debit: Optional[float] = None
+    rulaj_credit: Optional[float] = None
 
 class SolduriIn(BaseModel):
     randuri: list[SoldRand]
     data_referinta: Optional[str] = None     # [C22] cerută la scriere (`solduri_api.data_balantei`); lipsa -> 422 numit
+    inlocuieste: bool = False                # [426] confirmarea înlocuirii balanței existente; fără ea -> 409 cu totalurile
+    metoda_stoc: Optional[str] = None        # [425] cerută când balanța are sold pe 371 și firma n-are metoda declarată
 class PartenerRand(BaseModel):
     cont: str
     cui: str = ""
@@ -1423,14 +1441,15 @@ class PartenerRand(BaseModel):
 class ParteneriIn(BaseModel):
     randuri: list[PartenerRand]
     data_referinta: Optional[str] = None
+    inlocuieste: bool = False                # [426, clasa] confirmarea înlocuirii soldurilor existente; fără ea -> 409 cu totalurile
 class SalariatRand(BaseModel):
     nume: str = ""
     prenume: str = ""
     cnp: str = ""
     data_angajare: Optional[str] = None
-    tip_norma: str = ""     # [Q11] fara default tacit (DS cap.17): necunoscut ramane necunoscut, semnalat
+    tip_norma: str = ""     # [Q11] fara default tacit; [420] lipsa din fișier -> propunere editabilă pe ecran, marcată de verificat
     norma_ore_luna: bool = False                 # [14.10] SAGA „Norma pe zi” = 0 (ore pe lună): rândul se refuză numit
-    functie_baza: Optional[bool] = None          # [decizii 07.10 pct.4] cerut explicit; lipsa -> rândul refuzat, numit
+    functie_baza: Optional[bool] = None          # [decizii 07.10 pct.4] cerut explicit; [420] lipsa din fișier -> propunere „Da” editabilă
     scutit_contrib_minim: Optional[bool] = None  # idem
     ore_zi: float = 0
     salariu_brut: float = 0
@@ -1442,6 +1461,7 @@ class SalariatRand(BaseModel):
     rand_fisier: Optional[int] = None
 class SalariatiImportIn(BaseModel):
     randuri: list[SalariatRand]
+    inlocuieste: bool = False                # [426, clasa] confirmarea actualizării fișelor existente (același CNP); fără ea -> 409
 class AsociatRand(BaseModel):
     nume: str = ""
     cnp: str = ""
@@ -1453,6 +1473,7 @@ class AsociatiImportIn(BaseModel):
     # [lot 19 pct.4e] data de la care noua structura e valabila (cesiune): cea veche se arhiveaza pentru D205
     # (Legea 31/1990 art.67 alin.(6)). Absenta = corectura a structurii curente.
     data_cesiune: Optional[str] = None
+    inlocuieste: bool = False                # [426, clasa] confirmarea corecturii peste asociații existenți; fără ea -> 409
 class MijlocFixRand(BaseModel):
     cod: str = ""
     denumire: str = ""
@@ -1471,6 +1492,7 @@ class MijlocFixRand(BaseModel):
     rand_fisier: Optional[int] = None
 class MijloaceFixeImportIn(BaseModel):
     randuri: list[MijlocFixRand]
+    inlocuieste: bool = False                # [426, clasa] confirmarea înlocuirii registrului existent; fără ea -> 409 cu valorile
 class IstoricDeclRand(BaseModel):
     tip: str = ""
     an: int = 0
@@ -1482,6 +1504,7 @@ class IstoricDeclRand(BaseModel):
     data_brut: Optional[str] = None
 class IstoricDeclImportIn(BaseModel):
     randuri: list[IstoricDeclRand]
+    inlocuieste: bool = False                # [426, clasa] confirmarea înlocuirii istoricului preluat; fără ea -> 409 cu perioadele
 
 class CoadaIn(BaseModel):
     tenant_id: int
@@ -2330,6 +2353,8 @@ def migrare_salariati_status(ctx=Depends(cere_cabinet)):
     for f, d, prosp in _portofoliu_din_model(ctx, "salariati", {"are_salariati": False, "randuri": 0}):
         out.append({"tenant_id": f.get("id"), "nume": f.get("nume"), "cui": f.get("cui"),
                     "are_salariati": bool(d.get("are_salariati")), "randuri": d.get("randuri") or 0,
+                    # [lotul 10, 423 b] câți salariați au date de verificat (None = rezumat calculat înainte de câmp: nu se știe)
+                    "de_verificat": d.get("de_verificat"),
                     "prospetime": prosp})
     return {"firme": out}
 
@@ -2517,7 +2542,8 @@ def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=D
     # [357, comanda Costin 8.2] contorul spune ce se întâmplă: respinse (nu intră) / semnalate (intră, cu observație)
     return _raspuns({"randuri": randuri, "total": len(randuri), "erori": erori,
                      "respinse": sum(1 for r in randuri if r["stare"] == "respins"),
-                     "semnalate": sum(1 for r in randuri if r["stare"] == "semnalat")})
+                     "semnalate": sum(1 for r in randuri if r["stare"] == "semnalat"),
+                     **_uc_tenants.istoric_inlocuire(tenant_id, randuri, erori, ctx)})   # [426, clasa] istoricul preluat existent
 
 
 @app.post("/tenants/{tenant_id}/istoric-declaratii-import")
@@ -3056,6 +3082,15 @@ def _preincalzeste_cursul(moneda, data_emitere):
         raise _http_din(e)
 
 
+@app.post("/tenants/{tenant_id}/facturi/previzualizare-lei")
+def facturi_previzualizare_lei(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[lotul 10, comanda 10.2 pct.7g] Cursul BNR cu care se va emite factura în valută și TVA-ul / totalul ei în lei — nimic scris."""
+    try:
+        return _uc_tenants.facturi_previzualizare_lei(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.post("/tenants/{tenant_id}/facturi/emite")
 # [R42] „emiterea unui document" — factura primește număr din serie și ajunge la un om.
 def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
@@ -3106,6 +3141,64 @@ def vector_citeste(tenant_id: int, ctx=Depends(cere_cabinet)):
 def vector_salveaza(tenant_id: int, date: VectorIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.vector_salveaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+# [20.10.2026, lotul 10, deficiența 428] Regimul TVA la încasare pe firmă (CF art.282 alin.(3), (3^1), (5)): perioada curentă, ștergerea
+# unei perioade scrise greșit, verificarea în registrul ANAF (RTVAI). Dreptul: „Poate pregăti”, ca regimul de TVA (PIVOT DECIZII 04.10).
+@app.post("/tenants/{tenant_id}/tva-incasare")
+def tva_incasare_salveaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """Perioada curentă a sistemului TVA la încasare (aplică / nu, de la, până la), apoi verificarea în registrul ANAF consemnată pe ea.
+    corp: {aplica, de_la, pana_la}."""
+    try:
+        return _uc_tvai.tva_incasare_salveaza(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.delete("/tenants/{tenant_id}/tva-incasare/{perioada_id}")
+def tva_incasare_sterge(tenant_id: int, perioada_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """Ștergerea unei perioade a sistemului TVA la încasare scrise din greșeală (nu pe o lună închisă), cu jurnalul regimului."""
+    try:
+        return _uc_tvai.tva_incasare_sterge(tenant_id, perioada_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/tenants/{tenant_id}/tva-incasare/verifica-anaf")   # citire: propune datele ANAF, nu scrie nimic
+def tva_incasare_verifica_anaf(tenant_id: int, ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_tvai.tva_incasare_verifica_anaf(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+# [20.10.2026, lotul 10, deficiența 431] Asociații și cotele în Date firmă: citirea, corectura structurii curente, cesiunea de părți
+# sociale (Legea 31/1990 art.202 alin.(1), art.67 alin.(6)). Dreptul: „Poate pregăti”, ca datele firmei și importul asociaților.
+@app.get("/tenants/{tenant_id}/asociati")
+def asociati_citeste(tenant_id: int, ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_asociati.asociati_citeste(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/asociati")
+def asociati_salveaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """Corectura structurii curente a asociaților (scrisă greșit), fără istoric. corp: {randuri: [{nume, cnp, cota}]}."""
+    try:
+        return _uc_asociati.asociati_salveaza(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/asociati/cesiune")
+def asociati_cesiune(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """Cesiunea părților sociale de la o dată: structura de până atunci intră în istoric (Legea 31/1990 art.202 alin.(1)).
+    corp: {data_cesiune, randuri: [{nume, cnp, cota}]}."""
+    try:
+        return _uc_asociati.asociati_cesiune(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -6689,6 +6782,17 @@ def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_d
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
+
+@app.get("/tenants/{tenant_id}/tva-incasare/neexigibile")
+def tva_incasare_neexigibile(tenant_id: int, la: str, ctx=Depends(cere_drept(_drepturi.CITIRE))):
+    """[lotul 10, deficiența 428] Facturile cu TVA rămas pe 4428 la data `la` (AAAA-LL-ZZ) — emisele în sistem neîncasate integral și
+    primitele cu deducerea amânată neplătite integral —, cu ce se întâmplă cu fiecare la ieșirea din sistem (CF art.282 alin.(7)).
+    Numai citire: ieșirea nu mută nimic din 4428."""
+    try:
+        return _uc_tenants.tva_incasare_neexigibile(tenant_id, la, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
 @app.post("/tenants/{tenant_id}/decontare-valuta")
 def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765.
@@ -6702,11 +6806,55 @@ def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_dr
 
 @app.post("/tenants/{tenant_id}/reevaluare-valuta")
 def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
-    """Reevaluare lunara solduri valuta (OMFP 1802 pct. 316), curs BNR auto.
+    """Reevaluare lunara solduri valuta (OMFP 1802/2014 pct.325), curs BNR auto — formularul manual (cazurile speciale).
     corp: {data (ultima zi luna), solduri: [{cont, valoare_valuta, moneda,
     curs_evidenta, tip creanta|datorie|disponibil}]}. O nota cu toate liniile."""
     try:
         return _uc_tenants.reevaluare_valuta(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+# [lotul 10, deficiența 429, comanda Costin 10.1 pct.8] reevaluarea PROPUSĂ de aplicație (`core/uc_reevaluare.py`): „aplicația propune
+# singură creanțele și datoriile în valută neîncasate (pe factură), disponibilitățile în valută, cursul din evidență, cursul BNR din
+# ultima zi bancară și diferența pe 665/765; contabilul verifică și generează nota.”
+@app.get("/tenants/{tenant_id}/reevaluare-valuta")
+def reevaluare_valuta_propunere(tenant_id: int, an: int, luna: int, completari: Optional[str] = None, ctx=Depends(cere_cabinet)):
+    """Propunerea reevaluării lunii (OMFP 1802/2014 pct.325): elementele în valută, cursurile și diferența pe 665 / 765.
+    `completari` (JSON {cheie: {sold_valuta?, moneda?}}): recalcularea cu ce a scris contabilul pe ecran, fără scriere."""
+    try:
+        return _uc_reevaluare.reevaluare_valuta_propunere(tenant_id, an, luna, ctx, completari=completari)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/reevaluare-valuta/nota")
+def reevaluare_valuta_genereaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """Nota reevaluării lunii, din propunere (ciornă; a doua generare înlocuiește ciorna nevalidată a lunii).
+    corp: {an, luna, completari: {cheie: {sold_valuta?, moneda?}}}."""
+    try:
+        return _uc_reevaluare.reevaluare_valuta_genereaza(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+# [lotul 10, deficiența 428, decizia Costin 20.10.2026 „Construiesc acum”] compensarea creanțelor și datoriilor reciproce cu același partener
+# (`core/uc_compensari.py`): „fiecare compensare stinge cele două facturi și mută TVA-ul prin același punct ca banca și casa”.
+@app.get("/tenants/{tenant_id}/compensari/propunere")
+def compensari_propunere(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """Partenerii cu facturi emise neîncasate și primite neplătite, cu restul fiecărei facturi și perechile propuse."""
+    try:
+        return _uc_compensari.compensari_propunere(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/compensari")
+def compensari_genereaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """Ordinul de compensare: o notă ciornă pe pereche (401 = 4111 + TVA la încasare). corp: {data, numar, perechi: [{factura_emisa_id,
+    factura_primita_id, suma}]}."""
+    try:
+        return _uc_compensari.compensari_genereaza(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -6808,11 +6956,24 @@ def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
 @app.post("/tenants/{tenant_id}/nota-asociati")
 def nota_asociati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie dividend|regularizare|restituire_dividend|imprumut, descriere?, +
-    dividend{brut, interimar?, cu_plata?}; regularizare{total_interimar,
+    dividend{brut, numar_hotarare, data_hotarare, interimar?, cu_plata?}; regularizare{total_interimar,
     dividend_anual, impozit_interimar (cerut cand interimar > anual)}; restituire_dividend{suma_restituita};
-    imprumut{suma, fel primire|restituire, dobanda?}}."""
+    imprumut{suma, fel primire|restituire, dobanda?}}. [lotul 10, 430] Dividendul se împarte pe asociații de la data
+    hotărârii (Date firmă → Asociați), din contul care are profitul nerepartizat, cu hotărârea ca document."""
     try:
         return _uc_tenants.nota_asociati(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/tenants/{tenant_id}/dividende-impartire")
+def dividende_impartire(tenant_id: int, brut: str = "", data_hotarare: str = "", numar_hotarare: str = "",
+                        interimar: str = "0", data: str = "", ctx=Depends(cere_cabinet)):
+    """[lotul 10, deficiența 430b] Propunerea notei de dividende, înainte de generare: asociații la data hotărârii, cota, brutul,
+    impozitul și netul fiecăruia, contul sursă, documentul. Nu scrie nimic."""
+    try:
+        return _uc_tenants.dividende_impartire(tenant_id, {"brut": brut, "data_hotarare": data_hotarare, "data": data,
+                                                           "numar_hotarare": numar_hotarare, "interimar": interimar}, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

@@ -66,6 +66,16 @@ def _fara_baza_mf(mp):
     mp.setattr(solduri_api, "solduri_deschidere", lambda cur: [])
 
 
+def _firma_fara_date(mp):
+    """[lotul 10, 426 — clasa] previzualizările spun ce există deja (`existent` al fiecărui import); aici, o firmă fără date."""
+    mp.setattr(_part, "existent", lambda conn: {"randuri": 0, "total_debit": 0.0, "total_credit": 0.0, "data_referinta": None})
+    mp.setattr(_sal, "existent", lambda conn, cnp: {"total": 0, "randuri": 0, "nume": [], "state_plata": {"numar": 0, "ultima": None}})
+    mp.setattr(_mf, "existent", lambda conn: {"randuri": 0, "total_valoare": 0.0, "total_amortizare": 0.0,
+                                              "note_amortizare": {"numar": 0, "prima": None, "ultima": None}, "istoric_fisa": []})
+    mp.setattr(_ist, "existent", lambda conn, tid: {"randuri": 0, "tipuri": [], "perioade": "—", "depuse_iconta": {"numar": 0, "ani": []}})
+    mp.setattr(_aso, "existent", lambda conn: {"randuri": 0, "structura": [], "note_dividende": []})   # [lotul 10, 426] asociații
+
+
 def _uf():
     return UploadFile(io.BytesIO(b"x"), filename="x.csv")
 
@@ -80,7 +90,7 @@ CAZURI = [
      "norma_lipsa", True),   # [Q16] endpointul deschide conn pt. denumirea COR -> fake_conn (cor gol = fara lookup)
     ("asociati", main.asociati_import_incarca, _aso,
      [{"nume": "POP ION", "cnp": "1234567890123", "cota": 100}],
-     "cnp_invalid", False),
+     "cnp_invalid", True),   # [lotul 10, 426] previzualizarea citește asociații existenți -> fake_conn
     ("mijloace", main.mijloace_import_incarca, _mf,
      [{"cod": "MF1", "denumire": "X", "valoare": 5000.0, "rezidual": 0.0, "dnf_luni": 0, "stare": "ok", "motive": []}],
      "durata_lipsa", "mf"),
@@ -95,6 +105,7 @@ CAZURI = [
 def test_preview_intoarce_verdictul_salvarii(monkeypatch, nume, endpoint, modul, randuri, motiv, cu_conn):
     monkeypatch.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: "public")
     monkeypatch.setattr(modul, "extrage", lambda *a, **k: randuri)
+    _firma_fara_date(monkeypatch)
     if cu_conn == "mf":
         _fara_baza_mf(monkeypatch)
     elif cu_conn:
@@ -123,6 +134,7 @@ def test_preview_curat_nu_blocheaza():
         mp.setattr(_uc_comun, "_schema_sau_404", lambda ctx, tid: "public")
         mp.setattr(_mf, "extrage", lambda *a, **k: randuri)
         _fara_baza_mf(mp)
+        _firma_fara_date(mp)
         res = _continut(main.mijloace_import_incarca(1, fisier=_uf(), ctx={"uid": 1}))
     finally:
         mp.undo()

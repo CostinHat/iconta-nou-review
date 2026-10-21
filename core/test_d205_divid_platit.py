@@ -7,8 +7,8 @@ divid_P (platit)=0. Model corect confruntat cu structura ANAF (anaf_surse/d205_s
 rand 39.a/39.b):
   - divid_D "7.V. Dividende distribuite" N(15), >=0 pt. tip_venit1=08  <- CREDIT 457 (117/121=457)
   - divid_P "8.V. Dividende platite"    N(15), >=0 pt. tip_venit1=08  <- DEBIT 457 (457=5121/446)
-baza1/imp1 pe dividendul PLATIT (impozit retinut la plata). Regula fully-paid: divid_D>=divid_P;
-daca fereastra anului nu contine creditul de distribuire, divid_D=platit.
+[lotul 10, decizia Costin A] baza1/imp1 = distribuirea ANULUI (platita sau nu la 31.12), nu dividendul platit; regula
+veche „fully-paid” (divid_D >= divid_P) e supersedata - vezi core/test_lot10_d205_neplatite.py.
 
 MUTATIE DOVEDITA: caz cu distribuit(credit 457)=10000 si platit(debit 457)=6000 partial.
   HEAD 6cd0054: pull citeste DOAR debit 457=6000, emite divid_D=6000, divid_P=0
@@ -74,8 +74,10 @@ def test_divid_distribuit_si_platit_separate(conn_partial):
     # MUTATIE: pe HEAD divid_P=0 si divid_D=6000 (din debit 457). Post-fix:
     assert b.divid_p == 6000, "divid_P (platit) = Σ debit 457; got %s" % b.divid_p
     assert b.divid_d == 10000, "divid_D (distribuit) = Σ credit 457; got %s" % b.divid_d
-    # baza1/imp1 pe dividendul PLATIT (16% Legea 141/2025): 6000 -> 960
-    assert b.baza1 == 6000 and b.imp1 == 960, (b.baza1, b.imp1)
+    # [lotul 10, decizia Costin A — supersedează „baza1/imp1 pe dividendul PLATIT”] baza1/imp1 = distribuirea ANULUI, plătită sau
+    # nu la 31.12 (OPANAF 179/2022 anexa 1 cap.II pct.9: impozitul distribuitelor neplătite „se cuprinde în declaraţia aferentă
+    # perioadei în care s-a aprobat distribuirea dividendelor”), 16% (Legea 141/2025): 10000 -> 1600
+    assert b.baza1 == 10000 and b.imp1 == 1600, (b.baza1, b.imp1)
     # emis in XML
     linie = re.search(r'<benef[^>]*/>', xml).group(0)
     assert 'divid_D="10000"' in linie and 'divid_P="6000"' in linie, linie

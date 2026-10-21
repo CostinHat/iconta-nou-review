@@ -2938,3 +2938,61 @@ documentul facturii, amândouă validate; rulajul zilei neschimbat.
 Cele trei numere ale lotului 9 rămase fără test în browser: 409 (nota de descărcare la factură: documentul facturii și „× 2 buc”),
 C66 (D212 trimisă în coadă nu numește notele nevalidate), C67 („Salariat nou” păstrează data nașterii, copiii, declarația, data
 încetării). Fiecare verde și cu mutația ROȘIE (`scripts/e2e_poarta.py --mutatie=`). Intră în poartă cu lotul următor.
+
+## 20.10.2026 — Lotul 10, comanda 10.1: deficiențele 420–432, C68–C70, observațiile lotului 9 (pe ramură, nepublicat)
+
+Comanda lui Costin (verbatim în DECIZII „Comanda 10.1”): deficiențele găsite la testarea din 19.10 pe producție (F6 Migrare Test SRL și
+F1), punctul 9 (operațiunile speciale lunare / rare), observațiile din lotul 9 (micro și chitanța — confirmate; 500 din `/eu/ciorne` — de
+reparat; 409x, localitatea parțială, SalariatEdit, răspunsul API — decise de Code), testele 409 / C66 / C67 de pe ramura de după lotul 9.
+Ramura `lucru/lot10-2026-10-20` (din `d4ebae38`), worktree `/home/costin/iconta_lot9`.
+
+Lucrul, pe subagenți în paralel, pe fișiere disjuncte (CLAUDE.md §2.3 pct.14); testele grele, sesiunea principală, una după alta:
+- M (importurile de migrare: 425 importul, 426, 420, 423 a–c, SalariatEdit), R (efectul rulajelor preluate: balanța, D101, F20, KPI, K,
+  controalele anuale), W (421 / 424, fereastra cu tabel, DS v2.96 + verificator), F (427, regimul TVA la încasare pe firmă, asociații în
+  Date firmă), T (428, motorul TVA la încasare; cartea mare), V (429, reevaluarea propusă), D (430, 431, pct.9), apoi M2 (clasa 426 pe
+  toate importurile), K (compensările și beneficiarul afiliat — decizia Costin), D2 (D205 cu neplătitele și 457 preluat — decizia Costin;
+  importul asociaților), N și N2 (C69: valorile inventate pe documentele ANAF — antetul D406, localitatea partenerului, bilanțul, fără cont
+  bancar, e-Factura, D394 judP, D101G), G (cele 16 gărzi transversale).
+- Sesiunea principală: C68 (500 din `/eu/ciorne`: firma ștearsă în timpul cererii, `db.pe_firma_existenta`), 432 (predicatul unic
+  „înainte de preluare”), schema comună (5 migrări, rulate pe baza de TEST), legarea ecranelor noi în `firme.js`, refuzul D205 cu
+  trimitere și drumul manual al D205, dublarea reevaluării manual / propus, fallback-urile de declarant moarte, registrele.
+- Deciziile cerute pe drum, puse cu variante și răspunse de Costin în chat (verbatim în DECIZII): compensarea („Construiesc acum”), bifa
+  afiliat pe client, D205 cu neplătitele la 31.12, D205 la firma preluată, localitatea partenerului din ANAF, câmpurile bilanțului,
+  „fără cont bancar” cu contradicția 512x.
+- Temeiuri corectate pe drum: reevaluarea lunară e OMFP 1802/2014 pct.325 (comanda și codul vechi citau pct.316, despre avansuri); la
+  ieșirea din sistemul TVA la încasare nu există regularizare globală (CF art.282 alin.(7) lit.b).
+- Defecte găsite pe drum (cele mai grave): bilanțul punea județul 40 (București) oricărei firme cu județul venit ca cod („CJ”); D205
+  impozita a doua oară plata unui dividend distribuit înainte de preluare și citea impozitul reținut ca plată; excluderea beneficiarului
+  afiliat nu se aplica niciodată; DUK accepta antetul D406 inventat; XML-ul D101G nu trece DUK (C70, deschisă).
+Verificatorul TOTAL 0; gărzile transversale verzi; urmează e2e-urile lotului cu mutațiile, uneltele vizuale, registrele, commitul și poarta
+(cu reconfirmarea lui Costin).
+
+## 21.10.2026 — Lotul 10: integrarea lui 10.1 pe e2e, comanda 10.2, clasele găsite (pe ramură, nepublicat)
+
+Integrarea lui 10.1: e2e-urile lotului rulate unul după altul, cu fiecare mutație (cinci runde), până la verde la control și ROȘU la
+fiecare mutație. Testele care descriau greșit ecranul s-au corectat (cifrele D101 stau în XML, `%` din LIKE, clasa mesajului pusă pe
+zonă, declarantul / adresa firmei de probă, data dată de test marcată). Defecte REALE prinse de e2e: 500 la împărțirea dividendului
+(SQL necalificat pe conexiunea publică — ascuns de pytest-uri care lăsau `search_path` pe conexiunile din pool; gard
+`test_lot10_search_path_pool`); Registrul-inventar fără rezumatul fix; C71 (la PFA, „Profil incomplet” cerea câmpurile bilanțului); C72
+(bifa „Persoană afiliată” nu se putea salva — `class` dublat); C73 (cheia unică dublată -> 500; închisă pe toate cele 47 de chei ale
+schemei firmei, apoi pe schema `public`); regresia controlului D112 (firma fără salariați „neverificabilă” pe CAEN). 422 și 437 nu apar în
+nicio comandă: rânduri „neverificat”, întrebare la §6.
+
+Comanda 10.2 (găsită în `~/ghid_incoming`, nedată în chat; Costin: „Execut 10.2, apoi poarta”): subagenții A (383 — perioada neîncheiată
+refuzată la GENERARE, pivot la „Comanda 9.1”; 436 — depunerea blocată cât există note nevalidate), B (433, 7h, 394, 386), C (434, 435,
+401, 402, 404, 419 fișa), D (415, 417, 419 factura, 7g; C74 — a doua stornare acceptată), E (raportul Z: 438, 8b–8e), apoi Q (e2e-urile
+vechi mutate pe perioada încheiată, urmarea lui 383), Z (rezumatul fix și acțiunea jos pe toate ferestrele cu tabel, DS v2.97), U / U2 /
+U3 (C73). Reparațiile pe datele F1 (409, 7j, al doilea BA-1) sunt pregătite într-un script probat pe o schemă de test cu datele F1
+reproduse — se rulează numai la publicare, cu acordul lui Costin și backup.
+
+## 21.10.2026 — Lotul 10: suita întreagă înainte de commit — 46 de picături reparate (pe ramură, nepublicat)
+
+Suita întreagă pe arborele lotului: 46 failed / 9515 passed / 10 skipped / 15 xfailed (1 h 12 min). Cauzele: testele vechi rămase pe
+comportamentul de dinainte de C69 / C71 (declarațiile generate fără declarant, bilanțul fără câmpurile noi), gărzile-clichet depășite de
+testele noi (223 de aserțiuni pe text, `search_path` de sesiune, mesaje comparate întregi, fixturi pe tabel partajat fără marcaj,
+quantize fără mod, upsert fără motiv, o stare nouă în proces, o scriere mută) și trei defecte reale: 428 (`firma_in_sistem_in` fără
+tranziție — D300 refuzat la o firmă marcată din ANAF fără perioadă), mesajul reevaluării cu „ciornă” scris de mână (clasa 279),
+refuzul previzualizării cursului arătat în afara `catch`. Reparate de patru subagenți pe fișiere disjuncte (S1–S4) și de sesiunea
+principală; fiecare rescriere cu mutația ei roșie. Rerularea țintită (95 de fișiere): 1101 / 1101. Pe drum: o capcană de procedură a
+pytest (fișier din rădăcină între fișiere din `core/` -> `core/conftest.py` neaplicat), consemnată în DECIZII.
+

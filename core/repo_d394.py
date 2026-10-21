@@ -78,6 +78,7 @@ def select_facturi(cur, inceput, sfarsit):
                            f.moneda, f.curs_bnr, f.total_lei, f.tva_lei,
                            COALESCE(f.furnizor_tva_incasare, false) AS furnizor_tva_incasare,
                            f.categorie_331, f.tert_nume, f.tert_cui, f.tert_platitor_tva,
+                           f.tert_judet,   -- [C69, lotul 10] judP = județul PARTENERULUI (d394_struct pct.222), nu al firmei
                            c.nume AS c_nume, c.cui AS c_cui,
                            COALESCE(json_agg(json_build_object(
                                'cota', l.cota_tva,

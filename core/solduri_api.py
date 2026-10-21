@@ -63,7 +63,10 @@ def _numar(v, strict=False):
 # Fișierul trece prin `core.import_tabel` (sursa unică: format, codare, antet, coloane). Aici rămâne numai ce e propriu
 # balanței: CARE pereche debit/credit e soldul final, ce rânduri nu sunt conturi, și sinteticele dublate de analiticele lor.
 from core import import_tabel as _it
+from core import migrare_api as _mig   # [426, clasa] înlocuirea confirmată, comună importurilor
+from core import chei_unice as _chei   # [lotul 10, C73] cheia naturală dublată -> refuz numit, nu 500
 from core.pdf_util import bani as _bani, data_ro as _data_ro   # DS cap.4: sumele și datele din text, canonic
+from core.common import cate as _cate   # numeralul acordat („1 cont”, „20 de conturi”), gardul `test_plural_dupa_numar`
 import re as _re
 
 CAMPURI = {
@@ -94,14 +97,20 @@ def extrage_balanta_detaliat(continut, nume_fisier=""):
     - `coloane` = antetul coloanelor citite (ecranul le arată: „s-au citit «Sold final debitor» / «Sold final creditor»”);
     - `ignorate` = rândurile care nu sunt conturi (totaluri, titluri de clasă) — numărate și arătate, nu importate;
     - `sintetice_inlocuite` = sinteticele scoase fiindcă fișierul are analiticele lor (cu același sold net);
-    - `fara_sold` = conturi cu sold final 0 / 0 (au avut numai rulaje) — nu intră, nu schimbă nimic."""
+    - `fara_sold` = conturi fără nimic de preluat (sold final 0 / 0 și, când fișierul are rulajele, nici sold inițial, nici rulaj);
+    - `rulaje` = fișierul are soldurile inițiale ale anului și rulajele (deficiența 425): fiecare rând poartă `si_debit`, `si_credit`,
+      `rulaj_debit`, `rulaj_credit`, iar conturile cu sold final 0 dar cu rulaj intră; `perechi` = antetele perechilor citite."""
     brut = _it.citeste(continut, nume_fisier)
     if not brut or all(_it.rand_gol(r) for r in brut):
-        return {"randuri": [], "coloane": {}, "ignorate": [], "sintetice_inlocuite": [], "fara_sold": 0}
+        return {"randuri": [], "coloane": {}, "ignorate": [], "sintetice_inlocuite": [], "fara_sold": 0, "rulaje": False,
+                "perechi": {}}
     antet, start = _it.gaseste_antet(brut, CAMPURI, obligatorii=("cont",), nume_fisier=nume_fisier)
     i_cont = _it.coloana(antet, CAMPURI["cont"], camp="cont")
     i_den = _it.coloana(antet, CAMPURI["denumire"], exclus=(i_cont,), camp="denumire")
     i_deb, i_cre = _it.pereche_sold_final(antet, nume_fisier)
+    # [deficiența 425] celelalte perechi ale balanței de verificare (solduri inițiale an, sume precedente, rulaje, total sume)
+    per = _it.perechi_balanta(antet, nume_fisier)
+    cu_rulaje = "si" in per and ("ts" in per or ("sp" in per and "rl" in per))
 
     citite, ignorate, fara_sold = [], [], 0
     for nr, r in enumerate(brut[start:], start=start + 1):
@@ -119,17 +128,15 @@ def extrage_balanta_detaliat(continut, nume_fisier=""):
             raise _it.FisierNecitit("Rândul %d (contul %s): soldul final „%s” / „%s” nu e un număr. Corectează celula și "
                                     "încarcă fișierul din nou." % (nr, cont, _it.celula(r, i_deb), _it.celula(r, i_cre)))
         # [comanda Costin 8.2 pct.4] numărul rândului din fișier: previzualizarea arată fiecare rând cu starea lui, pe numărul lui
-        citite.append({"cont": cont, "denumire": _it.celula(r, i_den), "debit": deb, "credit": cre, "rand_fisier": nr})
+        x = {"cont": cont, "denumire": _it.celula(r, i_den), "debit": deb, "credit": cre, "rand_fisier": nr}
+        if cu_rulaje:
+            x.update(_rulaje_rand(r, per, nr, cont))
+        citite.append(x)
 
     # același cont de două ori: baza are UNIQUE(cont) (GARZI cat.1) — refuz numit, nu o eroare de bază la scriere
-    vazute, dubluri = set(), []
-    for x in citite:
-        if x["cont"] in vazute and x["cont"] not in dubluri:
-            dubluri.append(x["cont"])
-        vazute.add(x["cont"])
+    dubluri = conturi_dublate(citite)
     if dubluri:
-        raise _it.FisierNecitit("Contul %s apare de mai multe ori în balanță. Fiecare cont are un singur rând de sold; corectează "
-                                "fișierul și încarcă-l din nou." % ", ".join(dubluri[:8]))
+        raise _it.FisierNecitit(MESAJ_CONT_DUBLAT % ", ".join(dubluri[:8]))
     # sinteticele dublate de analiticele lor: păstrez frunzele, dacă netul sinteticului = suma netului frunzelor lui
     conturi = [x["cont"] for x in citite]
     net = {}
@@ -150,14 +157,128 @@ def extrage_balanta_detaliat(continut, nume_fisier=""):
     for x in citite:
         if x["cont"] in inlocuite:
             continue
-        if round(x["debit"], 2) == 0 and round(x["credit"], 2) == 0:  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+        # [deficiența 425] „cu toate conturile care au rulaj”: un cont cu sold final 0 (707, 607, 641 … închise pe 121) intră când are
+        # sold inițial sau rulaj în an; numai contul fără nimic (sold final, sold inițial și rulaj zero) rămâne pe dinafară, numărat
+        _miscare = cu_rulaje and any(x.get(k) for k in CHEI_RULAJE)
+        if round(x["debit"], 2) == 0 and round(x["credit"], 2) == 0 and not _miscare:  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
             fara_sold += 1
             continue
         out.append(x)
+    if cu_rulaje:
+        verifica_rulaje(out)
     return {"randuri": out,
             "coloane": {"cont": _it.eticheta(antet, i_cont), "debit": _it.eticheta(antet, i_deb),
                         "credit": _it.eticheta(antet, i_cre)},
-            "ignorate": ignorate, "sintetice_inlocuite": inlocuite, "fara_sold": fara_sold}
+            "ignorate": ignorate, "sintetice_inlocuite": inlocuite, "fara_sold": fara_sold, "rulaje": cu_rulaje,
+            # [425] ce perechi s-au citit, cu antetul lor din fișier (ecranul le numește)
+            "perechi": {g: [_it.eticheta(antet, d), _it.eticheta(antet, c)] for g, (d, c) in per.items()}}
+
+
+# ── rulajele anului (deficiența 425, comanda Costin 10.1, verbatim în DECIZII „Comanda 10.1”) ──────────────────────────────────────
+# `si_*` = soldul la 1 ianuarie al anului; `rulaj_*` = rulajele 01.01..data balanței FĂRĂ soldul inițial. Manualul SAGA, „Preluare date
+# contabile” (anaf_surse/saga_manual_topic12_…): coloanele „precedent” sunt „rulajele cumulate (inclusiv soldurile iniţiale) - coloanele
+# «Total Sume debitoare/creditoare»”. Deci TOTAL SUME = sold inițial an + rulajele anului, iar rulajele = total sume − sold inițial; când
+# fișierul n-are „Total sume”, total sume = sume precedente + rulajele lunii (aceeași balanță, luna curentă adăugată la cumul).
+CHEI_RULAJE = ("si_debit", "si_credit", "rulaj_debit", "rulaj_credit")
+
+
+def _bani_d(v):
+    from decimal import Decimal, ROUND_HALF_UP
+    return Decimal(str(v or 0)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+
+def _rulaje_rand(r, per, nr, cont):
+    """`{si_debit, si_credit, rulaj_debit, rulaj_credit}` dintr-un rând al balanței cu perechile `per`. Refuz numit pe o celulă care nu e
+    număr și pe un rând unde „sume precedente + rulaje” nu dau „total sume” (fișierul se contrazice)."""
+    v = {}
+    for g, (i_d, i_c) in per.items():
+        try:
+            v[g] = (_bani_d(_numar(_it.valoare(r, i_d), strict=True)), _bani_d(_numar(_it.valoare(r, i_c), strict=True)))
+        except ValueError:
+            raise _it.FisierNecitit("Rândul %d (contul %s): o sumă din coloanele balanței nu e un număr („%s” / „%s”). Corectează celula și "
+                                    "încarcă fișierul din nou." % (nr, cont, _it.celula(r, i_d), _it.celula(r, i_c)))
+    ts = v.get("ts")
+    if "sp" in v and "rl" in v:
+        din_parti = (v["sp"][0] + v["rl"][0], v["sp"][1] + v["rl"][1])
+        if ts is not None and (abs(din_parti[0] - ts[0]) >= _bani_d("0.01") or abs(din_parti[1] - ts[1]) >= _bani_d("0.01")):
+            raise _it.FisierNecitit(
+                "Rândul %d (contul %s): sumele precedente plus rulajele lunii (debit %s, credit %s) nu dau totalul sumelor (debit %s, "
+                "credit %s). Balanța se contrazice — exportă-o din nou din programul vechi." % (
+                    nr, cont, _bani(din_parti[0], "lei"), _bani(din_parti[1], "lei"), _bani(ts[0], "lei"), _bani(ts[1], "lei")))
+        ts = ts or din_parti
+    si = v["si"]
+    return {"si_debit": float(si[0]), "si_credit": float(si[1]),
+            "rulaj_debit": float(ts[0] - si[0]), "rulaj_credit": float(ts[1] - si[1])}
+
+
+def verifica_rulaje(randuri):
+    """PURĂ, ridică `ValueError` numit. Când balanța poartă soldurile inițiale ale anului și rulajele (deficiența 425):
+    - le poartă TOATE rândurile (o balanță jumătate cu rulaje, jumătate fără, nu e o balanță);
+    - pe fiecare cont, sold inițial + rulaj debitor − rulaj creditor = sold final (net, debitor cu +). OMFP 2634/2015 anexa 1 pct.52:
+      „Soldul debitor sau creditor al fiecărui cont se stabilește în funcție de rulajele debitoare și creditoare ale contului respectiv,
+      ținându-se seama de soldul de la începutul anului”;
+    - soldurile inițiale se echilibrează (debit = credit), iar rulajele la fel — același pct.52: „Balanța de verificare este documentul
+      contabil utilizat pentru verificarea înregistrării corecte în contabilitate a operațiunilor efectuate”; fiecare înregistrare are
+      o sumă egală în debit și în credit, deci totalurile coloanelor sunt egale.
+    Întoarce True dacă balanța are rulaje, False dacă are numai solduri finale."""
+    randuri = randuri or []
+    cu = [r for r in randuri if any(r.get(k) is not None for k in CHEI_RULAJE)]
+    if not cu:
+        return False
+    if len(cu) != len(randuri) or any(r.get(k) is None for r in cu for k in CHEI_RULAJE):
+        raise ValueError("Balanța are soldurile inițiale ale anului și rulajele numai pe o parte din conturi. Încarcă balanța de "
+                         "verificare întreagă (aceleași coloane pe fiecare cont) sau numai soldurile finale.")
+    tot = {k: _bani_d(0) for k in CHEI_RULAJE}
+    for i, r in enumerate(randuri, start=2):
+        b = {k: _bani_d(r.get(k)) for k in CHEI_RULAJE}
+        for k in CHEI_RULAJE:
+            tot[k] += b[k]
+        dreapta = _bani_d(r.get("debit")) - _bani_d(r.get("credit"))
+        stanga = b["si_debit"] - b["si_credit"] + b["rulaj_debit"] - b["rulaj_credit"]
+        if abs(stanga - dreapta) >= _bani_d("0.01"):
+            raise ValueError(
+                "Rândul %d (contul %s): soldul inițial al anului și rulajele dau %s, iar soldul final din fișier e %s (net, debitor cu +). "
+                "Balanța se contrazice — exportă-o din nou din programul vechi." % (
+                    _it.nr_rand(r, i), r.get("cont"), _bani(stanga, "lei"), _bani(dreapta, "lei")))
+    for d, c, ce in (("si_debit", "si_credit", "Soldurile inițiale ale anului"), ("rulaj_debit", "rulaj_credit", "Rulajele anului")):
+        if abs(tot[d] - tot[c]) >= _bani_d("0.01"):
+            raise ValueError("%s nu se echilibrează: debit %s, credit %s (diferență %s). Fiecare înregistrare are debit = credit, deci "
+                             "o balanță completă le are egale." % (ce, _bani(tot[d], "lei"), _bani(tot[c], "lei"),
+                                                                  _bani(tot[d] - tot[c], "lei")))
+    return True
+
+
+def avertisment_fara_rulaje(data_referinta):
+    """[deficiența 425] „Când are doar solduri finale, comportamentul de acum rămâne, dar aplicația spune clar că rulajele anului lipsesc
+    și ce afectează.” Textul, sau None când nu lipsește nimic: o balanță la 31 decembrie deschide exercițiul următor (rulajele anului
+    de preluare încep de la zero)."""
+    import datetime as _dt
+    d = None
+    if data_referinta:
+        try:
+            d = data_referinta if isinstance(data_referinta, _dt.date) else _dt.date.fromisoformat(str(data_referinta)[:10])
+        except ValueError:
+            d = None
+    if d is not None and (d.month, d.day) == (12, 31):
+        return None
+    pana = (" până la %s" % _data_ro(d)) if d else ""
+    return ("Fișierul are numai soldurile finale: soldurile de la 1 ianuarie și rulajele anului%s lipsesc, iar conturile cu sold final 0 "
+            "(veniturile și cheltuielile închise pe 121, TVA-ul lunii) nu intră deloc. Fără ele ies greșite pentru anul preluării: "
+            "declarația de impozit pe profit (D101) și situațiile financiare anuale (cifra de afaceri și cheltuielile anului), plafonul "
+            "de microîntreprindere, controalele cumulate de TVA și coloanele „sold inițial” / „sume precedente” din balanța de "
+            "verificare. Ca să le ai, încarcă balanța de verificare completă (solduri inițiale an, rulaje, total sume, solduri finale)."
+            % pana)
+
+
+#: [deficiența 425] „când balanța are sold pe 371, metoda de stoc se cere la migrare, nu rămâne «nedeclarată»” — 371 Mărfuri și 378
+#: Diferențe de preț la mărfuri (OMFP 1802/2014 pct.594: „371. Mărfuri (A)”, „378. Diferenţe de preţ la mărfuri (A/P)”), cu analiticele
+CONTURI_MARFA = ("371", "378")
+
+
+def are_sold_marfa(randuri):
+    """PURĂ: balanța are sold final pe un cont de mărfuri — atunci metoda de stoc a firmei se cere la migrare."""
+    return any(str(r.get("cont") or "").split(".")[0].startswith(CONTURI_MARFA)
+               and (_bani_d(r.get("debit")) != 0 or _bani_d(r.get("credit")) != 0) for r in (randuri or []))
 
 
 def extrage_balanta(continut, nume_fisier=""):
@@ -188,6 +309,30 @@ def verifica_echilibru(randuri):
     tc = round(sum(_numar(r.get("credit")) for r in (randuri or [])), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     dif = round(td - tc, 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     return abs(dif) < 0.01, td, tc, dif
+
+
+#: [lotul 10, C73] același cont de două ori — la citirea fișierului ȘI la scriere (rândurile pot veni și direct, prin API)
+MESAJ_CONT_DUBLAT = ("Contul %s apare de mai multe ori în balanță. Fiecare cont are un singur rând de sold; corectează "
+                     "fișierul și încarcă-l din nou.")
+
+
+def conturi_dublate(randuri):
+    """PURĂ: conturile care apar pe mai multe rânduri, în ordinea primei dubluri. Baza are UNIQUE(cont) (`solduri_initiale_cont_uniq`)."""
+    vazute, dubluri = set(), []
+    for x in randuri or []:
+        c = str(x.get("cont") or "").strip()
+        if c in vazute and c not in dubluri:
+            dubluri.append(c)
+        vazute.add(c)
+    return dubluri
+
+
+def _refuz_cont_scris_intre_timp(cur, e):
+    """[lotul 10, C73] Rândurile trimise n-au cont dublat (verificat înainte), deci violarea lui `solduri_initiale_cont_uniq` vine de la
+    o altă salvare a balanței, terminată în timpul acesteia."""
+    return _chei.CheieDublata("În timp ce salvai, altă salvare a scris deja soldul contului %s. Din balanța ta nu s-a scris nimic: "
+                              "reîncarcă pagina, verifică balanța firmei și salveaz-o din nou dacă e cazul." % _chei.valoarea(e),
+                              valoare=_chei.valoarea(e))
 
 
 def balanta_valida(randuri):
@@ -259,14 +404,50 @@ def data_balantei(v, azi=None):
     return d.isoformat()
 
 
-def importa(conn, randuri, data_referinta=None):
-    """Înlocuiește soldurile (DELETE + INSERT). Întoarce {randuri, total_debit, total_credit}.
-    Ridica ValueError daca balanta nu se echilibreaza.
+class BalantaExistenta(_mig.InlocuireNeconfirmata):
+    """[deficiența 426] Firma are deja o balanță de deschidere, iar cererea n-a confirmat înlocuirea. `vechi` / `nou` = totalurile,
+    `dependente` = notele de după data balanței. Forma balanței a refuzului comun al clasei (`migrare_api.InlocuireNeconfirmata`)."""
+
+
+def note_dupa(cur, data_referinta):
+    """[deficiența 426] Notele contabile de DUPĂ data balanței: `{numar, prima}` (prima = data celei mai vechi, 'YYYY-MM-DD'), sau
+    `{numar: 0, prima: None}`. Soldurile lor se citesc peste balanța de deschidere (`bilant_api.sold_la`: soldurile de preluare + mișcările
+    de după data lor), deci o balanță înlocuită le schimbă soldurile."""
+    if not data_referinta:
+        return {"numar": 0, "prima": None}
+    cur.execute("SELECT count(*), min(data) FROM inregistrari WHERE data > %s", (str(data_referinta)[:10],))
+    n, prima = cur.fetchone()
+    return {"numar": int(n or 0), "prima": prima.isoformat() if prima else None}
+
+
+def text_inlocuire(vechi, nou, note, data_noua=None):
+    """[deficiența 426] „spune că există deja o balanță, arată totalurile vechi și noi […]; dacă există note pe lunile de după preluare,
+    spune că soldurile lor se recalculează.” Textul comun avertismentului din previzualizare și refuzului de la salvare."""
+    t = ("Firma are deja o balanță de deschidere%s: %s, debit %s, credit %s. Balanța nouă%s: %s, debit %s, credit %s. "
+         "Salvarea o înlocuiește pe cea veche." % (
+             (" la %s" % _data_ro(vechi["data_referinta"])) if vechi.get("data_referinta") else "",
+             _cate(vechi["randuri"], "cont", "conturi"), _bani(vechi["total_debit"], "lei"), _bani(vechi["total_credit"], "lei"),
+             (" la %s" % _data_ro(data_noua)) if data_noua else "", _cate(nou["randuri"], "cont", "conturi"),
+             _bani(nou["total_debit"], "lei"), _bani(nou["total_credit"], "lei")))
+    if note and note.get("numar"):
+        t += (" Firma are %s după data balanței (prima la %s): soldurile lor se recalculează pe balanța nouă." % (
+            "o notă contabilă" if note["numar"] == 1 else _cate(note["numar"], "notă contabilă", "note contabile"),
+            _data_ro(note.get("prima")) or "—"))
+    return t
+
+
+def importa(conn, randuri, data_referinta=None, inlocuieste=False):
+    """Scrie soldurile de preluare (DELETE + INSERT). Întoarce {randuri, total_debit, total_credit, rulaje, avertisment_rulaje,
+    inlocuita, note_dupa}. Ridica ValueError daca balanta nu se echilibreaza.
 
     REFUZ dovedit necesar 15.07.2026, prin migrare reala: ecranul afisa "neechilibrat"
     rosu, dar importa() scria oricum, iar migrarea marca stratul "gata" verde. Firma
     ramanea cu o balanta de deschidere imposibila si contabilul credea ca e in regula.
     Semnalarea fara oprire e mai rea decat tacerea: da impresia ca produsul a verificat.
+
+    [deficiența 426] „al doilea import de balanță pentru aceeași firmă o înlocuiește pe prima fără avertisment” — o balanță existentă se
+    înlocuiește NUMAI cu `inlocuieste=True` (confirmarea de pe ecran); fără ea -> `BalantaExistenta`, cu totalurile vechi și noi.
+    [deficiența 425] soldurile inițiale ale anului și rulajele (`si_*`, `rulaj_*`) se scriu când balanța le are (`verifica_rulaje`).
     """
     # REFUZUL E PRIMA POARTA: nimic nu se scrie dintr-o balanta respinsa. Pusesem
     # _adauga_conturi_lipsa inaintea verificarii - conturile intrau in plan chiar si
@@ -274,6 +455,9 @@ def importa(conn, randuri, data_referinta=None):
     vok, vmotiv = balanta_valida(randuri)
     if not vok:
         raise ValueError(vmotiv)
+    dubluri = conturi_dublate(randuri)   # [lotul 10, C73] înaintea scrierii: refuzul numit, nu `UniqueViolation` -> 500
+    if dubluri:
+        raise ValueError(MESAJ_CONT_DUBLAT % ", ".join(dubluri[:8]))
     ok, td_v, tc_v, dif = verifica_echilibru(randuri)
     if not ok:
         raise ValueError(
@@ -281,29 +465,43 @@ def importa(conn, randuri, data_referinta=None):
             "(diferență %s). O balanță de deschidere trebuie să aibă totalul "
             "debitor egal cu cel creditor — altfel toată contabilitatea firmei "
             "pornește greșit." % (_bani(td_v, "lei"), _bani(tc_v, "lei"), _bani(dif, "lei")))
+    cu_rulaje = verifica_rulaje(randuri)                 # [425] ecuația pe fiecare cont + echilibrul coloanelor
     data_referinta = data_balantei(data_referinta)       # [C22] cerută, după validitate și echilibru
     asigura_tabel(conn)
+    vechi = rezumat(conn)
+    nou = {"randuri": len(randuri), "total_debit": td_v, "total_credit": tc_v}
+    with conn.cursor() as cur:
+        note = note_dupa(cur, data_referinta)
+    _mig.cere_confirmarea_inlocuirii(vechi["are_solduri"], inlocuieste, text_inlocuire(vechi, nou, note, data_referinta),
+                                     vechi, nou, note, exceptie=BalantaExistenta)   # [426] poarta comună a clasei
     _adauga_conturi_lipsa(conn, randuri)
     td = tc = 0.0
     with conn.cursor() as cur:
         cur.execute("DELETE FROM solduri_initiale")
-        for r in randuri:
-            cur.execute(
-                "INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) "
-                "VALUES (%s,%s,%s,%s,%s)",
-                (r["cont"], r.get("denumire", ""), r.get("debit", 0), r.get("credit", 0), data_referinta))
-            td += float(r.get("debit", 0) or 0)
-            tc += float(r.get("credit", 0) or 0)
-    return {"randuri": len(randuri), "total_debit": round(td, 2), "total_credit": round(tc, 2)}  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+        with _chei.refuza_dublura(cur, ("solduri_initiale_cont_uniq",), _refuz_cont_scris_intre_timp):
+            for r in randuri:
+                cur.execute(
+                    "INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta, "
+                    "si_an_debit, si_an_credit, rulaj_an_debit, rulaj_an_credit) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                    (r["cont"], r.get("denumire", ""), r.get("debit", 0), r.get("credit", 0), data_referinta,
+                     *((r.get(k) for k in CHEI_RULAJE) if cu_rulaje else (None,) * 4)))
+                td += float(r.get("debit", 0) or 0)
+                tc += float(r.get("credit", 0) or 0)
+    return {"randuri": len(randuri), "total_debit": round(td, 2), "total_credit": round(tc, 2),  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+            "rulaje": cu_rulaje, "avertisment_rulaje": None if cu_rulaje else avertisment_fara_rulaje(data_referinta),
+            "inlocuita": vechi if vechi["are_solduri"] else None, "note_dupa": note}
 
 
 def rezumat(conn):
-    """{are_solduri, randuri, total_debit, total_credit} pentru firma curentă."""
+    """{are_solduri, randuri, total_debit, total_credit, data_referinta, rulaje} pentru firma curentă. [426] data balanței și dacă are
+    rulajele anului: avertismentul de înlocuire le arată."""
     asigura_tabel(conn)
     with conn.cursor() as cur:
-        cur.execute("SELECT count(*), COALESCE(sum(sold_debitor),0), COALESCE(sum(sold_creditor),0) FROM solduri_initiale")
-        n, td, tc = cur.fetchone()
-    return {"are_solduri": n > 0, "randuri": n, "total_debit": float(td), "total_credit": float(tc)}
+        cur.execute("SELECT count(*), COALESCE(sum(sold_debitor),0), COALESCE(sum(sold_creditor),0), max(data_referinta), "
+                    "count(rulaj_an_debit) FROM solduri_initiale")
+        n, td, tc, dr, nr = cur.fetchone()
+    return {"are_solduri": n > 0, "randuri": n, "total_debit": float(td), "total_credit": float(tc),
+            "data_referinta": dr.isoformat() if dr else None, "rulaje": bool(nr)}
 
 
 def solduri_deschidere(cur):

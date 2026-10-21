@@ -91,11 +91,12 @@ def factura(schema):
                 (id, nume, cui, reg_com, adresa, oras, judet, cod_postal, iban, platitor_tva)
                 VALUES (1, 'FIRMA MEA SRL', '40372003', 'J12/1/2020', 'Bd. Test 10, Sector 2',
                         'Bucuresti', 'Bucuresti', '010101', 'RO49AAAA1B31007593840000', true)""")
+            # [lotul 10, C69] + tert_oras: e-Factura cere localitatea clientului (FACT1 BR-RO-092, BT-52) — nu se mai scrie „-”
             cur.execute(f"""INSERT INTO {schema}.facturi
                 (numar, serie, data_emitere, data_scadenta, moneda, tert_nume, tert_cui,
-                 tert_adresa, taxare_inversa, tip, total, tva)
+                 tert_adresa, tert_oras, taxare_inversa, tip, total, tva)
                 VALUES ('0007', 'FCT', DATE '2026-07-18', DATE '2026-08-17', 'RON', 'CLIENT SRL',
-                        'RO12345678', 'Str. Exemplu 1, Cluj', false, 'factura', 288.00, 38.00)
+                        'RO12345678', 'Str. Exemplu 1, Cluj', 'Cluj-Napoca', false, 'factura', 288.00, 38.00)
                 RETURNING id""")
             fid = cur.fetchone()[0]
             cur.execute(f"""INSERT INTO {schema}.factura_linii

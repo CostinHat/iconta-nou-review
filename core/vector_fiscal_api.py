@@ -36,6 +36,10 @@ def citeste(conn_schema):
     # (fapt UNIC: regim_contabil, aceeasi sursa ca la salveaza). Vezi DECIZII 23.07.
     partida_simpla = regim_contabil(tip_firma_nrm(tip_firma)) == "simpla"
     completat = bool(regim)  # regim_fiscal e obligatoriu -> daca exista, vectorul e setat
+    # [lotul 10, deficiența 428] regimul TVA la încasare (CF art.282 alin.(3)): perioadele, perioada curentă, „se aplică azi”
+    from core import regim_tva_incasare as _rti
+    with conn_schema.cursor() as cur:
+        tvai = _rti.stare(cur)
     return {
         "ok": True,
         "nume": nume, "cui": cui,
@@ -50,6 +54,7 @@ def citeste(conn_schema):
         "tva_data_inceput": tva_inceput.isoformat() if tva_inceput else None,
         "partida_simpla": partida_simpla,
         "completat": completat,
+        "tva_incasare": tvai,
     }
 
 

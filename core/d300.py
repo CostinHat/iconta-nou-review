@@ -168,6 +168,8 @@ class Rezultat:
     note_rezultat: list = field(default_factory=list)   # fapte neutre despre rezultat (fara actiune)
     nula_asumata: bool = False   # [B1 zero_base] decont nul ASUMAT explicit (nicio valoare declarata)
     z_fara_cote: list = field(default_factory=list)   # [lot 19 pct.4b] rapoarte Z validate fără defalcare -> refuz
+    # [lotul 10, 428] secțiunea „Informații privind TVA neexigibilă sau nedeductibilă” (rd.A/A1/B/B1): {valoare_a: int, ...}, numai nenule
+    neexigibil: dict = field(default_factory=dict)
 
 
 def _segmente(f):
@@ -278,11 +280,10 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     zero_achiz = []     # [Decimal] baze achizitii 0% scutite/neimpozabile -> R26_1
     achiz_331_0 = []    # [Decimal] baze achizitii 0% cu categorie art.331 (rata pierduta)
 
-    # TVA la incasare (art.282 alin.3 CF, OUG 8/2026): pentru firmele care aplica sistemul,
-    # exigibilitatea intervine la INCASARE (colectata) / PLATA (deductibila), proportional cu
-    # suma decontata (art.282 alin.8: suta marita - fiecare decontare include TVA). Sursa
-    # decontarilor = notele contabile legate de factura (nu emiterea) - vezi pull(). Fara acest
-    # regim: exigibilitate la faptul generator (emitere), comportament neschimbat.
+    # TVA la incasare (art.282 alin.3 CF, OUG 8/2026): pe facturile in sistem (regimul FACTURII la data ei, `tva_incasare.regim`),
+    # exigibilitatea intervine la INCASARE (colectata) / PLATA (deductibila), proportional cu suma decontata (art.282 alin.8: suta
+    # marita - fiecare decontare include TVA). Intrarile cu `decontari` vin din `_pull_la_incasare`; celelalte, pe emitere.
+    # [lotul 10, 428] `tvai` = firma a aplicat sistemul in perioada (pro-rata, mai jos) — nu mai ruteaza facturile.
     tvai = bool(prof.get("tva_la_incasare"))
     # [B1 D300] IC/export via tert_tara (nu doar cota). Refoloseste TARI_UE din core/d390.
     from core.d390 import TARI_UE as _TARI_UE
@@ -375,24 +376,33 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                 tip_ic = tip_def_ic
             if strain and ue:
                 axa_nedeclarata.append((f.get("id"), directie, tara))
-        if (tvai or f.get("exigibil_la_decontare")) and not ti:
-            # taxarea inversa e exigibila la faptul generator (art.282 alin.6 CF), NU la incasare:
-            # ramane pe calea de emitere (_segmente) chiar sub tva_la_incasare - vezi _pull_taxare_inversa.
-            from core import tva_incasare as _tvi
+        if "decontari" in f and not ti:
+            # [lotul 10, 428] decontarile facturilor in sistem (`_pull_la_incasare`). Taxarea inversa nu ajunge aici (art.282 alin.6 CF:
+            # exigibila la faptul generator), iar liniile cu 0% ale unei facturi in sistem s-au declarat la emitere (alin.6 lit.b) —
+            # partea decontata care le revine nu mai poarta nimic aici.
             segmente = []
             for d in (f.get("decontari") or []):
                 cd = d.get("cota")
                 ci = None if cd is None else int(round(float(cd)))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
                 gross = Decimal(str(d.get("suma") or 0))
-                if gross == 0:   # [A2] o decontare negativa (storno) reduce; doar zero exact nu poarta info
+                if gross == 0 or not ci:   # [A2] o decontare negativa (stornarea incasarii) reduce; zero exact / cota 0 nu poarta TVA
                     continue
-                tva = _tvi.tva_din_incasare(gross, ci) if ci else Decimal(0)
+                # CF art.282 alin.(8): suta marita (`tva_incasare.tva_din_incasare`, aceeasi formula ca nota); pe negativ (incasarea
+                # stornata) aceeasi suma, cu semn
+                from core import tva_incasare as _tvi
+                tva = _tvi.tva_din_incasare(abs(gross), ci) * (1 if gross > 0 else -1)
                 # [A12] decontarile (tva la incasare) NU poarta destinatia liniei (agregate pe cota) ->
                 # dest=None; pro-rata pe mixt nu se poate izola in acest regim (limita declarata, vezi R31).
                 segmente.append((ci, gross - tva, tva, None, None))   # (cota, baza exigibila, tva exigibil, destinatie, categorie)
         else:
             segmente = [(ci, baza, (baza * Decimal(ci) / Decimal(100) if ci else Decimal(0)), dest, cat)
                         for (ci, baza, dest, cat) in _segmente(f)]
+            _fr = f.get("fractie_exigibila")
+            if _fr is not None:
+                # [lotul 10, 428] stornarea unei facturi in sistem: CF art.282 alin.(10) lit.a) pct.2 — partea care anuleaza TVA neexigibil
+                # nu intra in decont; numai „pentru diferenta exigibilitatea taxei intervine la data anularii operatiunii”
+                segmente = [(ci, baza * _fr, tva * _fr, dest, cat) if ci else (ci, baza, tva, dest, cat)
+                            for (ci, baza, tva, dest, cat) in segmente]
         # [274b] o factură emisă cu categorie pe linii (de la 274b încoace) se rutează LINIE CU LINIE: pe ea, taxarea inversă e numai pe
         # liniile „taxare_inversa”, iar celelalte (cota pozitivă, alte categorii) merg pe rândul lor. O factură de dinainte (nicio linie
         # cu categorie) rămâne cum era: taxarea inversă de pe antet acoperă toate liniile ei (rd.13).
@@ -483,7 +493,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
                     f_zero_b += baza
         # [C-4 T2] TVA orfan: antetul facturii primite depaseste TVA-ul rezultat din cote (compensatie
         # forfetara agricultor art.315^1 al.17). Se masoara aici, se semnaleaza jos; nu se deduce tacit.
-        if not emisa and not ti and not tvai:
+        if not emisa and not ti and "decontari" not in f and not f.get("cote_pozitive_la_incasare"):
             _antet = Decimal(str(f.get("tva") or 0))
             _linii_tva = sum((s[2] for s in segmente), Decimal(0))
             _orfan = _antet - _linii_tva
@@ -759,6 +769,8 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         R["R26_1"] = _r26
 
     res = Rezultat(an=an, luna=luna, prof=prof)
+    # [lotul 10, 428] TVA rămas neexigibil / nededus la sfârșitul perioadei (adus de `pull` din `tva_incasare.neexigibile_la`)
+    res.neexigibil = {k: _int(v) for k, v in sorted((prof.get("tva_neexigibila") or {}).items()) if _int(v)}
     res.z_fara_cote = z_fara_cote
     res.R = R
     res.tva_de_plata = de_plata
@@ -1025,24 +1037,24 @@ def valideaza(res):
 def build_xml(res):
     prof = res.prof
     tip = tip_decont(prof)
-    if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D300: declarantul (nume/funcție) lipsește din profil — se trece implicit "
-                                "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     cui = _digits(prof.get("cui"))
     den = prof.get("nume") or ""
     adr = " ".join(x for x in [prof.get("adresa"), prof.get("oras"), prof.get("judet")] if x).strip() or den
     A = [
         'luna="%d"' % res.luna, 'an="%d"' % res.an,
         'depusReprezentant="0"', 'bifa_interne="0"', 'temei="0"',
-        'nume_declar="%s"' % _esc(_t(prof.get("declarant_nume") or den or "ADMINISTRATOR", _LIM["d300"]["nume_declar"])),
-        'prenume_declar="%s"' % _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d300"]["prenume_declar"])),
-        'functie_declar="%s"' % _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d300"]["functie_declar"])),
+        'nume_declar="%s"' % _esc(_t(prof.get("declarant_nume"), _LIM["d300"]["nume_declar"])),   # [C69] fără implicit: `erori_declarant` a blocat deja lipsa
+        'prenume_declar="%s"' % _esc(_t(prof.get("declarant_prenume"), _LIM["d300"]["prenume_declar"])),
+        'functie_declar="%s"' % _esc(_t(prof.get("declarant_functie"), _LIM["d300"]["functie_declar"])),
         'cui="%s"' % _esc(cui),
         'den="%s"' % _esc(_t(den, _LIM["d300"]["den"])),
         'adresa="%s"' % _esc(_t(adr, _LIM["d300"]["adresa"])),
         'banca="%s"' % _esc(_t(_clean_bc(prof.get("banca")), _LIM["d300"]["banca"])),
         'cont="%s"' % _esc(_t(_clean_bc(prof.get("iban") or prof.get("cont")), _LIM["d300"]["cont"])),
-        'caen="%s"' % _esc(_digits(prof.get("caen")) or "0"),
+        # [lotul 10, C69] fără „or "0"”: CAEN-ul lipsă / altul decât 4 cifre OPREȘTE D300 în `erori_generare` (structura ANAF „17. caen
+        # Cod CAEN C(4) DA”), deci pe drumul `genereaza` codul inventat nu se scria niciodată — era un fallback mort care, chemat direct,
+        # ar fi pus un CAEN inexistent pe declarație.
+        'caen="%s"' % _esc(_digits(prof.get("caen"))),
         'tip_decont="%s"' % tip,
         'pro_rata="%s"' % ("%.2f" % (float(prof.get("pro_rata")) if str(prof.get("pro_rata") or "").strip() else 100.0)),
         'bifa_cereale="N"', 'bifa_mob="N"', 'bifa_disp="N"', 'bifa_cons="N"',
@@ -1052,6 +1064,8 @@ def build_xml(res):
     ]
     for k in sorted(res.R.keys()):
         A.append('%s="%d"' % (k, res.R[k]))
+    for k, v in sorted(res.neexigibil.items()):   # [lotul 10, 428] valoare_a/a1, tva_a/a1, valoare_b/b1, tva_b/b1 (structura D300 v12)
+        A.append('%s="%d"' % (k, v))
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<declaratie300 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
             'xmlns="%s" xsi:schemaLocation="%s D300.xsd" ' % (NS, NS)
@@ -1059,35 +1073,23 @@ def build_xml(res):
 
 
 def _aloca_pe_cote(gross, linii, total_tva):
-    """Imparte suma DECONTATA (gross, incl. TVA) pe cotele facturii, proportional cu ponderea
-    gross a fiecarei cote (baza_cota x (100+cota)/100). Corecteaza limita multi-cota a postarilor
-    din reconciliere (care foloseau prima cota). Fallback fara linii: o cota din total/tva."""
-    if linii:
-        g = {}
-        for (cant, pret, cota) in linii:
-            if cota is None:
-                continue
-            ci = int(round(float(cota)))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
-            baza = Decimal(str(cant)) * Decimal(str(pret))
-            g[ci] = g.get(ci, Decimal(0)) + baza * (100 + ci) / 100
-        tg = sum(g.values(), Decimal(0))
-        if tg > 0:
-            return [{"suma": gross * gc / tg, "cota": ci} for ci, gc in g.items()]
-    total, tva = (total_tva or (0, 0))
-    base = Decimal(str(total or 0)) - Decimal(str(tva or 0))
-    ci = int(round(float(tva) / float(base) * 100)) if (base and tva) else None  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
-    return [{"suma": gross, "cota": ci}] if ci else []
+    """Imparte suma DECONTATA pe cotele facturii — sursa unica in `core.tva_incasare.aloca_pe_cote` (aceeasi pentru D394)."""
+    from core import tva_incasare as _tvi
+    return _tvi.aloca_pe_cote(gross, linii, total_tva)
 
 
-def _pull_incasare(cur, inceput, sfarsit):
-    """Facturi cu DECONTARE (incasare cont 4111 / plata cont 401) VALIDATA in perioada. Pentru
-    fiecare, suma decontata alocata pe cote -> `decontari`. Exigibilitatea D300 se calculeaza din
-    aceste decontari (art.282 alin.3 CF), nu din emitere."""
-    settle = _repo.select_inregistrari(cur, _STATUS_FINAL, inceput, sfarsit)
+def _pull_la_incasare(cur, inceput, sfarsit):
+    """[lotul 10, deficienta 428] Decontarile (incasare: credit 4111 / plata: debit 401) VALIDATE in perioada, pe facturile al caror TVA
+    devine exigibil / deductibil la decontare: emise IN SISTEM la data lor (CF art.282 alin.(3), (7)) si primite cu deducerea AMANATA
+    (CF art.297 alin.(2) furnizor in sistem, alin.(3) firma in sistem) — regimul FACTURII (`tva_incasare.regim`), nu bifa firmei de azi.
+    Pentru fiecare, suma decontata alocata pe cote -> `decontari`. Sursa unica pentru D300 si D394 (tvaCol / tvaDed / tvaDedAI).
+    Inlocuieste `_pull_incasare` (toate facturile, cand bifa firmei era pusa) si `_pull_furnizor_incasare` (numai furnizorul in sistem)."""
+    from core import tva_incasare as _tvi
+    settle = [r for r in _repo.select_inregistrari(cur, _STATUS_FINAL, inceput, sfarsit)
+              if _tvi.regim(cur, None, r["fid"]) == _tvi.REGIM_INCASARE]
     if not settle:
         return []
-    fids = [r["fid"] for r in settle]
-    _repo.select_facturi(cur, fids)
+    _repo.select_facturi(cur, [r["fid"] for r in settle])
     linii, totaluri = {}, {}
     for r in cur.fetchall():
         totaluri[r["fid"]] = (r["total"], r["tva"])
@@ -1096,65 +1098,39 @@ def _pull_incasare(cur, inceput, sfarsit):
     out = []
     for r in settle:
         gross = Decimal(str(r["settled"] or 0))
-        # [A2] o decontare NEGATIVA (storno rambursat) REDUCE, nu se pierde tacit: se lasa sa treaca
-        # (aloca proportional negativ). Doar zero-ul exact nu poarta informatie.
+        # [A2] o decontare NEGATIVA (stornarea incasarii) REDUCE, nu se pierde tacit. Doar zero-ul exact nu poarta informatie.
         if gross == 0:
             continue
-        dec = _aloca_pe_cote(gross, linii.get(r["fid"]), totaluri.get(r["fid"]))
-        # [A2] clasificarea PER FACTURA calatoreste cu decontarea, ca `calcul_d300` sa ruteze IC/export/
-        # servicii la incasare pe randul corect (rd.1/rd.5/rd.7/rd.14), nu la RO intern.
-        out.append({"directie": r["directie"], "decontari": dec,
+        out.append({"directie": r["directie"], "decontari": _aloca_pe_cote(gross, linii.get(r["fid"]), totaluri.get(r["fid"])),
+                    "exigibil_la_decontare": True, "factura_id": r["fid"],
+                    "furnizor_tva_incasare": bool(r.get("furnizor_tva_incasare")),
                     "tert_tara": r.get("tert_tara"), "cui": r.get("cui"),
                     "axa_ic": r.get("axa_ic"), "categorie_331": r.get("categorie_331")})
     return out
 
 
-def _pull_taxare_inversa(cur, inceput, sfarsit):
-    """Facturi cu taxare inversa EMISE in [inceput, sfarsit) pe faptul generator (emitere), cu linii.
-    Folosit DOAR pe calea tva_la_incasare: _pull_incasare EXCLUDE taxarea inversa (art.282 alin.6 CF:
-    exigibila la faptul generator, nu la incasare) - o aducem separat ca sa NU dispara tacit din decont
-    (rd.13 pt emise / rd.12+rd.25 pt primite). Aceeasi forma de dict ca pull() normal."""
-    _repo.select_facturi_2(cur, _STATUS_FINAL, _exig_d300(), inceput, sfarsit)  # [A11] IC pe art.284
-    fmap = {}
-    for r in cur.fetchall():
-        f = fmap.setdefault(r["id"], {"directie": r["directie"],
-                                      "taxare_inversa": r["taxare_inversa"],
-                                      "categorie_331": r["categorie_331"],
-                                      "tert_tara": r["tert_tara"],
-                                      # [A1] cursul + sumele in lei (taxarea inversa trece prin _segmente)
-                                      "id": r["id"], "moneda": r.get("moneda"),
-                                      "eticheta": _et.factura_din_rand(r),   # [258] „Factură FCT12 din 05.10.2026”
-                                      "curs_bnr": r.get("curs_bnr"),
-                                      "total_lei": r.get("total_lei"), "tva_lei": r.get("tva_lei"),
-                                      "total": r["total"] if r["total"] is not None else 0,
-                                      "tva": r["tva"] if r["tva"] is not None else 0, "linii": []})
-        if r["cantitate"] is not None and r["pret_unitar"] is not None:
-            f["linii"].append((r["cantitate"], r["pret_unitar"], r["cota_tva"]))
-    return list(fmap.values())
-
-
-def _pull_furnizor_incasare(cur, inceput, sfarsit):
-    """[B1 art.297 alin.2] Facturi PRIMITE de la furnizor care aplica TVA la incasare: deducerea se
-    amana pana la PLATA (cont 401 decontat), CHIAR daca firma proprie e in regim normal. Aceeasi cale
-    de decontare ca _pull_incasare (suma platita alocata pe cote), dar filtrata pe furnizor_tva_incasare.
-    Marcheaza dict-urile cu exigibil_la_decontare=True ca sa fie tratate pe decontari in calcul_d300."""
-    settle = _repo.select_inregistrari_2(cur, _STATUS_FINAL, inceput, sfarsit)
-    if not settle:
-        return []
-    fids = [r["fid"] for r in settle]
-    _repo.select_facturi_3(cur, fids)
-    linii, totaluri = {}, {}
-    for r in cur.fetchall():
-        totaluri[r["fid"]] = (r["total"], r["tva"])
-        if r["cantitate"] is not None and r["cota_tva"] is not None:
-            linii.setdefault(r["fid"], []).append((r["cantitate"], r["pret_unitar"], r["cota_tva"]))
-    out = []
-    for r in settle:
-        gross = Decimal(str(r["settled"] or 0))
-        if gross <= 0:
-            continue
-        dec = _aloca_pe_cote(gross, linii.get(r["fid"]), totaluri.get(r["fid"]))
-        out.append({"directie": "primita", "decontari": dec, "exigibil_la_decontare": True})
+def _neexigibil(cur, sfarsit):
+    """[lotul 10, 428] D300 sectiunea „Informatii privind TVA neexigibila sau nedeductibila” (OPANAF 174/2026): rd.A — „livrarile [...]
+    a caror taxa [...] a ramas neexigibila, existenta in sold la sfarsitul perioadei de raportare, ca urmare a aplicarii sistemului TVA la
+    incasare”; rd.A1 — „realizate in perioada de raportare si in ultimele 5 luni anterioare acesteia, in cazul in care perioada fiscala
+    este luna, sau [...] in trimestrul anterior acesteia, in cazul in care perioada fiscala este trimestrul” (= ultimele 6 luni pana la
+    sfarsitul perioadei); rd.B / B1 — achizitiile „pentru care nu s-a exercitat dreptul de deducere [...] conform prevederilor art. 297
+    alin. (2) si (3)”. Din `tva_incasare.neexigibile_la` (aceeasi lista ca la iesirea din sistem), pe decontarile VALIDATE, ca decontul.
+    `sfarsit` = prima zi DUPA perioada. Intoarce {valoare_a, valoare_a1, tva_a, tva_a1, valoare_b, valoare_b1, tva_b, tva_b1}."""
+    import datetime as _dt
+    from core import tva_incasare as _tvi
+    ultima = _dt.date.fromisoformat(str(sfarsit)[:10]) - _dt.timedelta(days=1)
+    an, luna = ultima.year, ultima.month - 5
+    while luna < 1:
+        an, luna = an - 1, luna + 12
+    prag_a1 = _dt.date(an, luna, 1)   # ultimele 6 luni calendaristice, inclusiv perioada (luna + 5 / trimestrul + trimestrul anterior)
+    out = {k: Decimal(0) for k in ("valoare_a", "valoare_a1", "tva_a", "tva_a1", "valoare_b", "valoare_b1", "tva_b", "tva_b1")}
+    for r in _tvi.neexigibile_la(cur, None, ultima, _STATUS_FINAL, doar_validate=True):
+        lit = "a" if r["directie"] == "emisa" else "b"
+        rest, baza = Decimal(r["rest_neexigibil"]), Decimal(r["baza_ramasa"])
+        out["valoare_" + lit] += baza; out["tva_" + lit] += rest
+        if _dt.date.fromisoformat(r["data_emitere"]) >= prag_a1:
+            out["valoare_%s1" % lit] += baza; out["tva_%s1" % lit] += rest
     return out
 
 
@@ -1202,16 +1178,25 @@ def pull(conn, schema, perioada):
         _inc, _sf = c.fereastra_tva(perioada, c.perioada_tva_tip(prof))
         inceput = _inc.isoformat()
         sfarsit = _sf.isoformat()
-        if prof.get("tva_la_incasare"):
-            # TVA la incasare: exigibilitate pe DECONTARI (incasari/plati validate in perioada),
-            # nu pe emitere. Vezi _pull_incasare. EXCEPTIE: taxarea inversa e exigibila la faptul
-            # generator (art.282 alin.6 CF), nu la incasare - _pull_incasare o EXCLUDE; o aducem pe
-            # calea de emitere (_pull_taxare_inversa) ca sa NU dispara tacit (rd.13 / rd.12+rd.25).
-            return prof, (_pull_incasare(cur, inceput, sfarsit) + _pull_taxare_inversa(cur, inceput, sfarsit)
-                          + _pull_rapoarte_z(cur, inceput, sfarsit) + _pull_chitante_i2(cur, inceput, sfarsit))
+        # [lotul 10, deficienta 428] Regimul TVA la incasare e al FACTURII, la data ei — nu al firmei azi. Calea de emitere aduce toate
+        # facturile; cele in sistem (emise) / cu deducerea amanata (primite) lasa aici numai liniile cu 0% (declarate la emitere, CF
+        # art.282 alin.(6) lit.b), iar TVA-ul lor vine din decontarile perioadei (`_pull_la_incasare`). `tva_la_incasare` din profil
+        # devine „firma a aplicat sistemul in perioada” (D394 sistemTVA, pro-rata, reconcilierea).
+        from core import tva_incasare as _tvi
+        prof = dict(prof)
+        prof["tva_la_incasare"] = _tvi.firma_in_sistem_in(cur, None, inceput, sfarsit)
         rows = _repo.select_facturi_4(cur, _STATUS_FINAL, _exig_d300(), inceput, sfarsit)  # [A11] IC pe art.284
-        deferred = _pull_furnizor_incasare(cur, inceput, sfarsit)
+        la_incasare = _pull_la_incasare(cur, inceput, sfarsit)
         rapoarte_z = _pull_rapoarte_z(cur, inceput, sfarsit) + _pull_chitante_i2(cur, inceput, sfarsit)
+        regimuri = {fid: _tvi.regim(cur, None, fid) for fid in {r["id"] for r in rows}}
+        fractii = {}
+        for fid, rg in regimuri.items():
+            if rg == _tvi.REGIM_STORNO:
+                from core import repo_tva_incasare as _rti
+                _fs = _rti.factura(cur, None, fid)
+                _neex, _exig = _tvi.anulare_storno(cur, None, _fs)
+                fractii[fid] = (_exig / (_neex + _exig)) if (_neex + _exig) else Decimal(0)
+        prof["tva_neexigibila"] = _neexigibil(cur, sfarsit)
     fmap = {}
     for r in rows:
         _exig = r.get("exig")
@@ -1232,11 +1217,9 @@ def pull(conn, schema, perioada):
                                       # uitat-o si serviciile IC au continuat sa intre la rd.5.
                                       # *Un SELECT largit nu e o citire largita.*
                                       #
-                                      # LIMITA DECLARATA: pe o firma cu TVA LA INCASARE, `pull`
-                                      # nu ajunge aici — intoarce decontari agregate pe cota
-                                      # (`_pull_incasare`), unde identitatea facturii se pierde
-                                      # oricum. Rutarea IC per-factura e deci pe calea normala;
-                                      # pe cea de incasare ea era deja neper-factura, dinainte.
+                                      # [lotul 10, 428] TVA la incasare: o factura IC / din
+                                      # afara tarii nu e niciodata in sistem (art.282 alin.(6),
+                                      # art.297 alin.(3)), deci trece mereu pe aici, cu axa ei.
                                       "axa_ic": r.get("axa_ic"),
                                       "id": r["id"],
                                       "eticheta": _et.factura_din_rand(r),   # [258] „Factură FCT12 din 05.10.2026”
@@ -1251,7 +1234,20 @@ def pull(conn, schema, perioada):
             # [A12] destinatia TVA per linie (art.300) calatoreste in segment pentru pro-rata/scutit
             f["linii"].append((r["cantitate"], r["pret_unitar"], r["cota_tva"],
                                r.get("destinatie_tva") or "taxabil", r.get("categorie_tva")))   # [274b] categoria liniei cu 0%
-    return prof, list(fmap.values()) + deferred + rapoarte_z
+    emitere = []
+    for f in fmap.values():
+        rg = regimuri.get(f["id"])
+        if rg == _tvi.REGIM_INCASARE:
+            # [428] TVA-ul (liniile cu cota pozitiva) e exigibil / deductibil la decontare; pe emitere raman numai liniile cu 0%. O factura
+            # fara linii (antet) n-are ce lasa aici.
+            f["linii"] = [l for l in f["linii"] if not (l[2] is not None and Decimal(str(l[2])) > 0)]
+            if not f["linii"]:
+                continue
+            f["cote_pozitive_la_incasare"] = True
+        elif rg == _tvi.REGIM_STORNO:
+            f["fractie_exigibila"] = fractii[f["id"]]   # [428] CF art.282 alin.(10): partea exigibila la data anularii
+        emitere.append(f)
+    return prof, emitere + la_incasare + rapoarte_z
 
 
 def _incarca_reclasificari(conn, schema, prof, perioada):

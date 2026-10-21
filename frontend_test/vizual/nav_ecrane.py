@@ -116,6 +116,8 @@ def ecran_centrecost(pg): _ecran_shell(pg, "fa-centrecost")
 def ecran_planconturi(pg): _ecran_shell(pg, "fa-planconturi")   # [Retest 2 pct.13, decizia Costin O12]
 def ecran_casa(pg): _ecran_shell(pg, "fa-casa")
 def ecran_operatiuni(pg): _ecran_shell(pg, "fa-operatiuni")  # [LOTUL 13, R145] JS atins
+def ecran_compensari(pg): _ecran_shell(pg, "fa-compensari")  # [lotul 10, 428] ecran nou
+def ecran_clienti(pg): _ecran_shell(pg, "fa-clienti")  # [lotul 10, 428] ecran nou (bifa „persoană afiliată”)
 
 
 # [R33 b'', 26.08.2026] Ecranul «Verificari» lipsea din inventarul vizual, desi e chiar ecranul
@@ -317,6 +319,9 @@ ECRANE = [
     # [LOTUL 13, R145] «Operatiuni speciale» a intrat aici prin aceeasi regula: lotul i-a ATINS
     # JS-ul (campurile de chirie/comodat/refacturare, plus conditia cu mai multe valori).
     ("operatiuni", ecran_operatiuni),
+    # [lotul 10, 428] ecrane NOI (compensările, fișele clienților): intră în inventarul vizual de la naștere
+    ("compensari", ecran_compensari),
+    ("clienti", ecran_clienti),
     # [LOTUL 15] atinse de reparatiile R152 / R156+R159 / R158 — v. comentariul de mai sus
     ("magazin", ecran_magazin),
     ("pachete", ecran_pachete),

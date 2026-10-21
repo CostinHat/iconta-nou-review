@@ -38,10 +38,12 @@ def _q(x):
 
 
 def _dividende_independent(conn, an):
-    """[lot 19 pct.4e] Partea fiecărui asociat (bază plătită + impozit) — SQL PROPRIU (457, asociați, istoricul
-    cesiunilor) + atribuirea din modulul NEUTRU `dividende_curs` (aceeași regulă ca generatorul, recitită independent
-    din registru): fiecare tranșă plătită, după structura de la data distribuirii ei (Legea 31/1990 art.67 alin.(2) și
-    (6)), impozitul pe rata de la data distribuirii (A6). {cnp: (nume, baza_int, impozit_int)}."""
+    """[lot 19 pct.4e] Partea fiecărui asociat (bază + impozit) — SQL PROPRIU (457, asociați, istoricul
+    cesiunilor, [lotul 10] soldul 457 din balanța de deschidere) + atribuirea din modulul NEUTRU `dividende_curs` (aceeași regulă ca
+    generatorul, recitită independent din registru): fiecare tranșă după structura de la data distribuirii ei (Legea 31/1990 art.67
+    alin.(2) și (6)), impozitul pe rata de la data distribuirii (A6). [lotul 10, decizia Costin A] Baza = distribuirile anului,
+    plătite sau nu la 31.12 (OPANAF 179/2022 anexa 1 cap.II pct.9, antetul `dividende_curs`); plătitul anului se confruntă separat
+    (divid_P). {cnp: (nume, baza_int, impozit_int, platit_int)}."""
     from core import common as _c
     from core import dividende_curs as _dc
     sf = date(an + 1, 1, 1).isoformat()
@@ -49,10 +51,15 @@ def _dividende_independent(conn, an):
         asoc = _repo.select_asociati(cur)
         istoric = _repo.select_asociati_istoric(cur)
         randuri = _repo.select_457_miscari(cur, sf)
-    miscari = [{"data": r[0], "distribuit": r[1], "platit": r[2]} for r in randuri]
+        deschidere = _repo.select_457_deschidere(cur, sf)
+    chei = ("data", "distribuit", "impozit", "platit", "compensat", "distribuit_interimar", "impozit_interimar",
+            "platit_interimar")   # [lotul 10, 431] impozitul înregistrat separat de plată; interimarele
+    # [lotul 10, decizia A] soldul de deschidere 457 = distribuire deschisă dinaintea evidenței; la aceeași dată, înaintea notelor
+    miscari = [{"data": d, "preluat": v} for d, v in deschidere] + [dict(zip(chei, r)) for r in randuri]
+    miscari.sort(key=lambda m: (m["data"], "preluat" not in m))
     struct = _dc.structura_la(list(asoc), list(istoric))
     pe = _dc.atribuie_pe_asociati(miscari, an, lambda d: _c.cota("impozit_dividend", d)[0], struct)
-    return {cnp: (r["nume"], _q(r["platit"]), _q(r["impozit"])) for cnp, r in pe.items()}
+    return {cnp: (r["nume"], _q(r["distribuit"]), _q(r["impozit"]), _q(r["platit"])) for cnp, r in pe.items()}
 
 
 def _consistenta_interna(perioada, res):
@@ -101,8 +108,8 @@ def reconciliaza(conn, schema, perioada, res, manual=None):
     parti = _dividende_independent(conn, an)
     gen = {str(b.cif): b for b in res.beneficiari}
     divergente = []
-    for cnp, (nume, parte, imp) in parti.items():
-        if parte <= 0:
+    for cnp, (nume, parte, imp, platit) in parti.items():
+        if parte <= 0 and platit <= 0:
             continue
         b = gen.get(str(cnp or ""))
         if b is None:
@@ -115,6 +122,9 @@ def reconciliaza(conn, schema, perioada, res, manual=None):
         if int(b.imp1) != imp:
             divergente.append({"beneficiar": cnp or nume, "camp": "impozit",
                                "generator": int(b.imp1), "cale2": imp, "diferenta": int(b.imp1) - imp})
+        if int(b.divid_p) != platit:   # [lotul 10, decizia A] plătitul anului (divid_P) e acum separat de bază
+            divergente.append({"beneficiar": cnp or nume, "camp": "dividende plătite",
+                               "generator": int(b.divid_p), "cale2": platit, "diferenta": int(b.divid_p) - platit})
     return {"acoperit": True, "neacoperit": None, "divergente": divergente}
 
 

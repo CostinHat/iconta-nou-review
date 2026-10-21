@@ -11,7 +11,7 @@ from core import coada_api
 def test_luna_in_curs_nu_se_depune():
     # comanda 9.1: 10/2026 pe 19.10.2026 -> neîncheiată
     m = coada_api.perioada_neincheiata(2026, 10, azi=_dt.date(2026, 10, 19))
-    assert m == ("Perioada 10/2026 nu s-a încheiat: declarația se depune după 31.10.2026, când toate operațiunile perioadei sunt "
+    assert m == ("Perioada 10/2026 nu s-a încheiat: declarația se generează și se depune după 31.10.2026, când toate operațiunile perioadei sunt "
                  "înregistrate."), m
 
 
@@ -22,10 +22,10 @@ def test_ultima_zi_a_lunii_inca_nu_s_a_incheiat():
 
 def test_trimestrul_si_anul():
     assert coada_api.perioada_neincheiata(2026, None, trim=4, azi=_dt.date(2026, 11, 15)) == (
-        "Perioada T4/2026 nu s-a încheiat: declarația se depune după 31.12.2026, când toate operațiunile perioadei sunt înregistrate.")
+        "Perioada T4/2026 nu s-a încheiat: declarația se generează și se depune după 31.12.2026, când toate operațiunile perioadei sunt înregistrate.")
     assert coada_api.perioada_neincheiata(2026, None, trim=3, azi=_dt.date(2026, 10, 19)) is None
     assert coada_api.perioada_neincheiata(2026, None, azi=_dt.date(2026, 12, 20)) == (
-        "Anul 2026 nu s-a încheiat: declarația se depune după 31.12.2026, când toate operațiunile perioadei sunt înregistrate.")
+        "Anul 2026 nu s-a încheiat: declarația se generează și se depune după 31.12.2026, când toate operațiunile perioadei sunt înregistrate.")
     assert coada_api.perioada_neincheiata(2025, None, azi=_dt.date(2026, 1, 2)) is None
 
 
@@ -57,7 +57,7 @@ def test_depunerea_pe_perioada_neincheiata_e_refuzata(element):
     _valid(conn, cid, XML_A)
     coada_api.aproba(conn, cid, "ztest", aprobat_de_id=uid)
     r = coada_api.marcheaza_depusa(conn, cid, depus_de="ztest", depus_de_id=uid)
-    assert r == {"ok": False, "cod": "PERIOADA_NEINCHEIATA", "mesaj": "Perioada 01/2099 nu s-a încheiat: declarația se depune după "
+    assert r == {"ok": False, "cod": "PERIOADA_NEINCHEIATA", "mesaj": "Perioada 01/2099 nu s-a încheiat: declarația se generează și se depune după "
                  "31.01.2099, când toate operațiunile perioadei sunt înregistrate."}, r
     with conn.cursor() as cur:
         cur.execute("SELECT stare FROM public.declaratii_coada WHERE id=%s", (cid,))

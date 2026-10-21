@@ -276,11 +276,22 @@ def actualizeaza_cabinet(conn, firm_id, nume=None, cui=None):
     if not sets:
         return {"ok": False, "cod": "NIMIC_DE_SCHIMBAT"}
     par.append(firm_id)
+    from core import chei_unice as _chei
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("UPDATE public.accounting_firms SET " + ", ".join(sets) +
-                    " WHERE id = %s RETURNING id, nume, cui", tuple(par))
-        r = cur.fetchone()
+        # [lotul 10, C73 / U3] CUI-ul cabinetului e unic pe toată platforma (`accounting_firms_cui_key`): CUI-ul altui cabinet cădea
+        # cu 500 (la înregistrare, cu „eroare tehnică”). Acum refuz numit, lângă câmpul `cui`. Schema `public` e a tuturor
+        # cabinetelor: refuzul nu numește cabinetul care îl are, numai că CUI-ul e deja înregistrat.
+        cui_nou = (cui or "").strip() or None
+        with _chei.refuza_dublura(cur, ("accounting_firms_cui_key",), lambda c, e: _chei.CheieDublata(
+                CUI_CABINET_EXISTA % cui_nou, valoare=cui_nou, camp="cui")):
+            cur.execute("UPDATE public.accounting_firms SET " + ", ".join(sets) +
+                        " WHERE id = %s RETURNING id, nume, cui", tuple(par))
+            r = cur.fetchone()
     return {"ok": True, "cabinet": dict(r)} if r else {"ok": False, "cod": "INEXISTENT"}
+
+
+#: [lotul 10, C73 / U3] refuzul CUI-ului de cabinet dublat (fără să numească cabinetul care îl are)
+CUI_CABINET_EXISTA = "CUI-ul %s e deja înregistrat pe iConta.eu pentru alt cabinet. Verifică cifrele."
 
 
 def inregistreaza_cabinet(conn, email, parola, nume_cabinet, nume=None, prenume=None, parola_hash=None):
@@ -292,23 +303,32 @@ def inregistreaza_cabinet(conn, email, parola, nume_cabinet, nume=None, prenume=
     Întoarce {ok, user_id, firm_id} sau {ok:False, cod, mesaj}.
     """
     import psycopg2.extras as _E
+    from core import chei_unice as _chei, repo_utilizatori as _ru
+    exista = {"ok": False, "cod": "EMAIL_EXISTA", "mesaj": "email deja înregistrat"}
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT 1 FROM public.users WHERE email = %s", (email,))
-        if cur.fetchone():
-            return {"ok": False, "cod": "EMAIL_EXISTA", "mesaj": "email deja înregistrat"}
-        cur.execute("INSERT INTO public.accounting_firms (nume) VALUES (%s) RETURNING id",
-                    (nume_cabinet,))
-        firm_id = cur.fetchone()["id"]
+        if _ru.id_si_activ_dupa_email(cur, email):
+            return exista
         h = parola_hash or nucleu.hash_parola(parola)
-        cur.execute(
-            # [B3 06.08.2026] proprietarul cabinetului (radacina) primeste drepturile operationale la
-            # creare: nimeni deasupra nu i le poate acorda, iar un cabinet solo are nevoie de tot lantul
-            # pregatire->validare->depunere. Personalul suplimentar primeste drepturi separat (Asistenti).
-            "INSERT INTO public.users (email, password_hash, nume, prenume, rol, "
-            "accounting_firm_id, poate_pregati, poate_valida, poate_depune) "
-            "VALUES (%s,%s,%s,%s,'admin_firma',%s,true,true,true) RETURNING id",
-            (email, h, nume, prenume, firm_id))
-        user_id = cur.fetchone()["id"]
+        # [lotul 10, C73 / U3] adresa luată între verificarea de mai sus și scriere (două înregistrări simultane cu același email):
+        # baza refuza a doua pe `users_email_key` și ieșea 500. Acum ACELAȘI refuz ca verificarea; savepoint-ul cuprinde și cabinetul,
+        # ca un cabinet fără proprietar să nu rămână scris.
+        try:
+            with _chei.refuza_dublura(cur, ("users_email_key",), lambda c, e: _chei.CheieDublata(exista["mesaj"], valoare=email,
+                                                                                             camp="email")):
+                cur.execute("INSERT INTO public.accounting_firms (nume) VALUES (%s) RETURNING id",
+                            (nume_cabinet,))
+                firm_id = cur.fetchone()["id"]
+                cur.execute(
+                    # [B3 06.08.2026] proprietarul cabinetului (radacina) primeste drepturile operationale la
+                    # creare: nimeni deasupra nu i le poate acorda, iar un cabinet solo are nevoie de tot lantul
+                    # pregatire->validare->depunere. Personalul suplimentar primeste drepturi separat (Asistenti).
+                    "INSERT INTO public.users (email, password_hash, nume, prenume, rol, "
+                    "accounting_firm_id, poate_pregati, poate_valida, poate_depune) "
+                    "VALUES (%s,%s,%s,%s,'admin_firma',%s,true,true,true) RETURNING id",
+                    (email, h, nume, prenume, firm_id))
+                user_id = cur.fetchone()["id"]
+        except _chei.CheieDublata:
+            return exista
     return {"ok": True, "user_id": user_id, "firm_id": firm_id}
 
 

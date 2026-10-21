@@ -139,7 +139,8 @@ def test_def_270_migrare_cabinet_butoanele_aplicatiilor_si_pasii_saga(patron, fi
     pg.set_input_files("#mig-file", files=[{"name": "balanta_saga.csv", "mimeType": "text/csv", "buffer": _cp1250(BALANTA_SAGA)}])
     pg.wait_for_selector("#mig-salveaza-sold", timeout=20000)
     t = patron.fereastra()
-    assert "Soldurile s-au citit din coloanele „Solduri finale Debit” și „Solduri finale Credit”." in t, t[:1200]
+    # [lotul 10, 425] balanța SAGA are și soldurile inițiale + totalul sumelor: soldurile FINALE se numesc ca atare
+    assert "Soldurile finale s-au citit din coloanele „Solduri finale Debit” și „Solduri finale Credit”." in t, t[:1200]
     patron.captura("saga_balanta")
 
     _migrare(patron)                                   # alegerea se ține cât e deschisă fereastra; una nouă pornește fără aplicație

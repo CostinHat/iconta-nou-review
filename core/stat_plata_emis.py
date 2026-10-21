@@ -29,6 +29,7 @@ import json
 from decimal import ROUND_HALF_UP, Decimal
 
 from core import amprenta_declaratie as _amp
+from core import chei_unice as _chei   # [lotul 10, C73] exemplarul dublat -> refuz numit, nu 500
 from core import db
 
 # Sumele care FAC documentul. Tot ce nu e aici (nume afișat, flaguri de interfață, câmpuri de
@@ -158,16 +159,27 @@ def citeste(conn, schema, an, luna, salariat_id=None):
         return [dict(zip(col, r)) for r in cur.fetchall()]
 
 
+#: cheia exemplarului (`core/migrare_intrare_date_garduri.UNIQUE` + indexul `uq_state_plata_sal_luna_ex`, același conținut)
+CONSTRANGERI_EXEMPLAR = ("state_plata_sal_luna_ex_uniq", "uq_state_plata_sal_luna_ex")
+
+
 def _insereaza(conn, schema, r, an, luna, exemplar, de_cine, corectie_la=None):
+    # [lotul 10, C73] `emite` sare peste cine are exemplar și `corectie` ia următorul număr, dar fără lacăt: două apăsări simultane
+    # scriu același (salariat, lună, exemplar). Cea de-a doua primește refuzul numit, nu 500.
+    def refuz(cur, e):
+        return _chei.CheieDublata("Exemplarul %d al statului de plată pe %d-%02d pentru %s a fost emis între timp de altă cerere. "
+                                  "Nu s-a emis a doua oară: reîncarcă pagina ca să vezi exemplarul emis."
+                                  % (exemplar, an, luna, r.get("nume") or "salariatul %s" % r.get("id")), valoare=_chei.valoarea(e))
     with conn.cursor() as cur:
-        cur.execute(
-            'INSERT INTO "%s".state_plata (salariat_id, luna, venit_brut, zile_lucrate, exemplar, '
-            "amprenta, date, emis_de, corectie_la) VALUES (%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s) "
-            "RETURNING id" % schema,
-            (int(r["id"]), _luna(an, luna), r.get("brut") or 0, int(r.get("tichete_zile") or 0),
-             exemplar, amprenta_rand(r), json.dumps(r, ensure_ascii=False, default=str),
-             de_cine, corectie_la))
-        return cur.fetchone()[0]
+        with _chei.refuza_dublura(cur, CONSTRANGERI_EXEMPLAR, refuz):
+            cur.execute(
+                'INSERT INTO "%s".state_plata (salariat_id, luna, venit_brut, zile_lucrate, exemplar, '
+                "amprenta, date, emis_de, corectie_la) VALUES (%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s) "
+                "RETURNING id" % schema,
+                (int(r["id"]), _luna(an, luna), r.get("brut") or 0, int(r.get("tichete_zile") or 0),
+                 exemplar, amprenta_rand(r), json.dumps(r, ensure_ascii=False, default=str),
+                 de_cine, corectie_la))
+            return cur.fetchone()[0]
 
 
 def emite(conn, schema, an, luna, de_cine):

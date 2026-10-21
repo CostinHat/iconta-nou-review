@@ -240,7 +240,9 @@ def coada_adauga(date, ctx):
     body = date.model_dump(exclude_none=True)
     for k in ("tenant_id", "tip", "inceput_la", "inlocuieste"):  # [p15] inceput_la nu merge la generator; [297] nici înlocuirea
         body.pop(k, None)
-    # 1) generează declarația pe schema tenantului
+    # 1) generează declarația pe schema tenantului — [lotul 10, C69] localitatea partenerilor din ANAF, înaintea tranzacției
+    from core.uc_declaratii import aduce_localitati_parteneri
+    aduce_localitati_parteneri(schema, date.tip)
     try:
         with db.get_conn(schema) as conn:
             xml, res = declaratii_api.genereaza(conn, schema, date.tip, body)
@@ -286,6 +288,15 @@ def coada_adauga(date, ctx):
             raise _erori.DateInvalide(_blocaj)
         if _avert and not _surse["facturi"]:
             avertismente_poarta.append(_avert)
+    # [lotul 10, deficiența 436, comanda Costin 10.2 pct.6, verbatim în DECIZII] „când declarația știe că are cifra greșită din note
+    # nevalidate, depunerea se blochează până la validare, cu motivul lângă buton, la toate declarațiile.” Declarația calculată din evidența
+    # validată (`coada_api.DECLARATII_DIN_EVIDENTA`) nu intră în coadă cu note nevalidate în fereastra ei: le numește, iar după validarea
+    # lor se generează din nou și intră singură (așteptarea de la 284 — același drum ca poarta TVA)
+    _bl_note = coada_api.blocaj_note_nevalidate(date.tip, _surse["note"])
+    if _bl_note:
+        _bl_note = dict(_bl_note, mesaj=_bl_note["mesaj"] + MESAJ_ASTEPTARE % ("notei" if len(_bl_note["note"]) == 1 else "notelor"),
+                        asteptare=asteapta_notele(date, ctx, [n["nota_id"] for n in _bl_note["note"]]))
+        raise _erori.DateInvalide(_bl_note)
     _nev = (_surse["documente_nevalidate"] or {}).get("motiv")
     if _nev and _nev not in avertismente_poarta and (_surse["facturi"] or not avertismente_poarta):
         avertismente_poarta.append(_nev)
@@ -468,13 +479,21 @@ def asteapta_notele(date, ctx, note_ids):
     """Scrie (sau înlocuiește) așteptarea declarației: o singură așteptare deschisă pe (firmă, declarație, perioadă). Întoarce id-ul."""
     import json as _json
     cerere = date.model_dump(exclude_none=True)
+    from core import chei_unice as _chei
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            repo_declaratii.inchide_asteptarea_deschisa(cur, date.tenant_id, date.tip, date.an, date.luna, date.trim,
-                                                        _json.dumps({"cod": "INLOCUITA"}))
-            aid = repo_declaratii.insereaza_asteptare(cur, int(ctx["firm"]), date.tenant_id, date.tip, date.an, date.luna, date.trim,
-                                                      _json.dumps(cerere, default=str), int(ctx["uid"]), ctx.get("rol"),
-                                                      sorted({int(i) for i in note_ids}))
+            def _scrie():
+                repo_declaratii.inchide_asteptarea_deschisa(cur, date.tenant_id, date.tip, date.an, date.luna, date.trim,
+                                                            _json.dumps({"cod": "INLOCUITA"}))
+                return repo_declaratii.insereaza_asteptare(cur, int(ctx["firm"]), date.tenant_id, date.tip, date.an, date.luna, date.trim,
+                                                           _json.dumps(cerere, default=str), int(ctx["uid"]), ctx.get("rol"),
+                                                           sorted({int(i) for i in note_ids}))
+            # [lotul 10, C73 / U3] două cereri simultane pe aceeași declarație și perioadă: a doua nu vedea așteptarea primei (necomisă) ca
+            # s-o închidă, iar indexul `declaratii_in_asteptare_deschisa` o refuza cu 500. Operația e „scrie SAU ÎNLOCUIEȘTE”: se reia,
+            # iar a doua oară închide așteptarea comisă între timp și o înlocuiește — exact ca două cereri una după alta.
+            aid = _chei.reincearca_la_dublura(cur, ("declaratii_in_asteptare_deschisa",), _scrie, lambda c, e: _chei.CheieDublata(
+                "Declarația nu s-a putut pune în așteptare: alte cereri pe aceeași declarație și perioadă se scriu chiar acum. "
+                "Încearcă din nou."))
         conn.commit()
     return aid
 
@@ -492,11 +511,13 @@ def reia_declaratiile_in_asteptare(cabinet_id):
     from core import repo_contabilitate
     out = []
     for aid, tenant_id, note_ids, schema in deschise:
-        with db.get_conn(schema) as conn:
+        def _ramase(conn, _ids=note_ids):
             with conn.cursor() as cur:
-                ramase = repo_contabilitate.cate_nevalidate_dintre(cur, list(note_ids))
+                n = repo_contabilitate.cate_nevalidate_dintre(cur, list(_ids))
             conn.rollback()
-        if ramase:
+            return n
+        exista, ramase = db.pe_firma_existenta(schema, _ramase)
+        if not exista or ramase:   # [lotul 10] firma ștearsă între timp: așteptarea ei nu se mai reia
             continue
         with db.get_conn() as conn:   # o singură reluare, chiar cu două cereri simultane
             with conn.cursor() as cur:
@@ -732,7 +753,8 @@ def coada_respinge(coada_id, date, ctx):
     if not r["ok"]:  # [motiv_lipsa_400_v1] MOTIV_LIPSA e input invalid -> 400
         _cod = r.get("cod")
         # [B1] ALT_CABINET -> 404 (Inexistent) prin ramura else.
-        _http = (_erori.Conflict if _cod == "STARE_GRESITA" else _erori.CerereGresita if _cod in ("MOTIV_LIPSA", "STOC_IESIT")
+        # [lotul 10, C73 / U2] DEJA_RESPINS = altă cerere a respins documentul între timp (cursa) -> 409, ca starea greșită
+        _http = (_erori.Conflict if _cod in ("STARE_GRESITA", "DEJA_RESPINS") else _erori.CerereGresita if _cod in ("MOTIV_LIPSA", "STOC_IESIT")
                  else _erori.Inexistent)
         raise _http(r.get("mesaj", _cod))
     # [p57_notif] notifica pregatitorul cu motivul

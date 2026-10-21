@@ -287,6 +287,13 @@ def erori_generare(prof):
         erori.append("Lipsă denumire firmă (obligatorie).")
     if not (prof.get("adresa") or "").strip():
         erori.append("Lipsă adresă domiciliu fiscal (obligatorie).")
+    # [lotul 10, deficiența C69 — „valoare inventată pe documentul ANAF în loc de blocaj”] Structura ANAF D100-D710
+    # (anaf_surse/structura_D100-D710_0126_140926.txt), pentru <declaratie710>: „nume_declar Nume declarant C(75) DA … ERR - Nume
+    # declarant necompletat”, „prenume_declar Prenume declarant C(75) DA … ERR - Prenume declarant necompletat”, „functie_declar
+    # Functie declarant C(50) DA … ERR - functie_declar necompletat”. `build_xml` le „completa” cu „ADMINISTRATOR” / „-”; acum lipsa
+    # oprește D710, prin aceeași verificare ca la celelalte opt declarații (sursa unică, R101).
+    from core.firma_profil_api import erori_declarant as _ed
+    erori += _ed(prof)
     return erori
 
 
@@ -304,9 +311,9 @@ def build_xml(res):
            'nume_declar=%s prenume_declar=%s functie_declar=%s '
            'cui=%s den=%s adresa=%s'
            % (NS, NS, res.luna, res.an, d_recn,
-              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR", _LIM["d710"]["nume_declar"])),
-              _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d710"]["prenume_declar"])),
-              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d710"]["functie_declar"])),
+              _esc(_t(prof.get("declarant_nume"), _LIM["d710"]["nume_declar"])),
+              _esc(_t(prof.get("declarant_prenume"), _LIM["d710"]["prenume_declar"])),
+              _esc(_t(prof.get("declarant_functie"), _LIM["d710"]["functie_declar"])),
               _esc(prof.get("cui")), _esc(_t(prof.get("nume"), _LIM["d710"]["den"])), _esc(_t(prof.get("adresa"), _LIM["d710"]["adresa"]))))
     tel = (prof.get("telefon") or "").strip()
     if tel:

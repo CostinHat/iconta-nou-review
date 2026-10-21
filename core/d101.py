@@ -441,9 +441,6 @@ def build_xml(res):
     'sectiune necunoscuta P1'). OPANAF 206/2025: toate campurile (d_rec..P53) sunt atribute ale
     elementului unic <declaratie101>, care se inchide self-fara-copii."""
     prof = res.prof
-    if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D101: declarantul (nume/funcție) lipsește din profil — se trece implicit "
-                                "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     an = res.an
     cif_num = "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit())
     scad_luna, scad_an = _scadenta(an)
@@ -458,9 +455,9 @@ def build_xml(res):
         _nr_evid(cif_num, an, 12, res.cod_obligatie), scad_luna, scad_an % 100))
     a.append('totalPlata_A="%d"' % res.total_plata_a)
     a.append('nume_declar=%s prenume_declar=%s functie_declar=%s' % (
-        _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR", _LIM["d101"]["nume_declar"])),
-        _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d101"]["prenume_declar"])),
-        _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d101"]["functie_declar"]))))
+        _esc(_t(prof.get("declarant_nume"), _LIM["d101"]["nume_declar"])),   # [C69] fără implicit: `erori_declarant` a blocat deja lipsa
+        _esc(_t(prof.get("declarant_prenume"), _LIM["d101"]["prenume_declar"])),
+        _esc(_t(prof.get("declarant_functie"), _LIM["d101"]["functie_declar"]))))
     a.append('cif="%s" denumire=%s adresa=%s' % (
         cif_num, _esc(_t(prof.get("nume"), _LIM["d101"]["denumire"])), _esc(_t(prof.get("adresa"), _LIM["d101"]["adresa"]))))
     caen = (prof.get("caen") or "").strip()
@@ -480,25 +477,49 @@ def build_xml(res):
     return "\n".join(H)
 
 
+def baza_contabila(rl):
+    """Veniturile și cheltuielile ferestrei, SPLIT pe exploatare (P1/P2) și financiar (P4/P5), din rulajele claselor 6 / 7
+    (`bilant_api.rulaje_67`: {cont: (debit, credit)}, note VALIDATE + rulajele preluate, fără închiderea în 121 — [C15], deficiența 425).
+    Clasa 76 = venituri financiare, 66 = cheltuieli financiare; restul 7x/6x = exploatare (planul de conturi RO). Fără split, D101 ar pune
+    tot în exploatare. Plus cifra de afaceri (70x creditat), amenzile (6581 net — rd.25, deficiența 378) și cheltuiala cu impozitul pe
+    profit (691 debitat). O singură regulă pentru D101, D100 pe profit și rândurile „din conturi” ale ajustărilor fiscale."""
+    def _s(lat, pref, fara=None):
+        i = 0 if lat == "d" else 1
+        return sum((v[i] for k, v in rl.items() if str(k).startswith(pref) and not (fara and str(k).startswith(fara))), Decimal("0"))
+    return {"ven_fin": _s("c", "76"), "ven_expl": _s("c", "7", "76"), "cifra_afaceri": _s("c", "70"),
+            "chelt_fin": _s("d", "66"), "chelt_expl": _s("d", "6", "66"),
+            "amenzi": _s("d", "6581") - _s("c", "6581"), "chelt_impozit": _s("d", "691")}
+
+
+def rulaje_fereastra(cur, schema, _inc, _sf):
+    """`baza_contabila` pe fereastra [_inc, _sf) — cursorul trebuie să întoarcă dicționare (RealDictCursor)."""
+    from core import bilant_api as _ba
+    return baza_contabila(_ba.rulaje_67(cur, schema, _inc, _sf))
+
+
 def pull(conn, schema, perioada):
-    """Profil + venituri/cheltuieli SPLIT pe exploatare (P1/P2) si financiar (P4/P5), din note
-    VALIDATE, pe fereastra anului. Clasa 76 = venituri financiare, 66 = cheltuieli financiare;
-    restul 7x/6x = exploatare (planul de conturi RO). Fara split, D101 ar pune tot in exploatare."""
+    """Profil + venituri/cheltuieli pe fereastra perioadei (`baza_contabila`: note VALIDATE + rulajele preluate din balanța de deschidere,
+    [lotul 10, deficiența 425] — „Cifra de afaceri a anului (707 = 180.000 lei) și cheltuielile dispar, deci D101 [...] ies greșite pentru
+    o firmă preluată în cursul anului.”)."""
     import psycopg2.extras as _E
+    from core import rulaje_preluate as _rp
     _inc, _sf = perioada.interval()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         prof = _repo.select_firma_profil(cur) or {}
         if prof.get("oras"):
             prof["adresa"] = " ".join(x for x in
                 (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
-        r = _repo.select_inregistrari_linii(cur, _inc, _sf) or {}
+        r = rulaje_fereastra(cur, schema, _inc, _sf)
         # Balante pentru rezerva legala deductibila (CF art.26 alin.(1) lit.a):
         #  capital 1012 (subscris/varsat) = sold cumulat pana la SFARSITUL perioadei (credit-debit);
         #  rezerva 1061 EXISTENTA = sold cumulat pana la INCEPUTUL anului (din anii anteriori);
-        #  691 = cheltuiala cu impozitul pe profit pe anul curent (baza rezervei = profit contabil + 691).
-        r["capital"] = (_repo.select_inregistrari_linii_2(cur, _sf) or {}).get("capital", 0)
-        r["rezerva_existenta"] = (_repo.select_inregistrari_linii_3(cur, _inc) or {}).get("rez", 0)
-        r["chelt_impozit"] = (_repo.select_inregistrari_linii_4(cur, _inc, _sf) or {}).get("imp", 0)
+        #  691 = cheltuiala cu impozitul pe profit pe anul curent (baza rezervei = profit contabil + 691) — în `baza_contabila`.
+        # [lotul 10, deficiența 425] soldul PRELUAT al lui 1012 / 1061 (`rulaje_preluate.sold_preluat`) + notele: până acum soldurile de
+        # preluare nu intrau deloc, deci la o firmă preluată capitalul era 0, iar plafonul rezervei legale (20% din capital) — 0.
+        pd, pc = _rp.sold_preluat(cur, schema, "1012", _sf)
+        r["capital"] = (_repo.select_inregistrari_linii_2(cur, _sf) or {}).get("capital", 0) + pc - pd
+        pd, pc = _rp.sold_preluat(cur, schema, "1061", _inc)
+        r["rezerva_existenta"] = (_repo.select_inregistrari_linii_3(cur, _inc) or {}).get("rez", 0) + pc - pd
     return prof, r
 
 
@@ -602,6 +623,12 @@ def genereaza(conn, schema, perioada, manual=None):
     # [deficiența 382, lotul 9] ce e în afara evidenței validate a anului se spune la generare
     res.avertismente.extend(avertismente_evidenta(conn, schema, _dt.date(perioada.an, 1, 1), _dt.date(perioada.an + 1, 1, 1),
                                                   "D101 pe %d" % perioada.an))
+    # [lotul 10, deficiența 425] balanța de deschidere fără rulajele anului: se spune ce lipsește (afirmația `rulaje_preluate.avertisment`)
+    from core import rulaje_preluate as _rp
+    with conn.cursor() as _c:
+        _av_rul = _rp.avertisment(_c, schema, perioada.an, "d101")
+    if _av_rul:
+        res.avertismente.append(_av_rul["motiv"])
     _imp_691 = _i(r.get("chelt_impozit", 0) or 0)
     if _imp_691 > 0 and not d_grup and _i(res.P.get("P23", 0)) == 0:
         from core.pdf_util import bani as _bani   # formatorul CANONIC de sume (DS cap.7)
@@ -622,7 +649,7 @@ def genereaza(conn, schema, perioada, manual=None):
     return xml, res
 
 
-def avertismente_evidenta(conn, schema, de_la, pana_la, declaratia, cu_amortizare=True):
+def avertismente_evidenta(conn, schema, de_la, pana_la, declaratia, cu_amortizare=True, efect="profitul și impozitul ies mai mari"):
     """[deficiența 382, retestul 19.10.2026, verbatim în DECIZII „Comanda 9.1”] „La F2 amortizarea 01–07/2026 (7 x 200 = 1.400 lei) e în
     ciornă. D100 T3/2026 calculează fără ea și nu avertizează nimic (D300 avertizează la note nevalidate; Închidere lună o semnalează:
     «amortizarea lipsă schimbă profitul (D100/D101)»).” Impozitul pe profit se calculează pe notele VALIDATE ale ferestrei CUMULATE
@@ -630,7 +657,9 @@ def avertismente_evidenta(conn, schema, de_la, pana_la, declaratia, cu_amortizar
     (1) amortizarea lunilor încheiate din fereastră, pe cont: generată și nevalidată („de validat”) sau neînregistrată deloc — aceeași
     regulă ca la Închidere lună (`mf_registru.luni_anterioare_neinregistrate` / `luni_in_ciorna`); (2) celelalte note nevalidate ale
     ferestrei, numite ca în Registrul jurnal (`coada_api.note_nevalidate`). `cu_amortizare=False` la D100 micro: impozitul pe veniturile
-    microîntreprinderii nu depinde de cheltuieli, dar notele nevalidate de venit da. -> [mesaj]."""
+    microîntreprinderii nu depinde de cheltuieli, dar notele nevalidate de venit da. -> [mesaj].
+    [lotul 10, deficiența 436, generalizarea pe clasă] bilanțul o cheamă și el (`bilant_api.avertismente_evidenta_an`), cu `efect` propriu:
+    amortizarea lipsă nu schimbă la el un impozit, ci rezultatul și valoarea netă a imobilizărilor."""
     import datetime as _dt
     from core import coada_api as _coada, inchidere_luna as _il, mf_registru as _mfr, repo_contabilitate as _rc, repo_mijloace_fixe as _rmf
     from core.common import azi_ro, cate as _cate
@@ -653,9 +682,9 @@ def avertismente_evidenta(conn, schema, de_la, pana_la, declaratia, cu_amortizar
                               ("neînregistrată", [m for m in luni if m not in ciorna])):
                 if grup:
                     suma = sum(x["rate"][m] for m in grup)
-                    out.append("Amortizarea pe %s (contul %s, %s lei) e %s: %s se calculează fără ea, deci profitul și impozitul ies mai "
-                               "mari. %s, apoi generează din nou." % (
-                                   _mfr.luni_ca_interval(grup), x["cont"], _bani(suma), fel, declaratia,
+                    out.append("Amortizarea pe %s (contul %s, %s lei) e %s: %s se calculează fără ea, deci %s. %s, apoi generează "
+                               "din nou." % (
+                                   _mfr.luni_ca_interval(grup), x["cont"], _bani(suma), fel, declaratia, efect,
                                    "Validează notele de amortizare în Registrul jurnal" if fel.startswith("generată")
                                    else "Generează-o din Închidere lună („Generează amortizarea restantă”) și valideaz-o"))
         note = _coada.note_nevalidate(cur, schema, de_la.isoformat(), pana_la.isoformat())

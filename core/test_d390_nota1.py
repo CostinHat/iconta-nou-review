@@ -37,16 +37,16 @@ def _prof(**kw):
 # ============================================================
 #  (2) declarant fabricat -> avertisment (PUR)
 # ============================================================
-def test_declarant_lipsa_avertisment_nu_tacut():
-    """Profil fara declarant -> nume/functie emise implicit 'ADMINISTRATOR' DAR cu avertisment.
-    RED pre-fix: 'ADMINISTRATOR' emis tacit."""
+def test_declarant_lipsa_nu_e_fabricat():
+    """[C69, lotul 10 — supersedează forma din 17.08: „implicit 'ADMINISTRATOR' DAR cu avertisment”] Profilul fără declarant nu ajunge la
+    `build_xml`: `erori_generare` (-> `firma_profil_api.erori_declarant`, R101) îl oprește; iar `build_xml` nu mai are niciun implicit —
+    XML-ul nu poartă „ADMINISTRATOR” nicăieri. MUTAȚIE: `or "ADMINISTRATOR"` repus pe `_dnume` -> pică."""
+    from core.d390 import erori_generare
     prof = _prof(declarant_nume=None, declarant_prenume=None, declarant_functie=None)
+    assert any("declarant" in e.lower() for e in erori_generare(prof)), erori_generare(prof)
     f = [{"cui": "DE811569869", "nume": "PARTENER DE", "directie": "emisa", "total": 1000, "tva": 0}]
-    res = calcul_d390(prof, 2026, 6, f)
-    xml = build_xml(res)
-    assert 'nume_declar="ADMINISTRATOR"' in xml, "implicitul încă emis (DUK cere campul)"
-    assert any("declarantul (nume/funcție) lipsește" in a for a in res.avertismente), \
-        "implicitul declarant trebuie ANUNTAT"
+    xml = build_xml(calcul_d390(prof, 2026, 6, f))
+    assert "ADMINISTRATOR" not in xml and 'prenume_declar="-"' not in xml
 
 
 def test_declarant_prezent_fara_avertisment():
