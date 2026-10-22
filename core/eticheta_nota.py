@@ -7,7 +7,7 @@ Nota se numește cum o vede contabilul în Registrul jurnal: „nr. crt. 5 din 1
 fond); aici doar se cheamă, ca refuzul din bază și mesajul din aplicație să spună același lucru. Numerotarea e a
 `repo_contabilitate.jurnal_pe_an` (paritatea: core/test_eticheta_nota.py). Operațiunea din registrul de încasări și plăți:
 `<schema>.eticheta_rip(oid)` („plata din 12.03.2026 de 150,00 RON”). Factura: felul, numărul cu seria și data
-(`jurnal_api.eticheta_factura`, „Factură FCT12 din 05.10.2026”) — niciodată id-ul.
+(`jurnal_api.eticheta_factura`, „Factură FCT nr. 12 din 05.10.2026”) — niciodată id-ul.
 
 `schema` gol = schema curentă a conexiunii (cursorul cu `search_path` pus). Cursor dict sau tuplu.
 """
@@ -55,7 +55,7 @@ def rip(cur, schema, oid):
 
 
 def factura(cur, schema, fid):
-    """„Factură FCT12 din 05.10.2026” — felul, numărul cu seria și data, ca în Registrul jurnal (`jurnal_api.eticheta_factura`)."""
+    """„Factură FCT nr. 12 din 05.10.2026” — felul, numărul cu seria și data, ca în Registrul jurnal (`jurnal_api.eticheta_factura`)."""
     cur.execute("SELECT tip, serie, numar, data_emitere FROM %sfacturi WHERE id = %%s" % _q(schema), (int(fid),))
     r = cur.fetchone()
     if r is None:

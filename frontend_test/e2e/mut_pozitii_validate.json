@@ -1,0 +1,80 @@
+[
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "if (!nume.value.trim() || nume.value === ultimAnaf) { nume.value = r.denumire; ultimAnaf = r.denumire; }",
+  "inlocuire": "if (false) { nume.value = r.denumire; ultimAnaf = r.denumire; }",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f004_adauga_firma_cu_datele_de_la_anaf"
+ },
+ {
+  "fisier": "static/js/ecrane/asistenti.js",
+  "ancora": "firme: [...corp.querySelectorAll(\".asi-firma-noua:checked\")].map((c) => Number(c.value)) });",
+  "inlocuire": "firme: [] });",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f006_asistentul_invitat_cu_drepturile_si_firmele_lui"
+ },
+ {
+  "fisier": "static/js/ecrane/login.js",
+  "ancora": "          cod_acces: (document.getElementById(\"login-cod\")?.value || \"\").trim(),\n        });\n        sesiune.intra(r.token, r.user);",
+  "inlocuire": "          cod_acces: (document.getElementById(\"login-cod\")?.value || \"\").trim(),\n        });\n        void r;",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f008_autentificarea_deschide_numai_firmele_contului"
+ },
+ {
+  "fisier": "core/chitante.py",
+  "ancora": "[\"adică:\", suma_in_litere(suma)],",
+  "inlocuire": "[\"adică:\", \"\"],",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f017_chitanta_din_factura_are_suma_in_litere_si_intra_in_casa"
+ },
+ {
+  "fisier": "core/coada_api.py",
+  "ancora": "if _vinovat and patru_ochi_stare(conn, _cabinet_id)[\"efectiv\"]:",
+  "inlocuire": "if False:",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f019_validarea_in_doi_pregatitorul_nu_aproba_altul_aproba_si_depune"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "bani(sum_imp), bani(sum_cas), bani(sum_cass)",
+  "inlocuire": "bani(sum_imp), bani(sum_cas + 1), bani(sum_cass)",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f028_d112_din_statul_de_plata_e_valida_la_duk_cu_sumele_statului"
+ },
+ {
+  "fisier": "core/common.py",
+  "ancora": "(date(2018, 1, 1), Decimal(\"0.25\"), Temei(\"CF\", art=\"138\"",
+  "inlocuire": "(date(2018, 1, 1), Decimal(\"0.24\"), Temei(\"CF\", art=\"138\"",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f080_statul_calculeaza_contributiile_si_netul_din_brut"
+ },
+ {
+  "fisier": "core/scadente.py",
+  "ancora": "    return urmatoarea_zi_lucratoare(nominala)",
+  "inlocuire": "    return nominala",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f081_termenul_d112_e_25_ale_lunii_urmatoare_pe_zi_lucratoare"
+ },
+ {
+  "fisier": "core/plata_salarii.py",
+  "ancora": "instd.text = _q2(p[\"net\"])",
+  "inlocuire": "instd.text = _q2(p[\"net\"] + 1)",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f134_fisierul_de_plata_pe_card_are_netul_si_iban_ul_salariatului"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "      await api.post(`/tenants/${t.id}/salariati`, corpReq);",
+  "inlocuire": "      await Promise.resolve(corpReq);",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f078_salariatul_se_adauga_si_se_corecteaza_din_ecran"
+ },
+ {
+  "fisier": "core/reconciliere.py",
+  "ancora": "    combo = _match_combo(suma, facturi)",
+  "inlocuire": "    combo = None",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f073_extrasul_se_potriveste_exact_pe_combinatie_si_partial"
+ },
+ {
+  "fisier": "core/audit_preluare.py",
+  "ancora": "        elif r[\"coincide\"]:",
+  "inlocuire": "        elif r[\"coincide\"] is False:",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f183_auditul_de_preluare_confrunta_partenerii_cu_balanta"
+ },
+ {
+  "fisier": "static/js/ecrane/raporteaza.js",
+  "ancora": "const cine = m.rol_autor === \"admin\" ? \"iConta.eu\"",
+  "inlocuire": "const cine = m.rol_autor === \"nimeni\" ? \"iConta.eu\"",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f072_sesizarea_cu_captura_primeste_raspunsul_echipei"
+ }
+]

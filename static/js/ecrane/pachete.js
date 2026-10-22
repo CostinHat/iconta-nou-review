@@ -3,7 +3,7 @@
 // Backend: GET /tenants, GET /pachete/{tid}/rezumat, POST /pachete/{tid}/genereaza,
 //          GET+POST /pachete/{tid}/poveste, POST /pachete/{tid}/trimite.
 
-import { api, dataRo, esc, arataMesaj, cate, confirmaCaseta } from "../api.js?v=ff30ebaf3f";
+import { api, dataRo, esc, arataMesaj, cate, confirmaCaseta } from "../api.js?v=58f26a3fc4";
 
 // LUNI = pentru pickerul de luna (<option>); etichetele luna-an trec prin dataRo("luna_an"). [G3 23.07]
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
@@ -89,7 +89,7 @@ async function pasLucru(corp, nav) {
     // [R156, 05.09.2026] Serverul refuza precis (`an invalid: -99999999 (aștept 1990-2100)`,
     // din `_cere_perioada`), iar ecranul il inlocuia cu „Nu s-au putut încărca datele.” — adica
     // spunea „nu s-a putut” despre ceva ce aplicatia STIA. `api.js` pune mesajul in `e.mesaj`.
-    corp.innerHTML = `<p class="ecran-nota">${esc((e && e.mesaj) || "Nu s-au putut încărca datele.")}</p>
+    corp.innerHTML = `<p class="ecran-nota pe-randuri">${esc((e && e.mesaj) || "Nu s-au putut încărca datele.")}</p>
       `;
     return;
   }

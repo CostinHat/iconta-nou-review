@@ -22,6 +22,8 @@ rămâne necompletat (tot nu se ghicește).
 import re
 from decimal import Decimal, InvalidOperation
 
+from core.migrare_api import regim_contabil   # PUR (modulul nu atinge baza la import)
+
 TEMEI = ("Legea 31/1990 art.74 alin.(3)", "anaf_surse/legea_31_1990_societatile.txt",
          "În documentele prevăzute la alin. (1) , dacă acestea provin de la o societate cu răspundere limitată, se va "
          "menționa și capitalul social, iar dacă ele provin de la o societate pe acțiuni sau în comandită pe acțiuni, se "
@@ -93,7 +95,9 @@ CAMP_LIPSA = {"forma juridică a firmei (SRL, SA etc.)": "df-forma_juridica", "c
 
 def lipsa(profil):
     """[ce lipsește, în termenii contabilului] pentru ca factura să poată fi emisă; [] = nimic. PFA/II/IF -> []."""
-    if profil.get("tip_firma") == "pfa":   # coloana e NOT NULL (implicit „srl”); fără ea: societate -> se cere forma, nu se scutește
+    # [lotul 11, P7] „partida simplă” dintr-o singură sursă (`migrare_api.regim_contabil`, ca `control_fiscal_api.neaplicabile_forma`):
+    # PFA / II / IF (tip_firma „pfa”, normalizat) -> fără capital; lipsa coloanei -> societate -> se cere forma, nu se scutește
+    if regim_contabil(profil.get("tip_firma")) == "simpla":
         return []
     forma = profil.get("forma_juridica")
     if not forma:
@@ -170,7 +174,9 @@ def _lei(d):
 
 def text_factura(profil):
     """Rândul de pe factură, sau None când forma nu cere nimic (ori PFA). Presupune `lipsa(profil) == []`."""
-    if profil.get("tip_firma") == "pfa":   # coloana e NOT NULL (implicit „srl”); fără ea: societate -> se cere forma, nu se scutește
+    # [lotul 11, P7] „partida simplă” dintr-o singură sursă (`migrare_api.regim_contabil`, ca `control_fiscal_api.neaplicabile_forma`):
+    # PFA / II / IF (tip_firma „pfa”, normalizat) -> fără capital; lipsa coloanei -> societate -> se cere forma, nu se scutește
+    if regim_contabil(profil.get("tip_firma")) == "simpla":
         return None
     cere = FORME.get(profil.get("forma_juridica") or "", (None, None))[1]
     if cere == "social":

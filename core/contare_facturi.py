@@ -369,6 +369,149 @@ def cont_venit_linie(cont_venit, cont_venit_implicit=None, tip_operatiune=None):
     return (cont_venit or "").strip() or (cont_venit_implicit or "").strip() or "707"
 
 
+def _linii_facturii(cur, schema, fid):
+    """Liniile facturii (contul de venit / de cheltuială al liniei, cota, cantitatea, prețul), în ordinea lor."""
+    # [lotul 11, C82] + `valoare_neta` (BT-131 de pe factură, la factura importată): valoarea liniei e aceea, nu cantitate × preț
+    cur.execute("SELECT cont_venit, cont_cheltuiala, cota_tva, cantitate, pret_unitar, valoare_neta FROM %sfactura_linii WHERE factura_id=%%s "
+                "ORDER BY id" % _p(schema), (fid,))
+    return [dict(r) for r in cur.fetchall()]
+
+
+def _note_pe_cote(linii, curs, nota_baza, nota_tva, tva_factura=None, tva_lei_document=None):
+    """[lotul 11, decizia Costin 10.3: „Rotunjirea TVA: o singură regulă pe toată aplicația, cea cerută de validatorul e-Factura.”] Notele
+    unei facturi din liniile ei, pe REGULA UNICĂ (`core/tva_calcul.py`, EN 16931 BR-DEC-23 / BR-S-08 / BR-CO-17): baza pe (cont, cotă) =
+    Σ valorilor nete ale liniilor (la ban), TVA-ul pe COTĂ = baza cotei × cotă / 100, rotunjit o dată — același TVA ca pe PDF și în XML-ul
+    e-Factura. Înainte: TVA-ul pe fiecare grup (cont, cotă) din Σ cantitate × preț nerotunjit — două conturi de venit pe aceeași cotă
+    rotunjeau de două ori. Cartea e în lei (A1): baza × curs; TVA-ul pe cote în lei, cu suma egală cu TVA-ul documentului în lei
+    (`tva_calcul.tva_lei_pe_cote`). `nota_baza(cont, suma)` / `nota_tva(suma)` -> (debit, credit, suma).
+
+    `tva_factura` = {cotă: TVA} de pe factura FURNIZORULUI (`tva_facturii_pe_cote`, lotul 11, C79): pe factura primită TVA-ul cotei e cel
+    înscris pe factură (CF art.299 alin.(1) lit.a, art.319 alin.(20) lit.j), nu recalculul din baze; baza pe cont rămâne a liniilor.
+    `tva_lei_document` = TVA-ul facturii în lei scris de furnizor (BT-111, lotul 11, C81), împărțit pe cote (`tva_lei_pe_cote`)."""
+    from core import tva_calcul as _tc
+    baze = {}   # {cota: {cont: baza}} — rândurile se grupează direct pe cotă (fără comparație pe valoarea cotei)
+    for l in linii:
+        pe_cont = baze.setdefault(Decimal(str(l["cota_tva"])), {})
+        pe_cont[l["cont"]] = (pe_cont.get(l["cont"], Decimal(0))
+                              + _tc.net_linie(l["cantitate"], l["pret_unitar"], l.get("valoare_neta")))   # [C82] BT-131
+    pc = _tc.pe_cote(linii)
+    if tva_factura is not None:
+        pc = {c: (b, tva_factura[c]) for c, (b, _t) in pc.items()}
+    tva_lei = _tc.tva_lei_pe_cote(pc, curs, tva_lei_document=tva_lei_document)
+    note = []
+    for cota in sorted(pc):
+        for cont, b in sorted(baze.get(cota, {}).items()):
+            note.append(_fc._nota(*nota_baza(cont, b * curs)))
+        if tva_lei[cota]:
+            d, cr, s = nota_tva(tva_lei[cota])
+            note.append(_fc._nota(d, cr, s, temei=(
+                "CF art.299 alin.(1) lit.a: TVA-ul cotei de %s%% de pe factura furnizorului" if tva_factura is not None else
+                "EN 16931 BR-CO-17: TVA-ul cotei de %s%% din baza ei, rotunjit o dată") % cota.normalize()))
+    return note
+
+
+def cote_nepotrivite(tva_factura, cote_linii):
+    """(cotele cu TVA de pe factură pe care nu stă nicio linie, cotele pozitive ale liniilor fără TVA pe factură) — amândouă goale când
+    defalcarea facturii și liniile ei au aceleași cote. Regula unică pentru contare (`tva_facturii_pe_cote`) și D300 (`_cu_tva_facturii`)."""
+    return (sorted(c for c, t in tva_factura.items() if t and c not in cote_linii),
+            sorted(c for c in cote_linii if c > 0 and c not in tva_factura))
+
+
+def tva_facturii_pe_cote(cur, schema, f, linii):
+    """[lotul 11, C79] {cotă (Decimal, procente): TVA} de pe factura PRIMITĂ, în moneda ei — sau None când factura nu-l poartă separat.
+
+    TEMEI. CF art.299 alin.(1) lit.a: deducerea cere ca beneficiarul „să dețină o factură emisă în conformitate cu prevederile art. 319”;
+    CF art.319 alin.(20) lit.j: factura cuprinde „indicarea cotei de taxă aplicate și a sumei taxei colectate, exprimate în lei, în funcție
+    de cotele taxei”. Taxa deductibilă e deci cea scrisă de furnizor pe factură, pe cotele ei — nu una recalculată din baze de beneficiar.
+    Înainte: TVA-ul notei era recalculat din liniile facturii (regula unică, `core/tva_calcul.py`); pe un XML cu 143,52 lei nota avea 143,54.
+
+    SURSA: `factura_tva_cote` (defalcarea BG-23 a XML-ului e-Factura, salvată la import — `efactura_import.tva_cote_din_xml`). O factură
+    fără rânduri acolo (introdusă în aplicație, nu din XML) -> None: TVA-ul ei e chiar cel scris pe factură de aplicație din linii
+    (`facturi_api.totaluri_din_linii`), deci recalculul e TVA-ul facturii. Cotele defalcării și ale liniilor trebuie să fie aceleași (vin
+    din același XML: BT-119 / BT-152); altfel împărțirea TVA-ului pe cote ar fi ghicită -> refuz numit, contarea o face omul."""
+    from core import repo_efactura as _re
+    randuri = _re.tva_cote(cur, schema, [f["id"]]).get(f["id"])
+    if not randuri:
+        return None
+    tf = {}
+    for cota, tva, _sursa, _cat, _baza in randuri:
+        c = Decimal(str(cota))
+        tf[c] = tf.get(c, Decimal(0)) + Decimal(str(tva))
+    cote_linii = {Decimal(str(l["cota_tva"])) for l in linii}
+    if any(cote_nepotrivite(tf, cote_linii)):
+        _proc = lambda cs: ", ".join("%s%%" % c.normalize() for c in cs)   # noqa: E731
+        raise RefuzContare(
+            "TVA_FACTURA_ALTE_COTE",
+            "%s: defalcarea TVA a furnizorului (XML, BG-23) are cotele %s, iar liniile facturii cotele %s — TVA-ul de dedus nu se poate "
+            "împărți pe cote fără a ghici. Verifică XML-ul furnizorului și scrie nota manual." % (
+                _et.factura_din_rand(f) or "Factura primită", _proc(sorted(tf)), _proc(sorted(cote_linii))),
+            detalii={"factura_id": f["id"], "cote_factura": [str(c) for c in sorted(tf)],
+                     "cote_linii": [str(c) for c in sorted(cote_linii)]})
+    return {c: tf.get(c, Decimal(0)) for c in cote_linii}
+
+
+def tva_lei_furnizor(f):
+    """[lotul 11, C81] TVA-ul în lei al facturii PRIMITE din XML, în valută — `facturi.tva_lei`, scris la import din BT-111 (TVA-ul în lei pe
+    care l-a scris furnizorul) sau, fără BT-111, TVA × curs, ca la emitere (`curs_factura_importate`); None la RON sau fără curs. CF
+    art.319 alin.(20) lit.j: factura cuprinde „suma taxei colectate, exprimate în lei, în funcție de cotele taxei”."""
+    from core import sume_lei as _sl
+    if _sl.e_ron(f.get("moneda")) or f.get("tva_lei") is None:
+        return None
+    return Decimal(str(f["tva_lei"]))
+
+
+def tva_lei_facturii(tva_factura, cote_linii, f):
+    """[lotul 11, C79 / C81] {cotă (Decimal): TVA în lei} de pe factura PRIMITĂ din XML: TVA-ul cotei de pe factura furnizorului (BG-23,
+    moneda ei), în lei cu `tva_calcul.tva_lei_pe_cote` — împărțind BT-111 (`tva_lei_furnizor`) când factura e în valută. None când cotele
+    defalcării nu sunt ale liniilor (`cote_nepotrivite`: împărțirea ar fi ghicită). Regula unică pentru contare, D300, D394 și D406."""
+    from core import sume_lei as _sl, tva_calcul as _tc
+    tf = {Decimal(str(c)): Decimal(str(t)) for c, t in tva_factura.items()}
+    cl = {Decimal(str(c)) for c in cote_linii}
+    if any(cote_nepotrivite(tf, cl)):
+        return None
+    return _tc.tva_lei_pe_cote({c: (None, tf.get(c, Decimal(0))) for c in cl}, _sl.curs_factura(f), tva_lei_document=tva_lei_furnizor(f))
+
+
+def curs_factura_importate(cur, schema, f):
+    """[lotul 11, C83] Cursul facturii din XML în valută, pus pe factură cum îl pune emiterea în valută (`facturi_api.creeaza_factura`):
+    `curs_bnr`, `data_curs`, `curs_sursa`, `total_lei`, `tva_lei`. Până azi importul nu scria cursul, iar nimic nu-l mai completa: factura
+    primită în valută nu se putea conta (LIPSA_CURS_LEI) și nu intra în D300 / D394 / D406.
+
+    TEMEI. CF art.290 alin.(2): „cursul de schimb care se aplică este ultimul curs de schimb comunicat de Banca Națională a României [...]
+    valabil la data la care intervine exigibilitatea taxei pentru operațiunea în cauză”; HG 1/2016 pct.35 alin.(1): „prin ultimul curs de
+    schimb comunicat de Banca Națională a României se înțelege cursul de schimb comunicat de respectiva bancă în ziua anterioară și care
+    este valabil pentru operațiunile care se vor desfășura în ziua următoare.” Regula e a lui `curs_bnr` (`REGULA_OPERATIUNE`), prin
+    `facturi_api.curs_automat` — aceeași ca la emitere și în formular; nu se rescrie aici.
+    TVA-ul în lei: BT-111 (TVA-ul în lei scris de furnizor, `efactura_import.tva_lei_din_xml`; CF art.319 alin.(20) lit.j) când XML-ul îl
+    are; altfel TVA × curs, ca la emitere (`facturi_api.sume_lei`). Totalul în lei = baza × curs + TVA-ul în lei.
+
+    Cursul se ADUCE (descărcarea BNR) înaintea tranzacției, de apelant (`uc_comun._preincalzeste_cursul`); aici se decide pe cache.
+    Întoarce None (RON, are deja curs, nu e din XML), {"curs": …} (scris) sau refuzul cursului (dict cu `ok` False, `cod`, `mesaj`,
+    nimic scris) — factura rămâne fără curs, iar contarea o refuză cu ieșirea numită (`contabilizeaza`, LIPSA_CURS_LEI)."""
+    import datetime as _dt
+    from core import sume_lei as _sl, tva_calcul as _tc, facturi_api as _fa, efactura_import as _ef, repo_efactura as _re
+    if _sl.e_ron(f.get("moneda")) or f.get("curs_bnr") is not None or not str(f.get("xml") or "").strip():
+        return None
+    zi = f["data_emitere"]
+    zi = zi if isinstance(zi, _dt.date) else _dt.date.fromisoformat(str(zi)[:10])
+    ca = _fa.curs_automat(cur.connection, f["moneda"], zi)
+    if isinstance(ca, dict):
+        return ca
+    curs, data_curs, sursa = ca
+    import xml.etree.ElementTree as _ET
+    _x = f["xml"].encode("utf-8") if isinstance(f["xml"], str) else f["xml"]
+    bt111 = _ef.tva_lei_din_xml(_ET.fromstring(_x), f["moneda"])
+    tot, tva = Decimal(str(f.get("total") or 0)), Decimal(str(f.get("tva") or 0))
+    if bt111 is not None:
+        tva_lei = _tc.q2(bt111)
+        total_lei = _tc.q2((tot - tva) * Decimal(str(curs))) + tva_lei
+    else:
+        tva_lei, total_lei = _fa.sume_lei({"tva": tva, "total": tot}, curs)
+    _re.seteaza_cursul_importului(cur, schema, f["id"], curs, data_curs, sursa, tva_lei, total_lei)
+    f.update({"curs_bnr": curs, "data_curs": data_curs, "curs_sursa": sursa, "tva_lei": tva_lei, "total_lei": total_lei})
+    return {"curs": curs, "data_curs": data_curs, "tva_lei": tva_lei, "total_lei": total_lei, "bt111": bt111 is not None}
+
+
 def genereaza_note(cur, schema, f, pe_4428, cont_venit_implicit, cont_cheltuiala=None):
     """Notele unei facturi, ca listă de dict {debit, credit, suma}. **PUR față de bază la scriere**:
     citește, nu scrie — tiparul NIR, unde validarea se termină înainte ca ceva să înceapă.
@@ -394,27 +537,15 @@ def genereaza_note(cur, schema, f, pe_4428, cont_venit_implicit, cont_cheltuiala
         # sau prestări de servicii (411)”. Nota: 4111 = 419 + 4427; regularizarea (rândurile cu minus) o inversează. Până azi ieșea
         # 4111 = 707 + 4427, adică venit înaintea livrării.
         if (f.get("tip_operatiune") or "normal") in ("avans", "regularizare_avans"):
-            cur.execute("SELECT cota_tva, COALESCE(SUM(cantitate*pret_unitar),0) AS baza FROM %sfactura_linii WHERE factura_id=%%s "
-                        "GROUP BY cota_tva ORDER BY cota_tva" % _p(schema), (fid,))
-            grupuri = [dict(r) for r in cur.fetchall()]
-            if not grupuri or any(g["cota_tva"] is None for g in grupuri):
+            linii = _linii_facturii(cur, schema, fid)
+            if not linii or any(l["cota_tva"] is None for l in linii):
                 raise RefuzContare("FARA_COTA", MSG_FARA_COTA)
-            note = []
-            for g in grupuri:
-                note += _fc.factura_emisa(Decimal(str(g["baza"] or 0)) * _curs, cota=Decimal(str(g["cota_tva"])) / 100, la_data=la_data,
-                                          tva_incasare=tvai, cont_venit=CONT_AVANS_CLIENT)
-            return note
+            return _note_pe_cote([dict(l, cont=CONT_AVANS_CLIENT) for l in linii], _curs,
+                                 lambda c, s: ("4111", c, s), lambda s: ("4111", "4428" if tvai else "4427", s))
         # [380] contul liniei prin `cont_venit_linie` (aceeași regulă ca D406), grupat pe (cont, cotă)
-        cur.execute("SELECT cont_venit, cota_tva, COALESCE(SUM(cantitate*pret_unitar),0) AS baza "
-                    "FROM %sfactura_linii WHERE factura_id=%%s GROUP BY cont_venit, cota_tva" % _p(schema), (fid,))
-        _gr = {}
-        for r in cur.fetchall():
-            r = dict(r)
-            k = (cont_venit_linie(r["cont_venit"], cvi), r["cota_tva"])
-            _gr[k] = _gr.get(k, Decimal(0)) + Decimal(str(r["baza"] or 0))
-        grupuri = [{"cv": k[0], "cota_tva": k[1], "baza": v}
-                   for k, v in sorted(_gr.items(), key=lambda kv: (kv[0][0], -1 if kv[0][1] is None else kv[0][1]))]
-        total_baza = sum((Decimal(str(g["baza"] or 0)) for g in grupuri), Decimal(0))
+        linii = [dict(l, cont=cont_venit_linie(l["cont_venit"], cvi)) for l in _linii_facturii(cur, schema, fid)]
+        total_baza = sum(((Decimal(str(l["valoare_neta"])) if l.get("valoare_neta") is not None
+                      else Decimal(str(l["cantitate"] or 0)) * Decimal(str(l["pret_unitar"] or 0))) for l in linii), Decimal(0))   # [lotul 11, C82]
         if total_baza == 0:
             # factură fără linii (legacy): cade pe antet, un singur cont. Antetul IN LEI.
             _tl, _vl = _sl.antet_lei(f)
@@ -427,24 +558,17 @@ def genereaza_note(cur, schema, f, pe_4428, cont_venit_implicit, cont_cheltuiala
                 raise RefuzContare("FARA_COTA", MSG_FARA_COTA)
             return _fc.factura_emisa(baza, cota=Decimal(str(cota_h)) / 100, la_data=la_data,
                                      tva_incasare=tvai, cont_venit=cvi)
-        if any(g["cota_tva"] is None for g in grupuri):
+        if any(l["cota_tva"] is None for l in linii):
             raise RefuzContare("FARA_COTA", MSG_FARA_COTA)
-        note = []
-        for g in grupuri:
-            note += _fc.factura_emisa(Decimal(str(g["baza"] or 0)) * _curs,   # [A1] baza IN LEI
-                                      cota=Decimal(str(g["cota_tva"])) / 100, la_data=la_data,
-                                      tva_incasare=tvai, cont_venit=g["cv"])
-        return note
+        return _note_pe_cote(linii, _curs, lambda c, s: ("4111", c, s), lambda s: ("4111", "4428" if tvai else "4427", s))
 
     # [E1/A6-runda2, 18.09.2026] PRIMITĂ pe COTE, ca emisa — nu `MAX(cota_tva)` pe toată factura.
     # O factură mixtă 21/11 aplica 21% pe toată baza -> 4426 supraevaluat, iar controlul încrucișat cu
     # D300 (care calculează corect pe rânduri) ieșea roșu -> risc de „corectare" a declarației după carte.
     # [deficiența 418b] și pe CONTUL LINIEI (`factura_linii.cont_cheltuiala`, gol = contul facturii), ca emisa pe (cont_venit, cotă)
-    cur.execute("SELECT cota_tva, cont_cheltuiala AS cont_linie, COALESCE(SUM(cantitate*pret_unitar),0) AS baza "
-                "FROM %sfactura_linii WHERE factura_id=%%s GROUP BY cota_tva, cont_cheltuiala ORDER BY cota_tva, cont_cheltuiala"
-                % _p(schema), (fid,))
-    grupuri = [dict(r) for r in cur.fetchall()]
-    total_baza = sum((Decimal(str(g["baza"] or 0)) for g in grupuri), Decimal(0))
+    linii = _linii_facturii(cur, schema, fid)
+    total_baza = sum(((Decimal(str(l["valoare_neta"])) if l.get("valoare_neta") is not None
+                      else Decimal(str(l["cantitate"] or 0)) * Decimal(str(l["pret_unitar"] or 0))) for l in linii), Decimal(0))   # [lotul 11, C82]
 
     def _nota_primita(baza_lei, cota_frac, cont_linie=None):
         cont = (cont_linie or "").strip() or cont_cheltuiala or None
@@ -465,14 +589,48 @@ def genereaza_note(cur, schema, f, pe_4428, cont_venit_implicit, cont_cheltuiala
         cota_h = r["cota"] if isinstance(r, dict) else r[0]
         if cota_h is None:
             raise RefuzContare("FARA_COTA", MSG_FARA_COTA)
+        if not f.get("taxare_inversa"):
+            # [lotul 11, C79] fără baze pe linii, TVA-ul e cel din antetul facturii (în lei), nu baza × cotă (CF art.299 alin.(1) lit.a)
+            cont = cont_cheltuiala or _fc.ACHIZITIE["marfa"]
+            return [_fc._nota(cont, "401", baza)] + ([_fc._nota("4428" if tvai else "4426", "401", _vl,
+                                                               temei="CF art.299 alin.(1) lit.a: TVA-ul de pe factura furnizorului")]
+                                                     if _vl else [])
         return _nota_primita(baza, Decimal(str(cota_h)) / 100)
-    if any(g["cota_tva"] is None for g in grupuri):
+    if any(l["cota_tva"] is None for l in linii):
         raise RefuzContare("FARA_COTA", MSG_FARA_COTA)
-    note = []
-    for g in grupuri:
-        note += _nota_primita(Decimal(str(g["baza"] or 0)) * _curs,   # [A1] baza IN LEI
-                              Decimal(str(g["cota_tva"])) / 100, g.get("cont_linie"))
-    return note
+    if f.get("taxare_inversa"):   # art. 331: la beneficiar 4426 = 4427 (autocolectare), nu TVA pe 401
+        nota_tva = lambda s: ("4426", "4427", s)   # noqa: E731
+        tva_factura = None   # taxarea inversă: factura nu poartă TVA, beneficiarul îl calculează (art.331)
+    else:
+        nota_tva = lambda s: ("4428" if tvai else "4426", "401", s)   # noqa: E731
+        tva_factura = tva_facturii_pe_cote(cur, schema, f, linii)   # [lotul 11, C79] TVA-ul de pe factura furnizorului
+    return _note_pe_cote([dict(l, cont=(l["cont_cheltuiala"] or "").strip() or cont_cheltuiala or _fc.ACHIZITIE["marfa"]) for l in linii],
+                         _curs, lambda c, s: (c, "401", s), nota_tva, tva_factura=tva_factura,
+                         # [lotul 11, C81] factura în valută: TVA-ul ei în lei de pe factură (BT-111), împărțit pe cote
+                         tva_lei_document=tva_lei_furnizor(f) if tva_factura is not None else None)
+
+
+def note_propuse(cur, schema, f, cont_cheltuiala=None):
+    """(regimul TVA al facturii, notele ei) — ce ar scrie contarea facturii `f` (rândul din `facturi`) ACUM, fără nicio scriere. Sursa unică
+    pentru `contabilizeaza` și pentru regenerarea pe uscat a ciornei la validare (`ciorne_depasite`, felul „factura_emisa”, lotul 11, 451):
+    o regulă schimbată aici se vede pe ciornele scrise înainte. Cursor dict (`_linii_facturii`).
+
+    [lotul 10, deficiența 428] Regimul TVA al FACTURII, la DATA EI (CF art.282 alin.(3), (6), (7); art.297 alin.(2)-(3)): emisă în
+    sistem -> TVA pe 4428 (neexigibil până la încasare); primită de la un furnizor în sistem sau de o firmă în sistem -> 4428 (deducerea
+    amânată până la plată); stornarea urmează factura stornată (alin.(10)). Până azi: bifa firmei de AZI, iar automatul REFUZA
+    factura primită de la un furnizor în sistem („exigibilitatea vine din reconcilierea bancară”) — acum plata, prin bancă sau casă,
+    mută singură TVA-ul (`tva_incasare.linii_la_incasare`), deci contarea nu mai are de ce să aștepte omul."""
+    from core import tva_incasare as _tvi
+    cur.execute("SELECT cont_venit_implicit FROM %sfirma_profil WHERE id=1" % _p(schema))
+    prof = cur.fetchone()
+    cvi = (prof["cont_venit_implicit"] if isinstance(prof, dict) else prof[0]) if prof else None
+    regim_tva = _tvi.regim(cur, schema, f)
+    note = genereaza_note(cur, schema, f, regim_tva in (_tvi.REGIM_INCASARE, _tvi.REGIM_STORNO), cvi, cont_cheltuiala=cont_cheltuiala)
+    if regim_tva == _tvi.REGIM_STORNO:
+        # CF art.282 alin.(10) lit.a): stornarea anulează întâi TVA-ul rămas neexigibil pe factura stornată (4428), iar ce depășește
+        # devine exigibil / deductibil la data stornării (4427 / 4426)
+        note = _tvi.note_storno(note, f.get("directie"), _tvi.anulare_storno(cur, schema, f)[0])
+    return regim_tva, note
 
 
 def _descriere(f, data_nota=None, motiv_data=None):
@@ -485,7 +643,7 @@ def _descriere(f, data_nota=None, motiv_data=None):
     nu pentru mașină."""
     serie, numar = f.get("serie"), f.get("numar") or f["id"]
     from core import pdf_util as _pu
-    nr = _pu.numar_cu_serie(serie, numar)
+    nr = _pu.serie_nr(serie, numar)   # [lotul 11, 443] „F6 nr. 1”: seria și numărul separate; notele scrise înainte: core/migrare_serie_nr_descrieri.py
     baza = "Contare factura %s" % nr
     if data_nota is not None and str(data_nota)[:10] != str(f["data_emitere"])[:10]:
         baza += " din %s — inregistrata la %s" % (str(f["data_emitere"])[:10], str(data_nota)[:10])
@@ -563,9 +721,20 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
     # numită. Criteriul cerut: o factură fără total în lei nu poate fi contată și nu intră în
     # declarație. RON și facturile cu curs trec neatinse.
     from core import sume_lei as _sl_gate
+    # [lotul 11, C83] factura din XML în valută fără curs (BNR n-a răspuns la import, sau importată înainte de C83): cursul se pune aici,
+    # pe aceeași regulă ca la import (CF art.290 alin.(2), HG 1/2016 pct.35 alin.(1)) — ruta de contare îl aduce înaintea tranzacției
+    _rc = curs_factura_importate(cur, schema, f)
     try:
         _sl_gate.curs_factura(f)
     except _sl_gate.LipsaCurs as _e:
+        if isinstance(_rc, dict) and _rc.get("ok") is False:
+            raise RefuzContare(
+                "LIPSA_CURS_LEI",
+                "%s e în %s și n-are încă curs BNR: %s Cursul se pune singur, pe regula legală (cursul comunicat de BNR în ziua dinaintea "
+                "facturii, CF art.290 alin.(2)), la următoarea contare — apasă din nou „Contabilizează” când BNR răspunde."
+                % (_et.factura_din_rand(f), (f.get("moneda") or "?"), _rc.get("mesaj") or "cursul nu e disponibil."),
+                detalii={"factura_id": factura_id, "moneda": f.get("moneda"), "cod_curs": _rc.get("cod"),
+                         "iesire": "reincearca_contarea"})
         raise RefuzContare(
             "LIPSA_CURS_LEI",
             "%s e în %s și nu are curs BNR — nota s-ar scrie în valută drept lei. "
@@ -603,17 +772,7 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
             detalii={"data_nota": str(data_nota)[:10],
                      "data_emitere": str(f.get("data_emitere"))[:10]})
 
-    cur.execute("SELECT cont_venit_implicit FROM %sfirma_profil WHERE id=1" % _p(schema))
-    prof = cur.fetchone()
-    prof = dict(prof) if prof else {"cont_venit_implicit": None}
-    # [lotul 10, deficiența 428] Regimul TVA al FACTURII, la DATA EI (CF art.282 alin.(3), (6), (7); art.297 alin.(2)-(3)): emisă în
-    # sistem -> TVA pe 4428 (neexigibil până la încasare); primită de la un furnizor în sistem sau de o firmă în sistem -> 4428 (deducerea
-    # amânată până la plată); stornarea urmează factura stornată (alin.(10)). Până azi: bifa firmei de AZI, iar automatul REFUZA
-    # factura primită de la un furnizor în sistem („exigibilitatea vine din reconcilierea bancară”) — acum plata, prin bancă sau casă,
-    # mută singură TVA-ul (`tva_incasare.linii_la_incasare`), deci contarea nu mai are de ce să aștepte omul.
     from core import tva_incasare as _tvi
-    regim_tva = _tvi.regim(cur, schema, f)
-
     if cont_cheltuiala is None and f.get("directie") == "primita":
         cur.execute("SELECT cont_cheltuiala FROM %sefactura_primite WHERE factura_id=%%s "
                     "AND cont_cheltuiala IS NOT NULL ORDER BY id DESC LIMIT 1" % _p(schema),
@@ -622,12 +781,7 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
         if r:
             cont_cheltuiala = (r["cont_cheltuiala"] if isinstance(r, dict) else r[0]) or None
 
-    note = genereaza_note(cur, schema, f, regim_tva in (_tvi.REGIM_INCASARE, _tvi.REGIM_STORNO), prof.get("cont_venit_implicit"),
-                          cont_cheltuiala=cont_cheltuiala)
-    if regim_tva == _tvi.REGIM_STORNO:
-        # CF art.282 alin.(10) lit.a): stornarea anulează întâi TVA-ul rămas neexigibil pe factura stornată (4428), iar ce depășește
-        # devine exigibil / deductibil la data stornării (4427 / 4426)
-        note = _tvi.note_storno(note, f.get("directie"), _tvi.anulare_storno(cur, schema, f)[0])
+    regim_tva, note = note_propuse(cur, schema, f, cont_cheltuiala=cont_cheltuiala)
 
     # [decizia Costin 08.10.2026, pct.2] NIR-ul „fără factură” al aceleiași livrări: legarea se propune, alegerea e a omului
     from core import nir_legare as _nl
@@ -691,13 +845,17 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
                     (iid, n["debit"], n["credit"], Decimal(str(n["suma"]))))
     stornare_nir = None
     if nir_ales and nir_ales.get("forma_noua"):
+        from core import pdf_util as _pu
         _nl.leaga_forma_noua(cur, schema, nir_ales["id"], f)
         _nl.scrie_ajustari_cv(cur, schema, plan_cv, data_nota, iid, nir_ales["id"], factura_id,
-                              "Diferență de preț NIR %s / factura %s" % (nir_ales["numar"], (f.get("serie") or "") + str(f.get("numar") or "")))
+                              "Diferență de preț NIR %s / factura %s" % (nir_ales["numar"], _pu.serie_nr(f.get("serie"), f.get("numar"))))
     elif nir_ales:
         stornare_nir = _nl.leaga(cur, schema, nir_ales["id"], f, data_nota)
     out = {"stare": "contata", "inregistrare_id": iid,
            "tva_la_incasare": regim_tva == _tvi.REGIM_INCASARE,
+           # [lotul 11, 428] regimul complet (general / incasare / storno_incasare): stornarea unei facturi din sistem își spune pe ecran
+           # împărțirea CF art.282 alin.(10) — `tva_la_incasare` e fals pe ea, deși nota e în sistem
+           "regim_tva_incasare": regim_tva,
            "linii": [{"debit": n["debit"], "credit": n["credit"], "suma": str(n["suma"])}
                      for n in note]}
     if nir_ales:

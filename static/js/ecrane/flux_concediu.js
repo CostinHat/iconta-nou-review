@@ -1,8 +1,13 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu, refuzPeRand } from "../api.js?v=ff30ebaf3f";
+import { api, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu, refuzPeRand, arataRefuzul } from "../api.js?v=58f26a3fc4";
 import { ciornaFormular } from "../ciorna_formular.js?v=f59e00811a";  // [267, clasa] ciorna formularelor lungi de creare
+// [lotul 11, 440] numele câmpurilor din refuzul serverului (`salariati_api.salveaza_concediu`, corpul cererii) -> id-ul de pe ecran
+const CAMPURI_CONCEDIU = { serie: "cm-serie", numar: "cm-numar", cod: "cm-cod", cod_urgenta: "cm-urgenta", cnp_ingrijit: "cm-cnp-ingrijit",
+  venit_realizat: "cm-venit", data_acordare: "cm-acord", data_inceput: "cm-inceput", data_sfarsit: "cm-sfarsit", diagnostic: "cm-diag",
+  spitalizare: "cm-spital", program_national: "cm-program-national", zile_cm: "cm-zile", venituri_6_luni: "cm-ven6", zile_6_luni: "cm-zile6",
+  este_continuare: "cm-continuare", serie_initiala: "cm-serie-ini", numar_initial: "cm-numar-ini" };
 
 // [cm_coduri_v1 22.08.2026] Lista de coduri NU mai traieste aici. Denumirea vine din
 // nomenclator (`core/nomenclator_cm.py`), procentul din registru (`salarizare.procent_cm`,
@@ -87,7 +92,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp"><span class="camp-eticheta">Num\u0103r</span><input type="text" id="cm-numar" class="camp-input" placeholder="ex. 1234567"></label>
           <label class="camp" style="grid-column:span 2"><span class="camp-eticheta">Cod indemniza\u021bie</span><select id="cm-cod" class="camp-input">${ALEGE}${optCod}</select></label>
           <label class="camp" id="cm-venit-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta">Venit brut realizat \u00een perioada CM, dup\u0103 reducerea timpului (lei)<span class="oblig">*</span></span><input type="number" id="cm-venit" class="camp-input" min="0" step="0.01"></label>
-          <label class="camp" id="cm-urgenta-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta">Cod urgen\u021b\u0103 medico-chirurgical\u0103<span class="oblig">*</span></span><input type="number" id="cm-urgenta" class="camp-input" min="1" max="177" placeholder="1\u2013177"><span class="camp-ajutor">Cod din nomenclatorul urgen\u021belor medico-chirurgicale (HG 423/2020). D112 \u00eel cere obligatoriu la codul 06.</span></label>
+          <label class="camp" id="cm-urgenta-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta" id="cm-urgenta-eticheta">Cod urgen\u021b\u0103 medico-chirurgical\u0103<span class="oblig">*</span></span><input type="number" id="cm-urgenta" class="camp-input" min="1" max="177" placeholder="1\u2013177"><span class="camp-ajutor" id="cm-urgenta-ajutor">Cod din nomenclatorul urgen\u021belor medico-chirurgicale (HG 423/2020). D112 \u00eel cere obligatoriu la codul 06.</span></label>
           <label class="camp" id="cm-cnp-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta">CNP-ul persoanei \u00eengrijite<span class="oblig">*</span></span><input type="text" id="cm-cnp-ingrijit" class="camp-input" maxlength="13" inputmode="numeric" placeholder="13 cifre"><span class="camp-ajutor">CNP-ul copilului (cod 09/91/92) sau al pacientului cu afec\u021biuni oncologice (cod 17) pentru care s-a eliberat certificatul. D112 \u00eel cere obligatoriu (regula DUK S97).</span></label>
           <label class="camp"><span class="camp-eticheta">Data acord\u0103rii</span><input type="date" id="cm-acord" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Data \u00eenceput<span class="oblig">*</span></span><input type="date" id="cm-inceput" class="camp-input"></label>
@@ -119,7 +124,27 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     const venitZona = zona.querySelector("#cm-venit-zona");
     selCod.addEventListener("change", () => { venitZona.style.display = selCod.value === "10" ? "" : "none"; });  // [cod10] camp conditionat
     const urgentaZona = zona.querySelector("#cm-urgenta-zona");
-    selCod.addEventListener("change", () => { urgentaZona.style.display = selCod.value === "06" ? "" : "none"; });  // [cod06] D_11 camp conditionat
+    // [cod06] D_11 cod urgență; [lotul 11, C92] la codul 10 același câmp poartă numărul avizului medicului expert (D112 D_13, „D_13#null
+    // pentru D_9 = 10”, DUK regula S102) — până la 22.10.2026 se arăta numai la 06, deci un certificat cod 10 nu putea trece de DUK
+    const CAMP_URGENTA = {
+      "06": { eticheta: "Cod urgen\u021b\u0103 medico-chirurgical\u0103", max: "177", exemplu: "1\u2013177",
+              ajutor: "Cod din nomenclatorul urgen\u021belor medico-chirurgicale (HG 423/2020). D112 \u00eel cere obligatoriu la codul 06." },
+      "10": { eticheta: "Num\u0103rul avizului medicului expert", max: "", exemplu: "",
+              ajutor: "Obligatoriu la codul 10: \u00eel cere D112 (D_13)." },
+    };
+    // [lotul 11, C92, aceeași clasă] 05 / 51: codul bolii infecto-contagioase (D112 D_12, „daca D_9= (05,51) atunci D_12#null”, „D_12<= 36”)
+    CAMP_URGENTA["05"] = CAMP_URGENTA["51"] = { eticheta: "Cod boal\u0103 infecto-contagioas\u0103", max: "36", exemplu: "1\u201336",
+      ajutor: "Codul bolii de pe certificat (grupa A sau boala pentru care se instituie izolarea). Obligatoriu la codurile 05 \u0219i 51: \u00eel cere D112 (D_12)." };
+    selCod.addEventListener("change", () => {
+      const c = CAMP_URGENTA[selCod.value];
+      urgentaZona.style.display = c ? "" : "none";
+      if (!c) return;
+      zona.querySelector("#cm-urgenta-eticheta").firstChild.nodeValue = c.eticheta;
+      zona.querySelector("#cm-urgenta-ajutor").textContent = c.ajutor;
+      const inpUrg = zona.querySelector("#cm-urgenta");
+      if (c.max) inpUrg.max = c.max; else inpUrg.removeAttribute("max");
+      inpUrg.placeholder = c.exemplu;
+    });
     const cnpZona = zona.querySelector("#cm-cnp-zona");
     selCod.addEventListener("change", () => { cnpZona.style.display = ["09","91","92","17"].includes(selCod.value) ? "" : "none"; });  // [D_8/D_8a] CNP persoana ingrijita, camp conditionat
     const chkCont = zona.querySelector("#cm-continuare");
@@ -158,7 +183,8 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       const rez = zona.querySelector("#cm-rezultat");
       rez.innerHTML = "";
       curataEroriCamp(zona);
-      if (cereAlegerile(zona, ["#cm-cod", "#cm-continuare", "#cm-spital", "#cm-program-national"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+      // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite; [lotul 11, 440] alegerile lipsă și câmpurile greșite se arată DEODATĂ (un singur `return`)
+      let faraAlegere = false; if (cereAlegerile(zona, ["#cm-cod", "#cm-continuare", "#cm-spital", "#cm-program-national"])) faraAlegere = true;
       const inceput = zona.querySelector("#cm-inceput").value;
       const sfarsit = zona.querySelector("#cm-sfarsit").value;
       const zile = parseInt(zona.querySelector("#cm-zile").value, 10);
@@ -176,6 +202,8 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       if (!ven6 || ven6 <= 0) eC.push(["cm-ven6", "Completează veniturile brute pe 6 luni (baza de calcul)."]);
       if (!zile6 || zile6 < 1) eC.push(["cm-zile6", "Completează zilele lucrătoare din cele 6 luni."]);
       if (codSel === "06" && (!urg || urg < 1 || urg > 177)) eC.push(["cm-urgenta", "La codul 06 completează codul de urgență (1–177, HG 423/2020)."]);
+      if (["05", "51"].includes(codSel) && !(urg >= 1 && urg <= 36)) eC.push(["cm-urgenta", "La codurile 05 și 51 completează codul bolii infecto-contagioase (1–36) — D112 îl cere (D_12)."]);  // [lotul 11, C92]
+      if (codSel === "10" && !(Number.isInteger(urg) && urg >= 1)) eC.push(["cm-urgenta", "La codul 10 completează numărul avizului medicului expert (un număr întreg) — D112 îl cere (D_13)."]);  // [lotul 11, C92]
       if (["09","91","92","17"].includes(codSel) && !/^\d{13}$/.test(cnpI)) eC.push(["cm-cnp-ingrijit", "La codurile de îngrijire copil (09/91/92) sau pacient oncologic (17) completează CNP-ul persoanei îngrijite (13 cifre) — D112 îl cere obligatoriu."]);
       if (codSel === "10" && !((zona.querySelector("#cm-venit").value || "").trim())) eC.push(["cm-venit", "La codul 10 completează venitul brut realizat în perioada CM."]);
       // [CM-episod] la continuare, seria+numarul certificatului INITIAL sunt obligatorii (episodul se leaga pe ele)
@@ -183,7 +211,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         if (!(zona.querySelector("#cm-serie-ini").value || "").trim()) eC.push(["cm-serie-ini", "Completează seria certificatului inițial al episodului (de pe certificatul de continuare)."]);
         if (!(zona.querySelector("#cm-numar-ini").value || "").trim()) eC.push(["cm-numar-ini", "Completează numărul certificatului inițial al episodului."]);
       }
-      if (eC.length) { eC.forEach(([camp, mesaj]) => eroareCamp(zona, camp, mesaj)); return; }
+      if (eC.length || faraAlegere) { eC.forEach(([camp, mesaj]) => eroareCamp(zona, camp, mesaj)); return; }
 
       const inc = new Date(inceput);
       const payload = {
@@ -235,7 +263,8 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         if (dupaSalvare) dupaSalvare();
       } catch (e) {
         btn.disabled = false; btn.textContent = "Calculeaz\u0103 \u0219i salveaz\u0103";
-        rez.innerHTML = `<span class="msg-eroare">${esc(e.mesaj || "Nu s-a putut salva concediul.")}</span>`;
+        // [lotul 11, 440] refuzul serverului: fiecare eroare lângă câmpul ei, textul în zona rezultatului (și în caseta „NU s-a salvat.”)
+        arataRefuzul(zona, e && e.mesaj ? e : { ...(e || {}), mesaj: "Nu s-a putut salva concediul." }, rez, { campuri: CAMPURI_CONCEDIU });
       }
     });
   }

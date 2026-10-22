@@ -99,12 +99,17 @@ DISTRIBUTIE = {
     # Masurat cu R.inventar: STABIL, prag 6 luni.
     # 14 -> 15 la 18.10.2026 (comanda 8.2, deficienta 378): CF art.31 alin.(1) - recuperarea pierderii fiscale in limita a 70%
     # (`ajustari_fiscale.PRAG_RECUPERARE_PIERDERE`). Masurat cu R.inventar: STABIL, prag 6 luni.
-    ("STABIL", "DEPUS"): 15,
+    # 15 -> 16 la 22.10.2026 (lotul 11): `jurnal_api.TEMEI_CONSEMNARE` (Legea 82/1991 art.6 alin.(1)) trece din STABIL/CALCULAT în
+    # STABIL/DEPUS: modulul nou `ciorne_depasite` (ciornele rămase în urma perioadei) cheamă validarea notei (`_erori_data` /
+    # `_erori_linii`), iar consumatorii temeiului (`consumatori_temei`) cresc 215 -> 578 de funcții, 0 -> 47 în module de declarație.
+    # Prag 12 -> 6 luni: verificat MAI DES. Masurat cu consumatori_temei + R.inventar, pe HEAD fata de arbore.
+    ("STABIL", "DEPUS"): 16,
     # 13 -> 14 la 01.10.2026 (tichete de cresa): common.PLAFON_CRESA_BAZA ancorat pe Legea 165/2018 art.19 alin.(1).
     # 14 -> 13 la 11.10.2026 (R3): iese `bacsis.COTA_IMPOZIT` (CF art.64 alin.(1) lit.h); cota se citeste din
     # `COTE["impozit_venit_categorii"]`, ale carei doua intrari (CF art.64 / Legea 227/2015 art.64) sunt STABIL/DEPUS — locul lasat de
     # `d101.COTA_STANDARD` si `d212.COTA_IMPOZIT_VENIT`, iesite si ele (STABIL/DEPUS ramane 14). Masurat cu R.inventar.
-    ("STABIL", "CALCULAT"): 13,
+    # 13 -> 12 la 22.10.2026 (lotul 11): iese `jurnal_api.TEMEI_CONSEMNARE`, trecut în STABIL/DEPUS (vezi mai sus).
+    ("STABIL", "CALCULAT"): 12,
     ("MISCATOR", "CALCULAT"): 7,
     # 0 -> 6 la 03.10.2026 (D212 Etapa 5c-2a), clasa noua: CF art.110 alin.(1) (premii 10%), alin.(4) lit.a (600 lei pe
     # premiu), alin.(4) lit.b (66.750 lei la jocuri), art.111 alin.(1) lit.a/b (3% / 1% la transfer), alin.(3) (1% la
@@ -136,7 +141,10 @@ DISTRIBUTIE = {
     # 26 -> 27 la 06.10.2026 (lotul 07.10 pct.18): `facturi_api.SCADENTA_PROPUSA` — Legea 72/2013 art.3 alin.(3) lit.a (scadența
     # propusă pe formularul facturii, 30 de zile). Masurat cu R.inventar: documentul adus (anaf_surse/legea_72_2013.html) nu
     # consemneaza NICIO modificare, deci frecventa nu se poate citi; consecinta NECUNOSCUT (nu ajunge intr-o declaratie).
-    ("NECUNOSCUT", "NECUNOSCUT"): 27,
+    # 27 -> 28 la 22.10.2026 (lotul 11): `ciorne_depasite.TEMEI` — OMFP 2634/2015 pct.58 lit.c (ciornele rămase în urma perioadei).
+    # Documentul (anexa 1) e ciot pentru instrument (R111, `core/test_pereche_act_articol.py` CLICHET_CIOT), deci frecventa nu se
+    # poate citi. Masurat cu R.inventar.
+    ("NECUNOSCUT", "NECUNOSCUT"): 28,
 }
 
 _AZI = datetime.date(2026, 8, 31)
@@ -262,7 +270,8 @@ def test_ANTI_VACUU_si_distributia_pinata():
 #: 13 -> 14 la 01.10.2026 (tichete de cresa): common.PLAFON_CRESA_BAZA (Legea 165/2018 art.19 alin.(1)), STABIL/CALCULAT.
 #: 14 -> 13 la 11.10.2026 (R3): `bacsis.COTA_IMPOZIT` a iesit — cota e acum in registru (`impozit_venit_categorii`), sub podeaua
 #: globala ca orice cheie din `COTE`: verificata MAI DES, nu mai rar.
-PRIMESC_PRAG_PESTE_PODEA = 13
+#: 13 -> 12 la 22.10.2026 (lotul 11): `jurnal_api.TEMEI_CONSEMNARE` trece la DEPUS (prin `ciorne_depasite`), prag 6 luni = podeaua: MAI DES.
+PRIMESC_PRAG_PESTE_PODEA = 12
 
 
 def test_nicio_valoare_nu_devine_verificata_MAI_RAR():

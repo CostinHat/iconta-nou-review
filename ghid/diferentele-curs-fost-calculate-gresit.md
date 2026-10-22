@@ -2,7 +2,7 @@
 title: "Ce fac dacă diferențele de curs au fost calculate greșit?"
 description: "Cum se corectează o eroare de calcul la diferențele de curs valutar (665/765), în funcție de exercițiul financiar în care a fost făcută greșeala."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Aplicat la diferențele de curs valutar greșit calculate:
 
 ## Ce face iConta.eu
 
-iConta.eu calculează diferențele de curs valutar (665/765) atât la decontarea creanțelor/datoriilor în valută, cât și la reevaluarea lunară a soldurilor, folosind cursul BNR al zilei introduse de utilizator — motorul intern refuză explicit să calculeze o diferență fără un curs declarat, tocmai pentru a evita o valoare implicită tăcută care ar putea deveni greșită la schimbarea legii sau a cursului. Dacă o diferență a fost deja înregistrată cu un curs greșit, corectarea ei — inclusiv decizia dacă se stornează pe 665/765 curent sau se trece pe rezultatul reportat (1174), pentru exerciții închise — rămâne o decizie manuală a contabilului, aplicația nu identifică automat erorile de curs deja înregistrate.
+iConta.eu calculează diferențele de curs valutar (665/765) atât la decontarea creanțelor/datoriilor în valută, cât și la reevaluarea lunară a soldurilor, folosind cursul BNR luat de aplicație de la BNR: la decontare, ultimul curs comunicat înaintea zilei plății sau a încasării; la reevaluare („Închidere lună → Reevaluare valută”), cursul din ultima zi bancară a lunii — fără curs BNR pentru moneda și data respectivă, calculul se oprește cu un mesaj, tocmai pentru a evita o valoare implicită tăcută care ar putea deveni greșită la schimbarea legii sau a cursului. Dacă o diferență a fost deja înregistrată cu un curs greșit, corectarea ei — inclusiv decizia dacă se stornează pe 665/765 curent sau se trece pe rezultatul reportat (1174), pentru exerciții închise — rămâne o decizie manuală a contabilului, aplicația nu identifică automat erorile de curs deja înregistrate.
 
 [iConta.eu](/)

@@ -207,6 +207,10 @@ def test_289_trimiterea_fara_drept_nu_incarca_si_spune_acelasi_lucru(monkeypatch
     monkeypatch.setattr(et.spv_conector, "stare_firma", lambda c, p, cui: {"are_drept": False, "mesaj": "M(%s)" % cui})
     # [C61] `trimite` citește factura cu `incarca_factura` și generează XML-ul după P0 (ANAF cu pool-ul liber): pragul e citirea
     monkeypatch.setattr(et, "incarca_factura", lambda *a: (_ for _ in ()).throw(AssertionError("factura citită pentru XML")))
+    # [lotul 11, C86] poarta 0 (`refuz_din_efactura`) citește factura prin `repo_facturi.stare_pentru_recunoastere`: aici, emisă în
+    # aplicație (fără XML importat) -> trece mai departe; poarta rulează pe codul ei, numai citirea e înlocuită
+    from core import repo_facturi
+    monkeypatch.setattr(repo_facturi, "stare_pentru_recunoastere", lambda cur, schema, fid: ("de_preluat", "emisa", False))
     assert et.trimite("tenant_x", 5, "P") == {"stare": "fara_drept", "mesaj": "M(55229657)"}
 
 

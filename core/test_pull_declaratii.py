@@ -357,7 +357,9 @@ def test_d112_impozit_multi_certificat_partitie_per_cert(schema):
         _seed(cur)
     def _imp():
         xml, _av = d112.genereaza(schema, SCHEMA_T, Perioada(an=2026, luna=6))
-        return int(re.search(r'E1_6="(\d+)"', re.search(r"<asiguratE1[^>]*/>", xml).group(0)).group(1))
+        # [lotul 11, 453] impozitul reținut e E1_7 (structura D112: E1_7=ΣE3_15); E1_6 e venitul bază de calcul (până la 22.10.2026
+        # secțiunea E punea impozitul în ambele)
+        return int(re.search(r'E1_7="(\d+)"', re.search(r"<asiguratE1[^>]*/>", xml).group(0)).group(1))
     assert _imp() == 676, "impozit multi-cert (cod01 impozabil + cod09 neimpozabil) trebuie 676"
     # RED built-in: golirea setului neimpozabil -> cod 09 devine impozabil -> 789 (dovada partitie PER-CERT, nu pe total)
     _orig = _sz._CM_COD_NEIMPOZABIL
@@ -411,7 +413,10 @@ def test_d112_impozit_exclude_indemnizatia_cm_neimpozabila_luna_mixta(schema):
     assert g(b4, "B4_6") == 900, "B4_6 CASS emis (cod 08 exclus CASS) = 900: " + b4
     assert g(b4, "B4_7") == 13000, "B4_7 baza CAS (include indemnizatia) = 13000: " + b4
     # IMPOZIT = pe baza IMPOZABILA (exclude maternitatea SI CAS/CASS aferent) = 585, NU 885 (buggy) sau 485 (naiv)
-    assert g(e1, "E1_6") == 585, "impozit trebuie 585 (simetric), nu 885 (buggy)/485 (naiv): " + e1
+    assert g(e1, "E1_7") == 585, "impozit trebuie 585 (simetric), nu 885 (buggy)/485 (naiv): " + e1
+    # [lotul 11, 453] E1_6 = venitul bază de calcul al impozitului: 9.000 − 2.250 (CAS pe salariu) − 900 (CASS) = 5.850 (maternitatea
+    # cod 08 neimpozabilă nu intră; fără persoane în întreținere, brutul 12.600 depășește plafonul deducerii de bază)
+    assert g(e1, "E1_6") == 5850, "venit baza de calcul = 5850: " + e1
     # lantul FLUTURAS (taxe_cm) trebuie CONSISTENT: impozit 0 pe maternitate; CAS ramane (art.139(1)(o))
     flut = taxe_cm(4000, "08", la_data=date(2026, 6, 1))
     assert int(flut["impozit"]) == 0, "taxe_cm cod 08 (maternitate) impozit trebuie 0 (CF art.62 lit.c): %s" % flut

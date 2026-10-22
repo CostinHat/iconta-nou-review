@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "core/produse_api.py",
+  "ancora": "    if um is not None and len(str(um).strip()) > LIMITE_UM:",
+  "inlocuire": "    if False:",
+  "test": "frontend_test/e2e/e2e_lot11_w3b.py::test_def_440_produse_toate_erorile_serverului_langa_campuri"
+ },
+ {
+  "fisier": "core/clienti_api.py",
+  "ancora": "        if k in LUNGIMI and v is not None and len(str(v)) > LUNGIMI[k]:",
+  "inlocuire": "        if False:",
+  "test": "frontend_test/e2e/e2e_lot11_w3b.py::test_def_440_clienti_numele_golit_si_localitatea_lunga_deodata"
+ }
+]

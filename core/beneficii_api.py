@@ -22,30 +22,47 @@ EVENIMENTE_LEGALE = ("paste", "craciun", "8martie", "1iunie")
 PLAFON_CADOU = 300  # lei / persoana / eveniment (neimpozabil)
 
 
+def _refuz_adunat(er):
+    """[lotul 11, 440] {eroare: toate (o singură = textul ei, ca înainte), erori_campuri: fiecare} din [(camp, mesaj)]."""
+    from core.erori import ErorileFormularului as _Erori
+    f = _Erori("Beneficiul nu s-a salvat")
+    for c, m in er:
+        f.camp(c, m)
+    d = f.detaliu()
+    return {"eroare": d["mesaj"], "erori_campuri": d["erori_campuri"]}
+
+
 def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_copii=1):
     """Upsert un beneficiu one-off (salariat/an/luna/tip/eveniment). valoare 0 -> sterge randul.
     eveniment: obligatoriu pt cadou (unul din EVENIMENTE_CADOU); gol pt vacanta."""
     if tip not in TIPURI:
         return {"eroare": "tip beneficiu necunoscut: %r" % tip}
+    # [lotul 11, deficiența 440, comanda Costin 11.1 pct.16: „toate erorile apar deodată, fiecare cu textul ei”] evenimentul și valoarea
+    # (multiplul de 10 și plafonul, amândouă) se verifică toate și pleacă într-un singur refuz (`_refuz_adunat`); plafonul cultural
+    # neconfirmat (fereastra GRI — starea temeiului, nu a datelor) rămâne refuzul unic
+    er = []
     eveniment = (eveniment or "").strip()
     if tip == "cadou":
         if eveniment not in EVENIMENTE_CADOU:
-            return {"eroare": "evenimentul cadoului e obligatoriu (paste/crăciun/8martie/1iunie/altul)"}
+            er.append(("eveniment", "evenimentul cadoului e obligatoriu (paste/crăciun/8martie/1iunie/altul)"))
     elif tip == "cultural":
         # [TICHETE CULTURALE] Legea 165/2018 art.21(1): lunar (eveniment gol) SAU ocazional (pe eveniment).
         if eveniment not in ("", "ocazional"):
-            return {"eroare": "tichetul cultural e lunar (eveniment gol) sau ocazional (eveniment='ocazional')"}
+            er.append(("eveniment", "tichetul cultural e lunar (eveniment gol) sau ocazional (eveniment='ocazional')"))
     elif tip == "cresa":
         eveniment = ""  # cresa e lunara (pe copil); fara eveniment
     else:
         eveniment = ""  # non-cadou/non-cultural nu are eveniment
     try:
         v = Decimal(str(valoare or 0))
+        if not v.is_finite():
+            raise ValueError(valoare)
     except Exception:
         # [R147] Nu spunea care valoare, nici ce se aștepta de la ea.
-        return {"eroare": "Valoarea beneficiului trebuie să fie un număr mai mare decât zero."}
+        er.append(("valoare", "Valoarea beneficiului trebuie să fie un număr mai mare decât zero."))
+        return _refuz_adunat(er)
     if v < 0:
-        return {"eroare": "valoarea nu poate fi negativă"}
+        er.append(("valoare", "valoarea nu poate fi negativă"))
     if tip == "cresa" and v > 0:
         # [GARD] plafon lunar/copil pe LUNA beneficiului: L165 art.19(1) indexat semestrial (HG 1045/2018 art.33,
         # ferestrele din common.plafon_cresa); in afara ferestrelor, baza 450.
@@ -60,10 +77,10 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_
         import datetime as _dtcr
         _plafc, _sursac = _cm2.plafon_cresa(_dtcr.date(int(an), int(luna), 1), nr_copii=_nr)
         if v % 10 != 0:
-            return {"eroare": "valoarea tichetului de cresa = multiplu de 10 lei (Legea 165/2018 art.19(2))"}
+            er.append(("valoare", "valoarea tichetului de cresa = multiplu de 10 lei (Legea 165/2018 art.19(2))"))
         if v > _plafc:
-            return {"eroare": "valoarea %s depășește plafonul de %s lei pentru %d copil(i) în %02d.%s (%s)."
-                    % (v, _plafc, _nr, int(luna), an, _sursac)}
+            er.append(("valoare", "valoarea %s depășește plafonul de %s lei pentru %d copil(i) în %02d.%s (%s)."
+                                  % (v, _plafc, _nr, int(luna), an, _sursac)))
     if tip == "cultural" and v > 0:
         # [GARD] plafon semestrial indexat (verdict 16). Fereastra GRI (oct.2025-mar.2026) sau semestru
         # fara ordin confirmat -> BLOCAT motivat, NU se calculeaza tacit cu 240/470. + valoare nominala
@@ -76,10 +93,12 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_
         except _cm.PlafonCulturalIndisponibil as _e:
             return {"eroare": str(_e)}
         if v % 10 != 0:
-            return {"eroare": "valoarea tichetului cultural = multiplu de 10 lei (Legea 165/2018 art.22(2))"}
+            er.append(("valoare", "valoarea tichetului cultural = multiplu de 10 lei (Legea 165/2018 art.22(2))"))
         if v > _plaf:
-            return {"eroare": "valoarea %s depășește plafonul %s/%s pentru %s-%s (%s)"
-                    % (v, _plaf, ("eveniment" if _ocaz else "luna"), an, luna, _sursa)}
+            er.append(("valoare", "valoarea %s depășește plafonul %s/%s pentru %s-%s (%s)"
+                                  % (v, _plaf, ("eveniment" if _ocaz else "luna"), an, luna, _sursa)))
+    if er:
+        return _refuz_adunat(er)
     with conn.cursor() as cur:
         if not _repo.select_salariati(cur, schema, salariat_id):
             return None

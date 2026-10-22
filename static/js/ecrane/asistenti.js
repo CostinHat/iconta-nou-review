@@ -1,7 +1,7 @@
 // asistenti.js — managementul actorilor de cabinet (cardul Asistenți).
 // Trei niveluri: listă actori -> editare actor (permisiuni + firme atribuite) -> Vizualizează.
 // Doar admin_firma. Stil aliniat la validat.js / control.js (api.js + nav.deschide).
-import { api, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp, dataIso, cate } from "../api.js?v=ff30ebaf3f";  /* audit_cab_lot2_v1 */
+import { api, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp, dataIso, cate } from "../api.js?v=58f26a3fc4";  /* audit_cab_lot2_v1 */
 /* [patch11_semafor_explicit] */
 function _semaforEticheta(culoare) {
   // [eticheta_din_fapt 20.08.2026] `gri` lipsea din harta -> M[culoare] || "" randa o bulina
@@ -10,7 +10,9 @@ function _semaforEticheta(culoare) {
   const M = { rosu: "probleme", galben: "de urm\u0103rit", verde: "f\u0103r\u0103 probleme",
               gri: "nu se poate verifica" };
   const t = M[culoare] || "";
-  return `<span class="asi-sem asi-sem-${culoare}"></span><span class="asi-sem-txt">${t}</span>`;
+  // [lotul 11, 458: „text suprapus peste nume”] eticheta purta `asi-sem-txt`, prinsă de selectorul global al bulinei
+  // (`span[class*="sem-"]`, STANDARD_SEMAFOR, DS cap.8): cutie de 16px, textul ieșea peste nume. Eticheta = clasa globală de text.
+  return `<span class="asi-sem asi-sem-${culoare}"></span><span class="tip-desc">${t}</span>`;
 }
 
 const PERM = [
@@ -75,7 +77,7 @@ export async function randeazaAsistenti(corp, nav) {
       z.innerHTML = t.length ? t.map((x) => `<label class="set-bifa" style="display:block"><input type="checkbox" class="asi-firma-noua" value="${x.id}"> <span>${esc(x.nume || "Firma " + x.id)}</span></label>`).join("")
         : `<span class="ecran-nota">Cabinetul n-are încă firme: le aloci după ce le adaugi, din ecranul colegului.</span>`;
       z.dataset.incarcat = "1";
-    } catch (e) { z.innerHTML = `<span class="ecran-nota">${esc((e && e.mesaj) || "Firmele nu s-au putut încărca: le aloci după invitație, din ecranul colegului.")}</span>`; }
+    } catch (e) { z.innerHTML = `<span class="ecran-nota pe-randuri">${esc((e && e.mesaj) || "Firmele nu s-au putut încărca: le aloci după invitație, din ecranul colegului.")}</span>`; }
   }
   corp.querySelector("#asi-trimite").addEventListener("click", async () => {
     const msg = corp.querySelector("#asi-adauga-msg");
@@ -101,7 +103,7 @@ export async function randeazaAsistenti(corp, nav) {
       let peCamp = false;
       (e.erori_campuri || []).forEach((c) => { if (c.camp === "email" && eroareCamp(corp, "asi-email", c.mesaj)) peCamp = true; });
       // motivul o singură dată: pe câmp; aici doar ce s-a întâmplat
-      arataMesaj(msg, peCamp ? "Invitația nu s-a trimis. Corectează adresa marcată." : (e.mesaj || e.message), "eroare");
+      arataMesaj(msg, peCamp ? "Invitația nu s-a trimis: " + ((e.erori_campuri || []).map((c) => c.mesaj).join(" ") || e.mesaj) : (e.mesaj || e.message), "eroare");
     }
   });
   const lista = corp.querySelector("#asi-lista");
@@ -391,7 +393,7 @@ function _asiRandeazaFereastra(d, c) {
         ? `<span class="asi-badge asi-badge-rosu">sistematic</span>`
         : `<span class="asi-badge asi-badge-gri">accident</span>`;
       const bn = t.nou ? `<span class="asi-badge asi-badge-galben">nou</span>` : "";
-      return `<div class="asi-cal-motiv"><span>${t.motiv}</span><span>${bt} ${bn} <b>${t.nr}\u00d7</b></span></div>`;
+      return `<div class="asi-cal-motiv"><span>${esc(t.motiv)}</span><span>${bt} ${bn} <b>${t.nr}\u00d7</b></span></div>`;
     }).join("") : `<div class="stare-goala">Nicio respingere înregistrată.</div>`;
     tipare = `<div class="asi-sectiune-titlu">Tipare sistematice și greșeli noi</div>${rows}`;
   }
@@ -455,7 +457,7 @@ async function deschideEchipaErori(nav) {
           ? `<span class="asi-badge asi-badge-rosu">sistematic</span>`
           : `<span class="asi-badge asi-badge-gri">accident</span>`;
         const bn = t.nou ? `<span class="asi-badge asi-badge-galben">nou</span>` : "";
-        return `<div class="asi-cal-motiv"><span>${t.motiv}</span><span>${bt} ${bn} <b>${t.nr}×</b></span></div>`;
+        return `<div class="asi-cal-motiv"><span>${esc(t.motiv)}</span><span>${bt} ${bn} <b>${t.nr}×</b></span></div>`;
       }).join("");
       return `
         <div class="val-card" style="display:block;">

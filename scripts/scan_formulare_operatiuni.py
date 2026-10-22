@@ -57,14 +57,6 @@ OPTIONALE_PERMISE = {
         "cerut de server, numit, exact când e nevoie (interimarele depășesc dividendul anual); altfel nu intră în notă",
     "nota-sgr:nr_ambalaje": "pereche alternativă cu `suma` (una din două); serverul refuză numit dacă lipsesc amândouă",
     "nota-sgr:suma": "idem (la virare e obligatorie — EXCEPTII)",
-    "achizitie-neinregistrat:numar":
-        "numărul borderoului; când lipsește se numerotează `BA-<n>` (contorul documentelor interne, 401) — nu schimbă nota, baza sau "
-        "impozitul",
-    # [402] articolul, cantitatea și UM-ul se cer NUMAI pe un cont de stoc (serverul refuză numit lipsa lor acolo); pe un cont de
-    # cheltuială borderoul n-are intrare în gestiune, deci golul lor nu e o valoare pusă în locul omului
-    "achizitie-neinregistrat:articol": "cerut de server, numit, numai pe un cont de stoc (OMFP 2634/2015 anexa 1 pct.6)",
-    "achizitie-neinregistrat:cantitate": "idem",
-    "achizitie-neinregistrat:um": "unitatea de măsură a articolului de stoc; goală = „buc”, ca la orice intrare de stoc (stocuri_cv_api.intrare)",
     "achizitie-ic:furnizor_nume": "numele furnizorului; identitatea fiscală e codul de TVA (obligatoriu)",
 }
 
@@ -255,10 +247,9 @@ def bife_nerespectate(js, main, uc):
 
 
 #: [lotul 07.10 B] câmpuri-cont din RÂNDURILE repetabile (`subcampuri`) care NU se precompletează — cu motivul
-CONTURI_NEPRECOMPLETATE = {
-    "reevaluare-valuta:cont": "contul fiecărui sold în valută diferă de la rând la rând (4111, 401, 5124 …): nu există un caz uzual — "
-                              "sugestia rămâne exemplu (placeholder), câmpul e cerut pe fiecare rând",
-}
+#: [lotul 11, 429] „reevaluare-valuta:cont” a ieșit odată cu formularul manual din Operațiuni (reevaluarea are un singur formular, în
+#: Închidere lună, cu propunerea) — niciun câmp-cont din rânduri nu mai rămâne neprecompletat
+CONTURI_NEPRECOMPLETATE = {}
 
 
 def motor_conturi_precompletate(js):

@@ -488,6 +488,14 @@ REGISTRU = (
     D("core/repo_stocuri.py", REPOSITORY, None,
       "P7 · V1: articolele și mișcările de stoc — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
+    D("core/repo_borderou.py", REPOSITORY, None,
+      "lotul 11 (regula straturilor): borderoul de achiziție și stornarea lui — SQL-ul din `uc_tenants.achizitie_neinregistrat` / "
+      "`_borderou_identic` / `borderouri_lista` / `borderou_storneaza`, mutat fără schimbare de comportament; zero `get_conn`, zero commit",
+      "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
+    D("core/repo_cabinet.py", REPOSITORY, None,
+      "lotul 11 (regula straturilor): întocmitorul bilanțului din `public.accounting_firms` — SQL-ul din `uc_cabinet.citeste_intocmitor_conn` / "
+      "`salveaza_intocmitor_conn`, mutat fără schimbare de comportament; zero `get_conn`, zero commit",
+      "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_tenants.py", REPOSITORY, None,
       "P7 · V1: firmele din portofoliu și cabinetele lor — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
@@ -495,7 +503,7 @@ REGISTRU = (
       "P7 · V1: conturile și accesul clienților — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("main.py", HTTP, None,
-      "501 rute montate in modul si 0 instructiuni SQL (437 + doua din deciziile 08.10.2026: codul din catalog al mijlocului fix, W2, si declaratia „depusa in afara iConta”, U2; + trei din retestul 08.10: validarea mai multor note deodata, pct.3, „marcheaza toate ca depuse de contabilul anterior”, pct.9, si anularea marcarii, pct.10; + trei din „Retest 2”, 09.10.2026: stornarea operatiunii de casa, pct.4, ciornele proprii, pct.12, si stergerea unui cont din plan, pct.13; + doua din comanda 11.10.2026, deficienta 221: coloana „An precedent” a bilantului, citita si completata manual) — dupa V1+V2 niciuna nu mai statea in corpul unei rute, iar valul D4 le-a scos si pe ultimele 38 din helperii de modul, in `core/repo_main.py`; + una din varianta (a), 13.10.2026: propunerea notei de închidere la 31.12; + trei din lotul 2, 15.10.2026: invitațiile cabinetelor (POST/GET /admin/invitatii, GET /public/invitatie/{token}); + patru din lotul 4, 15.10.2026: starea înregistrării libere, confirmarea ei (GET /public/inregistrare, POST /public/confirma-inregistrare) și comutatorul (GET/PUT /admin/setari/inregistrare); + două din lotul 5, 15.10.2026: pagina de dezabonare din emailuri (GET/POST /public/dezabonare, 268); + patru din lotul 5, 15.10.2026: registrul aplicațiilor din care se migrează (GET /migrare/aplicatii, 270) și fișierele private ale sesizărilor / cererilor de import (POST /raportari/mesaj/{mid}/fisier, GET și DELETE /raportari/fisiere/{fid}, 270d / C36); + nouă din lotul 6, 16.10.2026: cererile de înregistrare neconfirmate și retrimiterea confirmării (GET /admin/inregistrari-neconfirmate, POST …/{cerere_id}/retrimite, 282), corectura CUI-ului (POST /tenants/{tenant_id}/cui/corectura, 272), amortizarea lunilor rămase în urmă (POST …/amortizare/restanta, 281), previzualizarea și legarea dispozițiilor de casă (POST …/casa/previzualizare, POST …/casa/operatiuni/{op_id}/leaga, 278), starea SPV a firmei, „Verifică acum” și importul XML UBL (GET …/spv/stare, POST …/spv/verifica-acum, POST …/facturi-primite/import-xml, 273); + opt din lotul 7, 17.10.2026: Setări cont → Notificări (GET/PUT /eu/notificari, PUT /eu/telefon, POST /eu/telefon/cod, POST /eu/telefon/confirma), linkul din notificări (GET /deschide/{cheie}) și webhook-ul WhatsApp (GET/POST /whatsapp/webhook); + patru din comanda 7.2 (17.10.2026): „Generează din nou” pe declarația din coadă (POST /coada/{coada_id}/regenereaza, 297) și cardurile de început (GET /eu/inceput, POST /eu/inceput/lucrez-singur, POST /eu/inceput/firme-vazute, 319 + 320); + șase din comanda 8.2 (18.10.2026): firmele unui strat în Migrare cabinet (GET /migrare/firme, 371), salvarea importului RIP după previzualizare (POST /tenants/{tenant_id}/rip-import, 372), istoricul auditului de preluare (GET /control-fiscal/{tenant_id}/audit-preluare/istoric, 370) și ajustările fiscale ale rezultatului (GET/POST /tenants/{tenant_id}/ajustari-fiscale, DELETE …/{ajustare_id}, 378); + douăsprezece din comanda 10.1 (20.10.2026): sistemul TVA la încasare pe firmă (POST /tenants/{tenant_id}/tva-incasare, DELETE …/tva-incasare/{perioada_id}, GET …/tva-incasare/verifica-anaf, 428) și TVA-ul neexigibil la ieșirea din sistem (GET …/tva-incasare/neexigibile, 428), asociații firmei și cesiunea părților sociale (GET/POST /tenants/{tenant_id}/asociati, POST …/asociati/cesiune, 430), reevaluarea lunară în valută propusă de aplicație (GET /tenants/{tenant_id}/reevaluare-valuta, POST …/reevaluare-valuta/nota, 429), compensările de creanțe și datorii (GET /tenants/{tenant_id}/compensari/propunere, POST …/compensari) și împărțirea dividendului pe asociați (GET /tenants/{tenant_id}/dividende-impartire, 430b); + una din comanda 10.2 (21.10.2026): previzualizarea în lei a facturii în valută, înainte de emitere (POST /tenants/{tenant_id}/facturi/previzualizare-lei, 7g)",
+      "509 rute montate in modul si 0 instructiuni SQL (437 + doua din deciziile 08.10.2026: codul din catalog al mijlocului fix, W2, si declaratia „depusa in afara iConta”, U2; + trei din retestul 08.10: validarea mai multor note deodata, pct.3, „marcheaza toate ca depuse de contabilul anterior”, pct.9, si anularea marcarii, pct.10; + trei din „Retest 2”, 09.10.2026: stornarea operatiunii de casa, pct.4, ciornele proprii, pct.12, si stergerea unui cont din plan, pct.13; + doua din comanda 11.10.2026, deficienta 221: coloana „An precedent” a bilantului, citita si completata manual) — dupa V1+V2 niciuna nu mai statea in corpul unei rute, iar valul D4 le-a scos si pe ultimele 38 din helperii de modul, in `core/repo_main.py`; + una din varianta (a), 13.10.2026: propunerea notei de închidere la 31.12; + trei din lotul 2, 15.10.2026: invitațiile cabinetelor (POST/GET /admin/invitatii, GET /public/invitatie/{token}); + patru din lotul 4, 15.10.2026: starea înregistrării libere, confirmarea ei (GET /public/inregistrare, POST /public/confirma-inregistrare) și comutatorul (GET/PUT /admin/setari/inregistrare); + două din lotul 5, 15.10.2026: pagina de dezabonare din emailuri (GET/POST /public/dezabonare, 268); + patru din lotul 5, 15.10.2026: registrul aplicațiilor din care se migrează (GET /migrare/aplicatii, 270) și fișierele private ale sesizărilor / cererilor de import (POST /raportari/mesaj/{mid}/fisier, GET și DELETE /raportari/fisiere/{fid}, 270d / C36); + nouă din lotul 6, 16.10.2026: cererile de înregistrare neconfirmate și retrimiterea confirmării (GET /admin/inregistrari-neconfirmate, POST …/{cerere_id}/retrimite, 282), corectura CUI-ului (POST /tenants/{tenant_id}/cui/corectura, 272), amortizarea lunilor rămase în urmă (POST …/amortizare/restanta, 281), previzualizarea și legarea dispozițiilor de casă (POST …/casa/previzualizare, POST …/casa/operatiuni/{op_id}/leaga, 278), starea SPV a firmei, „Verifică acum” și importul XML UBL (GET …/spv/stare, POST …/spv/verifica-acum, POST …/facturi-primite/import-xml, 273); + opt din lotul 7, 17.10.2026: Setări cont → Notificări (GET/PUT /eu/notificari, PUT /eu/telefon, POST /eu/telefon/cod, POST /eu/telefon/confirma), linkul din notificări (GET /deschide/{cheie}) și webhook-ul WhatsApp (GET/POST /whatsapp/webhook); + patru din comanda 7.2 (17.10.2026): „Generează din nou” pe declarația din coadă (POST /coada/{coada_id}/regenereaza, 297) și cardurile de început (GET /eu/inceput, POST /eu/inceput/lucrez-singur, POST /eu/inceput/firme-vazute, 319 + 320); + șase din comanda 8.2 (18.10.2026): firmele unui strat în Migrare cabinet (GET /migrare/firme, 371), salvarea importului RIP după previzualizare (POST /tenants/{tenant_id}/rip-import, 372), istoricul auditului de preluare (GET /control-fiscal/{tenant_id}/audit-preluare/istoric, 370) și ajustările fiscale ale rezultatului (GET/POST /tenants/{tenant_id}/ajustari-fiscale, DELETE …/{ajustare_id}, 378); + douăsprezece din comanda 10.1 (20.10.2026): sistemul TVA la încasare pe firmă (POST /tenants/{tenant_id}/tva-incasare, DELETE …/tva-incasare/{perioada_id}, GET …/tva-incasare/verifica-anaf, 428) și TVA-ul neexigibil la ieșirea din sistem (GET …/tva-incasare/neexigibile, 428), asociații firmei și cesiunea părților sociale (GET/POST /tenants/{tenant_id}/asociati, POST …/asociati/cesiune, 430), reevaluarea lunară în valută propusă de aplicație (GET /tenants/{tenant_id}/reevaluare-valuta, POST …/reevaluare-valuta/nota, 429), compensările de creanțe și datorii (GET /tenants/{tenant_id}/compensari/propunere, POST …/compensari) și împărțirea dividendului pe asociați (GET /tenants/{tenant_id}/dividende-impartire, 430b); + una din comanda 10.2 (21.10.2026): previzualizarea în lei a facturii în valută, înainte de emitere (POST /tenants/{tenant_id}/facturi/previzualizare-lei, 7g); + nouă din lotul 11 (21–22.10.2026): fișa furnizorului (GET/POST /tenants/{tenant_id}/furnizori, PUT …/furnizori/{furnizor_id}, 444), întocmitorul bilanțului pe cabinet (GET/POST /cabinet/intocmitor), ciorna depășită (GET …/jurnal/{nota_id}/depasita, POST …/jurnal/{nota_id}/reface, 451), borderourile lunii și stornarea borderoului (GET …/borderouri, POST …/borderouri/{factura_id}/storneaza, decizia 10.3); − una: formularul manual al reevaluării (POST …/reevaluare-valuta, 429 — un singur formular, cu propunerea)",
       "PLAN_HARDENING.md:839 — stratul HTTP e acolo unde sunt rutele"),
     D("core/repo_beneficii_api.py", REPOSITORY, None,
       "P7 · valul D4: SQL-ul lui `core/beneficii_api.py` — 6 instructiuni SQL, zero `get_conn`, zero commit",
@@ -507,7 +515,7 @@ REGISTRU = (
       "P7 · valul D4: SQL-ul lui `core/control_fiscal_api.py` — 12 instructiuni SQL (opt mutate in valul D4, patru adaugate de decizia U2 din 08.10.2026: luna preluarii si „depusa in afara iConta”; citirea datei soldurilor de preluare a trecut la `repo_firma_profil.fapte_preluare`, §6 pct.4; + `delete_marcari`, retest 08.10 pct.10 — anularea scoate numai marcarile, niciodata o depunere prin iConta.eu), zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_control_incrucisat.py", REPOSITORY, None,
-      "P7 · valul D4: SQL-ul lui `core/control_incrucisat.py` — 45 instructiuni SQL (45 + notele nevalidate care explică diferența TVA, 284, lotul 6, minus suma 457 a D205, rămasă fără apelant în lotul 10), zero `get_conn`, zero commit",
+      "P7 · valul D4: SQL-ul lui `core/control_incrucisat.py` — 46 instructiuni SQL (45 + notele nevalidate care explică diferența TVA, 284, lotul 6, minus suma 457 a D205, rămasă fără apelant în lotul 10; +1 lotul 11: ajustările taxei pe 4427, `select_ajustari_taxa_4427`), zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_d100.py", REPOSITORY, None,
       "P7 · valul D4: SQL-ul lui `core/d100.py` — 5 instructiuni SQL (3 + veniturile pe conturi pentru Rezumatul D100, 295, lotul 6; + D100-urile depuse ale anului, 377), zero `get_conn`, zero commit",
@@ -535,7 +543,7 @@ REGISTRU = (
       "P7 · valul D4: SQL-ul lui `core/d112_reconciliere.py` — 7 instructiuni SQL (+1: elementele variabile ale lunii, S1 07.10.2026), zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_d205.py", REPOSITORY, None,
-      "P7 · valul D4: SQL-ul lui `core/d205.py` — 6 instructiuni SQL (+1: soldul 457 din balanța de deschidere, lotul 10), zero `get_conn`, zero commit",
+      "P7 · valul D4: SQL-ul lui `core/d205.py` — 8 instructiuni SQL (+1: soldul 457 din balanța de deschidere, lotul 10; +2 lotul 11: prima depunere prin iConta și D205 deja completată, `select_prima_depunere_iconta` / `select_d205_completata`), zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_d205_reconciliere.py", REPOSITORY, None,
       "P7 · valul D4: SQL-ul lui `core/d205_reconciliere.py` — 5 instructiuni SQL (+1: soldul 457 din balanța de deschidere, lotul 10), zero `get_conn`, zero commit",
@@ -553,7 +561,7 @@ REGISTRU = (
       "P7 · valul D4: SQL-ul lui `core/d223.py` — 1 instructiuni SQL, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_d300.py", REPOSITORY, None,
-      "P7 · valul D4: SQL-ul lui `core/d300.py` — 7 instructiuni SQL, zero `get_conn`, zero commit",
+      "P7 · valul D4: SQL-ul lui `core/d300.py` — 8 instructiuni SQL (+1 lotul 11: notele cu TVA fără factură, `select_note_tva_fara_factura`), zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_d300_manual_api.py", REPOSITORY, None,
       "P7 · valul D4: SQL-ul lui `core/d300_manual_api.py` — 5 instructiuni SQL, zero `get_conn`, zero commit",
@@ -950,6 +958,26 @@ REGISTRU = (
     D("core/note_derivate.py", REPOSITORY, None,
       "«nota derivată se corectează numai din documentul-sursă» (lotul 07.10 B, C9) — citește legăturile notei cu documentul ei; "
       "0 get_conn / 0 commit proprii",
+      "citit la sursa (docstring + ce face modulul)"),
+    D("core/ciorne_depasite.py", REPOSITORY, None,
+      "«ciornele generate înainte de o reparație nu mai sunt validabile cu regula veche» (lotul 11, 451) — regenerarea pe uscat a "
+      "ciornei derivate din sursa ei (citiri + punct de salvare anulat); 0 get_conn / 0 commit proprii",
+      "citit la sursa (docstring + ce face modulul)"),
+    D("core/rectificativa.py", REPOSITORY, None,
+      "«declarația deja depusă pe perioadă: inițială sau rectificativă» (lotul 11, C77) — citește `public.declaratii_depuse` "
+      "pe cursorul apelantului și pune `d_rec` în rezultatul generatorului; 0 get_conn / 0 commit proprii",
+      "citit la sursa (docstring + ce face modulul)"),
+    D("core/tva_calcul.py", FISCAL_ENGINE, None,
+      "«regula unică de calcul și rotunjire a TVA-ului unui document» (lotul 11, decizia 10.3; EN 16931 BR-CO-17) — "
+      "funcții pure pe linii și cote; zero SQL, zero db",
+      "PLAN_HARDENING.md:841 — motorul fiscal primeste date si intoarce rezultat"),
+    D("core/cui_forma.py", FISCAL_ENGINE, None,
+      "«CUI-ul se păstrează fără RO; RO apare la afișare după starea de plătitor» (lotul 11, decizia 10.3 pct.4; CF art.318 "
+      "alin.(1)) — funcții pure + expresia SQL ca șir; zero execuții, zero db",
+      "PLAN_HARDENING.md:841 — motorul fiscal primeste date si intoarce rezultat"),
+    D("core/amortizare_lunii.py", FISCAL_ENGINE, None,
+      "«rândurile notei de amortizare a lunii, din registrul de acum» (lotul 11, 451) — calculul pe metoda reală "
+      "(`d406_active.amortizare_luna`) peste citirea depozitului `repo_mijloace_fixe` pe conexiunea apelantului; zero SQL propriu, zero db",
       "citit la sursa (docstring + ce face modulul)"),
     D("core/eticheta_nota.py", REPOSITORY, None,
       "«numărul intern nu se afișează nicăieri» (deficiența 258) — numele notei / operațiunii / facturii în textele văzute de om, "

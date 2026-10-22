@@ -1,0 +1,26 @@
+[
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "        <div class=\"grila-campuri\" id=\"je-antet\">",
+  "inlocuire": "        <div id=\"je-antet\">",
+  "test": "frontend_test/e2e/e2e_lot11_w4.py::test_def_394_nota_noua_incape_la_1280x720"
+ },
+ {
+  "fisier": "static/stil.css",
+  "ancora": ".mig-apl-rand > .dec-xml[open] > .mig-intro { position: absolute;",
+  "inlocuire": ".mig-apl-rand > .dec-xml[open] > .mig-intro { position: static;",
+  "test": "frontend_test/e2e/e2e_lot11_w4.py::test_def_394_migrare_cabinet_incape_la_1280x720_cu_saga_si_cum_se_face"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "      <div class=\"bara-fixa\"><div class=\"fd-totaluri\">\n        <div class=\"fd-tot-rand\"><span>Note validate",
+  "inlocuire": "      <div><div class=\"fd-totaluri\">\n        <div class=\"fd-tot-rand\"><span>Note validate",
+  "test": "frontend_test/e2e/e2e_lot11_w4.py::test_def_421_totalurile_registrului_jurnal_raman_in_vedere"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "      ${dinConturi}${lista}\n      <div style=\"display:flex;gap:10px;flex-wrap:wrap;max-width:960px;margin-top:10px\">\n        <label class=\"camp\"><span class=\"camp-eticheta\">R\\u00e2ndul D101</span><select id=\"aj-rand\" class=\"camp-input\">${ALEGE}${optiuni}</select></label>\n        <label class=\"camp\" id=\"aj-trim-camp\"><span class=\"camp-eticheta\">Trimestrul</span><select id=\"aj-trim\" class=\"camp-input\">${ALEGE}\n          ${[1, 2, 3, 4].map((q) => `<option value=\"${q}\">T${q}/${esc(String(an))}</option>`).join(\"\")}</select></label>\n        <label class=\"camp\"><span class=\"camp-eticheta\">Suma (lei)</span><input type=\"number\" step=\"0.01\" min=\"0.01\" id=\"aj-suma\" class=\"camp-input\"></label>\n        <label class=\"camp\"><span class=\"camp-eticheta\">Descriere</span><input type=\"text\" id=\"aj-descriere\" class=\"camp-input\"></label>\n        <label class=\"camp\"><span class=\"camp-eticheta\">Document</span><input type=\"text\" id=\"aj-document\" class=\"camp-input\"></label>\n      </div>\n      <div class=\"bara-fixa\" style=\"margin-top:12px\"><button class=\"buton-primar\" id=\"aj-adauga\" data-actiune=\"POST /tenants/{tenant_id}/ajustari-fiscale\">Adaug\\u0103 ajustarea</button><div id=\"aj-mesaj\"></div></div>`;",
+  "inlocuire": "      ${dinConturi}${lista}\n      <div id=\"aj-mesaj\"></div>\n      <div style=\"display:flex;gap:10px;flex-wrap:wrap;max-width:960px;margin-top:10px\">\n        <label class=\"camp\"><span class=\"camp-eticheta\">R\\u00e2ndul D101</span><select id=\"aj-rand\" class=\"camp-input\">${ALEGE}${optiuni}</select></label>\n        <label class=\"camp\" id=\"aj-trim-camp\"><span class=\"camp-eticheta\">Trimestrul</span><select id=\"aj-trim\" class=\"camp-input\">${ALEGE}\n          ${[1, 2, 3, 4].map((q) => `<option value=\"${q}\">T${q}/${esc(String(an))}</option>`).join(\"\")}</select></label>\n        <label class=\"camp\"><span class=\"camp-eticheta\">Suma (lei)</span><input type=\"number\" step=\"0.01\" min=\"0.01\" id=\"aj-suma\" class=\"camp-input\"></label>\n        <label class=\"camp\"><span class=\"camp-eticheta\">Descriere</span><input type=\"text\" id=\"aj-descriere\" class=\"camp-input\"></label>\n        <label class=\"camp\"><span class=\"camp-eticheta\">Document</span><input type=\"text\" id=\"aj-document\" class=\"camp-input\"></label>\n      </div>\n      <div class=\"bara-fixa\" style=\"margin-top:12px\"><button class=\"buton-primar\" id=\"aj-adauga\" data-actiune=\"POST /tenants/{tenant_id}/ajustari-fiscale\">Adaug\\u0103 ajustarea</button></div>`;",
+  "test": "frontend_test/e2e/e2e_lot11_w4.py::test_def_410_mesajul_ajustarii_sta_langa_buton"
+ }
+]

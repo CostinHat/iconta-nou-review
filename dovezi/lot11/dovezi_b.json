@@ -1,0 +1,990 @@
+{
+ "copia": {
+  "clonat_la": "2026-10-22 19:35:01",
+  "productie_la": "2026-10-22 19:34:54.106928+03:00",
+  "migrari": [
+   {
+    "fisier": "core/migrare_borderou_storno_unic.py",
+    "amprenta": "153c19bdd9bc",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_borderou_storno_unic: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_borderou_storno_unic.py rulată (amprenta 153c19bdd9bc)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_borderou_tip_vechi.py",
+    "amprenta": "b77593a67311",
+    "cod": 0,
+    "durata_s": 0.2,
+    "iesire": [
+     "tenant_9049: 0 borderouri convertite, 0 numere schimbate, 1 mișcare aliniată, 0 candidați neconvertiți",
+     "  mișcare aliniată: «Borderou de achiziție BA-1 din 20.10.2026» -> «Borderou de achiziție BA-2 din 20.10.2026»",
+     "migrare_borderou_tip_vechi: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_borderou_tip_vechi.py rulată (amprenta b77593a67311)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_cui_fara_ro.py",
+    "amprenta": "75824de777df",
+    "cod": 0,
+    "durata_s": 0.3,
+    "iesire": [
+     "migrare_cui_fara_ro: public ok; firme 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_cui_fara_ro.py rulată (amprenta 75824de777df)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_curs_precizie.py",
+    "amprenta": "7ea3ad6f3827",
+    "cod": 0,
+    "durata_s": 0.8,
+    "iesire": [
+     "migrare_curs_precizie: public deja lărgit; cache BNR refăcut din arhivă: 0 valori {} (anii [2026])",
+     "migrare_curs_precizie: 27 firme ok (28 coloane lărgite), 0 esec",
+     "registrul migrărilor: core/migrare_curs_precizie.py rulată (amprenta 7ea3ad6f3827)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_factura_tva_cote.py",
+    "amprenta": "e1c80b11ff3d",
+    "cod": 0,
+    "durata_s": 0.2,
+    "iesire": [
+     "migrare_factura_tva_cote: 27 ok, 0 esec, 2 facturi completate din XML",
+     "registrul migrărilor: core/migrare_factura_tva_cote.py rulată (amprenta e1c80b11ff3d)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_intocmitor_bilant.py",
+    "amprenta": "0d5079348746",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_intocmitor_bilant: cabinetul (public) ok; firme 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_intocmitor_bilant.py rulată (amprenta 0d5079348746)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_produse_categorie_tva.py",
+    "amprenta": "0fea1b1b2287",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_produse_categorie_tva: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_produse_categorie_tva.py rulată (amprenta 0fea1b1b2287)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_reevaluare_partener.py",
+    "amprenta": "ffe042a5a876",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_reevaluare_partener: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_reevaluare_partener.py rulată (amprenta ffe042a5a876)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_serie_nr_descrieri.py",
+    "amprenta": "811da036db08",
+    "cod": 0,
+    "durata_s": 0.2,
+    "iesire": [
+     "tenant_9050: 0 ciorne rescrise, 0 mișcări de stoc rescrise, 1 notă validată arătată derivat, 0 texte lăsate",
+     "  validată 78 (descriere), arătată derivat: «Contare factura F2T2» -> «Contare factura F2T nr. 2»",
+     "tenant_9055: 1 ciornă rescrisă, 0 mișcări de stoc rescrise, 0 note validate arătate derivat, 0 texte lăsate",
+     "  ciornă 2 (descriere): «Contare factura F61» -> «Contare factura F6 nr. 1»",
+     "migrare_serie_nr_descrieri: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_serie_nr_descrieri.py rulată (amprenta 811da036db08)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_valoare_neta_linie.py",
+    "amprenta": "131375515921",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_valoare_neta_linie: 27 ok, 0 esec, 3 linii cu BT-131 completate din XML, 0 linii de document adăugate",
+     "registrul migrărilor: core/migrare_valoare_neta_linie.py rulată (amprenta 131375515921)"
+    ]
+   }
+  ]
+ },
+ "etape_s": [
+  [
+   "aplicația din arbore pornită (port 49967)",
+   10.7
+  ],
+  [
+   "dovezi parcurse (18)",
+   89.4
+  ]
+ ],
+ "dovezi": [
+  {
+   "nr": "440",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Date firmă (profilul scris înainte de reparație): denumirea din portofoliu golită + seria chitanțelor «CH-440!» -> Salvează: caseta «NU s-a salvat.» are AMBELE, fiecare cu textul ei, și fiecare câmp e marcat (aria-invalid). Înainte: o eroare pe rând, cu «motivul e mai sus». Refuzat: nimic nu se scrie",
+   "captura": "dovezi/lot11/440_f1_date_firma_toate_deodata.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Denumirea firmei — Completează denumirea din portofoliu.",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "NU s-a salvat. Denumirea firmei — Completează denumirea din portofoliu. Seria chitanțelor — Seria chitanțelor: litere și cifre, cel mult 10 (ex. CH, CA)."
+    },
+    {
+     "cerut": {
+      "contine": "Seria chitanțelor — Seria chitanțelor:",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "NU s-a salvat. Denumirea firmei — Completează denumirea din portofoliu. Seria chitanțelor — Seria chitanțelor: litere și cifre, cel mult 10 (ex. CH, CA)."
+    },
+    {
+     "cerut": {
+      "exista": "#df-nume-portofoliu[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": " | dezactivat=False | title= | lângă: Denumirea firmei* Una singură, și se scrie într-un singur loc: aceeași în listă, în bara de sus și pe declarații (D100, D101, D205, D301, D390, D394, D406, bilanț). Denumirea de la ANAF nu e încă adusă pentru firma asta, deci nu avem cu ce o compara. Scrie denumirea din actele firmei. Completează de"
+    },
+    {
+     "cerut": {
+      "exista": "#df-serie_chitanta[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": "CH-440! | dezactivat=False | title= | lângă: Seria chitanțelor Seria chitanțelor: litere și cifre, cel mult 10 (ex. CH, CA)."
+    },
+    {
+     "cerut": {
+      "nu_contine": "motivul e"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 ✕ Date firmă Datele pe care ANAF le cere în declarații. Câmpurile cu * sunt obligatorii pentru declarații — ce lipsește nu oprește salvarea, ci declarațiile care îl cer (lista de mai jos). Profil incomplet — 3 câmpuri obligatorii lipsesc Mare contribuabil — blochează Bilanț Forma de proprietate — blochează Bilanț Entitate de interes pu"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.1
+  },
+  {
+   "nr": "440",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Date firmă: seria chitanțelor «CH-440!» + data înființării 01.01.2999 (amândouă refuzuri ale SERVERULUI, firma_profil_api.salveaza_date) -> Salvează: lângă fiecare câmp textul lui și amândouă în casetă. Înainte serverul se oprea la prima (numai seria). Refuzat: nimic nu se scrie",
+   "captura": "dovezi/lot11/440_f1_date_firma_server_deodata.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Seria chitanțelor: litere și cifre",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "NU s-a salvat. Seria chitanțelor — Seria chitanțelor: litere și cifre, cel mult 10 (ex. CH, CA). Data înființării — Data înființării nu poate fi în viitor."
+    },
+    {
+     "cerut": {
+      "contine": "Data înființării nu poate fi în viitor.",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "NU s-a salvat. Seria chitanțelor — Seria chitanțelor: litere și cifre, cel mult 10 (ex. CH, CA). Data înființării — Data înființării nu poate fi în viitor."
+    },
+    {
+     "cerut": {
+      "exista": "#df-serie_chitanta[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": "CH-440! | dezactivat=False | title= | lângă: Seria chitanțelor Seria chitanțelor: litere și cifre, cel mult 10 (ex. CH, CA)."
+    },
+    {
+     "cerut": {
+      "exista": "#df-data_infiintare[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": "2999-01-01 | dezactivat=False | title= | lângă: ×"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.5
+  },
+  {
+   "nr": "440",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Casă -> «+ Dispoziție nouă»: data golită, tipul neales, suma goală -> «Adaugă»: toate trei deodată în casetă, fiecare cu textul ei, și marcate lângă câmp. Înainte: data și suma, iar tipul abia la a doua apăsare. Refuzat: nimic nu se scrie",
+   "captura": "dovezi/lot11/440_f1_casa_trei_deodata.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "— Completează data dispoziției.",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "NU s-a salvat. Data — Completează data dispoziției. Suma — Suma trebuie să fie un număr mai mare ca 0. Tip — Alege o valoare — aplicația nu alege în locul tău."
+    },
+    {
+     "cerut": {
+      "contine": "— Suma trebuie să fie un număr mai mare ca 0.",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "NU s-a salvat. Data — Completează data dispoziției. Suma — Suma trebuie să fie un număr mai mare ca 0. Tip — Alege o valoare — aplicația nu alege în locul tău."
+    },
+    {
+     "cerut": {
+      "contine": "— Alege o valoare — aplicația nu alege în locul tău.",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "NU s-a salvat. Data — Completează data dispoziției. Suma — Suma trebuie să fie un număr mai mare ca 0. Tip — Alege o valoare — aplicația nu alege în locul tău."
+    },
+    {
+     "cerut": {
+      "exista": "#c-data[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": " | dezactivat=False | title= | lângă: "
+    },
+    {
+     "cerut": {
+      "exista": "#c-cat[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": "— alege —\nÎncasare client (5311=4111)\nPlată furnizor (401=5311)\nRidicare de la bancă (5311=581)\nDepunere la bancă (581=5 | dezactivat=False | title= | lângă: Tip — alege — Încasare client (5311=4111) Plată furnizor (401=5311) Ridicare de la bancă (5311=581) Depunere la bancă (581=5311) Avans spre decontare (542=5311) Alege o valoare — aplicația nu alege în locul tău."
+    },
+    {
+     "cerut": {
+      "exista": "#c-suma[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": " | dezactivat=False | title= | lângă: Suma Suma trebuie să fie un număr mai mare ca 0."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.7
+  },
+  {
+   "nr": "440",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Registru jurnal -> «+ Notă nouă»: linia 1 9999 = (credit gol) 100, linia 2 401 = 5121 -5 fără partener -> «Salvează»: toate cele patru probleme deodată (cont în afara planului, cont creditor lipsă, suma -5, partenerul la 401), fiecare cu textul ei, suma liniei 2 marcată lângă câmp. Înainte serverul refuza la PRIMA problemă (patru salvări pentru patru erori). Refuzat: nota nu se scrie",
+   "captura": "dovezi/lot11/440_f1_nota_noua_patru_deodata.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "linia 1: Contul 9999"
+     },
+     "ok": true,
+     "vazut": "enerează după ce luna se încheie. Notă nouă · 01.10.2026 Data notei × Descriere Document justificativ (fel, număr, dată) Linii: cont debit = cont credit · sumă linia 1: Contul 9999 nu există în planul firmei (câmpul „contul debitor (linia 1)”). Îl adaugi din Plan de conturi (Import date › Plan de conturi), apoi reia operațiunea. Iar o not"
+    },
+    {
+     "cerut": {
+      "contine": "linia 1 n-are contul creditor"
+     },
+     "ok": true,
+     "vazut": " din Plan de conturi (Import date › Plan de conturi), apoi reia operațiunea. Iar o nota cu un cont inexistent nu e evidenta, e un rand care arata ca evidenta = linia 1 n-are contul creditor. Partida dubla cere ambele conturi pe fiecare inregistrare — centru — − = linia 2 are suma -5: o inregistrare consemneaza o operatiune efectuata, deci suma ei "
+    },
+    {
+     "cerut": {
+      "contine": "linia 2 are suma -5"
+     },
+     "ok": true,
+     "vazut": "stent nu e evidenta, e un rand care arata ca evidenta = linia 1 n-are contul creditor. Partida dubla cere ambele conturi pe fiecare inregistrare — centru — − = linia 2 are suma -5: o inregistrare consemneaza o operatiune efectuata, deci suma ei e strict pozitiva — centru — linia 2 e pe contul 401 (furnizori): scrie partenerul — numele și"
+    },
+    {
+     "cerut": {
+      "contine": "linia 2 e pe contul 401"
+     },
+     "ok": true,
+     "vazut": "onturi pe fiecare inregistrare — centru — − = linia 2 are suma -5: o inregistrare consemneaza o operatiune efectuata, deci suma ei e strict pozitiva — centru — linia 2 e pe contul 401 (furnizori): scrie partenerul — numele și, dacă are, codul fiscal. Fără el, datoria / creanța nu se poate urmări pe partener, iar D406 n-ar ști cui i-ai plătit"
+    },
+    {
+     "cerut": {
+      "exista": "#je-sum-1[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": "-5 | dezactivat=False | title= | lângă: = linia 2 are suma -5: o inregistrare consemneaza o operatiune efectuata, deci suma ei e strict pozitiva — centru — linia 2 e pe contul 401 (furnizori): scrie partenerul — numele și, dacă are, codul fiscal. Fără el, datoria / creanța nu se poate urmări pe partener, iar D406 n-ar ști cui i-ai plătit "
+    },
+    {
+     "cerut": {
+      "nu_contine": "motivul e mai sus"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 ✕ Registru jurnal ? Luna 10/2026 · 70 de note · 7 la validare în cabinet · 35 de validat ← luna luna → Generează amortizarea + Notă nouă Blochează luna? Amortizarea lunii se generează după ce luna se încheie. Notă nouă · 01.10.2026 Data notei × Descriere Document justificativ (fel, număr, dată) Linii: cont debit = cont credit · sumă li"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 5.0
+  },
+  {
+   "nr": "440",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Stocuri -> «+ NIR nou»: număr, articol nou cu denumirea, FĂRĂ cantitate și preț, transport 5 lei fără cota lui și fără «factura a sosit?» -> «Salvează»: alegerile ȘI cantitatea și prețul articolului deodată, fiecare cu textul ei. Înainte: întâi alegerile; cantitatea și prețul abia la apăsarea următoare. Refuzat: NIR-ul nu se scrie",
+   "captura": "dovezi/lot11/440_f1_nir_toate_deodata.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Factura furnizorului a sosit?",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "NU s-a salvat. Factura furnizorului a sosit? — Alege o valoare — aplicația nu alege în locul tău. Cota TVA a transportului — Alege o valoare — aplicația nu alege în locul tău. Cantitate — Articolul 1: scr"
+    },
+    {
+     "cerut": {
+      "contine": "Articolul 1: scrie cantitatea, un număr mai mare decât zero.",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "zorului a sosit? — Alege o valoare — aplicația nu alege în locul tău. Cota TVA a transportului — Alege o valoare — aplicația nu alege în locul tău. Cantitate — Articolul 1: scrie cantitatea, un număr mai mare decât zero. Preț achiziție — Articolul 1: scrie prețul de achiziție, un număr mai mare decât zero."
+    },
+    {
+     "cerut": {
+      "contine": "Articolul 1: scrie prețul de achiziție, un număr mai mare decât zero.",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": " a transportului — Alege o valoare — aplicația nu alege în locul tău. Cantitate — Articolul 1: scrie cantitatea, un număr mai mare decât zero. Preț achiziție — Articolul 1: scrie prețul de achiziție, un număr mai mare decât zero."
+    },
+    {
+     "cerut": {
+      "exista": "#nir-l0-cantitate[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": " | dezactivat=False | title= | lângă: — alege articolul — Carte tehnica grau grau Marfa A Marfa B Marfa C + articol nou… Articolul 1: scrie cantitatea, un număr mai mare decât zero. Articolul 1: scrie prețul de achiziție, un număr mai mare decât zero. alege 21% 11% ×"
+    },
+    {
+     "cerut": {
+      "exista": "#sn-transport-cota[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": "— alege —\nTVA transport 21%\nTVA transport 11%\nTVA transport 0% | dezactivat=False | title= | lângă: — alege — TVA transport 21% TVA transport 11% TVA transport 0% Alege o valoare — aplicația nu alege în locul tău."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.5
+  },
+  {
+   "nr": "440",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Plan de conturi -> «Adaugă» fără simbol și fără denumire: amândouă câmpurile marcate, fiecare cu textul lui, plus caseta «NU s-a salvat.». Înainte: nimic vizibil (TypeError în firme.js, eroareCamp fără rădăcină). Refuzat: nimic nu se scrie",
+   "captura": "dovezi/lot11/440_f1_plan_conturi_doua_deodata.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Completează simbolul contului (ex. 4111.01).",
+      "zona": ".msg-eroare[data-camp=\"pcf-simbol\"]"
+     },
+     "ok": true,
+     "vazut": "Completează simbolul contului (ex. 4111.01)."
+    },
+    {
+     "cerut": {
+      "contine": "Completează denumirea contului.",
+      "zona": ".msg-eroare[data-camp=\"pcf-denumire\"]"
+     },
+     "ok": true,
+     "vazut": "Completează denumirea contului."
+    },
+    {
+     "cerut": {
+      "exista": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "NU s-a salvat.\nSimbol cont — Completează simbolul contului (ex. 4111.01).\nDenumire cont — Completează denumirea contului | dezactivat=False | title= | lângă: Plan de conturi Conturile firmei: sinteticele din planul general și analiticele adăugate de tine, sub contul lor. Nu se șterg: sinteticele planului general, contul cu rulaj în note sau cu sold inițial și contul care are analitice. Adaugă analitic Analiticul se scrie după contul sintetic, cu punct: 4"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.0
+  },
+  {
+   "nr": "440",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Produse -> «+ Adaugă produs»: preț 99999999999 și UM «kilogramexx» (11 caractere) -> Salvează: lângă preț și lângă UM textul fiecăruia, amândouă în casetă. Înainte: serverul refuza la prima greșeală, iar UM-ul / prețul prea lung cădea în bază (500, „eroare internă”). Refuzat: produsul nu intră în nomenclator",
+   "captura": "dovezi/lot11/440_f1_produse_um_si_pret_deodata.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "cel mult 10 caractere",
+      "zona": ".msg-eroare[data-camp=\"pr-um\"]"
+     },
+     "ok": true,
+     "vazut": "Unitatea de măsură are cel mult 10 caractere (ex. buc, kg, ore, mp); „kilogramexx” are 11."
+    },
+    {
+     "cerut": {
+      "contine": "10 cifre",
+      "zona": ".msg-eroare[data-camp=\"pr-pret\"]"
+     },
+     "ok": true,
+     "vazut": "Prețul are cel mult 10 cifre înaintea virgulei (sub 10.000.000.000 lei)."
+    },
+    {
+     "cerut": {
+      "contine": "cel mult 10 caractere",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "NU s-a salvat. Unitate de măsură — Unitatea de măsură are cel mult 10 caractere (ex. buc, kg, ore, mp); „kilogramexx” are 11. Preț — Prețul are cel mult 10 cifre înaintea virgulei (sub 10.000.000.000 lei)."
+    },
+    {
+     "cerut": {
+      "contine": "10 cifre",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "NU s-a salvat. Unitate de măsură — Unitatea de măsură are cel mult 10 caractere (ex. buc, kg, ore, mp); „kilogramexx” are 11. Preț — Prețul are cel mult 10 cifre înaintea virgulei (sub 10.000.000.000 lei)."
+    },
+    {
+     "cerut": {
+      "nu_contine": "motivul e",
+      "zona": "#pr-form-zona"
+     },
+     "ok": true,
+     "vazut": "Denumire produs sau serviciu* Preț · unitate de măsură · cotă TVA Prețul are cel mult 10 cifre înaintea virgulei (sub 10.000.000.000 lei). Unitatea de măsură are cel mult 10 caractere (ex. buc, kg, ore, mp); „kilogramexx” are 11. cotă (auto) 21% 11% 0% — Taxare inversă (art.331) 0% — Scutit cu drept de deducere (art.294 alin.(1), 295, 296) 0% — Scutit fără drept de deducere (art.292) 0% — În afara"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.3
+  },
+  {
+   "nr": "441",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Date firmă: «Data înființării» (opțională) primește lângă ea «×» («Golește data») cât are o valoare -> «×»: câmpul se golește, iar «×» dispare (câmpul e gol). Înainte nu exista niciun «×» (în Chromium ștergerea lăsa «--.--.2020» pe ecran). Nu se salvează: profilul F1 rămâne cum era",
+   "captura": "dovezi/lot11/441_f1_data_infiintarii_golita.png",
+   "verificari": [
+    {
+     "cerut": {
+      "exista": "#df-data_infiintare + .data-goleste[aria-label='Golește data']"
+     },
+     "ok": true,
+     "vazut": "× | dezactivat=False | title=Golește data | lângă: "
+    },
+    {
+     "cerut": {
+      "exista": "#df-data_infiintare + .data-goleste[hidden]"
+     },
+     "ok": true,
+     "vazut": "× | dezactivat=False | title=Golește data | lângă: "
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.1
+  },
+  {
+   "nr": "441",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Registratură: data 10.03.2025 -> «×» lângă ea -> câmpul gol -> descrierea «Adresă dovadă 441» -> «Înregistrează»: înregistrarea intră cu data zilei (serverul pune ziua când data lipsește), deci apare în lista anului curent, nu în 2025. Înainte: fără «×»; data golită parțial pleca sau rămânea 10.03.2025. SCRIE pe copie o înregistrare de registratură: a doua rulare o adaugă încă o dată",
+   "captura": "dovezi/lot11/441_f1_registratura_data_golita.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Adresă dovadă 441"
+     },
+     "ok": true,
+     "vazut": "tratură Anul 2026 · registru unic de intrare-ieșire ← an an → Direcție * Intrare Ieșire Data × Descriere * Partener Înregistrează 1/2026 · Intrare · 22.10.2026 Adresă dovadă 441"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.6
+  },
+  {
+   "nr": "445",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Emite factură -> articolul din stoc «grau» (nr. 5, scris de borderou înainte de reparație, fără cotă în nomenclator): sub linie refuzul cu «Deschide Produse» -> Produse se deschide PESTE factură, cu săgeata «← Înapoi la …» -> X: înapoi în formularul facturii, cu articolul ales și refuzul lui. Înainte: X arunca tot drumul (pagina principală), iar un formular în care omul doar a ales se redesena de la zero. Nu se emite nimic",
+   "captura": "dovezi/lot11/445_f1_inapoi_din_x_la_factura.png",
+   "verificari": [
+    {
+     "cerut": {
+      "exista": ".fereastra:last-of-type #em-l0-articol option[value='5']:checked"
+     },
+     "ok": true,
+     "vazut": "grau · stoc 200 kg | dezactivat=False | title= | lângă: — fără articol (serviciu) — Carte tehnica · stoc 4 buc grau · stoc 200 kg grau · stoc 10 kg Marfa A · stoc 146 buc Marfa B · stoc 22 buc Marfa C · stoc 9 buc"
+    },
+    {
+     "cerut": {
+      "exista": ".fereastra:last-of-type #em-l0-cota-mesaj [data-ecran-destinatie='produse']"
+     },
+     "ok": true,
+     "vazut": "Deschide Produse | dezactivat=False | title= | lângă: Articolul „grau” n-are cota TVA în nomenclator, deci nu se propune nicio cotă. Adaug-o în Produse (o dată, pentru toate facturile), sau alege cota pe linie. Deschide Produse"
+    },
+    {
+     "cerut": {
+      "exista": ".fereastra:last-of-type #em-cui"
+     },
+     "ok": true,
+     "vazut": " | dezactivat=False | title= | lângă: Verifică"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 5.9
+  },
+  {
+   "nr": "445",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, același drum (Emite factură -> «grau» -> «Deschide Produse») -> «← Înapoi la …»: formularul facturii, cu articolul ales (nimic redesenat de la zero). Înainte: alegerea din listă nu făcea formularul «atins», deci la întoarcere factura se redesena goală. Nu se emite nimic",
+   "captura": "dovezi/lot11/445_f1_inapoi_din_sageata_la_factura.png",
+   "verificari": [
+    {
+     "cerut": {
+      "exista": ".fereastra:last-of-type #em-l0-articol option[value='5']:checked"
+     },
+     "ok": true,
+     "vazut": "grau · stoc 200 kg | dezactivat=False | title= | lângă: — fără articol (serviciu) — Carte tehnica · stoc 4 buc grau · stoc 200 kg grau · stoc 10 kg Marfa A · stoc 146 buc Marfa B · stoc 22 buc Marfa C · stoc 9 buc"
+    },
+    {
+     "cerut": {
+      "exista": ".fereastra:last-of-type #em-l0-cota-mesaj [data-ecran-destinatie='produse']"
+     },
+     "ok": true,
+     "vazut": "Deschide Produse | dezactivat=False | title= | lângă: Articolul „grau” n-are cota TVA în nomenclator, deci nu se propune nicio cotă. Adaug-o în Produse (o dată, pentru toate facturile), sau alege cota pe linie. Deschide Produse"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 5.7
+  },
+  {
+   "nr": "446",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6, la 1280×720: Import date -> Salariați -> fișierul lui 420 (POPESCU ANA, IONESCU RADU; CNP-uri verificate) salvat o dată (rândurile intră ca salariați NOI — CNP-urile nu sunt între salariații importați pe 19.10), apoi încărcat DIN NOU: avertismentul «Firma are deja … există deja după CNP» stă o singură dată, sus, galben (msg-avert); la «Salvează salariații» confirmarea e o întrebare scurtă, nu avertismentul repetat, iar «Salvează salariații» se ascunde (rămân «Actualizez fișele» / «Renunță»). Înainte: avertismentul apărea de două ori (caseta-atentie sus + în confirmare), tabelul se strângea la un rând, butonul rămânea activ lângă «Actualizez fișele». Locul tabelului se vede numai pe captură (nu e măsurat aici). SCRIE pe copie 2 salariați în F6 (prima încărcare); confirmarea a doua NU se apasă",
+   "captura": "dovezi/lot11/446_f6_confirmarea_duplicatelor_1280x720.png",
+   "verificari": [
+    {
+     "cerut": {
+      "exista": "#mig-inlocuire.msg-avert"
+     },
+     "ok": true,
+     "vazut": "Firma are deja 5 salariați; din cei 2 din fișier, 2 există deja după CNP: IONESCU RADU, POPESCU ANA. Salvarea le actuali | dezactivat=False | title= | lângă: F6 Migrare Test SRL · salariați încărcați 2 salariați 2 rânduri intră cu observație Firma are deja 5 salariați; din cei 2 din fișier, 2 există deja după CNP: IONESCU RADU, POPESCU ANA. Salvarea le actualizează fișele cu datele din fișier — numele, data angajării, codul COR, casa de sănătate, norma, "
+    },
+    {
+     "cerut": {
+      "contine": "există deja după CNP",
+      "zona": "#mig-inlocuire"
+     },
+     "ok": true,
+     "vazut": "Firma are deja 5 salariați; din cei 2 din fișier, 2 există deja după CNP: IONESCU RADU, POPESCU ANA. Salvarea le actualizează fișele cu datele din fișier — numele, data angajării, codul COR, casa de sănătate, norma, persoanele în în"
+    },
+    {
+     "cerut": {
+      "contine": "POPESCU ANA",
+      "zona": "#mig-inlocuire"
+     },
+     "ok": true,
+     "vazut": "Firma are deja 5 salariați; din cei 2 din fișier, 2 există deja după CNP: IONESCU RADU, POPESCU ANA. Salvarea le actualizează fișele cu datele din fișier — numele, data angajării, codul COR, casa de sănătate, norma, persoanele în întreținere, scutirea, funcți"
+    },
+    {
+     "cerut": {
+      "contine": "Actualizezi fișele salariaților existenți cu datele din fișier?"
+     },
+     "ok": true,
+     "vazut": "erificat) IONESCU RADU: funcția de bază lipsește din fișier — rămâne cea din fișa existentă („Da”); schimb-o pe rând dacă nu e așa (intră marcată de verificat) Actualizezi fișele salariaților existenți cu datele din fișier? Actualizez fișele Renunță"
+    },
+    {
+     "cerut": {
+      "nu_contine": "Firma are deja",
+      "zona": "#mig-eroare"
+     },
+     "ok": true,
+     "vazut": ""
+    },
+    {
+     "cerut": {
+      "exista": "#mig-salveaza-sal[hidden]"
+     },
+     "ok": true,
+     "vazut": "Salvează salariații | dezactivat=False | title= | lângă: Actualizezi fișele salariaților existenți cu datele din fișier? Actualizez fișele Renunță"
+    },
+    {
+     "cerut": {
+      "exista": "#ca-ok",
+      "text": "Actualizez fișele"
+     },
+     "ok": true,
+     "vazut": "Actualizez fișele | dezactivat=False | title= | lângă: Actualizez fișele Renunță"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 6.7
+  },
+  {
+   "nr": "447",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6: același fișier încărcat din nou (salariații lui există deja — puși de prima încărcare a acestei dovezi sau a dovezii 446) -> «Salvează salariații» -> «Actualizez fișele»: mesajul «Salariați: 0 noi, 2 fișe actualizate.», o singură numărătoare. Înainte: «2 salariați importați. Fișele a 2 salariați existenți au fost actualizate.». SCRIE pe copie (fișele celor 2 salariați ai fișierului)",
+   "captura": "dovezi/lot11/447_f6_mesajul_noi_si_actualizate.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Salariați: 0 noi, 2 fișe actualizate."
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F6 Migrare Test SRL · CUI 401006003 ✕ Import date Salariați: 0 noi, 2 fișe actualizate. 2 salariați au date de verificat în Stat de plată (butonul „De verificat”). Alege ce vrei să aduci pentru această firmă. Vector fiscal TVA, regim, intracomunit"
+    },
+    {
+     "cerut": {
+      "nu_contine": "salariați importați. Fișele"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F6 Migrare Test SRL · CUI 401006003 ✕ Import date Salariați: 0 noi, 2 fișe actualizate. 2 salariați au date de verificat în Stat de plată (butonul „De verificat”). Alege ce vrei să aduci pentru această firmă. Vector fiscal TVA, regim, intracomunitar Solduri inițiale Balanța de deschidere Solduri parteneri 4111/401 pe client și furnizor Salariați Nume, CNP, salariu, cont"
+    },
+    {
+     "cerut": {
+      "nu_contine": "au fost actualizate"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F6 Migrare Test SRL · CUI 401006003 ✕ Import date Salariați: 0 noi, 2 fișe actualizate. 2 salariați au date de verificat în Stat de plată (butonul „De verificat”). Alege ce vrei să aduci pentru această firmă. Vector fiscal TVA, regim, intracomunitar Solduri inițiale Balanța de deschidere Solduri parteneri 4111/401 pe client și furnizor Salariați Nume, CNP, salariu, cont"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 7.4
+  },
+  {
+   "nr": "448",
+   "firma": "tenant_9053",
+   "nume_firma": "F5 SRL Salariati SRL",
+   "descriere": "F5: nota 5 (salariile 10/2026, generată pe 08.10.2026, înainte de reparația 448) e depășită: nu se validează, iar „Refă nota din statul de plată” o reface numai după ce luna se încheie — azi refuzul spune de ce (luna 10/2026 nu s-a încheiat). Înainte: ciorna veche, cu alte sume decât statul curent (641 = 421 12.045,45 față de 11.860,79), era validabilă.",
+   "captura": "dovezi/lot11/448_f5_vechi_nota5_refacerea_asteapta_luna.png",
+   "verificari": [
+    {
+     "cerut": {
+      "inactiv": "[data-val='5']"
+     },
+     "ok": true,
+     "vazut": "Validează | dezactivat=True | title= | lângă: Validează"
+    },
+    {
+     "cerut": {
+      "contine": "Salariile lunii 10/2026 se contează după ce luna se încheie"
+     },
+     "ok": true,
+     "vazut": " ? Luna 10/2026 · 1 notă · 1 de validat ← luna luna → Generează amortizarea + Notă nouă Blochează luna? Amortizarea lunii se generează după ce luna se încheie. Salariile lunii 10/2026 se contează după ce luna se încheie: luna 10/2026 nu s-a încheiat (azi e 22.10.2026) — se închide după ultima ei zi. 31.10.2026 · Salariile lunii 10/2026 · ● Ciornă 421 = 4315 · 3.011,00 421 = 43"
+    },
+    {
+     "cerut": {
+      "contine": "641 = 421 · 12.045,45"
+     },
+     "ok": true,
+     "vazut": "zi e 22.10.2026) — se închide după ultima ei zi. 31.10.2026 · Salariile lunii 10/2026 · ● Ciornă 421 = 4315 · 3.011,00 421 = 4316 · 1.205,00 421 = 444 · 727,00 641 = 421 · 12.045,45 646 = 436 · 271,00 · sursa: statul de plată Document justificativ: Stat de plată nr SAL 10/2026 din 31.10.2026 Nota din 31.10.2026 a fost generată pe 08.10.202"
+    },
+    {
+     "cerut": {
+      "contine": "11.860,79",
+      "zona": "#jn-depasita-5"
+     },
+     "ok": true,
+     "vazut": " de plată 10/2026 ar scrie rândurile 421 = 4315 2.965,00; 421 = 4316 1.187,00; 421 = 444 706,00; 423 = 4315 66,00; 423 = 4316 26,00; 423 = 444 17,00; 641 = 421 11.860,79; 6458 = 423 262,00; 646 = 436 267,00 (pe ciornă: 421 = 4315 3.011,00; 421 = 4316 1.205,00; 421 = 444 727,00; 641 = 421 12.045,45; 646 = 436 271,00). Nota e dep"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.3
+  },
+  {
+   "nr": "449",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1 (plătitoare TVA), Produse -> «+ Adaugă produs»: lista cotei are la 0% taxarea inversă (art.331), scutit cu drept de deducere (art.294), scutit fără drept și în afara sferei; la «0% — Taxare inversă (art.331)» apare lista bunurilor, cu cerealele pe codul NC (HG 1/2016 pct.109 alin.(7)). Înainte: cota avea numai 21 / 11 / 0 «fără TVA». Nu se salvează",
+   "captura": "dovezi/lot11/449_f1_cotele_0_cu_categoria.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "0% — Taxare inversă (art.331)",
+      "zona": "#pr-cota"
+     },
+     "ok": true,
+     "vazut": "cotă (auto) 21% 11% 0% — Taxare inversă (art.331) 0% — Scutit cu drept de deducere (art.294 alin.(1), 295, 296) 0% — Scutit fără drept de deducere (art.292) 0% — În afara sferei / bazei de impozitare a TVA (ga"
+    },
+    {
+     "cerut": {
+      "contine": "0% — Scutit cu drept de deducere (art.294",
+      "zona": "#pr-cota"
+     },
+     "ok": true,
+     "vazut": "cotă (auto) 21% 11% 0% — Taxare inversă (art.331) 0% — Scutit cu drept de deducere (art.294 alin.(1), 295, 296) 0% — Scutit fără drept de deducere (art.292) 0% — În afara sferei / bazei de impozitare a TVA (garanții, penalități, dobânzi)"
+    },
+    {
+     "cerut": {
+      "contine": "0% — Scutit fără drept de deducere (art.292)",
+      "zona": "#pr-cota"
+     },
+     "ok": true,
+     "vazut": "cotă (auto) 21% 11% 0% — Taxare inversă (art.331) 0% — Scutit cu drept de deducere (art.294 alin.(1), 295, 296) 0% — Scutit fără drept de deducere (art.292) 0% — În afara sferei / bazei de impozitare a TVA (garanții, penalități, dobânzi)"
+    },
+    {
+     "cerut": {
+      "contine": "0% — În afara sferei",
+      "zona": "#pr-cota"
+     },
+     "ok": true,
+     "vazut": "cotă (auto) 21% 11% 0% — Taxare inversă (art.331) 0% — Scutit cu drept de deducere (art.294 alin.(1), 295, 296) 0% — Scutit fără drept de deducere (art.292) 0% — În afara sferei / bazei de impozitare a TVA (garanții, penalități, dobânzi)"
+    },
+    {
+     "cerut": {
+      "exista": "#pr-c331:not([hidden])"
+     },
+     "ok": true,
+     "vazut": "— alege bunul (art.331) —\nCereale: Grâu și meslin (NC 1001) (D394 cod 1001)\nCereale: Secară (NC 1002) (D394 cod 1002)\nCe | dezactivat=False | title= | lângă: cotă (auto) 21% 11% 0% — Taxare inversă (art.331) 0% — Scutit cu drept de deducere (art.294 alin.(1), 295, 296) 0% — Scutit fără drept de deducere (art.292) 0% — În afara sferei / bazei de impozitare a TVA (garanții, penalități, dobânzi) — alege bunul (art.331) — Cereale: Grâu și meslin (NC 1001) (D"
+    },
+    {
+     "cerut": {
+      "contine": "Grâu și meslin",
+      "zona": "#pr-c331"
+     },
+     "ok": true,
+     "vazut": "— alege bunul (art.331) — Cereale: Grâu și meslin (NC 1001) (D394 cod 1001) Cereale: Secară (NC 1002) (D394 cod 1002) Cereale: Orz (NC 1003) (D394 cod 1003) Cereale: Ovăz (NC 1004) (D394 cod 1004) Cereale: Por"
+    },
+    {
+     "cerut": {
+      "contine": "Porumb",
+      "zona": "#pr-c331"
+     },
+     "ok": true,
+     "vazut": "lin (NC 1001) (D394 cod 1001) Cereale: Secară (NC 1002) (D394 cod 1002) Cereale: Orz (NC 1003) (D394 cod 1003) Cereale: Ovăz (NC 1004) (D394 cod 1004) Cereale: Porumb (NC 1005) (D394 cod 1005) Cereale: Triticale (NC 10086000) (D394 cod 10086000) Cereale: Boabe de soia, chiar sfărâmate (NC 1201) (D394 cod 1201) Cereale: Semin"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.0
+  },
+  {
+   "nr": "449",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Produse: rândul articolului din stoc «grau» (scris de borderou înainte de reparație, fără cotă) -> cota «0% — Taxare inversă (art.331)» -> bunul «Grâu și meslin» (NC 1001) -> «Salvează cota»: confirmarea «Cota 0% (Taxare inversă (art.331)) salvată: grau …» și insigna «0% · Taxare inversă (art.331)». Înainte: taxarea inversă nu se putea alege. SCRIE pe copie (produsul «grau» în nomenclator): rulată DUPĂ dovezile 445 (care cer «grau» fără cotă). Presupune că «grau» n-are încă produs (rândul din stoc cu «Salvează cota»)",
+   "captura": "dovezi/lot11/449_f1_vechi_grau_taxare_inversa.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Cota 0% (Taxare inversă (art.331)) salvată: grau",
+      "zona": "#pr-mesaj"
+     },
+     "ok": true,
+     "vazut": "Cota 0% (Taxare inversă (art.331)) salvată: grau e acum în nomenclator, iar factura o ia de aici."
+    },
+    {
+     "cerut": {
+      "contine": "0% · Taxare inversă (art.331)",
+      "zona": "#pr-lista"
+     },
+     "ok": true,
+     "vazut": "Carte tehnica buc TVA 11% × grau kg 0% · Taxare inversă (art.331) × Marfa A 100,00 lei / buc TVA 21% × Marfa B buc · cota de pe NIR TVA 21% × Marfa C buc · cota de pe NIR nr 4 din 20.10.2026 TVA 21% ×"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.1
+  },
+  {
+   "nr": "454",
+   "firma": "tenant_9053",
+   "nume_firma": "F5 SRL Salariati SRL",
+   "descriere": "F5, Salariați -> «+ Salariat nou»: «CNP» și «Tip normă» poartă asteriscul de obligatoriu; «Salvează» cu numele scris și CNP-ul 1900305410078 (cifra de control greșită; corect ar fi …077): la ACEEAȘI apăsare CNP-ul, Tip normă, salariul și ocupația, fiecare marcat lângă câmp și în caseta «NU s-a salvat.». Înainte: erorile veneau pe rând, în trei salvări, iar CNP / Tip normă nu erau marcate obligatorii. Refuzat: nimic nu se scrie",
+   "captura": "dovezi/lot11/454_f5_salariat_nou_toate_deodata.png",
+   "verificari": [
+    {
+     "cerut": {
+      "exista": "label[for=\"sn-cnp\"] .oblig"
+     },
+     "ok": true,
+     "vazut": "* | dezactivat=False | title= | lângă: CNP*"
+    },
+    {
+     "cerut": {
+      "exista": "label[for=\"sn-tip_norma\"] .oblig"
+     },
+     "ok": true,
+     "vazut": "* | dezactivat=False | title= | lângă: Tip normă*"
+    },
+    {
+     "cerut": {
+      "exista": "#sn-cnp[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": "1900305410078 | dezactivat=False | title= | lângă: CNP* CNP invalid (13 cifre, cifră de control greșită)."
+    },
+    {
+     "cerut": {
+      "exista": "#sn-tip_norma[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": "— alege —\nÎntreagă\nParțială | dezactivat=False | title= | lângă: Tip normă* — alege — Întreagă Parțială Alege o valoare — aplicația nu alege în locul tău."
+    },
+    {
+     "cerut": {
+      "exista": "#sn-salariu_brut[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": " | dezactivat=False | title= | lângă: Salariu brut* Salariul brut este obligatoriu și trebuie să fie mai mare ca 0."
+    },
+    {
+     "cerut": {
+      "exista": "#sn-cor-cauta[aria-invalid='true']"
+     },
+     "ok": true,
+     "vazut": " | dezactivat=False | title= | lângă: Ocupație (COR)* Alege ocupația (cod COR) din listă — obligatorie pentru D112/REGES."
+    },
+    {
+     "cerut": {
+      "contine": "CNP invalid (13 cifre, cifră de control greșită).",
+      "zona": ".msg-eroare[data-camp=\"sn-cnp\"]"
+     },
+     "ok": true,
+     "vazut": "CNP invalid (13 cifre, cifră de control greșită)."
+    },
+    {
+     "cerut": {
+      "contine": "CNP invalid",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "ără ea nu se acordă … — Alege o valoare — aplicația nu alege în locul tău. Scutit contribuție minimă — Alege o valoare — aplicația nu alege în locul tău. CNP — CNP invalid (13 cifre, cifră de control greșită). Salariu brut — Salariul brut este obligatoriu și trebuie să fie mai mare ca 0. Ocupație (COR) — Alege ocupația (cod COR) "
+    },
+    {
+     "cerut": {
+      "contine": "Salariul brut",
+      "zona": ".refuz-salvare"
+     },
+     "ok": true,
+     "vazut": "ocul tău. Scutit contribuție minimă — Alege o valoare — aplicația nu alege în locul tău. CNP — CNP invalid (13 cifre, cifră de control greșită). Salariu brut — Salariul brut este obligatoriu și trebuie să fie mai mare ca 0. Ocupație (COR) — Alege ocupația (cod COR) din listă — obligatorie pentru D112/REGES."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.7
+  },
+  {
+   "nr": "454",
+   "firma": "tenant_9053",
+   "nume_firma": "F5 SRL Salariati SRL",
+   "descriere": "F5, «+ Salariat nou» cu CNP-ul salariatei existente Popescu Elena (2900320126783, din D112 09/2026), normă întreagă, brut 4.500, ocupația 241107, dar data încetării (01.04.2026) înaintea angajării (01.05.2026) și IBAN greșit -> «Salvează»: refuzul SERVERULUI spune deodată CNP-ul dublat, data încetării și IBAN-ul, fiecare lângă câmpul lui. Înainte: data încetării rupea refuzul (eroare de server, 500), iar CNP-ul dublat venea abia la salvarea următoare. Refuzat: nimic nu se scrie",
+   "captura": "dovezi/lot11/454_f5_vechi_cnp_dublat_server_deodata.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Există deja un salariat cu CNP-ul 2900320126783",
+      "zona": ".msg-eroare[data-camp=\"sn-cnp\"]"
+     },
+     "ok": true,
+     "vazut": "Există deja un salariat cu CNP-ul 2900320126783 la firma asta. Dacă e aceeași persoană reangajată, deschide-i fișa și completează noua dată de angajare — nu se creează un al doilea dosar pentru același om."
+    },
+    {
+     "cerut": {
+      "contine": "Data încetării nu poate fi înainte de data angajării.",
+      "zona": ".msg-eroare[data-camp=\"sn-data_incetare\"]"
+     },
+     "ok": true,
+     "vazut": "Data încetării nu poate fi înainte de data angajării."
+    },
+    {
+     "cerut": {
+      "contine": "IBAN invalid",
+      "zona": ".msg-eroare[data-camp=\"sn-iban\"]"
+     },
+     "ok": true,
+     "vazut": "IBAN invalid (se așteaptă IBAN românesc: RO + 22 caractere, cifra de control corectă)."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 5.9
+  }
+ ]
+}

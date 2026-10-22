@@ -120,7 +120,17 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # `migrare_tva_incasare_perioade` (perioadele TVA la încasare, 428), `migrare_reevaluari_valuta` (reevaluările consemnate, 429),
     # `migrare_compensari_afiliat` (compensările și bifa „persoană afiliată”, 428), `migrare_profil_c69` (mare contribuabil, forma de
     # proprietate, fără cont bancar, C69), `migrare_borderou_numar_unic` (numărul borderoului unic pe an, 434) — DDL idempotent, o dată.
-    assert 40 <= len(mg) <= 117, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [21.10.2026, lotul 11] 117 -> 123: `migrare_borderou_storno_unic` (o singură stornare pe borderou, index unic), `migrare_borderou_tip_vechi`
+    # (borderourile de dinainte de lotul 9 pe tipul lor, C75), `migrare_cui_fara_ro` (CUI-ul păstrat fără „RO”, decizia 10.3 pct.4),
+    # `migrare_intocmitor_bilant` (întocmitorul bilanțului pe cabinet, interesul public pe firmă), `migrare_produse_categorie_tva` (categoria
+    # de TVA a produsului cu cota 0, 449), `migrare_reevaluare_partener` (reevaluarea valutei pe partener) — rulate o dată, idempotente.
+    # [22.10.2026, lotul 11] 123 -> 125: `migrare_factura_tva_cote` (TVA-ul pe cote al facturii primite, din XML-ul ei — BG-23, C79) și
+    # `migrare_valoare_neta_linie` (valoarea netă a liniei de pe factură, păstrată exact — BT-131, C82) — rulate o dată, idempotente.
+    # [22.10.2026, lotul 11, subagentul N] 125 -> 126: `migrare_serie_nr_descrieri` (443, datele existente: ciornele cu seria lipită de
+    # număr rescrise cu `pdf_util.serie_nr`) — rulată o dată, idempotentă.
+    # [22.10.2026, lotul 11, C88] 126 -> 127: `migrare_curs_precizie` (cursul BNR cu precizia lui; cache-ul refăcut din arhivă) — rulată
+    # o dată, idempotentă.
+    assert 40 <= len(mg) <= 127, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

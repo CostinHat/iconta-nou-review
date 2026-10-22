@@ -207,9 +207,14 @@ def test_alegerea_are_AMANDOUA_ramurile_si_amandoua_SCRIU():
 
 
 def test_o_citire_ANAF_mai_noua_REDESCHIDE_intrebarea():
-    """**GARDĂ PE CALE MOARTĂ.** Ramura pe care o păzește e corectă și **nedeclanșabilă azi.**
+    """**[459, 22.10.2026] CALEA E VIE — marcajul „gardă pe cale moartă” scos.** A apărut condiția care o învie, scrisă mai jos: corectura
+    CUI-ului (`firma_profil_api.corecteaza_cui` -> `tenant_provisioning.inlocuieste_din_anaf`) re-citește ANAF pentru o firmă CARE EXISTĂ
+    (comanda Costin 11.3 pct.5: „la schimbarea CUI-ului rămân datele celui vechi”). Cu denumirea schimbată, corectura răspunde ea întrebării
+    (`alege_denumirea("anaf")`, în aceeași tranzacție: `nume_ales_la` = `nume_anaf_la`); cu o denumire ANAF egală fără majuscule / spații,
+    citirea e mai nouă decât alegerea veche și caseta reapare — probat pe date în
+    `core/test_lot11_a459_cui.py::test_459_corectura_redeschide_intrebarea_denumirii_numai_cand_n_a_raspuns_ea`.
 
-    Alegerea de azi nu acoperă o denumire schimbată la registru mâine. Regula trăiește în ecran: se
+    (Textul de mai jos e istoria marcajului, păstrată.) Alegerea de azi nu acoperă o denumire schimbată la registru mâine. Regula trăiește în ecran: se
     compară `nume_anaf_la` cu `nume_ales_la`, iar dacă citirea e mai nouă decât alegerea, caseta
     reapare.
 
@@ -251,7 +256,9 @@ def test_ecranul_stie_cand_o_citire_e_VECHE_nu_divergenta():
 # Numărul e clichet în AMÂNDOUĂ direcțiile, și nu fiindcă trei ar fi o cifră bună: cât timp e
 # **exact** mulțimea de la creare, marcajul „gardă pe cale moartă" de mai sus e adevărat. A patra
 # cale e chiar evenimentul care îl face fals.
-_CAPTARI_ANAF = 3
+# [459, 22.10.2026] A PATRA cale, pe o firmă EXISTENTĂ: corectura CUI-ului (`tenant_provisioning.inlocuieste_din_anaf`, din
+# `firma_profil_api.corecteaza_cui`). Marcajul de mai sus s-a scos, iar ramura de redeschidere are proba ei pe date (testul 459).
+_CAPTARI_ANAF = 4
 
 
 def _apeluri_catre(nume_functie):

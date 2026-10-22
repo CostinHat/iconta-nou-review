@@ -17,6 +17,7 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _HARTA = {
     "d104": "d104", "d110": "d110", "d112": "d112", "d220": "d220", "d221": "d221",
     "d223": "d223", "d307": "d307", "d311": "d311", "d402": "d402", "saft": "d406",
+    "d101g": "d101g",   # [lotul 11, C70] d101g_2024.xsd adus în corpus; generatorul core/d101g.py, probat de test_lot11_d_d101g
 }
 _GEN_TOKEN = re.compile(r"build_xml|genereaza|calcul_|XMLSchema|Validator\.jar|\.xsd", re.I)
 

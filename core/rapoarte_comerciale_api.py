@@ -108,13 +108,17 @@ def durata_medie_incasare(conn, schema, de, pana):
 
 
 def lista_parteneri(conn, schema):
-    """Partenerii distincti din facturi (ambele directii), pentru selectorul de fisa."""
+    """Partenerii distincti din facturi (ambele directii), pentru selectorul de fisa.
+    [lotul 11, decizia 10.3 pct.4] un partener = CUI-ul în forma păstrată (`cui_forma`): „RO14399840” de pe o factură veche și
+    „14399840” de pe una nouă sunt același partener, nu două rânduri în selector."""
+    from core import cui_forma as _cf
+    k = _cf.SQL.format(c="tert_cui")
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
-            SELECT tert_cui AS cui, MAX(tert_nume) AS nume
+            SELECT {k} AS cui, MAX(tert_nume) AS nume
             FROM {schema}.facturi
-            WHERE tert_cui IS NOT NULL AND tert_cui <> ''
-            GROUP BY tert_cui
+            WHERE {k} <> ''
+            GROUP BY {k}
             ORDER BY MAX(tert_nume)
         """)
         return [{"cui": r["cui"], "nume": r["nume"] or r["cui"]} for r in cur.fetchall()]
@@ -124,7 +128,7 @@ def fisa_partener(conn, schema, cui, de, pana):
     """Fisa unui partener (dupa CUI): facturile lui (ambele directii) din perioada,
     fiecare cu decontat si sold (conventia reconciliere), + sumar. Read-only.
     [lotul 10, 428] decontat = și compensarea (ca `reconciliere_api.facturi_deschise`, `compensari_api.nota_de_compensare`)."""
-    from core import compensari_api as _cz
+    from core import compensari_api as _cz, cui_forma as _cf   # [lotul 11, 10.3 pct.4] partenerul în forma păstrată a CUI-ului
     cz = _cz.nota_de_compensare("i", "f.id", f"{schema}.")
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
@@ -140,12 +144,12 @@ def fisa_partener(conn, schema, cui, de, pana):
                              FROM {schema}.facturi st
                              WHERE st.storno_din_id = f.id), 0) AS storno
             FROM {schema}.facturi f
-            WHERE f.tert_cui = %s AND f.tip = 'factura'
+            WHERE {_cf.SQL.format(c="f.tert_cui")} = %s AND f.tip = 'factura'
               AND f.status NOT IN ('anulata', 'storno')
               AND f.storno_din_id IS NULL
               AND f.data_emitere BETWEEN %s AND %s
             ORDER BY f.data_emitere, f.id
-        """, (CONT_CLIENTI, CONT_FURNIZORI, cui, de, pana))
+        """, (CONT_CLIENTI, CONT_FURNIZORI, _cf.stocare(cui) or "", de, pana))
         facturi = []
         s_fact = s_dec = s_sold = Decimal("0")
         nume = None

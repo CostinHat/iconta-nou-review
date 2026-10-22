@@ -32,7 +32,7 @@ _COD = "REZUMAT_TABEL_LIPSA"
 # `rezumat-fix`, regula trebuie să le prindă pe toate.
 _CU_REZUMAT = {
     ("activitate_cabinet.js", "randeazaActivitateCabinet"), ("admin.js", "randeazaAdminInvitatii"), ("capacitate.js", "randeazaCapacitate"),
-    ("clienti_ecran.js", "ecranClienti"), ("compensari_ecran.js", "ecranCompensari"), ("declaratii.js", "pas2"),
+    ("clienti_ecran.js", "ecranParteneri"), ("compensari_ecran.js", "ecranCompensari"), ("declaratii.js", "pas2"),
     ("facturi_ecran.js", "detaliiFactura"), ("firme.js", "ecranSalariati"), ("firme.js", "ecranFisaCont"), ("firme.js", "ecranJurnalMarja"),
     ("firme.js", "ecranRegistruFiscal"), ("firme.js", "ecranRegistruInventar"), ("firme.js", "ecranRegistre321"), ("firme.js", "ecranBilant"),
     ("firme.js", "ecranNir"), ("firme.js", "ecranBalanta"), ("firme.js", "ecranRapoarte"), ("migrare.js", "previzualizeazaSolduri"),
@@ -40,6 +40,8 @@ _CU_REZUMAT = {
     ("migrare.js", "previzualizeazaMijloace"), ("migrare.js", "previzualizeazaIstoric"), ("migrare.js", "previzualizeazaRetete"),
     ("migrare.js", "previzualizeazaArticole"), ("migrare.js", "previzualizeazaRip"), ("mijloace_ecran.js", "ecranMijloace"),
     ("reevaluare_ecran.js", "ecranReevaluareValuta"), ("validat.js", "deschideNota"),
+    # [lotul 11, decizia Costin 10.3: „rezumatul fix […]: da, reorganizezi ecranele”] cele trei excepții „de decis de Costin”, decise
+    ("firme.js", "randeazaSituatiaStocului"), ("tipare.js", "randeazaTipare"), ("admin.js", "cereriNeconfirmate"),
 }
 
 
@@ -66,10 +68,11 @@ def test_exceptiile_sunt_scrise_cu_motiv():
     lit = [n.value for n in ast.walk(fn) if isinstance(n, ast.Assign) and getattr(n.targets[0], "id", "") == "rezumat_exceptii"]
     assert len(lit) == 1, "ANTI-VACUU: `rezumat_exceptii` nu mai e în regulă"
     exc = ast.literal_eval(lit[0])
-    assert set(exc) == {("date_firma.js", "randeazaDateFirma"), ("operatiuni_ecran.js", "ecranOperatiuni"), ("tipare.js", "randeazaTipare"),
-                        ("admin.js", "cereriNeconfirmate"), ("firme.js", "randeazaSituatiaStocului")}
-    # DS cap.9 v2.97 pct.5: excepțiile sunt formularele (tabel mic în formular) și ecranele „de decis de Costin” (rezumatul ar cere o mutare)
-    assert all(re.match(r"(formular|de decis de Costin): \S", m) and len(m) > 80 for m in exc.values()), exc
+    # [lotul 11, DS cap.9 v2.100] cele trei „de decis de Costin” (Tipare, Înregistrare, Stocuri) au fost decise (DECIZII „Comanda 10.3”
+    # pct.4) și au acum rezumat: rămân numai formularele
+    assert set(exc) == {("date_firma.js", "randeazaDateFirma"), ("operatiuni_ecran.js", "ecranOperatiuni")}
+    # DS cap.9 v2.97 pct.5: excepțiile sunt formularele (tabel mic în formular)
+    assert all(re.match(r"formular: \S", m) and len(m) > 80 for m in exc.values()), exc
 
 
 # ── 2. mutațiile pe fișierele reale ─────────────────────────────────────────────────────────────────────────────────────────────────
@@ -102,9 +105,9 @@ _FARA_REZUMAT = "„%s” desenează un tabel în fereastră fără rezumatul li
 
 
 @pytest.mark.parametrize("fisier, ancora, inlocuire, asteptat", [
-    ("tipare.js", '<h3 class="tip-titlu">Motive de respingere recurente</h3>',
-     '<div class="rezumat-fix"><h3 class="tip-titlu">Motive de respingere recurente</h3></div>',
-     ["excepția „randeazaTipare” nu mai are obiect: are acum rezumatul lipit sus"]),
+    # [lotul 11] Tipare are acum rezumat (nu mai e excepție); exemplul excepției care capătă rezumat e formularul Operațiuni
+    ("operatiuni_ecran.js", """'<div id="op-propunere"></div>'""", """'<div id="op-propunere" class="rezumat-fix"></div>'""",
+     ["excepția „ecranOperatiuni” nu mai are obiect: are acum rezumatul lipit sus"]),
     # redenumită, funcția iese din excepție: e prinsă ea (și zona ei, `_legaTvaIncasare`), iar excepția rămasă fără obiect e numită
     ("date_firma.js", "export async function randeazaDateFirma(", "export async function randeazaDateleFirmei(",
      [_FARA_REZUMAT % "_legaTvaIncasare", _FARA_REZUMAT % "randeazaDateleFirmei",

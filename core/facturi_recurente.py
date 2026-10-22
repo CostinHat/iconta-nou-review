@@ -22,33 +22,35 @@ def lista(conn, schema):
 
 
 def adauga(conn, schema, corp):
+    # [440, comanda Costin 11.1 pct.16] liniile, beneficiarul și ziua se judecă TOATE (`ErorileFormularului`), fiecare lângă câmpul ei
+    # din ecran (`fr-linii`, `fr-nume`, `fr-zi`, `fr-l{i}-…`); înainte, beneficiarul și ziua se refuzau numai după linii, una câte una,
+    # iar ziua greșită purta id-ul `fr-zi_emitere`, care nu există pe ecran
+    from core.erori import ErorileFormularului as _Erori
+    er = _Erori("Șablonul nu s-a salvat")
     linii = corp.get("linii") or []
     if not linii:
-        return {"eroare": "Șablonul trebuie să aibă cel puțin o linie de facturat "
-                          "(denumire, cantitate, preț). Fără ele, factura lunară "
-                          "n-ar avea ce emite.",
-                "erori_campuri": [{"camp": "fr-linii",
-                                   "mesaj": "Adaugă cel puțin o linie de facturat (denumire, cantitate, preț)."}]}
+        er.camp("fr-linii", "Adaugă cel puțin o linie de facturat (denumire, cantitate, preț): fără ea, factura lunară n-ar avea ce "
+                            "emite.")
     if not (corp.get("tert_nume") or corp.get("client_id")):
-        return {"eroare": "beneficiar obligatoriu"}
+        er.camp("fr-nume", "Scrie beneficiarul facturii (denumirea clientului).")
     # [probare invalid lot 2, 03.09.2026] `zi_emitere="prima"` cadea in `int()` si iesea `500`.
     # Un camp completat cu litere e o greseala de tastare, nu o cadere de sistem.
     _zi = corp.get("zi_emitere")
     try:
         zi = int(_zi) if _zi not in (None, "") else 1
     except (TypeError, ValueError):
-        return {"eroare": "Ziua emiterii: %r nu e un număr. Se așteaptă o zi între 1 și 28." % (_zi,),
-                "erori_campuri": [{"camp": "fr-zi_emitere",
-                                   "mesaj": "Scrie ziua emiterii: un număr între 1 și 28."}]}
-    if not 1 <= zi <= 28:
-        return {"eroare": "Ziua emiterii trebuie să fie între 1 și 28."}
+        zi = None
+        er.camp("fr-zi", "Ziua emiterii: %r nu e un număr. Scrie o zi între 1 și 28." % (_zi,))
+    if zi is not None and not 1 <= zi <= 28:
+        er.camp("fr-zi", "Ziua emiterii trebuie să fie între 1 și 28.")
     # [cap.24 regula 2] validare per-linie AUTORITARA: un rand incomplet se raporteaza langa campul lui
     # (fr-l{i}-..), nu il filtreaza tacit frontendul. Aceleasi criterii (denumire nevida + cantitate>0),
     # din aceeasi functie ca emitere (fara oglinda care drifteaza, cap.24 regula 4).
-    lipsa = facturi_api.linii_campuri_lipsa(linii, prefix="fr-l")
-    if lipsa:
-        return {"eroare": "Completează liniile: " + "; ".join(x["eticheta"] for x in lipsa),
-                "erori_campuri": [{"camp": x["camp"], "mesaj": x["eticheta"]} for x in lipsa]}
+    for x in facturi_api.linii_campuri_lipsa(linii, prefix="fr-l"):
+        er.camp(x["camp"], "%s — %s" % (x["eticheta"], x.get("mesaj") or "completează câmpul."))
+    if er:
+        d = er.detaliu()
+        return {"eroare": d["mesaj"], "erori_campuri": d["erori_campuri"]}
     with conn.cursor() as cur:
         cur.execute(f"""INSERT INTO {schema}.facturi_recurente
             (client_id, tert_nume, tert_cui, linii, zi_emitere, moneda)

@@ -828,31 +828,91 @@ def test_def_77_preselectia_uzuala_si_dedusa_vizibila(patron):
 
 
 # ================================================================ 72 — bilanțul prin coadă
+def _bilant_coada_2025(patron, firma):
+    """Bilanț anual -> an 2025, S1005 (după ce ecranul a încărcat categoria anului, ca omul care vede ecranul: altfel primul clic se
+    poate pierde, 151/188) -> „Trimite în coadă →” -> textul din zona mesajului cozii."""
+    pg = patron.pg
+    _deschide(patron, firma["nume"], "bilant", "#bl-coada")
+    pg.fill("#bl-an", "2025")
+    pg.dispatch_event("#bl-an", "change")
+    pg.wait_for_function("() => { const z = document.querySelector('#bl-categorie'); return z && !z.hasAttribute('aria-busy') && "
+                         "z.innerText.trim() !== '' && !z.innerText.includes('Se calculează'); }", timeout=90000)
+    pg.select_option("#bl-tip", "s1005")
+    pg.evaluate("() => { const m = document.querySelector('#bl-coada-mesaj'); if (m) m.innerHTML = ''; }")
+    pg.click("#bl-coada")
+    pg.wait_for_function("() => (document.querySelector('#bl-coada-mesaj') || {innerText: ''}).innerText.trim() !== ''", timeout=60000)
+    return pg.inner_text("#bl-coada-mesaj")
+
+
 def test_def_72_bilantul_intra_in_coada(patron, firma_gv):
     """72. Bilanț: nu trecea prin coada pregătit → validat → depus.
     Pașii: firma -> Bilanț anual -> an 2025, S1005 -> „Trimite în coadă →”. Bilanțul intră în coada de validare (mesaj „a intrat
-    în coada de validare”), iar în coada cabinetului apare S1005 al firmei."""
+    în coada de validare”), iar în coada cabinetului apare S1005 al firmei.
+    [lotul 11, decizia Costin 10.3 pct.4, verbatim: „Întocmitorul bilanțului: calitatea întocmitorului în profilul cabinetului, interesul
+    public în Date firmă; ambele blochează dacă lipsesc.”] Drumul contabilului până la coadă trece acum prin cele două: prima trimitere e
+    refuzată și le numește pe amândouă, cu „Deschide Date firmă” -> „Entitate de interes public: Nu” -> Salvează -> a doua trimitere e
+    refuzată pentru întocmitor, cu „Deschide Date cabinet” -> Calitatea: Contabil șef, Numele: IONESCU MARIA -> Salvează întocmitorul ->
+    a treia trimitere intră în coadă. Date de pornire: interesul public nedeclarat (firma nouă) și întocmitorul cabinetului golit pe ruta
+    butonului „Salvează întocmitorul” (`POST /cabinet/intocmitor`), pus la loc la final pe aceeași rută — cabinetul de test e partajat."""
+    from e2e_bloc_d import PATRON, _api as _api_cont
     pg = patron.pg
     # [deficiența 221] bilanțul 2025 se întocmește numai dacă evidența firmei din iConta.eu cuprinde 31.12.2025, iar „An precedent” are
     # nevoie de anul 2024 întreg (decizia Costin 11.10.2026: altfel se completează manual): firma, creată azi fără preluare, primește
     # luna preluării 01/2024 (cum ar scrie-o contabilul în Date firmă), readusă la final
-    s = firma_gv["schema"]
+    s, tid, cab = firma_gv["schema"], firma_gv["tenant_id"], firma_gv["cabinet_id"]
     vechi = sql('SELECT luna_preluare FROM "%s".firma_profil WHERE id = 1' % s)[0][0]
     sql('UPDATE "%s".firma_profil SET luna_preluare = %%s WHERE id = 1' % s, (_dt.date(2024, 1, 1),))
+    intocmitor = sql("SELECT calit_intocmit, nume_intocmit, cif_intocmit, nri_intocmit FROM public.accounting_firms WHERE id = %s", (cab,))[0]
+    st, r = _api_cont(PATRON, "POST", "/tenants/%d/firma-profil/date" % tid, {"interes_public": ""})   # nedeclarat (NULL)
+    assert st == 200 and r.get("ok") is not False, (st, r)
+    st, r = _api_cont(PATRON, "POST", "/cabinet/intocmitor", {"calit_intocmit": "", "nume_intocmit": "", "cif_intocmit": "",
+                                                              "nri_intocmit": intocmitor[3] or ""})
+    assert st == 200 and r.get("ok") is not False, (st, r)
+    assert sql('SELECT interes_public FROM "%s".firma_profil WHERE id = 1' % s) == [(None,)]
+    assert sql("SELECT calit_intocmit, nume_intocmit FROM public.accounting_firms WHERE id = %s", (cab,)) == [(None, None)]
     try:
-        _deschide(patron, firma_gv["nume"], "bilant", "#bl-coada")
-        pg.fill("#bl-an", "2025")
-        pg.dispatch_event("#bl-an", "change")
-        pg.select_option("#bl-tip", "s1005")
-        pg.click("#bl-coada")
-        pg.wait_for_function("() => (document.querySelector('#bl-coada-mesaj') || {innerText: ''}).innerText.trim() !== ''", timeout=60000)
+        # 1. refuzul numește amândouă lipsurile (structura SC 1225: „15. interes_public … DA”, „21. calit_intocmit … DA”), cu butonul spre
+        #    Date firmă; nimic în coadă
+        msg = _bilant_coada_2025(patron, firma_gv)
+        assert "Nu e declarat dacă firma e entitate de interes public" in msg and "Calitatea întocmitorului bilanțului lipsește" in msg, msg
+        assert "a intrat în coada de validare" not in msg, msg
+        pg.wait_for_selector("#bl-coada-mesaj [data-ecran-destinatie='date_firma']", timeout=30000)
+        patron.captura("refuz_firma")
+        assert sql("SELECT count(*) FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 's1005'", (tid,)) == [(0,)]
+        pg.click("#bl-coada-mesaj [data-ecran-destinatie='date_firma']")
+        pg.wait_for_selector("#df-interes_public", timeout=30000)
+        pg.select_option("#df-interes_public", "0")
+        pg.evaluate("() => { const m = document.querySelector('#df-msg'); if (m) m.innerHTML = ''; }")
+        pg.click("#df-salveaza")
+        # partea „datele firmei” intră (mesajul de după salvare: „Salvat. Lipsesc …” / „S-au salvat: datele firmei …” — firma de probă
+        # n-are forma juridică și vectorul fiscal completate, iar ecranul le numește; nu sunt pasul acestui test); proba e în bază
+        pg.wait_for_function("() => ((document.querySelector('#df-msg') || {innerText: ''}).innerText || '').includes('alvat')", timeout=30000)
+        assert sql('SELECT interes_public FROM "%s".firma_profil WHERE id = 1' % s) == [(False,)]
+        # 2. refuzul rămas e al întocmitorului, cu butonul spre Date cabinet
+        msg = _bilant_coada_2025(patron, firma_gv)
+        assert "entitate de interes public" not in msg and "Calitatea întocmitorului bilanțului lipsește" in msg, msg
+        pg.wait_for_selector("#bl-coada-mesaj [data-ecran-destinatie='date_cabinet']", timeout=30000)
+        patron.captura("refuz_cabinet")
+        pg.click("#bl-coada-mesaj [data-ecran-destinatie='date_cabinet']")
+        pg.wait_for_selector("#cab-calit_intocmit", timeout=30000)
+        pg.select_option("#cab-calit_intocmit", "12")   # „Contabil șef”, nomenclatorul ANAF (`migrare_intocmitor_bilant.CALITATI_INTOCMIT`)
+        pg.fill("#cab-nume_intocmit", "IONESCU MARIA")
+        pg.click("#cab-salveaza-intocmitor")
+        pg.wait_for_function("() => (document.querySelector('#cab-msg-intocmitor') || {innerText: ''}).innerText.includes('a fost salvat')",
+                             timeout=30000)
+        assert sql("SELECT calit_intocmit, nume_intocmit FROM public.accounting_firms WHERE id = %s", (cab,)) == [(12, "IONESCU MARIA")]
+        # 3. bilanțul intră în coadă
+        msg = _bilant_coada_2025(patron, firma_gv)
         patron.captura("trimis")
-        msg = pg.inner_text("#bl-coada-mesaj")
         assert "a intrat în coada de validare" in msg, msg
-        r = sql("SELECT tip, stare FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 's1005'", (firma_gv["tenant_id"],))
+        r = sql("SELECT tip, stare FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 's1005'", (tid,))
         assert len(r) == 1 and r[0][1] in ("la_senior", "aprobata"), r
     finally:
         sql('UPDATE "%s".firma_profil SET luna_preluare = %%s WHERE id = 1' % s, (vechi,))
+        # întocmitorul cabinetului de test partajat, la valorile găsite, pe ruta butonului
+        _api_cont(PATRON, "POST", "/cabinet/intocmitor", {"calit_intocmit": "" if intocmitor[0] is None else str(intocmitor[0]),
+                                                          "nume_intocmit": intocmitor[1] or "", "cif_intocmit": intocmitor[2] or "",
+                                                          "nri_intocmit": intocmitor[3] or ""})
 
 
 # ================================================================ 79 — Da/Nu din schemă, cerute la prima folosire

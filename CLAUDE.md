@@ -819,6 +819,25 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
      `scripts/poarta_scurta.py`, `scripts/e2e_poarta.py` (e2e si mutatiile lor), uneltele vizuale, verificatorul — le ruleaza sesiunea
      principala, UNA dupa alta, niciodata doua deodata: serverul e si productia cabinetului real.
 
+15. **REGULI PERMANENTE 3a–3d (22.10.2026, comanda Costin 11.2 forma a doua pct.3, verbatim in DECIZII „Comanda 11.2, forma a doua”;
+   inlocuiesc regulile vechi care le contrazic).** Verbatim:
+   *„a. Nimic nu e „rezolvat” fără dovadă pe ecran pe firmele de test, inclusiv pe documentele create înainte de reparație. Orice reparație
+   acoperă și datele existente.
+   b. Fiecare poziție validată are un test automat în poartă; poarta nu trece dacă vreunul pică.
+   c. Până la pilot nu intră funcții noi. Pilotul pornește când o lună completă de contabil merge cap-coadă pe o firmă fără deficiențe grave:
+   facturi, bancă, casă, stoc, salarii, închidere, D300, D394, D112, D100, balanță.
+   d. Lotul se duce până la capăt fără oprire. Dacă poarta pică, repari codul și o rulezi din nou, până trece. Nu ai voie să slăbești, să
+   ocolești sau să ștergi un test ca să treacă poarta. Te oprești doar dacă reparația ar cere schimbarea unui comportament deja decis sau o
+   operație care nu se poate anula.”*
+   - 3a: „rezolvată” in `DEFICIENTE.md` cere captura de pe copia firmelor de test (`scripts/dovada_firme_test.py`) si coloana „date existente”
+     (migrare / script / cod / neafectate, cu motivul); la migrare / script / cod, o captura pe un document vechi (`vechi` in nume). Gardat de
+     `core/test_deficiente.py`.
+   - 3b: pozitiile validate au `test_pozitie_*` in `frontend_test/e2e/e2e_pozitii_validate.py`, cu mutatia in `mut_pozitii_validate.json`
+     (`core/test_pozitii_validate.py`).
+   - 3d SUPERSEDEAZA pct.13 b („Maximum două rulări complete pe lot; dacă a doua pică, te oprești”) si oprirea pe poarta rosie din pct.4 / pct.9:
+     pe rosu se repara cauza si se ruleaza din nou, pana la verde. Regimul pilot ramane: poarta, publicarea, restartul si migrarile numai cu
+     confirmarea lui Costin ca cabinetul nu lucreaza, cu backup chiar inainte.
+
 ## 2.1 De unde vin pasii
 
 Pasii unui fir traiesc in TESTE.md, la "In lucru acum". NU in conversatie.

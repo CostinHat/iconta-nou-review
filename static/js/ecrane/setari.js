@@ -1,6 +1,7 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp } from "../api.js?v=ff30ebaf3f";
+import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp } from "../api.js?v=58f26a3fc4";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
+import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";   // [lotul 11, decizia 10.3] întocmitorul bilanțului, sub Date cabinet
 
 export async function randeazaSetari(corp, nav) {
   const u = sesiune.user() || {};
@@ -63,8 +64,10 @@ export async function randeazaSetari(corp, nav) {
         </label>
         <button class="buton-primar" id="set-salveaza-cabinet" data-actiune="POST /eu/cabinet">Salveaz\u0103 datele cabinetului</button>
         <div class="" id="set-msg-cabinet"></div>
-      </div>`;
+      </div>
+      <div class="panou" id="set-intocmitor"></div>`;
     legaInapoi();
+    panouIntocmitor(corp.querySelector("#set-intocmitor"));
     corp.querySelector("#set-salveaza-cabinet").addEventListener("click", async () => {
       const msg = corp.querySelector("#set-msg-cabinet");
       const nume = corp.querySelector("#set-cab-nume").value.trim();
@@ -491,7 +494,7 @@ export async function panouConectareSPV(zona) {
       const r = await api.get("/spv/autorizare");
       if (r && r.url) {
         window.open(r.url, "_blank");
-        arataMesaj(msg, "S-a deschis autorizarea ANAF în altă filă. După ce alegi certificatul și confirmi, revino aici și redeschide ecranul.", "info");
+        arataMesaj(msg, "S-a deschis autorizarea ANAF în altă filă. După ce alegi certificatul și confirmi, revino în această filă: dacă ai venit dintr-un formular, „← Înapoi” te duce la el.", "info");
       } else { arataMesaj(msg, "Nu s-a putut porni autorizarea.", "eroare"); }
     } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la pornirea autorizării.", "eroare"); }
     btn.disabled = false; btn.textContent = text;

@@ -47,13 +47,11 @@ TID = 991073
 EXCEPTII = {
     ("core/scan_cai_factura.py", "<modul>", "facturi"):
         "nu e scriere: exemplele de SQL ale scanerului căilor de creare a facturii (`scan_cai_factura`), text analizat, neexecutat",
-    ("core/facturi_api.py", "emite_factura", "facturi"):
-        "scrierea seriei (`serie`) pe rândul abia scris de `creeaza_factura` (tratată): numărul vine din contorul atomic "
-        "`_rezerva_numar` (rândul `firma_profil` blocat), iar `seteaza_numerotare` refuză întoarcerea contorului — nicio altă factură "
-        "emisă nu poate purta (serie, număr) din contor; un număr tastat egal e refuzat la INSERT, înainte de seria pusă aici",
+    # [lotul 11, 443] `emite_factura` nu mai scrie seria după `creeaza_factura` (seria intră la INSERT, înaintea contării), deci intrarea ei a
+    # ieșit din listă; `storneaza` scrie numai `storno_din_id` (cheia `facturi_borderou_storno_uniq`, parțială pe `tip = 'borderou'`)
     ("core/facturi_api.py", "storneaza", "facturi"):
-        "scrierea seriei și a lui `storno_din_id` pe factura de stornare abia scrisă de `creeaza_factura`, cu număr din același "
-        "contor atomic `_rezerva_numar` — același motiv ca la `emite_factura`",
+        "scrierea lui `storno_din_id` pe factura de stornare abia scrisă de `creeaza_factura` (tratată): rândul e o factură (`tip = "
+        "'factura'`), în afara predicatului indexului `facturi_borderou_storno_uniq` (`tip = 'borderou'`), deci nu poate dubla cheia",
     ("core/repo_contabilitate.py", "nota_cu_sursa_si_status", "inregistrari"):
         "`sursa` vine de la apelant; indexul `inregistrari_raport_z_unic` cuprinde numai sursele raportului Z (`raport_z.SURSE`), iar "
         "toți apelanții trec o sursă LITERALĂ din afara lor — verificat mecanic de `test_apelantii_notei_cu_sursa_nu_scriu_un_raport_z`",
@@ -554,7 +552,8 @@ def test_client_dublat_refuz_numit(firma):
     d = ex.value.detaliu
     print("C73 client dublat:", d)
     # comanda C73: „Există deja clientul <nume> cu CUI …” — și drumul spre el (fișa existentă)
-    assert d["mesaj"].startswith("Există deja clientul ALFA SRL cu CUI-ul RO24736200"), d
+    # [lotul 11, decizia Costin 10.3] CUI-ul se păstrează fără „RO” (`RO24736200` scris -> `24736200` păstrat), deci refuzul îl numește așa
+    assert d["mesaj"].startswith("Există deja clientul ALFA SRL cu CUI-ul 24736200"), d
     assert d["existent"] == {"client_id": r["client_id"], "nume": "ALFA SRL"}, d
     assert "UniqueViolation" not in d["mesaj"] and "clienti_cui_uniq" not in d["mesaj"], d   # fără codul intern al bazei
     assert _numar("clienti") == 1                       # a doua fișă nu s-a scris

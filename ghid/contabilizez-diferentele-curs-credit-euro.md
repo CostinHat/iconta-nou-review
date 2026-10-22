@@ -2,7 +2,7 @@
 title: Cum contabilizez diferențele de curs la un credit în euro?
 description: Diferența de curs valutar la un credit în euro se recunoaște lunar (reevaluarea soldului la cursul BNR de la sfârșitul lunii) și la fiecare plată; pentru o datorie, cursul crescut înseamnă pierdere pe 665, cursul scăzut înseamnă câștig pe 765.
 published: 2026-09-25
-modified: 2026-10-13
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -48,6 +48,6 @@ Luna următoare, firma plătește o rată de 1.000 EUR la cursul zilei, 5,03 lei
 
 Motorul dedicat diferențelor de curs, aplicația, implementează exact această regulă de semn: funcția „calculul diferenței de curs” calculează câștigul/pierderea în funcție de `tip` (`"creanta"`, `"disponibil"` sau `"datorie"`) — pentru `"datorie"`, un curs final mai mare produce cont `"665"`, iar unul mai mic produce cont `"765"`, exact invers față de creanțe și disponibilități.
 
-Pentru reevaluarea lunară a soldului unui credit, se folosește funcția „reevaluarea soldului în valută (Operațiuni speciale)”, apelată din use-case-ul „reevaluarea în valută (Operațiuni speciale)” pe ruta aplicația; nota generată e datată în ziua reevaluării, cu descrierea „Reevaluare solduri valuta la [data] (curs BNR)”. Pentru diferența apărută la o plată efectivă (rată sau dobândă), funcția „nota de decontare în valută” generează atât nota de plată, cât și linia de diferență de curs, într-o singură operațiune.
+Reevaluarea lunară a soldului unui credit se face din „Închidere lună → Reevaluare valută”, singurul formular de reevaluare din aplicație: contul creditului se adaugă la ajustarea manuală din același formular, cu moneda și soldul în valută (soldul în lei vine din evidență), iar aplicația ia cursul BNR din ultima zi bancară a lunii și arată diferența pe 665/765 înainte de generare. Nota e datată în ultima zi a lunii, cu descrierea „Reevaluare valută la [data] (OMFP 1802/2014 pct.325, curs BNR din [data])”. Pentru diferența apărută la o plată efectivă (rată sau dobândă), funcția „nota de decontare în valută” generează atât nota de plată, cât și linia de diferență de curs, într-o singură operațiune.
 
 [iConta.eu](/)

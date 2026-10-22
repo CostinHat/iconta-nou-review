@@ -180,7 +180,8 @@ def asistent_creeaza(date, ctx):
     import secrets as _sec
     email = date.email.strip().lower()
     if not _uc_comun._email_valid(email):  # [R138] altfel `«»@#$%` devine un cont de `angajat`
-        raise _erori.DateInvalide(EMAIL_INVALID)
+        # [440] lângă câmpul de email (`camp` = `email`, ecranul îl pune pe `asi-email`), ca refuzul adresei ocupate
+        raise _erori.DateInvalide({"mesaj": EMAIL_INVALID, "erori_campuri": [{"camp": "email", "mesaj": EMAIL_INVALID}]})
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             _uc_comun._refuza_email_ocupat(repo_utilizatori.contul_dupa_email(cur, email), "angajat", email,

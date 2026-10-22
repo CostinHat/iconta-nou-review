@@ -60,6 +60,11 @@ class _ConnFals:
         return _CurFals(self._conturi)
 
 
+def _campuri(refuz):
+    """[lotul 11, 440] câmpurile numite de refuz (`erori_campuri`, id-urile ecranului „Notă nouă”), în ordine."""
+    return [c["camp"] for c in refuz.get("erori_campuri") or []]
+
+
 # ── TEMEIURILE ──────────────────────────────────────────────────────────────────────────────
 
 def test_cele_doua_temeiuri_sunt_SEPARATE_si_sursate():
@@ -82,7 +87,7 @@ def test_o_data_care_nu_e_data_produce_REFUZ_cu_temei_nu_500(data):
     d, refuz = _j._data_valida(data)
     assert d is None and refuz, "data %r a trecut ca validă" % data
     assert refuz["temei"] == str(_j.TEMEI_CONSEMNARE)
-    assert refuz.get("camp") == "data"
+    assert _campuri(refuz) == ["je-data"]   # [lotul 11, 440] câmpul ecranului „Notă nouă”, în lista erorilor (G10)
 
 
 def test_o_data_buna_trece():
@@ -100,7 +105,7 @@ def test_un_cont_din_AFARA_planului_e_refuzat_cu_temei():
     r = _j._linii_valide(_ConnFals(), "ztest",
                          [{"debit": "9999", "credit": "704", "suma": 1000}])
     assert r, "contul din afara planului a trecut"
-    assert r["temei"] and r.get("camp") == "debit"
+    assert r["temei"] and _campuri(r) == ["je-deb-0"]
 
 
 def test_conturile_din_plan_trec():
@@ -113,7 +118,7 @@ def test_se_verifica_AMBELE_conturi_nu_doar_primul():
     """Un creditor din afara planului e la fel de rupt ca un debitor."""
     r = _j._linii_valide(_ConnFals(), "ztest",
                          [{"debit": "4111", "credit": "8888", "suma": 1000, "partener_nume": "PARTENER PROBA SRL"}])
-    assert r and r.get("camp") == "credit"
+    assert r and _campuri(r) == ["je-cre-0"]
 
 
 def test_se_verifica_TOATE_liniile_nu_doar_prima():

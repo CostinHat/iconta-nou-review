@@ -102,7 +102,7 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
          "COALESCE(f.furnizor_tva_incasare, false) AS furnizor_tvai, "   # [lotul 10, 428] achiziția AI (art.297 alin.(2))
          "c.cui AS c_cui, "
          "COALESCE(json_agg(json_build_object('cota', l.cota_tva, "
-         "  'baza', ROUND(l.cantitate * l.pret_unitar, 2)) ORDER BY l.id) "
+         "  'baza', COALESCE(l.valoare_neta, ROUND(l.cantitate * l.pret_unitar, 2))) ORDER BY l.id) "   # [lotul 11, C82] BT-131 al liniei
          "  FILTER (WHERE l.id IS NOT NULL), '[]') AS linii "
          "FROM facturi f "
          "LEFT JOIN clienti c ON c.id = f.client_id "
@@ -129,6 +129,15 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
                                   "bazaA": Decimal(0), "tvaA": Decimal(0), "bazaAI": Decimal(0), "tvaAI": Decimal(0)})
         r["baza" + bucket] += Decimal(baza)
         r["tva" + bucket] += Decimal(tva)
+
+    # [lotul 11, C79] TVA-ul de pe factura furnizorului, pe cote (`factura_tva_cote`, BG-23) — SQL PROPRIU, nu `repo_efactura.tva_cote`:
+    # tvaA e TVA-ul facturii (CF art.299 alin.(1) lit.a; art.319 alin.(20) lit.j), iar calea 2 îl citește singură. Fereastra ca a facturilor.
+    qt = ("SELECT t.factura_id AS fid, t.cota AS cota, SUM(t.tva) AS tva FROM factura_tva_cote t JOIN facturi f ON f.id = t.factura_id "
+          "WHERE f.directie = 'primita' AND f.data_emitere >= %s AND f.data_emitere < %s GROUP BY t.factura_id, t.cota")
+    tva_fact = {}
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        for rr in _repo.sql(cur, qt, inceput, sfarsit):
+            tva_fact.setdefault(rr["fid"], {})[int(Decimal(str(rr["cota"])))] = Decimal(str(rr["tva"]))   # cota = procent întreg (BT-119)
 
     from core import sume_lei as _sl
     for r in rows:
@@ -163,9 +172,20 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
             c = int(Decimal(str(l["cota"])))
             pe_cota[c] = pe_cota.get(c, Decimal(0)) + Decimal(str(l["baza"]))
         if pe_cota:
+            # [C79] achiziția cu defalcarea furnizorului pe aceleași cote ca liniile -> TVA-ul facturii; altfel baza x cota
+            tf = tva_fact.get(r["fid"]) if not emisa and not ti else None
+            ale_facturii = bool(tf) and {c for c, t in tf.items() if t} <= set(pe_cota) and {c for c in pe_cota if c > 0} <= set(tf)
+            # [lotul 11, C81] la valută, TVA-ul în lei de pe factură (BT-111 -> `facturi.tva_lei`) x partea cotei din TVA-ul în valută
+            _tv = sum(tf.values(), Decimal(0)) if ale_facturii else Decimal(0)
+            _bt111 = (Decimal(str(r["tva_lei"])) if (_tv and r["tva_lei"] is not None
+                                                      and (r["moneda"] or "RON").strip().upper() != "RON") else None)
             for cota, baza in pe_cota.items():
                 baza = baza * _curs   # [A1] baza IN LEI
-                add(bucket, cota, baza, baza * Decimal(cota) / Decimal(100))
+                if ale_facturii:
+                    tva_c = (_bt111 * tf[cota] / _tv) if _bt111 is not None else tf[cota] * _curs
+                else:
+                    tva_c = baza * Decimal(cota) / Decimal(100)
+                add(bucket, cota, baza, tva_c)
         else:
             total, tva = _sl.antet_lei(r)   # [A1] antet IN LEI
             baza = total - tva
@@ -215,7 +235,7 @@ def _incasari_independent(conn, inceput, sfarsit):
     # [decizia A 02.10] facturile emise pe baza bonurilor se scad din luna bonului (Î1 „cu excepția celor pentru care s-au
     # emis facturi”) — SQL propriu, pe data bonului; doar facturi declarabile, documente fiscale (RON: baza = cant x preț)
     qf = ("SELECT date_trunc('month', f.bon_fiscal_data) AS luna, l.cota_tva AS cota, "
-          "SUM(ROUND(l.cantitate * l.pret_unitar, 2)) AS baza "
+          "SUM(COALESCE(l.valoare_neta, ROUND(l.cantitate * l.pret_unitar, 2))) AS baza "   # [lotul 11, C82] BT-131 al liniei
           "FROM facturi f JOIN factura_linii l ON l.factura_id = f.id "
           "WHERE " + _fc.clauza_din_bon("f") + " "
           "AND f.bon_fiscal_data >= %s AND f.bon_fiscal_data < %s "

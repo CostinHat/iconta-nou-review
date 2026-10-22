@@ -118,6 +118,23 @@ CAMPURI = {
     "cont_amort": ("cont amortizare", "cont amort"),
     "cd": ("cercetare*", "c d", "destinat cd", "destinatie cd"),
 }
+#: [lotul 11] numele câmpului în refuzul coloanelor ambigue (`import_tabel.coloana`), în limba contabilului — nu cheia internă
+#: (garda: core/test_lot11_import_etichete_camp.py)
+ETICHETE_CAMP = {
+    "cod": "numărul de inventar",
+    "denumire": "denumirea mijlocului fix",
+    "rezidual": "valoarea reziduală",
+    "ramas": "valoarea rămasă",
+    "amortizat": "amortizarea înregistrată",
+    "valoare": "valoarea de intrare",
+    "valoare_inventar": "valoarea de inventar",
+    "durata": "durata de amortizare",
+    "pif": "data punerii în funcțiune",
+    "metoda": "metoda de amortizare",
+    "cont_imob": "contul de imobilizare",
+    "cont_amort": "contul de amortizare",
+    "cd": "destinația cercetare-dezvoltare",
+}
 
 
 def extrage(continut, nume_fisier="", data_preluare=None):
@@ -134,7 +151,7 @@ def extrage(continut, nume_fisier="", data_preluare=None):
         if isinstance(e, _it.ColoaneAmbigue):
             raise
         raise ValueError("nu se găsește coloana denumire mijloc fix - fișier nerecunoscut")
-    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=camp)
+    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=ETICHETE_CAMP[camp])
     i_den = col("denumire")
     i_cod = col("cod", (i_den,))
     # rezidual si ramas se identifica INTAI, ca „valoare reziduala" / „valoare ramasa" sa nu fie luate drept

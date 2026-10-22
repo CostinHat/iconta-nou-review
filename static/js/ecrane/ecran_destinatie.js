@@ -9,9 +9,11 @@
 // navigator; iar după salvare, ecranul de destinație oferă singur „Înapoi la <formular>” (`inapoiLa`).
 // Gard: `core/test_refuz_spre_ecran.py` (fiecare `ecran` emis de server are intrare aici, și fiecare ecran care afișează un
 // astfel de refuz trece prin `butonSpreEcran`).
-import { randeazaDateFirma } from "./date_firma.js?v=7e69049acd";
-import { panouConectareSPV } from "./setari.js?v=6a36388d13";
-import { randeazaProduse } from "./produse_ecran.js?v=347a522a06";
+import { randeazaDateFirma } from "./date_firma.js?v=78225b288d";
+import { panouConectareSPV } from "./setari.js?v=2961546bb5";
+import { randeazaProduse } from "./produse_ecran.js?v=ab6276b830";
+import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=39e1f9f1fd";   // [lotul 11, decizia 10.3] fișa partenerului
+import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";            // [lotul 11, decizia 10.3] întocmitorul bilanțului
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export const ECRANE = {
@@ -23,7 +25,24 @@ export const ECRANE = {
   // [deficiența 274a] articolul fără cotă TVA în nomenclator trimite aici (emiterea facturii)
   produse: {
     titlu: "Produse",
-    deschide: (nav, tenantId) => nav.deschide("Produse", (c2) => randeazaProduse(c2, nav, tenantId)),
+    // [445] `inapoiLa` trece și aici (produse_ecran.js îl primește în `opt`; drumul înapoi îl spune oricum săgeata ferestrei)
+    deschide: (nav, tenantId, inapoiLa, camp) => nav.deschide("Produse", (c2) => randeazaProduse(c2, nav, tenantId, { inapoiLa, camp })),
+  },
+  // [lotul 11, decizia Costin 10.3] „refuzul declarației trimite direct acolo”: fișa partenerului (camp = „partener:<cheie>:<camp>”)
+  clienti: {
+    titlu: "Clienți",
+    deschide: (nav, tenantId, inapoiLa, camp) => nav.deschide("Clienți", (c2) => ecranClienti(c2, nav, { id: tenantId }, { inapoiLa, camp }), { lat: "tabel" }),
+  },
+  furnizori: {
+    titlu: "Furnizori",
+    deschide: (nav, tenantId, inapoiLa, camp) => nav.deschide("Furnizori", (c2) => ecranFurnizori(c2, nav, { id: tenantId }, { inapoiLa, camp }), { lat: "tabel" }),
+  },
+  // [lotul 11, decizia 10.3] întocmitorul bilanțului e în profilul cabinetului (îl scrie administratorul)
+  date_cabinet: {
+    titlu: "Date cabinet",
+    numaiAdmin: true,
+    faraDrept: "Întocmitorul bilanțului îl completează administratorul cabinetului (Setări cont → Date cabinet).",
+    deschide: (nav, _tenantId, inapoiLa, camp) => nav.deschide("Date cabinet", (c2) => panouIntocmitor(c2, { inapoiLa, camp, nav })),
   },
   conectare_spv: {
     titlu: "Conectare SPV",
@@ -56,7 +75,14 @@ export function butonSpreEcran(zona, ecran, nav, tenantId, opt = {}) {
   b.textContent = `Deschide ${e.titlu}`;
   // [retest 08.10, completarea pct.2] „trebuie să ducă direct la secțiunea «Chitanțe», cu câmpul seriei în focus”: refuzul numește
   // câmpul (`detail.camp_ecran`, tabela `core/mesaje.CAMP_ECRAN_PE_COD`), iar ecranul-țintă îl aduce în vedere și îi dă focus
-  b.addEventListener("click", () => e.deschide(nav, tenantId, opt.inapoiLa || null, opt.camp || null));
+  // [lotul 11, deficiența 445: „orice buton «Deschide X» dintr-un refuz întoarce în formularul de plecare, cu datele intacte.”] navigatorul
+  // află că deschiderea vine dintr-un refuz (`nav.dinRefuz`): formularul de dedesubt se păstrează oricum, săgeata destinației spune
+  // „Înapoi la <formular>”, iar X întoarce acolo; `inapoiLa` implicit = titlul ferestrei de plecare (și pentru butonul pus automat de api.js)
+  b.addEventListener("click", () => {
+    const inapoiLa = opt.inapoiLa || (typeof nav.titluCurent === "function" && nav.titluCurent()) || null;
+    if (typeof nav.dinRefuz === "function") nav.dinRefuz();
+    e.deschide(nav, tenantId, inapoiLa, opt.camp || null);
+  });
   zona.appendChild(b);
   return b;
 }

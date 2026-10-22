@@ -230,16 +230,21 @@ def control_fiscal_depusa_extern(tenant_id, corp, ctx):
     _uc_comun._schema_sau_404(ctx, tenant_id)
     tip, an, luna = _perioada(corp)
     azi = azi_ro()
+    # [440, comanda Costin 11.1 pct.16] data și recipisa se judecă amândouă (`ErorileFormularului`); `camp` = numele din cerere
+    from core.erori import ErorileFormularului as _Erori
+    er = _Erori("Marcarea nu s-a salvat")
     try:
         data = datetime.date.fromisoformat(str(corp.get("data_depunere") or "")[:10])
     except ValueError:
-        raise _erori.DateInvalide("Scrie data depunerii (de pe recipisă).")
-    if data > azi:
+        data = None
+        er.camp("data_depunere", "Scrie data depunerii (de pe recipisă).")
+    if data is not None and data > azi:
         from core.pdf_util import data_ro   # formatorul canonic al datelor pentru ochi (DS cap.4)
-        raise _erori.DateInvalide("Data depunerii (%s) e în viitor." % data_ro(data))
+        er.camp("data_depunere", "Data depunerii (%s) e în viitor." % data_ro(data))
     recipisa = (str(corp.get("recipisa") or "").strip() or None)
     if recipisa and len(recipisa) > 100:
-        raise _erori.DateInvalide("Numărul recipisei are peste 100 de caractere.")
+        er.camp("recipisa", "Numărul recipisei are peste 100 de caractere.")
+    er.refuza()
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             cur_dep = repo_control_fiscal_api.select_depusa_curenta(cur, tenant_id, an, luna, tip)

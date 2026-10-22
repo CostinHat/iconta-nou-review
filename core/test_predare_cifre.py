@@ -118,3 +118,67 @@ def test_CALIBRARE_blocul_NU_poarta_ora_masuratorii():
     assert not ceas, "blocul poartă o oră (%s) — s-ar schimba la fiecare rulare" % ceas
     data = re.findall(r"\b20\d{2}-\d{2}-\d{2}\b", bloc)
     assert not data, "blocul poartă o dată (%s) — la fel" % data
+
+
+# [lotul 11, suita a doua, 22.10.2026] Contorul `tenant_schema_seq` e o cifră a blocului de mai sus, iar `rollback` nu întoarce o secvență:
+# `test_lot11_p2_surse_unice` (+2) și `test_lot11_a459_cui` (+4) creau firme în tranzacție întoarsă fără să-l readucă, iar suita a doua a
+# mutat blocul 363 -> 369. Reparația e fixtura `contor_schema_pastrat` (core/conftest.py); garda o cere oricărei funcții de test sau
+# fixturi care creează o firmă — `provision_tenant(...)` sau un `.post(...)` pe rutele care creează (`/tenants`, `/migrare/importa`,
+# `/auth/register`) — dacă nu readuce singură contorul (`setval` în corpul ei). LIMITA: nu vede o creare ascunsă într-un ajutor din alt
+# fișier, chemat din test (o măsoară direct suita: blocul de mai sus pică la poartă).
+_RUTE_CARE_CREEAZA = ("/tenants", "/migrare/importa", "/auth/register")
+
+
+def functii_care_creeaza_firme_fara_readucere(text):
+    """PURĂ. Numele funcțiilor (teste / fixturi) care creează o firmă fără `contor_schema_pastrat` și fără `setval` propriu."""
+    import ast
+    rele = []
+    for f in ast.walk(ast.parse(text)):
+        if not isinstance(f, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        creeaza = False
+        for n in ast.walk(f):
+            if not isinstance(n, ast.Call):
+                continue
+            nume = getattr(n.func, "attr", None) or getattr(n.func, "id", None)
+            if nume == "provision_tenant":
+                creeaza = True
+            elif nume == "post" and n.args and isinstance(n.args[0], ast.Constant) and n.args[0].value in _RUTE_CARE_CREEAZA:
+                creeaza = True
+        if not creeaza:
+            continue
+        argumente = {a.arg for a in f.args.args}
+        proprii = any(isinstance(c, ast.Constant) and isinstance(c.value, str) and "setval" in c.value for c in ast.walk(f))
+        if "contor_schema_pastrat" not in argumente and not proprii:
+            rele.append(f.name)
+    return rele
+
+
+def test_orice_test_care_creeaza_firme_readuce_contorul_de_scheme():
+    """MUTAȚIE: `contor_schema_pastrat` scos din `firma_a` (core/test_lot11_a459_cui.py) -> pică."""
+    import glob
+    import re
+    rele, vazute = [], 0
+    for cale in sorted(glob.glob(os.path.join(_RAD, "core", "test_*.py"))):
+        text = io.open(cale, encoding="utf-8").read()
+        if "provision_tenant" not in text and not any(r in text for r in _RUTE_CARE_CREEAZA):
+            continue
+        if re.search(r"setval\(.{0,40}(tenant_schema_seq|SECVENTA_SCHEMA)|(tenant_schema_seq|SECVENTA_SCHEMA).{0,80}setval", text, re.S):
+            vazute += 1   # fișierul își readuce singur contorul (fixtura lui proprie: c2, rute_fiscale_lot3b, tenant_stergere)
+            continue
+        vazute += 1
+        rele += ["%s::%s" % (os.path.relpath(cale, _RAD), n) for n in functii_care_creeaza_firme_fara_readucere(text)]
+    assert vazute >= 5, vazute   # anti-vacuu: la 22.10.2026 cel puțin a459, p2, c2, rute_fiscale_lot3b, tenant_stergere
+    assert not rele, ("teste care creează o firmă și nu readuc `tenant_schema_seq` (cer fixtura `contor_schema_pastrat`):\n  "
+                      + "\n  ".join(rele))
+
+
+def test_garda_contorului_nu_e_vida():
+    rau = "def test_a(c):\n    tp.provision_tenant(c, 'X', '1', 1, 1, '')\n"
+    ruta = "def test_b(client):\n    client.post('/tenants', json={})\n"
+    bun = ("def test_c(c, contor_schema_pastrat):\n    tp.provision_tenant(c, 'X', '1', 1, 1, '')\n"
+           "def test_d(cur):\n    tp.provision_tenant(cur, 'X', '1', 1, 1, '')\n    cur.execute('SELECT setval(%s, %s, %s)')\n"
+           "def test_e(client):\n    client.post('/alt', json={})\n")
+    assert functii_care_creeaza_firme_fara_readucere(rau) == ["test_a"]
+    assert functii_care_creeaza_firme_fara_readucere(ruta) == ["test_b"]
+    assert functii_care_creeaza_firme_fara_readucere(bun) == []

@@ -1,0 +1,14 @@
+[
+  {"fisier": "core/contare_facturi.py",
+   "ancora": "        tva_factura = tva_facturii_pe_cote(cur, schema, f, linii)   # [lotul 11, C79] TVA-ul de pe factura furnizorului",
+   "inlocuire": "        tva_factura = None",
+   "test": "frontend_test/e2e/e2e_lot11_y.py::test_def_c79_nota_si_d300_iau_tva_ul_de_pe_factura_furnizorului"},
+  {"fisier": "core/uc_tenants.py",
+   "ancora": "    repo_efactura.salveaza_tva_cote(cur, schema, fid, f.get(\"tva_cote\"))",
+   "inlocuire": "    pass",
+   "test": "frontend_test/e2e/e2e_lot11_y.py::test_def_c79_nota_si_d300_iau_tva_ul_de_pe_factura_furnizorului"},
+  {"fisier": "core/d300.py",
+   "ancora": "                segmente = _cu_tva_facturii(segmente, f[\"tva_factura\"], f)",
+   "inlocuire": "                pass",
+   "test": "frontend_test/e2e/e2e_lot11_y.py::test_def_c79_nota_si_d300_iau_tva_ul_de_pe_factura_furnizorului"}
+]

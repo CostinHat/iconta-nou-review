@@ -33,6 +33,43 @@ from core import spv_conector
 MESAJ_FARA_TOKEN = ("Cabinetul nu e conectat la SPV, deci factura nu poate pleca la ANAF. Conectarea se face o singură dată, din "
                     "Setări cont → Conectare SPV, cu certificatul digital al administratorului.")
 
+#: [lotul 11, C86] factura EMISĂ venită din XML-ul e-Factura (`/import-efactura`) — sursa unică a refuzului (ecranul îl arată în locul
+#: butonului „Trimite în SPV”, ruta îl întoarce cu `COD_DIN_EFACTURA`)
+MESAJ_DIN_EFACTURA = ("Factura a venit din e-Factura: e deja transmisă în SPV de programul care a emis-o (aplicația are XML-ul ei). Nu se "
+                      "mai trimite de aici — XML-ul s-ar reface din cantitate × preț, iar aceeași factură ar ajunge de două ori în SPV.")
+COD_DIN_EFACTURA = "FACTURA_DIN_EFACTURA"
+#: [lotul 11, C86] eticheta de pe ecran (detaliul facturii, în locul butonului „Trimite în SPV”; `facturi_api._cu_stare_spv` o pune în
+#: `din_efactura`)
+ETICHETA_DIN_EFACTURA = "a venit din e-Factura: e deja transmisă în SPV"
+
+
+def refuz_din_efactura(conn, schema, factura_id):
+    """[lotul 11, C86] None, sau refuzul trimiterii unei facturi EMISE venite din XML-ul e-Factura: {"stare": "din_efactura", "cod", "mesaj"}.
+
+    Factura importată a fost emisă și transmisă în altă parte: OUG 120/2021 art.4 alin.(3) „Factura electronică se transmite de către
+    emitent în sistemul național privind factura electronică RO e-Factura.”, iar alin.(6) „Exemplarul original al facturii electronice se
+    consideră fișierul de tip XML însoțit de sigiliul electronic al Ministerului Finanțelor.” Originalul există deja; o încărcare din
+    aplicație ar pune în SPV a doua factură electronică cu același număr, cu XML-ul refăcut din cantitate × preț (regulă de produs: dublura
+    în SPV — legea nu are un text „o singură dată”; corecția se face prin stornare, care e o factură nouă și pleacă în SPV, art.4 alin.(10)).
+    Discriminatorul e cel al recunoașterii (`uc_tenants.factura_recunoaste`): `facturi.xml`, pe care îl scrie numai importul
+    (`uc_comun._factura_din_parsat`), niciodată emiterea din aplicație (`facturi_api.creeaza_factura`).
+
+    [lotul 11, AT] Refuzul e o AFIRMAȚIE TIPATĂ (`afirmatii.afirmatie`, decizia 21.08.2026): `fapt` despre factură (`unde` = factura) — a
+    venit din e-Factura —, cu `temei_completitudine` = discriminatorul de mai sus. `motiv` = același text ca `mesaj` (ecranul citește
+    `mesaj`, `api.js`); `stare` și `cod` rămân, pentru `trimite` și pentru ruta care îl întoarce întreg în 409."""
+    from core import repo_facturi as _rf
+    with conn.cursor() as cur:
+        r = _rf.stare_pentru_recunoastere(cur, schema, factura_id)   # (status, directie, din_import)
+    if r and r[1] == "emisa" and r[2]:
+        from core import afirmatii as _af
+        from core.unde import Unde as _Unde
+        return _af.afirmatie("fapt", "factura din e-Factura", MESAJ_DIN_EFACTURA, unde=_Unde("factura", factura_id),
+                             temei_completitudine="factura emisă are XML-ul e-Factura importat, pe care îl păstrează numai importul, "
+                                                  "niciodată emiterea din aplicație",
+                             stare="din_efactura", cod=COD_DIN_EFACTURA, mesaj=MESAJ_DIN_EFACTURA)
+    return None
+
+
 def incarca_factura(conn, schema, factura_id):
     """
     Citeste factura + linii + emitent (firma_profil) + cumparator (tert_* pe factura),
@@ -50,6 +87,9 @@ def incarca_factura(conn, schema, factura_id):
         from core import tva_incasare as _tvi
         factura = dict(factura)
         factura["tva_la_incasare"] = factura.get("directie") == "emisa" and _tvi.regim(cur, schema, factura_id) == _tvi.REGIM_INCASARE
+        # [lotul 11] statutul clientului (plătitor de TVA), înghețat pe factură la emitere: decide BT-48 / BT-47 (`efactura_send`)
+        from core import repo_tva_incasare as _rti
+        factura["tert_platitor_tva"] = (_rti.factura(cur, schema, factura_id) or {}).get("tert_platitor_tva")
     if not furnizor:
         raise ValueError("Datele firmei emitente nu sunt completate: completează-le în Date firmă înainte de a trimite factura.")
     if not linii:
@@ -62,6 +102,7 @@ def incarca_factura(conn, schema, factura_id):
         "judet": factura.get("tert_judet"),
         "cod_postal": None,   # cod postal cumparator: inca nestructurat (optional BT-53)
         "tara": (factura.get("tert_tara") or "RO").strip().upper() or "RO",   # [274b] BT-55 (și BT-80 la livrarea intracomunitară)
+        "platitor_tva": factura.get("tert_platitor_tva"),   # [lotul 11] True / False / None (necunoscut) — BT-48 numai la True
     }
     return dict(factura), [dict(l) for l in linii], dict(furnizor), client
 
@@ -110,6 +151,8 @@ def _ora_ro(t):
 def trimite(schema, factura_id, principal, mediu="test"):
     """
     Trimite o factura in SPV cu PORTILE IN ORDINE FIXA (niciuna sarita):
+      0) [lotul 11, C86] FACTURA DIN E-FACTURA: factura emisă venită din XML (importată) e deja transmisă de emitent -> stare='din_efactura'
+         (`refuz_din_efactura`), înainte de orice: nici token, nici XML refăcut.
       1) TOKEN VIU: principalul are token activ? altfel stare='fara_token' (conecteaza ANAF intai).
       2) VALIDARE/FACT1 (Regula 1): structura valida la validatorul ANAF? altfel stare='nevalidat'
          + erorile BR-RO, FARA upload. Diferentiatorul vs SmartBill: nu trimitem gunoi.
@@ -124,6 +167,10 @@ def trimite(schema, factura_id, principal, mediu="test"):
     # P0: citeste factura (XML-ul se genereaza dupa P0, cu clientul roman completat din ANAF; poate ridica EDateIncomplete /
     # NotImplementedError -> prinse de ruta)
     with db.get_conn() as conn:
+        # POARTA 0 [lotul 11, C86]: factura emisă venită din e-Factura nu se mai trimite (ar fi a doua oară în SPV)
+        din_ef = refuz_din_efactura(conn, schema, factura_id)
+        if din_ef:
+            return din_ef
         # POARTA 1: token viu?
         if spv_conector.ia_token_activ(conn, principal) is None:
             # [deficiența 289b] textul refuzului, în cuvintele contabilului; ruta îl trimite cu butonul spre Setări cont → Conectare SPV

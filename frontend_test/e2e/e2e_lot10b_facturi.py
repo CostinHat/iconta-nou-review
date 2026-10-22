@@ -18,6 +18,7 @@ from conftest import firma_noua, sql
 from e2e_bloc_a import AZI, ARTICOL, CLIENT, PRODUS, _api, _deschide_emiterea, _deschide_factura, _ok, articol_in_stoc, emite_api
 
 ZI_VALUTA = _dt.date(2026, 9, 4)
+ZI_CURS = _dt.date(2026, 9, 3)     # cursul comunicat în ziua anterioară facturii (CF art.290 alin.(2) + HG 1/2016 pct.35 alin.(1))
 
 
 @pytest.fixture(scope="module")
@@ -119,8 +120,12 @@ def test_def_417_detaliul_stornarii_trimite_la_factura_initiala(patron, firma_fa
     # CF art.330 alin.(1) lit.b): „se înscriu numărul și data facturii corectate”
     assert t == "Stornare factura %s din %s" % (_numar_pe_hartie(f["numar"]), AZI.strftime("%d.%m.%Y")), t   # AZI-dat-de-test (emite_api)
     pg.click("#fd-vezi-stornata")
+    # [lotul 11, deficiența 443, comanda Costin 11.1 pct.19: „seria și numărul se afișează separat peste tot (F6 nr. 1, nu F61)”] titlul
+    # detaliului facturii inițiale e „Factură E2EA nr. 5” (`numarCuSerie`), nu „Factură E2EA5”
+    from core.pdf_util import serie_nr
+    serie = sql('SELECT serie FROM "%s".facturi WHERE id = %%s' % firma_fac["schema"], (f["factura_id"],))[0][0]
     pg.wait_for_function("(x) => [...document.querySelectorAll('.fd-antet h2')].some((h) => h.textContent.trim() === x)",
-                         arg="Factură %s" % f["numar"], timeout=25000)
+                         arg="Factură %s" % serie_nr(serie, f["numar"]), timeout=25000)
     patron.captura("initiala")
 
 
@@ -130,7 +135,8 @@ def test_def_valuta_cursul_bnr_si_tva_in_lei_se_vad_inainte_de_emitere(patron, f
     emitere, „Curs BNR EUR <curs> din 04.09.2026”, „TVA în lei” și „Total în lei” -> „Emite factură” -> factura emisă are exact cursul,
     TVA-ul și totalul în lei arătate înainte."""
     s = firma_fac["schema"]
-    curs = Decimal(str(sql("SELECT curs FROM public.curs_bnr_zilnic WHERE moneda = 'EUR' AND data = %s", (ZI_VALUTA,))[0][0]))
+    # [lotul 11] HG 1/2016 pct.35 alin.(1): „cursul de schimb comunicat de respectiva bancă în ziua anterioară” — 03.09.2026
+    curs = Decimal(str(sql("SELECT curs FROM public.curs_bnr_zilnic WHERE moneda = 'EUR' AND data = %s", (ZI_CURS,))[0][0]))
     _deschide_emiterea(patron, firma_fac["nume"])
     pg = patron.pg
     assert pg.is_hidden("#em-valuta")   # la RON nu e nimic de convertit
@@ -150,7 +156,7 @@ def test_def_valuta_cursul_bnr_si_tva_in_lei_se_vad_inainte_de_emitere(patron, f
     t = " ".join(pg.inner_text("#em-valuta").split())
     patron.captura("inainte_de_emitere")
     curs_txt = ("%.4f" % curs).replace(".", ",")
-    assert "Curs BNR EUR %s din 04.09.2026" % curs_txt in t, t
+    assert "Curs BNR EUR %s din 03.09.2026" % curs_txt in t, t
     assert "TVA în lei %s lei" % tva_lei in t and "Total în lei %s lei" % total_lei in t, t
     with pg.expect_response(lambda r: r.url.endswith("/facturi/emite"), timeout=60000) as rr:
         pg.click("#em-emite")
@@ -158,7 +164,7 @@ def test_def_valuta_cursul_bnr_si_tva_in_lei_se_vad_inainte_de_emitere(patron, f
     pg.wait_for_selector("#em-rezultat.em-bun", timeout=20000)
     patron.captura("emisa")
     r = sql('SELECT curs_bnr, data_curs::text, tva_lei, total_lei FROM "%s".facturi WHERE id = %%s' % s, (fid,))[0]
-    assert r[1] == ZI_VALUTA.isoformat() and Decimal(str(r[0])) == curs, r
+    assert r[1] == ZI_CURS.isoformat() and Decimal(str(r[0])) == curs, r
     assert (_lei(r[2]), _lei(r[3])) == (tva_lei, total_lei), r   # ce s-a arătat înainte = ce s-a scris pe factură
 
 

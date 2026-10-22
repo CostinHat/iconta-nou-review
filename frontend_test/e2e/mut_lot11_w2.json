@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "      if (cereAlegerile(corp, [\"#c-cat\"])) _lipsa = true;\n      if (_lipsa) return;",
+  "inlocuire": "      if (_lipsa) return;\n      if (cereAlegerile(corp, [\"#c-cat\"])) return;",
+  "test": "frontend_test/e2e/e2e_lot11_w2.py::test_def_440_casa_data_tipul_si_suma_lipsa_toate_deodata"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "      if (alegereLipsa) {\n        // [lotul 11, 440] alegerile lipsă opresc trimiterea",
+  "inlocuire": "      if (alegereLipsa) { return;\n        // [lotul 11, 440] alegerile lipsă opresc trimiterea",
+  "test": "frontend_test/e2e/e2e_lot11_w2.py::test_def_440_nir_alegerile_si_campurile_articolului_toate_deodata"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "    if (cereCompletate(corp, [{ id: \"pcf-simbol\", mesaj: \"Completează simbolul contului (ex. 4111.01).\" },\n      { id: \"pcf-denumire\", mesaj: \"Completează denumirea contului.\" }])) return;",
+  "inlocuire": "    if (!simbol) { eroareCamp(\"pcf-simbol\", \"Completează simbolul contului (ex. 4111.01).\"); return; }\n    if (!denumire) { eroareCamp(\"pcf-denumire\", \"Completează denumirea contului.\"); return; }",
+  "test": "frontend_test/e2e/e2e_lot11_w2.py::test_def_440_plan_de_conturi_simbolul_si_denumirea_lipsa_se_vad"
+ },
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "const _SELECTOR_DATA = 'input[type=\"date\"]",
+  "inlocuire": "const _SELECTOR_DATA = 'input[type=\"nicio-data\"]",
+  "test": "frontend_test/e2e/e2e_lot11_w2.py::test_def_441_registratura_data_se_goleste_si_ia_data_zilei"
+ },
+ {
+  "fisier": "static/js/ecrane/produse_ecran.js",
+  "ancora": "  if (opt.dupaSalvare && opt.inapoiLa && nav && nav.inapoi) {",
+  "inlocuire": "  if (false) {",
+  "test": "frontend_test/e2e/e2e_lot11_w2.py::test_def_445_deschide_produse_din_factura_salveaza_cota_si_intoarce_la_factura"
+ }
+]

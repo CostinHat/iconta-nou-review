@@ -49,17 +49,19 @@ def test_272_date_firma_refuza_alt_cui_si_lasa_acelasi(conn):
     assert (r["ok"], r.get("cod"), r.get("camp")) == (False, _fp.COD_CUI_NEMODIFICABIL, "cui"), r
     with conn.cursor() as cur:
         cur.execute("SELECT cui, telefon FROM firma_profil WHERE id = 1")
-        assert cur.fetchone() == ("RO14399840", None), "refuzul nu lasă nimic scris"
+        # [lotul 11, decizia 10.3] CUI-ul se păstrează fără „RO” (triggerul `trg_cui_fara_ro`): rândul de pornire e 14399840
+        assert cur.fetchone() == ("14399840", None), "refuzul nu lasă nimic scris"
     r = _fp.salveaza_date(conn, {"cui": "ro14399840 ", "telefon": "07"}, tenant_id=1, user_id=1)
     assert r["ok"], r
     with conn.cursor() as cur:
         cur.execute("SELECT cui, telefon FROM firma_profil WHERE id = 1")
-        assert cur.fetchone() == ("RO14399840", "07"), "același CUI trece, nerescris"
+        assert cur.fetchone() == ("14399840", "07"), "același CUI trece, nerescris"
 
 
 def test_272_corectura_cere_avertismentul_confirmat_si_cui_valid(conn):
     r = _fp.corecteaza_cui(conn, 1, "RO18547290", 1)
-    assert (r["cod"], r["avertisment"]) == ("CONFIRMARE_CERUTA", _fp.AVERTISMENT_CORECTURA_CUI % ("RO14399840", "RO18547290")), r
+    assert (r["cod"], r["avertisment"]) == ("CONFIRMARE_CERUTA", _fp.AVERTISMENT_CORECTURA_CUI % ("14399840", "18547290")), r
+    assert r["anaf"]["gasit"] is False and r["anaf"]["mesaj"].endswith(_fp.DE_VERIFICAT_FARA_ANAF), r   # [459] fără date ANAF: de verificat
     assert _fp.corecteaza_cui(conn, 1, "RO14399841", 1, confirmat=True)["camp"] == "cui"
     assert _fp.corecteaza_cui(conn, 1, "ro14399840", 1, confirmat=True)["cod"] == "CUI_NESCHIMBAT"   # același CUI, altă scriere
 

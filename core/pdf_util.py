@@ -18,6 +18,15 @@ def bani(x, mon=""):
     return f"{s} {mon}".strip()
 
 
+def sold(v):
+    """[lotul 11, C100] Soldul unui cont pentru om: „debitor 1.234,56 lei” / „creditor 500,00 lei” — nu „-500,00 lei” (semnul e al
+    calculului, nu al contabilului). Sursa unică: refuzul importului soldurilor pe parteneri și auditul de preluare."""
+    v = Decimal(str(v or 0))
+    if v == 0:
+        return bani(v, "lei")   # un sold zero n-are fel
+    return "%s %s" % ("debitor" if v > 0 else "creditor", bani(abs(v), "lei"))
+
+
 def diferenta(ce, declarat, recalculat, dif=None, sursa="în declarație"):
     """[Retest 2 pct.2] Un rând de diferență al porților de reconciliere, în cuvintele contabilului: „TVA colectată 21%:
     în declarație 9.999,00 lei, recalculat 1.500,00 lei (diferență 8.499,00 lei)” — nu „generator=9999 vs cale2=1500”. Sursa
@@ -45,6 +54,45 @@ def numar_cu_serie(serie, numar):
     ID-ul e-Factura către ANAF. Seria se pune în față numai când numărul n-o poartă deja."""
     nr, s = str(numar if numar is not None else ""), str(serie or "")
     return nr if (not s or nr.startswith(s)) else s + nr
+
+
+#: [lotul 11, deficiența 443] separatorii de la capătul seriei („KAI-”) nu intră în textul afișat: „KAI nr. 12”, nu „KAI- nr. 12”
+_SEPARATORI_SERIE = " -/._"
+
+
+def serie_nr(serie, numar):
+    """„F6 nr. 1” — seria și numărul unui document AFIȘATE SEPARAT, în orice text pe care îl citește omul (ecran, mesaj, PDF, descrierea
+    notei). Sursa UNICĂ pentru afișare; oglinda JS e `numarCuSerie` din api.js.
+
+    [lotul 11, deficiența 443, comanda Costin 11.1 pct.19, verbatim] „seria și numărul se afișează separat peste tot (F6 nr. 1, nu F61)”.
+    Cauza: `numar_cu_serie` lipea seria de număr („F6” + „1” = „F61”, ambiguu cu seria „F” nr. 61), iar textul ăsta ajungea în
+    Registrul jurnal, în refuzuri și în listele de facturi. Numărul unei facturi emise poartă deja seria în față („F1A3” în seria „F1A”):
+    se taie, ca la `numar_in_serie`. Fără serie, numărul rămâne cum e („BA-1”, „12”).
+
+    `numar_cu_serie` rămâne NUMAI pentru IDENTIFICATORUL documentului (ID-ul facturii în e-Factura, BT-1 / BT-25), unde ANAF primește un
+    singur șir — garda `core/test_lot11_u0_serie_nr.py` numește locurile admise."""
+    nr = str(numar if numar is not None else "").strip()
+    s = str(serie or "").strip()
+    if not s or s == "-":
+        return nr
+    if nr.upper().startswith(s.upper()):
+        rest = nr[len(s):].lstrip(_SEPARATORI_SERIE)
+        if rest:
+            nr = rest
+    s = s.rstrip(_SEPARATORI_SERIE) or s
+    return "%s nr. %s" % (s, nr) if nr else s
+
+
+def forme_lipite(serie, numar):
+    """[lotul 11, 443 — datele existente; regula Costin 11.2 pct.3a: „Orice reparație acoperă și datele existente.”] Formele în care textele
+    scrise ÎNAINTE de 443 purtau numărul documentului cu seria lipită: `numar_cu_serie` („F1A3”, „F61”) și seria lipită de mână peste
+    numărul care o poartă deja („F6F61”, `contare_facturi` la diferența de preț a NIR-ului) — fără forma de acum (`serie_nr`). NUMAI ca să
+    fie RECUNOSCUTE în datele existente (`jurnal_api.fara_serie_lipita`: core/migrare_serie_nr_descrieri.py și Registrul jurnal), nu ca să
+    se scrie. Fără serie: nimic de recunoscut."""
+    s = str(serie or "").strip()
+    if not s or s == "-":
+        return set()
+    return {numar_cu_serie(serie, numar), s + str(numar if numar is not None else "").strip()} - {serie_nr(serie, numar), ""}
 
 
 def numar_in_serie(serie, numar):

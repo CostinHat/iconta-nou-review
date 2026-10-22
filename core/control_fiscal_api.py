@@ -701,7 +701,16 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
     term205 = scadente.scadenta_data("d205", Y)
     if term205 <= limita:
         fapt205, are_note = _ci.dividende_distribuite(conn_schema, schema, Y)
-        if fapt205:   # [lotul 10, deciziile A și B] afirmația tipată: distribuite (și neplătite), plătite, preluate din balanță
+        from core import d205 as _d205
+        _prel205 = _d205.dividende_preluate(conn_schema, Y) if fapt205 else None
+        if _prel205 and not _d205.completata_manual(conn_schema, schema, Y):
+            # [lotul 11, decizia Costin 10.3, verbatim în DECIZII] „Semaforul D205 numără 457 preluat ca incomplet până la completarea
+            # manuală.” Generarea automată e refuzată pe anul ăsta (`d205.refuz_preluate`): fără beneficiarii scriși manual D205 nu are
+            # cum să fie „de depus” ca celelalte, deci stă la „nu se poate verifica”, cu motivul; depusă sau în coadă cu beneficiarii
+            # manuali, redevine obligație obișnuită (verde la depunere).
+            neclar.append(_af.afirmatie("necunoastere", "d205", _d205.motiv_incomplet_preluate(Y, _prel205),
+                                        domeniu_de=f"{Y}-01", domeniu_pana=f"{Y}-12"))
+        elif fapt205:   # [lotul 10, deciziile A și B] afirmația tipată: distribuite (și neplătite), plătite, preluate din balanță
             datorate.append({"tip": "d205", "an": Y, "luna": 12, "perioada": perioada_canonica(Y, 12, "an"),
                              "termen": term205.isoformat(), "fapt": fapt205["motiv"], "afirmatie": fapt205})
         elif are_note:

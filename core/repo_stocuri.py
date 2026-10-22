@@ -41,3 +41,43 @@ def miscari_ale_articolului(cur, schema, articol_id):
     cur.execute(f"""SELECT id, data, tip, cantitate, pret_unitar, valoare, document, anuleaza_id FROM {schema}.miscari_stoc
                     WHERE articol_id=%s ORDER BY data, id""", (articol_id,))
     return [dict(r) for r in cur.fetchall()]
+
+
+# ── [lotul 11, subagentul x — regula straturilor] SQL-ul NIR-ului cu număr repetat (decizia 10.3, `uc_tenants.stocuri_adauga` /
+# `_nir_cu_numarul`) și al articolului ales din nomenclator (450, `uc_tenants.achizitie_neinregistrat` / `borderou_storneaza`), mutat din
+# use-case fără schimbare de comportament.
+def blocheaza_nir_urile(cur, schema):
+    """NIR-urile firmei se scriu unul după altul: lacăt pe tranzacție."""
+    cur.execute("SELECT pg_advisory_xact_lock(hashtext(%s))", (schema + ":nir",))
+
+
+def nir_cu_numarul(cur, schema, numar_normalizat, an, refacut_din_id):
+    """NIR-ul care poartă `numar_normalizat` (majuscule, spațiile strânse) în `an`, altul decât `refacut_din_id` și neînlocuit de o refacere:
+    (numar, data, furnizor) — rândul cursorului — sau None."""
+    cur.execute(f"""SELECT n.numar, n.data, n.furnizor FROM {schema}.nir n
+                    WHERE upper(regexp_replace(btrim(n.numar), '\\s+', ' ', 'g')) = %s AND EXTRACT(YEAR FROM n.data) = %s
+                      AND n.id IS DISTINCT FROM %s
+                      AND NOT EXISTS (SELECT 1 FROM {schema}.nir r WHERE r.refacut_din_id = n.id)
+                    ORDER BY n.data, n.id LIMIT 1""", (numar_normalizat, int(an), refacut_din_id))
+    return cur.fetchone()
+
+
+def savepoint_nir_numar_repetat(cur):
+    """NIR-ul cu numărul repetat se verifică (toate refuzurile lui, 440) fără să se scrie nimic."""
+    cur.execute("SAVEPOINT nir_numar_repetat")
+
+
+def inapoi_la_nir_numar_repetat(cur):
+    cur.execute("ROLLBACK TO SAVEPOINT nir_numar_repetat")
+
+
+def articolul_ales(cur, schema, articol_id):
+    """Articolul din nomenclator: id, denumire, um (sau None)."""
+    cur.execute("SELECT id, denumire, um FROM %s.articole WHERE id = %%s" % schema, (int(articol_id),))
+    return cur.fetchone()
+
+
+def denumirea_articolului(cur, schema, articol_id):
+    """Rândul cu `denumire` al articolului (sau None)."""
+    cur.execute(f"SELECT denumire FROM {schema}.articole WHERE id = %s", (articol_id,))
+    return cur.fetchone()

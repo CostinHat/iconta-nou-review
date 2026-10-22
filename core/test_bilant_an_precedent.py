@@ -39,6 +39,14 @@ def cur():
             conn.rollback()
 
 
+def _intocmitor(monkeypatch):
+    """[lotul 11, decizia Costin 10.3: „calitatea întocmitorului în profilul cabinetului, interesul public în Date firmă; ambele blochează
+    dacă lipsesc”] Firma sintetică n-are cabinet (`public.tenants`): întocmitorul vine ca din profilul unui cabinet completat. Testul nu e
+    despre întocmitor (păzit de core/test_lot11_p_bilant_intocmitor.py)."""
+    monkeypatch.setattr(ba, "intocmitor_cabinet", lambda *a, **k: {"calit_intocmit": 22, "intocmit_nume": "CABINET PROBA SRL",
+                                                                     "cif_intocmit": "14399840", "nri_intocmit": "12345"})
+
+
 def _nota(c, zi, debit, credit, suma):
     c.execute("INSERT INTO inregistrari (data, status, sursa, descriere) VALUES (%s, 'validata', 't', 'Probă') RETURNING id", (zi,))
     c.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, %s, %s, %s)",
@@ -129,7 +137,8 @@ def test_fara_sursa_nu_se_genereaza_iar_manualul_se_spune(cur, monkeypatch):
     assert re.search(r"completată manual de (.+?), la ", av[0]).group(1) == "Contabil Probă", av          # cine
     assert re.findall(r"bilanțul depus pe (\d{4})", av[0]) == ["2025"], av                              # față de ce se verifică
     cur.execute("UPDATE firma_profil SET reg_com = 'J40/1/2020', declarant_nume = 'Popescu', declarant_prenume = 'Ion', judet = 'B', "
-                "mare_contribuabil = false, forma_proprietate = '35' WHERE id = 1")  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
+                "mare_contribuabil = false, forma_proprietate = '35', interes_public = false WHERE id = 1")  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă; [lotul 11] interes_public
+    _intocmitor(monkeypatch)
     xml, _ = ba.genereaza(cur.connection, _SCHEMA, 2026)
     assert re.findall(r'\bF10_0081="(\d+)"', xml) == ["4321"] and re.findall(r'\bF10_0082="(\d+)"', xml) == ["10000"], xml[:600]
     with pytest.raises(ValueError, match="nu se poate întocmi"):
@@ -266,7 +275,8 @@ def test_primul_exercitiu_coloana_an_precedent_ramane_goala(cur, monkeypatch):
     from core import duk, erori
     cur.execute("UPDATE firma_profil SET data_infiintare = '2025-03-15', reg_com = 'J40/1/2025', caen = '6202', adresa = 'Str 1', "
                 "oras = 'Buc', judet = 'B', declarant_nume = 'Popescu', declarant_prenume = 'Ion', declarant_functie = 'ADMINISTRATOR', "
-                "mare_contribuabil = false, forma_proprietate = '35' WHERE id = 1")  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
+                "mare_contribuabil = false, forma_proprietate = '35', interes_public = false WHERE id = 1")  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă; [lotul 11] interes_public
+    _intocmitor(monkeypatch)
     _nota(cur, datetime.date(2025, 3, 20), "5121", "1012", Decimal("1000"))
     cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2025)
     assert cp["sursa"] == {"F10": "primul_exercitiu", "F20": "primul_exercitiu", "F30": "primul_exercitiu"} and cp["F10"] == {} \

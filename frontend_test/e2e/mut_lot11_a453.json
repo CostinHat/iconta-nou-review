@@ -1,0 +1,26 @@
+[
+ {
+  "fisier": "core/salarizare.py",
+  "ancora": "    ded_baza = leu_aritmetic(ded_baza)",
+  "inlocuire": "    ded_baza = ded_baza",
+  "test": "frontend_test/e2e/e2e_lot11_a453.py::test_def_453_deducerea_rotunjita_pe_stat_fluturas_si_d112"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "            \"ded\": baza_ded + tineri + copii, \"ded_baza\": baza_ded,",
+  "inlocuire": "            \"ded\": 0, \"ded_baza\": 0,",
+  "test": "frontend_test/e2e/e2e_lot11_a453.py::test_def_453_deducerea_rotunjita_pe_stat_fluturas_si_d112"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "      ${camp(\"cnp\", \"CNP\", \"text\", { obligatoriu: true })}",
+  "inlocuire": "      ${camp(\"cnp\", \"CNP\", \"text\")}",
+  "test": "frontend_test/e2e/e2e_lot11_a453.py::test_def_454_salariat_nou_toate_erorile_deodata_cnp_si_norma_obligatorii"
+ },
+ {
+  "fisier": "core/salariati_api.py",
+  "ancora": "    if cnp and \"cnp\" not in cu_eroare:",
+  "inlocuire": "    if False:",
+  "test": "frontend_test/e2e/e2e_lot11_a453.py::test_def_454_salariat_nou_toate_erorile_deodata_cnp_si_norma_obligatorii"
+ }
+]

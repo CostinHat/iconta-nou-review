@@ -74,6 +74,17 @@ CAMPURI = {
     "metoda": ("metoda*", "=cont", "mod*"),
     "document": ("document*", "factura*", "chitanta*"),
 }
+#: [lotul 11] numele câmpului în refuzul coloanelor ambigue (`import_tabel.coloana`), în limba contabilului — nu cheia internă
+#: (garda: core/test_lot11_import_etichete_camp.py)
+ETICHETE_CAMP = {
+    "data": "data operațiunii",
+    "tip": "tipul operațiunii",
+    "explicatie": "explicația",
+    "suma": "suma operațiunii",
+    "categorie": "categoria",
+    "metoda": "metoda de plată",
+    "document": "documentul",
+}
 
 
 def extrage(continut, nume_fisier=""):
@@ -90,7 +101,7 @@ def extrage(continut, nume_fisier=""):
     if not randuri or all(_it.rand_gol(r) for r in randuri):
         return []
     antet, start = _it.gaseste_antet(randuri, CAMPURI, obligatorii=("data",), nume_fisier=nume_fisier)
-    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=camp)
+    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=ETICHETE_CAMP[camp])
     i_data = col("data")
     i_tip  = col("tip", (i_data,))
     i_expl = col("explicatie")

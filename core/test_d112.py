@@ -165,7 +165,11 @@ def test_d112_ruteaza_cotele_prin_cote_nu_literale():
     assert "_cota_cas" in src and "_cota_cass" in src and "_cota_imp" in src and "_cota_cam" in src
     psrc = inspect.getsource(d112.pull)
     assert "prag_zile * 0.25" not in psrc and "prag_zile * 0.10" not in psrc
-    assert 'cota("cas"' in psrc and 'cota("cass"' in psrc
+    # [lotul 11, C99] minimul part-time (B4_6P / B4_8P) se calculează într-un singur loc, `salarizare.calcul_salariu`, iar `d112.pull`
+    # îl citește de acolo; cotele lui trec tot prin cota() — garda urmează calculul.
+    from core import salarizare
+    ssrc = inspect.getsource(salarizare._calcul_salariu_2018)   # corpul lui calcul_salariu
+    assert 'cota("cas"' in ssrc and 'cota("cass"' in ssrc
 
 
 def test_d112_cas_cass_valori_neschimbate_dupa_rutare():
@@ -208,10 +212,14 @@ def test_partime_minim_foloseste_d112int_nu_round_bancar():
     import inspect
     from core import d112
     src = inspect.getsource(d112.pull)
-    assert "prag_zile = round(" not in src
+    # [lotul 11, C99] pragul și contribuțiile minime se calculează în `salarizare` (`baza_minima_contributii` + `calcul_salariu`, cu
+    # `leu_aritmetic`, echivalentul lui `_d112int` — `core/test_lot0610_p3.py`); `pull` le citește din calcul tot prin `_d112int`.
+    from core import salarizare
+    psrc = inspect.getsource(salarizare.baza_minima_contributii) + inspect.getsource(salarizare._calcul_salariu_2018)
+    assert "round(" not in inspect.getsource(salarizare.baza_minima_contributii)
     assert 's["cas_min_pt"] = round(' not in src
     assert 's["cass_min_pt"] = round(' not in src
-    assert "prag_zile = _d112int(" in src
+    assert "leu_aritmetic(podea * cota_cas)" in psrc
     assert 's["cas_min_pt"] = _d112int(' in src
     assert 's["cass_min_pt"] = _d112int(' in src
 

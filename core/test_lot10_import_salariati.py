@@ -106,14 +106,17 @@ def test_def_420_salariatii_intra_marcati_si_confirmarea_ii_scoate_din_marcaj(co
 
 
 def test_420_reimportul_cu_propunere_nu_strica_fisa_confirmata(conn):
-    """Un reimport (același CNP) în care norma / funcția de bază sunt doar PROPUSE nu suprascrie ce a confirmat contabilul."""
+    """Un reimport (același CNP) în care norma / funcția de bază sunt doar PROPUSE nu suprascrie ce a confirmat contabilul.
+    [lotul 11, 420 — PIVOT, retestul Costin 21.10.2026: „norma și funcția de bază lipsă din fișier se pun tăcut. Trebuie […] marcate «de
+    verificat»”] valorile rămân, dar câmpurile lipsă din fișier se MARCHEAZĂ din nou: fișa nu deosebește o valoare confirmată de una pusă
+    tăcut de un import mai vechi (F6, 19.10.2026). Proba cazului F6: `core/test_lot11_m_salariati.py`."""
     from core import salariati_api as sa
     si.importa(conn, si.extrage(FARA_NORMA, "s.csv"))
     sid = _fisa(conn, CNP1)[0]
     sa.actualizeaza_salariat(conn, sid, tip_norma="partiala", ore_zi=4, functie_baza=False)
     # [426, clasa] reimportul pe CNP-uri existente actualizează fișele numai confirmat (`inlocuieste=True`)
     si.importa(conn, si.extrage(FARA_NORMA, "s.csv"), inlocuieste=True)
-    assert _fisa(conn, CNP1)[1:] == (True, 4, False, [])
+    assert _fisa(conn, CNP1)[1:] == (True, 4, False, ["tip_norma", "functie_baza"])
 
 
 def test_def_423b_rezumatul_numara_salariatii_de_verificat(conn):

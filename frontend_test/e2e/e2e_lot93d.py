@@ -34,7 +34,7 @@ def test_def_394_migrare_cabinet_incape_cu_cum_se_face_pliat(ecran):
     titlului); fereastra NU derulează (`scrollHeight <= clientHeight`) -> clic pe „Cum se face” -> textul (b) apare, cuvânt cu cuvânt.
     MUTAȚIA 1: în static/js/ecrane/migrare.js `<details class="dec-xml" id="mig-apl-cum">` ->
     `<details class="dec-xml" id="mig-apl-cum" open>` -> ROȘU („Cum se face” deschis la randare; și fereastra derulează).
-    MUTAȚIA 2: în static/stil.css `  .mig-op { padding: 3px 12px; gap: 10px; }` -> `  .mig-op { padding: 13px 15px; gap: 10px; }` -> ROȘU
+    MUTAȚIA 2: în static/stil.css `  .mig-op { padding: 1px 12px; gap: 10px; }` (lotul 11: 3 -> 1 px) -> `  .mig-op { padding: 13px 15px; gap: 10px; }` -> ROȘU
     pe 1366×768 (rândurile înalte: fereastra derulează)."""
     pg = ecran.pg
     _migrare(ecran)
@@ -64,7 +64,7 @@ def test_def_394_migrare_cabinet_incape_cu_cum_se_face_pliat(ecran):
 def test_def_394_pe_telefon_pasii_raman_tinte_de_atingere_mari(ecran):
     """394. Rândurile scunde sunt numai pe ecranul lat (stil.css `@media (min-width: 761px)`): pe telefon (Pixel 5, 393 px) fiecare pas
     rămâne de cel puțin 44 px înălțime (ținta de atingere, DS cap.4 / WCAG 2.5.5), cu descrierea sub titlu.
-    MUTAȚIA: în static/stil.css `@media (min-width: 761px) {\\n  .mig-meniu { gap: 2px; }` -> `@media (min-width: 1px) {\\n  .mig-meniu { gap: 2px; }`
+    MUTAȚIA: în static/stil.css `@media (min-width: 761px) {\\n  .mig-meniu { gap: 1px; }` -> `@media (min-width: 1px) {\\n  .mig-meniu { gap: 1px; }`
     -> ROȘU (rândul de ~35 px și pe telefon)."""
     pg = ecran.pg
     _migrare(ecran)

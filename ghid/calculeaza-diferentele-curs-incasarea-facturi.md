@@ -2,7 +2,7 @@
 title: "Cum se calculează diferențele de curs la încasarea unei facturi?"
 description: "La încasarea unei creanțe în valută, diferența de curs se calculează între cursul din evidență și cursul BNR de la data încasării: câștig (765) dacă cursul a crescut, pierdere (665) dacă a scăzut. Motor automat în iConta.eu, prin operațiunea Decontare în valută."
 published: 2026-09-24
-modified: 2026-10-13
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -36,8 +36,8 @@ Formula de calcul, aplicată la o creanță (o factură de încasat de la un cli
 
 ## Ce face iConta.eu
 
-Motorul pur aplicația, funcția „calculul diferenței de curs”, calculează exact formula de mai sus pentru `tip="creanta"`, cu rotunjire aritmetică (Decimal + ROUND_HALF_UP). Operațiunea „Decontare în valută" din ecranul Operațiuni speciale („decontare în valută (Operațiuni speciale)”) ia automat cursul BNR al zilei încasării și generează nota contabilă completă — linia principală plus linia de diferență pe 665/765 — direct în registrul jurnal, ca ciornă.
+Motorul pur aplicația, funcția „calculul diferenței de curs”, calculează exact formula de mai sus pentru `tip="creanta"`, cu rotunjire aritmetică (Decimal + ROUND_HALF_UP). Operațiunea „Decontare în valută" din ecranul Operațiuni speciale ia automat ultimul curs comunicat de BNR înaintea zilei încasării (cel comunicat în ziua bancară anterioară, valabil în ziua încasării) și generează nota contabilă completă — linia principală plus linia de diferență pe 665/765 — direct în registrul jurnal, ca ciornă.
 
-O limită de reținut: ecranul „Decontare în valută" nu are câmp pentru contul de bancă/casierie — orice încasare introdusă prin acest ecran se înregistrează implicit pe contul de bancă în valută (5124), chiar dacă încasarea a avut loc efectiv prin casierie în valută (5314) sau alt cont. Dacă încasarea ta a trecut prin alt cont decât 5124, verifică și corectează manual contul din nota generată.
+Contul prin care a intrat încasarea se alege în câmpul „Cont bancă" al formularului „Decontare în valută" (propus 5124; pentru casieria în valută, 5314, sau alt cont).
 
 [iConta.eu](/)

@@ -27,6 +27,8 @@ SAGA_TIP_FACTURA_CU_BON = "f"
 from decimal import Decimal, ROUND_HALF_UP
 from xml.sax.saxutils import escape as _xesc
 
+from core import tva_calcul as _tc   # [lotul 11, C82] valoarea netă a liniei (`net_linie`)
+
 FORMAT = "saga"
 
 
@@ -74,7 +76,7 @@ def xml_factura(firma, factura, linii):
     """Genereaza XML-ul SAGA pentru o factura EMISA. Pur (dict-uri -> str).
     firma: {nume,cui,reg_com,adresa,iban,banca,tva_la_incasare}
     factura: {numar,data_emitere,data_scadenta,taxare_inversa,moneda,tert_nume,tert_cui,tert_adresa}
-    linii: [{descriere,um,cantitate,pret_unitar,cota_tva}]
+    linii: [{descriere,um,cantitate,pret_unitar,cota_tva[,valoare_neta]}]  (valoare_neta = BT-131 al facturii importate, sau None)
     Furnizor = firma-client (facturi emise), Client = partener -> SAGA claseaza ca iesire."""
     total_val = Decimal("0")
     total_tva = Decimal("0")
@@ -87,7 +89,8 @@ def xml_factura(firma, factura, linii):
             raise ValueError("linie fără cota TVA (%r): nu se poate exporta (SAGA) - 0 (scutit) e "
                              "valoare valida, absenta nu se ghiceste" % (l.get("descriere") or "",))
         cota = Decimal(str(_ct))
-        valoare = _q(cant * pret)                 # valoare neta a liniei
+        # [lotul 11, C82] valoarea netă a liniei = BT-131 de pe factura importată (`valoare_neta`), altfel cantitate × preț la ban
+        valoare = _tc.net_linie(cant, pret, l.get("valoare_neta"))
         tva = _q(valoare * cota / Decimal(100))   # TVA aritmetic (ROUND_HALF_UP)
         total_val += valoare
         total_tva += tva
@@ -159,10 +162,11 @@ def date_factura(conn, schema, factura_id):
         f = cur.fetchone()
         if not f or f[9] != "emisa":
             return None
-        cur.execute(f"""SELECT descriere, um, cantitate, pret_unitar, cota_tva
+        # [lotul 11, C82] + `valoare_neta` (BT-131 de pe factura importată, exact): valoarea liniei în SAGA și în WinMentor
+        cur.execute(f"""SELECT descriere, um, cantitate, pret_unitar, cota_tva, valoare_neta
                         FROM {schema}.factura_linii WHERE factura_id=%s ORDER BY id""", (factura_id,))
         linii = [{"descriere": l[0], "um": l[1], "cantitate": l[2],
-                  "pret_unitar": l[3], "cota_tva": l[4]} for l in cur.fetchall()]
+                  "pret_unitar": l[3], "cota_tva": l[4], "valoare_neta": l[5]} for l in cur.fetchall()]
     factura = {"id": f[0], "numar": f[1], "data_emitere": f[2], "data_scadenta": f[3],
                "taxare_inversa": f[4], "moneda": f[5], "tert_nume": f[6], "tert_cui": f[7],
                "tert_adresa": f[8], "serie": f[11], "tert_oras": f[12],

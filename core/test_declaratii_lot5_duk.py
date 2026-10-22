@@ -5,10 +5,8 @@ D169 (inregistrare fiducie, L.129/2019, root D169, generatie noua), D398 (OSS TV
 generatie noua), D399 (IOSS TVA import, root declaratie399), D403 (DAC2/CRS asigurari viata, root declaratie403),
 D407 (institutii financiare raportoare, root D407). Toate manuale (conn=None).
 
-D101G (grup fiscal impozit profit) e xfail: DATORIE de infrastructura - schema de structura v2 (P01-P16,
-OPANAF 206/2025, ns d101g:declaratie:v2) NU e deployata in DUK pe server (DecValidation vechi nu cunoaste d101g,
-cel nou cere v1 hardwired). Modulul e construit corect pe v2 (bytecode + act in corpus); se probeaza cand se
-instaleaza DecValidation care cunoaste d101g v2. Vezi DECIZII.md.
+D101G (grup fiscal impozit profit): pana la lotul 11 era xfail („schema v2 nedeployata”); validatorul J2.0.0 e instalat, iar
+generatorul refacut pe el trece (C70, core/test_lot11_d_d101g.py).
 """
 import pytest
 from core.common import Perioada
@@ -49,14 +47,13 @@ CAZURI = [
             "isin": "US0378331005", "simbol": "AAPL", "cantitatea": "10", "tip_instrument": 1,
             "den_emitent": "Apple Inc", "adresa_d": "New York"}]}),
 
-    pytest.param("d101g", d101g, Perioada(2024, luna=12), {
-        "cui": "RO12345678", "nume": "GRUP RESPONSABIL SRL", "adresa": "Bucuresti, Str. Exemplu nr. 1",
-        "caen": "6201", "declarant_nume": "POPESCU", "declarant_prenume": "ION",
-        "declarant_functie": "ADMINISTRATOR", "P01": 1000000},
-        marks=pytest.mark.xfail(strict=True, reason="DATORIE 14.08.2026: schema de structura D101G v2 (P01-P16, "
-              "OPANAF 206/2025, ns d101g:declaratie:v2) NU e deployata in DUK pe server (DecValidation vechi nu "
-              "cunoaste d101g; cel nou cere v1 hardwired). Modulul e corect pe v2. Se probeaza cand se instaleaza "
-              "DecValidation cu d101g v2. Vezi DECIZII.md.")),
+    # [lotul 11, C70] xfail-ul „DATORIE 14.08.2026” (schema v2 nedeployata) s-a inchis: validatorul D101G J2.0.0 e instalat, iar
+    # generatorul refacut pe el (radacina <D101G>, CAEN, d_recN, cod_obligatie 100, totalPlata_A 0) iese „valid”. CUI-ul cazului
+    # era „RO12345678” (cifra de control gresita) — inlocuit cu 14399840, verificat cu algoritmul CUI.
+    ("d101g", d101g, Perioada(2024, luna=12), {
+        "cui": "RO14399840", "nume": "GRUP RESPONSABIL SRL", "adresa": "Bucuresti, Str. Exemplu nr. 1",
+        "caen": "6920", "declarant_nume": "POPESCU", "declarant_prenume": "ION",
+        "declarant_functie": "ADMINISTRATOR", "P01": 1000000}),
 ]
 
 

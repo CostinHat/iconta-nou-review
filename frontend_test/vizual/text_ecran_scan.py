@@ -82,6 +82,10 @@ def date_excluse():
     # `core/denumiri_randuri.py`): „TOTAL TAXĂ COLECTATĂ” e scris așa în formular, nu e textul aplicației
     from core import denumiri_randuri as _dr
     out |= set(_dr.D300.values()) | set(_dr.D101.values())
+    # [449, lotul 11] denumirile codurilor NC ale cerealelor (CF art.331 alin.(2) lit.c) sunt CITAT din HG 1/2016 pct.109 alin.(7)
+    # (`produse_api.NC_CEREALE`): „Semințe de in” e inul, nu „în” fără diacritice
+    from core import produse_api as _pa
+    out |= set(_pa.NC_CEREALE.values())
     return out
 
 

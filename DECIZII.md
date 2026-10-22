@@ -22787,3 +22787,261 @@ Costin, verbatim (chat, 21.10.2026):
 **Alternativa respinsă:** referința lăsată pe amprenta porții 1 cu refuzurile D406 / D394 — ar fi apărat cifre care spun „lipsește
 localitatea”, adică datele dinainte de reparația cerută. **Limita:** valorile sintetice ale localităților sunt ale firmelor de test și sunt
 declarate ca sintetice aici și în scriptul de reparație; nu sunt adresele reale ale unor parteneri.
+
+## 21.10.2026 — Comanda 11.1 (lotul 11): deciziile din 10.3, C75, prioritarele C76 / 428 / 439 / 451 / 409, deficiențele 439–452 — verbatim
+
+Costin, verbatim (chat, 21.10.2026):
+
+> 11.1
+>
+> Răspunde punctual pentru fiecare punct de mai jos: rezolvat sau nu, cu dovada. Folosește subagenți în paralel unde lucrul atinge fișiere diferite; testele grele nu le rula simultan. Înainte de execuție listează operațiile pe care le rulezi; în raport dă durata măsurată a fiecăreia.
+>
+> 1. Aplică deciziile deja notate în DECIZII: cele 20 de răspunsuri din 10.3, 422, C70.
+> 2. C75: DA. Migrează borderourile vechi pe toate firmele, inclusiv pe cabinetul pilot.
+> 3. Prioritar, C76: lipsa de la inventar trebuie să ajungă în D300.
+> 4. Prioritar, 428: firma în TVA la încasare emite factura pe 4427, fără mențiunea obligatorie, iar Configurare emitere nu arată sistemul. Trebuie: 4428 la emitere, mențiunea „TVA la încasare” pe factură, exigibilizare la încasare, D300 și D394 după exigibilitate.
+> 5. Prioritar, 439: balanța completă SAGA e respinsă, pentru că verificarea omite soldul inițial al anului. După reparare, 425 și 426 trebuie să poată fi retestate.
+> 6. Prioritar, 451: ciornele generate înainte de o reparație rămân validabile cu regula veche. Cazuri: ieșirea Marfa A din Z 0042 cu „Bon de consum nr 1”, F1; ciorna salariilor 10/2026 cu alte sume decât statul curent, F5 (448). Toate trebuie refăcute din sursă sau marcate depășite și oprite de la validare, pe toate firmele.
+> 7. Prioritar, 409: pe F1, nota veche nr. crt. 8 (607=371 100, „nederivat”) e tot validată, alături de nr. crt. 33 (aceeași ieșire). Verifică în balanță dacă ieșirea e dublată și corectează. Lămurește dacă renumerotarea unei note validate e admisă.
+> 8. 452: nota „Retur în stoc Marfa B × 1 buc (stornare)” de pe F1 e refuzată la validare cu un motiv fals („documentul ei a fost respins”).
+> 9. 450: borderoul de achiziție a creat tacit un articol nou „grau” lângă cel existent. Articolul se alege din nomenclator; unul nou se creează doar la cerere explicită. După generare, formularul nu trebuie să permită dublarea notei.
+> 10. 449: la cota TVA a produsului lipsesc taxarea inversă (art. 331), scutit cu drept de deducere (art. 294) și neimpozabil. Verifică la sursă dacă taxarea inversă pentru cereale e în vigoare în 2026.
+> 11. 429: reevaluarea în valută e neschimbată pe producție (formular manual, fără propunere, fără curs BNR, nimic la închiderea lunii). Explică de ce a fost raportată rezolvată și rezolv-o.
+> 12. 420: norma și funcția de bază lipsă din fișier se pun tăcut. Trebuie editabile în previzualizare și marcate „de verificat”, ca celelalte.
+> 13. 424: la importurile de migrare se derulează toată fereastra, plus separat tabelul. Trebuie: rezumat fix sus, acțiune fix jos, derulare doar pe tabel.
+> 14. 446: la confirmarea duplicatelor, avertismentul apare de două ori, tabelul se strânge la un rând, iar „Salvează salariații” rămâne activ lângă „Actualizez fișele”. Avertismentul nu e eroare.
+> 15. 447: mesajul după import: „0 noi, 3 fișe actualizate”, nu „3 importați” plus „3 actualizate”.
+> 16. 440, inclusiv extinderea: toate erorile apar deodată, fiecare cu textul ei, în casetă și lângă câmp. Fără „motivul e mai sus”. Pe toată aplicația.
+> 17. 441: orice câmp de dată opțional se poate goli.
+> 18. 442: capitalul social lipsă apare în „Profil incomplet”, cu „blochează emiterea facturilor”.
+> 19. 443: seria și numărul se afișează separat peste tot (F6 nr. 1, nu F61). „termen” din Istoric spune că e termenul SPV.
+> 20. 444: când numele de la ANAF diferă de fișa partenerului, se spune și se propune actualizarea.
+> 21. 445: orice buton „Deschide X” dintr-un refuz întoarce în formularul de plecare, cu datele intacte.
+> 22. 436, afișare: în D100, începutul casetei roșii e ascuns sub antetul fix; paragraful repetă notele pe care le arată butoanele.
+> 23. Mărunte: „nederivat” și „neimputabila” în texte pentru contabil; „sursa: facturile” pe nota borderoului; titluri fără diacritice; butonul borderoului stă în „TVA regimuri speciale” cu nume tehnic; etichetele „mâncare” / „alcool” și „Consum pe rețetă” la firme de comerț; „Generează amortizarea” activ pe luni deja amortizate; amortizarea 09 la F2 datată 28.09.
+> 24. Dă dovada pe aplicație pentru C68, C69, C71, C72, C73, C74, 7g, 8b–8e.
+> 25. Ghiduri: starea 247 și 248; verifică dacă sitemap-ul conține ghiduri redirecționate.
+> 26. La final rulează poarta o dată pe tot lotul. Nu publica. Fă un ZIP cu tot ce s-a schimbat (cod, documente noi, măsurători) la commitul de închidere și dă calea exactă. Oprește-te și raportează.
+
+**Consecințe (executor, la pornire):** ramura `lucru/lot11-2026-10-21` din `381c82df` (worktree `/home/costin/iconta_lot9`); firul și pașii
+în TESTE „În lucru acum” (L11-1 … L11-10). Numerele 439–452 intră în DEFICIENTE cu textul de mai sus. C75 pct.2 („inclusiv pe cabinetul
+pilot”) e aprobarea scrisă pentru scrierea migrării pe datele cabinetului; rularea ei pe producție (`--productie`) rămâne parte a publicării,
+pe care pct.26 o oprește („Nu publica”) — migrarea se scrie, se probează pe baza de test și pe o copie, și se rulează la publicare. Poarta
+lotului (pct.26) citește producția (cifrele F1–F5): conform regimului pilot, pornește după confirmarea lui Costin că cabinetul nu lucrează.
+
+## 22.10.2026 — Comanda 11.2 (lotul 11): reluarea lotului, cauzele regresiilor, trei reguli permanente — verbatim
+
+Costin, verbatim (chat, 22.10.2026):
+
+> 11.2
+>
+> Răspunde punctual pe fiecare punct. Folosește subagenți în paralel unde lucrul atinge fișiere diferite; testele grele nu le rula simultan. Înainte de execuție listează operațiile; în raport dă durata măsurată a fiecăreia.
+>
+> 1. Reia lotul 11 de unde ai rămas: salvează ce au lucrat subagenții și termină toate punctele din 11.1.
+> 2. Cauzele: pentru fiecare regresie și fiecare „rezolvat” fals găsit la retestul lotului 10 (439 care a stricat 425, 409 cu ieșirea dublată, 452, 429 raportat rezolvat dar neschimbat, ciornele vechi de la 451), spune de ce s-a întâmplat și ce oprește repetarea.
+> 3. Regulă permanentă, scrisă în DECIZII: nimic nu e „rezolvat” fără dovadă pe ecran pe firmele de test, inclusiv pe documentele create înainte de reparație. Orice reparație acoperă și datele existente.
+> 4. Regulă permanentă, scrisă în DECIZII: fiecare poziție validată la testare are un test automat în poartă, iar poarta nu trece dacă vreunul pică. Aplic-o acum pe pozițiile validate: din planul de testare F004, F006, F008, F017, F019, F025, F028, F072, F073, F078, F080, F081, F087, F134, F183; din retestul lotului 10: 383, 386, 401, 404, 415, 417, 419, 421, 423, 427, 430–432, 433, 434, 435, 436, 438, 7h, pct. 9. În raport dă lista: poziție → test.
+> 5. Regulă permanentă, scrisă în DECIZII: până la pilot nu intră funcții noi, doar reparații. Pilotul pornește când o lună completă de contabil merge cap-coadă pe o firmă fără deficiențe grave: facturi, bancă, casă, stoc, salarii, închidere, D300, D394, D112, D100, balanță.
+> 6. La final rulează poarta o dată pe tot lotul. Nu publica. Fă un ZIP cu tot ce s-a schimbat (cod, documente, măsurători) la commitul de închidere și dă calea exactă. Oprește-te și raportează.
+
+**Consecințe (executor, la pornire):** lucrul subagenților lotului 11 e salvat pe `wip/lot11-2026-10-22-oprit` (`ed57e80d`, local) și rămâne
+în arborele ramurii `lucru/lot11-2026-10-21`; 11.1 și 11.2 formează un singur lot (lotul 11), cu o singură poartă (pct.6). Regulile 3–5
+de mai jos sunt permanente; norma lor trăiește unde se aplică și se verifică mecanic (CLAUDE.md, `core/test_deficiente.py`, registrul
+pozițiilor validate, garda funcțiilor noi) — intrările de implementare le numesc.
+
+## 22.10.2026 — Comanda 11.2, forma a doua (înlocuiește forma de mai sus): reguli permanente 3a–3d, publicarea pe verde — verbatim
+
+Costin, verbatim (chat, 22.10.2026, a doua trimitere a comenzii 11.2):
+
+> 11.2
+>
+> Răspunde punctual pe fiecare punct: rezolvat, cu dovadă pe ecran, sau nerezolvat, cu motivul. Folosește subagenți în paralel unde lucrul atinge fișiere diferite; testele grele nu le rula simultan.
+>
+> 1. Reia lotul 11 de unde ai rămas și termină toate punctele din 11.1.
+> 2. Pentru fiecare regresie și fiecare „rezolvat” fals de la retestul lotului 10 (439 care a stricat 425, 409 cu ieșirea dublată, 452, 429 neschimbat pe producție, ciornele vechi de la 451): spune cauza și ce oprește repetarea.
+> 3. Reguli permanente, scrise în DECIZII, care le înlocuiesc pe cele vechi care le contrazic:
+>    a. Nimic nu e „rezolvat” fără dovadă pe ecran pe firmele de test, inclusiv pe documentele create înainte de reparație. Orice reparație acoperă și datele existente.
+>    b. Fiecare poziție validată are un test automat în poartă; poarta nu trece dacă vreunul pică.
+>    c. Până la pilot nu intră funcții noi. Pilotul pornește când o lună completă de contabil merge cap-coadă pe o firmă fără deficiențe grave: facturi, bancă, casă, stoc, salarii, închidere, D300, D394, D112, D100, balanță.
+>    d. Lotul se duce până la capăt fără oprire. Dacă poarta pică, repari codul și o rulezi din nou, până trece. Nu ai voie să slăbești, să ocolești sau să ștergi un test ca să treacă poarta. Te oprești doar dacă reparația ar cere schimbarea unui comportament deja decis sau o operație care nu se poate anula.
+> 4. Aplică 3b acum pe pozițiile validate: din planul de testare F004, F006, F008, F017, F019, F025, F028, F072, F073, F078, F080, F081, F087, F134, F183; din retestul lotului 10: 383, 386, 401, 404, 415, 417, 419, 421, 423, 427, 430–432, 433, 434, 435, 436, 438, 7h, pct. 9. În raport: poziție → test.
+> 5. Rulează poarta pe tot lotul. Când e verde: backup, publică pe producție, apoi raportează.
+
+**PIVOT (supersedează explicit):** (1) forma întâi a comenzii 11.2 (intrarea de mai sus) — pct.6 „Nu publica” e înlocuit de pct.5 „Când e verde:
+backup, publică pe producție”; (2) regula 3d supersedează CLAUDE.md §2.3 pct.13 b („Maximum două rulări complete pe lot; dacă a doua pică,
+te oprești și raportezi”, 15.10.2026) și orice oprire pe poartă roșie din §2.3 pct.4 / pct.9: pe roșu se repară codul și se rulează din nou,
+până la verde, fără a slăbi, ocoli sau șterge vreun test; oprire numai pentru o schimbare de comportament deja decis sau o operație
+ireversibilă. **Ce rămâne în vigoare (nu e contrazis):** regimul pilot (DECIZII 14.10.2026) — publicarea, restartul și migrările pe
+producție după confirmarea lui Costin că cabinetul nu lucrează, cu backup chiar înainte; aprobarea scrisă a SHA-ului pentru mutarea lui
+`main` (`.git/APROBARE_MAIN`) — comanda aceasta e aprobarea pentru SHA-ul verde al lotului 11.
+
+## 22.10.2026 — Comanda 11.3 (lotul 11): deficiențele 453–460 și testele pozițiilor validate la retestul din 22.10 — verbatim
+
+Costin, verbatim (chat, 22.10.2026):
+
+> 11.3
+>
+> Se adaugă la lotul 11, în aceleași reguli ca 11.2. Răspunde punctual pe fiecare număr: rezolvată, cu dovadă pe ecran, sau nerezolvată, cu motivul.
+>
+> 1. 460 (prioritar): cursul BNR nu s-a mai actualizat din 19.10; factura din 22.10 propune cursul de pe 19.10. Repară preluarea, completează zilele lipsă și pune alertă când cursul zilei lipsește.
+> 2. 455 (prioritar): casa F1 are două solduri în același moment: 294 la refuzul plății, 42 în registrul de casă. Registrul de casă, contul 5311 și verificarea de sold negativ folosesc aceeași cifră, din aceeași sursă.
+> 3. 456: încasarea în numerar de la o firmă se salvează fără chitanță. Emite automat chitanța, cu seria firmei și PDF.
+> 4. 457: ciornele făcute de contabil nu ajung în nicio coadă (182 nerezolvată); după contarea din bancă, rândul spune „la validare” deși nota e ciornă.
+> 5. 459: un CUI cu cifra de control greșită e acceptat la adăugarea firmei; la schimbarea CUI-ului rămân datele celui vechi.
+> 6. 458: în Erori — echipa: text suprapus peste nume; regenerările automate ale aplicației apar ca greșeli ale administratorului; numerele de respingeri nu se adună cu rândurile.
+> 7. 454: la salariat nou erorile apar pe rând, în trei salvări; CNP și Tip normă nu sunt marcate obligatorii.
+> 8. 453: verifică la sursă rotunjirea deducerii personale (fluturașul arată 562,25) și aplic-o în calcul, fluturaș și D112.
+> 9. Adaugă în poartă teste pentru comportamentul validat la retestul din 22.10: F006, F008, F019, F028, F072, F073, F080, F081, F087, F134, F183.
+
+**Consecințe (executor):** 453–460 intră în DEFICIENTE cu textul de mai sus; regulile 3a–3d (11.2, forma a doua) se aplică; pct.9 se leagă de
+registrul `POZITII_VALIDATE.csv` (regula 3b) — pozițiile au deja rânduri (T4, 11.2 pct.4), cu sursa „retestul din 22.10” adăugată.
+
+## 22.10.2026 — Lotul 11: integrarea (sesiunea principală, după subagenți) — interpretările, cu temeiul și alternativa respinsă
+
+1. **Citarea unui `Temei` compusă din câmpuri (F).** `common._citare_temei` punea „art.” / „lit.” / „alin.(…)” necondiționat, deci 16 citări
+   ajungeau la contabil ca „OMFP 1802/2014 art.pct.22”, „OMFP 2634/2015 art.anexa 2 lit.14-1-2”. Reparat LA SURSĂ (compunerea pune prefixul
+   numai pe un număr de articol arab / roman, pe un număr de alineat, pe o literă; altfel câmpul e o diviziune scrisă întreagă), nu cu
+   `text=` pe fiecare loc. Proba: diferența pe toate cele 118 citări literale e exact cele 16. **Respins:** `text=` per loc (16 dubluri ale
+   aceleiași reguli de format). Garda: `core/test_lot11_f_citare_temei.py` (lista de așteptare golită + calibrarea compunerii).
+2. **Cititorul de tabele din SQL (`scan_trasee.RE_W`, `scan_functionalitati.RE_R`).** Prefixul de schemă `%\(?\w*\)?s` era lacom
+   („UPDATE %sstoc” -> tabelul „toc”, „%sinregistrari” -> „trari”, „DO UPDATE SET” -> „SET”), iar citirea „FROM %sinregistrari” nu se vedea.
+   Găsit fiindcă `test_atribuire_scrieri` dădea 15 tabele pe „valideaza” factura primită. Reparat instrumentul; **respins:** plafonul ridicat
+   la 15 (regula 3d: nu se slăbește o gardă). Calibrarea: `core/test_lot11_re_w_tabele.py`.
+3. **Verificatorul, două reguli recalibrate (nu slăbite).** COTA_GRI: comentariul de la capătul liniei nu e cod (12 fals pozitive: „[lotul
+   11, …]” lângă un câmp „cota”); PASTRARE_FORMULAR: `_dePastrat(` cu orice argument (445 îi dă `dinRefuz`). Ambele probate prin mutație
+   (o cotă literală reală -> REGRESIE-GRI; apelul scos din „deschide” -> TOTAL > 0).
+4. **CUI: o singură formă (CF), decizia 10.3 pct.4.** Zece normalizări locale („scoate RO”) trec pe `cui_forma.stocare`; trei sunt păstrate ca
+   format de ieșire / detectare (cu motivul în lista EXCEPTATE a gărzii). Defect real găsit: `\s` din PostgreSQL nu vede spațiul nedespărțitor,
+   deci triggerul păstra „RO<NBSP>18547290”; clasa de spații e acum aceeași în Python și SQL (`cui_forma.SPATII_SQL`, migrarea
+   `migrare_cui_fara_ro`, amprenta nouă, rulată pe TEST). `asociati.cnp` intră în trigger și în datele de bază (ține și CUI-ul asociatului PJ;
+   un CNP n-are „RO”). Comparația partenerilor pe cifre (casa, NIR) trece pe forma păstrată: „DE123456789” nu e „123456789”.
+5. **Afirmațiile netipate noi ale lotului (AT).** Șase situri tipate (`absenta_observatie`, `fapt`, `verificare_rupta`); `cui_firma_invalid` e
+   refuz de formular (cu `camp`), nu afirmație. Baseline-ul NU s-a ridicat (13 = 13). Ecranul vede același text.
+6. **C92: plafonul codului bolii (05 / 51) condiționat de data acordării**, ca structura D112 („D_12<= 36 daca (D_5<=29.05.2020 sau
+   D_5>=24.10.2023)”); între cele două date serverul cere numai prezența codului. Refuzul și pe server (`salariati_api.salveaza_concediu`), nu
+   numai pe ecran.
+7. **C96: B1_4 = 8 la normă parțială — INTERPRETARE CU TEMEI.** OPANAF 605/2026 anexa 2, B.1 rândul 4: „programul normal de lucru specific
+   locului de muncă […] programul prevăzut la art. 112 alin. (1) din Legea nr. 53/2003”; aplicația nu ține un program normal sub 8 ore pe
+   locul de muncă. De reconfirmat dacă apare o firmă cu program normal redus (ar cere un câmp nou — decizie). Orele CM plătite de angajator
+   intră în B1_6 din textul rândului 5 („perioada suportată de angajator […] se consideră perioadă lucrată”), nu din alegere.
+8. **C95 nu se schimbă:** normele OUG 158/2005 art.62 alin.(1)–(2) nu rotunjesc media zilnică; numai exemplele o scriu cu 2 zecimale.
+9. **Baza de TEST: doi orfani `firma_sursa_versiune` șterși** (tenant 105779 / 105780, 22.10 08:19:54, `declaratii_depuse`), produși de o
+   versiune intermediară a unui test al lotului (prinsă atunci de garda de teardown); pe codul de acum nu se reproduc (rerulate testele
+   candidate). Producția nu e atinsă.
+10. **Testele scoase / schimbate în lot, în MOTIVATE (regula 3d):** `test_205_suma_deducerii_nu_se_rotunjeste` (păzea verdictul greșit al
+    lui 205; înlocuit de testul 453) și `test_fiecare_datorie_are_data_si_motiv` (întărit: eticheta DATORIE ca prim cuvânt, cu calibrare).
+
+## 22.10.2026 — Lotul 11: suita întreagă înaintea porții (46 de picături) — ce s-a schimbat în teste și de ce, cu alternativa respinsă
+
+Suita întreagă pe arborele lotului (14:57–16:20, 83 min): 46 failed / 10.457 passed. Fiecare picătură reparată pe cauză (regula 3d: niciun
+test slăbit, ocolit sau șters; `core/test_poarta_fara_slabire.py` verde). Unde testul s-a schimbat, motivul:
+
+1. **Gărzile D112 pe minimul part-time urmează calculul.** C99 a mutat calculul bazei minime și al CAS / CASS minime din `d112.pull` în
+   `salarizare.baza_minima_contributii` + `_calcul_salariu_2018` (un singur calcul pentru stat, fluturaș și D112); `pull` le citește prin
+   `_d112int`. Gărzile (`test_d112_ruteaza_cotele_prin_cote_nu_literale`, `test_partime_minim_foloseste_d112int_nu_round_bancar`) citesc acum
+   sursa noului loc, cu același număr de aserțiuni; mutațiile (cota CAS literală; `round()` în locul lui `leu_aritmetic`) -> roșu. Respins:
+   păstrarea unei copii a calculului în `pull` ca să rămână garda pe loc (exact dublura pe care C99 a scos-o).
+2. **`test_diferente_curs.py` (reevaluarea):** `reevaluare_sold` a ieșit odată cu formularul manual (429 / 445, un singur formular); aceleași
+   trei cazuri (500 EUR ținuți la 4,97 -> 5,02; fără diferență) pe `reevaluare_element`, cu aceleași linii așteptate.
+3. **Vectorul fiscal (440):** refuzul adună toate erorile, inclusiv regimul, care cere `tip_firma` din profil — deci `salveaza` citește
+   profilul înainte de a refuza. `test_vector_camp_marcat` trimitea `conn=None`; primește o conexiune care răspunde „fără profil” și refuză
+   orice altă interogare decât SELECT (nicio scriere nu se face înaintea refuzului). Aserțiunea (`camp` numit) neschimbată.
+4. **Bilanțul (decizia 10.3):** profilurile de test ale bilanțului primesc interesul public și întocmitorul (structura SC 1225 rândurile 15,
+   21, 22a), fără de care generarea se oprește acum — contractul s-a schimbat, nu testul.
+5. **Ferestra firmei: 36 / 26 de carduri** — „Furnizori” (ambele regimuri, decizia 10.3). **Ruta NIR** e legată și de `repo_stocuri`
+   (lacătul și savepoint-ul refuzului „număr NIR repetat”, decizia 10.3 pct.4). **284:** documentul notei „Factură F1A nr. 4” (443).
+6. **`factura_tva_cote` (tabel nou)** clasificat în ISTORIC_TENANTI: tenant_006 „în afara perimetrului” (lângă facturi), tenant_001 „poate
+   primi date”.
+7. **P4, șapte căi noi clasificate NON_CRITICAL_COMPOSITE** (`core/p4_clasificare.py`): migrarea `curs_precizie` și cinci rute care aduc
+   cursul BNR în cache înaintea actului (cache-ul nu e stare a firmei; actul e o tranzacție), plus `jurnal/{id}/reface` (ramuri exclusive pe
+   `fel`, o singură tranzacție care scrie pe orice rulare). Constatare de produs ridicată la §6 (nu defect P4): la validarea unei facturi
+   primite în valută, cursul mai vechi folosit când lipsește cel al zilei nu e anunțat contabilului (numai la emitere).
+8. **`CLICHET_CIOT` 5 -> 6** (`core/test_pereche_act_articol.py`): `ciorne_depasite.TEMEI` (OMFP 2634/2015 pct.58 lit.c) citează anexa 1, ciot
+   pentru instrument din aceeași cauză ca `anexa 1 pct. 24` (R111: anexa numerotează puncte, antetul nu se auto-identifică; R171 ține
+   tiparul îngust). Respins: lărgirea tiparului de puncte (decizia R171 — o trimitere în proză ar deveni titlu).
+9. **Reverificarea, distribuția repinată** (`core/test_reverificare.py`), măsurat pe HEAD față de arbore: `ciorne_depasite.TEMEI` intră
+   NECUNOSCUT (27 -> 28); `jurnal_api.TEMEI_CONSEMNARE` trece STABIL/CALCULAT -> STABIL/DEPUS (12 -> 6 luni, verificat MAI DES), fiindcă
+   `ciorne_depasite` cheamă validarea notei, iar consumatorii temeiului cresc 215 -> 578 (0 -> 47 în module de declarație);
+   `PRIMESC_PRAG_PESTE_PODEA` 13 -> 12. Celelalte rânduri diferă numai prin forma citării (`_citare_temei`, intrarea de mai sus pct.1).
+10. **Gărzi de formă** (fără schimbare de comportament): `SET LOCAL search_path` (`test_lot11_e2c_casa_refuz`), `rounding=` pe
+    completarea zecimalelor cursului (`curs_bnr.curs_text`), antetele „Stare” / „Acțiune” în tabelul ajustărilor manuale (reevaluare),
+    „DUK regula SP1B4_1 / S102”, mesajele comparate prin constante de modul, marcajele `# fixtura-sintetica-ok` (tenant sintetic în ROLLBACK;
+    șir dat scanerului), `# AZI-dat-de-test` / `zile_de_acum` în e2e-urile 455 / 460, SQL-ul de calibrare pe coloane reale.
+11. **Clasa „etichetă scrisă din cheia internă”** (prinsă de `text_ecran_scan`: 5 defecte pe Produse, bunurile cu taxare inversă „masa
+    lemnoasa”, „aur investitii”): eticheta stă acum în `taxare_inversa.CATEGORII[...]["eticheta"]` (aceleași texte ca pe Operațiuni), citită
+    de `produse_api.coduri_331`; datele concediului medical în refuz („Data început”, nu „data inceput”); șapte importuri trimit în refuzul
+    coloanelor ambigue eticheta câmpului (`ETICHETE_CAMP`), nu cheia („cont stoc”, „cd”, „pif”). Garda: `core/test_lot11_import_etichete_camp.py`
+    (mutații: o etichetă scoasă; `replace("_", " ")` readus; `coduri_331` pe cheie -> roșu). `test_afirmatii_tipate` (excluderea
+    nomenclatoarelor) 2 -> 3, cu motiv: `rip_migrare_api.ETICHETE_CAMP` e chiar o hartă de nomenclator.
+12. **Clasa „SQL fără schemă într-o funcție care primește `schema`”** (prinsă de dovada 451 pe copia F5: regenerarea pe uscat a ciornei
+    salariilor cădea cu `UndefinedTable concedii_medicale`, iar ciorna apărea „neregenerabilă”): 27 de apariții, 21 prefixate (`stat_final`,
+    `pull` din D106 / D107 / D110 / D177 / D307 / D311 / D710, `declaratii_api.genereaza`, pontajul, portalul, adeverința, contractele,
+    rezumatul firmei, coerența soldurilor), 6 excepții cu motiv în `core/test_lot11_sql_fara_schema.py`: trei migrări publicate (amprenta lor
+    e pe producție; rulează după `SET search_path`), fragmentul comun `_GRUP_DOC` (după `SET LOCAL search_path` în aceeași funcție) și
+    `solduri_parteneri_api.importa` (modul construit pe schema conexiunii; singurul apelant o deschide pe firmă). Respins: refactorizarea
+    acestor două acum — nu sunt cădere, schimbă structura a doi apelanți publicați. După reparație ciorna 10/2026 a F5 iese DEPĂȘITĂ, cu
+    diferențele numite (pe ciornă lipsesc 423 / 6458; 641 = 421 12.045,45 față de 11.860,79), nu „neregenerabilă”.
+13. **Dovezile pe copie, interpretări:** (a) 436 pe F2 — notele 25–31 sunt validate de atunci, iar 08–09 sunt încheiate: dovada arată starea
+    de azi (D100 T3 fără blocaj); blocajul și așezarea casetei le dovedesc e2e-urile (firmă sintetică), fiindcă pe F2 starea veche nu se poate
+    reface fără a fabrica date. (b) 444 — prima fișă a F1 / F2 are CUI-ul sintetic 410001005 (ANAF îl spune negăsit, corect); dovada F1 e pe
+    DANTE (14399840, real), cu ANAF real; F3 n-are clienți. (c) Descrierea notei F1 146 („Stornare: n (descărcarea facturii, scrisă fără
+    document)ota nr. crt. 8”) nu e scrisă de cod (textul nu există în arbore): motivul stornării tastat de om, inserat la cursor — date
+    introduse de contabil (CLAUDE.md §8), neatinse. (d) C76 — D300 10/2026 pe F1 nu se poate genera înaintea sfârșitului lunii: dovada e
+    „imposibilă azi”, iar C76 rămâne „neverificat” până la 01.11.2026.
+14. **Campania de mutații e2e a lotului (173 de mutații, câte una, fiecare numai cu testul ei): 166 roșii, 5 cu ancora mutată de codul lotului,
+    2 rămase verzi.** Cele 5 ancore (459 — mesajul „ANAF nu are date”; 420 — marcajul „de verificat” la reimport; 428 — contarea pe 4428; 440 —
+    limita UM; 458 — ancora mutată în `coada_api`) primesc aceeași mutație pe linia de azi. Cele 2 verzi nu sunt teste slabe, ci **două
+    mecanisme care apără același lucru**, deci o mutație care îl oprește pe unul nu poate înroși testul: (a) **19** (factura rămâne după Date
+    firmă) — formularul de dedesubt e păstrat de navigator (`_dePastrat`, [445]) ȘI refăcut din ciornă; mutația ciornei e pusă pe testul care
+    chiar trece prin ciornă (**44**: fereastra firmei -> Date firmă -> Facturi -> „Emite factură”), iar 19 primește mutația compusă, cu
+    amândouă oprite (`mut_lot11_e2f_19_impreuna.json`); (b) **C83** (cursul BNR al facturii primite în valută) — „Importă XML UBL” lasă
+    factura în așteptare, iar la validare cursul îl pun în aceeași tranzacție și `_factura_importata`, și reîncercarea contării (pentru
+    facturile importate înainte de C83); mutația devine compusă (`mut_lot11_y2_c83_impreuna.json`). O listă dintr-un fișier `*_impreuna.json`
+    se aplică deodată (forma listă a `scripts/e2e_poarta.py --mutatie=`). Respins: scoaterea unuia din mecanisme ca să meargă mutația simplă
+    (ar slăbi produsul ca să se potrivească testului); verificarea cursului „înainte de validare” (încercată, greșită: factura nu există încă).
+15. **Text pe ecran, a doua trecere (174 de ecrane): 1 defect, fals pozitiv de clasă.** „Cereale: Semințe de in, chiar sfărâmate (NC 120400)”
+    pe Produse — „in” e inul, nu „în”: denumirile codurilor NC sunt citat verbatim din HG 1/2016 pct.109 alin.(7) (`produse_api.NC_CEREALE`).
+    Intră în aceeași excludere ca denumirile oficiale ale rândurilor D300 / D101 (379, comanda 8.2): `text_ecran_scan._date_excluse` scoate
+    citatul înaintea verificării. Respins: schimbarea textului (ar altera citatul din normă) și scoaterea cuvântului „in” din declanșatori
+    (ar lăsa nevăzut „in” scris în loc de „în” peste tot).
+16. **Artefactele generate, refăcute din instrumente (nu de mână):** `scripts/trasee_tabele.json` (+ `factura_tva_cote`), blocul din
+    `TRASEE.md`, cele 35 de rânduri „ce face” și 18 antete din `TRASEE_VERIFICARI.md` (lista PLAFON „poate atinge, prin modul” crește cu
+    tabelele scrise de codul lotului: `factura_tva_cote`, `inregistrari` pe recunoaștere etc.; verificările scrise sub ele nu se schimbă — ele
+    privesc efectul rutei, nu lista-plafon), inventarul din `GARZI.md`, blocul CLICHETE-VII din `PREDARE_LANT.md`.
+
+## 22.10.2026 — Lotul 11: suita a doua (5 picături din 10 540) — cauzele, reparațiile pe clasă și garda fiecăreia
+
+Suita întreagă a doua (`pytest -q -n 3 --dist loadfile`, 22:01–23:23, 1:21:57): **5 failed, 10512 passed, 9 skipped, 14 xfailed.** Niciun test
+slăbit, ocolit sau șters (regula 3d). Fiecare picătură a avut o cauză reală, reparată pe clasă:
+
+1. **Capturile de dovadă intraseră în index, peste garda imaginilor** (`test_fara_probe_imagine` + `test_poarta_fara_slabire`, care citea și
+   PNG-urile ca text). Decizia Costin 03.09.2026 (verbatim în METODA §27): *„Capturile pentru diagnostic, în timpul unei ture, rămân permise —
+   dar nu se salvează și nu devin bază de comparație.”* Regula 3a („dovadă pe ecran”) nu cere ca imaginea să stea în repo, deci cele două NU se
+   contrazic; implementarea mea din `core/test_deficiente.py` le punea în contradicție, cerând imaginea „în indexul git”. **Reparat în codul
+   lotului, nu în decizie:** imaginile ies din index (`git rm --cached`, rămân pe disc; `.gitignore`: `dovezi/**/*.png`) și călătoresc în
+   ZIP-ul lotului; în index intră manifestul `dovezi/lot11/AMPRENTE.json` (`{captură: sha256}`, generat de
+   `scripts/dovada_firme_test.py --amprente=DIR`). `test_deficiente` cere ca fiecare captură citată să fie în manifest și, când fișierul e pe
+   disc, amprenta să corespundă; `test_manifestul_capturilor_descrie_discul` cere manifestul identic cu discul. **Limita, declarată:** pe un
+   arbore fără imagini (alt worktree), garda verifică numele și manifestul, nu și imaginea; imaginea se verifică din ZIP prin sha256.
+   Respins: lărgirea `PROBE_PINATE` / o excepție `dovezi/` în garda imaginilor — ar fi răsturnat decizia din 03.09 (o oprire după 3d, nu o
+   reparație). `test_poarta_fara_slabire` citește acum numai fișierele pe care le măsoară (teste, configurare, conftest): un binar schimbat nu
+   mai prăbușește garda.
+2. **2 orfani `firma_sursa_versiune` (105779 / 105780)** — `dovada_firme_test.py --sterge` ștergea tabelele în ordinea din
+   `information_schema`, deci contorul înaintea lui `declaratii_depuse`, iar triggerul `marcheaza_sursa_publica` îl recrea. Aceeași clasă cu
+   reparația din lotul 11 (`tenant_stergere.ordinea_stergerii`), care acoperise numai drumurile care o chemau. Căutat pe tot repo-ul (13 bucle
+   `DELETE FROM public.<t> WHERE tenant_id`): încă una greșită (`scripts/masoara_p3.py`, contoarele înaintea lui `declaratii_depuse`),
+   reparată; restul — `tenant_stergere`, curățenia e2e, teardown-urile pe `TABELE_TENANT`, listele numai cu contoare — corecte. Garda:
+   `core/test_tenant_stergere.py::test_orice_stergere_pe_firma_din_repo_sterge_contoarele_la_urma` (AST: lista buclei citită din cod, nicio
+   sursă cu trigger după un contor; o listă necitibilă trebuie trecută prin `ordinea_stergerii`). Proba: clonare + `--sterge` -> 0 orfani (înainte:
+   2). Orfanii (poluare de test, baza de TEST) șterși.
+3. **`tenant_schema_seq` 363 -> 369** (`test_predare_cifre`): `test_lot11_p2_surse_unice` (+2) și `test_lot11_a459_cui` (+4, fixtura `firma_a`)
+   creau firme în tranzacție întoarsă — `rollback` nu întoarce o secvență. Măsurat pe fiecare fișier candidat (zece fișiere, contorul înainte și
+   după). Reparat: fixtura `contor_schema_pastrat` (`core/conftest.py`), cerută de cele două și de testele de refuz pe aceleași drumuri;
+   contorul readus la 363 (numerele 364–375 n-au nicio schemă: toate crearea lor a fost întoarsă). Garda:
+   `core/test_predare_cifre.py::test_orice_test_care_creeaza_firme_readuce_contorul_de_scheme` (AST: o funcție care cheamă `provision_tenant`
+   sau face `.post` pe `/tenants`, `/migrare/importa`, `/auth/register` cere fixtura sau un `setval` în fișier). Limita: o creare ascunsă într-un
+   ajutor din alt fișier nu se vede static — o prinde blocul de cifre la poartă.
+4. **Antetele traseelor** (`test_trasee`, „N firme îl pot exercita azi”): regenerate de mine cât copia de dovadă era în baza de test (+7 firme);
+   refăcute din `scan_trasee.antet_traseu` după `--sterge` (20 de antete). **Blocul de cifre din PREDARE** era generat imediat după `--sterge`
+   și purta cei 2 orfani; regenerat (0 orfani, contor 363). Ordinea corectă, de acum: artefactele derivate din DATE se regenerează după ultima
+   operație pe baza de test (copia scoasă, orfanii curățați).

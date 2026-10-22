@@ -24,9 +24,9 @@ UNDE = {
     # trimite la Facturi.” Borderoul de achiziție (OMFP 2634/2015, cod 14-4-13) e documentul firmei, scris din Operațiuni; nu e o factură
     # și nu se stornează din Facturi (`facturi_api.storneaza`: numai facturi emise) — după validare, greșeala lui se corectează printr-o
     # notă de corecție, ca la NIR-ul aflat în evidență (`stocuri_api._nir_de_refacut`)
-    "borderou": ("borderoul de achiziție %s", "în Operațiuni › „Achiziție de la neînregistrat”, unde s-a scris (borderoul nu e o factură și "
-                                              "nu se stornează din Facturi); după validare, o greșeală în el se corectează printr-o notă de "
-                                              "corecție în Registrul jurnal"),
+    # [lotul 11, patch B (P9), decizia 10.3: „Borderoul se corectează prin stornare, ca factura.”] ecranul propriu al borderoului, cu stornare
+    "borderou": ("borderoul de achiziție %s", "în Stocuri › „Borderou de achiziție”: îl stornezi din lista lunii (borderoul de stornare și "
+                                              "nota inversă), apoi îl scrii din nou corect"),
     "plata_borderou": ("plata borderoului de achiziție %s", "în Bancă sau Casă, unde s-a înregistrat plata"),
     "stoc": ("mișcarea de stoc %s", "în Stoc: din documentul mișcării (factura, NIR-ul, inventarul, rețeta)"),
     "nir": ("NIR-ul %s", "în Stoc › NIR-urile lunii: deschizi NIR-ul"),
@@ -91,7 +91,7 @@ def documentul_sursa(cur, schema, nota_id):
     if not doc:
         # [401] numărul și data documentului, fără felul lui (felul îl spune `UNDE`): înainte, eticheta tăiată la primul cuvânt
         # („Borderou de achiziție BA-1” -> „de achiziție BA-1”) ajungea în „factura %s” -> „factura de achiziție BA-1”
-        doc = ("%s din %s" % (_pu.numar_cu_serie(f_serie, f_nr), _pu.data_ro(f_data)) if f_nr is not None
+        doc = ("%s din %s" % (_pu.serie_nr(f_serie, f_nr), _pu.data_ro(f_data)) if f_nr is not None   # [lotul 11, 443] „F6 nr. 1”
                else "din %s" % _pu.data_ro(data))
     borderou = f_tip == "borderou"
 

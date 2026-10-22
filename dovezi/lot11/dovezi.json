@@ -1,0 +1,2418 @@
+{
+ "copia": {
+  "clonat_la": "2026-10-22 18:11:38",
+  "productie_la": "2026-10-22 18:11:30.878713+03:00",
+  "migrari": [
+   {
+    "fisier": "core/migrare_borderou_storno_unic.py",
+    "amprenta": "153c19bdd9bc",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_borderou_storno_unic: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_borderou_storno_unic.py rulată (amprenta 153c19bdd9bc)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_borderou_tip_vechi.py",
+    "amprenta": "b77593a67311",
+    "cod": 0,
+    "durata_s": 0.2,
+    "iesire": [
+     "tenant_9049: 0 borderouri convertite, 0 numere schimbate, 1 mișcare aliniată, 0 candidați neconvertiți",
+     "  mișcare aliniată: «Borderou de achiziție BA-1 din 20.10.2026» -> «Borderou de achiziție BA-2 din 20.10.2026»",
+     "migrare_borderou_tip_vechi: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_borderou_tip_vechi.py rulată (amprenta b77593a67311)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_cui_fara_ro.py",
+    "amprenta": "75824de777df",
+    "cod": 0,
+    "durata_s": 0.3,
+    "iesire": [
+     "migrare_cui_fara_ro: public ok; firme 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_cui_fara_ro.py rulată (amprenta 75824de777df)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_curs_precizie.py",
+    "amprenta": "7ea3ad6f3827",
+    "cod": 0,
+    "durata_s": 0.8,
+    "iesire": [
+     "migrare_curs_precizie: public deja lărgit; cache BNR refăcut din arhivă: 0 valori {} (anii [2026])",
+     "migrare_curs_precizie: 27 firme ok (28 coloane lărgite), 0 esec",
+     "registrul migrărilor: core/migrare_curs_precizie.py rulată (amprenta 7ea3ad6f3827)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_factura_tva_cote.py",
+    "amprenta": "e1c80b11ff3d",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_factura_tva_cote: 27 ok, 0 esec, 2 facturi completate din XML",
+     "registrul migrărilor: core/migrare_factura_tva_cote.py rulată (amprenta e1c80b11ff3d)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_intocmitor_bilant.py",
+    "amprenta": "0d5079348746",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_intocmitor_bilant: cabinetul (public) ok; firme 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_intocmitor_bilant.py rulată (amprenta 0d5079348746)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_produse_categorie_tva.py",
+    "amprenta": "0fea1b1b2287",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_produse_categorie_tva: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_produse_categorie_tva.py rulată (amprenta 0fea1b1b2287)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_reevaluare_partener.py",
+    "amprenta": "ffe042a5a876",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_reevaluare_partener: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_reevaluare_partener.py rulată (amprenta ffe042a5a876)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_serie_nr_descrieri.py",
+    "amprenta": "811da036db08",
+    "cod": 0,
+    "durata_s": 0.2,
+    "iesire": [
+     "  mișcare 5 lăsată: «Factură F1A3 din 06.10.2026» — mișcarea e în evidență (nota ei e validată): nu se modifică",
+     "  mișcare 10 lăsată: «Factură F1A4 din 16.10.2026» — mișcarea e în evidență (nota ei e validată): nu se modifică",
+     "tenant_9055: 1 ciornă rescrisă, 0 mișcări de stoc rescrise, 0 note validate arătate derivat, 0 texte lăsate",
+     "  ciornă 2 (descriere): «Contare factura F61» -> «Contare factura F6 nr. 1»",
+     "migrare_serie_nr_descrieri: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_serie_nr_descrieri.py rulată (amprenta 811da036db08)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_valoare_neta_linie.py",
+    "amprenta": "131375515921",
+    "cod": 0,
+    "durata_s": 0.2,
+    "iesire": [
+     "migrare_valoare_neta_linie: 27 ok, 0 esec, 3 linii cu BT-131 completate din XML, 0 linii de document adăugate",
+     "registrul migrărilor: core/migrare_valoare_neta_linie.py rulată (amprenta 131375515921)"
+    ]
+   }
+  ]
+ },
+ "etape_s": [
+  [
+   "aplicația din arbore pornită (port 45255)",
+   10.6
+  ],
+  [
+   "dovezi parcurse (55)",
+   240.3
+  ]
+ ],
+ "dovezi": [
+  {
+   "nr": "428",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6: Date firmă arată sistemul TVA la încasare ales pe 21.10.2026, de la 01.11.2026 (CF art.282 alin.(3^1) lit.a)",
+   "captura": "dovezi/lot11/428_f6_vechi_date_firma.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "01.11.2026"
+     },
+     "ok": true,
+     "vazut": "le înregistrate în scopuri de TVA. Nu Da Azi firma nu aplică sistemul TVA la încasare. Verifică în registrul ANAF De la Până la Sursa Verificat la ANAF Acțiune 01.11.2026 31.12.2028 manual — Facturile rămase în sistem Șterge Aplică de la* Prima zi a perioadei fiscale de după opțiune, sau data înregistrării în scopuri de TVA (art"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.0
+  },
+  {
+   "nr": "428",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6: la «Emite factură», caseta de lângă dată spune că sistemul se aplică abia de la 01.11.2026, deci factura de azi rămâne pe regulile generale, cu 4427 (CF art.282 alin.(7) lit.a)",
+   "captura": "dovezi/lot11/428_f6_vechi_formular_emitere.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "01.11.2026",
+      "zona": "#em-tva-incasare"
+     },
+     "ok": true,
+     "vazut": "Factura din 22.10.2026: firma aplică sistemul TVA la încasare abia de la 01.11.2026. O factură emisă înainte de intrarea în sistem rămâne pe regulile generale: TVA exigibil la emitere (4427), fără mențiunea „TVA la încasare” (Cod fiscal art. 2"
+    },
+    {
+     "cerut": {
+      "contine": "4427",
+      "zona": "#em-tva-incasare"
+     },
+     "ok": true,
+     "vazut": "irma aplică sistemul TVA la încasare abia de la 01.11.2026. O factură emisă înainte de intrarea în sistem rămâne pe regulile generale: TVA exigibil la emitere (4427), fără mențiunea „TVA la încasare” (Cod fiscal art. 282 alin. (7) lit. a)). Dacă firma aplica sistemul și la această dată, corectează perioada în Date firmă."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.6
+  },
+  {
+   "nr": "428",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6: «Configurare emitere» (din formular, «Schimbă seria») arată sistemul TVA la încasare de la 01.11.2026 și că azi nu se aplică",
+   "captura": "dovezi/lot11/428_f6_vechi_configurare_emitere.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Configurare emitere"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F6 Migrare Test SRL · CUI 401006003 › Facturi ✕ Configurare emitere ? Înainte de prima factură: numerotarea (ca să fie neîntreruptă) și regimul de TVA. Regim TVA: plătitoare de TVA, TVA la încasare de la 01.11.2026 până la 31.1"
+    },
+    {
+     "cerut": {
+      "contine": "TVA la încasare de la 01.11.2026"
+     },
+     "ok": true,
+     "vazut": "CUI 401006003 › Facturi ✕ Configurare emitere ? Înainte de prima factură: numerotarea (ca să fie neîntreruptă) și regimul de TVA. Regim TVA: plătitoare de TVA, TVA la încasare de la 01.11.2026 până la 31.12.2028 — azi nu se aplică (din profilul firmei). Ai mai emis facturi până acum (în alt program sau pe hârtie)? Da, am mai emis Nu, încep acum"
+    },
+    {
+     "cerut": {
+      "contine": "azi nu se aplică"
+     },
+     "ok": true,
+     "vazut": "e de prima factură: numerotarea (ca să fie neîntreruptă) și regimul de TVA. Regim TVA: plătitoare de TVA, TVA la încasare de la 01.11.2026 până la 31.12.2028 — azi nu se aplică (din profilul firmei). Ai mai emis facturi până acum (în alt program sau pe hârtie)? Da, am mai emis Nu, încep acum"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.6
+  },
+  {
+   "nr": "428",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6: factura F6 nr. 1 din 21.10.2026 (emisă înainte de intrarea în sistem) are nota 4111 = 4427 210,00 (regulile generale), nimic pe 4428",
+   "captura": "dovezi/lot11/428_f6_vechi_factura_nr1_nota.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "4427"
+     },
+     "ok": true,
+     "vazut": "Notă nouă Blochează luna? Amortizarea lunii se generează după ce luna se încheie. 21.10.2026 · Contare factura F6 nr. 1 · ● Ciornă 4111 = 704 · 1.000,00 4111 = 4427 · 210,00 · sursa: facturile Document justificativ: Factură F6 nr. 1 din 21.10.2026 Nota din 21.10.2026 e derivată din factura F6 nr. 1 din 21.10.2026: se corec"
+    },
+    {
+     "cerut": {
+      "contine": "210,00"
+     },
+     "ok": true,
+     "vazut": "uă Blochează luna? Amortizarea lunii se generează după ce luna se încheie. 21.10.2026 · Contare factura F6 nr. 1 · ● Ciornă 4111 = 704 · 1.000,00 4111 = 4427 · 210,00 · sursa: facturile Document justificativ: Factură F6 nr. 1 din 21.10.2026 Nota din 21.10.2026 e derivată din factura F6 nr. 1 din 21.10.2026: se corectează num"
+    },
+    {
+     "cerut": {
+      "nu_contine": "4428"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F6 Migrare Test SRL · CUI 401006003 › Facturi ✕ Registru jurnal ? Luna 10/2026 · 2 note · 1 de validat ← luna luna → Generează amortizarea + Notă nouă Blochează luna? Amortizarea lunii se generează după ce luna se încheie. 21.10.2026 · Contare factura F6 nr. 1 · ● Ciornă 4111 = 704 · 1.000,00 4111 = 4427 · 210,00 · sursa: facturile Document justificativ: Factură F6 nr. "
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.6
+  },
+  {
+   "nr": "C76",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: D300 10/2026 — rândul 34 = -43 din nota nr. crt. 34 din 19.10.2026 (635 = 4427 43,24, lipsa neimputabilă de la inventar). Luna 10/2026 se poate declara abia după 31.10.2026 (383)",
+   "captura": "dovezi/lot11/c76_f1_vechi_d300_10_2026.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Rândul 34 (ajustări de taxă) cuprinde -43 lei"
+     },
+     "ok": false,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 ✕ Declarații Pasul 2 din 3 — generare Rânduri manuale D300 — introducere (0) Niciun rând manual pe octombrie 2026. Rândurile pe care generatorul le derivă din facturi apar automat în decont; aici introduci doar ce nu se derivă (scutiri, regularizări, ajustări). Adaugă rând: Rând * — alege — R1 — Livrări intracomunitare de bunuri, scuti"
+    },
+    {
+     "cerut": {
+      "contine": "635 = 4427 43,24"
+     },
+     "ok": false,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 ✕ Declarații Pasul 2 din 3 — generare Rânduri manuale D300 — introducere (0) Niciun rând manual pe octombrie 2026. Rândurile pe care generatorul le derivă din facturi apar automat în decont; aici introduci doar ce nu se derivă (scutiri, regularizări, ajustări). Adaugă rând: Rând * — alege — R1 — Livrări intracomunitare de bunuri, scuti"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": false,
+   "stare": "imposibila_azi",
+   "motiv_imposibil": "aplicația o poate arăta abia de la 2026-11-01",
+   "durata_s": 3.3
+  },
+  {
+   "nr": "451",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: nota 163 (ieșirea Marfa A din raportul Z 0042, scrisă înainte de reparație cu «Bon de consum nr 1») — depășită: «Validează» inactiv, motivul, «Refă nota din …»",
+   "captura": "dovezi/lot11/451_f1_vechi_nota163_depasita.png",
+   "verificari": [
+    {
+     "cerut": {
+      "inactiv": "[data-val='163']"
+     },
+     "ok": true,
+     "vazut": "Validează | dezactivat=True | title= | lângă: Validează"
+    },
+    {
+     "cerut": {
+      "contine": "Raport Z nr 0042",
+      "zona": "#jn-depasita-163"
+     },
+     "ok": true,
+     "vazut": "Nota din 20.10.2026 a fost generată pe 20.10.2026 după o regulă care s-a schimbat de atunci: acum raportul Z ar scrie documentul justificativ «Raport Z nr 0042 din 20.10.2026 (casa 8000000001)» (pe ciornă: «Bon de consum nr 1 din 20.10.2026»). Nota e depășită și nu se validează — refă-o din raportul Z („Refă nota din "
+    },
+    {
+     "cerut": {
+      "contine": "Bon de consum nr 1",
+      "zona": "#jn-depasita-163"
+     },
+     "ok": true,
+     "vazut": "26 după o regulă care s-a schimbat de atunci: acum raportul Z ar scrie documentul justificativ «Raport Z nr 0042 din 20.10.2026 (casa 8000000001)» (pe ciornă: «Bon de consum nr 1 din 20.10.2026»). Nota e depășită și nu se validează — refă-o din raportul Z („Refă nota din mișcarea de stoc”), apoi valideaz-o."
+    },
+    {
+     "cerut": {
+      "exista": "[data-reface='163']",
+      "text": "Refă nota din"
+     },
+     "ok": true,
+     "vazut": "Refă nota din mișcarea de stoc | dezactivat=False | title= | lângă: Refă nota din mișcarea de stoc"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.8
+  },
+  {
+   "nr": "451",
+   "firma": "tenant_9053",
+   "nume_firma": "F5 SRL Salariati SRL",
+   "descriere": "F5: nota 5 (salariile 10/2026, generată înainte de reparația 448) — depășită: «Validează» inactiv, ce ar scrie acum statul (641 = 421 11.860,79) față de ciornă (12.045,45), «Refă nota din …»",
+   "captura": "dovezi/lot11/451_f5_vechi_nota5_salarii_depasita.png",
+   "verificari": [
+    {
+     "cerut": {
+      "inactiv": "[data-val='5']"
+     },
+     "ok": true,
+     "vazut": "Validează | dezactivat=True | title= | lângă: Validează"
+    },
+    {
+     "cerut": {
+      "contine": "11.860,79",
+      "zona": "#jn-depasita-5"
+     },
+     "ok": true,
+     "vazut": " de plată 10/2026 ar scrie rândurile 421 = 4315 2.965,00; 421 = 4316 1.187,00; 421 = 444 706,00; 423 = 4315 66,00; 423 = 4316 26,00; 423 = 444 17,00; 641 = 421 11.860,79; 6458 = 423 262,00; 646 = 436 267,00 (pe ciornă: 421 = 4315 3.011,00; 421 = 4316 1.205,00; 421 = 444 727,00; 641 = 421 12.045,45; 646 = 436 271,00). Nota e dep"
+    },
+    {
+     "cerut": {
+      "contine": "12.045,45",
+      "zona": "#jn-depasita-5"
+     },
+     "ok": true,
+     "vazut": "00; 423 = 444 17,00; 641 = 421 11.860,79; 6458 = 423 262,00; 646 = 436 267,00 (pe ciornă: 421 = 4315 3.011,00; 421 = 4316 1.205,00; 421 = 444 727,00; 641 = 421 12.045,45; 646 = 436 271,00). Nota e depășită și nu se validează — refă-o din statul de plată 10/2026 („Refă nota din statul de plată”), apoi valideaz-o."
+    },
+    {
+     "cerut": {
+      "exista": "[data-reface='5']",
+      "text": "Refă nota din"
+     },
+     "ok": true,
+     "vazut": "Refă nota din statul de plată | dezactivat=False | title= | lângă: Refă nota din statul de plată"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.6
+  },
+  {
+   "nr": "452",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: nota 170 (retur în stoc Marfa B, la stornarea facturii F1A9) — nu mai spune «documentul ei a fost respins»; motivul adevărat e regula schimbată (451), cu refacerea din mișcarea de stoc",
+   "captura": "dovezi/lot11/452_f1_vechi_nota170.png",
+   "verificari": [
+    {
+     "cerut": {
+      "nu_contine": "documentul ei a fost respins",
+      "zona": "[data-nota-id='170']"
+     },
+     "ok": true,
+     "vazut": "19.10.2026 · Retur în stoc Marfa B × 1 buc (stornare) · ● Ciornă 607 = 371 · -27,50 · sursa: gestiunea stocurilor Document justificativ: Stornare factura F1A nr. 8 din 19.10.2026 Nota din 19.10.2026 a fost generată pe 21.10.2026 după o regulă care s-a schimbat de atunci: acum factura de stornare F1A nr. 9 din 19.10.2026 ar scrie documentul justificativ «Retur la Factură F1A nr. 9 din 19.10.2026» ("
+    },
+    {
+     "cerut": {
+      "exista": "#jn-depasita-170"
+     },
+     "ok": true,
+     "vazut": "Nota din 19.10.2026 a fost generată pe 21.10.2026 după o regulă care s-a schimbat de atunci: acum factura de stornare F1 | dezactivat=False | title= | lângă: 19.10.2026 · Retur în stoc Marfa B × 1 buc (stornare) · ● Ciornă 607 = 371 · -27,50 · sursa: gestiunea stocurilor Document justificativ: Stornare factura F1A nr. 8 din 19.10.2026 Nota din 19.10.2026 a fost generată pe 21.10.2026 după o regulă care s-a schimbat de atunci: acum factura de stornare F1A"
+    },
+    {
+     "cerut": {
+      "exista": "[data-reface='170']",
+      "text": "Refă nota din"
+     },
+     "ok": true,
+     "vazut": "Refă nota din mișcarea de stoc | dezactivat=False | title= | lângă: Refă nota din mișcarea de stoc"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.6
+  },
+  {
+   "nr": "409",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Registru jurnal — nota nr. crt. 8 (descărcarea veche, validată, nemodificabilă), stornările ei și descărcările cu documentul facturii și «× 2 buc»",
+   "captura": "dovezi/lot11/409_f1_vechi_registru_jurnal.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Nr. crt. 8",
+      "zona": "[data-nota-id='105']"
+     },
+     "ok": true,
+     "vazut": "Nr. crt. 8 · 05.10.2026 · Iesire stoc Marfa A x2.000 · ● Validată 607 = 371 · 100,00 · sursa: gestiunea stocurilor Document justificativ: lipsește — nota n-are documentul"
+    },
+    {
+     "cerut": {
+      "contine": "Factură 2 din 05.10.2026",
+      "zona": "[data-nota-id='147']"
+     },
+     "ok": true,
+     "vazut": "Nr. crt. 31 · 05.10.2026 · Ieșire stoc Marfa A × 2 buc · ● Validată 607 = 371 · 100,00 · sursa: gestiunea stocurilor Document justificativ: Factură 2 din 05.10.2026"
+    },
+    {
+     "cerut": {
+      "contine": "× 2 buc",
+      "zona": "[data-nota-id='147']"
+     },
+     "ok": true,
+     "vazut": "Nr. crt. 31 · 05.10.2026 · Ieșire stoc Marfa A × 2 buc · ● Validată 607 = 371 · 100,00 · sursa: gestiunea stocurilor Document justificativ: Factură 2 din 05.10.2026"
+    },
+    {
+     "cerut": {
+      "contine": "Factură 2 din 05.10.2026",
+      "zona": "[data-nota-id='169']"
+     },
+     "ok": true,
+     "vazut": "Nr. crt. 33 · 05.10.2026 · Ieșire stoc Marfa A × 2 buc · ● Validată 607 = 371 · 100,00 · sursa: gestiunea stocurilor Document justificativ: Factură 2 din 05.10.2026"
+    },
+    {
+     "cerut": {
+      "contine": "× 2 buc",
+      "zona": "[data-nota-id='169']"
+     },
+     "ok": true,
+     "vazut": "Nr. crt. 33 · 05.10.2026 · Ieșire stoc Marfa A × 2 buc · ● Validată 607 = 371 · 100,00 · sursa: gestiunea stocurilor Document justificativ: Factură 2 din 05.10.2026"
+    },
+    {
+     "cerut": {
+      "contine": "Stornare",
+      "zona": "[data-nota-id='146']"
+     },
+     "ok": true,
+     "vazut": "Nr. crt. 30 · 05.10.2026 · Stornare: n (descărcarea facturii, scrisă fără document)ota nr. crt. 8 din 05.10.2026 · ● Validată 607 = 371 · -100,00 · sursa: gestiunea stocurilor Document justificat"
+    },
+    {
+     "cerut": {
+      "contine": "Stornare",
+      "zona": "[data-nota-id='168']"
+     },
+     "ok": true,
+     "vazut": "Nr. crt. 32 · 05.10.2026 · Stornare: nota din 05.10.2026 (Iesire stoc Marfa A x2.000) — descărcarea facturii, scrisă fără document · ● Validată 607 = 371 · -100,00 · sursa: gestiunea stocurilor D"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.6
+  },
+  {
+   "nr": "409",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Balanța 10/2026 — 371 rulaj debitor 1.150,00, creditor 302,38, sold final 6.347,62 (= stocul fizic); 607 debitor 302,38: descărcarea facturii 2 nu e dublată",
+   "captura": "dovezi/lot11/409_f1_vechi_balanta_371_607.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "1.150,00",
+      "zona": "tr:has(> td:first-child:text-is('371'))"
+     },
+     "ok": true,
+     "vazut": "371 Mărfuri 5.000,00 0,00 1.000,00 500,00 1.150,00 302,38 7.150,00 802,38 6.347,62 0,00"
+    },
+    {
+     "cerut": {
+      "contine": "302,38",
+      "zona": "tr:has(> td:first-child:text-is('371'))"
+     },
+     "ok": true,
+     "vazut": "371 Mărfuri 5.000,00 0,00 1.000,00 500,00 1.150,00 302,38 7.150,00 802,38 6.347,62 0,00"
+    },
+    {
+     "cerut": {
+      "contine": "6.347,62",
+      "zona": "tr:has(> td:first-child:text-is('371'))"
+     },
+     "ok": true,
+     "vazut": "371 Mărfuri 5.000,00 0,00 1.000,00 500,00 1.150,00 302,38 7.150,00 802,38 6.347,62 0,00"
+    },
+    {
+     "cerut": {
+      "contine": "302,38",
+      "zona": "tr:has(> td:first-child:text-is('607'))"
+     },
+     "ok": true,
+     "vazut": "607 Cheltuieli privind mărfurile 0,00 0,00 500,00 0,00 302,38 0,00 802,38 0,00 802,38 0,00"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.3
+  },
+  {
+   "nr": "429",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Închidere lună -> «Reevaluare valută» (butonul e mereu acolo): facturile în EUR din 19–20.10.2026 au contarea în ciornă — apar cu motivul, nu sunt sărite tăcut",
+   "captura": "dovezi/lot11/429_f1_vechi_reevaluare_valuta.png",
+   "verificari": [
+    {
+     "cerut": {
+      "exista": "#rv-neincluse"
+     },
+     "ok": true,
+     "vazut": "Facturi în valută care nu intră în reevaluare (2)\nFactură F1A nr. 8 din 19.10.2026 — DANTE INTERNATIONAL SA: nota ei de  | dezactivat=False | title= | lângă: Reevaluare valută — 10/2026 La sfârșitul lunii, creanțele și datoriile în valută (pe partener: facturi minus plăți, legate de factură sau nu) și disponibilitățile în valută se evaluează la cursul BNR din ultima zi bancară a lunii (OMFP 1802/2014 pct.325); diferența merge pe 765 (favorabilă) sau 665 "
+    },
+    {
+     "cerut": {
+      "contine": "ciornă",
+      "zona": "#rv-neincluse"
+     },
+     "ok": true,
+     "vazut": "Facturi în valută care nu intră în reevaluare (2) Factură F1A nr. 8 din 19.10.2026 — DANTE INTERNATIONAL SA: nota ei de contare e ciornă — valideaz-o în Registrul jurnal, apoi reevaluarea o cuprinde Factură F1A nr. 12 din 20.10.2026 — DANTE INTERNATIONAL SA: nota ei de contare e ciornă — validea"
+    },
+    {
+     "cerut": {
+      "contine": "19.10.2026",
+      "zona": "#rv-neincluse"
+     },
+     "ok": true,
+     "vazut": "Facturi în valută care nu intră în reevaluare (2) Factură F1A nr. 8 din 19.10.2026 — DANTE INTERNATIONAL SA: nota ei de contare e ciornă — valideaz-o în Registrul jurnal, apoi reevaluarea o cuprinde Factură F1A nr. 12 din 20.10.2026 — DANTE I"
+    },
+    {
+     "cerut": {
+      "contine": "20.10.2026",
+      "zona": "#rv-neincluse"
+     },
+     "ok": true,
+     "vazut": "nr. 8 din 19.10.2026 — DANTE INTERNATIONAL SA: nota ei de contare e ciornă — valideaz-o în Registrul jurnal, apoi reevaluarea o cuprinde Factură F1A nr. 12 din 20.10.2026 — DANTE INTERNATIONAL SA: nota ei de contare e ciornă — valideaz-o în Registrul jurnal, apoi reevaluarea o cuprinde"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.1
+  },
+  {
+   "nr": "439",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6: Import date -> Solduri inițiale -> balanța SAGA cu sold la 1 ianuarie (fișierul de test al lui 439, forma «rulaje precedente»): previzualizarea o primește echilibrată, nu o mai refuză; nimic nu se salvează",
+   "captura": "dovezi/lot11/439_f6_balanta_saga.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "21 de conturi"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F6 Migrare Test SRL · CUI 401006003 › Import date ✕ Solduri inițiale F6 Migrare Test SRL · balanță încărcată 21 de conturi · debit 38.200,00 · credit 38.200,00 echilibrat 21 de rânduri intră Firma are deja o balanță de deschidere la 30.09.2026: 16 conturi, debit 111.170,00 lei, cre"
+    },
+    {
+     "cerut": {
+      "contine": "echilibrat"
+     },
+     "ok": true,
+     "vazut": "F6 Migrare Test SRL · CUI 401006003 › Import date ✕ Solduri inițiale F6 Migrare Test SRL · balanță încărcată 21 de conturi · debit 38.200,00 · credit 38.200,00 echilibrat 21 de rânduri intră Firma are deja o balanță de deschidere la 30.09.2026: 16 conturi, debit 111.170,00 lei, credit 111.170,00 lei. Balanța nouă la 30.09.2026: "
+    },
+    {
+     "cerut": {
+      "contine": "fără soldul inițial al anului"
+     },
+     "ok": true,
+     "vazut": "uri finale Credit”. Din aceeași balanță s-au citit soldurile la 1 ianuarie din „Solduri iniţiale an Debit” / „Solduri iniţiale an Credit”, rulajele precedente (fără soldul inițial al anului) din „Rulaje precedente Debit” / „Rulaje precedente Credit”, rulajele perioadei din „Rulaje lună Debit” / „Rulaje lună Credit”, totalul sumelor (cu soldul iniț"
+    },
+    {
+     "cerut": {
+      "nu_contine": "nu dau totalul sumelor"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F6 Migrare Test SRL · CUI 401006003 › Import date ✕ Solduri inițiale F6 Migrare Test SRL · balanță încărcată 21 de conturi · debit 38.200,00 · credit 38.200,00 echilibrat 21 de rânduri intră Firma are deja o balanță de deschidere la 30.09.2026: 16 conturi, debit 111.170,00 lei, credit 111.170,00 lei. Balanța nouă la 30.09.2026: 21 de conturi, debit 38.200,00 lei, credit"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.7
+  },
+  {
+   "nr": "443",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6: factura emisă pe 21.10.2026 (înainte de reparație, numărul stocat lipit «F61») apare în Istoric facturi ca «F6 nr. 1», în listă și în detaliu; termenul e numit «termen de transmitere în SPV»",
+   "captura": "dovezi/lot11/443_f6_vechi_istoric_detaliu.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Factură F6 nr. 1"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F6 Migrare Test SRL · CUI 401006003 › Facturi › Istoric facturi ✕ Factură F6 nr. 1 notă propusă, de validat nota din 21.10.2026 PDF factură Trimite pe email Stornează neîncasată netrimisă în SPV · termen de transmitere în SPV 28.10.2026 Emite"
+    },
+    {
+     "cerut": {
+      "nu_contine": "F61"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F6 Migrare Test SRL · CUI 401006003 › Facturi › Istoric facturi ✕ Factură F6 nr. 1 notă propusă, de validat nota din 21.10.2026 PDF factură Trimite pe email Stornează neîncasată netrimisă în SPV · termen de transmitere în SPV 28.10.2026 Emite chitanță Export SAGA Trimite în SPV Emisă · 21.10.2026 · scadență 20.11.2026 Către: CARAŞ TEODOR PERSOANĂ FIZICĂ AUTORIZATĂ · CIF"
+    },
+    {
+     "cerut": {
+      "contine": "termen de transmitere în SPV"
+     },
+     "ok": true,
+     "vazut": " Facturi › Istoric facturi ✕ Factură F6 nr. 1 notă propusă, de validat nota din 21.10.2026 PDF factură Trimite pe email Stornează neîncasată netrimisă în SPV · termen de transmitere în SPV 28.10.2026 Emite chitanță Export SAGA Trimite în SPV Emisă · 21.10.2026 · scadență 20.11.2026 Către: CARAŞ TEODOR PERSOANĂ FIZICĂ AUTORIZATĂ · CIF 48104715 JUD"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.5
+  },
+  {
+   "nr": "443",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6: Registru jurnal — nota de contare a facturii F6 nr. 1 (ciornă scrisă pe 21.10.2026, înainte de reparație, cu descrierea «Contare factura F61»; rescrisă de core/migrare_serie_nr_descrieri.py) nu mai arată numărul lipit «F61» nici în descriere",
+   "captura": "dovezi/lot11/443_f6_vechi_registru_jurnal.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Contare factura F6 nr. 1"
+     },
+     "ok": true,
+     "vazut": "26 · 2 note · 1 de validat ← luna luna → Generează amortizarea + Notă nouă Blochează luna? Amortizarea lunii se generează după ce luna se încheie. 21.10.2026 · Contare factura F6 nr. 1 · ● Ciornă 4111 = 704 · 1.000,00 4111 = 4427 · 210,00 · sursa: facturile Document justificativ: Factură F6 nr. 1 din 21.10.2026 Nota din 21.10.2026 e derivată "
+    },
+    {
+     "cerut": {
+      "contine": "Factură F6 nr. 1 din"
+     },
+     "ok": true,
+     "vazut": " după ce luna se încheie. 21.10.2026 · Contare factura F6 nr. 1 · ● Ciornă 4111 = 704 · 1.000,00 4111 = 4427 · 210,00 · sursa: facturile Document justificativ: Factură F6 nr. 1 din 21.10.2026 Nota din 21.10.2026 e derivată din factura F6 nr. 1 din 21.10.2026: se corectează numai de acolo — în Facturi: corectezi factura (stornare / factură"
+    },
+    {
+     "cerut": {
+      "nu_contine": "F61"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F6 Migrare Test SRL · CUI 401006003 ✕ Registru jurnal ? Luna 10/2026 · 2 note · 1 de validat ← luna luna → Generează amortizarea + Notă nouă Blochează luna? Amortizarea lunii se generează după ce luna se încheie. 21.10.2026 · Contare factura F6 nr. 1 · ● Ciornă 4111 = 704 · 1.000,00 4111 = 4427 · 210,00 · sursa: facturile Document justificativ: Factură F6 nr. 1 din 21.1"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.5
+  },
+  {
+   "nr": "443",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Registru jurnal (octombrie 2026) — notele scrise înainte de reparație cu seria lipită: cele VALIDATE («Contare factura F1A3», documentul stocului «Factură F1A3 din 06.10.2026») rămân în bază cum au fost scrise și se arată derivat din factură, «F1A nr. 3»; CIORNELE («Contare factura F1A12», «Retur la Factură F1A11 din …») rescrise de migrare; textul omului de la casă («Încasare factura F1A4») și cel al extrasului rămân cum au fost scrise",
+   "captura": "dovezi/lot11/443_f1_vechi_registru_jurnal.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Contare factura F1A nr. 3"
+     },
+     "ok": true,
+     "vazut": "e stoc Marfa A × 2 buc · ● Validată 607 = 371 · 100,00 · sursa: gestiunea stocurilor Document justificativ: Factură 2 din 05.10.2026 Nr. crt. 11 · 06.10.2026 · Contare factura F1A nr. 3 · ● Validată 4111 = 707 · 200,00 4111 = 4427 · 42,00 · sursa: facturile Document justificativ: Factură F1A nr. 3 din 06.10.2026 Nr. crt. 12 · 06.10.2026 · Ieși"
+    },
+    {
+     "cerut": {
+      "contine": "Factură F1A nr. 3 din 06.10.2026"
+     },
+     "ok": true,
+     "vazut": " 05.10.2026 Nr. crt. 11 · 06.10.2026 · Contare factura F1A nr. 3 · ● Validată 4111 = 707 · 200,00 4111 = 4427 · 42,00 · sursa: facturile Document justificativ: Factură F1A nr. 3 din 06.10.2026 Nr. crt. 12 · 06.10.2026 · Ieșire stoc Marfa A × 2 buc · ● Validată 607 = 371 · 100,00 · sursa: gestiunea stocurilor Document justificativ: Factură F1A nr. 3 d"
+    },
+    {
+     "cerut": {
+      "contine": "Contare factura F1A nr. 12"
+     },
+     "ok": true,
+     "vazut": ", inventarul, rețeta). Dacă a fost respinsă la validare, după corectare recontabilizarea o înlocuiește și o trimite din nou la validare. Validează 20.10.2026 · Contare factura F1A nr. 12 · ● Ciornă 4111 = 707 · 53,27 4111 = 4427 · 11,19 · sursa: facturile Document justificativ: Factură F1A nr. 12 din 20.10.2026 Nota din 20.10.2026 e derivată di"
+    },
+    {
+     "cerut": {
+      "contine": "Retur la Factură F1A nr. 11 din 20.10.2026"
+     },
+     "ok": true,
+     "vazut": "la validare. Validează 20.10.2026 · Retur în stoc Marfa B × 1 buc (stornare) · ● Ciornă 607 = 371 · -27,50 · sursa: gestiunea stocurilor Document justificativ: Retur la Factură F1A nr. 11 din 20.10.2026 Nota din 20.10.2026 e derivată din mișcarea de stoc Retur la Factură F1A nr. 11 din 20.10.2026: se corectează numai de acolo — în Stoc: din documentul mișcării"
+    },
+    {
+     "cerut": {
+      "nu_contine": "Contare factura F1A3"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 ✕ Registru jurnal ? Luna 10/2026 · 70 de note · 7 la validare în cabinet · 35 de validat ← luna luna → Generează amortizarea + Notă nouă Blochează luna? Amortizarea lunii se generează după ce luna se încheie. Nr. crt. 7 · 05.10.2026 · Contare factura 2 · ● Validată 4111 = 707 · 800,00 4111 = 4427 · 88,00 4111 = 707 · 5.000,00 4111 = 44"
+    },
+    {
+     "cerut": {
+      "nu_contine": "Factură F1A3 din"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 ✕ Registru jurnal ? Luna 10/2026 · 70 de note · 7 la validare în cabinet · 35 de validat ← luna luna → Generează amortizarea + Notă nouă Blochează luna? Amortizarea lunii se generează după ce luna se încheie. Nr. crt. 7 · 05.10.2026 · Contare factura 2 · ● Validată 4111 = 707 · 800,00 4111 = 4427 · 88,00 4111 = 707 · 5.000,00 4111 = 44"
+    },
+    {
+     "cerut": {
+      "nu_contine": "Contare factura F1A12"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 ✕ Registru jurnal ? Luna 10/2026 · 70 de note · 7 la validare în cabinet · 35 de validat ← luna luna → Generează amortizarea + Notă nouă Blochează luna? Amortizarea lunii se generează după ce luna se încheie. Nr. crt. 7 · 05.10.2026 · Contare factura 2 · ● Validată 4111 = 707 · 800,00 4111 = 4427 · 88,00 4111 = 707 · 5.000,00 4111 = 44"
+    },
+    {
+     "cerut": {
+      "contine": "Încasare factura F1A4"
+     },
+     "ok": true,
+     "vazut": " 371 · 102,38 · sursa: gestiunea stocurilor Document justificativ: Factură F1A nr. 4 din 16.10.2026 Nr. crt. 23 · 16.10.2026 · Încasare de la client — document Încasare factura F1A4 — FISCALOS ICONTA S.R.L. · ● Validată 5311 = 4111 · 6.000,00 · sursa: registrul de casă Document justificativ: Încasare factura F1A4 Nr. crt. 24 · 16.10.2026 ·"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.6
+  },
+  {
+   "nr": "450",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Stocuri -> «Borderou de achiziție»: articolul se alege din nomenclator (cele două «grau» scrise înainte de reparație, nr. 5 și 6, sunt în listă — unirea lor e decizia din §6); borderourile lunii, cu «Stornează»",
+   "captura": "dovezi/lot11/450_f1_vechi_borderou_articole.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "grau",
+      "zona": "#op-articol"
+     },
+     "ok": true,
+     "vazut": "— alege — Carte tehnica · buc · stoc 4 buc grau · kg · stoc 200 kg grau · kg · stoc 10 kg Marfa A · buc · stoc 146 buc Marfa B · buc · stoc 22 buc Marfa C · buc · stoc 9 buc Articol nou… (îl creez acum)"
+    },
+    {
+     "cerut": {
+      "contine": "Articol nou",
+      "zona": "#op-articol"
+     },
+     "ok": true,
+     "vazut": "e tehnica · buc · stoc 4 buc grau · kg · stoc 200 kg grau · kg · stoc 10 kg Marfa A · buc · stoc 146 buc Marfa B · buc · stoc 22 buc Marfa C · buc · stoc 9 buc Articol nou… (îl creez acum)"
+    },
+    {
+     "cerut": {
+      "contine": "BA-2",
+      "zona": "#ba-lista"
+     },
+     "ok": true,
+     "vazut": " achiziție BA-1 din 19.10.2026 · Ion Popescu 50 kg fier vechi - Ion Popescu · 1 buc · 100,00 lei · nota din 19.10.2026 (ciorna) Stornează Borderou de achiziție BA-2 din 20.10.2026 · Maria Ionescu grau · 200 buc · 200,00 lei · nota din 20.10.2026 (ciorna) Stornează Borderou de achiziție BA-3 din 21.10.2026 · Vasile Test gra"
+    },
+    {
+     "cerut": {
+      "contine": "BA-3",
+      "zona": "#ba-lista"
+     },
+     "ok": true,
+     "vazut": " Stornează Borderou de achiziție BA-2 din 20.10.2026 · Maria Ionescu grau · 200 buc · 200,00 lei · nota din 20.10.2026 (ciorna) Stornează Borderou de achiziție BA-3 din 21.10.2026 · Vasile Test grau · 10 buc · 10,00 lei · nota din 21.10.2026 (ciorna) Stornează"
+    },
+    {
+     "cerut": {
+      "contine": "Stornează",
+      "zona": "#ba-lista"
+     },
+     "ok": true,
+     "vazut": "Borderou de achiziție BA-1 din 19.10.2026 · Ion Popescu 50 kg fier vechi - Ion Popescu · 1 buc · 100,00 lei · nota din 19.10.2026 (ciorna) Stornează Borderou de achiziție BA-2 din 20.10.2026 · Maria Ionescu grau · 200 buc · 200,00 lei · nota din 20.10.2026 (ciorna) Stornează Borderou de achiziție BA-3 din 2"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.6
+  },
+  {
+   "nr": "C75",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: borderourile scrise înainte de lotul 9 au trecut pe tipul «borderou» (migrare): lista lunii arată BA-1, BA-2, BA-3 — fiecare număr o dată",
+   "captura": "dovezi/lot11/c75_f1_vechi_borderourile_lunii.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "BA-1",
+      "zona": "#ba-lista"
+     },
+     "ok": true,
+     "vazut": "Borderou de achiziție BA-1 din 19.10.2026 · Ion Popescu 50 kg fier vechi - Ion Popescu · 1 buc · 100,00 lei · nota din 19.10.2026 (ciorna) Stornează Borderou de achiziție BA-2 din 20.10."
+    },
+    {
+     "cerut": {
+      "contine": "BA-2",
+      "zona": "#ba-lista"
+     },
+     "ok": true,
+     "vazut": " achiziție BA-1 din 19.10.2026 · Ion Popescu 50 kg fier vechi - Ion Popescu · 1 buc · 100,00 lei · nota din 19.10.2026 (ciorna) Stornează Borderou de achiziție BA-2 din 20.10.2026 · Maria Ionescu grau · 200 buc · 200,00 lei · nota din 20.10.2026 (ciorna) Stornează Borderou de achiziție BA-3 din 21.10.2026 · Vasile Test gra"
+    },
+    {
+     "cerut": {
+      "contine": "BA-3",
+      "zona": "#ba-lista"
+     },
+     "ok": true,
+     "vazut": " Stornează Borderou de achiziție BA-2 din 20.10.2026 · Maria Ionescu grau · 200 buc · 200,00 lei · nota din 20.10.2026 (ciorna) Stornează Borderou de achiziție BA-3 din 21.10.2026 · Vasile Test grau · 10 buc · 10,00 lei · nota din 21.10.2026 (ciorna) Stornează"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.7
+  },
+  {
+   "nr": "C75",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: fișa de magazie a articolului 5 («grau»): intrarea din 20.10.2026 poartă documentul «Borderou de achiziție BA-2 din 20.10.2026» (era «BA-1», numărul altui borderou)",
+   "captura": "dovezi/lot11/c75_f1_vechi_fisa_grau.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Borderou de achiziție BA-2 din 20.10.2026",
+      "zona": "#cv-fisa-zona"
+     },
+     "ok": true,
+     "vazut": "Fisa: grau 20.10.2026 · +200 · 200,00 lei · preț 1,00 lei sold 200 · 200,00 lei · CMP 1,00 lei · Borderou de achiziție BA-2 din 20.10.2026"
+    },
+    {
+     "cerut": {
+      "nu_contine": "BA-1 din 20.10.2026",
+      "zona": "#cv-fisa-zona"
+     },
+     "ok": true,
+     "vazut": "Fisa: grau 20.10.2026 · +200 · 200,00 lei · preț 1,00 lei sold 200 · 200,00 lei · CMP 1,00 lei · Borderou de achiziție BA-2 din 20.10.2026"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.2
+  },
+  {
+   "nr": "442",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1 (SRL cu capitalul scris): Date firmă — capitalul social nu apare între lipsuri",
+   "captura": "dovezi/lot11/442_f1_vechi_date_firma.png",
+   "verificari": [
+    {
+     "cerut": {
+      "nu_contine": "emiterea facturilor",
+      "zona": ".dec-avert, .dec-ok"
+     },
+     "ok": true,
+     "vazut": "Profil incomplet — 3 câmpuri obligatorii lipsesc Mare contribuabil — blochează Bilanț Forma de proprietate — blochează Bilanț Entitate de interes public — blochează Bilanț"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.1
+  },
+  {
+   "nr": "442",
+   "firma": "tenant_9050",
+   "nume_firma": "F2 Profit Amortizare SRL",
+   "descriere": "F2 (SRL fără capital subscris): «Profil incomplet» numește capitalul social cu «blochează emiterea facturilor» (Legea 31/1990 art.74 alin.(3))",
+   "captura": "dovezi/lot11/442_f2_vechi_profil_incomplet.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Profil incomplet",
+      "zona": ".dec-avert"
+     },
+     "ok": true,
+     "vazut": "Profil incomplet — 4 câmpuri obligatorii lipsesc Mare contribuabil — blochează Bilanț Forma de proprietate — blochează Bilanț Entitate de interes public — blochează Bilanț Capi"
+    },
+    {
+     "cerut": {
+      "contine": "blochează emiterea facturilor",
+      "zona": ".dec-avert"
+     },
+     "ok": true,
+     "vazut": "ii lipsesc Mare contribuabil — blochează Bilanț Forma de proprietate — blochează Bilanț Entitate de interes public — blochează Bilanț Capital social subscris — blochează emiterea facturilor"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.1
+  },
+  {
+   "nr": "442",
+   "firma": "tenant_9051",
+   "nume_firma": "F3 Intracomunitar SRL",
+   "descriere": "F3 (fără forma juridică și capital): «Profil incomplet» numește forma juridică / capitalul cu «blochează emiterea facturilor»",
+   "captura": "dovezi/lot11/442_f3_vechi_profil_incomplet.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Profil incomplet",
+      "zona": ".dec-avert"
+     },
+     "ok": true,
+     "vazut": "Profil incomplet — 4 câmpuri obligatorii lipsesc Mare contribuabil — blochează Bilanț Forma de proprietate — blochează Bilanț Entitate de interes public — blochează Bilanț Form"
+    },
+    {
+     "cerut": {
+      "contine": "blochează emiterea facturilor",
+      "zona": ".dec-avert"
+     },
+     "ok": true,
+     "vazut": "obligatorii lipsesc Mare contribuabil — blochează Bilanț Forma de proprietate — blochează Bilanț Entitate de interes public — blochează Bilanț Forma juridică — blochează emiterea facturilor"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.1
+  },
+  {
+   "nr": "444",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Clienți -> «Verifică la ANAF» pe rândul DANTE INTERNATIONAL SA (CUI 14399840, real; partener din facturile emise, scris înainte de reparație): ANAF răspunde, iar ecranul spune că numele din fișă e același sau, dacă diferă, propune actualizarea. Primul rând (Client Test SRL, 410001005) are un CUI sintetic, pe care ANAF nu-l cunoaște. Cere --anaf-real",
+   "captura": "dovezi/lot11/444_f1_vechi_clienti_anaf.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine_oricare": [
+       "Numele de la ANAF diferă",
+       "numele din fișă e același"
+      ],
+      "zona": "tr:has-text('14399840') [id*='-anaf-stare-']"
+     },
+     "ok": true,
+     "vazut": "La ANAF: „DANTE INTERNATIONAL SA” · plătitor TVA — numele din fișă e același."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.7
+  },
+  {
+   "nr": "444",
+   "firma": "tenant_9050",
+   "nume_firma": "F2 Profit Amortizare SRL",
+   "descriere": "F2: Clienți -> «Verifică la ANAF» pe singurul client (Client Servicii SRL, CUI 410001005 — sintetic, al datelor de test): ANAF nu-l cunoaște, iar ecranul o spune lângă rând, fără să propună vreo actualizare. Cere --anaf-real",
+   "captura": "dovezi/lot11/444_f2_vechi_clienti_anaf_cui_sintetic.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "CUI negăsit la ANAF",
+      "zona": "[id*='-anaf-stare-']"
+     },
+     "ok": true,
+     "vazut": "CUI negăsit la ANAF."
+    },
+    {
+     "cerut": {
+      "nu_contine": "Actualizează fișa",
+      "zona": "[id*='-anaf-stare-']"
+     },
+     "ok": true,
+     "vazut": "CUI negăsit la ANAF."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.6
+  },
+  {
+   "nr": "C69",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: D406 09/2026 — fie refuzul care numește ce lipsește (cu drumul spre Date firmă), fie XML-ul fără valori inventate (oraș / telefon «-», IBAN RO00BANK…, cod poștal 000000)",
+   "captura": "dovezi/lot11/c69_f1_vechi_d406_09_2026.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine_oricare": [
+       "Vezi XML-ul generat",
+       "Date firmă",
+       "Completează localitatea în fișa partenerului"
+      ]
+     },
+     "ok": true,
+     "vazut": "din 3 — generare D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Vasile Test. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou.Deschide Furnizori"
+    },
+    {
+     "cerut": {
+      "nu_contine": "RO00BANK"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 ✕ Declarații Pasul 2 din 3 — generare D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Vasile Test. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou.Deschide Furnizori"
+    },
+    {
+     "cerut": {
+      "nu_contine": "<City>-</City>"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 ✕ Declarații Pasul 2 din 3 — generare D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Vasile Test. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou.Deschide Furnizori"
+    },
+    {
+     "cerut": {
+      "nu_contine": "<Telephone>-</Telephone>"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 ✕ Declarații Pasul 2 din 3 — generare D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Vasile Test. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou.Deschide Furnizori"
+    },
+    {
+     "cerut": {
+      "nu_contine": "<PostalCode>000000</PostalCode>"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 ✕ Declarații Pasul 2 din 3 — generare D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Vasile Test. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou.Deschide Furnizori"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.6
+  },
+  {
+   "nr": "C69",
+   "firma": "tenant_9050",
+   "nume_firma": "F2 Profit Amortizare SRL",
+   "descriere": "F2: D406 09/2026 — refuz cu ce lipsește sau XML fără valori inventate",
+   "captura": "dovezi/lot11/c69_f2_vechi_d406_09_2026.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine_oricare": [
+       "Vezi XML-ul generat",
+       "Date firmă",
+       "Completează localitatea în fișa partenerului"
+      ]
+     },
+     "ok": true,
+     "vazut": "06 poartă codul firmei, nu al partenerului. Scrie partenerul pe linia notei (Registrul jurnal) sau leag-o de factura ei. Din ce e făcută declarația — 8 rânduri Vezi XML-ul generat <?xml version=\"1.0\" encoding=\"UTF-8\"?> <AuditFile xmlns=\"mfp:anaf:dgti:d406:declaratie:v1\"> <Header> <AuditFileVersion>2.4.9</AuditFileVersion> <AuditFileCount"
+    },
+    {
+     "cerut": {
+      "nu_contine": "RO00BANK"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F2 Profit Amortizare SRL · CUI 403000015 ✕ Declarații Pasul 2 din 3 — verifică D406 · T3/2026 (iul–sep) Validat cu DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF. Rezumat Fișierul SAF-T (structura 2.4.9) cuprinde: 573 de conturi, 1 client, 0 furnizori, 7 note contabile, 1 factură de vânzare, 0 facturi de cumpărare, 1 plată. Av"
+    },
+    {
+     "cerut": {
+      "nu_contine": "<City>-</City>"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F2 Profit Amortizare SRL · CUI 403000015 ✕ Declarații Pasul 2 din 3 — verifică D406 · T3/2026 (iul–sep) Validat cu DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF. Rezumat Fișierul SAF-T (structura 2.4.9) cuprinde: 573 de conturi, 1 client, 0 furnizori, 7 note contabile, 1 factură de vânzare, 0 facturi de cumpărare, 1 plată. Av"
+    },
+    {
+     "cerut": {
+      "nu_contine": "<Telephone>-</Telephone>"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F2 Profit Amortizare SRL · CUI 403000015 ✕ Declarații Pasul 2 din 3 — verifică D406 · T3/2026 (iul–sep) Validat cu DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF. Rezumat Fișierul SAF-T (structura 2.4.9) cuprinde: 573 de conturi, 1 client, 0 furnizori, 7 note contabile, 1 factură de vânzare, 0 facturi de cumpărare, 1 plată. Av"
+    },
+    {
+     "cerut": {
+      "nu_contine": "<PostalCode>000000</PostalCode>"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F2 Profit Amortizare SRL · CUI 403000015 ✕ Declarații Pasul 2 din 3 — verifică D406 · T3/2026 (iul–sep) Validat cu DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF. Rezumat Fișierul SAF-T (structura 2.4.9) cuprinde: 573 de conturi, 1 client, 0 furnizori, 7 note contabile, 1 factură de vânzare, 0 facturi de cumpărare, 1 plată. Av"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 5.9
+  },
+  {
+   "nr": "C69",
+   "firma": "tenant_9051",
+   "nume_firma": "F3 Intracomunitar SRL",
+   "descriere": "F3: D406 09/2026 — refuz cu ce lipsește sau XML fără valori inventate",
+   "captura": "dovezi/lot11/c69_f3_vechi_d406_09_2026.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine_oricare": [
+       "Vezi XML-ul generat",
+       "Date firmă",
+       "Completează localitatea în fișa partenerului"
+      ]
+     },
+     "ok": true,
+     "vazut": "umat Fișierul SAF-T (structura 2.4.9) cuprinde: 573 de conturi, 0 clienți, 1 furnizor, 0 note contabile, 0 facturi de vânzare, 0 facturi de cumpărare, 0 plăți. Vezi XML-ul generat <?xml version=\"1.0\" encoding=\"UTF-8\"?> <AuditFile xmlns=\"mfp:anaf:dgti:d406:declaratie:v1\"> <Header> <AuditFileVersion>2.4.9</AuditFileVersion> <AuditFileCount"
+    },
+    {
+     "cerut": {
+      "nu_contine": "RO00BANK"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F3 Intracomunitar SRL · CUI 404000013 ✕ Declarații Pasul 2 din 3 — verifică D406 · T3/2026 (iul–sep) Validat cu DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF. Rezumat Fișierul SAF-T (structura 2.4.9) cuprinde: 573 de conturi, 0 clienți, 1 furnizor, 0 note contabile, 0 facturi de vânzare, 0 facturi de cumpărare, 0 plăți. Vezi "
+    },
+    {
+     "cerut": {
+      "nu_contine": "<City>-</City>"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F3 Intracomunitar SRL · CUI 404000013 ✕ Declarații Pasul 2 din 3 — verifică D406 · T3/2026 (iul–sep) Validat cu DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF. Rezumat Fișierul SAF-T (structura 2.4.9) cuprinde: 573 de conturi, 0 clienți, 1 furnizor, 0 note contabile, 0 facturi de vânzare, 0 facturi de cumpărare, 0 plăți. Vezi "
+    },
+    {
+     "cerut": {
+      "nu_contine": "<Telephone>-</Telephone>"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F3 Intracomunitar SRL · CUI 404000013 ✕ Declarații Pasul 2 din 3 — verifică D406 · T3/2026 (iul–sep) Validat cu DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF. Rezumat Fișierul SAF-T (structura 2.4.9) cuprinde: 573 de conturi, 0 clienți, 1 furnizor, 0 note contabile, 0 facturi de vânzare, 0 facturi de cumpărare, 0 plăți. Vezi "
+    },
+    {
+     "cerut": {
+      "nu_contine": "<PostalCode>000000</PostalCode>"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F3 Intracomunitar SRL · CUI 404000013 ✕ Declarații Pasul 2 din 3 — verifică D406 · T3/2026 (iul–sep) Validat cu DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF. Rezumat Fișierul SAF-T (structura 2.4.9) cuprinde: 573 de conturi, 0 clienți, 1 furnizor, 0 note contabile, 0 facturi de vânzare, 0 facturi de cumpărare, 0 plăți. Vezi "
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 5.2
+  },
+  {
+   "nr": "460",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: «Emite factură» cu data 22.10.2026, moneda EUR — cursul propus e cel comunicat de BNR pe 21.10.2026 (ultimul înaintea datei facturii, CF art.290 alin.(2) + HG 1/2016 pct.35 alin.(1)), nu cel din 19.10.2026; golurile cache-ului (20–21.10, 07.09–05.10) completate din arhiva BNR, fără avertizare de curs lipsă",
+   "captura": "dovezi/lot11/460_f1_emitere_curs_22_10.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "din 21.10.2026",
+      "zona": "#em-valuta"
+     },
+     "ok": true,
+     "vazut": "Conversie în lei (art. 319 Cod fiscal), cum o va scrie factura Curs BNR EUR 5,3297 din 21.10.2026 TVA în lei — Total în lei — Ultimul curs comunicat de BNR înaintea datei facturii (22.10.2026); se fixează la emitere."
+    },
+    {
+     "cerut": {
+      "nu_contine": "din 19.10.2026",
+      "zona": "#em-valuta"
+     },
+     "ok": true,
+     "vazut": "Conversie în lei (art. 319 Cod fiscal), cum o va scrie factura Curs BNR EUR 5,3297 din 21.10.2026 TVA în lei — Total în lei — Ultimul curs comunicat de BNR înaintea datei facturii (22.10.2026); se fixează la emitere."
+    },
+    {
+     "cerut": {
+      "nu_contine": "lipsește din aplicație",
+      "zona": "#em-valuta"
+     },
+     "ok": true,
+     "vazut": "Conversie în lei (art. 319 Cod fiscal), cum o va scrie factura Curs BNR EUR 5,3297 din 21.10.2026 TVA în lei — Total în lei — Ultimul curs comunicat de BNR înaintea datei facturii (22.10.2026); se fixează la emitere."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 5.3
+  },
+  {
+   "nr": "460",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: factura F1A nr. 12 din 20.10.2026 (emisă înainte de reparație, în valută) își păstrează cursul fixat la emitere — 5,3272 din 19.10.2026, chiar ultimul comunicat înaintea datei ei (HG 1/2016 pct.35 alin.(1) și (2)); reparația nu o atinge",
+   "captura": "dovezi/lot11/460_f1_vechi_f1a12_curs.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "5,3272"
+     },
+     "ok": true,
+     "vazut": "enumire Cant UM Preț Cotă Valoare Marfa A 1 buc 10,00 21% 10,00 EUR Conversie în lei (art. 319 Cod fiscal) TVA în lei 11,19 lei Total în lei 64,46 lei curs BNR 5,3272 · 19.10.2026 Bază 21% 10,00 EUR TVA 21% 2,10 EUR Total 12,10 EUR"
+    },
+    {
+     "cerut": {
+      "contine": "19.10.2026"
+     },
+     "ok": true,
+     "vazut": "ant UM Preț Cotă Valoare Marfa A 1 buc 10,00 21% 10,00 EUR Conversie în lei (art. 319 Cod fiscal) TVA în lei 11,19 lei Total în lei 64,46 lei curs BNR 5,3272 · 19.10.2026 Bază 21% 10,00 EUR TVA 21% 2,10 EUR Total 12,10 EUR"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.1
+  },
+  {
+   "nr": "457",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: linia de extras din 16.10.2026 (comisionul de 12,50 lei, contată pe 22.10 de contabil, înainte de reparație) spune «Contată · notă ciornă» — nota ei e ciornă, n-a trimis-o nimeni la validare —, nu «Contată, nota e la validare»",
+   "captura": "dovezi/lot11/457_f1_vechi_banca_comision_ciorna.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Contată · notă ciornă",
+      "zona": "#bk-lista"
+     },
+     "ok": true,
+     "vazut": "22.10.2026 · −3,50 lei · Contată · notă ciornă Comision transfer · fără CUI în descriere 22.10.2026 · +500,00 lei · CUI 14399840 · Ignorată readu Incasare DANTE INTERNATIONAL SA CUI 14399840 factura F1A5 · "
+    },
+    {
+     "cerut": {
+      "nu_contine": "nota e la validare",
+      "zona": "#bk-lista"
+     },
+     "ok": true,
+     "vazut": "22.10.2026 · −3,50 lei · Contată · notă ciornă Comision transfer · fără CUI în descriere 22.10.2026 · +500,00 lei · CUI 14399840 · Ignorată readu Incasare DANTE INTERNATIONAL SA CUI 14399840 factura F1A5 · suma depășește soldul total; rest nealocat 390.00 F1A nr. 13 · DANTE INTERNATIONAL SA · 110,00 lei 21.10.2026 · −827,00 lei · CUI 14399840 · Contată · notă ciornă Plata DANTE INTERNATIONAL SA CU"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.7
+  },
+  {
+   "nr": "457",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "Cabinet, «De validat»: ciornele vechi ale contabilului (scrise înainte de reparație, netrimise — el validează) sunt în coada lui, «Notele tale în ciornă», pe firme (F1: comisionul din bancă, încasarea F1A12 din casă; F6: contarea facturii F61), fiecare cu «Validează» și «Deschide nota»",
+   "captura": "dovezi/lot11/457_f1_f6_vechi_ciornele_contabilului_in_coada.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Notele scrise de tine care nu sunt încă în evidență",
+      "zona": "#val-ciorne"
+     },
+     "ok": true,
+     "vazut": "NOTELE TALE ÎN CIORNĂ (37) Notele scrise de tine care nu sunt încă în evidență. Le validezi de aici sau din Registrul jurnal al firmei; acolo se și șterg. F1 Comert Stoc SRL Deschide firma 09.10.2026 · Plată către furnizor — document DP-1"
+    },
+    {
+     "cerut": {
+      "contine": "Comision administrare cont octombrie",
+      "zona": "#val-ciorne"
+     },
+     "ok": true,
+     "vazut": "irma 09.10.2026 · Plată către furnizor — document DP-1 — DANTE INTERNATIONAL SA · rulaj 100,00 lei · nevalidată, netrimisă Validează Deschide nota 16.10.2026 · Comision administrare cont octombrie - · rulaj 12,50 lei · nevalidată, netrimisă Validează Deschide nota 19.10.2026 · Contare factura F1A nr. 7 · rulaj 1.000,00 lei · nevalidată, netrimisă Validea"
+    },
+    {
+     "cerut": {
+      "contine": "Încasare de la client — factura F1A12",
+      "zona": "#val-ciorne"
+     },
+     "ok": true,
+     "vazut": "ide nota 21.10.2026 · Incasare GOOGLE IRELAND LIMITED IE6388047V factura F1A7 · rulaj 1.000,00 lei · nevalidată, netrimisă Validează Deschide nota 22.10.2026 · Încasare de la client — factura F1A12 din 20.10.2026 — DANTE INTERNATIONAL SA · rulaj 64,46 lei · nevalidată, netrimisă Validează Deschide nota 22.10.2026 · Ieșire stoc Carte tehnica × 1 buc · rula"
+    },
+    {
+     "cerut": {
+      "contine": "Contare factura F6 nr. 1",
+      "zona": "#val-ciorne"
+     },
+     "ok": true,
+     "vazut": "irma 31.10.2026 · Salariile lunii 10/2026 · rulaj 17.259,45 lei · nevalidată, netrimisă Validează Deschide nota F6 Migrare Test SRL Deschide firma 21.10.2026 · Contare factura F6 nr. 1 · rulaj 1.210,00 lei · nevalidată, netrimisă Validează Deschide nota"
+    },
+    {
+     "cerut": {
+      "exista": "#val-ciorne li [data-val-ciorna]"
+     },
+     "ok": true,
+     "vazut": "Validează | dezactivat=False | title= | lângă: 09.10.2026 · Plată către furnizor — document DP-1 — DANTE INTERNATIONAL SA · rulaj 100,00 lei · nevalidată, netrimisă Validează Deschide nota"
+    },
+    {
+     "cerut": {
+      "exista": "#val-ciorne li [data-deschide-ciorna]"
+     },
+     "ok": true,
+     "vazut": "Deschide nota | dezactivat=False | title= | lângă: 09.10.2026 · Plată către furnizor — document DP-1 — DANTE INTERNATIONAL SA · rulaj 100,00 lei · nevalidată, netrimisă Validează Deschide nota"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 5.0
+  },
+  {
+   "nr": "453",
+   "firma": "tenant_9053",
+   "nume_firma": "F5 SRL Salariati SRL",
+   "descriere": "F5: statul 10/2026 (calculat înainte de reparație cu 648,75) — «Compoziția netului» arată deducerea personală rotunjită la leu, 649,00 (15% × 4.325 = 648,75), nu 648,75",
+   "captura": "dovezi/lot11/453_f5_vechi_stat_10_2026_deducere.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "deducere personală 649,00 lei"
+     },
+     "ok": true,
+     "vazut": "e octombrie (10 ore) 497,16 lei CAS (25%) -1.204,00 lei CASS (10%) -482,00 lei Impozit pe venit -248,00 lei în calculul impozitului, scade baza (nu se reține): deducere personală 649,00 lei Salariu net 2.881,34 lei Indemnizație CM (netă) 153,00 lei Net de plată (salariu + indemnizație CM) 3.034,34 lei Plătit de angajator — nu se scade din net CAM "
+    },
+    {
+     "cerut": {
+      "nu_contine": "648,75"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F5 SRL Salariati SRL · CUI 40510009 ✕ Stat de plată ? Luna 10/2026 ← luna luna → Chei REGES Răspunsuri REGES + Salariat nou Fișier plată card (SEPA) Contabilizează statul „Răspunsuri REGES\" e indisponibil: cheile REGES nu sunt configurate încă. Configurează-le cu butonul „Chei REGES”. Ionescu Vasile brut 4.815,34 · CAS 1.204,00 · CASS 482,00 · impozit 248,00 · net 3.034"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.5
+  },
+  {
+   "nr": "453",
+   "firma": "tenant_9053",
+   "nume_firma": "F5 SRL Salariati SRL",
+   "descriere": "F5: statul 09/2026 (contat și validat înainte de reparație) — deducerile 562,00 (brut 5.000) și 130,00 (brut 6.000), nu 562,25 / 129,75; impozitul rămâne 269 / 377 (baza impozitului era deja rotunjită la leu)",
+   "captura": "dovezi/lot11/453_f5_vechi_stat_09_2026_deducere.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "deducere personală 562,00 lei"
+     },
+     "ok": true,
+     "vazut": "0 lei Salariu brut 5.000,00 lei CAS (25%) -1.250,00 lei CASS (10%) -500,00 lei Impozit pe venit -269,00 lei în calculul impozitului, scade baza (nu se reține): deducere personală 562,00 lei Salariu net 2.981,00 lei Plătit de angajator — nu se scade din net CAM — contribuția asiguratorie pentru muncă (2,25%), plătită de angajator 113,00 lei Cost to"
+    },
+    {
+     "cerut": {
+      "contine": "deducere personală 130,00 lei"
+     },
+     "ok": true,
+     "vazut": "0 lei Salariu brut 6.000,00 lei CAS (25%) -1.500,00 lei CASS (10%) -600,00 lei Impozit pe venit -377,00 lei în calculul impozitului, scade baza (nu se reține): deducere personală 130,00 lei Salariu net 3.523,00 lei Plătit de angajator — nu se scade din net CAM — contribuția asiguratorie pentru muncă (2,25%), plătită de angajator 135,00 lei Cost to"
+    },
+    {
+     "cerut": {
+      "nu_contine": "562,25"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F5 SRL Salariati SRL · CUI 40510009 ✕ Stat de plată ? Luna 09/2026 ← luna luna → Chei REGES Răspunsuri REGES + Salariat nou Fișier plată card (SEPA) Contabilizează statul „Răspunsuri REGES\" e indisponibil: cheile REGES nu sunt configurate încă. Configurează-le cu butonul „Chei REGES”. Ionescu Vasile brut 5.000,00 · CAS 1.250,00 · CASS 500,00 · impozit 269,00 · net 2.981"
+    },
+    {
+     "cerut": {
+      "nu_contine": "129,75"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F5 SRL Salariati SRL · CUI 40510009 ✕ Stat de plată ? Luna 09/2026 ← luna luna → Chei REGES Răspunsuri REGES + Salariat nou Fișier plată card (SEPA) Contabilizează statul „Răspunsuri REGES\" e indisponibil: cheile REGES nu sunt configurate încă. Configurează-le cu butonul „Chei REGES”. Ionescu Vasile brut 5.000,00 · CAS 1.250,00 · CASS 500,00 · impozit 269,00 · net 2.981"
+    },
+    {
+     "cerut": {
+      "contine": "impozit 269,00"
+     },
+     "ok": true,
+     "vazut": "ES\" e indisponibil: cheile REGES nu sunt configurate încă. Configurează-le cu butonul „Chei REGES”. Ionescu Vasile brut 5.000,00 · CAS 1.250,00 · CASS 500,00 · impozit 269,00 · net 2.981,00 · cost 5.113,00 Compoziția netului — din ce se face 2.981,00 lei Salariu brut 5.000,00 lei CAS (25%) -1.250,00 lei CASS (10%) -500,00 lei Impozi"
+    },
+    {
+     "cerut": {
+      "contine": "impozit 377,00"
+     },
+     "ok": true,
+     "vazut": "l + creșă Salariu IBAN ✓ COR ✓ Încetare Corectează datele Suspendare / CFP Prime, sporuri, ore supl. Popescu Elena brut 6.000,00 · CAS 1.500,00 · CASS 600,00 · impozit 377,00 · net 3.523,00 · cost 6.135,00 Compoziția netului — din ce se face 3.523,00 lei Salariu brut 6.000,00 lei CAS (25%) -1.500,00 lei CASS (10%) -600,00 lei Impozi"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.9
+  },
+  {
+   "nr": "453",
+   "firma": "tenant_9053",
+   "nume_firma": "F5 SRL Salariati SRL",
+   "descriere": "F5: D112 09/2026 — valid la DUKIntegrator, cu deducerea declarată (E3_121 562 și 130, din statul de plată) și venitul bază de calcul în E3_14, nu impozitul",
+   "captura": "dovezi/lot11/453_f5_vechi_d112_09_2026.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "fără erori"
+     },
+     "ok": true,
+     "vazut": " SRL Salariati SRL · CUI 40510009 ✕ Declarații Pasul 2 din 3 — verifică D112 · septembrie 2026 Validat cu DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF. Rezumat D112: 2 salariați - impozit 646,00, CAS 2.750,00, CASS 1.100,00, CAM 248,00 lei (luna 9/2026). Din ce e făcută declarația — "
+    },
+    {
+     "cerut": {
+      "contine": "E3_121=\"562\""
+     },
+     "ok": true,
+     "vazut": "6=\"2688\" E1_7=\"269\" E1_41=\"562\" E1_42=\"0\" E1_421=\"0\" E1_422=\"0\"/> <asiguratE3 E3_1=\"B\" E3_2=\"1\" E3_3=\"1\" E3_4=\"P\" E3_8=\"5000\" E3_9=\"1750\" E3_11=\"0\" E3_12=\"562\" E3_121=\"562\" E3_122=\"0\" E3_1221=\"0\" E3_1222=\"0\" E3_14=\"2688\" E3_15=\"269\" E3_16=\"0\" E3_19=\"0\" E3_21=\"0\"/> </asigurat> <asigurat idAsig=\"2\" cnpAsig=\"2900320126783\" numeAsig=\""
+    },
+    {
+     "cerut": {
+      "contine": "E3_121=\"130\""
+     },
+     "ok": true,
+     "vazut": "6=\"3770\" E1_7=\"377\" E1_41=\"130\" E1_42=\"0\" E1_421=\"0\" E1_422=\"0\"/> <asiguratE3 E3_1=\"B\" E3_2=\"1\" E3_3=\"1\" E3_4=\"P\" E3_8=\"6000\" E3_9=\"2100\" E3_11=\"0\" E3_12=\"130\" E3_121=\"130\" E3_122=\"0\" E3_1221=\"0\" E3_1222=\"0\" E3_14=\"3770\" E3_15=\"377\" E3_16=\"0\" E3_19=\"0\" E3_21=\"0\"/> </asigurat> </declaratieUnica> Pune în „De depus” → Validare de str"
+    },
+    {
+     "cerut": {
+      "contine": "E3_14=\"2688\""
+     },
+     "ok": true,
+     "vazut": "=\"0\" E1_422=\"0\"/> <asiguratE3 E3_1=\"B\" E3_2=\"1\" E3_3=\"1\" E3_4=\"P\" E3_8=\"5000\" E3_9=\"1750\" E3_11=\"0\" E3_12=\"562\" E3_121=\"562\" E3_122=\"0\" E3_1221=\"0\" E3_1222=\"0\" E3_14=\"2688\" E3_15=\"269\" E3_16=\"0\" E3_19=\"0\" E3_21=\"0\"/> </asigurat> <asigurat idAsig=\"2\" cnpAsig=\"2900320126783\" numeAsig=\"Popescu\" prenAsig=\"Elena\" dataAng=\"05.01.2026\" c"
+    },
+    {
+     "cerut": {
+      "nu_contine": "E1_4=\"0\""
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F5 SRL Salariati SRL · CUI 40510009 ✕ Declarații Pasul 2 din 3 — verifică D112 · septembrie 2026 Validat cu DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF. Rezumat D112: 2 salariați - impozit 646,00, CAS 2.750,00, CASS 1.100,00, CAM 248,00 lei (luna 9/2026). Din ce e făcută declarația — 8 rânduri Vezi XML-ul generat <?xml vers"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 5.0
+  },
+  {
+   "nr": "458",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "Cabinet, Asistenți -> «Vezi erorile» (datele vechi: cele trei «Generează din nou» ale D300 F1 din 17–19.10.2026 și respingerile Anei din 06–09.10.2026): nicio rubrică «Înlocuită de declarația generată din nou»; Ana «5 respinse · 33%» cu rândurile 2 + 1 + 1 + 1 (înainte 4 + 2 + 1 + 1 = 8); Contabil Sesiunea B «1 respinsă · 100%» cu un rând de 1 (înainte 3 + 1); «probleme» nu mai stă peste nume. Cifrele țin cât respingerile sunt în ultimele 30 de zile (până la 05.11.2026)",
+   "captura": "dovezi/lot11/458_f1_cabinet_vechi_erori_echipa.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Erori — echipa"
+     },
+     "ok": true,
+     "vazut": "← Asistenți ✕ Erori — echipa Cine a produs respingeri în ultimele 30 de zile, sortat după volum. probleme Ana Asistent 5 respinse · 33% Descrierea conține referințe interne („decizia Costi"
+    },
+    {
+     "cerut": {
+      "nu_contine": "Înlocuită de declarația generată din nou"
+     },
+     "ok": true,
+     "vazut": "← Asistenți ✕ Erori — echipa Cine a produs respingeri în ultimele 30 de zile, sortat după volum. probleme Ana Asistent 5 respinse · 33% Descrierea conține referințe interne („decizia Costin 08.10, pct.4”). Contabilitatea e corectă; refă doar descrierea în limbaj de contabil și retrimite. sistematic nou 2× Lipsește prima de performanță la Popescu accident nou 1× NIR făcut cu logica veche (preț de r"
+    },
+    {
+     "cerut": {
+      "contine": "Ana Asistent"
+     },
+     "ok": true,
+     "vazut": "← Asistenți ✕ Erori — echipa Cine a produs respingeri în ultimele 30 de zile, sortat după volum. probleme Ana Asistent 5 respinse · 33% Descrierea conține referințe interne („decizia Costin 08.10, pct.4”). Contabilitatea e corectă; refă doar descrierea în limbaj de contabil și "
+    },
+    {
+     "cerut": {
+      "contine": "5 respinse · 33%"
+     },
+     "ok": true,
+     "vazut": "← Asistenți ✕ Erori — echipa Cine a produs respingeri în ultimele 30 de zile, sortat după volum. probleme Ana Asistent 5 respinse · 33% Descrierea conține referințe interne („decizia Costin 08.10, pct.4”). Contabilitatea e corectă; refă doar descrierea în limbaj de contabil și retrimite. sistem"
+    },
+    {
+     "cerut": {
+      "contine": "Contabil Sesiunea B"
+     },
+     "ok": true,
+     "vazut": "rformanță la Popescu accident nou 1× NIR făcut cu logica veche (preț de raft); se reface la cost accident nou 1× verifică data notei accident nou 1× de urmărit Contabil Sesiunea B 1 respinsă · 100% Depășită, lipsește F1A5 (servicii UE, rd.3/3.1) accident nou 1×"
+    },
+    {
+     "cerut": {
+      "contine": "1 respinsă · 100%"
+     },
+     "ok": true,
+     "vazut": " accident nou 1× NIR făcut cu logica veche (preț de raft); se reface la cost accident nou 1× verifică data notei accident nou 1× de urmărit Contabil Sesiunea B 1 respinsă · 100% Depășită, lipsește F1A5 (servicii UE, rd.3/3.1) accident nou 1×"
+    },
+    {
+     "cerut": {
+      "exista": ".val-card .asi-sem + .tip-desc"
+     },
+     "ok": true,
+     "vazut": "probleme | dezactivat=False | title= | lângă: probleme Ana Asistent 5 respinse · 33%"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 5.4
+  },
+  {
+   "nr": "459",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "Cabinet, Firme -> «+ Adaugă firmă»: CUI-ul lui F1 cu ultima cifră schimbată (401002002, cifra de control greșită) e refuzat lângă câmp — «cifra de control nu corespunde — verifică CUI-ul» — înainte de orice scriere și fără întrebare la ANAF, iar «Adaugă firma» rămâne inactiv. Firmele existente ale cabinetului de test (F1–F6 și FISCALOS ICONTA S.R.L.) au toate CUI cu cifra de control corectă (citit pe producție, 22.10.2026): nicio firmă veche de reparat",
+   "captura": "dovezi/lot11/459_f1_cabinet_adauga_firma_cui_gresit.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "CUI-ul 401002002 nu e valid: cifra de control nu corespunde — verifică CUI-ul"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente ✕ Adaugă firmă CUI CUI-ul 401002002 nu e valid: cifra de control nu corespunde — verifică CUI-ul. Un cod fiscal greșit îl respinge ANAF, la prima declarație depusă. Denumire firmă Tip firmă — alege — SRL / SA (partidă dublă) PFA / II / IF / profesii libera"
+    },
+    {
+     "cerut": {
+      "inactiv": "#fn-salveaza"
+     },
+     "ok": true,
+     "vazut": "Adaugă firma | dezactivat=True | title= | lângă: Adaugă firmă CUI CUI-ul 401002002 nu e valid: cifra de control nu corespunde — verifică CUI-ul. Un cod fiscal greșit îl respinge ANAF, la prima declarație depusă. Denumire firmă Tip firmă — alege — SRL / SA (partidă dublă) PFA / II / IF / profesii liberale (partidă simplă) Tipul nu se mai poate schi"
+    },
+    {
+     "cerut": {
+      "nu_contine": "CUI negăsit la ANAF"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente ✕ Adaugă firmă CUI CUI-ul 401002002 nu e valid: cifra de control nu corespunde — verifică CUI-ul. Un cod fiscal greșit îl respinge ANAF, la prima declarație depusă. Denumire firmă Tip firmă — alege — SRL / SA (partidă dublă) PFA / II / IF / profesii liberale (partidă simplă) Tipul nu se mai poate schimba după creare: determină sistemul contabil (partidă dublă sau simplă) "
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 6.7
+  },
+  {
+   "nr": "459",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Date firmă -> «Corectează CUI-ul» -> un CUI corect (459000010, cifra de control verificată) -> «Continuă»: avertismentul spune, pe lângă CUI-ul vechi și cel nou, ce dă ANAF pentru CUI-ul nou și că la confirmare datele firmei se înlocuiesc cu ele (sau, fără date ANAF, ce rămâne de verificat). Nu se confirmă: nimic nu se scrie",
+   "captura": "dovezi/lot11/459_f1_corectura_cui_propunerea_anaf.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Corectezi CUI-ul firmei din",
+      "zona": "#df-cui-aviz"
+     },
+     "ok": true,
+     "vazut": "Corectezi CUI-ul firmei din 401002001 în 459000010. CUI-ul intră în fiecare declarație și factură de acum înainte; declarațiile și facturile emise deja rămân cu CUI-ul vechi (o declarație"
+    },
+    {
+     "cerut": {
+      "contine_oricare": [
+       "La confirmare, datele de mai jos se înlocuiesc cu cele de la ANAF",
+       "de verificat în Date firmă după corectură",
+       "nu se schimbă nimic în afară de CUI"
+      ],
+      "zona": "#df-cui-anaf"
+     },
+     "ok": true,
+     "vazut": "EN, localitatea, județul, înregistrarea în scopuri de TVA, TVA la încasare, data înființării și forma juridică rămân cele de acum, scrise pentru CUI-ul vechi — de verificat în Date firmă după corectură. Denumirea de la ANAF, starea TVA citită la ANAF și perioadele TVA la încasare aduse din ANAF pentru CUI-ul vechi se șterg."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.5
+  },
+  {
+   "nr": "455",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: registrul de casă din octombrie are rapoartele Z din 20 și 21.10 (131 + 121 lei, 5311 = 707) și ajunge pe 21.10 la 294,00 lei — aceeași cifră cu refuzul plății; dedesubt, soldul notelor validate (fișa contului 5311). Înainte registrul spunea 42,00 (fără rapoartele Z). OMFP 2634/2015, Registrul de casă 14-4-7A: „document de stabilire, la sfârșitul fiecărei zile, a soldului de casă”",
+   "captura": "dovezi/lot11/455_f1_vechi_registrul_de_casa.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "notă din raportul Z"
+     },
+     "ok": true,
+     "vazut": " ciornă Șterge 20.10.2026 · +131,00 lei · sold 173,00 lei Raport Z 2026-10-20 casa 8000000001 nr 0042 · doc Raport Z nr 0042 din 20.10.2026 (casa 8000000001) · notă din raportul Z · notă ciornă 21.10.2026 · +121,00 lei · sold 294,00 lei Raport Z 2026-10-21 casa 8000000001 nr 0043 · doc Raport Z nr 0043 din 21.10.2026 (casa 8000000001) · "
+    },
+    {
+     "cerut": {
+      "contine": "sold 294,00 lei"
+     },
+     "ok": true,
+     "vazut": "ort Z 2026-10-20 casa 8000000001 nr 0042 · doc Raport Z nr 0042 din 20.10.2026 (casa 8000000001) · notă din raportul Z · notă ciornă 21.10.2026 · +121,00 lei · sold 294,00 lei Raport Z 2026-10-21 casa 8000000001 nr 0043 · doc Raport Z nr 0043 din 21.10.2026 (casa 8000000001) · notă din raportul Z · notă ciornă 22.10.2026 · +64,46 lei"
+    },
+    {
+     "cerut": {
+      "contine": "fișa contului 5311"
+     },
+     "ok": true,
+     "vazut": " › F1 Comert Stoc SRL · CUI 401002001 ✕ Casă ? Luna 10/2026 · sold la început 0,00 lei · sold final 558,46 lei (din care în contabilitate, pe notele validate — fișa contului 5311: 442,00 lei; restul sunt note ciornă) ← luna luna → + Dispoziție nouă 08.10.2026 · +242,00 lei · sold 242,00 lei DANTE INTERNATIONAL SA · doc CHF1-1 · Încasare"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.8
+  },
+  {
+   "nr": "455",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: depunerea la bancă de 400 lei pe 21.10 e refuzată cu soldul registrului — „în registru, e 294,00 lei” (înainte refuzul spunea 294, iar registrul 42)",
+   "captura": "dovezi/lot11/455_f1_vechi_refuzul_platii.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "soldul casei pe 21.10.2026, în registru, e 294,00 lei"
+     },
+     "ok": true,
+     "vazut": " bancă (5311=581) Depunere la bancă (581=5311) Avans spre decontare (542=5311) Suma Depunere de numerar în bancă de 400,00 lei nu încape în casă (contul 5311): soldul casei pe 21.10.2026, în registru, e 294,00 lei, iar după ea casa ar ajunge la -106,00 lei pe 21.10.2026. Numerarul din casă nu poate fi negativ. Înregistrează întâi încasarea sau ridicarea de numerar din ca"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.7
+  },
+  {
+   "nr": "456",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: încasarea de 64,46 lei a facturii F1A12, salvată pe 22.10 fără chitanță (înainte de reparație), e numită pe rândul registrului „fără chitanță” — ce se face cu ea e decizie cerută (o chitanță emisă acum cu data veche ar fi antedatată)",
+   "captura": "dovezi/lot11/456_f1_vechi_incasarea_fara_chitanta.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "fără chitanță"
+     },
+     "ok": true,
+     "vazut": "8000000001) · notă din raportul Z · notă ciornă 22.10.2026 · +64,46 lei · sold 358,46 lei DANTE INTERNATIONAL SA · Încasare de la client · factura F1A nr. 12 · fără chitanță · notă ciornă Șterge 22.10.2026 · +200,00 lei · sold 558,46 lei Raport Z 2026-10-22 casa 8000000001 nr 0050 · doc Raport Z nr 0050 din 22.10.2026 (casa 8000000"
+    },
+    {
+     "cerut": {
+      "contine": "64,46"
+     },
+     "ok": true,
+     "vazut": "94,00 lei Raport Z 2026-10-21 casa 8000000001 nr 0043 · doc Raport Z nr 0043 din 21.10.2026 (casa 8000000001) · notă din raportul Z · notă ciornă 22.10.2026 · +64,46 lei · sold 358,46 lei DANTE INTERNATIONAL SA · Încasare de la client · factura F1A nr. 12 · fără chitanță · notă ciornă Șterge 22.10.2026 · +200,00 lei · sold "
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.7
+  },
+  {
+   "nr": "420",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6 (salariații importați pe 19.10.2026, înainte de reparație): Import date -> Salariați -> fișierul fără normă de lucru și funcție de bază (același conținut ca FARA_NORMA din frontend_test/e2e/e2e_lot11_m.py; nicio funcție importabilă nu-l întoarce, deci e dat prin builtins:bytes) -> pe fiecare rând Norma și Funcția de bază sunt câmpuri editabile (#mig-norma-2, #mig-fbaza-2), marcate „din fișa existentă — de verificat” (CNP deja în F6) sau „propusă — de verificat”. Înainte de lotul 10 rândurile erau respinse întregi; pe lotul 10 publicat, la salariatul existent norma și funcția de bază se puneau tăcut, fără marcaj. Nimic nu se salvează",
+   "captura": "dovezi/lot11/420_f6_vechi_salariati_fara_norma.png",
+   "verificari": [
+    {
+     "cerut": {
+      "exista": "#mig-norma-2"
+     },
+     "ok": true,
+     "vazut": "întreagă (8 h)\nparțială | dezactivat=False | title= | lângă: întreagă (8 h) parțială propusă — de verificat"
+    },
+    {
+     "cerut": {
+      "exista": "#mig-fbaza-2"
+     },
+     "ok": true,
+     "vazut": "Da\nNu | dezactivat=False | title= | lângă: Da Nu propusă — de verificat"
+    },
+    {
+     "cerut": {
+      "exista": "#mig-norma-3"
+     },
+     "ok": true,
+     "vazut": "întreagă (8 h)\nparțială | dezactivat=False | title= | lângă: întreagă (8 h) parțială propusă — de verificat"
+    },
+    {
+     "cerut": {
+      "contine_oricare": [
+       "din fișa existentă — de verificat",
+       "propusă — de verificat"
+      ],
+      "zona": ".mig-prev"
+     },
+     "ok": true,
+     "vazut": "intră, cu observație POPESCU ANA 1900101410011 15.01.2024 specialist în domeniul proiectării asistate pe calculator COR 251401 5.000,00 întreagă (8 h) parțială propusă — de verificat Da Nu propusă — de verificat Nu 0 POPESCU ANA: norma de lucru lipsește din fișier — propusă normă întreagă (8 ore); schimb-o pe rând dacă nu e așa (intră marca"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.2
+  },
+  {
+   "nr": "424",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6, la 1280×720: Import date -> Solduri inițiale -> balanța SAGA (fișierul lui 439, 21 de conturi) -> tabelul derulat la ultimul rând: rezumatul („21 de conturi · debit … · credit …”) stă în zona lipită sus, iar data balanței și „Salvează soldurile” în bara lipită jos (captura arată așezarea după derulare). Ce s-a citit din fișier e o notă pliată (details#mig-citit), iar câmpurile salvării stau pe un rând în bară (.grila-doc) — pe lotul 10 publicat nota era o casetă deschisă care lungea rezumatul la 611 px din 661 și derula toată fereastra. Nimic nu se salvează",
+   "captura": "dovezi/lot11/424_f6_balanta_derulata_1280x720.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "21 de conturi",
+      "zona": ".rezumat-fix .mig-sold-rezumat"
+     },
+     "ok": true,
+     "vazut": "21 de conturi · debit 38.200,00 · credit 38.200,00 echilibrat"
+    },
+    {
+     "cerut": {
+      "exista": "details#mig-citit"
+     },
+     "ok": true,
+     "vazut": "Soldurile finale s-au citit din coloanele „Solduri finale Debit” și „Solduri finale Credit”. | dezactivat=False | title= | lângă: F6 Migrare Test SRL · balanță încărcată 21 de conturi · debit 38.200,00 · credit 38.200,00 echilibrat 21 de rânduri intră Firma are deja o balanță de deschidere la 30.09.2026: 16 conturi, debit 111.170,00 lei, credit 111.170,00 lei. Balanța nouă la 30.09.2026: 21 de conturi, debit 38.200,00 lei, cre"
+    },
+    {
+     "cerut": {
+      "exista": ".bara-fixa .grila-doc #mig-data-bal"
+     },
+     "ok": true,
+     "vazut": "2026-09-30 | dezactivat=False | title= | lângă: Data balanței * De obicei ultima zi a lunii dinaintea preluării; din ea se propune luna de început."
+    },
+    {
+     "cerut": {
+      "exista": ".bara-fixa #mig-salveaza-sold"
+     },
+     "ok": true,
+     "vazut": "Înlocuiește balanța | dezactivat=False | title= | lângă: Data balanței * De obicei ultima zi a lunii dinaintea preluării; din ea se propune luna de început. Metoda de stoc a firmei * — alege — global-valoric (preț cu amănuntul, 371/378/4428) cantitativ-valoric (fișe de magazie, CMP) Balanța are sold pe 371; de metodă depinde descărcarea mărfii. Se scrie î"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.4
+  },
+  {
+   "nr": "425",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6 (retest după 439): Import date -> Solduri inițiale -> balanța SAGA în forma „rulaje precedente + total rulaje” (core.test_lot11_m_balanta_saga, forma total_rulaje): previzualizarea are coloanele „Sold la 1 ianuarie” / „Rulaj debitor an”, 21 de conturi echilibrate, 707 (sold final 0) intră, iar nota spune că s-au citit soldurile la 1 ianuarie și totalul rulajelor. Înainte: citită numai din „Solduri finale” (707 lipsea); pe lotul 10 publicat perechile „Rulaje precedente” / „Total rulaje” nu erau cunoscute. Nimic nu se salvează",
+   "captura": "dovezi/lot11/425_f6_balanta_saga_total_rulaje.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "21 de conturi"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F6 Migrare Test SRL · CUI 401006003 › Import date ✕ Solduri inițiale F6 Migrare Test SRL · balanță încărcată 21 de conturi · debit 38.200,00 · credit 38.200,00 echilibrat 21 de rânduri intră Firma are deja o balanță de deschidere la 30.09.2026: 16 conturi, debit 111.170,00 lei, cre"
+    },
+    {
+     "cerut": {
+      "contine": "echilibrat"
+     },
+     "ok": true,
+     "vazut": "F6 Migrare Test SRL · CUI 401006003 › Import date ✕ Solduri inițiale F6 Migrare Test SRL · balanță încărcată 21 de conturi · debit 38.200,00 · credit 38.200,00 echilibrat 21 de rânduri intră Firma are deja o balanță de deschidere la 30.09.2026: 16 conturi, debit 111.170,00 lei, credit 111.170,00 lei. Balanța nouă la 30.09.2026: "
+    },
+    {
+     "cerut": {
+      "contine": "Rulaj debitor an"
+     },
+     "ok": true,
+     "vazut": " „Total clasa 6” …. Conturile sintetice 401, 4111, 5121 sunt înlocuite de analiticele din fișier (același sold). Rândul Starea Cont Denumire Sold la 1 ianuarie Rulaj debitor an Rulaj creditor an Sold final debitor Sold final creditor 6 intră 1012 Capital subscris vărsat 16.800,00 C 0,00 0,00 0,00 16.800,00 7 intră 117 Rezultatul repor"
+    },
+    {
+     "cerut": {
+      "contine": "Din aceeași balanță s-au citit soldurile la 1 ianuarie"
+     },
+     "ok": true,
+     "vazut": "ima la 21.10.2026): soldurile lor se recalculează pe balanța nouă. Soldurile finale s-au citit din coloanele „Solduri finale Debit” și „Solduri finale Credit”. Din aceeași balanță s-au citit soldurile la 1 ianuarie din „Solduri iniţiale an Debit” / „Solduri iniţiale an Credit”, rulajele precedente (fără soldul inițial al anului) din „Rulaje precedente Debit” / „Rulaje pre"
+    },
+    {
+     "cerut": {
+      "contine": "totalul rulajelor"
+     },
+     "ok": true,
+     "vazut": " (fără soldul inițial al anului) din „Rulaje precedente Debit” / „Rulaje precedente Credit”, rulajele perioadei din „Rulaje lună Debit” / „Rulaje lună Credit”, totalul rulajelor (fără soldul inițial al anului) din „Total rulaje Debit” / „Total rulaje Credit”: intră ca sold inițial și sume precedente (rulajele anului), cu toate conturil"
+    },
+    {
+     "cerut": {
+      "contine": "Venituri din vânzarea mărfurilor",
+      "zona": ".mig-prev"
+     },
+     "ok": true,
+     "vazut": "personalului — 9.000,00 9.000,00 0,00 0,00 33 intră 6811 Cheltuieli de exploatare privind amortizarea imobilizărilor — 1.500,00 1.500,00 0,00 0,00 35 intră 707 Venituri din vânzarea mărfurilor — 50.000,00 50.000,00 0,00 0,00"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.9
+  },
+  {
+   "nr": "425",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6, balanța de deschidere importată pe 19.10.2026 (înainte de reparație, numai cu soldurile finale): Balanța de verificare pe 10/2026 spune, în caseta #b-rulaje, că rulajele de la începutul anului până la data preluării lipsesc, ce afectează și că se poate importa din nou balanța cu rulajele. Înainte nu spunea nimic (soldurile finale păreau balanța completă)",
+   "captura": "dovezi/lot11/425_f6_vechi_balanta_10_2026_rulaje_lipsa.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Rulajele de la",
+      "zona": "#b-rulaje"
+     },
+     "ok": true,
+     "vazut": "Rulajele de la 01.01.2026 până la 30.09.2026 lipsesc: evidența firmei în iConta.eu începe după 30.09.2026, iar balanța de deschidere are numai soldurile finale, fără solduril"
+    },
+    {
+     "cerut": {
+      "contine": "lipsesc: evidența firmei în iConta.eu începe după",
+      "zona": "#b-rulaje"
+     },
+     "ok": true,
+     "vazut": "Rulajele de la 01.01.2026 până la 30.09.2026 lipsesc: evidența firmei în iConta.eu începe după 30.09.2026, iar balanța de deschidere are numai soldurile finale, fără soldurile inițiale ale anului și rulajele lui. Pe 2026, «Sold inițial» arată soldul de l"
+    },
+    {
+     "cerut": {
+      "contine": "Import date › Solduri inițiale",
+      "zona": "#b-rulaje"
+     },
+     "ok": true,
+     "vazut": "niturile și cheltuielile anului, deci rezultatul cumulat, ies mai mici). Importă din nou balanța de la 30.09.2026 cu soldurile inițiale ale anului și rulajele (Import date › Solduri inițiale), ca ele să intre ca sold inițial și sume precedente."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.6
+  },
+  {
+   "nr": "426",
+   "firma": "tenant_9055",
+   "nume_firma": "F6 Migrare Test SRL",
+   "descriere": "F6 (are balanța de deschidere importată pe 19.10.2026): Import date -> Solduri inițiale -> a doua balanță (SAGA, forma „sume precedente”) -> înainte de orice salvare, caseta galbenă #mig-inlocuire spune că firma are deja o balanță, cu totalurile vechi și cele noi, iar butonul devine „Înlocuiește balanța” (confirmarea se cere la apăsare). Înainte: „Salvează soldurile” o înlocuia pe prima fără avertisment. Nu se apasă: nimic nu se scrie",
+   "captura": "dovezi/lot11/426_f6_vechi_a_doua_balanta.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Firma are deja o balanță de deschidere",
+      "zona": "#mig-inlocuire"
+     },
+     "ok": true,
+     "vazut": "Firma are deja o balanță de deschidere la 30.09.2026: 16 conturi, debit 111.170,00 lei, credit 111.170,00 lei. Balanța nouă la 30.09.2026: 21 de conturi, debit 38.200,00 lei, credit 38.200,00 lei. S"
+    },
+    {
+     "cerut": {
+      "contine": "Balanța nouă",
+      "zona": "#mig-inlocuire"
+     },
+     "ok": true,
+     "vazut": "Firma are deja o balanță de deschidere la 30.09.2026: 16 conturi, debit 111.170,00 lei, credit 111.170,00 lei. Balanța nouă la 30.09.2026: 21 de conturi, debit 38.200,00 lei, credit 38.200,00 lei. Salvarea o înlocuiește pe cea veche. Firma are 2 note contabile după data balanței (pr"
+    },
+    {
+     "cerut": {
+      "exista": "#mig-salveaza-sold",
+      "text": "Înlocuiește balanța"
+     },
+     "ok": true,
+     "vazut": "Înlocuiește balanța | dezactivat=False | title= | lângă: Data balanței * De obicei ultima zi a lunii dinaintea preluării; din ea se propune luna de început. Metoda de stoc a firmei * — alege — global-valoric (preț cu amănuntul, 371/378/4428) cantitativ-valoric (fișe de magazie, CMP) Balanța are sold pe 371; de metodă depinde descărcarea mărfii. Se scrie î"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.3
+  },
+  {
+   "nr": "436",
+   "firma": "tenant_9050",
+   "nume_firma": "F2 Profit Amortizare SRL",
+   "descriere": "F2, D100 T3/2026, pe datele de azi: notele de amortizare 25–31 (01–07/2026), nevalidate la raportarea lui 436, sunt acum validate (copia de dovadă le arată «validata»), iar 08–09 sunt încheiate. Declarația nu mai are ce bloca: „Pune în «De depus»” e activ și nu apare caseta notelor nevalidate. Blocajul cu note nevalidate și așezarea casetei sub antetul fix (1280×520) le probează e2e_lot10b_declaratii.py::test_def_436_… și e2e_lot11_d.py (firmă sintetică cu amortizarea în ciornă): pe F2 starea aceea nu se mai poate reface fără a fabrica date",
+   "captura": "dovezi/lot11/436_f2_d100_t3_note_validate.png",
+   "verificari": [
+    {
+     "cerut": {
+      "activ": "#dec-trimite"
+     },
+     "ok": true,
+     "vazut": "Pune în „De depus” → | dezactivat=False | title= | lângă: Pune în „De depus” →"
+    },
+    {
+     "cerut": {
+      "nu_contine": "nevalidat",
+      "zona": "#dec-blocaj"
+     },
+     "ok": true,
+     "vazut": ""
+    },
+    {
+     "cerut": {
+      "nu_contine": "e generată, dar nevalidată"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F2 Profit Amortizare SRL · CUI 403000015 ✕ Declarații Pasul 2 din 3 — verifică D100 · T3/2026 (iul–sep) Validat cu DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF. Rezumat Rezultatul fiscal cumulat 01.01.2026 – 30.09.2026 (CF art.19 alin.(1); aceleași rânduri ca D101): rezultatul contabil: 3.100,00 lei (venituri 5.000,00 − chel"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 5.0
+  },
+  {
+   "nr": "C68",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "Cabinetul de test (pornit din F1, firma nu contează: /eu/ciorne citește toate firmele utilizatorului), pagina principală: cardul „De validat” numără ciornele contabilului din firmele cabinetului (F1: comisionul din bancă, încasarea F1A12; F6: contarea F61), fără nicio cerere 5xx. Cazul reparat — o firmă din listă ștearsă între citirea listei și interogarea ei — nu se poate face pe ecran (cere ștergerea unei scheme în timpul cererii); îl probează e2e_lot10_principal.py::test_def_c68_… și core/test_portofoliu_firma_stearsa.py",
+   "captura": "dovezi/lot11/c68_f1_cabinet_ciornele_tale.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine_oricare": [
+       "note ale tale în ciornă",
+       "notă a ta în ciornă"
+      ],
+      "zona": "[data-cheie='validat']"
+     },
+     "ok": true,
+     "vazut": "5 note de validat · 0 declarații de depus · 2 depășite, de generat din nou · 37 de note ale tale în ciornă"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.5
+  },
+  {
+   "nr": "C71",
+   "firma": "tenant_9052",
+   "nume_firma": "F4 PFA Sistem Real",
+   "descriere": "F4 (PFA, partidă simplă; câmpurile „Mare contribuabil” / „Forma de proprietate”, noi la C69, sunt goale pe firma creată înainte): Date firmă -> panoul profilului nu cere „Mare contribuabil” / „Forma de proprietate” și nu spune că ceva blochează Bilanțul (PFA nu întocmește situații financiare anuale, Legea 82/1991 art.28 alin.(1)). Înainte de C71 panoul spunea „Mare contribuabil — blochează Bilanț”",
+   "captura": "dovezi/lot11/c71_f4_vechi_profil_pfa.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine_oricare": [
+       "Profil incomplet",
+       "Profil complet"
+      ],
+      "zona": ".dec-avert, .dec-ok"
+     },
+     "ok": true,
+     "vazut": "Profil incomplet — 2 câmpuri obligatorii lipsesc Banca — blochează D300, D301 IBAN — blochează D300, D301"
+    },
+    {
+     "cerut": {
+      "nu_contine": "Mare contribuabil",
+      "zona": ".dec-avert, .dec-ok"
+     },
+     "ok": true,
+     "vazut": "Profil incomplet — 2 câmpuri obligatorii lipsesc Banca — blochează D300, D301 IBAN — blochează D300, D301"
+    },
+    {
+     "cerut": {
+      "nu_contine": "Forma de proprietate",
+      "zona": ".dec-avert, .dec-ok"
+     },
+     "ok": true,
+     "vazut": "Profil incomplet — 2 câmpuri obligatorii lipsesc Banca — blochează D300, D301 IBAN — blochează D300, D301"
+    },
+    {
+     "cerut": {
+      "nu_contine": "blochează Bilanț",
+      "zona": ".dec-avert, .dec-ok"
+     },
+     "ok": true,
+     "vazut": "Profil incomplet — 2 câmpuri obligatorii lipsesc Banca — blochează D300, D301 IBAN — blochează D300, D301"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.6
+  },
+  {
+   "nr": "C72",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Clienți: la prima fișă de client (fișe create înainte de reparație), „Persoană afiliată (Cod fiscal art.7 pct.26)”: Da -> „Salvează” de pe rândul ei devine activ. Înainte de C72 selectul pierdea clasa cl-afiliat (al doilea atribut class, ignorat de browser), alegerea nu era văzută și butonul rămânea inactiv. Nu se salvează (o a doua rulare pe aceeași copie ar găsi bifa deja pusă). Presupune că prima fișă nu e deja bifată afiliată",
+   "captura": "dovezi/lot11/c72_f1_vechi_client_afiliat.png",
+   "verificari": [
+    {
+     "cerut": {
+      "activ": "#cl-tabel tbody tr:first-child .cl-salveaza"
+     },
+     "ok": true,
+     "vazut": "Salvează | dezactivat=False | title= | lângă: Verifică la ANAF Salvează"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 3.6
+  },
+  {
+   "nr": "C73",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Operațiuni speciale -> „Achiziție necorporală”: două licențe la rând (furnizor DANTE INTERNATIONAL SA, CUI 14399840, cifra de control verificată; facturile C73-LIC-1 și C73-LIC-2, 100 lei + 21%). Ecranul n-are câmp de cod, deci a doua primește primul cod de inventar liber (NEC-LIC-2): a doua notă se generează, fără eroare 500, iar „Generează nota” redevine inactiv. Înainte: a doua licență primea același „NEC-LIC” și scrierea cădea cu 500 (clienti_cui_uniq / codul de inventar, clasa C73). SCRIE pe copie (2 facturi primite, 2 mijloace fixe, 2 note ciornă în 10/2026): a doua rulare cere --cloneaza din nou",
+   "captura": "dovezi/lot11/c73_f1_a_doua_licenta.png",
+   "verificari": [
+    {
+     "cerut": {
+      "exista": "#op-mesaj .caseta-ok"
+     },
+     "ok": true,
+     "vazut": "Notă generată\ndin 22.10.2026 — ciornă\n205 = 404 · 100,00 lei\n4426 = 404 · 21,00 lei\nNota: 205 = 404 100,00 lei; 4426 = 4 | dezactivat=False | title= | lângă: Notă generată din 22.10.2026 — ciornă 205 = 404 · 100,00 lei 4426 = 404 · 21,00 lei Nota: 205 = 404 100,00 lei; 4426 = 404 21,00 lei. O validezi din Registrul jurnal. Deschide nota din 22.10.2026 în Registrul jurnal"
+    },
+    {
+     "cerut": {
+      "contine": "Notă generată",
+      "zona": "#op-mesaj"
+     },
+     "ok": true,
+     "vazut": "Notă generată din 22.10.2026 — ciornă 205 = 404 · 100,00 lei 4426 = 404 · 21,00 lei Nota: 205 = 404 100,00 lei; 4426 = 404 21,00 lei. O validezi din Registrul jurnal. Deschi"
+    },
+    {
+     "cerut": {
+      "inactiv": "#op-trimite"
+     },
+     "ok": true,
+     "vazut": "Generează nota (ciornă) | dezactivat=True | title= | lângă: Generează nota (ciornă)Nota e generată — o vezi în Registru jurnal."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 9.2
+  },
+  {
+   "nr": "C74",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, factura F1A nr. 8 din 19.10.2026, stornată integral de F1A nr. 9 înainte de reparație: detaliul ei spune „stornată” și nu mai oferă „Stornează” și nici „Emite chitanță”. Înainte serverul și ecranul primeau a doua stornare (CF art.330 alin.(1) lit.b). A doua cerere de stornare trimisă direct la server și stornarea stornării nu se pot face din ecran (butonul nu mai există) — le probează e2e_lot10b_facturi.py::test_def_c74_…",
+   "captura": "dovezi/lot11/c74_f1_vechi_f1a8_stornata.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Factură F1A nr. 8",
+      "zona": ".fd-antet-sus"
+     },
+     "ok": true,
+     "vazut": "Factură F1A nr. 8 notă propusă, de validat nota din 19.10.2026 PDF factură Trimite pe email stornată netrimisă în SPV · termen de transmitere în SPV 26.10.2026 Export SAGA Trimi"
+    },
+    {
+     "cerut": {
+      "contine": "stornată",
+      "zona": ".fd-antet-sus"
+     },
+     "ok": true,
+     "vazut": "Factură F1A nr. 8 notă propusă, de validat nota din 19.10.2026 PDF factură Trimite pe email stornată netrimisă în SPV · termen de transmitere în SPV 26.10.2026 Export SAGA Trimite în SPV"
+    },
+    {
+     "cerut": {
+      "nu_contine": "Stornează",
+      "zona": ".fd-antet-sus"
+     },
+     "ok": true,
+     "vazut": "Factură F1A nr. 8 notă propusă, de validat nota din 19.10.2026 PDF factură Trimite pe email stornată netrimisă în SPV · termen de transmitere în SPV 26.10.2026 Export SAGA Trimite în SPV"
+    },
+    {
+     "cerut": {
+      "nu_contine": "Emite chitanță",
+      "zona": ".fd-antet-sus"
+     },
+     "ok": true,
+     "vazut": "Factură F1A nr. 8 notă propusă, de validat nota din 19.10.2026 PDF factură Trimite pe email stornată netrimisă în SPV · termen de transmitere în SPV 26.10.2026 Export SAGA Trimite în SPV"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.8
+  },
+  {
+   "nr": "7g",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1 (plătitoare de TVA; 7g nu ține de o firmă anume, F1 e firma de comerț a cabinetului): Emite factură -> linia serviciu 2 × 150, 21% -> Monedă EUR: ÎNAINTE de emitere, sub monedă, cursul BNR cu data lui și TVA-ul / totalul în lei calculate de server (facturi_api.previzualizare_lei, aceeași conversie ca emiterea; CF art.319 alin.(20) lit.j). Înainte de lotul 10 nu se vedeau decât după emitere. Nu se emite nimic",
+   "captura": "dovezi/lot11/7g_f1_valuta_lei_inainte_de_emitere.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Curs BNR EUR",
+      "zona": "#em-valuta"
+     },
+     "ok": true,
+     "vazut": "Conversie în lei (art. 319 Cod fiscal), cum o va scrie factura Curs BNR EUR 5,3297 din 21.10.2026 TVA în lei 335,77 lei Total în lei 1.934,68 lei Ultimul curs comunicat de BNR înaintea datei facturii (22.10.2026); se fixează la emitere"
+    },
+    {
+     "cerut": {
+      "contine": "TVA în lei",
+      "zona": "#em-valuta"
+     },
+     "ok": true,
+     "vazut": "Conversie în lei (art. 319 Cod fiscal), cum o va scrie factura Curs BNR EUR 5,3297 din 21.10.2026 TVA în lei 335,77 lei Total în lei 1.934,68 lei Ultimul curs comunicat de BNR înaintea datei facturii (22.10.2026); se fixează la emitere."
+    },
+    {
+     "cerut": {
+      "contine": "Total în lei",
+      "zona": "#em-valuta"
+     },
+     "ok": true,
+     "vazut": "Conversie în lei (art. 319 Cod fiscal), cum o va scrie factura Curs BNR EUR 5,3297 din 21.10.2026 TVA în lei 335,77 lei Total în lei 1.934,68 lei Ultimul curs comunicat de BNR înaintea datei facturii (22.10.2026); se fixează la emitere."
+    },
+    {
+     "cerut": {
+      "contine": "lei",
+      "zona": "#em-valuta-tva"
+     },
+     "ok": true,
+     "vazut": "335,77 lei"
+    },
+    {
+     "cerut": {
+      "nu_contine": "—",
+      "zona": "#em-valuta-tva"
+     },
+     "ok": true,
+     "vazut": "335,77 lei"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 6.4
+  },
+  {
+   "nr": "8b",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Raport Z (casa 8000000001, nr. 9811): total 21% 231,00, numerar 200,00, card 0 -> „Generează notă”: refuzul dă cifrele — total 231,00 lei, încasat 200,00 lei, diferență 31,00 lei. Înainte: „numerar + card trebuie să fie egal cu totalul pe cote”, fără cifre. Refuzat: nimic nu se scrie",
+   "captura": "dovezi/lot11/8b_f1_z_refuz_cu_cifrele.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "total 231,00 lei, încasat 200,00 lei",
+      "zona": "#z-rezultat"
+     },
+     "ok": true,
+     "vazut": "Numerarul și cardul trebuie să dea totalul pe cote: total 231,00 lei, încasat 200,00 lei (numerar 200,00 + card 0,00), diferență 31,00 lei."
+    },
+    {
+     "cerut": {
+      "contine": "diferență 31,00 lei",
+      "zona": "#z-rezultat"
+     },
+     "ok": true,
+     "vazut": "Numerarul și cardul trebuie să dea totalul pe cote: total 231,00 lei, încasat 200,00 lei (numerar 200,00 + card 0,00), diferență 31,00 lei."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.0
+  },
+  {
+   "nr": "8b",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Raport Z (casa 8000000001, nr. 9812): total 21% 10,11, numerar 10,10, card 0 -> refuzat, „diferență 0,01 lei”: numerar + card = total se compară exact pe lei (Decimal). Înainte comparația era în float cu toleranța 0,01 (abs(10,11 − 10,10) = 0,00999… ≤ 0,01), deci Z-ul cu un ban lipsă intra în evidență. Refuzat: nimic nu se scrie",
+   "captura": "dovezi/lot11/8b_f1_z_diferenta_un_ban.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "total 10,11 lei, încasat 10,10 lei",
+      "zona": "#z-rezultat"
+     },
+     "ok": true,
+     "vazut": "Numerarul și cardul trebuie să dea totalul pe cote: total 10,11 lei, încasat 10,10 lei (numerar 10,10 + card 0,00), diferență 0,01 lei."
+    },
+    {
+     "cerut": {
+      "contine": "diferență 0,01 lei",
+      "zona": "#z-rezultat"
+     },
+     "ok": true,
+     "vazut": "Numerarul și cardul trebuie să dea totalul pe cote: total 10,11 lei, încasat 10,10 lei (numerar 10,10 + card 0,00), diferență 0,01 lei."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.0
+  },
+  {
+   "nr": "8c",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Raport Z (casa 8000000001, nr. 9801, card 231,00) -> „Generează notă”: confirmarea e verde (caseta-ok), cu conturile notei (5125 = 707 · 231,00 lei; 707 = 4427 · 40,09 lei — 231 × 21/121, rotunjit aritmetic), iar „Generează notă” e inactiv. Înainte: titlul „Notă generată” era roșu, conturile nu se vedeau și butonul rămânea activ. SCRIE pe copie un Z ciornă pe card (nu atinge casa): a doua rulare cere --cloneaza din nou",
+   "captura": "dovezi/lot11/8c_f1_z_generat_conturile.png",
+   "verificari": [
+    {
+     "cerut": {
+      "exista": "#z-rezultat .caseta-ok"
+     },
+     "ok": true,
+     "vazut": "Notă generată\ndin 22.10.2026 — ciornă\n5125 = 707 · 231,00 lei\n707 = 4427 · 40,09 lei\nTVA 11%: 0,00 · TVA 21%: 40,09 · ba | dezactivat=False | title= | lângă: Notă generată din 22.10.2026 — ciornă 5125 = 707 · 231,00 lei 707 = 4427 · 40,09 lei TVA 11%: 0,00 · TVA 21%: 40,09 · baze: 0,00 / 190,91 Nota e ciornă: se validează după ce descarci marfa vândută din stoc — mai jos, la acest raport Z."
+    },
+    {
+     "cerut": {
+      "contine": "Notă generată",
+      "zona": "#z-rezultat"
+     },
+     "ok": true,
+     "vazut": "Notă generată din 22.10.2026 — ciornă 5125 = 707 · 231,00 lei 707 = 4427 · 40,09 lei TVA 11%: 0,00 · TVA 21%: 40,09 · baze: 0,00 / 190,91 Nota e ciornă: se validează după ce"
+    },
+    {
+     "cerut": {
+      "contine": "5125 = 707 · 231,00 lei",
+      "zona": "#z-nota-linii"
+     },
+     "ok": true,
+     "vazut": "5125 = 707 · 231,00 lei 707 = 4427 · 40,09 lei"
+    },
+    {
+     "cerut": {
+      "contine": "707 = 4427 · 40,09 lei",
+      "zona": "#z-nota-linii"
+     },
+     "ok": true,
+     "vazut": "5125 = 707 · 231,00 lei 707 = 4427 · 40,09 lei"
+    },
+    {
+     "cerut": {
+      "inactiv": "#z-salveaza"
+     },
+     "ok": true,
+     "vazut": "Generează notă | dezactivat=True | title= | lângă: Generează notăNota e generată — o vezi în Registru jurnal."
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.1
+  },
+  {
+   "nr": "8e",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1, Raport Z (casa 8000000001, nr. 9803, card 121,00) -> „Generează notă” -> la descărcare, pe rândul Z-ului: „Fără marfă din stoc” -> „Da, fără marfă”: rândul spune „Declarat fără marfă din stoc. Se poate valida.” și arată butonul „Validează raportul Z” (utilizatorul are dreptul de validare, F1 e în partidă dublă); apoi alt număr de Z scris în formular reactivează „Generează notă” (8c, „se reactivează la orice modificare a Z-ului”). Înainte: după descărcare nu se vedea butonul de validare. Valoarea descărcată pe articol nu se arată aici (vezi raportul). SCRIE pe copie un Z ciornă pe card",
+   "captura": "dovezi/lot11/8e_f1_z_fara_marfa_validare.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Declarat fără marfă din stoc. Se poate valida.",
+      "zona": "#z-descarcare .pf-frand:has-text('9803')"
+     },
+     "ok": true,
+     "vazut": "Z-8000000001-9803 · 22.10.2026 · încasat 121,00 lei Declarat fără marfă din stoc. Se poate valida. Validează raportul Z — alege — Carte tehnica (stoc 4) grau (stoc 200) grau (stoc 10) Marfa A (stoc 146) Marfa B (stoc 22) Marfa C (stoc 9) Ieșire pe articol Re"
+    },
+    {
+     "cerut": {
+      "exista": "#z-descarcare .pf-frand:has-text('9803') .zd-valideaza",
+      "text": "Validează raportul Z"
+     },
+     "ok": true,
+     "vazut": "Validează raportul Z | dezactivat=False | title= | lângă: Validează raportul Z"
+    },
+    {
+     "cerut": {
+      "activ": "#z-salveaza"
+     },
+     "ok": true,
+     "vazut": "Generează notă | dezactivat=False | title= | lângă: Generează notă"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.9
+  }
+ ]
+}

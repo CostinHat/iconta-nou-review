@@ -85,21 +85,11 @@ def _linie_reevaluare(d, cont_sold):
     return (d["cont"], cont_sold, d["diferenta"])
 
 
-def reevaluare_sold(sold_valuta, curs_evidenta, curs_bnr_sfarsit_luna, tip,
-                    cont_sold, in_lei_cu_clauza=False):
-    """Reevaluare lunara sold valuta (OMFP 1802/2014 pct.325 alin.(1)) — formularul manual din Operatiuni. Returneaza linia
-    notei sau None daca diferenta e 0."""
-    d = diferenta(sold_valuta, curs_evidenta, curs_bnr_sfarsit_luna, tip, in_lei_cu_clauza=in_lei_cu_clauza)
-    if not d["cont"]:
-        return None
-    return {"diferenta": d, "linie": _linie_reevaluare(d, cont_sold)}
-
-
 def reevaluare_element(sold_valuta, lei_evidenta, curs_bnr, tip, cont_sold, in_lei_cu_clauza=False):
     """[lotul 10, deficienta 429] Reevaluarea unui element propus de aplicatie, pe VALOAREA IN LEI din evidenta (nu pe cursul ei):
     elementul ajunge la `sold_valuta x curs BNR` (rotunjit la ban, ROUND_HALF_UP), iar diferenta e exact cat lipseste soldului in lei
     din evidenta pana acolo — OMFP 1802/2014 pct.325 alin.(1): „se evaluează la cursul de schimb [...] din ultima zi bancară a
-    lunii”. Pe curs (`reevaluare_sold`) diferenta ar fi `v x (c2 - c1)` rotunjita o data, care poate lasa soldul in lei la un ban
+    lunii”. Pe curs (`diferenta`) diferenta ar fi `v x (c2 - c1)` rotunjita o data, care poate lasa soldul in lei la un ban
     de `v x c2` cand soldul vechi era el insusi rotunjit; pe disponibilitati cursul din evidenta e chiar un raport (lei / valuta).
     -> {lei_nou, diferenta (semnata: cu cat creste soldul in lei), cont, sens, linie (None la 0)}."""
     v, lei, c2 = _d(sold_valuta), _d(lei_evidenta), _d(curs_bnr)

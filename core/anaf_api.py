@@ -139,7 +139,10 @@ def statut_furnizori(furnizori, interogare=None):
     interogare = interogare or valideaza_cui   # testele o simulează (core/conftest.py), niciodată ANAF real
     out, pe_data = {}, {}
     for cui, data, cod in furnizori:
-        out[(cui, data)] = {"platitor_tva": None, "sursa_platitor": None, "tva_la_incasare": None, "sursa_incasare": None, "_cod": cod}
+        # [lotul 11, deficiența 444] + `denumire_anaf`: numele de la ANAF, ca importul să spună când diferă de fișa furnizorului
+        # (`clienti_api.compara_cu_anaf`); None când ANAF nu l-a dat
+        out[(cui, data)] = {"platitor_tva": None, "sursa_platitor": None, "tva_la_incasare": None, "sursa_incasare": None,
+                            "denumire_anaf": None, "_cod": cod}
         pe_data.setdefault(data, []).append(cui)
     for data, cuii in pe_data.items():
         try:
@@ -150,6 +153,7 @@ def statut_furnizori(furnizori, interogare=None):
             r, st = gasite.get(_curata(cui)), out[(cui, data)]
             if r:
                 st.update(platitor_tva=bool(r["platitor_tva"]), tva_la_incasare=bool(r["tva_la_incasare"]),
+                          denumire_anaf=(r.get("denumire") or "").strip() or None,
                           sursa_platitor="ANAF, registrul contribuabililor la %s" % data_ro(data),
                           sursa_incasare="ANAF, Registrul persoanelor care aplică TVA la încasare, la %s" % data_ro(data))
             elif str(st["_cod"] or "").upper().startswith("RO"):
@@ -193,6 +197,45 @@ def mesaj_indisponibil(e):
             else MESAJ_ANAF_NU_RASPUNDE)
 
 
+#: [lotul 11, deficiența 444] plasa e2e (scripts/e2e_poarta.py) servește răspunsurile ANAF din `<director>/anaf.json` ({cui: rezultat, în
+#: forma de mai jos}), ca aplicația pornită pentru probă să nu atingă ANAF real și ca comparația fișă–ANAF să ruleze pe server. Ca la
+#: `ai_client.CHEIE_SIMULAT`: pe un mediu care nu se dovedește de test (`mediu_test.motive`), cheia e REFUZATĂ.
+CHEIE_SIMULAT = "ICONTA_ANAF_SIMULAT"
+
+
+def _raspuns_simulat(curatate):
+    import json
+    import os
+    d = os.environ.get(CHEIE_SIMULAT)
+    if not d:
+        return None
+    from core import mediu_test
+    m = mediu_test.motive()
+    if m:
+        raise RuntimeError("%s e setat pe un mediu care nu e de test (%s) — refuz răspunsurile pregătite"
+                           % (CHEIE_SIMULAT, ", ".join(x.cod for x in m)))
+    # [lotul 11] baza: răspunsurile REALE ale ANAF pentru firmele din testele plasei (`frontend_test/e2e/anaf_baza.json`, copiată aici de
+    # `scripts/e2e_poarta.py`), peste care testul își pune răspunsurile lui (`anaf.json`) — cum vedea plasa ANAF-ul real înainte de 444
+    dupa_cui = {}
+    for nume in ("anaf_baza.json", "anaf.json"):
+        cale = os.path.join(d, nume)
+        if os.path.exists(cale):
+            continut = json.load(open(cale, encoding="utf-8"))
+            dupa_cui.update(continut.get("raspunsuri", continut) if nume == "anaf_baza.json" else continut)
+    # [lotul 11] forma ÎNTREAGĂ a răspunsului (`rezultat_gol`) peste care se pun câmpurile pregătite de test: un răspuns pregătit numai
+    # cu câmpurile testului dădea KeyError 'tva_la_incasare' în `statut_furnizori` (lista facturilor primite, 500 în plasa e2e)
+    return [dict(rezultat_gol(c), **dupa_cui[str(c)], cui=str(c), gasit=True) if str(c) in dupa_cui else rezultat_gol(c)
+            for c in curatate]
+
+
+def rezultat_gol(c):
+    """Forma unică a unui rezultat ANAF pentru CUI-ul `c`, fără date (CUI negăsit): aceleași chei ca un rezultat găsit din
+    `valideaza_cui`, cu valorile „nu se știe / nu e”. Un singur loc pentru răspunsul real `notFound` și pentru răspunsul simulat."""
+    return {"cui": str(c), "denumire": "", "platitor_tva": False, "tva_data_inceput": None, "tva_perioade": [],
+            "tva_la_incasare": False, "tva_incasare_rtvai": None, "stare": "", "inactiv": False, "adresa": "", "cod_caen": "",
+            "nr_reg_com": "", "forma_juridica": "", "data_inregistrare": None, "localitate": "", "judet": "", "gasit": False}
+
+
 def valideaza_cui(lista_cui, data_interogare=None):
     """Întoarce [{cui, denumire, platitor_tva, tva_data_inceput, stare, inactiv, adresa, localitate, judet, ..., gasit}], ordine păstrată."""
     azi = data_interogare or date.today().isoformat()
@@ -200,6 +243,9 @@ def valideaza_cui(lista_cui, data_interogare=None):
     curatate, _ignorate = separa_cui(lista_cui)
     if not curatate:
         return []
+    simulat = _raspuns_simulat(curatate)
+    if simulat is not None:
+        return simulat
 
     rezultate = []
     for i in range(0, len(curatate), MAX_CUI):
@@ -247,12 +293,7 @@ def valideaza_cui(lista_cui, data_interogare=None):
                 "gasit": True,
             })
         for c in dj.get("notFound", []):
-            rezultate.append({
-                "cui": str(c), "denumire": "", "platitor_tva": False, "tva_data_inceput": None, "tva_la_incasare": False,
-                "tva_incasare_rtvai": None,
-                "stare": "", "inactiv": False, "adresa": "", "cod_caen": "", "nr_reg_com": "", "data_inregistrare": None,
-                "localitate": "", "judet": "", "gasit": False,
-            })
+            rezultate.append(rezultat_gol(c))
     return rezultate
 
 

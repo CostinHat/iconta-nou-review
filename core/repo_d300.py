@@ -48,7 +48,8 @@ def select_inregistrari(cur, _STATUS_FINAL, inceput, sfarsit):
 
 
 def select_facturi(cur, fids):
-    cur.execute("SELECT f.id AS fid, f.total, f.tva, l.cantitate, l.pret_unitar, l.cota_tva "
+    cur.execute("SELECT f.id AS fid, f.total, f.tva, l.cantitate, l.pret_unitar, l.cota_tva, "
+                "l.valoare_neta "   # [lotul 11, C82] BT-131 de pe factura importată: baza liniei la alocarea decontării pe cote
                 "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
                 "WHERE f.id = ANY(%s)", (fids,))
 
@@ -68,6 +69,24 @@ def select_chitante_cu_cota(cur, inceput, sfarsit):
     cur.execute("SELECT id, serie, numar, data, suma, cota_tva FROM chitante "
                 "WHERE factura_id IS NULL AND cota_tva IS NOT NULL AND NOT anulata AND data >= %s AND data < %s "
                 "ORDER BY id", (inceput, sfarsit))
+    return cur.fetchall()
+
+
+def select_note_tva_fara_factura(cur, inceput, sfarsit):
+    """[lotul 11, C76] Liniile de TVA (4426 / 4427 / 4428, pe debit sau pe credit) ale notelor VALIDATE din fereastră care NU vin dintr-o
+    factură (`factura_id` NULL) și nu sunt nota unei compensări (aceea decontează două facturi — `compensari`). Pe ele decide D300 ce
+    intră (ajustările de taxă) și ce spune că nu intră. Rândurile: id, data, sursa, descriere, eticheta, debit, credit, suma, din_chitanta
+    (nota unei chitanțe de vânzare fără factură — declarată din `chitante`, `select_chitante_cu_cota`)."""
+    cur.execute("SELECT i.id AS id, i.data AS data, i.sursa AS sursa, i.descriere AS descriere, eticheta_nota(i.id) AS eticheta, "
+                "l.cont_debit AS debit, l.cont_credit AS credit, l.suma AS suma, "
+                "EXISTS (SELECT 1 FROM chitante ch WHERE ch.inregistrare_id = i.id AND ch.factura_id IS NULL AND ch.cota_tva IS NOT NULL "
+                "        AND NOT ch.anulata) AS din_chitanta "
+                "FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
+                "WHERE i.status = 'validata' AND i.factura_id IS NULL AND i.data >= %s AND i.data < %s "
+                "AND NOT EXISTS (SELECT 1 FROM compensari cz WHERE cz.inregistrare_id = i.id) "
+                "AND (split_part(l.cont_debit, '.', 1) IN ('4426', '4427', '4428') "
+                "  OR split_part(l.cont_credit, '.', 1) IN ('4426', '4427', '4428')) "
+                "ORDER BY i.data, i.id, l.id", (inceput, sfarsit))
     return cur.fetchall()
 
 
@@ -92,6 +111,7 @@ def select_facturi_4(cur, _STATUS_FINAL, _EXIG_NORMAL, inceput, sfarsit):
                 # diferite - trimestru). Fara ea D300 nu poate potrivi factura pe luna corecta.
                 + _EXIG_NORMAL + " AS exig, "
                 "l.cantitate, l.pret_unitar, l.cota_tva, "
+                "l.valoare_neta, "   # [lotul 11, C82] BT-131 de pe factura importată, exact
                 "COALESCE(l.destinatie_tva, 'taxabil') AS destinatie_tva, "  # [A12 art.300] per linie
                 "l.categorie_tva "   # [274b] categoria liniei cu 0%: rândul din decont (core/categorii_tva)
                 "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "

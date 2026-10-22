@@ -115,7 +115,11 @@ def carduri(ctx):
     uid = int(ctx["uid"])
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            rol, cabinet, telefon, salvate, firme_vazute, pp, pv, pd = _repo.omul(cur, uid)
+            om = _repo.omul(cur, uid)
+            if om is None:   # [lotul 11, C98] contul a fost șters cât sesiunea era deschisă: nu se știe cine cere (401), nu 500
+                from core import erori as _erori
+                raise _erori.Neautentificat("Contul nu mai există. Intră din nou.")
+            rol, cabinet, telefon, salvate, firme_vazute, pp, pv, pd = om
             notif = bool(telefon) and salvate
             if rol == "admin_firma" and cabinet:
                 preluat = False

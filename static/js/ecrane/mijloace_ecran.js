@@ -3,7 +3,7 @@
 // puteau vedea, casa sau reevalua din interfata — iar casarea/reevaluarea cereau un mijloc_fix_id
 // pe care niciun ecran nu-l arata (casarea din formular dadea 422 garantat). Aici e sursa acelui id
 // + doua actiuni directe: casare (POST nota-inventariere) si reevaluare (POST reevaluare-imobilizare).
-import { api, cate, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso, stareNota, pasNota } from "../api.js?v=ff30ebaf3f";
+import { api, cate, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso, dupaGenerare, noteGenerate, stareNota, pasNota } from "../api.js?v=58f26a3fc4";
 
 // ["01/2026", …, "08/2026", "11/2026"] -> "9 luni: 01–08/2026, 11/2026" (intervalele peste an: "11/2025–02/2026")
 export function luniScurte(luni) {
@@ -77,9 +77,9 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         <td>${m.activ ? `
           <details class="dec-xml"><summary>Acțiuni</summary>
           <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start;margin-top:6px">
-            ${simpla ? "" : `<button class="buton-secundar" data-caseaza="${m.id}" data-actiune="POST /tenants/{tenant_id}/nota-inventariere">Casează</button>
+            ${simpla ? "" : `<button class="buton-secundar" data-caseaza="${m.id}" data-genereaza-nota="redesenat" data-actiune="POST /tenants/{tenant_id}/nota-inventariere">Casează</button>
             <input type="number" step="0.01" class="camp-input" style="max-width:130px" id="mf-reeval-${m.id}" placeholder="valoare justă" aria-label="Valoare justă ${esc(m.denumire || "")}">
-            <button class="buton-secundar" data-reeval="${m.id}" data-actiune="POST /tenants/{tenant_id}/reevaluare-imobilizare">Reevaluează</button>`}
+            <button class="buton-secundar" data-reeval="${m.id}" data-genereaza-nota="redesenat" data-actiune="POST /tenants/{tenant_id}/reevaluare-imobilizare">Reevaluează</button>`}
             <button class="buton-secundar" data-cd="${m.id}" data-actiune="PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd" data-cd-val="${m.destinatie_cd ? 1 : 0}">C&amp;D: ${m.destinatie_cd ? "da" : "nu"}</button>
           </div></details>` : "—"}</td>
       </tr>${planLunar(m)}`).join("");
@@ -123,8 +123,11 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
           try {
             const r = await api.post(`/tenants/${tenantId}/nota-inventariere`,
               { operatie: "casare", mijloc_fix_id: Number(id), data: azi });
-            arataMesaj(zona, `Casare înregistrată (${stareNota(r)}). ${pasNota(r)}`, "info");
+            // [8c] registrul se redesenează (mijlocul devine casat): confirmarea verde, cu conturile notei, în zona NOUĂ a ecranului
+            // (`zona` de dinainte e scoasă din pagină de redesenare — mesajul se pierdea)
             await incarca();
+            dupaGenerare(corp.querySelector("#mf-mesaj"), null, { titlu: `Casare înregistrată (${stareNota(r)})`,
+              note: await noteGenerate(tenantId, [r.inregistrare_id], azi), pas: pasNota(r) });
           } catch (e) {
             arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu s-a putut casa mijlocul fix.", "eroare");
           }
@@ -153,8 +156,14 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
       try {
         const r = await api.post(`/tenants/${tenantId}/reevaluare-imobilizare`,
           { operatie: "reevaluare", mijloc_fix_id: Number(id), valoare_justa: v, data: azi });
-        arataMesaj(zona, `Reevaluare înregistrată (${stareNota(r)}). ${pasNota(r)}`, "info");
         await incarca();
+        const zn = corp.querySelector("#mf-mesaj");   // zona NOUĂ, după redesenare
+        if (!r.inregistrare_id) {   // valoarea justă = valoarea netă contabilă: serverul nu scrie nicio notă
+          arataMesaj(zn, "Nicio diferență de reevaluat: valoarea justă e egală cu valoarea netă contabilă. Nu s-a generat nicio notă.", "info");
+          return;
+        }
+        dupaGenerare(zn, null, { titlu: `Reevaluare înregistrată (${stareNota(r)})`,
+          note: await noteGenerate(tenantId, [r.inregistrare_id], azi), pas: pasNota(r) });
       } catch (e) {
         arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu s-a putut reevalua mijlocul fix.", "eroare");
       }

@@ -133,10 +133,14 @@ def test_control_fiscal_d205_datorat_din_balanta_de_deschidere(firma):
         # afirmația tipată (`core/afirmatii.py`, fel „fapt” pe an), cu motivul din comanda Costin
         assert (fapt["fel"], fapt["tip"], fapt["an"], fapt["motiv"], are_note) == ("fapt", "d205", 2026, MOTIV, False), fapt
         rez = control_fiscal_api.declaratii_fapt(c, SCH, {"platitor_tva": True}, datetime.date(2027, 2, 1))
-    d205 = [d for d in rez["datorate"] if d["tip"] == "d205"]
-    # înainte: niciun debit 457 în note -> „nu se poate verifica”, nu datorată
-    assert [(d["an"], d["fapt"]) for d in d205] == [(2026, MOTIV)], rez
-    assert not [n for n in rez["neclar"] if n.get("tip") == "d205"], rez["neclar"]
+    # [lotul 11, PIVOT pe decizia Costin 10.3, verbatim în DECIZII] „Semaforul D205 numără 457 preluat ca incomplet până la completarea
+    # manuală.” Faptul rămâne (D205 se datorează — afirmația de mai sus), dar cât timp beneficiarii nu sunt completați manual (D205
+    # nedepusă, nici în coadă cu beneficiari manuali), semaforul n-o numără ca obligație de depus: o numără ca incompletă („nu se poate
+    # verifica”). Testul complet al deciziei: core/test_lot11_d_d205.py.
+    assert not [d for d in rez["datorate"] if d["tip"] == "d205"], rez
+    n205 = [n for n in rez["neclar"] if n.get("tip") == "d205"]
+    assert [(n["fel"], n["domeniu_de"], n["domeniu_pana"]) for n in n205] == [("necunoastere", "2026-01", "2026-12")], n205
+    assert n205[0]["motiv"].startswith("D205 pe 2026 — incompletă până la completarea manuală: dividende plătite înainte de preluare"), n205
 
 
 def test_ruta_declaratiilor_transmite_beneficiarii_manuali(firma, monkeypatch):

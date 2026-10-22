@@ -23,7 +23,7 @@ def date_firma(conn, schema):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT nume, cui, adresa, oras, judet, caen, banca, iban, "
-            "tip_decont FROM firma_profil WHERE id = 1")
+            f"tip_decont FROM {schema}.firma_profil WHERE id = 1")
         r = cur.fetchone()
     d = dict(r) if r else None
     if d:

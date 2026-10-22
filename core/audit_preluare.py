@@ -34,7 +34,7 @@ nu tacut): asociati/cote, mijloace fixe, salariati, vector fiscal vs documente.
 from core import afirmatii as _af  # [P8] constatarea E o afirmatie
 from core.unde import Unde as _Unde  # [P8] domeniul e PACHETUL, nu o luna
 from decimal import Decimal
-from core.pdf_util import bani
+from core.pdf_util import bani, sold as _sold
 from core.common import cate as _cate
 
 MODUL = "audit_preluare"
@@ -327,17 +327,17 @@ def constatare_parteneri(rez_coerenta):
         cont = r["cont"]
         if r["coincide"] is None:
             out.append(_gri(et, temei,
-                            f"Contul {cont}: parteneri {_lei(r['suma_parteneri'])}, dar balanța nu are "
+                            f"Contul {cont}: parteneri {_sold(r['suma_parteneri'])}, dar balanța nu are "
                             f"acest sold — nu se poate compara.",
                             "Importă balanța de deschidere care conține contul, apoi reia."))
         elif r["coincide"]:
             out.append(_verde(et, temei,
-                              f"Contul {cont}: defalcarea pe parteneri ({_lei(r['suma_parteneri'])}) "
+                              f"Contul {cont}: defalcarea pe parteneri ({_sold(r['suma_parteneri'])}) "
                               f"coincide cu balanța."))
         else:
             out.append(_rosu(et, temei,
-                             f"Contul {cont}: parteneri {_lei(r['suma_parteneri'])} vs balanță "
-                             f"{_lei(r['sold_balanta'])} (diferență {_lei(r['diferenta'])}).",
+                             f"Contul {cont}: parteneri {_sold(r['suma_parteneri'])} vs balanță "
+                             f"{_sold(r['sold_balanta'])} (diferență {_lei(abs(r['diferenta']))}).",   # [lotul 11, C100] soldul cu felul lui
                              cauza="Suma partenerilor nu egalează soldul sintetic din balanță.",
                              actiune=("Verifică: partener omis din defalcare, sold pe cont greșit, sau "
                                       "balanța și defalcarea preluate din momente diferite.")))

@@ -43,7 +43,7 @@ TEMEI_OBLIGATIE = Temei(
                 "efectueaza conform normelor elaborate de Ministerul Finantelor Publice"))
 
 TEMEI_CONTINUT = Temei(
-    "OMFP", 2634, 2015, art="anexa 2", lit="14-1-2",
+    "OMFP", 2634, 2015, art="anexa 2", lit="cod 14-1-2",
     data_in="2016-01-01", verificat_la="2026-08-30", de_cine="Code/Costin", nivel_sursa="MO",
     url="anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt",
     text_citat=("Registrul-inventar serveste ca document contabil obligatoriu de inregistrare a "
@@ -83,7 +83,7 @@ LUNA_SFARSIT_EXERCITIU = (12, Temei(
 #: exercițiului» — le enumeră pe toate trei. Un moment inventat („trimestrial") nu e o valoare
 #: greșită, e un registru ținut altfel decât cere norma.
 TEMEI_MOMENTE = Temei(
-    "OMFP", 2634, 2015, art="anexa 2", lit="14-1-2",
+    "OMFP", 2634, 2015, art="anexa 2", lit="cod 14-1-2",
     data_in="2016-01-01", verificat_la="2026-08-31", de_cine="Code/Costin", nivel_sursa="MO",
     url="anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt",
     text_citat=("Registrul-inventar se intocmeste la inceputul activitatii, la sfarsitul "

@@ -23,8 +23,31 @@ CELE PATRU MODURI DE ESEC ALE ACESTUI INSTRUMENT, scrise INAINTE de prima masura
      cuvinte pe care clichetul 50 o interzice. Cifra `FARA` amesteca deci doua populatii.
   3. **VEDE DOAR PYTHON.** Refuzurile din ecran (validare in JS inainte de cerere) nu sunt aici.
      Alta populatie, alt instrument.
-  4. **VEDE DOAR `raise`.** O ruta care INTOARCE un corp de eroare fara sa ridice — `return
-     {"eroare": ...}` — e invizibila. Numarate separat, ca sa se vada cat de mare e umbra.
+  4. **VEDE `raise` SI REFUZURILE ADUNATE, nu si corpurile intoarse.** O ruta care INTOARCE un corp
+     de eroare fara sa ridice — `return {"eroare": ...}` — e invizibila. Numarate separat, ca sa se
+     vada cat de mare e umbra.
+
+REFUZUL ADUNAT (lotul 11, 22.10.2026, subagentul g2 — gard erodat gasit de W5 in campania 440). Campania
+440 („toate erorile apar deodata”) a mutat zeci de refuzuri din `raise` in COLECTOARE: `core.erori.
+ErorileFormularului` (`.camp(camp, mesaj)` / `.fara_camp(mesaj)`), liste ridicate la capat
+(`motive.append(...)` + `raise RefuzuriSectiune(motive)` in d212, `_er.append(...)` + `raise
+FacturaRefuzata(_er)`, `erori.append(...)` + `raise RefuzReevaluare(erori)`) si ajutorul
+`uc_comun._campuri_lipsa`. Un scan care numara numai `raise` le pierdea: refuzul ramanea, temeiul nu-l
+castigase, iar clichetul cobora (d212 38 -> 11, facturi_api 27 -> 18, stocuri 9 -> 6, reevaluare_valuta
+4 -> 0). De atunci, **unitatea e LOCUL UNDE SE SCRIE MOTIVUL refuzului**, oricum pleaca el: un `raise`,
+o adaugare intr-un colector, un apel al ajutorului. Aceeasi regula de temei (`_poarta_temei_structurat`,
+apoi `_SEMNE_ACT`), pe nodul adaugarii. Ridicarea care doar duce lista (`raise X(lista)`) NU se mai
+numara: motivele ei sunt numarate unde se scriu, iar a o numara si pe ea ar dubla.
+
+  5. **REFUZUL ADUNAT se urmareste STRUCTURAL, in modul, nu peste module.** O lista e „de refuz” daca
+     ajunge intreaga intr-un `raise X(lista)`, intr-o bucla care o varsa intr-un colector, intr-un
+     ajutor din acelasi modul a carui lista-parametru e de refuz, sau e intoarsa unui apelant care o
+     ridica (propagare pana la punct fix). O lista primita dintr-un ALT modul si ridicata aici nu se
+     urmareste pana la sursa ei: motivele ei se numara acolo numai daca sursa le ridica / le aduna
+     ea insasi. O adaugare care doar RETRANSMITE (textul unei exceptii prinse, `str(e)`; elementele
+     altei liste de refuz; parametrii unui RELEU — o functie care varsa parametrii ei intr-un colector,
+     ca `_ErorileNotei.adauga`) nu e un refuz nou: se numara la sursa, iar pentru releu la fiecare
+     apel al lui din modul.
 
 CE NU MASOARA, declarat: daca temeiul e CORECT. Doar daca exista si sub ce forma.
 """
@@ -141,8 +164,217 @@ def _clasa_si_stare(nod):
     return None, None
 
 
+#: Metodele colectorului unic al formularelor (`core.erori.ErorileFormularului`) care ADAUGA un refuz. Citite pe structura in
+#: `core/test_refuzuri.py` (o metoda noua de adaugare a colectorului, nenumita aici, pica garda), nu presupuse.
+METODE_COLECTOR = ("camp", "fara_camp")
+#: Ajutoarele de refuz adunat chemate din ALTE module: un apel = un refuz al apelantului (lista campurilor obligatorii e a lui,
+#: textul e generic, in ajutor). Corpul ajutorului nu se numara (altfel s-ar numara o data in plus, in modulul ajutorului).
+AJUTOARE_ADUNATE = ("_campuri_lipsa",)
+#: Cum se adauga intr-o lista de refuz.
+_ADAUGARI_LISTA = ("append", "extend", "insert")
+
+_FN = (ast.FunctionDef, ast.AsyncFunctionDef)
+
+
+def _noduri_proprii(fn):
+    """Nodurile corpului lui `fn`, fara cele ale functiilor imbricate (au analiza lor)."""
+    out, stiva = [], list(ast.iter_child_nodes(fn))
+    while stiva:
+        n = stiva.pop()
+        out.append(n)
+        if not isinstance(n, _FN + (ast.ClassDef,)):
+            stiva.extend(ast.iter_child_nodes(n))
+    return out
+
+
+def _parametri(fn):
+    a = fn.args
+    return [p.arg for p in (a.posonlyargs + a.args + a.kwonlyargs)]
+
+
+def _nume(nod):
+    return {n.id for n in ast.walk(nod) if isinstance(n, ast.Name)}
+
+
+def _e_lista_noua(v):
+    return (isinstance(v, (ast.List, ast.ListComp))
+            or (isinstance(v, ast.Call) and isinstance(v.func, ast.Name) and v.func.id == "list"))
+
+
+def _tinta_apelului(c):
+    f = c.func
+    return f.id if isinstance(f, ast.Name) else (f.attr if isinstance(f, ast.Attribute) else None)
+
+
+def _adaugare_in_lista(n, R):
+    """(lista, [argumentele adaugate]) daca `n` adauga intr-o lista de refuz din `R`; altfel None."""
+    if (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr in _ADAUGARI_LISTA
+            and isinstance(n.func.value, ast.Name) and n.func.value.id in R and n.args):
+        return n.func.value.id, [n.args[-1]]
+    if (isinstance(n, ast.AugAssign) and isinstance(n.op, ast.Add) and isinstance(n.target, ast.Name)
+            and n.target.id in R):
+        return n.target.id, [n.value]
+    return None
+
+
+def _apel_colector(n):
+    return (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr in METODE_COLECTOR
+            and len(n.args) + len(n.keywords) in ((1,) if n.func.attr == "fara_camp" else (2,)))
+
+
+def _liste_de_refuz(arb):
+    """{id(fn): set(nume)} — listele de refuz ale fiecarei functii a modulului, propagate pana la punct fix (modul de esec 5)."""
+    fns = [f for f in ast.walk(arb) if isinstance(f, _FN)]
+    pe_nume = {}
+    for f in fns:
+        pe_nume.setdefault(f.name, []).append(f)
+    proprii = {id(f): _noduri_proprii(f) for f in fns}
+    ref = {id(f): set() for f in fns}
+    create, liste = {}, {}
+    for f in fns:
+        # `create` = numele legate de o lista NOUA in functie (`[]`, `list(...)`, o lista in comprehensiune): numai ele pot porni o
+        # lista de refuz (S1, S5) — un `raise ValueError(motiv)` cu `motiv` un text intors de un ajutor nu e o lista
+        c = set()
+        for n in proprii[id(f)]:
+            if isinstance(n, ast.Assign) and _e_lista_noua(n.value):
+                c |= {t.id for t in n.targets if isinstance(t, ast.Name)}
+            if isinstance(n, ast.Assign) and isinstance(n.value, ast.Tuple):
+                for t in n.targets:
+                    if isinstance(t, ast.Tuple):
+                        c |= {e.id for e, v in zip(t.elts, n.value.elts) if isinstance(e, ast.Name) and _e_lista_noua(v)}
+        # `liste` = in plus parametrii si rezultatele apelurilor: pot DUCE o lista de refuz pornita in alta parte (S2, S3, S4)
+        s = c | set(_parametri(f))
+        for n in proprii[id(f)]:
+            if isinstance(n, ast.Assign) and isinstance(n.value, ast.Call):
+                for t in n.targets:   # rezultatul unui apel: lista intoarsa de un ajutor
+                    s |= {e.id for e in ([t] if isinstance(t, ast.Name) else getattr(t, "elts", [])) if isinstance(e, ast.Name)}
+        create[id(f)], liste[id(f)] = c, s
+
+    def _poz_param(g, i, kw):
+        p = _parametri(g)
+        if kw is not None:
+            return kw if kw in p else None
+        p = p[1:] if (p and p[0] in ("self", "cls")) else p
+        return p[i] if i < len(p) else None
+
+    schimbat = True
+    while schimbat:
+        schimbat = False
+
+        def _pune(fid, nume):
+            nonlocal schimbat
+            if nume and nume not in ref[fid]:
+                ref[fid].add(nume)
+                schimbat = True
+
+        for f in fns:
+            R, L, C = ref[id(f)], liste[id(f)], create[id(f)]
+            for n in proprii[id(f)]:
+                # S1: lista NOUA dusa intreaga de un `raise X(lista)`
+                if isinstance(n, ast.Raise) and isinstance(n.exc, ast.Call):
+                    for a in list(n.exc.args) + [k.value for k in n.exc.keywords]:
+                        if isinstance(a, ast.Name) and a.id in C:
+                            _pune(id(f), a.id)
+                # S2: bucla care varsa lista intr-un colector
+                if isinstance(n, ast.For) and isinstance(n.iter, ast.Name) and n.iter.id in L:
+                    if any(_apel_colector(m) for m in ast.walk(n)):
+                        _pune(id(f), n.iter.id)
+                # S3: lista data unui ajutor din modul (in jos si in sus, pe pozitie / nume)
+                if isinstance(n, ast.Call) and _tinta_apelului(n) in pe_nume:
+                    for g in pe_nume[_tinta_apelului(n)]:
+                        perechi = [(a, _poz_param(g, i, None)) for i, a in enumerate(n.args)]
+                        perechi += [(k.value, _poz_param(g, 0, k.arg)) for k in n.keywords if k.arg]
+                        for a, p in perechi:
+                            if not (isinstance(a, ast.Name) and p):
+                                continue
+                            if a.id in R:
+                                _pune(id(g), p)
+                            if p in ref[id(g)] and a.id in L:
+                                _pune(id(f), a.id)
+                # S4: lista intoarsa de un ajutor din modul, pe care apelantul o trateaza ca refuz
+                if isinstance(n, ast.Assign) and isinstance(n.value, ast.Call) and _tinta_apelului(n.value) in pe_nume:
+                    for t in n.targets:
+                        poz = [(None, t)] if isinstance(t, ast.Name) else list(enumerate(getattr(t, "elts", [])))
+                        for i, e in poz:
+                            if not (isinstance(e, ast.Name) and e.id in R):
+                                continue
+                            for g in pe_nume[_tinta_apelului(n.value)]:
+                                for r in proprii[id(g)]:
+                                    if not (isinstance(r, ast.Return) and r.value is not None):
+                                        continue
+                                    v = r.value if i is None else (r.value.elts[i] if isinstance(r.value, ast.Tuple)
+                                                                    and i < len(r.value.elts) else None)
+                                    if isinstance(v, ast.Name) and v.id in liste[id(g)]:
+                                        _pune(id(g), v.id)
+                # S5: o lista NOUA ale carei elemente curg intr-o lista de refuz e si ea de refuz
+                ad = _adaugare_in_lista(n, R)
+                if ad:
+                    for nm in _nume(ad[1][0]) & C:
+                        _pune(id(f), nm)
+    return fns, proprii, ref, pe_nume, create
+
+
+def _retransmise(fn, noduri, R):
+    """Numele care, intr-o adaugare, inseamna RETRANSMITERE: exceptia prinsa, listele de refuz, variabilele buclelor peste ele."""
+    s = set(R)
+    for n in noduri:
+        if isinstance(n, ast.ExceptHandler) and n.name:
+            s.add(n.name)
+    for _ in range(2):
+        for n in noduri:
+            if isinstance(n, (ast.For, ast.comprehension)) and _nume(n.iter) & s:
+                s |= _nume(n.target)
+    return s
+
+
+def _e_releu(fn, noduri):
+    """O functie care doar varsa PARAMETRII ei intr-un colector (`_ErorileNotei.adauga`): refuzurile se numara la apelurile ei."""
+    p = set(_parametri(fn))
+    apeluri = [n for n in noduri if _apel_colector(n)]
+    return bool(apeluri) and all(not _siruri(n) and _nume(n) - {"self"} <= p | {"self"} for n in apeluri)
+
+
+def _purtator(nod):
+    if _poarta_temei_structurat(nod):
+        return "structurat"
+    txt = " ".join(_siruri(nod))
+    return "proza" if any(s in txt for s in _SEMNE_ACT) else "fara"
+
+
+def _adunate(arb):
+    """[(nod, functie)] — refuzurile ADUNATE ale modulului, cate unul pe locul unde se scrie motivul (docstringul, „REFUZUL ADUNAT”)."""
+    fns, proprii, ref, pe_nume, create = _liste_de_refuz(arb)
+    relee = {f.name for f in fns if _e_releu(f, proprii[id(f)])}
+    out = []
+    for f in fns:
+        if f.name in AJUTOARE_ADUNATE:
+            continue
+        noduri, R = proprii[id(f)], ref[id(f)]
+        retr = _retransmise(f, noduri, R)
+        releu = f.name in relee
+        for n in noduri:
+            ad = _adaugare_in_lista(n, R)
+            if ad:
+                if not (_nume(ad[1][0]) & retr) and not (releu and _nume(ad[1][0]) <= set(_parametri(f))):
+                    out.append((n, f.name))
+                continue
+            if _apel_colector(n):
+                argumente = set().union(*[_nume(a) for a in list(n.args) + [k.value for k in n.keywords]])
+                if releu or argumente & retr:
+                    continue
+                out.append((n, f.name))
+                continue
+            if isinstance(n, ast.Call) and _tinta_apelului(n) in AJUTOARE_ADUNATE:
+                out.append((n, f.name))
+                continue
+            if isinstance(n, ast.Call) and _tinta_apelului(n) in relee and _tinta_apelului(n) != f.name:
+                out.append((n, f.name))
+    return out, {k: ref[k] & create[k] for k in ref}
+
+
 def inventar():
-    """[{fisier, linia, functie, clasa, stare, purtator}] — un rand per `raise` care opreste un act."""
+    """[{fisier, linia, functie, clasa, stare, purtator, forma}] — un rand per refuz care opreste un act: `raise` (forma „raise”)
+    sau refuz ADUNAT intr-un colector (forma „adunat”, docstringul de modul)."""
     out = []
     for cale in _fisiere():
         try:
@@ -155,21 +387,29 @@ def inventar():
             if isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 for n in ast.walk(fn):
                     parinte.setdefault(id(n), fn.name)
+        adunate, ref = _adunate(arb)
+        # `raise X(lista_de_refuz)` doar DUCE motivele numarate la locul lor: nu se numara a doua oara
+        duc = set()
+        for fn in ast.walk(arb):
+            if isinstance(fn, _FN):
+                for n in _noduri_proprii(fn):
+                    if isinstance(n, ast.Raise) and isinstance(n.exc, ast.Call) and any(
+                            isinstance(a, ast.Name) and a.id in ref[id(fn)] for a in n.exc.args):
+                        duc.add(id(n))
         for n in ast.walk(arb):
-            if not isinstance(n, ast.Raise):
+            if not isinstance(n, ast.Raise) or id(n) in duc:
                 continue
             clasa, stare = _clasa_si_stare(n)
             if clasa is None:
                 continue
-            if _poarta_temei_structurat(n):
-                purtator = "structurat"
-            else:
-                txt = " ".join(_siruri(n))
-                purtator = "proza" if any(s in txt for s in _SEMNE_ACT) else "fara"
             out.append({"fisier": rel, "linia": n.lineno,
                         "functie": parinte.get(id(n), "(modul)"),
-                        "clasa": clasa, "stare": stare, "purtator": purtator,
-                        "citeaza": modul_citeaza_legea(cale)})
+                        "clasa": clasa, "stare": stare, "purtator": _purtator(n),
+                        "citeaza": modul_citeaza_legea(cale), "forma": "raise"})
+        for n, fnume in adunate:
+            out.append({"fisier": rel, "linia": n.lineno, "functie": fnume,
+                        "clasa": "refuz", "stare": 400, "purtator": _purtator(n),
+                        "citeaza": modul_citeaza_legea(cale), "forma": "adunat"})
     return out
 
 

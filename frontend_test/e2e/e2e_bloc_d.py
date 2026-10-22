@@ -933,12 +933,18 @@ def test_def_138_balanta_lunii_are_numai_notele_lunii(asistent, firma_mf):
     asistent.firma(firma_mf["nume"])
     _deschide(asistent, "#fa-balanta", "Balanță de verificare")
     pg.wait_for_selector(".fereastra:last-of-type .fd-tabel tbody tr", timeout=30000)
-    total = pg.evaluate("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); const t = f.querySelector('.fd-tabel:last-of-type') ;"
+    out = pg.evaluate("() => { const f = [...document.querySelectorAll('.fereastra')].pop();"
                         " const rows = [...f.querySelectorAll('.fd-tabel')].find((x) => x.innerText.includes('Rulaj lun'));"
-                        " const tr = [...rows.querySelectorAll('tbody tr')].pop(); return [...tr.cells].map((c) => c.innerText.trim()); }")
+                        " const tr = rows.querySelector('tfoot tr'); const ult = [...rows.querySelectorAll('tbody tr')].pop();"
+                        " return {total: tr ? [...tr.cells].map((c) => c.innerText.trim()) : [],"
+                        " ultim_corp: ult ? ult.cells[1].innerText.trim() : null}; }")
     asistent.captura("balanta")
+    # [lotul 11, decizia Costin 10.3 pct.4 „Totalurile și rezumatul fix […]: da, reorganizezi ecranele”; DS cap.9 v2.100 pct.7(a)] rândul
+    # de total e `<tfoot>` (lipit jos), nu ultimul rând din `<tbody>`; în corp rămân numai conturile.
+    assert out["ultim_corp"] != "Total", out
+    total = out["total"]
     # [cont, denumire, si_d, si_c, prec_d, prec_c, rul_d, rul_c, tot_d, tot_c, sf_d, sf_c]
-    assert total[1] == "Total" and (total[6], total[7]) == ("0,00", "0,00") and (total[4], total[5]) == ("800,00", "800,00"), total
+    assert total and total[1] == "Total" and (total[6], total[7]) == ("0,00", "0,00") and (total[4], total[5]) == ("800,00", "800,00"), total
 
 
 def test_def_143_ferestrele_cu_tabele_fara_derulare_laterala_la_1920(patron, firma_mf):
@@ -981,6 +987,8 @@ def _date_firma(firma):
                   # răspundere limitată”, nomenclatorul ANAF din `bilant.FORME_PROPRIETATE`) — lipsa lor oprește bilanțul
                   "mare_contribuabil": False, "forma_proprietate": "35"})
     assert st == 200 and r.get("ok") is not False, (st, r)
+    from e2e_bloc_e import antet_bilant   # import local: e2e_bloc_e nu importă din e2e_bloc_d, dar ordinea modulelor rămâne liberă
+    antet_bilant(firma)   # [lotul 11, decizia 10.3] interesul public + întocmitorul cabinetului: bilanțul le cere, testele nu sunt despre ele
 
 
 def _localitatea_partenerului(firma, factura_id, oras="București", judet="B"):

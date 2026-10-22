@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "core/firma_profil_api.py",
+  "ancora": "    r = {\"ok\": False, \"camp\": prima, \"mesaj\": d[\"mesaj\"], \"erori_campuri\": d[\"erori_campuri\"]}",
+  "inlocuire": "    r = {\"ok\": False, \"camp\": prima, \"mesaj\": d[\"mesaj\"], \"erori_campuri\": d[\"erori_campuri\"][:1]}",
+  "test": "frontend_test/e2e/e2e_lot11_w3a.py::test_def_440_date_firma_serverul_refuza_toate_valorile_deodata"
+ },
+ {
+  "fisier": "core/casa_api.py",
+  "ancora": "    r = {\"eroare\": d[\"mesaj\"], \"erori_campuri\": d[\"erori_campuri\"]}",
+  "inlocuire": "    r = {\"eroare\": d[\"mesaj\"], \"erori_campuri\": d[\"erori_campuri\"][:1]}",
+  "test": "frontend_test/e2e/e2e_lot11_w3a.py::test_def_440_casa_dispozitia_suma_si_destinatia_avansului_deodata"
+ }
+]

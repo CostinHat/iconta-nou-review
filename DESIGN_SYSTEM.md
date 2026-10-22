@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.97 · 21 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.101 · 22 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -113,11 +113,21 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Tabele: titlurile și valorile la STÂNGA, cu excepția coloanelor de sume monetare — titlu și valori la DREAPTA (separator zecimal pe aceeași verticală).
 - **Toate datele se afișează prin `dataRo(d, stil)` din api.js** (v2.0). SINGURA formatare de dată. Stiluri: implicit `zz.ll.aaaa`; `cu_ora` → `zz.ll.aaaa HH:MM`; `lung` → `11 iulie 2026`; `zi_luna_text` → `11 iul`; `luna_an` → `iulie 2026` (perioade lunare fără zi — balanțe, deconturi; v2.20); `zi_luna` → `zz.ll` (compact). Pentru date care pot **traversa anul** (ex. termene în fereastra de 60z care intră în an+1) se folosește un stil cu an (`lung`/`scurt`/`luna_an`), NU `zi_luna`/`zi_luna_text` (ambiguu). INTERZIS `toLocaleDateString` ad-hoc, date ISO brute în template (`${x.data}` direct), funcții locale de formatare a datei (`fmtZi`/`fmtD`/`fmtTermen`, **funcție/array local de nume de luni indexat prin `parseInt` — ex. `luni[parseInt(p[1])-1]`, forma `dataLunga`, v2.20**). Regula DATA_DIALECT în verificator prinde și această formă (array de luni indexat cu `parseInt`); NU atinge pickerele de lună (`LUNI.map(...)` pentru `<option>`) sau etichetele din stare (`LUNI[S.luna-1]`, fără `parseInt`) — acelea sunt legitime.
 - **Cantitățile se afișează prin `cantitate(v, um)`, costul unitar prin `pretUnitar(v)` (v2.69, 05.10.2026).** Gard `CANTITATE_BRUTA`. Stocul, cantitatea unei mișcări sau a unei linii, inventarul: `cantitate(v, um)` din api.js — „110 buc”, „1,5 kg”, fără zecimalele coloanei NUMERIC(12,3) („stoc 110.000”, „x2.000”). Costul unitar (CMP, prețul de intrare): `pretUnitar(v)` — 2–4 zecimale, cu „lei” („CMP 50.0000” → „50,00 lei”). În backend, textul pentru om folosește `pdf_util.cantitate`. EXCEPTAT: `value` de `<input type="number">` și payload-ul trimis serverului.
+- **Cursul valutar se afișează prin `cursValutar(v)` din api.js (v2.101, 22.10.2026, lotul 11, C88).** Cum îl dă BNR, pe unitate: 4–6 zecimale („5,2409”; HUF „0,014719”), nu rotunjit la 4 (HUF „0,0147” dă o eroare de 0,13% pe sumă). Gol -> „—”. INTERZIS `toLocaleString(…{ minimumFractionDigits: 4 })` local pe un curs. În backend, textul pentru om folosește `curs_bnr.curs_text`. Gard `CURS_FORMAT_LOCAL`. EXCEPTAT: `value` de `<input type="number">` și payload-ul.
 - **O dată produsă în interfață se scrie prin `dataIso(d)` (v2.68, 05.10.2026).** Gard `DATA_UTC`. Valoarea unui câmp de dată, „azi”, un termen calculat sau capetele unui interval se produc în ora LOCALĂ, prin `dataIso(d)` din api.js (fără argument: azi). INTERZIS `toISOString().slice(0, 10)` / `.split("T")` pentru o dată calendaristică: convertește în UTC, deci între 00:00 și 03:00 „azi” devine ieri, iar o dată construită la miezul nopții local (`new Date(an, luna, 1)`) iese cu o zi mai devreme — „luna” începea din ultima zi a lunii trecute, „UIT valabil până la” arăta o zi mai devreme. `toISOString()` întreg rămâne permis pentru un moment (marcaj de timp), nu pentru o zi.
 - **Perioadă lună/an NUMERICĂ (v2.21, 27.07.2026)**: `luna_an_numeric` — `07/2026`. DECIS de Costin: antetele de ecran (Firme, Facturi) folosesc forma NUMERICĂ, nu `iulie 2026`. Motiv: e mai scurtă, se aliniază în listă cu restul cifrelor și e forma cu care lucrează contabilul pe declarații. `luna_an` („iulie 2026") rămâne pentru titluri și texte narative (balanțe, povestea lunii). Ambele trec prin `dataRo` — formatarea locală cu `padStart` rămâne INTERZISĂ (cap.4: o singură funcție de formatare).
 - **Toate sumele afișate se trec prin `bani(v)` din api.js** (v2.1). SINGURUL formator monetar. Produce format românesc (1.234,56). INTERZIS `toFixed(2)` pe sume afișate (dă `1234.56`, nepotrivit), formatări locale sau concatenare brută. Excepții permise: `value` de `<input type="number">` și payload trimis la backend (acolo se cere punct zecimal). Moneda (`lei`/`RON`) se afișează când suma stă izolat sau unitatea nu e evidentă (total factură, fluturaș, indemnizație, sold); se omite în liste/tabele dense unde contextul o face redundantă (cost/porție, coloane cu antet monetar). `bani()` e mereu obligatoriu; moneda e contextuală. INTERZISE funcții locale de format monetar (`const fmt = …toLocaleString`) — dialect care produce formate divergente (0 vs 2 zecimale). Procentele NU folosesc `bani()` (ar da `19,00%`); pentru ele funcție separată (`pct`) sau `%` simplu. Pentru cifre de ansamblu rotunjite la leu (cockpit cabinet, cifrele firmei pe portalul client) → `baniRotund(v)` canonic (0 zecimale), NU dialect local. Orice `const X = …toLocaleString("ro-RO")` local (sub orice nume, nu doar `fmt`) e INTERZIS și prins de FMT_LOCAL. Cantități fără zecimale inutile. Procente compacte (11%).
 - **BACKEND (Python) — text destinat utilizatorului: aceeași regulă, alt limbaj** (v2.15, 22.07.2026). Orice sumă sau dată construită în backend care ajunge la utilizator (câmpurile `mesaj` / `temei` / `cauza` / `motiv` / `avert` / `descriere` / `actiune`, mesaje de eroare afișate, corp/subiect de email, text pe PDF) se formatează prin sursele canonice **`pdf_util.bani(x, mon)`** (sume, 1.234,56) și **`pdf_util.data_ro(d, stil)`** (date — oglinda Python a lui `dataRo`; stiluri `scurt`/`cu_ora`/`lung`/`zi_luna`). INTERZIS `f"{x} lei"` / `%d lei` brut, `str(sold)`, `strftime("%d.%m…")` local pentru afișare. Motiv: gărzile JS nu văd backendul — o sumă „40800.00 lei" sau o dată ISO brută trimisă din Python scapă complet controlului (dovedit F183, 22.07). Regula **BACKEND_UI_BRUT** în verificator (scanează `.py`). EXCEPTAT (nu e afișare): XML/SAF-T (ISO cerut de spec — etransport, D406), exporturi cu format al destinației (WinMentor), câmpuri de dată ISO în JSON API (formatate client-side prin `dataRo`), log-uri/print, valori unitare `:g` intenționate. Șabloanele `.format()` din `common.CODURI` se formatează CENTRAL în `common.problema()` (bani pe câmpurile din `MONEDA_CAMP`) — orice câmp monetar nou dintr-un șablon se adaugă acolo.
 - Etichetă și valoare pe același rând se separă clar (flex space-between + gap).
+- **Seria și numărul, separat — `numarCuSerie` (v2.99, lotul 11, deficiența 443; comanda Costin 11.1 pct.19, verbatim: „seria și
+  numărul se afișează separat peste tot (F6 nr. 1, nu F61)”):** orice document cu serie se afișează „<serie> nr. <număr>” — „F6 nr. 1”, „F1A nr. 3”, „KAI nr. 12”
+  (separatorul de la capătul seriei nu se afișează); fără serie, numărul cum e („BA-1”). O singură formă: `numarCuSerie(serie, numar)` în
+  api.js, `pdf_util.serie_nr(serie, numar)` în backend (refuzuri, descrierea notei, Registrul jurnal: „Factură F6 nr. 1 din 05.10.2026”).
+  Numărul unei facturi emise poartă deja seria în față („F1A3”) — helperul o taie. `pdf_util.numar_cu_serie` (seria lipită) rămâne NUMAI
+  pentru IDENTIFICATORUL trimis la ANAF (ID-ul facturii în e-Factura, BT-1 / BT-25). INTERZIS `${serie}${numar}`, `${serie}-${numar}`,
+  `(serie || "") + numar`, `[serie, numar].join` în ecrane. Un termen afișat spune al cui e („termen de transmitere în SPV”, „termen de
+  depunere”), nu „termen” singur. Gărzi: verificator SERIE_LIPITA + `core/test_lot11_u0_serie_nr.py` (Python, cu locurile de identificator
+  numite).
 - **Perioadele au TREI forme, una pe fel (v2.85, 09.10.2026, lotul „Retest 2” pct.14):** luna `LL/AAAA` (`07/2026`), trimestrul
   `T3/2026`, anul `2026`. În backend: `control_fiscal_api.perioada_canonica(an, luna, fel)`; în ecran: `dataRo(…, "luna_an_numeric")`
   și `T${trim}/${an}`. INTERZISE pe ecran „03.2026”, „iun 2026”, „T3 2026” / „T3” fără an. Textul narativ poate spune „iulie 2026”
@@ -160,9 +170,15 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - `arataMesaj(el, txt, tip)` — singura cale de afișare a mesajelor de stare. Tipuri canonice: `eroare` (roșu), `avert` (galben), `info` (gri), `ok` (verde, succes). INTERZIS mesaj de stare prin innerHTML cu clase ad-hoc (`mig-gol`, `pf-intro`, span inline).
 - Eroare de câmp/formular: `<span class="msg-eroare">` (roșu), lângă câmpul/butonul relevant. Niciodată tăcere la o acțiune eșuată.
 - **Un mesaj, o singură dată; o listă, rând cu rând (v2.89, retestul Costin 12.10.2026, deficiențele 237, 238):** același mesaj nu apare
-  de două ori pe ecran — o notă de lângă butoane care ar repeta refuzul de dedesubt trimite la el („motivul e mai jos”). Un mesaj cu mai
+  de două ori pe ecran — o notă de lângă butoane care ar repeta refuzul de dedesubt trimite la el („motivul e mai jos”) **[înlocuit în
+  v2.99, 440: refuzul stă lângă buton, cu textul lui, o singură dată — „Fără «motivul e mai sus»”]**. Un mesaj cu mai
   multe elemente (un rând pe cont, cu suma și acțiunea) vine cu rândurile despărțite (`\n`), iar zonele de mesaj (`.msg-eroare`,
-  `.msg-avert`, `.msg-info`, `.msg-ok`) le păstrează (`white-space: pre-line`). Gard: verificator MESAJ_PE_RANDURI + e2e 237 / 238.
+  `.msg-avert`, `.msg-info`, `.msg-ok`, `.dec-eroare` — caseta refuzului generării; caseta erorilor DUK, făcută din blocuri, nu: `.dec-eroare:has(> .dec-avert-cap)`, v2.100 / lotul 11) le păstrează (`white-space: pre-line`). Gard: verificator MESAJ_PE_RANDURI + e2e 237 / 238.
+  **Orice casetă care afișează textul serverului (`e.mesaj`, `detaliu.mesaj` …) e zonă de mesaj (v2.100, lotul 11, 440):** clasele cu
+  un singur fel de conținut au `pre-line` pe clasă, într-o regulă comună (`.dec-avert-cap`, `.pacm-mail`, `.cp-mesaj`, `.val-lipsa`,
+  `.anunt-text`, `.mig-eroare`, `.cf-semnal`, `.rn-mesaj`); într-o clasă de proză (`.ecran-nota`, `.ca-mesaj`, `.tip-desc`,
+  `.em-cui-stare`), scrisă în sursă pe mai multe rânduri, `pre-line` NU se pune pe clasă — caseta refuzului poartă și `.pe-randuri`.
+  Gard: `core/test_lot11_g2_pre_line.py` (fiecare `${esc(x.mesaj…)}` / `el.textContent = x.mesaj` din `static/js`).
 - **Mesajul nu șterge formularul în care e pus (v2.82, 08.10.2026):** `arataMesaj` pe un container care ține câmpuri (`input`,
   `select`, `textarea`) scrie mesajul într-un copil propriu (`.msg-in-formular`, la capătul containerului), nu peste conținut — omul nu
   pierde ce a tastat. O zonă de mesaj fără câmpuri se rescrie ca înainte. Regula stă în mecanismul unic (`api.js`), nu în fiecare ecran;
@@ -186,15 +202,41 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   butonul în fereastră, zona lipită jos). O bară urmată de alt conținut (nota de subsol a
   declarației, jurnalul din Date firmă) nu-l acoperă: marginea ei negativă de jos se aplică numai ultimului element
   (`.fereastra-corp .bara-fixa:not(:last-child)` → `margin-bottom: 0`; verificator FEREASTRA_LOT6 / BARA_NU_ACOPERA, e2e `test_def_164_*`).
+- **Caseta de refuz nu stă sub antetul lipit sus (lotul 11, 436 afișare):** zona de mesaj a `.bara-fixa` (`[id$="-mesaj"]`, `[id$="-msg"]`) are cel mult 35vh și derulează ea (precedentul `.em-rezultat`, 304), ca bara să nu treacă pe sub `.rezumat-fix`; orice element adus în vedere în corp se oprește sub antet (`scroll-margin-top: calc(var(--rezumat-h) + 8px)`). Lângă butoanele „Deschide nota …” refuzul nu enumeră notele (`mesaj_langa_note`). Gard: verificator FEREASTRA_LOT6 / CASETA_SUB_ANTET, e2e `test_def_436_caseta_de_refuz_*`.
+- **Avertismentul înlocuirii, o singură dată (v2.98, lotul 11, 424/446):** la un import care înlocuiește date existente, avertismentul apare o dată, prin `arataMesaj(…, "avert")` — nu e o eroare; confirmarea e o întrebare scurtă (`confirmaCaseta`), iar butonul principal e ascuns cât e deschisă (cap.9, „Fereastra cu tabel”, pct.5). Gard: `core/test_lot11_m_ferestre_import.py`.
 - **„NU s-a salvat” lângă butonul apăsat, cu lista câmpurilor (v2.93, 19.10.2026, comanda Costin 9.2, deficiența 410 — clasă, TOATE
   formularele; verbatim: „la orice Salvează refuzat «NU s-a salvat» lângă buton + lista tuturor câmpurilor lipsă cu trimitere; nu se
   pierde ce s-a scris”):** după apăsarea unui buton care scrie (`data-actiune` cu POST / PUT / PATCH / DELETE, sau fără declarație — nu
   cel declarat numai de citire și nici cel `data-fara-actiune`), orice refuz de câmp
   (`eroareCamp`, și erorile de câmp ale serverului) și orice refuz de formular (`arataMesaj(…, "eroare")`) se adună în
   `.refuz-salvare` (role=alert), imediat după rândul butonului: „NU s-a salvat.”, apoi fiecare câmp cu eticheta lui și trimitere (clic =
-  câmpul în vedere, cu focus; un `<details>` închis se deschide), iar refuzul fără câmp trimite la mesajul lui („motivul e mai jos”, fără
-  să-l repete). Câmpul corectat iese din listă, lista goală dispare. Un singur mecanism, în `api.js` (`refuzSalvare`), chemat de
+  câmpul în vedere, cu focus; un `<details>` închis se deschide), iar refuzul fără câmp vine cu textul lui întreg (v2.99, 440; până la
+  v2.98: „motivul e mai jos”, fără să-l repete). Câmpul corectat iese din listă, lista goală dispare. Un singur mecanism, în `api.js` (`refuzSalvare`), chemat de
   helperii comuni — ecranele nu-l repetă. Gard: verificator REFUZ_SALVARE + e2e `test_def_410_*`.
+- **Toate erorile deodată, fiecare cu textul ei, în casetă și lângă câmp (v2.99, lotul 11, deficiența 440 — clasa, toată aplicația;
+  comanda Costin 11.1 pct.16, verbatim: „toate erorile apar deodată, fiecare cu textul ei, în casetă și lângă câmp. Fără «motivul e mai
+  sus». Pe toată aplicația.”):**
+  1. caseta „NU s-a salvat.” de lângă butonul apăsat (`refuzSalvare`) spune FIECARE eroare cu textul ei: câmpul cu eticheta și motivul,
+     refuzul de formular cu textul lui întreg, eroarea de câmp fără câmp pe ecran cu textul ei. Excepția: refuzul de formular a cărui zonă
+     stă chiar lângă buton (în rândul lui sau imediat deasupra / dedesubtul lui) nu se copiază — se citește acolo, o dată. INTERZISE trimiterile fără text:
+     „motivul e mai sus / mai jos”, „corectează câmpul marcat mai sus”, „(vezi mai sus)”, „motivele mai jos” (ecran și server);
+  2. eroarea de câmp stă lângă câmp (`eroareCamp`), cu `aria-invalid` și `aria-describedby` spre textul ei (descrierile proprii ale
+     câmpului rămân; legătura pleacă la corectare);
+  3. refuzul serverului cu `erori_campuri`: helperul unic `arataRefuzul(root, e, zona, {campuri})` pune fiecare eroare lângă câmpul ei și
+     textul în zona formularului; un ecran care arată numai `e.mesaj` primește oricum marcajul câmpurilor (api.js, după `catch`-ul lui,
+     pentru câmpurile din fereastra butonului). Ecranele nu-și mai scriu bucla lor;
+  4. validarea din ecran le marchează pe toate (`cereCompletate(root, campuri)` + `cereAlegerile`, legate cu `|`, nu `return` după primul);
+     serverul le adună pe toate în `erori_campuri` (DS v2.30 pct.4 — „fail-fast e INTERZIS pe formularele multi-câmp”), inclusiv lista deja
+     adunată, nu `er[0]`.
+  Gărzi: verificator ERORI_TOATE + `core/test_lot11_u0_erori.py` (în browser) + `core/test_lot11_u0_verificator.py` (și textele din core/)
+  + e2e `test_def_440_*`.
+- **Câmpul de dată opțional se poate goli (v2.99, lotul 11, deficiența 441; comanda Costin 11.1 pct.17, verbatim: „orice câmp de dată
+  opțional se poate goli.”):** orice `input[type=date]` opțional (fără `required` / `aria-required` / `data-obligatoriu`, fără `.oblig` în
+  etichetă, editabil) primește lângă el butonul „×” („Golește data”, `.data-goleste`, în `.data-golibila` — un rând, fără înălțime în
+  plus), la vedere cât câmpul are valoare; Delete / Backspace golesc tot câmpul. Clicul trimite `input` + `change`, ecranul trimite
+  `value || null`, serverul scrie NULL. Un mecanism, în api.js (`dataGolibila`, aplicat de observator oricărui câmp desenat); ecranele nu-l
+  repetă. Un câmp de dată obligatoriu se MARCHEAZĂ (`.oblig`, v2.0) — altfel primește „×”. Gărzi: verificator DATA_GOLIBILA +
+  `core/test_lot11_u0_data.py` (în browser) + e2e `test_def_441_*`.
 - **Refuzul unei acțiuni de pe rând stă sub textul rândului (v2.92, lotul 6, deficiența 279, clasa 259):** `api.refuzPeRand(buton,
   mesaj)` (`.msg-refuz-rand`), nu un `<span class="msg-eroare">` lipit de buton, care strângea textul rândului. Gard:
   `core/test_stare_nota_salvata.py::test_refuzul_de_pe_rand_nu_mai_se_lipeste_de_buton`.
@@ -210,6 +252,34 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - **Câmp obligatoriu (v2.0)**: marcat cu asterisc roșu prin `<span class="oblig">*</span>` lângă etichetă. Câmpurile opționale nu se marchează.
 - **Ghidaj preventiv (v2.0)**: câmp care nu se poate autocompleta din date existente primește `<span class="camp-ajutor">` (albastru #3d8fd6, sub etichetă) care spune de unde ia utilizatorul valoarea. Niciun câmp obligatoriu gol fără context.
 - **Stare goală (v2.13)**: o listă cu ZERO rânduri NU e mesaj de stare — nu se afișează prin `arataMesaj()`. Nu s-a întâmplat nicio acțiune; e conținut de ecran, nu feedback tranzitoriu. Clasă canonică unică: **`.stare-goala`** (modificator `.stare-goala--inline` pentru o linie într-un panou, nu listă goală pe ecran plin — altă anatomie: aliniere stânga, padding mic). Clasele `.cap-gol` și `.sa-gol` sunt ELIMINATE; `.mig-gol` NU se mai folosește pentru stări goale (utilizările lui rămase sunt mesaje de eroare din `catch`, datorie de migrat la `arataMesaj` — vezi DE_FACUT). Trei părți OBLIGATORII: (1) **golul** — ce lipsește; (2) **cauza** — de ce e gol; dacă e precondiție neîndeplinită, cu temei; (3) **ieșirea** — butonul care repară, SAU regula sistemului pe care omul n-o știa (când golul e normal: n-a început încă). INTERZISĂ fundătura: „Niciun X." fără cauză și fără ieșire. Modele: `produse_ecran.js` („Niciun produs încă. Adaugă primul produs — cota se completează automat."), `firme.js` document de verificat („Clienții pozează, aici certifici."). Regula STARE_GOALA în verificator (clasă interzisă + fundătură).
+
+- **După generarea unei note (v2.98, 21.10.2026, decizia Costin 10.3: „8c: reparația centrală, cu DS cap. 6 actualizat.” — clasa, toată
+  aplicația; instanța, raportul Z, comanda 10.2 pct.8c: „După generare, titlul «Notă generată» e roșu, conturile notei nu se văd, iar
+  «Generează notă» rămâne activ.”):** orice ecran care GENEREAZĂ o notă dintr-un calcul (raportul Z și importul AMEF, amortizarea lunii și
+  cea restantă, inventarul, descărcarea gestiunii, reevaluarea, compensarea, operațiunile — borderou, TVA la încasare —, salariile, casarea)
+  se încheie pe un singur drum, `api.dupaGenerare(zona, buton, opt)`:
+  1. confirmarea are **stilul de succes** — `.caseta-ok` (verde-pal, titlul `--verde-inchis`, role=status), niciodată culoarea refuzului
+     de dinainte: zona își pierde clasele `msg-*`;
+  2. arată **conturile și sumele** notei generate, rând cu rând („5311 = 707 · 200,00 lei”), cu eticheta notei și starea ei; când
+     răspunsul generării dă numai id-urile notelor, ele se citesc din Registrul jurnal (`api.noteGenerate`);
+  3. butonul de generare devine **inactiv, cu motivul lângă el** — implicit „Nota e generată — o vezi în Registru jurnal.”
+     (`MOTIV_NOTA_GENERATA`); un motiv pe care ecranul îl dăduse deja butonului (`aria-describedby`) primește textul, nu încă unul alături.
+     Butonul redevine activ numai când se schimbă datele din care s-ar genera altă notă: câmpurile formularului (`reactiveazaLa`) sau o
+     scriere în alt ecran (`reactiveazaLaScriere`, după căile semnalului `iconta:schimbare` — amortizarea, după registrul mijloacelor fixe).
+  4. un ecran care se redesenează după generare pune confirmarea în zona de mesaj a ecranului REFĂCUT (cap.27, C64), nu înainte.
+  **Starea la deschidere:** generarea deja făcută și neînlocuibilă se vede pe buton la deschidere — „Generează amortizarea” e inactiv pe
+  luna cu nota validată, cu nota numită („Amortizarea lunii e generată: nota nr. crt. N din …, validată”); cu nota în ciornă butonul e
+  „Regenerează amortizarea”, iar serverul refuză, numit, a doua generare cu aceleași sume (`uc_tenants.tenant_amortizare`).
+  Textul „Notă generată” stă numai în helper. Gard: verificator DUPA_GENERARE (butonul de generare poartă `data-genereaza-nota` și trece
+  prin helper; helperul face cele trei lucruri; textul nu se scrie de mână) + `core/test_lot11_j_dupa_generare.py` (în browser) +
+  `core/test_lot11_j_verificator.py`. Stornarea facturii rămâne pe confirmarea cap.27 (418c): e un act asupra documentului, nu o generare.
+- **Contoarele și clopoțelul urmează acțiunile, fără reîncărcare (v2.98, 21.10.2026, decizia Costin 10.3, deficiența 422 — clasa 286):**
+  după orice scriere reușită prin `api.*` (validare, respingere, ciornă generată, ștergere, trimitere la validare) semnalul unic
+  `iconta:schimbare` (cu `detail.cai`, căile scrise) face pagina principală să-și recitească contoarele („De validat”, „De depus”, notele în
+  ciornă) și coaja să-și recitească insigna clopoțelului și lista lui deschisă; ce schimbă un coleg se află din contorul notificărilor,
+  recitit la `CLOPOT_INTERVAL_MS` (60 s) și la întoarcerea în filă, care trimite semnalul mai departe când s-a mișcat. Un ecran nu cheamă
+  contoarele de mână. INTERZISĂ scrierea cu `fetch` direct din ecrane (ocolește semnalul și refuzul comun); excepțiile, cu motiv:
+  previzualizările `…/incarca` și telemetria publică. Gard: `core/test_lot11_j_contoare.py` (în browser + garda statică).
 
 - **Nota internă a unei firme în partidă simplă (v2.95, 19.10.2026, decizia Costin, deficiența 368):** la PFA / II / IF nota scrisă în
 fundal se validează automat; starea ei se spune central, prin `stareNota` / `pasNota` (api.js): „notă internă — Poartă TVA-ul pentru D300 /
@@ -274,6 +344,15 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   **(18.10.2026, deficiența 331)** numai cuvântul care nu încape se rupe: `overflow-wrap: break-word`, NU `anywhere` — `anywhere` coboară
   lățimea minimă a celulei la o literă și tabelul rupe și cuvintele scurte („Can t”, „servici u”). Gard: e2e `test_def_331_*`.
 - **Fereastra cu tabel: aproape tot ecranul, rezumat sus, acțiune jos (v2.96, lotul 10, 421 și 424)**: `fer-tabel`, `rezumat-fix`, `bara-fixa`; gard `FEREASTRA_TABEL` / `ACTIUNE_TABEL_NEFIXATA` / `DERULARE_INLINE`.
+- **Fereastra deschisă dintr-un refuz întoarce la formular, cu datele intacte (v2.99, lotul 11, deficiența 445; comanda Costin 11.1
+  pct.21, verbatim: „orice buton «Deschide X» dintr-un refuz întoarce în formularul de plecare, cu datele intacte.”):** butonul
+  „Deschide X” al unui refuz (`ecran_destinatie.butonSpreEcran`, și cel pus automat de api.js) anunță navigatorul (`nav.dinRefuz()`):
+  (1) formularul de dedesubt se păstrează ORICUM — elementul lui, cu valorile, rândurile și refuzul afișat —, nu numai când omul a tastat;
+  (2) săgeata destinației spune „← Înapoi la <formular>” (`.nav-inapoi-la`); (3) X din destinație o închide numai pe ea și întoarce la
+  formular (pe orice altă fereastră X duce la pagina principală, ca înainte); (4) `inapoiLa` implicit = titlul ferestrei de plecare
+  (`nav.titluCurent()`), pentru destinațiile care spun după salvare „Înapoi la …”. Un buton „Deschide …” scris de mână într-un refuz cheamă
+  `nav.dinRefuz()` înainte de `nav.deschide`. Gărzi: verificator INTOARCERE_DIN_REFUZ + `core/test_lot11_u0_intoarcere.py` (în browser) +
+  e2e `test_def_445_*`.
   Comanda Costin 10.1 pct.5 (clasă, toată aplicația; verbatim în DECIZII): „Regula: ferestrele cu tabele se deschid aproape pe tot ecranul
   (cum e deja Balanța de verificare); rezumatul stă fix sus și acțiunea principală fix jos; se derulează doar tabelul din mijloc,
   niciodată lateral.” Concret:
@@ -298,12 +377,18 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
      **Rezumatul e obligatoriu pe orice ecran care desenează un tabel de date în fereastră (v2.97, gard `REZUMAT_TABEL_LIPSA`).** Intră
      în `.rezumat-fix` blocul care stă DEJA deasupra tabelului și trebuie văzut cât derulezi: perioada / luna / anul, filtrele (contul,
      varianta, registrul), cifrele ecranului, antetul documentului cu acțiunile lui, zona de mesaj a acțiunilor; titlul și textele de
-     prezentare nu se cer în el (pot rămâne deasupra lui, nelipite). Rezumatul nu mută nimic: ce stă sub tabel (totalurile Fișei de cont, luna Stocurilor)
-     rămâne acolo până decide Costin (reorganizarea unui ecran = STOP). Nu se cer: tabelele de machetă (`mfp-tabel`) și formularele
-     cu tabele mici în ele (Date firmă, Operațiuni — se derulează formularul, nu un tabel; acțiunea stă deja în `.bara-fixa`). Fiecare
-     excepție stă în verificator (`rezumat_exceptii`), cu motivul; cele „de decis de Costin” (Tipare, Înregistrare — cererile
-     neconfirmate, Stocuri — situația stocului) așteaptă decizia lui. O excepție fără obiect (ecranul are acum rezumat, sau nu mai
-     desenează tabel) pică gardul.
+     prezentare nu se cer în el (pot rămâne deasupra lui, nelipite). ~~Rezumatul nu mută nimic: ce stă sub tabel (totalurile Fișei de
+     cont, luna Stocurilor) rămâne acolo până decide Costin~~ — **înlocuit în v2.100** (decizia Costin 10.3, pct.7–8 de mai jos): ce
+     trebuie văzut cât derulezi se MUTĂ în rezumat (luna Stocurilor, cu butonul și mesajul ei) sau jos (totalurile). Nu se cer: tabelele
+     de machetă (`mfp-tabel`) și formularele cu tabele mici în ele (Date firmă, Operațiuni — se derulează formularul, nu un tabel;
+     acțiunea stă deja în `.bara-fixa`). Fiecare excepție stă în verificator (`rezumat_exceptii`), cu motivul; cele trei „de decis de
+     Costin” (Tipare, Înregistrare — cererile neconfirmate, Stocuri — situația stocului) au fost decise în v2.100 și au acum rezumat. O
+     excepție fără obiect (ecranul are acum rezumat, sau nu mai desenează tabel) pică gardul.
+     **(v2.98, lotul 11, 424/446)** În rezumatul lipit al unei previzualizări de import stă numai ce se vede cât derulezi (intro pe un
+     rând, cifrele, banda stărilor, avertismentul); notele informative («ce s-a citit», confruntarea care se potrivește, rândurile
+     ignorate) sunt pliate (`details.dec-xml`), cu concluzia în titlu. Câmpurile salvării stau pe un rând în `.bara-fixa` (`.grila-doc`).
+     Avertismentul înlocuirii apare o dată, `arataMesaj(…, "avert")`; confirmarea e o întrebare scurtă (`confirmaCaseta`), iar butonul
+     principal e ascuns cât e deschisă. Gard: `core/test_lot11_m_ferestre_import.py` (1280×720, toate importurile).
   6. Un buton care scrie (`data-actiune` POST / PUT / PATCH / DELETE), pus în corpul unei ferestre cu tabel, stă în `.bara-fixa` sau în
      `.rezumat-fix` — nu la capătul conținutului (gard `ACTIUNE_TABEL_NEFIXATA`). Nu se cer: acțiunile de pe un rând (în celulă, sau cu
      identificatorul rândului) și tabelele de machetă (`mfp-tabel`, modelul facturii). **(v2.97)** Regula privește și ZONELE ferestrei:
@@ -312,6 +397,22 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
      în `.bara-fixa`, cu mesajul lui când e lângă el. Butonul de deasupra tabelului ține de rezumat (pct.5). Excepții cu motiv, în
      verificator (`actiuni_exceptii`): „Adaugă” din panoul elementelor de salariu (e în rândul câmpurilor formularului; lipirea lui jos
      ar muta rândul întreg).
+  7. **Totalurile tabelului rămân în vedere (v2.100, lotul 11; decizia Costin 10.3, verbatim în DECIZII „Comanda 10.3” pct.4: „Totalurile
+     și rezumatul fix, mesajele lângă buton, 394 la 1280×720: da, reorganizezi ecranele; totul încape într-un ecran, fără derulare.”).**
+     (a) Rândul de total aliniat sub coloane e `<tfoot>`, nu ultimul rând din `<tbody>`: în fereastra cu tabel se lipește jos, deasupra
+     barei de acțiune (`bottom: calc(var(--bara-h) - 24px)`; `--bara-h` = înălțimea ultimei `.bara-fixa` din corp, pusă de navigator ca
+     `--rezumat-h`). Balanța, Registrul-inventar, Rapoartele comerciale (vânzările, fișa partenerului), registrul fiscal PF (rândul
+     anual al fiecărei surse), situația stocului, împărțirea dividendului. (b) Caseta de totaluri a unui registru fără coloane de aliniat
+     (`.fd-totaluri`) stă în `.bara-fixa`, pe un rând care se rupe pe telefon: Cartea mare, Jurnal regim marjă, Registru jurnal, detaliul
+     facturii. Gard: verificator `TOTAL_NEFIXAT` (rândul „Total” în `<tbody>`, caseta după tabel în afara barei, regula `tfoot` din
+     stil.css, `--bara-h` din navigator) + `core/test_lot11_w4_ecrane.py` (Chromium, 1280×720 și 1366×768, 40 de rânduri: totalul se
+     vede și neacoperit la începutul și la mijlocul tabelului).
+  8. **Mesajul stă lângă butonul care îl produce (v2.100, aceeași decizie).** Zona de mesaj a butoanelor de sus stă în `.rezumat-fix`,
+     a acțiunii de jos în `.bara-fixa`; nicio zonă de mesaj a ecranului nu rămâne sub tabel (Stocuri `#s-mesaj`, Înregistrare
+     `#ins-cereri-msg`, Registrul fiscal `#aj-mesaj` — mutate). Rezultatul unui buton din rezumat cu text lung (Tipare, „Generează
+     analiză AI”) stă chiar sub rezumat, deasupra tabelelor. Refuzul de pe un rând rămâne pe rând (`refuzPeRand`, cap.6). Gard: verificator
+     `MESAJ_SUB_TABEL` (excepții cu motiv în `mesaje_exceptii`: zona panoului elementelor de salariu, lângă „Adaugă”) +
+     `core/test_lot11_w4_ecrane.py` (mesajul în vedere, la ≤ 80 px de buton).
   Gard: `core/test_lot10_fereastra_tabel.py` (regula verificatorului pe fragmente bune / rele + navigatorul și stil.css reale, în
   Chromium) + e2e `test_def_421_*` / `test_def_424_*` (Balanța, Registrul-inventar, statul de plată și importul salariaților la 1366×768);
   rezumatul pe toate ecranele cu tabel: `core/test_lot10_rezumat_fix.py` (v2.97).
@@ -360,6 +461,13 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   (min-width: 761px)`) rândul e compact: titlul și descrierea pe același rând, descrierea tăiată cu „…” și întreagă în `title`. Pe telefon
   (≤ 760 px) rândul rămâne cel întreg (≥ 44 px, ținta de atingere, cap.4). Primul ecran: Migrare cabinet. Gard:
   `core/test_394_migrare_cum_se_face.py` + e2e `test_def_394_*` (1366×768, 1700×1000, 393×851).
+  **(v2.100, lotul 11 — decizia Costin 10.3: „394 la 1280×720 […] totul încape într-un ecran, fără derulare”)** Măsurat la 1280×720:
+  Migrare cabinet derula 4 px fără aplicație aleasă, 92 px cu SAGA aleasă și 326 px cu „Cum se face” deschis; „Notă nouă” 8 px în
+  partidă simplă. Acum: „Cum se face” stă pe rândul butoanelor aplicațiilor (`.mig-apl-rand`) și, deschis, se arată PESTE pași (panou
+  alb, `position: absolute`), fără să-i împingă; rândul compact al pașilor are 28 px (≥ 24 px, ținta de atingere a desktopului); nota
+  aplicației alese stă pe două rânduri. În „Notă nouă” data, descrierea și documentul stau pe un rând (`.grila-campuri`, se rup pe
+  telefon). Gard: `core/test_lot11_w4_ecrane.py` (1280×720 și 1366×768: fără aplicație, SAGA, SAGA + confirmarea unui pas, „Cum se
+  face” deschis; nota nouă în partidă simplă și dublă, luna în curs) + e2e `frontend_test/e2e/e2e_lot11_w4.py::test_def_394_*`.
 
 ## 10. Escape și securitate
 
@@ -414,6 +522,13 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
 - Clase de tip (rol semantic, în stil.css): `.tip-titlu` · `.tip-sectiune` · `.tip-corp` · `.tip-desc` (13px gri, descrieri) · `.tip-figura` (19px bold, cifre de card) · `.tip-total` (17px bold, totaluri) · `.tip-micut` (12px, note).
 - INTERZIS `font-size` cu valoare literală inline (`font-size:13px`). Se folosește clasa de tip sau, excepțional, `font-size:var(--text-*)`. Prins de regula FONT_INLINE în verificator.
 - Culoarea, marginea, alte stiluri non-tipografice pot rămâne inline; doar dimensiunea fontului trece prin clasă/token.
+- **Titlurile se scriu cu diacritice (v2.98, 21.10.2026, comanda Costin 11.1 pct.23: „titluri fără diacritice”):** titlul ferestrei
+  (`nav.deschide("…")`), al cardului, al secțiunii, antetul de coloană, opțiunea din listă, eticheta câmpului și textul butonului —
+  „Înregistrare”, „Ieșiri”, „Declarații”, „Factură” (titlul „Factura” singur e forma articulată, nu titlul). Tot așa, textele pentru
+  contabil nu poartă cuvinte din cod: „neimputabilă”, nu „neimputabila”; „Document justificativ: lipsește”, nu „nederivat”. Gard:
+  verificator TITLU_FARA_DIACRITICE — un dicționar de cuvinte frecvente din titluri care nu au formă corectă fără diacritice
+  (`_TITLU_FARA_DIACRITICE`, crește la fiecare titlu nou găsit), plus titlul „Factura” scris singur. Limita: un cuvânt corect și fără
+  diacritice în altă formă („plata”, „luna”, „factura” articulat într-o frază) nu se poate judeca din text.
 
 ## 15. Tokeni de culoare, bordură, rază
 
@@ -993,6 +1108,41 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.101 (22.10.2026)** — lotul 11, C88: **cap.4 — cursul valutar prin `cursValutar(v)`** (4–6 zecimale, cum îl dă BNR, pe unitate). Trei formatări locale cu `minimumFractionDigits: 4` (emitere, facturi, reevaluare) înlocuite. Gard: `CURS_FORMAT_LOCAL` (verificator) + `core/test_lot11_c88_curs_precizie.py::test_garda_cursul_se_afiseaza_numai_prin_cursvalutar`.
+
+**v2.100 (22.10.2026)** — lotul 11, decizia Costin 10.3 (verbatim în DECIZII „Comanda 10.3” pct.4: „Totalurile și rezumatul fix,
+mesajele lângă buton, 394 la 1280×720: da, reorganizezi ecranele; totul încape într-un ecran, fără derulare.”): **cap.9 pct.5** — cele trei
+excepții „de decis de Costin” decise: Stocuri (luna, „Descarcă gestiunea lunii” și `#s-mesaj` deasupra situației, în rezumat), Tipare
+(„Generează analiză AI” în rezumat, rezultatul sub el), Înregistrare (`#ins-cereri-msg` = rezumatul tabelului cererilor); Registru jurnal
+are rezumat (luna, butoanele, `#j-mesaj`). **Cap.9 pct.7** — totalurile rămân în vedere: rândul de total e `<tfoot>`, lipit jos deasupra
+barei (`--bara-h`, pus de navigator), iar caseta `.fd-totaluri` stă în `.bara-fixa`, pe un rând. **Cap.9 pct.8** — mesajul lângă butonul
+care îl produce, nicio zonă de mesaj sub tabel. **Cap.9, „Lista de pași” (394)** — Migrare cabinet și „Notă nouă” fără derulare la
+1280×720 („Cum se face” peste pași, rândul pașilor de 28 px, nota pe un rând). Gărzi: verificator `TOTAL_NEFIXAT`, `MESAJ_SUB_TABEL`;
+`core/test_lot11_w4_ecrane.py`; e2e `frontend_test/e2e/e2e_lot11_w4.py`. **Cap.6 (440, g2)** — casetele textului serverului păstrează
+rândurile refuzului: regula comună `pre-line` pe clasele cu un singur conținut, `.pe-randuri` pe caseta refuzului din clasele de proză.
+Gărzi: verificator `MESAJ_PE_RANDURI` (clasele noi), `core/test_lot11_g2_pre_line.py`.
+**v2.99 (21.10.2026)** — lotul 11, regulile transversale ale comenzii Costin 11.1 (pct.16, 17, 19, 21, verbatim în DECIZII „Comanda 11.1”):
+**cap.6** — **toate erorile deodată, fiecare cu textul ei, în casetă și lângă câmp** (440: caseta „NU s-a salvat.” cu textele, fără
+„motivul e mai sus”; `aria-describedby`; `arataRefuzul` și marcarea automată a câmpurilor din refuzul serverului; `cereCompletate`) — înlocuiește
+trimiterea din v2.89 / v2.93; **câmpul de dată opțional se poate goli** (441: „×” + Delete, `dataGolibila`). **Cap.4** — **seria și numărul,
+separat** (443: „F6 nr. 1”, `numarCuSerie` / `pdf_util.serie_nr`; `numar_cu_serie` numai pentru identificatorul trimis la ANAF; termenul
+spune al cui e). **Cap.9** — **fereastra deschisă dintr-un refuz întoarce la formular** (445: `nav.dinRefuz`, formularul păstrat oricum,
+„← Înapoi la <formular>”, X întoarce). Gărzi: verificator `ERORI_TOATE`, `DATA_GOLIBILA`, `SERIE_LIPITA`, `INTOARCERE_DIN_REFUZ`;
+`core/test_lot11_u0_erori.py`, `core/test_lot11_u0_data.py`, `core/test_lot11_u0_serie_nr.py`, `core/test_lot11_u0_intoarcere.py`,
+`core/test_lot11_u0_verificator.py`.
+**v2.98 (21.10.2026)** — lotul 11 (comanda Costin 11.1 pct.1 și pct.23; deciziile 10.3 „8c: reparația centrală, cu DS cap. 6 actualizat.” și
+„422 […] se repară.”): **cap.6** — **după generarea unei note**, un singur drum (`api.dupaGenerare`): confirmarea verde (`.caseta-ok`), cu
+conturile și sumele notei, butonul de generare inactiv cu motivul („Nota e generată — o vezi în Registru jurnal.”), reactivat numai de o
+schimbare a datelor; starea la deschidere („Generează amortizarea” inactiv pe luna cu nota validată, „Regenerează” pe ciornă, a doua
+generare cu aceleași sume refuzată de server). Trecute pe helper: Raport Z (și importul AMEF), amortizarea lunii (Registru jurnal) și cea
+restantă (Închidere lună), inventarul (formularul și inventarul pe mobil), descărcarea gestiunii (Stocuri și după Z), nota salariilor,
+Operațiunile („Generează nota”, reactivat la o modificare a câmpurilor) și borderoul de achiziție (ecranul lui, 450); reevaluarea în
+valută, compensarea și casarea / reevaluarea mijlocului fix — patch-uri în raportul subagentului J. **Cap.6** —
+**contoarele și clopoțelul urmează acțiunile** (422, clasa 286): semnalul `iconta:schimbare` poartă căile scrise, iar coaja recitește
+insigna și lista clopoțelului; schimbările colegilor, din contorul notificărilor (60 s / întoarcerea în filă); scrierea cu `fetch` direct
+din ecrane, interzisă. **Cap.14** — **titlurile se scriu cu diacritice**, fără cuvinte din cod în textele pentru contabil. Gărzi:
+verificator `DUPA_GENERARE`, `TITLU_FARA_DIACRITICE`; `core/test_lot11_j_dupa_generare.py`, `core/test_lot11_j_contoare.py`,
+`core/test_lot11_j_verificator.py`.
 **v2.97 (21.10.2026)** — lotul 10 (comanda Costin 10.1 pct.5, deficiențele 421 și 424 — clasa, toată aplicația): **cap.9** — **rezumatul
 lipit sus e obligatoriu pe orice ecran care desenează un tabel în fereastră** (`.rezumat-fix`: perioada, filtrele, cifrele, antetul
 documentului, zona de mesaj — blocul care stătea deja deasupra tabelului, fără mutări); pus pe 12 ecrane (Activitate cabinet, Invitații

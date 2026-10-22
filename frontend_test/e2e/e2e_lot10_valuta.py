@@ -1,93 +1,125 @@
 # -*- coding: utf-8 -*-
-"""Lotul 10, comanda 10.1 pct.8 (Costin 20.10.2026, verbatim în DECIZII „Comanda 10.1”): 429 — „reevaluarea lunară a soldurilor în valută
-cere de mână soldul, moneda și cursul pe fiecare cont. La închiderea lunii, aplicația propune singură creanțele și datoriile în valută
-neîncasate (pe factură), disponibilitățile în valută, cursul din evidență, cursul BNR din ultima zi bancară și diferența pe 665/765;
-contabilul verifică și generează nota. Reevaluarea apare în «Ce oprește închiderea» când există solduri în valută.”
+"""429 pe DRUMUL REAL al contabilului (lotul 11, comanda Costin 11.1 pct.11, verbatim în DECIZII „Comanda 11.1”: „429: reevaluarea în
+valută e neschimbată pe producție (formular manual, fără propunere, fără curs BNR, nimic la închiderea lunii). Explică de ce a fost
+raportată rezolvată și rezolv-o.”).
 
-Temei: OMFP 1802/2014 pct.325 alin.(1) „La finele fiecărei luni, creanțele și datoriile în valută se evaluează la cursul de schimb al
-pieței valutare, comunicat de Banca Națională a României din ultima zi bancară a lunii în cauză.”
+DE CE A FOST RAPORTATĂ REZOLVATĂ (lotul 10): testul de dinainte INSERA factura EUR direct în bază (moneda, cursul, totalul în lei) și o
+valida cu SQL, într-o lună încheiată, cu cursul BNR în cache — adică exact datele pe care drumul real nu le producea pe producție. Pe F1
+(19–20.10.2026) facturile EUR emise din ecran aveau nota de contare în CIORNĂ, luna era în curs, iar Costin a ajuns la reevaluare din
+Operațiuni (formularul manual): propunerea sărea tăcut facturile, butonul din Închidere lună apărea numai cu blocaj, iar formularul manual
+nu avea nici propunere, nici curs. Testul de acum reface pașii pe ecrane și pe API-ul aplicației, fără nicio inserare directă.
 
-Pașii contabilului pe aplicația din index, pe baza de TEST, pe firma nouă a fișierului (`firma_e2e`), luna 08/2026: cursul BNR din
-31.08.2026 (luni, ultima zi bancară a lunii) e în cache-ul bazei de test (EUR 5,2586) — ecranul nu cere BNR-ului nimic.
-Legătura din „Închidere lună” (butonul `#il-reevaluare`, lângă „Ce oprește închiderea”) o pune sesiunea principală în `firme.js`."""
-from conftest import sql
-from e2e_bloc_a import AZI  # noqa: F401 — aceeași zi de referință ca restul plasei
-from e2e_bloc_e import _card, _nota
+Pașii (pe aplicația din index, pe baza de TEST, pe o firmă NOUĂ a fișierului, pregătită pe rutele ecranelor): Emite factură -> data
+26.08.2026, clientul DANTE INTERNATIONAL SA (CUI 14399840, cifra de control verificată cu algoritmul din CLAUDE.md), 2 × 150 EUR + 21% ->
+„Emite factură” -> Închidere lună 08/2026 -> „Reevaluare valută” (butonul e mereu acolo): factura nu intră, cu motivul „nota ei de
+contare e ciornă” -> se validează nota de contare (acțiunea „Validează” din Registrul jurnal, pe ruta ei) -> Închidere lună: „Ce oprește
+închiderea” spune că soldurile în valută nu sunt reevaluate -> „Reevaluare valută”: partenerul, 4111, 363,00 EUR, cursul din evidență
+5,2534, cursul BNR 5,2586 din 31.08.2026, diferența 1,89 pe 765 -> „Generează nota” -> nota (4111 = 765 1,89 lei), ciornă.
 
-LUNA = "2026-08"
+Temei: CF art.290 alin.(2) + HG 1/2016 pct.35 alin.(1) — factura din 26.08 ia cursul comunicat în ziua anterioară (25.08.2026: 5,2534);
+OMFP 1802/2014 pct.325 alin.(1)–(2) lit.b — reevaluarea la cursul comunicat în ultima zi bancară a lunii (31.08.2026: 5,2586). Ambele
+cursuri sunt în cache-ul bazei de test (nicio cerere la BNR)."""
+import datetime as _dt
+
+import pytest
+
+from conftest import firma_noua, sql
+from e2e_bloc_a import AZI, CLIENT, PRODUS, _api, _deschide_emiterea, _ok
+
+ZI = _dt.date(2026, 8, 26)
 
 
-def _factura_eur(f):
-    """Factura emisă EX-429 / 10.08.2026: 1.000 EUR la cursul 4,9700 (4.970,00 lei), neîncasată; nota de contare 4111 = 707, validată."""
-    s = f["schema"]
-    gasit = sql('SELECT id FROM "%s".facturi WHERE serie = \'EX\' AND numar = \'429\'' % s)
-    if gasit:
-        return gasit[0][0]
-    fid = sql('INSERT INTO "%s".facturi (numar, serie, data_emitere, total, tva, moneda, directie, status, tert_nume, curs_bnr, total_lei, '
-              "tva_lei, data_curs) VALUES ('429', 'EX', '2026-08-10', 1000, 0, 'EUR', 'emisa', 'emisa', 'Client GmbH', 4.97, 4970, 0, "
-              "'2026-08-07') RETURNING id" % s)[0][0]
-    nid = sql('INSERT INTO "%s".inregistrari (data, factura_id, descriere, sursa, status, document_ref) VALUES (\'2026-08-10\', %%s, '
-              "'Factura EX 429', 'facturi', 'ciorna', 'Factura EX 429') RETURNING id" % s, (fid,))[0][0]
-    sql('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%%s, \'4111\', \'707\', 4970)' % s,
-        (nid,))
-    sql('UPDATE "%s".inregistrari SET status = \'validata\' WHERE id = %%s' % s, (nid,))   # [lotul 10] ciornă -> linii -> validată
+@pytest.fixture(scope="module")
+def firma_val_noua():
+    for f in firma_noua():
+        yield f
+
+
+@pytest.fixture()
+def firma_val(patron, firma_val_noua):
+    from e2e_bloc_a import pregateste_firma
+    pregateste_firma(patron, firma_val_noua)
+    return firma_val_noua
+
+
+def _emite_eur_din_ecran(patron, f):
+    """Factura EUR emisă din formularul de emitere, ca un contabil: data, clientul, linia, moneda, „Emite factură”."""
+    _deschide_emiterea(patron, f["nume"])
+    pg = patron.pg
+    pg.fill("#em-data", ZI.isoformat())
+    pg.dispatch_event("#em-data", "change")
+    for sel, v in CLIENT.items():
+        pg.fill(sel, v)
+    pg.fill("#em-l0-descriere", PRODUS)
+    pg.wait_for_function("() => document.querySelector('#em-l0-cota').value === '21'", timeout=20000)
+    pg.fill("#em-l0-pret_unitar", "150")
+    pg.fill("#em-l0-cantitate", "2")
+    pg.select_option("#em-moneda", "EUR")
+    # CF art.290 alin.(2) + HG 1/2016 pct.35 alin.(1): cursul comunicat în ziua ANTERIOARĂ facturii (25.08.2026)
+    pg.wait_for_function("() => (document.querySelector('#em-valuta') || {innerText: ''}).innerText.includes('din 25.08.2026')",
+                         timeout=20000)
+    with pg.expect_response(lambda r: r.url.endswith("/facturi/emite"), timeout=60000) as rr:
+        pg.click("#em-emite")
+    fid = rr.value.json()["factura_id"]
+    pg.wait_for_selector("#em-rezultat.em-bun", timeout=20000)
     return fid
 
 
-def _cont_eur(f):
-    """Contul 5124.EUR („Cont BT EUR”) cu 4.950,00 lei din 05.08.2026 (o depunere de 1.000 EUR la 4,95), notă validată."""
-    s = f["schema"]
-    if not sql('SELECT 1 FROM "%s".plan_conturi WHERE simbol = \'5124.EUR\'' % s):
-        sql('INSERT INTO "%s".plan_conturi (simbol, denumire) VALUES (\'5124.EUR\', \'Cont BT EUR\')' % s)
-    if not sql('SELECT 1 FROM "%s".inregistrari_linii WHERE cont_debit = \'5124.EUR\'' % s):
-        _nota(f, "2026-08-05", [{"debit": "5124.EUR", "credit": "456", "suma": 4950}], "Aport în valută E2E 429", valideaza=True,
-              document_ref="Extras BT 429")
-
-
-def _inchidere_august(patron, f):
+def _inchidere(patron, f, an, luna, asteapta):
+    """Închidere lună, de la luna curentă înapoi până la `luna/an`, până apare `asteapta` în controalele lunii."""
     pg = patron.pg
-    _card(patron, f, "inchidere", "#il-prev")
-    for _ in range((AZI.year * 12 + AZI.month) - (2026 * 12 + 8)):
+    patron.firma(f["nume"])
+    pg.click("#fa-inchidere")
+    pg.wait_for_selector(".fereastra:last-of-type #il-prev", timeout=30000)
+    for _ in range((AZI.year * 12 + AZI.month) - (an * 12 + luna)):
         pg.click(".fereastra:last-of-type #il-prev")
-    pg.wait_for_function("() => document.querySelector('.fereastra:last-of-type .pf-intro').innerText.includes('08/2026')", timeout=60000)
-    pg.wait_for_function("() => document.querySelector('.fereastra:last-of-type #il-controale').innerText.includes('nu sunt reevaluate')",
-                         timeout=60000)
+    pg.wait_for_function("(l) => document.querySelector('.fereastra:last-of-type .pf-intro').innerText.includes(l)",
+                         arg="%02d/%d" % (luna, an), timeout=60000)
+    pg.wait_for_function("(t) => (document.querySelector('.fereastra:last-of-type #il-controale') || {innerText: ''}).innerText.includes(t)",
+                         arg=asteapta, timeout=60000)
+    pg.wait_for_selector(".fereastra:last-of-type #il-reevaluare", timeout=60000)
     return pg
 
 
-def test_def_429_inchiderea_propune_reevaluarea_si_genereaza_nota(patron, firma_e2e):
-    """429. Pașii: factura de 1.000 EUR neîncasată și contul 5124.EUR -> Închidere lună, 08/2026: „Ce oprește închiderea” spune că soldurile
-    în valută nu sunt reevaluate -> „Reevaluare valută”: factura cu 4111, 1.000,00 EUR, cursul din evidență 4,9700, cursul BNR 5,2586 din
-    31.08.2026, diferența 288,60 pe 765; contul 5124.EUR cere soldul în valută -> scriu 1000 -> diferența 308,60 pe 765 -> „Generează
-    nota” -> confirmarea numește nota (4111 = 765 288,60 lei; 5124.EUR = 765 308,60 lei), ciornă."""
-    f = firma_e2e
-    s = f["schema"]
-    _factura_eur(f)
-    _cont_eur(f)
-    pg = _inchidere_august(patron, f)
-    assert "nu sunt reevaluate" in pg.inner_text(".fereastra:last-of-type #il-controale")
-    patron.captura("inchidere")
+def _reevaluare(pg):
     pg.click(".fereastra:last-of-type #il-reevaluare")
-    pg.wait_for_selector(".fereastra:last-of-type #rv-tabel", timeout=60000)
-    fact = pg.inner_text(".fereastra:last-of-type #rv-tabel tr:has-text('Client GmbH')")
-    # OMFP 1802/2014 pct.325 alin.(1): 1.000 EUR x 5,2586 = 5.258,60 lei; 5.258,60 - 4.970,00 = 288,60 -> 765 (creanța crește)
-    for x in ("4111", "1.000,00", "4,9700", "5,2586", "31.08.2026", "288,60", "765"):
-        assert x in fact, (x, fact)
-    camp = ".fereastra:last-of-type [data-cheie='c5124.EUR'][data-camp='sold_valuta']"
-    assert pg.input_value(camp) == ""
-    pg.fill(camp, "1000")
-    pg.dispatch_event(camp, "change")
-    pg.wait_for_function("() => (document.querySelector(\".fereastra:last-of-type tr[data-cheie='c5124.EUR']\") || {innerText: ''})"
-                         ".innerText.includes('308,60')", timeout=60000)
-    assert "Net:" in pg.inner_text(".fereastra:last-of-type #rv-totaluri")
+    pg.wait_for_selector(".fereastra:last-of-type #rv-genereaza", timeout=60000)
+
+
+def test_def_429_inchiderea_propune_reevaluarea_si_genereaza_nota(patron, firma_val):
+    f = firma_val
+    s = f["schema"]
+    fid = _emite_eur_din_ecran(patron, f)
+    patron.captura("emisa")
+    r = sql('SELECT moneda, curs_bnr::text, data_curs::text, total_lei::text FROM "%s".facturi WHERE id = %%s' % s, (fid,))[0]
+    assert r == ("EUR", "5.2534", "2026-08-25", "1906.98"), r   # 363 EUR x 5,2534 = 1.906,98 lei (CF art.290 + HG 1/2016 pct.35)
+    # contarea, cum o scrie aplicația la emitere: ciornă — exact cazul F1 de pe producție
+    (nid, st), = sql('SELECT id, status FROM "%s".inregistrari WHERE factura_id = %%s AND sursa = \'facturi\'' % s, (fid,))
+    assert st == "ciorna", st
+    pg = _inchidere(patron, f, 2026, 8, "ciorn")
+    assert "nu sunt reevaluate" not in pg.inner_text(".fereastra:last-of-type #il-controale")
+    _reevaluare(pg)
+    caseta = pg.inner_text(".fereastra:last-of-type #rv-neincluse")
+    assert "DANTE INTERNATIONAL SA" in caseta and "nota ei de contare e ciornă" in caseta, caseta   # spus, nu sărit tăcut
+    patron.captura("neinclusa_ciorna")
+    _ok(_api(patron, "POST", "/tenants/%d/jurnal/%d/valideaza" % (f["tenant_id"], nid), {}), "validarea contării")
+    pg = _inchidere(patron, f, 2026, 8, "nu sunt reevaluate")
+    assert "buton-primar" in pg.get_attribute(".fereastra:last-of-type #il-reevaluare", "class")
+    patron.captura("inchidere")
+    _reevaluare(pg)
+    rand = pg.inner_text(".fereastra:last-of-type #rv-tabel tr:has-text('DANTE INTERNATIONAL SA')")
+    # OMFP 1802/2014 pct.325 alin.(1): 363 EUR x 5,2586 = 1.908,87 lei; 1.908,87 - 1.906,98 = 1,89 -> 765 (creanța crește)
+    for x in ("4111", "363,00", "5,2534", "1.906,98", "5,2586", "31.08.2026", "1,89", "765"):
+        assert x in rand, (x, rand)
     patron.captura("propunere")
     pg.click(".fereastra:last-of-type #rv-genereaza")
-    pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #rv-mesaj') || {innerText: ''}).innerText"
-                         ".includes('a fost generată (ciornă)')", timeout=60000)
+    # [lotul 11, 8c] confirmarea pe drumul unic: caseta verde, cu rândurile notei citite din Registrul jurnal („debit = credit · sumă”)
+    pg.wait_for_selector(".fereastra:last-of-type #rv-mesaj .caseta-ok .cok-linii", timeout=60000)
     mesaj = pg.inner_text(".fereastra:last-of-type #rv-mesaj")
     patron.captura("nota")
-    assert "4111 = 765 288,60 lei" in mesaj and "5124.EUR = 765 308,60 lei" in mesaj, mesaj
-    note = sql('SELECT i.status, count(l.id) FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l ON l.inregistrare_id = i.id '
-               "WHERE i.descriere LIKE 'Reevaluare valută la 31.08.2026%%%%' GROUP BY i.id, i.status" % (s, s))
-    assert note == [("ciorna", 2)], note   # R36: ciornă, o singură notă pe lună
-    assert sql('SELECT count(*) FROM "%s".reevaluari_valuta WHERE data = \'2026-08-31\'' % s) == [(2,)]
+    assert "Nota de reevaluare" in mesaj and "= 765 · 1,89 lei" in mesaj, mesaj
+    assert pg.is_disabled(".fereastra:last-of-type #rv-genereaza")
+    note = sql('SELECT i.status, l.cont_debit, l.cont_credit, l.suma::text, l.partener_cui FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l '
+               "ON l.inregistrare_id = i.id WHERE i.descriere LIKE 'Reevaluare valută la 31.08.2026%%%%'" % (s, s))
+    assert [(n[0], n[2], n[3], n[4]) for n in note] == [("ciorna", "765", "1.89", "14399840")], note   # R36: ciornă, partenerul pe rând
+    assert sql('SELECT partener, sold_valuta::text FROM "%s".reevaluari_valuta WHERE data = \'2026-08-31\'' % s) == [("14399840", "363.00")]

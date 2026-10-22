@@ -14,9 +14,11 @@ def firma_srl():
 
 def _refuz(pg):
     """Lista „NU s-a salvat” de lângă buton: [(eticheta trimiterii, restul rândului)]."""
+    # [lotul 11, 440] un rând fără buton (eroare de câmp fără câmp pe ecran) are numai textul ei
     return pg.eval_on_selector_all(".refuz-salvare .refuz-salvare-lista > li",
-                                   "lis => lis.map(li => [li.querySelector('button').textContent.trim(), "
-                                   "li.textContent.slice(li.querySelector('button').textContent.length).trim()])")
+                                   "lis => lis.map(li => { const b = li.querySelector('button'); "
+                                   "const t = b ? b.textContent.trim() : li.textContent.trim(); "
+                                   "return [t, b ? li.textContent.slice(b.textContent.length).trim() : '']; })")
 
 
 # ── 410 — „NU s-a salvat” lângă buton, cu lista câmpurilor ───────────────────────────────────────────────
@@ -63,36 +65,46 @@ def test_def_410_date_firma_refuzul_se_vede_langa_salveaza_cu_campurile(patron, 
 def test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare(patron, firma_srl):
     """406 (PRIORITAR). Casă: plată 200 cu sold 142 acceptată, registrul −58. Pașii: fereastra firmei -> Casă -> „+ Dispoziție nouă” ->
     ridicare de la bancă 142 lei -> Adaugă; apoi plată furnizor 200 lei: previzualizarea spune refuzul, „Adaugă” -> „NU s-a salvat.”
-    lângă buton (motivul e mai jos), nimic scris, soldul final rămâne 142,00 lei."""
+    lângă buton, cu textul refuzului pe câmpul „Suma” (lotul 11, 440: eroarea serverului e a sumei, `c-suma`, deci stă lângă câmp și în
+    casetă cu textul ei, nu „motivul e mai jos”), nimic scris, soldul final rămâne 142,00 lei."""
     from e2e_bloc_a import _card
     pg = patron.pg
     patron.firma(firma_srl["nume"])
     _card(patron, "casa", "#c-toggle")
 
-    def _dispozitie(cat, suma, doc):
+    def _dispozitie(cat, suma, doc, avans_dest=None):
         if pg.is_hidden("#c-zona"):
             pg.click("#c-toggle")
         pg.select_option("#c-cat", cat)
         pg.fill("#c-suma", str(suma))
         pg.fill("#c-part", "DANTE INTERNATIONAL SA")
         pg.fill("#c-cui", "14399840")
+        if avans_dest:
+            # [lotul 11, 440, comanda 11.1 pct.16: „toate erorile apar deodată”] plata fără facturi deschise ale furnizorului e avans acordat
+            # (407, 409x = 5311): contabilul alege pentru ce e avansul, deci singurul refuz rămâne al soldului. Cu destinația lăsată goală,
+            # serverul le spune pe amândouă — `e2e_lot11_w3a.py::test_def_440_casa_dispozitia_suma_si_destinatia_avansului_deodata`.
+            pg.wait_for_selector("#c-avans-dest", timeout=20000)
+            pg.select_option("#c-avans-dest", avans_dest)
         pg.fill("#c-doc", doc)
         pg.wait_for_timeout(600)   # previzualizarea (250 ms după tastare)
     _dispozitie("ridicare_banca", 142, "DI406")
     pg.click("#c-adauga")
     pg.wait_for_function("() => (document.querySelector('#c-sold-final') || {}).textContent === '142,00 lei'", timeout=20000)
-    _dispozitie("plata_furnizor", 200, "DP406")
-    pg.wait_for_selector("#c-previz-refuz.msg-eroare", timeout=10000)
+    _dispozitie("plata_furnizor", 200, "DP406", avans_dest="servicii")
     asteptat = ("Plată către furnizor de 200,00 lei nu încape în casă (contul 5311): soldul casei pe %s, în registru, e 142,00 lei, iar "
                 "după ea casa ar ajunge la -58,00 lei pe %s. Numerarul din casă nu poate fi negativ. Înregistrează întâi încasarea sau "
                 "ridicarea de numerar din care s-a plătit.")
     zi = pg.eval_on_selector("#c-data", "e => e.value.split('-').reverse().join('.')")
-    assert pg.inner_text("#c-previz-refuz") == asteptat % (zi, zi)
+    # refuzul previzualizării, cu textul întreg (așteptat pe text, nu pe element: tastarea golește zona refuzului până la răspuns — 290)
+    pg.wait_for_function("(t) => (document.querySelector('#c-previz-refuz') || {}).textContent === t", arg=asteptat % (zi, zi),
+                         timeout=10000)
+    assert pg.input_value("#c-avans-dest") == "servicii"
     pg.click("#c-adauga")
-    pg.wait_for_function("() => (document.querySelector('#c-mesaj') || {}).textContent", timeout=10000)
+    pg.wait_for_function("() => document.querySelector('.msg-eroare[data-camp=\"c-suma\"]')", timeout=10000)
     patron.captura()
-    assert pg.inner_text("#c-mesaj") == asteptat % (zi, zi)
-    assert _refuz(pg) == [["motivul e mai jos", ""]], _refuz(pg)
+    assert pg.inner_text('.msg-eroare[data-camp="c-suma"]') == asteptat % (zi, zi)
+    assert pg.get_attribute("#c-suma", "aria-invalid") == "true"
+    assert _refuz(pg) == [["Suma", "— " + asteptat % (zi, zi)]], _refuz(pg)
     assert pg.inner_text("#c-sold-final") == "142,00 lei"
 
 
@@ -222,8 +234,10 @@ def test_def_409_descarcarea_de_stoc_are_documentul_facturii_si_cantitatea_in_bu
     aid = articol_in_stoc(patron, firma_cv, cantitate=7, pret=10)
     f = emite_api(patron, firma_cv, linii=[{"descriere": ARTICOL, "cantitate": 2, "um": "buc", "pret_unitar": 20.0, "cota_tva": 21,
                                              "cota_propusa": 21, "articol_id": aid}], pleaca_marfa=True)
-    nid, numar, data = sql('SELECT m.inregistrare_id, f.numar, f.data_emitere FROM "%s".miscari_stoc m JOIN "%s".facturi f ON f.id = '
-                           "m.factura_id WHERE m.factura_id = %%s" % (s, s), (f["factura_id"],))[0]
+    nid, serie, numar, data = sql('SELECT m.inregistrare_id, f.serie, f.numar, f.data_emitere FROM "%s".miscari_stoc m JOIN "%s".facturi f '
+                                  "ON f.id = m.factura_id WHERE m.factura_id = %%s" % (s, s), (f["factura_id"],))[0]
+    if serie and numar.startswith(serie):   # [lotul 11, 443] seria și numărul separat: „F1A nr. 1”, nu „F1A1”
+        numar = "%s nr. %s" % (serie, numar[len(serie):])
     patron.firma(firma_cv["nume"])
     _deschide(patron, "#fa-jurnal", "Registru")
     pg = patron.pg
@@ -313,14 +327,15 @@ def test_def_400_detaliul_nir_arata_transportul_repartizat_si_costul_unitar(patr
 
 # ── 401–402 — borderoul de achiziție ─────────────────────────────────────────────────────────────────────────────────────
 def test_def_401_borderoul_de_achizitie_cere_vanzatorul_si_arata_nota(patron, firma_cv):
-    """401, 402. Pașii: Operațiuni speciale -> „Achiziție de la neînregistrat” -> fără domiciliu și act de identitate: lângă câmpuri
-    (și „NU s-a salvat.”); completat, cont 371 cu articolul și cantitatea -> „Notă generată … Nota: 371 = 401 200,00 lei.”; în Registrul
-    jurnal documentul e „Borderou de achiziție BA-1 din …”, nu „Factură”."""
+    """401, 402. Pașii: Stocuri -> „Borderou de achiziție” (lotul 11, pct.23: lângă NIR) -> fără domiciliu și act de identitate: lângă
+    câmpuri (și „NU s-a salvat.”); completat, cont 371 cu articolul nou (cerut explicit, 450) și cantitatea -> confirmarea cu nota
+    „371 = 401 · 200,00 lei”; în Registrul jurnal documentul e „Borderou de achiziție BA-1 din …”, nu „Factură”."""
     from e2e_bloc_a import _card
+    from e2e_lot10b_stoc import alege_articolul
     patron.firma(firma_cv["nume"])
-    _card(patron, "operatiuni", "[data-op='neinregistrat']")
+    _card(patron, "stocuri", "#s-borderou")
     pg = patron.pg
-    pg.click("[data-op='neinregistrat']")
+    pg.click("#s-borderou")
     pg.wait_for_selector("#op-furnizor_nume", timeout=20000)
     pg.fill("#op-data", AZI.isoformat())
     pg.fill("#op-furnizor_nume", "Ion Popescu")
@@ -331,16 +346,14 @@ def test_def_401_borderoul_de_achizitie_cere_vanzatorul_si_arata_nota(patron, fi
     assert {x[0] for x in _refuz(pg)} >= {"Domiciliul vânzătorului", "Actul de identitate (seria și numărul)"}, _refuz(pg)
     pg.fill("#op-furnizor_adresa", "Str. Florilor 1, Ploiești")
     pg.fill("#op-furnizor_act", "PH 123456")
-    pg.fill("#op-articol", "Mere E2E")
+    alege_articolul(pg, "Mere E2E")
     pg.fill("#op-cantitate", "100")
-    pg.fill("#op-um", "kg")
     pg.select_option("#op-categorie", "alte_bunuri")
     pg.click("#op-trimite")
-    pg.wait_for_function("() => (document.querySelector('#op-mesaj') || {}).innerText && "
-                         "document.querySelector('#op-mesaj').innerText.includes('Notă generată')", timeout=30000)
+    pg.wait_for_selector("#op-mesaj .caseta-ok", timeout=30000)
     t = pg.inner_text("#op-mesaj")
     patron.captura()
-    assert "Nota: 371 = 401 200,00 lei." in t, t
+    assert "371 = 401 · 200,00 lei" in t, t
     patron.firma(firma_cv["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
     pg.wait_for_function("() => document.body.innerText.includes('Borderou de achiziție BA-1 din')", timeout=20000)
@@ -352,10 +365,11 @@ def test_def_402_achizitia_pf_pe_stoc_cere_articolul_si_intra_in_gestiune(patron
     câmpuri (nu 371 crescut fără stoc); completat (Pere E2E 402, 50 kg) -> articolul intră în gestiune: fișa lui are intrarea de 120,00
     lei, cu borderoul ca document."""
     from e2e_bloc_a import _card
+    from e2e_lot10b_stoc import alege_articolul
     patron.firma(firma_cv["nume"])
-    _card(patron, "operatiuni", "[data-op='neinregistrat']")
+    _card(patron, "stocuri", "#s-borderou")   # [lotul 11, pct.23] borderoul stă lângă NIR
     pg = patron.pg
-    pg.click("[data-op='neinregistrat']")
+    pg.click("#s-borderou")
     pg.wait_for_selector("#op-furnizor_nume", timeout=20000)
     pg.fill("#op-data", AZI.isoformat())
     pg.fill("#op-furnizor_nume", "Maria Ionescu")
@@ -367,16 +381,13 @@ def test_def_402_achizitia_pf_pe_stoc_cere_articolul_si_intra_in_gestiune(patron
     pg.click("#op-trimite")
     pg.wait_for_selector(".refuz-salvare", timeout=10000)
     patron.captura("refuz")
-    assert {x[0] for x in _refuz(pg)} == {"Articolul (la un cont de stoc)", "Cantitatea (la un cont de stoc)",
-                                       "motivul e mai jos"}, _refuz(pg)
+    assert {x[0] for x in _refuz(pg)} >= {"Articolul (din nomenclator)", "Cantitatea"}, _refuz(pg)   # [lotul 11, 450] articolul se alege
     s = firma_cv["schema"]
     assert sql('SELECT count(*) FROM "%s".articole WHERE denumire = %%s' % s, ("Pere E2E 402",))[0][0] == 0
-    pg.fill("#op-articol", "Pere E2E 402")
+    alege_articolul(pg, "Pere E2E 402")
     pg.fill("#op-cantitate", "50")
-    pg.fill("#op-um", "kg")
     pg.click("#op-trimite")
-    pg.wait_for_function("() => (document.querySelector('#op-mesaj') || {}).innerText && "
-                         "document.querySelector('#op-mesaj').innerText.includes('Notă generată')", timeout=30000)
+    pg.wait_for_selector("#op-mesaj .caseta-ok", timeout=30000)
     patron.captura()
     m = sql('SELECT m.tip, m.cantitate, m.valoare, m.document FROM "%s".miscari_stoc m JOIN "%s".articole a ON a.id = m.articol_id '
             "WHERE a.denumire = %%s" % (s, s), ("Pere E2E 402",))
@@ -571,7 +582,9 @@ def test_def_403_fisa_de_magazie_numeste_documentul_nu_id_ul(patron, firma_cv):
     pg.wait_for_selector("#cv-fisa-zona .pf-frand", timeout=20000)
     t = pg.inner_text("#cv-fisa-zona")
     patron.captura()
-    assert "Factura #1" not in t and ("Factură %s din %s" % (f["numar"], AZI.strftime("%d.%m.%Y"))) in t, t   # AZI-dat-de-test (emite_api)
+    ser = sql('SELECT serie FROM "%s".facturi WHERE id = %%s' % s, (f["factura_id"],))[0][0] or ""   # [lotul 11, 443] seria separat
+    nr = "%s nr. %s" % (ser, f["numar"][len(ser):]) if ser and f["numar"].startswith(ser) else f["numar"]
+    assert "Factura #1" not in t and ("Factură %s din %s" % (nr, AZI.strftime("%d.%m.%Y"))) in t, t   # AZI-dat-de-test (emite_api)
 
 
 def test_def_408_cardul_nir_din_coada_arata_rulajul_tuturor_notelor(patron, firma_cv):
@@ -635,9 +648,14 @@ def test_def_c58_primul_clic_pe_adauga_dupa_tastare_pleaca(patron, firma_cv):
     pg.wait_for_timeout(600)
     pg.wait_for_function("() => (document.querySelector('#c-previz-refuz') || {}).textContent", timeout=10000)
     pg.click("#c-adauga")
-    pg.wait_for_function("() => (document.querySelector('#c-mesaj') || {}).textContent", timeout=10000)
+    # [lotul 11, 440, comanda Costin 11.1 pct.16: „toate erorile apar deodată, fiecare cu textul ei, în casetă și lângă câmp”] refuzul
+    # serverului e eroarea sumei (`casa_api`: `er.camp("c-suma", …)`), deci stă pe câmpul „Suma” și în caseta „NU s-a salvat.” de lângă
+    # buton (`arataRefuzul`), nu în `#c-mesaj` — ca la 406 din același fișier
+    pg.wait_for_function("() => document.querySelector('.msg-eroare[data-camp=\"c-suma\"]')", timeout=10000)
     patron.captura()
-    assert len(cereri) == 1, cereri
+    assert len(cereri) == 1, cereri   # UN clic pe „Adaugă” -> cererea a plecat
+    assert "nu încape în casă" in pg.inner_text('.msg-eroare[data-camp="c-suma"]')
+    assert pg.is_visible(".refuz-salvare"), "caseta „NU s-a salvat.” lipsește de lângă buton"
 
 
 def test_def_c60_registrul_de_casa_porneste_de_la_soldul_casei(patron, firma_cv):
@@ -713,8 +731,12 @@ def test_def_c59_stornarea_pastreaza_orasul_si_judetul_clientului_in_xml(patron,
         pg.click("#fd-spre-istoric")
         pg.wait_for_selector(".fac-frand-btn[data-id='%s']" % st["factura_id"], timeout=20000)
         pg.click(".fac-frand-btn[data-id='%s']" % st["factura_id"])
+        # [lotul 11, deficiența 443, comanda Costin 11.1 pct.19: „seria și numărul se afișează separat peste tot (F6 nr. 1, nu F61)”]
+        # titlul detaliului stornării e „Factură <serie> nr. <n>” (`numarCuSerie`), nu numărul lipit de serie
+        from core.pdf_util import serie_nr
+        serie_st = sql('SELECT serie FROM "%s".facturi WHERE id = %%s' % s, (st["factura_id"],))[0][0]
         pg.wait_for_function("(x) => [...document.querySelectorAll('.fd-antet h2')].some((h) => h.textContent.trim() === x)",
-                             arg="Factură %s" % st["numar"], timeout=25000)
+                             arg="Factură %s" % serie_nr(serie_st, st["numar"]), timeout=25000)
         t = pg.locator(".fd-antet .tip-micut").last.inner_text()
         patron.captura()
         assert t == adresa_vazuta, t   # stornarea, pe ecran: aceeași adresă cu localitatea și județul

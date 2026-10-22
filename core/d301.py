@@ -127,6 +127,10 @@ class Rezultat:
     avertismente: list = field(default_factory=list)
     sinteza: list = field(default_factory=list)   # [08.10.2026, decizia Costin V5] un rezumat nu e avertisment
     ops_raw: list = field(default_factory=list)   # T2/T3: valorile BRUTE, pre-coercitie (validate pre-DUK)
+    # [lotul 11, C77] rectificativa: `core.rectificativa.aplica` (d_rec în XML, textul de pe ecran, depunerea pe care s-a sprijinit)
+    d_rec: int = 0
+    rectificativa: object = None
+    depunere_anterioara_nr: object = None
 
 
 def _data_doc_ro(v):
@@ -250,7 +254,10 @@ def _blocante_pre_duk(res):
     for i, r in enumerate(res.ops_raw, 1):
         nr_raw = r.get("nr_doc")
         nr = str(nr_raw).strip() if nr_raw is not None else ""
-        eticheta = nr if nr else "#%d" % i
+        # [lotul 11, J / clasa 258] eticheta pentru contabil: numărul documentului; fără număr, data lui (nu un id intern „#n”)
+        from core.pdf_util import data_ro as _data_ro
+        _dd_lbl = _data_ro(r.get("data_doc")).strip()
+        eticheta = nr if nr else ("fără număr, din %s" % _dd_lbl if _dd_lbl else "fără număr și fără dată (a %d-a din listă)" % i)
         # tip: out-of-nomenclator / gol / negenerabil -> NU se reclasifica tacit in sectiunea 1 (T2/T3)
         tip_raw = r.get("tip")
         try:
@@ -258,26 +265,26 @@ def _blocante_pre_duk(res):
         except (TypeError, ValueError):
             tip = None
         if tip not in TIPURI_OP:
-            b.append("Operatiunea %s: tip operațiune %r în afara nomenclatorului (permise 1..5); "
+            b.append("Operațiunea %s: tip operațiune %r în afara nomenclatorului (permise 1..5); "
                      "nu se reclasifică tacit în secțiunea 1." % (eticheta, tip_raw))
         # valuta: gol -> NU devine tacit EUR; altfel trebuie in nomenclatorul ancorat pe validator (T2/T3)
         val_raw = r.get("tip_valuta")
         val = str(val_raw).strip().upper() if val_raw is not None else ""
         if not val:
-            b.append("Operatiunea %s: valuta lipsă; nu se completează tacit EUR." % eticheta)
+            b.append("Operațiunea %s: valuta lipsă; nu se completează tacit EUR." % eticheta)
         elif val not in VALUTE:
-            b.append("Operatiunea %s: valuta %r neacceptata (nomenclator ANAF)." % (eticheta, val))
+            b.append("Operațiunea %s: valuta %r neacceptată (nomenclator ANAF)." % (eticheta, val))
         # nr_doc: gol (T2) sau supra-lung C(20) netrunchiat (T6, leak pur)
         if not nr:
-            b.append("Operatiunea #%d: fără număr document." % i)
+            b.append("Operațiunea %s: fără număr document." % eticheta)
         elif len(nr) > 20:
-            b.append("Operatiunea %s: număr document de %s depășește C(20) (structura ANAF); "
+            b.append("Operațiunea %s: număr document de %s depășește C(20) (structura ANAF); "
                      "nu se emite netrunchiat." % (eticheta, c.cate(len(nr), "caracter", "caractere")))
         # data_doc: gol (T2)
         dd_raw = r.get("data_doc")
         dd = str(dd_raw).strip() if dd_raw is not None else ""
         if not dd:
-            b.append("Operatiunea %s: fără data document." % eticheta)
+            b.append("Operațiunea %s: fără data document." % eticheta)
     return b
 
 
@@ -324,12 +331,16 @@ def build_xml(res):
     # complet, deci D301 nu s-a validat niciodata. E temeiul legal pentru depunerea
     # declaratiei DUPA anularea rezervei verificarii ulterioare (art. 105 alin.(6) din
     # Legea 207/2015, Codul de procedura fiscala). La o depunere obisnuita = 0.
-    H.append('<declaratie301 xmlns="%s" luna="%d" an="%d" d_rec="0" temei="0" mijl_trans="%d" '
+    # [lotul 11, C77] d_rec=1 dacă pe lună e înregistrată o depunere (OPANAF 592/2016 anexa 2 cap.III: „Declaraţia depusă iniţial se
+    # rectifică prin depunerea unei noi declaraţii, pe acelaşi format, bifând căsuţa corespunzătoare”). Generatorul cuprinde TOATE
+    # operațiunile lunii, deci o a doua depunere le-ar redeclara: excepția „mai multe deconturi […] fără a bifa căsuţa” (mijloace de
+    # transport noi) e pentru deconturi cu achiziții DIFERITE, nu pentru aceeași lună generată din nou.
+    H.append('<declaratie301 xmlns="%s" luna="%d" an="%d" d_rec="%d" temei="0" mijl_trans="%d" '
              'cif="%s" denumire="%s" adresa="%s" banca="%s" cont="%s" pers_inreg="%s" '
              'nr_evid="%s" baza1="%d" tva1="%d" baza2="%d" tva2="%d" baza3="%d" tva3="%d" '
              'baza4="%d" tva4="%d" baza5="%d" tva5="%d" totalPlata_A="%d" '
              'nume_declarant="%s" prenume_declarant="%s" functia_declarant="%s">'
-             % (NS, res.luna, res.an, res.mij_transp, _esc(cif), _esc(_t(den, _LIM["d301"]["denumire"])), _esc(_t(adr, _LIM["d301"]["adresa"])),
+             % (NS, res.luna, res.an, int(getattr(res, "d_rec", 0) or 0), res.mij_transp, _esc(cif), _esc(_t(den, _LIM["d301"]["denumire"])), _esc(_t(adr, _LIM["d301"]["adresa"])),
                 _esc(_t(_clean_bc(prof.get("banca")), _LIM["d301"]["banca"])), _esc(_t(_clean_bc(prof.get("iban") or prof.get("cont")), _LIM["d301"]["cont"])),
                 _pers_inreg(prof),
                 nr_evidenta(res.an, res.luna, res.mij_transp),
@@ -344,9 +355,9 @@ def build_xml(res):
         # sectiune 4 cand exista 4.1 (R32), deci o operatiune tip 5 emite AMBELE randuri.
         for tp in ((4, 5) if op.tip == 5 else (op.tip,)):
             H.append('  <sectiune tip_operatie="%d" nr_doc="%s" data_doc="%s" val_valuta="%.2f" '
-                     'tip_valuta="%s" curs_valutar="%.4f" baza="%d" tva="%d"/>'
+                     'tip_valuta="%s" curs_valutar="%s" baza="%d" tva="%d"/>'
                      % (tp, _esc(op.nr_doc), _esc(op.data_doc), op.val_valuta,
-                        op.tip_valuta, op.curs, op.baza, op.tva))
+                        op.tip_valuta, Decimal(str(op.curs)).quantize(Decimal("0.0001"), rounding=ROUND_HALF_UP), op.baza, op.tva))   # XSD/DUK: curs_valutar N(15.4); rotunjire aritmetica, nu %.4f pe float (C88)
     H.append('</declaratie301>')
     return "\n".join(H)
 
@@ -434,4 +445,6 @@ def genereaza(conn, schema, perioada, manual=None):
     # coerent cu bazele umflate). Vezi core/d301_reconciliere.py + GARZI cat.4 (limite declarate).
     from core.d301_reconciliere import verifica_reconciliere
     verifica_reconciliere(conn, perioada, res, manual)
+    from core import rectificativa as _rect
+    _rect.aplica(res, _rect.stabileste(conn, schema, "d301", perioada.an, perioada.luna))   # [C77]
     return build_xml(res), res

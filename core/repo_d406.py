@@ -87,7 +87,8 @@ def select_factura_linii(cur, di, ds):
     cur.execute("SELECT factura_id, id, descriere, um, "
                 "COALESCE(cantitate,0) AS cantitate, "
                 "COALESCE(pret_unitar,0) AS pret_unitar, "
-                "COALESCE(cota_tva,0) AS cota_tva, cont_venit "   # [380] contul de venit al liniei
+                "COALESCE(cota_tva,0) AS cota_tva, cont_venit, "   # [380] contul de venit al liniei
+                "valoare_neta "   # [lotul 11, C82] BT-131 de pe factura importată, exact
                 "FROM factura_linii WHERE factura_id IN "
                 "(SELECT id FROM facturi WHERE data_emitere >= %s AND data_emitere < %s "
                 " AND " + _doc_fiscal(None) + " AND " + _status_declarabil(None) + ") "

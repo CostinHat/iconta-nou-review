@@ -98,6 +98,13 @@ def borderou_cu_numarul(cur, schema, numar, data):
     return (tuple(r.values()) if isinstance(r, dict) else tuple(r)) if r else None
 
 
+def e_generat(document_ref, tip):
+    """[lotul 11, 451] Textul `document_ref` e documentul intern `tip` generat de aplicație („Bon de consum nr 3 din 20.10.2026” — forma
+    `jurnal_api.eticheta_document`, aceeași pe care o citește `cel_mai_mare`), nu un document scris de om. PURĂ."""
+    _cere_tip(tip)
+    return re.fullmatch(re.escape(TIPURI[tip]) + r" nr [0-9]{1,9} din [0-9]{2}\.[0-9]{2}\.[0-9]{4}", str(document_ref or "").strip()) is not None
+
+
 def genereaza(cur, schema, tip, data, nota_ids):
     """Numerotează un document de tipul dat, la data dată, și îl scrie pe notele `nota_ids` care n-au deja document.
     Întoarce textul documentului. Un act cu mai multe note (descărcarea lunii, inventarul) primește UN document."""

@@ -293,7 +293,7 @@ def _actiune_valideaza(patru_ochi):
 
 
 def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
-                sursa_declarat="regenerat"):
+                sursa_declarat="regenerat", ajustari_4427=0):
     """PURA: compara randurile D300 cu rulajele contabile.
 
     [P8, 21.08.2026] `an`/`luna` sunt OBLIGATORII. Prima forma le-a pus optionale, „ca sa nu ating
@@ -321,6 +321,10 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
     for eticheta, rand, cont, sens, directie, fel in perechi:
         decl = _d(d300_R.get(rand, 0))
         contabil = _d(rulaje.get(cont, {}).get(sens, 0))
+        if cont == "4427":
+            # [lotul 11, C76] 635 = 4427 (ajustarea taxei deductibile a lipsei neimputabile) creditează 4427, dar D300 o declară la
+            # rd.34 (R31), nu la TVA colectată (rd.17): scăzută din rulaj, altfel comparația arată o diferență egală cu ajustarea
+            contabil -= _d(ajustari_4427)
         dif = decl - contabil
         grup = [f for f in necontate if f.get("directie") == directie]
         fara_nota = [f for f in grup if not f.get("are_ciorna")]
@@ -747,8 +751,10 @@ def verifica_tva(conn, schema, an, luna):
     # [08.10.2026, decizia Costin pct.1 la §6 S6] TVA-ul din prețul de raft stă pe analiticul lui (`stocuri.CONT_TVA_STOC`), deci
     # semnalul „exigibilitate decalată” citește sinteticul 4428 EXACT: numai TVA-ul la încasare / taxarea inversă
     rulaje = rulaje_interval(conn, schema, _de, _pana, ("4427", "4426", "4423", "4424", "4428"))
+    with conn.cursor() as _c_aj:
+        _aj_4427 = _repo.select_ajustari_taxa_4427(_c_aj, schema, _de, _pana)   # [lotul 11, C76]
     constatari = compara_tva(R, rulaje, an, luna, necontate,
-                             sursa_declarat=sursa_declarat,
+                             sursa_declarat=sursa_declarat, ajustari_4427=_aj_4427,
                              patru_ochi=_patru_ochi_activ(conn, schema))
     constatari = ciorne_care_explica(conn, schema, _de, _pana, constatari)   # [deficiența 284]
     # [R35, 28.08.2026] A DOUA INSTANTA, in aceeasi functie, si nu se vede din prima: agregarea

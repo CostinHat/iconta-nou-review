@@ -26,6 +26,7 @@ def scoate(db, firme, incercari=5):
                     "c.table_schema AND t.table_name = c.table_name AND t.table_type = 'BASE TABLE' WHERE c.table_schema = 'public' "
                     "AND c.column_name = 'tenant_id' AND c.table_name <> 'tenants'")
         tabele = [r[0] for r in cur.fetchall()]
+    tabele = sorted(tabele)
     for tid, schema in firme:
         for incercare in range(1, incercari + 1):
             try:
@@ -43,7 +44,8 @@ def _scoate_una(db, tabele, tid, schema):
         r = cur.fetchone()
         if r and not str(r[0]).startswith(PREFIX_FIRMA):
             return                                         # nu e o firmă a probei: nu se atinge
-        for t in tabele:
+        from core.tenant_stergere import ordinea_stergerii   # [lotul 11] contoarele derivate la urmă (altfel ștergerea unei surse le recrea)
+        for t in ordinea_stergerii(tabele):
             cur.execute('DELETE FROM public."%s" WHERE tenant_id = %%s' % t, (tid,))
         cur.execute("DELETE FROM public.tenants WHERE id = %s", (tid,))
         if schema and schema.startswith("tenant_") and db.schema_valida(schema):

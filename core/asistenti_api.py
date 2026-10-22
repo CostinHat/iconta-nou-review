@@ -25,6 +25,8 @@ from __future__ import annotations
 import psycopg2.extras as _E
 
 from core.common import cate as _cate
+# [lotul 11, 458] „înlocuită de declarația generată din nou, nu respinsă” — definiția stă lângă cheia pregătirii, în coada_api
+from core.coada_api import sql_inlocuita
 
 REGULI = "2026.1"
 MODUL = "asistenti_api"
@@ -39,6 +41,10 @@ COL_TENANT = "tenant_id"                         # coloana tenant în tabelul de
 # ────────────────────────────────────────────────────────────────────────────
 
 ROLURI_ACTOR = ("admin_firma", "angajat")
+
+
+#: [458] cum se numește pe ecran o respingere fără motiv scris (rânduri vechi, dinainte de motivul obligatoriu)
+FARA_MOTIV = "Respinsă fără motiv scris"
 
 
 # ============================================================
@@ -95,10 +101,10 @@ def centralizator(conn, cabinet_id, de=None, pana=None):
             "SELECT "
             "COUNT(DISTINCT " + K + ") AS create_, "
             "COUNT(DISTINCT " + K + ") FILTER (WHERE aprobat_la IS NOT NULL) AS aprobate, "
-            "COUNT(DISTINCT " + K + ") FILTER (WHERE respins_la IS NOT NULL) AS respinse, "
+            "COUNT(DISTINCT " + K + ") FILTER (WHERE respins_la IS NOT NULL AND NOT " + sql_inlocuita("d") + ") AS respinse, "
             "COUNT(DISTINCT " + K + ") FILTER (WHERE depus_la IS NOT NULL) AS depuse, "
             "COUNT(DISTINCT " + K + ") FILTER (WHERE stare = 'la_senior') AS in_asteptare "
-            "FROM public.declaratii_coada WHERE " + w,
+            "FROM public.declaratii_coada d WHERE " + w,   # [458] alias: `sql_inlocuita` citește rândul din afară
             tuple(args),
         )
         tot = dict(cur.fetchone() or {})
@@ -116,7 +122,7 @@ def centralizator(conn, cabinet_id, de=None, pana=None):
             "SELECT COALESCE(NULLIF(TRIM(CONCAT_WS(' ', u.prenume, u.nume)), ''), "
             "       c.creat_de, '(necunoscut)') AS nume, "
             "       COUNT(DISTINCT " + KC + ") AS create_, "
-            "       COUNT(DISTINCT " + KC + ") FILTER (WHERE c.respins_la IS NOT NULL) AS respinse "
+            "       COUNT(DISTINCT " + KC + ") FILTER (WHERE c.respins_la IS NOT NULL AND NOT " + sql_inlocuita("c") + ") AS respinse "
             "  FROM public.declaratii_coada c "
             "  LEFT JOIN public.users u ON u.id = c.creat_de_id "
             " WHERE " + w_c +
@@ -157,7 +163,7 @@ def jurnal(conn, cabinet_id, de=None, pana=None, limit=200):
             "       t.nume AS firma, "
             "       c.creat_de, c.creat_la, c.creat_de_id, "
             "       c.aprobat_de, c.aprobat_la, c.aprobat_de_id, "
-            "       c.respins_de, c.respins_la, c.respins_de_id, c.motiv_respingere, "
+            "       c.respins_de, c.respins_la, c.respins_de_id, c.motiv_respingere, " + sql_inlocuita("c") + " AS inlocuita, "
             "       c.depus_de, c.depus_la, c.depus_de_id, "
             "       cu.prenume AS cre_pre, cu.nume AS cre_num, "
             "       au.prenume AS apr_pre, au.nume AS apr_num, "
@@ -195,7 +201,8 @@ def jurnal(conn, cabinet_id, de=None, pana=None, limit=200):
             ev.append({**baza, "actiune": "aprobat", "culoare": "verde",
                        "cine": _nume(r.get("apr_pre"), r.get("apr_num"), r.get("aprobat_de")),
                        "cand": r["aprobat_la"].isoformat(), "motiv": None})
-        if r.get("respins_la"):
+        # [458] înlocuită de declarația generată din nou: nu „a respins” — urmașul ei apare „pregătit”, la aceeași oră
+        if r.get("respins_la") and not r.get("inlocuita"):
             ev.append({**baza, "actiune": "respins", "culoare": "rosu",
                        "cine": _nume(r.get("res_pre"), r.get("res_num"), r.get("respins_de")),
                        "cand": r["respins_la"].isoformat(),
@@ -570,8 +577,10 @@ def reactiveaza(conn, cabinet_id, user_id):
 #  VIZUALIZEAZĂ — activitatea actorului + semnal "patru ochi"
 # ============================================================
 def _identificatori(actor):
-    """Variantele sub care actorul poate apărea în creat_de/aprobat_de."""
-    vals = []
+    """Variantele sub care actorul poate apărea în creat_de/aprobat_de.
+    [lotul 11, găsit la 458] Coada scrie în câmpurile text id-ul omului (`str(uid)`: `coada_adauga`, `respinge`, `inlocuieste`, triggerul
+    notelor); fără el, „Declarații lucrate” era goală pe orice cabinet (măsurat pe cabinetul de test: 0 rânduri, din 39)."""
+    vals = [str(actor["id"])] if actor.get("id") is not None else []
     if actor.get("email"):
         vals.append(actor["email"])
     nume_intreg = " ".join(
@@ -600,7 +609,7 @@ def activitate(conn, cabinet_id, user_id):
             """
             SELECT c.id, c.tenant_id, t.nume AS firma, c.tip, c.perioada, c.stare,
                    c.creat_de, c.creat_la, c.aprobat_de, c.aprobat_la,
-                   c.respins_de, c.respins_la
+                   c.respins_de, c.respins_la, """ + sql_inlocuita("c") + """ AS inlocuita
               FROM public.declaratii_coada c
               LEFT JOIN public.tenants t ON t.id = c.tenant_id   -- [258] firma numită, nu „firma #12”
              WHERE c.cabinet_id = %s
@@ -616,7 +625,7 @@ def activitate(conn, cabinet_id, user_id):
     for r in randuri:
         r["a_pregatit"] = r["creat_de"] in idents
         r["a_aprobat"] = r["aprobat_de"] in idents if r["aprobat_de"] else False
-        r["a_respins"] = r["respins_de"] in idents if r["respins_de"] else False
+        r["a_respins"] = (r["respins_de"] in idents if r["respins_de"] else False) and not r.get("inlocuita")   # [458]
         # patru ochi încălcat dacă pe ACEEAȘI declarație e și pregătitor și aprobator
         r["self_approval"] = bool(
             r["aprobat_de"] and r["creat_de"]
@@ -650,75 +659,67 @@ def calitate(conn, cabinet_id, user_id, de=None, pana=None):
     if not actor:
         return {"ok": False, "cod": "actor_inexistent"}
 
-    cond = ["cabinet_id = %s", "creat_de_id = %s"]
-    val = [cabinet_id, user_id]
-    if de:
-        cond.append("creat_la::date >= %s"); val.append(de)
-    if pana:
-        cond.append("creat_la::date <= %s"); val.append(pana)
-    w = " AND ".join(cond)
     # [lotul 07.10 pct.4] filtrul de interval se aplică pe PREGĂTIRE (când a început), nu pe rândul retrimis
-    wp = " AND ".join(c.replace("creat_la", "p.creat_la") for c in cond[2:]) or "TRUE"
+    wp, val = ["TRUE"], [cabinet_id, user_id]
+    if de:
+        wp.append("creat_la::date >= %s"); val.append(de)
+    if pana:
+        wp.append("creat_la::date <= %s"); val.append(pana)
 
     from core.coada_api import sql_cheie_pregatire as _cheie
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         # [lotul 07.10 pct.4, comanda Costin 06.10.2026] „o notă respinsă o dată și apoi validată apare «2 pregătite · 50%
         # acceptate din prima»; corect: 1 pregătită, 0% din prima. Retrimiterea nu e o pregătire nouă.” Se numără PREGĂTIRI
         # (`coada_api.sql_cheie_pregatire`), nu rânduri: „din prima” = acceptată fără nicio respingere.
+        # [lotul 11, 458 — comanda Costin 11.3 pct.6: „numerele de respingeri nu se adună cu rândurile”] O SINGURĂ listă, de pregătiri:
+        # din ea ies și numărul de lângă nume („respinse”), și rândurile motivelor (`tipare`) — fiecare pregătire respinsă e un rând al
+        # motivului ULTIMEI ei respingeri, deci Σ rânduri = respinse. Înainte rândurile numărau rânduri de coadă (un NIR = 4 note), pe
+        # alt interval (`creat_la` al rândului). Respingere = a omului: înlocuirea la „Generează din nou” nu e (`sql_inlocuita`).
         cur.execute(
-            "WITH p AS (SELECT " + _cheie() + " AS cheie, MIN(creat_la) AS creat_la, MIN(tip) AS tip, "
-            "  bool_or(stare = 'respinsa') AS respinsa, bool_or(stare IN ('aprobata','depusa')) AS acceptata, "
-            "  MAX(aprobat_la) FILTER (WHERE stare IN ('aprobata','depusa')) AS aprobat_la "
-            "  FROM public.declaratii_coada WHERE cabinet_id = %s AND creat_de_id = %s GROUP BY 1) "
-            "SELECT "
-            "  COUNT(*) AS pregatite, "
-            "  COUNT(*) FILTER (WHERE acceptata) AS aprobate, "
-            "  COUNT(*) FILTER (WHERE respinsa) AS respinse, "
-            "  COUNT(*) FILTER (WHERE acceptata AND NOT respinsa) AS din_prima, "
-            "  COUNT(*) FILTER (WHERE acceptata OR respinsa) AS evaluate, "
-            "  EXTRACT(EPOCH FROM AVG(aprobat_la - creat_la) "
-            "    FILTER (WHERE acceptata AND aprobat_la IS NOT NULL)) "
-            "    / 86400.0 AS zile_mediu, "
-            "  array_agg(DISTINCT tip) AS tipuri "
-            "FROM p WHERE " + wp,
+            "WITH x AS (SELECT d.*, " + _cheie("d") + " AS cheie, "
+            "  (d.stare = 'respinsa' AND NOT " + sql_inlocuita("d") + ") AS respingere "
+            "  FROM public.declaratii_coada d WHERE d.cabinet_id = %s AND d.creat_de_id = %s), "
+            "p AS (SELECT cheie, MIN(creat_la) AS creat_la, MIN(tip) AS tip, "
+            "  bool_or(respingere) AS respinsa, bool_or(stare IN ('aprobata','depusa')) AS acceptata, "
+            "  MAX(aprobat_la) FILTER (WHERE stare IN ('aprobata','depusa')) AS aprobat_la, "
+            "  (array_agg(motiv_respingere ORDER BY respins_la DESC, id DESC) FILTER (WHERE respingere))[1] AS motiv, "
+            "  MAX(respins_la) FILTER (WHERE respingere) AS respins_la "
+            "  FROM x GROUP BY cheie) "
+            "SELECT * FROM p WHERE " + " AND ".join(wp),
             val)
-        a = cur.fetchone() or {}
-
-        cur.execute(
-            "SELECT motiv_respingere AS motiv, COUNT(*) AS nr, MIN(respins_la) AS prima "
-            "FROM public.declaratii_coada WHERE " + w + " "
-            "  AND stare = 'respinsa' AND motiv_respingere IS NOT NULL "
-            "GROUP BY motiv_respingere ORDER BY nr DESC",
-            val)
-        _motive_raw = [dict(r) for r in cur.fetchall()]
+        prg = [dict(r) for r in cur.fetchall()]
 
         cur.execute(
             "SELECT poate_pregati, poate_valida, poate_depune "
             "FROM public.users WHERE id = %s", (user_id,))
         _perm = cur.fetchone() or {}
 
-    pregatite = int(a.get("pregatite") or 0)
-    aprobate = int(a.get("aprobate") or 0)
-    respinse = int(a.get("respinse") or 0)
-    din_prima = int(a.get("din_prima") or 0)
-    evaluate = int(a.get("evaluate") or 0)   # pregătiri cu o decizie (acceptate sau respinse măcar o dată)
-    rata = round(respinse * 100 / evaluate) if evaluate else 0  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
-    zile = a.get("zile_mediu")
-    zile_mediu = round(float(zile), 1) if zile is not None else None  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
-    tipuri = [t for t in (a.get("tipuri") or []) if t]
+    acc = [x for x in prg if x["acceptata"]]
+    resp = [x for x in prg if x["respinsa"]]
+    pregatite = len(prg)
+    aprobate = len(acc)
+    din_prima = sum(1 for x in acc if not x["respinsa"])
+    evaluate = sum(1 for x in prg if x["acceptata"] or x["respinsa"])   # pregătiri cu o decizie (acceptate sau respinse măcar o dată)
+    _durate = [(x["aprobat_la"] - x["creat_la"]).total_seconds() / 86400.0 for x in acc if x["aprobat_la"] is not None]
+    zile_mediu = round(sum(_durate) / len(_durate), 1) if _durate else None  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
+    tipuri = sorted({x["tip"] for x in prg if x["tip"]})
 
     # [patch4_tipare_nivel]
     nivel = 3 if _perm.get("poate_depune") else (2 if _perm.get("poate_valida") else 1)
     _prag = 2
     _limita_nou = _dt.datetime.now(_dt.timezone.utc) - _dt.timedelta(days=30)
-    tipare = []
-    for _m in _motive_raw:
-        _nr = int(_m["nr"]); _prima = _m.get("prima")
-        tipare.append({
-            "motiv": _m["motiv"], "nr": _nr,
-            "tip": "sistematic" if _nr >= _prag else "accident",
-            "nou": bool(_prima and _prima >= _limita_nou),
-        })
+    _pe_motiv = {}
+    for x in resp:
+        m = (x["motiv"] or "").strip() or FARA_MOTIV
+        g = _pe_motiv.setdefault(m, {"nr": 0, "prima": None})
+        g["nr"] += 1
+        if x["respins_la"] is not None and (g["prima"] is None or x["respins_la"] < g["prima"]):
+            g["prima"] = x["respins_la"]
+    tipare = [{"motiv": m, "nr": g["nr"], "tip": "sistematic" if g["nr"] >= _prag else "accident",
+               "nou": bool(g["prima"] and g["prima"] >= _limita_nou)}
+              for m, g in sorted(_pe_motiv.items(), key=lambda kv: (-kv[1]["nr"], kv[0]))]
+    respinse = sum(t["nr"] for t in tipare)   # [458] totalul = Σ rândurilor, din aceeași listă
+    rata = round(respinse * 100 / evaluate) if evaluate else 0  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
 
     return {
         "ok": True,

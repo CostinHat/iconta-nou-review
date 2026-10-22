@@ -35,7 +35,7 @@ Impozitul e datorat pentru întregul an fiscal (CF art.500^3 alin.(1)) -> cota l
 `COTA_IMPOZIT = 0.3` fix (crezut „constantă a validatorului”, cu actul declarat absent din corpus) dădea pentru 2026
 o treime din impozit. Valorile impozabile, cota-parte de proprietate și plafoanele rămân introduse de contabil în
 `manual`. Totalurile de antet = sumele/regulile aritmetice ale listelor.
-d_rec="0" implicit (declaratie initiala).
+d_rec: 1 daca anul are o depunere inregistrata sau e bifat, cu index_corectie (core.rectificativa, C77); altfel 0.
 
 Contract dXXX: pull/erori_generare/calcul_d216/build_xml/genereaza(conn, schema, perioada, manual).
 """
@@ -106,19 +106,27 @@ def _round(x):
     return int(x + 0.5) if x >= 0 else -int(-x + 0.5)
 
 
-def _calc_imobil(b, an):
-    """baza_imobil = (val - plafon)*cota/100 (R28.1); impozit_imobil = ROUND(baza * cota_impozit(an))."""
+def _calc_imobil(b, an, d_rec=0):
+    """baza_imobil = (val - plafon)*cota/100 (R28.1); impozit_imobil = ROUND(baza * cota_impozit(an)).
+    [lotul 11, C77] La rectificativă, un bun care a coborât sub plafon: DUK D216 v0 „Daca d_rec=1 si valoare_impozabila_imobil -
+    plafon_imobil <0, atunci impozit_imobil trebuie sa fie 0” -> baza și impozitul 0."""
     val = _int(b.get("valoare_impozabila_imobil"))
     plafon = _int(b.get("plafon_imobil"))
+    if int(d_rec or 0) == 1 and val - plafon < 0:
+        return 0, 0
     cota = _cota(b.get("cota"))
     baza = _round((val - plafon) * cota / 100.0)
     return baza, _impozit(baza, cota_impozit(an))
 
 
-def _calc_mobil(b, an):
-    """baza_mobil = val - plafon (R36.1); impozit_mobil = ROUND(baza * cota_impozit(an))."""
+def _calc_mobil(b, an, d_rec=0):
+    """baza_mobil = val - plafon (R36.1); impozit_mobil = ROUND(baza * cota_impozit(an)).
+    [lotul 11, C77] La rectificativă, sub plafon: DUK D216 v0 „Daca d_rec=1 si valoare_impozabila_mobil - plafon_mobil <0, atunci
+    impozit_mobil trebuie sa fie 0” -> baza și impozitul 0."""
     val = _int(b.get("valoare_impozabila_mobil"))
     plafon = _int(b.get("plafon_mobil"))
+    if int(d_rec or 0) == 1 and val - plafon < 0:
+        return 0, 0
     baza = val - plafon
     return baza, _impozit(baza, cota_impozit(an))
 
@@ -133,6 +141,10 @@ class Rezultat216:
     nr_imobile: int = 0
     nr_mobile: int = 0
     avertismente: list = field(default_factory=list)
+    # [lotul 11, C77] rectificativa: `core.rectificativa.aplica` (d_rec în XML, textul de pe ecran, depunerea pe care s-a sprijinit)
+    d_rec: int = 0
+    rectificativa: object = None
+    depunere_anterioara_nr: object = None
 
 
 def calcul_d216(manual, an):
@@ -141,8 +153,9 @@ def calcul_d216(manual, an):
     totalPlata_A = suma cifrelor din cif (R4, regula de control a validatorului)."""
     imob = manual.get("imobile") or []
     mob = manual.get("mobile") or []
-    ti = sum(_calc_imobil(b, an)[1] for b in imob)
-    tm = sum(_calc_mobil(b, an)[1] for b in mob)
+    d_rec = _int(manual.get("d_rec"))
+    ti = sum(_calc_imobil(b, an, d_rec)[1] for b in imob)
+    tm = sum(_calc_mobil(b, an, d_rec)[1] for b in mob)
     return {"impozit_imobile": ti, "impozit_mobile": tm, "totalPlata_A": _suma_cifre(manual.get("cif"))}
 
 
@@ -178,7 +191,7 @@ def erori_generare(prof, manual):
             er.append("Bun imobil %d: cota trebuie 0 < cota <= 100." % i)
         if _int(b.get("plafon_imobil")) <= 0:
             er.append("Bun imobil %d: plafon_imobil invalid." % i)
-        if _int(b.get("valoare_impozabila_imobil")) <= _int(b.get("plafon_imobil")):
+        if _int(manual.get("d_rec")) == 0 and _int(b.get("valoare_impozabila_imobil")) <= _int(b.get("plafon_imobil")):
             er.append("Bun imobil %d: valoare_impozabila_imobil trebuie > plafon_imobil (d_rec=0)." % i)
     for i, b in enumerate(mob, 1):
         if _int(b.get("an_detinere")) <= 0:
@@ -189,8 +202,13 @@ def erori_generare(prof, manual):
             er.append("Bun mobil %d: valoare_impozabila_mobil invalidă." % i)
         if _int(b.get("plafon_mobil")) <= 0:
             er.append("Bun mobil %d: plafon_mobil invalid." % i)
-        if _int(b.get("valoare_impozabila_mobil")) <= _int(b.get("plafon_mobil")):
+        if _int(manual.get("d_rec")) == 0 and _int(b.get("valoare_impozabila_mobil")) <= _int(b.get("plafon_mobil")):
             er.append("Bun mobil %d: valoare_impozabila_mobil trebuie > plafon_mobil (d_rec=0)." % i)
+    # [lotul 11, C77] rectificativa cere indexul de depunere al declarației inițiale (structura XML D216 v1.0.0 rândul 1.1
+    # index_corectie: „IF d_rec eq. 1 THEN index MUST EXISTS”; DUK D216 v0: „index_corectie>0 daca si numai daca este d216 rectificativa”)
+    if _int(manual.get("d_rec")) == 1 and not _cif(manual.get("index_corectie")):
+        er.append("Declarația rectificativă D216 cere indexul de depunere al declarației inițiale (de pe recipisa ANAF), pe care iConta.eu nu îl "
+                  "are: scrie-l în „Index declarație inițială”.")
     return er
 
 
@@ -207,6 +225,10 @@ def build_xml(prof, an, luna, manual):
         at("luna", str(int(luna))),
         at("an", str(int(an))),
         at("d_rec", str(d_rec)),
+    ]
+    if d_rec == 1:   # [lotul 11, C77] structura XML D216 v1.0.0 rândul 1.1 (vezi erori_generare)
+        h.append(at("index_corectie", _cif(manual.get("index_corectie"))))
+    h += [
         at("nume", _esc(manual.get("nume"), 75)),
         at("cif", _cif(manual.get("cif"))),
         at("domiciliuFiscal", _esc(manual.get("domiciliuFiscal"), 200)),
@@ -221,7 +243,7 @@ def build_xml(prof, an, luna, manual):
         h.append(at("cif_imputernicit", _cif(manual.get("cif_imputernicit"))))
     rows = []
     for b in imob:
-        baza, imp = _calc_imobil(b, an)
+        baza, imp = _calc_imobil(b, an, d_rec)
         a = [
             at("judet_imobil", _esc(b.get("judet_imobil"), 60)),
             at("cod_judet_imobil", _cif(b.get("cod_judet_imobil"))),
@@ -240,7 +262,7 @@ def build_xml(prof, an, luna, manual):
             a.insert(6, at("nr_strada", _esc(b.get("nr_strada"), 40)))
         rows.append("  <bun_imobil " + " ".join(a) + "/>")
     for b in mob:
-        baza, imp = _calc_mobil(b, an)
+        baza, imp = _calc_mobil(b, an, d_rec)
         a = [
             at("an_detinere", str(_int(b.get("an_detinere")))),
             at("niv", str(_int(b.get("niv")))),
@@ -260,6 +282,14 @@ def genereaza(conn, schema, perioada, manual=None):
     an = int(getattr(perioada, "an", 0) or manual.get("an") or 0)
     luna = int(getattr(perioada, "luna", 0) or manual.get("luna") or 12)
     prof = pull(conn, schema, perioada)
+    # [lotul 11, C77] rectificativă dacă anul are o depunere înregistrată (oricare sursă) sau dacă e bifată în formular; indexul
+    # inițialei: cel scris în formular, altfel cel cunoscut al depunerii (indexul SPV / recipisa)
+    from core import rectificativa as _rect
+    _st = _rect.stabileste(conn, schema, "d216", an, bifata=_rect.bifata(manual))
+    manual["d_rec"] = _st.d_rec
+    if _st.d_rec and not _cif(manual.get("index_corectie")):
+        _prima = ((_st.dep or {}).get("toate") or [None])[0]
+        manual["index_corectie"] = _rect.index_depunere(_prima) or ""
     er = erori_generare(prof, manual)
     if er:
         raise ValueError("D216 nu se poate genera: " + " ".join(er))
@@ -269,4 +299,5 @@ def genereaza(conn, schema, perioada, manual=None):
                       impozit_mobile=tot["impozit_mobile"], total_plata_a=tot["totalPlata_A"],
                       nr_imobile=len(manual.get("imobile") or []),
                       nr_mobile=len(manual.get("mobile") or []))
+    _rect.aplica(res, _st)
     return xml, res

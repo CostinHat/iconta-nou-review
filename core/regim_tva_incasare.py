@@ -184,6 +184,9 @@ def stare(cur, azi=None):
             "fara_data": (not lista) and bool(indicator),
             "curenta": ({**{k: _iso(v) for k, v in ultima.items()}} if ultima else None),
             "perioade": [{k: _iso(v) for k, v in p.items()} for p in lista],
+            # [lotul 11, 428] perioadele în cuvinte („de la 01.11.2026 până la 31.12.2028”) — „Configurare emitere” le arăta numai când
+            # sistemul se aplica AZI; o perioadă care începe luna viitoare nu se vedea deloc
+            "text": text_perioade(lista),
             "avertismente": av}
 
 
@@ -241,6 +244,13 @@ def _context(cur):
     return _rand(r) if r else (None, None, None)
 
 
+def _refuz_adunat(ef):
+    """[440] {ok: False, camp: al primei, mesaj: toate, erori_campuri: fiecare} din colectorul `core.erori.ErorileFormularului`."""
+    d = ef.detaliu()
+    prima = next(iter(d["erori_campuri"]), {}).get("camp")
+    return {"ok": False, "camp": prima, "mesaj": d["mesaj"], "erori_campuri": d["erori_campuri"]}
+
+
 def salveaza(cur, aplica, de_la=None, pana_la=None, user_id=None, azi=None):
     """[428] Perioada CURENTĂ (ultima) a sistemului TVA la încasare: intrare, corectură, ieșire.
 
@@ -264,21 +274,30 @@ def salveaza(cur, aplica, de_la=None, pana_la=None, user_id=None, azi=None):
                 "mesaj": "Firma are înregistrat sistemul TVA la încasare (%s). Ieșirea din sistem are o dată: alege „Da” și scrie "
                          "„până la” (ultima zi în care s-a aplicat). O perioadă scrisă din greșeală se șterge din lista perioadelor."
                          % text_perioade(lista)}
+    # [lotul 11, deficiența 440] „toate erorile apar deodată, fiecare cu textul ei”: cele două date se verifică amândouă, iar regulile
+    # perioadei (`valideaza`, care întoarce deja lista) pleacă TOATE (`erori_campuri`), nu numai prima
+    from core.erori import ErorileFormularului as _Erori
+    ef = _Erori("Regimul TVA la încasare nu s-a salvat")
+    d1 = d2 = None
     try:
         d1 = _data(de_la) if de_la not in (None, "") else None
     except ValueError:
-        return {"ok": False, "camp": "tva_incasare_de_la", "mesaj": "Data „de la”: o dată (zi, lună, an)."}
+        ef.camp("tva_incasare_de_la", "Data „de la”: o dată (zi, lună, an).")
     try:
         d2 = _data(pana_la) if pana_la not in (None, "") else None
     except ValueError:
-        return {"ok": False, "camp": "tva_incasare_pana_la", "mesaj": "Data „până la”: o dată (zi, lună, an)."}
+        ef.camp("tva_incasare_pana_la", "Data „până la”: o dată (zi, lună, an).")
+    if ef:
+        return _refuz_adunat(ef)
     ultima = lista[-1] if lista else None
     corecteaza = bool(ultima and d1 and (ultima["pana_la"] is None or d1 <= ultima["pana_la"]))
     altele = lista[:-1] if corecteaza else lista
     platitor, tva_in, decont = _context(cur)
     er, av = valideaza(d1, d2, platitor, tva_in, decont, altele)
-    if er:
-        return {"ok": False, "camp": er[0][0], "mesaj": er[0][1]}
+    for _c, _m in er:
+        ef.camp(_c, _m)
+    if ef:
+        return _refuz_adunat(ef)
     if corecteaza and (ultima["de_la"], ultima["pana_la"]) == (d1, d2):
         return {"ok": True, "avertismente": av, "stare": stare(cur, azi)}
     _rf = _refuz_luna_inchisa(cur, _prima_zi_schimbata((ultima["de_la"], ultima["pana_la"]) if corecteaza else None, (d1, d2)))

@@ -83,6 +83,12 @@ def test_def_428_compensarea_muta_tva_la_incasare(patron, firma_e2e):
                          "document.querySelector('#cz-mesaj').innerText.includes('Ordin de compensare nr 7')", timeout=20000)
     patron.captura("confirmarea")
     assert "605,00 lei compensați" in pg.inner_text("#cz-mesaj")
+    # [lotul 11, 8c] confirmarea pe drumul unic (`api.dupaGenerare`): caseta verde, cu rândurile notelor citite din Registrul jurnal
+    pg.wait_for_selector("#cz-mesaj .caseta-ok .cok-linii", timeout=20000)
+    conf = " ".join(pg.inner_text("#cz-mesaj .caseta-ok").split())
+    for rand in ("401 = 4111 · 605,00 lei", "4428 = 4427 · 105,00 lei", "4426 = 4428 · 105,00 lei"):
+        assert rand in conf, (rand, conf)
+    assert "msg-ok" not in (pg.get_attribute("#cz-mesaj", "class") or "") and pg.is_disabled("#cz-genereaza")
     # HG 1/2016 pct.26 alin.(7): încasarea se face și prin „compensarea”; CF art.282 alin.(8) — 605 include TVA-ul 105
     assert _linii_compensare(s) == [("401", "4111", "605.00"), ("4428", "4427", "105.00"), ("4426", "4428", "105.00")], _linii_compensare(s)
     assert sql('SELECT document_ref, status FROM "%s".inregistrari WHERE id = (SELECT inregistrare_id FROM "%s".compensari)' % (s, s)) == \
@@ -99,7 +105,9 @@ def test_def_428_compensarea_muta_tva_la_incasare(patron, firma_e2e):
 def _client_a(patron, firma):
     """Fișa clientului A (persoană juridică), cu bifa „Persoană afiliată” pe Nu — starea de pornire (firma e2e se refolosește)."""
     s, tid = firma["schema"], firma["tenant_id"]
-    gasit = sql('SELECT id FROM "%s".clienti WHERE cui = %%s' % s, ("RO" + _A["tert_cui"],))   # fișa există deja (alt test al modulului)
+    # fișa există deja (alt test al modulului). [lotul 11, decizia Costin 10.3 pct.4: „CUI-ul se păstrează fără «RO» și fără spații”]
+    # contabilul scrie „RO24736200”, fișa îl păstrează „24736200” (`cui_forma.stocare`) — căutarea după forma păstrată
+    gasit = sql('SELECT id FROM "%s".clienti WHERE cui = %%s' % s, (_A["tert_cui"],))
     cid = gasit[0][0] if gasit else _ok(_api(patron, "POST", "/tenants/%d/clienti" % tid, {"nume": _A["tert_nume"], "cui": "RO" + _A["tert_cui"]}),
                                          "fișa clientului")["client_id"]
     sql('UPDATE "%s".clienti SET afiliat = false WHERE id = %%s' % s, (cid,))
@@ -156,5 +164,10 @@ def test_def_c73_clientul_cu_cui_existent_e_refuzat_numit_nu_500(patron, firma_e
     r = _api(patron, "POST", "/tenants/%d/clienti" % tid, {"nume": _A["tert_nume"] + " (a doua)", "cui": "RO" + _A["tert_cui"]})
     patron.captura()
     assert r["status"] == 409, r
-    assert "Există deja clientul" in str(r["json"]) and "RO" + _A["tert_cui"] in str(r["json"]), r
-    assert sql('SELECT count(*) FROM "%s".clienti WHERE cui = %%s' % s, ("RO" + _A["tert_cui"],)) == [(1,)], cid
+    # [lotul 11, decizia Costin 10.3 pct.4: „CUI-ul se păstrează fără «RO» și fără spații”] refuzul numește CUI-ul în forma păstrată
+    # („RO24736200” scris de contabil = fișa „24736200”) și clientul existent
+    det = r["json"]["detail"]
+    assert ("Există deja clientul %s cu CUI-ul %s" % (_A["tert_nume"], _A["tert_cui"])) in det["mesaj"], r
+    assert det["existent"]["client_id"] == cid, r
+    # fișa nu se dublează, în nicio formă a codului (cu „RO” sau fără)
+    assert sql('SELECT count(*) FROM "%s".clienti WHERE cui IN (%%s, %%s)' % s, (_A["tert_cui"], "RO" + _A["tert_cui"])) == [(1,)], cid

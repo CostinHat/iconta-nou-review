@@ -35,6 +35,10 @@ def _stari(tip_firma, platitor_tva, salariati, operatiuni_ic, d205_note, depuse_
     monkeypatch.setattr(ci, "d301_luni_operatiuni", lambda *a, **k: set())
     monkeypatch.setattr(ci, "d301_luni_facturi_ic", lambda *a, **k: set())  # [ruptura D301<->facturi] helper DB nou, monkeypatch ca vechiul (matricea ruleaza fara DB)
     monkeypatch.setattr(ci, "existenta_firma_an", lambda *a, **k: True, raising=False)  # [C existenta] helper DB nou; matricea nu-l atinge (declaratii_datorate fara existenta_fapt), monkeypatch defensiv
+    # [lotul 11, decizia Costin 10.3 „Semaforul D205 numără 457 preluat ca incomplet”] helper DB nou al semaforului D205; matricea e pe
+    # firme fără balanță de deschidere (cazul 457 preluat are testul lui: core/test_lot11_d_d205.py)
+    from core import d205 as _d205
+    monkeypatch.setattr(_d205, "dividende_preluate", lambda *a, **k: None)
     fapt = cf.declaratii_fapt(None, "x", vector, AZI)
     datorate = rez["datorate"] + fapt["datorate"]
     neaplicabile = rez["neaplicabile"] + fapt["neaplicabile"]
@@ -86,12 +90,12 @@ def test_matrice_forma(tip_firma, platitor_tva, salariati, operatiuni_ic, d205_n
         rupt.append("A5 neplatitor cu D300/D394 datorate: %s" % sorted(TVA_ONLY & dat))
 
     # A6: zero salariati => zero D112
-    if salariati == 0 and "d112" in dat:
+    if salariati == 0 and dat >= {"d112"}:
         rupt.append("A6 zero salariati cu D112 datorat")
 
     # A7 [B2]: neplatitor + operatiuni IC => D390 NU e datorat tacit, e GRI cu temei (art.316/317 necunoscut)
     if not platitor_tva and operatiuni_ic:
-        if "d390" in dat:
+        if dat >= {"d390"}:
             rupt.append("A7 D390 datorat tacit la neplatitor")
         gri_d390 = [d for d in neclar if d["tip"] == "d390"]
         if not (gri_d390 and (gri_d390[0].get("cauza") or gri_d390[0].get("motiv"))):

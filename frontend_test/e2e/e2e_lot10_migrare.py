@@ -68,6 +68,10 @@ def test_def_425_numai_soldurile_finale_spune_ce_lipseste_si_ce_afecteaza(patron
     for ce in ("Fișierul are numai soldurile finale", "până la 30.09.2026 lipsesc", "(D101)", "situațiile financiare anuale",
                "plafonul de microîntreprindere", "controalele cumulate de TVA"):
         assert ce in av, (ce, av)
+    # [lotul 11, 424 — comanda Costin 11.1 pct.13, DS cap.9 v2.98] „ce s-a citit” (și conturile cu sold 0 care nu intră) e o notă pliată,
+    # `details#mig-citit`, cu coloanele soldului în titlu; avertismentul rulajelor (#mig-rulaje) rămâne la vedere. Contabilul o deschide.
+    pg.click("#mig-citit > summary")
+    pg.wait_for_function("() => document.querySelector('#mig-citit').open", timeout=5000)
     t = " ".join(patron.fereastra().split())
     assert "9 conturi · debit 79.525,00 · credit 79.525,00" in t and "10 conturi cu sold final 0 nu intră" in t, t[:1500]
 
@@ -83,6 +87,7 @@ def test_def_425_balanta_completa_intra_cu_rulajele_si_cere_metoda_de_stoc(patro
     s = firma_mig["schema"]
     _pas(patron, firma_mig, "Solduri ini")
     _incarca(patron, "balanta_saga_completa.xlsx", open(FISIER, "rb").read(), "#mig-salveaza-sold", tip=XLSX)
+    pg.click("#mig-citit summary")     # [lotul 11, 424] ce s-a citit din fișier stă pliat sub primul rând (rezumatul lipit sus e scurt)
     t = " ".join(patron.fereastra().split())
     patron.captura("previzualizare")
     assert "19 conturi · debit 79.525,00 · credit 79.525,00" in t, t[:1500]
@@ -196,7 +201,7 @@ def test_def_420_salariatii_fara_norma_intra_cu_propunerea_editabila(patron, fir
     _intro, propuse, rand2 = _importa_fara_norma(patron, firma_sal)
     assert propuse == ["intreaga", "true", "intreaga", "true"]          # propunerea comenzii: normă întreagă, funcție de bază Da
     assert "propusă — de verificat" in rand2 and "intră, cu observație" in rand2, rand2
-    patron.pg.wait_for_function("() => document.body.innerText.includes('2 salariați importați.')", timeout=30000)
+    patron.pg.wait_for_function("() => document.body.innerText.includes('Salariați: 2 noi, 0 fișe actualizate.')", timeout=30000)
     assert sql('SELECT nume, part_time, ore_zi, functie_baza, de_verificat FROM "%s".salariati ORDER BY nume' % s) == [
         ("IONESCU", True, 4, True, ["functie_baza"]), ("POPESCU", False, 8, True, ["tip_norma", "functie_baza"])]
 
@@ -206,12 +211,12 @@ def test_def_423_importul_salariatilor_confirma_si_numara_cei_de_verificat(patro
     «de verificat»”; c: „textul ecranului Salariați spune că importul se face doar după ce toate sunt corectate, dar salariații intră cu
     observații — textul urmează comportamentul.”
     Pașii: Firme -> Migrare cabinet -> Salariați (textul: „rândurile bune intră, cele respinse … se arată”) -> firma -> fișierul fără
-    normă și funcție de bază -> „Salvează” -> în lista Salariați, confirmarea „2 salariați importați. 2 salariați au date de verificat în
+    normă și funcție de bază -> „Salvează” -> în lista Salariați, confirmarea „Salariați: 2 noi, 0 fișe actualizate. 2 salariați au date de verificat în
     Stat de plată” -> rândul firmei: „✓ gata · 2 de verificat”."""
     pg = patron.pg
     intro, _propuse, _rand2 = _importa_fara_norma(patron, firma_sal)
     assert "doar după ce toate sunt corectate" not in intro and "rândurile bune intră, cele respinse" in intro, intro      # 423 c
-    pg.wait_for_function("() => document.body.innerText.includes('2 salariați importați. 2 salariați au date de verificat în Stat de "
+    pg.wait_for_function("() => document.body.innerText.includes('Salariați: 2 noi, 0 fișe actualizate. 2 salariați au date de verificat în Stat de "
                          "plată')", timeout=30000)
     patron.captura("confirmare")                                                                                    # 423 a
     assert pg.locator(".mig-frand").count() >= 1                       # e lista stratului (drumul de cabinet), nu meniul firmei

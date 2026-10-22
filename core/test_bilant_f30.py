@@ -26,6 +26,7 @@ from psycopg2.extras import RealDictCursor
 from core import bilant as b, bilant_api as ba, db as _db, tenant_provisioning as _tp
 
 _SCHEMA = "ztest_bilant_f30"
+_CAB = "INSERT INTO public.accounting_firms (nume, calit_intocmit, nume_intocmit) VALUES ('Cabinet sintetic', 12, 'IONESCU MARIA') RETURNING id"
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -37,11 +38,15 @@ def cur():
             with conn.cursor(cursor_factory=RealDictCursor) as c:
                 c.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA)
                 c.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA))
+                # [lotul 11, decizia 10.3] cabinetul sintetic care ține firma, cu întocmitorul bilanțului completat (antetul îl cere)
+                c.execute(_CAB)
+                c.execute("INSERT INTO public.tenants (schema_name, nume, accounting_firm_id, creat_la) VALUES (%s, 'PROBA SRL', %s, "
+                          "'2020-01-01')", (_SCHEMA, c.fetchone()["id"]))
                 c.execute("SET search_path TO %s, public" % _SCHEMA)
                 c.execute("INSERT INTO firma_profil (id, nume, cui) VALUES (1, 'PROBA SRL', '14399840') ON CONFLICT (id) DO NOTHING")
                 c.execute("UPDATE firma_profil SET data_infiintare = '2025-01-10', reg_com = 'J40/1/2025', caen = '6202', adresa = 'Str 1', "
                           "oras = 'Buc', judet = 'B', declarant_nume = 'Popescu', declarant_prenume = 'Ion', "
-                          "declarant_functie = 'ADMINISTRATOR', mare_contribuabil = false, forma_proprietate = '35' WHERE id = 1")  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
+                          "declarant_functie = 'ADMINISTRATOR', mare_contribuabil = false, forma_proprietate = '35', interes_public = false WHERE id = 1")  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
                 yield c
         finally:
             conn.rollback()
@@ -120,7 +125,7 @@ def test_def_c16_s1003_unitatile_cu_profit_sunt_din_profitul_net():
     f20 = b.f20_complet_din_rulaje({"704": (0, 5000), "641": (1000, 0), "711": (300, 0), "721": (0, 200)})
     assert (f20[8], f20[9], f20[69], f20[70]) == (300, 200, 3900, 0), f20
     x = b.xml_s1003({"cui_numeric": 14399840, "nume": "Z", "reg_com": "J40/1/2020", "caen": "6202", "cod_judet": 40, "mare_contribuabil": False,
-                     "forma_proprietate": "35", "declarant_nume": "Pop", "declarant_prenume": "Ion"}, 2025, {}, {}, {}, f20)  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
+                     "forma_proprietate": "35", "declarant_nume": "Pop", "declarant_prenume": "Ion", "interes_public": False, "calit_intocmit": 12, "intocmit_nume": "IONESCU MARIA"}, 2025, {}, {}, {}, f20)  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
     assert dict(((int(r), int(c)), int(v)) for r, c, v in re.findall(r'\bF30_00(\d)(\d)="(\d+)"', x)) == {
         (1, 1): 1, (1, 2): 3900, (2, 1): 0, (2, 2): 0, (3, 1): 0, (3, 2): 0}, x
 

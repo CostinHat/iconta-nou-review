@@ -5,8 +5,9 @@ sintetică „E2E Probă …” în baza de test, iar `test_predare_cifre` a ie�
 publica staticul, `cifre_referinta.py -h` scria `-h.json` / `-h.md`. Mecanismul unic: `scripts/argumente_script.py`.
 
 Rulat ca proces, cu limită de timp și cu mediul tăiat (E2E_TEMP / baza de neatins): dacă un script ar porni totuși lucrul, pică pe timp
-sau pe cod, nu trece. LIMITĂ: privește cele trei scripturi de mai jos; un script nou cu argumente citite de mână intră în SCRIPTURI."""
+sau pe cod, nu trece. LIMITĂ: privește scripturile de mai jos (lotul 11: și `ciorne_depasite.py`); un script nou cu argumente citite de mână intră în SCRIPTURI."""
 import os
+import re
 import subprocess
 import sys
 
@@ -16,7 +17,7 @@ RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(RAD, "scripts"))
 import argumente_script as a  # noqa: E402
 
-SCRIPTURI = ("e2e_poarta.py", "publica_static.py", "cifre_referinta.py")
+SCRIPTURI = ("e2e_poarta.py", "publica_static.py", "cifre_referinta.py", "ciorne_depasite.py")
 
 
 def _ruleaza(script, *argv):
@@ -39,7 +40,9 @@ def test_uzul_se_tipareste_si_nimic_nu_porneste(script, cerere):
 def test_argumentul_necunoscut_e_refuzat_inainte_de_lucru(script):
     """MUTAȚIE: refuzul flagurilor necunoscute scos -> scriptul pornește -> pică."""
     r = _ruleaza(script, "--ajutor")
-    assert r.returncode == 2 and "argument necunoscut: --ajutor" in r.stderr and "nimic nu pornește" in r.stderr, \
+    # primul rând al refuzului: „[<script>] argument necunoscut: --ajutor — nimic nu pornește.” (rândul întreg, nu fragmente)
+    prim = (r.stderr.splitlines() or [""])[0]
+    assert r.returncode == 2 and re.fullmatch(r"\[[^\]]+\] argument necunoscut: --ajutor — nimic nu pornește\.", prim), \
         (script, r.returncode, r.stderr[-300:])
 
 

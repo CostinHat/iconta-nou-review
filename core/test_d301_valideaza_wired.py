@@ -55,11 +55,14 @@ def test_tip_out_of_nomenclator_blocheaza(monkeypatch):
 def test_valuta_out_of_nomenclator_blocheaza(monkeypatch):
     with pytest.raises(ValueError) as ei:
         _gen(monkeypatch, [_op(tip_valuta="ZZZ")])
-    assert "neacceptata" in str(ei.value), str(ei.value)
+    assert ei.value.args == ("D301 nu se poate genera: Operațiunea F1: valuta 'ZZZ' neacceptată (nomenclator ANAF).",), ei.value.args
 
 
 def test_calea_valida_nu_e_rupta_de_cablare(monkeypatch):
     """Wiring valideaza() nu trebuie sa blocheze o operatiune complet valida."""
     xml, res = _gen(monkeypatch, [_op()])
-    assert "<declaratie301" in xml
+    import re
+    import xml.etree.ElementTree as _ET
+    rad = _ET.fromstring(re.sub(r"^\s*<\?xml[^>]*\?>", "", xml))   # elementul rădăcină (core/test_garzi_pe_text.py)
+    assert rad.tag == "{mfp:anaf:dgti:d301:declaratie:v1}declaratie301", rad.tag
     assert res.operatiuni and res.operatiuni[0].nr_doc == "F1"

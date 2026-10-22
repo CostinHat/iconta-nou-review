@@ -58,6 +58,17 @@ def citeste(conn_schema):
     }
 
 
+def _refuz_adunat(er):
+    """[lotul 11, 440] {ok: False, cod / camp: ale primei, mesaj: toate (o singură = textul ei, ca înainte), erori_campuri: fiecare}."""
+    from core.erori import ErorileFormularului as _Erori
+    f = _Erori("Vectorul fiscal nu s-a salvat")
+    for _cod, c, m in er:
+        f.camp(c, m)
+    d = f.detaliu()
+    cod, prima, _m = next(iter(er))
+    return {"ok": False, "cod": cod, "camp": prima, "mesaj": d["mesaj"], "erori_campuri": d["erori_campuri"]}
+
+
 def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
              nume=None, cui=None, inreg_art317=None, tva_data_inceput=None, user_id=None):  # [p83_upsert] UPSERT
     """Scrie vectorul. Valideaza valorile. Daca nu e platitor TVA, decontul devine NULL.
@@ -70,15 +81,17 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
     # None (necompletat) -> eroare, nu False. Altfel selectul fara optiune-placeholder din Date firma
     # trimitea "Nu" pe firma cu platitor_tva=NULL si se persista o alegere pe care contabilul n-a facut-o
     # (Regula 4). Vezi DECIZII 23.07 + DESIGN_SYSTEM cap.17; simetric cu operatiuni_ic de mai jos.
+    # [lotul 11, deficiența 440, comanda Costin 11.1 pct.16: „toate erorile apar deodată, fiecare cu textul ei”] fiecare valoare se
+    # verifică și se ADAUGĂ (cod, câmp, mesaj); refuzul pleacă o dată, cu toate (`_refuz_adunat`). Perioada închisă (starea evidenței)
+    # și identitatea lipsă rămân refuzuri unice.
+    er = []
     if platitor_tva is None:
-        return {"ok": False, "cod": "TVA_LIPSA", "camp": "platitor_tva",
-                "mesaj": "Înregistrată în scopuri de TVA: alege Da sau Nu (obligatoriu)."}
+        er.append(("TVA_LIPSA", "platitor_tva", "Înregistrată în scopuri de TVA: alege Da sau Nu (obligatoriu)."))
     tva = bool(platitor_tva)
     # operatiuni_ic OBLIGATORIU la migrare (ca tip_decont) - decide obligatia D390. Fara default tacit:
     # None (necompletat) -> eroare, nu False. Vezi DECIZII 23.07 + DESIGN_SYSTEM cap.17.
     if operatiuni_ic is None:
-        return {"ok": False, "cod": "IC_LIPSA", "camp": "operatiuni_ic",
-                "mesaj": "Operațiuni intracomunitare: alege Da sau Nu (obligatoriu)."}
+        er.append(("IC_LIPSA", "operatiuni_ic", "Operațiuni intracomunitare: alege Da sau Nu (obligatoriu)."))
     ic = bool(operatiuni_ic)
     # [art.317] inregistrare speciala scopuri TVA (art. 317 CF). [lotul 07.10 B] None = neales: rămâne nul și se cere la prima
     # folosire (D301 pers_inreg) — nu devine „Nu” la salvarea vectorului
@@ -95,14 +108,14 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
             try:
                 tva_inceput = _dt.date.fromisoformat(_di).isoformat()
             except (ValueError, TypeError):
-                return {"ok": False, "cod": "TVA_INCEPUT_INVALID", "camp": "tva_data_inceput",
-                        "mesaj": "Data înregistrării în scopuri de TVA trebuie în formatul AAAA-LL-ZZ (ex. 2020-01-15)."}
+                er.append(("TVA_INCEPUT_INVALID", "tva_data_inceput",
+                           "Data înregistrării în scopuri de TVA trebuie în formatul AAAA-LL-ZZ (ex. 2020-01-15)."))
 
     decont = (tip_decont or "").strip().lower()
     if tva:
         if decont not in _DECONTURI:
-            return {"ok": False, "cod": "DECONT_INVALID", "camp": "tip_decont",
-                    "mesaj": "Periodicitate decont TVA: alege Lunar sau Trimestrial (obligatoriu la plătitor de TVA)."}
+            er.append(("DECONT_INVALID", "tip_decont",
+                       "Periodicitate decont TVA: alege Lunar sau Trimestrial (obligatoriu la plătitor de TVA)."))
     else:
         decont = None
 
@@ -118,14 +131,15 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
             # PFA/II/PFL n-are regim CIT (impozit pe venit prin D212). Gol -> NULL valid; valoare ne-goala
             # -> eroare explicita (nu stocam micro/profit inexistent la partida simpla). Vezi DECIZII 23.07.
             if regim_in:
-                return {"ok": False, "cod": "REGIM_LA_PARTIDA_SIMPLA", "camp": "regim_fiscal",
-                        "mesaj": "Firmă în partidă simplă (PFA/II/PFL) — nu are regim micro/profit; lasă regimul gol."}
+                er.append(("REGIM_LA_PARTIDA_SIMPLA", "regim_fiscal",
+                           "Firmă în partidă simplă (PFA/II/PFL) — nu are regim micro/profit; lasă regimul gol."))
             regim = None
         else:
             if regim_in not in _REGIMURI:
-                return {"ok": False, "cod": "REGIM_INVALID", "camp": "regim_fiscal",
-                        "mesaj": "Regim fiscal: alege microîntreprindere sau impozit pe profit (obligatoriu)."}
+                er.append(("REGIM_INVALID", "regim_fiscal", "Regim fiscal: alege microîntreprindere sau impozit pe profit (obligatoriu)."))
             regim = regim_in
+        if er:
+            return _refuz_adunat(er)
         if exista:
             # [R46, 26.08.2026] Vectorul DECIDE ce declaratii se datoreaza. Peste o perioada
             # inchisa nu se schimba: ar rescrie ce s-a datorat pentru luni deja depuse. Calea
@@ -154,13 +168,14 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
             _repo_fp.jurnalizeaza_regim_tva(cur, vechi, {"platitor_tva": tva, "tip_decont": decont,
                                                          "inreg_art317": art317}, user_id)
         else:
+            from core import cui_forma as _cf
             if not nume or not cui:
                 return {"ok": False, "cod": "FARA_IDENTITATE",
                         "mesaj": "Firma nu are încă datele de identificare (denumire și CUI) — completează-le înainte de a salva vectorul fiscal."}
             cur.execute(
                 "INSERT INTO firma_profil (id, nume, cui, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, inreg_art317, platitor_tva_anaf_inceput) "
                 "VALUES (1, %s, %s, %s, %s, %s, %s, %s, %s)",
-                (nume, cui, regim, tva, decont, ic, art317, tva_inceput))
+                (nume, _cf.stocare(cui), regim, tva, decont, ic, art317, tva_inceput))   # [lotul 11, decizia 10.3] fără „RO” / spații
             # prima salvare a vectorului pe o firmă fără profil: jurnalizată cu vechiul gol (consecința 1 a pivotului)
             _repo_fp.jurnalizeaza_regim_tva(cur, None, {"platitor_tva": tva, "tip_decont": decont,
                                                         "inreg_art317": art317}, user_id)

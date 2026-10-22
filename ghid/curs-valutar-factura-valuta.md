@@ -2,7 +2,7 @@
 title: Ce curs valutar folosești pentru o factură în valută
 description: Pentru o factură în valută, cursul de TVA este ultimul curs BNR comunicat în ziua anterioară (valabil pentru ziua operațiunii), conform art. 290 alin. (2) din Codul fiscal și pct. 35 din Normele HG 1/2016. Cursul se fixează la data exigibilității și nu se recalculează la încasare.
 published: 2026-09-21
-modified: 2026-09-21
+modified: 2026-10-21
 poarta: v1
 functionalitate: F025
 ---
@@ -48,7 +48,7 @@ Dacă încasezi pe 10 iunie, la un curs de 5,0100 lei/EUR, diferența de 40 de l
 
 ## Ce face iConta
 
-La emiterea unei facturi în valută, iConta preia cursurile oficiale direct de la BNR (curs.bnr.ro) și le stochează local, apoi fixează pe factură cursul cel mai recent cu dată de valabilitate ≤ data operațiunii — adică exact „ultimul curs comunicat" din art. 290 alin. (2). Cursul se îngheață la emitere și nu se recalculează ulterior. Pentru valutele cotate la 100 de unități (HUF, JPY și altele), aplicația împarte automat la multiplicator, ca să nu iasă o bază de o sută de ori mai mare.
+La emiterea unei facturi în valută, iConta preia cursurile oficiale direct de la BNR (curs.bnr.ro) și le stochează local, apoi fixează pe factură ultimul curs comunicat de BNR înaintea zilei operațiunii (cel comunicat în ziua bancară anterioară, valabil în ziua operațiunii) — adică exact „ultimul curs comunicat" din art. 290 alin. (2). Cursul se îngheață la emitere și nu se recalculează ulterior. Pentru valutele cotate la 100 de unități (HUF, JPY și altele), aplicația împarte automat la multiplicator, ca să nu iasă o bază de o sută de ori mai mare.
 
 Ce rămâne al tău: alegerea sursei de curs (BNR / BCE / banca de decontare) și stabilirea corectă a datei faptului generator, de care atârnă ziua cursului.
 

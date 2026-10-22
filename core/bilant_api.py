@@ -453,7 +453,19 @@ def profil_bilant(p):
         "forma_proprietate": p.get("forma_proprietate"),
         "declarant_nume": p.get("declarant_nume"),
         "declarant_prenume": p.get("declarant_prenume"),
+        "interes_public": p.get("interes_public"),   # [lotul 11, decizia 10.3] NULL = nedeclarat -> refuz
     }
+
+
+def intocmitor_cabinet(cur, schema):
+    """[lotul 11, decizia Costin 10.3 pct.4: „calitatea întocmitorului în profilul cabinetului”] Întocmitorul bilanțului, din profilul
+    cabinetului care ține firma (`public.accounting_firms`, coloanele din core/migrare_intocmitor_bilant.py): {calit_intocmit,
+    intocmit_nume, cif_intocmit, nri_intocmit}; valori None când cabinetul nu le-a completat (`bilant.erori_intocmitor` le cere)."""
+    cur.execute("SELECT af.calit_intocmit, af.nume_intocmit, af.cif_intocmit, af.nri_intocmit FROM public.tenants t "
+                "JOIN public.accounting_firms af ON af.id = t.accounting_firm_id WHERE t.schema_name = %s", (schema,))
+    r = cur.fetchone()
+    r = (r if isinstance(r, (tuple, list)) else tuple(r.values())) if r else (None, None, None, None)
+    return {"calit_intocmit": r[0], "intocmit_nume": r[1], "cif_intocmit": r[2], "nri_intocmit": r[3]}
 
 
 #: [lotul 10, C69] câmpul din Date firmă pe care refuzul îl aduce în vedere, în ordinea verificărilor (primul lipsă)
@@ -461,13 +473,31 @@ _CAMP_ECRAN = (("reg_com", lambda pr: not str(pr.get("reg_com") or "").strip()),
                ("judet", lambda pr: not pr.get("cod_judet")),
                ("mare_contribuabil", lambda pr: pr.get("mare_contribuabil") is None),
                ("forma_proprietate", lambda pr: str(pr.get("forma_proprietate") or "").strip() not in _b.FORME_PROPRIETATE),
-               ("declarant_nume", lambda pr: not _b.nume_administrator(pr)))
+               ("declarant_nume", lambda pr: not _b.nume_administrator(pr)),
+               ("interes_public", lambda pr: pr.get("interes_public") is None))   # [lotul 11, decizia 10.3]
+
+#: [lotul 11, decizia 10.3] câmpurile întocmitorului, în profilul cabinetului (ecranul `date_cabinet`, id-urile din
+#: `static/js/ecrane/intocmitor_bilant.js`), în ordinea verificărilor din `bilant.erori_intocmitor`
+_CAMP_CABINET = (("calit_intocmit", lambda pr: pr.get("calit_intocmit") not in _b.CALITATI_INTOCMIT),
+                 ("nume_intocmit", lambda pr: not str(pr.get("intocmit_nume") or "").strip()),
+                 ("cif_intocmit", lambda pr: pr.get("calit_intocmit") in _b.CODURI_CALITATE_CU_CIF
+                  and not str(pr.get("cif_intocmit") or "").strip()))
 
 
 def camp_lipsa(prof):
     """Câmpul din Date firmă pe care refuzul îl aduce în vedere (`RefuzGenerare.camp_ecran`): primul lipsă, în ordinea verificărilor."""
     _camp = next((c for c, lipsa in _CAMP_ECRAN if lipsa(prof)), None)
     return ("df-" + _camp) if _camp else None
+
+
+def tinta_refuz(prof):
+    """(ecran, câmp) spre care trimite refuzul bilanțului: întâi Date firmă (primul câmp lipsă), apoi profilul cabinetului (întocmitorul,
+    decizia 10.3). Un refuz are un singur buton; textul refuzului le numește pe toate."""
+    c = camp_lipsa(prof)
+    if c:
+        return "date_firma", c
+    _camp = next((c for c, lipsa in _CAMP_CABINET if lipsa(prof)), None)
+    return ("date_cabinet", "cab-" + _camp) if _camp else ("date_firma", None)
 
 
 def cere_an_incheiat(an, tip):
@@ -487,11 +517,12 @@ def genereaza(conn, schema, an):
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
         cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         p = dict(cur.fetchone() or {})
+        _int = intocmitor_cabinet(cur, schema)   # [lotul 11, decizia 10.3] întocmitorul, din profilul cabinetului
         f10p, f10c, f20p, f30p = coloanele(cur, schema, "s1005", an, av)
         rl = _rulaje_67(cur, schema, an)
         av.extend(avertismente_rulaje(cur, schema, an))
     av.extend(avertismente_evidenta_an(conn, schema, an))   # [lotul 10, 436] ce e în afara evidenței validate a anului
-    prof = profil_bilant(p)
+    prof = dict(profil_bilant(p), **_int)
     if not prof["reg_com"]:
         av.append("Nr. Reg. Com. lipsă în Profil firma (câmp obligatoriu S1005).")
     f20c = _b.f20_din_rulaje(rl)
@@ -500,7 +531,8 @@ def genereaza(conn, schema, an):
                   "provizioanele sau veniturile în avans pot explica diferența.")
     _er = erori_generare(prof)
     if _er:   # [lotul 10, C69] refuzul trimite la Date firmă (butonul și câmpul de completat), ca la D406
-        raise RefuzGenerare("Bilanț nu se poate genera: " + " ".join(_er), ecran="date_firma", camp_ecran=camp_lipsa(prof))
+        _ecran, _camp = tinta_refuz(prof)   # [lotul 11, decizia 10.3] Date firmă sau profilul cabinetului (întocmitorul)
+        raise RefuzGenerare("Bilanț nu se poate genera: " + " ".join(_er), ecran=_ecran, camp_ecran=_camp)
     return _b.xml_s1005(prof, an, f10p, f10c, f20p, f20c, f30p, _b.f30_din_rulaje(rl)), av
 
 
@@ -512,13 +544,15 @@ def genereaza_s1003(conn, schema, an):
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
         cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         p = dict(cur.fetchone() or {})
+        _int = intocmitor_cabinet(cur, schema)   # [lotul 11, decizia 10.3] întocmitorul, din profilul cabinetului
         f10p, f10c, f20p, _f30p = coloanele(cur, schema, "s1003", an, av)
         rl = _rulaje_67(cur, schema, an)
         av.extend(avertismente_rulaje(cur, schema, an))
     av.extend(avertismente_evidenta_an(conn, schema, an))   # [lotul 10, 436] ce e în afara evidenței validate a anului
-    prof = profil_bilant(p)
+    prof = dict(profil_bilant(p), **_int)
     f20c = _b.f20_complet_din_rulaje(rl)
     _er = erori_generare(prof)
     if _er:   # [lotul 10, C69] refuzul trimite la Date firmă (butonul și câmpul de completat), ca la D406
-        raise RefuzGenerare("Bilanț nu se poate genera: " + " ".join(_er), ecran="date_firma", camp_ecran=camp_lipsa(prof))
+        _ecran, _camp = tinta_refuz(prof)   # [lotul 11, decizia 10.3] Date firmă sau profilul cabinetului (întocmitorul)
+        raise RefuzGenerare("Bilanț nu se poate genera: " + " ".join(_er), ecran=_ecran, camp_ecran=_camp)
     return _b.xml_s1003(prof, an, f10p, f10c, f20p, f20c), av

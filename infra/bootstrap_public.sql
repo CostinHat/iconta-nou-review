@@ -61,7 +61,13 @@ CREATE TABLE IF NOT EXISTS public.accounting_firms (
     activ boolean DEFAULT true NOT NULL,
     creat_la timestamp with time zone DEFAULT now() NOT NULL,
     educatie_4ochi_la_nr integer DEFAULT 0 NOT NULL,
-    patru_ochi_activ boolean DEFAULT false NOT NULL
+    patru_ochi_activ boolean DEFAULT false NOT NULL,
+    -- [lotul 11, decizia Costin 10.3 pct.4] întocmitorul bilanțului (oglinda core/migrare_intocmitor_bilant._DDL_PUBLIC)
+    calit_intocmit smallint,
+    nume_intocmit character varying(75),
+    cif_intocmit character varying(13),
+    nri_intocmit character varying(15),
+    CONSTRAINT accounting_firms_calit_intocmit_chk CHECK (calit_intocmit IS NULL OR calit_intocmit IN (11, 12, 13, 21, 22))
 );
 
 DO $$ BEGIN
@@ -170,7 +176,7 @@ ALTER SEQUENCE public.audit_log_id_seq OWNED BY public.audit_log.id;
 CREATE TABLE IF NOT EXISTS public.curs_bnr_zilnic (
     data date NOT NULL,
     moneda character varying(3) NOT NULL,
-    curs numeric(12,4) NOT NULL,
+    curs numeric NOT NULL,
     luat_la timestamp with time zone DEFAULT now() NOT NULL
 );
 
@@ -948,3 +954,23 @@ CREATE TRIGGER declaratii_coada_rezolva_notificari AFTER INSERT OR UPDATE OF sta
   FOR EACH ROW EXECUTE FUNCTION public.notificari_rezolva_din_coada();
 -- [08.10, decizia Costin U2] „O declarație anterioară se poate marca «depusă în afara iConta», cu recipisă opțională.” (sursa = 'extern')
 ALTER TABLE public.declaratii_depuse ADD COLUMN IF NOT EXISTS recipisa text;
+-- [lotul 11, CUI fără „RO”] codul fiscal se stochează fără prefixul RO (CF art.318 alin.(1): prefixul e al codului de TVA);
+-- oglinda core/migrare_cui_fara_ro.SQL_PUBLIC (funcțiile și triggerele pe public.tenants / public.accounting_firms)
+CREATE OR REPLACE FUNCTION public.cui_stocare(v text) RETURNS text AS $$
+  SELECT CASE WHEN v IS NULL OR btrim(v) = '' THEN v ELSE regexp_replace(regexp_replace(upper(v), '[\s\u0085\u00a0\u2007\u202f\u001c-\u001f]', '', 'g'), '^RO([0-9]+)$', '\1') END
+$$ LANGUAGE sql IMMUTABLE;
+CREATE OR REPLACE FUNCTION public.cui_normalizeaza() RETURNS trigger AS $$
+DECLARE c text; v text; n text; j jsonb := '{}'::jsonb;
+BEGIN
+  FOREACH c IN ARRAY TG_ARGV LOOP
+    v := to_jsonb(NEW) ->> c;
+    n := public.cui_stocare(v);
+    IF n IS DISTINCT FROM v THEN j := j || jsonb_build_object(c, n); END IF;
+  END LOOP;
+  IF j <> '{}'::jsonb THEN NEW := jsonb_populate_record(NEW, j); END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON public.tenants;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cui ON public.tenants FOR EACH ROW EXECUTE FUNCTION public.cui_normalizeaza('cui');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON public.accounting_firms;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cui, cif_intocmit ON public.accounting_firms FOR EACH ROW EXECUTE FUNCTION public.cui_normalizeaza('cui', 'cif_intocmit');

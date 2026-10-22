@@ -146,6 +146,9 @@ class RezultatD100:
     sinteza: list = field(default_factory=list)
     # [376–378, 18.10.2026] la impozitul pe profit: calculul pe rezultatul fiscal cumulat (`profit_trimestru`), pentru a doua cale și ecran
     profit: dict = field(default_factory=dict)
+    # [lotul 11, C77] o D100 peste una deja depusă pe trimestru: textul de pe ecran și depunerea pe care s-a sprijinit (D100 n-are d_rec)
+    rectificativa: object = None
+    depunere_anterioara_nr: object = None
 
 
 def calcul_d100(prof, an, luna, obligatii):
@@ -511,6 +514,59 @@ def obligatii_perioada(conn, schema, perioada, prof=None, venituri=None, cheltui
     return obligatii, {}
 
 
+def coduri_declarate(xmls):
+    """[lotul 11, C77] {cod_oblig: suma_dat} din D100-urile depuse pe trimestru (ultima depunere care declară codul câștigă)."""
+    import xml.etree.ElementTree as _ET
+    decl = {}
+    for x in xmls:
+        for el in _ET.fromstring(x.encode("utf-8") if isinstance(x, str) else x).iter():
+            if el.tag.rsplit("}", 1)[-1] == "obligatie":
+                decl[str(el.attrib.get("cod_oblig"))] = int(el.attrib.get("suma_dat") or 0)
+    return decl
+
+
+def _peste_depusa(conn, schema, perioada, res, prof):
+    """[lotul 11, C77] D100 pe un trimestru cu D100 deja înregistrată: obligațiile DECLARATE se corectează numai prin D710 (OPANAF
+    587/2016 anexa nr.4: „Corectarea obligațiilor declarate eronat în formular se face prin depunerea formularului 710 «Declarație
+    rectificativă»”; anexa nr.5 cap.I: D710 corectează impozitele „declarate în formularul 100”). D100 nu are bifă de rectificativă:
+    o a doua D100 cu aceleași obligații le-ar declara de două ori. Ce poate cuprinde = numai obligațiile încă nedeclarate pe trimestru
+    (o obligație omisă e nedeclarată: anexa nr.4, „echivalează cu nedeclararea obligației respective”). Fără conținutul depunerii,
+    obligațiile declarate nu se pot afla -> refuz numit."""
+    from core import rectificativa as _rect
+    from core.erori import RefuzGenerare
+    from core.pdf_util import bani as _bani
+    st = _rect.stabileste(conn, schema, "d100", perioada.an, trim=perioada.trim)
+    if st.dep is None:
+        return res
+    per = "T%d/%d" % (perioada.trim, perioada.an)
+    deps = st.dep["toate"]
+    fara = [d for d in deps if not d.get("xml")]
+    if fara:
+        raise RefuzGenerare(
+            "D100 pe %s e deja înregistrată: %s, iar conținutul ei nu e în iConta.eu. O obligație declarată se corectează numai prin "
+            "D710 (OPANAF 587/2016, instrucțiunile formularului 100); fără declarația depusă, iConta.eu nu știe ce obligații conține, "
+            "deci nu generează o a doua D100 care le-ar declara din nou." % (per, _rect.descriere_depunere(fara[-1])))
+    decl = coduri_declarate([d["xml"] for d in deps])
+    noi = [o for o in res.obligatii if o.cod_oblig not in decl]
+    if not noi:
+        dif = ["codul %s: declarat %s, acum %s" % (o.cod_oblig, _bani(decl[o.cod_oblig], "lei"), _bani(o.suma_dat, "lei"))
+               for o in res.obligatii if decl.get(o.cod_oblig) != o.suma_dat]
+        raise RefuzGenerare(
+            "D100 pe %s e deja depusă (%s) cu toate obligațiile de acum. %s O obligație declarată se corectează numai prin D710 "
+            "(OPANAF 587/2016, instrucțiunile formularului 100), nu printr-o a doua D100." % (
+                per, _rect.descriere_depunere(st.dep),
+                ("Diferențe: %s; se corectează în D710." % "; ".join(dif)) if dif else "Nicio sumă nu diferă: nu e nimic de corectat."))
+    vechi = [o.cod_oblig for o in res.obligatii if o.cod_oblig in decl]
+    nou = calcul_d100(prof, res.an, res.luna, [{"cod_oblig": o.cod_oblig, "suma_dat": o.suma_dat, "cod_bugetar": o.cod_bugetar,
+                                                 "scadenta": o.scadenta, "cota": o.cota} for o in noi])
+    res.obligatii, res.total_plata_a = nou.obligatii, nou.total_plata_a
+    res.rectificativa = ("D100 numai cu obligațiile încă nedeclarate pe %s (codurile %s), peste %s%s." % (
+        per, ", ".join(o.cod_oblig for o in noi), _rect.descriere_depunere(st.dep),
+        ("; codurile %s, declarate acolo, se corectează numai prin D710" % ", ".join(vechi)) if vechi else ""))
+    res.depunere_anterioara_nr = st.nr
+    return res
+
+
 def genereaza(conn, schema, perioada, manual=None):
     """D100 trimestrial (contract uniform A1). `perioada.trim` (1-4) -> luna raportare = trim*3.
     `manual` accepta DOAR cheia 'cota' (procent impozit; micro implicit 1, profit implicit 16)."""
@@ -553,6 +609,7 @@ def genereaza(conn, schema, perioada, manual=None):
     # suma_dat gresita, azi DUK-valid). NU alege singur cine are dreptate; NU repara tacit.
     from core.d100_reconciliere import verifica_reconciliere as _vr100
     _vr100(conn, perioada, res, manual)
+    _peste_depusa(conn, schema, perioada, res, prof)   # [lotul 11, C77] după reconciliere: ea privește trimestrul întreg
     xml = build_xml(res)
     from core.reconciliere_emis import verifica_total_plata_a as _vte
     _vte("d100", xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res

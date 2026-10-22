@@ -59,7 +59,9 @@ CALE_MD = os.path.join(RAD, "LISTA_FUNCTIONALITATI.md")
 
 #: Ce citesc modulele de declaratie. `RE_W` (scrierile) traieste in `scan_trasee`; simetricul lui
 #: pentru citiri nu exista acolo, fiindca traseele nu aveau nevoie de el.
-RE_R = re.compile(r'\b(?:FROM|JOIN)\s+(?:"?\{[^}]*\}"?\.|"?%\(?\w*\)?s"?\.|"?[a-z_]+"?\.)?'
+#: [lotul 11] prefixul de schemă `%s` / `%(nume)s` EXACT, cu punctul opțional, ca la `scan_trasee.RE_W` (forma veche, cu punctul cerut,
+#: nu vedea deloc citirea „FROM %sinregistrari”)
+RE_R = re.compile(r'\b(?:FROM|JOIN)\s+(?:"?\{[^}]*\}"?\.|"?%(?:\(\w+\))?s"?\.?|"?[a-z_]+"?\.)?'
                   r'"?([a-zA-Z_][a-zA-Z0-9_]*)"?', re.I)
 
 VERB = {"GET": "citire / afisare", "POST": "creare sau executie",

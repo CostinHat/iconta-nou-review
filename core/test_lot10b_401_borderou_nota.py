@@ -64,7 +64,7 @@ def _locurile_refuzului(txt):
 def test_def_401_sub_nota_borderoului_scrie_borderoul_si_nu_trimite_la_facturi(conn):
     from core import note_derivate as nd, uc_tenants
     r = uc_tenants.achizitie_neinregistrat(1, {"data": "2026-10-19", "furnizor_nume": "Ion Popescu", "furnizor_adresa": "Str. Florilor 1",
-                                               "furnizor_act": "PH 123456", "valoare": 200, "cont_cheltuiala": "371", "articol": "grâu",
+                                               "furnizor_act": "PH 123456", "valoare": 200, "cont_cheltuiala": "371", "articol": "grâu", "articol_nou": True,
                                                "cantitate": 100, "um": "kg"}, {"uid": 1})
     with conn.cursor() as cur:
         doc = nd.documentul_sursa(cur, SCH, r["inregistrare_id"])
@@ -73,7 +73,7 @@ def test_def_401_sub_nota_borderoului_scrie_borderoul_si_nu_trimite_la_facturi(c
         sursa, unde = _locurile_refuzului(txt)
         # comanda 10.2 pct.7a: nu „factura de achiziție BA-1”, nu trimiterea la Facturi; borderoul (OMFP 2634/2015, cod 14-4-13)
         assert sursa == "borderoul de achiziție BA-1 din 19.10.2026", txt
-        assert unde.startswith("în Operațiuni › „Achiziție de la neînregistrat”, unde s-a scris") and "în Facturi:" not in txt, txt
+        assert unde.startswith("în Stocuri › „Borderou de achiziție”") and "în Facturi:" not in txt, txt   # [lotul 11, patch B P9]
         # nota borderoului (ciornă) nu se șterge din jurnal: borderoul rămâne (statusul „importată”, ca factura primită)
         assert nd.se_sterge(cur, SCH, doc, r["inregistrare_id"]) is False
 
@@ -82,5 +82,5 @@ def test_def_401_stinge_numeste_borderoul_nu_factura():
     """Chitanța / plata care stinge un borderou: „stinge borderoul de achiziție BA-1 din …”, nu „factura de achiziție BA-1 …”."""
     from core import jurnal_api as j
     assert j.eticheta_factura_in_text("borderou", None, "BA-1", "2026-10-19") == "borderoul de achiziție BA-1 din 19.10.2026"
-    assert j.eticheta_factura_in_text("factura", "FCT", "FCT12", "2026-10-05") == "factura FCT12 din 05.10.2026"
+    assert j.eticheta_factura_in_text("factura", "FCT", "FCT12", "2026-10-05") == "factura FCT nr. 12 din 05.10.2026"   # [443] separat
     assert j.eticheta_factura_in_text(None, None, "7", "2026-10-05") == "factura 7 din 05.10.2026"

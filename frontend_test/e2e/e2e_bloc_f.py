@@ -507,6 +507,10 @@ def test_def_182_ciornele_proprii_se_vad_in_fereastra_de_validat(patron, firma_e
             if firma_e2e["nume"] in b]
     assert bloc, "firma cu ciorna nu apare: %s" % zona
     assert "Ciornă proprie probă E2E 182 · rulaj 75,00 lei · nevalidată, netrimisă" in bloc[0], bloc[0]
+    # [lotul 11, 457: „182 nerezolvată” — lista era numai de citit, deci ciorna nu aștepta în nicio coadă] rândul e acum al cozii lui:
+    # „Validează” (contul validează) și „Deschide nota”; drumul întreg (validarea de aici, Registrul jurnal) e în e2e_lot11_a457.py
+    rand = pg.locator(_fata(pg) + " #val-ciorne li", has_text="Ciornă proprie probă E2E 182")
+    assert rand.locator("[data-val-ciorna]").count() == 1 and rand.locator("[data-deschide-ciorna]").count() == 1, rand.inner_text()
 
 
 # ── 183 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

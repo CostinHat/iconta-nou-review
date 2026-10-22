@@ -223,6 +223,25 @@ def motiv_pe_romaneste(motiv):
     return motiv
 
 
+def stare_note_linie(ids, stari, coada):
+    """PURĂ. [lotul 11, deficiența 457] Starea notelor unei linii contate, în forma rândului de Casă (`nota_status`, `stare_coada`,
+    `motiv_respingere` — câmpurile pe care ecranul le citește cu o singură funcție, `stareNotaCasa`): `stari` = {id: status din Registrul
+    jurnal}, `coada` = `coada_api.stari_note`. Toate validate -> `validata`; altfel `ciorna`, iar coada se spune NUMAI cum e: o notă
+    respinsă -> `respinsa` (cu motivul); `la_senior` numai dacă TOATE nevalidatele sunt în coadă; altfel fără stare de coadă (ciornă
+    netrimisă). None când linia n-are note."""
+    ids = [i for i in ids or [] if i in stari]
+    if not ids:
+        return None
+    nev = [i for i in ids if stari[i] != "validata"]
+    if not nev:
+        return {"nota_status": "validata", "stare_coada": None, "motiv_respingere": None, "nevalidate": 0}
+    sc = [(coada.get(i) or {}).get("stare_coada") for i in nev]
+    resp = [coada[i] for i in nev if (coada.get(i) or {}).get("stare_coada") == "respinsa"]
+    st = "respinsa" if resp else ("la_senior" if all(s == "la_senior" for s in sc) else None)
+    return {"nota_status": "ciorna", "stare_coada": st, "motiv_respingere": resp[0].get("motiv_respingere") if resp else None,
+            "nevalidate": len(nev)}
+
+
 def lista(conn, schema, status=None):
     """Liniile de extras cu detaliile facturilor alocate (pentru UI)."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -245,18 +264,26 @@ def lista(conn, schema, status=None):
                             FROM {schema}.facturi WHERE id = ANY(%s)""", (list(ids),))
             facturi = {f["id"]: f for f in cur.fetchall()}
         # [deficiența 309, comanda Costin 17.10.2026 7.2] „linia contată arată «Contat ✓» cât nota e încă la validare”: starea notelor
-        # liniei (`alocari.inregistrari_ids`) se citește aici; ecranul spune „contată, nota e la validare” până la validare
+        # liniei (`alocari.inregistrari_ids`) se citește aici; ecranul nu spune „Contat ✓” până la validare
         note_ids = {i for l in linii for i in ((l.get("alocari") or {}).get("inregistrari_ids") or [])}
-        stari = {}
+        stari, coada = {}, {}
         if note_ids:
             cur.execute(f"SELECT id, status FROM {schema}.inregistrari WHERE id = ANY(%s)", (list(note_ids),))
             stari = {r["id"]: r["status"] for r in cur.fetchall()}
+            # [lotul 11, deficiența 457] „după contarea din bancă, rândul spune «la validare» deși nota e ciornă”: o notă nevalidată nu e
+            # neapărat în coada de validare (nota scrisă de cine validează rămâne ciornă, n-o trimite nimeni). Starea din coadă se citește
+            # (`coada_api.stari_note`, aceeași sursă ca Registrul jurnal și Casa), nu se presupune din „nevalidată”.
+            from core import coada_api as _coada
+            cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (str(schema).strip('"'),))
+            t = cur.fetchone()
+            coada = _coada.stari_note(conn, t["id"], list(note_ids)) if t else {}
         for l in linii:
             l["suma"] = str(l["suma"])
             l["data"] = str(l["data"])
             l["creat_la"] = str(l["creat_la"])
             ids_l = (l.get("alocari") or {}).get("inregistrari_ids") or []
             l["note_de_validat"] = sum(1 for i in ids_l if stari.get(i) not in (None, "validata"))
+            l["nota_stare"] = stare_note_linie(ids_l, stari, coada)
             al = l.get("alocari") or {}
             if al.get("motiv"):
                 al["motiv"] = motiv_pe_romaneste(al["motiv"])

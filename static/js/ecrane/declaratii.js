@@ -6,9 +6,11 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt } from "../api.js?v=ff30ebaf3f";
-import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=2fc90ca5ef";
-import { butonSpreEcran } from "./ecran_destinatie.js?v=df2c3a05b3";   // [lotul 10, 431] refuzul care trimite la ce lipsește
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=58f26a3fc4";
+import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=c05f894cb8";
+import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";   // [lotul 10, 431] refuzul care trimite la ce lipsește
+// [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
+const _campuriCu = (e, pre) => Object.fromEntries(((e && e.erori_campuri) || []).map((c) => [c.camp, pre + c.camp]));
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
   d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209", d200:"F221", d212:"F030", d201:"F222", d230:"F208", d204:"F223", d223:"F214", d216:"F225", d208:"F224", d221:"F215", d603:"F233", d600:"F227", d104:"F212", d114:"F230", d110:"F216", d398:"F242", d318:"F232" };
@@ -161,7 +163,7 @@ function pas1(corp, nav) {
     // [deficiența 283] întâi ce datorează firma în perioadă (din vectorul fiscal), cu termenul — alegerea fixează și perioada; restul separat
     const datorate = (S.datorate || []).filter((d) => S.tipuri.includes(d.tip) && !S.neaplicabile[d.tip]);
     const optDatorata = (d) => `<option value="${d.tip}" data-an="${d.an}" data-luna="${d.luna}"${d.tip === S.tip && d.an === S.an && d.luna === S.lunaDatorata ? " selected" : ""}>`
-      + `${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · termen ${esc(dataRo(d.termen))}${d.inainte_de_preluare ? " · înainte de preluare" : ""}</option>`;
+      + `${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · termen de depunere ${esc(dataRo(d.termen))}${d.inainte_de_preluare ? " · înainte de preluare" : ""}</option>`;
     // [lotul 10, deficiența 432] obligațiile pe perioade dinaintea preluării rămân vizibile (termenul cade după preluare), dar într-un grup
     // separat, marcate — regula de la 157 (decizia U2, 08.10); marcajul vine din motorul termenelor (`luna_preluare.inainte`)
     const deLaPreluare = datorate.filter((d) => !d.inainte_de_preluare), inainte = datorate.filter((d) => d.inainte_de_preluare);
@@ -493,6 +495,7 @@ async function pas2(corp, nav) {
 
   corp.innerHTML = `
     <div class="rezumat-fix"><p class="mig-intro">Pasul 2 din 3 — verifică <b>${S.tip.toUpperCase()}</b> · ${etPerioada()}</p></div>   <!-- [lotul 10, 421 / 424, DS cap.9 v2.97 pct.5] declarația și perioada rămân sus -->
+    ${S.rezultat.rectificativa ? `<div class="caseta-info" id="dec-rectificativa" role="status"><div class="ci-mesaj">${esc(String(S.rezultat.rectificativa))}</div></div>` : ""}   <!-- [lotul 11, C77] declarația peste una deja depusă pe perioadă; DS cap.5 v2.12 .caseta-info -->
     ${S.tip === "d390" ? '<div id="dec-d390-clasif"></div>' : ""}
     ${S.tip === "d301" ? '<div id="dec-d301-op"></div>' : ""}
     ${S.tip === "d300" ? '<div id="dec-d300-manual"></div>' : ""}
@@ -548,7 +551,7 @@ async function pas2(corp, nav) {
       </div>` : `<div class="dec-bara">
       <button class="buton-primar" id="dec-trimite" data-actiune="POST /coada">Trimite în coadă →</button>
     </div>`}
-    <div id="dec-coada-mesaj">${_blocaj ? `<div class="caseta-atentie" id="dec-blocaj" role="status"><div class="ca-mesaj">${esc(_blocaj.mesaj || "")}</div></div>` : ""}</div></div>
+    <div id="dec-coada-mesaj">${_blocaj ? `<div class="caseta-atentie" id="dec-blocaj" role="status"><div class="ca-mesaj">${esc(_mesajLangaNote(_blocaj))}</div></div>` : ""}</div></div>
     <p class="ecran-nota">${esc(S.rezultat.limita || "")}</p>
   `;
   // [lotul 10, 436] notele care opresc depunerea: fiecare cu drumul ei spre Registrul jurnal, în luna notei (ca refuzul porții TVA, 284)
@@ -585,6 +588,13 @@ async function pas2(corp, nav) {
   if (S.tip === "d110") randeazaFormularD110(corp, nav);
   if (S.tip === "d398") randeazaFormularD398(corp, nav);
   if (S.tip === "d318") randeazaFormularD318(corp, nav);
+}
+
+// [lotul 11, deficiența 436 afișare] „paragraful repetă notele pe care le arată butoanele”: lângă butoanele „Deschide nota …”
+// (`legaturiNote`) refuzul spune câte note și ce e de făcut, nu le mai enumeră — serverul dă textul fără listă (`mesaj_langa_note`,
+// `coada_api.blocaj_note_nevalidate`); textul cu lista (`mesaj`) rămâne pentru locurile fără butoane („De depus”, API-ul).
+function _mesajLangaNote(refuz) {
+  return (refuz.note || []).length ? refuz.mesaj_langa_note : (refuz.mesaj || "");
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -628,11 +638,11 @@ async function randeazaClasificareD390(corp, nav) {
   </details>`;
   zona.querySelectorAll(".dec-recl").forEach((sel) => sel.addEventListener("change", async () => {
     try { await api.put(`/tenants/${S.tenant_id}/d390-clasificare/reclasificare`, { an: S.an, luna: S.luna, directie: sel.dataset.dir, tara: sel.dataset.tara, cod: sel.dataset.cod, tip: sel.value }); }
-    catch (e) { arataMesaj(zona.querySelector("#dec-clasif-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
+    catch (e) { arataRefuzul(zona, e, zona.querySelector("#dec-clasif-msg")); }
   }));
   zona.querySelectorAll(".dec-man-del").forEach((b) => b.addEventListener("click", async () => {
     try { await api.del(`/tenants/${S.tenant_id}/d390-clasificare/manual/${b.dataset.id}?an=${S.an}&luna=${S.luna}`); randeazaClasificareD390(corp, nav); }
-    catch (e) { arataMesaj(zona.querySelector("#dec-clasif-msg"), (e && e.mesaj) || "Eroare la ștergere.", "eroare"); }
+    catch (e) { arataRefuzul(zona, e, zona.querySelector("#dec-clasif-msg")); }
   }));
   zona.querySelector("#man-add").addEventListener("click", async () => {
     const b = { an: S.an, luna: S.luna, tip: zona.querySelector("#man-tip").value,
@@ -643,9 +653,7 @@ async function randeazaClasificareD390(corp, nav) {
     try { await api.post(`/tenants/${S.tenant_id}/d390-clasificare/manual`, b); randeazaClasificareD390(corp, nav); }
     catch (e) {
       curataEroriCamp(zona);
-      const _ec = (e && e.erori_campuri) || [], _b = [];
-      _ec.forEach((x) => { if (!eroareCamp(zona, "man-" + x.camp, x.mesaj)) _b.push(x.mesaj); });
-      if (!_ec.length || _b.length) arataMesaj(zona.querySelector("#dec-clasif-msg"), _b.length ? _b.join("; ") : ((e && e.mesaj) || "Eroare la adăugare."), "eroare");
+      arataRefuzul(zona, e, zona.querySelector("#dec-clasif-msg"), { campuri: _campuriCu(e, "man-") });
     }
   });
   zona.querySelector("#dec-regen").addEventListener("click", () => pas2(corp, nav));
@@ -722,7 +730,7 @@ async function randeazaOperatiuniD301(corp, nav) {
   ["#d301-val", "#d301-curs", "#d301-cota"].forEach((s) => gv(s).addEventListener("input", preview));
   zona.querySelectorAll(".dec-d301-del").forEach((b) => b.addEventListener("click", async () => {
     try { await api.del(`/tenants/${S.tenant_id}/d301-operatiuni/${b.dataset.id}?an=${S.an}&luna=${S.luna}`); randeazaOperatiuniD301(corp, nav); }
-    catch (e) { arataMesaj(gv("#d301-msg"), (e && e.mesaj) || "Eroare la ștergere.", "eroare"); }
+    catch (e) { arataRefuzul(zona, e, gv("#d301-msg")); }
   }));
   // [temei_307] selectul de temei art. 307 apare doar la tip 4 (obligatoriu la introducere)
   const _tipSel = gv("#d301-tip"), _temeiWrap = gv("#d301-temei-wrap");
@@ -741,9 +749,7 @@ async function randeazaOperatiuniD301(corp, nav) {
     try { const _r = await api.post(`/tenants/${S.tenant_id}/d301-operatiuni`, b); await randeazaOperatiuniD301(corp, nav); if (_r && _r.avertisment) arataMesaj(gv("#d301-msg"), _r.avertisment, "atentionare"); }
     catch (e) {
       curataEroriCamp(zona);
-      const _ec = (e && e.erori_campuri) || [], _b = [];
-      _ec.forEach((x) => { if (!eroareCamp(zona, "d301-" + x.camp, x.mesaj)) _b.push(x.mesaj); });  // fallback B daca #camp lipseste
-      if (!_ec.length || _b.length) arataMesaj(gv("#d301-msg"), _b.length ? _b.join("; ") : ((e && e.mesaj) || "Eroare la adăugare."), "eroare");
+      arataRefuzul(zona, e, gv("#d301-msg"), { campuri: _campuriCu(e, "d301-") });   // fallback B (zona) daca #camp lipseste
     }
   });
   gv("#d301-regen").addEventListener("click", () => pas2(corp, nav));
@@ -1258,17 +1264,17 @@ function randeazaFormularD177(corp, nav) {
   gv("#d177-regen").addEventListener("click", () => {
     curataEroriCamp(zona);
     // marcheaza campul vinovat INAINTE de a chema serverul (Regula 14.4)
-    if (!(S.d177.beneficiari || []).length) {
-      eroareCamp(zona, "d177-cui", "Adaugă cel puțin un beneficiar (butonul + adaugă). D177 nu se depune fără beneficiari.");
-      return;
-    }
-    if (_n(S.d177.suma_rest) <= 0) { eroareCamp(zona, "d177-srest", "Completează suma rămasă de redirecționat (mai mare ca zero)."); return; }
-    if (_n(S.d177.suma_max) < _n(S.d177.suma_ant) + _n(S.d177.suma_rest)) {
-      eroareCamp(zona, "d177-smax", "Suma maximă trebuie să fie cel puțin cât suma redirecționată anterior plus suma rămasă."); return;
-    }
-    if (!S.d177.data_inceput || !S.d177.data_sfarsit) { eroareCamp(zona, "d177-di", "Completează perioada fiscală (de la / până la)."); return; }
+    // [lotul 11, 440] toate lipsurile deodată (alegerile + câmpurile), apoi un singur `return`
+    const err = [];
+    if (!(S.d177.beneficiari || []).length) err.push(["d177-cui", "Adaugă cel puțin un beneficiar (butonul + adaugă). D177 nu se depune fără beneficiari."]);
     const totB = (S.d177.beneficiari || []).reduce((s, b) => s + _n(b.suma), 0);
-    if (totB > _n(S.d177.suma_rest)) { eroareCamp(zona, "d177-srest", "Suma alocată beneficiarilor depășește suma rămasă de redirecționat."); return; }
+    if (_n(S.d177.suma_rest) <= 0) err.push(["d177-srest", "Completează suma rămasă de redirecționat (mai mare ca zero)."]);
+    else if (totB > _n(S.d177.suma_rest)) err.push(["d177-srest", "Suma alocată beneficiarilor depășește suma rămasă de redirecționat."]);
+    if (_n(S.d177.suma_max) < _n(S.d177.suma_ant) + _n(S.d177.suma_rest)) {
+      err.push(["d177-smax", "Suma maximă trebuie să fie cel puțin cât suma redirecționată anterior plus suma rămasă."]);
+    }
+    if (!S.d177.data_inceput || !S.d177.data_sfarsit) err.push(["d177-di", "Completează perioada fiscală (de la / până la)."]);
+    if (err.length) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
     pas2(corp, nav);
   });
 }
@@ -1772,9 +1778,12 @@ function randeazaFormularD204(corp, nav) {
   gv("#d204-regen").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveaza();
-    if (!(S.d204.asociati || []).length) { eroareCamp(zona, "d204-acnp", "Adaugă cel puțin un asociat înainte de a genera D204."); return; }
-    if (S.d204.activitate.categ_venit == null) { eroareCamp(zona, "d204-categ", "Scrie categoria de venit."); return; }
-    if (cereAlegerile(zona, ["#d204-forma"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    // [lotul 11, 440] toate lipsurile deodată (alegerile + câmpurile), apoi un singur `return`
+    let faraAlegere = false; if (cereAlegerile(zona, ["#d204-forma"])) faraAlegere = true;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    const err = [];
+    if (!(S.d204.asociati || []).length) err.push(["d204-acnp", "Adaugă cel puțin un asociat înainte de a genera D204."]);
+    if (S.d204.activitate.categ_venit == null) err.push(["d204-categ", "Scrie categoria de venit."]);
+    if (err.length || faraAlegere) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
     pas2(corp, nav);
   });
 }
@@ -1915,8 +1924,10 @@ function randeazaFormularD223(corp, nav) {
   gv("#d223-regen").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveaza();
-    if (cereAlegerile(zona, ["#d223-categ", "#d223-forma", "#d223-det"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    // [lotul 11, 440] toate lipsurile deodată (alegerile + câmpurile), apoi un singur `return`
+    let faraAlegere = false; if (cereAlegerile(zona, ["#d223-categ", "#d223-forma", "#d223-det"])) faraAlegere = true;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     if (!(S.d223.asociati || []).length) { eroareCamp(zona, "d223-scnp", "Adaugă cel puțin un asociat înainte de a genera D223."); return; }
+    if (faraAlegere) return;
     pas2(corp, nav);
   });
 }
@@ -2214,10 +2225,13 @@ function randeazaFormularD208(corp, nav) {
   gv("#d208-regen").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveaza();
-    if (cereAlegerile(zona, ["#d208-mod", "#d208-tip"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
-    if (String(S.d208.mod_transfer) === "4" && !S.d208.alt_mod_transfer) { eroareCamp(zona, "d208-altmod", "Explică modalitatea de transfer."); return; }
-    if (!(S.d208.beneficiari || []).length) { eroareCamp(zona, "d208-bcui", "Adaugă cel puțin un beneficiar."); return; }
-    if (!(S.d208.parti || []).length) { eroareCamp(zona, "d208-pcui", "Adaugă cel puțin o parte contractantă."); return; }
+    // [lotul 11, 440] toate lipsurile deodată (alegerile + câmpurile), apoi un singur `return`
+    let faraAlegere = false; if (cereAlegerile(zona, ["#d208-mod", "#d208-tip"])) faraAlegere = true;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    const err = [];
+    if (String(S.d208.mod_transfer) === "4" && !S.d208.alt_mod_transfer) err.push(["d208-altmod", "Explică modalitatea de transfer."]);
+    if (!(S.d208.beneficiari || []).length) err.push(["d208-bcui", "Adaugă cel puțin un beneficiar."]);
+    if (!(S.d208.parti || []).length) err.push(["d208-pcui", "Adaugă cel puțin o parte contractantă."]);
+    if (err.length || faraAlegere) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
     pas2(corp, nav);
   });
 }
@@ -2351,9 +2365,12 @@ function randeazaFormularD221(corp, nav) {
   gv("#d221-regen").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveaza();
-    if (cereAlegerile(zona, ["#d221-forma", "#d221-opt"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
-    if (!(S.d221.produse || []).length) { eroareCamp(zona, "d221-pcod", "Adaugă cel puțin un produs agricol."); return; }
-    if (String(S.d221.forma_org) === "2" && (S.d221.asociati || []).length < 2) { eroareCamp(zona, "d221-acnp", "Forma asociere cere minim 2 asociați."); return; }
+    // [lotul 11, 440] toate lipsurile deodată (alegerile + câmpurile), apoi un singur `return`
+    let faraAlegere = false; if (cereAlegerile(zona, ["#d221-forma", "#d221-opt"])) faraAlegere = true;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    const err = [];
+    if (!(S.d221.produse || []).length) err.push(["d221-pcod", "Adaugă cel puțin un produs agricol."]);
+    if (String(S.d221.forma_org) === "2" && (S.d221.asociati || []).length < 2) err.push(["d221-acnp", "Forma asociere cere minim 2 asociați."]);
+    if (err.length || faraAlegere) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
     pas2(corp, nav);
   });
 }
@@ -2770,9 +2787,11 @@ function randeazaFormularD110(corp, nav) {
   gv("#d110-add").addEventListener("click", () => {
     curataEroriCamp(zona);
     const sr = Math.round(_n(gv("#d110-rest").value) || 0);
-    if (sr <= 0) { eroareCamp(zona, "d110-rest", "Impozitul reținut trebuie > 0."); return; }
     salveaza();
-    if (cereAlegerile(zona, ["#d110-cod"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    // [lotul 11, 440] toate lipsurile deodată (alegerile + câmpurile), apoi un singur `return`
+    let faraAlegere = false; if (cereAlegerile(zona, ["#d110-cod"])) faraAlegere = true;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (sr <= 0) { eroareCamp(zona, "d110-rest", "Impozitul reținut trebuie > 0."); return; }
+    if (faraAlegere) return;
     S.d110.obligatii = S.d110.obligatii || [];
     S.d110.obligatii.push({ cod_oblig: gv("#d110-cod").value, suma_dat: Math.round(_n(gv("#d110-dat").value) || 0), suma_rest: sr });
     randeazaFormularD110(corp, nav);
@@ -2780,8 +2799,10 @@ function randeazaFormularD110(corp, nav) {
   gv("#d110-regen").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveaza();
-    if (cereAlegerile(zona, ["#d110-temei"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    // [lotul 11, 440] toate lipsurile deodată (alegerile + câmpurile), apoi un singur `return`
+    let faraAlegere = false; if (cereAlegerile(zona, ["#d110-temei"])) faraAlegere = true;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     if (!(S.d110.obligatii || []).length) { eroareCamp(zona, "d110-rest", "Adaugă cel puțin o obligație."); return; }
+    if (faraAlegere) return;
     pas2(corp, nav);
   });
 }
@@ -2885,8 +2906,10 @@ function randeazaFormularD398(corp, nav) {
   gv("#d398-regen").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveaza();
-    if (cereAlegerile(zona, ["#d398-moes", "#d398-eint"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    // [lotul 11, 440] toate lipsurile deodată (alegerile + câmpurile), apoi un singur `return`
+    let faraAlegere = false; if (cereAlegerile(zona, ["#d398-moes", "#d398-eint"])) faraAlegere = true;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     if (!(S.d398.linii || []).length) { eroareCamp(zona, "d398-stat", "Adaugă cel puțin o livrare."); return; }
+    if (faraAlegere) return;
     pas2(corp, nav);
   });
 }
@@ -3075,10 +3098,13 @@ function randeazaFormularD318(corp, nav) {
   gv("#d318-regen").addEventListener("click", () => {
     curataEroriCamp(zona);
     salveaza();
-    if (cereAlegerile(zona, ["#d318-tara", "#d318-ownt"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    // [lotul 11, 440] toate lipsurile deodată (alegerile + câmpurile), apoi un singur `return`
+    let faraAlegere = false; if (cereAlegerile(zona, ["#d318-tara", "#d318-ownt"])) faraAlegere = true;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    const err = [];
     // [lotul 07.10 B] moneda nu mai vine „EUR”: e a statului de rambursare (HG 1/2016 pct.73 alin.(6) lit.e) și o scrie omul
-    if (!d.currency) { eroareCamp(zona, "d318-cur", "Scrie moneda statului membru de rambursare (ex. EUR, HUF, PLN)."); return; }
-    if (!(d.facturi || []).length) { eroareCamp(zona, "d318-fnr", "Adaugă cel puțin o factură."); return; }
+    if (!d.currency) err.push(["d318-cur", "Scrie moneda statului membru de rambursare (ex. EUR, HUF, PLN)."]);
+    if (!(d.facturi || []).length) err.push(["d318-fnr", "Adaugă cel puțin o factură."]);
+    if (err.length || faraAlegere) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
     pas2(corp, nav);
   });
 }
@@ -3784,7 +3810,7 @@ async function randeazaManualD300(corp, nav) {
   if (gv("#d300-rand")) { gv("#d300-rand").addEventListener("change", sincTva); sincTva(); }
   zona.querySelectorAll(".dec-d300-del").forEach((b) => b.addEventListener("click", async () => {
     try { await api.del(`/tenants/${S.tenant_id}/d300-manual/${b.dataset.id}`); randeazaManualD300(corp, nav); }
-    catch (e) { arataMesaj(gv("#d300-msg"), (e && e.mesaj) || "Eroare la ștergere.", "eroare"); }
+    catch (e) { arataRefuzul(zona, e, gv("#d300-msg")); }
   }));
   const bAdd = gv("#d300-add");
   if (bAdd) bAdd.addEventListener("click", async () => {
@@ -3798,9 +3824,7 @@ async function randeazaManualD300(corp, nav) {
     try { await api.post(`/tenants/${S.tenant_id}/d300-manual`, b); randeazaManualD300(corp, nav); }
     catch (e) {
       curataEroriCamp(zona);
-      const _ec = (e && e.erori_campuri) || [], _b = [];
-      _ec.forEach((x) => { if (!eroareCamp(zona, "d300-" + x.camp, x.mesaj)) _b.push(x.mesaj); });  // fallback B daca #camp lipseste
-      if (!_ec.length || _b.length) arataMesaj(gv("#d300-msg"), _b.length ? _b.join("; ") : ((e && e.mesaj) || "Eroare la adăugare."), "eroare");
+      arataRefuzul(zona, e, gv("#d300-msg"), { campuri: _campuriCu(e, "d300-") });   // fallback B (zona) daca #camp lipseste
     }
   });
   gv("#d300-regen").addEventListener("click", () => pas2(corp, nav));

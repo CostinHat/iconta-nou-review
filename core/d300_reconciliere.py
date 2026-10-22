@@ -22,6 +22,9 @@ pusa in bucketul gresit, semn inversat) apare ca divergenta.
 CE PRINDE:  factura pierduta din agregare/pull; cota mutata in bucketul gresit;
             semn inversat; dublare - orice face totalul generatorului sa difere de
             recalculul independent din liniile brute.
+            [lotul 11, C76] si componenta automata a rd.34 (R31_2) din notele de
+            ajustare a taxei deductibile (635 = 4427 / 4426), recalculata din carte cu
+            SQL propriu - pe orice regim, si la TVA la incasare.
 CE NU PRINDE (limita declarata, GARZI cat.4 "Iesire catre autoritati"):
   1. Randurile MANUALE (intracom, taxare inversa, ajustari) + orice rand atins prin
      `manual=` -> NEACOPERIT (sarit, nu alarma falsa).
@@ -74,7 +77,8 @@ def _agrega_independent(conn, inceput, sfarsit):
     import psycopg2.extras as _E
     q = ("SELECT f.id AS fid, f.directie AS directie, f.total AS total, f.tva AS tva, "
          "f.moneda AS moneda, f.curs_bnr AS curs_bnr, f.total_lei AS total_lei, f.tva_lei AS tva_lei, "  # [A1] a doua cale IN LEI, ca generatorul
-         "l.cantitate AS cant, l.pret_unitar AS pret, l.cota_tva AS cota "
+         "l.cantitate AS cant, l.pret_unitar AS pret, l.cota_tva AS cota, "
+         "l.valoare_neta AS vn "   # [lotul 11, C82] BT-131 de pe factura importată (valoarea liniei, exactă) — citit aici, nu importat
          "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
          # [B1] fereastra pe EXIGIBILITATE (COALESCE(data_faptului_generator, data_emitere)), ca generatorul. [lotul 6, 278] avansul:
          # cea mai devreme dintre emitere și prima încasare legată (CF art.282 alin.(2) lit.a / lit.b) — scrisă aici din nou, nu importată
@@ -119,10 +123,23 @@ def _agrega_independent(conn, inceput, sfarsit):
                                       "tva": r["tva"] if r["tva"] is not None else 0,
                                       "linii": []})
         if r["cant"] is not None and r["pret"] is not None and r["cota"] is not None:
-            f["linii"].append((r["cant"], r["pret"], r["cota"]))
+            f["linii"].append((r["cant"], r["pret"], r["cota"], r["vn"]))
+
+    # [lotul 11, C79] TVA-ul de pe factura furnizorului, pe cote (`factura_tva_cote`, defalcarea BG-23 a XML-ului) — SQL PROPRIU, nu
+    # `repo_efactura.tva_cote` / `contare_facturi`: deductibilul e TVA-ul facturii (CF art.299 alin.(1) lit.a; art.319 alin.(20) lit.j),
+    # iar calea 2 il citeste singura. Fereastra pe exigibilitatea facturii primite (fara avans: avansul e al facturii emise), filtrata
+    # apoi pe facturile de mai sus.
+    qt = ("SELECT t.factura_id AS fid, t.cota AS cota, SUM(t.tva) AS tva FROM factura_tva_cote t JOIN facturi f ON f.id = t.factura_id "
+          "WHERE f.directie = 'primita' AND COALESCE(f.data_faptului_generator, f.data_emitere) >= %s "
+          "AND COALESCE(f.data_faptului_generator, f.data_emitere) < %s GROUP BY t.factura_id, t.cota")
+    tva_fact = {}
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        for r in _repo.sql(cur, qt, inceput, sfarsit):
+            tva_fact.setdefault(r["fid"], {})[int(Decimal(str(r["cota"])))] = Decimal(str(r["tva"]))   # cota e procent intreg (BT-119)
 
     colb = {21: Decimal(0), 11: Decimal(0), 9: Decimal(0)}
     dedb = {21: Decimal(0), 11: Decimal(0)}
+    dedt = {21: Decimal(0), 11: Decimal(0)}   # [C79] TVA-ul deductibil, pe factura: al facturii (cand il poarta) sau baza x cota
     for f in inv.values():
         emisa = (f["directie"] == "emisa")
         # [A1] Baza IN LEI (cantitate x pret x curs; RON->1). O factura in valuta fara curs se EXCLUDE
@@ -133,9 +150,10 @@ def _agrega_independent(conn, inceput, sfarsit):
             continue
         segmente = []  # (cota_int, baza_Decimal_LEI)
         if f["linii"]:
-            for (cant, pret, cota) in f["linii"]:
+            for (cant, pret, cota, vn) in f["linii"]:
                 ci = int(round(float(cota)))  # ROTUNJIRE PE COTA (procent intreg RO 21/11/9/5/0): bancar==aritmetic, nu pe lei
-                segmente.append((ci, Decimal(str(cant)) * Decimal(str(pret)) * _curs))
+                # [C82] valoarea liniei = BT-131 de pe factură când linia o poartă, altfel cantitate x pret
+                segmente.append((ci, (Decimal(str(vn)) if vn is not None else Decimal(str(cant)) * Decimal(str(pret))) * _curs))
         else:
             # factura fara linii: baza=total_lei-tva_lei, cota dedusa din raport (limita 5)
             _tl, _vl = _sl.antet_lei(f)
@@ -148,6 +166,22 @@ def _agrega_independent(conn, inceput, sfarsit):
         for (ci, baza) in segmente:
             if ci in tinta:
                 tinta[ci] += baza
+        if not emisa:
+            tf = tva_fact.get(f["id"]) or {}
+            cote_l = {ci for ci, _b in segmente}
+            # aceleasi cote pe factura (cu TVA) si pe linii (pozitive) -> TVA-ul facturii; altfel baza x cota (contarea o refuza)
+            ale_facturii = bool(tf) and {c for c, t in tf.items() if t} <= cote_l and {c for c in cote_l if c > 0} <= set(tf)
+            # [lotul 11, C81] factura in valuta cu TVA-ul in lei pe ea (BT-111 -> `facturi.tva_lei`): TVA-ul cotei in lei = BT-111 x partea
+            # cotei din TVA-ul in valuta (CF art.319 alin.(20) lit.j: „suma taxei colectate, exprimate in lei”); altfel TVA-ul cotei x curs
+            _tv = sum(tf.values(), Decimal(0))
+            _bt111 = (Decimal(str(f["tva_lei"])) if (ale_facturii and _tv and f.get("tva_lei") is not None
+                                                     and (f.get("moneda") or "RON").strip().upper() != "RON") else None)
+            for ci in {ci for ci, _b in segmente if ci in dedt}:
+                baza_c = sum((b for c, b in segmente if c == ci), Decimal(0))
+                if ale_facturii:
+                    dedt[ci] += (_bt111 * tf[ci] / _tv) if _bt111 is not None else tf[ci] * _curs
+                else:
+                    dedt[ci] += baza_c * Decimal(ci) / Decimal(100)
 
     # [lot 19 pct.4b, 02.10.2026] Livrările cu bon fiscal (rapoarte Z validate) — SQL PROPRIU, nu `d300._pull_rapoarte_z`.
     # TVA-ul lor se ia din defalcarea raportului (cum îl dă casa de marcat), nu se recalculează din bază: e TVA-ul
@@ -174,7 +208,7 @@ def _agrega_independent(conn, inceput, sfarsit):
             if ci in zb:
                 zb[ci] += Decimal(str(r["baza"])); zt[ci] += Decimal(str(r["tva"]))
     col = {c: (_q(colb[c] + zb[c]), _q(colb[c] * Decimal(c) / Decimal(100) + zt[c])) for c in colb}
-    ded = {c: (_q(dedb[c]), _q(dedb[c] * Decimal(c) / Decimal(100))) for c in dedb}
+    ded = {c: (_q(dedb[c]), _q(dedt[c])) for c in dedb}
     return col, ded
 
 
@@ -225,19 +259,49 @@ def _exigibil_la_decontare(conn, inceput, sfarsit):
     return bool(r["col"]), bool(r["ded"])
 
 
+def _ajustari_independent(conn, inceput, sfarsit):
+    """[lotul 11, C76] Componenta rd.34 (R31_2) din ajustările taxei deductibile scrise ca note — SQL PROPRIU, citit din carte: liniile
+    635 = 4427 / 635 = 4426 ale notelor validate din fereastră, fără factură și fără compensare, cu MINUS (ajustare negativă: HG 1/2016
+    titlul VII pct.78 alin.(1), (6) lit.a; OPANAF 174/2026 rd.34 „cu semnul plus sau minus, după caz”). Conturile se re-declară aici,
+    nu se importă din `d300.AJUSTARI_TAXA` (calea 2 e independentă prin construcție)."""
+    q = ("SELECT COALESCE(SUM(l.suma), 0) AS s FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
+         "WHERE i.status = 'validata' AND i.factura_id IS NULL AND i.data >= %s AND i.data < %s "
+         "AND split_part(l.cont_debit, '.', 1) = '635' AND split_part(l.cont_credit, '.', 1) IN ('4426', '4427') "
+         "AND NOT EXISTS (SELECT 1 FROM compensari cz WHERE cz.inregistrare_id = i.id)")
+    import psycopg2.extras as _E
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        s = _repo.sql(cur, q, inceput, sfarsit)[0]["s"]
+    return -_q(Decimal(str(s)))
+
+
+def _confrunta_ajustari(conn, inceput, sfarsit, res):
+    """[lotul 11, C76] Divergența componentei automate a rd.34 (generatorul: `res.ajustari_taxa`) față de recalculul din carte, sau []."""
+    gen = (getattr(res, "ajustari_taxa", None) or {}).get("R31_2", 0)
+    cale2 = _ajustari_independent(conn, inceput, sfarsit)
+    if gen == cale2:
+        return []
+    return [{"rand": "R31_2", "eticheta": "ajustări ale taxei deductibile din note — lipsa la inventar, 635 = 4427",
+             "generator": gen, "cale2": cale2, "diferenta": gen - cale2}]
+
+
 def reconciliaza(conn, perioada, res, manual=None):
     """Recalculeaza independent si confrunta. NU ridica - intoarce raportul.
     {"acoperit": bool, "neacoperit": afirmatie|None, "divergente": [...], "sarite": [...]}"""
     manual_keys = set((manual or {}).keys())
+    from core import common as _c  # [fix trim 06.08.2026]
     if res.prof.get("tva_la_incasare"):
-        return {"acoperit": False, "divergente": [], "sarite": [],
+        # [lotul 11, C76] ajustările de taxă din note se confruntă și la TVA la încasare (exigibilitatea pe decontări nu le atinge). Fără
+        # periodicitate în profil nu există fereastră — generatorul refuză oricum profilul (`d300.erori_generare`), deci nu e ce confrunta
+        aj_div = (_confrunta_ajustari(conn, *_c.fereastra_tva(perioada, _c.perioada_tva_tip(res.prof)), res)
+                  if res.prof.get("tip_decont") else [])
+        return {"acoperit": False, "divergente": aj_div, "sarite": [],
                 "neacoperit": _af.necunoastere_pe_luna(
                     "d300",
                     "TVA la încasare: exigibilitate pe decontari, nu pe emitere - "
                     "reconcilierea pe emitere nu se aplica (limita 3, GARZI cat.4).",
                     perioada.an, perioada.luna)}
-    from core import common as _c  # [fix trim 06.08.2026]
     inceput, sfarsit = _c.fereastra_tva(perioada, _c.perioada_tva_tip(res.prof))  # fereastra pe perioada TVA (trimestrial -> tot trimestrul), ca generatorul
+    aj_div = _confrunta_ajustari(conn, inceput, sfarsit, res)   # [lotul 11, C76]
     col, ded = _agrega_independent(conn, inceput, sfarsit)
     # [B1] deducere amanata (furnizor la incasare) cu PLATA in perioada: generatorul include deducerea pe
     # calea de PLATA (rd.24/rd.25), recon pe emitere nu o poate verifica -> sare randurile deductibile.
@@ -248,7 +312,7 @@ def reconciliaza(conn, perioada, res, manual=None):
     if _col_dec:
         skip |= {"R9_1", "R9_2", "R10_1", "R10_2", "R11_1", "R11_2"}
     divergente, sarite = _confrunta(res.R, col, ded, skip)
-    return {"acoperit": True, "neacoperit": None, "divergente": divergente,
+    return {"acoperit": True, "neacoperit": None, "divergente": divergente + aj_div,
             "sarite": sorted(set(sarite))}
 
 

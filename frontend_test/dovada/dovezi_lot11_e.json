@@ -1,0 +1,61 @@
+[
+ {
+  "nr": "422",
+  "firma": "tenant_9049",
+  "descriere": "F1 (notele trimise la validare de asistent înainte de reparație, nr. 132–137, 143): pagina principală, cardul „De validat”: 5 note de validat (7 trimise, 2 depășite) -> cardul „De validat” -> se bifează prima notă -> „Validează selectate” -> „Ai validat 1 notă” -> înapoi pe pagina principală, fără reîncărcare: cardul „De validat” numără o notă mai puțin. Înainte de lotul 11 cifra rămânea cea de la încărcarea paginii",
+  "pasi": [
+   {
+    "click": ".nav-x"
+   },
+   {
+    "asteapta": ".cab-card-sinteza[data-cheie=validat]"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "deruleaza": ".cab-card-sinteza[data-cheie=validat]"
+   },
+   {
+    "captura": "422_f1_de_validat_inainte.png"
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   },
+   {
+    "asteapta": ".val-sel"
+   },
+   {
+    "click": ".val-sel"
+   },
+   {
+    "click": "#val-aproba-selectate"
+   },
+   {
+    "asteapta_text": "Ai validat 1 notă"
+   },
+   {
+    "captura": "422_f1_validata_o_nota.png"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "asteapta": ".cab-card-sinteza[data-cheie=validat]"
+   },
+   {
+    "pauza": 2500
+   },
+   {
+    "deruleaza": ".cab-card-sinteza[data-cheie=validat]"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "4 note de validat",
+    "zona": ".cab-card-sinteza[data-cheie=validat]"
+   }
+  ],
+  "captura": "422_f1_de_validat_scade_dupa_validare.png"
+ }
+]

@@ -224,7 +224,7 @@ def coloana(antet, aliasuri, exclus=(), camp=""):
         if len(cuv) > 1:
             raise ColoaneAmbigue(
                 "Coloanele %s se potrivesc toate la „%s” — nu aleg una la întâmplare. Lasă în fișier una singură sau "
-                "redenumește-le." % (", ".join("«%s»" % eticheta(antet, j) for j in cuv), (camp or a).replace("_", " ")))
+                "redenumește-le." % (", ".join("«%s»" % eticheta(antet, j) for j in cuv), camp or a))
     return -1
 
 
@@ -344,11 +344,16 @@ def pereche_sold_final(antet, nume_fisier=""):
 # sume precedente, rulaje (ale lunii), total sume, solduri finale.
 #: grupul -> cum îl recunosc în antetul normalizat (cuvinte întregi / început de cuvânt). Ordinea contează: „final” întâi („Sold final”),
 #: „precedent” înaintea lui „total” („Total sume precedente” = sume precedente), „total sume” / „cumulat” înaintea lui „rulaj”.
+#: [deficiența 439, lotul 11] „rulaje precedente” (rp) și „total rulaje” / „rulaje cumulate” (tr) sunt grupuri ale lor: antetul spune
+#: numai cum se NUMEȘTE coloana (rulajele, fără soldul inițial al anului), iar `solduri_api` stabilește din DATE dacă îl cuprinde sau nu
+#: (manualul SAGA, „Balante”: „Înainte de generarea balanței se vor seta seriile de egalități” — coloanele nu au o singură formă).
 GRUPURI_BALANTA = (
     ("sf", "solduri finale", lambda w: any(x.startswith("final") for x in w)),
+    ("rp", "rulaje precedente", lambda w: any(x.startswith("precedent") for x in w) and any(x.startswith("rulaj") for x in w)),
     ("sp", "sume precedente", lambda w: any(x.startswith("precedent") for x in w)),
     ("si", "solduri inițiale an", lambda w: any(x.startswith("initial") for x in w)),
-    ("ts", "total sume", lambda w: (("total" in w and any(x.startswith(("sum", "rulaj")) for x in w))
+    ("tr", "total rulaje", lambda w: (any(x.startswith(("total", "cumulat")) for x in w) and any(x.startswith("rulaj") for x in w))),
+    ("ts", "total sume", lambda w: ((any(x.startswith("total") for x in w) and any(x.startswith("sum") for x in w))
                                     or any(x.startswith("cumulat") for x in w))),
     ("rl", "rulaje", lambda w: any(x.startswith(("rulaj", "curent")) for x in w)),
 )
@@ -356,7 +361,7 @@ GRUPURI_BALANTA = (
 
 def perechi_balanta(antet, nume_fisier=""):
     """`{grup: (i_debit, i_credit)}` — perechile RECUNOSCUTE în afară de soldul final: `si` (solduri inițiale an), `sp` (sume
-    precedente), `rl` (rulajele lunii), `ts` (total sume). Un grup are exact o coloană de debit și una de credit; o jumătate de
+    precedente), `rp` (rulaje precedente), `rl` (rulajele lunii), `ts` (total sume), `tr` (total rulaje). Un grup are exact o coloană de debit și una de credit; o jumătate de
     pereche sau două coloane pentru același grup -> REFUZ numit (nu aleg una — defectul C21). O balanță cu o singură pereche
     (balanța de deschidere „Sold debitor / Sold creditor”) -> `{}`. O pereche nerecunoscută rămâne necitită (ca până acum)."""
     deb = [j for j, h in enumerate(antet) if h and _e_debit(h)]

@@ -38,13 +38,15 @@ def test_nota_plata_datorie_pierdere():
     assert ("401", "5124", Decimal("9940.00")) in r["linii"]
     assert ("665", "5124", Decimal("100.00")) in r["linii"]
 
+# [lotul 11, 429 / 445] reevaluarea are un singur formular: `reevaluare_sold` (formularul manual, pe curs) a ieșit odată cu ruta lui;
+# reevaluarea pleacă din valoarea în lei din evidență (`reevaluare_element`). Aceleași cazuri: 500 EUR ținuți la 4,97 (2.485,00 lei).
 def test_reevaluare_creanta():
-    r = m.reevaluare_sold(500, "4.97", "5.02", "creanta", "4111")
+    r = m.reevaluare_element(500, "2485.00", "5.02", "creanta", "4111")
     assert r["linie"] == ("4111", "765", Decimal("25.00"))
 
 def test_reevaluare_datorie():
-    r = m.reevaluare_sold(500, "4.97", "5.02", "datorie", "401")
+    r = m.reevaluare_element(500, "2485.00", "5.02", "datorie", "401")
     assert r["linie"] == ("665", "401", Decimal("25.00"))
 
 def test_reevaluare_fara_dif():
-    assert m.reevaluare_sold(500, "5.00", "5.00", "creanta", "4111") is None
+    assert m.reevaluare_element(500, "2500.00", "5.00", "creanta", "4111")["linie"] is None

@@ -25,6 +25,16 @@ CAMPURI = {
     "cont_stoc": ("cont stoc",),
     "cont_cheltuiala": ("cont cheltuiala",),
 }
+#: [lotul 11] numele câmpului în refuzul coloanelor ambigue (`import_tabel.coloana`), în limba contabilului — nu cheia internă
+#: (garda: core/test_lot11_import_etichete_camp.py)
+ETICHETE_CAMP = {
+    "denumire": "denumirea articolului",
+    "um": "unitatea de măsură",
+    "cantitate": "cantitatea",
+    "pret": "prețul unitar",
+    "cont_stoc": "contul de stoc",
+    "cont_cheltuiala": "contul de cheltuială",
+}
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
@@ -74,7 +84,7 @@ def extrage(continut, nume_fisier=""):
         if isinstance(e, _it.ColoaneAmbigue):
             raise
         raise ValueError("nu se găsește coloana cu denumirea articolului")
-    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=camp)
+    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=ETICHETE_CAMP[camp])
     i_den = col("denumire")
     i_um = col("um", (i_den,))
     i_cant = col("cantitate", (i_den,))
@@ -238,8 +248,8 @@ def importa(conn, schema, articole, data_sold=None):
         for i, a in enumerate(articole, start=2):
             if _it.nr_rand(a, i) in resp_idx:
                 continue
-            cur.execute(f"SELECT id FROM {schema}.articole WHERE lower(denumire)=lower(%s)", (a["denumire"],))
-            if cur.fetchone():
+            from core import produse_api as _pa   # [lotul 11, 450] aceeași cheie de denumire ca nomenclatorul („grau” = „Grâu”)
+            if _pa.articol_dupa_denumire(cur, schema, a["denumire"]):
                 sarite.append(respinge("articol", _it.nr_rand(a, i), "deja_exista",
                                        "„%s” există deja în nomenclator - nu s-a dublat" % a["denumire"],
                                        denumire=a["denumire"]))

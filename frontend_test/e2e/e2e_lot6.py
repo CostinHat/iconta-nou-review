@@ -130,7 +130,13 @@ def test_def_278_dispozitia_leaga_factura_si_semnaleaza_avansul_si_plafonul(patr
     assert sql('SELECT COALESCE(SUM(l.suma), 0)::text FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l ON l.inregistrare_id = i.id '
                "WHERE i.factura_id = %%s AND l.cont_credit = '4111' AND i.sursa = 'casa'" % (s, s), (f["factura_id"],)) == [("242.00",)]
     assert sql('SELECT suma::text, avans FROM "%s".casa_operatiuni ORDER BY id DESC LIMIT 2' % s) == [("5758.00", True), ("242.00", False)]
-    assert pg.locator(".pf-frand", has_text="factura %s" % f["numar"]).count() == 1
+    # [lotul 11, 443, comanda 11.1 pct.19: „seria și numărul se afișează separat peste tot (F6 nr. 1, nu F61)”] rândul registrului numește
+    # factura „E2EA nr. 1”, nu „E2EA1”; numărul se potrivește întreg (nu și „nr. 12”)
+    import re as _re
+    from e2e_bloc_a import SERIE
+    assert f["numar"].startswith(SERIE), f
+    nr = "%s nr. %s" % (SERIE, f["numar"][len(SERIE):])
+    assert pg.locator(".pf-frand", has_text=_re.compile(r"factura %s(?!\d)" % _re.escape(nr))).count() == 1
 
 
 def test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand(asistent, firma_e2e):
@@ -204,6 +210,12 @@ def test_def_273_facturi_primite_spun_starea_spv_si_primesc_xml(patron, firma_e2
     assert "apar aici automat" not in pg.inner_text("#fp-lista")
     cui = sql('SELECT cui FROM "%s".firma_profil WHERE id = 1' % firma_e2e["schema"])[0][0]
     cifre = "".join(c for c in cui if c.isdigit())
+    # [lotul 11] răspunsul ANAF pentru furnizorul facturii (plasa nu întreabă ANAF real: `anaf_api.CHEIE_SIMULAT`, 444): înregistrat în
+    # scopuri de TVA, fără TVA la încasare — statutul se AFLĂ, nu se cere de mână (418a)
+    import json as _json
+    import os as _os
+    with open(_os.path.join(_os.environ["ICONTA_ANAF_SIMULAT"], "anaf.json"), "w", encoding="utf-8") as _f:
+        _json.dump({"40372003": {"denumire": "FURNIZOR E2E SRL", "platitor_tva": True, "tva_la_incasare": False}}, _f, ensure_ascii=False)
     pg.set_input_files("#fp-xml", {"name": "%s.xml" % tag, "mimeType": "text/xml",
                                    "buffer": UBL_PRIMITA.format(numar=tag, client=firma_e2e["nume"], cui=cifre).encode("utf-8")})
     pg.wait_for_function("() => (document.querySelector('#fp-mesaj') || {innerText: ''}).innerText.includes('importat')", timeout=20000)
@@ -404,7 +416,7 @@ def test_def_283_declaratii_intai_ce_datoreaza_firma_cu_termenul(patron):
 def test_def_284_refuzul_d300_numeste_nota_iar_dupa_validare_declaratia_intra_singura(patron, firma_e2e):
     """284. D300 / control: refuzul de la „Trimite în coadă” spunea „4 note nevalidate”, fără să le numească.
     Pașii administratorului: o factură emisă (nota ei e ciornă) -> Declarații -> D300 pe luna ei, încheiată -> „Trimite în coadă →”: refuzul
-    numește nota („Diferența o explică pe contul 4427: nr. crt. …”), cu butonul spre ea; butonul deschide Registrul jurnal cu nota
+    numără nota („Diferența pe contul 4427 o explică 1 notă nevalidată”), iar butonul o numește, cu butonul spre ea; butonul deschide Registrul jurnal cu nota
     evidențiată. Notele numite se validează -> declarația se generează din nou și intră singură în coadă, iar cine a trimis-o primește
     notificarea. Depunerea rămâne clicul contabilului (elementul e în coadă, nu depus)."""
     from e2e_bloc_a import _api
@@ -421,7 +433,7 @@ def test_def_284_refuzul_d300_numeste_nota_iar_dupa_validare_declaratia_intra_si
         pg.wait_for_selector(".coada-note-refuz button", timeout=30000)
         patron.captura("refuz")
         mesaj = pg.inner_text("#dec-coada-mesaj")
-        assert "Diferența o explică pe contul 4427: nota din " in mesaj and " — Factură " in mesaj, mesaj   # [302] ciorna n-are nr.
+        assert "Diferența pe contul 4427 o explică 1 notă nevalidată." in mesaj and " — Factură " in mesaj, mesaj   # [lotul 11, 436] lângă buton, fraza numără nota; butonul o numește   # [302] ciorna n-are nr.
         assert "se generează din nou și intră singură în coadă" in mesaj and "notă(e) nevalidată(e)" not in mesaj, mesaj
         asteptare = sql("SELECT id, note_ids FROM public.declaratii_in_asteptare WHERE tenant_id = %s AND rezolvata_la IS NULL", (tid,))
         assert len(asteptare) == 1, asteptare
@@ -451,10 +463,13 @@ def test_def_272_cui_nu_se_modifica_din_date_firma_ci_prin_corectura_administrat
     """272. Date firmă: un asistent junior modifica CUI-ul unei firme existente, cu documente.
     Pașii: asistentul (numai „Poate pregăti”) -> fereastra firmei -> Date firmă: CUI-ul se citește, nu se scrie, iar „Corectează CUI-ul”
     nu i se arată; cererea cu alt CUI e refuzată de server. Administratorul: „Corectează CUI-ul” -> CUI-ul corect -> avertismentul ->
-    „Corectez CUI-ul” -> CUI-ul nou, cu rândul în jurnal."""
+    „Corectez CUI-ul” -> CUI-ul nou, cu rândul în jurnal.
+    [lotul 11, decizia Costin 10.3 pct.4] Firma e plătitoare de TVA (`pregateste_firma`, pe rutele Date firmă + vector fiscal — și când
+    testul rulează singur): Date firmă arată CUI-ul nou cu „RO” în față, iar în bază (ambele locuri) el stă fără „RO”."""
     from conftest import cui_cu_control
     from e2e_bloc_a import _api
     tid = firma_e2e["tenant_id"]
+    pregateste_firma(patron, firma_e2e)   # plătitoare de TVA, lunar
     uid = sql("SELECT id FROM public.users WHERE email = 'asistent@prisma-cont.test'")[0][0]
     era = sql("SELECT poate_valida, poate_depune FROM public.users WHERE id = %s", (uid,))[0]
     sql("UPDATE public.users SET poate_valida = false, poate_depune = false WHERE id = %s", (uid,))
@@ -486,7 +501,11 @@ def test_def_272_cui_nu_se_modifica_din_date_firma_ci_prin_corectura_administrat
         pg.wait_for_function("() => (document.querySelector('#df-msg') || {innerText: ''}).innerText.includes('CUI-ul a fost corectat')",
                              timeout=20000)
         patron.captura("corectat")
-        assert pg.input_value("#df-cui") == nou
+        # [lotul 11, decizia Costin 10.3 pct.4: „CUI-ul se păstrează fără «RO» și fără spații; «RO» apare doar la afișare, după starea de
+        # plătitor de TVA.”] firma e plătitoare: ecranul arată CUI-ul nou cu „RO”; în bază, în ambele locuri, fără „RO”
+        assert sql('SELECT platitor_tva FROM "%s".firma_profil WHERE id = 1' % firma_e2e["schema"]) == [(True,)]
+        assert pg.input_value("#df-cui") == "RO" + nou, pg.input_value("#df-cui")
+        assert sql('SELECT cui FROM "%s".firma_profil WHERE id = 1' % firma_e2e["schema"])[0][0] == nou, "Date firmă"
         assert sql("SELECT cui FROM public.tenants WHERE id = %s", (tid,))[0][0] == nou, "ambele locuri"
     finally:
         _api(patron, "POST", "/tenants/%d/cui/corectura" % tid, {"cui": vechi, "confirmat": True})

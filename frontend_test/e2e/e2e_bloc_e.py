@@ -39,6 +39,28 @@ def _uid(email="patron@prisma-cont.test"):
     return sql("SELECT id FROM public.users WHERE email = %s", (email,))[0][0]
 
 
+#: [lotul 11, decizia Costin 10.3 pct.4] întocmitorul bilanțului al cabinetului de test: „Contabil șef” (cod 12 din nomenclatorul ANAF,
+#: `migrare_intocmitor_bilant.CALITATI_INTOCMIT`), fără CIF (cerut numai la 21 / 22)
+INTOCMITOR_PROBA = {"calit_intocmit": "12", "nume_intocmit": "IONESCU MARIA"}
+
+
+def antet_bilant(f):
+    """[lotul 11, decizia Costin 10.3 pct.4] DATE DE PORNIRE ale bilanțului, pe drumul ecranelor (nu INSERT-uri): în Date firmă „Entitate de
+    interes public: Nu” (`firma_profil_api.salveaza_date`) și, în Setări cont → Date cabinet, întocmitorul (`uc_cabinet.salveaza_intocmitor_conn`,
+    corpul rutei POST /cabinet/intocmitor). Fără ele bilanțul se refuză — corect („15. interes_public … DA”, „21. calit_intocmit … DA”,
+    structura SC 1225) —, iar testele care nu sunt despre antet n-au de ce să-l reconstruiască."""
+    from core import db, firma_profil_api as fp, uc_cabinet
+    with db.get_conn(f["schema"]) as c:
+        r = fp.salveaza_date(c, {"interes_public": False}, tenant_id=f["tenant_id"], user_id=_uid())
+        assert r.get("ok"), r
+        c.commit()
+    with db.get_conn() as c:
+        r = uc_cabinet.salveaza_intocmitor_conn(c, f["cabinet_id"], INTOCMITOR_PROBA)
+        assert r.get("ok"), r
+        c.commit()
+    return f
+
+
 def _completeaza(f, metoda):
     """Date firmă pe drumul ecranului (`firma_profil_api.salveaza_date` + `vector_fiscal_api.salveaza`): identitate, capital, metoda de
     stoc, seria chitanțelor; plătitoare de TVA, decont lunar, micro, fără operațiuni intracomunitare. Asistentul primește firma."""
@@ -58,6 +80,7 @@ def _completeaza(f, metoda):
         r = vf.salveaza(c, "micro", True, "lunar", False, inreg_art317=False, user_id=uid)
         assert r.get("ok"), r
         c.commit()
+    antet_bilant(f)   # [lotul 11, decizia 10.3] interesul public și întocmitorul: bilanțul firmei (151, 188) îi cere
     with db.get_conn() as c:
         r = asistenti_api.atribuie_firma(c, f["cabinet_id"], _uid("asistent@prisma-cont.test"), f["tenant_id"])
         assert r.get("ok"), r
@@ -505,7 +528,9 @@ def test_def_168_nota_chitantei_numeste_chitanta_si_factura(patron, firma, factu
     assert len(nota) == 1, _randuri_jurnal(patron)
     antet = nota[0][0]
     # [278] nota chitanței stinge factura (`inregistrari.factura_id`): partea ei numește factura ca la orice încasare legată
-    assert "chitanța %s — factura %s din %s" % (eticheta_ch, nr, AZI.strftime("%d.%m.%Y")) in antet, antet   # AZI-dat-de-test
+    ser = sql('SELECT serie FROM "%s".facturi WHERE id = %%s' % firma["schema"], (fid,))[0][0]   # [lotul 11, 443] seria separat
+    nr_afisat = "%s nr. %s" % (ser, nr[len(ser):]) if ser and nr.startswith(ser) else nr
+    assert "chitanța %s — factura %s din %s" % (eticheta_ch, nr_afisat, AZI.strftime("%d.%m.%Y")) in antet, antet   # AZI-dat-de-test
     assert "Client Chitanta SRL" in antet, antet
     assert any(x.startswith("5311 = 4111") and "121,00" in x for x in nota[0][1]), nota
     pg.locator(".fereastra:last-of-type [data-nota-id]", has_text=eticheta_ch).first.scroll_into_view_if_needed()
@@ -719,7 +744,12 @@ def _declaratie(ecran, f, tip, an, luna):
     alege_tipul(pg, tip)
     alege_perioada(pg, an, luna)
     pg.click("#dec-continua")
-    pg.wait_for_selector("details.dec-xml summary:text('Vezi XML-ul generat')", timeout=90000)
+    # [lotul 11] starea finală: XML-ul generat SAU refuzul generării (`.dec-eroare`); la refuz testul pică cu textul lui, nu cu 90 s de
+    # așteptare mută
+    pg.wait_for_function("""() => [...document.querySelectorAll('details.dec-xml summary')].some((x) => x.innerText.includes('Vezi XML-ul generat'))
+                            || !!document.querySelector('.dec-eroare')""", timeout=90000)
+    refuz = pg.locator(".dec-eroare")
+    assert not refuz.count(), "%s %02d/%d nu s-a generat: %s" % (tip, luna, an, refuz.first.inner_text())
 
 
 def _sectiune(ecran, nume):
@@ -1327,11 +1357,19 @@ def test_def_149_amortizarea_ciorna_se_inlocuieste_validata_nu(patron, firma_gv)
     _mf(f, "MF149A", "6000", 60, "2026-05-10")
     _card(patron, f, "jurnal", "#j-amort")
     _la_luna(patron, "#j-prev", 2026, 8)
+    def _redeseneaza_luna():
+        """Luna următoare și înapoi: registrul se recitește, ca după o redeschidere a ecranului (contabilul a schimbat registrul MF)."""
+        pg.click("#j-next")
+        _asteapta_text(patron, "Luna 09/2026")
+        pg.click("#j-prev")
+        _asteapta_text(patron, "Luna 08/2026")
     def genereaza(n_asteptat_linii=None):
         inainte = _note_amortizare(f, 2026, 8)
         ids0 = [x[0] for x in inainte]
         tot0 = (sql('SELECT sum(suma) FROM "%s".inregistrari_linii WHERE inregistrare_id = %%s' % f["schema"], (ids0[0],))[0][0]
                 if ids0 else None)
+        _redeseneaza_luna()   # [8c] după generare butonul rămâne inactiv (registrul MF se schimbă aici prin SQL, nu prin ecran)
+        pg.wait_for_selector("#j-amort:not([disabled])", timeout=20000)
         pg.click("#j-amort")
         for _ in range(60):   # mesajul „Notă generată” îl șterge redesenarea; se așteaptă nota nouă / suma nouă
             dupa = _note_amortizare(f, 2026, 8)
@@ -1355,8 +1393,13 @@ def test_def_149_amortizarea_ciorna_se_inlocuieste_validata_nu(patron, firma_gv)
     patron.captura("amortizare_ciorna_inlocuita")
     _ok(_api(patron, "POST", "/tenants/%d/jurnal/%d/valideaza" % (f["tenant_id"], n2[0][0]), {}))
     _mf(f, "MF149C", "2400", 24, "2026-05-25")
-    pg.click("#j-amort")
-    _asteapta_text(patron, "deja generată și validată")
+    _redeseneaza_luna()
+    # [lotul 11, 23 / 8c] nota lunii e validată: „Generează amortizarea” e inactiv, cu motivul scris sub el
+    pg.wait_for_selector("#j-amort-motiv", timeout=20000)
+    assert pg.is_disabled("#j-amort") and "validată" in pg.inner_text("#j-amort-motiv"), pg.inner_text("#j-amort-motiv")
+    # serverul refuză oricum (butonul inactiv nu e singura poartă): cererea directă primește refuzul numit
+    r = _api(patron, "POST", "/tenants/%d/amortizare?an=2026&luna=8" % f["tenant_id"], {})
+    assert r["status"] == 400 and "deja generată și validată" in str(r["json"]), r
     n3 = _note_amortizare(f, 2026, 8)
     assert n3 == [(n2[0][0], "validata")], n3
     assert sql('SELECT sum(suma) FROM "%s".inregistrari_linii WHERE inregistrare_id = %%s' % f["schema"], (n2[0][0],))[0][0] == total2

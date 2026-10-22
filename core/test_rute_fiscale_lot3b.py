@@ -291,7 +291,7 @@ def test_INCASAREA_DE_CASA_legata_de_factura_ajunge_in_rulajul_clientului(lume):
     assert r.status_code == 200, r.text[:300]
     op = r.json()["id"]
     r = cl.post("/tenants/%d/casa/operatiuni/%d/leaga" % (lume["tid"], op), json={"factura_id": fid}, headers=_H(lume))
-    assert r.status_code == 200 and r.json() == {"ok": True, "factura": "F1A4"}, r.text[:300]
+    assert r.status_code == 200 and r.json() == {"ok": True, "factura": "F1A nr. 4"}, r.text[:300]   # [lotul 11, 443] seria și numărul: `pdf_util.serie_nr`
     with lume["conn"].cursor() as cur:
         cur.execute('SELECT factura_id, status FROM "%s".inregistrari' % SCH)
         assert cur.fetchall() == [(fid, "ciorna")]

@@ -1,0 +1,6 @@
+[
+  {"fisier": "core/solduri_parteneri_api.py",
+   "ancora": "        cui = _forma_cui.stocare(_it.celula(r, i_cui)) or \"\"",
+   "inlocuire": "        cui = _it.celula(r, i_cui).strip().upper().replace(\" \", \"\"); cui = cui[2:] if cui.startswith(\"RO\") else cui",
+   "test": "frontend_test/e2e/e2e_lot11_cf.py::test_def_459_importul_partenerilor_pastreaza_cui_ul_fara_ro_si_fara_spatiu_nedespartitor"}
+]

@@ -6,7 +6,8 @@
 //    `motiv_trecere`, păstrată cu numele omului); `ERORI_DUK` -> se arată, fără portiță.
 //  - C1: refuzul spune motivul REAL venit de la server, nu o presupunere („Poate există deja o declarație…” apărea și la o eroare 500).
 //  - C11: bilanțul intră în coadă pe același drum ca orice declarație.
-import { api, esc, arataMesaj, aduInVedere, TEXT_NOTA_INTERNA } from "../api.js?v=ff30ebaf3f";
+import { api, esc, arataMesaj, aduInVedere, TEXT_NOTA_INTERNA } from "../api.js?v=58f26a3fc4";
+import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";   // [lotul 11, 445] refuzul care trimite la ecranul unde se repară
 
 // [deficiența 222, comanda Costin 10.10.2026] confirmarea intrării în coadă e ACEEAȘI casetă din orice ecran (Declarații, Bilanț) —
 // nu un rând de text: bifa, „Trimisă în coada de validare”, declarația și perioada. `cine` = ce urmează („a fost trimisă seniorului …”).
@@ -43,14 +44,16 @@ export async function trimiteInCoada(zona, body, laSucces, confirmare) {
     // [08.10.2026, decizia Costin §6 pct.7 — R36] ciornele perioadei nu opresc coada: avertismentul porții se arată după intrare
     // (ecranul care se redesenează la succes îl arată el, din `r`; aici numai dacă zona a rămas pe ecran)
     if (zona.isConnected && r && (r.avertismente_poarta || []).length) {
-      arataMesaj(zona, r.avertismente_poarta.join(" "), "avert");
-      if ((r.surse_note || []).length) legaturiNote(zona, body.tenant_id, r.surse_note);
+      // [lotul 11, 436 afișare] lângă butoanele notelor, avertismentul le numără, nu le enumeră (`avertismente_poarta_langa_note`)
+      const cuNote = (r.surse_note || []).length > 0;
+      arataMesaj(zona, mesajLangaNote(cuNote, r.avertismente_poarta_langa_note, r.avertismente_poarta).join(" "), "avert");
+      if (cuNote) legaturiNote(zona, body.tenant_id, r.surse_note);
     }
     return r;
   } catch (e) {
     const det = (e && e.detaliu && typeof e.detaliu === "object") ? e.detaliu : {};
     if (det.cod === "ATENTIONARI_NECONFIRMATE") {
-      zona.innerHTML = `<div class="caseta-atentie"><div class="ca-mesaj">${esc(det.mesaj || "")}
+      zona.innerHTML = `<div class="caseta-atentie"><div class="ca-mesaj"><span class="pe-randuri">${esc(det.mesaj || "")}</span>
           <pre class="dec-atentionari">${esc(det.erori || "")}</pre>
           <label class="camp"><span class="camp-eticheta">Confirmarea ta (se păstrează cu numele tău) *</span>
           <textarea id="coada-confirmare" class="camp-input" rows="3" aria-label="Confirmarea atenționărilor"></textarea></label>
@@ -73,24 +76,41 @@ export async function trimiteInCoada(zona, body, laSucces, confirmare) {
         b.innerHTML = `<button type="button" class="buton-secundar" id="coada-deja-deschide">Deschide declarația existentă</button>
           <button type="button" class="buton-primar" id="coada-deja-inlocuieste" data-actiune="POST /coada">Înlocuiește</button>`;
         zona.appendChild(b);
-        b.querySelector("#coada-deja-deschide").addEventListener("click", () => deschideInCoada(det.coada_id));
+        b.querySelector("#coada-deja-deschide").addEventListener("click", () => deschideInCoada(det.coada_id, true));
         b.querySelector("#coada-deja-inlocuieste").addEventListener("click", () =>
           trimiteInCoada(zona, Object.assign({}, body, { inlocuieste: det.coada_id }), laSucces, confirmare));
       }
       return null;
     }
-    const text = (typeof (e && e.mesaj) === "string" && e.mesaj) || det.mesaj || "Nu s-a putut trimite în coadă.";
+    // [lotul 11, 436 afișare — „paragraful repetă notele pe care le arată butoanele”] refuzul cu note numite (porțile TVA / D406, notele
+    // nevalidate ale declarației din evidență) se arată cu fraza care le NUMĂRĂ (`mesaj_langa_note`); butoanele „Deschide nota …” le numesc
+    const cuNote = (det.note || []).length > 0;
+    const text = mesajLangaNote(cuNote, det.mesaj_langa_note, (typeof (e && e.mesaj) === "string" && e.mesaj) || det.mesaj)
+      || "Nu s-a putut trimite în coadă.";
     arataMesaj(zona, text + (det.erori ? " — " + det.erori : ""), "eroare");
-    if ((det.note || []).length) legaturiNote(zona, body.tenant_id, det.note);
+    if (cuNote) legaturiNote(zona, body.tenant_id, det.note);
+    // [lotul 11, 445] refuzul generatorului numește ecranul unde se repară (`RefuzGenerare.detaliu`, ex. Date firmă): butonul spre el, cu
+    // întoarcerea la declarație (mecanismul unic `butonSpreEcran` -> `nav.dinRefuz`); ca declaratii.js la generare
+    if (det.ecran && window._navGlobal) butonSpreEcran(zona, det.ecran, window._navGlobal, body.tenant_id,
+      { clasa: "buton-secundar", camp: det.camp_ecran || null });
     return null;
   }
 }
 
+// [lotul 11, 436 afișare] textul de lângă butoanele notelor: varianta fără lista lor, când serverul o dă (`mesaj_langa_note`,
+// `avertismente_poarta_langa_note`); altfel textul întreg. Fără butoane (`cuNote` fals), textul întreg — el numește notele.
+export function mesajLangaNote(cuNote, langa, intreg) {
+  const areLanga = Array.isArray(langa) ? langa.length > 0 : !!langa;
+  return cuNote && areLanga ? langa : intreg;
+}
+
 // [deficiența 284] refuzul porții TVA numește notele nevalidate care explică diferența: fiecare are butonul ei spre Registrul jurnal, în
 // luna notei, cu nota evidențiată (același drum ca legătura „jurnal:” din notificări). Ecranul declarației rămâne dedesubt.
-export async function deschideInCoada(coadaId) {
+export async function deschideInCoada(coadaId, dinRefuz = false) {
   if (!window._navGlobal) return;
-  const { randeazaValidat } = await import("./validat.js?v=6d8f4bd482");
+  const { randeazaValidat } = await import("./validat.js?v=5a3d28dbec");
+  // [lotul 11, 445] deschisă dintr-un refuz („Deschide declarația existentă”): declarația de dedesubt se păstrează, X / „← Înapoi” întorc la ea
+  if (dinRefuz && window._navGlobal.dinRefuz) window._navGlobal.dinRefuz();
   window._navGlobal.deschide("Coada de validare și depunere", (corp, nn) => randeazaValidat(corp, nn, { evidentiaza: coadaId }), { nivel: "cabinet" });
 }
 
@@ -108,15 +128,17 @@ export function legaturiNote(zona, tenantId, note) {
     if (!t || t.regim_contabil !== "simpla") return;
     const p = document.createElement("p");
     p.className = "ecran-nota";
-    p.textContent = `Notele de mai jos sunt interne și nu s-au putut valida automat (motivul s-a spus la salvarea lor). ${TEXT_NOTA_INTERNA}`;
+    p.textContent = `Notele de mai jos sunt interne și nu s-au putut valida automat; motivul fiecăreia e pe nota ei în Registrul jurnal. ${TEXT_NOTA_INTERNA}`;
     lista.insertAdjacentElement("beforebegin", p);
   }).catch(() => {});   // eticheta lipsește, legăturile rămân: lista firmelor e citită și la clic
   lista.querySelectorAll("[data-nota]").forEach((b) => b.addEventListener("click", async () => {
     const n = note[parseInt(b.dataset.nota, 10)];
     const [an, luna] = n.data.split("-").map((x) => parseInt(x, 10));
-    const { ecranJurnal } = await import("./firme.js?v=6855dfc0c2");
+    const { ecranJurnal } = await import("./firme.js?v=020b99dd0c");
     const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tenantId);
     if (!t || !window._navGlobal) return;
+    // [lotul 11, 445] nota se deschide dintr-un refuz: formularul / declarația de dedesubt se păstrează, săgeata și X întorc acolo
+    if (window._navGlobal.dinRefuz) window._navGlobal.dinRefuz();
     window._navGlobal.deschide(`Registru jurnal · ${t.nume}`, (corp, nn) => ecranJurnal(corp, nn, t, { evidentiaza: n.nota_id, an, luna }),
       { lat: "tabel" });   // [394] Registrul jurnal se deschide lat de pe orice drum
   }));

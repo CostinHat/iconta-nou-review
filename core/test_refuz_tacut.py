@@ -43,7 +43,10 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # instrumentului, nu refuzuri înghițite: una cheamă o funcție proprie care afișează
 # (`plaseazaErori`, modul 1), cealaltă e o căutare de fundal la tastare (`produse/
 # potriveste`, modul 3 — `POST` folosit ca citire).
-_SCRIERI_MUTE = 18
+# [lotul 11, 22.10.2026] 18 -> 16, COBORÂT: cele două `plaseazaErori` proprii (emiterea facturii, `emitere_ecran.js`, și formularul
+# facturii recurente, `facturi_ecran.js` — modul de eșec 1 al instrumentului: o funcție proprie care afișează) trec acum prin drumul unic
+# al refuzului, `api.arataRefuzul` (440), pe care scanul îl recunoaște (`scan_refuz_tacut._ARATA`, W2). Citirile mute: 89 (≤ 87 + 5).
+_SCRIERI_MUTE = 16
 # [17.10.2026, comanda 7.2] 78 -> 87, deliberat: citiri AJUTĂTOARE, a căror lipsă nu oprește nimic — eticheta butonului de trimitere
 # (`coada_trimite.etichetaTrimitere`: rămâne „Trimite în coadă”), lista declarațiilor firmei deja în coadă (299), cardurile de început și
 # ghidul lor din „?” (319 / 320: fără ele pagina principală rămâne cum era), poarta primei intrări (o eroare de citire nu blochează

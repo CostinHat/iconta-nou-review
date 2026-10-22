@@ -139,7 +139,7 @@ def fisa_cont(conn, schema, cont, an, luna=None, sold_initial=None, rulaj_prelua
 
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
-            SELECT i.data, i.numar, i.descriere, i.sursa,
+            SELECT i.id, i.data, i.numar, i.descriere, i.sursa,
                    l.cont_debit, l.cont_credit, l.suma
               FROM {schema}.inregistrari i
               JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
@@ -149,6 +149,10 @@ def fisa_cont(conn, schema, cont, an, luna=None, sold_initial=None, rulaj_prelua
              ORDER BY i.data, i.id, l.id
         """, (di, ds, cont, cont))
         brut = cur.fetchall()
+        # [lotul 11, 443 — datele existente] nota validată scrisă înainte de 443 („Contare factura F1A3”) nu se modifică (OMFP 1802/2014
+        # pct.69); explicația o arată cu seria separat, ca Registrul jurnal
+        from core import jurnal_api as _j
+        afisat = _j.note_fara_serie_lipita(cur, schema, sorted({r["id"] for r in brut}))
 
     sold = _q(sold_initial if sold_initial is not None else 0)
     randuri = []
@@ -177,7 +181,7 @@ def fisa_cont(conn, schema, cont, an, luna=None, sold_initial=None, rulaj_prelua
         randuri.append(RandFisa(
             data=r["data"],
             document=(r["numar"] or "").strip() or None,
-            explicatie=(r["descriere"] or "").strip() or None,
+            explicatie=((afisat.get(r["id"]) or {}).get("descriere") or r["descriere"] or "").strip() or None,
             jurnal=(r["sursa"] or "").strip() or None,
             cont_corespondent=corespondent,
             debit=debit,

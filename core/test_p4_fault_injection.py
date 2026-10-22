@@ -310,7 +310,7 @@ def test_depunere_confirmarea_nu_ramane_fara_depunere(mediu, monkeypatch):
 #  2. POST /auth/register — contul nu rămâne fără dovada acordului
 # ============================================================================
 
-def test_register_contul_nu_ramane_fara_dovada_acordului(monkeypatch):
+def test_register_contul_nu_ramane_fara_dovada_acordului(monkeypatch, contor_schema_pastrat):
     """Frontiera probată: **între crearea contului și scrierea dovezii acordului**.
 
     Defectul se injectează dându-i lui `acord_termeni` un `cabinet_id` inexistent: cheia străină

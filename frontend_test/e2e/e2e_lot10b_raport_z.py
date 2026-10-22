@@ -100,7 +100,7 @@ def test_def_zgenerat_titlul_nu_e_rosu_conturile_se_vad_butonul_inactiv(patron, 
     pg.click("#z-salveaza")
     pg.wait_for_function("() => (document.querySelector('#z-rezultat') || {innerText: ''}).innerText.includes('Notă generată')",
                          timeout=20000)
-    culoare = pg.eval_on_selector("#z-rezultat .pf-frand-nume", "e => getComputedStyle(e).color")
+    culoare = pg.eval_on_selector("#z-rezultat .cok-titlu", "e => getComputedStyle(e).color")
     assert culoare != "rgb(163, 35, 28)", culoare                      # roșul lui .msg-eroare (static/stil.css)
     assert "msg-eroare" not in (pg.get_attribute("#z-rezultat", "class") or "")
     linii = " ".join(pg.inner_text("#z-nota-linii").split())

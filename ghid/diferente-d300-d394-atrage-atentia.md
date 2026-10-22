@@ -2,7 +2,7 @@
 title: "Ce diferențe între D300 și D394 pot atrage atenția ANAF?"
 description: "D300 și D394 nu declară aceleași sume — D300 conține tot TVA-ul firmei, D394 doar subsetul național raportabil. Ce diferențe sunt normale și ce merită verificat."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -33,6 +33,6 @@ Din text și din structura celor două formulare rezultă exact ce nu trebuie s�
 
 Generatorul D394 exclude explicit din calcul achizițiile intracomunitare (direcția „primită" de la parteneri UE/non-UE), cu comentariu direct în cod care citează exact motivul: acestea se declară în D390, nu în D394. Relația de incluziune D300⊇D394 e documentată explicit și în motorul de reconciliere al aplicației.
 
-Pe lângă excluderea corectă a achizițiilor intracomunitare, aplicația rulează o **a doua cale de calcul, independentă**: recalculează totalurile pe cotă de TVA direct din liniile brute ale facturilor, separat de generatorul principal, și **blochează** generarea declarației dacă cele două căi diferă — numind explicit valorile și câmpul divergent. Limitele declarate ale acestui gard: nu acoperă operațiunile manuale (bonuri/borderouri, fără ecran propriu la data acestui ghid) și nu prinde o eroare de intrare comună ambelor căi de calcul (de exemplu o cotă de TVA tastată greșit o singură dată, direct pe factură).
+Pe lângă excluderea corectă a achizițiilor intracomunitare, aplicația rulează o **a doua cale de calcul, independentă**: recalculează totalurile pe cotă de TVA direct din liniile brute ale facturilor, separat de generatorul principal, și **blochează** generarea declarației dacă cele două căi diferă — numind explicit valorile și câmpul divergent. Limitele declarate ale acestui gard: nu acoperă operațiunile introduse manual la generare (de exemplu bonurile fiscale; borderoul de achiziție are ecranul lui, în Stocuri → Borderou de achiziție, și intră în verificare ca orice document primit) și nu prinde o eroare de intrare comună ambelor căi de calcul (de exemplu o cotă de TVA tastată greșit o singură dată, direct pe factură).
 
 [iConta.eu](/)

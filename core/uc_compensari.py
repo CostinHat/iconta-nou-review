@@ -38,14 +38,23 @@ def compensari_genereaza(tenant_id, corp, ctx):
     data = str(corp.get("data") or "").strip()
     numar = str(corp.get("numar") or "").strip()
     perechi = corp.get("perechi") or []
+    # [440, comanda Costin 11.1 pct.16] data, numărul și perechile se judecă toate (`ErorileFormularului`), fiecare lângă câmpul ei
+    # (`cz-data`, `cz-numar`); perioada închisă (starea evidenței) rămâne refuzul ei, după
+    from core.erori import ErorileFormularului as _Erori
+    from core import jurnal_api as _ja
+    er = _Erori("Compensarea nu s-a generat")
+    _zi, _refuz_data = _ja._data_valida(data)
+    if _refuz_data:
+        er.camp("cz-data", _refuz_data["eroare"] if data else "Alege data ordinului de compensare: la ea se sting datoriile.")
     if not numar:
         # HG 685/1999 anexa 2 art.11: „Ordinele de compensare au regim special, sunt numerotate din tipografie” — numărul e al ordinului
-        raise _erori.CerereGresita({"mesaj": "Scrie numărul ordinului de compensare: e documentul justificativ al notei (HG 685/1999).",
-                                    "erori_campuri": [{"camp": "cz-numar", "mesaj": "Scrie numărul ordinului de compensare."}]})
-    if len(numar) > 40:
-        raise _erori.DateInvalide("Numărul ordinului de compensare are cel mult 40 de caractere.")
+        er.camp("cz-numar", "Scrie numărul ordinului de compensare.")
+    elif len(numar) > 40:
+        er.camp("cz-numar", "Numărul ordinului de compensare are cel mult 40 de caractere.")
     if not isinstance(perechi, list):
-        raise _erori.DateInvalide("Perechile de facturi trebuie trimise ca listă.")
+        er.fara_camp("Perechile de facturi trebuie trimise ca listă.")
+    if er:
+        raise _erori.CerereGresita(er.detaliu())
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     with db.get_conn() as conn:
         _uc_comun._cere_luna_deschisa(conn, schema, data)   # validează și data (zi din calendar)

@@ -69,10 +69,8 @@ def mentiune_storno(f):
     if not o:
         return None
     from core.pdf_util import data_ro
-    serie, numar = str(o.get("serie") or "").strip(), str(o.get("numar") or "").strip()
-    if serie and numar.startswith(serie) and numar[len(serie):].strip():
-        numar = numar[len(serie):].strip()   # numărul emis conține seria („F1A8”): pe hârtie „F1A nr. 8”
-    return "Stornare factura %snr. %s din %s" % ((serie + " ") if serie else "", numar, data_ro(str(o.get("data_emitere"))[:10]))
+    from core.pdf_util import serie_nr   # [lotul 11, 443] o singură regulă pentru seria și numărul („F1A nr. 8”)
+    return "Stornare factura %s din %s" % (serie_nr(o.get("serie"), o.get("numar")), data_ro(str(o.get("data_emitere"))[:10]))
 
 
 _RADACINI_VENIT = (            # radacina in denumire -> tip (OMFP 1802/2014)

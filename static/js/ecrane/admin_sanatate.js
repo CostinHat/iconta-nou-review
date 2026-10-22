@@ -1,6 +1,6 @@
 // admin_sanatate.js — Admin iConta: sanatate infrastructura (doar superadmin).
 // Server (CPU/RAM/disk), aplicatie (uptime), baza de date, erori recente (500+), grafice istoric.
-import { dataRo, api, arataMesaj, esc } from "../api.js?v=ff30ebaf3f";
+import { dataRo, api, arataMesaj, esc } from "../api.js?v=58f26a3fc4";
 
 
 function fmtOra(iso) {
@@ -88,6 +88,7 @@ export async function randeazaAdminSanatate(corp, nav) {
   const bd = d.baza_date || {};
   const erori = d.erori_lista || [];
   const istoric = (istoricR && istoricR.istoric) || [];
+  const bnr = d.curs_bnr || {};   // [460] cursul zilei: în aplicație sau lipsă (bucla de sănătate îl completează din BNR)
 
   const cifra = (val, eticheta, procent) => `
     <div class="cap-cifra-bloc">
@@ -109,6 +110,13 @@ export async function randeazaAdminSanatate(corp, nav) {
     <div class="cap-cifre">
       ${cifra(fmtUptime(app.uptime_secunde), "activă de")}
     </div>
+
+    <h3 class="cap-titlu">Curs BNR</h3>
+    <div class="cap-cifre" id="san-bnr">
+      ${cifra(bnr.ultima_zi ? dataRo(bnr.ultima_zi) : "—", "ultimul curs BNR din aplicație")}
+      ${cifra(bnr.asteptat ? dataRo(bnr.asteptat) : "—", "cursul de care au nevoie facturile de azi", bnr.lipsa ? 100 : bnr.lipsa === false ? 0 : null)}
+    </div>
+    <div id="san-bnr-msg"></div>
 
     <h3 class="cap-titlu">Bază de date</h3>
     <div class="cap-cifre">
@@ -144,6 +152,17 @@ export async function randeazaAdminSanatate(corp, nav) {
       <span id="san-test-msg"></span>
     </div>
   `;
+  // [460] cursul zilei lipsește: alertă pentru administratorul platformei (DS cap.6: `arataMesaj`, eroare), cu golurile anului
+  const lipsaBnr = (bnr.zile_lipsa || []).map((z) => dataRo(z));
+  if (bnr.lipsa) {
+    arataMesaj(corp.querySelector("#san-bnr-msg"), `Cursul BNR comunicat pe ${dataRo(bnr.asteptat)} lipsește din aplicație: facturile în valută de azi `
+      + `primesc cursul din ${bnr.ultima_zi ? dataRo(bnr.ultima_zi) : "—"}, iar contabilul vede asta pe factură. Aplicația reîncearcă singură la 10 minute.`
+      + (lipsaBnr.length ? ` Zile lipsă în ${bnr.asteptat.slice(0, 4)}: ${lipsaBnr.join(", ")}.` : ""), "eroare");
+  } else if (lipsaBnr.length) {
+    arataMesaj(corp.querySelector("#san-bnr-msg"), `Zile fără curs BNR în aplicație (se completează din arhiva BNR): ${lipsaBnr.join(", ")}.`, "avert");
+  } else if (bnr.lipsa === false) {
+    arataMesaj(corp.querySelector("#san-bnr-msg"), `Cursul BNR e la zi: toate zilele bancare din ${bnr.asteptat.slice(0, 4)} sunt în aplicație.`, "ok");
+  }
   const bTest = corp.querySelector("#san-test-alerta");
   bTest.addEventListener("click", async () => {  // [test_alerta_v1] verifica livrarea emailurilor de alerta
     bTest.disabled = true;

@@ -1,0 +1,20 @@
+[
+ {
+  "fisier": "core/coada_api.py",
+  "ancora": "def sql_inlocuita(a):\n    \"\"\"Expresia SQL (bool)",
+  "inlocuire": "def sql_inlocuita(a):\n    return \"FALSE\"\n    \"\"\"Expresia SQL (bool)",
+  "test": "frontend_test/e2e/e2e_lot11_a458.py::test_def_458_erori_echipa_fara_regenerari_totalul_e_suma_randurilor_fara_text_suprapus"
+ },
+ {
+  "fisier": "core/asistenti_api.py",
+  "ancora": "    respinse = sum(t[\"nr\"] for t in tipare)   # [458]",
+  "inlocuire": "    respinse = sum(t[\"nr\"] for t in tipare) + 1   # [458]",
+  "test": "frontend_test/e2e/e2e_lot11_a458.py::test_def_458_erori_echipa_fara_regenerari_totalul_e_suma_randurilor_fara_text_suprapus"
+ },
+ {
+  "fisier": "static/js/ecrane/asistenti.js",
+  "ancora": "<span class=\"tip-desc\">${t}</span>`;",
+  "inlocuire": "<span class=\"asi-sem-txt\">${t}</span>`;",
+  "test": "frontend_test/e2e/e2e_lot11_a458.py::test_def_458_erori_echipa_fara_regenerari_totalul_e_suma_randurilor_fara_text_suprapus"
+ }
+]

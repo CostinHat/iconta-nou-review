@@ -33,10 +33,11 @@ plăților unei facturi o citesc prin `legaturi()` / `nota_de_compensare()` — 
 
 FIECARE FUNCȚIE PRIMEȘTE CURSORUL / CONEXIUNEA APELANTULUI. Nu deschide conexiuni, nu comite.
 """
-import re
 from decimal import Decimal, ROUND_HALF_UP
 
 from psycopg2.extras import RealDictCursor
+
+from core import cui_forma as _forma_cui
 
 _BAN = Decimal("0.01")
 
@@ -46,8 +47,16 @@ LINIE_COMPENSARE = ("401", "4111")
 COD_DATE = "COMPENSARE_DATE"
 COD_STARE = "COMPENSARE_STARE"
 
-#: regula care oprește o factură de la compensare (`afirmatie["regula"]` în `facturi_deschise`) — sursa unică, citită și de teste
+#: regula care oprește o factură de la compensare (`afirmatie["regula"]` în `facturi_deschise`) — sursa unică, citită și de teste.
+#: [lotul 11, decizia Costin din 10.3, verbatim în DECIZII „Comanda 10.3”: „Compensarea în valută rămâne refuzată, cu motiv.”] Motivul:
+#: stingerea unei creanțe / datorii în valută la data ordinului cere și diferența de curs față de cursul din evidență — OMFP 1802/2014
+#: pct.322 alin.(1): „Diferențele de curs valutar care apar cu ocazia decontării creanțelor și datoriilor în valută la cursuri diferite față
+#: de cele la care au fost înregistrate inițial pe parcursul lunii sau față de cele la care sunt înregistrate în contabilitate trebuie
+#: recunoscute în luna în care apar, ca venituri sau cheltuieli din diferențe de curs valutar.” Aplicația n-o calculează la compensare,
+#: deci nu scrie o notă fără ea. Același refuz pe toate drumurile: propunerea (`facturi_deschise`, factura „nu intră”, cu motivul pe
+#: ecran), verificarea cererii (`verifica`, API-ul și butonul) și deci ordinul (generat numai din perechile verificate).
 REGULA_VALUTA = "compensarea se face în lei (diferența de curs la data ordinului nu e tratată de aplicație)"
+TEMEI_VALUTA = "OMFP 1802/2014 pct.322 alin.(1)"
 REGULA_CONTARE = "OMFP 1802/2014 pct.56 alin.(3)"
 REGULA_PARTENER = "datoriile reciproce se compensează cu același partener, identificat prin codul fiscal"
 
@@ -80,9 +89,10 @@ def nota_de_compensare(alias_i, expr_factura, p=""):
 
 
 def cui_partener(cui):
-    """CUI-ul partenerului fără spații și fără prefixul RO — același partener pe factura emisă și pe cea primită."""
-    c = re.sub(r"\s", "", str(cui or "")).upper()
-    return c[2:] if c.startswith("RO") else c
+    """CUI-ul partenerului în forma păstrată (`cui_forma.stocare`: fără spații, fără „RO” în fața cifrelor; codul de TVA al unui
+    partener din alt stat rămâne cu prefixul lui) — același partener pe factura emisă și pe cea primită; "" fără cod. [lotul 11,
+    decizia Costin 10.3 pct.4, clasa „normalizare locală a CUI”] Înainte: o a doua normalizare, scrisă aici, paralelă cu `stocare`."""
+    return _forma_cui.stocare(cui) or ""
 
 
 # ══════════════════════════════════════════════════════════════════ FACTURILE COMPENSABILE
@@ -111,8 +121,9 @@ def facturi_deschise(conn, schema):
                 continue
             motiv = regula = None
             if d["moneda"] != "RON":
-                motiv = ("în %s: compensarea în valută nu e tratată de aplicație (stingerea cere și diferența de curs la data ordinului)"
-                         % d["moneda"])
+                motiv = ("în %s: compensarea în valută nu se face în aplicație — stingerea cere și diferența de curs la data ordinului "
+                         "(%s), pe care aplicația n-o calculează; înregistreaz-o din Registrul jurnal, cu diferența pe 665 / 765"
+                         % (d["moneda"], TEMEI_VALUTA))
                 regula = REGULA_VALUTA
             elif not contare.get(fid):
                 motiv = ("nu e contabilizată: compensarea se înregistrează numai după contabilizarea creanței, respectiv a datoriei "
@@ -121,7 +132,7 @@ def facturi_deschise(conn, schema):
             elif not cui_partener(d["tert_cui"]):
                 motiv = "factura n-are codul fiscal al partenerului"
                 regula = REGULA_PARTENER
-            document = _pu.numar_cu_serie(d["serie"], d["numar"])
+            document = _pu.serie_nr(d["serie"], d["numar"])   # [lotul 11, 443] afișare: „F6 nr. 1”, nu „F61” (nu e identificator)
             out.append({"id": fid, "directie": d["directie"], "document": document,
                         "data": str(d["data_emitere"])[:10], "partener": d["tert_nume"], "cui": cui_partener(d["tert_cui"]),
                         "total": str(Decimal(str(d["total_lei"] or 0)).quantize(_BAN, rounding=ROUND_HALF_UP)),

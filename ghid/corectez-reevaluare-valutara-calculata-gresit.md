@@ -2,7 +2,7 @@
 title: "Cum corectez o reevaluare valutară calculată greșit?"
 description: "Reevaluarea valutară" (soldurile în valută la cursul BNR) nu e aceeași operațiune cu reevaluarea contabilă a imobilizărilor — sunt două funcționalități complet distincte, cu temei legal, conturi și mecanism proprii.
 published: 2026-09-23
-modified: 2026-09-23
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Nu există niciun punct comun de mecanism, conturi sau temei legal între cele d
 
 ## Ce face iConta.eu
 
-Reevaluarea lunară a soldurilor în valută este o funcționalitate proprie, distinctă de reevaluarea imobilizărilor (ecran separat, „Reevaluare lunară solduri valută"), cu propriul motor de calcul pe baza cursului BNR. Corectarea unei reevaluări valutare calculate greșit ține de acea funcționalitate, nu de reevaluarea imobilizărilor descrisă în acest dosar — pentru pașii corecți de corecție, urmăriți ghidul dedicat diferențelor de curs valutar, nu monografia de reevaluare a mijloacelor fixe.
+Reevaluarea lunară a soldurilor în valută este o funcționalitate proprie, distinctă de reevaluarea imobilizărilor (formularul ei e în „Închidere lună → Reevaluare valută”), cu propriul motor de calcul pe baza cursului BNR din ultima zi bancară a lunii; cât timp nota reevaluării e ciornă, o nouă generare din același formular o înlocuiește. Corectarea unei reevaluări valutare calculate greșit ține de acea funcționalitate, nu de reevaluarea imobilizărilor descrisă în acest dosar — pentru pașii corecți de corecție, urmăriți ghidul dedicat diferențelor de curs valutar, nu monografia de reevaluare a mijloacelor fixe.
 
 [iConta.eu](/)

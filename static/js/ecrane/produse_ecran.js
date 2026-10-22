@@ -2,7 +2,7 @@
 // Scrii denumirea -> AI potriveste cota TVA din regula oficiala (preview live) ->
 // vezi cota + justificarea -> salvezi. Cota se poate corecta manual.
 // Apelare: randeazaProduse(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp } from "../api.js?v=ff30ebaf3f";  /* cap6_catch_v1b + investigatie_identitate_v1 */
+import { api, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp, arataRefuzul, cereCompletate } from "../api.js?v=58f26a3fc4";  /* cap6_catch_v1b + investigatie_identitate_v1 */
 
 const SVG_BACK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
 
@@ -11,9 +11,14 @@ export async function randeazaProduse(corp, nav, tenantId, opt = {}) {
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
 
   let lista = [];
+  // [lotul 11, 449] categoriile cotei 0% (taxare inversă, scutit cu / fără drept de deducere, neimpozabil) și bunurile cu taxare inversă
+  // vin de la server (`produse_api.categorii_pentru_ecran`, din `categorii_tva` și `d394.CODPR`), nu se scriu a doua oară aici
+  const cat = { tva: [], c331: [] };
   try {
     const r = await api.get(`/tenants/${tenantId}/produse`);
     lista = (r && r.produse) || [];
+    cat.tva = (r && r.categorii_tva) || [];
+    cat.c331 = (r && r.categorii_331) || [];
   } catch (e) {
     /* [B7 fix] load esuat: NU referi 'zona' (nedeclarata aici -> ReferenceError) si NU continua la
        randarea listei goale (parea reusit). Stare-goala cap.6 (gol + cauza + iesire), apoi return. */
@@ -36,21 +41,32 @@ export async function randeazaProduse(corp, nav, tenantId, opt = {}) {
     <div class="pr-lista" id="pr-lista"></div>
   `;
   // [435] `opt.mesaj` e al unei singure redesenări: reîncărcarea următoare nu-l mai arată
-  const optFara = Object.assign({}, opt, { mesaj: null });
-  const reincarcaCu = (mesaj) => randeazaProduse(corp, nav, tenantId, Object.assign({}, optFara, { mesaj }));
-  corp.querySelector("#pr-add").addEventListener("click", () => formularAdauga(corp, tenantId, () => randeazaProduse(corp, nav, tenantId, optFara)));
+  const optFara = Object.assign({}, opt, { mesaj: null, dupaSalvare: false });
+  const reincarcaCu = (mesaj) => randeazaProduse(corp, nav, tenantId, Object.assign({}, optFara, { mesaj, dupaSalvare: true }));
+  corp.querySelector("#pr-add").addEventListener("click", () => formularAdauga(corp, tenantId,
+    () => randeazaProduse(corp, nav, tenantId, Object.assign({}, optFara, { dupaSalvare: true })), cat));
   corp.querySelector("#pr-cauta").addEventListener("input", (e) => {  // [pr_cauta_v1]
     const q = e.target.value.toLowerCase().trim();
     const filtrata = q ? lista.filter((x) => (x.denumire || "").toLowerCase().includes(q)) : lista;
-    randeazaLista(corp, tenantId, filtrata, () => randeazaProduse(corp, nav, tenantId, optFara), reincarcaCu);
+    randeazaLista(corp, tenantId, filtrata, () => randeazaProduse(corp, nav, tenantId, optFara), reincarcaCu, cat);
   });
 
-  randeazaLista(corp, tenantId, lista, () => randeazaProduse(corp, nav, tenantId, optFara), reincarcaCu);
+  randeazaLista(corp, tenantId, lista, () => randeazaProduse(corp, nav, tenantId, optFara), reincarcaCu, cat);
   // [lotul 10, 435] confirmarea salvării de pe rând rămâne vizibilă după reîncărcarea listei (DS cap.6, `arataMesaj` „ok”)
   if (opt.mesaj) arataMesaj(corp.querySelector("#pr-mesaj"), opt.mesaj, "ok");
+  // [lotul 11, 445] deschis dintr-un refuz al altui formular (NIR, factura): după salvare, drumul înapoi la formularul păstrat
+  // (ca Date firmă `#df-inapoi-la`; săgeata ferestrei îl spune oricum)
+  if (opt.dupaSalvare && opt.inapoiLa && nav && nav.inapoi) {
+    const bi = document.createElement("button");
+    bi.type = "button"; bi.className = "buton-primar"; bi.id = "pr-inapoi-la";
+    bi.dataset.faraActiune = "navigare înapoi la formularul de plecare";
+    bi.textContent = "\u2190 \u00cenapoi la " + opt.inapoiLa;
+    bi.addEventListener("click", () => nav.inapoi());
+    corp.querySelector("#pr-mesaj").appendChild(bi);
+  }
 }
 
-function badgeCota(cota, sursa) {
+function badgeCota(cota, sursa, categorie, cat) {
   // [R29] LIPSA nu e 0%: `Number(null)` da 0, deci un produs fara cota s-ar fi afisat
   // „fara TVA" - o afirmatie falsa despre un produs necompletat.
   if (cota === null || cota === undefined || cota === "") {
@@ -58,17 +74,28 @@ function badgeCota(cota, sursa) {
   }
   const c = Number(cota);
   const cls = c === 0 ? "prc-0" : (c === 11 ? "prc-11" : "prc-21");
-  const eticheta = c === 0 ? "f\u0103r\u0103 TVA" : `TVA ${c}%`;
+  // [449] la cota 0% insigna spune categoria (taxare inversă / scutit cu sau fără drept / neimpozabil), nu „fără TVA” pentru toate
+  const categ = c === 0 && categorie ? ((cat && cat.tva) || []).find((x) => x.cod === categorie) : null;
+  const eticheta = c === 0 ? (categ ? "0% \u00b7 " + esc(categ.eticheta) : "f\u0103r\u0103 TVA") : `TVA ${c}%`;
   const semn = sursa === "ai" ? " \u00b7 AI" : (sursa === "fallback" ? " \u00b7 verific\u0103" : "");
   return `<span class="pr-badge ${cls}">${eticheta}${semn}</span>`;
 }
 
 // [lotul 10, deficiența 435] „Orice articol din stoc apare în nomenclator”: articolul din stoc fără produs vine de la server cu `din_stoc`,
 // fără cotă; cota de TVA a vânzării se alege pe rândul lui și îl scrie în nomenclator (POST /produse, cu cota aleasă — nimic presupus)
-const OPT_COTA = `<option value="">— alege cota —</option><option value="21">21%</option><option value="11">11%</option><option value="0">scutit / f\u0103r\u0103 TVA (art. 292)</option>`;
+// [lotul 11, 449] cota 0% se alege CU categoria ei (valoarea „0:<categorie>”), ca factura să pună codul din e-Factura (AE / E) și rândul din
+// D300; taxarea inversă cere și bunul (codul din D394), în selectul de lângă
+const optCota = (cat, gol) => `<option value="">${gol}</option><option value="21">21%</option><option value="11">11%</option>` +
+  ((cat && cat.tva) || []).map((c) => `<option value="0:${esc(c.cod)}">0% \u2014 ${esc(c.eticheta)}</option>`).join("");
+const optC331 = (cat) => `<option value="">— alege bunul (art.331) —</option>` +
+  ((cat && cat.c331) || []).map((c) => `<option value="${esc(c.cod)}">${esc(c.eticheta)} (D394 cod ${esc(c.cod_d394)})</option>`).join("");
+/** Valoarea selectului de cotă -> {cota_tva, categorie_tva}. */
+const dinCota = (v) => { const [c, categ] = String(v).split(":"); return { cota_tva: Number(c), categorie_tva: categ || null }; };
+/** Selectul bunului cu taxare inversă se vede numai la „0% — taxare inversă”. */
+const legaC331 = (selCota, selC331) => { if (!selCota || !selC331) return; const f = () => { selC331.hidden = selCota.value !== "0:taxare_inversa"; if (selC331.hidden) selC331.value = ""; }; selCota.addEventListener("change", f); f(); };
 const cheieRand = (p) => (p.din_stoc ? "s" + p.articol_id : String(p.id));
 
-function randeazaLista(corp, tenantId, lista, reincarca, reincarcaCu) {
+function randeazaLista(corp, tenantId, lista, reincarca, reincarcaCu, cat) {
   const zona = corp.querySelector("#pr-lista");
   if (!zona) return;
   if (!lista.length) {
@@ -82,23 +109,31 @@ function randeazaLista(corp, tenantId, lista, reincarca, reincarcaCu) {
         <div class="pr-rand-sub">${p.din_stoc ? `în stoc, ${esc(p.um || "buc")} \u00b7 alege cota de TVA a vânzării, ca factura să o ia de aici` : (p.pret_unitar ? bani(p.pret_unitar) + " lei / " + (p.um || "buc") : (p.um || "buc")) + (p.justificare ? " \u00b7 " + esc(p.justificare) : "")}</div>
       </div>
       <div class="pr-rand-drept">
-        ${badgeCota(p.cota_tva, p.sursa)}
-        ${p.din_stoc ? `<select class="camp-input pr-mic pr-cota-rand" id="pr-cota-${cheieRand(p)}" aria-label="Cota TVA ${esc(p.denumire)}">${OPT_COTA}</select>
+        ${badgeCota(p.cota_tva, p.sursa, p.categorie_tva, cat)}
+        ${p.din_stoc ? `<select class="camp-input pr-mic pr-cota-rand" id="pr-cota-${cheieRand(p)}" aria-label="Cota TVA ${esc(p.denumire)}">${optCota(cat, "— alege cota —")}</select>
+        <select class="camp-input pr-mic" id="pr-c331-${cheieRand(p)}" aria-label="Bunul cu taxare inversă ${esc(p.denumire)}" hidden>${optC331(cat)}</select>
         <button class="buton-primar pr-cota-salveaza" id="pr-cota-salveaza-${cheieRand(p)}" data-cheie="${cheieRand(p)}" data-actiune="POST /tenants/{tenant_id}/produse">Salveaz\u0103 cota</button>`
         : `<button class="buton-sters pr-sterge" data-id="${p.id}" data-actiune="DELETE /tenants/{tenant_id}/produse/{produs_id}" title="\u0218terge" aria-label="\u0218terge">\u00d7</button>`}
       </div>
     </div>`).join("");
+  zona.querySelectorAll(".pr-cota-rand").forEach((s) => legaC331(s, zona.querySelector("#" + s.id.replace("pr-cota-", "pr-c331-"))));
   zona.querySelectorAll(".pr-cota-salveaza").forEach((b) => {
     b.addEventListener("click", async () => {
       const p = lista.find((x) => cheieRand(x) === b.dataset.cheie);
       const sel = zona.querySelector(`#pr-cota-${b.dataset.cheie}`);
+      const sel331 = zona.querySelector(`#pr-c331-${b.dataset.cheie}`);
       curataEroriCamp(zona);
       if (!p || !sel) return;
       if (sel.value === "") { eroareCamp(zona, sel.id, `Alege cota de TVA a vânzării pentru ${p.denumire}.`); return; }
+      const { cota_tva: cota, categorie_tva } = dinCota(sel.value);
+      if (categorie_tva === "taxare_inversa" && sel331 && !sel331.value) {
+        eroareCamp(zona, sel331.id, `Alege bunul cu taxare inversă (art.331) pentru ${p.denumire}: D394 îl declară cu codul lui.`); return;
+      }
       try {
-        await api.post(`/tenants/${tenantId}/produse`, { denumire: p.denumire, um: p.um || "buc", cota_tva: Number(sel.value), confirmat: true });
-        const cota = Number(sel.value);
-        reincarcaCu(`Cota ${cota === 0 ? "„scutit / fără TVA”" : cota + "%"} salvată: ${p.denumire} e acum în nomenclator, iar factura o ia de aici.`);
+        await api.post(`/tenants/${tenantId}/produse`, { denumire: p.denumire, um: p.um || "buc", cota_tva: cota, confirmat: true,
+          categorie_tva, categorie_331: categorie_tva === "taxare_inversa" && sel331 ? sel331.value : null });
+        const et = cota === 0 ? `0% (${sel.options[sel.selectedIndex].text.replace(/^0% \u2014 /, "")})` : cota + "%";
+        reincarcaCu(`Cota ${et} salvată: ${p.denumire} e acum în nomenclator, iar factura o ia de aici.`);
       } catch (e) {
         eroareCamp(zona, sel.id, (e && e.mesaj) || `Cota pentru ${p.denumire} nu s-a salvat. Încearcă din nou.`);
       }
@@ -116,7 +151,7 @@ function randeazaLista(corp, tenantId, lista, reincarca, reincarcaCu) {
   });
 }
 
-function formularAdauga(corp, tenantId, reincarca) {
+function formularAdauga(corp, tenantId, reincarca, cat) {
   const zona = corp.querySelector("#pr-form-zona");
   if (!zona) return;
   zona.innerHTML = `
@@ -130,12 +165,8 @@ function formularAdauga(corp, tenantId, reincarca) {
       <div class="pr-form-rand pr-form-detalii">
         <input class="camp-input pr-mic" id="pr-pret" type="number" step="0.01" placeholder="Pre\u021b" aria-label="Pre\u021b">
         <input class="camp-input pr-mic" id="pr-um" placeholder="UM (buc)" aria-label="Unitate de m\u0103sur\u0103" value="buc">
-        <select class="camp-input pr-mic" id="pr-cota" aria-label="Cota TVA">
-          <option value="">cot\u0103 (auto)</option>
-          <option value="21">21%</option>
-          <option value="11">11%</option>
-          <option value="0">scutit / f\u0103r\u0103 TVA (art. 292)</option>
-        </select>
+        <select class="camp-input pr-mic" id="pr-cota" aria-label="Cota TVA">${optCota(cat, "cot\u0103 (auto)")}</select>
+        <select class="camp-input pr-mic" id="pr-c331" aria-label="Bunul cu taxare inversă (art.331)" hidden>${optC331(cat)}</select>
       </div>
       <div class="pr-form-actiuni">
         <button class="buton-primar" id="pr-salveaza" data-actiune="POST /tenants/{tenant_id}/produse">Salveaz\u0103</button>
@@ -146,6 +177,8 @@ function formularAdauga(corp, tenantId, reincarca) {
   const inputDen = zona.querySelector("#pr-den");
   const preview = zona.querySelector("#pr-cota-preview");
   const selCota = zona.querySelector("#pr-cota");
+  const selC331 = zona.querySelector("#pr-c331");
+  legaC331(selCota, selC331);
   focusFaraSalt(inputDen);
 
   // potrivire AI live (debounce), doar daca utilizatorul nu a ales manual cota
@@ -173,16 +206,24 @@ function formularAdauga(corp, tenantId, reincarca) {
 
   zona.querySelector("#pr-anuleaza").addEventListener("click", () => { zona.innerHTML = ""; });
   zona.querySelector("#pr-salveaza").addEventListener("click", async () => {
+    curataEroriCamp(zona);
     const denumire = inputDen.value.trim();
-    if (!denumire) { arataMesaj(preview, "Completează denumirea produsului sau serviciului.", "eroare"); focusFaraSalt(inputDen); return; }
+    // [lotul 11, 440] toate lipsurile deodată, lângă câmpurile lor: denumirea și (la taxare inversă) bunul art.331
+    let lipsa = cereCompletate(zona, [{ id: "pr-den", mesaj: "Completează denumirea produsului sau serviciului." }]);
+    const cotaMan = selCota.value;
+    if (cotaMan !== "" && dinCota(cotaMan).categorie_tva === "taxare_inversa" && !selC331.value) {
+      eroareCamp(zona, "pr-c331", "Alege bunul cu taxare inversă (art.331): D394 îl declară cu codul lui.");
+      lipsa = true;
+    }
+    if (lipsa) return;
     const payload = {
       denumire,
       um: zona.querySelector("#pr-um").value.trim() || "buc",
       // [comanda Costin 06.10.2026 pct.1b, clasa] golul pleacă drept lipsă (nomenclatorul îl ține ca „fără preț”), nu ca 0 ales
       pret_unitar: zona.querySelector("#pr-pret").value === "" ? null : parseFloat(zona.querySelector("#pr-pret").value),
     };
-    const cotaMan = selCota.value;
-    if (cotaMan !== "") payload.cota_tva = parseFloat(cotaMan);
+    if (cotaMan !== "") Object.assign(payload, dinCota(cotaMan));   // [449] cota și, la 0%, categoria ei
+    if (payload.categorie_tva === "taxare_inversa") payload.categorie_331 = selC331.value;
     try {
       await api.post(`/tenants/${tenantId}/produse`, payload);
       zona.innerHTML = "";
@@ -190,7 +231,9 @@ function formularAdauga(corp, tenantId, reincarca) {
     } catch (e) {
       /* [catch_tacut 27.07.2026] o salvare esuata parea reusita: formularul
          se golea, omul credea ca s-a salvat. DS cap.6 - niciodata tacere. */
-      arataMesaj(zona, (e && e.mesaj) || "Nu s-a putut salva. Încearcă din nou.", "eroare");
+      // [lotul 11, 440] erorile serverului lângă câmpurile lor, textul refuzului în formular
+      arataRefuzul(zona, e && e.mesaj ? e : { ...(e || {}), mesaj: "Nu s-a putut salva. Încearcă din nou." }, zona,
+        { campuri: { denumire: "pr-den", pret_unitar: "pr-pret", um: "pr-um", cota_tva: "pr-cota", categorie_tva: "pr-cota", categorie_331: "pr-c331" } });
     }
   });
 }

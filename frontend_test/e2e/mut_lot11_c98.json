@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "core/repo_inceput.py",
+  "ancora": "        cur.execute(\"ROLLBACK TO SAVEPOINT preluare_facuta\")\n        return False, False",
+  "inlocuire": "        raise",
+  "test": "frontend_test/e2e/e2e_lot11_c85_c100.py::test_def_c98_primii_pasi_nu_cad_cand_firma_e_stearsa_in_timpul_cererii"
+ }
+]

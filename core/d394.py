@@ -46,6 +46,7 @@ from core.identitate import valideaza_cui as _vcui, valideaza_cif as _vcif
 _COLOANE_PROFIL = ("nume", "cui", "adresa", "caen", "activitate_exceptata_amef")   # minimul citit de aici
 
 from core.common import cate as _cate   # [Retest 2 pct.14]
+from core.pdf_util import serie_nr as _serie_nr   # [lotul 11, 443] seria și numărul separat în avertismente
 import re
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
@@ -451,6 +452,10 @@ class Rezultat:
     # [lotul 10, C69] judP al fiecărei op1 cu partener neînregistrat fără cuiP (cheia op1 -> cod SIRUTA), din `judete_partener`
     judP: dict = field(default_factory=dict)
     avertismente: list = field(default_factory=list)
+    # [lotul 11, C77] D394 n-are marcaj de rectificativă în XML (OPANAF 2194/2025 anexa 2 pct.3: „declaraţie care înlocuieşte
+    # declaraţia informativă depusă iniţial”) — numai mențiunea pe ecran, din depunerile înregistrate pe perioadă
+    rectificativa: object = None
+    depunere_anterioara_nr: object = None
 
 
 #: [D394 op2 Î1] NOMENCLATORUL rubricilor `op2` (D394Validator v5, clasa Op2: baza21/20/19/11/9/5, TVA21/…/5) —
@@ -590,13 +595,20 @@ def judete_partener(op1, judete_p, cuiuri_p):
         else:
             lipsa.append((denP or "?", tip, sorted(coduri)))
     if lipsa:
-        raise ValueError(
+        # [lotul 11, decizia Costin 10.3 pct.4: „Localitatea și județul la PF și la firmele neînregistrate se completează în fișa
+        # partenerului; refuzul declarației trimite direct acolo.”] refuzul trimite la fișa primului partener numit (ca D406,
+        # `d406.tinta_fisa_partener`); județul se citește din fișă când factura nu-l are (`repo_d394.select_facturi`)
+        from core.clienti_api import cheie_partener
+        from core.erori import RefuzGenerare
+        _n0, _t0, _c0 = lipsa[0]
+        raise RefuzGenerare(
             "D394 nu se poate genera: lipsește județul pe factură la %s fără cod de TVA (persoane fizice sau firme neînregistrate) — D394 îl "
-            "cere pentru fiecare partener fără cod (structura ANAF a declarației îl face obligatoriu): %s. Completează județul clientului / "
-            "furnizorului pe factura lui (sau la operațiunea adăugată manual) și generează din nou." % (
+            "cere pentru fiecare partener fără cod (structura ANAF a declarației îl face obligatoriu): %s. Completează județul în fișa "
+            "partenerului (Clienți / Furnizori) sau pe factura lui (ori la operațiunea adăugată manual) și generează din nou." % (
                 _cate(len(lipsa), "partener", "parteneri"),
                 "; ".join("%s (operațiunea %s%s)" % (n, t, (", pe facturi cu județe diferite: %s" % ", ".join(c)) if c else "")
-                          for n, t, c in lipsa)))
+                          for n, t, c in lipsa)),
+            ecran="clienti" if _t0 in ("L", "LS", "V") else "furnizori", camp_ecran="partener:%s:judet" % cheie_partener(None, _n0))
     return out
 
 
@@ -617,7 +629,7 @@ def calcul_d394(prof, perioada, date, manual=None):
     # crede ca o factura a intrat cand de fapt a fost exclusa.
     incluse = {}
     avert = []
-    nefacturabile = 0
+    nefacturabile = []   # [lotul 11, 440] documentele facturilor excluse (cota nedeclarabilă), ca avertismentul de la capăt să le numească
     excluse_N = []   # (nume, cui, baza) operatiuni N excluse - decizie Costin 04.08 (approach b)
 
     # [lotul 10, C69] judP al partenerului neînregistrat fără cuiP (structura D394 pct.222: „Obligatoriu pt tip_partener=2 și cuiP=null și
@@ -689,7 +701,7 @@ def calcul_d394(prof, perioada, date, manual=None):
         if cota not in COTE:
             avert.append("Cotă TVA %s nedeclarabilă (acceptate: %s) — factură ignorată."
                          % (cota, ", ".join(str(c) for c in COTE)))
-            nefacturabile += 1
+            nefacturabile.append(f.get("document") or "factura fără număr")   # [440] numită la capăt, nu „(vezi mai sus)”
             continue
         # pct. 217: cota=0 permisa doar pentru LS/AS/N/V (ASI eliminat - vezi TIPURI)
         if cota == 0 and tip not in TIP_COTA_ZERO:
@@ -704,7 +716,7 @@ def calcul_d394(prof, perioada, date, manual=None):
                 avert.append("Operațiune tip %s cu cotă 0 (partener %s) — ANAF acceptă cota 0 "
                              "doar pentru %s. Verifică factura." % (tip, cui or "fără CUI",
                                                                     "/".join(TIP_COTA_ZERO)))
-                nefacturabile += 1
+                nefacturabile.append(f.get("document") or "factura fără număr")
                 continue
         _adauga(tip, tp, cota, cui, f.get("nume"), f.get("nrFact", 1), f.get("baza"), f.get("tva"),
                 f.get("categorie_331"), fid=f.get("factura_id"), judet=f.get("judet"), cui_brut=f.get("cui"))
@@ -1052,7 +1064,10 @@ def calcul_d394(prof, perioada, date, manual=None):
             "%s de la parteneri din UE sau din afara UE — nu intră în D394 "
             "(se declară în D390 - VIES)." % _cate(intracom, "achiziție", "achiziții"))
     if nefacturabile:
-        res.avertismente.append("%s din declarație (vezi mai sus)." % _cate(nefacturabile, "factură exclusă", "facturi excluse"))
+        # [lotul 11, 440, comanda Costin 11.1 pct.16] „fiecare cu textul ei” — nu „(vezi mai sus)”: se numesc facturile excluse
+        _excl = list(dict.fromkeys(nefacturabile))   # o factură cu două cote nedeclarabile, o dată
+        res.avertismente.append("%s din declarație, fiindcă au o cotă de TVA pe care D394 n-o primește: %s." % (
+            _cate(len(_excl), "factură exclusă", "facturi excluse"), ", ".join(_excl)))
     if date.get("fara_serie"):
         n = len(date["fara_serie"])
         res.avertismente.append("%s fără serie (%s): în D394 %s cu seria „-”. Seria o stabilește firma la emitere — completeaz-o pe "
@@ -1282,6 +1297,10 @@ def pull(conn, schema, perioada):
         # partener: de pe FACTURA (tert_*), in ambele directii. Vezi decizia de mai jos.
         # proformele nu se raporteaza (nu sunt facturi fiscale).
         rows = _repo.select_facturi(cur, inceput, sfarsit)
+        # [lotul 11, C79] TVA-ul de pe factura furnizorului, pe cote (BG-23, `factura_tva_cote`): sursa tvaA a achizițiilor, ca în D300
+        from core import repo_efactura as _ref, d300 as _d300f
+        tva_facturi = {k: _d300f._tva_pe_cote(v) for k, v in _ref.tva_cote(
+            cur, None, sorted({r["id"] for r in rows if r["directie"] == "primita" and not r["ti"]})).items()}
         rapoarte_z = _pull_rapoarte_z(cur, inceput, sfarsit)
         din_bon = _pull_facturi_din_bon(cur, inceput, sfarsit)
         # [D394 Î2, decizia Costin 03.10] chitanțele de vânzare (cu cotă) intră MEREU — o vânzare emisă rămâne vânzare
@@ -1335,7 +1354,8 @@ def pull(conn, schema, perioada):
                  "factura_id": r["id"],
                  # [Retest 2 pct.15] documentul, ca nota despre factura cu mai multe cote s-o poată numi
                  # [258] fără număr scris: se spune așa, nu se arată id-ul intern; `facturi.numar` conține deja seria
-                 "document": str(r.get("numar") or "").strip() or "factura fără număr"}
+                 "document": (_serie_nr(r.get("serie"), r.get("numar"))
+                              if str(r.get("numar") or "").strip() else "factura fără număr")}   # [lotul 11, 443] „FCT nr. 2”
         pe_cota = {}
         for l in (r["linii"] or []):
             if l.get("cota") is None or l.get("baza") is None:
@@ -1348,6 +1368,14 @@ def pull(conn, schema, perioada):
             # TVA cea mai mare si 0 pentru rest (la TVA egal -> cota cea mai mare). ANTERIOR fiecare
             # split primea nrFact=1 -> o factura 2-cote raporta nrFact=2 (supra-numarare tacuta).
             _tva_cota = {c: b * Decimal(c) / Decimal(100) for c, b in pe_cota.items()}
+            _tf = tva_facturi.get(r["id"])
+            if _tf:
+                # [lotul 11, C79 / C81] achiziția: tvaA = TVA-ul cotei de pe factura furnizorului, în lei (la valută, BT-111 împărțit pe
+                # cote) — același ca nota și D300 (`contare_facturi.tva_lei_facturii`); CF art.299 alin.(1) lit.a, art.319 alin.(20) lit.j
+                from core import contare_facturi as _cft
+                _lei = _cft.tva_lei_facturii(_tf, {Decimal(c) for c in pe_cota}, r)
+                if _lei is not None:
+                    _tva_cota = {c: _lei[Decimal(c)] for c in pe_cota}
             _cota_nrfact = max(_tva_cota, key=lambda c: (_tva_cota[c], c))
             for cota, baza in sorted(pe_cota.items()):
                 facturi.append(dict(comun, cota=cota, baza=baza, tva=_tva_cota[cota],
@@ -1538,4 +1566,7 @@ def genereaza(conn, schema, perioada, manual=None):
     _xml = build_xml(res)
     from core.reconciliere_emis import verifica_total_plata_a as _vte
     _vte("d394", _xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res
+    from core import rectificativa as _rect   # [lotul 11, C77]
+    _st = _rect.stabileste(conn, schema, "d394", perioada.an, perioada.luna)
+    res.rectificativa, res.depunere_anterioara_nr = _st.mentiune, _st.nr
     return _xml, res

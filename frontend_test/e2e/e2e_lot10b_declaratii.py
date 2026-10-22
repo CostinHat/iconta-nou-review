@@ -81,9 +81,16 @@ def test_def_436_d100_cu_note_nevalidate_nu_se_pune_in_de_depus(patron, firma_am
     assert "Amortizarea pe 08–09/2026 (contul 2813, 400,00 lei) e neînregistrată: D100 pe T3/2026 se calculează fără ea" in t, t
     assert pg.is_disabled("#dec-trimite"), "«Trimite în coadă» activ cu note nevalidate"
     motiv = " ".join(pg.inner_text("#dec-blocaj").split())
-    assert motiv.startswith("Declarația nu se depune până la validarea notelor: cifra ei nu cuprinde 7 note nevalidate din perioada ei — "
-                            "nota din 28.01.2026 — Amortizare 01/2026, 200,00 lei;"), motiv
+    # [lotul 11, comanda Costin 11.1 pct.22: „436, afișare: […] paragraful repetă notele pe care le arată butoanele.”] fraza de lângă
+    # butoane nu mai enumeră notele (`MESAJ_NOTE_NEVALIDATE_LANGA_NOTE`); fiecare notă e numită o singură dată, pe butonul ei.
+    assert motiv.startswith("Declarația nu se depune până la validarea notelor: cifra ei nu cuprinde 7 note nevalidate din perioada ei. "
+                            "Validează-le în Registrul jurnal, apoi generează din nou."), motiv
     assert pg.locator("#dec-blocaj .coada-note-refuz button").count() == 7
+    butoane = pg.eval_on_selector_all("#dec-blocaj .coada-note-refuz button", "bs => bs.map(b => b.innerText.trim())")
+    assert butoane[0] == "Deschide nota din 28.01.2026 — Amortizare 01/2026, 200,00 lei", butoane
+    for luna in range(1, 8):
+        eticheta = "nota din 28.%02d.2026 — Amortizare %02d/2026, 200,00 lei" % (luna, luna)
+        assert motiv.count(eticheta) == 1, (eticheta, motiv)   # numai pe buton, nu și în paragraf
     # motivul stă lângă buton: în aceeași bară fixă, imediat după rândul butonului
     assert pg.evaluate("() => document.querySelector('#dec-trimite').closest('.bara-fixa').contains(document.querySelector('#dec-blocaj'))")
     r = _api(patron, "POST", "/coada", {"tenant_id": firma_amortizare["tenant_id"], "tip": "d100", "an": 2026, "trim": 3})

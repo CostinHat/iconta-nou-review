@@ -9,8 +9,8 @@
 # commit), ruleaza `scripts/githooks/poarta-suita` (prospetime, pytest, verificator, cifre F1–F5, plasa e2e) si scrie verdictul in
 # `<git-common-dir>/poarta_verdicte.log`:   VERDE|ROSU <sha complet> <ramura> <data>
 # `scripts/githooks/reference-transaction` muta `main` numai la un SHA cu `VERDE <sha>` aici (plus aprobarea scrisa a lui Costin).
-# REFUZA: pe `main` / fara ramura; arbore murdar (modificari sau fisiere noi); un SHA deja VERDE (nimic de aflat); a TREIA rulare pe
-# aceeasi ramura (maximum doua pe lot — la a doua rosie: oprire si raport, nu o a treia). Rulat in fundal (~70 de minute).
+# REFUZA: pe `main` / fara ramura; arbore murdar (modificari sau fisiere noi); un SHA deja VERDE (nimic de aflat); un SHA deja ROSU
+# (regula 3d, comanda Costin 11.2, 22.10.2026: pe rosu se repara codul — commit nou — si se ruleaza din nou, pana la verde; fara limita de rulari). Rulat in fundal (~70 de minute).
 # Gard: core/test_poarta_lot.py (depozit temporar) + core/test_poarta_ordine.py (singurul care cheama `poarta-suita`).
 ROOT=$(git rev-parse --show-toplevel) || exit 1
 cd "$ROOT" || exit 1
@@ -32,13 +32,12 @@ if grep -q "^VERDE $SHA " "$JV" 2>/dev/null; then
     echo "[poarta lot] REFUZ: $SHA are deja poarta VERDE — o a doua rulare pe acelasi commit nu afla nimic nou."
     exit 1
 fi
-N=$(awk -v r="$RAM" '$3 == r' "$JV" 2>/dev/null | wc -l)
-if [ "$N" -ge 2 ]; then
-    echo "[poarta lot] REFUZ: lotul $RAM are deja $N rulari complete (maximum doua pe lot). Oprire si raport (decizia Costin 15.10.2026)."
-    awk -v r="$RAM" '$3 == r' "$JV" | sed 's/^/    /'
+if grep -q "^ROSU $SHA " "$JV" 2>/dev/null; then
+    echo "[poarta lot] REFUZ: $SHA are deja poarta ROSIE — regula 3d (comanda Costin 11.2): pe rosu se REPARA CODUL (commit nou) si se ruleaza din nou; aceeasi rulare pe acelasi commit nu repara nimic (si ar trece un test instabil pe noroc)."
     exit 1
 fi
-echo "[poarta lot] rularea $((N + 1)) din maximum 2 pe $RAM, commit $SHA"
+N=$(awk -v r="$RAM" '$3 == r' "$JV" 2>/dev/null | wc -l)
+echo "[poarta lot] rularea $((N + 1)) pe $RAM, commit $SHA (regula 3d: pana la verde, fara limita de rulari)"
 sh scripts/githooks/poarta-suita
 RC=$?
 if [ "$(git rev-parse HEAD)" != "$SHA" ]; then

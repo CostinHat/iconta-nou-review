@@ -15,6 +15,7 @@ from core.mesaje import (EMAIL_INVALID)
 from core import nucleu as _nucleu
 from core import db, auth_api, tenant_provisioning, observare as _obs
 from core import repo_utilizatori
+from core import cui_forma as _forma_cui
 
 
 def login(date):
@@ -92,20 +93,38 @@ def _scrie_telefonul(cur, user_id, telefon):
 
 def _valideaza_formularul(date):
     """Verificările comune ale formularului (bifa termenilor, parola, emailul) + versiunea termenilor, ÎNAINTEA oricărei scrieri."""
+    # [lotul 11, deficiența 440, comanda Costin 11.1 pct.16: „toate erorile apar deodată, fiecare cu textul ei, în casetă și lângă câmp”]
+    # bifa, parola, emailul, denumirea și telefonul se verifică toate; refuzul pleacă o dată (400, ca înainte), fiecare eroare cu câmpul
+    # ei din formularul de înregistrare (`reg-…`, login.js)
+    from core.erori import ErorileFormularului as _Erori
+    er = _Erori("Contul nu s-a creat")
+    cod = None
     if not date.accept_termeni:  # [termeni_v1] fara bifa -> contul NU se creeaza (gard pe backend, nu doar JS)
-        raise _erori.CerereGresita("Trebuie să accepți Termenii și condițiile pentru a crea contul.")
+        er.camp("reg-termeni", "Trebuie să accepți Termenii și condițiile pentru a crea contul.")
     if not _nucleu.parola_ok(date.parola):  # [parola_min_v1] aceeasi cerinta ca activare/reset/schimbare
-        raise _erori.CerereGresita(_nucleu.PAROLA_MESAJ)
+        er.camp("reg-parola", _nucleu.PAROLA_MESAJ)
     if not _uc_comun._email_valid(date.email):  # [email_valid_v1] email obligatoriu + format valid
-        raise _erori.CerereGresita(EMAIL_INVALID)
+        er.camp("reg-email", EMAIL_INVALID)
     if not str(date.nume_cabinet or "").strip():
-        raise _erori.CerereGresita("Completează denumirea cabinetului.")
+        er.camp("reg-cabinet", "Completează denumirea cabinetului.")
+    # [459, comanda Costin 11.3 pct.5] CUI-ul cabinetului (opțional): scris, se cere valabil — aceeași verificare ca la crearea firmei
+    # (`tenant_provisioning.motiv_cui_firma_invalid`), înaintea contului; până azi contul se crea, iar firma proprie cădea după
+    _cui_reg = str(getattr(date, "cui", "") or "").strip()
+    if _cui_reg:
+        _m_cui = tenant_provisioning.motiv_cui_firma_invalid(_cui_reg)
+        if _m_cui:
+            er.camp("reg-cui", _m_cui)
     # [17.10.2026, lotul 7 pct.2.2, verbatim în DECIZII] „câmp telefon opțional la înregistrarea cabinetului” — gol trece; scris, se cere
     # să fie un număr de telefon (se salvează NECONFIRMAT: confirmarea și canalul WhatsApp sunt în Setări cont -> Notificări)
     if str(getattr(date, "telefon", "") or "").strip() and not _telefon(date):
         from core import uc_cont_notificari as _ucn
-        m = _ucn.MESAJ_TELEFON_INVALID
-        raise _erori.CerereGresita({"mesaj": m, "cod": _ucn.COD_TELEFON_INVALID, "erori_campuri": [{"camp": "reg-telefon", "mesaj": m}]})
+        er.camp("reg-telefon", _ucn.MESAJ_TELEFON_INVALID)
+        cod = _ucn.COD_TELEFON_INVALID if len(er.campuri) == 1 else None
+    if er:
+        d = er.detaliu()
+        if len(d["erori_campuri"]) == 1 and not cod:
+            raise _erori.CerereGresita(d["mesaj"])   # o singură eroare: textul ei, ca înainte (contractul celor patru refuzuri)
+        raise _erori.CerereGresita(dict(d, cod=cod) if cod else d)
     # [P4, 09.09.2026] Versiunea termenilor se citește ÎNAINTE de tranzacție. Un fișier care
     # lipsește trebuie să oprească înregistrarea înainte de orice scriere — nu să lase în urmă un
     # cont fără dovada acordului.
@@ -348,7 +367,9 @@ def _dupa_cont_nou(r, nume_cabinet, email, cui, cale):
             _d_anaf = None
         try:
             with db.get_conn() as conn:
-                _cui = cui.replace("RO", "").strip()
+                # [lotul 11, decizia Costin 10.3 pct.4] forma păstrată, unică (`cui_forma.stocare`); înainte `.replace("RO", "")`, sensibil
+                # la majuscule („ro 18547290” rămânea cu „ro”) și care scotea „RO” de oriunde din text
+                _cui = _forma_cui.stocare(cui) or ""
                 _t = tenant_provisioning.provision_tenant(
                     conn, nume_cabinet, _cui,
                     r["firm_id"], r["user_id"], _uc_comun._TENANT_TEMPLATE)

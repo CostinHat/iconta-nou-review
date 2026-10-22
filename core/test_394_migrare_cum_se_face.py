@@ -115,7 +115,8 @@ def _media_lat():
 
 def test_pasii_compacti_incap_in_fereastra_laptopului():
     """Pe ecranul lat, cei 12 pași, fiecare pe un singur rând (titlul și descrierea alături, nowrap), încap în bugetul ferestrei de
-    1366×768. MUTAȚIA: `  .mig-op { padding: 3px 12px; gap: 10px; }` -> `  .mig-op { padding: 13px 15px; gap: 10px; }` -> ROȘU."""
+    1366×768. MUTAȚIA: `  .mig-op { padding: 1px 12px; gap: 10px; }` -> `  .mig-op { padding: 13px 15px; gap: 10px; }` -> ROȘU. (Lotul 11,
+    394 la 1280×720: rândul are acum 1 px, nu 3 — proba la 1280×720 e `core/test_lot11_w4_ecrane.py`.)"""
     _, b = _media_lat()
     pad = _px(b, ".mig-op", "padding")[0]
     gap = _px(b, ".mig-meniu", "gap")[0]
@@ -132,7 +133,7 @@ def test_pasii_compacti_incap_in_fereastra_laptopului():
 def test_pe_telefon_randul_ramane_inalt():
     """Compactarea e numai în blocul ecranului lat: regula de bază a lui `.mig-op` (telefonul) păstrează rândul înalt — padding 13 px și
     iconița de 34 px (≥ 44 px cu cele două rânduri de text), ținta de atingere nu scade. MUTAȚIA: `@media (min-width: 761px) {` (al lui
-    `.mig-meniu { gap: 2px; }`) scos, regulile compacte rămânând globale -> ROȘU."""
+    `.mig-meniu { gap: 1px; }`) scos, regulile compacte rămânând globale -> ROȘU."""
     css, b = _media_lat()
     baza = css.replace(b, "")
     assert _px(baza, ".mig-op", "padding")[0] >= 13 and _px(baza, ".mig-op-icon", "height")[0] >= 34

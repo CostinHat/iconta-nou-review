@@ -292,7 +292,9 @@ def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e, firma
     patron.captura("an_dinaintea_preluarii")
     motiv = pg.inner_text(".fereastra:last-of-type #bl-precedent")
     assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled() and "31.12.2024" in motiv, motiv
-    assert "motivul e mai jos" in pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
+    # [lotul 11, 440] refuzul stă imediat sub rândul butoanelor, cu textul lui; nota nu mai trimite „mai jos”
+    assert pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv") == "Inactive până se rezolvă refuzul:"
+    assert pg.eval_on_selector(".fereastra:last-of-type #bl-precedent", "z => !!z.previousElementSibling && z.previousElementSibling.classList.contains('rezumat-fix')"), "refuzul nu stă imediat sub rândul butoanelor (440)"
     # al doilea an: „An precedent” din bilanțul anului anterior validat în aplicație (2024 -> 2025)
     g = firma_bilant_2024_validat
     patron.firma(g["nume"])

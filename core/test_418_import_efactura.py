@@ -73,14 +73,17 @@ def test_statutul_vine_din_anaf_la_data_facturii():
     st = anaf_api.statut_furnizori([("RO14399840", "2026-10-19", "RO14399840")], interogare=_anaf(True, True))
     assert st == {("RO14399840", "2026-10-19"): {
         "platitor_tva": True, "sursa_platitor": "ANAF, registrul contribuabililor la 19.10.2026",
-        "tva_la_incasare": True, "sursa_incasare": "ANAF, Registrul persoanelor care aplică TVA la încasare, la 19.10.2026"}}, st
+        "tva_la_incasare": True, "sursa_incasare": "ANAF, Registrul persoanelor care aplică TVA la încasare, la 19.10.2026",
+        "denumire_anaf": None}}, st   # [lotul 11, 444] numele de la ANAF (simularea nu-l dă)
 
 
 def test_fara_anaf_ramane_xml_ul_iar_ce_nu_transeaza_se_cere():
     st = anaf_api.statut_furnizori([("RO14399840", "2026-10-19", "RO14399840"), ("123", "2026-10-19", None)], interogare=_jos)
     assert st[("RO14399840", "2026-10-19")] == {"platitor_tva": True, "tva_la_incasare": None, "sursa_incasare": None,
-                                                 "sursa_platitor": "XML-ul facturii: codul de TVA RO14399840 al furnizorului (BT-31)"}
-    assert st[("123", "2026-10-19")] == {"platitor_tva": None, "sursa_platitor": None, "tva_la_incasare": None, "sursa_incasare": None}
+                                                 "sursa_platitor": "XML-ul facturii: codul de TVA RO14399840 al furnizorului (BT-31)",
+                                                 "denumire_anaf": None}
+    assert st[("123", "2026-10-19")] == {"platitor_tva": None, "sursa_platitor": None, "tva_la_incasare": None, "sursa_incasare": None,
+                                         "denumire_anaf": None}
 
 
 # ── b) contul pe linie, de capăt la capăt ────────────────────────────────────────────────────────────────
@@ -135,8 +138,11 @@ def test_validarea_conteaza_fiecare_linie_pe_contul_ei_si_ia_statutul_din_anaf(m
             assert cur.fetchone() == (True, False)                                   # din ANAF, nu din cerere
             cur.execute("SELECT l.cont_debit, l.cont_credit, l.suma FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
                         "WHERE i.factura_id = %s ORDER BY l.cont_debit", (r["factura_id"],))
-            assert cur.fetchall() == [("371", "401", Decimal("483.50")), ("4426", "401", Decimal("42.00")),
-                                      ("4426", "401", Decimal("101.54")), ("6028", "401", Decimal("200.00"))]
+            # [lotul 11, C79] o linie 4426 pe cota de 21%, cu TVA-ul de pe FACTURA FURNIZORULUI — BT-110 143,52 (XML-ul n-are BG-23 și are o
+            # singură cotă), nu recalculul (483,50 + 200,00) × 21% = 143,54. CF art.299 alin.(1) lit.a: deducerea pe baza facturii emise
+            # conform art.319; CF art.319 alin.(20) lit.j: factura indică „suma taxei colectate [...] în funcție de cotele taxei”
+            assert cur.fetchall() == [("371", "401", Decimal("483.50")), ("4426", "401", Decimal("143.52")),
+                                      ("6028", "401", Decimal("200.00"))]
             cur.execute("SELECT a.denumire, m.cantitate, m.valoare FROM miscari_stoc m JOIN articole a ON a.id = m.articol_id ORDER BY m.id")
             assert cur.fetchall() == [("Marfa A", Decimal("10.000"), Decimal("483.50"))]   # cartea nu intră în stoc
     finally:

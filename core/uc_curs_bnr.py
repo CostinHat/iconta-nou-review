@@ -17,6 +17,13 @@ from datetime import date
 
 from core import curs_bnr as _cb
 
+#: [460] Cel mult o descarcare de COMPLETARE (arhiva anuala BNR, ~280 KB) la atatea secunde, pe toate procesele: rezervarea e atomica
+#: in baza (`stare_partajata.rezerva_alerta`, categoria `CATEGORIE_COMPLETARE`). Motivul: BNR blocheaza IP-urile cu trafic repetat
+#: (antetul `curs_bnr`), iar completarea se cere din bucla de sanatate (la 5 minute) si din fiecare previzualizare a unei facturi in
+#: valuta; fara rezervare, o zi in care BNR nu raspunde ar insemna o descarcare la fiecare tasta.
+COMPLETARE_COOLDOWN_SEC = 600
+CATEGORIE_COMPLETARE = "bnr_completare"
+
 
 def _salveaza_cache(harta: dict):
     """Salveaza cursurile in cache (idempotent), pe o CONEXIUNE PROPRIE.
@@ -42,8 +49,12 @@ def _salveaza_cache(harta: dict):
         c2.commit()
 
 
-def asigura_cursul(moneda: str, data_factura: date, prag_zile: int = _cb.PRAG_VECHIME_ZILE):
+def asigura_cursul(moneda: str, data_factura: date, prag_zile: int = _cb.PRAG_VECHIME_ZILE, regula: str = _cb.REGULA_OPERATIUNE):
     """Aduce de la BNR ce lipseste din cache — FARA conexiunea apelantului. Nu decide nimic.
+
+    [lotul 11] `regula` = aceeasi ca la `_cb.curs_pentru` (operatiunea: cursul comunicat INAINTEA zilei, CF art.290 alin.(2) + HG
+    1/2016 pct.35 alin.(1); sfarsitul lunii: cel din ultima zi bancara, OMFP 1802/2014 pct.325 alin.(2) lit.b) — altfel s-ar crede
+    „destul de proaspat” un curs pe care decizia nu-l poate folosi (cel comunicat chiar in ziua operatiunii).
 
     [P5 val 3, 11.09.2026] Se cheama INAINTEA tranzactiei care va emite factura. Descarcarea are
     termen de 10 s pe fiecare din cele (pana la) trei adrese, iar forma dinainte o facea din
@@ -59,9 +70,16 @@ def asigura_cursul(moneda: str, data_factura: date, prag_zile: int = _cb.PRAG_VE
     if moneda == "RON":
         return
     with db.get_conn() as conn:                      # scurta, doar citirea cache-ului
-        c, dc = _cb._din_cache(conn, moneda, data_factura)
+        c, dc = _cb._din_cache(conn, moneda, data_factura, regula)
     if c is not None and (data_factura - dc).days <= prag_zile:
-        return                                       # destul de proaspat: nimic de adus
+        # [460] „Destul de proaspat” nu inseamna „ultimul comunicat”. Pana la 460 un curs din prag (5 zile) oprea aici orice preluare:
+        # pe 22.10.2026 cache-ul avea 19.10 (vechime 3), deci factura din 22.10 primea cursul din 19.10, desi BNR comunicase 20.10 si
+        # 21.10 — iar golurile nu se mai umpleau niciodata (producție: 07.09–05.10 si 20–21.10 lipsa). Acum: daca BNR trebuia sa fi
+        # comunicat un curs mai nou (ziua bancara asteptata), golul se umple din arhiva anului — cu rezervare, v. `completeaza`.
+        asteptata = _cb.ziua_bancara_asteptata(data_factura, regula)
+        if asteptata is not None and dc < asteptata:
+            completeaza(asteptata)
+        return
 
     urls = []
     azi = date.today()
@@ -84,9 +102,58 @@ def asigura_cursul(moneda: str, data_factura: date, prag_zile: int = _cb.PRAG_VE
                 _salveaza_cache(harta)
                 for _zi in harta.values():
                     cotate.update(_zi)
-                if _cb.curs_din_harta(harta, moneda, data_factura)[0] is not None:
+                if _cb.curs_din_harta(harta, moneda, data_factura, regula)[0] is not None:
                     break
         except Exception as e:  # retea, timeout, IP blocat, parse
             ultima_eroare = e
             continue
     _cb._preda(moneda, data_factura, ultima_eroare, cotate)
+
+
+def _azi():
+    """Ziua de azi (punct unic, ca testele pe zile sintetice sa-l poata fixa)."""
+    return date.today()
+
+
+def completeaza(pana_la: date = None):
+    """[460] Umple golurile cache-ului din arhiva anuala BNR (`nbrfxratesYYYY.xml`): toate zilele bancare ale anului lui `pana_la`, pana
+    la `pana_la` inclusiv, care n-au niciun curs in cache. IDEMPOTENT (`_salveaza_cache`: ON CONFLICT DO NOTHING; un cache complet nu
+    descarca nimic). Fara `pana_la`: ziua bancara de care au nevoie operatiunile de azi (`curs_bnr.ziua_bancara_asteptata(azi)`) — asa o
+    cheama bucla de sanatate (`main._verifica_curs_bnr`), deci preluarea nu mai depinde de o factura emisa. Un `pana_la` de dupa azi se
+    reduce la azi.
+
+    Cel mult o descarcare la `COMPLETARE_COOLDOWN_SEC`, pe toate procesele (rezervare atomica in baza). Retea / format necunoscut ->
+    se consemneaza (`observare.esec_secundar`) si raspunsul spune ce lipseste in continuare; nu ridica.
+
+    -> {"pana_la", "lipsa_inainte", "adus" (zile noi in cache), "lipsa" (ce lipseste dupa), "descarcat" (bool), "amanat" (bool)}."""
+    from core import db
+    from core import stare_partajata as _sp
+    azi = _azi()
+    pana_la = pana_la or _cb.ziua_bancara_asteptata(azi)
+    if pana_la is not None and pana_la > azi:
+        pana_la = azi      # o zi de dupa azi nu poate fi inca in arhiva BNR (factura datata in viitor): nu se cauta
+    rez = {"pana_la": pana_la.isoformat() if pana_la else None, "lipsa_inainte": [], "adus": 0, "lipsa": [], "descarcat": False,
+           "amanat": False}
+    if pana_la is None:
+        return rez
+    with db.get_conn() as conn:
+        lipsa = _cb.zile_bancare_lipsa(conn, pana_la)
+        rez["lipsa_inainte"] = rez["lipsa"] = [z.isoformat() for z in lipsa]
+        if not lipsa:
+            return rez
+        if not _sp.rezerva_alerta(conn, CATEGORIE_COMPLETARE, COMPLETARE_COOLDOWN_SEC):
+            rez["amanat"] = True
+            return rez
+    try:
+        harta = _cb.parse_xml(_cb._descarca(_cb.URL_AN.format(an=pana_la.year)))     # FARA nicio conexiune in mana
+    except Exception as e:  # noqa: BLE001 — retea, timeout, IP blocat, format: se spune, nu se ascunde
+        from core import observare as _obs
+        _obs.esec_secundar("curs BNR: completarea din arhiva %d" % pana_la.year, e)
+        return rez
+    rez["descarcat"] = True
+    _salveaza_cache(harta)
+    with db.get_conn() as conn:
+        dupa = _cb.zile_bancare_lipsa(conn, pana_la)
+    rez["lipsa"] = [z.isoformat() for z in dupa]
+    rez["adus"] = len(lipsa) - len(dupa)
+    return rez

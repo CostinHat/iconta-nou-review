@@ -93,15 +93,32 @@ def salveaza(conn, schema, corp):
     """corp: {id?, denumire, pret_fara_tva, linii:[{articol_id, cantitate}]}. Upsert.
     [cap.24 regula 2] validare per-linie AUTORITARA inainte de scriere: un ingredient inceput incomplet se
     raporteaza langa campul lui (rt-l{i}-..), nu il filtreaza tacit frontendul."""
+    # [440, comanda Costin 11.1 pct.16] denumirea, prețul și ingredientele se judecă toate deodată (`ErorileFormularului`), fiecare
+    # lângă câmpul ei din ecran (`rt-den`, `rt-pret`, `rt-l{i}-…`); înainte, denumirea lipsă oprea tot, iar ingredientele se vedeau abia
+    # după ce era scrisă
+    import math
+    from core.erori import ErorileFormularului as _Erori
+    er = _Erori("Rețeta nu s-a salvat")
     linii = corp.get("linii") or []
     if not (corp.get("denumire") or "").strip():
-        return {"eroare": "Denumirea rețetei e obligatorie."}
+        er.camp("rt-den", "Scrie denumirea rețetei.")
+    _p = corp.get("pret_fara_tva")
+    if _p not in (None, ""):
+        try:
+            _pf = float(_p)
+        except (TypeError, ValueError):
+            _pf = None
+        if _pf is None or not math.isfinite(_pf):
+            er.camp("rt-pret", "Prețul fără TVA %r nu e un număr." % (_p,))
+        elif abs(_pf) >= 10 ** 10:   # `retete.pret_fara_tva numeric(12,2)`: altfel cădea în INSERT (500)
+            er.camp("rt-pret", "Prețul are cel mult 10 cifre înaintea virgulei.")
     if not linii:
-        return {"eroare": "Adaugă cel puțin un ingredient."}
-    lipsa = _ingrediente_campuri_lipsa(linii)
-    if lipsa:
-        return {"eroare": "Completează ingredientele: " + "; ".join(x["eticheta"] for x in lipsa),
-                "erori_campuri": [{"camp": x["camp"], "mesaj": x["eticheta"]} for x in lipsa]}
+        er.fara_camp("Adaugă cel puțin un ingredient (butonul „+ ingredient”).")
+    for x in _ingrediente_campuri_lipsa(linii):
+        er.camp(x["camp"], "Completează: " + x["eticheta"] + ".")
+    if er:
+        d = er.detaliu()
+        return {"eroare": d["mesaj"], "erori_campuri": d["erori_campuri"]}
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         if corp.get("id"):
             cur.execute(f"""UPDATE {schema}.retete SET denumire=%s, pret_fara_tva=%s

@@ -46,13 +46,21 @@ def salveaza_sablon(conn, schema, sablon_id, nume, continut, creat_de):
     necunoscut -> MARCAJ_INVALID. Nume unic -> NUME_EXISTA. Coduri: NUME_GOL/CONTINUT_GOL."""
     nume = (nume or "").strip()
     continut = (continut or "").strip()
+    # [440, comanda Costin 11.1 pct.16] numele, textul și TOATE marcajele necunoscute se judecă deodată (`ErorileFormularului`), fiecare
+    # lângă câmpul ei din editor (`c-nume`, `c-continut`); `cod` rămâne codul primei probleme (contractul vechi al refuzului)
+    from core.erori import ErorileFormularului as _Erori
+    er, coduri = _Erori("Șablonul nu s-a salvat"), []
     if not nume:
-        return {"ok": False, "cod": "NUME_GOL"}
+        er.camp("c-nume", "Scrie numele șablonului."); coduri.append("NUME_GOL")
     if not continut:
-        return {"ok": False, "cod": "CONTINUT_GOL"}
-    necunoscute = _marcaje_folosite(continut) - set(MARCAJE)
+        er.camp("c-continut", "Scrie textul contractului."); coduri.append("CONTINUT_GOL")
+    necunoscute = sorted(_marcaje_folosite(continut) - set(MARCAJE))
+    for m in necunoscute:   # fiecare marcaj necunoscut, cu textul lui
+        er.camp("c-continut", "Marcajul {{%s}} nu e în lista „Marcaje disponibile”: ar rămâne necompletat în contract." % m)
     if necunoscute:
-        return {"ok": False, "cod": "MARCAJ_INVALID", "marcaj": sorted(necunoscute)[0]}
+        coduri.append("MARCAJ_INVALID")
+    if er:
+        return dict(er.detaliu(), ok=False, cod=coduri[0], marcaje=necunoscute)
     # [lotul 10, C73 / U2] numele dublat îl refuză baza (`contracte_sabloane_nume_unic`), prin helperul comun: ACELAȘI cod NUME_EXISTA
     # la a doua salvare și la cursa dintre două salvări simultane. Verificarea prealabilă de dinainte (`SELECT`, apoi scrierea) ținea
     # numai cererile una după alta; în cursă, a doua cădea cu 500.
@@ -85,7 +93,7 @@ def _date_firma(conn, schema):
         # [R66 (c)] contractul tipareste numele administratorului; fara el nu se produce
         from core import firma_profil_api as _fpa
         _fpa.cere_administrator(conn, "Contractul de muncă")
-        cur.execute("SELECT nume, cui, adresa, patron_nume, declarant_nume FROM firma_profil WHERE id=1")
+        cur.execute(f"SELECT nume, cui, adresa, patron_nume, declarant_nume FROM {schema}.firma_profil WHERE id=1")
         f = cur.fetchone() or (None,) * 5
     return {"firma_nume": f[0] or "", "firma_cui": f[1] or "", "firma_adresa": f[2] or "",
             "reprezentant": f[3] or f[4] or ""}

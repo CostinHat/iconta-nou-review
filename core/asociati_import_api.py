@@ -33,6 +33,13 @@ CAMPURI = {
     "cod": ("cnp cui", "cnp", "cui", "cif", "cod fiscal", "=cod"),
     "cota": ("cota*", "procent*", "participare", "%"),
 }
+#: [lotul 11] numele câmpului în refuzul coloanelor ambigue (`import_tabel.coloana`), în limba contabilului — nu cheia internă
+#: (garda: core/test_lot11_import_etichete_camp.py)
+ETICHETE_CAMP = {
+    "nume": "numele asociatului",
+    "cod": "CNP-ul / CUI-ul asociatului",
+    "cota": "cota de participare",
+}
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026); "%" tratat acolo
@@ -40,6 +47,7 @@ from core.migrare_api import respinge, semnaleaza  # [P8/C] respingerea e o afir
 from core.pdf_util import data_ro as _data_ro   # DS cap.4: data din text, canonic
 from core.common import cate as _cate
 from core import chei_unice as _chei   # [lotul 10, C73] cheia naturală dublată -> refuz numit, nu 500
+from core import cui_forma as _forma_cui   # [lotul 11, decizia Costin 10.3 pct.4] codul (CUI / CNP) în forma păstrată
 
 
 def extrage(continut, nume_fisier=""):
@@ -56,7 +64,7 @@ def extrage(continut, nume_fisier=""):
             antet, start = _it.gaseste_antet(randuri, CAMPURI, obligatorii=("cod",), nume_fisier=nume_fisier)
         except _it.FisierNecitit:
             raise ValueError("nu se găsește coloana nume/cod asociat - fișier nerecunoscut")
-    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=camp)
+    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=ETICHETE_CAMP[camp])
     i_cod = col("cod")
     i_nume = col("nume", (i_cod,))
     i_cota = col("cota", (i_cod, i_nume))
@@ -68,7 +76,9 @@ def extrage(continut, nume_fisier=""):
         def cel(i):
             return _it.celula(r, i)
         nume_v = cel(i_nume)
-        cod = cel(i_cod).upper().replace("RO", "").replace(" ", "")
+        # [lotul 11, clasa „normalizare locală a CUI”] forma unică `cui_forma.stocare`: „RO” scos numai din fața unui cod din cifre (CUI-ul
+        # unui asociat persoană juridică); înainte `.replace("RO", "")` îl scotea de oriunde („FRRO123456789” -> „FR123456789”)
+        cod = _forma_cui.stocare(cel(i_cod)) or ""
         cota = _numar(cel(i_cota))
         # [364, comanda Costin 8.2] rândul fără nume NU mai dispare în tăcere (7 rânduri -> „6 asociați”, totalul cotelor fără el): se
         # citește și se respinge numit (`verifica_randuri`). Numai rândul complet gol se sare.

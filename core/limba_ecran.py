@@ -61,7 +61,8 @@ PLURALE = ("parteneri", "facturi", "note", "conturi", "clienți", "furnizori", "
            "importate", "ingrediente", "intrări", "invalide", "livrări", "lucrări", "lucrători", "mijloace", "necunoscute",
            "netrimise", "neverificate", "notificări", "obligații", "ore", "minute", "rulări", "persoane", "plăți", "potriviri", "potrivite",
            "pregătite", "produse", "propoziții", "părți", "recomandări", "respinse", "restante", "restanțe", "retrimiteri", "rețete", "scadente", "scadențe",
-           "secțiuni", "sărite", "termene", "tipare", "tipuri", "trimise", "urme", "valizi")
+           "secțiuni", "sărite", "termene", "tipare", "tipuri", "trimise", "urme", "valizi",
+           "noi")   # [lotul 11, 447] „Salariați: 0 noi, 2 fișe actualizate.” (`migrare.js`, `cate(noi, "nou", "noi")`)
 #: un număr LIPIT de o literă face parte dintr-un cod („D390 bunuri IC” — declarația D390, nu „390 de bunuri”), deci nu e numeral
 _ACORD = re.compile(r"(?<![\w.,])(?:1|\d*(?:[2-9]\d|00)) (?:%s)(?![\wăâîșț-])" % "|".join(map(re.escape, PLURALE)))
 #: [comanda Costin 10.10.2026 pct.5: „Vocea «nu pot …» din Control fiscal: se rescrie la persoana a treia («nu se poate verifica …»), pe

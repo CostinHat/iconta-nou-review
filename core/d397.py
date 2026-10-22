@@ -20,7 +20,7 @@ Reguli probate pe validator:
     lunii de raportare, iar data_accept* trebuie sa fie anterioara perechii data_elim*.
 
 Toate valorile vin din `manual` (aplicatia nu are registru de transport alternativ). NU se fabrica nimic din
-acte. d_rec="0" implicit. Un Informatii_op + un Informatii_auto se emit pentru fiecare operator; daca val_curse/
+acte. d_rec: 1 daca luna are o depunere inregistrata sau e bifat (core.rectificativa, C77), altfel 0. Un Informatii_op + un Informatii_auto se emit pentru fiecare operator; daca val_curse/
 val_incasari lipsesc, se deriva din sumele autoturismelor (egalitate, satisface regulile >=).
 
 NEPOPULAT deliberat (optionale in validator, fara semantica determinabila fara input explicit): telefon, fax,
@@ -104,6 +104,10 @@ class Rezultat397:
     nr_operatori: int = 0
     nr_auto: int = 0
     avertismente: list = field(default_factory=list)
+    # [lotul 11, C77] rectificativa: `core.rectificativa.aplica` (d_rec în XML, textul de pe ecran, depunerea pe care s-a sprijinit)
+    d_rec: int = 0
+    rectificativa: object = None
+    depunere_anterioara_nr: object = None
 
 
 def _operatori(manual):
@@ -264,6 +268,10 @@ def genereaza(conn, schema, perioada, manual=None):
     manual = dict(manual or {})
     an, luna = int(perioada.an), int(perioada.luna)
     prof = pull(conn, schema, perioada)
+    # [lotul 11, C77] rectificativă dacă luna are o depunere înregistrată (oricare sursă) sau dacă e bifată (CPF art.105 alin.(2)-(3))
+    from core import rectificativa as _rect
+    _st = _rect.stabileste(conn, schema, "d397", an, luna, bifata=_rect.bifata(manual))
+    manual["d_rec"] = _st.d_rec
     er = erori_generare(prof, manual)
     if er:
         raise ValueError("D397 nu se poate genera: " + " ".join(er))
@@ -271,4 +279,5 @@ def genereaza(conn, schema, perioada, manual=None):
     xml = build_xml(prof, an, luna, manual)
     res = Rezultat397(an=an, luna=luna, total_plata_a=calc["totalPlata_A"],
                       nr_operatori=len(_operatori(manual)), nr_auto=calc["nr_auto"])
+    _rect.aplica(res, _st)
     return xml, res

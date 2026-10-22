@@ -89,7 +89,10 @@ def test_refuzul_numeste_notele_si_drumul():
     # comanda 10.2 pct.6: „depunerea se blochează până la validare, cu motivul lângă buton”
     assert r == {"ok": False, "cod": "NOTE_NEVALIDATE", "note": [_NOTA], "mesaj": (
         "Declarația nu se depune până la validarea notelor: cifra ei nu cuprinde 1 notă nevalidată din perioada ei — nota din 28.01.2026 "
-        "— AM, 200,00 lei. Validează-le în Registrul jurnal, apoi generează din nou.")}, r
+        "— AM, 200,00 lei. Validează-le în Registrul jurnal, apoi generează din nou."),
+        # [lotul 11, 436 afișare] lângă butoanele care numesc notele, fraza nu le mai enumeră
+        "mesaj_langa_note": "Declarația nu se depune până la validarea notelor: cifra ei nu cuprinde 1 notă nevalidată din perioada ei. "
+                            "Validează-le în Registrul jurnal, apoi generează din nou."}, r
 
 
 def test_CALIBRARE_fara_note_sau_pe_o_declaratie_care_nu_stie_nu_se_blocheaza():

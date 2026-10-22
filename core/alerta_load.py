@@ -32,6 +32,9 @@ ACTIUNI = {
     "conexiuni_db": "vezi în Panou Admin → Sănătate server cererile lente: conexiunile ținute peste prag blochează celelalte cereri",
     "erori": "deschide jurnalul erorilor (Panou Admin → Sănătate server): fiecare eroare 500 e un defect de reparat",
     "load": "vezi ce proces încarcă serverul (Panou Admin → Sănătate server); dacă nu e o rulare a ta, oprește-o sau mărește serverul",
+    # [460] cursul zilei lipsă: facturile în valută primesc un curs mai vechi decât ultimul comunicat (CF art.290 alin.(2))
+    "curs_bnr": "verifică de pe server că https://curs.bnr.ro/files/xml/years/nbrfxrates<an>.xml răspunde (Panou Admin → Sănătate "
+                "server arată zilele lipsă); aplicația reîncearcă singură la 10 minute, iar contabilul vede pe factură ce curs se folosește",
 }
 #: condițiile trecătoare: alertă numai dacă rămân (`tinut`)
 TINUTE = ("ram", "conexiuni_db", "load")

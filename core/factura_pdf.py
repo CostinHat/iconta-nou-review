@@ -11,6 +11,8 @@ import unicodedata
 import io as _io
 from decimal import Decimal
 
+from core import tva_calcul as _tc   # [lotul 11, decizia 10.3] regula unică de TVA a documentului
+
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.lib import colors
@@ -34,6 +36,7 @@ def _culoare(hexs, implicit="#1d4ed8"):
 
 
 from core.pdf_util import bani as _bani  # sursa unica cap.7
+from core import curs_bnr as _cb   # [C88] cursul pentru om: curs_text
 
 
 def _data_ro(iso):
@@ -202,11 +205,10 @@ def cod_fiscal_pe_factura(cui, platitor_tva, tara=None):
 
 
 def serie_si_numar(serie, numar):
-    """„Seria FCT nr. 12” (art.319 alin.(20) lit.a): `facturi.numar` conține deja seria (`{serie}{numar}`)."""
-    numar = str(numar or "-")
-    if serie and numar.startswith(serie):
-        return "Seria %s nr. %s" % (serie, numar[len(serie):])
-    return ("Seria %s nr. %s" % (serie, numar)) if serie else ("Nr. %s" % numar)
+    """„Seria FCT nr. 12” (art.319 alin.(20) lit.a): `facturi.numar` conține deja seria (`{serie}{numar}`).
+    [lotul 11, 443] separarea seriei de număr are o singură sursă, `pdf_util.serie_nr` (aici se dubla logica)."""
+    from core.pdf_util import serie_nr
+    return ("Seria " + serie_nr(serie, numar or "-")) if serie else ("Nr. %s" % (numar or "-"))
 
 
 def genereaza_pdf(profil, factura):
@@ -339,11 +341,10 @@ def genereaza_pdf(profil, factura):
                              "Completează cota pe linie — 0 (scutit) e o valoare validă, dar "
                              "absența nu se poate ghici." % (l.get("descriere") or "",))
         cota = Decimal(str(_ct))
-        baza = cant * pret
-        tva = baza * cota / 100
+        # [lotul 11, decizia 10.3] BR-DEC-23: valoarea netă a liniei, la ban — ca în e-Factura; [C82] la factura importată, BT-131 din XML
+        baza = _tc.net_linie(cant, pret, l.get("valoare_neta"))
         peCota.setdefault(cota, [Decimal(0), Decimal(0)])
         peCota[cota][0] += baza
-        peCota[cota][1] += tva
         date_tab.append([
             Paragraph(str(l.get("descriere") or ""), st_cell),
             Paragraph(f"{cant:,.3f}".rstrip("0").rstrip(".").replace(",", "."), st_cell),
@@ -368,6 +369,10 @@ def genereaza_pdf(profil, factura):
     el.append(Spacer(1, 10))
 
     # ---- TOTALURI defalcate pe cote ----
+    # [lotul 11, decizia Costin 10.3: „o singură regulă pe toată aplicația, cea cerută de validatorul e-Factura”] TVA-ul pe cotă = baza cotei ×
+    # cotă / 100, rotunjit o dată (BR-CO-17) — `core/tva_calcul.py`, aceeași funcție ca XML-ul e-Factura și nota contabilă
+    for cota in peCota:
+        peCota[cota][1] = _tc.tva_din_baza(peCota[cota][0], cota)
     tot_rows = []
     for cota in ([] if neplatitor else sorted(peCota.keys(), reverse=True)):
         b, t = peCota[cota]
@@ -421,7 +426,7 @@ def genereaza_pdf(profil, factura):
         el.append(Spacer(1, 10))
         sursa = "curs BNR" if factura.get("curs_sursa") == "bnr" else "curs introdus manual"
         curs = factura.get("curs_bnr")
-        curs_s = (f"{Decimal(str(curs)):.4f}".replace(".", ",")) if curs else ""
+        curs_s = _cb.curs_text(curs) if curs else ""   # [C88] precizia BNR: HUF 0,014719, nu 0,0147
         vb = [
             [Paragraph("<b>Conversie în lei (art. 319 Cod fiscal)</b>",
                        ParagraphStyle("vt", parent=st_cell, fontName=font_b))],

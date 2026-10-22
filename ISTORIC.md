@@ -3019,3 +3019,21 @@ cota Marfei B), al doilea BA-1 -> BA-2. Referința F1–F5 refăcută: 33 de dif
 declarații, valide pe DUK; 4427 / 635 din nota lipsei), amprenta `a8e833cd…`. 436(b): pe F2, 08 și 09 au note de amortizare validate; D100
 numește corect numai 01–07. Răspunsurile pentru lotul 11 consemnate în DECIZII „Comanda 10.3”; găsite pe drum C75 (borderourile dinainte de
 lotul 9 cu tipul „factura”) și C76 (ajustarea TVA a lipsei nu ajunge în D300), deschise pentru decizie.
+
+
+## 22.10.2026 — Lotul 11 (comenzile 11.1, 11.2 forma a doua, 11.3): închis pe ramură, înaintea porții; nepublicat
+
+Ramura `lucru/lot11-2026-10-21` (de la `381c82df`), lucrată în worktree, cu subagenți pe fișiere disjuncte și cu testele grele rulate numai de
+sesiunea principală, una după alta. Registrul deficiențelor: 67 de rânduri atinse — **54 „rezolvată”**, fiecare cu test de capăt la capăt
+probat prin mutație, cu dovadă pe ecran pe firmele de test (copia F1–F6 din producție, numai-citire, `scripts/dovada_firme_test.py`) și cu
+ce s-a făcut cu datele existente (regula 3a); 5 nerezolvate (247–248 amânate de Costin, C76 dovadă imposibilă înainte de 01.11, C84 și C97
+decizii), 7 neverificate (C70 / C86 fără ecran, C90 / C93 / C96 după 31.10, 456 decizie, 205), 1 nu se aplică (C95). Regulile permanente
+3a–3d scrise în DECIZII și în CLAUDE.md §2.3 pct.15, păzite de `core/test_deficiente.py`, registrul pozițiilor validate și
+`core/test_poarta_fara_slabire.py`. Campania de mutații e2e: 175 / 175 roșii după corectarea a 5 ancore și a două mutații compuse (19, C83 —
+câte două mecanisme care apără același lucru). Uneltele vizuale: axe 0 încălcări, mobil fără derulare orizontală, interacțiune rc 0,
+text pe ecran 174 de ecrane / 0 defecte (după excluderea citatului NC din HG 1/2016). Prima suită întreagă: 46 de picături reparate; a doua
+(22:01–23:23): 5 picături, toate cu cauză reală — capturile intrate în index peste garda din 03.09 (acum manifest de amprente, imaginile în
+ZIP), 2 orfani lăsați de ștergerea copiei de dovadă (ordinea contoarelor, aceeași clasă pe încă un drum), contorul de scheme mutat de două
+teste noi (fixtura `contor_schema_pastrat`) și două artefacte derivate din date generate prea devreme — fiecare cu garda ei, probată prin
+mutație (DECIZII „Lotul 11: suita a doua”). Urmează: commitul lotului, apoi poarta și publicarea, numai după confirmarea lui Costin că
+cabinetul nu lucrează, cu backup chiar înainte.

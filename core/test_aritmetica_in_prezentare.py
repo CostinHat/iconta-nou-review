@@ -27,29 +27,41 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _JS = os.path.join(_RAD, "static", "js", "ecrane")
 
 
+# [lotul 11, decizia Costin 10.3: „Rotunjirea TVA: o singură regulă pe toată aplicația, cea cerută de validatorul e-Factura.”] Regula
+# de pe 23.08.2026 (rotunjire pe LINIE) nu mai e a aplicației: TVA-ul se calculează pe COTĂ, din suma valorilor nete ale liniilor, rotunjit o
+# dată (EN 16931 BR-DEC-23 / BR-S-08 / BR-CO-17, `core/tva_calcul.py`). Prinsă la trecerea pe regula unică: `_server` de aici reproducea
+# „quantize pe linie” ca fiind `creeaza_factura`, dar `facturi_api.totaluri_din_linii` (cel care scrie TVA-ul pe factură) rotunjea o singură
+# dată, la total — gardul compara ecranul cu o REPRODUCERE, nu cu serverul, și era verde peste divergența 629,50 (ecran) / 629,69 (factura).
+# Acum `_server` e funcția reală a regulii, iar `_ecran` e chiar JS-ul ecranului (`tvaDocument`), rulat în Node.
 def _server(linii):
-    """Ce face `creeaza_factura`: quantize pe LINIE, apoi sumă."""
-    tva = Decimal("0.00")
-    for cant, pret, cota in linii:
-        baza = Decimal(str(cant)) * Decimal(str(pret))
-        tva += (baza * Decimal(str(cota)) / 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-    return tva
+    """TVA-ul documentului pe regula unică (`core/tva_calcul.py`) — sursa pe care o folosesc factura, PDF-ul, XML-ul și nota."""
+    from core import tva_calcul as _tc
+    return _tc.totaluri([{"cantitate": c, "pret_unitar": p, "cota_tva": k} for c, p, k in linii])["tva"]
 
 
 def _ecran(linii):
-    """Ce face `recalc()` DUPĂ reparație: rotunjire pe linie, în float, apoi sumă."""
-    tva = 0.0
-    for cant, pret, cota in linii:
-        tva += round((cant * pret) * (cota / 100.0) * 100) / 100
-    return Decimal(str(round(tva, 2)))
+    """Ce afișează ecranul: `tvaDocument` din `emitere_ecran.js` (folosit și de `facturi_ecran.js`), executat în Node."""
+    import json
+    import shutil
+    import subprocess
+    if not shutil.which("node"):
+        pytest.skip("node lipsește")
+    src = io.open(os.path.join(_JS, "emitere_ecran.js"), encoding="utf-8").read()
+    m = re.search(r"const _BI = BigInt[^\n]*\nfunction _zec\(.*?\nexport function tvaDocument\(linii\) \{.*?\n\}\n", src, re.S)
+    assert m, "tvaDocument a dispărut din emitere_ecran.js"
+    js = m.group(0).replace("export function", "function") + "\nconsole.log(JSON.stringify(tvaDocument(%s)));" % json.dumps(
+        [{"cantitate": str(c), "pret_unitar": str(p), "cota_tva": str(k)} for c, p, k in linii])
+    r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=30)
+    assert r.returncode == 0, r.stderr
+    return Decimal(str(json.loads(r.stdout)["tva"])).quantize(Decimal("0.01"))
 
 
 def _ecran_vechi(linii):
-    """Forma de DINAINTE: sumă nerotunjită. Ținută ca să se poată proba divergența."""
-    tva = 0.0
+    """Forma de DINAINTE (23.08.2026 – lotul 11): rotunjire pe linie, apoi sumă. Ținută ca să se poată proba divergența."""
+    tva = Decimal(0)
     for cant, pret, cota in linii:
-        tva += (cant * pret) * (cota / 100.0)
-    return Decimal(str(round(tva, 2)))
+        tva += (Decimal(str(cant)) * Decimal(str(pret)) * Decimal(str(cota)) / 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    return tva
 
 
 CAZURI = [
@@ -79,21 +91,20 @@ def test_ANTIVACUU_forma_veche_CHIAR_diverge():
         "divergențele rămase sunt sub un ban; alege cazuri care chiar despart cele două aritmetici"
 
 
-@pytest.mark.parametrize("fisier,tipar", [
-    ("emitere_ecran.js", r"tva \+= Math\.round\("),
-    ("facturi_ecran.js", r"const tva = Math\.round\("),
-])
-def test_rotunjirea_pe_linie_e_CHIAR_in_sursa_JS(fisier, tipar):
-    """Aritmetica de mai sus e o reproducere; asta verifică originalul. Dacă cineva scoate
-    rotunjirea din JS, reproducerea ar rămâne verde și ar minți."""
+@pytest.mark.parametrize("fisier", ["emitere_ecran.js", "facturi_ecran.js"])
+def test_ecranele_calculeaza_tva_cu_regula_unica(fisier):
+    """[lotul 11] Ambele ecrane cu totaluri de factură trec prin `tvaDocument` (oglinda regulii unice) și nu mai rotunjesc TVA-ul pe linie."""
     src = io.open(os.path.join(_JS, fisier), encoding="utf-8").read()
-    assert re.search(tipar, src), (
-        "%s nu mai rotunjește TVA-ul pe linie — ecranul poate diverge iar de server" % fisier)
+    from core.arbore_js import apeluri, arbore_js
+    arb, cod = arbore_js(fisier)   # apelul ca nod acorn, nu șirul în sursă (core/test_garzi_pe_text.py)
+    assert apeluri(arb, cod, "tvaDocument"), "%s nu mai calculează TVA-ul cu tvaDocument (regula unică, decizia 10.3)" % fisier
+    assert not re.search(r"tva \+?= Math\.round\(|const tva = Math\.round\(", src), (
+        "%s rotunjește iar TVA-ul pe linie — altă regulă decât factura, PDF-ul și e-Factura" % fisier)
 
 
 def test_nicio_ALTA_aritmetica_de_cota_fara_rotunjire_in_ecrane():
     """Clichet: o a treia formulă de TVA apărută în prezentare, fără rotunjire pe linie, pică."""
-    rele = []
+    rele, rotunjite = [], 0
     for f in sorted(os.listdir(_JS)):
         if not f.endswith(".js"):
             continue
@@ -101,9 +112,14 @@ def test_nicio_ALTA_aritmetica_de_cota_fara_rotunjire_in_ecrane():
         for i, linie in enumerate(src.split("\n"), 1):
             if not re.search(r"\bcota\w*\s*/\s*100|\*\s*cota\w*\s*/\s*100", linie):
                 continue
-            if "Math.round" in linie or linie.strip().startswith("//"):
+            if linie.strip().startswith("//"):
+                continue
+            if re.search(r"\bMath\.round\s*\(", linie):   # apelul de rotunjire pe același rând (nu „șirul apare”, garzi_pe_text)
+                rotunjite += 1
                 continue
             rele.append("  %s:%d %s" % (f, i, linie.strip()[:90]))
+    # anti-vacuu: scanul chiar vede aritmetica de cotă rotunjită (formulele de azi); zero ar însemna că regexul nu mai prinde nimic
+    assert rotunjite > 0, "scanul nu vede nicio aritmetică de cotă în %s — regexul s-a rupt" % _JS
     assert not rele, ("aritmetică de cotă fără rotunjire pe linie, în stratul de prezentare:\n"
                       + "\n".join(rele) + "\n\nVezi interdicția 4: regula fiscală n-are ce căuta în "
                       "ecran; până se scoate, măcar să nu dea altă cifră decât serverul.")

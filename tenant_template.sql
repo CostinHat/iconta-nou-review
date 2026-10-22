@@ -418,7 +418,7 @@ CREATE TABLE TENANT_PLACEHOLDER.facturi (
     creat_la timestamp with time zone DEFAULT now() NOT NULL,
     serie character varying(10),
     storno_din_id integer,
-    curs_bnr numeric(12,4),
+    curs_bnr numeric,
     tva_lei numeric(12,2),
     total_lei numeric(12,2),
     data_curs date,
@@ -1569,7 +1569,7 @@ CREATE TABLE TENANT_PLACEHOLDER.rip_operatiuni (
     suma numeric(14,2) NOT NULL,
     valuta character varying(3) DEFAULT 'RON'::character varying NOT NULL,
     suma_valuta numeric(14,2),
-    curs_valutar numeric(10,4),
+    curs_valutar numeric,
     metoda character varying(10) NOT NULL,
     banca_linie_id integer,
     casa_operatiune_id integer,
@@ -2943,6 +2943,22 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.efactura_primite (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS uq_efactura_primite_mesaj
   ON TENANT_PLACEHOLDER.efactura_primite (id_mesaj_anaf);
+-- [factura_tva_cote_v1, lotul 11, C79] TVA-ul de pe factură, pe cote (BG-23) — SURSA: core/migrare_factura_tva_cote.py
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.factura_tva_cote (
+  factura_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.facturi(id) ON DELETE CASCADE,
+  nr smallint NOT NULL,
+  categorie text,
+  cota numeric(5,2) NOT NULL,
+  baza numeric(15,2) NOT NULL,
+  tva numeric(15,2) NOT NULL,
+  sursa text NOT NULL CHECK (sursa IN ('BG-23', 'BT-110')),
+  PRIMARY KEY (factura_id, nr)
+);
+-- [factura_tva_cote_v1] sfârșit
+-- [valoare_neta_linie_v1, lotul 11, C82 / C80] BT-131 al liniei, exact; linia de document — SURSA: core/migrare_valoare_neta_linie.py
+ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS valoare_neta numeric(15,2);
+ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS nivel_document boolean NOT NULL DEFAULT false;
+-- [valoare_neta_linie_v1] sfârșit
 
 --
 -- e-Transport: urmarirea trimiterilor UIT (F121) — mirror al core/migrare_etransport_trimiteri.py
@@ -3670,9 +3686,16 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.tva_incasare_perioade (id serial P
 
 -- [deficiența 429, lotul 10, 20.10.2026] reevaluarea lunară a soldurilor în valută (OMFP 1802/2014 pct.325), un rând pe element.
 -- Firmele existente: core/migrare_reevaluari_valuta.py.
-CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.reevaluari_valuta (id serial PRIMARY KEY, data date NOT NULL, inregistrare_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE, factura_id integer REFERENCES TENANT_PLACEHOLDER.facturi(id) ON DELETE CASCADE, cont text NOT NULL, moneda text NOT NULL, sold_valuta numeric(15,2) NOT NULL, curs_vechi numeric(12,4) NOT NULL, curs_nou numeric(12,4) NOT NULL, diferenta numeric(15,2) NOT NULL, creat_la timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.reevaluari_valuta (id serial PRIMARY KEY, data date NOT NULL, inregistrare_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE, factura_id integer REFERENCES TENANT_PLACEHOLDER.facturi(id) ON DELETE CASCADE, cont text NOT NULL, moneda text NOT NULL, sold_valuta numeric(15,2) NOT NULL, curs_vechi numeric NOT NULL, curs_nou numeric NOT NULL, diferenta numeric(15,2) NOT NULL, creat_la timestamptz NOT NULL DEFAULT now());
 CREATE INDEX IF NOT EXISTS reevaluari_valuta_factura ON TENANT_PLACEHOLDER.reevaluari_valuta (factura_id, data);
 ALTER TABLE TENANT_PLACEHOLDER.reevaluari_valuta ADD COLUMN IF NOT EXISTS sursa text NOT NULL DEFAULT 'propunere' CHECK (sursa IN ('propunere', 'manual'));
+-- [deficiența 429, lotul 11, decizia Costin 10.3] reevaluarea pe PARTENER (cheia lui: CUI fără RO / „~NUME”), contul ajustat manual în
+-- același formular și clauza valutară în lei (768 / 668, OMFP 1802/2014 pct.325 alin.(3)). Firmele existente:
+-- core/migrare_reevaluare_partener.py.
+ALTER TABLE TENANT_PLACEHOLDER.reevaluari_valuta ADD COLUMN IF NOT EXISTS partener text;
+ALTER TABLE TENANT_PLACEHOLDER.reevaluari_valuta ADD COLUMN IF NOT EXISTS manual boolean NOT NULL DEFAULT false;
+ALTER TABLE TENANT_PLACEHOLDER.reevaluari_valuta ADD COLUMN IF NOT EXISTS clauza boolean NOT NULL DEFAULT false;
+CREATE INDEX IF NOT EXISTS reevaluari_valuta_partener ON TENANT_PLACEHOLDER.reevaluari_valuta (partener, cont, moneda, data);
 
 -- [deficiența 428, lotul 10, deciziile Costin 20.10.2026] compensările de creanțe și datorii (o factură emisă stinsă cu o factură primită,
 -- același partener; mută TVA-ul la încasare prin același punct ca banca și casa) și beneficiarul afiliat (CF art.282 alin.(6) lit.d).
@@ -3692,3 +3715,71 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS fara_cont_b
 -- [deficiența 434, lotul 10, comanda Costin 10.2 pct.4] „Numerotarea borderourilor e unică și continuă”: numărul borderoului de achiziție e
 -- unic în anul lui (aceeași formă ca verificarea din aplicație). Firmele existente: core/migrare_borderou_numar_unic.py.
 CREATE UNIQUE INDEX IF NOT EXISTS facturi_borderou_numar_an_uniq ON TENANT_PLACEHOLDER.facturi (upper(btrim(numar)), (EXTRACT(YEAR FROM data_emitere))) WHERE tip = 'borderou';
+
+-- [lotul 11, deficiența 449] categoria cotei 0% a produsului (taxare inversă / scutit cu sau fără drept / neimpozabil) și bunul cu taxare
+-- inversă (codul D394). Firmele existente: core/migrare_produse_categorie_tva.py (sursa valorilor admise).
+ALTER TABLE TENANT_PLACEHOLDER.produse ADD COLUMN IF NOT EXISTS categorie_tva text;
+ALTER TABLE TENANT_PLACEHOLDER.produse ADD COLUMN IF NOT EXISTS categorie_331 text;
+ALTER TABLE TENANT_PLACEHOLDER.produse DROP CONSTRAINT IF EXISTS produse_categorie_tva_check;
+ALTER TABLE TENANT_PLACEHOLDER.produse ADD CONSTRAINT produse_categorie_tva_check CHECK ((categorie_tva IS NULL OR (cota_tva = 0 AND categorie_tva IN ('taxare_inversa', 'scutit_cu_drept', 'scutit_fara_drept', 'in_afara_sferei'))) AND (categorie_331 IS NULL OR (categorie_tva = 'taxare_inversa' AND categorie_331 IN ('1001', '1002', '1003', '1004', '1005', '10086000', '1201', '120400', '1205', '120600', '121291', 'deseuri', 'masa_lemnoasa', 'certificate_emisii', 'energie_electrica', 'certificate_verzi', 'cladiri_terenuri', 'aur_investitii', 'telefoane', 'circuite_integrate', 'console_tablete', 'gaze_naturale'))));
+
+-- [lotul 11, decizia Costin 10.3 pct.4] „Borderoul se corectează prin stornare, ca factura.”: un borderou se stornează o singură dată.
+-- Firmele existente: core/migrare_borderou_storno_unic.py.
+CREATE UNIQUE INDEX IF NOT EXISTS facturi_borderou_storno_uniq ON TENANT_PLACEHOLDER.facturi (storno_din_id) WHERE tip = 'borderou' AND storno_din_id IS NOT NULL;
+
+-- [lotul 11, decizia Costin 10.3 pct.4] „interesul public în Date firmă” — bilanțul: „15. interes_public … DA interes_public=(0,1)”
+-- (structura SC 1225); NULL = nedeclarat -> bilanțul se oprește. Firmele existente: core/migrare_intocmitor_bilant.py.
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS interes_public boolean;
+
+-- [cui_fara_ro_v1, lotul 11, decizia Costin 10.3] CUI-ul fără „RO” și fără spații — SURSA: core/migrare_cui_fara_ro.py
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.cui_stocare(v text) RETURNS text AS $$
+  SELECT CASE WHEN v IS NULL OR btrim(v) = '' THEN v ELSE regexp_replace(regexp_replace(upper(v), '[\s\u0085\u00a0\u2007\u202f\u001c-\u001f]', '', 'g'), '^RO([0-9]+)$', '\1') END
+$$ LANGUAGE sql IMMUTABLE;
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza() RETURNS trigger AS $$
+DECLARE c text; v text; n text; j jsonb := '{}'::jsonb;
+BEGIN
+  FOREACH c IN ARRAY TG_ARGV LOOP
+    v := to_jsonb(NEW) ->> c;
+    n := TENANT_PLACEHOLDER.cui_stocare(v);
+    IF n IS DISTINCT FROM v THEN j := j || jsonb_build_object(c, n); END IF;
+  END LOOP;
+  IF j <> '{}'::jsonb THEN NEW := jsonb_populate_record(NEW, j); END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza_factura() RETURNS trigger AS $$
+BEGIN
+  IF NEW.tert_platitor_tva IS NULL AND regexp_replace(upper(COALESCE(NEW.tert_cui, '')), '[\s\u0085\u00a0\u2007\u202f\u001c-\u001f]', '', 'g') ~ '^RO[0-9]+$' THEN
+    NEW.tert_platitor_tva := true;
+  END IF;
+  NEW.tert_cui := TENANT_PLACEHOLDER.cui_stocare(NEW.tert_cui);
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.clienti;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cui ON TENANT_PLACEHOLDER.clienti FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('cui');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.furnizori;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cui ON TENANT_PLACEHOLDER.furnizori FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('cui');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.firma_profil;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cui ON TENANT_PLACEHOLDER.firma_profil FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('cui');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.solduri_parteneri;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cui ON TENANT_PLACEHOLDER.solduri_parteneri FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('cui');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.facturi;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF tert_cui ON TENANT_PLACEHOLDER.facturi FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza_factura();
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.facturi_recurente;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF tert_cui ON TENANT_PLACEHOLDER.facturi_recurente FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('tert_cui');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.casa_operatiuni;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cui ON TENANT_PLACEHOLDER.casa_operatiuni FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('cui');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.bonuri;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cui ON TENANT_PLACEHOLDER.bonuri FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('cui');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.chitante;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF client_cui ON TENANT_PLACEHOLDER.chitante FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('client_cui');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.nir;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cui ON TENANT_PLACEHOLDER.nir FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('cui');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.inregistrari_linii;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF partener_cui ON TENANT_PLACEHOLDER.inregistrari_linii FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('partener_cui');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.efactura_primite;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cif_emitent, cif_beneficiar ON TENANT_PLACEHOLDER.efactura_primite FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('cif_emitent', 'cif_beneficiar');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.extras_linii;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cui_detectat ON TENANT_PLACEHOLDER.extras_linii FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('cui_detectat');
+DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.asociati;
+CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cnp ON TENANT_PLACEHOLDER.asociati FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('cnp');
+-- [cui_fara_ro_v1] sfârșit

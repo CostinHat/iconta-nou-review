@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "core/reevaluare_valuta.py",
+  "ancora": "            ciorna = any(n[\"e_contare\"] for n in nf)\n            neincluse.append(",
+  "inlocuire": "            ciorna = any(n[\"e_contare\"] for n in nf)\n            (lambda x: None)(",
+  "test": "frontend_test/e2e/e2e_lot10_valuta.py::test_def_429_inchiderea_propune_reevaluarea_si_genereaza_nota"
+ },
+ {
+  "fisier": "core/curs_bnr.py",
+  "ancora": "(\"<\" if _strict(regula) else \"<=\")",
+  "inlocuire": "\"<=\"",
+  "test": "frontend_test/e2e/e2e_lot10_valuta.py::test_def_429_inchiderea_propune_reevaluarea_si_genereaza_nota"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "        {\n          const opreste = ctl.blocaje.some((b) => b.cod === \"REEVALUARE_VALUTA\");",
+  "inlocuire": "        if (ctl.blocaje.some((b) => b.cod === \"REEVALUARE_VALUTA\")) {\n          const opreste = true;",
+  "test": "frontend_test/e2e/e2e_lot11_v.py::test_def_429_un_singur_formular_operatiunile_nu_il_mai_au_iar_inchiderea_il_deschide_mereu"
+ },
+ {
+  "fisier": "core/reevaluare_valuta.py",
+  "ancora": "                gs[0][\"ev\"].append((p[\"data\"], 1, \"plata\", stinge))\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot11_v.py::test_def_429_plata_nelegata_scade_soldul_partenerului"
+ },
+ {
+  "fisier": "core/reevaluare_valuta.py",
+  "ancora": "    manuale_conturi = sorted((anterioare | set(noi)) - set(disponibil) - set(conturi_parteneri))",
+  "inlocuire": "    manuale_conturi = []",
+  "test": "frontend_test/e2e/e2e_lot11_v.py::test_def_429_ajustarea_manuala_e_in_acelasi_formular_marcata"
+ }
+]

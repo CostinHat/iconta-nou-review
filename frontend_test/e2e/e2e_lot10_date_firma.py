@@ -42,9 +42,11 @@ def _salveaza_si_asteapta(pg, text, timeout=30000):
 
 
 def _refuz(pg):
+    # [lotul 11, 440] un rând fără buton (eroare de câmp fără câmp pe ecran) are numai textul ei
     return pg.eval_on_selector_all(".refuz-salvare .refuz-salvare-lista > li",
-                                   "lis => lis.map(li => [li.querySelector('button').textContent.trim(), "
-                                   "li.textContent.slice(li.querySelector('button').textContent.length).trim()])")
+                                   "lis => lis.map(li => { const b = li.querySelector('button'); "
+                                   "const t = b ? b.textContent.trim() : li.textContent.trim(); "
+                                   "return [t, b ? li.textContent.slice(b.textContent.length).trim() : '']; })")
 
 
 # ── 427 — vectorul fiscal se salvează deși lipsesc Nr. reg. com., CAEN, adresa ───────────────────────────────────────

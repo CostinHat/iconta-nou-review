@@ -56,17 +56,26 @@ def documente_fisa(cur, schema, linii):
     """[deficiența 403, retestul Costin 19.10.2026] „Fișa de magazie: documente «Factura #1», «Factura #48», «factură primită #2» (id
     intern) — toate cu serie, număr, dată.” Mișcările scrise atunci păstrează textul vechi; fișa îl numește din documentul legat
     (factura: `eticheta_nota.factura`, NIR-ul: `jurnal_api.eticheta_document`), ca Registrul jurnal. {id mișcare: document}."""
-    ids = [l["id"] for l in linii if l.get("id") and (not l.get("document") or _DOC_CU_ID.search(str(l.get("document"))))]
+    # [lotul 11, 443 — datele existente] și mișcarea unei facturi scrisă înainte de 443 („Factură F1A3 din …”): în evidență nu se mai
+    # rescrie (`regula_stoc`; core/migrare_serie_nr_descrieri.py o lasă), deci fișa o arată cu seria separat, ca Registrul jurnal
+    from core import jurnal_api as _j
+    doc_scris = {l["id"]: l.get("document") for l in linii if l.get("id")}
+    ids = [i for i, d in doc_scris.items() if not d or _DOC_CU_ID.search(str(d)) or str(d).startswith(_j.SCRISE_DE_APLICATIE)]
     if not ids:
         return {}
-    from core import jurnal_api as _j
-    cur.execute(f"""SELECT m.id, m.factura_id, n.numar AS nir_numar, n.data AS nir_data FROM {schema}.miscari_stoc m
-                    LEFT JOIN {schema}.nir n ON n.id = m.nir_id WHERE m.id = ANY(%s)""", (ids,))
+    cur.execute(f"""SELECT m.id, m.factura_id, n.numar AS nir_numar, n.data AS nir_data, f.serie AS f_serie, f.numar AS f_numar
+                    FROM {schema}.miscari_stoc m LEFT JOIN {schema}.nir n ON n.id = m.nir_id
+                    LEFT JOIN {schema}.facturi f ON f.id = m.factura_id WHERE m.id = ANY(%s)""", (ids,))
     out = {}
     for r in cur.fetchall():
-        if r["factura_id"]:
+        d = doc_scris.get(r["id"])
+        if r["factura_id"] and d and not _DOC_CU_ID.search(str(d)):
+            nou = _j.scris_de_aplicatie_fara_serie_lipita(d, [(r["f_serie"], r["f_numar"])])
+            if nou != d:
+                out[r["id"]] = nou
+        elif r["factura_id"]:
             out[r["id"]] = _et.factura(cur, schema, r["factura_id"])
-        elif r["nir_numar"] is not None:
+        elif r["nir_numar"] is not None and (not d or _DOC_CU_ID.search(str(d))):
             out[r["id"]] = _j.eticheta_document("NIR", r["nir_numar"], r["nir_data"])
     return out
 
@@ -152,9 +161,9 @@ def intrare_din_factura(conn, schema, factura_id, cont_stoc, data, cont_cheltuia
         _nir = cur.fetchone()
         if _nir:
             return {"stare": "intrat_prin_nir", "factura_id": factura_id, "nir_id": _nir["id"], "linii": 0}
-        cur.execute(f"""SELECT descriere, cantitate, pret_unitar, cont_cheltuiala, cota_tva FROM {schema}.factura_linii
-                        WHERE factura_id=%s ORDER BY id""", (factura_id,))
-        brute = []
+        cur.execute(f"""SELECT descriere, cantitate, pret_unitar, cont_cheltuiala, cota_tva, valoare_neta, nivel_document
+                        FROM {schema}.factura_linii WHERE factura_id=%s ORDER BY id""", (factura_id,))
+        brute, document_linii = [], []
         from core import contare_facturi as _cf
         for l in cur.fetchall():
             den = (l["descriere"] or "").strip()
@@ -162,14 +171,49 @@ def intrare_din_factura(conn, schema, factura_id, cont_stoc, data, cont_cheltuia
             pret = Decimal(str(l["pret_unitar"] or 0))
             # [deficiența 418b] contul LINIEI (gol = al facturii): numai liniile contate pe un cont de stoc intră în fișa de magazie
             cont_l = (l["cont_cheltuiala"] or "").strip() or cont_stoc
-            if not den or cant <= 0 or not any(cont_l.startswith(p) for p in _cf.CONTURI_FOND_EXACT):
+            if not any(cont_l.startswith(p) for p in _cf.CONTURI_FOND_EXACT):
                 continue
-            cur.execute(f"SELECT id FROM {schema}.articole WHERE lower(denumire)=lower(%s) LIMIT 1", (den,))
-            row = cur.fetchone()
-            brute.append((row["id"] if row else None, den, cant, pret, cont_l, l["cota_tva"]))
+            # [lotul 11, C82] valoarea liniei = BT-131 de pe factura importată (`valoare_neta`), altfel cantitate × preț la ban
+            val = (Decimal(str(l["valoare_neta"])) if l.get("valoare_neta") is not None
+                   else (cant * pret).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+            if l.get("nivel_document"):
+                # [lotul 11, C80] reducerea / taxa la nivelul facturii nu e un articol: se împarte pe liniile de stoc (mai jos)
+                document_linii.append((cont_l, l["cota_tva"], val))
+                continue
+            if not den or cant <= 0:
+                continue
+            # [lotul 11, 450 — patch B (P7)] articolul existent după aceeași cheie ca nomenclatorul (`produse_api.articol_dupa_denumire`)
+            from core import produse_api as _pa
+            _ex = _pa.articol_dupa_denumire(cur, schema, den)
+            row = {"id": _ex[0]} if _ex else None
+            brute.append([row["id"] if row else None, den, cant, val, cont_l, l["cota_tva"], pret, l.get("valoare_neta") is not None])
         document = _et.factura(cur, schema, factura_id)   # [258] documentul mișcării: factura cum o vede omul, nu id-ul ei
+    # [lotul 11, C80] Reducerile / taxele la nivelul FACTURII (BG-20 / BG-21, linii `nivel_document`) intră în costul articolelor.
+    # OMFP 1802/2014 pct.76 alin.(1): „Reducerile comerciale acordate de furnizor și înscrise pe factura de achiziție ajustează în sensul
+    # reducerii costul de achiziție al bunurilor.”; OMFP 1802/2014 pct.8 (definiția 6): „cost de achiziție înseamnă prețul datorat și
+    # eventualele cheltuieli conexe minus eventualele reduceri ale costului de achiziție. În acest sens, costul de achiziție al bunurilor
+    # cuprinde prețul de cumpărare, taxele de import și alte taxe [...], cheltuielile de transport, manipulare și alte cheltuieli care pot
+    # fi atribuibile direct achiziției bunurilor respective.”
+    # ÎMPĂRȚIREA: suma liniei de document merge pe liniile de stoc cu ACELAȘI cont și ACEEAȘI cotă (cota reducerii e a liniilor pe care
+    # le reduce, EN 16931 BR-S-08), iar fără ele pe toate liniile de stoc cu același cont — proporțional cu valoarea fiecărei linii,
+    # fiecare parte rotunjită la ban (ROUND_HALF_UP), iar ULTIMA linie ia restul, ca suma fișei să închidă nota 371 la ban (contarea pune
+    # linia de document pe contul ei, `contare_facturi._note_pe_cote`). Prețul unitar al articolului = valoarea ajustată / cantitate.
+    for cont_d, cota_d, suma_d in document_linii:
+        tinta = ([b for b in brute if b[4] == cont_d and Decimal(str(b[5] or 0)) == Decimal(str(cota_d or 0))]
+                 or [b for b in brute if b[4] == cont_d])
+        total = sum((b[3] for b in tinta), Decimal(0))
+        if not tinta or not total:
+            continue
+        ramas = suma_d
+        for i, b in enumerate(tinta):
+            parte = ramas if i == len(tinta) - 1 else (suma_d * b[3] / total).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+            b[3] += parte
+            b[7] = b[7] or bool(parte)
+            ramas -= parte
     n = 0
-    for aid, den, cant, pret, cont_l, cota in brute:
+    for aid, den, cant, val, cont_l, cota, pret, din_valoare in brute:
+        if din_valoare:   # valoarea liniei (BT-131 / ajustată cu reducerile de document) / cantitate: `intrare` reface valoarea la ban
+            pret = val / cant
         # [lotul 10, 435] cota 0 de pe factura PRIMITĂ nu spune cota vânzării (furnizor neplătitor, taxare inversă, scutire): articolul
         # intră în nomenclator „cotă lipsă”, de ales pe rând în Produse, nu „fără TVA” din presupunere
         cota = cota if cota is not None and Decimal(str(cota)) > 0 else None
@@ -179,6 +223,159 @@ def intrare_din_factura(conn, schema, factura_id, cont_stoc, data, cont_cheltuia
                                "document": document}, factura_id=factura_id)
         n += 1
     return {"stare": "intrat", "factura_id": factura_id, "linii": n}
+
+
+def document_iesire(cur, schema, document_scris, z_id):
+    """Documentul justificativ al unei ieșiri pe articol: cel scris (factura, la descărcarea ei; documentul tastat de om), altfel al
+    raportului Z legat; None = fără document — nota primește bonul de consum generat (`scrie_nota_iesire`).
+    [lotul 10, deficiența 438] „descărcarea mărfii vândute pe Z are ca document justificativ «Bon de consum nr 1 din 20.10.2026». Bonul de
+    consum e pentru consum intern; la vânzarea pe Z documentul e raportul Z (nr. 0042, casa 8000000001).” Ieșirea legată de un Z poartă
+    documentul Z-ului (același text ca nota Z-ului), pe notă și în fișa de magazie; bonul de consum rămâne numai ieșirii fără document și
+    fără Z. [lotul 11, 451] Regula, într-un singur loc: o folosesc scrierea (`iesire`) și regenerarea pe uscat (`propunere_nota_miscare`)."""
+    from core import z_descarcare as _zd
+    return str(document_scris or "").strip() or (_zd.document_z(cur, schema, z_id) if z_id else None)
+
+
+def scrie_nota_iesire(cur, schema, a, data, cantitate, valoare, document):
+    """Nota ciornă a unei ieșiri pe articol: `cont_cheltuiala = cont_stoc` cu valoarea la CMP, cu documentul ei (Registrul-jurnal, col.3)
+    sau — fără document — cu bonul de consum generat odată cu nota. Întoarce id-ul notei.
+    [05.10.2026, comanda Costin pct.6] nota automată poartă documentul sursă. Fără `factura_id`: 607=371 nu e nici contarea facturii, nici
+    o plată — legată, ar bloca ștergerea facturii. [lotul 11, 451] O singură scriere, pentru `iesire` și pentru refacerea din mișcare."""
+    cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
+                    VALUES (%s,%s,'stocuri','ciorna',%s) RETURNING id""",
+                (data, f"Ieșire stoc {a['denumire']} × {_pu.cantitate(cantitate, a['um'])}"[:200], document))
+    r = cur.fetchone()
+    iid = r["id"] if isinstance(r, dict) else r[0]
+    if not document:
+        # [06.10.2026 §6.2] ieșirea fără document scris de om: bonul de consum, generat odată cu nota
+        from core import documente_interne as _di
+        _di.genereaza(cur, schema, "bon_consum", data, [iid])
+    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                    (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                (iid, a["cont_cheltuiala"], a["cont_stoc"], valoare))
+    return iid
+
+
+def _pref(schema):
+    """`"<schema>".` sau gol (schema din calea conexiunii — apelanții din `facturi_api`)."""
+    return ('"%s".' % str(schema).strip('"')) if schema else ""
+
+
+def document_retur(cur, schema, storno_id):
+    """[lotul 11, 451] Documentul returului în stoc la stornarea unei facturi: „Retur la <factura de stornare>” (felul, numărul și data
+    ei — Registrul-jurnal col.3), cum îl scrie `facturi_api.storneaza` la stornare. Citit din factura de stornare, ca regenerarea pe uscat
+    a notei returului să spună același text."""
+    from core import jurnal_api as _j
+    cur.execute(f"SELECT tip, serie, numar, data_emitere FROM {_pref(schema)}facturi WHERE id = %s", (storno_id,))
+    f = cur.fetchone()
+    if not f:
+        return None
+    f = dict(f) if isinstance(f, dict) else dict(zip(("tip", "serie", "numar", "data_emitere"), f))
+    return "Retur la " + _j.eticheta_factura(f.get("tip") or "factura", f.get("serie"), f.get("numar"), f.get("data_emitere"))
+
+
+def _descriere_retur(denumire, cantitate, um):
+    return ("Retur în stoc %s × %s (stornare)" % (denumire, _pu.cantitate(cantitate, um)))[:200]
+
+
+def _factura_in_text(cur, schema, factura_id, calificativ=""):
+    """„factura F1A12 din 20.10.2026” / „factura de stornare F1A9 din 19.10.2026” — sursa ciornei, în mijlocul unei fraze."""
+    from core import jurnal_api as _j
+    cur.execute(f"SELECT tip, serie, numar, data_emitere FROM {_pref(schema)}facturi WHERE id = %s", (factura_id,))
+    f = cur.fetchone()
+    if not f:
+        return "factura care nu mai există"
+    f = dict(f) if isinstance(f, dict) else dict(zip(("tip", "serie", "numar", "data_emitere"), f))
+    t = _j.eticheta_factura_in_text(f.get("tip"), f.get("serie"), f.get("numar"), f.get("data_emitere"))
+    return t.replace("factura ", "factura " + calificativ, 1) if calificativ else t
+
+
+#: [lotul 11, 451] documentul ciornei pe care l-ar scrie aplicația ACUM e „bonul de consum generat” (un număr nou, oricare) — nu un text
+BON_CONSUM_GENERAT = "bon_consum"
+
+
+def propunere_nota_miscare(cur, schema, nota_id):
+    """[lotul 11, deficiența 451] Ce ar scrie ACUM aplicația ca notă a mișcării de stoc legate de `nota_id` — regenerarea pe uscat, fără
+    nicio scriere, cu aceleași reguli ca scrierea (`document_iesire`, `scrie_nota_iesire`, `document_retur`). Numai pentru nota care
+    are EXACT o mișcare și e o ieșire pe articol (manuală, din factură, din raportul Z) sau returul la stornarea facturii; altfel None
+    (inventarul, rețeta, intrările — `ciorne_depasite.SURSE` le numește).
+    -> {"fel": "iesire" | "retur", "miscare_id", "data", "document" (text, sau `BON_CONSUM_GENERAT`), "linii": [(debit, credit, suma)],
+        "unde": cum se numește sursa pentru contabil}"""
+    with cur.connection.cursor(cursor_factory=RealDictCursor) as c:   # rânduri dict, oricare ar fi cursorul apelantului
+        return _propunere_nota_miscare(c, schema, nota_id)
+
+
+def _propunere_nota_miscare(cur, schema, nota_id):
+    from core import stocuri_anulare as _sa
+    from core import documente_interne as _di
+    # `r` = mișcarea notei; `o` = mișcarea pe care o stornează (numai la retur). `la_respingere`: stornarea la respingere a documentului
+    # (452, `STORNARE_LA_RESPINGERE`) — aceea nu e o notă proprie, deci nu se regenerează aici
+    cur.execute(f"""SELECT r.*, a.denumire, a.um, a.cont_stoc, a.cont_cheltuiala, i.document_ref AS nota_document,
+                           (o.id IS NOT NULL AND {_sa.STORNARE_LA_RESPINGERE}) AS la_respingere
+                    FROM {schema}.miscari_stoc r JOIN {schema}.articole a ON a.id = r.articol_id
+                    JOIN {schema}.inregistrari i ON i.id = r.inregistrare_id
+                    LEFT JOIN {schema}.miscari_stoc o ON o.id = r.anuleaza_id
+                    WHERE r.inregistrare_id = %s""", (nota_id,))
+    rows = [dict(x) for x in cur.fetchall()]
+    if len(rows) != 1:
+        return None
+    m = rows[0]
+    if m["tip"] != "iesire" or (m.get("document") or "") == "inventar" or m["la_respingere"]:
+        return None
+    linii = [(m["cont_cheltuiala"], m["cont_stoc"], Decimal(str(m["valoare"])))]
+    if m.get("anuleaza_id") is None:
+        if Decimal(str(m["cantitate"])) <= 0:
+            return None
+        if m.get("factura_id"):
+            # descărcarea facturii (`descarca_factura`) scrie mereu factura, cum o vede omul
+            scris = _et.factura(cur, schema, m["factura_id"])
+            unde = _factura_in_text(cur, schema, m["factura_id"])
+        else:
+            doc = str(m.get("nota_document") or "").strip()
+            # documentul tastat de om rămâne al lui; bonul de consum generat e „fără document” (regula îl dă din nou)
+            scris = None if (not doc or _di.e_generat(doc, "bon_consum")) else doc
+            unde = "raportul Z" if m.get("z_inregistrare_id") else "ieșirea din stoc"
+        document = document_iesire(cur, schema, scris, m.get("z_inregistrare_id"))
+        return {"fel": "iesire", "miscare_id": m["id"], "data": m["data"], "document": document or BON_CONSUM_GENERAT,
+                "linii": linii, "unde": unde}
+    if not m.get("factura_id"):   # retur numai la stornarea unei facturi (`retur_la_stornare`)
+        return None
+    return {"fel": "retur", "miscare_id": m["id"], "data": m["data"], "document": document_retur(cur, schema, m["factura_id"]),
+            "linii": linii, "unde": _factura_in_text(cur, schema, m["factura_id"], "de stornare "),
+            "descriere": _descriere_retur(m["denumire"], -Decimal(str(m["cantitate"])), m["um"])}
+
+
+def reface_nota_miscare(conn, schema, nota_id):
+    """[lotul 11, 451] Refacerea din sursă a ciornei unei mișcări de stoc (ieșire / retur), cu regula de acum: nota NOUĂ (ciornă) din
+    mișcare — aceeași valoare (mișcarea e faptul, nu se recalculează CMP-ul), documentul și conturile de acum —, mișcarea legată de ea,
+    iar ciorna veche scoasă (`note_derivate.sterge_ciorna_inlocuita`: numai o ciornă; elementul ei din coadă cade odată cu ea). Bonul de
+    consum generat rămâne același (fără număr nou). Întoarce {"nota_id", "nota_veche"} sau None (nu e o asemenea notă)."""
+    from core import note_derivate as _nd
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        p = propunere_nota_miscare(cur, schema, nota_id)
+        if not p:
+            return None
+        cur.execute(f"SELECT status, document_ref FROM {schema}.inregistrari WHERE id = %s", (nota_id,))
+        n = cur.fetchone()
+        if not n or n["status"] != "ciorna":
+            return None
+        cur.execute(f"""SELECT m.*, a.denumire, a.um, a.cont_stoc, a.cont_cheltuiala FROM {schema}.miscari_stoc m
+                        JOIN {schema}.articole a ON a.id = m.articol_id WHERE m.id = %s""", (p["miscare_id"],))
+        m = cur.fetchone()
+        document = n["document_ref"] if p["document"] == BON_CONSUM_GENERAT else p["document"]
+        if p["fel"] == "iesire":
+            nou = scrie_nota_iesire(cur, schema, m, p["data"], m["cantitate"], m["valoare"], document)
+        else:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
+                            VALUES (%s,%s,'stocuri','ciorna',%s) RETURNING id""", (p["data"], p["descriere"], document))
+            nou = cur.fetchone()["id"]
+            cur.execute(f"INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)",
+                        (nou, m["cont_cheltuiala"], m["cont_stoc"], m["valoare"]))
+        doc_miscare = document if p["document"] != BON_CONSUM_GENERAT else m["document"]
+        cur.execute(f"UPDATE {schema}.miscari_stoc SET inregistrare_id = %s, document = %s WHERE id = %s",
+                    (nou, (doc_miscare or "")[:100] or None, m["id"]))
+        _nd.sterge_ciorna_inlocuita(cur, schema, nota_id)
+    return {"nota_id": nou, "nota_veche": nota_id}
 
 
 def iesire(conn, schema, corp, factura_id=None):
@@ -205,25 +402,8 @@ def iesire(conn, schema, corp, factura_id=None):
             r = _m.valoare_iesire(_miscari(cur, schema, a["id"]), None, corp["cantitate"], a["um"])
         except ValueError as e:
             return {"eroare": str(e)}
-        # [lotul 10, deficiența 438] „descărcarea mărfii vândute pe Z are ca document justificativ «Bon de consum nr 1 din 20.10.2026».
-        # Bonul de consum e pentru consum intern; la vânzarea pe Z documentul e raportul Z (nr. 0042, casa 8000000001).” Ieșirea legată
-        # de un Z poartă documentul Z-ului (același text ca nota Z-ului), pe notă și în fișa de magazie; bonul de consum rămâne numai
-        # ieșirii fără document și fără Z.
-        document = (str(corp.get("document") or "").strip() or (_zd.document_z(cur, schema, z_id) if z_id else None))
-        # [05.10.2026, comanda Costin pct.6] nota automată poartă documentul sursă (Registrul-jurnal, col.3). Fără
-        # `factura_id`: 607=371 nu e nici contarea facturii, nici o plată — legată, ar bloca ștergerea facturii.
-        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
-                        VALUES (%s,%s,'stocuri','ciorna',%s) RETURNING id""",
-                    (corp["data"], f"Ieșire stoc {a['denumire']} × {_pu.cantitate(corp['cantitate'], a['um'])}"[:200],
-                     document))
-        iid = cur.fetchone()["id"]
-        if not document:
-            # [06.10.2026 §6.2] ieșirea fără document scris de om: bonul de consum, generat odată cu nota
-            from core import documente_interne as _di
-            _di.genereaza(cur, schema, "bon_consum", corp["data"], [iid])
-        cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                        (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
-                    (iid, a["cont_cheltuiala"], a["cont_stoc"], r["valoare"]))
+        document = document_iesire(cur, schema, corp.get("document"), z_id)
+        iid = scrie_nota_iesire(cur, schema, a, corp["data"], corp["cantitate"], r["valoare"], document)
         cur.execute(f"""INSERT INTO {schema}.miscari_stoc
                         (articol_id, data, tip, cantitate, valoare, document, inregistrare_id, locatie, factura_id, z_inregistrare_id)
                         VALUES (%s,%s,'iesire',%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
@@ -294,11 +474,13 @@ def retur_la_stornare(conn, schema, factura_id, storno_id, data, document):
         if schema is None:
             cur.execute("SELECT current_schema() AS s")
             schema = cur.fetchone()["s"]
+        # [lotul 11, 451] fără document dat, cel al regulii unice (`document_retur`, cu care se regenerează și ciorna returului)
+        document = str(document or "").strip() or document_retur(cur, schema, storno_id) or "Retur la stornare"
         for m in iesiri_facturii(cur, schema, factura_id):
             cant, val = Decimal(str(m["cantitate"])), Decimal(str(m["valoare"]))
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
                             VALUES (%s,%s,'stocuri','ciorna',%s) RETURNING id""",
-                        (data, ("Retur în stoc %s × %s (stornare)" % (m["denumire"], _pu.cantitate(cant, m["um"])))[:200], document))
+                        (data, _descriere_retur(m["denumire"], cant, m["um"]), document))
             iid = cur.fetchone()["id"]
             cur.execute(f"INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)",
                         (iid, m["cont_cheltuiala"], m["cont_stoc"], -val))
@@ -440,7 +622,8 @@ def _incadreaza_lipsa(cur, schema, a, l, val, platitor):
         if cota in (None, ""):
             return {"eroare": "Cota de TVA a articolului nu e în nomenclator: scrie cota cu care s-a dedus TVA-ul la cumpărare (ajustarea "
                               "TVA, HG 1/2016 titlul VII pct.78 alin.(6) lit.a).", "camp": "cvi-a%s-cota" % a["id"]}
-        tva = (val * Decimal(str(cota)) / 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        from core import tva_calcul as _tc   # [lotul 11, decizia 10.3: „o singură regulă de rotunjire TVA” — patch T]
+        tva = _tc.tva_din_baza(val, cota)
         if tva:
             linii.append(("635", "4427", tva))
         if lipsa == "neimputabila":
@@ -640,18 +823,43 @@ def transfer(conn, schema, corp):
     Transfer FIZIC intre locatii: iesire din sursa + intrare in destinatie, ambele la
     CMP-ul GLOBAL curent. NU genereaza nota contabila (nu e consum/achizitie) si e NEUTRU
     pe CMP si pe D406 (net zero cantitate+valoare). F138 Tier 1."""
+    # [440, comanda Costin 11.1 pct.16] articolul, locațiile, cantitatea și data se judecă toate (`ErorileFormularului`), fiecare lângă
+    # câmpul ei din ecran (`tr-art`, `tr-in`, `tr-cant`, `tr-data`); stocul insuficient (starea evidenței) rămâne refuzul lui, după.
+    # Înainte: corpul fără cantitate / dată cădea în `KeyError` pe primul câmp, iar o dată greșită ajungea în INSERT (500).
+    from core.erori import ErorileFormularului as _Erori
+    from core import jurnal_api as _ja
+    er = _Erori("Transferul nu s-a făcut")
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"SELECT * FROM {schema}.articole WHERE id=%s", (corp["articol_id"],))
-        a = cur.fetchone()
-        if not a:
-            return None
+        a = None
+        if corp.get("articol_id") in (None, ""):
+            er.camp("tr-art", "Alege articolul transferat.")
+        else:
+            cur.execute(f"SELECT * FROM {schema}.articole WHERE id=%s", (corp["articol_id"],))
+            a = cur.fetchone()
+            if not a:
+                return None
         din = (corp.get("din_locatie") or "").strip() or None
         catre = (corp.get("in_locatie") or "").strip() or None
         if din == catre:
-            return {"eroare": "Locația sursă și locația destinație sunt aceeași."}
-        cant = Decimal(str(corp["cantitate"]))
-        if cant <= 0:
-            return {"eroare": "Cantitatea transferată trebuie să fie mai mare ca zero (are %s)." % _pu.cantitate(cant, a["um"])}
+            er.camp("tr-in", "Locația destinație e aceeași cu locația sursă: alege altă locație.")
+        um = a["um"] if a else ""
+        cant = None
+        if corp.get("cantitate") in (None, ""):
+            er.camp("tr-cant", "Scrie cantitatea transferată.")
+        else:
+            try:
+                cant = Decimal(str(corp["cantitate"]))
+            except (InvalidOperation, ValueError):
+                er.camp("tr-cant", "Cantitatea %r nu e un număr." % (corp["cantitate"],))
+            if cant is not None and (not cant.is_finite() or cant <= 0):
+                er.camp("tr-cant", "Cantitatea transferată trebuie să fie mai mare ca zero (are %s)." % _pu.cantitate(cant, um))
+                cant = None
+        _zi, _refuz_data = _ja._data_valida(corp.get("data"))
+        if _refuz_data:
+            er.camp("tr-data", _refuz_data["eroare"] if corp.get("data") else "Alege data transferului.")
+        if er:
+            d = er.detaliu()
+            return {"eroare": d["mesaj"], "erori_campuri": d["erori_campuri"]}
         disp = _stoc_locatie(cur, schema, a["id"], din)
         if cant > disp:
             # [lotul 10, comanda 10.2 pct.8d, clasa] cantitatea în formatul românesc, cu unitatea de măsură (nu „139.000”)

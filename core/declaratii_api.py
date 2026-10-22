@@ -700,7 +700,7 @@ def genereaza(conn, schema, tip, body):
     per_ef = None
     if tip in _TVA_PERIODIC:
         with conn.cursor() as cur:
-            cur.execute("SELECT tip_decont, platitor_tva FROM firma_profil WHERE id = 1")
+            cur.execute(f"SELECT tip_decont, platitor_tva FROM {schema}.firma_profil WHERE id = 1")
             _rd = cur.fetchone()
         per_ef = periodicitate_firma(tip, {"tip_decont": _rd[0], "platitor_tva": _rd[1]} if _rd else None)
     erori = valideaza_cerere(tip, body, per_ef)
@@ -725,7 +725,7 @@ def genereaza(conn, schema, tip, body):
     from core.common import azi_ro as _azi
     with conn.cursor() as cur:
         cur.execute("SELECT tip_firma, platitor_tva, operatiuni_ic, regim_fiscal "
-                    "FROM firma_profil WHERE id = 1")
+                    f"FROM {schema}.firma_profil WHERE id = 1")
         _row = cur.fetchone()
     _vec = ({"tip_firma": _row[0], "platitor_tva": _row[1], "operatiuni_ic": _row[2],
              "regim_fiscal": _row[3]} if _row else {})
@@ -739,7 +739,11 @@ def genereaza(conn, schema, tip, body):
     if per_ef == "trimestrial" and body.get("trim") and body.get("luna") is None:
         body = {**body, "luna": int(body["trim"]) * 3}
     _per, adaptor = _inregistrare(tip)
-    return adaptor(conn, schema, body)
+    # [lotul 11, C77] formularele cu bifa „rectificativă” în `manual`: bifa o pun depunerile înregistrate pe perioadă
+    from core import rectificativa as _rect
+    body, _st_rect = _rect.pe_cerere(conn, schema, tip, body)
+    xml, res = adaptor(conn, schema, body)
+    return xml, _rect.pe_rezultat(res, _st_rect)
 
 
 # ============================================================

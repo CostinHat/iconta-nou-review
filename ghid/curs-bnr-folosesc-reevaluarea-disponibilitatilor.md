@@ -2,7 +2,7 @@
 title: "Ce curs BNR folosesc pentru reevaluarea disponibilităților în valută?"
 description: Disponibilitățile bănești în valută se reevaluează lunar la cursul BNR din ultima zi bancară a lunii, nu la cursul zilei fiecărei operațiuni — diferența rezultată se recunoaște ca venit sau cheltuială din curs valutar.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Diferența dintre soldul evaluat la cursul BNR de la finalul lunii și soldul ev
 
 ## Ce face iConta.eu
 
-Cursul BNR folosit pentru determinarea unui sold în valută la o dată dată provine din motorul de curs — ultimul curs BNR comunicat, valabil cel târziu la data cerută. Calculul diferenței față de cursul de evidență al soldului și recunoașterea ei pe 665/765 rămân, ca la orice reevaluare lunară, o operațiune realizată de contabil pe baza cursului preluat din motorul de curs. Dacă moneda soldului nu are curs BNR comunicat sau cursul găsit e prea vechi pentru pragul intern de siguranță, operațiunea e blocată cu un mesaj explicit, nu se aplică tăcut un curs aproximativ.
+Reevaluarea lunară se face din „Închidere lună → Reevaluare valută”: aplicația propune fiecare cont 5124, 5314 sau 5414 cu sold la sfârșitul lunii, cu soldul în lei din evidență, ia cursul BNR din ultima zi bancară a lunii și calculează diferența față de cursul de evidență, pe 665/765; soldul în valută al contului îl completezi pe ecran, apoi generezi nota. Dacă moneda soldului nu are curs BNR comunicat sau cursul găsit e prea vechi pentru pragul intern de siguranță, operațiunea e blocată cu un mesaj explicit, nu se aplică tăcut un curs aproximativ.
 
 [iConta.eu](/)

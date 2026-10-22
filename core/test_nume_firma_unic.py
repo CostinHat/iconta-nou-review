@@ -93,7 +93,8 @@ def test_redenumirea_nu_schimba_CUI_ul():
                                     [n for n in ast.walk(ast.parse(io.open(fp.__file__, encoding="utf-8").read()))
                                      if isinstance(n, ast.FunctionDef) and n.name == "corecteaza_cui"][0])
     chemate = {getattr(n.func, "attr", getattr(n.func, "id", None)) for n in ast.walk(ast.parse(corect)) if isinstance(n, ast.Call)}
-    assert {"_vcui", "cere_cui_unic", "alege_cui"} <= chemate, chemate   # cifra de control, unicitatea, scrierea în ambele locuri
+    # cifra de control (aceeași verificare ca la creare, [459]: `tenant_provisioning.motiv_cui_firma_invalid`), unicitatea, ambele locuri
+    assert {"motiv_cui_firma_invalid", "cere_cui_unic", "alege_cui"} <= chemate, chemate
 
 
 def test_normalizarea_ignora_majusculele_si_spatiile():

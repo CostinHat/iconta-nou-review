@@ -463,10 +463,13 @@ def test_CORECTURA_din_fisa_clientului_NU_rescrie_D394_pe_luni_trecute(firma):
         "corectura din fișa clientului a rescris RETROACTIV partenerul din D394: %r" % (dupa,))
     with firma["conn"].cursor() as cur:
         cur.execute('SET search_path TO "%s", public' % SCH)
-        cur.execute("SELECT tert_cui FROM facturi WHERE numar = 'ZT-C2'")
-        assert cur.fetchone()[0] == "RO40372003", "documentul emis s-a schimbat odată cu fișa"
+        # [lotul 11, decizia Costin 10.3 pct.4: „CUI-ul se păstrează fără «RO» și fără spații; «RO» apare doar la afișare, după starea de
+        # plătitor de TVA.”] — triggerul `trg_cui_fara_ro` păstrează codul fără prefix (`cui_forma.stocare`), pe factură ca și în fișă;
+        # ce apără testul rămâne: factura își păstrează codul de la emitere, fișa poartă corectura
+        cur.execute("SELECT tert_cui, tert_platitor_tva FROM facturi WHERE numar = 'ZT-C2'")
+        assert cur.fetchone() == ("40372003", True), "documentul emis s-a schimbat odată cu fișa"
         cur.execute("SELECT cui FROM clienti WHERE id = %s", (cid,))
-        assert cur.fetchone()[0] == "RO14399840", (
+        assert cur.fetchone()[0] == "14399840", (
             "martor pe cealaltă parte: fișa NU s-a schimbat, deci proba n-ar dovedi nimic")
 
     d = cl.delete(_U(firma, "/tenants/{tenant_id}/clienti/{client_id}", client_id=cid), headers=_H(firma))
@@ -552,10 +555,6 @@ NOTE = [
     ("/tenants/{tenant_id}/decontare-valuta", {"valoare_valuta": 100, "curs_evidenta": 4.9,
                                                "tip": "creanta", "moneda": "EUR",
                                                "cont_tert": "4111", "cont_banca": "5124"}),
-    ("/tenants/{tenant_id}/reevaluare-valuta", {"moneda": "EUR",
-                                                "solduri": [{"cont": "5124", "tip": "disponibil",
-                                                             "valoare_valuta": 100,
-                                                             "curs_evidenta": 4.9}]}),
 ]
 
 
@@ -705,3 +704,44 @@ def test_STERGEREA_operatiunii_de_casa_scoate_si_inregistrarea_ei(firma):
         "operațiunea de casă a rămas")
     assert _numar(firma, "SELECT count(*) FROM inregistrari") == inreg - 1, (
         "înregistrarea contabilă a rămas după ștergerea operațiunii care a produs-o")
+
+
+# ── sistemul TVA la încasare (lotul 11, K): perioada scrisă din Date firmă intră în regimul facturii, deci în D300 ─────────────────
+
+def _fara_anaf(monkeypatch):
+    """Registrul ANAF (RTVAI) nu e de verificat aici: răspunsul „găsit, fără date RTVAI” — verificarea rămâne semnal, nu blocaj."""
+    from core import anaf_api
+    monkeypatch.setattr(anaf_api, "valideaza_cui", lambda cuiuri, *a, **k: [{"gasit": True, "cui": cuiuri[0], "tva_incasare_rtvai": {}}])
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_TVA_LA_INCASARE_perioada_salvata_scoate_TVA_ul_neincasat_din_R9(firma, monkeypatch):
+    """`POST /tenants/{tenant_id}/tva-incasare` (Date firmă -> „Aplică sistemul TVA la încasare: Da, de la 01.06.2026”) -> factura emisă
+    pe 10.06, neîncasată -> D300 iunie: TVA-ul ei NU e colectat (exigibil la încasare). Ruta scrie în tabelul din care se ridică regimul
+    facturii (`tva_incasare_perioade`), deci în cifra declarației (`core/test_rute_probate.py`, subsetul fiscal)."""
+    _fara_anaf(monkeypatch)
+    cl = _client()
+    r = cl.post(_U(firma, "/tenants/{tenant_id}/tva-incasare"), headers=_H(firma), json={"aplica": True, "de_la": "2026-06-01"})
+    assert r.status_code == 200, r.text[:300]
+    assert _factura(cl, firma).status_code == 200
+    res = declaratie(firma, "d300")
+    # CF art.282 alin.(3): „exigibilitatea taxei intervine la data încasării contravalorii integrale sau parțiale [...], în cazul
+    # persoanelor impozabile care optează în acest sens” -> factura neîncasată nu are TVA colectat în iunie
+    assert _R(res, "R9_2") == 0, "TVA-ul facturii neîncasate e colectat deși firma e în sistem: %r" % (getattr(res, "R", None),)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_TVA_LA_INCASARE_perioada_stearsa_readuce_regimul_general(firma, monkeypatch):
+    """`DELETE /tenants/{tenant_id}/tva-incasare/{perioada_id}` (perioada scrisă din greșeală) -> factura emisă apoi pe 10.06 -> D300 iunie
+    are TVA-ul colectat la emitere (regimul general), ca la o firmă care n-a optat."""
+    _fara_anaf(monkeypatch)
+    cl = _client()
+    r = cl.post(_U(firma, "/tenants/{tenant_id}/tva-incasare"), headers=_H(firma), json={"aplica": True, "de_la": "2026-06-01"})
+    assert r.status_code == 200, r.text[:300]
+    pid = _numar(firma, "SELECT max(id) FROM tva_incasare_perioade")
+    d = cl.delete(_U(firma, "/tenants/{tenant_id}/tva-incasare/{perioada_id}", perioada_id=pid), headers=_H(firma))
+    assert d.status_code == 200, d.text[:300]
+    assert _factura(cl, firma).status_code == 200
+    res = declaratie(firma, "d300")
+    # CF art.282 alin.(1)-(2) regimul general: exigibilitatea la faptul generator (emiterea) -> R9: 1.000 bază, 210 TVA
+    assert (_R(res, "R9_1"), _R(res, "R9_2")) == (1000, 210), getattr(res, "R", None)

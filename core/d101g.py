@@ -7,15 +7,23 @@ depusa de membrul unui grup fiscal" bifata); persoana responsabila insumeaza rez
 membrilor si depune ACEASTA declaratie consolidata. Aplicatia NU are registru de membri de grup, deci
 valorile fiscale consolidate (P01-P16) vin din `manual`; identitatea = firma_profil (responsabilul).
 
-SURSA STRUCTURII = VALIDATORUL OFICIAL ANAF (arbitrul, DUKIntegrator / D101GValidator.jar), coroborat cu
-formularul oficial. Radacina si campurile au fost CITITE din bytecode:
-  - namespace v2 = pachet d101gvalidator/v1 (namespace v1 = pachet v0, structura veche P37..P53 - NU se
-    foloseste); radacina XML = <declaratie101G>.
-  - Atribute (clasa d101gvalidator/v1/Identificare): an, luna, an_i, luna_i, Data_I, Data_S, Data_M (opt),
-    d_rec, d_recN, d_reglem, d_anulare, d_alte, cif, denumire, adresa, caen, telefon, email, fax,
-    cod_obligatie, cod_bug, nr_evid, scadenta, totalPlata_A, nume_declar, prenume_declar, functie_declar,
-    temei (daca d_anulare=1), primul_an_modif/ultimul_an_modif (opt, la rectificativa), P01..P16.
-  - Nu exista sectiune de membri in XML-ul consolidat (fiecare membru = propriul D101).
+SURSA STRUCTURII = VALIDATORUL OFICIAL ANAF (arbitrul, ~/duk/dist/lib/D101GValidator.jar J2.0.0, valabil pentru an
+sfarsit de perioada >= 2024: `Validator._dateVersionTable` „2024-01 J2.0.0”), coroborat cu structura ANAF
+`anaf_surse/d101g_structura_2025_050526.pdf` (.txt = extrasul ei; static.anaf.ro/…/AplicatiiDec/structura_D101G_2025_050526.pdf,
+adusa 21.10.2026). [lotul 11, C70 — refacut pe validatorul v2] Ce scria generatorul inainte si DUK respingea:
+  - radacina `<declaratie>` -> „sectiune necunoscuta ('declaratie')”. Validatorul: `DECTag("D101G")`; structura nr.1 `<D101G>`.
+  - `d_recN="0"` -> „nu se incadreaza in intervalul cerut”: DUK `d_recN` interval [1,1], optional; structura „d_recN =1,null”.
+  - `cod_obligatie="103"` -> „nu se afla in lista”: DUK `Parameters_v1.nomenclat_cod_obl` = {"100"} (structura listeaza si
+    102-105, dar validatorul, arbitrul, primeste numai 100).
+  - `caen` -> „atribut necunoscut”: atributul e `CAEN` (DUK `nextAttributeInList(nomenclat_caen, "CAEN")`, structura nr.26),
+    pe nomenclatorul CAEN al validatorului (probat 21.10.2026: 6920 / 6201 trec, 9999 / 0000 „nu se afla in lista”).
+  - `totalPlata_A` = P15 -> „nu se incadreaza in intervalul cerut”: DUK interval [0,0]; structura nr.20 „totalPlata_A =0”.
+  - `temei` text liber: DUK interval [1,2]; structura 4b „1-art.105 alin(6) lit.a) din Legea nr.207/2015, 2-… lit.b)”.
+  - `functie_declar` taiat la 75: DUK lungime 50 (structura C(50)); lungimile se verifica, nu se taie (datele raman nealterate).
+  Atributele v2 (clasa d101gvalidator/v1/Identificare, toate cele 66): Data_S, d_rec, d_recN, d_anulare, temei, cod_obligatie,
+  luna_i, an_i, luna, an, d_alte, d_reglem, primul_an_modif, ultimul_an_modif, Data_M, Data_I, scadenta, cod_bug, nr_evid,
+  totalPlata_A, nume_declar, prenume_declar, functie_declar, cif, CAEN, denumire, adresa, telefon, fax, email, cifR, denR,
+  adrR, telR, faxR, emailR, P01 … P16. Nu exista sectiune de membri in XML-ul consolidat (fiecare membru = propriul D101).
 
 Randuri (formular 101 Grup fiscal, OPANAF 206/2025, anaf_surse/opanaf_206_2025_d101.txt liniile ~928-1073)
 mapate pe atribute:
@@ -45,8 +53,8 @@ Reguli citite din validator (DUK regula <cod/expresie>), implementate/verificate
   - DUK regula R17 scadenta: d_reglem=1 -> LL+3 (25 martie); d_reglem<>1 -> LL+6 (25 iunie) din Data_S.
   - DUK regula Data_S=31.12.an; Data_S>=Data_I; d_rec=2 daca d_recN=1; temei<>null daca d_anulare=1.
 
-totalPlata_A = suma de control: validatorul v2 o preia direct (_sumaControl = totalPlata_A), fara sa o
-recalculeze din suma randurilor P (spre deosebire de D101). Se emite = P15 (diferenta de impozit de plata).
+totalPlata_A = suma de control: DUK o cere 0 (interval [0,0]; structura nr.20 „totalPlata_A =0”). Diferenta de plata
+ramane la rd.15 (P15); `RezultatD101G.total_plata_a` e ce se scrie in XML, adica 0.
 
 Contract dXXX (uniform): NS, _cif/_esc, calcul_d101g, pull, erori_generare, build_xml,
 genereaza(conn, schema, perioada, manual=None). Valorile din `manual`; cota NU e hardcodata (override).
@@ -67,8 +75,20 @@ from core import common as _c
 
 NS = "mfp:anaf:dgti:d101g:declaratie:v2"
 
-_COD_OBLIGATIE_DEFAULT = "103"           # cod obligatie bugetara impozit pe profit (poz.3-5 din nr_evid)
-_COD_BUG_DEFAULT = "5503XXXXXX"          # cod bugetar impozit pe profit (X-uri literale, ca la D101)
+# DUK regula cod_obligatie: `Parameters_v1.nomenclat_cod_obl` = {"100"} (orice alta valoare: „nu se afla in lista”); tot el e
+# poz.3-5 din nr_evid (structura nr.19 „Poz.3-5 : cod_obligatie”).
+_COD_OBLIGATIE_D101G = ("100",)
+_COD_OBLIGATIE_DEFAULT = "100"
+_COD_BUG_DEFAULT = "5503XXXXXX"          # structura nr.18: cod_bug C(10) „5503XXXXXX” (X-uri literale, ca la D101)
+# structura 4b: temei N(1) — „1-art.105 alin(6) lit.a) din Legea nr.207/2015”, „2-art.105 alin(6) lit.b) din Legea nr.207/2015”
+# (DUK `temei` interval [1,2], obligatoriu cand d_anulare=1 — DUK regula R4b).
+TEMEIURI_ANULARE = {1: "CPF art.105 alin.(6) lit.a", 2: "CPF art.105 alin.(6) lit.b"}
+#: primul an acoperit de validatorul v2 (J2.0.0, „2024-01”); 2022-2023 au structura veche (namespace v1, J1.0.1).
+AN_SCHEMA_V2 = 2024
+# Lungimile maxime din DUK (`nextAttribute(nume, lungime, …)`) = structura (C(n)); peste ele DUK respinge. Se verifica, nu se taie.
+LIMITE_XSD_D101G = (("nume", "denumirea", 200), ("adresa", "adresa", 1000), ("telefon", "telefonul", 15), ("email", "e-mailul", 200),
+            ("declarant_nume", "numele declarantului", 75), ("declarant_prenume", "prenumele declarantului", 75),
+            ("declarant_functie", "funcția declarantului", 50))
 _NEDIGIT = re.compile(r"\D")
 
 # Campuri de INTRARE (valori fiscale consolidate furnizate de persoana responsabila). Restul (P03, P04,
@@ -111,14 +131,21 @@ class RezultatD101G:
     d_recN: int = 0
     d_anulare: int = 0
     d_alte: int = 0
-    temei: str = ""
+    temei: int = 0
+    rectificativa: object = None   # [lotul 11, C77] mențiunea de pe ecran („Rectificativă la declarația depusă …”), None la inițială
 
 
 def calcul_d101g(prof, an, intrari=None, cota=None, cod_obligatie=_COD_OBLIGATIE_DEFAULT,
-                 cod_bug=_COD_BUG_DEFAULT, d_reglem=0, d_recN=0, d_anulare=0, d_alte=0, temei=""):
+                 cod_bug=_COD_BUG_DEFAULT, d_reglem=0, d_recN=0, d_anulare=0, d_alte=0, temei=0, rect=0):
     """Calculeaza randurile consolidate P01-P16 din `intrari` (chei din _P_INTRARI). Formulele urmeaza
     formularul oficial (OPANAF 206/2025) SI conditiile validatorului (D101GValidator.jar, pachet v1)."""
     I = dict(intrari or {})
+    if str(cod_obligatie) not in _COD_OBLIGATIE_D101G:
+        raise ValueError("D101G: codul de obligație %s nu e acceptat de validatorul ANAF (lista: %s)." % (
+            cod_obligatie, ", ".join(_COD_OBLIGATIE_D101G)))
+    if int(an) < AN_SCHEMA_V2:
+        raise ValueError("D101G pe %d: anii dinainte de %d au altă structură ANAF (validatorul J1.0.1); aplicația generează "
+                         "numai structura în vigoare de la %d." % (int(an), AN_SCHEMA_V2, AN_SCHEMA_V2))
     necunoscute = [k for k in I if k not in _P_INTRARI]
     if necunoscute:
         raise ValueError("D101G intrări necunoscute: %s (permise: %s)" % (sorted(necunoscute), sorted(_P_INTRARI)))
@@ -179,13 +206,13 @@ def calcul_d101g(prof, an, intrari=None, cota=None, cod_obligatie=_COD_OBLIGATIE
     P["P15"] = dif if dif > 0 else 0                     # rd.15 diferenta de impozit de plata (>=0)
     P["P16"] = -dif if dif < 0 else 0                    # rd.16 diferenta de impozit de recuperat (>=0)
 
-    total = P["P15"]                                     # totalPlata_A = suma de control (diferenta de plata)
+    total = 0                                            # totalPlata_A: DUK interval [0,0], structura nr.20 „totalPlata_A =0”
     Pnz = {k: v for k, v in P.items() if v}              # se emit doar randurile nenule
     return RezultatD101G(an=an, prof=prof, P=Pnz, total_plata_a=total,
                          cod_obligatie=str(cod_obligatie), cod_bug=str(cod_bug),
-                         d_reglem=int(d_reglem or 0), d_rec=(2 if int(d_recN or 0) == 1 else 0),
+                         d_reglem=int(d_reglem or 0), d_rec=(2 if int(d_recN or 0) == 1 else int(rect or 0)),   # [lotul 11, C77] structura D101G: „d_rec =(0,1,2) … 1-rectificativa”
                          d_recN=int(d_recN or 0), d_anulare=int(d_anulare or 0),
-                         d_alte=int(d_alte or 0), temei=str(temei or ""))
+                         d_alte=int(d_alte or 0), temei=int(temei or 0))
 
 
 def _scadenta(an, d_reglem):
@@ -212,6 +239,17 @@ def _nr_evid(cod_oblig, an, d_reglem):
     return p1_21 + "%02d" % (suma % 100)
 
 
+def _erori_lungime(prof):
+    """Lungimile maxime ale validatorului (`LIMITE_XSD_D101G`): peste ele DUK respinge, iar a taia ar altera datele firmei."""
+    erori = []
+    for cheie, eticheta, maxim in LIMITE_XSD_D101G:
+        v = str(prof.get(cheie) or "").strip()
+        if len(v) > maxim:
+            erori.append("D101G: %s are %s; formularul ANAF primește cel mult %s. Scurtează-l în Date firmă." % (
+                eticheta, _c.cate(len(v), "caracter", "caractere"), _c.cate(maxim, "caracter", "caractere")))
+    return erori
+
+
 def erori_generare(prof):
     erori = []
     _cui = _cif(prof.get("cui"))
@@ -226,6 +264,7 @@ def erori_generare(prof):
         erori.append("Lipsă cod CAEN (obligatoriu în D101G).")
     elif not re.fullmatch(r"\d{4}", _caen):
         erori.append("D101G: cod CAEN invalid (%s): trebuie exact 4 cifre — N(4). Corectează în Profil firma." % _caen)
+    erori.extend(_erori_lungime(prof))
     # [lotul 10, deficiența C69 — „valoare inventată pe documentul ANAF în loc de blocaj”] Declarantul: aceeași poartă ca la D101
     # (`firma_profil_api.erori_declarant`). Sursa, în lipsa unei structuri D101G în anaf_surse/: validatorul ANAF D101G v2 instalat
     # (~/duk/dist/lib/D101GValidator.jar, J2.0.0 — sha256 identic cu cel publicat de ANAF la update5/D101G_3), probat 20.10.2026 pe XML
@@ -237,8 +276,8 @@ def erori_generare(prof):
 
 
 def build_xml(res):
-    """Emite <declaratie101G> cu toate campurile ca ATRIBUTE (ca la D101; validatorul respinge randurile
-    P ca elemente-copil). Radacina confirmata din bytecode: declaratie101G."""
+    """Emite <D101G> cu toate campurile ca ATRIBUTE (ca la D101; validatorul respinge randurile P ca elemente-copil).
+    Radacina: DUK `DECTag("D101G")` + structura nr.1 `<D101G>` (C70: era `<declaratie>`)."""
     prof = res.prof
     an = res.an
     cif_num = _cif(prof.get("cui"))
@@ -246,34 +285,40 @@ def build_xml(res):
     a = []
     a.append('an="%d" luna="12" an_i="%d" luna_i="1"' % (an, an))
     a.append('Data_I="01.01.%d" Data_S="31.12.%d"' % (an, an))
-    a.append('d_rec="%d" d_recN="%d" d_reglem="%d" d_anulare="%d" d_alte="%d"' % (
-        res.d_rec, res.d_recN, res.d_reglem, res.d_anulare, res.d_alte))
+    a.append('d_rec="%d" d_reglem="%d" d_anulare="%d" d_alte="%d"' % (res.d_rec, res.d_reglem, res.d_anulare, res.d_alte))
+    if res.d_recN == 1:                                   # DUK `d_recN` interval [1,1], optional; structura „d_recN =1,null”
+        a.append('d_recN="1"')
     a.append('cod_obligatie="%s" cod_bug="%s"' % (res.cod_obligatie, res.cod_bug))
     a.append('nr_evid="%s" scadenta="%02d%02d%02d"' % (
         _nr_evid(res.cod_obligatie, an, res.d_reglem), zz, scad_luna, scad_an % 100))
     a.append('totalPlata_A="%d"' % res.total_plata_a)
-    if res.d_anulare == 1 and res.temei:
-        a.append('temei=%s' % _esc(res.temei))
+    if res.d_anulare == 1:
+        if res.temei not in TEMEIURI_ANULARE:              # DUK R4b + `temei` interval [1,2]
+            raise ValueError("D101G: la anulare temeiul e 1 (%s) sau 2 (%s)." % (TEMEIURI_ANULARE[1], TEMEIURI_ANULARE[2]))
+        a.append('temei="%d"' % res.temei)
     # [lotul 10, C69] declarantul din Date firmă / din `manual`, fără „ADMINISTRATOR” / „-” (lipsa îl oprește în `erori_generare`)
     from core.firma_profil_api import erori_declarant
     _er_decl = erori_declarant(prof)
     if _er_decl:
         raise ValueError("D101G nu se poate genera: " + " ".join(_er_decl))
+    _er_lung = _erori_lungime(prof)
+    if _er_lung:                                          # lungimile DUK: se opresc, nu se taie
+        raise ValueError(" ".join(_er_lung))
     a.append('nume_declar=%s prenume_declar=%s functie_declar=%s' % (
-        _esc(str(prof["declarant_nume"]).strip()[:75]),
-        _esc(str(prof["declarant_prenume"]).strip()[:75]),
-        _esc(str(prof["declarant_functie"]).strip()[:75])))
+        _esc(str(prof["declarant_nume"]).strip()),
+        _esc(str(prof["declarant_prenume"]).strip()),
+        _esc(str(prof["declarant_functie"]).strip())))
     a.append('cif="%s" denumire=%s adresa=%s' % (
-        cif_num, _esc((prof.get("nume") or "")[:200]), _esc((prof.get("adresa") or "")[:200])))
+        cif_num, _esc((prof.get("nume") or "").strip()), _esc((prof.get("adresa") or "").strip())))
     caen = (prof.get("caen") or "").strip()
-    if caen:
-        a.append('caen=%s' % _esc(caen))
+    if caen:                                              # DUK `CAEN` (majuscule), obligatoriu; structura nr.26
+        a.append('CAEN=%s' % _esc(caen))
     tel = (prof.get("telefon") or "").strip()
     if tel:
-        a.append('telefon=%s' % _esc(tel[:15]))
+        a.append('telefon=%s' % _esc(tel))
     email = (prof.get("email") or "").strip()
     if email:
-        a.append('email=%s' % _esc(email[:60]))
+        a.append('email=%s' % _esc(email))
 
     def _ordine(k):
         m = re.match(r"P(\d+)([a-z]?)(\d*)", k)
@@ -282,7 +327,7 @@ def build_xml(res):
         a.append('%s="%d"' % (k, res.P[k]))
 
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<declaratie xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+            '<D101G xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
             'xmlns="%s" xsi:schemaLocation="%s D101G.xsd" %s/>\n' % (NS, NS, " ".join(a)))
 
 
@@ -310,9 +355,17 @@ def genereaza(conn, schema, perioada, manual=None):
     cod_bug = str(manual.pop("cod_bug", _COD_BUG_DEFAULT))
     d_reglem = int(manual.pop("d_reglem", 0) or 0)
     d_recN = int(manual.pop("d_recN", 0) or 0)
+    # [lotul 11, C77] rectificativa: depunerile înregistrate pe an (orice sursă) sau bifa din formular (`core.rectificativa`)
+    from core import rectificativa as _rect
+    _st_rect = _rect.stabileste(conn, schema, "d101g", perioada.an, bifata=_rect.bifata({"d_rec": manual.pop("d_rec", 0)}))
     d_anulare = int(manual.pop("d_anulare", 0) or 0)
     d_alte = int(manual.pop("d_alte", 0) or 0)
-    temei = str(manual.pop("temei", "") or "")
+    temei = manual.pop("temei", 0) or 0
+    try:
+        temei = int(temei)
+    except (TypeError, ValueError):
+        raise ValueError("D101G: temeiul anulării e 1 (%s) sau 2 (%s), nu „%s”." % (
+            TEMEIURI_ANULARE[1], TEMEIURI_ANULARE[2], temei))
     # suprascrieri / sursa de identitate din manual (cand nu exista DB sau se corecteaza profilul)
     ident = {}
     for k in ("cui", "nume", "adresa", "caen", "telefon", "email",
@@ -323,13 +376,15 @@ def genereaza(conn, schema, perioada, manual=None):
     prof = pull(conn, schema, perioada)
     prof = dict(prof or {})
     prof.update(ident)
-    if d_anulare == 1 and not temei:
-        raise ValueError("D101G: la o declarație de anulare se completează și temeiul anulării; validatorul ANAF o respinge fără el.")
+    if d_anulare == 1 and temei not in TEMEIURI_ANULARE:
+        raise ValueError("D101G: la o declarație depusă după anularea rezervei verificării ulterioare se alege temeiul: 1 (%s) "
+                         "sau 2 (%s); validatorul ANAF o respinge fără el." % (TEMEIURI_ANULARE[1], TEMEIURI_ANULARE[2]))
     erori = erori_generare(prof)
     if erori:
         raise ValueError(" ".join(erori))
     res = calcul_d101g(prof, perioada.an, intrari=manual, cota=cota, cod_obligatie=cod_obligatie,
                        cod_bug=cod_bug, d_reglem=d_reglem, d_recN=d_recN, d_anulare=d_anulare,
-                       d_alte=d_alte, temei=temei)
+                       d_alte=d_alte, temei=temei, rect=_st_rect.d_rec)
+    res.rectificativa = _st_rect.mentiune
     xml = build_xml(res)
     return xml, res

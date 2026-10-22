@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "core/audit_preluare.py",
+  "ancora": "f\"{_sold(r['sold_balanta'])} (diferență",
+  "inlocuire": "f\"{_lei(r['sold_balanta'])} (diferență",
+  "test": "frontend_test/e2e/e2e_lot11_c85_c100.py::test_def_c100_soldul_creditor_se_spune_cu_felul_lui_la_import_si_la_audit"
+ }
+]

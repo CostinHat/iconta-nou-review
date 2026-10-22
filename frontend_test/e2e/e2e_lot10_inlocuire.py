@@ -78,7 +78,7 @@ def test_def_426_parteneri_al_doilea_import_arata_totalurile_si_cere_confirmare(
     _renunta_apoi_confirma(patron, "#mig-salveaza-part", "Înlocuiesc soldurile pe parteneri",
                            lambda: sql('SELECT count(*) FROM "%s".solduri_parteneri' % s)[0][0], 2,
                            "Un partener salvat. Soldurile vechi (2 parteneri) au fost înlocuite.")
-    # CUI-ul se salvează fără „RO” (`solduri_parteneri_api._curata_cui`, regula de dinaintea lotului: „RO14837428 -> 14837428”)
+    # CUI-ul se salvează fără „RO” (`cui_forma.stocare`, decizia 10.3: „RO14837428 -> 14837428”)
     assert sql('SELECT cui, sold_debitor FROM "%s".solduri_parteneri' % s) == [("18189442", 2500)]
 
 
@@ -133,7 +133,7 @@ def test_def_426_istoricul_al_doilea_import_arata_perioadele_si_cere_confirmare(
 def test_def_426_salariatii_existenti_se_actualizeaza_numai_confirmat(patron, firma_inl):
     """Firma are salariata POPESCU ANA (CNP 1900101410011) -> Salariați -> fișierul cu același CNP, nume POPA, 7.000 lei -> caseta: „Firma
     are deja 1 salariat; salariatul din fișier există deja după CNP: POPESCU ANA. Salvarea îi actualizează fișa cu datele din fișier …”
-    -> „Salvează salariații” -> „Actualizez fișele” -> „Un salariat importat. Fișa unui salariat existent a fost actualizată.”"""
+    -> „Salvează salariații” -> „Actualizez fișele” -> „Salariați: 0 noi, 1 fișă actualizată.” (lotul 11, 447: o singură numărătoare)"""
     pg, s = patron.pg, firma_inl["schema"]
     sql('INSERT INTO "%s".salariati (cnp, nume, prenume, data_angajare, judet_casa, part_time, ore_zi) '
         "VALUES (%%s, 'POPESCU', 'ANA', '2024-01-15', 'B', false, 8)" % s, (CNP1,))
@@ -146,7 +146,7 @@ def test_def_426_salariatii_existenti_se_actualizeaza_numai_confirmat(patron, fi
                                   "actualizează fișa cu datele din fișier"), _caseta(pg)
     _renunta_apoi_confirma(patron, "#mig-salveaza-sal", "Actualizez fișele",
                            lambda: sql('SELECT nume FROM "%s".salariati WHERE cnp = %%s' % s, (CNP1,))[0][0], "POPESCU",
-                           "Fișa unui salariat existent a fost actualizată.")
+                           "Salariați: 0 noi, 1 fișă actualizată.")
     assert sql('SELECT nume FROM "%s".salariati WHERE cnp = %%s' % s, (CNP1,)) == [("POPA",)]
 
 

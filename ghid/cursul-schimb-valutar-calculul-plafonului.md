@@ -2,7 +2,7 @@
 title: "Cursul de schimb valutar pentru calculul plafonului micro 2026"
 description: "Ce curs BNR se folosește pentru a verifica dacă veniturile firmei depășesc echivalentul în lei a 100.000 euro, plafonul de ieșire din regimul microîntreprinderilor."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -36,6 +36,6 @@ Din cele două texte rezultă un mecanism clar, dar diferit de cel de la TVA:
 
 La data acestui ghid, iConta.eu **nu calculează și nu monitorizează automat plafonul de 100.000 euro** al microîntreprinderii. Nu există în aplicație nicio constantă sau logică de plafon micro (verificat: nicio implementare de acest tip în codul sursă, confirmat explicit chiar într-un comentariu intern despre blocajul de schimbare a regimului fiscal, care se bazează strict pe ce completează manual contabilul, nu pe un calcul propriu al plafonului).
 
-Aplicația are un motor separat pentru cursul BNR (folosit la facturare și TVA, conform art. 290 Cod fiscal), dar acela aplică regula cursului zilei operațiunii — o regulă diferită de cea de mai sus și, prin construcție, nu poate fi refolosit pentru verificarea plafonului micro. Urmărirea plafonului de 100.000 euro, cu cursul corect de la 31 decembrie, rămâne azi în sarcina contabilului.
+Aplicația are un motor separat pentru cursul BNR (folosit la facturare și TVA, conform art. 290 Cod fiscal), dar acela aplică regula ultimului curs comunicat de BNR înaintea zilei operațiunii — o regulă diferită de cea de mai sus și, prin construcție, nu poate fi refolosit pentru verificarea plafonului micro. Urmărirea plafonului de 100.000 euro, cu cursul corect de la 31 decembrie, rămâne azi în sarcina contabilului.
 
 [iConta.eu](/)

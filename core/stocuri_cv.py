@@ -80,7 +80,7 @@ def fisa_magazie(miscari, stoc_initial=None, um=""):
             # VALOARE (cantitate 0), în perioada facturii; CMP-ul se recalculează din soldul de după ea. Pe stoc zero nu are pe ce sta
             # (apelantul o duce atunci pe 607, nu în fișă).
             if c != 0:
-                raise ValueError("Ajustarea de valoare%s nu poate avea cantitate (are %s)" % (_la(m.get("data")), _c(c, um)))
+                raise ValueError("Ajustarea de valoare%s nu poate avea cantitate (are %s): ea schimbă numai valoarea stocului" % (_la(m.get("data")), _c(c, um)))
             if cant <= 0:
                 raise ValueError("Ajustarea de valoare nu are pe ce stoc să se aplice: stocul e zero%s" % _la(m.get("data")))
             v = _q(m["valoare"])

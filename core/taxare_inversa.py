@@ -21,19 +21,21 @@ PRAG_ELECTRONICE = ancoreaza("taxare_inversa.PRAG_ELECTRONICE", Decimal("22500")
     lant_acte="alin.(7) introdus de Legea 358/2015 (OUG 50/2015 pct.36^3); lit.i)-k) aplicabile pana la 31.12.2026 (alin.6)"))
 EXPIRA_2026 = date(2026, 12, 31)
 
+#: [lotul 11] `eticheta` = denumirea bunului pe ecran (Produse, Operațiuni), cu diacritice; înainte ecranul Produse o scria din cheie
+#: („masa lemnoasa”, „aur investitii”).
 CATEGORII = {
-    "deseuri":            {"lit": "a", "expira": None,        "prag": None},
-    "masa_lemnoasa":      {"lit": "b", "expira": None,        "prag": None},
-    "cereale":            {"lit": "c", "expira": EXPIRA_2026, "prag": None},
-    "certificate_emisii": {"lit": "d", "expira": EXPIRA_2026, "prag": None},
-    "energie_electrica":  {"lit": "e", "expira": EXPIRA_2026, "prag": None},
-    "certificate_verzi":  {"lit": "f", "expira": EXPIRA_2026, "prag": None},
-    "cladiri_terenuri":   {"lit": "g", "expira": None,        "prag": None},
-    "aur_investitii":     {"lit": "h", "expira": None,        "prag": None},
-    "telefoane":          {"lit": "i", "expira": EXPIRA_2026, "prag": PRAG_ELECTRONICE},
-    "circuite_integrate": {"lit": "j", "expira": EXPIRA_2026, "prag": PRAG_ELECTRONICE},
-    "console_tablete":    {"lit": "k", "expira": EXPIRA_2026, "prag": PRAG_ELECTRONICE},
-    "gaze_naturale":      {"lit": "l", "expira": EXPIRA_2026, "prag": None},
+    "deseuri":            {"lit": "a", "expira": None,        "prag": None, "eticheta": "Deșeuri"},
+    "masa_lemnoasa":      {"lit": "b", "expira": None,        "prag": None, "eticheta": "Masă lemnoasă"},
+    "cereale":            {"lit": "c", "expira": EXPIRA_2026, "prag": None, "eticheta": "Cereale"},
+    "certificate_emisii": {"lit": "d", "expira": EXPIRA_2026, "prag": None, "eticheta": "Certificate emisii"},
+    "energie_electrica":  {"lit": "e", "expira": EXPIRA_2026, "prag": None, "eticheta": "Energie electrică"},
+    "certificate_verzi":  {"lit": "f", "expira": EXPIRA_2026, "prag": None, "eticheta": "Certificate verzi"},
+    "cladiri_terenuri":   {"lit": "g", "expira": None,        "prag": None, "eticheta": "Clădiri/terenuri"},
+    "aur_investitii":     {"lit": "h", "expira": None,        "prag": None, "eticheta": "Aur de investiții"},
+    "telefoane":          {"lit": "i", "expira": EXPIRA_2026, "prag": PRAG_ELECTRONICE, "eticheta": "Telefoane"},
+    "circuite_integrate": {"lit": "j", "expira": EXPIRA_2026, "prag": PRAG_ELECTRONICE, "eticheta": "Circuite integrate"},
+    "console_tablete":    {"lit": "k", "expira": EXPIRA_2026, "prag": PRAG_ELECTRONICE, "eticheta": "Console/tablete"},
+    "gaze_naturale":      {"lit": "l", "expira": EXPIRA_2026, "prag": None, "eticheta": "Gaze naturale"},
 }
 
 def se_aplica(categorie, valoare_fara_tva, furnizor_tva, beneficiar_tva, la_data=None):

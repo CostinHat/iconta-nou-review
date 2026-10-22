@@ -5,7 +5,7 @@ dacă jurnalul porții îl arată verde. [...] Maximum două rulări complete pe
 
 Pe un depozit TEMPORAR, cu lansatorul adevărat și o `poarta-suita` de probă (iese cu codul din `PROBA_RC`; adevărata ar rula ~70 de
 minute): verdictul se scrie în `<git-common-dir>/poarta_verdicte.log` (`VERDE|ROSU <sha> <ramura> <data>`), iar lansatorul REFUZĂ —
-fără să pornească poarta — pe `main`, pe arbore murdar, pe un SHA deja VERDE și la a treia rulare pe aceeași ramură.
+fără să pornească poarta — pe `main`, pe arbore murdar, pe un SHA deja VERDE și pe un SHA deja ROȘU.
 MUTAȚIILE: fiecare din cele patru refuzuri scos din `poarta_lot.sh` -> testul lui pică."""
 import os
 import shutil
@@ -66,16 +66,26 @@ def test_acelasi_sha_verde_nu_se_mai_ruleaza(depozit):
     assert len(_verdicte(d)) == 1
 
 
-def test_maximum_doua_rulari_pe_lot(depozit):
-    """Prima roșie, reparație, a doua roșie -> a treia e refuzată fără să pornească (oprire și raport)."""
+def test_rularile_continua_pana_la_verde(depozit):
+    """Regula 3d (comanda Costin 11.2, 22.10.2026; supersedează „maximum două rulări pe lot”, 15.10.2026): roșu -> reparație -> roșu ->
+    reparație -> verde; fiecare commit nou pornește poarta, fără limită de rulări."""
     d = depozit
     assert _lanseaza(d, 1)[0] == 1
     _git(d, "commit", "-q", "--allow-empty", "-m", "reparatia")
     assert _lanseaza(d, 1)[0] == 1
     _git(d, "commit", "-q", "--allow-empty", "-m", "a doua reparatie")
     cod, iesire = _lanseaza(d, 0)
-    assert cod == 1 and iesire.count("[proba] poarta-suita") == 0 and iesire.count("maximum doua pe lot") == 1, iesire
-    assert [v[0] for v in _verdicte(d)] == ["ROSU", "ROSU"]
+    assert cod == 0 and iesire.count("[proba] poarta-suita") == 1, iesire
+    assert [v[0] for v in _verdicte(d)] == ["ROSU", "ROSU", "VERDE"]
+
+
+def test_acelasi_sha_rosu_nu_se_reia(depozit):
+    """Regula 3d: pe roșu se repară CODUL; aceeași rulare pe același commit nu repară nimic (și ar trece un test instabil pe noroc)."""
+    d = depozit
+    assert _lanseaza(d, 1)[0] == 1
+    cod, iesire = _lanseaza(d, 0)
+    assert cod == 1 and iesire.count("[proba] poarta-suita") == 0 and iesire.count("are deja poarta ROSIE") == 1, iesire
+    assert [v[0] for v in _verdicte(d)] == ["ROSU"]
 
 
 def test_arborele_murdar_e_refuzat(depozit):

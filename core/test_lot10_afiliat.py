@@ -166,7 +166,8 @@ def test_ecranul_clientilor_vede_si_beneficiarii_fara_fisa(prob):
     try:
         # beneficiarul B al unei facturi emise, fără fișă: apare, ca bifa să se poată pune și pe el
         assert [(p["cui"], p["facturi"]) for p in clienti_api.parteneri_fara_fisa(conn)] == [(_B, 1)]
-        assert {c["cui"]: c["afiliat"] for c in clienti_api.lista_clienti(conn)} == {"RO " + _A: True}
+        # [lotul 11, decizia Costin 10.3] „CUI-ul se păstrează fără «RO» și fără spații”: clientul scris „RO <cod>” e păstrat „<cod>”
+        assert {c["cui"]: c["afiliat"] for c in clienti_api.lista_clienti(conn)} == {_A: True}
     finally:
         with conn.cursor() as cur:
             cur.execute("ROLLBACK TO SAVEPOINT pf")

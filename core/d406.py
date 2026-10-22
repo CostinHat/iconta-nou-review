@@ -399,6 +399,20 @@ def parteneri_fara_localitate(clienti, furnizori, facturi):
     return [(v[0], pid, v[1]) for pid, v in lipsa.items()]
 
 
+def tinta_fisa_partener(fara_loc, clienti, furnizori, facturi_vanzare):
+    """[lotul 11, decizia Costin 10.3 pct.4, verbatim în DECIZII „Comanda 10.3”: „Localitatea și județul la PF și la firmele neînregistrate
+    se completează în fișa partenerului; refuzul declarației trimite direct acolo.”] (ecran, câmp) pentru refuzul pe localitatea lipsă:
+    fișa primului partener numit — „clienti” când e client (MasterFiles Customers sau o factură de vânzare), altfel „furnizori” —, cu
+    câmpul „partener:<cheie>:oras” (cheia `clienti_api.cheie_partener`, aceeași pe ecranul fișelor). (None, None) fără parteneri."""
+    if not fara_loc:
+        return None, None
+    from core.clienti_api import cheie_partener
+    nume, pid, _fs = fara_loc[0]
+    ai_clientilor = {p.id for p in clienti} | {f.partener_id for f in facturi_vanzare}
+    cui = {p.id: p.cui for p in list(clienti) + list(furnizori)}.get(pid) or (pid[2:] if pid.startswith("00") else None)
+    return ("clienti" if pid in ai_clientilor else "furnizori"), "partener:%s:oras" % cheie_partener(cui, nume)
+
+
 def registration_number(prof):
     """RegistrationNumber conform schemei oficiale ANAF (d406_schema_anaf.xlsx,
     foaia "5. Structures", S.CMH.1 CompanyHeaderStructure), citat integral:
@@ -711,6 +725,10 @@ class Rezultat:
     # luna-ancora, ca inainte: apelantii directi (`d406_active`, `d406_stocuri`) n-o dau.
     data_inceput: object = None
     data_sfarsit: object = None
+    # [lotul 11, C77] SAF-T n-are bifă de rectificativă: „Declaraţiile ulterioare depuse pentru aceeaşi perioadă […] sunt automat
+    # considerate declaraţii rectificative” (OPANAF 1783/2021 anexa 3 pct.18) — ecranul o spune (`core.rectificativa`)
+    rectificativa: object = None
+    depunere_anterioara_nr: object = None
 
 
 # TaxCode SAF-T: cod de 6 CIFRE, nu 3. Seria (primele 3) = categoria operatiunii,
@@ -1650,6 +1668,10 @@ def pull(conn, schema, an, luna):
             linii_pe_factura = {}
             for lr in cur.fetchall():
                 linii_pe_factura.setdefault(lr["factura_id"], []).append(lr)
+            # [lotul 11, C79] TVA-ul de pe factura furnizorului, pe cote (BG-23, `factura_tva_cote`): Σ TaxAmount al liniilor unei facturi
+            # primite = TVA-ul facturii = 4426 din nota ei (GeneralLedgerEntries), nu recalculul pe linii
+            from core import repo_efactura as _ref, d300 as _d300f
+            tva_facturi_d406 = {k: _d300f._tva_pe_cote(v) for k, v in _ref.tva_cote(cur, None, sorted(linii_pe_factura)).items()}
             for r in _repo.select_facturi_3(cur, di, ds):
                 # [A1, 17.09.2026] SAF-T declara CurrencyCode=RON pe toate sumele -> ele TREBUIE sa fie
                 # in lei. Antetul si liniile se exprima in lei prin cursul de pe document (RON->1). O
@@ -1695,7 +1717,10 @@ def pull(conn, schema, an, luna):
                     cant = Decimal(str(lr["cantitate"]))
                     pret = Decimal(str(lr["pret_unitar"])) * _curs_f   # [A1] pretul IN LEI (SAF-T RON)
                     cota_l = Decimal(str(lr["cota_tva"])).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
-                    val = (cant * pret).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+                    # [lotul 11, C82] valoarea liniei = BT-131 de pe factura importată (`valoare_neta`), în lei; altfel cantitate × preț
+                    _vn = lr.get("valoare_neta")
+                    val = ((Decimal(str(_vn)) * _curs_f) if _vn is not None else cant * pret).quantize(Decimal("0.01"),
+                                                                                                     rounding=ROUND_HALF_UP)
                     tva_l = (val * cota_l / 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
                     # TaxCode PE LINIE, dupa cota liniei si sensul operatiunii.
                     if din_bon:
@@ -1715,6 +1740,18 @@ def pull(conn, schema, an, luna):
                                               cantitate=cant, um=um_cod, pret_unitar=pret,
                                               valoare=val, sens=sens, tva_cod=tcod_l,
                                               tva_procent=cota_l, tva_suma=tva_l))
+                _tf406 = tva_facturi_d406.get(r["id"]) if (linii and not este_v and not r["ti"]) else None
+                if _tf406:
+                    # [lotul 11, C79 / C81] achiziția: Σ TaxAmount pe cotă = TVA-ul cotei de pe factura furnizorului în lei
+                    # (`contare_facturi.tva_lei_facturii`, aceeași regulă ca nota, D300 și D394; CF art.299 alin.(1) lit.a, art.319
+                    # alin.(20) lit.j); diferența față de TVA-ul calculat pe linii se pune pe ULTIMA linie a cotei
+                    from core import contare_facturi as _cft
+                    _lei406 = _cft.tva_lei_facturii(_tf406, {lf.tva_procent for lf in linii}, r)
+                    if _lei406 is not None:
+                        for _c, _t in _lei406.items():
+                            _ale = [lf for lf in linii if lf.tva_procent == _c]
+                            if _ale:
+                                _ale[-1].tva_suma += _t - sum((lf.tva_suma for lf in _ale), Decimal(0))
                 if linii:
                     # RECONCILIERE OBLIGATORIE: liniile trebuie sa dea antetul. Divergenta
                     # tacuta intre doua surse ale aceleiasi facturi = eroare, nu detaliu.
@@ -1940,14 +1977,16 @@ def genereaza(conn, schema, an, luna):
         # facturile pe care apar (localitatea se scrie pe factură, la „Localitatea clientului”, sau în nomenclatorul partenerului)
         from core.erori import RefuzGenerare
         _cu_cui = sum(1 for _n, _p, _fs in _fara_loc if _p.startswith("00"))
+        # [lotul 11, decizia Costin 10.3 pct.4] „refuzul declarației trimite direct acolo”: butonul deschide fișa primului partener numit
+        _ecran, _camp = tinta_fisa_partener(_fara_loc, clienti, furnizori, fv)
         raise RefuzGenerare(
             "D406 nu se poate genera: lipsește localitatea pentru %s — D406 cere adresa fiecărui partener (localitatea e obligatorie). %s. "
-            "%sCompletează localitatea pe factura partenerului (Localitatea clientului / furnizorului) sau în datele lui, apoi generează "
-            "din nou." % (
+            "%sCompletează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou." % (
                 c.cate(len(_fara_loc), "partener", "parteneri"),
                 "; ".join("%s%s" % (_n or _p, (" (facturile %s)" % ", ".join(_fs[:5]) + (" …" if len(_fs) > 5 else "")) if _fs else "")
                           for _n, _p, _fs in _fara_loc[:30]) + (" … (+%d)" % (len(_fara_loc) - 30) if len(_fara_loc) > 30 else ""),
-                ("Pentru cei cu CUI românesc, ANAF n-a dat localitatea (nu a răspuns sau n-are adresa lor). " if _cu_cui else "")))
+                ("Pentru cei cu CUI românesc, ANAF n-a dat localitatea (nu a răspuns sau n-are adresa lor). " if _cu_cui else "")),
+            ecran=_ecran, camp_ecran=_camp)
     if prof.get("fara_cont_bancar") is True:
         _contr = contradictie_fara_cont(conn, schema, prof, _fdi, _fds)
         if _contr:
@@ -2037,4 +2076,7 @@ def genereaza(conn, schema, an, luna):
     # Divergenta = HARD-BLOCK. Vezi core/d406_reconciliere.py.
     from core.d406_reconciliere import verifica_reconciliere
     verifica_reconciliere(conn, schema, an, luna, res)
+    from core import rectificativa as _rect
+    _st = _rect.stabileste(conn, schema, "d406", an, luna)   # [lotul 11, C77] mențiunea; XML-ul cuprinde tot (pct.21)
+    res.rectificativa, res.depunere_anterioara_nr = _st.mentiune, _st.nr
     return build_xml(res), res

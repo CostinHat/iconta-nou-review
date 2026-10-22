@@ -50,7 +50,10 @@ def _firma_gata(firma):
                     "forma_juridica": "SRL", "capital_subscris": "200", "capital_varsat": "200", "cont_venit_implicit": "704",
                     # [lotul 10, C69] cerute de bilanț (bifaMC, codPP „35” = SRL, `bilant.FORME_PROPRIETATE`); fără ele Date firmă spune
                     # „Salvat. Lipsesc …” în loc de „Datele firmei au fost salvate”
-                    "mare_contribuabil": False, "forma_proprietate": "35"})
+                    "mare_contribuabil": False, "forma_proprietate": "35",
+                    # [lotul 11, decizia Costin 10.3 pct.4: „interesul public în Date firmă; ambele blochează dacă lipsesc”] — fără ea
+                    # Date firmă spune „Salvat. Lipsește Entitate de interes public — blochează Bilanț.”
+                    "interes_public": False})
     with db.get_conn(firma["schema"]) as c:
         r = vector_fiscal_api.salveaza(c, "micro", True, "lunar", False, inreg_art317=False, user_id=_patron()[0])
         c.commit()
@@ -615,12 +618,18 @@ def test_def_51_o_factura_un_singur_element_de_validat(ana, patron, firma_e2e):
     pg.click("#em-poarta-da")
     pg.wait_for_selector("#em-rezultat.em-bun", timeout=30000)
     ana.captura("emisa")
-    f = sql('SELECT id, numar FROM "%s".facturi ORDER BY id DESC LIMIT 1' % firma_e2e["schema"])[0]
+    f = sql('SELECT id, numar, serie FROM "%s".facturi ORDER BY id DESC LIMIT 1' % firma_e2e["schema"])[0]
     note = sql('SELECT id FROM "%s".inregistrari WHERE factura_id = %%s OR id IN (SELECT inregistrare_id FROM "%s".miscari_stoc '
                'WHERE factura_id = %%s)' % (firma_e2e["schema"], firma_e2e["schema"]), (f[0], f[0]))
     assert len(note) == 2, note
     _de_validat(patron)
-    carduri = patron.pg.locator("#val-note .val-card").filter(has_text=firma_e2e["nume"]).filter(has_text=f[1])
+    # [lotul 11, deficiența 443, comanda Costin 11.1 pct.19: „seria și numărul se afișează separat peste tot (F6 nr. 1, nu F61)”] cardul
+    # numește factura „ZB nr. 4” (`pdf_util.serie_nr`), nu „ZB4”; numărul din bază poate purta seria în față, deci se compune la fel.
+    import re as _re
+    from core.pdf_util import serie_nr as _serie_nr
+    numit = _serie_nr(f[2], f[1])
+    carduri = patron.pg.locator("#val-note .val-card").filter(has_text=firma_e2e["nume"]).filter(
+        has_text=_re.compile(_re.escape(numit) + r"(?!\d)"))
     carduri.first.wait_for(timeout=20000)
     carduri.first.scroll_into_view_if_needed()
     patron.captura("de_validat")

@@ -66,6 +66,10 @@ def _stoc_initial(x):
 # ============================================================
 #  REGISTRU DE CASĂ — sold rulant
 # ============================================================
+#: [lotul 11, deficiența 455] rândul registrului scris de alt modul (raportul Z, statul de plată, decontul, nota manuală): intră în
+#: soldul zilei (plafonul soldului de casă), nu în plafoanele pe persoană — nota lui nu numește partenerul încasării / plății
+SCOP_ALT_DOCUMENT = "alt_document"
+
 def registru_casa(operatiuni, sold_initial=0):
     sold = _dec(sold_initial)
     out = []
@@ -127,7 +131,7 @@ def verifica_plafon(operatiuni, sold_initial=0, cash_and_carry=False, la_data=No
 
         for op in ops:
             scop = op.get("scop", "")
-            if scop in ("ridicare_banca", "depunere_banca"):
+            if scop in ("ridicare_banca", "depunere_banca", SCOP_ALT_DOCUMENT):
                 continue
             suma = _dec(op["suma"])
             part = op.get("partener", "?")

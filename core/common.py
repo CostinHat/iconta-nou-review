@@ -569,19 +569,25 @@ class Temei(TextStructurat):
 
 
 def _citare_temei(tip, nr, an, art, alin, lit):
-    """Formatul canonic §3.1: <TIP> <nr>/<an> [art.<art>] [alin.(<alin>)] [lit.<lit>].
-    CF/CPF sunt coduri (fara nr/an) -> se trece direct la art."""
+    """Formatul canonic §3.1: <TIP> <nr>/<an> [art.<art> | pct.<pct>] [alin.(<alin>)] [lit.<lit>].
+    CF/CPF sunt coduri (fara nr/an) -> se trece direct la art.
+    [lotul 11, F] Prefixul se pune numai unde câmpul e ce spune: „art.” în fața unui număr de articol (arab / roman), „alin.(…)” în jurul
+    unui număr, „lit.” în fața unei litere. Altfel câmpul e o diviziune scrisă întreagă și trece ca atare — normele OMFP pe puncte
+    („pct.22”), anexa („anexa 2”, „cod 14-1-2”), normele HG la un articol din Cod („norme art.321”); înainte ieșea „OMFP 1802/2014
+    art.pct.22”, „OMFP 2634/2015 art.anexa 2 lit.14-1-2”. „pct. N” se scrie „pct.N”. Garda: `core/test_lot11_f_citare_temei.py`."""
+    def _div(x):
+        return re.sub(r"\bpct\.\s+", "pct.", str(x))
     p = []
     if tip:
         p.append(str(tip))
     if nr and an:
         p.append("%s/%s" % (nr, an))
     if art:
-        p.append("art.%s" % art)
+        p.append("art.%s" % art if re.match(r"(?:\d|[IVXLCDM]+\b)", str(art)) else _div(art))
     if alin:
-        p.append("alin.(%s)" % alin)
+        p.append("alin.(%s)" % alin if re.match(r"\d", str(alin)) else _div(alin))
     if lit:
-        p.append("lit.%s" % lit)
+        p.append("lit.%s" % lit if re.fullmatch(r"[a-z]{1,2}", str(lit)) else _div(lit))
     return " ".join(p)
 
 
@@ -1150,8 +1156,11 @@ def cota(nume, la_data=None, strict=True):
 #: textul citat mai jos e verbatim de acolo. Stă AICI, cu celelalte temeiuri, nu în modulul care îl
 #: citează: `core/facturi_api.py` refuză în 17 locuri fără temei, iar norma 77 cere ca un modul care
 #: începe să citeze legea să nu aibă niciunul. *Cifra e scrisă, nu ascunsă — v. CONFORMITATE.md §77.*
+#: [lotul 11] Citarea e scrisă întreagă în `text`: anexa și PUNCTUL ei nu încap în `art.` / `lit.` din CLAUDE.md §3.1 (normele OMFP
+#: se citează pe puncte), iar `lit="pct. 24"` ajungea la contabil ca „OMFP 2634/2015 art.anexa 1 lit.pct. 24”. `art` rămâne
+#: anexa (cheia de reverificare a temeiului, `core/reverificare.categorie`).
 NUMEROTARE_SECVENTIALA = Temei(
-    "OMFP", 2634, 2015, art="anexa 1", lit="pct. 24",
+    "OMFP", 2634, 2015, art="anexa 1", text="OMFP 2634/2015 anexa 1 pct.24",
     verificat_la="2026-09-03", de_cine="Code/Costin", nivel_sursa="MO",
     url="anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt",
     text_citat="fiecare document va avea un număr de ordine sau o serie, după caz, număr sau "

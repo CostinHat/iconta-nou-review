@@ -1,0 +1,4 @@
+[{"fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "      Object.assign({}, opt, { dupaSalvare: () => nav.inapoi() }), opt.tvaProfil, opt.tvaIncasare)));",
+  "inlocuire": "      Object.assign({}, opt, { dupaSalvare: () => nav.inapoi() }), opt.tvaProfil)));",
+  "test": "frontend_test/e2e/e2e_lot11_d3.py::test_def_428_schimba_seria_arata_sistemul_tva_la_incasare"}]

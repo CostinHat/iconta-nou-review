@@ -2,7 +2,7 @@
 title: "Cum se înregistrează diferențele de curs la achiziția mărfurilor?"
 description: "Marfa achiziționată în valută se înregistrează o singură dată, la cursul din ziua recepției — costul ei nu generează diferențe de curs ulterioare, spre deosebire de datoria față de furnizor."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -34,6 +34,6 @@ Deci „diferența de curs la achiziția mărfurilor" din titlu, interpretată c
 
 iConta.eu tratează marfa ca element nemonetar: motorul de diferențe de curs (folosit pentru decontarea și reevaluarea lunară a creanțelor, datoriilor și disponibilităților în valută) acceptă explicit doar aceste trei tipuri și respinge orice tentativă de a introduce „stoc" ca obiect al calculului — deci costul mărfii nu poate fi, structural, atins de acest motor.
 
-Ce acoperă aplicația, separat: dacă achiziția de marfă generează o datorie față de un furnizor extern rămasă neachitată, acea datorie poate fi introdusă în funcționalitatea de reevaluare lunară (la finalul lunii) sau de decontare (la plata efectivă) — ambele calculează automat 665/765 pe baza cursului BNR. Costul mărfii propriu-zise nu e, și nu trebuie să fie, atins de acest calcul.
+Ce acoperă aplicația, separat: dacă achiziția de marfă generează o datorie față de un furnizor extern rămasă neachitată, acea datorie e propusă de aplicație la reevaluarea lunară („Închidere lună → Reevaluare valută”, la finalul lunii), iar la plata efectivă trece prin „Decontare în valută" — ambele calculează automat 665/765 pe baza cursului BNR. Costul mărfii propriu-zise nu e, și nu trebuie să fie, atins de acest calcul.
 
 [iConta.eu](/)

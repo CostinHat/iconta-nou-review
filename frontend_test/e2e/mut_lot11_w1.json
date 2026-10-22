@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "core/jurnal_api.py",
+  "ancora": "                    % (i, eticheta), TEMEI_PARTIDA_DUBLA, camp=camp_linie(cheie, i), linia=i)\n                continue",
+  "inlocuire": "                    % (i, eticheta), TEMEI_PARTIDA_DUBLA, camp=camp_linie(cheie, i), linia=i)\n                return",
+  "test": "frontend_test/e2e/e2e_lot11_w1.py::test_def_440_nota_noua_arata_toate_erorile_liniilor_deodata"
+ },
+ {
+  "fisier": "core/jurnal_api.py",
+  "ancora": "        r[\"erori_campuri\"] = d[\"erori_campuri\"]\n",
+  "inlocuire": "        r[\"camp\"] = d[\"erori_campuri\"][0][\"camp\"] if d[\"erori_campuri\"] else None\n",
+  "test": "frontend_test/e2e/e2e_lot11_w1.py::test_def_440_nota_noua_arata_toate_erorile_liniilor_deodata"
+ },
+ {
+  "fisier": "core/jurnal_api.py",
+  "ancora": "pdf_util.serie_nr(serie, numar), pdf_util.data_ro(data))",
+  "inlocuire": "pdf_util.numar_cu_serie(serie, numar), pdf_util.data_ro(data))",
+  "test": "frontend_test/e2e/e2e_lot11_w1.py::test_def_443_nota_chitantei_din_registru_jurnal_spune_f6_nr_1"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "reprezentand = \"contravaloare factura %s din %s\" % (_serie_nr(r[0], r[1]), data_ro(r[6]))",
+  "inlocuire": "reprezentand = \"contravaloare factura %s din %s\" % (str(r[1]), data_ro(r[6]))",
+  "test": "frontend_test/e2e/e2e_lot11_w1.py::test_def_443_nota_chitantei_din_registru_jurnal_spune_f6_nr_1"
+ },
+ {
+  "fisier": "core/chitante.py",
+  "ancora": "title=\"Chitanța %s\" % _pu.serie_nr(ch.get(\"serie\"), ch.get(\"numar\")),",
+  "inlocuire": "title=\"Chitanța %s\" % _pu.numar_cu_serie(ch.get(\"serie\"), ch.get(\"numar\")),",
+  "test": "frontend_test/e2e/e2e_lot11_w1.py::test_def_443_nota_chitantei_din_registru_jurnal_spune_f6_nr_1"
+ }
+]

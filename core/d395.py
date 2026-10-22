@@ -27,7 +27,7 @@ jud_preluare validat contra listei de judete (40/403 respinse; 1..52 acceptate).
 INTREG (nu cod alfabetic). Sectiunile in XML sunt lowercase: <lista>, <lista2>.
 
 Valorile vin din `manual` (furnizorul de servicii postale isi tine propriile evidente - aplicatia
-nu are registru de trimiteri postale). NU se fabrica nimic din acte. d_rec="0" implicit.
+nu are registru de trimiteri postale). NU se fabrica nimic din acte. d_rec="0": validatorul D395 v1 nu admite 1 (probat 21.10.2026); peste o depunere inregistrata pe luna generarea se refuza (core.rectificativa, C77).
 NEPOPULAT deliberat: rec_s/rec_s1/rectif_s1 (numerotare interna a validatorului, neceruta in XML).
 
 Contract dXXX: NS, _cif/_esc, calcul_d395(manual), pull (return {}), erori_generare, build_xml,
@@ -265,12 +265,22 @@ class Rezultat395:
     total_plata_a: int = 0
     nr_trimiteri: int = 0
     avertismente: list = field(default_factory=list)
+    # [lotul 11, C77] rectificativa: `core.rectificativa.aplica` (d_rec în XML, textul de pe ecran, depunerea pe care s-a sprijinit)
+    d_rec: int = 0
+    rectificativa: object = None
+    depunere_anterioara_nr: object = None
 
 
 def genereaza(conn, schema, perioada, manual=None):
     manual = dict(manual or {})
     an, luna = int(perioada.an), int(perioada.luna)
     prof = pull(conn, schema, perioada)
+    # [lotul 11, C77] peste o depunere înregistrată (oricare sursă) sau bifată rectificativă: validatorul D395 n-o admite -> refuz numit
+    from core import rectificativa as _rect
+    _st = _rect.stabileste(conn, schema, "d395", an, luna, bifata=_rect.bifata(manual))
+    if _st.d_rec:   # validatorul D395 nu admite rectificativa (`rectificativa.NU_ADMIT_RECTIFICATIVA`)
+        raise _rect.refuz_fara_rectificativa("d395", an, luna, _st)
+    manual["d_rec"] = 0
     er = erori_generare(prof, manual)
     if er:
         raise ValueError("D395 nu se poate genera: " + " ".join(er))
@@ -278,4 +288,5 @@ def genereaza(conn, schema, perioada, manual=None):
     xml = build_xml(prof, an, luna, manual)
     res = Rezultat395(an=an, luna=luna, total_plata_a=calc["totalPlata_A"],
                       nr_trimiteri=len(manual.get("trimiteri") or []))
+    _rect.aplica(res, _st)
     return xml, res

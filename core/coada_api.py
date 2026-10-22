@@ -195,6 +195,21 @@ def sql_cheie_pregatire(alias=""):
             "THEN COALESCE(%spayload->>'grup', %sperioada) ELSE %sperioada END)") % ((a,) * 7)
 
 
+# [lotul 11, deficiența 458 — comanda Costin 11.3 pct.6: „regenerările automate ale aplicației apar ca greșeli ale administratorului”]
+# „Generează din nou” / „Înlocuiește” (`uc_coada.coada_adauga` -> `inlocuieste`) scoate declarația veche din coadă cu
+# `stare = 'respinsa'`, autorul = cine a generat-o din nou. Autorul n-o deosebește de o respingere; o deosebește urmașul: declarația
+# nouă (aceeași firmă, tip, perioadă) e scrisă în ACEEAȘI tranzacție, deci `creat_la` al ei = `respins_la` al celei înlocuite
+# (`now()` = ora tranzacției). Înlocuirea atinge numai declarații (`fel IS DISTINCT FROM 'nota'`, ca `inlocuieste`); respingerea
+# omului e o cerere separată, fără urmaș în aceeași tranzacție. O folosesc TOATE numărătorile de respingeri (calitatea asistentului,
+# Erori — echipa, centralizatorul, jurnalul, Capacitate, sinteza zilnică, tiparele). Gărzi: `core/test_lot11_a458_erori_echipa.py`
+# (orice numărătoare de respingeri pe declarații o folosește), `core/test_lot11_t2_inlocuiri.py`.
+def sql_inlocuita(a):
+    """Expresia SQL (bool) „rândul `a` din `public.declaratii_coada` a fost înlocuit de declarația generată din nou, nu respins”."""
+    return ("({a}.respins_la IS NOT NULL AND {a}.fel IS DISTINCT FROM 'nota' AND EXISTS (SELECT 1 FROM public.declaratii_coada u_ "
+            "WHERE u_.tenant_id = {a}.tenant_id AND u_.tip = {a}.tip AND u_.perioada = {a}.perioada AND u_.id <> {a}.id "
+            "AND u_.fel IS NOT DISTINCT FROM {a}.fel AND u_.creat_la = {a}.respins_la))").format(a=a)
+
+
 def grup_nota(nota_id, grup_doc=None):
     """[lotul 07.10 pct.9, comanda Costin 06.10.2026] Cheia DOCUMENTULUI pe care cabinetul îl validează: „O factură produce două
     note de validat separat (contare + ieșire stoc). Cabinetul validează sau respinge documentul o dată.” Cheia vine din
@@ -274,7 +289,7 @@ def cheie_document(p):
 def ciornele_documentului(cur, schema, grup):
     """[S3] Notele CIORNĂ ale unui document (cheia `_GRUP_DOC`, ex. `factura-12`), pe schema firmei."""
     cur.execute('SET LOCAL search_path TO "%s", public' % str(schema).strip('"'))
-    cur.execute("SELECT i.id FROM inregistrari i WHERE (" + _GRUP_DOC + ") = %s AND i.status = 'ciorna' ORDER BY i.id", (grup,))
+    cur.execute("SELECT i.id FROM " + _q(schema) + "inregistrari i WHERE (" + _GRUP_DOC + ") = %s AND i.status = 'ciorna' ORDER BY i.id", (grup,))
     return [(x[0] if not isinstance(x, dict) else x["id"]) for x in cur.fetchall()]
 
 
@@ -409,19 +424,22 @@ def ciorne_dintre(cur, ids):
 def ciorne_proprii(conn, tenant_id, uid):
     """[Retest 2 pct.12, comanda Costin 09.10.2026] „Ciornele proprii ale contabilului trebuie să fie vizibile undeva fără
     căutare.” Notele CIORNĂ scrise de `uid` pe firmă, cu starea lor în coadă (`la_senior` = trimisă la validare, `respinsa` +
-    motivul, None = netrimisă: un validator nu-și trimite notele în coadă, le validează el). `conn` pe schema firmei."""
+    motivul, None = netrimisă: un validator nu-și trimite notele în coadă, le validează el). `conn` pe schema firmei.
+    [lotul 11, deficiența 457] „ciornele făcute de contabil nu ajung în nicio coadă (182 nerezolvată)”: lista era numai de citit — ciorna
+    netrimisă a celui care validează nu intra nicăieri unde să se lucreze; rândul are acum „Validează” / „Trimite la validare” / „Deschide
+    nota” (validat.js `ciorneleMele`). Starea din coadă vine dintr-o singură citire (`stari_note`, aceeași sursă ca Registrul jurnal, Casa
+    și Banca), nu dintr-o interogare pe notă."""
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(_SELECT_NOTE + "WHERE i.status = 'ciorna' AND i.creat_de_id = %s ORDER BY i.data, i.id", (uid,))
         note = [dict(n) for n in cur.fetchall()]
-        for n in note:
-            cur.execute("SELECT stare, motiv_respingere FROM public.declaratii_coada WHERE tenant_id = %s AND fel = 'nota' "
-                        "AND perioada = %s ORDER BY id DESC LIMIT 1", (tenant_id, perioada_nota(n["id"])))
-            c = cur.fetchone()
-            n["in_coada"], n["motiv_respingere"] = (c["stare"], c["motiv_respingere"]) if c else (None, None)
+    st = stari_note(conn, tenant_id, [n["id"] for n in note])
+    for n in note:
+        c = st.get(n["id"]) or {}
+        n["in_coada"], n["motiv_respingere"] = c.get("stare_coada"), c.get("motiv_respingere")
     return [{"id": n["id"], "data": n["data"].isoformat(), "descriere": n["descriere"], "document_ref": n["document_ref"],
-             "rulaj": float(n["rulaj"] or 0), "rulaj_storno": float(n["rulaj_storno"] or 0), "in_coada": n["in_coada"],
-             "motiv_respingere": n["motiv_respingere"]} for n in note]
+             "rulaj": float(n["rulaj"] or 0), "rulaj_storno": float(n["rulaj_storno"] or 0),
+             "in_coada": n["in_coada"], "motiv_respingere": n["motiv_respingere"]} for n in note]
 
 
 def pune_notele_in_coada(conn, cabinet_id, tenant_id, uid):
@@ -630,9 +648,10 @@ def lista_coada(conn, cabinet_id, stare=None):
                 if activa and (_surse or {}).get("de_la"):
                     _note, _f, _nev = nevalidate_acum(cur, _schema, d["tip"], _surse["de_la"], _surse["pana_la"])
                     d["surse_nevalidate"] = (_nev or {}).get("motiv")
+                    d["surse_nevalidate_langa_note"] = (_nev or {}).get("motiv_langa_note")   # [lotul 11, 436] fără lista notelor, lângă butoane
                     d["surse_note"] = [{"nota_id": n["nota_id"], "data": n["data"], "eticheta": n["eticheta"]} for n in _note]
                 else:
-                    d["surse_nevalidate"], d["surse_note"] = None, []
+                    d["surse_nevalidate"], d["surse_nevalidate_langa_note"], d["surse_note"] = None, None, []
                 # [324, 18.10.2026] „Generează din nou” se oferă numai unde serverul îl poate face (cererea păstrată, `coada_regenereaza`)
                 d["se_poate_regenera"] = bool(_are_cerere)
             # [383, lotul 9] perioada neîncheiată: declarația nu se oferă spre depunere ([lotul 10] tipul și perioada D318 din formular)
@@ -1161,6 +1180,12 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
         if refuz:
             return refuz
         an, luna = perioada_din_payload(p)
+        # [lotul 11, C77] o depunere apărută pe perioadă după generare (marcare „depusă în afara iConta.eu”, altă depunere): declarația
+        # generată ca inițială ar pleca a doua oară ca inițială -> refuz, cu „generează din nou” (iese rectificativă)
+        from core import rectificativa as _rect
+        refuz = _rect.refuz_la_depunere(cur, r["tenant_id"], (r["tip"] or "").lower(), an, luna, p)
+        if refuz:
+            return refuz
         cur.execute(
             "UPDATE public.declaratii_coada SET stare='depusa', depus_la=now(), "
             "spv_index=%s, depus_de=%s, depus_de_id=%s WHERE id=%s",
@@ -1305,17 +1330,24 @@ def nevalidate_acum(cur, schema, tip, de_la, pana_la):
                if tip in DECLARATII_DIN_FACTURI else [])
     for n in note:   # [302] nota nevalidată n-are număr: „nota din 17.10.2026 — F1A5, 1.000,00 lei”
         n["eticheta"] = "nota %s — %s, %s lei" % (n["eticheta"], n.get("document") or "fără document", _bani(n["suma"]))
-    parti = []
+    parti, parti_langa_note = [], []
     if facturi:
         parti.append("Declarația cuprinde %s fără notă validată, deci încă în afara evidenței: %s." % (
             _cate(len(facturi), "factură", "facturi"), _numite([f["eticheta"] for f in facturi])))
+        parti_langa_note.append(parti[-1])   # facturile n-au butoane lângă paragraf: lista lor rămâne
     if note:
-        parti.append("În perioadă %s %s, pe care evidența nu %s cuprinde până nu %s validează un om: %s." % (
+        fraza = "În perioadă %s %s, pe care evidența nu %s cuprinde până nu %s validează un om" % (
             "este" if len(note) == 1 else "sunt", _cate(len(note), "notă nevalidată", "note nevalidate"),
-            "o" if len(note) == 1 else "le", "o" if len(note) == 1 else "le", _numite([n["eticheta"] for n in note])))
+            "o" if len(note) == 1 else "le", "o" if len(note) == 1 else "le")
+        parti.append("%s: %s." % (fraza, _numite([n["eticheta"] for n in note])))
+        # [lotul 11, 436 afișare — clasa „paragraful repetă ce arată butoanele”] lângă butoanele „Deschide nota …” (`legaturiNote`) fraza
+        # fără lista notelor: butoanele le numesc deja (ca `uc_coada.MESAJ_CIORNE_*_LANGA_NOTE`)
+        parti_langa_note.append(fraza + ".")
+    _coda = " Validează-le înainte de depunere: după validare declarația devine depășită și se generează din nou."
     nevalidate = (_af.afirmatie(
         "fapt", "documente_nevalidate",
-        " ".join(parti) + " Validează-le înainte de depunere: după validare declarația devine depășită și se generează din nou.",
+        " ".join(parti) + _coda,
+        motiv_langa_note=" ".join(parti_langa_note) + _coda,
         unde="perioada declarației %s – %s" % (de_la, pana_la),
         temei_completitudine="toate notele perioadei din Registrul jurnal care nu sunt validate"
                              + (", și toate facturile perioadei fără notă validată" if tip in DECLARATII_DIN_FACTURI else ""))
@@ -1333,6 +1365,9 @@ def nevalidate_acum(cur, schema, tip, de_la, pana_la):
 DECLARATII_DIN_EVIDENTA = ("d100", "d101", "s1005", "s1003")
 MESAJ_NOTE_NEVALIDATE = ("Declarația nu se depune până la validarea notelor: cifra ei nu cuprinde %s din perioada ei — %s. Validează-le în "
                          "Registrul jurnal, apoi generează din nou.")
+#: [lotul 11, 436 afișare] aceeași frază fără lista notelor — afișată lângă butoanele „Deschide nota …”, care le numesc deja
+MESAJ_NOTE_NEVALIDATE_LANGA_NOTE = ("Declarația nu se depune până la validarea notelor: cifra ei nu cuprinde %s din perioada ei. Validează-le "
+                                    "în Registrul jurnal, apoi generează din nou.")
 
 
 def blocaj_note_nevalidate(tip, note):
@@ -1344,6 +1379,7 @@ def blocaj_note_nevalidate(tip, note):
     from core.common import cate as _cate
     return {"ok": False, "cod": "NOTE_NEVALIDATE",
             "mesaj": MESAJ_NOTE_NEVALIDATE % (_cate(len(note), "notă nevalidată", "note nevalidate"), _numite([n["eticheta"] for n in note])),
+            "mesaj_langa_note": MESAJ_NOTE_NEVALIDATE_LANGA_NOTE % _cate(len(note), "notă nevalidată", "note nevalidate"),
             "note": [{"nota_id": n["nota_id"], "data": n["data"], "eticheta": n["eticheta"]} for n in note]}
 
 

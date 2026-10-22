@@ -143,7 +143,9 @@ def test_426_inlocuirea_balantei_cere_confirmare_pe_ecran():
     # [426, clasa] confirmarea trece prin helperele comune ale înlocuirii (`_confirmaInlocuirea` / `_inlocuire409`, care cheamă
     # `confirmaCaseta` cu `date.avertisment_inlocuire` și deschid aceeași confirmare pe 409); gardul de clasă: test_lot10_inlocuire_clasa.py
     assert apeluri(fn, COD_MIG, "_casetaInlocuire") == [("date",)]
-    assert apeluri(fn, COD_MIG, "_confirmaInlocuirea") == [("eroare", "date", '"Înlocuiesc balanța"', "salveaza")]
+    assert apeluri(fn, COD_MIG, "_arataInlocuirea") == [("corp", "date")]      # [lotul 11, 446] avertismentul o dată, galben
+    assert apeluri(fn, COD_MIG, "_confirmaInlocuirea") == [("eroare", "date", '"Înlocuiesc balanța"', "salveaza",
+                                                             '"Înlocuiești balanța de deschidere a firmei cu cea din fișier?"')]
     assert apeluri(fn, COD_MIG, "_inlocuire409") == [("e", "inlocuieste", "eroare", '"Înlocuiesc balanța"', "salveaza")]
     # confirmarea ajunge la server: `salveaza(inlocuieste)` trimite câmpul în corpul cererii POST …/solduri
     assert [COD_MIG(p) for p in functia(fn, "salveaza")["params"]] == ["inlocuieste"]

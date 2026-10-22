@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "        _contare = fres.get(\"contare\") or {}\n",
+  "inlocuire": "        with conn.cursor() as cur:\n            _iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp[\"data\"], fid, descr[:200])[0]\n            repo_contabilitate.adauga_linie_client(cur, schema, _iid, cont_venit, val)\n        _contare = fres.get(\"contare\") or {}\n",
+  "test": "frontend_test/e2e/e2e_lot11_x.py::test_def_c78_vanzarea_intracomunitara_are_o_singura_nota"
+ }
+]

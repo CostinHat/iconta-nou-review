@@ -37,6 +37,14 @@ def test_verifica_iban_valid_trece():
     assert not any(e.get("regula") == "iban_invalid" for e in er), er
 
 
+def _insert_salariati(sql):
+    """Coloanele unui `INSERT INTO salariati (…) VALUES …`, din instrucțiune (verbul, tabela, lista de coloane), sau None pentru orice
+    altă instrucțiune — nu „șirul apare în SQL” (core/test_garzi_pe_text.py)."""
+    import re
+    m = re.match(r"\s*INSERT\s+INTO\s+salariati\s*\(([^)]*)\)", sql or "", re.I)
+    return [c.strip() for c in m.group(1).split(",")] if m else None
+
+
 def test_importa_scrie_iban():
     captured = {}
 
@@ -49,13 +57,15 @@ def test_importa_scrie_iban():
 
         def execute(self, sql, params=None):
             self.ultim = sql
-            if "INSERT INTO salariati" in sql:
+            if _insert_salariati(sql) is not None:
                 captured["sql"] = sql
                 captured["params"] = params
 
         def fetchone(self):
             # [lotul 10, 426 — clasa] statele de plată ale salariaților existenți (`existent`): niciunul, firma n-are salariați
             # tabela citită (după FROM), nu un sub-șir al instrucțiunii
+            if _insert_salariati(self.ultim) is not None:
+                return (1, True)                      # [lotul 11, 447] `RETURNING id, (xmax = 0)`: salariat nou
             return (0, None) if self.ultim.upper().partition(" FROM ")[2].split()[:1] == ["STATE_PLATA"] else (1,)
 
         def fetchall(self):
@@ -72,6 +82,8 @@ def test_importa_scrie_iban():
             "tip_norma": "intreaga", "ore_zi": 8, "functie_baza": True, "scutit_contrib_minim": False, "salariu_brut": 5000, "judet_casa": "B",
             "cor": "251401", "iban": "RO49AAAA1B31007593840000", "data_angajare": "2020-01-15"}
     _sal.importa(_Conn(), [rand])
-    assert "iban" in (captured.get("sql") or "").lower(), "INSERT-ul salariati NU include coloana iban"
-    assert "RO49AAAA1B31007593840000" in (captured.get("params") or ()), \
-        "IBAN-ul nu ajunge in parametrii INSERT: %r" % (captured.get("params"),)
+    coloane = _insert_salariati(captured.get("sql")) or []
+    assert coloane.count("iban") == 1, "INSERT-ul salariati NU include coloana iban: %r" % coloane
+    params = tuple(captured.get("params") or ())
+    assert len(params) == len(coloane) and params[coloane.index("iban")] == "RO49AAAA1B31007593840000", \
+        "IBAN-ul nu ajunge in parametrul coloanei iban: %r" % (dict(zip(coloane, params)),)

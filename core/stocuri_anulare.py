@@ -133,15 +133,32 @@ def storneaza(conn, schema, grup, note_ids, motiv):
     return {"stornate": noi}
 
 
+#: [lotul 11, deficiența 452, comanda Costin 11.1 pct.8, verbatim] „nota «Retur în stoc Marfa B × 1 buc (stornare)» de pe F1 e refuzată la
+#: validare cu un motiv fals («documentul ei a fost respins»).” Două feluri de rânduri cu `anuleaza_id` stau în `miscari_stoc`:
+#:   · STORNAREA LA RESPINGERE (`storneaza`, de mai sus) — copia mișcării cu minus, pe ACELAȘI document: aceeași notă, aceeași factură,
+#:     același NIR ca mișcarea stornată. Documentul a fost respins, iar nota lui nu mai are ce înregistra;
+#:   · RETURUL LA STORNAREA FACTURII (`stocuri_cv_api.retur_la_stornare`) — documentul DE CORECȚIE, cu nota lui nouă (ciornă) și legat
+#:     de factura de stornare: marfa se întoarce în magazie, iar nota returului și contarea facturii de stornare TREBUIE să intre în
+#:     evidență (OMFP 1802/2014 pct.69: „corectarea cu semnul minus a operațiunii inițiale”).
+#: Citirile care deduc „documentul a fost respins” din `anuleaza_id` le confundau: pe F1 (tenant_049, 21.10.2026) erau refuzate cu motivul
+#: fals returul F1A9 (nota 170), contarea F1A9 (142), returul F1A11 (152) și contarea F1A11 (151). O SINGURĂ definiție a stornării la
+#: respingere, pentru toate citirile (`document_stornat`, `reface_factura`); garda `core/test_lot11_s_452_retur.py` pică dacă apare o
+#: citire nouă a lui `anuleaza_id` fără ea. `r` = rândul cu `anuleaza_id`, `o` = mișcarea stornată.
+STORNARE_LA_RESPINGERE = ("r.inregistrare_id IS NOT DISTINCT FROM o.inregistrare_id AND r.factura_id IS NOT DISTINCT FROM o.factura_id "
+                          "AND r.nir_id IS NOT DISTINCT FROM o.nir_id")
+
+
 def document_stornat(cur, schema, nota_id):
     """Nota aparține unui document al cărui stoc a fost stornat la respingere și nerefăcut? Atunci nota nu mai poate intra în
     evidență (validare din jurnal, retrimitere): mișcarea ei nu mai există. Întoarce eticheta documentului sau None.
+    [452] Numai stornarea LA RESPINGERE (`STORNARE_LA_RESPINGERE`), nu returul la stornarea facturii: acela e documentul de corecție.
     `schema` gol = schema din calea conexiunii (`db.get_conn(schema)`)."""
     p = (schema + ".") if schema else ""
     vii = _VII.replace("{s}.", p)
     cur.execute(f"""SELECT r.document FROM {p}miscari_stoc r
+                    JOIN {p}miscari_stoc o ON o.id = r.anuleaza_id
                     JOIN {p}inregistrari i ON i.id = %s
-                    WHERE r.anuleaza_id IS NOT NULL AND (
+                    WHERE {STORNARE_LA_RESPINGERE} AND (
                           r.inregistrare_id = i.id
                        OR r.nir_id = (SELECT n.id FROM {p}nir n WHERE n.inregistrari_ids @> to_jsonb(i.id) ORDER BY n.id LIMIT 1)
                        OR (r.factura_id = i.factura_id AND NOT EXISTS (
@@ -161,13 +178,15 @@ MESAJ_NOTA_STORNATA = ("Nota nu mai intră în evidență: documentul ei a fost 
 def reface_factura(conn, schema, factura_id):
     """Factura refăcută („Contabilizează” după respingere) își reface și mișcarea de stoc stornată: intrarea (factura primită)
     sau ieșirile (factura emisă, cu nota lor nouă — ciornele respinse ale ieșirilor vechi se scot, elementul lor din coadă rămâne
-    ca istoric). No-op dacă factura n-are stornări sau are deja mișcări vii."""
+    ca istoric). No-op dacă factura n-are stornări sau are deja mișcări vii.
+    [452] Numai stornările LA RESPINGERE (`STORNARE_LA_RESPINGERE`): returul la stornare poartă `factura_id` = factura DE STORNARE, iar
+    recontabilizarea ei ar fi „refăcut” ca ieșiri chiar marfa întoarsă în magazie."""
     from core import note_derivate as _nd, stocuri_cv_api as _cvapi
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""SELECT o.tip, o.data, o.inregistrare_id, a.cont_stoc, a.cont_cheltuiala
                         FROM {schema}.miscari_stoc r JOIN {schema}.miscari_stoc o ON o.id = r.anuleaza_id
                         JOIN {schema}.articole a ON a.id = o.articol_id
-                        WHERE r.factura_id = %s AND o.tip <> 'ajustare' ORDER BY o.id""", (factura_id,))
+                        WHERE r.factura_id = %s AND o.tip <> 'ajustare' AND {STORNARE_LA_RESPINGERE} ORDER BY o.id""", (factura_id,))
         # [08.10 §6 pct.2] ajustarea de preț a unei facturi legate de NIR nu se reface aici: o rescrie contarea (`nir_legare`)
         stornate = [dict(x) for x in cur.fetchall()]
         if not stornate:

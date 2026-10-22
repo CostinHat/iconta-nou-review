@@ -120,6 +120,12 @@ def ecran_compensari(pg): _ecran_shell(pg, "fa-compensari")  # [lotul 10, 428] e
 def ecran_clienti(pg): _ecran_shell(pg, "fa-clienti")  # [lotul 10, 428] ecran nou (bifa „persoană afiliată”)
 
 
+def ecran_furnizori(pg):   # [lotul 11, decizia Costin 10.3] ecran nou: fișele furnizorilor (localitatea / județul citite de D406 / D394)
+    deschide_firma(pg)
+    pg.click("#fa-furnizori")
+    pg.wait_for_selector("#fz-tabel, #fz-gol", timeout=15000)
+
+
 # [R33 b'', 26.08.2026] Ecranul «Verificari» lipsea din inventarul vizual, desi e chiar ecranul
 # pe care se randeaza verdictul de echilibru. Poarta verde vizuala (CLAUDE.md 2.3 pct.11) cere
 # uneltele pe ECRANELE ATINSE — iar un ecran care nu e in lista nu poate fi atins de ele, deci
@@ -322,6 +328,7 @@ ECRANE = [
     # [lotul 10, 428] ecrane NOI (compensările, fișele clienților): intră în inventarul vizual de la naștere
     ("compensari", ecran_compensari),
     ("clienti", ecran_clienti),
+    ("furnizori", ecran_furnizori),   # [lotul 11, decizia 10.3] ecran nou
     # [LOTUL 15] atinse de reparatiile R152 / R156+R159 / R158 — v. comentariul de mai sus
     ("magazin", ecran_magazin),
     ("pachete", ecran_pachete),

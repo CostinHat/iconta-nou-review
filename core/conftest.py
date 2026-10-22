@@ -66,3 +66,21 @@ def _fara_anaf_la_localitati(monkeypatch, request):
     def _jos(*a, **k):
         raise OSError("ANAF simulat indisponibil (core/conftest.py)")
     monkeypatch.setattr(anaf_api, "aduce_localitati", lambda lista, interogare=None: _jos())
+
+
+@pytest.fixture()
+def contor_schema_pastrat():
+    """`tenant_schema_seq` pus la loc după test. `rollback` nu întoarce o SECVENȚĂ: un test care creează o firmă în tranzacție întoarsă
+    consumă totuși un număr de schemă, iar contorul e o cifră din PREDARE_LANT.md (`core/test_predare_cifre.py`) — fără readucere, suita
+    o mută la fiecare rulare (suita a doua a lotului 11: 363 -> 369, de la `test_lot11_p2_surse_unice` +2 și `test_lot11_a459_cui` +4).
+    Readucerea se face pe ALTĂ conexiune, după teardown-ul fixturilor care depind de ea (rollback-ul lor întâi). Garda:
+    `core/test_predare_cifre.py::test_orice_test_care_creeaza_firme_readuce_contorul_de_scheme`."""
+    from core import db as _db
+    from core import tenant_provisioning as _tp
+    _db.init_pool()
+    with _db.get_conn() as c, c.cursor() as cur:
+        cur.execute("SELECT last_value, is_called FROM " + _tp.SECVENTA_SCHEMA)
+        inainte = cur.fetchone()
+    yield inainte
+    with _db.get_conn() as c, c.cursor() as cur:
+        cur.execute("SELECT setval(%s, %s, %s)", (_tp.SECVENTA_SCHEMA, inainte[0], inainte[1]))

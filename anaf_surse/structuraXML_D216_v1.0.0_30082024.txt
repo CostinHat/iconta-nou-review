@@ -1,0 +1,306 @@
+DECLARATIE         216
+
+Declarație informativă privind impozitul pe veniturile din transferul proprietăților imobiliare
+din patrimoniul personal
+
+universalCode D216_A1.0.0
+v1
+data: 30082024
+
+acest formular utilizeaza un serviciu web pentru adrese
+
+judete:       https://webnom.anaf.ro/Nomenclatoare/api/judete/
+localitati:   https://webnom.anaf.ro/Nomenclatoare/api/judete/cod_judet
+strazi:       https://webnom.anaf.ro/Nomenclatoare/api/judete/cod_judet/cod_localitate
+
+
+Data             nr.crt element/ atribut              semnificatie tipDate       Cardinalitate      reguli operationale eroare/
+Modificare                                                                       0..1 = optional                        atentionare
+                                                                                 maxim o aparitie
+                                                                                 0..n = optional
+                                                                                 maxim n aparitii
+                                                                                 1..1 = obligatoriu
+                                                                                 maxim 1 aparitie
+                                                                                 1..n = obligatoriu
+                                                                                 maxim n aparirii
+                       <D216>                                                    1..1
+                     1 d_rec                          Declaratie      N(1)       1..1             d_rec IN (0,1)       ERR
+                                                      rectificativa                               0 – initiala         atribut
+                                                                                                  1 – rectificativa    absent
+
+                                                                                                  IF index EXISTS      valoare
+                                                  THEN d_rec eq. 1       incorecta
+1.1 index_corectie   Indexul de    N(15)   0..1   IF d_rec eq. 1
+                     depunere al                  THEN index MUST
+                     declaratiei                  EXISTS
+                     initiale care
+                     se coreteaza
+ 2 luna              Luna de      N(2)     1..1   luna IN (1,2,3...12)   ERR
+                     raportare                    luna = 12              atribut
+                                                                         absent
+
+                                                                         valoare
+                                                                         incorecta
+
+
+
+ 3 an                Anul de      N(4)     1..1   an >= 2024             ERR
+                     raportare                                           atribut
+                                                                         absent
+
+                                                                         valoare
+                                                                         incorecta
+ 4 totalPlata_A      Suma de      N(5)     1..1   totalPlata_A = sum     ERR
+                     control                      (cif(i))               atribut
+                                                  suma cifrelor care     absent
+                                                  compun cif
+                                                                         valoare
+                                                                         incorecta
+ 5 nume              Denuire/     C(250)   1..1                          ERR
+                     Nume si                                             atribut
+                     prenume                                             absent
+                     notar
+ 6 cif               Cod de       N(13)    1..1   Verificare CUI. CNP, ERR
+                      identificare                    NIF                   atribut
+                      fiscala notar                   format, cifra de      absent
+                                                      control, BD
+                                                                            valoare
+                                                                            incorecta
+ 7 domiciuliuFiscal   Domiciliul      C(250)   1..1                         ERR
+                      fiscal                                                atribut
+                      ( judeţ/sector,                                       absent
+                      localitate,
+                      strada,
+                      numar, bloc,
+                      scara, etaj,
+                      apartament,
+                      cod poştal)
+
+
+
+ 8 email              Adreas de e- C(200)      0..1   Verificare format     ERR
+                      mail notar                      adresa de email       format
+                                                                            invalid
+ 9 telefon            Telefon notar C(15)      0..1   Verificare format     ERR
+                                                      E164 ; numar          format
+                                                      telefon valid in RO   invalid
+10 nume_intocmit      Numele          C(250)   1..1                         ERR
+                      persoanei                                             atribut
+                      care                                                  absent
+                      intocmeste
+                      declaratia
+11 functia_intocmit      Functia      C(200)   0..1
+                         persoanei
+                         care
+                         intocmeste
+                         declaratia
+
+
+
+12 cif_imputernicit                   N(13)    0..1   IF EXISTS
+                                                      nume_imputernicit
+                                                      THEN MUST EXISTS
+                                                      cif_imputernicit
+
+
+
+
+13 nume_imputernicit                  C(250)   0..1   IF EXISTS
+                                                      cif_imputernicit
+                                                      THEN MUST EXISTS
+                                                      nume_imputernicit
+
+
+
+
+14 adresa_imputernicit                C(250)   0..1
+15 telefon_imputernicit          C(15)    0..1      Verificare format     ERR
+                                                    E164 ; numar          format
+                                                    telefon valid in RO   invalid
+
+
+
+
+16 email_imputernicit            C(200)   0..1      Verificare format     ERR
+                                                    adresa de email       format
+                                                                          invalid
+
+
+
+
+17 impozit_imobile               N(15)    0..1      IF                    ERR
+                                                    count(bun_imobil)     atribut absent
+                                                    gt.0
+                                                    THEN
+                                                    impozit_imobile =     valoare
+                                                    SUM                   incorecta
+                                                    ( impozit_imobil)
+
+
+18 impozit_mobile                N(15)    0..1      IF                    ERR
+                                                    count(bun_mobil)
+                                                                          atribut absent
+                                                    gt.0
+                                                    THEN
+                                                    impozit_mobile =      valoare
+                                                    SUM                   incorecta
+                                                    ( impozit_mobil)
+
+
+SECTIUNEA 1: Date privind impozitul special pe bunurile imobile
+19 <bun_imobil>                           0..n
+ 20 nr_cadastral             Numar        C(50)    0..1
+                             cadastral
+ 21 judet_imobil             Judet        C(250)   1..1   valori din           ERR
+                                                          serviciul web        atribut
+                                                          nomenclator
+                                                          judete/ localitati   absent
+                                                          / strazi
+
+
+
+21.1 cod_judet_imobil                     N(2)     1..1   valori din
+                                                          serviciul web
+                                                          nomenclator
+                                                          judete/ localitati
+                                                          / strazi
+ 22 localitate_imobil        Localitate   C(250)   1..1   valori din           ERR
+                                                          serviciul web
+                                                                               atribut
+                                                                               absent
+
+
+
+22.1 cod_localitate_imobil                N(5)     1..1   valori din
+                                                          serviciul web
+                                                          nomenclator
+                                                          judete/ localitati
+                                                          / strazi
+
+
+ 23 strada_imobil            Strada       C(250)   1..1   valori din           ERR
+                                                          serviciul web
+                                                                               atribut
+                                                          strada_imobil =
+                                                          cod#denumire         absent
+
+
+23.1 cod_strada_imobil                    N(5)     1..1   valori din
+                                                          serviciul web
+                                                          nomenclator
+                                                          judete/ localitati
+                                                          / strazi
+ 24 nr_strada                   Numar postal C(50)      0..1
+ 25 supl_adresa                 Mentiuni     C(200)     0..1
+                                suplimentare
+                                adresa (se
+                                completeaza
+                                cu bloc,
+                                scara, etaj,
+                                apartament
+                                si/sau alte
+                                informatii,
+                                dupa caz)
+25.1 cota                       Cota de        N(3.2)   1..1   0 < cota <=100       ERR
+                                detinere                                            valoare
+                                                                                    incorecta
+ 26 valoare_impozabila_imobil   Valoarea       N(15)    1..1   valoare_impozabila   ERR
+                                                               _imobil >
+                                impozabila a                                        atribut
+                                                               plafon_imobil
+                                cladirii                                            absent
+                                rezidentiale
+ 27 plafon_imobil               Plafonul       N(15)    1..1   plafon_imobil =      ERR
+                                                               2.500.000
+                                neimpozabil                                         atribut
+                                                                                    absent
+ 28 baza_imobil                 Baza de        N(15)    1..1   baza_imobil =        ERR
+                                impozitare                     (valoare_impozabil   atribut
+                                                               a_imobil –
+                                                               plafon_imobil) *     absent
+                                                               cota/100
+                                                                                    ERR
+                                                                                    valoare
+                                                                                    incorecta
+ 29 impozit_imobil              Impozit        N(15)    1..1   impozit_imobil =
+                                datorat                        ROUND(baza_imobil
+                                                               * 0.3 / 100)
+ 30 </bun_imobil>
+SECTIUNEA 2: Date privind impozitul special pe bunurile mobile
+31 <bun_mobil>                                         0..n
+32 niv                        Numar de        C(250)   1..1                        ERR
+                              identificare al                                      atribut
+                              vehiculului                                          absent
+33 an_detinere                Anul în care a N(4)      1..1                        ERR
+                              avut loc                                             atribut
+                              predarea-                                            absent
+                              primirea
+                              autoturismului
+34 valoare_impozabila_mobil   Valoarea de N(15)        1..1   valoare_impozabila   ERR
+                                                              _mobil >
+                              achizitie a                                          atribut
+                                                              plafon_mobil
+                              autoturismului                                       absent
+35 plafon_mobil               Plafonul       N(15)     1..1   plafon_mobil =       ERR
+                                                              375.000
+                              neimpozabil                                          atribut
+                                                                                   absent
+36 baza_ mobil                Baza de        N(15)     1..1   baza_mobil =         ERR
+                              impozitare                      valoare_impozabila   atribut
+                                                              _mobil -
+                                                              plafon_mobil         absent
+
+                                                                                   ERR
+                                                                                   valoare
+                                                                                   incorecta
+37 impozit_mobil              Impozit        N(15)     1..1   impozit_mobil =
+                              datorat                         ROUND(baza_mobil *
+                                                              0.3 / 100)
+38 </bun_mobil>
+39 </D216>
+Nomenclatoare :
+
+Nomenclator listaJUDET:
+                          1 ALBA
+                          2 ARAD
+                          3 ARGES
+                          4 BACAU
+                          5 BIHOR
+                          6 BISTRITA-NASAUD
+                          7 BOTOSANI
+                          8 BRASOV
+                          9 BRAILA
+                          10 BUZAU
+                          11 CARAS-SEVERIN
+                          51 CALARASI
+                          12 CLUJ
+                          13 CONSTANTA
+                          14 COVASNA
+                          15 DAMBOVITA
+                          16 DOLJ
+                          17 GALATI
+                          52 GIURGIU
+                          18 GORJ
+                          19 HARGHITA
+                          20 HUNEDOARA
+                          21 IALOMITA
+                          22 IASI
+                          23 ILFOV
+                          24 MARAMURES
+                          25 MEHEDINTI
+                          26 MURES
+                          27 NEAMT
+28 OLT
+29 PRAHOVA
+30 SATU MARE
+31 SALAJ
+32 SIBIU
+33 SUCEAVA
+34 TELEORMAN
+35 TIMIS
+36 TULCEA
+37 VASLUI
+30 VALCEA
+39 VRANCEA
+40 MUN. BUCURESTI
+

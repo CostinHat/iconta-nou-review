@@ -2,7 +2,7 @@
 title: "Ce fac dacă am uitat reevaluarea creanțelor și datoriilor în valută la sfârșitul lunii?"
 description: "Obligația reevaluării lunare a soldurilor valutare, ce riști dacă o omiți și cum recuperezi diferența în iConta.eu, în funcție de dacă luna e încă deschisă."
 published: 2026-09-26
-modified: 2026-10-13
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Reevaluarea lunară a soldurilor valutare nu e opțională — legea o cere expl
 
 ## Ce face iConta.eu
 
-Din ecranul **Operațiuni speciale → Reevaluare valuta**, introduci lista soldurilor (cont, valoare în valută, monedă, curs de evidență, tip), iar aplicația ia automat cursul BNR pentru fiecare monedă la data cerută și generează, prin aplicație („reevaluarea în valută (Operațiuni speciale)”), o singură notă contabilă cu toate diferențele calculate corect pe 665/765. Dacă ai uitat operațiunea și luna respectivă e **încă deschisă**, poți rula reevaluarea retroactiv, cu data de la finalul acelei luni — aplicația o acceptă. Dacă luna e deja **închisă**, ruta refuză nota nouă (constrângerea „verificarea lunii deschise”) și returnează un mesaj de eroare clar, nu o eroare tehnică — în acest caz, corectarea se face pe altă cale contabilă (notă de corecție în luna curentă), decizie care rămâne a contabilului, nu automatizată de aplicație.
+Din **Închidere lună → Reevaluare valută**, aplicația propune singură creanțele și datoriile în valută ale fiecărui partener, disponibilitățile în valută, cursul din evidență, cursul BNR din ultima zi bancară a lunii și diferența pe 665/765; verifici propunerea, completezi ce nu se știe din evidență (de exemplu soldul în valută al unui cont 5124), adaugi în același formular un cont pe care aplicația nu îl propune și generezi o singură notă contabilă, datată în ultima zi a lunii. Cât timp soldurile în valută ale unei luni nu sunt reevaluate, reevaluarea apare în „Ce oprește închiderea”, iar luna nu se poate închide. Dacă ai uitat operațiunea și luna respectivă e **încă deschisă**, alegi luna în „Închidere lună” și generezi reevaluarea ei — aplicația o acceptă. Dacă luna e deja **închisă**, ruta refuză nota nouă (constrângerea „verificarea lunii deschise”) și returnează un mesaj de eroare clar, nu o eroare tehnică — în acest caz, corectarea se face pe altă cale contabilă (notă de corecție în luna curentă), decizie care rămâne a contabilului, nu automatizată de aplicație.
 
 [iConta.eu](/)

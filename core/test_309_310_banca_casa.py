@@ -80,4 +80,4 @@ def test_310_factura_stinsa_de_o_nota_la_validare_se_spune(lume):
         _incasare(cur, fid, "ciorna")
     assert casa_api.facturi_partener(lume, '"%s"' % _SCH, "incasare_client", "14399840") == [], "nu se poate alege: e deja încasată"
     (f,) = casa_api.facturi_in_asteptare(lume, '"%s"' % _SCH, "incasare_client", "14399840")
-    assert (f["numar"], f["suma"], f["note"]) == ("F1A4", "242.00", ["din 16.10.2099"]), f
+    assert (f["numar"], f["suma"], f["note"]) == ("F1A nr. 4", "242.00", ["din 16.10.2099"]), f

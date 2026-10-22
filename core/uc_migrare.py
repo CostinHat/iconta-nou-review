@@ -78,6 +78,13 @@ def migrare_importa(date, ctx):
         for f in date.firme:
             nume = (f.denumire or "").strip() or f"Firmă {f.cui}"
             cuic = anaf_api._curata(f.cui)
+            # [459, comanda Costin 11.3 pct.5] CUI-ul care nu e valabil (cifra de control, numai cifre) se respinge pe rândul lui, cu
+            # motivul, înainte de provizionare (până azi `provision_tenant` ridica, iar `except Exception` de mai jos îl spunea „eroare internă”)
+            _m_cui = tenant_provisioning.motiv_cui_firma_invalid(f.cui)
+            if _m_cui:
+                erori.append(migrare_api.respinge(
+                    "firmă", "firma %s (CUI %s)" % (nume, f.cui), "cui_invalid", _m_cui, cui=str(f.cui), nume=nume))
+                continue
             if cuic and cuic in existente:
                 # [P8/C] respingere TIPATA: pana azi ecranul numara duplicatele potrivind PROZA
                 # (`(e.mesaj || "").includes("există deja")`), deci o reformulare a textului ar fi

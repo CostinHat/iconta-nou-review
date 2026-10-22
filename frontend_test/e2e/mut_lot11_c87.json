@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "core/asistenti_api.py",
+  "ancora": "    vals = [str(actor[\"id\"])] if actor.get(\"id\") is not None else []",
+  "inlocuire": "    vals = []",
+  "test": "frontend_test/e2e/e2e_lot11_c85_c100.py::test_def_c87_declaratii_lucrate_arata_declaratia_pregatita_de_coleg"
+ }
+]

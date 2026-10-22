@@ -1,0 +1,17 @@
+[
+  {"fisier": "core/firma_profil_api.py", "ancora": "    for et in _cs.lipsa(profil):\n        out.append({\"camp\": _cs.CAMP_LIPSA[et][len(\"df-\"):], \"declaratii\": [BLOCHEAZA_EMITEREA]})",
+   "inlocuire": "    for et in []:\n        out.append({\"camp\": _cs.CAMP_LIPSA[et][len(\"df-\"):], \"declaratii\": [BLOCHEAZA_EMITEREA]})",
+   "test": "frontend_test/e2e/e2e_lot11_p.py::test_def_442_capitalul_lipsa_apare_in_profil_incomplet"},
+  {"fisier": "core/d406.py", "ancora": "            ecran=_ecran, camp_ecran=_camp)",
+   "inlocuire": "            ecran=None, camp_ecran=None)",
+   "test": "frontend_test/e2e/e2e_lot11_p.py::test_def_c69_d406_refuzul_trimite_la_fisa_partenerului"},
+  {"fisier": "core/clienti_api.py", "ancora": "    return bool(a and b and a.replace(\" \", \"\") != b.replace(\" \", \"\"))",
+   "inlocuire": "    return False",
+   "test": "frontend_test/e2e/e2e_lot11_p.py::test_def_444_numele_anaf_diferit_de_fisa_se_propune_actualizarea"},
+  {"fisier": "core/bilant.py", "ancora": "    erori.extend(erori_intocmitor(prof))\n    return erori",
+   "inlocuire": "    return erori",
+   "test": "frontend_test/e2e/e2e_lot11_p.py::test_def_c69_bilant_cere_interesul_public_si_intocmitorul"},
+  {"fisier": "core/cui_forma.py", "ancora": "    return (\"RO\" + t) if (platitor_tva is True and t.isdigit()) else t",
+   "inlocuire": "    return t",
+   "test": "frontend_test/e2e/e2e_lot11_p.py::test_decizia_103_cui_fara_ro_si_ro_la_afisare"}
+]

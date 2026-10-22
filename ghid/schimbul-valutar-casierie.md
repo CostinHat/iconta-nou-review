@@ -2,7 +2,7 @@
 title: "Cum se face schimbul valutar la casierie"
 description: "Cum se înregistrează contabil o sumă în valută aflată în casieria firmei, la cursul BNR — și diferența față de operațiunea unei case de schimb valutar autorizate."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -32,8 +32,8 @@ Ce rezultă pentru numerarul în valută aflat în casierie:
 
 ## Ce face iConta.eu
 
-Funcționalitatea **Curs valutar BNR** furnizează cursul oficial pentru orice operațiune în valută — pentru facturare (art. 290 CF) sau pentru decontări/reevaluări (OMFP 1802/2014). Modulul de casierie tratează separat numerarul în valută (contul 5314, față de 5311 pentru lei) și avansurile de trezorerie acordate/restituite în valută, iar aplicația oferă operațiuni dedicate de „Reevaluare lunară solduri valută" și „Decontare în valută", care calculează diferența de curs (665/765) conform pct. 322/325 din OMFP 1802/2014.
+Funcționalitatea **Curs valutar BNR** furnizează cursul oficial pentru orice operațiune în valută — pentru facturare (art. 290 CF) sau pentru decontări/reevaluări (OMFP 1802/2014). Modulul de casierie tratează separat numerarul în valută (contul 5314, față de 5311 pentru lei) și avansurile de trezorerie acordate/restituite în valută, iar aplicația oferă reevaluarea lunară („Închidere lună → Reevaluare valută”) și „Decontare în valută" (în „Operațiuni speciale"), care calculează diferența de curs (665/765) conform pct. 322/325 din OMFP 1802/2014.
 
-Aplicația **nu are** un ecran dedicat operațiunii de „schimb valutar" propriu-zise (adică conversia numerarului în valută în lei, la o bancă sau casă de schimb) — nu s-a găsit nicio funcție care să înregistreze automat această conversie. Contabilul folosește operațiunile existente de reevaluare/decontare, introducând manual cursul de la schimb ca „curs de decontare".
+Aplicația **nu are** un ecran dedicat operațiunii de „schimb valutar" propriu-zise (adică conversia numerarului în valută în lei, la o bancă sau casă de schimb) — nu s-a găsit nicio funcție care să înregistreze automat această conversie. Formularul „Decontare în valută" ia singur cursul BNR și nu primește cursul practicat la schimb, deci conversia se înregistrează de contabil printr-o notă contabilă manuală.
 
 [iConta.eu](/)

@@ -1,0 +1,26 @@
+[
+ {
+  "fisier": "core/efactura_import.py",
+  "ancora": "    linii += linii_nivel_document(root)",
+  "inlocuire": "    linii += []",
+  "test": "frontend_test/e2e/e2e_lot11_y2.py::test_def_c80_reducerea_de_document_intra_in_baza_cotei_si_401_inchide_totalul"
+ },
+ {
+  "fisier": "core/repo_main.py",
+  "ancora": "                                                   ln.get(\"valoare_neta\"),\n",
+  "inlocuire": "                                                   None,\n",
+  "test": "frontend_test/e2e/e2e_lot11_y2.py::test_def_c82_cantitate_neintreaga_baza_liniei_din_xml_la_ban"
+ },
+ {
+  "fisier": "core/contare_facturi.py",
+  "ancora": "    if _sl.e_ron(f.get(\"moneda\")) or f.get(\"tva_lei\") is None:\n        return None\n    return Decimal(str(f[\"tva_lei\"]))",
+  "inlocuire": "    return None",
+  "test": "frontend_test/e2e/e2e_lot11_y2.py::test_def_c81_tva_ul_in_lei_de_pe_factura_bt111_in_nota_si_d300"
+ },
+ {
+  "fisier": "core/stocuri_cv_api.py",
+  "ancora": "            if l.get(\"nivel_document\"):\n",
+  "inlocuire": "            if False:\n",
+  "test": "frontend_test/e2e/e2e_lot11_y2.py::test_def_c80_reducerea_de_document_intra_in_baza_cotei_si_401_inchide_totalul"
+ }
+]

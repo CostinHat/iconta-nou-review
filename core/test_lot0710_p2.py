@@ -71,11 +71,18 @@ def _factura_cu_doua_note(conn, cur):
     """Contarea facturii (legată prin `inregistrari.factura_id`) + ieșirea din stoc (legată prin `miscari_stoc.factura_id`)."""
     cur.execute("INSERT INTO facturi (numar, data_emitere, total, tva) VALUES ('ZT1', '2026-10-05', 121, 21) RETURNING id")
     fid = cur.fetchone()[0]
-    n_contare = _nota(conn, "Factura ZT1", 121)
+    # [lotul 11, 451, S2] contarea pe drumul ei (`contabilizeaza`, din linia facturii): o notă fabricată 4111 = 707 121 pe o factură fără
+    # linii e oprită la validare (regenerarea pe uscat a contării facturii emise nu o mai poate scrie: factura fără cotă)
+    cur.execute("INSERT INTO factura_linii (factura_id, descriere, cantitate, pret_unitar, cota_tva) VALUES (%s, 'Marfa ZT', 2, 50, 21)",
+                (fid,))
+    from core import contare_facturi as _cf
+    with _cf.cursor_dict(conn) as _c:
+        n_contare = _cf.contabilizeaza(_c, SCH, fid, automat=False)["inregistrare_id"]
     # [lotul 07.10 B, C8] sursele reale: contarea e a facturii (`facturi`), ieșirea e din stoc (`stocuri`)
-    cur.execute("UPDATE inregistrari SET factura_id=%s, sursa='facturi' WHERE id=%s", (fid, n_contare))
     n_iesire = _nota(conn, "Ieșire marfă ZT1", 80, doc="Factură ZT1 din 05.10.2026")
     cur.execute("UPDATE inregistrari SET sursa='stocuri' WHERE id=%s", (n_iesire,))
+    # [lotul 11, 451] ieșirea din stoc se scrie 607 = 371 (ce ar scrie mișcarea acum); fabricată 4111 = 707, validarea o refuză pe drept
+    cur.execute("UPDATE inregistrari_linii SET cont_debit='607', cont_credit='371', partener_nume=NULL WHERE inregistrare_id=%s", (n_iesire,))
     cur.execute("INSERT INTO articole (denumire) VALUES ('Marfa ZT') RETURNING id")
     aid = cur.fetchone()[0]
     # [Retestul plasei, regula d (R8)] marfa vândută a intrat întâi în stoc — altfel baza refuză ieșirea (stoc negativ)

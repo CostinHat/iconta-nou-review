@@ -42,12 +42,12 @@ def grila(conn, schema, salariat_id, an, luna):
     prima = date(an, luna, 1)
     urm = date(an + 1, 1, 1) if luna == 12 else date(an, luna + 1, 1)
     with conn.cursor() as cur:
-        cur.execute("SELECT data_angajare FROM salariati WHERE id = %s", (salariat_id,))
+        cur.execute(f"SELECT data_angajare FROM {schema}.salariati WHERE id = %s", (salariat_id,))
         r = cur.fetchone()
         if r is None:
             return None
         data_ang = r[0]
-        cur.execute("SELECT zi, stare FROM pontaj WHERE salariat_id = %s AND zi >= %s AND zi < %s",
+        cur.execute(f"SELECT zi, stare FROM {schema}.pontaj WHERE salariat_id = %s AND zi >= %s AND zi < %s",
                     (salariat_id, prima, urm))
         exceptii = {row[0]: row[1] for row in cur.fetchall()}
     return grila_pura(an, luna, data_ang, exceptii)
@@ -75,11 +75,11 @@ def seteaza(conn, schema, salariat_id, zi, stare, tenant_id=None):
                         "la ANAF. Corectează prin rectificativă (nu prin editare liberă)." % (luna, an)}
     if not stare or stare == "prezent":
         with conn.cursor() as cur:
-            cur.execute("DELETE FROM pontaj WHERE salariat_id = %s AND zi = %s", (salariat_id, zi))
+            cur.execute(f"DELETE FROM {schema}.pontaj WHERE salariat_id = %s AND zi = %s", (salariat_id, zi))
     else:
         with conn.cursor() as cur:
             # upsert-ok: set pontaj pe (salariat,zi) - re-marcarea aceleiasi zile rescrie intentionat
-            cur.execute("INSERT INTO pontaj (salariat_id, zi, stare) VALUES (%s, %s, %s) "
+            cur.execute(f"INSERT INTO {schema}.pontaj (salariat_id, zi, stare) VALUES (%s, %s, %s) "
                         "ON CONFLICT (salariat_id, zi) DO UPDATE SET stare = EXCLUDED.stare",
                         (salariat_id, zi, stare))
     _per.deconfirma(conn, schema, an, luna, "pontaj")   # modificarea invalideaza confirmarea

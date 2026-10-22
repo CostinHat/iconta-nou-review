@@ -73,7 +73,7 @@ def test_284_ciornele_de_pe_4427_se_numesc_cu_nr_crt_documentul_si_suma(conn):
     ci.ciorne_care_explica(conn, _SCH, "2026-10-01", "2026-11-01", constatari)
     # [302] ciorna n-are număr (se dă la validare): se numește prin data ei, ca în Registrul jurnal
     assert constatari[0]["ciorne"] == [{"nota_id": nid, "nr_curent": None, "eticheta_nota": "din 16.10.2026", "data": "2026-10-16",
-                                        "descriere": "n", "document": "Factură F1A4 din 16.10.2026", "suma": "42.00"}], constatari[0]
+                                        "descriere": "n", "document": "Factură F1A nr. 4 din 16.10.2026", "suma": "42.00"}], constatari[0]   # [lotul 11, 443] seria separat de număr
     assert constatari[0]["ciorne_explica"] is True and "ciorne" not in constatari[1]
     constatari = [{"stare": "rosu", "cont": "4427", "diferenta": D("50")}]
     assert ci.ciorne_care_explica(conn, _SCH, "2026-10-01", "2026-11-01", constatari)[0]["ciorne_explica"] is False

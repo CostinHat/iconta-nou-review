@@ -50,11 +50,15 @@ def capacitate(conn, cabinet_id):
 
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         # ---------- 1) CABINET ----------
+        # [lotul 11, T2 — clasa lui 458 „numerele nu se adună cu rândurile”] PREGĂTIRI (documente), ca rândurile pe asistent de mai jos și
+        # ca „de validat” din sinteza zilnică: o factură cu două note de validat e UN document de validat, nu două rânduri de coadă
+        from core.coada_api import sql_cheie_pregatire as _cheie, sql_inlocuita
+        K = _cheie()
         cur.execute(
             "SELECT "
-            "  COUNT(*) FILTER (WHERE stare = ANY(%(active)s)) AS in_lucru, "
-            "  COUNT(*) FILTER (WHERE stare = 'la_senior') AS de_validat, "
-            "  COUNT(*) FILTER (WHERE depus_la >= %(p)s) AS depuse_luna "
+            "  COUNT(DISTINCT " + K + ") FILTER (WHERE stare = ANY(%(active)s)) AS in_lucru, "
+            "  COUNT(DISTINCT " + K + ") FILTER (WHERE stare = 'la_senior') AS de_validat, "
+            "  COUNT(DISTINCT " + K + ") FILTER (WHERE depus_la >= %(p)s) AS depuse_luna "
             "  FROM public.declaratii_coada "
             " WHERE cabinet_id = %(c)s",
             {"active": list(_STARI_ACTIVE), "p": prima_zi, "c": cabinet_id})
@@ -103,11 +107,12 @@ def capacitate(conn, cabinet_id):
             uid = p["id"]
             # [lotul 07.10 pct.4] PREGĂTIRI, nu rânduri: o retrimitere după respingere nu e o pregătire nouă
             # (`coada_api.sql_cheie_pregatire`); „pregătite luna asta” = pregătiri ÎNCEPUTE în lună.
-            from core.coada_api import sql_cheie_pregatire as _cheie
+            # [lotul 11, 458] respinsă = de om: înlocuirea la „Generează din nou” nu e o respingere (`coada_api.sql_inlocuita`)
             cur.execute(
-                "WITH p AS (SELECT " + _cheie() + " AS cheie, MIN(creat_la) AS creat_la, "
-                "  bool_or(respins_la IS NOT NULL) AS respinsa, bool_or(stare = ANY(%(active)s)) AS activa, "
-                "  MAX(depus_la) AS depus_la FROM public.declaratii_coada "
+                "WITH p AS (SELECT " + _cheie("d") + " AS cheie, MIN(creat_la) AS creat_la, "
+                "  bool_or(respins_la IS NOT NULL AND NOT " + sql_inlocuita("d") + ") AS respinsa, "
+                "  bool_or(stare = ANY(%(active)s)) AS activa, "
+                "  MAX(depus_la) AS depus_la FROM public.declaratii_coada d "
                 "  WHERE cabinet_id = %(c)s AND creat_de_id = %(u)s GROUP BY 1) "
                 "SELECT "
                 "  COUNT(*) FILTER (WHERE activa) AS in_lucru, "

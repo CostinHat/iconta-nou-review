@@ -82,3 +82,28 @@ def select_457_preluat(cur, _sf):
                 "GROUP BY data_referinta HAVING SUM(sold_creditor - sold_debitor) > 0 ORDER BY data_referinta",
                 (_sf.isoformat(),))
     return cur.fetchall()
+
+
+def select_prima_depunere_iconta(cur, schema, an):
+    """[lotul 11, decizia Costin 10.3 „D205 pe anii depuși după regula veche: fără rectificative”] Data primei D205 pe `an` depuse PRIN
+    iConta.eu (`sursa = 'iconta'`; marcările „extern” / „contabil_anterior” și istoricul importat nu sunt conținut generat de aplicație)
+    a firmei cu schema `schema`, sau None."""
+    cur.execute("SELECT MIN(d.data_depunere) FROM public.declaratii_depuse d JOIN public.tenants t ON t.id = d.tenant_id "
+                "WHERE t.schema_name = %s AND d.an = %s AND d.tip = 'd205' AND d.sursa = 'iconta'", (schema, an))
+    r = cur.fetchone()
+    return (r[0] if not isinstance(r, dict) else list(r.values())[0]) if r else None
+
+
+def select_d205_completata(cur, schema, an, stari_active):
+    """[lotul 11, decizia Costin 10.3 „Semaforul D205 numără 457 preluat ca incomplet până la completarea manuală”] True dacă D205 pe
+    `an` a firmei e depusă (orice sursă: prin aplicație, marcată „extern” / „contabil_anterior”, importată) sau așteaptă în coadă
+    (`stari_active` = `coada_api.STARI_ACTIVE`) cu beneficiarii completați manual (`_cerere.manual.beneficiari` — singurul drum de generare pe anul
+    preluării cu 457 în balanța de deschidere, `d205.refuz_preluate`)."""
+    cur.execute("SELECT EXISTS (SELECT 1 FROM public.declaratii_depuse d JOIN public.tenants t ON t.id = d.tenant_id "
+                "WHERE t.schema_name = %s AND d.an = %s AND d.tip = 'd205') OR EXISTS (SELECT 1 FROM public.declaratii_coada c "
+                "JOIN public.tenants t ON t.id = c.tenant_id WHERE t.schema_name = %s AND c.tip = 'd205' "
+                "AND c.stare = ANY(%s) AND (c.payload->>'_an')::int = %s "
+                "AND jsonb_typeof(c.payload->'_cerere'->'manual'->'beneficiari') = 'array' "
+                "AND jsonb_array_length(c.payload->'_cerere'->'manual'->'beneficiari') > 0)", (schema, an, schema, list(stari_active), an))
+    r = cur.fetchone()
+    return bool(r[0] if not isinstance(r, dict) else list(r.values())[0])

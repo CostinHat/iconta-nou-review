@@ -91,8 +91,11 @@ def inregistreaza(cur, fisier, amp, fel, commit=None, motiv=None):
 DUPA = {
     "core/migrare_2b_coloana.py": ("core/migrare_salariu_istoric.py",),
     "core/migrare_avans_nir_ajustare_nota.py": ("core/migrare_ajustari_fiscale.py",),
+    "core/migrare_borderou_tip_vechi.py": ("core/migrare_punte_stoc.py", "core/migrare_reguli_fond.py", "core/migrare_tert_platitor_tva.py"),
     "core/migrare_canal_notificari.py": ("core/migrare_inregistrare_libera.py",),
     "core/migrare_ciorne_proprii.py": ("core/migrare_nr_curent_note.py", "core/migrare_validare_note.py"),
+    "core/migrare_cui_fara_ro.py": ("core/migrare_efactura_primite.py",),
+    "core/migrare_curs_precizie.py": ("core/migrare_reevaluari_valuta.py",),
     "core/migrare_decizii_0710.py": ("core/migrare_punte_stoc.py", "core/migrare_validare_note.py"),
     "core/migrare_decizii_0810.py": ("core/migrare_decizii_0710.py", "core/migrare_declaratii_depuse_randuri.py", "core/migrare_validare_note.py"),
     "core/migrare_fapte_date_firma.py": ("core/migrare_art317.py", "core/migrare_d394_i2.py", "core/migrare_firma_profil_jurnal.py"),
@@ -100,10 +103,12 @@ DUPA = {
     "core/migrare_inregistrari_email.py": ("core/migrare_inregistrare_libera.py",),
     "core/migrare_intrare_date_garduri.py": ("core/migrare_efactura_primite.py", "core/migrare_stoc_lot4.py"),
     "core/migrare_nota_corectie.py": ("core/migrare_decizii_0710.py", "core/migrare_validare_note.py"),
+    "core/migrare_reevaluare_partener.py": ("core/migrare_reevaluari_valuta.py",),
     "core/migrare_reguli_fond.py": ("core/migrare_ciorne_proprii.py", "core/migrare_decizii_0710.py"),
     "core/migrare_retest2.py": ("core/migrare_validare_note.py",),
     "core/migrare_retest_0810.py": ("core/migrare_metoda_stoc.py",),
     "core/migrare_schema_seq.py": ("core/migrare_firme_scoase.py",),
+    "core/migrare_serie_nr_descrieri.py": ("core/migrare_compensari_afiliat.py", "core/migrare_punte_stoc.py", "core/migrare_reguli_fond.py"),
 }
 
 
@@ -265,6 +270,15 @@ def main(argv):
         if not e_migrare(cale, text):
             raise SystemExit("%s nu e o migrare (core/migrare_<nume>.py cu bloc __main__)" % cale)
         if cmd == "ruleaza":
+            # [lotul 11, comanda Costin 11.2 pct.2 — 409] pe PRODUCȚIE o migrare cu aceeași amprentă nu se rulează a doua oară: reparația
+            # pe datele F1 s-a aplicat de două ori (lotul 9 și lotul 10), fiindcă nimic nu refuza o rulare repetată. Pe baza de TEST rularea
+            # repetată rămâne admisă (plasa și subagenții refac schemele).
+            if productie:
+                deja = []
+                _cu_registrul(lambda cur: deja.extend([] if nerulate(cur, {cale: amprenta(text)}) else [cale]))
+                if deja:
+                    raise SystemExit("%s (amprenta %s) e deja rulată pe producție — o a doua rulare a aceleiași migrări nu se face "
+                                     "(reparația 409 aplicată de două ori, lotul 11)." % (cale, amprenta(text)[:12]))
             inainte = []
             _cu_registrul(lambda cur: inainte.extend(inainte_nerulate(cur, cale)))
             if inainte:

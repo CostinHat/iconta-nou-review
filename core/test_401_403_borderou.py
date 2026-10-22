@@ -56,7 +56,8 @@ def conn(monkeypatch):
 
 
 _PF = {"data": "2026-10-19", "furnizor_nume": "Ion Popescu", "furnizor_adresa": "Str. Florilor 1, Ploiești", "furnizor_act": "PH 123456",
-       "valoare": 200, "cont_cheltuiala": "371", "articol": "Mere", "cantitate": 100, "um": "kg"}
+       "valoare": 200, "cont_cheltuiala": "371", "articol": "Mere", "cantitate": 100, "um": "kg",
+       "articol_nou": True}   # [lotul 11, 450] articolul nou, cerut explicit
 
 
 def _borderou(corp):
@@ -78,7 +79,9 @@ def test_402_vanzatorul_se_identifica_si_stocul_cere_articolul(conn):
 
 def test_401_402_borderoul_e_document_propriu_si_aduce_marfa_in_gestiune(conn):
     r = _borderou(_PF)
-    assert (r["numar"], r["nota"], r["intrare_stoc"]) == ("BA-1", "371 = 401 200,00 lei", {"articol": "Mere", "cantitate": "100"}), r
+    _i = r["intrare_stoc"]   # [lotul 11, 450] și articolul (id-ul lui) și faptul că a fost creat la cererea explicită
+    assert (r["numar"], r["nota"], _i["articol"], _i["cantitate"], _i["articol_nou"], bool(_i["articol_id"])) == \
+        ("BA-1", "371 = 401 200,00 lei", "Mere", "100", True, True), r
     with conn.cursor() as cur:
         cur.execute("SELECT tip, directie, tert_nume, tert_adresa, tert_act_identitate FROM facturi WHERE id = %s", (r["factura_id"],))
         assert cur.fetchone() == ("borderou", "primita", "Ion Popescu", "Str. Florilor 1, Ploiești", "PH 123456")
@@ -104,4 +107,4 @@ def test_403_fisa_numeste_documentul_vechi_din_factura_legata(conn):
         cur.execute("INSERT INTO miscari_stoc (articol_id, data, tip, cantitate, valoare, document, factura_id) "
                     "VALUES (%s, '2026-10-02', 'iesire', 1, 10, 'Factura #1', %s)", (art["articol_id"], fid))
     f = cv.fisa(conn, SCH, art["articol_id"])
-    assert [l["document"] for l in f["linii"]] == [None, "Factură F1A1 din 02.10.2026"], f["linii"]
+    assert [l["document"] for l in f["linii"]] == [None, "Factură F1A nr. 1 din 02.10.2026"], f["linii"]   # [lotul 11, 443] seria separat

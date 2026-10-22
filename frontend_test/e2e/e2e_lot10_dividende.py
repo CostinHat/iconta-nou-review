@@ -68,8 +68,8 @@ def test_def_430_dividendul_se_imparte_pe_asociati_din_profitul_preluat_pe_117(p
     assert pg.locator("#op-propunere .msg-avert", has_text="contul sintetic 117").count() == 1
     patron.captura("propunere")
     pg.click("#op-trimite")
-    pg.wait_for_selector("#op-mesaj.msg-ok", timeout=20000)
-    msg = pg.inner_text("#op-mesaj.msg-ok")
+    pg.wait_for_selector("#op-mesaj .caseta-ok", timeout=20000)
+    msg = pg.inner_text("#op-mesaj .caseta-ok")
     assert "Notă generată" in msg and "117 = 457 10.000,00 lei; 457 = 446 1.600,00 lei" in msg, msg
     assert sql('SELECT sursa, document_ref FROM "%s".inregistrari' % s) == [
         ("operatiuni", "Hotărârea adunării generale a asociaților nr 3 din 15.05.%d" % _AN)]
@@ -108,7 +108,7 @@ def test_def_431_d205_spune_ca_nota_de_dividende_e_ciorna(patron, f6):
     pg = patron.pg
     _deschide_dividendul(patron, f6, _AN_D205)
     pg.click("#op-trimite")
-    pg.wait_for_selector("#op-mesaj.msg-ok", timeout=20000)
+    pg.wait_for_selector("#op-mesaj .caseta-ok", timeout=20000)
     patron.firma(f6["nume"])
     pg.click("#fa-declaratii")
     pg.wait_for_selector("#dec-tip", timeout=20000)
@@ -132,16 +132,21 @@ def test_def_431_d205_spune_ca_nota_de_dividende_e_ciorna(patron, f6):
 
 
 def test_def_pct9_operatiunile_lunare_sunt_separate_de_cele_rare(patron, f6):
-    """Pct.9. Pașii: Operațiuni speciale. Ecranul are două grupuri: „Lunare și recurente” (TVA la încasare, valută, avansuri — fiecare
-    propusă cu „se propune automat: …” unde aplicația o propune) și „Rare” (lichidare, reevaluare imobilizări)."""
+    """Pct.9. Pașii: Operațiuni speciale. Ecranul are două grupuri: „Lunare și recurente” (TVA la încasare, avansuri — fiecare
+    propusă cu „se propune automat: …” unde aplicația o propune) și „Rare” (lichidare, reevaluare imobilizări). Reevaluarea valutei nu mai
+    e aici (429, comanda 11.1 pct.11: formularul manual scos; propunerea stă în Închidere lună › „Reevaluare valută”)."""
     pg = patron.pg
     patron.firma(f6["nume"])
     pg.click("#fa-operatiuni")
     pg.wait_for_selector("[data-op]", timeout=20000)
     lunare, rare = pg.locator(".op-grup[data-frecventa='lunar']"), pg.locator(".op-grup[data-frecventa='rar']")
-    for ch in ("tva_incasare", "reeval_valuta", "avans"):
+    for ch in ("tva_incasare", "avans"):
         assert lunare.locator("button[data-op='%s']" % ch).count() == 1, ch
         assert lunare.locator("[data-propune='%s']" % ch).count() == 1, ch
+    # [lotul 11, 429, comanda Costin 11.1 pct.11: „reevaluarea în valută e neschimbată pe producție (formular manual, fără propunere, fără
+    # curs BNR […])”] formularul manual „Reevaluare lunară solduri valută” nu mai e în niciun grup — un singur drum, din Închidere lună
+    # (testul lui: e2e_lot11_v.py::test_def_429_un_singur_formular_…)
+    assert pg.locator("button[data-op='reeval_valuta'], [data-propune='reeval_valuta']").count() == 0
     for ch in ("lichidare", "reevaluare"):
         assert rare.locator("button[data-op='%s']" % ch).count() == 1, ch
     assert "se propune automat" in pg.inner_text("[data-propune='tva_incasare']")
@@ -160,7 +165,7 @@ def test_def_431_d205_cuprinde_dividendele_neplatite_la_31_12(patron, f6):
     pg = patron.pg
     _deschide_dividendul(patron, f6, _AN_D205)
     pg.click("#op-trimite")
-    pg.wait_for_selector("#op-mesaj.msg-ok", timeout=20000)
+    pg.wait_for_selector("#op-mesaj .caseta-ok", timeout=20000)
     # validarea notei (Registrul jurnal) nu e pasul probat aici: D205 preia numai notele validate (431, testul cu ciorna)
     sql('UPDATE "%s".inregistrari SET status = %%s' % s, ("validata",))
     patron.firma(f6["nume"])

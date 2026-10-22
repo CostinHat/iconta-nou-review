@@ -85,13 +85,27 @@ def _sql():
                      and len(n.value) > 200)
 
 
+def _tabele_citite():
+    """Tabelele din clauzele FROM / JOIN ale f-string-urilor SQL din `jurnal_pe_an`: `{schema}.<tabela>`, cu interpolarea ca nod AST
+    (FormattedValue), comentariile SQL (`-- …`) scoase înainte."""
+    import re
+    out = set()
+    for n in ast.walk(_functia_repo()):
+        if isinstance(n, ast.JoinedStr):
+            t = "".join(v.value if isinstance(v, ast.Constant) else "\x00" for v in n.values)
+            t = re.sub(r"--[^\n]*", "", t)
+            out |= set(re.findall(r"\b(?:FROM|JOIN)\s+\x00\.(\w+)", t, re.I))
+    return out
+
+
 # ── coloana 3: derivarea documentului justificativ ────────────────────────────
 def test_documentul_se_deriva_din_factura():
     """Norma cere FELUL, NUMARUL si DATA. Toate trei trebuie sa apara."""
     d = _j.document_justificativ(None, "factura", "ALFA-E-", "001", date(2026, 8, 10))
     # [05.10.2026, comanda Costin pct.6] data în forma românească (DS cap.4, `pdf_util.data_ro`) — textul ajunge la contabil,
     # nu e un câmp ISO de API. Felul, numărul și data rămân toate trei.
-    assert d == "Factură ALFA-E-001 din 10.08.2026", d
+    # [lotul 11, 443, comanda Costin 11.1 pct.19] seria și numărul separat („F6 nr. 1”); separatorul de la capătul seriei nu se afișează
+    assert d == "Factură ALFA-E nr. 001 din 10.08.2026", d
 
 
 def test_document_ref_scris_explicit_are_prioritate():
@@ -142,7 +156,10 @@ def test_ruta_chiar_cheama_derivarea():
         "dar goală, iar SQL-ul pe care îl pinează gardul ar fi cod nechemat")
 
 
-# ── singura aserțiune pe text, cu motivul declarat mai sus ───────────────────
+# ── numerotarea pe AN: tabela citită (FROM / JOIN, din f-string-ul AST), plus absența ferestrei ROW_NUMBER ─────
+# [lotul 11, G3] tabela se citește din clauza FROM / JOIN a f-string-ului (interpolarea `{schema}` ca nod AST, comentariile SQL scoase),
+# nu ca sub-șir al SQL-ului — un `-- registru_jurnal_numere` dintr-un comentariu SQL nu mai trece. `ROW_NUMBER` rămâne căutat în
+# constanta localizată prin AST, compromisul declarat în antet.
 def test_CALIBRARE_numerotarea_e_pe_AN_nu_pe_luna():
     """Partea subtila, si singura care poate regresa tacit: norma cere numerotare *incepand de la 1
     ianuarie*. [deficiența 302, 17.10.2026] Numărul nu se mai calculează la citire (ROW_NUMBER pe an, peste
@@ -151,7 +168,8 @@ def test_CALIBRARE_numerotarea_e_pe_AN_nu_pe_luna():
     numărul e pe AN (anul următor începe de la 1) se probează pe bază, în
     `core/test_302_nr_curent.py::test_302_numarul_se_da_la_validare_si_nu_se_muta`."""
     sql = _sql()
-    assert "registru_jurnal_numere" in sql, "ruta nu mai citește numărul păstrat la validare"
+    # tabela din clauza FROM / JOIN a SQL-ului (f-string-ul cu `{schema}.`), nu numele pomenit oriunde — și într-un comentariu SQL
+    assert _tabele_citite() >= {"registru_jurnal_numere"}, "ruta nu mai citește numărul păstrat la validare: %s" % sorted(_tabele_citite())
     assert "ROW_NUMBER() OVER" not in sql, "numărul curent se calculează iar la citire — se mută când apare o notă mai veche (302)"
 
 

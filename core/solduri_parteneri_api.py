@@ -16,22 +16,16 @@ from __future__ import annotations
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
+from core import pdf_util as _pu   # [lotul 11, C100] soldul cu felul lui (`pdf_util.sold`)
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 from core.common import cate as _cate
 from core import chei_unice as _chei   # [lotul 10, C73] cheia naturală dublată -> refuz numit, nu 500
+from core import cui_forma as _forma_cui   # [lotul 11, decizia Costin 10.3 pct.4] CUI-ul în forma păstrată: fără „RO”, fără spații
 
 
 def _radacina(cont):
     """Sinteticul de baza al unui cont: '4111.ALPHA' -> '4111', '401' -> '401'."""
     return str(cont).split(".")[0].strip()
-
-
-def _curata_cui(v):
-    """Normalizeaza CUI: RO14837428 -> 14837428, scoate spatii."""
-    t = str(v or "").strip().upper().replace(" ", "")
-    if t.startswith("RO"):
-        t = t[2:]
-    return t
 
 
 # [14.10.2026, comanda Costin „Importul din SAGA”, verbatim în DECIZII] Fișierul trece prin `core.import_tabel` (format, codare,
@@ -101,7 +95,7 @@ def extrage(continut, nume_fisier="", cont_implicit=None, ignorate=None):
         if _it.rand_gol(r):
             continue
         den = _it.celula(r, i_den)
-        cui = _curata_cui(_it.celula(r, i_cui))
+        cui = _forma_cui.stocare(_it.celula(r, i_cui)) or ""   # forma unică (înainte: `_curata_cui`, o normalizare locală paralelă)
         cont = _it.celula(r, i_cont) if i_cont >= 0 else cont_ales
         if not cui and (not den or _it.norm(den).startswith("total")):
             # rând de total / titlu, nu partener — [comanda Costin 8.2 pct.4] spus, nu sărit în tăcere
@@ -203,7 +197,7 @@ def coerenta(conn, schema, randuri):
         pe_sintetic[rad] = pe_sintetic.get(rad, 0.0) + float(r.get("debit", 0) or 0) - float(r.get("credit", 0) or 0)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         zi = _bil.data_soldurilor(cur, schema)
-        cur.execute("SELECT count(*) AS n FROM solduri_initiale" if _are_tabel(cur, "solduri_initiale") else "SELECT 0 AS n")
+        cur.execute(f"SELECT count(*) AS n FROM {schema}.solduri_initiale" if _are_tabel(cur, f"{schema}.solduri_initiale") else "SELECT 0 AS n")
         are_balanta = (cur.fetchone()["n"] or 0) > 0
         sursa = "balanța de deschidere" if are_balanta else "contabilitatea firmei"
         zi = zi or _dt.date.today()
@@ -242,13 +236,11 @@ def respinse_coerenta(randuri, coer):
             er.append(respinge(
                 "sold partener", i, "parteneri_nu_dau_soldul",
                 "pe %s, partenerii din fișier dau %s, iar %s la %s are %s (diferență %s) — rândurile contului nu intră până nu se potrivesc"
-                % (c["cont"], _sold_txt(c["suma_parteneri"], _b), c["sursa"], _data_ro_iso(c["data"]), _sold_txt(c["sold_balanta"], _b),
+                % (c["cont"], _pu.sold(c["suma_parteneri"]), c["sursa"], _data_ro_iso(c["data"]), _pu.sold(c["sold_balanta"]),
                    _b(abs(c["diferenta"]), "lei")), cont=r.get("cont")))
     return er
 
 
-def _sold_txt(v, bani):
-    return "%s %s" % ("debitor" if v >= 0 else "creditor", bani(abs(v), "lei"))
 
 
 def _data_ro_iso(s):

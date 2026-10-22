@@ -107,7 +107,10 @@ def _linii_valorizate(linii):
             raise ValueError("linie fără cota TVA (%r): nu se poate exporta (WinMentor) - 0 (scutit) e "
                              "valoare valida, absenta nu se ghiceste" % (l.get("descriere") or "",))
         cota = Decimal(str(_ct))
-        tva = _q(cant * pret * cota / Decimal(100))
+        # [lotul 11, C82] baza liniei = BT-131 de pe factura importată (`valoare_neta`, exact); altfel cantitate × preț, ca până acum
+        _vn = l.get("valoare_neta")
+        baza = Decimal(str(_vn)) if _vn not in (None, "") else cant * pret
+        tva = _q(baza * cota / Decimal(100))
         out.append({"cod": cod_articol(l.get("descriere")), "um": l.get("um") or "BUC",
                     "cant": cant, "pret": pret, "tva": tva, "descriere": l.get("descriere") or ""})
     return out

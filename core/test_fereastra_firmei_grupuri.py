@@ -65,4 +65,5 @@ def test_fereastra_firmei_are_titluri_cu_carduri_si_niciun_arbore(pg, regim):
     # [368, lotul 9] „Mijloace fixe” trece la „ambele” (decizia Costin 8.2: „Mijloace fixe rămâne vizibil și la PFA”)
     # [lotul 10] 35 / 25: + „Compensări” (dubla, decizia Costin „Construiesc acum”) + „Clienți” (ambele, fișa clientului cu bifa
     # de persoană afiliată, decizia Costin „Bifă pe client”) -> 24 „ambele”, 10 „dubla”, 1 „simpla”
-    assert sum(r["carduri"]) == (35 if regim == "dubla" else 25), r   # [Retest 2 pct.13] + „Plan de conturi” (partida dublă)
+    # [lotul 11] 36 / 26: + „Furnizori” (ambele, fișele furnizorilor cu localitatea / județul citite de D406 / D394, decizia Costin 10.3)
+    assert sum(r["carduri"]) == (36 if regim == "dubla" else 26), r   # [Retest 2 pct.13] + „Plan de conturi” (partida dublă)

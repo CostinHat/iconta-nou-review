@@ -173,7 +173,7 @@ def test_nota_chitantei_spune_ce_factura_stinge(conn):
         cur.execute("INSERT INTO chitante (serie, numar, data, factura_id, suma, inregistrare_id, anulata) VALUES "
                     "('CHF1', 1, '2099-10-03', %s, 242, %s, false)", (fid, iid))
         st = jurnal_api.facturi_stinse(cur, SCH, [iid, alta])
-    assert st == {iid: "factura F1A3 din 02.10.2099"}, st
+    assert st == {iid: "factura F1A nr. 3 din 02.10.2099"}, st   # [lotul 11, 443] „F6 nr. 1, nu F61”: seria și numărul separat
 
 
 # ── W2 + W3 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────

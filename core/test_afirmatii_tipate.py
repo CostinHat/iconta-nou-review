@@ -177,7 +177,10 @@ def test_excluderea_nomenclatoarelor_ramane_tintita():
                 if (ch & s.REVENDICARE) and not (ch & s.REMEDIU) and not (ch & s.FORMULAR):
                     scoase.append("%s:%d" % (os.path.relpath(p, s.RAD).replace(os.sep, "/"),
                                              n.lineno))
-    assert len(scoase) <= 2, (
+    # 2 -> 3 la 22.10.2026 (lotul 11): `rip_migrare_api.ETICHETE_CAMP` — numele câmpurilor de import în limba contabilului (cheia
+    # „explicatie” e și cuvânt de revendicare); e chiar o hartă de nomenclator (câmp -> etichetă), nu o afirmație despre datele firmei,
+    # ca vecinul ei `CAMPURI` (:68), deja numărat
+    assert len(scoase) <= 3, (
         "excluderea hărților de nomenclator scoate acum %d situri (%s) — la instalare scotea UNUL. "
         "Dacă e legitim, ridică pragul CU MOTIV; dacă nu, scanul a fost lărgit până a orbit."
         % (len(scoase), ", ".join(scoase)))

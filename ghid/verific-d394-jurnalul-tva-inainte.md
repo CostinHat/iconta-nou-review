@@ -2,7 +2,7 @@
 title: "Cum verific D394 cu jurnalul de TVA înainte de control?"
 description: "Mecanismele reale de verificare a D394 înainte de depunere în iConta.eu — validare pe validatorul oficial și recalcul independent din liniile brute ale facturilor."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Din această regulă rezultă ce merită verificat concret, cotă cu cotă, îna
 
 Înainte ca fișierul D394 să fie considerat gata de depus, aplicația rulează **local** validatorul oficial ANAF (DUK) pe declarație. Separat de această validare structurală, aplicația recalculează **independent** totalurile pe cotă de TVA direct din liniile brute ale facturilor perioadei, cu un cod de calcul distinct de generatorul principal, și **oprește** generarea dacă cele două căi de calcul nu coincid — arătând explicit valorile care diferă și câmpul afectat.
 
-Limitele acestui mecanism sunt declarate explicit în aplicație: nu acoperă operațiunile manuale (bonuri/borderouri, fără ecran propriu la data acestui ghid) și nu poate prinde o eroare de intrare care apare identic pe ambele căi de calcul (de exemplu o cotă de TVA greșit tastată o singură dată, direct pe factura sursă). Pentru acestea, verificarea rămâne una manuală a contabilului, direct pe jurnalul de TVA.
+Limitele acestui mecanism sunt declarate explicit în aplicație: nu acoperă operațiunile introduse manual la generare (de exemplu bonurile fiscale; borderoul de achiziție are ecranul lui, în Stocuri → Borderou de achiziție, și intră în verificare ca orice document primit) și nu poate prinde o eroare de intrare care apare identic pe ambele căi de calcul (de exemplu o cotă de TVA greșit tastată o singură dată, direct pe factura sursă). Pentru acestea, verificarea rămâne una manuală a contabilului, direct pe jurnalul de TVA.
 
 [iConta.eu](/)

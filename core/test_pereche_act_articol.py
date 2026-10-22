@@ -102,7 +102,12 @@ CLICHET_NEGASIT = 0
 #: singur, în antet, «(Anexa nr. 2)», iar acum i se numără punctele. `anexa 1` (×2) **rămâne**, și
 #: motivul e o regulă, nu o scăpare: antetul ei nu se auto-identifică — spune doar «NORME GENERALE
 #: din 5 noiembrie 2015…» —, iar *un act se identifică după conținut, nu după numele fișierului*.
-CLICHET_CIOT = 5
+#: **5 → 6 la 22.10.2026 (lotul 11), din aceeași cauză ca a patra (R111), nu una nouă.** `OMFP 2634/2015 pct.58 lit.c` — temeiul
+#: ciornelor rămase în urma perioadei (`core/ciorne_depasite.py`: „fiecare dată înregistrată în contabilitate [...]”), citit verbatim
+#: din `anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt`. Același document ca `anexa 1 pct. 24`: anexa 1 numerotează PUNCTE, iar
+#: antetul ei nu se auto-identifică (R171, decizia de mai jos `test_R171_tiparul_LARG_de_puncte_nu_a_fost_adoptat` ține tiparul îngust).
+#: Verdictul rămâne în direcția sigură: refuză, nu inventează un STABIL.
+CLICHET_CIOT = 6
 #: Pragul de JOS pe confirmate: dacă scade, ceva a dispărut din registru sau instrumentul s-a rupt.
 #: 15 → **24** după ce instrumentul a învățat convenția — fără ca vreun temei să se schimbe.
 #: 24 → **34** la 06.09.2026: lărgirea domeniului a adus și confirmări, nu doar necunoscute.

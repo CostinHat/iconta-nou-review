@@ -86,7 +86,7 @@ def _solduri(conn, schema):
 
 def _plan_conturi(conn, schema):
     with conn.cursor() as cur:
-        cur.execute("SELECT count(*) FROM plan_conturi")
+        cur.execute("SELECT count(*) FROM %s.plan_conturi" % schema)
         return {"conturi": cur.fetchone()[0]}
 
 
@@ -181,7 +181,9 @@ _T_CONTROL_FISCAL = (
     "reevaluari",
     # [428, lotul 10] D300 / D394 citesc perioadele sistemului TVA la încasare (regimul facturii pe data ei) și compensările (încasarea
     # prin compensare face exigibilă partea compensată — CF art.282 alin.(3), (8))
-    "tva_incasare_perioade", "compensari")
+    "tva_incasare_perioade", "compensari",
+    # [lotul 11, C79] D300 / D394 / D406 citesc TVA-ul de pe factura furnizorului, pe cote (BG-23, `factura_tva_cote`)
+    "factura_tva_cote")
 
 #: SURSE CONDIȚIONATE — citite de `control_fiscal` doar CÂND o fereastră de obligație e deschisă (spre
 #: scadență), nu în fiecare zi. `efactura_primite`: `control_fiscal` numără e-facturile primite

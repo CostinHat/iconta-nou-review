@@ -6,10 +6,18 @@ Probe end-to-end pe schema scratch din template (gated DB): handler real -> fact
 import pytest
 
 
+def _valori_atribut(xml, nume):
+    """Mulțimea valorilor atributului `nume` pe elementele XML-ului (din arbore, nu „șirul apare” — core/test_garzi_pe_text.py)."""
+    import re
+    import xml.etree.ElementTree as _ET
+    rad = _ET.fromstring(re.sub(r"^\s*<\?xml[^>]*\?>", "", xml))
+    return {e.get(nume) for e in rad.iter() if e.get(nume) is not None}
+
+
 
 #: [402] borderoul de achiziție identifică vânzătorul PF și, pe un cont de stoc (301), aduce marfa în gestiune
 _PF_402 = {"furnizor_adresa": "Str. Florilor 1, Ploiești", "furnizor_act": "PH 123456", "articol": "Deșeuri metalice", "cantitate": 100,
-           "um": "kg"}
+           "um": "kg", "articol_nou": True}   # [lotul 11, 450] articolul nou, cerut explicit
 
 def _db_ok():
     try:
@@ -105,14 +113,17 @@ def test_achizitie_taxare_inversa_emite_factura_ajunge_in_d394_duk_valid(monkeyp
             cur.execute("SET search_path TO %s" % _SCH)
             cur.execute("SELECT directie, tert_cui, taxare_inversa, categorie_331 FROM facturi WHERE id=%s",
                         (r["factura_id"],))
-            assert cur.fetchone() == ("primita", "RO14399840", True, "deseuri")
+            # decizia 10.3 (DECIZII „Comanda 10.3” pct.4): „CUI-ul se păstrează fără „RO” și fără spații; „RO” apare doar la afișare,
+            # după starea de plătitor de TVA.”
+            # — furnizorul scris „RO14399840” e păstrat „14399840”, pe factura de taxare inversă a lui
+            assert cur.fetchone() == ("primita", "14399840", True, "deseuri")
             cur.execute("SELECT factura_id FROM inregistrari WHERE id=%s", (r["inregistrare_id"],))
             assert cur.fetchone()[0] == r["factura_id"], "inregistrare ORFANA (fara factura_id)"
         with db.get_conn() as conn:
             with conn.cursor() as cur:
                 cur.execute("SET search_path TO %s" % _SCH)
             xml, res = d394.genereaza(conn, _SCH, Perioada(2026, luna=6))
-        assert 'codPR="22"' in xml, "taxare inversa (deseuri->codPR 22) NU e in D394: op11 lipsa"
+        assert _valori_atribut(xml, "codPR") >= {"22"}, "taxare inversa (deseuri->codPR 22) NU e in D394: op11 lipsa"
         if duk.poate_valida("d394"):
             verdict = duk.valideaza(xml, "d394", an=2026, luna=6)
             assert verdict["stare"] == "valid", "DUK a respins D394: %s" % verdict.get("erori")
@@ -155,7 +166,7 @@ def test_achizitie_neinregistrat_N_ajunge_in_d394_duk_valid(monkeypatch):
             with conn.cursor() as cur:
                 cur.execute("SET search_path TO %s" % _SCH)
             xml, res = d394.genereaza(conn, _SCH, Perioada(2026, luna=6))
-        assert 'tip="N"' in xml, "operatiunea N NU e in D394 (desi are categorie): %s" % xml[:400]
+        assert _valori_atribut(xml, "tip") >= {"N"}, "operatiunea N NU e in D394 (desi are categorie): %s" % xml[:400]
         # judP pe op1-ul N (furnizorul neînregistrat fără cuiP), din XML-ul parsat: exact Dolj (16), nu județul firmei
         import xml.etree.ElementTree as _ET
         _op1_n = [e.attrib for e in _ET.fromstring(xml).iter() if e.tag.rpartition("}")[2] == "op1" and e.get("tip") == "N"]
@@ -189,7 +200,7 @@ def test_achizitie_necorporala_emite_factura_in_d394_si_mijloc_fix(monkeypatch):
         with db.get_conn() as conn, conn.cursor() as cur:
             cur.execute("SET search_path TO %s" % _SCH)
             cur.execute("SELECT directie, tert_cui FROM facturi WHERE id=%s", (r["factura_id"],))
-            assert cur.fetchone() == ("primita", "RO14399840")
+            assert cur.fetchone() == ("primita", "14399840")   # decizia 10.3: CUI-ul furnizorului păstrat fără „RO”
             cur.execute("SELECT factura_id FROM inregistrari WHERE id=%s", (r["inregistrare_id"],))
             assert cur.fetchone()[0] == r["factura_id"], "inregistrare ORFANA"
             cur.execute("SELECT count(*) FROM mijloace_fixe WHERE id=%s", (r["mijloc_fix_id"],))
@@ -227,7 +238,8 @@ def test_nicio_achizitie_creeaza_inregistrare_orfana_de_factura():
                     rele.append("%s: INSERT inregistrari fara factura_id (orfan, invizibil D390/D394)" % node.name)
     assert not rele, "achizitie orfana de factura (invizibila declaratiei):\n" + "\n".join(rele)
     # anti-vacuu: exceptarea e reala (agricultor chiar e orfan azi) - altfel exceptia e moarta/inutila
-    assert "def achizitie_agricultor" in src
+    assert {n.name for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))} >= EXCEPTATE, \
+        "excepția nu mai are funcția ei în main.py (nod AST, nu șir — core/test_garzi_pe_text.py)"
 
 
 # ============ B: clasifica_partener pe flag real (INGHETAT), nu pe forma CUI ============

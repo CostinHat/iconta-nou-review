@@ -66,7 +66,8 @@ def tva_din_incasare(suma_incasata, cota):
         # o sumă nulă sau negativă n-are din ce extrage.
         raise ValueError("Suma încasată trebuie să fie mai mare decât zero: din ea se "
                          "extrage TVA-ul exigibil, prin suta mărită.")
-    return (s * c / (100 + c)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    from core import tva_calcul as _tc   # [lotul 11, decizia 10.3] regula unică: suta mărită, o rotunjire la ban
+    return _tc.tva_din_total(s, c)
 
 
 def tva_exigibil_alocari(alocari):
@@ -91,15 +92,20 @@ def plafon_la(data_iso):
 
 def aloca_pe_cote(gross, linii, total_tva):
     """Împarte suma DECONTATĂ (gross, cu TVA) pe cotele facturii, proporțional cu ponderea gross a fiecărei cote (baza_cotă ×
-    (100+cotă)/100) — CF art.282 alin.(8): fiecare încasare „include și taxa aferentă”. `linii` = [(cantitate, preț, cotă)]; fără linii,
-    o cotă dedusă din total/TVA. Sursa unică pentru D300 (rândurile) și D394 (tvaCol / tvaDed / tvaDedAI)."""
+    (100+cotă)/100) — CF art.282 alin.(8): fiecare încasare „include și taxa aferentă”. `linii` = [(cantitate, preț, cotă[, valoare_neta])];
+    fără linii, o cotă dedusă din total/TVA. Sursa unică pentru D300 (rândurile) și D394 (tvaCol / tvaDed / tvaDedAI).
+
+    [lotul 11, C82] `valoare_neta` = valoarea liniei scrisă PE FACTURĂ (BT-131 din XML-ul e-Factura, `factura_linii.valoare_neta`): la
+    factura importată ea e baza liniei — prețul unitar ținut la 2 zecimale nu o reface (1.000 × 0,004 = 4,00 lei, prețul 0,00). NULL
+    (factura făcută în aplicație) -> cantitate × preț, ca până acum."""
     if linii:
         g = {}
-        for (cant, pret, cota) in linii:
+        for (cant, pret, cota, *vn) in linii:
             if cota is None:
                 continue
             ci = int(round(float(cota)))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt numere intregi, bancar==aritmetic
-            baza = Decimal(str(cant)) * Decimal(str(pret))
+            vn = vn[0] if vn else None
+            baza = Decimal(str(vn)) if vn not in (None, "") else Decimal(str(cant)) * Decimal(str(pret))   # [C82] BT-131 când linia îl are
             g[ci] = g.get(ci, Decimal(0)) + baza * (100 + ci) / 100
         tg = sum(g.values(), Decimal(0))
         if tg > 0:
@@ -174,6 +180,82 @@ def firma_in_sistem_in(cur, schema, inceput, sfarsit):
             # `firma_profil.tva_la_incasare` — altfel facturile ies „în sistem” (regimul, pe `aplica_la`) iar perioada „în afara lui”
             return _rg.aplica_la(cur, i)
     return any(p["de_la"] <= s and (p["pana_la"] is None or p["pana_la"] >= i) for p in per)
+
+
+def text_regim_emitere(data, aplica, perioade, fara_data=False):
+    """PURĂ. [lotul 11, deficiența 428, retestul Costin pe producție 21.10.2026] Ce spune ecranul de emitere despre sistemul TVA la încasare
+    la DATA FACTURII — {aplica, mesaj} sau None (firma n-are nicio perioadă în sistem și nu-l aplică).
+
+    De ce: pe producție (F6, 21.10.2026) perioada era „de la 01.11.2026”, iar factura din 21.10.2026 a ieșit — corect — pe regulile
+    generale (4427, fără mențiune); niciun ecran nu spunea însă asta, iar „Configurare emitere” arăta sistemul numai dacă se aplica AZI.
+    Temeiul:
+      * CF art.282 alin.(3): „exigibilitatea taxei intervine la data încasării contravalorii integrale sau parțiale [...], în cazul
+        persoanelor impozabile care optează în acest sens”;
+      * CF art.282 alin.(7) lit.a): „în cazul facturilor pentru contravaloarea totală a livrării de bunuri ori a prestării de servicii
+        emise înainte de data intrării în sistemul de TVA la încasare, indiferent dacă acestea sunt sau nu încasate, pentru care faptul
+        generator de taxă intervine după intrarea în sistemul TVA la încasare, nu se aplică prevederile alin. (3) și (5)”;
+      * CF art.319 alin.(20) lit.p): pe factură, „în cazul în care exigibilitatea TVA intervine la data încasării [...], mențiunea «TVA la
+        încasare»”.
+    `perioade` = [{de_la: date, pana_la: date|None}] (ordine cronologică); `aplica` = decizia motorului la `data` (`firma_in_sistem_la`,
+    sursa unică — aici numai textul ei); `fara_data` = indicatorul vechi, fără perioadă scrisă."""
+    import datetime as _dt
+    from core.pdf_util import data_ro
+    d = data if isinstance(data, _dt.date) else _dt.date.fromisoformat(str(data)[:10])
+    if not perioade and not aplica:
+        return None
+    zi = data_ro(d)
+    from core import afirmatii as _af
+
+    def _fapt(aplica_, mesaj_):
+        # [lotul 11, decizia 21.08: afirmațiile despre datele firmei sunt obiecte cu `fel`] regimul TVA al facturii la data ei — un fapt
+        # despre firmă, cu domeniul (factura de la data aceea) și pe ce se sprijină; `mesaj` = același text, cheia citită de ecran
+        return _af.afirmatie("fapt", "regim_tva_incasare_la_emitere", mesaj_, aplica=aplica_, mesaj=mesaj_, unde="factura din %s" % zi,
+                             temei_completitudine="perioadele sistemului TVA la încasare scrise în Date firmă și decizia aplicației "
+                                                  "la data facturii")
+    if aplica:
+        mesaj = ("Factura din %s: firma aplică sistemul TVA la încasare. TVA-ul facturii se înregistrează pe 4428 (neexigibil) și devine "
+                 "exigibil la încasare; pe factură apare mențiunea „%s” (Cod fiscal art. 282 alin. (3), art. 319 alin. (20) lit. p)). Rămân "
+                 "pe regulile generale taxarea inversă, livrările scutite și clientul afiliat (art. 282 alin. (6))." % (zi, MENTIUNE))
+        if fara_data:
+            mesaj += " Data de la care firma aplică sistemul nu e scrisă în Date firmă: scrie-o acolo."
+        return _fapt(True, mesaj)
+    urm = next((p for p in perioade if p["de_la"] > d), None)
+    if urm:
+        return _fapt(False, (
+            "Factura din %s: firma aplică sistemul TVA la încasare abia de la %s. O factură emisă înainte de intrarea în sistem rămâne pe "
+            "regulile generale: TVA exigibil la emitere (4427), fără mențiunea „%s” (Cod fiscal art. 282 alin. (7) lit. a)). Dacă firma "
+            "aplica sistemul și la această dată, corectează perioada în Date firmă." % (zi, data_ro(urm["de_la"]), MENTIUNE)))
+    ies = [p for p in perioade if p.get("pana_la") and p["pana_la"] < d]
+    if ies:
+        return _fapt(False, (
+            "Factura din %s: firma a ieșit din sistemul TVA la încasare la %s. TVA-ul facturii e exigibil la emitere (4427), fără mențiunea "
+            "„%s”; facturile emise în sistem rămân în sistem până la încasare (Cod fiscal art. 282 alin. (7) lit. b))."
+            % (zi, data_ro(ies[-1]["pana_la"]), MENTIUNE)))
+    return None
+
+
+def refuz_nota_tva_la_emitere(cur, schema, data, ce):
+    """[lotul 11, 428 — „pe TOATE drumurile de emitere”] Mesajul refuzului pentru o notă din Operațiuni care ar credita TVA-ul unei livrări
+    direct în 4427 (vânzarea de produse finite, chiria încasată, refacturarea, autofactura RetuRO) la o firmă care aplică sistemul TVA la
+    încasare la `data`; None dacă firma nu-l aplică. Nota n-are factură, deci nici încasarea n-o poate muta din 4428 în 4427, nici D300 /
+    D394 n-o văd: livrarea intră pe drumul facturii, unde regimul, mențiunea, exigibilitatea și declarațiile funcționează. Temei: CF
+    art.282 alin.(3) — „exigibilitatea taxei intervine la data încasării”, nu la emitere."""
+    if not firma_in_sistem_la(cur, schema, data):
+        return None
+    from core.pdf_util import data_ro
+    return ("Firma aplică sistemul TVA la încasare la %s: %s se înregistrează ca factură emisă (Emite factură, sau factura emisă în alt "
+            "program adăugată în Facturi), nu ca notă. Pe factură TVA-ul merge pe 4428, devine exigibil la încasare și intră în D300 și "
+            "D394 (Cod fiscal art. 282 alin. (3)); nota de aici l-ar pune direct pe 4427, exigibil la emitere." % (data_ro(data), ce))
+
+
+def regim_emitere_la(cur, schema, data):
+    """[lotul 11, 428] `text_regim_emitere` cu perioadele și decizia citite pe firmă — aceeași `regim_tva_incasare.aplica_la` ca motorul
+    contării, nu o a doua definiție. Pentru ecranul de emitere (`facturi/numerotare?data=`)."""
+    from core import regim_tva_incasare as _rg, repo_tva_incasare as _rp
+    with _rp.search_path(cur, schema):
+        per = _rg.perioade(cur)
+        aplica = _rg.aplica_la(cur, data)
+    return text_regim_emitere(data, aplica, per, fara_data=bool(aplica and not per))
 
 
 #: ce citește regimul de pe antetul facturii (`repo_tva_incasare.factura`)

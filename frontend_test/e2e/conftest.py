@@ -357,6 +357,20 @@ def _drepturi_initiale():
 
 
 @pytest.fixture(scope="module", autouse=True)
+def _anaf_simulat_numai_baza():
+    """[lotul 11, prins la plasa din 22.10.2026] Răspunsurile ANAF pregătite de un test (`<ICONTA_ANAF_SIMULAT>/anaf.json`, 444 / 459)
+    rămâneau pentru fișierele de după: DANTE cu denumirea testului și fără localitate -> D406 refuzat în e2e_lot82 / e2e_lot91, numai când
+    rulau după ele. Fiecare FIȘIER pornește și se termină cu baza simulatorului (`anaf_baza.json`, răspunsurile reale), ca drepturile."""
+    def scoate():
+        d = os.environ.get("ICONTA_ANAF_SIMULAT")
+        if d and os.path.exists(os.path.join(d, "anaf.json")):
+            os.remove(os.path.join(d, "anaf.json"))
+    scoate()
+    yield
+    scoate()
+
+
+@pytest.fixture(scope="module", autouse=True)
 def _drepturi_comune_neschimbate(_drepturi_initiale):
     """[09.10.2026, prins la rularea integrală] Unele teste comută temporar drepturile contului comun de asistent; fiecare FIȘIER
     pornește și se termină cu drepturile de la începutul rulării, ca rezultatul să nu depindă de ordinea fișierelor."""

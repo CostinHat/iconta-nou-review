@@ -1,0 +1,344 @@
+     Structura fişier XML pentru declaratia 101 (an sfarsit exercitiu >=2022
+     conf. OPANAF nr....
+     (universalCode: D101G_A1.0.0, declaratie: v2)
+     fara atasament
+
+Nr. crt.       Elemente/          Denumire câmp                                 Tip şi    Câmp
+               atribute                                                         lungime   oblig.   Formule şi restricţii                Erori
+                                                                                câmp
+      1.       <D101G>
+      2.                                                                                           d_rec =(0,1,2)
+                                                                                                    0-initiala,
+               d_rec              Declaratie rectifcativa                        N(1)     DA       1-rectificativa
+                                                                                                   2-rectificativa cu notificare
+                                                                                                   d_rec =2 daca d_recN=1
+2a                                Declaratie rectificativã ca urmare a unei
+               d_recN                                                            N(1)              d_recN =1,null
+                                  notificari de conformare
+      3.       d_reg
+      4.       Stat_rezid
+4a             d_anulare          Declaraţie depusă/ corectata după anularea     N(1)     DA       d_anulare = 0(nebifat), 1 (bifat)    ERR - camp d_anulare
+                                  rezervei verificării ulterioare.
+4b             temei              Temeiul legal pentru corectarea declarației    N(1)              temei # null daca d_anulare=1        ERR - Temei necompletat
+                                                                                                   (bifat)                              pentru d_anulare=1 (bifat)
+
+                                                                                                   1-art.105 alin(6) lit.a) din Legea
+                                                                                                   nr.207/2015
+                                                                                                   2-art.105 alin(6) lit.b) din Legea
+                                                                                                   nr.207/2015
+
+4c             d_succ
+4d             cifS
+4e                                                                                                 d_alte =(0,1)                        ERR - camp d_alte
+                                                                                                   0- nebifat
+                                                                                                   1- bifat
+                                                                                                   -------------------------------
+                                  Se bifeaza pentru                                                If (d_alte)=1 then
+               d_alte             'Alte situatii'                                N(1)     DA       (
+                                                                                                        Data_I si Data_S -->
+                                                                                                   completare
+                                                                                                         libera (nu se verifica)
+                                                                                                   )
+
+
+
+
+                                                                                                                                                                     1
+4f          d_reglem            Declaraţie depusă de contribuabilii pentru   N(1)    DA   d_reglem = 0(nebifat), 1 (bifat)   ERR - camp d_reglem
+                               care reglementările contabile sunt emise de
+                               B.N.R, respectiv A.S.F.
+       5.                                                                                 cod_obligatie=(100
+            cod_obligatie      Tip impozit pe profit (nomenclator)           N(3)    DA   102,103,104,105)                   ERR - valoare invalida
+
+       6.                                                                                                                    ERR- Luna de inceput de
+                                                                                                                             exercitiu financiar nu
+            luna_i             Luna de inceput de exercitiu financiar        N(2)    DA   luna_i = Luna( Data_I)             corespunde cu Data de
+                                                                                                                             inceput de exercitiu
+                                                                                                                             financiar
+       7.                                                                                                                    ERR- Anul de inceput de
+                                                                                          an_i = Anul( Data_I)
+                                                                                                                             exercitiu financiar nu
+                               Anul de inceput de exercitiu financiar                     an_i>=2021
+            an_i                                                             N(4)    DA                                      corespunde cu Data de
+                               (an raportare D101)
+                                                                                                                             inceput de exercitiu
+                                                                                                                             financiar
+       8.                                                                                                                    ERR- Luna de sfarsit de
+                                                                                                                             exercitiu financiar nu
+            luna               Luna de sfarsit de exercitiu financiar        N(2)    DA   luna= Luna(Data_S)                 corespunde cu Data de
+                                                                                                                             sfarsit de exercitiu
+                                                                                                                             financiar
+       9.                                                                                                                    ERR- Anul de sfarsit de
+                                                                                          an = Anul( Data_S)                 exercitiu financiar nu
+            an                 Anul de sfarsit de exercitiu financiar        N(4)    DA   an>=2022                           corespunde cu Data de
+                                                                                                                             sfarsit de exercitiu
+                                                                                                                             financiar
+     10.    trim_micro
+     11.                                                                                  primul_an_modif =(0,1)             ERR- Primul an fiscal
+                                                                                           0- NU , 1- DA                     modificat nu se bifeaza
+            primul_an_modif    Primul an fiscal modificat                    N(1)
+                                                                                                                             pt.tip_impozit=102
+
+11a.                                                                                      ultimul_an_modif =(0,1)            ERR- Ultimul an fiscal
+                                                                                           0- NU , 1- DA                     modificat nu se bifeaza
+            ultimul_an_modif   Ultimul an fiscal modificat                   N(1)
+                                                                                                                             pt.tip_impozit=102
+
+     12.                                                                                                                     ERR- Data de inceput an
+                                                                                                                             modificat nu se
+                                                                                                                             completeaza pt.
+                                                                                                                             tip_impozit =102
+            Data_M             Data de inceput de an modificat               D(10)        if (Data_M<>null) then
+                                                                                                Anul(Data_M)=an_i
+                                                                                                                             ERR- Anul din data de
+                                                                                                                             inceput de an modificat
+                                                                                                                             trebuie sa fie egal cu anul
+
+
+
+                                                                                                                                                           2
+                                                                                                              de raportare
+
+13.   Data_L
+14.   Data_B
+15.                                                                    If (d_alte=0)
+                                                                       [
+                                                                       if (Data_M<>null) then
+                                                                       (
+                                                                          If (primul_an_modif=1) then
+                                                                                  Data_I=                     ERR- Data de inceput de
+                 Data de inceput de exercitiu financiar
+      Data_I                                              D(10)   DA   01.01.Anul(Data_M)                     exercitiu financiar
+                                                                          else Data_I=Data_M
+                                                                       )
+                                                                       --------------
+                                                                       if (Data_M=null )
+                                                                           then Data_I= 01.01.an_i
+                                                                       ]
+16.                                                                                                           ERR- Data de sfarsit de
+                                                                                                              exercitiu financiar
+
+                                                                       If (d_alte=0)
+                                                                       [
+                                                                       if (Data_M<>null) then
+                                                                       (
+                                                                                                              ERR- Data de sfarsit de
+                                                                           If (ultimul_an_modif=1)
+                                                                                                              exercitiu financiar nu
+                                                                                    Data_S=31.12.an
+                                                                                                              poate fi anterioara Datei de
+                                                                                  (adica an= Anul( Data_M)
+                 Data de sfarsit de exercitiu financiar                                                       inceput
+      Data_S                                              D(10)   DA   +1)
+
+                                                                           else
+                                                                               Data_S=Data_M+364 zile
+                                                                                (sau 365 zile in an bisect)
+                                                                       )
+
+                                                                       ]
+                                                                       ------------------------------
+
+                                                                       Data_S>= Data_I
+17.                                                                    AA = Anul(Data_S)
+                                                          D(8)         LL = Luna(Data_S)                      ERR- ‘Scadenta platii‘
+      scadenta   Scadenta platii                                  DA
+                                                          C(6)         ZZ = 25
+                                                                       -----------------
+
+
+
+
+                                                                                                                                             3
+                                                                         Daca d_reglem=1
+                                                                         atunci scadenta = LL=LL+3
+                                                                         altfel scadenta = LL=LL+6
+
+                                                                         AA=AA+1 daca LL>12
+                                                                         scadenta=ZZLLAA
+
+18.   cod_bug          Cod Bugetar                        C(10)    DA    5503XXXXXX
+19.                                                                      Ex.- nr.evid.a platii :                ERR – nr.de evidenta a
+                                                                         11103011212250413000028                platii invalid
+
+                                                                         Verificare componenta si suma de
+                                                                         control pentru nr_evid :
+                                                                         Poz.1-2 :11
+                                                                         Poz.3-5 : cod_obligatie
+                                                                         (nomenclator)
+                                                                         Poz.6-7 :01
+                                                                         Poz.8-11 : LLAA
+      nr_evid          Nr evidenta a platii               N(23)    DA
+                                                                          (unde LL = Luna(Data_S) si
+                                                                                 AA = Anul(Data_S) )
+
+                                                                         Poz.12-17 : scadenta
+                                                                         Poz.18: 0
+                                                                         Poz.19-21 : 000
+                                                                         Poz.22-23 : suma primelor 21
+                                                                         pozitii (se completeaza cu 0 in
+                                                                         fata sau se iau ultimele 2 cifre ale
+                                                                         sumei)
+20.                                                                                                             ERR-calcul suma de
+      totalPlata_A     Suma de control                    N(15)    DA    totalPlata_A =0
+                                                                                                                control
+21.                                                                                                             ERR - nume declarant
+      nume_declar      Nume declarant                     C(75)    DA
+                                                                                                                necompletat
+22.                                                                                                             ERR - prenume declarant
+      prenume_declar   Prenume declarant                  C(75)    DA
+                                                                                                                necompletat
+23.                                                                                                             ERR - functie declarant
+      functie_declar   Functie declarant                  C(50)    DA
+                                                                                                                necompletată
+24.                    A.DATE DE IDENTIFICARE PLATITOR
+25.   cif              Cod de identificare fiscala        N(10)     DA   Validare CIF                           ERR- CIF invalid
+26.   CAEN             CAEN                               N(4)      DA   Validare CAEN                          ERR – valoare invalida
+27.   denumire         Denumirea                         C(200)     DA
+28.   adresa           Adresa                            C(1000)    DA
+
+
+
+
+                                                                                                                                          4
+      29.   telefon   Telefon                                              C(15)
+      30.   fax       Fax                                                 C(15)
+      31.   email     E-mail                                              C(200)
+      32.             C.DATE DE IDENTIFICARE IMPUTERNICIT
+32a         cifR      Cod de identificare fiscala                          N(13)    Validare CF(10) si CIF(13)     ERR- CIF invalid
+32b         denR      Denumirea                                           C(200)
+32c         adrR      Adresa                                              C(1000)
+32d         telR      Telefon                                              C(15)
+32e         faxR      Fax                                                  C(15)
+32f         emailR    E-mail                                              C(200)
+      33.             B.DATE PRIVIND IMPOZITUL PE PROFIT
+      85    P01       Rezultatul fiscal al grupului: profit                                                        ERR
+                                                                           N(15)    P01>=0
+                      impozabil
+      86    P01a      Rezultatul fiscal al grupului: pierdere                                                      ERR
+                                                                           N(15)    P01a>=0
+                      fiscala
+      87    P02       Pierdere fiscală de recuperat din anii                                                       ERR
+                                                                           N(15)    P02>=0
+                      precedenţi
+      88    P02a      Pierdere fiscală de recuperat in anul curent,                 Daca P01>0                     ERR
+                      (rd.2^1<=rd.2, daca rd.1>0)                          N(15)    atunci P02a<=P02 (V1)
+                                                                                    Altfel P02a=0
+            P03       Profit impozabil aferent anului de                            Daca (P01 –P02a>0) atunci      ERR
+                      raportare rd.3=rd.1 - rd.2^1>=0                      N(15)    P03=P01 –P02a
+                                                                                    Altfel P03=0
+            P03a      Pierdere fiscală aferenta anului de                                                          ERR
+                                                                                    P03a=P01a
+                      raportare (rd.3^1=rd.1^1)
+      89    P04       Impozit pe profit (16%)                              N(15)    P04>=0                         ERR
+      92    P05       Total credit fiscal (rd.5=rd.5.1 + rd.5.2 +          N(15)    P05=P051+P052+P053             ERR
+                      rd.5.3)
+      93    P051      Credit fiscal extern (rd.5.1<=rd.4)                  N(15)    P051<=P04 (V2)                 ERR
+
+      94    P052      Impozit pe profit scutit                             N(15)    P052<=P04- P051                ERR
+                       (rd.5.2<=rd.4-rd.5.1), din care:                             P052>=P0521 + P0522 (V3)
+
+      95    P0521     Impozit pe profitul scutit, potrivit art.22 din      N(15)
+                      Codul fiscal
+      96    P0522     Impozit pe profitul scutit, potrivit art.22^1 din    N(15)
+                      Codul fiscal
+      97    P053      Scutiri şi reduceri de impozit pe profit             N(15)    P053<=P04 - P051 – P052 (V4)   ERR
+                      calculate potrivit legislaţiei în vigoare,                    P053>=P0531
+                      ( rd.5.3<=rd.4-rd.5.1-rd.5.2) din care:
+
+
+
+
+                                                                                                                                      5
+98    P0531   .Impozit pe profit scutit potrivit Legii           N(15)
+              cooperatiei agricole nr.566/2004
+99    P06     Sume reprezentând sponsorizare şi/sau              N(15)   P06<=P04 - P05 sau                ERR
+              mecenat, burse private, în limita prevăzută                P06<=P10 - P051 (V5)
+              de lege(rd.6<=rd.4-rd.5 sau rd.6<=rd.10-
+              rd.5.1), din care:                                         P06>=P061+P062
+      P061    - in anul curent                                   N(15)
+      P062    - raportate din perioada precedenta                N(15)
+102   P06a    Valoarea rezultata prin aplicarea cotei                    P06a>=0                           ERR
+              de 16% asupra deducerii suplimentare
+                                                                 N(15)
+              pentru cercetare-dezvoltare, potrivit
+              OUG nr115/ 2024
+103   P07     Alte sume care se scad din impozitul pe                    P07<=P04-P05-P06 (V6)             ERR
+              profit, potrivit legislatiei in vigoare            N(15)
+              ( rd.7<=rd.4-rd.5 -rd.6)
+104   P08     Reducerea impozitului pe profit conform                    P08<=P04-P05-P06-P07 (V7)         ERR
+              OUG nr. 153/ 2020                                  N(15)
+              (rd.8<=rd.4-rd.5 -rd.6-rd.7)
+      P09     Impozit pe profit determinat pentru                N(15)   P09>=0                            ERR
+              efectuarea comparatiei cu impozitul minim pe
+              cifra de afaceri, potrivit art.18^1 alin.(5) din
+              Codul fiscal
+      P10     Impozit pe profit la nivelul impozitului minim     N(15)   P10>=0                            ERR
+              pe cifra de afaceri,
+              potrivit art.18^1 din Codul fiscal
+105   P11     Impozit pe profit anual datorat/ impozit pe                P11=P111 sau                      ERR
+              profit la nivelul impozitului minim pe cifra               P11=P112 (V8)
+                                                                 N(15)
+              de afaceri anual (rd.11=rd.11.1 sau
+              rd.11=rd.11.2)
+      P111    Impozit pe profit anual datorat (rd.11.1=rd.4-             v1= P04-P05-P06-P07-P08           ERR
+              rd.5-rd.6-rd.7-rd.8>=0),
+                 daca rd.9>rd.10                                 N(15)   Daca (P09>=P10 si v1>=0) atunci
+                                                                         P111=v1
+                                                                         Altfel P111=0
+106   P112    Impozit pe profit la nivelul impozitului minim             v1=P10-P051-P061-P06a             ERR
+              pe cifra de afaceri, anual datorat potrivit
+              art.18^1 din Codul fiscal (rd.11.2=rd.10-          N(15)   Daca (P10>P09 si v1>=0) atunci
+              rd.5.1-rd.6.1-rd.6^1>=0),                                  P112=v1
+                daca rd.10>rd.9                                          Altfel P112=0
+107   P12     Impozit pe profit/ impozit pe profit la
+                                                                 N(15)
+              nivelul impozitului minim pe cifra de
+
+
+
+                                                                                                                 6
+                                  afaceri, stabilit în urma inspecţiei fiscale
+                                  pentru anul fiscal de raportare si care se
+                                  regăseste in indicatorii din formular
+     108        P13               Impozit pe profit/ impozit pe profit la
+                                  nivelul impozitului minim pe cifra de
+                                  afaceri, declarat pentru anul de                N(15)
+                                  raportare prin formularul 100
+     109        P14               Diferenţa de impozit pe profit datorat urmare
+                                  restituirii sponsorizarii/ bursei private/      N(15)
+                                  mecenatului
+     110        P15               Diferenţa de impozit pe profit datorat                  v1=(P11+P14) –(P12+P13)
+                                  rd.15=(rd.11 + rd.14) - (rd.12 + rd.13) >=0     N(15)   Daca v1>0 atunci P15=v1         ERR
+                                                                                          Altfel P15=0
+     111        P16               Diferenţa de impozit pe profit de                                                       ERR
+                                  recuperat                                               v1= – (P11+P14) + (P12+P13)
+                                  rd.16=(rd.12 + rd.13) - (rd.11 + rd.14) >=0             Daca v1>0 atunci P16=v1
+                                                                                  N(15)   Altfel P16=0
+
+                                                                                          P15 si P16 se exclud reciproc
+
+     112        </D101G>
+
+
+
+           Validari suplimentare
+V1                         P02a<=P02
+V2                         P051<=P04
+V3                         P052<=P04-P051
+V4                         P053<= P04-P051-P052
+V5                         P06<= P04-P05 sau P06<=P10-P051
+V6                         P07<= P04-P051-P052-P06
+V7                         P08<= P04-P05-P06-P07
+V8                         P11<= P111 sau P11<=P112
+
+
+
+
+     Coduri CAEN – lista de valori la 01.01.2025
+
+
+
+
+                                                                                                                                7
+

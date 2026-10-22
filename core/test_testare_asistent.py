@@ -146,7 +146,7 @@ def _camp(r):
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_firma_nu_se_creeaza_cu_emailul_unui_cont_cu_alt_rol(cab):
+def test_firma_nu_se_creeaza_cu_emailul_unui_cont_cu_alt_rol(cab, contor_schema_pastrat):
     """pct.3: refuz NUMIT, PE CÂMP, și NICIO firmă creată (înainte: firma se crea, refuzul venea după)."""
     inainte = _nr_firme(cab)
     r = _cl().post("/tenants", headers=_H(cab["tok"]),

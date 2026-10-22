@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "core/casa_api.py",
+  "ancora": "        if _r:\n            er.camp(\"c-suma\", _r)",
+  "inlocuire": "        if False:\n            er.camp(\"c-suma\", _r)",
+  "test": "frontend_test/e2e/e2e_lot92.py::test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "      if (html === htmlFact) return;   // [440] nimic schimbat",
+  "inlocuire": "      if (false) return;   // [440] nimic schimbat",
+  "test": "frontend_test/e2e/e2e_lot11_w3a.py::test_def_440_casa_dispozitia_suma_si_destinatia_avansului_deodata"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "      if (cd) cd.addEventListener(\"change\", () => { avansDest = cd.value; programeazaPreviz(); });",
+  "inlocuire": "      if (cd) cd.addEventListener(\"change\", () => { avansDest = cd.value; });",
+  "test": "frontend_test/e2e/e2e_lot11_w3a.py::test_def_440_casa_dispozitia_suma_si_destinatia_avansului_deodata"
+ },
+ {
+  "fisier": "core/casa_api.py",
+  "ancora": "    if not asteapta:\n        return []",
+  "inlocuire": "    if True:\n        return []",
+  "test": "frontend_test/e2e/e2e_lot72_contab.py::test_def_310_casa_spune_de_ce_lipseste_factura_si_are_renunta"
+ },
+ {
+  "fisier": "core/casa_api.py",
+  "ancora": "\"factura\": _ncs(*r[\"factura_numar\"]) if r[\"factura_numar\"] else None",
+  "inlocuire": "\"factura\": None",
+  "test": "frontend_test/e2e/e2e_lot6.py::test_def_278_dispozitia_leaga_factura_si_semnaleaza_avansul_si_plafonul"
+ }
+]

@@ -116,7 +116,54 @@ TOATE = (Inexistent, FaraDrept, Neautentificat, DateInvalide, CerereGresita, Con
 #: Ecranul-țintă al unui refuz, în limba contabilului (`unde` al afirmației de refuz). O singură tabelă pentru refuzurile cu țintă
 #: de ecran: `uc_comun.refuz_spre_ecran` și `RefuzGenerare.detaliu` (mutată aici din `uc_comun`, lotul 10, ca refuzul generatoarelor
 #: să aibă aceeași formă tipată fără ca acest modul de vocabular să importe un use-case).
-UNDE_ECRAN = {"date_firma": "Date firmă", "conectare_spv": "Setări cont → Conectare SPV", "produse": "Produse"}
+UNDE_ECRAN = {"date_firma": "Date firmă", "conectare_spv": "Setări cont → Conectare SPV", "produse": "Produse",
+              # [lotul 11, decizia Costin 10.3] refuzul D406 / D394 trimite la fișa partenerului, bilanțul la întocmitorul cabinetului
+              "clienti": "Clienți (fișa clientului)", "furnizori": "Furnizori (fișa furnizorului)",
+              "date_cabinet": "Setări cont → Date cabinet"}
+
+
+class ErorileFormularului:
+    """[lotul 11, deficiența 440, comanda Costin 11.1 pct.16: „toate erorile apar deodată, fiecare cu textul ei, în casetă și lângă câmp.”]
+    Colectorul unic al validării unui formular pe server: în loc de `raise` la primul câmp (inventarul lotului 11: 310 funcții cu
+    două sau mai multe refuzuri în șir, numai ~10 adunau lista), fiecare problemă se ADAUGĂ, iar la capăt se refuză o dată, cu toate:
+
+        er = ErorileFormularului()
+        if not corp.nume: er.camp("nume", "Numele firmei lipsește.")
+        if not cui_valid(corp.cui): er.camp("cui", "CUI-ul nu are cifra de control corectă.")
+        er.refuza()          # DateInvalide({"mesaj": …, "erori_campuri": [{camp, mesaj}, …]}) dacă e ceva; altfel nimic
+
+    `camp` = id-ul câmpului pe ecran (contractul G10, DS cap.6 v2.30) sau numele din cerere, pe care ecranul îl traduce
+    (`api.arataRefuzul(…, {campuri})`); `fara_camp(mesaj)` = o regulă a formularului întreg (intră în `mesaj`). Ecranul pune fiecare
+    eroare lângă câmpul ei și pe toate în caseta „NU s-a salvat.” (api.js, DS cap.6 v2.99). Gard: `core/test_lot11_u0_erori_server.py`."""
+
+    def __init__(self, titlu="Formularul nu s-a salvat"):
+        self.titlu = titlu
+        self.campuri = []
+        self.generale = []
+
+    def camp(self, camp, mesaj):
+        if not any(c["camp"] == camp and c["mesaj"] == mesaj for c in self.campuri):
+            self.campuri.append({"camp": camp, "mesaj": mesaj})
+        return self
+
+    def fara_camp(self, mesaj):
+        if mesaj not in self.generale:
+            self.generale.append(mesaj)
+        return self
+
+    def __bool__(self):
+        return bool(self.campuri or self.generale)
+
+    def detaliu(self):
+        """{mesaj, erori_campuri}: `mesaj` spune toate problemele, fiecare cu textul ei, rând cu rând (DS cap.6 v2.89, `white-space:
+        pre-line`) — și pentru un ecran care ar citi numai fraza."""
+        texte = self.generale + [c["mesaj"] for c in self.campuri]
+        mesaj = texte[0] if len(texte) == 1 else "%s:\n%s" % (self.titlu, "\n".join("— " + t for t in texte))
+        return {"mesaj": mesaj, "erori_campuri": list(self.campuri)}
+
+    def refuza(self):
+        if self:
+            raise DateInvalide(self.detaliu())
 
 
 class RefuzGenerare(ValueError):

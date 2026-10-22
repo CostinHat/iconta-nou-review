@@ -52,7 +52,8 @@ TRIGGERE = set(_TRIGGERE) | {"atentie", "apartin", "apartine", "apartinand", "in
                              # legislativ nu le are: legea nu „dezactivează” și nu „descarcă” nimic)
                              "dezactiveaza", "renunta", "cauta", "descarca", "vizualizeaza"}
 AMBIGUE = {"sa", "tine", "lipsa", "afara", "cheltuiala", "exista"}   # „în afara”, „cheltuiala X”, „a exista” — corecte
-ACRONIME = {"ANAF", "IBAN", "OMFP", "OPANAF", "SPV", "CUI", "CIF", "CNP", "TVA", "DUK", "XML", "XSD", "PDF", "SAGA", "BNR", "CASS",
+ACRONIME = {"CECCAR",   # [lotul 11] Corpul Experților Contabili și Contabililor Autorizați — nomenclatorul ANAF „calitate - Intocmit”
+            "ANAF", "IBAN", "OMFP", "OPANAF", "SPV", "CUI", "CIF", "CNP", "TVA", "DUK", "XML", "XSD", "PDF", "SAGA", "BNR", "CASS",
             "OUG", "CAEN", "EORI", "EUR", "RON", "USD", "REVISAL", "REGES", "INTRASTAT", "VIES", "HTTP", "JSON", "ONRC", "PFA", "SRL",
             "HORECA", "FIFO", "LIFO", "OSS", "IOSS", "NIR", "SEPA", "COR", "SAFT", "UBL", "CIUS", "BCR", "CEC", "DNF", "UIT", "SSM",
             "IMM", "ITM", "AMEF", "SMTP", "OAUTH", "HTML", "CSV", "UTC", "IBAN", "DIICOT", "WINMENTOR", "UNICEF", "CNAS", "FNUASS",

@@ -1,0 +1,18 @@
+[
+  {"fisier": "core/uc_coada.py",
+   "ancora": "                      mesaj_langa_note=refuz.get(\"mesaj_langa_note\", refuz.get(\"mesaj\", \"\")) + MESAJ_CIORNE_BLOCAJ_LANGA_NOTE % _cate_note(ciorne),\n",
+   "inlocuire": "",
+   "test": "frontend_test/e2e/e2e_lot11_g.py::test_def_436_coada_refuzul_nu_repeta_notele_ciorna_din_perioada"},
+  {"fisier": "core/uc_coada.py",
+   "ancora": "cod=COD_TVA_BALANTA, diferente=dif, mesaj=mesaj, mesaj_langa_note=langa, note=_note_unice(dif))",
+   "inlocuire": "cod=COD_TVA_BALANTA, diferente=dif, mesaj=mesaj, note=_note_unice(dif))",
+   "test": "frontend_test/e2e/e2e_lot11_g.py::test_def_436_coada_refuzul_nu_repeta_notele_nota_care_explica_diferenta"},
+  {"fisier": "core/uc_coada.py",
+   "ancora": "mesaj_langa_note=blocaj.get(\"mesaj_langa_note\", blocaj[\"mesaj\"]) + a)",
+   "inlocuire": "mesaj_langa_note=blocaj[\"mesaj\"] + a)",
+   "test": "frontend_test/e2e/e2e_lot11_g.py::test_def_436_coada_refuzul_nu_repeta_notele_bilantul_din_evidenta"},
+  {"fisier": "static/js/ecrane/coada_trimite.js",
+   "ancora": "    const text = mesajLangaNote(cuNote, det.mesaj_langa_note, (typeof (e && e.mesaj) === \"string\" && e.mesaj) || det.mesaj)\n",
+   "inlocuire": "    const text = ((typeof (e && e.mesaj) === \"string\" && e.mesaj) || det.mesaj)\n",
+   "test": "frontend_test/e2e/e2e_lot11_g.py::test_def_436_coada_refuzul_nu_repeta_notele_bilantul_din_evidenta"}
+]

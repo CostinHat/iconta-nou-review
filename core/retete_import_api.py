@@ -19,6 +19,14 @@ CAMPURI = {
     "ingredient": ("ingredient*", "articol*", "materie*"),
     "cantitate": ("cantitate*", "cant", "consum*"),
 }
+#: [lotul 11] numele câmpului în refuzul coloanelor ambigue (`import_tabel.coloana`), în limba contabilului — nu cheia internă
+#: (garda: core/test_lot11_import_etichete_camp.py)
+ETICHETE_CAMP = {
+    "reteta": "rețeta",
+    "pret": "prețul de vânzare",
+    "ingredient": "ingredientul",
+    "cantitate": "cantitatea",
+}
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
@@ -52,7 +60,7 @@ def extrage(continut, nume_fisier=""):
         if isinstance(e, _it.ColoaneAmbigue):
             raise
         raise ValueError("nu se găsesc coloanele Rețeta / Ingredient / Cantitate")
-    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=camp)
+    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=ETICHETE_CAMP[camp])
     i_ret = col("reteta")
     i_pret = col("pret")
     i_ing = col("ingredient", (i_ret,))

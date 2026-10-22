@@ -54,7 +54,10 @@ SCRIU = {
 #: imprumute de la vecini.
 CITESC = ("declaratii_tipuri", "facturi_lista", "salariati_lista", "tenant_jurnal",
           "d300_manual_lista", "d301_operatiuni_lista", "d390_clasificare_stare",
-          "factura_detalii", "salariat_detalii")
+          "factura_detalii", "salariat_detalii",
+          # [lotul 11, K] GET verifica-cui (444): ruta pe jumătate în HTTP, delegată unui use-case cu alt nume, cădea pe atribuirea pe modul
+          # și „scria" 78 de tabele; corpul e acum întreg în `uc_tenants.verifica_cui` — o citire
+          "verifica_cui")
 
 #: Plafonul de degenerare. Masurat pe populatia reala de azi: maximul e 9 tabele pe unitate, iar
 #: distributia nu se mai misca de la adancimea 4. Pragul lasa loc lantului lung si prinde intoarcerea

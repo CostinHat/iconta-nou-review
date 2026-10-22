@@ -21,9 +21,17 @@ def firma_c69():
         s = f["schema"]
         sql('UPDATE "%s".firma_profil SET adresa = %%s, oras = %%s, judet = %%s, caen = %%s, banca = %%s, iban = %%s, telefon = %%s, '
             'declarant_nume = %%s, declarant_prenume = %%s, declarant_functie = %%s, reg_com = %%s, regim_fiscal = %%s, '
-            'platitor_tva = true, tip_decont = %%s, operatiuni_ic = false, mare_contribuabil = NULL, forma_proprietate = NULL WHERE id = 1' % s,
+            'platitor_tva = true, tip_decont = %%s, operatiuni_ic = false, mare_contribuabil = NULL, forma_proprietate = NULL, '
+            # [lotul 11, decizia 10.3] interesul public declarat (și întocmitorul, mai jos): testul e despre bifaMC / codPP, nu despre ele
+            'interes_public = false WHERE id = 1' % s,
             ("Str. Probei 9", "Cluj-Napoca", "CJ", "6920", "BT", IBAN, "0264111222", "POPESCU", "ION", "ADMINISTRATOR", "J12/69/2020",
              "micro", "lunar"))
+        from e2e_bloc_e import INTOCMITOR_PROBA
+        from core import db, uc_cabinet
+        with db.get_conn() as c:   # întocmitorul cabinetului, pe drumul ecranului Date cabinet (`uc_cabinet.salveaza_intocmitor_conn`)
+            r = uc_cabinet.salveaza_intocmitor_conn(c, f["cabinet_id"], INTOCMITOR_PROBA)
+            assert r.get("ok"), r
+            c.commit()
         yield f
 
 

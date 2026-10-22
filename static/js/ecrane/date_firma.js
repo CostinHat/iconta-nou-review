@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani } from "../api.js?v=ff30ebaf3f";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie } from "../api.js?v=58f26a3fc4";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -58,7 +58,15 @@ const CAMPURI = [
     aj: "Da dacă firma e administrată de Direcția Generală de Administrare a Marilor Contribuabili. Cerut la bilanț." },
   { k: "forma_proprietate", e: "Forma de proprietate", ob: true, tip: "lista", lista: "forme_proprietate",
     aj: "Din nomenclatorul ANAF al bilanțului (ex. societăți cu răspundere limitată). Cerut la bilanț." },
+  // [lotul 11, decizia Costin 10.3 pct.4] „interesul public în Date firmă” — bilanțul: „15. interes_public Entitati de interes public N(1)
+  // DA” (structura ANAF SC 1225); neales = „— alege —”, bilanțul îl cere (generatorul scria 0 oricărei firme)
+  { k: "interes_public", e: "Entitate de interes public", ob: true, tip: "danu",
+    aj: "Da numai pentru entitățile de interes public definite de lege (ex. bănci, societăți de asigurare, societăți listate). Cerut la bilanț." },
 ];
+
+// [lotul 11, deficiența 442] câmpurile capitalului (blocul „Capital social”), cu numele lor în „Profil incomplet” — „blochează emiterea
+// facturilor” (Legea 31/1990 art. 74 alin. (3); aceeași regulă care refuză emiterea, `capital_social.lipsa`)
+const ETICHETE_CAPITAL = { forma_juridica: "Forma juridică", capital_subscris: "Capital social subscris", capital_varsat: "Capital social vărsat" };
 
 // [D394 Î2] Activitatea exceptată de la casa de marcat — OUG 28/1999 art. 2. Cu ea, chitanțele fără factură (cu cota
 // lor) intră în D394 la Î2; încasările din casă nelegate de o factură/chitanță se semnalează (decizia lui Costin, 03.10.2026).
@@ -290,7 +298,8 @@ function _blocAsociati(a) {
 function camp(c, val, d) {
   const ob = c.ob ? '<span class="oblig">*</span>' : "";
   const aj = c.aj ? `<span class="camp-ajutor">${esc(c.aj)}</span>` : "";
-  if (c.k === "cui" && val) return campCui(c, val, ob);
+  // [lotul 11, decizia 10.3] CUI-ul arătat cu „RO” numai la plătitorul de TVA (`cui_afisat`, regula din `core/cui_forma.afisare`)
+  if (c.k === "cui" && val) return campCui(c, (d && d.profil && d.profil.cui_afisat) || val, ob);
   // [lotul 10, C69] Da / Nu (valoarea salvată, altfel „— alege —”) și lista din nomenclator (codul se trimite, denumirea se arată)
   if (c.tip === "danu") return `
     <label class="camp">
@@ -570,10 +579,17 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     btn.textContent = "Se salveaz\u0103\u2026";
     const salvate = [];
     const faraCamp = [];
+    // [lotul 11, 440] fiecare eroare a părții refuzate lângă câmpul ei (`arataRefuzul`, numele din server -> id-ul de pe ecran); ce n-are
+    // câmp pe ecran intră cu textul lui în mesajul de sub buton — și atunci când alte erori ale aceleiași părți și-au găsit câmpul
     const pune = (pre) => (e) => {
       const ec = (e && e.erori_campuri) || [];
-      const peCamp = ec.filter((c) => eroareCamp(corp, c.camp === "cont_venit_implicit" ? "df-cont_venit" : pre + c.camp, c.mesaj)).length;
-      if (!peCamp) faraCamp.push((e && e.mesaj) || "Nu s-a putut salva.");
+      const campuri = Object.fromEntries(ec.map((c) => [c.camp, c.camp === "cont_venit_implicit" ? "df-cont_venit" : pre + c.camp]));
+      const puse = arataRefuzul(corp, e, null, { campuri });
+      if (puse < ec.length || !ec.length) {
+        const m = (e && e.mesaj) || "Nu s-a putut salva.";
+        const rest = ec.filter((c) => c.mesaj && !corp.querySelector("#" + CSS.escape(campuri[c.camp])) && m.indexOf(c.mesaj) < 0).map((c) => c.mesaj);
+        faraCamp.push([m].concat(rest).join(" "));
+      }
       return null;
     };
     const parte = (nume, p, pre) => p.then((r) => { salvate.push(nume); return r || {}; }, pune(pre));
@@ -734,9 +750,9 @@ function _legaTvaIncasare(corp, nav, tenantId, opt) {
       z.innerHTML = !f.length
         ? `<p class="pf-intro">La ieșirea din ${esc(dataRo(r.la))} nu rămâne nicio factură cu TVA neexigibil: nimic de regularizat.</p>`
         : `<p class="pf-intro">La ieșirea din ${esc(dataRo(r.la))} rămân în sistem ${cate(f.length, "factură", "facturi")}: TVA neexigibil pe emise ${bani(r.tva_neexigibil_emise)} lei, TVA nededus pe primite ${bani(r.tva_nededus_primite)} lei (Cod fiscal art. 282 alin. (7) lit. b).</p>
-          <table class="fd-tabel" id="vf-tva-incasare-iesire-tabel"><thead><tr><th>Factura</th><th>Data</th><th class="fd-td-num">TVA</th>
+          <table class="fd-tabel" id="vf-tva-incasare-iesire-tabel"><thead><tr><th>Factură</th><th>Data</th><th class="fd-td-num">TVA</th>
             <th class="fd-td-num">Exigibil până acum</th><th class="fd-td-num">Rămas pe 4428</th><th>Ce se întâmplă</th></tr></thead>
-          <tbody>${f.map((x) => `<tr><td>${esc(x.directie === "emisa" ? "emisă" : "primită")} ${esc([x.serie, x.numar].filter(Boolean).join(" "))}</td>
+          <tbody>${f.map((x) => `<tr><td>${esc(x.directie === "emisa" ? "emisă" : "primită")} ${esc(numarCuSerie(x.serie, x.numar))}</td>
             <td>${esc(dataRo(x.data_emitere))}</td><td class="fd-td-num">${bani(x.tva)}</td><td class="fd-td-num">${bani(x.exigibil)}</td>
             <td class="fd-td-num">${bani(x.rest_neexigibil)}</td><td>${esc(x.ce_se_intampla)}</td></tr>`).join("")}</tbody></table>`;
     } catch (e) { arataMesaj(z, (e && e.mesaj) || "Lista facturilor rămase în sistem nu s-a putut încărca.", "eroare"); }
@@ -801,7 +817,8 @@ function _corecturaCui(corp, nav, tenantId, opt) {
     <div id="df-cui-msg"></div>`;
   const msg = zona.querySelector("#df-cui-msg");
   const cuiScris = () => (zona.querySelector("#df-cui-nou").value || "").trim();
-  const peCamp = (e) => ((e && e.erori_campuri) || []).filter((c) => eroareCamp(zona, "df-cui-nou", c.mesaj)).length;
+  // [lotul 11, 440] refuzul serverului: erorile lui stau lângă singurul câmp al pasului (CUI-ul corect), textul fără câmp în zona pasului
+  const laCui = (e) => ({ campuri: Object.fromEntries(((e && e.erori_campuri) || []).map((c) => [c.camp, "df-cui-nou"])) });
   // pasul 1: CUI-ul corect -> avertismentul serverului (nimic scris), cu butonul de confirmare
   zona.querySelector("#df-cui-continua").addEventListener("click", async () => {
     curataEroriCamp(zona);
@@ -809,17 +826,25 @@ function _corecturaCui(corp, nav, tenantId, opt) {
     if (!cuiScris()) { eroareCamp(zona, "df-cui-nou", "Scrie CUI-ul corect."); return; }
     try {
       const r = await api.post(`/tenants/${tenantId}/cui/corectura`, { cui: cuiScris(), confirmat: false });
-      zona.querySelector("#df-cui-aviz").innerHTML = `<div class="caseta-atentie"><div class="ca-mesaj">${esc(r.avertisment || "")}</div>
+      // [459, comanda Costin 11.3 pct.5] datele ANAF ale CUI-ului nou, câmp cu câmp (acum -> ANAF): confirmarea le preia; fără ANAF, ce
+      // rămâne de verificat — nimic din CUI-ul vechi nu rămâne tacit
+      const an = r.anaf || {};
+      const schimbari = (an.schimbari || []).map((s) => `<li><b>${esc(s.eticheta)}</b>: ${esc(s.acum)} → ${esc(s.anaf)}</li>`).join("");
+      zona.querySelector("#df-cui-aviz").innerHTML = `<div class="caseta-atentie"><div class="ca-mesaj">${esc(r.avertisment || "")}
+          <div id="df-cui-anaf"><p>${esc(an.mesaj || "")}</p>${schimbari ? `<ul>${schimbari}</ul>` : ""}</div></div>
         <button type="button" class="buton-primar" id="df-cui-confirma" data-actiune="POST /tenants/{tenant_id}/cui/corectura">Corectez CUI-ul</button></div>`;
       // pasul 2: confirmarea -> scrierea (ambele locuri + jurnal)
       zona.querySelector("#df-cui-confirma").addEventListener("click", async () => {
         try {
           const r2 = await api.post(`/tenants/${tenantId}/cui/corectura`, { cui: cuiScris(), confirmat: true });
+          const a2 = r2.anaf || {};
+          const preluate = (a2.schimbari || []).map((s) => s.eticheta).join(", ");
           await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });
-          arataMesaj(corp.querySelector("#df-msg"), `CUI-ul a fost corectat: ${r2.cui}. Schimbarea e în jurnalul de mai jos.`, "ok");
-        } catch (e) { if (!peCamp(e)) arataMesaj(msg, (e && e.mesaj) || "CUI-ul nu s-a putut corecta.", "eroare"); }
+          arataMesaj(corp.querySelector("#df-msg"), `CUI-ul a fost corectat: ${r2.cui}. ${a2.gasit ? (preluate ? `Din ANAF s-au preluat: ${preluate}.` : "")
+            : (a2.mesaj || "")} Schimbarea e în jurnalul de mai jos.`, a2.gasit ? "ok" : "avert");
+        } catch (e) { arataRefuzul(zona, e, msg, laCui(e)); }
       });
-    } catch (e) { if (!peCamp(e)) arataMesaj(msg, (e && e.mesaj) || "CUI-ul nu s-a putut corecta.", "eroare"); }
+    } catch (e) { arataRefuzul(zona, e, msg, laCui(e)); }
   });
   zona.querySelector("#df-cui-nou").addEventListener("input", () => { zona.querySelector("#df-cui-aviz").innerHTML = ""; });   // avertismentul era pentru CUI-ul de dinainte
 }
@@ -851,5 +876,5 @@ function _dateDinFormular(corp) {
 
 function eticheta(k) {
   const c = CAMPURI.find((x) => x.k === k);
-  return c ? c.e : k;
+  return c ? c.e : (ETICHETE_CAPITAL[k] || k);
 }

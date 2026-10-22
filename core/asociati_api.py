@@ -28,6 +28,8 @@ from __future__ import annotations
 import datetime as _dt
 from decimal import Decimal
 
+from core import cui_forma as _forma_cui
+
 MODUL = "asociati_api"
 
 
@@ -117,11 +119,15 @@ def _cota(x):
 
 
 def randuri_din_corp(randuri):
-    """Rândurile trimise de ecran -> forma verificării comune: {nume, cnp (fără „RO” și spații, majuscule), cota, rand_fisier =
-    poziția pe ecran, de la 1}."""
+    """Rândurile trimise de ecran -> forma verificării comune: {nume, cnp, cota, rand_fisier = poziția pe ecran, de la 1}.
+
+    `cnp` e identificatorul asociatului: CNP-ul persoanei fizice sau CUI-ul persoanei juridice, în forma păstrată (`cui_forma.stocare`,
+    decizia Costin 10.3 pct.4, aceeași ca la import, `asociati_import_api.extrage`). Un CNP n-are „RO”: rămâne cum e (fără spații);
+    „RO” se scoate numai din fața CUI-ului din cifre. [lotul 11, clasa „normalizare locală a CUI”] Înainte, `.replace("RO", "")` scotea
+    „RO” de oriunde din text, nu numai prefixul."""
     out = []
     for i, r in enumerate(randuri or [], start=1):
-        cod = str(r.get("cnp") or "").upper().replace("RO", "").replace(" ", "").strip()
+        cod = _forma_cui.stocare(r.get("cnp")) or ""
         out.append({"nume": str(r.get("nume") or "").strip(), "cnp": cod, "cota": _cota(r.get("cota")), "rand_fisier": i})
     return out
 

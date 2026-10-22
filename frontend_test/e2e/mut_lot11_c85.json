@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "    opt.tvaIncasare = tvaIncasare;   // [lotul 11, C85]",
+  "inlocuire": "    // [mutație C85] fără tvaIncasare pe drumul „Schimbă seria”",
+  "test": "frontend_test/e2e/e2e_lot11_c85_c100.py::test_def_c85_schimba_seria_arata_sistemul_tva_la_incasare"
+ }
+]

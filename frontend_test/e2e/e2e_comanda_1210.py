@@ -273,13 +273,14 @@ def test_def_229_primul_exercitiu_fara_an_precedent(patron, firma_infiintata_202
     assert "Validare fără erori" in text and rand and all(p == "0,00" for p, _c in rand.values()), (text[:400], rand)
     pg.fill(".fereastra:last-of-type #bl-an", "2024")
     pg.dispatch_event(".fereastra:last-of-type #bl-an", "change")
-    # [237] refuzul stă o dată, dedesubt; lângă butoane — de ce sunt inactive și unde e motivul
+    # [237] refuzul stă o dată; [lotul 11, 440] imediat sub rândul butoanelor, cu textul lui — nota de lângă ele nu trimite „mai jos”
     pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #bl-precedent') || {}).innerText.includes('nu există')",
                          timeout=60000)
     patron.captura("inainte_de_infiintare")
     assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled()
     assert "firma s-a înființat pe 15.03.2025" in pg.inner_text(".fereastra:last-of-type #bl-precedent")
-    assert "motivul e mai jos" in pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
+    assert pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv") == "Inactive până se rezolvă refuzul:"
+    assert pg.eval_on_selector(".fereastra:last-of-type #bl-precedent", "z => !!z.previousElementSibling && z.previousElementSibling.classList.contains('rezumat-fix')"), "refuzul nu stă imediat sub rândul butoanelor (440)"
 
 
 # ── 230 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -748,8 +749,8 @@ def _bilant_oprit(patron, f):
 def test_def_237_mesajul_de_oprire_apare_o_singura_data(patron, firma_solduri_fara_loc):
     """237 (retestul Costin 12.10.2026): „în Bilanț, mesajul de oprire (solduri fără rând) apare de două ori: o dată gri, sub butoane, și o
     dată roșu, jos. Trebuie să apară o singură dată.”
-    Pașii: firma cu solduri pe care bilanțul nu le preia -> Bilanț 2025, S1005: refuzul apare O DATĂ în fereastră (roșu, dedesubt); lângă
-    butoanele inactive scrie numai de ce sunt inactive și unde e motivul.
+    Pașii: firma cu solduri pe care bilanțul nu le preia -> Bilanț 2025, S1005: refuzul apare O DATĂ în fereastră (roșu), imediat sub
+    rândul butoanelor (lotul 11, 440); lângă butoanele inactive scrie numai că așteaptă rezolvarea lui, fără „motivul e mai jos”.
     MUTAȚIA din plasă: nota de lângă butoane înapoi cu tot refuzul -> de două ori -> ROȘU."""
     pg = patron.pg
     _bilant_oprit(patron, firma_solduri_fara_loc)
@@ -757,7 +758,8 @@ def test_def_237_mesajul_de_oprire_apare_o_singura_data(patron, firma_solduri_fa
     nota = pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
     patron.captura()
     assert fereastra.count("nu au loc în bilanț") == 1 and fereastra.count("401 sold debitor 500,00") == 1, fereastra[:1500]
-    assert nota == "Inactive: bilanțul nu se poate genera — motivul e mai jos." and pg.locator(".fereastra:last-of-type #bl-val").is_disabled(), nota
+    assert nota == "Inactive până se rezolvă refuzul:" and pg.locator(".fereastra:last-of-type #bl-val").is_disabled(), nota
+    assert pg.eval_on_selector(".fereastra:last-of-type #bl-precedent", "z => !!z.previousElementSibling && z.previousElementSibling.classList.contains('rezumat-fix')"), "refuzul nu stă imediat sub rândul butoanelor (440)"
     assert pg.locator(".fereastra:last-of-type #bl-precedent .msg-eroare").count() == 1
 
 

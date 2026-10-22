@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "  return n.toLocaleString(\"ro-RO\", { minimumFractionDigits: 4, maximumFractionDigits: 6 });",
+  "inlocuire": "  return n.toLocaleString(\"ro-RO\", { minimumFractionDigits: 4, maximumFractionDigits: 4 });",
+  "test": "frontend_test/e2e/e2e_lot11_c88.py::test_def_c88_factura_in_huf_are_cursul_cu_precizia_bnr"
+ },
+ {
+  "fisier": "tenant_template.sql",
+  "ancora": "    curs_bnr numeric,\n",
+  "inlocuire": "    curs_bnr numeric(12,4),\n",
+  "test": "frontend_test/e2e/e2e_lot11_c88.py::test_def_c88_factura_in_huf_are_cursul_cu_precizia_bnr"
+ }
+]

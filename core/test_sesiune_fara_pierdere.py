@@ -96,7 +96,8 @@ def test_reinnoirea_nu_redeseneaza_aplicatia():
 def test_navigatorul_pastreaza_ecranul_in_care_s_a_tastat():
     """MUTAȚIE: păstrarea scoasă din `deschide` -> factura se pierde iar după Date firmă -> pică."""
     t = _js("navigator.js")
-    assert len(re.findall(r"_dePastrat\(\)", t)) == 3, "păstrarea la deschide + mergi (+ definiția)"
+    # [lotul 11, 445] definiția primește `oricum` (deschiderea dintr-un refuz păstrează și formularul netastat), iar `deschide` îi dă `dinRefuz`
+    assert len(re.findall(r"_dePastrat\((?:oricum = false|dinRefuz)?\)", t)) == 3, "păstrarea la deschide + mergi (+ definiția)"
     assert len(re.findall(r"sus\.pastrat = p\.pastrat \|\| null;", t)) == 3, "revenirea pe pas (buton, inapoiPas, fir)"
     assert re.search(r"replaceWith\(pastrat\.corp\)", t) and re.search(r'new CustomEvent\("nav:revenire"\)', t)
     assert re.search(r'addEventListener\("input", murdar, true\)', t)
@@ -114,4 +115,4 @@ def test_mesajul_care_promite_pastrarea_are_acoperire():
     de navigator (`deschide` păstrează pasul emiterii). Dacă păstrarea dispare, mesajul devine fals."""
     from core import capital_social
     assert re.search(r"factura rămâne așa cum ai scris-o", capital_social.mesaj_refuz(["forma juridică a firmei (SRL, SA etc.)"]))
-    assert len(re.findall(r"_dePastrat\(\)", _js("navigator.js"))) == 3
+    assert len(re.findall(r"_dePastrat\((?:oricum = false|dinRefuz)?\)", _js("navigator.js"))) == 3

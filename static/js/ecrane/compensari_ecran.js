@@ -5,7 +5,7 @@
 // CF art.282 alin.(3), (8) — `core/compensari_api.py`.
 // DS: fereastra cu tabel (cap.9 v2.96): rezumatul lipit sus `.rezumat-fix` (partenerul, ordinul, totalul), tabelul `.fd-tabel` cu cifrele
 // în `.fd-td-num`, acțiunea și mesajul ei lipite jos `.bara-fixa`; confirmarea numește notele și trimite la ele (cap.27).
-import { api, arataMesaj, bani, curataEroriCamp, dataIso, dataRo, esc, eroareCamp, ALEGE } from "../api.js?v=ff30ebaf3f";
+import { api, arataMesaj, bani, curataEroriCamp, dataIso, dataRo, dupaGenerare, esc, eroareCamp, noteGenerate, ALEGE } from "../api.js?v=58f26a3fc4";
 
 /** „CZ1 din 10.10.2026 · rest 1.210,00” — factura cum o citește omul. */
 function doc(f) {
@@ -74,12 +74,12 @@ export async function ecranCompensari(corp, nav, t, opt = {}) {
         : perechi.length ? `<table class="fd-tabel" id="cz-tabel"><thead><tr><th>Factura emisă (creanța)</th><th class="fd-td-num">Rest de încasat</th>
           <th>Factura primită (datoria)</th><th class="fd-td-num">Rest de plătit</th><th class="fd-td-num">Suma compensată (lei)</th></tr></thead>
           <tbody>${perechi.map(rand).join("")}</tbody></table>`
-        : `<div class="stare-goala" id="cz-fara-perechi">Partenerul are facturi deschise în ambele sensuri, dar niciuna nu se poate compensa încă (motivele mai jos).</div>`}
+        : `<div class="stare-goala" id="cz-fara-perechi">Partenerul are facturi deschise în ambele sensuri, dar niciuna nu se poate compensa încă.</div>`}
       ${opriteDe.length ? `<div class="caseta-info" id="cz-oprite"><span class="ci-mesaj">Nu intră în compensare: ${opriteDe.map((f) =>
         `${esc(f.document)} (${f.directie === "emisa" ? "emisă" : "primită"}) — ${esc(f.afirmatie.motiv)}`).join("; ")}.</span></div>` : ""}
       <div class="bara-fixa">
         <div id="cz-mesaj"></div>
-        <p class="dec-bara"><button class="buton-primar" id="cz-genereaza" data-actiune="POST /tenants/{tenant_id}/compensari"
+        <p class="dec-bara"><button class="buton-primar" id="cz-genereaza" data-genereaza-nota data-actiune="POST /tenants/{tenant_id}/compensari"
           ${perechi.length ? "" : "disabled"}>Generează compensarea</button></p>
       </div>`;
     const sel = corp.querySelector("#cz-partener");
@@ -97,7 +97,7 @@ export async function ecranCompensari(corp, nav, t, opt = {}) {
     }));
     if (mesajDupa) {
       const z = corp.querySelector("#cz-mesaj");
-      arataMesaj(z, mesajDupa.text, "ok");
+      dupaGenerare(z, corp.querySelector("#cz-genereaza"), { titlu: mesajDupa.text, note: mesajDupa.notele });
       if (opt.jurnal && mesajDupa.note.length) {
         z.insertAdjacentHTML("afterend", `<p><button class="buton-secundar" id="cz-jurnal" data-actiune="GET /tenants/{tenant_id}/jurnal">Vezi notele în Registrul jurnal →</button></p>`);
         const ids = mesajDupa.note;
@@ -132,6 +132,7 @@ export async function ecranCompensari(corp, nav, t, opt = {}) {
             + `${et.join(", ")} (ciornă, 401 = 4111${(r.note || []).some((n) => n.linii.length > 1) ? ", cu TVA-ul la încasare mutat" : ""}). `
             + "Facturile apar încasate / plătite pe partea compensată; notele le validezi din Registrul jurnal.",
           note: r.inregistrari || [],
+          notele: await noteGenerate(t.id, r.inregistrari || [], data),
         };
         corp._czNumar = "";
         Object.keys(sume).forEach((k) => delete sume[k]);

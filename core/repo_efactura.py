@@ -21,10 +21,12 @@ def primite_in_asteptare(cur, schema):
 
 
 def contul_invatat_al_emitentului(cur, schema, cif_emitent):
+    # [lotul 11, decizia 10.3 pct.4] CIF-ul în forma păstrată (`cui_forma`), pe ambele părți: rândurile vechi au „RO”, cele noi nu
+    from core import cui_forma as _cf
     cur.execute(f"""SELECT cont_cheltuiala FROM {schema}.efactura_primite
-                                WHERE cif_emitent=%s AND cont_cheltuiala IS NOT NULL
+                                WHERE {_cf.SQL.format(c="cif_emitent")}=%s AND cont_cheltuiala IS NOT NULL
                                 ORDER BY validat_la DESC NULLS LAST LIMIT 1""",
-                (cif_emitent,))
+                (_cf.stocare(cif_emitent) or "",))
     return cur.fetchone()
 
 
@@ -90,7 +92,8 @@ def factura_pentru_ubl(cur, schema, factura_id):
 
 
 def linii_pentru_ubl(cur, schema, factura_id):
-    cur.execute(f"""SELECT descriere, um, cantitate, pret_unitar, cota_tva, categorie_tva
+    # [lotul 11, C86] + valoare_neta (BT-131 exact: stornarea unei facturi venite din XML o poartă negată; NULL = cantitate × preț)
+    cur.execute(f"""SELECT descriere, um, cantitate, pret_unitar, cota_tva, categorie_tva, valoare_neta
                           FROM {schema}.factura_linii WHERE factura_id = %s ORDER BY id""",
                 (int(factura_id),))
     return cur.fetchall()
@@ -167,3 +170,54 @@ def rezultatul_trimiterii(cur, schema, stare, index_incarcare, execution_status,
                     WHERE id=%s""", (index_incarcare, execution_status, str(e), trimitere_id))
         return str(e)
     return None
+
+
+# ── [lotul 11, C79] TVA-ul de pe factură, pe cote (BG-23) ─────────────────────────────────────────────────
+
+# Prefixul de schemă al tabelelor de mai jos: `schema.` calificat, sau gol (schema None) când apelantul a fixat deja `search_path` (D300,
+# contarea pe `db.get_conn(schema)`). Scris în fiecare interogare: o funcție de repository fără cursor ar ieși din tiparul P7
+# (`core/test_p7_v1_citiri.py::test_fiecare_functie_de_repository_primeste_cursorul`).
+
+
+def salveaza_tva_cote(cur, schema, factura_id, cote):
+    """Rândurile de defalcare a TVA-ului facturii (`efactura_import.tva_cote_din_xml`), numai dacă factura nu le are deja — o factură
+    importată a doua oară (dedup pe număr / terț / dată) își păstrează rândurile de la primul import; două importuri concurente ale aceleiași
+    facturi se întâlnesc pe cheia (factura_id, nr) — al doilea nu mai scrie (`ON CONFLICT DO NOTHING`), nu cade. Întoarce True dacă a scris."""
+    if not cote:
+        return False
+    cur.execute(f"SELECT 1 FROM {(schema + '.') if schema else ''}factura_tva_cote WHERE factura_id = %s LIMIT 1", (factura_id,))
+    if cur.fetchone():
+        return False
+    for nr, c in enumerate(cote, start=1):
+        cur.execute(f"""INSERT INTO {(schema + '.') if schema else ''}factura_tva_cote (factura_id, nr, categorie, cota, baza, tva, sursa)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT (factura_id, nr) DO NOTHING""",
+                    (factura_id, nr, c.get("categorie"), c["cota"], c.get("baza"), c["tva"], c["sursa"]))
+    return True
+
+
+def tva_cote(cur, schema, factura_ids):
+    """{factura_id: [(cota, tva, sursa, categorie, baza)]} — TVA-ul de pe factură, în moneda documentului, în ordinea defalcării."""
+    if not factura_ids:
+        return {}
+    cur.execute(f"""SELECT factura_id, cota, tva, sursa, categorie, baza FROM {(schema + '.') if schema else ''}factura_tva_cote
+                    WHERE factura_id = ANY(%s) ORDER BY factura_id, nr""", (list(factura_ids),))
+    out = {}
+    for r in cur.fetchall():
+        r = tuple(r.values()) if isinstance(r, dict) else tuple(r)
+        out.setdefault(r[0], []).append(r[1:])
+    return out
+
+
+# ── [lotul 11, C83] cursul facturii importate din XML în valută ──────────────────────────────────────────────
+def seteaza_cursul_importului(cur, schema, factura_id, curs, data_curs, sursa, tva_lei, total_lei):
+    """Cursul și sumele în lei ale facturii din XML (`contare_facturi.curs_factura_importate`), numai dacă factura nu are încă un curs —
+    cursul fixat nu se mai recalculează (HG 1/2016 pct.35 alin.(2): „va rămâne neschimbat la data definitivării operațiunii”)."""
+    cur.execute(f"""UPDATE {(schema + '.') if schema else ''}facturi SET curs_bnr = %s, data_curs = %s, curs_sursa = %s, tva_lei = %s, total_lei = %s
+                    WHERE id = %s AND curs_bnr IS NULL""", (curs, data_curs, sursa, tva_lei, total_lei, factura_id))
+
+
+def moneda_si_data(cur, schema, factura_id):
+    """(moneda, data_emitere) ale facturii, sau None — ca ruta să aducă cursul BNR înaintea tranzacției contării."""
+    cur.execute(f"SELECT moneda, data_emitere FROM {(schema + '.') if schema else ''}facturi WHERE id = %s", (factura_id,))
+    r = cur.fetchone()
+    return (tuple(r.values()) if isinstance(r, dict) else tuple(r)) if r else None

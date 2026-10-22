@@ -1,0 +1,20 @@
+[
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "            if (r && r.cui_invalid) {",
+  "inlocuire": "            if (false) {",
+  "test": "frontend_test/e2e/e2e_lot11_a459.py::test_def_459_cui_gresit_e_refuzat_langa_camp_la_adaugarea_firmei"
+ },
+ {
+  "fisier": "core/firma_profil_api.py",
+  "ancora": "    _tp.inlocuieste_din_anaf(conn, _schema, anaf)\n",
+  "inlocuire": "    None\n",
+  "test": "frontend_test/e2e/e2e_lot11_a459.py::test_def_459_corectura_cui_inlocuieste_datele_celui_vechi_cu_cele_de_la_anaf"
+ },
+ {
+  "fisier": "core/firma_profil_api.py",
+  "ancora": "% cui_nou) + \" \" + DE_VERIFICAT_FARA_ANAF",
+  "inlocuire": "% cui_nou)",
+  "test": "frontend_test/e2e/e2e_lot11_a459.py::test_def_459_corectura_fara_date_anaf_spune_ce_ramane_de_verificat"
+ }
+]

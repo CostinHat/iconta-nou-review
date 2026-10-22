@@ -1,13 +1,23 @@
 """
 curs_bnr.py — curs valutar BNR pentru facturi in valuta.
 
-REGULA LEGALA (verificata la sursa, art. 290 alin.2 Cod fiscal + Norme HG 1/2016 pct.35):
-  Pentru o operatiune in valuta, baza de impozitare TVA se converteste in lei folosind
-  "ultimul curs de schimb comunicat de BNR" = cursul comunicat in ziua anterioara,
-  valabil pentru ziua urmatoare. In practica: pentru o factura cu data X, cursul folosit
-  este cel mai recent curs BNR publicat cu data_cube <= X (ziua bancara anterioara/curenta).
-  Cursul se fixeaza la emitere si NU se mai recalculeaza (nici la incasare, nici la regularizare).
-  Art. 319: TVA colectata trebuie exprimata SI in lei pe factura, chiar daca restul e in valuta.
+REGULA LEGALA — DOUA REGULI, verificate verbatim (lotul 11, decizia Costin din 10.3: „Cursul BNR: aplici textul legal în vigoare
+(CF art. 290, HG 1/2016 pct. 35), verificat verbatim”; `anaf_surse/cod_fiscal_227_2015_consolidat.txt` forma consolidata 08.08.2026,
+`anaf_surse/hg_1_2016_norme_cod_fiscal.txt` forma consolidata 31.03.2026, `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`):
+  1. OPERATIUNEA (`REGULA_OPERATIUNE`: factura emisa / primita, previzualizarea din formular, decontarea).
+     CF art.290 alin.(2): „cursul de schimb care se aplică este ultimul curs de schimb comunicat de Banca Națională a României [...]
+     valabil la data la care intervine exigibilitatea taxei pentru operațiunea în cauză”.
+     HG 1/2016 pct.35 alin.(1): „prin ultimul curs de schimb comunicat de Banca Națională a României se înțelege cursul de schimb
+     comunicat de respectiva bancă în ziua anterioară și care este valabil pentru operațiunile care se vor desfășura în ziua următoare.”
+     Data cubului BNR (`Cube date`) e ziua COMUNICARII (= `PublishingDate`, verificat pe `nbrfxrates.xml` 21.10.2026). Deci operatiunea
+     din ziua Z ia cel mai recent curs cu data_cube < Z (strict). Pana la lotul 11 se lua data_cube <= Z, adica si cursul comunicat
+     chiar in ziua operatiunii (F1A8 din 19.10.2026, pe productie: cursul din 19.10 in loc de cel din 16.10).
+     Cursul se fixeaza la emitere si NU se mai recalculeaza (HG 1/2016 pct.35 alin.(2): „va rămâne neschimbat la data definitivării
+     operațiunii”). Art. 319: TVA colectata trebuie exprimata SI in lei pe factura, chiar daca restul e in valuta.
+  2. REEVALUAREA LUNARA (`REGULA_SFARSIT_LUNA`, `curs_sfarsit_luna`). OMFP 1802/2014 pct.325 alin.(2) lit.b: „cursul de schimb al
+     pieței valutare comunicat de Banca Națională a României, din ultima zi bancară a lunii în cauză, pentru evaluarea creanțelor și
+     datoriilor în valută, a disponibilităților în valută [...]”. Deci cel mai recent curs cu data_cube <= ultima zi a lunii.
+     (Aceeasi norma, lit.a, pentru tranzactiile din ultima zi: „din ultima zi bancară anterioară operațiunii” — regula 1.)
 
 SURSA OFICIALA BNR — MUTATA pe `curs.bnr.ro` (verificat la sursa 04.09.2026, de pe server):
   - ultimele 10 zile: https://curs.bnr.ro/nbrfxrates10days.xml   (200, 10 zile BANCARE)
@@ -35,13 +45,15 @@ ARHITECTURA:
 """
 
 from __future__ import annotations
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from decimal import Decimal, ROUND_HALF_UP
 import xml.etree.ElementTree as ET
 import collections
 import time as _time
 from core.cache_declarat import Declaratie as _Dec
 from core.common import cate as _cate
+from core.pdf_util import data_ro as _data_ro   # DS cap.4: data pentru om, sursa unică
+from core import scadente as _sc
 
 #: PRAGUL DE VECHIME al unui curs, in zile CALENDARISTICE, intre data cursului si data facturii.
 #: **Decizie de produs, nu norma fiscala** — Costin, 04.09.2026, verbatim: *„pragul e 5 zile
@@ -50,6 +62,19 @@ from core.common import cate as _cate
 #: (art. 290 alin.2 CF) spune sa se foloseasca *ultimul curs comunicat*, nu cat de vechi poate fi.
 #: Cifra alege cat de departe de „ultimul comunicat" mai acceptam sa mergem in tacere.
 PRAG_VECHIME_ZILE = 5
+
+#: Cele doua reguli de alegere a cursului (v. antetul modulului). Nomenclator INCHIS.
+REGULA_OPERATIUNE = "operatiune"        # CF art.290 alin.(2) + HG 1/2016 pct.35 alin.(1): comunicat INAINTEA zilei operatiunii
+REGULA_SFARSIT_LUNA = "sfarsit_luna"    # OMFP 1802/2014 pct.325 alin.(2) lit.b: comunicat in ultima zi bancara a lunii (<= ziua)
+REGULI = (REGULA_OPERATIUNE, REGULA_SFARSIT_LUNA)
+
+
+def _strict(regula):
+    """True = numai cursurile comunicate INAINTEA zilei (operatiunea); False = si cel comunicat chiar in ziua (sfarsitul lunii)."""
+    if regula not in REGULI:
+        raise ValueError("regula cursului BNR necunoscută: %r (alege: %s)" % (regula, ", ".join(REGULI)))
+    return regula == REGULA_OPERATIUNE
+
 
 URL_10ZILE = "https://curs.bnr.ro/nbrfxrates10days.xml"
 URL_AN = "https://curs.bnr.ro/files/xml/years/nbrfxrates{an}.xml"
@@ -145,22 +170,98 @@ def parse_xml(continut: str) -> dict:
     return rezultat
 
 
-def curs_din_harta(harta: dict, moneda: str, data_ref: date):
+def curs_din_harta(harta: dict, moneda: str, data_ref: date, regula: str = REGULA_OPERATIUNE):
     """
     PUR: din harta {data: {moneda: curs}}, intoarce (curs, data_curs) pentru regula legala:
-    cel mai recent Cube cu data_cube <= data_ref care are moneda ceruta.
+    `REGULA_OPERATIUNE` — cel mai recent Cube cu data_cube < data_ref (comunicat in ziua anterioara, HG 1/2016 pct.35 alin.(1));
+    `REGULA_SFARSIT_LUNA` — cel mai recent Cube cu data_cube <= data_ref (ultima zi bancara a lunii, OMFP 1802/2014 pct.325).
     Intoarce (None, None) daca nu exista niciun curs eligibil (ex. data prea veche pt XML dat).
     RON -> (Decimal(1), data_ref) fara cautare.
     """
+    strict = _strict(regula)
     moneda = moneda.upper()
     if moneda == "RON":
         return Decimal("1"), data_ref
-    zile = sorted((d for d in harta if d <= data_ref), reverse=True)
+    zile = sorted((d for d in harta if (d < data_ref if strict else d <= data_ref)), reverse=True)
     for d in zile:
         c = harta[d].get(moneda)
         if c is not None:
             return c, d
     return None, None
+
+
+def ziua_bancara_asteptata(zi: date, regula: str = REGULA_OPERATIUNE):
+    """PUR. [460] Ziua in care BNR a comunicat cursul pe care il cere `regula` pentru `zi`: operatiunea — ultima zi bancara DINAINTEA
+    ei (HG 1/2016 pct.35 alin.(1): „comunicat de respectiva bancă în ziua anterioară”); sfarsitul lunii — ultima zi bancara <= `zi`
+    (OMFP 1802/2014 pct.325 alin.(2) lit.b: „din ultima zi bancară a lunii în cauză”).
+
+    Zilele bancare = zilele lucratoare din `scadente.e_zi_lucratoare` (L–V fara sarbatorile legale, art.139 Codul muncii). MASURAT pe
+    arhivele BNR (`nbrfxrates2024/2025/2026.xml`, 22.10.2026): zilele cu curs sunt EXACT zilele lucratoare — 252/252, 248/248, 202/202
+    (pana la 21.10.2026), nicio zi lucratoare fara curs si niciun curs intr-o zi nelucratoare.
+
+    `None` = nu se poate sti (an neacoperit de calendar): apelantii cad atunci pe pragul de vechime, ca inainte."""
+    d = zi - timedelta(days=1) if _strict(regula) else zi
+    try:
+        for _ in range(15):
+            if _sc.e_zi_lucratoare(d):
+                return d
+            d -= timedelta(days=1)
+    except ValueError:      # `scadente.sarbatori_legale`: an in afara calendarului
+        return None
+    return None
+
+
+def cursul_zilei_lipsa(zi: date, data_curs: date, azi: date = None):
+    """PUR. [460] Pentru operatiunea (factura) din `zi`: `None` daca `data_curs` e chiar ultimul curs comunicat inaintea ei (sau nu se
+    poate sti); altfel ce lipseste si ce se foloseste, cu mesajul pentru contabil: {"asteptat", "folosit", "mesaj"} (datele ISO).
+
+    [lotul 11, AT] Lipsa e o AFIRMATIE TIPATA (`afirmatii.afirmatie`, decizia 21.08.2026): `absenta_observatie` — cursul nu e intr-o sursa
+    NUMITA (cursurile BNR preluate in aplicatie), ca refuzul reevaluarii fara cursul lunii (`uc_reevaluare`). `motiv` = acelasi text ca
+    `mesaj` (pe care il citeste ecranul, `emitere_ecran.js`)."""
+    asteptata = ziua_bancara_asteptata(zi, REGULA_OPERATIUNE)
+    if asteptata is None or data_curs is None or data_curs >= asteptata:
+        return None
+    azi = azi or date.today()
+    de_ce = ("BNR îl comunică abia azi" if asteptata == azi else
+             "BNR nu l-a comunicat încă" if asteptata > azi else
+             "preluarea lui de la BNR n-a reușit încă; aplicația reîncearcă singură")
+    m = ("Cursul BNR comunicat pe %s (ultimul înaintea datei facturii, %s) lipsește din aplicație: %s. Până atunci se folosește cursul "
+         "din %s, iar factura emisă acum îl păstrează (se fixează la emitere)." % (_data_ro(asteptata), _data_ro(zi), de_ce, _data_ro(data_curs)))
+    from core import afirmatii as _af
+    return _af.afirmatie("absenta_observatie", "curs BNR al zilei", m,
+                         surse_consultate="cursurile BNR preluate în aplicație, pentru ziua bancară dinaintea datei facturii",
+                         asteptat=asteptata.isoformat(), folosit=data_curs.isoformat(), mesaj=m)
+
+
+#: [C88, lotul 11] PRECIZIA cursului pe unitate, cum o da BNR: valoarea din XML are cel mult 4 zecimale, iar cinci monede sunt cotate la 100
+#: de unitati (`multiplier="100"`: HUF, IDR, ISK, JPY, KRW — masurat pe arhivele 2024/2025/2026, 22.10.2026), deci cursul pe unitate are
+#: cel mult 6 zecimale (HUF 1,4719 / 100 = 0,014719; IDR 0,0256 / 100 = 0,000256). Nu e norma fiscala, e forma datelor BNR. Pana la C88
+#: coloanele de curs aveau 4 zecimale: HUF 0,014719 se pastra 0,0147 (v. `core/migrare_curs_precizie.py`).
+CURS_Q = Decimal("0.000001")
+#: Cursul se scrie cu cel putin 4 zecimale (forma BNR pentru monedele cotate la unitate: 5,2409).
+CQ_MIN = Decimal("0.0001")
+ZECIMALE_CURS = -CURS_Q.as_tuple().exponent
+#: Monedele cotate de BNR la 100 de unitati (`multiplier="100"`), MASURAT pe arhivele 2024, 2025, 2026 (aceleasi cinci in toti anii).
+#: Folosit NUMAI pentru precizia unui curs CALCULAT (lei / valuta, cursul din evidenta la reevaluare): cursul BNR insusi vine exact din
+#: `parse_xml`, oricare ar fi multiplicatorul. Garda: `core/test_lot11_c88_curs_precizie.py` (pe XML-ul real al arhivei).
+MONEDE_COTATE_LA_100 = frozenset({"HUF", "IDR", "ISK", "JPY", "KRW"})
+
+
+def curs_derivat(x, moneda: str) -> Decimal:
+    """PUR. [C88] Un curs CALCULAT (ex. sold in lei / sold in valuta) rotunjit (ROUND_HALF_UP) la precizia cursului BNR al monedei — 6
+    zecimale la monedele cotate la 100, 4 la celelalte: EUR 1906,98 / 363 -> 5,2534; HUF 14719 / 1000000 -> 0,014719 (cu 4 zecimale ar
+    fi fost 0,0147)."""
+    q = CURS_Q if (moneda or "").upper() in MONEDE_COTATE_LA_100 else CQ_MIN
+    return Decimal(str(x)).quantize(q, rounding=ROUND_HALF_UP)
+
+
+def curs_text(x) -> str:
+    """PUR. [C88] Cursul pentru om (PDF, mesaje), in forma romaneasca, cu precizia BNR: cel mult `ZECIMALE_CURS` zecimale (ROUND_HALF_UP),
+    cel putin 4, fara zerourile de prisos dintre ele — „5,2409”, „0,014719”, „0,01472” (5.240900 -> „5,2409”)."""
+    q = Decimal(str(x)).quantize(CURS_Q, rounding=ROUND_HALF_UP).normalize()
+    if q.as_tuple().exponent > CQ_MIN.as_tuple().exponent:
+        q = q.quantize(CQ_MIN, rounding=ROUND_HALF_UP)   # numai completează zerourile până la 4 zecimale
+    return format(q, "f").replace(".", ",")
 
 
 def rotunjeste(x: Decimal, zecimale: int = 2) -> Decimal:
@@ -198,17 +299,53 @@ def _monede_din_cache(conn):
         return set()
 
 
-def _din_cache(conn, moneda: str, data_ref: date):
-    """Cauta in public.curs_bnr_zilnic cel mai recent curs cu data <= data_ref."""
+def _din_cache(conn, moneda: str, data_ref: date, regula: str = REGULA_OPERATIUNE):
+    """Cauta in public.curs_bnr_zilnic cel mai recent curs eligibil dupa `regula` (operatiunea: data < data_ref; sfarsitul lunii:
+    data <= data_ref) — aceeasi regula ca `curs_din_harta`."""
     with conn.cursor() as cur:
         cur.execute(
             "SELECT curs, data FROM public.curs_bnr_zilnic "
-            "WHERE moneda = %s AND data <= %s ORDER BY data DESC LIMIT 1",
+            "WHERE moneda = %s AND data " + ("<" if _strict(regula) else "<=") + " %s ORDER BY data DESC LIMIT 1",
             (moneda.upper(), data_ref))
         row = cur.fetchone()
     if row:
         return Decimal(str(row[0])), row[1]
     return None, None
+
+
+def zile_bancare_lipsa(conn, pana_la: date):
+    """[460] Zilele bancare ale anului lui `pana_la`, de la 1 ianuarie pana la `pana_la` inclusiv, fara niciun curs in cache — golurile
+    de umplut din arhiva anuala BNR. Zilele bancare = `ziua_bancara_asteptata` (zilele lucratoare; v. masuratoarea de acolo). Un an
+    neacoperit de calendar -> [] (nu se poate sti)."""
+    zile, d = [], date(pana_la.year, 1, 1)
+    try:
+        while d <= pana_la:
+            if _sc.e_zi_lucratoare(d):
+                zile.append(d)
+            d += timedelta(days=1)
+    except ValueError:
+        return []
+    if not zile:
+        return []
+    with conn.cursor() as cur:
+        cur.execute("SELECT DISTINCT data FROM public.curs_bnr_zilnic WHERE data BETWEEN %s AND %s", (zile[0], pana_la))
+        are = {r[0] for r in cur.fetchall()}
+    return [z for z in zile if z not in are]
+
+
+def stare_curs_zilei(conn, azi: date = None):
+    """[460] Pentru sanatatea aplicatiei: cursul de care au nevoie operatiunile de AZI (comunicat in ultima zi bancara dinaintea ei,
+    HG 1/2016 pct.35 alin.(1)) e in cache? -> {"asteptat", "ultima_zi" (cea mai recenta zi din cache), "lipsa" (bool | None = nu se
+    poate sti), "zile_lipsa" (golurile anului, ISO)}."""
+    azi = azi or date.today()
+    asteptata = ziua_bancara_asteptata(azi)
+    with conn.cursor() as cur:
+        cur.execute("SELECT max(data) FROM public.curs_bnr_zilnic WHERE data < %s", (azi,))
+        ultima = cur.fetchone()[0]
+    goluri = zile_bancare_lipsa(conn, asteptata) if asteptata else []
+    return {"asteptat": asteptata.isoformat() if asteptata else None, "ultima_zi": ultima.isoformat() if ultima else None,
+            "lipsa": None if asteptata is None else (ultima is None or ultima < asteptata),
+            "zile_lipsa": [z.isoformat() for z in goluri]}
 
 
 # [E2b, 15.09.2026] ACTUL (`asigura_cursul` / `_salveaza_cache`) a plecat in
@@ -269,9 +406,17 @@ def _preluare(moneda, data_factura):
 # `curs_pentru` primeste conexiunea apelantului si decide.
 
 
-def curs_pentru(conn, moneda: str, data_factura: date, prag_zile: int = PRAG_VECHIME_ZILE):
+def curs_sfarsit_luna(conn, moneda: str, zi: date, prag_zile: int = PRAG_VECHIME_ZILE):
+    """Cursul reevaluarii lunare (OMFP 1802/2014 pct.325 alin.(2) lit.b): comunicat in ultima zi bancara a lunii, adica cel mai recent
+    curs cu data <= `zi` (ultima zi a lunii). Aceleasi refuzuri ca `curs_pentru`."""
+    return curs_pentru(conn, moneda, zi, prag_zile=prag_zile, regula=REGULA_SFARSIT_LUNA)
+
+
+def curs_pentru(conn, moneda: str, data_factura: date, prag_zile: int = PRAG_VECHIME_ZILE, regula: str = REGULA_OPERATIUNE):
     """
-    Intoarce (curs: Decimal, data_curs: date, sursa: str) pentru factura in valuta.
+    Intoarce (curs: Decimal, data_curs: date, sursa: str) pentru operatiunea in valuta din ziua `data_factura` — cursul comunicat de
+    BNR INAINTEA zilei (CF art.290 alin.(2), HG 1/2016 pct.35 alin.(1)); cu `regula=REGULA_SFARSIT_LUNA`, cursul din ultima zi
+    bancara a lunii (`curs_sfarsit_luna`).
       1. RON -> (1, data_factura, "ron")
       2. cache-first, **dar numai daca ce e in cache e in interiorul pragului**
       3. altfel: descarca XML BNR (10zile pt recent, arhiva anuala pt vechi), salveaza, re-cauta
@@ -286,12 +431,13 @@ def curs_pentru(conn, moneda: str, data_factura: date, prag_zile: int = PRAG_VEC
     ce am cablat gazda noua, drumul nu trecea pe-acolo. *Cache-ul e o scurtatura, nu o sursa — iar o
     scurtatura care nu se uita la vechime e o sursa care minte.*
     """
+    _strict(regula)
     moneda = moneda.upper()
     if moneda == "RON":
         return Decimal("1"), data_factura, "ron"
 
     # 2) cache, dar numai daca e destul de proaspat pentru data ceruta
-    c, dc = _din_cache(conn, moneda, data_factura)
+    c, dc = _din_cache(conn, moneda, data_factura, regula)
     if c is not None and (data_factura - dc).days <= prag_zile:
         return c, dc, "bnr"
 
@@ -302,7 +448,7 @@ def curs_pentru(conn, moneda: str, data_factura: date, prag_zile: int = PRAG_VEC
     # Recitesc cache-ul, care poate a fost tocmai imbogatit. Daca ce iese e in interiorul pragului,
     # e un raspuns; daca e mai vechi, e un refuz care POARTA cursul. *Recitirea asta E revalidarea:
     # decizia se ia pe ce e in cache ACUM, nu pe ce a adus descarcarea.*
-    c, dc = _din_cache(conn, moneda, data_factura)
+    c, dc = _din_cache(conn, moneda, data_factura, regula)
     if c is not None:
         vechime = (data_factura - dc).days
         if vechime <= prag_zile:

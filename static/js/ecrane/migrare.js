@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=ff30ebaf3f";
+import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=58f26a3fc4";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -16,7 +16,7 @@ let _migTip = "ok";   // [C24/C25] „avert” când salvarea a lăsat rânduri 
 function _consumaMigMesaj(corp) {
   if (!_migMesaj || !corp) return;
   const z = document.createElement("div");
-  z.style.margin = "0 0 12px";
+  z.style.margin = "0 0 6px";   // [lotul 11, 394 la 1280×720] confirmarea + aplicația aleasă încap fără derulare
   corp.insertBefore(z, corp.firstChild);
   arataMesaj(z, _migMesaj, _migTip);
   _migMesaj = ""; _migTip = "ok";
@@ -32,16 +32,35 @@ function _cadruPrev(sus, tabel, jos) {
 // totalurile vechi și noi, cere confirmare”. Caseta de sus (`#mig-inlocuire`) arată textul serverului (`avertisment_inlocuire`: ce există,
 // ce aduce fișierul, datele care se sprijină pe ele); salvarea cere confirmarea explicită; un 409 de la server (datele au apărut între
 // timp) deschide aceeași confirmare, cu textul lui. Gard: core/test_lot10_inlocuire_clasa.py.
+// [lotul 11, deficiența 446, comanda Costin 11.1 pct.14, verbatim în DECIZII: „la confirmarea duplicatelor, avertismentul apare de două
+// ori, tabelul se strânge la un rând, iar «Salvează salariații» rămâne activ lângă «Actualizez fișele». Avertismentul nu e eroare.”]
+// - avertismentul (textul serverului) stă O SINGURĂ DATĂ, sus, cu stilul avertismentului (`arataMesaj(…, "avert")`, DS cap.6: galben),
+//   nu în caseta roșie a refuzului; zona e goală în șablon și se umple după desenare (`_arataInlocuirea`);
+// - la salvare, confirmarea e o întrebare scurtă (`intrebare`), nu încă o dată avertismentul, deci bara de jos rămâne mică și tabelul
+//   își păstrează locul;
+// - cât confirmarea e deschisă, butonul principal e ascuns: o singură acțiune activă („Actualizez fișele” / „Renunță”); revine la „Renunță”.
 function _casetaInlocuire(date) {
-  return date.avertisment_inlocuire ? `<div class="caseta-atentie" id="mig-inlocuire" role="status"><div class="ca-mesaj">${esc(date.avertisment_inlocuire)}</div></div>` : "";
+  return date.avertisment_inlocuire ? `<div id="mig-inlocuire" role="status"></div>` : "";
 }
-function _confirmaInlocuirea(zona, date, textOk, salveaza) {
+function _arataInlocuirea(corp, date) {
+  const z = corp.querySelector("#mig-inlocuire");
+  if (z && date.avertisment_inlocuire) arataMesaj(z, date.avertisment_inlocuire, "avert");
+}
+function _confirmaInLoculButonului(zona, mesajHtml, textOk, laConfirm) {
+  const bara = zona.closest(".bara-fixa");
+  const buton = bara ? bara.querySelector("button.mig-buton") : null;
+  if (buton) buton.hidden = true;
+  confirmaCaseta(zona, mesajHtml, () => { if (buton) buton.hidden = false; laConfirm(); }, { textOk });
+  const nu = document.getElementById("ca-nu");
+  if (nu && buton) nu.addEventListener("click", () => { buton.hidden = false; });
+}
+function _confirmaInlocuirea(zona, date, textOk, salveaza, intrebare) {
   if (!date.avertisment_inlocuire) { salveaza(false); return; }
-  confirmaCaseta(zona, esc(date.avertisment_inlocuire), () => salveaza(true), { textOk });
+  _confirmaInLoculButonului(zona, esc(intrebare), textOk, () => salveaza(true));
 }
 function _inlocuire409(e, inlocuieste, zona, textOk, salveaza) {
   if (!(e && e.cod === 409 && !inlocuieste)) return false;
-  confirmaCaseta(zona, esc(e.mesaj || ""), () => salveaza(true), { textOk });
+  _confirmaInLoculButonului(zona, esc(e.mesaj || ""), textOk, () => salveaza(true));   // datele au apărut între timp: textul serverului
   return true;
 }
 import { sesiune } from "../sesiune.js?v=898215e0ee";
@@ -163,16 +182,22 @@ const TEXT_FARA_BUTON = `
 
 function _randeazaAplicatii(zona, aplicatii, corp, nav) {
   const inactive = aplicatii.filter((a) => !a.activa).map((a) => a.nume);
+  // [lotul 11, 394 la 1280×720 — decizia Costin 10.3, verbatim în DECIZII „Comanda 10.3” pct.4: „totul încape într-un ecran, fără
+  // derulare”] măsurat în Chromium: 4 px de derulare fără aplicație aleasă și 92 px cu aplicația activă aleasă (lotul 9 măsurase numai 1366×768 și
+  // 1700×1000, fără aplicație aleasă). „Cum se face” stă pe rândul butoanelor (deschis, se arată peste pași, fără să-i împingă — stil.css
+  // `.mig-apl-rand`), nota aplicației alese e pe două rânduri, iar rândurile pașilor sunt cu 2 px mai scunde.
   zona.innerHTML = `
-    <div role="group" aria-label="Aplicația din care migrezi" style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 6px">
+    <div class="mig-apl-rand">
+    <div role="group" aria-label="Aplicația din care migrezi" style="display:flex;gap:8px;flex-wrap:wrap">
       ${aplicatii.map((a) => {
         const ales = !!(_aplicatie && _aplicatie.cheie === a.cheie);
         return `<button type="button" class="buton-secundar${ales ? " buton-activ" : ""}" data-aplicatie="${esc(a.cheie)}" data-fara-actiune="alegerea aplicației din care migrezi — schimbă numai textul pașilor"${a.activa ? ` aria-pressed="${ales}"` : ` disabled aria-describedby="mig-apl-inactive"`}>${esc(a.nume)}</button>`;
       }).join("")}
     </div>
-    ${inactive.length ? `<p class="ecran-nota" id="mig-apl-inactive" style="margin:0 0 10px">${esc(_enumera(inactive))}: iConta.eu nu le citește încă exporturile. Butonul devine activ când începe să le citească.</p>` : ""}
-    ${_aplicatie ? `<p class="mig-intro" id="mig-apl-aleasa">Pașii de mai jos sunt pentru preluarea din ${esc(_aplicatie.nume)}: unde iConta.eu îi citește exportul, pasul spune ce să scoți din ${esc(_aplicatie.nume)} și îl primește direct; la ceilalți folosești modelul CSV.</p>` : ""}
-    ${TEXT_FARA_BUTON}`;
+    ${TEXT_FARA_BUTON}
+    </div>
+    ${inactive.length ? `<p class="ecran-nota" id="mig-apl-inactive" style="margin:0 0 4px">${esc(_enumera(inactive))}: iConta.eu nu le citește încă exporturile. Butonul devine activ când începe să le citească.</p>` : ""}
+    ${_aplicatie ? `<p class="mig-intro" id="mig-apl-aleasa">Pentru ${esc(_aplicatie.nume)}: unde pasul spune ce să scoți din ${esc(_aplicatie.nume)}, iConta.eu primește exportul direct; la ceilalți folosești modelul CSV.</p>` : ""}`;
   zona.querySelectorAll("button[data-aplicatie]:not([disabled])").forEach((b) => {
     b.addEventListener("click", () => {
       const a = aplicatii.find((x) => x.cheie === b.dataset.aplicatie);
@@ -933,9 +958,10 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
   ];
   // [425] metoda de stoc, cerută când balanța are sold pe 371 și firma n-o are declarată (aceleași două valori ca în Date firmă)
   const metode = date.cere_metoda_stoc ? (date.metode_stoc || []) : [];
-  const campMetoda = metode.length ? `<label class="camp" style="max-width:520px;margin:10px 0"><span class="camp-eticheta">Metoda de stoc a firmei <span class="oblig">*</span></span>
+  // [lotul 11, 424] câmpurile salvării stau pe un rând, în bara de jos, cu ajutorul scurt: bara rămâne mică și tabelul își păstrează locul
+  const campMetoda = metode.length ? `<label class="camp"><span class="camp-eticheta">Metoda de stoc a firmei <span class="oblig">*</span></span>
       <select id="mig-metoda-stoc" class="camp-input">${ALEGE}${metode.map(([v, et]) => `<option value="${esc(v)}">${esc(et)}</option>`).join("")}</select>
-      <span class="camp-ajutor">Balanța are sold pe mărfuri (371), iar metoda de stoc a firmei nu e declarată. De ea depinde cum se descarcă marfa (lunar, global, sau pe articol, la fiecare ieșire); se scrie în Date firmă odată cu balanța.</span></label>` : "";
+      <span class="camp-ajutor">Balanța are sold pe 371; de metodă depinde descărcarea mărfii. Se scrie în Date firmă.</span></label>` : "";
   // [lotul 10, deficiența 426] „Înainte de înlocuire: spune că există deja o balanță, arată totalurile vechi și noi, cere confirmare”
   const existenta = date.existenta;
 
@@ -950,13 +976,15 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
     ${_notaCititeBalanta(date)}
     <div id="mig-rulaje"></div>`,
     tabelPrevizualizare(coloane, randuri),
-    `<label class="camp" style="max-width:320px;margin:10px 0"><span class="camp-eticheta">Data balanței <span class="oblig">*</span></span>
+    `<div class="grila-doc" style="grid-template-columns:${metode.length ? "minmax(220px, 1fr) minmax(240px, 1fr)" : "minmax(220px, 640px)"};margin-top:8px">
+      <label class="camp"><span class="camp-eticheta">Data balanței <span class="oblig">*</span></span>
       <input type="date" id="mig-data-bal" class="camp-input" max="${dataIso()}" value="${esc(date.data_propusa || "")}">
-      <span class="camp-ajutor">Data la care sunt soldurile din fișier — de obicei ultima zi a lunii dinaintea preluării. Din ea se propune luna de la care lucrezi în iConta.eu.</span></label>
-    ${campMetoda}
+      <span class="camp-ajutor">De obicei ultima zi a lunii dinaintea preluării; din ea se propune luna de început.</span></label>
+    ${campMetoda}</div>
     <div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-salveaza-sold" data-actiune="POST /tenants/{tenant_id}/solduri">${existenta ? "Înlocuiește balanța" : "Salvează soldurile"}</button>`);
   nav.setInapoi(() => wizardSolduri(corp, nav));
+  _arataInlocuirea(corp, date);   // [446]
   // [425] fără rulaje: ce lipsește și ce afectează (textul vine de la server: sursa unică, aceeași frază și după salvare)
   if (!cuRulaje && date.avertisment_rulaje) arataMesaj(corp.querySelector("#mig-rulaje"), date.avertisment_rulaje, "avert");
 
@@ -1013,7 +1041,7 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
     }
     if (cereAlegerile(corp, ["#mig-metoda-stoc"])) return;   // [425] metoda de stoc: aplicația nu alege în locul omului
     // [426] înlocuirea unei balanțe existente se confirmă explicit, cu totalurile vechi și noi (și notele care se recalculează)
-    _confirmaInlocuirea(eroare, date, "Înlocuiesc balanța", salveaza);
+    _confirmaInlocuirea(eroare, date, "Înlocuiesc balanța", salveaza, "Înlocuiești balanța de deschidere a firmei cu cea din fișier?");
   });
 }
 
@@ -1026,8 +1054,12 @@ function _notaCititeBalanta(date) {
   if (c.debit || c.credit) linii.push(`Soldurile ${date.rulaje ? "finale " : ""}s-au citit din coloanele „${esc(c.debit || "—")}” și „${esc(c.credit || "—")}”.`);
   // [lotul 10, 425] perechile balanței de verificare citite: soldul de la 1 ianuarie și rulajele intră ca sold inițial și sume precedente
   const per = date.perechi || {};
-  const NUME_PER = { si: "soldurile la 1 ianuarie", sp: "sumele precedente", rl: "rulajele perioadei", ts: "totalul sumelor" };
-  const citite = ["si", "sp", "rl", "ts"].filter((g) => per[g]).map((g) => `${NUME_PER[g]} din „${esc(per[g][0])}” / „${esc(per[g][1])}”`);
+  // [lotul 11, 439] și „rulajele precedente” / „totalul rulajelor”; la fiecare pereche cumulată, cum s-a citit (forma stabilită din date)
+  const NUME_PER = { si: "soldurile la 1 ianuarie", sp: "sumele precedente", rp: "rulajele precedente", rl: "rulajele perioadei",
+    tr: "totalul rulajelor", ts: "totalul sumelor" };
+  const forma = date.forma_rulaje || {};
+  const cuSi = (g) => (g in forma ? (forma[g] ? " (cu soldul inițial al anului)" : " (fără soldul inițial al anului)") : "");
+  const citite = ["si", "sp", "rp", "rl", "tr", "ts"].filter((g) => per[g]).map((g) => `${NUME_PER[g]}${cuSi(g)} din „${esc(per[g][0])}” / „${esc(per[g][1])}”`);
   if (date.rulaje && citite.length) linii.push(`Din aceeași balanță s-au citit ${citite.join(", ")}: intră ca sold inițial și sume precedente (rulajele anului), cu toate conturile care au rulaj — și cele cu sold final 0.`);
   const ign = date.ignorate || [];
   if (ign.length) linii.push(`${ign.length === 1 ? "Un rând nu e cont și nu intră" : cate(ign.length, "rând", "rânduri") + " nu sunt conturi și nu intră"} (totaluri, titluri): ${ign.slice(0, 6).map((x) => "„" + esc(x) + "”").join(", ")}${ign.length > 6 ? " …" : ""}.`);
@@ -1037,7 +1069,11 @@ function _notaCititeBalanta(date) {
     ? `${date.fara_sold === 1 ? "Un cont fără sold și fără rulaj nu intră" : cate(date.fara_sold, "cont", "conturi") + " fără sold și fără rulaj nu intră"}.`
     : `${date.fara_sold === 1 ? "Un cont cu sold final 0 nu intră" : cate(date.fara_sold, "cont", "conturi") + " cu sold final 0 nu intră"}.`);
   // [344] informativă (ce s-a citit), nu avertisment: caseta albastră, nu cea galbenă
-  return linii.length ? `<div class="caseta-info" role="status"><div class="ca-mesaj">${linii.join("<br>")}</div></div>` : "";
+  // [lotul 11, 424] cu mai multe rânduri, primul (coloanele soldului) e titlul unei note pliate, iar restul (perechile, totalurile,
+  // sinteticele) stă în ea: e ce s-a citit, nu ce trebuie văzut cât derulezi tabelul — deschisă, lungea rezumatul lipit sus peste fereastră
+  if (!linii.length) return "";
+  if (linii.length === 1) return `<div class="caseta-info" role="status"><div class="ca-mesaj">${linii[0]}</div></div>`;
+  return `<details class="dec-xml" id="mig-citit"><summary>${linii[0]}</summary><div class="caseta-info" role="status"><div class="ca-mesaj">${linii.slice(1).join("<br>")}</div></div></details>`;
 }
 
 
@@ -1213,6 +1249,13 @@ function gateazaPartial(corp, butonId, erori, total, eticheta) {
   buton.textContent = `Salvează ${bune === 1 ? "rândul bun" : "cele " + cate(bune, "rând bun", "rânduri bune")} (${eticheta})`;
 }
 
+// [lotul 11, deficiența 447, comanda Costin 11.1 pct.15: „mesajul după import: «0 noi, 3 fișe actualizate», nu «3 importați» plus «3
+// actualizate»”] o singură numărătoare: câte au intrat NOI și câte au ACTUALIZAT ce exista (cum le-a numărat serverul la scriere);
+// rândurile respinse le adaugă `_mesajSalvarePartiala`, numite, o singură dată.
+function _noiActualizate(rez, actSg, actPl) {
+  const noi = (rez && rez.noi) || 0, act = (rez && rez.actualizate) || 0;
+  return `${cate(noi, "nou", "noi")}, ${cate(act, actSg, actPl)}`;
+}
 function _mesajSalvarePartiala(rez, ceSalvat) {
   const resp = (rez && rez.respinse) || [];
   if (!resp.length) return ceSalvat;
@@ -1239,7 +1282,10 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
     <div class="mig-coer">${bandaStari(randuri)}</div>
     ${_casetaInlocuire(date)}
     ${casetaIgnorate(date.ignorate)}
-    ${coer.length ? `<div class="${coer.every((c) => c.coincide) ? "caseta-info" : "caseta-atentie"}" style="margin:8px 0"><div class="ca-mesaj">Soldurile pe parteneri, față de soldul fiecărui cont:<ul>${coerHTML}</ul></div></div>` : ""}`,
+    ${!coer.length ? "" : coer.every((c) => c.coincide)
+    // [lotul 11, 424] potrivirea e informație: pliată, cu concluzia la vedere; nepotrivirea (rândurile nu intră) rămâne deschisă, în caseta ei
+    ? `<details class="dec-xml" id="mig-coer-cont"><summary>Soldurile pe parteneri, față de soldul fiecărui cont: se potrivesc (${coer.map((c) => esc(c.cont)).join(", ")})</summary><ul>${coerHTML}</ul></details>`
+    : `<div class="caseta-atentie" style="margin:8px 0"><div class="ca-mesaj">Soldurile pe parteneri, față de soldul fiecărui cont:<ul>${coerHTML}</ul></div></div>`}`,
     tabelPrevizualizare([
       { titlu: "Cont", celula: (r) => esc(r.cont) },
       { titlu: "CUI", celula: (r) => esc(r.cui || "") },
@@ -1250,6 +1296,7 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
     `<div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-salveaza-part" data-actiune="POST /tenants/{tenant_id}/parteneri">${date.existenta ? "Înlocuiește partenerii" : "Salvează partenerii"}</button>`);
   nav.setInapoi(() => wizardParteneri(corp, nav));
+  _arataInlocuirea(corp, date);   // [446]
   gateazaPartial(corp, "mig-salveaza-part", date.erori, randuri.length, "parteneri");   // [decizia Costin 14.10.2026 pct.2]
   const buton = corp.querySelector("#mig-salveaza-part");
   const textButon = buton.textContent;
@@ -1271,7 +1318,7 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
       }
     }
     eroare.textContent = "";
-    _confirmaInlocuirea(eroare, date, "Înlocuiesc soldurile pe parteneri", salveaza);   // [426] cu totalurile vechi și noi
+    _confirmaInlocuirea(eroare, date, "Înlocuiesc soldurile pe parteneri", salveaza, "Înlocuiești soldurile pe parteneri cu cele din fișier?");   // [426] cu totalurile vechi și noi
   });
 }
 
@@ -1382,6 +1429,9 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
   };
   const deVerificat = (v) => `${v}<div class="tip-desc">de verificat</div>`;
   const dv = (r) => r.de_verificat || [];
+  // [lotul 11, 420] pe un salariat existent, câmpul lipsă din fișier arată valoarea din fișa lui (`salariati_import_api.din_fise`), pe care
+  // o păstrează salvarea — spusă ca atare; pe un salariat nou, propunerea
+  const dinFisa = (r, camp) => ((r.din_fisa || []).includes(camp) ? "din fișa existentă" : "propusă");
   const nr = (r) => esc(String(r.rand_fisier || ""));
   // [lotul 10, deficiența 420, comanda Costin 10.1] „Câmpurile lipsă se completează pe ecran, înainte de import, cu propunere editabilă
   // (normă întreagă, funcție de bază Da) […] (intră marcate «de verificat»)”: pe rândul unde fișierul n-are norma / funcția de bază,
@@ -1396,13 +1446,13 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     const n = nr(r);
     return `<select id="mig-norma-${n}" class="camp-input" data-rand="${n}" data-propus="tip_norma" aria-label="Norma de lucru — rândul ${n}">${alegeDacaLipseste(r.tip_norma)}<option value="intreaga"${r.tip_norma === "intreaga" ? " selected" : ""}>întreagă (8 h)</option><option value="partiala"${r.tip_norma === "partiala" ? " selected" : ""}>parțială</option></select>`
       + `<input type="number" id="mig-ore-${n}" class="camp-input" data-rand="${n}" data-propus="ore_zi" min="1" max="7.5" step="0.5" aria-label="Ore pe zi — rândul ${n}" value="${r.tip_norma === "partiala" ? esc(String(r.ore_zi || "")) : ""}"${r.tip_norma === "partiala" ? "" : " hidden"}>`
-      + (dv(r).includes("tip_norma") ? `<div class="tip-desc">propusă — de verificat</div>` : "");
+      + (dv(r).includes("tip_norma") ? `<div class="tip-desc">${dinFisa(r, "tip_norma")} — de verificat</div>` : "");
   };
   const functieBaza = (r) => {
     if (!fbazaEd.has(String(r.rand_fisier))) return dn(r.functie_baza);
     const n = nr(r);
     return selectDaNu(`id="mig-fbaza-${n}" data-rand="${n}" data-propus="functie_baza"`, r.functie_baza, `Funcția de bază — rândul ${n}`)
-      + (dv(r).includes("functie_baza") ? `<div class="tip-desc">propusă — de verificat</div>` : "");
+      + (dv(r).includes("functie_baza") ? `<div class="tip-desc">${dinFisa(r, "functie_baza")} — de verificat</div>` : "");
   };
   const coloane = [
     { titlu: "Nume", celula: (r) => esc(`${r.nume || ""} ${r.prenume || ""}`.trim() || "—") },
@@ -1412,8 +1462,9 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     { titlu: "Brut", num: true, celula: (r) => bani(r.salariu_brut) },
     { titlu: "Normă", celula: norma },
     { titlu: "Funcție de bază", celula: functieBaza },
-    { titlu: "Scutit minim", celula: (r) => (dv(r).includes("scutit_contrib_minim") ? deVerificat("Nu") : dn(r.scutit_contrib_minim)) },
-    { titlu: "Persoane în întreținere", num: true, celula: (r) => (dv(r).includes("persoane_intretinere") ? deVerificat("0") : esc(String(r.persoane_intretinere || 0))) },
+    // [lotul 11, 420] valoarea care intră (propunerea „Nu” / 0, sau cea din fișa existentă), nu un text fix
+    { titlu: "Scutit minim", celula: (r) => (dv(r).includes("scutit_contrib_minim") ? deVerificat(dn(!!r.scutit_contrib_minim)) : dn(r.scutit_contrib_minim)) },
+    { titlu: "Persoane în întreținere", num: true, celula: (r) => (dv(r).includes("persoane_intretinere") ? deVerificat(esc(String(r.persoane_intretinere || 0))) : esc(String(r.persoane_intretinere || 0))) },
   ];
 
   corp.innerHTML = _cadruPrev(`
@@ -1425,6 +1476,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     `<div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-salveaza-sal" data-actiune="POST /tenants/{tenant_id}/salariati-import">Salvează salariații</button>`);
   nav.setInapoi(() => wizardSalariati(corp, nav));
+  _arataInlocuirea(corp, date);   // [446]
   gateazaPartial(corp, "mig-salveaza-sal", date.erori, randuri.length, "salariați");   // [decizia Costin 14.10.2026 pct.2]
 
   // [420] alegerea contabilului pe rând: valoarea intră în rândul trimis la salvare și iese din marcajul „de verificat”
@@ -1457,12 +1509,10 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
       try {
         const rez = await api.post(`/tenants/${firma.tenant_id}/salariati-import`, { randuri, inlocuieste });
         // [decizia Costin 14.10.2026 pct.2] rândurile refuzate nu intră și se spun numite; celelalte s-au scris
-        const n = (rez && rez.importati) || 0;
         const refuzate = new Set(((rez && rez.respinse) || []).map((e) => String(e.rand)));   // rândurile care n-au intrat nu se numără
         const marcati = randuri.filter((r) => (r.de_verificat || []).length && !refuzate.has(String(r.rand_fisier))).length;
-        // [426] confirmarea spune și câte fișe existente s-au actualizat
-        const act = rez && rez.actualizati ? ` ${rez.actualizati.randuri === 1 ? "Fișa unui salariat existent a fost actualizată" : "Fișele a " + cate(rez.actualizati.randuri, "salariat existent", "salariați existenți") + " au fost actualizate"}.` : "";
-        _migMesaj = _mesajSalvarePartiala(rez, `${n === 1 ? "Un salariat importat" : cate(n, "salariat importat", "salariați importați")}.${act}`
+        // [lotul 11, 447: „«0 noi, 3 fișe actualizate», nu «3 importați» plus «3 actualizate»”] noi și actualizate, numărate la scriere
+        _migMesaj = _mesajSalvarePartiala(rez, `Salariați: ${_noiActualizate(rez, "fișă actualizată", "fișe actualizate")}.`
           + (marcati ? ` ${marcati === 1 ? "Un salariat are" : cate(marcati, "salariat", "salariați") + " au"} date de verificat în Stat de plată (butonul „De verificat”).` : ""));
         if (marcati) _migTip = "avert";
         nav.inapoiPas();
@@ -1481,7 +1531,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     if (faraOre.length) return;
     // [FAPT_FISCAL_NECERUT] fiecare câmp propus are o valoare aleasă (propunerea sau alegerea contabilului) înainte de trimitere
     if (cereAlegerile(corp, [...normaEd].map((n) => `#mig-norma-${n}`).concat([...fbazaEd].map((n) => `#mig-fbaza-${n}`)))) return;
-    _confirmaInlocuirea(eroare, date, "Actualizez fișele", salveaza);   // [426] fișele salariaților existenți se actualizează confirmat
+    _confirmaInlocuirea(eroare, date, "Actualizez fișele", salveaza, "Actualizezi fișele salariaților existenți cu datele din fișier?");   // [426] fișele salariaților existenți se actualizează confirmat
   });
 }
 
@@ -1594,12 +1644,14 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
     <div class="mig-coer">${banda}</div>
     ${_casetaInlocuire(date)}`,
     tabelPrevizualizare(coloane, randuri),
-    `<label class="camp" style="max-width:320px;margin:10px 0"><span class="camp-eticheta">Data cesiunii (dacă structura nouă o înlocuiește pe una anterioară)</span>
-      <input type="date" id="mig-asoc-cesiune" class="camp-input">
-      <span class="camp-ajutor">Data transmiterii părților sociale (din actul de cesiune / înregistrarea la ONRC). Dividendele distribuite înainte rămân ale vechilor asociați (Legea 31/1990 art.67 alin.(6)). Gol = corectezi structura actuală.</span></label>
+    `<div class="grila-doc" style="grid-template-columns:minmax(200px, 260px) minmax(240px, 1fr);margin-top:8px">
+      <label class="camp"><span class="camp-eticheta">Data cesiunii</span>
+      <input type="date" id="mig-asoc-cesiune" class="camp-input"></label>
+      <span class="camp-ajutor">Numai dacă structura nouă o înlocuiește pe una anterioară: data transmiterii părților sociale (actul de cesiune / ONRC). Dividendele distribuite înainte rămân ale vechilor asociați (Legea 31/1990 art.67 alin.(6)). Gol = corectezi structura actuală.</span></div>
     <div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-salveaza-asoc" data-actiune="POST /tenants/{tenant_id}/asociati-import">Salvează asociații</button>`);
   nav.setInapoi(() => wizardAsociati(corp, nav));
+  _arataInlocuirea(corp, date);   // [446]
   gateazaPreview(corp, "mig-salveaza-asoc", date.erori);
 
   corp.querySelector("#mig-salveaza-asoc").addEventListener("click", () => {
@@ -1624,7 +1676,7 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
     // [426] cu data cesiunii structura de acum intră în istoric (nu se pierde) -> fără confirmare; fără ea, corectura cere confirmarea,
     // cu structura veche și nouă și notele de dividende care se împart după ea
     if (data_cesiune) salveaza(false);
-    else _confirmaInlocuirea(eroare, date, "Înlocuiesc asociații", salveaza);
+    else _confirmaInlocuirea(eroare, date, "Înlocuiesc asociații", salveaza, "Înlocuiești asociații firmei cu cei din fișier?");
   });
 }
 
@@ -1718,7 +1770,8 @@ function importMijloaceFirma(corp, nav, firma, app = null) {
 function casetaIgnorate(ignorate) {
   ignorate = ignorate || [];
   if (!ignorate.length) return "";
-  return `<div class="caseta-info" style="margin:8px 0"><div class="ca-mesaj">${ignorate.length === 1 ? "Un rând citit nu e de importat" : cate(ignorate.length, "rând citit nu e", "rânduri citite nu sunt") + " de importat"}:<ul>${ignorate.map((x) => `<li>${esc(undeE(x))}: ${esc(x.motiv || "")}</li>`).join("")}</ul></div></div>`;
+  // [lotul 11, 424] numărul la vedere, lista pliată (totalurile, partenerii cu sold 0): nu lungește rezumatul lipit sus
+  return `<details class="dec-xml" id="mig-ignorate"><summary>${ignorate.length === 1 ? "Un rând citit nu e de importat" : cate(ignorate.length, "rând citit nu e", "rânduri citite nu sunt") + " de importat"}</summary><ul>${ignorate.map((x) => `<li>${esc(undeE(x))}: ${esc(x.motiv || "")}</li>`).join("")}</ul></details>`;
 }
 
 // [359 / 374, comanda Costin 8.2] registrul preluat (mijloace fixe, stoc) față de balanța de deschidere, pe fiecare cont atins
@@ -1760,6 +1813,7 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
     `<div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-salveaza-mf" data-actiune="POST /tenants/{tenant_id}/mijloace-fixe-import">${date.existenta ? "Înlocuiește registrul" : "Salvează mijloacele fixe"}</button>`);
   nav.setInapoi(() => wizardMijloace(corp, nav));
+  _arataInlocuirea(corp, date);   // [446]
   gateazaPartial(corp, "mig-salveaza-mf", date.erori, randuri.length, "mijloace fixe");
   const buton = corp.querySelector("#mig-salveaza-mf");
   const textButon = buton.textContent;
@@ -1786,7 +1840,7 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
       }
     }
     eroare.textContent = "";
-    _confirmaInlocuirea(eroare, date, "Înlocuiesc registrul", salveaza);   // [426] cu valorile vechi și noi și amortizările înregistrate
+    _confirmaInlocuirea(eroare, date, "Înlocuiesc registrul", salveaza, "Înlocuiești registrul mijloacelor fixe cu cel din fișier?");   // [426] cu valorile vechi și noi și amortizările înregistrate
   });
 }
 
@@ -1897,6 +1951,7 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
     `<div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-salveaza-ist" data-actiune="POST /tenants/{tenant_id}/istoric-declaratii-import">${date.existenta ? "Înlocuiește istoricul" : "Salvează istoricul"}</button>`);
   nav.setInapoi(() => wizardIstoric(corp, nav));
+  _arataInlocuirea(corp, date);   // [446]
   gateazaPartial(corp, "mig-salveaza-ist", date.erori, randuri.length, "declarații");
   const buton = corp.querySelector("#mig-salveaza-ist");
   const textButon = buton.textContent;
@@ -1918,7 +1973,7 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
       }
     }
     eroare.textContent = "";
-    _confirmaInlocuirea(eroare, date, "Înlocuiesc istoricul", salveaza);   // [426] cu declarațiile și perioadele vechi și noi
+    _confirmaInlocuirea(eroare, date, "Înlocuiesc istoricul", salveaza, "Înlocuiești istoricul declarațiilor preluat cu cel din fișier?");   // [426] cu declarațiile și perioadele vechi și noi
   });
 }
 
@@ -2148,8 +2203,11 @@ function previzualizeazaRetete(corp, nav, firma, date) {
   const rez = date.rezumat || {};
   // [comanda Costin 8.2 pct.4; 375] fiecare rând citit (un ingredient), cu starea lui; cantitatea pe porție se arată în UM-ul articolului
   const cant = (r) => (r.cantitate == null ? esc(r.cantitate_brut || "—") : `${cantitate(r.cantitate)}${r.articol_um ? " " + esc(r.articol_um) : ""}`);
-  const zona = corp.querySelector("#mig-preview");
+  // [lotul 11, 424] previzualizarea ia corpul ferestrei, ca la celelalte importuri: sub zona de încărcare, rezumatul se lipea numai în
+  // `#mig-preview`, iar intro-ul, modelul și zona de încărcare derulau deasupra lui (se derula toată fereastra, nu doar tabelul)
+  const zona = corp;
   zona.innerHTML = _cadruPrev(`
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · rețete încărcate</p>
     <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")} · ${cate(rez.valide || 0, "rețetă intră", "rețete intră")} din ${rez.total || 0}</div>
     <div class="mig-coer">${bandaStari(randuri)}</div>`,
     tabelPrevizualizare([
@@ -2228,8 +2286,11 @@ function previzualizeazaArticole(corp, nav, firma, date) {
   // [comanda Costin 8.2 pct.4; 373/374] fiecare rând citit (și cel fără denumire), cu starea lui; contul de stoc se vede, iar valoarea
   // pe fiecare cont de stoc se confruntă cu balanța de deschidere.
   const nr = (v, brut) => (v == null ? esc(brut || "—") : cantitate(v));
-  const zona = corp.querySelector("#mig-preview");
+  // [lotul 11, 424] previzualizarea ia corpul ferestrei, ca la celelalte importuri: sub zona de încărcare, rezumatul se lipea numai în
+  // `#mig-preview`, iar intro-ul, modelul și zona de încărcare derulau deasupra lui (se derula toată fereastra, nu doar tabelul)
+  const zona = corp;
   zona.innerHTML = _cadruPrev(`
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · articole încărcate</p>
     <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")} · ${cate(rez.cu_stoc || 0, "articol cu stoc", "articole cu stoc")} · valoare <b>${bani(rez.valoare_totala || 0)}</b> lei${date.data_sold ? ` · stocul inițial la ${esc(dataRo(date.data_sold))}` : ""}</div>
     <div class="mig-coer">${bandaStari(randuri)}</div>
     ${casetaReconciliere(date.reconciliere, date.data_sold, "stoc inițial", "conturile de stoc")}`,
@@ -2317,8 +2378,11 @@ function previzualizeazaRip(corp, nav, firma, date) {
     { titlu: "Categoria", celula: (r) => esc(r.categorie || "—") },
     { titlu: "Document", celula: (r) => esc(r.document_numar || "—") },
   ];
-  const zona = corp.querySelector("#mig-preview");
+  // [lotul 11, 424] previzualizarea ia corpul ferestrei, ca la celelalte importuri: sub zona de încărcare, rezumatul se lipea numai în
+  // `#mig-preview`, iar intro-ul, modelul și zona de încărcare derulau deasupra lui (se derula toată fereastra, nu doar tabelul)
+  const zona = corp;
   zona.innerHTML = _cadruPrev(`
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · registrul de încasări și plăți încărcat</p>
     <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")}</div>
     <div class="mig-coer">${bandaStari(randuri)}</div>`,
     tabelPrevizualizare(coloane, randuri),

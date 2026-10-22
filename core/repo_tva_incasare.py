@@ -55,7 +55,9 @@ def factura(cur, schema, factura_id):
                   "COALESCE(furnizor_tva_incasare, false) AS furnizor_tva_incasare, storno_din_id, bon_fiscal_nr, tip_operatiune, status, "
                   # [lotul 10, 428, decizia Costin „Bifă pe client”] beneficiarul afiliat, înghețat pe factură la emitere — CF art.282
                   # alin.(6) lit.d): factura către el rămâne pe regulile generale (`tva_incasare.motiv_excludere`)
-                  "COALESCE(beneficiar_afiliat, false) AS beneficiar_afiliat "
+                  "COALESCE(beneficiar_afiliat, false) AS beneficiar_afiliat, "
+                  # [lotul 11] statutul TVA al clientului înghețat la emitere — BT-48 din e-Factura (`efactura_trimitere.incarca_factura`)
+                  "tert_platitor_tva "
                   "FROM %sfacturi WHERE id = %%s" % _p(schema), (int(factura_id),))
         r = c.fetchone()
     return dict(r) if r else None

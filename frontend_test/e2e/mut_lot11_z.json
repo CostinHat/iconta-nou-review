@@ -1,0 +1,26 @@
+[
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "\"valoare_neta \"   # [lotul 11, C82] BT-131 de pe factura importată: valoarea liniei pe ecran și pe PDF (NULL = cantitate × preț)",
+  "inlocuire": "\"NULL::numeric AS valoare_neta \"   # [lotul 11, C82] BT-131 de pe factura importată: valoarea liniei pe ecran și pe PDF (NULL = cantitate × preț)",
+  "test": "frontend_test/e2e/e2e_lot11_z.py::test_def_c82_detaliul_si_pdf_ul_facturii_primite_arata_valoarea_liniei_din_xml"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "const _deCalcul = (l, cota) => (l.valoare_neta != null && l.valoare_neta !== \"\"",
+  "inlocuire": "const _deCalcul = (l, cota) => (false",
+  "test": "frontend_test/e2e/e2e_lot11_z.py::test_def_c82_detaliul_si_pdf_ul_facturii_primite_arata_valoarea_liniei_din_xml"
+ },
+ {
+  "fisier": "core/export_saga.py",
+  "ancora": "\"cota_tva\": l[4], \"valoare_neta\": l[5]}",
+  "inlocuire": "\"cota_tva\": l[4], \"valoare_neta\": None}",
+  "test": "frontend_test/e2e/e2e_lot11_z.py::test_def_c82_exporturile_saga_si_winmentor_au_valoarea_liniei_din_xml"
+ },
+ {
+  "fisier": "core/tva_incasare.py",
+  "ancora": "baza = Decimal(str(vn)) if vn not in (None, \"\") else Decimal(str(cant)) * Decimal(str(pret))",
+  "inlocuire": "baza = Decimal(str(cant)) * Decimal(str(pret))",
+  "test": "frontend_test/e2e/e2e_lot11_z.py::test_def_c82_tva_la_incasare_plata_se_imparte_pe_valorile_liniilor_din_xml"
+ }
+]

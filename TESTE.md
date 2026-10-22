@@ -46,6 +46,56 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 11, comanda 11.1 (Costin 21.10.2026, verbatim în DECIZII „Comanda 11.1”)** — deciziile din „Comanda 10.3” pct.4, C75 (DA,
+  migrare pe toate firmele, inclusiv cabinetul pilot), prioritarele C76, 428, 439, 451, 409, apoi 452, 450, 449, 429, 420, 424, 446, 447,
+  440–445, 436 (afișare), măruntele (pct.23), dovada pe aplicație pentru C68, C69, C71–C74, 7g, 8b–8e, ghidurile 247 / 248 + sitemap;
+  ramura `lucru/lot11-2026-10-21` (din `381c82df`), în `/home/costin/iconta_lot9`. Poarta o singură dată pe lot, la final; fără publicare;
+  ZIP la commitul de închidere (pct.26).
+  - ultim: (22.10.2026 ~23:50) suita a doua (10 540 de teste, 1:21:57): 5 picături, reparate pe cauză, fiecare cu gardă probată prin mutație
+    (DECIZII „Lotul 11: suita a doua”): capturile ies din index (manifest `dovezi/lot11/AMPRENTE.json`, imaginile în ZIP), ordinea ștergerii
+    pe tot repo-ul (`dovada_firme_test`, `masoara_p3`), contorul de scheme readus (`contor_schema_pastrat`), antetele traseelor și blocul de
+    cifre regenerate după `--sterge`; înainte: campania de mutații e2e 175 / 175 roșii, uneltele vizuale (text pe ecran 174 / 0), 54 de numere
+    „rezolvată” cu dovadă. Registrele (DECIZII, GARZI, ISTORIC, PREDARE) scrise; intră în commitul lotului.
+  - urmator: commitul lotului (fișiere numite) -> poarta lotului NUMAI după confirmarea lui Costin că cabinetul nu lucrează -> pe VERDE, cu
+    backup chiar înainte: `APROBARE_MAIN`, fast-forward, post-commit, cele 10 migrări `--productie`, restart, four-way; ZIP; raportul §2.2.
+    BLOCAT: așteaptă confirmarea lui Costin pentru poartă și publicare
+  - pasi:
+    L11-1. T — 428 (emiterea în sistemul TVA la încasare: 4428, mențiunea, Configurare emitere arată sistemul; cauza pe producție) + C76
+           (ajustarea TVA a lipsei la inventar în D300) + rotunjirea TVA unică (10.3). Fișiere: `contare_facturi`, `tva_incasare*`,
+           `cota_tva_incasare`, `uc_regim_tva_incasare`, `factura_pdf`, `efactura_*`, `d300*`, `d394*`, `emitere_ecran.js`, `facturi_ecran.js`.
+    L11-2. M — 439 (balanța SAGA completă: verificarea cu soldul inițial al anului) + 420, 424, 446, 447 (importurile de migrare).
+           Fișiere: `migrare.js`, `solduri_api`, `import_tabel`, `salariati_import_api`, `migrare_api`, `aplicatii_migrare`.
+    L11-3. S — 451 (ciornele derivate depășite: refăcute din sursă sau oprite la validare, pe toate firmele), 452 (motivul fals la
+           validarea returului), 409 (dublarea ieșirii pe F1, renumerotarea notelor validate), C75 (migrarea borderourilor vechi), textele
+           din `jurnal_api` (pct.23). Fișiere: validarea notelor, `stocuri_cv`, `stocuri_anulare`, `z_descarcare`, contabilizarea salariilor,
+           `jurnal_api`, migrarea nouă C75.
+    L11-4. B — 450 (articolul borderoului din nomenclator, nota nedublabilă), 449 (cotele produsului: taxare inversă art.331, scutit
+           art.294, neimpozabil), NIR cu număr repetat refuzat, borderoul corectat prin stornare (10.3). Fișiere: borderoul, NIR-ul,
+           `produse_ecran.js` și API-ul produselor.
+    L11-5. V — 429 (reevaluarea propusă pe producție: cauza raportării „rezolvată”), reevaluarea pe soldul partenerului, avansurile după
+           OMFP 1802 pct.325, cursul BNR verbatim (CF art.290, HG 1/2016 pct.35), compensarea în valută refuzată. Fișiere: `reevaluare*`,
+           `uc_reevaluare`, `reevaluare_ecran.js`, cursul BNR, `uc_compensari`, `compensari_ecran.js`.
+    L11-6. D — C70 (D101G pe validatorul v2), D205 fără rectificative pe anii depuși după regula veche, semaforul D205 cu 457 preluat
+           incomplet, 436 afișarea (caseta sub antetul fix, paragraful repetat). Fișiere: `d101g*`, `d205*`, semaforul, `declaratii.js`.
+    L11-7. P — 442 (capitalul social în „Profil incomplet”), 444 (numele ANAF diferit de fișă), localitatea / județul PF în fișa
+           partenerului cu trimiterea din refuz, întocmitorul bilanțului (calitatea în profilul cabinetului, interesul public în Date
+           firmă), CUI-ul fără „RO”. Fișiere: `date_firma.js`, `cabinet.js`, `clienti_ecran.js`, `firma_profil_api`, `repo_firma_profil`,
+           API-ul partenerilor, generatorul bilanțului.
+    L11-8. J — `firme.js`: măruntele pct.23 (neimputabilă, etichetele Z la comerț, „Generează amortizarea” pe lunile amortizate,
+           amortizarea 09 F2, titlurile fără diacritice, butonul borderoului), 8c (reparația centrală + DS cap.6 + verificator), 422
+           (contorul „De validat” și clopoțelul, clasa 286). Fișiere: `firme.js`, `app.js`, `coaja.js`, `mf_registru`, `retete_api`, DS, verificator.
+    L11-9. Valul 2 (transversal, după valul 1): 440 (toate erorile deodată, în casetă și lângă câmp), 441 (datele opționale golibile), 443
+           (seria și numărul separat; „termen SPV”), 445 („Deschide X” întoarce în formular cu datele intacte), reorganizarea ecranelor
+           (10.3: totalurile, rezumatul fix, mesajele lângă buton, 394 la 1280×720).
+    L11-10. Sesiunea principală: ghidurile 247 / 248 + sitemap; dovada pct.24 (e2e-urile C68, C69, C71–C74, 7g, 8b–8e); e2e-urile lotului
+           cu mutațiile; uneltele vizuale; verificatorul; registrele; commitul; poarta lotului (cu confirmarea lui Costin că cabinetul nu
+           lucrează); ZIP-ul.
+    L11-11. Comanda 11.2 (forma a doua) + 11.3: cauzele regresiilor (pct.2), regulile 3a–3d (dovada pe ecran pe firmele de test și pe datele
+           existente — `scripts/dovada_firme_test.py`, garda `core/test_deficiente.py`; testul fiecărei poziții validate în poartă —
+           `frontend_test/e2e/e2e_pozitii_validate.py`; fără funcții noi; garda `core/test_poarta_fara_slabire.py`), deficiențele 453–460,
+           C88–C100; poarta pe tot lotul și, pe verde, backup + publicare (cu confirmarea lui Costin la momentul porții).
+
+
 - fir: **Lotul 10, comanda 10.1 (Costin 20.10.2026, verbatim în DECIZII „Comanda 10.1”)** — deficiențele 420–432, punctul 9 (operațiunile
   speciale lunare / rare), observațiile din lotul 9 (500 `/eu/ciorne`, 409x, localitatea parțială, SalariatEdit, răspunsul API
   `note_interne`), testele 409 / C66 / C67 de pe `lucru/dupa-lot9-2026-10-20`; ramura `lucru/lot10-2026-10-20` (din `d4ebae38`), în

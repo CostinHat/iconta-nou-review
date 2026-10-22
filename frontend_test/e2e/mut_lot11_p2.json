@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "          propuneNumeAnaf(st, r, t.id, { fel: \"furnizori\", pre: \"sn\" });",
+  "inlocuire": "          void 0;   // MUTATIE: NIR-ul nu mai spune diferența de nume",
+  "test": "frontend_test/e2e/e2e_lot11_p2.py::test_def_444_nir_propune_actualizarea_fisei_furnizorului"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "          propuneNumeAnaf(stare, r, t.id, { pre: \"c\" });",
+  "inlocuire": "          void 0;   // MUTATIE: casa nu mai spune diferența de nume",
+  "test": "frontend_test/e2e/e2e_lot11_p2.py::test_def_444_casa_propune_actualizarea_fisei_clientului"
+ }
+]

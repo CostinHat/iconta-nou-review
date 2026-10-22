@@ -94,7 +94,12 @@ def test_returul_readuce_marfa_si_storneaza_costul(conn):
     assert _stoc(conn, aid) == Decimal("22")                            # 22 → 21 → 22
     with conn.cursor() as cur:
         cur.execute("SELECT document_ref FROM inregistrari WHERE id = %s", (r["retur"][0]["inregistrare_id"],))
-        assert cur.fetchone()[0] == "Retur la Factură %s din %s" % (r["numar"], datetime.date.today().strftime("%d.%m.%Y"))
+        doc = cur.fetchone()[0]
+        cur.execute("SELECT serie FROM facturi WHERE numar = %s", (r["numar"],))
+        ser = cur.fetchone()[0]
+        # [lotul 11, 443, comanda Costin 11.1 pct.19] seria și numărul separat: „Factură F1A nr. 1”, nu „F1A1”
+        assert ser and r["numar"].startswith(ser)
+        assert doc == "Retur la Factură %s nr. %s din %s" % (ser, r["numar"][len(ser):], datetime.date.today().strftime("%d.%m.%Y"))
         cur.execute("SELECT i.status, l.cont_debit, l.cont_credit, l.suma FROM inregistrari i "
                     "JOIN inregistrari_linii l ON l.inregistrare_id = i.id WHERE i.id = %s", (r["retur"][0]["inregistrare_id"],))
         assert cur.fetchone() == ("ciorna", "607", "371", Decimal("-10.00"))   # 607 stornat în roșu, nota de corecție

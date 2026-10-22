@@ -203,6 +203,23 @@ def test_refuzurile_sunt_numite(prob):
 
 
 @pytestmark_db
+def test_compensarea_in_valuta_e_refuzata_cu_motiv_pe_cerere(prob):
+    """[lotul 11, decizia Costin din 10.3: „Compensarea în valută rămâne refuzată, cu motiv.”] Drumul cererii (API-ul / butonul, `verifica`):
+    factura în EUR se refuză numit, cu regula și temeiul, nu se compensează în lei. MUTAȚIE: `if d["moneda"] != "RON":` -> `if False:` în
+    `facturi_deschise` -> perechea în valută trece -> pică."""
+    conn, ids, note = prob
+    with pytest.raises(_cz.RefuzCompensare) as e:
+        _cz.verifica(conn, _SCHEMA, "2026-10-20", [{"factura_emisa_id": ids["E2"], "factura_primita_id": ids["P1"], "suma": "10"}])
+    assert (e.value.cod, e.value.detalii) == (_cz.COD_STARE, {"factura": ids["E2"], "regula": _cz.REGULA_VALUTA}), e.value.mesaj
+    # OMFP 1802/2014 pct.322 alin.(1): „Diferențele de curs valutar care apar cu ocazia decontării creanțelor și datoriilor în valută [...]
+    # trebuie recunoscute în luna în care apar” — motivul refuzului îl numește
+    assert e.value.mesaj == (
+        "Factura CZ nr. 2 nu se poate compensa: în EUR: compensarea în valută nu se face în aplicație — stingerea cere și diferența de curs "
+        "la data ordinului (%s), pe care aplicația n-o calculează; înregistreaz-o din Registrul jurnal, cu diferența pe 665 / 765."
+        % _cz.TEMEI_VALUTA), e.value.mesaj   # mesajul întreg (core/test_garzi_pe_text.py)
+
+
+@pytestmark_db
 def test_compensarea_stinge_ambele_facturi_si_muta_tva(prob):
     conn, ids, note = prob
     with conn.cursor() as cur:

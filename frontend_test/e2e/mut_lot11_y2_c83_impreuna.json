@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "    _cf.curs_factura_importate(cur, schema, {\"id\": fid, \"moneda\": f.get(\"moneda\"), \"curs_bnr\": None, \"xml\": f.get(\"xml\"),",
+  "inlocuire": "    (lambda *a: None)(cur, schema, {\"id\": fid, \"moneda\": f.get(\"moneda\"), \"curs_bnr\": None, \"xml\": f.get(\"xml\"),",
+  "test": "frontend_test/e2e/e2e_lot11_y2.py::test_def_c83_factura_primita_in_valuta_primeste_cursul_bnr_la_import_si_se_conteaza"
+ },
+ {
+  "fisier": "core/contare_facturi.py",
+  "ancora": "    _rc = curs_factura_importate(cur, schema, f)\n",
+  "inlocuire": "    _rc = None\n",
+  "test": "frontend_test/e2e/e2e_lot11_y2.py::test_def_c83_factura_primita_in_valuta_primeste_cursul_bnr_la_import_si_se_conteaza"
+ }
+]

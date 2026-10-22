@@ -78,3 +78,6 @@ pachete_loturi/
 
 # Capturi de proba F1 (Sesiunea B) — regenerate la fiecare rulare, nu se urmaresc
 frontend_test/f[0-9]_*.png
+
+# capturile de dovadă nu intră în index (core/test_fara_probe_imagine.py, 03.09.2026); manifestul lor AMPRENTE.json intră
+dovezi/**/*.png

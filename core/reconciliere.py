@@ -22,6 +22,10 @@ from decimal import Decimal
 from itertools import combinations
 
 from core.common import cate as _cate
+# [lotul 11, decizia Costin 10.3 pct.4, clasa „normalizare locală a CUI”] partenerul liniei de extras / al facturii = codul fiscal în
+# forma păstrată (`cui_forma.stocare`). Înainte: `_norm_cui`, cu `.replace("RO", "")` — scotea „RO” de oriunde, iar spațiile din
+# mijloc („185 47290”) rămâneau, deci același partener nu se mai potrivea.
+from core import cui_forma as _forma_cui
 
 TOLERANTA = Decimal("0.01")
 MAX_COMBO = 4  # max facturi într-o combinație exactă
@@ -31,21 +35,15 @@ def _d(v):
     return v if isinstance(v, Decimal) else Decimal(str(v))
 
 
-def _norm_cui(cui):
-    if not cui:
-        return None
-    return str(cui).upper().replace("RO", "").strip() or None
-
-
 def facturi_partener(facturi_deschise, cui, tip):
     """Facturile deschise ale partenerului cu CUI dat, pe direcția potrivită tipului.
     incasare -> emise; plata -> primite. Sortate crescător după data_emitere (FIFO)."""
-    cui = _norm_cui(cui)
+    cui = _forma_cui.stocare(cui)
     if not cui:
         return []
     directie = "emisa" if tip == "incasare" else "primita"
     rez = [f for f in facturi_deschise
-           if _norm_cui(f.get("tert_cui")) == cui
+           if _forma_cui.stocare(f.get("tert_cui")) == cui
            and f.get("directie") == directie
            and _d(f.get("sold", 0)) > TOLERANTA]
     return sorted(rez, key=lambda f: (str(f.get("data_emitere") or ""), f["id"]))
@@ -86,7 +84,7 @@ def _alocare_fifo(suma, facturi):
 def potriveste_linie(linie, facturi_deschise):
     """Matching pentru o linie de extras. Vezi docstring modul pentru contract."""
     suma = _d(linie.get("suma", 0)).copy_abs()
-    cui = _norm_cui(linie.get("cui"))
+    cui = _forma_cui.stocare(linie.get("cui"))
     if not cui:
         return dict(_af.afirmatie(
             "absenta_observatie", "reconciliere extras",

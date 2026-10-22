@@ -1,0 +1,26 @@
+[
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "${(f.directie === \"emisa\" && f.tip === \"factura\" && !f.din_efactura) ? '<button class=\"buton-secundar em-buton-sec\" id=\"fd-spv\"",
+  "inlocuire": "${(f.directie === \"emisa\" && f.tip === \"factura\") ? '<button class=\"buton-secundar em-buton-sec\" id=\"fd-spv\"",
+  "test": "frontend_test/e2e/e2e_lot11_q.py::test_def_c86_factura_emisa_din_xml_nu_se_trimite_in_spv_iar_stornarea_ia_valoarea_din_xml"
+ },
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "cur.execute(\"SELECT id FROM facturi WHERE id = ANY(%s) AND xml IS NOT NULL\", (ids,))",
+  "inlocuire": "cur.execute(\"SELECT id FROM facturi WHERE id = ANY(%s) AND false\", (ids,))",
+  "test": "frontend_test/e2e/e2e_lot11_q.py::test_def_c86_factura_emisa_din_xml_nu_se_trimite_in_spv_iar_stornarea_ia_valoarea_din_xml"
+ },
+ {
+  "fisier": "core/efactura_trimitere.py",
+  "ancora": "if r and r[1] == \"emisa\" and r[2]:",
+  "inlocuire": "if r and r[1] == \"emisa\" and False:",
+  "test": "frontend_test/e2e/e2e_lot11_q.py::test_def_c86_factura_emisa_din_xml_nu_se_trimite_in_spv_iar_stornarea_ia_valoarea_din_xml"
+ },
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "\"valoare_neta\": (-Decimal(str(l[\"valoare_neta\"])) if l.get(\"valoare_neta\") not in (None, \"\") else None),",
+  "inlocuire": "\"valoare_neta\": None,",
+  "test": "frontend_test/e2e/e2e_lot11_q.py::test_def_c86_factura_emisa_din_xml_nu_se_trimite_in_spv_iar_stornarea_ia_valoarea_din_xml"
+ }
+]

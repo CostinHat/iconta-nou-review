@@ -108,6 +108,16 @@ TABELE_TENANT = (
     "user_tenants",
 )
 
+#: [lotul 11, găsit în plasa e2e din 22.10.2026] Tabelele DERIVATE pe care le scriu triggerele (`firma_rezumat.marcheaza_sursa_publica`
+#: ridică `firma_sursa_versiune` la ORICE scriere într-o sursă publică — și la DELETE). Se șterg ULTIMELE: șterse înaintea unei surse
+#: (`declaratii_depuse` …), ștergerea sursei recrea contorul unei firme care, în aceeași tranzacție, dispărea -> orfan.
+CONTOARE_DERIVATE = ("firma_rezumat", "firma_sursa_versiune", "firma_tip", "supervizor_sursa")
+
+
+def ordinea_stergerii(tabele):
+    """Tabelele în ordinea ștergerii: sursele întâi, contoarele derivate la urmă (`CONTOARE_DERIVATE`)."""
+    return [t for t in tabele if t not in CONTOARE_DERIVATE] + [t for t in tabele if t in CONTOARE_DERIVATE]
+
 # Tabele care poartă `tenant_id` și pe care ștergerea NU le atinge — cu motivul lângă fiecare.
 # Fără lista asta, garda de mai sus n-ar avea unde pune o excepție legitimă și ar cere ștergerea
 # a ceea ce trebuie să supraviețuiască.
@@ -323,7 +333,7 @@ def sterge(conn, tenant_id, motiv, sters_de_user_id, confirmare=None):
              sters_de_user_id, _E.Json(urme) if urme else None))
         urma = cur.fetchone()
         # 1. cele 13 din `public` — ÎNTÂI, ca schema să rămână dacă vreuna refuză.
-        for tabel in TABELE_TENANT:
+        for tabel in ordinea_stergerii(TABELE_TENANT):
             cur.execute('DELETE FROM public."%s" WHERE tenant_id=%%s' % tabel, (tenant_id,))
             sters[tabel] = cur.rowcount
         # 2. schema firmei — APOI.

@@ -7,17 +7,17 @@
 // sus și benzile „Recomandă” / „Suport” vin din salut.js, ca la cabinet; dedesubt, numai grila de carduri.
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, ICOANE, CULORI_CARD } from "../api.js?v=ff30ebaf3f";
+import { api, ICOANE, CULORI_CARD } from "../api.js?v=58f26a3fc4";
 import { semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { randeazaControl } from "./control.js?v=2c85c083b5";
 import { randeazaTermene } from "./termene.js?v=74c373edbf";
-import { randeazaValidat } from "./validat.js?v=6d8f4bd482";
-import { randeazaListaFirme } from "./firme.js?v=6855dfc0c2";
+import { randeazaValidat } from "./validat.js?v=5a3d28dbec";
+import { randeazaListaFirme } from "./firme.js?v=020b99dd0c";
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=10719d2154"; // [225 + 231] banda de sus, aceeași la ambele roluri
-import { randeazaPachete } from "./pachete.js?v=6a0e4eba2f"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=24daa85dec"; // [p44_declaratii]
-import { randeazaSetari } from "./setari.js?v=6a36388d13"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
+import { randeazaPachete } from "./pachete.js?v=40357b139f"; // [p63_pachete]
+import { randeazaDeclaratii } from "./declaratii.js?v=f65bf1fdb3"; // [p44_declaratii]
+import { randeazaSetari } from "./setari.js?v=2961546bb5"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;

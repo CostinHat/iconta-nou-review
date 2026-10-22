@@ -91,7 +91,7 @@ def pull(conn, schema, perioada):
     with conn.cursor() as cur:
         cur.execute(
             "SELECT nume, nume, cui, adresa, declarant_nume, declarant_prenume, "
-            "declarant_functie, telefon, email FROM firma_profil WHERE id = 1")
+            f"declarant_functie, telefon, email FROM {schema}.firma_profil WHERE id = 1")
         r = cur.fetchone()
     if not r:
         return {}

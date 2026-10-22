@@ -1,0 +1,6 @@
+[
+  {"fisier": "core/rectificativa.py",
+   "ancora": "    if dep is not None:\n        return Stare(1, mentiune(tip, dep), dep[\"nr_depunere\"], dict(dep, toate=deps))",
+   "inlocuire": "    if False:\n        return Stare(1, mentiune(tip, dep), dep[\"nr_depunere\"], dict(dep, toate=deps))",
+   "test": "frontend_test/e2e/e2e_lot11_r.py::test_def_c77_d101_regenerata_dupa_depunere_iese_rectificativa"}
+]

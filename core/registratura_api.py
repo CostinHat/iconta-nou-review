@@ -28,11 +28,11 @@ def inregistreaza(conn, schema, corp, creat_de):
     """Aloca urmatorul numar (per anul din `data`) si insereaza. corp: {directie, data?,
     descriere, partener?, document_ref?}. Coduri eroare: DIRECTIE_INVALIDA / DESCRIERE_GOALA."""
     directie = (corp.get("directie") or "").strip().lower()
-    if directie not in DIRECTII:
-        return {"ok": False, "cod": "DIRECTIE_INVALIDA"}
     descriere = (corp.get("descriere") or "").strip()
-    if not descriere:
-        return {"ok": False, "cod": "DESCRIERE_GOALA"}
+    # [lotul 11, 440] ambele refuzuri deodată: `coduri` = toate, `cod` = primul (contractul vechi)
+    coduri = ([] if directie in DIRECTII else ["DIRECTIE_INVALIDA"]) + ([] if descriere else ["DESCRIERE_GOALA"])
+    if coduri:
+        return {"ok": False, "cod": coduri[0], "coduri": coduri}
     data = (corp.get("data") or "").strip() or datetime.date.today().isoformat()
     an = int(data[:4])
     partener = (corp.get("partener") or "").strip() or None

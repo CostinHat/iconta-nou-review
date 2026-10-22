@@ -93,7 +93,8 @@ def test_def_402_refuzul_la_contul_de_stoc_spune_complet_ce_lipseste(conn):
     # TOATE câmpurile lipsă deodată (clasa 410), nu numai primul grup
     assert list(camp) == ["op-furnizor_adresa", "op-furnizor_act", "op-articol", "op-cantitate"], camp
     # OMFP 2634/2015 anexa 1 pct.6: marfa intră în gestiune odată cu borderoul — câmpul spune ce se cere și unde, nu „articolul”
-    assert camp["op-articol"] == "Scrie articolul care intră în stoc pe contul 371: marfa intră în gestiune odată cu borderoul.", camp
+    assert camp["op-articol"] == ("Alege articolul care intră în stoc pe contul 371 (din nomenclator, sau unul nou, cerut explicit): marfa intră în "
+                                 "gestiune odată cu borderoul.")   # [lotul 11, 450] articolul se alege, nu se scrie, camp
     assert camp["op-cantitate"].startswith("Scrie cantitatea care intră în stoc pe contul 371, mai mare decât zero"), camp
     # refuzul de jos numește TOATE grupurile lipsă, în ordinea formularului: ce cere borderoul despre vânzător, apoi intrarea în stoc
     assert re.findall(r"completează ([^.]+)\.", d["mesaj"]) == [
@@ -101,7 +102,8 @@ def test_def_402_refuzul_la_contul_de_stoc_spune_complet_ce_lipseste(conn):
     # numai cantitatea lipsă -> refuzul numește numai cantitatea
     with pytest.raises(erori.DateInvalide) as e:
         uc_tenants.achizitie_neinregistrat(1, {"data": "2026-10-20", "furnizor_nume": "Maria Ionescu", "furnizor_adresa": "Str. Mare 2",
-                                               "furnizor_act": "PH 1", "valoare": 150, "cont_cheltuiala": "371", "articol": "grâu"},
+                                               "furnizor_act": "PH 1", "valoare": 150, "cont_cheltuiala": "371", "articol": "grâu",
+                                               "articol_nou": True},   # [lotul 11, 450] articolul nou, cerut explicit
                                            {"uid": 1})
     d = e.value.args[0]
     assert [x["camp"] for x in d["erori_campuri"]] == ["op-cantitate"] and d["mesaj"].endswith("completează cantitatea."), d

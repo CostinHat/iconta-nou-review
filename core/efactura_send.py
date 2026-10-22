@@ -243,12 +243,15 @@ def genereaza_xml(factura, linii, furnizor, client):
     # pe defalcarea TVA; O pe toată factura unui neplătitor (fără cota, fără codurile de TVA ale părților — ghidul, regulile BG-23).
     # O linie cu 0% de dinainte de categorie (NULL) rămâne „Z”, ca până acum.
     from core import categorii_tva as _ct
+    from core import tva_calcul as _tc
     neplatitor = not furnizor.get("platitor_tva")
     line_net = []
     grup = {}  # (cat, cota, motiv, vatex) -> baza
     for l in linii:
         cota = _D(l.get("cota_tva") if l.get("cota_tva") is not None else 0)
-        net = _bani(_D(l.get("cantitate")) * _D(l.get("pret_unitar")))
+        # BR-DEC-23 (regula unică, `core/tva_calcul.py`); [lotul 11, C86] valoarea netă scrisă pe linie (`factura_linii.valoare_neta`: stornarea
+        # unei facturi venite din XML poartă −BT-131 al originalului), ca BT-131 trimis să fie cel din contabilitate, nu cantitate × preț
+        net = _tc.net_linie(l.get("cantitate"), l.get("pret_unitar"), l.get("valoare_neta"))
         if neplatitor:
             d = _ct.NEPLATITOR
         elif cota > 0:
@@ -264,7 +267,7 @@ def genereaza_xml(factura, linii, furnizor, client):
     tax_total = _D0
     for cheie, baza in grup.items():
         cat, cota, motiv, vatex = cheie
-        taxa = _bani(baza * cota / _D("100"))
+        taxa = _tc.tva_din_baza(baza, cota)   # BR-CO-17: o rotunjire pe cotă (regula unică, decizia Costin 10.3)
         tax_total += taxa
         tax_subtotals.append((_bani(baza), taxa, cat, cota, motiv, vatex))
     tax_total = _bani(tax_total)
@@ -275,8 +278,18 @@ def genereaza_xml(factura, linii, furnizor, client):
     # [274b] O („nu face obiectul TVA”): factura NU conține codul de TVA al cumpărătorului (ghidul MF v2.9, reguli BG-23); pentru un
     # client străin codul de TVA e chiar al lui (prefixul țării), nu „RO” + cifre
     from core.d390 import TARI_UE as _UE
-    cli_vat = "" if neplatitor or (tara_cli != "RO" and tara_cli not in _UE) else (
-        _vatid(client.get("cui")) if tara_cli == "RO" else "".join(ch for ch in str(client.get("cui") or "").upper() if ch.isalnum()))
+    # [lotul 11, semnalat de subagentul P] BT-48 e „identificatorul de TVA al Cumpărătorului” — EN 16931 BR-CO-09: „the Buyer VAT identifier
+    # (BT-48) shall have a prefix in accordance with ISO code ISO 3166-1 alpha-2”; un client român NEînregistrat în scopuri de TVA n-are
+    # cod de TVA, deci „RO” + cifre ar fi un cod fals. CF art.319 alin.(20) lit.f) cere „codul de înregistrare în scopuri de TVA SAU codul
+    # de identificare fiscală al beneficiarului”: la clientul român BT-48 numai când e plătitor de TVA (statutul înghețat pe factură la
+    # emitere, `facturi.tert_platitor_tva`); altfel (neplătitor sau statut necunoscut) CUI-ul fără „RO” la BT-47 (RO_CIUS BR-RO-120).
+    # Înainte: „RO” + cifre oricărui client român.
+    if neplatitor or (tara_cli != "RO" and tara_cli not in _UE):
+        cli_vat = ""
+    elif tara_cli == "RO":
+        cli_vat = _vatid(client.get("cui")) if client.get("platitor_tva") is True else ""
+    else:
+        cli_vat = "".join(ch for ch in str(client.get("cui") or "").upper() if ch.isalnum())
     sup_jud = _jud(furnizor.get("judet"))
     cere_partile(furnizor, client)   # [lotul 10, C69] numele, strada, localitatea părților: cerute, nu „-”
     # [lotul 10, C69, generalizarea clasei] numele articolului (BT-153, validatorul FACT1, probat 20.10.2026: „[BR-25]-Each Invoice line (BG-25) shall contain the Item name (BT-153).”)

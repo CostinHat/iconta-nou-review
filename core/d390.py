@@ -170,6 +170,10 @@ class Rezultat:
     total_plata_a: int = 0
     avertismente: list = field(default_factory=list)
     diag: list = field(default_factory=list)        # probleme per-partener (T1/T3): checksum/prefix/tara/codO_lung
+    # [lotul 11, C77] rectificativa: `core.rectificativa.aplica` (d_rec în XML, textul de pe ecran, depunerea pe care s-a sprijinit)
+    d_rec: int = 0
+    rectificativa: object = None
+    depunere_anterioara_nr: object = None
 
 
 # ── VIES checksum OFFLINE (T1/T3) — subset ANCORAT pe DUK boundary 10.08.2026 ─────────────────────
@@ -500,9 +504,9 @@ def build_xml(res):
     _dpren = prof.get("declarant_prenume")
     hdr = ('<declaratie390 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
            'xmlns="%s" xsi:schemaLocation="%s D390.xsd" '
-           'luna="%d" an="%d" d_rec="0" nume_declar="%s" prenume_declar="%s" '
+           'luna="%d" an="%d" d_rec="%d" nume_declar="%s" prenume_declar="%s" '
            'functie_declar="%s" cui="%s" den="%s" adresa="%s"'
-           % (NS, NS, res.luna, res.an,
+           % (NS, NS, res.luna, res.an, int(getattr(res, "d_rec", 0) or 0),   # [lotul 11, C77] OPANAF 705/2020 anexa 2 cap.I
               _esc(_t(_dnume, _LIM["d390"]["nume_declar"])),
               _esc(_t(_dpren, _LIM["d390"]["prenume_declar"])),
               _esc(_t(_dfct, _LIM["d390"]["functie_declar"])),
@@ -879,4 +883,6 @@ def genereaza(conn, schema, an, luna, manual=None, reclasificari=None):
             "exigibilitatea taxei (OPANAF 705/2020 pct. 1.2; art. 325 Cod fiscal). "
             "Dacă ar fi trebuit să existe operațiuni, verifică dacă facturile UE sunt "
             "introduse și dacă partenerii au cod de TVA valid." % (luna, an))
+    from core import rectificativa as _rect
+    _rect.aplica(res, _rect.stabileste(conn, schema, "d390", an, luna))   # [C77] rectificativa: „se raportează toată inițiala corectată”
     return build_xml(res), res

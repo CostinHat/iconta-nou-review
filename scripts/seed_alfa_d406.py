@@ -20,6 +20,7 @@ for ln in open(os.path.expanduser("~/.iconta/db.env")):
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
 from core import db
+from core import cui_forma as _forma_cui   # [lotul 11, decizia Costin 10.3 pct.4] CUI-ul în forma păstrată: fără „RO”, fără spații
 db.init_pool()
 
 SCHEMA = "tenant_013"
@@ -35,18 +36,17 @@ def cif_check(baza):
     return 0 if c == 10 else c
 
 def cif_valid(cui):
-    """True daca CUI (numeric, fara RO) trece cifra de control."""
-    cui = str(cui).upper().replace("RO", "").strip()
+    """True daca CUI (numeric, fara RO) trece cifra de control. Forma: `cui_forma.stocare` (lotul 11, forma unica)."""
+    cui = _forma_cui.stocare(cui) or ""
     if not cui.isdigit() or len(cui) < 2:
         return False
     return cif_check(cui[:-1]) == int(cui[-1])
 
-# CUI-uri de corectat: pastreaza baza, corecteaza ULTIMA cifra
+# CUI-uri de corectat: pastreaza baza, corecteaza ULTIMA cifra. [lotul 11, decizia Costin 10.3 pct.4] rezultatul e in forma pastrata
+# (`cui_forma.stocare`: fara „RO”); „RO” apare numai la afisare, dupa starea de platitor de TVA
 def repara_cui(cui):
-    pre = "RO" if cui.upper().startswith("RO") else ""
-    num = cui.upper().replace("RO", "")
-    baza = num[:-1]
-    return "%s%s%d" % (pre, baza, cif_check(baza))
+    baza = (_forma_cui.stocare(cui) or "")[:-1]
+    return "%s%d" % (baza, cif_check(baza))
 
 CUI_FIX = {"RO12345678": repara_cui("RO12345678"), "RO87654321": repara_cui("RO87654321")}
 print("=== CUI-uri corectate (baza pastrata, cifra de control recalculata) ===")
@@ -77,7 +77,9 @@ with db.get_conn() as conn:
     fixe = 0
     for vechi, nou in CUI_FIX.items():
         for tab, col in loc:
-            cur.execute("UPDATE %s SET %s=%%s WHERE %s=%%s" % (tab, col, col), (nou, vechi))
+            # randurile vechi au „RO”, cele noi nu: potrivirea in forma pastrata, pe ambele parti (`cui_forma.SQL`)
+            cur.execute("UPDATE %s SET %s=%%s WHERE %s = %%s" % (tab, col, _forma_cui.SQL.format(c=col)),
+                        (nou, _forma_cui.stocare(vechi)))
             fixe += cur.rowcount
     print("randuri cu CUI corectat:", fixe)
 
@@ -179,7 +181,7 @@ with db.get_conn() as conn:
         cur.execute(f"SELECT DISTINCT {col} FROM {tab} WHERE {col} IS NOT NULL AND {col} <> ''")
         for (v,) in cur.fetchall():
             vv = str(v)
-            if (vv.upper().startswith("RO") or vv.isdigit()) and not cif_valid(vv) and not vv.startswith(("DE", "FR")):
+            if (_forma_cui.stocare(vv) or "").isdigit() and not cif_valid(vv):   # cod romanesc (cifre), fara cel strain (DE…, FR…)
                 ram.append((tab, col, vv))
     print("    ", ram if ram else "niciunul (toate trec cifra de control sau sunt straine/PF)")
 

@@ -893,12 +893,34 @@ def _verifica_drift_p2():
     return None
 
 
+def _verifica_curs_bnr():
+    """[460, comanda Costin 11.3 pct.1] Preluarea cursului BNR NU mai asteapta o factura: la fiecare ciclu al buclei de sanatate (lider,
+    la 5 minute) golurile anului se umplu din arhiva BNR (`uc_curs_bnr.completeaza`, idempotent, cel mult o descarcare la 10 minute),
+    apoi se spune daca tot lipseste cursul de care au nevoie operatiunile de azi (comunicat in ultima zi bancara dinaintea zilei, HG
+    1/2016 pct.35 alin.(1)). -> constatarea alertei sau None."""
+    from core import curs_bnr as _cb_s, uc_curs_bnr as _uc_cb_s
+    try:
+        _uc_cb_s.completeaza()
+        with db.get_conn() as conn:
+            st = _cb_s.stare_curs_zilei(conn)
+    except Exception as _e:
+        _obs.esec_secundar("curs BNR: completare / stare", _e)   # înghițit, dar nu tăcut
+        return None
+    if not st["lipsa"]:
+        return None
+    return ("Cursul BNR comunicat pe %s (de care au nevoie facturile în valută de azi) lipsește din aplicație; ultimul curs din "
+            "aplicație e din %s" % (st["asteptat"], st["ultima_zi"] or "—"))
+
+
 def _verifica_si_alerta():
     m = _citeste_metrici_pentru_alerte()
     alerte = []
     _drift = _verifica_drift_p2()
     if _drift:
         alerte.append(_alerta_load.rand("p2_infrastructura", _drift))
+    _bnr = _verifica_curs_bnr()      # [460] cursul zilei lipsă: alertă pentru administratorul platformei
+    if _bnr and _poate_alerta("curs_bnr"):
+        alerte.append(_alerta_load.rand("curs_bnr", _bnr))
     if m["disc_procent"] is not None and m["disc_procent"] >= _PRAG_DISC_PROCENT and _poate_alerta("disc"):
         alerte.append(_alerta_load.rand("disc", f"Disc folosit: {m['disc_procent']}% (prag {_PRAG_DISC_PROCENT}%)"))
     if m["erori_noi"] and m["erori_noi"] > 0 and _poate_alerta("erori"):
@@ -1261,6 +1283,28 @@ class ClientEdit(BaseModel):
     status: Optional[str] = None
     afiliat: Optional[bool] = None   # [lotul 10, 428] bifa „persoană afiliată (Cod fiscal art.7 pct.26)”
 
+class FurnizorIn(BaseModel):   # [lotul 11, decizia 10.3] fișa furnizorului (localitatea și județul citite de D406 / D394)
+    nume: str
+    cui: Optional[str] = None
+    adresa: Optional[str] = None
+    email: Optional[str] = None
+    telefon: Optional[str] = None
+    oras: Optional[str] = None
+    judet: Optional[str] = None
+    cod_postal: Optional[str] = None
+    status: str = "activ"
+
+class FurnizorEdit(BaseModel):
+    nume: Optional[str] = None
+    cui: Optional[str] = None
+    adresa: Optional[str] = None
+    email: Optional[str] = None
+    telefon: Optional[str] = None
+    oras: Optional[str] = None
+    judet: Optional[str] = None
+    cod_postal: Optional[str] = None
+    status: Optional[str] = None
+
 class SalariatIn(BaseModel):
     nume: str
     prenume: Optional[str] = None
@@ -1360,6 +1404,9 @@ class ProdusCreeazaIn(BaseModel):
     cota_tva: Optional[float] = None  # daca lipseste -> AI potriveste
     categorie: Optional[str] = None
     confirmat: bool = False
+    # [lotul 11, 449] categoria cotei 0% (produse_api.CATEGORII_PRODUS) și bunul cu taxare inversă (codul D394)
+    categorie_tva: Optional[str] = None
+    categorie_331: Optional[str] = None
 
 class ProdusUpdateIn(BaseModel):
     denumire: Optional[str] = None
@@ -1368,6 +1415,8 @@ class ProdusUpdateIn(BaseModel):
     cota_tva: Optional[float] = None
     categorie: Optional[str] = None
     confirmat: Optional[bool] = None
+    categorie_tva: Optional[str] = None   # [lotul 11, 449] None = neschimbat, "" = golit
+    categorie_331: Optional[str] = None
 
 class LinieEmitereIn(BaseModel):  # [p104_emitere_rute]
     descriere: str
@@ -3110,6 +3159,9 @@ def facturi_storno(tenant_id: int, factura_id: int, corp: dict = Body(default={}
 # ICRD_PUBLIC_VERIFICA_CUI_V1
 @app.get("/public/verifica-cui/{cui}")
 def public_verifica_cui(cui: str, request: Request):
+    _invalid = _uc_tenants.cui_firma_invalid(cui)   # [459] CUI-ul greșit se spune înainte de ANAF (și nu consumă din prag: nu atinge ANAF)
+    if _invalid:
+        return _invalid
     _rate_limit_email("verifica_cui", request, maxreq=10)  # [verifica_cui_v1] protejeaza cheia ANAF (10/15min per IP)
     try:
         rez = anaf_api.valideaza_cui([cui])
@@ -3120,15 +3172,14 @@ def public_verifica_cui(cui: str, request: Request):
     return rez[0]
 
 @app.get("/tenants/{tenant_id}/verifica-cui/{cui}")
-def verifica_cui(tenant_id: int, cui: str, ctx=Depends(cere_context)):
-    _schema_sau_404(ctx, tenant_id)  # doar verific accesul
+def verifica_cui(tenant_id: int, cui: str, nume: Optional[str] = None, ctx=Depends(cere_context)):
+    # [lotul 11, 444] `nume` = numele scris pe ecran (fișă / factură): răspunsul spune și dacă diferă de ANAF (`nume_dat_diferit`)
+    # [lotul 11, K] înveliș: verificarea ANAF și fișele stau împreună în use-case (`uc_tenants.verifica_cui`) — o citire, urmărită funcție
+    # cu funcție de `core/test_atribuire_scrieri.py`
     try:
-        rez = anaf_api.valideaza_cui([cui])
-    except Exception as e:
-        raise HTTPException(502, anaf_api.mesaj_indisponibil(e))   # [303 + 317]
-    if not rez:
-        return {"gasit": False}
-    return rez[0]
+        return _uc_tenants.verifica_cui(tenant_id, cui, nume, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 @app.get("/tenants/{tenant_id}/vector")  # [p82_vector] citeste vectorul fiscal
 def vector_citeste(tenant_id: int, ctx=Depends(cere_cabinet)):
@@ -3306,6 +3357,31 @@ def client_actualizeaza(tenant_id: int, client_id: int, date: ClientEdit,       
 def client_sterge(tenant_id: int, client_id: int,                   ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.client_sterge(tenant_id, client_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+# [lotul 11, decizia Costin 10.3 pct.4] FURNIZORI — fișele lor (localitatea și județul, citite de D406 / D394 când factura nu le are)
+@app.get("/tenants/{tenant_id}/furnizori")
+def furnizori_lista(tenant_id: int, status: Optional[str] = None, ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_tenants.furnizori_lista(tenant_id, status, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/furnizori")
+def furnizor_creeaza(tenant_id: int, date: FurnizorIn, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    try:
+        return _uc_tenants.furnizor_creeaza(tenant_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.put("/tenants/{tenant_id}/furnizori/{furnizor_id}")
+def furnizor_actualizeaza(tenant_id: int, furnizor_id: int, date: FurnizorEdit, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    try:
+        return _uc_tenants.furnizor_actualizeaza(tenant_id, furnizor_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -5394,6 +5470,23 @@ def eu_cabinet_set(date: CabinetIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
         raise _http_din(e)
 
 
+# [lotul 11, decizia Costin 10.3 pct.4] întocmitorul bilanțului, în profilul cabinetului (Setări cont → Date cabinet)
+@app.get("/cabinet/intocmitor")
+def cabinet_intocmitor_citeste(ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_cabinet.intocmitor_citeste(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/cabinet/intocmitor")
+def cabinet_intocmitor_salveaza(date: dict = Body(default={}), ctx=Depends(cere_drept(_drepturi.ADMIN))):
+    try:
+        return _uc_cabinet.intocmitor_salveaza(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 # [p30_recomanda]
 
 
@@ -5827,6 +5920,25 @@ def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_drept(_drept
     # orice nota care nu e `ciorna`, deci nu ating evidenta. E munca zilnica a asistentului.
     try:
         return _uc_tenants.jurnal_valideaza(tenant_id, nota_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/tenants/{tenant_id}/jurnal/{nota_id}/depasita")
+# [lotul 11, deficiența 451] Ciorna derivată e depășită față de sursa ei (aceeași verificare ca la validare)? Numai citire.
+def jurnal_depasita(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_tenants.jurnal_depasita(tenant_id, nota_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/jurnal/{nota_id}/reface")
+# [lotul 11, deficiența 451] Ciorna depășită se reface din sursa ei (statul, amortizarea, mișcarea de stoc): scrie o ciornă nouă în locul
+# celei vechi — „Poate pregăti”, ca „Contabilizează statul” / „Generează amortizarea”; validarea rămâne actul separat.
+def jurnal_reface(tenant_id: int, nota_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    try:
+        return _uc_tenants.jurnal_reface(tenant_id, nota_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -6727,6 +6839,25 @@ def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),             
         raise _http_din(e)
 
 
+@app.get("/tenants/{tenant_id}/borderouri")
+def borderouri_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_context)):
+    """[lotul 11, 450 / decizia 10.3 „Borderoul se corectează prin stornare”] Borderourile de achiziție ale lunii, cu nota și starea
+    stornării (stornat de / stornarea lui): lista de pe ecranul „Borderou de achiziție” (Stocuri)."""
+    try:
+        return _uc_tenants.borderouri_lista(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/borderouri/{factura_id}/storneaza")
+# [lotul 11, decizia Costin 10.3 pct.4] „Borderoul se corectează prin stornare, ca factura.” — al doilea document, nu o corectare a primului
+def borderou_storneaza(tenant_id: int, factura_id: int, corp: dict = Body(default={}), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    try:
+        return _uc_tenants.borderou_storneaza(tenant_id, factura_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.post("/tenants/{tenant_id}/vanzare-ic")
 def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """LIC bunuri (art. 294(2)a) sau prestare servicii IC (art. 278(2)).
@@ -6804,26 +6935,19 @@ def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_dr
         raise _http_din(e)
 
 
-@app.post("/tenants/{tenant_id}/reevaluare-valuta")
-def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
-    """Reevaluare lunara solduri valuta (OMFP 1802/2014 pct.325), curs BNR auto — formularul manual (cazurile speciale).
-    corp: {data (ultima zi luna), solduri: [{cont, valoare_valuta, moneda,
-    curs_evidenta, tip creanta|datorie|disponibil}]}. O nota cu toate liniile."""
-    try:
-        return _uc_tenants.reevaluare_valuta(tenant_id, corp, ctx)
-    except _erori.EroareDeDomeniu as e:
-        raise _http_din(e)
-
-
 # [lotul 10, deficiența 429, comanda Costin 10.1 pct.8] reevaluarea PROPUSĂ de aplicație (`core/uc_reevaluare.py`): „aplicația propune
 # singură creanțele și datoriile în valută neîncasate (pe factură), disponibilitățile în valută, cursul din evidență, cursul BNR din
 # ultima zi bancară și diferența pe 665/765; contabilul verifică și generează nota.”
+# [lotul 11, 429] UN SINGUR FORMULAR: ruta formularului manual (`POST /tenants/{id}/reevaluare-valuta`, Operațiuni) a fost scoasă — pe
+# producție, Costin a ajuns la ea în loc de propunere. Ajustarea manuală e în același formular (`manuale`), marcată.
 @app.get("/tenants/{tenant_id}/reevaluare-valuta")
-def reevaluare_valuta_propunere(tenant_id: int, an: int, luna: int, completari: Optional[str] = None, ctx=Depends(cere_cabinet)):
-    """Propunerea reevaluării lunii (OMFP 1802/2014 pct.325): elementele în valută, cursurile și diferența pe 665 / 765.
-    `completari` (JSON {cheie: {sold_valuta?, moneda?}}): recalcularea cu ce a scris contabilul pe ecran, fără scriere."""
+def reevaluare_valuta_propunere(tenant_id: int, an: int, luna: int, completari: Optional[str] = None, manuale: Optional[str] = None,
+                                ctx=Depends(cere_cabinet)):
+    """Propunerea reevaluării lunii (OMFP 1802/2014 pct.325): elementele în valută (pe partener), cursurile și diferența pe 665 / 765.
+    `completari` (JSON {cheie: {sold_valuta?, moneda?, clauza?}}) și `manuale` (JSON [{cont, moneda, sold_valuta, clauza?}]):
+    recalcularea cu ce a scris contabilul pe ecran, fără scriere."""
     try:
-        return _uc_reevaluare.reevaluare_valuta_propunere(tenant_id, an, luna, ctx, completari=completari)
+        return _uc_reevaluare.reevaluare_valuta_propunere(tenant_id, an, luna, ctx, completari=completari, manuale=manuale)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -6831,7 +6955,7 @@ def reevaluare_valuta_propunere(tenant_id: int, an: int, luna: int, completari: 
 @app.post("/tenants/{tenant_id}/reevaluare-valuta/nota")
 def reevaluare_valuta_genereaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Nota reevaluării lunii, din propunere (ciornă; a doua generare înlocuiește ciorna nevalidată a lunii).
-    corp: {an, luna, completari: {cheie: {sold_valuta?, moneda?}}}."""
+    corp: {an, luna, completari: {cheie: {sold_valuta?, moneda?, clauza?}}, manuale: [{cont, moneda, sold_valuta, clauza?}]}."""
     try:
         return _uc_reevaluare.reevaluare_valuta_genereaza(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:

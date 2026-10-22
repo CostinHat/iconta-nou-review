@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "static/js/ecrane/validat.js",
+  "ancora": "    if (n.in_coada !== \"la_senior\" && valideaza)\n",
+  "inlocuire": "    if (false)\n",
+  "test": "frontend_test/e2e/e2e_lot11_a457.py::test_def_457_ciorna_contabilului_e_in_coada_lui_si_se_valideaza_de_acolo"
+ },
+ {
+  "fisier": "core/reconciliere_api.py",
+  "ancora": "(\"la_senior\" if all(s == \"la_senior\" for s in sc) else None)",
+  "inlocuire": "\"la_senior\"",
+  "test": "frontend_test/e2e/e2e_lot11_a457.py::test_def_457_contarea_din_banca_spune_ciorna_nu_la_validare"
+ }
+]

@@ -65,7 +65,8 @@ def conn():
 def test_381_nota_pe_tert_fara_partener_e_refuzata(conn, deb, cre):
     """MUTAȚIA: verificarea partenerului scoasă din `_linii_valide` -> nota intră -> ROȘU."""
     r = jurnal_api.creeaza(conn, _SCHEMA, "Plata furnizor", "2026-10-03", [{"debit": deb, "credit": cre, "suma": 500}], "OP 1")
-    assert not r.get("ok") and (r.get("camp"), r.get("linia")) == ("partener_nume", 1), r
+    # [lotul 11, 440] câmpul ecranului „Notă nouă” (`je-pnume-0` = partenerul liniei 1), în lista erorilor; linia rămâne dată
+    assert not r.get("ok") and ([c["camp"] for c in r["erori_campuri"]], r.get("linia")) == (["je-pnume-0"], 1), r
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -76,11 +77,12 @@ def test_381_nota_cu_partener_intra_si_il_pastreaza(conn):
     assert r.get("ok"), r
     with conn.cursor() as cur:
         cur.execute("SELECT partener_cui, partener_nume FROM inregistrari_linii WHERE inregistrare_id = %s", (r["id"],))
-        assert cur.fetchall() == [("RO14399840", "DANTE INTERNATIONAL SA")]
+        # [lotul 11, decizia 10.3 pct.4] partenerul e păstrat, în forma păstrată a CUI-ului (fără „RO”, triggerul `trg_cui_fara_ro`)
+        assert cur.fetchall() == [("14399840", "DANTE INTERNATIONAL SA")]
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_381_cui_cu_cifra_de_control_gresita_e_refuzat(conn):
     r = jurnal_api.creeaza(conn, _SCHEMA, "Plata furnizor", "2026-10-03",
                            [{"debit": "401", "credit": "5311", "suma": 500, "partener_cui": "14399841", "partener_nume": "X"}], "OP 1")
-    assert not r.get("ok") and (r.get("camp"), r.get("linia")) == ("partener_cui", 1), r
+    assert not r.get("ok") and ([c["camp"] for c in r["erori_campuri"]], r.get("linia")) == (["je-pcui-0"], 1), r

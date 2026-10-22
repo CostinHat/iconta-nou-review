@@ -1,5 +1,5 @@
 {
- "ui_hash": "9d50c9e511e759d1",
+ "ui_hash": "8dfb0d36b1e543e7",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -213,7 +213,7 @@
   "stocuri": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 27,
+    "vazute": 30,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -232,7 +232,7 @@
   "inchidere_luna": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 7,
+    "vazute": 8,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -251,7 +251,7 @@
   "registratura": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 8,
+    "vazute": 9,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -327,7 +327,7 @@
   "centrecost": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 8,
+    "vazute": 10,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -365,7 +365,7 @@
   "casa": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 12,
+    "vazute": 13,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -403,7 +403,7 @@
   "datefirma": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 10,
+    "vazute": 14,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -422,7 +422,7 @@
   "emitere": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 12,
+    "vazute": 14,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -441,7 +441,7 @@
   "operatiuni": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 39,
+    "vazute": 37,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -460,8 +460,8 @@
   "compensari": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 5,
-    "apasate": 3,
+    "vazute": 6,
+    "apasate": 4,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },
@@ -479,8 +479,27 @@
   "clienti": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 5,
-    "apasate": 3,
+    "vazute": 6,
+    "apasate": 4,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "furnizori": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 7,
+    "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },
@@ -555,7 +574,7 @@
   "import_asociati": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 7,
+    "vazute": 8,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -574,8 +593,8 @@
   "raportz": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 6,
-    "apasate": 4,
+    "vazute": 7,
+    "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },

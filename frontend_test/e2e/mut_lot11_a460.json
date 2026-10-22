@@ -1,0 +1,20 @@
+[
+ {
+  "fisier": "core/uc_curs_bnr.py",
+  "ancora": "    _salveaza_cache(harta)\n    with db.get_conn() as conn:\n        dupa = _cb.zile_bancare_lipsa(conn, pana_la)",
+  "inlocuire": "    (lambda h: None)(harta)\n    with db.get_conn() as conn:\n        dupa = _cb.zile_bancare_lipsa(conn, pana_la)",
+  "test": "frontend_test/e2e/e2e_lot11_a460.py::test_def_460_factura_de_azi_propune_ultimul_curs_comunicat"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "      if (r.curs_zilei_lipsa) arataMesaj(z.querySelector(\"#em-valuta-lipsa\"), r.curs_zilei_lipsa.mesaj, \"avert\");",
+  "inlocuire": "      if (false) arataMesaj(z.querySelector(\"#em-valuta-lipsa\"), r.curs_zilei_lipsa.mesaj, \"avert\");",
+  "test": "frontend_test/e2e/e2e_lot11_a460.py::test_def_460_cursul_zilei_lipsa_se_vede_si_ce_se_foloseste"
+ },
+ {
+  "fisier": "static/js/ecrane/admin_sanatate.js",
+  "ancora": "  if (bnr.lipsa) {\n",
+  "inlocuire": "  if (false) {\n",
+  "test": "frontend_test/e2e/e2e_lot11_a460.py::test_def_460_administratorul_vede_cursul_zilei_lipsa"
+ }
+]

@@ -1,7 +1,7 @@
 // login.js — poarta de intrare.
 // Bara sus: logo + buton "Acces". Acces deschide central un modal umbrit
 // cu 2 optiuni: Intra in cont (login existent) / Client nou (inregistrare cabinet).
-import { api, arataMesaj, CULORI_CARD, ICOANE, esc, semnAjutor, inchidereDialog, focusFaraSalt, cate } from "../api.js?v=ff30ebaf3f";
+import { api, arataMesaj, CULORI_CARD, ICOANE, esc, semnAjutor, inchidereDialog, focusFaraSalt, cate } from "../api.js?v=58f26a3fc4";
 import { PRETURI_TITLU, preturiHTML } from "./preturi.js?v=0e00a65657";  // [preturi_v1] sursa unica a continutului de preturi
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { ciornaFormular } from "../ciorna_formular.js?v=f59e00811a";  // [267] ciorna formularului de înregistrare
@@ -402,7 +402,7 @@ export function ecranLogin(radacina) {
       randeazaFaraInvitatie();
       const m = modal.querySelector("#fi-mesaj");   // refuzul serverului, arătat pe loc (garda „refuz tăcut”)
       m.className = "caseta-atentie";
-      m.innerHTML = `<div class="ca-mesaj">${esc((e && e.mesaj) || "Nu se poate verifica acum dacă înregistrarea e deschisă. Încearcă din nou peste câteva minute.")}</div>`;
+      m.innerHTML = `<div class="ca-mesaj pe-randuri">${esc((e && e.mesaj) || "Nu se poate verifica acum dacă înregistrarea e deschisă. Încearcă din nou peste câteva minute.")}</div>`;
       return;
     }
     if (st && st.deschisa) randeazaInregistrare(st); else randeazaFaraInvitatie(st && st.refuz && st.refuz.motiv);
@@ -483,7 +483,7 @@ export function ecranLogin(radacina) {
     try { r = await api.post("/public/confirma-inregistrare", { token: CONFIRMARE }); } catch (e) {
       history.replaceState(null, "", location.pathname);   // tokenul nu rămâne în bara adresei
       // refuzul serverului (link folosit, expirat, inexistent), arătat pe loc (garda „refuz tăcut”)
-      modal.innerHTML = `${brand}<div class="caseta-atentie" id="conf-rezultat"><div class="ca-mesaj">${esc((e && e.mesaj) || "Activarea contului nu s-a putut face acum. Încearcă din nou peste câteva minute.")}</div></div>
+      modal.innerHTML = `${brand}<div class="caseta-atentie" id="conf-rezultat"><div class="ca-mesaj pe-randuri">${esc((e && e.mesaj) || "Activarea contului nu s-a putut face acum. Încearcă din nou peste câteva minute.")}</div></div>
         <button class="buton-secundar" id="conf-inapoi" style="margin-top:12px">Înapoi</button>`;
       modal.querySelector("#conf-inapoi").addEventListener("click", randeazaAlegere);
       modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
@@ -610,7 +610,10 @@ export function ecranLogin(radacina) {
       cuiInfo.textContent = "";
       try {
         const r = await api.get(`/public/verifica-cui/${encodeURIComponent(val)}`);
-        if (!r || !r.gasit) {
+        if (r && r.cui_invalid) {
+          cuiInfo.textContent = r.motiv;   // [459] CUI-ul greșit, înainte de ANAF (nu „Nu apare la ANAF”)
+          cuiInfo.style.color = "#a32d2d";
+        } else if (!r || !r.gasit) {
           cuiInfo.textContent = "Nu apare la ANAF prin acest CUI (posibil înregistrat ca PFI, direct la ANAF, fără ONRC). Completează denumirea manual mai jos.";
           cuiInfo.style.color = "#92500a";
         } else {

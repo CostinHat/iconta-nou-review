@@ -70,7 +70,7 @@ def test_def_435_orice_articol_din_stoc_apare_in_nomenclator(conn):
     produse_api.creeaza(conn, "marfa a", cota_tva=21)
     # grâu din borderou (fără cotă: persoana fizică nu facturează TVA)
     uc_tenants.achizitie_neinregistrat(1, {"data": "2026-10-19", "furnizor_nume": "Ion Popescu", "furnizor_adresa": "Str. Florilor 1",
-                                           "furnizor_act": "PH 123456", "valoare": 200, "cont_cheltuiala": "371", "articol": "grâu",
+                                           "furnizor_act": "PH 123456", "valoare": 200, "cont_cheltuiala": "371", "articol": "grâu", "articol_nou": True,
                                            "cantitate": 100, "um": "kg"}, {"uid": 1})
     l = _lista(conn)
     # comanda 10.2 pct.5: „Orice articol din stoc apare în nomenclator” — Marfa A o dată (produsul), restul ca rânduri din stoc

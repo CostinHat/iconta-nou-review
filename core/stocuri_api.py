@@ -63,7 +63,9 @@ def _nir_campuri_lipsa(linii, metoda=None):
 
 def _norm_denumire(x):
     """„Marfa  A” și „marfa a” sunt același articol pentru om: spațiile multiple și majusculele nu fac alt articol."""
-    return " ".join(str(x or "").split()).casefold()
+    # [lotul 11, 450] aceeași cheie ca nomenclatorul (fără diacritice): „grau” = „Grâu”
+    from core import produse_api as _pa
+    return _pa.cheie_denumire(x)
 
 
 def _articole_nir(cur, schema, linii):
@@ -180,22 +182,29 @@ def _decizia_omului(nir, metoda, factura):
     accesoriu (transport 100 lei, furnizor plătitor TVA) fără TVA”. Refuzul (cu câmpul) sau None. Factura nesosită = 408 și TVA-ul pe
     4428 (OMFP 1802/2014, funcțiunea contului 408: „valoarea bunurilor aprovizionate [...] pentru care nu s-au primit facturile”)."""
     from core import metoda_stoc as _ms
+    # [lotul 11, deficiența 440] ambele decizii se cer DEODATĂ (factura sosită și cota transportului), fiecare lângă câmpul ei
+    er, coduri = [], []
     if factura is None:
         fs = nir.get("factura_sosita")
         if fs is None:
-            return {"eroare": "Spune dacă factura furnizorului a sosit: fără ea, datoria intră pe 408 «Furnizori - facturi nesosite», iar "
-                              "TVA-ul stă neexigibil până la factură.", "cod": COD_FACTURA_NEDECLARATA,
-                    "erori_campuri": [{"camp": "sn-factura-sosita", "mesaj": "Alege dacă factura furnizorului a sosit sau nu."}]}
-        if fs is True:
+            er.append(("Spune dacă factura furnizorului a sosit: fără ea, datoria intră pe 408 «Furnizori - facturi nesosite», iar "
+                       "TVA-ul stă neexigibil până la factură.", "sn-factura-sosita", "Alege dacă factura furnizorului a sosit sau nu."))
+            coduri.append(COD_FACTURA_NEDECLARATA)
+        elif fs is True:
             msg = ("Factura a sosit: la stocul la cost, factura primită aduce ea marfa în stoc și în contabilitate (Facturi primite → "
                    "validare pe contul de stoc). NIR-ul fără factură se face numai când factura n-a sosit." if metoda == _ms.CV else
                    "Factura a sosit: alege-o în «Factura primită a recepției», ca NIR-ul să se lege de ea (costul vine din factură).")
-            return {"eroare": msg, "cod": COD_FACTURA_NEDECLARATA, "erori_campuri": [{"camp": "sn-factura-sosita", "mesaj": msg}]}
+            er.append((msg, "sn-factura-sosita", msg))
+            coduri.append(COD_FACTURA_NEDECLARATA)
     if _d(nir.get("transport")) > 0 and nir.get("cota_tva_transport") in (None, ""):
         msg = ("Alege cota de TVA a transportului (0% dacă transportatorul nu e plătitor de TVA): transportul de la un furnizor plătitor "
                "are TVA-ul lui, deductibil (CF art.297 alin.(4) lit.a).")
-        return {"eroare": msg, "cod": COD_COTA_TRANSPORT, "erori_campuri": [{"camp": "sn-transport-cota", "mesaj": msg}]}
-    return None
+        er.append((msg, "sn-transport-cota", msg))
+        coduri.append(COD_COTA_TRANSPORT)
+    if not er:
+        return None
+    return {"eroare": " ".join(e for e, _c, _m in er), "cod": coduri[0],
+            "erori_campuri": [{"camp": c, "mesaj": m} for _e, c, m in er]}
 
 
 def adauga_nir(conn, schema, nir, cere_decizia=False):
@@ -246,18 +255,22 @@ def adauga_nir(conn, schema, nir, cere_decizia=False):
             factura, er = _factura_pentru_nir(cur, schema, nir["factura_id"])
         if er:
             return {"eroare": er[1], "cod": er[0], "erori_campuri": [{"camp": "sn-factura", "mesaj": er[1]}]}
-    if cere_decizia:   # [399] drumul omului (ruta): factura sosită sau nu și cota transportului se aleg, nu se presupun
-        _dec = _decizia_omului(nir, metoda, factura)
-        if _dec:
-            return _dec
+    # [lotul 11, deficiența 440, comanda Costin 11.1 pct.16: „toate erorile apar deodată, fiecare cu textul ei, în casetă și lângă câmp”]
+    # deciziile omului (factura sosită, cota transportului), articolele incomplete și cota TVA a FIECĂREI linii fără cotă — un singur
+    # refuz, cu toate (înainte: decizia oprea tot, iar bucla cotei se oprea la prima linie)
+    _dec = _decizia_omului(nir, metoda, factura) if cere_decizia else None   # [399] factura sosită și cota transportului se aleg
     lipsa = _nir_campuri_lipsa(nir.get("linii") or [], metoda)
-    if lipsa:
-        return {"eroare": "Completează articolele: " + "; ".join(x["eticheta"] for x in lipsa),
-                "erori_campuri": [{"camp": x["camp"], "mesaj": x["mesaj"]} for x in lipsa]}
+    fara_cota = [{"camp": "nir-l%d-cota_tva" % _i, "mesaj": "Alege cota de TVA la «%s»." % (_l.get("denumire") or "")}
+                 for _i, _l in enumerate(nir["linii"]) if _l.get("cota_tva") is None]
+    if _dec or lipsa or fara_cota:
+        texte = ([_dec["eroare"]] if _dec else []) + (["Completează articolele: " + "; ".join(x["eticheta"] for x in lipsa)] if lipsa else []) \
+            + [x["mesaj"] for x in fara_cota]
+        r = {"eroare": " ".join(texte),
+             "erori_campuri": ((_dec or {}).get("erori_campuri") or []) + [{"camp": x["camp"], "mesaj": x["mesaj"]} for x in lipsa] + fara_cota}
+        if _dec:
+            r["cod"] = _dec["cod"]
+        return r
     try:
-        for _i, _l in enumerate(nir["linii"]):
-            if _l.get("cota_tva") is None:
-                raise _m.RefuzLinie("Alege cota de TVA la «%s»." % (_l.get("denumire") or ""), _i, "cota_tva")
         motor = _m.nir_gv if metoda == _ms.GV else _m.nir_cost
         # [08.10.2026, decizia Costin §6 pct.1 + pct.3] NIR-ul FĂRĂ factură: datoria e „factură nesosită” (408), iar TVA-ul stă
         # neexigibil (4428, pe analiticul de achiziție) până la factură. OMFP 1802/2014, funcțiunea contului 408: „În creditul

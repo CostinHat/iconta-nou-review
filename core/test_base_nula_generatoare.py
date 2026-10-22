@@ -49,5 +49,7 @@ def test_bilant_poarta_cere_si_reg_com():
         "bilant: profil fara reg_com ar trebui respins (regCom obligatoriu S1005/S1003)")
     assert not bilant_api.erori_generare(
         {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR", "cui_numeric": "14399840", "nume": "PROBA SRL", "reg_com": "J40/1234/2020",
-         "cod_judet": 40, "mare_contribuabil": False, "forma_proprietate": "35"}), (   # [lotul 10, C69] bifaMC / codPP „DA” (structura_SC_1225)   # [lotul 10, C69] + codTT „Cod judet sediu … DA” (structura_SC_1225), nu „bucuresti” implicit
+         "cod_judet": 40, "mare_contribuabil": False, "forma_proprietate": "35",
+         # [lotul 11, decizia Costin 10.3] interesul public și întocmitorul bilanțului (structura SC 1225 rândurile 15, 21, 22a) blochează
+         "interes_public": False, "calit_intocmit": 22, "intocmit_nume": "CABINET PROBA SRL", "cif_intocmit": "14399840"}), (   # [lotul 10, C69] bifaMC / codPP „DA” (structura_SC_1225)   # [lotul 10, C69] + codTT „Cod judet sediu … DA” (structura_SC_1225), nu „bucuresti” implicit
         "bilant: profil cu cui+nume+reg_com respins gresit")

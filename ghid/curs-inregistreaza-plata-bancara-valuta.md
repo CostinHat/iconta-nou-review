@@ -2,7 +2,7 @@
 title: "La ce curs se înregistrează o plată bancară în valută?"
 description: "Explică regula legală a cursului BNR aplicabil unei plăți în valută și modul în care iConta.eu determină automat cursul corect."
 published: 2026-09-26
-modified: 2026-10-13
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -28,7 +28,7 @@ Cele mai frecvente greșeli: folosirea cursului de vânzare/cumpărare al bănci
 
 ## Ce face iConta.eu
 
-Motorul de curs alege pentru orice dată dată ca parametru ultimul curs BNR comunicat cu data cursului ≤ data respectivă, folosind sursa oficială BNR. Dacă cel mai recent curs disponibil e mai vechi de 5 zile calendaristice (prag intern de produs, nu regulă fiscală), aplicația semnalează explicit "curs prea vechi" în loc să îl aplice tăcut; pentru monede necotate de BNR sau când serviciul e indisponibil, situația e afișată clar. Rotunjirea se face cu „calcul zecimal exact” și ROUND_HALF_UP, conform regulii fiscale de rotunjire.
+Motorul de curs alege pentru orice dată dată ca parametru ultimul curs comunicat de BNR înaintea datei respective (cel comunicat în ziua bancară anterioară, valabil în acea zi), folosind sursa oficială BNR. Dacă cel mai recent curs disponibil e mai vechi de 5 zile calendaristice (prag intern de produs, nu regulă fiscală), aplicația semnalează explicit "curs prea vechi" în loc să îl aplice tăcut; pentru monede necotate de BNR sau când serviciul e indisponibil, situația e afișată clar. Rotunjirea se face cu „calcul zecimal exact” și ROUND_HALF_UP, conform regulii fiscale de rotunjire.
 
 Ca și la încasări, această regulă de curs e implementată în iConta.eu în principal pentru conversia sumelor pe facturi în valută și în declarațiile care depind de ele (D300, D390, D394, D406) — cursul aplicat automat e cel al facturii, nu al zilei plății efective, dacă cele două diferă. Un curs manual poate fi introdus explicit, cu data comunicării lui și autorul modificării.
 

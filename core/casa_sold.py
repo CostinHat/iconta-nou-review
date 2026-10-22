@@ -31,32 +31,67 @@ def sintetic_casa(cont):
     return s if s in CONTURI_CASA else None
 
 
-def _miscari(cur, schema, cont, doar_validate):
-    """(sold de preluare, {data: variație}) pe contul de casă `cont` (sintetic, cu analiticele lui)."""
+def note_casa(cur, schema, cont, doar_validate=False, de_la=None, pana_la=None):
+    """[lotul 11, deficiența 455] SURSA UNICĂ a soldului casei: (data soldurilor de preluare, soldul de preluare, notele care mișcă
+    casa `cont` — sintetic, cu analiticele lui — de după data preluării). Fiecare notă: {inregistrare_id, data, variatie (intrare - ieșire
+    pe cont), status, sursa, descriere, document_ref}, în ordinea (data, id). `de_la` (inclusiv) / `pana_la` (exclusiv) taie intervalul
+    notelor; soldul de preluare e mereu întreg.
+
+    Registrul de casă (`casa_api.registru`), refuzul ieșirii la salvare și la validare (`refuz_iesire`) și soldul de la începutul lunii
+    (`sold_inainte`) citesc numai de aici — un singur calcul, deci o singură cifră. Până la 22.10.2026 registrul își aduna soldul din
+    `casa_operatiuni` (numai dispozițiile și chitanțele din ecranul Casă), iar refuzul din note: pe F1 raportul Z (5311 = 707, 252 lei)
+    era în casă pentru refuz (294) și lipsea din registru (42). Garda: `core/test_lot11_a455_sold_casa.py`.
+    `doar_validate`: numai evidența validată (momentul validării); altfel toate notele, ciornele incluse (plata în ciornă a scos deja banii
+    din casă)."""
     from psycopg2.extras import RealDictCursor
     from core.bilant_api import data_soldurilor
     with cur.connection.cursor(cursor_factory=RealDictCursor) as c:   # `data_soldurilor` citește rânduri-dicționar
         ref = data_soldurilor(c, schema)
-    cur.execute(f"SELECT COALESCE(sum(sold_debitor - sold_creditor), 0) AS s FROM {schema}.solduri_initiale "
-                f"WHERE split_part(cont, '.', 1) = %s", (cont,))
-    r = cur.fetchone()
-    initial = Decimal(str(r["s"] if isinstance(r, dict) else r[0]))
-    cur.execute(f"""SELECT i.data, sum(CASE WHEN split_part(l.cont_debit, '.', 1) = %s THEN l.suma ELSE 0 END)
-                                 - sum(CASE WHEN split_part(l.cont_credit, '.', 1) = %s THEN l.suma ELSE 0 END) AS v
-                      FROM {schema}.inregistrari_linii l JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-                     WHERE (split_part(l.cont_debit, '.', 1) = %s OR split_part(l.cont_credit, '.', 1) = %s)
-                       AND (i.status = 'validata' OR NOT %s) AND (%s::date IS NULL OR i.data > %s::date)
-                     GROUP BY i.data""", (cont, cont, cont, cont, doar_validate, ref, ref))
+        c.execute(f"SELECT COALESCE(sum(sold_debitor - sold_creditor), 0) AS s FROM {schema}.solduri_initiale "
+                  f"WHERE split_part(cont, '.', 1) = %s", (cont,))
+        initial = Decimal(str(c.fetchone()["s"]))
+        c.execute(f"""SELECT i.id AS inregistrare_id, i.data, i.status, i.sursa, i.descriere, i.document_ref,
+                             sum(CASE WHEN split_part(l.cont_debit, '.', 1) = %s THEN l.suma ELSE 0 END)
+                           - sum(CASE WHEN split_part(l.cont_credit, '.', 1) = %s THEN l.suma ELSE 0 END) AS variatie
+                        FROM {schema}.inregistrari_linii l JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
+                       WHERE (split_part(l.cont_debit, '.', 1) = %s OR split_part(l.cont_credit, '.', 1) = %s)
+                         AND (i.status = 'validata' OR NOT %s) AND (%s::date IS NULL OR i.data > %s::date)
+                         AND (%s::date IS NULL OR i.data >= %s::date) AND (%s::date IS NULL OR i.data < %s::date)
+                       GROUP BY i.id, i.data, i.status, i.sursa, i.descriere, i.document_ref
+                       ORDER BY i.data, i.id""", (cont, cont, cont, cont, doar_validate, ref, ref, de_la, de_la, pana_la, pana_la))
+        note = [dict(r, variatie=Decimal(str(r["variatie"]))) for r in c.fetchall()]
+    return ref, initial, note
+
+
+def _miscari(cur, schema, cont, doar_validate):
+    """(data preluării, sold de preluare, {data: variație}) pe contul de casă `cont` — din `note_casa`, pe zile."""
+    ref, initial, note = note_casa(cur, schema, cont, doar_validate)
     out = {}
-    for x in cur.fetchall():
-        d, v = (x["data"], x["v"]) if isinstance(x, dict) else (x[0], x[1])
-        out[d] = Decimal(str(v))
+    for n in note:
+        out[n["data"]] = out.get(n["data"], Decimal(0)) + n["variatie"]
     return ref, initial, out
+
+
+def _prima_zi_negativa(sold, mis, data, iesire):
+    """(ziua, soldul după ieșire) a primei zile >= `data` în care casa, cu ieșirea `iesire` scoasă la `data`, ar fi sub zero; None altfel.
+    `sold` = soldul de dinaintea zilei `data`."""
+    curent = sold
+    for d in sorted(set([data] + [d for d in mis if d >= data])):
+        curent += mis.get(d, Decimal(0))
+        if curent - iesire < 0:
+            return d, curent - iesire
+    return None
 
 
 def refuz_iesire(cur, schema, cont, data, iesire, doar_validate, ce="Plata"):
     """Mesajul refuzului dacă ieșirea `iesire` (lei, > 0) din casa `cont`, la `data`, duce soldul sub zero în acea zi sau în oricare zi de
-    după; None dacă încape. `doar_validate`: soldul evidenței validate (la validare) sau al tuturor notelor (la salvare)."""
+    după; None dacă încape. `doar_validate`: soldul evidenței validate (la validare) sau al tuturor notelor (la salvare).
+
+    [lotul 11, deficiența 455] La VALIDARE (`doar_validate=True`; unicul apelant e `jurnal_api.valideaza`, cu nota încă ciornă, deci
+    printre „toate notele”) refuzul e cel puțin la fel de strict ca registrul de casă: după evidența validată plus nota, se verifică și
+    registrul (toate notele, ciornele incluse, nota care se validează deja printre ele) — o notă care scoate bani nu se validează cât timp
+    registrul arată casa sub zero în ziua ei sau după. Fără asta, o ieșire în ciornă scrisă pe alt drum decât Casa (notă manuală, decont,
+    stat de plată) lăsa registrul negativ și validarea altei ieșiri trecea."""
     import datetime as _dt
     cont = sintetic_casa(cont)
     iesire = Decimal(str(iesire))
@@ -64,24 +99,26 @@ def refuz_iesire(cur, schema, cont, data, iesire, doar_validate, ce="Plata"):
         return None
     if not hasattr(data, "year"):
         data = _dt.date.fromisoformat(str(data)[:10])
-    ref, sold, mis = _miscari(cur, schema, cont, doar_validate)
-    if ref is not None and data <= ref:
-        return None   # înainte de soldurile de preluare aplicația nu știe ce era în casă
-    for d in sorted(mis):
-        if d < data:
-            sold += mis[d]
-    sold_inainte = sold + mis.get(data, Decimal(0))
-    zile = sorted(set([data] + [d for d in mis if d >= data]))
-    curent = sold
-    for d in zile:
-        curent += mis.get(d, Decimal(0))
-        if curent - iesire < 0:
-            evidenta = "evidența validată" if doar_validate else "registru"
-            cand = ("pe %s" % _data_ro(d)) if d == data else ("pe %s, după operațiunile înregistrate până atunci" % _data_ro(d))
+    for validate, scoate in (((True, iesire), (False, Decimal(0))) if doar_validate else ((False, iesire),)):
+        ref, sold, mis = _miscari(cur, schema, cont, validate)
+        if ref is not None and data <= ref:
+            return None   # înainte de soldurile de preluare aplicația nu știe ce era în casă
+        sold += sum((v for d, v in mis.items() if d < data), Decimal(0))
+        neg = _prima_zi_negativa(sold, mis, data, scoate)
+        if neg is None:
+            continue
+        d, dupa = neg
+        cand = ("pe %s" % _data_ro(d)) if d == data else ("pe %s, după operațiunile înregistrate până atunci" % _data_ro(d))
+        sold_zi = sold + mis.get(data, Decimal(0))
+        if validate or not doar_validate:
             return ("%s de %s lei nu încape în casă (contul %s): soldul casei pe %s, în %s, e %s lei, iar după ea casa ar ajunge la %s lei %s. "
                     "Numerarul din casă nu poate fi negativ. Înregistrează întâi încasarea sau ridicarea de numerar din care s-a plătit%s."
-                    % (ce, _lei(iesire), cont, _data_ro(data), evidenta, _lei(sold_inainte), _lei(curent - iesire), cand,
-                       " (și valideaz-o)" if doar_validate else ""))
+                    % (ce, _lei(iesire), cont, _data_ro(data), "evidența validată" if validate else "registru", _lei(sold_zi), _lei(dupa),
+                       cand, " (și valideaz-o)" if validate else ""))
+        return ("%s de %s lei nu se validează: în registrul de casă (contul %s, toate notele, și ciornele, cu ea inclusă) soldul pe %s e "
+                "%s lei, iar casa ajunge la %s lei %s. Numerarul din casă nu poate fi negativ. Înregistrează întâi încasarea sau ridicarea "
+                "de numerar din care s-a plătit, sau șterge ieșirea în ciornă care nu s-a făcut."
+                % (ce, _lei(iesire), cont, _data_ro(data), _lei(sold_zi), _lei(dupa), cand))
     return None
 
 

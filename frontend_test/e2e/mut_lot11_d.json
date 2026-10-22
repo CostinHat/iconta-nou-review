@@ -1,0 +1,22 @@
+[
+  {"fisier": "core/d101g.py",
+   "ancora": "'<D101G xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" '",
+   "inlocuire": "'<declaratie xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" '",
+   "test": "frontend_test/e2e/e2e_lot11_d.py::test_def_c70_d101g_trece_validatorul_oficial"},
+  {"fisier": "core/d205.py",
+   "ancora": "    _veche = depusa_regula_veche(conn, schema, perioada.an)\n    if _veche:",
+   "inlocuire": "    _veche = depusa_regula_veche(conn, schema, perioada.an)\n    if False and _veche:",
+   "test": "frontend_test/e2e/e2e_lot11_d.py::test_def_d205_anul_depus_dupa_regula_veche_nu_primeste_rectificativa"},
+  {"fisier": "core/control_fiscal_api.py",
+   "ancora": "        if _prel205 and not _d205.completata_manual(conn_schema, schema, Y):",
+   "inlocuire": "        if False and _prel205 and not _d205.completata_manual(conn_schema, schema, Y):",
+   "test": "frontend_test/e2e/e2e_lot11_d.py::test_def_d205_semaforul_numara_457_preluat_ca_incomplet"},
+  {"fisier": "static/js/ecrane/declaratii.js",
+   "ancora": "  return (refuz.note || []).length ? refuz.mesaj_langa_note : (refuz.mesaj || \"\");",
+   "inlocuire": "  return refuz.mesaj || \"\";",
+   "test": "frontend_test/e2e/e2e_lot11_d.py::test_def_436_caseta_de_refuz_incepe_sub_antet_si_nu_repeta_notele"},
+  {"fisier": "static/stil.css",
+   "ancora": ".fereastra-corp .bara-fixa > [id$=\"-mesaj\"], .fereastra-corp .bara-fixa > [id$=\"-msg\"] { max-height: 35vh; overflow-y: auto; }",
+   "inlocuire": "",
+   "test": "frontend_test/e2e/e2e_lot11_d.py::test_def_436_caseta_de_refuz_incepe_sub_antet_si_nu_repeta_notele"}
+]

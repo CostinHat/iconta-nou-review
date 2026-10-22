@@ -146,7 +146,8 @@ def test_aliasul_local_bate_pe_cel_de_modul(st):
     assert nir, "ruta POST /tenants/{}/stocuri/nir a dispărut din main.py"
     # [lotul 07.10 B, C10] refuzul „metoda de stoc nedeclarată” trimite în Date firmă prin forma unică
     # `uc_comun.refuz_spre_ecran` (care construiește afirmația tipată) — două module în plus, numite exact
-    assert set(nir[0]["module"]) == {"stocuri_api", "uc_comun", "afirmatii"}, (
+    # [lotul 11, decizia Costin 10.3 pct.4] „NIR cu număr repetat: refuzat” — lacătul NIR-urilor și savepoint-ul lui stau în `repo_stocuri`
+    assert set(nir[0]["module"]) == {"stocuri_api", "uc_comun", "afirmatii", "repo_stocuri"}, (
         "ruta de NIR nu mai e legată exact de `stocuri_api`, ci de %s — harta aliasurilor "
         "locale s-a stricat" % sorted(nir[0]["module"]))
 

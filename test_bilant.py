@@ -64,7 +64,10 @@ def test_f20_pierdere():
 # proprietate N(2) DA Nomenclator forme de proprietate”, „19. nume_admin Nume si prenume Administrator C(75) DA”. CUI-ul 14399840 are
 # cifra de control corectă (cel vechi, 12345678, n-o avea).
 _ANTET = {"cui_numeric": "14399840", "cod_judet": 40, "mare_contribuabil": False, "forma_proprietate": "35",
-          "declarant_nume": "POPESCU", "declarant_prenume": "ION"}
+          "declarant_nume": "POPESCU", "declarant_prenume": "ION",
+          # [lotul 11, decizia Costin 10.3] interesul public (Date firmă) și întocmitorul (profilul cabinetului) blochează dacă lipsesc
+          # (structura SC 1225 rândurile 15, 21, 22a); persoană juridică autorizată (22) cu CIF verificat.
+          "interes_public": False, "calit_intocmit": 22, "intocmit_nume": "CABINET PROBA SRL", "cif_intocmit": "14399840"}
 
 
 def test_xml_are_antet_si_valori():

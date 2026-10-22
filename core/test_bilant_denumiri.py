@@ -87,7 +87,7 @@ def test_datele_informative_scrise_au_denumire():
     """[C11, 12.10.2026] Rândurile F30 pe care le scrie generatorul (datele informative, cap.I) au denumirea lor din structura ANAF;
     tabelul „Ce se depune” le arată separat de „An precedent” / „An curent”. MUTAȚIE: F30 scos din extragere -> pică."""
     x = _b.xml_s1005({"cui_numeric": 14399840, "nume": "P", "cod_judet": 40, "mare_contribuabil": False, "forma_proprietate": "35",
-                      "declarant_nume": "Pop", "declarant_prenume": "Ion"}, 2025, {}, {8: 5}, {}, {8: 5})  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
+                      "declarant_nume": "Pop", "declarant_prenume": "Ion", "interes_public": False, "calit_intocmit": 12, "intocmit_nume": "IONESCU MARIA"}, 2025, {}, {8: 5}, {}, {8: 5})  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
     randuri = sorted({int(r) for r in re.findall(r'\bF30_(\d{3})[12]="', x)})
     assert randuri == [1, 2, 3] and all(NOMENCLATOR_DENUMIRI[t]["F30"].get(r) for t in ("s1005", "s1003") for r in randuri), randuri
     assert NOMENCLATOR_DENUMIRI["s1005"]["F30"][1] == "Unități care au înregistrat profit"

@@ -71,23 +71,42 @@ def poarta_tva_balanta(schema, an, luna, trim=None):
             "contabil": "%.2f" % c["contabil"], "diferenta": "%.2f" % c["diferenta"], "note": c.get("ciorne") or [],
             "note_explica": bool(c.get("ciorne_explica"))} for c in rosii]
     from core import afirmatii as _af
+    mesaj, langa = mesaje_refuz_tva(dif)
+    return dict(_af.afirmatie("neconformitate", "declaratie_tva", mesaj, unde="perioada %02d/%04d" % (luna_ancora, an),
+                              regula="R17_2 = rulajul creditor 4427 și R27_2 = rulajul debitor 4426 ale ferestrei TVA (toleranța 1 leu)"),
+                cod=COD_TVA_BALANTA, diferente=dif, mesaj=mesaj, mesaj_langa_note=langa, note=_note_unice(dif))
+
+
+def mesaje_refuz_tva(dif):
+    """(mesaj, mesaj_langa_note) ale refuzului porții TVA, din diferențele pe conturi. PURĂ.
+    `mesaj` numește notele nevalidate care mișcă fiecare cont ([deficiența 284]: numărul din Registrul-jurnal, documentul și suma) — pentru
+    locurile fără butoane („De depus”, API-ul). [lotul 11, 436 afișare — clasa „paragraful repetă ce arată butoanele”] `mesaj_langa_note`
+    e aceeași frază cu notele NUMĂRATE, nu enumerate: stă lângă butoanele „Deschide nota …” (`coada_trimite.legaturiNote`), care le numesc."""
     from core.pdf_util import bani as _bani   # [284] suma scrisă ca pe ecran (63,00), ca în notele numite mai jos
     mesaj = ("Declarația nu intră în coadă: TVA-ul ei nu se potrivește cu balanța lunii — " + "; ".join(
                 "%s (rândul %s): declarat %s, contul %s are %s, diferență %s lei" % (
                     d["eticheta"], d["rand"], _bani(d["declarat"]), d["cont"], _bani(d["contabil"]), _bani(d["diferenta"])) for d in dif)
                       + ". Toleranța e rotunjirea la leu.")
+    langa = mesaj
     # [deficiența 284] notele nevalidate care mișcă contul se numesc, cu numărul din Registrul-jurnal, documentul și suma
     numite = [d for d in dif if d["note"]]
     for d in numite:
         mesaj += (" %s pe contul %s: %s." % ("Diferența o explică" if d["note_explica"] else
                                              "Note nevalidate (nu acoperă toată diferența)", d["cont"], "; ".join(
             eticheta_nota_tva(n) for n in d["note"])))
+        langa += ((" Diferența pe contul %s o explică %s." if d["note_explica"] else " Pe contul %s, %s nu acoperă toată diferența.")
+                  % (d["cont"], _cate_note(d["note"])))
     if not numite or not all(d["note_explica"] for d in dif):
-        mesaj += (" Validatorul ANAF verifică structura, nu cifrele: corectează documentele (o factură necontată, o notă nevalidată, o "
-                  "achiziție fără factură) și generează din nou.")
-    return dict(_af.afirmatie("neconformitate", "declaratie_tva", mesaj, unde="perioada %02d/%04d" % (luna_ancora, an),
-                              regula="R17_2 = rulajul creditor 4427 și R27_2 = rulajul debitor 4426 ale ferestrei TVA (toleranța 1 leu)"),
-                cod=COD_TVA_BALANTA, diferente=dif, mesaj=mesaj, note=_note_unice(dif))
+        _corecteaza = (" Validatorul ANAF verifică structura, nu cifrele: corectează documentele (o factură necontată, o notă nevalidată, o "
+                       "achiziție fără factură) și generează din nou.")
+        mesaj += _corecteaza
+        langa += _corecteaza
+    return mesaj, langa
+
+
+def _cate_note(note):
+    """„1 notă nevalidată”, „3 note nevalidate” — cum se numără notele în frazele de lângă butoane."""
+    return _cate(len(note or []), "notă nevalidată", "note nevalidate")
 
 
 def eticheta_nota_tva(n):
@@ -210,6 +229,27 @@ MESAJ_ASTEPTARE = (" După validarea %s, declarația se generează din nou și i
                    "contabilului.")
 
 
+#: [lotul 11, 436 afișare — clasa „paragraful repetă ce arată butoanele”] variantele de mai sus FĂRĂ lista notelor, afișate lângă butoanele
+#: „Deschide nota …” (`coada_trimite.legaturiNote`), care le numesc deja; `%s` = câte note („2 note nevalidate”). Textele cu lista rămân
+#: pentru locurile fără butoane (ecranul de după intrarea în coadă, API-ul).
+MESAJ_CIORNE_POARTA_LANGA_NOTE = ("Comparația cu balanța s-a făcut pe notele validate. Perioada are %s. Declarația intră în coadă; "
+                                  "validează-le înainte de depunere.")
+MESAJ_CIORNE_BLOCAJ_LANGA_NOTE = (" Perioada are %s — dacă ele corectează diferența, validează-le și generează din nou; până atunci "
+                                  "evidența e cea validată, iar declarația nu se potrivește cu ea.")
+
+
+def avertisment_langa_note(ciorne):
+    """Avertismentul porții (`decizie_poarta`, ciornele fără diferență) fără lista notelor, pentru lângă butoanele lor; None fără ciorne."""
+    return MESAJ_CIORNE_POARTA_LANGA_NOTE % _cate_note(ciorne) if ciorne else None
+
+
+def _cu_asteptare(blocaj):
+    """Blocajul cu note numite + așteptarea validării lor ([deficiența 284]): MESAJ_ASTEPTARE pe ambele fraze — cea cu lista notelor și cea
+    de lângă butoane ([lotul 11, 436]). `asteptare` o pune cine cheamă (cere cererea și contextul)."""
+    a = MESAJ_ASTEPTARE % ("notei" if len(blocaj["note"]) == 1 else "notelor")
+    return dict(blocaj, mesaj=blocaj["mesaj"] + a, mesaj_langa_note=blocaj.get("mesaj_langa_note", blocaj["mesaj"]) + a)
+
+
 def decizie_poarta(refuz, ciorne):
     """(blocaj, avertisment) pentru porțile D300 / D394 / D390 / D406 față de balanță. PURĂ.
     [08.10.2026, decizia Costin §6 pct.7 — R36] „Porțile D300/D394/D390/D406 compară validat cu validat; dacă există ciorne în lună,
@@ -224,7 +264,9 @@ def decizie_poarta(refuz, ciorne):
         # [deficiența 284] notele care mișcă TVA-ul sunt numite în refuz
         if refuz.get("note"):
             return dict(refuz, ciorne=len(ciorne or [])), None
-        return ((dict(refuz, mesaj=refuz.get("mesaj", "") + MESAJ_CIORNE_BLOCAJ % numite, ciorne=len(ciorne), note=list(ciorne))
+        return ((dict(refuz, mesaj=refuz.get("mesaj", "") + MESAJ_CIORNE_BLOCAJ % numite,
+                      mesaj_langa_note=refuz.get("mesaj_langa_note", refuz.get("mesaj", "")) + MESAJ_CIORNE_BLOCAJ_LANGA_NOTE % _cate_note(ciorne),
+                      ciorne=len(ciorne), note=list(ciorne))
                  if ciorne else refuz), None)
     return None, (MESAJ_CIORNE_POARTA % numite if ciorne else None)
 
@@ -246,8 +288,8 @@ def coada_adauga(date, ctx):
     try:
         with db.get_conn(schema) as conn:
             xml, res = declaratii_api.genereaza(conn, schema, date.tip, body)
-    except ValueError as e:
-        raise _erori.DateInvalide(str(e))
+    except ValueError as e:   # [lotul 11, 445] refuzul cu trimitere (`RefuzGenerare`: ecranul / câmpul / notele de reparat) ajunge la ecran ca obiect, ca în uc_declaratii
+        raise _erori.DateInvalide(e.detaliu() if isinstance(e, _erori.RefuzGenerare) else str(e))
     # [F163v2] păstrăm și `res` întreg (serializat) în payload, nu doar avertismente: e singura
     # cale prin care rândurile depuse ajung persistate (marcheaza_depusa le scrie în
     # declaratii_depuse.randuri). d112 -> randuri None (randuri_din_res, temei acolo).
@@ -265,6 +307,7 @@ def coada_adauga(date, ctx):
     # dau doar avertisment, nu blocaj.” Fără ciorne, diferența blochează ca înainte; cu ciorne, intră în coadă cu avertismentul.
     # [PIVOT 09.10.2026, deficiențele 120 + 210; PIVOT 10.10.2026, comanda Costin pct.3] diferența blochează și cu ciorne, la toate patru.
     avertismente_poarta = []
+    avertismente_langa_note = []   # [lotul 11, 436] aceleași avertismente fără lista notelor, pentru lângă butoanele lor
     # [deficiențele 297 + 298] datele-sursă ale declarației: amprenta (pentru „depășită”), notele nevalidate și facturile fără notă
     # validată ale perioadei, NUMITE — la orice declarație, nu numai la TVA
     _surse = surse_declaratiei(schema, date.tip, date.an, date.luna, date.trim)
@@ -282,24 +325,26 @@ def coada_adauga(date, ctx):
         _blocaj, _avert = decizie_poarta(_refuz, _ciorne)
         if _blocaj and _blocaj.get("note"):
             # [deficiența 284] declarația așteaptă validarea notelor numite; după ea se generează din nou și intră singură în coadă
-            _blocaj = dict(_blocaj, mesaj=_blocaj["mesaj"] + MESAJ_ASTEPTARE % ("notei" if len(_blocaj["note"]) == 1 else "notelor"),
-                           asteptare=asteapta_notele(date, ctx, [n["nota_id"] for n in _blocaj["note"]]))
+            _blocaj = dict(_cu_asteptare(_blocaj), asteptare=asteapta_notele(date, ctx, [n["nota_id"] for n in _blocaj["note"]]))
         if _blocaj:
             raise _erori.DateInvalide(_blocaj)
         if _avert and not _surse["facturi"]:
             avertismente_poarta.append(_avert)
+            avertismente_langa_note.append(avertisment_langa_note(_ciorne))
     # [lotul 10, deficiența 436, comanda Costin 10.2 pct.6, verbatim în DECIZII] „când declarația știe că are cifra greșită din note
     # nevalidate, depunerea se blochează până la validare, cu motivul lângă buton, la toate declarațiile.” Declarația calculată din evidența
     # validată (`coada_api.DECLARATII_DIN_EVIDENTA`) nu intră în coadă cu note nevalidate în fereastra ei: le numește, iar după validarea
     # lor se generează din nou și intră singură (așteptarea de la 284 — același drum ca poarta TVA)
     _bl_note = coada_api.blocaj_note_nevalidate(date.tip, _surse["note"])
     if _bl_note:
-        _bl_note = dict(_bl_note, mesaj=_bl_note["mesaj"] + MESAJ_ASTEPTARE % ("notei" if len(_bl_note["note"]) == 1 else "notelor"),
-                        asteptare=asteapta_notele(date, ctx, [n["nota_id"] for n in _bl_note["note"]]))
+        # [lotul 11, 436 afișare] și fraza de lângă butoanele notelor (`mesaj_langa_note`, fără lista lor) primește așteptarea
+        _bl_note = dict(_cu_asteptare(_bl_note), asteptare=asteapta_notele(date, ctx, [n["nota_id"] for n in _bl_note["note"]]))
         raise _erori.DateInvalide(_bl_note)
     _nev = (_surse["documente_nevalidate"] or {}).get("motiv")
     if _nev and _nev not in avertismente_poarta and (_surse["facturi"] or not avertismente_poarta):
         avertismente_poarta.append(_nev)
+        # fraza fără lista notelor o dă `coada_api.nevalidate_acum` (`motiv_langa_note`), dacă o are; altfel aceeași frază
+        avertismente_langa_note.append((_surse["documente_nevalidate"] or {}).get("motiv_langa_note") or _nev)
     # 2) POARTA: se VALIDEAZĂ ÎNAINTE de a intra în coadă (decizia lui Costin, 26.08.2026).
     #
     # Până azi coada primea orice se genera, iar validatorul rula abia când cineva deschidea
@@ -380,6 +425,7 @@ def coada_adauga(date, ctx):
     r["surse_note"] = payload["_surse"]["note"]
     if avertismente_poarta:
         r["avertismente_poarta"] = avertismente_poarta
+        r["avertismente_poarta_langa_note"] = avertismente_langa_note   # [lotul 11, 436] lângă butoanele notelor (`surse_note`)
     if r.get("ok"):
         with db.get_conn() as conn:
             r["pas_urmator"] = pas_urmator(conn, ctx)

@@ -269,7 +269,7 @@ def _seteaza_bife(env, **bife):
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_asistentul_nu_adauga_firme_si_refuzul_e_in_termenii_contabilului(cabinet):
+def test_asistentul_nu_adauga_firme_si_refuzul_e_in_termenii_contabilului(cabinet, contor_schema_pastrat):
     """Comanda Costin pct.1+2: asistentul apasă „Adaugă firma” -> 403 cu mesajul care spune CINE o face."""
     r = _cl().post("/tenants", headers=_H(cabinet["asist"]), json={"nume": "ZT", "cui": "14399840"})
     assert r.status_code == 403, r.text

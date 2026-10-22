@@ -1,0 +1,86 @@
+[
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "<div class=\"rezumat-fix\" id=\"s-rezumat\">",
+  "inlocuire": "<div id=\"s-rezumat\">",
+  "test": "frontend_test/e2e/e2e_bloc_a.py::test_def_28_stocuri_arata_situatia_si_fara_retete_la_comert"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "<tfoot><tr><td></td><td><b>Total</b></td>",
+  "inlocuire": "<tr><td></td><td><b>Total</b></td>",
+  "test": "frontend_test/e2e/e2e_bloc_d.py::test_def_138_balanta_lunii_are_numai_notele_lunii"
+ },
+ {
+  "fisier": "core/jurnal_api.py",
+  "ancora": "    nr = pdf_util.serie_nr(serie, numar)\n    # [401] borderoul",
+  "inlocuire": "    nr = pdf_util.numar_cu_serie(serie, numar)\n    # [401] borderoul",
+  "test": "frontend_test/e2e/e2e_bloc_b.py::test_def_51_o_factura_un_singur_element_de_validat"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "  return (refuz.note || []).length ? refuz.mesaj_langa_note : (refuz.mesaj || \"\");",
+  "inlocuire": "  return refuz.mesaj || \"\";",
+  "test": "frontend_test/e2e/e2e_lot10b_declaratii.py::test_def_436_d100_cu_note_nevalidate_nu_se_pune_in_de_depus"
+ },
+ {
+  "fisier": "core/note_derivate.py",
+  "ancora": "\"borderou\": (\"borderoul de achiziție %s\", \"în Stocuri › „Borderou de achiziție”: îl stornezi din lista lunii (borderoul de stornare și \"",
+  "inlocuire": "\"borderou\": (\"borderoul de achiziție %s\", \"în Operațiuni › „Achiziție de la neînregistrat”, unde s-a scris (și \"",
+  "test": "frontend_test/e2e/e2e_lot10b_stoc.py::test_def_401_sub_nota_borderoului_scrie_borderoul_nu_factura"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "<h2 class=\"pf-titlu\">Factur\\u0103 ${f.numar ? esc(numarCuSerie(f.serie, f.numar)) : \"\\u2014\"}</h2>",
+  "inlocuire": "<h2 class=\"pf-titlu\">Factur\\u0103 ${f.numar ? esc(f.numar) : \"\\u2014\"}</h2>",
+  "test": "frontend_test/e2e/e2e_lot10b_facturi.py::test_def_417_detaliul_stornarii_trimite_la_factura_initiala"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "<h2 class=\"pf-titlu\">Factur\\u0103 ${f.numar ? esc(numarCuSerie(f.serie, f.numar)) : \"\\u2014\"}</h2>",
+  "inlocuire": "<h2 class=\"pf-titlu\">Factur\\u0103 ${f.numar ? esc(f.numar) : \"\\u2014\"}</h2>",
+  "test": "frontend_test/e2e/e2e_lot92.py::test_def_c59_stornarea_pastreaza_orasul_si_judetul_clientului_in_xml"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "<h2 class=\"pf-titlu\">Factur\\u0103 ${f.numar ? esc(numarCuSerie(f.serie, f.numar)) : \"\\u2014\"}</h2>",
+  "inlocuire": "<h2 class=\"pf-titlu\">Factur\\u0103 ${f.numar ? esc(f.numar) : \"\\u2014\"}</h2>",
+  "test": "frontend_test/e2e/e2e_lot11_u0.py::test_def_443_factura_seriei_f6_se_afiseaza_f6_nr_1"
+ },
+ {
+  "fisier": "core/reevaluare_valuta.py",
+  "ancora": "                valuta -= x / c\n",
+  "inlocuire": "                valuta -= 0 * x / c\n",
+  "test": "frontend_test/e2e/e2e_lot11_v.py::test_def_429_plata_nelegata_scade_soldul_partenerului"
+ },
+ {
+  "fisier": "static/js/ecrane/operatiuni_ecran.js",
+  "ancora": "  [\"lunar\", \"Lunare și recurente\",",
+  "inlocuire": "  [\"rar\", \"Lunare și recurente\",",
+  "test": "frontend_test/e2e/e2e_lot10_dividende.py::test_def_pct9_operatiunile_lunare_sunt_separate_de_cele_rare"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "  if (date.fara_sold) linii.push(date.rulaje",
+  "inlocuire": "  if (false) linii.push(date.rulaje",
+  "test": "frontend_test/e2e/e2e_lot10_migrare.py::test_def_425_numai_soldurile_finale_spune_ce_lipseste_si_ce_afecteaza"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "  if (ign.length) linii.push(",
+  "inlocuire": "  if (false) linii.push(",
+  "test": "frontend_test/e2e/e2e_import_saga.py::test_def_c29_totalurile_si_sinteticele_dublate_nu_intra"
+ },
+ {
+  "fisier": "core/solduri_parteneri_api.py",
+  "ancora": "        bune = [r for i, r in enumerate(bune, start=2) if _it.nr_rand(r, i) not in resp]\n",
+  "inlocuire": "        bune = list(bune)\n",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f183_auditul_de_preluare_confrunta_partenerii_cu_balanta"
+ },
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "  if (ev.type === \"change\" && _apasat && c.matches(",
+  "inlocuire": "  if (false && ev.type === \"change\" && _apasat && c.matches(",
+  "test": "frontend_test/e2e/e2e_lot92.py::test_def_c58_primul_clic_pe_adauga_dupa_tastare_pleaca"
+ }
+]

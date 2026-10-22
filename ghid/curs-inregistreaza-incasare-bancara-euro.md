@@ -2,7 +2,7 @@
 title: "La ce curs se înregistrează o încasare bancară în euro?"
 description: "Explică regula legală a cursului BNR aplicabil unei operațiuni în valută și cum determină iConta.eu cursul corect pe data operațiunii."
 published: 2026-09-26
-modified: 2026-10-13
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -28,7 +28,7 @@ Greșeli tipice: se ia cursul din extrasul bancar al băncii comerciale (care po
 
 ## Ce face iConta.eu
 
-Motorul de curs valutar al iConta.eu preia cursurile publicate de BNR (`curs.bnr.ro`) și aplică exact regula de mai sus: pentru orice dată de operațiune, alege ultimul curs BNR comunicat cu data cursului mai mică sau egală cu data operațiunii. Dacă cel mai recent curs găsit e mai vechi de 5 zile calendaristice (prag intern de produs, ales să acopere un weekend prelungit cu sărbători legale — nu e o normă fiscală), aplicația semnalează explicit "curs prea vechi" în loc să aplice tăcut un curs învechit; dacă moneda nu e cotată de BNR sau serviciul BNR e indisponibil, situația e afișată clar, nu ascunsă. Rotunjirea se face cu regula fiscală („calcul zecimal exact”, ROUND_HALF_UP), niciodată cu rotunjire simplă.
+Motorul de curs valutar al iConta.eu preia cursurile publicate de BNR (`curs.bnr.ro`) și aplică exact regula de mai sus: pentru orice dată de operațiune, alege ultimul curs comunicat de BNR înaintea zilei operațiunii — cel comunicat în ziua bancară anterioară, valabil în ziua operațiunii; cursul comunicat chiar în ziua operațiunii e valabil abia pentru ziua următoare. Dacă cel mai recent curs găsit e mai vechi de 5 zile calendaristice (prag intern de produs, ales să acopere un weekend prelungit cu sărbători legale — nu e o normă fiscală), aplicația semnalează explicit "curs prea vechi" în loc să aplice tăcut un curs învechit; dacă moneda nu e cotată de BNR sau serviciul BNR e indisponibil, situația e afișată clar, nu ascunsă. Rotunjirea se face cu regula fiscală („calcul zecimal exact”, ROUND_HALF_UP), niciodată cu rotunjire simplă.
 
 Această regulă de curs e implementată în iConta.eu în principal pentru conversia sumelor pe facturi și în declarații (D300, D390, D394, D406). Pentru o încasare bancară propriu-zisă (extras de cont), curs-ul aplicabil e cel al operațiunii cu care încasarea se decontează — de regulă, o factură emisă în valută — vezi și ghidul dedicat facturilor în valută.
 

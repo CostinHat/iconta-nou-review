@@ -423,8 +423,14 @@ def test_pct13_lunile_lipsa_se_strang_in_intervale(tmp_path):
     import subprocess
     src = io.open("static/js/ecrane/mijloace_ecran.js", encoding="utf-8").read()
     (tmp_path / "plural.mjs").write_text(io.open("static/js/plural.js", encoding="utf-8").read(), encoding="utf-8")   # `cate` real
-    src = re.sub(r'from "\.\./api\.js[^"]*"', 'from "data:text/javascript,export const api=0,esc=0,arataMesaj=0,confirmaCaseta=0,'
-                 'bani=0,dataRo=0,dataIso=0,stareNota=0,pasNota=0;export {cate,dupaNumar} from %%22%s%%22"' % (tmp_path / "plural.mjs").as_uri(), src)
+    # [lotul 11, K] numele importate din `api.js` se citesc din importul ecranului (lista scrisă de mână rămânea în urmă la fiecare
+    # helper nou — `dupaGenerare`, `noteGenerate` — și testul cădea cu „does not provide an export”); `cate` / `dupaNumar` rămân cele reale
+    imp = re.search(r'import \{([^}]*)\} from "\.\./api\.js[^"]*"', src)
+    assert imp, "mijloace_ecran.js nu mai importă din api.js — reconstruiește proba"
+    nume = [x.strip() for x in imp.group(1).split(",") if x.strip()]
+    fals = ",".join("%s=0" % x for x in nume if x not in ("cate", "dupaNumar"))
+    src = re.sub(r'from "\.\./api\.js[^"]*"', 'from "data:text/javascript,export const %s;export {cate,dupaNumar} from %%22%s%%22"'
+                 % (fals, (tmp_path / "plural.mjs").as_uri()), src)
     (tmp_path / "m.mjs").write_text(src, encoding="utf-8")
     cod = ("import('%s').then((m) => console.log(JSON.stringify([m.luniScurte(%s), m.luniScurte(%s), m.luniScurte(%s)])))"
            % ((tmp_path / "m.mjs").as_posix(), ["%02d/2026" % i for i in range(1, 9)], ["11/2025", "12/2025", "01/2026", "03/2026"],

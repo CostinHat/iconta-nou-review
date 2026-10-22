@@ -1,0 +1,1114 @@
+[
+ {
+  "nr": "440",
+  "firma": "tenant_9049",
+  "descriere": "F1, Date firmă (profilul scris înainte de reparație): denumirea din portofoliu golită + seria chitanțelor «CH-440!» -> Salvează: caseta «NU s-a salvat.» are AMBELE, fiecare cu textul ei, și fiecare câmp e marcat (aria-invalid). Înainte: o eroare pe rând, cu «motivul e mai sus». Refuzat: nimic nu se scrie",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#df-salveaza"
+   },
+   {
+    "asteapta": ".dec-avert, .dec-ok"
+   },
+   {
+    "completeaza": "#df-nume-portofoliu",
+    "valoare": ""
+   },
+   {
+    "completeaza": "#df-serie_chitanta",
+    "valoare": "CH-440!"
+   },
+   {
+    "click": "#df-salveaza"
+   },
+   {
+    "asteapta": ".refuz-salvare-lista > li",
+    "text": "Seria"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Denumirea firmei — Completează denumirea din portofoliu.",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "contine": "Seria chitanțelor — Seria chitanțelor:",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "exista": "#df-nume-portofoliu[aria-invalid='true']"
+   },
+   {
+    "exista": "#df-serie_chitanta[aria-invalid='true']"
+   },
+   {
+    "nu_contine": "motivul e"
+   }
+  ],
+  "captura": "440_f1_date_firma_toate_deodata.png"
+ },
+ {
+  "nr": "440",
+  "firma": "tenant_9049",
+  "descriere": "F1, Date firmă: seria chitanțelor «CH-440!» + data înființării 01.01.2999 (amândouă refuzuri ale SERVERULUI, firma_profil_api.salveaza_date) -> Salvează: lângă fiecare câmp textul lui și amândouă în casetă. Înainte serverul se oprea la prima (numai seria). Refuzat: nimic nu se scrie",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#df-salveaza"
+   },
+   {
+    "asteapta": ".dec-avert, .dec-ok"
+   },
+   {
+    "completeaza": "#df-serie_chitanta",
+    "valoare": "CH-440!"
+   },
+   {
+    "completeaza": "#df-data_infiintare",
+    "valoare": "2999-01-01"
+   },
+   {
+    "click": "#df-salveaza"
+   },
+   {
+    "asteapta": "#df-data_infiintare[aria-invalid='true']"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Seria chitanțelor: litere și cifre",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "contine": "Data înființării nu poate fi în viitor.",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "exista": "#df-serie_chitanta[aria-invalid='true']"
+   },
+   {
+    "exista": "#df-data_infiintare[aria-invalid='true']"
+   }
+  ],
+  "captura": "440_f1_date_firma_server_deodata.png"
+ },
+ {
+  "nr": "440",
+  "firma": "tenant_9049",
+  "descriere": "F1, Casă -> «+ Dispoziție nouă»: data golită, tipul neales, suma goală -> «Adaugă»: toate trei deodată în casetă, fiecare cu textul ei, și marcate lângă câmp. Înainte: data și suma, iar tipul abia la a doua apăsare. Refuzat: nimic nu se scrie",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   },
+   {
+    "asteapta": "#c-toggle"
+   },
+   {
+    "click": "#c-toggle"
+   },
+   {
+    "asteapta": "#c-data"
+   },
+   {
+    "completeaza": "#c-data",
+    "valoare": ""
+   },
+   {
+    "completeaza": "#c-suma",
+    "valoare": ""
+   },
+   {
+    "click": "#c-adauga"
+   },
+   {
+    "asteapta": ".refuz-salvare"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "— Completează data dispoziției.",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "contine": "— Suma trebuie să fie un număr mai mare ca 0.",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "contine": "— Alege o valoare — aplicația nu alege în locul tău.",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "exista": "#c-data[aria-invalid='true']"
+   },
+   {
+    "exista": "#c-cat[aria-invalid='true']"
+   },
+   {
+    "exista": "#c-suma[aria-invalid='true']"
+   }
+  ],
+  "captura": "440_f1_casa_trei_deodata.png"
+ },
+ {
+  "nr": "440",
+  "firma": "tenant_9049",
+  "descriere": "F1, Registru jurnal -> «+ Notă nouă»: linia 1 9999 = (credit gol) 100, linia 2 401 = 5121 -5 fără partener -> «Salvează»: toate cele patru probleme deodată (cont în afara planului, cont creditor lipsă, suma -5, partenerul la 401), fiecare cu textul ei, suma liniei 2 marcată lângă câmp. Înainte serverul refuza la PRIMA problemă (patru salvări pentru patru erori). Refuzat: nota nu se scrie",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "click": "#j-nota-noua"
+   },
+   {
+    "asteapta": "#je-salveaza"
+   },
+   {
+    "completeaza": "#je-desc",
+    "valoare": "Notă dovadă 440"
+   },
+   {
+    "completeaza": "#je-doc",
+    "valoare": "Document dovadă 440"
+   },
+   {
+    "click": "#je-plus"
+   },
+   {
+    "asteapta": "#je-linii > div:nth-child(2) .je-deb"
+   },
+   {
+    "completeaza": "#je-linii > div:nth-child(1) .je-deb",
+    "valoare": "9999"
+   },
+   {
+    "completeaza": "#je-linii > div:nth-child(1) .je-sum",
+    "valoare": "100"
+   },
+   {
+    "completeaza": "#je-linii > div:nth-child(2) .je-deb",
+    "valoare": "401"
+   },
+   {
+    "completeaza": "#je-linii > div:nth-child(2) .je-cre",
+    "valoare": "5121"
+   },
+   {
+    "completeaza": "#je-linii > div:nth-child(2) .je-sum",
+    "valoare": "-5"
+   },
+   {
+    "click": "#je-salveaza"
+   },
+   {
+    "asteapta_text": "linia 2 e pe contul 401"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "linia 1: Contul 9999"
+   },
+   {
+    "contine": "linia 1 n-are contul creditor"
+   },
+   {
+    "contine": "linia 2 are suma -5"
+   },
+   {
+    "contine": "linia 2 e pe contul 401"
+   },
+   {
+    "exista": "#je-sum-1[aria-invalid='true']"
+   },
+   {
+    "nu_contine": "motivul e mai sus"
+   }
+  ],
+  "captura": "440_f1_nota_noua_patru_deodata.png"
+ },
+ {
+  "nr": "440",
+  "firma": "tenant_9049",
+  "descriere": "F1, Stocuri -> «+ NIR nou»: număr, articol nou cu denumirea, FĂRĂ cantitate și preț, transport 5 lei fără cota lui și fără «factura a sosit?» -> «Salvează»: alegerile ȘI cantitatea și prețul articolului deodată, fiecare cu textul ei. Înainte: întâi alegerile; cantitatea și prețul abia la apăsarea următoare. Refuzat: NIR-ul nu se scrie",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#sn-toggle"
+   },
+   {
+    "click": "#sn-toggle"
+   },
+   {
+    "asteapta": "#sn-numar"
+   },
+   {
+    "completeaza": "#sn-numar",
+    "valoare": "N440DOV"
+   },
+   {
+    "alege": "#nir-l0-articol",
+    "valoare": "nou"
+   },
+   {
+    "asteapta": "#nir-l0-denumire"
+   },
+   {
+    "completeaza": "#nir-l0-denumire",
+    "valoare": "Marfa dovadă 440"
+   },
+   {
+    "completeaza": "#sn-transport",
+    "valoare": "5"
+   },
+   {
+    "click": "#sn-salveaza"
+   },
+   {
+    "asteapta": ".refuz-salvare"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Factura furnizorului a sosit?",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "contine": "Articolul 1: scrie cantitatea, un număr mai mare decât zero.",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "contine": "Articolul 1: scrie prețul de achiziție, un număr mai mare decât zero.",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "exista": "#nir-l0-cantitate[aria-invalid='true']"
+   },
+   {
+    "exista": "#sn-transport-cota[aria-invalid='true']"
+   }
+  ],
+  "captura": "440_f1_nir_toate_deodata.png"
+ },
+ {
+  "nr": "440",
+  "firma": "tenant_9049",
+  "descriere": "F1, Plan de conturi -> «Adaugă» fără simbol și fără denumire: amândouă câmpurile marcate, fiecare cu textul lui, plus caseta «NU s-a salvat.». Înainte: nimic vizibil (TypeError în firme.js, eroareCamp fără rădăcină). Refuzat: nimic nu se scrie",
+  "pasi": [
+   {
+    "click": "#fa-planconturi"
+   },
+   {
+    "asteapta": "#pcf-adauga"
+   },
+   {
+    "click": "#pcf-adauga"
+   },
+   {
+    "asteapta": ".refuz-salvare"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Completează simbolul contului (ex. 4111.01).",
+    "zona": ".msg-eroare[data-camp=\"pcf-simbol\"]"
+   },
+   {
+    "contine": "Completează denumirea contului.",
+    "zona": ".msg-eroare[data-camp=\"pcf-denumire\"]"
+   },
+   {
+    "exista": ".refuz-salvare"
+   }
+  ],
+  "captura": "440_f1_plan_conturi_doua_deodata.png"
+ },
+ {
+  "nr": "440",
+  "firma": "tenant_9049",
+  "descriere": "F1, Produse -> «+ Adaugă produs»: preț 99999999999 și UM «kilogramexx» (11 caractere) -> Salvează: lângă preț și lângă UM textul fiecăruia, amândouă în casetă. Înainte: serverul refuza la prima greșeală, iar UM-ul / prețul prea lung cădea în bază (500, „eroare internă”). Refuzat: produsul nu intră în nomenclator",
+  "pasi": [
+   {
+    "click": "#fa-produse"
+   },
+   {
+    "asteapta": "#pr-add"
+   },
+   {
+    "click": "#pr-add"
+   },
+   {
+    "asteapta": "#pr-den"
+   },
+   {
+    "completeaza": "#pr-den",
+    "valoare": "Produs dovadă 440"
+   },
+   {
+    "completeaza": "#pr-pret",
+    "valoare": "99999999999"
+   },
+   {
+    "completeaza": "#pr-um",
+    "valoare": "kilogramexx"
+   },
+   {
+    "alege": "#pr-cota",
+    "valoare": "11"
+   },
+   {
+    "click": "#pr-salveaza"
+   },
+   {
+    "asteapta": ".msg-eroare[data-camp=\"pr-um\"]"
+   },
+   {
+    "asteapta": ".msg-eroare[data-camp=\"pr-pret\"]"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "cel mult 10 caractere",
+    "zona": ".msg-eroare[data-camp=\"pr-um\"]"
+   },
+   {
+    "contine": "10 cifre",
+    "zona": ".msg-eroare[data-camp=\"pr-pret\"]"
+   },
+   {
+    "contine": "cel mult 10 caractere",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "contine": "10 cifre",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "nu_contine": "motivul e",
+    "zona": "#pr-form-zona"
+   }
+  ],
+  "captura": "440_f1_produse_um_si_pret_deodata.png"
+ },
+ {
+  "nr": "441",
+  "firma": "tenant_9049",
+  "descriere": "F1, Date firmă: «Data înființării» (opțională) primește lângă ea «×» («Golește data») cât are o valoare -> «×»: câmpul se golește, iar «×» dispare (câmpul e gol). Înainte nu exista niciun «×» (în Chromium ștergerea lăsa «--.--.2020» pe ecran). Nu se salvează: profilul F1 rămâne cum era",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#df-salveaza"
+   },
+   {
+    "completeaza": "#df-data_infiintare",
+    "valoare": "2020-05-01"
+   },
+   {
+    "asteapta": "#df-data_infiintare + .data-goleste"
+   },
+   {
+    "captura": "441_f1_data_infiintarii_cu_x.png"
+   },
+   {
+    "click": "#df-data_infiintare + .data-goleste"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#df-data_infiintare + .data-goleste[aria-label='Golește data']"
+   },
+   {
+    "exista": "#df-data_infiintare + .data-goleste[hidden]"
+   }
+  ],
+  "captura": "441_f1_data_infiintarii_golita.png"
+ },
+ {
+  "nr": "441",
+  "firma": "tenant_9049",
+  "descriere": "F1, Registratură: data 10.03.2025 -> «×» lângă ea -> câmpul gol -> descrierea «Adresă dovadă 441» -> «Înregistrează»: înregistrarea intră cu data zilei (serverul pune ziua când data lipsește), deci apare în lista anului curent, nu în 2025. Înainte: fără «×»; data golită parțial pleca sau rămânea 10.03.2025. SCRIE pe copie o înregistrare de registratură: a doua rulare o adaugă încă o dată",
+  "pasi": [
+   {
+    "click": "#fa-registratura"
+   },
+   {
+    "asteapta": "#rg-add"
+   },
+   {
+    "completeaza": "#rg-data",
+    "valoare": "2025-03-10"
+   },
+   {
+    "asteapta": "#rg-data + .data-goleste"
+   },
+   {
+    "click": "#rg-data + .data-goleste"
+   },
+   {
+    "completeaza": "#rg-desc",
+    "valoare": "Adresă dovadă 441"
+   },
+   {
+    "click": "#rg-add"
+   },
+   {
+    "asteapta_text": "Adresă dovadă 441"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Adresă dovadă 441"
+   }
+  ],
+  "captura": "441_f1_registratura_data_golita.png"
+ },
+ {
+  "nr": "445",
+  "firma": "tenant_9049",
+  "descriere": "F1, Emite factură -> articolul din stoc «grau» (nr. 5, scris de borderou înainte de reparație, fără cotă în nomenclator): sub linie refuzul cu «Deschide Produse» -> Produse se deschide PESTE factură, cu săgeata «← Înapoi la …» -> X: înapoi în formularul facturii, cu articolul ales și refuzul lui. Înainte: X arunca tot drumul (pagina principală), iar un formular în care omul doar a ales se redesena de la zero. Nu se emite nimic",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-cui"
+   },
+   {
+    "asteapta": "#em-l0-articol"
+   },
+   {
+    "alege": "#em-l0-articol",
+    "valoare": "5"
+   },
+   {
+    "asteapta": "#em-l0-cota-mesaj [data-ecran-destinatie='produse']"
+   },
+   {
+    "click": "#em-l0-cota-mesaj [data-ecran-destinatie='produse']"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #pr-add"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .nav-inapoi[aria-label^='Înapoi la ']"
+   },
+   {
+    "captura": "445_f1_produse_peste_factura.png"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #em-l0-articol"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #em-l0-articol option[value='5']:checked"
+   },
+   {
+    "exista": ".fereastra:last-of-type #em-l0-cota-mesaj [data-ecran-destinatie='produse']"
+   },
+   {
+    "exista": ".fereastra:last-of-type #em-cui"
+   }
+  ],
+  "captura": "445_f1_inapoi_din_x_la_factura.png"
+ },
+ {
+  "nr": "445",
+  "firma": "tenant_9049",
+  "descriere": "F1, același drum (Emite factură -> «grau» -> «Deschide Produse») -> «← Înapoi la …»: formularul facturii, cu articolul ales (nimic redesenat de la zero). Înainte: alegerea din listă nu făcea formularul «atins», deci la întoarcere factura se redesena goală. Nu se emite nimic",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-cui"
+   },
+   {
+    "asteapta": "#em-l0-articol"
+   },
+   {
+    "alege": "#em-l0-articol",
+    "valoare": "5"
+   },
+   {
+    "asteapta": "#em-l0-cota-mesaj [data-ecran-destinatie='produse']"
+   },
+   {
+    "click": "#em-l0-cota-mesaj [data-ecran-destinatie='produse']"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #pr-add"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .nav-inapoi[aria-label^='Înapoi la ']"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #em-l0-articol"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #em-l0-articol option[value='5']:checked"
+   },
+   {
+    "exista": ".fereastra:last-of-type #em-l0-cota-mesaj [data-ecran-destinatie='produse']"
+   }
+  ],
+  "captura": "445_f1_inapoi_din_sageata_la_factura.png"
+ },
+ {
+  "nr": "446",
+  "firma": "tenant_9055",
+  "descriere": "F6, la 1280×720: Import date -> Salariați -> fișierul lui 420 (POPESCU ANA, IONESCU RADU; CNP-uri verificate) salvat o dată (rândurile intră ca salariați NOI — CNP-urile nu sunt între salariații importați pe 19.10), apoi încărcat DIN NOU: avertismentul «Firma are deja … există deja după CNP» stă o singură dată, sus, galben (msg-avert); la «Salvează salariații» confirmarea e o întrebare scurtă, nu avertismentul repetat, iar «Salvează salariații» se ascunde (rămân «Actualizez fișele» / «Renunță»). Înainte: avertismentul apărea de două ori (caseta-atentie sus + în confirmare), tabelul se strângea la un rând, butonul rămânea activ lângă «Actualizez fișele». Locul tabelului se vede numai pe captură (nu e măsurat aici). SCRIE pe copie 2 salariați în F6 (prima încărcare); confirmarea a doua NU se apasă",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Salaria"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot11_m:fisier_fara_norma",
+    "nume": "salariati_fara_norma.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-sal"
+   },
+   {
+    "click": "#mig-salveaza-sal"
+   },
+   {
+    "pauza": 1000
+   },
+   {
+    "click": "#ca-ok",
+    "daca_exista": true
+   },
+   {
+    "asteapta_text": "fișe actualizate."
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Salaria"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot11_m:fisier_fara_norma",
+    "nume": "salariati_fara_norma.csv"
+   },
+   {
+    "asteapta": "#mig-inlocuire",
+    "stare": "attached"
+   },
+   {
+    "click": "#mig-salveaza-sal"
+   },
+   {
+    "asteapta": "#ca-ok"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#mig-inlocuire.msg-avert"
+   },
+   {
+    "contine": "există deja după CNP",
+    "zona": "#mig-inlocuire"
+   },
+   {
+    "contine": "POPESCU ANA",
+    "zona": "#mig-inlocuire"
+   },
+   {
+    "contine": "Actualizezi fișele salariaților existenți cu datele din fișier?"
+   },
+   {
+    "nu_contine": "Firma are deja",
+    "zona": "#mig-eroare"
+   },
+   {
+    "exista": "#mig-salveaza-sal[hidden]"
+   },
+   {
+    "exista": "#ca-ok",
+    "text": "Actualizez fișele"
+   }
+  ],
+  "captura": "446_f6_confirmarea_duplicatelor_1280x720.png",
+  "latime": 1280,
+  "inaltime": 720
+ },
+ {
+  "nr": "447",
+  "firma": "tenant_9055",
+  "descriere": "F6: același fișier încărcat din nou (salariații lui există deja — puși de prima încărcare a acestei dovezi sau a dovezii 446) -> «Salvează salariații» -> «Actualizez fișele»: mesajul «Salariați: 0 noi, 2 fișe actualizate.», o singură numărătoare. Înainte: «2 salariați importați. Fișele a 2 salariați existenți au fost actualizate.». SCRIE pe copie (fișele celor 2 salariați ai fișierului)",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Salaria"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot11_m:fisier_fara_norma",
+    "nume": "salariati_fara_norma.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-sal"
+   },
+   {
+    "click": "#mig-salveaza-sal"
+   },
+   {
+    "pauza": 1000
+   },
+   {
+    "click": "#ca-ok",
+    "daca_exista": true
+   },
+   {
+    "asteapta_text": "fișe actualizate."
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Salaria"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot11_m:fisier_fara_norma",
+    "nume": "salariati_fara_norma.csv"
+   },
+   {
+    "asteapta": "#mig-inlocuire",
+    "stare": "attached"
+   },
+   {
+    "click": "#mig-salveaza-sal"
+   },
+   {
+    "asteapta": "#ca-ok"
+   },
+   {
+    "click": "#ca-ok"
+   },
+   {
+    "asteapta_text": "Salariați: 0 noi, 2 fișe actualizate."
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Salariați: 0 noi, 2 fișe actualizate."
+   },
+   {
+    "nu_contine": "salariați importați. Fișele"
+   },
+   {
+    "nu_contine": "au fost actualizate"
+   }
+  ],
+  "captura": "447_f6_mesajul_noi_si_actualizate.png"
+ },
+ {
+  "nr": "448",
+  "firma": "tenant_9053",
+  "descriere": "F5: nota 5 (salariile 10/2026, generată pe 08.10.2026, înainte de reparația 448) e depășită: nu se validează, iar „Refă nota din statul de plată” o reface numai după ce luna se încheie — azi refuzul spune de ce (luna 10/2026 nu s-a încheiat). Înainte: ciorna veche, cu alte sume decât statul curent (641 = 421 12.045,45 față de 11.860,79), era validabilă.",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "[data-reface='5']"
+   },
+   {
+    "deruleaza": "[data-nota-id='5']"
+   },
+   {
+    "captura": "448_f5_vechi_nota5_inainte_de_refacere.png"
+   },
+   {
+    "click": "[data-reface='5']"
+   },
+   {
+    "asteapta_text": "se contează după ce luna se încheie"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "inactiv": "[data-val='5']"
+   },
+   {
+    "contine": "Salariile lunii 10/2026 se contează după ce luna se încheie"
+   },
+   {
+    "contine": "641 = 421 · 12.045,45"
+   },
+   {
+    "contine": "11.860,79",
+    "zona": "#jn-depasita-5"
+   }
+  ],
+  "captura": "448_f5_vechi_nota5_refacerea_asteapta_luna.png"
+ },
+ {
+  "nr": "449",
+  "firma": "tenant_9049",
+  "descriere": "F1 (plătitoare TVA), Produse -> «+ Adaugă produs»: lista cotei are la 0% taxarea inversă (art.331), scutit cu drept de deducere (art.294), scutit fără drept și în afara sferei; la «0% — Taxare inversă (art.331)» apare lista bunurilor, cu cerealele pe codul NC (HG 1/2016 pct.109 alin.(7)). Înainte: cota avea numai 21 / 11 / 0 «fără TVA». Nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-produse"
+   },
+   {
+    "asteapta": "#pr-add"
+   },
+   {
+    "click": "#pr-add"
+   },
+   {
+    "asteapta": "#pr-cota"
+   },
+   {
+    "alege": "#pr-cota",
+    "valoare": "0:taxare_inversa"
+   },
+   {
+    "asteapta": "#pr-c331"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "0% — Taxare inversă (art.331)",
+    "zona": "#pr-cota"
+   },
+   {
+    "contine": "0% — Scutit cu drept de deducere (art.294",
+    "zona": "#pr-cota"
+   },
+   {
+    "contine": "0% — Scutit fără drept de deducere (art.292)",
+    "zona": "#pr-cota"
+   },
+   {
+    "contine": "0% — În afara sferei",
+    "zona": "#pr-cota"
+   },
+   {
+    "exista": "#pr-c331:not([hidden])"
+   },
+   {
+    "contine": "Grâu și meslin",
+    "zona": "#pr-c331"
+   },
+   {
+    "contine": "Porumb",
+    "zona": "#pr-c331"
+   }
+  ],
+  "captura": "449_f1_cotele_0_cu_categoria.png"
+ },
+ {
+  "nr": "449",
+  "firma": "tenant_9049",
+  "descriere": "F1, Produse: rândul articolului din stoc «grau» (scris de borderou înainte de reparație, fără cotă) -> cota «0% — Taxare inversă (art.331)» -> bunul «Grâu și meslin» (NC 1001) -> «Salvează cota»: confirmarea «Cota 0% (Taxare inversă (art.331)) salvată: grau …» și insigna «0% · Taxare inversă (art.331)». Înainte: taxarea inversă nu se putea alege. SCRIE pe copie (produsul «grau» în nomenclator): rulată DUPĂ dovezile 445 (care cer «grau» fără cotă). Presupune că «grau» n-are încă produs (rândul din stoc cu «Salvează cota»)",
+  "pasi": [
+   {
+    "click": "#fa-produse"
+   },
+   {
+    "asteapta": "select.pr-cota-rand[aria-label='Cota TVA grau']"
+   },
+   {
+    "alege": "select.pr-cota-rand[aria-label='Cota TVA grau'] >> nth=0",
+    "valoare": "0:taxare_inversa"
+   },
+   {
+    "asteapta": "select[aria-label='Bunul cu taxare inversă grau']"
+   },
+   {
+    "alege": "select[aria-label='Bunul cu taxare inversă grau'] >> nth=0",
+    "valoare": "1001"
+   },
+   {
+    "click": ".pr-rand:has(select[aria-label='Cota TVA grau']) .pr-cota-salveaza"
+   },
+   {
+    "asteapta_text": "salvată: grau"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Cota 0% (Taxare inversă (art.331)) salvată: grau",
+    "zona": "#pr-mesaj"
+   },
+   {
+    "contine": "0% · Taxare inversă (art.331)",
+    "zona": "#pr-lista"
+   }
+  ],
+  "captura": "449_f1_vechi_grau_taxare_inversa.png"
+ },
+ {
+  "nr": "454",
+  "firma": "tenant_9053",
+  "descriere": "F5, Salariați -> «+ Salariat nou»: «CNP» și «Tip normă» poartă asteriscul de obligatoriu; «Salvează» cu numele scris și CNP-ul 1900305410078 (cifra de control greșită; corect ar fi …077): la ACEEAȘI apăsare CNP-ul, Tip normă, salariul și ocupația, fiecare marcat lângă câmp și în caseta «NU s-a salvat.». Înainte: erorile veneau pe rând, în trei salvări, iar CNP / Tip normă nu erau marcate obligatorii. Refuzat: nimic nu se scrie",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": "#sp-salariat-nou"
+   },
+   {
+    "click": "#sp-salariat-nou"
+   },
+   {
+    "asteapta": "#sn-salveaza"
+   },
+   {
+    "completeaza": "#sn-nume",
+    "valoare": "Marinescu"
+   },
+   {
+    "completeaza": "#sn-cnp",
+    "valoare": "1900305410078"
+   },
+   {
+    "click": "#sn-salveaza"
+   },
+   {
+    "asteapta": ".refuz-salvare"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "label[for=\"sn-cnp\"] .oblig"
+   },
+   {
+    "exista": "label[for=\"sn-tip_norma\"] .oblig"
+   },
+   {
+    "exista": "#sn-cnp[aria-invalid='true']"
+   },
+   {
+    "exista": "#sn-tip_norma[aria-invalid='true']"
+   },
+   {
+    "exista": "#sn-salariu_brut[aria-invalid='true']"
+   },
+   {
+    "exista": "#sn-cor-cauta[aria-invalid='true']"
+   },
+   {
+    "contine": "CNP invalid (13 cifre, cifră de control greșită).",
+    "zona": ".msg-eroare[data-camp=\"sn-cnp\"]"
+   },
+   {
+    "contine": "CNP invalid",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "contine": "Salariul brut",
+    "zona": ".refuz-salvare"
+   }
+  ],
+  "captura": "454_f5_salariat_nou_toate_deodata.png"
+ },
+ {
+  "nr": "454",
+  "firma": "tenant_9053",
+  "descriere": "F5, «+ Salariat nou» cu CNP-ul salariatei existente Popescu Elena (2900320126783, din D112 09/2026), normă întreagă, brut 4.500, ocupația 241107, dar data încetării (01.04.2026) înaintea angajării (01.05.2026) și IBAN greșit -> «Salvează»: refuzul SERVERULUI spune deodată CNP-ul dublat, data încetării și IBAN-ul, fiecare lângă câmpul lui. Înainte: data încetării rupea refuzul (eroare de server, 500), iar CNP-ul dublat venea abia la salvarea următoare. Refuzat: nimic nu se scrie",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": "#sp-salariat-nou"
+   },
+   {
+    "click": "#sp-salariat-nou"
+   },
+   {
+    "asteapta": "#sn-salveaza"
+   },
+   {
+    "completeaza": "#sn-nume",
+    "valoare": "Marinescu"
+   },
+   {
+    "completeaza": "#sn-cnp",
+    "valoare": "2900320126783"
+   },
+   {
+    "alege": "#sn-tip_norma",
+    "valoare": "intreaga"
+   },
+   {
+    "completeaza": "#sn-salariu_brut",
+    "valoare": "4500"
+   },
+   {
+    "completeaza": "#sn-data_angajare",
+    "valoare": "2026-05-01"
+   },
+   {
+    "completeaza": "#sn-data_incetare",
+    "valoare": "2026-04-01"
+   },
+   {
+    "completeaza": "#sn-iban",
+    "valoare": "RO00BANK0000000000000001"
+   },
+   {
+    "alege": "#sn-functie_baza",
+    "valoare": "true"
+   },
+   {
+    "alege": "#sn-scutit_contrib_minim",
+    "valoare": "false"
+   },
+   {
+    "alege": "#sn-declaratie_copii",
+    "valoare": "false"
+   },
+   {
+    "completeaza": "#sn-cor-cauta",
+    "valoare": "241107"
+   },
+   {
+    "asteapta": "#sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": "#sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": "#sn-salveaza"
+   },
+   {
+    "asteapta": ".msg-eroare[data-camp=\"sn-iban\"]"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Există deja un salariat cu CNP-ul 2900320126783",
+    "zona": ".msg-eroare[data-camp=\"sn-cnp\"]"
+   },
+   {
+    "contine": "Data încetării nu poate fi înainte de data angajării.",
+    "zona": ".msg-eroare[data-camp=\"sn-data_incetare\"]"
+   },
+   {
+    "contine": "IBAN invalid",
+    "zona": ".msg-eroare[data-camp=\"sn-iban\"]"
+   }
+  ],
+  "captura": "454_f5_vechi_cnp_dublat_server_deodata.png"
+ }
+]

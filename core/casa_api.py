@@ -8,8 +8,9 @@ Fiecare operațiune generează notă ciornă (AI propune, contabilul validează)
 from decimal import Decimal, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
 from core import casa as _m
+from core import cui_forma as _forma_cui
 from core import chei_unice as _chei   # [lotul 10, C73 / U2] stornarea dublă -> refuz numit și la cursă, nu 500
-from core.pdf_util import bani as _bani, data_ro as _data_ro, numar_cu_serie as _ncs
+from core.pdf_util import bani as _bani, data_ro as _data_ro, serie_nr as _ncs   # [lotul 11, 443] afișare „F6 nr. 1”, nu „F61” (numai pentru om: `numar` e text pe ecran, nu identificator)
 
 # categorie -> (debit, credit) ; 5311 = casa in lei
 CONTURI = {
@@ -82,6 +83,12 @@ def _cifre(cui):
     return "".join(ch for ch in str(cui or "") if ch.isdigit())
 
 
+def _acelasi_partener(a, b):
+    """[lotul 11, decizia Costin 10.3 pct.4] Același cod fiscal, în forma păstrată (`cui_forma.stocare`) pe ambele părți — nu numai
+    cifrele: „DE123456789” nu e „123456789”."""
+    return (_forma_cui.stocare(a) or "") == (_forma_cui.stocare(b) or "")
+
+
 def facturi_partener(conn, schema, categorie, cui=None):
     """Facturile deschise pe direcția categoriei (emise la încasare, primite la plată), ale partenerului cu `cui` (cifrele lui) — toate,
     fără `cui`. Fiecare: {id, numar, data_emitere, tert_nume, tert_cui, sold}. Soldul e cel al reconcilierii (`facturi_deschise`)."""
@@ -90,7 +97,7 @@ def facturi_partener(conn, schema, categorie, cui=None):
     if not directie:
         return []
     deschise = [f for f in _rec.facturi_deschise(conn, schema) if f["directie"] == directie
-                and (not _cifre(cui) or _cifre(f["tert_cui"]) == _cifre(cui))]
+                and (not _cifre(cui) or _acelasi_partener(f["tert_cui"], cui))]
     if not deschise:
         return []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -117,7 +124,7 @@ def niruri_neplatite(conn, schema, categorie, cui=None):
                                COALESCE((SELECT SUM(o.suma) FROM {schema}.casa_operatiuni o WHERE o.nir_id = n.id), 0) AS platit
                         FROM {schema}.nir n WHERE n.factura_id IS NULL
                          AND NOT EXISTS (SELECT 1 FROM {schema}.nir r WHERE r.refacut_din_id = n.id) ORDER BY n.data, n.id""")
-        nirs = [dict(r) for r in cur.fetchall() if not _cifre(cui) or _cifre(r["cui"]) == _cifre(cui)]
+        nirs = [dict(r) for r in cur.fetchall() if not _cifre(cui) or _acelasi_partener(r["cui"], cui)]
         nirs = [n for n in nirs if _nl.forma_noua(cur, schema, n)]
         tenant = _nl._tenant(cur, schema) if nirs else None
         stari = _cq.stari_note(conn, tenant, [i for n in nirs for i in _sa.note_nir(n)]) if tenant else {}
@@ -158,7 +165,7 @@ def facturi_in_asteptare(conn, schema, categorie, cui=None):
     if not directie:
         return []
     asteapta = [f for f in _rec.facturi_deschise(conn, schema, cu_asteptare=True) if f.get("in_asteptare") and f["directie"] == directie
-                and (not _cifre(cui) or _cifre(f["tert_cui"]) == _cifre(cui))]
+                and (not _cifre(cui) or _acelasi_partener(f["tert_cui"], cui))]
     if not asteapta:
         return []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -240,6 +247,16 @@ def semnale(conn, schema, op):
     return out
 
 
+def _refuz_adunat(er, coduri=()):
+    """[lotul 11, deficiența 440] Refuzul dispoziției cu TOATE erorile (`core.erori.ErorileFormularului`): `eroare` = toate, rând cu rând
+    (o singură eroare = textul ei, ca înainte), `erori_campuri` = fiecare lângă câmpul ei, `cod` = al primei probleme care are unul."""
+    d = er.detaliu()
+    r = {"eroare": d["mesaj"], "erori_campuri": d["erori_campuri"]}
+    if coduri:
+        r["cod"] = coduri[0]
+    return r
+
+
 def adauga(conn, schema, op, linii=None):
     """op: {data, categorie, suma, document?, partener?, cui?, facturi?: [{factura_id, suma}], avans?}; `linii` = [(debit, credit, suma)]
     pentru categoriile din `CATEGORII_CU_LINII` (suma lor = suma operațiunii). Creează operațiunea + nota ciornă. Întoarce operațiunea +
@@ -250,36 +267,57 @@ def adauga(conn, schema, op, linii=None):
     — de aici o citesc reconcilierea, starea de încasare și D300), plus una `avans` pentru ce depășește facturile (OMFP 1802/2014,
     funcțiunea contului 419: avansul trece prin 411 și prin factura de avans; CF art.282 alin.(2) lit.b, art.319 alin.(16)). Fiecare
     operațiune are nota ei — invariantul pe care îl citesc ștergerea, stornarea și registrul."""
+    # [lotul 11, deficiența 440, comanda Costin 11.1 pct.16: „toate erorile apar deodată, fiecare cu textul ei, în casetă și lângă câmp”]
+    # Fiecare problemă a dispoziției se ADAUGĂ (`core.erori.ErorileFormularului`), cu id-ul câmpului din formularul Casă (`c-data`,
+    # `c-cat`, `c-suma`, `c-facturi`, `c-avans-dest`); refuzul pleacă o dată, cu toate (`_refuz_adunat`). O verificare care cere o valoare
+    # refuzată deja (soldul casei cere data și suma) nu se mai face: ar spune a doua oară aceeași greșeală, cu alte cuvinte.
+    from core.erori import ErorileFormularului as _Erori
+    er = _Erori("Dispoziția nu s-a salvat")
+    coduri = []
     # [lotul 6, 04.09.2026] `data="2026-02-31"` mergea neatinsa in `INSERT` si cadea in driver:
     # contabilul primea `500`. O zi care nu exista in calendar e o greseala de tastare.
     import datetime as _dt
     _d = op.get("data")
-    if _d and not hasattr(_d, "year"):
+    data_ok = bool(_d)
+    if not _d:
+        er.camp("c-data", "Completează data dispoziției.")
+    elif not hasattr(_d, "year"):
         try:
             _dt.date.fromisoformat(str(_d)[:10])
         except ValueError:
-            return {"eroare": "Data operațiunii: %r nu e o dată din calendar. Se așteaptă forma "
-                              "AAAA-LL-ZZ, cu o zi care există în luna aia." % (_d,)}
+            er.camp("c-data", "Data operațiunii: %r nu e o dată din calendar. Se așteaptă forma "
+                              "AAAA-LL-ZZ, cu o zi care există în luna aia." % (_d,))
+            data_ok = False
     cat = op.get("categorie")
     if cat not in CONTURI:
-        return {"eroare": "Categoria %r nu e una dintre cele pe care le cunoaște registrul de "
-                          "casă. Valorile posibile: %s." % (cat, ", ".join(sorted(CONTURI)))}
-    suma = Decimal(str(op.get("suma", 0)))
-    if suma <= 0:
-        return {"eroare": "suma trebuie să fie > 0"}
-    if (cat in CATEGORII_CU_LINII) != bool(linii):
-        return {"eroare": "Încasarea din vânzare fără factură se înregistrează din «Chitanță fără factură», cu cota "
-                          "de TVA — nu ca dispoziție de casă." if cat in CATEGORII_CU_LINII
-                else "Categoria %r are o singură notă, fără rânduri date de apelant." % cat}
-    if linii and sum(Decimal(str(l[2])) for l in linii) != suma:
-        return {"eroare": "Rândurile notei (%s) nu dau suma operațiunii (%s)." % (
-            sum(Decimal(str(l[2])) for l in linii), suma)}
+        er.camp("c-cat", "Categoria %r nu e una dintre cele pe care le cunoaște registrul de "
+                         "casă. Valorile posibile: %s." % (cat, ", ".join(sorted(CONTURI))))
+        cat = None
+    try:
+        suma = Decimal(str(op.get("suma", 0)))
+    except ArithmeticError:
+        suma = None
+    if suma is None or not suma.is_finite() or suma <= 0:
+        er.camp("c-suma", "suma trebuie să fie > 0")
+        suma = None
+    if cat is not None and (cat in CATEGORII_CU_LINII) != bool(linii):
+        er.fara_camp("Încasarea din vânzare fără factură se înregistrează din «Chitanță fără factură», cu cota "
+                     "de TVA — nu ca dispoziție de casă." if cat in CATEGORII_CU_LINII
+                     else "Categoria %r are o singură notă, fără rânduri date de apelant." % cat)
+    if linii and suma is not None and sum(Decimal(str(l[2])) for l in linii) != suma:
+        er.fara_camp("Rândurile notei (%s) nu dau suma operațiunii (%s)." % (sum(Decimal(str(l[2])) for l in linii), suma))
     aloc = op.get("facturi") or []
     aloc_nir = op.get("niruri") or []   # [405] NIR-urile fără factură plătite de dispoziție
-    if aloc and cat not in CATEGORII_CU_FACTURI:
-        return {"eroare": "Numai încasarea de la client și plata către furnizor se leagă de facturi.", "cod": COD_FARA_FACTURI}
-    if aloc_nir and cat != "plata_furnizor":
-        return {"eroare": "Numai plata către furnizor se leagă de un NIR fără factură.", "cod": COD_FARA_FACTURI}
+    if cat is not None and aloc and cat not in CATEGORII_CU_FACTURI:
+        er.camp("c-facturi", "Numai încasarea de la client și plata către furnizor se leagă de facturi.")
+        coduri.append(COD_FARA_FACTURI)
+        aloc = []
+    if cat is not None and aloc_nir and cat != "plata_furnizor":
+        er.camp("c-facturi", "Numai plata către furnizor se leagă de un NIR fără factură.")
+        coduri.append(COD_FARA_FACTURI)
+        aloc_nir = []
+    if cat is None:
+        aloc, aloc_nir = [], []
     parti = []   # (suma, factura_id, stinge, avans, nir_id)
     if aloc or aloc_nir:
         deschise = {f["id"]: f for f in facturi_partener(conn, schema, cat)}
@@ -287,14 +325,18 @@ def adauga(conn, schema, op, linii=None):
             try:
                 fid, s_a = int(a.get("factura_id")), Decimal(str(a.get("suma")))
             except (TypeError, ValueError, ArithmeticError):
-                return {"eroare": "Factura aleasă și suma pe ea trebuie date amândouă (primit: %r)." % (a,)}
+                er.camp("c-facturi", "Factura aleasă și suma pe ea trebuie date amândouă (primit: %r)." % (a,))
+                continue
             f = deschise.get(fid)
             if not f:
-                return {"eroare": "Factura aleasă nu e o factură %s cu sold de %s." % (
-                    "emisă" if cat == "incasare_client" else "primită", "încasat" if cat == "incasare_client" else "plătit"),
-                        "cod": COD_FACTURA_NEPOTRIVITA}
+                er.camp("c-facturi", "Factura aleasă nu e o factură %s cu sold de %s." % (
+                    "emisă" if cat == "incasare_client" else "primită", "încasat" if cat == "incasare_client" else "plătit"))
+                coduri.append(COD_FACTURA_NEPOTRIVITA)
+                continue
             if s_a <= 0 or s_a > Decimal(f["sold"]) + _BAN:
-                return {"eroare": "Pe factura %s rămân %s lei; nu se pot aloca %s lei." % (f["numar"], f["sold"], s_a), "cod": COD_PESTE_SOLD}
+                er.camp("c-facturi", "Pe factura %s rămân %s lei; nu se pot aloca %s lei." % (f["numar"], f["sold"], s_a))
+                coduri.append(COD_PESTE_SOLD)
+                continue
             parti.append((s_a, fid, "factura %s din %s" % (f["numar"], _data_ro(f["data_emitere"])), False, None))
         # [405] plata unui NIR fără factură: avans acordat furnizorului pentru bunurile din NIR (4091 = 5311), legat de NIR
         de_plata = {n["id"]: n for n in niruri_neplatite(conn, schema, cat)} if aloc_nir else {}
@@ -302,39 +344,43 @@ def adauga(conn, schema, op, linii=None):
             try:
                 nid, s_a = int(a.get("nir_id")), Decimal(str(a.get("suma")))
             except (TypeError, ValueError, ArithmeticError):
-                return {"eroare": "NIR-ul ales și suma pe el trebuie date amândouă (primit: %r)." % (a,)}
+                er.camp("c-facturi", "NIR-ul ales și suma pe el trebuie date amândouă (primit: %r)." % (a,))
+                continue
             n = de_plata.get(nid)
             if not n:
-                return {"eroare": "NIR-ul ales nu e un NIR fără factură cu rest de plată (e legat de factură, plătit, refăcut sau respins).",
-                        "cod": COD_NIR_NEPOTRIVIT}
+                er.camp("c-facturi", "NIR-ul ales nu e un NIR fără factură cu rest de plată (e legat de factură, plătit, refăcut sau "
+                                     "respins).")
+                coduri.append(COD_NIR_NEPOTRIVIT)
+                continue
             if s_a <= 0 or s_a > Decimal(n["rest"]) + _BAN:
-                return {"eroare": "Pe %s rămân %s lei de plată; nu se pot aloca %s lei." % (n["eticheta"], _bani(n["rest"]), _bani(s_a)),
-                        "cod": COD_PESTE_SOLD}
+                er.camp("c-facturi", "Pe %s rămân %s lei de plată; nu se pot aloca %s lei." % (n["eticheta"], _bani(n["rest"]), _bani(s_a)))
+                coduri.append(COD_PESTE_SOLD)
+                continue
             parti.append((s_a, None, "avans pentru %s (factura nesosită)" % n["eticheta"], True, nid))
         alocat = sum((p[0] for p in parti), Decimal(0))
-        if alocat > suma + _BAN:
-            return {"eroare": "Suma alocată pe facturi (%s lei) depășește suma dispoziției (%s lei)." % (alocat, suma)}
-        if suma - alocat > _BAN:
+        if suma is not None and alocat > suma + _BAN:
+            er.camp("c-facturi", "Suma alocată pe facturi (%s lei) depășește suma dispoziției (%s lei)." % (alocat, suma))
+        elif suma is not None and suma - alocat > _BAN:
             parti.append((suma - alocat, None, "avans", True, None))
-    else:
+    elif cat is not None and suma is not None:
         parti = [(suma, None, op.get("stinge"), bool(op.get("avans")) and cat in CATEGORII_CU_FACTURI, None)]
-        if cat == "plata_furnizor" and not op.get("avans"):
+        if cat == "plata_furnizor" and not op.get("avans") and data_ok:
             # [deficiența 407] partea care depășește facturile deschise ale furnizorului E avans (mesajul o spune) — nota ei e 409x = 5311,
             # nu 401 = 5311; restul, plată nelegată (401 = 5311), ca înainte
             _av0 = semnale(conn, schema, op)["avans"]
             if _av0:
                 _r = Decimal(_av0["suma"])
                 parti = ([(suma - _r, None, op.get("stinge"), False, None)] if suma - _r > _BAN else []) + [(_r, None, "avans", True, None)]
-    sem = semnale(conn, schema, op)
-    tip = "incasare" if cat in CATEGORII_INCASARE else "plata"
-    if tip == "plata":
+    tip = ("incasare" if cat in CATEGORII_INCASARE else "plata") if cat is not None else None
+    if tip == "plata" and data_ok and suma is not None:
         # [deficiența 406, PRIORITAR] plata nu se salvează dacă duce casa sub zero (în ziua ei sau după): `casa_sold`, aceeași regulă
-        # ca la validarea notei
+        # ca la validarea notei — eroarea sumei (`c-suma`): suma nu încape în casă
         from core import casa_sold as _cs
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             _r = _cs.refuz_iesire(cur, schema, CONTURI[cat][1], op["data"], suma, doar_validate=False, ce=ETICHETE_CATEGORIE[cat])
         if _r:
-            return {"eroare": _r, "cod": _cs.COD}
+            er.camp("c-suma", _r)
+            coduri.append(_cs.COD)
     # [deficiența 407] avansul ACORDAT furnizorului: 409x = 5311; contul după destinație (`avansuri.CONT_AVANS`), ales de om.
     # TEMEIUL, citit la sursă (19.10.2026, `anaf_surse/omfp_1802_2014_reglementari_consolidat.txt`, funcțiunea contului 409): „Cu ajutorul
     # acestui cont se ține evidența avansurilor acordate furnizorilor [...]. În debitul contului 409 «Furnizori - debitori» se înregistrează:
@@ -347,10 +393,13 @@ def adauga(conn, schema, op, linii=None):
         from core import avansuri as _av
         cont_avans = _av.CONT_AVANS.get(str(op.get("avans_destinatie") or ""))
         if not cont_avans:
-            return {"eroare": "Plata cuprinde un avans acordat furnizorului (%s lei): alege pentru ce e avansul — bunuri (4091), servicii "
-                              "(4092), imobilizări corporale (4093) sau necorporale (4094); nota avansului e 409x = 5311." % _bani(
-                                  sum((p[0] for p in parti if p[3]), Decimal(0))),
-                    "cod": COD_AVANS_DESTINATIE, "erori_campuri": [{"camp": "c-avans-dest", "mesaj": "Alege pentru ce e avansul: bunuri (4091), servicii (4092), imobilizări (4093 / 4094)."}]}
+            er.camp("c-avans-dest", "Plata cuprinde un avans acordat furnizorului (%s lei): alege pentru ce e avansul — bunuri (4091), "
+                                    "servicii (4092), imobilizări corporale (4093) sau necorporale (4094); nota avansului e 409x = 5311."
+                                    % _bani(sum((p[0] for p in parti if p[3]), Decimal(0))))
+            coduri.append(COD_AVANS_DESTINATIE)
+    if er:
+        return _refuz_adunat(er, coduri)
+    sem = semnale(conn, schema, op)
     create = []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         from core import avansuri as _av
@@ -390,13 +439,11 @@ def adauga(conn, schema, op, linii=None):
 def previzualizare(conn, schema, op):
     """[lotul 6 pct.3b/3c, 278] Ce ar spune salvarea, fără să scrie: plafoanele Legii 70/2015 cu operațiunea propusă inclusă, avansul și
     factura nelegată. Formularul o cheamă la fiecare schimbare, ca avertismentul să apară înainte de „Adaugă”."""
-    import datetime as _dt
     from core import casa_sold as _cs
     an, luna = int(str(op["data"])[:4]), int(str(op["data"])[5:7])
     plata = op.get("categorie") in CONTURI and op.get("categorie") not in CATEGORII_INCASARE
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        rows = _operatiuni_luna(cur, schema, an, luna)
-        sold_initial = _cs.sold_inainte(cur, schema, "5311", _dt.date(an, luna, 1))
+        sold_initial, rows = _registru_luna(cur, schema, an, luna)   # [455] aceleași rânduri și același sold ca registrul
         # [406] refuzul salvării, spus înainte de „Adaugă” — aceeași regulă ca `adauga`
         refuz = _cs.refuz_iesire(cur, schema, CONTURI[op["categorie"]][1], op["data"], Decimal(str(op.get("suma") or 0)),
                                  doar_validate=False, ce=ETICHETE_CATEGORIE[op["categorie"]]) if plata else None
@@ -459,22 +506,61 @@ def _date_iso(v):
     return v if hasattr(v, "year") else _dt.date.fromisoformat(str(v)[:10])
 
 
-def _operatiuni_luna(cur, schema, an, luna):
+def _registru_luna(cur, schema, an, luna):
+    """[lotul 11, deficiența 455, PRIORITAR] „casa F1 are două solduri în același moment: 294 la refuzul plății, 42 în registrul de casă.
+    Registrul de casă, contul 5311 și verificarea de sold negativ folosesc aceeași cifră, din aceeași sursă.”
+
+    (soldul la 1 ale lunii, rândurile registrului lunii) — amândouă din `casa_sold.note_casa`, sursa unică a soldului casei: fiecare
+    notă care mișcă 5311 e un rând, cu suma și soldul ei. Nota unei operațiuni din ecranul Casă (dispoziție, chitanță, stornare) poartă
+    datele operațiunii (partener, document, factură, starea, acțiunile); nota scrisă de alt modul (raportul Z, statul de plată, decontul,
+    nota manuală) e rând fără acțiuni aici — se corectează din modulul ei. Până la 22.10.2026 registrul aduna numai `casa_operatiuni`,
+    deci raportul Z (5311 = 707) era în casă pentru refuz și lipsea din registru.
+    Temei: OMFP 2634/2015 anexa 2, Registrul de casă (cod 14-4-7A): „Registrul de casă servește ca: - document de înregistrare operativă a
+    încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei
+    zile, a soldului de casă; [...] Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți.” Iar
+    la Chitanță (14-4-1): „În condițiile utilizării aparatelor de marcat electronice fiscale [...] documentul în baza căruia se înregistrează
+    în contabilitate veniturile aferente încasărilor zilnice este Raportul fiscal de închidere zilnică” — raportul Z e document de încasare
+    în numerar, deci rând în registru."""
+    import datetime as _dt
+    from core import casa_sold as _cs
+    from core.jurnal_api import eticheta_sursa as _eticheta_sursa
+    prima = _dt.date(an, luna, 1)
+    urmatoarea = _dt.date(an + (luna == 12), luna % 12 + 1, 1)
+    sold_initial = _cs.sold_inainte(cur, schema, "5311", prima)
+    _ref, _init, note = _cs.note_casa(cur, schema, "5311", de_la=prima, pana_la=urmatoarea)
+    ids = [n["inregistrare_id"] for n in note]
     # [D394 Î2] `chitanta_neclasificata`: chitanța fără factură și fără cotă legată de operațiune (de clasificat la o
     # firmă exceptată de la AMEF — D394 o refuză numită până primește cota)
-    # [Retest 2, pct.4] starea notei (o operațiune cu notă validată nu se șterge, se stornează) și stornarea deja făcută
+    # [lotul 11, deficiența 456] `chitanta`: chitanța emisă (neanulată) pe operațiune — încasarea de la client fără ea se vede pe rând
     cur.execute(f"""SELECT o.*, (SELECT c.id FROM {schema}.chitante c WHERE c.casa_operatiune_id = o.id
                            AND c.factura_id IS NULL AND c.cota_tva IS NULL AND NOT c.anulata LIMIT 1)
                            AS chitanta_neclasificata,
-                           (SELECT i.status FROM {schema}.inregistrari i WHERE i.id = o.inregistrare_id) AS nota_status,
+                           (SELECT c.id FROM {schema}.chitante c WHERE c.casa_operatiune_id = o.id AND NOT c.anulata
+                             ORDER BY c.id LIMIT 1) AS chitanta_id,
                            (SELECT ARRAY[f.serie, f.numar] FROM {schema}.inregistrari i JOIN {schema}.facturi f ON f.id = i.factura_id
                              WHERE i.id = o.inregistrare_id) AS factura_numar,
                            EXISTS (SELECT 1 FROM {schema}.casa_operatiuni s WHERE s.storno_de = o.id) AS stornata,
                            (SELECT ARRAY[n.numar, n.data::text] FROM {schema}.nir n WHERE n.id = o.nir_id) AS nir_doc
                     FROM {schema}.casa_operatiuni o
-                    WHERE date_trunc('month', o.data) = %s ORDER BY o.data, o.id""",
-                (f"{an}-{luna:02d}-01",))
-    return cur.fetchall()
+                    WHERE o.inregistrare_id = ANY(%s) ORDER BY o.id""", (ids,))
+    ops = {}
+    for o in cur.fetchall():
+        ops.setdefault(o["inregistrare_id"], o)
+    rows = []
+    for n in note:
+        o = ops.get(n["inregistrare_id"])
+        v = n["variatie"]
+        if o is not None:
+            # suma și data rândului = ale notei (sursa soldului), semnul după felul operațiunii (stornarea are suma cu minus)
+            rows.append(dict(o, data=n["data"], suma=v if o["tip"] == "incasare" else -v, nota_status=n["status"], alt_modul=False))
+        elif v:
+            rows.append({"id": None, "data": n["data"], "tip": "incasare" if v > 0 else "plata", "categorie": None,
+                         "document": n["document_ref"], "partener": n["descriere"], "cui": None, "suma": abs(v),
+                         "inregistrare_id": n["inregistrare_id"], "chitanta_neclasificata": None, "chitanta_id": None,
+                         "nota_status": n["status"], "stornata": False, "storno_de": None, "factura_numar": None, "avans": False,
+                         "nir_doc": None, "alt_modul": True,
+                         "categorie_eticheta": "notă din %s" % (_eticheta_sursa(n["sursa"]) or "jurnal")})
+    return sold_initial, rows
 
 
 #: categoria registrului -> `scop` din motorul de plafoane (`casa.verifica_plafon`): ridicarea / depunerea nu sunt încasări / plăți cu
@@ -485,22 +571,25 @@ _SCOP = {"ridicare_banca": "ridicare_banca", "depunere_banca": "depunere_banca",
 def _pentru_motor(rows):
     """[lotul 6 pct.3c, 278] Motorul citește `scop` și `partener_tip`; până azi primea numai `categorie`, deci o ridicare de numerar
     de la bancă era socotită încasare de la o persoană juridică (avertisment fals peste 5.000 lei), iar plafonul persoanei fizice
-    (Legea 70/2015 art.4 alin.(1), 10.000 lei) nu se aplica niciodată. Persoana fizică = CNP-ul (13 cifre) în locul CUI-ului."""
+    (Legea 70/2015 art.4 alin.(1), 10.000 lei) nu se aplica niciodată. Persoana fizică = CNP-ul (13 cifre) în locul CUI-ului.
+    [455] Rândul scris de alt modul (raportul Z, statul de plată…) intră în soldul zilei (plafonul soldului), nu în plafoanele pe
+    persoană: nota lui nu numește partenerul (`casa.SCOP_ALT_DOCUMENT`)."""
     return [{"data": r["data"], "tip": r["tip"], "suma": Decimal(r["suma"]),
              "partener": r["partener"] or r["cui"] or "?", "cui": r["cui"],
-             "categorie": r["categorie"], "scop": _SCOP.get(r["categorie"], ""),
+             "categorie": r["categorie"], "scop": _m.SCOP_ALT_DOCUMENT if r.get("alt_modul") else _SCOP.get(r["categorie"], ""),
              "partener_tip": "pf" if len(_cifre(r["cui"])) == 13 else "pj"} for r in rows]
 
 
-def registru(conn, schema, an, luna, sold_initial=None):
-    """Registrul lunii cu sold curent pe fiecare operațiune + avertismente plafon. [406] Soldul de pornire e al casei la 1 ale lunii
-    (preluare + notele de dinainte, `casa_sold.sold_inainte`), nu zero în fiecare lună."""
+def registru(conn, schema, an, luna):
+    """Registrul lunii cu sold curent pe fiecare rând + avertismente plafon. [406] Soldul de pornire e al casei la 1 ale lunii
+    (preluare + notele de dinainte), nu zero în fiecare lună. [455] Rândurile și soldurile vin din `_registru_luna` (sursa unică,
+    `casa_sold.note_casa`): soldul final al lunii e cel cu care refuzul ieșirii compară, iar `sold_final_validat` e al evidenței validate
+    (fișa contului 5311) — diferența dintre ele sunt notele încă ciornă, fiecare pe rândul ei."""
     import datetime as _dt
+    from core import casa_sold as _cs
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        rows = _operatiuni_luna(cur, schema, an, luna)
-        if sold_initial is None:
-            from core import casa_sold as _cs
-            sold_initial = _cs.sold_inainte(cur, schema, "5311", _dt.date(an, luna, 1))
+        sold_initial, rows = _registru_luna(cur, schema, an, luna)
+        sold_validat = _cs.sold_inainte(cur, schema, "5311", _dt.date(an + (luna == 12), luna % 12 + 1, 1), doar_validate=True)
     ops = _pentru_motor(rows)
     reg = _m.registru_casa(ops, sold_initial)
     out = []
@@ -519,21 +608,25 @@ def registru(conn, schema, an, luna, sold_initial=None):
                     # [407] avansul acordat furnizorului (409x) nu se leagă de o factură: se compensează la factura finală
                     "se_leaga": r["categorie"] in CATEGORII_CU_FACTURI and not r["factura_numar"] and not r.get("storno_de")
                                 and r["nota_status"] == "ciorna" and not (r["categorie"] == "plata_furnizor" and r.get("avans")),
+                    # [455] rândul scris de alt modul (raportul Z, statul de plată…): fără acțiuni în Casă
+                    "alt_modul": bool(r.get("alt_modul")),
+                    # [456] chitanța emisă pe operațiune; încasarea de la client fără chitanță se spune pe rând
+                    "chitanta_id": r.get("chitanta_id"),
+                    "fara_chitanta": r["categorie"] == "incasare_client" and not r.get("storno_de") and not r.get("chitanta_id")
+                                     and not r.get("stornata"),
                     # [Retest 2 pct.2] categoria în cuvinte — ecranul nu afișează cheia din bază
-                    "categorie_eticheta": ETICHETE_CATEGORIE.get(r["categorie"], r["categorie"])})
+                    "categorie_eticheta": r.get("categorie_eticheta") or ETICHETE_CATEGORIE.get(r["categorie"], r["categorie"])})
     return {"operatiuni": out,
             "sold_initial": str(sold_initial), "sold_final": str(_m.sold_final(ops, sold_initial)),
+            "sold_final_validat": str(sold_validat),
             "avertismente": _fara_decimal(_m.verifica_plafon(ops, sold_initial))}
 
 
 def verifica_plafon(conn, schema, la_data):
     """Avertismentele de plafon pentru luna datei date."""
-    import datetime as _dt
-    from core import casa_sold as _cs
     an, luna = int(str(la_data)[:4]), int(str(la_data)[5:7])
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        rows = _operatiuni_luna(cur, schema, an, luna)
-        sold_initial = _cs.sold_inainte(cur, schema, "5311", _dt.date(an, luna, 1))   # [406] ca registrul
+        sold_initial, rows = _registru_luna(cur, schema, an, luna)   # [455] aceleași rânduri și același sold ca registrul
     return _fara_decimal(_m.verifica_plafon(_pentru_motor(rows), sold_initial))
 
 
@@ -590,11 +683,8 @@ def storneaza(conn, schema, op_id, data):
                 oid = cur.fetchone()["id"]
         except _chei.CheieDublata as e:
             return {"eroare": str(e)}
-        cur.execute(f"UPDATE {schema}.chitante SET anulata = true WHERE casa_operatiune_id = %s AND NOT anulata RETURNING factura_id", (op_id,))
-        for (fid,) in [(r["factura_id"],) for r in cur.fetchall() if r["factura_id"]]:
-            cur.execute(f"SELECT 1 FROM {schema}.chitante WHERE factura_id = %s AND NOT anulata", (fid,))
-            if not cur.fetchone():
-                cur.execute(f"UPDATE {schema}.facturi SET platita_la = NULL WHERE id = %s", (fid,))
+        from core import repo_casa as _rc
+        _rc.anuleaza_chitantele_operatiunii(cur, schema, op_id)
     return {"id": oid, "inregistrare_id": iid}
 
 
@@ -616,5 +706,8 @@ def sterge(conn, schema, op_id):
                 return {"eroare": _coada.mesaj_nota_la_validare(cur, schema, op["inregistrare_id"]), "cod": _coada.COD_NOTA_LA_VALIDARE}
             cur.execute(f"DELETE FROM {schema}.inregistrari WHERE id=%s",
                         (op["inregistrare_id"],))
+        # [lotul 11, 456] chitanța emisă pe operațiune (automat, la încasarea facturii) nu se șterge cu ea: se anulează, ca la stornare
+        from core import repo_casa as _rc
+        _rc.anuleaza_chitantele_operatiunii(cur, schema, op_id)
         cur.execute(f"DELETE FROM {schema}.casa_operatiuni WHERE id=%s", (op_id,))
     return {"ok": True}

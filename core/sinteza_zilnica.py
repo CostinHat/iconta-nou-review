@@ -49,12 +49,14 @@ def sinteza_cabinet(conn, cabinet_id, zi):
     with conn.cursor() as cur:
         # declaratii pe evenimentele zilei — [lotul 07.10 pct.4] pe PREGĂTIRE (documentul): „pregătite azi” = începute azi
         # (o retrimitere nu e o pregătire nouă), iar notele aceleiași facturi se validează / resping o dată
-        from core.coada_api import sql_cheie_pregatire as _cheie
+        # [lotul 11, 458] respinsă azi = de om: înlocuirea la „Generează din nou” nu e o respingere (`coada_api.sql_inlocuita`)
+        from core.coada_api import sql_cheie_pregatire as _cheie, sql_inlocuita
         cur.execute(
-            "WITH p AS (SELECT " + _cheie() + " AS cheie, MIN(creat_la) AS creat_la, "
-            "  bool_or(aprobat_la::date = %(z)s) AS validata_azi, bool_or(respins_la::date = %(z)s) AS respinsa_azi, "
+            "WITH p AS (SELECT " + _cheie("d") + " AS cheie, MIN(creat_la) AS creat_la, "
+            "  bool_or(aprobat_la::date = %(z)s) AS validata_azi, "
+            "  bool_or(respins_la::date = %(z)s AND NOT " + sql_inlocuita("d") + ") AS respinsa_azi, "
             "  bool_or(depus_la::date = %(z)s) AS depusa_azi "
-            "  FROM public.declaratii_coada WHERE cabinet_id = %(c)s GROUP BY 1) "
+            "  FROM public.declaratii_coada d WHERE cabinet_id = %(c)s GROUP BY 1) "
             "SELECT "
             "  COUNT(*) FILTER (WHERE creat_la::date = %(z)s) AS pregatite, "
             "  COUNT(*) FILTER (WHERE validata_azi) AS validate, "

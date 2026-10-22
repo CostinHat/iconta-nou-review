@@ -14,62 +14,55 @@ import psycopg2.extras as _E
 
 
 def tipare(conn, cabinet_id):
-    out = {"ok": True}
+    """[lotul 11, 458] Agregatele vin dintr-o SINGURĂ listă de PREGĂTIRI ale declarațiilor (`coada_api.sql_cheie_pregatire`: firma, tipul,
+    perioada — oricâte rânduri a lăsat în coadă), nu din rânduri de coadă: „Generează din nou” lasă un rând nou pe aceeași declarație, iar
+    rândurile numărau de câte ori fusese generată. Respingere = a omului (`coada_api.sql_inlocuita`): înlocuirea nu e o greșeală — pe
+    cabinetul de test motivul nr.1 era „Înlocuită de declarația generată din nou …” (n=3). Fiecare pregătire respinsă e un rând al motivului
+    ULTIMEI ei respingeri, deci Σ motive = Σ respinse pe tipuri = Σ respinse pe firme = `respinse`."""
+    from core.coada_api import sql_cheie_pregatire as _cheie, sql_inlocuita
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-
-        # ---------- 1) MOTIVE DE RESPINGERE recurente ----------
         cur.execute(
-            "SELECT COALESCE(NULLIF(TRIM(motiv_respingere), ''), '(fara motiv)') AS motiv, "
-            "       COUNT(*) AS n "
-            "  FROM public.declaratii_coada "
-            " WHERE cabinet_id = %s AND respins_la IS NOT NULL AND fel = 'declaratie' "
-            " GROUP BY motiv ORDER BY n DESC, motiv LIMIT 15",
+            "WITH x AS (SELECT d.tenant_id, d.tip, d.id, d.respins_la, d.motiv_respingere, " + _cheie("d") + " AS cheie, "
+            "  (d.respins_la IS NOT NULL AND NOT " + sql_inlocuita("d") + ") AS respingere "
+            "  FROM public.declaratii_coada d WHERE d.cabinet_id = %s AND d.fel = 'declaratie'), "
+            "p AS (SELECT cheie, MIN(tenant_id) AS tenant_id, MIN(tip) AS tip, bool_or(respingere) AS respinsa, "
+            "  (array_agg(COALESCE(NULLIF(TRIM(motiv_respingere), ''), '(fara motiv)') ORDER BY respins_la DESC, id DESC) "
+            "     FILTER (WHERE respingere))[1] AS motiv "
+            "  FROM x GROUP BY cheie) "
+            "SELECT p.tenant_id, p.tip, p.respinsa, p.motiv, t.nume, t.cui "
+            "  FROM p LEFT JOIN public.tenants t ON t.id = p.tenant_id",
             (cabinet_id,))
-        out["motive"] = [{"motiv": r["motiv"], "n": int(r["n"])} for r in cur.fetchall()]
+        prg = [dict(r) for r in cur.fetchall()]
 
-        # ---------- 2) TIPURI cu rata de respingere ----------
-        # pregatite = au fost create vreodata; respinse = au respins_la
-        cur.execute(
-            "SELECT tip, "
-            "  COUNT(*) AS total, "
-            "  COUNT(*) FILTER (WHERE respins_la IS NOT NULL) AS respinse "
-            "  FROM public.declaratii_coada "
-            " WHERE cabinet_id = %s AND fel = 'declaratie' "
-            " GROUP BY tip ORDER BY respinse DESC, tip",
-            (cabinet_id,))
-        tipuri = []
-        for r in cur.fetchall():
-            total = int(r["total"])
-            resp = int(r["respinse"])
-            pct = int(round(100.0 * resp / total)) if total else 0
-            tipuri.append({
-                "tip": r["tip"], "total": total, "respinse": resp, "pct": pct,
-            })
-        out["tipuri"] = tipuri
+    # ---------- 1) MOTIVE DE RESPINGERE recurente ----------
+    pe_motiv = {}
+    for x in prg:
+        if x["respinsa"]:
+            pe_motiv[x["motiv"]] = pe_motiv.get(x["motiv"], 0) + 1
+    motive = [{"motiv": m, "n": n} for m, n in sorted(pe_motiv.items(), key=lambda kv: (-kv[1], kv[0]))]
 
-        # ---------- 3) FIRME cu cele mai multe respingeri ----------
-        cur.execute(
-            "SELECT c.tenant_id, t.nume, t.cui, "
-            "  COUNT(*) FILTER (WHERE c.respins_la IS NOT NULL) AS respinse, "
-            "  COUNT(*) AS total "
-            "  FROM public.declaratii_coada c "
-            "  LEFT JOIN public.tenants t ON t.id = c.tenant_id "
-            " WHERE c.cabinet_id = %s AND c.fel = 'declaratie' "
-            " GROUP BY c.tenant_id, t.nume, t.cui "
-            "HAVING COUNT(*) FILTER (WHERE c.respins_la IS NOT NULL) > 0 "
-            " ORDER BY respinse DESC LIMIT 15",
-            (cabinet_id,))
-        firme = []
-        for r in cur.fetchall():
-            firme.append({
-                "tenant_id": r["tenant_id"],
-                "nume": r["nume"] or "(firma necunoscuta)",
-                "cui": r["cui"] or "",
-                "respinse": int(r["respinse"]),
-                "total": int(r["total"]),
-            })
-        out["firme"] = firme
+    # ---------- 2) TIPURI cu rata de respingere ----------
+    # total = pregătiri ale tipului; respinse = pregătiri respinse (de om) măcar o dată
+    pe_tip = {}
+    for x in prg:
+        g = pe_tip.setdefault(x["tip"], [0, 0])
+        g[0] += 1
+        g[1] += 1 if x["respinsa"] else 0
+    tipuri = [{"tip": tip, "total": tot, "respinse": resp,
+               "pct": int(round(100.0 * resp / tot)) if tot else 0}  # round-ok: indicator (procent), nu sumă fiscală
+              for tip, (tot, resp) in sorted(pe_tip.items(), key=lambda kv: (-kv[1][1], kv[0]))]
 
+    # ---------- 3) FIRME cu cele mai multe respingeri ----------
+    pe_firma = {}
+    for x in prg:
+        g = pe_firma.setdefault(x["tenant_id"], {"tenant_id": x["tenant_id"], "nume": x["nume"] or "(firma necunoscuta)",
+                                                  "cui": x["cui"] or "", "respinse": 0, "total": 0})
+        g["total"] += 1
+        g["respinse"] += 1 if x["respinsa"] else 0
+    firme = sorted((g for g in pe_firma.values() if g["respinse"] > 0), key=lambda g: (-g["respinse"], g["nume"]))
+
+    out = {"ok": True, "motive": motive[:15], "tipuri": tipuri, "firme": firme[:15],
+           "respinse": sum(n for n in pe_motiv.values())}   # totalul = Σ rândurilor motivelor (aceeași listă)
     # rezumat: avem date sau nu (pentru mesajul de gol)
     out["are_date"] = bool(out["motive"] or any(t["respinse"] for t in out["tipuri"]))
     return out

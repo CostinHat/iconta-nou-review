@@ -347,7 +347,44 @@ def test_numarul_de_instructiuni_se_conserva():
     #   implicit, primul liber („NEC-LIC”, „NEC-LIC-2”, …; „MF-PLUS”, „MF-PLUS-2”, …), în `uc_tenants.achizitie_necorporala` și
     #   `uc_tenants.nota_inventariere` (plus_mf). Ecranele n-au câmp de cod, iar codul fix făcea ca a doua operațiune să cadă cu 500 pe
     #   `mijloace_fixe_cod_uniq`.
-    assert _apeluri_catre_repository() == 352
+    # [lotul 11, comanda 11.1, 21.10.2026] 352 -> 353, cu apelurile numite (diferența față de HEAD, apel cu apel):
+    #   + repo_contabilitate.nota_facturi_cu_factura, + repo_contabilitate.adauga_linie (uc_tenants.borderou_storneaza) — decizia 10.3
+    #     „Borderoul se corectează prin stornare, ca factura”: nota inversă a borderoului stornat și rândurile ei; scrieri NOI;
+    #   + repo_facturi.seteaza_act_identitate (uc_tenants.borderou_storneaza) — borderoul de stornare (BA-n nou) poartă actul de identitate
+    #     al vânzătorului PF, ca borderoul inițial (402); scriere NOUĂ;
+    #   + tranzactie.fixeaza_schema (uc_tenants.borderou_storneaza) — stornarea emite o factură cu INSERT necalificat (ca `vanzare_ic`,
+    #     R187); apel de CONTROL NOU;
+    #   − repo_contabilitate.nota_operatiune_ciorna, − repo_contabilitate.adauga_linie (uc_tenants.reevaluare_valuta) — 429, formularul
+    #     manual al reevaluării și use-case-ul lui au plecat (un singur formular, cu propunerea): −2;
+    #   − repo_mijloace_fixe.de_amortizat (uc_tenants.tenant_amortizare) — 451, rândurile amortizării vin din sursa unică
+    #     `amortizare_lunii.linii` (aceeași cu regenerarea pe uscat a ciornei depășite), care nu e repository: −1;
+    #   neutru: repo_contabilitate.adauga_linie -> adauga_linie_partener (uc_reevaluare.reevaluare_valuta_genereaza) — decizia 10.3, rândul
+    #     de reevaluare al unui partener poartă partenerul.
+    # [lotul 11, subagentul x] 353 -> 375, cu apelurile numite:
+    #   − repo_contabilitate.nota_facturi_cu_factura, − repo_contabilitate.adauga_linie_client (uc_tenants.vanzare_ic) — C78, nota proprie
+    #     a livrării intracomunitare dubla contarea de la emitere; nota e acum `fres["contare"]["inregistrare_id"]`: −2;
+    #   + 24 de apeluri NOI, niciunul SQL nou: regula straturilor (`core/straturi.py`, e2a D4b) — SQL-ul scris în lotul 11 direct în
+    #     use-case a trecut în repository, instrucțiune cu instrucțiune, aceeași ordine:
+    #     uc_tenants.stocuri_adauga: repo_stocuri.blocheaza_nir_urile / savepoint_nir_numar_repetat / inapoi_la_nir_numar_repetat (3);
+    #     uc_tenants._nir_cu_numarul: repo_stocuri.nir_cu_numarul (1);
+    #     uc_tenants.achizitie_neinregistrat: repo_stocuri.articolul_ales, repo_borderou.blocheaza_borderourile (2);
+    #     uc_tenants._borderou_identic: repo_borderou.vii_cu_data_si_valoarea / descriere_si_cantitate (2);
+    #     uc_tenants.borderouri_lista: repo_borderou.ale_lunii / prima_linie / nota_si_valoarea (3);
+    #     uc_tenants.borderou_storneaza: repo_borderou.blocheaza_borderourile / de_stornat / stornarea_lui / linii_de_stornat /
+    #       liniile_notei / intrari_vii / savepoint_stornare / inapoi_la_stornare / leaga_stornarea / storneaza_intrarea,
+    #       repo_stocuri.denumirea_articolului (11);
+    #     uc_cabinet.citeste_intocmitor_conn / salveaza_intocmitor_conn: repo_cabinet.intocmitorul / scrie_intocmitorul (2).
+    # [lotul 11] 375 -> 377, cu apelurile numite:
+    #   + repo_efactura.salveaza_tva_cote (uc_tenants._factura_importata) — C79: importul e-Factura păstrează TVA-ul pe cote al facturii
+    #     (BG-23, BT-116..119) în `factura_tva_cote`; scriere NOUĂ;
+    #   + repo_efactura.moneda_si_data (uc_tenants.factura_contabilizeaza) — C83: factura din XML în valută rămasă fără curs; moneda și
+    #     data se citesc înaintea tranzacției, ca cursul BNR să fie adus (`_preincalzeste_cursul`); citire NOUĂ.
+    # [lotul 11, deficiența 456] 377 -> 381, cu apelurile numite: încasarea facturii din Casă emite automat chitanța
+    #   (`uc_tenants.chitante_pe_incasare`): + repo_casa.urmatorul_numar_chitanta, + repo_facturi.factura_pentru_chitanta (citiri NOI),
+    #   + repo_casa.data_si_documentul_operatiunii (citire NOUĂ), + repo_casa.documentul_chitantei (scriere NOUĂ: documentul operațiunii
+    #   și al notei = numărul chitanței). Neutre: repo_firma_profil.seria_chitantei, repo_casa.adauga_chitanta,
+    #   repo_facturi.marcheaza_platita mutate din `chitanta_emite` în ajutoarele comune `chitanta_serie_sau_refuz` / `chitanta_scrie`.
+    assert _apeluri_catre_repository() == 381
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

@@ -68,7 +68,13 @@ from scripts import scan_refuzuri as s
 BASELINE = {
     # 26 -> 27 la 19.10.2026 (lotul 9, deficiența 401): +1 refuz de FORMA, marcat lângă el — tipul „borderou” pe altceva decât o
     # achiziție (invariant intern: borderoul de achiziție îl creează numai `uc_tenants.achizitie_neinregistrat`, nu-l alege omul)
-    "core/facturi_api.py": 27,
+    # 27 -> 28 la 22.10.2026 (lotul 11, 440, recalibrare g2 — scanul numără și refuzurile ADUNATE, `scripts/scan_refuzuri.py` „REFUZUL
+    # ADUNAT”). Pe HEAD-ul lotului 10 (22c71846) scanul nou dă tot 26, ca cel vechi: unitatea nouă nu schimbă trecutul. Față de 26: cele 10
+    # refuzuri de FORMĂ din `creeaza_factura` sunt aceleași, mutate în `_er` (`FacturaRefuzata`, W3a B5) — nu au câștigat temei; +1 în
+    # `seteaza_numerotare` — seria goală era `return {"ok": False, ...}` (umbra modului de eșec 4), acum e `er.camp("serie", ...)`, deci
+    # se vede (FORMĂ, W3b B21); +1 în `_potriveste_linii` — refuzul produsului pe date (UM / preț peste coloană) dus mai departe (FORMĂ,
+    # W3b). Plafonul vechi 27 avea un loc liber (26 măsurat): închis.
+    "core/facturi_api.py": 28,
     "core/bacsis.py": 2,
     "core/casa.py": 3,
     "core/taxare_inversa.py": 3,
@@ -94,7 +100,14 @@ BASELINE = {
     # 35 -> 38 la 03.10.2026 (D212 Etapa 5c-2b): +3 refuzuri de FORMA, marcate langa ele — cheltuieli date la pensie, numarul
     # lunilor cu pensie lipsa, contributii date la remuneratie fara bifa de asigurat in alt stat. Normativul nou (CASS pe pensie
     # in Romania, fara sectiune in formular) poarta temeiul in text (CF art.155 alin.(1) lit.a^2, instructiuni pct.41).
-    "core/d212.py": 38,  # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
+    # 38 -> 39 la 22.10.2026 (lotul 11, 440, recalibrare g2 — scanul numără și refuzurile ADUNATE). Scanul vechi număra 11: W5 a mutat
+    # refuzurile din `cap11_categorie`, `cap14_sectiune`, `cap12_norma`, `cap11_sistem_real`, RIP în `motive.append(...)` + `raise
+    # RefuzuriSectiune(motive)` — ieșeau din clichet FĂRĂ să fi câștigat temeiul (gardul erodat, găsit de W5). Scanul nou: pe HEAD-ul
+    # lotului 10 tot 38; acum 39 = aceleași refuzuri de FORMĂ, mutate, plus: +1 `cap14_sectiune` (determinarea venitului net DPI în afara
+    # {1,2}, care trecea tăcut drept sistem real — FORMĂ, W5), +1 `_suma_camp` și +1 `_intreg_camp` (text nenumeric într-o rubrică de sumă /
+    # număr — înainte `decimal.InvalidOperation` brut, nu refuz; FORMĂ, W5), −2 în `genereaza` (refuzurile adunate ale secțiunilor nu se
+    # mai ridică fiecare, ci o dată, cu toate: `raise ValueError(_motive(...))`).
+    "core/d212.py": 39,  # 02.10.2026 D212 Etapa 2: modulul cita acum legea (Temei); 4 refuzuri de FORMA (generare cu erori de camp, sume negative, fisa RIP refuzata, conexiune lipsa)
     # +1 10.10.2026 (R1, registrul unic): `ancoreaza` refuza temeiul fara `data_in` — refuz de FORMA (o intrare de registru fara data
     # de la care e valabila nu se poate alege dupa data operatiunii), notat langa el; o eroare de program, nu o regula fiscala.
     # [18.10.2026, comanda 8.2, deficiența 378] `adauga` refuză ajustarea pe care `valideaza` o respinge — refuz de FORMĂ (rândul în afara
@@ -107,7 +120,9 @@ BASELINE = {
     "core/salarizare.py": 4,
     "core/scadente.py": 2,
     "core/sponsorizari.py": 3,
-    "core/stocuri.py": 9,
+    # 9 -> 6 la 22.10.2026 (lotul 11, recalibrare g2): măsurat 6 deja pe HEAD-ul lotului 10 (22c71846), cu scanul vechi și cu cel nou —
+    # trei locuri libere rămase dintr-o coborâre nescrisă; plafonul se strânge pe cifra reală, ca să nu ascundă o creștere viitoare.
+    "core/stocuri.py": 6,
     # [07.10.2026, retest R1] 5 -> 6: stornarea în roșu a unei intrări a cărei marfă a ieșit deja se refuză („stornarea intrării
     # … peste stocul …”) — refuz de FORMĂ, aceeași clasă cu „ieșire peste stoc” de lângă el (fișa nu poate deveni negativă);
     # un articol de lege n-are ce căuta pe el. Creșterea se înregistrează, nu se ascunde.
@@ -122,13 +137,35 @@ BASELINE = {
     # din HEAD-ul lotului 9) trec din umbră aici. Toate sunt de FORMĂ sau de stare a aplicației: da/nu, lună / an / exercițiu în afara
     # intervalului, interval întreg, firma de ales, email ocupat / invalid / prea multe, client din alt cabinet, lună încă în curs, dată
     # lipsă, perioadă închisă (lacătul aplicației), raport Z duplicat, element de coadă lipsă, eroarea jurnalului. Niciunul nu aplică o normă.
-    "core/uc_comun.py": 23,
+    # [lotul 11, 21.10.2026] `uc_comun.py` IEȘIT DIN DOMENIU, nu reparat: controlul de închidere „Reevaluare valută” nu mai e aici —
+    # blocajul are sursa unică `reevaluare_valuta.blocaj_inchidere` (429), care citează el `TEMEI`. Cele 23 de refuzuri rămase sunt
+    # cele din HEAD-ul lotului 9, toate de FORMĂ sau de stare a aplicației (lista de mai sus, lotul 10) — se întorc în umbră, unde
+    # stăteau înainte de lotul 10; niciunul nu aplică o normă, deci n-au pierdut un temei pe care să-l fi avut.
     # [lotul 10, 20.10.2026, deficiența 429] module NOI ale reevaluării lunare în valută. Refuzurile de FORMĂ sunt marcate lângă ele: în
     # `reevaluare_valuta` (4) — element ieșit din propunere, câmp needitabil, sold în valută nenumeric / nepozitiv; în `uc_reevaluare` (6) —
     # forma completărilor (×2), luna / anul nenumerice, completarea respinsă de motor (×2, mesajul lui), câmp lipsă pe care aplicația nu-l
     # ghicește. Refuzul normativ (cursul BNR din ultima zi bancară lipsă, OMFP 1802/2014 pct.325 alin.(1)) poartă `temei` în corp.
-    "core/reevaluare_valuta.py": 4,
-    "core/uc_reevaluare.py": 6,
+    # [lotul 11, 429] `reevaluare_valuta` a ieșit din datorie: completările se refuză toate deodată, prin `RefuzReevaluare` (o singură
+    # ridicare, lista {camp, mesaj}), iar refuzul normativ (contul de avansuri) își citează temeiul (OMFP 1802/2014 pct.316 alin.(2));
+    # `uc_reevaluare` 6 -> 4: forma cererii (×1, completări + ajustări), refuzul completărilor (×1, lista), luna / anul, câmpul lipsă.
+    # [lotul 11, 22.10.2026, recalibrare g2] PIVOT pe rândul de mai sus: `reevaluare_valuta` NU a ieșit din datorie — refuzurile lui au
+    # trecut din `raise` în lista `erori` (`raise RefuzReevaluare(erori)`), pe care scanul vechi n-o vedea (gardul erodat al lui 440).
+    # Scanul nou (refuzurile ADUNATE) dă 4 pe HEAD-ul lotului 10, ca cel vechi, și 5 acum, toate de FORMĂ, marcate lângă ele: câmp
+    # needitabil, sold în valută nenumeric / nepozitiv (`_aplica`, 2), moneda din trei litere (nou, `_elemente_conturi`), contul manual
+    # refuzat (`_elemente_conturi`: textul vine din `_refuz_rand_manual`, care citează el temeiul avansurilor — modul de eșec 1 al
+    # scanului, numărat la locul adăugării, deci plafon SUPERIOR), elementul ieșit din propunere (`propunere`).
+    "core/reevaluare_valuta.py": 5,
+    "core/uc_reevaluare.py": 4,
+    # [lotul 11, 21.10.2026, C70] `d101g.py` INTRAT ÎN DOMENIU, nu refuzuri normative noi: a primit `TEMEIURI_ANULARE` (nomenclatorul
+    # câmpului `temei` al structurii D101G 4b: CPF art.105 alin.(6) lit.a / lit.b), deci „citează legea”. Cele 8 refuzuri „fără” sunt
+    # toate de FORMĂ / de structură a validatorului (DUK nu e normă, CLAUDE.md §3.1): codul de obligație din lista DUK, anii dinainte de
+    # structura v2, intrări necunoscute (apelantul), valori negative (DUK regula X>=0), P02a > P02 (DUK), temeiul anulării nenumeric /
+    # lipsă la construcția XML (DUK R4b — mesajul numește cele două temeiuri din nomenclator), declarantul lipsă (`erori_declarant`).
+    "core/d101g.py": 8,
+    # [lotul 11, 21.10.2026, 451] `ciorne_depasite.py` — modul NOU (citează OMFP 2634/2015 pct.58 lit.c prin `TEMEI`). Cele 3 refuzuri
+    # ale `reface_factura_emisa` sunt de STARE: nota nu mai e o ciornă de contare, contarea facturii refuzată acum (mesajul motorului de
+    # contare, cu temeiul lui), factura are deja altă notă. Niciunul nu aplică o normă proprie.
+    "core/ciorne_depasite.py": 3,
 }
 
 #: Cele două cifre care NU se gardează, dar se scriu ca să nu se piardă. Dacă vreuna scade mult,
@@ -352,3 +389,134 @@ def test_calibrare_un_raise_care_NU_e_refuz_nu_se_numara(tmp_path):
     assert _clasa('raise KeyError("k")\n', tmp_path) == []
     assert _clasa('raise RuntimeError("x")\n', tmp_path) == []
     assert _clasa('try:\n    f()\nexcept Exception:\n    raise\n', tmp_path) == []
+
+
+# ── REFUZUL ADUNAT (lotul 11, 22.10.2026, g2): gardul erodat de campania 440, găsit de W5 ───────────────────────────────────────
+# Campania 440 („toate erorile apar deodată”) a mutat refuzurile din `raise` în colectoare. Un scan care număra numai `raise` le
+# pierdea: clichetul cobora (d212 38 -> 11) fără ca vreun refuz să fi câștigat temeiul. Calibrarea de mai jos, pe cod SINTETIC, în
+# ambele direcții: ce trebuie numărat e numărat, ce doar retransmite nu e numărat de două ori.
+
+def _adunate_sint(sursa):
+    import ast
+    rez, _ref = s._adunate(ast.parse(sursa))
+    return [(fn, s._purtator(n)) for n, fn in rez]
+
+
+def test_adunat_colectorul_unic_numara_fiecare_camp_si_temeiul_lui():
+    rez = _adunate_sint(
+        "def f(c):\n"
+        "    er = ErorileFormularului()\n"
+        "    if not c.a: er.camp('a', 'lipsește a')\n"
+        "    if not c.b: er.fara_camp('regula formularului')\n"
+        "    if c.x: er.camp('x', 'x nu se poate (CF art.146)')\n"
+        "    if c.y: er.camp('y', 'y nu se poate %s' % TEMEI_Y)\n"
+        "    er.refuza()\n")
+    assert sorted(rez) == [("f", "fara"), ("f", "fara"), ("f", "proza"), ("f", "structurat")], rez
+
+
+def test_adunat_lista_ridicata_la_capat_numara_motivele_nu_ridicarea():
+    """`motive.append` + `raise RefuzuriSectiune(motive)` (d212), inclusiv prin ajutorul care primește lista ca parametru (`_suma_camp`).
+    Ridicarea care doar duce lista NU se numără a doua oară (`inventar`, mulțimea `duc`)."""
+    import ast
+    sursa = ("def _suma(a, k, motive):\n"
+             "    try:\n        return int(a[k])\n    except ValueError:\n        motive.append('%s nu e număr' % k)\n"
+             "def sectiune(a):\n"
+             "    motive = []\n"
+             "    x = _suma(a, 'x', motive)\n"
+             "    if a.get('z') < 0: motive.append('z negativ')\n"
+             "    if motive:\n        raise ValueError(motive)\n")
+    rez = _adunate_sint(sursa)
+    assert sorted(rez) == [("_suma", "fara"), ("sectiune", "fara")], rez
+    _r, ref = s._adunate(ast.parse(sursa))
+    # pe MULȚIME (numele listei de refuz printre cele ridicate), nu pe sub-șir; o mulțime goală de referințe pică
+    assert any({"motive"} <= v for v in ref.values()), "lista ridicată la capăt n-a fost recunoscută ca listă de refuz"
+
+
+def test_adunat_retransmiterea_nu_se_numara_a_doua_oara():
+    """Textul unei excepții prinse (`str(e)`, numărat la `raise`-ul lui), elementele altei liste de refuz, bucla care varsă o listă
+    într-un colector (`_refuz_adunat`) și releul (`_ErorileNotei.adauga`) — numărate la sursă, nu aici."""
+    rez = _adunate_sint(
+        "def g(a):\n"
+        "    motive = []\n"
+        "    try:\n        _data(a)\n    except ValueError as e:\n        motive.append(str(e))\n"
+        "    raise RefuzuriSectiune(motive)\n"
+        "def _refuz_adunat(er):\n"
+        "    f = ErorileFormularului()\n"
+        "    for c, m in er:\n        f.camp(c, m)\n"
+        "    return f.detaliu()\n"
+        "def h(a):\n"
+        "    er = []\n"
+        "    if not a: er.append(('a', 'lipsește a'))\n"
+        "    return _refuz_adunat(er)\n"
+        "class Nota:\n"
+        "    def adauga(self, mesaj, temei, camp=None):\n"
+        "        self.er.camp(camp, mesaj)\n"
+        "def valid(n):\n"
+        "    n.adauga('data lipsă', TEMEI_DATA, camp='d')\n")
+    assert sorted(rez) == [("h", "fara"), ("valid", "structurat")], rez
+
+
+def test_adunat_lista_care_NU_e_de_refuz_nu_se_numara():
+    """Perechea inversă: o listă de avertismente, de câmpuri de UPDATE sau un text întors de un ajutor și ridicat (`raise
+    ValueError(motiv)`) nu sunt refuzuri adunate — altfel cifra ar crește din cod care nu refuză nimic."""
+    rez = _adunate_sint(
+        "def f(a):\n"
+        "    av, seturi = [], []\n"
+        "    av.append('atenție')\n"
+        "    seturi.append('x = %s')\n"
+        "    motiv = valideaza(a)\n"
+        "    if motiv:\n        raise ValueError(motiv)\n"
+        "    return av\n")
+    assert rez == [], rez
+
+
+def test_adunat_ajutorul_campuri_lipsa_e_un_refuz_al_APELANTULUI():
+    rez = _adunate_sint(
+        "def _campuri_lipsa(corp, obligatorii, er=None):\n"
+        "    colector = er or ErorileFormularului()\n"
+        "    for k in obligatorii:\n        colector.camp(k, 'Lipsește câmpul %s' % k)\n"
+        "def uc(corp):\n"
+        "    _campuri_lipsa(corp, ['a', 'b'])\n")
+    assert rez == [("uc", "fara")], rez
+
+
+def test_metodele_colectorului_sunt_toate_numite_in_scan():
+    """Structural, pe `core/erori.py`: fiecare metodă a lui `ErorileFormularului` care ADAUGĂ (scrie în `self.campuri` /
+    `self.generale`) e în `scan_refuzuri.METODE_COLECTOR`. O metodă nouă de adăugare, nenumită acolo, ar fi un drum nou pe lângă
+    clichet — exact eroziunea pe care o închide refuzul adunat."""
+    import ast
+    import io
+    import os
+    arb = ast.parse(io.open(os.path.join(s.RAD, "core", "erori.py"), encoding="utf-8").read())
+    cls = [n for n in ast.walk(arb) if isinstance(n, ast.ClassDef) and n.name == "ErorileFormularului"]
+    assert cls, "core.erori.ErorileFormularului nu mai există — scanul refuzurilor adunate trebuie revăzut"
+    adauga = set()
+    for m in cls[0].body:
+        if isinstance(m, ast.FunctionDef) and m.name != "__init__":
+            for n in ast.walk(m):
+                if (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr == "append"
+                        and isinstance(n.func.value, ast.Attribute) and n.func.value.attr in ("campuri", "generale")):
+                    adauga.add(m.name)
+    assert adauga == set(s.METODE_COLECTOR), (
+        "metodele care adaugă în colector %s != METODE_COLECTOR %s" % (sorted(adauga), sorted(s.METODE_COLECTOR)))
+
+
+def test_ajutoarele_adunate_exista():
+    """`AJUTOARE_ADUNATE` numește funcții reale: un nume rămas după o redenumire ar scoate tăcut apelurile din numărătoare."""
+    import ast
+    import io
+    defs = set()
+    for cale in s._fisiere():
+        for n in ast.walk(ast.parse(io.open(cale, encoding="utf-8").read())):
+            if isinstance(n, s._FN):
+                defs.add(n.name)
+    assert set(s.AJUTOARE_ADUNATE) <= defs, sorted(set(s.AJUTOARE_ADUNATE) - defs)
+
+
+def test_refuzurile_adunate_se_vad_in_inventar(inv):
+    """Anti-vacuu pe forma nouă: campania 440 a adus peste 200 de refuzuri adunate (252 la 22.10.2026); dacă scanul le-ar pierde iar,
+    cifra s-ar prăbuși și clichetul ar coborî fără reparație."""
+    n = sum(1 for r in inv if r.get("forma") == "adunat")
+    assert n > 150, "doar %d refuzuri adunate găsite — scanul colectoarelor a orbit" % n
+    d212 = sum(1 for r in inv if r.get("forma") == "adunat" and r["fisier"] == "core/d212.py")
+    assert d212 > 20, "d212: doar %d refuzuri adunate (motive.append) — RefuzuriSectiune nu se mai urmărește" % d212

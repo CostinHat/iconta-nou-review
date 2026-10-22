@@ -15,7 +15,7 @@ cheama functia de aici prin adaptorul `_http`.
 """
 
 from core import db, documente_api
-from core import repo_tenants
+from core import repo_cabinet, repo_tenants
 from core import erori as _erori
 from core import uc_comun as _uc_comun
 
@@ -79,3 +79,81 @@ def cabinet_consolidare(an, luna, ctx):
                 for c in total:
                     total[c] = round(total[c] + k[c], 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     return {"an": an, "luna": luna, "firme": firme, "total": total}
+
+
+# ── [lotul 11, decizia Costin 10.3 pct.4, verbatim în DECIZII „Comanda 10.3”: „Întocmitorul bilanțului: calitatea întocmitorului în profilul
+# cabinetului, interesul public în Date firmă; ambele blochează dacă lipsesc.”] Întocmitorul bilanțului e al cabinetului (îl întocmește
+# cabinetul, pentru toate firmele lui). Structura ANAF (anaf_surse/structura_SC_1225_270126.txt): „20. nume_intocmit Nume si prenume
+# Intocmit C(75 DA”, „21. calit_intocmit Calitate intocmit N(2) DA Nomenclator calitate - Intocmit”, „22. nri_intocmit Numar de inreg.in
+# org.profesional C(15)”, „22a cif_intocmit CIF intocmit C(13) NU … daca calit_intocmit=(21,22) atunci cif_intocmit#null altfel
+# cif_intocmit=null”. Coloanele: core/migrare_intocmitor_bilant.py. Citirea la generare: `bilant_api.intocmitor_cabinet`.
+def citeste_intocmitor_conn(conn, firm_id):
+    """{intocmitor: {calit_intocmit, nume_intocmit, cif_intocmit, nri_intocmit}, calitati: [[cod, eticheta]], cu_cif: [21, 22]}."""
+    from core.migrare_intocmitor_bilant import CALITATI_INTOCMIT
+    with conn.cursor() as cur:
+        r = repo_cabinet.intocmitorul(cur, firm_id) or (None, None, None, None)
+    return {"intocmitor": dict(zip(("calit_intocmit", "nume_intocmit", "cif_intocmit", "nri_intocmit"), r)),
+            "calitati": [[k, v] for k, v in sorted(CALITATI_INTOCMIT.items())], "cu_cif": [21, 22]}
+
+
+def salveaza_intocmitor_conn(conn, firm_id, date):
+    """Scrie întocmitorul cabinetului. Un câmp gol NU refuză salvarea (bilanțul îl cere la generare, ca Date firmă — 427); se refuză numai
+    o valoare INVALIDĂ: calitatea în afara nomenclatorului, numele peste 75 de caractere, CIF-ul cerut de calitățile 21 / 22 și lipsă sau
+    cu cifra de control greșită. CIF-ul se păstrează fără „RO” și fără spații (decizia 10.3, `cui_forma.stocare`); la celelalte calități
+    se golește („altfel cif_intocmit=null”). {ok, intocmitor} sau {ok: False, camp, mesaj}. Nu comite (tranzacția e a apelantului)."""
+    from core import bilant as _b, cui_forma as _cf
+    from core.identitate import valideaza_cif
+    date = date or {}
+    _c = str(date.get("calit_intocmit") or "").strip()
+    try:
+        calit = int(_c) if _c else None
+    except ValueError:
+        calit = -1
+    # [lotul 11, deficiența 440, comanda Costin 11.1 pct.16] toate valorile invalide deodată (`ErorileFormularului`), fiecare cu câmpul
+    # ei (`camp` = numele din cerere; ecranul pune prefixul „cab-”); {ok: False, camp: al primei, mesaj: toate, erori_campuri}
+    from core.erori import ErorileFormularului as _Erori
+    er = _Erori("Întocmitorul nu s-a salvat")
+    if calit is not None and calit not in _b.CALITATI_INTOCMIT:
+        er.camp("calit_intocmit",
+                "Calitatea întocmitorului: una din nomenclatorul ANAF al bilanțului (director economic, contabil șef, altă persoană "
+                         "împuternicită, persoană fizică sau juridică autorizată CECCAR).")
+    nume = str(date.get("nume_intocmit") or "").strip() or None
+    if nume and len(nume) > 75:
+        er.camp("nume_intocmit", "Numele întocmitorului: cel mult 75 de caractere (structura bilanțului, C(75)).")
+    nri = str(date.get("nri_intocmit") or "").strip() or None
+    if nri and len(nri) > 15:
+        er.camp("nri_intocmit", "Numărul de înregistrare în organizația profesională: cel mult 15 caractere (structura bilanțului, C(15)).")
+    cif = _cf.stocare(date.get("cif_intocmit"))
+    if calit in _b.CODURI_CALITATE_CU_CIF:
+        if not cif:
+            er.camp("cif_intocmit", "Scrie CIF-ul întocmitorului: bilanțul îl cere când întocmitorul e %s." % _b.CALITATI_INTOCMIT[calit].lower())
+        else:
+            ok, _tip, motiv = valideaza_cif(cif)
+            if not ok:
+                er.camp("cif_intocmit", "CIF-ul întocmitorului %s nu e valid (%s)." % (cif, motiv))
+    else:
+        cif = None
+    if er:
+        d = er.detaliu()
+        prima = next(iter(d["erori_campuri"]), {}).get("camp")
+        return {"ok": False, "camp": prima, "mesaj": d["mesaj"], "erori_campuri": d["erori_campuri"]}
+    with conn.cursor() as cur:
+        repo_cabinet.scrie_intocmitorul(cur, firm_id, calit, nume, cif, nri)
+    return dict({"ok": True}, **citeste_intocmitor_conn(conn, firm_id))
+
+
+def intocmitor_citeste(ctx):
+    """Corpul rutei GET `/cabinet/intocmitor`."""
+    with db.get_conn() as conn:
+        return citeste_intocmitor_conn(conn, ctx["firm"])
+
+
+def intocmitor_salveaza(date, ctx):
+    """Corpul rutei POST `/cabinet/intocmitor` — numai administratorul cabinetului (ca „Date cabinet”, `uc_eu.eu_cabinet_set`)."""
+    if ctx["rol"] not in ("admin_firma", "superadmin"):
+        raise _erori.FaraDrept("Doar administratorul cabinetului poate edita întocmitorul bilanțului (Date cabinet).")
+    with db.get_conn() as conn:
+        r = salveaza_intocmitor_conn(conn, ctx["firm"], date)
+    if not r.get("ok"):
+        raise _erori.DateInvalide({"mesaj": r["mesaj"], "erori_campuri": r.get("erori_campuri") or [{"camp": r["camp"], "mesaj": r["mesaj"]}]})
+    return r

@@ -167,14 +167,21 @@ def test_def_426_clasa_ecranul_cere_confirmarea_la_fiecare_import_care_inlocuies
     # helperele comune: caseta cu textul serverului, confirmarea înainte, 409 -> aceeași confirmare
     caseta = functia(arb, "_casetaInlocuire")
     assert [cod(c["test"]) for c in noduri(caseta, "ConditionalExpression")] == ["date.avertisment_inlocuire"]
-    assert elemente_html(caseta) == [("div", {"class": "caseta-atentie", "id": "mig-inlocuire", "role": "status"}),
-                                     ("div", {"class": "ca-mesaj"})]
+    # [lotul 11, 446] zona avertismentului e goală în șablon și o umple `arataMesaj(…, "avert")` (DS cap.6: avertismentul, nu eroarea)
+    assert elemente_html(caseta) == [("div", {"id": "mig-inlocuire", "role": "status"})]
+    assert apeluri(functia(arb, "_arataInlocuirea"), cod, "arataMesaj") == [("z", "date.avertisment_inlocuire", '"avert"')]
     confirma = functia(arb, "_confirmaInlocuirea")
-    assert apeluri(confirma, cod, "confirmaCaseta") == [("zona", "esc(date.avertisment_inlocuire)", "() => salveaza(true)", "{ textOk }")]
+    # [446] confirmarea e întrebarea scurtă, nu încă o dată avertismentul (care stă deja sus)
+    assert apeluri(confirma, cod, "_confirmaInLoculButonului") == [("zona", "esc(intrebare)", "textOk", "() => salveaza(true)")]
     assert apeluri(confirma, cod, "salveaza") == [("false",), ("true",)]   # fără avertisment: direct; cu el: numai după „da”
     la409 = functia(arb, "_inlocuire409")
     assert [cod(i["test"]) for i in noduri(la409, "IfStatement")] == ["!(e && e.cod === 409 && !inlocuieste)"]
-    assert apeluri(la409, cod, "confirmaCaseta") == [("zona", 'esc(e.mesaj || "")', "() => salveaza(true)", "{ textOk }")]
+    assert apeluri(la409, cod, "_confirmaInLoculButonului") == [("zona", 'esc(e.mesaj || "")', "textOk", "() => salveaza(true)")]
+    # [446] cât confirmarea e deschisă, butonul principal e ascuns (o singură acțiune activă); „Renunță” îl readuce
+    inloc = functia(arb, "_confirmaInLoculButonului")
+    assert len(apeluri(inloc, cod, "confirmaCaseta")) == 1
+    atribuiri = sorted(cod(a) for a in noduri(inloc, "AssignmentExpression"))
+    assert atribuiri == ["buton.hidden = false", "buton.hidden = false", "buton.hidden = true"], atribuiri
     # fiecare salvare: apelul `api.post` pe ruta importului, în funcția de previzualizare de nivel superior care îl conține
     functii = [n for n in arb["body"] if n["type"] == "FunctionDeclaration"] + [
         n["declaration"] for n in arb["body"] if n["type"] == "ExportNamedDeclaration" and (n.get("declaration") or {}).get("type")
@@ -189,7 +196,8 @@ def test_def_426_clasa_ecranul_cere_confirmarea_la_fiecare_import_care_inlocuies
         gazda = [f for f in functii if f["start"] <= post[0]["start"] < f["end"]]
         assert len(gazda) == 1, (ruta, len(gazda))
         lipsa = [] if {"inlocuieste"} <= chei else ["inlocuieste în corpul cererii"]
-        lipsa += [n for n in ("_casetaInlocuire", "_confirmaInlocuirea", "_inlocuire409") if not apeluri(gazda[0], cod, n)]
+        lipsa += [n for n in ("_casetaInlocuire", "_arataInlocuirea", "_confirmaInlocuirea", "_inlocuire409")
+                  if not apeluri(gazda[0], cod, n)]
         if lipsa:
             rele.append("%s (%s): %s" % (ruta, m, ", ".join(lipsa)))
     assert not rele, "previzualizare care salvează fără confirmarea înlocuirii (426):\n  " + "\n  ".join(rele)

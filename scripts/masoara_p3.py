@@ -309,8 +309,10 @@ def curata_reale(conn):
                 # care trimit la firme inexistente. S-a întâmplat — 60 de orfani în producție, de
                 # la o sondă ad-hoc care nu știa. *Curățenia comună e locul unde disciplina nu se
                 # poate uita; în fiecare sondă în parte, se uită.*
-                for t in ("firma_rezumat", "firma_sursa_versiune", "firma_tip", "supervizor_sursa",
-                          "supervizor_rezultat", "user_tenants", "declaratii_depuse", "audit_log"):
+                # sursele ÎNTÂI, contoarele derivate la urmă: ștergerea lui `declaratii_depuse` ridică
+                # `firma_sursa_versiune` prin trigger (`tenant_stergere.CONTOARE_DERIVATE`)
+                for t in ("declaratii_depuse", "audit_log", "supervizor_rezultat", "user_tenants",
+                          "firma_rezumat", "firma_sursa_versiune", "firma_tip", "supervizor_sursa"):
                     cur.execute("DELETE FROM public.%s WHERE tenant_id = ANY(%%s)" % t, (ids,))
                 cur.execute("DELETE FROM public.tenants WHERE id = ANY(%s)", (ids,))
             for _tid, sch in firme:

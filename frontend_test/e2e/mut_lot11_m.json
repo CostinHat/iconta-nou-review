@@ -1,0 +1,38 @@
+[
+ {
+  "fisier": "core/solduri_api.py",
+  "ancora": "    forme = _forme_incercate(set(randuri[0][\"_perechi\"]))\n",
+  "inlocuire": "    forme = [{g: True for g in _forme_incercate(set(randuri[0][\"_perechi\"]))[0]}]\n",
+  "test": "frontend_test/e2e/e2e_lot11_m.py::test_def_439_balanta_saga_cu_sold_initial_intra_si_a_doua_cere_confirmare"
+ },
+ {
+  "fisier": "core/solduri_api.py",
+  "ancora": "    for g in (\"si\", \"sp\", \"rp\", \"rl\", \"tr\", \"ts\"):\n        if g not in etichete or not randuri:",
+  "inlocuire": "    for g in ():\n        if g not in etichete or not randuri:",
+  "test": "frontend_test/e2e/e2e_lot11_m.py::test_def_439_balanta_dezechilibrata_se_refuza_cu_motivul"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "  return `<details class=\"dec-xml\" id=\"mig-citit\"><summary>${linii[0]}</summary><div class=\"caseta-info\" role=\"status\"><div class=\"ca-mesaj\">${linii.slice(1).join(\"<br>\")}</div></div></details>`;",
+  "inlocuire": "  return `<div class=\"caseta-info\" role=\"status\"><div class=\"ca-mesaj\">${linii.join(\"<br>\")}</div></div><details class=\"dec-xml\" id=\"mig-citit\"><summary>x</summary></details>`;",
+  "test": "frontend_test/e2e/e2e_lot11_m.py::test_def_424_importul_are_rezumatul_sus_actiunea_jos_si_deruleaza_numai_tabelul"
+ },
+ {
+  "fisier": "core/salariati_import_api.py",
+  "ancora": "WHERE x IN ('tip_norma', 'functie_baza') OR x = ANY(salariati.de_verificat)),",
+  "inlocuire": "WHERE x = ANY(salariati.de_verificat)),",
+  "test": "frontend_test/e2e/e2e_lot11_m.py::test_def_420_norma_si_functia_lipsa_arata_fisa_editabile_si_marcate"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "  if (buton) buton.hidden = true;\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot11_m.py::test_def_446_avertismentul_o_data_confirmarea_ia_locul_butonului"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "        _migMesaj = _mesajSalvarePartiala(rez, `Salariați: ${_noiActualizate(rez, \"fișă actualizată\", \"fișe actualizate\")}.`",
+  "inlocuire": "        _migMesaj = _mesajSalvarePartiala(rez, `${cate(rez.importati, \"salariat importat\", \"salariați importați\")}. Fișele au fost actualizate.`",
+  "test": "frontend_test/e2e/e2e_lot11_m.py::test_def_447_mesajul_spune_noi_si_fise_actualizate_o_singura_data"
+ }
+]

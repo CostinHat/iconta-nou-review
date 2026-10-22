@@ -160,16 +160,21 @@ def cap11_sistem_real(venit_brut, chelt_deduc, pierdere_precedenta=0, caen=None,
       rd.8 venit_redus     — „rubrica nu se completeaza"
       rd.9 impozit11       = 0 la pierdere sau venit net zero; altfel „nu se completeaza"
     """
-    vb, cd, pp = _lei(venit_brut), _lei(chelt_deduc), _lei(pierdere_precedenta)
-    if vb < 0 or cd < 0 or pp < 0:
-        raise ValueError("Venitul brut, cheltuielile și pierderea reportată nu pot fi negative.")
+    # [440, w5] cele două refuzuri (sumele, zilele scutite) sunt independente: pleacă împreună (`RefuzuriSectiune`)
+    motive = []
+    vb, cd = _lei(venit_brut), _lei(chelt_deduc)
+    pp = _suma_camp({"p": pierdere_precedenta}, "p", "pierderea reportată", motive, "D212 registrul RIP")
+    if vb < 0 or cd < 0 or (pp is not None and pp < 0):
+        motive.append("Venitul brut, cheltuielile și pierderea reportată nu pot fi negative.")
     c = {"categ_venit": CATEG_ACTIVITATI_INDEPENDENTE, "det_ven_net": DET_VEN_NET_SISTEM_REAL,
          "forma_org": FORMA_ORG_INDIVIDUAL, "venit_brut": vb, "chelt_deduc": cd}
     if caen:
         c["caen"] = str(caen).strip()
-    scut = int(nr_zile_scutite or 0)
-    if not 0 <= scut <= 366:   # refuz de FORMĂ: număr de zile în afara anului
-        raise ValueError("Zilele scutite trebuie să fie între 0 și numărul de zile ale anului.")
+    scut = _intreg_camp({"z": nr_zile_scutite}, "z", "zilele scutite", motive, "D212 registrul RIP")
+    if scut is not None and not 0 <= scut <= 366:   # refuz de FORMĂ: număr de zile în afara anului
+        motive.append("Zilele scutite trebuie să fie între 0 și numărul de zile ale anului.")
+    if motive:
+        raise RefuzuriSectiune(motive)
     if scut:
         # rd.A.9 (instrucțiuni pct.3.5.6); venitul redus se calculează în Secțiunea 4 rd.5 (oblig_realizat)
         c["nr_zile_scutite"] = scut
@@ -282,6 +287,29 @@ def redus_handicap(valoare, zile_scutite, an):
     return _lei(Decimal(valoare) * (zile - int(zile_scutite)) / zile)
 
 
+def _suma_camp(a, k, camp, motive, prefix):
+    """[440] Suma din formular în lei întregi (`_lei`); dacă rubrica nu e un număr, motivul intră în `motive` și se întoarce None —
+    refuz de FORMĂ, alături de celelalte ale secțiunii (până la 22.10.2026 textul nenumeric ieșea ca excepție brută, nu ca refuz)."""
+    try:
+        return _lei(a.get(k))
+    except (ArithmeticError, ValueError):   # decimal.InvalidOperation e ArithmeticError
+        motive.append("%s: %s %r nu e o sumă în lei." % (prefix, camp, a.get(k)))
+        return None
+
+
+def _intreg_camp(a, k, camp, motive, prefix, implicit=0):
+    """[440] Numărul întreg din formular (rubrica goală / 0 -> `implicit`, ca `int(a.get(k) or implicit)` de până acum); dacă nu e un
+    număr întreg, motivul intră în `motive` și se întoarce None (refuz de FORMĂ, nu mai „invalid literal for int()”)."""
+    v = a.get(k)
+    if not v:
+        return implicit
+    try:
+        return int(v.strip()) if isinstance(v, str) else int(v)
+    except (TypeError, ValueError):
+        motive.append("%s: %s %r nu e un număr întreg." % (prefix, camp, v))
+        return None
+
+
 def cap11_categorie(a, an):
     """O secțiune I.1.1 pentru o categorie fără date în aplicație, rând cu rând (instrucțiunile D212, Subsecțiunea 1):
 
@@ -296,13 +324,25 @@ def cap11_categorie(a, an):
       alte surse 1021-1024 (pct.9.2.2): rd.7 venitul impozabil, rd.9 = 10% x rd.7
     `a`: {categ_venit, det_ven_net? (DPI: 1 real / 2 forfetar), venit_brut?, chelt_deduc?, pierdere_precedenta?,
           castig_net? (1012, negativ = pierdere), venit_impozabil? (alte surse), fara_cota_forfetara? (DPI), forma_org?,
-          caen?, sediu?, nr_doc?, data_doc?, data_incep?, data_sf?, nr_zile_scutite?}. Sume în lei întregi (half-up)."""
+          caen?, sediu?, nr_doc?, data_doc?, data_incep?, data_sf?, nr_zile_scutite?}. Sume în lei întregi (half-up).
+
+    [440, comanda Costin 11.1 pct.16: „toate erorile apar deodată, fiecare cu textul ei”] Refuzurile secțiunii se ADUNĂ și pleacă
+    împreună (`RefuzuriSectiune`, câte un motiv; unul singur rămâne fraza lui). Regulile sunt aceleași — se schimbă numai momentul.
+    Rămân singure, înaintea celorlalte, fiindcă de ele DEPINDE ce se verifică mai departe:
+      - categoria în afara listei de pe ecran — rubricile pe care le are secțiunea și regulile lor sunt ale categoriei;
+      - anul fără reguli verificate — niciun rând nu se poate judeca.
+    Se judecă apoi, toate, independent una de alta: sumele (număr, nenegative), zilele scutite (număr, categoria care le admite,
+    intervalul), determinarea venitului net (DPI), forma de organizare, cele trei date (formă și an), și refuzurile ramurii
+    (pierderi la cote forfetare, cheltuieli date la cote forfetare, pierderea la turistic, brut/cheltuieli la investiții și la alte
+    surse, venitul impozabil lipsă). DEPENDENTE, deci sărite cât timp lipsește premisa (nu dublează motivul ei):
+      - refuzurile ramurii la DPI cer determinarea venitului net validă — ramura (forfetar / real) e aleasă de ea;
+      - „sumele cuvenite organismelor de gestiune depășesc venitul brut” cere ambele sume valide și nenegative."""
     an = int(an)
     try:
         cat = int(a.get("categ_venit"))
     except (TypeError, ValueError):
         cat = None
-    if cat not in CATEG_MANUALE:   # refuz de FORMĂ: codul în afara listei de pe ecran
+    if cat not in CATEG_MANUALE:   # refuz de FORMĂ: codul în afara listei de pe ecran (singur: restul depinde de categorie)
         raise ValueError("D212: categoria de venit %r nu e în lista de pe ecran (%s)."
                          % (a.get("categ_venit"), ", ".join(str(c) for c in CATEG_MANUALE)))
     # activitățile independente urmează regulile căii din registrul RIP (anii verificați în oblig_realizat), nu ANI_CATEGORII
@@ -312,20 +352,30 @@ def cap11_categorie(a, an):
                          "iar ANAF n-a publicat formularul. Se declară pe formularul ANAF."
                          % (CATEG_VENIT_CAP11[cat], "/".join(map(str, ANI_CATEGORII)), an))
     eticheta = CATEG_VENIT_CAP11[cat]
-    vb, cd, pp = _lei(a.get("venit_brut")), _lei(a.get("chelt_deduc")), _lei(a.get("pierdere_precedenta"))
-    if vb < 0 or cd < 0 or pp < 0:   # refuz de FORMĂ: sume negative
-        raise ValueError("D212 %s: venitul brut, cheltuielile și pierderea reportată nu pot fi negative." % eticheta)
-    scut = int(a.get("nr_zile_scutite") or 0)
+    prefix = "D212 %s" % eticheta
+    motive = []
+    vb = _suma_camp(a, "venit_brut", "venitul brut", motive, prefix)
+    cd = _suma_camp(a, "chelt_deduc", "cheltuielile", motive, prefix)
+    pp = _suma_camp(a, "pierdere_precedenta", "pierderea reportată", motive, prefix)
+    if any(x is not None and x < 0 for x in (vb, cd, pp)):   # refuz de FORMĂ: sume negative
+        motive.append("D212 %s: venitul brut, cheltuielile și pierderea reportată nu pot fi negative." % eticheta)
+    sume_ok = all(x is not None and x >= 0 for x in (vb, cd, pp))
+    scut = _intreg_camp(a, "nr_zile_scutite", "zilele scutite", motive, prefix)
     if scut and cat not in CATEG_SCUTIRE_HANDICAP:
-        raise ValueError("D212 %s: zilele scutite nu se aplică — scutirea pentru handicap grav sau accentuat (CF art.60 pct.1) "
-                         "privește activitățile independente, drepturile de proprietate intelectuală și activitățile agricole."
-                         % eticheta)
-    if not 0 <= scut <= 366:   # refuz de FORMĂ: număr de zile în afara anului
-        raise ValueError("D212 %s: zilele scutite trebuie să fie între 0 și numărul de zile ale anului." % eticheta)
+        motive.append("D212 %s: zilele scutite nu se aplică — scutirea pentru handicap grav sau accentuat (CF art.60 pct.1) "
+                      "privește activitățile independente, drepturile de proprietate intelectuală și activitățile agricole."
+                      % eticheta)
+    if scut is not None and not 0 <= scut <= 366:   # refuz de FORMĂ: număr de zile în afara anului
+        motive.append("D212 %s: zilele scutite trebuie să fie între 0 și numărul de zile ale anului." % eticheta)
+    det_ok = True
     if cat == CATEG_DPI:
-        det = int(a.get("det_ven_net") or DET_VEN_NET_FORFETAR)
+        try:
+            det = int(a.get("det_ven_net") or DET_VEN_NET_FORFETAR)
+        except (TypeError, ValueError):
+            det = a.get("det_ven_net")
         if det not in (DET_VEN_NET_SISTEM_REAL, DET_VEN_NET_FORFETAR):   # refuz de FORMĂ: validatorul are două căsuțe
-            raise ValueError("D212 %s: determinarea venitului net %r — 1 sistem real, 2 cote forfetare." % (eticheta, det))
+            motive.append("D212 %s: determinarea venitului net %r — 1 sistem real, 2 cote forfetare." % (eticheta, det))
+            det_ok = False
     elif cat == CATEG_CEDARE:
         det = DET_VEN_NET_FORFETAR                      # pct.5.6.2 „se bifează căsuța cote forfetare de cheltuieli”
     elif cat in (CATEG_TURISTIC, CATEG_ACTIVITATI_INDEPENDENTE) or cat in CATEG_AGRICOLE:
@@ -333,12 +383,15 @@ def cap11_categorie(a, an):
     else:
         det = None                                      # investiții, alte surse: rd.2 nu se completează (pct.7.3, 9.2)
     c = {"categ_venit": cat}
-    if det:
+    if det and det_ok:
         c["det_ven_net"] = det
     if cat in (CATEG_DPI, CATEG_ACTIVITATI_INDEPENDENTE) or cat in CATEG_AGRICOLE:
-        forma = int(a.get("forma_org") or FORMA_ORG_INDIVIDUAL)
+        try:
+            forma = int(a.get("forma_org") or FORMA_ORG_INDIVIDUAL)
+        except (TypeError, ValueError):
+            forma = None
         if forma not in FORME_ORG_NORMA:   # refuz de FORMĂ: pct.4.5.3 / 6.6.3 au două căsuțe
-            raise ValueError("D212 %s: forma de organizare %r — 1 individual, 2 asociere." % (eticheta, a.get("forma_org")))
+            motive.append("D212 %s: forma de organizare %r — 1 individual, 2 asociere." % (eticheta, a.get("forma_org")))
         c["forma_org"] = forma
     for k, kx in (("caen", "caen"), ("sediu", "descriere_sediu_bun"), ("nr_doc", "nr_doc_autoriz")):
         if str(a.get(k) or "").strip():
@@ -346,27 +399,53 @@ def cap11_categorie(a, an):
     ian1, dec31 = _dt.date(an, 1, 1), _dt.date(an, 12, 31)
     for k, kx, camp in (("data_doc", "data_doc_autoriz", "data documentului"), ("data_incep", "data_incep", "data începerii"),
                         ("data_sf", "data_sf", "data încetării")):
-        d = _data(a.get(k), camp)
+        try:
+            d = _data(a.get(k), camp, prefix)
+        except ValueError as e:
+            motive.append(str(e))
+            continue
         if d is None:
             continue
         if kx != "data_doc_autoriz" and not ian1 <= d <= dec31:
-            raise ValueError("D212 %s: %s (%s) nu e în anul %d — rubrica se completează numai dacă evenimentul se produce în "
-                             "cursul anului (OPANAF 2736/2025, instrucțiuni rd.8/rd.9)." % (eticheta, camp, d, an))
+            motive.append("D212 %s: %s (%s) nu e în anul %d — rubrica se completează numai dacă evenimentul se produce în "
+                          "cursul anului (OPANAF 2736/2025, instrucțiuni rd.8/rd.9)." % (eticheta, camp, d, an))
+            continue
         c[kx] = _dmy(d)
     if scut:
         c["nr_zile_scutite"] = scut
 
-    if det == DET_VEN_NET_FORFETAR:
+    # refuzurile ramurii (fiecare citește numai rubricile ei, deja judecate mai sus)
+    cn = vi = None
+    if det_ok and det == DET_VEN_NET_FORFETAR:
         if pp:   # refuz de FORMĂ: la cote forfetare nu există rd.5 (pct.4.5.9 / 5.6.6 enumeră rd.1, 2, 3, 7, 9)
-            raise ValueError("D212 %s: la cote forfetare nu se reportează pierderi." % eticheta)
+            motive.append("D212 %s: la cote forfetare nu se reportează pierderi." % eticheta)
         if cat == CATEG_DPI and a.get("fara_cota_forfetara"):
-            if cd > vb:   # refuz de FORMĂ: sumele cuvenite organismelor de gestiune nu pot depăși venitul brut
-                raise ValueError("D212 %s: sumele cuvenite organismelor de gestiune colectivă depășesc venitul brut." % eticheta)
+            if sume_ok and cd > vb:   # refuz de FORMĂ: sumele cuvenite organismelor de gestiune nu pot depăși venitul brut
+                motive.append("D212 %s: sumele cuvenite organismelor de gestiune colectivă depășesc venitul brut." % eticheta)
+        elif cd:   # refuz de FORMĂ: cheltuielile la cote forfetare le stabilește cota, nu contabilul
+            motive.append("D212 %s: la cote forfetare cheltuielile se calculează din venitul brut; câmpul se lasă gol." % eticheta)
+    elif det_ok and det == DET_VEN_NET_SISTEM_REAL:
+        if cat == CATEG_TURISTIC and pp:
+            motive.append("D212 %s: pierderea din închirierea în scop turistic „reprezintă pierdere definitivă” (OPANAF "
+                          "2736/2025, instrucțiuni pct.5.7.3) — nu se reportează." % eticheta)
+    elif cat == CATEG_INVESTITII:
+        if vb or cd:   # refuz de FORMĂ: pct.7.3.2 începe de la rd.3 (câștigul net), rd.1/rd.2 nu există
+            motive.append("D212 %s: se introduce câștigul net anual (pierderea, cu minus), nu venitul brut și cheltuielile."
+                          % eticheta)
+        cn = _suma_camp(a, "castig_net", "câștigul net anual", motive, prefix)
+    elif det_ok:
+        if vb or cd or pp:   # refuz de FORMĂ: pct.9.2.2 cere doar rd.7 (venitul impozabil) și rd.9
+            motive.append("D212 %s: se introduce venitul impozabil (rd.7), nu venitul brut, cheltuielile sau pierderi." % eticheta)
+        vi = _suma_camp(a, "venit_impozabil", "venitul impozabil", motive, prefix)
+        if vi is not None and vi <= 0:   # refuz de FORMĂ: secțiune fără venit
+            motive.append("D212 %s: venitul impozabil lipsește." % eticheta)
+    if motive:
+        raise RefuzuriSectiune(motive)
+
+    if det == DET_VEN_NET_FORFETAR:
+        if cat == CATEG_DPI and a.get("fara_cota_forfetara"):
             ded = cd          # pct.4.5.10 / CF art.72^1 alin.(2): „fără aplicarea cotei forfetare de cheltuieli”
         else:
-            if cd:   # refuz de FORMĂ: cheltuielile la cote forfetare le stabilește cota, nu contabilul
-                raise ValueError("D212 %s: la cote forfetare cheltuielile se calculează din venitul brut; câmpul se lasă gol."
-                                 % eticheta)
             ded = _procent(vb, COTA_FORFETARA_DPI if cat == CATEG_DPI else COTA_FORFETARA_CEDARE)
         net = vb - ded
         c.update(venit_brut=vb, chelt_deduc=ded, venit_net_anual=net, venit_recalculat=net)
@@ -375,9 +454,6 @@ def cap11_categorie(a, an):
             c["venit_redus"] = baza = redus_handicap(net, scut, an)
         c["impozit11"] = _procent(baza, _cota_venit(an))
     elif det == DET_VEN_NET_SISTEM_REAL:
-        if cat == CATEG_TURISTIC and pp:
-            raise ValueError("D212 %s: pierderea din închirierea în scop turistic „reprezintă pierdere definitivă” (OPANAF "
-                             "2736/2025, instrucțiuni pct.5.7.3) — nu se reportează." % eticheta)
         c.update(venit_brut=vb, chelt_deduc=cd)
         if pp:
             c["pierdere_precedenta"] = pp
@@ -400,10 +476,6 @@ def cap11_categorie(a, an):
                 c["pierdere"] = cd - vb
             c["impozit11"] = 0
     elif cat == CATEG_INVESTITII:
-        if vb or cd:   # refuz de FORMĂ: pct.7.3.2 începe de la rd.3 (câștigul net), rd.1/rd.2 nu există
-            raise ValueError("D212 %s: se introduce câștigul net anual (pierderea, cu minus), nu venitul brut și cheltuielile."
-                             % eticheta)
-        cn = _lei(a.get("castig_net"))
         if pp:
             c["pierdere_precedenta"] = pp
         if cn > 0:
@@ -418,11 +490,6 @@ def cap11_categorie(a, an):
                 c["pierdere"] = -cn
             c["impozit11"] = 0
     else:
-        if vb or cd or pp:   # refuz de FORMĂ: pct.9.2.2 cere doar rd.7 (venitul impozabil) și rd.9
-            raise ValueError("D212 %s: se introduce venitul impozabil (rd.7), nu venitul brut, cheltuielile sau pierderi." % eticheta)
-        vi = _lei(a.get("venit_impozabil"))
-        if vi <= 0:   # refuz de FORMĂ: secțiune fără venit
-            raise ValueError("D212 %s: venitul impozabil lipsește." % eticheta)
         c.update(venit_recalculat=vi, impozit11=_procent(vi, _cota_venit(an)))
     return c
 
@@ -574,13 +641,26 @@ def cap14_sectiune(a, an):
       rd.9 impozit plătit în străinătate · rd.10 credit = min(rd.9, rd.8) — doar la metoda creditului (CF art.131 alin.(4))
       rd.11 = rd.8 - rd.10 (zero dacă creditul acoperă impozitul)
     `a`: {tara, categ_venit, dubla_impunere?, venit_brut?, chelt_deduc?, det_ven_net? (DPI), castig_net? (titluri),
-          venit_baza? (salarii), pierdere_precedenta?, impozit_platit?, data_incep?, data_sf?}."""
+          venit_baza? (salarii), pierdere_precedenta?, impozit_platit?, data_incep?, data_sf?}.
+
+    [440, comanda Costin 11.1 pct.16: „toate erorile apar deodată, fiecare cu textul ei”] Refuzurile secțiunii se ADUNĂ și pleacă
+    împreună (`RefuzuriSectiune`, câte un motiv; unul singur rămâne fraza lui). Regulile sunt aceleași — se schimbă numai momentul.
+    Rămân singure, înaintea celorlalte, fiindcă de ele DEPINDE ce se verifică mai departe:
+      - categoria în afara listei de pe ecran — regula bazei (real / forfetar / brut / pensie / joc …) e a categoriei;
+      - anul fără reguli verificate — niciun rând nu se poate judeca.
+    Se judecă apoi, toate, independent una de alta: țara, metoda de evitare a dublei impuneri, sumele (număr, nenegative), datele
+    (formă și an), determinarea venitului net (DPI), și refuzurile regulii categoriei (cheltuieli date unde le stabilește legea,
+    lunile de pensie, CASS pe pensie, felul jocului, data plății, brut/cheltuieli la titluri și salarii, venitul bază negativ,
+    pierderi reportate unde nu se admit). DEPENDENTE, deci sărite cât timp lipsește premisa:
+      - la DPI, „cheltuielile la cote forfetare” și „pierderile nu se reportează” cer determinarea venitului net validă — ea alege
+        forfetarul sau sistemul real;
+      - data plății la jocuri: dacă nu e o dată, motivul e cel de formă, nu și „lipsește / nu e în an”."""
     an = int(an)
     try:
         cat = int(a.get("categ_venit"))
     except (TypeError, ValueError):
         cat = None
-    if cat not in CATEG_STRAINATATE:   # refuz de FORMĂ: codul în afara listei de pe ecran
+    if cat not in CATEG_STRAINATATE:   # refuz de FORMĂ: codul în afara listei de pe ecran (singur: restul depinde de categorie)
         raise ValueError("D212 străinătate: categoria %r nu e în lista de pe ecran (%s)."
                          % (a.get("categ_venit"), ", ".join(str(c) for c in CATEG_STRAINATATE)))
     eticheta, regula = CATEG_STRAINATATE[cat]
@@ -588,91 +668,128 @@ def cap14_sectiune(a, an):
         raise ValueError("D212 străinătate: %s — regulile sunt verificate pentru veniturile %s (instrucțiunile OPANAF 2736/2025); "
                          "pentru %d, Legea 239/2025 și Legea 141/2025 schimbă cote și baze, iar ANAF n-a publicat formularul. Se "
                          "declară pe formularul ANAF." % (eticheta, "/".join(map(str, ANI_CATEGORII)), an))
+    prefix = "D212 străinătate %s" % eticheta
+    motive = []
     tara = str(a.get("tara") or "").strip().upper()
     if tara not in TARI_STRAINATATE:   # refuz de FORMĂ: nomenclatorul de țări al validatorului
-        raise ValueError("D212 străinătate: țara %r nu e în nomenclatorul ANAF (cod din două litere, ex. DE, AT; Grecia = EL)."
-                         % a.get("tara"))
-    metoda = int(a.get("dubla_impunere") or 0)
+        motive.append("D212 străinătate: țara %r nu e în nomenclatorul ANAF (cod din două litere, ex. DE, AT; Grecia = EL)."
+                      % a.get("tara"))
+    try:
+        metoda = int(a.get("dubla_impunere") or 0)
+    except (TypeError, ValueError):
+        metoda = None
     if metoda not in (0, DUBLA_CREDIT, DUBLA_SCUTIRE, DUBLA_ACORD):   # refuz de FORMĂ: trei căsuțe în formular
-        raise ValueError("D212 străinătate: metoda %r — 1 creditul fiscal, 2 scutirea, 4 venit scutit prin acord internațional."
-                         % a.get("dubla_impunere"))
-    vb, cd, pp, platit = (_lei(a.get(k)) for k in ("venit_brut", "chelt_deduc", "pierdere_precedenta", "impozit_platit"))
-    if min(vb, cd, pp, platit) < 0:   # refuz de FORMĂ: sume negative
-        raise ValueError("D212 străinătate %s: sumele nu pot fi negative (pierderea la titluri se scrie la câștigul net)." % eticheta)
-    forfetar = regula == "cedare" or (regula == "dpi" and int(a.get("det_ven_net") or DET_VEN_NET_FORFETAR) == DET_VEN_NET_FORFETAR)
+        motive.append("D212 străinătate: metoda %r — 1 creditul fiscal, 2 scutirea, 4 venit scutit prin acord internațional."
+                      % a.get("dubla_impunere"))
+    vb, cd, pp, platit = (_suma_camp(a, k, camp, motive, prefix) for k, camp in (
+        ("venit_brut", "venitul brut"), ("chelt_deduc", "cheltuielile"), ("pierdere_precedenta", "pierderea reportată"),
+        ("impozit_platit", "impozitul plătit în străinătate")))
+    if any(x is not None and x < 0 for x in (vb, cd, pp, platit)):   # refuz de FORMĂ: sume negative
+        motive.append("D212 străinătate %s: sumele nu pot fi negative (pierderea la titluri se scrie la câștigul net)." % eticheta)
+    forfetar = regula == "cedare"
+    if regula == "dpi":
+        try:
+            det = int(a.get("det_ven_net") or DET_VEN_NET_FORFETAR)
+        except (TypeError, ValueError):
+            det = a.get("det_ven_net")
+        if det in (DET_VEN_NET_SISTEM_REAL, DET_VEN_NET_FORFETAR):
+            forfetar = det == DET_VEN_NET_FORFETAR
+        else:   # refuz de FORMĂ: două căsuțe, ca la I.1.1 (până la 22.10.2026 orice altă valoare trecea tăcut drept sistem real)
+            motive.append("D212 străinătate %s: determinarea venitului net %r — 1 sistem real, 2 cote forfetare." % (eticheta, det))
+            forfetar = None   # necunoscut: refuzurile care depind de el se sar
     c = {"str_stat_realiz_v": tara, "str_categ_venit": cat}
     if metoda:
         c["dubla_impunere"] = metoda
     ian1, dec31 = _dt.date(an, 1, 1), _dt.date(an, 12, 31)
     for k, kx, camp in (("data_incep", "str_data_incep", "data începerii"), ("data_sf", "str_data_sf", "data încetării")):
-        d = _data(a.get(k), camp)
+        try:
+            d = _data(a.get(k), camp, prefix)
+        except ValueError as e:
+            motive.append(str(e))
+            continue
         if d is None:
             continue
         if not ian1 <= d <= dec31:
-            raise ValueError("D212 străinătate %s: %s (%s) nu e în anul %d — rubrica se completează numai dacă evenimentul se "
-                             "produce în cursul anului (OPANAF 2736/2025, instrucțiuni pct.39.5)." % (eticheta, camp, d, an))
+            motive.append("D212 străinătate %s: %s (%s) nu e în anul %d — rubrica se completează numai dacă evenimentul se "
+                          "produce în cursul anului (OPANAF 2736/2025, instrucțiuni pct.39.5)." % (eticheta, camp, d, an))
+            continue
         c[kx] = _dmy(d)
-    joc_imp = None
+
+    # refuzurile regulii categoriei (fiecare citește numai rubricile ei)
+    luni = tip = dp = net = None
     if regula == "pensie":
         if cd:   # refuz de FORMĂ: suma neimpozabilă o stabilește legea
-            raise ValueError("D212 străinătate %s: suma neimpozabilă se calculează; câmpul de cheltuieli se lasă gol." % eticheta)
-        luni = int(a.get("nr_luni") or 0)
+            motive.append("D212 străinătate %s: suma neimpozabilă se calculează; câmpul de cheltuieli se lasă gol." % eticheta)
+        try:
+            luni = int(a.get("nr_luni") or 0)
+        except (TypeError, ValueError):
+            luni = 0
         if not 1 <= luni <= 12:   # refuz de FORMĂ: lunile de pensie în an
-            raise ValueError("D212 străinătate %s: numărul lunilor cu pensie în an (1-12) e obligatoriu." % eticheta)
-        if int(a.get("luni_cass_ro") or 0) and not a.get("fara_contributii"):
-            raise ValueError("D212 străinătate %s: CASS datorată în România pe pensia din străinătate (de la veniturile lunii august "
-                             "2025, CF art.155 alin.(1) lit.a^2) se declară în Subsecțiunea a 3-a a Secțiunii 2 (instrucțiuni pct.41), "
-                             "pe care formularul validatorului ANAF instalat (J13.0.1) n-o are. Se declară pe formularul ANAF." % eticheta)
-        cd = min(vb, PENSIE_NEIMPOZABIL_LUNAR * luni)          # CF art.130 alin.(2^1) + art.100 alin.(1), la nivelul anului
-        c.update(str_venit_brut=vb, str_chelt_deduc=cd)
-        net = vb - cd
+            motive.append("D212 străinătate %s: numărul lunilor cu pensie în an (1-12) e obligatoriu." % eticheta)
+        if _intreg_camp(a, "luni_cass_ro", "lunile august–decembrie cu CASS în România", motive, prefix) \
+                and not a.get("fara_contributii"):
+            motive.append("D212 străinătate %s: CASS datorată în România pe pensia din străinătate (de la veniturile lunii august "
+                          "2025, CF art.155 alin.(1) lit.a^2) se declară în Subsecțiunea a 3-a a Secțiunii 2 (instrucțiuni pct.41), "
+                          "pe care formularul validatorului ANAF instalat (J13.0.1) n-o are. Se declară pe formularul ANAF." % eticheta)
     elif regula == "remuneratie":
-        if a.get("fara_contributii"):
-            pass   # asigurat în alt stat: contribuțiile plătite acolo (date de contabil) se scad — CF art.78 alin.(2) lit.b)
-        elif cd:   # refuz de FORMĂ: CAS/CASS datorate în România se calculează (Secțiunea 2 Subsecțiunea a 2-a)
-            raise ValueError("D212 străinătate %s: CAS și CASS datorate în România se calculează; câmpul de contribuții se "
-                             "completează doar pentru un asigurat în alt stat (contribuțiile plătite acolo)." % eticheta)
-        else:
-            from core import common as _c
-            cd = (_procent(vb, _c.cota("cas", ian1)[0] * 100) + _procent(vb, _c.cota("cass", ian1)[0] * 100))
-        c.update(str_venit_brut=vb, str_chelt_deduc=cd)
-        net = vb - cd
+        if cd and not a.get("fara_contributii"):   # refuz de FORMĂ: CAS/CASS datorate în România se calculează (Secțiunea 2 Subsecțiunea a 2-a)
+            motive.append("D212 străinătate %s: CAS și CASS datorate în România se calculează; câmpul de contribuții se "
+                          "completează doar pentru un asigurat în alt stat (contribuțiile plătite acolo)." % eticheta)
     elif regula in ("premiu", "joc", "transfer", "mostenire"):
         if cd:   # refuz de FORMĂ: deducerea o stabilește legea (suma neimpozabilă / plafonul), nu contabilul
-            raise ValueError("D212 străinătate %s: suma neimpozabilă se calculează; câmpul de cheltuieli se lasă gol." % eticheta)
-        if regula == "premiu":
-            cd = min(vb, PREMIU_NEIMPOZABIL)                 # CF art.109 + art.110 alin.(4) lit.a), pe fiecare premiu
-        elif regula == "joc":
+            motive.append("D212 străinătate %s: suma neimpozabilă se calculează; câmpul de cheltuieli se lasă gol." % eticheta)
+        if regula == "joc":
             tip = str(a.get("tip_joc") or "")
             if tip not in TIPURI_JOC:   # refuz de FORMĂ: două feluri, cu regimuri diferite
-                raise ValueError("D212 străinătate %s: alege felul jocului — %s." % (eticheta, " / ".join(TIPURI_JOC.values())))
-            dp = _data(a.get("data_plata"), "data plății")
-            if dp is None or not ian1 <= dp <= dec31:
-                raise ValueError("D212 străinătate %s: data plății (în anul %d) e obligatorie — baremul depinde de ea (CF art.110 "
-                                 "alin.(2): forma OG 16/2022 până la 31.07.2025, forma Legea 141/2025 de la 01.08.2025)." % (eticheta, an))
-            cd, joc_imp = impozit_joc(vb, dp, tip)
-        c.update(str_venit_brut=vb, str_chelt_deduc=cd)
-        net = vb - cd
+                motive.append("D212 străinătate %s: alege felul jocului — %s." % (eticheta, " / ".join(TIPURI_JOC.values())))
+            try:
+                dp = _data(a.get("data_plata"), "data plății", prefix)
+            except ValueError as e:   # nu e o dată: motivul de formă, nu și „obligatorie” (aceeași rubrică)
+                motive.append(str(e))
+            else:
+                if dp is None or not ian1 <= dp <= dec31:
+                    motive.append("D212 străinătate %s: data plății (în anul %d) e obligatorie — baremul depinde de ea (CF art.110 "
+                                  "alin.(2): forma OG 16/2022 până la 31.07.2025, forma Legea 141/2025 de la 01.08.2025)."
+                                  % (eticheta, an))
     elif regula in ("castig", "salariu"):
         if vb or cd:   # refuz de FORMĂ: pct.39.6.3 — la titluri câștigul anual, la salarii venitul bază de calcul
-            raise ValueError("D212 străinătate %s: se scrie %s, nu venitul brut și cheltuielile." % (
+            motive.append("D212 străinătate %s: se scrie %s, nu venitul brut și cheltuielile." % (
                 eticheta, "câștigul net anual (pierderea cu minus)" if regula == "castig" else "venitul bază de calcul din documentul angajatorului"))
-        net = _lei(a.get("castig_net" if regula == "castig" else "venit_baza"))
-        if regula == "salariu" and net < 0:   # refuz de FORMĂ: venitul bază de calcul nu e negativ
-            raise ValueError("D212 străinătate %s: venitul bază de calcul nu poate fi negativ." % eticheta)
+        net = _suma_camp(a, "castig_net" if regula == "castig" else "venit_baza",
+                         "câștigul net anual" if regula == "castig" else "venitul bază de calcul", motive, prefix)
+        if regula == "salariu" and net is not None and net < 0:   # refuz de FORMĂ: venitul bază de calcul nu e negativ
+            motive.append("D212 străinătate %s: venitul bază de calcul nu poate fi negativ." % eticheta)
     else:
         if regula in ("brut",) and cd:   # refuz de FORMĂ: dobânzile, dividendele, alte venituri — impozit pe sumă
-            raise ValueError("D212 străinătate %s: impozitul se aplică asupra sumei încasate; cheltuielile nu se scriu." % eticheta)
-        if forfetar:
-            if cd:   # refuz de FORMĂ: la cote forfetare cheltuiala o stabilește cota
-                raise ValueError("D212 străinătate %s: la cote forfetare cheltuielile se calculează din venitul brut; câmpul se "
-                                 "lasă gol." % eticheta)
-            cd = _procent(vb, COTA_FORFETARA_CEDARE if regula == "cedare" else COTA_FORFETARA_DPI)   # CF art.84 alin.(3) / 72^1
+            motive.append("D212 străinătate %s: impozitul se aplică asupra sumei încasate; cheltuielile nu se scriu." % eticheta)
+        if forfetar and cd:   # refuz de FORMĂ: la cote forfetare cheltuiala o stabilește cota
+            motive.append("D212 străinătate %s: la cote forfetare cheltuielile se calculează din venitul brut; câmpul se "
+                          "lasă gol." % eticheta)
+    if pp and (forfetar is True or regula in ("brut", "salariu", "lichidare", "premiu", "joc", "transfer", "mostenire", "pensie",
+                                              "remuneratie")):
+        motive.append("D212 străinătate %s: pierderile se reportează doar la activități în sistem real și la titluri "
+                      "(CF art.118 alin.(5), art.119 alin.(4))." % eticheta)
+    if motive:
+        raise RefuzuriSectiune(motive)
+
+    joc_imp = None
+    if regula == "pensie":
+        cd = min(vb, PENSIE_NEIMPOZABIL_LUNAR * luni)          # CF art.130 alin.(2^1) + art.100 alin.(1), la nivelul anului
+    elif regula == "remuneratie":
+        if not a.get("fara_contributii"):
+            # asigurat în alt stat: contribuțiile plătite acolo (date de contabil) se scad — CF art.78 alin.(2) lit.b); altfel
+            # CAS și CASS datorate în România se calculează
+            from core import common as _c
+            cd = (_procent(vb, _c.cota("cas", ian1)[0] * 100) + _procent(vb, _c.cota("cass", ian1)[0] * 100))
+    elif regula == "premiu":
+        cd = min(vb, PREMIU_NEIMPOZABIL)                     # CF art.109 + art.110 alin.(4) lit.a), pe fiecare premiu
+    elif regula == "joc":
+        cd, joc_imp = impozit_joc(vb, dp, tip)
+    elif forfetar:
+        cd = _procent(vb, COTA_FORFETARA_CEDARE if regula == "cedare" else COTA_FORFETARA_DPI)   # CF art.84 alin.(3) / 72^1
+    if regula not in ("castig", "salariu"):
         c.update(str_venit_brut=vb, str_chelt_deduc=cd)
         net = vb - cd
-    if pp and (forfetar or regula in ("brut", "salariu", "lichidare", "premiu", "joc", "transfer", "mostenire", "pensie", "remuneratie")):
-        raise ValueError("D212 străinătate %s: pierderile se reportează doar la activități în sistem real și la titluri "
-                         "(CF art.118 alin.(5), art.119 alin.(4))." % eticheta)
     if pp:
         c["str_pierdere_precedenta"] = pp
     cota = _cota_strainatate(cat, an)
@@ -704,6 +821,17 @@ def cap14_sectiune(a, an):
 # CASS rd.1-5, I.4 rd.1-6 + I.4.1/I.4.2 (contribuțiile deductibile pe pondere, CF art.118 alin.(2^2)/(2^3)), I.7.1-I.7.4.
 # Rândurile urmează instrucțiunile D212 (OPANAF 2736/2025) Secțiunile 3, 4 și 7; CAS și CASS vin din `d212_engine`
 # (aceeași sursă ca fișa RIP), nu dintr-o a doua formulă.
+def _alte_cass_refuz(x):
+    """[440, w5] Refuzul de FORMĂ al veniturilor pentru CASS 2.2 (sume negative) — un singur loc: `oblig_realizat` îl ridică, `genereaza`
+    îl adună cu refuzurile secțiunilor (rubrici ale omului, independente de venituri). None dacă sumele sunt bune."""
+    try:
+        if min(_lei(x.get(k)) for k in ("asociere_pj", "dividende_dobanzi", "cass_retinuta")) >= 0:
+            return None
+    except ArithmeticError:   # decimal.InvalidOperation: rubrica nu e număr
+        return "D212: veniturile pentru CASS și CASS reținută se scriu în lei, ca numere."
+    return "D212: veniturile pentru CASS și CASS reținută nu pot fi negative."
+
+
 def _pondere(parte, total):
     """Ponderea (rd.1/rd.2) cu 4 zecimale, ca text (validatorul o citește ca valoare reală)."""
     return "%.4f" % (Decimal(parte) / Decimal(total)) if total else "0.0000"
@@ -777,9 +905,10 @@ def oblig_realizat(cap11, cap12, an, optiune_cas=False, exceptie_minim_cass=None
         bife["bifa131"] = "1"
     # CASS 2.2 (pct.52.1): venitul cumulat pe categoriile lit.c)-h) -> treapta 6/12/24 sm (CF art.170 alin.(3)-(4))
     x = alte_cass or {}
+    m = _alte_cass_refuz(x)
+    if m:
+        raise ValueError(m)
     asc, divd, ret22 = _lei(x.get("asociere_pj")), _lei(x.get("dividende_dobanzi")), _lei(x.get("cass_retinuta"))
-    if asc < 0 or divd < 0 or ret22 < 0:   # refuz de FORMĂ: sume negative
-        raise ValueError("D212: veniturile pentru CASS și CASS reținută nu pot fi negative.")
     # din străinătate (pct.52.1.4): dobânzile și dividendele „diminuate cu impozitul reținut” (art.170 alin.(4) lit.d) —
     # INTERPRETARE CU TEMEI: impozitul aferent = cel plătit în străinătate + diferența datorată în România (rd.9 + rd.11);
     # alternativă respinsă: doar impozitul străin (ar lăsa în bază un impozit pe care persoana îl plătește)
@@ -893,8 +1022,9 @@ def _dmy(d):
     return "%02d.%02d.%04d" % (d.day, d.month, d.year)
 
 
-def _data(v, camp):
-    """Data din formular (AAAA-LL-ZZ sau ZZ.LL.AAAA) -> date; None daca lipseste."""
+def _data(v, camp, prefix="D212 normă"):
+    """Data din formular (AAAA-LL-ZZ sau ZZ.LL.AAAA) -> date; None daca lipseste. `prefix` = secțiunea care o cere (pana la
+    22.10.2026 refuzul spunea „D212 normă” si pe o data a unui venit din I.1.1 sau din strainatate)."""
     if v in (None, ""):
         return None
     t = str(v).strip()
@@ -903,7 +1033,16 @@ def _data(v, camp):
             return _dt.datetime.strptime(t[:10], fmt).date()
         except ValueError:
             continue
-    raise ValueError("D212 normă: %s %r nu e o dată (AAAA-LL-ZZ)." % (camp, v))   # refuz de FORMĂ — fără temei legal
+    raise ValueError("%s: %s %r nu e o dată (AAAA-LL-ZZ)." % (prefix, camp, v))   # refuz de FORMĂ — fără temei legal
+
+
+class RefuzuriSectiune(ValueError):
+    """[440] Refuzul unei secțiuni cu TOATE motivele ei independente (`motive`); ca text, le spune pe toate. E `ValueError`, deci orice
+    cale care prindea refuzul ca text îl prinde la fel; `genereaza` le numerotează una câte una."""
+
+    def __init__(self, motive):
+        self.motive = list(motive)
+        super().__init__(" ".join(self.motive))
 
 
 def cap12_norma(a, an):
@@ -921,25 +1060,52 @@ def cap12_norma(a, an):
     `a`: {norma, norma_ajustata?, data_incep?, data_sf?, zile_intrerupere?, nr_zile_scutite?, forma_org?, caen?,
           sediu?, nr_doc_autoriz?, data_doc_autoriz?, data_susp?}."""
     an = int(an)
-    norma = _lei(a.get("norma"))
-    if norma <= 0:
-        raise ValueError("D212 normă: norma anuală de venit (rd.7) lipsește — se ia din lista DGRFP pentru locul activității.")
-    ajust = _lei(a.get("norma_ajustata")) if a.get("norma_ajustata") not in (None, "") else None
+    # [440] rubricile care nu depind una de alta (norma, norma ajustată, datele, forma de organizare) se judecă toate și se refuză
+    # împreună (`RefuzuriSectiune`); cele care se sprijină pe ele (ordinea datelor, zilele) vin după, ca până acum
+    motive = []
+    norma = _suma_camp(a, "norma", "norma anuală de venit (rd.7)", motive, "D212 normă")
+    if norma is not None and norma <= 0:
+        motive.append("D212 normă: norma anuală de venit (rd.7) lipsește — se ia din lista DGRFP pentru locul activității.")
+    ajust = (_suma_camp(a, "norma_ajustata", "norma ajustată (rd.8)", motive, "D212 normă")
+             if a.get("norma_ajustata") not in (None, "") else None)
     if ajust is not None and ajust < 0:
-        raise ValueError("D212 normă: norma ajustată (rd.8) nu poate fi negativă.")
+        motive.append("D212 normă: norma ajustată (rd.8) nu poate fi negativă.")
     baza = ajust if ajust is not None else norma
-    inc, sf = _data(a.get("data_incep"), "data începerii"), _data(a.get("data_sf"), "data încetării")
     ian1, dec31 = _dt.date(an, 1, 1), _dt.date(an, 12, 31)
-    for d, camp in ((inc, "data începerii"), (sf, "data încetării")):
+    date = {}
+    for k, camp in (("data_incep", "data începerii"), ("data_sf", "data încetării")):
+        try:
+            d = date[k] = _data(a.get(k), camp)
+        except ValueError as e:
+            date[k] = None
+            motive.append(str(e))
+            continue
         if d is not None and not (ian1 <= d <= dec31):
-            raise ValueError("D212 normă: %s (%s) nu e în anul %d — se completează numai dacă evenimentul e în anul de "
-                             "impunere (OPANAF 2736/2025, instrucțiuni rd.3/rd.4: „numai dacă evenimentele respective se produc în "
-                             "cursul anului”)." % (camp, d, an))
+            motive.append("D212 normă: %s (%s) nu e în anul %d — se completează numai dacă evenimentul e în anul de "
+                          "impunere (OPANAF 2736/2025, instrucțiuni rd.3/rd.4: „numai dacă evenimentele respective se produc în "
+                          "cursul anului”)." % (camp, d, an))
+    inc, sf = date["data_incep"], date["data_sf"]
+    # [440, w5] data documentului și data suspendării: tot rubrici independente — până la 22.10.2026 se citeau abia la sfârșit, după
+    # celelalte refuzuri, iar refuzul lor numea cheia internă („data_doc_autoriz”), nu rubrica
+    for k, camp in (("data_doc_autoriz", "data documentului"), ("data_susp", "data suspendării")):
+        try:
+            date[k] = _data(a.get(k), camp)
+        except ValueError as e:
+            motive.append(str(e))
+    try:
+        forma = int(a.get("forma_org") or 1)
+    except (TypeError, ValueError):
+        forma = None
+    if forma not in FORME_ORG_NORMA:   # refuz de FORMĂ: valoarea în afara intervalului validatorului [1,2]
+        motive.append("D212 normă: forma de organizare %r — 1 individual, 2 asociere." % a.get("forma_org"))
+    # [440, w5] numerele de zile se citesc aici (rubrici independente); intervalul lor depinde de perioadă, deci se judecă după
+    intrerupere = _intreg_camp(a, "zile_intrerupere", "zilele de întrerupere", motive, "D212 normă")
+    scutite = _intreg_camp(a, "nr_zile_scutite", "zilele scutite", motive, "D212 normă")
+    if motive:
+        raise RefuzuriSectiune(motive)
     start, end = inc or ian1, sf or dec31
     if end < start:
         raise ValueError("D212 normă: data încetării e înaintea datei începerii.")   # refuz de FORMĂ (coerența datelor)
-    intrerupere = int(a.get("zile_intrerupere") or 0)
-    scutite = int(a.get("nr_zile_scutite") or 0)
     zile_contract = (end - start).days + 1
     if intrerupere < 0 or scutite < 0 or intrerupere > zile_contract:   # refuz de FORMĂ: numere de zile în afara perioadei
         raise ValueError("D212 normă: zilele de întrerupere/scutire trebuie să fie între 0 și zilele de activitate (%d)."
@@ -957,9 +1123,6 @@ def cap12_norma(a, an):
         impozabil = _lei(Decimal(baza) - zi * scutite)
     else:
         impozabil = _lei(zi * (zile_act - scutite))
-    forma = int(a.get("forma_org") or 1)
-    if forma not in FORME_ORG_NORMA:   # refuz de FORMĂ: valoarea în afara intervalului validatorului [1,2]
-        raise ValueError("D212 normă: forma de organizare %r — 1 individual, 2 asociere." % a.get("forma_org"))
     c = {"norma_forma_org": forma, "real_norma_venit": norma, "real_venit_net_anual": net,
          "real_venit_impozit": impozabil,
          "real_impozit": _lei(Decimal(impozabil) * COTA_IMPOZIT_NORMA / 100)}
@@ -971,7 +1134,7 @@ def cap12_norma(a, an):
         if str(a.get(k) or "").strip():
             c[kx] = str(a[k]).strip()
     for k, kx in (("data_doc_autoriz", "norma_data_doc_autoriz"), ("data_susp", "norma_data_susp")):
-        d = _data(a.get(k), k)
+        d = date[k]
         if d:
             c[kx] = _dmy(d)
     if inc:
@@ -1161,17 +1324,39 @@ def cap11_din_rip(conn, schema, an, pierdere_precedenta=0, caen=None, nr_zile_sc
         f.get("avertisment")
 
 
+def _motive(texte):
+    """[440] Refuzul generării cu TOATE motivele, fiecare pe rândul lui (DS cap.6: rând cu rând), în forma refuzului bilanțului
+    (`bilant.refuz`); un singur motiv rămâne fraza lui, ca până acum."""
+    from core.common import cate as _cate
+    if len(texte) == 1:
+        return texte[0]
+    return ("D212 nu se poate genera — %s; rezolvă-le pe toate, apoi generează din nou.\n" % _cate(len(texte), "motiv", "motive")
+            + "\n".join("%d. %s" % (i, t) for i, t in enumerate(texte, start=1)))
+
+
 def genereaza(conn, schema, perioada, manual=None):
     manual = dict(manual or {})
     an = int(getattr(perioada, "an", None) or manual.get("an_r"))
     avert = []
+    # [440, comanda Costin 11.1 pct.16: „toate erorile apar deodată, fiecare cu textul ei”] refuzul fiecărei secțiuni (venitul din registru,
+    # venit, venit din străinătate, activitate pe normă, veniturile pentru CASS 2.2) se ADAUGĂ aici, nu oprește generarea la prima:
+    # contabilul le vede pe toate, numite, dintr-o trecere
+    refuzuri = []
     if manual.get("din_rip") and not manual.get("cap11"):
         if conn is None:
             raise ValueError("D212: venitul din registrul RIP cere firma (conexiunea lipsește).")
-        manual["cap11"], a = cap11_din_rip(conn, schema, an, manual.get("pierdere_precedenta") or 0,
-                                           manual.get("caen"), manual.get("nr_zile_scutite_rip") or 0)
-        if a:
-            avert.append(a)
+        try:
+            manual["cap11"], a = cap11_din_rip(conn, schema, an, manual.get("pierdere_precedenta") or 0,
+                                               manual.get("caen"), manual.get("nr_zile_scutite_rip") or 0)
+        except ValueError as e:          # [440, w5] până la 22.10.2026 oprea generarea înaintea celorlalte secțiuni
+            manual.pop("cap11", None)
+            refuzuri.extend("Venitul din registrul RIP — %s" % t for t in getattr(e, "motive", None) or [e])
+        else:
+            if a:
+                avert.append(a)
+    m_cass = _alte_cass_refuz(manual.get("alte_cass") or {})
+    if m_cass:
+        refuzuri.append(m_cass)
     if manual.get("venituri"):
         # [D212 Etapa 5] categoriile fără date în aplicație: câte o secțiune I.1.1 pe sursă, lângă cea din registrul RIP
         sectiuni = _sectiuni(manual.get("cap11"))
@@ -1179,7 +1364,7 @@ def genereaza(conn, schema, perioada, manual=None):
             try:
                 sectiuni.append(cap11_categorie(x, an))
             except ValueError as e:      # numește venitul vinovat (temeiul, unde există, e în mesajul interior)
-                raise ValueError("Venitul %d — %s" % (i, e)) from None
+                refuzuri.extend("Venitul %d — %s" % (i, t) for t in getattr(e, "motive", None) or [e])
         manual["cap11"] = sectiuni
     if manual.get("strainatate"):
         # [D212 Etapa 5c] veniturile din străinătate: câte o secțiune cap14 pe țară și sursă (instrucțiuni pct.32)
@@ -1188,7 +1373,8 @@ def genereaza(conn, schema, perioada, manual=None):
             try:
                 sec = cap14_sectiune(x, an)
             except ValueError as e:      # numește venitul vinovat (temeiul, unde există, e în mesajul interior)
-                raise ValueError("Venitul din străinătate %d — %s" % (i, e)) from None
+                refuzuri.extend("Venitul din străinătate %d — %s" % (i, t) for t in getattr(e, "motive", None) or [e])
+                continue
             cap14.append(sec)
             if not x.get("fara_contributii"):   # asigurat în alt stat (legislația europeană / acord) -> fără CAS/CASS aici
                 contrib.append(sec)
@@ -1201,9 +1387,9 @@ def genereaza(conn, schema, perioada, manual=None):
         # [D212 Etapa 3] Subsecțiunea a 4-a (activități agricole pe normă, CF art.107 alin.(2)) NU are loc în structura
         # validatorului instalat (J13.0.1 = formularul pentru veniturile 2024: niciun atribut agricol, fără bifa114).
         # Nu se emite pe altă subsecțiune și nu se sare tăcut.
-        raise ValueError("D212: venitul agricol pe normă (Subsecțiunea a 4-a, CF art.107 alin.(2)) nu se poate încă emite — "
-                         "validatorul ANAF instalat (J13.0.1) e al formularului pentru veniturile 2024 și nu are câmpurile "
-                         "agricole; ANAF n-a publicat validatorul pentru OPANAF 2736/2025. Se declară pe formularul ANAF.")
+        refuzuri.append("D212: venitul agricol pe normă (Subsecțiunea a 4-a, CF art.107 alin.(2)) nu se poate încă emite — "
+                        "validatorul ANAF instalat (J13.0.1) e al formularului pentru veniturile 2024 și nu are câmpurile "
+                        "agricole; ANAF n-a publicat validatorul pentru OPANAF 2736/2025. Se declară pe formularul ANAF.")
     if manual.get("norma"):
         # [D212 Etapa 3] activitățile pe normă (Subsecțiunea a 2-a lit.A): o secțiune cap12 pe activitate / loc
         cap12 = []
@@ -1211,8 +1397,11 @@ def genereaza(conn, schema, perioada, manual=None):
             try:
                 cap12.append(cap12_norma(x, an))
             except ValueError as e:      # numește activitatea vinovată (temeiul, unde există, e în mesajul interior)
-                raise ValueError("Activitatea %d — %s" % (i, e)) from None
+                refuzuri.extend("Activitatea %d — %s" % (i, t) for t in getattr(e, "motive", None) or [e])
         manual["cap12"] = cap12
+    if refuzuri:
+        # [440] cu ele, și ce lipsește din datele contribuabilului (`erori_generare`: numele, adresa, CNP-ul) — tot dintr-o trecere
+        raise ValueError(_motive(refuzuri + erori_generare(pull(conn, schema, perioada), manual)))
     if manual.get("cap12"):
         manual["bifa112"] = "1"      # R8: bifa112=1 => cap12 exista (și subsecțiunea se declară completată)
     alte_cass = {k: v for k, v in (manual.get("alte_cass") or {}).items() if v not in (None, "", 0, "0")}
@@ -1225,7 +1414,7 @@ def genereaza(conn, schema, perioada, manual=None):
     prof = pull(conn, schema, perioada)
     er = erori_generare(prof, manual)
     if er:
-        raise ValueError("D212 nu se poate genera: " + " ".join(er))
+        raise ValueError(_motive(er) if len(er) > 1 else "D212 nu se poate genera: " + er[0])
     calc = calcul_d212(manual)
     xml = build_xml(prof, an, None, manual, calc)
     capitole = [n for n in _COPII if manual.get(n)]

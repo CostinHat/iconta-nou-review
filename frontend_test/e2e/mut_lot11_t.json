@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "    z.hidden = !t;\n    z.querySelector(\".ci-mesaj\").textContent = t ? t.mesaj : \"\";",
+  "inlocuire": "    z.hidden = true;\n    z.querySelector(\".ci-mesaj\").textContent = \"\";",
+  "test": "frontend_test/e2e/e2e_lot11_t.py::test_def_428_tva_la_incasare_pe_pasii_contabilului"
+ },
+ {
+  "fisier": "core/contare_facturi.py",
+  "ancora": "    note = genereaza_note(cur, schema, f, regim_tva in (_tvi.REGIM_INCASARE, _tvi.REGIM_STORNO), cvi,",
+  "inlocuire": "    note = genereaza_note(cur, schema, f, False, cvi,",
+  "test": "frontend_test/e2e/e2e_lot11_t.py::test_def_428_tva_la_incasare_pe_pasii_contabilului"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "  if (t.text) return `, <b>TVA la încasare</b> ${esc(t.text)}${t.aplica_azi ? \" — se aplică azi\" : \" — azi nu se aplică\"}`;",
+  "inlocuire": "  if (t.text && t.aplica_azi) return `, <b>TVA la încasare</b> ${esc(t.text)}`;",
+  "test": "frontend_test/e2e/e2e_lot11_t.py::test_def_428_configurare_emitere_arata_sistemul_si_factura_dinainte_de_intrare"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "                r[\"tva_incasare\"] = _tvi.regim_emitere_la(_cur, None, _d)",
+  "inlocuire": "                r[\"tva_incasare\"] = None",
+  "test": "frontend_test/e2e/e2e_lot11_t.py::test_def_428_configurare_emitere_arata_sistemul_si_factura_dinainte_de_intrare"
+ },
+ {
+  "fisier": "core/d300.py",
+  "ancora": "AJUSTARI_TAXA = {(\"635\", \"4427\"): (\"R31\", -1), (\"635\", \"4426\"): (\"R31\", -1)}",
+  "inlocuire": "AJUSTARI_TAXA = {}",
+  "test": "frontend_test/e2e/e2e_lot11_t.py::test_def_c76_lipsa_la_inventar_ajunge_in_d300"
+ }
+]

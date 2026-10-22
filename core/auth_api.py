@@ -272,7 +272,9 @@ def actualizeaza_cabinet(conn, firm_id, nume=None, cui=None):
     if nume is not None:
         sets.append("nume = %s"); par.append(nume.strip())
     if cui is not None:
-        sets.append("cui = %s"); par.append((cui or "").strip() or None)
+        # [lotul 11, decizia Costin 10.3 pct.4] forma păstrată: fără „RO”, fără spații (`cui_forma.stocare`, ca triggerul `trg_cui_fara_ro`)
+        from core import cui_forma as _cf
+        sets.append("cui = %s"); par.append(_cf.stocare(cui))
     if not sets:
         return {"ok": False, "cod": "NIMIC_DE_SCHIMBAT"}
     par.append(firm_id)
@@ -281,7 +283,8 @@ def actualizeaza_cabinet(conn, firm_id, nume=None, cui=None):
         # [lotul 10, C73 / U3] CUI-ul cabinetului e unic pe toată platforma (`accounting_firms_cui_key`): CUI-ul altui cabinet cădea
         # cu 500 (la înregistrare, cu „eroare tehnică”). Acum refuz numit, lângă câmpul `cui`. Schema `public` e a tuturor
         # cabinetelor: refuzul nu numește cabinetul care îl are, numai că CUI-ul e deja înregistrat.
-        cui_nou = (cui or "").strip() or None
+        from core import cui_forma as _cf
+        cui_nou = _cf.stocare(cui)
         with _chei.refuza_dublura(cur, ("accounting_firms_cui_key",), lambda c, e: _chei.CheieDublata(
                 CUI_CABINET_EXISTA % cui_nou, valoare=cui_nou, camp="cui")):
             cur.execute("UPDATE public.accounting_firms SET " + ", ".join(sets) +

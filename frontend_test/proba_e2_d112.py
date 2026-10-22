@@ -170,7 +170,7 @@ def main():
     # `d112.py` isi declara singur sursa: *„Sursa unica de adevar: statul de plata
     # (stat_plata_api)"*. Deci confruntarea corecta nu e cu o cifra scrisa de mine — ar fi o copie
     # a codului —, ci cu ce calculeaza CEALALTA cale a aplicatiei pentru acelasi salariat si
-    # aceeasi luna. Maparea e citita din XML-ul emis: B4_8 = CAS, B4_6 = CASS, E1_6 = impozit.
+    # aceeasi luna. Maparea e citita din XML-ul emis: B4_8 = CAS, B4_6 = CASS, E1_7 = impozit.
     if al_meu:
         st, sp = U.cere("GET", "/tenants/%d/stat-plata?an=%d&luna=%d" % (tid, AN, LUNA),
                         None, tok, timeout=180)
@@ -192,7 +192,7 @@ def main():
             for eticheta, din_xml, din_stat in (
                     ("CAS", U.numar(b4.get("B4_8", "0")), round(float(rand.get("cas") or 0))),
                     ("CASS", U.numar(b4.get("B4_6", "0")), round(float(rand.get("cass") or 0))),
-                    ("impozit", U.numar(e1.get("E1_6", "0")),
+                    ("impozit", U.numar(e1.get("E1_7", "0")),
                      round(float(rand.get("impozit") or 0)))):
                 if din_xml != din_stat:
                     nepotrivit("D112 %s = ce calculeaza statul de plata" % eticheta,

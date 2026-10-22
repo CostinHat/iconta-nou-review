@@ -82,7 +82,7 @@ def test_descarcarea_din_factura_poarta_factura_ca_document_justificativ(conn):
         cur.execute("SELECT document_ref, factura_id FROM inregistrari WHERE sursa = 'stocuri'")
         rows = cur.fetchall()
     # factura_id rămâne NULL: nota 607=371 nu e nici contare, nici plată — legată, ar bloca ștergerea facturii (ARE_NOTA_LEGATA)
-    assert rows == [("Factură FCT12 din 05.10.2026", None)]
+    assert rows == [("Factură FCT nr. 12 din 05.10.2026", None)]   # [lotul 11, 443] seria și numărul separat
 
 
 def test_iesirea_manuala_poarta_documentul_scris(conn):
@@ -96,10 +96,12 @@ def test_iesirea_manuala_poarta_documentul_scris(conn):
 
 def test_documentul_justificativ_nu_dubleaza_seria_si_scrie_data_romaneste():
     """Numărul facturii emise conține deja seria (`facturi_api`: numar = serie + număr). MUTAȚIE: compunerea veche
-    (serie + număr, data ISO) -> „FCTFCT12 din 2026-10-05” -> pică."""
+    (serie + număr, data ISO) -> „FCTFCT12 din 2026-10-05” -> pică. [lotul 11, 443] seria și numărul separat: „FCT nr. 12”, nu „FCT12”
+    (comanda Costin 11.1 pct.19: „F6 nr. 1, nu F61”); MUTAȚIE: `numar_cu_serie` repus în `eticheta_factura` -> pică."""
     from core import jurnal_api as j
-    assert j.document_justificativ(None, "factura", "FCT", "FCT12", ZI) == "Factură FCT12 din 05.10.2026"
-    assert j.document_justificativ(None, "factura", "FCT", "12", ZI) == "Factură FCT12 din 05.10.2026"   # număr fără serie
+    assert j.document_justificativ(None, "factura", "FCT", "FCT12", ZI) == "Factură FCT nr. 12 din 05.10.2026"
+    assert j.document_justificativ(None, "factura", "FCT", "12", ZI) == "Factură FCT nr. 12 din 05.10.2026"   # număr fără serie
+    assert j.document_justificativ(None, "factura", "F6", "1", ZI) == "Factură F6 nr. 1 din 05.10.2026"       # 443: nu „F61”
     assert j.document_justificativ(None, "factura", None, "A-77", ZI) == "Factură A-77 din 05.10.2026"   # primită
     assert j.document_justificativ("Extras bancar x.csv din 05.10.2026", "factura", "FCT", "FCT12", ZI) == "Extras bancar x.csv din 05.10.2026"
     assert j.document_justificativ(None, None, None, None, ZI) is None
@@ -360,9 +362,11 @@ def test_nota_bonului_si_a_statului_de_plata_poarta_documentul(conn, uc, monkeyp
     b = types.SimpleNamespace(data="2026-10-05", comerciant="Mega Image", total=12.1, tva=0,
                               linii=[types.SimpleNamespace(cont="604", valoare=12.1)])
     uc.bon_aproba(1, bid, b, {"uid": 1})
-    monkeypatch.setattr(salarii_contare, "propunere", lambda *a: {"document_ref": "SAL-2026-09", "note": [{"debit": "641", "credit": "421", "suma": 100}]})
+    # [lotul 11, 451] numărul statului e al regulii unice (`salarii_contare.antet_nota` / `document_ref`), ca în propunerea reală
+    monkeypatch.setattr(salarii_contare, "propunere", lambda *a: {"document_ref": salarii_contare.document_ref(2026, 9),
+                                                                  "note": [{"debit": "641", "credit": "421", "suma": 100}]})
     uc.salarii_contare_scrie(1, 2026, 9, {"uid": 1})
     with conn.cursor() as cur:
         cur.execute("SELECT sursa, document_ref FROM inregistrari WHERE sursa IN ('bon', 'salarii') ORDER BY sursa")
         # [lotul 07.10 pct.13] documentul statului din sursa unică `jurnal_api.eticheta_document` (fel, număr, data = ultima zi)
-        assert cur.fetchall() == [("bon", "Bon fiscal din 05.10.2026 (Mega Image)"), ("salarii", "Stat de plată nr SAL-2026-09 din 30.09.2026")]
+        assert cur.fetchall() == [("bon", "Bon fiscal din 05.10.2026 (Mega Image)"), ("salarii", "Stat de plată nr SAL 09/2026 din 30.09.2026")]

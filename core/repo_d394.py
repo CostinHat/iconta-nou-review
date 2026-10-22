@@ -19,6 +19,7 @@ def select_firma_profil(cur):
 from core.nomenclator_status_factura import clauza_tip_document as _doc_fiscal
 from core.nomenclator_status_factura import clauza_sql as _status_declarabil  # [A3] filtru de STATUS
 from core import facturi as _fc   # [decizia A 02.10] definiția „factură din bon fiscal”
+from core import clienti_api as _clienti_api   # [lotul 11, decizia 10.3] fișa partenerului
 
 
 def select_rapoarte_z(cur, surse, inceput, sfarsit):
@@ -59,7 +60,8 @@ def select_facturi_din_bon(cur, inceput, sfarsit):
     marca) vine cu linii negative și adaugă suma înapoi în Î1."""
     cur.execute("SELECT f.id AS id, f.numar AS numar, f.bon_fiscal_nr AS bon_fiscal_nr, f.bon_fiscal_data AS bon_fiscal_data, "
                 "f.moneda AS moneda, f.curs_bnr AS curs_bnr, f.total_lei AS total_lei, f.tva_lei AS tva_lei, "
-                "f.total AS total, f.tva AS tva, l.cota_tva AS cota, ROUND(l.cantitate * l.pret_unitar, 2) AS baza "
+                "f.total AS total, f.tva AS tva, l.cota_tva AS cota, "
+                "COALESCE(l.valoare_neta, ROUND(l.cantitate * l.pret_unitar, 2)) AS baza "   # [lotul 11, C82] BT-131 când linia îl are
                 "FROM facturi f JOIN factura_linii l ON l.factura_id = f.id "
                 "WHERE " + _fc.clauza_din_bon("f") + " "
                 "AND f.bon_fiscal_data >= %s AND f.bon_fiscal_data < %s "
@@ -78,11 +80,11 @@ def select_facturi(cur, inceput, sfarsit):
                            f.moneda, f.curs_bnr, f.total_lei, f.tva_lei,
                            COALESCE(f.furnizor_tva_incasare, false) AS furnizor_tva_incasare,
                            f.categorie_331, f.tert_nume, f.tert_cui, f.tert_platitor_tva,
-                           f.tert_judet,   -- [C69, lotul 10] judP = județul PARTENERULUI (d394_struct pct.222), nu al firmei
+                           COALESCE(NULLIF(btrim(f.tert_judet), ''), """ + _clienti_api.sql_camp_fisa("judet") + """) AS tert_judet,   -- [C69] + [lotul 11, decizia 10.3] fișa partenerului când factura nu are județul
                            c.nume AS c_nume, c.cui AS c_cui,
                            COALESCE(json_agg(json_build_object(
                                'cota', l.cota_tva,
-                               'baza', ROUND(l.cantitate * l.pret_unitar, 2))
+                               'baza', COALESCE(l.valoare_neta, ROUND(l.cantitate * l.pret_unitar, 2)))   -- [lotul 11, C82] BT-131 al liniei
                              ORDER BY l.id) FILTER (WHERE l.id IS NOT NULL), '[]') AS linii
                       FROM facturi f
                       LEFT JOIN clienti c ON c.id = f.client_id

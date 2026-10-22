@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, cate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp } from "../api.js?v=ff30ebaf3f";
+import { api, cate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=58f26a3fc4";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
@@ -210,20 +210,6 @@ const REGISTRU = [
     C("cota", "Cota TVA %", "numar", { sugestie: "21" }),
     DN("furnizor_platitor_tva", "Furnizor plătitor TVA"),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "TVA regimuri speciale", cheie: "neinregistrat", titlu: "Achiziție de la neînregistrat (persoană fizică) — D394 op. N", ruta: "achizitie-neinregistrat", frecventa: "lunar", faraPropunere: "e documentul operațiunii (factura, borderoul, declarația vamală) — nu vine din alt ecran al aplicației, se introduce la fiecare operațiune", campuri: [
-    C("data", "Data", "data"),
-    C("furnizor_nume", "Furnizor (persoană fizică)", "text"),
-    // [deficiența 402] borderoul identifică vânzătorul (OMFP 2634/2015 anexa 1 pct.2) și, pe un cont de stoc, aduce marfa în gestiune (pct.6)
-    C("furnizor_adresa", "Domiciliul vânzătorului", "text"),
-    C("furnizor_act", "Actul de identitate (seria și numărul)", "text"),
-    C("valoare", "Valoare"),
-    C("cont_cheltuiala", "Cont cheltuială/stoc", "text", { sugestie: "301" }),
-    C("articol", "Articolul (la un cont de stoc)", "text", { optional: true }),
-    C("cantitate", "Cantitatea (la un cont de stoc)", "numar", { optional: true }),
-    C("um", "UM", "text", { optional: true, sugestie: "buc" }),
-    C("numar", "Nr. borderou (gol = numerotat de aplicație, BA-n)", "text", { optional: true }),
-    C("categorie", "Categorie bun (art. 331 lit. D)", "select", { optiuni: [["cereale","Cereale"],["deseuri","Deșeuri"],["masa_lemnoasa","Masă lemnoasă"],["terenuri","Terenuri"],["constructii","Construcții"],["alte_bunuri","Alte bunuri"],["alte_servicii","Alte servicii"]], ajutor: "Fără categorie, operațiunea N rămâne EXCLUSĂ din D394 cu avertisment (nu se ghicește)." }),
-    C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "TVA regimuri speciale", cheie: "agricultor_achizitie", titlu: "Achiziție de la agricultor (compensare 8%)", ruta: "achizitie-agricultor", frecventa: "lunar", faraPropunere: "e documentul operațiunii (factura, borderoul, declarația vamală) — nu vine din alt ecran al aplicației, se introduce la fiecare operațiune", campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare (fără taxă)"),
     C("cont_cheltuiala", "Cont cheltuială/stoc", "text", { sugestie: "301" }),
@@ -242,13 +228,6 @@ const REGISTRU = [
     DN("optiune_taxare", "Opțiune de taxare", { cond: { camp: "calitate_client", val: "PJ" }, ajutor: "Da: taxare inversă în locul scutirii — permisă numai către o persoană impozabilă (art. 313 alin. (4)–(5))." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
-  { cat: "Extern", cheie: "reeval_valuta", titlu: "Reevaluare lunară solduri valută", ruta: "reevaluare-valuta", frecventa: "lunar", propune: "La închiderea lunii, aplicația propune reevaluarea soldurilor în valută la cursul BNR (Ce oprește închiderea → Reevaluare valută).", multi: "solduri", campuri: [
-    C("data", "Data (ultima zi a lunii)", "data") ], subcampuri: [
-    C("cont", "Cont", "text", { sugestie: "4111" }),
-    C("valoare_valuta", "Sold în valută"),
-    C("moneda", "Moneda", "text", { sugestie: "EUR" }),
-    C("curs_evidenta", "Curs evidență"),
-    C("tip", "Tip", "select", { optiuni: [["creanta","Creanță"],["datorie","Datorie"],["disponibil","Disponibil"]] }) ] },
   { cat: "Extern", cheie: "decont_valuta", titlu: "Decontare în valută (665/765)", ruta: "decontare-valuta", frecventa: "lunar", faraPropunere: "plata facturii în valută din Bancă nu calculează diferența de curs la decontare (665 / 765)", campuri: [
     C("data", "Data", "data"),
     C("tip", "Tip", "select", { optiuni: [["creanta","Încasare creanță"],["datorie","Plată datorie"]] }),
@@ -504,7 +483,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         ${opCurenta.multi ? `<div class="op-multi-bloc"${opCurenta.multiCond ? ` data-cond-camp="${opCurenta.multiCond.camp}" data-cond-val="${[].concat(opCurenta.multiCond.val).join("|")}"` : ""}><div class="pf-frand-nume" style="margin:12px 0 6px">${esc(opCurenta.multiTitlu || "Solduri")}</div><div id="op-multi"></div></div>` : ""}
         ${opCurenta.cheie === "asociati" ? '<div id="op-propunere"></div>' : ""}
         <div class="bara-fixa">
-          <p style="margin-top:12px"><button class="buton-primar" id="op-trimite" data-actiune="${actiuneOp(opCurenta)}">Genereaz\u0103 nota (ciorn\u0103)</button></p>
+          <p style="margin-top:12px"><button class="buton-primar" id="op-trimite" data-genereaza-nota data-actiune="${actiuneOp(opCurenta)}">Genereaz\u0103 nota (ciorn\u0103)</button></p>
           <div id="op-mesaj"></div>
         </div>
       </div>`;
@@ -516,7 +495,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     const tabelAsociati = (p) => `<table class="fd-tabel" id="op-div-tabel">
         <thead><tr><th>Asociat</th><th class="fd-td-num">Cota</th><th class="fd-td-num">Dividend brut</th><th class="fd-td-num">Impozit ${esc(p.cota || "")}</th><th class="fd-td-num">Net</th></tr></thead>
         <tbody>${(p.asociati || []).map((a) => `<tr><td>${esc(a.nume || "")}</td><td class="fd-td-num">${esc(a.cota)}</td><td class="fd-td-num">${bani(a.brut)}</td><td class="fd-td-num">${bani(a.impozit)}</td><td class="fd-td-num">${bani(a.net)}</td></tr>`).join("")}
-          <tr><td><b>Total</b></td><td></td><td class="fd-td-num"><b>${bani(p.brut)}</b></td><td class="fd-td-num"><b>${bani(p.impozit)}</b></td><td class="fd-td-num"><b>${bani(p.net)}</b></td></tr></tbody>
+        </tbody><tfoot><tr><td><b>Total</b></td><td></td><td class="fd-td-num"><b>${bani(p.brut)}</b></td><td class="fd-td-num"><b>${bani(p.impozit)}</b></td><td class="fd-td-num"><b>${bani(p.net)}</b></td></tr></tfoot>
       </table>`;
     const mesajIn = (zona, txt, tip) => { const d = document.createElement("div"); zona.appendChild(d); arataMesaj(d, txt, tip); };
     const arataImpartirea = (p, titlu) => {
@@ -545,7 +524,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // nota și conturile ei, iar butonul o deschide în Registrul jurnal, în luna ei, evidențiată (același drum ca legătura din notificări)
     const deschideNota = async (nid, data) => {
       const [an, luna] = String(data || "").split("-").map((x) => parseInt(x, 10));
-      const { ecranJurnal } = await import("./firme.js?v=6855dfc0c2");
+      const { ecranJurnal } = await import("./firme.js?v=020b99dd0c");
       nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
         Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})), { lat: "tabel" });   // [394] Registrul jurnal se deschide lat
     };
@@ -654,9 +633,15 @@ export async function ecranOperatiuni(corp, nav, t) {
         // [401] nota se arată după generare (conturile și suma), nu doar numărul ei
         const nota = r && r.nota ? ` Nota: ${r.nota}.` : "";
         if (note.length) {
-          arataMesaj(zona, note.length === 1
-            ? `Notă generată ${note[0]}, ${stareNota(r)}.${nota} ${pasNota(r)}`
-            : `${cate(note.length, "notă generată", "note generate")} (${note.join(", ")}), ${stareNota(r, true)}. ${pasNota(r, true)}`, "ok");
+          // [lotul 11, 8c — decizia 10.3 „reparația centrală”; P1b] drumul unic al confirmării: caseta verde cu conturile și sumele
+          // fiecărei note (citite din Registrul jurnal după id), „Generează nota” inactiv cu motivul, reactivat la o modificare a câmpurilor
+          const citite = await noteGenerate(t.id, ids, corpReq.data);
+          dupaGenerare(zona, corp.querySelector("#op-trimite"), {
+            note: (citite.length ? citite : note.map(() => ({ linii: [] }))).map((n, i) => ({ linii: n.linii,
+              eticheta: `${note[i] || n.eticheta || ""} — ${stareNota(r)}` })),
+            detalii: [nota.trim()], pas: pasNota(r, note.length > 1),
+            reactiveazaLa: [...opCurenta.campuri.map((c) => corp.querySelector(`#op-${c.nume}`)),
+                            ...corp.querySelectorAll("#op-multi input, #op-multi select, #op-multi textarea")] });
           if (r.avertisment) mesajIn(zona, r.avertisment, "avert");
           if (ids.length) butoaneNote(zona, ids, note, corpReq.data);   // data notei = data trimisă (toate operațiunile)
           if (zonaProp && r.asociati) arataImpartirea(r, "Nota împarte dividendul pe asociați");   // [430b] tabelul notei generate

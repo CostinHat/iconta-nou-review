@@ -102,7 +102,7 @@ def pdf_chitanta(emitent, ch):
     doc = SimpleDocTemplate(buf, pagesize=A5,
                             leftMargin=14 * mm, rightMargin=14 * mm,
                             topMargin=12 * mm, bottomMargin=12 * mm,
-                            title="Chitanța %s" % _pu.numar_cu_serie(ch.get("serie"), ch.get("numar")),
+                            title="Chitanța %s" % _pu.serie_nr(ch.get("serie"), ch.get("numar")),   # [443] „F6 nr. 1”, nu „F61”
                             author=emitent.get("nume") or "iConta")   # [05.10.2026] fără titlu: „(anonymous)”
     stiluri = getSampleStyleSheet()
     normal = ParagraphStyle("n", parent=stiluri["Normal"], fontName=font, fontSize=9.5, leading=13)

@@ -2,7 +2,7 @@
 title: Cum contabilizez un credit bancar în valută?
 description: Nota de bază este identică cu a unui credit în lei (5121=1621 la primire, 1621=5121 la rată), doar că suma se convertește la cursul BNR din ziua primirii; lunar și la fiecare plată, soldul rămas se reevaluează, iar diferența de curs merge pe 665 (pierdere) sau 765 (câștig).
 published: 2026-09-25
-modified: 2026-10-13
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -45,6 +45,6 @@ Un credit de 10.000 EUR e primit la curs BNR 5,00 lei/EUR → se înregistrează
 
 Aplicația produce nota de bază („nota de primire a creditului”, „nota de plată a ratei” etc.) exact ca pentru un credit în lei — motorul nu are un câmp dedicat de „monedă” în ecranul „Credite bancare” (cheia `"credit"`), deci suma introdusă trebuie să fie deja convertită în lei, la cursul BNR din ziua operațiunii.
 
-Reevaluarea periodică a soldurilor în valută (inclusiv pentru conturile de credit, 1621/1682/5191/5198) e tratată **separat**, printr-un motor dedicat: Aplicația, funcția „reevaluarea soldului în valută (Operațiuni speciale)”, apelată din use-case-ul „reevaluarea în valută (Operațiuni speciale)” pe ruta aplicația. Pentru un credit (tip `"datorie"`), motorul generează automat linia `665=cont` sau `cont=765`, după caz. Practic: primirea și ratele creditului se introduc manual, convertite în lei, iar reevaluarea periodică a soldului se face separat, prin ecranul de reevaluare valută, nu prin ecranul „Credite bancare”.
+Reevaluarea periodică a soldurilor în valută (inclusiv pentru conturile de credit, 1621/1682/5191/5198) e tratată **separat**, în „Închidere lună → Reevaluare valută”, singurul formular de reevaluare: contul creditului se adaugă acolo la ajustarea manuală, cu moneda și soldul în valută, iar aplicația ia cursul BNR din ultima zi bancară a lunii. Pentru un credit (o datorie), aplicația generează linia 665 = contul creditului sau contul creditului = 765, după caz. Practic: primirea și ratele creditului se introduc manual, convertite în lei, iar reevaluarea lunară a soldului se face separat, din „Închidere lună → Reevaluare valută”, nu prin ecranul „Credite bancare”.
 
 [iConta.eu](/)

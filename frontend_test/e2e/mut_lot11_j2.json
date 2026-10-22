@@ -1,0 +1,26 @@
+[
+ {
+  "fisier": "static/js/ecrane/mijloace_ecran.js",
+  "ancora": "dupaGenerare(corp.querySelector(\"#mf-mesaj\"), null, { titlu: `Casare înregistrată",
+  "inlocuire": "dupaGenerare(zona, null, { titlu: `Casare înregistrată",
+  "test": "frontend_test/e2e/e2e_lot11_j2.py::test_def_8c_casarea_mijlocului_fix_confirmare_verde_cu_conturile_notei"
+ },
+ {
+  "fisier": "static/js/ecrane/mijloace_ecran.js",
+  "ancora": "if (!r.inregistrare_id) {   // valoarea justă = valoarea netă contabilă",
+  "inlocuire": "if (false) {   // valoarea justă = valoarea netă contabilă",
+  "test": "frontend_test/e2e/e2e_lot11_j2.py::test_def_8c_reevaluarea_mijlocului_fix_confirmare_verde_si_fara_diferenta_fara_nota"
+ },
+ {
+  "fisier": "static/js/ecrane/compensari_ecran.js",
+  "ancora": "notele: await noteGenerate(t.id, r.inregistrari || [], data),",
+  "inlocuire": "notele: [],",
+  "test": "frontend_test/e2e/e2e_lot10_compensari.py::test_def_428_compensarea_muta_tva_la_incasare"
+ },
+ {
+  "fisier": "static/js/ecrane/reevaluare_ecran.js",
+  "ancora": "note: await noteGenerate(t.id, [r.inregistrare_id], dataIso(new Date(an, luna, 0))),",
+  "inlocuire": "note: [],",
+  "test": "frontend_test/e2e/e2e_lot10_valuta.py::test_def_429_inchiderea_propune_reevaluarea_si_genereaza_nota"
+ }
+]

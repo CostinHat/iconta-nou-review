@@ -14,7 +14,7 @@ dacă jurnalul porții îl arată verde.”
    **Atât.** Commitul nu mai rulează suita.
 3. **Închiderea lotului:** `sh scripts/poarta_lot.sh` (arbore curat, pe ramura lotului) -> `poarta-suita` (prospețimea, pytest pe
    `POARTA_PROCESE` procese, verificatorul, cifrele F1–F5, plasa e2e) -> verdictul `VERDE|ROSU <sha> <ramura> <data>` în
-   `<git-common-dir>/poarta_verdicte.log`. Refuză: `main`, arbore murdar, SHA deja VERDE, a treia rulare pe aceeași ramură.
+   `<git-common-dir>/poarta_verdicte.log`. Refuză: `main`, arbore murdar, SHA deja VERDE, un SHA deja ROȘU (regula 3d, comanda 11.2: pe roșu se repară codul — commit nou — și se rulează din nou, până la verde).
 4. **Publicarea:** `reference-transaction` mută `main` numai la un SHA cu aprobarea scrisă (`APROBARE_MAIN`) **și** `VERDE <sha>`.
 
 Între comenzi: `scripts/poarta_scurta.py` (rularea țintită; incert -> suita întreagă, nu poarta).

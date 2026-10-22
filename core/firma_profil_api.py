@@ -177,9 +177,16 @@ CAMPURI_FISCALE = ("nume", "cui", "reg_com", "caen", "adresa", "oras", "judet",
 #: bancar” (S.BA.2), iar rulajul / soldul pe 512x în perioadă o contrazice și oprește D406. Coloanele: core/migrare_profil_c69.py.
 CAMPURI_C69 = ("mare_contribuabil", "forma_proprietate", "fara_cont_bancar")
 
+#: [lotul 11, decizia Costin 10.3 pct.4, verbatim în DECIZII „Comanda 10.3”: „Întocmitorul bilanțului: calitatea întocmitorului în profilul
+#: cabinetului, interesul public în Date firmă; ambele blochează dacă lipsesc.”] Structura ANAF a bilanțului (anaf_surse/
+#: structura_SC_1225_270126.txt, S1002 / S1003 / S1005): „15. interes_public Entitati de interes public N(1) DA interes_public=(0,1)”.
+#: Generatorul scria 0 oricărei firme (`bilant.xml_s1005`); acum Da / Nu din Date firmă, NULL = nedeclarat -> bilanțul se oprește.
+#: Coloana: core/migrare_intocmitor_bilant.py.
+CAMPURI_BILANT = ("interes_public",)
+
 #: [06.10.2026, comanda Costin §6.4] „Orice modificare [a Date firmă] se jurnalizează (cine, când, valoare veche → nouă),
 #: inclusiv forma juridică și capitalul, iar jurnalul e vizibil cabinetului.” Toate câmpurile ecranului, din toate grupurile.
-CAMPURI_JURNAL = CAMPURI_FISCALE + CAMPURI_CAPITAL + CAMPURI_AMEF + CAMPURI_C69 + ("cont_venit_implicit", "metoda_stoc", "serie_chitanta",
+CAMPURI_JURNAL = CAMPURI_FISCALE + CAMPURI_CAPITAL + CAMPURI_AMEF + CAMPURI_C69 + CAMPURI_BILANT + ("cont_venit_implicit", "metoda_stoc", "serie_chitanta",
                                                                     "luna_preluare",   # [08.10 §6 pct.4] „Schimbarea se jurnalizează.”
                                                                     "data_infiintare")   # [deficiența 229, 12.10.2026]
 
@@ -233,7 +240,15 @@ OBLIGATORII = {
     # Nomenclator forme de proprietate” (anaf_surse/structura_SC_1225_270126.txt) — generatorul punea 1 / 10 / 35 oricărei firme
     "mare_contribuabil": ("Bilanț",),
     "forma_proprietate": ("Bilanț",),
+    # [lotul 11, decizia 10.3] „15. interes_public Entitati de interes public N(1) DA interes_public=(0,1)” (structura SC 1225, S1002 /
+    # S1003 / S1005); Nu (False) e o alegere, lipsă e numai nedeclarat (NULL) — ca `mare_contribuabil`
+    "interes_public": ("Bilanț",),
 }
+
+#: [lotul 11, deficiența 442, comanda Costin 11.1 pct.18, verbatim: „capitalul social lipsă apare în «Profil incomplet», cu «blochează
+#: emiterea facturilor».”] Ce blochează lipsa formei juridice / a capitalului: nu o declarație, emiterea facturilor (Legea 31/1990 art.74
+#: alin.(3), refuzul de la emitere `facturi_api` -> `capital_social.refuz`).
+BLOCHEAZA_EMITEREA = "emiterea facturilor"
 
 
 def erori_declarant(prof):
@@ -298,6 +313,12 @@ def lipsuri(profil):
             decl = [d for d in decl if not (camp == "iban" and d == "D406" and profil.get("fara_cont_bancar") is True)]
             if decl:
                 out.append({"camp": camp, "declaratii": list(decl)})
+    # [lotul 11, deficiența 442] forma juridică și capitalul social: aceeași regulă care REFUZĂ emiterea (`capital_social.lipsa`, chemată
+    # de `facturi_api` pe orice emitere), deci panoul spune exact ce oprește factura — nici mai mult (PFA / II / IF, SNC, SCS, ONG nu au
+    # capital de menționat: Legea 31/1990 art.74 alin.(3) numește numai SRL, SA și SCA), nici mai puțin. Câmpul = id-ul din Date firmă.
+    from core import capital_social as _cs
+    for et in _cs.lipsa(profil):
+        out.append({"camp": _cs.CAMP_LIPSA[et][len("df-"):], "declaratii": [BLOCHEAZA_EMITEREA]})
     return out
 
 
@@ -357,33 +378,111 @@ AVERTISMENT_CORECTURA_CUI = ("Corectezi CUI-ul firmei din %s în %s. CUI-ul intr
                              "nouă (alt CUI) se adaugă ca firmă nouă, nu se corectează.")
 
 
-def corecteaza_cui(conn, tenant_id, cui, user_id, confirmat=False):
+#: [459] fără datele ANAF ale CUI-ului nou, ce rămâne de verificat (spus în avertisment și după corectură, nu tăcut)
+DE_VERIFICAT_FARA_ANAF = ("Denumirea, adresa, nr. registrului comerțului, codul CAEN, localitatea, județul, înregistrarea în scopuri de TVA, "
+                          "TVA la încasare, data înființării și forma juridică rămân cele de acum, scrise pentru CUI-ul vechi — de verificat "
+                          "în Date firmă după corectură. Denumirea de la ANAF, starea TVA citită la ANAF și perioadele TVA la încasare aduse "
+                          "din ANAF pentru CUI-ul vechi se șterg.")
+
+
+def _anaf_pentru_corectura(conn, cui_nou, anaf, anaf_eroare):
+    """[459] Ce spune corectura despre datele ANAF ale CUI-ului nou: {gasit, schimbari: [{camp, eticheta, acum, anaf}], mesaj}.
+
+    [lotul 11, AT] O AFIRMAȚIE TIPATĂ (`afirmatii.afirmatie`, decizia 21.08.2026), cu felul după ce s-a aflat: ANAF dă datele -> `fapt`
+    (despre CUI-ul firmei, temeiul = răspunsul ANAF comparat câmp cu câmp); ANAF nu le are -> `absenta_observatie` (registrul
+    contribuabililor); ANAF n-a răspuns (`anaf_eroare`) -> `verificare_rupta` — nu „nu există la ANAF” (ca `uc_regim_tva_incasare`).
+    `motiv` = același text ca `mesaj`; `gasit`, `schimbari`, `mesaj` (pe care le citește `date_firma.js`) rămân."""
+    from core import afirmatii as _af
+    from core import tenant_provisioning as _tp
+    from core.unde import Unde as _Unde
+    with conn.cursor() as cur:
+        cur.execute("SELECT %s FROM firma_profil WHERE id = 1" % ", ".join(c for c, _e, _k in _tp.CAMPURI_ANAF))
+        r = cur.fetchone()
+    acum = dict(zip([c for c, _e, _k in _tp.CAMPURI_ANAF], list(r.values()) if isinstance(r, dict) else (r or ())))
+    if anaf:
+        sch = _tp.propunere_anaf(acum, anaf)
+        mesaj = ("La ANAF, CUI-ul %s e al firmei „%s”. " % (cui_nou, (anaf.get("denumire") or "").strip() or "—")) + (
+            "La confirmare, datele de mai jos se înlocuiesc cu cele de la ANAF:" if sch
+            else "Datele din Date firmă coincid cu cele de la ANAF: nu se schimbă nimic în afară de CUI.")
+        return _af.afirmatie("fapt", "datele ANAF ale CUI-ului nou", mesaj, unde=_Unde("camp_profil", "CUI", cui_nou),
+                             temei_completitudine="răspunsul ANAF pentru CUI-ul %s, comparat câmp cu câmp cu Date firmă" % cui_nou,
+                             gasit=True, schimbari=sch, mesaj=mesaj)
+    if anaf_eroare:
+        mesaj = anaf_eroare + " " + DE_VERIFICAT_FARA_ANAF
+        return _af.afirmatie("verificare_rupta", "datele ANAF ale CUI-ului nou", mesaj, eroare=anaf_eroare,
+                             gasit=False, schimbari=[], mesaj=mesaj)
+    mesaj = ("ANAF nu are date pentru CUI-ul %s (nu apare în registrul contribuabililor)." % cui_nou) + " " + DE_VERIFICAT_FARA_ANAF
+    return _af.afirmatie("absenta_observatie", "datele ANAF ale CUI-ului nou", mesaj,
+                         surse_consultate="registrul contribuabililor ANAF, pentru CUI-ul %s" % cui_nou,
+                         gasit=False, schimbari=[], mesaj=mesaj)
+
+
+def corecteaza_cui(conn, tenant_id, cui, user_id, confirmat=False, anaf=None, anaf_eroare=None):
     """[deficiența 272] Corectura CUI-ului — operațiunea separată a administratorului (ruta o păzește: `drepturi.ADMIN`). Fără
     `confirmat`, întoarce avertismentul (nimic scris). Cu el: cifra de control, perioadele deschise (CUI-ul decide declarațiile), scrierea
-    în AMBELE locuri (`tenant_provisioning.alege_cui`) și jurnalul Date firmă, cu autorul. Nu comite (apelantul deține tranzacția)."""
-    _cui = (cui or "").strip().upper()
+    în AMBELE locuri (`tenant_provisioning.alege_cui`) și jurnalul Date firmă, cu autorul. Nu comite (apelantul deține tranzacția).
+
+    [459, comanda Costin 11.3 pct.5: „la schimbarea CUI-ului rămân datele celui vechi”] `anaf` = datele ANAF ale CUI-ului NOU
+    (`tenant_provisioning.date_din_anaf`, cerute de apelant ÎNAINTE de conexiune; None = negăsit / necitit, `anaf_eroare` = de ce n-au
+    venit). Avertismentul le arată ca propunere, câmp cu câmp (`anaf`: acum -> ANAF), ca la 444 („se spune și se propune actualizarea”);
+    confirmarea le aplică: datele de la ANAF înlocuiesc ce era scris pentru CUI-ul vechi (`tenant_provisioning.inlocuieste_din_anaf`),
+    denumirea trece prin `alege_denumirea` („anaf”, cu autorul), iar dacă firma e chiar firma proprie a cabinetului, CUI-ul cabinetului se
+    corectează odată cu ea. Fără date ANAF, avertismentul și răspunsul spun ce rămâne de verificat (`DE_VERIFICAT_FARA_ANAF`).
+    Verificarea CUI-ului e aceeași ca la crearea firmei (`tenant_provisioning.motiv_cui_firma_invalid`)."""
+    from core import cui_forma as _cf   # [lotul 11, decizia 10.3] CUI-ul se păstrează fără „RO” și fără spații
+    from core import tenant_provisioning as _tp, repo_firma_profil as _rfp
+    _cui = _cf.stocare(cui) or ""
     inainte = _instantaneu(conn)
     _vechi = (inainte.get("cui") or "").strip()
     if not _cui:
         return {"ok": False, "camp": "cui", "mesaj": "Scrie CUI-ul corect."}
-    if _cui == _vechi.upper():
+    if _cui == (_cf.stocare(_vechi) or ""):
         return {"ok": False, "camp": "cui", "cod": "CUI_NESCHIMBAT", "mesaj": "CUI-ul scris e cel înregistrat deja: nu e nimic de corectat."}
-    from core.solduri_parteneri_api import valideaza_cui as _vcui
-    _ok, _motiv = _vcui(_cui)
-    if not _ok:
-        return {"ok": False, "camp": "cui", "mesaj": "CUI-ul %s nu e valid (%s)." % (_cui, _motiv)}
+    _motiv = _tp.motiv_cui_firma_invalid(_cui)
+    if _motiv:
+        return {"ok": False, "camp": "cui", "mesaj": _motiv}
+    _anaf = _anaf_pentru_corectura(conn, _cui, anaf, anaf_eroare)
     if not confirmat:
-        return {"ok": False, "cod": "CONFIRMARE_CERUTA", "avertisment": AVERTISMENT_CORECTURA_CUI % (_vechi or "—", _cui)}
-    from core import tenant_provisioning as _tp, repo_firma_profil as _rfp
+        return {"ok": False, "cod": "CONFIRMARE_CERUTA", "avertisment": AVERTISMENT_CORECTURA_CUI % (_vechi or "—", _cui), "anaf": _anaf}
+    _den_anaf = ((anaf or {}).get("denumire") or "").strip()
+    _cu_nume = any(s["camp"] == "nume" for s in _anaf["schimbari"]) and bool(_den_anaf)
+    with conn.cursor() as cur:
+        cur.execute("SELECT schema_name, accounting_firm_id FROM public.tenants WHERE id = %s", (tenant_id,))
+        _schema, _cabinet = cur.fetchone()
+        # firma proprie a cabinetului: CUI-ul cabinetului e chiar al ei (`uc_auth._dupa_cont_nou` îl scrie din același CUI)
+        cur.execute("SELECT id FROM public.accounting_firms WHERE id = %s AND " + _cf.SQL.format(c="cui") + " = %s",
+                    (_cabinet, _cf.stocare(_vechi) or ""))
+        _cab_propriu = cur.fetchone()
     try:
         _tp.cere_cui_unic(conn, tenant_id, _cui)
         cere_perioade_deschise(conn, "CUI-ul firmei")
+        if _cu_nume:   # poarta denumirii ÎNAINTE de orice scriere (aceeași ca la redenumire)
+            _tp.cere_nume_unic(conn, _tp.cere_denumire_scriibila(_den_anaf), _cabinet, exclude_id=tenant_id)
     except ValueError as e:
         return {"ok": False, "camp": "cui", "mesaj": str(e)}
-    _tp.alege_cui(conn, tenant_id, _cui)
+    from core import regim_tva_incasare as _rti
     with conn.cursor() as cur:
+        _regim_vechi = dict(_rfp.regim_tva_pentru_schimbare(cur) or {}, tva_incasare_perioade=_rti.text_perioade(_rti.perioade(cur)))
+    if _cab_propriu:
+        from core import auth_api as _aa, chei_unice as _chei
+        try:
+            _aa.actualizeaza_cabinet(conn, _cabinet, cui=_cui)
+        except _chei.CheieDublata as e:
+            return {"ok": False, "camp": "cui", "mesaj": str(e)}
+    _tp.alege_cui(conn, tenant_id, _cui)
+    _tp.inlocuieste_din_anaf(conn, _schema, anaf)
+    if _cu_nume:
+        _tp.alege_denumirea(conn, tenant_id, "anaf", user_id)
+    with conn.cursor() as cur:
+        # indicatorul „se aplică azi” urmează perioadele, când există (`regim_tva_incasare.aplica_la`); jurnalul regimului, o dată
+        if _rti.perioade(cur):
+            from core.common import azi_ro as _azi   # ziua decide verdictul „se aplică azi”: ziua din București
+            cur.execute("UPDATE firma_profil SET tva_la_incasare = %s WHERE id = 1", (_rti.aplica_la(cur, _azi()),))
+        _rn = _rfp.regim_tva_pentru_schimbare(cur) or {}
+        _rfp.jurnalizeaza_regim_tva(cur, _regim_vechi, {"platitor_tva": _rn.get("platitor_tva"), "tva_la_incasare": _rn.get(
+            "tva_la_incasare"), "tva_incasare_perioade": _rti.text_perioade(_rti.perioade(cur))}, user_id)
         _rfp.jurnalizeaza_campuri(cur, inainte, _instantaneu(conn), user_id)
-    return {"ok": True, "cui": _cui}
+    return {"ok": True, "cui": _cui, "anaf": _anaf}
 
 
 def cere_perioade_deschise(conn, ce):
@@ -442,7 +541,8 @@ def citeste_date(conn):
     """Profilul complet + lipsurile + optiunile de cont venit, pentru ecranul Date firma."""
     import psycopg2.extras as _E
     coloane = (list(CAMPURI_FISCALE) + ["cont_venit_implicit"] + list(CAMPURI_CAPITAL) + ["tip_firma"]
-               + list(CAMPURI_AMEF) + ["metoda_stoc", "serie_chitanta", "data_infiintare"] + list(CAMPURI_C69))  # [F182]; [lot 19 d12]; [D394 Î2]; [06.10.2026 §6.3]; [decizii 07.10 pct.5]
+               + list(CAMPURI_AMEF) + ["metoda_stoc", "serie_chitanta", "data_infiintare"] + list(CAMPURI_C69)  # [F182]; [lot 19 d12]; [D394 Î2]; [06.10.2026 §6.3]; [decizii 07.10 pct.5]
+               + list(CAMPURI_BILANT))   # [lotul 11, decizia 10.3] interesul public (bilanțul)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT %s FROM firma_profil LIMIT 1" % ", ".join(coloane))
         r = cur.fetchone()
@@ -454,6 +554,12 @@ def citeste_date(conn):
             prof[k] = str(prof[k])
     if prof.get("data_infiintare") is not None:
         prof["data_infiintare"] = prof["data_infiintare"].isoformat()
+    # [lotul 11, decizia Costin 10.3] „«RO» apare doar la afișare, după starea de plătitor de TVA” (CF art.318 alin.(1)): CUI-ul arătat
+    from core import cui_forma as _cf
+    with conn.cursor() as cur:
+        cur.execute("SELECT platitor_tva FROM firma_profil LIMIT 1")
+        _pt = cur.fetchone()
+    prof["cui_afisat"] = _cf.afisare(prof.get("cui"), _pt[0] if _pt else None)
     from core import capital_social as _cs
     from core import luna_preluare as _lp, repo_firma_profil as _rfp
     with conn.cursor() as cur:   # [08.10 §6 pct.4] luna preluării: salvată / propusă (dedusă, plafonată la prima notă) / efectivă
@@ -466,112 +572,36 @@ def citeste_date(conn):
             "blocaje": blocaje(conn, prof)}
 
 
+def _refuz_formular(er, coduri):
+    """[lotul 11, deficiența 440] Refuzul Date firmă cu TOATE erorile adunate (`core.erori.ErorileFormularului`): `camp` / `cod` = ale
+    primei (apelanții care citeau un singur câmp), `mesaj` = toate, rând cu rând, `erori_campuri` = fiecare cu câmpul ei."""
+    d = er.detaliu()
+    prima = (d["erori_campuri"] or [{"camp": None}])[0]["camp"]
+    r = {"ok": False, "camp": prima, "mesaj": d["mesaj"], "erori_campuri": d["erori_campuri"]}
+    cod = next((coduri[c["camp"]] for c in d["erori_campuri"] if c["camp"] in coduri), None)
+    if cod:
+        r["cod"] = cod
+    return r
+
+
 def salveaza_date(conn, date, tenant_id=None, user_id=None):
     """Salveaza datele fiscale. [lotul 10, deficiența 427] Un câmp obligatoriu gol NU refuză salvarea: ce s-a completat se
     salvează, iar lipsa rămâne în `lipsuri` (răspunsul o întoarce — ecranul o spune după salvare) și blochează numai declarațiile
     care o cer (`OBLIGATORII` -> generatoarele). Se refuză numai o valoare INVALIDĂ (CUI, cont, serie, dată …).
     [06.10.2026 §6.4] Orice câmp schimbat se jurnalizează (`firma_profil_jurnal`: cine, când, vechi -> nou) — de aceea
-    salvarea cere utilizatorul."""
+    salvarea cere utilizatorul.
+    [lotul 11, deficiența 440, comanda Costin 11.1 pct.16: „toate erorile apar deodată, fiecare cu textul ei, în casetă și lângă
+    câmp”] Refuzurile care țin de STAREA evidenței (autorul lipsă, CUI-ul înregistrat schimbat, perioada închisă) vin întâi, singure;
+    apoi fiecare valoare invalidă se ADAUGĂ (`ErorileFormularului`) și se refuză o dată, cu toate (`erori_campuri`, `camp` = numele
+    din cerere — ecranul pune prefixul „df-”). Nimic nu se scrie până nu trec toate."""
+    from core.erori import ErorileFormularului as _Erori
     if date and user_id is None:
         return {"ok": False, "camp": None,
                 "mesaj": "Date firmă se salvează cu utilizatorul care le schimbă — orice schimbare rămâne în jurnal; lipsește."}
     inainte = _instantaneu(conn)
     curat = {k: (str(date.get(k)).strip() if date.get(k) is not None else None)
              for k in CAMPURI_FISCALE if k in (date or {})}
-    # [lot 19 d12] forma juridică + capitalul (L31/1990 art.74 alin.(3)): validate și scrise separat — numere, nu text
-    cap = {k: date.get(k) for k in CAMPURI_CAPITAL if k in (date or {})}
-    if cap:
-        from core import capital_social as _cs
-        _er = _cs.valideaza(cap)
-        if _er:
-            return {"ok": False, "camp": _er[0][0], "mesaj": _er[0][1]}
-    _val = {k: (None if cap[k] in (None, "") else
-                (str(cap[k]).strip().upper() if k == "forma_juridica" else _cs._suma(cap[k]))) for k in cap} if cap else {}
-    # [06.10.2026 §6.3] metoda de stoc: explicită, fără implicit; odată declarată nu se șterge, se schimbă (și rămâne în jurnal)
-    if "metoda_stoc" in (date or {}):
-        from core import metoda_stoc as _ms
-        _m = str(date.get("metoda_stoc") or "").strip() or None
-        if _m is None:
-            if inainte.get("metoda_stoc"):
-                return {"ok": False, "camp": "metoda_stoc",
-                        "mesaj": "Metoda de stoc nu se șterge după ce a fost declarată — se schimbă cu cealaltă, iar "
-                                 "schimbarea rămâne în jurnal."}
-        elif _m in _ms.NESUPORTATE:   # [decizia Costin 07.10, pct.1] refuz clar, „nesuportat încă”
-            return {"ok": False, "camp": "metoda_stoc", "cod": _ms.COD_NESUPORTATA,
-                    "mesaj": _ms.MESAJ_NESUPORTATA % _ms.NESUPORTATE[_m]}
-        elif _m not in (_ms.GV, _ms.CV):
-            return {"ok": False, "camp": "metoda_stoc", "mesaj": "Metoda de stoc e global-valorică sau cantitativ-valorică."}
-        else:
-            _val["metoda_stoc"] = _m
-    # [decizia Costin 07.10, pct.5] seria chitanțelor: „cerută la prima folosire, ca seria facturii; fără «CH» din oficiu”.
-    # OMFP 2634/2015 anexa 1 pct.24: seria e „stabilit(ă) de entitate”. Odată stabilită nu se șterge (numerotarea continuă pe ea).
-    if "serie_chitanta" in (date or {}):
-        _sc = str(date.get("serie_chitanta") or "").strip().upper() or None
-        if _sc is None:
-            if inainte.get("serie_chitanta"):
-                return {"ok": False, "camp": "serie_chitanta",
-                        "mesaj": "Seria chitanțelor nu se șterge după ce a fost stabilită — se schimbă, iar schimbarea rămâne în jurnal."}
-        elif not _re.fullmatch(r"[A-Z0-9]{1,10}", _sc):
-            return {"ok": False, "camp": "serie_chitanta",
-                    "mesaj": "Seria chitanțelor: litere și cifre, cel mult 10 (ex. CH, CA)."}
-        else:
-            _val["serie_chitanta"] = _sc
-    # [08.10.2026, decizia Costin §6 pct.4] „Luna preluării: editabilă în Date firmă, cu valoarea dedusă ca propunere, dar niciodată
-    # după luna primei note.” Gol = propunerea (`luna_preluare.efectiva`).
-    if "luna_preluare" in (date or {}):
-        from core import luna_preluare as _lp, repo_firma_profil as _rfp
-        try:
-            _l = _lp.din_text(date.get("luna_preluare"))
-        except ValueError as e:
-            return {"ok": False, "camp": "luna_preluare", "mesaj": str(e)}
-        with conn.cursor() as _cur:
-            _er = _lp.eroare(_l, _rfp.fapte_preluare(_cur)["prima_nota"])
-        if _er:
-            return {"ok": False, "camp": "luna_preluare", "mesaj": _er}
-        _val["luna_preluare"] = _l
-    # [deficiența 229, comanda Costin 12.10.2026] data înființării: de la ea curge primul exercițiu financiar (Legea 82/1991 art.27
-    # alin.(8)), în care coloana „An precedent” a bilanțului rămâne goală. Gol = necunoscută; o dată din viitor nu e o înființare.
-    if "data_infiintare" in (date or {}):
-        import datetime as _dt
-        _di = str(date.get("data_infiintare") or "").strip() or None
-        if _di is not None:
-            try:
-                _di = _dt.date.fromisoformat(_di)
-            except ValueError:
-                return {"ok": False, "camp": "data_infiintare", "mesaj": "Data înființării: o dată (zi, lună, an)."}
-            if _di > _dt.date.today():
-                return {"ok": False, "camp": "data_infiintare", "mesaj": "Data înființării nu poate fi în viitor."}
-        _val["data_infiintare"] = _di
-    # [D394 Î2] bifa „activitate exceptată de la AMEF” + litera din OUG 28/1999 art.2 (cerută când bifa e da)
-    if any(k in (date or {}) for k in CAMPURI_AMEF):
-        from core.uc_comun import bifa as _bifa
-        try:
-            exc = _bifa(date, "activitate_exceptata_amef", None)   # [lotul 07.10 B] gol = neales (NULL), nu „Nu”
-        except ValueError as e:
-            return {"ok": False, "camp": "activitate_exceptata_amef", "mesaj": str(e)}
-        lit = str(date.get("activitate_amef") or "").strip().lower() or None
-        if exc and lit not in _activitati_amef():
-            return {"ok": False, "camp": "activitate_amef",
-                    "mesaj": "Alege activitatea exceptată de la casa de marcat (OUG 28/1999 art.2) — fără ea, "
-                             "încasările fără bon nu au temei."}
-        _val["activitate_exceptata_amef"] = exc
-        _val["activitate_amef"] = lit if exc else None
-    # [lotul 10, C69] mare contribuabil (Da / Nu; gol = nedeclarat, NULL — bilanțul îl cere la generare, DS cap.17 „cerut la prima
-    # folosire”), forma de proprietate (un cod din nomenclatorul ANAF, altfel refuz), „nu are cont bancar” (Da / Nu, coloana NOT NULL)
-    if any(k in (date or {}) for k in CAMPURI_C69):
-        from core.uc_comun import bifa as _bifa
-        for k, implicit in (("mare_contribuabil", None), ("fara_cont_bancar", False)):
-            if k in (date or {}):
-                try:
-                    _val[k] = _bifa(date, k, implicit)
-                except ValueError as e:
-                    return {"ok": False, "camp": k, "mesaj": str(e)}
-        if "forma_proprietate" in (date or {}):
-            _fp_cod = str(date.get("forma_proprietate") or "").strip() or None
-            if _fp_cod is not None and _fp_cod not in _forme_proprietate():
-                return {"ok": False, "camp": "forma_proprietate",
-                        "mesaj": "Forma de proprietate: alege una din lista ANAF (codul din nomenclatorul formelor de proprietate)."}
-            _val["forma_proprietate"] = _fp_cod
+    # ── STAREA evidenței (refuzuri unice, înaintea câmpurilor) ──────────────────────────────────────────────────────────────
     # [R46] Doar câmpurile care DECID. Un telefon corectat pe o firmă cu ianuarie închis trebuie
     # să treacă mai departe — altfel poarta ar bloca munca de zi cu zi ca să apere trecutul.
     # [05.10.2026, găsit la proba pct.2] poarta se aplică la SCHIMBAREA unui câmp care decide, nu la prezența lui: formularul
@@ -579,9 +609,14 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
     # [deficiența 272, comanda Costin 16.10.2026, verbatim în DECIZII] „CUI-ul nu se modifică din acest ecran, de niciun rol; o corectură
     # reală de CUI e o operațiune separată, a administratorului, cu avertisment.” Formularul trimite mereu CUI-ul: același trece (nu se
     # rescrie); altul se refuză (`corecteaza_cui` e operațiunea separată). Numai o firmă FĂRĂ CUI îl primește de aici (completare).
+    # [lotul 11, decizia Costin 10.3] „CUI-ul se păstrează fără «RO» și fără spații”: forma păstrată (`cui_forma.stocare`) — „RO 123” și
+    # „123” sunt același CUI (nu e o schimbare refuzată), iar cel scris se păstrează fără prefix
+    from core import cui_forma as _cf
+    if "cui" in curat:
+        curat["cui"] = _cf.stocare(curat["cui"])
     _cui_vechi = (inainte.get("cui") or "").strip()
     if "cui" in curat and _cui_vechi:
-        if (curat["cui"] or "").strip().upper() != _cui_vechi.upper():
+        if (curat["cui"] or "") != (_cf.stocare(_cui_vechi) or ""):
             return {"ok": False, "camp": "cui", "cod": COD_CUI_NEMODIFICABIL, "mesaj": MESAJ_CUI_NEMODIFICABIL}
         curat.pop("cui")
     with conn.cursor() as _cur:
@@ -595,6 +630,116 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
             cere_perioade_deschise(conn, "CUI-ul firmei" if decid == ["cui"] else ", ".join(decid))
         except ValueError as e:
             return {"ok": False, "camp": decid[0], "mesaj": str(e)}
+    # ── VALORILE scrise de om: toate se verifică, fiecare eroare se adaugă ───────────────────────────────────────────────────
+    er = _Erori("Datele firmei nu s-au salvat")
+    coduri = {}
+    # [lot 19 d12] forma juridică + capitalul (L31/1990 art.74 alin.(3)): validate și scrise separat — numere, nu text
+    cap = {k: date.get(k) for k in CAMPURI_CAPITAL if k in (date or {})}
+    if cap:
+        from core import capital_social as _cs
+        for _c, _m in _cs.valideaza(cap):
+            er.camp(_c, _m)
+    _val = {k: (None if cap[k] in (None, "") else
+                (str(cap[k]).strip().upper() if k == "forma_juridica" else _cs._suma(cap[k]))) for k in cap} if cap else {}
+    # [06.10.2026 §6.3] metoda de stoc: explicită, fără implicit; odată declarată nu se șterge, se schimbă (și rămâne în jurnal)
+    if "metoda_stoc" in (date or {}):
+        from core import metoda_stoc as _ms
+        _m = str(date.get("metoda_stoc") or "").strip() or None
+        if _m is None:
+            if inainte.get("metoda_stoc"):
+                er.camp("metoda_stoc", "Metoda de stoc nu se șterge după ce a fost declarată — se schimbă cu cealaltă, iar "
+                                       "schimbarea rămâne în jurnal.")
+        elif _m in _ms.NESUPORTATE:   # [decizia Costin 07.10, pct.1] refuz clar, „nesuportat încă”
+            er.camp("metoda_stoc", _ms.MESAJ_NESUPORTATA % _ms.NESUPORTATE[_m])
+            coduri["metoda_stoc"] = _ms.COD_NESUPORTATA
+        elif _m not in (_ms.GV, _ms.CV):
+            er.camp("metoda_stoc", "Metoda de stoc e global-valorică sau cantitativ-valorică.")
+        else:
+            _val["metoda_stoc"] = _m
+    # [decizia Costin 07.10, pct.5] seria chitanțelor: „cerută la prima folosire, ca seria facturii; fără «CH» din oficiu”.
+    # OMFP 2634/2015 anexa 1 pct.24: seria e „stabilit(ă) de entitate”. Odată stabilită nu se șterge (numerotarea continuă pe ea).
+    if "serie_chitanta" in (date or {}):
+        _sc = str(date.get("serie_chitanta") or "").strip().upper() or None
+        if _sc is None:
+            if inainte.get("serie_chitanta"):
+                er.camp("serie_chitanta", "Seria chitanțelor nu se șterge după ce a fost stabilită — se schimbă, iar schimbarea "
+                                          "rămâne în jurnal.")
+        elif not _re.fullmatch(r"[A-Z0-9]{1,10}", _sc):
+            er.camp("serie_chitanta", "Seria chitanțelor: litere și cifre, cel mult 10 (ex. CH, CA).")
+        else:
+            _val["serie_chitanta"] = _sc
+    # [08.10.2026, decizia Costin §6 pct.4] „Luna preluării: editabilă în Date firmă, cu valoarea dedusă ca propunere, dar niciodată
+    # după luna primei note.” Gol = propunerea (`luna_preluare.efectiva`).
+    if "luna_preluare" in (date or {}):
+        from core import luna_preluare as _lp, repo_firma_profil as _rfp
+        try:
+            _l = _lp.din_text(date.get("luna_preluare"))
+        except ValueError as e:
+            er.camp("luna_preluare", str(e))
+        else:
+            with conn.cursor() as _cur:
+                _erl = _lp.eroare(_l, _rfp.fapte_preluare(_cur)["prima_nota"])
+            if _erl:
+                er.camp("luna_preluare", _erl)
+            else:
+                _val["luna_preluare"] = _l
+    # [deficiența 229, comanda Costin 12.10.2026] data înființării: de la ea curge primul exercițiu financiar (Legea 82/1991 art.27
+    # alin.(8)), în care coloana „An precedent” a bilanțului rămâne goală. Gol = necunoscută; o dată din viitor nu e o înființare.
+    if "data_infiintare" in (date or {}):
+        import datetime as _dt
+        _di = str(date.get("data_infiintare") or "").strip() or None
+        _di_ok = True
+        if _di is not None:
+            try:
+                _di = _dt.date.fromisoformat(_di)
+            except ValueError:
+                er.camp("data_infiintare", "Data înființării: o dată (zi, lună, an).")
+                _di_ok = False
+            else:
+                if _di > _dt.date.today():
+                    er.camp("data_infiintare", "Data înființării nu poate fi în viitor.")
+                    _di_ok = False
+        if _di_ok:
+            _val["data_infiintare"] = _di
+    # [D394 Î2] bifa „activitate exceptată de la AMEF” + litera din OUG 28/1999 art.2 (cerută când bifa e da)
+    if any(k in (date or {}) for k in CAMPURI_AMEF):
+        from core.uc_comun import bifa as _bifa
+        try:
+            exc = _bifa(date, "activitate_exceptata_amef", None)   # [lotul 07.10 B] gol = neales (NULL), nu „Nu”
+        except ValueError as e:
+            er.camp("activitate_exceptata_amef", str(e))
+        else:
+            lit = str(date.get("activitate_amef") or "").strip().lower() or None
+            if exc and lit not in _activitati_amef():
+                er.camp("activitate_amef", "Alege activitatea exceptată de la casa de marcat (OUG 28/1999 art.2) — fără ea, "
+                                           "încasările fără bon nu au temei.")
+            _val["activitate_exceptata_amef"] = exc
+            _val["activitate_amef"] = lit if exc else None
+    # [lotul 10, C69] mare contribuabil (Da / Nu; gol = nedeclarat, NULL — bilanțul îl cere la generare, DS cap.17 „cerut la prima
+    # folosire”), forma de proprietate (un cod din nomenclatorul ANAF, altfel refuz), „nu are cont bancar” (Da / Nu, coloana NOT NULL)
+    if any(k in (date or {}) for k in CAMPURI_C69):
+        from core.uc_comun import bifa as _bifa
+        for k, implicit in (("mare_contribuabil", None), ("fara_cont_bancar", False)):
+            if k in (date or {}):
+                try:
+                    _val[k] = _bifa(date, k, implicit)
+                except ValueError as e:
+                    er.camp(k, str(e))
+        if "forma_proprietate" in (date or {}):
+            _fp_cod = str(date.get("forma_proprietate") or "").strip() or None
+            if _fp_cod is not None and _fp_cod not in _forme_proprietate():
+                er.camp("forma_proprietate",
+                        "Forma de proprietate: alege una din lista ANAF (codul din nomenclatorul formelor de proprietate).")
+            else:
+                _val["forma_proprietate"] = _fp_cod
+    # [lotul 11, decizia Costin 10.3] entitate de interes public (Da / Nu; gol = nedeclarat, NULL — bilanțul o cere: „15. interes_public
+    # … DA interes_public=(0,1)”, structura SC 1225)
+    if "interes_public" in (date or {}):
+        from core.uc_comun import bifa as _bifa
+        try:
+            _val["interes_public"] = _bifa(date, "interes_public", None)
+        except ValueError as e:
+            er.camp("interes_public", str(e))
     # [lotul 10, deficiența 427] „Ce s-a completat se salvează; lipsurile rămân în «Profil incomplet» și blochează doar declarațiile
     # afectate, cum spune deja ecranul.” Un câmp obligatoriu GOL nu mai refuză salvarea: rămâne în `lipsuri()` (panoul și mesajul de
     # după salvare), iar fiecare generator îl oprește pe declarația lui (`core/test_camp_blocant.py` păzește perechile OBLIGATORII).
@@ -603,31 +748,23 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
     # Probat: `{"cui": "RO1234567890"}` intra fara nicio verificare, si numai in `firma_profil` —
     # `public.tenants.cui` ramanea cel vechi. Validatorul exista deja in aplicatie, pentru
     # PARTENERI (`solduri_parteneri_api.valideaza_cui`); firma proprie n-avea niciunul.
-    if "cui" in curat:
-        _cui = (curat["cui"] or "").strip()
-        if _cui:
-            from core.solduri_parteneri_api import valideaza_cui as _vcui
-            _ok, _motiv = _vcui(_cui)
-            if not _ok:
-                return {"ok": False, "camp": "cui",
-                        "mesaj": "CUI-ul %s nu e valid (%s). CUI-ul firmei intră în fiecare "
-                                 "declarație depusă — unul greșit nu se oprește aici, îl respinge "
-                                 "ANAF, după depunere." % (_cui, _motiv)}
-            if tenant_id is None:
-                return {"ok": False, "camp": "cui",
-                        "mesaj": "CUI-ul se schimbă prin calea care atinge amândouă locurile în "
-                                 "care e scris; cererea asta n-a spus despre ce firmă e vorba."}
-            from core import tenant_provisioning as _tp
-            _tp.alege_cui(conn, tenant_id, _cui)
-            curat.pop("cui")     # scris deja, simetric — nu se mai scrie o data, doar aici
+    _cui_nou = (curat.get("cui") or "").strip() if "cui" in curat else ""
+    if _cui_nou:
+        from core import tenant_provisioning as _tpc   # [459] aceeași verificare ca la crearea firmei
+        _m_cui = _tpc.motiv_cui_firma_invalid(_cui_nou)
+        if _m_cui:
+            er.camp("cui", _m_cui)
+        elif tenant_id is None:
+            er.camp("cui", "CUI-ul se schimbă prin calea care atinge amândouă locurile în "
+                           "care e scris; cererea asta n-a spus despre ce firmă e vorba.")
     # [F182] cont venit implicit: optional, dar daca vine trebuie sa fie cont de venit (clasa 70) valid.
     # Refuz un cont invalid la sursa — altfel emiterea ar scrie o nota contabila pe un cont gresit.
     if "cont_venit_implicit" in (date or {}):
         cv = str(date.get("cont_venit_implicit") or "").strip()
         if not cont_venit_valid(cv):
-            return {"ok": False, "camp": "cont_venit_implicit",
-                    "mesaj": "Contul de venit implicit trebuie să fie un cont din clasa 70 (cifra de afaceri)."}
-        curat["cont_venit_implicit"] = cv
+            er.camp("cont_venit_implicit", "Contul de venit implicit trebuie să fie un cont din clasa 70 (cifra de afaceri).")
+        else:
+            curat["cont_venit_implicit"] = cv
     # [R81/O3, 28.08.2026] DA, ecranul „Date firmă" are o cale de editare directă a denumirii
     # fiscale: `CAMPURI[0]` din `date_firma.js` e chiar `nume`, iar el ajungea aici. Sub simetrie,
     # denumirea nu se mai scrie de aici, ci prin scriitorul unic din `tenant_provisioning` — care
@@ -637,10 +774,16 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
     # nimic de-a face cu `public`, iar a cere identificatorul pentru un telefon corectat ar lega
     # inutil două straturi.
     nume_nou = curat.pop("nume", None)
+    if nume_nou is not None and not tenant_id:
+        er.camp("nume", "Denumirea firmei nu se poate salva fără identificatorul firmei.")
+    if er:
+        return _refuz_formular(er, coduri)
+    # ── SCRIEREA: numai după ce au trecut toate valorile ─────────────────────────────────────────────────────────────────────
+    if _cui_nou:
+        from core import tenant_provisioning as _tp
+        _tp.alege_cui(conn, tenant_id, _cui_nou)
+        curat.pop("cui")     # scris deja, simetric — nu se mai scrie o data, doar aici
     if nume_nou is not None:
-        if not tenant_id:
-            return {"ok": False, "camp": "nume",
-                    "mesaj": "Denumirea firmei nu se poate salva fără identificatorul firmei."}
         from core import tenant_provisioning as _tp
         try:
             _tp.scrie_denumirea(conn, tenant_id, nume_nou)
@@ -673,6 +816,9 @@ ETICHETE = {
     "declarant_functie": "Functia declarantului",
     "mare_contribuabil": "Mare contribuabil", "forma_proprietate": "Forma de proprietate",   # [lotul 10, C69]
     "fara_cont_bancar": "Nu are cont bancar",
+    "interes_public": "Entitate de interes public",   # [lotul 11, decizia 10.3]
+    # [lotul 11, deficiența 442] capitalul social (Legea 31/1990 art.74 alin.(3)) — în „Profil incomplet” cu „blochează emiterea facturilor”
+    "forma_juridica": "Forma juridica", "capital_subscris": "Capital social subscris", "capital_varsat": "Capital social varsat",
 }
 
 

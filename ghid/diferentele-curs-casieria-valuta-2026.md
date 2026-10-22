@@ -2,7 +2,7 @@
 title: "Diferențele de curs la casieria în valută 2026"
 description: "Reevaluarea lunară a casieriei în valută (cont 5314) funcționează la fel ca pentru bancă; la decontări directe prin casierie, o limită reală din iConta.eu."
 published: 2026-09-26
-modified: 2026-10-13
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Casieria în valută (cont 5314) urmează exact aceleași reguli de diferențe d
 
 ## Ce face iConta.eu
 
-Pentru **reevaluarea lunară**, ecranul „Operațiuni speciale → Reevaluare valuta" din iConta.eu funcționează corect pentru casierie: câmpul „cont" e text liber, deci accepți 5314 la fel de bine ca 5124, iar motorul („reevaluarea soldului în valută (Operațiuni speciale)”) calculează diferența cu aceeași regulă de semn ca pentru bancă. Pentru **decontări directe prin casierie** (o încasare sau plată de creanță/datorie efectuată prin casa în valută), există însă o limită reală: ecranul „Decontare în valută" nu are câmp pentru contul de bancă/casierie, iar backend-ul folosește implicit contul 5124 — deci o decontare care a avut loc de fapt prin 5314 se înregistrează automat pe 5124, greșit, fără niciun avertisment. Dacă lucrezi cu casierie în valută și faci decontări directe prin ea, corectează manual contul din nota generată înainte de a o confirma.
+Pentru **reevaluarea lunară**, „Închidere lună → Reevaluare valută” din iConta.eu propune și casieria în valută: fiecare cont 5124, 5314 sau 5414 cu sold la sfârșitul lunii apare în propunere, cu soldul în lei din evidență; soldul în valută îl completezi pe ecran, iar aplicația calculează diferența la cursul BNR din ultima zi bancară a lunii, cu aceeași regulă de semn ca pentru bancă. Pentru **decontări directe prin casierie** (o încasare sau plată de creanță/datorie efectuată prin casa în valută), formularul „Decontare în valută" din „Operațiuni speciale" are câmpul „Cont bancă", propus 5124: dacă decontarea a avut loc prin casa în valută, scrii acolo 5314, ca nota să iasă pe contul corect.
 
 [iConta.eu](/)

@@ -2,7 +2,7 @@
 title: "Cum se ține contabilitatea conturilor bancare în valută?"
 description: Un cont bancar în valută (5124) se ține atât în lei, cât și în valuta lui — fiecare operațiune se înregistrează la cursul BNR din ziua ei, iar soldul se reevaluează lunar la cursul BNR din ultima zi bancară a lunii, cu diferența pe venituri/cheltuieli financiare.
 published: 2026-09-25
-modified: 2026-09-25
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -35,6 +35,6 @@ Cele două reguli nu se substituie una alteia: operațiunile din timpul lunii r�
 
 ## Ce face iConta.eu
 
-Cursul BNR folosit la contabilizarea unei operațiuni în contul bancar în valută se determină pentru data operațiunii, prin motorul de curs — „ultimul curs BNR comunicat, valabil cel târziu la data cerută", fără fallback tăcut la un curs implicit dacă acesta nu poate fi determinat (curs indisponibil, prea vechi sau monedă necotată). Reevaluarea lunară a soldului în valută, cu recunoașterea diferenței pe 665/765, rămâne o regulă contabilă (pct. 325) pe care contabilul o aplică pe baza cursului BNR preluat din aceeași sursă.
+Cursul BNR folosit la contabilizarea unei operațiuni în contul bancar în valută se determină pentru data operațiunii, prin motorul de curs — ultimul curs comunicat de BNR înaintea zilei operațiunii, fără fallback tăcut la un curs implicit dacă acesta nu poate fi determinat (curs indisponibil, prea vechi sau monedă necotată). Reevaluarea lunară a soldului în valută (pct. 325) e propusă de aplicație în „Închidere lună → Reevaluare valută”, la cursul BNR din ultima zi bancară a lunii, cu diferența pe 665/765; soldul în valută al contului îl completezi pe ecran.
 
 [iConta.eu](/)

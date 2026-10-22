@@ -27,7 +27,9 @@ from core.erori import RefuzGenerare
 
 PROF = {"cui_numeric": "14399840", "nume": "FIRMA C69 SRL", "reg_com": "J12/1/2020", "caen": "6920", "adresa": "Str. Probei 9",
         "cod_judet": 12, "mare_contribuabil": False, "forma_proprietate": "35", "declarant_nume": "POPESCU",
-        "declarant_prenume": "ION"}
+        "declarant_prenume": "ION",
+        # [lotul 11, decizia 10.3] interesul public (Date firmă) și întocmitorul (profilul cabinetului) — cerute de antet, altfel refuz
+        "interes_public": False, "calit_intocmit": 12, "intocmit_nume": "IONESCU MARIA"}
 
 
 def _xml(prof):
@@ -124,10 +126,15 @@ def conn():
             with c.cursor() as cur:
                 cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA)
                 cur.execute(tp.parametrizeaza_template(io.open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA))
+                # [lotul 11, decizia 10.3] cabinetul sintetic care ține firma, cu întocmitorul completat (antetul îl cere)
+                cur.execute("INSERT INTO public.accounting_firms (nume, calit_intocmit, nume_intocmit) VALUES ('Cabinet sintetic C69', 12, "
+                            "'IONESCU MARIA') RETURNING id")
+                cur.execute("INSERT INTO public.tenants (schema_name, nume, accounting_firm_id, creat_la) VALUES (%s, 'FIRMA C69 SRL', %s, "
+                            "'2020-01-01')", (_SCHEMA, cur.fetchone()[0]))
                 cur.execute("SET LOCAL search_path TO %s, public" % _SCHEMA)
                 cur.execute("INSERT INTO firma_profil (id, nume, cui, reg_com, adresa, oras, judet, caen, declarant_nume, declarant_prenume, "
-                            "declarant_functie, platitor_tva, tip_decont) VALUES (1, 'FIRMA C69 SRL', '14399840', 'J12/1/2020', "
-                            "'Str. Probei 9', 'Cluj-Napoca', 'CJ', '6920', 'POPESCU', 'ION', 'ADMINISTRATOR', false, 'T')")
+                            "declarant_functie, platitor_tva, tip_decont, interes_public) VALUES (1, 'FIRMA C69 SRL', '14399840', 'J12/1/2020', "
+                            "'Str. Probei 9', 'Cluj-Napoca', 'CJ', '6920', 'POPESCU', 'ION', 'ADMINISTRATOR', false, 'T', false)")
             yield c
         finally:
             c.rollback()

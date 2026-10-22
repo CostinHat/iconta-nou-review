@@ -86,7 +86,7 @@ MT940 = """:20:EXTRAS{tag}
 def test_def_309_banca_contata_la_validare_comisionul_si_motivul_pe_romaneste(patron, firma_e2e):
     """309. Bancă: „Contat ✓” cât nota e încă la validare; „match exact pe o factura”; comisionul roșu „Fără potrivire”.
     Pașii: extrasul cu o încasare de la client (factura lui de 242,00) și un comision -> comisionul arată „Notă propusă 627 = 5121”, nu
-    „Fără potrivire”; încasarea „Contează” -> rândul spune „Contată, nota e la validare”; un rând importat înainte de reparație, cu motivul
+    „Fără potrivire”; încasarea „Contează” -> rândul spune „Contată · notă ciornă” (nu „la validare”, nu „Contat ✓”); un rând importat înainte de reparație, cu motivul
     vechi în engleză, se citește „potrivire exactă pe o factură”."""
     from e2e_lot6 import _incarca
     pregateste_firma(patron, firma_e2e)
@@ -109,7 +109,7 @@ def test_def_309_banca_contata_la_validare_comisionul_si_motivul_pe_romaneste(pa
     incasare = pg.locator(".pf-frand", has_text="Incasare DANTE INTERNATIONAL SA CUI 14399840 factura " + tag)
     t = incasare.inner_text()
     patron.captura("banca")
-    assert "Contată, nota e la validare" in t and "Contat ✓" not in t, t
+    assert "Contată · notă ciornă" in t and "la validare" not in t and "Contat ✓" not in t, t   # [lotul 11, 457] patronul contează: ciornă netrimisă
     assert sql('SELECT alocari->>\'motiv\' FROM "%s".extras_linii WHERE id = %%s' % s, (lid,)) == [("match exact pe o factura",)]
     linii = _api(patron, "GET", "/tenants/%d/banca/reconciliere" % firma_e2e["tenant_id"], None)["json"]["linii"]
     assert [x["alocari"]["motiv"] for x in linii if x["id"] == lid] == ["potrivire exactă pe o factură"]
@@ -136,11 +136,16 @@ def test_def_310_casa_spune_de_ce_lipseste_factura_si_are_renunta(patron, firma_
     pg.select_option("#c-cat", "incasare_client")
     pg.fill("#c-suma", "242")
     pg.fill("#c-cui", CLIENT["#em-cui"])
-    rand = pg.locator(".c-fact-asteptare", has_text=f["numar"] + " din ")
+    # [lotul 11, 443, comanda 11.1 pct.19: „seria și numărul se afișează separat peste tot (F6 nr. 1, nu F61)”] rândul numește factura
+    # „E2EA nr. 2”, nu „E2EA2” (`casa_api.facturi_in_asteptare` -> `pdf_util.serie_nr`)
+    from e2e_bloc_a import SERIE
+    assert f["numar"].startswith(SERIE), f
+    nr = "%s nr. %s" % (SERIE, f["numar"][len(SERIE):])
+    rand = pg.locator(".c-fact-asteptare", has_text=nr + " din ")
     rand.first.wait_for(timeout=20000)
     t = rand.first.inner_text()
     patron.captura("factura_in_asteptare")
-    assert t.startswith(f["numar"]) and "e încasată printr-o notă care așteaptă validarea" in t and "(din " in t, t
+    assert t.startswith(nr + " din ") and "e încasată printr-o notă care așteaptă validarea" in t and "(din " in t, t
     assert pg.locator("[data-cf='%s']" % f["factura_id"]).count() == 0
     pg.click("#c-renunta")
     assert pg.locator("#c-zona").is_hidden()

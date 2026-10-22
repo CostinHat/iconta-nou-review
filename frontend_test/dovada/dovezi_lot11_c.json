@@ -1,0 +1,1705 @@
+[
+ {
+  "nr": "C85",
+  "firma": "tenant_9055",
+  "descriere": "F6 (sistemul TVA la încasare ales pe 21.10.2026, înainte de reparație, de la 01.11.2026): «Emite factură» -> «Schimbă seria» -> «Configurare emitere» spune „Regim TVA: plătitoare de TVA, TVA la încasare de la 01.11.2026 … — azi nu se aplică”. Înainte (C85): al doilea drum spre ecran nu primea `tvaIncasare`, deci arăta numai „Regim TVA: plătitoare de TVA”. Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-cui"
+   },
+   {
+    "click": "#em-schimba-serie"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #em-config-regim"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Configurare emitere"
+   },
+   {
+    "contine": "TVA la încasare de la 01.11.2026",
+    "zona": ".fereastra:last-of-type #em-config-regim"
+   },
+   {
+    "contine": "azi nu se aplică",
+    "zona": ".fereastra:last-of-type #em-config-regim"
+   }
+  ],
+  "captura": "c85_f6_vechi_schimba_seria_configurare_emitere.png"
+ },
+ {
+  "nr": "C87",
+  "firma": "tenant_9049",
+  "descriere": "Cabinet, Asistenți -> Ana Asistent -> «Vizualizează»: „Declarații lucrate” listează declarațiile pregătite / respinse de ea în coada copiată din producție (scrise înainte de reparație, cu id-ul omului în `creat_de` / `respins_de`). Înainte: „Nicio activitate înregistrată.” pe orice cabinet (citire producție 22.10.2026: 0 rânduri din 39), deci semnalul „patru ochi” nu se putea aprinde",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='asistenti'])"
+   },
+   {
+    "asteapta": ".val-card:has-text('Ana Asistent') [data-act='vezi']"
+   },
+   {
+    "click": ".val-card:has-text('Ana Asistent') [data-act='vezi']"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #asi-activitate"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #asi-activitate .asi-act-rand"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Declarații lucrate"
+   },
+   {
+    "exista": ".fereastra:last-of-type #asi-activitate .asi-act-rand"
+   },
+   {
+    "nu_contine": "Nicio activitate înregistrată",
+    "zona": ".fereastra:last-of-type #asi-activitate"
+   },
+   {
+    "contine": "pregatit",
+    "zona": ".fereastra:last-of-type #asi-activitate"
+   }
+  ],
+  "captura": "c87_f1_cabinet_vechi_ana_declaratii_lucrate.png"
+ },
+ {
+  "nr": "C94",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 09/2026 (statul contat și validat înainte de reparație) — secțiunea E3 a fiecărui salariat poartă E3_4=\"P\" (venit din perioada de raportare, OPANAF 605/2026 anexa 2, E.3 rândul 4), fără E3_5 / E3_6 („se completează doar dacă la rândul 4 […] a fost utilizată opţiunea \"A\"”). Înainte: E3_4=\"A\" cu E3_5 / E3_6 = luna raportată",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "E3_4=\"P\""
+   },
+   {
+    "nu_contine": "E3_4=\"A\""
+   },
+   {
+    "nu_contine": "E3_5="
+   },
+   {
+    "nu_contine": "E3_6="
+   }
+  ],
+  "captura": "c94_f5_vechi_d112_09_2026_e3_4.png"
+ },
+ {
+  "nr": "C92",
+  "firma": "tenant_9053",
+  "descriere": "F5, statul 10/2026 -> «Concediu» pe rândul Popescu Elena -> «+ Certificat nou» -> cod 10: apare câmpul „Numărul avizului medicului expert” (obligatoriu, „Obligatoriu la codul 10: îl cere D112 (D_13).”); «Calculează și salvează» fără el -> refuzul lângă câmp. Înainte: câmpul apărea numai la codul 06, deci un certificat cod 10 făcea D112 nedepunibil (DUK regula S102). Formularul are și alte câmpuri goale: nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Popescu Elena') [data-cm]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-cod",
+    "valoare": "10"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "captura": "c92_f5_cod10_campul_avizului.png"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .msg-eroare[data-camp='cm-urgenta']"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Numărul avizului medicului expert",
+    "zona": ".fereastra:last-of-type #cm-urgenta-eticheta"
+   },
+   {
+    "contine": "Obligatoriu la codul 10: îl cere D112 (D_13).",
+    "zona": ".fereastra:last-of-type #cm-urgenta-ajutor"
+   },
+   {
+    "contine": "numărul avizului medicului expert",
+    "zona": ".fereastra:last-of-type .msg-eroare[data-camp='cm-urgenta']"
+   }
+  ],
+  "captura": "c92_f5_cod10_fara_aviz_refuzat.png"
+ },
+ {
+  "nr": "C98",
+  "firma": "tenant_9049",
+  "descriere": "Cabinetul de test, pagina principală: cererea „Primii pași” (`GET /eu/inceput`, zona #inceput-carduri) răspunde fără 5xx, cu toate firmele cabinetului. Cazul reparat — o firmă ștearsă între listarea firmelor și citirea ei, sau contul șters cu sesiunea deschisă — nu se poate face pe ecran (cere ștergerea unei scheme în timpul cererii); îl probează core/test_lot11_c98_inceput_firma_stearsa.py. Pe copie, codul vechi trecea și el: nicio verificare de aici nu deosebește reparația",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "asteapta": "[data-cheie='validat']"
+   },
+   {
+    "asteapta": "#inceput-carduri",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#inceput-carduri"
+   },
+   {
+    "exista": "[data-cheie='validat']"
+   }
+  ],
+  "captura": "c98_f1_cabinet_primii_pasi.png"
+ },
+ {
+  "nr": "C88",
+  "firma": "tenant_9049",
+  "descriere": "F1: «Emite factură» cu data 02.07.2026, o linie de serviciu 1 × 100.000, 21%, moneda HUF: ÎNAINTE de emitere, cursul BNR e 0,014719 din 01.07.2026 (BNR: 1,4719 la 100 HUF; CF art.290 alin.(2), HG 1/2016 pct.35 alin.(1)), TVA în lei 309,10, total 1.781,00. Înainte (C88): 0,0147, TVA 308,70, total 1.778,70. Nu se emite nimic",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-cui"
+   },
+   {
+    "asteapta": "#em-l0-descriere"
+   },
+   {
+    "completeaza": "#em-data",
+    "valoare": "2026-07-02"
+   },
+   {
+    "completeaza": "#em-l0-descriere",
+    "valoare": "Servicii de consultanță contabilă"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "alege": "#em-l0-cota",
+    "valoare": "21"
+   },
+   {
+    "completeaza": "#em-l0-pret_unitar",
+    "valoare": "100000"
+   },
+   {
+    "completeaza": "#em-l0-cantitate",
+    "valoare": "1"
+   },
+   {
+    "alege": "#em-moneda",
+    "valoare": "HUF"
+   },
+   {
+    "asteapta": "#em-valuta-tva",
+    "text": "309,10"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Curs BNR HUF 0,014719 din 01.07.2026",
+    "zona": "#em-valuta"
+   },
+   {
+    "contine": "TVA în lei 309,10 lei",
+    "zona": "#em-valuta"
+   },
+   {
+    "contine": "Total în lei 1.781,00 lei",
+    "zona": "#em-valuta"
+   },
+   {
+    "nu_contine": "HUF 0,0147 din",
+    "zona": "#em-valuta"
+   }
+  ],
+  "captura": "c88_f1_huf_curs_precizia_bnr.png"
+ },
+ {
+  "nr": "C100",
+  "firma": "tenant_9055",
+  "descriere": "F6: Control fiscal -> «Audit de preluare» -> «Rulează auditul» pe soldurile preluate (balanța de deschidere și soldurile pe parteneri, importate înainte de reparație): rândurile „Solduri parteneri vs balanță” spun soldul cu felul lui — „(debitor …)” / „vs balanță creditor …”, ca refuzul importului —, nu „vs balanță -500,00 lei”. Un audit păstrat de dinainte („Primul audit după preluare”, pliat) rămâne cum s-a scris. SCRIE pe copie o rulare de audit. Presupune că firma are solduri pe parteneri importate (altfel auditul spune „Nu există solduri pe parteneri de verificat”)",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cf-audit-run"
+   },
+   {
+    "click": ".fereastra:last-of-type #cf-audit-run"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cf-audit-run",
+    "text": "Rerulează"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #cf-audit-zona"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "defalcarea pe parteneri (debitor",
+     "defalcarea pe parteneri (creditor",
+     "vs balanță debitor",
+     "vs balanță creditor"
+    ],
+    "zona": ".fereastra:last-of-type #cf-audit-istoric"
+   },
+   {
+    "nu_contine": "vs balanță -",
+    "zona": ".fereastra:last-of-type #cf-audit-istoric"
+   }
+  ],
+  "captura": "c100_f6_vechi_audit_preluare_sold_cu_felul_lui.png"
+ },
+ {
+  "nr": "C100",
+  "firma": "tenant_9049",
+  "descriere": "F1: Control fiscal -> «Audit de preluare» -> «Rulează auditul» pe soldurile preluate (balanța de deschidere și soldurile pe parteneri, importate înainte de reparație): rândurile „Solduri parteneri vs balanță” spun soldul cu felul lui — „(debitor …)” / „vs balanță creditor …”, ca refuzul importului —, nu „vs balanță -500,00 lei”. Un audit păstrat de dinainte („Primul audit după preluare”, pliat) rămâne cum s-a scris. SCRIE pe copie o rulare de audit. Presupune că firma are solduri pe parteneri importate (altfel auditul spune „Nu există solduri pe parteneri de verificat”)",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cf-audit-run"
+   },
+   {
+    "click": ".fereastra:last-of-type #cf-audit-run"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cf-audit-run",
+    "text": "Rerulează"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #cf-audit-zona"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "defalcarea pe parteneri (debitor",
+     "defalcarea pe parteneri (creditor",
+     "vs balanță debitor",
+     "vs balanță creditor"
+    ],
+    "zona": ".fereastra:last-of-type #cf-audit-istoric"
+   },
+   {
+    "nu_contine": "vs balanță -",
+    "zona": ".fereastra:last-of-type #cf-audit-istoric"
+   }
+  ],
+  "captura": "c100_f1_vechi_audit_preluare_sold_cu_felul_lui.png"
+ },
+ {
+  "nr": "C77",
+  "firma": "tenant_9050",
+  "descriere": "F2: D100 T2/2026 e deja depusă (Control fiscal: „Depusă 24.07.2026 la termen”, înregistrată înainte de reparație). Declarații -> D100 T2/2026: generarea e refuzată — declarația e deja înregistrată, iar corectarea ei se face prin D710 (OPANAF pentru declarația rectificativă). Înainte (C77) a doua D100 pe aceeași perioadă pleca ca declarație inițială.",
+  "pasi": [
+   {
+    "declaratie": "d100",
+    "an": 2026,
+    "trim": 2
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D100 pe T2/2026 e deja înregistrată"
+   },
+   {
+    "contine": "D710"
+   }
+  ],
+  "captura": "c77_f2_vechi_d100_t2_depusa_refuzata.png"
+ },
+ {
+  "nr": "C79",
+  "firma": "tenant_9049",
+  "descriere": "F1: Facturi primite -> «Importă XML UBL» (DANTE INTERNATIONAL SA, DOVC79-1 din 15.10.2026: 21% baza 202,33 TVA 42,51; 11% baza 150,05 TVA 16,49 — TVA-ul rotunjit de furnizor) -> contul 628 -> «Validează» -> Registru jurnal: nota are 4426 = 401 42,51 și 16,49 — TVA-ul de pe factură (CF art.299 alin.(1) lit.a, art.319 alin.(20) lit.j) —, nu recalculul 42,49 / 16,51. SCRIE pe copie: a doua rulare cere --cloneaza",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-xml",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#fp-xml",
+    "generator": "builtins:bytes",
+    "argumente": [
+     "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\" xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\" xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"><cbc:ID>DOVC79-1</cbc:ID><cbc:IssueDate>2026-10-15</cbc:IssueDate><cbc:DocumentCurrencyCode>RON</cbc:DocumentCurrencyCode><cac:AccountingSupplierParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO14399840</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>DANTE INTERNATIONAL SA</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO401002001</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>F1 Comert Stoc SRL</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty><cac:TaxTotal><cbc:TaxAmount currencyID=\"RON\">59.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"RON\">202.33</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"RON\">42.51</cbc:TaxAmount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"RON\">150.05</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"RON\">16.49</cbc:TaxAmount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>11</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID=\"RON\">352.38</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID=\"RON\">411.38</cbc:TaxInclusiveAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode=\"H87\">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"RON\">101.17</cbc:LineExtensionAmount><cac:Item><cbc:Name>Servicii A C79</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"RON\">101.1700</cbc:PriceAmount></cac:Price></cac:InvoiceLine><cac:InvoiceLine><cbc:ID>2</cbc:ID><cbc:InvoicedQuantity unitCode=\"H87\">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"RON\">101.16</cbc:LineExtensionAmount><cac:Item><cbc:Name>Servicii B C79</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"RON\">101.1600</cbc:PriceAmount></cac:Price></cac:InvoiceLine><cac:InvoiceLine><cbc:ID>3</cbc:ID><cbc:InvoicedQuantity unitCode=\"H87\">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"RON\">150.05</cbc:LineExtensionAmount><cac:Item><cbc:Name>Carte C79</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>11</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"RON\">150.0500</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>",
+     "utf-8"
+    ],
+    "nume": "DOVC79-1.xml",
+    "tip": "text/xml"
+   },
+   {
+    "asteapta": ".fac-primita-btn",
+    "text": "DOVC79-1"
+   },
+   {
+    "click": ".fac-primita-btn",
+    "text": "DOVC79-1"
+   },
+   {
+    "asteapta": "#pr-cont"
+   },
+   {
+    "completeaza": "#pr-cont",
+    "valoare": "628"
+   },
+   {
+    "alege": "#pr-furnizor-incasare",
+    "valoare": "false"
+   },
+   {
+    "click": "#pr-valideaza"
+   },
+   {
+    "asteapta": "#ca-ok"
+   },
+   {
+    "click": "#ca-ok"
+   },
+   {
+    "asteapta": "#pr-zona",
+    "text": "Validată"
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F1 Comert Stoc SRL"
+   },
+   {
+    "asteapta": "#fa-jurnal"
+   },
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "[data-nota-id]:has-text('DOVC79-1')"
+   },
+   {
+    "deruleaza": "[data-nota-id]:has-text('DOVC79-1')"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "4426 = 401 · 42,51",
+    "zona": "[data-nota-id]:has-text('DOVC79-1')"
+   },
+   {
+    "contine": "4426 = 401 · 16,49",
+    "zona": "[data-nota-id]:has-text('DOVC79-1')"
+   },
+   {
+    "nu_contine": "42,49",
+    "zona": "[data-nota-id]:has-text('DOVC79-1')"
+   },
+   {
+    "nu_contine": "16,51",
+    "zona": "[data-nota-id]:has-text('DOVC79-1')"
+   }
+  ],
+  "captura": "c79_f1_nota_tva_de_pe_factura.png"
+ },
+ {
+  "nr": "C80",
+  "firma": "tenant_9049",
+  "descriere": "F1: Facturi primite -> «Importă XML UBL» (DANTE INTERNATIONAL SA, DOVC80-1 din 15.10.2026: 21% linii 500,00, reducere 50,00, transport 20,00; 11% linii 300,00, reducere 30,00 — BT-109 740,00, TVA 128,40, BT-112 868,40) -> detaliul facturii arată reducerile și taxa de document ca rânduri: „Reducere la nivelul facturii: Discount comercial”, „Taxă suplimentară la nivelul facturii: Transport”. Înainte (C80): reducerile și taxele de document (BG-20 / BG-21) erau ignorate. Nu se validează aici (o validează dovada următoare). SCRIE pe copie factura primită",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-xml",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#fp-xml",
+    "generator": "builtins:bytes",
+    "argumente": [
+     "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\" xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\" xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"><cbc:ID>DOVC80-1</cbc:ID><cbc:IssueDate>2026-10-15</cbc:IssueDate><cbc:DocumentCurrencyCode>RON</cbc:DocumentCurrencyCode><cac:AccountingSupplierParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO14399840</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>DANTE INTERNATIONAL SA</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO401002001</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>F1 Comert Stoc SRL</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty><cac:AllowanceCharge><cbc:ChargeIndicator>false</cbc:ChargeIndicator><cbc:AllowanceChargeReason>Discount comercial</cbc:AllowanceChargeReason><cbc:Amount currencyID=\"RON\">50.00</cbc:Amount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:AllowanceCharge><cac:AllowanceCharge><cbc:ChargeIndicator>false</cbc:ChargeIndicator><cbc:AllowanceChargeReason>Discount comercial</cbc:AllowanceChargeReason><cbc:Amount currencyID=\"RON\">30.00</cbc:Amount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>11</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:AllowanceCharge><cac:AllowanceCharge><cbc:ChargeIndicator>true</cbc:ChargeIndicator><cbc:AllowanceChargeReason>Transport</cbc:AllowanceChargeReason><cbc:Amount currencyID=\"RON\">20.00</cbc:Amount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:AllowanceCharge><cac:TaxTotal><cbc:TaxAmount currencyID=\"RON\">128.40</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"RON\">470.00</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"RON\">98.70</cbc:TaxAmount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"RON\">270.00</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"RON\">29.70</cbc:TaxAmount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>11</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID=\"RON\">740.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID=\"RON\">868.40</cbc:TaxInclusiveAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode=\"H87\">10</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"RON\">500.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Servicii Y2 C80 21</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"RON\">50.0000</cbc:PriceAmount></cac:Price></cac:InvoiceLine><cac:InvoiceLine><cbc:ID>2</cbc:ID><cbc:InvoicedQuantity unitCode=\"H87\">6</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"RON\">300.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Servicii Y2 C80 11</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>11</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"RON\">50.0000</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>",
+     "utf-8"
+    ],
+    "nume": "DOVC80-1.xml",
+    "tip": "text/xml"
+   },
+   {
+    "asteapta": ".fac-primita-btn",
+    "text": "DOVC80-1"
+   },
+   {
+    "click": ".fac-primita-btn",
+    "text": "DOVC80-1"
+   },
+   {
+    "asteapta": "#pr-cont"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Reducere la nivelul facturii: Discount comercial"
+   },
+   {
+    "contine": "Taxă suplimentară la nivelul facturii: Transport"
+   }
+  ],
+  "captura": "c80_f1_detaliul_reduceri_si_taxe.png"
+ },
+ {
+  "nr": "C80",
+  "firma": "tenant_9049",
+  "descriere": "F1: Facturi primite -> factura DOVC80-1 (importată de dovada precedentă) -> contul 628 -> «Validează» -> Registru jurnal: 628 = 401 470,00 și 270,00 (liniile minus reducerile plus taxa, nu 500 / 300), TVA 98,70 / 29,70, deci 401 închide 868,40 (EN 16931 BR-S-08, BR-CO-13, BR-CO-15 — regulă de validator). SCRIE pe copie nota",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": ".fac-primita-btn",
+    "text": "DOVC80-1"
+   },
+   {
+    "click": ".fac-primita-btn",
+    "text": "DOVC80-1"
+   },
+   {
+    "asteapta": "#pr-cont"
+   },
+   {
+    "completeaza": "#pr-cont",
+    "valoare": "628"
+   },
+   {
+    "alege": "#pr-furnizor-incasare",
+    "valoare": "false"
+   },
+   {
+    "click": "#pr-valideaza"
+   },
+   {
+    "asteapta": "#ca-ok"
+   },
+   {
+    "click": "#ca-ok"
+   },
+   {
+    "asteapta": "#pr-zona",
+    "text": "Validată"
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F1 Comert Stoc SRL"
+   },
+   {
+    "asteapta": "#fa-jurnal"
+   },
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "[data-nota-id]:has-text('DOVC80-1')"
+   },
+   {
+    "deruleaza": "[data-nota-id]:has-text('DOVC80-1')"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "628 = 401 · 470,00",
+    "zona": "[data-nota-id]:has-text('DOVC80-1')"
+   },
+   {
+    "contine": "628 = 401 · 270,00",
+    "zona": "[data-nota-id]:has-text('DOVC80-1')"
+   },
+   {
+    "contine": "4426 = 401 · 98,70",
+    "zona": "[data-nota-id]:has-text('DOVC80-1')"
+   },
+   {
+    "contine": "4426 = 401 · 29,70",
+    "zona": "[data-nota-id]:has-text('DOVC80-1')"
+   },
+   {
+    "nu_contine": "628 = 401 · 500,00",
+    "zona": "[data-nota-id]:has-text('DOVC80-1')"
+   }
+  ],
+  "captura": "c80_f1_nota_baza_dupa_reduceri.png"
+ },
+ {
+  "nr": "C82",
+  "firma": "tenant_9049",
+  "descriere": "F1: Facturi primite -> «Importă XML UBL» (DOVC82-1: 3,333 bucăți cu valoarea liniei 100,50 lei — preț unitar 30,153… —, TVA 21,11, total 121,61) -> contul 628 -> «Validează» -> Registru jurnal: 628 = 401 100,50 (BT-131 de pe factură, EN 16931 BR-DEC-23), nu 3,333 × 30,15 = 100,49. SCRIE pe copie",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-xml",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#fp-xml",
+    "generator": "builtins:bytes",
+    "argumente": [
+     "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\" xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\" xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"><cbc:ID>DOVC82-1</cbc:ID><cbc:IssueDate>2026-10-15</cbc:IssueDate><cbc:DocumentCurrencyCode>RON</cbc:DocumentCurrencyCode><cac:AccountingSupplierParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO14399840</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>DANTE INTERNATIONAL SA</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO401002001</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>F1 Comert Stoc SRL</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty><cac:TaxTotal><cbc:TaxAmount currencyID=\"RON\">21.11</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"RON\">100.50</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"RON\">21.11</cbc:TaxAmount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID=\"RON\">100.50</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID=\"RON\">121.61</cbc:TaxInclusiveAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode=\"H87\">3.333</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"RON\">100.50</cbc:LineExtensionAmount><cac:Item><cbc:Name>Servicii C82</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"RON\">30.1530</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>",
+     "utf-8"
+    ],
+    "nume": "DOVC82-1.xml",
+    "tip": "text/xml"
+   },
+   {
+    "asteapta": ".fac-primita-btn",
+    "text": "DOVC82-1"
+   },
+   {
+    "click": ".fac-primita-btn",
+    "text": "DOVC82-1"
+   },
+   {
+    "asteapta": "#pr-cont"
+   },
+   {
+    "completeaza": "#pr-cont",
+    "valoare": "628"
+   },
+   {
+    "alege": "#pr-furnizor-incasare",
+    "valoare": "false"
+   },
+   {
+    "click": "#pr-valideaza"
+   },
+   {
+    "asteapta": "#ca-ok"
+   },
+   {
+    "click": "#ca-ok"
+   },
+   {
+    "asteapta": "#pr-zona",
+    "text": "Validată"
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F1 Comert Stoc SRL"
+   },
+   {
+    "asteapta": "#fa-jurnal"
+   },
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "[data-nota-id]:has-text('DOVC82-1')"
+   },
+   {
+    "deruleaza": "[data-nota-id]:has-text('DOVC82-1')"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "628 = 401 · 100,50",
+    "zona": "[data-nota-id]:has-text('DOVC82-1')"
+   },
+   {
+    "contine": "4426 = 401 · 21,11",
+    "zona": "[data-nota-id]:has-text('DOVC82-1')"
+   },
+   {
+    "nu_contine": "100,49",
+    "zona": "[data-nota-id]:has-text('DOVC82-1')"
+   }
+  ],
+  "captura": "c82_f1_nota_valoarea_liniei_din_xml.png"
+ },
+ {
+  "nr": "C83",
+  "firma": "tenant_9049",
+  "descriere": "F1: Facturi primite -> «Importă XML UBL» (DOVC83-1, în EUR, fără TVA în lei pe factură) -> contul 628 -> «Validează»: „Validată” și nota scrisă în lei, cu cursul BNR pus la import (cel comunicat în ziua dinaintea facturii, CF art.290 alin.(2), HG 1/2016 pct.35 alin.(1)). Înainte (C83): factura în valută din XML n-avea curs, contarea o refuza („nu are curs BNR”), iar „completează cursul” n-avea ecran. SCRIE pe copie",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-xml",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#fp-xml",
+    "generator": "builtins:bytes",
+    "argumente": [
+     "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\" xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\" xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"><cbc:ID>DOVC83-1</cbc:ID><cbc:IssueDate>2026-10-15</cbc:IssueDate><cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode><cac:AccountingSupplierParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO14399840</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>DANTE INTERNATIONAL SA</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO401002001</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>F1 Comert Stoc SRL</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty><cac:TaxTotal><cbc:TaxAmount currencyID=\"EUR\">21.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"EUR\">100.00</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"EUR\">21.00</cbc:TaxAmount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID=\"EUR\">100.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID=\"EUR\">121.00</cbc:TaxInclusiveAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode=\"H87\">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"EUR\">100.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Servicii C83</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"EUR\">100.0000</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>",
+     "utf-8"
+    ],
+    "nume": "DOVC83-1.xml",
+    "tip": "text/xml"
+   },
+   {
+    "asteapta": ".fac-primita-btn",
+    "text": "DOVC83-1"
+   },
+   {
+    "click": ".fac-primita-btn",
+    "text": "DOVC83-1"
+   },
+   {
+    "asteapta": "#pr-cont"
+   },
+   {
+    "completeaza": "#pr-cont",
+    "valoare": "628"
+   },
+   {
+    "alege": "#pr-furnizor-incasare",
+    "valoare": "false"
+   },
+   {
+    "click": "#pr-valideaza"
+   },
+   {
+    "asteapta": "#ca-ok"
+   },
+   {
+    "click": "#ca-ok"
+   },
+   {
+    "asteapta": "#pr-zona",
+    "text": "Validată"
+   },
+   {
+    "captura": "c83_f1_validata.png"
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F1 Comert Stoc SRL"
+   },
+   {
+    "asteapta": "#fa-jurnal"
+   },
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "[data-nota-id]:has-text('DOVC83-1')"
+   },
+   {
+    "deruleaza": "[data-nota-id]:has-text('DOVC83-1')"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "[data-nota-id]:has-text('DOVC83-1')"
+   },
+   {
+    "contine": "4426 = 401",
+    "zona": "[data-nota-id]:has-text('DOVC83-1')"
+   },
+   {
+    "nu_contine": "nu are curs BNR"
+   },
+   {
+    "nu_contine": "n-are încă curs BNR"
+   }
+  ],
+  "captura": "c83_f1_nota_in_lei_cu_cursul_bnr.png"
+ },
+ {
+  "nr": "C81",
+  "firma": "tenant_9049",
+  "descriere": "F1: Facturi primite -> «Importă XML UBL» (DOVC81-1, în EUR: 1.000 la 21% + 500 la 11%, TVA 265 EUR; TVA-ul în lei scris de furnizor, BT-111, 1.300,00 lei) -> contul 628 -> «Validează» -> Registru jurnal: 4426 = 401 1.030,19 și 269,81 (1.300 × 210/265, 1.300 × 55/265; CF art.319 alin.(20) lit.j: TVA-ul „exprimat în lei” de pe factură), nu 265 EUR × cursul BNR. SCRIE pe copie",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-xml",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#fp-xml",
+    "generator": "builtins:bytes",
+    "argumente": [
+     "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\" xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\" xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"><cbc:ID>DOVC81-1</cbc:ID><cbc:IssueDate>2026-10-15</cbc:IssueDate><cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode><cbc:TaxCurrencyCode>RON</cbc:TaxCurrencyCode><cac:AccountingSupplierParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO14399840</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>DANTE INTERNATIONAL SA</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO401002001</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>F1 Comert Stoc SRL</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty><cac:TaxTotal><cbc:TaxAmount currencyID=\"RON\">1300.00</cbc:TaxAmount></cac:TaxTotal><cac:TaxTotal><cbc:TaxAmount currencyID=\"EUR\">265.00</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"EUR\">1000.00</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"EUR\">210.00</cbc:TaxAmount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"EUR\">500.00</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"EUR\">55.00</cbc:TaxAmount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>11</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID=\"EUR\">1500.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID=\"EUR\">1765.00</cbc:TaxInclusiveAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode=\"H87\">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"EUR\">1000.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Servicii C81 21</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"EUR\">1000.0000</cbc:PriceAmount></cac:Price></cac:InvoiceLine><cac:InvoiceLine><cbc:ID>2</cbc:ID><cbc:InvoicedQuantity unitCode=\"H87\">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"EUR\">500.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Servicii C81 11</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>11</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"EUR\">500.0000</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>",
+     "utf-8"
+    ],
+    "nume": "DOVC81-1.xml",
+    "tip": "text/xml"
+   },
+   {
+    "asteapta": ".fac-primita-btn",
+    "text": "DOVC81-1"
+   },
+   {
+    "click": ".fac-primita-btn",
+    "text": "DOVC81-1"
+   },
+   {
+    "asteapta": "#pr-cont"
+   },
+   {
+    "completeaza": "#pr-cont",
+    "valoare": "628"
+   },
+   {
+    "alege": "#pr-furnizor-incasare",
+    "valoare": "false"
+   },
+   {
+    "click": "#pr-valideaza"
+   },
+   {
+    "asteapta": "#ca-ok"
+   },
+   {
+    "click": "#ca-ok"
+   },
+   {
+    "asteapta": "#pr-zona",
+    "text": "Validată"
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F1 Comert Stoc SRL"
+   },
+   {
+    "asteapta": "#fa-jurnal"
+   },
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "[data-nota-id]:has-text('DOVC81-1')"
+   },
+   {
+    "deruleaza": "[data-nota-id]:has-text('DOVC81-1')"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "4426 = 401 · 1.030,19",
+    "zona": "[data-nota-id]:has-text('DOVC81-1')"
+   },
+   {
+    "contine": "4426 = 401 · 269,81",
+    "zona": "[data-nota-id]:has-text('DOVC81-1')"
+   }
+  ],
+  "captura": "c81_f1_nota_tva_lei_bt111.png"
+ },
+ {
+  "nr": "C78",
+  "firma": "tenant_9049",
+  "anaf_real": true,
+  "descriere": "F1: Operațiuni speciale -> «Livrare/prestare intracomunitară» -> Servicii, 1.000 lei, 22.10.2026, client GOOGLE IRELAND LIMITED (IE6388047V, VIES real), cont 704, descrierea „Servicii dovadă C78” -> «Generează nota» -> Registru jurnal: factura are numai nota de contare de la emitere. Înainte (C78): încă o notă proprie 4111 = 704, cu descrierea „Servicii dovadă C78 - … [GOOGLE IRELAND LIMITED]” (venitul dublat). Cere --anaf-real (VIES simulat răspunde „invalid”). SCRIE pe copie o factură emisă și nota ei",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "[data-op='vanzare_ic']"
+   },
+   {
+    "click": "[data-op='vanzare_ic']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-22"
+   },
+   {
+    "completeaza": "#op-valoare",
+    "valoare": "1000"
+   },
+   {
+    "completeaza": "#op-cod_tva_client",
+    "valoare": "IE6388047V"
+   },
+   {
+    "alege": "#op-tip",
+    "valoare": "servicii"
+   },
+   {
+    "pauza": 300
+   },
+   {
+    "completeaza": "#op-cont_venit",
+    "valoare": "704"
+   },
+   {
+    "completeaza": "#op-descriere",
+    "valoare": "Servicii dovadă C78"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj .caseta-ok"
+   },
+   {
+    "captura": "c78_f1_nota_generata.png"
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F1 Comert Stoc SRL"
+   },
+   {
+    "asteapta": "#fa-jurnal"
+   },
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "[data-nota-id]"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "4111 = 704 · 1.000,00",
+    "zona": "[data-nota-id]"
+   },
+   {
+    "nu_contine": "Servicii dovadă C78"
+   }
+  ],
+  "captura": "c78_f1_registru_jurnal_o_singura_nota.png"
+ },
+ {
+  "nr": "C91",
+  "firma": "tenant_9053",
+  "descriere": "F5: «+ Salariat nou» Plafon Ion — normă parțială 4 ore, 1.000 lei brut, 4 persoane în întreținere, funcția de bază, angajat 01.10.2026 -> statul 10/2026, «Compoziția netului»: „deducere personală 650,00 lei” = venitul net 1.000 − 250 (CAS) − 100 (CASS) (CF art.77 alin.(2): „se acordă în limita venitului impozabil lunar realizat”), nu 1.946,00 (45% din salariul minim). SCRIE pe copie un salariat",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-salariat-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-nume",
+    "valoare": "Plafon"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-prenume",
+    "valoare": "Ion"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cnp",
+    "valoare": "1850303401230"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-data_angajare",
+    "valoare": "2026-10-01"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-tip_norma",
+    "valoare": "partiala"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-ore_zi",
+    "valoare": "4"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-salariu_brut",
+    "valoare": "1000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-persoane_intretinere",
+    "valoare": "4"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-declaratie_copii",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-functie_baza",
+    "valoare": "true"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-scutit_contrib_minim",
+    "valoare": "false"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cor-cauta",
+    "valoare": "241107"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "asteapta_text": "Salariat salvat. Poți adăuga altul."
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F5 SRL Salariati SRL"
+   },
+   {
+    "asteapta": "#fa-salariati"
+   },
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-frand:has-text('Plafon')"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Plafon') details.dec-xml summary"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "deducere personală 650,00 lei",
+    "zona": ".fereastra:last-of-type .pf-frand:has-text('Plafon') details.dec-xml"
+   },
+   {
+    "nu_contine": "1.946,00",
+    "zona": ".fereastra:last-of-type .pf-frand:has-text('Plafon')"
+   }
+  ],
+  "captura": "c91_f5_deducere_plafonata_la_venitul_net.png"
+ },
+ {
+  "nr": "C96",
+  "firma": "tenant_9053",
+  "posibila_de_la": "2026-11-01",
+  "descriere": "F5: «+ Salariat nou» Partial Ana — normă parțială 4 ore, 2.500 lei, angajată 01.10.2026 -> D112 10/2026: tipul contractului B1_3=\"P4\" (OPANAF 605/2026 anexa 2, B.1 rândul 3: „N (norma întreagă 6, 7, 8) sau Pn (parţial P1, P2, ..., P7)”), orele lucrate 22 × 4 = 88. Înainte (C96): B1_3=\"N\" fix, orele cu 8 pe zi. D112 10/2026 se poate genera abia de la 01.11.2026 (383). SCRIE pe copie un salariat",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-salariat-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-nume",
+    "valoare": "Partial"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-prenume",
+    "valoare": "Ana"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cnp",
+    "valoare": "2860405401248"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-data_angajare",
+    "valoare": "2026-10-01"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-tip_norma",
+    "valoare": "partiala"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-ore_zi",
+    "valoare": "4"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-salariu_brut",
+    "valoare": "2500"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-persoane_intretinere",
+    "valoare": "0"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-declaratie_copii",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-functie_baza",
+    "valoare": "true"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-scutit_contrib_minim",
+    "valoare": "false"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cor-cauta",
+    "valoare": "241107"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "asteapta_text": "Salariat salvat. Poți adăuga altul."
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F5 SRL Salariati SRL"
+   },
+   {
+    "asteapta": "#fa-salariati"
+   },
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-frand:has-text('Partial')"
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F5 SRL Salariati SRL"
+   },
+   {
+    "asteapta": "#fa-declaratii"
+   },
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 10
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "B1_3=\"P4\""
+   },
+   {
+    "contine": "B1_6=\"88\""
+   }
+  ],
+  "captura": "c96_f5_d112_10_2026_norma_partiala.png"
+ },
+ {
+  "nr": "C90",
+  "firma": "tenant_9053",
+  "posibila_de_la": "2026-11-01",
+  "descriere": "F5: «+ Salariat nou» Farabaza Ion — 5.000 lei, normă întreagă, „Funcția de bază la acest angajator: Nu”, 2 persoane, angajat 01.10.2026 -> D112 10/2026: venitul în afara funcției de bază, E3_3=\"2\" și secțiunea asiguratE2 (structura D112, E3_3: „=2, pentru venit in afara functiei de baza”). Înainte (C90): E3_3=\"1\" și E1 pentru orice salariat. D112 10/2026 se poate genera abia de la 01.11.2026 (383). SCRIE pe copie un salariat",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-salariat-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-nume",
+    "valoare": "Farabaza"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-prenume",
+    "valoare": "Ion"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cnp",
+    "valoare": "1870506401259"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-data_angajare",
+    "valoare": "2026-10-01"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-tip_norma",
+    "valoare": "intreaga"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-salariu_brut",
+    "valoare": "5000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-persoane_intretinere",
+    "valoare": "2"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-declaratie_copii",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-functie_baza",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-scutit_contrib_minim",
+    "valoare": "false"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cor-cauta",
+    "valoare": "241107"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "asteapta_text": "Salariat salvat. Poți adăuga altul."
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F5 SRL Salariati SRL"
+   },
+   {
+    "asteapta": "#fa-salariati"
+   },
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-frand:has-text('Farabaza')"
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F5 SRL Salariati SRL"
+   },
+   {
+    "asteapta": "#fa-declaratii"
+   },
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 10
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "E3_3=\"2\""
+   },
+   {
+    "contine": "<asiguratE2"
+   }
+  ],
+  "captura": "c90_f5_d112_10_2026_fara_functie_de_baza.png"
+ },
+ {
+  "nr": "C93",
+  "firma": "tenant_9053",
+  "posibila_de_la": "2026-11-01",
+  "descriere": "F5: «+ Salariat nou» Minim Ion — salariul minim 4.325 lei, normă întreagă, funcția de bază, angajat 01.10.2026 -> D112 10/2026: beneficiarul sumei netaxabile (OUG 89/2025 art.III alin.(1)) e declarat cu tipul de asigurat 1.11.2, B1_1=\"51\" și E3_2=\"51\" (OPANAF 605/2026 anexa 2, B.1 rândul 1). Înainte (C93): tipul 1. D112 10/2026 se poate genera abia de la 01.11.2026 (383). SCRIE pe copie un salariat",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-salariat-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-nume",
+    "valoare": "Minim"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-prenume",
+    "valoare": "Ion"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cnp",
+    "valoare": "1880607401261"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-data_angajare",
+    "valoare": "2026-10-01"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-tip_norma",
+    "valoare": "intreaga"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-salariu_brut",
+    "valoare": "4325"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-persoane_intretinere",
+    "valoare": "0"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-declaratie_copii",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-functie_baza",
+    "valoare": "true"
+   },
+   {
+    "alege": ".fereastra:last-of-type #sn-scutit_contrib_minim",
+    "valoare": "false"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cor-cauta",
+    "valoare": "241107"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "asteapta_text": "Salariat salvat. Poți adăuga altul."
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F5 SRL Salariati SRL"
+   },
+   {
+    "asteapta": "#fa-salariati"
+   },
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-frand:has-text('Minim')"
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F5 SRL Salariati SRL"
+   },
+   {
+    "asteapta": "#fa-declaratii"
+   },
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 10
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "B1_1=\"51\""
+   },
+   {
+    "contine": "E3_2=\"51\""
+   }
+  ],
+  "captura": "c93_f5_d112_10_2026_tip_asigurat_51.png"
+ },
+ {
+  "nr": "C99",
+  "firma": "tenant_9053",
+  "descriere": "F5: Farabaza Ion (5.000 lei, adăugat de dovada C90) -> «Concediu» -> certificat cod 01, 01–10.10.2026, 7 zile lucrătoare -> statul 10/2026, «Compoziția netului»: fără „Suprataxă part-time” — salariul zilelor lucrate (5.000 × 15/22 = 3.409) e peste podeaua pe zilele active fără CM (4.125 × 15/22 = 2.812,50; CF art.146 alin.(5^6): „corespunzător numărului zilelor lucrătoare din lună în care contractul a fost activ”; Codul muncii art.50 lit.b: CM suspendă contractul). Înainte (C99): statul socotea podeaua și pe zilele de CM (4.125 pe toată luna) -> suprataxă > 0, iar D112 0. SCRIE pe copie un certificat",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Farabaza') [data-cm]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-serie",
+    "valoare": "AB"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-numar",
+    "valoare": "9902"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-cod",
+    "valoare": "01"
+   },
+   {
+    "pauza": 300
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-acord",
+    "valoare": "2026-10-01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-inceput",
+    "valoare": "2026-10-01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-sfarsit",
+    "valoare": "2026-10-10"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile",
+    "valoare": "7"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-continuare",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-spital",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-program-national",
+    "valoare": "false"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-ven6",
+    "valoare": "30000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile6",
+    "valoare": "125"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-rezultat .panou"
+   },
+   {
+    "captura": "c99_f5_certificat_cod01.png"
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F5 SRL Salariati SRL"
+   },
+   {
+    "asteapta": "#fa-salariati"
+   },
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-frand:has-text('Farabaza')"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Farabaza') details.dec-xml summary"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Indemnizație de concediu medical",
+    "zona": ".fereastra:last-of-type .pf-frand:has-text('Farabaza') details.dec-xml"
+   },
+   {
+    "nu_contine": "Suprataxă part-time",
+    "zona": ".fereastra:last-of-type .pf-frand:has-text('Farabaza') details.dec-xml"
+   }
+  ],
+  "captura": "c99_f5_stat_fara_suprataxa_in_luna_cu_cm.png"
+ },
+ {
+  "nr": "C89",
+  "firma": "tenant_9053",
+  "descriere": "F5: Plafon Ion (adăugat de dovada C91) -> «Concediu» -> certificat cod 10 (reducerea timpului de muncă cu 1/4), 15–28.10.2026, 10 zile lucrătoare, media 240,00 lei/zi (30.000 / 125), venitul realizat 1.900,41 = 2.400 − 499,59, avizul 4321 -> lista certificatelor: „indemnizație brută 500,00 lei” — rotunjită la leu la sursă (normele OUG 158/2005, OMS 15/2018 art.63 Exemplul nr.1: „624,59 lei, rotunjit la 625 lei conform legii”). Înainte (C89): 499,59 pe ecran și pe fluturaș, 500 în D112. SCRIE pe copie un certificat",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Plafon') [data-cm]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-serie",
+    "valoare": "AB"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-numar",
+    "valoare": "9001"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-cod",
+    "valoare": "10"
+   },
+   {
+    "pauza": 300
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-venit",
+    "valoare": "1900.41"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-urgenta",
+    "valoare": "4321"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-acord",
+    "valoare": "2026-10-15"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-inceput",
+    "valoare": "2026-10-15"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-sfarsit",
+    "valoare": "2026-10-28"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile",
+    "valoare": "10"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-continuare",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-spital",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-program-national",
+    "valoare": "false"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-ven6",
+    "valoare": "30000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile6",
+    "valoare": "125"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-rezultat .panou"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "indemnizație brută 500,00 lei",
+    "zona": ".fereastra:last-of-type .pf-lista"
+   },
+   {
+    "nu_contine": "499,59",
+    "zona": ".fereastra:last-of-type .pf-lista"
+   }
+  ],
+  "captura": "c89_f5_cod10_indemnizatie_rotunjita.png"
+ }
+]

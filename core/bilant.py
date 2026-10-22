@@ -705,6 +705,42 @@ def erori_antet(prof):
     if not nume_administrator(prof):
         erori.append("Numele și prenumele administratorului lipsesc — bilanțul le cere. Completează „Nume declarant” și „Prenume "
                      "declarant” în Date firmă.")
+    erori.extend(erori_intocmitor(prof))
+    return erori
+
+
+#: [lotul 11, decizia Costin 10.3 pct.4] nomenclatorul „calitate - Intocmit” (structura SC 1225) — sursa unică: migrarea care a creat coloana
+from core.migrare_intocmitor_bilant import CALITATI_INTOCMIT   # noqa: E402
+#: NOMENCLATOR (coduri din „Nomenclator calitate - Intocmit”, nu valori fiscale): calitățile pentru care structura cere CIF-ul
+#: întocmitorului — structura SC 1225, rândul 22a (`anaf_surse/structura_SC_1225_270126.txt:75`): „daca calit_intocmit=(21,22) atunci
+#: cif_intocmit#null altfel cif_intocmit=null” (21 / 22 = persoana fizică / juridică autorizată, membră CECCAR, `CALITATI_INTOCMIT`)
+CODURI_CALITATE_CU_CIF = (21, 22)
+#: unde se completează întocmitorul (decizia 10.3: „calitatea întocmitorului în profilul cabinetului”)
+LA_CABINET = "în profilul cabinetului (Setări cont → Date cabinet, „Întocmitorul bilanțului”)"
+
+
+def erori_intocmitor(prof):
+    """[lotul 11, decizia Costin 10.3 pct.4, verbatim în DECIZII „Comanda 10.3”: „Întocmitorul bilanțului: calitatea întocmitorului în
+    profilul cabinetului, interesul public în Date firmă; ambele blochează dacă lipsesc.”] Structura ANAF (anaf_surse/
+    structura_SC_1225_270126.txt, la fel pe S1002 / S1003 / S1004 / S1005):
+      „15. interes_public Entitati de interes public N(1) DA interes_public=(0,1)” (generatorul scria 0 oricărei firme);
+      „20. nume_intocmit Nume si prenume Intocmit C(75 DA” (era administratorul);
+      „21. calit_intocmit Calitate intocmit N(2) DA Nomenclator calitate - Intocmit” (era 12, „CONTABIL SEF”, oricărui întocmitor);
+      „22a cif_intocmit CIF intocmit C(13) NU … daca calit_intocmit=(21,22) atunci cif_intocmit#null altfel cif_intocmit=null”.
+    Lipsa oricăruia OPREȘTE bilanțul. Câmpurile se citesc explicit, cu numele lor (sonda `core/scan_camp_blocant.py`)."""
+    erori = []
+    if prof.get("interes_public") is None:
+        erori.append("Nu e declarat dacă firma e entitate de interes public — bilanțul o cere. Alege „Entitate de interes public” "
+                     "(Da / Nu) în Date firmă.")
+    calit = prof.get("calit_intocmit")
+    if calit not in CALITATI_INTOCMIT:
+        erori.append("Calitatea întocmitorului bilanțului lipsește — bilanțul o cere, din nomenclatorul ANAF (director economic, "
+                     "contabil șef, persoană fizică sau juridică autorizată CECCAR …). Completeaz-o %s." % LA_CABINET)
+    if not str(prof.get("intocmit_nume") or "").strip():
+        erori.append("Numele întocmitorului bilanțului lipsește — bilanțul îl cere. Completează-l %s." % LA_CABINET)
+    if calit in CODURI_CALITATE_CU_CIF and not str(prof.get("cif_intocmit") or "").strip():
+        erori.append("CIF-ul întocmitorului lipsește — bilanțul îl cere când întocmitorul e %s. Completează-l %s." % (
+            CALITATI_INTOCMIT[calit].lower(), LA_CABINET))
     return erori
 
 
@@ -744,14 +780,16 @@ def xml_s1005(prof, an, f10p, f10c, f20p, f20c, f30p=None, f30c=None, rezultat=N
     at.append(_a("bifaMC", 1 if mc else 0)); at.append(_a("bifaDD", 0))
     at.append(_a("bifaGG", 0)); at.append(_a("bifaAA", 0))
     at.append(_a("bifa_art27", 0)); at.append(_a("tipBIL", "UU"))
-    at.append(_a("interes_public", 0))
+    at.append(_a("interes_public", 1 if prof["interes_public"] else 0))   # [lotul 11, decizia 10.3] din Date firmă (`erori_intocmitor`)
     at.append(_a("codTT", prof["cod_judet"]))
     at.append(_a("codJJ", COD_JUDET_MARI_CONTRIBUABILI if mc else prof["cod_judet"]))
     at.append(_a("codPP", str(prof["forma_proprietate"]).strip()))
     at.append(_a("nume_admin", nume_administrator(prof)))
-    at.append(_a("nume_intocmit", prof.get("intocmit_nume") or nume_administrator(prof)))
-    at.append(_a("calit_intocmit", prof.get("calit_intocmit") or 12))
-    if prof.get("cif_intocmit"): at.append(_a("cif_intocmit", prof["cif_intocmit"]))
+    # [lotul 11, decizia 10.3] întocmitorul din profilul cabinetului (`erori_intocmitor` a oprit deja lipsa): fără administrator / 12
+    at.append(_a("nume_intocmit", str(prof["intocmit_nume"]).strip()[:75]))
+    at.append(_a("calit_intocmit", prof["calit_intocmit"]))
+    if prof.get("nri_intocmit"): at.append(_a("nri_intocmit", str(prof["nri_intocmit"]).strip()[:15]))
+    if prof["calit_intocmit"] in CODURI_CALITATE_CU_CIF: at.append(_a("cif_intocmit", str(prof["cif_intocmit"]).strip()[:13]))
     at.append(_a("totalPlata_A", f10c.get(49, 0)))
     # Atribute F<tag>_<rand><col>: randul pe 3 CIFRE, apoi coloana (1=an precedent,
     # 2=an curent). Ex: rand 6 -> F10_0061; rand 301 -> F10_3011; rand 302 -> F10_3021

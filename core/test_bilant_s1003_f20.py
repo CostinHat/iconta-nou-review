@@ -111,7 +111,7 @@ def test_xml_s1003_valid_pe_duk():
     from core import duk
     prof = {"cui_numeric": 14399840, "nume": "ZTEST BILANT SRL", "reg_com": "J40/1/2020", "adresa": "Str 1", "caen": "6202",
             "declarant_nume": "Pop", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR",
-            "cod_judet": 40, "mare_contribuabil": False, "forma_proprietate": "35"}  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
+            "cod_judet": 40, "mare_contribuabil": False, "forma_proprietate": "35", "interes_public": False, "calit_intocmit": 12, "intocmit_nume": "IONESCU MARIA"}  # [lotul 10, C69] antetul bilanțului: codTT, bifaMC/codJJ, codPP, nume_admin — din Date firmă
     f20 = b.f20_complet_din_rulaje({"704": (0, 5000), "7411": (0, 800), "709": (300, 0), "612": (200, 0), "6123": (200, 0), "641": (1000, 0)})
     x = b.xml_s1003(prof, 2025, {}, {8: 1000, 9: 1000, 15: 1000, 29: 1000, 30: 1000, 46: 1000, 49: 1000}, {}, f20)
     assert re.findall(r'\bF20_0042="(\d+)"', x) == ["300"] and re.findall(r'\bF20_0062="(\d+)"', x) == ["800"], x[:400]

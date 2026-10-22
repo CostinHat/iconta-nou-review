@@ -2,7 +2,7 @@
 title: "Cum se tratează diferențele de curs la plățile în valută"
 description: "Tratamentul contabil complet al plăților (și încasărilor) în valută: regula de semn pe tip de sold și recunoașterea diferenței în luna decontării."
 published: 2026-09-26
-modified: 2026-10-13
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Orice plată sau încasare în valută făcută la un curs diferit de cel din ev
 
 ## Ce face iConta.eu
 
-Ecranul **Operațiuni speciale → Decontare în valută** din iConta.eu acoperă exact acest scenariu, pentru încasarea unei creanțe sau plata unei datorii. Motorul (funcția „nota de decontare în valută”) primește tipul soldului, valoarea în valută și cursul de evidență, ia automat cursul BNR al zilei și aplică regula de semn corectă pe tip, generând nota-ciornă cu linia principală și diferența pe 665/765. Ruta cere ca luna să fie deschisă („verificarea lunii deschise”) — dacă e închisă, aplicația refuză nota și returnează o eroare clară, nu un mesaj tehnic. Limita cunoscută: contul de bancă folosit la decontare e mereu 5124 (implicit hardcodat), fiindcă ecranul nu are câmp pentru contul efectiv — dacă plata/încasarea a avut loc prin casieria în valută (5314) sau alt cont bancar în valută, contabilul trebuie să corecteze manual nota generată.
+Ecranul **Operațiuni speciale → Decontare în valută** din iConta.eu acoperă exact acest scenariu, pentru încasarea unei creanțe sau plata unei datorii. Motorul (funcția „nota de decontare în valută”) primește tipul soldului, valoarea în valută și cursul de evidență, ia automat ultimul curs comunicat de BNR înaintea zilei decontării (cel comunicat în ziua bancară anterioară, valabil în ziua decontării) și aplică regula de semn corectă pe tip, generând nota-ciornă cu linia principală și diferența pe 665/765. Ruta cere ca luna să fie deschisă („verificarea lunii deschise”) — dacă e închisă, aplicația refuză nota și returnează o eroare clară, nu un mesaj tehnic. Contul prin care s-a făcut plata sau încasarea se alege în câmpul „Cont bancă" (propus 5124; pentru casieria în valută, 5314, sau alt cont bancar în valută).
 
 [iConta.eu](/)

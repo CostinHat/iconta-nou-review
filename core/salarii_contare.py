@@ -117,6 +117,18 @@ def document_ref(an, luna):
     return "SAL %02d/%04d" % (luna, an)
 
 
+def antet_nota(an, luna):
+    """[lotul 11, 451] Antetul notei statului de plată, cum îl scrie „Contabilizează statul” (`uc_tenants.salarii_contare_scrie`):
+    (data = ultima zi a lunii, numărul = documentul statului, descrierea, documentul justificativ „Stat de plată nr SAL LL/AAAA din …”).
+    Sursa unică pentru scriere și pentru regenerarea pe uscat a ciornei (`ciorne_depasite`): o regulă schimbată aici se vede pe ciornele
+    scrise înainte. [lotul 07.10 pct.13 / pct.7] documentul din `jurnal_api.eticheta_document`; data = ultima zi a lunii (`uc_comun`)."""
+    from core import jurnal_api as _j
+    from core import uc_comun as _uc
+    ultima = _uc.ultima_zi_a_lunii(an, luna)
+    nr = document_ref(an, luna)
+    return ultima, nr, "Salariile lunii %02d/%d" % (luna, an), _j.eticheta_document("Stat de plată", nr, ultima)
+
+
 def note_lunare(conn, schema, an, luna, xml_d112=None):
     """Notele statului de plata, agregate pe (debit, credit) din monografie_salariu per salariat.
 
@@ -188,6 +200,9 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
             # [lot 19 pct.4c] aceeași prezență ca D112: suspendările (prorata pragului CF art.146 alin.(5^6)) și fracția
             # facilitații calculată o dată de pull (fără ea contarea folosea forma clasică — a doua cifră, clasa R34).
             suspendari=s.get("suspendari") or (),
+            # [lotul 11, C99] aceleași intrări ca statul și D112: zilele de CM nu sunt zile active pentru contribuția minimă
+            # (Codul muncii art.50 lit.b), iar salariatul scutit nu o datorează
+            zile_cm=int(s.get("zile_cm") or 0), exceptat_suprataxare=bool(s.get("scutit_pt")),
             facilitate_prorata=s.get("facilitate_prorata"),
             # [R86/RR1] TICHETELE. Fara ele, `tichete_nominal` iesea 0 si linia 642=5328 nu se
             # producea deloc — o cheltuiala reala care nu intra in evidenta. Valorile vin din

@@ -149,6 +149,7 @@ def campuri_rezultat(tip, res):
         "avertismente": getattr(res, "avertismente", None),
         "note_rezultat": getattr(res, "note_rezultat", None) or [],   # canal neutru (fapte despre rezultat); [] pt declaratiile fara canal
         "sinteza": getattr(res, "sinteza", None) or [],               # [08.10, V5] rezumatul, pe canalul lui (nu avertisment)
+        "rectificativa": getattr(res, "rectificativa", None),   # [lotul 11, C77] „Rectificativă la declarația depusă …”
         # [poarta_gol_v1 27.07.2026] cate operatiuni are declaratia; None = nu se poate
         # numara (d101/d112). Ecranul pune o poarta la 0, ca declaratia goala legitima
         # sa nu mai arate identic cu cea golita de un query rupt.

@@ -2,7 +2,7 @@
 title: "Cum tratez diferențele de curs la facturile intracomunitare?"
 description: "Diferența de curs apare la decontarea unei datorii sau creanțe provenite dintr-o factură intracomunitară în valută, nu la înregistrarea inițială a facturii."
 published: 2026-09-26
-modified: 2026-09-26
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -32,8 +32,8 @@ Aplicat la o factură intracomunitară:
 
 ## Ce face iConta.eu
 
-Partea de **decontare** a unei datorii sau creanțe provenite dintr-o factură intracomunitară (indiferent dacă tranzacția de bază a fost o achiziție sau o livrare intracomunitară) trece prin același motor din iConta.eu folosit pentru orice decontare în valută: contabilul introduce tipul (creanță/datorie), suma în valută, cursul din evidență, iar aplicația calculează automat diferența 665/765 față de cursul BNR al zilei de decontare. Aplicația nu distinge, la acest pas, dacă factura de bază a fost intracomunitară sau internă — motorul lucrează generic cu creanța/datoria rezultată.
+Partea de **decontare** a unei datorii sau creanțe provenite dintr-o factură intracomunitară (indiferent dacă tranzacția de bază a fost o achiziție sau o livrare intracomunitară) trece prin același motor din iConta.eu folosit pentru orice decontare în valută: contabilul introduce tipul (creanță/datorie), suma în valută, cursul din evidență, iar aplicația calculează automat diferența 665/765 față de ultimul curs comunicat de BNR înaintea zilei decontării. Aplicația nu distinge, la acest pas, dacă factura de bază a fost intracomunitară sau internă — motorul lucrează generic cu creanța/datoria rezultată.
 
-Ce nu acoperă acest circuit: cursul folosit la **înregistrarea inițială** a facturii intracomunitare (la recepție/emitere) nu ține de acest motor, ci de fluxul de facturare/achiziție separat. De asemenea, ecranul de decontare nu are un câmp pentru contul de bancă/casierie folosit efectiv — orice decontare introdusă din acest ecran se înregistrează implicit pe contul de bancă în valută standard, indiferent de contul real prin care a avut loc plata sau încasarea.
+Ce nu acoperă acest circuit: cursul folosit la **înregistrarea inițială** a facturii intracomunitare (la recepție/emitere) nu ține de acest motor, ci de fluxul de facturare/achiziție separat. Contul prin care a avut loc plata sau încasarea se alege în câmpul „Cont bancă" al formularului de decontare (propus 5124).
 
 [iConta.eu](/)

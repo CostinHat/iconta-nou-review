@@ -1,0 +1,151 @@
+{
+ "copia": {
+  "clonat_la": "2026-10-22 21:11:00",
+  "productie_la": "2026-10-22 21:10:52.481806+03:00",
+  "migrari": [
+   {
+    "fisier": "core/migrare_borderou_storno_unic.py",
+    "amprenta": "153c19bdd9bc",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_borderou_storno_unic: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_borderou_storno_unic.py rulată (amprenta 153c19bdd9bc)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_borderou_tip_vechi.py",
+    "amprenta": "b77593a67311",
+    "cod": 0,
+    "durata_s": 0.2,
+    "iesire": [
+     "tenant_9049: 0 borderouri convertite, 0 numere schimbate, 1 mișcare aliniată, 0 candidați neconvertiți",
+     "  mișcare aliniată: «Borderou de achiziție BA-1 din 20.10.2026» -> «Borderou de achiziție BA-2 din 20.10.2026»",
+     "migrare_borderou_tip_vechi: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_borderou_tip_vechi.py rulată (amprenta b77593a67311)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_cui_fara_ro.py",
+    "amprenta": "75824de777df",
+    "cod": 0,
+    "durata_s": 0.3,
+    "iesire": [
+     "migrare_cui_fara_ro: public ok; firme 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_cui_fara_ro.py rulată (amprenta 75824de777df)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_curs_precizie.py",
+    "amprenta": "7ea3ad6f3827",
+    "cod": 0,
+    "durata_s": 0.6,
+    "iesire": [
+     "migrare_curs_precizie: public deja lărgit; cache BNR refăcut din arhivă: 0 valori {} (anii [2026])",
+     "migrare_curs_precizie: 27 firme ok (28 coloane lărgite), 0 esec",
+     "registrul migrărilor: core/migrare_curs_precizie.py rulată (amprenta 7ea3ad6f3827)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_factura_tva_cote.py",
+    "amprenta": "e1c80b11ff3d",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_factura_tva_cote: 27 ok, 0 esec, 2 facturi completate din XML",
+     "registrul migrărilor: core/migrare_factura_tva_cote.py rulată (amprenta e1c80b11ff3d)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_intocmitor_bilant.py",
+    "amprenta": "0d5079348746",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_intocmitor_bilant: cabinetul (public) ok; firme 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_intocmitor_bilant.py rulată (amprenta 0d5079348746)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_produse_categorie_tva.py",
+    "amprenta": "0fea1b1b2287",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_produse_categorie_tva: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_produse_categorie_tva.py rulată (amprenta 0fea1b1b2287)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_reevaluare_partener.py",
+    "amprenta": "ffe042a5a876",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_reevaluare_partener: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_reevaluare_partener.py rulată (amprenta ffe042a5a876)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_serie_nr_descrieri.py",
+    "amprenta": "811da036db08",
+    "cod": 0,
+    "durata_s": 0.2,
+    "iesire": [
+     "  ciornă 87 (descriere): «Contare factura F2T3» -> «Contare factura F2T nr. 3»",
+     "  validată 78 (descriere), arătată derivat: «Contare factura F2T2» -> «Contare factura F2T nr. 2»",
+     "tenant_9055: 1 ciornă rescrisă, 0 mișcări de stoc rescrise, 0 note validate arătate derivat, 0 texte lăsate",
+     "  ciornă 2 (descriere): «Contare factura F61» -> «Contare factura F6 nr. 1»",
+     "migrare_serie_nr_descrieri: 27 ok, 0 esec",
+     "registrul migrărilor: core/migrare_serie_nr_descrieri.py rulată (amprenta 811da036db08)"
+    ]
+   },
+   {
+    "fisier": "core/migrare_valoare_neta_linie.py",
+    "amprenta": "131375515921",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_valoare_neta_linie: 27 ok, 0 esec, 3 linii cu BT-131 completate din XML, 0 linii de document adăugate",
+     "registrul migrărilor: core/migrare_valoare_neta_linie.py rulată (amprenta 131375515921)"
+    ]
+   }
+  ]
+ },
+ "etape_s": [
+  [
+   "aplicația din arbore pornită (port 54555)",
+   10.5
+  ],
+  [
+   "dovezi parcurse (1)",
+   10.4
+  ]
+ ],
+ "dovezi": [
+  {
+   "nr": "422",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1 (notele trimise la validare de asistent înainte de reparație, nr. 132–137, 143): pagina principală, cardul „De validat”: 5 note de validat (7 trimise, 2 depășite) -> cardul „De validat” -> se bifează prima notă -> „Validează selectate” -> „Ai validat 1 notă” -> înapoi pe pagina principală, fără reîncărcare: cardul „De validat” numără o notă mai puțin. Înainte de lotul 11 cifra rămânea cea de la încărcarea paginii",
+   "captura": "dovezi/lot11/422_f1_de_validat_scade_dupa_validare.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "4 note de validat",
+      "zona": ".cab-card-sinteza[data-cheie=validat]"
+     },
+     "ok": true,
+     "vazut": "4 note de validat · 0 declarații de depus · 2 depășite, de generat din nou · 40 de note ale tale în ciornă"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 9.6
+  }
+ ]
+}

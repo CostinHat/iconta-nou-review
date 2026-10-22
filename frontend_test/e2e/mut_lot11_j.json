@@ -1,0 +1,26 @@
+[
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "    butonGenerat(buton, opt.motiv || MOTIV_NOTA_GENERATA);",
+  "inlocuire": "    void 0;",
+  "test": "frontend_test/e2e/e2e_lot11_j.py::test_def_8c_dupa_generarea_notei_z_confirmarea_e_verde_cu_conturile_iar_butonul_inactiv"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "Total 11%${alimentatie ? \" (m\\u00e2ncare)\" : \"\"}",
+  "inlocuire": "Total 11% (m\\u00e2ncare)",
+  "test": "frontend_test/e2e/e2e_lot11_j.py::test_def_23_z_la_comert_cotele_sunt_neutre_fara_consum_pe_reteta"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "                    if refuza_aceeasi:",
+  "inlocuire": "                    if False:",
+  "test": "frontend_test/e2e/e2e_lot11_j.py::test_def_23_generarea_amortizarii_inactiva_pe_luna_amortizata_cu_nota_numita"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "      window.dispatchEvent(new CustomEvent(\"iconta:schimbare\", { detail: { cai: [], din: \"notificari\" } }));",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot11_j.py::test_def_422_contorul_de_validat_si_clopotelul_urmeaza_actiunile"
+ }
+]

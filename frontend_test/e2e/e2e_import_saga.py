@@ -60,7 +60,13 @@ def test_def_c29_totalurile_si_sinteticele_dublate_nu_intra(patron, firma_import
     alături de analiticele lui se dubla — balanța rămânea echilibrată (totalul se dubla pe ambele părți), deci trecea.
     Pașii: aceeași balanță -> „2 rânduri nu sunt conturi și nu intră (totaluri, titluri)”, „Contul sintetic 401 e înlocuit de
     analiticele din fișier”, 4 conturi, debit = credit = 300,00."""
-    t = _balanta(patron, firma_import)
+    _balanta(patron, firma_import)
+    # [lotul 11, 424 — comanda Costin 11.1 pct.13, DS cap.9 v2.98] „ce s-a citit” e o notă pliată (`details#mig-citit`), cu prima linie
+    # în titlu: contabilul o deschide ca să vadă ce n-a intrat — pasul lui, refăcut aici
+    pg = patron.pg
+    pg.click("#mig-citit > summary")
+    pg.wait_for_function("() => document.querySelector('#mig-citit').open", timeout=5000)
+    t = patron.fereastra()
     patron.captura()
     assert "2 rânduri nu sunt conturi și nu intră (totaluri, titluri): „Total clasa 4”, „TOTAL GENERAL”." in t, t[:1500]
     assert "Contul sintetic 401 e înlocuit de analiticele din fișier (același sold)." in t, t[:1500]
@@ -116,10 +122,10 @@ def _salariati(patron, firma):
     patron.captura("previzualizare")
     pg.click("#mig-salveaza-sal")
     # [lotul 10, deficiența 426] firma modulului are deja datele (alt test le-a importat): înlocuirea se confirmă explicit
-    pg.wait_for_function("() => document.querySelector('#ca-ok') || document.body.innerText.includes('2 salariați importați.')", timeout=20000)
+    pg.wait_for_function("() => document.querySelector('#ca-ok') || /Salariați: (2 noi, 0 fișe|0 noi, 2 fișe) actualizate\\./.test(document.body.innerText)", timeout=20000)
     if pg.locator("#ca-ok").count():
         pg.click("#ca-ok")
-    pg.wait_for_function("() => document.body.innerText.includes('2 salariați importați.')", timeout=20000)
+    pg.wait_for_function("() => /Salariați: (2 noi, 0 fișe|0 noi, 2 fișe) actualizate\\./.test(document.body.innerText)", timeout=20000)   # [lotul 11, 447] noi / fișe actualizate
     patron.captura("salvat")
 
 
@@ -280,10 +286,10 @@ def test_salariatii_partial_si_de_verificat_pana_la_confirmare(patron, firma_imp
     patron.captura("previzualizare")
     pg.click("#mig-salveaza-sal")
     # [lotul 10, deficiența 426] firma modulului are deja datele (alt test le-a importat): înlocuirea se confirmă explicit
-    pg.wait_for_function("() => document.querySelector('#ca-ok') || document.body.innerText.includes('2 salariați importați.')", timeout=20000)
+    pg.wait_for_function("() => document.querySelector('#ca-ok') || /Salariați: (2 noi, 0 fișe|0 noi, 2 fișe) actualizate\\./.test(document.body.innerText)", timeout=20000)
     if pg.locator("#ca-ok").count():
         pg.click("#ca-ok")
-    pg.wait_for_function("() => document.body.innerText.includes('2 salariați importați.')", timeout=20000)
+    pg.wait_for_function("() => /Salariați: (2 noi, 0 fișe|0 noi, 2 fișe) actualizate\\./.test(document.body.innerText)", timeout=20000)   # [lotul 11, 447] noi / fișe actualizate
     assert "2 salariați au date de verificat în Stat de plată" in patron.fereastra()
     assert sql('SELECT nume, persoane_intretinere, scutit_contrib_minim, de_verificat FROM "%s".salariati '
                "WHERE nume IN ('Dobre', 'Marin') ORDER BY nume" % sch) == [
@@ -309,10 +315,10 @@ def test_salariatii_partial_si_de_verificat_pana_la_confirmare(patron, firma_imp
     _incarca(patron, "salariati_fara_scutire.csv", _cp1250(SALARIATI_FARA_SCUTIRE), "#mig-salveaza-sal")
     pg.click("#mig-salveaza-sal")
     # [lotul 10, deficiența 426] firma modulului are deja datele (alt test le-a importat): înlocuirea se confirmă explicit
-    pg.wait_for_function("() => document.querySelector('#ca-ok') || document.body.innerText.includes('2 salariați importați.')", timeout=20000)
+    pg.wait_for_function("() => document.querySelector('#ca-ok') || /Salariați: (2 noi, 0 fișe|0 noi, 2 fișe) actualizate\\./.test(document.body.innerText)", timeout=20000)
     if pg.locator("#ca-ok").count():
         pg.click("#ca-ok")
-    pg.wait_for_function("() => document.body.innerText.includes('2 salariați importați.')", timeout=20000)
+    pg.wait_for_function("() => /Salariați: (2 noi, 0 fișe|0 noi, 2 fișe) actualizate\\./.test(document.body.innerText)", timeout=20000)   # [lotul 11, 447] noi / fișe actualizate
     assert sql('SELECT persoane_intretinere, de_verificat FROM "%s".salariati WHERE id = %%s' % sch, (pid,)) == [(1, [])]
 
 

@@ -98,6 +98,26 @@ def _mesaj_intrare(e):
     return str(e)
 
 
+def _campuri_lipsa(corp, obligatorii, prefix="op-", er=None):
+    """[lotul 11, deficiența 440 — A4, comanda Costin 11.1 pct.16: „toate erorile apar deodată, fiecare cu textul ei, în casetă și lângă
+    câmp”] TOATE câmpurile obligatorii lipsă din `corp`, înainte de calcul.
+
+    Instanța: 42 de use-case-uri citeau `corp["x"]` în calcul și prindeau `KeyError` (`_mesaj_intrare`) — refuzul numea numai PRIMUL
+    câmp lipsă și fără `erori_campuri`; omul completa unul, apăsa, afla de al doilea. Aici se verifică toate deodată: lipsă = cheia
+    absentă, `None` sau text gol (formularul nu trimite un câmp gol). `obligatorii` = cheile (câmpul de pe ecran = `prefix` + cheie;
+    `op-` e formularul Operațiuni) sau {cheie: id-ul câmpului de pe ecran}. Fără `er`, refuză (`DateInvalide` cu toate); cu `er`
+    (`core.erori.ErorileFormularului` al apelantului), le adaugă acolo. Întoarce cheile lipsă (lista goală = nimic lipsă)."""
+    harta = dict(obligatorii) if isinstance(obligatorii, dict) else {k: prefix + k for k in obligatorii}
+    corp = corp or {}
+    lipsa = [k for k in harta if corp.get(k) is None or (isinstance(corp.get(k), str) and not corp.get(k).strip())]
+    colector = er if er is not None else _erori.ErorileFormularului("Lipsesc câmpuri din cerere")
+    for k in lipsa:
+        colector.camp(harta[k], "Lipsește câmpul `%s` din cererea trimisă. Operațiunea nu se poate consemna fără el." % k)
+    if er is None:
+        colector.refuza()
+    return lipsa
+
+
 def refuz_spre_ecran(mesaj, cod, ecran, regula=None, tip="operatiune"):
     """[lotul 07.10 pct.2] Corpul refuzului care trimite în alt ecran, ca AFIRMAȚIE TIPATĂ (`neconformitate`, decizia 21.08):
     `cod`, `mesaj` și `ecran` (ținta butonului „Deschide …”). O singură formă pentru toate drumurile; numele ecranului-țintă vine din
@@ -201,7 +221,8 @@ def _anaf_tva_check(cui, valoare_manuala):
     DB și NU ridică niciodată (ANAF jos/notFound -> (None,None,None), salvarea trece — signal-not-block).
     anaf_val None = ANAF necunoscut -> snapshot NU se reîmprospătează. [B1] data inceperii inregistrarii TVA."""
     try:
-        c = (cui or "").replace("RO", "").strip()
+        from core import cui_forma as _forma_cui   # [lotul 11, decizia Costin 10.3 pct.4] forma unică (înainte `.replace("RO", "")`)
+        c = _forma_cui.stocare(cui)
         if not c:
             return None, None, None
         rez = anaf_api.valideaza_cui([c])
@@ -340,17 +361,12 @@ def controale_inchidere(conn, schema, an, luna):
         # cursul [...] din ultima zi bancară a lunii în cauză” — reevaluarea e LUNARĂ și obligatorie, deci blocaj, nu semnal. Oprește
         # elementul cu diferență neînregistrată sau fără ce trebuie ca s-o calculeze (soldul în valută al unui cont 5124, cursul BNR);
         # o reevaluare a lunii aflată în ciornă îl acoperă (CIORNE o spune separat). Propunerea, sursa unică: `reevaluare_valuta`.
+        # [lotul 11, 429] textul și numărătoarea (parteneri, conturi) vin din sursa unică, `reevaluare_valuta.blocaj_inchidere`
         from core import reevaluare_valuta as _rv
         with conn.cursor() as cur:
-            _de = _rv.de_reevaluat(_rv.propunere(cur, schema, an, luna, cu_ciorna_lunii=True))
-        if _de:
-            _fact = sum(1 for e in _de if e["factura_id"])
-            _ce = ", ".join(x for x in (_cate(_fact, "factură", "facturi") if _fact else "",
-                                        _cate(len(_de) - _fact, "cont de disponibilități", "conturi de disponibilități")
-                                        if len(_de) > _fact else "") if x)
-            blocaje.append(_ctl("REEVALUARE_VALUTA", "soldurile în valută de la sfârșitul lunii nu sunt reevaluate la cursul BNR din "
-                                "ultima zi bancară (%s: %s); deschide „Reevaluare valută”, verifică propunerea și generează nota"
-                                % (_rv.TEMEI, _ce), elemente=len(_de)))
+            _bl = _rv.blocaj_inchidere(cur, schema, an, luna)
+        if _bl:
+            blocaje.append(_ctl("REEVALUARE_VALUTA", _bl[0], elemente=_bl[1]))
         semnale += [_ctl("DECLARATIE_NEDEPUSA", m, tip=t) for t, m in declaratii_nedepuse_cu_termen_in_luna(schema, an, luna)]
     return {"blocaje": blocaje, "semnale": semnale}
 

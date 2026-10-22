@@ -226,10 +226,14 @@ def insert_public_5(cur, uid, tenant_id, fapt, _json_audit):
 
 def select_facturi_3(cur, schema, f):
     """Aceeași factură = același număr, același terț, aceeași dată ȘI aceeași direcție. [16.10.2026, lotul 6 pct.1b, clasa 277] Fără
-    direcție, o factură PRIMITĂ de la clientul X, cu numărul și data uneia EMISE către X, ieșea „duplicat” și nu se mai importa."""
+    direcție, o factură PRIMITĂ de la clientul X, cu numărul și data uneia EMISE către X, ieșea „duplicat” și nu se mai importa.
+    [lotul 11, decizia 10.3 pct.4 — CUI-ul se păstrează fără „RO”] terțul se compară în FORMA PĂSTRATĂ (`cui_forma`), pe ambele părți:
+    triggerul `trg_cui_fara_ro` scrie „14399840”, XML-ul aduce „RO14399840”, iar documentele de dinainte au rămas cu „RO” — comparat
+    brut, al doilea import nu-și găsea factura și cădea în cheia unică a numărului (500 / refuz fals)."""
+    from core import cui_forma as _cf
     cur.execute(f"""SELECT id FROM {schema}.facturi
-                WHERE numar=%s AND COALESCE(tert_cui,'')=%s AND data_emitere=%s AND directie=%s""",
-                (f["numar"], f["tert_cui"], f["data_emitere"], f["directie"]))
+                WHERE numar=%s AND {_cf.SQL.format(c="tert_cui")}=%s AND data_emitere=%s AND directie=%s""",
+                (f["numar"], _cf.stocare(f["tert_cui"]) or "", f["data_emitere"], f["directie"]))
     return cur.fetchone()
 
 
@@ -253,5 +257,9 @@ def insert_facturi(cur, schema, _stare, f):
 
 def insert_factura_linii(cur, schema, fid, ln):
     cur.execute(f"""INSERT INTO {schema}.factura_linii
-                (factura_id, descriere, cantitate, pret_unitar, cota_tva)
-                VALUES (%s,%s,%s,%s,%s)""", (fid, ln["descriere"][:255], ln["cantitate"], ln["pret_unitar"], ln["cota_tva"]))
+                (factura_id, descriere, cantitate, pret_unitar, cota_tva, valoare_neta, nivel_document)
+                VALUES (%s,%s,%s,%s,%s,%s,%s)""", (fid, ln["descriere"][:255], ln["cantitate"], ln["pret_unitar"], ln["cota_tva"],
+                                                   # [lotul 11, C82] BT-131 din XML, exact (`tva_calcul.net_linie`)
+                                                   ln.get("valoare_neta"),
+                                                   # [lotul 11, C80] reducerea / taxa la nivelul facturii (BG-20 / BG-21), nu un articol
+                                                   bool(ln.get("nivel_document"))))

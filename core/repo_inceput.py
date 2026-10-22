@@ -25,16 +25,26 @@ def firmele_cabinetului(cur, cabinet_id):
 def preluare_facuta(cur, schema):
     """(balanța importată, auditul de preluare rulat) pe firma din `schema`: soldurile inițiale există; auditul și-a păstrat raportul
     (`artefacte_produse`, fel `audit_preluare` — `uc_control_fiscal`)."""
+    import psycopg2.errors
     q = '"%s".' % str(schema).strip('"')
-    cur.execute("SELECT to_regclass(%s) IS NOT NULL, to_regclass(%s) IS NOT NULL", (q + "solduri_initiale", q + "artefacte_produse"))
-    are_sold, are_art = cur.fetchone()
-    sold = audit = False
-    if are_sold:
-        cur.execute("SELECT EXISTS (SELECT 1 FROM " + q + "solduri_initiale)")
-        sold = bool(cur.fetchone()[0])
-    if are_art:
-        cur.execute("SELECT EXISTS (SELECT 1 FROM " + q + "artefacte_produse WHERE fel = 'audit_preluare')")
-        audit = bool(cur.fetchone()[0])
+    # [lotul 11, C98] firma ștearsă între listarea firmelor și citirea ei (schema a dispărut după `to_regclass`): nu mai e o firmă a
+    # cabinetului, deci nu e nici preluată — înainte, „Primii pași” cădea cu 500 (UndefinedTable). Numai lipsa tabelului; orice altă
+    # eroare urcă.
+    cur.execute("SAVEPOINT preluare_facuta")
+    try:
+        cur.execute("SELECT to_regclass(%s) IS NOT NULL, to_regclass(%s) IS NOT NULL", (q + "solduri_initiale", q + "artefacte_produse"))
+        are_sold, are_art = cur.fetchone()
+        sold = audit = False
+        if are_sold:
+            cur.execute("SELECT EXISTS (SELECT 1 FROM " + q + "solduri_initiale)")
+            sold = bool(cur.fetchone()[0])
+        if are_art:
+            cur.execute("SELECT EXISTS (SELECT 1 FROM " + q + "artefacte_produse WHERE fel = 'audit_preluare')")
+            audit = bool(cur.fetchone()[0])
+    except psycopg2.errors.UndefinedTable:
+        cur.execute("ROLLBACK TO SAVEPOINT preluare_facuta")
+        return False, False
+    cur.execute("RELEASE SAVEPOINT preluare_facuta")
     return sold, audit
 
 

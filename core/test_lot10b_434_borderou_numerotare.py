@@ -55,8 +55,10 @@ def conn(monkeypatch):
 
 
 _ION = {"data": "2026-10-19", "furnizor_nume": "Ion Popescu", "furnizor_adresa": "Str. Florilor 1, Ploiești", "furnizor_act": "PH 123456",
-        "valoare": 200, "cont_cheltuiala": "371", "articol": "Grâu", "cantitate": 100, "um": "kg"}
-_MARIA = {**_ION, "data": "2026-10-20", "furnizor_nume": "Maria Ionescu", "furnizor_act": "PH 654321", "valoare": 150}
+        "valoare": 200, "cont_cheltuiala": "371", "articol": "Grâu", "cantitate": 100, "um": "kg",
+        "articol_nou": True}   # [lotul 11, 450] articolul nou, cerut explicit
+_MARIA = {**_ION, "data": "2026-10-20", "furnizor_nume": "Maria Ionescu", "furnizor_act": "PH 654321", "valoare": 150,
+          "articol_nou": False}   # [450] Grâu e deja în nomenclator (borderoul lui Ion): se ia de acolo
 
 
 def _borderou(corp):

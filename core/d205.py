@@ -8,7 +8,7 @@ dupa o prima incercare care citise doar primele ~180 si a ratat atributele reale
 ale sect_II/benef - gasite mai departe in document).
 
 Structura reala:
-  <declaratie205 luna="12" an="AAAA" d_rec="0" cui="..." nume_declar="..."
+  <declaratie205 luna="12" an="AAAA" d_rec="0/1" cui="..." nume_declar="..."   (d_rec: core.rectificativa, C77)
                  prenume_declar="..." functie_declar="..." den="..." adresa="..."
                  totalPlata_A="...">
     <sect_II tip_venit="25" nrben="N" Tcastig="..." Tpierd="..." T_VB="..."
@@ -118,6 +118,10 @@ class RezultatD205:
     beneficiari: list = field(default_factory=list)
     total_plata_a: int = 0
     avertismente: list = field(default_factory=list)
+    # [lotul 11, C77] rectificativa: `core.rectificativa.aplica` (d_rec în XML, textul de pe ecran, depunerea pe care s-a sprijinit)
+    d_rec: int = 0
+    rectificativa: object = None
+    depunere_anterioara_nr: object = None
 
 
 def calcul_d205(prof, an, beneficiari):
@@ -268,10 +272,10 @@ def build_xml(res):
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
     hdr = ('<declaratie205 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
            'xmlns="%s" xsi:schemaLocation="%s D205.xsd" '
-           'luna="12" an="%d" d_rec="0" '
+           'luna="12" an="%d" d_rec="%d" '
            'nume_declar=%s prenume_declar=%s functie_declar=%s '
            'cui="%s" den=%s adresa=%s totalPlata_A="%d">'
-           % (NS, NS, res.an,
+           % (NS, NS, res.an, int(getattr(res, "d_rec", 0) or 0),   # [lotul 11, C77]
               _esc(_t(prof.get("declarant_nume"), _LIM["d205"]["nume_declar"])),   # [C69] fără implicit: `erori_declarant` a blocat deja lipsa
               _esc(_t(prof.get("declarant_prenume"), _LIM["d205"]["prenume_declar"])),
               _esc(_t(prof.get("declarant_functie"), _LIM["d205"]["functie_declar"])),  # C(50) ANAF (DUK: 51 respins)
@@ -492,13 +496,127 @@ def refuz_preluate(an, prel):
         "în %d, baza și impozitul — inclusiv dividendele din notele de după preluare." % (an, _ce_preluate(prel), _dr(prel["ref"]), an))
 
 
+#: [lotul 11, decizia Costin 10.3, verbatim în DECIZII „Comanda 10.3” pct.4] „D205 pe anii depuși după regula veche: fără
+#: rectificative.” Regula nouă (lotul 10, decizia A: dividendele distribuite și neplătite la 31.12 intră pe anul distribuirii, cu
+#: impozitul lor) a intrat în aplicație la publicarea lotului 10 — restartul din 21.10.2026 16:24:12, ora României (DECIZII „Comanda
+#: 10.3” pct.1, commitul 22c71846). O D205 depusă prin iConta.eu înainte de clipa asta e făcută după regula veche („baza1 = plătit”).
+REGULA_DISTRIBUIT_PUBLICATA_LA = "2026-10-21T16:24:12+03:00"
+
+
+def depusa_regula_veche(conn, schema, an):
+    """Data primei D205 pe `an` depuse prin iConta.eu înainte de `REGULA_DISTRIBUIT_PUBLICATA_LA` (deci după regula veche), sau None."""
+    from datetime import datetime as _dtm
+    if conn is None or not schema:
+        return None
+    with conn.cursor() as cur:
+        prima = _repo.select_prima_depunere_iconta(cur, schema, an)
+    return prima if (prima is not None and prima < _dtm.fromisoformat(REGULA_DISTRIBUIT_PUBLICATA_LA)) else None
+
+
+def refuz_regula_veche(an, depusa_la):
+    """Refuzul oricărei D205 noi pe un an depus după regula veche (decizia Costin 10.3: fără rectificative), cu motivul numit."""
+    from core.erori import RefuzGenerare
+    from core.pdf_util import data_ro as _dr
+    from zoneinfo import ZoneInfo as _ZI
+    return RefuzGenerare(
+        "D205 pe %d e depusă prin iConta.eu la %s, după regula de atunci: baza și impozitul pe dividendele plătite în an. Regula de acum "
+        "(dividendele distribuite în an, plătite sau nu la 31.12, cu impozitul lor) se aplică numai anilor nedepuși: pentru anii "
+        "depuși după regula veche nu se face rectificativă (decizia din 21.10.2026), deci iConta.eu nu mai generează D205 pe %d."
+        % (an, _dr(depusa_la.astimezone(_ZI("Europe/Bucharest")) if getattr(depusa_la, "tzinfo", None) else depusa_la), an))
+
+
+def completata_manual(conn, schema, an):
+    """[lotul 11, decizia Costin 10.3 „Semaforul D205 numără 457 preluat ca incomplet până la completarea manuală”] D205 pe `an` e
+    completată: depusă (orice sursă) sau în coadă cu beneficiarii scriși manual (`repo_d205.select_d205_completata`)."""
+    from core.coada_api import STARI_ACTIVE
+    with conn.cursor() as cur:
+        return _repo.select_d205_completata(cur, schema, an, STARI_ACTIVE)
+
+
+def motiv_incomplet_preluate(an, prel):
+    """Textul semaforului pentru D205 datorată pe anul preluării, din balanța de deschidere, încă necompletată manual."""
+    return ("D205 pe %d — incompletă până la completarea manuală: %s, din balanța de deschidere. iConta.eu nu are notele lor, deci "
+            "nici beneficiarii; se completează manual în D205." % (an, _ce_preluate(prel)))
+
+
+_CAMPURI_BENEF = ("den1", "tip_plata", "divid_D", "divid_P", "baza1", "imp1")
+
+
+def pozitii_depuse(xmls):
+    """[lotul 11, C77] Pozițiile D205 în vigoare după depunerile anului, în ordinea lor: {(tip_venit1, cifR): {den1, tip_plata, divid_D,
+    divid_P, baza1, imp1}}. Prima depunere e completă; o rectificativă cuprinde numai pozițiile corectate (OPANAF 179/2022 anexa 3
+    pct.I.5.2), deci fiecare o suprascrie pe a ei. O poziție adusă la zero rămâne în stare, cu zero."""
+    import xml.etree.ElementTree as _ET
+    stare = {}
+    for x in xmls:
+        root = _ET.fromstring(x.encode("utf-8") if isinstance(x, str) else x)
+        for el in root.iter():
+            if el.tag.rsplit("}", 1)[-1] != "benef":
+                continue
+            a = el.attrib
+            stare[(a.get("tip_venit1", ""), "".join(ch for ch in a.get("cifR", "") if ch.isdigit()))] = {
+                k: (a.get(k, "") if k in ("den1", "tip_plata") else int(a.get(k) or 0)) for k in _CAMPURI_BENEF}
+    return stare
+
+
+def pozitii_corectate(stare, beneficiari):
+    """[lotul 11, C77] Rectificativa D205 față de pozițiile în vigoare (`pozitii_depuse`): pozițiile noi sau cu altă valoare, plus
+    pozițiile declarate care nu mai există, cu col. 7-10 pe zero (OPANAF 179/2022 anexa 3 pct.I.5.3 lit.a): „se vor înscrie datele de
+    identificare ale beneficiarului de venit din declaraţia iniţială, iar la col. 7 - 10 se va înscrie cifra "0" (zero)”). [Beneficiar]."""
+    noi, vazute = [], set()
+    for b in beneficiari:
+        cheie = ("08", "".join(ch for ch in (b.cif or "") if ch.isdigit()))
+        vazute.add(cheie)
+        acum = {"den1": b.nume1, "tip_plata": b.tip_plata, "divid_D": b.divid_d, "divid_P": b.divid_p, "baza1": b.baza1, "imp1": b.imp1}
+        vechi = stare.get(cheie)
+        if vechi is None or any(vechi[k] != acum[k] for k in ("divid_D", "divid_P", "baza1", "imp1", "tip_plata")):
+            noi.append(b)
+    for cheie, v in stare.items():
+        if cheie not in vazute and cheie[0] == "08" and any(v[k] for k in ("divid_D", "divid_P", "baza1", "imp1")):
+            noi.append(Beneficiar(categ="1.a", nume1=v["den1"], cif=cheie[1], tip_plata=v["tip_plata"] or "2"))
+    return noi
+
+
+def _rectificativa_d205(conn, schema, an, res, bifata):
+    """[lotul 11, C77] Peste o D205 înregistrată pe an, declarația devine rectificativă cu numai pozițiile corectate. Fără conținutul
+    depunerilor (marcată „în afara iConta.eu” / de contabilul anterior / din istoric) pozițiile corectate nu se pot afla -> refuz numit
+    (nu se trimite lista întreagă ca rectificativă). Bifată fără depunere înregistrată: lista din formular sunt pozițiile corectate."""
+    from core import rectificativa as _rect
+    from core.erori import RefuzGenerare
+    st = _rect.stabileste(conn, schema, "d205", an, bifata=bifata)
+    _rect.aplica(res, st)
+    if not st.d_rec or st.dep is None:
+        return res
+    deps = st.dep["toate"]
+    fara = [d for d in deps if not d.get("xml")]
+    if fara:
+        raise RefuzGenerare(
+            "D205 pe %d e deja înregistrată: %s. Declarația rectificativă D205 cuprinde numai pozițiile corectate față de declarația inițială "
+            "(OPANAF 179/2022, instrucțiunile formularului 205, pct.I.5.2), iar conținutul acelei declarații nu e în iConta.eu, deci "
+            "pozițiile corectate nu se pot afla. Declarația rectificativă se completează manual în D205, numai cu beneficiarii corectați, bifând "
+            "„rectificativă”." % (an, _rect.descriere_depunere(fara[-1])))
+    noi = pozitii_corectate(pozitii_depuse([d["xml"] for d in deps]), res.beneficiari)
+    if not noi:
+        raise RefuzGenerare("D205 pe %d: nicio poziție nu diferă de %s — nu e nimic de rectificat." % (
+            an, _rect.descriere_depunere(st.dep)))
+    res.beneficiari = noi
+    res.total_plata_a = len(noi) + sum(b.baza1 for b in noi) + sum(b.imp1 for b in noi)   # checksum-ul din calcul_d205, pe poziții
+    return res
+
+
 def genereaza(conn, schema, perioada, manual=None):
     """D205 anual (contract uniform A1). `manual` cu cheia 'beneficiari' suprascrie lista calculata
     automat din dividendele asociatilor (cota din tabelul `asociati`, sume din notele VALIDATE pe
     contul 457: divid_D=distribuit credit 457, divid_P=platit debit 457; impozit pe dividende
     PERIOD-AWARE - cota("impozit_dividend"): 10% pana in 2025, 16% de la 01.01.2026 (Legea
     141/2025, CF art.97). Foloseste perioada.an."""
-    manual = cheie_manual(manual, "beneficiari")
+    manual = dict(cheie_manual(manual, "beneficiari", "d_rec"))
+    from core import rectificativa as _rect
+    _bifata = _rect.bifata({"d_rec": manual.pop("d_rec", 0)})   # [lotul 11, C77] bifa „rectificativă” din formular
+    # [lotul 11, decizia Costin 10.3] anul depus după regula veche: nicio D205 nouă (nici automată, nici manuală) = nicio rectificativă
+    _veche = depusa_regula_veche(conn, schema, perioada.an)
+    if _veche:
+        raise refuz_regula_veche(perioada.an, _veche)
     prof, beneficiari_auto = pull_beneficiari(conn, schema, perioada)
 
     erori = erori_generare(prof)
@@ -521,6 +639,7 @@ def genereaza(conn, schema, perioada, manual=None):
     # impozitului pe dividende din 457 (NU cross-check cu D100 = same-source trap).
     from core.d205_reconciliere import verifica_reconciliere as _vr205
     _vr205(conn, schema, perioada, res, manual)
+    _rectificativa_d205(conn, schema, perioada.an, res, _bifata)   # [lotul 11, C77] după reconciliere: ea privește anul întreg
     xml = build_xml(res)
     from core.reconciliere_emis import verifica_total_plata_a as _vte
     _vte("d205", xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res

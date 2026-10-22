@@ -35,6 +35,7 @@ facturii în lei, la ban — altfel nu e aceeași livrare (ca la ordinea direct�
 """
 from decimal import Decimal, ROUND_HALF_UP
 
+from core import cui_forma as _forma_cui
 from core import facturi as _fc
 from core import metoda_stoc as _ms
 from core import sume_lei as _sl
@@ -62,10 +63,6 @@ MENTIUNE_ALTA_LIVRARE = " · altă livrare decât NIR-urile nelegate (confirmat)
 
 def _q2(x):
     return Decimal(str(x)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-
-
-def _cui(v):
-    return "".join(ch for ch in str(v or "") if ch.isdigit())
 
 
 def _p(schema):
@@ -115,7 +112,7 @@ def candidati(cur, schema, f, data_nota):
     nerespinse și nerefăcute. Fiecare: {id, numar, data, cost, eticheta, acelasi_cost}."""
     from core import coada_api as _cq
     from core import stocuri_api as _sa
-    cui = _cui(f.get("tert_cui"))
+    cui = _forma_cui.stocare(f.get("tert_cui"))   # [lotul 11, decizia 10.3] forma păstrată, nu numai cifrele
     if not cui:
         return []
     an = int(str(data_nota)[:4])
@@ -127,7 +124,7 @@ def candidati(cur, schema, f, data_nota):
     nirs = []
     for r in cur.fetchall():
         n = dict(r)
-        if _cui(n["cui"]) != cui:
+        if _forma_cui.stocare(n["cui"]) != cui:
             continue
         n["forma_noua"] = forma_noua(cur, schema, n)
         # §6 pct.2: forma nouă se leagă și între exerciții, cât timp 408 e deschis (factura_id NULL); forma veche se stornează, deci

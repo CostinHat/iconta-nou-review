@@ -124,7 +124,10 @@ def stat_plata(conn, schema, an, luna):
                                          # [S1] elementele variabile + indemnizația CM (venitul realizat al facilității)
                                          elemente_variabile=_es.total(elem_luna.get(sid)),
                                          cadou_taxabil=float(cadou_tax_luna.get(sid, 0) or 0),
-                                         venit_cm=(c_cm["brut"] if c_cm else 0))
+                                         venit_cm=(c_cm["brut"] if c_cm else 0),
+                                         # [lotul 11, C99] zilele de CM nu sunt zile active pentru contribuția minimă (Codul muncii
+                                         # art.50 lit.b), iar salariatul scutit nu o datorează — aceleași intrări ca `d112.pull`
+                                         zile_cm=cm_zile, exceptat_suprataxare=bool(scutit))
         # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
         vac_an = _ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) if vac else 0
         cadou = cadou_luna.get(sid, 0)  # [F133 Faza 2b1] total cadou (neimpozabil in 2b1)
@@ -294,7 +297,7 @@ def stat_final(conn, schema, an, luna):
         if ("%s %s" % (s_.get("nume") or "", s_.get("prenume") or "")).strip() == a.nume:
             decl[s_["id"]] = a
     with conn.cursor() as cur:
-        cur.execute("SELECT salariat_id, brut_ang, brut_fnuass FROM concedii_medicale WHERE an=%s AND luna=%s", (an, luna))
+        cur.execute(f"SELECT salariat_id, brut_ang, brut_fnuass FROM {schema}.concedii_medicale WHERE an=%s AND luna=%s", (an, luna))
         brut_cm = {}
         for sid, ba, bf in cur.fetchall():
             brut_cm[sid] = brut_cm.get(sid, _D(0)) + leu_aritmetic(_D(str(ba or 0))) + leu_aritmetic(_D(str(bf or 0)))

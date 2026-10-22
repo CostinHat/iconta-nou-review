@@ -15,7 +15,9 @@ from core import repo_tenants
 
 def _refuz(r):
     m = r.get("mesaj") or "regim TVA la încasare invalid"
-    return _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": r["camp"], "mesaj": m}]} if r.get("camp") else m)
+    # [lotul 11, deficiența 440] toate erorile adunate (`regim_tva_incasare._refuz_adunat`), nu numai prima
+    ec = r.get("erori_campuri") or ([{"camp": r["camp"], "mesaj": m}] if r.get("camp") else None)
+    return _erori.DateInvalide({"mesaj": m, "erori_campuri": ec} if ec else m)
 
 
 def _rtvai_firma(tenant_id):

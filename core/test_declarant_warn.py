@@ -60,6 +60,6 @@ def test_bilantul_nu_fabrica_administratorul_il_cere():
     from core import bilant
     for path in ("core/bilant.py", "core/bilant_api.py"):
         assert '"ADMINISTRATOR"' not in io.open(path, encoding="utf-8").read(), path
-    erori = bilant.erori_antet({"cod_judet": 40, "mare_contribuabil": False, "forma_proprietate": "35"})
+    erori = bilant.erori_antet({"cod_judet": 40, "mare_contribuabil": False, "forma_proprietate": "35", "interes_public": False, "calit_intocmit": 12, "intocmit_nume": "IONESCU MARIA"})
     assert len(erori) == 1, erori                                    # numai administratorul lipsește („19. nume_admin … DA”)
     assert "administratorului lipsesc" in erori[0], erori

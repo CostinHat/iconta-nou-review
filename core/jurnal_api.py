@@ -65,8 +65,58 @@ def _refuz(mesaj, temei, camp=None, linia=None):
     return dict(a)
 
 
-def _data_valida(data):
-    """`(data, refuz)` — data notei, sau refuzul cu temeiul ei.
+#: [lotul 11, deficiența 440] câmpurile editorului notei din Registru jurnal („Notă nouă” și „Editează”, `static/js/ecrane/firme.js`,
+#: `ecranJurnal`): data e `#je-data`; pe rândul i al liniilor (numărat de la 0, ordinea rândurilor din `#je-linii` = ordinea listei
+#: `linii` trimise) `je-deb-i`, `je-cre-i`, `je-sum-i` (id-ul pe care ecranul îl pune sumelor la salvare), `je-pcui-i`, `je-pnume-i`.
+#: Refuzul numește câmpul ECRANULUI (contractul G10, DS cap.6), ca `api.js` să pună fiecare eroare lângă câmpul ei.
+CAMP_DATA = "je-data"
+_CAMP_LINIE = {"debit": "je-deb", "credit": "je-cre", "suma": "je-sum", "partener_cui": "je-pcui", "partener_nume": "je-pnume"}
+
+
+def camp_linie(cheie, linia):
+    """Id-ul câmpului `cheie` de pe linia `linia` (numărată de la 1, ca în mesaje) în editorul notei: „je-deb-0” pentru debitul liniei 1."""
+    return "%s-%d" % (_CAMP_LINIE[cheie], int(linia) - 1)
+
+
+class _ErorileNotei:
+    """[lotul 11, deficiența 440, comanda Costin 11.1 pct.16, verbatim] „toate erorile apar deodată, fiecare cu textul ei, în casetă și
+    lângă câmp.” Până aici, validarea notei se oprea la PRIMA problemă: o notă cu două linii greșite se refuza de trei ori la rând, câte un
+    câmp pe rând. Acum fiecare problemă (data, fiecare linie, fiecare câmp al liniei) se ADAUGĂ în colectorul unic al formularelor
+    (`core.erori.ErorileFormularului`), iar la capăt nota se refuză o dată, cu toate. Fiecare problemă își păstrează temeiul (interdicția
+    77): refuzul le citează pe toate, o dată fiecare."""
+
+    def __init__(self):
+        from core import erori as _erori
+        self.er = _erori.ErorileFormularului("Nota nu s-a salvat")
+        self.temeiuri = []
+        self.prima_linie = None
+
+    def adauga(self, mesaj, temei, camp=None, linia=None):
+        if camp:
+            self.er.camp(camp, mesaj)
+        else:
+            self.er.fara_camp(mesaj)
+        if str(temei) not in self.temeiuri:
+            self.temeiuri.append(str(temei))
+        if self.prima_linie is None and linia is not None:
+            self.prima_linie = linia
+
+    def __bool__(self):
+        return bool(self.er)
+
+    def refuz(self):
+        """Refuzul tipat (`_refuz`) cu TOATE problemele, sau None. `erori_campuri` = lista întreagă (câmpurile ecranului); `camp` rămâne
+        gol, ca stratul use-case (`uc_comun._jurnal_rez`) să treacă lista mai departe, nu s-o înlocuiască cu un singur câmp."""
+        if not self.er:
+            return None
+        d = self.er.detaliu()
+        r = _refuz(d["mesaj"], "; ".join(self.temeiuri), linia=self.prima_linie)
+        r["erori_campuri"] = d["erori_campuri"]
+        return r
+
+
+def _erori_data(data, er):
+    """Data notei (`datetime.date`), sau None, cu problema adăugată în `er`.
 
     Pana azi, o data lipsa sau in alt format iesea **500**, fara niciun mesaj: exceptia din driverul
     de baza nu era prinsa nicaieri. Un 500 nu e un refuz — nu spune nimic omului si nu poate purta
@@ -75,36 +125,57 @@ def _data_valida(data):
     import datetime
     s = str(data or "").strip()
     if not s:
-        return None, _refuz(
-            "nota are nevoie de data operatiunii: fiecare operatiune se consemneaza in momentul "
-            "efectuarii ei", TEMEI_CONSEMNARE, camp="data")
+        er.adauga("nota are nevoie de data operatiunii: fiecare operatiune se consemneaza in momentul "
+                  "efectuarii ei", TEMEI_CONSEMNARE, camp=CAMP_DATA)
+        return None
     try:
-        return datetime.date.fromisoformat(s), None
+        return datetime.date.fromisoformat(s)
     except ValueError:
-        return None, _refuz(
-            "data %r nu e in formatul AAAA-LL-ZZ. Se cere o data calendaristica, fiindca "
-            "inregistrarea se face la momentul operatiunii, iar ordinea cronologica a "
-            "registrului-jurnal atarna de ea" % s, TEMEI_CONSEMNARE, camp="data")
+        er.adauga("data %r nu e in formatul AAAA-LL-ZZ. Se cere o data calendaristica, fiindca "
+                  "inregistrarea se face la momentul operatiunii, iar ordinea cronologica a "
+                  "registrului-jurnal atarna de ea" % s, TEMEI_CONSEMNARE, camp=CAMP_DATA)
+        return None
+
+
+def _data_valida(data):
+    """`(data, refuz)` — data notei, sau refuzul cu temeiul ei (forma pentru un singur câmp; nota întreagă trece prin `_ErorileNotei`)."""
+    er = _ErorileNotei()
+    d = _erori_data(data, er)
+    return d, er.refuz()
 
 
 def _linii_valide(conn, schema, linii):
-    """`refuz sau None` — forma liniilor SI conturile, confruntate cu planul firmei.
+    """`refuz sau None` — forma liniilor SI conturile, confruntate cu planul firmei; refuzul le numește pe TOATE (440)."""
+    er = _ErorileNotei()
+    _erori_linii(conn, schema, linii, er)
+    return er.refuz()
+
+
+def _erori_linii(conn, schema, linii, er):
+    """Adaugă în `er` fiecare problemă a fiecărei linii — nu se oprește la prima (440): forma liniilor SI conturile, confruntate cu
+    planul firmei.
 
     Confruntarea cu planul lipsea de pe calea asta, iar `9999` intra in evidenta. R54 o declarase
     facuta „pe toate rutele care scriu in evidenta cu un cont venit de la om" — dar domeniul ei
     recunoaste citirile dupa NUMELE cheii (`cont`, `cont_*`), iar aici cheile se numesc `debit` si
     `credit`. N-a fost niciodata in domeniu, deci nici in cele 8 declarate NELEGATE.
     """
+    from decimal import InvalidOperation
     from core import cont_valid as _cv
     if not linii:
-        return _refuz("nota trebuie sa aiba cel putin o linie: o inregistrare in partida dubla are "
-                      "cel putin un cont debitor si unul creditor", TEMEI_PARTIDA_DUBLA)
+        er.adauga("nota trebuie sa aiba cel putin o linie: o inregistrare in partida dubla are "
+                  "cel putin un cont debitor si unul creditor", TEMEI_PARTIDA_DUBLA)
+        return
     for i, l in enumerate(linii, 1):
+        if not isinstance(l, dict):   # [440] refuz numit, nu 500 din `l.get`
+            er.adauga("linia %d nu are forma unei linii de notă (cont debitor, cont creditor, sumă)" % i, TEMEI_PARTIDA_DUBLA, linia=i)
+            continue
         for cheie, eticheta in (("debit", "contul debitor"), ("credit", "contul creditor")):
             if not str(l.get(cheie, "")).strip():
-                return _refuz(
+                er.adauga(
                     "linia %d n-are %s. Partida dubla cere ambele conturi pe fiecare inregistrare"
-                    % (i, eticheta), TEMEI_PARTIDA_DUBLA, camp=cheie, linia=i)
+                    % (i, eticheta), TEMEI_PARTIDA_DUBLA, camp=camp_linie(cheie, i), linia=i)
+                continue
             try:
                 _cv.cere_cont(conn, schema, l[cheie], "%s (linia %d)" % (eticheta, i))
             except _cv.ContNecunoscut as e:
@@ -116,30 +187,35 @@ def _linii_valide(conn, schema, linii):
                 # lista iese goala si ramura nici nu se executa. De-aia etapa 1, care apasa cu
                 # `«»@#$%%`, a primit de aici un mesaj bun — iar etapa 2, cu `7015`, un 500.
                 d = e.detalii if hasattr(e, "detalii") else {}
-                return _refuz(
+                er.adauga(
                     "linia %d: %s Iar o nota cu un cont inexistent nu e evidenta, e un rand "
                     "care arata ca evidenta"
                     % (i, _cv.randeaza(d) if d else str(e)),
-                    TEMEI_PARTIDA_DUBLA, camp=cheie, linia=i)
-        if Decimal(str(l.get("suma", 0))) <= 0:
-            return _refuz("linia %d are suma %s: o inregistrare consemneaza o operatiune efectuata, "
-                          "deci suma ei e strict pozitiva" % (i, l.get("suma")),
-                          TEMEI_CONSEMNARE, camp="suma", linia=i)
+                    TEMEI_PARTIDA_DUBLA, camp=camp_linie(cheie, i), linia=i)
+        # [440] o sumă care nu e număr (lipsă, text) ieșea 500 din `Decimal(...)`: acum e o problemă a liniei, printre celelalte
+        try:
+            suma = Decimal(str(l.get("suma", 0)))
+        except (InvalidOperation, ValueError):
+            suma = None
+        if suma is None or not suma.is_finite() or suma <= 0:
+            er.adauga("linia %d are suma %s: o inregistrare consemneaza o operatiune efectuata, "
+                      "deci suma ei e strict pozitiva" % (i, l.get("suma")),
+                      TEMEI_CONSEMNARE, camp=camp_linie("suma", i), linia=i)
         # [deficiența 381, comanda Costin 8.2, 18.10.2026: „Nota pe 401/4111 cere partenerul la introducere”] o datorie / creanță se ține
         # pe fiecare partener (D406, nota la GL.28/GL.29: „în câmpurile SupplierID, respectiv CustomerID se va completa codul [...]”)
         tert = next((str(l.get(k) or "").strip() for k in ("debit", "credit") if _cont_tert(l.get(k))), None)
         if tert and not str(l.get("partener_nume") or "").strip() and not str(l.get("partener_cui") or "").strip():
-            return _refuz("linia %d e pe contul %s (%s): scrie partenerul — numele și, dacă are, codul fiscal. Fără el, datoria / creanța "
-                          "nu se poate urmări pe partener, iar D406 n-ar ști cui i-ai plătit sau de la cine ai încasat"
-                          % (i, tert, "furnizori" if tert.startswith("401") else "clienți"), TEMEI_CONSEMNARE, camp="partener_nume", linia=i)
+            er.adauga("linia %d e pe contul %s (%s): scrie partenerul — numele și, dacă are, codul fiscal. Fără el, datoria / creanța "
+                      "nu se poate urmări pe partener, iar D406 n-ar ști cui i-ai plătit sau de la cine ai încasat"
+                      % (i, tert, "furnizori" if tert.startswith("401") else "clienți"), TEMEI_CONSEMNARE,
+                      camp=camp_linie("partener_nume", i), linia=i)
         cifre = "".join(ch for ch in str(l.get("partener_cui") or "") if ch.isdigit())
         if cifre and len(cifre) != 13:   # 13 cifre = CNP (partener persoană fizică), nu CUI
             from core import identitate as _id
             ok, motiv = _id.valideaza_cui(cifre)
             if not ok:
-                return _refuz("linia %d: codul fiscal al partenerului (%s) nu e valid — %s" % (i, l.get("partener_cui"), motiv),
-                              TEMEI_CONSEMNARE, camp="partener_cui", linia=i)
-    return None
+                er.adauga("linia %d: codul fiscal al partenerului (%s) nu e valid — %s" % (i, l.get("partener_cui"), motiv),
+                          TEMEI_CONSEMNARE, camp=camp_linie("partener_cui", i), linia=i)
 
 
 #: [381] conturile de terți (sintetic de gradul I/II) pe care nota manuală cere partenerul: furnizori și clienți
@@ -169,12 +245,12 @@ def _av_plan(conn, schema, linii, out):
 def creeaza(conn, schema, descriere, data, linii, document_ref=None):
     """Creeaza o nota manuala noua, ca ciorna. linii = [{debit, credit, suma}], min 1 linie.
     `document_ref` = documentul justificativ scris de om (Registrul-jurnal col.3); gol -> se derivă sau rămâne lipsă vizibilă."""
-    data, rd = _data_valida(data)
-    if rd:
-        return rd
-    rl = _linii_valide(conn, schema, linii)
-    if rl:
-        return rl
+    # [lotul 11, 440] data și TOATE liniile se verifică înainte de refuz: refuzul le numește pe toate deodată, nu prima găsită
+    er = _ErorileNotei()
+    data = _erori_data(data, er)
+    _erori_linii(conn, schema, linii, er)
+    if er:
+        return er.refuz()
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
                         VALUES (%s,%s,'manual','ciorna',%s) RETURNING id""",
@@ -220,14 +296,15 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None, docum
         doc = _nd.documentul_sursa(cur, schema, nota_id)
         if doc:
             return {"eroare": _nd.mesaj_refuz(nota_id, doc), "cod": _nd.COD, "document": doc[0]}
+        # [lotul 11, 440] ce se schimbă (data, liniile) se verifică întreg înainte de refuz: toate problemele deodată
+        er = _ErorileNotei()
         if data is not None:
-            data, rd = _data_valida(data)
-            if rd:
-                return rd
+            data = _erori_data(data, er)
         if linii is not None:
-            rl = _linii_valide(conn, schema, linii)
-            if rl:
-                return rl
+            _erori_linii(conn, schema, linii, er)
+        if er:
+            return er.refuz()
+        if linii is not None:
             # ai_corectie_v1: memoreaza contul debit dinainte de edit (propunerea AI)
             cur.execute(f"""SELECT cont_debit FROM {schema}.inregistrari_linii
                             WHERE inregistrare_id=%s ORDER BY id LIMIT 1""", (nota_id,))
@@ -285,6 +362,11 @@ def sterge(conn, schema, nota_id):
         doc = _nd.documentul_sursa(cur, schema, nota_id)
         if doc and not _nd.se_sterge(cur, schema, doc, nota_id):
             return {"eroare": _nd.mesaj_refuz(nota_id, doc), "cod": _nd.COD, "document": doc[0]}
+        # [lotul 11, 456] chitanța emisă pe operațiunea de casă nu se șterge cu ea: se anulează (același loc ca la Casă)
+        from core import repo_casa as _rc
+        cur.execute(f"SELECT id FROM {schema}.casa_operatiuni WHERE inregistrare_id=%s", (nota_id,))
+        for _op in [r["id"] if isinstance(r, dict) else r[0] for r in cur.fetchall()]:
+            _rc.anuleaza_chitantele_operatiunii(cur, schema, _op)
         cur.execute(f"DELETE FROM {schema}.casa_operatiuni WHERE inregistrare_id=%s", (nota_id,))
         cur.execute(f"""UPDATE {schema}.extras_linii SET status='potrivit'
                         WHERE status='contat'
@@ -321,6 +403,12 @@ def valideaza(conn, schema, nota_id):
         _i = _ia.refuz_validare(cur, schema, nota_id)
         if _i:
             return {**_refuz(_i, "OMFP 1802/2014, contul 121"), "cod": "INCHIDERE_NEVALIDABILA"}
+        # [lotul 11, deficiența 451, PRIORITAR] ciorna derivată dintr-o sursă se validează numai cât e ce ar scrie sursa ACUM (regenerarea
+        # pe uscat: data, documentul, conturile, sumele) — o reparație a regulii nu mai lasă în urmă ciorne validabile cu regula veche
+        from core import ciorne_depasite as _cd
+        _dep = _cd.refuz_validare(conn, cur, schema, nota_id)
+        if _dep:
+            return {**_refuz(_dep["mesaj"], _cd.TEMEI), "cod": _cd.COD, "depasita": _dep}
         # [deficiența 406, PRIORITAR] nota care scoate bani din casă nu se validează dacă evidența validată ar arăta casa sub zero (în ziua
         # notei sau după) — orice drum de scriere (dispoziție, notă manuală, import, stornare) trece pe aici
         from core import casa_sold as _cs
@@ -435,10 +523,19 @@ ETICHETE_SURSA = {
 }
 
 
-def eticheta_sursa(sursa):
+#: [lotul 11, comanda Costin 11.1 pct.23, verbatim] „«sursa: facturile» pe nota borderoului”. Sursa `facturi` o scriu și notele legate de
+#: un BORDEROU de achiziție (`facturi.tip = 'borderou'`: „Achiziție de la neînregistrat”, stornarea borderoului — `repo_contabilitate.
+#: nota_facturi_cu_factura`); borderoul (OMFP 2634/2015, cod 14-4-13) nu e o factură. Eticheta se ia după documentul legat, când el
+#: schimbă felul sursei. Celelalte surse au un singur fel de scriere fiecare (verificat pe scrierile din cod, `test_jurnal_sursa_eticheta`).
+ETICHETE_SURSA_DUPA_DOCUMENT = {
+    ("facturi", "borderou"): "borderoul de achiziție",
+}
+
+
+def eticheta_sursa(sursa, fel_document=None):
     """Eticheta sursei notei, pentru ecran; None pentru o notă fără sursă sau cu un cod pe care aplicația nu-l scrie (nu se afișează
-    codul)."""
-    return ETICHETE_SURSA.get(sursa)
+    codul). `fel_document` = tipul documentului legat (`facturi.tip` al facturii notei), când există."""
+    return ETICHETE_SURSA_DUPA_DOCUMENT.get((sursa, fel_document)) or ETICHETE_SURSA.get(sursa)
 
 
 def document_justificativ(document_ref, fel, serie, numar, data, sursa=None, numar_nota=None):
@@ -447,7 +544,7 @@ def document_justificativ(document_ref, fel, serie, numar, data, sursa=None, num
 
     Se DERIVĂ, nu se fabrică. Trei căi, în ordine:
       1. `document_ref` scris explicit pe notă — se ia ca atare;
-      2. factura legată prin `factura_id` — se compune „Factură <serie><număr> din <data>";
+      2. factura legată prin `factura_id` — se compune „Factură <serie> nr. <număr> din <data>" (443: seria separat de număr);
       2b. [deficiența 214, retestul Costin 09.10: „Nota de amortizare … «Document justificativ: nederivat»”] nota de amortizare are
           documentul ei prin construcție — tabloul de amortizare al lunii, numit de numărul notei (`AMORT-AAAA-LL`); notele scrise
           înainte ca tabloul să primească număr intern (`document_ref` gol) îl primesc la citire;
@@ -487,12 +584,13 @@ _FEL_IN_TEXT = {"factura": "factura", "borderou": "borderoul de achiziție"}
 
 
 def eticheta_factura_in_text(fel, serie, numar, data):
-    """„factura FCT12 din 05.10.2026” / „borderoul de achiziție BA-1 din 19.10.2026” — documentul din `facturi` în mijlocul unei fraze.
-    [lotul 10, deficiența 401, comanda Costin 10.2 pct.7a, verbatim] „sub nota borderoului, textul zice «factura de achiziție BA-1» și
-    trimite la Facturi.” Cauza: textul se compunea din „factura ” + eticheta tăiată la primul cuvânt („Borderou de achiziție BA-1” ->
-    „de achiziție BA-1”). Felul se ia din `facturi.tip`, aceeași sursă ca `eticheta_factura`."""
+    """„factura FCT nr. 12 din 05.10.2026” / „borderoul de achiziție BA-1 din 19.10.2026” — documentul din `facturi` în mijlocul unei
+    fraze. [lotul 10, deficiența 401, comanda Costin 10.2 pct.7a, verbatim] „sub nota borderoului, textul zice «factura de achiziție BA-1»
+    și trimite la Facturi.” Cauza: textul se compunea din „factura ” + eticheta tăiată la primul cuvânt („Borderou de achiziție BA-1” ->
+    „de achiziție BA-1”). Felul se ia din `facturi.tip`, aceeași sursă ca `eticheta_factura`.
+    [lotul 11, deficiența 443] seria și numărul separat (`pdf_util.serie_nr`: „F6 nr. 1”, nu „F61”)."""
     from core import pdf_util
-    return "%s %s din %s" % (_FEL_IN_TEXT.get(fel or "factura") or str(fel), pdf_util.numar_cu_serie(serie, numar), pdf_util.data_ro(data))
+    return "%s %s din %s" % (_FEL_IN_TEXT.get(fel or "factura") or str(fel), pdf_util.serie_nr(serie, numar), pdf_util.data_ro(data))
 
 
 def eticheta_document(fel, numar=None, data=None, detaliu=None):
@@ -511,13 +609,97 @@ def eticheta_document(fel, numar=None, data=None, detaliu=None):
 
 
 def eticheta_factura(fel, serie, numar, data):
-    """„Factură FCT12 din 05.10.2026” — felul, numărul și data, în forma în care le citește omul.
+    """„Factură FCT nr. 12 din 05.10.2026” — felul, numărul și data, în forma în care le citește omul.
 
     [05.10.2026, comanda Costin pct.6] Numărul unei facturi EMISE conține deja seria (`facturi_api`: număr = serie + număr),
-    deci seria se pune în față numai când lipsește din număr — înainte ieșea „FCTFCT12”. Data în forma românească
-    (`pdf_util.data_ro`), nu ISO. Sursa UNICĂ: o folosesc și Registrul-jurnal, și nota de descărcare a stocului."""
+    deci seria nu se dublează — înainte ieșea „FCTFCT12”. Data în forma românească
+    (`pdf_util.data_ro`), nu ISO. Sursa UNICĂ: o folosesc și Registrul-jurnal, și nota de descărcare a stocului.
+    [lotul 11, deficiența 443, comanda Costin 11.1 pct.19] „seria și numărul se afișează separat peste tot (F6 nr. 1, nu F61)”:
+    `pdf_util.serie_nr`, nu `numar_cu_serie` (care lipea „F6” + „1” = „F61”)."""
     from core import pdf_util
-    nr = pdf_util.numar_cu_serie(serie, numar)
+    nr = pdf_util.serie_nr(serie, numar)
     # [401] borderoul de achiziție de la persoana fizică (OMFP 2634/2015, cod 14-4-13) nu e „Factură”
     et = {"factura": "Factură", "borderou": "Borderou de achiziție"}.get(fel or "factura") or str(fel).capitalize()
     return "%s %s din %s" % (et, nr, pdf_util.data_ro(data))
+
+
+#: [lotul 11, deficiența 443 — datele existente; regula Costin 11.2 pct.3a: „Orice reparație acoperă și datele existente.”] începuturile
+#: textelor pe care APLICAȚIA le scrie pentru o factură: descrierea notei de contare (`contare_facturi._descriere`), documentul notei și al
+#: mișcării de stoc (`eticheta_factura`, `stocuri_cv_api.document_retur`), diferența de preț a NIR-ului (`contare_facturi.contabilizeaza`),
+#: compensarea (`compensari_api.scrie`). Numai în ele numărul lipit de dinainte de 443 e al aplicației; textul tastat de om (documentul de
+#: la casă, „Încasare factura F1A4”) și cel venit din afară (extrasul băncii) nu se ating — CLAUDE.md §8: datele omului, NEALTERATE.
+SCRISE_DE_APLICATIE = ("Contare factura ", "Factură ", "Retur la Factură ", "Diferență de preț NIR ", "Compensare ")
+
+
+def fara_serie_lipita(text, serie, numar):
+    """PURĂ. `text` cu numărul facturii (`serie`, `numar`) scris în forma lipită de dinainte de 443 („F1A3”, „F61” — `pdf_util.forme_lipite`)
+    înlocuit de forma de acum — aceeași funcție ca la scriere, `pdf_util.serie_nr` („F1A nr. 3”, „F6 nr. 1”). Numai numărul întreg (nu
+    „F1A1” din „F1A11”); fără serie sau fără forma veche în text, textul rămâne cum e. Idempotentă."""
+    import re
+    from core import pdf_util
+    if not text:
+        return text
+    nou = pdf_util.serie_nr(serie, numar)
+    for g in sorted(pdf_util.forme_lipite(serie, numar), key=len, reverse=True):
+        text = re.sub(r"(?<![0-9A-Za-z])%s(?![0-9A-Za-z])" % re.escape(g), lambda _m: nou, text)
+    return text
+
+
+def scris_de_aplicatie_fara_serie_lipita(text, facturi):
+    """PURĂ. Textul unei note / mișcări scris de aplicație (`SCRISE_DE_APLICATIE`) cu numerele facturilor lui (`facturi`: [(serie, numar)])
+    în forma de acum; orice alt text (al omului, al băncii) — neschimbat."""
+    if not text or not str(text).startswith(SCRISE_DE_APLICATIE):
+        return text
+    for serie, numar in facturi:
+        text = fara_serie_lipita(text, serie, numar)
+    return text
+
+
+def note_cu_serie_lipita(cur, schema, nota_ids=None):
+    """[lotul 11, 443 — datele existente] [(nota_id, status, data, câmp, text de acum, text cu seria separat)] — notele scrise de aplicație
+    înainte de 443 cu numărul facturii lor lipit („Contare factura F61”): descrierea notei de contare (factura din `factura_id`), documentul
+    notei de stoc (factura mișcării ei), descrierea compensării (cele două facturi ale ei). `nota_ids` None = toate.
+    Sursa UNICĂ pentru amândouă drumurile: Registrul jurnal le ARATĂ cu seria separat (`note_fara_serie_lipita`; nota validată nu se
+    modifică — OMFP 1802/2014 pct.69, triggerul `regula_nota`), iar `core/migrare_serie_nr_descrieri.py` le RESCRIE pe ciorne."""
+    p = ('"%s".' % str(schema).strip('"')) if schema else ""
+    filtru, par = "", []
+    if nota_ids is not None:
+        ids = [int(i) for i in nota_ids if i]
+        if not ids:
+            return []
+        filtru, par = " AND i.id = ANY(%s)", [ids]
+    cur.execute(f"""SELECT i.id, i.status, i.data, 'descriere' AS camp, i.descriere AS text, f.serie, f.numar
+                      FROM {p}inregistrari i JOIN {p}facturi f ON f.id = i.factura_id
+                     WHERE i.sursa = 'facturi' AND i.descriere LIKE %s AND COALESCE(btrim(f.serie), '') <> ''{filtru}
+                    UNION
+                    SELECT i.id, i.status, i.data, 'document_ref', i.document_ref, f.serie, f.numar
+                      FROM {p}inregistrari i JOIN {p}miscari_stoc m ON m.inregistrare_id = i.id JOIN {p}facturi f ON f.id = m.factura_id
+                     WHERE i.sursa = 'stocuri' AND i.document_ref IS NOT NULL AND COALESCE(btrim(f.serie), '') <> ''{filtru}
+                    UNION
+                    SELECT i.id, i.status, i.data, 'descriere', i.descriere, f.serie, f.numar
+                      FROM {p}inregistrari i JOIN {p}compensari c ON c.inregistrare_id = i.id
+                      JOIN {p}facturi f ON f.id IN (c.factura_emisa_id, c.factura_primita_id)
+                     WHERE i.descriere LIKE %s AND COALESCE(btrim(f.serie), '') <> ''{filtru}
+                    ORDER BY 1, 4""",
+                ["Contare factura %"] + par + par + ["Compensare %"] + par)
+    grupe = {}
+    for r in cur.fetchall():
+        v = tuple(r.values()) if isinstance(r, dict) else tuple(r)
+        g = grupe.setdefault((v[0], v[3]), {"status": v[1], "data": v[2], "text": v[4], "facturi": []})
+        g["facturi"].append((v[5], v[6]))
+    out = []
+    for (nid, camp), g in sorted(grupe.items()):
+        nou = scris_de_aplicatie_fara_serie_lipita(g["text"], g["facturi"])
+        if nou != g["text"]:
+            out.append((nid, g["status"], g["data"], camp, g["text"], nou))
+    return out
+
+
+def note_fara_serie_lipita(cur, schema, nota_ids):
+    """{nota_id: {"descriere" | "document": text cu seria separat}} — ce arată Registrul jurnal în locul textului salvat cu seria lipită
+    (`note_cu_serie_lipita`): nota validată rămâne în bază cum a fost scrisă, iar rândul ei spune „Contare factura F6 nr. 1” / „Factură F6
+    nr. 1 din …”. `document_ref` (ce editează omul) rămâne cel salvat; coloana „document” (Registrul-jurnal col.3) îl arată derivat."""
+    out = {}
+    for nid, _st, _d, camp, _vechi, nou in note_cu_serie_lipita(cur, schema, nota_ids):
+        out.setdefault(nid, {})["document" if camp == "document_ref" else camp] = nou
+    return out

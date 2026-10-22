@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "        propuneNumeAnaf(stare, r, tenantId, { fel: \"clienti\", pre: \"em\" });",
+  "inlocuire": "        void 0;   // MUTATIE: emiterea nu mai spune diferența de nume",
+  "test": "frontend_test/e2e/e2e_lot11_k.py::test_def_444_emiterea_propune_actualizarea_fisei_clientului"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "  propuneNumeAnaf(corp.querySelector(\"#pr-zona\"), p.fisa_vs_anaf, tenantId, { fel: \"furnizori\", pre: \"pr\" });",
+  "inlocuire": "  void 0;   // MUTATIE: importul nu mai spune diferența de nume",
+  "test": "frontend_test/e2e/e2e_lot11_k.py::test_def_444_importul_efactura_propune_actualizarea_fisei_furnizorului"
+ }
+]

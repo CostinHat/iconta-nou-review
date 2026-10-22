@@ -4,10 +4,10 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-21** (seara, comanda 10.3: lotul 10 publicat, datele de test reparate), pe ramura `lucru/lot10-2026-10-20`
-  (worktree `/home/costin/iconta_lot9`), în commitul de după publicare — nepublicat, ca la loturile 8 și 9 (producția rămâne pe `22c71846`);
-  pe secțiunile de stare (lecțiile și CIFRE INVALIDATE se poartă neschimbate).
-- **pe commit**: `22c71846` (lotul 10: 10.1, 10.2 și cauzele porții 1) — **four-way închis 21.10.2026 16:24**: HEAD = origin/main =
+- **ultima rescriere**: **2026-10-22** (noaptea, lotul 11 închis pe ramură, înaintea porții), pe ramura `lucru/lot11-2026-10-21` (worktree
+  `/home/costin/iconta_lot9`), în commitul lotului 11 — nepublicat; producția rămâne pe `22c71846`; pe secțiunile de stare (lecțiile și
+  CIFRE INVALIDATE se poartă neschimbate).
+- **pe commit**: `22c71846` (producția, ultimul four-way; commitul lotului 11 e cel care conține această predare) (lotul 10: 10.1, 10.2 și cauzele porții 1) — **four-way închis 21.10.2026 16:24**: HEAD = origin/main =
   backup/lant-2026-10-21 = RUNNING = `22c71846` (2 din 2 procese, pornite 16:24:12, după commitul de 13:43:11); nicio sentinelă; backup
   înainte `~/backups_db/iconta_v2_pre_lot10_20261021_1621.dump`; cele 6 migrări rulate pe producție (7 scheme fiecare, 0 eșecuri). Poarta
   lotului 10: rularea 1 ROȘIE (`3118774c`: 5 gărzi + 221 de diferențe la cifre, explicate), rularea 2 VERDE (`22c71846`, 16:18; pytest
@@ -17,6 +17,22 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
+
+**22.10.2026 noaptea — LOTUL 11 (11.1, 11.2 forma a doua, 11.3) COMIS PE RAMURĂ, ÎNAINTEA PORȚII; NEPUBLICAT.** Ramura
+`lucru/lot11-2026-10-21` (worktree `/home/costin/iconta_lot9`), un singur commit pe lot (registrele în el). 67 de rânduri din DEFICIENTE
+atinse: 54 rezolvate cu e2e + mutație + dovadă pe ecran pe copia firmelor de test + datele existente (regula 3a); deschise: 247–248 (amânate
+de Costin), C76 / C90 / C93 / C96 (dovada imposibilă înainte de 01.11.2026), C70 / C86 (fără ecran), C84, C97, 456 (decizii). Suita
+întreagă rulată de două ori înaintea porții (46, apoi 5 picături, toate reparate pe cauză — DECIZII „Lotul 11: suita întreagă…” și „…suita
+a doua”). Capturile de dovadă NU sunt în repo: manifestul `dovezi/lot11/AMPRENTE.json` (sha256) e în commit, imaginile intră în ZIP-ul lotului.
+**Fronturi deschise:** (1) **poarta lotului** (`sh scripts/poarta_lot.sh`) și publicarea cer confirmarea lui Costin că cabinetul nu lucrează,
+cu backup chiar înainte; regula 3d: pe roșu se repară și se rulează din nou, fără limită de rulări, fără a slăbi vreun test. (2) La publicare,
+cele 10 migrări `--productie`: `borderou_tip_vechi`, `borderou_storno_unic`, `produse_categorie_tva`, `reevaluare_partener`, `cui_fara_ro`,
+`intocmitor_bilant`, `factura_tva_cote`, `valoare_neta_linie`, `serie_nr_descrieri`, `curs_precizie`. (3) Deciziile cerute (raportul lotului
+11 §6): C97, 456, cursul mai vechi la validarea facturii primite în valută, B1_4 = 8 la norma parțială, C84 (a)/(b), dovada fără ecran C70 /
+C86. (4) Pe producție se lucrează pe firmele de test (nota 186 a F1 a devenit „respinsă” între 21:07 și 21:09): referința F1–F5 poate
+diferi la poartă din datele de retest — regula 7.3 pct.4.
+**Ce urmează:** confirmarea lui Costin -> poarta -> pe VERDE: backup, `APROBARE_MAIN`, fast-forward, post-commit, migrările, restart,
+four-way, ZIP, raportul §2.2.
 
 **21.10.2026 — LOTUL 10 PUBLICAT INTEGRAL (comanda 10.3).** Producția e pe `22c71846` (four-way 16:24). La publicare, după backup: pasul
 „borderou” al reparației F1, apoi cele 6 migrări `--productie`. După publicare, pe firmele de test (F1 = tenant_049; F1–F5 = tenant_049–053,
@@ -551,9 +567,9 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **170** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **1068** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1213** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77** | **160** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77u** | **1268** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1201** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -601,7 +617,7 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 | **4** | rânduri în `public.firme_scoase` |
 | **3** | nume de schemă distincte în ele |
 | **20** | scheme `tenant_NNN` în bază |
-| **277** | contorul `tenant_schema_seq` |
+| **363** | contorul `tenant_schema_seq` |
 | **48** | maximul istoric de nume de schemă |
 
 **Clasificatorul de alerte**

@@ -275,6 +275,19 @@ def select_public_12(cur, row):
     return cur.fetchone()
 
 
+def select_ajustari_taxa_4427(cur, schema, data_de, data_pana):
+    """[lotul 11, C76] Suma liniilor 635 = 4427 din notele VALIDATE ale ferestrei: ajustarea negativă a taxei deductibile (lipsa
+    neimputabilă — HG 1/2016 titlul VII pct.78 alin.(6) lit.a), declarată de D300 la rd.34 (R31), nu la TVA colectată (rd.17)."""
+    cur.execute(f"""
+                    SELECT COALESCE(SUM(l.suma), 0) FROM {schema}.inregistrari_linii l
+                    JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
+                    WHERE i.data >= %s AND i.data < %s AND i.status = 'validata'
+                      AND l.cont_credit = '4427' AND split_part(l.cont_debit, '.', 1) = '635'
+                """, (data_de, data_pana))
+    r = cur.fetchone()
+    return (r[0] if not isinstance(r, dict) else list(r.values())[0]) or 0
+
+
 def select_inregistrari_linii_3(cur, schema, cont, an):
     cur.execute(f"""
                     SELECT count(*) FROM {schema}.inregistrari_linii l

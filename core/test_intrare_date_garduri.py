@@ -31,6 +31,11 @@ BANI = ("suma", "valoare", "total", "pret", "tva", "baza", "salariu", "cost", "p
 # (A+B au fost puse NOT NULL.) (C) LEGITIM nullable — declarate cu motiv. Gardul cere ca fiecare sa fie
 # chiar o coloana de bani nullable existenta (fara whitelist stale).
 NULLABLE_OK = {
+    # [lotul 11, C82] valoarea netă a liniei de pe factura importată (BT-131, exactă). NULL = linia n-are BT-131 (factura emisă în
+    # aplicație, linia scrisă de mână): valoarea e cantitate × preț — nu „zero”. Toți cititorii o tratează așa (`tva_calcul.net_linie`,
+    # `COALESCE(l.valoare_neta, ROUND(l.cantitate * l.pret_unitar, 2))`); migrarea `core/migrare_valoare_neta_linie.py` o completează
+    # din XML pe liniile importate vechi
+    ("factura_linii", "valoare_neta"): "NULL = linia n-are BT-131: valoarea e cantitate × preț (C82)",
     # [lotul 10, 425] balanța de deschidere: NULL = fișierul are numai soldurile finale (nu „zero”); cu solduri inițiale și rulaje,
     # cele patru se scriu (`core/migrare_balanta_rulaje_an.py`), iar cititorii (`core/rulaje_preluate.py`) disting cele două cazuri
     ("solduri_initiale", "si_an_debit"): "NULL = balanța preluată are numai soldurile finale (425)",

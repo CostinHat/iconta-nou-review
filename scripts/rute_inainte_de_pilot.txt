@@ -1,0 +1,990 @@
+# Referința gărzii core/test_fara_functii_noi.py (comanda Costin 11.2 pct.5: „până la pilot nu intră funcții noi, doar reparații”).
+# Starea de la închiderea lotului 11: rutele din main.py, ID-urile din FUNCTIONALITATI.csv și cele „în aplicație” (LIVE / PARTIAL /
+# API / INTERN). Nu se editează de mână: o rută nouă intră numai prin EXCEPTII (cu numărul deficienței), în gardă.
+# 509 rute, 257 funcționalități, 217 în aplicație.
+[rute]
+DELETE /asistenti/{uid}/firme/{tid}
+DELETE /cabinet/api-chei/{kid}
+DELETE /portal/acces-cont/acces/{user_id}
+DELETE /portal/bon/{bon_id}
+DELETE /raportari/fisiere/{fid}
+DELETE /tenants/{tenant_id}
+DELETE /tenants/{tenant_id}/ajustari-fiscale/{ajustare_id}
+DELETE /tenants/{tenant_id}/casa/operatiuni/{op_id}
+DELETE /tenants/{tenant_id}/client-acces/{user_id}
+DELETE /tenants/{tenant_id}/clienti/{client_id}
+DELETE /tenants/{tenant_id}/contracte/sabloane/{sid}
+DELETE /tenants/{tenant_id}/d300-manual/{rid}
+DELETE /tenants/{tenant_id}/d301-operatiuni/{op_id}
+DELETE /tenants/{tenant_id}/d390-clasificare/manual/{mid}
+DELETE /tenants/{tenant_id}/facturi-recurente/{sid}
+DELETE /tenants/{tenant_id}/facturi/{factura_id}
+DELETE /tenants/{tenant_id}/jurnal/{nota_id}
+DELETE /tenants/{tenant_id}/perioade-blocate
+DELETE /tenants/{tenant_id}/plan-conturi/{simbol}
+DELETE /tenants/{tenant_id}/produse/{produs_id}
+DELETE /tenants/{tenant_id}/rapoarte-salvate/{vid}
+DELETE /tenants/{tenant_id}/retete/{reteta_id}
+DELETE /tenants/{tenant_id}/rip/operatiuni/{op_id}
+DELETE /tenants/{tenant_id}/salariati/{salariat_id}
+DELETE /tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}
+DELETE /tenants/{tenant_id}/salariati/{salariat_id}/elemente/{element_id}
+DELETE /tenants/{tenant_id}/tva-incasare/{perioada_id}
+GET /
+GET /admin/activitate/cabinet/{firm_id}
+GET /admin/activitate/cabinete
+GET /admin/alerte-fiscale
+GET /admin/analytics
+GET /admin/inregistrari-neconfirmate
+GET /admin/invitatii
+GET /admin/sanatate
+GET /admin/sanatate/istoric
+GET /admin/setari/inregistrare
+GET /admin/versiune
+GET /ajutor/{fid}
+GET /ansamblu
+GET /api/v1/firme
+GET /api/v1/firme/{tenant_id}/balanta
+GET /api/v1/firme/{tenant_id}/facturi
+GET /api/v1/firme/{tenant_id}/kpi
+GET /asistenti
+GET /asistenti/echipa/centralizator
+GET /asistenti/echipa/erori
+GET /asistenti/echipa/jurnal
+GET /asistenti/echipa/semafor
+GET /asistenti/{uid}
+GET /asistenti/{uid}/activitate
+GET /asistenti/{uid}/calitate
+GET /cabinet/api-chei
+GET /cabinet/consolidare
+GET /cabinet/intocmitor
+GET /capacitate
+GET /coada
+GET /coada/{coada_id}/continut
+GET /contracte/marcaje
+GET /control-fiscal
+GET /control-fiscal/{tenant_id}
+GET /control-fiscal/{tenant_id}/audit-preluare/istoric
+GET /cor
+GET /declaratii/tipuri
+GET /deschide/{cheie}
+GET /eu/anunturi
+GET /eu/cabinet
+GET /eu/calitate
+GET /eu/ciorne
+GET /eu/competente
+GET /eu/drepturi
+GET /eu/educatie
+GET /eu/inceput
+GET /eu/notificari
+GET /eu/patru-ochi
+GET /eu/permisiuni
+GET /favicon.ico
+GET /firme-scoase
+GET /firme/{tenant_id}/verificari
+GET /gdpr/export-cabinet
+GET /ghid
+GET /ghid/tema/{tema}
+GET /ghid/{slug}
+GET /migrare/aplicatii
+GET /migrare/asociati
+GET /migrare/firme
+GET /migrare/istoric-declaratii
+GET /migrare/mijloace-fixe
+GET /migrare/parteneri
+GET /migrare/plan-conturi
+GET /migrare/salariati
+GET /migrare/solduri
+GET /migrare/status
+GET /migrare/straturi
+GET /migrare/vector
+GET /notificari
+GET /notificari/contor
+GET /notificari/sumar
+GET /pachete/{tenant_id}/poveste
+GET /pachete/{tenant_id}/preview
+GET /pachete/{tenant_id}/rezumat
+GET /portal/acasa
+GET /portal/acces-cont
+GET /portal/bon/{bon_id}/imagine/{n}
+GET /portal/cashflow
+GET /portal/declaratii
+GET /portal/documente/balanta
+GET /portal/documente/luni
+GET /portal/facturi
+GET /portal/firma
+GET /portal/firme
+GET /portal/kpi
+GET /portal/povesti
+GET /portal/recomanda/preview
+GET /portal/solicitari
+GET /portal/solicitari/contor
+GET /public/config
+GET /public/dezabonare
+GET /public/inregistrare
+GET /public/invitatie/{token}
+GET /public/termeni
+GET /public/verifica-cui/{cui}
+GET /raportari/admin
+GET /raportari/contor
+GET /raportari/eu
+GET /raportari/fisiere/{fid}
+GET /raportari/{rid}
+GET /recomanda/preview
+GET /robots.txt
+GET /sitemap-ghiduri-{n}.xml
+GET /sitemap-index.xml
+GET /sitemap-pagini.xml
+GET /sitemap.xml
+GET /supervizor
+GET /tenants
+GET /tenants/{tenant_id}
+GET /tenants/{tenant_id}/ajustari-fiscale
+GET /tenants/{tenant_id}/asociati
+GET /tenants/{tenant_id}/balanta
+GET /tenants/{tenant_id}/banca/reconciliere
+GET /tenants/{tenant_id}/banca/reconciliere/facturi-deschise
+GET /tenants/{tenant_id}/bilant-an-precedent
+GET /tenants/{tenant_id}/bonuri/de-verificat
+GET /tenants/{tenant_id}/bonuri/{bon_id}/facturi-candidate
+GET /tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}
+GET /tenants/{tenant_id}/borderouri
+GET /tenants/{tenant_id}/casa/registru
+GET /tenants/{tenant_id}/categorie-marime
+GET /tenants/{tenant_id}/centre-cost
+GET /tenants/{tenant_id}/centre-cost/raport
+GET /tenants/{tenant_id}/centre-cost/varianta
+GET /tenants/{tenant_id}/chitante
+GET /tenants/{tenant_id}/chitante/{chitanta_id}/pdf
+GET /tenants/{tenant_id}/client-acces
+GET /tenants/{tenant_id}/clienti
+GET /tenants/{tenant_id}/clienti/{client_id}
+GET /tenants/{tenant_id}/compensari/propunere
+GET /tenants/{tenant_id}/concedii/coduri
+GET /tenants/{tenant_id}/contracte/sabloane
+GET /tenants/{tenant_id}/d300-manual
+GET /tenants/{tenant_id}/d301-operatiuni
+GET /tenants/{tenant_id}/d390-clasificare
+GET /tenants/{tenant_id}/d406-active
+GET /tenants/{tenant_id}/d406-stocuri
+GET /tenants/{tenant_id}/dividende-impartire
+GET /tenants/{tenant_id}/documente/balanta
+GET /tenants/{tenant_id}/etransport/trimiteri
+GET /tenants/{tenant_id}/facturi
+GET /tenants/{tenant_id}/facturi-primite
+GET /tenants/{tenant_id}/facturi-primite/{primita_id}/xml
+GET /tenants/{tenant_id}/facturi-recurente
+GET /tenants/{tenant_id}/facturi/numerotare
+GET /tenants/{tenant_id}/facturi/perioada
+GET /tenants/{tenant_id}/facturi/{factura_id:int}
+GET /tenants/{tenant_id}/facturi/{factura_id}/export-saga
+GET /tenants/{tenant_id}/facturi/{factura_id}/pdf
+GET /tenants/{tenant_id}/firma-profil
+GET /tenants/{tenant_id}/firma-profil/date
+GET /tenants/{tenant_id}/fisa-cont
+GET /tenants/{tenant_id}/fluturas/{salariat_id}
+GET /tenants/{tenant_id}/furnizori
+GET /tenants/{tenant_id}/horeca/rapoarte-z
+GET /tenants/{tenant_id}/intrastat-praguri
+GET /tenants/{tenant_id}/jurnal
+GET /tenants/{tenant_id}/jurnal-marja
+GET /tenants/{tenant_id}/jurnal/{nota_id}/depasita
+GET /tenants/{tenant_id}/mijloace-fixe
+GET /tenants/{tenant_id}/parteneri
+GET /tenants/{tenant_id}/perioade-blocate
+GET /tenants/{tenant_id}/perioade-blocate/istoric
+GET /tenants/{tenant_id}/plan-conturi
+GET /tenants/{tenant_id}/plata-salarii-preview
+GET /tenants/{tenant_id}/produse
+GET /tenants/{tenant_id}/rapoarte-comerciale
+GET /tenants/{tenant_id}/rapoarte-comerciale/fisa
+GET /tenants/{tenant_id}/rapoarte-salvate
+GET /tenants/{tenant_id}/reevaluare-valuta
+GET /tenants/{tenant_id}/registratura
+GET /tenants/{tenant_id}/registre-art321/{fel}
+GET /tenants/{tenant_id}/registru-evidenta-fiscala
+GET /tenants/{tenant_id}/registru-inventar
+GET /tenants/{tenant_id}/registru-inventar/propunere
+GET /tenants/{tenant_id}/retete
+GET /tenants/{tenant_id}/rip/d212/{an}
+GET /tenants/{tenant_id}/rip/inventar/{an}
+GET /tenants/{tenant_id}/rip/registru
+GET /tenants/{tenant_id}/s1003-xml
+GET /tenants/{tenant_id}/s1005-xml
+GET /tenants/{tenant_id}/salariati
+GET /tenants/{tenant_id}/salariati/{salariat_id}
+GET /tenants/{tenant_id}/salariati/{salariat_id}/concedii
+GET /tenants/{tenant_id}/salariati/{salariat_id}/elemente
+GET /tenants/{tenant_id}/salariati/{salariat_id}/pontaj
+GET /tenants/{tenant_id}/scadentar
+GET /tenants/{tenant_id}/scoatere
+GET /tenants/{tenant_id}/solduri
+GET /tenants/{tenant_id}/solicitari
+GET /tenants/{tenant_id}/spv/stare
+GET /tenants/{tenant_id}/stat-plata
+GET /tenants/{tenant_id}/stat-plata/emis
+GET /tenants/{tenant_id}/stocuri/analitica
+GET /tenants/{tenant_id}/stocuri/articole
+GET /tenants/{tenant_id}/stocuri/articole/{articol_id}/fisa
+GET /tenants/{tenant_id}/stocuri/barcode/{cod}
+GET /tenants/{tenant_id}/stocuri/locatii
+GET /tenants/{tenant_id}/stocuri/nir
+GET /tenants/{tenant_id}/stocuri/nir/{nir_id}
+GET /tenants/{tenant_id}/trimiteri-spv
+GET /tenants/{tenant_id}/tva-incasare/neexigibile
+GET /tenants/{tenant_id}/tva-incasare/verifica-anaf
+GET /tenants/{tenant_id}/urme-portal
+GET /tenants/{tenant_id}/vector
+GET /tenants/{tenant_id}/verifica-cui/{cui}
+GET /tenants/{tenant_id}/verifica-vies
+GET /tenants/{tenant_id}/verificare-stocuri
+GET /tenants/{tenant_id}/woocommerce/config
+GET /termene
+GET /tipare
+GET /tipare/ai
+GET /util/zile-lucratoare
+GET /whatsapp/webhook
+POST /admin/alerte-fiscale/{aid}/tratat
+POST /admin/anunturi
+POST /admin/cabinete/{firm_id}/reactiveaza
+POST /admin/cabinete/{firm_id}/suspenda
+POST /admin/inregistrari-neconfirmate/{cerere_id}/retrimite
+POST /admin/invitatii
+POST /admin/sanatate/test-alerta
+POST /api/eveniment-public
+POST /api/v1/firme/{tenant_id}/facturi
+POST /asistenti
+POST /asistenti/{uid}/dezactiveaza
+POST /asistenti/{uid}/finalizeaza-firme
+POST /asistenti/{uid}/firme/{tid}
+POST /asistenti/{uid}/permisiuni
+POST /asistenti/{uid}/reactiveaza
+POST /auth/login
+POST /auth/register
+POST /auth/reinnoieste
+POST /cabinet/api-chei
+POST /cabinet/intocmitor
+POST /coada
+POST /coada/aproba-mai-multe
+POST /coada/{coada_id}/aproba
+POST /coada/{coada_id}/depune
+POST /coada/{coada_id}/regenereaza
+POST /coada/{coada_id}/respinge
+POST /cont/bun-venit-vazut
+POST /control-fiscal/{tenant_id}/audit-preluare
+POST /control-fiscal/{tenant_id}/depusa-extern
+POST /control-fiscal/{tenant_id}/depusa-extern/anuleaza
+POST /control-fiscal/{tenant_id}/depuse-anterior
+POST /declaratii/{tip}
+POST /declaratii/{tip}/valideaza
+POST /eu/anunturi/{aid}/confirma
+POST /eu/cabinet
+POST /eu/competente
+POST /eu/educatie/patru-ochi/vazut
+POST /eu/inceput/firme-vazute
+POST /eu/inceput/lucrez-singur
+POST /eu/patru-ochi
+POST /eu/profil
+POST /eu/schimba-parola
+POST /eu/telefon/cod
+POST /eu/telefon/confirma
+POST /gdpr/cerere-stergere
+POST /gdpr/sterge-cabinet/{cabinet_id}/executa
+POST /gdpr/sterge-cabinet/{cabinet_id}/previzualizare
+POST /migrare/fisier
+POST /migrare/importa
+POST /migrare/incarca
+POST /migrare/status
+POST /migrare/valideaza
+POST /notificari/citit
+POST /notificari/{nid}/citit
+POST /pachete/{tenant_id}/genereaza
+POST /pachete/{tenant_id}/poveste
+POST /pachete/{tenant_id}/poveste/aproba
+POST /pachete/{tenant_id}/trimite
+POST /portal/acces-cont/acces
+POST /portal/bon
+POST /portal/bon/{bon_id}/confirma
+POST /portal/recomanda
+POST /portal/solicitari
+POST /public/activare
+POST /public/confirma-email
+POST /public/confirma-inregistrare
+POST /public/dezabonare
+POST /public/magic-link
+POST /public/magic-login
+POST /public/reset-parola/cere
+POST /public/reset-parola/seteaza
+POST /raportari
+POST /raportari/mesaj/{mid}/fisier
+POST /raportari/mesaj/{mid}/imagine
+POST /raportari/{rid}/citit
+POST /raportari/{rid}/mesaj
+POST /raportari/{rid}/pentru-admin
+POST /raportari/{rid}/stare
+POST /recomanda
+POST /tenants
+POST /tenants/{tenant_id}/acces-portal
+POST /tenants/{tenant_id}/achizitie-agricultor
+POST /tenants/{tenant_id}/achizitie-ic
+POST /tenants/{tenant_id}/achizitie-necorporala
+POST /tenants/{tenant_id}/achizitie-neinregistrat
+POST /tenants/{tenant_id}/achizitie-taxare-inversa
+POST /tenants/{tenant_id}/activare
+POST /tenants/{tenant_id}/ajustari-fiscale
+POST /tenants/{tenant_id}/amortizare
+POST /tenants/{tenant_id}/amortizare/restanta
+POST /tenants/{tenant_id}/articole-import
+POST /tenants/{tenant_id}/articole-import/incarca
+POST /tenants/{tenant_id}/asociati
+POST /tenants/{tenant_id}/asociati-import
+POST /tenants/{tenant_id}/asociati-import/incarca
+POST /tenants/{tenant_id}/asociati/cesiune
+POST /tenants/{tenant_id}/banca/parse-extras
+POST /tenants/{tenant_id}/banca/reconciliere/import
+POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza
+POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora
+POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza
+POST /tenants/{tenant_id}/bilant-an-precedent-manual
+POST /tenants/{tenant_id}/bilant-inchidere-propunere
+POST /tenants/{tenant_id}/bonuri/{bon_id}/aproba
+POST /tenants/{tenant_id}/bonuri/{bon_id}/stinge
+POST /tenants/{tenant_id}/borderouri/{factura_id}/storneaza
+POST /tenants/{tenant_id}/calcul-cm
+POST /tenants/{tenant_id}/casa/operatiuni
+POST /tenants/{tenant_id}/casa/operatiuni/{op_id}/leaga
+POST /tenants/{tenant_id}/casa/operatiuni/{op_id}/storneaza
+POST /tenants/{tenant_id}/casa/previzualizare
+POST /tenants/{tenant_id}/centre-cost
+POST /tenants/{tenant_id}/chitante
+POST /tenants/{tenant_id}/client-acces
+POST /tenants/{tenant_id}/clienti
+POST /tenants/{tenant_id}/compensari
+POST /tenants/{tenant_id}/contracte/genereaza
+POST /tenants/{tenant_id}/contracte/sabloane
+POST /tenants/{tenant_id}/cui/corectura
+POST /tenants/{tenant_id}/d300-manual
+POST /tenants/{tenant_id}/d301-operatiuni
+POST /tenants/{tenant_id}/d390-clasificare/manual
+POST /tenants/{tenant_id}/decontare-valuta
+POST /tenants/{tenant_id}/etransport-xml
+POST /tenants/{tenant_id}/etransport/trimite
+POST /tenants/{tenant_id}/export-extracomunitar
+POST /tenants/{tenant_id}/facturi
+POST /tenants/{tenant_id}/facturi-primite/import-xml
+POST /tenants/{tenant_id}/facturi-primite/{primita_id}/respinge
+POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza
+POST /tenants/{tenant_id}/facturi-recurente
+POST /tenants/{tenant_id}/facturi/emite
+POST /tenants/{tenant_id}/facturi/export-saga
+POST /tenants/{tenant_id}/facturi/export-winmentor
+POST /tenants/{tenant_id}/facturi/perioada/confirma
+POST /tenants/{tenant_id}/facturi/perioada/redeschide
+POST /tenants/{tenant_id}/facturi/previzualizare-lei
+POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza
+POST /tenants/{tenant_id}/facturi/{factura_id}/email
+POST /tenants/{tenant_id}/facturi/{factura_id}/recunoaste
+POST /tenants/{tenant_id}/facturi/{factura_id}/storno
+POST /tenants/{tenant_id}/facturi/{factura_id}/transforma
+POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv
+POST /tenants/{tenant_id}/firma-profil/date
+POST /tenants/{tenant_id}/firma-profil/model
+POST /tenants/{tenant_id}/firma-profil/regim-tva
+POST /tenants/{tenant_id}/furnizori
+POST /tenants/{tenant_id}/horeca/import-amef
+POST /tenants/{tenant_id}/horeca/raport-z
+POST /tenants/{tenant_id}/horeca/raport-z/{nota_id}/fara-marfa
+POST /tenants/{tenant_id}/import-efactura
+POST /tenants/{tenant_id}/import-extracomunitar
+POST /tenants/{tenant_id}/istoric-declaratii-import
+POST /tenants/{tenant_id}/istoric-declaratii-import/incarca
+POST /tenants/{tenant_id}/jurnal
+POST /tenants/{tenant_id}/jurnal/{nota_id}/dezleaga
+POST /tenants/{tenant_id}/jurnal/{nota_id}/reface
+POST /tenants/{tenant_id}/jurnal/{nota_id}/retrimite
+POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza
+POST /tenants/{tenant_id}/mijloace-fixe-import
+POST /tenants/{tenant_id}/mijloace-fixe-import/incarca
+POST /tenants/{tenant_id}/nota-asociati
+POST /tenants/{tenant_id}/nota-avans
+POST /tenants/{tenant_id}/nota-bacsis
+POST /tenants/{tenant_id}/nota-chirie
+POST /tenants/{tenant_id}/nota-contract-special
+POST /tenants/{tenant_id}/nota-credit
+POST /tenants/{tenant_id}/nota-decont-deplasare
+POST /tenants/{tenant_id}/nota-inventariere
+POST /tenants/{tenant_id}/nota-leasing
+POST /tenants/{tenant_id}/nota-lichidare
+POST /tenants/{tenant_id}/nota-obiect-inventar
+POST /tenants/{tenant_id}/nota-ong
+POST /tenants/{tenant_id}/nota-perisabilitati
+POST /tenants/{tenant_id}/nota-productie
+POST /tenants/{tenant_id}/nota-provizion
+POST /tenants/{tenant_id}/nota-sgr
+POST /tenants/{tenant_id}/nota-sponsorizare
+POST /tenants/{tenant_id}/nota-subventie
+POST /tenants/{tenant_id}/nota-tva-incasare
+POST /tenants/{tenant_id}/nume-ales
+POST /tenants/{tenant_id}/parteneri
+POST /tenants/{tenant_id}/parteneri/incarca
+POST /tenants/{tenant_id}/perioade-blocate
+POST /tenants/{tenant_id}/plan-conturi
+POST /tenants/{tenant_id}/plata-salarii-fisier
+POST /tenants/{tenant_id}/pontaj/confirma
+POST /tenants/{tenant_id}/prapastie-salariu
+POST /tenants/{tenant_id}/produse
+POST /tenants/{tenant_id}/produse/potriveste
+POST /tenants/{tenant_id}/rapoarte-salvate
+POST /tenants/{tenant_id}/reevaluare-imobilizare
+POST /tenants/{tenant_id}/reevaluare-valuta/nota
+POST /tenants/{tenant_id}/reges-config
+POST /tenants/{tenant_id}/reges-poll
+POST /tenants/{tenant_id}/reges-trimite-salariat
+POST /tenants/{tenant_id}/registratura
+POST /tenants/{tenant_id}/registre-art321/{fel}
+POST /tenants/{tenant_id}/registru-evidenta-fiscala
+POST /tenants/{tenant_id}/registru-inventar
+POST /tenants/{tenant_id}/retete
+POST /tenants/{tenant_id}/retete-import
+POST /tenants/{tenant_id}/retete-import/incarca
+POST /tenants/{tenant_id}/retete/descarca
+POST /tenants/{tenant_id}/rip-import
+POST /tenants/{tenant_id}/rip-import/incarca
+POST /tenants/{tenant_id}/rip/import-banca
+POST /tenants/{tenant_id}/rip/import-casa
+POST /tenants/{tenant_id}/rip/operatiuni
+POST /tenants/{tenant_id}/s1003-valideaza
+POST /tenants/{tenant_id}/s1005-valideaza
+POST /tenants/{tenant_id}/salariati
+POST /tenants/{tenant_id}/salariati-import
+POST /tenants/{tenant_id}/salariati-import/incarca
+POST /tenants/{tenant_id}/salariati/{salariat_id}/adeverinta
+POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii
+POST /tenants/{tenant_id}/salariati/{salariat_id}/elemente
+POST /tenants/{tenant_id}/salarii-contare
+POST /tenants/{tenant_id}/salarii-contare/propunere
+POST /tenants/{tenant_id}/solduri
+POST /tenants/{tenant_id}/solduri/incarca
+POST /tenants/{tenant_id}/solicitari
+POST /tenants/{tenant_id}/spv/verifica-acum
+POST /tenants/{tenant_id}/stat-plata/corectie
+POST /tenants/{tenant_id}/stat-plata/emite
+POST /tenants/{tenant_id}/stat-plata/motiv
+POST /tenants/{tenant_id}/stocuri/articole/{articol_id}/barcode
+POST /tenants/{tenant_id}/stocuri/articole/{articol_id}/nivel-minim
+POST /tenants/{tenant_id}/stocuri/descarcare
+POST /tenants/{tenant_id}/stocuri/iesire
+POST /tenants/{tenant_id}/stocuri/intrare
+POST /tenants/{tenant_id}/stocuri/inventar
+POST /tenants/{tenant_id}/stocuri/nir
+POST /tenants/{tenant_id}/stocuri/reclasificare
+POST /tenants/{tenant_id}/stocuri/transfer
+POST /tenants/{tenant_id}/tva-incasare
+POST /tenants/{tenant_id}/vanzare-agricultor
+POST /tenants/{tenant_id}/vanzare-aur-investitii
+POST /tenants/{tenant_id}/vanzare-ic
+POST /tenants/{tenant_id}/vanzare-marja
+POST /tenants/{tenant_id}/vanzare-marja-turism
+POST /tenants/{tenant_id}/vector
+POST /tenants/{tenant_id}/woocommerce/sincronizeaza
+POST /whatsapp/webhook
+PUT /admin/setari/inregistrare
+PUT /eu/notificari
+PUT /eu/telefon
+PUT /portal/acces-cont/email
+PUT /tenants/{tenant_id}
+PUT /tenants/{tenant_id}/centre-cost/{centru_id}
+PUT /tenants/{tenant_id}/centre-cost/{centru_id}/buget
+PUT /tenants/{tenant_id}/chitante/{chitanta_id}/cota
+PUT /tenants/{tenant_id}/clienti/{client_id}
+PUT /tenants/{tenant_id}/d390-clasificare/reclasificare
+PUT /tenants/{tenant_id}/facturi-recurente/{sid}
+PUT /tenants/{tenant_id}/facturi/numerotare
+PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare
+PUT /tenants/{tenant_id}/furnizori/{furnizor_id}
+PUT /tenants/{tenant_id}/jurnal/{nota_id}
+PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/cod-catalog
+PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd
+PUT /tenants/{tenant_id}/produse/{produs_id}
+PUT /tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza
+PUT /tenants/{tenant_id}/salariati/{salariat_id}
+PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar
+PUT /tenants/{tenant_id}/salariati/{salariat_id}/pontaj
+PUT /tenants/{tenant_id}/scadentar/opt-in
+PUT /tenants/{tenant_id}/woocommerce/config
+[functionalitati]
+F001
+F002
+F003
+F004
+F005
+F006
+F007
+F008
+F009
+F010
+F011
+F012
+F013
+F014
+F015
+F016
+F017
+F018
+F019
+F020
+F021
+F022
+F023
+F024
+F025
+F026
+F027
+F028
+F029
+F030
+F031
+F032
+F033
+F034
+F035
+F036
+F037
+F038
+F039
+F040
+F041
+F042
+F043
+F044
+F045
+F046
+F047
+F048
+F049
+F050
+F051
+F052
+F053
+F054
+F055
+F056
+F057
+F058
+F059
+F060
+F061
+F062
+F063
+F064
+F065
+F066
+F067
+F068
+F069
+F070
+F071
+F072
+F073
+F074
+F075
+F076
+F077
+F078
+F079
+F080
+F081
+F082
+F083
+F084
+F085
+F086
+F087
+F088
+F089
+F090
+F091
+F092
+F093
+F094
+F095
+F096
+F097
+F098
+F099
+F100
+F101
+F102
+F103
+F104
+F105
+F106
+F107
+F108
+F109
+F110
+F111
+F112
+F113
+F114
+F115
+F116
+F117
+F118
+F120
+F121
+F122
+F123
+F124
+F125
+F126
+F127
+F128
+F130
+F131
+F132
+F133
+F134
+F135
+F136
+F137
+F138
+F139
+F140
+F141
+F142
+F143
+F144
+F145
+F146
+F147
+F148
+F149
+F150
+F151
+F152
+F153
+F154
+F155
+F156
+F157
+F158
+F159
+F160
+F161
+F162
+F163
+F164
+F165
+F166
+F169
+F170
+F171
+F172
+F176
+F177
+F178
+F179
+F180
+F182
+F183
+F184
+F185
+F186
+F187
+F188
+F189
+F190
+F191
+F192
+F194
+F195
+F196
+F197
+F198
+F199
+F200
+F201
+F202
+F203
+F204
+F205
+F207
+F208
+F209
+F210
+F211
+F212
+F213
+F214
+F215
+F216
+F217
+F218
+F219
+F220
+F221
+F222
+F223
+F224
+F225
+F226
+F227
+F228
+F229
+F230
+F231
+F232
+F233
+F234
+F235
+F236
+F237
+F238
+F239
+F240
+F241
+F242
+F243
+F244
+F245
+F246
+F247
+F248
+F249
+F250
+F251
+F252
+F253
+F254
+F255
+F256
+F257
+F258
+F259
+F260
+F261
+F262
+F263
+F264
+F265
+F266
+F267
+[live]
+F001
+F002
+F003
+F004
+F005
+F006
+F007
+F008
+F009
+F010
+F011
+F012
+F013
+F014
+F015
+F016
+F017
+F018
+F019
+F020
+F021
+F022
+F023
+F024
+F025
+F026
+F027
+F028
+F029
+F030
+F031
+F032
+F033
+F034
+F035
+F036
+F037
+F038
+F039
+F040
+F041
+F042
+F043
+F044
+F045
+F046
+F047
+F048
+F049
+F050
+F051
+F052
+F053
+F054
+F055
+F056
+F057
+F058
+F059
+F060
+F061
+F062
+F063
+F064
+F065
+F066
+F067
+F068
+F069
+F070
+F071
+F072
+F073
+F074
+F075
+F076
+F077
+F078
+F079
+F080
+F081
+F082
+F083
+F084
+F085
+F086
+F087
+F088
+F089
+F090
+F091
+F092
+F093
+F094
+F095
+F096
+F097
+F098
+F099
+F100
+F101
+F102
+F103
+F104
+F105
+F106
+F107
+F108
+F109
+F110
+F111
+F112
+F113
+F114
+F115
+F116
+F117
+F118
+F120
+F121
+F122
+F124
+F125
+F126
+F131
+F133
+F134
+F135
+F136
+F137
+F138
+F139
+F140
+F141
+F142
+F143
+F144
+F145
+F146
+F147
+F150
+F151
+F152
+F162
+F163
+F164
+F165
+F166
+F169
+F170
+F171
+F172
+F176
+F177
+F178
+F179
+F180
+F182
+F183
+F184
+F187
+F188
+F189
+F190
+F191
+F192
+F197
+F198
+F199
+F200
+F201
+F202
+F203
+F204
+F205
+F207
+F208
+F209
+F210
+F211
+F212
+F214
+F215
+F216
+F217
+F221
+F222
+F223
+F224
+F225
+F227
+F230
+F232
+F233
+F242
+F246
+F247
+F248
+F249
+F250
+F251
+F252
+F253
+F254
+F255
+F256
+F257
+F258
+F259
+F260
+F261
+F262
+F263
+F264
+F265
+F266
+F267

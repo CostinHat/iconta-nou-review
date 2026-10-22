@@ -77,7 +77,12 @@ PLAFON_NICAIERI = 21
 #: rutei (`core/test_lot0710_p2.py::test_rutele_jurnalului_refuza_luna_inchisa_si_nota_la_validare`: luna nouă închisă ->
 #: refuz; nota la validare -> refuz); `stocuri_descarcare` — `descarca_luna` e chemată de `test_refuzul_metodei_de_stoc_…`, dar
 #: numai pe drumul REFUZULUI (metoda nedeclarată), nu pe cel care scrie: LIMITĂ DECLARATĂ, scanerul o socotește probată.
-PLAFON_SUBSET_FISCAL = 7
+#: [lotul 11, 21-22.10.2026] 7 -> 3. Au probă acum, în suită: `mijloace_import_salveaza`, `nota_avans`, `salariat_beneficiu_lunar`,
+#: `cv_transfer` (numite acum de testele lotului 11 — scanul le găsește calea în suită); iar `tva_incasare_salveaza` / `tva_incasare_sterge` — apărute în
+#: subset în lotul 11 (scriu `tva_incasare_perioade`, din care se ridică regimul facturii, deci cifra D300 / D394) — au probă până în
+#: rândul D300 (`core/test_scrieri_pana_in_declaratie.py::test_TVA_LA_INCASARE_*`, K). Rămân, NUMITE: `articole_import_salveaza`,
+#: `tenant_pontaj_set`, `wc_sinc`.
+PLAFON_SUBSET_FISCAL = 3
 
 
 def test_CLICHET_rutele_care_scriu_fara_proba_in_suita_nu_cresc():

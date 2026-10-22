@@ -32,18 +32,35 @@ _VANZATOR = {"furnizor_adresa": "Str. Florilor 1, Ploiești", "furnizor_act": "P
 def _borderou_api(patron, firma, **corp):
     from e2e_bloc_a import _api, _ok
     c = {"data": AZI.isoformat(), "valoare": 200, "cont_cheltuiala": "371", "um": "kg", **_VANZATOR, **corp}
+    if c.get("articol") and "articol_nou" not in c:   # [lotul 11, 450] un articol nou se cere explicit; unul existent se ia din nomenclator
+        c["articol_nou"] = not sql('SELECT 1 FROM "%s".articole WHERE denumire = %%s' % firma["schema"], (c["articol"],))
     return _ok(_api(patron, "POST", "/tenants/%d/achizitie-neinregistrat" % firma["tenant_id"], c), "borderou")
 
 
 def _formular_borderou(patron, firma):
+    # [lotul 11, pct.23] borderoul stă lângă NIR: Stocuri -> „Borderou de achiziție” (nu mai e în Operațiuni › TVA regimuri speciale)
     from e2e_bloc_a import _card
     patron.firma(firma["nume"])
-    _card(patron, "operatiuni", "[data-op='neinregistrat']")
+    _card(patron, "stocuri", "#s-borderou")
     pg = patron.pg
-    pg.click("[data-op='neinregistrat']")
+    pg.click("#s-borderou")
     pg.wait_for_selector("#op-furnizor_nume", timeout=20000)
     pg.fill("#op-data", AZI.isoformat())
     return pg
+
+
+def alege_articolul(pg, articol):
+    """[lotul 11, 450] Articolul se ALEGE din nomenclator (lista); unul nou numai cu „Articol nou…”, cerut explicit."""
+    if not articol:
+        return
+    v = pg.eval_on_selector("#op-articol", "(s, a) => { const o = [...s.options].find(o => o.textContent.startsWith(a + ' ·')); "
+                                           "return o ? o.value : ''; }", articol)
+    if v:
+        pg.select_option("#op-articol", v)
+    else:
+        pg.select_option("#op-articol", "__nou__")
+        pg.fill("#op-articol_den", articol)
+        pg.fill("#op-um", "kg")
 
 
 def _scrie_borderou(pg, nume, numar="", articol="Grâu E2E 434", adresa=True):
@@ -53,9 +70,8 @@ def _scrie_borderou(pg, nume, numar="", articol="Grâu E2E 434", adresa=True):
         pg.fill("#op-furnizor_act", _VANZATOR["furnizor_act"])
     pg.fill("#op-valoare", "150")
     pg.fill("#op-cont_cheltuiala", "371")
-    pg.fill("#op-articol", articol)
+    alege_articolul(pg, articol)
     pg.fill("#op-cantitate", "100")
-    pg.fill("#op-um", "kg")
     pg.fill("#op-numar", numar)
     pg.select_option("#op-categorie", "alte_bunuri")
     pg.click("#op-trimite")
@@ -75,12 +91,10 @@ def test_def_434_borderoul_nou_primeste_numarul_urmator_nu_unul_deja_dat(patron,
     pg = _formular_borderou(patron, firma_cv)
     n = max([int(x[3:]) for x in _numere_borderouri(firma_cv) if x.upper().startswith("BA-") and x[3:].isdigit()] or [0])
     _scrie_borderou(pg, "Ion Popescu", numar="BA-%d" % (n + 1))
-    pg.wait_for_function("() => (document.querySelector('#op-mesaj') || {}).innerText && "
-                         "document.querySelector('#op-mesaj').innerText.includes('Notă generată')", timeout=30000)
+    pg.wait_for_selector("#op-mesaj .caseta-ok", timeout=30000)   # [lotul 11, 8c] confirmarea de după generare
     pg = _formular_borderou(patron, firma_cv)
     _scrie_borderou(pg, "Maria Ionescu")
-    pg.wait_for_function("() => (document.querySelector('#op-mesaj') || {}).innerText && "
-                         "document.querySelector('#op-mesaj').innerText.includes('Notă generată')", timeout=30000)
+    pg.wait_for_selector("#op-mesaj .caseta-ok", timeout=30000)   # [lotul 11, 8c] confirmarea de după generare
     patron.captura("al_doilea")
     nr = _numere_borderouri(firma_cv)
     assert nr[-2:] == ["BA-%d" % (n + 1), "BA-%d" % (n + 2)], nr
@@ -132,7 +146,8 @@ def test_def_435_articolul_din_stoc_apare_in_produse_si_cota_se_completeaza(patr
 # ── 401 — textul de sub nota borderoului ────────────────────────────────────────────────────────────────────────────────
 def test_def_401_sub_nota_borderoului_scrie_borderoul_nu_factura(patron, firma_cv):
     """401 (comanda 10.2 pct.7a). Pașii: un borderou (ciornă) -> Registru jurnal: sub nota lui, textul numește „borderoul de achiziție
-    BA-n din …” și trimite la Operațiuni („Achiziție de la neînregistrat”), nu „factura de achiziție” și nu „în Facturi”.
+    BA-n din …” și trimite la ecranul borderoului (Stocuri › „Borderou de achiziție”, unde se stornează — decizia 10.3), nu „factura
+    de achiziție” și nu „în Facturi”.
     MUTAȚIA: core/note_derivate.py, `return d("borderou" if borderou else "factura")` -> `return d("factura")` -> ROȘU."""
     from e2e_bloc_a import _card
     r = _borderou_api(patron, firma_cv, furnizor_nume="Ion Popescu", articol="Grâu E2E 401", cantitate=50)
@@ -144,7 +159,10 @@ def test_def_401_sub_nota_borderoului_scrie_borderoul_nu_factura(patron, firma_c
     t = " ".join(sub.inner_text().split())
     patron.captura()
     assert ("borderoul de achiziție %s din %s" % (r["numar"], AZI.strftime("%d.%m.%Y"))) in t, t   # AZI-dat-de-test (data borderoului)
-    assert "Achiziție de la neînregistrat" in t and "factura de achiziție" not in t and "în Facturi:" not in t, t
+    # [lotul 11, decizia Costin 10.3 pct.4: „Borderoul se corectează prin stornare, ca factura.”; 11.1 pct.23: butonul borderoului nu mai
+    # stă în „TVA regimuri speciale”] borderoul are acum ecranul lui în Stocuri, cu stornarea din lista lunii — acolo trimite textul.
+    assert "în Stocuri › „Borderou de achiziție”: îl stornezi din lista lunii" in t, t
+    assert "factura de achiziție" not in t and "în Facturi:" not in t, t
 
 
 # ── 402 — refuzul la contul de stoc spune complet ce lipsește ───────────────────────────────────────────────────────────
@@ -161,7 +179,9 @@ def test_def_402_refuzul_la_contul_de_stoc_spune_ce_lipseste_si_de_ce(patron, fi
     patron.captura()
     art = pg.inner_text('.msg-eroare[data-camp="op-articol"]').strip()
     cant = pg.inner_text('.msg-eroare[data-camp="op-cantitate"]').strip()
-    assert art == "Scrie articolul care intră în stoc pe contul 371: marfa intră în gestiune odată cu borderoul.", art
+    # [lotul 11, 450] articolul se ALEGE din nomenclator (sau unul nou, cerut explicit), nu se scrie
+    assert art == ("Alege articolul care intră în stoc pe contul 371 (din nomenclator, sau unul nou, cerut explicit): marfa intră în "
+                   "gestiune odată cu borderoul."), art
     assert cant.startswith("Scrie cantitatea care intră în stoc pe contul 371, mai mare decât zero"), cant
     assert "completează articolul și cantitatea" in pg.inner_text("#op-mesaj")
 

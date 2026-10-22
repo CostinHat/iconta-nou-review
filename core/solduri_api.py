@@ -110,7 +110,8 @@ def extrage_balanta_detaliat(continut, nume_fisier=""):
     i_deb, i_cre = _it.pereche_sold_final(antet, nume_fisier)
     # [deficiența 425] celelalte perechi ale balanței de verificare (solduri inițiale an, sume precedente, rulaje, total sume)
     per = _it.perechi_balanta(antet, nume_fisier)
-    cu_rulaje = "si" in per and ("ts" in per or ("sp" in per and "rl" in per))
+    # [439] o sursă a rulajelor anului: un total cumulat (total sume / total rulaje) sau precedentele + rulajele lunii
+    cu_rulaje = "si" in per and (any(g in per for g in TOTALURI) or ("rl" in per and any(g in per for g in PRECEDENTE)))
 
     citite, ignorate, fara_sold = [], [], 0
     for nr, r in enumerate(brut[start:], start=start + 1):
@@ -130,7 +131,7 @@ def extrage_balanta_detaliat(continut, nume_fisier=""):
         # [comanda Costin 8.2 pct.4] numărul rândului din fișier: previzualizarea arată fiecare rând cu starea lui, pe numărul lui
         x = {"cont": cont, "denumire": _it.celula(r, i_den), "debit": deb, "credit": cre, "rand_fisier": nr}
         if cu_rulaje:
-            x.update(_rulaje_rand(r, per, nr, cont))
+            x["_perechi"] = _perechi_rand(r, per, nr, cont)    # [439] valorile brute; forma lor se stabilește pe tot fișierul
         citite.append(x)
 
     # același cont de două ori: baza are UNIQUE(cont) (GARZI cat.1) — refuz numit, nu o eroare de bază la scriere
@@ -159,27 +160,50 @@ def extrage_balanta_detaliat(continut, nume_fisier=""):
             continue
         # [deficiența 425] „cu toate conturile care au rulaj”: un cont cu sold final 0 (707, 607, 641 … închise pe 121) intră când are
         # sold inițial sau rulaj în an; numai contul fără nimic (sold final, sold inițial și rulaj zero) rămâne pe dinafară, numărat
-        _miscare = cu_rulaje and any(x.get(k) for k in CHEI_RULAJE)
+        _miscare = cu_rulaje and any(v for p in x["_perechi"].values() for v in p)
         if round(x["debit"], 2) == 0 and round(x["credit"], 2) == 0 and not _miscare:  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
             fara_sold += 1
             continue
         out.append(x)
+    forma = None
     if cu_rulaje:
+        # [439] numai frunzele: un sintetic bifuncțional poartă soldul NET, iar sumele lui brute (cumulul analiticelor) nu se închid pe el
+        forma = forma_rulajelor(out)
+        verifica_coloane(out, {g: [_it.eticheta(antet, d), _it.eticheta(antet, c)] for g, (d, c) in per.items()})
         verifica_rulaje(out)
+    for x in citite:
+        x.pop("_perechi", None)
     return {"randuri": out,
             "coloane": {"cont": _it.eticheta(antet, i_cont), "debit": _it.eticheta(antet, i_deb),
                         "credit": _it.eticheta(antet, i_cre)},
             "ignorate": ignorate, "sintetice_inlocuite": inlocuite, "fara_sold": fara_sold, "rulaje": cu_rulaje,
             # [425] ce perechi s-au citit, cu antetul lor din fișier (ecranul le numește)
-            "perechi": {g: [_it.eticheta(antet, d), _it.eticheta(antet, c)] for g, (d, c) in per.items()}}
+            "perechi": {g: [_it.eticheta(antet, d), _it.eticheta(antet, c)] for g, (d, c) in per.items()},
+            # [439] pentru fiecare pereche cumulată: cuprinde (True) sau nu (False) soldul inițial al anului — stabilit din date
+            "forma_rulaje": forma}
 
 
-# ── rulajele anului (deficiența 425, comanda Costin 10.1, verbatim în DECIZII „Comanda 10.1”) ──────────────────────────────────────
-# `si_*` = soldul la 1 ianuarie al anului; `rulaj_*` = rulajele 01.01..data balanței FĂRĂ soldul inițial. Manualul SAGA, „Preluare date
-# contabile” (anaf_surse/saga_manual_topic12_…): coloanele „precedent” sunt „rulajele cumulate (inclusiv soldurile iniţiale) - coloanele
-# «Total Sume debitoare/creditoare»”. Deci TOTAL SUME = sold inițial an + rulajele anului, iar rulajele = total sume − sold inițial; când
-# fișierul n-are „Total sume”, total sume = sume precedente + rulajele lunii (aceeași balanță, luna curentă adăugată la cumul).
+# ── rulajele anului (deficiența 425, comanda Costin 10.1; deficiența 439, comanda Costin 11.1 — verbatim în DECIZII) ─────────────────
+# `si_*` = soldul la 1 ianuarie al anului; `rulaj_*` = rulajele 01.01..data balanței FĂRĂ soldul inițial.
+# [439] Perechile cumulate ale unei balanțe de verificare au DOUĂ forme, după seria de egalități aleasă la generare (manualul SAGA,
+# „Balante”, anaf_surse/saga_manual_topic52_…: „Înainte de generarea balanței se vor seta seriile de egalități”):
+# - CU soldul inițial al anului: „sume precedente” (manualul SAGA, „Preluare date contabile”, anaf_surse/saga_manual_topic12_…: „Debit
+#   precedent” / „Credit precedent” = „rulajele cumulate (inclusiv soldurile iniţiale)”) și „total sume”;
+# - FĂRĂ el: „rulaje precedente” și „total rulaje”.
+# Verificarea lotului 10 presupunea că orice „… precedente” cuprinde soldul inițial și cerea `precedente + rulajele lunii = total sume`;
+# pe „rulaje precedente” omitea soldul inițial al anului și refuza fiecare cont cu sold la 1 ianuarie (439). Acum antetul dă numai ORDINEA
+# încercărilor: se păstrează forma pentru care TOATE conturile verifică ecuațiile balanței (OMFP 2634/2015 anexa 1 pct.52: „Soldul
+# debitor sau creditor al fiecărui cont se stabilește în funcție de rulajele debitoare și creditoare ale contului respectiv, ținându-se
+# seama de soldul de la începutul anului”):
+#   rulajele anului = total − sold inițial (când totalul îl cuprinde) = precedente − sold inițial (când îl cuprind) + rulajele lunii;
+#   sold inițial + rulajele anului = sold final (net, pe fiecare cont); fiecare pereche de coloane are debit = credit (`verifica_coloane`).
 CHEI_RULAJE = ("si_debit", "si_credit", "rulaj_debit", "rulaj_credit")
+TOTALURI = ("ts", "tr")
+PRECEDENTE = ("sp", "rp")
+#: forma după antet (prima încercată): True = coloana cuprinde soldul inițial al anului
+CUPRINDE_SI = {"sp": True, "rp": False, "ts": True, "tr": False}
+NUME_GRUP = {"si": "soldurile inițiale ale anului", "sp": "sumele precedente", "rp": "rulajele precedente", "rl": "rulajele lunii",
+             "ts": "totalul sumelor", "tr": "totalul rulajelor"}
 
 
 def _bani_d(v):
@@ -187,9 +211,8 @@ def _bani_d(v):
     return Decimal(str(v or 0)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
-def _rulaje_rand(r, per, nr, cont):
-    """`{si_debit, si_credit, rulaj_debit, rulaj_credit}` dintr-un rând al balanței cu perechile `per`. Refuz numit pe o celulă care nu e
-    număr și pe un rând unde „sume precedente + rulaje” nu dau „total sume” (fișierul se contrazice)."""
+def _perechi_rand(r, per, nr, cont):
+    """`{grup: (debit, credit)}` (Decimal) dintr-un rând al balanței cu perechile `per`. Refuz numit pe o celulă care nu e număr."""
     v = {}
     for g, (i_d, i_c) in per.items():
         try:
@@ -197,18 +220,111 @@ def _rulaje_rand(r, per, nr, cont):
         except ValueError:
             raise _it.FisierNecitit("Rândul %d (contul %s): o sumă din coloanele balanței nu e un număr („%s” / „%s”). Corectează celula și "
                                     "încarcă fișierul din nou." % (nr, cont, _it.celula(r, i_d), _it.celula(r, i_c)))
-    ts = v.get("ts")
-    if "sp" in v and "rl" in v:
-        din_parti = (v["sp"][0] + v["rl"][0], v["sp"][1] + v["rl"][1])
-        if ts is not None and (abs(din_parti[0] - ts[0]) >= _bani_d("0.01") or abs(din_parti[1] - ts[1]) >= _bani_d("0.01")):
+    return v
+
+
+def _forme_incercate(grupuri):
+    """Formele posibile ale perechilor cumulate din fișier ({grup: cuprinde soldul inițial}), cea din antet întâi, apoi după câte
+    perechi se abat de la antet."""
+    import itertools
+    cum = [g for g in TOTALURI + PRECEDENTE if g in grupuri]
+    forme = [dict(zip(cum, f)) for f in itertools.product((True, False), repeat=len(cum))]
+    return sorted(forme, key=lambda f: sum(f[g] != CUPRINDE_SI[g] for g in cum))
+
+
+def _surse(v, forma):
+    """`[(grup, (rulaj debit, rulaj credit))]` — rulajele anului FĂRĂ soldul inițial, după fiecare sursă a rândului (totalurile întâi)."""
+    si, out = v["si"], []
+    for g in TOTALURI:
+        if g in v:
+            k = 1 if forma[g] else 0
+            out.append((g, (v[g][0] - k * si[0], v[g][1] - k * si[1])))
+    if "rl" in v:
+        for g in PRECEDENTE:
+            if g in v:
+                k = 1 if forma[g] else 0
+                out.append((g, (v[g][0] - k * si[0] + v["rl"][0], v[g][1] - k * si[1] + v["rl"][1])))
+    return out
+
+
+def _descrie(g, forma, ref_cuprinde):
+    """Partea stângă a refuzului, spusă în termenii coloanei de referință (cu sau fără soldul inițial al anului)."""
+    luna = g in PRECEDENTE
+    if ref_cuprinde and not forma[g]:
+        return "soldul inițial al anului plus " + NUME_GRUP[g] + (" plus rulajele lunii" if luna else "")
+    if forma[g] and not ref_cuprinde:
+        return NUME_GRUP[g] + " fără soldul inițial al anului" + (", plus rulajele lunii," if luna else "")
+    return NUME_GRUP[g] + (" plus rulajele lunii" if luna else "")
+
+
+def _abatere(x, forma, i):
+    """Motivul pentru care rândul NU verifică forma (textul refuzului), sau None."""
+    v, nr, cont = x["_perechi"], _it.nr_rand(x, i), x.get("cont")
+    surse = _surse(v, forma)
+    ref_g, ref = surse[0]
+    si, k = v["si"], (1 if forma[ref_g] else 0)
+    for g, r in surse[1:]:
+        if abs(r[0] - ref[0]) >= _bani_d("0.01") or abs(r[1] - ref[1]) >= _bani_d("0.01"):
+            return ("Rândul %d (contul %s): %s (debit %s, credit %s) nu dau %s (debit %s, credit %s). Balanța se contrazice — exportă-o din "
+                    "nou din programul vechi." % (nr, cont, _descrie(g, forma, bool(k)), _bani(r[0] + k * si[0], "lei"),
+                                                   _bani(r[1] + k * si[1], "lei"), NUME_GRUP[ref_g], _bani(v[ref_g][0], "lei"),
+                                                   _bani(v[ref_g][1], "lei")))
+    stanga = si[0] - si[1] + ref[0] - ref[1]
+    dreapta = _bani_d(x.get("debit")) - _bani_d(x.get("credit"))
+    if abs(stanga - dreapta) >= _bani_d("0.01"):
+        return ("Rândul %d (contul %s): soldul inițial al anului și rulajele dau %s, iar soldul final din fișier e %s (net, debitor cu +). "
+                "Balanța se contrazice — exportă-o din nou din programul vechi." % (nr, cont, _bani(stanga, "lei"), _bani(dreapta, "lei")))
+    return None
+
+
+def forma_rulajelor(randuri):
+    """[439] Stabilește din DATE forma perechilor cumulate ({grup: cuprinde soldul inițial al anului}) și scrie pe fiecare rând
+    `si_debit`, `si_credit`, `rulaj_debit`, `rulaj_credit`. Rândurile poartă `_perechi` (valorile brute). Se încearcă întâi forma din
+    antet, apoi celelalte; rămâne prima pentru care TOATE conturile verifică ecuațiile. Nicio formă -> refuz numit, cu primul rând care nu
+    verifică forma din antet. Două forme care verifică totul, dar dau rulaje diferite (un cont cu sold inițial și debitor, și creditor)
+    -> refuz numit: nu se alege una."""
+    if not randuri:
+        return None
+    forme = _forme_incercate(set(randuri[0]["_perechi"]))
+    bune, motiv = [], None
+    for f in forme:
+        ab = next((m for m in (_abatere(x, f, i) for i, x in enumerate(randuri, start=2)) if m), None)
+        if ab is None:
+            bune.append(f)
+        elif motiv is None:
+            motiv = ab
+    if not bune:
+        raise _it.FisierNecitit(motiv)
+    forma = bune[0]
+    rez = [_surse(x["_perechi"], forma)[0][1] for x in randuri]
+    for alta in bune[1:]:
+        for i, (x, r) in enumerate(zip(randuri, rez), start=2):
+            if _surse(x["_perechi"], alta)[0][1] != r:
+                g = next(g for g in forma if forma[g] != alta[g])
+                raise _it.FisierNecitit(
+                    "Rândul %d (contul %s): din fișier nu se poate stabili dacă %s cuprind soldul inițial al anului — contul are sold "
+                    "inițial și pe debit, și pe credit, iar ambele citiri închid balanța. Exportă balanța cu soldul inițial net (pe o "
+                    "singură parte) și încarcă-o din nou." % (_it.nr_rand(x, i), x.get("cont"), NUME_GRUP[g]))
+    for x, r in zip(randuri, rez):
+        si = x["_perechi"]["si"]
+        x.update({"si_debit": float(si[0]), "si_credit": float(si[1]), "rulaj_debit": float(r[0]), "rulaj_credit": float(r[1])})
+    return forma
+
+
+def verifica_coloane(randuri, etichete):
+    """[439] PURĂ pe rândurile cu `_perechi`: fiecare pereche citită are totalul debitor egal cu cel creditor — OMFP 2634/2015 anexa 1
+    pct.52: „Balanța de verificare este documentul contabil utilizat pentru verificarea înregistrării corecte în contabilitate a
+    operațiunilor efectuate”; fiecare înregistrare are debit = credit, deci fiecare coloană. Refuz numit cu antetul perechii din fișier."""
+    for g in ("si", "sp", "rp", "rl", "tr", "ts"):
+        if g not in etichete or not randuri:
+            continue
+        d = sum((x["_perechi"][g][0] for x in randuri), _bani_d(0))
+        c = sum((x["_perechi"][g][1] for x in randuri), _bani_d(0))
+        if abs(d - c) >= _bani_d("0.01"):
             raise _it.FisierNecitit(
-                "Rândul %d (contul %s): sumele precedente plus rulajele lunii (debit %s, credit %s) nu dau totalul sumelor (debit %s, "
-                "credit %s). Balanța se contrazice — exportă-o din nou din programul vechi." % (
-                    nr, cont, _bani(din_parti[0], "lei"), _bani(din_parti[1], "lei"), _bani(ts[0], "lei"), _bani(ts[1], "lei")))
-        ts = ts or din_parti
-    si = v["si"]
-    return {"si_debit": float(si[0]), "si_credit": float(si[1]),
-            "rulaj_debit": float(ts[0] - si[0]), "rulaj_credit": float(ts[1] - si[1])}
+                "Coloanele „%s” / „%s” nu se echilibrează: debit %s, credit %s (diferență %s). Fiecare înregistrare are debit = credit, "
+                "deci în balanța de verificare fiecare pereche de coloane are totalurile egale — exportă-o din nou din programul vechi."
+                % (etichete[g][0], etichete[g][1], _bani(d, "lei"), _bani(c, "lei"), _bani(d - c, "lei")))
 
 
 def verifica_rulaje(randuri):

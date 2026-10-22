@@ -124,6 +124,10 @@ class RezultatD101:
     cod_obligatie: str = "103"
     d_grup: int = 0
     avertismente: list = field(default_factory=list)
+    # [lotul 11, C77] rectificativa: `core.rectificativa.aplica` (d_rec în XML, textul de pe ecran, depunerea pe care s-a sprijinit)
+    d_rec: int = 0
+    rectificativa: object = None
+    depunere_anterioara_nr: object = None
 
 
 # Campurile P de INTRARE: baza contabila (P1,P2,P4,P5 - din pull) + ajustari fiscale (restul,
@@ -447,7 +451,8 @@ def build_xml(res):
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
     a = []
     a.append('an="%d" luna="12" an_i="%d" luna_i="1" cod_obligatie="%s"' % (an, an, res.cod_obligatie))
-    a.append('d_rec="0" d_reg="0" d_reglem="0" d_anulare="0" d_succ="0" d_prof="0" d_alte="0"')
+    # [lotul 11, C77] d_rec: 1 dacă pe an e înregistrată o depunere (core.rectificativa; OPANAF 206/2025 anexa 2 cap.I pct.3)
+    a.append('d_rec="%d" d_reg="0" d_reglem="0" d_anulare="0" d_succ="0" d_prof="0" d_alte="0"' % int(getattr(res, "d_rec", 0) or 0))
     if res.d_grup:
         a.append('d_grup="1"')
     a.append('Data_I="01.01.%d" Data_S="31.12.%d"' % (an, an))
@@ -565,6 +570,8 @@ def genereaza(conn, schema, perioada, manual=None):
     Foloseste perioada.an. `manual` = ajustari fiscale (chei P8..P51 din formular) + cota/d_grup/
     cod_obligatie; o cheie P necunoscuta e respinsa de calcul_d101 (typo != implicit tacut)."""
     manual = dict(manual or {})
+    from core import rectificativa as _rect
+    _bifata = _rect.bifata({"d_rec": manual.pop("d_rec", 0)})   # [C77] bifa din formular nu e un rând P
     cota = manual.pop("cota", None)
     d_grup = int(manual.pop("d_grup", 0) or 0)
     cod_obligatie = str(manual.pop("cod_obligatie", "103"))
@@ -643,6 +650,7 @@ def genereaza(conn, schema, perioada, manual=None):
     # CONTABILE (P1/P2/P4/P5 din balanta). NU verifica impozabilul (ajustari manuale + golden).
     from core.d101_reconciliere import verifica_reconciliere as _vr101
     _vr101(conn, schema, perioada, res, manual)
+    _rect.aplica(res, _rect.stabileste(conn, schema, "d101", perioada.an, bifata=_bifata))   # [C77]
     xml = build_xml(res)
     from core.reconciliere_emis import verifica_total_plata_a as _vte
     _vte("d101", xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res

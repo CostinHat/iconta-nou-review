@@ -1,0 +1,38 @@
+[
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "intrare = _scv.intrare(conn, schema, {\"articol_id\": articol_ales[0] if articol_ales else None,",
+  "inlocuire": "intrare = _scv.intrare(conn, schema, {\"articol_id\": None,",
+  "test": "frontend_test/e2e/e2e_lot11_b.py::test_def_450_borderoul_alege_articolul_din_nomenclator_si_se_inchide_dupa_generare"
+ },
+ {
+  "fisier": "core/produse_api.py",
+  "ancora": "return \" \".join(\"\".join(ch for ch in s if not _ud.combining(ch)).split()).casefold()",
+  "inlocuire": "return \" \".join(str(x or \"\").split()).casefold()",
+  "test": "frontend_test/e2e/e2e_lot11_b.py::test_def_450_articolul_nou_cu_denumirea_unuia_existent_se_refuza"
+ },
+ {
+  "fisier": "static/js/ecrane/borderou_ecran.js",
+  "ancora": "${!b.storno_din && !b.stornat_de ? `<button",
+  "inlocuire": "${true ? `<button",
+  "test": "frontend_test/e2e/e2e_lot11_b.py::test_decizia_103_borderoul_se_storneaza_din_lista_lunii"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "            _dubla = _nir_cu_numarul(_c, schema, corp.get(\"numar\"), corp.get(\"data\"), corp.get(\"refacut_din_id\"))",
+  "inlocuire": "            _dubla = None",
+  "test": "frontend_test/e2e/e2e_lot11_b.py::test_decizia_103_nir_cu_numar_repetat_se_refuza_langa_numar"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "id=\"s-borderou\" data-fara-actiune",
+  "inlocuire": "id=\"s-borderou-scos\" hidden data-fara-actiune",
+  "test": "frontend_test/e2e/e2e_lot11_b.py::test_def_450_pct23_borderoul_sta_langa_nir_nu_in_operatiuni"
+ },
+ {
+  "fisier": "static/js/ecrane/produse_ecran.js",
+  "ancora": "  ((cat && cat.tva) || []).map((c) => `<option value=\"0:${esc(c.cod)}\">0% \\u2014 ${esc(c.eticheta)}</option>`).join(\"\");",
+  "inlocuire": "  \"\";",
+  "test": "frontend_test/e2e/e2e_lot11_b.py::test_def_449_produsul_cu_taxare_inversa_se_salveaza_cu_categoria_si_bunul"
+ }
+]

@@ -2,7 +2,7 @@
 title: "Ce documente cere firma care cumpără sau preia în consignație bunuri de la o persoană fizică?"
 description: "Pentru bunuri produse sau cumpărate de persoana fizică în vederea revânzării, firma cere dovada provenienței și a activității independente; bunurile din patrimoniul personal nu intră aici."
 published: 2026-09-29
-modified: 2026-09-29
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -45,6 +45,6 @@ Ce înseamnă concret:
 
 ## Ce face iConta.eu
 
-În ecranul de operațiuni, iConta.eu are o operațiune „Achiziție de la neînregistrat (persoană fizică)”: înregistrezi data, numele vânzătorului, valoarea, contul de stoc sau cheltuială și numărul borderoului, iar aplicația creează documentul primit fără TVA și nota contabilă, cu includerea în D394 dacă alegi categoria bunului. Aplicația nu are un flux dedicat pentru bunurile primite în consignație și nu verifică documentele de proveniență sau de activitate independentă ale persoanei fizice: dosarul justificativ rămâne în sarcina contabilului.
+În „Stocuri → Borderou de achiziție”, iConta.eu întocmește borderoul de achiziție de la persoana fizică: înregistrezi data, vânzătorul, articolul ales din nomenclatorul stocului (sau un articol nou, cerut explicit), valoarea și contul de stoc sau de cheltuială, iar aplicația numerotează borderoul, creează documentul primit fără TVA, nota contabilă și, pe un cont de stoc, intrarea în gestiune, cu includerea în D394 dacă alegi categoria bunului; un borderou greșit se stornează din lista borderourilor lunii. Aplicația nu are un flux dedicat pentru bunurile primite în consignație și nu verifică documentele de proveniență sau de activitate independentă ale persoanei fizice: dosarul justificativ rămâne în sarcina contabilului.
 
 [iConta.eu](/)

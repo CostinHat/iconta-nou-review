@@ -25,6 +25,11 @@ RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCHEMA_T = "ztest_lot10b_facturi"
 ZI = _dt.date(2026, 9, 4)          # o zi bancară cu cursul EUR în cache-ul bazei de test (vineri)
 CURS_ZI = D("5.2524")              # cursul BNR EUR din 04.09.2026 (cache-ul bazei de test); pus numai dacă lipsește, în ROLLBACK
+# [lotul 11, decizia Costin 10.3: „Cursul BNR: aplici textul legal în vigoare (CF art. 290, HG 1/2016 pct. 35)”] factura din ZI ia
+# cursul comunicat în ziua ANTERIOARĂ — HG 1/2016 pct.35 alin.(1): „cursul de schimb comunicat de respectiva bancă în ziua anterioară și
+# care este valabil pentru operațiunile care se vor desfășura în ziua următoare”
+ZI_CURS = _dt.date(2026, 9, 3)
+CURS_ZI_CURS = D("5.2536")         # cursul BNR EUR comunicat pe 03.09.2026 (cache-ul bazei de test); pus numai dacă lipsește, în ROLLBACK
 LINII = [{"descriere": "Consultanta IT", "cont_venit": "704", "cantitate": 2, "pret_unitar": 150, "cota_tva": 21}]
 
 
@@ -62,6 +67,8 @@ def conn_schema():
                 # cursul zilei, numai dacă lipsește din cache (tabel partajat — se anulează la final)
                 cur.execute("INSERT INTO public.curs_bnr_zilnic (data, moneda, curs) VALUES (%s, 'EUR', %s) "
                             "ON CONFLICT (data, moneda) DO NOTHING", (ZI, CURS_ZI))
+                cur.execute("INSERT INTO public.curs_bnr_zilnic (data, moneda, curs) VALUES (%s, 'EUR', %s) "
+                            "ON CONFLICT (data, moneda) DO NOTHING", (ZI_CURS, CURS_ZI_CURS))
             yield conn
         finally:
             conn.rollback()
@@ -83,12 +90,13 @@ def test_7g_previzualizarea_in_lei_e_ce_scrie_emiterea(conn_schema):
     în lei) — o singură definiție (`curs_automat` + `sume_lei`). 2 × 150 EUR la 21% = 63,00 EUR TVA; la cursul din cache."""
     from core import facturi_api
     with conn_schema.cursor() as cur:
-        cur.execute("SELECT curs FROM public.curs_bnr_zilnic WHERE moneda = 'EUR' AND data = %s", (ZI,))
+        cur.execute("SELECT curs FROM public.curs_bnr_zilnic WHERE moneda = 'EUR' AND data = %s", (ZI_CURS,))
         curs = D(str(cur.fetchone()[0]))
     p = facturi_api.previzualizare_lei(conn_schema, "EUR", ZI, [{k: l[k] for k in ("cantitate", "pret_unitar", "cota_tva")} for l in LINII])
     # CF art.290 alin.(2): „ultimul curs de schimb comunicat de Banca Națională a României [...] valabil la data la care intervine
     # exigibilitatea” — cursul ales de `curs_bnr.curs_pentru`, cel cu care emite serverul
-    assert p["ok"] is True and D(p["curs"]) == curs and p["data_curs"] == ZI.isoformat() and p["vechime_zile"] == 0, p
+    # + HG 1/2016 pct.35 alin.(1): cel comunicat „în ziua anterioară” (03.09.2026, joi), deci vechimea e 1 zi
+    assert p["ok"] is True and D(p["curs"]) == curs and p["data_curs"] == ZI_CURS.isoformat() and p["vechime_zile"] == 1, p
     assert (D(p["tva"]), D(p["total"])) == (D("63.00"), D("363.00")), p
     assert D(p["tva_lei"]) == (D("63.00") * curs).quantize(D("0.01"), rounding=ROUND_HALF_UP), p      # CF art.319 alin.(20) lit.j) — TVA în lei
     r = facturi_api.emite_factura(conn_schema, [dict(l) for l in LINII], data_emitere=ZI.isoformat(), moneda="EUR", platitor_tva=True,
@@ -107,7 +115,7 @@ def test_7g_fara_linii_numai_cursul_iar_refuzul_e_al_emiterii(conn_schema):
     """Cota încă nestabilită (linii=None): numai cursul, fără sume în lei; o monedă pe care BNR n-o cotează: același refuz ca la emitere."""
     from core import facturi_api
     p = facturi_api.previzualizare_lei(conn_schema, "EUR", ZI, None)
-    assert p["ok"] is True and "tva_lei" not in p and p["data_curs"] == ZI.isoformat(), p
+    assert p["ok"] is True and "tva_lei" not in p and p["data_curs"] == ZI_CURS.isoformat(), p   # HG 1/2016 pct.35 alin.(1)
     p0 = facturi_api.previzualizare_lei(conn_schema, "EUR", ZI, [])
     assert (D(p0["tva_lei"]), D(p0["total_lei"])) == (D("0.00"), D("0.00")), p0   # liniile fără valoare: zero, nu „—”
     refuz = facturi_api.previzualizare_lei(conn_schema, "XYZ", ZI, None)

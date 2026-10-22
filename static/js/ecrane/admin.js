@@ -3,13 +3,13 @@
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand } from "../api.js?v=ff30ebaf3f";
+import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand } from "../api.js?v=58f26a3fc4";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=a2a0b629a8";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=eb7737e0b3";
-import { randeazaAdminSanatate } from "./admin_sanatate.js?v=510e670f0b";
+import { randeazaAdminSanatate } from "./admin_sanatate.js?v=f72a91fe71";
 import { randeazaAdminAnalytics } from "./admin_analytics.js?v=65a3ea09d5";
 import { numeDeSalut } from "./salut.js?v=10719d2154";
-import { panouNotificari } from "./setari.js?v=6a36388d13";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală
+import { panouNotificari } from "./setari.js?v=2961546bb5";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală
 
 // iconite SVG inline (autonome)
 function svg(cheie, fg) {
@@ -262,11 +262,13 @@ async function cereriNeconfirmate(zona) {
     ? `trimis ${dataRo(x.email_trimis_la, "cu_ora")}${x.retrimiteri ? ` (${cate(x.retrimiteri, "retrimitere", "retrimiteri")})` : ""}` : "netrimis";
   // [deficiența 316, comanda Costin 17.10.2026 7.2] cererea expirată rămâne în listă, marcată „expirată” (cu data la care se șterge);
   // data, emailul și butonul nu se mai rup pe rânduri (`.ins-cereri`, fără `overflow-wrap: anywhere` pe coloanele lor)
-  zona.innerHTML = `<table class="fd-tabel ins-cereri"><thead><tr><th>Data</th><th>Cabinet</th><th>Email</th><th>Emailul de confirmare</th><th>Starea linkului</th><th>Acțiune</th></tr></thead><tbody>
+  // [lotul 11, decizia Costin 10.3: „rezumatul fix, mesajele lângă buton […]: da, reorganizezi ecranele”] confirmarea lui „Retrimite
+  // confirmarea” stătea SUB tabelul cererilor; acum zona ei e rezumatul lipit sus al tabelului (refuzul rămâne pe rând, `refuzPeRand`)
+  zona.innerHTML = `<div class="rezumat-fix" id="ins-cereri-msg"></div><table class="fd-tabel ins-cereri"><thead><tr><th>Data</th><th>Cabinet</th><th>Email</th><th>Emailul de confirmare</th><th>Starea linkului</th><th>Acțiune</th></tr></thead><tbody>
     ${v.map((x) => `<tr data-cerere="${x.id}"${x.expirata ? ' class="ins-expirata"' : ""}><td class="ins-nerupt">${dataRo(x.creat_la, "cu_ora")}</td><td>${esc(x.nume_cabinet)}</td><td class="ins-nerupt">${esc(x.email)}</td>
       <td>${trimis(x)}</td><td>${x.expirata ? `<b>expirată</b> pe ${dataRo(x.expira_la, "cu_ora")} · se șterge pe ${dataRo(x.se_sterge_la)}` : `valabilă până la ${dataRo(x.expira_la, "cu_ora")}`}</td>
       <td class="ins-nerupt"><button class="buton-secundar" data-retrimite="${x.id}" data-actiune="POST /admin/inregistrari-neconfirmate/{cerere_id}/retrimite">Retrimite confirmarea</button></td></tr>`).join("")}
-    </tbody></table><div id="ins-cereri-msg" style="margin-top:8px"></div>`;
+    </tbody></table>`;
   zona.querySelectorAll("[data-retrimite]").forEach((b) => b.addEventListener("click", async () => {
     b.disabled = true;
     try {
@@ -283,7 +285,7 @@ async function randeazaAdminInregistrare(corp) {
   corp.innerHTML = `<h2 class="pf-titlu">Înregistrare</h2><p class="ecran-nota">Se încarcă…</p>`;
   let st;
   try { st = await api.get("/admin/setari/inregistrare"); } catch (e) {
-    corp.innerHTML = `<h2 class="pf-titlu">Înregistrare</h2><p class="ecran-nota">${esc((e && e.mesaj) || "Setarea nu se poate încărca.")}</p>`;
+    corp.innerHTML = `<h2 class="pf-titlu">Înregistrare</h2><p class="ecran-nota pe-randuri">${esc((e && e.mesaj) || "Setarea nu se poate încărca.")}</p>`;
     return;
   }
   const deseneaza = () => {

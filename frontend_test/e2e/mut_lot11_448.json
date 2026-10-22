@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "core/ciorne_depasite.py",
+  "ancora": "\"salarii\": _acum_salarii, ",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot11_448.py::test_def_448_ciorna_salariilor_depasita_se_reface_din_stat_si_se_valideaza"
+ }
+]

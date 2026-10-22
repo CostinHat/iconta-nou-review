@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "core/jurnal_api.py",
+  "ancora": "    for nid, _st, _d, camp, _vechi, nou in note_cu_serie_lipita(cur, schema, nota_ids):",
+  "inlocuire": "    for nid, _st, _d, camp, _vechi, nou in []:",
+  "test": "frontend_test/e2e/e2e_lot11_n.py::test_def_443_nota_veche_din_registru_jurnal_arata_seria_separat"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "            for _nid, _afisat in _j.note_fara_serie_lipita(cur, schema, list(note)).items():",
+  "inlocuire": "            for _nid, _afisat in {}.items():",
+  "test": "frontend_test/e2e/e2e_lot11_n.py::test_def_443_nota_veche_din_registru_jurnal_arata_seria_separat"
+ }
+]

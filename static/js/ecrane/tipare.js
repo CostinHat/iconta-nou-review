@@ -2,7 +2,7 @@
 // Trei sectiuni statistice: motive de respingere, tipuri cu rata, firme cu respingeri.
 // Plus [F120] buton "Genereaza analiza AI" care cere lui Claude explicatii + recomandari.
 // Doar patron (regula 4).
-import { api, esc } from "../api.js?v=ff30ebaf3f";
+import { api, esc } from "../api.js?v=58f26a3fc4";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 
 function bara(pct) {
@@ -116,13 +116,16 @@ export async function randeazaTipare(corp, nav) {
     </div>
   `;
 
-  corp.innerHTML = `<div class="tip-ecran">${sectMotive}${sectTipuri}${sectFirme}
-    <div class="tip-analiza" style="margin-top:16px">
-      <h3 class="tip-titlu">Analiză AI</h3>
-      <p class="cap-nota">Claude citește exact tiparele de mai sus și propune explicații și recomandări concrete.</p>
-      <p><button class="buton-primar" id="tip-ai" data-actiune="GET /tipare/ai">Generează analiză AI</button></p>
-      <div id="tip-ai-rez"></div>
-    </div></div>`;
+  // [lotul 11, decizia Costin 10.3, verbatim în DECIZII „Comanda 10.3” pct.4: „Totalurile și rezumatul fix, mesajele lângă buton […]:
+  // da, reorganizezi ecranele”] „Generează analiză AI” stătea sub cele trei tabele, iar rezultatul lui la capătul lor: acum butonul e în
+  // rezumatul lipit sus, iar rezultatul chiar sub el, deasupra tabelelor (DS cap.9 v2.100)
+  corp.innerHTML = `<div class="tip-ecran">
+    <div class="rezumat-fix tip-analiza">
+      <p class="cap-nota"><b>Analiză AI</b> — Claude citește exact tiparele de mai jos și propune explicații și recomandări concrete.
+        <button class="buton-primar" id="tip-ai" data-actiune="GET /tipare/ai" style="margin-left:8px">Generează analiză AI</button></p>
+    </div>
+    <div id="tip-ai-rez"></div>
+    ${sectMotive}${sectTipuri}${sectFirme}</div>`;
   corp.querySelector("#tip-ai").addEventListener("click", async () => {
     const btn = corp.querySelector("#tip-ai");
     const rez = corp.querySelector("#tip-ai-rez");

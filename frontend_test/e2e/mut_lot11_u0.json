@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "if (!descr.includes(sp.id)) inp.setAttribute(\"aria-describedby\", descr.concat(sp.id).join(\" \"));",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot11_u0.py::test_def_440_date_firma_toate_erorile_cu_textul_lor_in_caseta_si_langa_camp"
+ },
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "  if (!inp || inp.__golibila || !inp.parentElement || inp.readOnly || inp.disabled || _dataObligatorie(inp)) return null;",
+  "inlocuire": "  if (true) return null;",
+  "test": "frontend_test/e2e/e2e_lot11_u0.py::test_def_441_data_infiintarii_se_goleste_din_x_si_ramane_goala"
+ },
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "  return nr ? `${s} nr. ${nr}` : s;",
+  "inlocuire": "  return s + nr;",
+  "test": "frontend_test/e2e/e2e_lot11_u0.py::test_def_443_factura_seriei_f6_se_afiseaza_f6_nr_1"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "    fer.querySelector(\".nav-x\").addEventListener(\"click\", () => (sus.intoarcere && stiva.length > 1 ? nav.inapoi() : nav.acasa()));",
+  "inlocuire": "    fer.querySelector(\".nav-x\").addEventListener(\"click\", () => nav.acasa());",
+  "test": "frontend_test/e2e/e2e_lot11_u0.py::test_def_445_deschide_date_firma_din_refuzul_chitantei_intoarce_la_chitanta"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "        const p = _dePastrat(dinRefuz);",
+  "inlocuire": "        const p = _dePastrat();",
+  "test": "frontend_test/e2e/e2e_lot11_u0.py::test_def_445_deschide_date_firma_din_refuzul_chitantei_intoarce_la_chitanta"
+ }
+]

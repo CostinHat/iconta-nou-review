@@ -170,6 +170,59 @@ class Rezultat:
     z_fara_cote: list = field(default_factory=list)   # [lot 19 pct.4b] rapoarte Z validate fără defalcare -> refuz
     # [lotul 10, 428] secțiunea „Informații privind TVA neexigibilă sau nedeductibilă” (rd.A/A1/B/B1): {valoare_a: int, ...}, numai nenule
     neexigibil: dict = field(default_factory=dict)
+    # [lotul 11, C76] componenta AUTOMATĂ a rd.34 (R31_2) din notele de ajustare a taxei (lipsa neimputabilă: 635 = 4427), în lei întregi,
+    # și notele care o compun — reconcilierea (calea a doua) o confruntă cu propriul ei recalcul din carte
+    ajustari_taxa: dict = field(default_factory=dict)
+    note_ajustare: list = field(default_factory=list)
+
+
+# ══════════════════════════════════════════════════════════════════ NOTELE CU TVA CARE NU VIN DIN FACTURI [lotul 11, C76]
+# „Lipsa de la inventar trebuie să ajungă în D300” (comanda Costin 11.1 pct.3). Decontul se construia numai din facturi, decontări, rapoarte
+# Z și chitanțe; o notă cu TVA din altă sursă (ajustarea lipsei neimputabile 635 = 4427, scrisă de inventar) intra în registru, iar decontul
+# ieșea identic cu cel de dinainte de ea. Temeiul rândului:
+#   * HG 1/2016 titlul VII pct.78 alin.(1): „Ajustarea reprezintă [...] anularea totală sau parțială a deducerii exercitate inițial în
+#     situația în care persoana impozabilă pierde potrivit legii dreptul de deducere, denumită în continuare ajustare negativă. Ajustarea
+#     se evidențiază în decontul de taxă aferent perioadei fiscale în care a intervenit evenimentul care a generat ajustarea.”
+#   * HG 1/2016 titlul VII pct.78 alin.(6) lit.a): „persoana impozabilă realizează o ajustare pozitivă sau, după caz, trebuie să efectueze
+#     o ajustare negativă a taxei deductibile în situații precum: a) bunuri lipsă în gestiune din alte cauze decât cele prevăzute la
+#     art. 304 alin. (2) din Codul fiscal”.
+#   * OPANAF 174/2026 (instrucțiunile D300), rândul 34 (XML R31): „se înscriu [...] diferenţele de taxă pe valoarea adăugată rezultate ca
+#     urmare a ajustării taxei deductibile, cu semnul plus sau minus, după caz.” (anaf_surse/opanaf_174_2026_d300.txt)
+# Deci 635 = 4427 / 635 = 4426 (TVA-ul dedus, anulat pe cheltuială) intră în rd.34 cu MINUS; o stornare (sumă negativă) îl întoarce.
+#: (debit, credit) -> (rândul XML, semnul) pentru ajustările taxei deductibile scrise ca note
+AJUSTARI_TAXA = {("635", "4427"): ("R31", -1), ("635", "4426"): ("R31", -1)}
+#: închiderea TVA a perioadei (`motor.regularizare_tva`; OMFP 1802/2014, conturile 4423 / 4424): 4427 = 4426, 4427 = 4423, 4424 = 4426 —
+#: rezultatul operațiunilor, nu o operațiune de declarat. NU și 4426 = 4427 (autolichidarea la taxarea inversă e o operațiune)
+_INCHIDERE = {("4427", "4426"), ("4427", "4423"), ("4424", "4426")}
+
+
+def _radacina(cont):
+    return str(cont or "").split(".")[0].strip()
+
+
+def clasifica_nota_tva(r):
+    """PURĂ. Ce face D300 cu o linie de TVA dintr-o notă VALIDATĂ fără factură (`repo_d300.select_note_tva_fara_factura`):
+    ("rand", rândul, semnul) — intră în decont (ajustările de taxă, `AJUSTARI_TAXA`);
+    ("acoperit", motiv) — e declarată din altă sursă sau nu e operațiune (motivul o spune);
+    ("nedeclarat", None) — nicio cale a decontului n-o duce în D300: se NUMEȘTE în avertismente, nu se pierde tăcut."""
+    d, c = _radacina(r.get("debit")), _radacina(r.get("credit"))
+    if (d, c) in AJUSTARI_TAXA:
+        rand, semn = AJUSTARI_TAXA[(d, c)]
+        return ("rand", rand, semn)
+    if (d, c) in _INCHIDERE:
+        return ("acoperit", "închiderea TVA a perioadei (4427 = 4426 / 4423, 4424 = 4426)")
+    if "371" in (d, c) and "4428" in (d, c):
+        return ("acoperit", "TVA cuprinsă în prețul de vânzare cu amănuntul al mărfii (371 / 4428), nu operațiune a perioadei")
+    from core.raport_z import SURSE as _SURSE_Z
+    if (r.get("sursa") or "") in _SURSE_Z:
+        return ("acoperit", "raportul Z, declarat din defalcarea lui pe cote")
+    if r.get("din_chitanta"):
+        return ("acoperit", "chitanța de vânzare fără factură, declarată din chitanțe")
+    if (r.get("sursa") or "") == "migrare":
+        return ("acoperit", "sold inițial preluat la migrare, nu operațiune a perioadei")
+    if (r.get("sursa") or "") == "stocuri" and d in ("4426", "4428") and c in ("401", "404", "408", "4428"):
+        return ("acoperit", "TVA-ul NIR-ului, declarat din factura furnizorului")
+    return ("nedeclarat", None)
 
 
 def _segmente(f):
@@ -188,7 +241,10 @@ def _segmente(f):
             # [A12 art.300] destinatia TVA a liniei (taxabil/scutit/mixt); tuplu vechi fara ea -> taxabil
             dest = lin[3] if len(lin) > 3 else "taxabil"
             cat = lin[4] if len(lin) > 4 else None   # [274b] categoria liniei cu 0% (tuplu vechi fără ea -> None)
-            baza = Decimal(str(cant)) * Decimal(str(pret)) * curs
+            # [lotul 11, C82] valoarea netă a liniei de pe factură (BT-131, `factura_linii.valoare_neta`) când o are: prețul unitar la 2
+            # zecimale × o cantitate neîntreagă nu o reface la ban
+            vn = lin[5] if len(lin) > 5 else None
+            baza = (Decimal(str(vn)) if vn is not None else Decimal(str(cant)) * Decimal(str(pret))) * curs
             ci = None if cota is None else int(round(float(cota)))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
             out.append((ci, baza, dest, cat))
         return out
@@ -198,6 +254,29 @@ def _segmente(f):
     ci = int(round(float(tva) / float(baza) * 100)) if (baza and tva) else None  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
     # factura fara linii (antet): destinatia nu e pe document -> taxabil (deducere integrala, comportament neschimbat)
     return [(ci, baza, "taxabil", None)]
+
+
+def _cu_tva_facturii(segmente, tva_factura, f):
+    """[lotul 11, C79] Segmentele unei facturi PRIMITE cu TVA-ul de pe factură: pe fiecare cotă, TVA-ul cotei de pe factura furnizorului
+    în lei (`contare_facturi.tva_lei_facturii` — aceeași regulă ca nota: la valută, BT-111 împărțit pe cote, lotul 11, C81), împărțit pe
+    segmentele cotei proporțional cu baza lor (destinația liniei — taxabil / mixt / scutit — rămâne pe segment). Temei: CF art.299
+    alin.(1) lit.a — deducerea se face pe baza facturii emise conform art.319; CF art.319 alin.(20) lit.j — factura indică „suma taxei
+    colectate, exprimate în lei, în funcție de cotele taxei”. Când cotele facturii nu sunt cele ale liniilor
+    (`contare_facturi.cote_nepotrivite`), segmentele rămân pe recalcul — contarea o refuză oricum."""
+    from core import contare_facturi as _cf
+    lei = _cf.tva_lei_facturii(tva_factura, {Decimal(s[0]) for s in segmente if s[0] is not None}, f)
+    if lei is None:
+        return segmente
+    pe_int = {int(c): t for c, t in lei.items()}   # cotele fiscale RO sunt întregi (21/11/9/5/0), ca `_segmente`
+    baze = {}
+    for s in segmente:
+        baze[s[0]] = baze.get(s[0], Decimal(0)) + s[1]
+    out = []
+    for (ci, baza, tva, dest, cat) in segmente:
+        if ci and ci in pe_int and baze[ci]:
+            tva = pe_int[ci] * baza / baze[ci]
+        out.append((ci, baza, tva, dest, cat))
+    return out
 
 
 def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
@@ -317,7 +396,17 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     fara_curs = []                       # [A1] facturi in valuta fara curs -> EXCLUSE din decont, SEMNALAT (nu se ghiceste 1)
     from core import sume_lei as _sl
     z_fara_cote = []                     # [lot 19 pct.4b] rapoarte Z validate fără defalcare pe cote -> genereaza REFUZĂ
+    aj_taxa, aj_note, note_nedecl = {}, [], []   # [lotul 11, C76] ajustările de taxă din note (rd.34) și notele cu TVA nedeclarate
     for f in facturi:
+        if f.get("ajustare_taxa"):
+            # [lotul 11, C76] HG 1/2016 titlul VII pct.78 alin.(1): „Ajustarea se evidențiază în decontul de taxă aferent perioadei fiscale
+            # în care a intervenit evenimentul”; rândul ei: OPANAF 174/2026 rd.34 (antetul secțiunii „NOTELE CU TVA CARE NU VIN DIN FACTURI”)
+            aj_taxa[f["rand"]] = aj_taxa.get(f["rand"], Decimal(0)) + Decimal(str(f["tva"]))
+            aj_note.append(f)
+            continue
+        if f.get("nota_tva_nedeclarata"):
+            note_nedecl.append(f)
+            continue
         if f.get("raport_z"):
             # [lot 19 pct.4b] livrare cu bon fiscal (raport Z), pe cotă: aceleași rânduri ca livrarea facturată.
             if f.get("fara_cote"):
@@ -397,6 +486,10 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         else:
             segmente = [(ci, baza, (baza * Decimal(ci) / Decimal(100) if ci else Decimal(0)), dest, cat)
                         for (ci, baza, dest, cat) in _segmente(f)]
+            if f.get("tva_factura") and not emisa and not ti:
+                # [lotul 11, C79] deductibilul e TVA-ul de pe factura furnizorului (CF art.299 alin.(1) lit.a; art.319 alin.(20) lit.j),
+                # nu recalculul din baze — același ca pe nota facturii (`contare_facturi.tva_facturii_pe_cote`)
+                segmente = _cu_tva_facturii(segmente, f["tva_factura"], f)
             _fr = f.get("fractie_exigibila")
             if _fr is not None:
                 # [lotul 10, 428] stornarea unei facturi in sistem: CF art.282 alin.(10) lit.a) pct.2 — partea care anuleaza TVA neexigibil
@@ -717,6 +810,10 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         # r28_2 (comportament anterior), semnalat in avertismente.
         _baza_prorata = r28_2 if tvai else ded_mixt_t
         r31_2 += _int(Decimal(str(_baza_prorata)) * Decimal(str(100 - pro_rata)) / Decimal(100) * -1)
+    # [lotul 11, C76] + ajustările taxei deductibile scrise ca note (lipsa neimputabilă: 635 = 4427, minus) — OPANAF 174/2026 rd.34:
+    # „diferenţele de taxă [...] rezultate ca urmare a ajustării taxei deductibile, cu semnul plus sau minus, după caz”
+    _aj_r31 = _int(aj_taxa.get("R31", 0))
+    r31_2 += _aj_r31
     if r31_2:
         R["R31_2"] = r31_2
 
@@ -769,6 +866,27 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
         R["R26_1"] = _r26
 
     res = Rezultat(an=an, luna=luna, prof=prof)
+    # [lotul 11, C76] ajustările de taxă din note: componenta automată a rd.34 și notele ei (spuse în rezultat, confruntate de reconciliere)
+    res.ajustari_taxa = {"R31_2": _aj_r31} if aj_note else {}
+    res.note_ajustare = [{"nota_id": f["nota_id"], "eticheta": f["eticheta"], "linie": f["linie"]} for f in aj_note]
+    if aj_note:
+        res.note_rezultat.append(
+            "Rândul 34 (ajustări de taxă) cuprinde %s lei din %s: %s (HG 1/2016 titlul VII pct.78 alin.(6) lit.a — ajustarea taxei "
+            "deductibile pentru bunurile lipsă din gestiune)." % (_aj_r31, _cate(len(aj_note), "notă de ajustare", "note de ajustare"),
+                                                                  "; ".join("%s (%s)" % (f["eticheta"], f["linie"]) for f in aj_note)))
+        if any(k.startswith("R31_") for k in manual):
+            res.avertismente.append(
+                "Rândul 34 are și o valoare introdusă manual, iar ajustările de taxă din note (%s lei) intră acum automat: verifică să nu "
+                "fie aceeași ajustare de două ori — dacă ai introdus manual lipsa de la inventar, scoate-o de pe rândul manual." % _aj_r31)
+    if note_nedecl:
+        # [lotul 11, C76 — generalizarea] o notă validată cu TVA pe care nicio cale a decontului n-o duce în D300 se NUMEȘTE: altfel
+        # TVA-ul ei e în registru (balanța, 4427 / 4426), dar nu și în decont, fără să spună nimeni
+        res.avertismente.append(
+            "%s cu TVA nu intră în decont, fiindcă nu vin dintr-o factură, un raport Z, o chitanță sau o încasare legată de factură: %s. "
+            "Dacă operațiunea are factură, înregistreaz-o ca factură (intră singură în decont); altfel declară rândul ei pe rândurile "
+            "completate manual." % (_cate(len(note_nedecl), "notă validată", "note validate"),
+                                    "; ".join("%s — %s (%s)" % (f["eticheta"], (f.get("descriere") or "")[:80], f["linie"])
+                                              for f in note_nedecl)))
     # [lotul 10, 428] TVA rămas neexigibil / nededus la sfârșitul perioadei (adus de `pull` din `tva_incasare.neexigibile_la`)
     res.neexigibil = {k: _int(v) for k, v in sorted((prof.get("tva_neexigibila") or {}).items()) if _int(v)}
     res.z_fara_cote = z_fara_cote
@@ -1094,7 +1212,7 @@ def _pull_la_incasare(cur, inceput, sfarsit):
     for r in cur.fetchall():
         totaluri[r["fid"]] = (r["total"], r["tva"])
         if r["cantitate"] is not None and r["cota_tva"] is not None:
-            linii.setdefault(r["fid"], []).append((r["cantitate"], r["pret_unitar"], r["cota_tva"]))
+            linii.setdefault(r["fid"], []).append((r["cantitate"], r["pret_unitar"], r["cota_tva"], r.get("valoare_neta")))   # [lotul 11, C82] BT-131 al liniei importate
     out = []
     for r in settle:
         gross = Decimal(str(r["settled"] or 0))
@@ -1168,6 +1286,35 @@ def _pull_chitante_i2(cur, inceput, sfarsit):
     return out
 
 
+def _pull_note_tva(cur, inceput, sfarsit):
+    """[lotul 11, C76] Notele VALIDATE cu TVA care nu vin din facturi, clasificate (`clasifica_nota_tva`): ajustările de taxă intră în decont
+    (`ajustare_taxa`, cu suma cu semn pe rândul lor), cele pe care nicio cale nu le duce în D300 se numesc (`nota_tva_nedeclarata`), cele
+    declarate din altă sursă nu produc nimic. Intrările merg în lista lui `calcul_d300`, ca rapoartele Z."""
+    out = []
+    for r in _repo.select_note_tva_fara_factura(cur, inceput, sfarsit):
+        cl = clasifica_nota_tva(r)
+        if cl[0] == "rand":
+            out.append({"ajustare_taxa": True, "rand": cl[1], "tva": cl[2] * Decimal(str(r["suma"])), "nota_id": r["id"],
+                        "eticheta": r.get("eticheta") or "nota din %s" % _pu.data_ro(r["data"]),
+                        "linie": "%s = %s %s" % (r["debit"], r["credit"], _pu.bani(r["suma"]))})
+        elif cl[0] == "nedeclarat":
+            out.append({"nota_tva_nedeclarata": True, "nota_id": r["id"], "descriere": r.get("descriere"),
+                        "eticheta": r.get("eticheta") or "nota din %s" % _pu.data_ro(r["data"]),
+                        "linie": "%s = %s %s" % (r["debit"], r["credit"], _pu.bani(r["suma"]))})
+    return out
+
+
+def _tva_pe_cote(randuri):
+    """{cotă: TVA} din rândurile `repo_efactura.tva_cote` ale unei facturi (cota, tva, sursa, categorie, baza), sau None."""
+    if not randuri:
+        return None
+    out = {}
+    for cota, tva, *_rest in randuri:
+        c = Decimal(str(cota))
+        out[c] = out.get(c, Decimal(0)) + Decimal(str(tva))
+    return out
+
+
 def pull(conn, schema, perioada):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -1186,8 +1333,12 @@ def pull(conn, schema, perioada):
         prof = dict(prof)
         prof["tva_la_incasare"] = _tvi.firma_in_sistem_in(cur, None, inceput, sfarsit)
         rows = _repo.select_facturi_4(cur, _STATUS_FINAL, _exig_d300(), inceput, sfarsit)  # [A11] IC pe art.284
+        # [lotul 11, C79] TVA-ul de pe factura furnizorului, pe cote (BG-23, `factura_tva_cote`): sursa deductibilului facturilor primite
+        from core import repo_efactura as _ref
+        tva_facturi = _ref.tva_cote(cur, None, sorted({r["id"] for r in rows if r["directie"] == "primita"}))
         la_incasare = _pull_la_incasare(cur, inceput, sfarsit)
         rapoarte_z = _pull_rapoarte_z(cur, inceput, sfarsit) + _pull_chitante_i2(cur, inceput, sfarsit)
+        note_tva = _pull_note_tva(cur, inceput, sfarsit)   # [lotul 11, C76] ajustările de taxă (rd.34) și notele cu TVA nedeclarate
         regimuri = {fid: _tvi.regim(cur, None, fid) for fid in {r["id"] for r in rows}}
         fractii = {}
         for fid, rg in regimuri.items():
@@ -1229,11 +1380,14 @@ def pull(conn, schema, perioada):
                                       "moneda": r.get("moneda"), "curs_bnr": r.get("curs_bnr"),
                                       "total_lei": r.get("total_lei"), "tva_lei": r.get("tva_lei"),
                                       "total": r["total"] if r["total"] is not None else 0,
-                                      "tva": r["tva"] if r["tva"] is not None else 0, "linii": []})
+                                      "tva": r["tva"] if r["tva"] is not None else 0, "linii": [],
+                                      # [lotul 11, C79] {cotă: TVA} de pe factura primită (moneda ei); absent = factura n-a venit din XML
+                                      "tva_factura": _tva_pe_cote(tva_facturi.get(r["id"]))})
         if r["cantitate"] is not None and r["pret_unitar"] is not None:
             # [A12] destinatia TVA per linie (art.300) calatoreste in segment pentru pro-rata/scutit
             f["linii"].append((r["cantitate"], r["pret_unitar"], r["cota_tva"],
-                               r.get("destinatie_tva") or "taxabil", r.get("categorie_tva")))   # [274b] categoria liniei cu 0%
+                               r.get("destinatie_tva") or "taxabil", r.get("categorie_tva"),   # [274b] categoria liniei cu 0%
+                               r.get("valoare_neta")))   # [lotul 11, C82] BT-131 de pe factura importată
     emitere = []
     for f in fmap.values():
         rg = regimuri.get(f["id"])
@@ -1247,7 +1401,7 @@ def pull(conn, schema, perioada):
         elif rg == _tvi.REGIM_STORNO:
             f["fractie_exigibila"] = fractii[f["id"]]   # [428] CF art.282 alin.(10): partea exigibila la data anularii
         emitere.append(f)
-    return prof, emitere + la_incasare + rapoarte_z
+    return prof, emitere + la_incasare + rapoarte_z + note_tva
 
 
 def _incarca_reclasificari(conn, schema, prof, perioada):

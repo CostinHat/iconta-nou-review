@@ -138,3 +138,29 @@ def adauga_chitanta(cur, schema, serie, numar, data_, factura_id, client_nume, c
                             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
                 (serie, numar, data_, factura_id, client_nume, client_cui, suma, reprezentand, casa_operatiune_id, inregistrare_id, cota_tva))
     return cur.fetchone()
+
+
+def data_si_documentul_operatiunii(cur, schema, op_id):
+    """[lotul 11, 456] (data, document) ale operațiunii de casă — chitanța emisă automat poartă data operațiunii."""
+    cur.execute(f"SELECT data, document FROM {schema}.casa_operatiuni WHERE id = %s", (op_id,))
+    return cur.fetchone()
+
+
+def documentul_chitantei(cur, schema, op_id, inregistrare_id, document):
+    """[lotul 11, 456] Încasarea facturii din Casă fără document scris de contabil: documentul ei (al operațiunii și al notei) e numărul
+    chitanței emise automat — ca la „Emite chitanță” (`SERIE-NR`)."""
+    cur.execute(f"UPDATE {schema}.casa_operatiuni SET document = %s WHERE id = %s", (document, op_id))
+    cur.execute(f"UPDATE {schema}.inregistrari SET document_ref = %s WHERE id = %s", (document, inregistrare_id))
+
+
+def anuleaza_chitantele_operatiunii(cur, schema, op_id):
+    """Chitanța emisă pe operațiune nu se șterge (`trg_regula_chitanta`, OMFP 2634/2015 anexa 1 pct.15): se anulează și se păstrează.
+    Factura pe care o stingea redevine neîncasată dacă nu mai are altă chitanță neanulată. Un singur loc: stornarea operațiunii și
+    [lotul 11, 456] ștergerea ei (nota încă ciornă)."""
+    cur.execute(f"UPDATE {schema}.chitante SET anulata = true WHERE casa_operatiune_id = %s AND NOT anulata RETURNING factura_id", (op_id,))
+    for fid in [r[0] if not isinstance(r, dict) else r["factura_id"] for r in cur.fetchall()]:
+        if not fid:
+            continue
+        cur.execute(f"SELECT 1 FROM {schema}.chitante WHERE factura_id = %s AND NOT anulata", (fid,))
+        if not cur.fetchone():
+            cur.execute(f"UPDATE {schema}.facturi SET platita_la = NULL WHERE id = %s", (fid,))

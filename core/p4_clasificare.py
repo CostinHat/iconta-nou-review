@@ -316,6 +316,86 @@ CLASIFICARE = {
             "nota nouă, liniile și rândurile `reevaluari_valuta` — e într-o singură tranzacție, tot-sau-nimic. Un curs scris și o notă "
             "neînregistrată lasă numai cache-ul mai bogat, care nu e stare a firmei.",
     },
+    "POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza": {
+        "clasa": NECRITIC,
+        "efecte": "cursul BNR al facturii în cache (public.alerte_cooldown + public.curs_bnr_zilnic, înaintea tranzacției) <-> validarea: "
+                  "factura (facturi + factura_tva_cote + cursul ei), marcarea primitei, clasificarea, nota contării, recepția în stoc",
+        "de_ce":
+            "[lotul 11, C83, 22.10.2026] `uc_tenants.factura_primita_valideaza` (core/uc_tenants.py:7473): o citire scurtă a XML-ului "
+            "(conn0, fără scrieri), apoi `_uc_comun._preincalzeste_cursul` (:7491) — `uc_curs_bnr.asigura_cursul` / `completeaza`, care "
+            "scriu NUMAI în cache-ul public, fiecare pe conexiunea lui (decizia din 04.09.2026, `curs_bnr:_descarca`), iar orice eșec e "
+            "înghițit DELIBERAT («pre-încălzirea nu poate strica o cerere»); apoi interogarea ANAF a statutului (fără conexiune); apoi "
+            "ACTUL, într-o singură tranzacție (:7496 -> commit :7610): `_factura_importata` (factura, cotele, cursul — "
+            "`contare_facturi.curs_factura_importate` decide pe cache), marcarea, clasificarea, `contabilizeaza`, `intrare_din_factura`. "
+            "Refuzul NIR-ului face `rollback` pe tot actul (:7590). Un cache scris și un act căzut lasă numai cache-ul mai bogat, care nu "
+            "e stare a firmei; un cache necompletat (BNR jos) lasă factura FĂRĂ curs, iar contarea o refuză cu ieșirea numită "
+            "(`LIPSA_CURS_LEI`, «apasă din nou Contabilizează când BNR răspunde»), pe ecran — nu o tăcere. Același tipar ca "
+            "`POST /tenants/{tenant_id}/reevaluare-valuta/nota`.",
+    },
+    "POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza": {
+        "clasa": NECRITIC,
+        "efecte": "cursul BNR al facturii în cache (public.alerte_cooldown + public.curs_bnr_zilnic, înaintea tranzacției) <-> contarea: "
+                  "cursul pus pe factura din XML, nota, refacerea stocului, notificarea «respinsă» marcată înlocuită",
+        "de_ce":
+            "[lotul 11, C83, 22.10.2026] `uc_tenants.factura_contabilizeaza` (core/uc_tenants.py:3890): citirea scurtă a monedei și "
+            "datei (`repo_efactura.moneda_si_data`, fără scrieri), apoi `_preincalzeste_cursul` (:3901), care scrie NUMAI cache-ul public, "
+            "pe conexiunile lui, cu eșecul înghițit deliberat; apoi ACTUL într-o singură tranzacție (:3902 -> commit :3942): "
+            "`contabilizeaza` (care pune cursul pe factura din XML rămasă fără el — `curs_factura_importate` — și scrie nota, cu "
+            "`rezolva_nota_inlocuita` pe ACEEAȘI conexiune), `stocuri_anulare.reface_factura`. Orice `RefuzContare` și avertismentul "
+            "notei neschimbate fac `rollback` pe tot (:3925, :3928). Cache scris + act refuzat = numai cache mai bogat; cache "
+            "necompletat = refuzul numit `LIPSA_CURS_LEI`, reîncercabil din același buton. Niciun efect al firmei în afara tranzacției.",
+    },
+    "GET /tenants/{tenant_id}/reevaluare-valuta": {
+        "clasa": NECRITIC,
+        "efecte": "cursurile BNR de sfârșit de lună în cache (public.alerte_cooldown + public.curs_bnr_zilnic) <-> propunerea "
+                  "reevaluării (numai citire)",
+        "de_ce":
+            "[lotul 11, 22.10.2026] `uc_reevaluare.reevaluare_valuta_propunere` (core/uc_reevaluare.py:85): `_aduce_cursurile` (:92 -> "
+            "`asigura_cursul` pe fiecare monedă, :51, regula sfârșitului de lună) scrie NUMAI cache-ul public, pe conexiunile lui, cu "
+            "eșecul înghițit deliberat; propunerea (`reevaluare_valuta.propunere`) doar CITEȘTE — nicio scriere în schema firmei. Singurele "
+            "scrieri ale căii sunt cache-ul de curs (idempotent, ON CONFLICT DO NOTHING) și rezervarea descărcării (`rezerva_alerta`, un "
+            "cooldown), care sunt stare a aplicației, nu a firmei. Un curs lipsă din cache apare pe elementul propunerii ca refuz numit, "
+            "pe ecran.",
+    },
+    "POST /tenants/{tenant_id}/decontare-valuta": {
+        "clasa": NECRITIC,
+        "efecte": "cursul BNR al decontării în cache (public.alerte_cooldown + public.curs_bnr_zilnic, înaintea tranzacției) <-> nota de "
+                  "decontare (ciornă) cu liniile ei",
+        "de_ce":
+            "[lotul 11, 22.10.2026] `uc_tenants.decontare_valuta` (core/uc_tenants.py:7615): `_preincalzeste_cursul` (:7617) scrie NUMAI "
+            "cache-ul public, pe conexiunile lui, cu eșecul înghițit deliberat; apoi ACTUL într-o singură tranzacție (:7621 -> commit "
+            ":7648): `curs_bnr.curs_pentru` decide pe cache (`CursIndisponibil` -> 409, `MonedaNecotata` -> refuz numit, înaintea "
+            "oricărei scrieri), apoi nota și liniile ei. Un cache scris și un act refuzat lasă numai cache-ul mai bogat, care nu e stare a "
+            "firmei. (Scanerul nu vede scrierile notei în domeniul actului — `nota_operatiune_ciorna` / `adauga_linie`; sunt în aceeași "
+            "tranzacție, citite în cod.)",
+    },
+    "POST /tenants/{tenant_id}/facturi/previzualizare-lei": {
+        "clasa": NECRITIC,
+        "efecte": "cursul BNR al facturii în cache (public.alerte_cooldown + public.curs_bnr_zilnic) <-> previzualizarea cursului și a "
+                  "sumelor în lei (numai citire)",
+        "de_ce":
+            "[lotul 10 pct.7g / lotul 11, 22.10.2026] `uc_tenants.facturi_previzualizare_lei` (core/uc_tenants.py:6477): "
+            "`_preincalzeste_cursul` (:6501) scrie NUMAI cache-ul public, pe conexiunile lui, cu eșecul înghițit deliberat; apoi "
+            "`facturi_api.previzualizare_lei` (:6504) doar CITEȘTE («nimic scris»), iar cursul zilei lipsă e întors numit "
+            "(`curs_bnr.cursul_zilei_lipsa`) și arătat pe ecranul de emitere. Nicio scriere în schema firmei; cache-ul (idempotent) și "
+            "rezervarea descărcării sunt stare a aplicației.",
+    },
+    "POST /tenants/{tenant_id}/jurnal/{nota_id}/reface": {
+        "clasa": NECRITIC,
+        "efecte": "verificarea ciornei depășite (regenerare pe uscat, sub SAVEPOINT anulat) <-> refacerea din sursă pe UNUL din drumuri: "
+                  "mișcarea de stoc / contarea facturii emise (în tranzacția verificării) SAU statul de plată / amortizarea (tranzacția "
+                  "rutei lor) <-> eticheta notei noi (citire)",
+        "de_ce":
+            "[lotul 11, deficiența 451, 22.10.2026] `uc_tenants.jurnal_reface` (core/uc_tenants.py:7319). Cele trei domenii care scriu din "
+            "inventar sunt RAMURI EXCLUSIVE pe `fel`, aplatizate de scaner (ca și «commit parțial» :7347 -> repo_efactura.py:215: commitul "
+            "e al ramurii stoc, scrierea al ramurii `factura_emisa`). Pe orice rulare scrie O SINGURĂ tranzacție: stoc -> "
+            "`reface_nota_miscare` + commit (:7347); factura emisă -> `ciorne_depasite.reface_factura_emisa` (ștergerea ciornei vechi + "
+            "`contabilizeaza` + descrierea, aceeași conexiune) + commit (:7354), iar un refuz face `rollback` pe tot (:7352); salarii / "
+            "amortizare -> tranzacția verificării se anulează (:7356, n-a scris nimic: `verifica` rulează sub SAVEPOINT anulat), apoi "
+            "`salarii_contare_scrie` / `tenant_amortizare` (:7360, :7362) — exact actul butoanelor «Contabilizează statul» / «Generează "
+            "amortizarea», cu tranzacția lor. Citirea etichetei de la capăt nu scrie. O cădere după actul comis lasă ciorna nouă (corectă, "
+            "de validat) și o eroare vizibilă; reluarea spune «Nota e la zi» — nicio stare falsă, niciun efect extern.",
+    },
     "POST /coada": {
         "clasa": NECRITIC,
         "efecte": "elementul intra in coada <-> verdictul validatorului <-> notificarea validatorilor",
@@ -533,6 +613,23 @@ CLASIFICARE = {
             "fiecare pas e comis SEPARAT si e idempotent (ADD COLUMN IF NOT EXISTS, CREATE INDEX IF NOT EXISTS, stornarea numai a "
             "miscarilor VII — `anuleaza_id` unic —, partenerul numai unde lipseste). O cadere intre pasi lasa o stare din care "
             "rularea a doua continua fara efect dublu; niciun efect extern (e-mail, ANAF, disc).",
+    },
+    "core/migrare_curs_precizie.py::__main__ -> _main()": {
+        "clasa": NECRITIC,
+        "efecte": "descărcarea arhivelor anuale BNR (interogare, fără conexiune) <-> lărgirea coloanei `public.curs_bnr_zilnic.curs` și "
+                  "refacerea valorilor rotunjite ale cache-ului (o tranzacție) <-> lărgirea coloanelor de curs ale fiecărei firme (câte o "
+                  "tranzacție pe schemă)",
+        "de_ce":
+            "[lotul 11, C88, 22.10.2026] `_main` (core/migrare_curs_precizie.py:128): (1) citește anii din cache, (2) `arhive` descarcă "
+            "arhivele BNR FĂRĂ conexiune (o eroare de rețea ridică înaintea oricărei scrieri), (3) o tranzacție ține ALTER-ul pe cache și "
+            "`refa_cache`, comisă la capăt (:136) — `refa_cache` ridică `ValueError` înaintea oricărui UPDATE dacă o valoare nu e nici a "
+            "arhivei, nici rotunjirea ei, deci tranzacția se anulează întreagă; (4) fiecare schemă de firmă e lărgită și comisă SEPARAT "
+            "(:149). Nicio stare intermediară nu e evidență greșită: datele firmelor NU se rescriu (HG 1/2016 pct.35 alin.(2)), numai "
+            "tipul coloanei; o cădere între (3) și (4) sau pe o firmă e ANUNȚATĂ (`ESEC <schema>` + `SystemExit(1)`), deci "
+            "`migrari_registru` nu-i scrie rândul și restartul rămâne oprit (fail-closed), iar rularea a doua e idempotentă (o coloană "
+            "deja fără scală și o valoare deja exactă nu se ating). Cele patru domenii pe `public.spv_token` din inventar sunt OMONIMIE: "
+            "parametrul local `descarca` al lui `arhive` (= `curs_bnr._descarca`) e rezolvat de scaner pe `spv_conector.descarca`; "
+            "migrarea nu atinge SPV. Singurul efect extern real e citirea arhivelor BNR — interogare.",
     },
     "core/facturi_recurente.py::__main__ -> _main()": {
         "clasa": NECRITIC,

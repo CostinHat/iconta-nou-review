@@ -94,7 +94,7 @@ def pull(conn, schema, perioada):
     """Header operatorului economic. Actionarii vin din `manual` (nu exista registru al actionarilor de stat)."""
     with conn.cursor() as cur:
         cur.execute("SELECT nume, cui, adresa, declarant_nume, declarant_prenume, "
-                    "declarant_functie, telefon, email FROM firma_profil WHERE id = 1")
+                    f"declarant_functie, telefon, email FROM {schema}.firma_profil WHERE id = 1")
         r = cur.fetchone()
     if not r:
         return {}

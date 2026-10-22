@@ -1,0 +1,430 @@
+{
+ "_capturat": "2026-10-22, ANAF PlatitorTvaRest v9 (anaf_api.valideaza_cui, data_interogare=2026-10-22)",
+ "_de_ce": "Plasa e2e nu întreabă ANAF real (anaf_api.CHEIE_SIMULAT, deficiența 444). Înainte de lotul 11 aplicația probei îl întreba, iar testele se sprijineau pe răspunsul real pentru CUI-urile reale pe care le folosesc (statutul de TVA al furnizorului, localitatea pentru D406). Baza = răspunsul REAL, capturat o dată, pentru firmele (persoane juridice) din testele e2e; fiecare test își pune peste ea răspunsurile lui (anaf.json). Persoanele fizice autorizate găsite printre numerele din teste NU intră aici.",
+ "raspunsuri": {
+  "14399840": {
+   "adresa": "MUNICIPIUL BUCUREŞTI, SECTOR 2, STR. GARA HERĂSTRĂU, NR.6, CLADIREA GLOBALWORTH SQUARE, ET.1,2,3,5,8",
+   "cod_caen": "4754",
+   "data_inregistrare": "2002-01-23",
+   "denumire": "DANTE INTERNATIONAL SA",
+   "forma_juridica": "SOCIETATE COMERCIALĂ PE ACŢIUNI",
+   "inactiv": false,
+   "judet": "B",
+   "localitate": "Sector 2 Mun. Bucureşti",
+   "nr_reg_com": "J2002000372404",
+   "platitor_tva": true,
+   "stare": "INREGISTRAT din data 29.08.2006",
+   "tva_data_inceput": "2002-02-01",
+   "tva_incasare_rtvai": {
+    "brut": {
+     "dataActualizareTvaInc": "",
+     "dataInceputTvaInc": "",
+     "dataPublicareTvaInc": "",
+     "dataSfarsitTvaInc": "",
+     "statusTvaIncasare": false,
+     "tipActTvaInc": ""
+    },
+    "data_actualizare": null,
+    "data_inceput": null,
+    "data_publicare": null,
+    "data_sfarsit": null,
+    "status": false,
+    "tip_act": null
+   },
+   "tva_la_incasare": false,
+   "tva_perioade": [
+    {
+     "inceput": "2002-02-01",
+     "sfarsit": null
+    }
+   ]
+  },
+  "14837428": {
+   "adresa": "MUNICIPIUL BUCUREŞTI, SECTOR 5, STR ING. ŞTEFAN HEPITEŞ, NR.16A, PARTER",
+   "cod_caen": "6210",
+   "data_inregistrare": "2002-08-26",
+   "denumire": "BORG DESIGN SRL",
+   "forma_juridica": "SOCIETATE COMERCIALĂ CU RĂSPUNDERE LIMITATĂ",
+   "inactiv": false,
+   "judet": "B",
+   "localitate": "Sector 5 Mun. Bucureşti",
+   "nr_reg_com": "J2002008118400",
+   "platitor_tva": true,
+   "stare": "TRANSFER(SOSIRE) din data 09.09.2020",
+   "tva_data_inceput": "2002-08-26",
+   "tva_incasare_rtvai": {
+    "brut": {
+     "dataActualizareTvaInc": "",
+     "dataInceputTvaInc": "",
+     "dataPublicareTvaInc": "",
+     "dataSfarsitTvaInc": "",
+     "statusTvaIncasare": false,
+     "tipActTvaInc": ""
+    },
+    "data_actualizare": null,
+    "data_inceput": null,
+    "data_publicare": null,
+    "data_sfarsit": null,
+    "status": false,
+    "tip_act": null
+   },
+   "tva_la_incasare": false,
+   "tva_perioade": [
+    {
+     "inceput": "2002-08-26",
+     "sfarsit": null
+    }
+   ]
+  },
+  "18189442": {
+   "adresa": "MUNICIPIUL BUCUREŞTI, SECTOR 6, ŞOS ORHIDEELOR, NR.15A, CLADIREA ORHIDEEA TOWERS. ETAJELE 10.11 SI 12",
+   "cod_caen": "5829",
+   "data_inregistrare": "2005-12-06",
+   "denumire": "BITDEFENDER SRL",
+   "forma_juridica": "SOCIETATE COMERCIALĂ CU RĂSPUNDERE LIMITATĂ",
+   "inactiv": false,
+   "judet": "B",
+   "localitate": "Sector 6 Mun. Bucureşti",
+   "nr_reg_com": "J2005020427400",
+   "platitor_tva": true,
+   "stare": "TRANSFER(SOSIRE) din data 29.08.2018",
+   "tva_data_inceput": "2006-04-01",
+   "tva_incasare_rtvai": {
+    "brut": {
+     "dataActualizareTvaInc": "",
+     "dataInceputTvaInc": "",
+     "dataPublicareTvaInc": "",
+     "dataSfarsitTvaInc": "",
+     "statusTvaIncasare": false,
+     "tipActTvaInc": ""
+    },
+    "data_actualizare": null,
+    "data_inceput": null,
+    "data_publicare": null,
+    "data_sfarsit": null,
+    "status": false,
+    "tip_act": null
+   },
+   "tva_la_incasare": false,
+   "tva_perioade": [
+    {
+     "inceput": "2006-04-01",
+     "sfarsit": null
+    }
+   ]
+  },
+  "18547290": {
+   "adresa": "JUD. ARAD, MUN. ARAD, STR. GEORGE COŞBUC, NR.30, AP.1",
+   "cod_caen": "2561",
+   "data_inregistrare": "2006-04-04",
+   "denumire": "WEMA-HYDROMOTION SRL",
+   "forma_juridica": "SOCIETATE COMERCIALĂ CU RĂSPUNDERE LIMITATĂ",
+   "inactiv": false,
+   "judet": "AR",
+   "localitate": "Mun. Arad",
+   "nr_reg_com": "J02/602/2006",
+   "platitor_tva": false,
+   "stare": "RADIERE din data 20.07.2016",
+   "tva_data_inceput": null,
+   "tva_incasare_rtvai": {
+    "brut": {
+     "dataActualizareTvaInc": "2016-08-08",
+     "dataInceputTvaInc": "2013-01-01",
+     "dataPublicareTvaInc": "2016-08-09",
+     "dataSfarsitTvaInc": "2016-07-20",
+     "statusTvaIncasare": false,
+     "tipActTvaInc": "Radiere"
+    },
+    "data_actualizare": "2016-08-08",
+    "data_inceput": "2013-01-01",
+    "data_publicare": "2016-08-09",
+    "data_sfarsit": "2016-07-20",
+    "status": false,
+    "tip_act": "Radiere"
+   },
+   "tva_la_incasare": false,
+   "tva_perioade": [
+    {
+     "inceput": "2006-04-05",
+     "sfarsit": "2016-07-20"
+    }
+   ]
+  },
+  "24736200": {
+   "adresa": "JUD. SATU MARE, MUN. SATU MARE, STR. AMAŢIULUI, NR.83",
+   "cod_caen": "6201",
+   "data_inregistrare": "2008-11-13",
+   "denumire": "GESCONT IT SOLUTIONS SRL",
+   "forma_juridica": "SOCIETATE COMERCIALĂ CU RĂSPUNDERE LIMITATĂ",
+   "inactiv": false,
+   "judet": "SM",
+   "localitate": "Mun. Satu Mare",
+   "nr_reg_com": "J30/1459/2008",
+   "platitor_tva": false,
+   "stare": "RADIERE din data 04.08.2017",
+   "tva_data_inceput": null,
+   "tva_incasare_rtvai": {
+    "brut": {
+     "dataActualizareTvaInc": "",
+     "dataInceputTvaInc": "",
+     "dataPublicareTvaInc": "",
+     "dataSfarsitTvaInc": "",
+     "statusTvaIncasare": false,
+     "tipActTvaInc": ""
+    },
+    "data_actualizare": null,
+    "data_inceput": null,
+    "data_publicare": null,
+    "data_sfarsit": null,
+    "status": false,
+    "tip_act": null
+   },
+   "tva_la_incasare": false,
+   "tva_perioade": [
+    {
+     "inceput": "2008-11-13",
+     "sfarsit": "2010-10-01"
+    }
+   ]
+  },
+  "251401": {
+   "adresa": "JUD. CLUJ, MUN. CLUJ-NAPOCA, STR. VASILE LUPU, NR.5",
+   "cod_caen": "7031",
+   "data_inregistrare": "1992-11-27",
+   "denumire": "MODA SEBI & DIA S.R.L.",
+   "forma_juridica": "SOCIETATE COMERCIALĂ CU RĂSPUNDERE LIMITATĂ",
+   "inactiv": false,
+   "judet": "CJ",
+   "localitate": "Mun. Cluj-Napoca",
+   "nr_reg_com": "J12/1920/1992",
+   "platitor_tva": false,
+   "stare": "RADIERE din data 23.12.2011",
+   "tva_data_inceput": null,
+   "tva_incasare_rtvai": {
+    "brut": {
+     "dataActualizareTvaInc": "",
+     "dataInceputTvaInc": "",
+     "dataPublicareTvaInc": "",
+     "dataSfarsitTvaInc": "",
+     "statusTvaIncasare": false,
+     "tipActTvaInc": ""
+    },
+    "data_actualizare": null,
+    "data_inceput": null,
+    "data_publicare": null,
+    "data_sfarsit": null,
+    "status": false,
+    "tip_act": null
+   },
+   "tva_la_incasare": false,
+   "tva_perioade": []
+  },
+  "2864518": {
+   "adresa": "JUD. ILFOV, ORŞ. VOLUNTARI, ŞOS. BUCUREŞTI NORD, NR.10, CLADIREA GLOBAL CITY BUSINESS PARK. CORPUL O11. ETAJELE 9 SI 10",
+   "cod_caen": "4754",
+   "data_inregistrare": "1993-02-01",
+   "denumire": "ALTEX ROMANIA SRL",
+   "forma_juridica": "SOCIETATE COMERCIALĂ CU RĂSPUNDERE LIMITATĂ",
+   "inactiv": false,
+   "judet": "IF",
+   "localitate": "Orş. Voluntari",
+   "nr_reg_com": "J23/2611/2016",
+   "platitor_tva": true,
+   "stare": "TRANSFER(SOSIRE) din data 23.06.2016",
+   "tva_data_inceput": "1993-07-01",
+   "tva_incasare_rtvai": {
+    "brut": {
+     "dataActualizareTvaInc": "",
+     "dataInceputTvaInc": "",
+     "dataPublicareTvaInc": "",
+     "dataSfarsitTvaInc": "",
+     "statusTvaIncasare": false,
+     "tipActTvaInc": ""
+    },
+    "data_actualizare": null,
+    "data_inceput": null,
+    "data_publicare": null,
+    "data_sfarsit": null,
+    "status": false,
+    "tip_act": null
+   },
+   "tva_la_incasare": false,
+   "tva_perioade": [
+    {
+     "inceput": "1993-07-01",
+     "sfarsit": null
+    }
+   ]
+  },
+  "31000000": {
+   "adresa": "JUD. IAŞI, MUN. IAŞI, CAL. CHIŞINĂULUI, NR.32, CAD. 3431/1 - C3",
+   "cod_caen": "1392",
+   "data_inregistrare": "2012-12-11",
+   "denumire": "TST CONF SRL",
+   "forma_juridica": "SOCIETATE COMERCIALĂ CU RĂSPUNDERE LIMITATĂ",
+   "inactiv": false,
+   "judet": "IS",
+   "localitate": "Mun. Iaşi",
+   "nr_reg_com": "J22/2112/2012",
+   "platitor_tva": false,
+   "stare": "RADIERE din data 03.12.2020",
+   "tva_data_inceput": null,
+   "tva_incasare_rtvai": {
+    "brut": {
+     "dataActualizareTvaInc": "2013-05-10",
+     "dataInceputTvaInc": "2013-01-10",
+     "dataPublicareTvaInc": "2013-05-11",
+     "dataSfarsitTvaInc": "2013-06-01",
+     "statusTvaIncasare": false,
+     "tipActTvaInc": "Radiere"
+    },
+    "data_actualizare": "2013-05-10",
+    "data_inceput": "2013-01-10",
+    "data_publicare": "2013-05-11",
+    "data_sfarsit": "2013-06-01",
+    "status": false,
+    "tip_act": "Radiere"
+   },
+   "tva_la_incasare": false,
+   "tva_perioade": [
+    {
+     "inceput": "2013-01-10",
+     "sfarsit": "2016-03-01"
+    }
+   ]
+  },
+  "36000150": {
+   "adresa": "JUD. DOLJ, MUN. CRAIOVA, STR. AMILCAR SĂNDULESCU, NR.14, BL.A31, SC.1, AP.13",
+   "cod_caen": "7311",
+   "data_inregistrare": "2016-04-22",
+   "denumire": "FAGA SOLUTIONS SRL",
+   "forma_juridica": "SOCIETATE COMERCIALĂ CU RĂSPUNDERE LIMITATĂ",
+   "inactiv": true,
+   "judet": "DJ",
+   "localitate": "Mun. Craiova",
+   "nr_reg_com": "J16/893/2016",
+   "platitor_tva": false,
+   "stare": "INREGISTRAT din data 22.04.2016",
+   "tva_data_inceput": null,
+   "tva_incasare_rtvai": {
+    "brut": {
+     "dataActualizareTvaInc": "",
+     "dataInceputTvaInc": "",
+     "dataPublicareTvaInc": "",
+     "dataSfarsitTvaInc": "",
+     "statusTvaIncasare": false,
+     "tipActTvaInc": ""
+    },
+    "data_actualizare": null,
+    "data_inceput": null,
+    "data_publicare": null,
+    "data_sfarsit": null,
+    "status": false,
+    "tip_act": null
+   },
+   "tva_la_incasare": false,
+   "tva_perioade": []
+  },
+  "4221306": {
+   "adresa": "MUNICIPIUL BUCUREŞTI, SECTOR 5, BLD. LIBERTĂŢII, NR.16",
+   "cod_caen": "",
+   "data_inregistrare": "1993-07-06",
+   "denumire": "MINISTERUL FINANTELOR",
+   "forma_juridica": "",
+   "inactiv": false,
+   "judet": "B",
+   "localitate": "Sector 5 Mun. Bucureşti",
+   "nr_reg_com": "",
+   "platitor_tva": false,
+   "stare": "MODIFICARE PUBLICI din data 06.07.1993",
+   "tva_data_inceput": null,
+   "tva_incasare_rtvai": {
+    "brut": {
+     "dataActualizareTvaInc": "",
+     "dataInceputTvaInc": "",
+     "dataPublicareTvaInc": "",
+     "dataSfarsitTvaInc": "",
+     "statusTvaIncasare": false,
+     "tipActTvaInc": ""
+    },
+    "data_actualizare": null,
+    "data_inceput": null,
+    "data_publicare": null,
+    "data_sfarsit": null,
+    "status": false,
+    "tip_act": null
+   },
+   "tva_la_incasare": false,
+   "tva_perioade": []
+  },
+  "55229657": {
+   "adresa": "MUNICIPIUL BUCUREŞTI, SECTOR 1, STR PARIS, NR.26, ET.PARTER, AP.2",
+   "cod_caen": "6220",
+   "data_inregistrare": "2026-07-14",
+   "denumire": "FISCALOS ICONTA S.R.L.",
+   "forma_juridica": "SOCIETATE COMERCIALĂ CU RĂSPUNDERE LIMITATĂ",
+   "inactiv": false,
+   "judet": "B",
+   "localitate": "Sector 1 Mun. Bucureşti",
+   "nr_reg_com": "J2026044762007",
+   "platitor_tva": false,
+   "stare": "INREGISTRAT din data 14.07.2026",
+   "tva_data_inceput": null,
+   "tva_incasare_rtvai": {
+    "brut": {
+     "dataActualizareTvaInc": "",
+     "dataInceputTvaInc": "",
+     "dataPublicareTvaInc": "",
+     "dataSfarsitTvaInc": "",
+     "statusTvaIncasare": false,
+     "tipActTvaInc": ""
+    },
+    "data_actualizare": null,
+    "data_inceput": null,
+    "data_publicare": null,
+    "data_sfarsit": null,
+    "status": false,
+    "tip_act": null
+   },
+   "tva_la_incasare": false,
+   "tva_perioade": []
+  },
+  "9010105": {
+   "adresa": "MUNICIPIUL BUCUREŞTI, SECTOR 1, STR MATEI MILLO, NR.5, CLĂDIREA TANDEM",
+   "cod_caen": "6110",
+   "data_inregistrare": "1996-12-12",
+   "denumire": "ORANGE ROMANIA SA",
+   "forma_juridica": "SOCIETATE COMERCIALĂ PE ACŢIUNI",
+   "inactiv": false,
+   "judet": "B",
+   "localitate": "Sector 1 Mun. Bucureşti",
+   "nr_reg_com": "J1996010178400",
+   "platitor_tva": true,
+   "stare": "INREGISTRAT din data 04.12.1996",
+   "tva_data_inceput": "1996-12-12",
+   "tva_incasare_rtvai": {
+    "brut": {
+     "dataActualizareTvaInc": "",
+     "dataInceputTvaInc": "",
+     "dataPublicareTvaInc": "",
+     "dataSfarsitTvaInc": "",
+     "statusTvaIncasare": false,
+     "tipActTvaInc": ""
+    },
+    "data_actualizare": null,
+    "data_inceput": null,
+    "data_publicare": null,
+    "data_sfarsit": null,
+    "status": false,
+    "tip_act": null
+   },
+   "tva_la_incasare": false,
+   "tva_perioade": [
+    {
+     "inceput": "1996-12-12",
+     "sfarsit": null
+    }
+   ]
+  }
+ }
+}

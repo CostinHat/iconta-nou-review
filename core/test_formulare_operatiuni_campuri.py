@@ -214,7 +214,9 @@ def test_conturile_vin_precompletate_cu_sugestia_standard():
     js = _surse_()[0]
     assert F.motor_conturi_precompletate(js)
     assert sorted(F.conturi_fara_sugestie(js)) == sorted(F.CONTURI_NEPRECOMPLETATE)
-    assert len(re.findall(r'C\("cont(?:_[a-z_]+)?", "[^"]*", "text"', js)) >= 19      # premisă: 19 câmpuri-cont + 1 în rânduri
+    # premisă: 18 câmpuri-cont (lotul 11: borderoul de achiziție a ieșit din Operațiuni în Stocuri, cu contul lui — 450 / pct.23;
+    # reevaluarea manuală, cu contul din rânduri, a ieșit — 429)
+    assert len(re.findall(r'C\("cont(?:_[a-z_]+)?", "[^"]*", "text"', js)) >= 18
 
 
 def test_CALIBRARE_cont_fara_sugestie_sau_motor_cu_placeholder_e_prins():

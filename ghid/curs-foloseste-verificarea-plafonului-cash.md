@@ -2,7 +2,7 @@
 title: "Ce curs se folosește pentru verificarea plafonului cash la o plată în valută?"
 description: "Cursul BNR aplicabil la încadrarea în plafoanele legale de încasări și plăți în numerar, atunci când operațiunea e în valută."
 published: 2026-09-24
-modified: 2026-09-24
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -31,6 +31,6 @@ Regula de aplicat:
 
 ## Ce face iConta.eu
 
-Modulul de casierie din iConta.eu verifică plafoanele de numerar pe baza sumelor înregistrate în lei în registrul de casă. Pentru operațiunile introduse direct în valută, conversia la cursul BNR al zilei se face prin modulul de curs valutar al aplicației, folosit consecvent și pentru alte calcule fiscale care depind de cursul zilei — nu există un curs separat, „de plafon", diferit de cursul BNR aplicat restului operațiunilor contabile.
+Modulul de casierie din iConta.eu verifică plafoanele de numerar pe baza sumelor înregistrate în lei în registrul de casă. Pentru operațiunile introduse direct în valută, conversia la cursul BNR (ultimul curs comunicat înaintea zilei operațiunii) se face prin modulul de curs valutar al aplicației, folosit consecvent și pentru alte calcule fiscale care depind de cursul BNR — nu există un curs separat, „de plafon", diferit de cursul BNR aplicat restului operațiunilor contabile.
 
 [iConta.eu](/)

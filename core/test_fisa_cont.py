@@ -9,6 +9,7 @@ Aia a fost greșeala de la poziția 1 a triajului: o agregare care arată ca un 
 CE NU FACE, declarat: nu verifică dacă cifrele din evidență sunt corecte — verifică **forma** fișei și
 **invarianții** ei aritmetici. Corectitudinea sumelor e treaba reconcilierii.
 """
+import re
 from datetime import date
 from decimal import Decimal
 
@@ -29,11 +30,12 @@ class _Cur:
     def __exit__(self, *a):
         return False
 
-    def execute(self, *a, **k):
-        pass
+    def execute(self, sql="", *a, **k):
+        # [lotul 11, 443] afișarea derivată a notelor vechi (`jurnal_api.note_cu_serie_lipita`, cu `miscari_stoc` în ea) n-are rânduri aici
+        self._gol = {"miscari_stoc"} <= set(re.findall(r"\w+", str(sql)))   # pe IDENTIFICATOR din SQL, nu pe sub-șir
 
     def fetchall(self):
-        return self._r
+        return [] if getattr(self, "_gol", False) else self._r
 
 
 class _Conn:
@@ -45,7 +47,7 @@ class _Conn:
 
 
 def _linie(zi, numar, desc, cd, cc, suma, sursa="casa"):
-    return {"data": date(2026, 8, zi), "numar": numar, "descriere": desc, "sursa": sursa,
+    return {"id": zi, "data": date(2026, 8, zi), "numar": numar, "descriere": desc, "sursa": sursa,
             "cont_debit": cd, "cont_credit": cc, "suma": Decimal(str(suma))}
 
 

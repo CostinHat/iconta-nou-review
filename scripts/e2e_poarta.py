@@ -65,6 +65,9 @@ def _env_test():
     # [comanda Costin 09.10.2026 pct.7] AI simulat: nicio cerere spre model; testele pregătesc răspunsurile (`core.ai_client`)
     env.pop("ANTHROPIC_API_KEY", None)
     env["ICONTA_AI_SIMULAT"] = os.path.join(TEMP, "ai_simulat")
+    # [lotul 11, deficiența 444] ANAF simulat pe server (`anaf_api.CHEIE_SIMULAT`, `<dir>/anaf.json`): nicio cerere spre ANAF real;
+    # un CUI nepregătit = „negăsit”, ca un CUI sintetic al plasei la ANAF real
+    env["ICONTA_ANAF_SIMULAT"] = os.path.join(TEMP, "anaf_simulat")
     env["ICONTA_BON_DIR"] = os.path.join(TEMP, "bonuri")   # [pct.7, deficiența 9] pozele bonurilor de probă nu stau lângă cele reale
     # [C36, 15.10.2026] depozitul privat al probei (capturi, exporturi trimise la Suport), separat de ~/iconta_date/fisiere
     env["ICONTA_FISIERE_DIR"] = os.path.join(TEMP, "fisiere")
@@ -182,6 +185,9 @@ def _main(argv):
             print("[e2e] MUTAȚIE aplicată pe copie: %s" % mu["fisier"])
     env = _env_test()
     os.makedirs(env["ICONTA_AI_SIMULAT"], exist_ok=True)
+    os.makedirs(env["ICONTA_ANAF_SIMULAT"], exist_ok=True)
+    # [lotul 11] răspunsurile reale ale ANAF pentru firmele din teste (baza simulatorului; testele pun peste ea `anaf.json`)
+    shutil.copy(os.path.join(arb, "frontend_test", "e2e", "anaf_baza.json"), os.path.join(env["ICONTA_ANAF_SIMULAT"], "anaf_baza.json"))
     os.makedirs(env["ICONTA_BON_DIR"], exist_ok=True)
     sys.path.insert(0, RAD)
     contor = _contor_schema(env)

@@ -148,6 +148,13 @@ _SCRIU_IN_NOTE_ISTORIC = {
     "core/migrare_retest_0810.py": "conturile notelor „Retest 08.10”, rulată pe producție înaintea regulilor de fond",
 }
 
+#: [lotul 11, 443 — datele existente; regula Costin 11.2 pct.3a: „Orice reparație acoperă și datele existente.”] migrările care rescriu
+#: NUMAI ciorne (textul scris de aplicație) — admise pe nume, cu condiția verificată pe fiecare scriere: un UPDATE cu `status = 'ciorna'`,
+#: fără DELETE / INSERT și fără rândurile notei. Nota validată rămâne neatinsă (OMFP 1802/2014 pct.69).
+_SCRIU_NUMAI_IN_CIORNE = {
+    "core/migrare_serie_nr_descrieri.py": "descrierea / documentul ciornelor scrise înainte de 443 cu seria lipită („Contare factura F61”)",
+}
+
 
 def test_nicio_migrare_noua_nu_scrie_in_notele_contabile():
     """[17.10.2026, poarta 1 a lotului 6] `migrare_casa_avans` punea `factura_id` pe notele chitanțelor de dinainte — pe copia producției
@@ -156,8 +163,17 @@ def test_nicio_migrare_noua_nu_scrie_in_notele_contabile():
     UPDATE-ul pus înapoi în `migrare_casa_avans._DDL` -> pică."""
     rad = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     scrie = re.compile(r"(UPDATE|DELETE\s+FROM|INSERT\s+INTO)\s+[\"'{}A-Za-z_.@]*\binregistrari(_linii)?\b", re.I)
-    gasite = {os.path.relpath(f, rad) for f in glob.glob(os.path.join(rad, "core", "migrare_*.py"))
-              if any(scrie.search(s) for s in _siruri_executate(open(f, encoding="utf-8").read()))}
+    scrieri = {os.path.relpath(f, rad): [s for s in _siruri_executate(open(f, encoding="utf-8").read()) if scrie.search(s)]
+               for f in glob.glob(os.path.join(rad, "core", "migrare_*.py"))}
+    gasite = {f for f, s in scrieri.items() if s}
+    # anti-vacuu: fiecare migrare admisă pe ciorne CHIAR scrie (altfel lista e stale și verificarea de mai jos nu se execută)
+    assert gasite >= set(_SCRIU_NUMAI_IN_CIORNE), sorted(set(_SCRIU_NUMAI_IN_CIORNE) - gasite)
+    # admise numai pe ciorne, pe CLAUZE: verbul e UPDATE, tabelul e `inregistrari` (nu `_linii`), WHERE-ul cere `status = 'ciorna'`
+    ciorna = re.compile(r"\bWHERE\b.*\bstatus\s*=\s*'ciorna'", re.I | re.S)
+    rele = [(f, s) for f in sorted(_SCRIU_NUMAI_IN_CIORNE) for s in scrieri[f]
+            if scrie.search(s).group(1).upper() != "UPDATE" or scrie.search(s).group(2) is not None or not ciorna.search(s)]
+    assert rele == [], rele
+    gasite -= set(_SCRIU_NUMAI_IN_CIORNE)
     assert gasite <= set(_SCRIU_IN_NOTE_ISTORIC), sorted(gasite - set(_SCRIU_IN_NOTE_ISTORIC))
     assert gasite == set(_SCRIU_IN_NOTE_ISTORIC), "lista istorică are un fișier care nu mai scrie în note: %s" % sorted(
         set(_SCRIU_IN_NOTE_ISTORIC) - gasite)
@@ -170,7 +186,10 @@ def _siruri_executate(src):
     doc = {id(n.body[0].value) for n in ast.walk(arb)
            if isinstance(n, (ast.Module, ast.FunctionDef, ast.ClassDef)) and n.body and isinstance(n.body[0], ast.Expr)
            and isinstance(n.body[0].value, ast.Constant)}
-    return [n.value for n in ast.walk(arb) if isinstance(n, ast.Constant) and isinstance(n.value, str) and id(n) not in doc]
+    out = [n.value for n in ast.walk(arb) if isinstance(n, ast.Constant) and isinstance(n.value, str) and id(n) not in doc]
+    # [lotul 11, 443] un f-string are bucăți separate („UPDATE ” / „.inregistrari SET …”): refăcut întreg, altfel scrierea nu se vede
+    return out + ["".join(v.value if isinstance(v, ast.Constant) else "{}" for v in n.values) for n in ast.walk(arb)
+                  if isinstance(n, ast.JoinedStr)]
 
 
 _RE_TABELA = re.compile(r"CREATE TABLE\s+(?:IF NOT EXISTS\s+)?(?:[\w@{}%\"]+\.)?\"?(\w+)\"?\s*\(", re.I)
@@ -192,6 +211,9 @@ def _ordinea_din_cod():
     def cuvant(nume, text):
         return re.search(r"\b%s\b" % re.escape(nume), text) is not None
 
+    def fara_literale(s):   # [lotul 11] o coloană numită într-un literal SQL nu e o folosire: `CHECK (sursa IN ('propunere', 'manual'))`
+        return re.sub(r"'[^']*'", "''", s)   # din `migrare_reevaluari_valuta` nu citește coloana `manual` a lui `migrare_reevaluare_partener`
+
     def creeaza(text):
         return ({m.group(1) for m in _RE_TABELA.finditer(text)} | {m.group(1) for m in _RE_FUNCTIE.finditer(text)},
                 {m.groups() for m in _RE_COLOANA.finditer(text)})
@@ -203,7 +225,7 @@ def _ordinea_din_cod():
                 continue
             nume_b, coloane_b = creeaza(tb)
             if any(cuvant(n, tb) for n in nume_a - nume_b) or any(
-                    cuvant(tab, s) and cuvant(col, s) for tab, col in coloane_a - coloane_b for s in tb.split(";")):
+                    cuvant(tab, s) and cuvant(col, fara_literale(s)) for tab, col in coloane_a - coloane_b for s in tb.split(";")):
                 perechi.add((b, a))
     return sql, perechi
 

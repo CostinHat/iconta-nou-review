@@ -93,10 +93,18 @@ def _deducere_personala_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
             "Câmpul „Declarația părintelui pentru copii” din fișa salariatului nu e bifat, deci deducerea nu se acordă.")
     copii = DEDUCERE_COPIL_SCOALA * _dec(copii_scoala)
 
+    # [lotul 11, deficiența 453; PIVOT față de 205] Fiecare componentă a deducerii se ROTUNJEȘTE LA LEU, aritmetic (>= 0,50 -> +1), O
+    # SINGURĂ DATĂ, aici, la sursă: calculul impozitului, fluturașul (`stat_plata_api.randuri_deducere`) și D112 (E3_121 / E3_1221 /
+    # E3_1222, E3_12 = suma lor) citesc aceeași cifră. INTERPRETARE CU TEMEI: CF art.77 și HG 1/2016 pct.13 (normele art.77) NU spun
+    # cum se rotunjește SUMA (alin.(8) rotunjește PERIOADA); sursa care transează e procedura ANAF a D112 (structura D112, antet,
+    # `anaf_surse/d112_struct_anaf.txt`): „Toate valorile sunt numere intregi pozitive. Parametrii pot avea zecimale. Campurile
+    # calculate cu ajutorul parametrilor vor avea valori intregi, pozitive obtinute prin rotunjire matematica” — deducerea e procent
+    # × salariul minim (parametru), deci câmp calculat, declarat ca întreg (N(15)). Alternativa respinsă: 562,25 în calcul și pe
+    # fluturaș, rotunjit numai în D112 — două cifre pentru aceeași deducere. De reconfirmat dacă apare o normă care transează suma.
+    ded_baza = leu_aritmetic(ded_baza)
+    tineri = leu_aritmetic(tineri)
+    copii = leu_aritmetic(copii)
     total = ded_baza + tineri + copii
-    # Suma deducerii NU se rotunjeste. Art.77 in vigoare nu prevede rotunjirea SUMEI; alin.(8) e
-    # despre PERIOADA (deducere pe fiecare luna), nu despre valoare. Rotunjirea la 10 lei a fost
-    # confirmata ABSENTA pe pliant ANAF + redarea textului codificat (runda 2 verificare la sursa).
     return {"baza": _q(ded_baza), "tineri": _q(tineri),
             "copii": _q(copii), "total": _q(total)}
 
@@ -111,6 +119,74 @@ _VARIANTE_DEDUCERE = [
              url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
              text_citat="tabel art.77(4): 4 si peste persoane = 45,00% la 1 salariu minim (scara 20/25/30/35/45)")),
 ]
+
+
+def _deducere_acordata(ded, venit_net):
+    """[lotul 11, C91] Deducerea ACORDATĂ: cea calculată de `deducere_personala`, în limita venitului net al lunii.
+
+    TEMEI: CF art.77 alin.(2): „Deducerea personală cuprinde deducerea personală de bază și deducerea personală suplimentară și se
+    acordă în limita venitului impozabil lunar realizat.”; HG 1/2016 Titlul IV pct.13 alin.(1): „… numai pentru veniturile din salarii
+    la locul unde se află funcția de bază, în limita venitului realizat.”; OPANAF 605/2026 anexa 1.2, D112 secțiunea E.1 rândul 4
+    („deduceri personale acordate … în limita venitului impozabil lunar realizat”). Venitul net = cel din care se scade deducerea
+    (CF art.78 alin.(2) lit.a: „venitul net din salarii calculat prin deducerea din venitul brut a contribuțiilor sociale obligatorii”),
+    pe contribuțiile nerotunjite, ca baza impozitului.
+
+    INTERPRETARE CU TEMEI (două puncte pe care textul nu le transează):
+    - suma plafonată se rotunjește la leu, aritmetic, ca restul deducerii (453; structura D112, antet: „Campurile calculate cu ajutorul
+      parametrilor vor avea valori intregi, pozitive obtinute prin rotunjire matematica”) — E3_12 e N(15); baza impozitului rămâne 0
+      (fracțiunea de sub 50 de bani se neglijează, HG 1/2016 Titlul IV pct.4).
+    - la plafonare, partea acordată se ia întâi din deducerea de bază, apoi din suplimentară (alin.(10) lit.a, apoi lit.b) — ordinea
+      din alin.(2) și din alin.(10). Alternativa respinsă: împărțirea proporțională (resturi de rotunjire între componente, fără temei).
+      DUKIntegrator verifică numai sumele (E3_12 = E3_121 + E3_122, E3_122 = E3_1221 + E3_1222).
+    De reconfirmat dacă apare o normă care transează repartizarea. Indemnizația de concediu medical nu intră aici: deducerea pe
+    indemnizație e GRI (DECIZII, „DEDUCERE PE INDEMNIZATIE: NEconfirmat prin text explicit”) — indemnizația se impozitează separat
+    (`taxe_cm`), fără deducere."""
+    total = _dec(ded["total"])
+    vn = max(_dec(venit_net), Decimal(0))
+    if total <= vn:
+        return ded
+    rest = acordat = min(leu_aritmetic(vn), total)
+    out = {}
+    for k in ("baza", "tineri", "copii"):
+        v = min(_dec(ded[k]), rest)
+        out[k] = _q(v)
+        rest -= v
+    out["total"] = _q(acordat)
+    return out
+
+
+def zile_contract_activ(la_data, data_angajare=None, data_incetare=None, suspendari=(), zile_cm=0):
+    """[lotul 11, C99] Zilele lucrătoare din luna `la_data` în care contractul a fost ACTIV, pentru contribuția minimă (CF art.146
+    alin.(5^6) / art.168 alin.(6^1)): în fereastra contractului (angajare, încetare), fără zilele suspendate (CFP / suspendare) și fără
+    zilele concediului medical (`zile_cm` = zilele certificatelor lunii, ca `d112.pull`).
+
+    TEMEI: CF art.146 alin.(5^6): contribuția „nu poate fi mai mică decât nivelul contribuției de asigurări sociale calculate prin aplicarea
+    cotei […] asupra salariului de bază minim brut pe țară în vigoare în luna pentru care se datorează contribuția de asigurări sociale,
+    corespunzător numărului zilelor lucrătoare din lună în care contractul a fost activ.” Legea 53/2003 (Codul muncii) art.50: „Contractul
+    individual de muncă se suspendă de drept în următoarele situații: […] b) concediu pentru incapacitate temporară de muncă”; art.49
+    alin.(2): „Suspendarea contractului individual de muncă are ca efect suspendarea prestării muncii de către salariat și a plății
+    drepturilor de natură salarială de către angajator.” (`anaf_surse/legea_53_2003_codul_muncii.txt`). INTERPRETARE CU TEMEI (două acte
+    combinate; CF nu definește „activ”): zilele de suspendare de drept nu sunt zile în care contractul a fost activ. Confirmată de arbitru:
+    DUKIntegrator (DUK regula SP1B4_1) calculează suma limită pe zilele lucrate declarate (B4_1, fără concediul medical) — probat 22.10.2026:
+    5.000 lei, 8 zile de CM din 22, „B4_5P(4025) diferit de suma calculata 2625” = ROUND(4.125 × 14 / 22). Alternativa respinsă: zilele
+    de CM ca zile active (statul de dinainte: suprataxă 489 lei, D112: 0)."""
+    from core import salariu_istoric as _si
+    za = len(_si.zile_active(la_data.year, la_data.month, data_angajare, data_incetare, suspendari))
+    return max(za - int(zile_cm or 0), 0)
+
+
+def baza_minima_contributii(la_data, zile_activ):
+    """[lotul 11, C99] UNICUL loc de calcul al bazei minime pentru CAS / CASS (CF art.146 alin.(5^6), art.168 alin.(6^1)), folosit de
+    `calcul_salariu` (stat, fluturaș, notă) și, prin el, de `d112.pull` (B4_5P / B4_7P): salariul minim al lunii, diminuat cu suma
+    netaxabilă (OUG 89/2025 art.III — nivelul de referință, vezi `d112.pull`, part-time-floor 20.08), × zilele lucrătoare active / zilele
+    lucrătoare ale lunii, rotunjit la leu aritmetic. Structura D112: „part_time= ROUND(sm*zile_PT /NZL)”, „sm=sm-300”."""
+    from core import scadente as _scad
+    sm, _ = c.salariu_minim_luna(la_data)
+    fac, _ = c.cota("facilitate_salariu_minim", la_data)
+    nzl = _scad.zile_lucratoare_luna(la_data.year, la_data.month)
+    if not nzl:
+        return Decimal(0)
+    return leu_aritmetic((_dec(sm) - _dec(fac)) * _dec(zile_activ) / _dec(nzl))
 
 
 def sub_26_la(data_nastere, la_data):
@@ -148,7 +224,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
                    facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
-                   cadou_taxabil=0, declaratie_copii=False, suspendari=(), elemente_variabile=0, venit_cm=0):
+                   cadou_taxabil=0, declaratie_copii=False, suspendari=(), elemente_variabile=0, venit_cm=0, zile_cm=0):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -199,8 +275,9 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     var = _dec(elemente_variabile) if _dec(elemente_variabile) > 0 else Decimal(0)
     venit_realizat = b + var + (_dec(cadou_taxabil) if _dec(cadou_taxabil) > 0 else Decimal(0)) + _dec(venit_cm or 0)
     sub_plafon = venit_realizat <= plafon_fac
-    # PRORATA luna de ANGAJARE (zile lucrate / zile lucratoare din luna, fara sarbatori) - UN SINGUR loc,
-    # folosita SI la facilitate SI la pragul de suprataxare. 1 daca nu e luna de angajare (contract activ tot).
+    # PRORATA luna de ANGAJARE (zile lucrate / zile lucratoare din luna, fara sarbatori), pentru FACILITATE (forma clasica, fara
+    # `facilitate_prorata`). 1 daca nu e luna de angajare (contract activ tot). [lotul 11, C99] Pragul de suprataxare NU mai trece pe aici:
+    # `baza_minima_contributii` + `zile_contract_activ` (unicul loc, citit si de `d112.pull`).
     _prorata = Decimal(1)
     if la_data is not None:
         from datetime import date as _date
@@ -241,7 +318,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
         facilitate = facilitate_val * _dec(facilitate_prorata) if (norma_intreaga and functie_baza and sub_plafon) else Decimal(0)
     else:
         # Forma clasica (fara istoric): eligibilitate vbt==sm + proratare pe fereastra activa (alin.4
-        # lit.b) angajare / lit.d) incetare). TEXT EXPLICIT (spre deosebire de prag - vezi baza_podea).
+        # lit.b) angajare / lit.d) incetare). TEXT EXPLICIT (spre deosebire de prag - vezi baza_minima_contributii).
         facilitate = facilitate_val if (
             # interpretare: incadrat_la_minim
             # Egalitatea stricta NU e in textul legii - e alegerea noastra, declarata in
@@ -270,6 +347,8 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
 
     ded = deducere_personala(b_imp, persoane, sub_26, copii_scoala, functie_baza,
                              la_data=la_data, declaratie_copii=declaratie_copii)
+    # [lotul 11, C91] deducerea ACORDATĂ = cea calculată, în limita venitului net (salariul realizat minus contribuții)
+    ded = _deducere_acordata(ded, baza_contrib - cas - cass)
 
     baza_imp = baza_contrib - cas - cass - _dec(ded["total"])
     if baza_imp < 0:
@@ -354,16 +433,23 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     # Alternativa A (sm intreg proratat, apoi 300 intreg) e mai putin fidela literei. De reconfirmat la o
     # norma/ghid ANAF explicit.
     # DIFERENTA DE TEMEI: pragul (alin.5) se prorateaza prin INTERPRETARE; facilitatea (alin.4 lit.b) prin
-    # TEXT EXPLICIT. [lot 19, 02.10.2026] Incetarea (data_incetare) si suspendarile (CFP/suspendare) intra in _prorata de mai sus.
-    baza_podea = (sm - facilitate_val) * _prorata
+    # TEXT EXPLICIT. [lot 19, 02.10.2026] Incetarea (data_incetare) si suspendarile (CFP/suspendare); [lotul 11, C99] si zilele de CM ies
+    # din zilele active (`zile_contract_activ`).
+    # [lotul 11, C99] baza minimă din `baza_minima_contributii` (unicul loc, citit și de `d112.pull`), pe zilele în care contractul a fost
+    # ACTIV — fără zilele de concediu medical (`zile_contract_activ`, Codul muncii art.50 lit.b). Până la 22.10.2026 zilele de CM intrau
+    # în prorata de mai sus: statul arăta suprataxă (489 lei la 5.000 lei cu 10 zile de CM), iar D112 — 0. Comparația e pe baza întreagă
+    # (B2_5, ca DUK: „Daca baza>0 si baza<part_time”).
+    podea = baza_minima_contributii(la_data, zile_contract_activ(la_data, data_angajare, data_incetare, suspendari, zile_cm))
     cas_suprataxa = Decimal(0)
     cass_suprataxa = Decimal(0)
-    if (not exceptat_suprataxare) and baza_contrib < baza_podea:
-        # [lot 06.10 pct.11] ca D112 (pull: B4_8P = ROUND(prag x cota), topup = B4_8P - CAS-ul declarat): diferenta
+    baza_minima_pt = cas_min_pt = cass_min_pt = Decimal(0)
+    if (not exceptat_suprataxare) and 0 < leu_aritmetic(baza_contrib) < podea:
+        # [lot 06.10 pct.11] ca D112 (B4_8P = ROUND(prag x cota), topup = B4_8P - CAS-ul declarat): diferenta
         # suportata de angajator e contributia minima rotunjita minus contributia retinuta rotunjita.
-        podea = leu_aritmetic(baza_podea)
-        cas_suprataxa = max(leu_aritmetic(podea * cota_cas) - cas, Decimal(0))
-        cass_suprataxa = max(leu_aritmetic(podea * cota_cass) - cass, Decimal(0))
+        baza_minima_pt = podea
+        cas_min_pt, cass_min_pt = leu_aritmetic(podea * cota_cas), leu_aritmetic(podea * cota_cass)
+        cas_suprataxa = max(cas_min_pt - cas, Decimal(0))
+        cass_suprataxa = max(cass_min_pt - cass, Decimal(0))
 
     return {
         "brut": _q(b_imp),   # [D3] gross impozabil (cu exces vacanta) - declarat in D112
@@ -372,11 +458,16 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
         "cass": _q(cass),
         "deducere": ded,
         "baza_impozabila": _q(baza_imp),
+        # [lotul 11, 453] baza impozitului pe bilete (rotunjită la leu, ca mai sus): D112 E3_14 „Venit baza de calcul al impozitului”
+        # = baza salariului + baza biletelor — cea pe care s-a calculat impozitul TOTAL de mai jos (E3_15)
+        "baza_impozabila_tichete": _q(baza_imp_tichete),
         "impozit": _q(impozit),
         "net": _q(net),
         "cam": _q(cam),
         "cas_suprataxa": _q(cas_suprataxa),
         "cass_suprataxa": _q(cass_suprataxa),
+        # [lotul 11, C99] baza minimă și contribuțiile minime declarate (D112 B4_5P / B4_7P, B4_6P, B4_8P), 0 când nu se aplică
+        "baza_minima_pt": _q(baza_minima_pt), "cas_min_pt": _q(cas_min_pt), "cass_min_pt": _q(cass_min_pt),
         # [F133] tichete (0 daca nu primeste / fara pontaj). cass/impozit = pe masa + vacanta
         "tichete_nominal": _q(tichete_nominal),    # tichete de MASA (valoare x zile)
         "tichete_vacanta": _q(tichete_vac),        # tichete de VACANTA in plafon (one-off) - Faza 2a
@@ -410,7 +501,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
                    facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
-                   cadou_taxabil=0, declaratie_copii=False, suspendari=(), elemente_variabile=0, venit_cm=0):
+                   cadou_taxabil=0, declaratie_copii=False, suspendari=(), elemente_variabile=0, venit_cm=0, zile_cm=0):
     """Calcul salariu brut->net, DISPECER pe la_data (varianta de formula valabila la luna venitului).
     Dispecer subtire care forwardeaza toti parametrii catre varianta datata; NU duplica corpul.
     TEMEI: CF art.77 (deducere personala), art.146 alin.(5^6)/(5^7) (contributia minima / exceptari
@@ -426,7 +517,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
               data_angajare=data_angajare, data_incetare=data_incetare, facilitate_prorata=facilitate_prorata,
               tichet_vacanta_exces=tichet_vacanta_exces, tichet_cultural=tichet_cultural,
               tichet_cresa=tichet_cresa, cadou_taxabil=cadou_taxabil, declaratie_copii=declaratie_copii,
-              suspendari=suspendari, elemente_variabile=elemente_variabile, venit_cm=venit_cm)
+              suspendari=suspendari, elemente_variabile=elemente_variabile, venit_cm=venit_cm, zile_cm=zile_cm)
 
 
 # ============================================================
@@ -564,7 +655,14 @@ def _calcul_cm_cod10_2018(baza_lunara, venit_realizat):
     b, v = _dec(baza_lunara), _dec(venit_realizat)
     if b <= 0 or v < 0:
         raise ValueError("baza/venit invalide")
-    return _q(min(max(b - v, Decimal("0")), b * Decimal("0.25")))
+    # [lotul 11, C89] indemnizația se rotunjește la leu O DATĂ, aici (ca `_calcul_cm_core`), ca statul / fluturașul (citește suma stocată)
+    # și D112 (D_21, B3_7) să poarte aceeași cifră; până la 22.10.2026 se întorcea cu bani și o rotunjea numai D112 (`_d112int`).
+    # TEMEI: Normele OUG 158/2005 (Ordinul MS 15/2018 / CNAS 1.311/2017) art.63 Exemplul nr.1: „Bmax = 2.499,59 lei x 25% = 624,89 lei,
+    # rotunjit la 625 lei conform legii; Ci = 2.499,59 lei - 1.875 lei = 624,59 lei, rotunjit la 625 lei conform legii”. Modul (>= 0,50
+    # -> +1): INTERPRETARE CU TEMEI — exemplele normelor nu au jumătatea; structura D112, antet: „Campurile calculate cu ajutorul
+    # parametrilor vor avea valori intregi, pozitive obtinute prin rotunjire matematica”. Rotunjirea e monotonă: min(rotunjit) =
+    # rotunjit(min), deci comparația cu plafonul din exemplu dă același rezultat.
+    return _q(leu_aritmetic(min(max(b - v, Decimal("0")), b * Decimal("0.25"))))
 
 
 _VARIANTE_CALCUL_CM_COD10 = [

@@ -14,6 +14,7 @@ from core.db import SchemaInvalida as _SchemaInvalida
 import re
 
 from core import db
+from core import cui_forma as _cf   # [lotul 11] CUI-ul păstrat fără „RO” / spații (decizia Costin 10.3 pct.4)
 
 REGULI = "2026.1"
 MODUL = "tenant_provisioning"
@@ -114,20 +115,54 @@ def creeaza_schema(conn, schema_noua, sql_template):
 # ============================================================
 #  PROVISION tenant — orchestrare, o singură tranzacție
 # ============================================================
+#: [459] motivul refuzului unui CUI cu cifra de control greșită — același text pe toate drumurile care creează o firmă sau îi corectează
+#: CUI-ul (ecranul „Adaugă firmă”, `POST /tenants`, importul din Migrare cabinet, înregistrarea, corectura din Date firmă)
+MESAJ_CUI_CONTROL = ("CUI-ul %s nu e valid: cifra de control nu corespunde — verifică CUI-ul. Un cod fiscal greșit îl respinge ANAF, la "
+                     "prima declarație depusă.")
+
+
+class CuiInvalid(ValueError):
+    """[459] Refuzul unui CUI de firmă care nu e valabil (`motiv_cui_firma_invalid`); `camp` = câmpul formularului. Subclasă de
+    `ValueError`: apelanții care prindeau refuzurile lui `provision_tenant` ca `ValueError` le prind în continuare."""
+    camp = "cui"
+
+
+def motiv_cui_firma_invalid(cui):
+    """[459, comanda Costin 11.3 pct.5: „un CUI cu cifra de control greșită e acceptat la adăugarea firmei”] None când `cui` e un CUI
+    românesc valabil pentru o FIRMĂ; altfel textul refuzului, de pus lângă câmp. PURĂ. Sursa unică a verificării pe toate drumurile.
+
+    Forma păstrată (`cui_forma.stocare`: fără spații, fără „RO”) trebuie să fie NUMAI cifre, fără 0 în față, 2–10 cifre, cu cifra de
+    control corectă (`identitate.valideaza_cui`, algoritmul oficial: cheia 753217532, suma × 10 mod 11, 10 -> 0). Până azi verificarea
+    extrăgea cifrele din orice text, deci „RO-401002001” sau „40100200A1” treceau (cifrele lor au control corect) și se păstrau așa,
+    cu cratimă / literă — un cod fiscal pe care nicio declarație nu-l poate purta; iar „0401002001” trecea și se păstra cu zeroul,
+    altfel decât îl scrie ANAF (serviciul îl primește ca număr), deci poarta de CUI unic din cabinet nu-l mai recunoștea."""
+    from core import identitate as _id
+    c = _cf.stocare(cui)
+    if not c:
+        return "Scrie CUI-ul firmei."
+    if not c.isdigit():
+        return ("CUI-ul %s nu e valid: un CUI are numai cifre (eventual cu „RO” în față, la plătitorii de TVA) — verifică CUI-ul." % c)
+    if c[0] == "0":
+        return "CUI-ul %s nu e valid: un CUI nu începe cu 0 — scrie-l fără zerourile din față." % c
+    ok, motiv = _id.valideaza_cui(c)
+    if ok:
+        return None
+    if motiv.startswith("lungime"):
+        return "CUI-ul %s nu e valid: un CUI are între 2 și 10 cifre, acesta are %d — verifică CUI-ul." % (c, len(c))
+    return MESAJ_CUI_CONTROL % c
+
+
 def cui_valid(cui):
-    """True daca CUI-ul are cifra de control corecta (algoritm oficial ANAF, Codul
-    fiscal). Pur, testabil. Acceptata forma cu/fara prefix RO si cu spatii - se
-    extrag doar cifrele. CUI romanesc: 2-10 cifre (numar identificare 1-9 + control)."""
-    c = "".join(ch for ch in str(cui or "") if ch.isdigit())
-    if not (2 <= len(c) <= 10):
-        return False
-    ponderi = [7, 5, 3, 2, 1, 7, 5, 3, 2]
-    corp, ctrl = c[:-1].rjust(9, "0"), int(c[-1])
-    s = sum(int(corp[i]) * ponderi[i] for i in range(9))
-    r = (s * 10) % 11
-    if r == 10:
-        r = 0
-    return r == ctrl
+    """True dacă `cui` e un CUI de firmă valabil (`motiv_cui_firma_invalid` nu are nimic de spus). Pur, testabil."""
+    return motiv_cui_firma_invalid(cui) is None
+
+
+def cere_cui_firma_valid(cui):
+    """Forma păstrată a CUI-ului, sau `CuiInvalid` cu motivul (`motiv_cui_firma_invalid`)."""
+    m = motiv_cui_firma_invalid(cui)
+    if m:
+        raise CuiInvalid(m)
+    return _cf.stocare(cui)
 
 
 def nume_normalizat(nume):
@@ -176,15 +211,14 @@ def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template,
     # cand ANAF e jos un CUI malformat ajungea tenant real -> sparge toate declaratiile
     # ulterioare (RegistrationNumber D406/D394 etc. cer CUI valid). Algoritmul e obiectiv
     # (lege), nu depinde de disponibilitatea ANAF.
-    if not cui_valid(cui):
-        raise ValueError(
-            "CUI-ul %r nu e valid: cifra de control nu corespunde. Un cod fiscal "
-            "greșit nu se oprește aici — îl respinge ANAF, la prima declarație "
-            "depusă." % cui)
+    # [lotul 11, decizia Costin 10.3 pct.4] forma păstrată (fără „RO”, fără spații) de la intrare: verificarea unicității de mai jos
+    # compară cu ce e în bază (triggerul `trg_cui_fara_ro` normalizează scrierea, nu și o căutare cu valoarea brută)
+    # [459] verificarea strictă (numai cifre, cifra de control), cu motivul de pus lângă câmp (`CuiInvalid`, camp="cui")
+    cui = cere_cui_firma_valid(cui)
     # cui_unic_v1: un CUI o singura data per cabinet
     with conn.cursor() as _c:
-        _c.execute("SELECT id FROM public.tenants WHERE cui=%s AND accounting_firm_id=%s",
-                   (str(cui), accounting_firm_id))
+        _c.execute("SELECT id FROM public.tenants WHERE " + _cf.SQL.format(c="cui") + " = %s AND accounting_firm_id=%s",
+                   (cui, accounting_firm_id))
         if _c.fetchone():
             raise ValueError(
                 "Ai deja în portofoliu o firmă cu codul fiscal %s. Două firme nu pot "
@@ -250,14 +284,82 @@ def date_din_anaf(cui):
     Intoarce datele firmei sau `None` daca ANAF n-a gasit CUI-ul. Ridica daca ANAF e jos; toti
     apelantii prind si consemneaza, ca inainte."""
     from core import anaf_api
-    cuic = str(cui).replace("RO", "").strip()
+    cuic = _cf.stocare(cui) or ""   # [lotul 11] forma păstrată (fără „RO”, fără spații), aceeași ca la scriere
     rez = anaf_api.valideaza_cui([cuic])
     if not (rez and rez[0].get("gasit")):
         return None
     return rez[0]
 
 
-def precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=False):
+#: [459] ce aduce ANAF în Date firmă și de unde: (câmpul din `firma_profil`, eticheta, cheia din răspunsul `anaf_api.valideaza_cui`). Același
+#: set îl scrie precompletarea (la creare: numai unde lipsește; la corectura CUI-ului: înlocuit) și îl arată propunerea corecturii.
+CAMPURI_ANAF = (("nume", "Denumirea", "denumire"), ("adresa", "Adresa", "adresa"), ("reg_com", "Nr. registrul comerțului", "nr_reg_com"),
+                ("caen", "Cod CAEN", "cod_caen"), ("oras", "Localitatea", "localitate"), ("judet", "Județul", "judet"),
+                ("platitor_tva", "Înregistrată în scopuri de TVA", "platitor_tva"),
+                ("tva_la_incasare", "Aplică TVA la încasare", "tva_la_incasare"),
+                ("data_infiintare", "Data înființării", "data_inregistrare"), ("forma_juridica", "Forma juridică", "forma_juridica"))
+
+
+def valori_anaf(d):
+    """PURĂ. {câmp din `firma_profil`: valoarea de la ANAF} pentru `CAMPURI_ANAF` (texte curățate, gol -> None; da/nu ca bool; forma
+    juridică numai când ANAF și denumirea o dau neechivoc, `capital_social.forma_propusa`)."""
+    from core import capital_social as _cs
+    out = {}
+    for camp, _et, cheie in CAMPURI_ANAF:
+        v = (d or {}).get(cheie)
+        if camp in ("platitor_tva", "tva_la_incasare"):
+            out[camp] = bool(v)
+        elif camp == "forma_juridica":
+            out[camp] = _cs.forma_propusa((d or {}).get("forma_juridica"), (d or {}).get("denumire"))[0]
+        else:
+            out[camp] = (str(v).strip() or None) if v is not None else None
+    if out.get("oras"):
+        out["oras"] = out["oras"][:100]   # `firma_profil.oras varchar(100)`
+    return out
+
+
+def _text_camp(camp, v):
+    if v is None:
+        return ""
+    if isinstance(v, bool):
+        return "Da" if v else "Nu"
+    if camp == "data_infiintare":
+        from core.pdf_util import data_ro   # DS cap.4: data afișată, formatorul canonic
+        return data_ro(v)
+    return " ".join(str(v).split())
+
+
+def propunere_anaf(acum, d):
+    """PURĂ. [459] Ce se schimbă în Date firmă când datele vin de la ANAF pentru CUI-ul nou: [{camp, eticheta, acum, anaf}] numai pentru
+    câmpurile care diferă (`acum` = profilul de acum, {câmp: valoare}). Textele se compară fără spațiile în plus și fără majuscule."""
+    nou = valori_anaf(d)
+    out = []
+    for camp, et, _ch in CAMPURI_ANAF:
+        a, n = _text_camp(camp, (acum or {}).get(camp)), _text_camp(camp, nou.get(camp))
+        if a.casefold() != n.casefold():
+            out.append({"camp": camp, "eticheta": et, "acum": a or "—", "anaf": n or "— (ANAF nu dă)"})
+    return out
+
+
+def inlocuieste_din_anaf(conn, schema_name, d):
+    """[459, comanda Costin 11.3 pct.5: „la schimbarea CUI-ului rămân datele celui vechi”] După corectura CUI-ului, ce venise de la ANAF
+    pentru CUI-ul vechi nu mai rămâne tacit. Cu datele ANAF ale CUI-ului nou (`d`): câmpurile `CAMPURI_ANAF` se ÎNLOCUIESC (un gol de la
+    ANAF golește câmpul, care apare apoi în „Profil incomplet”), denumirea ANAF și instantaneul TVA se rescriu, iar perioadele TVA la
+    încasare aduse din ANAF pentru CUI-ul vechi (`sursa = 'anaf'`) se scot și se pun cele ale CUI-ului nou. Fără date ANAF (CUI negăsit,
+    ANAF jos): se uită numai ce era al ANAF-ului pentru CUI-ul vechi (denumirea ANAF, instantaneul TVA, perioadele aduse din ANAF);
+    câmpurile rămân, iar ecranul le cere verificate. Denumirea firmei (`nume`) nu se scrie aici: o scrie apelantul prin
+    `alege_denumirea`, cu autorul. Nu comite. Întoarce True dacă au venit date de la ANAF."""
+    if d:
+        return precompleteaza_din_anaf(conn, schema_name, d, inlocuieste=True)
+    with conn.cursor() as cur:
+        cur.execute("UPDATE public.tenants SET nume_anaf = NULL, nume_anaf_la = NULL WHERE schema_name = %s", (schema_name,))
+        cur.execute('UPDATE "%s".firma_profil SET platitor_tva_anaf = NULL, platitor_tva_anaf_data = NULL, '
+                    "platitor_tva_anaf_inceput = NULL" % schema_name)
+        cur.execute("DELETE FROM \"%s\".tva_incasare_perioade WHERE sursa = 'anaf'" % schema_name)
+    return False
+
+
+def precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=False, inlocuieste=False):
     """[F188/register_profil_anaf] SURSA UNICA de precompletare a firma_profil din ANAF v9, pentru
     TOATE caile de creare a unei firme: register (firma proprie), adaugare manuala, import in masa.
     Inainte, fiecare cale scria un subset DIFERIT (register: snapshot TVA + data inceput; add-firm:
@@ -269,7 +371,9 @@ def precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=False):
     Best-effort la nivel de apelant: ANAF jos -> exceptie propagata, profilul ramane pe default,
     corectabil din Date firma. Intoarce True daca a precompletat, False daca ANAF n-a gasit CUI-ul.
     NU scrie tip_decont (periodicitatea TVA): ANAF v9 nu o intoarce -> ramane alegerea contabilului
-    (necunoscut declarat explicit, nu fabricat)."""
+    (necunoscut declarat explicit, nu fabricat).
+    inlocuieste=True numai la corectura CUI-ului (`inlocuieste_din_anaf`, deficiența 459): ANAF-ul CUI-ului nou înlocuiește tot setul
+    `CAMPURI_ANAF`, și golul."""
     if not d:
         return False
     # [nume_anaf_v1, 27.08.2026] Denumirea de la ANAF se PASTREAZA intotdeauna, cu data ei, pe
@@ -278,10 +382,10 @@ def precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=False):
     # „firma cu CUI validat la ANAF" nu insemna „denumire de la ANAF", iar campul se putea edita
     # liber fara sa se loveasca de nimic. Decizia lui Costin: varianta (b) — se pastreaza amandoua.
     _den = (d.get("denumire") or "").strip()
-    if _den:
+    if _den or inlocuieste:   # [459] la corectura CUI-ului, o denumire ANAF lipsă nu lasă în loc pe cea a CUI-ului vechi
         with conn.cursor() as _c:
             _c.execute("UPDATE public.tenants SET nume_anaf=%s, nume_anaf_la=now() "
-                       "WHERE schema_name=%s", (_den, schema_name))
+                       "WHERE schema_name=%s", (_den or None, schema_name))
     # [R81/O4, 28.08.2026] A PATRA cale care scria denumirea într-un singur loc, găsită de garda
     # de simetrie — nu de citire. `seteaza_nume=True` (numai la `POST /auth/register`, firma proprie
     # a cabinetului) scria `firma_profil.nume` singur, la câteva milisecunde după ce
@@ -300,16 +404,22 @@ def precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=False):
     seturi, par = [], []
     # [comanda Costin 05.10.2026 pct.2] forma juridică precompletată la creare, numai dacă ANAF și denumirea ANAF o dau neechivoc;
     # COALESCE: nu suprascrie o formă aleasă deja de contabil.
-    from core import capital_social as _cs
-    _forma, _sursa = _cs.forma_propusa(d.get("forma_juridica"), d.get("denumire"))
-    if _forma:
+    # [459] `inlocuieste` (corectura CUI-ului): fiecare câmp din `CAMPURI_ANAF` primește valoarea ANAF a CUI-ului nou — și golul (NULL), ca
+    # nimic din CUI-ul vechi să nu rămână tacit; la creare, ca înainte, ANAF completează numai ce lipsește (COALESCE). Localitatea și
+    # județul (domiciliul fiscal, `anaf_api.valideaza_cui`: `localitate` / `judet`) intră în același set, pe ambele drumuri.
+    v = valori_anaf(d)
+    if inlocuieste:
+        seturi.append("forma_juridica = %s")
+        par.append(v["forma_juridica"])
+    elif v["forma_juridica"]:
         seturi.append("forma_juridica = COALESCE(forma_juridica, %s)")
-        par.append(_forma)
+        par.append(v["forma_juridica"])
+    _f = ("{c} = NULLIF(%s, '')" if inlocuieste else "{c} = COALESCE(NULLIF(%s, ''), {c})")
+    seturi += [_f.format(c=c) for c in ("caen", "adresa", "reg_com", "oras", "judet")]
+    par += [v["caen"] or "", v["adresa"] or "", v["reg_com"] or "", v["oras"] or "", v["judet"] or ""]
     seturi += [
-        "caen = COALESCE(NULLIF(%s, ''), caen)",
-        "adresa = COALESCE(NULLIF(%s, ''), adresa)",
-        "reg_com = COALESCE(NULLIF(%s, ''), reg_com)",
-        "data_infiintare = COALESCE(data_infiintare, %s::date)",   # [deficiența 229] ANAF date_generale.data_inregistrare
+        # [deficiența 229] ANAF date_generale.data_inregistrare
+        "data_infiintare = %s::date" if inlocuieste else "data_infiintare = COALESCE(data_infiintare, %s::date)",
         "platitor_tva = %s",
         "tva_la_incasare = %s",
         "platitor_tva_anaf = %s",           # snapshot ANAF (verde) = aceeasi valoare la onboarding
@@ -317,10 +427,7 @@ def precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=False):
         "platitor_tva_anaf_inceput = %s",   # data inregistrarii in scopuri de TVA (Q9)
     ]
     par += [
-        (d.get("cod_caen") or "").strip(),
-        (d.get("adresa") or "").strip(),
-        (d.get("nr_reg_com") or "").strip(),
-        d.get("data_inregistrare") or None,
+        v["data_infiintare"],
         bool(d.get("platitor_tva")),
         bool(d.get("tva_la_incasare")),
         bool(d.get("platitor_tva")),
@@ -333,11 +440,16 @@ def precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=False):
         # perioada în curs e neechivocă și intră la creare, cu sursa „anaf” (valoarea inițială, ca restul precompletării — nu o
         # schimbare, deci fără jurnal: DECIZII 04.10.2026, consecința 1). Cu dată de sfârșit (perioadă trecută) sau fără dată nu se
         # scrie nimic: o propune „Verifică în registrul ANAF” din Date firmă, iar omul alege.
+        # [459] la corectura CUI-ului, perioadele aduse din ANAF pentru CUI-ul vechi nu mai sunt ale firmei: se scot (cele scrise de mână
+        # rămân — alegerea omului), apoi intră, după aceeași regulă, perioada CUI-ului nou
+        if inlocuieste:
+            cur.execute("DELETE FROM \"%s\".tva_incasare_perioade WHERE sursa = 'anaf'" % schema_name)
         _rt = d.get("tva_incasare_rtvai") or {}
         if _rt.get("status") and _rt.get("data_inceput") and not _rt.get("data_sfarsit"):
             cur.execute('INSERT INTO "%s".tva_incasare_perioade (de_la, sursa, verificat_anaf_la, stare_anaf) '
                         "SELECT %%s::date, 'anaf', now(), %%s WHERE NOT EXISTS (SELECT 1 FROM \"%s\".tva_incasare_perioade)"
-                        % (schema_name, schema_name), (_rt["data_inceput"], "aplică (ANAF, la adăugarea firmei)"))
+                        % (schema_name, schema_name), (_rt["data_inceput"], "aplică (ANAF, la %s)" % (
+                            "corectura CUI-ului" if inlocuieste else "adăugarea firmei")))
     return True
 
 
@@ -445,6 +557,7 @@ def alege_cui(conn, tenant_id, cui):
     if not r:
         raise ValueError("firmă inexistentă")
     schema_name = r[0]
+    cui = _cf.stocare(cui)   # [lotul 11] forma păstrată, aceeași în ambele locuri
     with conn.cursor() as cur:
         cur.execute("UPDATE public.tenants SET cui = %s WHERE id = %s", (cui, tenant_id))
         cur.execute('UPDATE "%s".firma_profil SET cui = %%s WHERE id = 1' % schema_name, (cui,))
@@ -512,9 +625,10 @@ MESAJ_CUI_PE_CORECTURA = ("CUI-ul nu se schimbă la editarea firmei. Dacă CUI-u
 def cere_cui_unic(conn, tenant_id, cui):
     """[27.08.2026, mutată la corectura CUI-ului 16.10.2026 — deficiența 272] Două firme ale aceluiași cabinet nu au același CUI."""
     with conn.cursor() as cur:
-        cur.execute("SELECT id FROM public.tenants WHERE upper(cui) = upper(%s) AND id <> %s "
+        # [lotul 11] forma păstrată pe ambele părți („RO123” și „123” sunt același cod fiscal; `cui_forma.SQL` = `stocare` în SQL)
+        cur.execute("SELECT id FROM public.tenants WHERE " + _cf.SQL.format(c="cui") + " = %s AND id <> %s "
                     "AND accounting_firm_id = (SELECT accounting_firm_id FROM public.tenants WHERE id = %s)",
-                    (str(cui), tenant_id, tenant_id))
+                    (_cf.stocare(cui) or "", tenant_id, tenant_id))
         if cur.fetchone():
             raise ValueError(
                 "Ai deja în portofoliu o firmă cu codul fiscal %s. Două firme nu pot "

@@ -13,19 +13,37 @@ from core import vector_fiscal_api
 from core import scan_sql_efectiv as _efectiv
 
 
+class _FaraProfil:
+    """[lotul 11, 440] refuzul adună toate erorile, inclusiv cea de regim, care cere `tip_firma` din profil — deci salveaza() citește
+    profilul înainte de a refuza. Firma fără profil (SELECT fără rând); nicio scriere nu se face, refuzul pleacă înaintea ei."""
+    def cursor(self):
+        return self
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+    def execute(self, sql, params=None):
+        assert sql.lstrip().upper().startswith("SELECT"), sql
+
+    def fetchone(self):
+        return None
+
+
 def test_tva_lipsa_numeste_campul():
-    # platitor_tva=None -> eroare INAINTE de orice acces la DB (conn poate fi None)
-    r = vector_fiscal_api.salveaza(None, "micro", None, None, None)
+    r = vector_fiscal_api.salveaza(_FaraProfil(), "micro", None, None, None)
     assert r["ok"] is False and r.get("camp") == "platitor_tva", r
 
 
 def test_ic_lipsa_numeste_campul():
-    r = vector_fiscal_api.salveaza(None, "micro", True, "lunar", None)
+    r = vector_fiscal_api.salveaza(_FaraProfil(), "micro", True, "lunar", None)
     assert r["ok"] is False and r.get("camp") == "operatiuni_ic", r
 
 
 def test_decont_lipsa_numeste_campul():
-    r = vector_fiscal_api.salveaza(None, "micro", True, None, True)
+    r = vector_fiscal_api.salveaza(_FaraProfil(), "micro", True, None, True)
     assert r["ok"] is False and r.get("camp") == "tip_decont", r
 
 

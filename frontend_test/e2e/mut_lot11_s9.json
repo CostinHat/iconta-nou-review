@@ -1,0 +1,50 @@
+[
+ {
+  "fisier": "core/salarizare.py",
+  "ancora": "    ded = _deducere_acordata(ded, baza_contrib - cas - cass)",
+  "inlocuire": "    ded = ded",
+  "test": "frontend_test/e2e/e2e_lot11_s9.py::test_def_c91_deducerea_plafonata_la_venitul_net"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "    return {\"e3_3\": 1 if functie_baza else 2, \"contributii\": int(cas) + int(cass),",
+  "inlocuire": "    return {\"e3_3\": 1, \"contributii\": int(cas) + int(cass),",
+  "test": "frontend_test/e2e/e2e_lot11_s9.py::test_def_c90_fara_functie_de_baza_declarat_cu_e3_3_doi"
+ },
+ {
+  "fisier": "core/salarizare.py",
+  "ancora": "    return _q(leu_aritmetic(min(max(b - v, Decimal(\"0\")), b * Decimal(\"0.25\"))))",
+  "inlocuire": "    return _q(min(max(b - v, Decimal(\"0\")), b * Decimal(\"0.25\")))",
+  "test": "frontend_test/e2e/e2e_lot11_s9.py::test_def_c89_indemnizatia_cm_rotunjita_la_sursa"
+ },
+ {
+  "fisier": "static/js/ecrane/flux_concediu.js",
+  "ancora": "      \"10\": { eticheta: \"Num\\u0103rul avizului medicului expert\", max: \"\", exemplu: \"\",",
+  "inlocuire": "      \"1O\": { eticheta: \"Num\\u0103rul avizului medicului expert\", max: \"\", exemplu: \"\",",
+  "test": "frontend_test/e2e/e2e_lot11_s9.py::test_def_c92_cod10_cere_avizul_medicului_expert"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "        tip_asig = 51 if facil > 0 else 1",
+  "inlocuire": "        tip_asig = 1",
+  "test": "frontend_test/e2e/e2e_lot11_s9.py::test_def_c93_beneficiarul_facilitatii_declarat_cu_tipul_51"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "E3_3=\"%d\" E3_4=\"P\" E3_8=\"%d\" '",
+  "inlocuire": "E3_3=\"%d\" E3_4=\"A\" E3_8=\"%d\" '",
+  "test": "frontend_test/e2e/e2e_lot11_s9.py::test_def_c94_venitul_lunii_cu_e3_4_p"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "            b1_3 = \"P%d\" % ore_contract",
+  "inlocuire": "            b1_3 = \"N\"",
+  "test": "frontend_test/e2e/e2e_lot11_s9.py::test_def_c96_norma_partiala_declarata_cu_orele_ei"
+ },
+ {
+  "fisier": "core/salarizare.py",
+  "ancora": "    return max(za - int(zile_cm or 0), 0)",
+  "inlocuire": "    return za",
+  "test": "frontend_test/e2e/e2e_lot11_s9.py::test_def_c99_suprataxa_in_luna_cu_cm_aceeasi_pe_stat_fluturas_si_d112"
+ }
+]

@@ -31,6 +31,15 @@ CAMPURI = {
     # cumulat (D100 profit)”
     "suma": ("suma de plata", "suma de plată", "suma declarata", "suma declarată", "=suma", "suma*", "impozit*"),
 }
+#: [lotul 11] numele câmpului în refuzul coloanelor ambigue (`import_tabel.coloana`), în limba contabilului — nu cheia internă
+#: (garda: core/test_lot11_import_etichete_camp.py)
+ETICHETE_CAMP = {
+    "tip": "tipul declarației",
+    "an": "anul",
+    "luna": "luna raportării",
+    "data": "data depunerii",
+    "suma": "suma declarată",
+}
 
 
 def _intreg(v):
@@ -81,7 +90,7 @@ def extrage(continut, nume_fisier=""):
         if isinstance(e, _it.ColoaneAmbigue):
             raise
         raise ValueError("nu se găsește coloana cu tipul declarației (tip/declarație/formular) - fișier nerecunoscut")
-    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=camp)
+    col = lambda camp, exclus=(): _it.coloana(antet, CAMPURI[camp], exclus=exclus, camp=ETICHETE_CAMP[camp])
     i_tip = col("tip")
     i_an = col("an", (i_tip,))
     i_luna = col("luna", (i_tip, i_an))

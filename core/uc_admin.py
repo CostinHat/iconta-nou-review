@@ -181,7 +181,16 @@ def admin_sanatate(ctx):
     # `ok = None` înseamnă „încă neverificat", și NU se rotunjește la `true`.
     from core import firma_rezumat as _fr_s
     _p2 = _fr_s.stare_infrastructura()
+    # [460] cursul BNR de care au nevoie operațiunile de azi: în cache sau lipsă (bucla de sănătate îl completează; aici doar se citește)
+    curs_bnr = {"asteptat": None, "ultima_zi": None, "lipsa": None, "zile_lipsa": []}
+    try:
+        from core import curs_bnr as _cb_s
+        with db.get_conn() as conn:
+            curs_bnr = _cb_s.stare_curs_zilei(conn)
+    except Exception as _e:
+        _obs.esec_secundar("admin sanatate: curs BNR", _e)  # inghitit, dar nu tacut
     return {
+        "curs_bnr": curs_bnr,
         "server": {"load1": load1, "load5": load5, "load15": load15, "ram": ram, "disc": disc},
         "aplicatie": {"uptime_secunde": uptime_sec},
         "baza_date": db_info,

@@ -1,0 +1,20 @@
+[
+ {
+  "fisier": "core/d212.py",
+  "ancora": "        motive.append(\"D212 %s: zilele scutite trebuie să fie între 0 și numărul de zile ale anului.\" % eticheta)",
+  "inlocuire": "        raise ValueError(\"D212 %s: zilele scutite trebuie să fie între 0 și numărul de zile ale anului.\" % eticheta)",
+  "test": "frontend_test/e2e/e2e_lot11_w5.py::test_def_440_d212_toate_greselile_din_venit_deodata"
+ },
+ {
+  "fisier": "core/d212.py",
+  "ancora": "        motive.append(\"D212 străinătate: țara %r nu e în nomenclatorul ANAF",
+  "inlocuire": "        raise ValueError(\"D212 străinătate: țara %r nu e în nomenclatorul ANAF",
+  "test": "frontend_test/e2e/e2e_lot11_w5.py::test_def_440_d212_toate_greselile_din_venit_deodata"
+ },
+ {
+  "fisier": "static/stil.css",
+  "ancora": "  /* [lotul 11, 440, w5] refuzul generării cu mai multe motive vine rând cu rând (`\\n`, d212._motive); DS cap.6 v2.89 */\n  white-space: pre-line;",
+  "inlocuire": "  /* [lotul 11, 440, w5] refuzul generării cu mai multe motive vine rând cu rând (`\\n`, d212._motive); DS cap.6 v2.89 */\n  white-space: normal;",
+  "test": "frontend_test/e2e/e2e_lot11_w5.py::test_def_440_d212_toate_greselile_din_venit_deodata"
+ }
+]

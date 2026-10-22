@@ -33,6 +33,7 @@ from core import scan_sql_efectiv as _efectiv
 import io
 import os
 import re
+import subprocess
 
 import pytest
 
@@ -613,3 +614,115 @@ def test_contorul_exista_si_nu_a_ramas_in_urma_bazei():
     assert curent >= istoric, (
         "contorul e la %d, iar maximul istoric e %d — următoarea firmă ar primi un nume deja "
         "folosit. Rulează `python3 -m core.migrare_schema_seq`." % (curent, istoric))
+
+
+def test_contoarele_derivate_se_sterg_dupa_surse():
+    """[lotul 11] Ștergerea unei surse publice (`declaratii_depuse`) ridică `firma_sursa_versiune` prin trigger: contorul șters ÎNAINTE
+    era recreat pentru firma care dispărea în aceeași tranzacție (orfan găsit în plasa e2e, 22.10.2026). MUTAȚIE: `ordinea_stergerii`
+    întoarce lista neschimbată, cu contoarele la mijloc -> pică."""
+    ordine = ts.ordinea_stergerii(list(ts.TABELE_TENANT) + ["declaratii_depuse"])
+    contoare = [i for i, t in enumerate(ordine) if t in ts.CONTOARE_DERIVATE]
+    surse = [i for i, t in enumerate(ordine) if t not in ts.CONTOARE_DERIVATE]
+    assert set(ts.CONTOARE_DERIVATE) <= set(ts.TABELE_TENANT)
+    assert contoare and surse and min(contoare) > max(surse)
+
+
+# [lotul 11, suita a doua, 22.10.2026] Aceeași clasă, pe alt drum: copia de dovadă (`scripts/dovada_firme_test.py --sterge`) ștergea
+# tabelele în ordinea din `information_schema`, deci contorul înaintea lui `declaratii_depuse` — 2 orfani (`firma_sursa_versiune` pentru
+# 105779 / 105780). Reparația din `ordinea_stergerii` acoperea numai drumurile care o chemau; garda de mai jos le cere pe TOATE: orice
+# buclă `for t in <tabele>:` din repo care șterge `DELETE FROM public.<t> WHERE tenant_id` trece contoarele derivate la urmă.
+_DELETE_PE_FIRMA = re.compile(r"DELETE FROM public\.\"?%s\"? WHERE (?:\"?tenant_id\"?)")
+
+
+def _iterabil_ordonat(nod, literale):
+    """Lista tabelelor iterate, dacă se poate stabili din cod; `True` = trecută prin `ordinea_stergerii`; `None` = nerezolvabil."""
+    if isinstance(nod, ast.Call):
+        nume = getattr(nod.func, "id", None) or getattr(nod.func, "attr", None)
+        if nume == "ordinea_stergerii":
+            return True
+        if nume in ("tuple", "list", "sorted") and len(nod.args) == 1:
+            return _iterabil_ordonat(nod.args[0], literale)
+        return None
+    if isinstance(nod, ast.BinOp) and isinstance(nod.op, ast.Add):
+        a, b = _iterabil_ordonat(nod.left, literale), _iterabil_ordonat(nod.right, literale)
+        return a + b if isinstance(a, list) and isinstance(b, list) else None
+    if isinstance(nod, (ast.Tuple, ast.List)) and all(isinstance(e, ast.Constant) and isinstance(e.value, str) for e in nod.elts):
+        return [e.value for e in nod.elts]
+    nume = getattr(nod, "id", None) or getattr(nod, "attr", None)
+    if nume == "TABELE_TENANT":
+        return list(ts.TABELE_TENANT)
+    return literale.get(nume)
+
+
+def bucle_de_stergere(text):
+    """PURĂ. [(linie, tabele | True | None)] pentru fiecare buclă `for` care șterge din `public` pe `tenant_id`."""
+    arbore = ast.parse(text)
+    literale = {}
+    for n in arbore.body:
+        if isinstance(n, ast.Assign) and len(n.targets) == 1 and isinstance(n.targets[0], ast.Name):
+            v = _iterabil_ordonat(n.value, {})
+            if isinstance(v, list):
+                literale[n.targets[0].id] = v
+    out = []
+    for n in ast.walk(arbore):
+        if not (isinstance(n, ast.For) and isinstance(n.target, ast.Name)):
+            continue
+        # bucla care formatează CHIAR variabila ei în `DELETE ... % t` (nu o buclă exterioară pe firme)
+        if any(isinstance(c, ast.BinOp) and isinstance(c.op, ast.Mod) and isinstance(c.left, ast.Constant)
+               and isinstance(c.left.value, str) and _DELETE_PE_FIRMA.search(c.left.value)
+               and any(isinstance(x, ast.Name) and x.id == n.target.id for x in ast.walk(c.right))
+               for b in n.body for c in ast.walk(b)):
+            out.append((n.lineno, _iterabil_ordonat(n.iter, literale)))
+    return out
+
+
+def _surse_cu_trigger():
+    from core import firma_rezumat as _fr
+    return set(_fr.tabele_publice_urmarite())
+
+
+def rele_de_ordine(text):
+    rele = []
+    for linie, t in bucle_de_stergere(text):
+        if t is None:
+            rele.append("linia %d: tabelele buclei nu se pot citi din cod — trece-le prin `tenant_stergere.ordinea_stergerii`" % linie)
+        elif isinstance(t, list):
+            # sursele cu trigger (`firma_rezumat.tabele_publice_urmarite`): niciuna după primul contor derivat
+            primul = next((i for i, x in enumerate(t) if x in ts.CONTOARE_DERIVATE), len(t))
+            dupa = [x for x in t[primul:] if x in _surse_cu_trigger()]
+            if dupa:
+                rele.append("linia %d: %s se șterge DUPĂ un contor derivat (%s) — triggerul îl recreează: %s" % (
+                    linie, ", ".join(dupa), ", ".join(ts.CONTOARE_DERIVATE), t))
+    return rele
+
+
+def test_orice_stergere_pe_firma_din_repo_sterge_contoarele_la_urma():
+    """MUTAȚIE: în `scripts/dovada_firme_test.py` bucla pe `tabele` din `information_schema`, fără `ordinea_stergerii` -> pică."""
+    fis = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard", "*.py"], cwd=_RAD,
+                         capture_output=True, text=True).stdout.split()
+    rele, gasite = [], 0
+    for f in fis:
+        cale = os.path.join(_RAD, f)
+        if f.startswith("venv/") or not os.path.isfile(cale):
+            continue
+        text = io.open(cale, encoding="utf-8").read()
+        if "DELETE FROM public." not in text or "tenant_id" not in text:
+            continue
+        gasite += len(bucle_de_stergere(text))
+        rele += ["%s %s" % (f, r) for r in rele_de_ordine(text)]
+    # anti-vacuu: la 22.10.2026 sunt 13 bucle (tenant_stergere, curățenia e2e, copia de dovadă, sondele, teardown-urile)
+    assert gasite >= 10, gasite
+    assert not rele, "\n".join(rele)
+
+
+def test_garda_ordinii_nu_e_vida():
+    rau = ("def f(cur, ids):\n    for t in ('firma_sursa_versiune', 'declaratii_depuse'):\n"
+           "        cur.execute('DELETE FROM public.%s WHERE tenant_id = ANY(%%s)' % t, (ids,))\n")
+    necitibil = ("def f(cur, tabele, tid):\n    for t in tabele:\n"
+                 "        cur.execute('DELETE FROM public.\"%s\" WHERE tenant_id = %%s' % t, (tid,))\n")
+    bun = ("from core.tenant_stergere import ordinea_stergerii\nT = ('declaratii_depuse', 'firma_sursa_versiune')\n"
+           "def f(cur, tabele, tid):\n    for t in ordinea_stergerii(tabele):\n"
+           "        cur.execute('DELETE FROM public.\"%s\" WHERE tenant_id = %%s' % t, (tid,))\n"
+           "    for t in T:\n        cur.execute('DELETE FROM public.%s WHERE tenant_id = %%s' % t, (tid,))\n")
+    assert rele_de_ordine(rau) and rele_de_ordine(necitibil)
+    assert rele_de_ordine(bun) == [] and len(bucle_de_stergere(bun)) == 2

@@ -20,11 +20,15 @@ def tip_si_transformare(cur, factura_id):
 
 
 def candidate_pentru_bon(cur, schema, cui, total):
+    """`cui` în forma păstrată (`cui_forma.stocare`); factura comparată în aceeași formă (`cui_forma.SQL`) — rândurile vechi au „RO”.
+    [lotul 11, decizia Costin 10.3 pct.4] Înainte: un `replace` SQL al lui „RO”, un al doilea dialect (scotea „RO” de oriunde din text)."""
+    from core import cui_forma as _forma_cui
+    k = _forma_cui.SQL.format(c="tert_cui")
     cur.execute(f"""
                 SELECT id, numar, serie, data_emitere, total, tert_nume, tert_cui
                 FROM {schema}.facturi
                 WHERE directie='primita' AND COALESCE(status,'') <> 'anulata' AND platita_la IS NULL
-                ORDER BY (upper(replace(COALESCE(tert_cui,''),'RO','')) = %s) DESC,
+                ORDER BY ({k} = %s) DESC,
                          abs(total - %s) ASC, data_emitere DESC
                 LIMIT 10
             """,

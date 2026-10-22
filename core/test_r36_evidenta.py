@@ -104,8 +104,12 @@ def test_amortizarea_intra_ciorna_si_se_inlocuieste_cat_e_nevalidata(amortizare)
     with _db.get_conn(SCH) as c:
         ((id1, st1, doc1),) = _note(c, "AMORT-2099-10")
     assert (r1["nota_id"], st1) == (id1, "ciorna") and r1["total"] == 100.0
-    r2 = gen()
-    assert (r2["nota_id"], r2.get("deja_generata")) == (id1, True)                     # aceleași sume: ciorna rămâne
+    from core import erori
+    # [lotul 11, pct.23] aceleași sume: ciorna rămâne, iar a doua generare se REFUZĂ numită (nu mai întoarce tăcut aceeași ciornă)
+    with pytest.raises(erori.CerereGresita, match="deja generată, cu exact sumele registrului"):
+        gen()
+    with _db.get_conn(SCH) as c:
+        assert [x[0] for x in _note(c, "AMORT-2099-10")] == [id1]
     valoare(7200)
     r3 = gen()
     with _db.get_conn(SCH) as c:

@@ -20,9 +20,10 @@ def test_brut_6000_fara_dependenti_sem2():
     assert r["cass"] == Decimal("600.00")
     # [A7, 17.09.2026] treapta ceil (nu floor): brut 6000 = sm+1675 -> banda sm+1651…sm+1700 = treapta
     # 34, deci pct = 20% - 34x0,5% = 3% -> 0,03x4325 = 129,75 (nu 33 trepte / 3,5% / 151,38, care era
-    # bug-ul A7). Deducerea NU se rotunjeste (129.75). [1c] Baza impozitului SE rotunjeste la leu
-    # (CF art.64, HG tit.IV pct.4): impozit = baza_rotunjita x 10%, apoi net.
-    assert r["deducere"]["total"] == Decimal("129.75")
+    # bug-ul A7). [lotul 11, 453] Deducerea se rotunjeste la leu (structura D112: camp calculat cu parametri = intreg prin rotunjire
+    # matematica): 129,75 -> 130. [1c] Baza impozitului SE rotunjeste la leu (CF art.64, HG tit.IV pct.4): impozit = baza_rotunjita x
+    # 10%, apoi net (baza 3.770 in ambele cazuri: 3.770,25 -> 3.770 inainte, 3.770 acum).
+    assert r["deducere"]["total"] == Decimal("130.00")
     assert r["impozit"] == Decimal("377.00")
     assert r["net"] == Decimal("3523.00")
     assert r["cam"] == Decimal("135.00")
@@ -63,8 +64,8 @@ def test_minim_difera_pe_semestru():
 
 
 def test_deducere_degresiva_pe_trepte():
-    # [A7] treapta ceil: sm+1675 -> treapta 34 -> 3% x 4325 = 129,75 (bug-ul floor dadea 151,375)
-    assert deducere_personala(6000, la_data=SEM2)["total"] == Decimal("129.75")
+    # [A7] treapta ceil: sm+1675 -> treapta 34 -> 3% x 4325 = 129,75 (bug-ul floor dadea 151,375); [453] rotunjit la leu -> 130
+    assert deducere_personala(6000, la_data=SEM2)["total"] == Decimal("130.00")
 
 
 def test_deducere_copil_scoala():
@@ -221,15 +222,15 @@ def test_suprataxa_si_facilitate_prorata_la_incetare():
 def test_deducere_4plus_persoane_45pct():
     # FIX1 (Cod fiscal art.77 alin.4): 4 SAU MAI MULTE persoane in intretinere -> 45% x salariu
     # minim (nu 40%). brut = salariu minim (fara degresivitate) izoleaza procentul de baza.
-    # 0.45 * 4325 = 1946.25.
-    assert deducere_personala(4325, persoane=4, la_data=SEM2)["baza"] == Decimal("1946.25")
-    assert deducere_personala(4325, persoane=5, la_data=SEM2)["baza"] == Decimal("1946.25")
+    # 0.45 * 4325 = 1946.25 -> [453] 1946 la leu.
+    assert deducere_personala(4325, persoane=4, la_data=SEM2)["baza"] == Decimal("1946.00")
+    assert deducere_personala(4325, persoane=5, la_data=SEM2)["baza"] == Decimal("1946.00")
 
 def test_tanar_sub26_brut_mic_primeste_deducere():
     # FIX2 (Cod fiscal art.77 alin.10 lit.a): tanarul <26 are DOAR limita superioara de venit
     # (brut <= sm+2000); NU exista limita inferioara. brut 1500 (part-time, sub salariul minim)
     # trebuie sa primeasca deducerea suplimentara de 15% x salariu minim. 0.15 * 4325 = 648.75.
-    assert deducere_personala(1500, sub_26=True, la_data=SEM2)["tineri"] == Decimal("648.75")
+    assert deducere_personala(1500, sub_26=True, la_data=SEM2)["tineri"] == Decimal("649.00")   # [453] 648,75 -> 649 la leu
 
 
 def test_deducere_la_data_obligatoriu():

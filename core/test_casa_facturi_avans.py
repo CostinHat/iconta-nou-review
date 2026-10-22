@@ -90,14 +90,14 @@ def test_278_incasarea_leaga_factura_si_separa_avansul(conn):
                     "JOIN inregistrari_linii l ON l.inregistrare_id = i.id ORDER BY i.id")
         note = cur.fetchall()
     assert [(n[0], n[2], n[3], n[4]) for n in note] == [(fid, "5311", "4111", "242.00"), (None, "5311", "4111", "5758.00")]
-    assert [n[1] for n in note] == ["Încasare de la client — document DI-1 — factura F1A4 din 16.10.2026 — FISCALOS ICONTA SRL",
+    assert [n[1] for n in note] == ["Încasare de la client — document DI-1 — factura F1A nr. 4 din 16.10.2026 — FISCALOS ICONTA SRL",   # [lotul 11, 443] „F1A nr. 4”, nu „F1A4”
                                     "Încasare de la client — document DI-1 — avans de la client — FISCALOS ICONTA SRL"], note
 
 
 def test_278_fara_factura_aleasa_semnaleaza_factura_deschisa_si_avansul(conn):
     _factura(conn)
     p = _ca.previzualizare(conn, _SCH, {"data": "2026-10-16", "categorie": "incasare_client", "suma": 6000, "cui": "RO" + CUI_CLIENT})
-    assert [f["numar"] for f in p["facturi"]] == ["F1A4"], p["facturi"]
+    assert [f["numar"] for f in p["facturi"]] == ["F1A nr. 4"], p["facturi"]
     assert p["avans"]["suma"] == "5758.00", p["avans"]
     assert p["semnale"] == ["Clientul are 1 factură deschisă (de 242,00 lei). Dispoziția nu e legată de niciuna, deci rămân neîncasate: "
                             "alege factura încasată."], p["semnale"]
@@ -122,7 +122,7 @@ def test_278_avansul_se_leaga_de_factura_de_avans_iar_nota_validata_nu(conn):
     r = _ca.adauga(conn, _SCH, {"data": "2026-10-16", "categorie": "incasare_client", "suma": 1210, "cui": CUI_CLIENT, "avans": True})
     assert r["operatiuni"][0]["avans"] is True and r["avans"]["suma"] == "1210.00"
     fav = _factura(conn, numar="5", total="1210.00", tip="avans", data="2026-10-20")
-    assert _ca.leaga(conn, _SCH, r["id"], fav) == {"ok": True, "factura": "F1A5"}
+    assert _ca.leaga(conn, _SCH, r["id"], fav) == {"ok": True, "factura": "F1A nr. 5"}   # [lotul 11, 443] seria și numărul separat
     assert _sold(conn, fav) == 0
     assert _ca.leaga(conn, _SCH, r["id"], fav)["cod"] == _ca.COD_DEJA_LEGATA
     r2 = _ca.adauga(conn, _SCH, {"data": "2026-10-16", "categorie": "incasare_client", "suma": 100, "cui": CUI_CLIENT, "avans": True,

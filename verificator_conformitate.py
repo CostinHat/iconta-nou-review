@@ -652,6 +652,9 @@ for _r2, _d2, _f2 in os.walk(BAZA_PY):
             _st = _ln.strip()
             if _st.startswith("#"):
                 continue
+            # [lotul 11] comentariul de la capătul liniei nu e cod (ca linia-comentariu de mai sus): „# [lotul 11, …]” lângă un câmp
+            # „cota” se citea drept cota 11 (12 fals pozitive). Separatorul e cel PEP 8 (două spații + „# ”), deci un „#” din șir rămâne.
+            _ln = re.split(r"\s{2,}#\s", _ln, 1)[0]
             _md = _re_tva_dec.search(_ln)
             _mi = _re_tva_int.search(_ln) if "cota" in _ln.lower() else None
             if not (_md or _mi):
@@ -1390,9 +1393,15 @@ except Exception as _e_tb:
 rap["mesaj_pe_randuri"] = []
 try:
     _css_mr = open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read()
-    for _cls in ("msg-eroare", "msg-avert", "msg-info", "msg-ok"):
-        _mm = re.search(r"(?m)^\.%s\s*\{([^}]*)\}" % _cls, _css_mr)
-        if not _mm or not re.search(r"white-space\s*:\s*pre-line", _mm.group(1)):
+    # [lotul 11, 440, g2] + casetele care afișează textul serverului (`e.mesaj`) și `.pe-randuri` (caseta refuzului dintr-o clasă de
+    # proză), declarate ÎMPREUNĂ într-o regulă comună (global-first) — de aceea `.cls` se caută și ca element al unei liste de selectori,
+    # iar oricare regulă a clasei cu `pre-line` ajunge. Gardul pe locurile din JS: core/test_lot11_g2_pre_line.py
+    for _cls in ("msg-eroare", "msg-avert", "msg-info", "msg-ok", "dec-eroare",   # [lotul 11, 440] caseta refuzului generării
+                 "dec-avert-cap", "pacm-mail", "cp-mesaj", "val-lipsa", "anunt-text", "mig-eroare", "cf-semnal", "rn-mesaj",
+                 "pe-randuri"):
+        _mm = [_m for _m in re.finditer(r"(?m)^(?:[^{}\n]*,\s*)?\.%s\s*(?:,[^{}]*)?\{([^}]*)\}" % _cls, _css_mr)
+               if re.search(r"white-space\s*:\s*pre-line", _m.group(1))]
+        if not _mm:
             rap["mesaj_pe_randuri"].append(("static/stil.css", 0, _cls,
                 ".%s fara white-space: pre-line — un mesaj cu un rand pe element s-ar citi pe un singur rand (DS cap.6 v2.89)" % _cls))
 except Exception as _e_mr:
@@ -1704,7 +1713,9 @@ for _cerinta, _rx in (("zona include .fereastra-corp", r'ZONA_MOTIV\s*=\s*"[^"]*
 #     `sesiune.iesi()` la 401. Comportamentul îl probează `frontend_test/proba_fara_pierdere.py`. Mutația care o probează:
 #     `_dePastrat()` scos din `deschide` -> TOTAL > 0.
 rap["pastrare_formular"] = []
-for _fis, _cerinta, _rx, _n in (("navigator.js", "păstrarea la deschide și mergi", r"_dePastrat\(\)", 3),
+#     [lotul 11, 445] `_dePastrat(dinRefuz)`: deschiderea dintr-un refuz păstrează formularul și neatins — se numără apelul cu orice
+#     argument (definiția + cele două apeluri), nu numai forma fără argument.
+for _fis, _cerinta, _rx, _n in (("navigator.js", "păstrarea la deschide și mergi", r"_dePastrat\(", 3),
                                 ("navigator.js", "revenirea pune ecranul la loc", r"replaceWith\(pastrat\.corp\)", 1),
                                 ("api.js", "401 cu sesiune -> reautentificare peste ecran", r"await ceraReautentificare\(\)", 1)):
     if len(re.findall(_rx, fisiere.get(_fis, ""))) < _n:
@@ -1734,6 +1745,16 @@ for _fis, _txt in sorted(fisiere.items()):
     for _i, _ln in enumerate(_txt.split("\n"), 1):
         for _m in _RX_CANT.finditer(_ln):
             rap["cantitate_bruta"].append((_fis, _i, "CANTITATE_BRUTA", _m.group(0)[:60]))
+
+# --- CURS_FORMAT_LOCAL (DS cap.4 v2.101, 22.10.2026, lotul 11, C88): cursul valutar se afișează prin `cursValutar(v)` din api.js,
+#     cu precizia BNR (4–6 zecimale). Prinde formatarea locală cu `minimumFractionDigits: 4` (cursul rotunjit la 4 zecimale: HUF
+#     „0,0147” în loc de „0,014719”). EXCEPTAT: definiția din api.js (linia cu `maximumFractionDigits: 6`). Mutația care o
+#     probează: `Number(r.curs).toLocaleString("ro-RO", { minimumFractionDigits: 4 })` repus în emitere_ecran.js -> TOTAL > 0.
+rap["curs_format_local"] = []
+for _fis, _txt in sorted(fisiere.items()):
+    for _i, _ln in enumerate(_txt.split("\n"), 1):
+        if re.search(r"minimumFractionDigits\s*:\s*4\b", _ln) and not (_fis == "api.js" and "maximumFractionDigits: 6" in _ln):
+            rap["curs_format_local"].append((_fis, _i, "CURS_FORMAT_LOCAL", _ln.strip()[:90]))
 
 # --- CULOARE_SEMAFOR_TEXT (DS cap.8 v2.70, 05.10.2026): culorile de SEMAFOR (`--galben` #c9961f, `--gri-semafor` #9aa3b2) sunt
 #     pentru buline, borduri și fundaluri, nu pentru text: pe alb dau ~2,6:1 și ~2,5:1, sub pragul WCAG 1.4.3 (4,5:1). Textul
@@ -1987,7 +2008,11 @@ _css_l6 = _surse_css["stil.css"]
 for _sel, _decl, _cod in ((r"\.camp-input\[readonly\]", r"background\s*:", "READONLY_GLOBAL"),
                           (r"\.fereastra-corp \.bara-fixa", r"position\s*:\s*sticky", "BARA_FIXA"),
                           (r"\.fereastra-corp \.bara-fixa:not\(:last-child\)", r"margin-bottom\s*:\s*0", "BARA_NU_ACOPERA"),
-                          (r"\.fd-antet-sus", r"flex-wrap\s*:\s*wrap", "RAND_RUPT")):
+                          (r"\.fd-antet-sus", r"flex-wrap\s*:\s*wrap", "RAND_RUPT"),
+                          # [lotul 11, 436 afișare — patch-ul subagentului D] caseta de refuz din bara fixă nu trece pe sub antetul lipit
+                          # sus: zona de mesaj are cel mult 35vh și derulează ea; elementul adus în vedere se oprește sub antet (DS cap.6 v2.98)
+                          (r'\.fereastra-corp \.bara-fixa > \[id\$="-mesaj"\], \.fereastra-corp \.bara-fixa > \[id\$="-msg"\]', r"max-height\s*:\s*35vh", "CASETA_SUB_ANTET"),
+                          (r"\.fereastra-corp \*", r"scroll-margin-top\s*:\s*calc\(var\(--rezumat-h", "CASETA_SUB_ANTET")):
     _ml6 = re.search(r"(?m)^" + _sel + r"\s*\{([^}]*)\}", _css_l6)
     if not _ml6 or not re.search(_decl, _ml6.group(1)):
         rap["fereastra_lot6"].append(("stil.css", 0, _cod, "regula %s lipsește sau nu are %s (DS v2.92)" % (_sel, _decl)))
@@ -2228,6 +2253,16 @@ def analiza_fereastra_tabel(css, nav, fisiere):
             "deasupra formularului de adăugare; „Adaugă” e în rândul câmpurilor formularului, iar lipirea lui jos ar cere mutarea rândului întreg",
     }
     actiuni_vazute = set()
+    # [lotul 11, MESAJ_SUB_TABEL / TOTAL_NEFIXAT] zonele de mesaj lăsate sub tabel, cu motivul (cheia: fișier, id-ul zonei); o excepție
+    # fără obiect pică, ca la acțiuni.
+    mesaje_exceptii = {
+        ("firme.js", "el-msg"):
+            "lângă butonul ei: panoul „Prime, sporuri, ore suplimentare” al unui salariat — zona stă sub rândul câmpurilor cu „Adaugă” "
+            "(excepția `el-adauga` de la acțiuni), deci lângă butonul care o folosește; tabelul de deasupra e al elementelor lunii lui",
+    }
+    mesaje_vazute = set()
+    re_zona_msg = _re.compile(r'<div\b[^>]*\bid="([\w-]+-(?:mesaj|msg|eroare))"')
+    re_total_rand = _re.compile(r"<tr>\s*(?:<td[^>]*>\s*</td>\s*)?<td[^>]*>\s*<b>\s*Total\b")
     for nume, t in sorted(fisiere.items()):
         spans = _sabloane(t)
         for a, z, _f in spans:
@@ -2291,10 +2326,49 @@ def analiza_fereastra_tabel(css, nav, fisiere):
                     out.append((nume, _linie(t, a + p), "ACTIUNE_TABEL_NEFIXATA",
                                 "„%s” la capătul conținutului: în .bara-fixa (jos) sau .rezumat-fix (sus) — DS cap.9 v2.96" % (
                                     idm.group(1) if idm else mb.group(0)[:50])))
+                # [lotul 11, decizia Costin 10.3: „Totalurile și rezumatul fix, mesajele lângă buton”, DS cap.9 v2.100 pct.7–8]
+                # MESAJ_SUB_TABEL — zona de mesaj a ecranului (`id="…-mesaj|-msg|-eroare"`) pusă DUPĂ tabel, în afara barei de jos și a
+                # rezumatului: mesajul acțiunii de sus apărea la capătul tabelului, departe de butonul care îl produce (Stocuri `#s-mesaj`,
+                # Înregistrare `#ins-cereri-msg`). Zona unui rând (în celulă) nu e a ecranului.
+                if not dupa_tabel:
+                    for mz in re_zona_msg.finditer(s):
+                        p = mz.start()
+                        if p < min(pozt) or s.rfind("<td", 0, p) > s.rfind("</td>", 0, p):
+                            continue
+                        if _in_zona(s, p, "bara-fixa") or _in_zona(s, p, "rezumat-fix"):
+                            continue
+                        if (nume, mz.group(1)) in mesaje_exceptii:
+                            mesaje_vazute.add((nume, mz.group(1)))
+                            continue
+                        out.append((nume, _linie(t, a + p), "MESAJ_SUB_TABEL",
+                                    "zona de mesaj „%s” stă sub tabel, departe de butonul ei: în .rezumat-fix (lângă butoanele de sus) sau "
+                                    ".bara-fixa (lângă acțiunea de jos) — DS cap.9 v2.100" % mz.group(1)))
+                # TOTAL_NEFIXAT — totalul unui tabel care iese din vedere cât derulezi: rândul „Total” lăsat în `<tbody>` (se lipește jos
+                # numai din `<tfoot>`), sau caseta `.fd-totaluri` pusă după tabel în afara `.bara-fixa`.
+                for mt in re_total_rand.finditer(s):
+                    p = mt.start()
+                    if s.rfind("<tbody", 0, p) > max(s.rfind("</tbody>", 0, p), s.rfind("<tfoot", 0, p)):
+                        out.append((nume, _linie(t, a + p), "TOTAL_NEFIXAT",
+                                    "rândul de total stă în <tbody>: în <tfoot>, ca să rămână jos, în vedere — DS cap.9 v2.100"))
+                for mt in _re.finditer(r'class="fd-totaluri\b', s):
+                    p = mt.start()
+                    if (dupa_tabel or p > min(pozt)) and not _in_zona(s, p, "bara-fixa"):
+                        out.append((nume, _linie(t, a + p), "TOTAL_NEFIXAT",
+                                    "caseta de totaluri stă după tabel, în afara .bara-fixa: iese din vedere cât derulezi — DS cap.9 v2.100"))
 
     for (fis, ida), _motiv in sorted(actiuni_exceptii.items()):
         if fis in fisiere and (fis, ida) not in actiuni_vazute:
             out.append((fis, 0, "ACTIUNE_TABEL_NEFIXATA", "excepția „%s” nu mai are obiect: butonul nu mai e la capătul unui tabel" % ida))
+    for (fis, idz), _motiv in sorted(mesaje_exceptii.items()):
+        if fis in fisiere and (fis, idz) not in mesaje_vazute:
+            out.append((fis, 0, "MESAJ_SUB_TABEL", "excepția „%s” nu mai are obiect: zona nu mai stă sub un tabel" % idz))
+    # [lotul 11, TOTAL_NEFIXAT, partea de stil] rândul de total se lipește jos în fereastra cu tabel, deasupra barei (`--bara-h`, pus de
+    # navigator ca `--rezumat-h`), iar caseta de totaluri din bară stă pe un rând
+    mtf = _re.search(r"(?m)^\.fereastra\.fer-tabel \.fereastra-corp \.fd-tabel tfoot td[^{]*\{([^}]*)\}", css)
+    if not mtf or not (_re.search(r"position:\s*sticky", mtf.group(1)) and _re.search(r"bottom:\s*calc\(var\(--bara-h", mtf.group(1))):
+        out.append(("stil.css", 0, "TOTAL_NEFIXAT", "rândul de total (`tfoot`) nu mai e lipit jos, deasupra barei (`--bara-h`) — DS cap.9 v2.100"))
+    if not _re.search(r'_corp\.style\.setProperty\("--bara-h"', nav):
+        out.append(("navigator.js", 0, "TOTAL_NEFIXAT", "navigatorul nu mai pune `--bara-h` (înălțimea barei de jos): totalul lipit ar sta sub bară"))
 
     # (e) REZUMAT_TABEL_LIPSA — rezumatul lipit sus al ferestrei cu tabel (DS cap.9 v2.97 pct.5). Excepțiile se scriu, ca să poată fi
     # contrazise; cheia e (fișier, funcția care desenează tabelul).
@@ -2306,15 +2380,9 @@ def analiza_fereastra_tabel(css, nav, fisiere):
         ("operatiuni_ecran.js", "ecranOperatiuni"):
             "formular: tabelul împărțirii dividendului pe asociați e rezultatul câmpurilor de deasupra (câteva rânduri și totalul lor), "
             "iar „Generează nota” stă deja în bara fixă",
-        ("tipare.js", "randeazaTipare"):
-            "de decis de Costin: deasupra celor trei tabele nu stă nimic de fixat (numai titlurile lor), iar butonul „Generează analiză AI” "
-            "stă sub ele",
-        ("admin.js", "cereriNeconfirmate"):
-            "de decis de Costin: în fereastra Înregistrare zona de mesaj a lui „Retrimite confirmarea” (`#ins-cereri-msg`) stă SUB tabelul "
-            "cererilor, iar deasupra lui e formularul comutatorului; rezumatul fix ar cere mutarea mesajului deasupra tabelului",
-        ("firme.js", "randeazaSituatiaStocului"):
-            "de decis de Costin: în Stocuri tabelul situației stocului stă primul (decizia din 05.10.2026 pct.10), iar luna, „Descarcă "
-            "gestiunea lunii” și zona ei de mesaj (`#s-mesaj`) stau SUB el; rezumatul fix ar cere mutarea lor deasupra tabelului",
+        # [lotul 11] cele trei excepții „de decis de Costin” (Tipare, Înregistrare — cererile neconfirmate, Stocuri — situația stocului)
+        # au fost decise (DECIZII „Comanda 10.3” pct.4: „Totalurile și rezumatul fix, mesajele lângă buton […]: da, reorganizezi
+        # ecranele”) și scoase: ecranele au acum rezumatul lipit sus.
     }
     re_fn_n = _re.compile(r"(?m)^(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*\(")
     re_tab_d = _re.compile(r"<table\b(?![^>]*class=\"[^\"]*\b(?:%s)\b)|class=\"[^\"]*\bmig-sold-tabel\b" % "|".join(sorted(tabele_macheta)))
@@ -2373,6 +2441,191 @@ _blocuri_pacm = re.findall(r"(?m)^\.pacm \{([^}]*)\}", _surse_css["stil.css"])
 if len(_blocuri_pacm) != 1 or not re.search(r"(?<![-\w])height:\s*calc\(100vh", _blocuri_pacm[0] if _blocuri_pacm else ""):
     rap["fereastra_scris"].append(("stil.css", 0, "PACM", "%d blocuri `.pacm`, înălțimea ecranului: %s" % (
         len(_blocuri_pacm), bool(_blocuri_pacm and re.search(r"(?<![-\w])height:\s*calc\(100vh", _blocuri_pacm[0])))))
+
+
+# --- DUPA_GENERARE (DS cap.6 v2.98, lotul 11 — 8c, decizia Costin 10.3: „8c: reparația centrală, cu DS cap. 6 actualizat.”). Clasa,
+#     raportul Z (comanda 10.2 pct.8c): „După generare, titlul «Notă generată» e roșu, conturile notei nu se văd, iar «Generează notă»
+#     rămâne activ.” Un singur drum: `api.dupaGenerare` (stilul de succes, conturile și sumele, butonul inactiv cu motivul).
+#     Mutațiile care o probează (`core/test_lot11_j_verificator.py`, pe fragmente și pe fișierele reale): `butonGenerat(` scos din
+#     helper; un buton „Generează …” fără `data-genereaza-nota`; „Notă generată” scris de mână într-un ecran; apelul helperului scos din
+#     handlerul butonului -> lista nevidă -> TOTAL > 0.
+#     LIMITA, declarată: (1) domeniul îl dă eticheta butonului (`_GENERATOARE`) — un buton nou de generare cu altă etichetă intră numai
+#     când e adăugat în listă (sau poartă singur `data-genereaza-nota`); (2) legătura buton -> helper e textuală: un `dupaGenerare(` în
+#     cel mult 80 de rânduri după o referință la `#<id>`-ul butonului; nu dovedește că apelul e pe ramura de succes (o dovedesc testele
+#     în browser, `core/test_lot11_j_dupa_generare.py`); (3) stornarea facturii nu e aici: se încheie cu confirmarea DS cap.27 (418c).
+_GENERATOARE = re.compile(r"Genereaz[ăa] (?:not|amortizar|compensar)|Regenereaz[ăa] amortizar|Desc[ăa]rc[ăa] gestiunea|"
+                          r"Finalizeaz[ăa] inventarul|Salveaz[ăa] inventarul|Scrie nota|[ÎI]nlocuie[șş]te ciorna|Recontabilizeaz[ăa]|"
+                          r"Reevalueaz[ăa]|Caseaz[ăa]")
+
+
+def analiza_dupa_generare(fisiere):
+    """[(fișier, linie, COD, text)] — funcție PURĂ (primește {nume: sursă JS}), chemată de `core/test_lot11_j_verificator.py` pe
+    fragmente known-good / known-bad și pe fișierele reale. Codurile: DUPA_GENERARE_HELPER (helperul unic din api.js nu face ce cere
+    regula), GENERARE_NEDECLARATA (buton de generare fără `data-genereaza-nota`), GENERARE_FARA_HELPER (butonul declarat nu trece prin
+    `dupaGenerare`), TEXT_GENERAT_DE_MANA („Notă generată” scris în afara helperului — culoarea și conturile ar depinde de ecran)."""
+    import re as _re
+    out = []
+    dec = lambda s: _re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), s)
+    api = fisiere.get("api.js", "")
+
+    def _corp(nume):
+        m = _re.search(r"export function %s\([^)]*\)\s*\{(.*?)\n\}" % nume, api, _re.S)
+        return m.group(1) if m else None
+    dg, bg = _corp("dupaGenerare"), _corp("butonGenerat")
+    if dg is None or bg is None:
+        out.append(("api.js", 0, "DUPA_GENERARE_HELPER", "lipsește helperul unic `dupaGenerare` / `butonGenerat` (DS cap.6 v2.98)"))
+    else:
+        for frag, motiv in (("msg-(eroare|avert|info|ok)", "nu șterge culoarea refuzului de dinainte"),
+                            ("caseta-ok", "nu are stilul de succes (.caseta-ok)"),
+                            ("liniiNotaHtml(", "nu arată conturile și sumele notei"),
+                            ("butonGenerat(", "nu dezactivează butonul de generare")):
+            if frag not in dg:
+                out.append(("api.js", 0, "DUPA_GENERARE_HELPER", "dupaGenerare %s (DS cap.6 v2.98)" % motiv))
+        if "disabled = true" not in bg:
+            out.append(("api.js", 0, "DUPA_GENERARE_HELPER", "butonGenerat nu face butonul inactiv (DS cap.6 v2.98)"))
+    re_txt = _re.compile(r"\b[Nn]ot[ăa] generat[ăa]\b|\b[Nn]ote generate\b")
+    for nume, t in sorted(fisiere.items()):
+        linii = t.split("\n")
+        if nume != "api.js":
+            for i, lin in enumerate(linii, 1):
+                if lin.strip().startswith(("//", "/*", "*")):
+                    continue
+                if re_txt.search(dec(_re.sub(r"\s//\s.*$", "", lin))):
+                    out.append((nume, i, "TEXT_GENERAT_DE_MANA", "„Notă generată” în afara helperului: confirmarea trece prin "
+                                "`dupaGenerare` (DS cap.6 v2.98)"))
+        cheama = [i for i, lin in enumerate(linii) if "dupaGenerare(" in lin and not lin.strip().startswith(("//", "*"))]
+        for m in _re.finditer(r"<button\b[^>]*>(?:[^<]|<(?!/button>))*</button>", t):
+            tag = m.group(0)
+            if tag.startswith("<button") and "data-fara-actiune" in tag:
+                continue
+            i = t[:m.start()].count("\n") + 1
+            if _GENERATOARE.search(dec(tag)) and "data-genereaza-nota" not in tag:
+                out.append((nume, i, "GENERARE_NEDECLARATA", "buton de generare fără `data-genereaza-nota` (DS cap.6 v2.98): %s"
+                            % _re.sub(r"\s+", " ", dec(tag))[:90]))
+            if "data-genereaza-nota" not in tag:
+                continue
+            mid = _re.search(r'\bid="([\w-]+)"', tag)
+            if mid:
+                x = mid.group(1)
+                refs = [k for k, lin in enumerate(linii) if ("#%s\"" % x) in lin or ("#%s'" % x) in lin]
+                # butonul dat helperului: `#x` chiar în apel, sau variabila legată de `querySelector("#x")`. Ecranul care se
+                # redesenează fără buton (confirmarea cu `null`) o declară: `data-genereaza-nota="redesenat"` — atunci ajunge apelul
+                var = {v for k in refs for v in _re.findall(r"\b(?:const|let)\s+(\w+)\s*=\s*[^;]*#%s[\"']" % _re.escape(x), linii[k])}
+                da_butonul = lambda lin: _re.search(r"#%s[\"']" % _re.escape(x), lin.split("dupaGenerare(", 1)[1]) or any(
+                    _re.search(r"dupaGenerare\([^,]*,\s*%s\b" % v, lin) for v in var)
+                redesenat = 'data-genereaza-nota="redesenat"' in tag
+                if not any(r0 <= c <= r0 + 80 and (redesenat or da_butonul(linii[c])) for r0 in refs for c in cheama):
+                    out.append((nume, i, "GENERARE_FARA_HELPER", "butonul #%s generează o notă, dar handlerul lui nu cheamă "
+                                "`dupaGenerare` (DS cap.6 v2.98)" % mid.group(1)))
+            elif not cheama:
+                out.append((nume, i, "GENERARE_FARA_HELPER", "buton de generare fără id, iar fișierul nu cheamă `dupaGenerare`"))
+    return out
+
+
+rap["dupa_generare"] = analiza_dupa_generare(fisiere)
+
+
+# --- TITLU_FARA_DIACRITICE (lotul 11, comanda 11.1 pct.23: „titluri fără diacritice”). Titlurile de ferestre, carduri, secțiuni, coloane,
+#     opțiuni și butoane se scriu cu diacritice. Regula `diacritice` de mai sus (CUVINTE) prinde verbe din texte; aici, un DICȚIONAR de
+#     cuvinte frecvente din titluri care NU au formă corectă fără diacritice („Inregistrare”, „Iesire”, „Declaratii”…), plus titlul
+#     „Factura” scris singur (forma de titlu e „Factură”). Mutația: `<th>Factura</th>` sau `nav.deschide("Iesiri", …)` -> TOTAL > 0.
+#     LIMITA: un cuvânt corect și fără diacritice în altă formă („plata”, „luna”, „factura” articulat) nu intră — nu se poate judeca
+#     din text; dicționarul crește când se găsește un titlu nou (ca CUVINTE).
+_TITLU_FARA_DIACRITICE = frozenset("""inregistrare inregistrari iesire iesiri intrari situatie situatia situatii declaratie declaratia declaratii
+    setari notificari notificare operatiuni operatiune incasari incasare plati adeverinta adeverinte balanta evidenta fisa fisier fisiere
+    retete reteta productie tranzactii tranzactie asociati salariati contributii inchidere inapoi optiuni optiune pozitii informatii
+    ajustari cautare adaugare stergere selectie configuratie actiune actiuni activitati atentie diferente bilant imobilizari compensari
+    genereaza salveaza valideaza descarca incarca anuleaza renunta pastreaza sterge adauga inlocuieste chitante chitanta dispozitii
+    dispozitie noua lunara initiala scadente judet sfarsit inceput raspuns marfuri achizitii livrari prestari incarcare descarcare
+    rectificativa clienti angajati asistenti mentiuni observatii conditii ocupatie banci unitati pret preturi creante numar
+    saptamana urmatoarea urmator precedenta curenta neimputabila imputabila justificata mancare bauturi""".split())
+
+
+def analiza_titluri_diacritice(fisiere):
+    """[(fișier, linie, cuvânt, titlu)] — funcție PURĂ, chemată de `core/test_lot11_j_verificator.py`."""
+    import re as _re
+    out = []
+    dec = lambda s: _re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), s)
+    ctx = [r'\.deschide\(\s*"([^"]+)"', r"\.deschide\(\s*'([^']+)'", r"<h[1-6][^>]*>([^<$]+)", r'\btitlu:\s*"([^"]+)"',
+           r'class="[^"]*\b(?:pf-titlu|pf-subtitlu|cf-grup-titlu|cab-card-titlu|cok-titlu)\b[^"]*"[^>]*>([^<$]+)', r"<summary[^>]*>([^<$]+)",
+           r"<legend[^>]*>([^<$]+)", r"<th[^>]*>([^<$]+)", r"<option[^>]*>([^<$]+)", r'camp-eticheta"[^>]*>([^<$]+)',
+           r"<button[^>]*>([^<$]+)"]
+    for nume, t in sorted(fisiere.items()):
+        for i, lin in enumerate(t.split("\n"), 1):
+            if lin.strip().startswith(("//", "/*", "*")):
+                continue
+            vazute = set()   # același titlu prins de două tipare (<h2 class="pf-titlu">) se numără o dată
+            for p in ctx:
+                for m in _re.finditer(p, lin):
+                    s = dec(m.group(1)).strip()
+                    gasite = ["Factura"] if s == "Factura" else [w for w in _re.findall(r"[A-Za-zĂÂÎȘȚăâîșțşţ]+", s)
+                                                                  if w.lower() in _TITLU_FARA_DIACRITICE]
+                    for w in gasite:
+                        if (m.start(1), w) not in vazute:
+                            vazute.add((m.start(1), w))
+                            out.append((nume, i, w, "titlul „Factura” -> „Factură”" if s == "Factura" else s[:70]))
+    return out
+
+
+rap["titlu_fara_diacritice"] = analiza_titluri_diacritice(fisiere)
+
+
+# --- [lotul 11, subagentul U0] cele patru reguli transversale ale comenzii 11.1 (DS v2.99): 440 ERORI_TOATE, 441 DATA_GOLIBILA,
+#     443 SERIE_LIPITA, 445 INTOARCERE_DIN_REFUZ. Funcție PURĂ, chemată de `core/test_lot11_u0_verificator.py` pe fragmente și pe
+#     fișierele reale. Limita declarată: INTOARCERE_DIN_REFUZ privește mecanismul unic (navigator + `butonSpreEcran`); un buton „Deschide …”
+#     scris de mână într-un refuz, care cheamă `nav.deschide` fără `nav.dinRefuz()`, nu se recunoaște static.
+#: trimiterea la o EROARE fără textul ei („motivul e mai jos”, „câmpul marcat mai sus”, „(vezi mai sus)”, „motivele mai jos”); nu
+#: frazele care descriu conținutul de alături („o vezi mai jos” după o generare, „ce vezi mai sus e numărul de operațiuni”)
+_MAI_SUS = r"(?:motivul e|motivele(?: sunt)?|\(vezi|marcat|marcate)\s+(?:de\s+)?mai\s+(?:sus|jos)"
+
+
+def analiza_lot11_u0(fisiere, css=""):
+    """[(fișier, linie, COD, text)]."""
+    import re as _re
+    out = []
+    api, nav = fisiere.get("api.js", ""), fisiere.get("navigator.js", "")
+    dest = fisiere.get("ecran_destinatie.js", "")
+
+    def _corp(src, antet):
+        m = _re.search(antet + r"[^{]*\{(.*?)\n\}", src, _re.S)
+        return m.group(1) if m else ""
+    # 440 — mecanismul unic din api.js
+    rs, ec = _corp(api, r"export function refuzSalvare\("), _corp(api, r"export function eroareCamp\(")
+    if not rs or "motivul e" in rs:
+        out.append(("api.js", 0, "ERORI_TOATE", "caseta „NU s-a salvat.” trimite la refuz („motivul e mai sus”) în loc să-i spună textul (440)"))
+    if "aria-describedby" not in ec:
+        out.append(("api.js", 0, "ERORI_TOATE", "eroareCamp nu leagă eroarea de câmp (aria-describedby, 440)"))
+    if "export function arataRefuzul(" not in api or api.count("setTimeout(() => _campuriAutomat(e, declansator), 0)") < 2:
+        out.append(("api.js", 0, "ERORI_TOATE", "refuzul serverului nu-și mai pune toate câmpurile (arataRefuzul / _campuriAutomat în cere și cereForm, 440)"))
+    # 441 — câmpul de dată opțional se poate goli
+    if "export function dataGolibila(" not in api or "_dateGolibileIn(n)" not in api:
+        out.append(("api.js", 0, "DATA_GOLIBILA", "câmpurile de dată opționale nu mai primesc „×” (dataGolibila + observator, 441)"))
+    if css and not _re.search(r"(?m)^\.data-golibila \{", css):
+        out.append(("stil.css", 0, "DATA_GOLIBILA", "regula .data-golibila lipsește (DS cap.6 v2.99, 441)"))
+    # 445 — „Deschide X” dintr-un refuz întoarce la formular
+    bs = _corp(dest, r"export function butonSpreEcran\(")
+    if dest and ("nav.dinRefuz()" not in bs or "titluCurent" not in bs):
+        out.append(("ecran_destinatie.js", 0, "INTOARCERE_DIN_REFUZ", "butonSpreEcran nu mai anunță navigatorul (nav.dinRefuz / inapoiLa implicit, 445)"))
+    if nav and ("_dePastrat(dinRefuz)" not in nav or "sus.intoarcere && stiva.length > 1 ? nav.inapoi()" not in nav):
+        out.append(("navigator.js", 0, "INTOARCERE_DIN_REFUZ", "fereastra din refuz nu mai păstrează formularul / X o aruncă (445)"))
+    for nume, t in sorted(fisiere.items()):
+        for i, lin in enumerate(t.split("\n"), 1):
+            s = lin.strip()
+            if s.startswith(("//", "/*", "*")):
+                continue
+            cod = _re.sub(r"\s//\s.*$", "", lin)
+            # 440 — trimiterea fără text la o eroare
+            if _re.search(_MAI_SUS, cod, _re.I):
+                out.append((nume, i, "ERORI_TOATE", "trimitere „mai sus / mai jos” în locul textului erorii (440): " + s[:80]))
+            # 443 — seria lipită de număr (în afara helperului `numarCuSerie`)
+            if nume != "api.js" and (_re.search(r"\$\{[^}]*\bserie\w*[^}]*\}\s*-?\s*\$\{[^}]*\b(?:numar|nr|urmator_numar)\w*", cod)
+                                     or _re.search(r"\bserie\w*\s*\|\|\s*[\"']{2}\s*\)\s*\+\s*\(?\s*[\w.]*numar", cod)
+                                     or _re.search(r"\[\s*[\w.]*serie\w*\s*,\s*[\w.]*numar\w*\s*\]\s*\.filter\(Boolean\)\.join", cod)):
+                out.append((nume, i, "SERIE_LIPITA", "seria lipită de număr — numarCuSerie(serie, numar) dă „F6 nr. 1” (443): " + s[:80]))
+    return out
+
+
+rap["lot11_u0"] = analiza_lot11_u0(fisiere, open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read())
 
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))

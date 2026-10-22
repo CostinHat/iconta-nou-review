@@ -187,8 +187,11 @@ def _profil(firma, forma=True, platitor=True, caen="4711", amef=False):
     if forma:
         # [lotul 10, C69] bilanțul cere din Date firmă „Mare contribuabil” (bifaMC) și „Forma de proprietate” (codPP, nomenclatorul ANAF:
         # „35” = „Societăți cu răspundere limitată”, `bilant.FORME_PROPRIETATE`) — firma de probă e un SRL mic, nu mare contribuabil
+        # [lotul 11, decizia Costin 10.3 pct.4: „interesul public în Date firmă; ambele blochează dacă lipsesc”] + „Entitate de interes
+        # public: Nu” — fără ea profilul are o lipsă (`firma_profil_api.OBLIGATORII`), iar Date firmă spune „Salvat. Lipsește Entitate de
+        # interes public — blochează Bilanț.” în loc de „Datele firmei au fost salvate.”
         p.update({"forma_juridica": "SRL", "capital_subscris": "200", "capital_varsat": None,
-                  "mare_contribuabil": False, "forma_proprietate": "35"})
+                  "mare_contribuabil": False, "forma_proprietate": "35", "interes_public": False})
     return p
 
 
@@ -1283,7 +1286,9 @@ def test_def_24_notele_automate_poarta_documentul_iar_validarea_fara_document_ce
         return pg.inner_text("[data-nota-id='%s']" % nid)
     r_stoc, r_com, r_man = rand(stoc[0][0]), rand(comision[0][0]), rand(nota_manuala)
     patron.captura("jurnal", intreaga=True)
-    assert "Document justificativ: Factură %s din %s" % (f["numar"], AZI.strftime("%d.%m.%Y")) in r_stoc, r_stoc   # AZI-dat-de-test
+    # [lotul 11, 443] seria și numărul separat („E2EA nr. 1”, nu „E2EA1”)
+    assert "Document justificativ: Factură %s nr. %s din %s" % (SERIE, str(f["numar"])[len(SERIE):], AZI.strftime("%d.%m.%Y")) in r_stoc, \
+        r_stoc   # AZI-dat-de-test
     assert "Notă fără document justificativ" not in r_stoc and "Notă fără document justificativ" not in r_com, (r_stoc, r_com)
     assert "Document justificativ: Extras bancar" in r_com, r_com
     assert "Notă fără document justificativ" in r_man, r_man
@@ -1339,7 +1344,7 @@ def test_def_26_banca_spune_exact_ce_a_importat_si_ce_nota_a_creat(patron, firma
     pg.wait_for_function("() => document.querySelector('#bk-mesaj').innerText.includes('creat')", timeout=20000)
     mesaj = pg.inner_text("#bk-mesaj")
     # [309, 17.10.2026] nota comisionului e ciornă: rândul spune „Contată, nota e la validare”, nu „Contat ✓”
-    pg.locator(".pf-frand", has_text="Comision administrare cont E2E 26").get_by_text("Contată, nota e la validare").wait_for(timeout=20000)
+    pg.locator(".pf-frand", has_text="Comision administrare cont E2E 26").get_by_text("Contată · notă ciornă")   # [309; lotul 11, 457] nota comisionului e ciornă netrimisă.wait_for(timeout=20000)
     patron.captura("contare")
     # [258] nota se numește cum o arată Registrul jurnal („nr. crt. N din ZZ.LL.AAAA”), nu prin id-ul intern
     nid = sql('SELECT i.id FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l ON l.inregistrare_id = i.id '
@@ -1389,8 +1394,14 @@ def test_def_28_stocuri_arata_situatia_si_fara_retete_la_comert(patron, firma_e2
     assert cap == ["Articol", "UM", "Cantitate", "CMP (lei)", "Valoare (lei)"], cap
     marfa = [r for r in rand if r[0] == ARTICOL]
     assert marfa and marfa[0][1] == "buc" and marfa[0][3] == "12,50", marfa
-    assert pg.evaluate("() => { const s = document.querySelector('#s-situatie'); const t = document.querySelector('.pf-titlu'); "
-                       "return !!s && s.previousElementSibling === t; }"), "situația nu e primul lucru de sub titlu"
+    # [lotul 11, decizia Costin 10.3 pct.4 „Totalurile și rezumatul fix, mesajele lângă buton […]: da, reorganizezi ecranele”; DS cap.9
+    # v2.100 pct.5 și 8] titlul, luna, „Descarcă gestiunea lunii” și `#s-mesaj` sunt acum rezumatul lipit sus; situația stocului e
+    # primul lucru de sub el (deasupra formularelor — decizia 05.10.2026 pct.10), iar nimic altceva nu stă între titlu și situație.
+    assert pg.evaluate("() => { const s = document.querySelector('#s-situatie'); const r = s && s.previousElementSibling; "
+                       "if (!r || !r.classList.contains('rezumat-fix')) return false; "
+                       "const t = r.firstElementChild; "
+                       "return !!t && t.classList.contains('pf-titlu') && !!r.querySelector('#s-desc') && !!r.querySelector('#s-mesaj') "
+                       "&& !r.querySelector('table'); }"), "situația nu e primul lucru de sub titlu (rezumatul: titlu, luna, descărcarea, mesajul)"
     pg.click("#cv-toggle")
     pg.wait_for_selector("#cv-intrare", timeout=15000)
     patron.captura(intreaga=True)

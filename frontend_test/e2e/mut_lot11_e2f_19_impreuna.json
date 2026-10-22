@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "Object.entries(ciorna.campuri || {}).forEach(([id, v]) => { const e = corp.querySelector(\"#\" + id); if (e && v != null) e.value = v; });",
+  "inlocuire": "void 0;",
+  "test": "frontend_test/e2e/e2e_bloc_a.py::test_def_19_factura_nu_se_pierde_la_date_firma_si_la_expirarea_sesiunii"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "const p = _dePastrat(dinRefuz);",
+  "inlocuire": "const p = null;",
+  "test": "frontend_test/e2e/e2e_bloc_a.py::test_def_19_factura_nu_se_pierde_la_date_firma_si_la_expirarea_sesiunii"
+ }
+]

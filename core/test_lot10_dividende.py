@@ -266,7 +266,10 @@ _UC_FUNCTII = {n.name: n for n in ast.parse(io.open(os.path.join(RAD, "core", "u
 
 def test_430d_clasa_operatiunile_speciale_isi_scriu_sursa_lor():
     f = _functii_operatiuni()
-    assert len(f) == 34 and all(f.values()), [r for r, s in f.items() if not s]
+    # [lotul 11] 34 -> 32: au ieșit din Operațiuni speciale „Reevaluare lunară solduri valută” (429: un singur formular, în Închidere lună;
+    # ruta și use-case-ul au plecat) și „Achiziție de la neînregistrat” (450 / pct.23: borderoul are ecranul lui, în Stocuri; nota lui e
+    # legată de borderou — `nota_facturi_cu_factura`, sursa borderoului, nu „operatiuni”)
+    assert len(f) == 32 and all(f.values()), [r for r, s in f.items() if not s]
     vechi = {r for r, s in f.items() if re.search(r"repo_contabilitate\.nota_(facturi|banca|casa|salarii)_ciorna", s)}
     assert vechi <= SURSA_VECHE_PERMISA, sorted(vechi - SURSA_VECHE_PERMISA)
     # cele care scriu o notă fără factură legată trec prin nota_operatiune_ciorna (sursa „operatiuni”)

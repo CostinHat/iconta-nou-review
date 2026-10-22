@@ -33,7 +33,8 @@ CE PRINDE:  operatiune/partener pierdut(a) intre sursa si declaratie (aggregatio
             "### D390"); baza mutata pe alt tip; dublare/omisiune; nr_opi sau total_baza incoerent
             cu recalculul din facturi.
 CE NU PRINDE (limite declarate, GARZI cat.4 "Iesire catre autoritati"):
-  1. Corectiile <cos>: generatorul emite doar d_rec="0" (fara sectiune de corectie) - recalculul
+  1. Corectiile <cos>: [lotul 11, C77] generatorul emite d_rec="1" peste o depunere inregistrata (core.rectificativa), dar fara
+     sectiune de corectie (rectificativa D390 se completeaza integral, OPANAF 705/2020 anexa 2 cap.I) - recalculul
      pe facturile lunii NU acopera declaratii rectificative; daca generatorul ar capata <cos>,
      acest gard trebuie extins (declarat aici, nu alarma falsa azi).
   2. Checksum-ul VIES invalid: NU e treaba acestui gard (e mesaj per-partener din TURA-3 /

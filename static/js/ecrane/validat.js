@@ -28,10 +28,11 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt } from "../api.js?v=ff30ebaf3f";
+import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand } from "../api.js?v=58f26a3fc4";
 import { randA as randConstatare } from "./control_verdict.js?v=2daa29640d";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma } from "./firme.js?v=6855dfc0c2";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=020b99dd0c";
+import { permis } from "../drepturi.js?v=34d0fb0afd";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)
@@ -242,7 +243,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     <div class="mig-eroare" id="val-eroare"></div>
     <div id="val-ciorne"></div>
   `;
-  ciorneleMele(corp.querySelector("#val-ciorne"), firme, nav);
+  ciorneleMele(corp.querySelector("#val-ciorne"), firme, nav, corp);
   const z1 = corp.querySelector("#val-deValidat");
   const z2 = corp.querySelector("#val-deDepus");
   const z3 = corp.querySelector("#val-nevalidate");
@@ -337,22 +338,63 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
 // Bara apare numai când există note pe care le poți valida; serverul trece fiecare notă prin aceeași aprobare și spune ce a refuzat.
 // [Retest 2 pct.12, comanda Costin 09.10.2026] „Ciornele proprii ale contabilului trebuie să fie vizibile undeva fără căutare.”
 // La capătul ferestrei: notele tale încă în ciornă, pe firme, cu starea lor (trimisă la validare / respinsă cu motivul / netrimisă).
-async function ciorneleMele(zona, firme, nav) {
+// [lotul 11, deficiența 457] „ciornele făcute de contabil nu ajung în nicio coadă (182 nerezolvată)”: lista era numai de citit, deci ciorna
+// netrimisă (a celui care validează: n-o trimite nimeni în coadă) nu aștepta nicăieri unde să se lucreze. Acum lista e coada ta: pe rând,
+// „Validează” (cine are dreptul; serverul aplică aceleași reguli ca în Registrul jurnal, iar refuzul stă sub rând), „Trimite la validare”
+// (cine nu validează, pentru ciorna încă netrimisă) și „Deschide nota” (Registrul jurnal, pe luna notei, cu nota evidențiată).
+async function ciorneleMele(zona, firme, nav, corp) {
   if (!zona) return;
   let r;
   try { r = await api.get("/eu/ciorne"); } catch (e) { arataMesaj(zona, "Nu s-au putut încărca notele tale în ciornă" + (e && e.mesaj ? " (" + e.mesaj + ")" : "") + ".", "eroare"); return; }
   if (!r || !r.total) return;
   const stare = (n) => n.in_coada === "la_senior" ? "trimisă la validare"
     : (n.in_coada === "respinsa" ? `respinsă${n.motiv_respingere ? ": " + n.motiv_respingere : ""}` : "nevalidată, netrimisă");
+  const valideaza = permis("POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza");
+  const actiuni = (f, n) => {
+    const b = [];
+    if (n.in_coada !== "la_senior" && valideaza)
+      b.push(`<button class="buton-primar val-ciorna-valideaza" data-val-ciorna="${n.id}" data-tenant="${f.tenant_id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza">Validează</button>`);
+    else if (!n.in_coada && !valideaza)
+      b.push(`<button class="buton-secundar val-ciorna-trimite" data-trimite-ciorna="${n.id}" data-tenant="${f.tenant_id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/retrimite">Trimite la validare</button>`);
+    b.push(`<button class="btn-link val-ciorna-deschide" data-deschide-ciorna="${n.id}" data-tenant="${f.tenant_id}">Deschide nota</button>`);
+    return b.join(" ");
+  };
   zona.innerHTML = `<div class="cf-grup-titlu">Notele tale în ciornă (${r.total})</div>
-    <p class="mig-intro">Notele scrise de tine care nu sunt încă în evidență. Se validează sau se șterg din Registrul jurnal al firmei.</p>
+    <p class="mig-intro">Notele scrise de tine care nu sunt încă în evidență. ${valideaza ? "Le validezi de aici" : "Le trimiți la validare de aici"} sau din Registrul jurnal al firmei; acolo se și șterg.</p>
     ${r.firme.map((f) => `<div class="val-ciorne-firma">
       <div class="pf-frand-nume">${esc(f.firma)} <button class="btn-link" data-firma="${f.tenant_id}">Deschide firma</button></div>
-      <ul class="sa-jurnal">${f.note.map((n) => `<li>${esc(dataRo(n.data))} \u00b7 ${esc(n.descriere || "")} \u00b7 ${rulajNota(n)} \u00b7 ${esc(stare(n))}</li>`).join("")}</ul>
+      <ul class="sa-jurnal">${f.note.map((n) => `<li data-ciorna="${n.id}">${esc(dataRo(n.data))} · ${esc(n.descriere || "")} · ${rulajNota(n)} · ${esc(stare(n))} ${actiuni(f, n)}</li>`).join("")}</ul>
     </div>`).join("")}`;
+  const nota = (b) => (r.firme.find((f) => String(f.tenant_id) === b.dataset.tenant) || { note: [] }).note
+    .find((n) => String(n.id) === (b.dataset.valCiorna || b.dataset.trimiteCiorna || b.dataset.deschideCiorna)) || {};
+  const numeNota = (n) => `nota din ${dataRo(n.data)}${n.descriere ? " („" + n.descriere + "”)" : ""}`;
   zona.querySelectorAll("[data-firma]").forEach((b) => b.addEventListener("click", () => {
     const t = firme.find((x) => String(x.id) === b.dataset.firma);
     if (t) deschideFirma(t, nav);
+  }));
+  const dupaAct = (text) => { _confirma([], text); if (corp) randeazaValidat(corp, nav); else ciorneleMele(zona, firme, nav, corp); };
+  zona.querySelectorAll("[data-val-ciorna]").forEach((b) => b.addEventListener("click", async () => {
+    const n = nota(b);
+    b.disabled = true;
+    try {
+      await api.post(`/tenants/${b.dataset.tenant}/jurnal/${b.dataset.valCiorna}/valideaza`, {});
+      dupaAct(`Ai validat ${numeNota(n)}: a intrat în evidență.`);
+    } catch (e) { b.disabled = false; refuzPeRand(b, (e && e.mesaj) || "Nota nu s-a putut valida."); }
+  }));
+  zona.querySelectorAll("[data-trimite-ciorna]").forEach((b) => b.addEventListener("click", async () => {
+    const n = nota(b);
+    b.disabled = true;
+    try {
+      await api.post(`/tenants/${b.dataset.tenant}/jurnal/${b.dataset.trimiteCiorna}/retrimite`, {});
+      dupaAct(`Ai trimis la validare ${numeNota(n)}.`);
+    } catch (e) { b.disabled = false; refuzPeRand(b, (e && e.mesaj) || "Nota nu s-a putut trimite la validare."); }
+  }));
+  zona.querySelectorAll("[data-deschide-ciorna]").forEach((b) => b.addEventListener("click", () => {
+    const n = nota(b);
+    const t = firme.find((x) => String(x.id) === b.dataset.tenant);
+    if (!n.data || !t) return;
+    const [an, luna] = n.data.split("-").map((x) => parseInt(x, 10));
+    nav.deschide(`Registru jurnal · ${t.nume}`, (c, nn) => ecranJurnal(c, nn, t, { evidentiaza: n.id, an, luna }), { lat: "tabel" });
   }));
 }
 
@@ -453,7 +495,9 @@ function legaActiuniNota(zona, c, corpLista, nav, eroare, dinDetaliu) {
         if (dinDetaliu) nav.inapoi();
         randeazaValidat(corpLista, nav);
       }
-      catch (e) { if (eroare) arataMesaj(eroare, (e && e.mesaj) || "Eroare la validare.", "eroare"); }
+      catch (e) {
+        if (eroare) { arataMesaj(eroare, (e && e.mesaj) || "Eroare la validare.", "eroare"); ofertaRefacere(eroare, c, corpLista, nav); }
+      }
     };
     // [386, lotul 9] ca în Registrul-jurnal: regula de fond R3 din bază refuză validarea fără document justificativ — caseta spune de ce
     // și duce la pasul posibil (respingerea cu motivul, ca cel care a pregătit nota să scrie referința)
@@ -464,6 +508,32 @@ function legaActiuniNota(zona, c, corpLista, nav, eroare, dinDetaliu) {
     }
     valideaza();
   });
+}
+
+// [lotul 11, deficiența 451] „ciornele generate înainte de o reparație rămân validabile cu regula veche” — serverul refuză validarea
+// ciornei DEPĂȘITE (regenerată pe uscat din sursa ei, dă altă notă). Sub refuz, refacerea din sursă, ca în Registrul jurnal: aceeași
+// verificare (`GET …/jurnal/{nota_id}/depasita`), aceeași refacere (`POST …/reface`). Butonul stă SUB mesaj (DS cap.5, `.caseta-atentie`).
+async function ofertaRefacere(zona, c, corpLista, nav) {
+  const p0 = c.nota || {};
+  const ids = (p0.note || [p0]).map((p) => p && p.inregistrare_id).filter(Boolean);
+  for (const nid of ids) {
+    let d = null;
+    try { d = await api.get(`/tenants/${c.tenant_id}/jurnal/${nid}/depasita`); } catch { d = null; }
+    if (!d || !d.depasita || !d.refacere) continue;
+    const p = document.createElement("p");
+    p.style.marginTop = "6px";
+    p.innerHTML = `<button class="buton-secundar val-reface" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/reface">${esc(d.refacere.eticheta)}</button>`;
+    zona.appendChild(p);
+    p.querySelector(".val-reface").addEventListener("click", async (ev) => {
+      const b = ev.currentTarget;
+      b.disabled = true;
+      try {
+        const r = await api.post(`/tenants/${c.tenant_id}/jurnal/${nid}/reface`, {});
+        _confirma([], `${r.mesaj} O găsești în Registrul jurnal al firmei.`);
+        randeazaValidat(corpLista, nav);
+      } catch (e) { b.disabled = false; arataMesaj(zona, (e && e.mesaj) || "Nota nu s-a putut reface din sursă.", "eroare"); }
+    });
+  }
 }
 
 async function deschideNota(c, nav, ctx = {}) {
@@ -635,7 +705,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
       <div class="val-termen">termen (scadență): ${c.perioada || "—"}</div>
       ${dep ? `<div class="val-lipsa val-depasita">${esc(dep.mesaj)}</div>`
         : vi.gata ? "" : `<div class="val-lipsa">${esc(vi.lipsa)} <span class="val-lipsa-iesire">${esc(vi.iesire)}</span></div>`}
-      ${c.surse_nevalidate ? `<div class="val-lipsa val-surse">${esc(c.surse_nevalidate)}</div><div class="val-surse-note"></div>` : ""}
+      ${c.surse_nevalidate ? `<div class="val-lipsa val-surse">${esc((c.surse_note || []).length && c.surse_nevalidate_langa_note ? c.surse_nevalidate_langa_note : c.surse_nevalidate)}</div><div class="val-surse-note"></div>` : ""}  <!-- [lotul 11, 436] lângă butoanele notelor, fraza fără lista lor -->
       ${c.trecere_motiv ? `<div class="val-lipsa">trecut peste refuz, motiv: ${esc(c.trecere_motiv)}</div>` : ""}
       <button type="button" class="btn-link val-vezi" data-act="vezi">Vezi declarația, XML și verdictul DUK →</button>
     </div>
@@ -652,7 +722,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   if (_vezi) _vezi.addEventListener("click", () => deschideContinut(c, nav, corp));
   // [298 + 313] notele nevalidate pe care se sprijină declarația, fiecare cu butonul ei spre Registrul jurnal
   const zSurse = div.querySelector(".val-surse-note");
-  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=2fc90ca5ef").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
+  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=c05f894cb8").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
   return div;
 }
 
@@ -662,7 +732,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=24daa85dec");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=f65bf1fdb3");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;
@@ -828,7 +898,7 @@ function pasConfirmariConstatari(nav, c, corpBaza, detaliu, firme, corpLista, pe
   nav.mergi("Constatări de confirmat", (fc) => {
     fc.innerHTML = `
       <div class="caseta-atentie">
-        <div class="ca-mesaj">${esc(detaliu.mesaj || "")}</div>
+        <div class="ca-mesaj pe-randuri">${esc(detaliu.mesaj || "")}</div>
       </div>
       <p class="mig-intro">${esc((c.tip || "").toUpperCase())} · ${esc(perDecl)} · ${esc(numeFirma(firme, c.tenant_id))}</p>
       ${cs.map((x, i) => `

@@ -38,8 +38,34 @@ def desparte_cod_tva(cod):
                          "completează-l de pe factura furnizorului." % (tara, tara))
     return tara, nr
 
+def _vies_simulat(cod_tva):
+    """[lotul 11, C78 — plasa e2e] Răspunsul VIES pregătit în `<ICONTA_ANAF_SIMULAT>/vies.json` (aceeași cheie ca ANAF simulat,
+    `anaf_api.CHEIE_SIMULAT`): numai pe un mediu care se dovedește de test (`mediu_test.motive`), altfel refuz. None = VIES real."""
+    import os
+    d = os.environ.get("ICONTA_ANAF_SIMULAT")
+    if not d:
+        return None
+    from core import mediu_test
+    m = mediu_test.motive()
+    if m:
+        raise RuntimeError("ICONTA_ANAF_SIMULAT e setat pe un mediu care nu e de test (%s) — refuz răspunsurile VIES pregătite"
+                           % ", ".join(x.cod for x in m))
+    cale = os.path.join(d, "vies.json")
+    dupa_cod = {}
+    if os.path.exists(cale):
+        with open(cale, encoding="utf-8") as fh:
+            dupa_cod = json.load(fh)
+    tara, nr = desparte_cod_tva(cod_tva)
+    r = dupa_cod.get(tara + nr)
+    return dict(r, tara=tara, numar=nr) if r else {"valid": False, "nume": "", "adresa": "", "tara": tara, "numar": nr,
+                                                    "eroare": "INVALID_INPUT"}
+
+
 def verifica_vies(cod_tva, timeout=15):
     """Interogheaza VIES oficial. Returneaza {valid, nume, adresa, tara, numar}."""
+    s = _vies_simulat(cod_tva)
+    if s is not None:
+        return s
     tara, nr = desparte_cod_tva(cod_tva)
     req = urllib.request.Request(VIES_URL.format(ms=tara, vat=nr),
                                  headers={"Accept": "application/json"})

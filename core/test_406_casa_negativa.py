@@ -56,10 +56,11 @@ def _op(data, cat, suma, doc):
 def test_plata_peste_sold_e_refuzata_la_salvare(conn):
     assert _ca.adauga(conn, _SCH, _op("2026-10-15", "ridicare_banca", 142, "DI1")).get("eroare") is None
     r = _ca.adauga(conn, _SCH, _op("2026-10-19", "plata_furnizor", 200, "DP1"))
-    assert r == {"cod": "CASA_NEGATIVA", "eroare": (
-        "Plată către furnizor de 200,00 lei nu încape în casă (contul 5311): soldul casei pe 19.10.2026, în registru, e 142,00 lei, iar "
-        "după ea casa ar ajunge la -58,00 lei pe 19.10.2026. Numerarul din casă nu poate fi negativ. Înregistrează întâi încasarea sau "
-        "ridicarea de numerar din care s-a plătit.")}, r
+    _m = ("Plată către furnizor de 200,00 lei nu încape în casă (contul 5311): soldul casei pe 19.10.2026, în registru, e 142,00 lei, iar "
+          "după ea casa ar ajunge la -58,00 lei pe 19.10.2026. Numerarul din casă nu poate fi negativ. Înregistrează întâi încasarea sau "
+          "ridicarea de numerar din care s-a plătit.")
+    # [lotul 11, deficiența 440] refuzul poartă și câmpul (suma, `c-suma`), ca formularul Casă să-l pună lângă el
+    assert r == {"cod": "CASA_NEGATIVA", "eroare": _m, "erori_campuri": [{"camp": "c-suma", "mesaj": _m}]}, r
     # nimic scris: o singură operațiune în registru, soldul final 142
     reg = _ca.registru(conn, _SCH, 2026, 10)
     assert [o["suma"] for o in reg["operatiuni"]] == ["142.00"] and reg["sold_final"] == "142.00", reg

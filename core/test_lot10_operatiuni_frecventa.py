@@ -30,15 +30,17 @@ def _intrari():
     return out
 
 
-def test_toate_cele_34_au_frecventa():
+def test_toate_cele_32_au_frecventa():
     i = _intrari()
-    assert len(i) == 34, sorted(i)
+    # [lotul 11, 429] 34 -> 33: „Reevaluare lunară solduri valută” a ieșit — reevaluarea are un singur formular, în Închidere lună
+    # [lotul 11, 450 / pct.23] 33 -> 32: „Achiziție de la neînregistrat” a ieșit — borderoul are ecranul lui, în Stocuri (borderou_ecran.js)
+    assert len(i) == 32, sorted(i)
     assert {k for k, v in i.items() if v["frecventa"] not in ("lunar", "rar")} == set()
 
 
 def test_exemplele_comenzii_sunt_unde_le_pune_comanda():
     i = _intrari()
-    assert all(i[k]["frecventa"] == "lunar" for k in ("tva_incasare", "reeval_valuta", "avans"))       # „TVA la încasare, valută, avansuri”
+    assert all(i[k]["frecventa"] == "lunar" for k in ("tva_incasare", "decont_valuta", "avans"))       # „TVA la încasare, valută, avansuri”
     assert all(i[k]["frecventa"] == "rar" for k in ("lichidare", "reevaluare"))                         # „lichidare, reevaluare imobilizări”
 
 
@@ -49,7 +51,8 @@ def test_fiecare_lunara_spune_unde_o_propune_aplicatia_sau_de_ce_nu_poate():
     assert {k for k, v in i.items() if v["frecventa"] == "rar" and (v["propune"] or v["faraPropunere"])} == set()
     # cele propuse din alt ecran (verificate la sursă: T — bancă / casă / compensare; V — reevaluarea la închiderea lunii; facturile de
     # avans și casa; contarea facturii cu taxare inversă; asociații din Date firmă)
-    assert {k for k, v in i.items() if v["propune"]} == {"tva_incasare", "reeval_valuta", "avans", "taxare_inversa", "asociati"}
+    # [lotul 11, 429] reevaluarea în valută nu mai are formular aici: se propune și se generează numai din Închidere lună
+    assert {k for k, v in i.items() if v["propune"]} == {"tva_incasare", "avans", "taxare_inversa", "asociati"}
 
 
 def test_ecranul_separa_lunarele_de_cele_rare():

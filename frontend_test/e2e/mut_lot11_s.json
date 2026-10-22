@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "core/ciorne_depasite.py",
+  "ancora": "    elif acum.document is not None and doc != str(acum.document).strip():",
+  "inlocuire": "    elif False:",
+  "test": "frontend_test/e2e/e2e_lot11_s.py::test_def_451_ciorna_depasita_se_arata_pe_rand_se_reface_din_sursa_si_se_valideaza"
+ },
+ {
+  "fisier": "core/jurnal_api.py",
+  "ancora": "            return {**_refuz(_dep[\"mesaj\"], _cd.TEMEI), \"cod\": _cd.COD, \"depasita\": _dep}",
+  "inlocuire": "            pass",
+  "test": "frontend_test/e2e/e2e_lot11_s.py::test_def_451_de_validat_refuza_ciorna_depasita_si_ofera_refacerea"
+ },
+ {
+  "fisier": "core/stocuri_anulare.py",
+  "ancora": "                    WHERE {STORNARE_LA_RESPINGERE} AND (",
+  "inlocuire": "                    WHERE r.anuleaza_id IS NOT NULL AND (",
+  "test": "frontend_test/e2e/e2e_lot11_s.py::test_def_452_returul_din_stornare_se_valideaza_fara_motivul_fals"
+ },
+ {
+  "fisier": "core/jurnal_api.py",
+  "ancora": "    (\"facturi\", \"borderou\"): \"borderoul de achiziție\",",
+  "inlocuire": "    (\"facturi\", \"borderou_mutat\"): \"borderoul de achiziție\",",
+  "test": "frontend_test/e2e/e2e_lot11_s.py::test_def_23_nota_borderoului_arata_sursa_borderoul_nu_facturile"
+ },
+ {
+  "fisier": "core/migrare_borderou_tip_vechi.py",
+  "ancora": "            cur.execute(f\"UPDATE {s}.facturi SET tip = 'borderou' WHERE id = ANY(%s)\", ([c[\"id\"] for c in p[\"convertite\"]],))",
+  "inlocuire": "            pass",
+  "test": "frontend_test/e2e/e2e_lot11_s.py::test_def_c75_borderoul_vechi_e_borderou_iar_urmatorul_primeste_numarul_urmator"
+ }
+]

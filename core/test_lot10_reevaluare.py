@@ -7,7 +7,8 @@ cursul din evidență, cursul BNR din ultima zi bancară și diferența pe 665/7
 Temei: OMFP 1802/2014 pct.325 alin.(1) „La finele fiecărei luni, creanțele și datoriile în valută se evaluează la cursul de schimb al
 pieței valutare, comunicat de Banca Națională a României din ultima zi bancară a lunii în cauză. Diferențele de curs înregistrate se
 recunosc în contabilitate la venituri sau cheltuieli din diferențe de curs valutar, după caz.”; alin.(2) lit.b (disponibilitățile în
-valută). Perioade SINTETICE 2099 (schemă efemeră din template, ștearsă la ieșire; cursurile BNR din 2099 în `public.curs_bnr_zilnic`,
+valută). [lotul 11] Creanțele / datoriile sunt PE PARTENER (decizia Costin 10.3): cheia elementului e `p:<cont>:<partener>:<monedă>`
+(partenerul fără cod fiscal = „~NUMELE”). Perioade SINTETICE 2099 (schemă efemeră din template, ștearsă la ieșire; cursurile BNR din 2099 în `public.curs_bnr_zilnic`,
 scrise de test și șterse la ieșire — nicio zi reală nu se atinge).
 """
 import datetime
@@ -77,7 +78,8 @@ def firma(monkeypatch):
     monkeypatch.setattr(common, "azi_ro", lambda: datetime.date(2099, 12, 15))
     monkeypatch.setattr(auth_api, "schema_tenant", lambda conn, uid, tid: SCH)
     cerute = []
-    monkeypatch.setattr(uc_curs_bnr, "asigura_cursul", lambda m, z, prag_zile=5: cerute.append((m, str(z), prag_zile)))
+    monkeypatch.setattr(uc_curs_bnr, "asigura_cursul", lambda m, z, prag_zile=5, regula="operatiune": cerute.append((m, str(z), prag_zile,
+                                                                                                                       regula)))
     yield {"fe": fe, "fp": fp, "cerute": cerute}
     with _db.get_conn() as c:
         with c.cursor() as cur:
@@ -87,6 +89,8 @@ def firma(monkeypatch):
 
 
 CTX = {"uid": 1, "firm": 1}
+#: elementele pe partener ale fixturii (partenerii n-au cod fiscal: cheia e numele, `reevaluare_valuta.cheie_partener`)
+FE, FP = "p:4111:~CLIENT GMBH:EUR", "p:401:~SUPPLIER INC:USD"
 
 
 def _el(prop, cheie):
@@ -116,12 +120,12 @@ def test_def_429_propunerea_lunii_are_facturile_si_disponibilitatile_cu_cursuril
     ar ieși câștig) -> pică pe 401."""
     from core import uc_reevaluare
     p = uc_reevaluare.reevaluare_valuta_propunere(1, 2099, 9, CTX)
-    fe, fp, disp = _el(p, "f%d" % firma["fe"]), _el(p, "f%d" % firma["fp"]), _el(p, "c5124.EUR")
+    fe, fp, disp = _el(p, FE), _el(p, FP), _el(p, "c5124.EUR")
     # OMFP 1802/2014 pct.325 alin.(1): creanța în valută la cursul BNR din ultima zi bancară a lunii; crește cursul -> venit 765
     assert (fe["cont"], fe["moneda"], fe["sold_valuta"], fe["curs_evidenta"], fe["curs_bnr"], fe["data_curs"], fe["lei_evidenta"],
             fe["lei_bnr"], fe["diferenta"], fe["cont_diferenta"]) == (
         "4111", "EUR", "1000.00", "4.9700", "5.0000", "2099-09-30", "4970.00", "5000.00", "30.00", "765"), fe
-    assert fe["document"] and fe["partener"] == "Client GmbH" and not fe["estimat"]
+    assert fe["document"] and fe["partener"] == "Client GmbH" and not fe["estimat"] and fe["facturi"] == [firma["fe"]]
     # OMFP 1802/2014 pct.325 alin.(1) + planul de conturi, 665: „diferențele nefavorabile [...] din evaluarea datoriilor în valută, la
     # finele lunii (… 401 …)” — datoria crește cu cursul -> cheltuială 665
     assert (fp["cont"], fp["sold_valuta"], fp["curs_bnr"], fp["diferenta"], fp["cont_diferenta"]) == (
@@ -130,8 +134,9 @@ def test_def_429_propunerea_lunii_are_facturile_si_disponibilitatile_cu_cursuril
     assert (disp["moneda"], disp["sold_valuta"], disp["lei_evidenta"], disp["de_completat"], disp["editabile"]) == (
         "EUR", None, "4950.00", ["sold_valuta"], ["sold_valuta", "moneda"]), disp
     assert p["totaluri"]["venit"] == "30.00" and p["totaluri"]["cheltuiala"] == "50.00" and p["totaluri"]["de_completat"] == 1
-    # cursul ultimei zile bancare se cere BNR-ului înaintea tranzacției (30.09.2099 e miercuri: pragul 0 zile)
-    assert ("EUR", "2099-09-30", 0) in firma["cerute"] and ("USD", "2099-09-30", 0) in firma["cerute"]
+    # cursul ultimei zile bancare se cere BNR-ului înaintea tranzacției (30.09.2099 e miercuri: pragul 0 zile), cu regula sfârșitului de
+    # lună — OMFP 1802/2014 pct.325 alin.(2) lit.b: „comunicat [...] din ultima zi bancară a lunii” (și cel comunicat chiar pe 30.09)
+    assert ("EUR", "2099-09-30", 0, "sfarsit_luna") in firma["cerute"] and ("USD", "2099-09-30", 0, "sfarsit_luna") in firma["cerute"]
 
 
 def test_def_429_inchiderea_e_oprita_pana_la_reevaluare_si_nota_o_deblocheaza(firma):
@@ -142,10 +147,16 @@ def test_def_429_inchiderea_e_oprita_pana_la_reevaluare_si_nota_o_deblocheaza(fi
     # OMFP 1802/2014 pct.325 alin.(1) „La finele fiecărei luni [...] se evaluează” — obligatoriu lunar -> blocaj
     # numărul elementelor și defalcarea lor, din locul ei în mesaj („(<temei>: <defalcare>)”), nu „apare undeva”
     assert len(b) == 1 and b[0]["elemente"] == 3, ctl["blocaje"]
-    assert b[0]["mesaj"].partition("(%s: " % _rv.TEMEI)[2].partition(");")[0] == "2 facturi, 1 cont de disponibilități", b[0]["mesaj"]
+    # [lotul 11] textul blocajului are o singură sursă, `reevaluare_valuta.blocaj_inchidere`: pe parteneri și conturi
+    with _db.get_conn() as c, c.cursor() as cur:
+        mesaj, n = _rv.blocaj_inchidere(cur, SCH, 2099, 9)
+    assert mesaj.partition("(%s: " % _rv.TEMEI)[2].partition(");")[0] == "2 parteneri, 1 cont în valută" and n == 3, mesaj
+    assert b[0]["mesaj"] == mesaj, b[0]["mesaj"]   # „Ce oprește închiderea” spune exact textul ei (patch-ul `uc_comun`, lotul 11)
     with pytest.raises(erori.DateInvalide) as ei:   # soldul în valută al lui 5124.EUR lipsește: nu se generează pe o valoare inventată
         uc_reevaluare.reevaluare_valuta_genereaza(1, {"an": 2099, "luna": 9}, CTX)
-    assert re.findall(r"contul (\S+?)(?=, |\.$)", str(ei.value)) == ["5124.EUR"], str(ei.value)   # exact contul care cere completarea
+    # exact câmpul care cere completarea, lângă el (`erori_campuri`), și contul numit în mesaj
+    assert [x["camp"] for x in ei.value.detaliu["erori_campuri"]] == ["rv-sold_valuta-c5124.EUR"], ei.value.detaliu
+    assert re.findall(r"pe contul (\S+)", ei.value.detaliu["mesaj"]) == ["5124.EUR"], ei.value.detaliu
     r = uc_reevaluare.reevaluare_valuta_genereaza(1, {"an": 2099, "luna": 9, "completari": {"c5124.EUR": {"sold_valuta": "1000,00"}}}, CTX)
     assert (r["venit"], r["cheltuiala"], r["elemente"]) == ("80.00", "50.00", 3), r
     # nota: 4111 = 765 (creanța), 665 = 401 (datoria), 5124.EUR = 765 (disponibilul: 1.000 x 5,00 - 4.950)
@@ -189,7 +200,7 @@ def test_def_429_luna_urmatoare_porneste_de_la_cursul_reevaluarii_iar_plata_scad
         _nota(cur, "2099-10-15", [("5124.EUR", "4111", 2500)], firma["fe"], sursa="banca")
         c.commit()
     p = uc_reevaluare.reevaluare_valuta_propunere(1, 2099, 10, CTX)
-    fe, fp, disp = _el(p, "f%d" % firma["fe"]), _el(p, "f%d" % firma["fp"]), _el(p, "c5124.EUR")
+    fe, fp, disp = _el(p, FE), _el(p, FP), _el(p, "c5124.EUR")
     # OMFP 1802/2014 pct.322 alin.(1): plata stinge creanța la cursul la care e înregistrată în contabilitate (5,00 după reevaluare)
     assert (fe["curs_evidenta"], fe["curs_evidenta_din"], fe["sold_valuta"], fe["estimat"], fe["lei_evidenta"], fe["lei_bnr"],
             fe["diferenta"], fe["cont_diferenta"]) == ("5.0000", "2099-09-30", "500.00", True, "2500.00", "2525.00", "25.00", "765"), fe
@@ -208,7 +219,7 @@ def test_def_429_factura_incasata_integral_nu_mai_intra_in_propunere(firma):
         _nota(cur, "2099-09-20", [("5124.EUR", "4111", 4970)], firma["fe"], sursa="banca")
         c.commit()
     p = uc_reevaluare.reevaluare_valuta_propunere(1, 2099, 9, CTX)
-    assert "f%d" % firma["fe"] not in [e["cheie"] for e in p["elemente"]], p["elemente"]
+    assert FE not in [e["cheie"] for e in p["elemente"]], p["elemente"]
 
 
 def test_def_429_completarea_unui_camp_needitabil_e_refuzata(firma):
@@ -216,9 +227,10 @@ def test_def_429_completarea_unui_camp_needitabil_e_refuzata(firma):
     from core import uc_reevaluare, erori
     with pytest.raises(erori.DateInvalide) as ei:
         uc_reevaluare.reevaluare_valuta_genereaza(1, {"an": 2099, "luna": 9, "completari": {
-            "f%d" % firma["fe"]: {"sold_valuta": "900"}, "c5124.EUR": {"sold_valuta": "1000"}}}, CTX)
-    # câmpul refuzat, numit (eticheta lui, între ghilimele), pe elementul facturii — nu „apare undeva «sold în valută»”
-    assert re.findall(r"„([^”]+)”", str(ei.value)) == ["sold în valută"], str(ei.value)
+            FE: {"sold_valuta": "900"}, "c5124.EUR": {"sold_valuta": "1000"}}}, CTX)
+    # câmpul refuzat, numit (eticheta lui, între ghilimele), pe elementul partenerului — și lângă câmpul lui
+    assert re.findall(r"„([^”]+)”", ei.value.detaliu["mesaj"]) == ["sold în valută"], ei.value.detaliu
+    assert [x["camp"] for x in ei.value.detaliu["erori_campuri"]] == ["rv-sold_valuta-" + FE], ei.value.detaliu
 
 
 def test_def_429_luna_in_curs_nu_se_reevalueaza_si_nu_blocheaza(firma, monkeypatch):

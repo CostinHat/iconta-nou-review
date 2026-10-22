@@ -2,7 +2,7 @@
 title: "Greșeli la diferențe de curs: nerecunoscute la timp"
 description: "De ce amânarea recunoașterii diferențelor de curs valutar e o greșeală contabilă frecventă și cum arată consecința ei în bilanț."
 published: 2026-09-26
-modified: 2026-10-13
+modified: 2026-10-21
 poarta: v1
 ---
 
@@ -30,6 +30,6 @@ Cea mai frecventă greșeală la diferențele de curs valutar nu e formula de ca
 
 ## Ce face iConta.eu
 
-Ambele operațiuni relevante din iConta.eu — decontarea și reevaluarea lunară („reevaluarea în valută (Operațiuni speciale)”) — generează nota contabilă în chiar luna operațiunii, cu data cerută de utilizator, respectând momentul de recunoaștere cerut de pct. 322. Ce **nu automatizează** aplicația este verificarea că, de fapt, contabilul a rulat reevaluarea în fiecare lună la timp: dacă o lună a fost închisă fără reevaluare, aplicația nu emite niciun avertisment proactiv — constrângerea „verificarea lunii deschise” doar blochează încercarea de a mai scrie retroactiv într-o lună închisă, nu semnalează omisiunea în avans.
+Ambele operațiuni relevante din iConta.eu generează nota contabilă în chiar luna operațiunii, respectând momentul de recunoaștere cerut de pct. 322: decontarea („Operațiuni speciale → Decontare în valută”), cu data plății sau a încasării, și reevaluarea lunară („Închidere lună → Reevaluare valută”), datată în ultima zi a lunii. Omisiunea reevaluării se vede înainte de închidere: cât timp soldurile în valută de la sfârșitul lunii nu sunt reevaluate, reevaluarea apare în „Ce oprește închiderea”, iar luna nu se poate închide. O lună deja închisă rămâne închisă: constrângerea „verificarea lunii deschise” blochează scrierea retroactivă în ea.
 
 [iConta.eu](/)

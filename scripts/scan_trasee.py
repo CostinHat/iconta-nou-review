@@ -98,7 +98,8 @@ TRASEE = [
     ("T06", "Importul de e-Factura și transmiterea prin SPV",
      [r"^/tenants/\{\}/import-efactura", r"^/tenants/\{\}/facturi-primite",
       r"^/tenants/\{\}/facturi/\{\}/trimite-spv", r"^/tenants/\{\}/trimiteri-spv",
-      r"^/tenants/\{\}/spv/(stare|verifica-acum)$"],   # [lotul 6, 273a] starea SPV a firmei și „Verifică acum în SPV”
+      r"^/tenants/\{\}/spv/(stare|verifica-acum)$",   # [lotul 6, 273a] starea SPV a firmei și „Verifică acum în SPV”
+      r"^/tenants/\{\}/furnizori(/|$)"],   # [lotul 11] fișa furnizorilor: partenerul facturilor primite (ca `clienti` la T35)
      ["efactura_primite", "efactura_trimiteri"]),
     ("T07", "Extrasul bancar și potrivirea",
      [r"^/tenants/\{\}/banca"], ["extras_linii"]),
@@ -118,7 +119,8 @@ TRASEE = [
      # datorata, deci apartine aceluiasi traseu, nu unuia propriu.
      # [varianta (a), 13.10.2026] propunerea notei de închidere la 31.12 aparține închiderii anului
      [r"^/tenants/\{\}/s100[35]", r"^/tenants/\{\}/categorie-marime$", r"^/tenants/\{\}/bilant-an-precedent(-manual)?$",
-      r"^/tenants/\{\}/bilant-inchidere-propunere$"], []),
+      r"^/tenants/\{\}/bilant-inchidere-propunere$",
+      r"^/cabinet/intocmitor$"], []),   # [lotul 11] întocmitorul situațiilor financiare (calitatea, numele, CIF, nr. CECCAR), pe cabinet
     ("T13", "Trecerea de regim fiscal",
      [r"^/tenants/\{\}/firma-profil", r"^/tenants/\{\}/vector$", r"^/migrare/vector",
       r"^/tenants/\{\}/tva-incasare"],   # [lotul 10, 428] regimul TVA la încasare: perioadele, verificarea ANAF, facturile rămase la ieșire
@@ -183,6 +185,7 @@ TRASEE = [
      [r"^/tenants/\{\}/(vanzare-marja|vanzare-marja-turism|vanzare-aur-investitii)",
       r"^/tenants/\{\}/(achizitie-agricultor|vanzare-agricultor|achizitie-taxare-inversa)",
       r"^/tenants/\{\}/(achizitie-neinregistrat|achizitie-necorporala)",
+      r"^/tenants/\{\}/borderouri(/|$)",   # [lotul 11, 450] borderourile de achiziție ale lunii și stornarea lor (decizia 10.3)
       r"^/tenants/\{\}/(import-extracomunitar|export-extracomunitar)",
       r"^/tenants/\{\}/jurnal-marja"],
      []),
@@ -351,6 +354,26 @@ def _delegare(fn):
 _UC_CACHE = {}
 
 
+def _legate_local(fn):
+    """Numele legate in corpul lui `fn` prin altceva decat un import: atribuiri, `with ... as`, `for`, argumentele functiei."""
+    out = set()
+    for n in ast.walk(fn):
+        tinte = []
+        if isinstance(n, ast.Assign):
+            tinte = n.targets
+        elif isinstance(n, (ast.AnnAssign, ast.AugAssign)):
+            tinte = [n.target]
+        elif isinstance(n, ast.withitem) and n.optional_vars is not None:
+            tinte = [n.optional_vars]
+        elif isinstance(n, (ast.For, ast.AsyncFor)):
+            tinte = [n.target]
+        for t in tinte:
+            out |= {x.id for x in ast.walk(t) if isinstance(x, ast.Name)}
+    if isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        out |= {a.arg for a in list(fn.args.args) + list(fn.args.kwonlyargs) + list(fn.args.posonlyargs)}
+    return out
+
+
 def _corp_efectiv(fn, local):
     """(nod, alias) — functia care poarta MUNCA rutei, si harta de aliasuri a modulului ei.
 
@@ -383,6 +406,11 @@ def _corp_efectiv(fn, local):
         if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == nume:
             # aliasul LOCAL bate pe cel de modul: corpul mutat isi poarta importurile lui
             propriu = dict(harta)
+            # [lotul 11] si un nume legat LOCAL prin altceva decat un import (`with conn.cursor() as _c`) nu mai e alias de modul — a doua
+            # fata a atribuirii false (test_CALIBRARE_un_nume_umbrit_local...), acum si in corpul delegat din `core/uc_*.py`: ruta de NIR
+            # primea `casa_api` (importat ca `_c` in alte functii ale lui `uc_tenants`) de la cursorul ei `_c`
+            for nume_legat in _legate_local(n):
+                propriu.pop(nume_legat, None)
             for x in ast.walk(n):
                 if isinstance(x, ast.ImportFrom) and (x.module or "").split(".")[0] == "core":
                     for al in x.names:
@@ -645,9 +673,12 @@ def citeste_rute():
     return rute
 
 
+#: [lotul 11, 22.10.2026] Prefixul de schemă e `%s` / `%(nume)s` EXACT: forma veche `%\(?\w*\)?s` era lacomă și tăia numele tabelului
+#: lipit de prefix la ULTIMUL „s” („UPDATE %sstoc” -> „toc”, „INSERT INTO %sinregistrari” -> „trari”), iar „DO UPDATE SET” / „FOR UPDATE”
+#: dădeau tabelul „SET” / „SELECT”. Calibrarea: core/test_lot11_re_w_tabele.py.
 RE_W = re.compile(r'\b(INSERT\s+INTO|UPDATE|DELETE\s+FROM)\s+'
-                  r'(?:"?\{[^}]*\}"?\.|"?%\(?\w*\)?s"?\.?|"?[a-z_]+"?\.)?'
-                  r'"?([a-zA-Z_][a-zA-Z0-9_]*)"?', re.I)
+                  r'(?:"?\{[^}]*\}"?\.|"?%(?:\(\w+\))?s"?\.?|"?[a-z_]+"?\.)?'
+                  r'(?!(?:SET|SELECT|OF|NOWAIT|SKIP)\b)"?([a-zA-Z_][a-zA-Z0-9_]*)"?', re.I)
 RE_STARE = re.compile(r"\b(status|stare)\s*=\s*['\"]([a-z_]+)['\"]", re.I)
 
 

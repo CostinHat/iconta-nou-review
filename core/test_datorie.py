@@ -72,9 +72,29 @@ def test_fiecare_datorie_are_data_si_motiv():
     # Registrul GOL e starea DORITA, nu o eroare: inseamna ca tot ce era amanat s-a inchis
     # (reparat sau respins cu motiv). 27.07.2026 - prima zi cand s-a intamplat.
     for nume, motiv in itemi:
-        assert "DATORIE" in motiv, "%s: motiv fara eticheta DATORIE" % nume
-        assert re.search(r"\d{2}\.\d{2}\.\d{4}", motiv), "%s: motiv fara data" % nume
-        assert len(motiv) > 60, "%s: motiv prea scurt ca sa fie util peste 3 luni" % nume
+        assert not _lipsuri_motiv(motiv), "%s: %s" % (nume, "; ".join(_lipsuri_motiv(motiv)))
+
+
+def _lipsuri_motiv(motiv):
+    """Ce-i lipseste motivului unui xfail: eticheta DATORIE ca PRIM cuvant (pozitia ei, nu „apare undeva” — core/test_garzi_pe_text.py),
+    data ZZ.LL.AAAA, lungimea care il face util peste 3 luni."""
+    lipsa = []
+    if motiv.split(" ", 1)[0] != "DATORIE":
+        lipsa.append("motiv fara eticheta DATORIE")
+    if not re.search(r"\d{2}\.\d{2}\.\d{4}", motiv):
+        lipsa.append("motiv fara data")
+    if len(motiv) <= 60:
+        lipsa.append("motiv prea scurt ca sa fie util peste 3 luni")
+    return lipsa
+
+
+def test_CALIBRARE_igiena_motivului_prinde_fiecare_lipsa():
+    """Anti-vacuu: registrul gol e starea dorita, deci bucla de mai sus poate sa nu compare nimic; verificarea insasi se probeaza aici."""
+    bun = "DATORIE 22.10.2026: un motiv destul de lung ca sa spuna peste trei luni ce anume s-a amanat si de ce."
+    assert _lipsuri_motiv(bun) == []
+    assert _lipsuri_motiv(bun.replace("DATORIE", "NOTA", 1)) == ["motiv fara eticheta DATORIE"]
+    assert _lipsuri_motiv(bun.replace("22.10.2026", "azi")) == ["motiv fara data"]
+    assert _lipsuri_motiv("DATORIE 22.10.2026: scurt") == ["motiv prea scurt ca sa fie util peste 3 luni"]
 
 
 def test_datoria_nu_imbatraneste_nelimitat():
@@ -385,3 +405,28 @@ def test_datorie_toate_tipurile_au_termen_sursat():
 def test_datorie_stoc_cantitativ_la_pret_de_vanzare_si_fifo():
     from core import metoda_stoc
     assert metoda_stoc.NESUPORTATE == {}
+
+
+# [lotul 11, K] DATORIA 21.10.2026 (subagentul b, găsită la 449) ÎNCHISĂ în același lot: emiterea primește acum subcodurile NC ale
+# cerealelor (HG 1/2016 pct.109 alin.(7): 1001 Grâu și meslin ...; `facturi_api` verifică pe `produse_api.coduri_331()`, iar lista `C331`
+# a ecranului de emitere vine din aceeași sursă). Testul a trecut din xfail (XPASS strict) în regresie permanentă.
+def test_datorie_factura_emisa_cu_cereale_poarta_codul_nc():
+    import io as _io
+    from core import facturi_api, tenant_provisioning as _tp
+    if not _db_ok():
+        pytest.skip("DB indisponibil")
+    sch = "efemer_datorie_cereale_nc"
+    with db.get_conn() as c:
+        try:
+            with c.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % sch)
+                cur.execute(_tp.parametrizeaza_template(_io.open("tenant_template.sql", encoding="utf-8").read(), sch))
+                cur.execute("SET LOCAL search_path TO %s, public" % sch)   # pe tranzacție: nu rămâne pe conexiunea din pool (core/test_lot10_search_path_pool.py)
+                cur.execute("INSERT INTO firma_profil (id, nume, cui, platitor_tva, forma_juridica, capital_subscris, serie_factura) "
+                            "VALUES (1, 'CAT SRL', '14399840', true, 'SRL', 200, 'CAT')")
+            r = facturi_api.creeaza_factura(c, "G1", "2026-10-16", "emisa", [{"descriere": "Grâu", "um": "kg", "cantitate": 1000,
+                                            "pret_unitar": 1, "cota_tva": 0, "categorie_tva": "taxare_inversa"}],
+                                            tert_nume="CLIENT SRL", tert_cui="18547290", categorie_331="1001")
+            assert r["factura_id"]
+        finally:
+            c.rollback()
