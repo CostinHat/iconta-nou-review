@@ -23045,3 +23045,11 @@ slăbit, ocolit sau șters (regula 3d). Fiecare picătură a avut o cauză real�
    refăcute din `scan_trasee.antet_traseu` după `--sterge` (20 de antete). **Blocul de cifre din PREDARE** era generat imediat după `--sterge`
    și purta cei 2 orfani; regenerat (0 orfani, contor 363). Ordinea corectă, de acum: artefactele derivate din DATE se regenerează după ultima
    operație pe baza de test (copia scoasă, orfanii curățați).
+5. **După commit, garda anti-stale a agendei** (`test_agenda::test_verificarile_A_nu_sunt_in_urma_codului`, care citește starea COMISĂ):
+   5 funcții de test bifate s-au schimbat în lot, de data asta cu aserțiuni noi, nu numai în fixtură — 453 (deducerea rotunjită la leu:
+   `test_deducere_degresiva_pe_trepte`, `test_deducere_4plus_persoane_45pct`, `test_tanar_sub26_brut_mic_primeste_deducere`) și C99
+   (minimul part-time calculat într-un singur loc: `test_d112_ruteaza_cotele_prin_cote_nu_literale`, `test_partime_minim_foloseste_d112int_nu_round_bancar`).
+   Reverificat la sursă (structura D112 din `anaf_surse/d112_struct_anaf.txt`: l.192–193 rotunjirea matematică a câmpurilor calculate cu
+   parametri, l.189 rotunjirea aritmetică a contribuțiilor, l.4548–4550 formula part-time) și pe DUK (`test_lot11_a453_deducere.py`,
+   `test_d112.py`: 38 passed). Cele trei bife (deducere personală, baze contribuții, rotunjire aritmetică A91b) reancorate la 22.10 cu
+   `bump:` și motivul în TESTE.md. Respins: excluderea funcțiilor din agendă.
