@@ -23053,3 +23053,23 @@ slăbit, ocolit sau șters (regula 3d). Fiecare picătură a avut o cauză real�
    parametri, l.189 rotunjirea aritmetică a contribuțiilor, l.4548–4550 formula part-time) și pe DUK (`test_lot11_a453_deducere.py`,
    `test_d112.py`: 38 passed). Cele trei bife (deducere personală, baze contribuții, rotunjire aritmetică A91b) reancorate la 22.10 cu
    `bump:` și motivul în TESTE.md. Respins: excluderea funcțiilor din agendă.
+
+## 23.10.2026 — Comanda 11.4 (lotul 11): poarta și publicarea, bara din Panou Admin, deciziile deschise — verbatim
+
+Costin, verbatim (chat, 23.10.2026, după raportul „Lotul 11 — suita a doua și commitul”):
+
+> 11.4
+>
+> 1. Confirm: nimeni nu lucrează în cabinet până la publicare; nota 186 a F1 respinsă la 21:07–21:09 e de la testarea mea. Pornește poarta și, pe VERDE, publică lotul 11 cum ai descris.
+> 2. Între 23:06 și 23:12 bara din Panou Admin a coborât de la „3 angajați · 25 de facturi emise” la „2 angajați · 22 de facturi emise”. Spune ce a șters asta, pe ce firme, și dacă a fost intenționat.
+> 3. Pentru fiecare decizie deschisă (C97, 456, cursul vechi la factura primită în valută, B1_4 = 8, C84, dovada fără ecran la C70 și C86) scrie în trei rânduri: ce e, variantele, recomandarea ta.
+> 4. Răspunde punctual pe fiecare număr din lotul 11: rezolvat sau nu, și unde se vede în aplicație.
+>
+> Oprește-te după publicare și raportează.
+
+**Consecințe (executor):** pct.1 e confirmarea cerută de regimul pilot pentru poartă, migrări, restart și publicare (backup chiar înainte),
+și aprobarea scrisă a SHA-ului verde al lotului 11 pentru `main` (`.git/APROBARE_MAIN`); se oprește după publicare. Pct.2 s-a verificat pe
+producție numai-citire, ÎNAINTEA porții (o ștergere neexplicată ar fi oprit publicarea): niciun rând de audit de ștergere / dezactivare între
+22:50 și 23:20, niciun utilizator cu emiteri dispărut, nicio firmă scoasă în ultimele 30 de ore; bara calculată acum dă 3 angajați · 25 —
+aceeași cifră ca la 23:05 — iar rândurile de audit nu reapar după o ștergere. Deci nu s-a șters nimic; „2 · 22” nu se poate reproduce din
+date (răspunsul, în raport). Găsită pe drum: C101 (refuzurile numărate ca facturi emise), consemnată „nerezolvată”, în afara lotului.
