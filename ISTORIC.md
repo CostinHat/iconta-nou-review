@@ -3068,3 +3068,12 @@ casa, stocurile, jurnalul, balanța, bilanțul, declarațiile, facturile, emiter
 `api.js` (`ultimaCerere`, `pastreazaCampulActiv`), aplicat de trei subagenți pe fișiere disjuncte și de sesiunea principală pe reevaluare,
 concediu, facturile primite și planul de conturi; contoarele scrise de mână au trecut pe el. Garda statică și două teste de capăt la capăt
 noi, fiecare roșu sub mutația lui; dovada pe copia lui F1. Detaliile, perimetrul și alternativele respinse: DECIZII „C103”.
+
+### 23.10.2026 — Lotul 11, poarta 3 ROȘIE pe două teste: firul de fundal de după scriere, oprit în suită
+
+Poarta 3 a trecut verificatorul, cifrele F1–F5 și plasa nu a mai apucat-o: pytest a picat pe două teste din același fișier (generarea D300
+după o factură), care singure treceau. Cauza, reprodusă determinist: după orice scriere a cabinetului, aplicația pornește un fir care reia
+declarațiile în așteptare; în suită, unde testul are o singură conexiune comună, firul o lua și îi muta schema în mijlocul generării.
+Recalcularea rezumatelor avea comutator de oprire în suită din 08.10, firul reluării (16.10) și triajul sesizărilor nu. Acum toate trei trec
+printr-un singur loc, `db.fir_de_fundal`, oprit în suită, cu gardă care nu lasă alt fir să pornească pe lângă el. Pe producție nimic nu se
+schimbă. Detalii: DECIZII „Lotul 11, poarta 3 ROȘIE”.

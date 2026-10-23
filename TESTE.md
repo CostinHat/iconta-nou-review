@@ -70,7 +70,11 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     unei cereri vechi scris peste cel nou” + „câmpul înlocuit la re-desenare” — 39 de funcții pe 20 de ecrane, trecute pe `ultimaCerere()` /
     `pastreazaCampulActiv` (`static/js/api.js`); garda `core/test_cerere_veche.py` (7 teste, 2 mutații ROȘII), `e2e_lot11_v.py::test_def_c103_…`
     ×2 (mutațiile ROȘII), C102 re-probat pe mecanismul unic (mutație ROȘIE). DECIZII „C103”.
-  - urmator: commitul reparațiilor -> poarta 3 a lotului (regula 3d: până la verde) -> pe VERDE, cu backup chiar înainte: `APROBARE_MAIN`,
+  - ultim: (23.10.2026 ~13:40) poarta 3 pe `ba2e04d4` ROȘIE (pytest 10 528 passed, 2 failed + 2 errors în
+    `core/test_scrieri_pana_in_declaratie.py`; verificatorul 0, cifrele identice): firul `uc_coada.reia_in_fundal` pornit după orice scriere
+    lucra pe conexiunea comună a testului (reprodus determinist). Cele trei fire cu bază trec prin `db.fir_de_fundal`, oprit în suită
+    (`ICONTA_FIRE_FUNDAL=0`); garda `core/test_fire_fundal.py` (5 teste, 3 mutații ROȘII). DECIZII „Lotul 11, poarta 3 ROȘIE”.
+  - urmator: commitul reparației -> poarta 4 a lotului (regula 3d: până la verde) -> pe VERDE, cu backup chiar înainte: `APROBARE_MAIN`,
     fast-forward, post-commit, cele 10 migrări `--productie`, restart, four-way; ZIP; raportul §2.2. IN LUCRU
   - pasi:
     L11-1. T — 428 (emiterea în sistemul TVA la încasare: 4428, mențiunea, Configurare emitere arată sistemul; cauza pe producție) + C76

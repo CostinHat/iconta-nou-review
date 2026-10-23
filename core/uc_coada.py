@@ -595,8 +595,7 @@ def reia_declaratiile_in_asteptare(cabinet_id):
 
 
 def reia_in_fundal(cabinet_id):
-    """`reia_declaratiile_in_asteptare` pe un fir separat; eșecul nu e tăcut (`observare.esec_secundar`)."""
-    import threading
+    """`reia_declaratiile_in_asteptare` pe un fir separat (`db.fir_de_fundal`); eșecul nu e tăcut (`observare.esec_secundar`)."""
 
     def _ruleaza():
         try:
@@ -604,7 +603,7 @@ def reia_in_fundal(cabinet_id):
         except Exception as e:
             from core import observare as _obs
             _obs.esec_secundar("declaratii in asteptare reluate dupa validarea notelor", e)
-    threading.Thread(target=_ruleaza, name="reia-asteptare-%s" % cabinet_id, daemon=True).start()
+    return db.fir_de_fundal(_ruleaza, nume="reia-asteptare-%s" % cabinet_id)
 
 
 #: [deficiența 287] ce urmează după „Trimite în coadă”, spus după starea REALĂ: validarea în doi efectivă (`coada_api.patru_ochi_stare`) și

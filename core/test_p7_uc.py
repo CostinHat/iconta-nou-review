@@ -649,6 +649,10 @@ APELURI_INLOCUITE = {
 #: Creditul NU se dă orb: se numără apelurile din corpul ajutorului (plus funcțiile modulului lui pe care le cheamă direct), deci
 #: un apel care nu există nici acolo rămâne pierdut. Anti-vacuu: `test_EXTRAGERILE_declarate_chiar_cheama_ajutorul`.
 APELURI_EXTRASE_IN_AJUTOR = {
+    'raportari_creeaza': (("core/db.py", "fir_de_fundal"), (
+        'Lotul 11, poarta 3 (DECIZII „Lotul 11, poarta 3 ROȘIE”): firul triajului AI al sesizării (`threading.Thread(...).start()`) pornește '
+        'acum prin `db.fir_de_fundal`, singurul loc care pornește fire cu bază din drumul unei cereri, oprit în suită. Gardul: '
+        '`core/test_fire_fundal.py::test_niciun_fir_pornit_in_afara_portii_unice`.')),
     "factura_primita_valideaza": (("core/uc_tenants.py", "_factura_importata"), "Lotul 11, C79 (subagentul Y): importul facturii din XML trece numai prin `uc_tenants._factura_importata` — `_factura_din_parsat` (facturi + linii, dedup) ȘI TVA-ul pe cote al facturii (BG-23, `factura_tva_cote`), de pe care se contează și se declară TVA-ul (CF art.299 alin.(1) lit.a). Gardul: `core/test_lot11_y_tva_primita.py::test_importul_trece_numai_prin_factura_importata`."),
     "import_efactura": (("core/uc_tenants.py", "_factura_importata"), "Lotul 11, C79 (subagentul Y): importul facturii din XML trece numai prin `uc_tenants._factura_importata` — `_factura_din_parsat` (facturi + linii, dedup) ȘI TVA-ul pe cote al facturii (BG-23, `factura_tva_cote`), de pe care se contează și se declară TVA-ul (CF art.299 alin.(1) lit.a). Gardul: `core/test_lot11_y_tva_primita.py::test_importul_trece_numai_prin_factura_importata`."),
     'tenant_amortizare': (("core/amortizare_lunii.py", "linii"), (

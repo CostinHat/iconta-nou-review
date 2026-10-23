@@ -260,6 +260,27 @@ def schema_exista(schema):
             return repo_admin.schema_exista(cur, schema)
 
 
+def fire_de_fundal_permise():
+    """[lotul 11, poarta 3] False în suită (`ICONTA_FIRE_FUNDAL=0`, conftest); peste tot în rest, True. Vezi `fir_de_fundal`."""
+    return os.environ.get("ICONTA_FIRE_FUNDAL", "1") != "0"
+
+
+def fir_de_fundal(tinta, *args, nume):
+    """`tinta(*args)` pe un fir daemon, pornit din drumul unei cereri; întoarce True dacă a pornit.
+
+    [lotul 11, poarta 3] Singurul loc din aplicație care pornește un fir ce deschide conexiuni la bază. După orice scriere reușită,
+    middleware-ul pornea `uc_coada.reia_in_fundal` (fără comutator, spre deosebire de recalcularea rezumatelor): în suită, unde testul
+    înlocuiește `get_conn` cu o singură conexiune comună, firul punea `search_path` pe `public` în mijlocul lui `d300.pull` din test
+    („relation inregistrari does not exist”, două picături în poarta 3, numai sub încărcare). În suită firele nu pornesc; testele
+    cheamă funcțiile direct. Garda: `core/test_fire_fundal.py` (niciun `threading.Thread` în afara acestei funcții, cu excepțiile
+    numite acolo)."""
+    if not fire_de_fundal_permise():
+        return False
+    import threading
+    threading.Thread(target=tinta, args=args, name=nume, daemon=True).start()
+    return True
+
+
 def pe_firma_existenta(schema, fn):
     """[lotul 10, eroarea 500 din `/eu/ciorne`] `fn(conn)` pe schema unei firme din portofoliu, citită în bucla unei cereri.
     Între citirea listei firmelor și interogarea uneia, firma se poate șterge (schema ei dispare): atunci întoarce

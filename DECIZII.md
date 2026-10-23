@@ -23217,3 +23217,39 @@ afara `pastreazaCampulActiv`, scrierile din editare clasificate, clasificările 
 calibrarea pe versiunea publicată (reevaluarea și concediul de la `22c71846` sunt prinse), mecanismul rulat în node. Testele de capăt la
 capăt: `e2e_lot11_v.py::test_def_c103_…` (×2), cu răspunsurile ținute pe loc. Limita, declarată în detector: se urmăresc funcțiile chemate
 pe nume din același fișier — o citire făcută de o funcție importată din alt modul sau chemată ca metodă nu se vede.
+
+## 23.10.2026 — Lotul 11, poarta 3 ROȘIE (pytest: 2 failed + 2 errors, același fișier): firul de fundal pornit după orice scriere lucra pe conexiunea comună a testului
+
+**Cum a apărut.** Poarta 3 (`ba2e04d4`, rularea 3 pe ramură, 4946 s): verificator 0, cifrele F1–F5 identice cu referința, pytest 10 528
+passed / 9 skipped / 14 xfailed, 2 failed + 2 errors, ambele în `core/test_scrieri_pana_in_declaratie.py`
+(`test_STORNO_intra_in_LUNA_LUI_nu_o_scade_pe_a_facturii`, `test_operatiunea_iesita_din_proforma_se_declara_O_SINGURA_data`):
+`psycopg2.errors.UndefinedTable: relation "inregistrari" does not exist` în mijlocul lui `d300.pull` (la a cincea, respectiv a patra
+interogare de pe același cursor), apoi `InFailedSqlTransaction` la curățarea fixture-ului. Fișierul rulat singur: 39 passed.
+
+**Cauza.** După orice cerere de modificare reușită a cabinetului, middleware-ul din `main.py` (`_autor_si_note_in_coada`, deficiența 284,
+16.10.2026) pornea `uc_coada.reia_in_fundal` — `threading.Thread` direct, fără comutatorul pe care recalcularea rezumatelor îl avea din
+08.10 (`ICONTA_RECALCUL_FUNDAL=0` în conftest, cu motivul scris: „un fir neașteptat ar face testele nedeterministe”). Fixture-ul testului
+înlocuiește `db.get_conn` cu o singură conexiune comună; firul o primea și punea `SET search_path TO public` în timp ce testul genera D300.
+Sub încărcarea porții (3 procese) firul cădea în fereastra aceea; singur, nu. **Reprodus determinist** pe codul comis (plugin pytest:
+firul întârziat 0,3 s, `d300._pull_note_tva` 1 s): exact aceeași eroare, `1 failed, 1 error`. Pe producție nu se întâmplă: acolo fiecare
+`get_conn` are conexiunea lui din pool, deci nu e o deficiență a produsului (nu intră în DEFICIENTE), ci o gaură de izolare a suitei.
+
+**Clasa:** un fir care deschide conexiuni la bază, pornit din drumul unei cereri, lăsat pornit în suită. Căutat pe tot codul aplicației
+(`grep -rnE "threading\.Thread|Thread\(|Timer\(|ThreadPoolExecutor|start_new_thread|create_task\(" core main.py`, fără teste): patru fire —
+`firma_rezumat.recalculeaza_in_fundal` (oprit în suită), `uc_coada.reia_in_fundal` (**neoprit**, cauza), `uc_raportari` → triajul AI al
+sesizării (`raportari_ai.proceseaza`, **neoprit**, aceeași formă) și `observare.alerteaza_in_fundal` (numai HTTP către Brevo, fără bază —
+în afara clasei; testele lui cer firul real). `create_task` numai în `lifespan` (buclele lui trăiesc cât clientul de test).
+
+**Reparația:** un singur loc, `db.fir_de_fundal(tinta, *args, nume)`, oprit în suită de `ICONTA_FIRE_FUNDAL=0` (conftest), prin care trec
+cele trei fire cu bază; comutatorul vechi `ICONTA_RECALCUL_FUNDAL` e înlocuit (nu era setat nicăieri în afara suitei: verificat în
+`~/.iconta/*.env`, unitatea systemd, `scripts/e2e_poarta.py`). Pe producție și în plasa e2e comportamentul rămâne neschimbat (comutatorul
+lipsește → firele pornesc). **Garda** `core/test_fire_fundal.py`: niciun fir pornit în `core/` sau `main.py` în afara lui `db.fir_de_fundal`,
+cu excepția numită a alertei (al cărei motiv e verificat: `_trimite_brevo` nu deschide conexiuni); comutatorul pus pentru toată suita;
+reluarea declarațiilor trece prin poartă. Mutațiile: firul direct pus înapoi în `uc_coada` → ROȘU (locul numit); comutatorul scos din
+conftest → ROȘU, iar reproducerea iese din nou roșie; `get_conn` în `_trimite_brevo` → ROȘU.
+
+**Alternative respinse:** (a) fixture-ul testului să-și dea conexiunea numai firului lui — repară un fișier din zeci care falsifică
+`get_conn` la fel, iar firul ar fi lovit pe altul; (b) firul să-și ia conexiune proprie și în suită — sub fake nu există pool, iar un fir care
+scrie notificări peste firma efemeră a altui test rămâne nedeterminist; (c) rularea din nou a porții „că a fost noroc” — interzis de regula 3d.
+Garda de conservare a apelurilor din P7 (`core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum`) a văzut mutarea (`raportari_creeaza`: `Thread` + `start` pierdute din corp) și primește intrarea `raportari_creeaza` -> `db.fir_de_fundal` în `APELURI_EXTRASE_IN_AJUTOR`: apelurile sunt creditate numai dacă ajutorul chiar le face.
+**Limita:** garda vede `core/` și `main.py`; `scripts/` sunt unelte de linie de comandă, fără cereri.

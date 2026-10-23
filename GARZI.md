@@ -9009,9 +9009,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**1031 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**1032 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 992
+### `core/` — 993
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9500,6 +9500,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_fereastra_firmei_grupuri.py` — GARD ÎN BROWSER — fereastra firmei, grupată (comanda Costin 05.10.2026 pct.11): „cele peste 20 de carduri se grupează sub câteva
 - `core/test_fereastra_focusabila.py` — [a11y WCAG 2.1.1 / Regula 14] GARD: corpul modal .fereastra-corp e focusabil din tastatura.
 - `core/test_fieldmark.py` — [Regula 13 + Regula 6] GARDA: marcajul vizual al campului cu eroare de validare (Regula 14 pct.4).
+- `core/test_fire_fundal.py` — [lotul 11, poarta 3] Firele de fundal pornite din drumul unei cereri trec printr-un singur loc, `db.fir_de_fundal`, oprit în suită.
 - `core/test_firma_profil_api.py` — Teste pure pentru helper-ele F180 (regim TVA vs ANAF) din firma_profil_api.
 - `core/test_firma_rezumat.py` — GARD P2 (08.09.2026, remediat) — modelul de citire al portofoliului.
 - `core/test_fisa_cont.py` — GARD: Fișa de cont pentru operațiuni diverse produce ce cere norma, nu o balanță deghizată.
@@ -11775,3 +11776,5 @@ clasificare fără cerere pică. Mutațiile: verificarea de după răspuns scoas
 proba de dinți (9 forme rele, 6 bune) și calibrarea pe `22c71846`. Limita, declarată: se urmăresc funcțiile chemate pe nume din același
 fișier — o citire făcută de o funcție importată din alt modul, sau chemată ca metodă (`obj.f()`), nu se vede; clicurile care nu schimbă o
 variabilă a ecranului nu intră (cer același lucru de două ori).
+
+**După poarta 3 (23.10.2026): firele de fundal pornite din drumul unei cereri — ACOPERIT.** Categoria „testul e nedeterminist fiindcă un fir al aplicației lucrează pe conexiunea lui”: `core/test_fire_fundal.py` — niciun `threading.Thread` / `Timer` / executor în `core/` sau `main.py` în afara lui `db.fir_de_fundal` (oprit în suită de `ICONTA_FIRE_FUNDAL=0`, conftest), cu excepția numită a alertei Brevo, al cărei motiv („fără bază”) e verificat pe arborele sintactic. Mutațiile: firul direct în `uc_coada.reia_in_fundal` -> ROȘU; comutatorul scos din conftest -> ROȘU; `get_conn` în `_trimite_brevo` -> ROȘU. Limita: `scripts/` nu e citit (fără cereri); taskurile `asyncio` din `lifespan` nu sunt fire. DECIZII „Lotul 11, poarta 3 ROȘIE”.

@@ -29,8 +29,10 @@ Poarta 1 (`0dab561d`) ROȘIE: 5 picături pytest + cifrele necalculabile (ordine
 ROȘIE numai pe plasă: 50 de erori din repornirea Postgres + `iconta-nou` de către needrestart la 06:24 (actualizarea automată a lui zlib) +
 C102 (reparată) + garda 323 (citea și ciornele). Rularea țintită de după reparații a scos C103 — clasa din care C102 era o instanță
 (răspunsul unei cereri vechi scris peste cel nou; câmpul înlocuit la re-desenare): 39 de funcții pe 20 de ecrane, trecute pe mecanismul unic
-din `api.js`, cu gardă (DECIZII „C103”). Toate în commitul care conține această predare; urmează poarta 3 (DECIZII „Lotul 11, poarta 2
-ROȘIE”, „C103”). Poarta se pornește DETAȘAT (`setsid nohup sh scripts/poarta_lot.sh`): cu plasa, durează peste 7200 s, limita unei sarcini
+din `api.js`, cu gardă (DECIZII „C103”), comise în `ba2e04d4`. Poarta 3 (`ba2e04d4`) ROȘIE pe două teste din același fișier: firul de
+fundal pornit după orice scriere (`uc_coada.reia_in_fundal`) lucra pe conexiunea comună a testului; cele trei fire cu bază trec acum prin
+`db.fir_de_fundal`, oprit în suită, cu gardă (DECIZII „Lotul 11, poarta 3 ROȘIE”). Toate în commitul care conține această predare; urmează
+poarta 4. Poarta se pornește DETAȘAT (`setsid nohup sh scripts/poarta_lot.sh`): cu plasa, durează peste 7200 s, limita unei sarcini
 de fundal.
 **Fronturi deschise:** (1) **poarta lotului** (`sh scripts/poarta_lot.sh`) și publicarea cer confirmarea lui Costin că cabinetul nu lucrează,
 cu backup chiar înainte; regula 3d: pe roșu se repară și se rulează din nou, fără limită de rulări, fără a slăbi vreun test. (2) La publicare,

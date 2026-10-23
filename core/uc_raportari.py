@@ -48,9 +48,8 @@ def raportari_creeaza(date, ctx):
         raise _erori.CerereGresita(mesaj_din_cod(r.get("cod")))
     if tip == "sesizare":
         # [triaj_ai] AI raspunde la intrebarile de folosire sau escaladeaza (pentru_admin); nu blocheaza crearea
-        import threading
         from core import raportari_ai as _rai
-        threading.Thread(target=_rai.proceseaza, args=(r["raportare_id"], date.subiect, date.text), daemon=True).start()
+        db.fir_de_fundal(_rai.proceseaza, r["raportare_id"], date.subiect, date.text, nume="triaj-sesizare")
     return r
 
 

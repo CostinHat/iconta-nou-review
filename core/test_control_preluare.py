@@ -205,7 +205,7 @@ def test_cardul_nu_asteapta_tura_de_5_minute(monkeypatch):
     a doua scriere în timpul lui cere încă o trecere, nu un al doilea fir. Citirea portofoliului rămâne o interogare (P2)."""
     import threading
     from core import firma_rezumat as fr
-    monkeypatch.setenv("ICONTA_RECALCUL_FUNDAL", "1")
+    monkeypatch.setenv("ICONTA_FIRE_FUNDAL", "1")
     porniri, gata, tine = [], threading.Event(), threading.Event()
 
     def lot(*a, **k):
@@ -219,7 +219,7 @@ def test_cardul_nu_asteapta_tura_de_5_minute(monkeypatch):
     assert fr.recalculeaza_in_fundal() is False       # în timpul rulării: încă o trecere, nu un fir nou
     tine.set()
     assert gata.wait(5) and len(porniri) == 2
-    monkeypatch.setenv("ICONTA_RECALCUL_FUNDAL", "0")
+    monkeypatch.setenv("ICONTA_FIRE_FUNDAL", "0")
     assert fr.recalculeaza_in_fundal() is False
     # și e legată de cererile de modificare (middleware-ul din main.py)
     import ast

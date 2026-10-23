@@ -1221,12 +1221,12 @@ def recalculeaza_in_fundal():
     într-un fir de fundal: același `recalculeaza_lot`, același blocaj per firmă ca lucrătorul (deci nicio firmă nu se calculează de
     două ori). Citirea portofoliului rămâne o singură interogare (contractul P2, `core/test_p2_contract.py`) — recalcularea NU se
     mută în cererea de citire. Câte o rulare pe proces; o scriere venită în timpul ei cere încă o trecere, nu un fir nou.
-    Oprită în suită (`ICONTA_RECALCUL_FUNDAL=0`, conftest), unde un fir neașteptat ar face testele nedeterministe.
+    Oprită în suită (`ICONTA_FIRE_FUNDAL=0`, conftest; `db.fir_de_fundal`), unde un fir neașteptat ar face testele nedeterministe.
     Întoarce True dacă a pornit un fir."""
     global _FUNDAL_LACAT
-    import os
     import threading
-    if os.environ.get("ICONTA_RECALCUL_FUNDAL", "1") == "0":
+    from core import db as _db_fundal
+    if not _db_fundal.fire_de_fundal_permise():
         return False
     if _FUNDAL_LACAT is None:
         _FUNDAL_LACAT = threading.Lock()
@@ -1249,8 +1249,7 @@ def recalculeaza_in_fundal():
                     _FUNDAL["ruleaza"] = False
                     return
 
-    threading.Thread(target=_lucru, name="firma_rezumat_fundal", daemon=True).start()
-    return True
+    return _db_fundal.fir_de_fundal(_lucru, nume="firma_rezumat_fundal")
 
 
 # ============================================================================
