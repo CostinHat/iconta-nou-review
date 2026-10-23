@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=58f26a3fc4";
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=31460b24f2";
 import { textStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
@@ -402,14 +402,18 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   aratăPregatirea(num);
   aratăRegimulTva(num);
   // reîncarcă ce depinde de Date firmă și de DATA facturii: lipsurile, numerotarea, cotele permise la data aleasă
+  const cererePregatire = ultimaCerere();   // [C103] data facturii schimbată în șir: numai numerotarea și cotele ultimei date ajung pe ecran
   async function reincarcaPregatirea() {
+    const actuala = cererePregatire();
     const data = (corp.querySelector("#em-data") || {}).value || dataIso();
     try {
       const n = await api.get(`/tenants/${tenantId}/facturi/numerotare?data=${encodeURIComponent(data)}`);
+      if (!actuala()) return;
       aratăPregatirea(n); aratăNumarul(n); aratăRegimulTva(n);
       const cote = (n.cote_permise && n.cote_permise.length) ? n.cote_permise : [];
-      if (cote.join(",") !== COTE.join(",")) { COTE = cote; deseneazaLinii(); }   // altă perioadă de cote -> lista pe fiecare linie
-    } catch { /* rămâne starea de dinainte */ }
+      // altă perioadă de cote -> lista pe fiecare linie; [C103] cantitatea / prețul scrise între timp pe o linie nu se pierd
+      if (cote.join(",") !== COTE.join(",")) { COTE = cote; pastreazaCampulActiv(corp, deseneazaLinii); }
+    } catch { if (!actuala()) return; /* rămâne starea de dinainte */ }
   }
   corp.addEventListener("nav:revenire", reincarcaPregatirea);
   corp.querySelector("#em-data").addEventListener("change", reincarcaPregatirea);
@@ -561,6 +565,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     const aratăFaraArticol = () => { if (faraArt) faraArt.hidden = !(l.descriere && !l.articol_id); };
     const del = zonaLinii.querySelector('.em-l-sterge[data-idx="' + i + '"]');
     let timer = null;
+    const cerereCota = ultimaCerere();   // [C103] denumirea scrisă în reprize: numai propunerea pentru ultima denumire ajunge pe linie
     den.addEventListener("input", () => {
       l.descriere = den.value.trim();
       // [comanda Costin 06.10.2026 pct.1c] denumirea scrisă de mână, diferită de articolul ales, DEZLEAGĂ linia de articol: altfel
@@ -577,6 +582,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       l.cota_tva = null;  // reset -> se repotriveste
       l.cotaAleasa = false; l.categoriePropusa = false; l.tipLinie = null; l.categorie_tva = null;   // [326] denumire nouă, propunere nouă
       clearTimeout(timer);
+      const actuala = cerereCota();   // și o denumire scurtă / neplătitorul (fără cerere) opresc propunerea cerută înainte
       const d = l.descriere;
       if (d.length < 3) { setCota(l, "—"); recalc(); return; }
       // [lot 19 pct.4d] neplatitor: cota e 0 prin lege, nu o propunere — fara apel de potrivire (care ar fi dat 21)
@@ -587,6 +593,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       timer = setTimeout(async () => {
         try {
           const r = await api.post(`/tenants/${tenantId}/produse/potriveste`, { denumire: d, articol: !!l.articol_id });
+          if (!actuala()) return;
           if (r && !r.ok && r.cod === "ARTICOL_FARA_COTA") {   // [274a] articolul de stoc fără cotă în nomenclator: se spune, cu drumul spre Produse
             const z = zonaLinii.querySelector("#em-l" + linii.indexOf(l) + "-cota-mesaj");
             if (z) {
@@ -620,7 +627,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
             }
             propuneServiciuExtern(l);   // [326]
           }
-        } catch {}
+        } catch { if (!actuala()) return; }
         recalc();
       }, 550);
     });
@@ -711,12 +718,13 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   // previzualizare_lei`: același curs, aceeași conversie ca la emitere, CF art.319 alin.(20) lit.j: „suma taxei colectate, exprimate în
   // lei”), nu aici: ecranul nu duplică regula (interdicția 4). Cererea pleacă după ce omul s-a oprit din scris; un răspuns întârziat,
   // pentru o stare deja schimbată, nu se mai afișează. Cât cota nu e stabilită pe o linie cu valoare, sumele în lei sunt „—”, ca totalul.
-  let leiTimer = null, leiCerere = 0;
+  let leiTimer = null;
+  const cerereLei = ultimaCerere();   // [C103] moneda, data sau o linie schimbate în șir: numai conversia ultimei cereri ajunge pe ecran
   function actualizeazaLei(nestiut) {
     const z = corp.querySelector("#em-valuta");
     if (!z) return;
     clearTimeout(leiTimer);
-    const nr = ++leiCerere;
+    const actuala = cerereLei();
     if (!monedaSel || monedaSel === "RON") { z.hidden = true; z.innerHTML = ""; return; }
     const moneda = monedaSel, data = (corp.querySelector("#em-data") || {}).value || dataIso();
     // DS cap.24 regula 2: lista trimisă e lista de pe ecran, nefiltrată — cât un rând e incomplet, numai cursul (ca la cota nestabilită)
@@ -734,10 +742,12 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       let r;
       try { r = await api.post(`/tenants/${tenantId}/facturi/previzualizare-lei`, cerere); }
       catch (e) {
-        if (nr === leiCerere && z.isConnected) arataMesaj(zonaRefuzului(), `${(e && e.mesaj) || "Cursul BNR nu s-a putut citi acum."}${reincearca}`, "eroare");
+        if (!actuala()) return;
+        if (z.isConnected) arataMesaj(zonaRefuzului(), `${(e && e.mesaj) || "Cursul BNR nu s-a putut citi acum."}${reincearca}`, "eroare");
         return;
       }
-      if (nr !== leiCerere || !z.isConnected) return;   // între timp s-a schimbat moneda, data sau o linie
+      if (!actuala()) return;   // între timp s-a schimbat moneda, data sau o linie
+      if (!z.isConnected) return;
       z.hidden = false;
       if (!r || !r.ok) {
         arataMesaj(zonaRefuzului(), `${(r && r.mesaj) || ""}${r && r.cod === "MONEDA_NECOTATA" ? "" : reincearca}`, "eroare");

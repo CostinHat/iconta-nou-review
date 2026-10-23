@@ -5,7 +5,7 @@
 // CF art.282 alin.(3), (8) — `core/compensari_api.py`.
 // DS: fereastra cu tabel (cap.9 v2.96): rezumatul lipit sus `.rezumat-fix` (partenerul, ordinul, totalul), tabelul `.fd-tabel` cu cifrele
 // în `.fd-td-num`, acțiunea și mesajul ei lipite jos `.bara-fixa`; confirmarea numește notele și trimite la ele (cap.27).
-import { api, arataMesaj, bani, curataEroriCamp, dataIso, dataRo, dupaGenerare, esc, eroareCamp, noteGenerate, ALEGE } from "../api.js?v=58f26a3fc4";
+import { api, ultimaCerere, arataMesaj, bani, curataEroriCamp, dataIso, dataRo, dupaGenerare, esc, eroareCamp, noteGenerate, ALEGE } from "../api.js?v=31460b24f2";
 
 /** „CZ1 din 10.10.2026 · rest 1.210,00” — factura cum o citește omul. */
 function doc(f) {
@@ -21,12 +21,16 @@ export async function ecranCompensari(corp, nav, t, opt = {}) {
   const sume = {};          // ce a scris contabilul pe pereche: {index: suma}
   let mesajDupa = null;     // confirmarea generării, păstrată peste redesenare
 
+  const cerereNoua = ultimaCerere();   // [C103] partenerul / sumele schimbate în șir: numai propunerea ultimei cereri ajunge pe ecran
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
+    const actuala = cerereNoua();
     let p;
     try {
       p = await api.get(`/tenants/${t.id}/compensari/propunere`);
+      if (!actuala()) return;
     } catch (e) {
+      if (!actuala()) return;
       corp.innerHTML = `<h2 class="pf-titlu">Compensări</h2><div id="cz-mesaj"></div>`;
       arataMesaj(corp.querySelector("#cz-mesaj"), "Facturile de compensat nu s-au putut citi" + (e && e.mesaj ? ": " + e.mesaj : "") + ".", "eroare");
       return;

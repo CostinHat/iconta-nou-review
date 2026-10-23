@@ -5,12 +5,12 @@
 // butonul de ajutor (?).” + „La prima intrare, fiecare utilizator își pune obligatoriu telefonul, canalul (WhatsApp sau email) și bifele
 // de notificări înainte să ajungă în aplicație.”
 // Textul și starea fiecărui card vin de la server (`GET /eu/inceput`, `core/uc_inceput.py`): „făcut” e citit din bază, nu ținut aici.
-import { api, esc, arataMesaj } from "../api.js?v=58f26a3fc4";
+import { api, esc, arataMesaj } from "../api.js?v=31460b24f2";
 
 // [320] butoanele cardurilor: fiecare deschide ecranul REAL (aceleași funcții ca meniul aplicației)
 async function deschide(cheie, nav, laSchimbare) {
   if (cheie === "migrare") {
-    const { randeazaMigrare } = await import("./migrare.js?v=e6bf27526c");
+    const { randeazaMigrare } = await import("./migrare.js?v=2e03f197ba");
     nav.deschide("Migrare cabinet", (c) => randeazaMigrare(c, nav), { nivel: "cabinet" });
   } else if (cheie === "suport_import") {
     // banda „Suport” de pe pagina principală, apoi fila „Cerere import din altă aplicație”
@@ -23,10 +23,10 @@ async function deschide(cheie, nav, laSchimbare) {
     const { panouNotificari } = await import("./setari.js?v=2961546bb5");
     nav.deschide("Notificări", (c) => panouNotificari(c, { dupaSalvare: laSchimbare }));
   } else if (cheie === "asistenti") {
-    const { randeazaAsistenti } = await import("./asistenti.js?v=8e42a15753");
+    const { randeazaAsistenti } = await import("./asistenti.js?v=e62dbd374c");
     nav.deschide("Asistenți", (c) => randeazaAsistenti(c, nav), { nivel: "cabinet" });
   } else if (cheie === "firme") {
-    const { randeazaListaFirme } = await import("./firme.js?v=020b99dd0c");
+    const { randeazaListaFirme } = await import("./firme.js?v=67a0f7dd2f");
     nav.deschide("Firmele tale alocate", (c) => randeazaListaFirme(c, nav, null), { nivel: "cabinet" });
   }
 }

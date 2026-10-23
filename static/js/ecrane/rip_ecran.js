@@ -1,5 +1,5 @@
 // [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
-import { api, cate, dupaNumar, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=58f26a3fc4";  /* investigatie_identitate_v1 */
+import { api, ultimaCerere, cate, dupaNumar, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor, dataIso, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=31460b24f2";  /* investigatie_identitate_v1 */
 
 const CATEGORII_INC = [
   ["activitate", "\u00cencasare din activitate"],
@@ -20,10 +20,12 @@ export async function ecranRip(corp, nav, t) {
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
 
+  const cerereNoua = ultimaCerere();   // [C103] „luna ←/→” apăsate în șir: numai registrul lunii cerute ultima ajunge pe ecran
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+    const actuala = cerereNoua();
     let reg = { operatiuni: [], total_incasari: "0", total_plati: "0", sold: "0" };
-    try { reg = await api.get(`/tenants/${t.id}/rip/registru?an=${an}&luna=${luna}`); } catch { corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca registrul.</p>`; return; }
+    try { reg = await api.get(`/tenants/${t.id}/rip/registru?an=${an}&luna=${luna}`); if (!actuala()) return; } catch { if (!actuala()) return; corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca registrul.</p>`; return; }
     const ziAzi = dataIso();
 
     const randuri = !(reg.operatiuni || []).length

@@ -13,7 +13,7 @@
 // DS: fereastra cu tabel (cap.9 v2.96) — rezumatul și zona de mesaj a acțiunilor de pe rânduri lipite sus (`.rezumat-fix`), acțiunea pe rând
 // stă în celula ei; cifrele în `.fd-td-num`; rândul adus în vedere de un refuz poartă `.val-evidentiat` (aceeași evidențiere ca nota adusă
 // în vedere din „De validat”).
-import { api, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt } from "../api.js?v=58f26a3fc4";
+import { api, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt } from "../api.js?v=31460b24f2";
 
 const FEL = {
   clienti: {

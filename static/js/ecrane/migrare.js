@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=58f26a3fc4";
+import { api, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=31460b24f2";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -213,19 +213,24 @@ function latime(corp, larg) {
   if (f) f.classList.toggle("fer-larg", !!larg);
 }
 
+// [C103] un singur contor pe modul: ecranul „Migrare cabinet” e unul (fereastra de sus), iar starea lui (`_aplicatie`) stă tot pe modul
+const cerereMeniu = ultimaCerere();   // [C103] aplicația aleasă în șir: numai meniul ultimei alegeri ajunge pe ecran
 async function meniuMigrare(corp, nav) {
+  const actuala = cerereMeniu();
   nav.setInapoi(null);
   latime(corp, false);
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let status = {}, nrFirme = 0;
   try {
     const s = await api.get("/migrare/status");
+    if (!actuala()) return;
     status = (s && s.status) || {};
-  } catch {}
+  } catch { if (!actuala()) return; }
   try {
     const t = await api.get("/tenants");
+    if (!actuala()) return;
     nrFirme = ((t && t.tenants) || []).length;
-  } catch {}
+  } catch { if (!actuala()) return; }
   corp.innerHTML = `
     <div id="mig-aplicatii"></div>
     <div class="mig-meniu" id="mig-meniu"></div>
@@ -233,10 +238,12 @@ async function meniuMigrare(corp, nav) {
   const zonaApl = corp.querySelector("#mig-aplicatii");
   try {
     const r = await api.get("/migrare/aplicatii");
+    if (!actuala()) return;
     if (!r || !Array.isArray(r.aplicatii)) throw new Error("registru gol");
     _aplicatie = _aplicatie ? (r.aplicatii.find((a) => a.cheie === _aplicatie.cheie && a.activa) || null) : null;
     _randeazaAplicatii(zonaApl, r.aplicatii, corp, nav);
   } catch {
+    if (!actuala()) return;
     // registrul necitit nu e „nicio aplicație”: se spune, iar pașii rămân cu modelele CSV
     _aplicatie = null;
     zonaApl.innerHTML = `<p class="ecran-nota">Lista aplicațiilor din care se poate migra nu s-a putut încărca. Pașii de mai jos merg cu modelele CSV.</p>` + TEXT_FARA_BUTON;
@@ -2035,10 +2042,13 @@ function importPlanConturiFirma(corp, nav, firma) {
   `;
   const rezZona = corp.querySelector("#pc-rezultate");
   const cautaInput = corp.querySelector("#pc-cauta");
+  const cerereNoua = ultimaCerere();   // [C103] căutarea la tastare: numai rezultatul ultimului termen tastat ajunge pe ecran
   async function cauta(q) {
+    const actuala = cerereNoua();
     rezZona.innerHTML = `<p class="ecran-nota">Se caut\u0103\u2026</p>`;
     try {
       const r = await api.get(`/tenants/${firma.tenant_id}/plan-conturi${q ? "?q=" + encodeURIComponent(q) : ""}`);
+      if (!actuala()) return;
       const conturi = (r && r.conturi) || [];
       rezZona.innerHTML = conturi.length
         ? conturi.map((c) => `<div class="mig-frand" style="cursor:default">
@@ -2049,6 +2059,7 @@ function importPlanConturiFirma(corp, nav, firma) {
           </div>`).join("")
         : `<div class="stare-goala">Niciun cont g\u0103sit cu acest termen.</div>`;
     } catch {
+      if (!actuala()) return;
       arataMesaj(rezZona, "Eroare la căutare.", "eroare");
     }
   }

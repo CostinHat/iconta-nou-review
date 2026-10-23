@@ -1,7 +1,7 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu, refuzPeRand, arataRefuzul } from "../api.js?v=58f26a3fc4";
+import { api, ultimaCerere, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu, refuzPeRand, arataRefuzul } from "../api.js?v=31460b24f2";
 import { ciornaFormular } from "../ciorna_formular.js?v=f59e00811a";  // [267, clasa] ciorna formularelor lungi de creare
 // [lotul 11, 440] numele câmpurilor din refuzul serverului (`salariati_api.salveaza_concediu`, corpul cererii) -> id-ul de pe ecran
 const CAMPURI_CONCEDIU = { serie: "cm-serie", numar: "cm-numar", cod: "cm-cod", cod_urgenta: "cm-urgenta", cnp_ingrijit: "cm-cnp-ingrijit",
@@ -163,7 +163,10 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     // Auto-calcul zile lucratoare (FARA sarbatori legale, OUG 158/2005 art.10) intre inceput
     // si sfarsit; contabilul poate suprascrie. Calendarul e pe backend (sursa unica), NU
     // reimplementat in JS cu getDay() - vechiul cod ignora sarbatorile -> zile CM gresite in D112.
+    // [C102] Raspunsul vine dupa `await`: daca intre timp contabilul a scris zilele sau a schimbat iar datele, propunerea
+    // nu se mai scrie (altfel cifra lui era inlocuita cu una veche, iar in D112 ajungeau alte zile decat cele tastate).
     let zileEditateManual = false;
+    const cerereZile = ultimaCerere();   // [C103] mecanismul unic
     const inpZile = zona.querySelector("#cm-zile");
     inpZile.addEventListener("input", () => { zileEditateManual = true; });
     const recalcZile = async () => {
@@ -171,8 +174,10 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       const di = zona.querySelector("#cm-inceput").value;
       const ds = zona.querySelector("#cm-sfarsit").value;
       if (!di || !ds || ds < di) return;
+      const actuala = cerereZile();
       try {
         const r = await api.get(`/util/zile-lucratoare?start=${di}&end=${ds}`);
+        if (zileEditateManual || !actuala()) return;
         if (r && typeof r.zile === "number") inpZile.value = r.zile;
       } catch { /* auto-calcul best-effort; contabilul poate completa manual */ }
     };

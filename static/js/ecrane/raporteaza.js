@@ -5,7 +5,7 @@
 // exporturi (CSV, XLS/XLSX, ZIP). [C36] Fisierele firului stau in depozitul privat: se arata si se descarca numai prin ruta
 // autentificata `/raportari/fisiere/{id}` (echipa iConta si autorul), iar autorul le poate sterge.
 
-import { api, dataRo, arataMesaj, esc, cereBlob, descarca, deschideLupa, confirmaCaseta, eroareCamp, curataEroriCamp, cate, refuzPeRand } from "../api.js?v=58f26a3fc4";
+import { api, ultimaCerere, dataRo, arataMesaj, esc, cereBlob, descarca, deschideLupa, confirmaCaseta, eroareCamp, curataEroriCamp, cate, refuzPeRand } from "../api.js?v=31460b24f2";
 
 function dataScurta(iso) {
   return dataRo(iso, "cu_ora");
@@ -168,9 +168,12 @@ export async function randeazaRaporteaza(corp, nav) {
     return esuate;
   }
 
+  const cerereNoua = ultimaCerere();   // [C103] „Arată și închisele” / trimiteri / pollingul AI în șir: numai lista ultimei cereri ajunge pe ecran
   async function incarcaFire() {
+    const actuala = cerereNoua();
     try {
       const r = await api.get("/raportari/eu");
+      if (!actuala()) return;
       const fire = (r && r.raportari) || [];
       window._rapFire = fire;  // [triaj_ai] pollingul verifica reactia AI pe firul cel mai nou
       if (!fire.length) {
@@ -187,6 +190,7 @@ export async function randeazaRaporteaza(corp, nav) {
       // legaturi pe fiecare fir: deschidere/raspuns/citire
       fire.forEach((f) => legaFir(f));
     } catch {
+      if (!actuala()) return;
       lista.innerHTML = `<div class="rap-gol">Nu s-au putut încărca sesizarile.</div>`;
     }
   }

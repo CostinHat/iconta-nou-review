@@ -22,7 +22,8 @@ Forma unei dovezi (JSON):
       {"incarca": CSS, "generator": "modul:funcție", ["argumente": [...]], "nume": FIȘIER}   fișierul dat de funcție (octeți), încărcat
                                             în câmpul de fișier — sursa lui e aceeași cu a testelor (ex. balanța SAGA a lui 439)
   - `verifica` (după pași): {"contine": T, ["zona": CSS]}, {"nu_contine": T, ["zona": CSS]}, {"inactiv": CSS, ["text": T]},
-      {"activ": CSS, ["text": T]}, {"exista": CSS, ["text": T]}, {"contine_oricare": [T1, T2, …], ["zona": CSS]}. Textul se compară cu spațiile normalizate; fără `zona`, pe fereastra
+      {"activ": CSS, ["text": T]}, {"exista": CSS, ["text": T]}, {"contine_oricare": [T1, T2, …], ["zona": CSS]},
+      {"valoare": CSS, "egal": V} (valoarea câmpului, nu textul: cifra scrisă de contabil într-un câmp, C102). Textul se compară cu spațiile normalizate; fără `zona`, pe fereastra
       din față (ce citește contabilul, `Ecran.fereastra`).
   - `posibila_de_la` (ZZZZ-LL-ZZ, opțional): data de la care aplicația poate arăta dovada (ex. o declarație pe o lună neîncheiată, pe
       care aplicația o refuză până la sfârșitul ei — deficiența 383); înainte de ea dovada se parcurge și se scrie ce s-a văzut, cu starea
@@ -40,7 +41,7 @@ import urllib.request
 RAD = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #: Acțiunile unui pas și felurile de verificare (forma de mai sus); lista de dovezi e păzită pe ele (`core/test_dovada_firme_test.py`).
 PASI = ("click", "asteapta", "asteapta_text", "completeaza", "alege", "deruleaza", "pauza", "captura", "declaratie", "incarca")
-VERIFICARI = ("contine", "nu_contine", "contine_oricare", "inactiv", "activ", "exista")
+VERIFICARI = ("contine", "nu_contine", "contine_oricare", "inactiv", "activ", "exista", "valoare")
 
 
 def _e2e(baza, capturi):
@@ -142,6 +143,12 @@ def _verifica(e, v):
         text = _text(e, v.get("zona"))
         gasit = cautat in text
         return {"cerut": v, "ok": gasit if "contine" in v else not gasit, "vazut": _decupaj(text, cautat)}
+    if "valoare" in v:
+        loc = _loc(pg, v, "valoare")
+        if not loc.count():
+            return {"cerut": v, "ok": False, "vazut": "elementul nu există pe ecran"}
+        val = loc.input_value()
+        return {"cerut": v, "ok": val == str(v["egal"]), "vazut": "valoarea câmpului: %r" % val}
     for cheie in ("inactiv", "activ", "exista"):
         if cheie in v:
             loc = _loc(pg, v, cheie)

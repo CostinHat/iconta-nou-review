@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=58f26a3fc4";
+import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=31460b24f2";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=c05f894cb8";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";   // [lotul 10, 431] refuzul care trimite la ce lipsește
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
@@ -132,9 +132,14 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa, preset = null) {
 }
 
 // [G1] tipurile SI neaplicabile prin forma depind de FIRMA -> ruta cere tenant_id; se re-cer la fiecare schimbare de firma.
+// [C103] firma schimbată de două ori în șir: numai tipurile ultimei firme alese intră în S; întoarce false pentru o cerere depășită,
+// ca apelantul (refresh) să nu continue cu firma veche
+const cerereTipuri = ultimaCerere();
 async function incarcaTipuri(tenantId) {
+  const actuala = cerereTipuri();
   try {
     const d = await api.get(`/declaratii/tipuri?tenant_id=${tenantId}`);
+    if (!actuala()) return false;
     S.tipuri = d.tipuri || [];
     S.periodicitate = d.periodicitate || {};
     S.periodicitateEticheta = d.periodicitate_eticheta || {};
@@ -143,8 +148,10 @@ async function incarcaTipuri(tenantId) {
     S.obligatiiD710 = d.obligatii_d710 || [];   // [9.1 A.3] codurile D710 cu denumirea oficială din nomenclator
     S.tipuriEsuat = false;
   } catch {
+    if (!actuala()) return false;
     S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {}; S.datorate = []; S.tipuriEsuat = true;
   }
+  return true;
 }
 
 // ---------- PAS 1: firma + tip + perioada ----------
@@ -224,7 +231,8 @@ ${S.firmaFixa ? "" : `      <label class="camp">
       const nou = selFirma.value ? parseInt(selFirma.value) : null;
       if (nou !== S.tenant_id) {   // [G1] firma schimbata -> re-cere tipurile+neaplicabile ale ei, re-randeaza selectorul
         S.tenant_id = nou; S.tip = null;
-        if (nou) await incarcaTipuri(nou); else { S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {}; }
+        if (nou) { if (!(await incarcaTipuri(nou))) return; }   // [C103] o firmă aleasă între timp: refresh-ul ei desenează
+        else { cerereTipuri(); S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {}; }   // [C103] fără firmă: tipurile cerute înainte nu mai ajung
         S.alteDeschise = false;
         selTip.innerHTML = optiuniTip();
         declaratiiExistente(corp.querySelector("#dec-existente"), nou);
@@ -282,14 +290,18 @@ ${S.firmaFixa ? "" : `      <label class="camp">
 // [deficiența 299, comanda Costin 17.10.2026 7.2] „Ana nu are nicio listă a declarațiilor existente (cardul Declarații deschide direct
 // pregătirea)”: sub alegere, declarațiile firmei aflate în coadă (la validare / de depus), fiecare cu drumul spre ea — înainte de a genera
 // una a doua pe aceeași perioadă. Aceeași listă ca a cozii (`GET /coada`, numai firmele alocate asistentului).
+const cerereExistente = ultimaCerere();   // [C103] firma schimbată în șir: numai coada ultimei firme alese apare sub alegere
 async function declaratiiExistente(zona, tenantId) {
+  const actuala = cerereExistente();
   if (!zona) return;
   zona.innerHTML = "";
   if (!tenantId) return;
   let coada = [];
-  try { coada = ((await api.get("/coada")).coada || []).filter((c) => c.tenant_id === tenantId && c.fel !== "nota"
-                                                                 && (c.stare === "la_senior" || c.stare === "aprobata")); }
-  catch { return; }
+  try { const r = await api.get("/coada");
+        if (!actuala()) return;
+        coada = (r.coada || []).filter((c) => c.tenant_id === tenantId && c.fel !== "nota"
+                                         && (c.stare === "la_senior" || c.stare === "aprobata")); }
+  catch { if (!actuala()) return; }   // refuzul cererii curente: coada rămâne goală -> ieșirea de mai jos
   if (!zona.isConnected || !coada.length) return;
   const stare = (c) => c.depasita ? "depășită, de generat din nou" : c.stare === "aprobata" ? "validată, de depus" : "la validare";
   zona.innerHTML = `<div class="caseta-info dec-existente"><div class="ci-mesaj"><b>Declarațiile firmei aflate deja în coadă</b>
@@ -603,12 +615,14 @@ const _D390_TIP_DIR = {
   emisa: [["L", "Livrare bunuri (L)"], ["T", "Triangulație (T)"], ["P", "Servicii prestate (P)"], ["R", "Agricol special (R)"]],
   primita: [["A", "Achiziție bunuri (A)"], ["S", "Servicii primite (S)"]],
 };
+const cerereD390 = ultimaCerere();   // [C103] două ștergeri / adăugări în șir: numai re-citirea ultimei ajunge în panou
 async function randeazaClasificareD390(corp, nav) {
+  const actuala = cerereD390();
   const zona = corp.querySelector("#dec-d390-clasif");
   if (!zona) return;
   let d;
-  try { d = await api.get(`/tenants/${S.tenant_id}/d390-clasificare?an=${S.an}&luna=${S.luna}`); }
-  catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca clasificarea intracomunitară${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
+  try { d = await api.get(`/tenants/${S.tenant_id}/d390-clasificare?an=${S.an}&luna=${S.luna}`); if (!actuala()) return; }
+  catch (e) { if (!actuala()) return; zona.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca clasificarea intracomunitară${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
   const auto = d.auto || [], manual = d.manual || [];
   const optSel = (dir, cur) => (_D390_TIP_DIR[dir] || []).map(([v, l]) => `<option value="${v}" ${v === cur ? "selected" : ""}>${l}</option>`).join("");
   zona.innerHTML = `<details class="dec-xml" open><summary>Clasificare intracomunitară (servicii / triangulație)</summary>
@@ -665,12 +679,14 @@ async function randeazaClasificareD390(corp, nav) {
 // cota; cota din selector (standard period-aware din backend, nu literal), TVA calculat SE STOCHEAZA
 // (d301.calcul_d301 il citeste din DB, nu-l recalculeaza). Etichetele celor 5 tipuri + valutele +
 // cotele vin din backend (sursa unica, EXACT ca formularul oficial) - nu le rescriu in JS.
+const cerereD301 = ultimaCerere();   // [C103] două ștergeri / adăugări în șir: numai re-citirea ultimei ajunge în grilă
 async function randeazaOperatiuniD301(corp, nav) {
+  const actuala = cerereD301();
   const zona = corp.querySelector("#dec-d301-op");
   if (!zona) return;
   let d;
-  try { d = await api.get(`/tenants/${S.tenant_id}/d301-operatiuni?an=${S.an}&luna=${S.luna}`); }
-  catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca operațiunile D301${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
+  try { d = await api.get(`/tenants/${S.tenant_id}/d301-operatiuni?an=${S.an}&luna=${S.luna}`); if (!actuala()) return; }
+  catch (e) { if (!actuala()) return; zona.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca operațiunile D301${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
   const ops = d.operatiuni || [], tipuri = d.tipuri || [], valute = d.valute || [], cote = d.cote || [];
   const grila = ops.length
     ? ops.map((o) => {
@@ -3766,12 +3782,14 @@ function randeazaFormularD207(corp, nav) {
 // de depunere (/coada) le citeste din DB -> acelasi XML (paritate preview<->depunere). Etichetele
 // oficiale + lista randurilor disponibile (allow-list minus auto-derivate) vin din backend, nu din JS.
 // Sume in LEI intregi (ca generatorul). catch NON-gol (scrie in #d300-msg / zona) - garda test_catch_vizibil.
+const cerereD300 = ultimaCerere();   // [C103] două ștergeri / adăugări în șir: numai re-citirea ultimei ajunge în grilă
 async function randeazaManualD300(corp, nav) {
+  const actuala = cerereD300();
   const zona = corp.querySelector("#dec-d300-manual");
   if (!zona) return;
   let d;
-  try { d = await api.get(`/tenants/${S.tenant_id}/d300-manual?an=${S.an}&luna=${S.luna}`); }
-  catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca rândurile manuale D300${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
+  try { d = await api.get(`/tenants/${S.tenant_id}/d300-manual?an=${S.an}&luna=${S.luna}`); if (!actuala()) return; }
+  catch (e) { if (!actuala()) return; zona.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca rândurile manuale D300${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
   const randuri = d.randuri || [], disp = d.randuri_disponibile || [];
   const grila = randuri.length
     ? randuri.map((o) => `<div class="dec-man-rand">

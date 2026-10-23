@@ -23126,3 +23126,94 @@ ambele cauze; **0 neexplicate**.
 
 **Referința nouă:** `scripts/cifre_referinta_aprobate.json`, amprenta `537da5532c68997052a25d3aaf68951935ac537cddc8be6258166a31e63966ff`;
 `cifre_referinta.py --productie --verifica` -> „identice cu referința aprobată (5 firme)”.
+
+## 23.10.2026 — Lotul 11, poarta 2 ROȘIE (plasa e2e: 2 failed, 50 errors): baza repornită de actualizarea automată + C102 + garda 323 citea și ciornele
+
+**Ce s-a întâmplat.** Poarta lotului pe `d041b0ec` (rularea 2, 04:35–06:50, pornită detașat: `setsid nohup`, fiindcă poarta lotului 10 a
+durat 7166 s, la limita de 7200 s a unei sarcini de fundal; prima pornire a fost oprită la probele de prospețime, fără verdict): prospețimea
+21 passed, pytest `10522 passed, 9 skipped, 14 xfailed` (4940 s), verificatorul `TOTAL: 0`, cifrele F1–F5 identice cu referința aprobată (5
+firme). Plasa: `2 failed, 622 passed, 50 errors` (3136 s). Regula aplicată: 3d (comanda 11.2).
+
+1. **Cele 50 de erori: Postgres și `iconta-nou` repornite de sistem la 06:24, nu de cod.** `/var/log/unattended-upgrades/unattended-upgrades.log`:
+   `2026-10-23 06:23:54 INFO Packages that will be upgraded: zlib1g zlib1g-dev`; `unattended-upgrades-dpkg.log`: `Restarting services...
+   systemctl restart fail2ban.service iconta-nou.service mariadb.service nginx.service php8.3-fpm.service polkit.service
+   postgresql@16-main.service rsyslog.service ssh.service` (needrestart, după actualizarea de securitate a lui zlib). Jurnalul Postgres:
+   `06:24:00 LOG: shutting down` … `06:24:01 database system is ready to accept connections`. Aplicația plasei (8019) și-a pierdut conexiunile
+   (`SSL connection has been closed unexpectedly`, apoi 500 pe `/notificari/sumar`, `/eu/anunturi` …) — toate cele 50 sunt erori de
+   pregătire/curățare ale testelor rulate în acel minut și după. Producția a fost repornită de needrestart pe același commit publicat
+   (`22c71846`), fără aprobare — regimul pilot pct.(2) cere publicare/restart numai cu acordul lui Costin. **Nu se poate repara din cod**:
+   ce face reapariția imposibilă e configurarea lui needrestart (fără repornire automată pentru `postgresql@16-main` și `iconta-nou`), care
+   cere `sudo` cu parolă — **decizie cerută lui Costin** (raportul §6). Până atunci, o poartă care cade peste fereastra lui
+   `apt-daily-upgrade` (06:00 + până la 60 de minute, aleator) poate pica la fel.
+2. **`test_def_c92` și `test_def_c89` (`e2e_lot11_s9.py`): C102, defect real al ecranului.** După „Sfârșit”, formularul certificatului de CM
+   propune zilele lucrătoare printr-o cerere asincronă și scria răspunsul în câmp oricând sosea: peste cifra tastată deja de contabil, iar la
+   două schimbări de dată, răspunsul vechi peste cel nou. În poartă răspunsul a sosit între selectarea și tastarea lui `fill`: „1010 zile” în
+   certificat și B3_1 = 1010 în D112 (DUK: `B3_1: valoarea '1010' nu se incadreaza in intervalul cerut`). Reparat la sursă
+   (`static/js/ecrane/flux_concediu.js`, `recalcZile`): după `await`, propunerea nu se scrie dacă între timp câmpul a fost editat sau a
+   pornit o cerere mai nouă. Testele care completează zilele așteaptă propunerea ecranului (`_propunerea_zilelor`, ca un contabil care o
+   vede înainte să scrie). Garda: `test_def_c102_propunerea_zilelor_nu_inlocuieste_ce_a_scris_contabilul`, cu răspunsurile ținute pe loc
+   (`page.route`) și eliberate în ordinea care producea defectul; mutațiile (fiecare jumătate a verificării de după `await` scoasă) -> ROȘU.
+   Generalizare: handlerele asincrone din `static/js` care scriu `.value` după `await` (script pe tot arborele) — `recalcZile` singurul care
+   propune într-un câmp editabil; `portal.js` / `facturi_ecran.js` / `firme.js` (×2) golesc numai câmpul de fișier după încărcare.
+   Dovada pe F5 (copia firmelor de test): pentru ea, pașii dovezii au primit verificarea valorii unui câmp (`{"valoare": CSS, "egal": V}`,
+   `frontend_test/dovada/pasi.py`); dovada arată ecranul, iar ordinea răspunsurilor o reface testul — rulată și cu petic (codul vechi), a ieșit
+   tot îndeplinită: pe pașii dovezii răspunsul sosește înaintea tastării.
+3. **`test_def_323` (`e2e_lot91.py`): testul citea și secțiunea „Notele tale în ciornă”.** Aserțiunea „textul de sus nu vorbește de note”
+   aduna TOATE textele `.mig-intro` ale ferestrei „De depus”, deci și pe al secțiunii de ciorne de la capătul ferestrei (457, lotul 11), care
+   apare numai când contabilul are ciorne pe oricare firmă (`/eu/ciorne`). În poartă, testele căzute la 06:24 n-au mai curățat ciornele lor ->
+   secțiunea a apărut. Reparat: textul de sus exclude `#val-note` și `#val-ciorne`, forma deja folosită de `e2e_bloc_b` (52). Nu e slăbire:
+   323 privește textul de sus; secțiunea de ciorne vorbește de note prin decizia 457. Generalizare: aserțiunile negative pe „note” / „Notele” /
+   „ciornă” din `frontend_test/e2e` (grep) — numai `e2e_lot91.py:166` citea fereastra „De depus” întreagă; `e2e_lot5_roluri.py:180` citește
+   toate textele, dar numai cu aserțiuni pozitive și negative pe fraze care nu apar în secțiunea de ciorne.
+
+Testele picate, rulate o dată (din index, apoi din arbore după reparație): `e2e_lot11_s9.py` + `e2e_lot91.py` 38 passed. Alternativa
+respinsă: repornirea porții fără reparații („erorile sunt de infrastructură”) — c89/c92 erau un defect real, ascuns de ordinea răspunsurilor.
+
+## 23.10.2026 — Lotul 11, după poarta 2: C103 — răspunsul unei cereri vechi nu se mai scrie peste cel nou (SUPERSEDEAZĂ generalizarea C102)
+
+**Cum a apărut.** Rularea țintită de după reparațiile porții 2 (`scripts/poarta_scurta.py`, 7786 s) a ieșit cu 2 picături: artefactul probei
+celor 50 de declarații (refăcut de uneltele vizuale, ca de obicei după JS) și `e2e_lot11_v.py::test_def_429_ajustarea_manuala_…`, care la
+rularea din nou a trecut. N-a fost tratată ca întâmplare: ecranul reevaluării recalculează propunerea pe server la fiecare câmp, iar
+`deseneaza` punea pe ecran răspunsul oricărei cereri, oricând sosea. Al doilea mecanism, găsit la reproducere: când un răspuns re-desena
+formularul cât testul (contabilul) scria deja în câmpul următor, câmpul era înlocuit, iar ce se tastase fără `change` dispărea — ultima
+cerere pleca atunci fără sold.
+
+**Clasa (din perspectiva contabilului):** după ce editează un câmp sau dă un clic care schimbă luna / filtrul / pagina, ecranul arată altă
+cifră sau listă decât cea cerută, ori pierde ce tocmai scria. C102 (zilele concediului) e o instanță; generalizarea ei din intrarea de
+dimineață („`recalcZile` singurul care propune într-un câmp editabil”) căuta numai scrierea în `.value` și e **depășită** de aceasta.
+
+**Măsurat** cu detectorul nou `scripts/scan_cerere_veche.js` (acorn, cu domeniul numelor rezolvat, ca un fișier cu zeci de `deseneaza` să nu
+lege toate ecranele): 39 de funcții cu citiri atinse din editare sau dintr-un clic care schimbă starea, pe 20 de fișiere; 49 de cereri de
+scriere pe același drum.
+
+**Reparația, un mecanism (`static/js/api.js`):**
+- `ultimaCerere()` — funcția care cere ia un jeton înaintea cererii și iese după răspuns (și în `catch`) dacă între timp a pornit alta;
+  `ultimaCerere(corp)` ține contorul pe elementul ecranului (punctul de intrare deschis cu alt `corp`: două ferestre nu se anulează).
+- `pastreazaCampulActiv(radacina, randeaza)` — după re-desenare, câmpul activ (după `id`) primește înapoi ce scria omul, cu focusul și
+  cursorul; dacă valoarea diferă de cea re-desenată, la părăsire pleacă `change`, ca editarea să ajungă în model. Aplicat pe cele 5 fluxuri
+  de editare care re-desenează câmpuri după răspuns (reevaluarea, ajustările fiscale, previzualizarea dispoziției de casă, calitatea
+  asistentului, liniile facturii la schimbarea cotelor); un flux nou de felul ăsta e oprit de gardă.
+- Contoarele scrise de mână (`cerereZile` în concediu, `leiCerere` la emitere, `cerereaPrec` la bilanț) au trecut pe mecanismul unic.
+
+**Ce intră și ce nu (deciziile de perimetru, cu motivul):**
+- clicurile intră numai când schimbă o variabilă a ecranului înaintea cererii — atunci două clicuri pornesc cereri DIFERITE; un buton care
+  cere același lucru de două ori nu poate arăta altceva;
+- cererile de SCRIERE pornite de un clic nu intră: butonul e blocat cât e cererea în zbor (`blocheazaButon`); cele pornite dintr-o editare
+  sunt clasificate una câte una în `core/test_cerere_veche.py::SCRIERI_DIN_EDITARE` (8 salvări — refuzul unei salvări nu are voie să fie
+  ascuns ca „răspuns vechi”); cele care erau CALCULE fără scriere (previzualizarea casei, potrivirea cotei pe linie, previzualizarea în lei)
+  au primit jetonul;
+- planul de conturi, „Adaugă”: salvarea și recitirea stăteau în același `try`; despărțite — refuzul salvării se arată mereu, numai recitirea
+  listei e a ultimei cereri (și o recitire căzută nu mai spune „contul nu s-a putut adăuga” despre un cont adăugat);
+- 4 excepții, cu motivul în test: citirile după scriere cu butonul dezactivat (`trimiteEmitere`, cele două formulare din portal) și
+  `legaBlocareLuna`, care scrie numai în elementele desenului care a chemat-o (un desen nou le scoate din pagină — verificat în cod).
+
+**Alternative respinse:** `AbortController` pe cererea veche (oprirea ar trece prin `catch`-urile ecranelor ca eroare și ar aprinde
+refuzurile „NU s-a salvat” de lângă buton — 410/440); amânarea (debounce) — micșorează fereastra, n-o închide (căutarea CUI avea deja 500 ms);
+un contor pe ecran scris de fiecare dată (forma C102) — exact ce a lăsat celelalte 38 neacoperite.
+
+**Garda:** `core/test_cerere_veche.py` — nicio citire din editare fără jeton după răspuns și în `catch` (verificarea din `catch` nu ține
+loc de cea de după răspuns; fabrica declarată în funcția care cere e respinsă — protecție nulă), niciun desen cu câmpuri după răspuns în
+afara `pastreazaCampulActiv`, scrierile din editare clasificate, clasificările fără cerere scoase, proba de dinți (9 forme rele, 6 bune),
+calibrarea pe versiunea publicată (reevaluarea și concediul de la `22c71846` sunt prinse), mecanismul rulat în node. Testele de capăt la
+capăt: `e2e_lot11_v.py::test_def_c103_…` (×2), cu răspunsurile ținute pe loc. Limita, declarată în detector: se urmăresc funcțiile chemate
+pe nume din același fișier — o citire făcută de o funcție importată din alt modul sau chemată ca metodă nu se vede.

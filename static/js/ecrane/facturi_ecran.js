@@ -3,10 +3,10 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=58f26a3fc4";  /* esc_nc27 */
+import { api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=31460b24f2";  /* esc_nc27 */
 import { randeazaStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaEmitere, intrebarePleacaMarfa, textDescarcare, textTvaIncasare, tvaDocument } from "./emitere_ecran.js?v=57e787b44e";
+import { randeazaEmitere, intrebarePleacaMarfa, textDescarcare, textTvaIncasare, tvaDocument } from "./emitere_ecran.js?v=9b689f0a32";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 
@@ -92,10 +92,19 @@ function meniuFacturi(corp, nav, tenantId, opt) {
 // ---------- FACTURI PRIMITE din SPV — four-eyes (F126, [efactura_primite_v1]) ----------
 // Anatomia ecranului de bon OCR: date parsate (nu XML brut), cont sugerat editabil (om confirma),
 // Valideaza (buton-verde) / Respinge (motiv in-ecran), XML brut la click. Fara confirm/alert.
-async function primiteSPV(corp, nav, tenantId, opt) {
+// [C103] „Verifică acum în SPV” și importul XML re-citesc aceeași fereastră: numai ultima citire ajunge pe ecran (contorul e pe `corp`,
+// deci două ferestre „Facturi primite” nu se anulează între ele), iar mesajul fiecărei operații se arată de citirea care termină ultima
+const _mesajePrimite = new WeakMap();
+async function primiteSPV(corp, nav, tenantId, opt, mesaj = null) {
+  const actuala = ultimaCerere(corp)();
+  if (mesaj) _mesajePrimite.set(corp, [...(_mesajePrimite.get(corp) || []), mesaj]);
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let lista = [], categorii331 = [];
-  try { const r = await api.get(`/tenants/${tenantId}/facturi-primite`); lista = (r && r.primite) || []; categorii331 = (r && r.categorii_331) || []; } catch { corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca facturile primite din SPV.</p>`; return; }
+  try {
+    const r = await api.get(`/tenants/${tenantId}/facturi-primite`);
+    if (!actuala()) return;
+    lista = (r && r.primite) || []; categorii331 = (r && r.categorii_331) || [];
+  } catch { if (!actuala()) return; corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca facturile primite din SPV.</p>`; return; }
   // [deficiența 273a/b, lotul 6] starea SPV a firmei (conectată? verificată când? ce a răspuns ANAF?), „Verifică acum în SPV” și importul
   // manual XML UBL. „apar aici automat” se spune NUMAI când firma chiar e citită automat (conectată și cu drept).
   corp.innerHTML = `
@@ -118,7 +127,7 @@ async function primiteSPV(corp, nav, tenantId, opt) {
       const r = await api.post(`/tenants/${tenantId}/spv/verifica-acum`, {});
       const c = r.citire || {};
       const txt = c.eroare ? `ANAF a răspuns: „${c.eroare}”.` : `Citit din SPV: ${cate(c.mesaje || 0, "factură primită", "facturi primite")} în ultimele ${cate(c.zile, "zi", "zile")}; cele noi sunt în listă.`;
-      primiteSPV(corp, nav, tenantId, opt).then(() => arataMesaj(corp.querySelector("#fp-mesaj"), txt, c.eroare ? "avert" : "ok"));
+      primiteSPV(corp, nav, tenantId, opt, { txt, tip: c.eroare ? "avert" : "ok" });
     } catch (e) { arataMesaj(zMsg, e.mesaj || "Citirea din SPV n-a mers.", "eroare"); b.disabled = false; }
   });
   corp.querySelector("#fp-xml").addEventListener("change", async (ev) => {
@@ -130,11 +139,12 @@ async function primiteSPV(corp, nav, tenantId, opt) {
       const r = await api.postForm(`/tenants/${tenantId}/facturi-primite/import-xml`, fd);
       const txt = [`${cate(r.importate, "factură importată", "facturi importate")} în lista de validat`
         + (r.deja ? `; ${cate(r.deja, "era deja", "erau deja")} în listă` : "") + ".", ...(r.erori || [])].join("\n");
-      primiteSPV(corp, nav, tenantId, opt).then(() => arataMesaj(corp.querySelector("#fp-mesaj"), txt, (r.erori || []).length ? "avert" : "ok"));
+      primiteSPV(corp, nav, tenantId, opt, { txt, tip: (r.erori || []).length ? "avert" : "ok" });
     } catch (e) { arataMesaj(zMsg, e.mesaj || "Importul n-a mers.", "eroare"); }
     ev.target.value = "";
   });
   const st = await randeazaStareSpv(corp.querySelector("#fp-spv"), nav, tenantId);
+  if (!actuala()) return;
   const automat = !!(st && st.conectat && st.are_drept !== false);
   zLista.innerHTML = !lista.length
     ? `<div class="stare-goala">Nicio factură primită de validat.${automat ? " Facturile de la furnizori apar aici automat din SPV; le validezi înainte să intre în cheltuieli." : " Până la conectarea SPV, le încarci cu „Importă XML UBL”."}</div>`
@@ -151,6 +161,9 @@ async function primiteSPV(corp, nav, tenantId, opt) {
     const p = lista.find((x) => String(x.id) === b.dataset.id);
     nav.mergi("Validare factură", (c) => primitaDetaliu(c, nav, tenantId, p, opt, categorii331));
   }));
+  const m = _mesajePrimite.get(corp) || [];
+  _mesajePrimite.delete(corp);
+  if (m.length) arataMesaj(zMsg, m.map((x) => x.txt).join("\n"), m.some((x) => x.tip !== "ok") ? "avert" : "ok");
 }
 
 function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
@@ -282,20 +295,23 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
   let afisate = 10;
+  const cerereNoua = ultimaCerere();   // [C103] luna / „mai multe” apăsate în șir: numai lista lunii cerute ultima ajunge pe ecran
   const deseneaza = async () => {
+    const actuala = cerereNoua();
     corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
     let lista = [];
     try {
       const r = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}&limit=${afisate + 1}`);
+      if (!actuala()) return;
       lista = (r && r.facturi) || [];
-    } catch { corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca facturile emise.</p>`; return; }
+    } catch { if (!actuala()) return; corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca facturile emise.</p>`; return; }
     // [cap.23, 21.08.2026] ACTUL DE ÎNCHIDERE a lunii pe facturi. Cât timp luna nu e închisă, evidența
     // ei e informativă — iar semaforul nu se poate sprijini pe ea când spune că o declarație nu se
     // datorează. Nu se afișează în portalul clientului (închiderea e act de contabil).
     let per = null;
     if (!opt.client) {
-      try { per = await api.get(`/tenants/${tenantId}/facturi/perioada?an=${an}&luna=${luna}`); }
-      catch { per = null; }
+      try { per = await api.get(`/tenants/${tenantId}/facturi/perioada?an=${an}&luna=${luna}`); if (!actuala()) return; }
+      catch { if (!actuala()) return; per = null; }
     }
     const maiSunt = lista.length > afisate;
     if (maiSunt) lista = lista.slice(0, afisate);
@@ -844,7 +860,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=020b99dd0c");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=67a0f7dd2f");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }), { lat: "tabel" });   // [394]
   });
@@ -1259,19 +1275,22 @@ export function formSablon(corp, nav, tenantId, opt) {
     const pret = zonaLinii.querySelector("#fr-l" + i + "-pret_unitar");
     const del = zonaLinii.querySelector('.em-l-sterge[data-idx="' + i + '"]');
     let timer = null;
+    const cerereCota = ultimaCerere();   // [C103] denumirea scrisă în reprize: numai cota pentru ultima denumire ajunge pe linie
     den.addEventListener("input", () => {
       l.descriere = den.value.trim();
       l.cota_tva = null;
       clearTimeout(timer);
+      const actuala = cerereCota();   // și o denumire scurtă (fără cerere) oprește cota cerută înainte
       const d = l.descriere;
       if (d.length < 3) { setCota(l, "—"); return; }
       setCota(l, "…");
       timer = setTimeout(async () => {
         try {
           const r = await api.post(`/tenants/${tenantId}/produse/potriveste`, { denumire: d });
+          if (!actuala()) return;
           if (r && r.ok) { l.cota_tva = r.cota; setCota(l, r.cota === 0 ? "scutit" : r.cota + "%"); }
           else setCota(l, "—");
-        } catch { setCota(l, "—"); }
+        } catch { if (!actuala()) return; setCota(l, "—"); }
       }, 400);
     });
     cant.addEventListener("input", () => { l.cantitate = Number(cant.value) || 0; });

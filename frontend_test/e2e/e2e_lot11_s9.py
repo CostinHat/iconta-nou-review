@@ -193,6 +193,13 @@ def test_def_c90_fara_functie_de_baza_declarat_cu_e3_3_doi(patron, firma_c90):
 _VEN6, _ZILE6 = 30000, 125          # media 240,00 lei/zi
 
 
+def _propunerea_zilelor(pg, zile):
+    """[C102] După „Sfârșit”, ecranul propune zilele lucrătoare (cerere asincronă). Pasul următor așteaptă propunerea, cum o vede
+    contabilul înainte să scrie în câmp: un `fill` peste un răspuns care sosește între selectare și tastare lipea cifrele („1010 zile”,
+    poarta 2 a lotului 11)."""
+    pg.wait_for_function("(z) => document.querySelector(%r).value === z" % (_F + "#cm-zile"), arg=str(zile), timeout=20000)
+
+
 def _formular_cod10(patron, firma):
     """Statul lunii trecute -> „Concediu” pe rândul salariatului -> „+ Certificat nou” -> certificat cod 10, 1–14 ale lunii trecute, media
     240,00 lei/zi, venitul realizat = baza − 499,59 (indemnizația 499,59, sub plafonul de 25%). Întoarce numărul zilelor lucrătoare."""
@@ -214,6 +221,7 @@ def _formular_cod10(patron, firma):
     pg.fill(_F + "#cm-acord", di.isoformat())
     pg.fill(_F + "#cm-inceput", di.isoformat())
     pg.fill(_F + "#cm-sfarsit", ds.isoformat())
+    _propunerea_zilelor(pg, zile)
     pg.fill(_F + "#cm-zile", str(zile))   # aceeași cifră ca propunerea ecranului (zilele lucrătoare dintre cele două date)
     for sel in ("#cm-continuare", "#cm-spital", "#cm-program-national"):
         pg.select_option(_F + sel, "false")
@@ -288,6 +296,60 @@ def test_def_c92_cod10_cere_avizul_medicului_expert(patron, firma_c89):
     assert sql('SELECT cod, cod_urgenta FROM "%s".concedii_medicale' % firma_c89["schema"]) == [("10", 4321)]
     d = _un(_singurul(_d112_xml(patron, firma_c89)), "asiguratD")
     assert (d["D_9"], d.get("D_13")) == ("10", "4321"), d
+
+
+def test_def_c102_propunerea_zilelor_nu_inlocuieste_ce_a_scris_contabilul(patron, firma_c89):
+    """C102 (găsită de Code la poarta 2 a lotului 11). Pașii: Salariați -> statul lunii trecute -> „Concediu” -> „+ Certificat nou” ->
+    „Început” 1, „Sfârșit” 7, apoi „Sfârșit” 14: ecranul cere de două ori zilele lucrătoare; răspunsul pentru 1–7 sosește DUPĂ cel pentru
+    1–14 -> „Zile lucrătoare CM” rămâne cifra pentru 1–14. Apoi „Sfârșit” 10 și contabilul scrie 3 zile înainte de răspuns -> câmpul rămâne
+    3. Înainte: orice răspuns sosit după `await` scria peste câmp (cifra veche, sau peste ce tastase contabilul; în poartă: „1010 zile”).
+    Răspunsurile se țin pe loc (`page.route`) și se eliberează în ordinea care producea defectul."""
+    pg = patron.pg
+    di = LUNA_TRECUTA
+    zile = {}
+    for zi in (7, 10, 14):
+        st, r = _api(PATRON, "GET", "/util/zile-lucratoare?start=%s&end=%s" % (di.isoformat(), di.replace(day=zi).isoformat()))
+        assert st == 200, (st, r)
+        zile[zi] = str(r["zile"])
+    assert zile[7] != zile[14] and zile[10] != "3", zile
+    _stat_luna(patron, firma_c89, luni_inapoi=1)
+    pg.click(_F + "[data-cm] >> nth=0")
+    pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
+    pg.click(_F + "#cm-nou")
+    pg.wait_for_selector(_F + "#cm-calc", timeout=20000)
+    tinute = []
+    pg.route("**/util/zile-lucratoare*", lambda route: tinute.append(route))
+
+    def asteapta_cereri(n):
+        for _ in range(100):
+            if len(tinute) >= n:
+                return
+            pg.wait_for_timeout(100)
+        raise AssertionError("ecranul n-a cerut zilele lucrătoare (%d cereri din %d)" % (len(tinute), n))
+
+    def elibereaza(i):
+        with pg.expect_response(lambda r: "/util/zile-lucratoare" in r.url):
+            tinute[i].continue_()
+        pg.wait_for_timeout(300)        # handlerul ecranului rulează după răspuns
+
+    valoare = lambda: pg.input_value(_F + "#cm-zile")   # noqa: E731
+    pg.fill(_F + "#cm-inceput", di.isoformat())
+    pg.fill(_F + "#cm-sfarsit", di.replace(day=7).isoformat())
+    asteapta_cereri(1)
+    pg.fill(_F + "#cm-sfarsit", di.replace(day=14).isoformat())
+    asteapta_cereri(2)
+    elibereaza(1)
+    assert valoare() == zile[14], (valoare(), zile)
+    elibereaza(0)                       # răspunsul vechi (1–7) sosește ultimul
+    assert valoare() == zile[14], "răspunsul pentru 1–7, sosit ultimul, a înlocuit zilele pentru 1–14: %r (%s)" % (valoare(), zile)
+    pg.fill(_F + "#cm-sfarsit", di.replace(day=10).isoformat())
+    asteapta_cereri(3)
+    pg.fill(_F + "#cm-zile", "3")       # contabilul scrie zilele înainte de răspuns
+    elibereaza(2)
+    patron.captura("zile_scrise")
+    assert valoare() == "3", "propunerea întârziată a înlocuit zilele scrise de contabil: %r (%s)" % (valoare(), zile)
+    pg.unroute("**/util/zile-lucratoare*")
+    pg.click(_F + "#cm-renunta")
 
 
 # ── C93 — beneficiarul sumei netaxabile: tipul de asigurat 1.11.2 (51) ────────────────────────────────────────────────────────────
@@ -396,6 +458,7 @@ def test_def_c99_suprataxa_in_luna_cu_cm_aceeasi_pe_stat_fluturas_si_d112(patron
     pg.fill(_F + "#cm-acord", di.isoformat())
     pg.fill(_F + "#cm-inceput", di.isoformat())
     pg.fill(_F + "#cm-sfarsit", ds.isoformat())
+    _propunerea_zilelor(pg, zile_cm)
     pg.fill(_F + "#cm-zile", str(zile_cm))
     for sel in ("#cm-continuare", "#cm-spital", "#cm-program-national"):
         pg.select_option(_F + sel, "false")

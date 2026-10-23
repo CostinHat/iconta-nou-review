@@ -3,7 +3,7 @@
 // Jurnal: evenimente cronologice (pregatit/aprobat/respins/depus), tabel scrollabil.
 // Regula design: fer-larg, antet fix, doar tabelul scrolleaza (un singur scrollbar).
 
-import { api, dataIso, esc, cate } from "../api.js?v=58f26a3fc4";
+import { api, ultimaCerere, dataIso, esc, cate } from "../api.js?v=31460b24f2";
 
 // perioade selectabile -> [de, pana] ISO (sau null pentru tot)
 function interval(cheie) {
@@ -44,8 +44,10 @@ export async function randeazaActivitateCabinet(corp, nav) {
   if (f) f.classList.add("fer-larg");
 
   let perioada = "luna";
+  const cerereNoua = ultimaCerere();   // [C103] perioada schimbată în șir: numai răspunsul ultimei perioade alese ajunge pe ecran
 
   async function reincarca() {
+    const actuala = cerereNoua();
     const [de, pana] = interval(perioada);
     const qs = [];
     if (de) qs.push("de=" + de);
@@ -57,8 +59,11 @@ export async function randeazaActivitateCabinet(corp, nav) {
     let jur = { evenimente: [], total: 0 };
     try {
       cen = await api.get("/asistenti/echipa/centralizator" + sfx);
+      if (!actuala()) return;
       jur = await api.get("/asistenti/echipa/jurnal" + sfx + (sfx ? "&" : "?") + "limit=200");
+      if (!actuala()) return;
     } catch {
+      if (!actuala()) return;
       corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca activitatea.</p>`;
       return;
     }

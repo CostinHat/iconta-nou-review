@@ -1,7 +1,7 @@
 // asistenti.js — managementul actorilor de cabinet (cardul Asistenți).
 // Trei niveluri: listă actori -> editare actor (permisiuni + firme atribuite) -> Vizualizează.
 // Doar admin_firma. Stil aliniat la validat.js / control.js (api.js + nav.deschide).
-import { api, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp, dataIso, cate } from "../api.js?v=58f26a3fc4";  /* audit_cab_lot2_v1 */
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp, dataIso, cate } from "../api.js?v=31460b24f2";  /* audit_cab_lot2_v1 */
 /* [patch11_semafor_explicit] */
 function _semaforEticheta(culoare) {
   // [eticheta_din_fapt 20.08.2026] `gri` lipsea din harta -> M[culoare] || "" randa o bulina
@@ -328,11 +328,13 @@ async function deschideVizualizare(uid, nav) {
   const nume = [d0.actor.prenume, d0.actor.nume].filter(Boolean).join(" ") || d0.actor.email || "asistent fără nume";   // [258] nu id-ul intern
 
   nav.deschide(`Asistent \u2014 ${nume}`, (box) => {
+    const cerereNoua = ultimaCerere();   // [C103] perioada schimbată în șir: numai calitatea ultimei perioade alese ajunge pe ecran
     async function reincarca(de, pana) {
+      const actuala = cerereNoua();
       let c;
-      try { c = await api.get(`/asistenti/${uid}/calitate` + qp(de, pana)); }
-      catch { c = null; }
-      box.innerHTML = _asiRandeazaFereastra(d0, c);
+      try { c = await api.get(`/asistenti/${uid}/calitate` + qp(de, pana)); if (!actuala()) return; }
+      catch { if (!actuala()) return; c = null; }
+      pastreazaCampulActiv(box, () => { box.innerHTML = _asiRandeazaFereastra(d0, c); });   // [C103] data scrisă cât sosește calitatea rămâne
     }
     box.addEventListener("change", (e) => {
       const t = e.target;

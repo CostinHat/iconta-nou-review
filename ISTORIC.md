@@ -3047,3 +3047,24 @@ migrărilor vede acum SQL-ul compus din date și din triggere (5 perechi noi în
 funcție (`tenant_provisioning.contor_schema`), parolele de probă generate la rulare. Cifrele: 103 diferențe, toate explicate (97 date de
 retest identice pe codul publicat, 18 codul lotului: C76, decizia 10.3 pct.4, 453 / C94 / C96, toate XML-urile `valid` pe DUK); referința
 rescrisă după regula 7.3 pct.4 (DECIZII „Lotul 11, poarta 1 ROȘIE”). Urmează poarta 2 și, pe VERDE, publicarea.
+
+### 23.10.2026 — Lotul 11, poarta 2 ROȘIE pe plasă, cauzele reparate
+
+Poarta 2 pe `d041b0ec` (04:35–06:50, pornită detașat ca să nu depășească limita de 2 ore a sarcinii de fundal): pytest verde (10 522 passed),
+verificatorul 0, cifrele F1–F5 identice cu referința; plasa ROȘIE — 2 teste picate și 50 de erori. Erorile: la 06:24 actualizarea automată
+de securitate a lui zlib a repornit (needrestart) Postgres și aplicația de producție, pe același commit publicat; testele din acel minut și de
+după și-au pierdut conexiunea. Cele 2 picături: C102, un defect real al formularului de concediu medical (propunerea zilelor lucrătoare
+scrisă peste ce tastase contabilul: „1010 zile”, respins de DUK în D112) — reparat, cu gardă cu răspunsurile ținute pe loc și mutații roșii,
+plus dovada pe F5; și 323, al cărui test citea și secțiunea „Notele tale în ciornă” (457), apărută fiindcă testele căzute la 06:24 nu și-au
+curățat ciornele — testul citește acum numai textul de sus. Configurarea lui needrestart rămâne decizia lui Costin. Urmează poarta 3.
+
+### 23.10.2026 — Lotul 11, după poarta 2: C103, răspunsul vechi și câmpul înlocuit (39 de funcții, 20 de ecrane)
+
+Rularea țintită de după reparațiile porții 2 a ieșit cu o picătură care la rularea din nou a trecut: ajustarea manuală din reevaluarea
+valutară. Cauza, reprodusă cu răspunsurile ținute pe loc: ecranul cere propunerea de la server la fiecare câmp și punea pe ecran răspunsul
+oricărei cereri, oricând sosea; iar când un răspuns re-desena formularul, câmpul în care se scria deja era înlocuit. Clasa e mai largă decât
+C102: măsurată cu un detector nou pe arborele sintactic, 39 de funcții pe 20 de ecrane (reevaluarea, borderoul, fișa contului, registrele,
+casa, stocurile, jurnalul, balanța, bilanțul, declarațiile, facturile, emiterea, migrarea, asistenții, …). Reparația e un singur mecanism în
+`api.js` (`ultimaCerere`, `pastreazaCampulActiv`), aplicat de trei subagenți pe fișiere disjuncte și de sesiunea principală pe reevaluare,
+concediu, facturile primite și planul de conturi; contoarele scrise de mână au trecut pe el. Garda statică și două teste de capăt la capăt
+noi, fiecare roșu sub mutația lui; dovada pe copia lui F1. Detaliile, perimetrul și alternativele respinse: DECIZII „C103”.

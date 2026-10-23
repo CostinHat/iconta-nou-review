@@ -24,10 +24,21 @@ atinse: 54 rezolvate cu e2e + mutație + dovadă pe ecran pe copia firmelor de t
 de Costin), C76 / C90 / C93 / C96 (dovada imposibilă înainte de 01.11.2026), C70 / C86 (fără ecran), C84, C97, 456 (decizii). Suita
 întreagă rulată de două ori înaintea porții (46, apoi 5 picături, toate reparate pe cauză — DECIZII „Lotul 11: suita întreagă…” și „…suita
 a doua”). Capturile de dovadă NU sunt în repo: manifestul `dovezi/lot11/AMPRENTE.json` (sha256) e în commit, imaginile intră în ZIP-ul lotului.
+**23.10.2026 dimineața — porțile lotului 11 (confirmarea și aprobarea: comanda 11.4 pct.1 + „continuă: poarta 2 și, pe VERDE, publică”).**
+Poarta 1 (`0dab561d`) ROȘIE: 5 picături pytest + cifrele necalculabile (ordinea migrărilor) — reparate în `d041b0ec`. Poarta 2 (`d041b0ec`)
+ROȘIE numai pe plasă: 50 de erori din repornirea Postgres + `iconta-nou` de către needrestart la 06:24 (actualizarea automată a lui zlib) +
+C102 (reparată) + garda 323 (citea și ciornele). Rularea țintită de după reparații a scos C103 — clasa din care C102 era o instanță
+(răspunsul unei cereri vechi scris peste cel nou; câmpul înlocuit la re-desenare): 39 de funcții pe 20 de ecrane, trecute pe mecanismul unic
+din `api.js`, cu gardă (DECIZII „C103”). Toate în commitul care conține această predare; urmează poarta 3 (DECIZII „Lotul 11, poarta 2
+ROȘIE”, „C103”). Poarta se pornește DETAȘAT (`setsid nohup sh scripts/poarta_lot.sh`): cu plasa, durează peste 7200 s, limita unei sarcini
+de fundal.
 **Fronturi deschise:** (1) **poarta lotului** (`sh scripts/poarta_lot.sh`) și publicarea cer confirmarea lui Costin că cabinetul nu lucrează,
 cu backup chiar înainte; regula 3d: pe roșu se repară și se rulează din nou, fără limită de rulări, fără a slăbi vreun test. (2) La publicare,
-cele 10 migrări `--productie`: `borderou_tip_vechi`, `borderou_storno_unic`, `produse_categorie_tva`, `reevaluare_partener`, `cui_fara_ro`,
-`intocmitor_bilant`, `factura_tva_cote`, `valoare_neta_linie`, `serie_nr_descrieri`, `curs_precizie`. (3) Deciziile cerute (raportul lotului
+cele 10 migrări `--productie`, în ordinea registrului (`core.migrari_registru.in_ordine`; rulatorul refuză o migrare rulată înaintea celor din
+`DUPA`): `borderou_storno_unic`, `borderou_tip_vechi`, `intocmitor_bilant`, `cui_fara_ro`, `curs_precizie`, `factura_tva_cote`,
+`produse_categorie_tva`, `reevaluare_partener`, `serie_nr_descrieri`, `valoare_neta_linie`. (5) **needrestart repornește automat Postgres și
+producția** după actualizările de securitate (fereastra `apt-daily-upgrade`, ~06:00–07:00): decizie cerută lui Costin (configurarea cere
+`sudo`); până atunci, o poartă peste fereastră poate pica la fel. (3) Deciziile cerute (raportul lotului
 11 §6): C97, 456, cursul mai vechi la validarea facturii primite în valută, B1_4 = 8 la norma parțială, C84 (a)/(b), dovada fără ecran C70 /
 C86. (4) Pe producție se lucrează pe firmele de test (nota 186 a F1 a devenit „respinsă” între 21:07 și 21:09): referința F1–F5 poate
 diferi la poartă din datele de retest — regula 7.3 pct.4.

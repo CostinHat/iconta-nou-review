@@ -406,6 +406,48 @@ async function _cereForm(cale, formData) {
   return _cuLaValidare(r, date);
 }
 
+// ── [C103] RĂSPUNSUL UNEI CERERI VECHI NU SE SCRIE PESTE CEL NOU ─────────────────────────────────────────────────────────
+// Un ecran care cere din nou la fiecare editare (propunerea reevaluării, zilele concediului, lista unei luni) poate avea două cereri
+// în zbor; răspunsurile sosesc în orice ordine, iar cel vechi, sosit ultimul, ar pune pe ecran altă cifră decât cea scrisă în câmp.
+// UN mecanism: funcția care cere ia un jeton înaintea cererii și, după răspuns (și în `catch`), iese dacă între timp a pornit alta:
+//   const cerereNoua = ultimaCerere();                       // o dată, lângă funcție
+//   const actuala = cerereNoua();                            // la fiecare cerere
+//   const r = await api.get(...); if (!actuala()) return;    // un răspuns depășit nu se scrie
+// Un ecran deschis de mai multe ori cu alt `corp` (punctul de intrare al ecranului) ține contorul pe elementul lui:
+// `ultimaCerere(corp)` întoarce de fiecare dată aceeași fabrică pentru același element, deci două ferestre nu se anulează între ele.
+// Gard: `core/test_cerere_veche.py` (detectorul `scripts/scan_cerere_veche.js`).
+const _fabriciPeElement = new WeakMap();
+export function ultimaCerere(el) {
+  if (el) {
+    if (!_fabriciPeElement.has(el)) _fabriciPeElement.set(el, ultimaCerere());
+    return _fabriciPeElement.get(el);
+  }
+  let n = 0;
+  return () => { const k = ++n; return () => k === n; };
+}
+
+// [C103, a doua fațetă] Răspunsul unei editări re-desenează formularul cât omul scrie deja în câmpul următor: fără asta, câmpul e
+// înlocuit, iar ce a tastat și n-a confirmat încă (`change`) dispare — testul ajustării manuale din reevaluare a picat așa, la
+// întâmplare. `randeaza` rulează, apoi câmpul activ (după `id`) primește înapoi ce scria omul, cu focusul și cursorul; dacă valoarea
+// lui diferă de cea re-desenată, la părăsirea câmpului pleacă `change`, ca editarea să ajungă în model ca de obicei.
+export function pastreazaCampulActiv(radacina, randeaza) {
+  const a = document.activeElement;
+  const id = a && a.id && radacina.contains(a) && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)
+    && !["file", "checkbox", "radio", "hidden"].includes(a.type) ? a.id : null;
+  const valoare = id ? a.value : null;
+  const sel = id && typeof a.selectionStart === "number" ? [a.selectionStart, a.selectionEnd] : null;
+  const r = randeaza();
+  if (!id) return r;
+  const nou = radacina.querySelector("#" + CSS.escape(id));
+  if (!nou || nou === a) return r;
+  const diferit = nou.value !== valoare;
+  if (diferit) nou.value = valoare;
+  nou.focus({ preventScroll: true });
+  if (sel) { try { nou.setSelectionRange(sel[0], sel[1]); } catch { /* câmpuri fără selecție (number, date) */ } }
+  if (diferit) nou.addEventListener("blur", () => nou.dispatchEvent(new Event("change", { bubbles: true })), { once: true });
+  return r;
+}
+
 export const api = {
   get: (cale) => cere("GET", cale),
   post: (cale, corp) => cere("POST", cale, corp),

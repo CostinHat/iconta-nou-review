@@ -1701,5 +1701,116 @@
    }
   ],
   "captura": "c89_f5_cod10_indemnizatie_rotunjita.png"
+ },
+ {
+  "nr": "C102",
+  "firma": "tenant_9053",
+  "descriere": "F5: Salariați -> «Concediu» pe primul salariat -> «+ Certificat nou» -> «Început» 01.10.2026, «Sfârșit» 10.10.2026 și, imediat (fără să aștepte propunerea ecranului), «Zile lucrătoare CM» = 3 -> după o secundă și jumătate câmpul are tot 3. Înainte (C102): propunerea zilelor lucrătoare (8) sosea după tastare și scria peste cifra contabilului (în poarta 2 a lotului 11: „1010 zile” în certificat și B3_1 = 1010 în D112). NU scrie nimic: formularul se închide fără salvare.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand [data-cm]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-inceput",
+    "valoare": "2026-10-01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-sfarsit",
+    "valoare": "2026-10-10"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile",
+    "valoare": "3"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": ".fereastra:last-of-type #cm-zile",
+    "egal": "3"
+   }
+  ],
+  "captura": "c102_f5_zilele_scrise_de_contabil_raman.png"
+ },
+ {
+  "nr": "C103",
+  "firma": "tenant_9049",
+  "descriere": "F1: Închidere lună -> luna trecută -> «Reevaluare valută» -> «Adaugă un cont» -> 5121, EUR, 1000 scrise în șir, fără să aștepte recalcularea dintre ele (ecranul cere propunerea de la server la fiecare câmp) -> după o secundă și jumătate rândul ajustării e în tabel, «adăugat de tine», calculat cu soldul scris (1.000 EUR), iar câmpurile au tot 5121 / EUR / 1000. Contul 5121 e ales numai fiindcă are sold în evidența F1 (un cont fără sold e refuzat lângă câmp), ca ecranul să aibă ce calcula — dovada privește ce ajunge pe ecran, nu reevaluarea lui. Înainte (C103): răspunsul unei cereri vechi (numai contul, sau contul și moneda) putea sosi ultimul și punea pe ecran propunerea fără sold; re-desenarea golea câmpul în care contabilul scria deja. NU scrie nimic: nota nu se generează.",
+  "pasi": [
+   {
+    "click": "#fa-inchidere"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #il-prev"
+   },
+   {
+    "click": ".fereastra:last-of-type #il-prev"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #il-reevaluare"
+   },
+   {
+    "click": ".fereastra:last-of-type #il-reevaluare"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #rv-m-adauga"
+   },
+   {
+    "click": ".fereastra:last-of-type #rv-m-adauga"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #rv-m0-cont"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #rv-m0-cont",
+    "valoare": "5121"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #rv-m0-moneda",
+    "valoare": "EUR"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #rv-m0-sold_valuta",
+    "valoare": "1000"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "adăugat de tine"
+   },
+   {
+    "valoare": ".fereastra:last-of-type #rv-m0-cont",
+    "egal": "5121"
+   },
+   {
+    "valoare": ".fereastra:last-of-type #rv-m0-moneda",
+    "egal": "EUR"
+   },
+   {
+    "valoare": ".fereastra:last-of-type #rv-m0-sold_valuta",
+    "egal": "1000"
+   }
+  ],
+  "captura": "c103_f1_ajustarea_scrisa_in_sir_ramane.png"
  }
 ]

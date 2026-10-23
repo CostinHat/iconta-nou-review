@@ -12,8 +12,8 @@
 // ca butoanele. Asistentului fără firme i se spune asta, nu i se arată un fir pe care nu-l poate parcurge.
 // [pct.7] Termenul de rezolvare („se rezolvă în maximum 48 de ore”) a ieșit din fraza despre Suport: nu e un angajament
 // decis (Costin). Fraza rămâne, fără termen.
-import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=58f26a3fc4";
-import { STRATURI } from "./migrare.js?v=e6bf27526c";
+import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=31460b24f2";
+import { STRATURI } from "./migrare.js?v=2e03f197ba";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 

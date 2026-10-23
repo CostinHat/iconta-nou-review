@@ -61,7 +61,16 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     poarta 1 ROȘIE”): ordinea migrărilor (`DUPA` + garda lărgită la SQL compus din date și triggere), parolele de probă scrise în teste,
     contorul de scheme citit într-un singur loc (`tenant_provisioning.contor_schema`), blocul de clichete; referința F1–F5 rescrisă după
     regula 7.3 pct.4 (103 diferențe, toate explicate: 97 date de retest, 18 codul lotului).
-  - urmator: commitul reparațiilor -> poarta 2 a lotului (regula 3d: până la verde) -> pe VERDE, cu backup chiar înainte: `APROBARE_MAIN`,
+  - ultim: (23.10.2026 ~07:50) poarta 2 pe `d041b0ec` ROȘIE numai pe plasă (pytest 10 522 passed, verificatorul 0, cifrele identice):
+    50 de erori din repornirea Postgres + `iconta-nou` de către needrestart la 06:24 (zlib, `unattended-upgrades`; decizie cerută: §6) și
+    2 picături — C102 (propunerea zilelor CM scrisă peste ce tastase contabilul; reparată în `flux_concediu.js`, gardă cu răspunsurile ținute
+    pe loc, 2 mutații ROȘII, dovada pe F5) și 323 (testul citea și „Notele tale în ciornă”; citește acum textul de sus, ca `e2e_bloc_b`).
+    DECIZII „Lotul 11, poarta 2 ROȘIE”.
+  - ultim: (23.10.2026 ~13:00) rularea țintită de după poarta 2: picătura 429 (ajustarea manuală, la întâmplare) = C103, clasa „răspunsul
+    unei cereri vechi scris peste cel nou” + „câmpul înlocuit la re-desenare” — 39 de funcții pe 20 de ecrane, trecute pe `ultimaCerere()` /
+    `pastreazaCampulActiv` (`static/js/api.js`); garda `core/test_cerere_veche.py` (7 teste, 2 mutații ROȘII), `e2e_lot11_v.py::test_def_c103_…`
+    ×2 (mutațiile ROȘII), C102 re-probat pe mecanismul unic (mutație ROȘIE). DECIZII „C103”.
+  - urmator: commitul reparațiilor -> poarta 3 a lotului (regula 3d: până la verde) -> pe VERDE, cu backup chiar înainte: `APROBARE_MAIN`,
     fast-forward, post-commit, cele 10 migrări `--productie`, restart, four-way; ZIP; raportul §2.2. IN LUCRU
   - pasi:
     L11-1. T — 428 (emiterea în sistemul TVA la încasare: 4428, mențiunea, Configurare emitere arată sistemul; cauza pe producție) + C76

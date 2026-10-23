@@ -10,7 +10,7 @@
 // validarea pe server, erorile lângă câmp — toate deodată, `erori_campuri`).
 // DS: tabelul `.fd-tabel` cu cifrele în `.fd-td-num` (cap.9), rezumatul lipit sus `.rezumat-fix`, acțiunea și mesajul ei lipite jos
 // `.bara-fixa` (cap.6, v2.92), confirmarea care numește nota și consecința rămâne pe ecran (cap.27).
-import { api, arataMesaj, bani, cursValutar as curs, dataIso, dupaGenerare, esc, dataRo, eroareCamp, noteGenerate, stareNota, pasNota, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=58f26a3fc4";
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, bani, cursValutar as curs, dataIso, dupaGenerare, esc, dataRo, eroareCamp, noteGenerate, stareNota, pasNota, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=31460b24f2";
 
 const FEL = { creanta: "Creanță", datorie: "Datorie", disponibil: "Disponibil" };
 
@@ -39,22 +39,27 @@ export async function ecranReevaluareValuta(corp, nav, t, an, luna, opt = {}) {
   const completari = {};   // ce a scris contabilul pe ecran, pe element: {cheie: {sold_valuta, moneda, clauza}}
   const manuale = [];      // ajustarea manuală: [{cont, moneda, sold_valuta, clauza}] — rândurile adăugate de contabil
   let ultima = null;       // ultima propunere primită: un refuz al completărilor nu golește ecranul
+  const cerereNoua = ultimaCerere();   // [C103] contul, moneda și soldul editate în șir: numai răspunsul ultimei cereri ajunge pe ecran
   // propunerea se recalculează pe server la orice completare (contabilul vede diferența înainte de generare); un refuz al completărilor
   // păstrează ultima propunere pe ecran și pune fiecare eroare lângă câmpul ei
   const deseneaza = async () => {
     if (!ultima) corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
+    const actuala = cerereNoua();
     try {
       const q = (Object.keys(completari).length ? `&completari=${encodeURIComponent(JSON.stringify(completari))}` : "")
         + (manuale.length ? `&manuale=${encodeURIComponent(JSON.stringify(manuale))}` : "");
-      ultima = await api.get(`/tenants/${t.id}/reevaluare-valuta?an=${an}&luna=${luna}${q}`);
-      randeaza(ultima, null);
+      const r = await api.get(`/tenants/${t.id}/reevaluare-valuta?an=${an}&luna=${luna}${q}`);
+      if (!actuala()) return;
+      ultima = r;
+      pastreazaCampulActiv(corp, () => randeaza(ultima, null));   // [C103] câmpul în care omul scrie deja nu se pierde
     } catch (e) {
+      if (!actuala()) return;
       if (!ultima || !(e && (e.erori_campuri || []).length)) {
         corp.innerHTML = `<h2 class="pf-titlu">Reevaluare valută</h2><div id="rv-mesaj"></div>`;
         arataMesaj(corp.querySelector("#rv-mesaj"), "Propunerea nu s-a putut calcula" + (e && e.mesaj ? ": " + e.mesaj : "") + ".", "eroare");
         return;
       }
-      randeaza(ultima, e);
+      pastreazaCampulActiv(corp, () => randeaza(ultima, e));
     }
   };
   const randeaza = (p, refuz) => {

@@ -3,7 +3,7 @@
 // Backend: GET /tenants, GET /pachete/{tid}/rezumat, POST /pachete/{tid}/genereaza,
 //          GET+POST /pachete/{tid}/poveste, POST /pachete/{tid}/trimite.
 
-import { api, dataRo, esc, arataMesaj, cate, confirmaCaseta } from "../api.js?v=58f26a3fc4";
+import { api, ultimaCerere, dataRo, esc, arataMesaj, cate, confirmaCaseta } from "../api.js?v=31460b24f2";
 
 // LUNI = pentru pickerul de luna (<option>); etichetele luna-an trec prin dataRo("luna_an"). [G3 23.07]
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
@@ -219,16 +219,20 @@ function deschideModal(corp, nav) {
 
   // toggle preview email
   let modPreview = false;
+  const cerereNoua = ultimaCerere();   // [C103] „Vezi ca email” apăsat în șir: numai previzualizarea textului de acum ajunge pe ecran
   btnVezi.addEventListener("click", async () => {
     modPreview = !modPreview;
     if (modPreview) {
+      const actuala = cerereNoua();
       editor.style.display = "none"; preview.style.display = "block";
       btnVezi.textContent = "Înapoi la editare";
       preview.innerHTML = `<div class="pacm-mail">Se încarcă previzualizarea…</div>`;
       try {
         const r = await api.get(`/pachete/${S.tenant_id}/preview?an=${S.an}&luna=${S.luna}&text=${encodeURIComponent(ta.value)}`);
+        if (!actuala()) return;
         preview.innerHTML = (r && r.html) || "";
       } catch (e) {
+        if (!actuala()) return;
         preview.innerHTML = `<div class="pacm-mail">${esc((e && e.mesaj) || "Nu s-a putut încărca previzualizarea.")}</div>`;
       }
     } else {

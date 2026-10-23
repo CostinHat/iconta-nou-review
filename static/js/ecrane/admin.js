@@ -3,7 +3,7 @@
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand } from "../api.js?v=58f26a3fc4";
+import { api, ultimaCerere, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand } from "../api.js?v=31460b24f2";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=a2a0b629a8";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=eb7737e0b3";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=f72a91fe71";
@@ -250,9 +250,14 @@ async function randeazaAdminInvitatii(corp) {
 
 // [deficiența 282, comanda Costin 16.10.2026, verbatim în DECIZII] „Cardul «Înregistrare» le listează: data, denumirea cabinetului,
 // emailul, dacă emailul de confirmare a plecat și când expiră linkul, cu acțiunea «Retrimite confirmarea».”
+// [C103] contor pe modul: lista e chemată numai din ecranul „Înregistrare” (unul singur, fereastra de sus); retrimiterile pe rânduri
+// diferite în șir: numai lista ultimei cereri ajunge pe ecran
+const cerereNoua = ultimaCerere();
 async function cereriNeconfirmate(zona) {
+  const actuala = cerereNoua();
   let r;
-  try { r = await api.get("/admin/inregistrari-neconfirmate"); } catch (e) {
+  try { r = await api.get("/admin/inregistrari-neconfirmate"); if (!actuala()) return; } catch (e) {
+    if (!actuala()) return;
     arataMesaj(zona, (e && e.mesaj) || "Cererile neconfirmate nu se pot încărca.", "eroare");
     return;
   }

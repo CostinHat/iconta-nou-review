@@ -9009,9 +9009,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**1030 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**1031 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 991
+### `core/` — 992
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9186,6 +9186,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_catch_vizibil.py` — GARD DEFECT-3 (08.08.2026): (A) frontend - un catch{} GOL care inghite un api.* transforma un 500 intr-o
 - `core/test_categorie_marime.py` — GARD — categoria de mărime nu se rotunjește la „micro", și pragurile citează actul.
 - `core/test_cauza_precisa_business.py` — GARD cauza_precisa: cand un verificator din control_incrucisat prinde o eroare de BUSINESS
+- `core/test_cerere_veche.py` — GARD — răspunsul unei cereri vechi nu se scrie peste cel nou (C103, găsită de Code la rularea țintită de după poarta 2 a lotului 11;
 - `core/test_chei_duplicate.py` — GARDĂ: o cheie care apare de două ori în același dicționar e o intrare MOARTĂ. (21.08.2026)
 - `core/test_chei_unice.py` — GARD — o cheie de registru nu se repetă (comanda Costin 07.10.2026, C7).
 - `core/test_cifre_referinta_poarta.py` — GARD — cifrele de referință ale firmelor F1–F5 opresc publicarea la orice diferență (comanda Costin 10.10.2026 pct.1, verbatim în
@@ -11756,3 +11757,21 @@ producție ar fi picat la fel. 5 perechi noi în `DUPA`, toate reale (verificate
 **Riscuri deschise, fără gard (decizii cerute, raportul lotului 11 §6):** C97 (pensionarul la D112), 456 (încasarea salvată fără chitanță,
 înainte de reparație: chitanța de acum ar fi antedatată), C84, cursul mai vechi folosit tăcut la validarea unei facturi primite în valută
 (semnalat numai la emitere). Dovezile imposibile azi (până la 01.11.2026): C76 (D300 10/2026), C90 / C93 / C96 (D112 10/2026).
+
+**După poarta 2 a lotului 11 (23.10.2026, ROȘIE pe plasă):** (1) C102 — o propunere asincronă nu mai scrie peste un câmp editat sau peste o
+cerere mai nouă: `frontend_test/e2e/e2e_lot11_s9.py::test_def_c102_propunerea_zilelor_nu_inlocuieste_ce_a_scris_contabilul` (răspunsurile
+ținute pe loc și eliberate în ordinea defectului; două mutații -> ROȘU). Limita: garda acoperă singurul handler care propune într-un câmp
+editabil (căutat pe tot `static/js`); un handler nou de același fel nu e prins mecanic — îl prinde plasa numai dacă testul lui are ordinea
+nefericită. (2) **Risc deschis, fără gard (decizie cerută, raportul §6): needrestart repornește automat Postgres și `iconta-nou`** după
+actualizările de securitate (`unattended-upgrades`, fereastra `apt-daily-upgrade`): la 06:24 a rupt plasa porții 2 (50 de erori) și a
+repornit producția fără aprobare. Gardul (configurarea lui needrestart) cere `sudo` cu parolă.
+
+**După rularea țintită de după poarta 2 (23.10.2026): C103 închide limita de la (1).** Clasa „răspunsul unei cereri vechi scris peste cel
+nou” (C102 era o instanță) are acum gardă mecanică pe tot `static/js`: `core/test_cerere_veche.py` + detectorul
+`scripts/scan_cerere_veche.js` (acorn) — orice citire atinsă dintr-o editare (`input` / `change` / `keyup` / `search`) sau dintr-un clic
+care schimbă starea ecranului trece prin `ultimaCerere()` (`static/js/api.js`), cu verificarea după răspuns ȘI în fiecare `catch`; orice
+desen cu câmpuri de după un astfel de răspuns trece prin `pastreazaCampulActiv`; scrierile din editare sunt clasificate una câte una; o
+clasificare fără cerere pică. Mutațiile: verificarea de după răspuns scoasă din reevaluare -> ROȘU; `pastreazaCampulActiv` scos -> ROȘU;
+proba de dinți (9 forme rele, 6 bune) și calibrarea pe `22c71846`. Limita, declarată: se urmăresc funcțiile chemate pe nume din același
+fișier — o citire făcută de o funcție importată din alt modul, sau chemată ca metodă (`obj.f()`), nu se vede; clicurile care nu schimbă o
+variabilă a ecranului nu intră (cer același lucru de două ori).

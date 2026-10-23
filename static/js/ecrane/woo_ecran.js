@@ -1,15 +1,17 @@
 // woo_ecran.js — ecranul WooCommerce (config + sincronizare), reutilizabil.  // wc_extras_v1
 // Extras din firme.js ca sa fie folosit si de cabinet (firme.js) si de contul gratuit
 // (facturi_ecran.js). O singura sursa (regula DS 0a). Semnatura pe tenantId, nu obiect firma.
-import { api, cate, arataMesaj, esc } from "../api.js?v=58f26a3fc4";
+import { api, ultimaCerere, cate, arataMesaj, esc } from "../api.js?v=31460b24f2";
 
 export async function ecranMagazin(corp, nav, tenantId) {
   let mesajSucces = "";
+  const cerereNoua = ultimaCerere();   // [C103] „Renunță” / „Salvează” în șir: numai starea citită ultima ajunge pe ecran
   async function randeazaPrincipal() {
+    const actuala = cerereNoua();
     nav.setInapoi(undefined);
     corp.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
     let cfg = { configurat: false, url: null };
-    try { cfg = await api.get(`/tenants/${tenantId}/woocommerce/config`); } catch (e) { corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca starea magazinului online.</p>`; return; }
+    try { cfg = await api.get(`/tenants/${tenantId}/woocommerce/config`); if (!actuala()) return; } catch (e) { if (!actuala()) return; corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca starea magazinului online.</p>`; return; }
     corp.innerHTML = `
       <h2 class="pf-titlu">Magazin online</h2>
       <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>

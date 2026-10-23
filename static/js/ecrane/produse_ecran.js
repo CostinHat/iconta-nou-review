@@ -2,7 +2,7 @@
 // Scrii denumirea -> AI potriveste cota TVA din regula oficiala (preview live) ->
 // vezi cota + justificarea -> salvezi. Cota se poate corecta manual.
 // Apelare: randeazaProduse(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp, arataRefuzul, cereCompletate } from "../api.js?v=58f26a3fc4";  /* cap6_catch_v1b + investigatie_identitate_v1 */
+import { api, ultimaCerere, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp, arataRefuzul, cereCompletate } from "../api.js?v=31460b24f2";  /* cap6_catch_v1b + investigatie_identitate_v1 */
 
 const SVG_BACK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
 
@@ -183,7 +183,9 @@ function formularAdauga(corp, tenantId, reincarca, cat) {
 
   // potrivire AI live (debounce), doar daca utilizatorul nu a ales manual cota
   let timer = null, ultimaDenum = "";
+  const cerereCota = ultimaCerere();   // [C103] denumirea scrisă în reprize: numai cota propusă pentru ultima denumire ajunge în previzualizare
   inputDen.addEventListener("input", () => {
+    const actuala = cerereCota();   // și alegerea manuală / o denumire scurtă (fără cerere) opresc propunerea cerută înainte
     const d = inputDen.value.trim();
     if (selCota.value) { preview.innerHTML = ""; return; }  // a ales manual
     clearTimeout(timer);
@@ -191,16 +193,17 @@ function formularAdauga(corp, tenantId, reincarca, cat) {
     preview.innerHTML = `<span class="pr-cota-cauta">se verific\u0103 cota\u2026</span>`;
     timer = setTimeout(async () => {
       if (d === ultimaDenum) return;
-      ultimaDenum = d;
       try {
         const r = await api.post(`/tenants/${tenantId}/produse/potriveste`, { denumire: d });
+        if (!actuala()) return;
+        ultimaDenum = d;   // [C103] denumirea „deja propusă” e numai cea al cărei răspuns a ajuns pe ecran
         if (r && r.ok) {
           preview.innerHTML = `<div class="pr-cota-rezultat">
             ${badgeCota(r.cota, r.sursa)}
             <span class="pr-cota-just">${r.justificare || ""}</span>
           </div>`;
         } else { preview.innerHTML = ""; }
-      } catch { preview.innerHTML = ""; }
+      } catch { if (!actuala()) return; preview.innerHTML = ""; }
     }, 600);
   });
 

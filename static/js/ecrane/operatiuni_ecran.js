@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, cate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=58f26a3fc4";
+import { api, ultimaCerere, cate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=31460b24f2";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
@@ -503,15 +503,20 @@ export async function ecranOperatiuni(corp, nav, t) {
       // avertismentul despre sursa profitului e o afirmație tipată (`afirmatie.motiv`, decizia 21.08), ca în firme.js
       if (p.afirmatie && p.afirmatie.motiv) mesajIn(zonaProp, p.afirmatie.motiv, "avert");
     };
+    const cerereNoua = ultimaCerere();   // [C103] brutul / datele editate în șir: numai împărțirea ultimelor valori ajunge pe ecran
     const propuneImpartirea = async () => {
+      const actuala = cerereNoua();   // și golirea (altă operație) oprește o cerere în zbor
       const v = (n) => (corp.querySelector(`#op-${n}`) || {}).value || "";
       if (!zonaProp) return;
       if (v("operatie") !== "dividend" || !v("brut") || !v("data_hotarare")) { zonaProp.innerHTML = ""; return; }
       const q = new URLSearchParams({ brut: v("brut"), data_hotarare: v("data_hotarare"), numar_hotarare: v("numar_hotarare"),
                                       interimar: v("interimar") || "0", data: v("data") });
       try {
-        arataImpartirea(await api.get(`/tenants/${t.id}/dividende-impartire?${q}`), "Împărțirea pe asociați");
+        const p = await api.get(`/tenants/${t.id}/dividende-impartire?${q}`);
+        if (!actuala()) return;
+        arataImpartirea(p, "Împărțirea pe asociați");
       } catch (e) {
+        if (!actuala()) return;
         // refuzul (fără asociați, peste profitul disponibil) se vede înainte de generare, ca avertisment; butonul spre Date firmă îl pune api.js
         zonaProp.innerHTML = "";
         mesajIn(zonaProp, e.mesaj || e.message || "Împărțirea pe asociați nu s-a putut calcula.", "avert");
@@ -524,7 +529,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // nota și conturile ei, iar butonul o deschide în Registrul jurnal, în luna ei, evidențiată (același drum ca legătura din notificări)
     const deschideNota = async (nid, data) => {
       const [an, luna] = String(data || "").split("-").map((x) => parseInt(x, 10));
-      const { ecranJurnal } = await import("./firme.js?v=020b99dd0c");
+      const { ecranJurnal } = await import("./firme.js?v=67a0f7dd2f");
       nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
         Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})), { lat: "tabel" });   // [394] Registrul jurnal se deschide lat
     };

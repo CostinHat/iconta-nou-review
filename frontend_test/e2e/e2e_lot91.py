@@ -158,7 +158,11 @@ def test_def_323_textul_de_depus_nu_vorbeste_de_note_care_nu_sunt(patron, firma_
         cid = _in_coada(patron, firma_tva_luna, luna=trecuta.month, an=trecuta.year)["json"]["coada_id"]
         _deschide_coada(patron, cid)
         pg = patron.pg
-        intro = " ".join(" ".join(pg.eval_on_selector_all(".fereastra:last-of-type .mig-intro", "es => es.map(x => x.innerText)")).split())
+        # textul de sus: fără cel al notelor de validat (#val-note) și al „Notele tale în ciornă” (#val-ciorne, 457: la capătul ferestrei,
+        # numai când contabilul are ciorne, pe oricare firmă), ca în e2e_bloc_b (52)
+        intro = " ".join(" ".join(pg.eval_on_selector_all(
+            ".fereastra:last-of-type .mig-intro",
+            "es => es.filter(x => !x.closest('#val-note') && !x.closest('#val-ciorne')).map(x => x.innerText)")).split())
         note = pg.locator(".fereastra:last-of-type .val-card[data-fel='nota'], .fereastra:last-of-type #val-note .val-card").count()
         patron.captura()
         assert "trimit la validare" not in intro and "Declarațiile" in intro, intro

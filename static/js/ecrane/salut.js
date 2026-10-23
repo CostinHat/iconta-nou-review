@@ -6,9 +6,9 @@
 // fără meniu lateral. Un singur loc o scrie (aici), deci cele două pagini nu mai pot diverge; gard `PAGINA_PRINCIPALA_UNA`
 // (verificator) + `frontend_test/e2e/e2e_comanda_1210.py`.
 
-import { api, dataRo, esc, ICOANE, CULORI_CARD } from "../api.js?v=58f26a3fc4";
+import { api, dataRo, esc, ICOANE, CULORI_CARD } from "../api.js?v=31460b24f2";
 import { randeazaRecomanda } from "./recomanda.js?v=62f148fa2b"; // [p31_recomanda]
-import { randeazaRaporteaza } from "./raporteaza.js?v=ff0c5ffd8d"; // [p34_raporteaza]
+import { randeazaRaporteaza } from "./raporteaza.js?v=c8012ff8c2"; // [p34_raporteaza]
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;
