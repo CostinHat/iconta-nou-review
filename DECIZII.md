@@ -23073,3 +23073,56 @@ producție numai-citire, ÎNAINTEA porții (o ștergere neexplicată ar fi oprit
 22:50 și 23:20, niciun utilizator cu emiteri dispărut, nicio firmă scoasă în ultimele 30 de ore; bara calculată acum dă 3 angajați · 25 —
 aceeași cifră ca la 23:05 — iar rândurile de audit nu reapar după o ștergere. Deci nu s-a șters nimic; „2 · 22” nu se poate reproduce din
 date (răspunsul, în raport). Găsită pe drum: C101 (refuzurile numărate ca facturi emise), consemnată „nerezolvată”, în afara lotului.
+
+## 23.10.2026 — Lotul 11, poarta 1 ROȘIE (5 picături pytest + cifrele F1–F5 necalculabile): cauzele reparate, referința F1–F5 rescrisă după regula 7.3 pct.4
+
+**Ce s-a întâmplat.** Poarta lotului pe `0dab561d` (rularea 1 pe `lucru/lot11-2026-10-21`, pornită la 00:14 după comanda 11.4 pct.1):
+pytest `5 failed, 10516 passed, 10 skipped, 14 xfailed` (4901 s), verificatorul `TOTAL: 0`, cifrele F1–F5 NU s-au putut calcula:
+`migrarea core/migrare_cui_fara_ro.py a picat pe copie: column "cif_intocmit" of relation "accounting_firms" does not exist`. Plasa n-a mai
+rulat. Regula aplicată: 3d (comanda 11.2) — cauza fiecărei picături reparată, testele picate rulate o dată, commit, poarta din nou.
+
+1. **Ordinea migrărilor (cifrele).** `migrare_cui_fara_ro` normalizează și `accounting_firms.cif_intocmit`, coloana adăugată de
+   `migrare_intocmitor_bilant` (tot lotul 11); alfabetic, `cui_fara_ro` rula întâi — pe producție ar fi picat la fel la rularea de mână.
+   Garda din 18.10.2026 n-a văzut perechea: `cui_fara_ro` își compune SQL-ul din tupluri Python, deci tabela și coloana nu stau în aceeași
+   instrucțiune. Reparat: garda vede și SQL-ul compus (tuplu Python; corpul funcției unui trigger `ON` tabela; `NEW.col` cu tabela numită ca
+   șir), iar `DUPA` numește cele 5 perechi găsite, toate verificate în cod: `cui_fara_ro` după `intocmitor_bilant`, `partener_linie`,
+   `tert_platitor_tva`; `reguli_fond_2` după `declaratii_depuse_randuri`, `declaratii_depuse_versiune`. Respinsă: căutarea pe tot modulul
+   (fals pozitiv `reguli_fond` -> `punte_stoc`: `factura_id` e al notei, nu al mișcării de stoc). Ordinea celor 10 migrări ale lotului:
+   `borderou_storno_unic, borderou_tip_vechi, intocmitor_bilant, cui_fara_ro, curs_precizie, factura_tva_cote, produse_categorie_tva,
+   reevaluare_partener, serie_nr_descrieri, valoare_neta_linie`.
+2. **`test_fara_secrete_in_git` (3 fișiere).** DSN-uri sintetice cu parola `x` în `core/test_dovada_firme_test.py` (5) și parole de probă
+   scrise în `core/test_lot11_a459_cui.py` / `core/test_lot11_w3a_erori.py`. Reparat la sursă, fără intrare nouă în lista închisă: DSN-urile
+   fără parolă (clasificarea mediului nu citește parola), parolele `secrets.token_urlsafe(12) + "-Pp1"` (precedentul din
+   `test_inregistrare_libera.py`). Suita a doua nu le văzuse: garda citește fișierele URMĂRITE, iar ele intraseră în git abia la commit.
+3. **`test_e2a_univers` (2: criteriul și clichetul D4b 20 > 19).** Fixtura `contor_schema_pastrat` scria SQL în `core/conftest.py`, care
+   devenea „modul cu SQL fără strat”. Reparat: citirea și readucerea contorului stau într-o singură funcție, lângă secvență
+   (`tenant_provisioning.contor_schema(cur, pune=None)`), folosită de fixtură și de plasă (`scripts/e2e_poarta._contor_schema`, care avea
+   aceeași logică dublată). Respinsă: excluderea lui `conftest.py` din universul gărzii (ar fi slăbit garda).
+4. **`test_clichete_generate` (2).** Clichetul 50 (aserțiuni ancorate pe text) 1201 -> 1202 după testele lotului; blocul din PREDARE_LANT.md
+   regenerat cu `scripts/scan_ramas.py --clichete-md`, nu corectat de mână.
+
+**Cifrele F1–F5 (regula 7.3 pct.4, verbatim în „Comanda 7.3”).** După reparația 1, copia s-a migrat și cifrele s-au calculat: **103 diferențe**
+față de referința din 21.10.2026 16:32. Metoda din 20.10.2026: trei măsurători, numai citire pe producție — referința; codul PUBLICAT
+(`~/iconta_nou`, `22c71846`, măsurat direct); codul LOTULUI (copia migrată). Referință -> publicat: **97**; publicat -> lot: **18**; 8 chei au
+ambele cauze; **0 neexplicate**.
+
+1. **Datele de retest — 97, identice pe codul publicat.** Scrise pe producție după referință (numărate numai-citire pe `creat_la` și în
+   `audit_log`): F1 (tenant_049) 15 note în 10/2026, 2 facturi, un NIR, 4 mișcări de stoc, un extras cu 5 linii, o operație de casă ->
+   balanța 10/2026, D300 / D394 10/2026, D406 09–10/2026 (refuzul „lipsește localitatea” pentru partenerul „Vasile Test”); F2 (tenant_050)
+   7 note de amortizare 01–07/2026 validate pe 22.10 la 17:28–17:30 (până atunci ciorne: lunile cu date erau 08–09), 6 note și 4 facturi
+   în 10/2026, TVA la încasare și profilul (22.10 18:07–20:07) -> lunile 01–10, balanțele, D300 / D394 T1, T2, T4, D406 T1–T4; F3
+   (tenant_051) o factură și o notă în 09/2026 -> balanța 09, D406 T2–T3. F4 și F5: nicio scriere, nicio diferență pe codul publicat.
+2. **Codul lotului — 18.**
+   - **C76** (D300 F1 10/2026, 6 câmpuri): nota 171 de 43,24 lei (635 = 4427, lipsa la inventar) intră acum în rândul 34 (`R31_2` = −43),
+     deci TVA dedusă `R32_2` 127 -> 84 și TVA de plată `R34_2` / `R37_2` / `R41_2` 1.159 -> 1.202, `totalPlata_A` 28.561 -> 28.604. Fără
+     `AJUSTARI_TAXA`, reconcilierea lotului refuză declarația pe exact această diferență (43,00 lei, rândul 34) — efectul e numai C76.
+   - **Decizia Costin 10.3 pct.4** (D406, 8 refuzuri: F1 09–10, F2 T1–T4, F3 T2–T3): îndemnul refuzului trimite acum la fișa partenerului
+     („Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui”); restul textului, identic.
+   - **453 + C94 + C96** (D112, 4 amprente: F1 09/2026, F5 09–11/2026; obligațiile `angajatorA` / `angajatorB` și numărul asiguraților
+     identice): secțiunea E poartă contribuțiile (E1_2 / E3_9), deducerea personală (E1_4 / E1_41 / E3_12 / E3_121) și baza impozitului
+     (E1_6 / E3_14) — 453; `E3_4="P"` fără E3_5 / E3_6 — C94; F5 10/2026 `B1_6` 152 -> 168: cele 2 zile de concediu medical plătite de
+     angajator se declară ore lucrate („sunt considerate ore efectiv lucrate”, `anaf_surse/opanaf_605_2026_d112.txt`) — C96. Toate cele 4
+     XML-uri D112 și D300 F1 10/2026 ale lotului: `stare: valid` pe validatorul oficial DUK.
+
+**Referința nouă:** `scripts/cifre_referinta_aprobate.json`, amprenta `537da5532c68997052a25d3aaf68951935ac537cddc8be6258166a31e63966ff`;
+`cifre_referinta.py --productie --verifica` -> „identice cu referința aprobată (5 firme)”.

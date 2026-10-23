@@ -11743,6 +11743,16 @@ Limite: ordinea ștergerii nu vede o listă construită în alt fișier și trec
 vede o creare ascunsă într-un ajutor din alt fișier (o prinde blocul de cifre la poartă); amprenta verifică imaginea numai unde imaginea e
 pe disc (în alt worktree, din ZIP-ul lotului, prin sha256).
 
+**După poarta 1 a lotului 11 (23.10.2026, ROȘIE pe cifre):** garda ordinii migrărilor (`core/test_migrari_registru.py::
+test_ordinea_numeste_tot_ce_creeaza_alta_migrare`, rândul din 18.10.2026) vede acum și coloana folosită în SQL COMPUS, unde tabela și
+coloana nu stau în aceeași instrucțiune: (a) în același tuplu Python (`("accounting_firms", ("cui", "cif_intocmit"))`); (b) `NEW.col` /
+`OLD.col` în corpul funcției unui trigger creat `ON` tabela; (c) `NEW.col` / `OLD.col` într-o migrare care numește tabela ca șir Python
+(trigger compus `ON %s.%s`). Pățit: `migrare_cui_fara_ro` rulată pe copie înaintea lui `migrare_intocmitor_bilant` (alfabetic) — pe
+producție ar fi picat la fel. 5 perechi noi în `DUPA`, toate reale (verificate în cod); fals pozitivul unei căutări pe tot modulul
+(`reguli_fond` -> `punte_stoc`, `factura_id` al notei) respins prin legarea triggerului de funcția lui. Mutații: perechea scoasă din `DUPA`
+-> ROȘU; formele compuse scoase din gardă -> ROȘU (anti-vacuu pe câte o pereche din fiecare formă). Limita rămasă: o coloană numită numai
+într-un șir construit prin concatenare la rulare (fără tuplu, fără `NEW.` / `OLD.`) — o prinde copia cifrelor la poartă (fail-closed).
+
 **Riscuri deschise, fără gard (decizii cerute, raportul lotului 11 §6):** C97 (pensionarul la D112), 456 (încasarea salvată fără chitanță,
 înainte de reparație: chitanța de acum ar fi antedatată), C84, cursul mai vechi folosit tăcut la validarea unei facturi primite în valută
 (semnalat numai la emitere). Dovezile imposibile azi (până la 01.11.2026): C76 (D300 10/2026), C90 / C93 / C96 (D112 10/2026).

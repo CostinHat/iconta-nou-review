@@ -18,7 +18,7 @@ RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(RAD, "scripts"))
 import dovada_firme_test as d  # noqa: E402
 
-ENV_TEST = {"ICONTA_MEDIU": "test", "DATABASE_URL": "postgresql://iconta_test_user:x@localhost:5432/iconta_test"}
+ENV_TEST = {"ICONTA_MEDIU": "test", "DATABASE_URL": "postgresql://iconta_test_user@localhost:5432/iconta_test"}
 
 
 def _rand(schema, cabinet="Cabinet Test Sesiunea B SRL", cab_id=48765):
@@ -28,8 +28,8 @@ def _rand(schema, cabinet="Cabinet Test Sesiunea B SRL", cab_id=48765):
 # ── 1. ținta ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 @pytest.mark.parametrize("env, cod", [
     ({"DATABASE_URL": ENV_TEST["DATABASE_URL"]}, "MEDIU_NEDECLARAT"),                                     # tăcerea nu trece
-    ({"ICONTA_MEDIU": "test", "DATABASE_URL": "postgresql://iconta_test_user:x@localhost:5432/iconta_v2"}, "BAZA_PRODUCTIE"),
-    ({"ICONTA_MEDIU": "test", "DATABASE_URL": "postgresql://iconta_user:x@localhost:5432/iconta_test"}, "UTILIZATOR_PRODUCTIE"),
+    ({"ICONTA_MEDIU": "test", "DATABASE_URL": "postgresql://iconta_test_user@localhost:5432/iconta_v2"}, "BAZA_PRODUCTIE"),
+    ({"ICONTA_MEDIU": "test", "DATABASE_URL": "postgresql://iconta_user@localhost:5432/iconta_test"}, "UTILIZATOR_PRODUCTIE"),
 ])
 def test_refuza_tinta_care_nu_e_de_test(env, cod):
     """MUTAȚIE: `tinta_de_test` fără verificarea `mediu_test.motive` -> nu ridică -> pică."""
@@ -45,7 +45,7 @@ def test_tinta_de_test_e_acceptata():
 def test_cloneaza_refuza_tinta_inainte_de_a_atinge_productia(monkeypatch):
     """O țintă care nu e de test oprește clonarea ÎNAINTE de conexiunea la producție și de orice proces (pg_dump / psql).
     MUTAȚIE: `tinta_de_test(env)` scos din `cloneaza` -> se deschide producția -> pică."""
-    monkeypatch.setattr(d, "_env_test", lambda: {"DATABASE_URL": "postgresql://iconta_user:x@localhost:5432/iconta_v2"})
+    monkeypatch.setattr(d, "_env_test", lambda: {"DATABASE_URL": "postgresql://iconta_user@localhost:5432/iconta_v2"})
     monkeypatch.setattr(d, "_conexiune_productie", lambda: pytest.fail("producția s-a deschis înaintea verificării țintei"))
     monkeypatch.setattr(subprocess, "run", lambda *a, **k: pytest.fail("un proces a pornit înaintea verificării țintei: %r" % (a,)))
     with pytest.raises(d.Refuz) as e:
@@ -112,7 +112,7 @@ def test_cloneaza_refuza_schema_pilotului_inainte_de_pg_dump(monkeypatch):
     randuri[0] = _rand(d.SURSE[0], cabinet="Cabinetul pilot SRL", cab_id=1)
     cur = _CursorFals(randuri)
     monkeypatch.setattr(d, "_env_test", lambda: dict(ENV_TEST))
-    monkeypatch.setattr(d, "_conexiune_productie", lambda: ("postgresql://iconta_user:x@localhost:5432/iconta_v2", _ConexiuneFalsa(cur)))
+    monkeypatch.setattr(d, "_conexiune_productie", lambda: ("postgresql://iconta_user@localhost:5432/iconta_v2", _ConexiuneFalsa(cur)))
     monkeypatch.setattr(d, "_lacat", lambda: pytest.fail("clonarea a trecut de verificarea surselor"))
     monkeypatch.setattr(subprocess, "run", lambda *a, **k: pytest.fail("pg_dump / psql a pornit pe o schemă a pilotului: %r" % (a,)))
     import psycopg2

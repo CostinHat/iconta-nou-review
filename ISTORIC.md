@@ -3037,3 +3037,13 @@ ZIP), 2 orfani lăsați de ștergerea copiei de dovadă (ordinea contoarelor, ac
 teste noi (fixtura `contor_schema_pastrat`) și două artefacte derivate din date generate prea devreme — fiecare cu garda ei, probată prin
 mutație (DECIZII „Lotul 11: suita a doua”). Urmează: commitul lotului, apoi poarta și publicarea, numai după confirmarea lui Costin că
 cabinetul nu lucrează, cu backup chiar înainte.
+
+### 23.10.2026 — Lotul 11, poarta 1 ROȘIE, cauzele reparate
+
+Poarta lotului pe `0dab561d` (00:14–01:36, după comanda 11.4 pct.1) a ieșit ROȘIE: 5 teste (secrete în teste noi intrate în git la commit,
+SQL în `conftest.py` prin fixtura contorului, blocul de clichete) și cifrele F1–F5 necalculabile — copia a rulat `migrare_cui_fara_ro`
+înaintea lui `migrare_intocmitor_bilant`, de a cărei coloană depinde (pe producție ar fi picat la fel). Reparate pe cauză: garda ordinii
+migrărilor vede acum SQL-ul compus din date și din triggere (5 perechi noi în `DUPA`, mutații roșii), contorul de scheme într-o singură
+funcție (`tenant_provisioning.contor_schema`), parolele de probă generate la rulare. Cifrele: 103 diferențe, toate explicate (97 date de
+retest identice pe codul publicat, 18 codul lotului: C76, decizia 10.3 pct.4, 453 / C94 / C96, toate XML-urile `valid` pe DUK); referința
+rescrisă după regula 7.3 pct.4 (DECIZII „Lotul 11, poarta 1 ROȘIE”). Urmează poarta 2 și, pe VERDE, publicarea.

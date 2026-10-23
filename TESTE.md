@@ -56,9 +56,13 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
     pe tot repo-ul (`dovada_firme_test`, `masoara_p3`), contorul de scheme readus (`contor_schema_pastrat`), antetele traseelor și blocul de
     cifre regenerate după `--sterge`; înainte: campania de mutații e2e 175 / 175 roșii, uneltele vizuale (text pe ecran 174 / 0), 54 de numere
     „rezolvată” cu dovadă. Registrele (DECIZII, GARZI, ISTORIC, PREDARE) scrise; intră în commitul lotului.
-  - urmator: commitul lotului (fișiere numite) -> poarta lotului NUMAI după confirmarea lui Costin că cabinetul nu lucrează -> pe VERDE, cu
-    backup chiar înainte: `APROBARE_MAIN`, fast-forward, post-commit, cele 10 migrări `--productie`, restart, four-way; ZIP; raportul §2.2.
-    BLOCAT: așteaptă confirmarea lui Costin pentru poartă și publicare
+  - ultim: (23.10.2026 ~03:00) poarta 1 a lotului pe `0dab561d` (comanda 11.4 pct.1) ROȘIE: 5 picături pytest (10 516 passed) + cifrele
+    F1–F5 necalculabile (copia a rulat `migrare_cui_fara_ro` înaintea lui `migrare_intocmitor_bilant`). Cauzele reparate (DECIZII „Lotul 11,
+    poarta 1 ROȘIE”): ordinea migrărilor (`DUPA` + garda lărgită la SQL compus din date și triggere), parolele de probă scrise în teste,
+    contorul de scheme citit într-un singur loc (`tenant_provisioning.contor_schema`), blocul de clichete; referința F1–F5 rescrisă după
+    regula 7.3 pct.4 (103 diferențe, toate explicate: 97 date de retest, 18 codul lotului).
+  - urmator: commitul reparațiilor -> poarta 2 a lotului (regula 3d: până la verde) -> pe VERDE, cu backup chiar înainte: `APROBARE_MAIN`,
+    fast-forward, post-commit, cele 10 migrări `--productie`, restart, four-way; ZIP; raportul §2.2. IN LUCRU
   - pasi:
     L11-1. T — 428 (emiterea în sistemul TVA la încasare: 4428, mențiunea, Configurare emitere arată sistemul; cauza pe producție) + C76
            (ajustarea TVA a lipsei la inventar în D300) + rotunjirea TVA unică (10.3). Fișiere: `contare_facturi`, `tva_incasare*`,

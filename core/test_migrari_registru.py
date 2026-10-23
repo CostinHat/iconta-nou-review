@@ -196,23 +196,51 @@ _RE_TABELA = re.compile(r"CREATE TABLE\s+(?:IF NOT EXISTS\s+)?(?:[\w@{}%\"]+\.)?
 _RE_COLOANA = re.compile(r"ALTER TABLE\s+(?:IF EXISTS\s+)?(?:ONLY\s+)?(?:[\w@{}%\"]+\.)?\"?(\w+)\"?\s+ADD COLUMN\s+(?:IF NOT EXISTS\s+)?\"?(\w+)",
                          re.I)
 _RE_FUNCTIE = re.compile(r"CREATE (?:OR REPLACE )?FUNCTION\s+(?:[\w@{}%\"]+\.)?\"?(\w+)\"?\s*\(", re.I)
+_Q = r"(?:[\w@{}%\"]+\.)?\"?(\w+)\"?"
+_RE_TRIGGER = re.compile(r"CREATE (?:CONSTRAINT )?TRIGGER\s+\w+[^;]*?\bON\s+" + _Q + r"[^;]*?EXECUTE (?:FUNCTION|PROCEDURE)\s+" + _Q, re.I)
+_RE_CORP = re.compile(r"CREATE (?:OR REPLACE )?FUNCTION\s+" + _Q + r"\s*\(.*?\$(\w*)\$(.*?)\$\2\$", re.I | re.S)
+
+
+def _date_python(src):
+    """([{șirurile unui tuplu / unei liste}], {toate șirurile}) — SQL-ul compus din date: `("accounting_firms", ("cui", "cif_intocmit"))`."""
+    import ast
+    arb = ast.parse(src)
+
+    def siruri(n):
+        return {c.value for c in ast.walk(n) if isinstance(c, ast.Constant) and isinstance(c.value, str)}
+    return [siruri(n) for n in ast.walk(arb) if isinstance(n, (ast.Tuple, ast.List))], siruri(arb)
 
 
 def _ordinea_din_cod():
     """({migrare: SQL executat}, {(migrarea care folosește, migrarea care creează)}) — din SQL-ul EXECUTAT (fără docstringuri) al
     migrărilor de pe disc. Folosește = numește o tabelă sau o funcție creată de cealaltă, ori, în aceeași instrucțiune, tabela și
-    coloana adăugată de cealaltă; ce creează și ea însăși (`IF NOT EXISTS`) nu e o dependență."""
-    sql = {}
+    coloana adăugată de cealaltă; ce creează și ea însăși (`IF NOT EXISTS`) nu e o dependență. [lotul 11, poarta 1] Și coloana folosită
+    în SQL COMPUS din date sau din triggere, unde tabela și coloana nu stau în aceeași instrucțiune: (a) în același tuplu Python
+    (`("accounting_firms", ("cui", "cif_intocmit"))`); (b) `NEW.col` / `OLD.col` în corpul funcției unui trigger creat `ON` tabela;
+    (c) `NEW.col` / `OLD.col` într-o migrare care numește tabela ca șir Python (triggerul compus `ON %s.%s` din date). Pățit: copia
+    cifrelor a rulat `migrare_cui_fara_ro` înaintea lui `migrare_intocmitor_bilant` (alfabetic) -> `cif_intocmit` lipsea."""
+    sql, date = {}, {}
     for f in sorted(glob.glob(os.path.join(_RAD, "core", "migrare_*.py"))):
         cale, text = os.path.relpath(f, _RAD), open(f, encoding="utf-8").read()
         if mr.e_migrare(cale, text):
             sql[cale] = "\n".join(_siruri_executate(text))
+            date[cale] = _date_python(text)
 
     def cuvant(nume, text):
         return re.search(r"\b%s\b" % re.escape(nume), text) is not None
 
     def fara_literale(s):   # [lotul 11] o coloană numită într-un literal SQL nu e o folosire: `CHECK (sursa IN ('propunere', 'manual'))`
         return re.sub(r"'[^']*'", "''", s)   # din `migrare_reevaluari_valuta` nu citește coloana `manual` a lui `migrare_reevaluare_partener`
+
+    def din_trigger(col, text):
+        return re.search(r"\b(?:NEW|OLD)\.%s\b" % re.escape(col), text) is not None
+
+    def folosita_compus(b, tb, tab, col):
+        grupuri, siruri = date[b]
+        corp = {m.group(1): m.group(3) for m in _RE_CORP.finditer(tb)}
+        return (any(tab in g and col in g for g in grupuri)
+                or any(t == tab and din_trigger(col, corp.get(f, "")) for t, f in (m.groups() for m in _RE_TRIGGER.finditer(tb)))
+                or (tab in siruri and din_trigger(col, tb)))
 
     def creeaza(text):
         return ({m.group(1) for m in _RE_TABELA.finditer(text)} | {m.group(1) for m in _RE_FUNCTIE.finditer(text)},
@@ -225,7 +253,8 @@ def _ordinea_din_cod():
                 continue
             nume_b, coloane_b = creeaza(tb)
             if any(cuvant(n, tb) for n in nume_a - nume_b) or any(
-                    cuvant(tab, s) and cuvant(col, fara_literale(s)) for tab, col in coloane_a - coloane_b for s in tb.split(";")):
+                    cuvant(tab, s) and cuvant(col, fara_literale(s)) for tab, col in coloane_a - coloane_b for s in tb.split(";")) or any(
+                    folosita_compus(b, tb, tab, col) for tab, col in coloane_a - coloane_b):
                 perechi.add((b, a))
     return sql, perechi
 
@@ -240,6 +269,10 @@ def test_ordinea_numeste_tot_ce_creeaza_alta_migrare():
     assert declarate == din_cod, "nenumite în DUPA: %s; în DUPA fără temei în cod: %s" % (
         sorted(din_cod - declarate), sorted(declarate - din_cod))
     assert ("core/migrare_ciorne_proprii.py", "core/migrare_nr_curent_note.py") in din_cod, "anti-vacuu: perechea pățită nu mai e găsită"
+    for compus in (("core/migrare_cui_fara_ro.py", "core/migrare_intocmitor_bilant.py"),          # (a) tuplul Python
+                   ("core/migrare_reguli_fond_2.py", "core/migrare_declaratii_depuse_randuri.py"),  # (b) corpul funcției triggerului
+                   ("core/migrare_cui_fara_ro.py", "core/migrare_tert_platitor_tva.py")):          # (c) triggerul compus din date
+        assert compus in din_cod, "anti-vacuu: forma compusă %s nu mai e găsită" % (compus,)
     loc = {f: i for i, (f, _a) in enumerate(mr.in_ordine((f, "x") for f in sql))}
     assert len(loc) == len(sql)
     assert all(loc[a] < loc[b] for b, a in declarate), sorted((b, a) for b, a in declarate if loc[a] >= loc[b])

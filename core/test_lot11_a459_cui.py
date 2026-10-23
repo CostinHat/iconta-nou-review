@@ -18,6 +18,7 @@ CUI-urile de test: 459000010, 459000029, 459000037 au cifra de control calculat�
 import io
 import os
 import re
+import secrets
 import types
 
 import pytest
@@ -167,7 +168,7 @@ def test_459_inregistrarea_refuza_cui_gresit_inainte_de_cont():
     """`POST /auth/register` (`uc_auth._valideaza_formularul`): un CUI scris și greșit oprește formularul, înainte de cont (până azi contul
     se crea, iar firma proprie cădea după, cu „Firma proprie NU a putut fi adăugată”). MUTAȚIE: verificarea scoasă -> trece -> pică."""
     from core import uc_auth, erori
-    date = types.SimpleNamespace(accept_termeni=True, parola="Parola-Buna-459!", email="ef_a459@exemplu.ro", nume_cabinet="Cabinet EF",
+    date = types.SimpleNamespace(accept_termeni=True, parola=secrets.token_urlsafe(12) + "-Pp1", email="ef_a459@exemplu.ro", nume_cabinet="Cabinet EF",
                                  telefon="", cui=GRESIT, nume="N", prenume="P")
     with pytest.raises(erori.CerereGresita) as e:
         uc_auth._valideaza_formularul(date)

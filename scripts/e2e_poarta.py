@@ -96,13 +96,9 @@ def _contor_schema(env, pune=None):
     Fiecare firmă sintetică a plasei consumă un număr de schemă: fără readucere, contorul (o cifră pe care PREDARE_LANT.md o arată,
     păzită de `core/test_predare_cifre.py`) creștea la fiecare poartă, iar următoarea poartă pica pe o cifră schimbată de plasă."""
     import psycopg2
-    from core.tenant_provisioning import SECVENTA_SCHEMA
+    from core.tenant_provisioning import contor_schema
     with psycopg2.connect(env["DATABASE_URL"]) as c, c.cursor() as cur:
-        if pune is None:
-            cur.execute("SELECT last_value, is_called FROM %s" % SECVENTA_SCHEMA)
-            return cur.fetchone()
-        cur.execute("SELECT setval(%s, %s, %s)", (SECVENTA_SCHEMA, pune[0], pune[1]))
-    return pune
+        return contor_schema(cur, pune)
 
 
 def _scoate_firmele(env, contor=None):

@@ -2,7 +2,7 @@
  "F1 Comert Stoc SRL (tenant_049)": {
   "D112": {
    "09/2026": {
-    "amprenta": "df6aec14d8d1c2e100f2eb34b429908f44ceff512b9c7a1d9bf1cb5c62271ca5",
+    "amprenta": "66c16951646be638522878cc3396e0b79d6f92c67f08e811c9d3ac0007f96d22",
     "angajatorB": [
      {
       "B_brutSalarii": "13900",
@@ -82,12 +82,12 @@
     }
    },
    "10/2026": {
-    "amprenta": "ef7d490318af364ed149a03fdfaaa0083a9e7a46a6624371536dbd99f967633b",
+    "amprenta": "6c4e7686b53b93ffde84a82220b0041573024a02ca4838f293631b6a751e2c2d",
     "randuri": {
-     "R10_1 (rândul 10, coloana Valoare)": "800",
-     "R10_2 (rândul 10, coloana TVA)": "88",
-     "R17_1 (rândul 19, coloana Valoare)": "8753",
-     "R17_2 (rândul 19, coloana TVA)": "1233",
+     "R10_1 (rândul 10, coloana Valoare)": "899",
+     "R10_2 (rândul 10, coloana TVA)": "99",
+     "R17_1 (rândul 19, coloana Valoare)": "9052",
+     "R17_2 (rândul 19, coloana TVA)": "1286",
      "R22_1 (rândul 24, coloana Valoare)": "500",
      "R22_2 (rândul 24, coloana TVA)": "105",
      "R23_1 (rândul 25, coloana Valoare)": "200",
@@ -95,14 +95,15 @@
      "R27_1 (rândul 30, coloana Valoare)": "700",
      "R27_2 (rândul 30, coloana TVA)": "127",
      "R28_2 (rândul 31, coloana TVA)": "127",
-     "R32_2 (rândul 35, coloana TVA)": "127",
-     "R34_2 (rândul 37, coloana TVA)": "1106",
-     "R37_2 (rândul 40, coloana TVA)": "1106",
+     "R31_2 (rândul 34, coloana TVA)": "-43",
+     "R32_2 (rândul 35, coloana TVA)": "84",
+     "R34_2 (rândul 37, coloana TVA)": "1202",
+     "R37_2 (rândul 40, coloana TVA)": "1202",
      "R3_1 (rândul 3, coloana Valoare)": "2500",
      "R3_1_1 (rândul 3.1, coloana Valoare)": "2500",
-     "R41_2 (rândul 44, coloana TVA)": "1106",
-     "R9_1 (rândul 9, coloana Valoare)": "5453",
-     "R9_2 (rândul 9, coloana TVA)": "1145"
+     "R41_2 (rândul 44, coloana TVA)": "1202",
+     "R9_1 (rândul 9, coloana Valoare)": "5653",
+     "R9_2 (rândul 9, coloana TVA)": "1187"
     }
    }
   },
@@ -123,58 +124,36 @@
     ]
    },
    "10/2026": {
-    "amprenta": "8c26c7731b7532a018710c467cd3f080b81c790c5fe45dfdf0d4cc157cb36dc2",
+    "amprenta": "ab85797e0ef7bca347fe41e4dc6c9335c8d1bcdb46ba8a26daee9b68699c7242",
     "antet": {
      "op_efectuate": "1",
      "sistemTVA": "0",
      "tip_D394": "L",
-     "totalPlata_A": "6957"
+     "totalPlata_A": "7056"
     },
     "rezumat1": [
-     " tip_partener=\"1\" cota=\"11\" bazaA=\"200\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"800\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"0\" tvaA=\"22\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"88\"/",
+     " tip_partener=\"1\" cota=\"11\" bazaA=\"200\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"899\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"1\" tvaA=\"22\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"99\"/",
      " tip_partener=\"1\" cota=\"21\" bazaA=\"500\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"5253\" facturiA=\"1\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"7\" tvaA=\"105\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"1103\"/",
      " tip_partener=\"2\" cota=\"0\" bazaLS=\"0\" bazaN=\"100\" document_N=\"1\" facturiLS=\"0\" facturiN=\"1\"",
      " tip_partener=\"2\" cota=\"21\" bazaL=\"200\" facturiL=\"1\" tvaL=\"42\"/",
      " tip_partener=\"3\" cota=\"0\" bazaLS=\"2500\" facturiLS=\"3\"/"
     ],
     "rezumat2": [
-     " cota=\"11\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"200\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"800\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"22\" tvaAI=\"0\" tvaL=\"88\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
-     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"500\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5453\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"1\" nrFacturiAI=\"0\" nrFacturiL=\"8\" tvaA=\"105\" tvaAI=\"0\" tvaL=\"1145\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
+     " cota=\"5\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"0\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"0\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
+     " cota=\"9\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"0\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"0\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
+     " cota=\"11\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"200\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"899\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"1\" tvaA=\"22\" tvaAI=\"0\" tvaL=\"99\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
+     " cota=\"19\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"0\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"0\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
+     " cota=\"20\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"0\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"0\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
+     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"500\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5453\" bazaL_PF=\"0\" baza_incasari_i1=\"200\" baza_incasari_i2=\"0\" nrFacturiA=\"1\" nrFacturiAI=\"0\" nrFacturiL=\"8\" tvaA=\"105\" tvaAI=\"0\" tvaL=\"1145\" tvaL_PF=\"0\" tva_incasari_i1=\"42\" tva_incasari_i2=\"0\"/"
     ]
    }
   },
   "D406": {
    "09/2026": {
-    "GeneralLedgerEntries": {
-     "NumberOfEntries": "6",
-     "TotalCredit": "25106.00",
-     "TotalDebit": "25106.00"
-    },
-    "amprenta": "62a6b0d8d6ec7262ca113774c29e89f860eda2c15cd20b05dcc82ab96dea7426",
-    "facturi_emise": 1,
-    "facturi_primite": 1,
-    "jurnale": [
-     "BANCA",
-     "FACTURI",
-     "SALARII",
-     "STOCURI"
-    ]
+    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Vasile Test. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
    },
    "10/2026": {
-    "GeneralLedgerEntries": {
-     "NumberOfEntries": "27",
-     "TotalCredit": "18096.12",
-     "TotalDebit": "18096.12"
-    },
-    "amprenta": "2fd0799726673a57a4984b8c22ef09ed7b5d23e7cd4552b3bf4a625cddbec40e",
-    "facturi_emise": 11,
-    "facturi_primite": 3,
-    "jurnale": [
-     "BANCA",
-     "CASA",
-     "FACTURI",
-     "STOCURI"
-    ]
+    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Vasile Test (facturile BA-3). Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
    }
   },
   "balanta": {
@@ -636,13 +615,13 @@
      "prec_d": 0.0,
      "prel_c": 0.0,
      "prel_d": 0.0,
-     "rul_c": 1265.24,
+     "rul_c": 1318.14,
      "rul_d": 0.0,
-     "sf_c": 1475.24,
+     "sf_c": 1528.14,
      "sf_d": 0.0,
      "si_c": 0.0,
      "si_d": 0.0,
-     "tot_c": 1475.24,
+     "tot_c": 1528.14,
      "tot_d": 0.0
     },
     {
@@ -694,6 +673,22 @@
      "tot_d": 18390.0
     },
     {
+     "cont": "5125",
+     "denumire": "Sume în curs de decontare",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 152.0,
+     "sf_c": 0.0,
+     "sf_d": 152.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 152.0
+    },
+    {
      "cont": "5311",
      "denumire": "Casa în lei",
      "prec_c": 0.0,
@@ -701,13 +696,13 @@
      "prel_c": 0.0,
      "prel_d": 0.0,
      "rul_c": 0.0,
-     "rul_d": 242.0,
+     "rul_d": 442.0,
      "sf_c": 0.0,
-     "sf_d": 242.0,
+     "sf_d": 442.0,
      "si_c": 0.0,
      "si_d": 0.0,
      "tot_c": 0.0,
-     "tot_d": 242.0
+     "tot_d": 442.0
     },
     {
      "cont": "607",
@@ -812,14 +807,14 @@
      "prec_d": 0.0,
      "prel_c": 0.0,
      "prel_d": 0.0,
-     "rul_c": 6200.0,
-     "rul_d": 0.0,
-     "sf_c": 7200.0,
+     "rul_c": 6552.0,
+     "rul_d": 52.9,
+     "sf_c": 7499.1,
      "sf_d": 0.0,
      "si_c": 0.0,
      "si_d": 0.0,
-     "tot_c": 7200.0,
-     "tot_d": 0.0
+     "tot_c": 7552.0,
+     "tot_d": 52.9
     }
    ]
   },
@@ -831,6 +826,14 @@
  "F2 Profit Amortizare SRL (tenant_050)": {
   "D112": {},
   "D300": {
+   "T1/2026": {
+    "amprenta": "0478c491fde71bbaa6cf72468bea18b58a923cecfac114a85c96983111d6e900",
+    "randuri": {}
+   },
+   "T2/2026": {
+    "amprenta": "dca80b62b91097c02796f21d22faa17f011547bece21342325fd511f66e64c23",
+    "randuri": {}
+   },
    "T3/2026": {
     "amprenta": "8f5d7958957ee0d6bafd233eaa21de440331d65011dbd700ebefb57a7f960826",
     "randuri": {
@@ -842,9 +845,52 @@
      "R9_1 (rândul 9, coloana Valoare)": "5000",
      "R9_2 (rândul 9, coloana TVA)": "1050"
     }
+   },
+   "T4/2026": {
+    "amprenta": "dff9ace2446ca8446ecce69031181aa71c5f7ff8ee6659666edc3f8738dc7d26",
+    "randuri": {
+     "R12_1 (rândul 12, coloana Valoare)": "60000",
+     "R12_2 (rândul 12, coloana TVA)": "12600",
+     "R17_1 (rândul 19, coloana Valoare)": "70500",
+     "R17_2 (rândul 19, coloana TVA)": "12705",
+     "R1_1 (rândul 1, coloana Valoare)": "10000",
+     "R25_1 (rândul 26, coloana Valoare)": "60000",
+     "R25_2 (rândul 26, coloana TVA)": "12600",
+     "R27_1 (rândul 30, coloana Valoare)": "60000",
+     "R27_2 (rândul 30, coloana TVA)": "12600",
+     "R28_2 (rândul 31, coloana TVA)": "12600",
+     "R32_2 (rândul 35, coloana TVA)": "12600",
+     "R34_2 (rândul 37, coloana TVA)": "105",
+     "R37_2 (rândul 40, coloana TVA)": "105",
+     "R41_2 (rândul 44, coloana TVA)": "105",
+     "R9_1 (rândul 9, coloana Valoare)": "500",
+     "R9_2 (rândul 9, coloana TVA)": "105"
+    }
    }
   },
   "D394": {
+   "T1/2026": {
+    "amprenta": "8641eb57fe2fe9ff7780eeb785c55d18d7e0d80e6ff2e93a65be4b2a59d39f9b",
+    "antet": {
+     "op_efectuate": "0",
+     "sistemTVA": "0",
+     "tip_D394": "T",
+     "totalPlata_A": "0"
+    },
+    "rezumat1": [],
+    "rezumat2": []
+   },
+   "T2/2026": {
+    "amprenta": "0df2d36dbfece140cce04f7d13afc89f3770d165285b46e1d4a2b68fb5adb257",
+    "antet": {
+     "op_efectuate": "0",
+     "sistemTVA": "0",
+     "tip_D394": "T",
+     "totalPlata_A": "0"
+    },
+    "rezumat1": [],
+    "rezumat2": []
+   },
    "T3/2026": {
     "amprenta": "ebb1565d7ffcf32f19dae021f87140f9cf007dfa4e9db5609430aae065025353",
     "antet": {
@@ -859,28 +905,40 @@
     "rezumat2": [
      " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5000\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"1\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"1050\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
     ]
-   }
-  },
-  "D406": {
-   "T3/2026": {
-    "GeneralLedgerEntries": {
-     "NumberOfEntries": "6",
-     "TotalCredit": "8050.00",
-     "TotalDebit": "8050.00"
+   },
+   "T4/2026": {
+    "amprenta": "2f44f070bc68d10dda3f1a9a958eb91a22fae4954624b74ec06f58867d9c3fbd",
+    "antet": {
+     "op_efectuate": "1",
+     "sistemTVA": "1",
+     "tip_D394": "T",
+     "totalPlata_A": "61002"
     },
-    "amprenta": "ea3ac9842a9af9a7668d8df9f9dc84677292b7f7c2e846d22c7edc03c3fd603a",
-    "facturi_emise": 1,
-    "facturi_primite": 0,
-    "jurnale": [
-     "AMORTIZARE",
-     "CASA",
-     "DIVERSE",
-     "FACTURI"
+    "rezumat1": [
+     " tip_partener=\"1\" cota=\"21\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"60000\" bazaL=\"1000\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"2\" facturiL=\"1\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"12600\" tvaL=\"210\"",
+     " tip_partener=\"3\" cota=\"0\" bazaLS=\"10000\" facturiLS=\"1\"/"
+    ],
+    "rezumat2": [
+     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"60000\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"1000\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"2\" nrFacturiAI=\"0\" nrFacturiL=\"1\" tvaA=\"12600\" tvaAI=\"0\" tvaL=\"210\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
     ]
    }
   },
+  "D406": {
+   "T1/2026": {
+    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). AMAZON EUROPE CORE S.A R.L.. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
+   },
+   "T2/2026": {
+    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). AMAZON EUROPE CORE S.A R.L.. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
+   },
+   "T3/2026": {
+    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). AMAZON EUROPE CORE S.A R.L.. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
+   },
+   "T4/2026": {
+    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). AMAZON EUROPE CORE S.A R.L. (facturile F2T3). Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
+   }
+  },
   "balanta": {
-   "08/2026": [
+   "01/2026": [
     {
      "cont": "1012",
      "denumire": "Capital subscris vărsat",
@@ -978,7 +1036,7 @@
      "tot_d": 200.0
     }
    ],
-   "09/2026": [
+   "02/2026": [
     {
      "cont": "1012",
      "denumire": "Capital subscris vărsat",
@@ -1041,6 +1099,692 @@
      "si_c": 2200.0,
      "si_d": 0.0,
      "tot_c": 2600.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 5000.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 0.0,
+     "tot_d": 5000.0
+    },
+    {
+     "cont": "6811",
+     "denumire": "Cheltuieli de exploatare privind amortizarea imobilizărilor",
+     "prec_c": 0.0,
+     "prec_d": 200.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 200.0,
+     "sf_c": 0.0,
+     "sf_d": 400.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 400.0
+    }
+   ],
+   "03/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 14600.0,
+     "sf_d": 0.0,
+     "si_c": 14600.0,
+     "si_d": 0.0,
+     "tot_c": 14600.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "2131",
+     "denumire": "Echipamente tehnologice",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 12000.0,
+     "si_c": 0.0,
+     "si_d": 12000.0,
+     "tot_c": 0.0,
+     "tot_d": 12000.0
+    },
+    {
+     "cont": "2813",
+     "denumire": "Amortizarea instalațiilor și mijloacelor de transport",
+     "prec_c": 400.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 200.0,
+     "rul_d": 0.0,
+     "sf_c": 2800.0,
+     "sf_d": 0.0,
+     "si_c": 2200.0,
+     "si_d": 0.0,
+     "tot_c": 2800.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 5000.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 0.0,
+     "tot_d": 5000.0
+    },
+    {
+     "cont": "6811",
+     "denumire": "Cheltuieli de exploatare privind amortizarea imobilizărilor",
+     "prec_c": 0.0,
+     "prec_d": 400.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 200.0,
+     "sf_c": 0.0,
+     "sf_d": 600.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 600.0
+    }
+   ],
+   "04/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 14600.0,
+     "sf_d": 0.0,
+     "si_c": 14600.0,
+     "si_d": 0.0,
+     "tot_c": 14600.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "2131",
+     "denumire": "Echipamente tehnologice",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 12000.0,
+     "si_c": 0.0,
+     "si_d": 12000.0,
+     "tot_c": 0.0,
+     "tot_d": 12000.0
+    },
+    {
+     "cont": "2813",
+     "denumire": "Amortizarea instalațiilor și mijloacelor de transport",
+     "prec_c": 600.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 200.0,
+     "rul_d": 0.0,
+     "sf_c": 3000.0,
+     "sf_d": 0.0,
+     "si_c": 2200.0,
+     "si_d": 0.0,
+     "tot_c": 3000.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 5000.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 0.0,
+     "tot_d": 5000.0
+    },
+    {
+     "cont": "6811",
+     "denumire": "Cheltuieli de exploatare privind amortizarea imobilizărilor",
+     "prec_c": 0.0,
+     "prec_d": 600.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 200.0,
+     "sf_c": 0.0,
+     "sf_d": 800.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 800.0
+    }
+   ],
+   "05/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 14600.0,
+     "sf_d": 0.0,
+     "si_c": 14600.0,
+     "si_d": 0.0,
+     "tot_c": 14600.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "2131",
+     "denumire": "Echipamente tehnologice",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 12000.0,
+     "si_c": 0.0,
+     "si_d": 12000.0,
+     "tot_c": 0.0,
+     "tot_d": 12000.0
+    },
+    {
+     "cont": "2813",
+     "denumire": "Amortizarea instalațiilor și mijloacelor de transport",
+     "prec_c": 800.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 200.0,
+     "rul_d": 0.0,
+     "sf_c": 3200.0,
+     "sf_d": 0.0,
+     "si_c": 2200.0,
+     "si_d": 0.0,
+     "tot_c": 3200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 5000.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 0.0,
+     "tot_d": 5000.0
+    },
+    {
+     "cont": "6811",
+     "denumire": "Cheltuieli de exploatare privind amortizarea imobilizărilor",
+     "prec_c": 0.0,
+     "prec_d": 800.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 200.0,
+     "sf_c": 0.0,
+     "sf_d": 1000.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 1000.0
+    }
+   ],
+   "06/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 14600.0,
+     "sf_d": 0.0,
+     "si_c": 14600.0,
+     "si_d": 0.0,
+     "tot_c": 14600.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "2131",
+     "denumire": "Echipamente tehnologice",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 12000.0,
+     "si_c": 0.0,
+     "si_d": 12000.0,
+     "tot_c": 0.0,
+     "tot_d": 12000.0
+    },
+    {
+     "cont": "2813",
+     "denumire": "Amortizarea instalațiilor și mijloacelor de transport",
+     "prec_c": 1000.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 200.0,
+     "rul_d": 0.0,
+     "sf_c": 3400.0,
+     "sf_d": 0.0,
+     "si_c": 2200.0,
+     "si_d": 0.0,
+     "tot_c": 3400.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 5000.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 0.0,
+     "tot_d": 5000.0
+    },
+    {
+     "cont": "6811",
+     "denumire": "Cheltuieli de exploatare privind amortizarea imobilizărilor",
+     "prec_c": 0.0,
+     "prec_d": 1000.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 200.0,
+     "sf_c": 0.0,
+     "sf_d": 1200.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 1200.0
+    }
+   ],
+   "07/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 14600.0,
+     "sf_d": 0.0,
+     "si_c": 14600.0,
+     "si_d": 0.0,
+     "tot_c": 14600.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "2131",
+     "denumire": "Echipamente tehnologice",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 12000.0,
+     "si_c": 0.0,
+     "si_d": 12000.0,
+     "tot_c": 0.0,
+     "tot_d": 12000.0
+    },
+    {
+     "cont": "2813",
+     "denumire": "Amortizarea instalațiilor și mijloacelor de transport",
+     "prec_c": 1200.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 200.0,
+     "rul_d": 0.0,
+     "sf_c": 3600.0,
+     "sf_d": 0.0,
+     "si_c": 2200.0,
+     "si_d": 0.0,
+     "tot_c": 3600.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 5000.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 0.0,
+     "tot_d": 5000.0
+    },
+    {
+     "cont": "6811",
+     "denumire": "Cheltuieli de exploatare privind amortizarea imobilizărilor",
+     "prec_c": 0.0,
+     "prec_d": 1200.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 200.0,
+     "sf_c": 0.0,
+     "sf_d": 1400.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 1400.0
+    }
+   ],
+   "08/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 14600.0,
+     "sf_d": 0.0,
+     "si_c": 14600.0,
+     "si_d": 0.0,
+     "tot_c": 14600.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "2131",
+     "denumire": "Echipamente tehnologice",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 12000.0,
+     "si_c": 0.0,
+     "si_d": 12000.0,
+     "tot_c": 0.0,
+     "tot_d": 12000.0
+    },
+    {
+     "cont": "2813",
+     "denumire": "Amortizarea instalațiilor și mijloacelor de transport",
+     "prec_c": 1400.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 200.0,
+     "rul_d": 0.0,
+     "sf_c": 3800.0,
+     "sf_d": 0.0,
+     "si_c": 2200.0,
+     "si_d": 0.0,
+     "tot_c": 3800.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 5000.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 0.0,
+     "tot_d": 5000.0
+    },
+    {
+     "cont": "6811",
+     "denumire": "Cheltuieli de exploatare privind amortizarea imobilizărilor",
+     "prec_c": 0.0,
+     "prec_d": 1400.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 200.0,
+     "sf_c": 0.0,
+     "sf_d": 1600.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 1600.0
+    }
+   ],
+   "09/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 14600.0,
+     "sf_d": 0.0,
+     "si_c": 14600.0,
+     "si_d": 0.0,
+     "tot_c": 14600.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "2131",
+     "denumire": "Echipamente tehnologice",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 12000.0,
+     "si_c": 0.0,
+     "si_d": 12000.0,
+     "tot_c": 0.0,
+     "tot_d": 12000.0
+    },
+    {
+     "cont": "2813",
+     "denumire": "Amortizarea instalațiilor și mijloacelor de transport",
+     "prec_c": 1600.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 200.0,
+     "rul_d": 0.0,
+     "sf_c": 4000.0,
+     "sf_d": 0.0,
+     "si_c": 2200.0,
+     "si_d": 0.0,
+     "tot_c": 4000.0,
      "tot_d": 0.0
     },
     {
@@ -1159,17 +1903,17 @@
      "cont": "6811",
      "denumire": "Cheltuieli de exploatare privind amortizarea imobilizărilor",
      "prec_c": 0.0,
-     "prec_d": 200.0,
+     "prec_d": 1600.0,
      "prel_c": 0.0,
      "prel_d": 0.0,
      "rul_c": 0.0,
      "rul_d": 200.0,
      "sf_c": 0.0,
-     "sf_d": 400.0,
+     "sf_d": 1800.0,
      "si_c": 0.0,
      "si_d": 0.0,
      "tot_c": 0.0,
-     "tot_d": 400.0
+     "tot_d": 1800.0
     },
     {
      "cont": "704",
@@ -1187,11 +1931,245 @@
      "tot_c": 5000.0,
      "tot_d": 0.0
     }
+   ],
+   "10/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 14600.0,
+     "sf_d": 0.0,
+     "si_c": 14600.0,
+     "si_d": 0.0,
+     "tot_c": 14600.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "2131",
+     "denumire": "Echipamente tehnologice",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 12000.0,
+     "si_c": 0.0,
+     "si_d": 12000.0,
+     "tot_c": 0.0,
+     "tot_d": 12000.0
+    },
+    {
+     "cont": "2813",
+     "denumire": "Amortizarea instalațiilor și mijloacelor de transport",
+     "prec_c": 1800.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 4000.0,
+     "sf_d": 0.0,
+     "si_c": 2200.0,
+     "si_d": 0.0,
+     "tot_c": 4000.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "401",
+     "denumire": "Furnizori",
+     "prec_c": 0.0,
+     "prec_d": 500.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 500.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 500.0
+    },
+    {
+     "cont": "4111",
+     "denumire": "Clienți",
+     "prec_c": 0.0,
+     "prec_d": 6050.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 605.0,
+     "rul_d": 1210.0,
+     "sf_c": 0.0,
+     "sf_d": 6655.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 605.0,
+     "tot_d": 7260.0
+    },
+    {
+     "cont": "4427",
+     "denumire": "TVA colectată",
+     "prec_c": 1050.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 105.0,
+     "rul_d": 0.0,
+     "sf_c": 1155.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1155.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "4428",
+     "denumire": "TVA neexigibilă",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 210.0,
+     "rul_d": 105.0,
+     "sf_c": 105.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 210.0,
+     "tot_d": 105.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 5000.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 0.0,
+     "tot_d": 5000.0
+    },
+    {
+     "cont": "5311",
+     "denumire": "Casa în lei",
+     "prec_c": 600.0,
+     "prec_d": 1000.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 605.0,
+     "sf_c": 0.0,
+     "sf_d": 1005.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 600.0,
+     "tot_d": 1605.0
+    },
+    {
+     "cont": "581",
+     "denumire": "Viramente interne",
+     "prec_c": 1000.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 1000.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 1000.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "6581",
+     "denumire": "Despăgubiri, amenzi și penalități",
+     "prec_c": 0.0,
+     "prec_d": 100.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 100.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 100.0
+    },
+    {
+     "cont": "6811",
+     "denumire": "Cheltuieli de exploatare privind amortizarea imobilizărilor",
+     "prec_c": 0.0,
+     "prec_d": 1800.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 1800.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 1800.0
+    },
+    {
+     "cont": "704",
+     "denumire": "Venituri din servicii prestate",
+     "prec_c": 5000.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 1000.0,
+     "rul_d": 0.0,
+     "sf_c": 6000.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 6000.0,
+     "tot_d": 0.0
+    }
    ]
   },
   "luni": [
+   "01/2026",
+   "02/2026",
+   "03/2026",
+   "04/2026",
+   "05/2026",
+   "06/2026",
+   "07/2026",
    "08/2026",
-   "09/2026"
+   "09/2026",
+   "10/2026"
   ]
  },
  "F3 Intracomunitar SRL (tenant_051)": {
@@ -1200,17 +2178,10 @@
   "D394": "nu se aplică: neplătitor de TVA",
   "D406": {
    "T2/2026": {
-    "GeneralLedgerEntries": {
-     "NumberOfEntries": "2",
-     "TotalCredit": "9075.00",
-     "TotalDebit": "9075.00"
-    },
-    "amprenta": "6654c9eead2cf7ed7e0eb354b4890be84cfd526e8f9873cf01970b36b4eae9e6",
-    "facturi_emise": 0,
-    "facturi_primite": 2,
-    "jurnale": [
-     "FACTURI"
-    ]
+    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Furnizor test UE. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
+   },
+   "T3/2026": {
+    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Furnizor test UE (facturile IE-100). Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
    }
   },
   "balanta": {
@@ -1327,10 +2298,125 @@
      "tot_c": 0.0,
      "tot_d": 3025.0
     }
+   ],
+   "09/2026": [
+    {
+     "cont": "1012",
+     "denumire": "Capital subscris vărsat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 200.0,
+     "sf_d": 0.0,
+     "si_c": 200.0,
+     "si_d": 0.0,
+     "tot_c": 200.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "117",
+     "denumire": "Rezultatul reportat",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 4800.0,
+     "sf_d": 0.0,
+     "si_c": 4800.0,
+     "si_d": 0.0,
+     "tot_c": 4800.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "371",
+     "denumire": "Mărfuri",
+     "prec_c": 0.0,
+     "prec_d": 6050.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 12100.0,
+     "sf_c": 0.0,
+     "sf_d": 18150.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 18150.0
+    },
+    {
+     "cont": "401",
+     "denumire": "Furnizori",
+     "prec_c": 7500.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 10000.0,
+     "rul_d": 0.0,
+     "sf_c": 17500.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 17500.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "446",
+     "denumire": "Alte impozite, taxe și vărsăminte asimilate",
+     "prec_c": 1575.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 2100.0,
+     "rul_d": 0.0,
+     "sf_c": 3675.0,
+     "sf_d": 0.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 3675.0,
+     "tot_d": 0.0
+    },
+    {
+     "cont": "5121",
+     "denumire": "Conturi la bănci în lei",
+     "prec_c": 0.0,
+     "prec_d": 0.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 5000.0,
+     "si_c": 0.0,
+     "si_d": 5000.0,
+     "tot_c": 0.0,
+     "tot_d": 5000.0
+    },
+    {
+     "cont": "628",
+     "denumire": "Alte cheltuieli cu serviciile executate de terți",
+     "prec_c": 0.0,
+     "prec_d": 3025.0,
+     "prel_c": 0.0,
+     "prel_d": 0.0,
+     "rul_c": 0.0,
+     "rul_d": 0.0,
+     "sf_c": 0.0,
+     "sf_d": 3025.0,
+     "si_c": 0.0,
+     "si_d": 0.0,
+     "tot_c": 0.0,
+     "tot_d": 3025.0
+    }
    ]
   },
   "luni": [
-   "06/2026"
+   "06/2026",
+   "09/2026"
   ]
  },
  "F4 PFA Sistem Real (tenant_052)": {
@@ -1344,7 +2430,7 @@
  "F5 SRL Salariati SRL (tenant_053)": {
   "D112": {
    "09/2026": {
-    "amprenta": "bb4a7b2273407d3dbb54e6584b7be6c035e8508d64c0534d4dad237adfc11363",
+    "amprenta": "6ecb38839ec1b9b57a71a2f163efebedf71af9c5dfbfba4665c3a97d3eda8ed2",
     "angajatorB": [
      {
       "B_brutSalarii": "11000",
@@ -1407,7 +2493,7 @@
     ]
    },
    "10/2026": {
-    "amprenta": "32d59fa414a6bd3fa9622d55cc1aa74af432d99faca9708ea99badeb14070cc9",
+    "amprenta": "f2cdce07d8291ff2d99809e39afd244514366b8e5de4e5f40fba7978f687aa4a",
     "angajatorB": [
      {
       "B_brutSalarii": "11860",
@@ -1470,7 +2556,7 @@
     ]
    },
    "11/2026": {
-    "amprenta": "3b9b6463510e73b01798b573780b36714410a542944914b5b2cd76e2bc6c3f3f",
+    "amprenta": "9d428b4628c4c49f49ae024c33869ac4bb23c925f18dd6f77a3884c590dbfaff",
     "angajatorB": [
      {
       "B_brutSalarii": "12000",

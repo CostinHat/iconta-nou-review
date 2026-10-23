@@ -70,6 +70,17 @@ def urmator_schema_name(conn, lat=3):
     return nume
 
 
+def contor_schema(cur, pune=None):
+    """`(last_value, is_called)` al lui `SECVENTA_SCHEMA`; cu `pune`, îl readuce acolo. Numai pe baza de TEST: `nextval` nu se întoarce
+    la rollback, deci o firmă creată de o probă în tranzacție anulată (suita, plasa e2e) consumă un număr, iar contorul e o cifră pe care
+    PREDARE_LANT.md o arată (`core/test_predare_cifre.py`). Folosită de `scripts/e2e_poarta.py` și de fixtura `contor_schema_pastrat`."""
+    if pune is None:
+        cur.execute("SELECT last_value, is_called FROM %s" % SECVENTA_SCHEMA)
+        return cur.fetchone()
+    cur.execute("SELECT setval(%s, %s, %s)", (SECVENTA_SCHEMA, pune[0], pune[1]))
+    return pune
+
+
 # ============================================================
 #  PARAMETRIZARE template — PURĂ
 # ============================================================

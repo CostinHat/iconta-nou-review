@@ -79,8 +79,7 @@ def contor_schema_pastrat():
     from core import tenant_provisioning as _tp
     _db.init_pool()
     with _db.get_conn() as c, c.cursor() as cur:
-        cur.execute("SELECT last_value, is_called FROM " + _tp.SECVENTA_SCHEMA)
-        inainte = cur.fetchone()
+        inainte = _tp.contor_schema(cur)
     yield inainte
     with _db.get_conn() as c, c.cursor() as cur:
-        cur.execute("SELECT setval(%s, %s, %s)", (_tp.SECVENTA_SCHEMA, inainte[0], inainte[1]))
+        _tp.contor_schema(cur, inainte)

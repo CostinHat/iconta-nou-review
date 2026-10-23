@@ -13,6 +13,7 @@ cheamă cu accesul și luna deschisă înlocuite (monkeypatch) — refuzul se ia
 import contextlib
 import io
 import os
+import secrets
 import types
 
 import pytest
@@ -182,7 +183,7 @@ def test_b17_intocmitor_calitate_si_nume():
 def test_b18_inregistrare_termeni_email_cabinet():
     """MUTAȚIE: `raise` repus după prima verificare (bifa termenilor) -> o eroare -> pică."""
     from core import uc_auth
-    d = types.SimpleNamespace(accept_termeni=False, parola="Parola-Buna-440!", email="nu-e-email", nume_cabinet="", telefon="")
+    d = types.SimpleNamespace(accept_termeni=False, parola=secrets.token_urlsafe(12) + "-Pp1", email="nu-e-email", nume_cabinet="", telefon="")
     with pytest.raises(erori.CerereGresita) as ei:
         uc_auth._valideaza_formularul(d)
     assert _campuri(ei.value.detaliu) == ["reg-termeni", "reg-email", "reg-cabinet"], ei.value.detaliu
